@@ -996,14 +996,14 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function UsergroupGetForUser($id)
 	{
-		return $this->DB->GetAll('SELECT usergroups.id AS id, name, description FROM usergroups, userassignments WHERE usergroups.id=userassignments.usergroupid AND userassignments.userid=? ORDER BY name ASC', array($id));
+		return $this->DB->GetAll('SELECT usergroups.id AS id, name, description FROM usergroups, userassignments WHERE usergroups.id=usergroupid AND userid=? ORDER BY name ASC', array($id));
 	}
 
 	function GetGroupNamesWithoutUser($userid)
 	{
 		return $this->DB->GetAll('SELECT usergroups.id AS id, name, userid
-			FROM usergroups LEFT JOIN userassignments ON (usergroups.id=userassignments.usergroupid AND userassignments.userid = ?) 
-			GROUP BY id, name HAVING userid IS NULL ORDER BY name', array($userid));
+			FROM usergroups LEFT JOIN userassignments ON (usergroups.id=usergroupid AND userid = ?) 
+			GROUP BY usergroups.id, name, userid HAVING userid IS NULL ORDER BY name', array($userid));
 	}
 
 	function UserassignmentGetForUser($id)
