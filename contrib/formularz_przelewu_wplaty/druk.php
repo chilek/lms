@@ -6,8 +6,11 @@
 <BODY>
 
 <?php 
-//  NRB 26 cyfr, 2 kontrolne, 8 nr banku, 16 nr konta 
 
+// ustaw ¶cie¿kê do pliku common.php z katalogu /lib LMSa
+require_once("../../lib/common.php");
+
+//  NRB 26 cyfr, 2 kontrolne, 8 nr banku, 16 nr konta 
 $KONTO_DO="00123456781234567890123456";
 
 $ISP1_DO="XXXXXXXXXXXXXXXXXXXXXXXXXXX";
@@ -84,8 +87,6 @@ for ( $i=0; $i<12; $i++ ) {
 	}
 ?>
 
-
-<?php require_once("../../lib/common.php"); ?>
 
 <span style="position: absolute; top: 203px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 8pt; font-weight: bold;"><?php echo "$KWOTA_ZL z³ $KWOTA_GR gr";?></span>
 
