@@ -53,6 +53,31 @@ sub process_request
 		}
 		close(ARP);
 	}
+	else 
+	{
+		
+# in case of [Free]BSD:
+# do a '*/3 * * * * /usr/sbin/arp -a -n >/tmp/arps' to your uncle cron
+# then sth like this should work:
+# 
+		if(open(ARP, "</tmp/arps"))
+		{
+			my(@arps) = <ARP>;
+			foreach my $arp (@arps)
+			{
+				chomp $arp;
+				$arp =~ s/^\? //g;
+				$arp =~ s/[\(\)]//g;
+				$arp =~ s/[\t ]+/ /g;
+				if($arp =~ /^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/ )
+                        {
+                                my ($ip,$at,$hwaddr) = split(' ',$arp);
+                                print STDOUT "$ip $hwaddr\n";
+                        }
+			}
+            close(ARP);
+		}
+	}
 }  
 
 sub configure_hook
