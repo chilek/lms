@@ -6,7 +6,7 @@
 			<IMG SRC="img/node.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name|upper}" {tip text="Wpisz nazwê komputera" trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name|upper}" MAXLENGTH="16" {tip text="Wpisz nazwê komputera" trigger="name" bold=1}>
 			<B>({$nodeinfo.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
