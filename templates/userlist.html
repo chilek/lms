@@ -1,7 +1,7 @@
 {include file="header.html"}
 {include file="userheader.html"}
 <!--// $Id$ //-->
-<H1>Lista u¿ytkowników{$layout.ultitle}</H1>
+<H1>{$lang.pagetitle_userlist|replace:"#":"`$layout.ultitle`"}</H1>
 <P>
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B" {popup text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
@@ -24,22 +24,17 @@
 			<img src="img/money.gif" alt="" align="absmiddle">
 		</TD>
 		<TD width="1%" class="fbt" ALIGN="right" VALIGN="TOP">
-			<a href="?m=userlist&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">Saldo:</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<a href="?m=userlist&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{$lang.balance}:</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			Abonament:
 		</TD>
 		<TD width="1%" class="frightu">
 			<NOBR><B>{$lang.total}: {$listdata.total}</B></NOBR>
 		</TD>
 	</TR>
-{*	<TR bgColor="CEBD9B">
-		<TD colspan="6" class="fall">
-			<B>Filtruj: <img src="img/user.gif" align="absmiddle" border="0" alt=""> {if $listdata.state neq 3}<a href="?m=userlist&s=3">{else}<U>{/if}pod³±czeni{if $listdata.state neq 3}</a>{else}</U>{/if} <img src="img/wait.gif" align="absmiddle" border="0" alt=""> {if $listdata.state neq 2}<a href="?m=userlist&s=2">{else}<U>{/if}oczekuj±cy{if $listdata.state neq 2}</a>{else}</U>{/if} <img src="img/unk.gif" align="absmiddle" border="0" alt=""> {if $listdata.state neq 1}<a href="?m=userlist&s=1">{else}<U>{/if}zainteresowani{if $listdata.state neq 1}</a>{else}</U>{/if}</a> <img src="img/user.gif" align="absmiddle" border="0" alt=""> {if $listdata.state neq 0}<a href="?m=userlist&s=0">{else}<U>{/if}wszyscy{if $listdata.state neq 0}</a>{else}</U>{/if}</B>	
-		</TD>
-	</TR>*}
 	<TR CLASS="DARK">
 		<TD CLASS="fall" colspan="6">
 			<P><FORM METHOD="GET" ACTION="?m=userlist" NAME="choosefilter">
-				<B>Filtruj:</B>
+				<B>{$lang.show_only}:</B>
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="userlist">
 				<SELECT SIZE="1" CLASS="bold" NAME="s" ONCHANGE="document.choosefilter.submit();">
 					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>pod³±czeni</OPTION>
@@ -58,7 +53,7 @@
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+			</B> ({$lang.records} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {$lang.of} {$listdata.total})
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
