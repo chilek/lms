@@ -28,31 +28,40 @@ $layout[pagetitle]="Lista u¿ytkowników";
 
 $order=$_GET['o'];
 
+if(!isset($order)) $order="name";
+
+$state=$_GET['s'];
+
+if(!isset($state)) $state="3";
+
 $SMARTY->assign("order",$order);
 
 $sql="SELECT id, lastname, name, status, email, phone1, address, info FROM users ";
 
-if(isset($order))
-	switch ($order){
+switch ($state){
+	case "3":
+		$sql .= " WHERE status = 3 ";
+		break;
+	case "2":
+		$sql .= " WHERE status = 2 ";
+		break;
+	case "1":
+		$sql .= " WHERE status = 1 ";
+}
 
-		case "name":
-			$sql .= " ORDER BY lastname ASC";
-			$layout[sortmsg] = "Sortowanie wed³ug nazwiska.";
-			break;
-		case "addr":
-			$sql .= " ORDER BY address ASC";
-			$layout[sortmsg] = "Sortowanie wed³ug adresu.";
-			break;
-		case "id":
-			$sql .= " ORDER BY id ASC";
-			$layout[sortmsg] = "Sortowanie wed³ug ID.";
-			break;
-	
-	}
-else
-{
-	$sql .= " ORDER BY lastname ASC";
-	$layout[sortmsg] = "Sortowanie wed³ug nazwiska.";
+switch ($order){
+	case "name":
+		$sql .= " ORDER BY lastname ASC";
+		$layout[sortmsg] = "Sortowanie wed³ug nazwiska.";
+		break;
+	case "addr":
+		$sql .= " ORDER BY address ASC";
+		$layout[sortmsg] = "Sortowanie wed³ug adresu.";
+		break;
+	case "id":
+		$sql .= " ORDER BY id ASC";
+		$layout[sortmsg] = "Sortowanie wed³ug ID.";
+		break;
 }
 
 $DB->ExecSQL($sql);
@@ -64,10 +73,13 @@ while($DB->FetchRow()){
 for($i=0;$i<sizeof($userlist[id]);$i++)
 	$userlist[balance][$i] = $LMS->GetUserBalance($userlist[id][$i]);
 
-$_SESSION[from] = $QUERY_STRING;
+$_SESSION[userdelfrom] = $QUERY_STRING;
 
+$SMARTY->assign("total",sizeof($userlist[id]));
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("userlist",$userlist);
+$SMARTY->assign("state",$state);
+$SMARTY->assign("order",$order);
 
 $SMARTY->display("header.html");
 $SMARTY->display("userlist.html");
