@@ -24,36 +24,18 @@
  *  $Id$
  */
 
-	if($LMS->UserExists($_GET[ownerid]))
-	{
-		$LMS->NodeSetU($_GET[ownerid],$_GET[access]);
-		$backid = $_GET[ownerid];
-	}
-	if($LMS->NodeExists($_GET[id]))
-	{
-		$LMS->NodeSet($_GET[id]);
-		$backid = $_GET[id];
-	}
-	
-	header("Location: ?".$_SESSION[backto]."#".$backid);
+if($LMS->UserExists($_GET[ownerid]))
+{
+	$LMS->NodeSetU($_GET[ownerid],$_GET[access]);
+	$backid = $_GET[ownerid];
+}
 
-/*
- * $Log$
- * Revision 1.12  2003/09/22 19:12:36  alec
- * ma³± zamotka z tymi ¿arówkami
- *
- * Revision 1.11  2003/09/22 17:31:16  alec
- * naprawiona zmiana statusu komputera przy pomocy ikony zarowki na liscie kompow
- *
- * Revision 1.10  2003/08/27 20:18:42  lukasz
- * - changed nodes.access from ENUM to BOOL;
- *
- * Revision 1.9  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.8  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
+if($LMS->NodeExists($_GET[id]))
+{
+	$LMS->NodeSet($_GET[id]);
+	$backid = $_GET[id];
+}
+
+header("Location: ?".$_SESSION[backto]."#".$backid);
+
 ?>

@@ -66,39 +66,4 @@ $SMARTY->assign("layout",$layout);
 $SMARTY->assign("replacelist",$replacelist);
 $SMARTY->display("netdevinfo.html");
 
-/*
- * $Log$
- * Revision 1.9  2003/10/10 12:25:58  lexx
- * - Dodana mo¿liwo¶æ zamiany urz±dzeñ miejscami
- *
- * Revision 1.8  2003/10/08 04:39:38  lukasz
- * - temporary save
- *
- * Revision 1.7  2003/10/08 04:01:29  lukasz
- * - html fixes in netdevices
- * - added new smarty function called {confirm text="confirm message"}
- * - little bugfix with netdev field in nodes (alec, pse, add this to
- *   changelog, also consider making 'UPGRADING' chapter in doc if it not
- *   exists yet)
- * - lot of small changes, mainly cosmetic
- *
- * Revision 1.6  2003/10/07 19:37:35  alec
- * unset nieporzebnych elem.
- *
- * Revision 1.5  2003/10/06 04:46:49  lukasz
- * - temp save
- *
- * Revision 1.4  2003/09/22 18:12:33  lexx
- * - komputery moga sie linkowac
- *
- * Revision 1.3  2003/09/21 18:07:47  lexx
- * - netdev
- *
- * Revision 1.2  2003/09/13 20:20:14  lexx
- * - lokalizacja
- *
- * Revision 1.1  2003/09/12 20:57:05  lexx
- * - netdev
- *
- */
 ?>

@@ -79,35 +79,4 @@ $SMARTY->assign("error",$error);
 $SMARTY->assign("tariffadd",$tariffadd);
 $SMARTY->display("tariffadd.html");
 
-/*
- * $Log$
- * Revision 1.28  2003/12/01 02:12:48  lukasz
- * - tsave - do nowych faktur... jak siê wy¶piê to dokoñczê
- *
- * Revision 1.27  2003/10/05 20:47:02  alec
- * stream -> rate in errors
- *
- * Revision 1.26  2003/10/05 20:37:15  alec
- * ujednolicenie interfejsu
- *
- * Revision 1.25  2003/09/09 01:22:28  lukasz
- * - nowe finanse
- * - kosmetyka
- * - bugfixy
- * - i inne rzeczy o których aktualnie nie pamiêtam
- *
- * Revision 1.24  2003/09/06 07:41:17  alec
- * dodana mo¿liwo¶æ tworzenia taryfy bez uprate i downrate, kosmetyka
- *
- * Revision 1.23  2003/09/05 13:11:24  lukasz
- * - nowy sposób wy¶wietlania informacji o b³êdach
- *
- * Revision 1.22  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.21  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>

@@ -155,59 +155,7 @@ $SMARTY->assign("layout",$layout);
 $SMARTY->assign("nodeinfo",$nodeinfo);
 $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
-/*
- * $Log$
- * Revision 1.41  2003/12/04 04:39:14  lukasz
- * - porz±dki
- * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
- *
- * Revision 1.40  2003/10/11 10:17:03  lexx
- * - computer -> node i inne drobne poprawki
- *
- * Revision 1.39  2003/10/06 04:46:49  lukasz
- * - temp save
- *
- * Revision 1.38  2003/10/04 12:41:28  lexx
- * - co za duzo to nie zdrowo
- *
- * Revision 1.36  2003/10/02 20:14:13  alec
- * dodana mozliwosc odlaczenia kompa od urzadzenia
- *
- * Revision 1.35  2003/10/02 19:40:22  alec
- * dodane sprawdzanie ilosci portow w netdev
- *
- * Revision 1.32  2003/09/23 19:11:46  alec
- * kosmetyka - dodany dwukropek
- *
- * Revision 1.31  2003/09/22 18:12:33  lexx
- * - komputery moga sie linkowac
- *
- * Revision 1.30  2003/09/19 11:00:03  lukasz
- * - temporary save
- *
- * Revision 1.29  2003/09/12 02:52:57  lukasz
- * - cosmetics
- *
- * Revision 1.28  2003/09/09 01:44:07  lukasz
- * - poprawki node{edit,info,add}
- *
- * Revision 1.27  2003/09/07 18:53:53  lukasz
- * *** empty log message ***
- *
- * Revision 1.26  2003/09/07 18:52:39  lukasz
- * - add $nodedata[mac] = str_replace("-",":",$nodedata[mac]);
- *
- * Revision 1.25  2003/08/27 20:18:42  lukasz
- * - changed nodes.access from ENUM to BOOL;
- *
- * Revision 1.24  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.23  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
+
 ?>
 
 

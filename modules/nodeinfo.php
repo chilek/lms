@@ -75,44 +75,4 @@ $SMARTY->assign("tariffs",$tariffs);
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("nodeinfo.html");
 
-/*
- * $Log$
- * Revision 1.25  2003/10/08 04:39:38  lukasz
- * - temporary save
- *
- * Revision 1.24  2003/10/01 16:06:37  alec
- * removed bad array members
- *
- * Revision 1.23  2003/09/26 17:44:10  alec
- * ujednolicone nag³ówki (dodany ':')
- *
- * Revision 1.22  2003/09/22 18:12:33  lexx
- * - komputery moga sie linkowac
- *
- * Revision 1.21  2003/09/22 17:47:28  alec
- * added node name to page title
- *
- * Revision 1.20  2003/09/19 11:00:03  lukasz
- * - temporary save
- *
- * Revision 1.19  2003/09/12 02:52:57  lukasz
- * - cosmetics
- *
- * Revision 1.18  2003/09/12 02:48:13  lukasz
- * - parse error @ 51;
- *
- * Revision 1.17  2003/09/12 02:47:37  lukasz
- * - cosmetics
- *
- * Revision 1.16  2003/09/09 01:44:07  lukasz
- * - poprawki node{edit,info,add}
- *
- * Revision 1.15  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.14  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>

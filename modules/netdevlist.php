@@ -62,17 +62,4 @@ $SMARTY->assign("netdevlist",$netdevlist);
 $SMARTY->assign("listdata",$listdata);
 $SMARTY->display("netdevlist.html");
 
-/*
- * $Log$
- * Revision 1.5  2003/12/04 04:39:14  lukasz
- * - porz±dki
- * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
- *
- * Revision 1.4  2003/10/06 05:33:04  lukasz
- * - temporary save / lot of fixes
- *
- * Revision 1.3  2003/09/12 20:57:05  lexx
- * - netdev
- *
- */
 ?>

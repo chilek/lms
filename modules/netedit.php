@@ -169,26 +169,5 @@ $SMARTY->assign("networkdata",$networkdata);
 $SMARTY->assign("prefixlist",$prefixlist);
 $SMARTY->assign("error",$error);
 $SMARTY->display("netinfo.html");
-/*
- * $Log$
- * Revision 1.25  2003/10/03 15:59:46  alec
- * ujednolicenie interfejsu
- *
- * Revision 1.24  2003/09/05 13:11:24  lukasz
- * - nowy sposób wy¶wietlania informacji o b³êdach
- *
- * Revision 1.23  2003/08/30 01:11:21  lukasz
- * - nowe pole w li¶cie sieci: interfejs
- *
- * Revision 1.22  2003/08/27 19:25:42  lukasz
- * - changed format of ipaddr storage in database
- *
- * Revision 1.21  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.20  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
+
 ?>

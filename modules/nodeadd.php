@@ -133,43 +133,5 @@ $SMARTY->assign("layout",$layout);
 
 $SMARTY->display("nodeadd.html");
 
-/*
- * $Log$
- * Revision 1.40  2003/12/16 23:18:47  alec
- * - dodane 'wywo³aj ponownie formularz' w nodeadd
- *
- * Revision 1.39  2003/12/12 18:29:12  alec
- * - dodane sprawdzenie czy MAC jest pusty i odpowiedni komunikat
- *
- * Revision 1.38  2003/12/04 04:39:14  lukasz
- * - porz±dki
- * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
- *
- * Revision 1.37  2003/10/07 19:15:05  alec
- * ujednolicenie naglowka
- *
- * Revision 1.36  2003/09/12 02:52:57  lukasz
- * - cosmetics
- *
- * Revision 1.35  2003/09/09 01:44:07  lukasz
- * - poprawki node{edit,info,add}
- *
- * Revision 1.34  2003/09/01 12:34:05  lukasz
- * - BTS #0000066
- *
- * Revision 1.33  2003/08/27 19:26:15  lukasz
- * - changed format of ipaddr storage in database
- *
- * Revision 1.32  2003/08/25 02:12:13  lukasz
- * - zmieniona obs³uga usuwania userów
- *
- * Revision 1.31  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.30  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>
 

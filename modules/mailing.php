@@ -25,21 +25,10 @@
  */
 
 $layout[pagetitle]="Mailing";
+
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("header.html");
 $SMARTY->display("mailing.html");
 $SMARTY->display("footer.html");
-/*
- * $Log$
- * Revision 1.16  2003/09/05 13:11:23  lukasz
- * - nowy sposób wy¶wietlania informacji o b³êdach
- *
- * Revision 1.15  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.14  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
+
 ?>
