@@ -51,55 +51,6 @@ switch($_RELOAD_TYPE)
 		echo '</TD></TR></TABLE>';
 	break;
 
-	case "lmsd-tcp":
-		
-		// hrhrhrhr :> Nieudokoumentowana opcja lmsd-tcp :>
-		// czyli kompatybilno¶æ z tym starym poczciwym lmsd-0.1 z lms'a 0.4
-
-		$better_token = md5(uniqid(rand(),1));
-		$auth_string = md5($better_token);
-		$ADB->Execute("INSERT INTO tokens (id, auth) VALUES (?, ?)",array($better_token,$auth_string));
-		echo "<P class=\"hd1\"><B>Prze³adowanie ustawieñ</B></p>\n";
-		$service_port = (! $_CONFIG[tcplmsd][port] ? "2345" : $_CONFIG[tcplmsd][port]);
-		$service_address = (! $_CONFIG[tcplmsd][address] ? "2345" : $_CONFIG[tcplmsd][address]);
-		$address = gethostbyname ($service_address);
-		$socket = socket_create (AF_INET, SOCK_STREAM, 0);
-		if ($socket < 0)
-			echo "socket_create() failed: reason: " . socket_strerror ($socket) . "\n";
-		$result = socket_connect ($socket, $address, $service_port);
-		if ($result < 0)
-			echo "socket_connect() failed.\nReason: ($result) " . socket_strerror($result) . "\n";
-		$in = "SESSION $better_token\nAUTH $auth_string\nDHCP\nFRWL$lms_frwltype\nODNT\nQUIT\n";
-		$out = '';
-		socket_write ($socket, $in, strlen ($in));
-		while ($out = socket_read ($socket, 2048)) 
-			$obf .= $out;
-		$out = $obf;
-		socket_close ($socket);
-		list($r_hello,$r_session,$r_auth,$r_dhcp,$r_frwl,$r_odnt) = explode("\n",$out);
-		list($r_r,$r_time)=explode(" ",$r_hello);
-		echo "Czas na zdalnej maszynie: ".date("Y/m/d H:i",$r_time)."<br>";
-		if($r_session=="+OK"&&$r_auth=="+OK")
-			echo "Autoryzacja siê powiod³a.<br>";
-		else
-			echo "Autoryzacja siê nie powiod³a.<br>";
-		if($r_dhcp=="+OK")
-			echo "Prze³adowanie DHCP: OK<br>";
-		else
-			echo "Prze³adowania DHCP: zablokowane!<br>";
-		if($r_frwl=="+OK")
-			echo "Prze³adowanie firewalla: OK<br>";
-		else
-			echo "Prze³adowania firewalla: zablokowane!<br>";
-		if($r_odnt=="+OK")
-			echo "Prze³adowanie oidnetd: OK<br>";
-		else
-			echo "Prze³adowania oidentd: zablokowane!<br>";
-		$ADB->Execute("DELETE FROM tokens WHERE id=?",array($better_token));
-
-	break;
-		
-
 	case "sql":
 		if(isset($_CONFIG[phpui]['reload_sqlquery']))
 		{
