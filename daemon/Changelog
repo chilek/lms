@@ -1,6 +1,5 @@
 * 31.10.2003
   - poprawiony b³±d z pustymi warto¶ciami zmiennych konfiguracyjnych (alec)
-  - poprawka umo¿liwiaj±ca po³±czenia przez socket lub tcp/ip (alec)
 
 * 29.10.2003
   - dodane parsowanie sekwencji specjalnych w zmiennych konfiguracyjnych (alec)
