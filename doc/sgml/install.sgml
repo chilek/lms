@@ -222,23 +222,29 @@
       	    <title>Konfiguracja</title>
  		<para>Parametry konfiguracyjne LMS-UI ustawia siê w pliku lms.ini,
 		 który nale¿y umie¶ciæ w katalogu /etc/lms/</para>
-		<sect2>	
+		<sect2>
 		<title>Sekcja [database] - ustawienia bazy danych</title>
-		<para>        
+		<para>
 		<itemizedlist>
           	<listitem>
 	   	<para>type</para>
-	   <para>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</para>
+	   <para>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie 
+	   widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</para>
 	   <para>Przyk³ad: <prompt>type = mysql</prompt></para>
 	  </listitem>
           <listitem>
 	   <para>host</para>
-	   <para>Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost</para>
+	   <para>Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj 
+	   wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie 'localhost:/path/to/socket'). 
+	   Domy¶lnie: localhost</para>
 	   <para>Przyk³ad:	<prompt>host = localhost</prompt></para>
 	  </listitem>
           <listitem>
 	   <para>user</para>
-	   <para>U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 'postgres' (PostgreSQL). Domy¶lnie: root</para>
+	   <para>U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze 
+	   wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, 
+	   prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 
+	   'postgres' (PostgreSQL). Domy¶lnie: root</para>
 	   <para>Przyk³ad:	<prompt>user = lms</prompt></para>
 	  </listitem>
           <listitem>
@@ -260,12 +266,15 @@
 	<itemizedlist>
           <listitem>
 	   <para>sys_dir</para>
-	   <para>Katalog systemowy. Jest to miejsce gdzie jest ca³a zawarto¶æ UI LMS'a, czyli index.php, grafiki, templejty i reszta. Domy¶lnie, index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale lepiej by by³o gdyby mu powiedzieæ gdzie jest:</para>
+	   <para>Katalog systemowy. Jest to miejsce gdzie jest ca³a zawarto¶æ UI LMS'a, czyli index.php, grafiki, 
+	   templejty i reszta. Domy¶lnie, index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale 
+	   lepiej by by³o gdyby mu powiedzieæ gdzie jest:</para>
 	   <para>Przyk³ad:	<prompt>sys_dir = /var/www/htdocs/lms/</prompt></para>
 	  </listitem>
           <listitem>
 	   <para>modules_dir</para>
-	   <para>Katalog z "modu³ami" LMS'a. Czyli zawarto¶æ katalogu modules. Domy¶lnie jest to podkatalog modules w sys_dir.</para>
+	   <para>Katalog z "modu³ami" LMS'a. Czyli zawarto¶æ katalogu modules. Domy¶lnie jest to podkatalog 
+	   modules w sys_dir.</para>
 	   <para>Przyk³ad:	<prompt>modules_dir = /usr/share/lms/modules/</prompt></para>
 	  </listitem>
           <listitem>
@@ -275,9 +284,11 @@
 	  </listitem>
           <listitem>
 	   <para>backup_dir</para>
-	   <para>Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje zrzuty z bazy. Domy¶lnie jest to podkatalog 'backups'.</para>
+	   <para>Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje zrzuty z bazy. 
+	   Domy¶lnie jest to podkatalog 'backups'.</para>
 	   <para>Przyk³ad:	<prompt>backup_dir = /var/backup/lms/</prompt>
-	   <warning><para>Je¶li katalog z kopiami zapasowymi bêdzie osi±galny z poziomu WWW, to ka¿dy bez autoryzacji bêdzie mia³ do nich dostêp.</para></warning>
+	   <warning><para>Je¶li katalog z kopiami zapasowymi bêdzie osi±galny z poziomu WWW, to ka¿dy 
+	   bez autoryzacji bêdzie mia³ do nich dostêp.</para></warning>
 	   </para>
 	  </listitem>
           <listitem>
@@ -287,7 +298,8 @@
 	  </listitem>
           <listitem>
 	   <para>smarty_compile_dir</para>
-	   <para>Katalog kompilacji Smartyego. Miejsce gdzie Smarty kompiluje szablony. Domy¶lnie to templates_c w katalogu sysdir.</para>
+	   <para>Katalog kompilacji Smartyego. Miejsce gdzie Smarty kompiluje szablony. Domy¶lnie to 
+	   <filename>templates_c</filename> w katalogu sysdir.</para>
 	   <para>Przyk³ad: 	<prompt>smarty_compile_dir = /var/smarty/compile/lms</prompt></para>
 	  </listitem>
           <listitem>
@@ -303,14 +315,18 @@
     	<itemizedlist>
    	<listitem>
     	<para>allow_from  (opcjonalny)</para>
-    	<para>Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste, ka¿dy adres IP ma dostêp do LMS'a, je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego niechcianego u¿ytkownika.</para>
+    	<para>Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste, ka¿dy adres IP ma dostêp do LMS'a, 
+	je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego 
+	niechcianego u¿ytkownika.</para>
     	<para>Przyk³ad:		<prompt>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</prompt></para>
    </listitem>
    <listitem>
     <para>timeout</para>
-    <para>Timeout sesji www. Po tym czasie (w sekudnach) u¿ytkownik zostanie wylogowany je¿eli nie podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</para>
+    <para>Timeout sesji www. Po tym czasie (w sekudnach) u¿ytkownik zostanie wylogowany je¿eli nie 
+    podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</para>
     <para>Przyk³ad:	<prompt>timeout = 900</prompt>
-    <warning><para>Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie bêdziesz móg³ korzystaæ z LMS!</para></warning>
+    <warning><para>Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie 
+    bêdziesz móg³ korzystaæ z LMS!</para></warning>
     </para>
    </listitem>
    <listitem>
@@ -326,39 +342,52 @@
    <listitem>
     <para>reload_type</para>
     <para>Typ reloadu. Dozwolone warto¶ci:</para>
-    <para>exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶ skrypt lub co¶, konfigurowalny poni¿ej)</para>
+    <para>exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶ skrypt lub co¶, konfigurowalny
+     poni¿ej)</para>
     <para>sql  - zrobienie wpisów w SQL'u (te¿ mo¿na ustawiæ konkretne query SQL'a)</para>
     <para>Domy¶lna warto¶æ to 'sql'.</para>
     <para>Przyk³ad:	<prompt>reload_type = exec</prompt></para>
    </listitem>
    <listitem>
     <para>reload_execcmd</para>
-    <para>Komenda do wykonania podczas reloadu je¿eli reload_type jest ustawione na 'exec'. Domy¶lnie /bin/true. String ten puszczany do komendy system() wiêc pronuje rozwagê i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedyñczo.</para>
+    <para>Komenda do wykonania podczas reloadu je¿eli reload_type jest ustawione na 'exec'. Domy¶lnie
+    <filename>/bin/true</filename>. String ten puszczany do komendy system() wiêc pronuje rozwagê 
+    i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru 
+    zglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedyñczo.</para>
     <para>Przyk³ad:	<prompt>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</prompt></para>
    </listitem>
    <listitem>
     <para>reload_sqlquery</para>
-    <para>Query SQL'a. Generalnie, LMS przy nie ustawionym swoim w³asnym QUERY robi dziwne rzeczy które ja ju¿ wymy¶li³em. Chwilowo pewnie wogóle nie kompatybilne z mteg'owym demonikiem, ale pracujemy nad uzgodnieniem formatu. Jak kto¶ bardzo chce, to mo¿na u¿yæ '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika (czyli ;) jest traktowany jako separator kwerend. Tj. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka komend MySQL'a.</para>
+    <para>Query SQL'a. Generalnie, LMS przy nie ustawionym swoim w³asnym QUERY robi dziwne rzeczy, 
+    które ja ju¿ wymy¶li³em. Chwilowo pewnie wogóle nie kompatybilne z mteg'owym demonikiem, 
+    ale pracujemy nad uzgodnieniem formatu. Jak kto¶ bardzo chce, to mo¿na u¿yæ '%TIME%' jako podstawki 
+    pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest traktowany jako separator kwerend.
+    Tj. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka komend MySQL'a.</para>
     <para>Przyk³ad:	<prompt>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</prompt></para>
    </listitem>
    <listitem>
     <para>force_ssl</para>
-    <para>Wymuszanie SSL'a. Ustawinie tej zmiennej na 1 spowoduje ¿e LMS bêdzie wymusza³ po³±czenie SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</para>
+    <para>Wymuszanie SSL'a. Ustawinie tej zmiennej na 1 spowoduje ¿e LMS bêdzie wymusza³ po³±czenie 
+    SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej 
+    próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</para>
     <para>Przyk³ad:	<prompt>force_ssl = 0</prompt></para>
    </listitem>
    <listitem>
     <para>allow_mac_sharing</para>
-    <para>Przyzwolenie na dodawanie rekordów komputerów z adresami MAC ju¿ istniej±cymi (nie sprawdza czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone</para>
+    <para>Przyzwolenie na dodawanie rekordów komputerów z adresami MAC ju¿ istniej±cymi (nie sprawdza 
+    czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone</para>
     <para>Przyk³ad:	<prompt>allow_mac_sharing	= 1</prompt></para>
    </listitem>
    <listitem>
     <para>smarty_debug</para>
-    <para>W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP do Smartyego. Domy¶lnie wy³±czone.</para>
+    <para>W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP 
+    do Smartyego. Domy¶lnie wy³±czone.</para>
     <para>Przyk³ad:	<prompt>smarty_debug = 1</prompt></para>
    </listitem>
    <listitem>
     <para>debug_mail</para>
-    <para>Adres e-mail do debugowania - pod ten email bêd± sz³y maile wysy³ane z sekcji 'mailing' LMS'a, zamiast do w³a¶ciwych u¿ytkowników.</para>
+    <para>Adres e-mail do debugowania - pod ten email bêd± sz³y maile wysy³ane z sekcji 'mailing' LMS'a, 
+    zamiast do w³a¶ciwych u¿ytkowników.</para>
     <para>Przyk³ad:	<prompt>debug_mail = root@localhost</prompt></para>
    </listitem>
     <listitem>
@@ -371,19 +400,48 @@
     </sect1>
     <sect1 id="install-rights">
       <title>Prawa dostêpu</title>
-      <para>LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu administratorowi mo¿na przydzieliæ dowoln± kombinacjê regu³ dostêpu.</para>
-      <para>Domy¶lnie zdefiniowanych  jest  osiem regu³ dostêpu. Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania.</para>
-      <para>Modu³y do których administrator ma zawsze dostêp to: welcome,  copyrights,  logout, chpasswd (przy czym chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostep do reszty jest zdefiniowany regu³ami. Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie przydzieli mu regu³kê 0 czyli pe³en dostêp.</para>
+      <sect2>
+      		<title>Idea</title>
+      <para>LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e
+      zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu administratorowi mo¿na
+      przydzieliæ dowoln± kombinacjê regu³ dostêpu.</para>
+      <para>Domy¶lnie zdefiniowanych jest osiem regu³ dostêpu. 
+       <itemizedlist>
+	<listitem><para>pe³en dostêp</para></listitem>
+	<listitem><para>odczyt wszystkich danych</para></listitem>
+	<listitem><para>pod³±czanie i od³±czanie komputerów</para></listitem>
+	<listitem><para>manipulowanie finansami</para></listitem>
+	<listitem><para>prze³adowywanie konfiguracji</para></listitem>
+	<listitem><para>manipulowanie danymi u¿ytkowników</para></listitem>
+	<listitem><para>manipulowanie danymi komputerów</para></listitem>
+	<listitem><para>brak dostêpu do modyfikacji i zak³adania kont administratorów</para></listitem>
+	<listitem><para>brak dostêpu</para></listitem>
+	</itemizedlist>
+      Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania. Modu³y do których 
+      administrator ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
+      chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostep do reszty jest zdefiniowany regu³ami.</para>
+     <note><para>Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie
+      przydzieli mu regu³kê 0, czyli pe³en dostêp.</para></note>
+     
+      </sect2>
+      <sect2>
+      		<title>Jak to dzia³a?</title>
+		<para>Decyzja  czy  u¿ytkownik  ma prawo dostêpu do modu³u czy nie przebiega nastêpuj±co:
+		<simplelist>
+		<member>-  najpierw  sprawdzana  jest  lista  modu³ów, do których zawsze ma siê
+		dostêp,</member>
+		<member>-  potem  nastêpuje sprawdzenie czy modu³ pasuje do regu³ w poszczególnych
+		poziomach, do których administrator ma dostêp,</member>
+		<member>-  na  koñcu podejmowana jest decyzja czy u¿ytkownik ma uprawnienia by
+		do  modu³u siê dobraæ. Je¿eli modu³ siê za³apa³ na którykolwiek poziom, który zabrania dostêpu,
+		dostêp  zostanie  zabroniony  nawet  je¿eli administrator ma ustawiony poziom, który pozwala
+		na dostêp do modu³u (np.  kto¶  ma  pe³ny  dostêp oraz brak dostêpu do modu³u dodawania
+		komputerów,  nie  bêdzie  on  móg³ siê odwo³aæ do tego modu³u). Je¿eli modu³ pasuje do
+		poziomu, który pozwala na dostêp do danego modu³u LMS zezwala na dalsz± pracê.
+		Je¿eli natomiast modu³ siê nie "za³apa³" na ¿aden poziom równie¿ zostanie mu wy¶wietlony
+		komunikat o braku dostêpu.</member>
+		</simplelist>
+		</para>
+	</sect2>
     </sect1>
-    <!--
-    A to tu po co? ¯adne rewelacje
-    <sect1>
-      <title>Bezpieczeñstwo</title>
-        <para>Dostêp do lms-ui powinien byæ mo¿liwy tylko po SSL (co zreszt± mo¿na wymusiæ flag± 
-	<command>force_ssl</command> w <filename>lms.ini</filename>), a katalog z kopiami 
-	zapasowymi baz danych powinien zostaæ przeniesiony do katalogu gdzie serwer WWW nie ma 
-	dostêpu (np. <filename>/var/backup/lms</filename>), bo inaczej do plików z kopiami 
-	zapasowymi bazy bêdzie siê mo¿na dostaæ z poziomu www bez autoryzacji.</para>
-    </sect1>
-    -->
   </chapter>

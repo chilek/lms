@@ -1,50 +1,52 @@
 <!-- $Id$ -->
 <chapter id="user">
  <title>Interfejs U¿ytkownika (lms-ui)</title>
- <para>LMS'owy Interfejs U¿ytkownika to panel administracyjny do tworzenia 
+ <para>LMS'owy Interfejs U¿ytkownika to panel administracyjny do tworzenia
   i zarz±dzania baz± u¿ytkowników i komputerów dostêpny za pomoc± przegl±darki
   internetowej. Umo¿liwia wprowadzanie danych komputerów,
   przypisanie ich do u¿ytkowników i sieci. Definiowanie op³at i zarz±dzanie finansami sieci,
   Szybkie wyszukiwanie danych o u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji
   seryjnej do u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich hase³.
-  Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania ³±cza, a tak¿e 
+  Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania ³±cza, a tak¿e
   tworzenie kopii bazy danych oraz zarz±dzanie skryptami wykonywalnymi.</para>
  <sect1 id="user-login">
 	<title>Logowanie</title>
 	<para>Po wpisaniu w przegl±darce adresu do strony z lms'em, powita ciê
 	ekran logowania. Musisz podaæ w³a¶ciwy login oraz has³o. Has³a w bazie
 	danych przechowywane s± w formie zaszyfrowanej.</para>
-	<para>Je¿eli jest to twoje pierwsze logowanie i nie masz jeszcze 
+	<para>Je¿eli jest to twoje pierwsze logowanie i nie masz jeszcze
 	za³o¿onego konta, zostaniesz przekierowany do modu³u tworzenia kont
 	administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
 	jednego modu³u.</para>
 	<figure>
-	<title>LMS-UI: Logowanie</title>
-	<ulink url="images/login.png">
-	<inlinemediaobject>
-  		<imageobject>
-  		<imagedata fileref="images/login-small.png" format="png">
-  		</imageobject>
-  	</inlinemediaobject></ulink>
+		<title>LMS-UI: Logowanie</title>
+			<ulink url="images/login.png">
+				<inlinemediaobject>
+  				<imageobject>
+  					<imagedata fileref="images/login-small.png" format="png">
+  				</imageobject>
+  				</inlinemediaobject>
+			</ulink>
 	</figure>
  </sect1>
  <sect1 id="user-all">
 	<title>Praca z LMS-UI</title>
 	<para>Po zalogowaniu do LMS'a zobaczysz panel powitalny, na którym znajduj± siê
-	podstawowe informacje na temat naszego systemu: wersjê LMS i jego sk³adników, 
-	wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i komputerów w bazie oraz ich 
+	podstawowe informacje na temat naszego systemu: wersjê LMS i jego sk³adników,
+	wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i komputerów w bazie oraz ich
 	stan (pod³±czony/od³±czony), liczbê zad³u¿onych i kwota oraz przydatne lms'owe linki.</para>
 	<para>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
-	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze 
+	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze
 	podaj±c ich numery.</para>
 	<figure>
-	<title>LMS-UI: Panel g³ówny</title>
-	<ulink url="images/welcome.png">
-	<inlinemediaobject>
-  		<imageobject>
-  		<imagedata fileref="images/welcome-small.png" format="png">
-  		</imageobject>
-  	</inlinemediaobject></ulink>
+		<title>LMS-UI: Panel g³ówny</title>
+			<ulink url="images/welcome.png">
+				<inlinemediaobject>
+  				<imageobject>
+  					<imagedata fileref="images/welcome-small.png" format="png">
+  				</imageobject>
+  				</inlinemediaobject>
+			</ulink>
 	</figure>
  <sect2 id="menu-users">
 	<title>U¿ytkownicy</title>
@@ -55,108 +57,172 @@
 	z informacjami szczegó³owymi o nim i przypisanych mu komputerach oraz
 	operacjach finansowych. Tam te¿ mo¿esz zaksiêgowaæ wp³atê lub obci±¿enie jego
 	rachunku.</para>
-	<para>W menu znajduj±cym siê u góry okna masz do wyboru opcje: filtrowania listy, 
+	<para>W menu znajduj±cym siê u góry okna masz do wyboru opcje: filtrowania listy,
 	dodawania nowych u¿ytkowników, wyszukiwania w bazie wg zadanych kryteriów oraz
 	wydruku listy.</para>
+	<para>Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony) u¿ytkowników.
+	<note><para>Do automatycznego od³±czania u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
+	s³u¿y skrypt lms-cutoff.</para></note>
+	</para>
 	<figure>
-	<title>LMS-UI: U¿ytkownicy</title>
-	<ulink url="images/users.png">
-	<inlinemediaobject>
-  		<imageobject>
-  		<imagedata fileref="images/users-small.png" format="png">
-  		</imageobject>
-  	</inlinemediaobject></ulink>
+		<title>LMS-UI: U¿ytkownicy</title>
+			<ulink url="images/users.png">
+				<inlinemediaobject>
+  				<imageobject>
+  					<imagedata fileref="images/users-small.png" format="png">
+  				</imageobject>
+  				</inlinemediaobject>
+			</ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-nodes">
 	<title>Komputery</title>
-	<para><warning><para>Aby dodaæ nowy komputer musisz wcze¶niej utworzyæ 
-	u¿ytkownika oraz sieæ, które mu przypiszesz.</para></warning></para>
+	<para>Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie listy komputerów,
+	wyszukiwania komputerów o danej nazwie, IP lub MAC'u, dodawanie nowych lub usuwanie ju¿
+	wpisanych do bazy komputerów, a tak¿e podgl±d i zmianê informacji o nich. W górnym menu dostêpna
+	jest opcja wydruku listy. Zmiany statusu komputera 'w³±czony/wy³±czony' dokonuje siê
+	klikniêciem na ikonê ¿arówki w odpowiedniej linii.
+	<note><para>Aby dodaæ nowy komputer musisz wcze¶niej utworzyæ
+	u¿ytkownika oraz sieæ, którym go przypiszesz.</para></note>
+	</para>
 	<figure>
-	<title>LMS-UI: Komputery</title>
-	<ulink url="images/nodes.png">
-	<inlinemediaobject>
-  		<imageobject>
-  		<imagedata fileref="images/nodes-small.png" format="png">
-  		</imageobject>
-  	</inlinemediaobject></ulink>
+		<title>LMS-UI: Komputery</title>
+			<ulink url="images/nodes.png">
+				<inlinemediaobject>
+  				<imageobject>
+  					<imagedata fileref="images/nodes-small.png" format="png">
+		  		</imageobject>
+  				</inlinemediaobject>
+			</ulink>
 	</figure>
  </sect2>
  <sect2 id="user-networks">
 	<title>Sieci IP</title>
-	<para></para>
+	<para>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, Gateway,
+	zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i dostepnych adresów.
+	Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ na podsieci,
+	albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</para>
 	<figure>
-	<title>LMS-UI: Sieci IP</title>
-	<ulink url="images/networks.png"><inlinemediaobject>
-  		<imageobject>
-  		<imagedata fileref="images/networks-small.png" format="png">
-  		</imageobject>
-  	</inlinemediaobject></ulink>
+		<title>LMS-UI: Sieci IP</title>
+			<ulink url="images/networks.png">
+				<inlinemediaobject>
+  				<imageobject>
+  					<imagedata fileref="images/networks-small.png" format="png">
+  				</imageobject>
+  				</inlinemediaobject>
+			</ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-tariffs">
 	<title>Taryfy i Finanse</title>
-	<para></para>
+	<para>Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami sieci.</para>
+	<para>Masz mo¿liwo¶æ definiowania taryf abonamentowych i okre¶lenia kwoty abonamentu oraz
+	ograniczeñ upstream, downstream wykorzystywanych pó¼niej podczas generowania plików
+	konfiguracyjnych.</para>
+	<para>Dostêpny z górnego menu 'Bilans Finansowy' to historia rachunku z podsumowaniem
+	przychodu i rozchodu. 'Nowa Operacja' umo¿liwia zaksiêgowanie nowych wp³at i obci±¿eñ
+	u¿ytkowników lub wydatków i przychodów sieci.</para>
 	<figure>
-	<title>LMS-UI: Taryfy i finanse</title>
-	<ulink url="images/tariffs.png"><inlinemediaobject>
-  		<imageobject>
-  		<imagedata fileref="images/tariffs-small.png" format="png">
-  		</imageobject>
-  	</inlinemediaobject></ulink>
+		<title>LMS-UI: Taryfy i finanse</title>
+			<ulink url="images/tariffs.png">
+					<inlinemediaobject>
+  					<imageobject>
+  						<imagedata fileref="images/tariffs-small.png" format="png">
+  					</imageobject>
+  					</inlinemediaobject>
+			</ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-mailing">
 	<title>Mailing</title>
-	<para></para>
+	<para>Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
+	u¿ytkowników twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
+	do której zostanie wys³any e-mail.
+	<note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji mail().</para></note>
+	<note><para>Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami polecam.
+	skrypt lms-notify.</para></note>
+	</para>
  </sect2>
  <sect2 id="menu-reload">
 	<title>Prze³adowanie</title>
-	<para></para>
+	<para>Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji zdefiniowanej
+	dla generatora plików konfiguracyjnych lms-mgc. Wiêcej informacji znajdziesz w rozdziale
+	dotycz±cym lms-mgc.</para>
  </sect2>
  <sect2 id="menu-databases">
 	<title>Bazy danych</title>
-	<para></para>
+	<para>Z panelu 'Bazy danych' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy lms'a.
+	Kopia bazy to plik tekstowy z zawarto¶ci± wszystkich tabel w bazie, zapisywany w
+	katalogu zdefiniowanym w sekcji <emphasis>[directories]</emphasis> <filename>lms.ini</filename>
+	zmienn± <prompt>backup_dir</prompt>.
+	<note><para>Domy¶lnie kopie zapisywane s± w katalogu <filename>lms/backups</filename>
+	dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</para></note></para>
+	<para>Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
+	</para>
 	<figure>
-	<title>LMS-UI: Bazy danych</title>
-	<ulink url="images/db.png"><inlinemediaobject>
-  		<imageobject>
-  		<imagedata fileref="images/db-small.png" format="png">
-  		</imageobject>
-  	</inlinemediaobject></ulink>
+		<title>LMS-UI: Bazy danych</title>
+			<ulink url="images/db.png">
+				<inlinemediaobject>
+  				<imageobject>
+  					<imagedata fileref="images/db-small.png" format="png">
+  				</imageobject>
+  				</inlinemediaobject>
+			</ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-admins">
 	<title>Administratorzy</title>
-	<para></para>
+	<para>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, zmiany hase³ oraz
+	definiowania praw dostêpu. Na pierwszym widoku jest lista administratorów z datami ostatniego
+	logowania. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie informacji szczegó³owych
+	o danym koncie, w tym o zdefiniowanych prawach dostêpu. W ka¿dej chwili mo¿liwa jest zmiana
+	danych i uprawnieñ za pomoc± przycisku 'Edytuj'. Aby za³o¿yæ nowe konto administratora
+	skorzystaj z górnego menu 'Nowy'.</para>
 	<figure>
-	<title>LMS-UI: Administratorzy</title>
-	<ulink url="images/admins.png"><inlinemediaobject>
-  		<imageobject>
-  		<imagedata fileref="images/admins-small.png" format="png">
-  		</imageobject>
-  	</inlinemediaobject></ulink>
+		<title>LMS-UI: Administratorzy</title>
+			<ulink url="images/admins.png">
+				<inlinemediaobject>
+  				<imageobject>
+  					<imagedata fileref="images/admins-small.png" format="png">
+  				</imageobject>
+  				</inlinemediaobject>
+			</ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-stats">
 	<title>Statystyki</title>
-	<para></para>
+	<para>W menu 'Statystyki' dostêpny jest interfejs do przegl±dania statystyk wykorzystania
+	³±cza w postaci prostych wykresów. Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
+	okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz ich wiêcej),
+	ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug downloadu).
+	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
+	ostatnich 30 dni lub ostatniego roku.
+	<note><para>Menu 'Statystyki' jest standardowo niedostêpne. Aby je w³±czyæ, nale¿y w sekcji
+	<emphasis>[phpui]</emphasis> pliku <filename>lms.ini</filename> ustawiæ zmienn±:
+	<prompt>enable_stats = 1</prompt>.</para></note>
+	<note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y go zainstalowaæ
+	aby mieæ w bazie dane do wykresów.</para></note>
+	</para>
 	<figure>
-	<title>LMS-UI: Statystyki - filtr</title>
-	<ulink url="images/stats.png"><inlinemediaobject>
-  		<imageobject>
-  		<imagedata fileref="images/stats-small.png" format="png">
-  		</imageobject>
-  	</inlinemediaobject></ulink>
+		<title>LMS-UI: Statystyki - filtr</title>
+			<ulink url="images/stats.png">
+				<inlinemediaobject>
+  				<imageobject>
+  					<imagedata fileref="images/stats-small.png" format="png">
+  				</imageobject>
+  				</inlinemediaobject>
+			</ulink>
 	</figure>
 	<para></para>
-		<figure>
-	<title>LMS-UI: Statystyki - wykres</title>
-	<ulink url="images/statbars.png"><inlinemediaobject>
-  		<imageobject>
-  		<imagedata fileref="images/statbars-small.png" format="png">
-  		</imageobject>
-  	</inlinemediaobject></ulink>
+	<figure>
+		<title>LMS-UI: Statystyki - wykres</title>
+			<ulink url="images/statbars.png">
+				<inlinemediaobject>
+  				<imageobject>
+  					<imagedata fileref="images/statbars-small.png" format="png">
+  				</imageobject>
+  				</inlinemediaobject>
+			</ulink>
 	</figure>
  </sect2>
  </sect1>
