@@ -24,6 +24,53 @@
  *  $Id$
  */
 
+function DBLoad($filename=NULL)
+{
+	global $LMS;
+
+	if(!$filename)
+		return FALSE;
+	$finfo = pathinfo($filename);
+	$ext = $finfo['extension'];
+
+	if ((extension_loaded('zlib'))&&($ext=='gz'))
+		$file = gzopen($filename,'r'); //jezeli chcemy gz to plik najpierw trzeba rozpakowac
+	else
+		$file = fopen($filename,'r');
+
+	$LMS->DB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
+	while(!feof($file))
+	{
+		$line = fgets($file,4096);
+		if($line!='')
+		{
+			$line=str_replace(';\n','',$line);
+			$LMS->DB->Execute($line);
+		}
+	}
+	$LMS->DB->CommitTrans();
+
+	if ((extension_loaded('zlib'))&&($ext=='gz'))
+		gzclose($file);
+	else
+		fclose($file);
+
+	// Okej, zróbmy parê bzdurek db depend :S
+	// Postgres sux ! (warden)
+	// Tak, a ³y¿ka na to 'niemo¿liwe' i polecia³a za wann± potr±caj±c bannanem musztardê (lukasz)
+
+	switch($LMS->CONFIG['database']['type'])
+	{
+		case 'postgres':
+			// uaktualnijmy sequencery postgresa ...
+			foreach($LMS->DB->ListTables() as $tablename)
+				// ... tam gdzie jest *_id_seq
+				if(!in_array($tablename, array('rtattachments','dbinfo','invoicecontents','stats','timestamps','eventassignments')))
+					$LMS->DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
+		break;
+	}
+}
+
 if($_GET['is_sure'])
 {
 	if ($_GET['gz'])
@@ -31,7 +78,17 @@ if($_GET['is_sure'])
 	else
 		$LMS->DatabaseCreate();
 
-	$LMS->DatabaseRecover($_GET['db']);
+	$dbtime = $_GET['db'];
+
+	if(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql'))
+	{
+		DBLoad($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
+	}
+	elseif ((extension_loaded('zlib'))&&(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz')))
+	{
+		DBLoad($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
+	}
+	
 	header('Location: ?m='.$_SESSION['lastmodule']);
 	die;
 }else{
@@ -45,4 +102,3 @@ if($_GET['is_sure'])
 }
 
 ?>
-

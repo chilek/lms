@@ -26,7 +26,17 @@
 
 if($_GET['is_sure'])
 {
-	$LMS->DatabaseDelete($_GET['db']);
+	$dbtime = $_GET['db'];
+	
+	if(@file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql'))
+	{
+		@unlink($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
+	}
+	elseif((extension_loaded('zlib'))&&((@file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz'))))
+	{
+		@unlink($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
+	}
+
 	header('Location: ?m='.$_SESSION['lastmodule']);
 	die;
 } 
