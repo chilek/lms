@@ -40,7 +40,7 @@ for host in $hosty
     do
     recv=`cat /tmp/recv.stat | grep $net.$host' ' | cut -c10-18`
     send=`cat /tmp/send.stat | grep $net.$host' ' | cut -c10-18`
-    echo -e $net.$host '\t' $send '\t' $recv >> $log
+    echo -e $net.$host ' ' $send ' ' $recv >> $log
 done
 
 # zerowanie liczników iptables
