@@ -18,6 +18,7 @@ CREATE TABLE admins (
   lastloginip varchar(16) NOT NULL default '',
   failedlogindate int(11) NOT NULL default '0',
   failedloginip varchar(16) NOT NULL default '',
+  deleted tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY login (login)
 ) TYPE=MyISAM;
@@ -54,6 +55,7 @@ CREATE TABLE cash (
   adminid int(11) NOT NULL default '0',
   type int(11) NOT NULL default '0',
   value decimal(9,2) NOT NULL default '0.00',
+  taxvalue decimal(9,2) default '0.00',
   userid int(11) NOT NULL default '0',
   comment varchar(255) NOT NULL default '',
   invoiceid int(11) NOT NULL default '0',
@@ -83,7 +85,7 @@ DROP TABLE IF EXISTS invoicecontents;
 CREATE TABLE invoicecontents (
   invoiceid int(11) NOT NULL default '0',
   value decimal(9,2) NOT NULL default '0.00',
-  taxvalue decimal(9,2) NOT NULL default '0.00',
+  taxvalue decimal(9,2) default '0.00',
   pkwiu varchar(255) NOT NULL default '',
   content varchar(16) NOT NULL default '',
   count decimal(9,2) NOT NULL default '0.00',
@@ -197,7 +199,6 @@ CREATE TABLE nodes (
   warning tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
-  UNIQUE KEY mac (mac),
   UNIQUE KEY ipaddr (ipaddr)
 ) TYPE=MyISAM;
 
@@ -314,7 +315,7 @@ CREATE TABLE tariffs (
   id int(11) NOT NULL auto_increment,
   name varchar(255) NOT NULL default '',
   value decimal(9,2) NOT NULL default '0.00',
-  taxvalue decimal(9,2) NOT NULL default '0.00',
+  taxvalue decimal(9,2) default '0.00',
   pkwiu varchar(255) NOT NULL default '',
   uprate int(11) NOT NULL default '0',
   downrate int(11) NOT NULL default '0',
@@ -368,4 +369,28 @@ CREATE TABLE users (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004031402');
+#
+# Struktura tabeli dla usergroups
+#
+DROP TABLE IF EXISTS usergroups;
+CREATE TABLE usergroups (
+  id int(11) NOT NULL auto_increment, 
+  name varchar(255) NOT NULL default '', 
+  description text NOT NULL, 
+  PRIMARY KEY (id), 
+  UNIQUE KEY name (name)
+) TYPE=MyISAM;
+
+#
+# Struktura tabeli dla userassignments
+#
+DROP TABLE IF EXISTS userassignments;
+CREATE TABLE userassignments (
+  id int(11) NOT NULL auto_increment, 
+  usergroupid int(11) NOT NULL default '0', 
+  userid int(11) NOT NULL default '0', 
+  PRIMARY KEY (id),
+  UNIQUE KEY userassignment (usergroupid, userid)
+) TYPE=MyISAM;
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004042300');
