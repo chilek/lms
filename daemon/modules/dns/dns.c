@@ -28,6 +28,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <time.h>
 
 #include "almsd.h"
 #include "dns.h"
@@ -165,7 +166,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 					if(ownerid==0)
 						continue;
 					m = gc;
-					if( res1 = g->db_pquery("SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"))) {
+					if( (res1 = g->db_pquery("SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"))) ) {
 						for(k=0; k<res1->nrows; k++) {
 							int groupid = atoi(g->db_get_data(res1, k, "usergroupid"));
 							for(m=0; m<gc; m++) 
@@ -194,7 +195,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 		configfile = load_file(dns->confpattern);
 	
 		for (i=0; i<res->nrows; i++) {
-			unsigned char *s, *d, *e, *name, *dnsserv;
+			unsigned char *d, *e, *name, *dnsserv;
 			unsigned long netmask, network;
 		
 			e = g->db_get_data(res,i,"address");
@@ -221,8 +222,6 @@ void reload(GLOBAL *g, struct dns_module *dns)
 			
 				unsigned char *forwardzone;
 				unsigned char *reversezone;
-			
-				unsigned char *outfile;
 			
 				if( strlen(d) && strlen(e) && strlen(name) ) {
 					unsigned long host_netmask;
@@ -271,7 +270,6 @@ void reload(GLOBAL *g, struct dns_module *dns)
 							unsigned char *reversehost;
 							unsigned char hostpart[30];
 							unsigned char *tmphosts;
-							unsigned long ip;
 						
 							if( (hosts[j].ipaddr & netmask) == network) {
 								forwardhost = strdup(dns->forward);
@@ -288,14 +286,14 @@ void reload(GLOBAL *g, struct dns_module *dns)
 					
 								switch(prefixlen) {
 								case 1:
-									snprintf(hostpart, 30, "%d.%d.%d", ip & 0xff, (ip >> 8) & 0xff, (ip >> 24) & 0xff);
+									snprintf(hostpart, 30, "%d.%d.%d", (int)(ip & 0xff),(int)((ip >> 8) & 0xff),(int)((ip >> 24) & 0xff));
 									break;
 								case 2:
-									snprintf(hostpart, 30, "%d.%d", ip & 0xff, (ip >> 8) & 0xff);
+									snprintf(hostpart, 30, "%d.%d", (int)(ip & 0xff),(int)((ip >> 8) & 0xff));
 									break;					
 								case 3:
 								default:
-									snprintf(hostpart, 30, "%d", ip & 0xff);
+									snprintf(hostpart, 30, "%d", (int)(ip & 0xff));
 									break;
 								}
 						
@@ -322,7 +320,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 						g->str_replace(&forwardzone, "%d", name);
 						g->str_replace(&reversezone, "%d", name);
 					
-						snprintf(serial, 12, "%d", time(NULL));
+						snprintf(serial, 12, "%d", (int) time(NULL));
 						
 						g->str_replace(&forwardzone, "%s", serial);
 						g->str_replace(&reversezone, "%s", serial);
@@ -331,14 +329,14 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	
 						switch(prefixlen) {
 						case 1:
-							snprintf(netpart, 30, "%d", (ip >> 24) & 0xff);
+							snprintf(netpart, 30, "%d", (int)((ip >> 24) & 0xff));
 							break;
 						case 2:
-							snprintf(netpart, 30, "%d.%d", (ip >> 16) & 0xff, (ip >> 24) & 0xff);
+							snprintf(netpart, 30, "%d.%d", (int)((ip >> 16) & 0xff),(int)((ip >> 24) & 0xff));
 							break;
 						case 3:
 						default:
-							snprintf(netpart, 30, "%d.%d.%d", (ip >> 8) & 0xff, (ip >> 16) & 0xff, (ip >> 24) & 0xff);
+							snprintf(netpart, 30, "%d.%d.%d", (int)((ip >> 8) & 0xff),(int)((ip >> 16) & 0xff),(int)((ip >> 24) & 0xff));
 							break;
 						}
 
@@ -461,7 +459,6 @@ struct dns_module * init(GLOBAL *g, MODULE *m)
 	struct dns_module *dns;
 	unsigned char *instance, *s;
 	dictionary *ini;
-	int i;
 
 	if(g->api_version != APIVERSION) 
 		return (NULL);
