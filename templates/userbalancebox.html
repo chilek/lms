@@ -39,27 +39,31 @@
 	<TR CLASS="DARK">
 		<TD class="fleftu">
 			<IMG src="img/money.gif" border="0" ALT="" align="absmiddle">
-			<B><A name="balance">Rachunek u¿ytkownika:</A></B> {if $limit}(ostatnie {math equation="x * -1" x=$limit} operacji){/if}
+			<B><A name="balance">{t}Customer Account:{/t}</A></B> 
+			{if $limit}
+				{math equation="x * -1" x=$limit assign=n}
+				{t 0=$n}(last $0 transactions){/t}
+			{/if}
 		</TD>
 		<TD class="frightu" align="right">
-			<A href="?m=invoicenew&userid={$balancelist.userid}">Wystaw fakturê &raquo;</A>&nbsp;    
-			{if $limit}<A href="?m=userbalance&id={$balancelist.userid}">Zobacz wszystkie operacje &raquo;</A>{/if}
+			<A href="?m=invoicenew&userid={$balancelist.userid}">{t}New invoice{/t} &raquo;</A>&nbsp;    
+			{if $limit}<A href="?m=userbalance&id={$balancelist.userid}">{t}See all transactions{/t} &raquo;</A>{/if}
 		</TD>
 	</TR>
 	<TR>
 		<TD width="100%" colspan="2" class="fall">
-			<table cellpadding="5" cellspacing="0" width="100%">
-				<tr class="dark">
-					<TD width="1%" class="fleftu">Data:</TD>
-					<TD width="1%" class="fbt">Admin:</TD>
-					<TD width="1%" class="fbt"><B>Typ:</B></TD>
-					<TD width="1%" class="fbt" align="right">Warto¶æ:</TD>
-					<TD width="1%" class="fbt" align="right">VAT:</TD>
+			<TABLE cellpadding="5" cellspacing="0" width="100%">
+				<TR class="dark">
+					<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
+					<TD width="1%" class="fbt">{t}User:{/t}</TD>
+					<TD width="1%" class="fbt"><B>{t}Type:{/t}</B></TD>
+					<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
+					<TD width="1%" class="fbt" align="right">{t}VAT:{/t}</TD>
 					<TD width="1%" class="fbt" align="center">&raquo;</TD>
-					<TD width="1%" class="fbt" align="right">Po:</TD>
-					<TD width="92%" class="fbt">Opis:</TD>
+					<TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
+					<TD width="92%" class="fbt">{t}Description:{/t}</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
-				</tr>
+				</TR>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{section name=balancelist loop=$balancelist.id start=$limit}
 					{if $balancelist.invoiceid[balancelist] && $balancelist.invoiceid[balancelist] == $bal}
@@ -76,14 +80,14 @@
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.taxvalue[balancelist]}
 							{$balancelist.taxvalue[balancelist]|string_format:"%01.2f"} %
-						{else}zw.{/if}
+						{else}{t}tax-free{/t}{/if}
 						</nobr></TD>
 					<TD width="1%" align="center">&raquo;</TD>
 					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
 					<TD width="92%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.invoiceid[balancelist]}
-						<A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>
+						<A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"} BORDER="0"></A>
 						{else}
 						{cycle print=false}
 						<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
@@ -96,7 +100,7 @@
 					<TD align="center" width="100%" colspan="9">
 						<BR>
 						<BR>
-						<B>Z tym u¿ytkownikiem nie s± zwi±zane ¿adne operacje kasowe.</B><BR>
+						<B>{t}That customer haven't got any transactions.{/t}</B><BR>
 						<BR>
 						<BR>
 					</TD>
@@ -104,44 +108,44 @@
 				{/section}
 				<TR bgcolor="#DFD5BD" title="Usuwanie operacji kasowych">
 					<TD CLASS="ftop" ALIGN="left">
-						<NOBR><A HREF="javascript:DeleteMarked();">Kasuj <IMG SRC="img/delete.gif" BORDER="0" ALT="Kasuj" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" BORDER="0" ALT="{t}Delete{/t}" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" COLSPAN="8">
-						<NOBR><A HREF="javascript:CheckAll2();">Zaznacz wszystkie</A><INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
 				<TR bgcolor="#DFD5BD" title="Nowa operacja kasowa">
 					<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
 					<TD class="ftop">
-						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Wpisz czas operacji w formacie 'rrrr/mm/dd gg:mm' (pole puste oznacza datê dzisiejsz±). Kliknij na to pole by wybraæ datê z kalendarza."} onClick="cal3.popup();">
+						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Enter transaction time in format 'yyyy/mm/dd hh:mm' (empty field means current time). Click to select date from calendar."} onClick="cal3.popup();">
 						{*<nobr>{$smarty.now|date_format:"%Y/%m/%d %H:%M"}</nobr>*}
 					</TD>
 					<TD class="ftop">
 						{$layout.logname|truncate:20:"..."|replace:" ":"&nbsp;"}
 					</TD>
 					<TD class="ftop">
-						<SELECT SIZE="1" name="addbalance[type]" {tip text="Wybierz rodzaj operacji finansowej"}>
-							<OPTION value="3">wp³ata</OPTION>
-							<OPTION value="4">obci±¿enie</OPTION>
+						<SELECT SIZE="1" name="addbalance[type]" {tip text="Select transaction type"}>
+							<OPTION value="3">{t}payment{/t}</OPTION>
+							<OPTION value="4">{t}covenant{/t}</OPTION>
 						</SELECT>
 					</TD>
 					<TD class="ftop" nowrap>
-						<INPUT TYPE="text" size="8" name="addbalance[value]" accesskey="s" {tip text="Wpisz warto¶æ operacji"}> z³
+						<INPUT TYPE="text" size="8" name="addbalance[value]" accesskey="s" {tip text="Enter transaction value"}>
 					</TD>
 					<TD class="ftop" nowrap>
-						<SELECT SIZE="1" name="addbalance[taxvalue]" {tip text="Wpisz stawkê VAT"}>
+						<SELECT SIZE="1" name="addbalance[taxvalue]" {tip text="Select VAT value"}>
 							<OPTION value="22">22%</OPTION>
 							<OPTION value="7">7%</OPTION>
 							<OPTION value="0">0%</OPTION>
-							<OPTION value="zw.">zw.</OPTION>
+							<OPTION value="zw.">{t}tax-free{/t}</OPTION>
 						</SELECT>
 					</TD>
 					<TD colspan="4" align="right" class="ftop">
-						<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Podaj opis dla tej operacji finansowej"}> 
-						<NOBR><A href="javascript:AddBalance();">Dodaj <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A></NOBR>
+						<B>{t}Description:{/t}</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Enter short description of transaction"}> 
+						<NOBR><A href="javascript:AddBalance();">{t}Save{/t} <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A></NOBR>
 					</TD>
 				</TR>
-			</table>
+			</TABLE>
 		</TD>
 	</TR>
 </TABLE>
