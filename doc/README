@@ -2464,13 +2464,18 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
 
 5.2.4. Zmienne konfiguracyjne
 
-   W opcjach konfiguracyjnych mo¿na u¿ywaæ nastêpuj±cych zmiennych:
-     * %IP - zostanie rozwiniête do adresu IP
-     * %ID - ID sieci w bazie
-     * %MAC - zostanie rozwiniête do adresu MAC karty sieciowej
+   W opcjach konfiguracyjnych mo¿na u¿ywaæ nastêpuj±cych zmiennych, które
+   zostan± podmienione na odpowiednie dane z bazy:
+
+   Zmienne dla komputerów:
+     * %IP - adres IP komputera
+     * %ID - ID komputera w bazie
+     * %MAC - adres MAC karty sieciowej
+     * %SMAC - adres MAC pisany ma³ymi literami z usuniêtymi dwukropkami
      * %OWNER - w³a¶ciciel komputera
-     * %NAME - nazwa sieci du¿ymi znakami
-     * %name - nazwa sieci ma³ymi znakami
+     * %NAME - nazwa komputera du¿ymi znakami
+     * %name - nazwa komputera ma³ymi znakami
+     * %INFO - opis komputera
      * %UPRATE - gwarantowany transfer dla danych wychodz±cych
      * %DOWNRATE - gwarantowany transfer dla danych przychodz±cych
      * %UPCEIL - maksymalny transfer dla danych wychodz±cych
@@ -2478,13 +2483,42 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
      * %CLIMIT - limit równoczesnych po³±czeñ
      * %PLIMIT - limit pakietów
      * %1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP
+     * %NID - ID sieci, do której nale¿y komputer
+     * %NNAME - nazwa sieci du¿ymi znakami
+     * %nname - nazwa sieci ma³ymi znakami
+     * %NADDR - adres sieci
+     * %NIFACE - interfejs sieci
+     * %NMASK - maska sieci
+     * %NGATE - adres bramy
+     * %NDNS - adres serwera DNS
+     * %NDNS2 - adres drugiego serwera DNS
+     * %NDOMAIN - domena sieci
+     * %NWINS - adres serwera WINS dla tej sieci
+     * %NDHCPS - pierwszy adres DHCP sieci
+     * %NDHCPE - ostatni adres DHCP sieci
+
+   Zmienne dla sieci (w opcjach dotycz±cych tylko sieci):
+     * %ID - ID sieci w bazie
+     * %NAME - nazwa sieci du¿ymi znakami
+     * %name - nazwa sieci ma³ymi znakami
      * %ADDR - adres sieci
+     * %IFACE - interfejs
+     * %MASK - maska
      * %GATE - brama sieci
      * %DNS - serwer DNS tej sieci
+     * %DNS2 - drugi serwer DNS tej sieci
      * %DOMAIN - domena tej sieci
      * %WINS - adres serwera WINS dla tej sieci
      * %DHCPS - pierwszy adres DHCP tej sieci
      * %DHCPE - ostatni adres DHCP tej sieci
+
+   Notatka
+
+   W opcji konfiguracyjnej dst_network_header mo¿na ponadto u¿yæ
+   powy¿szych zmiennych ale poprzedzonych liter± D (np. %DADDR, %dname)
+   jako parametry sieci docelowych.
+
+   Zmienne które mo¿na stosowaæ we wszystkich opcjach:
      * %DATE - data w formacie YYYYMMDD;
      * %TIME - czas w formacie HHMM;
      * %TIMES - czas w formacie HHMMSS;

@@ -12,6 +12,7 @@ wersja 1.5.2 (??/??/????):
     je¶li nie powiedzie siê próba odczytania nazwy poprzez `hostname` (alec)
   - do danych komputera dodano pole 'info' (alec)
   - lms-mgc: dodana zmienna %INFO zawieraj±ca opis komputera j.w. (alec)
+  - dokumentacja: uzupe³niony opis zmiennych lms-mgc (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 

@@ -264,25 +264,30 @@
 	</sect2>
 	<sect2 id="mgc-config-vars">
 	<title>Zmienne konfiguracyjne</title>
-  <para>W opcjach konfiguracyjnych mo¿na u¿ywaæ nastêpuj±cych zmiennych:</para>
+    <para>W opcjach konfiguracyjnych mo¿na u¿ywaæ nastêpuj±cych zmiennych, 
+    które zostan± podmienione na odpowiednie dane z bazy:</para>
+    <para>Zmienne dla komputerów:
    <itemizedlist>
     <listitem>
-     <para>%IP - zostanie rozwiniête do adresu IP</para>
+     <para>%IP - adres IP komputera</para>
     </listitem>
     <listitem>
-     <para>%ID - ID sieci w bazie</para>
+     <para>%ID - ID komputera w bazie</para>
     </listitem>
     <listitem>
-     <para>%MAC - zostanie rozwiniête do adresu MAC karty sieciowej</para>
+     <para>%MAC - adres MAC karty sieciowej</para>
+    </listitem>
+    <listitem>
+     <para>%SMAC - adres MAC pisany ma³ymi literami z usuniêtymi dwukropkami</para>
     </listitem>
     <listitem>
      <para>%OWNER - w³a¶ciciel komputera</para>
     </listitem>
     <listitem>
-     <para>%NAME - nazwa sieci du¿ymi znakami</para>
+     <para>%NAME - nazwa komputera du¿ymi znakami</para>
     </listitem>
     <listitem>
-     <para>%name - nazwa sieci ma³ymi znakami</para>
+     <para>%name - nazwa komputera ma³ymi znakami</para>
     </listitem>
     <listitem>
      <para>%INFO - opis komputera</para>
@@ -306,16 +311,77 @@
      <para>%PLIMIT - limit pakietów</para>
     </listitem>
     <listitem>
-     <para>%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP </para>
+     <para>%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP</para>
+    </listitem>
+    <listitem>
+     <para>%NID - ID sieci, do której nale¿y komputer</para>
+    </listitem>
+    <listitem>
+     <para>%NNAME - nazwa sieci du¿ymi znakami</para>
+    </listitem>
+    <listitem>
+     <para>%nname - nazwa sieci ma³ymi znakami</para>
+    </listitem>
+    <listitem>
+     <para>%NADDR - adres sieci</para>
+    </listitem>
+    <listitem>
+     <para>%NIFACE - interfejs sieci</para>
+    </listitem>
+    <listitem>
+     <para>%NMASK - maska sieci</para>
+    </listitem>
+    <listitem>
+     <para>%NGATE - adres bramy</para>
+    </listitem>
+    <listitem>
+     <para>%NDNS - adres serwera DNS</para>
+    </listitem>
+    <listitem>
+     <para>%NDNS2 - adres drugiego serwera DNS</para>
+    </listitem>
+    <listitem>
+     <para>%NDOMAIN - domena sieci</para>
+    </listitem>
+    <listitem>
+     <para>%NWINS - adres serwera WINS dla tej sieci</para>
+    </listitem>
+    <listitem>
+     <para>%NDHCPS - pierwszy adres DHCP sieci</para>
+    </listitem>
+    <listitem>
+     <para>%NDHCPE - ostatni adres DHCP sieci</para>
+    </listitem>
+   </itemizedlist>
+    </para>
+    <para>Zmienne dla sieci (w opcjach dotycz±cych tylko sieci):
+   <itemizedlist>
+    <listitem>
+     <para>%ID - ID sieci w bazie</para>
+    </listitem>
+    <listitem>
+     <para>%NAME - nazwa sieci du¿ymi znakami</para>
+    </listitem>
+    <listitem>
+     <para>%name - nazwa sieci ma³ymi znakami</para>
     </listitem>
     <listitem>
      <para>%ADDR - adres sieci</para>
+    </listitem>
+    <listitem>
+     <para>%IFACE - interfejs</para>
+    </listitem>
+    <listitem>
+     <para>%MASK - maska</para>
     </listitem>
     <listitem>
      <para>%GATE - brama sieci</para>
     </listitem>
     <listitem>
      <para>%DNS - serwer DNS tej sieci</para>
+    </listitem>
+    <listitem>
+     <para>%DNS2 - drugi serwer DNS tej sieci</para>
     </listitem>
     <listitem>
      <para>%DOMAIN - domena tej sieci</para>
@@ -329,7 +395,14 @@
     <listitem>
      <para>%DHCPE - ostatni adres DHCP tej sieci</para>
     </listitem>
-    <listitem>
+   </itemizedlist>
+    <note><para>W opcji konfiguracyjnej <prompt>dst_network_header</prompt> mo¿na
+    ponadto u¿yæ powy¿szych zmiennych ale poprzedzonych liter± D (np. %DADDR, %dname)
+    jako parametry sieci docelowych.</para></note>
+   </para>
+   <para>Zmienne które mo¿na stosowaæ we wszystkich opcjach:
+   <itemizedlist>
+   <listitem>
      <para>%DATE - data w formacie YYYYMMDD;</para>
     </listitem>
     <listitem>
@@ -341,7 +414,8 @@
     <listitem>
      <para>%UTIME - czas w formacie unix timestamp;</para>
     </listitem>
-   </itemizedlist>
+    </itemizedlist>
+   </para>
 	</sect2>
   </sect1>
   <sect1 id="mgc-example">
