@@ -46,8 +46,6 @@ function _smarty_function_sizeof($args, &$SMARTY)
 
 function _smarty_function_confirm($args, &$SMARTY)
 {
-	// onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz rozliczyæ WSZYSTKIE nale¿no¶ci u¿ytkownika: {$userlist[userlist].username|upper|escape} z bazy danych?\n\n')"
-
 	$text = str_replace('\'','\\\'',$args['text']);
 	$text = str_replace('"','&quot;',$text);
 	$text = str_replace("\r",'',$text);
@@ -119,6 +117,9 @@ $SMARTY->register_modifier('striphtml','_smarty_modifier_striphtml');
 
 /*
  * $Log$
+ * Revision 1.12  2003/10/11 14:08:33  lukasz
+ * - cleanups
+ *
  * Revision 1.11  2003/10/08 04:01:29  lukasz
  * - html fixes in netdevices
  * - added new smarty function called {confirm text="confirm message"}
