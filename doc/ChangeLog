@@ -32,7 +32,7 @@ wersja 1.1.5 (??/??/2003):
     poprawek w bazie danych (lukasz):
     MySQL:
 	ALTER TABLE `tariffs` ADD `taxvalue` INT DEFAULT '0' NOT NULL AFTER `value`;
-	ALTER TABLE `tariffs` ADD `sww` VARCHAR(255) DEFAULT '' NOT NULL AFTER `taxvalue`;
+	ALTER TABLE `tariffs` ADD `sww` VARCHAR(255) DEFAULT '' AFTER `taxvalue`;
 	ALTER TABLE `assignments` ADD `invoice` TINYINT( 1 ) DEFAULT '0' NOT NULL;
 	ALTER TABLE `cash` ADD `invoiceid` INT DEFAULT '0' NOT NULL ;
     PostgreSQL:
@@ -41,9 +41,7 @@ wersja 1.1.5 (??/??/2003):
 	UPDATE tariffs SET taxvalue=0;
 	ALTER TABLE tariffs ALTER taxvalue SET NOT NULL;
 	ALTER TABLE tariffs ADD sww varchar(255);
-	ALTER TABLE tariffs ALTER sww SET DEFAULT '';
-	UPDATE tariffs SET sww='';
-	ALTER TABLE tariffs ALTER sww SET NOT NULL;
+	ALTER TABLE tariffs ALTER sww SET DEFAULT NULL;
 	ALTER TABLE assignments ADD invoice smallint;
 	ALTER TABLE assignments ALTER invoice SET DEFAULT 0;
 	UPDATE assignments SET invoice=0;
@@ -61,7 +59,7 @@ wersja 1.1.5 (??/??/2003):
     	    customerid INT NOT NULL ,
     	    name VARCHAR( 255 ) NOT NULL ,
     	    address VARCHAR( 255 ) NOT NULL ,
-    	    nip VARCHAR( 16 ) NOT NULL ,
+    	    nip VARCHAR( 16 )DEFAULT '' ,
     	    zip VARCHAR( 6 ) NOT NULL ,
     	    city VARCHAR( 32 ) NOT NULL ,
     	    phone VARCHAR( 255 ) NOT NULL ,
@@ -74,7 +72,7 @@ wersja 1.1.5 (??/??/2003):
     	    invoiceid INT NOT NULL ,
     	    value DOUBLE NOT NULL ,
     	    taxvalue INT NOT NULL ,
-	    sww VARCHAR( 255 ) NOT NULL DEFAULT '';
+	    sww VARCHAR( 255 ) DEFAULT '';
     	    content VARCHAR( 16 ) NOT NULL ,
     	    count INT NOT NULL ,
 	    description VARCHAR( 255 ) NOT NULL ,
@@ -90,7 +88,7 @@ wersja 1.1.5 (??/??/2003):
     	    customerid integer NOT NULL,
     	    name varchar(255) NOT NULL,
     	    address varchar(255) NOT NULL,
-    	    nip varchar(16) NOT NULL,
+    	    nip varchar(16) DEFAULT NULL,
     	    zip varchar(6) NOT NULL,
     	    city varchar(32) NOT NULL,
     	    phone varchar(255) NOT NULL,
@@ -101,7 +99,7 @@ wersja 1.1.5 (??/??/2003):
 	    invoiceid integer NOT NULL,
 	    value float4 NOT NULL,
 	    taxvalue integer NOT NULL,
-	    sww varchar(255) DEFAULT '' NOT NULL,
+	    sww varchar(255) DEFAULT NULL,
 	    content varchar(16) NOT NULL,
 	    count integer NOT NULL,
 	    description varchar(255) NOT NULL,
@@ -117,25 +115,21 @@ wersja 1.1.5 (??/??/2003):
     %TID i %TVAL (lukasz)
   - dodany PESEL do rekordu u¿ytkownika, upgrade bazy (lukasz):
     MySQL:
-	ALTER TABLE `users` ADD `pesel` VARCHAR(11) DEFAULT '' NOT NULL AFTER `nip`;
-	ALTER TABLE `invoices` ADD `pesel` VARCHAR(11) DEFAULT '' NOT NULL AFTER `nip`;
+	ALTER TABLE `users` ADD `pesel` VARCHAR(11) DEFAULT '' AFTER `nip`;
+	ALTER TABLE `invoices` ADD `pesel` VARCHAR(11) DEFAULT '' AFTER `nip`;
     PostgreSQL:
 	ALTER TABLE users ADD pesel varchar(11);
-	ALTER TABLE users ALTER pesel SET DEFAULT '';
-	UPDATE users SET pesel='';
-	ALTER TABLE users ALTER pesel SET NOT NULL;
+	ALTER TABLE users ALTER pesel SET DEFAULT NULL;
 	ALTER TABLE invoices ADD pesel varchar(11);
-	ALTER TABLE invoices ALTER pesel SET DEFAULT '';
-	UPDATE invoices SET pesel='';
-	ALTER TABLE invoices ALTER pesel SET NOT NULL;
+	ALTER TABLE invoices ALTER pesel SET DEFAULT NULL;
 
     Je¿eli u¿ytkownik nie posiada NIPu, to wtedy na fakturze umieszczany jest
     PESEL.
   - do faktur zosta³o dodane miejsce wystawienia (lukasz);
   - zamiana nazewctwa w tabelach z 'sww' na 'pkwiu' (lukasz);
     MySQL:
-	ALTER TABLE `tariffs` CHANGE `sww` `pkwiu` VARCHAR( 255 ) NOT NULL;
-	ALTER TABLE `invoicecontents` CHANGE `sww` `pkwiu` VARCHAR( 255 ) NOT NULL;
+	ALTER TABLE `tariffs` CHANGE `sww` `pkwiu` VARCHAR( 255 );
+	ALTER TABLE `invoicecontents` CHANGE `sww` `pkwiu` VARCHAR( 255 );
     PostgreSQL:
 	ALTER TABLE tariffs RENAME sww TO pkwiu;
 	ALTER TABLE invoicecontents RENAME sww TO pkwiu;  
