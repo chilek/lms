@@ -290,15 +290,18 @@ IPT=/usr/sbin/iptables
 TC=/sbin/tc
 LAN=eth1
 WAN=eth0
+BURST=\"burst 15k\"
 
+$TC del dev $LAN root 2> /dev/null
+$TC del dev $WAN root 2> /dev/null
 # incomming traffic
-$TC qdisc add dev $LAN root handle 1:0 htb default 3
+$TC qdisc add dev $LAN root handle 1:0 htb default 3 r2q 1
 $TC class add dev $LAN parent 1:0 classid 1:1 htb rate 100mbit ceil 100mbit
-$TC class add dev $LAN parent 1:1 classid 1:2 htb rate 640kbit ceil 640kbit
-$TC class add dev $LAN parent 1:1 classid 1:3 htb rate 99360kbit ceil 99360kbit prio 9
+$TC class add dev $LAN parent 1:1 classid 1:2 htb rate 640kbit ceil 640kbit $BURST
+$TC class add dev $LAN parent 1:1 classid 1:3 htb rate 99mbit ceil 99mbit prio 9
 $TC qdisc add dev $LAN parent 1:3 sfq perturb 10 hash dst
 # priorities for ICMP, TOS 0x10 and port 22
-$TC class add dev $LAN parent 1:2 classid 1:20 htb rate 50kbit ceil 50kbit prio 1 quantum 1500
+$TC class add dev $LAN parent 1:2 classid 1:20 htb rate 50kbit ceil 50kbit $BURST prio 1 quantum 1500
 $TC qdisc add dev $LAN parent 1:20 sfq perturb 10 hash dst
 $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xffff flowid 1:3
 $TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0xff flowid 1:3
@@ -308,18 +311,17 @@ $TC filter add dev $LAN parent 1:0 protocol ip prio 4 handle 1 fw flowid 1:3
 
 # outgoing traffic
 $TC qdisc add dev $WAN root handle 2:0 htb default 11
-$TC class add dev $WAN parent 2:0 classid 2:1 htb rate 160kbit ceil 160kbit
-# priority ACK
-$TC class add dev $WAN parent 2:1 classid 2:10 htb rate 54kbit ceil 54kbit prio 1 quantum 1500
+$TC class add dev $WAN parent 2:0 classid 2:1 htb rate 160kbit ceil 160kbit $BURST 
+$TC class add dev $WAN parent 2:1 classid 2:10 htb rate 54kbit ceil 54kbit $BURST prio 1 quantum 1500
 $TC qdisc add dev $WAN parent 2:10 sfq perturb 10 hash dst
+# priorities for ACK, ICMP, TOS 0x10
 $TC filter add dev $WAN parent 2:0 protocol ip prio 2 u32 match ip protocol 6 0xff \
     match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 1 match u8 0x10 0xff at 33 flowid 2:10
-# priorities for ICMP, TOS 0x10
 $TC filter add dev $WAN parent 2:0 protocol ip prio 2 u32 match ip dport 22 0xffff flowid 2:10
 $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip tos 0xff flowid 2:10
 $TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 2:10
 # server -> Internet
-$TC class add dev $WAN parent 2:1 classid 2:11 htb rate 34kbit ceil 34kbit prio 2 quantum 1500
+$TC class add dev $WAN parent 2:1 classid 2:11 htb rate 34kbit ceil 34kbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $WAN parent 2:11 sfq perturb 10 hash dst
 $TC filter add dev $WAN parent 2:0 protocol ip prio 3 handle 1 fw flowid 2:11
 $TC filter add dev $WAN parent 2:0 protocol ip prio 9 u32 match ip dst 0/0 flowid 2:11
@@ -330,28 +332,27 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 9 u32 match ip dst 0/0 flowi
 	tc->host = strdup(g->iniparser_getstring(ini, s, 
 "# %n
 $IPT -t mangle -A PREROUTING -s %i -j MARK --set-mark %x
-$TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit prio 2 quantum 1500
+$TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $LAN parent 1:%x sfq perturb 1 hash classic
 $TC filter add dev $LAN parent 1:0 protocol ip prio 5 u32 match ip dst %i flowid 1:%x
-$TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit prio 2 quantum 1500
+$TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $WAN parent 2:%x sfq perturb 1 hash classic
 $TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x
 "));
 	free(s); s = g->str_concat(instance, ":host_climit");
 	tc->host_climit = strdup(g->iniparser_getstring(ini, s, "
-$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT
+$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -j REJECT
 "));
 	free(s); s = g->str_concat(instance, ":host_plimit");
 	tc->host_plimit = strdup(g->iniparser_getstring(ini, s, "
-$IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
-$IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
+$IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -j ACCEPT
+$IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -j ACCEPT
 "));
 	free(s); s = g->str_concat(instance, ":networks");
 	tc->networks = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":usergroups");
 	tc->usergroups = strdup(g->iniparser_getstring(ini, s, ""));
 	
-
 	g->iniparser_freedict(ini);
 	free(instance);
 	free(s);
