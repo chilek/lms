@@ -927,6 +927,18 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 			    przypisany mac-adres '00:00:00:00:00:00'. Domy¶lnie: "no".</para>
 			    <para>Przyk³ad: <prompt>dummy_macs = yes</prompt></para>
 			</listitem>
+			<listitem>
+			    <para>networks</para>
+			    <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+			    Domy¶lnie: pusta (wszystkie sieci).</para>
+			    <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>usergroups</para>
+			    <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    Domy¶lnie: pusta (wszystkie grupy).</para>
+			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+			</listitem>
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
