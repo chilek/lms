@@ -47,16 +47,16 @@ $dane = 1;
 switch($_GET['bar'])
 {
   case "hour":
-	$query = "SELECT nodeid, ipaddr, name, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE dt < ?NOW? AND dt > ?NOW?-(60*60) GROUP BY nodeid, name, ipaddr ORDER BY download DESC";
+	$query = "SELECT nodeid, ipaddr, name, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE dt < ?NOW? AND dt > ?NOW?-(60*60) GROUP BY nodeid, name, ipaddr ORDER BY download DESC";
 	break;
   case "day":
-	$query = "SELECT nodeid, ipaddr, name, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24) GROUP BY nodeid, name, ipaddr ORDER BY download DESC";
+	$query = "SELECT nodeid, ipaddr, name, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24) GROUP BY nodeid, name, ipaddr ORDER BY download DESC";
 	break;
   case "month":
-	$query = "SELECT nodeid, ipaddr, name, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24*30)  GROUP BY nodeid, name, ipaddr ORDER BY download DESC";
+	$query = "SELECT nodeid, ipaddr, name, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24*30)  GROUP BY nodeid, name, ipaddr ORDER BY download DESC";
 	break;
   case "year":
-	$query = "SELECT nodeid, ipaddr, name, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24*365) GROUP BY nodeid, name, ipaddr ORDER BY download DESC";
+	$query = "SELECT nodeid, ipaddr, name, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24*365) GROUP BY nodeid, name, ipaddr ORDER BY download DESC";
 	break;
   case "user": ##########################################################
 	$from = ArrayToTimestamp($_POST['from']);
@@ -67,9 +67,9 @@ switch($_GET['bar'])
 	    $params = $LMS->GetNetworkParams($net);
 	    $ipfrom = $params['address']+1;
 	    $ipto = $params['broadcast']-1;
-	    $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE (ipaddr>$ipfrom AND ipaddr<$ipto) AND (dt > $from AND dt < $to) GROUP BY nodeid, name, ipaddr";
+	    $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE (ipaddr>$ipfrom AND ipaddr<$ipto) AND (dt > $from AND dt < $to) GROUP BY nodeid, name, ipaddr";
 	} else 
-	    $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE dt > $from AND dt < $to GROUP BY nodeid, name, ipaddr";
+	    $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE dt > $from AND dt < $to GROUP BY nodeid, name, ipaddr";
 	# sortujemy wyniki
 	switch ($_POST['order'])  
 	{
