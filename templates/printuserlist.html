@@ -50,10 +50,10 @@
 		</TD>
 		<TD HEIGHT=40 VALIGN="ABSMIDDLE">
 			{$userlist[userlist].email}<BR>
-			{$userlist[userlist].tariffvalue|string_format:"%01.2f"} {$lang.currency} / mc
+			{$userlist[userlist].tariffvalue|string_format:"`$lang.currency_format`"} {$lang.currency} / mc
 		</TD>
 		<TD>
-			{$userlist[userlist].balance|string_format:"%01.2f"} {$lang.currency}
+			{$userlist[userlist].balance|string_format:"`$lang.currency_format`"} {$lang.currency}
 		</TD>
 
 	</TR>

@@ -78,7 +78,7 @@
 			<IMG src="img/money.gif" align="left" border="0" alt="">
 		</TD>
 		<TD align="right" valign="top" NOWRAP>
-			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|string_format:"%01.2f"} {$lang.currency}{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|string_format:"%01.2f"} {$lang.currency}</FONT>{if $userlist[userlist].balance < 0}<BR>
+			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|string_format:"`$lang.currency_format`"} {$lang.currency}{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|string_format:"`$lang.currency_format`"} {$lang.currency}</FONT>{if $userlist[userlist].balance < 0}<BR>
 			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" onClick="return confirmLink(this, '{$lang.confirm_pay|replace:"#":"`$userlist[userlist].username`"}')">{$lang.square_up} &raquo;</A>{/if}
 			</NOBR>
 		</TD>
@@ -117,8 +117,8 @@
 				{$lang.excess_payment}:</B>
 		</TD>
 		<TD class="fbt" align="right" COLSPAN="2"> 
-			<B>{$listdata.below|string_format:"%01.2f"} {$lang.currency}<BR>
-			{$listdata.over|string_format:"%01.2f"} {$lang.currency}</B>
+			<B>{$listdata.below|string_format:"`$lang.currency_format`"} {$lang.currency}<BR>
+			{$listdata.over|string_format:"`$lang.currency_format`"} {$lang.currency}</B>
 		</TD>
 		<TD class="frightu">
 			&nbsp;
