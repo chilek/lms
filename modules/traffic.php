@@ -27,22 +27,29 @@ $layout['pagetitle'] = "Statystyki wykorzystania ³±cza";
 
 $bars = 1;
 
+if (isset($_GET['bar']) && isset($_POST['order']))
+	$_SESSION['trafficorder'] = $_POST['order'];
+	
 switch($_GET['bar'])
 {
 	case "hour":
-		$traffic = $LMS->Traffic( "?NOW?-(60*60)", "?NOW?", 0, "download");
+		$traffic = $LMS->Traffic( "?NOW?-(60*60)", "?NOW?", 0,
+			isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : "download");
 	break;
 
 	case "day":
-		$traffic = $LMS->Traffic( "?NOW?-(60*60*24)","?NOW?",  0, "download");
+		$traffic = $LMS->Traffic( "?NOW?-(60*60*24)","?NOW?",  0,
+			isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : "download");
 	break;
 
 	case "month":
-		$traffic = $LMS->Traffic( "?NOW?-(60*60*24*30)", "?NOW?", 0, "download");
+		$traffic = $LMS->Traffic( "?NOW?-(60*60*24*30)", "?NOW?", 0,
+			isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : "download");
 	break;
 
 	case "year":
-		$traffic = $LMS->Traffic( "?NOW?-(60*60*24*365)", "?NOW?", 0, "download");
+		$traffic = $LMS->Traffic( "?NOW?-(60*60*24*365)", "?NOW?", 0,
+			isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : "download");
 	break;
 
 	case "user":
@@ -76,6 +83,7 @@ $SMARTY->assign('showips',$_POST['showips']);
 $SMARTY->assign('download',$download);
 $SMARTY->assign('upload',$upload);
 $SMARTY->assign('bars',$bars);
+$SMARTY->assign('trafficorder', isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : "download");
 $SMARTY->display('traffic.html');
 
 ?>

@@ -103,11 +103,11 @@
 		</TD>
 		<TD CLASS="fright">
 			<SELECT SIZE="1" NAME="order">
-				<OPTION VALUE="name">Nazwa hosta</OPTION>
-				<OPTION VALUE="ip">Adres IP hosta</OPTION>
-				<OPTION VALUE="nodeid">Numer hosta</OPTION>
-				<OPTION VALUE="download" SELECTED>Download</OPTION>
-				<OPTION VALUE="upload">Upload</OPTION>
+				<OPTION VALUE="name"{if $trafficorder == "name"} SELECTED{/if}>Nazwa hosta</OPTION>
+				<OPTION VALUE="ip"{if $trafficorder == "ip"} SELECTED{/if}>Adres IP hosta</OPTION>
+				<OPTION VALUE="nodeid"{if $trafficorder == "nodeid"} SELECTED{/if}>Numer hosta</OPTION>
+				<OPTION VALUE="download"{if $trafficorder == "download"} SELECTED{/if}>Download</OPTION>
+				<OPTION VALUE="upload"{if $trafficorder == "upload"} SELECTED{/if}>Upload</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
