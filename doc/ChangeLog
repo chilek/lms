@@ -1,6 +1,6 @@
 $Id$
 
-version 1.5.5 (??/??/????):
+version 1.5.5 Anubis (??/??/????):
 
   - fixed empty page printing on invoices when trying to print only 
     originals or only copies (alec)
