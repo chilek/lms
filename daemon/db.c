@@ -49,7 +49,7 @@ int db_connect(const unsigned char *db, const unsigned char *user, const unsigne
         return ERROR;
     }
 #endif
-#ifdef DEBUG1
+#ifdef DEBUG0
 	syslog(LOG_INFO, "DEBUG: [lmsd] Connected with params: db='%s' host='%s' user='%s' port='%d' passwd='*'",db, host, user, port);
 #endif
     return OK;
@@ -65,7 +65,7 @@ int db_disconnect(void)
      if( PQstatus(conn) != CONNECTION_BAD )
           PQfinish(conn);
 #endif
-#ifdef DEBUG1
+#ifdef DEBUG0
     syslog(LOG_INFO, "DEBUG: [lmsd] Disconnected");
 #endif
      return OK;
