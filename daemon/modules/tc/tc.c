@@ -55,7 +55,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	// get table of networks
 	while( n>1 ) 
 	{
-		n = sscanf(netnames, "%s %[a-zA-Z0-9- ]", netname, netnames);
+		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 
 		if( strlen(netname) ) 
 			if( res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname)) 
@@ -78,7 +78,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	// get table of usergroups
 	while( k>1 ) 
 	{
-		k = sscanf(groupnames, "%s %[a-zA-Z0-9- ]", groupname, groupnames);
+		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
 
 		if( strlen(groupname) )
 			if( res = g->db_pquery("SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname)) 
