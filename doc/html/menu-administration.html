@@ -1,0 +1,272 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Administracja</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Interfejs U¿ytkownika (LMS-UI)"
+HREF="user.html"><LINK
+REL="PREVIOUS"
+TITLE="Interfejs U¿ytkownika (LMS-UI)"
+HREF="user.html"><LINK
+REL="NEXT"
+TITLE="U¿ytkownicy"
+HREF="menu-users.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="user.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia&#322; 3. Interfejs U¿ytkownika (LMS-UI)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="menu-users.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MENU-ADMINISTRATION"
+>3.2. Administracja</A
+></H1
+><P
+>Po zalogowaniu do LMS'a znajdziesz siê w module (menu) administracji
+	systemem LMS. Tutaj znajdziesz niezbêdne informacje o systemie. Bêdziesz
+	móg³ zarz±dzaæ administratorami i tworzyæ/odtwarzaæ kopie bazy danych.</P
+><P
+>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
+	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze.
+	W polach szybkiego wyszukiwania, oprócz id u¿ytkownika lub komputera, mo¿esz 
+	podawaæ nazwisko, nazwê, fragment adresu, telefon, email, adres IP lub MAC. 
+	W przypadku gdy w bazie znajduje siê wiêcej u¿ytkowników pasuj±cych do szukanych
+	danych zostan± wy¶wietlone informacje tylko o jednym u¿ytkowniku lub komputerze.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-INFO"
+>3.2.1. Info</A
+></H2
+><P
+>To panel na którym znajduj± siê podstawowe informacje na temat naszego 
+	    systemu: wersja LMS i jego sk³adników, informacje o prawach autorskich, 
+	    wersja j±dra i uptime serwera, dane statystyczne o u¿ytkownikach i komputerach,
+	    bie¿±ce informacje o aktywno¶ci komputerów i stanie finansów sieci. 
+	    Ponadto znajdziesz tu przydatne lms'owe linki.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-ADMINS"
+>3.2.2. Administratorzy</A
+></H2
+><P
+>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, czyli osób
+	    korzystaj±cych z LMS'a, zak³adania i przegl±dania ich kont, zmiany hase³ i definiowania 
+	    praw dostêpu.</P
+><P
+> Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale <A
+HREF="install-rights.html"
+>Prawa dostêpu</A
+>.</P
+><P
+>Po wybraniu menu 'Administratorzy' zobaczysz listê wszystkich administratorów
+	    z informacj± o ostatnim logowaniu. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie 
+	    informacji szczegó³owych o danym koncie, w tym o zdefiniowanych prawach dostêpu. 
+	    W ka¿dej chwili mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'. 
+	    Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu 'Nowy administrator'.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-NEWADMIN"
+>3.2.3. Nowy administrator</A
+></H2
+><P
+>Aby dodaæ nowe konto administratora nale¿y podaæ login oraz has³o, 
+	    które nie mo¿e byæ puste. Podanie imienia, nazwiska i adresu poczty elektronicznej
+	    nie jest wymagane. Poni¿ej mo¿na zaznaczyæ uprawnienia dostêpu do
+	    systemu. Je¿eli wszystkie pola pozostawisz puste, administratorowi 
+	    przypisany zostanie 'Pe³en dostêp'.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-DB"
+>3.2.4. Kopie zapasowe</A
+></H2
+><P
+>Z panelu 'Kopie zapasowe' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy LMSa.
+	    Kopia bazy to plik tekstowy zawieraj±cy zapytania SQL i dane z wszystkich tabel w bazie, zapisywany w
+	    katalogu zdefiniowanym w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[directories]</I
+></SPAN
+> <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>
+	    zmienn± <SAMP
+CLASS="PROMPT"
+>backup_dir</SAMP
+>.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Domy¶lnie kopie zapisywane s± w katalogu <TT
+CLASS="FILENAME"
+>lms/backups</TT
+>
+	    dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
+	    Klikniêcie na ikonkê Odtwórz spowoduje wyczyszczenie bie¿±cej bazy danych i za³adowanie
+	    do niej danych z wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
+	    aktualnej bazy danych.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="menu-users.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Interfejs U¿ytkownika (LMS-UI)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>U¿ytkownicy</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Konta</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Interfejs U¿ytkownika (LMS-UI)"
+HREF="user.html"><LINK
+REL="PREVIOUS"
+TITLE="Taryfy i Finanse"
+HREF="menu-finances.html"><LINK
+REL="NEXT"
+TITLE="Mailing"
+HREF="menu-mailing.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="menu-finances.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia&#322; 3. Interfejs U¿ytkownika (LMS-UI)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="menu-mailing.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MENU-ACCOUNTS"
+>3.8. Konta</A
+></H1
+><P
+>Zarz±dzanie kontami ró¿nych us³ug na serwerze jest teraz
+	mo¿liwe. Funkcjonalno¶æ ta jest przeznaczona dla zaawansowanych 
+	administratorów. Wymaga znajomo¶ci tych us³ug i ich konfiguracji
+	w celu korzystania z bazy danych.</P
+><P
+>W LMSie mo¿na utworzyæ cztery rodzaje kont: shell (1), poczta (2),
+	www (4), ftp (8). W nawiasach podano numeryczne wewnêtrzne oznaczenie
+	typu konta w bazie. Konta mog± byæ wielotypowe. Przyk³adowo, je¶li 
+	zdefiniujesz konto shell+poczta+ftp w bazie zostanie zapisana cyfra 11.
+	Oznacza to, ¿e do rozpoznawania typu konta w warunkach WHERE zapytañ
+	SQL nale¿y stosowaæ sumowanie binarne (jak na przyk³adach w dalszej
+	czê¶ci rozdzia³u).</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ACCOUNTS-LIST"
+>3.8.1. Lista</A
+></H2
+><P
+>Na li¶cie przedstawione s± podstawowe informacje o kontach.
+	    Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
+	    kolumny oraz filtrowanie wg zadanych kryteriów. Przej¶cie do edycji 
+	    danych konta nastêpuje po wybraniu ikony [Edytuj]. Administrator ma 
+	    tak¿e prawo do zmiany has³a.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ACCOUNTS-NEW"
+>3.8.2. Nowe konto</A
+></H2
+><P
+>Definiuj±c dane konto musisz podaæ unikalny login, has³o,
+	    wybraæ typ konta oraz przypisaæ u¿ytkownika (lub utworzyæ tzw. konto
+	    systemowe). Nazwa domeny oraz data wa¿no¶ci konta s± opcjonalne.
+	    Pozostawienie pustego pola z dat± oznacza, ¿e konto nigdy nie
+	    wygasa.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ACCOUNTS-EXAMPLES"
+>3.8.3. Przyk³ady</A
+></H2
+><P
+></P
+><P
+>Poni¿szy listing zawiera istotne fragmenty pliku konfiguracyjnego
+	    demona proftpd (w wersji 1.2.10) umo¿liwiaj±cy przechowywanie danych
+	    o kontach ftp w bazie LMSa. Przyk³ad zawiera konfiguracjê dla bazy
+	    danych PostgreSQL, w komentarzach podano rozwi±zania dla MySQLa:
+	    <DIV
+CLASS="EXAMPLE"
+><A
+NAME="ACCOUNTS-E1"
+></A
+><P
+><B
+>Przyk&#322;ad 3-1. Konta. Konfiguracja proftpd.</B
+></P
+><PRE
+CLASS="SCREEN"
+>  ServerName	"LMS FTP Server"
+  
+  #nazwa_bazy@host:port u¿ytkownik has³o
+  SQLConnectInfo lms@localhost:5432 lms mypassword
+  
+  SQLAuthTypes Crypt Plaintext
+  SQLUserInfo passwd login password uid NULL home NULL
+  RequireValidShell off
+  SQLAuthenticate users
+  
+  # utworzenie katalogu domowego gdy nie istnieje
+  SQLHomedirOnDemand on
+  
+  # komunikat przy logowaniu
+  SQLShowInfo PASS "230" "Last login: %{getlastlogin}"
+  SQLLog PASS setlastlogin
+  
+  # SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE FROM_UNIXTIME(lastlogin) END FROM passwd WHERE login='%u'"
+  # SQLNamedQuery setlastlogin UPDATE "lastlogin=UNIX_TIMESTAMP() WHERE login='%u'" passwd 
+  SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE '1970-01-01'::timestamp + (lastlogin || ' seconds')::interval END FROM passwd WHERE login='%u'"
+  SQLNamedQuery setlastlogin UPDATE "lastlogin=EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) WHERE login='%u'" passwd
+  
+  # Sprawdzamy datê wa¿no¶ci konta oraz ograniczamy szukanie do kont ftp
+  # SQLUserWhereClause "type &#38; 8 = 8 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())"
+  SQLUserWhereClause "type &#38; 8 = 8 AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))"</PRE
+></DIV
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="menu-finances.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="menu-mailing.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Taryfy i Finanse</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Mailing</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

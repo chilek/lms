@@ -28,15 +28,15 @@ LMS Developers
    3. Interfejs U¿ytkownika (LMS-UI)
 
         3.1. Logowanie
-        3.2. U¿ytkownicy
-        3.3. Komputery
-        3.4. Osprzêt sieciowy
-        3.5. Sieci IP
-        3.6. Taryfy i Finanse
-        3.7. Mailing
-        3.8. Prze³adowanie
-        3.9. Bazy danych
-        3.10. Administratorzy
+        3.2. Administracja
+        3.3. U¿ytkownicy
+        3.4. Komputery
+        3.5. Osprzêt sieciowy
+        3.6. Sieci IP
+        3.7. Taryfy i Finanse
+        3.8. Konta
+        3.9. Mailing
+        3.10. Prze³adowanie
         3.11. Statystyki
         3.12. Helpdesk
 
@@ -81,6 +81,7 @@ LMS Developers
    7-1. Drzewo katalogów LMS
 
    Spis przyk³adów
+   3-1. Konta. Konfiguracja proftpd.
    4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych
    4-2. Lms-notify: Przyk³ad szablonu
    5-1. Lms-mgc: Przyk³ad instancji
@@ -686,6 +687,10 @@ database = /usr/local/lms/lms.db
        Ilo¶æ komputerów wy¶wietlanych na jednej stronie w informacjach o
        sieci. Domy¶lnie: 256.
        Przyk³ad: networkhosts_pagelimit = 1024
+     * accountlist_pagelimit
+       Limit wy¶wietlanych pozycji na stronie w li¶cie kont. Domy¶lnie:
+       100.
+       Przyk³ad: accountlist_pagelimit = 25
      * reload_type
        Typ reloadu. Dozwolone warto¶ci:
        exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo,
@@ -866,13 +871,12 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    jednego modu³u.
      _________________________________________________________________
 
-3.1.1. Praca z LMS-UI
+3.2. Administracja
 
-   Po zalogowaniu do LMS'a zobaczysz panel powitalny, na którym znajduj±
-   siê podstawowe informacje na temat naszego systemu: wersjê LMS i jego
-   sk³adników, wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i
-   komputerów w bazie oraz ich stan (pod³±czony/od³±czony), liczbê
-   zad³u¿onych i kwota oraz przydatne lms'owe linki.
+   Po zalogowaniu do LMS'a znajdziesz siê w module (menu) administracji
+   systemem LMS. Tutaj znajdziesz niezbêdne informacje o systemie.
+   Bêdziesz móg³ zarz±dzaæ administratorami i tworzyæ/odtwarzaæ kopie
+   bazy danych.
 
    Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz
    równie¿ dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do
@@ -884,7 +888,62 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    u¿ytkowniku lub komputerze.
      _________________________________________________________________
 
-3.2. U¿ytkownicy
+3.2.1. Info
+
+   To panel na którym znajduj± siê podstawowe informacje na temat naszego
+   systemu: wersja LMS i jego sk³adników, informacje o prawach
+   autorskich, wersja j±dra i uptime serwera, dane statystyczne o
+   u¿ytkownikach i komputerach, bie¿±ce informacje o aktywno¶ci
+   komputerów i stanie finansów sieci. Ponadto znajdziesz tu przydatne
+   lms'owe linki.
+     _________________________________________________________________
+
+3.2.2. Administratorzy
+
+   Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów,
+   czyli osób korzystaj±cych z LMS'a, zak³adania i przegl±dania ich kont,
+   zmiany hase³ i definiowania praw dostêpu.
+
+   Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale Prawa dostêpu.
+
+   Po wybraniu menu 'Administratorzy' zobaczysz listê wszystkich
+   administratorów z informacj± o ostatnim logowaniu. Klikniêcie na
+   pozycji z listy spowoduje wy¶wietlenie informacji szczegó³owych o
+   danym koncie, w tym o zdefiniowanych prawach dostêpu. W ka¿dej chwili
+   mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'.
+   Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu 'Nowy
+   administrator'.
+     _________________________________________________________________
+
+3.2.3. Nowy administrator
+
+   Aby dodaæ nowe konto administratora nale¿y podaæ login oraz has³o,
+   które nie mo¿e byæ puste. Podanie imienia, nazwiska i adresu poczty
+   elektronicznej nie jest wymagane. Poni¿ej mo¿na zaznaczyæ uprawnienia
+   dostêpu do systemu. Je¿eli wszystkie pola pozostawisz puste,
+   administratorowi przypisany zostanie 'Pe³en dostêp'.
+     _________________________________________________________________
+
+3.2.4. Kopie zapasowe
+
+   Z panelu 'Kopie zapasowe' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z
+   bazy LMSa. Kopia bazy to plik tekstowy zawieraj±cy zapytania SQL i
+   dane z wszystkich tabel w bazie, zapisywany w katalogu zdefiniowanym w
+   sekcji [directories] lms.ini zmienn± backup_dir.
+
+   Notatka
+
+   Domy¶lnie kopie zapisywane s± w katalogu lms/backups dostêpnym przez
+   przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.
+
+   Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub
+   zapisywaæ na lokalnym dysku. Klikniêcie na ikonkê Odtwórz spowoduje
+   wyczyszczenie bie¿±cej bazy danych i za³adowanie do niej danych z
+   wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
+   aktualnej bazy danych.
+     _________________________________________________________________
+
+3.3. U¿ytkownicy
 
    Tutaj zarz±dzasz danymi u¿ytkowników twojej sieci i ich finansami, ale
    tak¿e ich komputerami. Mo¿esz na przyk³ad jednym klikniêciem od³±czyæ
@@ -895,7 +954,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    jest poni¿ej zadanej warto¶ci s³u¿y skrypt lms-cutoff.
      _________________________________________________________________
 
-3.2.1. Lista
+3.3.1. Lista
 
    Po wej¶ciu do panelu 'U¿ytkownicy' uka¿e siê lista u¿ytkowników, któr±
    mo¿esz filtrowaæ wed³ug wybranych kryteriów (statusu, grupy lub sieci)
@@ -917,7 +976,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    obci±¿enie jego rachunku.
      _________________________________________________________________
 
-3.2.2. Nowy
+3.3.2. Nowy
 
    Dodaj±c nowego u¿ytkownika podajesz jego nazwisko/nazwê i dane
    teleadresowe oraz status (pod³±czony/oczekuj±cy/zainteresowany).
@@ -928,7 +987,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    rozwi±zania nale¿y szukaæ w jego konfiguracji.
      _________________________________________________________________
 
-3.2.3. Szukaj
+3.3.3. Szukaj
 
    Mo¿liwe jest wyszukiwanie u¿ytkowników (tak¿e usuniêtych) wg zadanych
    kryteriów. Modu³ ten, od pola szybkiego wyszukiwania z menu po lewej
@@ -937,7 +996,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    u¿ytkowników spe³niaj±cych podane kryteria.
      _________________________________________________________________
 
-3.2.4. Grupy
+3.3.4. Grupy
 
    Tutaj zarz±dzasz grupami u¿ytkowników. Po klikniêciu menu 'Grupy'
    uka¿e ci siê lista grup z podstawowymi informacjami o grupach.
@@ -946,14 +1005,14 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    grup.
      _________________________________________________________________
 
-3.2.5. Nowa grupa
+3.3.5. Nowa grupa
 
    Grupa powinna posiadaæ unikaln± nazwê, sk³adaj±c± siê z liter, cyfr,
    znaku my¶lnika lub podkre¶lenia. Poniewa¿ grupy wykorzystywane s± w
    skryptach w nazwie nie mo¿e byæ znaku spacji.
      _________________________________________________________________
 
-3.2.6. Ostrze¿enia
+3.3.6. Ostrze¿enia
 
    Tutaj mo¿na "hurtowo" przypisaæ tre¶æ wiadomo¶ci administracyjnej
    u¿ytkownikom, których wybiera siê z listy w lewym oknie. Mo¿liwe jest
@@ -961,7 +1020,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    nale¿±cym do wybranych u¿ytkowników.
      _________________________________________________________________
 
-3.2.7. Wydruki
+3.3.7. Wydruki
 
    Zestaw modu³ów wy¶wietlaj±cych listy w formie przyjaznej dla drukarki
    zawiera:
@@ -970,7 +1029,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
      * Bilans u¿ytkownika za wybrany okres
      _________________________________________________________________
 
-3.3. Komputery
+3.4. Komputery
 
    Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie
    listy komputerów, wyszukiwanie, dodawanie nowych lub usuwanie ju¿
@@ -978,7 +1037,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    nich.
      _________________________________________________________________
 
-3.3.1. Lista
+3.4.1. Lista
 
    Lista komputerów, ta która pokazuje siê po wej¶ciu do panelu
    'Komputery'. obejmuje wszystkie komputery w bazie. Mo¿na j± sortowaæ
@@ -992,7 +1051,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    klikaj±c na pod¶wietlonym wierszu.
      _________________________________________________________________
 
-3.3.2. Nowy
+3.4.2. Nowy
 
    Tutaj dodaje siê nowe komputery do bazy danych. W tym celu definiujemy
    nazwê komputera (sk³adaj±c± siê z liter, cyfr, znaku podkre¶lenia lub
@@ -1012,13 +1071,13 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    przypiszesz.
      _________________________________________________________________
 
-3.3.3. Szukaj
+3.4.3. Szukaj
 
    Wyszukiwanie komputerów wed³ug zadanych kryteriów. Mo¿esz podaæ ca³±
    lub fragment nazwy komputera oraz jego adresów IP i MAC.
      _________________________________________________________________
 
-3.3.4. Ostrze¿enia
+3.4.4. Ostrze¿enia
 
    Tutaj definiuje siê tre¶æ wiadomo¶ci administracyjnych dla
    u¿ytkowników oraz w³±cza lub wy³±cza komputerom ostrze¿enia. Po lewej
@@ -1029,13 +1088,13 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    ostrze¿enia' oraz 'Wy³±cz ostrze¿enia'.
      _________________________________________________________________
 
-3.3.5. Wydruki
+3.4.5. Wydruki
 
    Wy¶wietlenie list komputerów, w formacie przyjaznym dla drukarki z
    mo¿liwo¶ci± definiowania filtrów i sortowania podobnie jak na Li¶cie.
      _________________________________________________________________
 
-3.4. Osprzêt sieciowy
+3.5. Osprzêt sieciowy
 
    W panelu przeznaczonym do ewidencji sprzêtu zarz±dzamy struktur±
    sieci, urz±dzeniami typu swich, hub, router, serwer i po³±czeniami
@@ -1043,7 +1102,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    urzêdzeniu mo¿na przypisaæ co najmniej jeden adres sieciowy.
      _________________________________________________________________
 
-3.4.1. Lista
+3.5.1. Lista
 
    Lista urz±dzeñ zawiera ich nazwy i symbole, po³o¿enie i opis, a
    ponadto ilo¶æ dostêpnych portów. Lista mo¿e byæ sortowana wg dowolnego
@@ -1053,14 +1112,14 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    oraz zamiana dwóch urz±dzeñ.
      _________________________________________________________________
 
-3.4.2. Nowe
+3.5.2. Nowe
 
    Urz±dzenie sieciowe powinno posiadaæ unikaln± nazwê. Pozosta³e
    parametry tj. producent, model, nr seryjny, ilo¶æ portów, lokalizacja
    i opis s± opcjonalne.
      _________________________________________________________________
 
-3.4.3. Mapa
+3.5.3. Mapa
 
    Generowanie graficznej mapy ca³ej sieci, na podstawie danych z bazy
    lms'a nastêpuje po wybraniu opcji menu 'Mapa'. Mo¿esz zdefiniowaæ,
@@ -1087,7 +1146,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    demona almsd.
      _________________________________________________________________
 
-3.5. Sieci IP
+3.6. Sieci IP
 
    Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y,
    bramê, zakres DHCP. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma
@@ -1095,7 +1154,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    ró¿nych klas adresowych tutaj jest to mo¿liwe.
      _________________________________________________________________
 
-3.5.1. Lista
+3.6.1. Lista
 
    Lista sieci oprócz podstawowych danych o sieciach zawiera podsumowanie
    ilo¶ci adresów wolnych i przypisanych. Modyfikowanie w³a¶ciwo¶ci sieci
@@ -1112,13 +1171,13 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    przenoszenia wszystkich komputerów/urz±dzeñ z tej sieci do innej.
      _________________________________________________________________
 
-3.5.2. Nowa sieæ
+3.6.2. Nowa sieæ
 
    Definiuj±c now± sieæ musisz okre¶liæ jej unikaln± nazwê i klasê
    adresow± podaj±c adres IP sieci i maskê. Pozosta³e dane s± opcjonalne.
      _________________________________________________________________
 
-3.6. Taryfy i Finanse
+3.7. Taryfy i Finanse
 
    Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami
    sieci. Masz mo¿liwo¶æ definiowania taryf abonamentowych, op³at
@@ -1127,7 +1186,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    finansowych.
      _________________________________________________________________
 
-3.6.1. Lista taryf
+3.7.1. Lista taryf
 
    Po wej¶ciu do panelu 'Taryfy i finanse' zobaczysz listê taryf
    zawieraj±c± podstawowe informacje o nich. Klikaj±c wybran± taryfê na
@@ -1139,14 +1198,14 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    uwzglêdniaj±ca okresy obowi±zywania.
      _________________________________________________________________
 
-3.6.2. Nowa taryfa
+3.7.2. Nowa taryfa
 
    Definiuj±c now± taryfê musisz podaæ unikaln± nazwê, kwotê i stawkê
    podatku. Przy czym "zw." w polu stawka podatku oznacza "zwolnienie z
    podatku".
      _________________________________________________________________
 
-3.6.3. Lista op³at
+3.7.3. Lista op³at
 
    Lista op³at sta³ych ¶wiadczonych na rzecz innych podmiotów, oprócz
    elementów standardowych zawiera ikonê [Nalicz], przy pomocy której
@@ -1157,20 +1216,20 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    op³atê w bazie operacji finansowych.
      _________________________________________________________________
 
-3.6.4. Nowa op³ata
+3.7.4. Nowa op³ata
 
    Nowej op³acie sta³ej przypisujesz unikaln± nazwê, wierzyciela oraz
    kwotê i dzieñ naliczenia.
      _________________________________________________________________
 
-3.6.5. Bilans finansowy
+3.7.5. Bilans finansowy
 
    Historia operacji finansowych z podsumowaniem przychodu, rozchodu,
    wp³at i zobowi±zañ u¿ytkowników. Ikona drukarki umo¿liwia wydruk
    faktury odpowiadaj±cej danej pozycji z listy.
      _________________________________________________________________
 
-3.6.6. Nowa operacja
+3.7.6. Nowa operacja
 
    Wprowadzanie nowych operacji finansowych. Mo¿liwe jest zaksiêgowanie
    tej samej wp³aty lub obci±¿enia wielu u¿ytkownikom równocze¶nie.
@@ -1182,14 +1241,14 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    faktury.
      _________________________________________________________________
 
-3.6.7. Lista faktur
+3.7.7. Lista faktur
 
    Lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych faktur
    (ikona [Drukuj]) oraz rozliczenia danej pozycji, czyli zaksiêgowania
    wp³aty (ikona [Rozlicz]).
      _________________________________________________________________
 
-3.6.8. Nowa faktura
+3.7.8. Nowa faktura
 
    Rêczne wystawianie faktur dla wybranego u¿ytkownika.
 
@@ -1263,7 +1322,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    W bazie danych zapisywane s± kwoty brutto.
      _________________________________________________________________
 
-3.6.9. Wydruki
+3.7.9. Wydruki
 
    Wydruki zestawieñ finansowych obejmuj±:
      * Bilans finansowy sieci obejmuj±cy operacje finansowe za dany okres
@@ -1275,7 +1334,75 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
      * Bilans u¿ytkownika na dany okres.
      _________________________________________________________________
 
-3.7. Mailing
+3.8. Konta
+
+   Zarz±dzanie kontami ró¿nych us³ug na serwerze jest teraz mo¿liwe.
+   Funkcjonalno¶æ ta jest przeznaczona dla zaawansowanych
+   administratorów. Wymaga znajomo¶ci tych us³ug i ich konfiguracji w
+   celu korzystania z bazy danych.
+
+   W LMSie mo¿na utworzyæ cztery rodzaje kont: shell (1), poczta (2), www
+   (4), ftp (8). W nawiasach podano numeryczne wewnêtrzne oznaczenie typu
+   konta w bazie. Konta mog± byæ wielotypowe. Przyk³adowo, je¶li
+   zdefiniujesz konto shell+poczta+ftp w bazie zostanie zapisana cyfra
+   11. Oznacza to, ¿e do rozpoznawania typu konta w warunkach WHERE
+   zapytañ SQL nale¿y stosowaæ sumowanie binarne (jak na przyk³adach w
+   dalszej czê¶ci rozdzia³u).
+     _________________________________________________________________
+
+3.8.1. Lista
+
+   Na li¶cie przedstawione s± podstawowe informacje o kontach. Mo¿liwe
+   jest dowolne sortowanie listy poprzez klikniêcie nazwy kolumny oraz
+   filtrowanie wg zadanych kryteriów. Przej¶cie do edycji danych konta
+   nastêpuje po wybraniu ikony [Edytuj]. Administrator ma tak¿e prawo do
+   zmiany has³a.
+     _________________________________________________________________
+
+3.8.2. Nowe konto
+
+   Definiuj±c dane konto musisz podaæ unikalny login, has³o, wybraæ typ
+   konta oraz przypisaæ u¿ytkownika (lub utworzyæ tzw. konto systemowe).
+   Nazwa domeny oraz data wa¿no¶ci konta s± opcjonalne. Pozostawienie
+   pustego pola z dat± oznacza, ¿e konto nigdy nie wygasa.
+     _________________________________________________________________
+
+3.8.3. Przyk³ady
+
+   Poni¿szy listing zawiera istotne fragmenty pliku konfiguracyjnego
+   demona proftpd (w wersji 1.2.10) umo¿liwiaj±cy przechowywanie danych o
+   kontach ftp w bazie LMSa. Przyk³ad zawiera konfiguracjê dla bazy
+   danych PostgreSQL, w komentarzach podano rozwi±zania dla MySQLa:
+
+   Przyk³ad 3-1. Konta. Konfiguracja proftpd.
+  ServerName    "LMS FTP Server"
+
+  #nazwa_bazy@host:port u¿ytkownik has³o
+  SQLConnectInfo lms@localhost:5432 lms mypassword
+
+  SQLAuthTypes Crypt Plaintext
+  SQLUserInfo passwd login password uid NULL home NULL
+  RequireValidShell off
+  SQLAuthenticate users
+
+  # utworzenie katalogu domowego gdy nie istnieje
+  SQLHomedirOnDemand on
+
+  # komunikat przy logowaniu
+  SQLShowInfo PASS "230" "Last login: %{getlastlogin}"
+  SQLLog PASS setlastlogin
+
+  # SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE FROM_UNIXTIME(lastlogin) END FROM passwd WHERE login='%u'"
+  # SQLNamedQuery setlastlogin UPDATE "lastlogin=UNIX_TIMESTAMP() WHERE login='%u'" passwd
+  SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE '1970-01-01'::timestamp + (lastlogin || ' seconds')::interval END FROM passwd WHERE login='%u'"
+  SQLNamedQuery setlastlogin UPDATE "lastlogin=EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) WHERE login='%u'" passwd
+
+  # Sprawdzamy datê wa¿no¶ci konta oraz ograniczamy szukanie do kont ftp
+  # SQLUserWhereClause "type & 8 = 8 AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())"
+  SQLUserWhereClause "type & 8 = 8 AND (expdate = 0 OR expdate > EXTRACT(EPOCHFROM CURRENT_TIMESTAMP(0)))"
+     _________________________________________________________________
+
+3.9. Mailing
 
    Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci
    do grupy u¿ytkowników twojej sieci. Podajesz dane nadawcy, tre¶æ
@@ -1293,60 +1420,12 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    ggnotify demona almsd.
      _________________________________________________________________
 
-3.8. Prze³adowanie
+3.10. Prze³adowanie
 
    Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie
    konfiguracji i us³ug zdefiniowanych dla generatora plików
    konfiguracyjnych LMS-MGC lub demona almsd. Wiêcej informacji
    znajdziesz w rozdzia³ach dotycz±cych LMS-MGC oraz demona.
-     _________________________________________________________________
-
-3.9. Bazy danych
-
-   Z panelu 'Bazy danych' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z
-   bazy lms'a. Kopia bazy to plik tekstowy zawieraj±cy zapytania SQL i
-   dane z wszystkich tabel w bazie, zapisywany w katalogu zdefiniowanym w
-   sekcji [directories] lms.ini zmienn± backup_dir.
-
-   Notatka
-
-   Domy¶lnie kopie zapisywane s± w katalogu lms/backups dostêpnym przez
-   przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.
-
-   Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub
-   zapisywaæ na lokalnym dysku. Klikniêcie na ikonkê Odtwórz spowoduje
-   wyczyszczenie bie¿±cej bazy danych i za³adowanie do niej danych z
-   wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
-   aktualnej bazy danych.
-     _________________________________________________________________
-
-3.10. Administratorzy
-
-   Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów,
-   czyli osób korzystaj±cych z LMS'a, zak³adania i przegl±dania ich kont,
-   zmiany hase³ i definiowania praw dostêpu.
-
-   Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale Prawa dostêpu.
-     _________________________________________________________________
-
-3.10.1. Lista
-
-   Po wej¶ciu do panelu 'Administratorzy' zobaczysz listê wszystkich
-   administratorów z informacj± o ostatnim logowaniu. Klikniêcie na
-   pozycji z listy spowoduje wy¶wietlenie informacji szczegó³owych o
-   danym koncie, w tym o zdefiniowanych prawach dostêpu. W ka¿dej chwili
-   mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'.
-   Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu
-   'Nowy'.
-     _________________________________________________________________
-
-3.10.2. Nowy
-
-   Aby dodaæ nowe konto administratora nale¿y podaæ login oraz has³o,
-   które nie mo¿e byæ puste. Podanie imienia, nazwiska i adresu poczty
-   elektronicznej nie jest wymagane. Poni¿ej mo¿na zaznaczyæ uprawnienia
-   dostêpu do systemu. Je¿eli wszystkie pola pozostawisz puste,
-   administratorowi przypisany zostanie 'Pe³en dostêp'.
      _________________________________________________________________
 
 3.11. Statystyki
