@@ -398,13 +398,27 @@ info = "Opcjonalny opis modu³u"
 		    </sect3>
 		    <sect3 id="cutoff-config">
 		    <title>Konfiguracja</title>
-		    <para>Modu³ 'cutoff' posiada tylko jeden parametr:</para>
+		    <para>Dla modu³u 'cutoff' mamy nastêpuj±ce opcje:</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>limit</para>
 			    <para>Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej
 			    kwoty okre¶lonej t± zmienn±. Domy¶lnie: 0.</para>
 			    <para>Przyk³ad: <prompt>limit = -20</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>command</para>
+			    <para>Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co najmniej
+			    jeden u¿ytkownik zostanie od³±czony. Domy¶lnie: nieustawiona.</para>
+			    <para>Przyk³ad: <prompt>command = 'almsd -qi firewall'</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>warning</para>
+			    <para>W³±cza ostrze¿enie dla od³±czanego u¿ytkowanika i przypisuje mu 
+			    okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
+			    Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
+			    Domy¶lnie: 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty (dd.mm.yyyy)".</para>
+			    <para>Przyk³ad: <prompt>warning = ""</prompt></para>
 			</listitem>
 		    </itemizedlist>
 		    </sect3>
