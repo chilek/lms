@@ -81,7 +81,7 @@ class LMS
 
 		// to siê rozejdzie po modu³ach:
 
-		$this->AddMenu('Administracja', 'l.gif', '?', 'Informacje i zarz±dzanie systemem', 'i', 0);
+		$this->AddMenu('Administracja', 'settings.gif', '?', 'Informacje i zarz±dzanie systemem', 'i', 0);
 		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 5);
 		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 10);
 		$this->AddMenu('Osprzêt sieciowy', 'netdev.gif', '?m=netdevlist', 'Ewidencja sprzêtu sieciowego', 'o', 15);
