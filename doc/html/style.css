@@ -23,7 +23,7 @@ H4		{ font-size:  9pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 P		{ text-align: justify; }
 UL		{ list-style-position: outside;  }
 DIV.WARNING	{ text-align: center; }
-TABLE.WARNING	{ border-collapse: collapse; }
+TABLE.WARNING	{ width: 90%; border-collapse: collapse; }
 TABLE.WARNING TD { background: #EBCF9E; border-width: 0pt; padding: 3pt; border-style: none }
 TABLE.WARNING P { text-align: center; color: #F00000}
 HR		{ height: 1pt; }
