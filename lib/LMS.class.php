@@ -1194,6 +1194,10 @@ class LMS
 		$iid = $this->DB->GetOne('SELECT id FROM invoices WHERE number = ? AND cdate = ?',array($number,$cdate));
 		foreach($invoice['contents'] as $idx => $item)
 		{
+			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
+			$item['count'] = str_replace(',','.',$item['count']);
+			$item['taxvalue'] = str_replace(',','.',$item['taxvalue']);
+			
 			$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',array($iid, $item['valuebrutto'], $item['taxvalue'], $item['pkwiu'], $item['jm'], $item['count'], $item['name'], $item['tariffid']));
 			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'userid' => $invoice['customer']['id'], 'comment' => $item['name'], 'invoiceid' => $iid));
 		}
