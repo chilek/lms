@@ -73,7 +73,7 @@
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top">
 			<NOBR>
-			{if $balancelist[balancelist].taxvalue}
+			{if $balancelist[balancelist].taxvalue!=''}
 				{$balancelist[balancelist].taxvalue|string_format:"%01.2f"} %
 			{else}zw.{/if}
 			</NOBR>
