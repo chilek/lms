@@ -53,6 +53,8 @@ function lms_parse_ini_file($filename, $process_sections = false)
 				if ( sscanf($line, "%[^=] = \"%[^\"]\"", &$property, &$value) != 2 ) 
 					if( sscanf($line, "%[^=] = %[^;#]",    &$property, &$value) != 2 ) 
 						continue;
+					else
+						$value = trim($value, "\"'");
 			
 			$property = trim($property);
 			$value = trim($value);
@@ -234,6 +236,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.123  2003/12/04 22:20:36  alec
+ *  - mala poprawka parsera uwzgledniajaca puste zmienne np.""
+ *
  * Revision 1.122  2003/12/04 04:39:14  lukasz
  * - porz±dki
  * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
