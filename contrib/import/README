@@ -1,0 +1,54 @@
+$Id$
+
+1. Co to?
+
+Dziêki temu modu³owi mo¿liwe jest wczytanie p³atno¶ci/przelewów z przygotowanego
+wcze¶niej pliku tekstowego (np. z banku). Skrypt czyta taki plik linia po linii
+i korzystaj±c z ustawionych wyra¿eñ regularnych parsuje plik, wy³uskuj±c
+dane dotycz±ce ka¿dej p³atno¶ci, potrzebne do zapisania jej w bazie danych
+(ID u¿ytkownika, kwotê, itd.). Po wczytaniu pliku zostanie wy¶wietlona lista
+p³atno¶ci do zatwierdzenia i/lub korekty.
+
+2. Instalacja.
+
+Pliki .html umie¶æ w katalogu templates, a .php w modules. Zostanie dodane nowe 
+menu 'Taryfy i Finanse'->'Import'.
+
+3. Konfiguracja.
+
+Opcje konfiguracyjne ustawia siê w pliku import.php.
+Aby skrypt potrafi³ odczytaæ dane z plików w dowolnym formacie nale¿y
+zdefiniowaæ odpowiednio wyra¿enia regularne. Domy¶lna konfiguracja
+zak³ada, ¿e dane bêd± mia³y postaæ nastêpuj±c±:
+
+23.02.2004	Machniak Aleksander	123,45	Op³ata za Internet 04/2004 ID:0013
+15.02.2004	Ból Józef	123,45	Op³ata za faktrê LMS/34/2004
+
+czyli warto¶ci oddzielone tabulatorem.
+
+- g³ówny regexp dla ka¿dej linii w pliku:
+$pattern = "/^([^ ]+)\t([^ ]+)[\s\t]+([^ ]+)\t([^ ]+)\t(.*)/";
+
+- pozycja poszczególnych elementów w/w wyra¿enia:
+$pid = 0;	// ID u¿ytkownika, je¶li zero - nast±pi wyszukiwanie 
+		// ID wg szablonu, numeru faktury lub nazwiska 
+		// i imienia usera w ca³ym wierszu
+$pname = 2;	// nazwisko
+$plastname = 3; // imiê
+$pvalue = 4;	// kwota
+$pcomment = 5;  // komentarz
+$pdate = 1;  	// data
+
+- wyra¿enie regularne dla formatu daty (domy¶lnie: dd.mm.yyyy):
+$date_regexp = '/([0-9]{2})\.([0-9]{2})\.([0-9]{4})/';
+$pday = 1;
+$pmonth = 2;
+$pyear = 3;
+
+- u¿ywany format numeru faktury (domy¶lnie: %N/LMS/%Y:
+$invoice_regexp = '/.* (\d*)\/LMS\/([0-9]{4}).*/'; 
+$pinvoice_number = 1; // numer faktury
+$pinvoice_year = 2;   // numer roku
+
+- stawka VATu dla wszystkich op³at
+$taxvalue = '0.0';	// 'zw.', '0.0', '7.0', '22.0'	
