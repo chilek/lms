@@ -75,33 +75,51 @@
  <sect1 id="menu-nodes">
 	<title>Komputery</title>
 	<para>Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie listy komputerów,
-	wyszukiwania komputerów o danej nazwie, IP lub MAC'u, dodawanie nowych lub usuwanie ju¿
-	wpisanych do bazy komputerów, a tak¿e podgl±d i zmianê informacji o nich. Zmiany statusu 
-	komputera 'w³±czony/wy³±czony' dokonuje siê
-	klikniêciem na ikonê ¿arówki w odpowiedniej linii.</para>
-	<para>Górne menu udostêpnia nastêpuj±ce modu³y:
-	<itemizedlist>
-	    <listitem>
-	    <para>Lista - Wy¶wietlenie listy komputerów, tej która pokazuje siê po
-	    wej¶ciu do panelu 'Komputery'. Listê mo¿na sortowaæ klikaj±c na nazwie kolumny.</para>
-	    </listitem>
-	    <listitem>
-	    <para>Nowy - Dodawanie nowego komputera.</para>
-	    <para><note><para>Aby wyszukaæ komputery w swojej sieci
+	wyszukiwanie, dodawanie nowych lub usuwanie ju¿	wpisanych do bazy komputerów, a tak¿e podgl±d 
+	i zmianê informacji o nich.</para>
+	<sect2 id="menu-nodes-list">
+	    <title>Lista</title>
+	    <para>Lista komputerów, ta która pokazuje siê po wej¶ciu do panelu 'Komputery'. 
+	    obejmuje wszystkie komputery w bazie. Mo¿na j± sortowaæ klikaj±c na nazwie dowolnej 
+	    kolumny. W ka¿dym wierszu, po prawej stronie znajduj± siê ikony s³u¿±ce kolejno do:
+	    zmiany statusu komputera [Pod³±cz/Od³±cz], zmiany statusu ostrze¿enia [Ostrzegaj/Nie ostrzegaj],
+	    usuniêcia z bazy [Usuñ], wywo³ania panelu edycyjnego [Edytuj] oraz wy¶wietlenia
+	    informacji szczegó³owych na temat danego komputera [Info]. Do panelu informacyjnego,
+	    który jest zintegrowany z panelem informacji o w³a¶cicielu komputera mo¿na tak¿e
+	    przej¶æ klikaj±c na pod¶wietlonym wierszu.</para>
+	</sect2>
+	<sect2 id="menu-nodes-new">
+	<title>Nowy</title>
+	    <para>Tutaj dodaje siê nowe komputery do bazy danych. W tym celu definiujemy nazwê
+	    komputera (sk³adaj±c± siê z liter, cyfr, znaku podkre¶lenia lub my¶lnika), jego w³a¶ciciela,
+	    adres IP, adres MAC oraz status. Przy polach na adresy IP i MAC znajduj± siê linki
+	    do paneli, w których mo¿na wybraæ dostêpny adres IP oraz znaleziony w sieci MAC.
+	    Po wpisaniu danych naci¶nij "Zapisz". Przy wprowadzaniu danych dla wielu komputerów
+	    wygodnie jest zaznaczyæ pole "Wywo³aj ponownie..."
+	    <note><para>Aby wyszukaæ komputery w swojej sieci
 	    mo¿esz skorzystaæ z programu nbtscan. Je¶li jest on zainstalowany w systemie, po
-	    naci¶niêciu 'Skanuj' zobaczysz listê znalezionych komputerów.</para></note></para>
-	    <para><note><para>Aby dodaæ komputer musisz mieæ sieæ i u¿ytkownika,
+	    naci¶niêciu 'Skanuj' zobaczysz listê znalezionych komputerów.</para></note>
+	    <note><para>Aby dodaæ komputer musisz mieæ sieæ i u¿ytkownika,
 	    którym go przypiszesz.</para></note></para>
-	    </listitem>
-	    <listitem>
-	    <para>Szukaj - Wyszukiwanie komputerów wed³ug zadanych kryteriów.</para>
-	    </listitem>
-	     <listitem>
-	    <para>Wydruki - Wy¶wietlenie list komputerów, w formacie 
-	    przyjaznym dla drukarki z mo¿liwo¶ci± definiowania filtrów i sortowania.</para>
-	    </listitem>
-	</itemizedlist>
-	</para>
+	</sect2>
+	<sect2 id="menu-nodes-search">
+	    <title>Szukaj</title>
+	    <para>Wyszukiwanie komputerów wed³ug zadanych kryteriów. Mo¿esz podaæ 
+	    ca³± lub fragment nazwy komputera oraz jego adresów IP i MAC.</para>
+	</sect2>
+	<sect2 id="menu-nodes-warnings">
+	    <title>Ostrze¿enia</title>
+		<para>Tutaj definiuje siê tre¶æ wiadomo¶ci administracyjnych dla u¿ytkowników oraz
+		w³±cza lub wy³±cza komputerom ostrze¿enia. Po lewej stronie znajduje siê lista, na
+		której komputery z w³±czonym ostrze¿eniem zaznaczone s± kolorem czerwonym. Jesli chcesz
+		tylko zmieniæ/przypisaæ u¿ytkownikom tre¶æ wiadomo¶ci administracyjnej, zaznacz odpowiednie
+		komputery na li¶cie i pozostaw puste pola 'W³±cz ostrze¿enia' oraz 'Wy³±cz ostrze¿enia'.  </para>
+	</sect2>	
+	<sect2 id="menu-nodes-print">
+	    <title>Wydruki</title>
+		<para>Wy¶wietlenie list komputerów, w formacie przyjaznym dla drukarki 
+		z mo¿liwo¶ci± definiowania filtrów i sortowania podobnie jak na Li¶cie.</para>
+	</sect2>
  </sect1>
  <sect1 id="menu-netdevices">
 	<title>Osprzêt sieciowy</title>
