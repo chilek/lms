@@ -95,7 +95,7 @@ wersja 1.1.4 (??/??/2003):
     MySQL:
 	ALTER TABLE users DROP tariff, DROP payday;
     PostgreSQL:
-	ALTER TABLE test DROP tariff; ALTER TABLE test DROP payday;	
+	ALTER TABLE users DROP tariff; ALTER TABLE users DROP payday;	
 
     4) Dopiszcie do crona lms-payments tak aby by³ uruchamiany codziennie o
        godzinie 0:00.
@@ -172,6 +172,8 @@ wersja 1.1.4 (??/??/2003):
   - poprawione b³êdy w GetTariff() wystêpuj±ce na postgresie (alec)
   - b³êdy teraz pokazuj± siê jako popupy (lukasz)
   - nowy skrypt - bin/lms-traffic-htbiptlimits - do limitowania pasma (lukasz)
+  - nowe pliki doc/UPGRADE.mysql, doc/UPGRADE.pgsql do upgrade'u bazy z wersji
+    1.0 do 1.1 (alec)
 	
 wersja 1.1.3 (29/08/2003):
 
