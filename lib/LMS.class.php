@@ -1363,7 +1363,7 @@ class LMS
 
 	function GetUsersWithTariff($id)
 	{
-		return $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE tariff=?",array($id));
+		return $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE tariff=? AND status=3",array($id));
 	}
 	
 	function GetTariffList()
