@@ -31,7 +31,7 @@ if($_GET['is_sure'])
 	header('Location: ?m='.$_SESSION['lastmodule']);
 	die;
 }else{
-	$layout['pagetitle'] = trans(Database Backup Recovery');
+	$layout['pagetitle'] = trans('Database Backup Recovery');
 	$SMARTY->display('header.html');
 	$SMARTY->display('adminheader.html');
 	echo '<H1>'.trans('Database Backup Recovery').'</H1>';
