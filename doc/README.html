@@ -6102,9 +6102,33 @@ CLASS="PROMPT"
 ></LI
 ></UL
 ><P
->Teraz MGC rozpocznie przetwarzanie kolejnych adresów IP. Robi to w dosyæ specyficzny sposób. 
-   Tzn. oblicza kolejny adres IP i kolejno sprawdza:</P
+>Teraz MGC rozpocznie przetwarzanie regu³ek dla kolejnych adresów IP. Robi to w dosyæ specyficzny sposób. 
+   Tzn. oblicza kolejny adres IP i sprawdza czy zdefiniowano regu³ê dla hosta i wykonuje pierwsz±.
+   Sprawdzanie jest wykonywane w nastepuj±cej kolejno¶ci:</P
 ><UL
+><LI
+><P
+>ignore</P
+><P
+>Pozwala na ustawienie listy adresów w postaci adres/prefix lub adres/maska oddzielanej spacjami dla której ma byæ ignorowane generowanie</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>ignore = 192.168.0.100/32</SAMP
+></P
+></LI
+><LI
+><P
+>node(IP)</P
+><P
+>Przy pomocy tej opcji mo¿na zdefiniowaæ regu³ê dla wybranego komputera. W nawiasie podaje siê jego adres IP. 
+     Ka¿da sekcja instancji mo¿e zawieraæ dowoln± ilo¶æ takich opcji.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>node(192.168.0.20) = ??</SAMP
+></P
+></LI
 ><LI
 ><P
 >allnodes</P
@@ -6129,13 +6153,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->ignore</P
+>grantednode_priv</P
 ><P
->Pozwala na ustawienie listy adresów w postaci adres/prefix lub adres/maska oddzielanej spacjami dla której ma byæ ignorowane generowanie</P
+>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->ignore = ??</SAMP
+>grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</SAMP
 ></P
 ></LI
 ><LI
@@ -6151,13 +6175,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->grantednode_priv</P
+>deniednode_priv</P
 ><P
->Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
+>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</SAMP
+>deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;</SAMP
 ></P
 ></LI
 ><LI
@@ -6173,13 +6197,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->deniednode_priv</P
+>dhcpnode_priv</P
 ><P
->Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
+>Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;</SAMP
+>dhcpnode_priv = node unknown (%IP) reject;</SAMP
 ></P
 ></LI
 ><LI
@@ -6195,28 +6219,6 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->dhcpnode_priv</P
-><P
->Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</P
-><P
->Przyk³ad:	<SAMP
-CLASS="PROMPT"
->dhcpnode_priv = node unknown (%IP) reject;</SAMP
-></P
-></LI
-><LI
-><P
->freeip_publ</P
-><P
->Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów publicznych)</P
-><P
->Przyk³ad:	<SAMP
-CLASS="PROMPT"
->freeip_publ = node unknown (%IP) lock_as_unused;</SAMP
-></P
-></LI
-><LI
-><P
 >freeip_priv</P
 ><P
 >Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów prywatnych)</P
@@ -6228,13 +6230,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->default_publ</P
+>freeip_publ</P
 ><P
->Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów publicznych)</P
+>Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów publicznych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->default_publ = node unknown (%IP) lock_as_intruder;</SAMP
+>freeip_publ = node unknown (%IP) lock_as_unused;</SAMP
 ></P
 ></LI
 ><LI
@@ -6274,6 +6276,22 @@ VALIGN="TOP"
 ></DIV
 ></P
 ></LI
+><LI
+><P
+>default_publ</P
+><P
+>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów publicznych)</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>default_publ = node unknown (%IP) lock_as_intruder;</SAMP
+></P
+></LI
+></UL
+><P
+>W koñcu nastêpuje wygenerowanie koñcowej czê¶ci pliku i wykonanie
+    polecenia systemowego.</P
+><UL
 ><LI
 ><P
 >network_footer</P
@@ -8592,6 +8610,10 @@ BORDER="0"
 ><TR
 ><TD
 >info - dodatkowe informacje</TD
+></TR
+><TR
+><TD
+>serviceaddr - adres do dorêczeñ (np. na faktury)</TD
 ></TR
 ><TR
 ><TD

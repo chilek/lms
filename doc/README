@@ -2186,9 +2186,20 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
        przed rozpoczêciem analizy adresów IP
        Przyk³ad: network_body = \tnodes {
 
-   Teraz MGC rozpocznie przetwarzanie kolejnych adresów IP. Robi to w
-   dosyæ specyficzny sposób. Tzn. oblicza kolejny adres IP i kolejno
-   sprawdza:
+   Teraz MGC rozpocznie przetwarzanie regu³ek dla kolejnych adresów IP.
+   Robi to w dosyæ specyficzny sposób. Tzn. oblicza kolejny adres IP i
+   sprawdza czy zdefiniowano regu³ê dla hosta i wykonuje pierwsz±.
+   Sprawdzanie jest wykonywane w nastepuj±cej kolejno¶ci:
+     * ignore
+       Pozwala na ustawienie listy adresów w postaci adres/prefix lub
+       adres/maska oddzielanej spacjami dla której ma byæ ignorowane
+       generowanie
+       Przyk³ad: ignore = 192.168.0.100/32
+     * node(IP)
+       Przy pomocy tej opcji mo¿na zdefiniowaæ regu³ê dla wybranego
+       komputera. W nawiasie podaje siê jego adres IP. Ka¿da sekcja
+       instancji mo¿e zawieraæ dowoln± ilo¶æ takich opcji.
+       Przyk³ad: node(192.168.0.20) = ??
      * allnodes
        Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego
        adresu IP.
@@ -2197,52 +2208,42 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
        Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego
        adresu IP który jest u¿ywany.
        Przyk³ad: allexistnodes = ??
-     * ignore
-       Pozwala na ustawienie listy adresów w postaci adres/prefix lub
-       adres/maska oddzielanej spacjami dla której ma byæ ignorowane
-       generowanie
-       Przyk³ad: ignore = ??
-     * grantednode_publ
-       Jest przetwarzana gdy dany adres komputer z danym adresem IP
-       istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka
-       przetwarzana dla adresów publicznych)
-       Przyk³ad: grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;
      * grantednode_priv
        Jest przetwarzana gdy dany adres komputer z danym adresem IP
        istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka
        przetwarzana dla adresów prywatnych)
        Przyk³ad: grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;
-     * deniednode_publ
+     * grantednode_publ
        Jest przetwarzana gdy dany adres komputer z danym adresem IP
-       istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana
-       dla adresów publicznych)
-       Przyk³ad: deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;
+       istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka
+       przetwarzana dla adresów publicznych)
+       Przyk³ad: grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;
      * deniednode_priv
        Jest przetwarzana gdy dany adres komputer z danym adresem IP
        istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana
        dla adresów prywatnych)
        Przyk³ad: deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;
-     * dhcpnode_publ
-       Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP
-       (regu³ka przetwarzana dla adresów publicznych)
-       Przyk³ad: dhcpnode_publ = node unknown (%IP) reject;
+     * deniednode_publ
+       Jest przetwarzana gdy dany adres komputer z danym adresem IP
+       istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana
+       dla adresów publicznych)
+       Przyk³ad: deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;
      * dhcpnode_priv
        Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP
        (regu³ka przetwarzana dla adresów prywatnych)
        Przyk³ad: dhcpnode_priv = node unknown (%IP) reject;
-     * freeip_publ
-       Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego
-       komputera (regu³ka przetwarzana dla adresów publicznych)
-       Przyk³ad: freeip_publ = node unknown (%IP) lock_as_unused;
+     * dhcpnode_publ
+       Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP
+       (regu³ka przetwarzana dla adresów publicznych)
+       Przyk³ad: dhcpnode_publ = node unknown (%IP) reject;
      * freeip_priv
        Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego
        komputera (regu³ka przetwarzana dla adresów prywatnych)
        Przyk³ad: freeip_priv = node unknown (%IP) lock_as_unused;
-     * default_publ
-       Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie
-       przetworzony przez ¿adn± regu³kê grantednode lub deniednode
-       (regu³ka przetwarzana dla adresów publicznych)
-       Przyk³ad: default_publ = node unknown (%IP) lock_as_intruder;
+     * freeip_publ
+       Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego
+       komputera (regu³ka przetwarzana dla adresów publicznych)
+       Przyk³ad: freeip_publ = node unknown (%IP) lock_as_unused;
      * default_priv
        Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie
        przetworzony przez ¿adn± regu³kê grantednode lub deniednode
@@ -2253,6 +2254,14 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
 
    lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który
    do prywatnej.
+     * default_publ
+       Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie
+       przetworzony przez ¿adn± regu³kê grantednode lub deniednode
+       (regu³ka przetwarzana dla adresów publicznych)
+       Przyk³ad: default_publ = node unknown (%IP) lock_as_intruder;
+
+   W koñcu nastêpuje wygenerowanie koñcowej czê¶ci pliku i wykonanie
+   polecenia systemowego.
      * network_footer
        Pozwala na ustawienie stopki dla w³a¶nie przetwarzanej sieci
        Przyk³ad: network_footer = ??
@@ -3124,6 +3133,7 @@ Rozdzia³ 7. Dla dociekliwych
    nip - numer identyfikacji podatkowej NIP
    pesel - numer PESEL
    info - dodatkowe informacje
+   serviceaddr - adres do dorêczeñ (np. na faktury)
    creationdate - czas utworzenia wpisu
    moddate - czas modyfikacji
    creatorid - identyfikator administratora tworz±cego wpis
