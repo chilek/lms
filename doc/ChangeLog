@@ -46,6 +46,8 @@ wersja 1.5.3 (??/??/????):
     miesiêcznym taryf nie uwzglêdniamy zobowi±zañ zawieszonych (alec)
   - BTS#0000266: zabezpieczenie przed generowaniem mapy sieci, w której nie ma
     urz±dzeñ, co powodowa³o segfaulta Apache'a (alec)
+  - z szablonu faktury usuniêta informacja powo³uj±ca siê na nieaktualne
+    przepisy prawne (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 
