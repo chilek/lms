@@ -86,7 +86,7 @@ sub isprivate($)
 	return matchip($ip,"192.168.0.0","255.255.0.0") || matchip($ip,"10.0.0.0","255.0.0.0") || matchip($ip,"172.16.0.0","255.240.0.0");
 }
 
-my $_version = '1.0-cvs';
+my $_version = '1.1-cvs';
 
 my %options = (
 	"--config-file|C=s"	=>	\$configfile,
@@ -306,6 +306,7 @@ sub instance($)
 			$tnh =~ s/\%ADDR/$row->{'address'}/g;
 			$tnh =~ s/\%MASK/$row->{'mask'}/g;
 			$tnh =~ s/\%GATE/$row->{'gateway'}/g;
+			$tnh =~ s/\%DNS2/$row->{'dns2'}/g;
 			$tnh =~ s/\%DNS/$row->{'dns'}/g;
 			$tnh =~ s/\%DOMAIN/$row->{'domain'}/g;
 			$tnh =~ s/\%WINS/$row->{'wins'}/g;
@@ -388,7 +389,7 @@ sub instance($)
 		
 		# BUILD NODELIST
 		
-		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name, uprate, downrate FROM nodes, users, tariffs WHERE tariffs.id=users.tariff AND users.id=nodes.ownerid");
+		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name, uprate, downrate, tariffs.id AS tariffid, tariffs.value AS tariffvalue FROM nodes, users, tariffs WHERE tariffs.id=users.tariff AND users.id=nodes.ownerid");
 		
 		$dbq->execute();
 		my %maclist;
@@ -399,6 +400,8 @@ sub instance($)
 		my %ownerlist;
 		my %upratelist;
 		my %downratelist;
+		my %tariffsidlist;
+		my %tariffsvallist;
 		
 		while (my $row = $dbq->fetchrow_hashref())
 		{
@@ -410,6 +413,8 @@ sub instance($)
 			$ownerlist{$row->{'ipaddr'}} = $row->{'ownerid'};
 			$upratelist{$row->{'ipaddr'}} = $row->{'uprate'};
 			$downratelist{$row->{'ipaddr'}} = $row->{'downrate'};
+			$tariffsidlist{$row->{'ipaddr'}} = $row->{'tariffid'};
+			$tariffsvallist{$row->{'ipaddr'}} = $row->{'tariffvalue'};
 		}
 				
 		
@@ -520,6 +525,8 @@ sub instance($)
 			my $mac = $maclist{$ipaddr} || '';
 			my $uprate = $upratelist{$ipaddr} || '';
 			my $downrate = $downratelist{$ipaddr} || '';
+			my $tid = $tariffsidlist{$ipaddr} || '';
+			my $tval = $tariffsvallist{$ipaddr} || '0';
 			my $macs = lc($mac);
 			$macs =~ s/://g;
 			my $owner = $ownerlist{$ipaddr} || '';
@@ -551,6 +558,8 @@ sub instance($)
 			$rule =~ s/\%TIME/$time/g;
 			$rule =~ s/\%UTIME/$utime/g;
 			$rule =~ s/\%DATE/$date/g;
+			$rule =~ s/\%TID/$tid/g;
+			$rule =~ s/\%TVAL/$tval/g;
 			$rule =~ s/\%1/$q1/g;
 			$rule =~ s/\%2/$q2/g;
 			$rule =~ s/\%3/$q3/g;
