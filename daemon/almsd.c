@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
         	if( quit )
    	    		reload = 1;
 		else {
-	    		if( (res =  db_query("SELECT COUNT(*) AS number FROM `timestamps` WHERE tablename = '_force'"))!=NULL ) {
+	    		if( (res =  db_query("SELECT COUNT(*) AS number FROM timestamps WHERE tablename = '_force'"))!=NULL ) {
 				if( atoi(db_get_data(res,0,"number"))>0 )
 	    	    		reload = 1;
 				db_free(res);
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
 		}
 
 		if( reload ) { // **********************************************
-	    		syslog(LOG_INFO, "Reload oder detected, calling modules...");
+	    		syslog(LOG_INFO, "Reload signal detected, calling modules...");
 	    
 	    		// read configuration from lms.ini
 	    		ini = iniparser_load(ini_file);
@@ -238,9 +238,9 @@ int main(int argc, char *argv[])
 			iniparser_freedict(ini);
 
 	 		// empty reload table 
-			db_exec("DELETE FROM `timestamps` WHERE tablename = '_force'"); 
+			db_exec("DELETE FROM timestamps WHERE tablename = '_force'"); 
 #ifdef DEBUG1
-			syslog(LOG_INFO,"DEBUG: [lmsd] reload oder deleted");
+			syslog(LOG_INFO,"DEBUG: [lmsd] reload signal deleted");
 #endif
 		} // end of reload *****************************************
 		db_disconnect();	  
