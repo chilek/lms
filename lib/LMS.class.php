@@ -1666,7 +1666,7 @@ class LMS
 	function GetNetworkList()
 	{
 
-		if($networks = $this->DB->GetAll("SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks"))
+		if($networks = $this->DB->GetAll("SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks ORDER BY name"))
 			foreach($networks as $idx => $row)
 			{
 				$row['prefix'] = mask2prefix($row['mask']);
