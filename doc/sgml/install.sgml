@@ -36,10 +36,9 @@
 	    </sect2>
 	    <sect2>
 	      <title>Serwer baz danych</title>
-	      <para>Preferowany to MySQL. 3.23.53 i nowszy. Starszy mo¿e te¿ dzia³aæ, je¶li nie to 
-		daj nam o tym znaæ.</para>
-	      <para>LMS wspó³pracuje tak¿e z PostgreSQL. Zaleca siê instalacjê wersji 7.3 lub nowszych,
-		aczkolwiek nie powinno byæ problemów z wersjami od 7.2.3 pocz±wszy.</para>
+	      <para>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 3.23.xx 
+	      </para>
+	      <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</para>
 	    </sect2>
 	    <sect2>
              <title>Biblioteka Smarty</title>
