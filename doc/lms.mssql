@@ -412,6 +412,7 @@ CREATE TABLE userassignments (
 
 IF EXISTS (SELECT name FROM sysobjects WHERE name='inet_ntoa' AND type='FN')
      DROP FUNCTION inet_ntoa;
+GO
 CREATE FUNCTION inet_ntoa(@ip bigint) RETURNS varchar(15) AS 
 BEGIN
 RETURN 
@@ -422,10 +423,12 @@ RETURN
      CAST(@ip/256 - @ip/(256*256)*256 AS varchar)
      +'.'+
      CAST(@ip - @ip/256*256 AS varchar)
-END;
+END
+GO
 
 IF EXISTS (SELECT name FROM sysobjects WHERE name='inet_aton' AND type='FN')
      DROP FUNCTION inet_aton;
+GO
 CREATE FUNCTION inet_aton(@ip varchar(15)) RETURNS bigint AS 
 BEGIN
      DECLARE @i int;
@@ -466,6 +469,7 @@ BEGIN
      END
 
      RETURN @ipaddr
-END;
+END
+GO
 
 INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004101800');
