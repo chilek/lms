@@ -43,7 +43,7 @@ if(isset($adminadd))
 	elseif(!eregi("^[a-z0-9.-_]+$",$adminadd[login]))
 		$error[login] = "Login zawiera niepoprawne znaki!";
 
-	if($adminadd[email]!="" && !eregi("^[0-9a-z\-_\.]+@[0-9a-z\-_\.]+\.[a-z]{2,}$",$adminadd[email]))
+	if($adminadd[email]!="" && !check_email($adminadd[email]))
 		$error[email] = "Podany email nie wydaje siê byæ poprawny!";
 
 	if($adminadd[password]=="")
