@@ -596,6 +596,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 	// Extracted from lang.pl.php by Piotr Klaban <makler at man dot torun dot pl>
 	// from PEAR package Number_Words-0.3.1
 	// 'short_version' added by alec/kubatyszko
+	// added leading space trim's by alec
 	
 	if($short_version)
 	{
@@ -676,7 +677,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 
 	if (substr($num, 0, 1) == '-')
 	{
-		$ret = $_sep . $_minus;
+		$ret = $_minus;
 		$num = substr($num, 1);
 	}
 
@@ -708,6 +709,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 			}
 		}
 		$num = substr($num, $maxp - $curp, $curp - $p + 1);
+		$ret = trim($ret);
 		if ($num == 0)
 		{
 			return $ret;
@@ -715,7 +717,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 	}
 	elseif ($num == 0 || $num == '')
 	{
-		return $_sep . $_digits[0];
+		return $_digits[0];
 	}
 
 	$h = $t = $d = 0;
@@ -774,7 +776,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 			$ret .= $_sep . 'sto';
 			break;
 	}
-
+	
 	switch ($t)
 	{
 		case 9:
@@ -876,7 +878,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 	if ($powsuffix != '')
 		$ret .= $_sep . $powsuffix;
 
-	return $ret;
+	return trim($ret);
 }
 
 function setunits($data)  // for traffic data
