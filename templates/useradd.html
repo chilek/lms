@@ -14,7 +14,7 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="useradd[lastname]" VALUE="{$useradd.lastname}" CLASS="{if $error.username}ALERTB{else}BOLD{/if}">
+						<INPUT TYPE="TEXT" NAME="useradd[lastname]" VALUE="{$useradd.lastname}" {tip text="Wpisz nazwisko u¿ytkownika lub nazwê firmy" trigger="username" bold=1}>
 					</TD>
 				</TR>
 				<TR>
@@ -23,7 +23,7 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" CLASS="{if $error.username}ALERTB{else}BOLD{/if}">
+						<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" {tip text="Wpisz imiê u¿ytkownika" trigger="username" bold=1}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -39,7 +39,7 @@
 						{if $useradd.status eq "1"}<IMG SRC="img/unk.gif" alt="" border="0">{/if}
 					</tD>
 					<TD width="99%">
-						<SELECT size="1" name="useradd[status]"{if $error.status} CLASS="alert"{/if}>
+						<SELECT size="1" name="useradd[status]" {tip text="Wybierz status u¿ytkownika" trigger="status"}>
 							<OPTION VALUE="3"{if $useradd.status eq "3"} SELECTED{/if}><B>pod³±czony</B></OPTION>
 							<OPTION VALUE="2"{if $useradd.status eq "2"} SELECTED{/if}><B>oczekuj±cy</B></option>
 							<OPTION VALUE="1"{if $useradd.status eq "1"} SELECTED{/if}><B>zainteresowany</B></OPTION>
@@ -49,7 +49,8 @@
 				<TR>
 					<TD width="1%" valign="top">
 						<IMG src="img/phone.gif" alt="" border="0" width="16" width="16" height="16"><BR>
-					<TD width="99%">
+					</TD>
+					<TD width="99%" {tip text="Wpisz telefon kontaktowy"}>
 						<INPUT TYPE="text" size="40" value="{$useradd.phone1}" name="useradd[phone1]"><BR>
 						<INPUT TYPE="text" size="40" value="{$useradd.phone2}" name="useradd[phone2]"><BR>
 						<INPUT TYPE="text" size="40" value="{$useradd.phone3}" name="useradd[phone3]">
@@ -61,8 +62,8 @@
 						<IMG src="img/home.gif" alt="" align="absmiddle" border="0" width="16" height="16">
 					</td>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.address}" name="useradd[address]" {if $error.address}CLASS="ALERT"{/if}><BR>
-						<B>Kod:</B> <INPUT TYPE="text" SIZE="5" VALUE="{$useradd.zip}" NAME="useradd[zip]"{if $error.zip} CLASS="ALERT"{/if}> <B>Miasto:</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$useradd.city}" NAME="useradd[city]"{if $error.city} CLASS="ALERT"{/if}>
+						<INPUT TYPE="text" size="40" value="{$useradd.address}" name="useradd[address]" {tip text="Wpisz adres" trigger="address"}><BR>
+						<B>Kod:</B> <INPUT TYPE="text" SIZE="5" VALUE="{$useradd.zip}" NAME="useradd[zip]" {tip text="Wpisz kod pocztowy" trigger="zip"}> <B>Miasto:</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$useradd.city}" NAME="useradd[city]" {tip text="Wpisz miasto" trigger="city"}>
 					</td>
 				</TR>
 				<TR>
@@ -70,7 +71,7 @@
 						<IMG src="img/mail.gif" alt="" align="absmiddle" border="0" width="16" height="16">
 					</td>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.email}" name="useradd[email]"{if $error.email} CLASS="alert"{/if}>
+						<INPUT TYPE="text" size="40" value="{$useradd.email}" name="useradd[email]" {tip text="Wpisz adres e-mail" trigger="email"}>
 					</td>
 				</TR>
 				<TR>
@@ -78,7 +79,7 @@
 						<IMG src="img/gg.gif" alt="" align="absmiddle" border="0" width="16" height="16">
 					</td>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.gguin}" name="useradd[gguin]" {if $error.gguin}CLASS="ALERT"{/if}>
+						<INPUT TYPE="text" size="40" value="{$useradd.gguin}" name="useradd[gguin]" {tip text="Wpisz numer GaduGadu" trigger="gguin"}>
 					</td>
 				</TR>
 				<TR>
@@ -86,7 +87,7 @@
 						<B>NIP</B>
 					</td>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {if $error.nip}CLASS="alert"{/if}>
+						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {tip text="Wpisz NIP u¿ytkownika (opcjonalnie)" trigger="nip"}>
 					</td>
 				</TR>
             		</TABLE>

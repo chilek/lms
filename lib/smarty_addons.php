@@ -26,7 +26,7 @@
 
 // Funkcje dodatkowe, do roszerzenia Smarty.
 
-function _smarty_function_sum($args, $SMARTY)
+function _smarty_function_sum($args, &$SMARTY)
 {
 	$array = $args['array'];
 	$column = $args['column'];
@@ -38,17 +38,32 @@ function _smarty_function_sum($args, $SMARTY)
 	return sprintf($format,(isset($result) ? $result : $default));
 }
 
-function _smarty_function_sizeof($args, $SMARTY)
+function _smarty_function_sizeof($args, &$SMARTY)
 {
 	$array = $args['of'];
 	return sizeof($array);
 }
 
+function _smarty_function_tip($args, &$SMARTY)
+{
+	$error = eregi_replace('(\'|")','\\\1',$SMARTY->_tpl_vars['error'][$args['trigger']]);
+	$text = eregi_replace('(\'|")','\\\1',$args['text']);
+	
+	if($SMARTY->_tpl_vars['error'][$args['trigger']])
+		return ' onMouseOver="return overlib(\'<B><FONT COLOR=RED>'.$error.'</FONT></B>\');" onMouseOut="nd();"'.($args['bold'] ? ' CLASS="ALERTB" ' : ' CLASS="ALERT" ');
+	elseif($args['text'] != "")
+		return 'onMouseOver="return overlib(\''.$text.'\');" onMouseOut="nd();"'.($args['bold'] ? ' CLASS="BOLD" ' : '');	
+}
+
 $SMARTY->register_function('sum','_smarty_function_sum');
 $SMARTY->register_function('size','_smarty_function_sizeof');
+$SMARTY->register_function('tip','_smarty_function_tip');
 $SMARTY->register_modifier('to_words','to_words');
 /*
  * $Log$
+ * Revision 1.6  2003/09/22 01:14:17  lukasz
+ * - new popups
+ *
  * Revision 1.5  2003/09/13 12:49:49  lukasz
  * - tsave
  *
