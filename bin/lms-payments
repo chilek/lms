@@ -92,6 +92,8 @@ my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
+my $deadline = $ini->val('payments', 'deadline') || '14';
+my $paytype = $ini->val('payments', 'paytype') || 'PRZELEW';
 my $payday = sprintf("%d",strftime("%e",localtime()));
 
 my $dbase;
@@ -167,7 +169,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 				my $udbq = $dbase->prepare("SELECT * FROM users WHERE id=$uid");
 				$udbq->execute();
 				my $urow = $udbq->fetchrow_hashref();
-				my $idbq = $dbase->prepare("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES ($number, $uid, '$urow->{'lastname'} $urow->{'name'}', '$urow->{'address'}', '$urow->{'zip'}', '$urow->{'city'}', '$urow->{'phone1'}', '$urow->{'nip'}', '$urow->{'pesel'}', $time, 14, 'PRZELEW', 1)");
+				my $idbq = $dbase->prepare("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES ($number, $uid, '$urow->{'lastname'} $urow->{'name'}', '$urow->{'address'}', '$urow->{'zip'}', '$urow->{'city'}', '$urow->{'phone1'}', '$urow->{'nip'}', '$urow->{'pesel'}', $time, $deadline, '$paytype', 1)");
 				$idbq->execute();
 				$idbq = $dbase->prepare("SELECT id FROM invoices WHERE number=$number AND cdate=$time AND finished=1 AND customerid=$uid");
 				$idbq->execute();
