@@ -1,4 +1,3 @@
-
 LMS - LAN Management System 1.3-cvs
 
    [logo-small.png]
@@ -771,10 +770,8 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
      * Zad³u¿eni - Wy¶wietlenie listy u¿ytkowników zad³u¿onych.
      * Nowy - Dodawanie nowego u¿ytkownika.
      * Szukaj - Wyszukiwanie u¿ytkowników wg zadanych kryteriów.
-     * Wersja do druku - Wy¶wietlenie listy u¿ytkowników, w formacie
-       przyjaznym dla drukarki.
-     * Wydruk zad³u¿onych - Wy¶wietlenie listy u¿ytkowników zad³u¿onych,
-       w formacie przyjaznym dla drukarki.
+     * Wydruki - Listy oraz bilansy u¿ytkowników, w formacie przyjaznym
+       dla drukarki z mo¿liwo¶ci± definiowania filtrów i sortowania
 
    Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony)
    wszystkich komputerów przypisanych danemu u¿ytkownikowi.
@@ -811,8 +808,8 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    Aby dodaæ komputer musisz mieæ sieæ i u¿ytkownika, którym go
    przypiszesz.
      * Szukaj - Wyszukiwanie komputerów wed³ug zadanych kryteriów.
-     * Wersja do druku - Wy¶wietlenie listy komputerów, w formacie
-       przyjaznym dla drukarki.
+     * Wydruki - Wy¶wietlenie list komputerów, w formacie przyjaznym dla
+       drukarki z mo¿liwo¶ci± definiowania filtrów i sortowania.
      _________________________________________________________________
 
 3.2.3. Osprzêt sieciowy
@@ -885,6 +882,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
        wybranych faktur oraz rejestru sprzeda¿y za dany okres.
      * Nowa faktura - Rêczne wystawianie faktur dla wybranego
        u¿ytkownika.
+     * Wydruki - wydruk ró¿nych zestawieñ finansowych.
      _________________________________________________________________
 
 3.2.6. Mailing
@@ -1885,7 +1883,8 @@ info = "Opcjonalny opis modu³u"
    przypisanych u¿ytkownikowi taryf zapisywane s± do bazy wraz z
    komentarzem okre¶lonym zmienn± 'comment'. Po naliczeniu op³at tworzone
    s± faktury. Komentarz do op³aty sta³ej to zlepek sk³adaj±cy siê z jej
-   nazwy oraz wierzyciela.
+   nazwy oraz wierzyciela. Na koñcu usuwane s± z bazy nieaktualne
+   obci±¿enia u¿ytkowników.
      _________________________________________________________________
 
 6.2.2.2. Konfiguracja
@@ -1902,6 +1901,12 @@ info = "Opcjonalny opis modu³u"
        do przodu, czy do ty³u w stosunku do daty naliczenia op³aty.
        Domy¶lnie: yes.
        Przyk³ad: up_payments = no
+     * expiry_days
+       Okre¶la liczbê dni od daty wyga¶niêcia przypisanych u¿ytkownikowi
+       zobowi±zañ, po której dane tego zobowi±zania zostan± usuniête z
+       bazy. Przy ustawieniu na '0' dane zostan± usuniête natychmiast po
+       dacie, do której obowi±zywa³o zobowi±zanie. Domy¶lnie: 30.
+       Przyk³ad: expiry_days = 365
      _________________________________________________________________
 
 6.2.3. Notify
@@ -2359,7 +2364,7 @@ Rozdzia³ 7. Dla dociekliwych
    moddate - czas modyfikacji
    creatorid - identyfikator administratora tworz±cego wpis
    modid - identyfikator administratora dokonuj±cego zmian danych
-   deleted - usuniêty z bazy
+   deleted - usuniêty z bazy (0/1)
      _________________________________________________________________
 
 7.2.3. Sieci ('networks')
@@ -2391,7 +2396,7 @@ Rozdzia³ 7. Dla dociekliwych
    modid - identyfikator administratora
    netdev - identyfikator urz±dzenia sieciowego do którego jest
    pod³±czony komputer
-   access - pod³±czony/od³±czony
+   access - pod³±czony/od³±czony (1/0)
      _________________________________________________________________
 
 7.2.5. Sprzêt sieciowy ('netdevices')
@@ -2443,7 +2448,8 @@ Rozdzia³ 7. Dla dociekliwych
    name - nazwa
    value - kwota
    creditor - nazwa wierzyciela
-   period - typ okresu naliczania (co miesi±c/co tydzieñ/co rok)
+   period - typ okresu naliczania: co tydzieñ/co miesi±c/co kwarta³/co
+   rok (0/1/2/3)
    at - dzieñ naliczenia
    description - opis
      _________________________________________________________________
@@ -2455,6 +2461,8 @@ Rozdzia³ 7. Dla dociekliwych
    userid - identyfikator u¿ytkownika
    period - typ okresu
    at - dzieñ naliczania
+   datefrom - data obowi±zywania zobowi±zania
+   dateto - data obowi±zywania zobowi±zania
    invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)
      _________________________________________________________________
 
@@ -2473,7 +2481,7 @@ Rozdzia³ 7. Dla dociekliwych
    zip - kod pocztowy nabywcy
    phone - telefon nabywcy
    city - miasto nabywcy
-   finished - pole okre¶laj±ce zamkniêcie faktury
+   finished - pole okre¶laj±ce zamkniêcie faktury (0/1)
      _________________________________________________________________
 
 7.2.12. Faktury - cd. ('invoicecontents')
@@ -2488,7 +2496,7 @@ Rozdzia³ 7. Dla dociekliwych
    tariffid - identyfikator taryfy
      _________________________________________________________________
 
-7.2.13. Znaczniki czasu ('timestamps')
+7.2.13. Historia ('timestamps')
 
    time - czas ostatniej modyfikacji
    tablename - nazwa tabeli
@@ -2500,6 +2508,12 @@ Rozdzia³ 7. Dla dociekliwych
    dt - znacznik czasu
    upload - ilo¶æ danych wys³anych, w bajtach
    download - ilo¶æ danych odebranych, w bajtach
+     _________________________________________________________________
+
+7.2.15. Informacje o bazie danych ('dbinfo')
+
+   keytype - typ
+   keyvalue - warto¶æ
      _________________________________________________________________
 
 7.3. Format pliku konfiguracyjnego
@@ -2556,11 +2570,14 @@ key = "A.L.E.C's LMS Daemon is the best"
 7.4. Generowanie danych losowych
 
    Dla osób chc±cych szybko sprawdziæ jak dzia³a LMS przygotowali¶my
-   modu³ 'genfake', s³u¿±cy do tworzenia bazy danych.
+   modu³ 'genfake', s³u¿±cy do tworzenia bazy zawieraj±cej przyk³adowe
+   dane.
 
    Aby wygenerowaæ dane nale¿y, po zalogowaniu siê w LMS'ie wywo³aæ adres
    http://twoj.serwer.net/lms/?m=genfake, okre¶liæ ilu u¿ytkowników ma
-   zostaæ stworzonych i nacisn±æ ENTER. To wszystko.
+   zostaæ stworzonych i nacisn±æ ENTER. To wszystko. Ewentualne b³êdy
+   bazy danych, spowodowane ograniczeniami unikalno¶ci niektórych danych,
+   mo¿na zignorowaæ.
    Notatka
 
    Dla prawid³owego wygenerowania zale¿no¶ci, modu³ 'genfake' nale¿y

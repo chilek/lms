@@ -211,7 +211,8 @@ NAME="PAYMENTS-DESC"
 		    codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
 		    taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn± 'comment'.
 		    Po naliczeniu op³at tworzone s± faktury. Komentarz do op³aty sta³ej to zlepek
-		    sk³adaj±cy siê z jej nazwy oraz wierzyciela.</P
+		    sk³adaj±cy siê z jej nazwy oraz wierzyciela. Na koñcu usuwane s± z bazy nieaktualne
+		    obci±¿enia u¿ytkowników.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -247,6 +248,19 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >up_payments = no</SAMP
+></P
+></LI
+><LI
+><P
+>expiry_days</P
+><P
+>Okre¶la liczbê dni od daty wyga¶niêcia przypisanych u¿ytkownikowi zobowi±zañ, 
+			    po której dane tego zobowi±zania zostan± usuniête z bazy. Przy ustawieniu na '0' dane
+			    zostan± usuniête natychmiast po dacie, do której obowi±zywa³o zobowi±zanie. Domy¶lnie: 30.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>expiry_days = 365</SAMP
 ></P
 ></LI
 ></UL
