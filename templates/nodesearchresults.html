@@ -58,7 +58,7 @@
 		<TD class="fright" width="1%">
 			<nobr>
 			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" border="0" ALT="{if ! $nodelist[nodelist].access}[ {t}Disconnect{/t} ]{else}[ {t}Connect{/t} ]{/if}"></A>
-			<a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" border="0" ALT="{if ! $nodelist[nodelist].warning}[ {t}Enable warnings{/t} ]{else}[ {t}Disable warnings{/t} ]{/if}"></A>
+			<a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" border="0" ALT="{if ! $nodelist[nodelist].warning}[ {t}Enable Warnings{/t} ]{else}[ {t}Disable Warnings{/t} ]{/if}"></A>
 			<a href="?m=nodedel&id={$nodelist[nodelist].id}" onClick="return confirmLink(this, '{t 0=$nodelist[nodelist].name|upper}Are you sure, you want to delete node \'$0\' from database?{/t}')"><img src="img/delete.gif" border="0" ALT="[ {t}Delete{/t} ]"></A>
 			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" border="0" ALT="[ {t}Edit{/t} ]"></A>
 			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" border="0" ALT="[ {t}Info{/t} ]"></A>
