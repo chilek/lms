@@ -1424,6 +1424,80 @@ class LMS
 		return $balancelist;
 	}
 
+	/*
+	*	Obs³uga op³at sta³ych
+	*/
+
+	function GetPaymentList()
+	{
+		$paymentlist = $this->DB->GetAll("SELECT id, name, creditor, value, period, at, description FROM payments ORDER BY name ASC");
+		
+		$paymentlist['total'] = sizeof($paymentlist);
+		
+		return $paymentlist;
+	}
+
+	function GetPayment($id)
+	{
+		return $this->DB->GetRow("SELECT id, name, creditor, value, period, at, description FROM payments WHERE id=?", array($id));
+	}
+	
+	function GetPaymentName($id)
+	{
+		return $this->DB->GetOne("SELECT name FROM payments WHERE id=?", array($id));
+	}
+	
+	function GetPaymentIDByName($name)
+	{
+		return $this->DB->GetOne("SELECT id FROM payments WHERE name=?",array($name));
+	}	
+
+	function PaymentExists($id)
+	{
+		return ($this->DB->GetOne("SELECT * FROM payments WHERE id=?",array($id))?TRUE:FALSE);
+	}
+
+	function PaymentAdd($paymentdata)
+	{
+		$this->SetTS("payments");
+		if($this->DB->Execute("INSERT INTO payments (name, creditor, description, value, period, at)
+			VALUES (?, ?, ?, ?, ?, ?)",
+			array(
+				$paymentdata['name'],
+				$paymentdata['creditor'],
+				$paymentdata['description'],
+				$paymentdata['value'],
+				$paymentdata['period'],
+				$paymentdata['at'],
+			)
+		))
+			return $this->DB->GetOne("SELECT id FROM payments WHERE name=?",array($paymentdata['name']));
+		else
+			return FALSE;
+	}
+	
+	function PaymentDelete($id)
+	{
+		$this->SetTS("payments");		
+		return $this->DB->Execute("DELETE FROM payments WHERE id=?",array($id));
+	}
+	
+	function PaymentUpdate($paymentdata)
+	{
+		$this->SetTS("payments");
+		return $this->DB->Execute("UPDATE payments SET name=?, creditor=?, description=?, value=?, period=?, at=? WHERE id=?",
+			array(
+				$paymentdata['name'],
+				$paymentdata['creditor'],
+				$paymentdata['description'],
+				$paymentdata['value'],
+				$paymentdata['period'],
+				$paymentdata['at'],
+				$paymentdata['id']
+			)
+		);
+	}
+
 	function ScanNodes()
 	{
 		$networks = $this->GetNetworks();
@@ -2176,19 +2250,12 @@ class LMS
 
 	function TrafficHost($from, $to, $host)
 	{
-	    $query = "SELECT sum(upload) as upload, sum(download) as download FROM stats WHERE dt >=".$from." AND dt <".$to." AND nodeid=".$host.";";
-	    //echo $query;
-	    $row = $this->DB->GetRow($query);
-	    return $row;
+	    return $this->DB->GetRow("SELECT sum(upload) as upload, sum(download) as download FROM stats WHERE dt >=".$from." AND dt <".$to." AND nodeid=".$host);
 	}
 
 	function TrafficFirstRecord($host)
 	{
-	    $query = "select min(dt) from stats, nodes where id=".$host.";";
-	    //$query = "SELECT sum(upload) as upload, sum(download) as download FROM stats WHERE dt >=".$from." AND dt <".$to." AND nodeid=".$host.";";
-	    //echo $query;
-	    $row = $this->DB->GetOne($query);
-	    return $row;
+	    return $this->DB->GetOne("SELECT MIN(dt) FROM stats WHERE nodeid=".$host);
 	}
 
 	/*
@@ -2249,7 +2316,6 @@ class LMS
 		}
 
 		return $result;
-
 	}
 			
 				

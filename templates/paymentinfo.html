@@ -1,0 +1,75 @@
+{include file="header.html"}
+{include file="balanceheader.html"}
+<!-- $Id$ -->
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="fleftu">
+			<IMG SRC="img/payment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="98%" COLSPAN="2" CLASS="frightu">
+			<B>{$payment.name} ({$payment.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/creditor.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="1%">
+			<B>Wierzyciel:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{$payment.creditor}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/value.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Warto¶æ:</B> 
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			{$payment.value|string_format:"%01.2f"} z³
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/calendar.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Dzieñ naliczenia:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">								
+			{$payment.payday}
+		</TD>
+	</TR>	
+	{if $payment.description}
+	<TR CLASS="light">	
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="98%" CLASS="fright" COLSPAN="2">
+			<TABLE WIDTH="100%" CELLPADDING="5"> 
+			    <TR><TD CLASS="fall" BGCOLOR="#F4F0EC">
+				    {$payment.description|replace:"\n":"<BR>"}
+			    </TD></TR>
+			</TABLE>
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
+			<P><FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
+				<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
+				<INPUT TYPE="HIDDEN" NAME="addbalance[type]" VALUE="2">
+				<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{$payment.value}">
+				<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$payment.name} / {$payment.creditor}">
+				<A HREF="?m=paymentedit&id={$payment.id}">Edytuj <IMG SRC="img/edit.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+				<A HREF="?m=paymentlist">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+				<A HREF="javascript:document.addbalance.submit();">Nalicz <IMG SRC="img/save.gif" ALT="[ Zaksiêguj ]" ALIGN="absmiddle" BORDER="0"></A>
+			</FORM></P>
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

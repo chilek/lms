@@ -1,0 +1,75 @@
+{include file="header.html"}
+{include file="balanceheader.html"}
+<!-- $Id$ -->
+<H1>{$layout.pagetitle}</H1>
+<FORM METHOD="POST" NAME="paymentadd" ACTION="?m=paymentadd">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="fleftu">
+			<IMG SRC="img/payment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt">
+			<B>Nazwa:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="frightu">
+			<INPUT TYPE="TEXT" NAME="payment[name]" VALUE="{$payment.name}" {tip text="Wpisz nazwê op³aty sta³ej" trigger="name" bold=1}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/creditor.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="1%">
+			<B>Wierzyciel:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			<INPUT TYPE="TEXT" SIZE="50" NAME="payment[creditor]" VALUE="{$payment.creditor}" {tip text="Wpisz nazwê wierzyciela" trigger="creditor"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/value.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Warto¶æ (z³):</B> 
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			<INPUT TYPE="TEXT" SIZE="8" NAME="payment[value]" VALUE="{$payment.value}" {tip text="Wpisz kwotê" trigger="value"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/calendar.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Dzieñ naliczenia:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">								
+			<SELECT SIZE="1" NAME="payment[period]" {tip text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
+				<OPTION VALUE="0" {if $payment.period eq 0}SELECTED{/if}>co miesi±c</OPTION>
+				<OPTION VALUE="1" {if $payment.period eq 1}SELECTED{/if}>co tydzieñ</OPTION>
+				<OPTION VALUE="2" {if $payment.period eq 2}SELECTED{/if}>co rok</OPTION>
+			</SELECT>&nbsp;
+    			<INPUT TYPE="TEXT" NAME="payment[at]" VALUE="{$payment.at}" {tip text="Podaj kiedy ma byæ naliczane zobowi±zanie. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28) a dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia)." trigger="at"} SIZE="5">
+		</TD>
+	</TR>	
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="1%">
+			<B>Opis:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			<TEXTAREA NAME="payment[description]" COLS="50" ROWS="5" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>{$payment.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
+			<A HREF="javascript:document.paymentadd.submit();">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+			<A HREF="?m=paymentlist">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A><BR>
+			<INPUT TYPE="checkbox" NAME="payment[reuse]" VALUE="ON" STYLE="border-style: none;"{if $payment.reuse} checked{/if}> Wywo³aj ponownie ten formularz po dodaniu op³aty
+		</TD>
+	</TR>
+</TABLE></FORM></P>
+{include file="footer.html"}
