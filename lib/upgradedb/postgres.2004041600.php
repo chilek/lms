@@ -23,25 +23,26 @@
  *
  *  $Id$
  */
-
 $DB->Execute("
+    BEGIN;
+    CREATE SEQUENCE usergroups_id_seq;
     CREATE TABLE usergroups (
-	id int(11) NOT NULL auto_increment, 
-	name varchar(255) NOT NULL default '', 
-	description text NOT NULL, 
+	id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL, 
+	name varchar(255) DEFAULT '' NOT NULL, 
+	description text DEFAULT '' NOT NULL, 
 	PRIMARY KEY (id), 
-	UNIQUE KEY name (name)
-    )
-");
-$DB->Execute("
+	UNIQUE (name)
+    );
+    CREATE SEQUENCE userassignments_id_seq;
     CREATE TABLE userassignments (
-	id int(11) NOT NULL auto_increment, 
-	usergroupid int(11) NOT NULL default '0', 
-	userid int(11) NOT NULL default '0', 
+	id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL, 
+	usergroupid integer DEFAULT 0 NOT NULL, 
+	userid integer DEFAULT 0 NOT NULL, 
 	PRIMARY KEY (id),
-	UNIQUE KEY userassignment (usergroupid, userid)
-    )
+	UNIQUE (usergroupid, userid)
+    );
+    UPDATE dbinfo SET keyvalue = '2004041600' WHERE keytype = 'dbversion';
+    COMMIT;
 ");
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004041600', 'dbversion'));
 
 ?>
