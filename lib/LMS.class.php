@@ -1,7 +1,7 @@
 <?
 
 /*
- * LMS version 1.1.1
+ * LMS version 1.1-cvs
  *
  *  (C) Copyright 2001-2003 LMS Developers
  *
@@ -412,11 +412,7 @@ class LMS
 
 	function GetCashByID($id)
 	{
-		if($result = $this->ADB->GetRow("SELECT time, adminid, type, value, userid, comment FROM `cash` WHERE id=?",array($id)))
-		{
-			return $result;
-		} else
-			return FALSE;
+		return $this->ADB->GetRow("SELECT time, adminid, type, value, userid, comment FROM `cash` WHERE id=?",array($id));
 	}
 
 	function GetUserStatus($id)
