@@ -53,6 +53,7 @@ mv Smarty-2.5.0/libs Smarty
 rm -Rf Smarty-2.5.0 Smarty-2.5.0.tar.gz
 cd ../
 rm -Rf devel
+cd ../
 tar -czf $WORKDIR/lms-$LMSVER+libs.tar.gz lms
 cd $WORKDIR
 echo -ne "Aby posprz±taæ, wykonaj (ja nie bêdê eremefowa³ sam):\nrm -Rf $TEMPDIR/$X\n"
