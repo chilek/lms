@@ -97,7 +97,7 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 my $sendmail = $ini->val('rt', 'sendmail_binary') || '/usr/sbin/sendmail';
 my $save_path = $ini->val('rt', 'mail_dir') || '';
 my $queue = $queue || $ini->val('rt', 'default_queue');
-my $autoreply_from = $ini->val('rt', 'autoreply_from') || '';
+my $autoreply_from = $ini->val('rt', 'mail_from') || '';
 
 # very ugly code, but we really need tempdir..
 my $tmpdir = (defined $ini->val('rt', 'tmp_dir') && ! ($ini->val('rt', 'tmp_dir') eq '')) || (defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '') ? $ENV{'TMP'} : '/tmp');
