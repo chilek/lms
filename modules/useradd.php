@@ -50,7 +50,7 @@ elseif(isset($useradd))
 	if($useradd['pesel'] != '' && !check_ssn($useradd['pesel']))
 		$error['pesel'] = trans('Incorrect Social Security Number!');
 		
-	if($useradd['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$useradd['zip']))
+	if($useradd['zip'] !='' && !check_zip($useradd['zip']))
 		$error['zip'] = trans('Incorrect ZIP code!');
 
 	if($useradd['gguin'] == '')

@@ -66,7 +66,7 @@ elseif(isset($userdata))
 	if(!check_ssn($userdata['pesel']) && $userdata['pesel'] != '')
 		$error['pesel'] = trans('Incorrect Social Security Number!');
 
-	if($userdata['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$userdata['zip']))
+	if($userdata['zip'] !='' && !check_zip($userdata['zip']))
 		$error['zip'] = trans('Incorrect ZIP code!');
 
 	if($userdata['email']!='' && !check_email($userdata['email']))
