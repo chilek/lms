@@ -1846,8 +1846,8 @@ class LMS
 		     {
 			     $traffic[upload][data][] = $row[upload];
 			     $traffic[download][data][] = $row[download];
-			     $traffic[upload][name][] = $row[name];
-			     $traffic[download][name][] = $row[name];
+			     $traffic[upload][name][] = ($row[name] ? $row[name] : 'nieznany (ID: '.$row[nodeid].')');
+			     $traffic[download][name][] = ($row[name] ? $row[name] : 'nieznany (ID: '.$row[nodeid].')');
 			     $traffic[upload][ipaddr][] = long2ip($row[ipaddr]);
 			     $traffic[download][nodeid][] = $row[nodeid];
 			     $traffic[upload][nodeid][] = $row[nodeid];
@@ -1894,6 +1894,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.246  2003/09/26 01:48:01  lukasz
+ * - fixes
+ *
  * Revision 1.245  2003/09/26 01:40:15  lukasz
  * - typo
  *
