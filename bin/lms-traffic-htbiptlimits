@@ -141,6 +141,7 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 
 
 my $dbase;
+my $utsfmt;
 my %iftable;
 my $totalspd;
 
@@ -153,10 +154,12 @@ if(! $wan_interfaces)
 if($dbtype eq "mysql")
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "UNIX_TIMESTAMP()";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";	
 }
 else
 {
