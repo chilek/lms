@@ -1,0 +1,272 @@
+#!/usr/bin/perl -Tw
+#
+# LMS version 1.3-cvs
+#
+#  (C) 2001-2004 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($configfile $quiet $help $version);
+
+sub mask2prefix($)
+{
+	my $mask = shift @_;
+	my @tmp = split('\.',$mask,4);
+	my $q = sprintf("%b%b%b%b",$tmp[0],$tmp[1],$tmp[2],$tmp[3]);
+	$q =~ s/0*$//;
+	if ($q =~ /0/) {
+		print " You idiot. error in mask\n";
+	}
+	my $len = length($q) ;
+	return $len;
+}
+
+sub prefix2mask
+{
+	my $host_bits = 32-$_[0];
+	my $net_mask = (~0 << $host_bits) & 0xffffffff;
+	my @bytes = unpack "CCCC", pack "N", $net_mask;
+	my $dec_rep = sprintf "%d.%d.%d.%d", @bytes;
+	return $dec_rep;
+}					
+
+sub matchip($$$)
+{
+	my ($ip,$net,$mask) = @_;
+	my $prefix = mask2prefix($mask);
+	my $bmask = 2**32 <<(32-$prefix);
+	my @net = split('\.',$net,4);
+	my $bnet = dotquad2u32($net);
+	if(($bnet & $bmask)!= $bnet) {
+		print "EEediot net &mask != net\n"; return 1==0
+	}
+	my $bip = dotquad2u32($ip);
+	return (($bip&$bmask) == $bnet);
+}
+
+sub u32todotquad($)
+{
+	my $p = shift @_;
+	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
+}
+
+sub dotquad2u32($)
+{
+	my $dq = shift||'0.0.0.0';
+	my @dq = split('\.',$dq,4);
+	return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
+}
+
+sub isprivate($)
+{
+	my ($ip) = @_;
+	return matchip($ip,"192.168.0.0","255.255.0.0") || matchip($ip,"10.0.0.0","255.0.0.0") || matchip($ip,"172.16.0.0","255.240.0.0");
+}
+
+my $_version = '1.3-cvs';
+
+my %options = (
+	"--config-file|C=s"	=>	\$configfile,
+	"--quiet|q"		=>	\$quiet,
+	"--help|h"		=>	\$help,
+	"--version|v"		=>	\$version
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-makemessages, version $_version
+(C) 2001-2004 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
+-h, --help			print this help and exit;
+-v, --version			print version info and exit;
+-q, --quiet			suppress any output, except errors;
+
+EOF
+	exit 0;
+}
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-makemessages, version $_version
+(C) 2001-2004 LMS Developers
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms/lms.ini";
+}
+
+if(!$quiet)
+{
+	print STDOUT "lms-makemessages, version $_version\n";
+	print STDOUT "(C) 2001-2004 LMS Developers\n";
+	print STDOUT "Using file $configfile as config.\n";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+
+my $networks_list = $ini->val('messages', 'networks') || '';
+my $usergroups_list = $ini->val('messages', 'usergroups') || '';
+my $cfile = $ini->val('messages', 'config_file') || '/etc/rc.d/rc.messages';
+my $cuid = $ini->val('messages', 'config_owneruid') || '0';
+my $cgid = $ini->val('messages', 'config_ownergid') || '0';
+my $cperm = $ini->val('messages', 'config_permission') || '700';
+my $redir = $ini->val('messages', 'redirect_address') || '127.0.0.1:80';
+my $ipbin = $ini->val('messages', 'iptables_binary') || '/sbin/iptables';
+my $chain = $ini->val('messages', 'chain') || 'MESSAGES';
+my $limit = $ini->val('messages', 'limit') || '0';
+
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+my $dbase;
+
+if($dbtype eq "mysql")
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+elsif($dbtype eq "postgres")
+{
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+elsif($dbtype eq "sqlite")
+{
+	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$dbase->func('inet_ntoa',1,'u32todotquad','create_function');
+	$dbase->func('inet_aton',1,'dotquad2u32','create_function');	
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+
+open(MESGFILE, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.\n");
+
+print MESGFILE $ipbin." -t nat -F ".$chain."\n\n";
+
+my $allnetworks = "";
+
+my $dbq = $dbase->prepare("SELECT name FROM networks");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref()) {
+	$allnetworks = "$allnetworks $row->{'name'}";
+}
+
+if(!$networks_list)
+{
+	$networks_list = $allnetworks;
+}
+
+my @networks = split ' ',$networks_list;
+
+my $allusergroups = "";
+
+$dbq = $dbase->prepare("SELECT name FROM usergroups");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref()) {
+	$allusergroups = "$allusergroups $row->{'name'}";
+}
+
+if(!$usergroups_list)
+{
+	$usergroups_list = $allusergroups;
+}
+
+my @usergroups = split ' ',$usergroups_list;
+
+#
+# Buil nodes list
+#
+
+$dbq = $dbase->prepare("SELECT id, name FROM usergroups");
+$dbq->execute();
+my %usergrouplist;
+
+while (my $row = $dbq->fetchrow_hashref())
+{
+	$usergrouplist{$row->{'name'}} = $row->{'id'};
+}
+
+$dbq = $dbase->prepare("SELECT ipaddr, name, warning AS message, ownerid FROM nodes WHERE warning=1");
+$dbq->execute();
+
+while (my $row = $dbq->fetchrow_hashref())
+{
+	my $usergroupscount = 0;
+	foreach my $key2 (@usergroups)
+	{
+		my $sdbq = $dbase->prepare("SELECT count(userid) AS total FROM userassignments WHERE userid=$row->{'ownerid'} AND usergroupid=".$usergrouplist{$key2});
+		$sdbq->execute();
+		my $srow = $sdbq->fetchrow_hashref();
+		if ($srow->{'total'} eq 1)
+		{
+			$usergroupscount++;
+		}
+	}
+	if($usergroupscount)
+	{
+	        my $tmpname = lc($row->{'name'});
+		my $ipaddr = u32todotquad($row->{'ipaddr'});
+		my $networkscount = 0;
+		foreach my $key (@networks)
+		{
+			my $sdbq2 = $dbase->prepare("SELECT address, mask FROM networks WHERE name = UPPER('$key')");
+			$sdbq2->execute();
+			while (my $srow2 = $sdbq2->fetchrow_hashref()) 
+			{
+				my $net = u32todotquad($srow2->{'address'});
+				if (matchip($ipaddr, $net, $srow2->{'mask'}))
+				{
+					$networkscount++;
+				}
+			}
+		}
+		if ($networkscount)
+		{
+			print MESGFILE "# $tmpname\n".$ipbin." -t nat -A ".$chain." -p tcp -s ".$ipaddr." -j DNAT --to ".$redir."\n\n";
+		}
+	}
+}
+
+$dbase->disconnect();
+close(MESGFILE);
+chown $cuid, $cgid, $cfile or print "Warning! Unable to set owner of $cfile to $cuid.$cgid.\n";
+chmod oct($cperm), $cfile or print "Warning! Unable to set permission $cperm to $cfile.\n";
