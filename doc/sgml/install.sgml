@@ -438,6 +438,12 @@ database = /usr/local/lms/lms.db</screen>
     <para>Przyk³ad:	<prompt>ticketlist_pagelimit = 50</prompt></para>
    </listitem>
    <listitem>
+    <para>networkhosts_pagelimit</para>
+    <para>Ilo¶æ komputerów wy¶wietlanych na jednej stronie w informacjach 
+    o sieci. Domy¶lnie: 256.</para>
+    <para>Przyk³ad:	<prompt>networkhosts_pagelimit = 1024</prompt></para>
+   </listitem>
+   <listitem>
     <para>reload_type</para>
     <para>Typ reloadu. Dozwolone warto¶ci:</para>
     <para>exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶ skrypt lub co¶, konfigurowalny
