@@ -140,6 +140,19 @@
 				<member>access - pod³±czony/od³aczony</member>
 			</simplelist>
 		</sect2>
+		<sect2 id="netdevices">
+			<title>Sprzêt sieciowy ('netdevices')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>name - nazwa</member>
+				<member>location - lokalizacja</member>
+				<member>description - opis</member>
+				<member>producer - producent</member>
+				<member>model - model</member>
+				<member>serialnumber - numer seryjny</member>
+				<member>ports - ilo¶æ portów</member>
+			</simplelist>
+		</sect2>
 		<sect2 id="cash">
 			<title>Operacje finansowe ('cash')</title>
 			<simplelist>
