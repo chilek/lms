@@ -73,8 +73,6 @@ if(isset($tariff))
 		$error['downrate'] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
 
 	$tariff['id'] = $_GET['id'];
-	$tariff['count'] = $LMS->GetUsersWithTariff($_GET['id']);	
-	$tariff['totalval'] = $tariff['count'] * str_replace(".",",",$tariff['value']);
 	if(!$error)
 	{
 		$LMS->TariffUpdate($tariff);

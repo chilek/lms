@@ -4,6 +4,7 @@ version 1.2.0 (??/03/2004):
 
   - fixed userlist sorting by balance (alec)
   - fixed errors in 'hostfile' and 'oident' almsd modules (alec)
+  - fixed accounting of monthly average tariffs income (alec)
 
 version 1.2.0rc3 Janet (??/??/2004):
 
