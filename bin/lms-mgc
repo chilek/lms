@@ -365,6 +365,7 @@ sub instance($)
 				$dtnh =~ s/\%IFACE/$row->{'interface'}/g;
 				$dtnh =~ s/\%MASK/$row->{'mask'}/g;
 				$dtnh =~ s/\%GATE/$row->{'gateway'}/g;
+				$dtnh =~ s/\%DNS2/$row->{'dns2'}/g;
 				$dtnh =~ s/\%DNS/$row->{'dns'}/g;
 				$dtnh =~ s/\%DOMAIN/$row->{'domain'}/g;
 				$dtnh =~ s/\%WINS/$row->{'wins'}/g;
@@ -402,6 +403,7 @@ sub instance($)
 			$tnb =~ s/\%MASK/$row->{'mask'}/g;
 			$tnb =~ s/\%IFACE/$row->{'interface'}/g;
 			$tnb =~ s/\%GATE/$row->{'gateway'}/g;
+			$tnb =~ s/\%DNS2/$row->{'dns2'}/g;
 			$tnb =~ s/\%DNS/$row->{'dns'}/g;
 			$tnb =~ s/\%DOMAIN/$row->{'domain'}/g;
 			$tnb =~ s/\%WINS/$row->{'wins'}/g;
@@ -612,6 +614,7 @@ sub instance($)
 			$rule =~ s/\%NIFACE/$row->{'interface'}/g;
 			$rule =~ s/\%NMASK/$row->{'mask'}/g;
 			$rule =~ s/\%NGATE/$row->{'gateway'}/g;
+			$rule =~ s/\%NDNS2/$row->{'dns2'}/g;
 			$rule =~ s/\%NDNS/$row->{'dns'}/g;
 			$rule =~ s/\%NDOMAIN/$row->{'domain'}/g;
 			$rule =~ s/\%NWINS/$row->{'wins'}/g;
@@ -658,6 +661,7 @@ sub instance($)
 			$tnh =~ s/\%MASK/$row->{'mask'}/g;
 			$tnh =~ s/\%GATE/$row->{'gateway'}/g;
 			$tnh =~ s/\%IFACE/$row->{'interface'}/g;
+			$tnh =~ s/\%DNS2/$row->{'dns2'}/g;
 			$tnh =~ s/\%DNS/$row->{'dns'}/g;
 			$tnh =~ s/\%DOMAIN/$row->{'domain'}/g;
 			$tnh =~ s/\%WINS/$row->{'wins'}/g;
@@ -672,8 +676,6 @@ sub instance($)
 			
 			print OUTFILE $tnh."\n";
 		}
-		
-
 		
 	}
 
