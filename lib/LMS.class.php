@@ -50,17 +50,17 @@ class LMS
 	{
 		switch($this->ADB->databaseType)
 		{
-			case "mysql":
-				return "UNIX_TIMESTAMP()";
+			case 'mysql':
+				return 'UNIX_TIMESTAMP()';
 				break;
-			case "postgres":
-				return "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+			case 'postgres':
+				return 'EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))';
 				break;
 			default:
 				// fall back to local timestamp instead of remote.
 				// it's dangerous if we use remote database where
 				// time can (and propably will) differ from local.
-				return "'".time()."'";
+				return '\''.time().'\'';
 				break;
 		}
 	}
@@ -69,20 +69,20 @@ class LMS
 	{
 		switch($this->ADB->databaseType)
 		{
-			case "postgres":
-				return "ILIKE";
+			case 'postgres':
+				return 'ILIKE';
 				break;
 
 			default:
-				return "LIKE";
+				return 'LIKE';
 				break;
 		}
 	}
 
 	function SetTS($table) // ustawia timestamp tabeli w tabeli 'timestamps'
 	{
-		$this->ADB->Replace("timestamps",array("tablename" => "'_global'","time" => $this->sqlTSfmt() ),"tablename");
-		return $this->ADB->Replace("timestamps",array("tablename" => "'".$table."'","time" => $this->sqlTSfmt() ),"tablename");
+		$this->ADB->Replace('timestamps',array("tablename" => "'_global'","time" => $this->sqlTSfmt() ),"tablename");
+		return $this->ADB->Replace('timestamps',array("tablename" => "'".$table."'","time" => $this->sqlTSfmt() ),"tablename");
 	}
 
 	function GetTS($table) // zwraca timestamp tabeli zapisany w tabeli 'timestamps'
@@ -101,15 +101,15 @@ class LMS
 		{
 			while (false !== ($file = readdir($handle)))
 			{
-				if ($file != "." && $file != "..")
+				if ($file != '.' && $file != '..')
 				{
 					$path = pathinfo($file);
-					if($path['extension'] = "sql")
+					if($path['extension'] = 'sql')
 					{
-						if(substr($path['basename'],0,4)=="lms-")
+						if(substr($path['basename'],0,4)=='lms-')
 						{
-							$dblist['time'][] = substr(basename("$file",".sql"),4);
-							$dblist['size'][] = filesize($this->CONFIG['backup_dir']."/".$file);
+							$dblist['time'][] = substr(basename('$file','.sql'),4);
+							$dblist['size'][] = filesize($this->CONFIG['backup_dir'].'/'.$file);
 						}
 					}
 				}
@@ -136,14 +136,14 @@ class LMS
 	{
 		if(!$filename)
 			return FALSE;
-		$file = fopen($filename,"r");
+		$file = fopen($filename,'r');
 		$this->ADB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
 		while(!feof($file))
 		{
 			$line = fgets($file,4096);
-			if($line!="")
+			if($line!='')
 			{
-				$line=str_replace(";\n","",$line);
+				$line=str_replace(";\n",'',$line);
 				$this->ADB->Execute($line);
 			}
 		}
@@ -156,7 +156,7 @@ class LMS
 
 		switch($this->ADB->databaseType)
 		{
-			case "postgres":
+			case 'postgres':
 				// uaktualnijmy sequencery postgresa
 				foreach($this->ADB->MetaTables() as $tablename)
 					$this->ADB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
@@ -168,23 +168,23 @@ class LMS
 	{
 		if(!$filename)
 			return FALSE;
-		if($dumpfile = fopen($filename,"w"))
+		if($dumpfile = fopen($filename,'w'))
 		{
 			foreach($this->ADB->MetaTables() as $tablename)
 			{
-				fputs($dumpfile,"DELETE FROM $tablename;\n");
-				foreach($this->ADB->GetAll("SELECT * FROM ".$tablename) as $row)
+				fputs($dumpfile,'DELETE FROM '.$tablename.';'."\n");
+				foreach($this->ADB->GetAll('SELECT * FROM '.$tablename) as $row)
 				{
-					fputs($dumpfile,"INSERT INTO $tablename (");
+					fputs($dumpfile,'INSERT INTO '.$tablename.' (');
 					foreach($row as $field => $value)
 					{
 						$fields[] = $field;
 						$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
 					}
-					fputs($dumpfile,implode(", ",$fields));
-					fputs($dumpfile,") VALUES (");
-					fputs($dumpfile,implode(", ",$values));
-					fputs($dumpfile,");\n");
+					fputs($dumpfile,implode(', ',$fields));
+					fputs($dumpfile,') VALUES (');
+					fputs($dumpfile,implode(', ',$values));
+					fputs($dumpfile,');'."\n");
 					unset($fields);
 					unset($values);
 				}
