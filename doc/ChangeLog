@@ -23,6 +23,8 @@ wersja 1.4.2 (??/??/????):
     pytania o potwierdzenie usuniêcia na li¶cie wyszukanych u¿ytkowników (alec)
   - BTS#0000266: zabezpieczenie przed generowaniem mapy sieci, w której nie ma
     urz±dzeñ, co powodowa³o segfaulta Apache'a (alec)
+  - BTS#0000268: z szablonu faktury usuniêto informacjê powo³uj±c± siê na
+    nieobowi±zuj±ce przepisy o wys. faktury bez podpisu (alec)
 
 wersja 1.4.1 Teyla (15/11/2004):
 
