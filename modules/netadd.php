@@ -109,7 +109,7 @@ if(isset($netadd))
 
 }
 
-$layout[pagetitle]=$lang[pagetitle_netadd];
+$layout[pagetitle] = $lang[pagetitle_netadd];
 
 $prefixlist = $LMS->GetPrefixList();
 $netlist = $LMS->GetNetworkList();

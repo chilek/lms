@@ -73,7 +73,7 @@ if(isset($tariffadd))
 	
 }
 
-$layout[pagetitle]=$lang[pagetitle_tariffad];
+$layout[pagetitle] = $lang[pagetitle_tariffad];
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("error",$error);

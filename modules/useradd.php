@@ -38,13 +38,13 @@ if($useradd[name]=="" && $useradd[lastname]=="" && $useradd[phone1]=="" && $user
 elseif(isset($useradd))
 {
 	if($useradd[lastname]=="")
-		$error[username]=$lang[error_no_empty_field];
+		$error[username] = $lang[error_no_empty_field];
 	
 	if($useradd[address]=="")
-		$error[address]=$lang[error_no_empty_field];
+		$error[address] = $lang[error_no_empty_field];
 	
 	if(!$LMS->TariffExists($useradd[tariff]))
-		$error[tariff]=$lang[error_choose_tariff];
+		$error[tariff] = $lang[error_choose_tariff];
 	
 	if($useradd[nip] !="" && !eregi("^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$",$useradd[nip]) && !eregi("^[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}$",$useradd[nip]))
 		$error[nip] = $lang[error_taxid_invalid];
@@ -74,7 +74,7 @@ elseif(isset($useradd))
 	}
 }
 
-$layout[pagetitle]=$lang[pagetitle_useradd];
+$layout[pagetitle] = $lang[pagetitle_useradd];
 $tariffs = $LMS->GetTariffs();
 if(!isset($useradd[tariff]))
 	$useradd[tariff] = $tariffs[common];	

@@ -56,7 +56,7 @@
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="?m=userinfo&id={$nodeinfo.ownerid}">{$lang.all_nodes} <IMG SRC="img/cancel.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
-			<A HREF="?m=nodedel&id={$nodeinfo.id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ komputer \'{$nodeinfo.name|upper}\' z bazy danych?')">{$lang.delete} <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
+			<A HREF="?m=nodedel&id={$nodeinfo.id}" onClick="return confirmLink(this, '{$lang.confirm_nodedel|replace:"#":"`$nodeinfo.name`"}')">{$lang.delete} <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
 			<A HREF="?m=nodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{$lang.edit} <IMG SRC="img/edit.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
 		</TD>
 	</TR>	

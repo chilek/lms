@@ -79,11 +79,11 @@
 		</TD>
 		<TD align="right" valign="top" NOWRAP>
 			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|string_format:"%01.2f"} {$lang.currency}{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|string_format:"%01.2f"} {$lang.currency}</FONT>{if $userlist[userlist].balance < 0}<BR>
-			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz rozliczyæ WSZYSTKIE nale¿no¶ci u¿ytkownika: {$userlist[userlist].username|upper} z bazy danych?\n\n')">{$lang.square_up}&raquo;</A>{/if}
+			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" onClick="return confirmLink(this, '{$lang.confirm_pay|replace:"#":"`$userlist[userlist].username`"}')">{$lang.square_up} &raquo;</A>{/if}
 			</NOBR>
 		</TD>
 		<TD class="fright">
-			<NOBR><A href="?m=userdel&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist[userlist].username|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ {$lang.delete} ]"></A> <A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ {$lang.edit} ]"></A> <A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ {$lang.info} ]"></A></NOBR>
+			<NOBR><A href="?m=userdel&id={$userlist[userlist].id}" onClick="return confirmLink(this, '{$lang.confirm_userdel|replace:"#":"`$userlist[userlist].username`"}')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ {$lang.delete} ]"></A> <A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ {$lang.edit} ]"></A> <A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ {$lang.info} ]"></A></NOBR>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -91,7 +91,7 @@
 		<TD colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Nie znaleziono ¿adnych u¿ytkowników o podanych kryteriach lub lista jest pusta.</B></p>
+			<p><B>{$lang.no_users}</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>

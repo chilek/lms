@@ -21,7 +21,7 @@
 						&nbsp;
 					</TD>
 					<TD ROWSPAN="2">
-						<B><FONT COLOR="RED">Te pola nie mog± byæ puste!</FONT></B>
+						<B><FONT COLOR="RED">{$error.username}</FONT></B>
 					</TD>
 					{/if}						
 				</TR>
@@ -120,7 +120,7 @@
 										{/section}
 									</SELECT>
 									{if $error.tariff}
-									<FONT COLOR="Red"><B>{$lang.choose_tariff}</B></FONT>
+									<FONT COLOR="Red"><B>{$error.tariff}</B></FONT>
 									{/if}
 								</TD>
 							</TR>

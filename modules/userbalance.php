@@ -30,7 +30,7 @@ if(!$LMS->UserExists($_GET[id]))
 $username=$LMS->GetUserName($_GET[id]);
 $id = $_GET[id];
 
-$layout[pagetitle]=$lang[pagetitle_userbalance].' '.$username;
+$layout[pagetitle] = $lang[pagetitle_userbalance].' '.$username;
 
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($_GET[id]));
 $SMARTY->assign("layout",$layout);

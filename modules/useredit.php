@@ -66,12 +66,12 @@ if(isset($userdata))
 	}else{
 		$olddata=$LMS->GetUser($_GET[id]);
 		$userinfo=$userdata;
-		$userinfo[createdby]=$olddata[createdby];
-		$userinfo[modifiedby]=$olddata[modifiedby];
-		$userinfo[creationdateh]=$olddata[creationdateh];
-		$userinfo[moddateh]=$olddata[moddateh];
-		$userinfo[username]=$olddata[username];
-		$userinfo[balance]=$olddata[balance];
+		$userinfo[createdby] = $olddata[createdby];
+		$userinfo[modifiedby] = $olddata[modifiedby];
+		$userinfo[creationdateh] = $olddata[creationdateh];
+		$userinfo[moddateh] = $olddata[moddateh];
+		$userinfo[username] = $olddata[username];
+		$userinfo[balance] = $olddata[balance];
 		if($olddata[status]==3)
 			$userinfo[shownodes] = TRUE;
 		$SMARTY->assign("error",$error);

@@ -39,7 +39,7 @@ if(!isset($_GET[ownerid]))
 							
 $owner = $ownerid;
 $userinfo=$LMS->GetUser($owner);
-$layout[pagetitle]="Informacje o u¿ytkowniku ".$userinfo[username]." - edycja komputera ".$LMS->GetNodeName($_GET[id]);
+$layout[pagetitle] = "Informacje o u¿ytkowniku ".$userinfo[username]." - edycja komputera ".$LMS->GetNodeName($_GET[id]);
 
 $nodeedit = $_POST[nodeedit];
 $usernodes = $LMS->GetUserNodes($owner);

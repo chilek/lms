@@ -45,7 +45,7 @@
 		</TD>
 		<TD class="fright">
 			<nobr>
-			<a href="?m=netdel&id={$netlist.id[netlist]}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ sieæ \'{$netlist.name[netlist]|upper}\'?')"><IMG src="img/delete.gif" border="0" alt="[ {$lang.delete} ]"></A>
+			<a href="?m=netdel&id={$netlist.id[netlist]}" onClick="return confirmLink(this,'{$lang.confirm_netdel|replace:"#":"`$netlist.name[netlist]`"}')"><IMG src="img/delete.gif" border="0" alt="[ {$lang.delete} ]"></A>
 			<a href="?m=netedit&id={$netlist.id[netlist]}"><IMG src="img/edit.gif" border="0" alt="[ {$lang.edit} ]"></A>
 			<a href="?m=netinfo&id={$netlist.id[netlist]}"><IMG src="img/info.gif" border="0" alt="[ {$lang.info} ]"></A></nobr>
 		</TD>
@@ -55,7 +55,7 @@
 		<TD colspan="6" class="flr" align="center" width="1%">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Nie posiadasz ¿adnych klas adresowych. Skorzystaj z opcji menu powy¿ej aby dodaæ nowe sieci.</B></p>
+			<p><B>{$lang.no_networks}</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -65,7 +65,7 @@
 		<TD width="99%" colspan="2" class="fleftu" align="right"> 
 			<B>{$lang.total}:<BR>
 			{$lang.addresses}:<BR>
-			Przypisanych:</B>
+			{$lang.assigned}:</B>
 		</TD>
 		<TD width="1%" colspan="4" class="frightu">
 			<B>{$netlist.total}<BR>

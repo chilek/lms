@@ -101,7 +101,7 @@ if(isset($_GET[prename])&&$nodedata[name]=="")
 	$nodedata[name] = $_GET[prename];
 		
 
-$layout[pagetitle]=$lang[pagetitle_nodeadd];
+$layout[pagetitle] = $lang[pagetitle_nodeadd];
 
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($nodedata[ownerid]));
 $SMARTY->assign("users",$users);

@@ -27,7 +27,7 @@
 // Agggrrr. Nie zwracajcie uwagi na styl pisania *TEGO* kawa³ka kodu :)
 // Jest 7:35 a ja ca³± noc nie spa³em :)
 
-$layout[pagetitle]=$lang[pagetitle_reload];
+$layout[pagetitle] = $lang[pagetitle_reload];
 
 $SMARTY->display("header.html");
 

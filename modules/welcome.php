@@ -27,7 +27,7 @@ require_once($_LIB_DIR."/Sysinfo.class.php");
 
 $SI = new Sysinfo;
 
-$layout[pagetitle]="Witamy w LMS :-) !";
+$layout[pagetitle] = $lang[pagetitle_welcome];
 $SMARTY->assign("sysinfo",$SI->get_sysinfo());
 $SMARTY->assign("userstats",$LMS->UserStats());
 $SMARTY->assign("nodestats",$LMS->NodeStats());

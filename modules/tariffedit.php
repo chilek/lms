@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-$layout[pagetitle]=$lang[pagetitle_tariffedit];
+$layout[pagetitle] = $lang[pagetitle_tariffedit];
 if(!$LMS->TariffExists($_GET[id]))
 {
 	header("Location: ?m=tarifflist");
