@@ -26,7 +26,9 @@
 
 $netdevinfo = $LMS->GetNetDev($_GET[id]);
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET[id]);
-$netcomplist = $LMS->GetNetDevNode($_GET[id]);
+$netcomplist = $LMS->GetNetdevLinkedNodes($_GET[id]);
+$netdevlist = $LMS->GetNotConnectedDevices($_GET[id]);
+$nodelist = $LMS->GetNodeList();
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
@@ -37,11 +39,16 @@ $netdevinfo[id] = $_GET[id];
 $SMARTY->assign("netdevinfo",$netdevinfo);
 $SMARTY->assign("netdevlist",$netdevconnected);
 $SMARTY->assign("netcomplist",$netcomplist);
+$SMARTY->assign("restnetdevlist",$netdevlist);
+$SMARTY->assign("nodelist",$nodelist);
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("netdevinfo.html");
 
 /*
  * $Log$
+ * Revision 1.5  2003/10/06 04:46:49  lukasz
+ * - temp save
+ *
  * Revision 1.4  2003/09/22 18:12:33  lexx
  * - komputery moga sie linkowac
  *

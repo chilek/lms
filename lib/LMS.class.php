@@ -1012,9 +1012,9 @@ class LMS
 		return $result;
 	}
 
-	function GetNetDevNode($id)
+	function GetNetdevLinkedNodes($id)
 	{
-		if($nodelist = $this->DB->GetAll("SELECT id, name, ownerid, ipaddr, netdev FROM nodes WHERE netdev=?",array($id)))
+		if($nodelist = $this->DB->GetAll("SELECT id, name, ownerid, ipaddr, netdev FROM nodes WHERE netdev=? ORDER BY name ASC",array($id)))
 			foreach($nodelist as $idx => $row)
 			{
 				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
@@ -1025,15 +1025,16 @@ class LMS
 
 	function NetDevLinkComputer($id,$netid)
 	{
-	   if($netid != 0)
-	{
-    	    $netdev = $this->GetNetDev($netid);
-	    if( $netdev[takenports] >= $netdev[ports])
-		return FALSE;
-	}
-	   $this->DB->Execute("UPDATE nodes SET netdev=".$netid." WHERE id=".$id);
-	$this->SetTS("nodes");
-	return TRUE;
+		if($netid != 0)
+		{
+			$netdev = $this->GetNetDev($netid);
+			if( $netdev[takenports] >= $netdev[ports])
+				return FALSE;
+		}
+		
+		$this->DB->Execute("UPDATE nodes SET netdev=".$netid." WHERE id=".$id);
+		$this->SetTS("nodes");
+		return TRUE;
 	}
 
 	/*
@@ -1595,13 +1596,15 @@ class LMS
 	function GetNetDevConnectedNames($id)
 	{
 		// To powinno byæ lepiej zrobione...
-		$list =  $this -> GetNetDevConnected($id);
-		$id=0;
-		if ($list) {
-		    foreach($list as $row) {
-			$names[$id]= $this -> GetNetDev($row[dst]);
-			$id++;
-		    }
+		$list = $this -> GetNetDevConnected($id);
+		$id = 0;
+		if ($list) 
+		{
+			foreach($list as $row)
+			{
+				$names[$id]= $this -> GetNetDev($row[dst]);
+				$id++;
+			}
 		}
 		return $names;
 	}
@@ -1668,14 +1671,18 @@ class LMS
 
 	function GetNetDev($id)
 	{
-		$result = $this->DB->GetRow("SELECT name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?",array($id));
+		$result = $this->DB->GetRow("SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?",array($id));
 		$result['takenports'] = $this->CountNetDevLinks($id);
-		$result['id'] = $id;
 		return $result;
 	}
 
 	function DeleteNetDev($id)
 	{
+		$this->DB->Execute("DELETE FROM netlinks WHERE src=? OR dst=?",array($id));
+		$this->DB->Execute("UPDATE nodes SET netdev=0 WHERE netdev=?",array($id));
+		$this->SetTS('nodes');
+		$this->SetTS('netlinks');
+		$this->SetTS('netdevices');
 		return $this->DB->Execute("DELETE FROM netdevices WHERE id=?",array($id));
 	}
 
@@ -1943,6 +1950,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.264  2003/10/06 04:46:49  lukasz
+ * - temp save
+ *
  * Revision 1.263  2003/10/06 03:56:45  lukasz
  * - 4089 podstawieñw 1589 wierszach - ALEC, jeszcze raz wypieprzysz tabulacjê
  *   z jakiego¶ pliku to uduszê!

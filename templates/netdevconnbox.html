@@ -17,7 +17,7 @@
 			Nazwa / Producent:</B><BR>
 			Lokalizacja:
 		</TD>
-		<TD CLASS="fbt" width="1%">
+		<TD CLASS="fbt" WIDTH="1%">
 			<BR>
 			<img src="img/port.gif" alt="" align="absmiddle">
 		</TD>
@@ -30,31 +30,33 @@
 
 	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=netdevlist loop=$netdevlist start=$start}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-		<TD width="1%" CLASS="fleftu" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
+		<TD width="1%" CLASS="fleft" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
 			<IMG SRC="img/netdev.gif" ALT="" ALIGN="ABSMIDDLE"><BR>
 			<img src="img/home.gif" alt="" align="absmiddle">
 		</TD>
-		<TD width="49%" CLASS="fbt" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
+		<TD width="49%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
 			<a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name} {if $netdevlist[netdevlist].producer}/ {$netdevlist[netdevlist].producer}{/if}</B></A><BR>
 			{$netdevlist[netdevlist].location}
 		</TD>
-		<TD width="1%" CLASS="fbt" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
+		<TD width="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
 			<br>
 			<IMG SRC="img/port.gif" ALT="" ALIGN="ABSMIDDLE">
 		</TD>
-		<TD width="45%" CLASS="fbt" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
+		<TD width="45%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
 			({$netdevlist[netdevlist].id|string_format:"%04d"})<br>
 			{$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
 		</TD>
-		<TD WIDTH="4%" CLASS="frightu">
-		{if $netdev.id}
+		<TD WIDTH="4%" CLASS="fright">
+			{if $netdevinfo.id}
+			{* agrh, kurwa, panowie, co to jest?!? no opanujcie siê dziewczyny! Przecie¿ tego moloha mo¿na na jednym ahrefie zrobiæ :(((
 			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="unlink{$netdevlist[netdevlist].id}">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="devid" VALUE="{$netdevlist[netdevlist].id}">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdev.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="disconnect">
 			<A HREF="javascript:document.unlink{$netdevlist[netdevlist].id}.submit(); "><IMG SRC="img/delete.gif" ALIGN="absmiddle" BORDER="0" ALT="[ Od³±cz ]"></A>
-			</FORM></P>
+		</FORM></P> *}
+			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/delete.gif" ALIGN="absmiddle" BORDER="0" ALT="[ Od³±cz ]"></A>
 		{/if}
 		</TD>
 	</TR>
@@ -72,17 +74,17 @@
                 <TD WIDTH="100%" COLSPAN="5" CLASS="ftop">
                 </TD>
         </TR>
-	{if $netdev.id}
+	{if $netdevinfo.id}
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="fbl"></TD>
 		<TD WIDTH="99%" CLASS="fbr" COLSPAN=4>
 			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connect">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
-			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdev.id}">
+			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connect">
 			<A HREF="javascript:document.connect.submit(); "><B>Pod³±cz urz±dzenie:</B></A>
 			<SELECT NAME="netdev" {tip trigger="link"}>
-				{section name=restnetdevlist loop=$restnetdevlist }
+				{section name=restnetdevlist loop=$restnetdevlist}
 				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}">{$restnetdevlist[restnetdevlist].name} {if $restnetdevlist[restnetdevlist].producer}/ {$restnetdevlist[restnetdevlist].producer}{/if} {if $restnetdevlist[restnetdevlist].location}({$restnetdevlist[restnetdevlist].location}){/if}</OPTION>
 				{/section}
 			</SELECT>
