@@ -11,28 +11,34 @@
 		cechy LMS to:</para>
 		<itemizedlist>
   	 	<listitem>
-	 	    	<para>baza danych u¿ytkowników (imiê, nazwisko, adres, numer telefonu, uwagi i inne);</para>
+	 	    	<para>baza danych u¿ytkowników (imiê, nazwisko, adres, numer telefonu, uwagi i inne),</para>
 	  	</listitem>
 	  	<listitem>
-	   	    	<para>baza danych komputerów (adres IP, adres MAC);</para>
+	   	    	<para>baza danych komputerów (adres IP, adres MAC),</para>
 	  	</listitem>
 	  	<listitem>
-	   	   	 <para>prowadzenie prostego rachunku operacji finansowych oraz stanu funduszów sieci;</para>
+	   	    	<para>baza danych sprzêtu sieciowego (nazwa, ilo¶æ portów),</para>
+	  	</listitem>
+		<listitem>
+	   	   	 <para>prowadzenie prostego rachunku operacji finansowych oraz stanu funduszów sieci,</para>
 	  	</listitem>
 	  	<listitem>
-	     		<para>ró¿ne taryfy abonamentowe;</para>
+	     		<para>ró¿ne taryfy abonamentowe,</para>
 	  	</listitem>
 	  	<listitem>
-	   		<para>wysy³anie poczt± elektroniczn± upomnieñ do u¿ytkowników;</para>
+	   		<para>wysy³anie poczt± elektroniczn± upomnieñ do u¿ytkowników,</para>
 	  	</listitem>
 	  	<listitem>
-	   		<para>automatyczne naliczanie op³at miesiêcznych;</para>
+	   		<para>automatyczne naliczanie op³at miesiêcznych,</para>
 	  	</listitem>
 	  	<listitem>
 	   		<para>generowanie praktycznie jakiegokolwiek konfiga na podstawie danych 
 			o komputerach w bazie (przyk³adowe konfigi obejmuj± rc.masq na iptables, 
-			dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i odwrotny);</para>
+			dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i odwrotny),</para>
 	  	</listitem>
+		<listitem>
+			<para>wizualizacja statystyk wykorzystania ³±cza.</para>
+		</listitem>
 		</itemizedlist>
 		<para>Ca³o¶æ zosta³a wymy¶lona w ramach administracji <ulink url="http://www.netx.waw.pl/">ASK NetX</ulink> 
 		i tam jest nieustannie rozwijana i poddawana testom.</para>
