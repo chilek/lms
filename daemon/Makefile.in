@@ -17,10 +17,10 @@ $(OUT): ${OBJECTS}
 
 install: 
 	mkdir -p -m 755 $(INSTALLDIR)
-	install -c -m 700 almsd $(INSTALLDIR)/
+	install -c -m 700 lmsd $(INSTALLDIR)/
  
 remove:
-	rm -f $(INSTALLDIR)/almsd
+	rm -f $(INSTALLDIR)/lmsd
 
 clean:
 	rm -f $(OBJECTS)
