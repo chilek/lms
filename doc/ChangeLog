@@ -34,6 +34,8 @@ wersja 1.3.4  (??/06/2004):
     dane do bazy wprost, nie trzeba uruchamiaæ lms-traffic (alec)
   - do demona dodany modu³ 'system', dla tych co nie chc± u¿ywaæ sudo dla
     skryptów perlowych, oczywi¶cie nie tylko (alec)
+  - poprawka w notify i ggnotify dodaj±ca znak minus przy obci±¿eniu w
+    %last_10_in_a_table (alec)
 
 wersja 1.3.3 Sokar (05/05/2004):
   
