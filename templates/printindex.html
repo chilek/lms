@@ -13,7 +13,7 @@
 			<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>Lista u¿ytkowników</B>
+			<B>{t}Customers list:{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -24,45 +24,45 @@
 						<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>Status:</B>
+						<B>{t}Status:{/t}</B>
 					</TD>
-					<TD width="1%" {tip text="Wybierz grupê u¿ytkowników"}>
-						<INPUT class="box" type="radio" name="filter" value="3" CHECKED>pod³±czeni<BR>
-						<INPUT class="box" type="radio" name="filter" value="4">od³±czeni<BR>
-						<INPUT class="box" type="radio" name="filter" value="5">zad³u¿eni<BR>
-						<INPUT class="box" type="radio" name="filter" value="2">oczekuj±cy<BR>
-						<INPUT class="box" type="radio" name="filter" value="1">zainteresowani<BR>
-						<INPUT class="box" type="radio" name="filter" value="6"><NOBR>bez komputerów</NOBR><BR>
-						<INPUT class="box" type="radio" name="filter" value="0">wszyscy
+					<TD width="1%" {tip text="Select customer's group"}>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="3" CHECKED>{t}connected{/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="4">{t}disconnected{/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="5">{t}in debt{/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="2">{t}waiting{/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="1">{t}interested{/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="6">{t}without nodes{/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="0">{t}all{/t}</NOBR>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/view.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%">	
-			    			<B>Sortowanie:</B>
+			    			<B>{t}Sorting:{/t}</B>
 					</TD>
-					<TD width="1%" {tip text="Wybierz rodzaj i kierunek sortowania"}>
+					<TD width="1%" {tip text="Select sorting direction and conditions"}>
 						<SELECT SIZE="1" name="order">
-							<OPTION value="username" SELECTED>Nazwa/nazwisko i imiê</OPTION>
-							<OPTION value="id">Identyfikator</OPTION> 
-							<OPTION value="balance">Saldo</OPTION> 
-							<OPTION value="tariff">Abonament</OPTION> 
-							<OPTION value="address">Adres</OPTION> 
+							<OPTION value="username" SELECTED>{t}Name/surname and forename{/t}</OPTION>
+							<OPTION value="id">{t}Id{/t}</OPTION> 
+							<OPTION value="balance">{t}Balance{/t}</OPTION> 
+							<OPTION value="tariff">{t}Subscription{/t}</OPTION> 
+							<OPTION value="address">{t}Address{/t}</OPTION> 
 						</SELECT><BR><BR>
 						<SELECT SIZE="1" name="direction">
-							<OPTION value="asc" SELECTED>rosn±co</OPTION>
-							<OPTION value="desc">malej±co</OPTION> 
+							<OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
+							<OPTION value="desc">{t}descending{/t}</OPTION> 
 						</SELECT>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/network.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%">	
-			    			<B>Sieæ:</B>
+			    			<B>{t}Network:{/t}</B>
 					</TD>
-					<TD width="1%" {tip text="Wybierz sieæ"}>
+					<TD width="1%" {tip text="Select network"}>
 						<SELECT size="1" name="network">
-							<OPTION value="0" SELECTED>- wszystkie -</OPTION>
+							<OPTION value="0" SELECTED>{t}- all -{/t}</OPTION>
 							{section name="networks" loop=$networks}
 							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:50:" ..."}</OPTION>
 							{/section}
@@ -72,11 +72,11 @@
 						<IMG src="img/group.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%">	
-			    			<B>Grupa:</B>
+			    			<B>{t}Group:{/t}</B>
 					</TD>
-					<TD width="89%" {tip text="Wybierz grupê u¿ytkowników"}>
+					<TD width="89%" {tip text="Select customers group"}>
 						<SELECT size="1" name="usergroup">
-							<OPTION value="0" SELECTED>- wszystkie -</OPTION>
+							<OPTION value="0" SELECTED>{t}- all -{/t}</OPTION>
 							{section name="usergroups" loop=$usergroups}
 							<OPTION value="{$usergroups[usergroups].id}">{$usergroups[usergroups].name|truncate:50:" ..."}</OPTION>
 							{/section}
@@ -88,7 +88,7 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printuserlist.submit();">Drukuj <IMG src="img/print.gif" alt="" border="0" align="absmiddle" hspace="2"></A>
+			<A href="javascript:document.printuserlist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" border="0" align="absmiddle" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -102,7 +102,7 @@
 			<IMG src="img/money.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>Bilans finansowy sieci</B>
+			<B>{t}Network balance sheet{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -116,7 +116,7 @@
 						<B>Administrator:</B>
 					</TD>
 					<TD width="1%">
-						<SELECT size="1" name="admin" {tip text="Dla ograniczenia wyników mo¿esz wybraæ administratora"}>
+						<SELECT size="1" name="admin" {tip text="You can select customer to limit results"}>
 							<OPTION value="">- wszyscy -</OPTION>
 							{section name="admins" loop=$admins}
 							<OPTION value="{$admins[admins].id}">{$admins[admins].name|truncate:50:" ..."}</OPTION>
@@ -127,9 +127,9 @@
 						<IMG src="img/calendar.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="96%" nowrap>
-						<B>Okres:</B>&nbsp;
-						Od&nbsp;<INPUT TYPE="text" NAME="balancefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' albo kliknij aby wybraæ datê z kalendarza"}>
-						Do&nbsp;<INPUT TYPE="text" NAME="balanceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>	
+						<B>{t}Period:{/t}</B>&nbsp;
+						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="balancefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Enter date in format 'yyyy/mm/dd' or click to chose it from calendar"}>
+						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="balanceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Enter date in format 'yyyy/mm/dd' (empty means current date) or click to chose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -137,7 +137,7 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printbalancelist.submit();">Drukuj <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
+			<A href="javascript:document.printbalancelist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -170,9 +170,9 @@ cal2.time_comp = false;
 						<IMG src="img/calendar.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="96%" nowrap>
-						<B>Okres:</B>&nbsp;
-						Od&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal5.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' albo kliknij aby wybraæ datê z kalendarza"}>
-						Do&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal6.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>	
+						<B>{t}Period:{/t}</B>&nbsp;
+						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal5.popup();" {tip text="Enter date in format 'yyyy/mm/dd' or click to chose it from calendar"}>
+						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal6.popup();" {tip text="Enter date in format 'yyyy/mm/dd' (empty means current date) or click to chose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -180,7 +180,7 @@ cal2.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printincomereport.submit();">Drukuj <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
+			<A href="javascript:document.printincomereport.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -202,7 +202,7 @@ cal6.time_comp = false;
 			<IMG src="img/money.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>Raport wierzytelno¶ci</B>
+			<B>{t}Invoices report{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -213,10 +213,10 @@ cal6.time_comp = false;
 						<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>U¿ytkownik:</B>
+						<B>{t}User:{/t}</B>
 					</TD>
 					<TD width="1%">
-						<SELECT size="1" name="user" {tip text="Wybierz u¿ytkownika"}>
+						<SELECT size="1" name="user" {tip text="Select customer"}>
 							<OPTION value="0" SELECTED>- wszyscy -</OPTION>
 							{section name="users" loop=$users}
 							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
@@ -227,23 +227,23 @@ cal6.time_comp = false;
 						<IMG src="img/calendar.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>Dzieñ:</B>&nbsp;
-						<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal7.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza."}>
+						<B>{t}Day:{/t}</B>&nbsp;
+						<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal7.popup();" {tip text="Enter date in format 'yyyy/mm/dd' (empty means current date) or click to chose it from calendar"}>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/view.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>Sortowanie:</B>
+						<B>{t}Sorting:{/t}</B>
 					</TD>
-					<TD width="93%" {tip text="Wybierz rodzaj i kierunek sortowania"}>
+					<TD width="93%" {tip text="Select sorting direction and conditions"}>
 						<SELECT SIZE="1" name="order">
-							<OPTION value="username" SELECTED>Nazwa/nazwisko i imiê</OPTION>
+							<OPTION value="username" SELECTED>{t}Name/surname and forename{/t}</OPTION>
 							<OPTION value="brutto">Kwota brutto</OPTION> 
 						</SELECT><BR><BR>
 						<SELECT SIZE="1" name="direction">
-							<OPTION value="asc" SELECTED>rosn±co</OPTION>
-							<OPTION value="desc">malej±co</OPTION> 
+							<OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
+							<OPTION value="desc">{t}descending{/t}</OPTION> 
 						</SELECT>
 					</TD>
 				</TR>
@@ -252,7 +252,7 @@ cal6.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.liabilityreport.submit();">Drukuj <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
+			<A href="javascript:document.liabilityreport.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -283,13 +283,13 @@ cal7.time_comp = false;
 						<IMG src="img/calendar.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%">
-						<B>Okres:</B>
+						<B>{t}Period:{/t}</B>
 					</TD>
 					<TD width="1%">
-						Od&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>
+						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in format 'yyyy/mm/dd' (empty means current date) or click to chose it from calendar"}>
 					</TD>
 					<TD width="97%">
-						Do&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>	
+						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in format 'yyyy/mm/dd' (empty means current date) or click to chose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -297,7 +297,7 @@ cal7.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.invoicereport.submit();">Drukuj <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
+			<A href="javascript:document.invoicereport.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -319,7 +319,7 @@ cal9.time_comp = false;
 			<IMG src="img/money.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>Bilans u¿ytkownika</B>
+			<B>{t}Customer balance sheet{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -330,10 +330,10 @@ cal9.time_comp = false;
 						<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>U¿ytkownik:</B>
+						<B>{t}User:{/t}</B>
 					</TD>
 					<TD width="1%">
-						<SELECT size="1" name="user" {tip text="Wybierz u¿ytkownika"}>
+						<SELECT size="1" name="user" {tip text="Select customer"}>
 							{section name="users" loop=$users}
 							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
@@ -343,9 +343,9 @@ cal9.time_comp = false;
 						<IMG src="img/calendar.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="96%" nowrap>
-						<B>Okres:</B>&nbsp;
-						Od&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal3.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' albo kliknij aby wybraæ datê z kalendarza"}>
-						Do&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal4.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>	
+						<B>{t}Period:{/t}</B>&nbsp;
+						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal3.popup();" {tip text="Enter date in format 'yyyy/mm/dd' or click to chose it from calendar"}>
+						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal4.popup();" {tip text="Enter date in format 'yyyy/mm/dd' (empty means current date) or click to chose it from calendar"}>	
 					</TD>
 				</TR>
 			</TABLE>
@@ -353,7 +353,7 @@ cal9.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printuserbalance.submit();">Drukuj <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
+			<A href="javascript:document.printuserbalance.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -386,10 +386,10 @@ cal4.time_comp = false;
 						<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>U¿ytkownik:</B>
+						<B>{t}User:{/t}</B>
 					</TD>
 					<TD width="1%">
-						<SELECT size="1" name="user" {tip text="Dla ograniczenia wyników mo¿esz wybraæ u¿ytkownika"}>
+						<SELECT size="1" name="user" {tip text="You can select customer to limit results"}>
 							<OPTION value="0">- wszyscy -</OPTION>
 							{section name="users" loop=$users}
 							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."}</OPTION>
@@ -400,9 +400,9 @@ cal4.time_comp = false;
 						<IMG src="img/calendar.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>Okres:</B>&nbsp;
-						Od&nbsp;<INPUT TYPE="text" NAME="invoicefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal10.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' albo kliknij aby wybraæ datê z kalendarza"}>
-						Do&nbsp;<INPUT TYPE="text" NAME="invoiceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal11.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>	
+						<B>{t}Period:{/t}</B>&nbsp;
+						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="invoicefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal10.popup();" {tip text="Enter date in format 'yyyy/mm/dd' or click to chose it from calendar"}>
+						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="invoiceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal11.popup();" {tip text="Enter date in format 'yyyy/mm/dd' (empty means current date) or click to chose it from calendar"}>	
 					</TD>
 					<TD width="1%">
 						<IMG src="img/info.gif" alt="" BORDER="0" align="absmiddle">
@@ -417,7 +417,7 @@ cal4.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printinvoices.submit();">Drukuj <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
+			<A href="javascript:document.printinvoices.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -439,7 +439,7 @@ cal11.time_comp = false;
 			<IMG src="img/node.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>Lista komputerów</B>
+			<B>{t}Nodes list{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -450,31 +450,31 @@ cal11.time_comp = false;
 						<IMG src="img/group.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>Grupa:</B>
+						<B>{t}Group:{/t}</B>
 					</TD>
-					<TD width="1%" {tip text="Wybierz grupê komputerów"}>
-						<INPUT class="box" type="radio" name="filter" value="0" CHECKED>wszystkie<BR>
-						<INPUT class="box" type="radio" name="filter" value="1">od³±czone<BR>
-						<INPUT class="box" type="radio" name="filter" value="2">pod³±czone<BR>
+					<TD width="1%" {tip text="Select nodes group"}>
+						<INPUT class="box" type="radio" name="filter" value="0" CHECKED>{t}all{/t}<BR>
+						<INPUT class="box" type="radio" name="filter" value="1">{t}disconnected{/t}<BR>
+						<INPUT class="box" type="radio" name="filter" value="2">{t}connected{/t}<BR>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/view.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%">	
-			    			<B>Sortowanie:</B>
+			    			<B>{t}Sorting:{/t}</B>
 					</TD>
-					<TD width="95%" {tip text="Wybierz rodzaj i kierunek sortowania"}>
+					<TD width="95%" {tip text="Select sorting direction and conditions"}>
 						<SELECT SIZE="1" name="order">
-							<OPTION value="name" SELECTED>Nazwa</OPTION>
-							<OPTION value="id">Identyfikator</OPTION> 
-							<OPTION value="owner">W³a¶ciciel</OPTION> 
-							<OPTION value="ownerid">Identyfikator w³a¶ciciela</OPTION> 
-							<OPTION value="ip">Adres IP</OPTION> 
-							<OPTION value="mac">Adres MAC</OPTION>
+							<OPTION value="name" SELECTED>{t}Name{/t}</OPTION>
+							<OPTION value="id">{t}Id{/t}</OPTION> 
+							<OPTION value="owner">{t}Customer{/t}</OPTION> 
+							<OPTION value="ownerid">{t}Customer ID{/t}</OPTION> 
+							<OPTION value="ip">{t}IP address{/t}</OPTION> 
+							<OPTION value="mac">{t}MAC address{/t}</OPTION>
 						</SELECT><BR><BR>
 						<SELECT SIZE="1" name="direction">
-							<OPTION value="asc" SELECTED>rosn±co</OPTION>
-							<OPTION value="desc">malej±co</OPTION> 
+							<OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
+							<OPTION value="desc">{t}descending{/t}</OPTION> 
 						</SELECT>
 					</TD>
 				</TR>
@@ -483,7 +483,7 @@ cal11.time_comp = false;
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.printnodelist.submit();">Drukuj <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
+			<A href="javascript:document.printnodelist.submit();">{t}Print{/t} <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -63,9 +63,9 @@
 		</TD>
 		<TD class="fright" width="1%">
 			<nobr>
-			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" border="0" ALT="{if ! $nodelist[nodelist].access}[ Pod³±cz ]{else}[ Od³±cz ]{/if}"></A>
-                        <a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" border="0" ALT="{if ! $nodelist[nodelist].warning}[ Ostrzegaj ]{else}[ Nie ostrzegaj ]{/if}"></A>
-			<a {confirm href="?m=nodedel&id=`$nodelist[nodelist].id`" text="Jeste¶ pewien ¿e chcesz usun±æ komputer '`$nodelist[nodelist].name`' z bazy danych?"}><img src="img/delete.gif" border="0" ALT="[ Usuñ ]"></A>
+			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" border="0" ALT="{if ! $nodelist[nodelist].access}[ {t}Connect{/t} ]{else}[ {t}Disconnect{/t} ]{/if}"></A>
+                        <a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" border="0" ALT="{if ! $nodelist[nodelist].warning}[ {t}Show message{/t} ]{else}[ {t}Don't show message{/t} ]{/if}"></A>
+			<a onClick="return confirmLink(this, '{t}Are you sure, you want to remove node \'{$nodelist[nodelist].name|upper}\' from database?{/t}')" href="?m=nodedel&id={$nodelist[nodelist].id}"><img src="img/delete.gif" border="0" ALT="[ {t}Delete{/t} ]"></A>
 			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" border="0" ALT="[ Edytuj ]"></A>
 			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" border="0" ALT="[ Info ]"></A>
 			</nobr>
@@ -77,7 +77,7 @@
 		<TD colspan="4" class="fall" align="center">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Nie posiadasz ¿adnych komputerów w bazie danych.</b></p>
+			<p><B>{t}No such nodes in database.{/t}</b></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
