@@ -387,10 +387,10 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
     <para>Przyk³ad:	<prompt>smarty_debug = 1</prompt></para>
    </listitem>
    <listitem>
-    <para>debug_mail</para>
+    <para>debug_email</para>
     <para>Adres e-mail do debugowania - pod ten email bêd± sz³y maile wysy³ane z sekcji 'mailing' LMS'a, 
     zamiast do w³a¶ciwych u¿ytkowników.</para>
-    <para>Przyk³ad:	<prompt>debug_mail = root@localhost</prompt></para>
+    <para>Przyk³ad:	<prompt>debug_email = root@localhost</prompt></para>
    </listitem>
    <listitem>
     <para>enable_stats</para>
