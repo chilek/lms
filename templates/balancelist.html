@@ -28,12 +28,15 @@
 		<TD width="1%" class="fbt">
 			<B>U¿ytkownik:</B>
 		</TD>
-		<TD width="91%" class="frightu">
+		<TD width="90%" class="fbt">
 			<B>Opis:</B>
+		</TD>
+		<TD width="1%" CLASS="frightu">
+			&nbsp;
 		</TD>
 	</TR>
 	<TR class="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="9">
+		<TD WIDTH="100%" class="fall" COLSPAN="10">
 			<B>Strona:
 				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$balancelist step=$pagelimit}
@@ -71,13 +74,16 @@
 		<TD width="1%" nowrap valign="top">
 			{if $balancelist[balancelist].userid}<NOBR><A HREF="?m=userbalance&id={$balancelist[balancelist].userid}">{$balancelist[balancelist].username|truncate:20:"..."}</A></NOBR>{else} - {/if}
 		</TD>
-		<TD width="92%" class="fright">
+		<TD width="91%">
 			{$balancelist[balancelist].comment}
+		</TD>
+		<TD width="1%" class="fright">
+			{if $balancelist[balancelist].invoiceid}<A HREF="?m=invoice&id={$balancelist[balancelist].invoiceid}"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>{/if}
 		</TD>
 	</TR>
 	{/section}
 	<TR class="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="9">
+		<TD WIDTH="100%" class="fall" COLSPAN="10">
 			<B>Strona:
 				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$balancelist step=$pagelimit}
@@ -103,7 +109,7 @@
 			{$listdata.expense|string_format:"%01.2f"} z³<HR>
 			{$listdata.total|string_format:"%01.2f"} z³</NOBR>
 		</TD>
-		<TD width="95%" colspan="4" class="frightu">
+		<TD width="95%" colspan="5" class="frightu">
 			&nbsp;
 		</TD>
 	</TR>

@@ -33,34 +33,38 @@ $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 ini_set('session.name','LMSSESSIONID');
 
 // Parse configuration file
-function lms_parse_ini_file($filename, $process_sections = false) {
-    $ini_array = array();
-    $sec_name = "";
-    $lines = file($filename);
-    foreach($lines as $line) {
-	$line = trim($line);
-
-	if($line == "" || $line[0] == ";" || $line[0] == "#") 
-	    continue;
-    
-	if( sscanf($line, "[%[^]]", &$sec_name)==1 ) 
-	    $sec_name = trim($sec_name);
-	else {
-	    if ( sscanf($line, "%[^=] = '%[^']'", &$property, &$value) != 2 ) 
-		if ( sscanf($line, "%[^=] = \"%[^\"]\"", &$property, &$value) != 2 ) 
-		    if( sscanf($line, "%[^=] = %[^;#]",    &$property, &$value) != 2 ) 
+function lms_parse_ini_file($filename, $process_sections = false) 
+{
+	$ini_array = array();
+	$sec_name = "";
+	$lines = file($filename);
+	foreach($lines as $line) 
+	{
+		$line = trim($line);
+		
+		if($line == "" || $line[0] == ";" || $line[0] == "#") 
 			continue;
-		    
-	    $property = trim($property);
-    	    $value = trim($value);
-	    
-	    if($process_sections) 
-    		$ini_array[$sec_name][$property] = $value;
-    	    else 
-    		$ini_array[$property] = $value;
+		
+		if( sscanf($line, "[%[^]]", &$sec_name)==1 ) 
+			$sec_name = trim($sec_name);
+		else 
+		{
+			if ( sscanf($line, "%[^=] = '%[^']'", &$property, &$value) != 2 ) 
+				if ( sscanf($line, "%[^=] = \"%[^\"]\"", &$property, &$value) != 2 ) 
+					if( sscanf($line, "%[^=] = %[^;#]",    &$property, &$value) != 2 ) 
+						continue;
+			
+			$property = trim($property);
+			$value = trim($value);
+			
+			if($process_sections) 
+				$ini_array[$sec_name][$property] = $value;
+			else 
+				$ini_array[$property] = $value;
+		}
 	}
-    }
-    return $ini_array;
+	
+	return $ini_array;
 }
 
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
@@ -163,7 +167,7 @@ require_once($_LIB_DIR.'/smarty_addons.php');
 
 $layout['logname'] = $SESSION->logname;
 $layout['logid'] = $SESSION->id;
-$layout['lmsv'] = '1.1-cvs ('.$LMS->_version.'/'.$SESSION->_version.')';
+$layout['lmsv'] = '1.1-cvs ('.$LMS->_revision.'/'.$SESSION->_revision.')';
 $layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['uptime'] = uptime();
@@ -234,6 +238,10 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.119  2003/12/01 04:21:18  lukasz
+ * - tsave (nowe faktury)
+ * - kosmetyka
+ *
  * Revision 1.118  2003/11/27 03:19:48  lukasz
  * - no i leftmenu polecia³o w niepamiêæ ;-)
  *
