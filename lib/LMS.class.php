@@ -1007,7 +1007,7 @@ class LMS {
 	function GetTariffs()
 	{
 		$DB=$this->DB;
-		return $DB->fetchTable("SELECT id, name, value FROM tariffs ORDER BY value DESC  ");
+		return $DB->fetchTable("SELECT id, name, value, uprate, downrate FROM tariffs ORDER BY value DESC  ");
 	}
 
 	function GetUserName($id)
@@ -1238,7 +1238,7 @@ class LMS {
 	function GetTariffList()
 	{
 		$DB=$this->DB;
-		$tarifflist = $DB->fetchTable("SELECT `id`, `name`, `value`, `description` FROM `tariffs` ORDER BY `value` DESC");
+		$tarifflist = $DB->fetchTable("SELECT `id`, `name`, `value`, `description`, `uprate`, `downrate` FROM `tariffs` ORDER BY `value` DESC");
 		$tarifflist[total] = sizeof($tarifflist[id]);
 		if($tarifflist[total])
 			foreach($tarifflist[id] as $key => $value)
@@ -1304,7 +1304,7 @@ class LMS {
 	function TariffAdd($tariffdata)
 	{
 		$DB=$this->DB;
-		$DB->execSQL("INSERT INTO `tariffs` (`name`, `description`, `value`) VALUES ('".$tariffdata[name]."', '".$tariffdata[description]."', '".$tariffdata[value]."')");
+		$DB->execSQL("INSERT INTO `tariffs` (`name`, `description`, `value`, `uprate`, `downrate`) VALUES ('".$tariffdata[name]."', '".$tariffdata[description]."', '".$tariffdata[value]."' , '".$tariffdata[uprate]."' , '".$tariffdata[downrate]."')");
 		$DB->fetchRow("SELECT max(id) AS id FROM `tariffs`");
 		return $DB->row[id];
 	}

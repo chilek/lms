@@ -44,6 +44,22 @@ if(isset($tariffadd))
 	}
 
 	$tariffadd[value] = str_replace(",",".",$tariffadd[value]);
+
+	
+	$uprate = $tariffadd[uprate];
+	$downrate = $tariffadd[downrate];
+	
+	if(!(ereg("^[0-9]+$", $uprate)))
+		$error[uprate] = "To pole musi zawieraæ liczbê ca³kowit±";
+		
+	if(!ereg("^[0-9]+$", $downrate))
+		$error[downrate] = "To pole musi zawieraæ liczbê ca³kowit±";
+	
+	if($uprate < 8 || $uprate > 4096)
+		$error[uprate] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
+
+	if($downrate < 8 || $downrate > 4096)
+		$error[downrate] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
 	
 	if($tariffadd[name] == "")
 		$error[name] = "To pole nie mo¿e byæ puste!";
@@ -52,7 +68,7 @@ if(isset($tariffadd))
 			$error[name] = "Istnieje ju¿ taryfa o takiej nazwie!";
 
 	if(!$error){
-		header("Location: ?m=tariffinfo&id=".$LMS->TariffAdd($tariffadd));
+		header("Location: ?m=tarifflist&id=".$LMS->TariffAdd($tariffadd));
 		exit(0);
 	}
 	
