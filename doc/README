@@ -38,7 +38,8 @@ LMS Developers
         3.9. Bazy danych
         3.10. Administratorzy
         3.11. Statystyki
-        3.12. Dodatki
+        3.12. Helpdesk
+        3.13. Dodatki
 
    4. Skrypty
 
@@ -104,7 +105,8 @@ Rozdzia³ 1. Wstêp
        o komputerach w bazie (przyk³adowe konfigi obejmuj± rc.masq na
        iptables, dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i
        odwrotny, htb),
-     * wizualizacja statystyk wykorzystania ³±cza.
+     * wizualizacja statystyk wykorzystania ³±cza,
+     * system obs³ugi zg³oszeñ (Helpdesk).
 
    Ca³o¶æ zosta³a wymy¶lona w ramach administracji ASK NetX i tam jest
    nieustannie rozwijana i poddawana testom.
@@ -561,7 +563,7 @@ database = /usr/local/lms/lms.db
      * host
        Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost,
        ale mo¿na tutaj wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda
-       w formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost
+       w formacie '/path/to/socket'). Domy¶lnie: localhost
        Przyk³ad: host = localhost
      * user
        U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶
@@ -652,6 +654,10 @@ database = /usr/local/lms/lms.db
        Limit wy¶wietlanych pozycji na stronie w li¶cie faktur. Domy¶lnie:
        100
        Przyk³ad: invoicelist_pagelimit = 50
+     * ticketlist_pagelimit
+       Limit wy¶wietlanych pozycji na stronie w li¶cie zg³oszeñ.
+       Domy¶lnie: 100
+       Przyk³ad: ticketlist_pagelimit = 50
      * reload_type
        Typ reloadu. Dozwolone warto¶ci:
        exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo,
@@ -1309,9 +1315,62 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    Kompaktowanie bazy danych jest procesem nieodwracalnym.
      _________________________________________________________________
 
-3.12. Dodatki
+3.12. Helpdesk
 
-3.12.1. "Moje konto"
+   Helpdesk (inaczej Request Tracker) to system obs³ugi zg³oszeñ. W
+   systemie mo¿na prowadziæ bazê wszystkich zg³oszeñ i zapytañ
+   u¿ytkowników sieci, ale tak¿e osób które nie s± wpisane do bazy LMS'a.
+   Zg³oszenia mo¿na pogrupowaæ w kategorie (kolejki) i wyszukiwaæ wg
+   zadanych kryteriów. Do ka¿dej kolejki mo¿na zdefiniowaæ uprawnienia
+   dla administratorów.
+
+   W menu po lewej stronie znajduje siê pole szybkiego wyszukiwania
+   zg³oszenia, w którym mo¿na podawaæ jego ID lub nazwisko zg³aszaj±cego
+   je u¿ytkownika. W drugim przypadku zostanie wy¶wietlona lista
+   wszystkich zg³oszeñ danego u¿ytkownika.
+     _________________________________________________________________
+
+3.12.1. Lista kolejek
+
+   Na li¶cie kolejek znajduj± siê podstawowe informacje i statystyki
+   zg³oszeñ. Klikniêcie na wybranej kolejce powoduje wy¶wietlenie listy
+   zg³oszeñ. St±d mo¿na tak¿e przej¶æ do informacji szczegó³owych (w tym
+   tak¿e uprawnieniach) o kolejce lub usun±æ wybran± kolejkê. Usuniêcie
+   kolejki spowoduje tak¿e usuniêcie zg³oszeñ z bazy danych przypisanych
+   do niej.
+     _________________________________________________________________
+
+3.12.2. Nowa kolejka
+
+   Kolejka (kategoria) posiada nazwê, opcjonalny opis oraz opcjonalny
+   adres poczty elektronicznej, który u¿ywany jest do korespondencji. W
+   tabeli 'Uprawnienia' definiuje siê prawa do danej kolejki, które maj±
+   moc wiêksz± od ogólnych uprawnieñ administratorów tzn. je¶li admin nie
+   ma praw do danej kolejki, to nawet je¶li ma 'pe³ny dostêp' zg³oszeñ w
+   tej kolejce nie zobaczy. Prawo zapisu (dodawanie/edytowanie zg³oszeñ i
+   wiadomo¶ci) oznacza automatyczne prawo do odczytu.
+     _________________________________________________________________
+
+3.12.3. Wyszukaj
+
+   Wyszukiwanie zg³oszeñ polega na wybraniu z bazy zg³oszeñ spe³niaj±cych
+   wszystkie podane kryteria (warunek AND, nie OR). Mo¿esz podaæ temat,
+   w³a¶ciciela, kolejkê, status i zg³aszaj±cego. Klientów sieci wybieraj
+   z listy, dla pozosta³ych nale¿y podaæ Nazwisko/Imiê i/lub e-mail.
+     _________________________________________________________________
+
+3.12.4. Nowe zg³oszenie
+
+   Dodaj±c nowe zg³oszenie nale¿y okre¶liæ dla niego temat, tre¶æ, wybraæ
+   kolejkê oraz zg³aszaj±cego u¿ytkownika. Osoby spoza sieci wpisujemy w
+   polach Nazwisko i Imiê. Opcjonalnie, je¶li wiadomo¶æ zosta³a zg³oszona
+   poczt± elektroniczn± podajemy adres e-mail (tak¿e dla u¿ytkownika
+   zapisanego w bazie).
+     _________________________________________________________________
+
+3.13. Dodatki
+
+3.13.1. "Moje konto"
 
    W katalogu contrib/customer znajduje siê przyk³ad rozwi±zania, dziêki
    któremu ka¿dy u¿ytkownik twojej sieci mo¿e sprawdziæ w³asny bilans
@@ -1324,9 +1383,9 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    poprawn± ¶cie¿kê do lms.ini w pliku index.php.
      _________________________________________________________________
 
-3.12.2. Panel SQL
+3.13.2. Panel SQL
 
-3.12.2.1. Wstêp
+3.13.2.1. Wstêp
 
    W katalogu contrib/sqlpanel znajdziesz modu³, dziêki któremu bêdziesz
    mia³ mo¿liwo¶æ bezpo¶redniego dostêpu do bazy danych poprzez zadawanie
@@ -1339,7 +1398,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    'sqlpanel_pagelimit' w sekcji [phpui] pliku konfiguracyjnego lms.ini.
      _________________________________________________________________
 
-3.12.2.2. Instalacja
+3.13.2.2. Instalacja
 
    Instalacja polega na skopiowaniu plików w odpowiednie miejsca w
    drzewie katalogów lms'a. Plik sql.php skopiuj do katalogu modules, a
@@ -2204,8 +2263,12 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
      * %OWNER - w³a¶ciciel komputera
      * %NAME - nazwa sieci du¿ymi znakami
      * %name - nazwa sieci ma³ymi znakami
-     * %UPRATE - limit transferu dla danych wychodz±cych
-     * %DOWNRATE - limit transferu dla danych przychodz±cych
+     * %UPRATE - gwarantowany transfer dla danych wychodz±cych
+     * %DOWNRATE - gwarantowany transfer dla danych przychodz±cych
+     * %UPCEIL - maksymalny transfer dla danych wychodz±cych
+     * %DOWNCEIL - maksymalny transfer dla danych przychodz±cych
+     * %CLIMIT - limit równoczesnych po³±czeñ
+     * %PLIMIT - limit pakietów
      * %1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP
      * %ADDR - adres sieci
      * %GATE - brama sieci
@@ -2703,7 +2766,7 @@ info = "Opcjonalny opis modu³u"
    "traffic control". Zasada dzia³ania skryptu przedstawia siê
    nastêpuj±co: Najpierw z bazy pobierane s± dane dla wszystkich
    u¿ytkowników. Obliczane s± warto¶ci ¶rednie (uprate, downrate, upceil,
-   downceil, limity po³aczeñ) dla ka¿dego pod³±czonego komputera na
+   downceil, limity po³±czeñ) dla ka¿dego pod³±czonego komputera na
    podstawie sumy z taryf jego w³a¶ciciela z zaokr±gleniem ca³kowitym.
    Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do
    grupy u¿ytkowników i sieci (je¶li okre¶lono). Je¶li warto¶ci
@@ -2747,7 +2810,7 @@ IPT=/usr/sbin/iptables
 TC=/sbin/tc
 LAN=eth0
 WAN=eth1
-BURST=\"burst 5k\"
+BURST="burst 5k"
 
 stop ()
 {
@@ -2800,7 +2863,7 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 9 u32 match ip dst 0/0 flowi
        Stopka skryptu. Domy¶lnie:
 }
 
-case \"$1\" in
+case "$1" in
     'start')
         start
     ;;
@@ -2808,17 +2871,17 @@ case \"$1\" in
         stop
     ;;
     'status')
-        echo \"WAN Interface\"
-        echo \"=============\"
+        echo "WAN Interface"
+        echo "============="
         $TC class show dev $WAN | grep root
-        $TC class show dev $WAN \ grep -v root | sort | nl
-        echo \"LAN Interface\"
-        echo \"=============\"
+        $TC class show dev $WAN | grep -v root | sort | nl
+        echo "LAN Interface"
+        echo "============="
         $TC class show dev $LAN | grep root
-        $TC class show dev $LAN \ grep -v root | sort | nl
+        $TC class show dev $LAN | grep -v root | sort | nl
     ;;
     *)
-        echo -e \"\\nUsage: rc.htb start|stop|status\"
+        echo -e "\nUsage: rc.htb start|stop|status"
     ;;
 esac
        Przyk³ad: end = ""
@@ -3138,8 +3201,12 @@ Rozdzia³ 7. Dla dociekliwych
    value - kwota
    taxvalue - wysoko¶æ podatku w procentach
    pkwiu - numer PKWiU
-   uprate - ograniczenie szybko¶ci transferu danych wychodz±cych
-   downrate - ograniczenie szybko¶ci transferu danych przychodz±cych
+   uprate - gwarantowany upload
+   upceil - maksymalny upload
+   downrate - gwarantowany download
+   downceil - maksymalny download
+   climit - limit po³±czeñ
+   plimit - limit pakietów
    description - opis
      _________________________________________________________________
 
