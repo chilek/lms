@@ -148,9 +148,9 @@
  <sect2 id="menu-tariffs">
 	<title>Taryfy i Finanse</title>
 	<para>Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami sieci.</para>
-	<para>Masz mo¿liwo¶æ definiowania taryf abonamentowych, ksiêgowania operacji finansowych,
-	przegl±danie bilansu i historii rachunku oraz sporz±dzanie faktur. A oto
-	wszystkie dostêpne modu³y:
+	<para>Masz mo¿liwo¶æ definiowania taryf abonamentowych, op³at (zleceñ) sta³ych, ksiêgowania 
+	operacji finansowych, przegl±danie bilansu i historii rachunku oraz sporz±dzanie faktur. 
+	A oto wszystkie dostêpne modu³y:
 	<itemizedlist>
 	    <listitem>
 	    <para>Lista taryf - Wy¶wietlenie listy taryf. tej która pokazuje siê po
@@ -160,6 +160,14 @@
 	    </listitem>
 	    <listitem>
 	    <para>Nowa taryfa - Definiowanie nowej taryfy.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Lista op³at - Wy¶wietlenie listy op³at. Klikaj±c wybran± op³atê na li¶cie zostaniesz
+	    przeniesiony do modu³u 'Informacje o op³acie', gdzie mo¿esz edytowaæ jej parametry
+	    lub zaksiêgowaæ dan± op³atê w bazie operacji finansowych.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Nowa op³ata - Definiowanie nowej op³aty sta³ej.</para>
 	    </listitem>
 	    <listitem>
 	    <para>Bilans finansowy - Historia operacji finansowych z podsumowaniem przychodu, rozchodu,
