@@ -86,6 +86,13 @@
 	    my¶lnika lub podkre¶lenia. Poniewa¿ grupy wykorzystywane s± w skryptach w nazwie
 	    nie mo¿e byæ znaku spacji.</para>
 	</sect2>
+	<sect2 id="menu-users-warnings">
+	    <title>Ostrze¿enia</title>
+	    <para>Tutaj mo¿na "hurtowo" przypisaæ tre¶æ wiadomo¶ci administracyjnej
+	    u¿ytkownikom, których wybiera siê z listy w lewym oknie. Mo¿liwe jest
+	    tak¿e w³±czenie lub wy³±czenie ostrze¿eñ wszystkim komputerom nale¿±cym
+	    do wybranych u¿ytkowników.</para>
+	</sect2>
 	<sect2 id="menu-users-prints">
 	    <title>Wydruki</title>
 	    <para>Zestaw modu³ów wy¶wietlaj±cych listy w formie przyjaznej dla drukarki
