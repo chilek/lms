@@ -74,6 +74,17 @@ $tipoftheday[] = "Wyj±tki s± liczniejsze od regu³. Od wszystkich uznanych wyj±tk
 $tipoftheday[] = "Klientowi nigdy nie przyjdzie na my¶l ile kosztuje projekt, tylko ile mo¿na na tym projekcie zaoszczêdziæ. Je¿eli uda³o ci siê wprowadziæ w programie wymagane przez klienta poprawki, wtedy on z nich zrezygnuje. ¯aden klient nie wie czego w³a¶ciwie chce. Ka¿dy klient wie dok³adnie czego nie chce. ¯aden klient nie chce tego co masz ju¿ gotowe. Nie wie tak¿e co chcia³by mieæ zamiast tego. Klient, który najmniej p³aci, marudzi najwiêcej. Klient ¿±da najwiêkszych zmian dok³adnie wtedy, kiedy produkt jest ju¿ gotowy.";
 $tipoftheday[] = "Na polecenie \"napisz tak lub nie\" u¿ytkownik wpisuje \"tak lub nie\". Na polecenie \"wci¶nij Enter\" u¿ytkownik wpisuje \"Enter\". Na polecenie \"naci¶nij dowolny klawisz\", u¿ytkownik naciska na klawisz \"reset\". Wniosek: Nie ma programów ca³kowicie idiotoodpornych.";
 $tipoftheday[] = "W zespole programistów ka¿dy ma genialny plan rozwi±zania problemu. Wszystkie plany siê wzajemnie wykluczaj± i ¿aden nie prowadzi do poprawnego rozwi±zania. Liczba osób w zespole programistycznym ma tendencje wzrastaj±ce, niezale¿nie od ilo¶ci pracy.";
+$tipoftheday[] = "01:04 < [hunter]> robiæ dokumentacje ? \n
+01:04 < [hunter]> :) \n
+01:04 <@Warden> dokumentacjê? rób \n
+01:04 <@Warden> ;)\n
+01:04 <@Warden> Baseciq:: jest chêtny!\n
+01:04 <@Warden> ;)\n
+01:05 <@Baseciq> zwi±¿cie go!!!!!!!!!\n
+01:05 <@Baseciq> szybko!!!\n
+01:05 <@Baseciq> bo ucieknie!!!\n
+01:06 <@agaran> :>\n
+01:08 <@agaran> :>>> Hunterq uwazaj\n";
 
 mt_srand ((double) microtime()* 100000000);
 $layout[tip] = $tipoftheday[mt_rand(0,sizeof($tipoftheday)-1)];
