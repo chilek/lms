@@ -1033,7 +1033,7 @@ class LMS
 		return $nodelist;
 	}
 
-	function NetDevLinkComputer($id,$netid)
+	function NetDevLinkNode($id,$netid)
 	{
 		if($netid != 0)
 		{
@@ -1701,7 +1701,7 @@ class LMS
 		return $this->DB->Execute("DELETE FROM netlinks WHERE src=? OR dst=?",array($id,$id));
 		$nodes = GetNetdevLinkedNodes($id);
 		if ($nodes) foreach($nodes as $node) {
-			$this->NetDevLinkComputer($node[id],0);
+			$this->NetDevLinkNode($node[id],0);
 		}
 	}
 	
@@ -1725,16 +1725,13 @@ class LMS
 			$this -> NetDevLink($sid,$row[dst]);
 		}
 		if ($nodes1) foreach($nodes1 as $row) {
-			$this->NetDevLinkComputer($row[id],$did);
+			$this->NetDevLinkNode($row[id],$did);
 		}
 		if ($nodes2) foreach($nodes2 as $row) {
-			$this->NetDevLinkComputer($row[id],$sid);
+			$this->NetDevLinkNode($row[id],$sid);
 		}
 		$this -> NetDevUpdate($dev1);
 		$this -> NetDevUpdate($dev2);
-		//echo('<pre>');
-		//var_dump($links1);
-		//var_dump($links2);
 	}
 
 	function DeleteNetDev($id)
@@ -2099,6 +2096,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.276  2003/10/11 10:17:03  lexx
+ * - computer -> node i inne drobne poprawki
+ *
  * Revision 1.275  2003/10/10 21:40:21  lexx
  * - NumberSpell
  *

@@ -32,7 +32,7 @@ if(!$LMS->NodeExists($_GET[id]))
 
 if($_GET[action]=="link")
 {
-	$LMS->NetDevLinkComputer($_GET[id],$_GET[devid]);
+	$LMS->NetDevLinkNode($_GET[id],$_GET[devid]);
 	header("Location: ?m=nodeinfo&id=".$_GET[id]);
 	die;
 }
@@ -157,6 +157,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.40  2003/10/11 10:17:03  lexx
+ * - computer -> node i inne drobne poprawki
+ *
  * Revision 1.39  2003/10/06 04:46:49  lukasz
  * - temp save
  *
