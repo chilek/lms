@@ -103,15 +103,18 @@ if test "${with_pgsql+set}" = set
 then
 	LIBS="-lpq -ldl"
 	FLAGS="-DUSE_PGSQL"
+	DBDRIVER=pgsql
 	echo " PostgreSQL"
 elif test "${with_sqlite+set}" = set
 then
 	LIBS="-lsqlite -ldl -lm"
 	FLAGS="-DUSE_SQLITE"
+	DBDRIVER=sqlite
 	echo " SQLite"
 else
 	LIBS="-lmysqlclient -ldl"
 	FLAGS="-DUSE_MYSQL"
+	DBDRIVER=mysql
 	echo " MySQL"
 fi
 
@@ -163,6 +166,7 @@ echo "
 LIBS = $LIBS
 LDFLAGS = $LDFLAGS
 CFLAGS = $CFLAGS $FLAGS -Wall -O2
+DBDRIVER = $DBDRIVER
 INSTALLDIR = $INSTALLDIR
 " > Makefile \
 && cat Makefile.in >> Makefile
