@@ -3,25 +3,25 @@
 /*
  * LMS version 1.3-cvs
  *
- *  (C) Copyright 2001-2004 LMS Developers
+ * (C) Copyright 2001-2004 LMS Developers
  *
- *  Please, see the doc/AUTHORS for more information about authors!
+ * Please, see the doc/AUTHORS for more information about authors!
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License Version 2 as
- *  published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License Version 2 as
+ * published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
- *  USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ * USA.
  *
- *  $Id$
+ * $Id$
  */
 
 $DB->Execute("ALTER TABLE admins CHANGE id id INT(11) NOT NULL AUTO_INCREMENT, CHANGE login login VARCHAR(32) NOT NULL, CHANGE name name VARCHAR(64) NOT NULL, CHANGE email email VARCHAR(255) NOT NULL, CHANGE rights rights VARCHAR(64) NOT NULL, CHANGE passwd passwd VARCHAR(255) NOT NULL, CHANGE lastlogindate lastlogindate INT(11) DEFAULT '0' NOT NULL, CHANGE lastloginip lastloginip VARCHAR(16) NOT NULL, CHANGE failedlogindate failedlogindate INT(11) DEFAULT '0' NOT NULL, CHANGE failedloginip failedloginip VARCHAR(16) NOT NULL");
@@ -67,6 +67,7 @@ $DB->Execute("ALTER TABLE users DROP INDEX id");
 $DB->Execute("ALTER TABLE users DROP INDEX id_2");
 $DB->Execute("ALTER TABLE users DROP tariff, DROP payday");
 $DB->Execute("ALTER TABLE users CHANGE message message TEXT NOT NULL");
+$DB->Execute("ALTER TABLE invoicecontents CHANGE value value DECIMAL(9, 2) NOT NULL, CHANGE taxvalue taxvalue DECIMAL(9, 2) NOT NULL, CHANGE count count DECIMAL(9, 2) NOT NULL ");
 $DB->Execute("UPDATE dbinfo SET keyvalue='2004031400' WHERE keytype='dbversion'");
 
 ?>
