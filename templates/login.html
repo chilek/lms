@@ -94,7 +94,7 @@ pop.document.write('<html><head><title>Missing strings</title></head>');
 pop.document.write('<body bgcolor=#FFFFFF>');
 pop.document.write('<pre>');
 {section name=strings loop=$missing_strings}
-pop.document.write('$_LANG[\'{$missing_strings[strings]}\'] = \'{$missing_strings[strings]}\';\n');
+pop.document.write('$_LANG[\'{$missing_strings[strings]|escape}\'] = \'{$missing_strings[strings]|escape}\';\n');
 {/section}
 pop.document.write('</pre></body></html>');
 </script>
