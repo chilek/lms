@@ -49,7 +49,7 @@
 				<SELECT size="1" name="d" OnChange="document.filter.submit();">
 					<OPTION value=""{if $listdata.domainid eq ""} SELECTED{/if}>- wszystkie -</OPTION>
 					{section name=domainlist loop=$domainlist}
-					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domainid} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
+					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
 					{/section}
 				</SELECT>
 			</FORM></P>
