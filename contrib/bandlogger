@@ -39,7 +39,7 @@ print OUTFILE "#!/bin/bash\n";
 print OUTFILE "$iptbin -t mangle -F\n";
 print OUTFILE "$iptbin -t mangle -X\n";
 
-my $dbq = $dbase->prepare("SELECT * FROM nodes");
+my $dbq = $dbase->prepare("SELECT ipaddr, id FROM nodes");
 
 $dbq->execute();
 
