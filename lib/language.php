@@ -30,7 +30,8 @@ foreach ($langs as $val) {
     switch (substr($val, 0, 2)) {
 	case 'pl':
             $language = 'pl';
-	    setlocale(LC_ALL, 'pl_PL');
+	    setlocale(LC_MESSAGES, 'pl_PL');
+	    setlocale(LC_TIME, 'pl_PL');
             break 2;
         case 'en':
 	    $language = 'en';
