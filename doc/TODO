@@ -4,7 +4,6 @@ TODO do zrobienia w 1.0:
 
 - wyczarowanie czego¶ w netinfo.
 - dokumentacje uaktualniæ.
-- gg przy edycji uzytkownika (wpisuje defaultowo '0' co wkurza podczas zapisu rekordu)
 - nazwa admina który dodawa³/edytowa³ usera (niewiadomo czemu nie pokazywa³a siê)
   (HA! wiem dlaczego, username admina chyba mia³em puste)
 - zapamientanie numeru ostatniej strony z listingu
