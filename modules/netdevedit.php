@@ -92,7 +92,7 @@ unset($netdevlist[total]);
 unset($netdevlist[order]);
 unset($netdevlist[direction]);
 
-$nodelist = $LMS->GetNodeList();
+$nodelist = $LMS->GetUnlinkedNodes();
 
 unset($nodelist[totaloff]);
 unset($nodelist[totalon]);
@@ -117,6 +117,14 @@ else
 
 /*
  * $Log$
+ * Revision 1.13  2003/10/08 04:01:29  lukasz
+ * - html fixes in netdevices
+ * - added new smarty function called {confirm text="confirm message"}
+ * - little bugfix with netdev field in nodes (alec, pse, add this to
+ *   changelog, also consider making 'UPGRADING' chapter in doc if it not
+ *   exists yet)
+ * - lot of small changes, mainly cosmetic
+ *
  * Revision 1.12  2003/10/06 12:18:02  lukasz
  * - wilk syty i owca ca³a
  *

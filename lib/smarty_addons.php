@@ -44,13 +44,28 @@ function _smarty_function_sizeof($args, &$SMARTY)
 	return sizeof($array);
 }
 
+function _smarty_function_confirm($args, &$SMARTY)
+{
+	// onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz rozliczyæ WSZYSTKIE nale¿no¶ci u¿ytkownika: {$userlist[userlist].username|upper|escape} z bazy danych?\n\n')"
+
+	$text = str_replace('\'','\\\'',$args['text']);
+	$text = str_replace('"','&quot;',$text);
+	$text = str_replace("\r",'',$text);
+	$text = str_replace("\n",'\n',$text);
+
+	if($text != "")
+		return ' onClick="return confirmLink(this, \''.$text.'\')" ';
+}
+
 function _smarty_function_tip($args, &$SMARTY)
 {
-	$error = eregi_replace('(\'|")','\\\1',$SMARTY->_tpl_vars['error'][$args['trigger']]);
+	$error = str_replace("'",'\\\'',$SMARTY->_tpl_vars['error'][$args['trigger']]);
+	$error = str_replace('"','&quot;',$error);
 	$error = str_replace("\r",'',$error);
 	$error = str_replace("\n",'<BR>',$error);
-			
-	$text = eregi_replace('(\'|")','\\\1',$args['text']);
+	
+	$text = str_replace('\'','\\\'',$args['text']);
+	$text = str_replace('"','&quot;',$text);
 	$text = str_replace("\r",'',$text);
 	$text = str_replace("\n",'<BR>',$text);
 	
@@ -98,11 +113,20 @@ function _smarty_modifier_striphtml($args)
 $SMARTY->register_function('sum','_smarty_function_sum');
 $SMARTY->register_function('size','_smarty_function_sizeof');
 $SMARTY->register_function('tip','_smarty_function_tip');
+$SMARTY->register_function('confirm','_smarty_function_confirm');
 $SMARTY->register_modifier('to_words','to_words');
 $SMARTY->register_modifier('striphtml','_smarty_modifier_striphtml');
 
 /*
  * $Log$
+ * Revision 1.11  2003/10/08 04:01:29  lukasz
+ * - html fixes in netdevices
+ * - added new smarty function called {confirm text="confirm message"}
+ * - little bugfix with netdev field in nodes (alec, pse, add this to
+ *   changelog, also consider making 'UPGRADING' chapter in doc if it not
+ *   exists yet)
+ * - lot of small changes, mainly cosmetic
+ *
  * Revision 1.10  2003/10/06 22:02:10  lukasz
  * - ju¿ nie psuje
  *

@@ -174,9 +174,9 @@ wersja 1.1.4 Tanith (03/10/2003):
 	);
   - komputery mog± siê l±czyæ do urz±dzeñ sieciowych (Lexx)
     MySql:
-	ALTER TABLE `nodes` ADD `netdev` INT(11) AFTER `modid` ;
+	ALTER TABLE `nodes` ADD `netdev` INT(11) NOT NULL default '0' AFTER `modid` ;
     PosgreSQL:
-	ALTER TABLE nodes ADD netdev integer;  	
+	ALTER TABLE nodes ADD netdev integer default 0 NOT NULL;  	
   - update modu³u 'nodesearch' wynikaj±cy ze zmiany sposobu zapisu
     adresów IP w bazie danych i inne drobne poprawki (alec)
   - poprawione b³êdy w GetTariff() wystêpuj±ce na postgresie (alec)

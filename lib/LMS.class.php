@@ -1735,6 +1735,11 @@ class LMS
 		$this->SetTS("netlinks");
 		$this->DB->Execute("DELETE FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)",array($dev1, $dev2, $dev1, $dev2));
 	}
+
+	function GetUnlinkedNodes()
+	{
+		return $this->DB->GetAll("SELECT * FROM nodes WHERE netdev=0 ORDER BY name ASC");
+	}
 	
 	/*
 	 * Pozosta³e funkcje...
@@ -1955,6 +1960,14 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.270  2003/10/08 04:01:29  lukasz
+ * - html fixes in netdevices
+ * - added new smarty function called {confirm text="confirm message"}
+ * - little bugfix with netdev field in nodes (alec, pse, add this to
+ *   changelog, also consider making 'UPGRADING' chapter in doc if it not
+ *   exists yet)
+ * - lot of small changes, mainly cosmetic
+ *
  * Revision 1.269  2003/10/07 18:47:58  lukasz
  * - rence opadajom...
  *
