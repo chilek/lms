@@ -28,12 +28,14 @@
 // LMS Class - contains internal LMS database functions used
 // to fetch data like usernames, searching for mac's by ID, etc..
 
-class LMS {
+class LMS 
+{
 
 	var $ADB;
 	var $DB;
 	var $SESSION;
 	var $_BACKUP_DIR;
+	var $sqlTSfmt;
 	var $_version = '1.0.65';
 
 	function LMS($DB,$SESSION,$ADB)
@@ -43,28 +45,42 @@ class LMS {
 		$this->ADB=$ADB;
 	}
 
+	function sqlTSfmt()
+	{
+		switch($this->ADB->databaseType)
+		{
+			case "mysql":
+				return "UNIX_TIMESTAMP()";
+				break;
+			case "postgres":
+				return "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+				break;
+			default:
+				// fall back to local timestamp instead of remote.
+				// it's dangerous if we use remote database where
+				// time can (and propably will) differ from local.
+				return "'".time()."'";
+				break;
+		}
+	}
+
 	function SetTS($table)
 	{
 		$DB=$this->DB;
-		if($DB->countRows("SELECT * FROM `timestamps` WHERE `table` = '_'"))
-			$DB->execSQL("UPDATE `timestamps` SET `time` = UNIX_TIMESTAMP() WHERE `table` = '_'");
+		if($DB->countRows("SELECT * FROM `timestamps` WHERE `tablename` = '_global'"))
+			$DB->execSQL("UPDATE `timestamps` SET `time` = ".$this->sqlTSfmt." WHERE `tablename` = '_global'");
 		else
-			$DB->execSQL("INSERT INTO `timestamps` VALUES (UNIX_TIMESTAMP(), '_')");
-		if($DB->countRows("SELECT * FROM `timestamps` WHERE `table` = '".$table."'"))
-			$DB->execSQL("UPDATE `timestamps` SET `time` = UNIX_TIMESTAMP() WHERE `table` = '".$table."'");
+			$DB->execSQL("INSERT INTO `timestamps` VALUES (".$this->sqlTSfmt.", '_global')");
+		if($DB->countRows("SELECT * FROM `timestamps` WHERE `tablename` = '".$table."'"))
+			$DB->execSQL("UPDATE `timestamps` SET `time` = ".$this->sqlTSfmt." WHERE `tablename` = '".$table."'");
 		else
-			$DB->execSQL("INSERT INTO `timestamps` VALUES (UNIX_TIMESTAMP(), '".$table."')");
+			$DB->execSQL("INSERT INTO `timestamps` VALUES (".$this->sqlTSfmt.", '".$table."')");
 		return $this->GetTS($table);
 	}
 
 	function GetTS($table)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `time` FROM `timestamps` WHERE `table` = '".$table."'");
-		if(!isset($DB->row[time]))
-			return -1;
-		else
-			return $DB->row[time];
+		return $this->ADB->GetOne("SELECT time FROM timestamps WHERE tablename=?",array($table));
 	}
 
 	function SetAdminPassword($id,$passwd)
@@ -97,8 +113,7 @@ class LMS {
 
 	function AdminExists($id)
 	{
-		$DB=$this->DB;
-		return $DB->fetchRow("SELECT * FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
+		return ($this->ADB->GetOne("SELECT * FROM admins WHERE id=?",array($id))?TRUE:FALSE);
 	}
 
 	function GetNetworkName($id)
@@ -999,7 +1014,7 @@ class LMS {
 
 	function GetUserName($id)
 	{
-		return $this->ADB->GetOne("SELECT CONCAT(UPPER(lastname),' ',name) FROM users WHERE id=?",array($id));
+		return $this->ADB->GetOne("SELECT ".$this->ADB->Concat("UPPER(lastname)","' '","name")." FROM users WHERE id=?",array($id));
 	}
 
 	function NodeAdd($nodedata)
@@ -1031,36 +1046,28 @@ class LMS {
 
 	function UserExists($id)
 	{
-		$DB=$this->DB;
-		return $DB->countRows("SELECT * FROM `users` WHERE `id` = '".$id."' LIMIT 1");
+		return ($this->ADB->GetOne("SELECT * FROM users WHERE id=?",array($id))?TRUE:FALSE);
 	}
 
 	function NetworkExists($id)
 	{
-		$DB=$this->DB;
-		return $DB->countRows("SELECT * FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
+		return ($this->ADB->GetOne("SELECT * FROM networks WHERE id=?",array($id))?TRUE:FALSE);
 	}	
 
 	function TariffExists($id)
 	{
-		$DB=$this->DB;
-		return $DB->countRows("SELECT * FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
+		return ($this->ADB->GetOne("SELECT * FROM tariffs WHERE id=?",array($id))?TRUE:FALSE);
 	}
 
 
 	function IsIPFree($ip)
 	{
-		$DB=$this->DB;
-		if($DB->countRows("SELECT * FROM `nodes` WHERE `ipaddr` = '".$ip."' LIMIT 1"))
-			return FALSE;
-		else
-			return TRUE;
+		return !($this->ADB->GetOne("SELECT * FROM nodes WHERE ipaddr=?",array($ip))?TRUE:FALSE);
 	}
 
 	function NodeExists($id)
 	{
-		$DB=$this->DB;
-		return $DB->countRows("SELECT * FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		return ($this->ADB->GetOne("SELECT * FROM nodes WHERE id=?",array($id))?TRUE:FALSE);
 	}
 
 	function AddBalance($addbalance)
@@ -1186,8 +1193,7 @@ class LMS {
 	
 	function AdminExists($id)
 	{
-		$DB=$this->DB;
-		return $DB->countRows("SELECT * FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
+		return ($this->ADB->GetOne("SELECT * FROM admins WHERE id=?",array($id))?TRUE:FALSE);
 	}
 
 	function GetNodeOwner($id)
@@ -1212,8 +1218,7 @@ class LMS {
 
 	function GetUsersWithTariff($id)
 	{
-		$DB=$this->DB;
-		return $DB->countRows("SELECT * FROM `users` WHERE `tariff` = '".$id."' AND `status` = '3'");
+		return $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE tariff=?",array($id));
 	}
 	
 	function GetTariffList()
