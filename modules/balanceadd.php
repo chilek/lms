@@ -30,7 +30,7 @@ $_SESSION['addtype'] = $addbalance['type'];
 $_SESSION['addbc'] = $addbalance['comment'];
 $_SESSION['addbt'] = $addbalance['time'];
 $_SESSION['addbv'] = $addbalance['value'];
-if ($addbalance['taxvalue'] == 'zw.')
+if ($addbalance['taxvalue'] == trans('tax-free'))
 	$addbalance['taxvalue'] = '';
 $_SESSION['addbtax'] = $addbalance['taxvalue'];
 

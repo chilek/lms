@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Umowa</title>
+<title>{t}Contract{/t}</title>
 {literal}
 <STYLE type="text/css"><!--
 BODY		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
@@ -12,14 +12,12 @@ P		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align
 //-->
 </STYLE>
 {/literal}
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
 </head>
 <body>
-<h1>UMOWA NA ŚWIADCZENIE USŁUGI DOSTĘPU DO SIECI INTERNET</h1>
-<h2>Uwaga! To jest przykładowy szablon umowy. Możesz wyedytować plik
-contract.html znajdujący się w katalogu templates lub stworzyć własny, ustawiając
-odpowiednio opcję contract_template w sekcji [phpui] pliku lms.ini.</h2>
-<p>Zawarta w dniu {$smarty.now|date_format:"%d-%m-%Y"} w <s>Miasto</s> pomiędzy 
+<h1>{t}INTERNET SERVICES CONTRACT{/t}</h1>
+<h2>{t}Warning! It's an example template of contract. You can edit file contract.html in templates directory or create your own and set option contract_template in section [phpui] of lms.ini file.{/t}</h2>
+<p>Zawarta w dniu {$smarty.now|date_format:"%Y-%m-%d"} w <s>Miasto</s> pomiędzy 
 <s>Naszą firmą</s> z siedzibą w <s>Siedziba</s> wpisanym do rejestru KRS pod 
 numerem <s>Numer</s>, NIP <s>Nip</s> zwanym dalej Usługodawcą reprezentowanym 
 przez: {$layout.logname} a: </p>
@@ -93,15 +91,15 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
 
 <TABLE cellpadding="3" cellspacing="0" border="1">
     <TR>
-	<TD NOWRAP>Usługa:</TD>
-	<TD NOWRAP ALIGN="RIGHT">Wartość:</TD>
-	<TD NOWRAP>Płatność:</TD>
-	<TD NOWRAP>Okres:</TD>
+	<TD NOWRAP>{t}Service:{/t}</TD>
+	<TD NOWRAP ALIGN="RIGHT">{t}Value:{/t}</TD>
+	<TD NOWRAP>{t}Payment:{/t}</TD>
+	<TD NOWRAP>{t}Period:{/t}</TD>
     </TR>
     {foreach from=$assignments item=a}
     <TR>
 	<TD NOWRAP>{$a.name}</TD>
-	<TD NOWRAP ALIGN="RIGHT">{$a.value|string_format:"%01.2f"} zł</TD>
+	<TD NOWRAP ALIGN="RIGHT">{$a.value|money_format}</TD>
 	<TD NOWRAP>{$a.period}</TD>
 	<TD>
 	od: {if $a.datefrom}{$a.datefrom|date_format:"%Y/%m/%d"}{else}-{/if}
@@ -110,8 +108,8 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
     </TR>
     {/foreach}
     <TR>
-	<TD ALIGN="RIGHT">Razem:</TD>
-	<TD NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format="%01.2f"} zł</TD>
+	<TD ALIGN="RIGHT">{t}Total:{/t}</TD>
+	<TD NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format="%01.2f"}</TD>
 	<TD>&nbsp;</TD>
 	<TD>&nbsp;</TD>
     </TR>
@@ -128,9 +126,9 @@ Strony uzgodniły obowiązujące opłaty za następujące usługi:
 	    następujących adresów:
 <TABLE cellpadding="3" cellspacing="0" border="1">
     <TR>
-	<TD>Nazwa:</TD>
-	<TD>Adres IP:</TD>
-	<TD>Adres MAC:</TD>
+	<TD>{t}Name:{/t}</TD>
+	<TD>{t}IP Address:{/t}</TD>
+	<TD>{t}MAC Address:{/t}</TD>
     </TR>
     {section name=usernodes loop=$usernodes}
     {if $usernodes[usernodes].name}
