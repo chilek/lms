@@ -212,9 +212,25 @@ cal6.time_comp = false;
 					<TD width="1%">
 						<IMG src="img/calendar.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
-					<TD width="96%" nowrap>
+					<TD width="1%" nowrap>
 						<B>Dzieñ:</B>&nbsp;
 						<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal7.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza."}>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/view.gif" alt="" BORDER="0" align="absmiddle">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>Sortowanie:</B>
+					</TD>
+					<TD width="93%" {tip text="Wybierz rodzaj i kierunek sortowania"}>
+						<SELECT SIZE="1" name="order">
+							<OPTION value="username" SELECTED>Nazwa/nazwisko i imiê</OPTION>
+							<OPTION value="brutto">Kwota brutto</OPTION> 
+						</SELECT><BR><BR>
+						<SELECT SIZE="1" name="direction">
+							<OPTION value="asc" SELECTED>rosn±co</OPTION>
+							<OPTION value="desc">malej±co</OPTION> 
+						</SELECT>
 					</TD>
 				</TR>
 			</TABLE>

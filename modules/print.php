@@ -259,7 +259,7 @@ switch($_GET['type'])
 		
 		$layout['pagetitle'] = 'Raport wierzytelno¶ci na dzieñ '.date('Y/m/d', $reportday);
 
-		$SMARTY->assign('reportlist', $LMS->LiabilityReport($reportday, $_POST['user']));
+		$SMARTY->assign('reportlist', $LMS->LiabilityReport($reportday, $_POST['order'].','.$_POST['direction'], $_POST['user']));
 		$SMARTY->display('printliabilityreport.html');
 	break;
 		
