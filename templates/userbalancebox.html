@@ -72,14 +72,14 @@
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
 					<TD width="1%">{$balancelist.adminname[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
 					<TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
-					<TD width="1%" align="right"><nobr>{$balancelist.value[balancelist]|string_format:"%01.2f"} z³</nobr></TD>
+					<TD width="1%" align="right"><nobr>{$balancelist.value[balancelist]|money_format}</nobr></TD>
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.taxvalue[balancelist]}
 							{$balancelist.taxvalue[balancelist]|string_format:"%01.2f"} %
 						{else}zw.{/if}
 						</nobr></TD>
 					<TD width="1%" align="center">&raquo;</TD>
-					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|string_format:"%01.2f"} z³{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
+					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|money_format}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
 					<TD width="92%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.invoiceid[balancelist]}

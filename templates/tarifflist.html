@@ -60,7 +60,7 @@
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
-			{$tarifflist[tariffs].value|string_format:"%01.2f"} z³<BR>
+			{$tarifflist[tariffs].value|money_format} <BR>
 			{if $tarifflist[tariffs].taxvalue}{$tarifflist[tariffs].taxvalue}%
 			{else}zw.{/if}
 			</NOBR>
@@ -69,7 +69,7 @@
 			{$tarifflist[tariffs].userscount} ({$tarifflist[tariffs].users},{$tarifflist[tariffs].assignmentcount})
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			{$tarifflist[tariffs].income|string_format:"%01.2f"} z³
+			{$tarifflist[tariffs].income|money_format} 
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
@@ -98,7 +98,7 @@
 			<B>{$listdata.totalcount}({$listdata.totalusers},{$listdata.totalassignmentcount})</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
-			<B>{$listdata.totalincome|string_format:"%01.2f"} z³</B>
+			<B>{$listdata.totalincome|money_format}</B>
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;

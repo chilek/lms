@@ -152,8 +152,8 @@
 			{$item.jm}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.valuenetto|string_format:"%01.2f z³"}<BR>
-			{$item.s_valuenetto|string_format:"%01.2f z³"}
+			{$item.valuenetto|money_format}<BR>
+			{$item.s_valuenetto|money_format}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{if $item.taxvalue}
@@ -161,8 +161,8 @@
 			{else}zw.{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.valuebrutto|string_format:"%01.2f z³"}<BR>
-			{$item.s_valuebrutto|string_format:"%01.2f z³"}
+			{$item.valuebrutto|money_format}<BR>
+			{$item.s_valuebrutto|money_format}
 		</TD>
 		<TD WIDTH="1%" NOWRAP CLASS="fright">
 			<A HREF="?m=invoicenew&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Skasuj t± pozycjê z listy"} BORDER="0"></A>
@@ -185,13 +185,13 @@
 			<B>Razem:</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
-			{sum array=$contents column=s_valuenetto string_format="%01.2f z³"}
+			{sum array=$contents column=s_valuenetto string_format="%01.2f"}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
 			&nbsp;
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
-			{sum array=$contents column=s_valuebrutto string_format="%01.2f z³"}
+			{sum array=$contents column=s_valuebrutto string_format="%01.2f"}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu">
 			&nbsp;
@@ -208,7 +208,7 @@
 			<INPUT TYPE="text" NAME="name" SIZE="48"><BR>
 			<SELECT SIZE="1" NAME="ttariffid">
 				{foreach from=$tariffs item=tariff}
-				<OPTION VALUE="{$tariff.id}">{$tariff.name} ({$tariff.value|string_format:"%0.2f"} z³)</OPTION>
+				<OPTION VALUE="{$tariff.id}">{$tariff.name} ({$tariff.value|money_format})</OPTION>
 				{/foreach}
 			</SELECT><A HREF="javascript:setItem(document.additem.ttariffid.value)">Wybierz</A>
 		</TD>

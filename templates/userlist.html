@@ -128,7 +128,7 @@
 			<IMG src="img/money.gif" align="left" border="0" ALT="">
 		</TD>
 		<TD align="right" valign="top" NOWRAP>
-			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|string_format:"%01.2f"} z³{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|string_format:"%01.2f"} z³</FONT>{if $userlist[userlist].balance < 0}<BR>
+			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|money_format}{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|money_format}</FONT>{if $userlist[userlist].balance < 0}<BR>
 			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" {confirm text="Jeste¶ pewien ¿e chcesz rozliczyæ WSZYSTKIE nale¿no¶ci u¿ytkownika: `$userlist[userlist].username` z bazy danych?\n\n"}>Rozlicz &raquo;</A>{/if}
 			</NOBR>
 		</TD>
@@ -174,8 +174,8 @@
 			{t}Overcharges:{/t}</B>
 		</TD>
 		<TD class="fbt" align="right" COLSPAN="2"> 
-			<B>{$listdata.below|string_format:"%01.2f"} z³<BR>
-			{$listdata.over|string_format:"%01.2f"} z³</B>
+			<B>{$listdata.below|money_format}<BR>
+			{$listdata.over|money_format}</B>
 		</TD>
 		<TD class="frightu">
 			&nbsp;

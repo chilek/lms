@@ -41,7 +41,7 @@
 		</TD>
 		<TD WIDTH="1%" ALIGN="right" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
 			<NOBR>
-			{$paymentlist[payments].value|string_format:"%01.2f"} z³
+			{$paymentlist[payments].value|money_format} 
 			</NOBR>
 		</TD>
 		<TD WIDTH="1%" ALIGN="right" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
