@@ -19,6 +19,8 @@ wersja 1.4.2 (??/??/????):
     jest adres kolejki do pola 'From:' potwierdzenia (alec)
   - BTS#0000257: w sumie miesiêcznych zobowi±zañ u¿ytkownika nie uwzglêdniamy
     zobowi±zañ zawieszonych (alec)
+  - poprawiony b³±d powoduj±cy brak nazwiska/nazwy u¿ytkownika w tre¶ci 
+    pytania o potwierdzenie usuniêcia na li¶cie wyszukanych u¿ytkowników (alec)
 
 wersja 1.4.1 Teyla (15/11/2004):
 
