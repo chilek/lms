@@ -11,13 +11,16 @@
 		<TD width="1%" class="fbt" align="center">
 			{t}Value:{/t}
 		</TD>
-		<TD width="98%" class="frightu" align="center">
+		<TD width="97%" class="fbt" align="center">
 			{t}Comment:{/t}
+		</TD>
+		<TD width="1%" class="frightu" align="right" nowrap>
+			<A href="?m=configadd">{t}Add option{/t} <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
-		<TD COLSPAN="3" CLASS="FALL">
+		<TD COLSPAN="4" CLASS="FALL">
 			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$configlist step=$pagelimit}
@@ -43,13 +46,18 @@
 		<TD align="right" valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
 			{$configlist[configlist].value}
 		</TD>
-		<TD class="fright" valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
+		<TD valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
 			{$configlist[configlist].description|truncate:400:"..."}
+		</TD>
+		<TD class="fright" align="right" nowrap>
+			<A href="?m=configedit&id={$configlist[configlist].id}&statuschange=1"><IMG src="img/wait.gif" alt="[ {if $configlist[configlist].disabled}{t}Enable{/t}{else}{t}Disable{/t}{/if} ]" border="0" align="absmiddle"></A>&nbsp;
+			<A href="?m=configedit&id={$configlist[configlist].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" border="0" align="absmiddle"></A>
+			<A href="?m=configdel&id={$configlist[configlist].id}" OnClick="return confirmLink(this, '{t 0=$configlist[configlist].var}Are you sure, you want to delete option \'$0\' from database?{/t}');"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="3" align="center" class="fall">
+		<TD colspan="4" align="center" class="fall">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 			<p><B>{t}No configuration options in database. Click <A href="?m=configload">here</A> to import them from lms.ini.{/t}</B></p>
@@ -60,7 +68,7 @@
 	{/section}
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
-		<TD COLSPAN="3" CLASS="FALL">
+		<TD COLSPAN="4" CLASS="FALL">
 			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m={$layout.module}&t={$listdata.type}&k={$listdata.kind}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$configlist step=$pagelimit}
@@ -77,7 +85,7 @@
 	</TR>
 	{/if}
 	<TR CLASS="DARK">
-		<TD colspan="3" class="FALL" align="right">
+		<TD colspan="4" class="FALL" align="right">
 			<A href="?m=configadd">{t}Add option{/t} <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
