@@ -660,7 +660,7 @@ class LMS
 			{
 				$value = "'%".$value."%'";
 				if($key=="phone")
-					$searchargs[] = "(phone1 $like '$value' OR phone2 $like '$value' OR phone3 $like $value)";
+					$searchargs[] = "(phone1 $like $value OR phone2 $like $value OR phone3 $like $value)";
 				elseif($key=="username")
 					$searchargs[] = $this->ADB->Concat("UPPER(lastname)","' '","name")." $like ".$value;
 				elseif($key!="s")
