@@ -525,6 +525,8 @@ class LMS
 				foreach($blst as $row)
 					$balance[$row['id']] = $balance[$row['id']] - $row['value'];
 
+			$tariffstlist = $this->DB->GetAllByKey("SELECT users.id AS id, sum(value) AS value FROM users, tariffs, assignments WHERE userid = users.id AND tariffid = tariffs.id GROUP BY id", "id");
+
 			foreach($userlist as $key => $value)
 			{
 				$userlist[$key]['balance'] = $balance[$value['id']];
@@ -534,6 +536,8 @@ class LMS
 					$over = $over + $balance[$value['id']];
 				
 				$userlist[$key]['nodeac'] = $this->GetUserNodesAC($value['id']);
+				$userlist[$key]['tariffvalue'] = $tariffstlist[$value['id']]['value'];
+
 			}
 			
 			if($order == "balance")
@@ -1656,6 +1660,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.214  2003/09/09 01:41:09  lukasz
+ * - wy¶wietlanie sumy taryf w wynikach wyszukiwania
+ *
  * Revision 1.213  2003/09/09 01:22:28  lukasz
  * - nowe finanse
  * - kosmetyka
