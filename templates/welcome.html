@@ -13,7 +13,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://lms.rulez.pl" target="_BLANK">Wersja LMS:</A></B>
+						<B><A HREF="http://lms.rulez.pl" target="_BLANK">{t}LMS version:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$layout.lmsv}
@@ -21,7 +21,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://lms.rulez.pl" target="_BLANK">Wersja LMSDB:</A></B>
+						<B><A HREF="http://lms.rulez.pl" target="_BLANK">{t}LMSDB version:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$layout.lmsdbv}
@@ -30,13 +30,13 @@
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
 						<B>
 						{if $layout.dbtype == "mysql"}
-						<A HREF="http://www.mysql.com" target="_BLANK"> Wersja MySQL:</A>
+						<A HREF="http://www.mysql.com" target="_BLANK">{t}MySQL version:{/t}</A>
 						{elseif $layout.dbtype == "postgres"}
-						<A HREF="http://www.postgresql.org" target="_BLANK">Wersja PostgreSQL:</A>
+						<A HREF="http://www.postgresql.org" target="_BLANK">{t}PostgreSQL: version{/t}</A>
 						{elseif $layout.dbtype == "sqlite"}
-						<A HREF="http://www.sqlite.org" target="_BLANK">Wersja SQLite:</A>
+						<A HREF="http://www.sqlite.org" target="_BLANK">{t}SQLite version:{/t}</A>
 						{elseif $layout.dbtype == "mssql"}
-						<A HREF="http://www.microsoft.com" target="_BLANK">Wersja MS SQL Server:</A>
+						<A HREF="http://www.microsoft.com" target="_BLANK">{t}MS SQL Server version:{/t}</A>
 						{/if}
 						</B>
 					</TD>
@@ -46,7 +46,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://www.php.net/" target="_BLANK">Wersja PHP:</A></B>
+						<B><A HREF="http://www.php.net/" target="_BLANK">{t}PHP version:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.phpversion}
@@ -54,7 +54,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
-						<B><A HREF="http://smarty.php.net" target="_BLANK">Wersja Smarty:</A></B>
+						<B><A HREF="http://smarty.php.net" target="_BLANK">{t}Smarty version:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FBR">
 						{$layout.smarty_version}
