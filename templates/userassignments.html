@@ -75,7 +75,7 @@
 						<NOBR>
 						<SELECT size="1" NAME="assignment[period]" {tip text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
 							<OPTION VALUE="0" {if $assignment.period==0}SELECTED{/if}>co tydzieñ</OPTION>
-							<OPTION VALUE="1" {if $assignment.period==1}SELECTED{/if}>co miesi±c</OPTION>
+							<OPTION VALUE="1" {if $assignment.period==1 || $assignment.period==''}SELECTED{/if}>co miesi±c</OPTION>
 							<OPTION VALUE="2" {if $assignment.period==2}SELECTED{/if}>co kwarta³</OPTION>
 							<OPTION VALUE="3" {if $assignment.period==3}SELECTED{/if}>co rok</OPTION>
 						</SELECT>
