@@ -231,8 +231,42 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="MENU-IMPORT"
+>3.7.9. Import</A
+></H2
+><P
+>Import s³u¿y do zapisywania operacji finansowych z zewnêtrznych
+		systemów np. pobranych z banku bezpo¶rednio ze stron www lub z e-maila. 
+		Do tego celu nale¿y napisaæ skrypt (parser) wrzucaj±cy dane do tabeli
+		cashimport. Przyk³adem takiego zastosowania jest skrypt lms-cashimport-ingbs.
+		Nastêpnie po wej¶ciu do menu Import zobaczymy listê wrzuconych operacji
+		finansowych, które nale¿y zatwierdziæ (ewentualnie zmodyfikowaæ) przed
+		zapisem do systemu finansowego LMSa.</P
+><P
+>Dziêki temu modu³owi mo¿liwe jest tak¿e wczytanie p³atno¶ci/przelewów z przygotowanego
+		wcze¶niej pliku tekstowego. Plik taki jest czytany linia po linii
+		i korzystaj±c z ustawionych wyra¿eñ regularnych parsowany w celu wy³uskania
+		danych dotycz±cych ka¿dej p³atno¶ci, potrzebnych do zapisania w bazie danych
+		(ID klienta, kwota, itd.). Po wczytaniu pliku zostanie wy¶wietlona lista
+		p³atno¶ci do zatwierdzenia i/lub korekty.</P
+><P
+>Aby skrypt potrafi³ odczytaæ dane z plików w dowolnym formacie nale¿y
+		zdefiniowaæ odpowiednio wyra¿enia regularne w pliku modules/cashimportcfg.php. 
+		Domy¶lna konfiguracja zak³ada, ¿e dane bêd± mia³y postaæ nastêpuj±c±:
+<PRE
+CLASS="SCREEN"
+>23.02.2004	Machniak Aleksander	123,45	Op³ata za Internet 04/2004 ID:0013
+15.02.2004	Ból Józef	123,45	Op³ata za faktrê LMS/34/2004</PRE
+>
+		</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="MENU-FINANCES-PRINT"
->3.7.9. Wydruki</A
+>3.7.10. Wydruki</A
 ></H2
 ><P
 >Wydruki zestawieñ finansowych obejmuj±:
@@ -288,6 +322,16 @@ CLASS="EMPHASIS"
 >Bilans klienta</I
 ></SPAN
 > na dany okres.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Raport z wykonania zobowi±zañ</I
+></SPAN
+>.</P
 ></LI
 ><LI
 ><P
