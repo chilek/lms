@@ -41,9 +41,9 @@ function MessageAdd($msg, $headers, $file=NULL)
 		$id = $LMS->DB->GetOne('SELECT id FROM rtmessages WHERE ticketid=? AND adminid=? AND userid=? AND createtime=?', array($msg['ticketid'], $msg['adminid'], $msg['userid'], $time));
 		$dir = $LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d',$msg['ticketid'],$id);
 		@mkdir($LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d',$msg['ticketid']), 0700);
-		mkdir($dir, 0700);
+		@mkdir($dir, 0700);
 		$newfile = $dir.'/'.$file['name'];
-		if(rename($file['tmp_name'], $newfile))
+		if(@rename($file['tmp_name'], $newfile))
 			if($LMS->DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype) 
 						VALUES (?,?,?)', array($id, $file['name'], $file['type'])))
 				$LMS->SetTS('rtattachments');
