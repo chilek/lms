@@ -51,7 +51,7 @@ if(isset($ticket))
 		$error['email'] = trans('Incorrect email!');
 
 	if($ticket['surname']=='' && $ticket['userid']==0)
-		$error['surname'] = trans('Reporter name required!');
+		$error['surname'] = trans('Requestor name required!');
 
 	$requestor  = ($ticket['surname'] ? $ticket['surname'].' ' : '');
 	$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');	    

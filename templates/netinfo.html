@@ -51,7 +51,7 @@
 			<nobr><img src="img/cmp.gif" border="0" align="absmiddle" ALT=""> <B>{t}Network size:{/t}</B>
 		</TD>
 		<TD width="49%">
-			{$network.size} {t}addresses{/t}
+			{t 0=$network.size}$0 addresses{/t}
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -117,7 +117,7 @@
 		<TD width="100%" class="fbottomu" colspan="4" align="right">
 			{if $unlockedit}
 			<form name="remap" action="" method="get">
-				<A {confirm text="Are you sure you want to connect new addresses for all computers? Remember, it can make problems for your network :)" href="?m=netcmp&id=`$network.id`"}>{t}Put in order{/t} <img src="img/cmp.gif" align="absmiddle" ALT="[ {t}Put in order{/t} ]" border="0"></A><BR>
+				<A {confirm text="Are you sure, you want to connect new addresses for all computers? Remember, it can make problems for your network :)" href="?m=netcmp&id=`$network.id`"}>{t}Put in order{/t} <img src="img/cmp.gif" align="absmiddle" ALT="[ {t}Put in order{/t} ]" border="0"></A><BR>
 				<input type="hidden" name="is_sure">
 				<input type="hidden" name="m" value="netremap">
 				<input type="hidden" name="id" value="{$network.id}">
