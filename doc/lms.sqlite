@@ -321,9 +321,9 @@ CREATE TABLE rtmessages (
 DROP TABLE rtrights;
 CREATE TABLE rtrights (
     id integer PRIMARY KEY, 
-    adminid integer DEFAULT 0 NOT NULL,
-    queueid integer DEFAULT 0 NOT NULL,
-    rights integer DEFAULT 0 NOT NULL,
+    adminid integer 	DEFAULT 0 NOT NULL,
+    queueid integer 	DEFAULT 0 NOT NULL,
+    rights integer 	DEFAULT 0 NOT NULL,
     UNIQUE (adminid, queueid)
 );
 
@@ -341,9 +341,24 @@ CREATE TABLE passwd (
     uid integer 		DEFAULT 0 NOT NULL,
     home varchar(255) 		DEFAULT '' NOT NULL,
     type smallint 		DEFAULT 0 NOT NULL,
-    expdate	integer		DEFAULT 0 NOT NULL,
+    expdate integer		DEFAULT 0 NOT NULL,
     domain varchar(255)		DEFAULT '' NOT NULL,
     UNIQUE (login)
+);
+
+/* --------------------------------------------------
+    UIconfig  table
+------------------------------------------------------*/
+
+DROP TABLE uiconfig;
+CREATE TABLE uiconfig (
+    id integer PRIMARY KEY,
+    section varchar(255) 	DEFAULT '' NOT NULL,
+    var varchar(255) 		DEFAULT '' NOT NULL,
+    value text 			DEFAULT '' NOT NULL,
+    description text 		DEFAULT '' NOT NULL,
+    disabled smallint 		DEFAULT 0 NOT NULL,
+    UNIQUE (section, var)
 );
 
 /* --------------------------------------------------
@@ -357,4 +372,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004112100');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004112700');

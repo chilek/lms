@@ -370,6 +370,17 @@
 				<member>rights - (1-odczyt, 2-zapis)</member>
 			</simplelist>
 		</sect2>
+		<sect2 id="uiconfig">
+			<title>Konfiguracja LMS-UI ('uiconfig')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>section - nazwa sekcji</member>
+				<member>var - nazwa opcji konfiguracyjnej</member>
+				<member>value - warto¶æ</member>
+				<member>description - opis/komentarz</member>
+				<member>disabled - wy³±czenie opcji (0-w³., 1-wy³.)</member>
+			</simplelist>
+		</sect2>
 		<sect2 id="dbinfo">
 			<title>Informacje o bazie danych ('dbinfo')</title>
 			<simplelist>

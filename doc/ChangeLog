@@ -6,6 +6,9 @@ wersja 1.5.3 (??/??/????):
     adres (alec)
   - poprawiona walidacja PINu przy dodawaniu u¿ytkownika (alec)
   - poprawione sprawdzanie poprawno¶ci loginu i domeny konta (alec)
+  - mo¿liwo¶æ zmiany opcji konfiguracyjnych z sekcji [phpui] i [invoices]
+    w interfejsie u¿ytkownika (menu Administracja -> Konfiguracja), wiêcej 
+    w dokumentacji: Rozdzia³ 3.2.5. (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 
