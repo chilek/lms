@@ -42,8 +42,8 @@ wersja 1.5.3 (??/??/????):
   - lms-squid-warnings obs³uguje bazy postgres i sqlite (alec)
   - lms-rtparser: przy nieustawionej opcji 'mail_from' poprawnie wstawiany
     jest adres kolejki (alec)
-  - BTS#0000257: w sumie op³at miesiêcznych u¿ytkownika nie uwzglêdniamy
-    zobowi±zañ zawieszonych (alec)
+  - BTS#0000257: w sumie op³at miesiêcznych u¿ytkowników oraz w ¶rednim zysku
+    miesiêcznym taryf nie uwzglêdniamy zobowi±zañ zawieszonych (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 
