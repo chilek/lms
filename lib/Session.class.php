@@ -114,7 +114,7 @@ class Session {
 	{
 		if( (time()-$_SESSION[session_timestamp]) > $timeout )
 		{
-			$this->error=str_replace("%s",$timeout,gettext("Your login time was timetout. (%s sec)"));
+			$this->error="Przekroczy³e¶ limit czasu bezczynno¶ci (".$timeout." sekund).";
 			return FALSE;
 		}
 		else
@@ -133,9 +133,9 @@ class Session {
 		else 
 		{
 			if(isset($this->login))
-				$this->error=gettext("Wrong username or password");
+				$this->error="B³êdne has³o lub nazwa u¿ytkownika.";
 			else
-				$this->error=gettext("Please login yourself");
+				$this->error="Proszê siê zalogowaæ.";
 			return FALSE;
 		}
 	}
