@@ -1369,7 +1369,7 @@ class LMS
 		$this->SetTS("cash");
 		$stan=$this->GetUserBalance($user_id);
 		$stan=-$stan;
-		return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (?NOW?, ?, ?, ?, ?)",array($this->SESSION->id, 3 , round("$stan",2) , $user_id));
+		return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?)",array($this->SESSION->id, 3 , round("$stan",2) , $user_id, 'Rozliczono'));
 	}
 	
 	function AddBalance($addbalance)
