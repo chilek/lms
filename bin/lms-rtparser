@@ -99,11 +99,6 @@ my $save_path = $ini->val('rt', 'mail_dir') || '';
 my $queue = $queue || $ini->val('rt', 'default_queue');
 my $autoreply_from = $ini->val('rt', 'autoreply_from') || "LMS RT System <rt\@$hostname>";
 
-if(!$queue)
-{
-	print STDERR "Fatal error: Queue ID not specified, exiting.\n";
-	exit 1;
-}
 
 # very ugly code, but we really need tempdir..
 my $tmpdir = (defined $ini->val('rt', 'tmp_dir') && ! ($ini->val('rt', 'tmp_dir') eq '')) || (defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '') ? $ENV{'TMP'} : '/tmp');
@@ -155,6 +150,7 @@ else
 }
 
 chomp $mh_from;
+chomp $mh_to;
 chomp $mh_subject;
 chomp $mh_msgid;
 chomp $mailbody;
@@ -168,6 +164,8 @@ $mailheaders =~ s/\\/\\\\/g;
 $mailheaders =~ s/\'/\\\'/g;
 $mh_from =~ s/\\/\\\\/g;
 $mh_from =~ s/\'/\\\'/g;
+$mh_to =~ s/\\/\\\\/g;
+$mh_to =~ s/\'/\\\'/g;
 $mh_msgid =~ s/\\/\\\\/g;
 $mh_msgid =~ s/\'/\\\'/g;
 $mh_subject =~ s/\\/\\\\/g;
@@ -253,10 +251,29 @@ my $rt_msgid;
 my $reqcustid = 0;
 my $reqadminid = 0;
 my $fromemail = $mh_from;
-$fromemail =~ s/^.* <(.+\@.+)>$/\1/g;
+$fromemail =~ s/^.*<(.+\@.+)>$/\1/g;
+my $toemail = $mh_to;
+$toemail =~ s/^.*<(.+\@.+)>$/\1/g;
 
 if(! $prev_tid) # generate new ticket if previous not found
 {
+	# find queue ID if not specified
+	if(!$queue)
+	{
+		$dbq = $dbase->prepare("SELECT id FROM rtqueues WHERE email = '$toemail'");
+		$dbq->execute();
+		if(my $row = $dbq->fetchrow_hashref())
+		{
+			$queue = $row->{'id'};
+		}
+	}
+	
+	if(!$queue)
+	{
+		print STDERR "Fatal error: Queue ID not recognized, exiting.\n";
+		exit 1;
+	}
+
 	# find userid
 	$dbq = $dbase->prepare("SELECT id FROM users WHERE email = '$fromemail'");
 	$dbq->execute();
