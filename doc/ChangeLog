@@ -16,6 +16,8 @@ wersja 1.5.1 (??/??/????):
     przez rtparser modu³ach Perla (alec)
   - w lms-rtparser potwierdzenia wysy³a Net::SMTP zamiast sendmaila, 
     dodane opcje smtp_server, mail_from_name (alec)
+  - usuniêty b³±d przy odtwarzaniu backupu na postgresie spowodowany 
+    aktualizacj± nieistniej±cych sekwencji (alec)
   
 wersja 1.5.0 Marduk (18/09/2004):
 
