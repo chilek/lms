@@ -285,6 +285,9 @@
      <para>%name - nazwa sieci ma³ymi znakami</para>
     </listitem>
     <listitem>
+     <para>%INFO - opis komputera</para>
+    </listitem>
+    <listitem>
      <para>%UPRATE - gwarantowany transfer dla danych wychodz±cych</para>
     </listitem>
     <listitem>

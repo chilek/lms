@@ -439,9 +439,9 @@ sub instance($)
 		
 		# BUILD NODELIST
 		
-		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name, warning FROM nodes, users WHERE users.id=nodes.ownerid");
-		
+		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info FROM nodes, users WHERE users.id=nodes.ownerid");
 		$dbq->execute();
+
 		my %maclist;
 		my %accesslist;
 		my %warninglist;
@@ -449,6 +449,7 @@ sub instance($)
 		my %namelist;
 		my %ucnamelist;
 		my %ownerlist;
+		my %infolist;
 		
 		while (my $row = $dbq->fetchrow_hashref())
 		{
@@ -460,6 +461,7 @@ sub instance($)
 			$namelist{$row->{'ipaddr'}} = lc($row->{'name'});
 			$ucnamelist{$row->{'ipaddr'}} = uc($row->{'name'});
 			$ownerlist{$row->{'ipaddr'}} = $row->{'ownerid'};
+			$infolist{$row->{'ipaddr'}} = $row->{'info'};
 		}
 
 				
@@ -598,6 +600,7 @@ sub instance($)
 			my $downceil = $downceils{$owner} || '';
 			my $climit = $climits{$owner} || '';
 			my $plimit = $plimits{$owner} || '';
+			my $info = $infolist{$ipaddr} || '';
 			my $macs = lc($mac);
 			$macs =~ s/://g;
 			my ($q1,$q2,$q3,$q4) = split('\.',$ipaddr,4);
@@ -623,7 +626,7 @@ sub instance($)
 			$rule =~ s/\%ID/$id/g;
 			$rule =~ s/\%IP/$ipaddr/g;
 			$rule =~ s/\%ADDR/$ipaddr/g;
-			$rule =~ s/\%IPADDR/$ipaddr/g;
+			$rule =~ s/\%INFO/$info/g;
 			$rule =~ s/\%NAME/$NAME/g;
 			$rule =~ s/\%name/$name/g;
 			$rule =~ s/\%SMAC/$macs/g;
