@@ -1574,6 +1574,7 @@ class LMS
 
      function CountNetDevLinks($id)
      {
+    	  $this->SetTS("netlinks");    
           return $this->DB->GetOne("SELECT COUNT(id) FROM netlinks WHERE src = ? OR dst = ?",array($id,$id)) + $this->DB->GetOne("SELECT COUNT(Id) FROM nodes WHERE netdev = ?",array($id));
      }
 
@@ -1898,6 +1899,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.254  2003/10/03 19:35:49  alec
+ * SetTS in NetDevUnLink() added
+ *
  * Revision 1.253  2003/10/03 18:34:06  alec
  * new function: NetDevUnLink()
  *
