@@ -41,6 +41,9 @@ version 1.5.5 (??/??/????):
     column names in last_10_in_a_table (alec)
   - almsd/tc: fixed uninitialized variable warning (alec)
   - possibility of removing tickets (chilek)
+  - lms-rtparser: added mail charset detection and conversion to database
+    charset (req. Text::Iconv), changed encoding of confirmation message (alec)
+  - added contrib/coffee_cup (lexx)
 
 version 1.5.4 Ramius (16/02/2005):
 
