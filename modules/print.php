@@ -27,8 +27,8 @@
 $layout[pagetitle]="Wydruki";
 $SMARTY->assign("layout",$layout);
 
-$su = $ADB->GetOne("SELECT min(time) FROM cash");
-$eu = $ADB->GetOne("SELECT max(time) FROM cash");
+$su = $DB->GetOne("SELECT min(time) FROM cash");
+$eu = $DB->GetOne("SELECT max(time) FROM cash");
 $sm = date("m",$su);
 $sy = date("Y",$su);
 $em = date("m",$eu);
@@ -75,6 +75,9 @@ switch($_GET[type])
 }
 /*
  * $Log$
+ * Revision 1.17  2003/09/05 18:51:58  alec
+ * ADB -> DB
+ *
  * Revision 1.16  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
