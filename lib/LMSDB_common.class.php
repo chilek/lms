@@ -45,26 +45,15 @@ Class LMSDB_common
 	var $_dblink=NULL;
 	var $_dbhost=NULL;
 	var $_dbuser=NULL;
-	var $_dbpasswd=NULL;
 	var $_dbname=NULL;
 	var $_error=NULL;
 	var $_query=NULL;
 	var $_result=NULL;
 
-	function Now()
+	function Connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
-		// Generalnie driver do bazy powinien nadpisaæ t± funkcjê
-		// czym¶ co zwróci odpowiedni± komendê SQL'a, na przyk³ad
-		// UNIX_TIMESTAMP() dla MySQL. Je¿eli jednak dana baza danych
-		// nie posiada podobnej funkcji (or kto¶ kto pisa³ driver ma
-		// sklerozê, Now() zwróci aktualny timestamp
-		
-		return time();
+		$this->_driver_connect($dbhost,$dbuser,$dbpasswd);
+		$this->_driver_selectdb($dbname);
 	}
 
-	function ErrorEvent($errormsg)
-	{
-		$this->_error = $errormsg;
-		trigger_error($errormsg);
-	}
 }
