@@ -1695,27 +1695,28 @@ class LMS
 	}
 	
 	/*
-	*	Statystyki
-	*/
+	 *	Statystyki
+	 */
+	
 	function Traffic($from = 0, $to = "?NOW?", $net = 0, $order = "", $limit = 0)
 	{
-	if (is_array($from))
-		$fromdate = mktime($from[hour],	$from[minute],	$from[second],	$from[month],	$from[day],	$from[year]);
-	else $fromdate = $from;
-	if (is_array($to))
-		$todate 	  = mktime($to[hour],	$to[minute],	$to[second],		$to[month],	$to[day],		$to[year]);
-	else $todate = $to;
-	$dt = "( dt >= $fromdate AND dt <= $todate )";
-	// nets
-	if ($net != "allnets")
+	    if (is_array($from))
+		$fromdate = mktime($from[hour],$from[minute],$from[second],$from[month],$from[day],$from[year]);
+	    else $fromdate = $from;
+	    if (is_array($to))
+		$todate = mktime($to[hour],$to[minute],$to[second],$to[month],$to[day],$to[year]);
+	    else $todate = $to;
+	    $dt = "( dt >= $fromdate AND dt <= $todate )";
+	    // nets
+	    if ($net != "allnets")
 		{
 	    	$params = $this->GetNetworkParams($net);
 	    	$ipfrom = $params['address']+1;
 	    	$ipto = $params['broadcast']-1;
 		$net = " AND ( ipaddr > $ipfrom AND ipaddr < $ipto )";
 		} else $net = "";
-	// order
-	switch ($order)
+	    // order
+	    switch ($order)
 		{
 		case "nodeid"   	: $order = " ORDER BY nodeid"; 	 		break;
 	    	case "download" 	: $order = " ORDER BY download DESC"; 	break;
@@ -1723,11 +1724,11 @@ class LMS
 	    	case "name"     	: $order = " ORDER BY name"; 	 		break;
 	    	case "ip"       		: $order = " ORDER BY ipaddr"; 	 		break;
 		}
-	// limits
-	if( $limit > 0 ) $limit = " LIMIT ".$limit;
-	$query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE $dt $net GROUP BY nodeid, name, ipaddr $order $limit";
+	    // limits
+	    if( $limit > 0 ) $limit = " LIMIT ".$limit;
+	    $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE $dt $net GROUP BY nodeid, name, ipaddr $order $limit";
 
-	if ($traffic = $this->DB->GetAll($query))
+	    if ($traffic = $this->DB->GetAll($query))
 		{
  		foreach ($traffic as $idx => $row)
     			{
@@ -1751,25 +1752,28 @@ class LMS
 		foreach ($traffic[download][data] as $data)
     			{
     			$traffic[download][bar]	[] = round($data * 150 / $maximum);
-    			list($traffic[download][data][$x], $traffic[download][jedn][$x]) = ZmienJedn($data);
+    			list($traffic[download][data][$x], $traffic[download][unit][$x]) = setunits($data);
     			$x++;
     			}
 		$x = 0;
  		foreach ($traffic[upload][data] as $data)
     			{
     			$traffic[upload][bar]	[] = round($data * 150 / $maximum);
-    			list($traffic[upload][data][$x], $traffic[upload][jedn][$x]) = ZmienJedn($data);
+    			list($traffic[upload][data][$x], $traffic[upload][unit][$x]) = setunits($data);
     			$x++;
     			}
- 		list($traffic[download][sum][data], $traffic[download][sum][jedn]) = ZmienJedn($traffic[download][sum]);
- 		list($traffic[upload][sum][data], $traffic[upload][sum][jedn]) = ZmienJedn($traffic[download][sum]);
+ 		list($traffic[download][sum][data], $traffic[download][sum][unit]) = setunits($traffic[download][sum]);
+ 		list($traffic[upload][sum][data], $traffic[upload][sum][unit]) = setunits($traffic[download][sum]);
 		}
-	return $traffic;
+	    return $traffic;
 	}
 }
 
 /*
  * $Log$
+ * Revision 1.226  2003/09/15 20:53:23  alec
+ * function setunits for Traffic() added
+ *
  * Revision 1.225  2003/09/15 16:31:04  alec
  * added function Traffic() for stats
  *
