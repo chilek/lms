@@ -931,7 +931,6 @@ class LMS
 		{
 			foreach($nodelist as $idx => $row)
 			{
-			//	$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
 				($row['access']) ? $totalon++ : $totaloff++;
 			}
@@ -1018,7 +1017,6 @@ class LMS
 		{
 			foreach($nodelist as $idx => $row)
 			{
-				//$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
 				($row['access']) ? $totalon++ : $totaloff++;
 			}
@@ -1095,7 +1093,6 @@ class LMS
 		if($nodelist = $this->DB->GetAll("SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, netdev FROM nodes WHERE netdev=? AND ownerid > 0 ORDER BY name ASC",array($id)))
 			foreach($nodelist as $idx => $row)
 			{
-		//		$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $this->GetUsername($row['ownerid']);
 			}
 		return $nodelist;
@@ -1599,7 +1596,7 @@ class LMS
 	{
 		$this->SetTS("nodes");
 		$this->SetTS("networks");
-		return $this->DB->Execute("UPDATE nodes SET ipaddr = ipaddr + ? WHERE ipaddr >= ? AND ipaddr <= ?",array($shift,ip_long($network), ip_long(getbraddr($network,$mask))));
+		return $this->DB->Execute("UPDATE nodes SET ipaddr = ipaddr + ? WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)",array($shift, $network, getbraddr($network,$mask)));
 	}
 
 	function NetworkUpdate($networkdata)
@@ -1952,10 +1949,7 @@ class LMS
 
 	function GetNetDevIPs($id)
 	{
-		if($result = $this->DB->GetAll("SELECT id, name, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access FROM nodes WHERE ownerid=0 AND netdev=?",array($id)))
-//			foreach($result as $idx => $row)
-//				$result[$idx]['ip'] = long2ip($row['ipaddr']);
-		return $result;
+		return $this->DB->GetAll("SELECT id, name, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access FROM nodes WHERE ownerid=0 AND netdev=?",array($id));
 	}
 	
 	/*
@@ -2090,7 +2084,6 @@ class LMS
 			$net = "";
 
 		// order
-
 		switch ($order)
 		{
 			case "nodeid":
@@ -2238,435 +2231,4 @@ class LMS
 			
 				
 }
-
-/*
- * $Log$
- * Revision 1.320  2003/12/17 21:48:20  alec
- * - dodane sortowanie w SearchNodeList() i poprawki
- * - w nodesearchresults dodane sortowanie wg ownerid i poprawione b³êdy
- *   powoduj±ce brak sortowania wg niektórych kolumn
- *
- * Revision 1.319  2003/12/16 23:10:32  alec
- * - poprawione ustawianie 'access' podczas dodawania komputera
- *
- * Revision 1.318  2003/12/15 22:39:37  alec
- * - dodane sortowanie wg liczby portów zajêtych
- *
- * Revision 1.317  2003/12/15 22:23:58  alec
- * - niejako przez pomy³kê wpad³em na b³±d w sortowaniu listy kompów
- *   wg w³a¶ciciela, poprawione
- *
- * Revision 1.316  2003/12/15 22:15:35  alec
- * - dodane sortowanie listy userów wg abonamentu
- *
- * Revision 1.315  2003/12/14 18:38:00  lukasz
- * - finisz z fakturami + kosmetyka
- *
- * Revision 1.314  2003/12/14 13:31:55  lukasz
- * - e, ja to zmieniam czêsto zdanie
- *
- * Revision 1.313  2003/12/14 03:53:05  lukasz
- * - okej, narazie dajmy spokój z modu³ami.
- *
- * Revision 1.312  2003/12/14 00:35:42  lukasz
- * - nie do¶æ ¿e nie u¿ywane to jeszcze z jakimi¶ ^M na koñcu ka¿dej linii
- *
- * Revision 1.311  2003/12/12 18:54:01  alec
- * - dodane sortowanie listy komputerow po ID usera
- *
- * Revision 1.310  2003/12/12 18:16:35  alec
- * - w GetTariffList() przy pustej liscie 'total' zwraca 0, a nie ""
- *
- * Revision 1.309  2003/12/11 22:52:01  alec
- * - poprawione kapitalizowanie pliterek w nazwisku (BTS#0000078)
- * - Warden, mo¿e zrobisz tak w 1.0.x ?
- * - kosmetyka
- *
- * Revision 1.308  2003/12/11 20:22:16  alec
- * - GetUnlinkedNodes() zwraca takze ip w formacie x.x.x.x
- *
- * Revision 1.307  2003/12/11 12:27:52  lukasz
- * - kurwaaaaaaa! no. zrobione
- *
- * Revision 1.306  2003/12/11 12:26:25  lukasz
- * - another fix
- *
- * Revision 1.305  2003/12/11 12:23:06  lukasz
- * - tsave
- *
- * Revision 1.304  2003/12/10 21:23:33  alec
- * - adresy IP przelicza teraz baza danych
- * - teraz biore sie za testowanie lms'a pod katem ustabilizowania
- *   linii 1.1.x
- *
- * Revision 1.303  2003/12/09 17:56:02  alec
- * - adresy sieci na bigintach, niech to kto¶ sprawdzi na MySQL'u.
- *   UWAGA! Wymagane wersje Mysql 3.23.xx, PostgreSQL 7.3.x
- *
- * Revision 1.302  2003/12/07 17:01:20  alec
- * - usuniête zdublowane wywo³ania funkcji
- *
- * Revision 1.301  2003/12/04 03:43:51  lukasz
- * - dodany PESEL do rekordu u¿ytkownika, upgrade bazy
- *   Je¿eli u¿ytkownik nie posiada NIPu, to wtedy na fakturze umieszczany jest
- *   PESEL.
- * - do faktur zosta³o dodane miejsce wystawienia
- * - zamiana nazewctwa w tabelach z 'sww' na 'pkwiu'
- * - przegenerowane doce
- * - TODO: je¿eli na fakturze nie ma pozycji z pkwiu, to usun±æ t± kolumenê
- *   z faktury.
- * - w cholerê kosmetyki
- *
- * Revision 1.300  2003/12/03 00:48:52  lukasz
- * - z racji zmienionego systemu finansów nie maj± racji bytu ju¿ %TID i %TVAL
- *   w lms-mgc.
- * - tsave
- * - ALEC, Ciebie to nie razi ¿e formatujesz inaczej commitlogi ni¿ reszta?
- *
- * Revision 1.299  2003/12/02 03:57:13  lukasz
- * - poprawka genfake'a
- * - prawie skoñczone drukowanie masowe
- * - trochê innych rzeczy
- *
- * Revision 1.298  2003/12/02 01:48:21  lukasz
- * - poprawiony bug z numerem faktury
- * - dodane number_template do opcji faktur
- *
- * Revision 1.297  2003/12/01 20:27:39  alec
- * poprawiony b³±d GetCashByID() - czy to komu¶ potrzebne, czy nie
- *
- * Revision 1.296  2003/12/01 15:25:37  lukasz
- * - poprawki
- * - obs³uga kilku tych samych abonamentów w jednym dniu
- *
- * Revision 1.295  2003/12/01 14:14:17  lukasz
- * - dodane SWW do faktur
- *
- * Revision 1.294  2003/12/01 13:24:56  lukasz
- * - nowe fuckturki
- *
- * Revision 1.293  2003/12/01 06:13:37  lukasz
- * - temporary save, do not touch
- *
- * Revision 1.292  2003/12/01 04:20:17  lukasz
- * - grr, another tsave
- *
- * Revision 1.291  2003/12/01 04:18:37  lukasz
- * - tsave
- *
- * Revision 1.290  2003/12/01 04:15:44  lukasz
- * - tsave
- *
- * Revision 1.289  2003/12/01 04:09:31  lukasz
- * - tsave
- *
- * Revision 1.288  2003/12/01 02:12:48  lukasz
- * - tsave - do nowych faktur... jak siê wy¶piê to dokoñczê
- *
- * Revision 1.287  2003/12/01 00:58:10  lukasz
- * - jak kogo¶ wezmê zaraz i mietnê po ³bie...
- *
- * Revision 1.286  2003/11/28 11:15:21  lexx
- * - lms teraz powinien poprawnie dzialac jesli mamy node z ownerid = 0
- *   (potrzebne do netdevipbox)
- *
- * Revision 1.285  2003/11/28 09:48:04  lukasz
- * - tsave
- *
- * Revision 1.284  2003/11/26 21:07:00  alec
- * GetAll -> GetRow w GetInvoiceContent()
- *
- * Revision 1.283  2003/11/26 16:33:02  lukasz
- * - takie testy z pe³n± modu³owo¶ci±.
- *
- * Revision 1.282  2003/11/22 18:02:08  alec
- * UserStats() zlicza³o userów usuniêtych - poprawione
- *
- * Revision 1.281  2003/11/18 20:55:26  alec
- * http://lists.rulez.pl/lms/1477.html
- *
- * Revision 1.280  2003/10/23 19:57:23  alec
- * poprawiona literowka w zapytaniu w GetTemplateList()
- *
- * Revision 1.279  2003/10/22 23:07:52  lukasz
- * - temporary save
- *
- * Revision 1.278  2003/10/22 17:50:50  lukasz
- * - generator configów
- *
- * Revision 1.277  2003/10/22 12:20:33  lukasz
- * - small changes in $_CONFIG handling
- *
- * Revision 1.276  2003/10/11 10:17:03  lexx
- * - computer -> node i inne drobne poprawki
- *
- * Revision 1.275  2003/10/10 21:40:21  lexx
- * - NumberSpell
- *
- * Revision 1.274  2003/10/10 12:25:58  lexx
- * - Dodana mo¿liwo¶æ zamiany urz±dzeñ miejscami
- *
- * Revision 1.273  2003/10/08 20:55:11  alec
- * SetTS() added to DELETE queries
- *
- * Revision 1.272  2003/10/08 15:54:15  alec
- * poprawka w Traffic() umo¿liwiaj±ca wy¶wietlanie statów dla komputeró usuniêtych
- *
- * Revision 1.271  2003/10/08 04:39:38  lukasz
- * - temporary save
- *
- * Revision 1.270  2003/10/08 04:01:29  lukasz
- * - html fixes in netdevices
- * - added new smarty function called {confirm text="confirm message"}
- * - little bugfix with netdev field in nodes (alec, pse, add this to
- *   changelog, also consider making 'UPGRADING' chapter in doc if it not
- *   exists yet)
- * - lot of small changes, mainly cosmetic
- *
- * Revision 1.269  2003/10/07 18:47:58  lukasz
- * - rence opadajom...
- *
- * Revision 1.268  2003/10/07 18:30:51  alec
- * nie potrzebujemy ju¿ get_ip_range...(), teraz przeszukiwanie po adresie czê¶ciowym zosta³o przerzucone z sql'a na php w SearchNodeList()
- *
- * Revision 1.267  2003/10/06 22:18:23  alec
- * nowa rozbudowana funkcja SearchNodeList() - na adresach IP dzia³a prawie jak LIKE
- *
- * Revision 1.266  2003/10/06 05:33:04  lukasz
- * - temporary save / lot of fixes
- *
- * Revision 1.265  2003/10/06 05:17:00  lukasz
- * - to by³o g³upie ;)
- *
- * Revision 1.264  2003/10/06 04:46:49  lukasz
- * - temp save
- *
- * Revision 1.263  2003/10/06 03:56:45  lukasz
- * - 4089 podstawieñw 1589 wierszach - ALEC, jeszcze raz wypieprzysz tabulacjê
- *   z jakiego¶ pliku to uduszê!
- *
- * Revision 1.262  2003/10/05 20:45:33  lexx
- * - Lista urzadzen do podlaczenia wyswietla tylko urzadzenia jeszcze nie
- *   podlaczone
- *
- * Revision 1.261  2003/10/04 20:51:07  alec
- * brak prog. nbtscan powodowal bledy w funkcji ScanNodes() - poprawione
- *
- * Revision 1.260  2003/10/04 20:15:02  alec
- * netdev id can be 0 in NetDevLinkComputer()
- *
- * Revision 1.259  2003/10/04 19:57:41  alec
- * free ports checking in NetDevLinkComputer() added
- *
- * Revision 1.258  2003/10/04 19:45:22  alec
- * get 'netdev' in GetNodeList()
- *
- * Revision 1.257  2003/10/04 19:22:34  alec
- * some changes in NetDevLink()
- *
- * Revision 1.256  2003/10/04 13:17:40  alec
- * new function NetDevLink()
- *
- * Revision 1.255  2003/10/04 12:17:52  alec
- * new functions for netdevices linking
- *
- * Revision 1.254  2003/10/03 19:35:49  alec
- * SetTS in NetDevUnLink() added
- *
- * Revision 1.253  2003/10/03 18:34:06  alec
- * new function: NetDevUnLink()
- *
- * Revision 1.252  2003/10/01 16:09:27  alec
- * now we can change netdevice assigned to node (function NodeUpdate()
- *
- * Revision 1.251  2003/09/30 18:33:54  alec
- * rest of ADO removed
- *
- * Revision 1.250  2003/09/30 18:21:38  alec
- * removed doubled query in UserExists()
- *
- * Revision 1.249  2003/09/30 18:17:59  alec
- * usuwam smieci po sobie
- *
- * Revision 1.248  2003/09/30 16:07:22  alec
- * poprawione zmienne Session->id w funkcjach NodeSet() i NodeSetU() powodujace bledne dzialanie tych funkcji
- *
- * Revision 1.247  2003/09/26 02:02:12  lukasz
- * - hide data of deleted nodes in traffic
- *
- * Revision 1.246  2003/09/26 01:48:01  lukasz
- * - fixes
- *
- * Revision 1.245  2003/09/26 01:40:15  lukasz
- * - typo
- *
- * Revision 1.244  2003/09/26 01:16:24  lukasz
- * - zmienione nazwy kluczy na kompatybilne z tym co zwraca smarty
- * - zmienione pole sekund w mktime() bo przecie¿ i tak nie jest ono
- *   przekazywane z templejta
- *
- * Revision 1.243  2003/09/25 18:42:51  lexx
- * - Baset psuja
- *
- * Revision 1.242  2003/09/25 15:54:14  lukasz
- * - cosmetics
- *
- * Revision 1.241  2003/09/25 15:45:04  lukasz
- * - cleanups
- *
- * Revision 1.240  2003/09/25 11:18:19  lukasz
- * - little fix
- *
- * Revision 1.239  2003/09/23 19:21:50  alec
- * poprawione zliczanie zysku miesiecznego oraz bledy w zapytaniu wystepujace na postgresie
- *
- * Revision 1.238  2003/09/23 18:57:43  alec
- * new method for ip search in SearchNodeList()
- *
- * Revision 1.237  2003/09/23 14:25:25  alec
- * update SearchNodeList() ze wzglêdu na nowy format zapisu adresu IP w bazie, dodany ¶rednik w CountNetDevLinks()
- *
- * Revision 1.236  2003/09/22 23:56:47  lukasz
- * *** empty log message ***
- *
- * Revision 1.235  2003/09/22 20:54:09  alec
- * LIKE -> ?LIKE? in SearchNodeList
- *
- * Revision 1.234  2003/09/22 18:07:56  lexx
- * - dalej netdev
- *
- * Revision 1.233  2003/09/22 01:13:54  lukasz
- * - foreach() error
- *
- * Revision 1.232  2003/09/21 18:06:12  lexx
- * - yyy... dalej netdev
- *
- * Revision 1.231  2003/09/18 14:15:53  alec
- * usuniety fatal error powodowany przez podwojona funkcje GetNetDev(), dodana funkcja GetNetDevName i w zwiazku z tym zmiana w GetNode()
- *
- * Revision 1.230  2003/09/17 03:10:39  lukasz
- * - very experimental support for lms-arpd
- *
- * Revision 1.229  2003/09/17 02:14:09  lukasz
- * - to samo co poprzednio dla innych osów
- *
- * Revision 1.228  2003/09/17 02:10:40  lukasz
- * - zmiana zachowania procedury zczytuj±cej mac adresy - na Linuksie szuka
- *   ona wpisów 0x2 (podczas gdy pernamentne s± oznaczone 0x6)
- * - pozosta³e zmiany - zignorowaæ ;)
- *
- * Revision 1.227  2003/09/16 18:35:50  alec
- * Traffic() modified
- *
- * Revision 1.226  2003/09/15 20:53:23  alec
- * function setunits for Traffic() added
- *
- * Revision 1.225  2003/09/15 16:31:04  alec
- * added function Traffic() for stats
- *
- * Revision 1.224  2003/09/13 20:19:56  lexx
- * - lokalizacja
- *
- * Revision 1.223  2003/09/13 12:49:49  lukasz
- * - tsave
- *
- * Revision 1.222  2003/09/12 20:59:20  lexx
- * - netdev
- *
- * Revision 1.221  2003/09/12 20:43:51  lukasz
- * - more cosmetics
- *
- * Revision 1.220  2003/09/12 20:32:24  lukasz
- * - cosmetics
- *
- * Revision 1.219  2003/09/11 19:17:30  lukasz
- * - forgot about SetTS
- *
- * Revision 1.218  2003/09/11 03:42:37  lukasz
- * - rekord u¿ytkownika zwraca tak¿e sumê op³at
- *
- * Revision 1.217  2003/09/10 19:02:52  alec
- * bug fix for postgres in GetUserList
- *
- * Revision 1.216  2003/09/09 21:19:45  lukasz
- * - cleanup
- *
- * Revision 1.215  2003/09/09 20:23:00  lukasz
- * - literówka, czyli Baseciq zna jêz. angielski
- *
- * Revision 1.214  2003/09/09 01:41:09  lukasz
- * - wy¶wietlanie sumy taryf w wynikach wyszukiwania
- *
- * Revision 1.213  2003/09/09 01:22:28  lukasz
- * - nowe finanse
- * - kosmetyka
- * - bugfixy
- * - i inne rzeczy o których aktualnie nie pamiêtam
- *
- * Revision 1.212  2003/09/05 02:07:04  lukasz
- * - massive attack: s/this->ADB->/this->DB->/g
- *
- * Revision 1.211  2003/08/31 19:48:34  alec
- * removed bug in GetNetworkParams()
- *
- * Revision 1.209  2003/08/31 19:16:54  alec
- * added GetNetworkParams
- *
- * Revision 1.208  2003/08/30 01:11:21  lukasz
- * - nowe pole w li¶cie sieci: interfejs
- *
- * Revision 1.207  2003/08/29 22:53:19  lukasz
- * - lista taryf zlicza³a tak¿e u¿ytkowników usuniêtych
- *
- * Revision 1.206  2003/08/29 01:16:28  lukasz
- * - w³±czenie transakcji przy odczytywaniu backup bazy z dysku
- *
- * Revision 1.205  2003/08/28 13:02:05  lukasz
- * - podawanie dnia naliczania op³aty podczas dodawania usera nic dawa³o
- *
- * Revision 1.204  2003/08/27 21:38:13  alec
- * removed two ' :)
- *
- * Revision 1.203  2003/08/27 21:00:33  alec
- * Popr. RecoverUser()
- *
- * Revision 1.202  2003/08/27 20:32:54  lukasz
- * - changed another ENUM (users.deleted) to BOOL
- *
- * Revision 1.201  2003/08/27 20:18:42  lukasz
- * - changed nodes.access from ENUM to BOOL;
- *
- * Revision 1.200  2003/08/27 19:25:00  lukasz
- * - changed format of ipaddr storage in database
- * - propably improved performance
- *
- * Revision 1.199  2003/08/25 02:14:05  lukasz
- * - zmieniona obs³uga usuwania userów
- *
- * Revision 1.198  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.197  2003/08/24 00:59:29  lukasz
- * - LMSDB: GetAllByKey($query, $key, $inputarray)
- * - LMS: more fixes for new DAL
- *
- * Revision 1.196  2003/08/23 12:46:57  alec
- * literówka
- *
- * Revision 1.195  2003/08/22 13:15:00  lukasz
- * - fixed MetaTables
- *
- * Revision 1.194  2003/08/22 00:17:50  lukasz
- * - removed ADODB ;>
- *
- * Revision 1.193  2003/08/21 03:14:29  lukasz
- * - http://lists.rulez.pl/lms/0835.html
- *
- * Revision 1.192  2003/08/20 01:46:12  lukasz
- * - do not display MAC's '00:00:00:00:00:00'
- *
- * Revision 1.191  2003/08/18 16:57:00  lukasz
- * - more cvs tags :>
- *
- */
+?>

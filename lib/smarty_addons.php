@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * LMS version 1.1-cvs
@@ -114,53 +114,5 @@ $SMARTY->register_function('tip','_smarty_function_tip');
 $SMARTY->register_function('confirm','_smarty_function_confirm');
 $SMARTY->register_modifier('to_words','to_words');
 $SMARTY->register_modifier('striphtml','_smarty_modifier_striphtml');
-
-/*
- * $Log$
- * Revision 1.12  2003/10/11 14:08:33  lukasz
- * - cleanups
- *
- * Revision 1.11  2003/10/08 04:01:29  lukasz
- * - html fixes in netdevices
- * - added new smarty function called {confirm text="confirm message"}
- * - little bugfix with netdev field in nodes (alec, pse, add this to
- *   changelog, also consider making 'UPGRADING' chapter in doc if it not
- *   exists yet)
- * - lot of small changes, mainly cosmetic
- *
- * Revision 1.10  2003/10/06 22:02:10  lukasz
- * - ju¿ nie psuje
- *
- * Revision 1.9  2003/10/02 13:15:15  lukasz
- * - eskejepowanie
- *
- * Revision 1.8  2003/09/24 22:33:15  lukasz
- * - more error tips
- *
- * Revision 1.7  2003/09/22 14:32:23  lukasz
- * - test
- *
- * Revision 1.6  2003/09/22 01:14:17  lukasz
- * - new popups
- *
- * Revision 1.5  2003/09/13 12:49:49  lukasz
- * - tsave
- *
- * Revision 1.4  2003/09/09 23:40:03  lukasz
- * - added to_words
- *
- * Revision 1.3  2003/09/09 01:22:28  lukasz
- * - nowe finanse
- * - kosmetyka
- * - bugfixy
- * - i inne rzeczy o których aktualnie nie pamiêtam
- *
- * Revision 1.2  2003/09/08 03:15:14  lukasz
- * - added string_format="%d"
- *
- * Revision 1.1  2003/09/08 03:12:22  lukasz
- * - dodane {sum array=$array column="columnname" default="default value"}
- *
- */
 
 ?>

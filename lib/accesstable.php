@@ -58,21 +58,4 @@ $access[table][253][deny_reg]	= "^(admin(add|del|edit|passwd))$";
 $access[table][255][name]	= "brak dostêpu";
 $access[table][255][deny_reg]	= "^.*$";
 
-/*
- * $Log$
- * Revision 1.14  2003/09/11 17:29:30  lexx
- * - taffic
- *
- * Revision 1.13  2003/09/10 13:38:34  lexx
- * - faktury
- *
- * Revision 1.12  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.11  2003/08/18 16:57:00  lukasz
- * - more cvs tags :>
- *
- */
-
 ?>
