@@ -4,13 +4,14 @@
 
 DIRS="modules lib lib/modules" # list of directories with PHP files
 
-
 echo -ne "Language? [pl]: "
 read LANG
 echo -ne "Charset? [ISO-8859-1]: "
 read CHARSET
 echo -ne "Translator? [LMS Developers]: "
 read TRANSLATOR
+echo -ne "Replace old .po file (y/n)? [n]: "
+read REPLACE
 
 if [ -z "$LANG" ]; then
     LANG=pl
@@ -20,6 +21,9 @@ if [ -z "$CHARSET" ]; then
 fi
 if [ -z "$TRANSLATOR" ]; then
     TRANSLATOR="LMS Developers lms.rulez.pl"
+fi
+if [ -z "$REPLACE" ]; then
+    REPLACE=n
 fi
 
 FILES=
@@ -31,13 +35,19 @@ do
     done
 done
 
-xgettext -o ../lib/locale/$LANG/LC_MESSAGES/lms.po \
+if [ $REPLACE == "n" ]; then
+    xgettext -o ../lib/locale/$LANG/LC_MESSAGES/lms.po \
+	    -d lms \
+	    -L Python \
+	    --force-po --omit-header -j \
+	    $FILES						
+else
+    xgettext -o ../lib/locale/$LANG/LC_MESSAGES/lms.po \
 	    -d lms \
 	    -L Python \
 	    --force-po --omit-header \
-	    $FILES						
-
-echo "
+	    $FILES
+    echo "
 # \$Id\$
 
 msgid \"\"
@@ -48,7 +58,7 @@ msgstr \"\"
 \"Content-Type: text/plain; charset=$CHARSET\n\"
 \"Content-Transfer-Encoding: 8bit\n\"
 " > tmpfile
-
-cat ../lib/locale/$LANG/LC_MESSAGES/lms.po >> ./tmpfile 
-cp -f ./tmpfile ../lib/locale/$LANG/LC_MESSAGES/lms.po
-rm -f ./tmpfile
+    cat ../lib/locale/$LANG/LC_MESSAGES/lms.po >> ./tmpfile 
+    cp -f ./tmpfile ../lib/locale/$LANG/LC_MESSAGES/lms.po
+    rm -f ./tmpfile
+fi
