@@ -378,11 +378,10 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
    </listitem>
    <listitem>
     <para>reload_sqlquery</para>
-    <para>Query SQL'a. Generalnie, LMS przy nie ustawionym swoim w³asnym QUERY robi dziwne rzeczy, 
-    które ja ju¿ wymy¶li³em. Chwilowo pewnie wogóle nie kompatybilne z mteg'owym demonikiem, 
-    ale pracujemy nad uzgodnieniem formatu. Jak kto¶ bardzo chce, to mo¿na u¿yæ '%TIME%' jako podstawki 
-    pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest traktowany jako separator kwerend.
-    Tj. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka komend MySQL'a.</para>
+    <para>Zapytanie SQL wykonywane podczas reloadu, je¶li <prompt>reload_type = sql</prompt>.  
+    Domy¶lnie zapytanie wrzuca do tabeli timestamps warto¶æ '_force'. W zapytaniu mo¿na u¿yæ 
+    '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest 
+    traktowany jako separator kwerend, tzn. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka zapytañ SQL.</para>
     <para>Przyk³ad:	<prompt>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</prompt></para>
    </listitem>
    <listitem>
