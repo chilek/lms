@@ -25,7 +25,7 @@
 					<TD WIDTH="1%" NOWRAP>{$assignments[a].period} ({$assignments[a].at})</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].downrate|default:"-"} kbps</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].uprate|default:"-"} kbps</TD>
-					<TD WIDTH="95%" ALIGN="RIGHT" COLSPAN="2">{*<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê oraz zaksiêgowaæ wyrównanie od ostatniego zaksiêgowania do dnia dzisiejszego?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}&balance=1" {popup text="Usuwa taryfê z rekordu u¿ytkownika oraz ksiêguje wyrównanie od dnia ostatniego zdarzenia do dzisiaj"}>Usuñ i wyrównaj <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}" {popup text="Usuwa taryfê z rekordu u¿ytkownika"}>Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
+					<TD WIDTH="95%" ALIGN="RIGHT" COLSPAN="2">{*<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê oraz zaksiêgowaæ wyrównanie od ostatniego zaksiêgowania do dnia dzisiejszego?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}&balance=1" {tip text="Usuwa taryfê z rekordu u¿ytkownika oraz ksiêguje wyrównanie od dnia ostatniego zdarzenia do dzisiaj"}>Usuñ i wyrównaj <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}" {tip text="Usuwa taryfê z rekordu u¿ytkownika"}>Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
 				</TR>
 				{sectionelse}
 				<TR>
@@ -46,21 +46,21 @@
 				<FORM METHOD="POST" NAME="addassignment" ACTION="?m=useredit&action=addassignment&id={$balancelist.userid}">
 				<TR bgcolor="#DFD5BD">
 					<TD NOWRAP COLSPAN="5" ALIGN="RIGHT"><B>Dodaj:</B>
-						<SELECT SIZE="1" NAME="tariffid" {popup text="Wybierz taryfê która ma byæ przypisana do u¿ytkownika"}>
+						<SELECT SIZE="1" NAME="tariffid" {tip text="Wybierz taryfê która ma byæ przypisana do u¿ytkownika"}>
 							<OPTION VALUE="0">... wybierz taryfê ...</OPTION>
 							{section name=t loop=$tariffs}<OPTION VALUE="{$tariffs[t].id}">{$tariffs[t].name} ({$tariffs[t].value|string_format:"%01.2f"} z³{if $tariffs[t].downrate}, {$tariffs[t].downrate} down{/if}{if $tariffs[t].uprate}, {$tariffs[t].uprate} up{/if})</OPTION>{/section}
 						</SELECT>
 					</TD>
 					<TD>
-						<SELECT SIZE="1" NAME="period" {popup text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
+						<SELECT SIZE="1" NAME="period" {tip text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
 							<OPTION VALUE="0">co miesi±c</OPTION>
 							<OPTION VALUE="1">co tydzieñ</OPTION>
 							<OPTION VALUE="2">co rok</OPTION>
 						</SELECT>
-						<B>kiedy:</B> <INPUT TYPE="TEXT" NAME="at" {popup text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28) a dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia)."} SIZE="5">
+						<B>kiedy:</B> <INPUT TYPE="TEXT" NAME="at" {tip text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28) a dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia)."} SIZE="5">
 					</TD>
 					<TD ALIGN="RIGHT" NOWRAP>
-						<A HREF="javascript:document.addassignment.submit()" {popup text="Przypisz t± taryfê do u¿ytkownika"}>Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+						<A HREF="javascript:document.addassignment.submit()" {tip text="Przypisz t± taryfê do u¿ytkownika"}>Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
 					</TD>
 				</TR>
 				</FORM>
