@@ -8,10 +8,10 @@
   Szybkie wyszukiwanie danych o u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji
   seryjnej do u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich hase³.
   Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania ³±cza, a tak¿e
-  tworzenia kopii bazy danych oraz zarz±dzania konfiguracj± us³ug na serwerze . 
+  tworzenia kopii bazy danych oraz zarz±dzania konfiguracj± us³ug na serwerze. 
   <emphasis>LMS-UI</emphasis> posiada tak¿e wiele innych mo¿liwo¶ci, które w tym
   rozdziale zostan± opisane.</para>
- <sect1 id="user-login">
+  <sect1 id="user-login">
 	<title>Logowanie</title>
 	<para>Po wpisaniu w przegl±darce adresu do strony z lms'em, powita ciê
 	ekran logowania. Musisz podaæ w³a¶ciwy login oraz has³o. Has³a w bazie
@@ -20,17 +20,18 @@
 	za³o¿onego konta, zostaniesz przekierowany do modu³u tworzenia kont
 	administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
 	jednego modu³u.</para>
- </sect1>
- <sect1 id="user-all">
+	<sect2 id="user-welcome">
 	<title>Praca z LMS-UI</title>
-	<para>Po zalogowaniu do LMS'a zobaczysz panel powitalny, na którym znajduj± siê
-	podstawowe informacje na temat naszego systemu: wersjê LMS i jego sk³adników,
-	wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i komputerów w bazie oraz ich
-	stan (pod³±czony/od³±czony), liczbê zad³u¿onych i kwota oraz przydatne lms'owe linki.</para>
-	<para>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
-	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze
-	podaj±c ich numery.</para>
- <sect2 id="menu-users">
+	    <para>Po zalogowaniu do LMS'a zobaczysz panel powitalny, na którym znajduj± siê
+	    podstawowe informacje na temat naszego systemu: wersjê LMS i jego sk³adników,
+	    wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i komputerów w bazie oraz ich
+	    stan (pod³±czony/od³±czony), liczbê zad³u¿onych i kwota oraz przydatne lms'owe linki.</para>
+	    <para>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
+	    dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze
+	    podaj±c ich numery.</para>
+	</sect2>
+ </sect1>
+ <sect1 id="menu-users">
 	<title>U¿ytkownicy</title>
 	<para>Po wej¶ciu do panelu 'U¿ytkownicy' uka¿e siê lista u¿ytkowników,
 	któr± mo¿esz filtrowaæ wed³ug wybranych kryteriów lub sortowaæ klikaj±c
@@ -67,8 +68,8 @@
 	przypisanych danemu u¿ytkownikowi.</para>
 	<para><note><para>Do automatycznego od³±czania komputerów u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
 	s³u¿y skrypt lms-cutoff.</para></note></para>
- </sect2>
- <sect2 id="menu-nodes">
+ </sect1>
+ <sect1 id="menu-nodes">
 	<title>Komputery</title>
 	<para>Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie listy komputerów,
 	wyszukiwania komputerów o danej nazwie, IP lub MAC'u, dodawanie nowych lub usuwanie ju¿
@@ -98,8 +99,8 @@
 	    </listitem>
 	</itemizedlist>
 	</para>
- </sect2>
- <sect2 id="menu-netdevices">
+ </sect1>
+ <sect1 id="menu-netdevices">
 	<title>Osprzêt sieciowy</title>
 	<para>W panelu przeznaczonym do ewidencji sprzêtu mo¿na przegl±daæ listê
 	urz±dzeñ sieciowych, zawieraj±c± ich nazwy i symbole, po³o¿enie i opis, a ponadto 
@@ -121,8 +122,8 @@
 	    </listitem>
 	</itemizedlist>
 	</para>
- </sect2>
- <sect2 id="user-networks">
+ </sect1>
+ <sect1 id="user-networks">
 	<title>Sieci IP</title>
 	<para>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
 	zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i dostêpnych adresów.
@@ -140,8 +141,8 @@
 	    </listitem>
 	</itemizedlist>
 	</para>
- </sect2>
- <sect2 id="menu-tariffs">
+ </sect1>
+ <sect1 id="menu-tariffs">
 	<title>Taryfy i Finanse</title>
 	<para>Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami sieci.</para>
 	<para>Masz mo¿liwo¶æ definiowania taryf abonamentowych, op³at (zleceñ) sta³ych, ksiêgowania 
@@ -188,8 +189,8 @@
 	    </listitem>
 	</itemizedlist>
 	</para>
- </sect2>
- <sect2 id="menu-mailing">
+ </sect1>
+ <sect1 id="menu-mailing">
 	<title>Mailing</title>
 	<para>Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
 	u¿ytkowników twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
@@ -197,14 +198,14 @@
 	<para><note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji mail().</para></note>
 	<note><para>Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami mo¿na
 	wykorzystaæ skrypt lms-notify lub modu³y notify i ggnotify demona <emphasis>almsd</emphasis>.</para></note></para>
- </sect2>
- <sect2 id="menu-reload">
+ </sect1>
+ <sect1 id="menu-reload">
 	<title>Prze³adowanie</title>
 	<para>Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji i us³ug zdefiniowanych
 	dla generatora plików konfiguracyjnych <emphasis>LMS-MGC</emphasis> lub demona <emphasis>almsd</emphasis>. 
 	Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <emphasis>LMS-MGC</emphasis> oraz demona.</para>
- </sect2>
- <sect2 id="menu-databases">
+ </sect1>
+ <sect1 id="menu-databases">
 	<title>Bazy danych</title>
 	<para>Z panelu 'Bazy danych' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy lms'a.
 	Kopia bazy to plik tekstowy z zawarto¶ci± wszystkich tabel w bazie, zapisywany w
@@ -214,8 +215,8 @@
 	dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</para></note></para>
 	<para>Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
 	</para>
- </sect2>
- <sect2 id="menu-admins">
+ </sect1>
+ <sect1 id="menu-admins">
 	<title>Administratorzy</title>
 	<para>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, zmiany hase³ oraz
 	definiowania praw dostêpu. Na pierwszym widoku jest lista administratorów z datami ostatniego
@@ -223,8 +224,8 @@
 	o danym koncie, w tym o zdefiniowanych prawach dostêpu. W ka¿dej chwili mo¿liwa jest zmiana
 	danych i uprawnieñ za pomoc± przycisku 'Edytuj'. Aby za³o¿yæ nowe konto administratora
 	skorzystaj z górnego menu 'Nowy'.</para>
- </sect2>
- <sect2 id="menu-stats">
+ </sect1>
+ <sect1 id="menu-stats">
 	<title>Statystyki</title>
 	<para>Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
 	dostêpny w menu 'Statystyki'. Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
@@ -272,7 +273,6 @@
 	    </listitem>
 	</itemizedlist>
 	</para>
- </sect2>
  </sect1>
  <sect1 id="user-staff">
  	<title>Dodatki</title>
@@ -350,8 +350,8 @@
 			stopki i nag³ówka, czy te¿ adresu na wydruku.</para></note>
 			<warning><para>W bazie danych zapisywane s± kwoty brutto. </para></warning>
 		</para>
- </sect2>
- <sect2 id="user-staff-customer">
+	</sect2>
+	<sect2 id="user-staff-customer">
     	<title>"Moje konto"</title>
 		<para>W katalogu <filename>contrib/customer</filename> znajduje siê
 		przyk³ad rozwi±zania, dziêki któremu ka¿dy u¿ytkownik twojej sieci
@@ -362,21 +362,21 @@
 		pod adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie
 		ustawiæ poprawn± ¶cie¿kê do <filename>lms.ini</filename> w pliku 
 		<filename>index.php</filename>.</para>	
- </sect2>
- <sect2 id="user-staff-sqlpanel">
+	</sect2>
+	<sect2 id="user-staff-sqlpanel">
     	<title>Panel SQL</title>
-	<sect3 id="sqlpanel-intro">
+	    <sect3 id="sqlpanel-intro">
 		<title>Wstêp</title>
 		<para>W katalogu <filename>contrib/sqlpanel</filename> znajdziesz
 		modu³, dziêki któremu bêdziesz mia³ mo¿liwo¶æ bezpo¶redniego dostêpu 
 		do bazy danych poprzez zadawanie zapytañ SQL. Wyniki wy¶wietlane s±
-		w formie tabeli. Ponadto podawany jest czas wykonania zapytania.</para>
+		w formie tabeli. Ponadto podawany jest czas wykonania zapytania. 
+		Mo¿liwe jest tak¿e drukowanie wyników zapytania.</para>
 		<para>Ilo¶æ wy¶wietlanych wierszy na jednej stronie ograniczana jest
 		domy¶lnie do 50. Mo¿na to zmieniæ przy pomocy zmiennej '<prompt>sqlpanel_pagelimit</prompt>'
-		w sekcji <emphasis>[phpui]</emphasis> pliku konfiguracyjnego <filename>lms.ini</filename>.
-		Modu³ umo¿liwia tak¿e wydruk wyników zapytania.</para>
-	</sect3>
-	<sect3 id="sqlpanel-install">
+		w sekcji <emphasis>[phpui]</emphasis> pliku konfiguracyjnego <filename>lms.ini</filename>.</para>
+	    </sect3>
+	    <sect3 id="sqlpanel-install">
 		<title>Instalacja</title>
 		<para>Instalacja polega na skopiowaniu plików w odpowiednie miejsca
 		w drzewie katalogów lms'a. Plik <filename>sql.php</filename> skopiuj
@@ -384,7 +384,7 @@
 		adminheader.html</filename> do katalogu <filename>templates</filename>.
 		Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu 
 		<emphasis>Administratorzy->SQL.</emphasis></para>
-	</sect3>
- </sect2>
+	    </sect3>
+	</sect2>
  </sect1>
 </chapter>
