@@ -40,6 +40,11 @@ $menu[link]	[] = "?m=userlist";
 $menu[accesskey][] = "u";
 $menu[tip]	[] = "<B>U¿ytkownicy: lista, wyszukiwanie, dodanie nowego</B>";
 
+$menu[name] [] = "Grupowanie";
+$menu[img]  [] = "users.gif";
+$menu[link] [] = "?m=groups";
+$menu[accesskey][] = "g";
+
 $menu[name]	[] = "Komputery";
 $menu[img]	[] = "node.gif";
 $menu[link]	[] = "?m=nodelist";
