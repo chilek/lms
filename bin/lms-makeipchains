@@ -232,31 +232,31 @@ foreach my $key (@networks)
 	my $dbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = UPPER('$key')");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
-		my $sdbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ipaddr FROM nodes WHERE access = 1 ORDER BY ipaddr");
+		my $sdbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ip FROM nodes WHERE access = 1 ORDER BY ipaddr");
 		$sdbq->execute();
 		while(my $srow = $sdbq->fetchrow_hashref())
 		{
-			if(matchip($srow->{'ipaddr'},$row->{'address'},$row->{'mask'}))
+			if(matchip($srow->{'ip'},$row->{'address'},$row->{'mask'}))
 			{
-				if(isprivate($srow->{'ipaddr'}))
+				if(isprivate($srow->{'ip'}))
 				{
-					print IPCHAINSSCRIPT "$ipbin -A forward -s $srow->{'ipaddr'} -j MASQ\n";
+					print IPCHAINSSCRIPT "$ipbin -A forward -s $srow->{'ip'} -j MASQ\n";
 				}
 				else
 				{
-					print IPCHAINSSCRIPT "$ipbin -A forward -s $srow->{'ipaddr'} -j ACCEPT -b\n";
+					print IPCHAINSSCRIPT "$ipbin -A forward -s $srow->{'ip'} -j ACCEPT -b\n";
 				}
 
 				foreach my $tcp_rportp (@tcp_rports)
 				{
 					my($rport,$lport) = split ':',$tcp_rportp;
-					print IPCHAINSSCRIPT "$ipbin -A input -p tcp -s $srow->{'ipaddr'} -d 0/0 $rport -j REDIRECT $lport\n";
+					print IPCHAINSSCRIPT "$ipbin -A input -p tcp -s $srow->{'ip'} -d 0/0 $rport -j REDIRECT $lport\n";
 				}
 
 				foreach my $udp_rportp (@udp_rports)
 				{
 					my($rport,$lport) = split ':',$udp_rportp;
-					print IPCHAINSSCRIPT "$ipbin -A input -p udp -s $srow->{'ipaddr'} -d 0/0 $rport -j REDIRECT $lport\n";
+					print IPCHAINSSCRIPT "$ipbin -A input -p udp -s $srow->{'ip'} -d 0/0 $rport -j REDIRECT $lport\n";
 				}
 			}
 		}
