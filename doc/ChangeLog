@@ -1,5 +1,9 @@
 $Id$
 
+wersja 1.4.0rc2 Evalla (??/??/2004):
+
+  - usuniête stare pliki UPGRADE* (alec)
+
 wersja 1.4.0rc1 Evalla (18/09/2004):
 
   - w lms-makedhcpconf hosty s± sortowane (alec)
