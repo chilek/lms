@@ -256,7 +256,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 	   <para>U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze 
 	   wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, 
 	   prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 
-	   'postgres' (PostgreSQL). Domy¶lnie: root</para>
+	   'postgres' (PostgreSQL). Domy¶lnie: mysql</para>
 	   <para>Przyk³ad:	<prompt>user = lms</prompt></para>
 	  </listitem>
           <listitem>
