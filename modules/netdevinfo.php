@@ -26,6 +26,8 @@
 
 $netdevinfo = $LMS->GetNetDev($_GET[id]);
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET[id]);
+$netcomplist = $LMS->GetNetDevNode($_GET[id]);
+
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 $layout[pagetitle]="Informacje o urz±dzeniu: ".$netdevinfo[name]." ".$netdevinfo[producer]." ".$netdevinfo[model];
@@ -34,11 +36,15 @@ $netdevinfo[id] = $_GET[id];
 
 $SMARTY->assign("netdevinfo",$netdevinfo);
 $SMARTY->assign("netdevlist",$netdevconnected);
+$SMARTY->assign("netcomplist",$netcomplist);
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("netdevinfo.html");
 
 /*
  * $Log$
+ * Revision 1.4  2003/09/22 18:12:33  lexx
+ * - komputery moga sie linkowac
+ *
  * Revision 1.3  2003/09/21 18:07:47  lexx
  * - netdev
  *

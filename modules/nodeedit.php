@@ -30,7 +30,10 @@ if(!$LMS->NodeExists($_GET[id]))
 	else
 		header("Location: ?m=nodelist");
 
-
+if ($_GET[action]==link) {
+	$LMS->NetDevLinkComputer($_GET[id],$_GET[devid]);
+	header("Location: ?m=nodeinfo&id=".$_GET[id]);
+    }
 
 $nodeid = $_GET[id];
 $ownerid = $LMS->GetNodeOwner($nodeid);
@@ -136,6 +139,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.31  2003/09/22 18:12:33  lexx
+ * - komputery moga sie linkowac
+ *
  * Revision 1.30  2003/09/19 11:00:03  lukasz
  * - temporary save
  *
