@@ -1,5 +1,9 @@
 $Id$
 
+wersja 1.2.0 (??/03/2004):
+
+  - poprawione sortowanie list u¿ytkowników wg salda (alec)
+
 wersja 1.2.0rc3 Janet (12/03/2004):
 
   - poprawiony bug w module 'hostfile' demona, w szablonach dla hostów dodane 
@@ -12,7 +16,7 @@ wersja 1.2.0rc3 Janet (12/03/2004):
 
 wersja 1.2.0rc2 Janet (03/03/2004):
 
-  - poprawki kosmetyczne iface (lukasz)
+  - poprawki kosmetyczne iface'u (lukasz)
   - cleanup kodu (lukasz)
   - poprawiony BTS#0000112 (alec)
   - poprawiony BTS#0000114 (alec)

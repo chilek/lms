@@ -1,14 +1,19 @@
 $Id$
 
-wersja 1.2.0rc3 Janet (??/??/2004):
+version 1.2.0 (??/03/2004):
+
+  - fixed userlist sorting by balance (alec)
+
+version 1.2.0rc3 Janet (??/??/2004):
 
   - bugfix in almsd's 'hostfile' module, in hosts templates added two 
     vars: %domain - replaced by network domain and %net - by name (alec)
   - in config option 'networks' for hostfile and oident modules now we
     write in networks names list, not addresses (alec)
   - added 'Sale register' - invoices inventory (alec)
+  - fixed error on postgres while adding user without gadu-gadu id (alec)
 
-wersja 1.2.0rc2 Janet (03/03/2004):
+version 1.2.0rc2 Janet (03/03/2004):
 
   - interface cosmetics (lukasz)
   - code ceanup (lukasz)
@@ -19,7 +24,7 @@ wersja 1.2.0rc2 Janet (03/03/2004):
   - bugfixes in upgrade: monthly tariff accounting, not weekly, fixed sql
     queries in UPGRADE.pgsql and comments in UPGRADE.mysql (alec)
     
-wersja 1.2.0rc1 Janet (18/02/2004):
+version 1.2.0rc1 Janet (18/02/2004):
 
   - Smarty libs version change 2.5.0 -> 2.6.0 (alec)
   - added contrib/warn&msg (Rafa³ Ramocki/Tomasz Chiliñski)
@@ -66,7 +71,7 @@ wersja 1.2.0rc1 Janet (18/02/2004):
   - now you can set time of the finance operations (alec)
   - fixed e-mails formatting, removed empty lines (lexx)
 
-wersja 1.1.8 Cronos (01/02/2004):
+version 1.1.8 Cronos (01/02/2004):
 
   - netdevmap uses PNG images (some systems don't support GIF format) (Lexx) 
   - fixed records accounting on empty lists, BTS#90 (alec)
@@ -143,7 +148,7 @@ wersja 1.1.8 Cronos (01/02/2004):
 	ALTER TABLE admins UPDATE failedlogindate SET DEFAULT 0;
 	ALTER TABLE admins UPDATE failedlogindate SET NOT NULL;
 	
-wersja 1.1.7 Hathor (14/12/2003):
+version 1.1.7 Hathor (14/12/2003):
 
   - networks address now are type of bigint, for conversions are used
     INET_NTOA() and INET_ATON() functions, so required higher versions of
@@ -231,7 +236,7 @@ wersja 1.1.7 Hathor (14/12/2003):
   - standardized reload for almsd and ui, now almsd reloads with standard 
     ui settings (reload table isn't needed) (Lexx)
 
-wersja 1.1.6 Seth (08/12/2003):
+version 1.1.6 Seth (08/12/2003):
 
   - misprint: http://bts.rulez.pl/bug_view_page.php?bug_id=0000088
     (chilek/lukasz)
@@ -246,7 +251,7 @@ wersja 1.1.6 Seth (08/12/2003):
     PostgreSQL:
     	ALTER TABLE tariffs ALTER COLUMN description DROP NOT NULL;  
 
-wersja 1.1.5 Amaonet (04/12/2003):
+version 1.1.5 Amaonet (04/12/2003):
 
   - added options for owner and permissions for script files maked
     with lms-traffic-* (lukasz)
@@ -369,7 +374,7 @@ wersja 1.1.5 Amaonet (04/12/2003):
 	ALTER TABLE tariffs RENAME sww TO pkwiu;
 	ALTER TABLE invoicecontents RENAME sww TO pkwiu;  
 
-wersja 1.1.4 Tanith (03/10/2003):
+version 1.1.4 Tanith (03/10/2003):
   
   - tariff list not accounts deleted users (lukasz)
   - added new field on network list: interface - very usefull with making
@@ -543,7 +548,7 @@ wersja 1.1.4 Tanith (03/10/2003):
     - cleanup
   - fixed (I hope so) error handling - now we have tooltips (lukasz)
 	
-wersja 1.1.3 (29/08/2003):
+version 1.1.3 (29/08/2003):
 
   - changed users philosophy - now user deletion not delete them really,
     but only hidding and is possible get them by his ID, hi can by searched,
@@ -604,7 +609,7 @@ wersja 1.1.3 (29/08/2003):
   - source optimized for big networks printing (lukasz)
   - transactions while database backup restoring again enabled (lukasz)
   
-wersja 1.1.2 (24/08/2003):
+version 1.1.2 (24/08/2003):
 
   - new substitution (%date_month_name) in mail templates, resolves into
     current month name, based on locales.
@@ -625,7 +630,7 @@ wersja 1.1.2 (24/08/2003):
   - changed all '<?' (short PHP tags) to '<?php' - that should be at the
     beginning, but who go to fall into that? (lukasz)
 
-wersja 1.1.1 (09/08/2003):
+version 1.1.1 (09/08/2003):
 
   - new possibility of indebted users printing (MichalZ)
   - added %TID (tariff id) and %TVAL (tariff value) in lms-mgc (lukasz)
@@ -644,7 +649,7 @@ wersja 1.1.1 (09/08/2003):
     which must be run everyday with cron! (lukasz)
   - source cleanup (lukasz)
   
-wersja 1.1.0 (23/06/2003):
+version 1.1.0 (23/06/2003):
 
   - secondary nameserver support (%DNS2 in lms-mgc); database modification needed:
     MySQL:	
@@ -656,13 +661,13 @@ wersja 1.1.0 (23/06/2003):
   - new file: ChangeLog.en (warden)
   - not used table 'options' removed and lms.mysql refreshed (lukasz)
 
-wersja 1.0.0 (18/05/2003):
+version 1.0.0 (18/05/2003):
 
   - icons have been changed (Yeah, they are awful, but nobody has done any better)
   - some documentation. Not much but better than nothing. Any volunteers to write? :-)
   - uff...
 
-wersja 1.0.0rc1 (17/05/2003):
+version 1.0.0rc1 (17/05/2003):
 
   - docs incoming (Lexx)
   - some cleaning in LMS.class.php (lukasz)
