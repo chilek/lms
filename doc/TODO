@@ -19,11 +19,11 @@ PROPOSALS:
 
 - ujednolicenie popupów vs. tooltipy
 - faktury
-- statystyki do LMS.class.php
 - dokumentacja podrêczna (tooltipy, popupy)
 - tooltipy przy b³±dach
 - nodesearch
 - netdevices
 - zdjêcia u¿ytkowników (taki niepotrzebny bajer :-) 
 - mail mngmnt
-- wizualizacja wyników statystyk
+- ³±dniejsza wizualizacja wyników statystyk
+- modu³ do upgrade'u bazy 1.0 -> 1.2
