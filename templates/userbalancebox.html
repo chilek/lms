@@ -4,23 +4,23 @@
 	<TR CLASS="DARK">
 		<TD class="fleftu">
 			<IMG src="img/money.gif" border="0" ALT="" align="absmiddle">
-			<B><A name="balance">Rachunek u¿ytkownika:</A></B> {if $limit}(ostatnie {math equation="x * -1" x=$limit} operacji){/if}
+			<B><A name="balance">{t}User's balance{/t}:</A></B> {if $limit}({t}last{/t} {math equation="x * -1" x=$limit} {t}operations{/t}){/if}
 		</TD>
 		<TD class="frightu" align="right">
-			{if $limit}<A href="?m=userbalance&id={$balancelist.userid}">Zobacz wszystkie operacje &raquo;</A>{else}&nbsp;{/if}
+			{if $limit}<A href="?m=userbalance&id={$balancelist.userid}">{t}See all operations{/t} &raquo;</A>{else}&nbsp;{/if}
 		</TD>
 	</TR>
 	<TR>
 		<TD width="100%" colspan="2" class="fall">
 			<table border="0" cellpadding="5" cellspacing="0" width="100%">
 				<tr class="dark">
-					<TD width="1%" class="fleftu">Data:</TD>
-					<TD width="1%" class="fbt">Admin:</TD>
-					<TD width="1%" class="fbt"><B>Typ:</B></TD>
-					<TD width="1%" class="fbt" align="right">Warto¶æ:</TD>
+					<TD width="1%" class="fleftu">{t}Date{/t}:</TD>
+					<TD width="1%" class="fbt">{t}Admin{/t}:</TD>
+					<TD width="1%" class="fbt"><B>{t}Type{/t}:</B></TD>
+					<TD width="1%" class="fbt" align="right">{t}Value{/t}:</TD>
 					<TD width="1%" class="fbt" align="center">&raquo;</TD>
-					<TD width="1%" class="fbt" align="right">Po:</TD>
-					<TD width="93%" class="fbt">Opis:</TD>
+					<TD width="1%" class="fbt" align="right">{t}After{/t}:</TD>
+					<TD width="93%" class="fbt">{t}Description{/t}:</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
 				</tr>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
@@ -35,13 +35,13 @@
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
 					<TD width="1%">{$balancelist.adminname[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
 					<TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
-					<TD width="1%" align="right"><nobr>{$balancelist.value[balancelist]|string_format:"%01.2f"} z³</nobr></TD>
+					<TD width="1%" align="right"><nobr>{$balancelist.value[balancelist]|string_format:"%01.2f"} </nobr></TD>
 					<TD width="1%" align="center">&raquo;</TD>
-					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|string_format:"%01.2f"} z³{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
+					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|string_format:"%01.2f"} {if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
 					<TD width="93%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.invoiceid[balancelist] && $balancelist.invoiceid[balancelist] != $bal}
-						<A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>
+						<A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"} BORDER="0"></A>
 						{/if}</nobr>
 					</TD>
 					</TR>
@@ -49,7 +49,7 @@
 				{sectionelse}
 				<TR>
 					<TD align="center" width="100%" colspan="7"><p>&nbsp;</p>
-						<p><B>Z tym u¿ytkownikiem nie s± zwi±zane ¿adne operacje kasowe.</B></p>
+						<p><B>{t}No such accounting operations for that user.{/t}</B></p>
 						<p>&nbsp;</p>
 					</TD>
 				</TR>
@@ -58,23 +58,23 @@
 					<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.userid}">
 						<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
 						<TD class="ftop">
-							<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Wpisz czas operacji w formacie 'rrrr/mm/dd gg:mm' (pole puste oznacza datê dzisiejsz±). Kliknij na to pole bywybraæ datê z kalendarza."} onClick="cal1.popup();">
+							<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Enter time of operation 'yyyy/mm/dd hh:mm' (empty field means current time). Click for select of date from calendar"} onClick="cal1.popup();">
 							{*<nobr>{$smarty.now|date_format:"%Y/%m/%d %H:%M"}</nobr>*}
 						</TD>
 						<TD class="ftop">
 							{$layout.logname|truncate:20:"..."|replace:" ":"&nbsp;"}
 						</TD>
 						<TD class="ftop">
-							<SELECT SIZE="1" name="addbalance[type]" {tip text="Wybierz rodzaj operacji finansowej"}>
-								<OPTION value="3">wp³ata</OPTION>
-								<OPTION value="4">obci±¿enie</OPTION>
+							<SELECT SIZE="1" name="addbalance[type]" {tip text="Select type of operation"}>
+								<OPTION value="3">{t}payment{/t}</OPTION>
+								<OPTION value="4">{t}covenant{/t}</OPTION>
 							</SELECT>
 						</TD>
 						<TD colspan="2" class="ftop" nowrap>
-							<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s" {tip text="Wpisz warto¶æ operacji"}> z³
+							<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s" {tip text="Enter value of operation"}> 
 						</TD>
 						<TD colspan="3" align="right" class="ftop">
-							<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Podaj opis dla tej operacji finansowej"}> <A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A>
+							<B>{t}Description{/t}:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Enter description of accounting operation"}> <A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A>
 						</TD>
 					</FORM>
 				</TR>
