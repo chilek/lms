@@ -3,13 +3,13 @@
 <TABLE WIDTH="100%" CELLPADDING="10">
 	<TR BGCOLOR="#F4F0EC">
 		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/warning.png" ALT="[ B³±d ! ]">
+			<IMG SRC="img/warning.png" ALT="[ {t}Error!{/t} ]">
 		</TD>
 		<TD WIDTH="99%" CLASS="frightu">
-			<B><FONT COLOR="RED">Wyst±pi³y b³êdy w obs³udze bazy danych!</FONT></B><BR>
+			<B><FONT COLOR="RED">{t}Database errors occured!{/t}</FONT></B><BR>
 			{foreach from=$layout.dberrors item=dberror}
-			<B>Podczas wykonywania zapytania:</B> {$dberror.query}<BR>
-			<B>Wyst±pi³ b³±d:</B> {$dberror.error}<BR>
+			<B>{t}Query:{/t}</B> {$dberror.query}<BR>
+			<B>{t}Error:{/t}</B> {$dberror.error}<BR>
 			{/foreach}
 		</TD>
 	</TR>
