@@ -473,7 +473,7 @@ class LMS
 
 	function UserAdd($useradd)
 	{
-		if($this->DB->Execute('INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info, serviceaddr, message) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?)', array(ucwords($useradd['name']), $useradd['lastname'], $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->SESSION->id, $useradd['info'], $useradd['serviceaddr'], $useradd['message']))) {
+		if($this->DB->Execute('INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info, serviceaddr, message) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?)', array(ucwords($useradd['name']),  strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->SESSION->id, $useradd['info'], $useradd['serviceaddr'], $useradd['message']))) {
 			$this->SetTS('users');
 			return $this->DB->GetOne('SELECT MAX(id) FROM users');
 		} else
