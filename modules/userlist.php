@@ -60,6 +60,7 @@ $SMARTY->assign("tariffs",$LMS->GetTariffs());
 
 
 $SMARTY->display("header.html");
+$SMARTY->display("userheader.html");
 $SMARTY->display("userlist.html");
 $SMARTY->display("footer.html");
 
