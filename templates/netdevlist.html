@@ -1,0 +1,43 @@
+{include file="header.html"}
+{include file="netdevheader.html"}
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="5">
+	<TR CLASS="DARK">
+		<TD CLASS="FLEFTU" WIDTH="97%">
+			<B>Nazwa:</B><BR>
+			Producent / model:
+		</TD>
+		<TD CLASS="FBT" ALIGN="RIGHT" WIDTH="1%" NOWRAP>
+			ID:
+		</TD>
+		<TD CLASS="FBT" ALIGN="RIGHT" WIDTH="1%" NOWRAP>
+			Typ:<BR>
+			Nr. fabryczny:
+		</TD>
+		<TD CLASS="FRIGHTU" WIDTH="1%" NOWRAP>
+			<B>Razem: {$total}</B>
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{section name=dev loop=$devices}
+	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD CLASS="FLEFT" WIDTH="97%">
+			<B>{$devices[dev].name}</B><BR>
+			{$devices[dev].manufacturer|default:"(nieznany)"} / {$devices[dev].model|default:"(nieznany)"}
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			({$devices[dev].id|string_format:"%04d"})
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{$devices[dev].type|default:"(nieznany)"}<BR>
+			{$devices[dev].serialno|default:"(nieznany)"}
+		</TD>
+		<TD CLASS="FRIGHT" WIDTH="1%" NOWRAP>
+			<IMG SRC="img/delete.gif">
+			<IMG SRC="img/edit.gif">
+			<IMG SRC="img/info.gif">
+		</TD>
+	</TR>
+	{/section}
+</TABLE>
+{include file="footer.html"}
