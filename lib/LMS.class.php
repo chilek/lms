@@ -1674,6 +1674,11 @@ class LMS
           $this->DB->Execute("UPDATE netdevices SET name=?, location=?, description=?, producer=?, model=?, serialnumber=?, ports=? WHERE id=?", array( $netdevdata['name'], $netdevdata['location'], $netdevdata['description'], $netdevdata['producer'], $netdevdata['model'], $netdevdata['serialnumber'], $netdevdata['ports'], $netdevdata['id'] ) );
      }
 
+     function NetDevUnLink($dev1, $dev2)
+     {
+        $this->DB->Execute("DELETE FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)",array($dev1, $dev2, $dev1, $dev2));
+     }
+     
      /*
       * Pozosta³e funkcje...
       */
@@ -1893,6 +1898,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.253  2003/10/03 18:34:06  alec
+ * new function: NetDevUnLink()
+ *
  * Revision 1.252  2003/10/01 16:09:27  alec
  * now we can change netdevice assigned to node (function NodeUpdate()
  *
