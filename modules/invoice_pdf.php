@@ -178,7 +178,7 @@ function invoice_title($x,$y)
     $tmp = str_replace("%Y",$invoice['year'],$tmp);
     $tmp = str_replace("%M",$invoice['month'],$tmp);
     $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0',$tmp)).'</b>');
-    $y=$y-text_align_left($x,$y,$font_size,$type);
+    $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$type));
     return $y;
 }
 
@@ -441,7 +441,7 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	}
 
 	sort($ids);
-	$which = ($_GET['which'] != '' ? $_GET['which'] : iconv("UTF-8","ISO-8859-2",trans('ORIGINAL+COPY')));
+	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
 	
 	$count = (strstr($which,'+') ? sizeof($ids)*2 : sizeof($ids));
 	$i=0;
@@ -461,7 +461,7 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 elseif($_GET['fetchallinvoices'])
 {
 	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoices'));
-	$which = ($_GET['which'] != '' ? $_GET['which'] : iconv("UTF-8","ISO-8859-2",trans('ORIGINAL+COPY')));
+	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
 	
 	$ids = $LMS->DB->GetCol('SELECT id FROM invoices 
 				WHERE cdate > ? AND cdate < ?'
@@ -498,9 +498,9 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
 	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0', $ntempl));
 	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
-	$type = iconv("UTF-8","ISO-8859-2",trans('ORIGINAL'));
+	$type = trans('ORIGINAL');
 	invoice_body();
-	$type = iconv("UTF-8","ISO-8859-2",trans('COPY'));
+	$type = trans('COPY');
 	$invoice['last'] = TRUE;
 	invoice_body();
 }
