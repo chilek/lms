@@ -13,12 +13,11 @@
 	b±d¼ wysy³anie upomnieñ. Jest jeszcze <emphasis>LMS-MGC</emphasis>, który te¿ jest skryptem ale na tyle 
 	uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i zrestartowaæ 
 	us³ugê na twoim serwerze.</para>
-	<!--  Czyszczenie dokumentacji przed wydaniem stabilnym
-        <para>Jest jeszcze LMSd (LMS Daemon), napisany w jêzyku C. Jest on przeznaczony 
+        <para>Jest jeszcze <emphasis>A.L.E.C's LMS Daemon</emphasis>, napisany w jêzyku C. Jest on przeznaczony 
 	(a w³a¶ciwie jego wtyczki) do generowania plików konfiguracyjnych i restartowania us³ug. 
+	Mo¿na go stosowaæ jako zamiennik lub uzupe³nienie skryptów perlowych.
 	Odpowiada on za to, aby to co zosta³o zmienione w <emphasis>LMS-UI</emphasis> zosta³o zmienione tak¿e 
 	w rzeczywisto¶ci.</para>
-        -->
     </sect1>
     <sect1 id="install-requirements">
      	  <title>Wymagania</title>
@@ -73,11 +72,12 @@
 	    </listitem>
 	  </itemizedlist></para>
 	  </sect2>
-	<!--
-          Czyszczenie dokumentacji przed wydaniem stabilnym
-	  <para>A je¶li chcesz uruchomiæ LMSd potrzebujesz dzia³aj±cy kompilator 
-	  jêzyka C.</para>
-	-->
+	  <sect2>
+	    <title>Kompilator jêzyka C</title>
+	  <para>Je¶li chcesz uruchomiæ <emphasis>A.L.E.C's LMS Daemon</emphasis> bêdziesz potrzebowa³
+	  dzia³aj±cy kompilator jêzyka C, gdy¿ jest on dostarczany wy³±cznie w postaci
+	  kodu ¼ród³owego.</para>
+	  </sect2>
 	</sect1>
 	<sect1 id="install-install">
 	<title>Instalacja LMS</title>
@@ -400,6 +400,11 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
     <para>Adres e-mail do debugowania - pod ten email bêd± sz³y maile wysy³ane z sekcji 'mailing' LMS'a, 
     zamiast do w³a¶ciwych u¿ytkowników.</para>
     <para>Przyk³ad:	<prompt>debug_email = root@localhost</prompt></para>
+   </listitem>
+   <listitem>
+    <para>enable_stats</para>
+    <para>W³±czenie/wy³±czenie dostêpno¶ci w menu modu³u 'traffic'. Domy¶lnie wy³±czone.</para>
+    <para>Przyk³ad:	<prompt>enable_stats = 1</prompt></para>
    </listitem>
    <listitem>
     <para>default_zip, default_city, default_address</para>
