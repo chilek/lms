@@ -5,13 +5,13 @@
 <table width="100%" cellpadding="3">
 	<TR class="dark">
 		<TD class="fleftu" width="1%">
-			<NOBR><IMG SRC="img/admins.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>Login:</B></NOBR>
+			<NOBR><B>Login</B></NOBR>
 		</TD>
 		<TD class="fbt" width="96%">
-			<NOBR><IMG SRC="img/info2.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>Imiê i nazwisko:</B></NOBR>
+			<NOBR><IMG SRC="img/info2.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>Imiê i nazwisko</B></NOBR>
 		</TD>
 		<TD class="fbt" width="2%" NOWRAP>
-			<IMG SRC="img/time.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>Ostatnio zalogowany:</B>
+			<IMG SRC="img/time.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>Ostatnio zalogowany</B>
 		</TD>
 		<TD class="frightu" width="1%">
 			<NOBR><B>Razem: {$adminslist.total}</B></NOBR>
@@ -19,9 +19,9 @@
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{section name=adminslist loop=$adminslist}{if $adminslist[adminslist].id}
-	<TR bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<OL><TR bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD class="fleft" width="1%" onClick="return self.location.href='?m=admininfo&id={$adminslist[adminslist].id}';">
-			<NOBR><IMG SRC="img/admins.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>{$adminslist[adminslist].login}</B></NOBR>
+			<NOBR><LI><B>{$adminslist[adminslist].login}</B></NOBR>
 		</TD>
 		<TD width="96%" onClick="return self.location.href='?m=admininfo&id={$adminslist[adminslist].id}';">
 			<NOBR><IMG SRC="img/info2.gif" ALIGN="absmiddle" ALT="" BORDER=""> {$adminslist[adminslist].name}</NOBR>
@@ -37,7 +37,7 @@
 			<a href="?m=adminedit&id={$adminslist[adminslist].id}"><img src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A>
 			<a href="?m=admininfo&id={$adminslist[adminslist].id}"><img src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A>
 		</TD>
-	</TR>
+	</TR></OL>
 	{/if}{/section}
 	<TR CLASS="LIGHT">
 		<TD CLASS="FALL" COLSPAN="4">

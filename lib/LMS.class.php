@@ -150,10 +150,6 @@ class LMS
 		$this->ADB->CommitTrans();		
 		fclose($file);
 
-		// Okej, zróbmy parê bzdurek db depend :S 
-		// Postgres sux ! (warden)
-		// Tak, a ³y¿ka na to 'niemo¿liwe' i polecia³a za wann± potr±caj±c bannanem musztardê (lukasz)
-
 		switch($this->ADB->databaseType)
 		{
 			case "postgres":
@@ -212,13 +208,13 @@ class LMS
 
 	function DatabaseFetchContent($dbtime) // zwraca zawarto¶æ tekstow± kopii bazy danych
 	{
-		if(file_exists($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql'))
+		if(file_exists($this->CONFIG['backup_dir'] . '/lms-' . $dbtime . '.sql'))
 		{
-			$content = file($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
+			$content = file($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql');
 			foreach($content as $value)
-				$database[content] .= $value;
-			$database[size] = filesize($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
-			$database[time] = $dbtime;
+				$database['content'] .= $value;
+			$database['size'] = filesize($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
+			$database['time'] = $dbtime;
 			return $database;
 		}
 		else
@@ -248,22 +244,18 @@ class LMS
 		{
 			foreach($adminslist as $idx => $row)
 			{
-				if($row[lastlogindate])
-					$adminslist[$idx][lastlogin] = date("Y/m/d H:i",$row[lastlogindate]);
-				else
-					$adminslist[$idx][lastlogin] = "-";
-
-				if(check_ip($row[lastloginip]))
-					$adminslist[$idx][lastloginhost] = gethostbyaddr($row[lastloginip]);
+				$adminslist[$idx][lastlogin] = ($row['lastlogindate']) ? date("Y/m/d H:i",$row[lastlogindate]) : $adminslist[$idx][lastlogin] = "-";
+				if(check_ip($row['lastloginip']))
+					$adminslist[$idx]['lastloginhost'] = gethostbyaddr($row['lastloginip']);
 				else
 				{
-					$adminslist[$idx][lastloginhost] = "-";
-					$adminslist[$idx][lastloginip] = "-";
+					$adminslist[$idx]['lastloginhost'] = "-";
+					$adminslist[$idx]['lastloginip'] = "-";
 				}
 			}
 		}
 		
-		$adminslist[total] = sizeof($adminslist);		
+		$adminslist['total'] = sizeof($adminslist);		
 		return $adminslist;
 	}
 
@@ -367,7 +359,7 @@ class LMS
 
 	function UserExists($id)
 	{
-		return ($this->ADB->GetOne("SELECT * FROM users WHERE id=?",array($id))?TRUE:FALSE);
+		return ($this->ADB->GetOne("SELECT * FROM users WHERE id=?",array($id)) ? TRUE : FALSE);
 	}
 
 	function GetUsersWithTariff($id)
@@ -419,13 +411,13 @@ class LMS
 	{
 		if($result = $this->ADB->GetRow("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid FROM users WHERE id=?",array($id)))
 		{
-			$result[createdby] = $this->GetAdminName($result[creatorid]);
-			$result[modifiedby] = $this->GetAdminName($result[modid]);
-			$result[creationdateh] = date("Y-m-d, H:i",$result[creationdate]);
-			$result[moddateh] = date("Y-m-d, H:i",$result[moddate]);
-			$result[tariffvalue] = $this->GetTariffValue($result[tariff]);
-			$result[tariffname] = $this->GetTariffName($result[tariff]);
-			$result[balance] = $this->GetUserBalance($result[id]);
+			$result['createdby'] = $this->GetAdminName($result['creatorid']);
+			$result['modifiedby'] = $this->GetAdminName($result['modid']);
+			$result['creationdateh'] = date("Y-m-d, H:i",$result['creationdate']);
+			$result['moddateh'] = date("Y-m-d, H:i",$result['moddate']);
+			$result['tariffvalue'] = $this->GetTariffValue($result['tariff']);
+			$result['tariffname'] = $this->GetTariffName($result['tariff']);
+			$result['balance'] = $this->GetUserBalance($result['id']);
 			return $result;
 		}else
 			return FALSE;
@@ -742,36 +734,36 @@ class LMS
 				(strlen($saldolist[comment][$i])<3) ? $saldolist[comment][$i] = $saldolist[name][$i] : $saldolist[comment][$i] =  $saldolist[comment][$i];
 			}
 				
-			$saldolist[balance] = $saldolist[after][sizeof($saldolist[id])-1];
-			$saldolist[total] = sizeof($saldolist[id]);
+			$saldolist['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
+			$saldolist['total'] = sizeof($saldolist['id']);
 			
 		}else{
-			$saldolist[balance] = 0;
+			$saldolist['balance'] = 0;
 		}
 
-		if($saldolist[total])
+		if($saldolist['total'])
 		{
-			foreach($saldolist[value] as $key => $value)
-				$saldolist[value][$key] = $value;
-			foreach($saldolist[after] as $key => $value)
-				$saldolist[after][$key] = $value;
-			foreach($saldolist[before] as $key => $value)
-				$saldolist[before][$key] = $value;
+			foreach($saldolist['value'] as $key => $value)
+				$saldolist['value'][$key] = $value;
+			foreach($saldolist['after'] as $key => $value)
+				$saldolist['after'][$key] = $value;
+			foreach($saldolist['before'] as $key => $value)
+				$saldolist['before'][$key] = $value;
 		}
 
-		$saldolist[userid] = $id;
+		$saldolist['userid'] = $id;
 		return $saldolist;
 
 	}
 
 	function UserStats()
 	{
-		$result[total] = $this->ADB->GetOne("SELECT COUNT(id) FROM users");
-		$result[connected] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=3");
-		$result[awaiting] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=2");
-		$result[interested] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=1");
-		$result[debt] = 0;
-		$result[debtvalue] = 0;
+		$result['total'] = $this->ADB->GetOne("SELECT COUNT(id) FROM users");
+		$result['connected'] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=3");
+		$result['awaiting'] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=2");
+		$result['interested'] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=1");
+		$result['debt'] = 0;
+		$result['debtvalue'] = 0;
 		if($users = $this->ADB->GetAll("SELECT id FROM users"))
 			foreach($users as $idx => $row)
 			{
@@ -933,11 +925,11 @@ class LMS
 			break;
 		}
 
-		$nodelist[total] = sizeof($nodelist);
-		$nodelist[order] = $order;
-		$nodelist[direction] = $direction;
-		$nodelist[totalon] = $totalon;
-		$nodelist[totaloff] = $totaloff;
+		$nodelist['total'] = sizeof($nodelist);
+		$nodelist['order'] = $order;
+		$nodelist['direction'] = $direction;
+		$nodelist['totalon'] = $totalon;
+		$nodelist['totaloff'] = $totaloff;
 
 		return $nodelist;
 	}
@@ -1138,10 +1130,10 @@ class LMS
 	function GetTariff($id)
 	{
 		$result = $this->ADB->GetRow("SELECT id, name, value, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
-		$result[count] = $this->GetUsersWithTariff($id);
-		$result[totalval] = $result[value] * $result[count];
-		$result[users] = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat('upper(lastname)',"' '",'name')." AS username FROM users WHERE tariff=? AND status=3 ORDER BY username",array($id));
-		$result[rows] = ceil(sizeof($result[users])/2);
+		$result['count'] = $this->GetUsersWithTariff($id);
+		$result['totalval'] = $result['value'] * $result['count'];
+		$result['users'] = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat('upper(lastname)',"' '",'name')." AS username FROM users WHERE tariff=? AND status=3 ORDER BY username",array($id));
+		$result['rows'] = ceil(sizeof($result['users'])/2);
 		return $result;
 	}
 

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-// Common functions, that making it in class would be nonsense :)
+// Common functions, that making it in class would be a nonsense :)
 
-// Execute a system program. return a trim()'d result.
+// Execute a system program. return a trim()med result.
 // does very crude pipe checking.  you need ' | ' for it to work
 // ie $program = execute_program('netstat', '-anp | grep LIST');
 // NOT $program = execute_program('netstat', '-anp|grep LIST');
@@ -232,18 +232,12 @@ function hostname()
 		default:
 			$return = "nieznany, ".PHP_OS;
 	}
-	if($hostname=="")
-		$hostname="N.A.";
-	return $hostname;
+	return ($hostname=="") ? "N.A." : $hostname;
 }
 
 function ip_long($sip)
 {
-	if(check_ip($sip)){
-		return sprintf("%u",ip2long($sip));
-	}else{
-		return false;
-	}
+	return (check_ip($sip)) ? sprintf("%u",ip2long($sip)) : false;
 }
 
 function check_ip($ip)
@@ -442,7 +436,7 @@ function writesyslog($message,$type)
 	
 		    	$access = date("Y/m/d H:i:s");
 
-			syslog($type,"$message (at $access from ".$_SERVER[REMOTE_ADDR]." (".$_SERVER[HTTP_USER_AGENT]."))");
+			syslog($type,"$message (at $access from ".$_SERVER['REMOTE_ADDR']." (".$_SERVER['HTTP_USER_AGENT']."))");
 
 			closelog();
 
