@@ -54,13 +54,13 @@ function chkconfig($value,$default=FALSE)
 // Define directories and configuration vars
 
 $_SYSTEM_DIR = (! $_CONFIG[directories]['sys_dir'] ? getcwd() : $_CONFIG[directories]['sys_dir']);
-$_BACKUP_DIR = (! $_CONFIG[directories]['backup_dir'] ? $_SYSTEM_DIR."/backups/" : $_CONFIG[directories]['backup_dir']);
-$_LIB_DIR = (! $_CONFIG[directories]['lib_dir'] ? $_SYSTEM_DIR."/lib/" : $_CONFIG[directories]['lib_dir']);
-$_MODULES_DIR = (! $_CONFIG[directories]['modules_dir'] ? $_SYSTEM_DIR."/modules/" : $_CONFIG[directories]['modules_dir']);
-$_SMARTY_DIR = (! $_CONFIG[directories]['smarty_dir'] ? $_LIB_DIR."/Smarty/" : $_CONFIG[directories]['smarty_dir']);
+$_BACKUP_DIR = (! $_CONFIG[directories]['backup_dir'] ? $_SYSTEM_DIR."/backups" : $_CONFIG[directories]['backup_dir']);
+$_LIB_DIR = (! $_CONFIG[directories]['lib_dir'] ? $_SYSTEM_DIR."/lib" : $_CONFIG[directories]['lib_dir']);
+$_MODULES_DIR = (! $_CONFIG[directories]['modules_dir'] ? $_SYSTEM_DIR."/modules" : $_CONFIG[directories]['modules_dir']);
+$_SMARTY_DIR = (! $_CONFIG[directories]['smarty_dir'] ? $_LIB_DIR."/Smarty" : $_CONFIG[directories]['smarty_dir']);
 $_SMARTY_COMPILE_DIR = (! $_CONFIG[directories]['smarty_compile_dir'] ? $_SYSTEM_DIR."/templates_c" : $_CONFIG[directories]['smarty_compile_dir']);
 $_SMARTY_TEMPLATES_DIR = (! $_CONFIG[directories]['smarty_templates_dir'] ? $_SYSTEM_DIR."/templates" : $_CONFIG[directories]['smarty_templates_dir']);
-$_ADODB_DIR = (! $_CONFIG[directories]['adodb_dir'] ? $_LIB_DIR."/adodb/" : $_CONFIG[directories]['adodb_dir']);
+$_ADODB_DIR = (! $_CONFIG[directories]['adodb_dir'] ? $_LIB_DIR."/adodb" : $_CONFIG[directories]['adodb_dir']);
 $_TIMEOUT = (! $_CONFIG[phpui]['timeout'] ? 600 : $_CONFIG[phpui]['timeout']);
 $_FORCE_SSL = chkconfig($_CONFIG[phpui]['force_ssl']);
 
@@ -90,8 +90,8 @@ require_once($_LIB_DIR."/common.php");
 require_once($_LIB_DIR."/checkip.php");
 require_once($_LIB_DIR."/checkdirs.php");
 require_once($_LIB_DIR."/unstrip.php");
-require_once($_SMARTY_DIR.'/Smarty.class.php');
-require_once($_ADODB_DIR.'/adodb.inc.php');
+require_once($_SMARTY_DIR."/Smarty.class.php");
+require_once($_ADODB_DIR."/adodb.inc.php");
 require_once($_LIB_DIR."/LMS.class.php");
 require_once($_LIB_DIR."/Session.class.php");
 require_once($_LIB_DIR."/leftmenu.php");
