@@ -238,8 +238,8 @@ else
 		imageline($im, $src_px+4, $src_py+4, $dst_px+4, $dst_py+4, $red);
 	}
 
-	$im_nd = imagecreatefromgif('img/netdev.gif');
-	$im_n = imagecreatefromgif('img/node.gif');
+	$im_nd = imagecreatefrompng('img/netdev.png');
+	$im_n = imagecreatefrompng('img/node.png');
 
 //	print_r($nodemap);
 	
