@@ -115,7 +115,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('arping','networks') || '';
-my $arping = $ini->val('arping','arping_binary') || '/lms/sbin/arping';
+my $arping = $ini->val('arping','arping_binary') || '/sbin/arping';
 
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
