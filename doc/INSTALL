@@ -15,8 +15,8 @@ lekturê.
 Po pierwsze: serwer WWW.
 
 Generalnie,   LMS   wymaga   PHP,  wiêc  jakikolwiek  serwer  WWW  obs³uguj±cy
-interpreter  PHP.  Oczywi¶cie  preferowany to Apache 1.3.26 (czyli najnowszy),
-ale na starszych nie powinno byæ najmniejszych problemów.
+interpreter  PHP.  Oczywi¶cie  preferowany to Apache 1.3.26 (czyli tymczasowo
+najnowszy), ale na starszych nie powinno byæ najmniejszych problemów.
 
 Po drugie: interpreter PHP.
 
@@ -87,6 +87,9 @@ Do tego jeszcze ADOdb:
 wget http://phplens.com/lens/dl/adodb320.tgz
 tar -xzf adodb320.tgz
 
+W Debianie unstable wystarczy:
+apt-get install libphp-adodb
+
 Pozostaje  nam stworzyæ w katalogu z LMS podkatalogi templates_c i backups
 (o ile go nie ma, bo bardzo niewykluczone ¿e pewien pacan pakuj±cy LMS'a zapomni 
 go dodaæ) oraz zmieniæ jego w³a¶ciciela na u¿ytkownika z którego uruchominy jest
@@ -117,7 +120,7 @@ mysql> use lms;
 mysql> source doc/lms.mysql;
 
 Teraz,  przyda³oby  siê  utworzyæ pierwsze konto administratora. Tak, wiem, to
-jest  pokrêcone i bardzo user-friendly, ale sorry, jako¶ nie doszed³em jeszcze
+jest pokrêcone i bardzo "user-friendly", ale sorry, jako¶ nie doszed³em jeszcze
 do napisania wizarda który wszystko zrobi ³adnie za u¿ytkownika:
 
 mysql> insert into admins (login, passwd) values ('login', '')
@@ -183,17 +186,21 @@ lms-eachmonth do crona. Przyk³adowa linijka wygl±da tak:
 
 0 0 6 * *       /usr/sbin/lms-eachmonth
 
-Taki zapisa spowoduje ¿e ka¿dego szóstego dnia miesi±ca, o godzinie 0:00,
-ze ka¿dy u¿ytkownik zostanie obci±¿ony op³at± abonamentow± w wysoko¶ci
-przewidzianej przez taryfê w jakiej siê znajduje. Oczywi¶cie zamiast
-szóstego mo¿e byæ inny dzieñ, jednak¿e radzê pamiêtaæ, ¿e 31 ka¿dego miesi±ca
-wystêpuje 8 razy do roku, a 29 luty wystêpuje co cztery lata, wiêc najpó¼niej
-op³aty mo¿na pobieraæ dwudziestego ósmego ka¿dego miesi±ca, odwa¿ni mog± to 
-zrobiæ w skrypcie /etc/cron.d/monthly obs³ugiwanym przez wiêkszo¶æ 
-wspó³czesnych dystrybucji, wykonywanym dok³adnie raz na miesi±c, czy wrêcz 
-w postaci wpisów w atd (demonie uruchamiaj±cym polecenia nie 'wcze¶niej 
-ni¿'). To dla tych którzy maj± np 'kalendarz naliczania' ostatniego dnia 
-miesi±ca.
+lub
+
+@monthly	/usr/sbin/lms-eachmonth
+
+Pierwszy zapis spowoduje ¿e ka¿dego szóstego dnia miesi±ca, o godzinie 0:00,
+ze  ka¿dy u¿ytkownik  zostanie obci±¿ony op³at±  abonamentow± w wysoko¶ci
+przewidzianej przez taryfê w jakiej siê znajduje, natomiast drugi zrobi to
+samo lecz 1szego ka¿dego miesi±ca. Oczywi¶cie zamiast szóstego mo¿e byæ inny
+dzieñ, jednak¿e  radzê pamiêtaæ, ¿e 31 ka¿dego miesi±ca wystêpuje 8 razy do
+roku, a 29 luty wystêpuje co  cztery lata, wiêc najpó¼niej  op³aty mo¿na
+pobieraæ  dwudziestego ósmego ka¿dego miesi±ca,  odwa¿ni mog± to zrobiæ w
+skrypcie  /etc/cron.d/monthly  obs³ugiwanym przez wiêkszo¶æ  wspó³czesnych
+dystrybucji, wykonywanym dok³adnie raz na miesi±c, czy wrêcz w postaci wpisów
+w atd (demonie uruchamiaj±cym polecenia nie 'wcze¶niej ni¿'). To dla tych
+którzy maj± np 'kalendarz naliczania' ostatniego dnia miesi±ca.
 
 $ at -f /usr/sbin/lms-eachmonth 6:00 01/31/01
 $ at -f /usr/sbin/lms-eachmonth 6:00 02/28/01
