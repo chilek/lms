@@ -30,7 +30,7 @@ if(! $LMS->NetDevExists($_GET[id]))
 	die;
 }		
 
-$edit = TRUE;
+$edit = data;
 
 if($_GET[action]=="replace")
 {
@@ -83,6 +83,39 @@ if($_GET[action]=="connectnode")
 	}
 	else
 		header("Location: ?m=netdevinfo&id=".$_GET[id]);
+}
+
+// NetDevIp - Narazie tylko podstawa, pu¼niej sprawdzanie b³êdów i reszta
+
+if($_GET[action]=="addip")
+{
+	$edit = 'addip';
+}
+
+if($_GET[action]=="editip")
+{
+	$nodeipdata=$LMS->GetNode($_GET[netdev]);
+	$SMARTY->assign("nodeipdata",$nodeipdata);
+	$edit = 'ip';
+}
+
+if($_GET[action]=="formaddip")
+{
+	$netdevipdata = $_POST['ipadd'];
+	$netdevipdata['ownerid']=0;
+	$LMS->NetDevLinkNode($LMS->NodeAdd($netdevipdata),$_GET[id]);
+	header("Location: ?m=netdevinfo&id=".$_GET[id]);
+	die;
+}
+
+if($_GET[action]=="formeditip")
+{
+	$netdevipdata = $_POST['ipadd'];
+	$netdevipdata['ownerid']=0;
+	$netdevipdata['netdev']=$_GET[id];
+	$LMS->NodeUpdate($netdevipdata);
+	header("Location: ?m=netdevinfo&id=".$_GET[id]);
+	die;
 }
 
 $netdevdata = $_POST[netdev];
@@ -142,8 +175,12 @@ $SMARTY->assign("nodelist",$nodelist);
 $SMARTY->assign("restnetdevlist",$netdevlist);
 $SMARTY->assign("replacelist",$replacelist);
 
-if($edit)
+if($edit == 'data')
 	$SMARTY->display('netdevedit.html');
+else if($edit == 'ip')
+	$SMARTY->display('netdeveditip.html');
+else if($edit == 'addip')
+	$SMARTY->display('netdevaddip.html');
 else
 	$SMARTY->display('netdevinfo.html');
 
