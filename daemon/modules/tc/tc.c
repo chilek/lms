@@ -149,6 +149,8 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					int n_downrate = atoi(downrate);					
 					int n_climit = atoi(climit);
 					int n_plimit = atoi(plimit);
+					
+					int got_node = 0;
 
 					if( (nres = g->db_pquery(" \
 						SELECT INET_NTOA(ipaddr) AS ip, ipaddr, mac, name \
@@ -182,6 +184,28 @@ void reload(GLOBAL *g, struct tc_module *tc)
 																		
 							if(!nc || v!=nc)
 							{
+								got_node = 1;
+							
+								if(h_climit)
+								{
+									g->str_replace(&cl, "%climit", itoa(h_climit));
+									g->str_replace(&cl, "%n", name);
+	    								g->str_replace(&cl, "%i", ipaddr);
+									g->str_replace(&cl, "%m", mac);
+									g->str_replace(&cl, "%x", itoa(x));
+									fprintf(fh, "%s", cl);
+								}
+								
+								if(h_plimit)
+								{
+									g->str_replace(&pl, "%plimit", itoa(h_plimit));
+									g->str_replace(&pl, "%n", name);
+									g->str_replace(&pl, "%i", ipaddr);
+									g->str_replace(&pl, "%m", mac);
+									g->str_replace(&pl, "%x", itoa(x));
+									fprintf(fh, "%s", pl);
+								}	
+							
 								if(h_uprate && h_downrate)
 								{
 									g->str_replace(&mark_up, "%n", name);
@@ -224,31 +248,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 									}
 								}
 								
-								if(h_climit)
-								{
-									g->str_replace(&cl, "%climit", itoa(h_climit));
-									g->str_replace(&cl, "%n", name);
-	    								g->str_replace(&cl, "%i", ipaddr);
-									g->str_replace(&cl, "%m", mac);
-									g->str_replace(&cl, "%x", itoa(x));
-									fprintf(fh, "%s", cl);
-								}
-								
-								if(h_plimit)
-								{
-									g->str_replace(&pl, "%plimit", itoa(h_plimit));
-									g->str_replace(&pl, "%n", name);
-									g->str_replace(&pl, "%i", ipaddr);
-									g->str_replace(&pl, "%m", mac);
-									g->str_replace(&pl, "%x", itoa(x));
-									fprintf(fh, "%s", pl);
-								}	
-							
-							
 								if(tc->one_class_per_host) x++;
 							}
 							
-							if(!tc->one_class_per_host && j==nres->nrows-1 && n_downrate && n_uprate)
+							if(!tc->one_class_per_host && j==nres->nrows-1 && got_node && n_downrate && n_uprate)
 							{
 								g->str_replace(&htb_up, "%n", name);
 								g->str_replace(&htb_up, "%x", itoa(x));
