@@ -693,6 +693,7 @@ class LMS
 			$deleted = 0;
 			
 		$disabled = ($state == 5) ? 1 : 0;
+		$indebted = ($state == 6) ? 1 : 0;
 		
 		if(!isset($state) || $state>3)
 			$state = 3;
@@ -709,6 +710,7 @@ class LMS
 				.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
 				.($usergroup ? ' AND usergroupid='.$usergroup : '') 
 				.' GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, users.address, gguin, nip, pesel, zip, city, info '
+				.($indebted ? ' HAVING SUM((type * -2 + 7) * value) < 0 ' : '')
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{

@@ -32,7 +32,7 @@ $access[table][0][name]		= "pe³en dostêp";
 $access[table][0][allow_reg]	= "^.*$";
 
 $access[table][1][name]		= "odczyt wszystkich danych";
-$access[table][1][allow_reg]	= "^((admin|balance|db|net|node|netdev|tariff|payment|user|usergroup)(list|list(debt|disc)|info|view|debt|search|balance)|netdevmap|print)$";
+$access[table][1][allow_reg]	= "^((admin|balance|db|net|node|netdev|tariff|payment|user|usergroup)(list|info|view|search|balance)|netdevmap|print)$";
 
 $access[table][2][name]		= "w³±czanie i od³±czanie komputerów";
 $access[table][2][allow_reg]	= "^nodeset$";

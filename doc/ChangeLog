@@ -41,8 +41,9 @@ wersja 1.3.3 (??/??/2004):
   - dodane skrypty lms-makewarnings, lms-makemessages (chilek)
   - dane administratorów usuniêtych nie s± usuwane z bazy (alec)
   - wydruki list u¿ytkowników mo¿na filtrowaæ wg grupy (alec)
-  - do listy u¿ytkowników dodany filtr 'usuniêci' (alec)
-  - mo¿liwo¶æ przegl±dania u¿ytkowników 'od³±czonych' (chilek)
+  - do listy u¿ytkowników dodane filtry 'usuniêci', 'od³±czeni'
+    i 'zad³u¿eni', w zwi±zku z tym znika menu U¿ytkownicy->Od³±czeni
+    i U¿ytkownicy->Zad³u¿eni (alec/chilek)
   - w wersji demona dla SQLite dodane funkcje UPPER() i LOWER()
     uwzglêdniaj±ce systemowe locales, dla prawid³owego kapitalizowania
     polskich znaków diakrytycznych (alec)
