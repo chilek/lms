@@ -31,7 +31,6 @@ class Session {
 	var $logname;
 	var $passwd;
 	var $islogged = FALSE;
-	var $ADB;
 	var $last;
 	var $lastip;
 	var $error;
