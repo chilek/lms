@@ -40,7 +40,7 @@
 	</TR>
 	{if $listdata.totalpos != 0}
 	<TR class="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="10">
+		<TD WIDTH="100%" class="fall" COLSPAN="11">
 			<B>Strona:
 				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$balancelist step=$pagelimit}
@@ -87,7 +87,7 @@
 		<TD width="1%" nowrap valign="top">
 			{if $balancelist[balancelist].userid}<NOBR><A HREF="?m=userbalance&id={$balancelist[balancelist].userid}">{$balancelist[balancelist].username|truncate:20:"..."}</A></NOBR>{else} - {/if}
 		</TD>
-		<TD width="91%">
+		<TD width="90%">
 			{$balancelist[balancelist].comment}
 		</TD>
 		<TD width="1%" class="fright">
@@ -107,7 +107,7 @@
 	{/section}
 	{if $listdata.totalpos != 0}
 	<TR class="dark">
-		<TD WIDTH="100%" class="fall" COLSPAN="10">
+		<TD WIDTH="100%" class="fall" COLSPAN="11">
 			<B>Strona:
 				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$balancelist step=$pagelimit}
@@ -135,7 +135,7 @@
 			{$listdata.expense|string_format:"%01.2f"} z³<HR>
 			{$listdata.total|string_format:"%01.2f"} z³</NOBR>
 		</TD>
-		<TD width="95%" colspan="5" class="frightu">
+		<TD width="95%" colspan="6" class="frightu">
 			&nbsp;
 		</TD>
 	</TR>
