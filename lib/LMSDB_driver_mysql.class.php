@@ -34,10 +34,10 @@ class LMSDB_driver_mysql extends LMSDB_common
 	var $_dbtype = 'mysql';
 	var $iconv = NULL;
 
-	function LMSDB_driver_mysql($dbhost,$dbuser,$dbpasswd,$dbname)
+	function LMSDB_driver_mysql($dbhost, $dbuser, $dbpasswd, $dbname)
 	{
 		$this->_version .= ' (core: '.eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->_revision).' / driver: '.$this->_dbtype.' '.eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$').')';
-		$this->Connect($dbhost,$dbuser,$dbpasswd,$dbname);
+		$this->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
 	}
 	
 	function _driver_dbversion()
@@ -45,9 +45,9 @@ class LMSDB_driver_mysql extends LMSDB_common
 		return mysql_get_server_info();
 	}
 
-	function _driver_connect($dbhost,$dbuser,$dbpasswd,$dbname)
+	function _driver_connect($dbhost, $dbuser, $dbpasswd, $dbname)
 	{
-		if($this->_dblink = mysql_connect($dbhost,$dbuser,$dbpasswd))
+		if($this->_dblink = @mysql_connect($dbhost,$dbuser,$dbpasswd))
 		{
 			$this->_dbhost = $dbhost;
 			$this->_dbuser = $dbuser;
@@ -60,9 +60,20 @@ class LMSDB_driver_mysql extends LMSDB_common
 		return $this->_dblink;
 	}
 
+	function _driver_shutdown()
+	{
+		$this->_loaded = FALSE;
+		// mysql_close($this->_dblink); - apparently, mysql_close() is automagicly called after end of the script...
+	}
+	
 	function _driver_geterror()
 	{
-		return mysql_error($this->_dblink);
+		if($this->_dblink)
+			return mysql_error($this->_dblink);
+		elseif($this->_query)
+			return 'We\'re not connected!';
+		else
+			return mysql_error();
 	}
 
 	function _driver_disconnect()
@@ -72,7 +83,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 	
 	function _driver_selectdb($dbname)
 	{
-		if($result = mysql_select_db($dbname,$this->_dblink))
+		if($result = mysql_select_db($dbname, $this->_dblink))
 			$this->_dbname = $dbname;
 		return $result;
 	}
@@ -84,7 +95,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 		if($this->iconv)
 			$query = iconv('UTF-8', $this->iconv, $query);
 
-		if($this->_result = mysql_query($query,$this->_dblink))
+		if($this->_result = mysql_query($query, $this->_dblink))
 			$this->_error = FALSE;
 		else
 			$this->_error = TRUE;
@@ -95,7 +106,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 	{
 		if(! $this->_error)
 		{
-			$result =  mysql_fetch_array($this->_result,MYSQL_ASSOC);
+			$result =  mysql_fetch_array($this->_result, MYSQL_ASSOC);
 			
 			if(!$this->iconv)
 				return $result;
@@ -115,7 +126,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 	{
 		if(! $this->_error)
 		{
-			$result = mysql_fetch_array($this->_result,MYSQL_NUM);
+			$result = mysql_fetch_array($this->_result, MYSQL_NUM);
 			
 			if(!$this->iconv)
 				return $result;
@@ -151,13 +162,13 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 	function _driver_concat($input)
 	{
-		$return = implode(', ',$input);
+		$return = implode(', ', $input);
 		return 'CONCAT('.$return.')';
 	}
 
 	function _driver_listtables()
 	{
-		$this->_result = mysql_list_tables($this->_dbname,$this->_dblink);
+		$this->_result = mysql_list_tables($this->_dbname, $this->_dblink);
 		return $this->GetCol();
 	}
 
