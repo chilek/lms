@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.1.5 (18/10.2003):
+wersja 1.1.5 (18.10.2003):
 
   - dodane opcje do ustawienie w³a¶ciciela oraz praw dostêpu skryptów
     tworzonych przez lms-traffic-* (lukasz)
@@ -11,6 +11,9 @@ wersja 1.1.5 (18/10.2003):
     programu nbtscan w systemie (alec)
   - poprawione wyszukiwanie komputerów po adresie IP, mo¿liwe jest wyszukiwanie
     tekstowe po fragmencie adresu (alec)
+  - na wykresach statystyk dostêpne s± dane komputerów usuniêtych z bazy oraz
+    dodano opcja usuwania statystyk tych komputerów podczas kompaktowania 
+    bazy (alec)
 
 wersja 1.1.4 Tanith (03/10/2003):
   
