@@ -42,9 +42,9 @@
 		<TD CLASS="FRIGHTU" WIDTH="98%">
 			{t}Customers:{/t}
 			<SELECT NAME="mailing[group]" {tip trigger="group" text="Select recipients group"}>
-				<option value="3"{if $mailing.group == "3"} SELECTED{/if}>{t}connected{/t}</option>
+				<option value="3"{if $mailing.group == "3"} SELECTED{/if}>{t}connected {/t}</option>
 				<option value="2"{if $mailing.group == "2"} SELECTED{/if}>{t}waiting{/t}</option>
-				<option value="1"{if $mailing.group == "1"} SELECTED{/if}>{t}interested{/t}</option>
+				<option value="1"{if $mailing.group == "1"} SELECTED{/if}>{t}interested {/t}</option>
 				<option value="0"{if !$mailing.group} SELECTED{/if}>{t}- all customers -{/t}</option>
 			</SELECT>&nbsp;
 			{t}Network:{/t}
