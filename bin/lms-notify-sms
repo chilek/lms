@@ -31,7 +31,7 @@ use POSIX qw(strftime);
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
-my $_version = '1.0-cvs';
+my $_version = '1.5-cvs';
 my $my_template;
 
 my %options = (
@@ -204,8 +204,57 @@ while (my $row = $dbq->fetchrow_hashref())
 				}
 
 				{
+<<<<<<< lms-notify-sms
+					$line =~ s/\%B/$balance/g;
+					{ 	
+						my $amount = -$balance;
+						$line =~ s/\%b/$amount/g; 	
+					}
+
+					{ 
+						my $year = strftime( "%Y", localtime());
+						$line =~ s/\%date-y/$year/; 
+					}
+
+					{
+						my $phone = $row->{'phone1'};
+						$line =~ s/\%phone1/$phone/;
+					}
+
+					{
+						my $month = strftime ( "%m", localtime()) ; 
+						$line =~ s/\%date-m/$month/;
+					}
+
+					if ($line =~ /\%saldo/) {
+						my $saldo_dbq = $dbase->prepare("SELECT SUM(value) FROM cash WHERE 
+							userid='$row->{'id'}' AND (type>='4' )") ; 
+						$saldo_dbq->execute();
+						my $ow_s = $saldo_dbq->fetchrow_hashref();
+						$line =~ s/\%saldo/$ow_s->{'SUM(value)'}/;
+					}
+
+
+					if ($line =~ /\%abonament/) {
+						my $saldo_dbq = $dbase->prepare("SELECT users.id,tariffs.value,tariff FROM users,tariffs WHERE 
+							users.id='$row->{'id'}' AND tariffs.id=users.tariff") ; 
+						$saldo_dbq->execute();
+						my $ow_s = $saldo_dbq->fetchrow_hashref();
+						$line =~ s/\%abonament/$ow_s->{'value'}/;
+					}
+
+					$sms_data+=$line;
+
+					system("echo $sms_data | gnokii --sendsms $phone1");
+					}
+					else
+					if(!$quiet)
+					{
+						print STDOUT "This user don't have any sms capable number in database, call him if You can ($row->{'phone1'}).\n";
+=======
 					my $month = strftime ( "%m", localtime()) ; 
 					$line =~ s/\%date-m/$month/;
+>>>>>>> 1.14
 				}
 
 				{
