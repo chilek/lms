@@ -270,7 +270,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 	
 	if(!$queue)
 	{
-		print STDERR "Fatal error: Queue ID not recognized, exiting.\n";
+		print STDERR "Fatal error: Queue ID not found, exiting.\n";
 		exit 1;
 	}
 
