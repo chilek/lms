@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.3.7 (??/??/2004):
+wersja 1.4.0rc1 ??? (??/09/2004):
 
   - w lms-makedhcpconf hosty s± sortowane (alec)
   - drukowanie zg³oszeñ (alec)
@@ -47,6 +47,9 @@ wersja 1.3.7 (??/??/2004):
     nl2br() i htmlspecialchars() (alec)
   - na mapie zwiêkszony do 24 limit urz±dzeñ pod³±czonych do jednego urz±dzenia
     oraz usuniêty b³±d pokrywaj±cych siê linków (alec)
+  - lms-rtparser: przebudowany, przetestowany i dodana dokumentacja (alec)
+  - dopracowane wysy³anie wiadomo¶ci w Helpdesku (alec)
+  - obs³uga za³±czników w Helpdesku (alec)
 
 wersja 1.3.6 Osiris (01/09/2004);
 
