@@ -168,7 +168,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 #endif
 	}
 	else
-		syslog(LOG_ERR, "mod_dhcp: Unable to write a temporary file '%s'", dhcp->file);
+		syslog(LOG_ERR, "[%s/dhcp] Unable to write a temporary file '%s'", dhcp->base.instance, dhcp->file);
 	
 	free(dhcp->prefix);
 	free(dhcp->append);

@@ -81,7 +81,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 #endif
 	}
 	else
-		syslog(LOG_ERR, "mod_hostfile: Unable to write a temporary file '%s'", hm->file);
+		syslog(LOG_ERR, "[%s/hostfile] Unable to write a temporary file '%s'", hm->base.instance, hm->file);
 	
 	free(hm->prefix);
 	free(hm->append);
