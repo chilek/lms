@@ -9,6 +9,7 @@ wersja 1.4.2 (??/??/????):
   - w polu email przy edycji/dodawaniu u¿ytkownika mo¿na wpisaæ tylko jeden 
     adres (alec)
   - poprawiona walidacja PINu przy dodawaniu u¿ytkownika (alec)
+  - poprawione dzia³anie opcji --quiet w lms-payments (alec)
 
 wersja 1.4.1 Teyla (15/11/2004):
 
