@@ -25,7 +25,7 @@
 		</TD>
 		<TD width="1%" class="fbt" ALIGN="right" VALIGN="TOP">
 			<a href="?m=userlist&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{$lang.balance}:</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			Abonament:
+			{$lang.fee}:
 		</TD>
 		<TD width="1%" class="frightu">
 			<NOBR><B>{$lang.total}: {$listdata.total}</B></NOBR>
@@ -37,10 +37,10 @@
 				<B>{$lang.show_only}:</B>
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="userlist">
 				<SELECT SIZE="1" CLASS="bold" NAME="s" ONCHANGE="document.choosefilter.submit();">
-					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>pod³±czeni</OPTION>
-					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>oczekuj±cy</OPTION>
-					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>zainteresowani</OPTION>
-					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>wszyscy</OPTION>
+					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>{$lang.connected}</OPTION>
+					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>{$lang.awaiting}</OPTION>
+					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{$lang.zainteresowany}</OPTION>
+					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{$lang.all}</OPTION>
 				</SELECT>
 			</FORM></P>
 		</TD>
@@ -113,8 +113,8 @@
 			<IMG SRC="img/info2.gif" border="0" alt="" align="absmiddle"> <B>{$lang.total}: {$listdata.total}</B>	
 		</TD>
 		<TD class="fbt" align="right">
-			<B>Zaleg³o¶ci:<BR>
-			Nadp³aty:</B>
+			<B>{$lang.mortgage}:<BR>
+				{$lang.excess_payment}:</B>
 		</TD>
 		<TD class="fbt" align="right" COLSPAN="2"> 
 			<B>{$listdata.below|string_format:"%01.2f"} {$lang.currency}<BR>
