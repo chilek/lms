@@ -1473,11 +1473,11 @@ echo '<H1>Generowanie losowych danych</H1>';
 if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 {
 	echo '<B>Czyszczê bazê danych...</B><BR>';
-	$ADB->Execute('DELETE FROM nodes');
-	$ADB->Execute('DELETE FROM users');
-	$ADB->Execute('DELETE FROM cash');
-	$ADB->Execute('DELETE FROM networks');
-	$ADB->Execute('DELETE FROM tariffs');
+	$DB->Execute('DELETE FROM nodes');
+	$DB->Execute('DELETE FROM users');
+	$DB->Execute('DELETE FROM cash');
+	$DB->Execute('DELETE FROM networks');
+	$DB->Execute('DELETE FROM tariffs');
 	echo '<B>Generuje taryfy...</B><BR>';
 	$tariffdata = array( name => 'Lite', description => 'Taryfa Lite', value => '30', uprate => '64', downrate => '128');
 	$LMS->TariffAdd($tariffdata);
