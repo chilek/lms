@@ -668,9 +668,9 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->DB->GetAll("SELECT users.id AS id, ".$this->DB->Concat("UPPER(lastname)","' '","users.name")." AS username, status, email, phone1, address, gguin, nip, pesel, zip, city, info, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 ".($state !=0 ? " AND status = '".$state."'":"")." GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info ".($sqlord !="" ? $sqlord." ".$direction:"")))
+		if($userlist = $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, email, phone1, address, gguin, nip, pesel, zip, city, info, SUM((type * -2 + 7) * value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (type = 3 OR type = 4) WHERE deleted = 0 '.($state !=0 ? ' AND status = '.$state :'').' GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info '.($sqlord !='' ? $sqlord.' '.$direction:'')))
 		{
-			$tariffvalues = $this->DB->GetAllByKey("SELECT users.id AS id, SUM(value) AS value FROM users, assignments, tariffs WHERE users.id = assignments.userid AND tariffs.id = tariffid AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) GROUP by users.id",'id');
+			$tariffvalues = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value) AS value FROM users, assignments, tariffs WHERE users.id = assignments.userid AND tariffs.id = tariffid AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) GROUP by users.id','id');
 
 			$access = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid",'id');
 			$warning = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid",'id');
@@ -1376,17 +1376,22 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	{
 		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate FROM tariffs ORDER BY name ASC"))
 		{
+			$week = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 GROUP BY tariffid', 'tariffid');
+			$month = $this->DB->GetAllByKey('SELECT tariffid, SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 GROUP BY tariffid', 'tariffid');
+			$quarter = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)/4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 GROUP BY tariffid', 'tariffid');
+			$year = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 GROUP BY tariffid', 'tariffid');
+
 			foreach($tarifflist as $idx => $row)
 			{
 				$tarifflist[$idx]['users'] = $this->GetUsersWithTariff($row['id']);
 				$tarifflist[$idx]['userscount'] = sizeof($this->DB->GetCol("SELECT userid FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY userid", array($row['id'])));
-				$tarifflist[$idx]['income'] = $tarifflist[$idx]['users'] * $row['value'];
+				// avg monthly income
+				$tarifflist[$idx]['income'] = $week[$row['id']]['value'] + $month[$row['id']]['value'] + $quarter[$row['id']]['value'] + $year[$row['id']]['value'];
 				$totalincome += $tarifflist[$idx]['income'];
 				$totalusers += $tarifflist[$idx]['users'];
 				$totalcount += $tarifflist[$idx]['userscount'];
 			}
 		}
-		
 		$tarifflist['total'] = sizeof($tarifflist);
 		$tarifflist['totalincome'] = $totalincome;
 		$tarifflist['totalusers'] = $totalusers;
@@ -1456,11 +1461,19 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetTariff($id)
 	{
-		$result = $this->DB->GetRow("SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate FROM tariffs WHERE id=?", array($id));
-		$result['users'] = $this->DB->GetAll("SELECT users.id AS id, COUNT(users.id) AS cnt, ".$this->DB->Concat('upper(lastname)',"' '",'name')." AS username FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY users.id, username", array($id));
+		$result = $this->DB->GetRow('SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate FROM tariffs WHERE id=?', array($id));
+		$result['users'] = $this->DB->GetAll('SELECT users.id AS id, COUNT(users.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS username FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY users.id, username', array($id));
+		
+		$week = $this->DB->GetOne('SELECT SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND tariffid = ?', array($id));
+		$month = $this->DB->GetOne('SELECT SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 AND tariffid = ?', array($id));
+		$quarter = $this->DB->GetOne('SELECT SUM(value)/4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 AND tariffid = ?', array($id));
+		$year = $this->DB->GetOne('SELECT SUM(value)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 AND tariffid = ?', array($id));
+		
 		$result['userscount'] = sizeof($result['users']);
 		$result['count'] = $this->GetUsersWithTariff($id);
-		$result['totalval'] = $result['value'] * $result['count'];
+		// avg monthly income
+		$result['totalval'] = $week + $month + $quarter + $year;
+
 		$result['rows'] = ceil(sizeof($result['users'])/2);
 		return $result;
 	}
