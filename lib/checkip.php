@@ -46,7 +46,6 @@ if($_CONFIG[phpui][allow_from])
 	
 		if(isipinstrict($ipaddr,$net,$mask))
 			$isin = TRUE;
-
 	}
 
 	if(!$isin)
@@ -65,8 +64,6 @@ if($_CONFIG[phpui][allow_from])
 		';
 		exit(0);
 	}
-		
-
 }
 
 ?>

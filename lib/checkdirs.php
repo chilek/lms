@@ -24,18 +24,16 @@
  *  $Id$
  */
 
-
-
 if(!is_dir($_SMARTY_COMPILE_DIR))
-	die("Brakuje mi katalogu <B>".$_SMARTY_COMPILE_DIR."</B> - bêdê wdziêczny jak kto¶ go utworzy.");
+	die(sprintf(_("Missing directory <B>%s</B>. Can anybody make them?"),$_SMARTY_COMPILE_DIR));
 
 if(!is_writable($_SMARTY_COMPILE_DIR))
-	die("Nie mogê zapisywaæ do katalogu <B>".$_SMARTY_COMPILE_DIR."</B> - móg³by¶ wykonaæ komendê:<BR><pre>chown ".posix_geteuid().".".posix_getegid()." ".$_SMARTY_COMPILE_DIR."\nchmod 755 ".$_SMARTY_COMPILE_DIR."</pre><BR>Pomo¿e mi to poprawnie dzia³aæ. Dziêki.");
+	die(sprintf(_("Can't write to directory <B>%s</B>. Can You run: <BR><pre>chown %s.%s %s\nchmod 755 %s</pre><BR>This helps me to work. Thanks."), $_SMARTY_COMPILE_DIR, posix_geteuid(), posix_getegid(), $_SMARTY_COMPILE_DIR, $_SMARTY_COMPILE_DIR));
 
 if(!is_dir($_BACKUP_DIR))
-	die("Brakuje mi katalogu <B>".$_BACKUP_DIR."</B> - bêdê wdziêczny jak kto6 go utworzy.");
+	die(sprintf(_("Missing directory <B>%s</B>. Can anybody make them?"), $_BACKUP_DIR));
 	
 if(!is_writable($_BACKUP_DIR))
-	die("Nie mogê zapisywaæ do katalogu <B>".$_BACKUP_DIR."</B> - móg³by¶ wykonaæ komendê:<BR><pre>chown ".posix_geteuid().".".posix_getegid()." ".$_BACKUP_DIR."\nchmod 755 ".$_BACKUP_DIR."</pre><BR>Pomo¿e mi to poprawnie dzia³aæ. Dziêki.");
+	die(sprintf(_("Can't write to directory <B>%s</B>. Can You run: <BR><pre>chown %s.%s %s\nchmod 755 %s</pre><BR>This helps me to work. Thanks."), $_BACKUP_DIR, posix_geteuid(), posix_getegid(), $_BACKUP_DIR, $_BACKUP_DIR));
 
 ?>

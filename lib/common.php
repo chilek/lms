@@ -31,12 +31,10 @@
 // ie $program = execute_program('netstat', '-anp | grep LIST');
 // NOT $program = execute_program('netstat', '-anp|grep LIST');
 
-
 function bsd_grab_key ($key)
 {
 	return execute_program('sysctl', '-n '.$key);
 }
-
 
 function find_program ($program)
 {
@@ -108,11 +106,12 @@ function uptime()
 			$days  = floor($hours / 24);
 			$hours = floor($hours - ($days * 24));
 			$min= floor($min - ($days * 60 * 24) - ($hours * 60));
+
 			if ($days != 0)
-				$result = $days.' dni ';
+				$result = sprintf(_("%d days"),$days);
 			if ($hours != 0)
-				$result .= $hours.' godzin ';
-			$result .= $min.' minut';
+				$result .= sprintf(_("%d hours"),$hours);
+			$result .= sprintf(_("%d minutes"), $min);
 		break;
 
 		case 'FreeBSD':
@@ -125,16 +124,11 @@ function uptime()
 			$hours = floor($hours - ($days * 24));
 			$min= floor($min - ($days * 60 * 24) - ($hours * 60));
 
-			if ( $days != 0 )
-			{
-				$result = $days.' dni ';
-			}
-
-			if ( $hours != 0 )
-			{
-				$result .= $hours.' godzin ';
-			}
-			$result .= $min.' minut';
+			if ($days != 0)
+				$result = sprintf(_("%d days"),$days);
+			if ($hours != 0)
+				$result .= sprintf(_("%d hours"),$hours);
+			$result .= sprintf(_("%d minutes"), $min);
 		break;
 		case 'NetBSD':
 			$a = bsd_grab_key('kern.boottime');
@@ -145,16 +139,11 @@ function uptime()
 			$hours = floor($hours - ($days * 24));
 			$min= floor($min - ($days * 60 * 24) - ($hours * 60));
 
-			if ( $days != 0 )
-			{
-				$result = $days.' dni ';
-			}
-
-			if ( $hours != 0 )
-			{
-				$result .= $hours.' godzin ';
-			}
-			$result .= $min.' minut';
+			if ($days != 0)
+				$result = sprintf(_("%d days"),$days);
+			if ($hours != 0)
+				$result .= sprintf(_("%d hours"),$hours);
+			$result .= sprintf(_("%d minutes"), $min);
 		break;
 		case 'OpenBSD':
 			$a = bsd_grab_key('kern.boottime');
@@ -165,16 +154,11 @@ function uptime()
 			$hours = floor($hours - ($days * 24));
 			$min= floor($min - ($days * 60 * 24) - ($hours * 60));
 
-			if ( $days != 0 )
-			{
-				$result = $days.' dni ';
-			}
-
-			if ( $hours != 0 )
-			{
-				$result .= $hours.' godzin ';
-			}
-			$result .= $min.' minut';
+			if ($days != 0)
+				$result = sprintf(_("%d days"),$days);
+			if ($hours != 0)
+				$result .= sprintf(_("%d hours"),$hours);
+			$result .= sprintf(_("%d minutes"), $min);
 		break;
 		case 'WINNT':
 //			dl("php_w32api.dll");
@@ -225,7 +209,7 @@ function hostname()
 			$hostname=$return[0];
 			break;
 		default:
-			$return = 'nieznany, '.PHP_OS;
+			$return = _('unknown ').PHP_OS;
 	}
 	if($hostname == '')
 		$hostname='N.A.';
@@ -895,7 +879,7 @@ function setunits($data)  // for traffic data
 	else
 	{
 		$number = $data / 1024;
-		$unit = "KB";
+		$unit = "kB";
 	}
 	return array($number, $unit);
 }

@@ -112,7 +112,7 @@ class Sysinfo {
 				$hostname=$return[0];
 				break;
 			default:
-				$return = "nieznany, ".PHP_OS;
+				$return = _("unknown, ").PHP_OS;
 		}
 		if($hostname=="")
 			$hostname="N.A.";
@@ -139,10 +139,10 @@ class Sysinfo {
 				$hours = floor($hours - ($days * 24));
 				$min   = floor($min - ($days * 60 * 24) - ($hours * 60));
 				if ($days != 0)
-					$result = "$days dni ";
+					$result = sprintf(_("%d days "),$days);
 				if ($hours != 0)
-					$result .= "$hours godzin ";
-				$result .= "$min minut";
+					$result .= sprintf(_("%d hours "),$hours);
+				$result .= sprintf(_("%d minutes"),$min);
 			break;
 			case "FreeBSD":
 				$s = explode(' ', $this->bsd_grab_key('kern.boottime'));
@@ -153,12 +153,12 @@ class Sysinfo {
 				$days  = floor($hours / 24);
 				$hours = floor($hours - ($days * 24));
 				$min   = floor($min - ($days * 60 * 24) - ($hours * 60));
-				
-				if ( $days != 0 )
-					$result = "$days dni ";
-				if ( $hours != 0 )
-					$result .= "$hours godzin ";
-				$result .= "$min minut";
+
+				if ($days != 0)
+					$result = sprintf(_("%d days "),$days);
+				if ($hours != 0)
+					$result .= sprintf(_("%d hours "),$hours);
+				$result .= sprintf(_("%d minutes"),$min);
 			break;
 			case "NetBSD":
 				$a = $this->bsd_grab_key('kern.boottime');
@@ -169,11 +169,11 @@ class Sysinfo {
 				$hours = floor($hours - ($days * 24));
 				$min   = floor($min - ($days * 60 * 24) - ($hours * 60));
 
-				if ( $days != 0 )
-					$result = "$days dni ";
-				if ( $hours != 0 )
-					$result .= "$hours godzin ";
-				$result .= "$min minut";
+				if ($days != 0)
+					$result = sprintf(_("%d days "),$days);
+				if ($hours != 0)
+					$result .= sprintf(_("%d hours "),$hours);
+				$result .= sprintf(_("%d minutes"),$min);
 			break;
 			case "OpenBSD":
 				$a = $this->bsd_grab_key('kern.boottime');
@@ -183,15 +183,14 @@ class Sysinfo {
 				$days  = floor($hours / 24);
 				$hours = floor($hours - ($days * 24));
 				$min   = floor($min - ($days * 60 * 24) - ($hours * 60));
-
-				if ( $days != 0 )
-					$result = "$days dni ";
-				if ( $hours != 0 )
-					$result .= "$hours godzin ";
-				$result .= "$min minut";
+				if ($days != 0)
+					$result = sprintf(_("%d days "),$days);
+				if ($hours != 0)
+					$result .= sprintf(_("%d hours "),$hours);
+				$result .= sprintf(_("%d minutes"),$min);
 			break;
 			default:
-				$result = "nieznany os (".PHP_OS.")";
+				$result = _("unknown os (").PHP_OS.")";
 			break;
 		}
 		return $result;

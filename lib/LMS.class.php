@@ -81,17 +81,17 @@ class LMS
 
 		// to siê rozejdzie po modu³ach:
 
-		$this->AddMenu('Witamy !', 'l.gif', '?', '', '', 0);
-		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 10);
-		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 15);
-		$this->AddMenu('Osprzêt sieciowy', 'netdev.gif', '?m=netdevlist', 'Ewidencja sprzêtu sieciowego', 'o', 20);
-		$this->AddMenu('Sieci IP', 'ip.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 's', 25);
-		$this->AddMenu('Taryfy i finanse', 'money.gif', '?m=tarifflist', 'Zarz±dzanie taryfami oraz finansami sieci', 't', 30);
-		$this->AddMenu('Mailing', 'mail.gif', '?m=mailing', 'Korespondencja seryjna', 'm', 35);
-		$this->AddMenu('Prze³adowanie', 'reload.gif', '?m=reload', '', 'r', 40);
-		$this->AddMenu('Bazy danych', 'db.gif', '?m=dblist', 'Zarz±dzanie kopiami zapasowymi bazy danych', 'b', 45);
-		$this->AddMenu('Administratorzy', 'admins.gif', '?m=adminlist', 'Konta administratorów systemu', 'd', 50);
-		$this->AddMenu('Statystyki', 'traffic.gif', '?m=traffic', 'Statystyki wykorzystania ³±cza', 'x', 55);
+		$this->AddMenu(_('Welcome'), 'l.gif', '?', '', '', 0);
+		$this->AddMenu(_('Users'), 'user.gif', '?m=userlist', _('Users: list, adding, searching'), 'u', 10);
+		$this->AddMenu(_('Nodes'), 'node.gif', '?m=nodelist', _('Nodes: list, adding, searching'), 'k', 15);
+		$this->AddMenu(_('Net devices'), 'netdev.gif', '?m=netdevlist', _('Net devices record'), 'o', 20);
+		$this->AddMenu(_('IP networks'), 'ip.gif', '?m=netlist', _('Allows you to manage yours ip networks'), 's', 25);
+		$this->AddMenu(_('Finances'), 'money.gif', '?m=tarifflist', _('Allows you to manage financies of your network'), 't', 30);
+		$this->AddMenu(_('Mailing'), 'mail.gif', '?m=mailing', _('Mailing'), 'm', 35);
+		$this->AddMenu(_('Reload'), 'reload.gif', '?m=reload', '', 'r', 40);
+		$this->AddMenu(_('Backups'), 'db.gif', '?m=dblist', _('Allows you to manage yours database backups'), 'b', 45);
+		$this->AddMenu(_('Administrators'), 'admins.gif', '?m=adminlist', _('Allows you to manage administrators accounts'), 'd', 50);
+		$this->AddMenu(_('Stats'), 'traffic.gif', '?m=traffic', _('Statistics of usage'), 'x', 55);
 	}
 
 	function _postinit()
