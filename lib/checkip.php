@@ -1,0 +1,73 @@
+<?
+
+/*
+ * LMS version 1.0
+ *
+ *  (C) Copyright 2002 Rulez.PL Development Team
+ *  (C) Copyright 2001-2002 NetX ACN
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+// Sprawdzenie czy po³±czenie z dozwolonego IP.
+
+if($_CONFIG[phpui][allow_from])
+{
+	// usuñmy prefix ipv6 jak jest
+	
+	$ipaddr = str_replace("::ffff:","",$_SERVER[REMOTE_ADDR]);
+
+	$allowedlist = explode(",",$_CONFIG[phpui][allow_from]);
+
+	foreach($allowedlist as $value)
+	{
+		list($net,$mask) = split("/",$value);
+		$net=trim($net);
+		$mask=trim($mask);
+		if($mask == "")
+			$mask = "32";
+		if($mask >= 0 || $mask <= 32)
+			$mask = prefix2mask($mask);
+	
+		if(isipinstrict($ipaddr,$net,$mask))
+			$isin = TRUE;
+
+	}
+
+	if(!$isin)
+	{
+		header("HTTP/1.1 403 Forbidden");
+		echo '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+		<HTML><HEAD>
+		<TITLE>403 Forbidden</TITLE>
+		</HEAD><BODY>
+		<H1>Forbidden</H1>
+		You don\'t have permission to access '.$_SERVER[REQUEST_URI].'
+		on this server.<P>
+		<HR>
+		'.$_SERVER[SERVER_SIGNATURE].'
+		</BODY></HTML>
+		';
+		exit(0);
+	}
+		
+
+}
+
+?>
