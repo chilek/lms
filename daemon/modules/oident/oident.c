@@ -48,7 +48,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 
 		if( strlen(netname) ) {
 
-			if( res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')",netname)) {
+			if( (res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')",netname)) ) {
 
 				if(res->nrows) {
 

@@ -49,7 +49,7 @@ int is_host(HOSTS *hosts, int n, unsigned char *ip)
 
 void reload(GLOBAL *g, struct traffic_module *traffic)
 {
-	QUERY_HANDLE *res, *result;
+	QUERY_HANDLE *res;
 	int i, k, j=0;
 	HOSTS *hosts = NULL;
 	FILE *fh;
@@ -82,7 +82,7 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 				if ( sscanf(buffer, "%[^\t ] %[^\t ] %s", host, download, upload) !=3 )
 					continue; //if invalid data format
 					 
-				if( k = is_host(hosts, j, host) ) { // host exists ?
+				if( (k = is_host(hosts, j, host)) ) { // host exists ?
 					
 					if( atoi(download) || atoi(upload) ) { // write not null data
 					

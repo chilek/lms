@@ -103,7 +103,7 @@ unsigned char * get_period(struct tm *today, int period, int up_payments)
 void reload(GLOBAL *g, struct payments_module *p)
 {
 	QUERY_HANDLE *res, *result, *sres;
-	unsigned char *query, *insert, *insert_inv, *update;
+	unsigned char *query, *insert, *insert_inv;
 	unsigned char *w_period, *m_period, *q_period, *y_period, *value, *taxvalue;
 	unsigned char *description;
 	int i, invoiceid, last_userid=0, number=0, exec=0, suspended=0;
