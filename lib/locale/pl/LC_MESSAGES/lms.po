@@ -1,123 +1,1174 @@
-#
-# LMS-ML $Id$
-#
+
+# $Id$
+
 msgid ""
 msgstr ""
-"Project-Id-Version: LMS-ML\n"
-"Last-Translator: Marcin Król <lexx@polarnet.gliwice.pl>\n"
+"Project-Id-Version: LMS-International\n"
+"Language-Team: LMS Developers\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-# Login screen
-msgid "Please login yourself"
-msgstr "Proszê siê zalogowaæ"
+#: ../modules/adminadd.php:42
+msgid "Login exists!"
+msgstr ""
 
-msgid "Wrong username or password"
-msgstr "B³êdne has³o lub nazwa u¿ytkownika"
+#: ../modules/adminadd.php:44 ../modules/adminedit.php:49
+msgid "Login contains forbidden characters!"
+msgstr ""
 
-msgid "Your login time was timetout. (%s sec)"
-msgstr "Przekroczono limit czasu bezczynno¶ci (%s sekund)"
+#: ../modules/adminadd.php:47 ../modules/adminedit.php:55
+#: ../modules/mailingsend.php:37
+msgid "E-mail isn't correct!"
+msgstr ""
 
-msgid "Login"
-msgstr "Login"
+#: ../modules/adminadd.php:50
+msgid "Empty password not allowed!"
+msgstr ""
 
-msgid "Password"
-msgstr "Has³o"
+#: ../modules/adminadd.php:52 ../modules/chpasswd.php:39
+msgid "Passwords do not match!"
+msgstr ""
 
-msgid "Documentation"
-msgstr "Dokumentacja"
+#: ../modules/adminadd.php:82
+msgid "New administrator"
+msgstr ""
 
-msgid "LMS homepage"
-msgstr "Strona domowa"
+#: ../modules/adminedit.php:44
+msgid "Login exists yet!"
+msgstr ""
 
-# Menu
+#: ../modules/adminedit.php:47
+msgid "Login field can't be empty!"
+msgstr ""
 
-msgid "Welcome"
-msgstr "Witaj"
+#: ../modules/adminedit.php:52
+msgid "Field 'name and surname' can't be empty!"
+msgstr ""
 
-msgid "Users"
-msgstr "U¿ytkownicy"
+#: ../modules/adminedit.php:84
+msgid "Edit Administrator: "
+msgstr ""
 
-msgid "Computers"
-msgstr "Komputery"
+#: ../modules/admininfo.php:33
+msgid "Info Administrator: "
+msgstr ""
 
-msgid "Net devices"
-msgstr "Osprzêt sieciowy"
+#: ../modules/adminlist.php:27
+msgid "Administrators List"
+msgstr ""
 
-msgid "IP networks"
-msgstr "Sieci IP"
+#: ../modules/adminpasswd.php:36
+msgid "Password cannot be empty!<BR>"
+msgstr ""
 
-msgid "Finances"
-msgstr "Taryfy i finanse"
+#: ../modules/adminpasswd.php:39
+msgid "Password do not match!"
+msgstr ""
 
+#: ../modules/adminpasswd.php:50
+msgid "Password change for "
+msgstr ""
+
+#: ../modules/balancelist.php:47
+msgid "Financial balance"
+msgstr ""
+
+#: ../modules/balancenew.php:29
+msgid "New balance"
+msgstr ""
+
+#: ../modules/chooseip.php:50
+msgid "Choose IP address"
+msgstr ""
+
+#: ../modules/choosemac.php:27
+msgid "Choose MAC address"
+msgstr ""
+
+#: ../modules/chpasswd.php:36
+msgid "Empty password not allowed!<BR>"
+msgstr ""
+
+#: ../modules/chpasswd.php:50
+msgid "Password change"
+msgstr ""
+
+#: ../modules/confgen.php:31
+msgid "Configuration files"
+msgstr ""
+
+#: ../modules/copyrights.php:27
+msgid "Legal Notice"
+msgstr ""
+
+#: ../modules/dbdel.php:34
+msgid "Database backup deleting"
+msgstr ""
+
+#: ../modules/dbdel.php:37
+msgid "<H1>Database backups deleting</H1>"
+msgstr ""
+
+#: ../modules/dbdel.php:38
+msgid "<p>Are you shure, you want to delete database backup created "
+msgstr ""
+
+#: ../modules/dbdel.php:39
+msgid "Yes, I am shure.</A>"
+msgstr ""
+
+#: ../modules/dblist.php:27
+msgid "Database backups"
+msgstr ""
+
+#: ../modules/dbrecover.php:34
+msgid "Database backup restoring"
+msgstr ""
+
+#: ../modules/dbrecover.php:37
+msgid "<H1>Database backup restoring</H1>"
+msgstr ""
+
+#: ../modules/dbrecover.php:38
+msgid "<p>Are You sure, You want to restore database backup created "
+msgstr ""
+
+#: ../modules/dbrecover.php:38
+msgid "?</p>"
+msgstr ""
+
+#: ../modules/dbrecover.php:39
+msgid "<a href=\"?m=dbrecover&db="
+msgstr ""
+
+#: ../modules/dbrecover.php:39
+msgid "db"
+msgstr ""
+
+#: ../modules/dbrecover.php:39
+msgid "&is_sure=1\">"
+msgstr ""
+
+#: ../modules/dbrecover.php:39
+msgid "Yes, I am sure.</A>"
+msgstr ""
+
+#: ../modules/dbview.php:27
+msgid "Database backup view"
+msgstr ""
+
+#: ../modules/genfake.php:1482
+msgid "Database cleaning..."
+msgstr ""
+
+#: ../modules/genfake.php:1505
+msgid "Create tariffs..."
+msgstr ""
+
+#: ../modules/genfake.php:1513
+msgid "Create payments..."
+msgstr ""
+
+#: ../modules/genfake.php:1521
+msgid "Create networks..."
+msgstr ""
+
+#: ../modules/genfake.php:1525
+msgid "Create users accounts..."
+msgstr ""
+
+#: ../modules/genfake.php:1566
+msgid "Create network devices and links..."
+msgstr ""
+
+#: ../modules/invoicelist.php:27
+msgid "Invoices List"
+msgstr ""
+
+#: ../modules/invoicenew.php:27
+msgid "New Invoice"
+msgstr ""
+
+#: ../modules/invoicenew.php:52
+msgid "Incorrect tax value!"
+msgstr ""
+
+#: ../modules/invoice.php:32
+msgid "Invoices"
+msgstr ""
+
+#: ../modules/invoice.php:39
+msgid "ORIGINAL+COPY"
+msgstr ""
+
+#: ../modules/invoice.php:60
+msgid "Invoice No."
+msgstr ""
+
+#: ../modules/invoicereport.php:46
+#, python-format
+msgid "Sale register for period %s - %s"
+msgstr ""
+
+#: ../modules/mailingsend.php:27 ../lib/LMS.class.php:90
 msgid "Mailing"
-msgstr "Mailing"
+msgstr ""
 
-msgid "Reload"
-msgstr "Prze³adowanie"
+#: ../modules/mailingsend.php:32
+msgid "You've got choose incorrect users group"
+msgstr ""
 
-msgid "Data base"
-msgstr "Bazy danych"
+#: ../modules/mailingsend.php:35
+msgid "Enter sender e-mail address!"
+msgstr ""
 
-msgid "Administrators"
-msgstr "Administratorzy"
+#: ../modules/mailingsend.php:40
+msgid "Enter sender!"
+msgstr ""
 
-msgid "Stats"
-msgstr "Statystyki"
+#: ../modules/mailingsend.php:43
+msgid "Enter e-mail subject!"
+msgstr ""
 
-msgid "Change password"
-msgstr "Zmieñ has³o"
+#: ../modules/netadd.php:52
+msgid "You must enter network name!"
+msgstr ""
 
-msgid "Logout"
-msgstr "Wyloguj siê"
+#: ../modules/netadd.php:54
+msgid "Network name contains forbidden characters!"
+msgstr ""
 
-# welcome.html
+#: ../modules/netadd.php:57
+msgid "Domain name contains forbidden characters!"
+msgstr ""
 
-msgid "About LMS"
-msgstr "Informacje o LMS"
+#: ../modules/netadd.php:60
+msgid "Network IP address isn't correct!"
+msgstr ""
 
-msgid "%1 version"
-msgstr "Wersja %1"
+#: ../modules/netadd.php:65
+msgid "That address isn't network address, setting to "
+msgstr ""
 
-msgid "About system"
-msgstr "Informacje o systemie"
+#: ../modules/netadd.php:71
+msgid "That address overlaps with other network!"
+msgstr ""
 
-msgid "Host name"
-msgstr "Nazwa hosta"
+#: ../modules/netadd.php:76 ../modules/netedit.php:88
+msgid "Incorrect interface name!"
+msgstr ""
 
-msgid "System version"
-msgstr "Wersja systemu"
+#: ../modules/netadd.php:79 ../modules/netadd.php:82 ../modules/netedit.php:99
+#: ../modules/netedit.php:102
+msgid "Incorrect DNS server IP address!"
+msgstr ""
 
-msgid "Uptime"
-msgstr "Uptime"
+#: ../modules/netadd.php:85
+msgid "Incorrect WINS server IP address!"
+msgstr ""
 
-msgid "Load"
-msgstr "Obci±¿enie"
+#: ../modules/netadd.php:89 ../modules/netadd.php:91
+msgid "gateway"
+msgstr ""
 
-msgid "Connected"
-msgstr "Pod³±czonych"
+#: ../modules/netadd.php:89
+msgid "Incorrect Gateway IP address!"
+msgstr ""
 
-msgid "Waiting for connection"
-msgstr "Oczekuj±cych na pod³±czenie"
+#: ../modules/netadd.php:91
+msgid "Gateway IP address don't match with network address class!"
+msgstr ""
 
-msgid "Interested for connection"
-msgstr "Zainteresowanych pod³±czeniem"
+#: ../modules/netadd.php:95 ../modules/netadd.php:97
+msgid "dhcpstart"
+msgstr ""
 
-msgid "All"
-msgstr "Razem"
+#: ../modules/netadd.php:95
+msgid "Incorrect IP address for start of DHCP range!"
+msgstr ""
 
-msgid "In debt"
-msgstr "W tym zad³u¿onych"
+#: ../modules/netadd.php:97
+msgid "IP address for start of DHCP range not overlaps with this network!"
+msgstr ""
 
-msgid "Disconnected"
-msgstr "Odl±czonych"
+#: ../modules/netadd.php:101 ../modules/netadd.php:103
+msgid "dhcpend"
+msgstr ""
 
+#: ../modules/netadd.php:101 ../modules/netedit.php:123
+msgid "Incorrect IP address for end of DHCP range!"
+msgstr ""
+
+#: ../modules/netadd.php:103
+msgid "IP address for end of DHCP range not overlaps with this network!"
+msgstr ""
+
+#: ../modules/netadd.php:108 ../modules/netadd.php:110
+msgid "dhcp"
+msgstr ""
+
+#: ../modules/netadd.php:108
+msgid "Required both IP addresses for DHCP range!"
+msgstr ""
+
+#: ../modules/netadd.php:110
+msgid "End of DHCP range must be greater than start!"
+msgstr ""
+
+#: ../modules/netadd.php:121
+msgid "pagetitle"
+msgstr ""
+
+#: ../modules/netadd.php:121
+msgid "New network"
+msgstr ""
+
+#: ../modules/netcmp.php:41 ../modules/netremap.php:49
+#: ../modules/netremap.php:52
+msgid "Readdressing network "
+msgstr ""
+
+#: ../modules/netcmp.php:44
+msgid "Ordering network "
+msgstr ""
+
+#: ../modules/netcmp.php:45
+msgid "Are You sure, You want to readdress that network?"
+msgstr ""
+
+#: ../modules/netcmp.php:46 ../modules/netdel.php:52
+#: ../modules/netdevdel.php:46 ../modules/netremap.php:54
+#: ../modules/nodedel.php:40 ../modules/userdel.php:41
+msgid "Yes, I am sure."
+msgstr ""
+
+#: ../modules/netdel.php:47 ../modules/netdel.php:50
+msgid "Deleting network "
+msgstr ""
+
+#: ../modules/netdel.php:51
+msgid "Are you sure, You want to delete that network?"
+msgstr ""
+
+#: ../modules/netdel.php:56
+msgid "Network Info"
+msgstr ""
+
+#: ../modules/netdevadd.php:32
+msgid "Incorrect ports number!"
+msgstr ""
+
+#: ../modules/netdevadd.php:34 ../modules/netdevedit.php:208
+msgid "Name can't be empty!"
+msgstr ""
+
+#: ../modules/netdevadd.php:45
+msgid "New network device"
+msgstr ""
+
+#: ../modules/netdevdel.php:33
+msgid "Deleting device ID: "
+msgstr ""
+
+#: ../modules/netdevdel.php:40
+msgid "Is not allowed to delete device connected to other devices."
+msgstr ""
+
+#: ../modules/netdevdel.php:45
+msgid "Are You sure, You want to delete device?"
+msgstr ""
+
+#: ../modules/netdevdel.php:50
+msgid "Device has been deleted."
+msgstr ""
+
+#: ../modules/netdevedit.php:41
+msgid "It scants ports in source device"
+msgstr ""
+
+#: ../modules/netdevedit.php:44
+msgid "It scants ports in destination device"
+msgstr ""
+
+#: ../modules/netdevedit.php:67 ../modules/netdevedit.php:75
+msgid "Device does not have free ports"
+msgstr ""
+
+#: ../modules/netdevedit.php:107 ../modules/netdevedit.php:157
+msgid "Name for address is required!"
+msgstr ""
+
+#: ../modules/netdevedit.php:109 ../modules/netdevedit.php:159
+msgid "Name is too long!"
+msgstr ""
+
+#: ../modules/netdevedit.php:111 ../modules/netdevedit.php:164
+msgid "Name is in use yet!"
+msgstr ""
+
+#: ../modules/netdevedit.php:113 ../modules/netdevedit.php:166
+msgid "Name consist forbidden characters!"
+msgstr ""
+
+#: ../modules/netdevedit.php:116 ../modules/netdevedit.php:169
+#: ../modules/nodeadd.php:59
+msgid "IP address is required!"
+msgstr ""
+
+#: ../modules/netdevedit.php:118 ../modules/netdevedit.php:171
+#: ../modules/nodeadd.php:61 ../modules/nodeedit.php:85
+msgid "Incorrect IP address!"
+msgstr ""
+
+#: ../modules/netdevedit.php:120 ../modules/netdevedit.php:173
+#: ../modules/nodeadd.php:63
+msgid "IP address not belongs to any network!"
+msgstr ""
+
+#: ../modules/netdevedit.php:122 ../modules/netdevedit.php:178
+#: ../modules/nodeadd.php:65 ../modules/nodeedit.php:75
+msgid "IP address is in use!"
+msgstr ""
+
+#: ../modules/netdevedit.php:125 ../modules/netdevedit.php:181
+#: ../modules/nodeadd.php:68
+msgid "MAC address is required!"
+msgstr ""
+
+#: ../modules/netdevedit.php:127 ../modules/netdevedit.php:187
+#: ../modules/nodeadd.php:70
+msgid "MAC address is in use yet!"
+msgstr ""
+
+#: ../modules/netdevedit.php:129 ../modules/netdevedit.php:189
+#: ../modules/nodeadd.php:72 ../modules/nodeedit.php:101
+msgid "Incorrect MAC address!"
+msgstr ""
+
+#: ../modules/netdevedit.php:249
+msgid "Editing device: "
+msgstr ""
+
+#: ../modules/netdevinfo.php:56
+msgid "Info device: "
+msgstr ""
+
+#: ../modules/netdevlist.php:27
+msgid "Network devices"
+msgstr ""
+
+#: ../modules/netedit.php:52
+msgid "Incorrect network IP address!"
+msgstr ""
+
+#: ../modules/netedit.php:57
+msgid "IP address isn't a correct network address,<BR> setting on "
+msgstr ""
+
+#: ../modules/netedit.php:63
+msgid "Network overlaps with other network!"
+msgstr ""
+
+#: ../modules/netedit.php:67
+msgid "New network is too small!"
+msgstr ""
+
+#: ../modules/netedit.php:91
+msgid "Network name is required!"
+msgstr ""
+
+#: ../modules/netedit.php:93
+msgid "Network name consists forbidden characters!"
+msgstr ""
+
+#: ../modules/netedit.php:96
+msgid "Domain name consists forbidden characters!"
+msgstr ""
+
+#: ../modules/netedit.php:105
+msgid "Incorrect WINS IP address!"
+msgstr ""
+
+#: ../modules/netedit.php:109
+msgid "Incorrect gateway IP address!"
+msgstr ""
+
+#: ../modules/netedit.php:112
+msgid "Gateway IP address mismatches for network address class!"
+msgstr ""
+
+#: ../modules/netedit.php:116
+msgid "Incorrect IP address for begin of DHCP range!"
+msgstr ""
+
+#: ../modules/netedit.php:119
+msgid ""
+"IP address for begin of DHCP range missmatches for network address class!"
+msgstr ""
+
+#: ../modules/netedit.php:126
+msgid "IP address for end of DHCP range mismatches for network address class!"
+msgstr ""
+
+#: ../modules/netedit.php:131
+msgid "Both IP address for DHCP range are required!"
+msgstr ""
+
+#: ../modules/netedit.php:133
+msgid "End of DHCP range must be greater than begin!"
+msgstr ""
+
+#: ../modules/netedit.php:163
+msgid "Edit network: "
+msgstr ""
+
+#: ../modules/netinfo.php:40
+msgid "Info network: "
+msgstr ""
+
+#: ../modules/netlist.php:27 ../lib/LMS.class.php:88
+msgid "IP networks"
+msgstr ""
+
+#: ../modules/netremap.php:53
+msgid "Are You sure, You want to readdressing network "
+msgstr ""
+
+#: ../modules/nodeadd.php:50 ../modules/nodeedit.php:105
+msgid "Node name is required!"
+msgstr ""
+
+#: ../modules/nodeadd.php:52
+msgid "Node name is too long!"
+msgstr ""
+
+#: ../modules/nodeadd.php:54
+msgid "Node name is in use!"
+msgstr ""
+
+#: ../modules/nodeadd.php:56
+msgid "Node name consists forbidden characters!"
+msgstr ""
+
+#: ../modules/nodeadd.php:75
+msgid "Choose a owner for that node!"
+msgstr ""
+
+#: ../modules/nodeadd.php:78
+#, python-format
+msgid "Incorrect chosen user %s!"
+msgstr ""
+
+#: ../modules/nodeadd.php:118
+msgid "New Node"
+msgstr ""
+
+#: ../modules/nodedel.php:27
+msgid "Delete Node "
+msgstr ""
+
+#: ../modules/nodedel.php:33
+msgid "Entered ID is incorrect or not exists."
+msgstr ""
+
+#: ../modules/nodedel.php:39
+#, python-format
+msgid "Are You sure, You want to delete node %s?"
+msgstr ""
+
+#: ../modules/nodedel.php:50
+#, python-format
+msgid "Node %s was deleted"
+msgstr ""
+
+#: ../modules/nodeedit.php:49
+#, python-format
+msgid "Info user: %s - Edit node: %s"
+msgstr ""
+
+#: ../modules/nodeedit.php:80
+msgid "IP address mismatches for any network!"
+msgstr ""
+
+#: ../modules/nodeedit.php:96
+msgid "MAC address is in use!"
+msgstr ""
+
+#: ../modules/nodeedit.php:107
+msgid "Name is in use!"
+msgstr ""
+
+#: ../modules/nodeedit.php:109
+msgid "Name consists forbidden characters!"
+msgstr ""
+
+#: ../modules/nodeedit.php:118
+msgid "Not enough ports in chosen device!"
+msgstr ""
+
+#: ../modules/nodeinfo.php:73
+msgid "Info node: "
+msgstr ""
+
+#: ../modules/nodelist.php:27
+msgid "Nodes List"
+msgstr ""
+
+#: ../modules/nodescan.php:32
+msgid "Nodes Scan"
+msgstr ""
+
+#: ../modules/nodesearch.php:27
+msgid "Nodes Search"
+msgstr ""
+
+#: ../modules/paymentadd.php:46 ../modules/paymentedit.php:43
+msgid "Creditor name is required!"
+msgstr ""
+
+#: ../modules/paymentadd.php:49 ../modules/paymentedit.php:46
+msgid "Payment name is required!"
+msgstr ""
+
+#: ../modules/paymentadd.php:52
+#, python-format
+msgid "Payment '%s' exists!"
+msgstr ""
+
+#: ../modules/paymentadd.php:64 ../modules/paymentedit.php:65
+msgid "Incorrect day of week"
+msgstr ""
+
+#: ../modules/paymentadd.php:75 ../modules/paymentedit.php:77
+msgid "Incorrect day of month"
+msgstr ""
+
+#: ../modules/paymentadd.php:79 ../modules/paymentadd.php:92
+#: ../modules/paymentedit.php:82 ../modules/paymentedit.php:96
+#: ../modules/useredit.php:80 ../modules/useredit.php:94
+msgid "Incorrect date format"
+msgstr ""
+
+#: ../modules/paymentadd.php:83 ../modules/paymentedit.php:86
+#: ../modules/useredit.php:84
+msgid "Incorrect day of month number"
+msgstr ""
+
+#: ../modules/paymentadd.php:85 ../modules/paymentedit.php:88
+#: ../modules/useredit.php:86
+msgid "Incorrect month number (max.3)"
+msgstr ""
+
+#: ../modules/paymentadd.php:118
+msgid "New Payment"
+msgstr ""
+
+#: ../modules/paymentedit.php:48
+msgid "Payment name is in use!"
+msgstr ""
+
+#: ../modules/paymentedit.php:51
+msgid "Payment value is required!"
+msgstr ""
+
+#: ../modules/paymentedit.php:53
+msgid "Incorrect payment value!"
+msgstr ""
+
+#: ../modules/paymentedit.php:124
+msgid "Edit Payment: "
+msgstr ""
+
+#: ../modules/paymentinfo.php:35
+msgid "Info payment: "
+msgstr ""
+
+#: ../modules/paymentlist.php:27
+msgid "Payments List"
+msgstr ""
+
+#: ../modules/print.php:27
+msgid "Printing"
+msgstr ""
+
+#: ../modules/reload.php:30
+msgid "Configuration Reload"
+msgstr ""
+
+#: ../modules/reload.php:62
+msgid "Runing:"
+msgstr ""
+
+#: ../modules/reload.php:70
+msgid "Reload order deleted."
+msgstr ""
+
+#: ../modules/reload.php:77
+#, python-format
+msgid "Reload order from '%s' was discovered in database.<BR>"
+msgstr ""
+
+#: ../modules/reload.php:78
+#, python-format
+msgid "You can %s cancel %s or %s refresh %s them."
+msgstr ""
+
+#: ../modules/reload.php:80 ../modules/reload.php:84
+msgid "Reload order saved."
+msgstr ""
+
+#: ../modules/reload.php:92
+#, python-format
+msgid "Error. Incorrect reload type: '%s'!"
+msgstr ""
+
+#: ../modules/tariffadd.php:43 ../modules/tariffedit.php:56
+msgid "Incorrect tariff value!"
+msgstr ""
+
+#: ../modules/tariffadd.php:47 ../modules/tariffedit.php:60
+msgid "Incorrect tariff tax value!"
+msgstr ""
+
+#: ../modules/tariffadd.php:50
+msgid "Uprate value must be integer"
+msgstr ""
+
+#: ../modules/tariffadd.php:54
+msgid "Downrate value must be integer"
+msgstr ""
+
+#: ../modules/tariffadd.php:58 ../modules/tariffedit.php:69
+msgid "Uprate must be in range of 8 - 4096"
+msgstr ""
+
+#: ../modules/tariffadd.php:61 ../modules/tariffedit.php:72
+msgid "Downrate must be in range of 8 - 4096"
+msgstr ""
+
+#: ../modules/tariffadd.php:64 ../modules/tariffedit.php:49
+msgid "Tariff name is required!"
+msgstr ""
+
+#: ../modules/tariffadd.php:67
+#, python-format
+msgid "Tariff name '%s' exists!"
+msgstr ""
+
+#: ../modules/tariffadd.php:76
+msgid "New tariff"
+msgstr ""
+
+#: ../modules/tariffedit.php:51
+msgid "Tariff name is in use!"
+msgstr ""
+
+#: ../modules/tariffedit.php:54
+msgid "Tariff value is required!"
+msgstr ""
+
+#: ../modules/tariffedit.php:63
+msgid "Uprate value must be integer!"
+msgstr ""
+
+#: ../modules/tariffedit.php:66
+msgid "Downrate value must be integer!"
+msgstr ""
+
+#: ../modules/tariffedit.php:85
+msgid "Edit tariff: "
+msgstr ""
+
+#: ../modules/tariffinfo.php:33
+msgid "Info tariff: "
+msgstr ""
+
+#: ../modules/tarifflist.php:27
+msgid "Tariffs List"
+msgstr ""
+
+#: ../modules/template.php:27
+msgid "Module title"
+msgstr ""
+
+#: ../modules/trafficdbcompact.php:40
+msgid "Stats database compactiong"
+msgstr ""
+
+#: ../modules/trafficdbcompact.php:41
+#, python-format
+msgid "Before compacting in database was %d records.<BR>"
+msgstr ""
+
+#: ../modules/trafficdbcompact.php:58
+#, python-format
+msgid "Removed stats for node with ID: %d\n"
+msgstr ""
+
+#: ../modules/trafficdbcompact.php:95
+msgid " - removed, "
+msgstr ""
+
+#: ../modules/trafficdbcompact.php:95
+msgid " - insertedh\n"
+msgstr ""
+
+#: ../modules/trafficdbcompact.php:99
+#, python-format
+msgid "After compacting in database is %d records."
+msgstr ""
+
+#: ../modules/traffic.php:26
+msgid "Interface Usage Stats"
+msgstr ""
+
+#: ../modules/upgrade01.php:28
+msgid "Database upgrade: finances format change:"
+msgstr ""
+
+#: ../modules/upgrade01.php:35
+msgid "tariff: '"
+msgstr ""
+
+#: ../modules/useradd.php:42
+msgid "Name of user is required"
+msgstr ""
+
+#: ../modules/useradd.php:45 ../modules/useredit.php:119
+msgid "Address of user is required!"
+msgstr ""
+
+#: ../modules/useradd.php:48 ../modules/useredit.php:122
+msgid "Incorrect NIP identifier!"
+msgstr ""
+
+#: ../modules/useradd.php:51 ../modules/useredit.php:125
+msgid "Incorrect PESEL identifier!"
+msgstr ""
+
+#: ../modules/useradd.php:54 ../modules/useredit.php:128
+msgid "Incorrect postal code!"
+msgstr ""
+
+#: ../modules/useradd.php:60
+msgid "Incorrect GG identifier!"
+msgstr ""
+
+#: ../modules/useradd.php:84
+msgid "New user"
+msgstr ""
+
+#: ../modules/userbalanceok.php:33
+msgid "That user's ID is errornous or not exists."
+msgstr ""
+
+#: ../modules/userbalanceok.php:39 ../modules/userdel.php:39
+msgid "Are You sure, You want to delete user "
+msgstr ""
+
+#: ../modules/userbalanceok.php:40 ../modules/userdel.php:40
+msgid ""
+"All user's data will be lost and all his nodes will be removed from database."
+msgstr ""
+
+#: ../modules/userbalanceok.php:41
+msgid "Yes, I am sure"
+msgstr ""
+
+#: ../modules/userbalanceok.php:45 ../modules/userdel.php:45
+#, python-format
+msgid "User %s deleted."
+msgstr ""
+
+#: ../modules/userbalance.php:33
+msgid "Account of user: "
+msgstr ""
+
+#: ../modules/userdel.php:27
+msgid "Delete user of ID: "
+msgstr ""
+
+#: ../modules/userdel.php:33
+msgid "That user's ID is incorrect or not exists."
+msgstr ""
+
+#: ../modules/useredit.php:116
+msgid "Name of user is required!"
+msgstr ""
+
+#: ../modules/useredit.php:134
+msgid "Incorrect Gadu-Gadu identifier!"
+msgstr ""
+
+#: ../modules/useredit.php:137
+msgid "Only connected user can have nodes!"
+msgstr ""
+
+#: ../modules/useredit.php:163
+msgid "Edit User: "
+msgstr ""
+
+#: ../modules/userinfo.php:47
+msgid "Info User: "
+msgstr ""
+
+#: ../modules/userlistdebt.php:29
+msgid "In Debt Users List"
+msgstr ""
+
+#: ../modules/userlistdebt.php:30
+msgid " debted"
+msgstr ""
+
+#: ../modules/userlistdisc.php:29
+msgid "Disconnected Users List"
+msgstr ""
+
+#: ../modules/userlist.php:29
+msgid "Users List"
+msgstr ""
+
+#: ../modules/usersearch.php:32
+msgid "Users Search"
+msgstr ""
+
+#: ../modules/welcome.php:32
+msgid "LAN Management System"
+msgstr ""
+
+#: ../lib/checkdirs.php:28 ../lib/checkdirs.php:34
+#, python-format
+msgid "Missing directory <B>%s</B>. Can anybody make them?"
+msgstr ""
+
+#: ../lib/checkdirs.php:31 ../lib/checkdirs.php:37
+#, python-format
+msgid ""
+"Can't write to directory <B>%s</B>. Can You run: <BR><pre>chown %s.%s %s\n"
+"chmod 755 %s</pre><BR>This helps me to work. Thanks."
+msgstr ""
+
+#: ../lib/common.php:111 ../lib/common.php:128 ../lib/common.php:143
+#: ../lib/common.php:158
+#, python-format
+msgid "%d days"
+msgstr ""
+
+#: ../lib/common.php:113 ../lib/common.php:130 ../lib/common.php:145
+#: ../lib/common.php:160
+#, python-format
+msgid "%d hours"
+msgstr ""
+
+#: ../lib/common.php:114 ../lib/common.php:131 ../lib/common.php:146
+#: ../lib/common.php:161 ../lib/Sysinfo.class.php:145
+#: ../lib/Sysinfo.class.php:161 ../lib/Sysinfo.class.php:176
+#: ../lib/Sysinfo.class.php:190
+#, python-format
+msgid "%d minutes"
+msgstr ""
+
+#: ../lib/common.php:212
+msgid "unknown "
+msgstr ""
+
+#: ../lib/LMS.class.php:80
+#, python-format
+msgid "Errors occured while module '%s' initialization."
+msgstr ""
+
+#: ../lib/LMS.class.php:84
+msgid "Welcome"
+msgstr ""
+
+#: ../lib/LMS.class.php:85
+msgid "Users"
+msgstr ""
+
+#: ../lib/LMS.class.php:85
+msgid "Users: list, adding, searching"
+msgstr ""
+
+#: ../lib/LMS.class.php:86
 msgid "Nodes"
-msgstr "Komputery"
+msgstr ""
 
-msgid "Useful links"
-msgstr "Przydatne linki"
+#: ../lib/LMS.class.php:86
+msgid "Nodes: list, adding, searching"
+msgstr ""
 
+#: ../lib/LMS.class.php:87
+msgid "Net devices"
+msgstr ""
 
+#: ../lib/LMS.class.php:87
+msgid "Net devices record"
+msgstr ""
 
+#: ../lib/LMS.class.php:88
+msgid "Allows you to manage yours ip networks"
+msgstr ""
+
+#: ../lib/LMS.class.php:89
+msgid "Finances"
+msgstr ""
+
+#: ../lib/LMS.class.php:89
+msgid "Allows you to manage financies of your network"
+msgstr ""
+
+#: ../lib/LMS.class.php:91
+msgid "Reload"
+msgstr ""
+
+#: ../lib/LMS.class.php:92
+msgid "Backups"
+msgstr ""
+
+#: ../lib/LMS.class.php:92
+msgid "Allows you to manage yours database backups"
+msgstr ""
+
+#: ../lib/LMS.class.php:93
+msgid "Administrators"
+msgstr ""
+
+#: ../lib/LMS.class.php:93
+msgid "Allows you to manage administrators accounts"
+msgstr ""
+
+#: ../lib/LMS.class.php:94
+msgid "Stats"
+msgstr ""
+
+#: ../lib/LMS.class.php:94
+msgid "Statistics of usage"
+msgstr ""
+
+#: ../lib/LMS.class.php:1150
+msgid "weekly"
+msgstr ""
+
+#: ../lib/LMS.class.php:1151
+msgid "monday"
+msgstr ""
+
+#: ../lib/LMS.class.php:1151
+msgid "tuesday"
+msgstr ""
+
+#: ../lib/LMS.class.php:1151
+msgid "wednesday"
+msgstr ""
+
+#: ../lib/LMS.class.php:1151
+msgid "thursday"
+msgstr ""
+
+#: ../lib/LMS.class.php:1151
+msgid "friday"
+msgstr ""
+
+#: ../lib/LMS.class.php:1151
+msgid "saturday"
+msgstr ""
+
+#: ../lib/LMS.class.php:1151
+msgid "sunday"
+msgstr ""
+
+#: ../lib/LMS.class.php:1156
+msgid "monthly"
+msgstr ""
+
+#: ../lib/LMS.class.php:1160
+msgid "quarterly"
+msgstr ""
+
+#: ../lib/LMS.class.php:1166 ../lib/LMS.class.php:1173
+msgid "yearly"
+msgstr ""
+
+#: ../lib/LMS.class.php:1495
+msgid "income"
+msgstr ""
+
+#: ../lib/LMS.class.php:1501
+msgid "expenditure"
+msgstr ""
+
+#: ../lib/LMS.class.php:1507
+msgid "user payment"
+msgstr ""
+
+#: ../lib/LMS.class.php:1512
+msgid "user debt"
+msgstr ""
+
+#: ../lib/LMS.class.php:1545
+msgid "weekly (mon)"
+msgstr ""
+
+#: ../lib/LMS.class.php:1546
+msgid "weekly (tue)"
+msgstr ""
+
+#: ../lib/LMS.class.php:1547
+msgid "weekly (wed)"
+msgstr ""
+
+#: ../lib/LMS.class.php:1548
+msgid "weekly (thu)"
+msgstr ""
+
+#: ../lib/LMS.class.php:1549
+msgid "weekly (fri)"
+msgstr ""
+
+#: ../lib/LMS.class.php:1550
+msgid "weekly (sat)"
+msgstr ""
+
+#: ../lib/LMS.class.php:1551
+msgid "weekly (sun)"
+msgstr ""
+
+#: ../lib/LMS.class.php:1552
+msgid "missing"
+msgstr ""
+
+#: ../lib/LMS.class.php:1556
+#, python-format
+msgid "monthly (%d)"
+msgstr ""
+
+#: ../lib/LMS.class.php:1560
+#, python-format
+msgid "quarterly (%d)"
+msgstr ""
+
+#: ../lib/LMS.class.php:1564
+#, python-format
+msgid "yearly (%d)"
+msgstr ""
+
+#: ../lib/Sysinfo.class.php:115
+msgid "unknown, "
+msgstr ""
+
+#: ../lib/Sysinfo.class.php:142 ../lib/Sysinfo.class.php:158
+#: ../lib/Sysinfo.class.php:173 ../lib/Sysinfo.class.php:187
+#, python-format
+msgid "%d days "
+msgstr ""
+
+#: ../lib/Sysinfo.class.php:144 ../lib/Sysinfo.class.php:160
+#: ../lib/Sysinfo.class.php:175 ../lib/Sysinfo.class.php:189
+#, python-format
+msgid "%d hours "
+msgstr ""
+
+#: ../lib/Sysinfo.class.php:193
+msgid "unknown os ("
+msgstr ""
