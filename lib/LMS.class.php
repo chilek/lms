@@ -111,7 +111,7 @@ class LMS
 		if(!$filename)
 			return FALSE;
 		$file = fopen($filename,"r");
-//		$this->ADB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
+		$this->ADB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
 		while(!feof($file))
 		{
 			$line = fgets($file,4096);
@@ -121,7 +121,7 @@ class LMS
 				$this->ADB->Execute($line);
 			}
 		}
-//		$this->ADB->CommitTrans();		
+		$this->ADB->CommitTrans();		
 		fclose($file);
 
 		// Okej, zróbmy parê bzdurek db depend :S 
@@ -1602,6 +1602,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.206  2003/08/29 01:16:28  lukasz
+ * - w³±czenie transakcji przy odczytywaniu backup bazy z dysku
+ *
  * Revision 1.205  2003/08/28 13:02:05  lukasz
  * - podawanie dnia naliczania op³aty podczas dodawania usera nic dawa³o
  *
