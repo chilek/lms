@@ -168,7 +168,7 @@ if (isset($_GET['readed'])) {
 } else {
     $userinfo = $LMS->GetUser($userid);
     $layout['oldurl']=$_GET['oldurl'];
-    $layout['messageurl']="http://".$_SERVER['HTTP_HOST'].$_SERVER['REDIRECT_URL'];
+    $layout['messageurl']=$_CONFIG['squid-warnings']['redirect'];
     $SMARTY->assign("userinfo",$userinfo);
     $SMARTY->assign("layout",$layout);
     $SMARTY->display("message.html");
