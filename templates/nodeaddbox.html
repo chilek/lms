@@ -77,6 +77,17 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/info.gif" BORDER="0" ALT="Opis:">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Opis:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<TEXTAREA NAME="nodedata[info]" COLS="50" ROWS="5" {tip text="Wpisz dodatkowe informacje (opcjonalnie)"}>{$nodedata.info}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="?m=nodescan{if $userinfo.id}&ownerid={$userinfo.id}{/if}">Skanuj <IMG SRC="img/search.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>

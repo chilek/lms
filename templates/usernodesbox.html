@@ -19,7 +19,8 @@
 		</TD>
 		<TD WIDTH="97%" onClick="return self.location.href='?m=nodeinfo&id={$usernodes[usernodes].id}';">
 			<B>{$usernodes[usernodes].name}</B><BR>
-			{$usernodes[usernodes].ip} / {$usernodes[usernodes].mac}
+			<NOBR>{$usernodes[usernodes].ip} / {$usernodes[usernodes].mac}</NOBR><BR>
+			<NOBR>{$usernodes[usernodes].info|truncate:45:"..."}</NOBR>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP" onClick="return self.location.href='?m=nodeinfo&id={$usernodes[usernodes].id}';">
 			({$usernodes[usernodes].id|string_format:"%04d"})

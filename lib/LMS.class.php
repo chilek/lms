@@ -814,7 +814,8 @@ class LMS
 
 	function GetUserNodes($id)
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, access, warning FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id))){
+		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, access, warning, info FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
+		{
 			$result['total'] = sizeof($result);
 			$result['ownerid'] = $id;
 		}
@@ -1129,7 +1130,7 @@ class LMS
 	function NodeUpdate($nodedata)
 	{
 		$this->SetTS('nodes');
-		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr=inet_aton(?), mac=UPPER(?), netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=? WHERE id=?', array($nodedata['name'], $nodedata['ipaddr'], $nodedata['mac'], $nodedata['netdev'], $this->SESSION->id, $nodedata['access'], $nodedata['warning'], $nodedata['ownerid'], $nodedata['id']));
+		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr=inet_aton(?), mac=UPPER(?), netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=?, info=? WHERE id=?', array($nodedata['name'], $nodedata['ipaddr'], $nodedata['mac'], $nodedata['netdev'], $this->SESSION->id, $nodedata['access'], $nodedata['warning'], $nodedata['ownerid'], $nodedata['info'], $nodedata['id']));
 	}
 
 	function DeleteNode($id)
@@ -1180,7 +1181,7 @@ class LMS
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access, warning, creationdate, moddate, creatorid, modid, netdev, lastonline FROM nodes WHERE id=?', array($id)))
+		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access, warning, creationdate, moddate, creatorid, modid, netdev, lastonline, info FROM nodes WHERE id=?', array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
@@ -1232,7 +1233,7 @@ class LMS
 			break;
 		}
 
-		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, ownerid, access, warning, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, lastonline FROM nodes, users WHERE ownerid = users.id AND ownerid > 0'.($sqlord != '' ? $sqlord.' '.$direction : '')))
+		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, ownerid, access, warning, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, lastonline, nodes.info AS info FROM nodes, users WHERE ownerid = users.id AND ownerid > 0'.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
 			foreach($nodelist as $idx => $row)
 			{
@@ -1299,7 +1300,7 @@ class LMS
 			foreach($username as $idx => $row)
 				$usernames[$row['id']] = $row['username'];
 		
-		if($nodelist = $this->DB->GetAll('SELECT id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access, warning FROM nodes '.$searchargs.' '.($sqlord != '' ? $sqlord.' '.$direction : '')))
+		if($nodelist = $this->DB->GetAll('SELECT id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access, warning, info FROM nodes '.$searchargs.' '.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
 			foreach($nodelist as $idx => $row)
 			{
@@ -1391,7 +1392,7 @@ class LMS
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS('nodes');
-		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate, access, warning) VALUES (?, ?, inet_aton(?), ?, ?, ?NOW?, ?, ?)', array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id, $nodedata['access'], $nodedata['warning'])))
+		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate, access, warning, info) VALUES (?, ?, inet_aton(?), ?, ?, ?NOW?, ?, ?, ?)', array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id, $nodedata['access'], $nodedata['warning'], $nodedata['info'])))
 			return $this->DB->GetOne('SELECT MAX(id) FROM nodes');
 		else
 			return FALSE;

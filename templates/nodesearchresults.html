@@ -38,12 +38,15 @@
 		<TD width="95%" class="fleft" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
 			<a name="{$nodelist[nodelist].id}"><img src="img/node.gif" border="0" ALT="" align="absmiddle">&nbsp;<B>{$nodelist[nodelist].name}</B></A><BR>
 			<img src="img/user.gif" border="0" ALT="" align="absmiddle">&nbsp;<A href="?m=userinfo&id={$nodelist[nodelist].ownerid}">{if ! $nodelist[nodelist].access}<font color="#888888">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</FONT>{/if}</A>
+			{if $nodelist[nodelist].info}
+				<BR><NOBR><IMG src="img/empty.gif" alt="" width="20" height="1" align="absmiddle">{$nodelist[nodelist].info|truncate:60:"..."}</NOBR>
+			{/if}
 		</TD>
 		<TD align="right" width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top">
 			<img src="img/empty.gif" align="absmiddle" ALT="" border="0" width="1" height="16">({$nodelist[nodelist].id|string_format:"%04d"})<BR>
 			<img src="img/empty.gif" align="absmiddle" ALT="" border="0" width="1" height="16"><font class="blend">({$nodelist[nodelist].ownerid|string_format:"%04d"})</font>
 		</TD>
-		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
+		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top">
 			<img src="img/ip.gif" border="0" ALT="" align="absmiddle">&nbsp;{$nodelist[nodelist].ip}<BR>
 			<img src="img/mac.gif" border="0" ALT="" align="absmiddle">&nbsp;{$nodelist[nodelist].mac}
 		</TD>
