@@ -72,29 +72,30 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 						break;
 				
 					$row = $LMS->DB->GetRow('SELECT invoiceid, itemid, comment, taxvalue FROM cash WHERE id = ?', array($cashid));
-					$value = $LMS->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 AS value
-								    FROM cash WHERE invoiceid = ? AND itemid = ?', 
-								    array($row['invoiceid'], $row['itemid']));
+					$value = $LMS->GetItemUnpaidValue($row['invoiceid'], $row['itemid']);
 					
-					$addbalance['itemid'] = $row['itemid'];
-					$addbalance['invoiceid'] = $row['invoiceid'];
-					$addbalance['taxvalue'] = $row['taxvalue'];
-					$addbalance['comment'] = $addbalance['comment'] ? $addbalance['comment'] : $row['comment'];
+					$balance['itemid'] = $row['itemid'];
+					$balance['invoiceid'] = $row['invoiceid'];
+					$balance['taxvalue'] = $row['taxvalue'];
+					$balance['comment'] = $addbalance['comment'] ? $addbalance['comment'] : $row['comment'];
+					$balance['type'] = 3;
+					$balance['userid'] = $addbalance['userid'];
 					
 					$oldvalue = $addbalance['value'];
 					if($oldvalue >= $value)
-						$addbalance['value'] = $value;
+						$balance['value'] = $value;
 					else
-						$addbalance['value'] = $oldvalue;
+						$balance['value'] = $oldvalue;
 						
-					$LMS->AddBalance($addbalance);
+					$LMS->AddBalance($balance);
 					
-					$addbalance['value'] = $oldvalue - $addbalance['value'];
+					$addbalance['value'] = $oldvalue - $balance['value'];
 				}
 				
 				unset($_SESSION['unpaid'][$addbalance['userid']]);
 			}
-			else
+			
+			if($addbalance['value']>0)
 				$LMS->AddBalance($addbalance);
 		}
 	}
