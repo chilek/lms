@@ -1061,24 +1061,24 @@ class LMS
 
 	function GetUserAssignments($id)
 	{
-		if($assignments = $this->DB->GetAll("SELECT assignments.id AS id, tariffid, userid, peroid, at, value, uprate, downrate, name FROM assignments, tariffs WHERE userid=? AND tariffs.id = tariffid",array($id)))
+		if($assignments = $this->DB->GetAll("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, name FROM assignments, tariffs WHERE userid=? AND tariffs.id = tariffid",array($id)))
 		{
 			foreach($assignments as $idx => $row)
 			{
-				switch($row['peroid'])
+				switch($row['period'])
 				{
 					case 0:
-						$row['peroid'] = 'co miesi±c';
+						$row['period'] = 'co miesi±c';
 					break;
 
 					case 1:
-						$row['peroid'] = 'co tydzieñ';
+						$row['period'] = 'co tydzieñ';
 						$dni = array('poniedzia³ek', 'wtorek', '¶roda', 'czwartek', 'pi±tek', 'sobota', 'niedziela');
 						$row['at'] = $dni[$row['at'] - 1];
 					break;
 
 					case 2:
-						$row['peroid'] = 'co rok';
+						$row['period'] = 'co rok';
 						$miesiace = array('styczeñ','luty', 'marzec', 'kwiecieñ', 'maj', 'czerwiec', 'lipiec', 'sierpieñ', 'wrzesieñ', 'pa¼dziernik', 'listopad', 'grudzieñ');
 						$row['at'] --;
 						$ttime = $row['at'] * 86400 + mktime(12, 0, 0, 1, 1, 1990);
@@ -1102,7 +1102,7 @@ class LMS
 
 	function AddAssignment($assignmentdata)
 	{
-		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, peroid, at) VALUES (?, ?, ?, ?)",array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['peroid'], $assignmentdata['at']));
+		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, period, at) VALUES (?, ?, ?, ?)",array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at']));
 	}
 	
 	function GetTariffList()
@@ -1660,6 +1660,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.215  2003/09/09 20:23:00  lukasz
+ * - literówka, czyli Baseciq zna jêz. angielski
+ *
  * Revision 1.214  2003/09/09 01:41:09  lukasz
  * - wy¶wietlanie sumy taryf w wynikach wyszukiwania
  *

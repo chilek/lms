@@ -124,7 +124,7 @@ my $monthtxt = "za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $yea
 my $weektxt = "za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day + 7, $month - 1, $year - 1900);
 my $yeartxt = "za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month - 1, $year - 1900 + 1);
 
-my $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, peroid, at, value, uprate, downrate, tariffs.name AS name FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND peroid=0 AND at=$day");
+my $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period=0 AND at=$day");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
@@ -132,7 +132,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata miesiêczna za \\'".$row->{'name'}."\\' ($monthtxt)')");
 	$sdbq->execute();
 }
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, peroid, at, value, uprate, downrate, tariffs.name AS name FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND peroid=1 AND at=$weekday");
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period=1 AND at=$weekday");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
@@ -140,7 +140,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata tygodniowa za \\'".$row->{'name'}."\\' ($weektxt)')");
 	$sdbq->execute();
 }
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, peroid, at, value, uprate, downrate, tariffs.name AS name FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND peroid=2 AND at=$yearday");
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period=2 AND at=$yearday");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
