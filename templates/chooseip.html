@@ -56,8 +56,8 @@
 	<tr>
 		<td bgcolor="#DFD5BD" class="fall" align="center">
 			<SELECT SIZE="1" onchange="document.selectnet.submit();" NAME="netid">
-				{section name=networks loop=$networks.id}
-				<OPTION VALUE="{$networks.id[networks]}">{$networks.name[networks]}: {$networks.address[networks]}/{$networks.prefix[networks]}</OPTION>
+				{section name=networks loop=$networks}
+				<OPTION VALUE="{$networks[networks].id}">{$networks[networks].name}: {$networks[networks].address}/{$networks[networks].prefix}</OPTION>
 				{sectionelse}
 				<OPTION VALUE="0">nie posiadasz ¿adnych sieci!</OPTION>
 				{/section}
