@@ -40,9 +40,7 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" NAME="nodeedit[netdev]"  {tip text="Wybierz urz±dzenie sieciowe z listy" trigger="netdev"}>
-				{if ! $nodeinfo.netdev.id}
-				<OPTION VALUE="0" SELECTED>--- Brak ---</OPTION>
-				{/if}
+				<OPTION VALUE="0" {if ! $nodeinfo.netdev.id}SELECTED{/if}>--- Brak ---</OPTION>
 				{section name="netdev" loop=$netdevices}
 				<OPTION VALUE="{$netdevices[netdev].id}" {if $nodeinfo.netdev.id == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {$netdevices[netdev].producer} / {$netdevices[netdev].location }</OPTION>
 				{/section}
