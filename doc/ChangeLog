@@ -16,6 +16,9 @@ wersja 1.0pre6 (??/??/2003):
   - sprawdzenie stanu konta przez usera
   - czê¶ciowo wydruki
   - dodane ³adne cacu¶ne i s³odkie README
+  - poprawiony pagelimiter w li¶cie u¿ytkowników
+  - opcja w³±czaj±ca sharing mac-addr
+  - autmoagiczna instalacja domy¶lnego admina z poziomu pliku lms.mysql 
 	
 wersja 1.0pre5 (26/01/2003):
  
