@@ -603,10 +603,33 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	wykorzystaæ skrypt lms-notify lub modu³ notify demona <emphasis>almsd</emphasis>.</para></note></para>
  </sect1>
  <sect1 id="menu-reload">
-	<title>Prze³adowanie</title>
-	<para>Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji i us³ug zdefiniowanych
-	dla generatora plików konfiguracyjnych <emphasis>LMS-MGC</emphasis> lub demona <emphasis>almsd</emphasis>. 
-	Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <emphasis>LMS-MGC</emphasis> oraz demona.</para>
+	<para>Menu 'Prze³adowanie' s³u¿y do zarz±dzania us³ugami na serwerach/routerach
+	poprzez "w³±czanie" ¿±dania prze³adowania dla <emphasis>LMS-MGC</emphasis>
+	lub demona <emphasis>lmsd</emphasis>. Tutaj tak¿e znajduje siê panel
+	konfiguracyjny demona.</para>
+	<sect2 id="menu-reload-reload">
+	    <title>Prze³adowanie</title>
+	    <para>Je¿eli korzystasz z <emphasis>LMS-MGC</emphasis> klikniêcie na menu 
+	    'Prze³adowanie' spowoduje uruchomienie generatora plików konfiguracyjnych 
+	    <emphasis>LMS-MGC</emphasis>, który wygeneruje zdefiniowan± konfiguracjê i prze³aduje us³ugi. 
+	    W przypadku demona <emphasis>almsd</emphasis> mo¿esz wybraæ z listy
+	    zdefiniowane hosty na których chcesz dokonaæ prze³adowania. Zachowanie
+	    menu 'Prze³adowanie' jest zale¿ne od ustawienia opcji 'reload_type'. Je¶li
+	    zdefiniowa³e¶ zapytanie SQL w opcji 'reload_sqlquery' zostanie ono wykonane.
+	    <para>Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <emphasis>LMS-MGC</emphasis> 
+	    oraz demona.</para>
+	</sect2>
+	<sect2 id="menu-reload-config">
+	<title>Konfiguracja</title>
+	    <para>W tym miejscu konfigurujemy demona <amphasis>lmsd</emphasis>.
+	    Konfiguracjê zaczyna siê od zdefiniowania hostów, na których dzia³a
+	    demon. Musisz zdefiniowaæ co najmniej jeden host, nawet je¶li jest to 
+	    localhost (na którym dzia³a <emphasis>LMS-UI</emphasis>). Nastêpnie
+	    klikaj±c na wybranym ho¶cie przechodzisz ju¿ do w³a¶ciwej konfiguracji
+	    (to co dawniej by³o zapisywane w pliku <filename>lms.ini</filename>).</para>
+	    <para>Konfiguracja jest bardziej szczegó³owo opisana w rozdziale dotycz±cym
+	    demona.</para>
+	</sect2>
  </sect1>
  <sect1 id="menu-stats">
 	<title>Statystyki</title>
