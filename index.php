@@ -1,5 +1,4 @@
 <?php
-
 /*
  * LMS version 1.1-cvs
  *
@@ -30,12 +29,42 @@ $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
-
+// *******************************************************************
 ini_set('session.name','LMSSESSIONID');
 
 // Parse configuration file
+function lms_parse_ini_file($filename, $process_sections = false) {
+  $ini_array = array();
+  $sec_name = "";
+  $lines = file($filename);
+  foreach($lines as $line) {
+    $line = trim($line);
 
-foreach(parse_ini_file($CONFIG_FILE, true) as $key => $val)
+    if($line == "" || $line[0] == ";" || $line[0] == "#") {
+      continue;
+    }
+
+    if($line[0] == "[" && $line[strlen($line) - 1] == "]") {
+      $sec_name = trim(substr($line, 1, strlen($line) - 2));
+    }
+    else {
+      $pos = strpos($line, "=");
+      $property = trim(substr($line, 0, $pos));
+      $value = trim(substr($line, $pos + 1)," \"'");
+
+      if($process_sections) {
+        $ini_array[$sec_name][$property] = $value;
+      }
+      else {
+        $ini_array[$property] = $value;
+      }
+    }
+  }
+
+  return $ini_array;
+}
+
+foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
 	$_CONFIG[$key] = $val;
 
 // config value tester
@@ -203,6 +232,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.114  2003/11/11 20:44:53  alec
+ * function for ini file parsing, compatible with almsd ini value strings
+ *
  * Revision 1.113  2003/10/27 21:29:52  warden
  * - czesc hopaki, wpadlem cos zepsuc w 1.1 ;-)
  *
@@ -289,3 +321,6 @@ $DB->Destroy();
  */
 
 ?>
+
+
+
