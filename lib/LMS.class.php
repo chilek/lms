@@ -1416,7 +1416,7 @@ class LMS
 		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, ipaddr, inet_ntoa(ipaddr) AS ip, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner FROM nodes, users WHERE ownerid = users.id AND netdev=? AND ownerid > 0 ORDER BY nodes.name ASC', array($id));
 	}
 
-	function NetDevLinkNode($id, $netid, $type=0)
+	function NetDevLinkNode($id, $netid, $type=NULL)
 	{
 		if($netid != 0)
 		{
@@ -1425,8 +1425,10 @@ class LMS
 				if( $netdev['takenports'] >= $netdev['ports'])
 					return FALSE;
 		}
-		
-		$this->DB->Execute('UPDATE nodes SET netdev=?, linktype=? WHERE id=?', array($netid,$type,$id));
+		if($type==NULL)
+			$this->DB->Execute('UPDATE nodes SET netdev=? WHERE id=?', array($netid, $id));
+		else
+			$this->DB->Execute('UPDATE nodes SET netdev=?, linktype=? WHERE id=?', array($netid,$type,$id));
 		$this->SetTS('nodes');
 		return TRUE;
 	}
@@ -2403,7 +2405,7 @@ class LMS
 
 	function GetNetDevConnected($id)
 	{
-		return $this->DB->GetAll('SELECT (CASE src WHEN '.$id.' THEN src ELSE dst END) AS src, (CASE src WHEN '.$id.' THEN dst ELSE src END) AS dst FROM netlinks WHERE src = '.$id.' OR dst = '.$id);
+		return $this->DB->GetAll('SELECT type, (CASE src WHEN '.$id.' THEN src ELSE dst END) AS src, (CASE src WHEN '.$id.' THEN dst ELSE src END) AS dst FROM netlinks WHERE src = '.$id.' OR dst = '.$id);
 	}
 
 	function GetNetDevLinkType($dev1,$dev2)
@@ -2503,7 +2505,7 @@ class LMS
 	function NetDevDelLinks($id)
 	{
 		return $this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id,$id));
-		$nodes = GetNetdevLinkedNodes($id);
+		$nodes = GetNetDevLinkedNodes($id);
 		if ($nodes) foreach($nodes as $node) {
 			$this->NetDevLinkNode($node['id'],0);
 		}
@@ -2511,22 +2513,22 @@ class LMS
 	
 	function NetDevReplace($sid, $did)
 	{
-		$dev1=$this -> GetNetDev($sid);
-		$dev2=$this -> GetNetDev($did);
+		$dev1 = $this->GetNetDev($sid);
+		$dev2 = $this->GetNetDev($did);
 		$location = $dev1['location'];
 		$dev1['location'] = $dev2['location'];
 		$dev2['location'] = $location;
-		$links1 = $this -> GetNetDevConnected($sid);
-		$links2 = $this -> GetNetDevConnected($did);
-		$nodes1 = $this -> GetNetDevLinkedNodes($sid);
-		$nodes2 = $this -> GetNetDevLinkedNodes($did);
-		$this -> NetDevDelLinks($sid);
-		$this -> NetDevDelLinks($did);
+		$links1 = $this->GetNetDevConnected($sid);
+		$links2 = $this->GetNetDevConnected($did);
+		$nodes1 = $this->GetNetDevLinkedNodes($sid);
+		$nodes2 = $this->GetNetDevLinkedNodes($did);
+		$this->NetDevDelLinks($sid);
+		$this->NetDevDelLinks($did);
 		if ($links1) foreach($links1 as $row) {
-			$this -> NetDevLink($did,$row['dst']);
+			$this->NetDevLink($did,$row['dst'],$row['type']);
 		}
 		if ($links2) foreach($links2 as $row) {
-			$this -> NetDevLink($sid,$row['dst']);
+			$this->NetDevLink($sid,$row['dst'], $row['type']);
 		}
 		if ($nodes1) foreach($nodes1 as $row) {
 			$this->NetDevLinkNode($row['id'],$did);
@@ -2534,8 +2536,8 @@ class LMS
 		if ($nodes2) foreach($nodes2 as $row) {
 			$this->NetDevLinkNode($row['id'],$sid);
 		}
-		$this -> NetDevUpdate($dev1);
-		$this -> NetDevUpdate($dev2);
+		$this->NetDevUpdate($dev1);
+		$this->NetDevUpdate($dev2);
 	}
 
 	function DeleteNetDev($id)
