@@ -30,7 +30,7 @@ switch($_GET['mode'])
 {
 	case 'user':
 		if(($userid = $DB->GetOne('SELECT id FROM users WHERE id = '.intval($search))) ||
-		   ($userid = $DB->GetOne('SELECT id FROM users WHERE lastname ?LIKE? ? OR address ?LIKE? ? OR phone1 = ? OR phone2 = ? OR phone3 = ? OR email = ? LIMIT 1', array('%'.$search.'%', '%'.$search.'%', $search, $search, $search, $search)))
+		   ($userid = $DB->GetOne('SELECT id FROM users WHERE deleted=0 AND lastname ?LIKE? ? OR address ?LIKE? ? OR phone1 = ? OR phone2 = ? OR phone3 = ? OR email = ? LIMIT 1', array('%'.$search.'%', '%'.$search.'%', $search, $search, $search, $search)))
 		   )
 			$target = '?m=userinfo&id='.$userid;
 		else
