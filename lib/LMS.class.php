@@ -533,9 +533,8 @@ class LMS
 
 	function GetUser($id)
 	{
-		if($return = $this->ADB->GetRow("SELECT id, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid FROM users WHERE id=?",array($id)))
+		if($return = $this->ADB->GetRow("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid FROM users WHERE id=?",array($id)))
 		{
-			$return[username] = strtoupper($return[lastname])." ".$return[name];	
 			$return[createdby] = $this->GetAdminName($return[creatorid]);
 			$return[modifiedby] = $this->GetAdminName($return[modid]);
 			$return[creationdateh] = date("Y-m-d, H:i",$return[creationdate]);
