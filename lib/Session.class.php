@@ -42,7 +42,10 @@ class Session {
 	{
 		session_start();
 		$this->DB = &$DB;
-		$loginform = $_POST[loginform];
+		if($_GET['override'])
+			$loginform = $_GET['loginform'];
+		else
+			$loginform = $_POST['loginform'];
 		if(isset($loginform))
 		{
 			$this->login = $loginform[login];
