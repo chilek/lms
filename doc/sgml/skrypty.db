@@ -16,38 +16,30 @@
           Na podstawie CVS; $Id$
           -->
 	  <para>lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych [w iso-8859-2] i traktowania ich jako szablonów do mailingu.</para>
-	  <para>W plikach mo¿na u¿ywaæ nastêpuj±cych s³ów:</para>
+	  <para>W plikach mo¿na u¿ywaæ nastêpuj±cych zmiennych:</para>
 	  <itemizedlist>
 	    <listitem>
-	       <para>%date-m</para>
+	       <para>%date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1 poprzedzone 0, np. 02</para>
 	    </listitem>
 	    <listitem>
-	       <para>%date-y</para>
+	       <para>%date-y - zostanie zast±pione aktualnym rokiem, np 2003</para>
 	    </listitem>
 	    <listitem>
-	       <para>%saldo</para>
+	       <para>%saldo - zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535</para>
 	    </listitem>
 	    <listitem>
-	       <para>%abonament</para>
+	       <para>%abonament - zostanie zast±pione kwot± abonamentu jaka jest do danego u¿ytkownika przypisana, np. 107</para>
 	    </listitem>
 	    <listitem>
-	       <para>%b</para>
+	       <para>%b - saldo z zanegowanym znakiem, np. 107</para>
 	    </listitem>
 	    <listitem>
-	       <para>%B</para>
+	       <para>%B - saldo z prawdziwym znakiem, np. -107</para>
 	    </listitem>
 	    <listitem>
-	       <para>%last_10_in_a_table</para>
+	       <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:</para>
 	    </listitem>
 	  </itemizedlist>
-	  <para>które rozwijane s± do nastêpuj±cych danych:</para>
-	  <para><emphasis>%date-m</emphasis> zostanie zast±pione aktualnym miesi±cem, licz±c od 1 poprzedzone 0, np. 02</para>
-	  <para><emphasis>%date-y</emphasis> zostanie zast±pione aktualnym rokiem, np 2003</para>
-	  <para><emphasis>%saldo</emphasis> zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535</para>
-	  <para><emphasis>%abonament</emphasis> zostanie zast±pione kwot± abonamentu jaka jest do danego u¿ytkownika przypisana, np. 107</para>
-	  <para><emphasis>%b</emphasis> saldo z zanegowanym znakiem, np. 107</para>
-	  <para><emphasis>%B</emphasis> saldo z prawdziwym znakiem, np. -107</para>
-	  <para><emphasis>%last_10_in_a_table</emphasis> wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:</para>
 	  <example>
 	   <title>Przyk³adowy wyci±g 10 ostatnich operacji kasowych</title>
 <screen>Data       | Opis                                                 | Warto¶æ
@@ -147,7 +139,7 @@ http://www.naszasiec.pl/</screen></example>
 	</sect1>
 	<sect1>
 	 <title>lms-cutoff</title>
-	 <para>Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez LMSd lub LMS-MGC.</para>
+	 <para>Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.</para>
          <para>Konfiguracjê dla lms-cutoff mo¿emy ustaliæ w pliku <filename>lms.ini</filename> w sekcji <emphasis>[cutoff]</emphasis>. Mo¿emy tam ustawiæ nastêpuj±ce parametry:</para>
 	 <itemizedlist>
           <listitem>
