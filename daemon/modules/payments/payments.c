@@ -279,6 +279,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 		g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('cash', %NOW%)");
 		g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('_global', %NOW%)");
 	}
+	// remove old assignments
+	g->db_exec("DELETE FROM assignments WHERE dateto < %NOW% - 86400*30 AND dateto != 0 ");
 
 	// clean up
 	free(p->comment);
