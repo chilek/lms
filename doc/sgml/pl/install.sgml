@@ -276,6 +276,13 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
 			mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
 			nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak± zobaczysz
 			bêdzie formularz dodania u¿ytkownika.</para>
+
+			<para>Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
+			<screen>
+12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean --create --column-inserts  \
+		    --format=p lms -- file backups/lms-auto-"$(date +%s)".sql</screen>
+			</para>
+
 		</sect3>
 		</sect2>
 		<sect2 id="install-sqlite">
@@ -332,6 +339,11 @@ database = /usr/local/lms/lms.db</screen>
 			bazie danych nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
 			zobaczysz bêdzie formularz dodania u¿ytkownika.  
 			</para>
+			<para>Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
+			<screen>
+12 4 3,10,17,21,28 * * /bin/cp /usr/local/lms/lms.db  backups/lms-auto-"$(date +%s)"-sqllite.db</screen>
+			</para>
+
 		</sect3>
 		</sect2>
 	</sect1>  	
