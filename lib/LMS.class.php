@@ -1307,7 +1307,7 @@ class LMS
 	function GetFilters()
 	{
 		//	if($ttlist = $this->ADB->GetAll("SELECT id, g_name,description FROM usr_groups ORDER BY id ASC"))
-			if($ttlist = $this->ADB->GetAll("SELECT count(users.id) as count, usr_groups.id as id, g_name, description FROM users RIGHT JOIN usr_groups ON users.usr_group=usr_groups.id GROUP BY g_name ORDER BY id ASC"));
+			if($ttlist = $this->ADB->GetAll("SELECT count(users.id) as count, sum(users.status=1) as count_1, sum(users.status=2) as count_2, sum(users.status=3) as count_3, usr_groups.id as id, g_name, description FROM users RIGHT JOIN usr_groups ON users.usr_group=usr_groups.id GROUP BY g_name ORDER BY id ASC"));
 
 		return $ttlist;
 
@@ -1316,8 +1316,10 @@ class LMS
 	function GetFilter($group)
 
 	{
-	   if ($this->ADB->GetRow("SELECT id, g_name,description FROM usr_groups WHERE id=?", Array ($group)))
-	           return $ttlist;
+		$this->SetTS("usr_groups");
+		$return = $this->ADB->GetRow("SELECT id, g_name,description FROM usr_groups WHERE id=?", array($group)  );
+		$return[dupa]='dupa';
+		return $return;
 	}			
 
 	function FilterUpdate($group)
