@@ -50,6 +50,8 @@ wersja 1.5.4 (??/??/????):
   - na li¶cie opcji konfiguracyjnych dodano linki do edycji, usuwania oraz
     w³±czania/wy³±czania opcji (alec)
   - dodana mo¿liwo¶æ filtrowania listy faktur wg zadanych kryteriów (alec)
+  - w opcji 'contract_template' mo¿e podawaæ kilka plików szablonów umów
+    wraz z opisem, np. "plik.html:Umowa Test, plik2.html:Umowa Standard" (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 

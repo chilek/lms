@@ -3588,6 +3588,20 @@ class LMS
 
 		return $result;
 	}
-				
+	
+	function GetContractList()
+	{
+		$contractlist = explode(',', $this->CONFIG['phpui']['contract_template']);
+		
+		foreach($contractlist as $idx => $row)
+		{
+			list($file, $name) = explode(':', $row);
+			$clist[$idx]['file'] = trim($file);
+			$clist[$idx]['name'] = trim($name);
+		}
+		
+		return $clist;
+	}
+			
 }
 ?>
