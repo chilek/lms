@@ -26,7 +26,7 @@
 
 // we need this defines, and we need to place them here, see below why
 define('RT_NEW', trans('new'));
-define('RT_OPEN', trans('open'));
+define('RT_OPEN', trans('opened'));
 define('RT_RESOLVED', trans('resolved'));
 define('RT_DEAD', trans('dead'));
 
