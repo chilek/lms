@@ -86,6 +86,11 @@ class LMS
 		return $this->ADB->GetOne("SELECT time FROM timestamps WHERE tablename=?",array($table));
 	}
 
+	function DeleteTS($table)
+	{
+		return $this->ADB->Execute("DELETE FROM timestamps WHERE tablename=?",array($table));
+	}
+
 	function SetAdminPassword($id,$passwd)
 	{
 		$this->SetTS("admins");
