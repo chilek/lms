@@ -157,7 +157,6 @@ $iptables_binary -t mangle -I FORWARD -i $wan_interface -j STAT
 $iptables_binary -t mangle -I FORWARD -o $wan_interface -j STAT
 ";
 
-my @local_ports_list = split(' ',$local_ports);
 foreach my $port (@local_ports_list)
 {
 	print OUTFILE "$iptables_binary -t mangle -I INPUT -p tcp --dport $port -j STAT\n";
