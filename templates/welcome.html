@@ -32,8 +32,10 @@
 						<A HREF="http://www.mysql.com" target="_BLANK"> Wersja MySQL:</A>
 						{elseif $layout.dbtype == "postgres"}
 						<A HREF="http://www.postgresql.org" target="_BLANK">Wersja PostgreSQL:</A>
-						{else}
+						{elseif $layout.dbtype == "sqlite"}
 						<A HREF="http://www.sqlite.org" target="_BLANK">Wersja SQLite:</A>
+						{elseif $layout.dbtype == "mssql"}
+						<A HREF="http://www.microsoft.com" target="_BLANK">Wersja MS SQL Server:</A>
 						{/if}
 						</B>
 					</TD>
@@ -216,7 +218,7 @@
 						<B><A href="?m=rtsearch&state=1">Otwarte:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
-						{$rtstats.open|default:"0"}
+						{$rtstats.opened|default:"0"}
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -240,7 +242,7 @@
 						<B><A href="?m=rtqueuelist">Razem:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
-						{math equation="a+b+c+d" a=$rtstats.open b=$rtstats.new c=$rtstats.dead d=$rtstats.resolved}
+						{math equation="a+b+c+d" a=$rtstats.opened b=$rtstats.new c=$rtstats.dead d=$rtstats.resolved}
 					</TD>
 				</TR>
 			</TABLE>
