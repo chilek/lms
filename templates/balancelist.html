@@ -57,7 +57,7 @@
 			{$balancelist[balancelist].id|string_format:"%04d"}
 		</TD>
 		<TD width="1%" nowrap valign="top">
-			<NOBR>{$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M.%S"}</NOBR>
+			<NOBR>{$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M"}</NOBR>
 		</TD>
 		<TD width="1%" nowrap valign="top">
 			{if $balancelist[balancelist].adminid}<NOBR>{$balancelist[balancelist].admin|truncate:16:"..."}</NOBR>{else}-{/if}
