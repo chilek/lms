@@ -176,16 +176,23 @@ QUERY_HANDLE * db_query(unsigned char *q)
     syslog(LOG_INFO,"DEBUG: [SQL] %s", stmt);
 #endif
 #ifdef USE_MYSQL
-    if( mysql_query(&conn,stmt) < 0 ) {
+    if( mysql_query(&conn,stmt) != 0 ) {
 	syslog(LOG_CRIT,"[db_query] Query failed. Error: %s",mysql_error(&conn));
 	free(stmt);
 	return NULL;
     }
-    if ( (res = mysql_store_result(&conn)) == NULL ) {
+    if( (res = mysql_store_result(&conn)) == NULL ) {
 	syslog(LOG_CRIT,"[db_query] Unable to get query result. Error: %s",mysql_error(&conn));
 	free(stmt);
 	return NULL;
     }
+    if( mysql_num_rows(res) == 0 ) {  // empty result
+	free(stmt);
+	mysql_free_result(res);
+	return NULL;
+    }
+    query = get_query_result(res);
+    mysql_free_result(res);
 #endif
 #ifdef USE_PGSQL
     res = PQexec(conn,stmt);
@@ -195,6 +202,8 @@ QUERY_HANDLE * db_query(unsigned char *q)
         free(stmt);
 	return NULL;
     }
+    query = get_query_result(res);
+    PQclear(res);
 #endif
 #ifdef USE_SQLITE
     sqlite_compile(conn, stmt, &query_tail, &vm, &error);
@@ -234,15 +243,6 @@ QUERY_HANDLE * db_query(unsigned char *q)
     }
     query->col = my_col;
     sqlite_finalize(vm, NULL);
-#endif
-#ifndef USE_SQLITE  /* we don't need get_query_result() for SQLiteDB */
-    query = get_query_result(res);
-#endif
-#ifdef USE_MYSQL
-    mysql_free_result(res);
-#endif
-#ifdef USE_PGSQL
-    PQclear(res);
 #endif
     free(stmt);
     return query;
