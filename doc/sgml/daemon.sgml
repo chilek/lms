@@ -384,39 +384,39 @@ info = "Additional description of module"
           <title>Cutoff</title>
               <sect3 id="cutoff-desc">
               <title>Description</title>
-              <para>Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza ostrze¿enia
-              u¿ytkownikom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ 
-              nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</para>
+              <para>Cutoff do change nodes status to 'disconnected' and/or enable warnings
+              for customers, which have debts at an account greater than specified limit.
+              This module do not blocking network access.</para>
               </sect3>
               <sect3 id="cutoff-config">
               <title>Configuration</title>
-              <para>Dla modu³u 'cutoff' mamy nastêpuj±ce opcje:</para>
+              <para>For module 'cutoff' we have following options:</para>
               <itemizedlist>
                <listitem>
                    <para>limit</para>
-                   <para>Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej
-                   kwoty okre¶lonej t± zmienn±. Default: 0.</para>
+                   <para>Disconnection ensue if customer balance will decrease below
+                   specified value. Default: 0.</para>
                    <para>Example: <prompt>limit = -20</prompt></para>
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co najmniej
-                   jeden u¿ytkownik zostanie od³±czony lub zostanie w³±czone ostrze¿enie. 
-                   Default: nieustawiona.</para>
+                   <para>Specify system command, wich will be executed if at least one
+                   customer will be disconnected or warning will be enabled. 
+                   Default: empty.</para>
                    <para>Example: <prompt>command = 'almsd -qi firewall'</prompt></para>
                </listitem>
                <listitem>
                    <para>warning</para>
-                   <para>W³±cza ostrze¿enie dla od³±czanego u¿ytkowanika i przypisuje mu 
-                   okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
-                   Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
+                   <para>Enable warning for disconnected customer and write specified 
+                   by this option message. If empty, warning will be not enabled.
+                   Date in message is hidden in '%time' variable.
                    Default: 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty (dd.mm.yyyy)".</para>
                    <para>Example: <prompt>warning = ""</prompt></para>
                </listitem>
                <listitem>
                    <para>warnings_only</para>
-                   <para>Ta opcja pozwala zdecydowaæ, czy chcemy u¿yæ naszego 
-                   modu³u wy³±cznie do w³±czania ostrze¿eñ. Default: wy³±czona.</para>
+                   <para>Here you can to decide, if you want to use this module
+                   only for warnings enabling. Default: false.</para>
                    <para>Example: <prompt>warnings_only = true</prompt></para>
                </listitem>
               </itemizedlist>
@@ -426,90 +426,90 @@ info = "Additional description of module"
           <title>Dhcp</title>
               <sect3 id="dhcp-desc">
               <title>Description</title>
-              <para>Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
-              restartuje us³ugê. Zmienna 'command' umo¿liwia równie¿ wykonywanie innych 
-              czynno¶ci (programów).</para>
+              <para>Module for management of DHCP server, creates configuration file
+              and restarts service. Option 'command' make possible execution of other 
+              functions (programs).</para>
               </sect3>
               <sect3 id="dhcp-config">
               <title>Configuration</title>
-              <para>Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom 
-              pliku konfiguracyjnego dhcpd, które w typowych zastosowaniach
-              nie wymagaj± zmiany:</para>
+              <para>Most of configuration parameters match with parts of 
+              dhcpd configuration file, which in typical purposes do not need
+              change:</para>
               <itemizedlist>
                <listitem>
                    <para>file</para>
-                   <para>Okre¶la lokalizacjê pliku konfiguracyjnego serwera dhcp. 
-                   Default: /tmp/dhcpd.conf.</para>
-                   <para>Example: <prompt>file = /etc/dhcpd.conf</prompt></para>
+                   <para>Specify location of dhcp server configuration file. 
+                   Default: /etc/dhcpd.conf.</para>
+                   <para>Example: <prompt>file = /etc/dhcp/dhcpd.conf</prompt></para>
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Polecenie wykonywane po utworzeniu pliku konfiguracyjnego. 
-                   Default: pusta.</para>
-                   <para>Example: <prompt>command = 'killall -HUP dhcpd'</prompt></para>
+                   <para>Shell command executed after file generation. 
+                   Default: 'killall dhcpd; /usr/sbin/dhcpd'.</para>
+                   <para>Example: <prompt>command = '/etc/rc.d/rc.dhcpd restart'</prompt></para>
                </listitem>
                <listitem>
                    <para>begin</para>
-                   <para>Nag³ówek pliku. Default: "shared-network LMS {".</para>
+                   <para>File header. Default: "shared-network LMS {".</para>
                    <para>Example: <prompt>begin = "shared-network LMS {"</prompt></para>
                </listitem>
                <listitem>
                    <para>end</para>
-                   <para>Stopka pliku. Default: "}".</para>
+                   <para>File footer. Default: "}".</para>
                    <para>Example: <prompt>end = "\n}"</prompt></para>
                </listitem>
                <listitem>
                    <para>subnet_start</para>
-                   <para>Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Default: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</para>
+                   <para>Subnet header. '%a' - name, '%m' - mask. Default: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</para>
                    <para>Example: <prompt>subnet_start = "subnet %a netmask %m {default-lease-time 3600;"</prompt></para>
                </listitem>
                <listitem>
                    <para>subnet_end</para>
-                   <para>Stopka podsieci. Default: "}".</para>
+                   <para>Subnet footer. Default: "}".</para>
                    <para>Example: <prompt>subnet_end = '\t}'</prompt></para>
                </listitem>
                <listitem>
                    <para>subnet_gateway</para>
-                   <para>Brama podsieci. '%i' zostanie zamienione na adres ip. Default: 'option routers %i;'.</para>
+                   <para>Subnet gateway. '%i' will be changed to ip address. Default: 'option routers %i;'.</para>
                    <para>Example: <prompt>subnet_gateway = "option routers %i"</prompt></para>
                </listitem>
                <listitem>
                    <para>subnet_dns</para>
-                   <para>DNS'y podsieci. '%i - adresy dns'ów. Default: "option domain-name-servers %i;".</para>
+                   <para>Subnet DNS servers. '%i - dns addresses. Default: "option domain-name-servers %i;".</para>
                    <para>Example: <prompt>subnet_dns = "option domain-name-servers 192.168.0.1"</prompt></para>
                </listitem>
                <listitem>
                    <para>subnet_domain</para>
-                   <para>Nazwa domenowa podsieci. '%n' - nazwa. Default: "option domain-name %n;".</para>
+                   <para>Subnet domain name. '%n' - name. Default: "option domain-name %n;".</para>
                    <para>Example: <prompt>subnet_domain = "option domain-name test.%n;"</prompt></para>
                </listitem>
                <listitem>
                    <para>subnet_wins</para>
-                   <para>Serwery wins. '%i' - adres ip serwera. Default: "option netbios-name-servers %i;".</para>
+                   <para>WINS servers. '%i' - server IP address. Default: "option netbios-name-servers %i;".</para>
                    <para>Example: <prompt>subnet_wins = ""</prompt></para>
                </listitem>
                <listitem>
                    <para>subnet_range</para>
-                   <para>Zakres adresów podsieci. '%s' - adres pocz±tkowy, '%e' - koniec zakresu. Default: "range %s %e;".</para>
+                   <para>Subnet address range. '%s' - initial address, '%e' - end of range. Default: "range %s %e;".</para>
                    <para>Example: <prompt>subnet_range = "range %s %e;"</prompt></para>
                </listitem>
                <listitem>
                    <para>host</para>
-                   <para>Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' - adres ip. 
+                   <para>Hosts parameters, where '%n' - host name, '%m' - MAC, '%i' - IP address. 
                    Default: "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}".</para>
                    <para>Example: <prompt>host = "host %n {hardware ethernet %m; fixed-address %i;}"</prompt></para>
                </listitem>
                <listitem>
                    <para>networks</para>
-                   <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
-                   Default: pusta (wszystkie sieci).</para>
+                   <para>List of network names to take into consideration. Letters size is not important.
+                   Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
                    <para>usergroups</para>
-                   <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
-                   Default: pusta (wszystkie grupy).</para>
-                   <para>Example: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+                   <para>List of customers groups to take into consideration. Letters size is not important.
+                   Default: empty (all groups).</para>
+                   <para>Example: <prompt>usergroups = "group1 group2"</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>

@@ -310,9 +310,9 @@ struct dhcp_module * init(GLOBAL *g, MODULE *m)
 	free(s); s = g->str_concat(instance, ":host");
 	dhcp->host = strdup(g->iniparser_getstring(ini, s, "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}"));
 	free(s); s = g->str_concat(instance, ":file");
-	dhcp->file = strdup(g->iniparser_getstring(ini, s, "/tmp/dhcpd.conf"));
+	dhcp->file = strdup(g->iniparser_getstring(ini, s, "/etc/dhcpd.conf"));
 	free(s); s = g->str_concat(instance, ":command");
-	dhcp->command = strdup(g->iniparser_getstring(ini, s, ""));
+	dhcp->command = strdup(g->iniparser_getstring(ini, s, "killall dhcpd; /usr/sbin/dhcpd"));
 	free(s); s = g->str_concat(instance, ":networks");
 	dhcp->networks = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":usergroups");

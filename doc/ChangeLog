@@ -55,7 +55,8 @@ version 1.5.5 Anubis (??/??/????):
   - added Finances -> Print -> Covenants Realization Report (alec)  
   - new layout for menu (lukasz)
   - ip address selection divided to pages (chilek)
-  - if we find only one user we will redirect immediately to his info (chilek)
+  - if we find only one customer we will redirect to his info (chilek)
+  - almsd/dhcp: changed defaults of 'file' and 'command' options (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
