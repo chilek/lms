@@ -265,11 +265,8 @@ switch($_GET['type'])
 		
 	default: /*******************************************************/
 		$layout['pagetitle'] = 'Wydruki';
-		$admins = $LMS->GetAdminList();
-		unset($admins['total']);
-		
 		$SMARTY->assign('users', $LMS->GetUserNames());
-		$SMARTY->assign('admins', $admins);
+		$SMARTY->assign('admins', $LMS->GetAdminNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
 		$SMARTY->assign('printmenu', $_GET['menu']);
