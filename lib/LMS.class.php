@@ -70,8 +70,8 @@ class LMS
 		// a teraz postinit
 
 		foreach($this->modules as $module)
-			$this->$module->_postinit();
-	
+			if(! $this->$module->_postinit())
+				trigger_error('Wyst±pi³y problemy z inicjalizacj± modu³u '.$module.'.');
 
 		// to siê rozejdzie po modu³ach:
 
@@ -86,6 +86,11 @@ class LMS
 		$this->AddMenu('Bazy danych', 'db.gif', '?m=dblist', 'Zarz±dzanie kopiami zapasowymi bazy danych', 'b', 45);
 		$this->AddMenu('Administratorzy', 'admins.gif', '?m=adminlist', 'Konta administratorów systemu', 'd', 50);
 		$this->AddMenu('Statystyki', 'traffic.gif', '?m=traffic', 'Statystyki wykorzystania ³±cza', 'x', 55);
+	}
+
+	function _postinit()
+	{
+		return TRUE;
 	}
 
 	/*
@@ -2243,6 +2248,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.291  2003/12/01 04:18:37  lukasz
+ * - tsave
+ *
  * Revision 1.290  2003/12/01 04:15:44  lukasz
  * - tsave
  *
