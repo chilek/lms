@@ -73,6 +73,10 @@ $SESSION->restore('ilc', $listdata['cat']);
 $SESSION->restore('ils', $listdata['search']);
 $SESSION->restore('ilg', $listdata['group']);
 $SESSION->restore('ilge', $listdata['groupexclude']);
+$listdata['order'] = $invoicelist['order'];
+$listdata['direction'] = $invoicelist['direction'];
+unset($invoicelist['order']);
+unset($invoicelist['direction']);
 
 $listdata['totalpos'] = sizeof($invoicelist);
 

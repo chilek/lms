@@ -1595,6 +1595,7 @@ class LMS
 				$sqlord = ' ORDER BY name';
 			break;
 		}
+		
 		if($search && $cat)
 		{
 			switch($cat)
@@ -1629,7 +1630,7 @@ class LMS
 						WHERE invoiceid = id AND finished = 1 '
 						.$where
 						.' GROUP BY id, number, cdate, customerid, name, address, zip, city, finished '
-						.$sqlord))
+						.$sqlord.' '.$direction))
 		{
 			$inv_paid = $this->DB->GetAllByKey('SELECT invoiceid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum FROM cash WHERE invoiceid!=0 GROUP BY invoiceid','id');
 			
@@ -1652,6 +1653,9 @@ class LMS
 			if($group['group'])
 				$result = $result1;
 		}
+		
+		$result['order'] = $order;
+		$result['direction'] = $direction;
 		return $result;
 	}
 

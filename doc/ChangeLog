@@ -21,6 +21,7 @@ version 1.5.6 Baal (??/??/????):
   - in invoice edition added check that settlement date not conflicts with
     invoice number, so we can change date only to the same year or month
     (monthly_numbering) that was before change (alec)
+  - fixed invoices list sorting (alec)
 
 version 1.5.5 Anubis (25/03/2005):
 
