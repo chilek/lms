@@ -422,11 +422,12 @@ sub instance($)
 		
 		# BUILD NODELIST
 		
-		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name FROM nodes, users WHERE users.id=nodes.ownerid");
+		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name, warning FROM nodes, users WHERE users.id=nodes.ownerid");
 		
 		$dbq->execute();
 		my %maclist;
 		my %accesslist;
+		my %warninglist;
 		my %idlist;
 		my %namelist;
 		my %ucnamelist;
@@ -437,6 +438,7 @@ sub instance($)
 			$row->{'ipaddr'} = u32todotquad($row->{'ipaddr'}); 
 			$maclist{$row->{'ipaddr'}} = $row->{'mac'};
 			$accesslist{$row->{'ipaddr'}} = $row->{'access'};
+			$warninglist{$row->{'ipaddr'}} = $row->{'warning'};
 			$idlist{$row->{'ipaddr'}} = $row->{'id'};
 			$namelist{$row->{'ipaddr'}} = lc($row->{'name'});
 			$ucnamelist{$row->{'ipaddr'}} = uc($row->{'name'});
@@ -524,6 +526,16 @@ sub instance($)
 			{
 				print "exists in db (access neq \"Y\") and rule for deniednode exists, applying.\n" if $debug;
 				$rule = $deniednode;
+			}
+			elsif($idlist{$ipaddr} && ($warninglist{$ipaddr} eq 1) && $grantednode)
+			{
+				print "exists in db (warning eq \"Y\") and rule for grantednode exists, applying.\n" if $debug;
+				$rule = $deniednode;
+			}
+			elsif($idlist{$ipaddr} && !($warninglist{$ipaddr} eq 1) && $deniednode)
+			{
+				print "exists in db (warning neq \"Y\") and rule for deniednode exists, applying.\n" if $debug;
+				$rule = $grantednode;
 			}
 			elsif(($i>=$dhcpstart && $i<=$dhcpend) && $dhcpnode)
 			{
