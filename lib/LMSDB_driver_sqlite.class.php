@@ -24,10 +24,6 @@
  *  $Id$
  */
 
-/*
- To jest eksperymentalny pseudo-driver LMSDB dla bazy danych 'sqlite'.
- */
-
 class LMSDB_driver_sqlite extends LMSDB_common
 {
 	var $_loaded = TRUE;
@@ -145,6 +141,7 @@ class LMSDB_driver_sqlite extends LMSDB_common
 		sqlite_create_function($this->_dblink, 'upper','strtoupper',1);
 		sqlite_create_function($this->_dblink, 'lower','strtolower',1);
 		sqlite_create_function($this->_dblink, 'floor','floor',1);
+		sqlite_create_function($this->_dblink, 'random','sql_random');
 	}
 }
 
