@@ -249,7 +249,7 @@
 		<TD width="1%" class="fbt" align="right">{t}After:{/t}</TD>
 		<TD width="93%" class="frightu">{t}Description:{/t}</TD>
 	</TR>
-	{section name=balancelist loop=$invoice.userbalancelist.id}
+	{section name=balancelist loop=$invoice.userbalancelist.id start=-20}
 	<TR>
 		<TD width="1%"><nobr>{$invoice.userbalancelist.date[balancelist]}</nobr></TD>
 		<TD width="1%">{$invoice.userbalancelist.adminname[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
