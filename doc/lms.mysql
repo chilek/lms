@@ -157,3 +157,16 @@ CREATE TABLE users (
   UNIQUE KEY id_2 (id),
   KEY id (id)
 ) TYPE=MyISAM;
+
+#
+# Struktura tabeli 'stats'
+#
+
+DROP TABLE IF EXISTS stats;
+CREATE TABLE stats (
+  nodeid int(11) NOT NULL default '0',
+  dt int(11) NOT NULL default '0',
+  upload int(11) default '0',
+  download int(11) default '0',        
+  PRIMARY KEY (nodeid, dt)
+) TYPE=MyISAM;

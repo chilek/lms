@@ -158,3 +158,5 @@ CREATE TABLE stats (
   download integer DEFAULT 0,
   PRIMARY KEY (nodeid, dt)
 );
+/* Ma³y dopalacz niektórych zapytañ */
+CREATE INDEX stats_nodeid_idx ON stats(nodeid);
