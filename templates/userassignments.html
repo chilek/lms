@@ -59,7 +59,7 @@
 				{/foreach}
 				<TR bgcolor="#DFD5BD">
 					<TD CLASS="ftop" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format="%01.2f"}</TD>
+					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format=$LANGDEFS.$_language.money_format}</TD>
 					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="downrate" default="-"} kbps</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="downceil" default="-"} kbps</TD>
