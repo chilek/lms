@@ -1,0 +1,43 @@
+{include file="header.html"}
+{include file="accountheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P align="CENTER">
+<FORM method="POST" action="?m=domainedit&id={$domain.id}" name="domain">
+<TABLE width="100%" cellpadding="3" border="0">
+	<TR class="dark">
+		<TD width="1%" class="fleftu">
+			<img src="img/network.gif" border="0" align="absmiddle" alt="">
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>Nazwa:</B>
+		</TD>
+		<TD width="98%" class="frightu">
+			<input name="domain[name]" value="{$domain.name}" size="30" {tip text="Podaj nazwê domeny" trigger="name" bold="1"}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<img src="img/info.gif" border="0" align="absmiddle" alt="">
+		</TD>
+		<TD width="1%" nowrap>
+		        <B>Opis:</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA name="domain[description]" rows="5" cols="50">{$domain.description}</TEXTAREA>
+	        </TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="3">
+			<A href="javascript:document.domain.submit();" accesskey="s">Zapisz <img src="img/save.gif" border="0" align="absmiddle" alt=""></A>
+			<A href="?m=domainlist">Anuluj <img src="img/cancel.gif" border="0" align="absmiddle" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+<SCRIPT>
+<!--
+document.forms['domain'].elements['domain[name]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}
