@@ -1740,7 +1740,67 @@ http://www.naszasiec.pl/
        Przyk³ad: script_permission = 700
      _________________________________________________________________
 
-4.3.7. lms-makeiptables, lms-makeipchains
+4.3.7. lms-makedhcpconf
+
+   Tworzenie pliku konfiguracyjnego serwera DHCP - dhcpd.conf.
+   Konfiguracjê skryptu umieszcza siê w sekcji [dhcp]:
+     * config_file
+       Lokalizacja pliku wynikowego. Domy¶lnie: /etc/dhcpd.conf
+       Przyk³ad: config_file = /tmp/dhcpd.conf
+     * networks
+       Lista nazw sieci (oddzielonych spacjami), które maj± byæ
+       uwzglêdnione podczas generowania pliku. Je¶li nie ustawiono,
+       zostanie stworzony konfig dla wszystkich sieci.
+       Przyk³ad: networks = public-custa public-custb
+     * usergroups
+       Lista nazw grup (oddzielonych spacjami), które maj± byæ
+       uwzglêdnione podczas generowania pliku. Je¶li nie ustawiono,
+       zostanie stworzony konfig dla wszystkich grup.
+       Przyk³ad: usergroups = grupa1 grupa2
+     * default_lease_time
+       Domy¶lny czas dzier¿awy. Domy¶lnie: 86400.
+       Przyk³ad: default_lease_time = 43200
+     * max_lease_time
+       Maksymalny czas dzier¿awy. Domy¶lnie: 86400.
+       Przyk³ad: max_lease_time = 43200
+     * ignore_ddns
+       Nie generuj wpisu 'ddns-update-style none;' na pocz±tku pliku.
+       Przydatne przy starszych (2.2) wersjach demona dhcpd. Domy¶lnie:
+       wy³±czone.
+       Przyk³ad: ignore_ddns = 1
+     * log_facility
+       Ustawienie trybu logowania daemona dhcp. Je¿eli puste to tryb
+       domy¶lny.
+       Przyk³ad: log_facility = 7
+     * script_owneruid
+       UID w³a¶ciciela skryptu okre¶lonego w 'config_file'. Domy¶lnie: 0
+       (root).
+       Przyk³ad: script_owneruid = 0
+     * script_ownergid
+       GID w³a¶ciciela skryptu okre¶lonego w 'config_file'. Domy¶lnie: 0
+       (root).
+       Przyk³ad: script_ownergid = 0
+     * script_permission
+       Uprawnienia skryptu okre¶lonego w 'config_file'. Domy¶lnie: 600
+       (rwx------).
+       Przyk³ad: script_permission = 700
+
+   Mo¿esz podaæ czasy dzier¿awy dla konkretnych sieci poprzez stworzenie
+   sekcji [dhcp:nazwasieci] np.:
+[dhcp:public-custa] # nazwa sieci ma³ymi literami!
+default_lease_time = 3600
+max_lease_time     = 3600
+
+   Mo¿esz podaæ gateway, serwer dns, nazwê domeny i wins dla konkretnego
+   hosta poprzez stworzenie sekcji [dhcp:adresip] np.:
+[dhcp:213.25.209.216]
+domain  = anotherdomain.pl
+gateway = 213.25.209.251
+dns     = 213.25.209.8
+wins    = 213.25.209.10
+     _________________________________________________________________
+
+4.3.8. lms-makeiptables, lms-makeipchains
 
    Para skryptów s³u¿±cych do generowania plików zawieraj±cych regu³y
    firewalla. Do utworzonego pliku mo¿esz do³±czyæ inne wcze¶niej
@@ -1797,7 +1857,7 @@ http://www.naszasiec.pl/
        Przyk³ad: tcp_redirect_ports = 80:3128 25:25
      _________________________________________________________________
 
-4.3.8. lms-etherdesc
+4.3.9. lms-etherdesc
 
    Skrypt s³u¿±cy do generowania pliku zawieraj±cego MAC adresy oraz
    nazwy hostów pobierane z bazy lms'a. Adresy zapisywane s± w formacie
@@ -1824,7 +1884,7 @@ http://www.naszasiec.pl/
        Przyk³ad: etherdesc_permission = 600
      _________________________________________________________________
 
-4.3.9. lms-sendinvoices
+4.3.10. lms-sendinvoices
 
    Skrypt s³u¿y do wysy³ania poczt± elektroniczn± faktur, jako
    za³±czników do wiadomo¶ci. Faktury generowane s± na podstawie szablonu
@@ -1860,7 +1920,7 @@ http://www.naszasiec.pl/
        Przyk³ad: tmp_dir = /home/user/tmp
      _________________________________________________________________
 
-4.3.10. lms-makemacs
+4.3.11. lms-makemacs
 
    Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra
    filtruj±ce ruch u¿ytkowników na bazie testu adresu ¼ród³owego MAC. Dla
@@ -1916,7 +1976,7 @@ http://www.naszasiec.pl/
        Przyk³ad: lock_noaccess = 1
      _________________________________________________________________
 
-4.3.11. lms-makehosts
+4.3.12. lms-makehosts
 
    Skrypt s³u¿±cy do generowania pliku /etc/hosts zawieraj±cego
    odwzorowania nazw komputerów na adresy IP.
@@ -1951,7 +2011,7 @@ http://www.naszasiec.pl/
        Przyk³ad: config_header = 192.168.1.1 serwer serwer.nasza-siec
      _________________________________________________________________
 
-4.3.12. lms-makewarnings
+4.3.13. lms-makewarnings
 
    Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra
    przekierowuj±ce ruch http i webcache u¿ytkowników o saldzie mniejszym
@@ -2001,7 +2061,7 @@ http://www.naszasiec.pl/
        Przyk³ad: limit = -85
      _________________________________________________________________
 
-4.3.13. lms-makemessages
+4.3.14. lms-makemessages
 
    Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra
    przekierowuj±ce ruch http i webcache u¿ytkowników dla których zosta³o
@@ -2047,7 +2107,7 @@ http://www.naszasiec.pl/
        Przyk³ad: redirect_address = 192.168.1.1:3002
      _________________________________________________________________
 
-4.3.14. lms-fping
+4.3.15. lms-fping
 
    Skrypt zapisuje do bazy informacje o aktywno¶ci komputerów. Do
    skanowania wykorzystywany jest szybki program fping (z opcjami -ar1).
@@ -2071,7 +2131,7 @@ http://www.naszasiec.pl/
        Przyk³ad: temp_file = /tmp/hosts
      _________________________________________________________________
 
-4.3.15. lms-rtparser
+4.3.16. lms-rtparser
 
    Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który
    wspó³pracuj±c z serwerem pocztowym zapisuje do bazy danych wszystkie
