@@ -1,12 +1,19 @@
 $Id$
 
-wersja 1.1.6 (??/??/????):
+wersja 1.1.6 Seth (08/12/2003):
 
+  - literówka: http://bts.rulez.pl/bug_view_page.php?bug_id=0000088
+    (chilek/lukasz)
+  - poprawiony modu³ upgrade:
+    http://bts.rulez.pl/bug_view_page.php?bug_id=0000085 (chilek/lukasz)
+  - poprawione dodawanie taryf (alec)
+  - byk w skrypcie lms-makearp
+    http://bts.rulez.pl/bug_view_page.php?bug_id=0000086 (chilek/lukasz)
   - opis taryfy mo¿e byæ NULL (alec)
     MySQL:
-	ALTER TABLE tariffs CHANGE description description text;	
+    	ALTER TABLE tariffs CHANGE description description text;
     PostgreSQL:
-	ALTER TABLE tariffs ALTER COLUMN description DROP NOT NULL;
+    	ALTER TABLE tariffs ALTER COLUMN description DROP NOT NULL;  
 
 wersja 1.1.5 Amaonet (04/12/2003):
 
