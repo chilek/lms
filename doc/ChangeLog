@@ -27,6 +27,10 @@ wersja 1.5.4 (??/??/????):
     includach (i tak do d..y bo po co pó³ tony bibliotek i innych pierdó³ skoro
     i tak zaraz bêdzie redirect) (lukasz)
   - obs³uga gzipowanych kopii zapasowych (kuba)
+  - BTS#0000276: lms-rtparser: je¶li nie zdefiniowano 'mail_from_name' w polu
+    'From:' potwierdzenia wstawiamy nazwê kolejki (rejmer/alec)
+  - BTS#0000282: lms-rtparser: w polu 'Do:' potwierdzenia wstawiamy tylko
+    adres email bez nazwy konta zg³aszaj±cego (rejmer/alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
