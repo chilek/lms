@@ -51,7 +51,6 @@ if ((isset($_GET['id'])) && ($_GET['action']=='edit')) {
     $_SESSION['invoiceid'] = $invoice['id'];
 }
 
-$layout['pagetitle'] = trans('Edit Invoice');
 $users = $LMS->GetUserNames();
 $tariffs = $LMS->GetTariffs();
 $contents = $_SESSION['invoicecontents'];
@@ -59,6 +58,13 @@ $customer = $_SESSION['invoicecustomer'];
 $invoice = $_SESSION['invoice'];
 $error = $_SESSION['invoiceediterror'];
 $itemdata = r_trim($_POST);
+
+$ntempl = $LMS->CONFIG['invoices']['number_template'];
+$ntempl = str_replace('%N', $_SESSION['invoice']['number'], $ntempl);
+$ntempl = str_replace('%M', $_SESSION['invoice']['month'], $ntempl);
+$ntempl = str_replace('%Y', $_SESSION['invoice']['year'], $ntempl);
+
+$layout['pagetitle'] = trans('Invoice Edit: $0', $ntempl);
 
 if($_GET['userid'] != '' && $LMS->UserExists($_GET['userid']))
 	$_GET['action'] = 'setcustomer';

@@ -115,7 +115,7 @@
 	</TR>
 </TABLE>
 </FORM>
-<BR>	
+<P>	
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">
@@ -168,9 +168,11 @@
 			{$item.s_valuenetto|money_format}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{if $item.taxvalue}
+			{if $item.taxvalue || $item.taxvalue=="0"}
 				{$item.taxvalue|string_format:"%01.2f"}%
-			{else}{t}tax-free{/t}{/if}
+			{else}
+				{t}tax-free{/t}
+			{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$item.valuebrutto|money_format}<BR>

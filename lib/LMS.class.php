@@ -1627,7 +1627,6 @@ class LMS
 		}
 		
 		$number = $invoice['invoice']['number'];
-		
 		$this->DB->Execute('INSERT INTO invoices (number, cdate, paytime, paytype, customerid, name, address, nip, pesel, zip, city, phone, finished) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)', array($number, $cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['username'], $invoice['customer']['address'], $invoice['customer']['nip'], $invoice['customer']['pesel'], $invoice['customer']['zip'], $invoice['customer']['city'], $invoice['customer']['phone1']));
 		$iid = $this->DB->GetOne('SELECT id FROM invoices WHERE number = ? AND cdate = ?', array($number,$cdate));
 		
@@ -1637,29 +1636,26 @@ class LMS
 			$itemid++;
 			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
 			$item['count'] = str_replace(',','.',$item['count']);
-			if ($item['taxvalue'] == trans('tax-free'))
-				$item['taxvalue'] = '';
-			else
-				$item['taxvalue'] = str_replace(',','.',$item['taxvalue']);
-			
-			if ($item['taxvalue'] == '')
-				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
-				array(
-					$iid,
-					$itemid ,
-					$item['valuebrutto'], 
-					$item['pkwiu'], 
-					$item['jm'], 
-					$item['count'], 
-					$item['name'], 
-					$item['tariffid']));
-			else
+
+			if($item['taxvalue'] || $item['taxvalue'] == '0')
 				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
 					$iid, 
 					$itemid, 
 					$item['valuebrutto'], 
 					$item['taxvalue'], 
 					$item['pkwiu'],
+					$item['jm'], 
+					$item['count'], 
+					$item['name'], 
+					$item['tariffid']));
+				
+			else
+				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
+				array(
+					$iid,
+					$itemid ,
+					$item['valuebrutto'], 
+					$item['pkwiu'], 
 					$item['jm'], 
 					$item['count'], 
 					$item['name'], 
@@ -1687,25 +1683,8 @@ class LMS
 		foreach($invoice['contents'] as $idx => $item)
 		{
 			$itemid++;
-			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
-			$item['count'] = str_replace(',','.',$item['count']);
-			if ($item['taxvalue'] == trans('tax-free'))
-				$item['taxvalue'] = '';
-			else
-				$item['taxvalue'] = str_replace(',','.',$item['taxvalue']);
 			
-			if ($item['taxvalue'] == '')
-				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
-				array(
-					$iid,
-					$itemid,
-					$item['valuebrutto'], 
-					$item['pkwiu'], 
-					$item['jm'], 
-					$item['count'], 
-					$item['name'], 
-					$item['tariffid']));
-			else
+			if($item['taxvalue'] || $item['taxvalue'] == '0')
 				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				array(
 					$iid, 
@@ -1713,6 +1692,17 @@ class LMS
 					$item['valuebrutto'], 
 					$item['taxvalue'], 
 					$item['pkwiu'],
+					$item['jm'], 
+					$item['count'], 
+					$item['name'], 
+					$item['tariffid']));
+			else
+				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
+				array(
+					$iid,
+					$itemid,
+					$item['valuebrutto'], 
+					$item['pkwiu'], 
 					$item['jm'], 
 					$item['count'], 
 					$item['name'], 
