@@ -185,7 +185,7 @@ class LMS
 			$userdata[nip],
 			$userdata[tariff],
 			$this->SESSION->id,
-			$userdata[uwagi],
+			$userdata[info],
 			strtoupper($userdata[lastname]),
 			$userdata[name],
 			$userdata[id]
