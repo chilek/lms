@@ -24,7 +24,7 @@
 					<TD width="1%" nowrap>
 						<B>Grupa:</B>
 					</TD>
-					<TD width="1%">
+					<TD width="1%" {tip text="Wybierz grupê u¿ytkowników"}>
 						<INPUT class="box" type="radio" name="filter" value="3" CHECKED>pod³±czeni<BR>
 						<INPUT class="box" type="radio" name="filter" value="4">od³±czeni<BR>
 						<INPUT class="box" type="radio" name="filter" value="5">zad³u¿eni<BR>
@@ -38,7 +38,7 @@
 					<TD width="1%">	
 			    			<B>Sortowanie:</B>
 					</TD>
-					<TD width="95%">
+					<TD width="95%" {tip text="Wybierz rodzaj i kierunek sortowania"}>
 						<SELECT SIZE="1" name="order">
 							<OPTION value="username" SELECTED>Nazwa/nazwisko i imiê</OPTION>
 							<OPTION value="id">Identyfikator</OPTION> 
@@ -103,7 +103,7 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD class="fbottomu" width="100%" colspan="2" align="right">
-			<A href="javascript:document.getElementById('printuserbalance').submit();">Drukuj<IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
+			<A href="javascript:document.getElementById('printuserbalance').submit();">Drukuj <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -138,7 +138,7 @@ cal2.time_comp = false;
 					<TD width="1%" nowrap>
 						<B>Grupa:</B>
 					</TD>
-					<TD width="1%">
+					<TD width="1%" {tip text="Wybierz grupê komputerów"}>
 						<INPUT class="box" type="radio" name="filter" value="0" CHECKED>wszystkie<BR>
 						<INPUT class="box" type="radio" name="filter" value="1">od³±czone<BR>
 						<INPUT class="box" type="radio" name="filter" value="2">pod³±czone<BR>
@@ -149,7 +149,7 @@ cal2.time_comp = false;
 					<TD width="1%">	
 			    			<B>Sortowanie:</B>
 					</TD>
-					<TD width="95%">
+					<TD width="95%" {tip text="Wybierz rodzaj i kierunek sortowania"}>
 						<SELECT SIZE="1" name="order">
 							<OPTION value="name" SELECTED>Nazwa</OPTION>
 							<OPTION value="id">Identyfikator</OPTION> 
