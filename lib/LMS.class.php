@@ -342,7 +342,6 @@ class LMS
 
      function UserExists($id)
      {
-          $got = $this->DB->GetOne("SELECT deleted FROM users WHERE id=?",array($id));
           switch($this->DB->GetOne("SELECT deleted FROM users WHERE id=?",array($id)))
           {
                case '0':
@@ -1894,6 +1893,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.250  2003/09/30 18:21:38  alec
+ * removed doubled query in UserExists()
+ *
  * Revision 1.249  2003/09/30 18:17:59  alec
  * usuwam smieci po sobie
  *
