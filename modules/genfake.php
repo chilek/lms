@@ -1561,6 +1561,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$useradd['serviceaddr'] = '';
 		$useradd['info'] = '';
 		$useradd['message'] = '';
+		$useradd['pin'] = rand(10000,99999);
 		$id = $LMS->UserAdd($useradd);
 		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'period' => 1, 'at' => $useradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0));
 		$nodes = mt_rand(1,3);
