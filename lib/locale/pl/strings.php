@@ -179,7 +179,7 @@ $_LANG['Balance date:'] = 'Data bilansu:';
 $_LANG['Balance Sheet'] = 'Bilans finansowy';
 $_LANG['Balance Sheet ($0 to $1)'] = 'Bilans finansowy ($0 do $1)';
 $_LANG['Balance Sheet of User: $0 ($1 to $2)'] = 'Bilans finansowy dla użytkownika: $0 ($1 do $2)';
-$_LANG['<B>Allows you to change your password</B>'] = '<B>Zmiana twojego hasła dostępu</B>';
+$_LANG['Allows you to change your password'] = 'Zmiana twojego hasła dostępu';
 $_LANG['<B>Allows you to logout</B>'] = '<B>Zakończenie pracy</B>';
 $_LANG['Basic system informations'] = 'Podstawowe informacje o systemie';
 $_LANG['Begin:'] = 'Początek:';
@@ -1390,5 +1390,6 @@ $_LANG['You must specify event day!'] = 'Musisz wybrać dzień wpisu!';
 $_LANG['Your PHP do not support Graphic Library required for map generation!'] = 'Twoja wersja PHP nie obsługuje biblioteki graficznej wymaganej do generacji mapy!';
 $_LANG['You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.'] = 'Z pewnością wraz z niniejszym programem otrzymałeś też egzemplarz Powszechnej Licencji Publicznej GNU; jeśli nie - napisz do Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.';
 $_LANG['Zip:'] = 'Kod:';
+$_LANG['Services:'] = 'Usługi:';
 
 ?>
