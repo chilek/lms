@@ -39,7 +39,8 @@ wersja 1.5.1 (??/??/????):
   - lms-rtparser: auto_open - automatyczne otwieranie zamkniêtych zg³oszeñ (alec)
   - BTS#0000204: dane o ostatnim logowaniu zalogowanego administratora zawieraj±
     informacje z ostatniego logowania, a nie z bie¿±cej sesji (alec)
-  - po zmianie has³a wy¶wietlamy ostatni modu³ zamiast welcome (alec) 
+  - po zmianie has³a wy¶wietlamy ostatni modu³ zamiast welcome (alec)
+  - nazwa interfejsu mo¿e zawieraæ ':' i '.' (alec)
   
 wersja 1.5.0 Marduk (18/09/2004):
 
