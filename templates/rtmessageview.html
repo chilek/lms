@@ -58,7 +58,7 @@
 			<B>Nag³ówki:</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<TEXTAREA rows="5" cols="100">{$message.headers|escape|replace:"\n":"<BR>"}</TEXTAREA>
+			<TEXTAREA rows="5" cols="100">{$message.headers|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	{/if}
@@ -109,7 +109,7 @@
 			<B>Wiadomo¶æ:</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<TEXTAREA rows="5" cols="100">{$message.body|escape|replace:"\n":"<BR>"}</TEXTAREA>
+			<TEXTAREA rows="5" cols="100">{$message.body|escape}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
