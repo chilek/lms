@@ -167,7 +167,7 @@ if($a = $_POST['assignmentedit'])
 				    $to,
 				    $a['id'] ));
 		$LMS->SetTS('assignments');
-		header('Location: ?m=userinfo&id='.$userid);
+		header('Location: ?'.$_SESSION['backto']);
 		die;
 	}
 }
