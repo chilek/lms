@@ -192,9 +192,13 @@ while(my $assign = $dbq->fetchrow_hashref())
 			else
 			{
 				if ($assign->{'taxvalue'})
+				{
 					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxvalue'}, '$assign->{'pkwiu'}', 'szt', 1, '$txt', $assign->{'tariffid'})");
+				}
 				else
+				{
 					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES ($gotinv{$uid}, $assign->{'value'}, NULL, '$assign->{'pkwiu'}', 'szt', 1, '$txt', $assign->{'tariffid'})");
+				}
 				$icdbq->execute();
 			}
 		}
