@@ -69,33 +69,43 @@
 				<FORM METHOD="POST" NAME="assignment" ACTION="?m=userassignments&action=add&id={$balancelist.userid}">
 				<TR bgcolor="#DFD5BD">
 					<TD COLSPAN="9">
+						<TABLE>
+							<TR>
+								<TD>
 						<B>Dodaj:</B>
-						<SELECT size="1" name="assignment[tariffid]" {tip text="Wybierz taryfê która ma byæ przypisana do u¿ytkownika lub zawie¶ naliczanie wszystkich p³atno¶ci na dany okres" trigger="tariffid"}>
-							<OPTION value="" SELECTED>... wybierz taryfê ...</OPTION>
-							<OPTION value="0">- zawieszenie wszystkich p³atno¶ci -</OPTION>
-							{section name=t loop=$tariffs}
-							<OPTION VALUE="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>{$tariffs[t].name} ({$tariffs[t].value|string_format:"%01.2f"} z³{if $tariffs[t].downrate}, {$tariffs[t].downrate} down{/if}{if $tariffs[t].uprate}, {$tariffs[t].uprate} up{/if})</OPTION>
-							{/section}
-						</SELECT>
-						<NOBR>
-						<SELECT size="1" NAME="assignment[period]" {tip text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
-							<OPTION VALUE="0" {if $assignment.period==0}SELECTED{/if}>co tydzieñ</OPTION>
-							<OPTION VALUE="1" {if $assignment.period==1 || $assignment.period==''}SELECTED{/if}>co miesi±c</OPTION>
-							<OPTION VALUE="2" {if $assignment.period==2}SELECTED{/if}>co kwarta³</OPTION>
-							<OPTION VALUE="3" {if $assignment.period==3}SELECTED{/if}>co rok</OPTION>
-						</SELECT>
-						<B>kiedy:</B> <INPUT TYPE="TEXT" NAME="assignment[at]" VALUE="{$assignment.at}" {tip text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28), dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia), a dla kwartalnej DD/MM (MM <= 3)." trigger="at"} SIZE="5">
-						<INPUT CLASS="box" TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice}CHECKED{/if}> wystawiaj fakturê
-						</NOBR>
+								</TD>
+								<TD>
+								    <SELECT size="1" name="assignment[tariffid]" {tip text="Wybierz taryfê która ma byæ przypisana do u¿ytkownika lub zawie¶ naliczanie wszystkich p³atno¶ci na dany okres" trigger="tariffid"}>
+									<OPTION value="" SELECTED>... wybierz taryfê ...</OPTION>
+									<OPTION value="0">- zawieszenie wszystkich p³atno¶ci -</OPTION>
+									{section name=t loop=$tariffs}
+									    <OPTION VALUE="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
+									    {$tariffs[t].name} ({$tariffs[t].value|string_format:"%01.2f"} z³{if $tariffs[t].downrate || $tariffs[t].downceil}, {$tariffs[t].downrate}-{$tariffs[t].downceil} down{/if}{if $tariffs[t].uprate || $tariffs[t].upceil}, {$tariffs[t].uprate}-{$tariffs[t].upceil} up{/if})
+									    </OPTION>
+									{/section}
+								    </SELECT>
+								    <INPUT CLASS="box" TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice}CHECKED{/if}> wystawiaj fakturê
+								</TD>
+							</TR>
+							<TR>
+								<TD></TD>
+								<TD>
+								    <B>Okres:</B>
+								    <SELECT size="1" NAME="assignment[period]" {tip text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
+									<OPTION VALUE="0" {if $assignment.period==0}SELECTED{/if}>co tydzieñ</OPTION>
+									<OPTION VALUE="1" {if $assignment.period==1 || $assignment.period==''}SELECTED{/if}>co miesi±c</OPTION>
+				    					<OPTION VALUE="2" {if $assignment.period==2}SELECTED{/if}>co kwarta³</OPTION>
+									<OPTION VALUE="3" {if $assignment.period==3}SELECTED{/if}>co rok</OPTION>
+								    </SELECT>
+								    <B>kiedy:</B> <INPUT TYPE="TEXT" NAME="assignment[at]" VALUE="{$assignment.at}" {tip text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28), dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia), a dla kwartalnej DD/MM (MM <= 3)." trigger="at"} SIZE="5">
+								    <B>od:</B> <INPUT TYPE="TEXT" NAME="assignment[datefrom]" VALUE="{if $assignment.datefrom}{$assignment.datefrom}{/if}" OnClick="cal1.popup();" {tip text="Podaj datê w formacie RRRR/MM/DD od kiedy ma obowi±zywaæ dane zobowi±zanie. Je¶li nie chcesz okre¶laæ daty 'Od' pozostaw pole puste." trigger="datefrom"} SIZE="10"> 
+								    <B>do:</B> <INPUT TYPE="TEXT" NAME="assignment[dateto]" VALUE="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal2.popup();" {tip text="Podaj datê w formacie RRRR/MM/DD do kiedy ma obowi±zywaæ dane zobowi±zanie. Pozostaw puste pole je¿eli naliczenie ma obowi±zywaæ do momentu jego usuniêcia." trigger="dateto"} SIZE="10">
+								</TD>
+							</TR>
+						</TABLE>
 					</TD>
-					<TD ALIGN="RIGHT" NOWRAP>
+					<TD ALIGN="RIGHT" VALIGN="bottom" NOWRAP>
 						<A HREF="javascript:document.assignment.submit()" {tip text="Przypisz t± taryfê do u¿ytkownika"}>Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
-					</TD>
-				</TR>
-				<TR bgcolor="#DFD5BD">
-					<TD COLSPAN="10">
-						<B>Od:</B> <INPUT TYPE="TEXT" NAME="assignment[datefrom]" VALUE="{if $assignment.datefrom}{$assignment.datefrom}{/if}" OnClick="cal1.popup();" {tip text="Podaj datê w formacie RRRR/MM/DD od kiedy ma obowi±zywaæ dane zobowi±zanie. Je¶li nie chcesz okre¶laæ daty 'Od' pozostaw pole puste." trigger="datefrom"} SIZE="10"> 
-						<B>Do:</B> <INPUT TYPE="TEXT" NAME="assignment[dateto]" VALUE="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal2.popup();" {tip text="Podaj datê w formacie RRRR/MM/DD do kiedy ma obowi±zywaæ dane zobowi±zanie. Pozostaw puste pole je¿eli naliczenie ma obowi±zywaæ do momentu jego usuniêcia." trigger="dateto"} SIZE="10">
 					</TD>
 				</TR>
 				</FORM>
