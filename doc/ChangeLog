@@ -1,11 +1,12 @@
 $Id$
 
-wersja 1.0:
+wersja 1.0pre1 (24/12/2002):
 
    - przepisane obiektowo
    - napisane z wykorzystaniem engine'u template'owego Smarty
    - dodana opcja mailingu
    - bardzo fajne sortowanie (tm) :-)
+   - wprowadzone cacheowanie wyników (nawala, ale co¶ tam dzia³a)
 
 wersja 0.4:
 
