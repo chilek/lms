@@ -309,8 +309,12 @@ CREATE TABLE rtmessages (
   replyto text NOT NULL default '',
   headers text NOT NULL default '',
   body mediumtext NOT NULL default '',
+  createtime int(11) NOT NULL default '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
+
+DROP TABLE IF EXISTS rtmessages;
+CREATE TABLE rtattachments (messageid INT DEFAULT 0 NOT NULL, filename VARCHAR(255) NOT NULL, contenttype VARCHAR(255) NOT NULL)
 
 #
 # Struktura tabeli 'dbinfo'
@@ -324,4 +328,4 @@ CREATE TABLE dbinfo (
   UNIQUE KEY keytype (keytype),
   KEY keytype_2 (keytype)
 ) TYPE=MyISAM;
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004030800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004031100');

@@ -1,0 +1,48 @@
+<!-- $Id$ -->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD CLASS="fall" COLSPAN="2">
+			<B>Informacje o bilecie #{$ticket.ticketid|string_format:"%06d"}</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+			<B>Temat:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			{$ticket.subject}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+			<B>Zg³aszaj±cy:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			{$ticket.requestor} &lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+			<B>Data utworzenia:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			{$ticket.createtime|date_format:"%Y/%m/%d, %H:%M:%S"}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+			<B>Kolejka:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<A HREF="?m=rtqueueview&id={$ticket.queueid}">{$ticket.queuename}</A>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fbl" NOWRAP ALIGN="RIGHT">
+			<B>Status:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fbr">
+			{$ticket.status}
+		</TD>
+	</TR>
+</TABLE>

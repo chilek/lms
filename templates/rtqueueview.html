@@ -20,15 +20,15 @@
 	{cycle values="#DFD5BD,#EBE4D6" print=false}		
 	{foreach from=$queue item=ticket}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-		<TD CLASS="fleft" NOWRAP>
+		<TD CLASS="fleft" NOWRAP onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
 			<B><FONT CLASS="h3">{$ticket.id|string_format:"%06d"}</FONT></B><BR>
 			{$ticket.createtime|date_format:"%Y/%m/%d, %H:%M:%S"}
 		</TD>
-		<TD>
+		<TD onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
 			<FONT CLASS="h3"{if $ticket.state eq 0} COLOR="GREEN"{/if}><B>{$ticket.subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B></FONT></FONT><BR>
 			{$ticket.requestor|escape} &lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;<BR>
 		</TD>
-		<TD CLASS="fright" NOWRAP>
+		<TD CLASS="fright" NOWRAP onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
 			<FONT CLASS="h3">{if $ticket.owner}<A HREF="?m=admininfo&id={$ticket.ownerid}">{$ticket.ownername}</A>{else}-{/if}</FONT><BR>
 			{$ticket.lastmodfied|date_format:"%Y/%m/%d, %H:%M:%S"|default:"-"}
 		</TD>
