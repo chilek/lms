@@ -24,32 +24,28 @@
  *  $Id$
  */
 
-$netdevdata = $_POST['netdev'];
-
-if(isset($netdevdata)) {
-	// Jakby to dzia³a³o to by by³o mi³o... :P
-	//if($netdevdata['ports'] !="" && !eregi("^[0-9]{,4}$",$netdevdata['ports']))
-        //        $error['ports'] = "Podana ilo¶æ portów jest b³êdna!";
+if($netdevdata = $_POST['netdev']) 
+{
 	if($netdevdata['ports'] =='')
 		$netdevdata['ports'] = 0;
 	if($netdevdata['name'] == '')
-		$error['name'] = 'Pole nazwa nie mo¿e byæ puste!';
+		$error['name'] = trans('Device name is required!');
 	elseif(strlen($netdevdata['name'])>32)
-		$error['name'] = 'Podana nazwa jest za d³uga!';
+		$error['name'] = trans('Device name is too long (max.32 characters)!');
 
         if(!$error)
         {
-	    $netdevid=$LMS->NetDevAdd($netdevdata);
+	    $netdevid = $LMS->NetDevAdd($netdevdata);
 	    header('Location: ?m=netdevinfo&id='.$netdevid);
 	    die;
         }
 }
 		
 
-$layout['pagetitle'] = 'Nowe urz±dzenie';
+$layout['pagetitle'] = trans('New Device');
 
-$SMARTY->assign('error',$error);
-$SMARTY->assign('netdev',$netdevdata);
+$SMARTY->assign('error', $error);
+$SMARTY->assign('netdev', $netdevdata);
 $SMARTY->display('netdevadd.html');
 
 ?>

@@ -26,7 +26,7 @@
 
 if(!$LMS->NetworkExists($_GET['id']))
 {
-	header("Location: ?m=netlist");
+	header('Location: ?m=netlist');
 	die;
 }
 
@@ -35,14 +35,14 @@ $network['name'] = $LMS->GetNetworkName($_GET['id']);
 if($_GET['is_sure'])
 {
 	$LMS->NetworkCompress($_GET['id']);
-	header("Location: ?m=".$_SESSION['lastmodule']."&id=".$_GET['id']);
+	header('Location: ?m='.$_SESSION['lastmodule'].'&id='.$_GET['id']);
 	die;
 }else{
-	$layout['pagetitle'] = "Porz±dkowanie sieci ".strtoupper($network['name']);
+	$layout['pagetitle'] = sprintf(trans('Readdressing network %s'),strtoupper($network['name']));
 	$SMARTY->display('header.html');
-	echo "<H1>Porz±dkowanie sieci ".strtoupper($network['name'])."</H1>";
-	echo "<p>Czy jeste¶ pewien ¿e chcesz uporz±dkowaæ t± sieæ?</p>";
-	echo "<a href=\"?m=netcmp&id=".$_GET['id']."&is_sure=1\">Tak, jestem pewien</A>";
+	echo '<H1>'.sprintf(trans('Readdressing network %s'),strtoupper($network['name'])).'</H1>';
+	echo '<P>'.trans('Are you shure, you want to reorder that network?').'</P>';
+	echo '<A href="?m=netcmp&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I am sure').'</A>';
 	$SMARTY->display('footer.html');
 }
 
