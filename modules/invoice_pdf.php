@@ -358,7 +358,7 @@ function invoice_footnote($x, $y, $width, $font_size)
 
 function invoice_body() 
 {
-    global $invoice,$pdf,$id,$_CONFIG,$fh;
+    global $invoice,$pdf,$id,$_CONFIG;
     switch ($_CONFIG['invoices']['template_file']) {
 	case "standard":
 	    $top=800;
