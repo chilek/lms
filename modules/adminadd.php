@@ -39,17 +39,20 @@ if(isset($adminadd))
 	}
 	
 	if($LMS->GetAdminIDByLogin($adminadd['login']))
-		$error['login'] = 'Podany login istnieje!';
+		$error['login'] = trans('Account with specified login exists!');
 	elseif(!eregi("^[a-z0-9.-_]+$",$adminadd['login']))
-		$error['login'] = 'Login zawiera niepoprawne znaki!';
+		$error['login'] = trans('Login contains forbidden characters!');
 
 	if($adminadd['email']!='' && !check_email($adminadd['email']))
-		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+		$error['email'] = trans('E-mail isn\'t correct!');
+
+	if($adminadd['name']=='')
+		$error['name'] = trans('You must enter name and surname!');
 
 	if($adminadd['password']=='')
-		$error['password'] = 'Has³o nie mo¿e byæ puste!';
+		$error['password'] = trans('Empty password not allowed!');
 	elseif($adminadd['password']!=$adminadd['confirm'])
-		$error['password'] = 'Has³a nie s± takie same!';
+		$error['password'] = trans('Passwords do not match!');
 
 	// zróbmy maskê ACL...
 
@@ -79,7 +82,7 @@ foreach($access['table'] as $idx => $row)
 	$accesslist[] = $row;
 }
 
-$layout['pagetitle'] = 'Nowy administrator';
+$layout['pagetitle'] = trans('New User');
 $SMARTY->assign('adminadd', $adminadd);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('accesslist', $accesslist);

@@ -32,7 +32,7 @@
  *    ftp = 8	(0000000000001000)
  */
 
-$layout['pagetitle'] = 'Utworzenie nowego konta';
+$layout['pagetitle'] = trans('New account addition');
 
 if($account = $_POST['account'])
 {
@@ -45,15 +45,15 @@ if($account = $_POST['account'])
 	$account['type'] = array_sum($account['type']);
 
 	if(!eregi("^[a-z0-9._-]+$", $account['login']))
-    		$error['login'] = 'Login zawiera niepoprawne znaki!';
+    		$error['login'] = trans('Login contains forbidden characters!');
 	elseif($LMS->GetAccountIdByLogin($account['login']))
-		$error['login'] = 'Konto o podanej nazwie ju¿ istnieje!';
+		$error['login'] = trans('Account with specified login exists!');
 	
 	if($account['passwd1'] != $account['passwd2'])
-		$error['passwd'] = 'Has³a nie mog± siê ró¿niæ!';
+		$error['passwd'] = trans('Passwords do not match!');
 	    
 	if($account['passwd1'] == '')
-		$error['passwd'] = 'Has³a nie mog± byæ puste';
+		$error['passwd'] = trans('Empty passwords not allowed!');
 	
 	if($account['expdate'] == '')
 		$account['expdate'] = 0;
@@ -61,13 +61,13 @@ if($account = $_POST['account'])
 	{
 		$date = explode('/',$account['expdate']);
 		if(!checkdate($date[1],$date[2],$date[0]))
-			$error['expdate'] = 'Zastosuj prawid³owy format daty - RRRR/MM/DD!';
+			$error['expdate'] = trans('Incorrect date format! Enter date in format YYYY/MM/DD.');
 		elseif(!$error)
 			$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
 	}
 
 	if(!$account['domainid'] && (($account['type'] & 2) == 2))
-		$error['domainid'] = 'Konto mailowe musi posiadaæ domenê!';
+		$error['domainid'] = trans('E-mail account must have domain!');
 	
 	if(!$error)
 	{
