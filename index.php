@@ -64,10 +64,10 @@ $_SMARTY_TEMPLATES_DIR = (! $_CONFIG['directories']['smarty_templates_dir'] ? $_
 $_TIMEOUT = (! $_CONFIG['phpui']['timeout'] ? 600 : $_CONFIG['phpui']['timeout']);
 $_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
 $_DBTYPE = (! $_CONFIG['database']['type'] ? 'mysql' : $_CONFIG['database']['type']);
-$_DBHOST = (isset($_CONFIG['database']['host']) ? 'localhost' : $_CONFIG['database']['host']);
-$_DBUSER = (isset($_CONFIG['database']['user']) ? 'root' : $_CONFIG['database']['user']);
-$_DBPASS = (isset($_CONFIG['database']['password']) ? '' : $_CONFIG['database']['password']);
-$_DBNAME = (isset($_CONFIG['database']['database']) ? 'lms' : $_CONFIG['database']['database']);
+$_DBHOST = (! isset($_CONFIG['database']['host']) ? 'localhost' : $_CONFIG['database']['host']);
+$_DBUSER = (! isset($_CONFIG['database']['user']) ? 'root' : $_CONFIG['database']['user']);
+$_DBPASS = (! isset($_CONFIG['database']['password']) ? '' : $_CONFIG['database']['password']);
+$_DBNAME = (! isset($_CONFIG['database']['database']) ? 'lms' : $_CONFIG['database']['database']);
 
 // Redirect to SSL
 
@@ -185,6 +185,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.110  2003/10/11 20:01:14  alec
+ * kto¶ zapomnia³ o wykrzyknikach
+ *
  * Revision 1.109  2003/10/11 03:45:20  lukasz
  * - http://lists.rulez.pl/lms/1242.html
  *
