@@ -1,0 +1,4 @@
+<Files lms.ini>
+Order allow,deny
+deny from all
+</Files>
