@@ -34,6 +34,6 @@ foreach($users as $idx => $row)
 {
 	echo $row[lastname]." ".$row[name].": ";
 	echo "taryfa: '".$tariffs[$row[tariff]][name]."'... ";
-	$LMS->AddAssignment(array('tariffid' => $row[tariff], 'at' => $row[payday], 'userid' => $row[id], 'peroid' => 0));
+	$LMS->AddAssignment(array('tariffid' => $row[tariff], 'at' => $row[payday], 'userid' => $row[id], 'period' => 0));
 	echo "ok.\n";
 }

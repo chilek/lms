@@ -22,7 +22,7 @@
 				<tr bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=tariffinfo&id={$assignments[a].tariffid}">{$assignments[a].name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].value|string_format:"%01.2f"} z³</TD>
-					<TD WIDTH="1%" NOWRAP>{$assignments[a].peroid} ({$assignments[a].at})</TD>
+					<TD WIDTH="1%" NOWRAP>{$assignments[a].period} ({$assignments[a].at})</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].downrate|default:"-"} kbps</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].uprate|default:"-"} kbps</TD>
 					<TD WIDTH="95%" ALIGN="RIGHT" COLSPAN="2">{*<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê oraz zaksiêgowaæ wyrównanie od ostatniego zaksiêgowania do dnia dzisiejszego?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}&balance=1" {popup text="Usuwa taryfê z rekordu u¿ytkownika oraz ksiêguje wyrównanie od dnia ostatniego zdarzenia do dzisiaj"}>Usuñ i wyrównaj <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}" {popup text="Usuwa taryfê z rekordu u¿ytkownika"}>Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
@@ -52,7 +52,7 @@
 						</SELECT>
 					</TD>
 					<TD>
-						<SELECT SIZE="1" NAME="peroid" {popup text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
+						<SELECT SIZE="1" NAME="period" {popup text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
 							<OPTION VALUE="0">co miesi±c</OPTION>
 							<OPTION VALUE="1">co tydzieñ</OPTION>
 							<OPTION VALUE="2">co rok</OPTION>

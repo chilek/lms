@@ -44,12 +44,12 @@ if($_GET[action] == "assignmentdelete")
 }
 elseif($_GET[action] == "addassignment")
 {
-	$peroid = sprintf('%d',$_POST[peroid]);
+	$period = sprintf('%d',$_POST[period]);
 
-	if($peroid < 0 || $peroid > 2)
-		$peroid = 0;
+	if($period < 0 || $period > 2)
+		$period = 0;
 
-	switch($peroid)
+	switch($period)
 	{
 		case 0:
 			$at = sprintf('%d',$_POST[at]);
@@ -78,7 +78,7 @@ elseif($_GET[action] == "addassignment")
 	}
 
 	if($LMS->TariffExists($_POST[tariffid]) && !$error)
-		$LMS->AddAssignment(array('tariffid' => $_POST[tariffid], 'userid' => $_GET[id], 'peroid' => $peroid, 'at' => $at));
+		$LMS->AddAssignment(array('tariffid' => $_POST[tariffid], 'userid' => $_GET[id], 'period' => $period, 'at' => $at));
 		
 	header('Location: ?m=userinfo&id='.$_GET[id]);
 	die;
@@ -149,6 +149,9 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 /*
  * $Log$
+ * Revision 1.46  2003/09/09 20:23:00  lukasz
+ * - literówka, czyli Baseciq zna jêz. angielski
+ *
  * Revision 1.45  2003/09/09 01:50:51  lukasz
  * - YAFBF - Yet Another Fucked Bug Fix
  *
