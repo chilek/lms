@@ -3,3 +3,12 @@
  do niego ko³o zaleg³ych/nadp³aconych $$$, a osoba która robi³a ostanio
  zmianê danych usera w okolicach taryfy i dopisaæ tam np "zmieñ taryfê"
  albo zg³o¶ reklamacjê etc.
+
+Suggested by (From: "Maciej Krok" <maciek@grybow.net.pl>)
+- mozliowsc wydrukowania fv wystawionych a przypisanych danym operacja
+   finansowym wyswietlanch uzytkownikowi. Klient wchodzi i drukuje oryginal
+   fv.( tylko oryginal!!)
+- pobieranie numeru konta z lms.ini zamiast wklepanych na sztywno
+- jezeli klient ma nadplacone to w przelewpie pojawia sie i tak wartosc
+  tylko bezwzgledna( ale to juz kosmetyka)
+
