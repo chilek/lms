@@ -62,7 +62,7 @@ $menu[name]	[] = "Mailing";
 $menu[img]	[] = "mail.gif";
 $menu[link]	[] = "?m=mailing";
 $menu[accesskey][] = "m";
-$menu[tip]	[] = "";
+$menu[tip]	[] = "Korespondencja seryjna";
 
 $menu[name]	[] = "Prze³adowanie";
 $menu[img]	[] = "reload.gif";
@@ -82,8 +82,13 @@ $menu[link]     [] = "?m=adminlist";
 $menu[accesskey][] = "d";
 $menu[tip]	[] = "Konta administratorów systemu";
 
+
+
 /*
  * $Log$
+ * Revision 1.49  2003/08/30 12:56:02  alec
+ * Korespondencja seryjna?
+ *
  * Revision 1.48  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
