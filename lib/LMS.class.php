@@ -985,7 +985,6 @@ class LMS
      function NodeSetU($id,$access=FALSE)
      {
           $this->SetTS("nodes");
-          echo $this->SESSION->id."<BR>";
 	  if($access)
                return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?",array(1,$this->SESSION->id,$id));
           else
@@ -1895,6 +1894,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.249  2003/09/30 18:17:59  alec
+ * usuwam smieci po sobie
+ *
  * Revision 1.248  2003/09/30 16:07:22  alec
  * poprawione zmienne Session->id w funkcjach NodeSet() i NodeSetU() powodujace bledne dzialanie tych funkcji
  *
