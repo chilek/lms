@@ -58,6 +58,7 @@ $_CONFIG['directories']['sys_dir'] = (! $_CONFIG['directories']['sys_dir'] ? get
 $_CONFIG['directories']['backup_dir'] = (! $_CONFIG['directories']['backup_dir'] ? $_CONFIG['directories']['sys_dir'].'/backups' : $_CONFIG['directories']['backup_dir']);
 $_CONFIG['directories']['lib_dir'] = (! $_CONFIG['directories']['lib_dir'] ? $_CONFIG['directories']['sys_dir'].'/lib' : $_CONFIG['directories']['lib_dir']);
 $_CONFIG['directories']['modules_dir'] = (! $_CONFIG['directories']['modules_dir'] ? $_CONFIG['directories']['sys_dir'].'/modules' : $_CONFIG['directories']['modules_dir']);
+$_CONFIG['directories']['config_templates_dir'] = (! $_CONFIG['directories']['config_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/config_templates' : $_CONFIG['directories']['config_templates_dir']);
 $_CONFIG['directories']['smarty_dir'] = (! $_CONFIG['directories']['smarty_dir'] ? $_CONFIG['directories']['lib_dir'].'/Smarty' : $_CONFIG['directories']['smarty_dir']);
 $_CONFIG['directories']['smarty_compile_dir'] = (! $_CONFIG['directories']['smarty_compile_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates_c' : $_CONFIG['directories']['smarty_compile_dir']);
 $_CONFIG['directories']['smarty_templates_dir'] = (! $_CONFIG['directories']['smarty_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates' : $_CONFIG['directories']['smarty_templates_dir']);
@@ -120,6 +121,7 @@ $LMS = new LMS($DB, $SESSION);
 $LMS->CONFIG = $_CONFIG;
 
 $SMARTY = new Smarty;
+$SMARTY->assign('_config',$_CONFIG);
 
 // test for proper version of Smarty
 
@@ -199,6 +201,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.112  2003/10/22 17:50:51  lukasz
+ * - generator configów
+ *
  * Revision 1.111  2003/10/22 12:20:33  lukasz
  * - small changes in $_CONFIG handling
  *
