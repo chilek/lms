@@ -4,6 +4,9 @@
 <!--
 	function randomize()
 	{
+		if(! confirm('{/literal}{t}Are you sure, you want to generate new PIN?{/t}{literal}'))
+			return;
+	
 		var r = 0;
 		do
 			r = Math.floor(Math.random()*1000000-1);
