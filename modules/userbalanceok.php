@@ -34,7 +34,7 @@ if (!$LMS->UserExists($_GET['id']))
 else
 {
 	$LMS->SetBalanceZero($_GET['id']);
-	header('Location: ?m='.$_SESSION['lastmodule']);
+	header('Location: ?'.$_SESSION['backto']);
 }
 
 $SMARTY->display('header.html');
