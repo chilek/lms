@@ -49,7 +49,7 @@ if(isset($nodedata))
 	if($nodedata['name']=='')
 		$error['name'] = trans('Node name is required!');
 	elseif(strlen($nodedata['name']) > 16)
-		$error['name'] = trans('Node name is too long (max.16 characters!');
+		$error['name'] = trans('Node name is too long (max.16 characters)!');
 	elseif($LMS->GetNodeIDByName($nodedata['name']))
 		$error['name'] = trans('Specified name is in use!');
 	elseif(!eregi('^[_a-z0-9-]+$',$nodedata['name']))
@@ -58,7 +58,7 @@ if(isset($nodedata))
 	if(!$nodedata['ipaddr'])
 		$error['ipaddr'] = trans('Node IP address is required!');
 	elseif(!check_ip($nodedata['ipaddr']))
-		$error['ipaddr'] = trans('Incorrect node IP address!';
+		$error['ipaddr'] = trans('Incorrect node IP address!');
 	elseif(!$LMS->IsIPValid($nodedata['ipaddr']))
 		$error['ipaddr'] = trans('Specified IP address not overlaps with any network!');
 	elseif(!$LMS->IsIPFree($nodedata['ipaddr']))
