@@ -38,13 +38,18 @@ if(isset($adminadd))
 		die;
 	}
 	
-	if($LMS->GetAdminIDByLogin($adminadd['login']))
-		$error['login'] = "Podany login istnieje!";
+	if($adminadd['login']=="")
+		$error['login'] = "Login nie mo¿e byæ pusty!";
 	elseif(!eregi("^[a-z0-9.-_]+$",$adminadd['login']))
 		$error['login'] = "Login zawiera niepoprawne znaki!";
+	elseif($LMS->GetAdminIDByLogin($adminadd['login']))
+		$error['login'] = "Konto z podanym loginem istnieje lub login ten by³ ju¿ wykorzystany w przesz³o¶ci!";
 
 	if($adminadd['email']!="" && !check_email($adminadd['email']))
 		$error['email'] = "Podany email nie wydaje siê byæ poprawny!";
+
+	if($adminadd['name']=="")
+		$error['name'] = "Pole 'imiê i nazwisko' nie mo¿e byæ puste!";
 
 	if($adminadd['password']=="")
 		$error['password'] = "Has³o nie mo¿e byæ puste!";

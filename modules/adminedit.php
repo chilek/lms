@@ -40,13 +40,12 @@ if(isset($admininfo))
 	foreach($admininfo as $key => $value)
 		$admininfo[$key] = trim($value);
 
-	if($LMS->GetAdminIDByLogin($admininfo['login']) && $LMS->GetAdminIDByLogin($admininfo['login']) != $_GET['id'])
-		$error['login'] = "Podany login jest ju¿ zajêty!";
-
 	if($admininfo['login'] == "")
-		$error['login'] = "Pole login nie mo¿e byæ puste!";
+		$error['login'] = "Login nie mo¿e byæ pusty!";
 	elseif(!eregi("^[a-z0-9.-_]+$",$admininfo['login']))
 		$error['login'] = "Login zawiera niepoprawne znaki!";
+	elseif($LMS->GetAdminIDByLogin($admininfo['login']) && $LMS->GetAdminIDByLogin($admininfo['login']) != $_GET['id'])
+		$error['login'] = "Konto o podanym loginie istnieje lub login ten zosta³ ju¿ wykorzystany w przesz³o¶ci!";
 
 	if($admininfo['name'] == "")
 		$error['name'] = "Pole 'imiê i nazwisko' nie mo¿e byæ puste!";

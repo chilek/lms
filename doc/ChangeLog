@@ -7,6 +7,10 @@ wersja 1.4.4 (??/??/????):
   - BTS#0000299: poprawka w funkcji sprawdzaj±cej poprawno¶æ MAC'a (lukas)
   - BTS#0000300: drobna kosmetyka w useraddbox.html i usereditbox.html dla 
     Opery (alec)
+  - BTS#0000284: login admina jest unikalny i nie mo¿e byæ ponownie 
+    wykorzystany - zmieniono tre¶æ komunikatu o b³êdzie przy zmianie loginu 
+    lub tworzeniu nowego konta (alec)
+  - przy dodawaniu administratora 'imiê i nazwisko' nie mo¿e byæ puste (alec) 
 
 wersja 1.4.3 Velis (13/01/2005):
 
