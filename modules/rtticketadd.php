@@ -78,7 +78,7 @@ if(isset($ticket))
 		$headers['Date'] = date('D, d F Y H:i:s T');
 	        $headers['From'] = '<'.$message['mailfrom'].'>';
 		$headers['To'] = '<'.$message['destination'].'>';
-		$headers['Content-Type'] = 'text/plain; charset=UTF-8'
+		$headers['Content-Type'] = 'text/plain; charset=UTF-8';
 		$headers['Subject'] = $ticket['subject'];
 		$headers['Reply-To'] = $headers['From'];
 
