@@ -81,7 +81,7 @@ class LMS
 
 		// to siê rozejdzie po modu³ach:
 
-//		$this->AddMenu('RT', 'mail.gif', '?m=rtqueuelist', 'Obs³uga zg³oszeñ (RT)', 'r', 60);
+//		$this->AddMenu('RT', 'ticket.gif', '?m=rtqueuelist', 'Obs³uga zg³oszeñ (RT)', 'r', 60);
 		$this->AddMenu('Witamy !', 'l.gif', '?', '', '', 0);
 		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 10);
 		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 15);
