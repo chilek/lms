@@ -146,16 +146,17 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 						if(nets[j].address == (inet & nets[j].mask)) 
 							break;
 					// groups test
-					if( res1 = g->db_pquery("SELECT DISTINCT(usergroupid) AS groupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"))) {
-						for(k=0; k<res1->nrows; k++) {
-							int groupid = atoi(g->db_get_data(res1, k, "groupid"));
-							for(m=0; m<gc; m++) 
-								if(gps[m].id==groupid) 
-									break;
-							if(m!=gc) break;
+					if(strlen(hm->groups))
+						if( res1 = g->db_pquery("SELECT DISTINCT(usergroupid) AS groupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"))) {
+							for(k=0; k<res1->nrows; k++) {
+								int groupid = atoi(g->db_get_data(res1, k, "groupid"));
+								for(m=0; m<gc; m++) 
+									if(gps[m].id==groupid) 
+										break;
+								if(m!=gc) break;
+							}
+							g->db_free(res1);
 						}
-						g->db_free(res1);
-					}
 					
 					if( j!=nc && (m!=gc || (m==gc && !strlen(hm->groups))) ) {
 
