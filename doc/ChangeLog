@@ -41,6 +41,8 @@ wersja 1.3.7 (??/??/2004):
   - do demona dodana opcja wiersza poleceñ '-i' okre¶laj±ca instancje do
     prze³adowania, nie ma konieczno¶ci tworzenia odrêbnych plików konfig.
     dla modu³ów uruchamianych z crona (alec)
+  - na mapie sieci zwiêkszony górny margines i usuniête b³êdy wyst. przy
+    braku pod³±czonych komputerów (lukas)
 
 wersja 1.3.6 Osiris (01/09/2004);
 
