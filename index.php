@@ -63,7 +63,7 @@ $_SMARTY_TEMPLATES_DIR = (! $_CONFIG['directories']['smarty_templates_dir'] ? $_
 $_TIMEOUT = (! $_CONFIG['phpui']['timeout'] ? 600 : $_CONFIG['phpui']['timeout']);
 $_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
 $_DBTYPE = (! $_CONFIG['database']['type'] ? 'mysql' : $_CONFIG['database']['type']);
-$_DBHOST = (! $_CONFIG['database']['host'] ? 'localhost' : $_CONFIG['database']['host']);
+$_DBHOST = (! $_CONFIG['database']['host'] && $_CONFIG['database']['type'] != "postgres" ? 'localhost' : $_CONFIG['database']['host']);
 $_DBUSER = (! $_CONFIG['database']['user'] ? 'root' : $_CONFIG['database']['user']);
 $_DBPASS = (! $_CONFIG['database']['password'] ? '' : $_CONFIG['database']['password']);
 $_DBNAME = (! $_CONFIG['database']['database'] ? 'lms' : $_CONFIG['database']['database']);
@@ -182,6 +182,9 @@ else
 
 /*
  * $Log$
+ * Revision 1.94  2003/08/24 13:53:30  lukasz
+ * - do not change empty dbhost with postgres
+ *
  * Revision 1.93  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
