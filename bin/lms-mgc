@@ -535,7 +535,7 @@ sub instance($)
 			{
 				print "ignoring.\n" if $debug;
 			}
-			elsif($pernoderule)
+			elsif($pernoderule && $idlist{$ipaddr})
 			{
 				print "using per node rule.\n" if $debug;
 				$rule = $pernoderule;
