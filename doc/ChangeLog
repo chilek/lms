@@ -42,6 +42,8 @@ wersja 1.5.1 (??/??/????):
   - po zmianie has³a wy¶wietlamy ostatni modu³ zamiast welcome (alec)
   - nazwa interfejsu mo¿e zawieraæ ':' i '.' (alec)
   - naprawione sumowanie w kolumnie 0% w rejestrze sprzeda¿y (alec)
+  - poprawione b³êdy w pinger.h uniemo¿liwiaj±ce kompilacjê na niektórych
+    wersjach glibca (alec)
   
 wersja 1.5.0 Marduk (18/09/2004):
 
