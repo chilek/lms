@@ -1,5 +1,9 @@
 $Id$
 
+wersja 1.0.3 (??/??/2003):
+
+  - dodany contrib/lms_contract.patch (durden/lukasz)
+
 wersja 1.0.2 (13/08/2003):
   
   - dodana mo¿liwo¶æ wydrukowania listy zad³u¿onych u¿ytkowników (MichalZ)
