@@ -86,4 +86,18 @@ INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border
 document.forms['loginform'].elements['loginform[login]'].focus();
 -->
 </SCRIPT>
+{if $_config.phpui.lang_debug}
+<script language="JavaScript">
+config='toolbar=no,location=no,directories=no,status=no,menubar=no,width=600,height=400'
+config += 'scrollbars=no,resizable=no'
+pop = window.open ("","pop",config)
+pop.document.write('<html><head><title>Missing strings</title></head>');
+pop.document.write('<body bgcolor=#FFFFFF>');
+pop.document.write('<pre>');
+{section name=strings loop=$missing_strings}
+pop.document.write('$_LANG(\'{$missing_strings[strings]}\')\t= \'{$missing_strings[strings]}\';\n');
+{/section}
+pop.document.write('</pre></body></html>');
+</script>
+{/if}
 </BODY></HTML>
