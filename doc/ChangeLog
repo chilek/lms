@@ -6,6 +6,7 @@ wersja 1.3.5 (??/??/????):
     przy pustej zmiennej konfiguracyjnej 'usergroups' (alec)
   - domy¶lnie, w mailingu u¿ywamy imienia i e-maila administratora który
     aktualnie siê zalogowa³ jako nadawcy (lukasz)
+  - skoñczony (?) interfejs www dla systemu RT-Helpdesk (alec)
 
 wersja 1.3.4 Terok (06/07/2004):
 
