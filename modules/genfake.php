@@ -1501,13 +1501,21 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$DB->Execute("DROP SEQUENCE \"netdevices_id_seq\"; CREATE SEQUENCE \"netdevices_id_seq\"");
 		$DB->Execute("DROP SEQUENCE \"netlinks_id_seq\";   CREATE SEQUENCE \"netlinks_id_seq\"");
 	}
+	
+	if($LMS->CONFIG['database']['type']=='mysql')
+	{
+		$DB->Execute('ALTER TABLE users auto_increment=0');
+		$DB->Execute('ALTER TABLE nodes auto_increment=0');
+		$DB->Execute('ALTER TABLE netdevices auto_increment=0');
+		$DB->Execute('ALTER TABLE tariffs auto_increment=0');
+	}
 
 	echo '<B>Generuje taryfy...</B><BR>';
-	$tariffdata = array( name => 'Lite', description => 'Taryfa Lite', value => '30', taxvalue => '7', uprate => '64', downrate => '128');
+	$tariffdata = array( name => 'Lite', description => 'Taryfa Lite', value => '30', taxvalue => '7', pkwiu => '', uprate => '64', downrate => '128');
 	$LMS->TariffAdd($tariffdata);
-	$tariffdata = array( name => 'Standard', description => 'Taryfa Standard', value => '60', taxvalue => '7', uprate => '128', downrate => '256');
+	$tariffdata = array( name => 'Standard', description => 'Taryfa Standard', value => '60', taxvalue => '7', pkwiu => '', uprate => '128', downrate => '256');
 	$LMS->TariffAdd($tariffdata);
-	$tariffdata = array( name => 'Gold', description => 'Taryfa Gold', value => '120', taxvalue => '7', uprate => '256', downrate => '512');
+	$tariffdata = array( name => 'Gold', description => 'Taryfa Gold', value => '120', taxvalue => '7', pkwiu => '', uprate => '256', downrate => '512');
 	$LMS->TariffAdd($tariffdata);
 
 	echo '<B>Generuje op³aty sta³e...</B><BR>';
@@ -1546,18 +1554,25 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$useradd['tariff'] = mt_rand(1,3);
 		$useradd['payday'] = mt_rand(1,28);
 		$useradd['gguin'] = 0;
+		$useradd['phone2'] = '';
+		$useradd['phone3'] = '';
+		$useradd['nip'] = '';
+		$useradd['pesel'] = '';
+		$useradd['info'] = '';
+		$useradd['message'] = '';
 		$id = $LMS->UserAdd($useradd);
-		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'period' => 1, 'at' => $useradd['payday'], 'invoice' => 0));
+		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'period' => 1, 'at' => $useradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0));
 		$nodes = mt_rand(1,3);
 		for($j = 0; $j < $nodes; $j++)
 		{
-			$nodedata['name'] = $nodenames[$cnt];
+			$nodedata['name'] = $nodenames[$cnt].$i;
 			$cnt++;
 			$startip++;
 			$nodedata['ipaddr'] = long2ip($startip);
 			$nodedata['mac'] = makemac();
 			$nodedata['ownerid'] = $id;
 			$nodedata['access'] = 1;
+			$nodedata['warning'] = '';
 			$LMS->NodeAdd($nodedata);
 		}
 		$startip ++;
@@ -1591,6 +1606,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$ip['mac'] = makemac();
 		$ip['name'] = "SWITCH_".$i;
 		$ip['access'] = 1;
+		$ip['warning'] = '';
 		$LMS->NetDevLinkNode($LMS->NodeAdd($ip),$i);		
 		$startip++;
 		if($i>1)
