@@ -1377,4 +1377,8 @@ $_LANG['Import cash operations'] = 'Import operacji kasowych';
 $_LANG['Link to:'] = 'Przypisz do:';
 $_LANG['No cash operations to import.'] = 'Brak operacji kasowych do zaimportowania.';
 $_LANG['No customer selected!'] = 'Nie wybrano klienta!';
+$_LANG['Enter path to file or use \'View\' button'] = 'Wprowadź ścieżkę do pliku albo skorzystaj z przycisku \'Przeglądaj\'';
+$_LANG['Enter path to file with data for import'] = 'Wprowadź scieżkę do pliku z danymi do importu';
+$_LANG['Import file:'] = 'Plik importu:';
+
 ?>
