@@ -1204,6 +1204,45 @@ class LMS
 		return $iid;
 	}
 
+	function InvoicesReport($from, $to)
+	{
+		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, taxvalue, SUM(value*count) AS value FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 AND (cdate BETWEEN ? AND ?) GROUP BY id, number, taxvalue, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC',array($from, $to)))
+		{
+			foreach($result as $idx => $row)
+			{
+				$id = $row['id'];
+				$list[$id]['custname'] = $row['name'];
+				$list[$id]['custaddress'] = $row['zip']." ".$row['city'].', '.$row['address'];
+				$list[$id]['number'] = $row['number'];
+				$list[$id]['cdate'] = $row['cdate'];
+				$list[$id]['year'] = date('Y',$row['cdate']);
+				$list[$id]['month'] = date('m',$row['cdate']);
+				$list[$id]['brutto'] += $row['value'];
+				$list['sum']['brutto'] += $row['value'];
+				switch(round($row['taxvalue'],1))
+				{
+				    case '0.0':
+					    $list[$id]['val0'] += $row['value'];
+					    $list['sum']['val0'] +=$row['value'];
+				    break;
+				    case '7.0':
+					     $list[$id]['val7'] += $row['value']/1.07;
+					     $list[$id]['tax7'] += $row['value']-$row['value']/1.07;
+					     $list['sum']['val7'] +=$row['value']/1.07;
+					     $list['sum']['tax7'] +=$row['value']-$row['value']/1.07;
+				    break;
+				    case '22.0':
+					     $list[$id]['val22'] += $row['value']/1.22;
+					     $list[$id]['tax22'] += $row['value']-$row['value']/1.22;
+					     $list['sum']['val22'] +=$row['value']/1.22;
+					     $list['sum']['tax22'] +=$row['value']-$row['value']/1.22;
+				    break;
+				}
+			}
+		}
+		return $list;
+	}
+
 	function GetInvoicesList()
 	{
 		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value*count) AS value, COUNT(invoiceid) AS count FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
