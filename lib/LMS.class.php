@@ -1837,7 +1837,7 @@ class LMS
 		     $limit = "";
 
 	     // join query from parts
-	     $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE ".$dt." ".$net." GROUP BY nodeid, name, ipaddr ".$order." ".$limit;
+	     $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats, nodes WHERE stats.nodeid=nodes.id AND ".$dt." ".$net." GROUP BY nodeid, name, ipaddr ".$order." ".$limit;
 
 	     // get results
 	     if ($traffic = $this->DB->GetAll($query))
@@ -1894,6 +1894,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.247  2003/09/26 02:02:12  lukasz
+ * - hide data of deleted nodes in traffic
+ *
  * Revision 1.246  2003/09/26 01:48:01  lukasz
  * - fixes
  *
