@@ -13,7 +13,7 @@
 			<p align="right">
 				<b>
 					LMS {$layout.lmsv} @ {$layout.hostname}<br>
-					{$layout.date}<br>
+					{$smarty.now|date_format:"%A, %e %B, %Y"}<br>
 					Uptime: {$layout.uptime}
 				</b>
 			</p>
