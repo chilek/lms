@@ -1,0 +1,38 @@
+{include file="header.html"}
+{include file="userheader.html"}
+<H1>{$layout.pagetitle}</H1>
+<FORM METHOD="POST" NAME="tedit" ACTION="?m=usergroupedit&id={$usergroup.id}">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="fleftu">
+			<IMG SRC="img/money.gif" BORDER="0" ALIGN="absmiddle" ALT="">
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" NOWRAP>
+			<B>Nazwa:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="frightu">
+			<INPUT TYPE="TEXT" VALUE="{$usergroup.name}" NAME="usergroup[name]" {tip trigger="name" bold=1}>
+			<B>&nbsp;({$usergroup.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/usercomment.gif" BORDER="0" ALIGN="absmiddle" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>Opis:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" VALUE="{$usergroup.description}" NAME="usergroup[description]" SIZE="40" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT" CLASS="FBOTTOMU">
+			<A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{if $usergroup.count eq 0} <A HREF="?m=usergroupdelete&id={$usergroup.id}">Usuñ <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{/if}
+			<A HREF="?m=usergroupinfo&id={$usergroup.id}">Anuluj <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> 
+		
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{include file="footer.html"}
