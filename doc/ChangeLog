@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.0.4 (??/09/2003):
+wersja 1.0.4 (02/12/2003):
 
  - poprawiony bug pozwalaj±cy na zapisanie mac adresu ze znakiem '-' podczas
    edycji danych komputera - teraz podobnie jak podczas dodawania - zamienia
