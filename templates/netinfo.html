@@ -121,7 +121,7 @@
 				<input type="hidden" name="is_sure">
 				<input type="hidden" name="m" value="netremap">
 				<input type="hidden" name="id" value="{$network.id}">
-				<a href="javascript:document.remap.submit()" onClick="return confirmForm(is_sure,'{t}Are you sure you want to change network {$network.name} to network '+getText(document.remap.mapto.value)+'?{/t}','1');">{t}Reassign to network:{/t}</A> 
+				<a href="javascript:document.remap.submit()" onClick="return confirmForm(is_sure,'{t 0=$network.name}Are you sure, you want to change network $0 to network '+getText(document.remap.mapto.value)+'?{/t}','1');">{t}Reassign to network:{/t}</A> 
 					<select size="1" name="mapto" {tip text="Select network to which you want to move computers"}>
 						{section name=networks loop=$networks}
 						{if $networks[networks].id neq $network.id}
@@ -131,11 +131,11 @@
 					</select>
 				<img src="img/remap.gif" border="0" ALT="" align="absmiddle"><BR>
 				<a href="javascript:document.netedit.submit()" ACCESSKEY="S">{t}Save{/t} <IMG src="img/save.gif" ALT="[ {t}Save{/t} ]" align="absmiddle" border="0"></a>
-				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t}Are you sure you want to remove network{/t} \'{$network.name|upper}\'?')">{t}Remove{/t} <img src="img/delete.gif" align="absmiddle" ALT="[ {t}Remove{/t} ]" border="0"></A>
+				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t 0=$network.name|upper}Are you sure, you want to remove network \'$0\' ?{/t}')">{t}Remove{/t} <img src="img/delete.gif" align="absmiddle" ALT="[ {t}Remove{/t} ]" border="0"></A>
 				<a href="?m=netinfo&id={$network.id}">{t}Cancel{/t} <img src="img/cancel.gif" align="absmiddle" ALT="[ {t}Cancel{/t} ]" border="0"></A></TD></form>
 			{else}
 			<A href="?m=netedit&id={$network.id}" ACCESSKEY="E">{t}Edit{/t} <img src="img/edit.gif" align="absmiddle" ALT="[ {t}Edit{/t} ]" border="0"></A>
-			<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t}Are you sure you want to remove network{/t} \'{$network.name|upper}\'?')">{t}Remove{/t} <img src="img/delete.gif" align="absmiddle" ALT="[ {t}Remove{/t} ]" border="0"></A>
+			<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{t 0=$network.name|upper}Are you sure, you want to remove network \'$0\' ?{/t}')">{t}Remove{/t} <img src="img/delete.gif" align="absmiddle" ALT="[ {t}Remove{/t} ]" border="0"></A>
 		</TD>
 			{/if}
 	</TR>
