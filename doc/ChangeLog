@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.2.0rc1 Janet (18/02/2004):
+wersja 1.3.0 Apophis (18/02/2004):
 
   - zmiana wersji biblioteki Smarty z 2.5.0 na 2.6.0 (alec)
   - dodane contrib/warn&msg (Rafa³ Ramocki/Tomasz Chiliñski)
