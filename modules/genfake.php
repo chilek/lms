@@ -1540,7 +1540,7 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 		$id = $LMS->UserAdd($useradd);
 		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'period' => 0, 'at' => $useradd['payday'], 'invoice' => 0));
 		$nodes = mt_rand(1,3);
-		for($j = 0; $j < $nodes; $j++, $k++)
+		for($j = 0; $j < $nodes; $j++)
 		{
 			$nodedata['name'] = $nodenames[$cnt];
 			$cnt++;
