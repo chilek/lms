@@ -16,7 +16,7 @@
 	{cycle values="#DFD5BD,#EBE4D6" print=false}		
 	{foreach from=$queue item=ticket}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-		<TD CLASS="fleft" NOWRAP>
+		<TD CLASS="fleft" NOWRAP BGCOLOR="#00AA00">
 			<B><FONT CLASS="h3">{$ticket.id|string_format:"%06d"}</FONT></B><BR>
 			{$ticket.createtime|date_format:"%Y/%m/%d, %H:%M:%S"}
 		</TD>
