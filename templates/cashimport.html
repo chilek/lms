@@ -3,25 +3,25 @@
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
-<TABLE WIDTH="100%" CELLPADDING="3">
+<P><TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">
-			<B>{t}ID:{/t}</B>
+			{t}ID:{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>{t}Date:{/t}</B>
+			{t}Date:{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>{t}Value:{/t}</B>
+			{t}Value:{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>{t}Customer:{/t}</B>
+			{t}Customer:{/t}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
-			<B>{t}Description:{/t}</B>
+		<TD WIDTH="95%" CLASS="fbt">
+			{t}Description:{/t}
 		</TD>
-		<TD WIDTH="1%" CLASS="frightu">
-			<B>{t}Link to:{/t}</B>
+		<TD WIDTH="1%" CLASS="frightu" nowrap>
+			{t}Link to:{/t}
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
@@ -38,10 +38,10 @@
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$importlist[importlist].value|money_format} 
 		</TD>
-		<TD WIDTH="48%" ALIGN="LEFT">
+		<TD WIDTH="1%" ALIGN="LEFT">
 			{$importlist[importlist].customer}
 		</TD>
-		<TD WIDTH="48%" ALIGN="LEFT">
+		<TD WIDTH="95%" ALIGN="LEFT">
 			{$importlist[importlist].description}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
@@ -61,7 +61,7 @@
 	{/section}
 	{else}
 	<TR>
-		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="7">
+		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="6">
 			<P>&nbsp;</P>
 			<P>&nbsp;</P>
 			<P><B>{t}No cash operations to import.{/t}</B></P>
@@ -71,18 +71,10 @@
 	</TR>	
 	{/if}
 	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="6">
-			<TABLE WIDTH="100%">
-				<TR>
-					<TD ALIGN="left">
-						&nbsp;
-					</TD>
-					<TD ALIGN="right">	
-						<IMG SRC="img/info2.gif" border="0" ALT="" align="absmiddle"> <B>{t}Total:{/t} {$importlist.total}</B>
-					</TD>
-				</TR>
-			</TABLE>
+		<TD CLASS="fall" COLSPAN="6" align="right">
+			<IMG SRC="img/info2.gif" border="0" ALT="" align="absmiddle"> <B>{t}Total:{/t} {$importlist.total}</B>
 		</TD>
 	</TR>
 </TABLE>
+</P>
 {include file="footer.html"}

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Import cash operations');
+$layout['pagetitle'] = trans('Cash Operations Import');
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
 $op = $_GET['op'];
