@@ -157,9 +157,34 @@ class LMS
 		$this->SetTS("users");
 		return $this->ADB->Execute(
 		"UPDATE users SET 
-		phone1=?, phone2=?, phone3=?, address=?, email=?, gguin=?, nip=?, city=?, zip=?, tariff=?, info=?, modid=?, status=?, moddate=".$this->sqlTSfmt()." WHERE id=?",
+		status=?,
+		phone1=?,
+		phone2=?,
+		phone3=?,
+		address=?,
+		zip=?,
+		city=?,
+		email=?,
+		gguin=?,
+		nip=?,
+		tariff=?,
+		info=? WHERE id=?",
 		array(
-		$userdata[phone1],$userdata[phone2],$userdata[phone3],$userdata[address],$userdata[city],$userdata[gguin],$userdata[nip],$userdata[zip],$userdata[email],$userdata[tariff],$userdata[uwagi],$this->SESSION->id,$userdata[status],$userdata[id]));	
+			$userdata[status],
+			$userdata[phone1],
+			$userdata[phone2],
+			$userdata[phone3],
+			$userdata[address],
+			$userdata[zip],
+			$userdata[city],
+			$userdata[email],
+			$userdata[gguin],
+			$userdata[nip],
+			$userdata[tariff],
+			$userdata[uwagi],
+			$userdata[id]
+		     )
+			);
 	}
 
 	function GetUserNodesNo($id)

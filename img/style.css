@@ -1,4 +1,4 @@
-<!-- // $Id: style.css,v 1.1 2003/01/06 15:39:47 lukasz Exp $ // -->
+<!-- // $Id: style.css,v 1.2 2003/01/25 01:33:17 warden Exp $ // -->
 <STYLE type="text/css"><!--
 BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
@@ -20,6 +20,7 @@ TR.dark		{ background-color: #CEBD9B; }
 TR.light	{ background-color: #DFD5BD; }
 TR.blend	{ color: #888888; }
 FONT.blend	{ color: #888888; }
+FONT.alert	{ color: #FF0000; font-weight: bold; }
 A		{ text-decoration: none; }
 A:hover		{ text-decoration: underline; color: #336600; }
 P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }

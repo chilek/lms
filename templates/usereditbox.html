@@ -20,7 +20,7 @@
 				<OPTION VALUE="3"{if $userinfo.status eq "3"} SELECTED{/if}>pod³±czony</OPTION>
 				<OPTION VALUE="2"{if $userinfo.status eq "2"} SELECTED{/if}>oczekuj±cy</OPTION>
 				<OPTION VALUE="1"{if $userinfo.status eq "1"} SELECTED{/if}>zainteresowany</OPTION>
-				</SELECT>{if $error.status}<BR><FONT COLOR="RED"><B>{$error.status}</B>{/if}
+				</SELECT>{if $error.status}<BR><FONT CLASS="ALERT">{$error.status}</B>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -39,15 +39,15 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" SIZE="30">
-			{if $error.address}<FONT COLOR="RED"><B>{$error.address}</B></FONT>{/if}
+			{if $error.address}<FONT CLASS="ALERT">{$error.address}</FONT>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="10">
-			{if $error.zip}<FONT COLOR="RED"><B>{$error.zip}</B></FONT>{/if}
+			<INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="10"{if $error.zip} CLASS="ALERT"><BR>
+			<FONT CLASS="ALERT">{$error.zip}</FONT{/if}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -70,7 +70,7 @@
 			<IMG SRC="img/gg.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[gguin]" VALUE="{$userinfo.gguin}" CLASS="red" SIZE="30"><BR>
+			<INPUT TYPE="TEXT" NAME="userdata[gguin]" VALUE="{$userinfo.gguin}" SIZE="30"{if $error.gguin} CLASS="ALERT"><BR><FONT CLASS="ALERT">{$error.gguin}</FONT{/if}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -78,8 +78,7 @@
 		<B>NIP</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[nip]" VALUE="{$userinfo.nip}" CLASS="red" SIZE="30">
-			{if $error.nip}<FONT COLOR="RED"><B>{$error.nip}</B></FONT>{/if}<BR>
+			<INPUT TYPE="TEXT" NAME="userdata[nip]" VALUE="{$userinfo.nip}" SIZE="30"{if $error.nip} CLASS="ALERT"><BR><FONT CLASS="ALERT">{$error.nip}</FONT{/if}>
 		</TD>
 	</TR>
 
@@ -92,13 +91,13 @@
 			Taryfa:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} z³</B></FONT>{else}{$userinfo.balance|default:"0"} z³{/if}<BR>
+			{if $userinfo.balance < 0}<FONT CLASS="ALERT">{$userinfo.balance|default:"0"} z³</FONT>{else}{$userinfo.balance|default:"0"} z³{/if}<BR>
 			<SELECT SIZE="1" NAME="userdata[tariff]">
 				{section name=t loop=$tariffs.id}
 				<OPTION VALUE="{$tariffs.id[t]}"{if $tariffs.id[t] eq $userinfo.tariff} SELECTED{/if}>{$tariffs.name[t]} ({$tariffs.value[t]} z³/mc)</OPTION>
 				{/section}
 			</SELECT>
-			{if $error.tariff}<BR><FONT COLOR="RED"><B>{$error.tariff}</B></FONT>{/if}
+			{if $error.tariff}<BR><FONT CLASS="ALERT">{$error.tariff}</FONT>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
