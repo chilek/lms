@@ -1,0 +1,415 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>FAQ</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Ostrze¿enia + squid"
+HREF="contrib-squid-warn.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="contrib-squid-warn.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+>&nbsp;</TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="FAQ"
+></A
+>Rozdzia&#322; 9. FAQ</H1
+><DIV
+CLASS="QANDASET"
+><DL
+><DT
+>9.1. <A
+HREF="faq.html#Q1"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Co zrobiæ gdy nie generuje siê mapa sieci?</B
+></SPAN
+></A
+></DT
+><DT
+>9.2. <A
+HREF="faq.html#Q2"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Jak dodaæ dwa komputery z tym samym adresem IP?</B
+></SPAN
+></A
+></DT
+><DT
+>9.3. <A
+HREF="faq.html#Q3"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Jak dodaæ dwa komputery z tym samym adresem MAC?</B
+></SPAN
+></A
+></DT
+><DT
+>9.4. <A
+HREF="faq.html#Q4"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Co oznacza b³±d <SAMP
+CLASS="PROMPT"
+>Can't locate Config/IniFiles.pm in @INC ...</SAMP
+>?</B
+></SPAN
+></A
+></DT
+><DT
+>9.5. <A
+HREF="faq.html#Q5"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Zrobiem parê poprawek. Jak mogê dodaæ je do LMSa?</B
+></SPAN
+></A
+></DT
+><DT
+>9.6. <A
+HREF="faq.html#Q6"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Która wersja LMSa jest najnowsza?</B
+></SPAN
+></A
+></DT
+></DL
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q1"
+></A
+><B
+>9.1. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Co zrobiæ gdy nie generuje siê mapa sieci?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Pierwsze co nale¿y sprawdziæ, to logi serwera www. 
+		Najczê¶ciej pomaga zwiêkszenie parametru <SAMP
+CLASS="PROMPT"
+>memory_limit</SAMP
+>
+		w <TT
+CLASS="FILENAME"
+>php.ini</TT
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q2"
+></A
+><B
+>9.2. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Jak dodaæ dwa komputery z tym samym adresem IP?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Nie ma takiej mo¿liwo¶ci. Co wiêcej, autorzy nie przewiduj±
+		takiej funkcjonalno¶ci w najbli¿szej przysz³o¶ci. Jednak masz jeszcze
+		szansê skorzystaæ z patch'a <SAMP
+CLASS="PROMPT"
+>multiip</SAMP
+> znajduj±cego
+		siê w <SAMP
+CLASS="PROMPT"
+>contrib</SAMP
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q3"
+></A
+><B
+>9.3. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Jak dodaæ dwa komputery z tym samym adresem MAC?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>A dokumentacjê przejrza³e¶? Do tego s³u¿y opcja <SAMP
+CLASS="PROMPT"
+>		allow_mac_sharing = 1</SAMP
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q4"
+></A
+><B
+>9.4. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Co oznacza b³±d <SAMP
+CLASS="PROMPT"
+>Can't locate Config/IniFiles.pm in @INC ...</SAMP
+>?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Prawdopodobnie nie masz zainstalowanych wymaganych modu³ow 
+		Perla, w tym wypadku chodzi o <TT
+CLASS="FILENAME"
+>Config::IniFiles</TT
+>.
+		Najwygodniejszym sposobem instalacji modu³ów jest skorzystanie z CPANu
+		w nastêpuj±cy sposób: 
+		<SAMP
+CLASS="PROMPT"
+>perl -MCPAN -e 'install Config::IniFiles'</SAMP
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q5"
+></A
+><B
+>9.5. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Zrobiem parê poprawek. Jak mogê dodaæ je do LMSa?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Poprawki najlepiej zg³aszaæ na listê mailingow±. Do wiadomo¶ci,
+		z krótkim opisem poprawki, nale¿y do³±czyæ diff'a (najlepiej do aktualnej
+		wersji cvs'owej), którego mo¿na wykonaæ w nastêpuj±cy sposób:
+<PRE
+CLASS="SCREEN"
+>$ cd lms
+$ cvs -z7 diff -u &#62; /tmp/moja_latka.patch</PRE
+>
+		Je¿eli jeste¶ zainteresowany do³±czeniem do grona developerów
+		i otrzymaniem praw zapisu do CVSu zg³o¶ tak± chêæ na listê. Wcze¶niej
+		jednak powiniene¶ siê daæ poznaæ na li¶cie jako odpowiedzialna 
+		i kompetentna osoba np. przysy³aj±c popraweki.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q6"
+></A
+><B
+>9.6. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Która wersja LMSa jest najnowsza?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Wersje LMSa s± numerowane analogicznie do j±dra Linuksa. 
+		I tak w LMS-x.y.z mamy: x - g³ówny numer wersji, y - jak parzysty
+		to wersja stabilna, jak nieparzysty to rozwojowa (niestabilna), 
+		z - mniej istotny numer podwersji. W zwi±zku z tym, je¶li uka¿e siê 
+		wersja stabilna np. 1.4.0, to w tej ga³êzi (1.4) nie bêdzie ju¿ dodawana
+		nowa funkcjonalno¶æ, bêd± usuwane tylko ewentualne b³êdy. Jednocze¶nie
+		powstaje wersja rozwojowa 1.5.x, która przez dodanie nowych rzeczy,
+		mo¿e byæ niestabilna/nie dzia³aj±ca prawid³owo.</P
+><P
+>Archiwum wszystkich wersji LMS znajduje siê pod adresem
+		<A
+HREF="http://lms.rulez.pl/download/"
+TARGET="_top"
+>lms.rulez.pl/download</A
+></P
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="contrib-squid-warn.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Ostrze¿enia + squid</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

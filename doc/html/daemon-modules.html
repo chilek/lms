@@ -629,11 +629,9 @@ NAME="CUTOFF-DESC"
 >6.2.6.1. Opis</A
 ></H3
 ><P
->Cutoff zmienia na 'od³±czony' status komputerów u¿ytkownikom, którzy
-		    maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ nie zajmuje
-		    siê fizycznym blokowaniem dostêpu do sieci. Nale¿y pamiêtaæ aby uruchamiaæ
-		    go przed modu³ami takimi jak np. 'hostfile'. Wa¿na jest kolejno¶æ instancji
-		    na li¶cie w zmiennej 'instances'. Modu³ 'cutoff' najlepiej uruchamiaæ codziennie.</P
+>Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza ostrze¿enia
+		    u¿ytkownikom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ 
+		    nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -663,7 +661,8 @@ CLASS="PROMPT"
 >command</P
 ><P
 >Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co najmniej
-			    jeden u¿ytkownik zostanie od³±czony. Domy¶lnie: nieustawiona.</P
+			    jeden u¿ytkownik zostanie od³±czony lub zostanie w³±czone ostrze¿enie. 
+			    Domy¶lnie: nieustawiona.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -682,6 +681,18 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >warning = ""</SAMP
+></P
+></LI
+><LI
+><P
+>warnings_only</P
+><P
+>Ta opcja pozwala zdecydowaæ, czy chcemy u¿yæ naszego 
+			    modu³u wy³±cznie do w³±czania ostrze¿eñ. Domy¶lnie: wy³±czona.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>warnings_only = true</SAMP
 ></P
 ></LI
 ></UL
