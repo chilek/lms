@@ -41,8 +41,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 	function _driver_dbversion()
 	{
-		list($var1, $var2) = explode(' ',$this->GetOne("SELECT version()"));
-		return $var2;
+		return $this->GetOne("SELECT trim(substring(version() from ' [0-9.a-z]+'))");
 	}
 
 	function _driver_connect($dbhost,$dbuser,$dbpasswd,$dbname)
