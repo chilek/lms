@@ -85,11 +85,17 @@ $tipoftheday[] = "01:04 < [hunter]> robiæ dokumentacje ?
 01:06 <@agaran> :>
 01:08 <@agaran> :>>> Hunterq uwazaj";
 
+$tipoftheday[] = "19:16.31| <@Baseciq> SELECT users.id, lastname, SUM((type * -2 + 7) * value) FROM users LEFT OUTER JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE status=3 AND deleted=0 GROUP BY users.id;
+19:17.00| <@Lexx__> Wy z tymi zapytaniami jobla dostajcie ;P";		     
+
 mt_srand ((double) microtime()* 100000000);
 $layout[tip] = $tipoftheday[mt_rand(0,sizeof($tipoftheday)-1)];
 
 /*
  * $Log$
+ * Revision 1.17  2003/09/11 17:18:17  lukasz
+ * - Lexx zaczyna normalnieæ ;>
+ *
  * Revision 1.16  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
