@@ -2851,8 +2851,11 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		    return NULL;
 	}
 	
-	function GetAdminRightsRT($admin, $queue)
+	function GetAdminRightsRT($admin, $queue, $ticket=NULL)
 	{
+		if($queue==0)
+			$queue = $this->DB->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($ticket));
+
 		$rights = $this->DB->GetOne('SELECT rights FROM rtrights WHERE adminid=? AND queueid=?', array($admin, $queue));
 		return ($rights ? $rights : 0);
 	}
@@ -2989,6 +2992,12 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $id;
 	}
 
+	function TicketUpdate($ticket)
+	{
+		$this->SetTS('rttickets');	
+		return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=? WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['ticketid']));
+	}
+
 	function GetTicketContents($id)
 	{
 		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, admins.name AS ownername, createtime, subject FROM rttickets LEFT JOIN rtqueues ON queueid = rtqueues.id LEFT JOIN admins ON owner = admins.id WHERE rttickets.id = ?', array($id));
@@ -2998,6 +3007,11 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 //		$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 		$ticket['status'] = $this->rtstates[$ticket['state']];
 		return $ticket;
+	}
+
+	function SetTicketState($ticket, $state)
+	{
+		return $this->DB->Execute('UPDATE rttickets SET state=? WHERE id=?', array($state, $ticket));
 	}
 
 	/*

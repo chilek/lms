@@ -1,56 +1,105 @@
 <!-- $Id$ -->
-<P><FORM method="POST" name="ticket" action="?m=rtticketedit">
+<P><FORM method="POST" name="ticket" action="?m=rtticketedit&id={$ticket.ticketid}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="2">
+		<TD width="100%" CLASS="fall">
 			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
 			<B>Zg³oszenie Nr {$ticket.ticketid|string_format:"%06d"}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+		<TD width="100%" class="flr">
+<TABLE width="100%" cellpadding="0">
+    <TR>
+	<TD width="50%">
+	    <TABLE>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
 			<B>Temat:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			{$ticket.subject|escape}
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+		    </TD>
+		    <TD WIDTH="99%" NOWRAP>
+		        <INPUT type="text" size="50" name="ticket[subject]" value="{$ticket.subject}" {tip text="Podaj tytu³ zg³oszenia" trigger="subject"}></INPUT>
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/user.gif" alt="" border="0" align="absmiddle">
 			<B>Zg³aszaj±cy:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			{$ticket.requestor|escape} &lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+		    </TD>
+		    <TD WIDTH="99%" NOWRAP>
+			{$ticket.requestor|escape} 
+			{if $ticket.requestoremail}
+				&lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
+			{/if}
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%"NOWRAP>
+		    	<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">
 			<B>Data zg³oszenia:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+		    </TD>
+		    <TD WIDTH="99%">
 			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+		    </TD>
+		</TR>
+	    </TABLE>
+	</TD>
+	<TD width="50%">	
+	    <TABLE>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+			<IMG src="img/admins.gif" alt="" border="0" align="absmiddle">
+			<B>W³a¶ciciel:</B>
+		    </TD>
+		    <TD WIDTH="99%">
+			<SELECT size="1" name="ticket[owner]" {tip text="Wybierz administratora" trigger="owner"}>
+			{if $ticket.owner==0}
+				<OPTION value="0" SELECTED>- wybierz administratora -</OPTION>
+			{/if}
+			{foreach from=$adminlist item=adminlist}
+				<OPTION value="{$adminlist.id}" {if $adminlist.id == $ticket.owner}SELECTED{/if}>{$adminlist.name}</OPTION>
+			{/foreach}
+			</SELECT>
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/queue.gif" alt="" border="0" align="absmiddle">
 			<B>Kolejka:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<A HREF="?m=rtqueueview&id={$ticket.queueid}">{$ticket.queuename}</A>
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+		    </TD>
+		    <TD WIDTH="99%">
+			<SELECT size="1" name="ticket[queueid]" {tip text="Wybierz kolejkê" trigger="queue"}>
+			{foreach from=$queuelist item=queuelist}
+				<OPTION value="{$queuelist.id}" {if $queuelist.id == $ticket.queueid}SELECTED{/if}>{$queuelist.name}</OPTION>
+			{/foreach}
+			</SELECT>
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/dead.gif" alt="" border="0" align="absmiddle">
 			<B>Status:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			{$ticket.status}
+		    </TD>
+		    <TD WIDTH="99%">
+			<SELECT SIZE="1" name="ticket[state]" {tip text="Wybierz status zg³oszenia" trigger="state"}>
+				<OPTION value="0" {if $ticket.state == 0}SELECTED{/if}>nowy</OPTION>
+				<OPTION value="1" {if $ticket.state == 1}SELECTED{/if}>otwarty</OPTION>
+				<OPTION value="2" {if $ticket.state == 2}SELECTED{/if}>zamkniêty</OPTION>
+				<OPTION value="3" {if $ticket.state == 3}SELECTED{/if}>martwy</OPTION>
+			</SELECT>
+		    </TD>
+		</TR>
+	    </TABLE>
+	</TD>
+    </TR>
+</TABLE>
 		</TD>
 	</TR>
 	<TR CLASS="light">
-		<TD WIDTH="100%" colspan="2" CLASS="fbottomu" ALIGN="RIGHT">
-			<A href="javascript:document.ticket.submit();">Zapisz <IMG src="img/edit.gif" alt="" border="0" align="absmiddle"></A>
-			<A href="?m=rtticketview&id={$ticket.queueid}">Anuluj <IMG src="img/cancel.gif" alt="" border="0" align="absmiddle"></A>
+		<TD CLASS="fbottomu" ALIGN="RIGHT">
+			<A href="javascript:document.ticket.submit()">Zapisz <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=rtqueueview&id={$ticket.queueid}">Anuluj <IMG src="img/cancel.gif" alt="" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>
