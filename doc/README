@@ -68,7 +68,7 @@ LMS Developers
 
    8. Dodatki
 
-        8.1. "Moje konto"
+        8.1. Moje konto
         8.2. Panel SQL
         8.3. Ostrze¿enia + squid
 
@@ -301,12 +301,12 @@ Rozdzia³ 2. Instalacja i konfiguracja
 2.2.3. Serwer baz danych
 
    LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od
-   3.23.xx
+   3.23.xx.
 
    LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.
 
-   Wykorzystanie bazy SQLite dla LMS'a jest w fazie testów. Jedyn±
-   przetestowan± wersj± jest wersja 2.8.11.
+   Przy wspó³pracy LMS'a z baz± danych SQLite nie stwierdzono ¿adnych
+   problemów z tym, ¿e jedyn± przetestowan± wersj± jest wersja 2.8.11.
      _________________________________________________________________
 
 2.2.4. Biblioteka Smarty
@@ -728,6 +728,13 @@ database = /usr/local/lms/lms.db
        Lista ta powinna zawieraæ wpisy w postaci adresIP[:port]
        oddzielone spacjami. Domy¶lnie pusta.
        Przyk³ad: arpd_servers = 192.168.1.1 192.168.2.1
+     * helpdesk_backend_mode
+       W³±czenie tej opcji spowoduje, ¿e wszystkie wiadomo¶ci w systemie
+       helpdesk (oprócz tych skierowanych do zg³aszaj±cego) bêd± wysy³ane
+       do serwera pocztowego na adres odpowiedniej kolejki. Na serwerze
+       tym powinien byæ uruchomiony skrypt lms-rtparser, który zajmie siê
+       zapisem wiadomo¶ci do bazy danych. Domy¶lnie: wy³±czona.
+       Przyk³ad: helpdesk_backend_mode = 1
      _________________________________________________________________
 
 2.6. Prawa dostêpu
@@ -1378,6 +1385,9 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    adres kolejki, a je¶li jest pusty, adres administratora). Wszystkie
    wiadomo¶ci tak¿e te wys³ane, zostaj± zapisane w historii zg³oszenia.
    Zg³oszenie mo¿e mieæ cztery stany: nowy, otwarty, rozwi±zany i martwy.
+
+   Skrypt lms-rtparser zosta³ stworzony aby umo¿liwiæ obs³ugê systemu i
+   przesy³anie zg³oszeñ poczt± elektroniczn±.
      _________________________________________________________________
 
 3.12.1. Lista kolejek
@@ -1458,8 +1468,8 @@ Rozdzia³ 4. Skrypty
    lms-makedhcpconf Konfiguracja serwera DHCP (/etc/dhcpd.conf)
    lms-makeiptables Konfiguracja firewalla iptables
    lms-makeipchains Konfiguracja firewalla ipchains
-   lms-makeoidentconf Konfiguracja oident
    lms-makeopenbsdpf Konfiguracja firewalla dla systemu OpenBSD
+   lms-makeoidentconf Konfiguracja oident
    lms-sendinvoices Wysy³anie faktur do u¿ytkowników
    lms-makemacs Filtrowanie ruchu na bazie adresów ¼ród³owych MAC
    lms-makehosts Generuje plik /etc/hosts
@@ -2052,7 +2062,7 @@ http://www.naszasiec.pl/
 4.3.15. lms-rtparser
 
    Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który
-   wspó³pracuj±c z serwerm pocztowym zapisuje do bazy danych wszystkie
+   wspó³pracuj±c z serwerem pocztowym zapisuje do bazy danych wszystkie
    wiadomo¶ci skierowane na adresy Helpdesk'a. Skrypt pobiera z wej¶cia
    wiadomo¶æ pocztow±, parsuje zawarto¶æ i umieszcza zg³oszenie w
    kolejce, wysy³aj±c do zg³aszaj±cych potwierdzenie przyjêcia
@@ -2078,6 +2088,12 @@ header_checks = regexp:/etc/postfix/header_checks
 filter unix - n n - 10 pipe
       -flags=Rq user=nobody argv=/path/to/lms-rtparser
 
+   Notatka
+
+   Je¿eli chcesz aby wiadomo¶ci wprowadzane poprzez lms-ui by³y kierowane
+   do parsera, zamiast bezpo¶rednio zapisywane do bazy, powiniene¶
+   w³±czyæ opcjê konfiguracyjn± helpdesk_backend_mode w sekcji [phpui].
+
    Konfiguracjê tego skryptu zawiera sekcja [rt] w pliku lms.ini:
      * default_queue
        Numer ID kolejki, do której trafi± zg³oszenia. Je¶li nie podano,
@@ -2088,10 +2104,10 @@ filter unix - n n - 10 pipe
      * sendmail_binary
        Lokalizacja programu sendmail. Domy¶lnie: /usr/sbin/sendmail
        Przyk³ad: sendmail_binary = /usr/lib/sandmail
-     * autoreply_from
+     * mail_from
        Nadawca potwierdzenia. Je¶li nie zdefiniowano, zostanie u¿yty
        adres kolejki do której zapisano zg³oszenie. Domy¶lnie: pusty.
-       Przyk³ad: autoreply_from = <rt@net.pl>
+       Przyk³ad: mail_from = <rt@net.pl>
      * mail_dir
        Katalog w którym zostan± zapisane za³±czniki. Katalog ten powinien
        byæ dostêpny dla apache'a i u¿ytkownika uruchamiaj±cego
@@ -3290,6 +3306,7 @@ Rozdzia³ 7. Dla dociekliwych
    phone2 - telefon
    phone3 - telefon
    gguin - identyfikator gadu-gadu
+   pin - numer pin (uwierzytelnianie)
    address - adres (ulica, nr domu, nr lokalu)
    zip - kod pocztowy
    city - nazwa miasta
@@ -3687,7 +3704,7 @@ Rozdzia³ 8. Dodatki
    integruj± siê z interfejsem LMS-UI.
      _________________________________________________________________
 
-8.1. "Moje konto"
+8.1. Moje konto
 
 8.1.1. Wstêp
 
