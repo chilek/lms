@@ -1452,6 +1452,13 @@ $emaildomains[] = "kki.net.pl";
 $emaildomains[] = "wp.pl";
 $emaildomains[] = "rulez.pl";
 
+$producer[] = "3Com";
+$producer[] = "Planet";
+$producer[] = "Cisco";
+$producer[] = "Micronet";
+$producer[] = "Surecom";
+$producer[] = "D-Link";
+
 function mkpw($nchars)
 {
 	$allowed="0123456789ABCDEF";
@@ -1468,7 +1475,7 @@ function makemac()
 }
 
 $SMARTY->display("header.html");
-echo '<H1>Generowanie losowych danych</H1>';
+echo '<H1>Generowanie danych losowych</H1>';
 	
 if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 {
@@ -1476,8 +1483,25 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 	$DB->Execute('DELETE FROM nodes');
 	$DB->Execute('DELETE FROM users');
 	$DB->Execute('DELETE FROM cash');
+	$DB->Execute('DELETE FROM assignments');
 	$DB->Execute('DELETE FROM networks');
 	$DB->Execute('DELETE FROM tariffs');
+	$DB->Execute('DELETE FROM netdevices');
+	$DB->Execute('DELETE FROM netlinks');
+	
+	
+	if($LMS->CONFIG['database']['type']=="postgres")
+	{
+		$DB->Execute("DROP SEQUENCE \"nodes_id_seq\"; CREATE SEQUENCE \"nodes_id_seq\"");
+		$DB->Execute("DROP SEQUENCE \"users_id_seq\"; CREATE SEQUENCE \"users_id_seq\"");
+		$DB->Execute("DROP SEQUENCE \"cash_id_seq\";  CREATE SEQUENCE \"cash_id_seq\"");
+		$DB->Execute("DROP SEQUENCE \"assignments_id_seq\";CREATE SEQUENCE \"assignments_id_seq\"");
+		$DB->Execute("DROP SEQUENCE \"networks_id_seq\";   CREATE SEQUENCE \"networks_id_seq\"");
+		$DB->Execute("DROP SEQUENCE \"tariffs_id_seq\";    CREATE SEQUENCE \"tariffs_id_seq\"");
+		$DB->Execute("DROP SEQUENCE \"netdevices_id_seq\"; CREATE SEQUENCE \"netdevices_id_seq\"");
+		$DB->Execute("DROP SEQUENCE \"netlinks_id_seq\";   CREATE SEQUENCE \"netlinks_id_seq\"");
+	}
+
 	echo '<B>Generuje taryfy...</B><BR>';
 	$tariffdata = array( name => 'Lite', description => 'Taryfa Lite', value => '30', taxvalue => '7', uprate => '64', downrate => '128');
 	$LMS->TariffAdd($tariffdata);
@@ -1485,9 +1509,12 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 	$LMS->TariffAdd($tariffdata);
 	$tariffdata = array( name => 'Gold', description => 'Taryfa Gold', value => '120', taxvalue => '7', uprate => '256', downrate => '512');
 	$LMS->TariffAdd($tariffdata);
+	
 	echo '<B>Generuje sieæ...</B><BR>';
 	$netdata = array( name => 'LAN1', address => '192.168.0.0', prefix => '22', gateway => '192.168.0.1', dns => '192.168.0.1', dns2 => '192.168.3.254', domain => 'ultralan.net.pl', wins => '192.168.0.2', dhcpstart => '192.168.3.230', dhcpend => '192.168.3.253');
 	$LMS->NetworkAdd($netdata);
+
+	echo '<B>Generuje u¿ytkowników...</B><BR>';	
 	$startip = ip_long('192.168.0.0');
 	$cnt = 0;
 	$lnsize = sizeof($lastnames);
@@ -1495,7 +1522,6 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 	$ppsize = sizeof($phoneprefix);
 	$ssize = sizeof($streets);
 	$esize = sizeof($emaildomains);
-	echo '<B>Generuje u¿ytkowników...</B><BR>';
 	for($i = 0; $i < sprintf('%d',$_GET[l]); $i++)
 	{
 		$useradd['lastname'] = $lastnames[mt_rand(0,$lnsize-1)];
@@ -1514,7 +1540,7 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 		$id = $LMS->UserAdd($useradd);
 		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'period' => 0, 'at' => $useradd['payday'], 'invoice' => 0));
 		$nodes = mt_rand(1,3);
-		for($j = 0; $j < $nodes; $j++)
+		for($j = 0; $j < $nodes; $j++, $k++)
 		{
 			$nodedata['name'] = $nodenames[$cnt];
 			$cnt++;
@@ -1526,9 +1552,41 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 			$LMS->NodeAdd($nodedata);
 		}
 		$startip ++;
-			
 	}
-		
+	
+	echo '<B>Generuje osprzêt i po³±czenia sieciowe...</B><BR>';	
+	$nodes = $DB->GetOne("SELECT count(id) FROM nodes");
+	$sprod = sizeof($producer);
+	$i = 0;
+	while($nodes)
+	{
+		$i++;
+		$prod = mt_rand(0,$sprod-1);
+		$LMS->NetDevAdd(array(
+			'name' => "SWITCH_".$i,
+			'location' => "",
+			'description' => "",
+			'producer' => $producer[$prod],
+			'model' => "10/100 Mbps Switch",
+			'serialnumber' => ($i*1000000+$i*200000)."-".($i*11111)."-".($i*33),
+			'ports' => "16"));
+		$ports = mt_rand(4,14);
+		for($j = 0; $j < $ports; $j++)
+		{
+			if(!$nodes) break;
+			$LMS->NetDevLinkNode($nodes,$i);
+			$nodes--;
+		}
+		$ip['ownerid'] = 0;
+		$ip['ipaddr'] = long2ip($startip); 
+		$ip['mac'] = makemac();
+		$ip['name'] = "SWITCH_".$i;
+		$ip['access'] = 1;
+		$LMS->NetDevLinkNode($LMS->NodeAdd($ip),$i);		
+		$startip++;
+		if($i>1)
+			$LMS->NetDevLink($i,$i-1);
+	}	
 		
 }else
 	echo '<FORM METHOD="GET" ACTION="?"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">Ile rekordów wygenerowaæ? (max: 250, <FONT COLOR="RED">UWAGA! TO USUNIE WSZYSTKIE DANE Z BAZY!!!</FONT>) <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
