@@ -2303,7 +2303,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetNetwork($id)
 	{
-		if($row = $this->DB->GetRow('SELECT inet_ntoa(address) AS address, address AS addresslong, mask, name FROM networks WHERE id=?', array($id)))
+		if($row = $this->DB->GetRow('SELECT inet_ntoa(address) AS address, address AS addresslong, mask, name, dhcpstart, dhcpend FROM networks WHERE id=?', array($id)))
 			foreach($row as $field => $value)
 				$$field = $value;
 
@@ -2315,7 +2315,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			$result['nodename'][] = '';
 			$result['ownerid'][] = 0;
 		}
-
+		
 		if(sizeof($result['address']))
 			if($nodes = $this->DB->GetAll('SELECT name, id, ownerid, ipaddr FROM nodes WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($address, getbraddr($address,$mask))))
 				foreach($nodes as $node)
@@ -2325,6 +2325,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 					$result['nodename'][$pos] = $node['name'];
 					$result['ownerid'][$pos] = $node['ownerid'];
 				}
+		
+		for($pos=(ip_long($dhcpstart) - $addresslong - 1);$pos<=(ip_long($dhcpend) - $addresslong - 1);$pos++)
+			$result['nodename'][$pos] = "DHCP";
 		
 		return $result;
 	}
