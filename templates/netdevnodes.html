@@ -3,17 +3,17 @@
 	<TR CLASS="DARK">
 		<TD WIDTH="100%" CLASS="fall" COLSPAN="3">
 			<IMG SRC="img/node.gif" BORDER="0" ALT="" ALIGN="absmiddle">
-			<B>Komputery pod³±czone:</B>
+			<B>{t}Connected nodes:{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" width="98%">
-			<img src="img/node.gif" ALT="" align="absmiddle"> <B>Nazwa:</B><BR>
-			<img src="img/user.gif" ALT="" align="absmiddle"> W³a¶ciciel:
+			<img src="img/node.gif" ALT="" align="absmiddle"> <B>{t}Name:{/t}</B><BR>
+			<img src="img/user.gif" ALT="" align="absmiddle"> {t}Owner:{/t}
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
-			<img src="img/empty.gif" WIDTH="16" HEIGHT="16" align="absmiddle"> ID:<BR>
-			<img src="img/ip.gif" ALT="" align="absmiddle"> Adres IP:
+			<img src="img/empty.gif" WIDTH="16" HEIGHT="16" align="absmiddle"> {t}ID:{/t}<BR>
+			<img src="img/ip.gif" ALT="" align="absmiddle"> {t}IP address:{/t}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;	
@@ -28,22 +28,22 @@
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
 			{if $netcomplist[netcomplist].linktype}
-			<A href="?m=netdevedit&action=switchnodelinktype&linktype=0&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/wireless.gif" alt="[ Zmieñ typ po³±czenia ]" align="absmiddle" border="0"></A> 
+			<A href="?m=netdevedit&action=switchnodelinktype&linktype=0&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/wireless.gif" alt="[ {t}Change connection type{/t} ]" align="absmiddle" border="0"></A> 
 			{else}
-			<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ Zmieñ typ po³±czenia ]" align="absmiddle" border="0"></A> 
+			<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]" align="absmiddle" border="0"></A> 
 			{/if}
 			({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>
 			<IMG SRC="img/ip.gif" ALT="" ALIGN="ABSMIDDLE"> {$netcomplist[netcomplist].ip}
 		</TD>
 		<TD CLASS="fright" WIDTH="1%">
-			<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}" {confirm text="Napewno chcesz usun±æ to po³±cznie?"}><IMG SRC="img/delete.gif" ALIGN="absmiddle" ALT="" BORDER="0" {tip text="Usuñ to po³±czenie"}></A>
+			<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}" {confirm text="Are you sure, you want to delete that connection?"}><IMG SRC="img/delete.gif" ALIGN="absmiddle" ALT="" BORDER="0" {tip text="Delete connection"}></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD colspan="3" CLASS="fall" align="center">
 			<p>&nbsp;</p>
-			<p><B>Nie posiadasz ¿adnych pod³±czonych komputerów.</b></p>
+			<p><B>{t}No such connected nodes.{/t}</b></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -51,21 +51,21 @@
 	<TR CLASS="DARK">
 		<TD WIDTH="100%" CLASS="fall" COLSPAN="3" ALIGN="CENTER">
 			{if $netdevinfo.ports eq $netdevinfo.takenports}
-			<B>Wszystkie porty w tym urz±dzeniu s± zajête</B>
+			<B>{t}All ports in device are in use.{/t}</B>
 			{elseif $nodelist eq NULL}
-			<B>Nie ma komputerów do pod³±czenia</B>
+			<B>{t}No such nodes to connection.{/t}</B>
 			{else}
 			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connectnode">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connectnode">
-			<A HREF="javascript:document.connectnode.submit(); "><B>Pod³±cz komputer:</B></A>
-			<SELECT NAME="nodeid" {tip trigger="linknode" text="Wybierz z listy komputer, który chcesz pod³±czyæ do tego urz±dzenia"}>
+			<A HREF="javascript:document.connectnode.submit(); "><B>{t}Connect node:{/t}</B></A>
+			<SELECT NAME="nodeid" {tip trigger="linknode" text="Select node, which you want to connect to device"}>
 				{section name=nodelist loop=$nodelist}
 				<OPTION VALUE="{$nodelist[nodelist].id}">{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
 				{/section}
 			</SELECT>
-			<INPUT style="border:0; background-color=#CEBD9B;" type="checkbox" name="linktype" value="1" {if $nodelinktype}CHECKED{/if}>&nbsp;wireless
+			<INPUT style="border:0; background-color=#CEBD9B;" type="checkbox" name="linktype" value="1" {if $nodelinktype}CHECKED{/if}>&nbsp;{t}wireless{/t}
 			</FORM></P>
 			{/if}
 		</TD>
