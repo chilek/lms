@@ -26,14 +26,19 @@
 
 if($_GET[action]=="disconnect") {
 	$LMS->NetDevUnLink($_GET[id],$_GET[devid]);
-	header("Location: ?m=netdevinfo&id=".$_GET[id]);
+	header("Location: ?m=netdevedit&id=".$_GET[id]);
     }
 
 if($_GET[action]=="disconnectnode") {
 	$LMS->NetDevLinkComputer($_GET[nodeid],0);
-	header("Location: ?m=netdevinfo&id=".$_GET[id]);
+	header("Location: ?m=netdevedit&id=".$_GET[id]);
     }
 
+if($_GET[action]=="connect") {
+	if(! $LMS->NetDevLink($_GET[netdev], $_GET[id]) )
+		$error[link] = "Po³±czenie istnieje lub brak wolnych portów w urz±dzeniu";
+    }
+    
 $netdevdata = $_POST[netdev];
 
 if(isset($netdevdata)) {
@@ -56,6 +61,10 @@ if(isset($netdevdata)) {
 
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET[id]);
 $netcomplist = $LMS->GetNetDevNode($_GET[id]);
+$netdevlist = $LMS->GetNetDevList();
+unset($netdevlist[total]);
+unset($netdevlist[order]);
+unset($netdevlist[direction]);
 
 $layout[pagetitle]="Edycja urz±dzenia: ".$netdevdata[name]." ".$netdevdata[producer];
 
@@ -64,10 +73,14 @@ $SMARTY->assign("error",$error);
 $SMARTY->assign("netdev",$netdevdata);
 $SMARTY->assign("netdevlist",$netdevconnected);
 $SMARTY->assign("netcomplist",$netcomplist);
+$SMARTY->assign("restnetdevlist",$netdevlist);
 $SMARTY->display("netdevedit.html");
 
 /*
  * $Log$
+ * Revision 1.5  2003/10/04 19:23:25  alec
+ * now we can link net devices
+ *
  * Revision 1.4  2003/10/03 19:55:21  alec
  * teraz mozna tutaj od³±czaæ kompy
  *
