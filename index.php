@@ -173,7 +173,10 @@ if($SESSION->islogged)
 		include($_MODULES_DIR.'/welcome.php');
 	}else{
 		$layout[module]='notfound';
-		include($_MODULES_DIR.'/notfound.php');
+		$layout[pagetitle]="B³±d!";
+		$SMARTY->assign("layout",$layout);
+		$SMARTY->assign("server",$_SERVER);
+		$SMARTY->display("notfound.html");
 	}
 	
 	if($_SESSION[lastmodule]!=$module)
