@@ -26,18 +26,18 @@
 
 if(!$LMS->NodeExists($_GET['id']))
 	if(isset($_GET['ownerid']))
-		header("Location: ?m=userinfo&id=".$_GET['ownerid']);
+		header('Location: ?m=userinfo&id='.$_GET['ownerid']);
 	else
-		header("Location: ?m=nodelist");
+		header('Location: ?m=nodelist');
 
-if($_GET['action']=="link")
+if($_GET['action']=='link')
 {
 	$netdev = $LMS->GetNetDev($_GET['devid']); 
 
 	if($netdev['ports'] <= $netdev['takenports']) 
 	{
 		$LMS->NetDevLinkNode($_GET['id'],$_GET['devid']);
-		header("Location: ?m=nodeinfo&id=".$_GET['id']);
+		header('Location: ?m=nodeinfo&id='.$_GET['id']);
 		die;
 	}
 	else
@@ -52,11 +52,11 @@ $ownerid = $LMS->GetNodeOwner($nodeid);
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 	
 if(!isset($_GET['ownerid']))
-	$_SESSION['backto'] .= "&ownerid=".$ownerid;
+	$_SESSION['backto'] .= '&ownerid='.$ownerid;
 							
 $owner = $ownerid;
 $userinfo=$LMS->GetUser($owner);
-$layout['pagetitle'] = "Informacje o u¿ytkowniku: ".$userinfo['username']." - edycja komputera: ".$LMS->GetNodeName($_GET['id']);
+$layout['pagetitle'] = 'Informacje o u¿ytkowniku: '.$userinfo['username'].' - edycja komputera: '.$LMS->GetNodeName($_GET['id']);
 
 $nodeedit = $_POST['nodeedit'];
 $usernodes = $LMS->GetUserNodes($owner);
@@ -66,57 +66,44 @@ if(isset($nodeedit))
 {
 	$nodeedit['ipaddr'] = $_POST['nodeeditipaddr'];
 	$nodeedit['mac'] = $_POST['nodeeditmac'];
-	$nodeedit['mac'] = str_replace("-",":",$nodeedit['mac']);
+	$nodeedit['mac'] = str_replace('-',':',$nodeedit['mac']);
 	foreach($nodeedit as $key => $value)
 		$nodeedit[$key] = trim($value);
 	
-	if($nodeedit['ipaddr']==""&&$nodeedit['mac']==""&&$nodeedit['name']=="")
+	if($nodeedit['ipaddr']=='' && $nodeedit['mac']=='' && $nodeedit['name']=='')
 	{
-		header("Location: ?m=nodeinfo&id=".$nodeedit['id']);
+		header('Location: ?m=nodeinfo&id='.$nodeedit['id']);
 		die;
 	}
 
 	if(check_ip($nodeedit['ipaddr']))
 	{
-		if($LMS->IsIPValid($nodeedit['ipaddr']))
+		if($LMS->IsIPValid($nodeedit['ipaddr'])) 
 		{
-			if(!$LMS->IsIPFree($nodeedit['ipaddr'])&&$LMS->GetNodeIPByID($nodeedit['id'])!=$nodeedit['ipaddr'])
-			{
-				$error['ipaddr'] = "Podany adres IP jest zajêty!";
-			}
+			if(!$LMS->IsIPFree($nodeedit['ipaddr']) && $LMS->GetNodeIPByID($nodeedit['id'])!=$nodeedit['ipaddr'])
+				$error['ipaddr'] = 'Podany adres IP jest zajêty!';
 		}
 		else
-		{
-			$error['ipaddr'] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
-		}
+			$error['ipaddr'] = 'Podany adres IP nie nale¿y do ¿adnej sieci!';
 	}
 	else
-	{
-		$error['ipaddr'] = "Podany adres IP jest niepoprawny!";
-	}
+		$error['ipaddr'] = 'Podany adres IP jest niepoprawny!';
 
 	if(check_mac($nodeedit['mac']))
 	{
-		if(
-				$LMS->GetNodeIDByMAC($nodeedit['mac']) &&
-				$LMS->GetNodeMACByID($nodeedit['id'])!=$nodeedit['mac'] &&
-				$LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE
-		)
-		{
-			$error['mac'] = "Podany adres MAC jest ju¿ przypisany do innego komputera!";
-		}
+		if($LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE)
+			if($LMS->GetNodeIDByMAC($nodeedit['mac']) && $LMS->GetNodeMACByID($nodeedit['id'])!=$nodeedit['mac'])
+				$error['mac'] = 'Podany adres MAC jest ju¿ przypisany do innego komputera!';
 	}
 	else
-	{
-		$error['mac'] = "Podany adres MAC jest b³êdny!";
-	}
+		$error['mac'] = 'Podany adres MAC jest b³êdny!';
 
-	if($nodeedit['name']=="")
-		$error['name'] = "Podaj nazwê!";
+	if($nodeedit['name']=='')
+		$error['name'] = 'Podaj nazwê!';
 	elseif($LMS->GetNodeIDByName($nodeedit['name']) && $LMS->GetNodeIDByNAME($nodeedit['name']) != $nodeedit['id'])
-		$error['name'] = "Ta nazwa jest zajêta!";
+		$error['name'] = 'Ta nazwa jest zajêta!';
 	elseif(!eregi("^[_a-z0-9-]+$",$nodeedit['name']))
-		$error['name'] = "Podana nazwa zawiera niepoprawne znaki!";
+		$error['name'] = 'Podana nazwa zawiera niepoprawne znaki!';
 
 	if($nodeedit['access']!=1)
 		$nodeedit['access'] = 0;
@@ -127,7 +114,7 @@ if(isset($nodeedit))
 	{
 		$netdev = $LMS->GetNetDev($nodeedit['netdev']); 
 		if($netdev['ports'] <= $netdev['takenports'])
-		    $error['netdev'] = "Brak wolnych portów w wybranym urz±dzeniu!";
+		    $error['netdev'] = 'Brak wolnych portów w wybranym urz±dzeniu!';
 		$nodeinfo['netdev'] = $nodeedit['netdev'];
 	}
 	
@@ -140,7 +127,7 @@ if(isset($nodeedit))
 	if(!$error)
 	{
 		$LMS->NodeUpdate($nodeedit);
-		header("Location: ?m=nodeinfo&id=".$nodeedit['id']);
+		header('Location: ?m=nodeinfo&id='.$nodeedit['id']);
 	}
 }
 
