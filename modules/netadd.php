@@ -118,7 +118,7 @@ if(isset($netadd))
 
 }
 
-$layout[pagetitle]="Dodaj sieæ";
+$layout[pagetitle]="Nowa sieæ";
 
 $prefixlist = $LMS->GetPrefixList();
 $netlist = $LMS->GetNetworkList();
@@ -131,6 +131,9 @@ $SMARTY->display("netadd.html");
 
 /*
  * $Log$
+ * Revision 1.25  2003/10/05 21:30:25  alec
+ * ujednolicenie naglowkow
+ *
  * Revision 1.24  2003/09/05 13:11:24  lukasz
  * - nowy sposób wy¶wietlania informacji o b³êdach
  *
