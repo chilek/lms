@@ -34,7 +34,12 @@
 			<B>Stawka podatku (%):</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[taxvalue]" VALUE="{$tariffadd.taxvalue}" {tip text="Podaj stawkê podatku VAT (puste pole oznacza zwolnienie)" trigger="taxvalue"}>
+			<SELECT SIZE="1" NAME="tariffadd[taxvalue]" VALUE="{$tariffadd.taxvalue}" {tip text="Wybierz stawkê podatku VAT" trigger="taxvalue"}>
+				<OPTION VALUE="22">22%</OPTION>
+				<OPTION VALUE="7">7%</OPTION>
+				<OPTION VALUE="0">0%</OPTION>
+				<OPTION VALUE="">zw.</OPTION>
+			</SELECT>
 		</TD>
 	</TR>												
 	<TR CLASS="LIGHT">
