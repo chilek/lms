@@ -583,8 +583,10 @@ database = /usr/local/lms/lms.db</screen>
       przygotowano pliki <filename>UPGRADE-1.0-1.5.mysql</filename> i 
       <filename>UPGRADE-1.0-1.5.pgsql</filename> dla przej¶cia od wersji 1.0 do wersji 1.5
       oraz <filename>UPGRADE-1.2-1.5.mysql</filename> i <filename>UPGRADE-1.2-1.5.pgsql
-      </filename> przy migracji od wersji 1.2 do bie¿±cej. W nich znajdziesz krótki
-      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.</para>
+      </filename> przy migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. W nich znajdziesz krótki
+      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
+      W wersjach o numerze wy¿szym od 1.3.0 aktualizacja struktury bazy danych 
+      nastêpuje automatycznie podczas pierwszego logowania.</para>
       <para><note><para>W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
       mo¿na skasowaæ odpowiedni katalog z katalogu <filename>/lib</filename></para></note></para>
     </sect1>
