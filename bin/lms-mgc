@@ -447,7 +447,7 @@ sub instance($)
 			$default = $default_publ;
 		}
 		
-		for(my $i=$longip;$i<$longip+$netsize;$i++)
+		for(my $i=$longip+1;$i<$longip+$netsize-1;$i++)
 		{
 			my $ipaddr = u32todotquad($i);
 			my $rule = '';
