@@ -24,14 +24,17 @@
  *  $Id$
  */
 
-include($_LIB_DIR.'/multipart_mime_email.php');
-
-function MessageAdd($msg, $file=NULL)
+function MessageAdd($msg, $headers, $file=NULL)
 {
 	global $LMS;
 	$time = time();
+	
+	if($headers)
+		foreach($headers as $idx => $header)
+			$head .= $idx.": ".$header."\n";
+	
 	$LMS->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, userid, mailfrom, inreplyto, messageid, replyto, headers)
-			    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $time, $msg['subject'], $msg['body'], $msg['adminid'], $msg['userid'], $msg['mailfrom'], $msg['inreplyto'], $msg['messageid'], $msg['replyto'], $msg['headers']));
+			    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $time, $msg['subject'], $msg['body'], $msg['adminid'], $msg['userid'], $msg['mailfrom'], $msg['inreplyto'], $msg['messageid'], $headers['Reply-To'], $head));
 	$LMS->SetTS('rtmessages');
 	if($file['name'])
 	{
@@ -137,40 +140,14 @@ if(isset($message))
 					$headers['References'] = $message['references'];
 				$headers['Message-Id'] = $message['messageid'];
 				$headers['Reply-To'] = $headers['From'];
-				$headers['X-Mailer'] = 'LMS-'.$LMS->_version.'/PHP-'.phpversion();
+				$headers['X-Mailer'] = 'LMS-'.$LMS->_version;
 				$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
 				$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
-
-				$message['mailfrom'] = '<'.$message['mailfrom'].'>';
-				$message['replyto'] = $message['mailfrom'];				
-				$message['headers'] = 'From: '.$mailfname.' '.$message['mailfrom']."\n"
-				    .($message['references'] ? 'References: '.$message['references']."\n" : '')
-				    .'Message-Id: '.$message['messageid']."\n"
-				    .'Reply-To: '.$message['replyto']."\n"
-				    .(!$file ? "Content-Type: text/plain; charset=UTF-8;\n" : '')
-				    .'X-Mailer: LMS-'.$LMS->_version.'/PHP-'.phpversion()."\n"
-				    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
-				    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT'];
-			    	
-				$msg[1]['content_type'] = 'text/plain; charset=UTF-8';
-				$msg[1]['filename'] = '';
-				$msg[1]['no_base64'] = TRUE;
-				$msg[1]['data'] = $message['body']."\n\nhttps://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'],
-					0, strrpos($_SERVER['REQUEST_URI'], '/') + 1).'?m=rtticketview&id='.$message['ticketid'];
-				if($file)
-				{
-					$msg[2]['content_type'] = $_FILES['file']['type'];
-					$msg[2]['filename'] = $filename;
-					$msg[2]['data'] = $file;
-					$msg[2]['headers'] = '';
-				}	
-				$out = mp_new_message($msg);
-
-				$body = $out[0].($out[1] ? "\n".$out[1] : '');
 
 				$body = $message['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 					.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 					.'?m=rtticketview&id='.$message['ticketid'];
+					
 				$LMS->SendMail($recipients, $headers, $body);
 			}
 			else 
@@ -182,16 +159,16 @@ if(isset($message))
 			    	$message['replyto'] = '';
 			}
 				
-			MessageAdd($message, $_FILES['file']);
+			MessageAdd($message, $headers, $_FILES['file']);
 		}
 		else //sending to backend
 		{
 			($message['destination']!='' ? $addmsg = 1 : $addmsg = 0);
 			
 			if($LMS->CONFIG['phpui']['debug_email'])
-					$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
+				$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
 			if($message['destination']=='') 
-					$message['destination'] = $queue['email'];
+				$message['destination'] = $queue['email'];
 			$recipients = $message['destination'];
 
 			if($message['adminid'] && $addmsg)
@@ -210,45 +187,19 @@ if(isset($message))
 				$headers['References'] = $message['references'];
 			$headers['Message-Id'] = $message['messageid'];
 			$headers['Reply-To'] = $headers['From'];
-			$headers['X-Mailer'] = 'LMS-'.$LMS->_version.'/PHP-'.phpversion();
+			$headers['X-Mailer'] = 'LMS-'.$LMS->_version;
 			$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
 			$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
-
-			$message['mailfrom'] = '<'.$message['mailfrom'].'>';
-			$message['replyto'] = $message['mailfrom']; 
-			$message['headers'] = 'From: '.$mailfname.' '.$message['mailfrom']."\n"
-			    .($message['references'] ? 'References: '.$message['references']."\n" : '')
-			    .'Message-Id: '.$message['messageid']."\n"
-			    .'Reply-To: '.$message['replyto']."\n"
-			    .(!$file ? "Content-Type: text/plain; charset=UTF-8;\n" : '')
-			    .'X-Mailer: LMS-'.$LMS->_version.'/PHP-'.phpversion()."\n"
-			    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
-			    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT'];
-
-			$msg[1]['content_type'] = 'text/plain; charset=UTF-8';
-			$msg[1]['filename'] = '';
-			$msg[1]['no_base64'] = TRUE;
-			$msg[1]['data'] = $message['body']."\n\nhttps://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'],
-				0, strrpos($_SERVER['REQUEST_URI'], '/') + 1).'?m=rtticketview&id='.$message['ticketid'];
-			if($file)
-			{
-				$msg[2]['content_type'] = $_FILES['file']['type'];
-				$msg[2]['filename'] = $filename;
-				$msg[2]['data'] = $file;
-				$msg[2]['headers'] = '';
-			}
-			$out = mp_new_message($msg);
-
-			$body = $out[0].($out[1] ? "\n".$out[1] : '');
-
+			
 			$body = $message['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$message['ticketid'];
+
 			$LMS->SendMail($recipients, $headers, $body);
 
 			// message to user is written to database
 			if($message['adminid'] && $addmsg) 
-				MessageAdd($message, $_FILES['file']);
+				MessageAdd($message, $headers, $_FILES['file']);
 		}
 		
 		// setting status and ticket owner
