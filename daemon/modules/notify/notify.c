@@ -100,7 +100,7 @@ void reload(GLOBAL *g, struct notify_module *n)
 	unsigned char *command, *id;
 	int i, j, balance;
 
-	if ( (res = g->db_query("SELECT users.id AS id, email, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) GROUP BY users.id, email"))!=NULL ) {
+	if ( (res = g->db_query("SELECT users.id AS id, email, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id, email"))!=NULL ) {
 	
 		for(i=0; i<res->nrows; i++) {
 			
@@ -203,7 +203,7 @@ struct notify_module * init(GLOBAL *g, MODULE *m)
 	free(s); s = g->str_concat(instance, ":file");
 	n->file = strdup(g->iniparser_getstring(ini, s, "/tmp/mail"));
 	free(s); s = g->str_concat(instance, ":command");
-	n->command = strdup(g->iniparser_getstring(ini, s, "mail %address -s \"Inf. o zaleg³o¶ciach w op³atach za Internet\" < /tmp/mail"));
+	n->command = strdup(g->iniparser_getstring(ini, s, "mail %address -s \"Inf. o zaleg³o¶ciach w op³atach za Internet\" -a \"Content-Type: text/plain; charset=iso-8859-2\"< /tmp/mail"));
 	free(s); s = g->str_concat(instance, ":limit");
 	n->limit = g->iniparser_getint(ini, s, 0);
 	free(s); s = g->str_concat(instance, ":debug_mail");
