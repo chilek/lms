@@ -102,7 +102,11 @@ if($query = $_POST['query'])
 }
 
 $SMARTY->assign('query', $query);
-$SMARTY->display('sql.html');
+
+if($_GET['print'])
+	$SMARTY->display('sqlprint.html');
+else
+	$SMARTY->display('sql.html');
 
 ?>
 
