@@ -3268,7 +3268,7 @@ class LMS
 
 		$params['host'] = $this->CONFIG['phpui']['smtp_host'];
 		$params['port'] = $this->CONFIG['phpui']['smtp_port'];
-		if ($this->CONFIG['phpui']['username'])
+		if ($this->CONFIG['phpui']['smtp_username'])
 		{
 			$params['auth'] = true;
 			$params['username'] = $this->CONFIG['phpui']['smtp_username'];
