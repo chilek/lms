@@ -729,7 +729,8 @@ NAME="HOSTFILE-CONFIG"
 ><P
 >W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
 		    które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
-		    adresem, '%n' - nazw± komputera. Poni¿ej opcje udostêpniane przez ten modu³</P
+		    adresem, '%n' - nazw± komputera, '%domain' - domen±, '%net' - nazw± sieci. 
+		    Poni¿ej opcje udostêpniane przez ten modu³</P
 ><UL
 ><LI
 ><P
@@ -801,11 +802,11 @@ CLASS="PROMPT"
 ><P
 >networks</P
 ><P
->Lista sieci, które maj± byæ brane pod uwagê. Domy¶lnie: "192.168.0.0/16 10.0.0.0/8"</P
+>Lista nazw sieci, które maj± byæ brane pod uwagê. Domy¶lnie: pusta (wszystkie sieci).</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->networks = "192.168.0.0/24 192.168.1.0/24"</SAMP
+>networks = "lan1 lan2"</SAMP
 ></P
 ></LI
 ><LI
