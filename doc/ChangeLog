@@ -1,10 +1,13 @@
 $Id$
 
-wersja 1.0pre3 (??/??/????):
+wersja 1.0pre3 (27/12/2002):
 
   - poprawione pobieranie hostname i uptime (Marcoos)
   - zmiana typu kolumny value w tabeli cash z float na double
   - zmiana typu kolumny value w tabeli tariffs z float na double
+  - dodane blokowanie dostêpu do aplikacji poza okre¶lonymi hostami
+    lub klasami adresowymi
+  - poprawka parsowania ¶cie¿ek do katalogów z configa
 
 wersja 1.0pre2 (25/12/2002):
 
