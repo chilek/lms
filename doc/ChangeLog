@@ -39,6 +39,7 @@ wersja 1.5.3 (??/??/????):
   - usuniêta redefinicja funkcji chkconfig() z customer (chilek)
   - w userinfo dodany link do listy kont u¿ytkownika (alec)
   - listy kont i aliasów wspó³dziel± te same filtry (alec)
+  - lms-squid-warnings obs³uguje bazy postgres i sqlite (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 
