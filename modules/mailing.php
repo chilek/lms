@@ -24,8 +24,44 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Mailing";
+$layout['pagetitle'] = "Korespondencja seryjna";
 
+if($mailing = $_POST['mailing'])
+{
+	if($mailing['group'] < 0 || $mailing['group'] > 3)
+		$error['group'] = 'Wybra³e¶ b³êdn± grupê u¿ytkowników';
+
+	if($mailing['sender']=='')
+		$error['sender'] = 'Proszê podaæ e-mail nadawcy!';
+	elseif(!check_email($mailing['sender']))
+		$error['sender'] = 'Podany e-mail nie wydaje siê poprawny!';
+
+	if($mailing['from']=='')
+		$error['from'] = 'Proszê podaæ nadawcê!';
+
+	if($mailing['subject']=='')
+		$error['subject'] = 'Proszê podaæ temat listu!';
+
+	if($mailing['body']=='')
+		$error['body'] = 'Proszê podaæ tre¶æ wiadomo¶ci!';
+
+	if(!$error)
+	{
+		$layout['nomenu'] = TRUE;
+		$mailing['body'] = textwrap($mailing['body']);
+		$mailing['body'] = str_replace("\r", '', $mailing['body']);
+		$SMARTY->assign('mailing', $mailing);
+		$SMARTY->display('header.html');
+		$SMARTY->display('mailingsend.html');
+		$emails = $LMS->Mailing($mailing);
+		$SMARTY->display("mailingsend-footer.html");
+		$SMARTY->display('footer.html');
+		die;
+	}
+}
+
+$SMARTY->assign('error', $error);
+$SMARTY->assign('mailing', $mailing);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
 $SMARTY->assign('admininfo', $LMS->GetAdminInfo($SESSION->id));

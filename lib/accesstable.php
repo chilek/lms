@@ -52,7 +52,7 @@ $access['table'][7]['name']    	     	= 'dostêp do statystyk';
 $access['table'][7]['allow_reg']	= '^traffic$';
 
 $access['table'][8]['name']         	= 'dostêp do korespondencji seryjnej';
-$access['table'][8]['allow_reg']    	= '^(mailing|mailingsend)$';
+$access['table'][8]['allow_reg']    	= '^(mailing)$';
 
 $access['table'][9]['name']         	= 'zarz±dzanie Helpdeskiem (RT)';
 $access['table'][9]['allow_reg']    	= '^(rtsearch|(rtqueue|rtticket|rtmessage)(add|del|edit|info|view|list|print))$';
