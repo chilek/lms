@@ -1553,8 +1553,7 @@ class LMS
 				{
 					case 0:
 						$row['period'] = trans('weekly');
-						$dni = array(trans('Mon'), trans('Tue'), trans('Wed'), trans('Thu'), trans('Fri'), trans('Sun'), trans('Sat'));
-						$row['at'] = $dni[$row['at'] - 1];
+						$row['at'] = strftime("%a",mktime(0,0,0,0,$row['at']+5,0));
 					break;
 					
 					case 1:
@@ -2028,8 +2027,7 @@ class LMS
 				switch($row['period'])
 				{
 					case 0:
-						$days = array(trans('Mon'), trans('Tue'), trans('Wed'), trans('Thu'), trans('Fri'), trans('Sun'), trans('Sat'));
-						$row['payday'] = trans('weekly ($0)',$days[$row['at'] - 1]);
+						$row['payday'] = trans('weekly ($0)', strftime("%a",mktime(0,0,0,0,$row['at']+5,0)));
 					break;
 					
 					case 1:
@@ -2060,8 +2058,7 @@ class LMS
 		switch($payment['period'])
 		{
 			case 0:
-				$days = array(trans('Mon'), trans('Tue'), trans('Wed'), trans('Thu'), trans('Fri'), trans('Sun'), trans('Sat'));
-				$row['payday'] = trans('weekly ($0)',$days[$row['at'] - 1]);
+				$row['payday'] = trans('weekly ($0)', strftime("%a",mktime(0,0,0,0,$row['at']+5,0)));
 			break;
 				
 			case 1:
