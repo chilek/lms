@@ -55,22 +55,22 @@ elseif(isset($userdata))
 		$userdata[$key] = trim($value);
 
 	if($userdata['lastname']=='')
-		$error['username'] = 'Pola \'nazwisko/nazwa\' oraz imiê nie mog± byæ puste!';
+		$error['username'] = trans('\'Surname/Name\' and \'First Name\' fields cannot be empty!');
 	
 	if($userdata['address']=='')
-		$error['address'] = 'Proszê podaæ adres!';
+		$error['address'] = trans('Address required!');
 
 	if($userdata['nip'] !='' && !check_nip($userdata['nip']))
-		$error['nip'] = 'Podany NIP jest b³êdny!';
+		$error['nip'] = trans('Incorrect Vat Reg No.!');
 
 	if(!check_pesel($userdata['pesel']) && $userdata['pesel'] != '')
-		$error['pesel'] = 'Podany PESEL jest b³êdny!';
+		$error['pesel'] = trans('Incorrect Personal ID!');
 
 	if($userdata['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$userdata['zip']))
-		$error['zip'] = 'Podany kod pocztowy jest b³êdny!';
+		$error['zip'] = trans('Incorrect ZIP code!');
 
 	if($userdata['email']!='' && !check_email($userdata['email']))
-		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+		$error['email'] = trans('Incorrect email!');
 
 	if($userdata['gguin'] == '')
 		$userdata['gguin'] = 0;
@@ -79,13 +79,13 @@ elseif(isset($userdata))
 		$userdata['pin'] = 0;
 
 	if($userdata['gguin']!=0 && !eregi('^[0-9]{4,}$',$userdata['gguin']))
-		$error['gguin'] = 'Podany numer GG jest niepoprawny!';
+		$error['gguin'] = trans('Incorrect IM uin!');
 
 	if($userdata['pin']!=0 && !eregi('^[0-9]{4,6}$',$userdata['pin']))
-		$error['pin'] = 'Podany numer PIN jest niepoprawny!';
+		$error['pin'] = trans('Incorrect PIN code!');
 
 	if($userdata['status']!=3&&$LMS->GetUserNodesNo($userdata['id'])) 
-		$error['status'] = 'Tylko pod³±czony u¿ytkownik mo¿e posiadaæ komputery!';
+		$error['status'] = trans('Only connected user can own computers!');
 		
 	if (!isset($error)){
 		$LMS->UserUpdate($userdata);
@@ -111,7 +111,7 @@ elseif(isset($userdata))
 		$userinfo['shownodes'] = TRUE;
 }
 
-$layout['pagetitle'] = 'Edycja danych u¿ytkownika: '.$userinfo['username'];
+$layout['pagetitle'] = trans('User Data Edit: $0',$userinfo['username']);
 
 $SMARTY->assign('usernodes',$LMS->GetUserNodes($userinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($userinfo['id']));
