@@ -23,7 +23,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Statystyki wykorzystania ³±cza';
+$layout['pagetitle'] = trans('Network Statistics');
 
 $bars = 1;
 
