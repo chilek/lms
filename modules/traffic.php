@@ -33,22 +33,22 @@ if (isset($_GET['bar']) && isset($_POST['order']))
 switch($_GET['bar'])
 {
 	case 'hour':
-		$traffic = $LMS->Traffic( '?NOW?-(60*60)', '?NOW?', 0,
+		$traffic = $LMS->Traffic( time()-(60*60), time(), 0,
 			isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : 'download');
 	break;
 
 	case 'day':
-		$traffic = $LMS->Traffic( '?NOW?-(60*60*24)','?NOW?',  0,
+		$traffic = $LMS->Traffic( time()-(60*60*24), time(),  0,
 			isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : 'download');
 	break;
 
 	case 'month':
-		$traffic = $LMS->Traffic( '?NOW?-(60*60*24*30)', '?NOW?', 0,
+		$traffic = $LMS->Traffic( time()-(60*60*24*30), time(), 0,
 			isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : 'download');
 	break;
 
 	case 'year':
-		$traffic = $LMS->Traffic( '?NOW?-(60*60*24*365)', '?NOW?', 0,
+		$traffic = $LMS->Traffic( time()-(60*60*24*365), time(), 0,
 			isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : 'download');
 	break;
 
