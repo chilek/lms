@@ -140,7 +140,8 @@ CREATE TABLE "users" (
    "moddate" int4 DEFAULT '0' NOT NULL,
    "creatorid" int4 DEFAULT '0' NOT NULL,
    "modid" int4 DEFAULT '0' NOT NULL,
-   "payday" int4 DEFAULT '1' NOT NULL
+   "payday" int4 DEFAULT '1' NOT NULL,
+   "deleted" int2 DEFAULT '0' NOT NULL
 );
 CREATE  UNIQUE INDEX "users_id_key" ON "users" ("id");
 
