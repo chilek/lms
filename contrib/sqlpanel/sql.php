@@ -31,6 +31,7 @@ if($query = $_POST['query'])
 	$pagelimit = ( $_CONFIG['phpui']['sqlpanel_pagelimit'] ? $_CONFIG['lmsui']['sqlpanel_pagelimit'] : 50 );
 	$page = (! $_GET['page'] ? 1 : $_GET['page']); 
 	$start = ($page - 1) * $pagelimit;
+	$words = array('SELECT','EXPLAIN','SHOW','DESCRIBE','ANALYZE','CHECK','OPTIMIZE','REPAIR','VACUUM');
 
 	$t = getmicrotime();
 	$rows = $LMS->DB->Execute($query);
@@ -44,10 +45,10 @@ if($query = $_POST['query'])
 		$SMARTY->display('sql.html');	
 		die;
 	}
-	
-	$layout['pagetitle'] = 'SQL - Wyniki zapytania';
-	
-	if( ! eregi('^SELECT',$query) && ! eregi('^EXPLAIN',$query) && ! eregi('^ANALYZE',$query))
+		
+	list($firstword) = explode(' ', trim($query));
+
+	if( ! in_array(strtoupper($firstword), $words) )
 	{
 		$nrows = $rows;
 	} 
@@ -99,6 +100,7 @@ if($query = $_POST['query'])
 	$SMARTY->assign('colnames', $colnames);
 	$SMARTY->assign('executetime', $duration);
 	$SMARTY->assign('result', $result);
+	$layout['pagetitle'] = 'SQL - Wyniki zapytania';
 }
 
 $SMARTY->assign('query', $query);
