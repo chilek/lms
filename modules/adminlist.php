@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout[pagetitle] = "Administratorzy";
+$layout[pagetitle] = $lang[pagetitle_adminlist];
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("adminslist",$LMS->GetAdminList());

@@ -31,7 +31,7 @@ $userinfo=$LMS->GetUser($_GET[id]);
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
-$layout[pagetitle]="Informacje o u¿ytkowniku ".$userinfo[username];
+$layout[pagetitle] = sprintf($lang[pagetitle_userinfo],$userinfo[username]);
 
 $usernodes = $LMS->GetUserNodes($_GET[id]);
 $usernodes[ownerid] = $_GET[id];

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Lista komputerów";
+$layout[pagetitle]=$lang[pagetitle_nodelist];
 
 $_SESSION[backto]=$_SERVER[QUERY_STRING];
 

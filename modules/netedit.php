@@ -44,22 +44,22 @@ if(isset($networkdata))
 	$networkdata[addresslong] = ip_long($networkdata[address]);
 	$networkdata[mask] = prefix2mask($networkdata[prefix]);
 	if(!check_ip($networkdata[address]))
-		$error[address] = "Podany adres IP jest nieprawid³owy!";
+		$error[address] = $lang[error_ip_address_invalid];
 	else
 	{
 		if(getnetaddr($networkdata[address],prefix2mask($networkdata[prefix]))!=$networkdata[address])
 		{
-			$error[address] = "Podany adres nie jest pocz±tkowym adresem sieci,<BR> ustawiam na ".getnetaddr($networkdata[address],prefix2mask($networkdata[prefix]));
+			$error[address] = $lang[error_ip_address_is_not_netaddr];
 			$networkdata[address] = getnetaddr($networkdata[address],prefix2mask($networkdata[prefix]));
 		}
 		else
 		{
 			if($LMS->NetworkOverlaps($networkdata[address],prefix2mask($networkdata[prefix]),$networkdata[id]))
-				$error[address] = "Podana sieæ pokrywa siê z inn± sieci±!";
+				$error[address] = $lang[error_network_overlaps];
 			else
 			{
 				if($network[assigned] > ($networkdata[size]-2))
-					$error[address] = "Nowa sieæ jest za ma³a!";
+					$error[address] = $lang[error_network_too_small];
 				else
 				{
 
@@ -80,46 +80,43 @@ if(isset($networkdata))
 	}
 
 	if($networkdata[name]=="")
-		$error[name] = "Musisz podaæ nazwê sieci!";
+		$error[name] = $lang[error_no_empty_field];
 	elseif(!eregi("^[.a-z0-9-]+$",$networkdata[name]))
-		$error[name] = "Podana nazwa zawiera nieprawid³owe znaki!";
+		$error[name] = $lang[error_field_contains_incorrect_characters];
 
 	if($networkdata[domain]!="" && !eregi("^[.a-z0-9-]+$",$networkdata[domain]))
-		$error[domain] = "Podana domena zawiera nieprawid³ow znaki";
+		$error[domain] = $lang[error_field_contains_incorrect_characters];
 
 	if($networkdata[dns]!="" && !check_ip($networkdata[dns]))
-		$error[dns] = "Podany adres IP jest nie prawid³owy!";
+		$error[dns] = $lang[error_ip_address_invalid];
 
 	if($networkdata[wins]!="" && !check_ip($networkdata[wins]))
-		$error[wins] = "Podany adres IP jest nie prawid³owy!";
+		$error[wins] = $lang[error_ip_address_invalid];
 
 	if($networkdata[gateway]!="")
 		if(!check_ip($networkdata[gateway]))
-			$error[gateway] = "Podany adres IP jest nie prawid³owy!";
-		else
-			if(!isipin($networkdata[gateway],getnetaddr($networkdata[address],prefix2mask($networkdata[prefix])),prefix2mask($networkdata[prefix])))
-				$error[gateway] = "Podany adres gateway'a nie pasuje do adresu sieci!";
+			$error[gateway] = $lang[error_ip_address_invalid];
 
 	if($networkdata[dhcpstart]!="")
 		if(!check_ip($networkdata[dhcpstart]))
-			$error[dhcpstart] = "Podany adres IP jest nieprawid³owy!";
+			$error[dhcpstart] = $lang[error_ip_address_invalid];
 		else
 			if(!isipin($networkdata[dhcpstart],getnetaddr($networkdata[address],prefix2mask($networkdata[prefix])),prefix2mask($networkdata[prefix])) && $networkdata[address]!="")
-				$error[dhcpstart] = "Podany adres IP nie nale¿y do tej sieci!";
+				$error[dhcpstart] = $lang[error_ip_address_is_not_in_network];
 
 	if($networkdata[dhcpend]!="")
 		if(!check_ip($networkdata[dhcpend]))
-			$error[dhcpend] = "Podany adres IP jest nieprawid³owy!";
+			$error[dhcpend] = $lang[error_ip_address_invalid];
 		else
 			if(!isipin($networkdata[dhcpend],getnetaddr($networkdata[address],prefix2mask($networkdata[prefix])),prefix2mask($networkdata[prefix])) && $networkdata[address]!="")
-				$error[dhcpend] = "Podany adres IP nie nale¿y do tej sieci!";
+				$error[dhcpend] = $lang[error_ip_address_is_not_in_network];
 	
 	if(!$error[dhcpstart] && !$error[dhcpend])
 	{
 		if(($networkdata[dhcpstart]!="" && $networkdata[dhcpend]=="")||($networkdata[dhcpstart]=="" && $networkdata[dhcpend]!=""))
-			$error[dhcp] = "Musisz podaæ obydwa zakresy IP dla DHCP!";
-		if($networkdata[dhcpstart]!="" && $networkdata[dhcpend]!="" && !(ip_long($networkdata[dhcpend]) > ip_long($networkdata[dhcpstart])))
-			$error[dhcp] = "Koniec zakresu DHCP musi byæ wiêkszy ni¿ start!";
+			$error[dhcp] = $lang[error_dhcp1];
+		if($networkdata[dhcpstart]!="" && $networkdata[dhcpend]!="" && ip_long($networkdata[dhcpend]) > ip_long($networkdata[dhcpstart])))
+			$error[dhcp] = $lang[error_dhcp2];
 	}
 	
 	if(!$error)
@@ -147,7 +144,7 @@ if(isset($networkdata))
 
 $prefixlist = $LMS->GetPrefixList();
 $networks = $LMS->GetNetworks();
-$layout[pagetitle]="Informacja o sieci";
+$layout[pagetitle]=$lang[pagetitle_netedit];
 $SMARTY->assign("unlockedit",TRUE);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("network",$network);

@@ -27,11 +27,11 @@
 // Agggrrr. Nie zwracajcie uwagi na styl pisania *TEGO* kawa³ka kodu :)
 // Jest 7:35 a ja ca³± noc nie spa³em :)
 
-$layout[$pagetitle]="Prze³adowanie ustawieñ";
+$layout[pagetitle]=$lang[pagetitle_reload];
 
 $SMARTY->display("header.html");
 
-?><H1>Prze³adowanie ustawieñ</H1><?
+?><H1><?=$layout[pagetitle]?></H1><?
 
 $_RELOAD_TYPE = (! $_CONFIG[phpui]['reload_type'] ? "sql" : $_CONFIG[phpui]['reload_type']);
 $_EXECCMD = (! $_CONFIG[phpui]['reload_execcmd'] ? "/bin/true" : $_CONFIG[phpui]['reload_execcmd']);

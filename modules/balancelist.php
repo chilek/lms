@@ -44,7 +44,7 @@ $pagelimit = (! $_CONFIG[phpui][balancelist_pagelimit] ? 50 : $_CONFIG[phpui][ba
 $page = (! $_GET[page] ? ceil($listdata[totalpos]/$pagelimit) : $_GET[page]); 
 $start = ($page - 1) * $pagelimit;
 $_SESSION[blp] = $page;
-$layout[pagetitle] = "Bilans finansowy";
+$layout[pagetitle] = $lang[pagetitle_balancelist];
 $SMARTY->assign("layout",$layout);
 
 $SMARTY->assign("balancelist",$balancelist);
