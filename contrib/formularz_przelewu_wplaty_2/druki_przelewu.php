@@ -100,7 +100,7 @@ function address_box($x,$y,$scale)	{
     global $pdf,$_NAME,$_ADDRESS,$_ZIP,$_CITY,$_ACCOUNT,$userinfo,$_SERVICE,$_SHORT_NAME;
 
     $font_size=30;
-    while ($pdf->getTextWidth($font_size*$scale,$userinfo['username'])>240)
+    while ($pdf->getTextWidth($font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']))>240)
 	$font_size=$font_size-1;    
     $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']));
     $pdf->addtext(15*$scale+$x,275*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['address']));
@@ -118,18 +118,30 @@ $_ACCOUNT = (! $_CONFIG[finances]['account'] ? "123456789012345678901234567" : $
 
 $control_lines = 0;
 
-$userlist=$LMS->GetUserList($o, $s, $n, $g);
-foreach ($userlist as $user) {
-    $userinfo=$LMS->GetUser($user['id']);
-    if (($user['id']>0) && ($userinfo['balance']<0)) {
-        main_fill(177,12,0.395);
-	main_fill(177,313,0.396);
-        simple_fill_mip(5,12,0.395);
-	simple_fill_mip(5,313,0.395);
-        address_box(40,600,0.395);
+$userlist = $LMS->GetUserList($o, 6, $n, $g);
+$total = $userlist['total'];
+unset($userlist['total']);
+unset($userlist['state']);
+unset($userlist['network']);
+unset($userlist['usergroup']);
+unset($userlist['order']);
+unset($userlist['below']);
+unset($userlist['over']);
+unset($userlist['direction']);
 
-	$id=$pdf->newPage(1,$id,'after');
-    }
+$i=0;
+foreach ($userlist as $user) 
+{
+    $i++;
+    $userinfo = $LMS->GetUser($user['id']);
+    main_fill(177,12,0.395);
+    main_fill(177,313,0.396);
+    simple_fill_mip(5,12,0.395);
+    simple_fill_mip(5,313,0.395);
+    address_box(40,600,0.395);
+
+    if($i != $total)
+	    $id = $pdf->newPage(1,$id,'after');
 }
 $pdf->ezStream();
 
