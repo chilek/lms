@@ -60,7 +60,7 @@ if(isset($nodedata))
 	elseif($LMS->GetNodeIDByName($nodedata[name]))
 		$error[name] = "Podana nazwa jest u¿ywana!";
 	elseif(!eregi("^[_a-z0-9-]+$",$nodedata[name]))
-		$error[name] = "Podana nazwa zawiera niepoprawne znaki";		
+		$error[name] = "Podana nazwa zawiera niepoprawne znaki!";		
 
 	if(!$nodedata[ipaddr])
 		$error[ipaddr] = "Proszê podac adres IP!";
@@ -71,7 +71,9 @@ if(isset($nodedata))
 	elseif(!$LMS->IsIPFree($nodedata[ipaddr]))
 		$error[ipaddr] = "Podany adres IP jest zajêty!";
 
-	if($LMS->GetNodeIDByMAC($nodedata[mac]) && $LMS->CONFIG[phpui][allow_mac_sharing] == FALSE)
+	if(!$nodedata[mac])
+		$error[mac] = "Proszê podac adres MAC!";
+	elseif($LMS->GetNodeIDByMAC($nodedata[mac]) && $LMS->CONFIG[phpui][allow_mac_sharing] == FALSE)
 		$error[mac] = "Podany MAC jest ju¿ w bazie!";
 	elseif(!check_mac($nodedata[mac]))
 		$error[mac] = "Podany adres MAC jest nieprawid³owy!";
@@ -128,6 +130,9 @@ $SMARTY->display("nodeadd.html");
 
 /*
  * $Log$
+ * Revision 1.39  2003/12/12 18:29:12  alec
+ * - dodane sprawdzenie czy MAC jest pusty i odpowiedni komunikat
+ *
  * Revision 1.38  2003/12/04 04:39:14  lukasz
  * - porz±dki
  * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
