@@ -1290,7 +1290,7 @@ class LMS
 					$result['lastonlinedate'] = '('.date('Y/m/d, H:i',$result['lastonline']).')';
 			}
 			else
-				$result['lastonlinedate'] = trans('on-line');
+				$result['lastonlinedate'] = trans('online');
 			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
 			$result['owner'] = $this->GetUsername($result['ownerid']);
 			$result['netid'] = $this->GetNetIDByIP($result['ip']);
