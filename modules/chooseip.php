@@ -66,8 +66,10 @@ if($p == 'down' || $p == 'top')
 {
 	$SESSION->restore('ntlp.page.'.$netid, $network['page']);
 	$SESSION->restore('ntlp.pages.'.$netid, $network['pages']);
-	if (!isset($network['pages']))
+	if (!isset($network['pages'])) {
 		$network = $LMS->GetNetworkRecord($netid, $page, $LMS->CONFIG['phpui']['networkhosts_pagelimit']);
+		$SESSION->save('ntlp.pages.'.$netid, $network['pages']);
+		}
 }
 
 $SMARTY->assign('part',$p);
