@@ -1479,7 +1479,7 @@ echo '<H1>Generowanie danych losowych</H1>';
 	
 if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 {
-	echo '<B>._('Database cleaning...').'</B><BR>';
+	echo '<B>'._('Database cleaning...').'</B><BR>';
 	$DB->Execute('DELETE FROM nodes');
 	$DB->Execute('DELETE FROM users');
 	$DB->Execute('DELETE FROM cash');
