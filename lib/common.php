@@ -900,8 +900,22 @@ function setunits($data)  // for traffic data
 	return array($number, $unit);
 }
 
+function r_trim($array)
+{
+	foreach($array as $key => $value)
+		if(is_array($value))
+			$array[$key] = r_trim($value);
+		else
+			$array[$key] = trim($value);
+	
+	return $array;
+}
+
 /*
  * $Log$
+ * Revision 1.55  2003/12/14 05:01:35  lukasz
+ * - temporary changes
+ *
  * Revision 1.54  2003/12/04 03:03:40  lukasz
  * - cosmetics
  *
