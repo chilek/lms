@@ -30,6 +30,8 @@
 // ustawienie komunikatów syst. na polskie
 setlocale(LC_MESSAGES,'pl_PL');
 // ustawienie formatu czasu na polski
-setlocale(LC_TIME,'pl_PL')
+setlocale(LC_TIME,'pl_PL');
+// kapitalizowanie literek
+setlocale(LC_CTYPE,'pl_PL');
 
 ?>
