@@ -10,9 +10,10 @@ ChangeLog.en	- Historia zmian po angielsku
 README		- Podrêcznik u¿ytkownika
 README.html	- Podrêcznik u¿ytkownika - wersja w jednym pliku HTML
 TODO		- Do-Zrobienia.
-lms.mysql	- Polecenia zak³adaj±ce tabelki w mysqlu
-lms.pgsql	- Polecenia zak³adaj±ce tabelki w postgresqlu
-lms.sqlite	- Polecenia zak³±daj±ce tabelki w sqlite
+lms.mysql	- Polecenia zak³adaj±ce tabelki dla MySQL
+lms.pgsql	- Polecenia zak³adaj±ce tabelki dla PostgreSQL
+lms.sqlite	- Polecenia zak³adaj±ce tabelki dla SQLite
+lms.mssql	- Polecenia zak³adaj±ce tabelki dla MS SQL Server
 UPGRADE-*.mysql	- jak uaktualniæ lms'a do wersji bie¿±cej
 UPGRADE-*.pgsql	- jak uaktualniæ lms'a do wersji bie¿±cej
 
