@@ -36,11 +36,10 @@ class LMS
 	var $CONFIG;
 	var $_version = '1.0.65';
 
-	function LMS($ADB,$SESSION,$CONFIG)
+	function LMS($ADB,$SESSION)
 	{
 		$this->SESSION=$SESSION;
 		$this->ADB=$ADB;
-		$this->CONFIG=$CONFIG;
 	}
 
 	function sqlTSfmt()
@@ -914,8 +913,7 @@ class LMS
 
 	function DatabaseList()
 	{
-		$_BACKUP_DIR = $this->_BACKUP_DIR;
-		if ($handle = opendir($_BACKUP_DIR))
+		if ($handle = opendir($this->CONFIG[backup_dir]))
 		{
 			while (false !== ($file = readdir($handle)))
 			{
@@ -927,7 +925,7 @@ class LMS
 						if(substr($path[basename],0,4)=="lms-")
 						{
 							$dblist[time][] = substr(basename($file,".sql"),4);
-							$dblist[size][] = filesize($_BACKUP_DIR."/".$file);
+							$dblist[size][] = filesize($this->CONFIG[backup_dir]."/".$file);
 						}
 					}
 				}
@@ -940,31 +938,73 @@ class LMS
 		return $dblist;
 	}		
 
+	
+
 	function DatabaseRecover($dbtime)
 	{
-		$_BACKUP_DIR = $this->_BACKUP_DIR;
-		$DB=$this->DB;
-		if(file_exists($_BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
+		if(file_exists($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql'))
 		{
-			return $DB->source($_BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+			return $this->DBLoad($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
 		}
 		else
 			return FALSE;
 	}
 
+	function DBLoad($filename=NULL)
+	{
+		if(!$filename)
+			return FALSE;
+		$file = fopen($filename,"r");
+		while(!feof($file))
+		{
+			$line = fgets($file,4096);
+			if($line!="")
+			{
+				$line=str_replace(";\n","",$line);
+				$this->ADB->Execute($line);
+			}
+		}
+		fclose($file);
+	}						
+
+	function DBDump($filename=NULL)
+	{
+		if(!$filename)
+			return FALSE;
+		if($dumpfile = fopen($filename,"w"))
+		{
+			foreach($this->ADB->MetaTables() as $tablename)
+			{
+				fputs($dumpfile,"DELETE FROM $tablename;\n");
+				foreach($this->ADB->GetAll("SELECT * FROM ".$tablename) as $row)
+				{
+					fputs($dumpfile,"INSERT INTO $tablename VALUES (");
+					foreach($row as $value)
+					{
+						$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
+					}
+					fputs($dumpfile,implode(", ",$values));
+					fputs($dumpfile,");\n");
+					unset($values);
+				}
+			}
+			fclose($dumpfile);
+		}
+		else
+			return FALSE;
+	}
+			
 	function DatabaseCreate()
 	{
-		$DB=$this->DB;
-		$_BACKUP_DIR = $this->_BACKUP_DIR;
-		return $DB->dump($_BACKUP_DIR.'/lms-'.time().'.sql');
+	
+		return $this->DBDump($this->CONFIG[backup_dir].'/lms-'.time().'.sql');
 	}
 
 	function DatabaseDelete($dbtime)
 	{
-		$_BACKUP_DIR = $this->_BACKUP_DIR;
-		if(file_exists($_BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
+		if(file_exists($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql'))
 		{
-			return unlink($_BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+			return unlink($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
 		}
 		else
 			return FALSE;
@@ -972,13 +1012,12 @@ class LMS
 
 	function DatabaseFetchContent($dbtime)
 	{
-		$_BACKUP_DIR = $this->_BACKUP_DIR;	
-		if(file_exists($_BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
+		if(file_exists($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql'))
 		{
-			$content = file($_BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+			$content = file($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
 			foreach($content as $value)
 				$database[content] .= $value;
-			$database[size] = filesize($_BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+			$database[size] = filesize($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
 			$database[time] = $dbtime;
 			return $database;
 		}
