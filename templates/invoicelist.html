@@ -20,13 +20,6 @@
 		}
 	}
 	
-	function raport()
-	{
-		document.page.action="?m=invoicereport";
-		document.page.target="_blank";
-		document.page.submit();
-	}
-
 	function invoicepay(id)
 	{
 		document.page.action="?m=invoicepaid&id="+id;
@@ -162,58 +155,18 @@
 	</TR>
 	{/if}
 	<TR CLASS="dark">
-		<TD COLSPAN="7" class="fall" COLSPAN="7">
+		<TD CLASS="fall" COLSPAN="7">
 			<TABLE WIDTH="100%">
 				<TR>
-					<TD WIDTH="99%" VALIGN="bottom">
-						<A HREF="javascript:cal3.popup()"><IMG SRC="img/calendar.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2">Data operacji:</A>
-						<INPUT TYPE="text" NAME="invoicepaydate" onclick="javascript:cal3.popup()"><BR>
-						<A HREF="javascript:raport();"><IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2">Rejestr sprzeda¿y: </A>
-						Od&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>
-						Do&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>	
-					
-{*					
-					<TABLE WIDTH="100%">
-							<TR>
-								<TD WIDTH="1%" ROWSPAN="2">
-									<INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="action" VALUE="markrange">
-								</TD>
-								<TD WIDTH="1%">
-									<B>Od:</B>
-								</TD>
-								<TD WIDTH="98%">
-									{html_select_date field_array="from" prefix="" time=$listdata.startdate field_order="DMY" field_separator=" / " start_year=$listdata.startyear end_year=$listdata.endyear}&nbsp;{html_select_time field_array="from" prefix="" time=$listdata.startdate display_seconds=0}
-								</TD>
-							</TR>
-							<TR>
-								<TD WIDTH="1%">
-									<B>Do:</B>
-								</TD>
-								<TD WIDTH="98%">
-									{html_select_date field_array="to" prefix="" time=$listdata.enddate field_order="DMY" field_separator=" / " start_year=$listdata.startyear end_year=$listdata.endyear}&nbsp;{html_select_time field_array="to" prefix="" time=$listdata.enddate display_seconds=0}
-								</TD>
-							</TR>
-							<TR>
-								<TD WIDTH="1%">
-									<INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="action" VALUE="marktoday">
-								</TD>
-								<TD WIDTH="98%" COLSPAN="2">
-									<B>Dzisiejszy dzieñ</B>
-								</TD>
-							</TR>								
-						</TABLE>
-						
-						
-						
-						
-*}						
+					<TD ALIGN="left">
+						<NOBR><A HREF="javascript:prints();">Drukuj <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:prints_org();">Drukuj orygina³y <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:prints_cpy();">Drukuj kopie <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:pays();">Rozlicz <IMG SRC="img/edit.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><INPUT TYPE="text" NAME="invoicepaydate" SIZE="10" onclick="javascript:cal1.popup()" {tip text="Podaj datê rozliczenia w formacie 'YYYY/MM/DD' (pole puste oznacza datê dzisiejsz±)."}>&nbsp;<IMG SRC="img/calendar.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></NOBR>
 					</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="right">
-						Zaznacz wszystkie<INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"><BR>
-						<A HREF="javascript:prints();">Drukuj <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
-						<A HREF="javascript:prints_org();">Drukuj orygina³y <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
-						<A HREF="javascript:prints_cpy();">Drukuj kopie <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
-						<A HREF="javascript:pays();">Rozlicz <IMG SRC="img/edit.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
+					<TD ALIGN="right">	
+						<NOBR>Zaznacz wszystkie<INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
 			</TABLE>
@@ -224,11 +177,7 @@
 {include file="footer.html"}
 <SCRIPT>
 <!--
-var cal1 = new calendar(document.forms['page'].elements['from']);
+var cal1 = new calendar(document.forms['page'].elements['invoicepaydate']);
 cal1.time_comp = false;
-var cal2 = new calendar(document.forms['page'].elements['to']);
-cal2.time_comp = false;
-var cal3 = new calendar(document.forms['page'].elements['invoicepaydate']);
-cal3.time_comp = false;
 //-->
 </SCRIPT>
