@@ -51,7 +51,7 @@ else
 	unset($queue['rights']['total']);
 }
 	
-$layout['pagetitle'] = 'Dodawanie kolejki';
+$layout['pagetitle'] = 'Nowa kolejka';
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

@@ -2936,15 +2936,16 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $this->DB->GetOne('SELECT name FROM rtqueues WHERE id=?', array($id));
 	}
 
-	function GetQueueContent($id)
+	function GetQueueContents($id)
 	{
-		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, requestor, subject, state, owner AS ownerid, name AS ownername, createtime FROM rttickets LEFT JOIN admins ON owner = admins.id WHERE queueid = ? ORDER BY createtime DESC', array($id)))
+		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, requestor, rttickets.subject AS subject, state, owner AS ownerid, name AS ownername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified FROM rtmessages, rttickets LEFT JOIN admins ON (owner = admins.id AND rttickets.id = ticketid) WHERE queueid = ? GROUP BY ticketid ORDER BY rttickets.createtime DESC', array($id)))
 		{
 			foreach($result as $idx => $ticket)
 			{
 				$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
 				$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 				$result[$idx] = $ticket;
+				$result['total']++;
 			}
 		}
 		return $result;
@@ -2966,6 +2967,19 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function TicketExists($id)
 	{
 		return $this->DB->GetOne('SELECT * FROM rttickets WHERE id = ?', array($id));
+	}
+
+	function TicketAdd($ticket)
+	{
+		$ts = time();
+		$this->DB->Execute('INSERT INTO rttickets (queueid, userid, requestor, subject, state, owner, createtime) 
+				    VALUES (?, ?, ?, ?, 0, 0, ?)', array($ticket['queueid'], $ticket['userid'], $ticket['requestor'], $ticket['subject'], $ts));
+	//	$this->DB->Execute('INSERT INTO rtmessages (ticketid, )
+	//			    VALUES ()', array());
+		$this->SetTS('rttickets');	
+		$this->SetTS('rtmessages');
+		// here possibly wrong way to get inserted ticket id
+		return $this->DB->GetOne('SELECT FROM rttickets WHERE createtime=?', array($ts));
 	}
 
 	function GetTicketContents($id)

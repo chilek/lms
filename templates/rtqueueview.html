@@ -10,13 +10,16 @@
 			<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">
 			Data zg³oszenia:
 		</TD>
-		<TD CLASS="fbt" WIDTH="99%">
+		<TD CLASS="fbt" WIDTH="97%">
 			<B>Temat:</B><BR>
 			Zg³aszaj±cy:
 		</TD>
-		<TD CLASS="frightu" WIDTH="1%" NOWRAP>
+		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
 			<B>W³a¶ciciel:</B><BR>
 			Data modyfikacji:
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%" NOWRAP>
+			<B>Razem: {$queuetotal|default:"0"}</B>
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}		
@@ -48,7 +51,7 @@
 			{$ticket.requestor|escape} &lt;{if $ticket.state != 2}<A HREF="mailto:{$ticket.requestoremail}">{/if}{$ticket.requestoremail}{if $ticket.state != 2}</A>{/if}&gt;<BR>
 			{if $ticket.state == 0 || $ticket.state == 3}</FONT>{/if}
 		</TD>
-		<TD CLASS="fright" NOWRAP onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
+		<TD NOWRAP onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
 			{if $ticket.state == 3}
 				<FONT style="color: brown">
 			{elseif $ticket.state == 0}
@@ -60,13 +63,17 @@
 				{/if}
 				{$ticket.ownername}
 				{if $ticket.stat != 2}</A>{/if}
-			{else}-{/if}<BR>{$ticket.lastmodfied|date_format:"%Y/%m/%d, %H:%M:%S"|default:"-"}
+			{else}-{/if}<BR>{$ticket.lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
 			{if $ticket.state == 0 || $ticket.state == 3}</FONT>{/if}
+		</TD>
+		<TD class="fright">
+			<A href="?m=rtticketview&id={$ticket.id}"><IMG src="img/info.gif" alt="[ Info ]" border="0" align="absmiddle"></A>
+			<A href="?m=rtticketedit&id={$ticket.id}"><IMG src="img/edit.gif" alt="[ Edytuj ]" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="3" CLASS="flr" ALIGN="center">
+		<TD COLSPAN="4" CLASS="flr" ALIGN="center">
 			<BR>
 			<BR>
 			<B>Ta kolejka jest pusta.</B><BR>
@@ -76,7 +83,7 @@
 	</TR>
 	{/foreach}
 	<TR CLASS="light">
-		<TD COLSPAN="3" CLASS="fall" ALIGN="right">
+		<TD COLSPAN="4" CLASS="fall" ALIGN="right">
 			<A HREF="?m=rtticketadd&id={$queuedata.id}">Nowe zg³oszenie <IMG src="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
 		</TD>
 	</TR>

@@ -46,7 +46,7 @@
 			{$queue.open|default:0}
 		</TD>
 		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';" NOWRAP>
-			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d, %H:%M:%S"}{else}-{/if}
+			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD CLASS="fright" NOWRAP>
 			<A HREF="?m=rtqueueinfo&id={$queue.id}"><IMG SRC="img/info.gif" ALT="[ Info ]" ALIGN="absmiddle" BORDER="0"></A>

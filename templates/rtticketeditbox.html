@@ -1,0 +1,57 @@
+<!-- $Id$ -->
+<P><FORM method="POST" name="ticket" action="?m=rtticketedit">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD CLASS="fall" COLSPAN="2">
+			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
+			<B>Zg³oszenie Nr {$ticket.ticketid|string_format:"%06d"}</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+			<B>Temat:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			{$ticket.subject|escape}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+			<B>Zg³aszaj±cy:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			{$ticket.requestor|escape} &lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+			<B>Data zg³oszenia:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+			<B>Kolejka:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<A HREF="?m=rtqueueview&id={$ticket.queueid}">{$ticket.queuename}</A>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+			<B>Status:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			{$ticket.status}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="100%" colspan="2" CLASS="fbottomu" ALIGN="RIGHT">
+			<A href="javascript:document.ticket.submit();">Zapisz <IMG src="img/edit.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=rtticketview&id={$ticket.queueid}">Anuluj <IMG src="img/cancel.gif" alt="" border="0" align="absmiddle"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM></P>
