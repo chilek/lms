@@ -5,7 +5,7 @@
 		<TD width="100%" align="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
-			{t}Created by:{/t} {$layout.logname}
+			{t 0=$layout.logname}Created by: $0{/t}
 		</TD>
 	</TR>
 </TABLE>

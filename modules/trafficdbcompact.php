@@ -39,7 +39,7 @@ if (!($level || $delete || $removedeleted))
 $SMARTY->display('header.html');
 $SMARTY->display('trafficheader.html');
 
-echo '<PRE><B>'.trans('Database compaction').'</B><BR>';
+echo '<PRE><B>'.trans('Database compacting').'</B><BR>';
 echo trans('$0 records before compaction.\n',$LMS->DB->GetOne('SELECT COUNT(*) FROM stats'));
 
 if($delete)
