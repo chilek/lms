@@ -30,104 +30,104 @@
 
 class LMS {
 
-	var $db;
-	var $session;
+	var $DB;
+	var $SESSION;
 	var $_BACKUP_DIR;
-	var $_version = '1.0.63';
+	var $_version = '1.0.65';
 
-	function LMS($db,$session)
+	function LMS($DB,$SESSION)
 	{
-		$this->db=$db;
-		$this->session=$session;
+		$this->DB=$DB;
+		$this->SESSION=$SESSION;
 	}
 
 	function SetTS($table)
 	{
-		$db=$this->db;
-		if($db->CountRows("SELECT * FROM `timestamps` WHERE `table` = '_'"))
-			$db->ExecSQL("UPDATE `timestamps` SET `time` = UNIX_TIMESTAMP() WHERE `table` = '_'");
+		$DB=$this->DB;
+		if($DB->countRows("SELECT * FROM `timestamps` WHERE `table` = '_'"))
+			$DB->execSQL("UPDATE `timestamps` SET `time` = UNIX_TIMESTAMP() WHERE `table` = '_'");
 		else
-			$db->ExecSQL("INSERT INTO `timestamps` VALUES (UNIX_TIMESTAMP(), '_')");
-		if($db->CountRows("SELECT * FROM `timestamps` WHERE `table` = '".$table."'"))
-			$db->ExecSQL("UPDATE `timestamps` SET `time` = UNIX_TIMESTAMP() WHERE `table` = '".$table."'");
+			$DB->execSQL("INSERT INTO `timestamps` VALUES (UNIX_TIMESTAMP(), '_')");
+		if($DB->countRows("SELECT * FROM `timestamps` WHERE `table` = '".$table."'"))
+			$DB->execSQL("UPDATE `timestamps` SET `time` = UNIX_TIMESTAMP() WHERE `table` = '".$table."'");
 		else
-			$db->ExecSQL("INSERT INTO `timestamps` VALUES (UNIX_TIMESTAMP(), '".$table."')");
+			$DB->execSQL("INSERT INTO `timestamps` VALUES (UNIX_TIMESTAMP(), '".$table."')");
 		return $this->GetTS($table);
 	}
 
 	function GetTS($table)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `time` FROM `timestamps` WHERE `table` = '".$table."'");
-		if(!isset($db->row[time]))
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `time` FROM `timestamps` WHERE `table` = '".$table."'");
+		if(!isset($DB->row[time]))
 			return -1;
 		else
-			return $db->row[time];
+			return $DB->row[time];
 	}
 
 	function SetAdminPassword($id,$passwd)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("admins");
-		return $db->ExecSQL("UPDATE `admins` SET `passwd` = '".crypt($passwd)."' WHERE `id` = '".$id."' LIMIT 1");
+		return $DB->execSQL("UPDATE `admins` SET `passwd` = '".crypt($passwd)."' WHERE `id` = '".$id."' LIMIT 1");
 	}
 
 	function DeleteUser($id)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("users");
 		$this->SetTS("nodes");
-		$db->ExecSQL("DELETE FROM `nodes` WHERE `ownerid` = '".$id."'");
-		return $db->ExecSQL("DELETE FROM `users` WHERE `id` = '".$id."' LIMIT 1");
+		$DB->execSQL("DELETE FROM `nodes` WHERE `ownerid` = '".$id."'");
+		return $DB->execSQL("DELETE FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 	}
 
 	function DeleteNode($id)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("nodes");
-		return $db->ExecSQL("DELETE FROM `nodes` WHERE `id` = '".$id."'");
+		return $DB->execSQL("DELETE FROM `nodes` WHERE `id` = '".$id."'");
 	}
 
 	function GetAdminName($id)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `name` FROM `admins` WHERE `id` = '".$id."' LIMIT 1") or $db->row[name] = "-";
-		return $db->row[name];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `name` FROM `admins` WHERE `id` = '".$id."' LIMIT 1") or $DB->row[name] = "-";
+		return $DB->row[name];
 	}
 
 	function AdminExists($id)
 	{
-		$db=$this->db;
-		return $db->FetchRow("SELECT * FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
+		$DB=$this->DB;
+		return $DB->fetchRow("SELECT * FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
 	}
 
 	function GetNetworkName($id)
 	{	
-		$db=$this->db;
-		$db->FetchRow("SELECT `name` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
-		return $db->row[name];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `name` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
+		return $DB->row[name];
 	}
 
 	function GetTariffValue($id)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `value` FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
-		return $db->row[value];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `value` FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
+		return $DB->row[value];
 	}
 
 	function GetTariffName($id)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `name` FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
-		return $db->row[name];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `name` FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
+		return $DB->row[name];
 	}
 
 	function UserUpdate($userdata)
 	{
-		$session=$this->session;
-		$db=$this->db;
+		$SESSION=$this->SESSION;
+		$DB=$this->DB;
 		$this->SetTS("users");
-		return $db->ExecSQL("UPDATE `users` SET 
+		return $DB->execSQL("UPDATE `users` SET 
 		`phone1` = '".$userdata[phone1]."',
 		`phone2` = '".$userdata[phone2]."',
 		`phone3` = '".$userdata[phone3]."',
@@ -135,7 +135,7 @@ class LMS {
 		`email` = '".$userdata[email]."',
 		`tariff` = '".$userdata[tariff]."',
 		`info` = '".trim($userdata[uwagi])."',
-		`modid` = '".$session->id."',
+		`modid` = '".$SESSION->id."',
 		`status` = '".$userdata[status]."',
 		`moddate` = UNIX_TIMESTAMP()
 		WHERE `id` = '".$userdata[id]."' LIMIT 1");
@@ -143,16 +143,16 @@ class LMS {
 
 	function GetUserNodesNo($id)
 	{
-		$db=$this->db;
-		return $db->CountRows("SELECT * FROM `nodes` WHERE `ownerid` = '".$id."'");		
+		$DB=$this->DB;
+		return $DB->countRows("SELECT * FROM `nodes` WHERE `ownerid` = '".$id."'");		
 	}
 
 	function GetNetworks()
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		if($_SESSION[timestamps][getnetworks][networks] != $this->GetTS("networks"))
 		{
-			$return = $db->FetchArray("SELECT `id`, `name`, `address`, `mask` FROM `networks` ORDER BY `address` ASC");
+			$return = $DB->fetchTable("SELECT `id`, `name`, `address`, `mask` FROM `networks` ORDER BY `address` ASC");
 			$return[total] = sizeof($return[id]);
 			if($return[total])
 				foreach($return[id] as $i => $v)
@@ -171,7 +171,7 @@ class LMS {
 
 	function GetNetworkList()
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 
 		if(
 			$_SESSION[timestamps][getnetworklist][networks] != $this->GetTS("networks")
@@ -179,8 +179,8 @@ class LMS {
 			$_SESSION[timestamps][getnetworklist][nodes] != $this->GetTS("nodes")
 		)
 		{
-			$networks = $db->FetchArray("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks`");
-			$nodes = $db->FetchArray("SELECT `ipaddr` FROM `nodes`");
+			$networks = $DB->fetchTable("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks`");
+			$nodes = $DB->fetchTable("SELECT `ipaddr` FROM `nodes`");
 			$networks[total] = sizeof($networks[id]);
 			if($networks[total])
 			{
@@ -319,83 +319,83 @@ class LMS {
 
 	function GetNodeIDByIP($ipaddr)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `id` FROM `nodes` WHERE `ipaddr` = '".$ipaddr."' LIMIT 1");
-		return $db->row[id];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `id` FROM `nodes` WHERE `ipaddr` = '".$ipaddr."' LIMIT 1");
+		return $DB->row[id];
 	}
 
 	function GetNodeIDByMAC($mac)	
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `id` FROM `nodes` WHERE `mac` = '".$mac."' LIMIT 1");
-		return $db->row[id];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `id` FROM `nodes` WHERE `mac` = '".$mac."' LIMIT 1");
+		return $DB->row[id];
 	}
 
 	function GetNodeIDByName($name)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `id` FROM `nodes` WHERE `name` = '".$name."' LIMIT 1");
-		return $db->row[id];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `id` FROM `nodes` WHERE `name` = '".$name."' LIMIT 1");
+		return $DB->row[id];
 	}
 
 	function GetNodeIPByID($id)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `ipaddr` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
-		return $db->row[ipaddr];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `ipaddr` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		return $DB->row[ipaddr];
 	}
 
 	function GetNodeMACByID($id)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `mac` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
-		return $db->row[mac];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `mac` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		return $DB->row[mac];
 	}
 
 	function GetNodeName($id)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `name` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
-		return $db->row[name];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `name` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		return $DB->row[name];
 	}
 
 	function GetNodeNameByIP($ipaddr)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `name` FROM `nodes` WHERE `ipaddr` = '".$ipaddr."' LIMIT 1");
-		return $db->row[name];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `name` FROM `nodes` WHERE `ipaddr` = '".$ipaddr."' LIMIT 1");
+		return $DB->row[name];
 	}
 
 	function GetUserStatus($id)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `status` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
-		return $db->row[status];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `status` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
+		return $DB->row[status];
 	}
 
 	function NetworkShift($network="0.0.0.0",$mask="0.0.0.0",$shift=0)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("nodes");
 		$this->SetTS("networks");
-		$nodes = $db->FetchArray("SELECT `ipaddr`, `id` FROM `nodes`");
+		$nodes = $DB->fetchTable("SELECT `ipaddr`, `id` FROM `nodes`");
 		if(sizeof($nodes[ipaddr]))
 			foreach($nodes[ipaddr] as $key => $value)
 				if(isipin($value,$network,$mask))
-					$db->ExecSQL("UPDATE `nodes` SET `ipaddr` = '".long2ip(ip_long($value) + $shift)."' WHERE `id` = '".$nodes[id][$key]."' LIMIT 1");
+					$DB->execSQL("UPDATE `nodes` SET `ipaddr` = '".long2ip(ip_long($value) + $shift)."' WHERE `id` = '".$nodes[id][$key]."' LIMIT 1");
 	}
 
 	function NetworkUpdate($networkdata)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("networks");
-		return $db->ExecSQL("UPDATE `networks` SET `name` = '".strtoupper($networkdata[name])."', `address` = '".$networkdata[address]."', `mask` = '".$networkdata[mask]."', `gateway` = '".$networkdata[gateway]."', `dns` = '".$networkdata[dns]."', `domain` = '".$networkdata[domain]."', `wins` = '".$networkdata[wins]."', `dhcpstart` = '".$networkdata[dhcpstart]."', `dhcpend` = '".$networkdata[dhcpend]."' WHERE `id` = '".$networkdata[id]."' LIMIT 1");
+		return $DB->execSQL("UPDATE `networks` SET `name` = '".strtoupper($networkdata[name])."', `address` = '".$networkdata[address]."', `mask` = '".$networkdata[mask]."', `gateway` = '".$networkdata[gateway]."', `dns` = '".$networkdata[dns]."', `domain` = '".$networkdata[domain]."', `wins` = '".$networkdata[wins]."', `dhcpstart` = '".$networkdata[dhcpstart]."', `dhcpend` = '".$networkdata[dhcpend]."' WHERE `id` = '".$networkdata[id]."' LIMIT 1");
 	}
 				
 	
 	function NetworkCompress($id,$shift=0)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("nodes");
 		$this->SetTS("networks");
 		$network=$this->GetNetworkRecord($id);
@@ -405,14 +405,14 @@ class LMS {
 			if($value)
 			{
 				$address ++;
-				$db->ExecSQL("UPDATE `nodes` SET `ipaddr` = '".long2ip($address)."' WHERE `id` = '".$value."' LIMIT 1");
+				$DB->execSQL("UPDATE `nodes` SET `ipaddr` = '".long2ip($address)."' WHERE `id` = '".$value."' LIMIT 1");
 			}				
 		}
 	}
 
 	function NetworkRemap($src,$dst)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("nodes");
 		$this->SetTS("networks");
 		$network[source] = $this->GetNetworkRecord($src);
@@ -426,7 +426,7 @@ class LMS {
 			{
 				while($this->NodeExists($network[dest][nodes][id][$counter]))
 					$counter++;
-				$db->ExecSQL("UPDATE `nodes` SET `ipaddr` = '".$network[dest][nodes][address][$counter]."' WHERE `id` = '".$value."' LIMIT 1");
+				$DB->execSQL("UPDATE `nodes` SET `ipaddr` = '".$network[dest][nodes][address][$counter]."' WHERE `id` = '".$value."' LIMIT 1");
 				$counter++;
 			}
 		return $counter;
@@ -434,8 +434,8 @@ class LMS {
 
 	function GetNetworkRecord($id)
 	{
-		$db=$this->db;
-		$network = $db->FetchRow("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks` WHERE `id` = '".$id."'");
+		$DB=$this->DB;
+		$network = $DB->fetchRow("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks` WHERE `id` = '".$id."'");
 		$network[prefix] = mask2prefix($network[mask]);
 		$network[addresslong] = ip_long($network[address]);
 		$network[size] = pow(2,32-$network[prefix]);
@@ -452,7 +452,7 @@ class LMS {
 			$network[nodes][ownerid][$i] = "";
 			$network[nodes][name][$i] = "";
 		}
-		$networknodes = $db->FetchArray("SELECT `id`, `name`, `ipaddr`, `ownerid` FROM `nodes`");
+		$networknodes = $DB->fetchTable("SELECT `id`, `name`, `ipaddr`, `ownerid` FROM `nodes`");
 		if(sizeof($networknodes[id]))
 			foreach($networknodes[id] as $key => $value)
 			{
@@ -473,7 +473,7 @@ class LMS {
 
 	function GetNetwork($id)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 
 		if(
 				$_SESSION[timestamps][getnetwork][$id][networks] != $this->GetTS("networks")
@@ -481,10 +481,10 @@ class LMS {
 				$_SESSION[timestamps][getnetwork][$id][nodes] != $this->GetTS("nodes")
 		  )
 		{
-			$db->row = "";
-			$db->FetchRow("SELECT `address`, `mask`, `name` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
-			if($db->row != "")
-				foreach($db->row as $key => $value)
+			$DB->row = "";
+			$DB->fetchRow("SELECT `address`, `mask`, `name` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
+			if($DB->row != "")
+				foreach($DB->row as $key => $value)
 					$$key = $value;
 				
 			for($i=ip_long($address)+1;$i<ip_long(getbraddr($address,$mask));$i++)
@@ -498,7 +498,7 @@ class LMS {
 			
 			if(sizeof($return[address]))
 			{
-				$nodes = $db->FetchArray("SELECT `name`, `id`, `ownerid`, `ipaddr` FROM `nodes`");
+				$nodes = $DB->fetchTable("SELECT `name`, `id`, `ownerid`, `ipaddr` FROM `nodes`");
 				if(sizeof($nodes[id]))
 					foreach($nodes[id] as $key => $value)
 						if(isipin($nodes[ipaddr][$key],$address,$mask))
@@ -526,8 +526,8 @@ class LMS {
 
 	function GetUser($id)
 	{
-		$db=$this->db;
-		$return = $db->FetchRow("SELECT `id`, `lastname`, `name`, `status`, `email`, `phone1`, `phone2`, `phone3`, `address`, `tariff`, `info`, `creationdate`, `moddate`, `creatorid`, `modid` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
+		$DB=$this->DB;
+		$return = $DB->fetchRow("SELECT `id`, `lastname`, `name`, `status`, `email`, `phone1`, `phone2`, `phone3`, `address`, `tariff`, `info`, `creationdate`, `moddate`, `creatorid`, `modid` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 		$return[username] = strtoupper($return[lastname])." ".$return[name];
 		$return[createdby] = $this->GetAdminName($return[creatorid]);
 		$return[modifiedby] = $this->GetAdminName($return[modid]);
@@ -542,11 +542,11 @@ class LMS {
 	function GetUserNames()
 	{
 	
-		$db=$this->db;
+		$DB=$this->DB;
 
 		if($_SESSION[timestamps][getusernames] != $this->GetTS("users"))
 		{
-			$usernames = $db->FetchArray("SELECT `id`, `name`, `lastname` FROM `users` WHERE `status` = '3'");
+			$usernames = $DB->fetchTable("SELECT `id`, `name`, `lastname` FROM `users` WHERE `status` = '3'");
 			
 			if(sizeof($usernames[id]))
 			{
@@ -569,8 +569,8 @@ class LMS {
 
 	function GetUserNodesAC($id)
 	{
-		$db=$this->db;
-		$acl = $db->FetchArray("SELECT `access` FROM `nodes` WHERE `ownerid` = '".$id."'");
+		$DB=$this->DB;
+		$acl = $DB->fetchTable("SELECT `access` FROM `nodes` WHERE `ownerid` = '".$id."'");
 		if(sizeof($acl))
 			foreach($acl[access] as $value)
 				if(strtoupper($value) == "Y")
@@ -584,11 +584,11 @@ class LMS {
 		
 	function GetBalanceList()
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 
 		if ($_SESSION[timestamps][getbalancelist] != $this->GetTS("cash"))
 		{
-			$balancelist = $db->FetchArray("SELECT `id`, `time`, `adminid`, `type`, `value`, `userid`, `comment` FROM `cash` ORDER BY `time` ASC");
+			$balancelist = $DB->fetchTable("SELECT `id`, `time`, `adminid`, `type`, `value`, `userid`, `comment` FROM `cash` ORDER BY `time` ASC");
 			$balancelist[total] = sizeof($balancelist[id]);
 			
 			if($balancelist[total])
@@ -653,12 +653,12 @@ class LMS {
 	function GetUserList($order=NULL,$state=NULL)
 	{
 
-		$db=$this->db;
+		$DB=$this->DB;
 
 		if(!isset($state)) $state="3";
 		if(!isset($order)) $order="username,asc";
 			
-		$userlist = $db->FetchArray("SELECT id, lastname, name, status, email, phone1, address, info FROM users");
+		$userlist = $DB->fetchTable("SELECT id, lastname, name, status, email, phone1, address, info FROM users");
 			
 		if(sizeof($userlist[id]))
 			foreach($userlist[id] as $i => $v)
@@ -720,12 +720,12 @@ class LMS {
 			
 	function GetUserNodes($id)
 	{
-		$db=$this->db;
-		$db->ExecSQL("SELECT `id`, `name`, `mac`, `ipaddr`, `ownerid`, `access` FROM `nodes` WHERE `ownerid` = '".$id."' ORDER BY `name` ASC");
-		while($db->FetchRow()){
-			foreach($db->row as $key => $value)
+		$DB=$this->DB;
+		$DB->execSQL("SELECT `id`, `name`, `mac`, `ipaddr`, `ownerid`, `access` FROM `nodes` WHERE `ownerid` = '".$id."' ORDER BY `name` ASC");
+		while($DB->fetchRow()){
+			foreach($DB->row as $key => $value)
 				$return[$key][] = $value;
-			$return[iplong][] = ip_long($db->row[ipaddr]);
+			$return[iplong][] = ip_long($DB->row[ipaddr]);
 		}
 		$return[total] = sizeof($return[id]);
 		return $return;
@@ -733,7 +733,7 @@ class LMS {
 
 	function GetNodeList($order=NULL)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 
 		if(
 				$_SESSION[timestamps][getnodelist][nodes] != $this->GetTS("nodes")
@@ -743,7 +743,7 @@ class LMS {
 		{
 			$nodelist[totalon]=0;
 			$nodelist[totaloff]=0;
-			$nodelist = $db->FetchArray("SELECT `id`, `ipaddr`, `mac`, `name`, `ownerid`, `access` FROM `nodes`");
+			$nodelist = $DB->fetchTable("SELECT `id`, `ipaddr`, `mac`, `name`, `ownerid`, `access` FROM `nodes`");
 			if(sizeof($nodelist[id]))
 				foreach($nodelist[id] as $key => $value)
 				{
@@ -837,10 +837,10 @@ class LMS {
 	function DatabaseRecover($dbtime)
 	{
 		$_BACKUP_DIR = $this->_BACKUP_DIR;
-		$db=$this->db;
+		$DB=$this->DB;
 		if(file_exists($_BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
 		{
-			return $db->Source($_BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+			return $DB->source($_BACKUP_DIR.'/lms-'.$dbtime.'.sql');
 		}
 		else
 			return FALSE;
@@ -848,9 +848,9 @@ class LMS {
 
 	function DatabaseCreate()
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$_BACKUP_DIR = $this->_BACKUP_DIR;
-		return $db->Dump($_BACKUP_DIR.'/lms-'.time().'.sql');
+		return $DB->dump($_BACKUP_DIR.'/lms-'.time().'.sql');
 	}
 
 	function DatabaseDelete($dbtime)
@@ -882,30 +882,30 @@ class LMS {
 		
 	function NodeSet($id)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("nodes");
-		$db->FetchRow("SELECT `access` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
-		if($db->row[access]=="Y")
-			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'N' WHERE `id` = '".$id."' LIMIT 1");
+		$DB->fetchRow("SELECT `access` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		if($DB->row[access]=="Y")
+			return $DB->execSQL("UPDATE `nodes` SET `access` = 'N' WHERE `id` = '".$id."' LIMIT 1");
 		else
-			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'Y' WHERE `id` = '".$id."' LIMIT 1");
+			return $DB->execSQL("UPDATE `nodes` SET `access` = 'Y' WHERE `id` = '".$id."' LIMIT 1");
 	}
 
 	function NodeSetU($id,$access=FALSE)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("nodes");
 		if($access)
-			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'Y' WHERE `ownerid` = '".$id."'");
+			return $DB->execSQL("UPDATE `nodes` SET `access` = 'Y' WHERE `ownerid` = '".$id."'");
 		else
-			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'N' WHERE `ownerid` = '".$id."'");
+			return $DB->execSQL("UPDATE `nodes` SET `access` = 'N' WHERE `ownerid` = '".$id."'");
 	}
 
 	function GetOwner($id)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `ownerid` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
-		return $db->row[ownerid];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `ownerid` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		return $DB->row[ownerid];
 	}
 
 	function GetUserBalance($id)
@@ -916,11 +916,11 @@ class LMS {
 
 	function GetUserBalanceList($id)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 
 		if($_SESSION[timestamps][getuserbalancelist][$id][cash] != $this->GetTS("cash"))
 		{
-			$saldolist = $db->FetchArray("SELECT `id`, `time`, `adminid`, `type`, `value`, `userid`, `comment` FROM cash WHERE userid = '".$id."'");
+			$saldolist = $DB->fetchTable("SELECT `id`, `time`, `adminid`, `type`, `value`, `userid`, `comment` FROM cash WHERE userid = '".$id."'");
 			if(sizeof($saldolist[id]) > 0){
 				foreach($saldolist[id] as $i => $v)
 				{
@@ -978,69 +978,69 @@ class LMS {
 
 	function GetTariffs()
 	{
-		$db=$this->db;
-		return $db->FetchArray("SELECT id, name, value FROM tariffs ORDER BY value DESC  ");
+		$DB=$this->DB;
+		return $DB->fetchTable("SELECT id, name, value FROM tariffs ORDER BY value DESC  ");
 	}
 
 	function GetUserName($id)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `lastname`, `name` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
-		return strtoupper($db->row[lastname])." ".$db->row[name];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `lastname`, `name` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
+		return strtoupper($DB->row[lastname])." ".$DB->row[name];
 	}
 
 	function NodeAdd($nodedata)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("nodes");
-		$session=$this->session;
-		$db->ExecSQL("INSERT INTO `nodes` (`name`, `mac`, `ipaddr`, `ownerid`, `creatorid`, `creationdate`) VALUES ('".strtoupper($nodedata[name])."', '".strtoupper($nodedata[mac])."', '".$nodedata[ipaddr]."', '".$nodedata[ownerid]."', '".$session->id."', UNIX_TIMESTAMP())");
-		$db->FetchRow("SELECT max(id) FROM `nodes`");
-		return $db->row["max(id)"];
+		$SESSION=$this->SESSION;
+		$DB->execSQL("INSERT INTO `nodes` (`name`, `mac`, `ipaddr`, `ownerid`, `creatorid`, `creationdate`) VALUES ('".strtoupper($nodedata[name])."', '".strtoupper($nodedata[mac])."', '".$nodedata[ipaddr]."', '".$nodedata[ownerid]."', '".$SESSION->id."', UNIX_TIMESTAMP())");
+		$DB->fetchRow("SELECT max(id) FROM `nodes`");
+		return $DB->row["max(id)"];
 	}
 
 	function UserAdd($useradd)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("users");
-		$session=$this->session;
+		$SESSION=$this->SESSION;
 		if(!isset($useradd[status]))
 			$useradd[status] = 1;
-		$db->ExecSQL("INSERT INTO `users` (`name`, `lastname`, `phone1`, `phone2`, `phone3`, `address`, `email`, `status`, `tariff`, `creationdate`, `moddate`, `creatorid`, `modid` ) VALUES ('".ucwords($useradd[name])."', '".strtoupper($useradd[lastname])."', '".$useradd[phone1]."', '".$useradd[phone2]."', '".$useradd[phone3]."', '".$useradd[address]."', '".$useradd[email]."', '".$useradd[status]."', '".$useradd[tariff]."', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '".$session->id."', '".$session->id."')");
-		$db->FetchRow("SELECT max(id) FROM `users`");
-		return $db->row["max(id)"];
+		$DB->execSQL("INSERT INTO `users` (`name`, `lastname`, `phone1`, `phone2`, `phone3`, `address`, `email`, `status`, `tariff`, `creationdate`, `moddate`, `creatorid`, `modid` ) VALUES ('".ucwords($useradd[name])."', '".strtoupper($useradd[lastname])."', '".$useradd[phone1]."', '".$useradd[phone2]."', '".$useradd[phone3]."', '".$useradd[address]."', '".$useradd[email]."', '".$useradd[status]."', '".$useradd[tariff]."', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '".$SESSION->id."', '".$SESSION->id."')");
+		$DB->fetchRow("SELECT max(id) FROM `users`");
+		return $DB->row["max(id)"];
 	}
 
 	function GetUserEmail($id)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `email` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
-		return $db->row[email];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `email` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
+		return $DB->row[email];
 	}
 
 	function UserExists($id)
 	{
-		$db=$this->db;
-		return $db->CountRows("SELECT * FROM `users` WHERE `id` = '".$id."' LIMIT 1");
+		$DB=$this->DB;
+		return $DB->countRows("SELECT * FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 	}
 
 	function NetworkExists($id)
 	{
-		$db=$this->db;
-		return $db->CountRows("SELECT * FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
+		$DB=$this->DB;
+		return $DB->countRows("SELECT * FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
 	}	
 
 	function TariffExists($id)
 	{
-		$db=$this->db;
-		return $db->CountRows("SELECT * FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
+		$DB=$this->DB;
+		return $DB->countRows("SELECT * FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
 	}
 
 
 	function IsIPFree($ip)
 	{
-		$db=$this->db;
-		if($db->CountRows("SELECT * FROM `nodes` WHERE `ipaddr` = '".$ip."' LIMIT 1"))
+		$DB=$this->DB;
+		if($DB->countRows("SELECT * FROM `nodes` WHERE `ipaddr` = '".$ip."' LIMIT 1"))
 			return FALSE;
 		else
 			return TRUE;
@@ -1048,25 +1048,25 @@ class LMS {
 
 	function NodeExists($id)
 	{
-		$db=$this->db;
-		return $db->CountRows("SELECT * FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		$DB=$this->DB;
+		return $DB->countRows("SELECT * FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
 	}
 
 	function AddBalance($addbalance)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("cash");
-		$session=$this->session;
-		return $db->ExecSQL("INSERT INTO `cash`	(time, adminid, type, value, userid, comment) VALUES (UNIX_TIMESTAMP(),'".$session->id."','".$addbalance[type]."','".$addbalance[value]."','".$addbalance[userid]."','".$addbalance[comment]."' )");
+		$SESSION=$this->SESSION;
+		return $DB->execSQL("INSERT INTO `cash`	(time, adminid, type, value, userid, comment) VALUES (UNIX_TIMESTAMP(),'".$SESSION->id."','".$addbalance[type]."','".$addbalance[value]."','".$addbalance[userid]."','".$addbalance[comment]."' )");
 	}
 
 	function GetEmails($group)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		if($group == 0)
-			$emails = $db->FetchArray("SELECT `id`, `email` FROM `users`");
+			$emails = $DB->fetchTable("SELECT `id`, `email` FROM `users`");
 		else
-			$emails = $db->FetchArray("SELECT `id`, `email` FROM `users` WHERE `status` = '".$group."'");
+			$emails = $DB->fetchTable("SELECT `id`, `email` FROM `users` WHERE `status` = '".$group."'");
 		$emails[total]=sizeof($emails[id]);
 		if($emails[total])
 			foreach($emails[id] as $key => $value)
@@ -1077,8 +1077,8 @@ class LMS {
 
 	function Mailing($mailing)
 	{
-		$db=$this->db;
-		$session=$this->session;
+		$DB=$this->DB;
+		$SESSION=$this->SESSION;
 		$emails = $this->GetEmails($mailing[group]);
 		
 		if(sizeof($emails[id]))
@@ -1117,27 +1117,27 @@ class LMS {
 
 	function NetworkAdd($netadd)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 
 		if($netadd[prefix] != "")
 			$netadd[mask] = prefix2mask($netadd[prefix]);
 		$this->SetTS("networks");
-		$db->ExecSQL("INSERT INTO `networks` (`name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend`) VALUES ( '".strtoupper($netadd[name])."','".$netadd[address]."','".$netadd[mask]."','".$netadd[gateway]."', '".$netadd[dns]."', '".$netadd[domain]."', '".$netadd[wins]."', '".$netadd[dhcpstart]."', '".$netadd[dhcpend]."' )");
-		$db->FetchRow("SELECT id FROM `networks` WHERE `address` = '".$netadd[address]."'");
-		return $db->row[id];
+		$DB->execSQL("INSERT INTO `networks` (`name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend`) VALUES ( '".strtoupper($netadd[name])."','".$netadd[address]."','".$netadd[mask]."','".$netadd[gateway]."', '".$netadd[dns]."', '".$netadd[domain]."', '".$netadd[wins]."', '".$netadd[dhcpstart]."', '".$netadd[dhcpend]."' )");
+		$DB->fetchRow("SELECT id FROM `networks` WHERE `address` = '".$netadd[address]."'");
+		return $DB->row[id];
 	}
 
 	function NetworkDelete($id)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		$this->SetTS("networks");
-		return $db->ExecSQL("DELETE FROM `networks` WHERE `id` = '".$id."'");
+		return $DB->execSQL("DELETE FROM `networks` WHERE `id` = '".$id."'");
 	}
 
 	function GetAdminList()
 	{
-		$db=$this->db;
-		$admins=$db->FetchArray("SELECT `id`, `login`, `name`, `lastlogindate`, `lastloginip` FROM `admins` ORDER BY `login` ASC");
+		$DB=$this->DB;
+		$admins=$DB->fetchTable("SELECT `id`, `login`, `name`, `lastlogindate`, `lastloginip` FROM `admins` ORDER BY `login` ASC");
 		$admins[total] = sizeof($admins[id]);
 		if($admins[total])
 			foreach($admins[id] as $key => $value)
@@ -1160,61 +1160,61 @@ class LMS {
 
 	function GetAdminIDByLogin($login)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `id` FROM `admins` WHERE `login` = '".$login."' LIMIT 1");
-			return $db->row[id];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `id` FROM `admins` WHERE `login` = '".$login."' LIMIT 1");
+			return $DB->row[id];
 	}
 
 	function AdminAdd($adminadd)
 	{
-		$db=$this->db;
-		$db->ExecSQL("INSERT INTO `admins` (`login`, `name`, `passwd`) VALUES ('".$adminadd[login]."', '".$adminadd[name]."', '".crypt($adminadd[password])."')");
-		$db->FetchRow("SELECT max(id) FROM `admins`");
-		return $db->row["max(id)"];
+		$DB=$this->DB;
+		$DB->execSQL("INSERT INTO `admins` (`login`, `name`, `passwd`) VALUES ('".$adminadd[login]."', '".$adminadd[name]."', '".crypt($adminadd[password])."')");
+		$DB->fetchRow("SELECT max(id) FROM `admins`");
+		return $DB->row["max(id)"];
 	}
 
 	function AdminDelete($id)
 	{
-		$db=$this->db;
-		return $db->ExecSQL("DELETE FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
+		$DB=$this->DB;
+		return $DB->execSQL("DELETE FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
 	}
 	
 	function AdminExists($id)
 	{
-		$db=$this->db;
-		return $db->CountRows("SELECT * FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
+		$DB=$this->DB;
+		return $DB->countRows("SELECT * FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
 	}
 
 	function GetNodeOwner($id)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `ownerid` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
-		return $db->row[ownerid];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `ownerid` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		return $DB->row[ownerid];
 	}
 
 	function NodeUpdate($nodedata)
 	{
-		$db=$this->db;
-		$session=$this->session;
+		$DB=$this->DB;
+		$SESSION=$this->SESSION;
 		$this->SetTS("nodes");
-		return $db->ExecSQL("UPDATE `nodes` SET `name` = '".strtoupper($nodedata[name])."',
+		return $DB->execSQL("UPDATE `nodes` SET `name` = '".strtoupper($nodedata[name])."',
 		`ipaddr` = '".$nodedata[ipaddr]."',
 		`mac` = '".$nodedata[mac]."',
 		`moddate` = UNIX_TIMESTAMP(),
-		`modid` = '".$session->id."'
+		`modid` = '".$SESSION->id."'
 		WHERE `id` = '".$nodedata[id]."' LIMIT 1");
 	}
 
 	function GetUsersWithTariff($id)
 	{
-		$db=$this->db;
-		return $db->CountRows("SELECT * FROM `users` WHERE `tariff` = '".$id."' AND `status` = '3'");
+		$DB=$this->DB;
+		return $DB->countRows("SELECT * FROM `users` WHERE `tariff` = '".$id."' AND `status` = '3'");
 	}
 	
 	function GetTariffList()
 	{
-		$db=$this->db;
-		$tarifflist = $db->FetchArray("SELECT `id`, `name`, `value`, `description` FROM `tariffs` ORDER BY `value` DESC");
+		$DB=$this->DB;
+		$tarifflist = $DB->fetchTable("SELECT `id`, `name`, `value`, `description` FROM `tariffs` ORDER BY `value` DESC");
 		$tarifflist[total] = sizeof($tarifflist[id]);
 		if($tarifflist[total])
 			foreach($tarifflist[id] as $key => $value)
@@ -1230,8 +1230,8 @@ class LMS {
 
 	function GetAdminInfo($id)
 	{
-		$db=$this->db;
-		$admins = $db->FetchRow("SELECT `id`, `login`, `name`, `email`, `lastlogindate`, `lastloginip`, `failedlogindate`, `failedloginip` FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
+		$DB=$this->DB;
+		$admins = $DB->fetchRow("SELECT `id`, `login`, `name`, `email`, `lastlogindate`, `lastloginip`, `failedlogindate`, `failedloginip` FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
 		if($admins[id])
 		{
 			if($admins[lastlogindate])
@@ -1266,30 +1266,30 @@ class LMS {
 
 	function AdminUpdate($admininfo)
 	{
-		$db=$this->db;
-		return $db->ExecSQL("UPDATE `admins` SET `login` = '".$admininfo[login]."', `name` = '".$admininfo[name]."', `email` = '".$admininfo[email]."' WHERE `id` = '".$admininfo[id]."' LIMIT 1");
+		$DB=$this->DB;
+		return $DB->execSQL("UPDATE `admins` SET `login` = '".$admininfo[login]."', `name` = '".$admininfo[name]."', `email` = '".$admininfo[email]."' WHERE `id` = '".$admininfo[id]."' LIMIT 1");
 	}
 
 	function GetTariffIDByName($name)
 	{
-		$db=$this->db;
-		$db->FetchRow("SELECT `id` FROM `tariffs` WHERE `name` = '".$name."' LIMIT 1");
-		return $db->row[id]; 
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT `id` FROM `tariffs` WHERE `name` = '".$name."' LIMIT 1");
+		return $DB->row[id]; 
 	}
 
 	function TariffAdd($tariffdata)
 	{
-		$db=$this->db;
-		$db->ExecSQL("INSERT INTO `tariffs` (`name`, `description`, `value`) VALUES ('".$tariffdata[name]."', '".$tariffdata[description]."', '".$tariffdata[value]."')");
-		$db->FetchRow("SELECT max(id) AS id FROM `tariffs`");
-		return $db->row[id];
+		$DB=$this->DB;
+		$DB->execSQL("INSERT INTO `tariffs` (`name`, `description`, `value`) VALUES ('".$tariffdata[name]."', '".$tariffdata[description]."', '".$tariffdata[value]."')");
+		$DB->fetchRow("SELECT max(id) AS id FROM `tariffs`");
+		return $DB->row[id];
 	}
 	
 	function TariffDelete($id)
 	{
-		$db=$this->db;
+		$DB=$this->DB;
 		if(!$this->GetUsersWithTariff($id))
-			return $db->ExecSQL("DELETE FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
+			return $DB->execSQL("DELETE FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
 		else
 			return FALSE;
 	}
