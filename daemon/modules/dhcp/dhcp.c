@@ -69,7 +69,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 		}
 		fprintf(fh, "%s\n", dhcp->prefix);
 		
-		if( (res = g->db_query("SELECT address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks"))!=NULL ) {
+		if( (res = g->db_query("SELECT inet_ntoa(address) AS address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks"))!=NULL ) {
 
 			for(i=0; i<res->nrows; i++) {
 			

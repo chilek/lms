@@ -123,7 +123,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 		g->db_free(res);
 	}
 	
-	if ( (res = g->db_query("SELECT address, mask, domain, dns FROM networks"))!=NULL) {
+	if ( (res = g->db_query("SELECT inet_ntoa(address) AS address, mask, domain, dns FROM networks"))!=NULL) {
 
 		configfile = load_file(dns->confpattern);
 	
