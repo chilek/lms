@@ -6,6 +6,9 @@ wersja 1.1.1 (??/??/2003):
   - dodane %TID (id taryfy) i %TVAL (warto¶æ taryfy) do lms-mgc (lukasz)
   - poprawione problemy ze zmian± kolejno¶ci sortowania na li¶cie osób
     od³±czonych b±d¼ zad³u¿onych (lukasz)
+  - naprawiony bug z oper± (zamiana exit(0) na die) (lukasz)
+  - cleanup kodu (wywalenie g³ównie ¶mieci i trochê poprawnego kodowania...)
+    (lukasz)
 
 wersja 1.1.0 (23/06/2003):
 
