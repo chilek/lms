@@ -150,7 +150,7 @@ HREF="#MENU-NETDEVICES"
 ></DT
 ><DT
 >3.5. <A
-HREF="#USER-NETWORKS"
+HREF="#MENU-NETWORKS"
 >Sieci IP</A
 ></DT
 ><DT
@@ -2891,7 +2891,7 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
-NAME="USER-NETWORKS"
+NAME="MENU-NETWORKS"
 >3.5. Sieci IP</A
 ></H2
 ><P
@@ -3944,7 +3944,7 @@ ALIGN="CENTER"><THEAD
 ><TD
 >lms-traffic-logiptables</TD
 ><TD
->Wspó³praca lms-traffic z iptables</TD
+>Statystyki ³±cza dla iptables</TD
 ></TR
 ><TR
 ><TD
@@ -4511,8 +4511,8 @@ NAME="LMS-TRAFFIC-LOGIPTABLES"
 >Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
 	przez ka¿dy komputer z sieci lokalnej, na podstawie liczników iptables. Dane 
 	sczytuje z firewalla, tworz±c jednocze¶nie odpowiednie regu³y. Zatem, nie jest 
-	konieczne rêczne tworzenie regu³ iptables. Dane zapisywane s± do pliku o 
-	formacie wymaganym przez <TT
+	konieczne rêczne tworzenie regu³ iptables, ani wywo³ywanie skryptu  
+	<TT
 CLASS="FILENAME"
 >lms-traffic</TT
 >.
@@ -4526,17 +4526,6 @@ CLASS="EMPHASIS"
 ></SPAN
 >:
 	    <UL
-><LI
-><P
->logfile</P
-><P
->Lokalizacja pliku na dane. Domy¶lnie: niezdefiniowana.</P
-><P
->Przyk³ad:	<SAMP
-CLASS="PROMPT"
->logfile = /var/log/traffic.log</SAMP
-></P
-></LI
 ><LI
 ><P
 >outfile</P
@@ -6648,6 +6637,12 @@ ALIGN="CENTER"><THEAD
 ><TBODY
 ><TR
 ><TD
+>system</TD
+><TD
+>Wywo³ywanie poleceñ pow³oki</TD
+></TR
+><TR
+><TD
 >dhcp</TD
 ><TD
 >Konfiguracja serwera dhcpd</TD
@@ -6721,8 +6716,59 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="DAEMON-SYSTEM"
+>6.2.2. System</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="SYSTEM-DESC"
+>6.2.2.1. Opis</A
+></H4
+><P
+>Jedyne co robi ten modu³ to wykonanie zadanego polecenia (listy poleceñ)
+		    pow³oki. Mo¿e siê przydaæ gdy chcesz podczas prze³adowania konfiguracji 
+		    wykonaæ jak±¶ komendê lub uruchomiæ zewnêtrzny skrypt, na przyk³ad jeden 
+		    z tych, które mo¿esz znale¼æ w katalogu <TT
+CLASS="FILENAME"
+>/bin</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="SYSTEM-CONFIG"
+>6.2.2.2. Konfiguracja</A
+></H4
+><P
+>W zwi±zku z powy¿szym mo¿esz zdefiniowaæ jedynie tre¶æ polecenia.
+		    Pow³oka powinna sobie tak¿e poradziæ z list± poleceñ oddzielonych ¶rednikami:</P
+><UL
+><LI
+><P
+>command</P
+><P
+>Polecenie pow³oki. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = 'echo "tu modu³ system"'</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="DAEMON-PAYMENTS"
->6.2.2. Payments</A
+>6.2.3. Payments</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -6730,7 +6776,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="PAYMENTS-DESC"
->6.2.2.1. Opis</A
+>6.2.3.1. Opis</A
 ></H4
 ><P
 >Modu³ nalicza op³aty abonamentowe u¿ytkowników oraz op³aty sta³e. Nale¿y go uruchamiaæ 
@@ -6746,7 +6792,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="PAYMENTS-CONFIG"
->6.2.2.2. Konfiguracja</A
+>6.2.3.2. Konfiguracja</A
 ></H4
 ><P
 >Dla tego modu³u s± dostêpne nastêpuj±ce zmienne kofiguracyjne:</P
@@ -6820,7 +6866,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-NOTIFY"
->6.2.3. Notify</A
+>6.2.4. Notify</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -6828,7 +6874,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="NOTIFY-DESC"
->6.2.3.1. Opis</A
+>6.2.4.1. Opis</A
 ></H4
 ><P
 >Modu³ 'notify' s³u¿y do informowania u¿ytkowników o zaleg³o¶ciach
@@ -6862,20 +6908,20 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="NOTIFY-CONFIG"
->6.2.3.2. Konfiguracja</A
+>6.2.4.2. Konfiguracja</A
 ></H4
 ><P
 >Poni¿ej przedstawiono dostêpne opcje konfiguracyjne modu³u 'notify':</P
 ><UL
 ><LI
 ><P
->mailtemplate</P
+>template</P
 ><P
 >Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->mailtemplate = modules/notify/sample/mailtemplate</SAMP
+>template = modules/notify/sample/mailtemplate</SAMP
 ></P
 ></LI
 ><LI
@@ -6934,7 +6980,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-GGNOTIFY"
->6.2.4. Ggnotify</A
+>6.2.5. Ggnotify</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -6942,7 +6988,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="GGNOTIFY-DESC"
->6.2.4.1. Opis</A
+>6.2.5.1. Opis</A
 ></H4
 ><P
 >Odpowiednik modu³u 'notify' s³u¿±cy do wysy³ania wiadomo¶ci gadu-gadu.
@@ -6970,20 +7016,20 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="GGNOTIFY-CONFIG"
->6.2.4.2. Konfiguracja</A
+>6.2.5.2. Konfiguracja</A
 ></H4
 ><P
 >Podobnie jak w 'notify' masz do dyspozycji nastêpuj±ce zmienne:</P
 ><UL
 ><LI
 ><P
->ggtemplate</P
+>template</P
 ><P
 >Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->ggtemplate = modules/ggnotify/sample/mailtemplate</SAMP
+>template = modules/ggnotify/sample/mailtemplate</SAMP
 ></P
 ></LI
 ><LI
@@ -7042,7 +7088,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-CUTOFF"
->6.2.5. Cutoff</A
+>6.2.6. Cutoff</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -7050,7 +7096,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="CUTOFF-DESC"
->6.2.5.1. Opis</A
+>6.2.6.1. Opis</A
 ></H4
 ><P
 >Cutoff zmienia na 'od³±czony' status komputerów u¿ytkownikom, którzy
@@ -7065,7 +7111,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="CUTOFF-CONFIG"
->6.2.5.2. Konfiguracja</A
+>6.2.6.2. Konfiguracja</A
 ></H4
 ><P
 >Modu³ 'cutoff' posiada tylko jeden parametr:</P
@@ -7091,7 +7137,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-DHCP"
->6.2.6. Dhcp</A
+>6.2.7. Dhcp</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -7099,7 +7145,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="DHCP-DESC"
->6.2.6.1. Opis</A
+>6.2.7.1. Opis</A
 ></H4
 ><P
 >Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
@@ -7112,7 +7158,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="DHCP-CONFIG"
->6.2.6.2. Konfiguracja</A
+>6.2.7.2. Konfiguracja</A
 ></H4
 ><P
 >Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom 
@@ -7263,7 +7309,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-HOSTFILE"
->6.2.7. Hostfile</A
+>6.2.8. Hostfile</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -7271,7 +7317,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="HOSTFILE-DESC"
->6.2.7.1. Opis</A
+>6.2.8.1. Opis</A
 ></H4
 ><P
 >Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
@@ -7287,7 +7333,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="HOSTFILE-CONFIG"
->6.2.7.2. Konfiguracja</A
+>6.2.8.2. Konfiguracja</A
 ></H4
 ><P
 >W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
@@ -7405,7 +7451,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-TRAFFIC"
->6.2.8. Traffic</A
+>6.2.9. Traffic</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -7413,7 +7459,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="TRAFFIC-DESC"
->6.2.8.1. Opis</A
+>6.2.9.1. Opis</A
 ></H4
 ><P
 >'Traffic' to odpowiednik perlowego lms-traffic, zapisuj±cy do bazy statystyki
@@ -7427,7 +7473,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="TRAFFIC-CONFIG"
->6.2.8.2. Konfiguracja</A
+>6.2.9.2. Konfiguracja</A
 ></H4
 ><P
 >Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:</P
@@ -7452,7 +7498,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-TC"
->6.2.9. Tc (HTB)</A
+>6.2.10. Tc (HTB)</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -7460,7 +7506,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="TC-DESC"
->6.2.9.1. Opis</A
+>6.2.10.1. Opis</A
 ></H4
 ><P
 >Do pliku okre¶lonego opcj± 'file' zapisywane s± dane dotycz±ce uploadu
@@ -7484,7 +7530,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="TC-CONFIG"
->6.2.9.2. Konfiguracja</A
+>6.2.10.2. Konfiguracja</A
 ></H4
 ><P
 >Ten modu³ zawiera standardowe parametry:</P
@@ -7520,7 +7566,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-DNS"
->6.2.10. Dns</A
+>6.2.11. Dns</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -7528,7 +7574,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="DNS-DESC"
->6.2.10.1. Opis</A
+>6.2.11.1. Opis</A
 ></H4
 ><P
 >Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej skomplikowanych.
@@ -7545,7 +7591,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="DNS-CONFIG"
->6.2.10.2. Konfiguracja</A
+>6.2.11.2. Konfiguracja</A
 ></H4
 ><P
 ></P
@@ -7714,7 +7760,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-ETHERS"
->6.2.11. Ethers</A
+>6.2.12. Ethers</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -7722,7 +7768,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="ETHERS-DESC"
->6.2.11.1. Opis</A
+>6.2.12.1. Opis</A
 ></H4
 ><P
 >Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Ustawiaj±c opcjê
@@ -7735,7 +7781,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="ETHERS-CONFIG"
->6.2.11.2. Konfiguracja</A
+>6.2.12.2. Konfiguracja</A
 ></H4
 ><P
 >Tutaj s± tylko standardowe opcje:</P
@@ -7783,7 +7829,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-OIDENT"
->6.2.12. Oident</A
+>6.2.13. Oident</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -7791,7 +7837,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="OIDENT-DESC"
->6.2.12.1. Opis</A
+>6.2.13.1. Opis</A
 ></H4
 ><P
 >Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
@@ -7803,7 +7849,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="OIDENT-CONFIG"
->6.2.12.2. Konfiguracja</A
+>6.2.13.2. Konfiguracja</A
 ></H4
 ><P
 >A oto parametry modu³u 'oident'</P
@@ -8117,7 +8163,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->status - pod³±czony/od³±czony</TD
+>status - status u¿ytkownika (3-pod³±czony, 2-oczekuj±cy, 1-zainteresowany)</TD
 ></TR
 ><TR
 ><TD
