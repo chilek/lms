@@ -38,7 +38,7 @@ if($_GET['is_sure'])
 	header('Location: ?m='.$_SESSION['lastmodule'].'&id='.$_GET['id']);
 	die;
 }else{
-	$layout['pagetitle'] = trans('Readdressing network $0', strtoupper($network['name']));
+	$layout['pagetitle'] = trans('Readdressing Network $0', strtoupper($network['name']));
 	$SMARTY->display('header.html');
 	echo '<H1>'.trans('Readdressing network $0', strtoupper($network['name'])).'</H1>';
 	echo '<P>'.trans('Are you sure, you want to reorder that network?').'</P>';

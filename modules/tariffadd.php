@@ -54,22 +54,22 @@ if(isset($tariffadd))
 	if($tariffadd['plimit']=='') $tariffadd['plimit'] = 0;
 
 	if(!ereg('^[0-9]+$', $tariffadd['uprate']))
-		$error['uprate'] = trans('Integer value expected');
+		$error['uprate'] = trans('Integer value expected!');
 	if(!ereg('^[0-9]+$', $tariffadd['downrate']))
-		$error['downrate'] = trans('Integer value expected');
+		$error['downrate'] = trans('Integer value expected!');
 	if(!ereg('^[0-9]+$', $tariffadd['upceil']))
-		$error['upceil'] = trans('Integer value expected');
+		$error['upceil'] = trans('Integer value expected!');
 	if(!ereg('^[0-9]+$', $tariffadd['downceil']))
-		$error['downceil'] = trans('Integer value expected');
+		$error['downceil'] = trans('Integer value expected!');
 	if(!ereg('^[0-9]+$', $tariffadd['climit']))
-		$error['climit'] = trans('Integer value expected');
+		$error['climit'] = trans('Integer value expected!');
 	if(!ereg('^[0-9]+$', $tariffadd['plimit']))
-		$error['plimit'] = trans('Integer value expected');
+		$error['plimit'] = trans('Integer value expected!');
 
 	if(($tariffadd['uprate'] < 8 || $tariffadd['uprate'] > 4096) && $tariffadd['uprate'] != 0)
 		$error['uprate'] = trans('This field must be within range 8 - 4096');
 	if(($tariffadd['downrate'] < 8 || $tariffadd['downrate'] > 4096) && $tariffadd['downrate'] != 0)
-		$error['downrate'] = trans('This field must be within range  8 - 4096');
+		$error['downrate'] = trans('This field must be within range 8 - 4096');
 	if(($tariffadd['upceil'] < 8 || $tariffadd['upceil'] < $tariffadd['uprate']) && $tariffadd['upceil'] != 0)
 		$error['upceil'] = trans('This field must contain number greater than 8 and greater than upload rate');
 	if(($tariffadd['downceil'] < 8 || $tariffadd['downceil'] < $tariffadd['downrate']) && $tariffadd['downceil'] != 0)

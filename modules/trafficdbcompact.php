@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Network Statistics Compation');
+$layout['pagetitle'] = trans('Network Statistics Compacting');
 
 $delete = $_POST['delete'];
 $level = $_POST['level'];

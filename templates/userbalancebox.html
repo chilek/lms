@@ -42,7 +42,7 @@
 			<B><A name="balance">{t}Customer Account:{/t}</A></B> 
 			{if $limit}
 				{math equation="x * -1" x=$limit assign=n}
-				{t 0=$n}(last $0 transactions){/t}
+				({t 0=$n}last $0 transactions{/t})
 			{/if}
 		</TD>
 		<TD class="frightu" align="right">

@@ -128,7 +128,7 @@ if($_GET['action'] == 'add' && isset($a))
 			if(!$error)
 			{
 				if($d>30 || $d<1 || ($d>28 && $m==2))
-					$error['at'] = trans('This month doesnt contain specified number of days');
+					$error['at'] = trans('This month doesn\'t contain specified number of days');
 				if($m>12 || $m<1)
 					$error['at'] = trans('Incorrect month number');
 			

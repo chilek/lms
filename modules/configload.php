@@ -31,7 +31,7 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
     switch($key)
     {
      case 'allow_from':
-         $desc = trans('Lis of networks and IP addresses, which have access to LMS. If empty, every IP address has access to LMS. When you write here list of addresses or address classes, LMS dismiss every unwanted user with HTTP 403 error.');
+         $desc = trans('List of networks and IP addresses, which have access to LMS. If empty, every IP address has access to LMS. When you write here list of addresses or address classes, LMS dismiss every unwanted user with HTTP 403 error.');
          break;
      case 'lang':
          $desc = trans('User interface language symbol. When is not set, language will be based on html browser settings. Default: en.');

@@ -92,7 +92,7 @@ if(isset($networkdata))
 		$error['name'] = trans('Network name contains forbidden characters!');
 
 	if($networkdata['domain']!='' && !eregi('^[.a-z0-9-]+$',$networkdata['domain']))
-		$error['domain'] = trans('Specified doamin contains forbidden characters!');
+		$error['domain'] = trans('Specified domain contains forbidden characters!');
 
 	if($networkdata['dns']!='' && !check_ip($networkdata['dns']))
 		$error['dns'] = trans('Incorrect DNS server IP address!');

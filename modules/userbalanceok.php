@@ -29,7 +29,7 @@ $SMARTY->assign('userid',$_GET['id']);
 
 if (!$LMS->UserExists($_GET['id']))
 {
-	$body = '<H1>'.$layout['pagetitle'].'</H1><P>'.trans('Incorrect customer ID').'</P>';
+	$body = '<H1>'.$layout['pagetitle'].'</H1><P>'.trans('Incorrect Customer ID.').'</P>';
 }
 else
 {
