@@ -1,0 +1,739 @@
+<!-- $Id$ -->
+<chapter id="user">
+ <title>Interfejs U¿ytkownika (LMS-UI)</title>
+ <para>LMS'owy Interfejs U¿ytkownika to panel administracyjny do tworzenia
+  i zarz±dzania baz± u¿ytkowników i komputerów dostêpny za pomoc± przegl±darki
+  internetowej. Umo¿liwia wprowadzanie danych komputerów,
+  przypisanie ich do u¿ytkowników i sieci. Definiowanie op³at i zarz±dzanie finansami sieci,
+  Szybkie wyszukiwanie danych o u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji
+  seryjnej do u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich hase³.
+  Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania ³±cza, a tak¿e
+  tworzenia kopii bazy danych oraz zarz±dzania konfiguracj± us³ug na serwerze. 
+  <emphasis>LMS-UI</emphasis> posiada tak¿e wiele innych mo¿liwo¶ci, które w tym
+  rozdziale zostan± opisane.</para>
+  <sect1 id="user-login">
+	<title>Logowanie</title>
+	<para>Po wpisaniu w przegl±darce adresu do strony z lms'em, powita ciê
+	ekran logowania. Musisz podaæ w³a¶ciwy login oraz has³o. Has³a w bazie
+	danych przechowywane s± w formie zaszyfrowanej.</para>
+	<para>Je¿eli jest to twoje pierwsze logowanie i nie masz jeszcze
+	za³o¿onego konta, zostaniesz przekierowany do modu³u tworzenia kont
+	administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
+	jednego modu³u.</para>
+  </sect1>
+  <sect1 id="menu-administration">
+	<title>Administracja</title>
+	<para>Po zalogowaniu do LMS'a znajdziesz siê w module (menu) administracji
+	systemem LMS. Tutaj znajdziesz niezbêdne informacje o systemie. Bêdziesz
+	móg³ zarz±dzaæ administratorami i tworzyæ/odtwarzaæ kopie bazy danych.</para>
+	<para>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
+	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze.
+	W polach szybkiego wyszukiwania, oprócz id u¿ytkownika lub komputera, mo¿esz 
+	podawaæ nazwisko, nazwê, fragment adresu, telefon, email, adres IP lub MAC. 
+	W przypadku gdy w bazie znajduje siê wiêcej u¿ytkowników pasuj±cych do szukanych
+	danych zostan± wy¶wietlone informacje tylko o jednym u¿ytkowniku lub komputerze.</para>
+	<sect2 id="administration-info">
+	    <title>Info</title>
+	    <para>To panel na którym znajduj± siê podstawowe informacje na temat naszego 
+	    systemu: wersja LMS i jego sk³adników, informacje o prawach autorskich, 
+	    wersja j±dra i uptime serwera, dane statystyczne o u¿ytkownikach i komputerach,
+	    bie¿±ce informacje o aktywno¶ci komputerów i stanie finansów sieci. 
+	    Ponadto znajdziesz tu przydatne lms'owe linki.</para>
+	</sect2>
+	<sect2 id="administration-admins">
+	    <title>Administratorzy</title>
+	    <para>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, czyli osób
+	    korzystaj±cych z LMS'a, zak³adania i przegl±dania ich kont, zmiany hase³ i definiowania 
+	    praw dostêpu.</para>
+	    <para> Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale <xref linkend="install-rights">.</para> 
+	    <para>Po wybraniu menu 'Administratorzy' zobaczysz listê wszystkich administratorów
+	    z informacj± o ostatnim logowaniu. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie 
+	    informacji szczegó³owych o danym koncie, w tym o zdefiniowanych prawach dostêpu. 
+	    W ka¿dej chwili mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'. 
+	    Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu 'Nowy administrator'.</para>
+	</sect2>
+	<sect2 id="administration-newadmin">
+	<title>Nowy administrator</title>
+	    <para>Aby dodaæ nowe konto administratora nale¿y podaæ login oraz has³o, 
+	    które nie mo¿e byæ puste. Podanie imienia, nazwiska i adresu poczty elektronicznej
+	    nie jest wymagane. Poni¿ej mo¿na zaznaczyæ uprawnienia dostêpu do
+	    systemu. Je¿eli wszystkie pola pozostawisz puste, administratorowi 
+	    przypisany zostanie 'Pe³en dostêp'.</para>
+	</sect2>
+	<sect2 id="administration-db">
+	    <title>Kopie zapasowe</title>
+	    <para>Z panelu 'Kopie zapasowe' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy LMSa.
+	    Kopia bazy to plik tekstowy zawieraj±cy zapytania SQL i dane z wszystkich tabel w bazie, zapisywany w
+	    katalogu zdefiniowanym w sekcji <emphasis>[directories]</emphasis> <filename>lms.ini</filename>
+	    zmienn± <prompt>backup_dir</prompt>.</para>
+	    <para><note><para>Domy¶lnie kopie zapisywane s± w katalogu <filename>lms/backups</filename>
+	    dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</para></note></para>
+	    <para>Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
+	    Klikniêcie na ikonkê Odtwórz spowoduje wyczyszczenie bie¿±cej bazy danych i za³adowanie
+	    do niej danych z wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
+	    aktualnej bazy danych.</para>
+	</sect2>
+	<sect2 id="administration-uiconfig">
+	    <title>Konfiguracja</title>
+	    <para>Pocz±wszy od wersji 1.5.3 mo¿liwa jest konfiguracja interfejsu
+	    u¿ytkownika tak¿e poprzez <emphasis>LMS-UI</emphasis>. Opcje przechowywane 
+	    s± w bazie danych i nale¿y je przenie¶æ z pliku <filename>lms.ini</filename>.
+	    Do tego celu s³u¿y modu³ <filename>upgrade02</filename>, który jest
+	    automatycznie wykonywany po klikniêciu linku znajduj±cego siê na pustej
+	    li¶cie opcji konfiguracyjnych.</para>
+	    <para><note><para>Opcje konfigurowane w <emphasis>LMS-UI</emphasis> maj±
+	    wiêkszy priorytet od tych zapisanych w <filename>lms.ini</filename>, co
+	    oznacza, ¿e plik konfiguracyjny jest tak¿e odczytywany, ale warto¶ci 
+	    zmiennych z tego pliku nadpisywane s± warto¶ciami zapisanymi
+	    w bazie danych.</para></note></para>
+	    <para>Aby dodaæ now± opcjê kliknij link 'Dodaj opcjê' na dole listy.
+	    Aby wyedytowaæ parametry opcji kliknij na jej rekord. Zostaniesz przeniesiony 
+	    do formularza edycyjnego, gdzie mo¿esz równie¿ usun±æ opcjê. Zmiana statusu
+	    opcji onacza w³±czenie/wy³±czenie jej dzia³ania, co polega na przypisaniu
+	    jej warto¶ci domy¶lnej (je¿eli tak± posiada).</para>
+	</sect2>
+ </sect1>
+ <sect1 id="menu-users">
+	<title>U¿ytkownicy</title>
+	<para>Tutaj zarz±dzasz danymi u¿ytkowników twojej sieci i ich finansami, ale tak¿e 
+	ich komputerami. Mo¿esz na przyk³ad jednym klikniêciem od³±czyæ wszystkie 
+	komputery u¿ytkownika.
+	<note><para>Do automatycznego od³±czania komputerów u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
+	s³u¿y skrypt lms-cutoff.</para></note></para>
+	<sect2 id="menu-users-list">
+	    <title>Lista</title>
+	    <para>Po wej¶ciu do panelu 'U¿ytkownicy' uka¿e siê lista u¿ytkowników,
+	    któr± mo¿esz filtrowaæ wed³ug wybranych kryteriów (statusu, grupy lub sieci)
+	    lub sortowaæ klikaj±c na nazwie kolumny. Na li¶cie ikona ¿arówki informuje
+	    o statusie pod³±czenia komputerów u¿ytkownika, a ikona znaku drogowego
+	    o statusie ostrze¿eñ. Klikniêcie na nich zmienia status na przeciwny w
+	    stosunku do wszystkich komputerów danego u¿ytkownika. Gdy u¿ytkownik nie
+	    posiada przypisanych ¿adnych komputerów ikony te zostan± zamienione znakiem
+	    wykrzyknika.</para>
+	    <para>U u¿ytkowników z saldem ujemnym pojawia siê link "Rozlicz", pozwalaj±cy na
+	    zaksiêgowanie jednym klikniêciem wp³aty równowa¿±cej ujemne saldo.</para>
+	    <para>Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu
+	    z informacjami szczegó³owymi o nim i przypisanych mu komputerach, taryfach oraz
+	    operacjach finansowych. Tam te¿ mo¿esz modyfikowaæ dane u¿ytkownika, definiowaæ
+	    op³aty abonamentowe i zaksiêgowaæ wp³atê lub obci±¿enie jego rachunku.</para>
+	</sect2>
+	<sect2 id="menu-users-new">
+	    <title>Nowy</title>
+	    <para>Dodaj±c nowego u¿ytkownika podajesz jego nazwisko/nazwê i dane teleadresowe
+	    oraz status (pod³±czony/oczekuj±cy/zainteresowany).
+	    <note><para>Czêsto zg³aszane jest blêdne kapitalizowanie narodowych znaków diakrytycznych.
+	    Odpowiedzialny za to jest serwer bazy danych i rozwi±zania nale¿y szukaæ w jego konfiguracji.</para></note>
+	    </para>
+	</sect2>
+	<sect2 id="menu-users-search">
+	    <title>Szukaj</title>
+	    <para>Mo¿liwe jest wyszukiwanie u¿ytkowników (tak¿e usuniêtych) wg zadanych kryteriów. Modu³ ten,
+	    od pola szybkiego wyszukiwania z menu po lewej stronie, oprócz tego, ¿e jest bardziej rozbudowany 
+	    i pozwala wyszukiwaæ wg wielu kryteriów, ró¿ni siê tak¿e tym, ¿e zwraca listê u¿ytkowników
+	    spe³niaj±cych podane kryteria.</para>
+	</sect2>
+	<sect2 id="menu-users-groups">
+	    <title>Grupy</title>
+	    <para>Tutaj zarz±dzasz grupami u¿ytkowników. Po klikniêciu menu 'Grupy'
+	    uka¿e ci siê lista grup z podstawowymi informacjami o grupach. Klikaj±c 
+	    na wybranej grupie przejdziesz do modu³u, w którym mo¿esz zmieniæ dane
+	    tej sieci, przegl±daæ oraz przypisywaæ u¿ytkowników do grup.</para>
+	</sect2>
+	<sect2 id="menu-users-newgropup">
+	    <title>Nowa grupa</title>
+	    <para>Grupa powinna posiadaæ unikaln± nazwê, sk³adaj±c± siê z liter, cyfr, znaku
+	    my¶lnika lub podkre¶lenia. Poniewa¿ grupy wykorzystywane s± w skryptach w nazwie
+	    nie mo¿e byæ znaku spacji.</para>
+	</sect2>
+	<sect2 id="menu-users-warnings">
+	    <title>Ostrze¿enia</title>
+	    <para>Tutaj mo¿na "hurtowo" przypisaæ tre¶æ wiadomo¶ci administracyjnej
+	    u¿ytkownikom, których wybiera siê z listy w lewym oknie. Mo¿liwe jest
+	    tak¿e w³±czenie lub wy³±czenie ostrze¿eñ wszystkim komputerom nale¿±cym
+	    do wybranych u¿ytkowników.</para>
+	</sect2>
+	<sect2 id="menu-users-prints">
+	    <title>Wydruki</title>
+	    <para>Zestaw modu³ów wy¶wietlaj±cych listy w formie przyjaznej dla drukarki
+	    zawiera:
+	    <itemizedlist>
+		<listitem>
+		    <para><emphasis>Lista u¿ytkowników</emphasis> z wieloma filtrami i dowolnym sortowaniem,</para>
+		</listitem>
+		<listitem>
+		    <para><emphasis>Raport wierzytelno¶ci</emphasis> u¿ytkownika(ów) na dany dzieñ,</para>
+		</listitem>
+		<listitem>
+		    <para><emphasis>Bilans u¿ytkownika</emphasis> za wybrany okres</para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
+	</sect2>
+ </sect1>
+ <sect1 id="menu-nodes">
+	<title>Komputery</title>
+	<para>Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie listy komputerów,
+	wyszukiwanie, dodawanie nowych lub usuwanie ju¿	wpisanych do bazy komputerów, a tak¿e podgl±d 
+	i zmianê informacji o nich.</para>
+	<sect2 id="menu-nodes-list">
+	    <title>Lista</title>
+	    <para>Lista komputerów, ta która pokazuje siê po wej¶ciu do panelu 'Komputery'. 
+	    obejmuje wszystkie komputery w bazie. Mo¿na j± sortowaæ klikaj±c na nazwie dowolnej 
+	    kolumny. W ka¿dym wierszu, po prawej stronie znajduj± siê ikony s³u¿±ce kolejno do:
+	    zmiany statusu komputera [Pod³±cz/Od³±cz], zmiany statusu ostrze¿enia [Ostrzegaj/Nie ostrzegaj],
+	    usuniêcia z bazy [Usuñ], wywo³ania panelu edycyjnego [Edytuj] oraz wy¶wietlenia
+	    informacji szczegó³owych na temat danego komputera [Info]. Do panelu informacyjnego,
+	    który jest zintegrowany z panelem informacji o w³a¶cicielu komputera mo¿na tak¿e
+	    przej¶æ klikaj±c na pod¶wietlonym wierszu.</para>
+	</sect2>
+	<sect2 id="menu-nodes-new">
+	<title>Nowy</title>
+	    <para>Tutaj dodaje siê nowe komputery do bazy danych. W tym celu definiujemy nazwê
+	    komputera (sk³adaj±c± siê z liter, cyfr, znaku podkre¶lenia lub my¶lnika), jego w³a¶ciciela,
+	    adres IP, adres MAC oraz status. Przy polach na adresy IP i MAC znajduj± siê linki
+	    do paneli, w których mo¿na wybraæ dostêpny adres IP oraz znaleziony w sieci MAC.
+	    Po wpisaniu danych naci¶nij "Zapisz". Przy wprowadzaniu danych dla wielu komputerów
+	    wygodnie jest zaznaczyæ pole "Wywo³aj ponownie..."
+	    <note><para>Aby wyszukaæ komputery w swojej sieci
+	    mo¿esz skorzystaæ z programu nbtscan. Je¶li jest on zainstalowany w systemie, po
+	    naci¶niêciu 'Skanuj' zobaczysz listê znalezionych komputerów.</para></note>
+	    <note><para>Aby dodaæ komputer musisz mieæ sieæ i u¿ytkownika,
+	    którym go przypiszesz.</para></note></para>
+	</sect2>
+	<sect2 id="menu-nodes-search">
+	    <title>Szukaj</title>
+	    <para>Wyszukiwanie komputerów wed³ug zadanych kryteriów. Mo¿esz podaæ 
+	    ca³± lub fragment nazwy komputera oraz jego adresów IP i MAC.</para>
+	</sect2>
+	<sect2 id="menu-nodes-warnings">
+	    <title>Ostrze¿enia</title>
+		<para>Tutaj definiuje siê tre¶æ wiadomo¶ci administracyjnych dla u¿ytkowników oraz
+		w³±cza lub wy³±cza komputerom ostrze¿enia. Po lewej stronie znajduje siê lista, na
+		której komputery z w³±czonym ostrze¿eniem zaznaczone s± kolorem czerwonym. Jesli chcesz
+		tylko zmieniæ/przypisaæ u¿ytkownikom tre¶æ wiadomo¶ci administracyjnej, zaznacz odpowiednie
+		komputery na li¶cie i pozostaw puste pola 'W³±cz ostrze¿enia' oraz 'Wy³±cz ostrze¿enia'.  </para>
+	</sect2>	
+	<sect2 id="menu-nodes-print">
+	    <title>Wydruki</title>
+		<para>Wy¶wietlenie list komputerów, w formacie przyjaznym dla drukarki 
+		z mo¿liwo¶ci± definiowania filtrów i sortowania podobnie jak na Li¶cie.</para>
+	</sect2>
+ </sect1>
+ <sect1 id="menu-netdevices">
+	<title>Osprzêt sieciowy</title>
+	<para>W panelu przeznaczonym do ewidencji sprzêtu zarz±dzamy struktur± 
+	sieci, urz±dzeniami typu swich, hub, router, serwer i po³±czeniami miêdzy
+	nimi, a tak¿e przy³±czonymi do nich komputerami. Ka¿demu urzêdzeniu mo¿na przypisaæ 
+	co najmniej jeden adres sieciowy.</para>
+	    <sect2 id="menu-netdevices-list">
+	    <title>Lista</title>
+		<para>Lista urz±dzeñ zawiera ich nazwy i symbole, po³o¿enie i opis, a ponadto 
+		ilo¶æ dostêpnych portów. Lista mo¿e byæ sortowana wg dowolnego parametru/kolumny.
+		Klikniêcie na wybranym urz±dzeniu spowoduje wy¶wietlenie informacji szczegó³owych 
+		o nim, gdzie mo¿liwe jest definiowanie po³±czeñ urz±dzeñ i komputerów, adresów IP
+		urz±dzenia oraz zamiana dwóch urz±dzeñ.</para>
+	    </sect2>
+	    <sect2 id="menu-netdevices-new">
+	    <title>Nowe</title>
+		<para>Urz±dzenie sieciowe powinno posiadaæ unikaln± nazwê. Pozosta³e
+		parametry tj. producent, model, nr seryjny, ilo¶æ portów, lokalizacja
+		i opis s± opcjonalne.</para>
+	    </sect2>
+	    <sect2 id="menu-netdevices-map">
+	    <title>Mapa</title>
+		<para>Generowanie graficznej mapy ca³ej sieci, na podstawie
+		danych z bazy lms'a nastêpuje po wybraniu opcji menu 'Mapa'. Mo¿esz 
+		zdefiniowaæ, które urz±dzenie jest nadrzêdne w stosunku do pozosta³ych.
+		<note><para>Do wygenerowania mapy potrzebna jest wbudowana w PHP obs³uga 
+		biblioteki graficznej GD.</para></note>
+		</para>
+		<para>Na mapie hosty wy³±czone oznaczone s± kolorem czarnym. Ikona z pytajnikiem
+		oznacza, ¿e dany komputer nie by³ jeszcze skanowany/w³±czony. Aby skorzystaæ z 
+		tej funkcjonalno¶ci nale¿y, korzystaj±c z crona, uruchamiaæ skrypt skanuj±cy.
+		Na mapie komputer traktowany jest za w³±czony je¶li czas ostatniego pozytywnego
+		skanowania nie jest starszy od zadanej warto¶ci (domy¶lnie 600 sekund).
+		Parametr ten okre¶la siê przy pomocy opcji
+		<filename>lastonline_limit</filename> w sekcji [phpui] pliku konfiguracyjnego.
+		Powy¿sze odnosi siê równie¿ do urz±dzeñ z tym, ¿e status urz±dzenia okre¶la
+		siê na podstawie statusu wszystkich jego adresów.
+		Status komputerów jest tak¿e widoczny na li¶cie komputerów.
+		<note><para>Do badania aktywno¶ci hostów mo¿na wykorzystaæ skrypt lms-fping lub demona almsd.</para></note>
+		</para>
+	    </sect2>
+ </sect1>
+ <sect1 id="menu-networks">
+	<title>Sieci IP</title>
+	<para>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
+	zakres DHCP. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ 
+	na podsieci, albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</para>
+	<sect2 id="menu-networks-list">
+	    <title>Lista</title>
+	    <para>Lista sieci oprócz podstawowych danych o sieciach zawiera podsumowanie ilo¶ci
+	    adresów wolnych i przypisanych. Modyfikowanie w³a¶ciwo¶ci sieci nastêpuje w module 
+	    dostêpnym po wybraniu sieci z listy lub bezpo¶rednio po klikniêciu ikony [Edytuj].</para>
+	    <para>Podczas edycji danych sieci mo¿esz przegl±daæ listê komputerów z tej sieci, gdzie w 
+	    miejscu adresu IP pojawia siê nazwa komputera/urz±dzenia, do którego mo¿esz przej¶æ 
+	    klikaj±c na odpowiednim polu. Klikniêcie na polu z adresem IP przeniesie Ciê do modu³u
+	    dodawania nowego komputera. Znajdziesz tu tak¿e dwa przydatne linki: <emphasis>
+	    Porz±dkuj sieæ</emphasis> s³u¿±cy do przeadresowania komputerów, tak aby wyeliminowaæ 
+	    luki w adresacji oraz <emphasis>Przeadresuj do sieci</emphasis> s³u¿±cy do przenoszenia wszystkich 
+	    komputerów/urz±dzeñ z tej sieci do innej.</para>
+	</sect2>
+	<sect2 id="menu-networks-new">
+	    <title>Nowa sieæ</title>
+	    <para>Definiuj±c now± sieæ musisz okre¶liæ jej unikaln± nazwê i klasê adresow±
+	    podaj±c adres IP sieci i maskê. Pozosta³e dane s± opcjonalne.</para>
+	</sect2>
+ </sect1>
+ <sect1 id="menu-finances">
+	<title>Taryfy i Finanse</title>
+	<para>Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami sieci.
+	Masz mo¿liwo¶æ definiowania taryf abonamentowych, op³at (zleceñ) sta³ych, ksiêgowania 
+	operacji finansowych, przegl±dania bilansu i historii rachunku oraz sporz±dzania faktur
+	i zestawieñ finansowych.</para> 
+	<sect2 id="menu-tariffs-list">
+	    <title>Lista taryf</title>
+	    <para>Po wej¶ciu do panelu 'Taryfy i finanse' zobaczysz listê taryf zawieraj±c±
+	    podstawowe informacje o nich. Klikaj±c wybran± taryfê na li¶cie zostaniesz
+	    przeniesiony do modu³u 'Informacje o taryfie', gdzie mo¿esz edytowaæ jej parametry
+	    lub zamieniaæ u¿ytkownikom taryfy. W polu 'ilo¶æ u¿ytkowników' podana jest liczba
+	    u¿ytkowników, którym dana taryfa zosta³a przypisana oraz kolejno od lewej (w nawiasie) ca³kowita 
+	    liczba przypisañ taryfy i liczba aktywnych przypisañ taryfy, uwzglêdniaj±ca okresy obowi±zywania.</para>
+	</sect2>
+	<sect2 id="menu-tariffs-new">
+	    <title>Nowa taryfa</title>
+	    <para>Definiuj±c now± taryfê musisz podaæ unikaln± nazwê, kwotê i stawkê podatku.
+	    Przy czym "zw." w polu stawka podatku oznacza "zwolnienie z podatku".</para>
+	</sect2>
+	<sect2 id="menu-payments-list">
+	    <title>Lista op³at</title>
+    	    <para>Lista op³at sta³ych ¶wiadczonych na rzecz innych podmiotów, oprócz elementów standardowych
+	    zawiera ikonê [Nalicz], przy pomocy której mo¿na obci±¿yæ rachunek sieci. Automatycznym naliczaniem
+	    op³at zajmuje siê skrypt 'lms-payments' lub odpowiedni modu³ demona almsd. Klikaj±c wybran± 
+	    op³atê na li¶cie zostaniesz przeniesiony do modu³u 'Informacje o op³acie', gdzie mo¿esz 
+	    edytowaæ jej parametry lub zaksiêgowaæ dan± op³atê w bazie operacji finansowych.</para>
+	</sect2>
+	<sect2 id="menu-payments-new">
+	    <title>Nowa op³ata</title>
+	    <para>Nowej op³acie sta³ej przypisujesz unikaln± nazwê, wierzyciela oraz kwotê i dzieñ
+	    naliczenia.</para>
+	</sect2>
+	<sect2 id="menu-balance">
+	    <title>Bilans finansowy</title>
+	    <para>Historia operacji finansowych z podsumowaniem przychodu, rozchodu,
+	    wp³at i zobowi±zañ u¿ytkowników. Ikona drukarki umo¿liwia wydruk faktury odpowiadaj±cej
+	    danej pozycji z listy.</para>
+	</sect2>
+	<sect2 id="menu-newbalance">
+	    <title>Nowa operacja</title>
+	    <para>Wprowadzanie nowych operacji finansowych. Mo¿liwe jest
+	    zaksiêgowanie tej samej wp³aty lub obci±¿enia wielu u¿ytkownikom równocze¶nie.</para>
+	    <para><note><para>Do naliczania sta³ych op³at abonamentowych najlepiej wykorzystywaæ
+	    skrypt lms-payments lub demona <emphasis>almsd</emphasis>, które potrafi± ponadto
+	    wystawiaæ faktury.</para></note></para>
+	</sect2>
+	<sect2 id="menu-invoices-list">
+	    <title>Lista faktur</title>
+	    <para>Lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych faktur (ikona [Drukuj]) oraz rozliczenia
+	    danej pozycji, czyli zaksiêgowania wp³aty (ikona [Rozlicz]).</para>
+	</sect2>
+	<sect2 id="menu-invoices-new">
+	    <title>Nowa faktura</title>
+		<para>Rêczne wystawianie faktur dla wybranego u¿ytkownika.</para>
+		<para>LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie dowolnej
+		faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Taryfy i finanse'. Automatyczne wystawianie faktur 
+		wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
+		zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <emphasis>almsd</emphasis></para>
+		<para>Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
+		opcji w sekcji <emphasis>[invoices]</emphasis> <filename>lms.ini</filename>:
+		<itemizedlist>
+		<listitem>
+			<para>number_template</para>
+			<para>Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku,
+			'%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</para>
+			<para>Przyk³ad: <prompt>number_template = %N/%Y</prompt></para>
+		</listitem>
+		<listitem>
+			<para>header</para>
+			<para>Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</para>
+			<para>Przyk³ad: <prompt>header = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</prompt></para>
+		</listitem>
+		<listitem>
+			<para>footer</para>
+			<para>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka zostanie umieszczona na dole faktury, ma³± czcionk±. Podobnie jak i w przypadku opcji header, mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</para>
+			<para>Przyk³ad: <prompt>footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</prompt></para>
+		</listitem>
+		<listitem>
+			<para>default_author</para>
+			<para>Domy¶lna osoba wystawiaj±ca fakturê. Domy¶lnie: puste</para>
+			<para>Przyk³ad: <prompt>default_author = "specjalista d/s fakturowania"</prompt></para>
+		</listitem>
+		</itemizedlist>
+		Ponadto dostêpne s± zmienne:
+		<itemizedlist>
+		<listitem>
+			<para>cplace</para>
+			<para>Miejsce wystawienia faktury. Domy¶lnie: puste.</para>
+			<para>Przyk³ad: <prompt>cplace = Warszawa</prompt></para>
+		</listitem>
+		<listitem>
+			<para>template_file</para>
+			<para>Szablon faktury, który powinien znajdowaæ siê w
+			katalogu <filename>templates</filename>. Domy¶lnie: invoice.html.</para>
+			<para>Przyk³ad: <prompt>template_file = invoice-mynet.html</prompt></para>
+		</listitem>		
+		<listitem>
+			<para>content_type</para>
+			<para>Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
+			to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
+			Przydatne je¶li u¿ywasz w³asnego templejta, który wygeneruje np.rtf'a lub xls'a.
+			Domy¶lnie: 'text/html; charset=iso-8859-2'</para>
+			<para>Przyk³ad: <prompt>content_type = application/octet-stream</prompt></para>
+		</listitem>	
+		<listitem>
+			<para>attachment_name</para>
+			<para>Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
+			wydruk. Domy¶lnie: pusta.</para>
+			<para>Przyk³ad: <prompt>attachment_name = faktura.xls</prompt></para>
+		</listitem>
+		</itemizedlist>
+		</para>
+		<para>Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
+		na wykazie bilansu finansowego (ogólnego b±d¼ pojedynczego u¿ytkownika), albo 
+		poprzez 'Lista faktur' z menu 'Taryfy i finanse'. W przypadku listy faktur, mo¿liwe jest 
+		tak¿e filtrowanie faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y 
+		i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. 
+		Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ 
+		faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darkach 
+		Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.</para>
+		<para>
+			<note><para>Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ 
+			konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie 
+			stopki i nag³ówka, czy te¿ adresu na wydruku.</para></note>
+			<warning><para>W bazie danych zapisywane s± kwoty brutto. </para></warning>
+		</para>
+	</sect2>
+	<sect2 id="menu-finances-print">
+	    <title>Wydruki</title>
+	    <para>Wydruki zestawieñ finansowych obejmuj±:
+	    <itemizedlist>
+		<listitem>
+		    <para><emphasis>Bilans finansowy sieci</emphasis> obejmuj±cy operacje finansowe 
+		    za dany okres z mo¿liwo¶ci± wybrania administratora.</para>
+		</listitem>
+		<listitem>
+		    <para><emphasis>£±czny przychód bezrachunkowy sieci</emphasis> w danym okresie.</para>
+		</listitem>
+		<listitem>
+		    <para><emphasis>Raport wierzytelno¶ci</emphasis> na dany dzieñ, dla wszystkich lub 
+		    wybranego u¿ytkownika.</para>
+		</listitem>
+		<listitem>
+		    <para><emphasis>Rejestr sprzeda¿y</emphasis>, czyli zestawienie faktur na dany okres.</para>
+		</listitem>
+		<listitem>
+		    <para><emphasis>Bilans u¿ytkownika</emphasis> na dany okres.</para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
+	</sect2>
+ </sect1>
+ <sect1 id="menu-accounts">
+	<title>Konta</title>
+	<para>Zarz±dzanie kontami ró¿nych us³ug na serwerze jest teraz
+	mo¿liwe. Funkcjonalno¶æ ta jest przeznaczona dla zaawansowanych 
+	administratorów. Wymaga znajomo¶ci tych us³ug i ich konfiguracji
+	w celu korzystania z bazy danych.</para>
+	<para>W LMSie mo¿na utworzyæ cztery rodzaje kont: shell (1), poczta (2),
+	www (4), ftp (8). W nawiasach podano numeryczne wewnêtrzne oznaczenie
+	typu konta w bazie. Konta mog± byæ wielotypowe. Przyk³adowo, je¶li 
+	zdefiniujesz konto shell+poczta+ftp w bazie zostanie zapisana cyfra 11.
+	Oznacza to, ¿e do rozpoznawania typu konta w warunkach WHERE zapytañ
+	SQL nale¿y stosowaæ sumowanie binarne (jak na przyk³adach w dalszej
+	czê¶ci rozdzia³u).</para>
+	<para>Masz tak¿e mo¿liwo¶æ definiowania domen i aliasów.</para>
+	<sect2 id="accounts-accounts">
+	    <title>Konta</title>
+	    <para>Na li¶cie przedstawione s± podstawowe informacje o kontach.
+	    Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
+	    kolumny oraz filtrowanie wg zadanych kryteriów. Przej¶cie do edycji 
+	    danych konta nastêpuje po wybraniu ikony [Edytuj]. Administrator ma 
+	    tak¿e prawo do zmiany has³a.</para>
+	</sect2>
+	<sect2 id="accounts-new">
+	    <title>Nowe konto</title>
+	    <para>Definiuj±c dane konto musisz podaæ login, has³o i
+	    wybraæ typ konta oraz przypisaæ u¿ytkownika (lub utworzyæ tzw. konto
+	    systemowe). Nazwa domeny jest wymagana tylko dla kont mailowych. Data 
+	    wa¿no¶ci konta jest opcjonalna. Pozostawienie pustego pola z dat± 
+	    oznacza, ¿e konto nigdy nie wygasa.</para>
+	</sect2>
+	<sect2 id="accounts-aliases">
+	    <title>Aliasy</title>
+	    <para>Konta (g³ównie mailowe) mog± posiadaæ dowoln± ilo¶æ aliasów.
+	    Administrator serwera pocztowego mo¿e przekierowaæ (lokalnie) pocztê
+	    z wszystkich aliasów do jednego kota. Na li¶cie aliasów przedstawione 
+	    s± podstawowe informacje o nich i o kontach na które aliasy te wskazuj±.
+	    Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
+	    kolumny oraz filtrowanie wg zadanych kryteriów. Nie ma mo¿liwo¶ci
+	    edycji aliasu, nale¿y go usun±æ i utworzyæ nowy. Dodawanie nowego
+	    aliasu nastêpuje poprzez formularz na dole listy.</para>
+	</sect2>
+	<sect2 id="accounts-domains">
+	    <title>Domeny</title>
+	    <para>Na li¶cie przedstawione s± podstawowe informacje o zdefiniowanych
+	    domenach. Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
+	    kolumny. Mo¿liwa jest edycja danych domeny po wybraniu ikony [Edytuj].
+	    Do utworzenia nowej domeny s³u¿y formularz na dole listy.</para>
+	</sect2>
+	<sect2 id="accounts-examples">
+	    <title>Przyk³ady</title>
+	    <para>Poni¿szy listing zawiera istotne fragmenty pliku konfiguracyjnego
+	    demona proftpd (w wersji 1.2.10) umo¿liwiaj±cy przechowywanie danych
+	    o kontach ftp w bazie LMSa. Przyk³ad zawiera konfiguracjê dla bazy
+	    danych PostgreSQL, w komentarzach podano rozwi±zania dla MySQLa:
+	    <example id="accounts-e1">
+		<title>Konta. Konfiguracja proftpd.</title>
+<screen>
+  ServerName	"LMS FTP Server"
+  
+  #nazwa_bazy@host:port u¿ytkownik has³o
+  SQLConnectInfo lms@localhost:5432 lms mypassword
+  
+  SQLAuthTypes Crypt Plaintext
+  SQLUserInfo passwd login password uid NULL home NULL
+  RequireValidShell off
+  SQLAuthenticate users
+  
+  # utworzenie katalogu domowego gdy nie istnieje
+  SQLHomedirOnDemand on
+  
+  # komunikat przy logowaniu
+  SQLShowInfo PASS "230" "Last login: %{getlastlogin}"
+  SQLLog PASS setlastlogin
+  
+  # SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE FROM_UNIXTIME(lastlogin) END FROM passwd WHERE login='%u'"
+  # SQLNamedQuery setlastlogin UPDATE "lastlogin=UNIX_TIMESTAMP() WHERE login='%u'" passwd 
+  SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE lastlogin::abstime::timestamp::text END FROM passwd WHERE login='%u'"
+  SQLNamedQuery setlastlogin UPDATE "lastlogin=EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) WHERE login='%u'" passwd
+  
+  # Sprawdzamy datê wa¿no¶ci konta oraz ograniczamy szukanie do kont ftp
+  # SQLUserWhereClause "type & 8 = 8 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())"
+  SQLUserWhereClause "type & 8 = 8 AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))"
+</screen>
+	    </example></para>
+	    <para>W kolejnym przyk³adzie przedstawimy jak skonfigurowaæ serwer
+	    Postfix 2.1.1 oraz Cyrus-SASL 2.1.19, Courier-IMAP/POP3 3.0.4, aby korzysta³y
+	    z bazy danych LMSa. LMS'owe konta bêd± kontami wirtualnymi, a poczta
+	    przechowywana bêdzie w formacie Maildir.</para>
+	    <para>Poniewa¿ has³a w LMS'ie s± szyfrowane, wymagane jest zainstalowanie
+	    SASL'a z ³at± pozwalaj±c± na to. W komentarzach podano warto¶ci opcji
+	    charakterystycznych dla bazy MySQL. Listing zawiera tylko opcje bezpo¶rednio
+	    zwi±zane z baz± danych:
+	    <example id="accounts-e2">
+		<title>Konta. Konfiguracja serwera pocztowego (postfix+sasl+courier).</title>
+<screen>
+# Plik smtpd.conf (Cyrus-SASL):
+
+pwcheck_method: auxprop
+#sql_engine: mysql
+sql_engine: pgsql
+sql_user: lms
+sql_passwd: has³o
+sql_hostnames: localhost
+sql_database: lms
+#sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
+#       AND login='%u' AND domains.name ='%r' AND type & 2 = 2 
+#	AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
+sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
+	AND login='%u' AND domains.name ='%r' AND type & 2 = 2 
+	AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+password_format: crypt
+mech_list: login plain
+
+# authpgsqlrc (lub authmysqlrc) (Courier):
+
+#MYSQL_PORT		3306
+PGSQL_PORT		5432
+#MYSQL_USERNAME		lms
+PGSQL_USERNAME		lms
+#MYSQL_PASSWORD		has³o
+PGSQL_PASSWORD		has³o
+#MYSQL_DATABASE		lms
+PGSQL_DATABASE		lms
+#MYSQL_SELECT_CLAUSE SELECT login, \
+#       password, '', 104, 104, '/var/spool/mail/virtual', \
+#       CONCAT(login,'/'), '', login, '' \
+#       FROM passwd, domains WHERE domainid = domains.id \
+#       AND login = '$(local_part)' AND domains.name = '$(domain)' \
+#       AND type & 2 = 2 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
+PGSQL_SELECT_CLAUSE SELECT login, \
+        password, '', 104, 104, '/var/spool/mail/virtual', \
+        login ||'/', '', login, '' \
+        FROM passwd, domains WHERE domainid = domains.id 
+        AND login = '$(local_part)' AND domains.name = '$(domain)' \
+        AND type & 2 = 2 \
+        AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+
+# main.cf (Postfix):
+
+virtual_mailbox_base = /var/spool/mail/virtual
+virtual_mailbox_domains = pgsql:/etc/postfix/pgsql_virtual_domains_maps.cf
+virtual_mailbox_maps = pgsql:/etc/postfix/pgsql_virtual_mailbox_maps.cf
+virtual_alias_maps = pgsql:/etc/postfix/pgsql_virtual_alias_maps.cf
+
+# pgsql_virtual_domains_maps.cf (Postfix):
+
+user = lms
+password = has³o
+hosts = localhost
+dbname = lms
+#MySQL nie obs³uguje opcji query, dlatego budujemy zapytanie w inny sposób
+#select_field = name
+#table = domains
+#where_field = name
+query = SELECT name FROM domains WHERE name = '%s'
+
+# pgsql_virtual_mailbox_maps.cf (Postfix):
+
+user = lms
+password = has³o
+hosts = localhost
+dbname = lms
+#table = passwd, domains
+#select_field = CONCAT(login,'/')
+#where_field = CONCAT(login,'@',domains.name)
+additional_conditions = AND domainid = domains.id 
+#       AND type & 2 = 2 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
+query = SELECT login || '/' FROM passwd, domains WHERE domainid = domains.id
+        AND login = '%u' AND domains.name = '%d' 
+        AND type & 2 = 2 
+        AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+
+# pgsql_virtual_alias_maps.cf (Postfix):
+
+user = lms
+password = has³o
+hosts = localhost
+dbname = lms
+#table = passwd, domains, aliases
+#select_field = CONCAT(passwd.login,'@',domains.name)
+#where_field = CONCAT(aliases.login,'@',domains.name)
+#additional_conditions = AND  passwd.domainid = domains.id AND passwd.id = aliases.accountid
+query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases 
+        WHERE passwd.domainid = domains.id AND passwd.id = aliases.accountid
+        AND aliases.login = '%u' AND domains.name = '%d' 
+</screen>
+	    </example></para>
+	</sect2>
+ </sect1>
+ <sect1 id="menu-mailing">
+	<title>Mailing</title>
+	<para>Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
+	u¿ytkowników twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
+	odbiorców, do której zostanie wys³any e-mail. Grupê adresatów mo¿na okre¶liæ
+	wg statusu oraz sieci lub grup u¿ytkowników do których nale¿±.</para>
+	<para><note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji mail().</para></note>
+	<note><para>Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami mo¿na
+	wykorzystaæ skrypt lms-notify lub modu³y notify i ggnotify demona <emphasis>almsd</emphasis>.</para></note></para>
+ </sect1>
+ <sect1 id="menu-reload">
+	<title>Prze³adowanie</title>
+	<para>Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji i us³ug zdefiniowanych
+	dla generatora plików konfiguracyjnych <emphasis>LMS-MGC</emphasis> lub demona <emphasis>almsd</emphasis>. 
+	Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <emphasis>LMS-MGC</emphasis> oraz demona.</para>
+ </sect1>
+ <sect1 id="menu-stats">
+	<title>Statystyki</title>
+	<para>Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
+	dostêpny w menu 'Statystyki'. Dane statystyk zawieraj± lo¶æ danych wysy³anych i pobieranych 
+	z Internetu (na danym interfejsie) dla ka¿dego komputera. Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej 
+	godziny, ostatniego dnia, ostatnich 30 dni lub ostatniego roku.</para>
+	<para> 
+	    <note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, albo demon <emphasis>almsd</emphasis>.</para></note>
+	</para>
+	<sect2 id="menu-stats-filter">
+	<title>Filtr</title>
+	    <para>Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
+	    okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz 
+	    ich wiêcej), ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad 
+	    wed³ug downloadu).</para>
+	</sect2>
+	<sect2 id="menu-stats-compact">
+	<title>Kompaktowanie</title>
+	    <para>W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci zapisu, mo¿e
+	    nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
+	    oczekiwania na rysowanie wykresów. Z tego powodu w menu 'Kompaktowanie'
+	    udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy statystyk bez
+	    utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
+	    w nastêpuj±cy sposób:
+		<itemizedlist>
+		    <listitem><para><emphasis>Poziom Niski</emphasis>: dane z poprzedniego dnia i starsze, zostan± u¶rednione
+			do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
+			to 6*24 wpisów zostanie zast±pione jednym.</para></listitem>
+		    <listitem><para><emphasis>Poziom ¦redni</emphasis>: dane starsze ni¿ miesi±c zostan± u¶rednione do
+			jednego dnia.</para></listitem>
+		    <listitem><para><emphasis>Poziom Wysoki</emphasis>: dane starsze ni¿ miesi±c zostan± u¶rednione do
+			jednej godziny.</para></listitem>
+		</itemizedlist>
+	    <warning><para>Kompaktowanie bazy danych jest procesem nieodwracalnym.</para></warning>
+	    </para>
+	</sect2>
+ </sect1>
+  <sect1 id="menu-helpdesk">
+	<title>Helpdesk</title>
+	    <para>Helpdesk (inaczej Request Tracker) to system obs³ugi zg³oszeñ.
+	    W systemie mo¿na prowadziæ bazê wszystkich zg³oszeñ i zapytañ u¿ytkowników
+	    sieci, ale tak¿e osób które nie s± wpisane do bazy LMS'a. Zg³oszenia mo¿na
+	    pogrupowaæ w kategorie (kolejki) i wyszukiwaæ wg zadanych kryteriów.
+	    Do ka¿dej kolejki mo¿na zdefiniowaæ uprawnienia dla administratorów.
+	    </para>
+	    <para>W menu po lewej stronie znajduje siê pole szybkiego wyszukiwania
+	    zg³oszenia, w którym mo¿na podawaæ jego ID lub nazwisko zg³aszaj±cego je
+	    u¿ytkownika. W drugim przypadku zostanie wy¶wietlona lista wszystkich zg³oszeñ
+	    danego u¿ytkownika.</para>
+	    <para>Ka¿de zg³oszenie posiada historiê, na któr± sk³adaj± siê wiadomo¶ci
+	    od administratorów i u¿ytkowników. Administrator mo¿e wys³aæ swoj± wiadomo¶æ do 
+	    u¿ytkownika, klikaj±c 'Wy¶lij' podczas dodawania wiadomo¶ci. (Nale¿y podaæ
+	    e-mail odbiorcy. Adresem nadawcy bêdzie adres kolejki, a je¶li jest pusty, adres 
+	    administratora). Wszystkie wiadomo¶ci tak¿e te wys³ane, zostaj± zapisane 
+	    w historii zg³oszenia. Zg³oszenie mo¿e mieæ cztery stany: nowy, otwarty, rozwi±zany 
+	    i martwy.</para>
+	    <para>Skrypt <xref linkend="lms-rtparser"> zosta³ stworzony aby umo¿liwiæ
+	    obs³ugê systemu i przesy³anie zg³oszeñ poczt± elektroniczn±.</para>
+	<sect2 id="menu-helpdesk-list">
+	<title>Lista kolejek</title>
+	    <para>Na li¶cie kolejek znajduj± siê podstawowe informacje i statystyki zg³oszeñ.
+	    Klikniêcie na wybranej kolejce powoduje wy¶wietlenie listy zg³oszeñ. St±d mo¿na
+	    tak¿e przej¶æ do informacji szczegó³owych (w tym tak¿e uprawnieniach) o kolejce lub
+	    usun±æ wybran± kolejkê. Usuniêcie kolejki spowoduje tak¿e usuniêcie zg³oszeñ z bazy
+	    danych przypisanych do niej.
+	    </para>
+	</sect2>
+	<sect2 id="menu-helpdesk-newqueue">
+	<title>Nowa kolejka</title>
+	    <para>Kolejka (kategoria) posiada nazwê, opcjonalny opis oraz opcjonalny adres
+	    poczty elektronicznej, który u¿ywany jest do korespondencji. W tabeli 'Uprawnienia'
+	    definiuje siê prawa do danej kolejki, które maj± moc wiêksz± od ogólnych 
+	    uprawnieñ administratorów tzn. je¶li admin nie ma praw do danej kolejki, to nawet
+	    je¶li ma 'pe³ny dostêp' zg³oszeñ w tej kolejce nie zobaczy. Prawo zapisu (dodawanie/edytowanie
+	    zg³oszeñ i wiadomo¶ci) oznacza automatyczne prawo do odczytu. 
+	    </para>
+	</sect2>
+	<sect2 id="menu-helpdesk-search">
+	<title>Wyszukaj</title>
+	    <para>Wyszukiwanie zg³oszeñ polega na wybraniu z bazy zg³oszeñ spe³niaj±cych 
+	    wszystkie podane kryteria (warunek AND, nie OR). Mo¿esz podaæ temat, w³a¶ciciela, 
+	    kolejkê, status i zg³aszaj±cego. Klientów sieci wybieraj z listy, dla pozosta³ych
+	    nale¿y podaæ Nazwisko/Imiê i/lub e-mail.
+	    </para>
+	</sect2>
+	<sect2 id="menu-helpdesk-newticket">
+	<title>Nowe zg³oszenie</title>
+	    <para>Dodaj±c nowe zg³oszenie nale¿y okre¶liæ dla niego temat, tre¶æ, wybraæ kolejkê
+	    oraz zg³aszaj±cego u¿ytkownika. Osoby spoza sieci wpisujemy w polach Nazwisko i Imiê.
+	    Opcjonalnie, je¶li wiadomo¶æ zosta³a zg³oszona poczt± elektroniczn± podajemy adres 
+	    e-mail (tak¿e dla u¿ytkownika zapisanego w bazie).</para>
+	</sect2>
+ </sect1>
+</chapter>

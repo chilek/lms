@@ -1,0 +1,124 @@
+<!-- $Id$ -->
+<chapter id="faq">
+    <title>FAQ</title>
+    <qandaset>
+        <qandaentry>
+	    <question id="q1">
+	        <para><emphasis role="bold">Co zrobiæ gdy nie generuje siê mapa sieci?</emphasis></para>
+	    </question>
+	    <answer>
+	        <para>Pierwsze co nale¿y sprawdziæ, to logi serwera www. 
+		Najczê¶ciej pomaga zwiêkszenie parametru <prompt>memory_limit</prompt>
+		w <filename>php.ini</filename>.</para>
+	    </answer>
+	</qandaentry>
+	<qandaentry>
+	    <question id="q2">
+	    	<para><emphasis role="bold">Jak dodaæ dwa komputery z tym samym adresem IP?</emphasis></para>
+	    </question>
+	    <answer>
+	        <para>Nie ma takiej mo¿liwo¶ci. Co wiêcej, autorzy nie przewiduj±
+		takiej funkcjonalno¶ci w najbli¿szej przysz³o¶ci. Jednak masz jeszcze
+		szansê skorzystaæ z patch'a <prompt>multiip</prompt> znajduj±cego
+		siê w <prompt>contrib</prompt>.</para>
+	    </answer>
+	</qandaentry>
+	<qandaentry>
+	    <question id="q3">
+	        <para><emphasis role="bold">Jak dodaæ dwa komputery z tym samym adresem MAC?</emphasis></para>
+	    </question>
+	    <answer>
+	        <para>A dokumentacjê przejrza³e¶? Do tego s³u¿y opcja <prompt>
+		allow_mac_sharing = 1</prompt>.</para>
+	    </answer>
+	</qandaentry>
+	<qandaentry>
+	    <question id="q4">
+	    	<para><emphasis role="bold">Co oznacza b³±d <prompt>Can't locate Config/IniFiles.pm in @INC ...</prompt>?</emphasis></para>
+	    </question>
+	    <answer>
+	        <para>Prawdopodobnie nie masz zainstalowanych wymaganych modu³ow 
+		Perla, w tym wypadku chodzi o <filename>Config::IniFiles</filename>.
+		Najwygodniejszym sposobem instalacji modu³ów jest skorzystanie z CPANu
+		w nastêpuj±cy sposób: 
+		<prompt>perl -MCPAN -e 'install Config::IniFiles'</prompt>.</para>
+	    </answer>
+	</qandaentry>
+	<qandaentry>
+	    <question id="q5">
+	    	<para><emphasis role="bold">Zrobiem parê poprawek. Jak mogê dodaæ je do LMSa?</emphasis></para>
+	    </question>
+	    <answer>
+	        <para>Poprawki najlepiej zg³aszaæ na listê mailingow±. Do wiadomo¶ci,
+		z krótkim opisem poprawki, nale¿y do³±czyæ diff'a (najlepiej do aktualnej
+		wersji cvs'owej), którego mo¿na wykonaæ w nastêpuj±cy sposób:
+<screen>
+$ cd lms
+$ cvs -z7 diff -u > /tmp/moja_latka.patch
+</screen>
+		Je¿eli jeste¶ zainteresowany do³±czeniem do grona developerów
+		i otrzymaniem praw zapisu do CVSu zg³o¶ tak± chêæ na listê. Wcze¶niej
+		jednak powiniene¶ siê daæ poznaæ na li¶cie jako odpowiedzialna 
+		i kompetentna osoba np. przysy³aj±c poprawki.</para>
+	    </answer>
+	</qandaentry>
+	<qandaentry>
+	    <question id="q6">
+	    	<para><emphasis role="bold">Która wersja LMSa jest najnowsza?</emphasis></para>
+	    </question>
+	    <answer>
+	        <para>Wersje LMSa s± numerowane analogicznie do j±dra Linuksa. 
+		I tak w LMS-x.y.z mamy: x - g³ówny numer wersji, y - jak parzysty
+		to wersja stabilna, jak nieparzysty to rozwojowa (niestabilna), 
+		z - mniej istotny numer podwersji. W zwi±zku z tym, je¶li uka¿e siê 
+		wersja stabilna np. 1.4.0, to w tej ga³êzi (1.4) nie bêdzie ju¿ dodawana
+		nowa funkcjonalno¶æ, bêd± usuwane tylko ewentualne b³êdy. Jednocze¶nie
+		powstaje wersja rozwojowa 1.5.x, która przez dodanie nowych rzeczy,
+		mo¿e byæ niestabilna/nie dzia³aj±ca prawid³owo.</para>
+		<para>Archiwum wszystkich wersji LMS znajduje siê pod adresem
+		<ulink url="http://lms.rulez.pl/download/">lms.rulez.pl/download</ulink></para>
+	    </answer>
+	</qandaentry>
+	<qandaentry>
+	    <question id="q7">
+	    	<para><emphasis role="bold">Jak wypisaæ siê z listy mailingowej?</emphasis></para>
+	    </question>
+	    <answer>
+	        <para>Informacja ta jest zawarta w nag³ówkach wszystkich wiadomo¶ci 
+		z listy mailingowej. Nale¿y wys³aæ wiadomo¶æ z tematem "unsubscribe"
+		na adres lms-request@lists.rulez.pl.</para>
+	    </answer>
+	</qandaentry>
+	<qandaentry>
+	    <question id="q8">
+	    	<para><emphasis role="bold">Jakie s± ograniczenia ilo¶ci urz±dzeñ na mapie?</emphasis></para>
+	    </question>
+	    <answer>
+	        <para>Algorytm zastosowany przy tworzeniu mapy nie jest doskona³y.
+		Do jednego urz±dzenia mo¿na pod³±czyæ maksymalnie 24 komputery (tyle 
+		bêdzie widoczne na mapie, mo¿na pod³±czyæ wiêcej, ale zostan± pominiête).
+		Podobnie wygl±da sprawa z urz±dzeniami. Ka¿de urz±dzenie sieciowe
+		mo¿e mieæ pod³±czonych 24 innych urz±dzeñ. Z tym, ¿e w przypadku
+		urz±dzeñ, w pewnych warunkach (czêsto) liczba ta mo¿e siê zmniejszyæ (w
+		zale¿no¶ci od rozmieszczenia urz±dzeñ na siatce mapy). Po przekroczeniu
+		tej liczby mog± wystêpowaæ b³êdne po³±czenia wybiegaj±ce poza mapê, ¿adziej
+		problemy z wygenerowaniem mapy.
+		</para>
+	    </answer>
+	</qandaentry>
+	<qandaentry>
+	    <question id="q9">
+	    	<para><emphasis role="bold">Insecure $ENV{BASH_ENV} while running -T switch...</emphasis></para>
+	    </question>
+	    <answer>
+	        <para>Powo³any b³±d pojawia siê podczas uruchamiania skryptów
+		perlowych korzystaj±cych z zewnêtrznych programów na niektórych 
+		systemach. Opis problemu i sposoby jego rozwi±zania podane s± w manualu
+		perla (man perlsec) w dziale "Cleaning Up Your Path". Naprostszym rozwi±zaniem jest
+		usuniêcie przy³±cznika -T (który odpowiada za to zamieszanie) z pierwszej 
+		linii skryptu.
+		</para>
+	    </answer>
+	</qandaentry>
+    </qandaset>
+</chapter>
