@@ -7,6 +7,12 @@
 		document.contract.target = "_blank";
 		document.contract.submit();
 	}
+
+	function SearchTickets()
+	{
+		document.contract.action = "?m=rtsearch";
+		document.contract.submit();
+	}
 //-->	
 </SCRIPT>
 {/literal}
@@ -136,6 +142,22 @@
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{$userinfo.createdby}, {$userinfo.creationdateh}<BR>
 			{if $userinfo.moddate}{$userinfo.modifiedby}, {$userinfo.moddateh}{else}-{/if}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/ticket.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			<INPUT type="hidden" name="contract[subject]" value=""></INPUT>
+			<INPUT type="hidden" name="contract[userid]" value="{$userinfo.id}"></INPUT>
+			<INPUT type="hidden" name="contract[name]" value=""></INPUT>
+			<INPUT type="hidden" name="contract[email]" value=""></INPUT>
+			<INPUT type="hidden" name="contract[owner]" value="0"></INPUT>
+			<INPUT type="hidden" name="contract[queue]" value="0"></INPUT>
+			<INPUT type="hidden" name="contract[state]" value=""></INPUT>
+			<INPUT type="hidden" name="contract[uptime]" value=""></INPUT>
+			<A HREF="javascript: SearchTickets();">{t}Tickets searching{/t}</A>
 		</TD>
 	</TR>
 	{if $userinfo.info}

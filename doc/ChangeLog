@@ -1,9 +1,10 @@
 $Id$
 
-version 1.5.6 (??/??/????):
+version 1.5.6 Baal (??/??/????):
 
   - finished translation of documentation (kondi)
   - we can use limitations in percents in warnings (chilek)
+  - tickets searching for selected user in userinfobox (chilek)
 
 version 1.5.5 Anubis (25/03/2005):
 
