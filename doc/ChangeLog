@@ -22,6 +22,7 @@ wersja 1.5.2 (??/??/????):
     urz±dzenia sieciowego (alec)
   - lms-arping (T.Ciaszczyk/alec)
   - lms-rtparser: usuniêty b³±d w dzia³aniu opcji tmp_dir (alec)
+  - pinger.h: usuniêty b³±d kompilacji z glibc 2.3 (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 
