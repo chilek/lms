@@ -173,7 +173,6 @@ class LMSDB_driver_mysql extends LMSDB_common
 	}
 }
 
-?>
 if(strtolower($_CONFIG['database']['server_encoding']) != 'unicode')
 {
 	switch($_CONFIG['database']['type'])
@@ -191,3 +190,4 @@ if(strtolower($_CONFIG['database']['server_encoding']) != 'unicode')
 		break;
 	}
 }
+?>
