@@ -136,7 +136,6 @@ require_once($_SMARTY_DIR.'/Smarty.class.php');
 require_once($_LIB_DIR.'/LMSDB.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
-require_once($_LIB_DIR.'/leftmenu.php');
 require_once($_LIB_DIR.'/accesstable.php');
 require_once($_LIB_DIR.'/language.php');
 
@@ -171,7 +170,7 @@ $layout['uptime'] = uptime();
 $layout['hostname'] = hostname();
 $layout['faktury'] = (! $_CONFIG['finances']['enable_faktury'] ? '0' : $_CONFIG['finances']['enable_faktury']);
 
-$SMARTY->assign('menu', $menu);
+$SMARTY->assign('menu', $LMS->MENU);
 $SMARTY->assign('layout', $layout);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
@@ -201,13 +200,18 @@ if($SESSION->islogged)
 		{
 			$layout['module'] = $module;
 			include($_MODULES_DIR.'/'.$module.'.php');
-		}else
+		}
+		else
 			$SMARTY->display('noaccess.html');
-	}elseif($module == ''){
+	}
+	elseif($module == '')
+	{
 		$layout['module'] = 'welcome';
 		$SMARTY->assign('warning',!chkconfig($_CONFIG['phpui']['disable_devel_warning']));
 		include($_MODULES_DIR.'/welcome.php');
-	}else{
+	}
+	else
+	{
 		$layout['module'] = 'notfound';
 		$layout['pagetitle'] = 'B³±d!';
 		$SMARTY->assign('layout', $layout);
@@ -230,6 +234,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.118  2003/11/27 03:19:48  lukasz
+ * - no i leftmenu polecia³o w niepamiêæ ;-)
+ *
  * Revision 1.117  2003/11/26 18:23:36  alec
  * nie wiem czy to tak mia³o byæ, ale teraz dziala
  *
@@ -328,6 +335,3 @@ $DB->Destroy();
  */
 
 ?>
-
-
-
