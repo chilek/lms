@@ -38,25 +38,25 @@ $menu[name]	[] = "U¿ytkownicy";
 $menu[img]	[] = "user.gif";
 $menu[link]	[] = "?m=userlist";
 $menu[accesskey][] = "u";
-$menu[tip]	[] = "U¿ytkownicy: lista, wyszukiwanie, dodanie nowego";
+$menu[tip]	[] = "<B>U¿ytkownicy: lista, wyszukiwanie, dodanie nowego</B>";
 
 $menu[name]	[] = "Komputery";
 $menu[img]	[] = "node.gif";
 $menu[link]	[] = "?m=nodelist";
 $menu[accesskey][] = "k";
-$menu[tip]	[] = "Komputery: lista, wyszukiwanie, dodawanie";
+$menu[tip]	[] = "<B>Komputery: lista, wyszukiwanie, dodawanie</B>";
 
 $menu[name]	[] = "Sieci IP";
 $menu[img]	[] = "ip.gif";
 $menu[link]	[] = "?m=netlist";
 $menu[accesskey][] = "s";
-$menu[tip]	[] = "Zarz±dzanie klasami adresowymi IP";
+$menu[tip]	[] = "<B>Zarz±dzanie klasami adresowymi IP</B>";
 
 $menu[name]	[] = "Taryfy i finanse";
 $menu[img]	[] = "money.gif";
 $menu[link]	[] = "?m=tarifflist";
 $menu[accesskey][] = "t";
-$menu[tip]	[] = "Zarz±dzanie taryfami oraz finansami sieci";
+$menu[tip]	[] = "<B>Zarz±dzanie taryfami oraz finansami sieci</B>";
 
 $menu[name]	[] = "Mailing";
 $menu[img]	[] = "mail.gif";
@@ -74,12 +74,12 @@ $menu[name]	[] = "Bazy danych";
 $menu[img]	[] = "db.gif";
 $menu[link]	[] = "?m=dblist";
 $menu[accesskey][] = "b";
-$menu[tip]	[] = "Zarz±dzanie kopiami zapasowymi bazy danych";
+$menu[tip]	[] = "<B>Zarz±dzanie kopiami zapasowymi bazy danych</B>";
 
 $menu[name]	[] = "Administratorzy";
 $menu[img]	[] = "admins.gif";
 $menu[link]     [] = "?m=adminlist";
 $menu[accesskey][] = "d";
-$menu[tip]	[] = "Konta administratorów systemu";
+$menu[tip]	[] = "<B>Konta administratorów systemu</B>";
 
 ?>
