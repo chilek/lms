@@ -103,6 +103,9 @@ pada³ mi wins ;-)
 --
 £ukasz Jaros³aw Mozer ;]";
 
+$fortunes[] = "Ilu potrzeba developerów LMSa do wkrêcenia ¿arówki?
+¯adnego. Developerzy LMSa zrobi± odrazu now± lampê.";
+
 mt_srand ((double) microtime()* 100000000);
 $layout[fortune] = $fortunes[mt_rand(0,sizeof($fortunes)-1)];
 
