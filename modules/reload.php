@@ -61,7 +61,7 @@ switch($_RELOAD_TYPE)
 				$query = str_replace("%TIME%","?NOW?",$query);
 				echo "<P><B>Wykonuje:</B></P>";
 				echo "<PRE>".$query."</PRE>";
-				$ADB->Execute($query);
+				$LMS->DB->Execute($query);
 			}
 			echo '</TD></TR></TABLE>';
 		}else{
@@ -92,6 +92,9 @@ $SMARTY->display("footer.html");
 
 /*
  * $Log$
+ * Revision 1.19  2003/09/07 18:46:57  lexx
+ * - die ADOB, die!
+ *
  * Revision 1.18  2003/08/31 19:05:14  lukasz
  * - 19:48.32| < Lexx__> Baseciq, ten tego w reload.php uzywasz sqlTSfmt() ktore jest zdaje sie obsolete
  *
