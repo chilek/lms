@@ -92,7 +92,6 @@ require_once($_LIB_DIR.'/LMSDB.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
 require_once($_LIB_DIR.'/leftmenu.php');
-require_once($_LIB_DIR.'/TipOfTheDay.php');
 require_once($_LIB_DIR.'/accesstable.php');
 
 $DB = DBInit($_DBTYPE,$_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME);
@@ -186,6 +185,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.104  2003/09/24 22:33:54  lukasz
+ * - s/TipOfTheDay/fortunes/g
+ *
  * Revision 1.103  2003/09/12 21:58:43  lexx
  * - blak
  *

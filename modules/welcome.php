@@ -24,7 +24,7 @@
  *  $Id$
  */
 require_once($_LIB_DIR."/Sysinfo.class.php");
-require_once($_LIB_DIR."/TipOfTheDay.php");
+require_once($_LIB_DIR."/fortunes.php");
 
 $SI = new Sysinfo;
 
@@ -36,6 +36,9 @@ $SMARTY->assign("layout",$layout);
 $SMARTY->display("welcome.html");
 /*
  * $Log$
+ * Revision 1.27  2003/09/24 22:33:54  lukasz
+ * - s/TipOfTheDay/fortunes/g
+ *
  * Revision 1.26  2003/08/28 11:36:47  lukasz
  * - http://bts.rulez.pl/bug_view_page.php?bug_id=0000057
  *
