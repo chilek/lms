@@ -28,6 +28,7 @@ version 1.5.5 (??/??/????):
   - added index on tariffid column in assignments table (alec)
   - BTS#0000284: user login is unique and can't be reused - changed content
     of warning message (alec)
+  - added 'in debt', 'deleted' and 'disconnected' filters for mailing (alec) 
 
 version 1.5.4 Ramius (16/02/2005):
 
