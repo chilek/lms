@@ -30,7 +30,7 @@ INSTALL           - krótkie how-to jak zainstalowaæ LMS'a.
 TODO              - lista rzeczy do zrobienia.
 ChangeLog         - lista ostatnich zmian w LMS.
 lms.mysql         - skrypt MySQL tworz±cy tabele LMS'a.
-lms.pgsql         - (nieaktualny) skrypt PostgreSQL tworz±cy tabele LMS'a.
+lms.pgsql         - skrypt PostgreSQL tworz±cy tabele LMS'a.
 
 -----------------------------------------------------------------------------
 
