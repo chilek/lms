@@ -81,6 +81,7 @@ class LMS
 
 		// to siê rozejdzie po modu³ach:
 
+		$this->AddMenu('RT', 'mail.gif', '?m=rtshowqlist', 'Obs³uga zg³oszeñ (RT)', 'r', 60);
 		$this->AddMenu('Witamy !', 'l.gif', '?', '', '', 0);
 		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 10);
 		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 15);
@@ -2371,7 +2372,44 @@ class LMS
 	}
 
 	/*
+	 * Obs³uga RT
+	 *
+         * Statusy ticketów:
+	 *
+	 * 0 - new
+	 * 1 - open
+	 * 2 - resolved
+	 * 3 - dead (podobny do resolved, ale nie rozwi±zany)
+	 *
+	 */
+
+	function GetQueueList()
+	{
+		if($result = $this->DB->GetAll('SELECT id, name, email FROM rtqueues'))
+		{
+			foreach($result as $idx => $row)
+			{
+				$result[$idx]['stats'] = $this->GetQueueStats($row['id']);
+			}
+		}
+		return $result;
+	}
+
+	function GetQueueStats($id)
+	{
+		if($result = $this->DB->GetAll('SELECT state, COUNT(state) AS scount FROM rttickets WHERE queueid = ? GROUP BY state ORDER BY state ASC',array($id)))
+		{
+			foreach($result as $row)
+				$stats[$row['state']] = $row['scount'];
+			foreach(array('new', 'open', 'resolved', 'dead') as $idx => $value)
+				$stats[$value] = $stats[$idx];
+		}
+		return $stats;
+	}
+
+	/*
 	 * Templejty plików konfiguracyjnych
+	 *
 	 */
 
 	function GetTemplatesList()
