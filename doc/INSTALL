@@ -184,11 +184,11 @@ lms-eachmonth do crona. Przyk³adowa linijka wygl±da tak:
 0 0 6 * *       /usr/sbin/lms-eachmonth
 
 Taki zapisa spowoduje ¿e ka¿dego szóstego dnia miesi±ca, o godzinie 0:00,
-z ka¿dy u¿ytkownik zostanie obci±¿ony op³at± abonamentow± w wysoko¶ci
+ze ka¿dy u¿ytkownik zostanie obci±¿ony op³at± abonamentow± w wysoko¶ci
 przewidzianej przez taryfê w jakiej siê znajduje. Oczywi¶cie zamiast
 szóstego mo¿e byæ inny dzieñ, jednak¿e radzê pamiêtaæ, ¿e 31 ka¿dego miesi±ca
 wystêpuje 8 razy do roku, a 29 luty wystêpuje co cztery lata, wiêc najpó¼niej
-op³aty mo¿na pobieraæ dwudziestego ósmego ka¿dego miesi±ca, owa¿ni mog± to 
+op³aty mo¿na pobieraæ dwudziestego ósmego ka¿dego miesi±ca, odwa¿ni mog± to 
 zrobiæ w skrypcie /etc/cron.d/monthly obs³ugiwanym przez wiêkszo¶æ 
 wspó³czesnych dystrybucji, wykonywanym dok³adnie raz na miesi±c, czy wrêcz 
 w postaci wpisów w atd (demonie uruchamiaj±cym polecenia nie 'wcze¶niej 
@@ -209,13 +209,31 @@ Czyli ósmego ka¿dego miesi±ca wy¶lemy przypominienie o tym, ¿e s± jakie¶
 zaleg³o¶ci (czyli aktualne saldo usera jest poni¿ej zera). Temat wiadomo¶ci
 oraz ¶cie¿kê do pliku tekstowego ustawiamy w /etc/lms/lms.ini. Przydatna
 bêdzie opcja debug która zaspamuje naszego mailboxa zamiast u¿ytkowników.
-Przyk³adowy template maila jest w sample/mailtemplate.txt.
+Przyk³adowy template maila jest w sample/mailtemplate.txt. 
+Dzia³ Nêkania mo¿e p.t. luserowi przys³aæ pewne informacje zawarte w lmsie, 
+ich pe³ny wykaz znajduje siê w pliku sample/test.txt, mo¿e to byæ np aktualna
+taryfa, stan konta, czy wyci±g z ostatnich operacji. 
+Dodatkowo mo¿na ustawiæ kilka(na¶cie?) szablonów maili, tak ¿e pierwszy to 
+'naliczono abonament', drugi 'pro¶ba o uregulowanie wp³aty'. N-ty to 'za 24h 
+zostaniesz odciêty od sieci'. Np:
+
+0 0 10 * * /usr/sbin/lms-notify -D conf/tekst_1.txt 
+0 0 15 * * /usr/sbin/lms-notify -D conf/tekst_2.txt 
+0 0 20 * * /usr/sbin/lms-notify -D conf/tekst_3.txt 
 
 Trzeci i ostatni etap to odcinanie userów poni¿ej danego limitu:
 
 0 0 10 * *       /usr/sbin/lms-cutoff
 
 Limit ustawiamy w lms.ini jak zwykle.
+
+Zatrzymajmy siê tutaj i dodajmy co¶ do crona, tak dla ¶wiêtego 
+spokoju[tm](C):
+
+12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o --add-drop-table --add-locks lms > backups/lms-auto-"$(date +%s)".sql
+
+Spowoduje to wykonywanie 12 po 4 rano, ka¿dego 3, 10, 17, 21 i 28 dnia 
+miesi±ca automagicznie zrzutu danych z mysqla.
 
 Okej. Teraz generowanie configów. Od tego s³u¿y lms-mgc. Jego konfiguracja
 jest zawi³a. Tak wiêc wróæmy do podstawowego zadania - zrobienia tylko
