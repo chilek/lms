@@ -1,3 +1,10 @@
+* 27.11.2003
+  - w 'ethers' dodana mo¿liwo¶æ wyboru (opcja dummy_macs), czy dla 
+    komputerów od³±czonych ustawiaæ mac 00:00:00:00:00:00 (alec)
+  - ujednolicone opcje begin i end, zamiast prefix, start, append (alec)
+  - w 'ggnotify' zmiana opcji passwd na bardziej intuicyjn± password (alec)
+  - w modu³ach notify ujednolicono opcje template (alec)
+
 * 26.11.2003
   - dodany modu³ 'ggnotify' (lexx/alec)
   - poprawiona obs³uga warto¶ci NULL w mysql (alec)
