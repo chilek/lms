@@ -39,15 +39,14 @@ $DB->Execute("CREATE TABLE sessions (
 )");
 
 $DB->Execute("CREATE TABLE cashimport (
-    id integer DEFAULT nextval('cashimport_id_seq'::text) NOT NULL,
+    id integer PRIMARY KEY,
     date integer DEFAULT 0 NOT NULL,
     value numeric(9,2) DEFAULT 0 NOT NULL,
     customer varchar(150) DEFAULT '' NOT NULL,
     description varchar(150) DEFAULT '' NOT NULL,
     customerid integer DEFAULT 0 NOT NULL,
     hash varchar(50) DEFAULT '' NOT NULL,
-    closed smallint DEFAULT 0 NOT NULL,
-    PRIMARY KEY (id)
+    closed smallint DEFAULT 0 NOT NULL
 )");
 
 $DB->Execute("CREATE INDEX assignments_tariffid_idx ON assignments (tariffid)");
