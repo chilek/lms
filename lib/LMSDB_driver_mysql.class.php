@@ -78,7 +78,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 	function _driver_disconnect()
 	{
-		return mysql_close($this->_dblink);
+		return @mysql_close($this->_dblink);
 	}
 	
 	function _driver_selectdb($dbname)
@@ -95,7 +95,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 		if($this->iconv)
 			$query = iconv('UTF-8', $this->iconv, $query);
 
-		if($this->_result = mysql_query($query, $this->_dblink))
+		if($this->_result = @mysql_query($query, $this->_dblink))
 			$this->_error = FALSE;
 		else
 			$this->_error = TRUE;
