@@ -111,7 +111,7 @@
 				<member>moddate - czas modyfikacji</member>
 				<member>creatorid - identyfikator administratora tworz±cego wpis</member>
 				<member>modid - identyfikator administratora dokonuj±cego zmian danych</member>
-				<member>deleted - usuniêty z bazy</member>
+				<member>deleted - usuniêty z bazy (0/1)</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="networks">
@@ -144,7 +144,7 @@
 				<member>creatorid - identyfikator administratora tworz±cego wpis</member>
 				<member>modid - identyfikator administratora </member>
 				<member>netdev - identyfikator urz±dzenia sieciowego do którego jest pod³±czony komputer</member>
-				<member>access - pod³±czony/od³±czony</member>
+				<member>access - pod³±czony/od³±czony (1/0)</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="netdevices">
@@ -168,7 +168,6 @@
 				<member>dst- drugi koniec</member>
 			</simplelist>
 		</sect2>
-
 		<sect2 id="cash">
 			<title>Operacje finansowe ('cash')</title>
 			<simplelist>
@@ -202,7 +201,7 @@
 				<member>name - nazwa</member>
 				<member>value - kwota</member>
 				<member>creditor - nazwa wierzyciela</member>
-				<member>period - typ okresu naliczania (co miesi±c/co tydzieñ/co rok)</member>
+				<member>period - typ okresu naliczania: co tydzieñ/co miesi±c/co kwarta³/co rok (0/1/2/3)</member>
 				<member>at - dzieñ naliczenia</member>
 				<member>description - opis</member>
 			</simplelist>
@@ -215,6 +214,8 @@
 				<member>userid - identyfikator u¿ytkownika</member>
 				<member>period - typ okresu </member>
 				<member>at - dzieñ naliczania</member>
+				<member>datefrom - data obowi±zywania zobowi±zania</member>
+				<member>dateto - data obowi±zywania zobowi±zania</member>
 				<member>invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)</member>
 			</simplelist>
 		</sect2>
@@ -234,7 +235,7 @@
 				<member>zip - kod pocztowy nabywcy</member>
 				<member>phone - telefon nabywcy</member>
 				<member>city - miasto nabywcy</member>
-				<member>finished - pole okre¶laj±ce zamkniêcie faktury</member>
+				<member>finished - pole okre¶laj±ce zamkniêcie faktury (0/1)</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="invoicecontents">
@@ -251,7 +252,7 @@
 			</simplelist>
 		</sect2>
 		<sect2 id="timestamps">
-			<title>Znaczniki czasu ('timestamps')</title>
+			<title>Historia ('timestamps')</title>
 			<simplelist>
 				<member>time - czas ostatniej modyfikacji</member>
 				<member>tablename - nazwa tabeli</member>
@@ -264,6 +265,13 @@
 				<member>dt - znacznik czasu</member>
 				<member>upload - ilo¶æ danych wys³anych, w bajtach</member>
 				<member>download - ilo¶æ danych odebranych, w bajtach</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="dbinfo">
+			<title>Informacje o bazie danych ('dbinfo')</title>
+			<simplelist>
+				<member>keytype - typ</member>
+				<member>keyvalue - warto¶æ</member>
 			</simplelist>
 		</sect2>
 	</sect1>
