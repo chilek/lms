@@ -175,7 +175,7 @@ open(IPTABLESSCRIPT, ">$cfile") or die("Fatal error: Unable to write $cfile, exi
 print IPTABLESSCRIPT "#!/bin/bash\n";
 print IPTABLESSCRIPT "$ipbin -t nat -F\n";
 print IPTABLESSCRIPT "$ipbin -t filter -F\n";
-print IPTABLESSCRIPT "$ipbin -P FORWARD DENY\n";
+print IPTABLESSCRIPT "$ipbin -P FORWARD DROP\n";
 
 if($prescript)
 {
