@@ -5,7 +5,7 @@
 # backup:
 13 1 * * * /home/services/lan-managment-system/bin/rc.backup
 # naliczenie:
-15 2 1 * * /home/services/lan-managment-system/bin/lms-eachmonth
+15 2 * * * /home/services/lan-managment-system/bin/lms-payments
 # przypomnienia:
 18 4 1 * * /home/services/lan-managment-system/bin/rc.reminder_1st
 18 4 11 * * /home/services/lan-managment-system/bin/rc.reminder_2nd
