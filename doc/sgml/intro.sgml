@@ -165,7 +165,7 @@
 	</sect1>
 	<sect1 id="legalnotice">
 		<title>Licencja</title>
-	   <para>Niniejszy  program  jest  oprogramowaniem  wolnodostêpnym;  
+	   <para>Niniejszy  program (z wy³±czeniem dokumentacji) jest  oprogramowaniem  wolnodostêpnym;  
 		mo¿esz  go rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej 
 		Licencji Publicznej  GNU, wydanej przez Fundacjê Wolnodostêpnego Oprogramowania 
 		- wed³ug wersji 2-giej tej Licencji lub której¶ z pó¼niejszych wersji.</para>
@@ -178,6 +178,8 @@
 		Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. </para>
 	   <para>Angielski tekst tej licencji znajduje siê <ulink url="../COPYING">
 		tutaj</ulink>.</para>
+	    <para>Autorzy niniejszej dokumentacji wyra¿aj± zgodê na jej kopiowanie i niekomercyjne
+		rozprowadzanie wraz z systemem LMS.</para>
 	</sect1>
 	<sect1 id="moreinfo">
 		<title>Informacje dodatkowe</title>
