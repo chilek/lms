@@ -120,7 +120,11 @@ CREATE TABLE tariffs (
 	taxvalue numeric(9,2) 	DEFAULT 0,
 	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
 	uprate integer		DEFAULT 0 NOT NULL,
+	upceil integer		DEFAULT 0 NOT NULL,
 	downrate integer	DEFAULT 0 NOT NULL,
+	downceil integer	DEFAULT 0 NOT NULL,
+	climit integer		DEFAULT 0 NOT NULL,
+	plimit integer		DEFAULT 0 NOT NULL,
 	description text	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name)
@@ -330,7 +334,6 @@ CREATE TABLE rtattachments (
 	contenttype varchar(255) DEFAULT '' NOT NULL
 );
 
-
 DROP SEQUENCE "rtqueues_id_seq";
 CREATE SEQUENCE "rtqueues_id_seq";
 DROP TABLE rtqueues;
@@ -338,9 +341,9 @@ CREATE TABLE rtqueues (
   id integer default nextval('rtqueues_id_seq'::text) NOT NULL,
   name varchar(255) 	DEFAULT '' NOT NULL,
   email varchar(255) 	DEFAULT '' NOT NULL,
+  description text	DEFAULT '' NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (name),
-  UNIQUE (email)
 );
 
 DROP SEQUENCE "rttickets_id_seq";
@@ -353,6 +356,7 @@ CREATE TABLE rttickets (
   subject varchar(255) 	DEFAULT '' NOT NULL,
   state smallint 	DEFAULT 0 NOT NULL,
   owner integer 	DEFAULT 0 NOT NULL,
+  userid integer 	DEFAULT 0 NOT NULL,
   createtime integer 	DEFAULT 0 NOT NULL,
   PRIMARY KEY (id)
 );
@@ -363,7 +367,8 @@ DROP TABLE rtmessages;
 CREATE TABLE rtmessages (
   id integer default nextval('rtmessages_id_seq'::text) NOT NULL,
   ticketid integer 	DEFAULT 0 NOT NULL,
-  sender integer 	DEFAULT 0 NOT NULL,
+  adminid integer 	DEFAULT 0 NOT NULL,
+  userid integer 	DEFAULT 0 NOT NULL,
   mailfrom varchar(255) DEFAULT '' NOT NULL,
   subject varchar(255) 	DEFAULT '' NOT NULL,
   messageid varchar(255) DEFAULT '' NOT NULL,
@@ -373,6 +378,18 @@ CREATE TABLE rtmessages (
   body text 		DEFAULT '' NOT NULL,
   createtime integer	DEFAULT 0 NOT NULL,
   PRIMARY KEY (id)
+);
+
+DROP SEQUENCE "rtrights_id_seq";
+CREATE SEQUENCE "rtrights_id_seq";
+DROP TABLE rtrights;
+CREATE TABLE rtrights (
+    id integer DEFAULT nextval('rtrights_id_seq'::text) NOT NULL, 
+    adminid integer DEFAULT 0 NOT NULL,
+    queueid integer DEFAULT 0 NOT NULL,
+    rights integer DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (adminid, queueid)
 );
 
 /* ---------------------------------------------------
@@ -385,4 +402,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004042300');    
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004071200');    

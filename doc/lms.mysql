@@ -243,7 +243,8 @@ DROP TABLE IF EXISTS rtmessages;
 CREATE TABLE rtmessages (
   id int(11) NOT NULL auto_increment,
   ticketid int(11) NOT NULL default '0',
-  sender int(11) NOT NULL default '0',
+  adminid int(11) NOT NULL default '0',
+  userid int(11) NOT NULL default '0',
   mailfrom varchar(255) NOT NULL default '',
   subject varchar(255) NOT NULL default '',
   messageid varchar(255) NOT NULL default '',
@@ -266,9 +267,9 @@ CREATE TABLE rtqueues (
   id int(11) NOT NULL auto_increment,
   name varchar(255) NOT NULL default '',
   email varchar(255) NOT NULL default '',
+  description text NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
-  UNIQUE KEY email (email)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -285,8 +286,25 @@ CREATE TABLE rttickets (
   subject varchar(255) NOT NULL default '',
   state tinyint(4) NOT NULL default '0',
   owner int(11) NOT NULL default '0',
+  userid int(11) NOT NULL default '0',
   createtime int(11) NOT NULL default '0',
   PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
+# Struktura tabeli dla  rtrights
+#
+
+CREATE TABLE IF EXISTS rtrights;
+CREATE TABLE rtrights (
+    id INT(11) NOT NULL auto_increment, 
+    adminid INT(11) DEFAULT 0 NOT NULL,
+    queueid INT(11) DEFAULT 0 NOT NULL,
+    rights INT(11) DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (adminid, queueid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -318,7 +336,11 @@ CREATE TABLE tariffs (
   taxvalue decimal(9,2) default '0.00',
   pkwiu varchar(255) NOT NULL default '',
   uprate int(11) NOT NULL default '0',
+  upceil int(11) NOT NULL default '0',
   downrate int(11) NOT NULL default '0',
+  downceil int(11) NOT NULL default '0',
+  climit int(11) NOT NULL default '0',
+  plimit int(11) NOT NULL default '0',
   description text NOT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY name (name)
@@ -393,4 +415,4 @@ CREATE TABLE userassignments (
   UNIQUE KEY userassignment (usergroupid, userid)
 ) TYPE=MyISAM;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004042300');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004071200');
