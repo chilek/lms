@@ -111,6 +111,7 @@ my $mh_to = $headers->get('To');
 my $mh_msgid = $headers->get('Message-ID');
 my $mh_replyto = $headers->get('Reply-To');
 my $mh_subject = $headers->get('Subject');
+my $mh_references = $headers->get('References');
 my $mailheaders = $headers->as_string;
 my $body;
 my $mailbody;
@@ -142,6 +143,7 @@ chomp $mh_msgid;
 chomp $mailbody;
 chomp $mailheaders;
 chomp $mh_replyto;
+chomp $mh_references;
 
 $mailbody =~ s/\\/\\\\/g;
 $mailbody =~ s/\'/\\\'/g;
@@ -155,12 +157,13 @@ $mh_subject =~ s/\\/\\\\/g;
 $mh_subject =~ s/\'/\\\'/g;
 $mh_replyto =~ s/\\/\\\\/g;
 $mh_replyto =~ s/\'/\\\'/g;
+$mh_references =~ s/\\/\\\\/g;
+$mh_references =~ s/\'/\\\'/g;
 
 #print "From: $mh_from\n";
 #print "Subject: $mh_subject\n";
 #print "Message-ID: $mh_msgid\n";
 #print $mailbody;
-
 
 my $dbase;
 my $utsfmt;
@@ -187,6 +190,28 @@ $dbq->execute();
 my $row = $dbq->fetchrow_hashref();
 my $timestamp = $row->{'timestamp'};
 
+# before we create new ticket try to find references...
+
+my $prev_tid = 0;
+$queue = 0 if($queue eq '');
+	
+# TODO - consider using references and In-Reply-To:
+#
+# no because: somebody would like to make new request while replying with new subject (without ticketdid)
+
+if( $mh_subject =~ /\[RT#[0-9]{6,}\]/ )
+{
+	$prev_tid = $mh_subject;
+	$prev_tid =~ s/\[RT#([0-9]{6,})\]/\1/g;
+	$prev_tid = sprintf('%d',$prev_tid);
+	$dbq = $dbase->prepare("SELECT * FROM tickets WHERE id = $prev_tid AND queueid = $queue");
+	$dbq->execute();
+	if(!($row = $dbq->fetchrow_hashref()))
+	{
+		$prev_tid = 0;
+	}
+}
+
 # create new ticket.
 #CREATE TABLE `tickets` (
 #`id` INT NOT NULL AUTO_INCREMENT ,
@@ -199,16 +224,63 @@ my $timestamp = $row->{'timestamp'};
 #PRIMARY KEY ( `id` ) 
 #);
 
-$dbq = $dbase->prepare("INSERT INTO tickets (queueid, requestor, subject, createtime) VALUES ($queue, '$mh_from', '$mh_subject', '$timestamp')");
-$dbq->execute();
+my $ticket_id;
 
-# fetch assigned ID
-
-$dbq = $dbase->prepare("SELECT id FROM tickets WHERE queueid = '$queue' AND requestor = '$mh_from' AND subject = '$mh_subject' AND createtime = '$timestamp'");
-$dbq->execute();
-$row = $dbq->fetchrow_hashref();
-my $ticket_id = $row->{'id'};
-
+if(! $prev_tid) # generate new ticket if previous not found
+{
+	$dbq = $dbase->prepare("INSERT INTO tickets (queueid, requestor, subject, createtime) VALUES ($queue, '$mh_from', '$mh_subject', '$timestamp')");
+	$dbq->execute();
+	
+	# fetch assigned ID
+	
+	$dbq = $dbase->prepare("SELECT id FROM tickets WHERE queueid = '$queue' AND requestor = '$mh_from' AND subject = '$mh_subject' AND createtime = '$timestamp'");
+	
+	$dbq->execute();
+	$row = $dbq->fetchrow_hashref();
+	$ticket_id = $row->{'id'};
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, subject, messageid, replyto, headers, body) VALUES ($ticket_id, '$mh_from', '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody')");
+	$dbq->execute();
+	my $replymail = MIME::Entity->build(Type => "text/plain; charset=iso-8859-2",
+		From => "LMS RT System <parser\@netx.waw.pl>",
+		Encoding => "quoted-printable",
+		Subject => "[RT#".sprintf("%06d",$ticket_id)."] Potwierdzenie przyjêcia zg³oszenia o temacie '".$headers->get('Subject')."'",
+		To => $mh_from,
+		References => $mh_references.' '.$mh_msgid,
+		Data => [
+			"Uprzejmie informujemy ¿e Pañstwa zg³oszenie zosta³o zarejestrowane w naszym\n",
+			"systemie. Zg³oszeniu zosta³ przydzielony numer: #".sprintf("%06d",$ticket_id)."\n",
+			"\n",
+			"W przypadku jakiejkolwiek korespondencji zwi±zanej z Pañstwa zg³oszeniem, prosimy\n",
+			"umie¶ciæ w polu tematu wiadomo¶ci nastêpuj±cy ci±g znaków: [RT#".sprintf("%06d",$ticket_id)."]\n",
+			"\n",
+		]);
+	
+	$replymail->head->replace('In-Reply-To',$mh_msgid);
+	
+	# TODO - is sendmail via pipe is correct way?
+	
+	open SENDMAIL, "|/usr/lib/sendmail -t -oi -oem"
+		or die "$0: open sendmail: $!\n";
+	$replymail->print(\*SENDMAIL);
+	close SENDMAIL;
+	die "sendmail failed" if ($? >> 255);
+	
+}
+else
+{
+	my @reftab = split(' ',$mh_references);
+	print Data::Dumper::Dumper @reftab;
+	my $lastref = $reftab[(scalar @reftab)-1];
+	my $inreplytoid = 0;
+	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE messageid = '$lastref'");
+	$dbq->execute();
+	if($row = $dbq->fetchrow_hashref())
+	{
+		$inreplytoid = $row->{'id'};
+	}
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, subject, messageid, replyto, headers, body, inreplyto) VALUES ($prev_tid, '$mh_from', '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $inreplytoid)");
+	$dbq->execute();
+}
 #CREATE TABLE `rtmessages` (
 #`id` INT NOT NULL AUTO_INCREMENT ,
 #`ticketid` INT DEFAULT '0' NOT NULL ,
@@ -223,8 +295,6 @@ my $ticket_id = $row->{'id'};
 #PRIMARY KEY ( `id` ) 
 #);
 
-$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, subject, messageid, replyto, headers, body) VALUES ($ticket_id, '$mh_from', '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody')");
-$dbq->execute();
 $parser->filer->purge;			# cleanup
 $dbq->finish();
 $dbase->disconnect();
