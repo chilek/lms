@@ -99,7 +99,8 @@
 	<para>W panelu przeznaczonym do ewidencji sprzêtu mo¿na przegl±daæ listê
 	urz±dzeñ sieciowych, zawieraj±c± ich nazwy i symbole, po³o¿enie i opis, a ponadto 
 	ilo¶æ dostêpnych portów. Klikniêcie na wybranym urz±dzeniu spowoduje
-	wy¶wietlenie informacji szczegó³owych o nim.</para>
+	wy¶wietlenie informacji szczegó³owych o nim. Mo¿liwe jest definiowanie po³±czeñ
+	urz±dzeñ i komputerów oraz generowanie graficznej mapy ca³ej sieci.</para>
 	<figure>
 		<title>LMS-UI: Osprzêt sieciowy</title>
 			<ulink url="images/netdev.png">
@@ -109,7 +110,7 @@
 		  		</imageobject>
   				</inlinemediaobject>
 			</ulink>
-	</figure
+	</figure>
  </sect2>
  <sect2 id="user-networks">
 	<title>Sieci IP</title>
@@ -159,9 +160,9 @@
  </sect2>
  <sect2 id="menu-reload">
 	<title>Prze³adowanie</title>
-	<para>Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji zdefiniowanej
-	dla generatora plików konfiguracyjnych lms-mgc. Wiêcej informacji znajdziesz w rozdziale
-	dotycz±cym lms-mgc.</para>
+	<para>Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji i us³ug zdefiniowanych
+	dla generatora plików konfiguracyjnych <emphasis>LMS-MGC</emphasis> lub demona <emphasis>almsd</emphasis>. 
+	Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <emphasis>LMS-MGC</emphasis> oraz demona.</para>
  </sect2>
  <sect2 id="menu-databases">
 	<title>Bazy danych</title>
