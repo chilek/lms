@@ -26,6 +26,8 @@ version 1.5.5 (??/??/????):
   - BTS#0000292: tariff's avg monthly income don't take into consideration
     suspended liabilities (alec)
   - added index on tariffid column in assignments table (alec)
+  - BTS#0000284: user login is unique and can't be reused - changed content
+    of warning message (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
