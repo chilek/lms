@@ -51,8 +51,14 @@ function _smarty_function_confirm($args, &$SMARTY)
 	$text = str_replace("\r",'',$text);
 	$text = str_replace("\n",'\n',$text);
 
-	if($text != "")
-		return ' onClick="return confirmLink(this, \''.$text.'\')" ';
+	if($text != '')
+		$ret = ' onClick="return confirmLink(this, \''.$text.'\')" ';
+	if($args['href'] != '')
+		$ret .= ' href="'.$args['href'].'" ';
+//		$ret .= ' href="?m=confirm&text='.urlencode($text).'&link='.urlencode($args['href']).'" ';
+		
+	$ret = eregi_replace('[ ]+', ' ', $ret);
+	return $ret;
 }
 
 function _smarty_function_tip($args, &$SMARTY)

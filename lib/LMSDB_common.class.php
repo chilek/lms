@@ -30,7 +30,7 @@
 
 Class LMSDB_common
 {
-	var $_version = "1.3-cvs";
+	var $_version = '1.3-cvs';
 	var $_revision = '$Revision$';
 	
 	// Driver powinien nadpisaæ t± zmienn± warto¶ci± TRUE, ¿eby
