@@ -11,7 +11,7 @@
 	</TR>
 	<TR>
 		<TD width="100%" colspan="2" class="fall">
-			<table border="0" cellpadding="5" cellspacing="0" width="100%">
+			<table cellpadding="5" cellspacing="0" width="100%">
 				<tr class="dark">
 					<TD width="1%" class="fleftu">Data:</TD>
 					<TD width="1%" class="fbt">Admin:</TD>
@@ -20,7 +20,7 @@
 					<TD width="1%" class="fbt" align="right">VAT:</TD>
 					<TD width="1%" class="fbt" align="center">&raquo;</TD>
 					<TD width="1%" class="fbt" align="right">Po:</TD>
-					<TD width="93%" class="fbt">Opis:</TD>
+					<TD width="92%" class="fbt">Opis:</TD>
 					<TD width="1%" class="frightu">&nbsp;</TD>
 				</tr>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
@@ -43,7 +43,7 @@
 						</nobr></TD>
 					<TD width="1%" align="center">&raquo;</TD>
 					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|string_format:"%01.2f"} z³{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
-					<TD width="93%">{$balancelist.comment[balancelist]}</TD>
+					<TD width="92%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.invoiceid[balancelist]}
 						<A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>
@@ -87,7 +87,8 @@
 							</SELECT>
 						</TD>
 						<TD colspan="3" align="right" class="ftop">
-							<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Podaj opis dla tej operacji finansowej"}> <A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A>
+							<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Podaj opis dla tej operacji finansowej"}> 
+							<NOBR><A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A></NOBR>
 						</TD>
 					</FORM>
 				</TR>
