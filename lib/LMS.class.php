@@ -1694,10 +1694,10 @@ class LMS
 				$item['taxvalue'] = str_replace(',','.',$item['taxvalue']);
 			
 			if ($item['taxvalue'] == '')
-				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
+				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
 				array(
 					$iid,
-					$itemid ,
+					$itemid,
 					$item['valuebrutto'], 
 					$item['pkwiu'], 
 					$item['jm'], 
@@ -1705,7 +1705,8 @@ class LMS
 					$item['name'], 
 					$item['tariffid']));
 			else
-				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
+				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+				array(
 					$iid, 
 					$itemid, 
 					$item['valuebrutto'], 
