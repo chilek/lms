@@ -109,7 +109,7 @@ if(isset($nodeedit))
 	if($nodeedit[access]!=1)
 		$nodeedit[access] = 0;
 	
-	if($nodeinfo[netdev] != $nodeedit[netdev])
+	if($nodeinfo[netdev] != $nodeedit[netdev] && $nodeedit[netdev] != 0)
 	{
 		$netdev = $LMS->GetNetDev($nodeedit[netdev]); 
 		if($netdev[ports] <= $netdev[takenports])
@@ -155,6 +155,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.36  2003/10/02 20:14:13  alec
+ * dodana mozliwosc odlaczenia kompa od urzadzenia
+ *
  * Revision 1.35  2003/10/02 19:40:22  alec
  * dodane sprawdzanie ilosci portow w netdev
  *
