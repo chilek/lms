@@ -106,18 +106,18 @@ function cal_prs_date1 (str_date) {
 
 	var arr_date = str_date.split('/');
 
-	if (arr_date.length != 3) return cal_error ("Z³y format daty: '" + str_date + "'.\nAkceptowany format to 'rrrr/mm/dd gg:mm'.");
-	if (!arr_date[0]) return cal_error ("Z³y format daty: '" + str_date + "'.\nNie podano roku.");
-	if (!RE_NUM.exec(arr_date[0])) return cal_error ("Z³y rok: '" + arr_date[0] + "'.\nDopuszczalne s± liczby ca³kowite bez znaku.");
-	if (!arr_date[1]) return cal_error ("Z³y format daty: '" + str_date + "'.\nNie podano miesi±ca.");
-	if (!RE_NUM.exec(arr_date[1])) return cal_error ("Z³y miesi±ca: '" + arr_date[1] + "'.\nDopuszczalne s± liczby ca³kowite bez znaku.");
-	if (!arr_date[2]) return cal_error ("Z³y format daty: '" + str_date + "'.\nNie dnia podano miesi±ca.");
-	if (!RE_NUM.exec(arr_date[2])) return cal_error ("Z³y dzieñ miesi±ca: '" + arr_date[2] + "'.\nDopuszczalne s± liczby ca³kowite bez znaku.");
+	if (arr_date.length != 3) return cal_error ("B³êdny format daty: '" + str_date + "'.\nAkceptowany format to 'rrrr/mm/dd gg:mm'.");
+	if (!arr_date[0]) return cal_error ("B³êdny format daty: '" + str_date + "'.\nNie podano roku.");
+	if (!RE_NUM.exec(arr_date[0])) return cal_error ("B³êdny rok: '" + arr_date[0] + "'.\nDopuszczalne s± liczby ca³kowite bez znaku.");
+	if (!arr_date[1]) return cal_error ("B³êdny format daty: '" + str_date + "'.\nNie podano miesi±ca.");
+	if (!RE_NUM.exec(arr_date[1])) return cal_error ("B³êdny numer miesi±c: '" + arr_date[1] + "'.\nDopuszczalne s± liczby ca³kowite bez znaku.");
+	if (!arr_date[2]) return cal_error ("B³êdny format daty: '" + str_date + "'.\nNie dnia podano miesi±ca.");
+	if (!RE_NUM.exec(arr_date[2])) return cal_error ("B³êdny dzieñ miesi±ca: '" + arr_date[2] + "'.\nDopuszczalne s± liczby ca³kowite bez znaku.");
 
 	var dt_date = new Date();
 	dt_date.setDate(1);
 
-	if (arr_date[1] < 1 || arr_date[1] > 12) return cal_error ("Z³y miesi±c: '" + arr_date[1] + "'.\nDopuszczalny zakres 01-12.");
+	if (arr_date[1] < 1 || arr_date[1] > 12) return cal_error ("B³êdny numer miesi±ca: '" + arr_date[1] + "'.\nDopuszczalny zakres 01-12.");
 	dt_date.setMonth(arr_date[1]-1);
 	 
 	if (arr_date[0] < 100) arr_date[0] = Number(arr_date[0]) + (arr_date[0] < NUM_CENTYEAR ? 2000 : 1900);
