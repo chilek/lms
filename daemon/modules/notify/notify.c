@@ -148,8 +148,6 @@ void reload(GLOBAL *g, struct notify_module *n)
 							free(last_ten);
 							free(select);
 						}
-		//				g->str_replace(&mailfile, "%date-m", month);
-		//				g->str_replace(&mailfile, "%date-y", year);
 						g->str_replace(&mailfile, "%saldo", g->db_get_data(res,i,"balance"));
 						g->str_replace(&mailfile, "%name", g->db_get_data(res,i,"name"));
 						g->str_replace(&mailfile, "%lastname", g->db_get_data(res,i,"lastname"));
