@@ -68,8 +68,8 @@
 	      <para>LMS-UI oraz LMS-MGC <emphasis>powinien</emphasis> tak¿e dzia³aæ z postgresql, jednak ta konfiguracja jest narazie w fazie testów.</para>
 	    </sect3>
 	    <sect3>
-             <title>Biblioteki: Smarty i ADOdb</title>
-             <para>LMS-UI do pracy wymaga jeszcze bibliotek Smarty (<ulink url="http://smarty.php.net">http://smarty.php.net</ulink>) w wersji 2.5.0 lub wy¿szej oraz ADOdb (<ulink url="http://php.weblogs.com/ADOdb">http://php.weblogs.com/ADOdb</ulink>) w wersji 2.90 lub wy¿szej.</para>
+             <title>Biblioteka Smarty</title>
+             <para>LMS-UI do pracy wymaga jeszcze biblioteki Smarty (<ulink url="http://smarty.php.net">http://smarty.php.net</ulink>) w wersji 2.5.0 lub wy¿szej.</para>
             </sect3>
             <sect3>
             <title>Perl</title>
@@ -121,13 +121,6 @@
 <prompt>lexx@troll:~$</prompt> <userinput>wget http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz</userinput>
 <prompt>lexx@troll:~$</prompt> <userinput>tar -xzf Smarty-2.5.0.tar.gz</userinput>
 <prompt>lexx@troll:~$</prompt> <userinput>mv Smarty-2.5.0/libs Smarty</userinput></screen>
-	  <para>Teraz ADOdb:</para>
-	  <screen><prompt>lexx@troll:~$</prompt> <userinput>wget http://phplens.com/lens/dl/adodb320.tgz</userinput>
-<prompt>lexx@troll:~$</prompt> <userinput>tar -xzf adodb320.tgz</userinput></screen>
-          <!--
-	  Debian owszem jest spoko, ale powinno byæ bardziej ogólnie. IMHO pójdzie do usuniêcia
-	  <para>Je¶li mamy Debiana, to ADOdb mo¿emy zainstalowaæ w ten sposób:</para>
-	  <screen><prompt>lexx@troll:~$</prompt> <userinput>apt-get install libphp-adodb</userinput></screen>
 	  -->
         </sect2>
     </sect1>
@@ -212,11 +205,6 @@
 	   <para>smarty_templates_dir</para>
 	   <para>Katalog z szablonami którymi Smartiego. Domy¶lnie to podkatalog templates z sys_dir'a.</para>
 	   <example><title>Przyk³ad:</title><para>smarty_templates_dir = /usr/share/lms/templates</para></example>
-	  </listitem>
-          <listitem>
-	   <para>adodb_dir</para>
-	   <para>Katalog z ADOdb - czyli tym co posredniczy pomiêdzy baz± a UI. Domy¶lnie podkatalog adodb w lib_dir.</para>
-	   <example><title>Przyk³ad:</title><para>adodb_dir = /usr/lib/php/adodb</para></example>
 	  </listitem>
          </itemizedlist>
     </sect1>

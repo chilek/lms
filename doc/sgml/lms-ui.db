@@ -63,16 +63,6 @@
     <example><title>Przyk³ad:</title><para>smarty_debug = 1</para></example>
    </listitem>
    <listitem>
-    <para>adodb_debug</para>
-    <para>W³±czenie debugu ADOdb, przydatne w ¶ledzeniu b³êdów w kwerendach SQL. Domy¶lnie wy³±czone.</para>
-    <example><title>Przyk³ad:</title><para>adodb_debug = 1</para></example>
-   </listitem>
-   <listitem>
-    <para>adodb_debug_log</para>
-    <para>Plik z logiem debugu ADOdb. Je¿eli w³±czymy adodb_debug i podamy tutaj nazwê pliku (do którego bêdzie móg³ zapisaæ serwer www) ca³y debug bêdzie szed³ do pliku, a na interface jedynie krytyczne b³êdy SQL'a. Domy¶lnie puste.</para>
-    <example><title>Przyk³ad:</title><para>adodb_debug_log	= /var/log/debug/lms-adodb.log</para></example>
-   </listitem>
-   <listitem>
     <para>debug_mail</para>
     <para>Adres e-mail do debugowania - pod ten email bêd± sz³y maile wysy³ane z sekcji 'mailing' LMS'a, zamiast do w³a¶ciwych u¿ytkowników.</para>
     <example><title>Przyk³ad:</title><para>debug_mail = root@localhost</para></example>
