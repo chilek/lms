@@ -154,62 +154,62 @@ info = "Opcjonalny opis modu³u"
 				</thead>
 				<tbody>
 				<row>
-				<entry>system</entry>
+				<entry><xref linkend="daemon-system"></entry>
 				<entry>Wywo³ywanie poleceñ pow³oki</entry>
 				</row>
 				<row>
-				<entry>dhcp</entry>
+				<entry><xref linkend="daemon-dhcp"></entry>
 				<entry>Konfiguracja serwera dhcpd</entry>
 				</row>
 				<row>
-				<entry>cutoff</entry>
+				<entry><xref linkend="daemon-cutoff"></entry>
 				<entry>Od³±czanie u¿ytkowników z zaleg³o¶ciami w op³atach</entry>
 				</row>
 				<row>
-				<entry>dns</entry>
+				<entry><xref linkend="daemon-dns"></entry>
 				<entry>Konfiguracja serwera dns</entry>
 				</row>
 				<row>
-				<entry>ethers</entry>
+				<entry><xref linkend="daemon-ethers"></entry>
 				<entry>Tworzenie pliku /etc/ethers</entry>
 				</row>
 				<row>
-				<entry>hostfile</entry>
+				<entry><xref linkend="daemon-hostfile"></entry>
 				<entry>Modu³ uniwersalny (np. tworzenie regu³ iptables)</entry>
 				</row>
 				<row>
-				<entry>notify</entry>
+				<entry><xref linkend="daemon-notify"></entry>
 				<entry>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach poczt± elektroniczn±</entry>
 				</row>
 				<row>
-				<entry>ggnotify</entry>
+				<entry><xref linkend="daemon-ggnotify"></entry>
 				<entry>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach przez gadu-gadu</entry>
 				</row>
 				<row>
-				<entry>payments</entry>
+				<entry><xref linkend="daemon-payments"></entry>
 				<entry>Naliczanie op³at abonamentowych</entry>
 				</row>
 				<row>
-				<entry>oident</entry>
+				<entry><xref linkend="daemon-oident"></entry>
 				<entry>Konfiguracja oident</entry>
 				</row>
 				<row>
-				<entry>tc</entry>
+				<entry><xref linkend="daemon-tc"></entry>
 				<entry>Tworzenie regu³ HTB</entry>
 				</row>
 				<row>
-				<entry>traffic</entry>
+				<entry><xref linkend="daemon-traffic"></entry>
 				<entry>Statystyki wykorzystania ³±cza</entry>
 				</row>
 				<row>
-				<entry>pinger</entry>
+				<entry><xref linkend="daemon-pinger"></entry>
 				<entry>Badanie aktywno¶ci u¿ytkowników</entry>
 				</row>
 				</tbody>
 			</tgroup>
 			</table>
 		</sect2>
-		<sect2 id="daemon-system">
+		<sect2 id="daemon-system" xreflabel="system">
 		<title>System</title>
 		    <sect3 id="system-desc">
 		    <title>Opis</title>
@@ -231,7 +231,7 @@ info = "Opcjonalny opis modu³u"
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-payments">
+		<sect2 id="daemon-payments" xreflabel="payments">
 		<title>Payments</title>
 		    <sect3 id="payments-desc">
 		    <title>Opis</title>
@@ -279,7 +279,7 @@ info = "Opcjonalny opis modu³u"
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-notify">
+		<sect2 id="daemon-notify" xreflabel="notify">
 		<title>Notify</title>
 		    <sect3 id="notify-desc">
 		    <title>Opis</title>
@@ -338,7 +338,7 @@ info = "Opcjonalny opis modu³u"
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-ggnotify">
+		<sect2 id="daemon-ggnotify" xreflabel="ggnotify">
 		<title>Ggnotify</title>
 		    <sect3 id="ggnotify-desc">
 		    <title>Opis</title>
@@ -386,7 +386,7 @@ info = "Opcjonalny opis modu³u"
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-cutoff">
+		<sect2 id="daemon-cutoff" xreflabel="cutoff">
 		<title>Cutoff</title>
 		    <sect3 id="cutoff-desc">
 		    <title>Opis</title>
@@ -409,7 +409,7 @@ info = "Opcjonalny opis modu³u"
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-dhcp">
+		<sect2 id="daemon-dhcp" xreflabel="dhcp">
 		<title>Dhcp</title>
 		    <sect3 id="dhcp-desc">
 		    <title>Opis</title>
@@ -501,7 +501,7 @@ info = "Opcjonalny opis modu³u"
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-hostfile">
+		<sect2 id="daemon-hostfile" xreflabel="hostfile">
 		<title>Hostfile</title>
 		    <sect3 id="hostfile-desc">
 		    <title>Opis</title>
@@ -570,7 +570,7 @@ info = "Opcjonalny opis modu³u"
 		    </itemizedlist>
 		    </sect3>
 		</sect2>	    
-		<sect2 id="daemon-traffic">
+		<sect2 id="daemon-traffic" xreflabel="traffic">
 		<title>Traffic</title>
 		    <sect3 id="traffic-desc">
 		    <title>Opis</title>
@@ -591,7 +591,7 @@ info = "Opcjonalny opis modu³u"
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-tc">
+		<sect2 id="daemon-tc" xreflabel="tc">
 		<title>Tc (HTB)</title>
 		    <sect3 id="tc-desc">
 		    <title>Opis</title>
@@ -823,7 +823,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-dns">
+		<sect2 id="daemon-dns" xreflabel="dns">
 		<title>Dns</title>
 		    <sect3 id="dns-desc">
 		    <title>Opis</title>
@@ -928,7 +928,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-ethers">
+		<sect2 id="daemon-ethers" xreflabel="ethers">
 		<title>Ethers</title>
 		    <sect3 id="ethers-desc">
 		    <title>Opis</title>
@@ -971,7 +971,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-oident">
+		<sect2 id="daemon-oident" xreflabel="oident">
 		<title>Oident</title>
 		    <sect3 id="oident-desc">
 		    <title>Opis</title>
@@ -1015,7 +1015,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-pinger">
+		<sect2 id="daemon-pinger" xreflabel="pinger">
 		<title>Pinger</title>
 		    <sect3 id="pinger-desc">
 		    <title>Opis</title>
