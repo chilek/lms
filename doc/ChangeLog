@@ -26,6 +26,9 @@ wersja 1.3.5 (??/??/????):
     zdefiniowano) zast±pi adres u¿ytkownika na fakturze (alec)
   - w module hostfile demona dodana zmienna '%gw' zamieniana na adres
     bramy (alec)
+  - w module 'tc' demona mo¿na okre¶liæ politykê generowania klas htb poprzez
+    zmienn± 'one_class_per_host', rozbite regu³y na kilka opcji konfiguracyjnych
+    osobno dla markowania i htb w obie strony (alec)
 
 wersja 1.3.4 Terok (06/07/2004):
 
