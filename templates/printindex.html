@@ -6,7 +6,7 @@
 <SCRIPT type="text/javascript" src="img/calendar.js"></SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 {if $printmenu=="users" || !$printmenu}
-<FORM method="POST" name="printuserlist" id="printuserlist" action="?m=print&type=userlist" target="_blank">	
+<P><FORM method="POST" name="printuserlist" id="printuserlist" action="?m=print&type=userlist" target="_blank">	
 <TABLE width="100%" cellpadding="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -95,7 +95,7 @@
 </FORM>
 {/if}
 {if $printmenu=="finances" || !$printmenu}
-<FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist" target="_blank">
+<P><FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist" target="_blank">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -152,7 +152,7 @@ cal2.time_comp = false;
 </SCRIPT>
 {/if}
 {if $printmenu=="incomereport" || $printmenu=="finances" || !$printmenu}
-<FORM method="post" name="printincomereport" id="printincomereport" action="?m=print&type=incomereport" target="_blank">
+<P><FORM method="post" name="printincomereport" id="printincomereport" action="?m=print&type=incomereport" target="_blank">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -195,7 +195,7 @@ cal6.time_comp = false;
 </SCRIPT>
 {/if}
 {if $printmenu=="users" || $printmenu=="finances" || !$printmenu}
-<FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&type=liabilityreport" target="_blank">
+<P><FORM method="post" name="liabilityreport" id="liabilityreport" action="?m=print&type=liabilityreport" target="_blank">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -265,14 +265,14 @@ cal7.time_comp = false;
 </SCRIPT>
 {/if}
 {if $printmenu=="finances" || !$printmenu}
-<FORM method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport" target="_blank">
+<P><FORM method="post" name="invoicereport" id="invoicereport" action="?m=invoicereport" target="_blank">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
 			<IMG src="img/money.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Sale registry{/t}</B>
+			<B>{t}Sale Registry{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -283,12 +283,12 @@ cal7.time_comp = false;
 						<IMG src="img/calendar.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%">
-						<B>{t}Period:{/t}</B>
+						<B>{t}Period:{/t}&nbsp;</B>
 					</TD>
-					<TD width="1%">
+					<TD width="1%" nowrap>
 						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal8.popup();" {tip text="Enter date in format 'yyyy/mm/dd' (empty means current date) or click to chose it from calendar"}>
 					</TD>
-					<TD width="97%">
+					<TD width="97%" nowrap>
 						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal9.popup();" {tip text="Enter date in format 'yyyy/mm/dd' (empty means current date) or click to chose it from calendar"}>	
 					</TD>
 				</TR>
@@ -312,7 +312,7 @@ cal9.time_comp = false;
 </SCRIPT>
 {/if}
 {if $printmenu=="users" || $printmenu=="finances" || !$printmenu}
-<FORM method="post" name="printuserbalance" id="printuserbalance" action="?m=print&type=userbalance" target="_blank">
+<P><FORM method="post" name="printuserbalance" id="printuserbalance" action="?m=print&type=userbalance" target="_blank">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -368,7 +368,7 @@ cal4.time_comp = false;
 </SCRIPT>
 {/if}
 {if $printmenu=="finances" || !$printmenu}
-<FORM method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices" target="_blank">
+<P><FORM method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices" target="_blank">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -432,7 +432,7 @@ cal11.time_comp = false;
 </SCRIPT>
 {/if}
 {if $printmenu=="nodes" || !$printmenu}
-<FORM method="post" name="printnodelist" id="printnodelist"  action="?m=print&type=nodelist" target="_blank">
+<P><FORM method="post" name="printnodelist" id="printnodelist"  action="?m=print&type=nodelist" target="_blank">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
 		<TD class="fleftu" width="1%">
@@ -453,9 +453,9 @@ cal11.time_comp = false;
 						<B>{t}Group:{/t}</B>
 					</TD>
 					<TD width="1%" {tip text="Select nodes group"}>
-						<INPUT class="box" type="radio" name="filter" value="0" CHECKED>{t}all{/t}<BR>
-						<INPUT class="box" type="radio" name="filter" value="1">{t}disconnected{/t}<BR>
-						<INPUT class="box" type="radio" name="filter" value="2">{t}connected{/t}<BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="0" CHECKED>{t}all{/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="1">{t}disconnected{/t}</NOBR><BR>
+						<NOBR><INPUT class="box" type="radio" name="filter" value="2">{t}connected{/t}</NOBR><BR>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/view.gif" alt="" BORDER="0" align="absmiddle">
