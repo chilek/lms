@@ -28,11 +28,12 @@ $layout[pagetitle]="Sieci IP";
 
 $netlist = $LMS->GetNetworkList();
 
-$listdata[total] = sizeof($netlist);
 $listdata[size] = $netlist[size];
 $listdata[assigned] = $netlist[assigned];
 
-unset($netlist[assigned], $netlist[size]);
+unset($netlist[assigned], $netlist[size], $netlist[total]);
+
+$listdata[total] = sizeof($netlist);
 
 $SMARTY->assign("listdata",$listdata);
 $SMARTY->assign("netadd",$netadd);
@@ -41,6 +42,9 @@ $SMARTY->assign("netlist",$netlist);
 $SMARTY->display("netlist.html");
 /*
  * $Log$
+ * Revision 1.20  2003/09/01 12:37:02  lukasz
+ * - BTS #0000067
+ *
  * Revision 1.19  2003/08/27 19:25:56  lukasz
  * - changed format of ipaddr storage in database
  *
