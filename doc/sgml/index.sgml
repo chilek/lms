@@ -19,10 +19,10 @@
 	    <imagedata fileref="images/logo-small.png" format="png">
 	</imageobject>
     </mediaobject>
-    <corpauthor>The LMS Developers</corpauthor>
+    <corpauthor> LMS Developers</corpauthor>
     <copyright>
-        <year>2003</year>
-        <holder> The LMS Developers</holder>
+        <year>2001-2004</year>
+        <holder> LMS Developers</holder>
     </copyright>
   </bookinfo>
 <toc></toc>
