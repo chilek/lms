@@ -1921,7 +1921,7 @@ class LMS
 			$limit = "";
 
 		// join query from parts
-		$query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats, nodes WHERE stats.nodeid=nodes.id AND ".$dt." ".$net." GROUP BY nodeid, name, ipaddr ".$order." ".$limit;
+		$query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE 1=1 AND ".$dt." ".$net." GROUP BY nodeid, name, ipaddr ".$order." ".$limit;
 
 		// get results
 		if ($traffic = $this->DB->GetAll($query))
@@ -1978,6 +1978,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.272  2003/10/08 15:54:15  alec
+ * poprawka w Traffic() umo¿liwiaj±ca wy¶wietlanie statów dla komputeró usuniêtych
+ *
  * Revision 1.271  2003/10/08 04:39:38  lukasz
  * - temporary save
  *
