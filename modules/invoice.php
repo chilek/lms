@@ -30,7 +30,7 @@ $layout[pagetitle] = 'Faktura VAT nr '.$invoice[number].'/LMS/'.date('Y',$invoic
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('invoice',$invoice);
 $SMARTY->display('clearheader.html');
-$SMARTY->assign('type','ORGINA£');
+$SMARTY->assign('type','ORYGINA£');
 $SMARTY->display('invoice.html');
 $SMARTY->assign('type','KOPIA');
 $invoice[last] = TRUE;
