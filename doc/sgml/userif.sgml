@@ -2,15 +2,22 @@
 <chapter id="user">
  <title>Interfejs U¿ytkownika (lms-ui)</title>
  <para>LMS'owy Interfejs U¿ytkownika to panel administracyjny do tworzenia 
- i zarz±dzania baz± u¿ytkowników i komputerów. Umo¿liwia wprowadzanie danych komputerów,
- przypisanie ich do u¿ytkowników i sieci. Definiowanie op³at i zarz±dzanie finansami sieci,
+  i zarz±dzania baz± u¿ytkowników i komputerów dostêpny za pomoc± przegl±darki
+  internetowej. Umo¿liwia wprowadzanie danych komputerów,
+  przypisanie ich do u¿ytkowników i sieci. Definiowanie op³at i zarz±dzanie finansami sieci,
   Szybkie wyszukiwanie danych o u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji
   seryjnej do u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich hase³.
   Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania ³±cza, a tak¿e 
   tworzenie kopii bazy danych oraz zarz±dzanie skryptami wykonywalnymi.</para>
  <sect1 id="user-login">
 	<title>Logowanie</title>
-	<para>co¶ o pierwszym logowaniu
+	<para>Po wpisaniu w przegl±darce adresu do strony z lms'em, powita ciê
+	ekran logowania. Musisz podaæ w³a¶ciwy login oraz has³o. Has³a w bazie
+	danych przechowywane s± w formie zaszyfrowanej.</para>
+	<para>Je¿eli jest to twoje pierwsze logowanie i nie masz jeszcze 
+	za³o¿onego konta, zostaniesz przekierowany do modu³u tworzenia kont
+	administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
+	jednego modu³u.</para>
 	<figure>
 	<title>LMS-UI: Logowanie</title>
 	<ulink url="images/login.png">
@@ -19,7 +26,7 @@
   		<imagedata fileref="images/login-small.png" format="png">
   		</imageobject>
   	</inlinemediaobject></ulink>
-	</figure></para>
+	</figure>
  </sect1>
  <sect1 id="user-all">
 	<title>Praca z LMS-UI</title>

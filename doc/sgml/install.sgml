@@ -359,6 +359,11 @@
     <para>Adres e-mail do debugowania - pod ten email bêd± sz³y maile wysy³ane z sekcji 'mailing' LMS'a, zamiast do w³a¶ciwych u¿ytkowników.</para>
     <para>Przyk³ad:	<prompt>debug_mail = root@localhost</prompt></para>
    </listitem>
+    <listitem>
+    <para>enable_stats</para>
+    <para>W³±czenie/wy³±czenie dostêpno¶ci w menu modu³u 'traffic'. Domy¶lnie wy³±czone.</para>
+    <para>Przyk³ad:	<prompt>enable_stats = 1</prompt></para>
+   </listitem>
   </itemizedlist>
  	</sect2> 
     </sect1>
