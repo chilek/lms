@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Dodanie opcji konfiguracyjnej';
+$layout['pagetitle'] = trans('New Config Option');
 
 if($config = $_POST['config'])
 {
@@ -38,19 +38,19 @@ if($config = $_POST['config'])
 	}
 	
 	if($config['name']=='')
-		$error['name'] = 'Musisz podaæ nazwê opcji!';
+		$error['name'] = trans('Option name is required!');
 	elseif(strlen($config['name'])>64)
-		$error['name'] = 'Za d³uga nazwa opcji (max.64 znaki) !';
-	elseif(!eregi("^[a-z0-9_-]+$", $config['name']))
-    		$error['name'] = 'Nazwa opcji zawiera niepoprawne znaki!';
+		$error['name'] = trans('Option name is too long (max.64 characters)!');
+	elseif(!eregi('^[a-z0-9_-]+$', $config['name']))
+    		$error['name'] = trans('Option name contains forbidden characters!');
 	elseif($LMS->GetConfigOptionId($config['name'], $config['section']))
-		$error['name'] = 'Opcja ju¿ jest w bazie!'; 
+		$error['name'] = trans('Option exists!'); 
 
-	if(!eregi("^[a-z0-9_-]+$", $config['section']) && $config['section']!='')
-    		$error['section'] = 'Nazwa sekcji zawiera niepoprawne znaki!';
+	if(!eregi('^[a-z0-9_-]+$', $config['section']) && $config['section']!='')
+    		$error['section'] = trans('Section name contains forbidden characters!');
 	    
 	if($config['value']=='')
-		$error['value'] = 'Opcja musi mieæ okre¶lon± warto¶æ!';
+		$error['value'] = trans('Option with empty value not allowed!');
 	elseif($msg = $LMS->CheckOption($config['name'], $config['value']))
 	        $error['value'] = $msg;
 	

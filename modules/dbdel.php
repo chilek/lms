@@ -27,16 +27,17 @@
 if($_GET['is_sure'])
 {
 	$LMS->DatabaseDelete($_GET['db']);
-	header("Location: ?m=".$_SESSION['lastmodule']);
+	header('Location: ?m='.$_SESSION['lastmodule']);
 	die;
-} else
+} 
+else
 {
-	$layout['pagetitle'] = "Usuniêcie kopii zapasowej";
+	$layout['pagetitle'] = trans('Backup Delete');
 	$SMARTY->display('header.html');
 	$SMARTY->display('adminheader.html');
-	echo "<H1>Usuniêcie bazy danych</H1>";
-	echo "<p>Czy jeste¶ pewien ¿e chcesz usun±æ kopiê bazy utworzon± ".date("Y/m/d H:i.s",$_GET['db'])."?</p>";
-	echo "<a href=\"?m=dbdel&db=".$_GET['db']."&is_sure=1\">Tak, jestem pewien</A>";
+	echo '<H1>'.trans('Deletion of Database Backup').'</H1>';
+	echo '<P>'.sprintf(trans('Are you shure, you want to delete database backup created at %s ?'),date('Y/m/d H:i.s',$_GET['db'])).'</P>';
+	echo '<a href="?m=dbdel&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am shure').'</A>';
 	$SMARTY->display('footer.html');
 }
 

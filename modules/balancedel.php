@@ -36,6 +36,6 @@ if (sizeof($_POST['marks']))
 	}
 }
 
-header("Location: ?".$_SESSION['backto']);
+header('Location: ?'.$_SESSION['backto']);
 
 ?>

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if(!eregi("^[0-9]+$",$_GET['id']))
+if(!eregi('^[0-9]+$',$_GET['id']))
 {
 	header('Location: ?m=userlist');
 	die;

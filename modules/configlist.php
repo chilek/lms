@@ -51,7 +51,7 @@ function GetConfigList($order='var,asc')
 	return $config;
 }
 
-$layout['pagetitle'] = 'Konfiguracja interfejsu';
+$layout['pagetitle'] = trans('User Interface Configuration');
 
 if(!isset($_GET['o']))
 	$o = $_SESSION['clo'];

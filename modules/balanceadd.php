@@ -34,8 +34,8 @@ if ($addbalance['taxvalue'] == 'zw.')
 	$addbalance['taxvalue'] = '';
 $_SESSION['addbtax'] = $addbalance['taxvalue'];
 
-$addbalance['value'] = str_replace(",",".",$addbalance['value']);
-$addbalance['taxvalue'] = str_replace(",",".",$addbalance['taxvalue']);
+$addbalance['value'] = str_replace(',','.',$addbalance['value']);
+$addbalance['taxvalue'] = str_replace(',','.',$addbalance['taxvalue']);
 
 if($addbalance['time']) {
 
@@ -43,20 +43,20 @@ if($addbalance['time']) {
 	list($date,$time) = split(' ',$addbalance['time']);
 	$date = explode('/',$date);
 	$time = explode(':',$time);
-	if(checkdate($date[1],$date[2],$date[0])) //je¶li z³a data, zapisujemy pod dzisiejsz±
+	if(checkdate($date[1],$date[2],$date[0])) //if date is wrong, set today's date
 		$addbalance['time'] = mktime($time[0],$time[1],0,$date[1],$date[2],$date[0]);
 	else
 		unset($addbalance['time']);
 }
 
-if($addbalance['type']=="3"||$addbalance['type']=="4")
+if($addbalance['type']=='3'||$addbalance['type']=='4')
 	{
 		if(isset($addbalance['muserid']))
 		{
 			foreach($addbalance['muserid'] as $value)
 				if($LMS->UserExists($value))
 				{
-					$addbalance['userid']=$value;
+					$addbalance['userid'] = $value;
 					$LMS->AddBalance($addbalance);
 				}
 		}
@@ -67,12 +67,12 @@ if($addbalance['type']=="3"||$addbalance['type']=="4")
 		}
 	}
 
-	if($addbalance['type']=="2"||$addbalance['type']=="1")
+	if($addbalance['type']=='2'||$addbalance['type']=='1')
 	{
-		$addbalance['userid'] = "0";
+		$addbalance['userid'] = '0';
 		$LMS->AddBalance($addbalance);
 	}
 
-header("Location: ?".$_SESSION['backto']);
+header('Location: ?'.$_SESSION['backto']);
 
 ?>

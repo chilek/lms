@@ -49,22 +49,22 @@ if($cfg = $_POST['config'])
 		$cfg[$key] = trim($val);
 	
 	if($cfg['var']=='')
-		$error['var'] = 'Musisz podaæ nazwê opcji!';
+		$error['var'] = trans('Option name is required!');
 	elseif(strlen($cfg['var'])>64)
-		$error['var'] = 'Za d³uga nazwa opcji (max.64 znaki) !';
-	elseif(!eregi("^[a-z0-9_-]+$", $cfg['var']))
-    		$error['var'] = 'Nazwa opcji zawiera niepoprawne znaki!';
+		$error['var'] = trans('Option name is too long (max.64 characters)!');
+	elseif(!eregi('^[a-z0-9_-]+$', $cfg['var']))
+    		$error['var'] = trans('Option name contains forbidden characters!');
 
 	if(($cfg['var']!=$config['var'] || $cfg['section']!=$config['section'])
 		&& $LMS->GetConfigOptionId($cfg['var'], $cfg['section'])
 	)
-		$error['var'] = 'Opcja ju¿ jest w bazie!';
+		$error['var'] = trans('Option exists!');
 
-	if(!eregi("^[a-z0-9_-]+$", $cfg['section']) && $cfg['section']!='')
-    		$error['section'] = 'Nazwa sekcji zawiera niepoprawne znaki!';
+	if(!eregi('^[a-z0-9_-]+$', $cfg['section']) && $cfg['section']!='')
+    		$error['section'] = trans('Section name contains forbidden characters!');
 	    
 	if($cfg['value']=='')
-		$error['value'] = 'Opcja musi mieæ okre¶lon± warto¶æ!';
+		$error['value'] = trans('Empty option value not allowed!');
 	elseif($msg = $LMS->CheckOption($cfg['var'], $cfg['value']))
 		$error['value'] = $msg;
 	
@@ -87,7 +87,7 @@ if($cfg = $_POST['config'])
 	$config = $cfg;
 }
 
-$layout['pagetitle'] = 'Edycja opcji: '.$option;
+$layout['pagetitle'] = sprintf(trans('Edit Option: %s'),$option);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
