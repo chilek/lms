@@ -33,7 +33,7 @@ class LMS {
 	var $db;
 	var $session;
 	var $_BACKUP_DIR;
-	var $_version = '1.0.61';
+	var $_version = '1.0.62';
 
 	function LMS($db,$session)
 	{
@@ -460,7 +460,6 @@ class LMS {
 				$_SESSION[timestamps][getnetwork][$id][networks] != $this->GetTS("networks")
 				||
 				$_SESSION[timestamps][getnetwork][$id][nodes] != $this->GetTS("nodes")
-				|| TRUE
 		  )
 		{
 			$db->row = "";
