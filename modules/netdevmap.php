@@ -126,7 +126,7 @@ else
 	$widthx = $maxx - $minx;
 	$widthy = $maxy - $miny;
 	$cellw = 200;
-	$cellh = 100;
+	$cellh = 80;
 	$celltmargin = 10;
 	$celllmargin = 10;
 	$imgwx = $cellw * ($widthx + 1);
@@ -134,13 +134,14 @@ else
 
 	$im = imagecreatetruecolor($imgwx, $imgwy);
 
+	$lightbrown = imagecolorallocate($im, 234,228,214);
 	$black = imagecolorallocate($im, 0,0,0);
 	$white = imagecolorallocate($im, 255,255,255);
 	$red = imagecolorallocate($im, 255,0,0);
-	$green = imagecolorallocate($im, 0,255,0);
+	$green = imagecolorallocate($im, 0,128,0);
 	$blue = imagecolorallocate($im, 0,0,255);
 
-	imagefill($im,0,0,$white);
+	imagefill($im,0,0,$lightbrown);
 
 	foreach($map as $idx => $x)
 	{
