@@ -34,6 +34,27 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev.gif" BORDER="0" ALT="Urz±dzenie sieciowe:">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			{if $nodeinfo.netdevid}
+			<B><A HREF="?m=netdevinfo&id={$nodeinfo.netdevid}">{$nodeinfo.netdevname}</A></B>
+			{else}
+			<P>
+			<FORM METHOD="GET" ACTION="?m=nodeedit" NAME="nodelink"><INPUT TYPE="HIDDEN" NAME="m" VALUE="nodeedit"><INPUT TYPE="HIDDEN" NAME="id" VALUE="{$nodeinfo.id}"><INPUT TYPE="HIDDEN" NAME="action" VALUE="link">
+				<SELECT SIZE="1" NAME="devid">
+					{section name=netdev loop=$netdevices}
+					<OPTION VALUE="{$netdevices[netdev].id}">{$netdevices[netdev].name}</OPTION>
+					{/section}
+				</SELECT>
+				<A HREF="javascript:document.nodelink.submit(); ">Pod³±cz <IMG SRC="img/edit.gif" ALT="" ALIGN="ABSMIDDLE" BORDER="0"></A>
+			</FORM>
+			</P>
+			{/if}				
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
 			<A HREF="?m=nodeset&id={$nodeinfo.id}"><IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" BORDER="0" ALT=""></A>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
