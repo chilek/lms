@@ -121,7 +121,7 @@ struct oident_module * init(GLOBAL *g, MODULE *m)
 	free(s); s = g->str_concat(instance, ":end");
 	o->append = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":host");
-	o->host = strdup(g->iniparser_getstring(ini, s, "m-%n\tUNIX"));
+	o->host = strdup(g->iniparser_getstring(ini, s, "%i\t%n\tUNIX"));
 	free(s); s = g->str_concat(instance, ":file");
 	o->file = strdup(g->iniparser_getstring(ini, s, "/tmp/oidentd.conf"));
 	free(s); s = g->str_concat(instance, ":command");
