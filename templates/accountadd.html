@@ -84,7 +84,7 @@
 					<B>{t}Owner:{/t}</B>
 		    		    </TD>
 				    <TD width="98%">
-					<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Select account owner or 'SYSTEM ACCOUNT' if you don't want to assign it to any customer"}>
+					<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Select owner or 'SYSTEM ACCOUNT' if you don't want to assign it to any customer"}>
     					    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
 					    {section name=users loop=$users}
 					    <OPTION VALUE="{$users[users].id}"{if $account.ownerid == $users[users].id} SELECTED{/if}>{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
