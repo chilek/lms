@@ -110,8 +110,8 @@ class Session {
 	
 	function VerifyPassword()
 	{
-		$dbpasswd = $this->ADB->GetOne("SELECT passwd FROM admins WHERE login=?",array($this->login));
-		$dblogin = $this->ADB->GetOne("SELECT login FROM admins WHERE login=?",array($this->login));
+		$dbpasswd = $this->ADB->GetOne("SELECT passwd FROM admins WHERE login=? AND rights != 'LOCK'",array($this->login));
+		$dblogin = $this->ADB->GetOne("SELECT login FROM admins WHERE login=? AND rights != 'LOCK'",array($this->login));
 		if (crypt($this->passwd,$dbpasswd)==$dbpasswd || ($dblogin != "" && $dbpasswd == "" && $this->passwd == ""))
 			return TRUE;
 		else 
