@@ -45,6 +45,19 @@ switch($_GET['mode'])
 		else
 			$target = '?m=nodelist';
 	break;
+	
+	case 'ticket':
+		if(intval($search))
+			$target = '?m=rtticketview&id='.$search;
+		else
+		{
+			$_SESSION['rtsearch']['username'] = $search;
+			$target = '?m=rtsearch&search=1';
+		}
+	break;
+	
+	
+
 }
 
 if($target == '')

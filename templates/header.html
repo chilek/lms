@@ -79,12 +79,13 @@
 				</FORM>
 			</TR>
 			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
-				<FORM METHOD="GET" ACTION="?m=rtviewticket">
-					<TD width="100%" class="fbt" nowrap {tip text="<B>Wpisz ID biletu RT i wci¶nij Enter</B>"}>
+				<FORM METHOD="GET" ACTION="?m=quicksearch">
+					<TD width="100%" class="fbt" nowrap {tip text="<B>Wpisz ID biletu RT lub nazwisko u¿ytkownika i wci¶nij Enter</B>"}>
 						<P CLASS="separated">
 						<IMG SRC="img/ticket.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
-						<INPUT TYPE="text" NAME="id" VALUE="" SIZE="10">
-						<INPUT TYPE="hidden" NAME="m" VALUE="rtticketview">
+						<INPUT TYPE="text" NAME="what" VALUE="" SIZE="10">
+						<INPUT TYPE="hidden" NAME="m" VALUE="quicksearch">
+						<INPUT TYPE="hidden" NAME="mode" VALUE="ticket">
 					</TD>
 				</FORM>
 			</TR>			

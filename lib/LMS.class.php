@@ -3139,6 +3139,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$where .= ($search['name']!=''  ? 'AND requestor LIKE \''.$search['name']/'\' '  : '');
 		$where .= ($search['email']!='' ? 'AND requestor LIKE \''.$search['email'].'\' ' : '');
 		
+		if($search['username'])
+			$where = 'AND users.lastname ?LIKE? \'%'.$search['username'].'%\' OR requestor ?LIKE? \'%'.$search['username'].'%\' ';
+
 		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 		    FROM rttickets 
 		    LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
