@@ -24,6 +24,12 @@
  *  $Id$
  */
 
+if(!eregi("^[0-9]+$",$_GET['id']))
+{
+	header('Location: ?m=userlist');
+	die;
+}
+
 if($LMS->UserExists($_GET['id']) == 0)
 {
 	header('Location: ?m=userlist');
