@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
                 break;
 	case 'h':
         default:
-		printf("A.L.E.C's LMS Daemon. Command line options:");
+		printf("A.L.E.C's LMS Daemon. Command line options:\n");
 		printf("-c \tpath to config file (default: /etc/lms/lms.ini)\n");
                 printf("-b \tfork in background\n");
                 printf("-s \tthe time the run sleeps for (seconds)\n");
