@@ -41,22 +41,32 @@ else
 	$s = $_GET[s];
 $_SESSION[uls] = $s;
 
-if(isset($_GET[search]))
-{
-	$SMARTY->assign("search",TRUE);
-	$search[username] = $_GET[username];
-	$search[address] = $_GET[address];
-	$search[phone1] = $_GET[phone];
-	$search[phone2] = $_GET[phone];
-	$search[phone3] = $_GET[phone];
-	$search[email] = $_GET[email];
-	$userlist=$LMS->GetUserList($o,$s,$search);
-}else
-	$userlist=$LMS->GetUserList($o,$s);
+$userlist=$LMS->GetUserList($o,$s);
+$listdata[total] = $userlist[total];
+$listdata[state] = $userlist[state];
+$listdata[order] = $userlist[order];
+$listdata[below] = $userlist[below];
+$listdata[over] = $userlist[over];
+$listdata[direction] = $userlist[direction];
+
+$page = (! $_GET[page] ? 1 : $_GET[page]); 
+$pagelimit = (! $_CONFIG[phpui][userlist_pagelimit] ? $listdata[total] : $_CONFIG[phpui][userlist_pagelimit]);
+$start = ($page - 1) * $pagelimit + 1;
+
+unset($userlist[total]);
+unset($userlist[state]);
+unset($userlist[order]);
+unset($userlist[below]);
+unset($userlist[over]);
+unset($userlist[direction]);
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("userlist",$userlist);
+$SMARTY->assign("listdata",$listdata);
 $SMARTY->assign("tariffs",$LMS->GetTariffs());
+$SMARTY->assign("pagelimit",$pagelimit);
+$SMARTY->assign("page",$page);
+$SMARTY->assign("start",$start);
 
 
 $SMARTY->display("header.html");
