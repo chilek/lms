@@ -1,0 +1,47 @@
+Propopnowany zmiany dla ksiêgowo¶ci:
+
+users:
+-user_id ($)--------1------+
+                           |
+assigments(users(1)-tarrifs(oo))           
+-assinged_id($)   --1---+  |         tarrifs
+-user---------------oo--|--+          -value
+-tarrif-------------oo--|----------1- -tarrif_id($)		
+-step in (y, m, w, d, never)          -type (+/-)
+-when                   |
+-description            |
+-from                   |
+-to                     |
+-deadline               |
+                        |
+       bills            |         accounting
+       -bill_id($)-1----|-------oo-- -bill
+       -assigment----oo-+            -account_id($)       
+       -value                        -payed
+       -description                  -date/time
+
+
+
+Opis obrazka: 
+ ($)     klucz g³ówny
+ 1----oo relacja jeden do wielu 
+
+O co mi chodzi:
+
+ U¿ytkownik ma w tabelce assigments (lub nie ma) tylko swój id, rodzaj 
+ obci±zenia (czyli nr taryfy) kiedy go obci±¿aæ (tutaj mamy when i step
+ mo¿na daæ np 27 m czyli 27 ka¿dego miesi±ca lub 3 w w ka¿dy wtorek/¶rodê).
+
+Co dziennie chodzi sobie skrypt sprawdzajacy czy dzis (w senie 27 lub wtorek)
+nie trzeba czego¶ naliczyæ. Je¶li tak to do bills leci id 'cyklu obrachunkowego'
+i kwota, kwotê kopiujemy z tarryf. A kopiujemy poto ¿eby 'bill' mo¿na by³o
+w razie czego zrobiæ rêczny. np '3 pln za zw³okê'.
+ 
+
+komentzy proszê dopisywaæ tutaj.
+
+Powodem bycia odzielnej tabeli na rozliczanie bills jest np chêæ wpisania
+sobie 5 przelewów po 5 pln zamiast jednego 25. Albo brania 'na raty' aby wiedzieæ u którego admina forsa wsi±k³a.
+
+$Id$
+
