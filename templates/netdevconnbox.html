@@ -47,13 +47,15 @@
 			{$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
 		</TD>
 		<TD WIDTH="4%" CLASS="frightu">
+		{if $netdev.id}
 			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="unlink{$netdevlist[netdevlist].id}">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="devid" VALUE="{$netdevlist[netdevlist].id}">
-			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
+			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdev.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="disconnect">
 			<A HREF="javascript:document.unlink{$netdevlist[netdevlist].id}.submit(); "><IMG SRC="img/delete.gif" ALIGN="absmiddle" BORDER="0" ALT="[ Od³±cz ]"></A>
 			</FORM></P>
+		{/if}
 		</TD>
 	</TR>
 	{if $netdevlist[netdevlist.index_next].ownerid eq $netdevlist[netdevlist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
@@ -70,4 +72,22 @@
                 <TD WIDTH="100%" COLSPAN="5" CLASS="ftop">
                 </TD>
         </TR>
+	{if $netdev.id}
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="fbl"></TD>
+		<TD WIDTH="99%" CLASS="fbr" COLSPAN=4>
+			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connect">
+			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
+			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdev.id}">
+			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connect">
+			<A HREF="javascript:document.connect.submit(); "><B>Pod³±cz urz±dzenie:</B></A>
+			<SELECT NAME="netdev" {tip trigger="link"}>
+				{section name=restnetdevlist loop=$restnetdevlist }
+				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}">{$restnetdevlist[restnetdevlist].name} / {$restnetdevlist[restnetdevlist].producer}</OPTION>
+				{/section}
+			</SELECT>
+			</FORM></P>
+		</TD>
+	</TR>
+	{/if}
 </TABLE>
