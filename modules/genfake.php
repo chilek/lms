@@ -1916,7 +1916,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 65000)
 		$useradd['message'] = '';
 		$useradd['pin'] = rand(10000,99999);
 		$id = $LMS->UserAdd($useradd);
-		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'period' => 1, 'at' => $useradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0));
+		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'period' => 1, 'at' => $useradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0));
 		$nodes = mt_rand(1,3);
 		for($j = 0; $j < $nodes; $j++)
 		{
@@ -1975,7 +1975,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 65000)
 	}	
 		
 }else
-	echo '<FORM METHOD="GET" ACTION="?"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">How many records? (max: 65000, <FONT COLOR="RED">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</FONT>) <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
+	echo '<FORM METHOD="GET" ACTION="?"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">'.trans('How many records? (max: 65000)').' <FONT COLOR="RED">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</FONT> <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
 	
 $SMARTY->display('footer.html');
 
