@@ -53,6 +53,7 @@ else
 {
 	$layout[nomenu] = TRUE;
 	$mailing[body] = textwrap($mailing[body]);
+	$mailing[body] = str_replace("\r", "", $mailing[body]);
 	$SMARTY->assign("mailing",$mailing);
 	$SMARTY->assign("layout",$layout);
 	$SMARTY->display("header.html");
