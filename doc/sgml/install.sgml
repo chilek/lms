@@ -31,7 +31,7 @@
 	      <title>Interpreter PHP</title>
 	      <para>Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a te¿ 
 		poprawnie na 4.1.x (ale poniewa¿ developerzy pracuj± na 4.2.3, nie mo¿na 
-		zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿na ¶ci±gn±æ ze 
+		zagwarantowaæ poprawnej pracy na starszych wersjach (unikaæ wersji 4.2.2). PHP mo¿na ¶ci±gn±æ ze 
 		strony <ulink url="http://www.php.net">www.php.net</ulink>.</para>
 	    </sect2>
 	    <sect2 id="install-req-db">
@@ -44,7 +44,7 @@
 	    <sect2 id="install-req-smarty">
              <title>Biblioteka Smarty</title>
              <para><emphasis>LMS-UI</emphasis> do pracy wymaga jeszcze biblioteki Smarty (<ulink url="http://smarty.php.net">http://smarty.php.net</ulink>)
-		 w wersji 2.5.0 lub wy¿szej.</para>
+		 w wersji 2.5.0 lub wy¿szej (unikaæ wersji 2.6.4).</para>
             </sect2>
             <sect2 id="install-req-perl">
             <title>Perl</title>
