@@ -67,6 +67,7 @@ $_LANG = array();
 
 $SMARTY->assign_by_ref('_LANG', $_LANG);
 $SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
+$SMARTY->assign_by_ref('_language', $LMS->lang);
 
 function trans()
 {
