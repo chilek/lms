@@ -7,6 +7,8 @@ wersja 1.2.5 (??/??/2004):
   - BTS#0000189: poprawiony trigger dns2 w formularzu netadd.html (alec)
   - BTS#0000192: wy¶wietlanie w³a¶ciwego urz±dzenia podczas edycji
     komputera (alec/lexx)
+  - usuniêty b³±d w modu³ach 'oident' i 'hostfile' demona powoduj±cy b³êdne
+    interpretowanie opcji 'networks', gdy nazwa sieci zawiera³a kropkê (alec)
 
 wersja 1.2.4 Jolinar (29/07/2004):
 
