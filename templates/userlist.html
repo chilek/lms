@@ -1,5 +1,6 @@
 <!--// $Id$ //-->
 <H1>Lista u¿ytkowników</H1>
+<P>
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD width="95%" class="fleftu">
@@ -76,60 +77,62 @@
 			&nbsp;
 		</TD>
 	</TR>
-	<TR bgColor="#DFD5BD" title="Dodaj nowego u¿ytkownika">
-		<TD colspan="5" class="fall">
-			<P><a name="useradd"><FORM METHOD="post" NAME="useradd" ACTION="?m=useradd#useradd">
-					<B>Dodaj nowego u¿ytkownika:</B>
-					<table width="100%">
-					<TR>
-						<TD width="1%">
-							<IMG SRC="img/user.gif" border="0" alt="" align="absmiddle">
-						</TD>
-						<TD width="95%">
-							<NOBR><INPUT accesskey="a" TYPE="text" NAME="useradd[lastname]" title="Nazwisko" class="{if $error.username}alertb{else}bold{/if}" size="12" value="{$useradd.lastname}"> <INPUT TYPE="text" NAME="useradd[name]" title="Imiê" class="{if $error.username}alertb{else}bold{/if}" size="10" value="{$useradd.name}">{if $error.username}<BR><FONT COLOR="red"><B>¯adne z tych pól nie mo¿e byæ puste!</B></FONT>{/if}</NOBR>
-						</TD>
-						<TD width="1%">
-							<IMG SRC="img/home.gif" alt="" align="absmiddle" border="0">
-						</TD>
-						<TD width="1%">
-							<INPUT TYPE="text" NAME="useradd[address]" title="Adres" value="{$useradd.address}"{if $error.address} class="alert"{/if}>
-							{if $error.address}<BR><FONT COLOR="red"><B>To pole nie mo¿e byæ puste!</B></FONT>{/if}
-						</TD>
-						<TD width="1%">
-							<img src="img/money.gif" alt="" align="absmiddle" border="0">
-						</TD>
-						<TD width="1%">
-							<SELECT size="1" name="useradd[tariff]">{section name=tariffs loop=$tariffs.id}<OPTION VALUE="{$tariffs.id[tariffs]}"{if $tariffs.id[tariffs] eq $useradd.tariff} SELECTED{/if}> {$tariffs.name[tariffs]} ({$tariffs.value[tariffs]} z³)</OPTION>{/section}</SELECT>{if $error.tariff}<B><FONT COLOR="red"><B>Proszê wybraæ taryfê!</B></FONT>{/if}
-						</TD>
-					</TR>
-					<TR>
-						<TD width="1%">
-							<IMG src="img/phone.gif" alt="" align="absmiddle" border="0">
-						</TD>
-						<TD width="95%">
-							<INPUT TYPE="text" NAME="useradd[phone1]" title="Telefon" size="15" value="{$useradd.phone1}"><BR>
-						</TD>
-						<TD width="1%">
-							<IMG SRC="img/mail.gif" alt="" align="absmiddle" border="0">
-						</TD>
-						<TD width="1%">
-							<INPUT TYPE="text" NAME="useradd[email]" title="E-mail" value="{$useradd.email}">
-						</TD>
-						<TD width="1%" align="right" valign="top">
-							<IMG src="img/unk.gif" alt="" align="absmiddle" border="0">
-						</TD>
-						<TD width="1%" align="right">
-							<SELECT size="1" name="useradd[status]"><OPTION VALUE="3" {if $useradd.status eq 3 || $userlist.state eq 3} SELECTED{/if}><B>pod³±czony</B></OPTION><OPTION VALUE="2" {if $useradd.status eq 2 || $userlist.state eq 2} SELECTED{/if}><B>oczekuj±cy</B></option><OPTION VALUE="1" {if $useradd.status eq 1 || $userlist.state eq 1} SELECTED{/if}><B>zainteresowany</B></OPTION></SELECT>
-						</TD>
-					</TR>
-					<TR>
-						<TD colspan="6" align="right">
-							<A HREF="javascript:document.useradd.submit();">Dodaj&nbsp;u¿ytkownika&nbsp;<IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
-						</TD>
-					</TR>
-				</TABLE>				
-			</FORM>
-			</A></p>
+</TABLE>
+</P>
+<P>
+<FORM METHOD="post" NAME="useradd" ACTION="?m=useradd#useradd">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD WIDTH="100%" COLSPAN="6" CLASS="fall">
+			<B><IMG SRC="img/user.gif" border="0" alt="" align="absmiddle"> Dodaj nowego u¿ytkownika:</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD width="1%" CLASS="fleft">
+			<IMG SRC="img/user.gif" border="0" alt="" align="absmiddle">
+		</TD>
+		<TD width="95%">
+			<NOBR><INPUT accesskey="a" TYPE="text" NAME="useradd[lastname]" title="Nazwisko" class="{if $error.username}alertb{else}bold{/if}" size="12" value="{$useradd.lastname}"> <INPUT TYPE="text" NAME="useradd[name]" title="Imiê" class="{if $error.username}alertb{else}bold{/if}" size="10" value="{$useradd.name}">{if $error.username}<BR><FONT COLOR="red"><B>¯adne z tych pól nie mo¿e byæ puste!</B></FONT>{/if}</NOBR>
+		</TD>
+		<TD width="1%">
+			<IMG SRC="img/home.gif" alt="" align="absmiddle" border="0">
+		</TD>
+		<TD width="1%">
+			<INPUT TYPE="text" NAME="useradd[address]" title="Adres" value="{$useradd.address}"{if $error.address} class="alert"{/if}>
+			{if $error.address}<BR><FONT COLOR="red"><B>To pole nie mo¿e byæ puste!</B></FONT>{/if}
+		</TD>
+		<TD width="1%">
+			<img src="img/money.gif" alt="" align="absmiddle" border="0">
+		</TD>
+		<TD width="1%" CLASS="fright">
+			<SELECT size="1" name="useradd[tariff]">{section name=tariffs loop=$tariffs.id}<OPTION VALUE="{$tariffs.id[tariffs]}"{if $tariffs.id[tariffs] eq $useradd.tariff} SELECTED{/if}> {$tariffs.name[tariffs]} ({$tariffs.value[tariffs]} z³)</OPTION>{/section}</SELECT>{if $error.tariff}<B><FONT COLOR="red"><B>Proszê wybraæ taryfê!</B></FONT>{/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD width="1%" CLASS="fleft">
+			<IMG src="img/phone.gif" alt="" align="absmiddle" border="0">
+		</TD>
+		<TD width="95%">
+			<INPUT TYPE="text" NAME="useradd[phone1]" title="Telefon" size="15" value="{$useradd.phone1}"><BR>
+		</TD>
+		<TD width="1%">
+			<IMG SRC="img/mail.gif" alt="" align="absmiddle" border="0">
+		</TD>
+		<TD width="1%">
+			<INPUT TYPE="text" NAME="useradd[email]" title="E-mail" value="{$useradd.email}">
+		</TD>
+		<TD width="1%" align="right" valign="top">
+			<IMG src="img/unk.gif" alt="" align="absmiddle" border="0">
+		</TD>
+		<TD width="1%" align="right" CLASS="fright">
+			<SELECT size="1" name="useradd[status]"><OPTION VALUE="3" {if $useradd.status eq 3 || $userlist.state eq 3} SELECTED{/if}><B>pod³±czony</B></OPTION><OPTION VALUE="2" {if $useradd.status eq 2 || $userlist.state eq 2} SELECTED{/if}><B>oczekuj±cy</B></option><OPTION VALUE="1" {if $useradd.status eq 1 || $userlist.state eq 1} SELECTED{/if}><B>zainteresowany</B></OPTION></SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD COLSPAN="6" align="right" class="fbottomu">
+			<A HREF="javascript:document.useradd.submit();">Dodaj&nbsp;u¿ytkownika&nbsp;<IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>
+</FORM>
+</P>
