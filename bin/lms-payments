@@ -193,7 +193,7 @@ my $itemid;
 
 # dobra, query wybiera *WSZYSTKIE* mo¿liwe assigmenty na dany dzieñ.
 
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0) ORDER BY userid, invoice, value ASC");
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0) ORDER BY userid, invoice, value DESC");
 $dbq->execute();
 
 print "UID:\tKwota:\tZa:\n" if not $quiet;
