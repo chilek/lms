@@ -12,14 +12,17 @@ wersja 1.1.3 (29/08/2003):
 	ALTER TABLE users ADD deleted BOOL DEFAULT '0' NOT NULL;
     PostgreSQL:
 	ALTER TABLE users ADD deleted int2;
+	UPDATE users SET deleted=0;
 	ALTER TABLE users ALTER COLUMN deleted SET DEFAULT 0;
 	ALTER TABLE users ALTER COLUMN deleted SET NOT NULL;
-    (dla tych co zd±¿yli zrobiæ to na ENUM:
+    (dla tych co zd±¿yli zrobiæ to na ENUM
+    MySQL:
  	ALTER TABLE users CHANGE deleted deleted CHAR(1) DEFAULT 'N' NOT NULL;
 	UPDATE users SET deleted=1 WHERE deleted='Y';
 	UPDATE users SET deleted=0 WHERE deleted='N';
-	ALTER TABLE users CHANGE deleted deleted BOOL DEFAULT '0' NOT NULL;)
-
+	ALTER TABLE users CHANGE deleted deleted BOOL DEFAULT '0' NOT NULL;
+    PostgreSQL: metoda taka sama jak z polem access w tabeli nodes, patrz ni¿ej;
+    )
   - zmienione 'op³ata ab' na bardziej intuicyjne 'obci±¿enie' (lukasz)
   - zmiana formatu zapisu adresu IP w bazie danych, wymagane upgrejdy bazy
     (lukasz):
@@ -32,7 +35,7 @@ wersja 1.1.3 (29/08/2003):
 				split_part(ipaddr,'.',3)::int4*256+
 				split_part(ipaddr,'.',4)::int4);
 	ALTER TABLE nodes ADD ipaddr2 BIGINT;
-	UPDATE nodes SET ipaddr2 = ipaddr; 
+	UPDATE nodes SET ipaddr2 = ipaddr::text::int8; 
 	ALTER TABLE nodes DROP COLUMN ipaddr;
 	ALTER TABLE nodes RENAME COLUMN ipaddr2 to ipaddr;
 	ALTER TABLE nodes ALTER COLUMN ipaddr set NOT NULL;
@@ -43,7 +46,7 @@ wersja 1.1.3 (29/08/2003):
 	UPDATE nodes SET access='1' WHERE access='Y';
 	UPDATE nodes SET access='0' WHERE access='N';
 	ALTER TABLE nodes CHANGE access access BOOL NOT NULL DEFAULT '1';
-    a w PostgreSQL pola sa typu int2
+    a w PostgreSQL pola s± typu int2 :
 	UPDATE nodes SET access= CASE access WHEN 'Y' THEN '1' ELSE '0' END;
 	ALTER TABLE nodes ADD access2 int2; 
 	UPDATE nodes SET access2 = access::text::int2; 
@@ -93,7 +96,9 @@ wersja 1.1.1 (09/08/2003):
   - naprawiony bug z oper± (zamiana exit(0) na die) (lukasz)
   - wprowadzono mo¿liwo¶æ ustawienia dnia zap³aty, konieczne zmiany w SQL to:
     MySQL: ALTER TABLE `users` ADD `payday` INT DEFAULT '5' NOT NULL;
-    PostgreSQL: ALTER TABLE users ADD payday INT4 DEFAULT '5' NOT NULL;
+    PostgreSQL: ALTER TABLE users ADD payday integer;
+		ALTER TABLE users ALTER COLUMN payday SET DEFAULT 0;
+		ALTER TABLE users ALTER COLUMN payday SET NOT NULL;
     gdzie zamiast '5', mo¿emy podaæ domy¶lny dzieñ zap³aty, tj. je¿eli teraz
     op³aty w Twojej sieci s± naliczane ka¿dego pi±tego dnia miesi±ca, to
     wtedy spowoduje to przypisanie ka¿demu u¿ytkownikowi takiego dnia
