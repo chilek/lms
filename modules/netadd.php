@@ -37,6 +37,7 @@ if(isset($netadd))
 			$netadd[name]=="" &&
 			$netadd[address]=="" &&
 			$netadd[dns]=="" &&
+			$netadd[dns2]=="" &&
 			$netadd[domain]=="" &&
 			$netadd[gateway]=="" &&
 			$netadd[wins]=="" &&
@@ -72,14 +73,17 @@ if(isset($netadd))
 	}
 	
 	if($netadd[dns]!="" && !check_ip($netadd[dns]))
-		$error[dns] = "Podany adres IP jest nie prawid這wy!";
+		$error[dns] = "Podany adres IP jest nieprawid這wy!";
+	
+	if($netadd[dns2]!="" && !check_ip($netadd[dns2]))
+		$error[dns2] = "Podany adres IP jest nieprawid這wy!";
 	
 	if($netadd[wins]!="" && !check_ip($netadd[wins]))
-		$error[wins] = "Podany adres IP jest nie prawid這wy!";
+		$error[wins] = "Podany adres IP jest nieprawid這wy!";
 	
 	if($netadd[gateway]!="")
 		if(!check_ip($netadd[gateway]))
-			$error[gateway] = "Podany adres IP jest nie prawid這wy!";
+			$error[gateway] = "Podany adres IP jest nieprawid這wy!";
 	elseif(!isipin($netadd[gateway],getnetaddr($netadd[address],prefix2mask($netadd[prefix])),prefix2mask($netadd[prefix])))
 		$error[gateway] = "Podany adres gateway'a nie pasuje do adresu sieci!";
 	

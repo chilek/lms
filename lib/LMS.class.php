@@ -1288,7 +1288,7 @@ class LMS
 		if($netadd[prefix] != "")
 			$netadd[mask] = prefix2mask($netadd[prefix]);
 		$this->SetTS("networks");
-		if($this->ADB->Execute("INSERT INTO networks (name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",array(strtoupper($netadd[name]),$netadd[address],$netadd[mask],$netadd[gateway],$netadd[dns],$netadd[domain],$netadd[wins],$netadd[dhcpstart],$netadd[dhcpend])))
+		if($this->ADB->Execute("INSERT INTO networks (name, address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",array(strtoupper($netadd[name]),$netadd[address],$netadd[mask],$netadd[gateway],$netadd[dns],$netadd[dns2],$netadd[domain],$netadd[wins],$netadd[dhcpstart],$netadd[dhcpend])))
 			return $this->ADB->GetOne("SELECT id FROM networks WHERE address=?",array($netadd[address]));
 		else
 			return FALSE;
@@ -1329,7 +1329,7 @@ class LMS
 
 	function GetNetworkList()
 	{
-		$tnetworks = $this->ADB->GetAll("SELECT id, name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks");
+		$tnetworks = $this->ADB->GetAll("SELECT id, name, address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks");
 		foreach($tnetworks as $idx => $row)
 			foreach($row as $field => $value)
 			$networks[$field][] = $value;
@@ -1338,7 +1338,7 @@ class LMS
 		$networks[total] = sizeof($networks[id]);
 		if($networks[total])
 		{
-			array_multisort($networks[name],$networks[id],$networks[address],$networks[mask],$networks[gateway],$networks[wins],$networks[domain],$networks[dns],$networks[dhcpstart],$networks[dhcpend]);
+			array_multisort($networks[name],$networks[id],$networks[address],$networks[mask],$networks[gateway],$networks[wins],$networks[domain],$networks[dns],$networks[dns2],$networks[dhcpstart],$networks[dhcpend]);
 			foreach($networks[id] as $key => $value)
 			{
 				$networks[addresslong][$key] = ip_long($networks[address][$key]);
@@ -1436,7 +1436,7 @@ class LMS
 	function NetworkUpdate($networkdata)
 	{
 		$this->SetTS("networks");
-		return $this->ADB->Execute("UPDATE networks SET name=?, address=?, mask=?, gateway=?, dns=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?",array(strtoupper($networkdata[name]),$networkdata[address],$networkdata[mask],$networkdata[gateway],$networkdata[dns],$networkdata[domain],$networkdata[wins],$networkdata[dhcpstart],$networkdata[dhcpend],$networkdata[id]));
+		return $this->ADB->Execute("UPDATE networks SET name=?, address=?, mask=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?",array(strtoupper($networkdata[name]),$networkdata[address],$networkdata[mask],$networkdata[gateway],$networkdata[dns],$networkdata[dns2],$networkdata[domain],$networkdata[wins],$networkdata[dhcpstart],$networkdata[dhcpend],$networkdata[id]));
 	}
 				
 	
@@ -1479,7 +1479,7 @@ class LMS
 
 	function GetNetworkRecord($id,$strip=TRUE)
 	{
-		$network = $this->ADB->GetRow("SELECT id, name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?",array($id));
+		$network = $this->ADB->GetRow("SELECT id, name, address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?",array($id));
 		$network[prefix] = mask2prefix($network[mask]);
 		$network[addresslong] = ip_long($network[address]);
 		$network[size] = pow(2,32-$network[prefix]);

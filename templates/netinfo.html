@@ -56,13 +56,15 @@
 			{/if}
 		</TD>
 		<TD width="2%">
-			<nobr><img src="img/dns.gif" border="0" align="absmiddle" alt=""> <B>Serwer DNS:</B></NOBR>
+			<nobr><img src="img/dns.gif" border="0" align="absmiddle" alt=""> <B>Serwery DNS:</B></NOBR>
 		</TD>
 		<TD width="48%" class="fright">
 			{if $unlockedit}
-			<INPUT TYPE="text" NAME="networkdata[dns]" VALUE="{$network.dns}"{if $error.dns} class="alert"><BR><FONT COLOR="red"><B>{$error.dns}</B></FONT{/if}>
+			<INPUT TYPE="text" NAME="networkdata[dns]" VALUE="{$network.dns}"{if $error.dns} class="alert"><BR><FONT COLOR="red"><B>{$error.dns}</B></FONT{/if}><BR>
+			<INPUT TYPE="text" NAME="networkdata[dns2]" VALUE="{$network.dns2}"{if $error.dns2} class="alert"><BR><FONT COLOR="red"><B>{$error.dns2}</B></FONT{/if}>
 			{else}			
-			{$network.dns}
+			{$network.dns}<BR>
+			{$network.dns2}
 			{/if}
 		</TD>
 	</TR>

@@ -34,7 +34,7 @@
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{section name=tariffs loop=$tarifflist}
-	<TR BGCOLOR="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD WIDTH="95%" CLASS="fleft" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';" class="fleft">
 			<B>{$tarifflist[tariffs].name}</B><BR>
 			{$tarifflist[tariffs].description}

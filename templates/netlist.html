@@ -11,7 +11,7 @@
 			ID:
 		</TD>
 		<TD class="fbt" width="1%">
-			<NOBR><IMG src="img/dns.gif" border="0" alt="" align="absmiddle"> Serwer DNS:<BR><IMG src="img/domain.gif" border="0" alt="" align="absmiddle"> Domena:</NOBR>
+			<NOBR><IMG src="img/dns.gif" border="0" alt="" align="absmiddle"> Serwery DNS:<BR><IMG src="img/domain.gif" border="0" alt="" align="absmiddle"> Domena:</NOBR>
 		</TD>
 		<TD class="fbt" width="1%">
 			<NOBR><IMG src="img/gateway.gif" border="0" alt="" align="absmiddle"> Gateway:<BR>	<IMG src="img/wins.gif" border="0" alt="" align="absmiddle"> Serwer WINS:</NOBR>
@@ -25,7 +25,7 @@
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{section name=netlist loop=$netlist.id}
-	<TR bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD class="fleft" width="96%" onClick="return self.location.href='?m=netinfo&id={$netlist.id[netlist]}';">
 			<nobr><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>{$netlist.name[netlist]}</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> {$netlist.address[netlist]} / {$netlist.prefix[netlist]}</nobr>
 		</TD>
@@ -33,7 +33,7 @@
 			<nobr><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">({$netlist.id[netlist]|string_format:"%04d"})<BR><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">rozmiar: {$netlist.size[netlist]} (zaj: {$netlist.assigned[netlist]|string_format:"%01d"})</nobr>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist.id[netlist]}';">
-			<nobr>{if $netlist.dns[netlist] neq ""}<IMG src="img/dns.gif" border="0" alt="" align="absmiddle"> {$netlist.dns[netlist]}{/if}<BR>
+			<nobr>{if $netlist.dns[netlist] neq ""}<IMG src="img/dns.gif" border="0" alt="" align="absmiddle"> {$netlist.dns[netlist]}{if $netlist.dns2[netlist] neq ""}, {$netlist.dns2[netlist]}{/if}{/if}<BR>
 			{if $netlist.domain[netlist] neq ""}<IMG src="img/domain.gif" border="0" alt="" align="absmiddle"> {$netlist.domain[netlist]}{/if}&nbsp;</nobr>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist.id[netlist]}';">

@@ -90,6 +90,9 @@ if(isset($networkdata))
 	if($networkdata[dns]!="" && !check_ip($networkdata[dns]))
 		$error[dns] = "Podany adres IP jest nie prawid³owy!";
 
+	if($networkdata[dns2]!="" && !check_ip($networkdata[dns2]))
+		$error[dns2] = "Podany adres IP jest nie prawid³owy!";
+
 	if($networkdata[wins]!="" && !check_ip($networkdata[wins]))
 		$error[wins] = "Podany adres IP jest nie prawid³owy!";
 
@@ -142,6 +145,7 @@ if(isset($networkdata))
 	$network[gateway] = $networkdata[gateway];
 	$network[wins] = $networkdata[wins];
 	$network[dns] = $networkdata[dns];
+	$network[dns2] = $networkdata[dns2];
 
 }
 
