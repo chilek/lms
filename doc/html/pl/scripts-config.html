@@ -418,7 +418,7 @@ NAME="LMS-PAYMENTS"
 	 klientom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
 	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</P
 ><P
->Skrypt ten udostêpnia dwie opcje do fakturowania, które mo¿na ustawiæ
+>Skrypt ten udostêpnia trzy opcje do fakturowania, które mo¿na ustawiæ
 	 w sekcji <SPAN
 CLASS="emphasis"
 ><I
@@ -450,6 +450,19 @@ CLASS="PROMPT"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >paytype = 'GOTÓWKA'</SAMP
+></P
+></LI
+><LI
+><P
+>comment</P
+><P
+>Opis operacji, w którym mo¿na skorzystaæ ze zmiennych: %tariff
+	   - zamienianej na nazwê taryfy, %period - okres i %desc - opis taryfy. 
+	   Domy¶lnie: 'Abonament wg taryfy %tariff za okres %period'</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>comment = %desc</SAMP
 ></P
 ></LI
 ></UL
