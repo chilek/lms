@@ -1087,7 +1087,7 @@ class LMS
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS("nodes");
-		if($this->DB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate) VALUES (?, ?, inet_aton(?), ?, ?, ?NOW?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id)))
+		if($this->DB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate, access) VALUES (?, ?, inet_aton(?), ?, ?, ?NOW?, ?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id, $nodedata['access'])))
 			return $this->DB->GetOne("SELECT MAX(id) FROM nodes");
 		else
 			return FALSE;
@@ -2257,6 +2257,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.319  2003/12/16 23:10:32  alec
+ * - poprawione ustawianie 'access' podczas dodawania komputera
+ *
  * Revision 1.318  2003/12/15 22:39:37  alec
  * - dodane sortowanie wg liczby portów zajêtych
  *
