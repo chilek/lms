@@ -78,8 +78,8 @@ database        = lms           # nazwa bazy, domy¶lnie: lms
 port            = 0             # numer portu, domy¶lnie: 0
 
 [lmsd]
-sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma 
-                                # ma byæ sprawdzana tabela 'reload', domy¶lnie: 30
+sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma
+                                # byæ sprawdzane ¿±danie reloadu, domy¶lnie: 30
 instances       = hosts oident firewall       # lista instancji modu³ów
 </screen>
 			<note><para>Lista instancji sk³ada siê z nazw instancji oddzielonych 
@@ -97,11 +97,10 @@ info = "Opcjonalny opis modu³u"
 		<sect2 id="daemon-run">
 		<title>Uruchomienie</title>
 			<para>Program mo¿esz uruchamiaæ jako demona pracuj±cego w tle (opcja '-b'). Wtedy 
-			prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie, przez wpis do tabeli 
-			'reload'. Opcja 'sleeptime' (-s) okre¶la okres miêdzy
-			odczytami tej tabeli. Gdy do tabeli 'reload' zostan± zapisane dowolne dane 
-			(przy pomocy menu 'Prze³adowanie' w <emphasis>LMS-UI</emphasis>)
-			demon wykona modu³y okre¶lone opcj± 'instances' z <filename>lms.ini</filename>.
+			prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie, przy u¿yciu menu 
+			'Prze³adowanie' w <emphasis>LMS-UI</emphasis>. Opcja 'sleeptime' (-s) okre¶la okres miêdzy
+			odczytami bazy. Gdy demon wykryje ¿±danie wykonania reloadu, wywo³a 
+			modu³y okre¶lone opcj± 'instances' z <filename>lms.ini</filename>.
 			Na przyk³ad:
 <screen>
 # almsd -b
