@@ -22,10 +22,10 @@ H3		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 H4		{ font-size:  9pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 P		{ text-align: justify; }
 UL		{ list-style-position: outside;  }
-DIV.WARNING	{ text-align: center; }
-TABLE.WARNING	{ width: 90%; border-collapse: collapse; }
-TABLE.WARNING TD { background: #EBCF9E; border-width: 0pt; padding: 3pt; border-style: none }
-TABLE.WARNING P { text-align: center; color: #F00000}
+TABLE.WARNING TD { vertical-align: middle; border-width: 0pt; }
+TABLE.WARNING P { vertical-align: middle; text-align: left; color: #F00000}
+TABLE.NOTE TD 	{ vertical-align: middle; border-width: 0pt; }
+TABLE.NOTE P 	{ vertical-align: middle; text-align: left; }
 HR		{ height: 1pt; }
 DIV.TABLE	{ text-align: center; }
 DIV.FIGURE	{ text-align: center; }
