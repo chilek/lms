@@ -2,43 +2,87 @@
 {include file="userheader.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<P>
-<TABLE cellpadding="3" WIDTH="100%">
+<P><TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD width="20%" class="fleftu" NOWRAP>
 			<IMG src="img/account.gif" alt="" align="absmiddle"> <A href="?m=accountlist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>Login:</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD width="77%" class="fbt">
-			<A href="?m=accountlist&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}"><B>W³a¶ciciel:</B></A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<A href="?m=accountlist&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">W³a¶ciciel:</A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD align="right" width="1%" class="fbt" NOWRAP>
-			<A href="?m=accountlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}"><B>ID:</B></A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<A href="?m=accountlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP>
-			<A href="?m=accountlist&o=lastlogin{if $listdata.direction eq "asc" && $listdata.order eq "lastlogin"},desc{/if}"><B>Ostatnie logowanie:</B></A> {if $listdata.order eq "lastlogin"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<A href="?m=accountlist&o=lastlogin{if $listdata.direction eq "asc" && $listdata.order eq "lastlogin"},desc{/if}">Ostatnie logowanie:</A> {if $listdata.order eq "lastlogin"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
-		<TD width="1%" class="frightu">
-			&nbsp;
+		<TD width="1%" class="frightu" NOWRAP>
+			 <B>Razem: {$listdata.total}</B>
 		</TD>
 	</TR>
+	<TR class="DARK">
+		<TD class="fall" colspan="5">
+			<P><FORM method="GET" action="?m=accountlist" name="filter">
+				<B>Filtruj:</B> U¿ytkownicy:
+				<INPUT type="HIDDEN" name="m" value="accountlist">
+				<INPUT type="HIDDEN" name="page" value="1">
+				<SELECT size="1" class="bold" name="u" OnChange="document.filter.submit();">
+					<OPTION value=""{if $listdata.user eq ""} SELECTED{/if}>wszyscy</OPTION>
+					<OPTION value="0"{if $listdata.user eq "0"} SELECTED{/if}>KONTA SYSTEMOWE</OPTION>
+					{section name=userlist loop=$userlist}
+					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.user} SELECTED{/if}>{$userlist[userlist].username|truncate:50:"..."}</OPTION>
+					{/section}
+				</SELECT>&nbsp;
+				{*
+				Typ:
+				<SELECT size="1" class="bold" name="t" ONCHANGE="document.filter.submit();">
+					<OPTION value="0"{if !$listdata.type} SELECTED {/if}>- wszystkie -</OPTION>
+					<OPTION value="1"{if $listdata.type eq 1} SELECTED {/if}>poczta</OPTION>
+					<OPTION value="2"{if $listdata.type eq 2} SELECTED {/if}>ftp</OPTION>
+					<OPTION value="3"{if $listdata.type eq 3} SELECTED {/if}>www</OPTION>
+					<OPTION value="4"{if $listdata.type eq 4} SELECTED {/if}>shell</OPTION>
+					{/section}
+				</SELECT>&nbsp;
+				*}
+			</FORM></P>
+		</TD>
+	</TR>		
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="5" CLASS="FALL">
+			<B>Strona:
+				{if $page > 1}<A HREF="?m={$layout.module}&t={$listdata.type}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$accountlist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&t={$listdata.type}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&t={$listdata.type}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+		</TD>
+	</TR>
+	{/if}
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
-	{section name=accountlist loop=$accountlist}
+	{section name=accountlist loop=$accountlist start=$start max=$pagelimit}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD class="fleft">
 			<nobr><IMG src="img/account.gif" ALT="" align="absmiddle" border="0"><B> {$accountlist[accountlist].login}</B></nobr>
 		</TD>
 		<TD NOWRAP>
+			{if $accountlist[accountlist].ownerid}
 			<A href="?m=userinfo&id={$accountlist[accountlist].ownerid}">
 			{$accountlist[accountlist].username|truncate:50:"..."} ({$accountlist[accountlist].ownerid|string_format:"%04d"})
 			</A>
+			{/if}
 		</TD>
 		<TD align="right">
-			<B>{$accountlist[accountlist].id|string_format:"%04d"}</B>
+			{if $accountlist[accountlist].id}
+				({$accountlist[accountlist].id|string_format:"%04d"})
+			{/if}
 		</TD>
 		<TD align="right">
 			<nobr>{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"%Y/%m/%d %H:%M"}{/if}</nobr>
 		</TD>
-		<TD class="fright">
+		<TD class="fright" align="right">
 			<NOBR>
 			<A href="?m=accountdel&id={$accountlist[accountlist].id}" OnClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ konto \'{$accountlist[accountlist].login}\' z bazy danych?')"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ Usuñ ]"></A> 
 			<A href="?m=accountedit&op=chpasswddlg&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" border="0" align="absmiddle" ALT="[ Zmieñ has³o ]"></A> 
@@ -47,7 +91,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD colspan="6" align="center" class="flr">
+		<TD colspan="5" align="center" class="flr">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 			<p><B>Nie znaleziono ¿adnych kont o podanych kryteriach lub lista jest pusta.</B></p>
@@ -56,6 +100,20 @@
 		</TD>
 	</TR>
 	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="5" CLASS="FALL">
+			<B>Strona:
+				{if $page > 1}<A HREF="?m={$layout.module}&t={$listdata.type}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$accountlist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&t={$listdata.type}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&t={$listdata.type}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+		</TD>
+	</TR>
+	{/if}
 	<TR bgColor="#DFD5BD">
 		<TD colspan="4" class="fleftu" align="right" valign="top">
 			<IMG SRC="img/info2.gif" border="0" ALT="" align="absmiddle"> <B>Razem: {$listdata.total}</B>	
@@ -64,6 +122,5 @@
 			&nbsp;
 		</TD>
 	</TR>
-</TABLE>
-</P>
+</TABLE></P>
 {include file="footer.html"}
