@@ -360,6 +360,7 @@ class LMS
 
 	function RecoverUser($id)
 	{
+		$this->SetTS('users');
 		return $this->DB->Execute("UPDATE users SET deleted=0 WHERE id=?",array($id));
 	}
 
@@ -1036,7 +1037,6 @@ class LMS
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS("nodes");
-
 		if($this->DB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate) VALUES (?, ?, ?, ?, ?, ?NOW?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),ip_long($nodedata['ipaddr']),$nodedata['ownerid'],$this->SESSION->id)))
 			return $this->DB->GetOne("SELECT MAX(id) FROM nodes");
 		else
@@ -1108,6 +1108,7 @@ class LMS
 
 	function AddAssignment($assignmentdata)
 	{
+		$this->SetTS('assignments');
 		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, period, at) VALUES (?, ?, ?, ?)",array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at']));
 	}
 
@@ -1135,6 +1136,7 @@ class LMS
 
 	function TariffMove($from, $to)
 	{
+		$this->SetTS('assignments');
 		$ids = $this->DB->GetCol("SELECT assignments.id AS id FROM assignments, users WHERE userid = users.id AND deleted = 0 AND tariffid = ?",array($from));
 		foreach($ids as $id)
 			$this->DB->Execute("UPDATE assignments SET tariffid=? WHERE id=? AND tariffid=?",array($to, $id, $from));
@@ -1666,6 +1668,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.219  2003/09/11 19:17:30  lukasz
+ * - forgot about SetTS
+ *
  * Revision 1.218  2003/09/11 03:42:37  lukasz
  * - rekord u¿ytkownika zwraca tak¿e sumê op³at
  *
