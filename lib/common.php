@@ -455,14 +455,6 @@ function rmkdir($dir)
 		return $makedirs;
 }
 
-function isvalidstring($string)
-{
-	for($i=0;$i<sizeof($string);$i++)
-		if(!($string[$i] >= 'a' && $string[$i] <= 'z') && !($string[$i] >= '0' && $string[$i] <= '9') && !($string[$i] == '_') && !($string[$i] == '-'))
-			return false;
-	return true;
-}
-
 function striphtml($text)
 {
 	$search = array ("'<script[^>]*?>.*?</script>'si",  // Strip out javascript
