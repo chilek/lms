@@ -137,7 +137,6 @@ $_TIMEOUT = $_CONFIG['phpui']['timeout'];
 require_once($_SMARTY_DIR.'/Smarty.class.php');
 $SMARTY = new Smarty;
 
-
 // test for proper version of Smarty
 
 if(version_compare('2.5.0', $SMARTY->_version) > 0)
