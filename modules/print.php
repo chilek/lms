@@ -182,11 +182,11 @@ switch($_GET['type'])
 			$to = date('Y/m/d',time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
-		
+
 		if($admin = $_POST['admin'])
 			$layout['pagetitle'] = trans('Balance Sheet of User: $0 ($1 to $2)', $LMS->GetAdminName($admin), ($from ? $from : ''), $to);
 		else
-			$layout['pagetitle'] = trans('Balance Sheet ($1 to $2)', ($from ? $from : ''), $to);
+			$layout['pagetitle'] = trans('Balance Sheet ($0 to $1)', ($from ? $from : ''), $to);
 			
 		$userslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users','id');
 		
