@@ -30,8 +30,11 @@ if(sizeof($setwarnings['mnodeid']))
 {
 	foreach($setwarnings['mnodeid'] as $value)
 	{
-		if (isset($setwarnings['warnon']) && $LMS->NodeExists($value))
-			$LMS->NodeSetWarn($value, ($setwarnings['warnon']) ? TRUE : FALSE);
+		if($setwarnings['warnon'])
+			$LMS->NodeSetWarn($value, TRUE);
+		if($setwarnings['warnoff']) 
+			$LMS->NodeSetWarn($value, FALSE);
+		
 		if (isset($setwarnings['message']))
 		{
 			$LMS->SetTS('users');
@@ -40,6 +43,7 @@ if(sizeof($setwarnings['mnodeid']))
 	}
 	$_SESSION['warnmessage'] = $setwarnings['message'];
 	$_SESSION['warnon'] = $setwarnings['warnon'];
+	$_SESSION['warnoff'] = $setwarnings['warnoff'];
 	
 	header('Location: ?'.$_SESSION['backto']);
 	die;
