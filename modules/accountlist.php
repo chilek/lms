@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = 'Zarz±dzanie kontami';
 
-$accountlist = $LMS->DB->GetAll('SELECT passwd.id, passwd.ownerid, login, passwd.lastlogin, users.name, users.lastname FROM passwd, users WHERE users.id = passwd.ownerid ORDER BY name, lastname, login');
+$accountlist = $LMS->DB->GetAll('SELECT passwd.id AS id, ownerid, login, lastlogin, '.$LMS->DB->Concat('users.lastname', "' '",'users.name').' AS username FROM passwd, users WHERE users.id = ownerid ORDER BY login, username');
 $listdata['total'] = sizeof($accountlist);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];

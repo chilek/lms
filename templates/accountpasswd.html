@@ -15,7 +15,7 @@
 			<NOBR><B>Nowe has³o:</B></NOBR>
 		</TD>
 		<TD class="fright" nowrap>
-			<input type="password" name="passwd[passwd]">
+			<input type="password" name="passwd[passwd]" value="{$account.passwd1}" {tip trigger="passwd"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -23,17 +23,9 @@
 			<NOBR><B>Powtórz:</B></NOBR>
 		</TD>
 		<TD class="fright" nowrap>
-			<input type="password" name="passwd[confirm]">
+			<input type="password" name="passwd[confirm]" value="{$account.passwd2}" {tip trigger="passwd"}>
 		</TD>
 		
-	</TR>
-	<TR class="light">
-		<TD colspan="2" align="center" class="flr">
-			{if $layout.error}
-				<font color="red"><B>B³±d:</B> {$layout.error}</font><br>
-			{/if}
-			Zmieniasz has³o do konta: {$account.login}. <NOBR>W³a¶cicielem konta jest: {$account.name} {$account.lastname}.</NOBR>
-		</TD>
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="2">
