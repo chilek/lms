@@ -1,0 +1,82 @@
+{include file="header.html"}
+{include file="rtheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM METHOD="POST" NAME="queue" ACTION="?m=rtqueueedit&id={$queue.id}">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+	    <TD width="1%" class="fleftu">
+		<IMG src="img/ticket.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+	    </TD>
+	    <TD width="1%" class="fbt"><B>Nazwa:</B></TD>
+	    <TD width="98%" class="frightu">
+		<INPUT TYPE="TEXT" NAME="queue[name]" VALUE="{$queue.name}" {tip text="Podaj nazwê" trigger="name" bold=1}><B> ({$queue.id|string_format:"%04d"})</B>
+	    </TD>
+	</TR>
+	<TR class="LIGHT">
+	    <TD width="1%" class="fleft">
+		<IMG src="img/mail.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+	    </TD>
+	    <TD width="1%"><B>E-mail:</B></TD>
+	    <TD width="98%" class="fright">
+		    <INPUT TYPE="TEXT" SIZE="50" NAME="queue[email]" VALUE="{$queue.email}" {tip text="Wpisz adres e-mail" trigger="email"}>
+	    </TD>
+	</TR>
+	<TR class="LIGHT">
+	    <TD width="1%" class="fleft">
+		<IMG src="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+	    </TD>
+	    <TD width="1%"><B>Opis:</B></TD>
+	    <TD width="98%" class="fright">
+		<TEXTAREA NAME="queue[description]" COLS="50" ROWS="3" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>{$queue.description}</TEXTAREA>
+	    </TD>
+	</TR>
+	<TR class="LIGHT">
+	    <TD width="1%" class="fleft">
+		<IMG src="img/admins.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+	    </TD>
+	    <TD width="1%"><B>Uprawnienia:</B></TD>
+	    <TD width="98%" class="fright">
+		    <TABLE width="100%" cellpadding="3">
+			<TR class="DARK">
+			    <TD width="98%" class="fleftu"><B>Administrator</B>
+			    </TD>
+			    <TD width="1%" class="fbt" align="center" nowrap><B>Odczyt</B></TD>
+			    <TD width="1%" class="frightu" align="center"><B>Zapis</B></TD>
+			</TR>
+			{cycle values="#DFD5BD,#EBE4D6" print=false}
+			{foreach from=$queue.rights item=right}
+			<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+			    <TD width="98%" class="fleft">
+				<A href="?m=admininfo&id={$right.id}">{$right.name}</A>
+				<INPUT type="hidden" name="queue[adminnames][{$right.id}]" value="{$right.name}">
+			    </TD>
+			    <TD width="1%" align="center">
+			    	    {cycle print=false}
+				    <INPUT style="border-style: none; background-color: {cycle}" type="checkbox" name="queue[admins][{$right.id}]" value="1" {if $right.rights > 0}CHECKED{/if}>
+			    </TD>
+			    <TD width="1%" align="center" class="fright">
+				    {cycle print=false}
+			    	    <INPUT style="border-style: none; background-color: {cycle}" type="checkbox" name="queue[admins][{$right.id}]" value="2" {if $right.rights == 2}CHECKED{/if}>
+			    </TD>
+			</TR>
+			{/foreach}
+			<TR class="LIGHT">
+			    <TD width="98%" class="ftop">
+			    </TD>
+			    <TD width="1%" align="center" class="ftop">
+			    </TD>
+			    <TD width="1%" align="center" class="ftop"></TD>
+			</TR>
+		</TABLE>			
+	    </TD>
+	</TR>
+	<TR class="LIGHT">
+	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
+	    	<A HREF="javascript:document.queue.submit();">Zapisz <IMG src="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+		<A HREF="?m=rtqueuedel&id={$queue.id}" {confirm text="Czy jeste¶ pewien, ¿e chcesz usun±æ kolejkê \"`$queue.name`\" oraz wszystkie przypisane do niej zg³oszenia i wiadomo¶ci?"}>Usuñ <IMG src="img/delete.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+		<A HREF="?m=rtqueuelist">Anuluj <IMG src="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+	    </TD>
+	</TR>
+</TABLE></FORM></P>
+{include file="footer.html"}

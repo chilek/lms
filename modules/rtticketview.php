@@ -31,8 +31,10 @@ if(! $LMS->TicketExists($_GET['id']))
 }
 
 $ticket = $LMS->GetTicketContents($_GET['id']);
-$layout['pagetitle'] = 'Bilet #'.$ticket['ticketid'].' - '.$ticket['subject'];
+$layout['pagetitle'] = 'Zg³oszenie #'.$ticket['ticketid'].' - '.$ticket['subject'];
+
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->display('rtticketview.html');
-?><PRE><? print_r($ticket);
-//layout['pagetitle']
+?>

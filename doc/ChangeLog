@@ -45,6 +45,7 @@ wersja 1.3.4 Terok (??/06/2004):
   - podczas usuwania urz±dzenia sieciowego usuwane s± tak¿e jego adresy (alec)
   - poprawione ustawianie sekwencji postgresa podczas odtwarzania kopii
     bazy danych (alec)
+  - wznowiono prace na systemem RT (Helpdesk) (alec)
 
 wersja 1.3.3 Sokar (05/05/2004):
   

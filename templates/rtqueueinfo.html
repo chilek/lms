@@ -1,0 +1,79 @@
+{include file="header.html"}
+{include file="rtheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+	    <TD width="1%" class="fleftu">
+		<IMG src="img/ticket.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+	    </TD>
+	    <TD width="99%" colspan="2" class="frightu"><B>{$queue.name} ({$queue.id|string_format:"%04d"})</B></TD>
+	</TR>
+	{if $queue.email}
+	<TR class="LIGHT">
+	    <TD width="1%" class="fleft">
+		<IMG src="img/mail.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+	    </TD>
+	    <TD width="1%"><B>E-mail:</B></TD>
+	    <TD width="98%" class="fright">{$queue.email}</TD>
+	</TR>
+	{/if}
+	{if $queue.description}
+	<TR class="LIGHT">
+	    <TD width="1%" class="fleft">
+		<IMG src="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+	    </TD>
+	    <TD width="1%"><B>Opis:</B></TD>
+	    <TD width="98%" class="fright">
+		<TEXTAREA COLS="50" ROWS="3">{$queue.description}</TEXTAREA>
+	    </TD>
+	</TR>
+	{/if}
+	<TR class="LIGHT">
+	    <TD width="1%" class="fleft">
+		<IMG src="img/admins.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+	    </TD>
+	    <TD width="1%"><B>Uprawnienia:</B></TD>
+	    <TD width="98%" class="fright">
+		    <TABLE width="100%" cellpadding="3">
+			<TR class="DARK">
+			    <TD width="98%" class="fleftu"><B>Administrator</B>
+			    </TD>
+			    <TD width="1%" class="fbt" align="center" nowrap><B>Odczyt</B></TD>
+			    <TD width="1%" class="frightu" align="center"><B>Zapis</B></TD>
+			</TR>
+			{cycle values="#DFD5BD,#EBE4D6" print=false}
+			{foreach from=$queue.rights item=right}
+			{if $right.rights}
+			<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+			    <TD width="98%" class="fleft">
+				<A href="?m=admininfo&id={$right.id}">{$right.name}</A>
+				<INPUT type="hidden" name="queue[adminnames][{$right.id}]" value="{$right.name}">
+			    </TD>
+			    <TD width="1%" align="center">
+				{if $right.rights > 0}<IMG src="img/pass.gif" border="0" alt="">{/if}
+			    </TD>
+			    <TD width="1%" align="center" class="fright">
+				{if $right.rights > 1}<IMG src="img/pass.gif" border="0" alt="">{/if}
+			    </TD>
+			</TR>
+			{/if}
+			{/foreach}
+			<TR class=LIGHT">
+			    <TD width="98%" class="ftop"></TD>
+			    <TD width="1%" class="ftop"></TD>
+			    <TD width="1%" class="ftop"></TD>
+			</TR>
+		</TABLE>
+	    </TD>
+	</TR>
+	<TR class="LIGHT">
+	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
+	        <A HREF="?m=rtqueueview&id={$queue.id}">Przegl±daj <IMG src="img/view.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+	    	<A HREF="?m=rtqueueedit&id={$queue.id}">Edytuj <IMG src="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+		<A HREF="?m=rtqueuedel&id={$queue.id}">Usuñ <IMG src="img/delete.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+		<A HREF="?m=rtqueuelist">Anuluj <IMG src="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+	    </TD>
+	</TR>
+</TABLE></P>
+{include file="footer.html"}

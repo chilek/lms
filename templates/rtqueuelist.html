@@ -49,10 +49,10 @@
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d, %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD CLASS="fright" NOWRAP>
-			<A HREF="?m=rtqueuedel&id={$queue.id}"><IMG SRC="img/delete.gif" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=rtticketnew&id={$queue.id}"><IMG SRC="img/netdev_description.gif" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtqueueinfo&id={$queue.id}"><IMG SRC="img/info.gif" ALT="[ Info ]" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" ALT="[ Przegl±daj ]" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtqueuedel&id={$queue.id}" {confirm text="Czy jeste¶ pewien, ¿e chcesz usun±æ kolejkê `$queue.name` z bazy danych?"}><IMG SRC="img/delete.gif" ALT="[ Usuñ ]" ALIGN="absmiddle" BORDER="0"></A>
 		</TD>
 	</TR>
 	{foreachelse}

@@ -24,12 +24,19 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Obs³uga zg³oszeñ';
+if(! $LMS->QueueExists($_GET['id']))
+{
+	header('Location: ?m=rtqueuelist');
+	die;
+}
 
-$queues = $LMS->GetQueueList();
+$queue = $LMS->GetQueue($_GET['id']);
+
+$layout['pagetitle'] = 'Informacje o kolejce: '.$queue['name'];
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$SMARTY->assign('queues', $queues);
-$SMARTY->display('rtqueuelist.html');
+$SMARTY->assign('queue', $queue);
+$SMARTY->display('rtqueueinfo.html');
+
 ?>

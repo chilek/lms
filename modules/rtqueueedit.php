@@ -24,12 +24,44 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Obs³uga zg³oszeñ';
+if(! $LMS->QueueExists($_GET['id']))
+{
+	header('Location: ?m=rtqueuelist');
+	die;
+}
 
-$queues = $LMS->GetQueueList();
+$queue = $_POST['queue'];
+
+if(isset($queue))
+{
+	$queue['id'] = $_GET['id'];
+	
+	if($queue['name'] == '')
+		$error['name'] = "Kolejka musi posiadaæ nazwê!";
+
+	if($queue['email']!='' && !check_email($queue['email']))
+		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+
+	if(isset($queue['admins']))
+		foreach($queue['admins'] as $key => $value)
+			$queue['rights'][] = array('id' => $key, 'rights' => $value, 'name' => $queue['adminnames'][$key]);
+
+	if(!$error)
+	{
+		$LMS->QueueUpdate($queue);
+		header("Location: ?m=rtqueueinfo&id=".$queue['id']);
+		die;
+	}
+}
+else
+	$queue = $LMS->GetQueue($_GET['id']);
+
+$layout['pagetitle'] = 'Edycja kolejki: '.$queue['name'];
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$SMARTY->assign('queues', $queues);
-$SMARTY->display('rtqueuelist.html');
+$SMARTY->assign('queue', $queue);
+$SMARTY->assign('error', $error);
+$SMARTY->display('rtqueueedit.html');
+
 ?>
