@@ -498,7 +498,7 @@ database = /usr/local/lms/lms.db</screen>
   </itemizedlist>
  	</sect2> 
     </sect1>
-    <sect1 id="install-rights">
+    <sect1 id="install-rights" xreflabel="Prawa dostêpu">
       <title>Prawa dostêpu</title>
       <sect2 id="install-rights-idea">
       		<title>Idea</title>

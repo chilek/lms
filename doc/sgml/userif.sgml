@@ -242,12 +242,25 @@
  </sect1>
  <sect1 id="menu-admins">
 	<title>Administratorzy</title>
-	<para>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, zmiany hase³ oraz
-	definiowania praw dostêpu. Na pierwszym widoku jest lista administratorów z datami ostatniego
-	logowania. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie informacji szczegó³owych
-	o danym koncie, w tym o zdefiniowanych prawach dostêpu. W ka¿dej chwili mo¿liwa jest zmiana
-	danych i uprawnieñ za pomoc± przycisku 'Edytuj'. Aby za³o¿yæ nowe konto administratora
-	skorzystaj z górnego menu 'Nowy'.</para>
+	    <para>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, czyli osób
+	    korzystaj±cych z LMS'a. S³u¿y do zak³adania i przegl±dania kont oraz zmiany hase³ i definiowania 
+	    praw dostêpu.</para>
+	    <para> Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale <xref linkend="install-rights">.</para> 
+	<sect2 id="menu-admins-list">
+	<title>Lista</title>
+	    <para>Po wej¶ciu do panelu 'Administratorzy' zobaczysz listê wszystkich administratorów
+	    z informacj± o ostatnim logowaniu. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie 
+	    informacji szczegó³owych o danym koncie, w tym o zdefiniowanych prawach dostêpu. 
+	    W ka¿dej chwili mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'. 
+	    Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu 'Nowy'.</para>
+	</sect2>
+	<sect2 id="menu-admins-new">
+	<title>Nowy</title>
+	    <para>Aby dodaæ nowe konto administratora nale¿y podaæ login oraz has³o, 
+	    które nie mo¿e byæ puste. Poni¿ej mo¿na zaznaczyæ uprawnienia dostêpu do
+	    systemu. Je¿eli wszystkie pola pozostawisz puste, administratorowi 
+	    przypisany zostanie 'Pe³en dostêp'.</para>
+	</sect2>
  </sect1>
  <sect1 id="menu-stats">
 	<title>Statystyki</title>
