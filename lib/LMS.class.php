@@ -1118,70 +1118,65 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function NodeSetU($id,$access=FALSE)
 	{
-		$this->SetTS("nodes");
+		$this->SetTS('nodes');
 		if($access)
-			return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?", array(1,$this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET access=?, modid=? WHERE ownerid=?', array(1,$this->SESSION->id,$id));
 		else
-			return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?", array(0,$this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET access=?, modid=? WHERE ownerid=?', array(0,$this->SESSION->id,$id));
 	}		
 
 	function NodeSetWarn($id)
 	{
-		$this->SetTS("nodes");
-		if($this->DB->GetOne("SELECT warning FROM nodes WHERE id=?", array($id)) == 1 )
-			return $this->DB->Execute("UPDATE nodes SET warning=0, modid=? WHERE id=?", array($this->SESSION->id,$id));
+		$this->SetTS('nodes');
+		if($this->DB->GetOne('SELECT warning FROM nodes WHERE id=?', array($id)) == 1 )
+			return $this->DB->Execute('UPDATE nodes SET warning=0, modid=? WHERE id=?', array($this->SESSION->id,$id));
 		else
-			return $this->DB->Execute("UPDATE nodes SET warning=1, modid=? WHERE id=?", array($this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET warning=1, modid=? WHERE id=?', array($this->SESSION->id,$id));
 	}
 
 	function NodeSetWarnU($id,$warning=FALSE)
 	{
-		$this->SetTS("nodes");
+		$this->SetTS('nodes');
 		if($warning)
-			return $this->DB->Execute("UPDATE nodes SET warning=?, modid=? WHERE ownerid=?", array(1,$this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET warning=?, modid=? WHERE ownerid=?', array(1,$this->SESSION->id,$id));
 		else
-			return $this->DB->Execute("UPDATE nodes SET warning=?, modid=? WHERE ownerid=?", array(0,$this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET warning=?, modid=? WHERE ownerid=?', array(0,$this->SESSION->id,$id));
 	}		
 
 	function IPSetU($netdev, $access=FALSE)
 	{
-		$this->SetTS("nodes");
+		$this->SetTS('nodes');
 		if($access)
-			return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE netdev=? AND ownerid=0", array(1,$this->SESSION->id,$netdev));
+			return $this->DB->Execute('UPDATE nodes SET access=?, modid=? WHERE netdev=? AND ownerid=0', array(1,$this->SESSION->id,$netdev));
 		else
-			return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE netdev=? AND ownerid=0", array(0,$this->SESSION->id,$netdev));
+			return $this->DB->Execute('UPDATE nodes SET access=?, modid=? WHERE netdev=? AND ownerid=0', array(0,$this->SESSION->id,$netdev));
 	}
 	
 	function NodeAdd($nodedata)
 	{
-		$this->SetTS("nodes");
-		if($this->DB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate, access, warning) VALUES (?, ?, inet_aton(?), ?, ?, ?NOW?, ?, ?)", array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id, $nodedata['access'], $nodedata['warning'])))
-			return $this->DB->GetOne("SELECT MAX(id) FROM nodes");
+		$this->SetTS('nodes');
+		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate, access, warning) VALUES (?, ?, inet_aton(?), ?, ?, ?NOW?, ?, ?)', array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id, $nodedata['access'], $nodedata['warning'])))
+			return $this->DB->GetOne('SELECT MAX(id) FROM nodes');
 		else
 			return FALSE;
 	}
 
 	function NodeExists($id)
 	{
-		return ($this->DB->GetOne("SELECT * FROM nodes WHERE id=?", array($id))?TRUE:FALSE);
+		return ($this->DB->GetOne('SELECT id FROM nodes WHERE id=?', array($id))?TRUE:FALSE);
 	}
 
 	function NodeStats()
 	{
-		$result['connected'] = $this->DB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=1 AND ownerid>0");
-		$result['disconnected'] = $this->DB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=0 AND ownerid>0");
+		$result['connected'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE access=1 AND ownerid>0');
+		$result['disconnected'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE access=0 AND ownerid>0');
 		$result['total'] = $result['connected'] + $result['disconnected'];
 		return $result;
 	}
 
 	function GetNetdevLinkedNodes($id)
 	{
-		if($nodelist = $this->DB->GetAll("SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, netdev FROM nodes WHERE netdev=? AND ownerid > 0 ORDER BY name ASC", array($id)))
-			foreach($nodelist as $idx => $row)
-			{
-				$nodelist[$idx]['owner'] = $this->GetUsername($row['ownerid']);
-			}
-		return $nodelist;
+		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, ipaddr, inet_ntoa(ipaddr) AS ip, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner FROM nodes, users WHERE ownerid = users.id AND netdev=? AND ownerid > 0 ORDER BY nodes.name ASC', array($id));
 	}
 
 	function NetDevLinkNode($id,$netid)
@@ -1194,8 +1189,8 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 					return FALSE;
 		}
 		
-		$this->DB->Execute("UPDATE nodes SET netdev=".$netid." WHERE id=".$id);
-		$this->SetTS("nodes");
+		$this->DB->Execute('UPDATE nodes SET netdev='.$netid.' WHERE id='.$id);
+		$this->SetTS('nodes');
 		return TRUE;
 	}
 
@@ -1205,12 +1200,12 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetUserTariffsValue($id)
 	{
-		return $this->DB->GetOne("SELECT sum(value) FROM assignments, tariffs WHERE tariffid = tariffs.id AND userid=? AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)", array($id));
+		return $this->DB->GetOne('SELECT sum(value) FROM assignments, tariffs WHERE tariffid = tariffs.id AND userid=? AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
 	}
 
 	function GetUserAssignments($id)
 	{
-		if($assignments = $this->DB->GetAll("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, name, invoice, datefrom, dateto FROM assignments, tariffs WHERE userid=? AND tariffs.id = tariffid ORDER BY datefrom ASC", array($id)))
+		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, name, invoice, datefrom, dateto FROM assignments, tariffs WHERE userid=? AND tariffs.id = tariffid ORDER BY datefrom ASC', array($id)))
 		{
 			foreach($assignments as $idx => $row)
 			{
@@ -1232,14 +1227,6 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 					break;
 					
 					case 3:
-					/*	
-						$row['period'] = 'co rok';
-						$miesiace = array('styczeñ','luty', 'marzec', 'kwiecieñ', 'maj', 'czerwiec', 'lipiec', 'sierpieñ', 'wrzesieñ', 'pa¼dziernik', 'listopad', 'grudzieñ');
-						$row['at'] --;
-						$ttime = $row['at'] * 86400 + mktime(12, 0, 0, 1, 1, 1990);
-						$row['at'] = date('j ',$ttime);
-						$row['at'] .= $miesiace[date('n',$ttime) - 1];
-					*/
 						$row['period'] = 'co rok';
 						$row['at'] = date('d/m',($row['at']-1)*86400);
 					break;
@@ -1254,14 +1241,14 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function DeleteAssignment($id,$balance = FALSE)
 	{
-		$this->SetTS("assignments");
+		$this->SetTS('assignments');
 		return $this->DB->Execute('DELETE FROM assignments WHERE id=?', array($id));
 	}
 
 	function AddAssignment($assignmentdata)
 	{
 		$this->SetTS('assignments');
-		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, period, at, invoice, datefrom, dateto) VALUES (?, ?, ?, ?, ?, ?, ?)", array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at'], $assignmentdata['invoice'], $assignmentdata['datefrom'], $assignmentdata['dateto']));
+		return $this->DB->Execute('INSERT INTO assignments (tariffid, userid, period, at, invoice, datefrom, dateto) VALUES (?, ?, ?, ?, ?, ?, ?)', array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at'], $assignmentdata['invoice'], $assignmentdata['datefrom'], $assignmentdata['dateto']));
 	}
 
 	function AddInvoice($invoice)
@@ -1433,22 +1420,22 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function TariffMove($from, $to)
 	{
 		$this->SetTS('assignments');
-		$ids = $this->DB->GetCol("SELECT assignments.id AS id FROM assignments, users WHERE userid = users.id AND deleted = 0 AND tariffid = ?", array($from));
+		$ids = $this->DB->GetCol('SELECT assignments.id AS id FROM assignments, users WHERE userid = users.id AND deleted = 0 AND tariffid = ?', array($from));
 		foreach($ids as $id)
-			$this->DB->Execute("UPDATE assignments SET tariffid=? WHERE id=? AND tariffid=?", array($to, $id, $from));
+			$this->DB->Execute('UPDATE assignments SET tariffid=? WHERE id=? AND tariffid=?', array($to, $id, $from));
 	}
 
 	function GetTariffIDByName($name)
 	{
-		return $this->DB->GetOne("SELECT id FROM tariffs WHERE name=?", array($name));
+		return $this->DB->GetOne('SELECT id FROM tariffs WHERE name=?', array($name));
 	}
 
 	function TariffAdd($tariffdata)
 	{
-		$this->SetTS("tariffs");
+		$this->SetTS('tariffs');
 		if($tariffdata['taxvalue'] == '')
-			$result = $this->DB->Execute("INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate)
-				VALUES (?, ?, ?, NULL, ?, ?, ?)",
+			$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate)
+				VALUES (?, ?, ?, NULL, ?, ?, ?)',
 				array(
 					$tariffdata['name'],
 					$tariffdata['description'],
@@ -1459,8 +1446,8 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 				)
 			);
 		else
-			$result = $this->DB->Execute("INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate)
-				VALUES (?, ?, ?, ?, ?, ?, ?)",
+			$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate)
+				VALUES (?, ?, ?, ?, ?, ?, ?)',
 				array(
 					$tariffdata['name'],
 					$tariffdata['description'],
@@ -1472,38 +1459,38 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 				)
 			);
 		if ($result)
-			return $this->DB->GetOne("SELECT id FROM tariffs WHERE name=?", array($tariffdata['name']));
+			return $this->DB->GetOne('SELECT id FROM tariffs WHERE name=?', array($tariffdata['name']));
 		else
 			return FALSE;
 	}
 
 	function TariffUpdate($tariff)
 	{
-		$this->SetTS("tariffs");
+		$this->SetTS('tariffs');
 		if ($tariff['taxvalue'] == '')
-			return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=NULL, pkwiu=?, uprate=?, downrate=? WHERE id=?", array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
+			return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, taxvalue=NULL, pkwiu=?, uprate=?, downrate=? WHERE id=?', array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
 		else
-			return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, pkwiu=?, uprate=?, downrate=? WHERE id=?", array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
+			return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, pkwiu=?, uprate=?, downrate=? WHERE id=?', array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
 	}
 
 	function TariffDelete($id)
 	{
 		 if (!$this->GetUsersWithTariff($id))
 		 {
-			$this->SetTS("tariffs");
-			return $this->DB->Execute("DELETE FROM tariffs WHERE id=?", array($id));
+			$this->SetTS('tariffs');
+			return $this->DB->Execute('DELETE FROM tariffs WHERE id=?', array($id));
 		 } else
 			return FALSE;
 	}
 
 	function GetTariffValue($id)
 	{
-		return $this->DB->GetOne("SELECT value FROM tariffs WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT value FROM tariffs WHERE id=?', array($id));
 	}
 
 	function GetTariffName($id)
 	{
-		return $this->DB->GetOne("SELECT name FROM tariffs WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT name FROM tariffs WHERE id=?', array($id));
 	}
 
 	function GetTariff($id)
@@ -1529,36 +1516,36 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetTariffs()
 	{
-		return $this->DB->GetAll("SELECT id, name, value, uprate, downrate, taxvalue, pkwiu FROM tariffs ORDER BY value DESC");
+		return $this->DB->GetAll('SELECT id, name, value, uprate, downrate, taxvalue, pkwiu FROM tariffs ORDER BY value DESC');
 	}
 
 	function TariffExists($id)
 	{
-		return ($this->DB->GetOne("SELECT * FROM tariffs WHERE id=?", array($id))?TRUE:FALSE);
+		return ($this->DB->GetOne('SELECT id FROM tariffs WHERE id=?', array($id))?TRUE:FALSE);
 	}
 
 	function SetBalanceZero($user_id)
 	{
-		$this->SetTS("cash");
+		$this->SetTS('cash');
 		$stan=$this->GetUserBalance($user_id);
 		$stan=-$stan;
-		return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?)", array($this->SESSION->id, 3 , round("$stan",2) , $user_id, 'Rozliczono'));
+		return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?)', array($this->SESSION->id, 3 , round("$stan",2) , $user_id, 'Rozliczono'));
 	}
 	
 	function AddBalance($addbalance)
 	{
-		$this->SetTS("cash");
+		$this->SetTS('cash');
 		if($addbalance['time'])
-			return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES (?, ?, ?, ?, ?, ?, ?)", array($addbalance['time'],$this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
+			return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES (?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'],$this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
 		else
-			return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)", array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
+			return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)', array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
 	}
 	
 	function GetBalanceList()
 	{
 		$adminlist = $this->DB->GetAllByKey('SELECT id, name FROM admins','id');
-		$userslist = $this->DB->GetAllByKey("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users","id");
-		if($balancelist = $this->DB->GetAll("SELECT id, time, adminid, type, value, userid, comment, invoiceid FROM cash ORDER BY time ASC"))
+		$userslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users','id');
+		if($balancelist = $this->DB->GetAll('SELECT id, time, adminid, type, value, userid, comment, invoiceid FROM cash ORDER BY time ASC'))
 		{
 			foreach($balancelist as $idx => $row)
 			{
@@ -1573,24 +1560,24 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 				switch($row['type'])
 				{
 					case "1":
-						$balancelist[$idx]['type'] = "przychód";
+						$balancelist[$idx]['type'] = 'przychód';
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $balancelist[$idx]['value'];
 						$balancelist['income'] = $balancelist['income'] + $balancelist[$idx]['value'];
 					break;
 
 					case "2":
-						$balancelist[$idx]['type'] = "rozchód";
+						$balancelist[$idx]['type'] = 'rozchód';
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] - $balancelist[$idx]['value'];
 						$balancelist['expense'] = $balancelist['expense'] + $balancelist[$idx]['value'];
 					break;
 
 					case "3":
-						$balancelist[$idx]['type'] = "wp³ata u¿";
+						$balancelist[$idx]['type'] = 'wp³ata u¿';
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $balancelist[$idx]['value'];
 						$balancelist['incomeu'] = $balancelist['incomeu'] + $balancelist[$idx]['value'];
 					break;
 					case "4":
-						$balancelist[$idx]['type'] = "obci±¿enie u¿";
+						$balancelist[$idx]['type'] = 'obci±¿enie u¿';
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
 						$balancelist['uinvoice'] = $balancelist['uinvoice'] + $balancelist[$idx]['value'];
 					break;
@@ -1599,11 +1586,8 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
 					break;
 				}
-
 			}
-
 			$balancelist['total'] = $balancelist[$idx]['after'];
-
 		}
 
 		return $balancelist;
@@ -1615,7 +1599,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetPaymentList()
 	{
-		if ($paymentlist = $this->DB->GetAll("SELECT id, name, creditor, value, period, at, description FROM payments ORDER BY name ASC"))
+		if ($paymentlist = $this->DB->GetAll('SELECT id, name, creditor, value, period, at, description FROM payments ORDER BY name ASC'))
 			foreach($paymentlist as $idx => $row)
 			{
 				switch($row['period'])
@@ -1623,26 +1607,26 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 					case 0:
 				    		switch($row['at'])
 						{
-							case 1: $row['payday'] = "co tydzieñ (pon)"; break;
-							case 2: $row['payday'] = "co tydzieñ (wt)"; break;
-							case 3: $row['payday'] = "co tydzieñ (¶r)"; break;
-							case 4: $row['payday'] = "co tydzieñ (czw)"; break;
-							case 5: $row['payday'] = "co tydzieñ (pt)"; break;
-							case 6: $row['payday'] = "co tydzieñ (sob)"; break;
-							case 7: $row['payday'] = "co tydzieñ (nie)"; break;
+							case 1: $row['payday'] = 'co tydzieñ (pon)'; break;
+							case 2: $row['payday'] = 'co tydzieñ (wt)'; break;
+							case 3: $row['payday'] = 'co tydzieñ (¶r)'; break;
+							case 4: $row['payday'] = 'co tydzieñ (czw)'; break;
+							case 5: $row['payday'] = 'co tydzieñ (pt)'; break;
+							case 6: $row['payday'] = 'co tydzieñ (sob)'; break;
+							case 7: $row['payday'] = 'co tydzieñ (nie)'; break;
 							default : $row['payday'] = "brak"; break;
 					        }
 					break;
 					case 1:
-					        $row['payday'] = "co miesi±c (".$row['at'].")"; 
+					        $row['payday'] = 'co miesi±c ('.$row['at'].')'; 
 					break;
 					case 2:
-						$at = sprintf("%02d/%02d", $row['at']%100,$row['at']/100+1);
-						$row['payday'] = "co kwarta³ (".$at.")";
+						$at = sprintf('%02d/%02d', $row['at']%100,$row['at']/100+1);
+						$row['payday'] = 'co kwarta³ ('.$at.')';
 					break;
 					case 3:
-						$at = date("d/m",($row['at']-1)*86400);
-						$row['payday'] = "co rok (".$at.")";
+						$at = date('d/m',($row['at']-1)*86400);
+						$row['payday'] = 'co rok ('.$at.')';
 					break;
 				}
 				
@@ -1656,33 +1640,33 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetPayment($id)
 	{
-		$payment = $this->DB->GetRow("SELECT id, name, creditor, value, period, at, description FROM payments WHERE id=?", array($id));
+		$payment = $this->DB->GetRow('SELECT id, name, creditor, value, period, at, description FROM payments WHERE id=?', array($id));
 
 		switch($payment['period'])
 		{
 		    case 0:
 			    switch($payment['at'])
 			    {
-				case 1: $payment['payday'] = "co tydzieñ (pon)"; break;
-				case 2: $payment['payday'] = "co tydzieñ (wt)"; break;
-				case 3: $payment['payday'] = "co tydzieñ (¶r)"; break;
-				case 4: $payment['payday'] = "co tydzieñ (czw)"; break;
-				case 5: $payment['payday'] = "co tydzieñ (pt)"; break;
-				case 6: $payment['payday'] = "co tydzieñ (sob)"; break;
-				case 7: $payment['payday'] = "co tydzieñ (nie)"; break;
-				default : $payment['payday'] = "brak"; break;
+				case 1: $payment['payday'] = 'co tydzieñ (pon)'; break;
+				case 2: $payment['payday'] = 'co tydzieñ (wt)'; break;
+				case 3: $payment['payday'] = 'co tydzieñ (¶r)'; break;
+				case 4: $payment['payday'] = 'co tydzieñ (czw)'; break;
+				case 5: $payment['payday'] = 'co tydzieñ (pt)'; break;
+				case 6: $payment['payday'] = 'co tydzieñ (sob)'; break;
+				case 7: $payment['payday'] = 'co tydzieñ (nie)'; break;
+				default : $payment['payday'] = 'brak'; break;
 			    }
 		    break;
 		    case 1:
-			    $payment['payday'] = "co miesi±c (".$payment['at'].")"; 
+			    $payment['payday'] = 'co miesi±c ('.$payment['at'].')'; 
 		    break;
 		    case 2:
-			    $at = sprintf("%02d/%02d", $payment['at']%100,$payment['at']/100+1);
-			    $payment['payday'] = "co kwarta³ (".$at.")";
+			    $at = sprintf('%02d/%02d', $payment['at']%100,$payment['at']/100+1);
+			    $payment['payday'] = 'co kwarta³ ('.$at.')';
 		    break;
 		    case 3:
-			    $at = date("d/m",($payment['at']-1)*86400);
-			    $payment['payday'] = "co rok (".$at.")";
+			    $at = date('d/m',($payment['at']-1)*86400);
+			    $payment['payday'] = 'co rok ('.$at.')';
 		    break;
 		}
 		return $payment;
@@ -1690,24 +1674,24 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	
 	function GetPaymentName($id)
 	{
-		return $this->DB->GetOne("SELECT name FROM payments WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT name FROM payments WHERE id=?', array($id));
 	}
 	
 	function GetPaymentIDByName($name)
 	{
-		return $this->DB->GetOne("SELECT id FROM payments WHERE name=?", array($name));
+		return $this->DB->GetOne('SELECT id FROM payments WHERE name=?', array($name));
 	}	
 
 	function PaymentExists($id)
 	{
-		return ($this->DB->GetOne("SELECT * FROM payments WHERE id=?", array($id))?TRUE:FALSE);
+		return ($this->DB->GetOne('SELECT id FROM payments WHERE id=?', array($id))?TRUE:FALSE);
 	}
 
 	function PaymentAdd($paymentdata)
 	{
-		$this->SetTS("payments");
-		if($this->DB->Execute("INSERT INTO payments (name, creditor, description, value, period, at)
-			VALUES (?, ?, ?, ?, ?, ?)",
+		$this->SetTS('payments');
+		if($this->DB->Execute('INSERT INTO payments (name, creditor, description, value, period, at)
+			VALUES (?, ?, ?, ?, ?, ?)',
 			array(
 				$paymentdata['name'],
 				$paymentdata['creditor'],
@@ -1717,21 +1701,21 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 				$paymentdata['at'],
 			)
 		))
-			return $this->DB->GetOne("SELECT id FROM payments WHERE name=?", array($paymentdata['name']));
+			return $this->DB->GetOne('SELECT id FROM payments WHERE name=?', array($paymentdata['name']));
 		else
 			return FALSE;
 	}
 	
 	function PaymentDelete($id)
 	{
-		$this->SetTS("payments");		
-		return $this->DB->Execute("DELETE FROM payments WHERE id=?", array($id));
+		$this->SetTS('payments');		
+		return $this->DB->Execute('DELETE FROM payments WHERE id=?', array($id));
 	}
 	
 	function PaymentUpdate($paymentdata)
 	{
-		$this->SetTS("payments");
-		return $this->DB->Execute("UPDATE payments SET name=?, creditor=?, description=?, value=?, period=?, at=? WHERE id=?",
+		$this->SetTS('payments');
+		return $this->DB->Execute('UPDATE payments SET name=?, creditor=?, description=?, value=?, period=?, at=? WHERE id=?',
 			array(
 				$paymentdata['name'],
 				$paymentdata['creditor'],
@@ -1750,15 +1734,15 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		if($networks)
 			foreach($networks as $idx => $network)
 			{
-				$out = split("\n",execute_program("nbtscan","-q -s: ".$network['address']."/".$network['prefix']));
+				$out = split("\n",execute_program('nbtscan','-q -s: '.$network['address'].'/'.$network['prefix']));
 				foreach($out as $line)
 				{
-					list($ipaddr,$name,$null,$login,$mac)=split(":",$line);
+					list($ipaddr,$name,$null,$login,$mac)=split(':',$line);
 					$row['ipaddr'] = trim($ipaddr);
 					if($row['ipaddr'])
 					{
 						$row['name'] = trim($name);
-						$row['mac'] = str_replace("-",":",trim($mac));
+						$row['mac'] = str_replace('-',':',trim($mac));
 						if(!$this->GetNodeIDByIP($row['ipaddr']) && $row['ipaddr'] && $row['mac'] != "00:00:00:00:00:00")
 							$result[] = $row;
 					}
@@ -1773,7 +1757,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function NetworkExists($id)
 	{
-		return ($this->DB->GetOne("SELECT * FROM networks WHERE id=?", array($id)) ? TRUE : FALSE);
+		return ($this->DB->GetOne('SELECT * FROM networks WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
 	function IsIPFree($ip)
