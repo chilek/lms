@@ -1,16 +1,6 @@
 {include file="header.html"}
 {include file="netheader.html"}
 <!--// $Id$ //-->
-{if $unlockedit}<script language="javascript">
-	<!--
-		function getText(index)
-		{literal}{{/literal}
-			{section name=networks loop=$networks}
-			if(index=={$networks[networks].id}) return '{$networks[networks].name|upper} ({$networks[networks].address}/{$networks[networks].prefix})';
-			{/section}
-		{literal}}{/literal}	
-	//-->
-</script>{/if}
 <H1>{$layout.pagetitle}</H1>
 <TABLE cellpadding="3" width="100%">
 	{if $unlockedit}<FORM METHOD="POST" ACTION="?m=netedit&id={$network.id}" NAME="netedit">{/if}
@@ -93,11 +83,11 @@
 		<TD width="100%" class="flr" colspan="4" align="right">
 			{if $unlockedit}
 			<form name="remap" action="" method="get">
-			<A href="?m=netcmp&id={$network.id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz przyznaæ wszystkim komputerom adresy od nowa? Pamiêtaj, ¿e mo¿e to wywo³aæ nie{$lang.currency}e zamieszanie w sieci :)')">Porz±dkuj sieæ <img src="img/cmp.gif" align="absmiddle" alt="[ Posortuj ]" border="0"></A><BR>
+				<A href="?m=netcmp&id={$network.id}" onClick="return confirmLink(this,'{$lang.confirm_netcmp}')">{$lang.network_compress} <img src="img/cmp.gif" align="absmiddle" alt="[ Posortuj ]" border="0"></A><BR>
 				<input type="hidden" name="is_sure">
 				<input type="hidden" name="m" value="netremap">
 				<input type="hidden" name="id" value="{$network.id}">
-				<a href="javascript:document.remap.submit()" onClick="return confirmForm(is_sure,'Jeste¶ pewien ¿e chcesz przeadresowaæ sieæ {$network.name} do sieci '+getText(document.remap.mapto.value)+'?','1');">Przeadresuj do sieci:</A> 
+				<a href="javascript:document.remap.submit()" onClick="return confirmForm(is_sure,'{$lang.confirm_netmap|replace:"#":"`$network.name`"}','1');">{$lang.remap_network_to}:</A> 
 					<select size="1" name="mapto">
 						{section name=networks loop=$networks}
 						{if $networks[networks].id neq $network.id}
@@ -107,18 +97,18 @@
 					</select>
 				<img src="img/remap.gif" border="0" alt="" align="absmiddle"><BR>
 				<a href="javascript:document.netedit.submit()" ACCESSKEY="S">{$lang.save} <IMG src="img/save.gif" alt="[ {$lang.save} ]" align="absmiddle" border="0"></a>
-				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ sieæ \'{$network.name|upper}\'?')">{$lang.delete} <img src="img/delete.gif" align="absmiddle" alt="[ {$lang.delete} ]" border="0"></A>
+				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{$lang.confirm_netdel|replace:"#":"`$network.name`"}')">{$lang.delete} <img src="img/delete.gif" align="absmiddle" alt="[ {$lang.delete} ]" border="0"></A>
 				<a href="?m=netinfo&id={$network.id}">{$lang.cancel}<img src="img/cancel.gif" align="absmiddle" alt="[ {$lang.cancel}]" border="0"></A></TD></form>
 			{else}	
 			<A href="?m=netedit&id={$network.id}" ACCESSKEY="E">{$lang.edit} <img src="img/edit.gif" align="absmiddle" alt="[ {$lang.edit} ]" border="0"></A>
-			<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ sieæ \'{$network.name|upper}\'?')">{$lang.delete} <img src="img/delete.gif" align="absmiddle" alt="[ {$lang.delete} ]" border="0"></A>
-			{if $error.delete}<BR><FONT COLOR="red"><B>Nie mo¿na usun±æ sieci je¿eli znajduj± siê w niej jakie¶ komputery!</B></FONT>{/if}
+			<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'{$lang.confirm_netdel|replace:"#":"`$network.name`"}')">{$lang.delete} <img src="img/delete.gif" align="absmiddle" alt="[ {$lang.delete} ]" border="0"></A>
+			{if $error.delete}<BR><FONT COLOR="red"><B>{$lang.error_cannot_delete_network}</B></FONT>{/if}
 		</TD>
 			{/if}
 	</TR>
 	<TR class="dark">
 		<TD width="100%" class="fall" colspan="4">
-			<img src="img/ip.gif" align="absmiddle" alt="" border="0"> <B>Wykorzystanie adresów IP:</B>
+			<img src="img/ip.gif" align="absmiddle" alt="" border="0"> <B>{$lang.ip_usage}:</B>
 		</TD>
 	</TR>
 	<TR>

@@ -30,7 +30,7 @@ if($_GET[is_sure])
 	header("Location: ?m=".$_SESSION[lastmodule]);
 	exit(0);
 }else{
-	$layout[pagetitle]="Usuniêcie bazy danych";
+	$layout[pagetitle] = "Usuniêcie bazy danych";
 	$SMARTY->assign("layout",$layout);
 	$SMARTY->display("header.html");
 	echo "<H1>Usuniêcie bazy danych</H1>";

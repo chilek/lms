@@ -115,7 +115,7 @@ if(isset($networkdata))
 	{
 		if(($networkdata[dhcpstart]!="" && $networkdata[dhcpend]=="")||($networkdata[dhcpstart]=="" && $networkdata[dhcpend]!=""))
 			$error[dhcp] = $lang[error_dhcp1];
-		if($networkdata[dhcpstart]!="" && $networkdata[dhcpend]!="" && ip_long($networkdata[dhcpend]) > ip_long($networkdata[dhcpstart])))
+		if($networkdata[dhcpstart]!="" && $networkdata[dhcpend]!="" && ip_long($networkdata[dhcpend]) > ip_long($networkdata[dhcpstart]))
 			$error[dhcp] = $lang[error_dhcp2];
 	}
 	
@@ -144,7 +144,7 @@ if(isset($networkdata))
 
 $prefixlist = $LMS->GetPrefixList();
 $networks = $LMS->GetNetworks();
-$layout[pagetitle]=$lang[pagetitle_netedit];
+$layout[pagetitle] = $lang[pagetitle_netedit];
 $SMARTY->assign("unlockedit",TRUE);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("network",$network);

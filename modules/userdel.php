@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Usuniêcie u¿ytkownika ID: ".sprintf("%04d",$_GET[id]);
+$layout[pagetitle] = "Usuniêcie u¿ytkownika ID: ".sprintf("%04d",$_GET[id]);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("userid",$_GET[id]);
 

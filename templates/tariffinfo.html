@@ -1,15 +1,5 @@
 {include file="header.html"}
 {include file="balanceheader.html"}
-<script language="javascript">
-	<!--
-	function getText(index)
-	{literal}{{/literal}
-		{section name=tf loop=$tariffs.id}
-		if(index=={$tariffs.id[tf]}) return '{$tariffs.name[tf]} ({$tariffs.value[tf]} {$lang.currency}/mc)';
-		{/section}
-	{literal}}{/literal}
-	//-->
-																	</script>
 <H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -34,7 +24,7 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%" CLASS="FLEFT" NOWRAP>
 			<B>{$lang.upstream}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
@@ -42,7 +32,7 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%" CLASS="FLEFT" NOWRAP>
 			<B>{$lang.downstream}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
@@ -50,7 +40,7 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%" CLASS="FLEFT" NOWRAP>
 			<B>{$lang.amount_of_users}:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
@@ -106,7 +96,7 @@
 				<INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
 				<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="from">
 				<input type="hidden" name="is_sure">
-				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'Jeste¶ pewien ¿e chcesz przenie¶æ u¿ytkowników do taryfy '+getText(document.tmove.to.value)+'?','1');">Przenie¶ tych u¿ytkowników do taryfy:</A> </B>
+				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'{$lang.confirm_move_users}','1');">{$lang.change_tariff_for_users}:</A> </B>
 				<SELECT SIZE="1" NAME="to">
 					{section name=lt loop=$tariffs.id}
 					{if $tariffs.id[lt] neq $tariff.id}<OPTION VALUE="{$tariffs.id[lt]}">{$tariffs.name[lt]} ({$tariffs.value[lt]} {$lang.currency}/mc)</OPTION>{/if}

@@ -46,7 +46,7 @@ if(!$error)
 		exit(0);
 
 	}else{
-		$layout[pagetitle]="Readresowanie sieci ".strtoupper($network[source][name]);
+		$layout[pagetitle] = "Readresowanie sieci ".strtoupper($network[source][name]);
 		$SMARTY->assign("layout",$layout);
 		$SMARTY->display("header.html");
 		echo "<H1>Readresowanie sieci ".strtoupper($network[source][name])."</H1>";

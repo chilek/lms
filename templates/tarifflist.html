@@ -8,9 +8,9 @@
 			<B>{$lang.name}:<BR>
 			{$lang.description}:</B>
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right" NOWRAP>
 			<B>{$lang.downstream}:<BR>
-				{$lang.upstream}:</B>
+			{$lang.upstream}:</B>
 		</TD>	
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
 			<B>{$lang.amount}:</B>
@@ -61,7 +61,7 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
-			{if $tarifflist[tariffs].users}<A HREF="javascript:alert('Nie mo¿na usun±æ taryfy z której korzystaj± jacy¶ u¿ytkownicy!');">{else}<A HREF="?m=tariffdelete&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ t± taryfê?');">{/if}<IMG SRC="img/delete.gif" ALT="[ {$lang.delete} ]" BORDER="0"></A>
+			{if $tarifflist[tariffs].users}<A HREF="javascript:alert('{$lang.alert_cannot_delete_tariff}');">{else}<A HREF="?m=tariffdelete&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'{$lang.confirm_tariffdel}');">{/if}<IMG SRC="img/delete.gif" ALT="[ {$lang.delete} ]" BORDER="0"></A>
 				<A HREF="?m=tariffedit&id={$tarifflist[tariffs].id}"><IMG SRC="img/edit.gif" ALT="[ {$lang.edit} ]" BORDER="0"></A>
 				<A HREF="?m=tariffinfo&id={$tarifflist[tariffs].id}"><IMG SRC="img/info.gif" ALT="[ {$lang.info} ]" BORDER="0"></A>
 			</NOBR>
