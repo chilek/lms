@@ -26,7 +26,7 @@
 
 // REPLACE THIS WITH PATH TO YOU CONFIG FILE
 
-$CONFIG_FILE = (is_readable('lms.ini') ? 'lms.ini' : '/etc/lms/lms.ini');
+$CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
@@ -53,22 +53,24 @@ function chkconfig($value, $default = FALSE)
 }
 
 // Check for configuration vars and set default values
-
 $_CONFIG['directories']['sys_dir'] = (! $_CONFIG['directories']['sys_dir'] ? getcwd() : $_CONFIG['directories']['sys_dir']);
 $_CONFIG['directories']['backup_dir'] = (! $_CONFIG['directories']['backup_dir'] ? $_CONFIG['directories']['sys_dir'].'/backups' : $_CONFIG['directories']['backup_dir']);
 $_CONFIG['directories']['lib_dir'] = (! $_CONFIG['directories']['lib_dir'] ? $_CONFIG['directories']['sys_dir'].'/lib' : $_CONFIG['directories']['lib_dir']);
 $_CONFIG['directories']['modules_dir'] = (! $_CONFIG['directories']['modules_dir'] ? $_CONFIG['directories']['sys_dir'].'/modules' : $_CONFIG['directories']['modules_dir']);
 $_CONFIG['directories']['config_templates_dir'] = (! $_CONFIG['directories']['config_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/config_templates' : $_CONFIG['directories']['config_templates_dir']);
-$_CONFIG['directories']['smarty_dir'] = (! $_CONFIG['directories']['smarty_dir'] ? $_CONFIG['directories']['lib_dir'].'/Smarty' : $_CONFIG['directories']['smarty_dir']);
+$_CONFIG['directories']['smarty_dir'] = (! $_CONFIG['directories']['smarty_dir'] ? (is_readable('/usr/share/php/smarty/libs/Smarty.class.php') ? '/usr/share/php/smarty/libs' : 
+$_CONFIG['directories']['lib_dir'].'/Smarty') : $_CONFIG['directories']['smarty_dir']);
+
+
 $_CONFIG['directories']['smarty_compile_dir'] = (! $_CONFIG['directories']['smarty_compile_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates_c' : $_CONFIG['directories']['smarty_compile_dir']);
 $_CONFIG['directories']['smarty_templates_dir'] = (! $_CONFIG['directories']['smarty_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates' : $_CONFIG['directories']['smarty_templates_dir']);
 $_CONFIG['phpui']['timeout'] = (! $_CONFIG['phpui']['timeout'] ? 600 : $_CONFIG['phpui']['timeout']);
 $_CONFIG['phpui']['force_ssl'] = chkconfig($_CONFIG['phpui']['force_ssl']);
 $_CONFIG['database']['type'] = (! $_CONFIG['database']['type'] ? 'mysql' : $_CONFIG['database']['type']);
 $_CONFIG['database']['host'] = (! isset($_CONFIG['database']['host']) ? 'localhost' : $_CONFIG['database']['host']);
-$_CONFIG['database']['user'] = (! isset($_CONFIG['database']['user']) ? 'root' : $_CONFIG['database']['user']);
-$_CONFIG['database']['password'] = (! isset($_CONFIG['database']['password']) ? '' : $_CONFIG['database']['password']);
-$_CONFIG['database']['database'] = (! isset($_CONFIG['database']['database']) ? 'lms' : $_CONFIG['database']['database']);
+$_CONFIG['database']['user'] = (! isset($_CONFIG['database']['user']) ? 'LMS1_2' : $_CONFIG['database']['user']);
+$_CONFIG['database']['password'] = (! isset($_CONFIG['database']['password']) ? 'haselko' : $_CONFIG['database']['password']);
+$_CONFIG['database']['database'] = (! isset($_CONFIG['database']['database']) ? 'lms1_2' : $_CONFIG['database']['database']);
 
 $_SYSTEM_DIR = $_CONFIG['directories']['sys_dir'];
 $_BACKUP_DIR = $_CONFIG['directories']['backup_dir'];
@@ -201,6 +203,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.113  2003/10/27 21:29:52  warden
+ * - czesc hopaki, wpadlem cos zepsuc w 1.1 ;-)
+ *
  * Revision 1.112  2003/10/22 17:50:51  lukasz
  * - generator configów
  *
