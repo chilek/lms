@@ -24,11 +24,11 @@
  *  $Id$
  */
 
+$DB->BeginTrans();
 $DB->Execute("
-    BEGIN;
     CREATE INDEX cash_userid_idx ON cash(userid);
     UPDATE dbinfo SET keyvalue = '2004090700' WHERE keytype = 'dbversion';
-    COMMIT;
 ");
+$DB->CommitTrans();
 
 ?>
