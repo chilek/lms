@@ -40,8 +40,8 @@
 		</TD>
 		<TD class="fright">
 			<NOBR>
-			<A href="?m=accounts&op=delete&id={$accountlist[accountlist].id}" {confirm text="Jeste¶ pewien ¿e chcesz usun±æ konto: `$accountlist[accountlist].user` z bazy danych?"}><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ Usuñ ]"></A> 
-			<A href="?m=accounts&op=chpasswddlg&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" border="0" align="absmiddle" ALT="[ Edytuj ]"></A> 
+			<A href="?m=accountdel&id={$accountlist[accountlist].id}" OnClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ konto \'{$accountlist[accountlist].login}\' z bazy danych?')"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ Usuñ ]"></A> 
+			<A href="?m=accountedit&op=chpasswddlg&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" border="0" align="absmiddle" ALT="[ Edytuj ]"></A> 
 			</NOBR>
 		</TD>
 	</TR>
