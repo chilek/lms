@@ -2,9 +2,8 @@
 #
 # LMS version 1.1-cvs
 #
-#  (C) Copyright 2002 Rulez.PL Development Team
-#  (C) Copyright 2001-2002 NetX ACN
-#
+#  (C) 2001-2003 LMS Developers
+#  
 #  Please, see the doc/AUTHORS for more information about authors!
 #
 #  This program is free software; you can redistribute it and/or modify
@@ -91,8 +90,7 @@ if($help)
 {
 	print STDERR <<EOF;
 lms-makeiptables, version $_version
-(C) Copyright 2002 Rulez.PL Development Team
-(C) Copyright 2001-2002 NetX ACN
+(C) 2001-2003 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
 -h, --help			print this help and exit;
@@ -107,8 +105,7 @@ if($version)
 {
 	print STDERR <<EOF;
 lms-makeiptables, version $_version
-(C) Copyright 2002 Rulez.PL Development Team
-(C) Copyright 2001-2002 NetX ACN
+(C) 2001-2003 LMS Developers
 
 EOF
 	exit 0;
@@ -122,8 +119,7 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-makeiptables, version $_version\n";
-	print STDOUT "(C) Copyright 2002 Rulez.PL Development Team\n";
-	print STDOUT "(C) Copyright 2001-2002 NetX ACN\n";
+	print STDOUT "(C) 2001-2003 LMS Developers\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 
@@ -141,7 +137,7 @@ my $cfile = $ini->val('iptables', 'script_file') || '/etc/rc.d/rc.masq';
 my $cuid = $ini->val('iptables', 'script_owneruid') || '0';
 my $cgid = $ini->val('iptables', 'script_ownergif') || '0';
 my $cperm = $ini->val('iptables', 'script_permission') || '700';
-my $ipbin = $ini->val('iptables', 'iptables_binary') || '/sbin/iptables';
+my $ipbin = $ini->val('iptables', 'iptables_binary') || '/usr/sbin/iptables';
 my $prescript = $ini->val('iptables', 'pre_script') || '';
 my $postscript = $ini->val('iptables', 'post_script') || '';
 my $snataddr = $ini->val('iptables', 'snat_address') || '';
