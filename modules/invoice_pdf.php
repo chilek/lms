@@ -40,23 +40,23 @@ function invoice_simple_form_fill($x,$y,$scale)  {
     $pdf->line(370*$scale+$x,197*$scale+$y,370*$scale+$x,227*$scale+$y);
     $pdf->line(370*$scale+$x,197*$scale+$y,340*$scale+$x,197*$scale+$y);
     
-    $pdf->addtext(15*$scale+$x,560*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$finances['shortname']));
-    $pdf->addtext(15*$scale+$x,525*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$finances['address']));
-    $pdf->addtext(15*$scale+$x,490*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$finances['zip']." ".$finances['city']));
+    $pdf->addtext(15*$scale+$x,568*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$finances['shortname']));
+    $pdf->addtext(15*$scale+$x,534*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$finances['address']));
+    $pdf->addtext(15*$scale+$x,500*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$finances['zip']." ".$finances['city']));
     $tmp = iconv("UTF-8","ISO-8859-2",$finances['account']);
-    $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, substr($tmp,0,17));
-    $pdf->addtext(15*$scale+$x,620*$scale+$y,30*$scale, substr($tmp,18,200));
-    $pdf->addtext(15*$scale+$x,435*$scale+$y,30*$scale,"**".number_format($invoice['total'],2,',','')."**");
+    $pdf->addtext(15*$scale+$x,683*$scale+$y,30*$scale, substr($tmp,0,17));
+    $pdf->addtext(15*$scale+$x,626*$scale+$y,30*$scale, substr($tmp,18,200));
+    $pdf->addtext(15*$scale+$x,445*$scale+$y,30*$scale,"**".number_format($invoice['total'],2,',','')."**");
 
     $font_size=30;
     while ($pdf->getTextWidth($font_size*$scale,$invoice['name'])>135)
         $font_size=$font_size-1;
-    $pdf->addtext(15*$scale+$x,380*$scale+$y,$font_size*$scale,$invoice['name']);
+    $pdf->addtext(15*$scale+$x,390*$scale+$y,$font_size*$scale,$invoice['name']);
     $font_size=30;
     while ($pdf->getTextWidth($font_size*$scale,$invoice['address'])>135)
         $font_size=$font_size-1;
-    $pdf->addtext(15*$scale+$x,345*$scale+$y,$font_size*$scale,$invoice['address']);
-    $pdf->addtext(15*$scale+$x,310*$scale+$y,30*$scale,$invoice['zip']." ".$invoice['city']);
+    $pdf->addtext(15*$scale+$x,356*$scale+$y,$font_size*$scale,$invoice['address']);
+    $pdf->addtext(15*$scale+$x,322*$scale+$y,30*$scale,$invoice['zip']." ".$invoice['city']);
 
     $tmp = $_CONFIG['invoices'];
     $tmp = iconv("UTF-8","ISO-8859-2",$tmp['number_template']);
@@ -192,24 +192,46 @@ function invoice_address_box($x,$y) {
     return $y;
 }
 
-function invoice_data_row($x,$y,$width,$font_size,$margin,$data) {
+function invoice_data_row($x,$y,$width,$font_size,$margin,$data,$t_width) {
     global $pdf;
     $fy=$y-$margin-$pdf->GetFontHeight($font_size);    
     $left = $x+$margin;
     $ny = $fy;
     for ($i = 1; $i <= 10; $i++) {
-	$ly = text_wrap($left+$margin, $fy, $data[$i]['width'], $font_size,$data[$i]['title']);
-	$left = $left + $data[$i]['width']+2*$margin;
+	$ly = text_wrap($left+$margin, $fy, $t_width[$i], $font_size,$data[$i]);
+	$left = $left + $t_width[$i]+2*$margin;
 	if ($ly<$ny) $ny=$ly;
     }
     $left = $x;
     for ($i = 1; $i <= 10; $i++) {
 	$pdf->line($left, $y, $left, $ny);
-	$left = $left + $data[$i]['width']+2*$margin;
+	$left = $left + $t_width[$i]+2*$margin;
     }
     $pdf->line($left, $y, $left, $ny);
     $y=$ny;
     $pdf->line($x,$y,$x+$width,$y);
+    return($y);
+}
+
+function invoice_short_data_row($x,$y,$width,$font_size,$margin,$data,$t_width) {
+    global $pdf;
+    $fy=$y-$margin-$pdf->GetFontHeight($font_size);    
+    $left = $x+$margin;
+    $ny = $fy;
+    for ($i = 7; $i <= 10; $i++) {
+	$ly = text_wrap($left+$margin, $fy, $t_width[$i], $font_size,$data[$i]);
+	$left = $left + $t_width[$i]+2*$margin;
+	if ($ly<$ny) $ny=$ly;
+    }
+    $left = $x;
+    for ($i = 7; $i <= 10; $i++) {
+	$pdf->line($left, $y, $left, $ny);
+	$left = $left + $t_width[$i]+2*$margin;
+    }
+    $pdf->line($left, $y, $left, $ny);
+    $y=$ny;
+    //$pdf->line($x,$y,$x+$width,$y);
+    $pdf->line($x,$y,$x+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+8*$margin,$y);
     return($y);
 }
 
@@ -219,95 +241,127 @@ function invoice_data($x,$y,$width) {
     $margin = 2;
     $pdf->setlinestyle(1);
     $pdf->line($x,$y,$x+$width,$y);
-    $header[1]['title'] = "Lp.";
-    $header[2]['title'] = "Nazwa wyrobu, towaru lub us³ugi:";
-    $header[3]['title'] = "PKWiU:";
-    $header[4]['title'] = "JM:";
-    $header[5]['title'] = "Ilo¶æ:";
-    $header[6]['title'] = "Cena jedn. netto:";
-    $header[7]['title'] = "Warto¶æ netto:";
-    $header[8]['title'] = "St. PTU:";
-    $header[9]['title'] = "Kwota PTU:";
-    $header[10]['title'] = "Warto¶æ brutto:";
-    for ($i = 1; $i <= 10; $i++) $header[$i]['width']=$pdf->getTextWidth($font_size,$header[$i]['title'])+2*$margin;
+    $t_data[1] = "Lp.";
+    $t_data[2] = "Nazwa wyrobu, towaru lub us³ugi:";
+    $t_data[3] = "PKWiU:";
+    $t_data[4] = "JM:";
+    $t_data[5] = "Ilo¶æ:";
+    $t_data[6] = "Cena jedn. netto:";
+    $t_data[7] = "Warto¶æ netto:";
+    $t_data[8] = "St. PTU:";
+    $t_data[9] = "Kwota PTU:";
+    $t_data[10] = "Warto¶æ brutto:";
+    for ($i = 1; $i <= 10; $i++) $t_width[$i]=$pdf->getTextWidth($font_size,$t_data[$i])+2*$margin;
     // tutaj jeszcze trzeba bêdzie sprawdziæ jak± szeroko¶æ maj± pola w tabelce pu¼niej
     
     // Kolumna 2 bêdzie mia³a rozmiar ustalany dynamicznie
-    $header[2]['width'] = $width-($header[1]['width']+$header[3]['width']+$header[4]['width']+$header[5]['width']+$header[6]['width']+$header[7]['width']+$header[8]['width']+$header[9]['width']+$header[10]['width']+20*$margin);
+    $t_width[2] = $width-($t_width[1]+$t_width[3]+$t_width[4]+$t_width[5]+$t_width[6]+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+20*$margin);
 
-    $y = invoice_data_row($x,$y,$width,$font_size,$margin,$header);
+    $y = invoice_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width);
     $lp = 1;
     foreach ($invoice['content'] as $item) {
-	$header[1]['title'] = $lp;
-	$header[2]['title'] = $item['description'];
-	$header[3]['title'] = $item['pkwiu'];
-	$header[4]['title'] = $item['content'];
-	$header[5]['title'] = $item['count'];
-	$header[6]['title'] = iconv("UTF-8","ISO-8859-2",moneyf($item['basevalue']));
-	$header[7]['title'] = iconv("UTF-8","ISO-8859-2",moneyf($item['totalbase']));
-	$header[8]['title'] = $item['taxvalue']." %";
-	$header[9]['title'] = iconv("UTF-8","ISO-8859-2",moneyf($item['totaltax']));
-	$header[10]['title'] = iconv("UTF-8","ISO-8859-2",moneyf($item['total']));
+	$t_data[1] = $lp;
+	$t_data[2] = $item['description'];
+	$t_data[3] = $item['pkwiu'];
+	$t_data[4] = $item['content'];
+	$t_data[5] = $item['count'];
+	$t_data[6] = iconv("UTF-8","ISO-8859-2",moneyf($item['basevalue']));
+	$t_data[7] = iconv("UTF-8","ISO-8859-2",moneyf($item['totalbase']));
+	$t_data[8] = $item['taxvalue']." %";
+	$t_data[9] = iconv("UTF-8","ISO-8859-2",moneyf($item['totaltax']));
+	$t_data[10] = iconv("UTF-8","ISO-8859-2",moneyf($item['total']));
 	
 	$lp++;
-	$y = invoice_data_row($x,$y,$width,$font_size,$margin,$header);
+	$y = invoice_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width);
     }
-    $x = $x + 12*$margin + $header[1]['width'] + $header[2]['width'] + $header[3]['width'] + $header[4]['width'] + $header[5]['width'] + $header[6]['width'];
+    
+    $return[1] = $y;
+    
+    $x = $x + 12*$margin + $t_width[1] + $t_width[2] + $t_width[3] + $t_width[4] + $t_width[5] + $t_width[6];
+
     $fy=$y-$margin-$pdf->GetFontHeight($font_size);    
     text_align_right($x-$margin,$fy,$font_size,"Razem:");
 
-    $left = $x+$margin;
-    $ny = $fy;
-    $ly = text_wrap($left+$margin, $fy, $header[7]['width'], $font_size,iconv("UTF-8","ISO-8859-2",moneyf($invoice['totalbase'])));
-    $left = $left + $header[7]['width']+2*$margin;
-    if ($ly<$ny) $ny=$ly;
-    $ly = text_wrap($left+$margin, $fy, $header[8]['width'], $font_size,"X");
-    $left = $left + $header[8]['width']+2*$margin;
-    if ($ly<$ny) $ny=$ly;
-    $ly = text_wrap($left+$margin, $fy, $header[9]['width'], $font_size,iconv("UTF-8","ISO-8859-2",moneyf($invoice['totaltax'])));
-    $left = $left + $header[9]['width']+2*$margin;
-    if ($ly<$ny) $ny=$ly;
-    $ly = text_wrap($left+$margin, $fy, $header[9]['width'], $font_size,iconv("UTF-8","ISO-8859-2",moneyf($invoice['total'])));
-    $left = $left + $header[9]['width']+2*$margin;
-    if ($ly<$ny) $ny=$ly;
+    $t_data[7] = iconv("UTF-8","ISO-8859-2",moneyf($invoice['totalbase']));
+    $t_data[8] = "x";
+    $t_data[9] = iconv("UTF-8","ISO-8859-2",moneyf($invoice['totaltax']));
+    $t_data[10] = iconv("UTF-8","ISO-8859-2",moneyf($invoice['total']));
+
+    $y = invoice_short_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width);
     
-    $left = $x;
-    for ($i = 7; $i <= 10; $i++) {
-	$pdf->line($left, $y, $left, $ny);
-	$left = $left + $header[$i]['width']+2*$margin;
+    $y = $y - 5;
+
+    $fy=$y-$margin-$pdf->GetFontHeight($font_size);    
+    text_align_right($x-$margin,$fy,$font_size,"W tym:");
+    $pdf->line($x,$y,$x+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+8*$margin,$y);
+    
+    foreach ($invoice['taxest'] as $item) {
+	$t_data[7] = iconv("UTF-8","ISO-8859-2",moneyf($item['base']));
+	$t_data[8] = $item['taxvalue']." %";
+	$t_data[9] = iconv("UTF-8","ISO-8859-2",moneyf($item['tax']));
+	$t_data[10] = iconv("UTF-8","ISO-8859-2",moneyf($item['total']));
+	$y = invoice_short_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width);
     }
-    $pdf->line($left, $y, $left, $ny);
-    $y=$ny;
-    $pdf->line($x,$y,$x+$header[7]['width']+$header[8]['width']+$header[9]['width']+$header[10]['width']+8*$margin,$y);
-    
-    
-    //$pdf->line($x,$y,$x,$y-20);
+    $return[2] = $y;
+    return $return;
+}
+
+function invoice_to_pay($x,$y) {
+    global $pdf, $invoice;
+    $y = $y - text_align_left($x,$y,14,"Do zap³aty: ".iconv("UTF-8","ISO-8859-2",moneyf($invoice['total'])));
+    $y = $y - text_align_left($x,$y,10,"S³ownie: ".to_words(floor($invoice['total']))." z³ ".to_words(round(($invoice['total']-floor($invoice['total']))*100))." gr");
+    return $y;
+}
+
+function invoice_expositor ($x,$y) {
+    global $pdf, $_CONFIG;
+    $y = $y - text_align_left($x,$y,10,"Wystawi³: ".iconv("UTF-8","ISO-8859-2",$_CONFIG['invoices']['default_author']));
+    return $y;
 }
 
 function invoice_body() {
-    global $pdf;
-    $pdf->addJpegFromFile('/var/www/devel/lms/lib/ezpdf/formularz.jpg',0,0,595);
-    global $invoice,$pdf,$id;
-    $top=800;
-    invoice_dates(500,800);    
-    invoice_address_box(400,700);
-    $top=invoice_title(30,$top);
-    $top=$top-20;
-    $top=invoice_seller(30,$top);
-    $top=$top-20;
-    $top=invoice_buyer(30,$top);
-    $top=$top-20;
-    $top=invoice_data(30,$top,440);
-    
-    invoice_main_form_fill(187,3,0.4);
-    invoice_simple_form_fill(14,3,0.4);
-
-    if (!($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
+    global $invoice,$pdf,$id,$_CONFIG;
+    switch ($_CONFIG['invoices']['template_file']) {
+	case "standard":
+	    $top=800;
+	    invoice_dates(500,800);    
+    	    invoice_address_box(400,700);
+	    $top=invoice_title(30,$top);
+	    $top=$top-20;
+    	    $top=invoice_seller(30,$top);
+	    $top=$top-20;
+    	    $top=invoice_buyer(30,$top);
+	    $top=$top-20;
+    	    $return=invoice_data(30,$top,530);
+	    invoice_expositor(30,$return[1]-20);
+    	    $top=$return[2]-20;
+	    invoice_to_pay(30,$top);
+	    break;
+	case "FT-0100":
+	    $top=800;
+	    invoice_dates(500,800);    
+    	    invoice_address_box(400,700);
+	    $top=invoice_title(30,$top);
+	    $top=$top-10;
+    	    $top=invoice_seller(30,$top);
+	    $top=$top-10;
+    	    $top=invoice_buyer(30,$top);
+	    $top=$top-10;
+    	    $return=invoice_data(30,$top,530);
+	    invoice_expositor(30,$return[1]-20);
+    	    $top=$return[2]-10;
+	    invoice_to_pay(30,$top);
+	    invoice_main_form_fill(187,3,0.4);
+	    invoice_simple_form_fill(14,3,0.4);
+	    break;
+	default:
+	    require($_CONFIG['invoices']['template_file']);
+    }
+    if (!($invoice['last'])) $id=$pdf->newPage(1,$id,'after'); 
 }
 
 // brzydki hack dla ezpdf 
 setlocale(LC_ALL,'C');
-
 require_once($_LIB_DIR.'/ezpdf/class.ezpdf.php');
 
 $diff=array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogonek',202=>'Eogonek',
@@ -321,9 +375,8 @@ $pdf->addInfo('Creator','LMS '.$layout['lmsv']);
 $pdf->setPreferences('FitWindow','1');
 $pdf->ezSetMargins(0,0,0,0);
 $pdf->selectFont($_LIB_DIR.'/ezpdf/arial.afm',array('encoding'=>'WinAnsiEncoding','differences'=>$diff));
-$pdf->setLineStyle(2);
+//$pdf->setLineStyle(2);
 $id=$pdf->getFirstPageId();
-
 
 if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
@@ -400,6 +453,7 @@ else
 }
 
 global $pdf;
+
 $pdf->ezStream();
 
 ?>
