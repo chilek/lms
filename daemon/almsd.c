@@ -48,10 +48,10 @@ int main(int argc, char *argv[])
     int port;				//
     dictionary *ini;			//config
     int reload = 0, counter = 0, reload_t = 0;    
-    unsigned char *instance, *instances;
+    unsigned char *instance, *instances, *iopt;
 
     	// read command line args
-    	while ( (opt = getopt(argc, argv, "hc:bs:q")) != -1 ) {
+    	while ( (opt = getopt(argc, argv, "hc:bs:qi:")) != -1 ) {
 		switch (opt) {
         	case 'b':
                 	background = 1;
@@ -65,17 +65,21 @@ int main(int argc, char *argv[])
 		case 'q':
         		quit = 1;
                 	break;
+		case 'i':
+        		iopt = strdup(optarg);
+                	break;
 		case 'h':
         	default:
-			printf("A.L.E.C's LMS Daemon v.1.0. Command line options:\n");
+			printf("A.L.E.C's LMS Daemon v.1.3-cvs. Command line options:\n");
 			printf(" -c \tpath to config file (default: /etc/lms/lms.ini)\n");
-                	printf(" -b \tfork in background\n");
+                	printf(" -i \tlist of instances to reload\n");
+			printf(" -b \tfork in background\n");
                 	printf(" -s \tthe time the run sleeps for (seconds)\n");
                 	printf(" -q \tdo a reload and quit\n");
                 	exit(1);
 		}
     	}
-    
+
     	// start logging 
 #ifdef DEBUG1
     	syslog(LOG_INFO, "A.L.E.C's LMS Daemon started.");
@@ -113,7 +117,7 @@ int main(int argc, char *argv[])
     	if ( background ) {
 		int fval = fork();
         	if ( fval < 0 ) {
-    	    		syslog(LOG_CRIT,"Fork error");;
+    	    		syslog(LOG_CRIT,"Fork error");
             		exit(1); /* fork error */
         	} else if ( fval > 0 ) {
 #ifdef DEBUG1
@@ -188,20 +192,22 @@ int main(int argc, char *argv[])
 #ifdef DEBUG1
 	    		syslog(LOG_INFO, "Reload signal detected, calling modules...");
 #endif
-	    
-	    		// read configuration from lms.ini
-	    		ini = iniparser_load(ini_file);
-    
-	    		if( ini==NULL ) {
+			// read configuration from lms.ini
+    			ini = iniparser_load(ini_file);
+
+    			if( ini==NULL ) {
 				syslog(LOG_ERR, "Unable to load configuration file '%s'", ini_file);
 				if( quit ) termination_handler(0);
 				sleep(sleeptime);
 				continue;
-	    		}
-
-	    		// get instances list for reload
-	    		instances = strdup(iniparser_getstring(ini, "lmsd:instances",""));
-	    	
+    			}
+			
+			// get instances list for reload
+			if(iopt)
+				instances = strdup(iopt);
+	    		else 	
+				instances = strdup(iniparser_getstring(ini, "lmsd:instances",""));
+			
 			// let's initialize and reload instances/modules...
 	    		for( instance=strtok(instances," "); instance!=NULL; instance=strtok(NULL, " ") ) {	
     

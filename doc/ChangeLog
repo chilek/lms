@@ -37,8 +37,10 @@ wersja 1.3.7 (??/??/2004):
   - polecenie 'make daemon' do kompilacji samego demona, bez modu³ów (alec) 	 
   - przy starcie almsd w 'background mode' nie nastêpuje prze³adowanie (alec)
   - dodane klawisze szybkiego dostêpu w formularzu wyszukiwania u¿ytkownika (S)
-    oraz nowej operacji (W); mo¿na by wszêdzie gdzie to wygodne to pododawaæ - pod mozill±
-    i firefoxem wciskamy odpowiednio Alt+S i Alt+W (chilek)
+    oraz nowej operacji (W) (chilek)
+  - do demona dodana opcja wiersza poleceñ '-i' okre¶laj±ca instancje do
+    prze³adowania, nie ma konieczno¶ci tworzenia odrêbnych plików konfig.
+    dla modu³ów uruchamianych z crona (alec)
 
 wersja 1.3.6 Osiris (01/09/2004);
 
