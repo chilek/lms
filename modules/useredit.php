@@ -135,7 +135,7 @@ elseif(isset($userdata))
 		$userinfo[shownodes] = TRUE;
 }
 
-$layout[pagetitle]="Edycja danych u¿ytkownika ".$userinfo[username];
+$layout[pagetitle]="Edycja danych u¿ytkownika: ".$userinfo[username];
 $SMARTY->assign("usernodes",$LMS->GetUserNodes($userinfo[id]));
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($userinfo[id]));
 $SMARTY->assign("tariffs",$LMS->GetTariffs());
@@ -149,6 +149,9 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 /*
  * $Log$
+ * Revision 1.47  2003/09/26 17:44:10  alec
+ * ujednolicone nag³ówki (dodany ':')
+ *
  * Revision 1.46  2003/09/09 20:23:00  lukasz
  * - literówka, czyli Baseciq zna jêz. angielski
  *
