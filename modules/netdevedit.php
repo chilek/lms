@@ -127,9 +127,10 @@ case "formaddip":
 		$error['mac'] = "Podany MAC jest ju¿ w bazie!";
 	elseif(!check_mac($nodeipdata['mac']))
 		$error['mac'] = "Podany adres MAC jest nieprawid³owy!";
-
+	
 	if(!$error)
 	{
+		$nodeipdata['warning'] = '';
 		$LMS->NetDevLinkNode($LMS->NodeAdd($nodeipdata),$_GET['id']);
 		header("Location: ?m=netdevinfo&id=".$_GET['id']);
 		die;
