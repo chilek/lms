@@ -16,6 +16,8 @@ wersja 1.5.4 (??/??/????):
     komputerów (rejmer/alec)
   - w dokumentacji dodana informacja jak pod³±czyæ lms-rtparser do postixa
     przy u¿yciu procmaila (D.Rejmer)
+  - dodawanie aliasów i domen przeniesiono do osobnych modu³ów, uprawnienie
+    'tylko odczyt' zezwala na odczyt danych kont/aliasów/domen (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
