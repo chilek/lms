@@ -12,11 +12,8 @@ INSTALL.mysql			Instalacja i konfiguracja bazy MySQL
 INSTALL.pgsql			Instalacja i konfiguracja bazy PostgreSQL
 README				Informacje ogólne
 TODO				Do-Zrobienia.
-accessrights.txt		Opis praw dostêpu do lms
-limits.txt			Ograniczenia pakietu lms
 lms.mysql			Polecenia zak³adaj±ce tabelki w mysqlu
 lms.pgsql			Polecenia zak³adaj±ce tabelki w postgresqlu
-mailing.txt			Opis plików tekstowych z mailingiem dla u¿ytkowników.
 
 --------------------------------------------------------------------------
 $Id$
