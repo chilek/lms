@@ -286,10 +286,9 @@
 	   <para>backup_dir</para>
 	   <para>Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje zrzuty z bazy. 
 	   Domy¶lnie jest to podkatalog 'backups'.</para>
-	   <para>Przyk³ad:	<prompt>backup_dir = /var/backup/lms/</prompt>
-	   <warning><para>Je¶li katalog z kopiami zapasowymi bêdzie osi±galny z poziomu WWW, to ka¿dy 
-	   bez autoryzacji bêdzie mia³ do nich dostêp.</para></warning>
-	   </para>
+	   <para>Przyk³ad:	<prompt>backup_dir = /var/backup/lms/</prompt></para>
+	   <para><warning><para>Je¶li katalog z kopiami zapasowymi bêdzie osi±galny z poziomu WWW, to ka¿dy 
+	   bez autoryzacji bêdzie mia³ do nich dostêp.</para></warning></para>
 	  </listitem>
           <listitem>
 	   <para>smarty_dir</para>
@@ -324,10 +323,9 @@
     <para>timeout</para>
     <para>Timeout sesji www. Po tym czasie (w sekudnach) u¿ytkownik zostanie wylogowany je¿eli nie 
     podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</para>
-    <para>Przyk³ad:	<prompt>timeout = 900</prompt>
-    <warning><para>Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie 
-    bêdziesz móg³ korzystaæ z LMS!</para></warning>
-    </para>
+    <para>Przyk³ad:	<prompt>timeout = 900</prompt></para>
+    <para><warning><para>Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie 
+    bêdziesz móg³ korzystaæ z LMS!</para></warning></para>
    </listitem>
    <listitem>
     <para>userlist_pagelimit</para>
