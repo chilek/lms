@@ -2,7 +2,9 @@ $Id$
 
 wersja 1.1.0 (??/??/2003):
 
-  - wyjeba³em zmiany z jêzykiem. najpierw rozbudujmy LMS'a, pó¼niej go psujmy
+  - support do drugiego serwera dns (w lms-mgc jako %DNS2)
+    wymagany upgrade:
+    ALTER TABLE `networks` ADD `dns2` VARCHAR( 16 ) AFTER `dns` 
 
 wersja 1.0.0 (18/05/2003):
 
