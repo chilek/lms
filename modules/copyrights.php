@@ -110,14 +110,6 @@ $others = array(
 			),
 		);
 				
-$betatesters = array(
-		'byko' => array(
-			'realname' => 'Grzegorz Cichowski',
-			'www' => 'byko.pawlacz.net',
-			),
-		);
-		
-		
 $SMARTY->assign('authors', $authors);
 $SMARTY->assign('others', $others);
 $SMARTY->display('copyrights.html');
