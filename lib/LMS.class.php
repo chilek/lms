@@ -3192,5 +3192,42 @@ class LMS
 		
 		return $clist;
 	}
+
+	function GetUniqueInstallationID()
+	{
+		if(!($uiid = $this->DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype=?', array('unique_installation_id'))))
+		{
+			list($usec, $sec) = split(' ', microtime());
+			$uiid = md5(uniqid(rand(), true)).sprintf('%09x', $sec).sprintf('%07x', ($usec * 10000000));
+			$this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('unique_installation_id', $uiid));
+		}
+		return $uiid;
+	}
+
+	function CheckUpdates()
+	{
+		$uiid = $this->GetUniqueInstallationID();
+		$time = $this->DB->GetOne('SELECT ?NOW?');
+		$content = FALSE;
+		if(!($lastcheck = $this->DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype=?', array('last_check_for_updates_timestamp'))))
+			$lastcheck = 0;
+		if($lastcheck + $this->CONFIG['phpui']['check_for_updates_period'] < $time)
+		{
+			list($v, $codename) = split(' ', $this->_version);
+			ini_set('default_socket_timeout', 5);
+			if($updatefile = fopen('http://lms.rulez.pl/update.php?uiid='.$uiid.'&v='.$v, 'r'))
+			{
+				while(! feof($updatefile))
+					$content .= fgets($updatefile, 4096);
+				fclose($updatefile);
+				if($lastcheck == 0)
+					$this->DB->Execute('INSERT INTO dbinfo (keyvalue, keytype) VALUES (?NOW?, ?)', array('last_check_for_updates_timestamp'));
+				else
+					$this->DB->Execute('UPDATE dbinfo SET keyvalue=?NOW? WHERE keytype=?', array('last_check_for_updates_timestamp'));
+			}
+			ini_restore('default_socket_timeout');
+		}
+		return $content;
+	}
 }
 ?>
