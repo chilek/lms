@@ -1,0 +1,53 @@
+<?php
+
+/*
+ * LMS version 1.5-cvs
+ *
+ *  (C) Copyright 2001-2005 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+if(!$_GET['id'])
+{
+	header('Location: ?m=eventlist');
+	die;
+}
+
+$event = $LMS->DB->GetRow('SELECT events.id AS id, title, description, note, adminid, userid, begintime, endtime, date, private, closed, '
+			    .$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username,
+			    admins.name AS adminname
+			    FROM events LEFT JOIN users ON (users.id = userid)
+			    LEFT JOIN admins ON (admins.id = adminid)
+			    WHERE events.id = ?', array($_GET['id']));
+
+$event['adminlist'] = $LMS->DB->GetAll('SELECT adminid AS id, admins.name
+					FROM admins, eventassignments
+					WHERE admins.id = adminid
+					AND eventid = ?', array($event['id']));
+
+$layout['pagetitle'] = trans('Event Info');
+
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+
+$SMARTY->assign('event', $event);
+$SMARTY->assign('layout', $layout);
+$SMARTY->display('eventinfo.html');
+
+?>

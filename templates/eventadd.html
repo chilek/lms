@@ -1,0 +1,143 @@
+{include file="header.html"}
+{include file="eventheader.html"}
+<!--// $Id$ //-->
+<SCRIPT LANGUAGE="JavaScript" SRC="img/calendar.js"></SCRIPT>
+{literal}
+<SCRIPT LANGUAGE="JavaScript">
+	function SetEndtime()
+	{
+		box = document.forms['event'].elements['event[begintime]'];
+		document.forms['event'].elements['event[endtime]'].value = box.options[box.selectedIndex].value;
+	}
+	
+	function CheckEndtime()
+	{
+		start = document.forms['event'].elements['event[begintime]'];
+		end = document.forms['event'].elements['event[endtime]'];
+		if(Number(start.options[start.selectedIndex].value) > Number(end.options[end.selectedIndex].value))
+		{
+			alert('{/literal}{t}End time must be older than begin time!{/t}{literal}');
+			end.value = start.options[start.selectedIndex].value;
+		}
+	}
+</SCRIPT>
+{/literal}
+<H1>{$layout.pagetitle}</H1>
+<P align="CENTER">
+{*<TABLE width="100%" cellpadding="0" border="0">
+	<TR>
+	    <TD>
+*}
+<FORM method="POST" action="?m=eventadd" name="event">
+<TABLE width="100%" cellpadding="3" border="0">
+	<TR class="dark">
+		<TD width="1%" class="fleftu">
+			<IMG src="img/calendar.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>{t}Title:{/t}</B>
+		</TD>
+		<TD width="98%" class="frightu">
+			<INPUT name="event[title]" value="{$event.title}" size="50" {tip text="Enter event title" trigger="title"}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/time.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Time:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+{*			<INPUT type="hidden" name="event[date]" value="{$event.date}">
+*}			<INPUT name="event[date]" value="{$event.date}" size="10" OnCLick="javascript:cal1.popup();" {tip text="Enter date in format YYYY/MM/DD (empty field means today) or click to choose it from calendar" trigger="date"}>
+			{t}Begin:{/t} <SELECT name="event[begintime]" size="1" {tip text="Select time of"} OnChange="javascript:SetEndtime();">
+				{section name=time loop=$hours}
+				<OPTION value="{$hours[time]}" {if $hours[time] == $event.begintime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
+				{/section}
+			</SELECT>
+			{t}End:{/t} <SELECT name="event[endtime]" size="1" {tip text="Select time of"} OnChange="javascript:CheckEndtime();">
+				{section name=time loop=$hours}
+				<OPTION value="{$hours[time]}" {if $hours[time] == $event.endtime}SELECTED{/if}>{math equation="floor(x/100)" x=$hours[time] format="%02d"}:{math equation="x % 100" x=$hours[time] format="%02d"}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/info.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Description:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA name="event[description]" cols="50" rows="5" {tip text="Enter additional informations (optional)"}>{$event.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/access.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Status:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			<INPUT type="checkbox" name="event[status]" value="1" style="border-style: none; background-color: #DFD5BD" {tip text="Select event's status"}{if $event.status}CHECKED{/if}> {t}private{/t}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/user.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Customer:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			<SELECT name="event[userid]" value="{$event.userid}" {tip text="Select customer (optional)"}>
+				<OPTION value="0"{if !$event.userid} SELECTED{/if}>{t}- select customer -{/t}</OPTION>
+				{section name=userlist loop=$userlist}	
+				<OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id == $event.userid} SELECTED{/if}>{$userlist[userlist].username}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/admins.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Users:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			<SELECT size="{if $adminlistsize > 5}5{else}{size of=$adminlist}{/if}" name="event[adminlist][]" {tip text="Select user(s) (optional)"} multiple>
+				{section name=adminlist loop=$adminlist}	
+				<OPTION value="{$adminlist[adminlist].id}">{$adminlist[adminlist].name}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="3">
+			<A href="javascript:document.event.submit();" accesskey="s">{t}Submit{/t} <IMG src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A><BR>
+			<INPUT type="checkbox" name="event[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $event.reuse}checked{/if}> {t}Display this form after addition of event again{/t}
+		</TD>
+	</TR>
+{*</TABLE>
+		</TD>
+		<TD></TD>
+		<TD>
+			{include file="eventcalendar.html"}
+		</TD>
+	</TR>
+*}
+</TABLE>
+</P>
+<SCRIPT>
+<!--
+var cal1 = new calendar(document.forms['event'].elements['event[date]']);
+cal1.time_comp = false;
+document.forms['event'].elements['event[title]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

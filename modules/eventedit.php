@@ -1,0 +1,124 @@
+<?php
+
+/*
+ * LMS version 1.5-cvs
+ *
+ *  (C) Copyright 2001-2005 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+if($_GET['action'] == 'open')
+{
+	$LMS->DB->Execute('UPDATE events SET closed = 0 WHERE id = ?',array($_GET['id']));
+	$LMS->SetTS('events');
+	header('Location: ?m=eventlist');
+	die;
+}
+elseif($_GET['action'] == 'close')
+{
+	$LMS->DB->Execute('UPDATE events SET closed = 1 WHERE id = ?',array($_GET['id']));
+	$LMS->SetTS('events');
+	header('Location: ?m=eventlist');
+	die;
+}
+elseif($_GET['action'] == 'dropadmin')
+{
+	$LMS->DB->Execute('DELETE FROM eventassignments WHERE eventid = ? AND adminid = ?',array($_GET['eid'], $_GET['aid']));
+	$LMS->SetTS('eventassignments');
+	header('Location: ?'.$_SESSION['backto']);
+	die;
+}
+
+$event = $LMS->DB->GetRow('SELECT events.id AS id, title, description, note, 
+			date, begintime, endtime, userid, private, closed, ' 
+			.$LMS->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username
+			FROM events LEFT JOIN users ON (users.id = userid)
+			WHERE events.id = ?', array($_GET['id']));
+
+$event['date'] = sprintf('%04d/%02d/%02d', date('Y',$event['date']),date('n',$event['date']),date('j',$event['date']));
+
+$eventadminlist = $LMS->DB->GetAll('SELECT adminid AS id, admins.name
+					FROM admins, eventassignments
+					WHERE admins.id = adminid
+					AND eventid = ?', array($event['id']));
+
+if(isset($_POST['event']))
+{
+	$event = $_POST['event'];
+	$event['id'] = $_GET['id'];
+	
+	if($event['title'] == '')
+    		$error['title'] = trans('Event title is required!');
+	
+	if($event['date'] == '')
+		$error['date'] = trans('You must specify event day!');
+	else
+	{
+		list($year,$month, $day) = explode('/',$event['date']);
+		if(!checkdate($month,$day,$year))
+			$error['date'] = trans('Incorrect date format! Enter date in format YYYY/MM/DD!');
+	}
+
+	if(!$error)
+	{
+		$date = mktime(0, 0, 0, $month, $day, $year);
+		$event['private'] = $event['private'] ? 1 : 0;
+
+		$LMS->DB->Execute('UPDATE events SET title=?, description=?, date=?, begintime=?, endtime=?, private=?, note=?, userid=? WHERE id=?',
+				array($event['title'], $event['description'], $date, $event['begintime'], $event['endtime'], $event['private'], $event['note'], $event['userid'], $event['id']));
+				
+		$LMS->SetTS('events');
+
+		if($event['admin'])
+		{
+			if(!$LMS->DB->GetOne('SELECT 1 FROM eventassignments WHERE eventid = ? AND adminid = ?',array($event['id'], $event['admin'])))
+			{
+				$LMS->DB->Execute('INSERT INTO eventassignments (eventid, adminid) VALUES(?,?)',array($event['id'], $event['admin']));
+				$LMS->SetTS('eventassignments');
+			}
+		}
+
+		header('Location: ?m=eventlist');
+		die;
+	}
+}
+
+$event['adminlist'] = $eventadminlist;
+
+$layout['pagetitle'] = trans('Event Edit');
+
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+
+$adminlist = $LMS->GetAdminNames();
+
+$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->assign('adminlist', $adminlist);
+$SMARTY->assign('adminlistsize', sizeof($adminlist));
+$SMARTY->assign('error', $error);
+$SMARTY->assign('event', $event);
+$SMARTY->assign('layout', $layout);
+$SMARTY->assign('hours', 
+		array(0,30,100,130,200,230,300,330,400,430,500,530,
+		600,630,700,730,800,830,900,930,1000,1030,1100,1130,
+		1200,1230,1300,1330,1400,1430,1500,1530,1600,1630,1700,1730,
+		1800,1830,1900,1930,2000,2030,2100,2130,2200,2230,2300,2330));
+$SMARTY->display('eventedit.html');
+
+?>

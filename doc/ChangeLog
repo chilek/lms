@@ -43,6 +43,7 @@ wersja 1.5.4 (??/??/????):
   - numeracja miesiêczna faktur: invoices/monthly_numbering (alec)
   - BTS#0000299: poprawka w funkcji sprawdzaj±cej poprawno¶æ MAC'a (lukas)
   - dodana opcja %PIN do lms-mgc (lukasz)
+  - Terminarz (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 

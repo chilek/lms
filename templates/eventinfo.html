@@ -1,0 +1,132 @@
+{include file="header.html"}
+{include file="eventheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P>
+<TABLE width="100%" cellpadding="3" border="0">
+	<TR class="dark">
+		<TD width="1%" class="fleftu">
+			<IMG src="img/calendar.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>{t}Title:{/t}</B>
+		</TD>
+		<TD width="98%" class="frightu">
+			<B>{$event.title}</B>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/time.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Time:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			{$event.date|date_format:"%x (%A)"}
+			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
+			{if $event.begintime != $event.endtime}
+			- {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
+			{/if}
+		</TD>
+	</TR>
+{if $event.description}
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/info.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Description:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TABLE WIDTH="95%" CELLPADDING="5">
+				<TR>
+					<TD CLASS="FALL" BGCOLOR="#F4F0EC">
+						{$event.description|replace:"\n":"<BR>"}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+{/if}
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/access.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Status:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			{if $event.private}{t}private{/t}{else}{t}public{/t}{/if}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/admins.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Users:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			{foreach item=admin from=$event.adminlist}	
+				<NOBR><A href="?m=admininfo&id={$admin.id}">{$admin.name}</A></NOBR><BR>
+			{/foreach}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/user.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Customer:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			<A href="?m=userinfo&id={$event.userid}">{$event.username}</A>
+		</TD>
+	</TR>
+{if $event.note}
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/info.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Note:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<TABLE WIDTH="95%" CELLPADDING="5">
+				<TR>
+					<TD CLASS="FALL" BGCOLOR="#F4F0EC">
+						{$event.note|replace:"\n":"<BR>"}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+{/if}
+{*
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<IMG src="img/admins.gif" border="0" align="absmiddle" ALT="">
+		</TD>
+		<TD width="1%">
+			<B>{t}Creator:{/t}</B>
+		</TD>
+		<TD width="98%" class="fright" nowrap>
+			<A href="?m=admininfo&id={$event.adminid}">{$event.adminname}</A>
+		</TD>
+	</TR>
+*}
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="3">
+			<A href="?m=eventedit&id={$event.id}">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" ALT=""></A>
+			{if !$event.closed}
+			<A href="?m=eventedit&id={$event.id}&action=close">{t}Close{/t} <IMG src="img/dead.gif" border="0" align="absmiddle" ALT=""></A>
+			{else}
+			<A href="?m=eventedit&id={$event.id}&action=open">{t}Open{/t} <IMG src="img/open.gif" border="0" align="absmiddle" ALT=""></A>
+			{/if}
+			<A href="?m=eventlist">{t}Cancel{/t} <IMG src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A><BR>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+{include file="footer.html"}
