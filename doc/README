@@ -16,9 +16,8 @@ dMMMMMP dMP dMP dMP  VMMMP"
 "LMS" jest skrótem od "LAN Management System". Jest to zestaw aplikacji w
 PHP i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi (popularnie
 zwanymi Amatorskimi Sieciami Komputerowymi), opartych o bazê danych MySQL
-(docelowo, do wyboru, MySQL lub PostgreSQL). G³ówne za³o¿enia to uzyskanie
-jako¶ci us³ug oraz obs³ugi u¿ytkowników na poziomie providera z prawdziwego
-zdarzenia.
+lub PostgreSQL. G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi 
+u¿ytkowników na poziomie providera z prawdziwego zdarzenia.
 
 -----------------------------------------------------------------------------
 
