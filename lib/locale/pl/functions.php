@@ -224,6 +224,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 					if ($powsuffix != '')
 						$cursuffix .= $_sep . $powsuffix;
 					$ret .= to_words($snum, $p, $cursuffix);
+					$ret .=' ';
 				}
 				$curp = $p - 1;
 				continue;
