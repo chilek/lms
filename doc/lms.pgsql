@@ -47,7 +47,7 @@ DROP TABLE networks;
 CREATE TABLE networks (
 	id int4 DEFAULT nextval('networks_id_seq'::text) NOT NULL,
 	name varchar(255) NOT NULL,
-	address varchar(16) NOT NULL,
+	address bigint NOT NULL,
 	mask varchar(16) NOT NULL,
 	interface varchar(8),
 	gateway varchar(16),
