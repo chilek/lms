@@ -131,6 +131,7 @@ $layout['adodb_version'] = eregi_replace('(.*)\(c\).*','\1',$ADODB_vers);
 $layout['uptime']=uptime();
 $layout['hostname']=hostname();
 $layout['date']=pldate();
+$layout['faktury']=(! $_CONFIG['finances']['enable_faktury'] ? '0' : $_CONFIG['finances']['enable_faktury']);
 
 $SMARTY->assign('menu',$menu);
 $SMARTY->assign('layout',$layout);
