@@ -1,7 +1,9 @@
 * 01.12.2003
   - w 'payments' poprawione obliczanie %period oraz dodana zmienna %tariff,
     która zostaje zamieniona nazw± taryfy (alec)
-
+  - do 'payments' dodana opcja 'up_payments'. ustawiaj±c j± na 'yes' (lub 1) 
+    okres (%period) bêdzie obliczany "z góry" (alec)    
+    
 * 27.11.2003
   - w 'ethers' dodana mo¿liwo¶æ wyboru (opcja dummy_macs), czy dla 
     komputerów od³±czonych ustawiaæ mac 00:00:00:00:00:00 (alec)
