@@ -56,7 +56,7 @@ if (isset($_SESSION['ulp']) && !isset($_GET['page']))
 	$_GET['page'] = $_SESSION['ulp'];
 
 $userlist=$LMS->GetUserList($o, $s, $n, $g);
-$listdata['state'] = $userlist['state'];
+$listdata['state'] = $_SESSION['uls'];
 $listdata['order'] = $userlist['order'];
 $listdata['network'] = $userlist['network'];
 $listdata['usergroup'] = $userlist['usergroup'];
