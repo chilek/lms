@@ -163,7 +163,7 @@ info = "Opcjonalny opis modu³u"
 				</row>
 				<row>
 				<entry><xref linkend="daemon-cutoff"></entry>
-				<entry>Od³±czanie u¿ytkowników z zaleg³o¶ciami w op³atach</entry>
+				<entry>Od³±czanie klientów z zaleg³o¶ciami w op³atach</entry>
 				</row>
 				<row>
 				<entry><xref linkend="daemon-dns"></entry>
@@ -179,11 +179,11 @@ info = "Opcjonalny opis modu³u"
 				</row>
 				<row>
 				<entry><xref linkend="daemon-notify"></entry>
-				<entry>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach poczt± elektroniczn±</entry>
+				<entry>Powiadamianie klientów o zaleg³o¶ciach w op³atach poczt± elektroniczn±</entry>
 				</row>
 				<row>
 				<entry><xref linkend="daemon-ggnotify"></entry>
-				<entry>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach przez gadu-gadu</entry>
+				<entry>Powiadamianie klientów o zaleg³o¶ciach w op³atach przez gadu-gadu</entry>
 				</row>
 				<row>
 				<entry><xref linkend="daemon-payments"></entry>
@@ -203,7 +203,7 @@ info = "Opcjonalny opis modu³u"
 				</row>
 				<row>
 				<entry><xref linkend="daemon-pinger"></entry>
-				<entry>Badanie aktywno¶ci u¿ytkowników</entry>
+				<entry>Badanie aktywno¶ci klientów</entry>
 				</row>
 				</tbody>
 			</tgroup>
@@ -235,12 +235,12 @@ info = "Opcjonalny opis modu³u"
 		<title>Payments</title>
 		    <sect3 id="payments-desc">
 		    <title>Opis</title>
-		    <para>Modu³ nalicza op³aty abonamentowe u¿ytkowników oraz op³aty sta³e. Nale¿y go uruchamiaæ 
-		    codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
+		    <para>Modu³ nalicza op³aty abonamentowe klientów oraz op³aty sta³e. Nale¿y go uruchamiaæ 
+		    codziennie. Op³aty naliczane na podstawie przypisanych klientowi
 		    taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn± 'comment'.
 		    Po naliczeniu op³at tworzone s± faktury. Komentarz do op³aty sta³ej to zlepek
 		    sk³adaj±cy siê z jej nazwy oraz wierzyciela. Na koñcu usuwane s± z bazy nieaktualne
-		    obci±¿enia u¿ytkowników.</para>
+		    obci±¿enia klientów.</para>
 		    </sect3>
 		    <sect3 id="payments-config">
 		    <title>Konfiguracja</title>
@@ -261,7 +261,7 @@ info = "Opcjonalny opis modu³u"
 			</listitem>
 			<listitem>
 			    <para>expiry_days</para>
-			    <para>Okre¶la liczbê dni od daty wyga¶niêcia przypisanych u¿ytkownikowi zobowi±zañ, 
+			    <para>Okre¶la liczbê dni od daty wyga¶niêcia przypisanych klientowi zobowi±zañ, 
 			    po której dane tego zobowi±zania zostan± usuniête z bazy. Przy ustawieniu na '0' dane
 			    zostan± usuniête natychmiast po dacie, do której obowi±zywa³o zobowi±zanie. Domy¶lnie: 30.</para>
 			    <para>Przyk³ad: <prompt>expiry_days = 365</prompt></para>
@@ -283,23 +283,23 @@ info = "Opcjonalny opis modu³u"
 		<title>Notify</title>
 		    <sect3 id="notify-desc">
 		    <title>Opis</title>
-		    <para>Modu³ 'notify' s³u¿y do informowania u¿ytkowników o zaleg³o¶ciach
-		    w op³atach za pomoc± poczty elektronicznej. Aktualne saldo u¿ytkownika
+		    <para>Modu³ 'notify' s³u¿y do informowania klientów o zaleg³o¶ciach
+		    w op³atach za pomoc± poczty elektronicznej. Aktualne saldo klienta
 		    porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze - wiadomo¶æ
 		    zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego szablonu, 
 		    w którym mo¿na stosowaæ nastêpuj±ce zmienne:
 		    <itemizedlist>
 			<listitem>
-			    <para>%saldo - aktualne saldo u¿ytkownika</para>
+			    <para>%saldo - aktualne saldo klienta</para>
 			</listitem>
 			<listitem>
-			    <para>%name - imiê u¿ytkownika</para>
+			    <para>%name - imiê klienta</para>
 			</listitem>
 			<listitem>
-			    <para>%lastname - nazwisko/nazwa u¿ytkownika</para>
+			    <para>%lastname - nazwisko/nazwa klienta</para>
 			</listitem>
 			<listitem>
-			    <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji na kocie u¿ytkownika</para>
+			    <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji na kocie klienta</para>
 			</listitem>
 		    </itemizedlist></para>
 		    </sect3>
@@ -320,12 +320,12 @@ info = "Opcjonalny opis modu³u"
 			<listitem>
 			    <para>command</para>
 			    <para>Polecenie pow³oki wysy³aj±ce e-maila. '%address' zostanie zast±pione
-			    adresem e-mail u¿ytkownika. Domy¶lnie: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</para>
+			    adresem e-mail klienta. Domy¶lnie: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</para>
 			    <para>Przyk³ad: <prompt>command = 'mail %address -s "musisz zap³aciæ, bo jak nie..." &lt; /tmp/mail.txt'</prompt></para>
 			</listitem>		
 			<listitem>
 			    <para>limit</para>
-			    <para>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
+			    <para>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo klienta 
 			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</para>
 			    <para>Przyk³ad: <prompt>limit = -20</prompt></para>
 			</listitem>
@@ -343,7 +343,7 @@ info = "Opcjonalny opis modu³u"
 		    <sect3 id="ggnotify-desc">
 		    <title>Opis</title>
 		    <para>Odpowiednik modu³u 'notify' s³u¿±cy do wysy³ania wiadomo¶ci gadu-gadu.
-		    Aktualne saldo u¿ytkownika porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze 
+		    Aktualne saldo klienta porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze 
 		    - wiadomo¶æ zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego szablonu, 
 		    w którym mo¿na stosowaæ zmienne takie jak dla modu³u 'notify' (mo¿e to byæ te¿ ten sam 
 		    szablon).</para>
@@ -373,7 +373,7 @@ info = "Opcjonalny opis modu³u"
 			</listitem>		
 			<listitem>
 			    <para>limit</para>
-			    <para>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
+			    <para>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo klienta 
 			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</para>
 			    <para>Przyk³ad: <prompt>limit = -20</prompt></para>
 			</listitem>
@@ -391,7 +391,7 @@ info = "Opcjonalny opis modu³u"
 		    <sect3 id="cutoff-desc">
 		    <title>Opis</title>
 		    <para>Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza ostrze¿enia
-		    u¿ytkownikom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ 
+		    klientom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ 
 		    nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</para>
 		    </sect3>
 		    <sect3 id="cutoff-config">
@@ -400,20 +400,20 @@ info = "Opcjonalny opis modu³u"
 		    <itemizedlist>
 			<listitem>
 			    <para>limit</para>
-			    <para>Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej
+			    <para>Od³±czenie nastêpuje je¶li saldo klienta spadnie poni¿ej
 			    kwoty okre¶lonej t± zmienn±. Domy¶lnie: 0.</para>
 			    <para>Przyk³ad: <prompt>limit = -20</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>command</para>
 			    <para>Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co najmniej
-			    jeden u¿ytkownik zostanie od³±czony lub zostanie w³±czone ostrze¿enie. 
+			    jeden klient zostanie od³±czony lub zostanie w³±czone ostrze¿enie. 
 			    Domy¶lnie: nieustawiona.</para>
 			    <para>Przyk³ad: <prompt>command = 'almsd -qi firewall'</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>warning</para>
-			    <para>W³±cza ostrze¿enie dla od³±czanego u¿ytkowanika i przypisuje mu 
+			    <para>W³±cza ostrze¿enie dla od³±czanego klienta i przypisuje mu 
 			    okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
 			    Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
 			    Domy¶lnie: 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty (dd.mm.yyyy)".</para>
@@ -513,7 +513,7 @@ info = "Opcjonalny opis modu³u"
 			</listitem>
 			<listitem>
 			    <para>usergroups</para>
-			    <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    <para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</para>
 			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
 			</listitem>
@@ -577,7 +577,7 @@ info = "Opcjonalny opis modu³u"
 			</listitem>
 			<listitem>
 			    <para>usergroups</para>
-			    <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    <para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</para>
 			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
 			</listitem>
@@ -615,19 +615,19 @@ info = "Opcjonalny opis modu³u"
 		    <sect3 id="tc-desc">
 		    <title>Opis</title>
 		    <para>Modu³ generuj±cy skrypt zawieraj±cy polecenia iptables i tc s³u¿±ce
-		    do ograniczania pasma i limitowania po³±czeñ u¿ytkownikom. Regu³ki dla 
+		    do ograniczania pasma i limitowania po³±czeñ klientom. Regu³ki dla 
 		    komputerów mo¿na dowolnie zdefiniowaæ i wykorzystaæ nie tylko do "traffic 
 		    control". Zasada dzia³ania skryptu przedstawia siê nastêpuj±co: Najpierw z bazy
-		    pobierane s± dane dla wszystkich u¿ytkowników. Obliczane s± sumy ograniczeñ
-		    (uprate, downrate, upceil, downceil, limity po³±czeñ) dla ka¿dego u¿ytkownika
-		    Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy u¿ytkowników
+		    pobierane s± dane dla wszystkich klientów. Obliczane s± sumy ograniczeñ
+		    (uprate, downrate, upceil, downceil, limity po³±czeñ) dla ka¿dego klienta
+		    Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy klientów
 		    i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s± ró¿ne od zera nastêpuje
 		    zapis regu³ do pliku z podmian± zmiennych. W regu³kach mo¿na stosowaæ nastêpuj±ce
 		    zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, %uprate, %downrate, %upceil, 
 		    %downceil, %plimit, %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 
 		    zwiêkszany o jeden dla ka¿dego komputera.</para>
 		    <para>Domy¶lna polityka tworzenia klas htb zak³ada utworzenie jednej klasy dla
-		    wszystkich komputerów u¿ytkownika. Mo¿e to byæ zmienione za pomoc± opcji
+		    wszystkich komputerów klienta. Mo¿e to byæ zmienione za pomoc± opcji
 		    'one_class_per_host'.</para>
 		    <para>Konfiguracja domy¶lna zak³ada, ¿e twój system jest przystosowany
 		    do zastosowania htb oraz iptables z modu³ami limit, connlimit, mark i ipp2p.
@@ -755,10 +755,10 @@ esac
 			<listitem>
 			    <para>one_class_per_host</para>
 			    <para>Okre¶la politykê tworzenia klas htb. W ustawieniu domy¶lnym
-			    wszystkie komputery u¿ytkownika zostan± wrzucone do jednej klasy.
+			    wszystkie komputery klienta zostan± wrzucone do jednej klasy.
 			    Ustawienie tej opcji na 'true' spowoduje, ¿e regu³y okre¶lone w 
 			    host_htb_up i host_htb_down zostan± wygenerowane dla wszystkich
-			    komputerów u¿ytkownika (z inn± warto¶ci± '%x'). Regu³y z host_mark_down,
+			    komputerów klienta (z inn± warto¶ci± '%x'). Regu³y z host_mark_down,
 			    host_mark_up, host_plimit i host_climit generowane s± dla ka¿dego
 			    komputera niezale¿nie od ustawieñ tej zmiennej. Domy¶lnie: false</para>
 			    <para>Przyk³ad: <prompt>one_class_per_host = 1</prompt></para>
@@ -835,7 +835,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 			</listitem>
 			<listitem>
 			    <para>usergroups</para>
-			    <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    <para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</para>
 			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
 			</listitem>
@@ -940,7 +940,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 			</listitem>
 			<listitem>
 			    <para>usergroups</para>
-			    <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    <para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</para>
 			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
 			</listitem>
@@ -983,7 +983,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 			</listitem>
 			<listitem>
 			    <para>usergroups</para>
-			    <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    <para>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</para>
 			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
 			</listitem>

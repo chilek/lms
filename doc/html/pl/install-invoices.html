@@ -1,0 +1,413 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Faktury</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Instalacja i konfiguracja"
+HREF="install.html"><LINK
+REL="PREVIOUS"
+TITLE="Upgrade"
+HREF="install-upgrade.html"><LINK
+REL="NEXT"
+TITLE="Interfejs U¿ytkownika (LMS-UI)"
+HREF="user.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="install-upgrade.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia&#322; 2. Instalacja i konfiguracja</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="user.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INSTALL-INVOICES"
+>2.9. Faktury</A
+></H1
+><P
+>LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie
+		faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
+		wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
+		zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+></P
+><P
+>Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
+		opcji w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[invoices]</I
+></SPAN
+> <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>:
+		<UL
+><LI
+><P
+>number_template</P
+><P
+>Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
+			'%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>number_template = %N/%Y</SAMP
+></P
+></LI
+><LI
+><P
+>monthly_numbering</P
+><P
+>W³±czenie tej opcji spowoduje zerowanie numeracji faktur na pocz±tku ka¿dego miesi±ca.
+			Domy¶lnie: wy³±czona</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>monthly_numbering = 1</SAMP
+></P
+></LI
+><LI
+><P
+>header</P
+><P
+>Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>header = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</SAMP
+></P
+></LI
+><LI
+><P
+>footer</P
+><P
+>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka zostanie umieszczona na dole faktury, ma³± czcionk±. Podobnie jak i w przypadku opcji header, mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</SAMP
+></P
+></LI
+><LI
+><P
+>default_author</P
+><P
+>Domy¶lna osoba wystawiaj±ca fakturê. Domy¶lnie: puste</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>default_author = "specjalista d/s fakturowania"</SAMP
+></P
+></LI
+><LI
+><P
+>cplace</P
+><P
+>Miejsce wystawienia faktury. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>cplace = Warszawa</SAMP
+></P
+></LI
+></UL
+>
+		Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
+		na wykazie bilansu finansowego (ogólnego b±d¼ pojedynczego u¿ytkownika), albo 
+		poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest 
+		tak¿e filtrowanie faktur do wydruku.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-INVOICES-HTML"
+>2.9.1. HTML</A
+></H2
+><P
+>Przy domy¶lnych ustawieniach faktury wy¶wietlane s± w
+		formacie html wg domy¶lnego szablonu. W sekcji [invoices] masz
+		do dyspozycji jeszcze nastêpuj±ce opcje:
+		<UL
+><LI
+><P
+>template_file</P
+><P
+>Szablon faktury, który powinien znajdowaæ siê w
+			katalogu <TT
+CLASS="FILENAME"
+>templates</TT
+>. Domy¶lnie: invoice.html.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>template_file = invoice-mynet.html</SAMP
+></P
+></LI
+><LI
+><P
+>content_type</P
+><P
+>Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
+			to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
+			Przydatne je¶li u¿ywasz w³asnego templejta, który wygeneruje np.rtf'a lub xls'a.
+			Domy¶lnie: 'text/html'</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>content_type = application/octet-stream</SAMP
+></P
+></LI
+><LI
+><P
+>attachment_name</P
+><P
+>Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
+			wydruk. Domy¶lnie: pusta.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>attachment_name = faktura.xls</SAMP
+></P
+></LI
+></UL
+>
+		Wynikowy dokument HTML zawiera orygina³y 
+		i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. 
+		Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ 
+		faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darkach 
+		Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.</P
+><P
+>			<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ 
+			konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie
+			stopki i nag³ówka, czy te¿ adresu na wydruku.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+		</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-INVOICES-PDF"
+>2.9.2. PDF</A
+></H2
+><P
+>Mo¿liwe jest tak¿e tworzenie faktur jako pliki pdf. Przypisanie
+		opcji <TT
+CLASS="FILENAME"
+>type</TT
+> z sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[invoices]</I
+></SPAN
+> 
+		warto¶ci 'pdf' spowoduje, ¿e faktury zamiast w html'u bêd± tworzone jako pliki 
+		"portable data format". Opcja <TT
+CLASS="FILENAME"
+>template_file</TT
+> spe³nia podobn± rolê jak dla faktur html'owych,
+		z tym, ¿e posiada predefiniowane warto¶ci: 'standard' - faktura podstawowa 
+		(odpowiednik invoice.html) i 'FT-0100' - faktura przystosowana do drukowania
+		na drukach FT-0100 zawieraj±cych druk polecenia przelewu. W opcji <TT
+CLASS="FILENAME"
+>template_file</TT
+>
+		mo¿na tak¿e wstawiæ nazwê pliku php, jednak ta mo¿liwo¶æ jest przeznaczona dla
+		zaawansowanych u¿ytkowników, gdy¿ wymaga utworzenia pliku php, a nie tak jak w 
+		przypadku faktur html'owych szablonu Smarty.</P
+><P
+>Dane do druku polecenia przelewu s± brane z sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[finances]</I
+></SPAN
+>
+		pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>. A oto dostêpne opcje:
+		<TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>name - nazwa firmy</TD
+></TR
+><TR
+><TD
+>shortname - skrócona nazwa firmy</TD
+></TR
+><TR
+><TD
+>address - adres firmy</TD
+></TR
+><TR
+><TD
+>zip - kod pocztowy</TD
+></TR
+><TR
+><TD
+>city - miasto</TD
+></TR
+><TR
+><TD
+>account - numer konta bankowego</TD
+></TR
+></TBODY
+></TABLE
+>
+		</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="install-upgrade.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Upgrade</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="install.html"
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Interfejs U¿ytkownika (LMS-UI)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

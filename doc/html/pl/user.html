@@ -10,8 +10,8 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.5-cvs"
 HREF="index.html"><LINK
 REL="PREVIOUS"
-TITLE="Upgrade"
-HREF="install-upgrade.html"><LINK
+TITLE="Faktury"
+HREF="install-invoices.html"><LINK
 REL="NEXT"
 TITLE="Administracja"
 HREF="menu-administration.html"><LINK
@@ -44,7 +44,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="install-upgrade.html"
+HREF="install-invoices.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -96,17 +96,17 @@ HREF="menu-administration.html"
 ><DT
 >3.2.1. <A
 HREF="menu-administration.html#ADMINISTRATION-INFO"
->Info</A
+>Informacje</A
 ></DT
 ><DT
 >3.2.2. <A
-HREF="menu-administration.html#ADMINISTRATION-ADMINS"
->Administratorzy</A
+HREF="menu-administration.html#ADMINISTRATION-USERS"
+>U¿ytkownicy</A
 ></DT
 ><DT
 >3.2.3. <A
-HREF="menu-administration.html#ADMINISTRATION-NEWADMIN"
->Nowy administrator</A
+HREF="menu-administration.html#ADMINISTRATION-NEWUSER"
+>Nowy u¿ytkownik</A
 ></DT
 ><DT
 >3.2.4. <A
@@ -116,50 +116,50 @@ HREF="menu-administration.html#ADMINISTRATION-DB"
 ><DT
 >3.2.5. <A
 HREF="menu-administration.html#ADMINISTRATION-UICONFIG"
->Konfiguracja</A
+>Konfiguracja UI</A
 ></DT
 ></DL
 ></DD
 ><DT
 >3.3. <A
-HREF="menu-users.html"
->U¿ytkownicy</A
+HREF="menu-customers.html"
+>Klienci</A
 ></DT
 ><DD
 ><DL
 ><DT
 >3.3.1. <A
-HREF="menu-users.html#MENU-USERS-LIST"
+HREF="menu-customers.html#MENU-CUSTOMERS-LIST"
 >Lista</A
 ></DT
 ><DT
 >3.3.2. <A
-HREF="menu-users.html#MENU-USERS-NEW"
->Nowy</A
+HREF="menu-customers.html#MENU-CUSTOMERS-NEW"
+>Nowy klient</A
 ></DT
 ><DT
 >3.3.3. <A
-HREF="menu-users.html#MENU-USERS-SEARCH"
+HREF="menu-customers.html#MENU-CUSTOMERS-SEARCH"
 >Szukaj</A
 ></DT
 ><DT
 >3.3.4. <A
-HREF="menu-users.html#MENU-USERS-GROUPS"
+HREF="menu-customers.html#MENU-CUSTOMERS-GROUPS"
 >Grupy</A
 ></DT
 ><DT
 >3.3.5. <A
-HREF="menu-users.html#MENU-USERS-NEWGROPUP"
+HREF="menu-customers.html#MENU-CUSTOMERS-NEWGROPUP"
 >Nowa grupa</A
 ></DT
 ><DT
 >3.3.6. <A
-HREF="menu-users.html#MENU-USERS-WARNINGS"
->Ostrze¿enia</A
+HREF="menu-customers.html#MENU-CUSTOMERS-MESSAGES"
+>Wiadomo¶ci</A
 ></DT
 ><DT
 >3.3.7. <A
-HREF="menu-users.html#MENU-USERS-PRINTS"
+HREF="menu-customers.html#MENU-CUSTOMERS-PRINTS"
 >Wydruki</A
 ></DT
 ></DL
@@ -179,7 +179,7 @@ HREF="menu-nodes.html#MENU-NODES-LIST"
 ><DT
 >3.4.2. <A
 HREF="menu-nodes.html#MENU-NODES-NEW"
->Nowy</A
+>Nowy komputer</A
 ></DT
 ><DT
 >3.4.3. <A
@@ -188,8 +188,8 @@ HREF="menu-nodes.html#MENU-NODES-SEARCH"
 ></DT
 ><DT
 >3.4.4. <A
-HREF="menu-nodes.html#MENU-NODES-WARNINGS"
->Ostrze¿enia</A
+HREF="menu-nodes.html#MENU-NODES-MESSAGES"
+>Wiadomo¶ci</A
 ></DT
 ><DT
 >3.4.5. <A
@@ -213,7 +213,7 @@ HREF="menu-netdevices.html#MENU-NETDEVICES-LIST"
 ><DT
 >3.5.2. <A
 HREF="menu-netdevices.html#MENU-NETDEVICES-NEW"
->Nowe</A
+>Nowe urz±dzenie</A
 ></DT
 ><DT
 >3.5.3. <A
@@ -244,7 +244,7 @@ HREF="menu-networks.html#MENU-NETWORKS-NEW"
 ><DT
 >3.7. <A
 HREF="menu-finances.html"
->Taryfy i Finanse</A
+>Finanse</A
 ></DT
 ><DD
 ><DL
@@ -261,12 +261,12 @@ HREF="menu-finances.html#MENU-TARIFFS-NEW"
 ><DT
 >3.7.3. <A
 HREF="menu-finances.html#MENU-PAYMENTS-LIST"
->Lista op³at</A
+>Lista p³atno¶ci</A
 ></DT
 ><DT
 >3.7.4. <A
 HREF="menu-finances.html#MENU-PAYMENTS-NEW"
->Nowa op³ata</A
+>Nowa p³atno¶æ</A
 ></DT
 ><DT
 >3.7.5. <A
@@ -378,7 +378,7 @@ HREF="menu-helpdesk.html#MENU-HELPDESK-NEWQUEUE"
 ><DT
 >3.12.3. <A
 HREF="menu-helpdesk.html#MENU-HELPDESK-SEARCH"
->Wyszukaj</A
+>Wyszukiwanie</A
 ></DT
 ><DT
 >3.12.4. <A
@@ -387,15 +387,39 @@ HREF="menu-helpdesk.html#MENU-HELPDESK-NEWTICKET"
 ></DT
 ></DL
 ></DD
+><DT
+>3.13. <A
+HREF="menu-timetable.html"
+>Terminarz</A
+></DT
+><DD
+><DL
+><DT
+>3.13.1. <A
+HREF="menu-timetable.html#TIMETABLE-LIST"
+>Terminarz (Lista zadañ)</A
+></DT
+><DT
+>3.13.2. <A
+HREF="menu-timetable.html#TIMETABLE-NEW"
+>Nowe zdarzenie</A
+></DT
+><DT
+>3.13.3. <A
+HREF="menu-timetable.html#TIMETABLE-SEARCH"
+>Szukaj</A
+></DT
+></DL
+></DD
 ></DL
 ></DIV
 ><P
 >LMS'owy Interfejs U¿ytkownika to panel administracyjny do tworzenia
-  i zarz±dzania baz± u¿ytkowników i komputerów dostêpny za pomoc± przegl±darki
+  i zarz±dzania baz± klientów i komputerów dostêpny za pomoc± przegl±darki
   internetowej. Umo¿liwia wprowadzanie danych komputerów,
-  przypisanie ich do u¿ytkowników i sieci. Definiowanie op³at i zarz±dzanie finansami sieci,
-  Szybkie wyszukiwanie danych o u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji
-  seryjnej do u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich hase³.
+  przypisanie ich do klientów i sieci. Definiowanie op³at i zarz±dzanie finansami sieci,
+  Szybkie wyszukiwanie danych o klientach i ich sprzêcie. Sporz±dzanie korespondencji
+  seryjnej do klientów, definiowanie praw dostêpu dla u¿ytkowników i ich hase³.
   Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania ³±cza, a tak¿e
   tworzenia kopii bazy danych oraz zarz±dzania konfiguracj± us³ug na serwerze. 
   <SPAN
@@ -415,13 +439,13 @@ NAME="USER-LOGIN"
 >3.1. Logowanie</A
 ></H1
 ><P
->Po wpisaniu w przegl±darce adresu do strony z lms'em, powita ciê
+>Po wpisaniu w przegl±darce adresu do strony z LMS'em, powita ciê
 	ekran logowania. Musisz podaæ w³a¶ciwy login oraz has³o. Has³a w bazie
 	danych przechowywane s± w formie zaszyfrowanej.</P
 ><P
 >Je¿eli jest to twoje pierwsze logowanie i nie masz jeszcze
 	za³o¿onego konta, zostaniesz przekierowany do modu³u tworzenia kont
-	administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
+	u¿ytkowników. W tym momencie bêdziesz mia³ tylko dostêp do tego
 	jednego modu³u.</P
 ></DIV
 ></DIV
@@ -441,7 +465,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="install-upgrade.html"
+HREF="install-invoices.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -469,7 +493,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Upgrade</TD
+>Faktury</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

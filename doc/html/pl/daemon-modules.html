@@ -145,7 +145,7 @@ HREF="daemon-modules.html#DAEMON-CUTOFF"
 >cutoff</A
 ></TD
 ><TD
->Od³±czanie u¿ytkowników z zaleg³o¶ciami w op³atach</TD
+>Od³±czanie klientów z zaleg³o¶ciami w op³atach</TD
 ></TR
 ><TR
 ><TD
@@ -181,7 +181,7 @@ HREF="daemon-modules.html#DAEMON-NOTIFY"
 >notify</A
 ></TD
 ><TD
->Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach poczt± elektroniczn±</TD
+>Powiadamianie klientów o zaleg³o¶ciach w op³atach poczt± elektroniczn±</TD
 ></TR
 ><TR
 ><TD
@@ -190,7 +190,7 @@ HREF="daemon-modules.html#DAEMON-GGNOTIFY"
 >ggnotify</A
 ></TD
 ><TD
->Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach przez gadu-gadu</TD
+>Powiadamianie klientów o zaleg³o¶ciach w op³atach przez gadu-gadu</TD
 ></TR
 ><TR
 ><TD
@@ -235,7 +235,7 @@ HREF="daemon-modules.html#DAEMON-PINGER"
 >pinger</A
 ></TD
 ><TD
->Badanie aktywno¶ci u¿ytkowników</TD
+>Badanie aktywno¶ci klientów</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -309,12 +309,12 @@ NAME="PAYMENTS-DESC"
 >6.2.3.1. Opis</A
 ></H3
 ><P
->Modu³ nalicza op³aty abonamentowe u¿ytkowników oraz op³aty sta³e. Nale¿y go uruchamiaæ 
-		    codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
+>Modu³ nalicza op³aty abonamentowe klientów oraz op³aty sta³e. Nale¿y go uruchamiaæ 
+		    codziennie. Op³aty naliczane na podstawie przypisanych klientowi
 		    taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn± 'comment'.
 		    Po naliczeniu op³at tworzone s± faktury. Komentarz do op³aty sta³ej to zlepek
 		    sk³adaj±cy siê z jej nazwy oraz wierzyciela. Na koñcu usuwane s± z bazy nieaktualne
-		    obci±¿enia u¿ytkowników.</P
+		    obci±¿enia klientów.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -356,7 +356,7 @@ CLASS="PROMPT"
 ><P
 >expiry_days</P
 ><P
->Okre¶la liczbê dni od daty wyga¶niêcia przypisanych u¿ytkownikowi zobowi±zañ, 
+>Okre¶la liczbê dni od daty wyga¶niêcia przypisanych klientowi zobowi±zañ, 
 			    po której dane tego zobowi±zania zostan± usuniête z bazy. Przy ustawieniu na '0' dane
 			    zostan± usuniête natychmiast po dacie, do której obowi±zywa³o zobowi±zanie. Domy¶lnie: 30.</P
 ><P
@@ -407,27 +407,27 @@ NAME="NOTIFY-DESC"
 >6.2.4.1. Opis</A
 ></H3
 ><P
->Modu³ 'notify' s³u¿y do informowania u¿ytkowników o zaleg³o¶ciach
-		    w op³atach za pomoc± poczty elektronicznej. Aktualne saldo u¿ytkownika
+>Modu³ 'notify' s³u¿y do informowania klientów o zaleg³o¶ciach
+		    w op³atach za pomoc± poczty elektronicznej. Aktualne saldo klienta
 		    porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze - wiadomo¶æ
 		    zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego szablonu, 
 		    w którym mo¿na stosowaæ nastêpuj±ce zmienne:
 		    <UL
 ><LI
 ><P
->%saldo - aktualne saldo u¿ytkownika</P
+>%saldo - aktualne saldo klienta</P
 ></LI
 ><LI
 ><P
->%name - imiê u¿ytkownika</P
+>%name - imiê klienta</P
 ></LI
 ><LI
 ><P
->%lastname - nazwisko/nazwa u¿ytkownika</P
+>%lastname - nazwisko/nazwa klienta</P
 ></LI
 ><LI
 ><P
->%last_10_in_a_table - wyci±g ostatnich 10 operacji na kocie u¿ytkownika</P
+>%last_10_in_a_table - wyci±g ostatnich 10 operacji na kocie klienta</P
 ></LI
 ></UL
 ></P
@@ -470,7 +470,7 @@ CLASS="PROMPT"
 >command</P
 ><P
 >Polecenie pow³oki wysy³aj±ce e-maila. '%address' zostanie zast±pione
-			    adresem e-mail u¿ytkownika. Domy¶lnie: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</P
+			    adresem e-mail klienta. Domy¶lnie: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -481,7 +481,7 @@ CLASS="PROMPT"
 ><P
 >limit</P
 ><P
->Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
+>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo klienta 
 			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</P
 ><P
 >Przyk³ad: <SAMP
@@ -522,7 +522,7 @@ NAME="GGNOTIFY-DESC"
 ></H3
 ><P
 >Odpowiednik modu³u 'notify' s³u¿±cy do wysy³ania wiadomo¶ci gadu-gadu.
-		    Aktualne saldo u¿ytkownika porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze 
+		    Aktualne saldo klienta porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze 
 		    - wiadomo¶æ zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego szablonu, 
 		    w którym mo¿na stosowaæ zmienne takie jak dla modu³u 'notify' (mo¿e to byæ te¿ ten sam 
 		    szablon).</P
@@ -589,7 +589,7 @@ CLASS="PROMPT"
 ><P
 >limit</P
 ><P
->Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
+>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo klienta 
 			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</P
 ><P
 >Przyk³ad: <SAMP
@@ -630,7 +630,7 @@ NAME="CUTOFF-DESC"
 ></H3
 ><P
 >Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza ostrze¿enia
-		    u¿ytkownikom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ 
+		    klientom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ 
 		    nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</P
 ></DIV
 ><DIV
@@ -648,7 +648,7 @@ NAME="CUTOFF-CONFIG"
 ><P
 >limit</P
 ><P
->Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej
+>Od³±czenie nastêpuje je¶li saldo klienta spadnie poni¿ej
 			    kwoty okre¶lonej t± zmienn±. Domy¶lnie: 0.</P
 ><P
 >Przyk³ad: <SAMP
@@ -661,7 +661,7 @@ CLASS="PROMPT"
 >command</P
 ><P
 >Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co najmniej
-			    jeden u¿ytkownik zostanie od³±czony lub zostanie w³±czone ostrze¿enie. 
+			    jeden klient zostanie od³±czony lub zostanie w³±czone ostrze¿enie. 
 			    Domy¶lnie: nieustawiona.</P
 ><P
 >Przyk³ad: <SAMP
@@ -673,7 +673,7 @@ CLASS="PROMPT"
 ><P
 >warning</P
 ><P
->W³±cza ostrze¿enie dla od³±czanego u¿ytkowanika i przypisuje mu 
+>W³±cza ostrze¿enie dla od³±czanego klienta i przypisuje mu 
 			    okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
 			    Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
 			    Domy¶lnie: 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty (dd.mm.yyyy)".</P
@@ -883,7 +883,7 @@ CLASS="PROMPT"
 ><P
 >usergroups</P
 ><P
->Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</P
 ><P
 >Przyk³ad: <SAMP
@@ -1015,7 +1015,7 @@ CLASS="PROMPT"
 ><P
 >usergroups</P
 ><P
->Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</P
 ><P
 >Przyk³ad: <SAMP
@@ -1102,12 +1102,12 @@ NAME="TC-DESC"
 ></H3
 ><P
 >Modu³ generuj±cy skrypt zawieraj±cy polecenia iptables i tc s³u¿±ce
-		    do ograniczania pasma i limitowania po³±czeñ u¿ytkownikom. Regu³ki dla 
+		    do ograniczania pasma i limitowania po³±czeñ klientom. Regu³ki dla 
 		    komputerów mo¿na dowolnie zdefiniowaæ i wykorzystaæ nie tylko do "traffic 
 		    control". Zasada dzia³ania skryptu przedstawia siê nastêpuj±co: Najpierw z bazy
-		    pobierane s± dane dla wszystkich u¿ytkowników. Obliczane s± sumy ograniczeñ
-		    (uprate, downrate, upceil, downceil, limity po³±czeñ) dla ka¿dego u¿ytkownika
-		    Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy u¿ytkowników
+		    pobierane s± dane dla wszystkich klientów. Obliczane s± sumy ograniczeñ
+		    (uprate, downrate, upceil, downceil, limity po³±czeñ) dla ka¿dego klienta
+		    Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy klientów
 		    i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s± ró¿ne od zera nastêpuje
 		    zapis regu³ do pliku z podmian± zmiennych. W regu³kach mo¿na stosowaæ nastêpuj±ce
 		    zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, %uprate, %downrate, %upceil, 
@@ -1115,7 +1115,7 @@ NAME="TC-DESC"
 		    zwiêkszany o jeden dla ka¿dego komputera.</P
 ><P
 >Domy¶lna polityka tworzenia klas htb zak³ada utworzenie jednej klasy dla
-		    wszystkich komputerów u¿ytkownika. Mo¿e to byæ zmienione za pomoc± opcji
+		    wszystkich komputerów klienta. Mo¿e to byæ zmienione za pomoc± opcji
 		    'one_class_per_host'.</P
 ><P
 >Konfiguracja domy¶lna zak³ada, ¿e twój system jest przystosowany
@@ -1316,10 +1316,10 @@ CLASS="PROMPT"
 >one_class_per_host</P
 ><P
 >Okre¶la politykê tworzenia klas htb. W ustawieniu domy¶lnym
-			    wszystkie komputery u¿ytkownika zostan± wrzucone do jednej klasy.
+			    wszystkie komputery klienta zostan± wrzucone do jednej klasy.
 			    Ustawienie tej opcji na 'true' spowoduje, ¿e regu³y okre¶lone w 
 			    host_htb_up i host_htb_down zostan± wygenerowane dla wszystkich
-			    komputerów u¿ytkownika (z inn± warto¶ci± '%x'). Regu³y z host_mark_down,
+			    komputerów klienta (z inn± warto¶ci± '%x'). Regu³y z host_mark_down,
 			    host_mark_up, host_plimit i host_climit generowane s± dla ka¿dego
 			    komputera niezale¿nie od ustawieñ tej zmiennej. Domy¶lnie: false</P
 ><P
@@ -1450,7 +1450,7 @@ CLASS="PROMPT"
 ><P
 >usergroups</P
 ><P
->Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</P
 ><P
 >Przyk³ad: <SAMP
@@ -1668,7 +1668,7 @@ CLASS="PROMPT"
 ><P
 >usergroups</P
 ><P
->Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</P
 ><P
 >Przyk³ad: <SAMP
@@ -1761,7 +1761,7 @@ CLASS="PROMPT"
 ><P
 >usergroups</P
 ><P
->Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+>Lista nazw grup klientów, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
 			    Domy¶lnie: pusta (wszystkie grupy).</P
 ><P
 >Przyk³ad: <SAMP

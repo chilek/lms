@@ -115,11 +115,11 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ></LI
 ><LI
 ><P
->%saldo - zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535</P
+>%saldo - zostanie zast±pione aktualnym saldem klienta, np. 535</P
 ></LI
 ><LI
 ><P
->%abonament - zostanie zast±pione kwot± abonamentu jaka jest do danego u¿ytkownika przypisana, np. 107</P
+>%abonament - zostanie zast±pione kwot± abonamentu jaka jest do danego klienta przypisana, np. 107</P
 ></LI
 ><LI
 ><P
@@ -131,15 +131,15 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ></LI
 ><LI
 ><P
->%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:</P
+>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie klienta, np:</P
 ></LI
 ><LI
 ><P
->%pin - numer PIN u¿ytkownika.</P
+>%pin - numer PIN klienta.</P
 ></LI
 ><LI
 ><P
->%phone1 - pierwszy numer telefonu u¿ytkownika.</P
+>%phone1 - pierwszy numer telefonu klienta.</P
 ></LI
 ></UL
 ><DIV
@@ -239,7 +239,7 @@ CLASS="EMPHASIS"
 ><P
 >limit (opcjonalny)</P
 ><P
->Pozwala na ustalenie limitu bilansu, poni¿ej którego do u¿ytkownika zostanie wys³any e-mail z upomnieniem. Domy¶lnie limit = 0</P
+>Pozwala na ustalenie limitu bilansu, poni¿ej którego do klienta zostanie wys³any e-mail z upomnieniem. Domy¶lnie limit = 0</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -250,7 +250,7 @@ CLASS="PROMPT"
 ><P
 >mailsubject (wymagany)</P
 ><P
->Pozwala na ustalenie tematu e-maila wysy³anego do u¿ytkownika. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie: nie ustawione.</P
+>Pozwala na ustalenie tematu e-maila wysy³anego do klienta. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie: nie ustawione.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -261,7 +261,7 @@ CLASS="PROMPT"
 ><P
 >mailtemplate (wymagany)</P
 ><P
->Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie: nie ustawione.</P
+>Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do klienta. Wiêcej o szablonach tutaj. Domy¶lnie: nie ustawione.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -305,7 +305,7 @@ CLASS="PROMPT"
 ><P
 >debug_email (opcjonalny)</P
 ><P
->Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do u¿ytkowników. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</P
+>Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do klientów. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -349,7 +349,7 @@ CLASS="EMPHASIS"
 ><P
 >limit (opcjonalny)</P
 ><P
->Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika 
+>Pozwala na ustalenie limitu bilansu poni¿ej którego do klienta 
 	     zostanie wys³any sms z upomnieniem. Domy¶lnie: 0</P
 ><P
 >Przyk³ad:	<SAMP
@@ -379,7 +379,7 @@ NAME="LMS-CUTOFF"
 >4.3.3. lms-cutoff</A
 ></H2
 ><P
->Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.</P
+>Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) klientów których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.</P
 ><P
 >Konfiguracjê dla lms-cutoff mo¿emy ustaliæ w pliku <TT
 CLASS="FILENAME"
@@ -415,7 +415,7 @@ NAME="LMS-PAYMENTS"
 ></H2
 ><P
 >Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
-	 u¿ytkownikom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
+	 klientom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
 	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</P
 ><P
 >Skrypt ten udostêpnia dwie opcje do fakturowania, które mo¿na ustawiæ
@@ -481,8 +481,8 @@ NAME="LMS-TRAFFIC"
 >Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
 	przez ka¿dy komputer w sieci lokalnej. W bazie danych zapisywana jest ilo¶æ
 	danych w bajtach, numer komputera z bazy lms i znacznik czasu. 
-	Od u¿ytkownika zale¿y w jakich odstêpach dane bêd± odczytywane.
-	Poniewa¿ dane odczytywane s± z pliku utworzonego przez u¿ytkownika, nie ma
+	Od klienta zale¿y w jakich odstêpach dane bêd± odczytywane.
+	Poniewa¿ dane odczytywane s± z pliku utworzonego przez klienta, nie ma
 	znaczenia z jakiego ¼ród³a pochodz±, mo¿e to byæ iptables, ipchains lub
 	program zewnêtrzny np. ipfm.
     </P
@@ -566,7 +566,7 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Czêstotliwo¶æ zapisywania danych do bazy ustala u¿ytkownik. Ustawienie
+>Czêstotliwo¶æ zapisywania danych do bazy ustala klient. Ustawienie
 	    jej poni¿ej 10 minut, mo¿e spowodowaæ szybki przyrost ilo¶ci rekordów w 
 	    bazie danych, a co za tym idzie zwiêkszyæ czas oczekiwania na wy¶wietlenie
 	    wyników.</P
@@ -1113,10 +1113,10 @@ NAME="LMS-SENDINVOICES"
 ><P
 >Skrypt s³u¿y do wysy³ania poczt± elektroniczn± faktur, jako za³±czników
 	do wiadomo¶ci. Faktury generowane s± na podstawie szablonu dostêpnego w lms-ui,
-	dlatego wymagane jest podanie u¿ytkownika i has³a do interfejsu www lms-ui.</P
+	dlatego wymagane jest podanie klienta i has³a do interfejsu www lms-ui.</P
 ><P
 >W odró¿nieniu od pozosta³ych skrytpów ten wymaga dodatkowych modu³ów perla:
-	Data::Dumper, LWP::UserAgent, MIME::Entity.</P
+	LWP::UserAgent, MIME::Entity.</P
 ><P
 >Konfiguracjê nale¿y umie¶ciæ w sekcji <SPAN
 CLASS="emphasis"
@@ -1141,7 +1141,7 @@ CLASS="PROMPT"
 ><P
 >lms_user</P
 ><P
->Login administratora. Domy¶lnie: pusty</P
+>Login u¿ytkownika. Domy¶lnie: pusty</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -1192,22 +1192,22 @@ CLASS="PROMPT"
 >sender_email = admin@mynet.pl</SAMP
 ></P
 ></LI
-><LI
-><P
->tmp_dir</P
-><P
->Lokalizacja katalogu tymczasowego. Je¶li nie podano katalog 
-		    odczytywany jest ze zmiennej ¶rodowiskowej 'TMP' lub przyjmowany jest 
-		    katalog '/tmp'.</P
-><P
->Przyk³ad:	<SAMP
-CLASS="PROMPT"
->tmp_dir = /home/user/tmp</SAMP
-></P
-></LI
 ></UL
 >
-	</P
+	 Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ
+	 <SAMP
+CLASS="PROMPT"
+>--fakedate</SAMP
+> (<SAMP
+CLASS="PROMPT"
+>-f</SAMP
+>). Przy jego u¿yciu mo¿na 
+	 sprawiæ, aby skrypt dzia³a³ z podmienion± dat± systemow± (w formacie YYYY/MM/DD),
+	 na przyk³ad <SAMP
+CLASS="PROMPT"
+>--fakedate=2004/10/10</SAMP
+>.
+	 </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -1219,12 +1219,12 @@ NAME="LMS-MAKEMACS"
 ></H2
 ><P
 >Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra filtruj±ce ruch
-	    u¿ytkowników na bazie testu adresu ¼ród³owego MAC. Dla ka¿dego komputera generowana jest
+	    klientów na bazie testu adresu ¼ród³owego MAC. Dla ka¿dego komputera generowana jest
 	    jedna regu³a dla tablicy nat, zadanego ³añcucha, testuj±ca adres ¼ród³owy IP pakietu oraz adres
 	    ¼ród³owy MAC ramki. Je¶li testy zakoñcz± siê pozytywnie nastêpuje powrót do ³añcucha nadrzêdnego
 	    za pomoc± decyzji RETURN. Na koñcu listy regu³ dodawane s± 2 regu³y przekierowuj±ce ruch http
 	    oraz webcache na podany w konfiguracji adres IP oraz port (z wykorzystaniem decyzji DNAT).
-	    Przekierowanie mo¿e odbywaæ siê na wirtualny host www z zawiadomieniem u¿ytkownika
+	    Przekierowanie mo¿e odbywaæ siê na wirtualny host www z zawiadomieniem klienta
 	    o zaleg³o¶ciach finansowych bez mo¿liwo¶ci wy³±czenia zawiadomienia. Na koñcu dodawana jest 
 	    regu³a blokuj±ca jakikolwiek inny ruch.
 	    </P
@@ -1257,8 +1257,8 @@ CLASS="PROMPT"
 ><P
 >usergroups </P
 ><P
->Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</P
+>Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -1396,8 +1396,8 @@ CLASS="PROMPT"
 ><P
 >usergroups </P
 ><P
->Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</P
+>Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -1471,7 +1471,7 @@ NAME="LMS-MAKEWARNINGS"
 ></H2
 ><P
 >Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
-	    u¿ytkowników o saldzie mniejszym lub równym od zadanego na zadany adres IP i port (wykorzystywana
+	    klientów o saldzie mniejszym lub równym od zadanego na zadany adres IP i port (wykorzystywana
 	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
 	    </P
 ><P
@@ -1503,8 +1503,8 @@ CLASS="PROMPT"
 ><P
 >usergroups </P
 ><P
->Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</P
+>Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -1592,7 +1592,7 @@ CLASS="PROMPT"
 ><P
 >limit</P
 ><P
->Saldo u¿ytkownika przy którym dla wszystkich komputerów u¿ytkownika generowane s± regu³ki przekierowuj±ce ruch. Domy¶lnie: 0 </P
+>Saldo klienta przy którym dla wszystkich komputerów klienta generowane s± regu³ki przekierowuj±ce ruch. Domy¶lnie: 0 </P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -1611,7 +1611,7 @@ NAME="LMS-MAKEMESSAGES"
 ></H2
 ><P
 >Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
-	    u¿ytkowników dla których zosta³o w³±czone przekazywanie wiadomo¶ci administracyjnej (ostrze¿enia) na zadany adres IP i port (wykorzystywana
+	    klientów dla których zosta³o w³±czone przekazywanie wiadomo¶ci administracyjnej (ostrze¿enia) na zadany adres IP i port (wykorzystywana
 	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
 	    </P
 ><P
@@ -1643,8 +1643,8 @@ CLASS="PROMPT"
 ><P
 >usergroups </P
 ><P
->Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</P
+>Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -1799,8 +1799,94 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="LMS-REMINDER"
+>4.3.16. lms-notify</A
+></H2
+><P
+>Skrypt s³u¿y do przypominania klientom o zaplanowanych na dany dzieñ 
+	  zadaniach. Lista zdarzeñ przypisanych w Terminarzu danemu klientowi w bie¿±cym
+	  dniu zostaje wys³ana na jego adres e-mail.</P
+><P
+>Konfiguracjê dla lms-reminder umieszcza siê w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> 
+	  w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[reminder]</I
+></SPAN
+>. Mo¿esz tam ustawiæ nastêpuj±ce parametry:</P
+><UL
+><LI
+><P
+>mailsubject (wymagany)</P
+><P
+>Pozwala na ustalenie tematu e-maila wysy³anego do klienta. Domy¶lnie: nie ustawione.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mailsubject = 'Terminarz z LMSa'</SAMP
+></P
+></LI
+><LI
+><P
+>mailfrom</P
+><P
+>Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na 
+	     niektórych MTA (np. exim) konto to musi istnieæ w systemie. 
+	     Domy¶lnie nieustawione.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mailfrom = staff@domain.pl</SAMP
+></P
+></LI
+><LI
+><P
+>mailfname</P
+><P
+>Nazwa nadawcy maila.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mailfname = LMS</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_server</P
+><P
+>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>smtp_server = smtp.mydomain.pl</SAMP
+></P
+></LI
+><LI
+><P
+>debug_email (opcjonalny)</P
+><P
+>Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje 
+	     wys³ana na dany email zamiast do klientów. Przydatne do debugowania 
+	     i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>debug_email = alec@domain.pl</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="LMS-RTPARSER"
->4.3.16. lms-rtparser</A
+>4.3.17. lms-rtparser</A
 ></H2
 ><P
 >Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który wspó³pracuj±c
@@ -1854,7 +1940,7 @@ CLASS="SCREEN"
 ># plik main.cf
 mailbox_command = /usr/bin/procmail
 
-# w katalogu domowym u¿ytkownika, którego maile maj± byæ obs³ugiwane przez HelpDesk:
+# w katalogu domowym klienta, którego maile maj± byæ obs³ugiwane przez HelpDesk:
 # plik .forward
 "|IFS=' ' &#38;&#38; exec /usr/bin/procmail -f - || exit 75 #YOUR_USERNAME"
 
@@ -1992,7 +2078,7 @@ CLASS="PROMPT"
 >mail_dir</P
 ><P
 >Katalog w którym zostan± zapisane za³±czniki. Katalog ten powinien byæ
-		    dostêpny dla apache'a i u¿ytkownika uruchamiaj±cego lms-rtparser. Gdy nie ustawiono, 
+		    dostêpny dla apache'a i klienta uruchamiaj±cego lms-rtparser. Gdy nie ustawiono, 
 		    za³±czniki zostan± utracone. Domy¶lnie: niezdefiniowany.</P
 ><P
 >Przyk³ad:	<SAMP

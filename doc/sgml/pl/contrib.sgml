@@ -10,14 +10,14 @@
 		<sect2 id="customer-intro">
 		<title>Wstêp</title>
 		<para>W katalogu <filename>contrib/customer</filename> znajduje siê
-		przyk³ad rozwi±zania, dziêki któremu ka¿dy u¿ytkownik twojej sieci
+		przyk³ad rozwi±zania, dziêki któremu ka¿dy klient twojej sieci
 		mo¿e sprawdziæ w³asny bilans finansowy.</para>
 		<para>Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
-		bilans i informacje o u¿ytkowniku, który jest w³a¶cicielem komputera
+		bilans i informacje o kliencie, który jest w³a¶cicielem komputera
 		o tym adresie.</para>
-		<para>Dla u¿ytkowników korzystaj±cych z proxy, nie korzystaj±cych
+		<para>Dla osób korzystaj±cych z proxy, nie korzystaj±cych
 		z sieci tylko w domu, albo którzy nie chc± aby dzieci/ma³¿onkowie/pracownicy 
-		mieli wgl±d w dane fiansowe dotycz±ce ich dostêpu do sieci/innych 
+		mieli wgl±d w dane finansowe dotycz±ce ich dostêpu do sieci/innych 
 		us³ug przeznaczone jest "Moje konto 2".</para>
 		</sect2>
 		<sect2 id="customer-install">
@@ -34,12 +34,12 @@
 		<title>Wstêp</title>
 		<para>W katalogu <filename>contrib/customer_otherip</filename> znajduje siê
 		odpowiednik <filename>contrib/customer</filename>, który nie rozpoznaje
-		u¿ytkownika po adresie IP, ale wymaga logowania. Uwierzytelnianie odbywa siê na 
-		podstawie numeru PIN oraz telefonu u¿ytkownika, ale mo¿liwe jest tak¿e
+		klienta po adresie IP, ale wymaga logowania. Uwierzytelnianie odbywa siê na 
+		podstawie numeru PIN oraz telefonu klienta, ale mo¿liwe jest tak¿e
 		wykorzystanie ID lub numeru umowy (dodatkowe pole w bazie) - patrz 
 		pliki balanceview.php i authentication.inc).</para>
-		<para>Skrypt wy¶wietla bilans i informacje o u¿ytkowniku, a tak¿e w po³±czeniu
-		z <filename>contrib/formularz_przelewu_wplaty</filename> umo¿liwia u¿ytkownikowi
+		<para>Skrypt wy¶wietla bilans i informacje o kliencie, a tak¿e w po³±czeniu
+		z <filename>contrib/formularz_przelewu_wplaty</filename> umo¿liwia klientowi
 		wydrukowanie druku wp³aty na kwotê zaleg³o¶ci.</para>
 		</sect2>
 		<sect2 id="customer2-install">
@@ -85,7 +85,7 @@
 		przekierowywa³ wszystkie ¿±dania wysy³ane do serwera proxy na nasz, 
 		ustalony wcze¶niej adres. Przekierowaniu nie ulegaj± adresy zawieraj±ce 
 		adres naszej winetki, tak aby umo¿liwiæ za³adowanie siê obrazków.
-		Po przekierowaniu u¿ytkownik ma mo¿liwo¶æ oznaczenia wiadomo¶ci jako 
+		Po przekierowaniu klient ma mo¿liwo¶æ oznaczenia wiadomo¶ci jako 
 		przeczytanej, po czym skrypt automatycznie kieruje przegl±darkê na 
 		pierwotnie wywo³ywany URL. Wiêcej informacji znajdziesz w pliku
 		<filename>README</filename>.</para>

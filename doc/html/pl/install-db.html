@@ -151,6 +151,46 @@ mysql&#62; use lms;
 mysql&#62; source doc/lms.mysql;</PRE
 >
 		</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Z uwagi na to, ¿e MySQL nawet w wersji 4.1 ma pewne 
+		problemy z kodowaniem utf baza danych LMS mo¿e mieæ inne kodowanie.
+		W takim wypadku nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
+		z opcji konfiguracyjnej <TT
+CLASS="FILENAME"
+>server_encoding</TT
+> w sekcji 
+		<TT
+CLASS="FILENAME"
+>[database]</TT
+> pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>.
+		</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -166,15 +206,16 @@ NAME="INSTALL-MYSQL-LMS"
 			<PRE
 CLASS="SCREEN"
 >user     = lms
-password = has³o_z_pkt.3</PRE
+password = has³o_z_pkt.3
+server_encoding = latin2 ; je¶li baza nie jest w unicodzie</PRE
 >
 		    </P
 ><P
 >Po  takim  zabiegu,  o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
 			danych,  mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
-			bazie  danych  nie ma ¿adnego konta administratora, jedyn± rzecz± jak±
-			zobaczysz bêdzie  formularz  dodania  administratora.  Je¿eli
-			podasz  prawid³owe  dane  administratora, LMS przeniesie Ciê na stronê
+			bazie  danych  nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
+			zobaczysz bêdzie  formularz  dodania  u¿ytkownika.  Je¿eli
+			podasz  prawid³owe  dane  u¿ytkownika, LMS przeniesie Ciê na stronê
 			logowania gdzie od razu bêdziesz móg³ u¿yæ nowo utworzonego konta.
 			</P
 ><P
@@ -355,8 +396,8 @@ CLASS="FILENAME"
 ><P
 >Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy danych,
 			mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
-			nie ma ¿adnego konta administratora, jedyn± rzecz± jak± zobaczysz
-			bêdzie formularz dodania administratora.</P
+			nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak± zobaczysz
+			bêdzie formularz dodania u¿ytkownika.</P
 ></DIV
 ></DIV
 ><DIV
@@ -459,26 +500,10 @@ database = /usr/local/lms/lms.db</PRE
 		    </P
 ><P
 >Po  takim  zabiegu, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
-			bazie danych nie ma ¿adnego konta administratora, jedyn± rzecz± jak±
-			zobaczysz bêdzie formularz dodania administratora.  
+			bazie danych nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
+			zobaczysz bêdzie formularz dodania u¿ytkownika.  
 			</P
 ></DIV
-></DIV
-><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
-NAME="INSTALL-MSSQL"
->2.5.4. MS SQL Server</A
-></H2
-><P
->LMS na bazie Microsoftu? Czemu nie. W celach poznawczych
-			i eksperymentalnych dodano mo¿liwo¶æ pod³aczenia LMSa do tej bazy.
-			Nie nale¿y jednak liczyæ na jakikolwiek support z tym zwi±zany, ale
-			traktowaæ to raczej jako ciekawostkê. Nie mo¿na tak¿e zagwarantowaæ
-			¿e pomys³ bêdzie rozwijany. Niemniej ze wstêpnych testów
-			przy u¿yciu MS SQL Server 2000 wynika, ¿e jest to mo¿liwe.</P
 ></DIV
 ></DIV
 ><DIV

@@ -115,7 +115,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ADMINS"
->7.2.1. Administratorzy ('admins')</A
+>7.2.1. U¿ytkownicy ('admins')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -173,7 +173,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USERS"
->7.2.2. U¿ytkownicy ('users')</A
+>7.2.2. Klienci ('users')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -192,7 +192,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->status - status u¿ytkownika (3-pod³±czony, 2-oczekuj±cy, 1-zainteresowany)</TD
+>status - status (3-pod³±czony, 2-oczekuj±cy, 1-zainteresowany)</TD
 ></TR
 ><TR
 ><TD
@@ -256,11 +256,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->creatorid - identyfikator administratora tworz±cego wpis</TD
+>creatorid - identyfikator u¿ytkownika tworz±cego wpis</TD
 ></TR
 ><TR
 ><TD
->modid - identyfikator administratora dokonuj±cego zmian danych</TD
+>modid - identyfikator u¿ytkownika dokonuj±cego zmian danych</TD
 ></TR
 ><TR
 ><TD
@@ -279,7 +279,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USERGROUPS"
->7.2.3. Grupy u¿ytkowników ('usergroups')</A
+>7.2.3. Grupy klientów ('usergroups')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -305,7 +305,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USERASSIGNMENTS"
->7.2.4. Grupy u¿ytkowników - c.d. ('userassignments')</A
+>7.2.4. Grupy klientów - c.d. ('userassignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -320,7 +320,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->userid - identyfikator u¿ytkownika</TD
+>userid - identyfikator klienta</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -428,11 +428,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->creatorid - identyfikator administratora tworz±cego wpis</TD
+>creatorid - identyfikator u¿ytkownika tworz±cego wpis</TD
 ></TR
 ><TR
 ><TD
->modid - identyfikator administratora </TD
+>modid - identyfikator u¿ytkownika ostatnio modyfikuj±cego wpis</TD
 ></TR
 ><TR
 ><TD
@@ -558,7 +558,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->adminid - identyfikator administratora dokonuj±cego operacji</TD
+>adminid - identyfikator u¿ytkownika dokonuj±cego operacji</TD
 ></TR
 ><TR
 ><TD
@@ -574,11 +574,15 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy)</TD
+>userid - identyfikator klienta ('0' - je¶li nie dotyczy)</TD
 ></TR
 ><TR
 ><TD
 >invoiceid - identyfikator faktury obejmuj±cej dan± operacjê</TD
+></TR
+><TR
+><TD
+>itemid - nr pozycji na fakturze</TD
 ></TR
 ><TR
 ><TD
@@ -712,7 +716,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->userid - identyfikator u¿ytkownika</TD
+>userid - identyfikator klienta</TD
 ></TR
 ><TR
 ><TD
@@ -774,7 +778,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->customerid - identyfikator u¿ytkownika-nabywcy</TD
+>customerid - identyfikator klienta-nabywcy</TD
 ></TR
 ><TR
 ><TD
@@ -828,6 +832,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>itemid - nr pozycji</TD
+></TR
+><TR
+><TD
 >value - kwota pozycji</TD
 ></TR
 ><TR
@@ -874,7 +882,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->ownerid - identyfikator u¿ytkownika (0 - konto "systemowe")</TD
+>ownerid - identyfikator klienta (0 - konto "systemowe")</TD
 ></TR
 ><TR
 ><TD
@@ -1066,11 +1074,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->requestor - dane zg³aszaj±cego (w tym e-mail)</TD
+>requestor - dane zg³aszaj±cego-klienta (w tym e-mail)</TD
 ></TR
 ><TR
 ><TD
->userid - identyfikator u¿ytkownika</TD
+>userid - identyfikator klienta</TD
 ></TR
 ><TR
 ><TD
@@ -1082,7 +1090,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->owner - identyfikator w³a¶ciciela-administratora</TD
+>owner - identyfikator w³a¶ciciela-u¿ytkownika</TD
 ></TR
 ><TR
 ><TD
@@ -1112,11 +1120,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->adminid - identyfikator administratora nadawcy</TD
+>adminid - identyfikator u¿ytkownika-nadawcy</TD
 ></TR
 ><TR
 ><TD
->userid - identyfikator u¿ytkownika nadawcy</TD
+>userid - identyfikator klienta-nadawcy</TD
 ></TR
 ><TR
 ><TD
@@ -1200,7 +1208,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->adminid - identyfikator administratora</TD
+>adminid - identyfikator u¿ytkownika</TD
 ></TR
 ><TR
 ><TD
@@ -1252,8 +1260,88 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="EVENTS"
+>7.2.26. Terminarz - zdarzenia ('events')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>title - tytu³</TD
+></TR
+><TR
+><TD
+>description - opis</TD
+></TR
+><TR
+><TD
+>note - notatka</TD
+></TR
+><TR
+><TD
+>date - data zdarzenia</TD
+></TR
+><TR
+><TD
+>begintime - pocz±tek zdarzenia</TD
+></TR
+><TR
+><TD
+>endtime - koniec zdarzenia</TD
+></TR
+><TR
+><TD
+>adminid - identyfikator u¿ytkownika tworz±cego wpis w terminarzu</TD
+></TR
+><TR
+><TD
+>userid - identyfikator klienta</TD
+></TR
+><TR
+><TD
+>private - prywatny/publiczny</TD
+></TR
+><TR
+><TD
+>closed - status zamkniêcia</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="EVENTASSIGNMENTS"
+>7.2.27. Terminarz - powi±zania ('eventassignments')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>eventid - identyfikator zdarzenia</TD
+></TR
+><TR
+><TD
+>adminid - identyfikator u¿ytkownika</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="DBINFO"
->7.2.26. Informacje o bazie danych ('dbinfo')</A
+>7.2.28. Informacje o bazie danych ('dbinfo')</A
 ></H2
 ><TABLE
 BORDER="0"

@@ -178,6 +178,12 @@ mysql> flush privileges;
 mysql> use lms;
 mysql> source doc/lms.mysql;</screen>
 		</para>
+		<para><note><para>Z uwagi na to, ¿e MySQL nawet w wersji 4.1 ma pewne 
+		problemy z kodowaniem utf baza danych LMS mo¿e mieæ inne kodowanie.
+		W takim wypadku nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
+		z opcji konfiguracyjnej <filename>server_encoding</filename> w sekcji 
+		<filename>[database]</filename> pliku <filename>lms.ini</filename>.
+		</para></note></para>
 		</sect3>
 		<sect3 id="install-mysql-lms">
 		<title>Konfiguracja LMS (lms.ini)</title>
@@ -185,7 +191,8 @@ mysql> source doc/lms.mysql;</screen>
 			siê  do  podania  w  sekcji  [database] pliku /etc/lms/lms.ini has³a i u¿ytkownika:
 			<screen>
 user     = lms
-password = has³o_z_pkt.3</screen>
+password = has³o_z_pkt.3
+server_encoding = latin2 ; je¶li baza nie jest w unicodzie</screen>
 		    </para>
 			<para>Po  takim  zabiegu,  o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
 			danych,  mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
@@ -255,7 +262,8 @@ $ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</screen>
    			<screen>
 type     = postgres
 user     = lms
-password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
+password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
+</screen>
 		    </para>
 			<para><note><para>Has³o jest wymagane w zale¿no¶ci od konfiguracji autentykacji
        			u¿ytkowników postgresa w <filename>/usr/local/pgsql/data/pg_hba.conf</filename>. 
@@ -368,9 +376,10 @@ database = /usr/local/lms/lms.db</screen>
 	  </listitem>
           <listitem>
 	   <para>server_encoding</para>
-	   <para>Opcja przeznaczona dla bazy PostgreSQL. Je¶li kodowanie bazy danych
-	   jest inne od UNICODE nale¿y ustawiæ tê opcjê na warto¶æ inn± ni¿ domy¶lna.
-	   Spowoduje to w³±czenie konwersji danych w komunikacji z baz±. Domy¶lnie: UNICODE</para>
+	   <para>Kodowanie bazy danych. Je¶li kodowanie to jest inne od UNICODE nale¿y ustawiæ 
+	   tê opcjê na odpowiedni± warto¶æ. Postgres zajmie siê konwersj± sam, ale w przypadku
+	   mysqla u¿ywana jest PHP-owa funkcja iconv() w LMS-owych driverach do bazy danych. 
+	   Domy¶lnie: UNICODE</para>
 	   <para>Przyk³ad:	<prompt>server_encoding = LATIN2</prompt></para>
 	  </listitem>
          </itemizedlist>
@@ -707,11 +716,120 @@ AddDefaultCharset UTF-8
 	nale¿y utworzyæ bazê danych z kodowaniem UNICODE (opis w dziale Instalacja).
 	Po czym uruchamiamy <emphasis>LMS-UI</emphasis> i odtwarzamy dane z 
 	przekonwertowanego backupu.</para>
-	<para><note><para>W przypadku bazy danych PostgreSQL mo¿liwa jest praca
+	<para><note><para>Mo¿liwa jest praca
 	z baz± danych z kodowaniem innym ni¿ UNICODE. W takim wypadku rezygnujemy
 	z ostatniego, opisanego wy¿ej, etapu i ustawiamy odpowiednio opcjê
 	konfiguracyjn± <filename>server_encoding</filename> w sekcji 
 	<filename>[database]</filename>. Rozwi±zanie to bêdzie mia³o z³y wp³yw
-	na wydajno¶æ.</para></note></para>
+	na wydajno¶æ ze wzglêdu na przeprowadzan± konwersjê kodowania danych.</para></note></para>
+    </sect1>
+    <sect1 id="install-invoices">
+	<title>Faktury</title>
+		<para>LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie
+		faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Finanse'. Automatyczne wystawianie faktur 
+		wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
+		zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <emphasis>almsd</emphasis></para>
+		<para>Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
+		opcji w sekcji <emphasis>[invoices]</emphasis> <filename>lms.ini</filename>:
+		<itemizedlist>
+		<listitem>
+			<para>number_template</para>
+			<para>Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
+			'%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</para>
+			<para>Przyk³ad: <prompt>number_template = %N/%Y</prompt></para>
+		</listitem>
+		<listitem>
+			<para>monthly_numbering</para>
+			<para>W³±czenie tej opcji spowoduje zerowanie numeracji faktur na pocz±tku ka¿dego miesi±ca.
+			Domy¶lnie: wy³±czona</para>
+			<para>Przyk³ad: <prompt>monthly_numbering = 1</prompt></para>
+		</listitem>
+		<listitem>
+			<para>header</para>
+			<para>Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</para>
+			<para>Przyk³ad: <prompt>header = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</prompt></para>
+		</listitem>
+		<listitem>
+			<para>footer</para>
+			<para>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka zostanie umieszczona na dole faktury, ma³± czcionk±. Podobnie jak i w przypadku opcji header, mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</para>
+			<para>Przyk³ad: <prompt>footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</prompt></para>
+		</listitem>
+		<listitem>
+			<para>default_author</para>
+			<para>Domy¶lna osoba wystawiaj±ca fakturê. Domy¶lnie: puste</para>
+			<para>Przyk³ad: <prompt>default_author = "specjalista d/s fakturowania"</prompt></para>
+		</listitem>
+		<listitem>
+			<para>cplace</para>
+			<para>Miejsce wystawienia faktury. Domy¶lnie: puste.</para>
+			<para>Przyk³ad: <prompt>cplace = Warszawa</prompt></para>
+		</listitem>
+		</itemizedlist>
+		Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
+		na wykazie bilansu finansowego (ogólnego b±d¼ pojedynczego u¿ytkownika), albo 
+		poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest 
+		tak¿e filtrowanie faktur do wydruku.</para>
+	    <sect2 id="install-invoices-html">
+		<title>HTML</title>
+		<para>Przy domy¶lnych ustawieniach faktury wy¶wietlane s± w
+		formacie html wg domy¶lnego szablonu. W sekcji [invoices] masz
+		do dyspozycji jeszcze nastêpuj±ce opcje:
+		<itemizedlist>
+		<listitem>
+			<para>template_file</para>
+			<para>Szablon faktury, który powinien znajdowaæ siê w
+			katalogu <filename>templates</filename>. Domy¶lnie: invoice.html.</para>
+			<para>Przyk³ad: <prompt>template_file = invoice-mynet.html</prompt></para>
+		</listitem>		
+		<listitem>
+			<para>content_type</para>
+			<para>Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
+			to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
+			Przydatne je¶li u¿ywasz w³asnego templejta, który wygeneruje np.rtf'a lub xls'a.
+			Domy¶lnie: 'text/html'</para>
+			<para>Przyk³ad: <prompt>content_type = application/octet-stream</prompt></para>
+		</listitem>	
+		<listitem>
+			<para>attachment_name</para>
+			<para>Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
+			wydruk. Domy¶lnie: pusta.</para>
+			<para>Przyk³ad: <prompt>attachment_name = faktura.xls</prompt></para>
+		</listitem>
+		</itemizedlist>
+		Wynikowy dokument HTML zawiera orygina³y 
+		i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. 
+		Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ 
+		faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darkach 
+		Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.</para>
+		<para>
+			<note><para>Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ 
+			konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie
+			stopki i nag³ówka, czy te¿ adresu na wydruku.</para></note>
+		</para>
+	    </sect2>	
+	    <sect2 id="install-invoices-pdf">
+		<title>PDF</title>
+		<para>Mo¿liwe jest tak¿e tworzenie faktur jako pliki pdf. Przypisanie
+		opcji <filename>type</filename> z sekcji <emphasis>[invoices]</emphasis> 
+		warto¶ci 'pdf' spowoduje, ¿e faktury zamiast w html'u bêd± tworzone jako pliki 
+		"portable data format". Opcja <filename>template_file</filename> spe³nia podobn± rolê jak dla faktur html'owych,
+		z tym, ¿e posiada predefiniowane warto¶ci: 'standard' - faktura podstawowa 
+		(odpowiednik invoice.html) i 'FT-0100' - faktura przystosowana do drukowania
+		na drukach FT-0100 zawieraj±cych druk polecenia przelewu. W opcji <filename>template_file</filename>
+		mo¿na tak¿e wstawiæ nazwê pliku php, jednak ta mo¿liwo¶æ jest przeznaczona dla
+		zaawansowanych u¿ytkowników, gdy¿ wymaga utworzenia pliku php, a nie tak jak w 
+		przypadku faktur html'owych szablonu Smarty.</para>
+		<para>Dane do druku polecenia przelewu s± brane z sekcji <emphasis>[finances]</emphasis>
+		pliku <filename>lms.ini</filename>. A oto dostêpne opcje:
+		<simplelist>
+		    <member>name - nazwa firmy</member>
+		    <member>shortname - skrócona nazwa firmy</member>
+		    <member>address - adres firmy</member>
+		    <member>zip - kod pocztowy</member>
+		    <member>city - miasto</member>
+		    <member>account - numer konta bankowego</member>		
+		</simplelist>
+		</para>
+	    </sect2>
     </sect1>
   </chapter>

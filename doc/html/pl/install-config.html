@@ -203,9 +203,10 @@ CLASS="PROMPT"
 ><P
 >server_encoding</P
 ><P
->Opcja przeznaczona dla bazy PostgreSQL. Je¶li kodowanie bazy danych
-	   jest inne od UNICODE nale¿y ustawiæ tê opcjê na warto¶æ inn± ni¿ domy¶lna.
-	   Spowoduje to w³±czenie konwersji danych w komunikacji z baz±. Domy¶lnie: UNICODE</P
+>Kodowanie bazy danych. Je¶li kodowanie to jest inne od UNICODE nale¿y ustawiæ 
+	   tê opcjê na odpowiedni± warto¶æ. Postgres zajmie siê konwersj± sam, ale w przypadku
+	   mysqla u¿ywana jest PHP-owa funkcja iconv() w LMS-owych driverach do bazy danych. 
+	   Domy¶lnie: UNICODE</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -418,13 +419,13 @@ VALIGN="TOP"
 ></LI
 ><LI
 ><P
->userlist_pagelimit</P
+>customerlist_pagelimit</P
 ><P
->Limit wy¶wietlanych pozycji na stronie w li¶cie u¿ytkowników. Domy¶lnie brak limitu.</P
+>Limit wy¶wietlanych pozycji na stronie w li¶cie klientów. Domy¶lnie brak limitu.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->userlist_pagelimit = 10</SAMP
+>customerlist_pagelimit = 10</SAMP
 ></P
 ></LI
 ><LI
@@ -442,7 +443,7 @@ CLASS="PROMPT"
 ><P
 >balancelist_pagelimit</P
 ><P
->Limit wy¶wietlanych pozycji na stronie na rachunku u¿ytkownika. Domy¶lnie: 100.</P
+>Limit wy¶wietlanych pozycji na stronie na rachunku klienta. Domy¶lnie: 100.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -633,7 +634,7 @@ CLASS="PROMPT"
 >debug_email</P
 ><P
 >Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Mailing' LMS'a, 
-	    zamiast do w³a¶ciwych u¿ytkowników.</P
+	    zamiast do w³a¶ciwych klientów.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -645,7 +646,7 @@ CLASS="PROMPT"
 >default_zip, default_city, default_address</P
 ><P
 >Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
-	    u¿ytkownika. Przydatne gdy mamy do wpisania wielu u¿ytkowników z tej samej ulicy.</P
+	    klienta. Przydatne gdy mamy do wpisania wielu klientów z tej samej ulicy.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -657,7 +658,7 @@ CLASS="PROMPT"
 >use_current_payday</P
 ><P
 >Okre¶la, czy ma byæ u¿yta aktualna data jako dzieñ zap³aty podczas
-	    przypisywania zobowi±zañ u¿ytkownikom. Domy¶lnie wy³±czone.</P
+	    przypisywania zobowi±zañ klientom. Domy¶lnie wy³±czone.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -675,6 +676,18 @@ CLASS="PROMPT"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >lastonline_limit = 300</SAMP
+></P
+></LI
+><LI
+><P
+>timetable_days_forward</P
+><P
+>Okre¶la ilo¶æ dni (³±cznie z bie¿±cym) jaka ma byæ wy¶wietlana 
+	    w terminarzu. Domy¶lnie: 7.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>timetable_days_forward = 2</SAMP
 ></P
 ></LI
 ><LI
@@ -709,12 +722,17 @@ CLASS="PROMPT"
 ><P
 >contract_template</P
 ><P
->W³asny szablon umowy z u¿ytkownikiem. Mo¿na tak¿e dostosowaæ domy¶lny
-	    szablon. Domy¶lnie: contract.html.</P
+>W³asny szablon umowy z klientem. Mo¿e zawieraæ listê umów oddzielonych 
+	    przecinkami. Domy¶lnie: contract.html.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >contract_template = "../my_templates/contract.html"</SAMP
+></P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>contract_template = "contract.html:Umowa Podstawowa, umowa.html:Umowa Rozbudowana"</SAMP
 ></P
 ></LI
 ><LI
