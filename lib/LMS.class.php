@@ -1328,6 +1328,15 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $list;
 	}
 
+	function IsInvoicePaid($invoiceid)
+	{
+		$topay = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE type=4 AND invoiceid=?', array($invoiceid));
+		$paid = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE type=3 AND invoiceid=?', array($invoiceid));
+		if ($topay - $paid == 0)
+			return TRUE;
+		return FALSE;
+	}
+
 	function GetInvoicesList()
 	{
 		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value*count) AS value, COUNT(invoiceid) AS count FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
@@ -1336,6 +1345,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			{
 				$result[$idx]['year'] = date('Y',$row['cdate']);
 				$result[$idx]['month'] = date('m',$row['cdate']);
+				$result[$idx]['paid'] = $this->IsInvoicePaid($row['id']);
 			}
 			$result['startdate'] = $this->DB->GetOne('SELECT MIN(cdate) FROM invoices');
 			$result['enddate'] = $this->DB->GetOne('SELECT MAX(cdate) FROM invoices');
@@ -1351,6 +1361,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			{
 				$result[$idx]['year'] = date('Y',$row['cdate']);
 				$result[$idx]['month'] = date('m',$row['cdate']);
+				$result[$idx]['paid'] = FALSE;
 			}
 		}
 		return $result;
@@ -1380,6 +1391,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			$result['totalg'] = ($result['total'] - floor($result['total'])) * 100;
 			$result['year'] = date('Y',$result['cdate']);
 			$result['month'] = date('m',$result['cdate']);
+			$result['paid'] = $this->IsInvoicePaid($invoiceid);
 			return $result;
 		}
 		else
