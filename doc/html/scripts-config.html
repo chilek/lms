@@ -1,0 +1,839 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Opis i konfiguracja</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.1-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Skrypty"
+HREF="scripts.html"><LINK
+REL="PREVIOUS"
+TITLE="Lista dostêpnych skryptów"
+HREF="scripts-list.html"><LINK
+REL="NEXT"
+TITLE="Generator plików konfiguracyjnych (lms-mgc)"
+HREF="mgc.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.1-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="scripts-list.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia&#322; 4. Skrypty</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="mgc.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SCRIPTS-CONFIG"
+>4.3. Opis i konfiguracja</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-NOTIFY"
+>4.3.1. lms-notify</A
+></H2
+><P
+>lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci 
+	  i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych 
+	  (w iso-8859-2) i traktowania ich jako szablonów do mailingu.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="LMS-NOTIFY-TEMPLATES"
+>4.3.1.1. Szablony</A
+></H3
+><P
+>W szablonach mo¿na u¿ywaæ nastêpuj±cych zmiennych:</P
+><UL
+><LI
+><P
+>%date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1 poprzedzone 0, np. 02</P
+></LI
+><LI
+><P
+>%date-y - zostanie zast±pione aktualnym rokiem, np 2003</P
+></LI
+><LI
+><P
+>%saldo - zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535</P
+></LI
+><LI
+><P
+>%abonament - zostanie zast±pione kwot± abonamentu jaka jest do danego u¿ytkownika przypisana, np. 107</P
+></LI
+><LI
+><P
+>%b - saldo z zanegowanym znakiem, np. 107</P
+></LI
+><LI
+><P
+>%B - saldo z prawdziwym znakiem, np. -107</P
+></LI
+><LI
+><P
+>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:</P
+></LI
+></UL
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="AEN802"
+></A
+><P
+><B
+>Przyk&#322;ad 4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</B
+></P
+><PRE
+CLASS="SCREEN"
+>Data       | Opis                                                 | Warto¶æ
+-----------+------------------------------------------------------+---------
+2003-02-02 | Abonament za miesi±c 2003/02                         |  107.00
+2003-02-01 | Wp³ata                                               | -107.00
+2003-02-01 | Abonament za miesi±c 2003/02                         |  107.00
+2003-02-01 | Wp³ata                                               | -321.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+-----------+------------------------------------------------------+---------</PRE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="AEN805"
+></A
+><P
+><B
+>Przyk&#322;ad 4-2. Lms-notify: Przyk³ad szablonu</B
+></P
+><PRE
+CLASS="SCREEN"
+>UWAGA! Ta wiadomo¶æ zosta³a wygenerowana automatycznie.
+
+Uprzejmie informujemy i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za
+internet w wysoko¶ci %B z³.
+
+Je¿eli porozumieli siê ju¿ Pañstwo z administratorami w kwestii op³aty za
+bierz±cy miesi±c czyli %date-m %date-y roku, prosimy o
+zignorowanie tej wiadomo¶ci.
+
+W wypadku gdy uwa¿aj± Pañstwo i¿ zaleg³o¶æ ta jest nieporozumieniem prosimy o
+jak najszybszy kontakt.
+
+Wszelkie informacje na temat Pañstwa rozliczeñ mog± Pañstwo znale¼æ pod
+adresem http://www.naszasiec.pl/mojekonto/
+
+Je¿eli chcieliby Pañstwo uregulowaæ zaleg³o¶ci prosimy o kontakt:
+
+Dzia³ Rozliczeñ ASK NaszaSiec
+
+Gerwazy Regu³a
+telefon: 0-509031337
+email: gerwazy@staff.naszasiec.pl
+
+Gwidon Mniejwa¿ny
+telefon: 0-606666666
+email: gwidonm@naszasiec.pl
+
+ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
+system bilingowy na Pañstwa koncie:
+
+kwota operacji | typ operacji | data
+
+%last_10_in_a_table
+
+--
+Amatorska Sieæ Komputerowa NaszaSiec
+http://www.naszasiec.pl/</PRE
+></DIV
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="LMS-NOTIFY-CONFIG"
+>4.3.1.2. Konfiguracja</A
+></H3
+><P
+>Konfiguracjê dla lms-notify mo¿na ustaliæ w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[notify]</I
+></SPAN
+>. 
+	   Mo¿esz tam ustawiæ nastêpuj±ce parametry:</P
+><UL
+><LI
+><P
+>limit (opcjonalny)</P
+><P
+>Pozwala na ustalenie limitu bilansu, poni¿ej którego do u¿ytkownika zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>limit = -20</SAMP
+></P
+></LI
+><LI
+><P
+>mailsubject (wymagany)</P
+><P
+>Pozwala na ustalenie tematu e-maila wysy³anego do u¿ytkownika. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie nieustawione.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mailsubject = Informacje o zaleg³o¶ciach w op³atach za internet</SAMP
+></P
+></LI
+><LI
+><P
+>mailtemplate (wymagany)</P
+><P
+>Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie nieustawione</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mailtemplate = /etc/lms/notifytemplate.txt</SAMP
+></P
+></LI
+><LI
+><P
+>mailfrom</P
+><P
+>Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie nieustawione</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mailfrom = staff@domain.pl</SAMP
+></P
+></LI
+><LI
+><P
+>mailfname</P
+><P
+>Nazwa nadawcy maila</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mailfname = Administratorzy</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_server</P
+><P
+>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>smtp_server = smtp.mydomain.pl</SAMP
+></P
+></LI
+><LI
+><P
+>debug_email (opcjonalny)</P
+><P
+>Adres email do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do u¿ytkowników. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie nieustawiony.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>debug_email = lexx@domain.pl</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-NOTIFY-SMS"
+>4.3.2. lms-notify-sms</A
+></H2
+><P
+>lms-notify-sms to odpowiednik lms-notify, s³u¿±cy do wysy³ania
+	  smsów. Do wysy³ania wiadomo¶ci potrzebna jest komórka Nokii oraz oprogramowanie,
+	  które nale¿y pobraæ z (<A
+HREF="http://www.gnokii.org"
+TARGET="_top"
+>www.gnokii.org</A
+>)
+	  i zainstalowaæ w systemie.</P
+><P
+>Konfiguracjê dla lms-notify-sms mo¿na ustaliæ w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> 
+	  w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[notify-sms]</I
+></SPAN
+>, a masz do dyspozycji nastêpuj±ce opcje:</P
+><UL
+><LI
+><P
+>limit (opcjonalny)</P
+><P
+>Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika 
+	     zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>limit = -20</SAMP
+></P
+></LI
+><LI
+><P
+>smstemplate (wymagany)</P
+><P
+>Szablon wiadomo¶ci. Domy¶lnie nieustawione.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>smstemplate = /etc/lms/smstemplate.txt</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-CUTOFF"
+>4.3.3. lms-cutoff</A
+></H2
+><P
+>Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.</P
+><P
+>Konfiguracjê dla lms-cutoff mo¿emy ustaliæ w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[cutoff]</I
+></SPAN
+>. Mo¿emy tam ustawiæ nastêpuj±ce parametry:</P
+><UL
+><LI
+><P
+>limit (opcjonalny)</P
+><P
+>Pozwala na ustalenie limitu bilansu poni¿ej którego do bazy danych zostanie zapisany stan od³±czony. Domy¶lnie limit = 0</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>limit = -20</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-PAYMENTS"
+>4.3.4. lms-payments</A
+></H2
+><P
+>Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
+	 u¿ytkownikom oraz op³at sta³ych.
+	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</P
+><P
+>Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-TRAFFIC"
+>4.3.5. lms-traffic</A
+></H2
+><P
+>Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
+	przez ka¿dy komputer w sieci lokalnej. W bazie danych zapisywana jest ilo¶æ
+	danych w bajtach, numer komputera z bazy lms i znacznik czasu. 
+	Od u¿ytkownika zale¿y w jakich odstêpach dane bêd± odczytywane.
+	Poniewa¿ dane odczytywane s± z pliku utworzonego przez u¿ytkownika, nie ma
+	znaczenia z jakiego ¼ród³a pochodz±, mo¿e to byæ iptables, ipchains lub
+	program zewnêtrzny np. ipfm.
+    </P
+><P
+>Przegl±danie wykresów wykorzystania ³±cza oraz definiowanie filtrów
+	dostêpne jest z g³ównego menu 'Statystyki'.
+    </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="LMS-TRAFFIC-CONFIG"
+>4.3.5.1. Instalacja</A
+></H3
+><P
+>Przed uruchomieniem lms-traffic nale¿y zadbaæ o utworzenie
+	    pliku z danymi. Zawarto¶æ pliku powinna mieæ nastêpuj±cy format:</P
+><PRE
+CLASS="SCREEN"
+>&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
+&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
+...</PRE
+><P
+>Skrypt tworz±cy statystyki nale¿y uruchamiaæ z tak± sam± czêstotliwo¶ci± 
+	    co lms-traffic.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Przyk³ad takiego skryptu dla iptables znajduje siê w 
+	    pliku <TT
+CLASS="FILENAME"
+>/sample/traffic_ipt.sh</TT
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>Nastêpnie instalujemy skrypt dopisuj±c do crontaba.
+	    Oprócz standardowych opcji wiersza poleceñ mo¿liwe jest
+	    zdefiniowanie lokalizacji pliku z logiem</P
+><PRE
+CLASS="SCREEN"
+>-f=/plik 	po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traffic.log</PRE
+><P
+>	    <DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/warning.gif"
+HSPACE="5"
+ALT="Ostrze&#380;enie"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Czêstotliwo¶æ zapisywania danych do bazy ustala u¿ytkownik. Ustawienie
+	    jej poni¿ej 10 minut, mo¿e spowodowaæ szybki przyrost ilo¶ci rekordów w 
+	    bazie danych, a co za tym idzie zwiêkszyæ czas oczekiwania na wy¶wietlenie
+	    wyników.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	    </P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEIPTABLES"
+>4.3.6. lms-makeiptables, lms-makeipchains</A
+></H2
+><P
+>Para skryptów s³u¿±cych do generowania plików zawieraj±cych
+	    regu³y firewalla. Do utworzonego pliku mo¿esz do³±czyæ inne wcze¶niej
+	    utworzone pliki, a w koñcu nadaæ mu odpowiednie uprawnienia. Skrypty nie
+	    uruchamiaj± wygenerowanych plików.</P
+><P
+>Konfiguracjê dla tych skryptów mo¿esz ustaliæ w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[iptables]</I
+></SPAN
+>
+	    (i odpowiednio <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[ipchains]</I
+></SPAN
+>). Oba skrypty posiadaj± te same
+	    opcje: </P
+><UL
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku firewalla. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary (ipchains_binary)</P
+><P
+>Lokalizacja programu iptables (ipchains). Domy¶lnie: /usr/sbin/iptables (/usr/sbin/ipchains)</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>script_file</P
+><P
+>Plik, do którego zapisujemy regu³y firwalla. Domy¶lnie: /etc/rc.d/rc.masq</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_file = /etc/rc.d/rc.firewall</SAMP
+></P
+></LI
+><LI
+><P
+>pre_script</P
+><P
+>Plik wykonywany PO wyczyszczeniu regu³ek, ale PRZED ustawieniem nowych. 
+		    Domy¶lnie: niezdefiniowany.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>pre_script = /etc/rc.d/rc.masq-pre</SAMP
+></P
+></LI
+><LI
+><P
+>post_script</P
+><P
+>Plik wykonywany PO ustawieniu regu³ek. Domy¶lnie: niezdefiniowany.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>post_script = /etc/rc.d/rc.masq-post</SAMP
+></P
+></LI
+><LI
+><P
+>forward_to</P
+><P
+>Lista sieci, dla których w³±czamy forwarding. Mo¿liwe warto¶ci: "" - pe³ny forward, 
+		    "dowolny ci±g" - wy³±cz forward, "siec1 siec2" - lista sieci z w³±czonym forwardingiem.  
+		    Domy¶lnie: pe³ny forward.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>forward_to = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>script_owneruid</P
+><P
+>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_ownergid</P
+><P
+>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_permission</P
+><P
+>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>snat_address</P
+><P
+>Adres SNAT. Je¶li nie ustawiono, dla hostów z adresami publicznymi bêdzie
+		    u¿yte "-j MASQUERADE". Je¶li ustawiono zostanie u¿yte "-j SNAT --to xxx.xxx.xxx.xxx".
+		    Dotyczy lms-makeiptables. Domy¶lnie: nieustawiony.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>snat_address = 123.123.123.123</SAMP
+></P
+></LI
+><LI
+><P
+>tcp_redirect_ports (udp_redirect_ports)</P
+><P
+>Konfiguracja przekierowañ w formie port_¼ród³owy:port_docelowy dla
+		    przekierowañ na lokaln± maszynê dla po³±czeñ wychodz±cych. Dotyczy lms-makeipchains.
+		    Domy¶lnie: nieustawione.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>tcp_redirect_ports = 80:3128 25:25</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-ETHERDESC"
+>4.3.7. lms-etherdesc</A
+></H2
+><P
+>Skrypt s³u¿±cy do generowania pliku zawieraj±cego MAC adresy oraz
+	    nazwy hostów pobierane z bazy lms'a. Adresy zapisywane s± w formacie 'stripped mac',
+	    czyli bez ":". Tego typu plik wykorzystywany jest przez pakiet <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>iptraf</I
+></SPAN
+>.
+	    </P
+><P
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[ethers]</I
+></SPAN
+>
+	    w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
+><UL
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>etherdesc_owneruid</P
+><P
+>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>etherdesc_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>etherdesc_file</P
+><P
+>Lokalizacja pliku. Domy¶lnie: /var/lib/iptraf/ethernet.desc.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>etherdesc_file = /etc/ethernet.desc</SAMP
+></P
+></LI
+><LI
+><P
+>etherdesc_ownergid</P
+><P
+>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>etherdesc_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>etherdesc_permission</P
+><P
+>Uprawnienia pliku skryptu. Domy¶lnie: 600 (rw-------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>etherdesc_permission = 600</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="scripts-list.html"
+ACCESSKEY="P"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="mgc.html"
+ACCESSKEY="N"
+>Nast&#281;pny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Lista dostêpnych skryptów</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="scripts.html"
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Generator plików konfiguracyjnych (lms-mgc)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
