@@ -18,6 +18,7 @@ wersja 1.1.8 (??/??/????):
   - lms-notify-sms nied³ugo bêdzie mo¿na wysy³aæ smsy z upomnieniami o
     zaleg³o¶ciach. Wymagany pakiet gnokii (hunter)
   - dodane uprawnienie 'dostêp do korespondencji seryjnej' (alec)
+  - urz±dzeniom sieciowym mo¿na przypisywaæ adresy IP oraz MAC (lexx/alec)
     
 wersja 1.1.7 Hathor (14/12/2003):
 
