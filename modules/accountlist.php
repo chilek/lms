@@ -94,7 +94,7 @@ if(!isset($_GET['t']))
 	$SESSION->restore('alt', $t);
 else
 	$t = $_GET['t'];
-$SESSION->save('alt', $t)
+$SESSION->save('alt', $t);
 
 if(!isset($_GET['k']))
 	$SESSION->restore('alk', $k);
