@@ -26,8 +26,6 @@
 
 // Array with left menu on engine.
 
-global $_SHOW_STATS, $_SHOW_NETDEV;
-
 $menu = Array();
 
 $menu[name]	[] = "Witamy !";
@@ -90,16 +88,17 @@ $menu[link]     [] = "?m=adminlist";
 $menu[accesskey][] = "d";
 $menu[tip]	[] = "Konta administratorów systemu";
 
-if ($_SHOW_STATS == 1) {
-    $menu[name]		[] = "Statystyki";
-    $menu[img]		[] = "traffic.gif";
-    $menu[link]     	[] = "?m=traffic";
-    $menu[accesskey]	[] = "x";
-    $menu[tip]		[] = "Statystyki wykorzystania ³±cza";
-}
+$menu[name]	[] = "Statystyki";
+$menu[img]	[] = "traffic.gif";
+$menu[link]	[] = "?m=traffic";
+$menu[accesskey][] = "x";
+$menu[tip]	[] = "Statystyki wykorzystania ³±cza";
 
 /*
  * $Log$
+ * Revision 1.54  2003/09/25 15:13:13  lukasz
+ * - force stats te be show
+ *
  * Revision 1.53  2003/09/12 21:58:29  lexx
  * - blak
  *

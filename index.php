@@ -67,7 +67,6 @@ $_DBHOST = (! $_CONFIG['database']['host'] && $_CONFIG['database']['type'] != "p
 $_DBUSER = (! $_CONFIG['database']['user'] ? 'root' : $_CONFIG['database']['user']);
 $_DBPASS = (! $_CONFIG['database']['password'] ? '' : $_CONFIG['database']['password']);
 $_DBNAME = (! $_CONFIG['database']['database'] ? 'lms' : $_CONFIG['database']['database']);
-$_SHOW_STATS = (! $_CONFIG['phpui']['enable_stats'] ? '0' : $_CONFIG['phpui']['enable_stats']);
 
 // Redirect to SSL
 
@@ -185,6 +184,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.105  2003/09/25 15:13:13  lukasz
+ * - force stats te be show
+ *
  * Revision 1.104  2003/09/24 22:33:54  lukasz
  * - s/TipOfTheDay/fortunes/g
  *
