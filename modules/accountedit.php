@@ -47,7 +47,7 @@ if($id && !AccountExists($id))
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$account = $LMS->DB->GetRow('SELECT passwd.id AS id, ownerid, login, lastlogin, domain, expdate, type, '.$LMS->DB->Concat('users.lastname', "' '", 'users.name').' AS username FROM passwd LEFT JOIN users ON users.id = ownerid WHERE passwd.id = ?', array($id));
+$account = $LMS->DB->GetRow('SELECT passwd.id AS id, ownerid, login, lastlogin, domainid, expdate, type, '.$LMS->DB->Concat('users.lastname', "' '", 'users.name').' AS username FROM passwd LEFT JOIN users ON users.id = ownerid WHERE passwd.id = ?', array($id));
 
 switch ($option) 
 {
@@ -95,9 +95,6 @@ switch ($option)
 			if(GetAccountIdByLogin($account['login']))
 				$error['login'] = 'Konto o podanej nazwie ju¿ istnieje!'; 
 	
-		if(!eregi("^[a-z0-9._-]+$", $account['domain']) && $account['domain']!='')
-    			$error['domain'] = 'Domena zawiera niepoprawne znaki!';
-	    
 		if($account['expdate'] == '')
 			$account['expdate'] = 0;
 		else
@@ -113,12 +110,12 @@ switch ($option)
 			
 		if(!$error)
 		{
-			$LMS->DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, home = ?, expdate = ?, domain = ?, type = ? WHERE id = ?', 
+			$LMS->DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, home = ?, expdate = ?, domainid = ?, type = ? WHERE id = ?', 
 				array(	$account['ownerid'], 
 					$account['login'], 
 					'/home/'.$account['login'],
 					$account['expdate'],
-					$account['domain'],
+					$account['domainid'],
 					$account['type'],
 					$account['id']
 					));
@@ -135,6 +132,7 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('account', $account);
 $SMARTY->assign('layout', $layout);
 $SMARTY->assign('users', $LMS->GetUserNames());
+$SMARTY->assign('domainlist', $LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->display($template);
 
 ?>

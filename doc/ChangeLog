@@ -27,6 +27,7 @@ wersja 1.5.3 (??/??/????):
   - BTS#0000252: usuniête spacje wiod±ce w repr. s³ownej kwot (alec)
   - filtrowanie listy zg³oszeñ Helpdesk wg statusu (alec)
   - w dokumentacji dodany opis pod³±czenia lms-rtparser do Exima (P.Górski)
+  - Konta i Domeny (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 
