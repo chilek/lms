@@ -31,7 +31,7 @@ $access['table'][0]['name']		= trans('full access');
 $access['table'][0]['allow_reg']	= '^.*$';
 
 $access['table'][1]['name']		= trans('read only (excluding helpdesk)');
-$access['table'][1]['allow_reg']	= '^((admin|balance|db|net|node|netdev|tariff|payment|user|usergroup|account|alias|domain)(list|info|view|search|balance)|netdevmap|print)$';
+$access['table'][1]['allow_reg']	= '^((admin|balance|db|net|node|netdev|tariff|payment|user|usergroup|account|alias|domain|config)(list|info|view|search|balance)|netdevmap|print)$';
 
 $access['table'][2]['name']		= trans('nodes connection/disconnection');
 $access['table'][2]['allow_reg']	= '^nodeset$';
@@ -64,7 +64,7 @@ $access['table'][11]['name']        	= trans('accounts management');
 $access['table'][11]['allow_reg']   	= '^((account|domain|alias)(list|edit|add|del))$';
 
 $access['table'][12]['name']        	= trans('UI configuration');
-$access['table'][12]['allow_reg']   	= '^(config(list|edit|add|del))$';
+$access['table'][12]['allow_reg']   	= '^(config(list|edit|add|del|load))$';
 
 $access['table'][13]['name']        	= trans('networks and devices management');
 $access['table'][13]['allow_reg']   	= '^((net|netdev)(info|list|edit|add|del|cmp|map|remap)|choose(mac|ip))$';
