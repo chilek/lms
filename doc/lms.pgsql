@@ -35,7 +35,7 @@ CREATE TABLE cash (
 	userid integer DEFAULT 0 NOT NULL,
 	comment varchar(255) DEFAULT '' NOT NULL,
 	invoiceid integer DEFAULT 0 NOT NULL,
-	PRIMARY KEY (id);
+	PRIMARY KEY (id)
 );
 
 /* -------------------------------------------------------- 
