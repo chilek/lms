@@ -913,20 +913,23 @@ class LMS
 			{
 				switch($idx)
 				{
-				    case "ipaddr" :
-			    if (ip_long($value))
-					   {
-					 $searchargs[] = "ipaddr = ".ip_long($value);
-					    } else
-			    {
-				list($net,$broadcast) = get_ip_range_from_ip_part($value);
-				if(check_ip($net) && check_ip($broadcast)) //na wszelki wypadek
-				    $searchargs[] = "ipaddr > ".ip_long($net)." AND ipaddr < ".ip_long($broadcast);
-			    }
-			break;
-				    default :
-					    $searchargs[] = $idx." ?LIKE? '%".$value."%'";
-				    break;
+					case "ipaddr" :
+						$address = get_ip_range_from_ip_part($value);
+						$ipfindquery = "(";
+						for($i=0; $i<3; $i++)
+						{
+						    if($address[$i][0] && $address[$i][1])
+						    {
+							    if($i >= 1) $ipfindquery .= " OR ";
+							    $ipfindquery .= "(ipaddr >= ".ip_long($address[$i][0])." AND ipaddr <= ".ip_long($address[$i][1]).")";
+						    }
+						}
+						$ipfindquery .= ")";
+						if(strlen($ipfindquery) > 5) $searchargs[] = $ipfindquery;
+						break;
+					default :
+						$searchargs[] = $idx." ?LIKE? '%".$value."%'";
+					break;
 				}
 			}
 		}
@@ -1947,6 +1950,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.267  2003/10/06 22:18:23  alec
+ * nowa rozbudowana funkcja SearchNodeList() - na adresach IP dzia³a prawie jak LIKE
+ *
  * Revision 1.266  2003/10/06 05:33:04  lukasz
  * - temporary save / lot of fixes
  *
