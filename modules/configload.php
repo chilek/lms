@@ -189,7 +189,7 @@ foreach($LMS->CONFIG['invoices'] as $key => $val)
          $desc = trans('Invoice template file. Default: "invoice.html". Should be placed in templates directory.');
          break;
      case 'content_type':
-         $desc = trans('Content-type for invoice. If you enter "application/octet-stream", browser will send file for save on disk, instead of display it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html; charset=iso-8859-2".');
+         $desc = trans('Content-type for invoice. If you enter "application/octet-stream", browser will send file for save on disk, instead of display it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html; charset=UTF-8".');
          break;
      case 'attachment_name':
          $desc = trans('File name for save finished invoice printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) invoices printing, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP).');

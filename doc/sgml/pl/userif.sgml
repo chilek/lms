@@ -387,7 +387,7 @@
 			<para>Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
 			to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
 			Przydatne je¶li u¿ywasz w³asnego templejta, który wygeneruje np.rtf'a lub xls'a.
-			Domy¶lnie: 'text/html; charset=iso-8859-2'</para>
+			Domy¶lnie: 'text/html'</para>
 			<para>Przyk³ad: <prompt>content_type = application/octet-stream</prompt></para>
 		</listitem>	
 		<listitem>
