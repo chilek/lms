@@ -31,7 +31,7 @@ class LMS {
 
 	var $db;
 	var $session;
-	var $version = '1.0.23';
+	var $version = '1.0.24';
 
 	function LMS($db,$session)
 	{
@@ -302,6 +302,10 @@ class LMS {
 			{
 				$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
 				$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
+				if($userlist[balance][$i]) > 0
+					$userlist[over] = $userlist[over] + $userlist[balance][$i];
+				if($userlist[balance][$i]) < 0
+					$userlist[below] = $userlist[below] - $userlist[balance][$i];
 			}
 			
 		list($order,$direction)=explode(",",$order);
