@@ -514,6 +514,15 @@ database = /usr/local/lms/lms.db</screen>
     spacjami. Domy¶lnie pusta.</para>
     <para>Przyk³ad:	<prompt>arpd_servers = 192.168.1.1 192.168.2.1</prompt></para>
    </listitem>
+   <listitem>
+    <para>helpdesk_backend_mode</para>
+    <para>W³±czenie tej opcji spowoduje, ¿e wszystkie wiadomo¶ci w systemie 
+    helpdesk (oprócz tych skierowanych do zg³aszaj±cego) 
+    bêd± wysy³ane do serwera pocztowego na adres odpowiedniej kolejki.
+    Na serwerze tym powinien byæ uruchomiony skrypt lms-rtparser, który zajmie
+    siê zapisem wiadomo¶ci do bazy danych. Domy¶lnie: wy³±czona.</para>
+    <para>Przyk³ad:	<prompt>helpdesk_backend_mode = 1</prompt></para>
+   </listitem>
   </itemizedlist>
  	</sect2> 
     </sect1>

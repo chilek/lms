@@ -487,6 +487,8 @@
 	    administratora). Wszystkie wiadomo¶ci tak¿e te wys³ane, zostaj± zapisane 
 	    w historii zg³oszenia. Zg³oszenie mo¿e mieæ cztery stany: nowy, otwarty, rozwi±zany 
 	    i martwy.</para>
+	    <para>Skrypt <xref linkend="lms-rtparser"> zosta³ stworzony aby umo¿liwiæ
+	    obs³ugê systemu i przesy³anie zg³oszeñ poczt± elektroniczn±.</para>
 	<sect2 id="menu-helpdesk-list">
 	<title>Lista kolejek</title>
 	    <para>Na li¶cie kolejek znajduj± siê podstawowe informacje i statystyki zg³oszeñ.

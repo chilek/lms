@@ -819,7 +819,7 @@ http://www.naszasiec.pl/</screen></example>
     <sect2 id="lms-rtparser" xreflabel="lms-rtparser">
 	<title>lms-rtparser</title>
 	    <para>Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który wspó³pracuj±c
-	    z serwerm pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
+	    z serwerem pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
 	    adresy Helpdesk'a. Skrypt pobiera z wej¶cia wiadomo¶æ pocztow±, parsuje zawarto¶æ
 	    i umieszcza zg³oszenie w kolejce, wysy³aj±c do zg³aszaj±cych
 	    potwierdzenie przyjêcia wiadomo¶ci. W temacie potwierdzenia znajduje siê symbol
@@ -844,6 +844,10 @@ filter unix - n n - 10 pipe
       -flags=Rq user=nobody argv=/path/to/lms-rtparser
 </screen>
 	    </para>
+	    <para><note><para>Je¿eli chcesz aby wiadomo¶ci wprowadzane poprzez <emphasis>lms-ui</emphasis>
+	    by³y kierowane do parsera, zamiast bezpo¶rednio zapisywane do bazy, powiniene¶ w³±czyæ
+	    opcjê konfiguracyjn± <filename>helpdesk_backend_mode</filename> w sekcji
+	    <emphasis>[phpui]</emphasis>.</para></note></para>
 	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[rt]</emphasis>
 	    w pliku <filename>lms.ini</filename>: </para>
 	    <itemizedlist>
@@ -861,10 +865,10 @@ filter unix - n n - 10 pipe
 		    <para>Przyk³ad:	<prompt>sendmail_binary = /usr/lib/sandmail</prompt></para>
 		</listitem>
 		<listitem>
-		    <para>autoreply_from</para>
+		    <para>mail_from</para>
 		    <para>Nadawca potwierdzenia. Je¶li nie zdefiniowano, zostanie u¿yty adres
 		    kolejki do której zapisano zg³oszenie. Domy¶lnie: pusty.</para>
-		    <para>Przyk³ad:	<prompt>autoreply_from = &lt;rt@net.pl&gt;</prompt></para>
+		    <para>Przyk³ad:	<prompt>mail_from = &lt;rt@net.pl&gt;</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>mail_dir</para>
