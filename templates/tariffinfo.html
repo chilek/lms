@@ -190,7 +190,7 @@
 				<INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
 				<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="from">
 				<input type="hidden" name="is_sure">
-				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'{t}Are you sure, you want to move customers to tariff {/t}'+getText(document.tmove.to.value)+'?','1');">{t}Move customers to tariff:{/t}</A> </B>
+				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'{t}Are you sure, you want to move customers to tariff '+getText(document.tmove.to.value)+'?{/t}','1');">{t}Move customers to tariff:{/t}</A> </B>
 				<SELECT SIZE="1" NAME="to">
 					{section name=lt loop=$tariffs}
 					{if $tariffs[lt].id neq $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value|money_format} )</OPTION>{/if}
