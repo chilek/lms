@@ -14,21 +14,22 @@
 </script>{/if}
 </head>
 {if ! $part}
-<frameset frameborder="0" framespacing="0" ROWS="55,*">
+<frameset name="all" frameborder="0" framespacing="0" ROWS="55,*,27">
 	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="cal" noresize src="?m=chooseip&p=top">
 	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=chooseip&p=main">
+	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="down" noresize src="?m=chooseip&p=down">
 </frameset>
 {/if}
 {if $part eq "main"}
-<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<body onload="parent.frames[2].history.reload()" topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
 	<table width="100%" cellpadding="1">
-	{section name=iplist loop=$network.address}
+	{section name=iplist loop=$network.nodes.name}
 	{if $smarty.section.iplist.index is even}<TR>{/if}
-		<TD width="50%" align="center" onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '#EBE4D6')"{if $network.nodename[iplist] eq ""} onClick="sendvalue(targetfield,'{$network.address[iplist]}');"{/if}>
-			{if $network.nodename[iplist] neq ""}
-				<FONT COLOR="#666666">{$network.nodename[iplist]}</FONT>
+		<TD width="50%" align="center" onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '#EBE4D6')"{if $network.nodes.name[iplist] eq ""} onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');"{/if}>
+			{if $network.nodes.name[iplist] neq ""}
+				<FONT COLOR="#666666">{$network.nodes.name[iplist]}</FONT>
 			{else}
-			<A href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.address[iplist]}');">{$network.address[iplist]}</A>
+			<A href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.nodes.address[iplist]}');">{$network.nodes.address[iplist]}</A>
 			{/if}
 		</TD>
 	{if $smarty.section.iplist.index is not even}</TR>{/if}
@@ -66,5 +67,22 @@
 	</tr>
 	</form>
 </table>
+</body>
+{/if}
+{if $part eq "down"}
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<table cellpadding="5" width="100%">
+	<form target="m" name="selectpage" method="post" action="?m=chooseip&p=main">
+	<tr>
+		<td bgcolor="#CEBD9B" class="fall" align="center">
+			<INPUT type="hidden" name="page" value="1"></INPUT>
+			<B>{if $network.page > 1}<A HREF="" onclick="document.forms['selectpage'].elements['page'].value={math equation="x - 1" x=$network.page}; document.selectpage.submit(); return false;">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;&laquo;&laquo;</FONT>{/if}
+			{t 0=$network.page 1=$network.pages}Page $0 of $1{/t}
+			{if $network.page < $network.pages}<A HREF="" onclick="document.forms['selectpage'].elements['page'].value={math equation="x + 1" x=$network.page}; document.selectpage.submit(); return false;">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;&raquo;&raquo;<FONT>{/if}</B>
+		</td>
+	</tr>
+	</form>
+</table>
+</body>
 {/if}
 </html>	
