@@ -32,6 +32,15 @@ Po trzecie: serwer MySQL.
 Aua. Tutaj to ja ju¿ wogóle zielony jestem. Pisa³em ca³o¶æ korzystaj±c z MySQL
 3.23.53 i nie mam pojêcia która wersja jest wymagana.
 
+Po czwarte: perl i modu³y do niego.
+
+- perl w³a¶ciwy i jego podstawowe modu³y (POSIX, GetOpt::Long);
+- Net::SMTP;
+- Config::IniFiles;
+- DBI;
+- DBD-mysql (dla mysql'a);
+- DBD-pg (dls postgres'a);
+
 I tyle by by³o na temat wymagañ samego LMS'a. Na koniec co do dystrybucji -
 LMS zosta³ odpalony na:
 - PLD 1.0 Ra
@@ -134,6 +143,9 @@ Nale¿y wej¶æ na stronê http://twoj.serwer.pl/katalog_gdzie_masz_lms/crypt.php.
 
 Dalej jest dosyæ intuicyjnie :)
 
+Teraz, kopiujemy z katalogu sample plik lms.ini do katalogu /etc/lms/ i go
+edytujemy wed³ug instrukcji tam podanych.
+
 Oki.  Wiêc  mamy  LMS'a.  Wchodzimy na WWW i siê logujemy. Teraz mo¿na porobiæ
 porz±dek,  posprz±taæ  w  adminach,  dodaæ u¿yszkodników i komputery do bazy i
 zacz±æ  siê  rozgl±daæ  za LMSd - czyli czym¶ co bêdzie konfigurowaæ serwer na
@@ -145,21 +157,58 @@ I to (narazie) na tyle.
 
 Za³ó¿my  ¿e  chcemy  prost±  sieæ, prywatn±, na kernelu 2.2, na jednym
 serwerze  gdzie jest wszystko i tak± w miarê bez komplikacji. Mamy ju¿
-uruchomiony interface, wszystko chodzi i wogóle cacy ale teraz kwestia
-jak  to  zgraæ  z  serwerem. Oki. Na pocz±tek, trzeba ¶ci±gn±æ z CVS'a
-lms-scripts:
+uruchomiony interface, wszystko chodzi i wogóle cacy, ale teraz kwestia
+jak  to  zgraæ  z  serwerem. Oki. Niezbêdne skrypty perlowe s± w katalogu bin
+tarbala z LMS. Kolejno te skrypty to:
 
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
-[wciskamy enter, bo has³o jest puste]
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms-scripts
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout
+lms-cutoff	- skrypcik, który zmienia status komputerów 
+lsm-eachmonth	- skrypcik, który obci±¿a ka¿dego u¿ytkownika okre¶lon±
+		  wed³ug taryfy sum±.
+lms-mgc		- magiczny generator czegokolwiek - czyli co¶, co potrafi
+		  nam skonfigurowaæ cokolwiek co chcemy.
+lms-notify	- skrypt wysy³aj±cy upomnienia do u¿yszkodników, ¿e zalegaj± z
+		  op³atami.
 
-Teraz skopiujmy jeden skrypt - lms-mgc w jakie¶ ciekawe miejsce:
+Wszystkie skrypty poza lms-mgc (z racji ró¿nego dzia³ania parsera plików ini
+PHP i perla) korzystaj± z /etc/lms/lms.ini. lms-mgc czyta /etc/lms/lms-mgc.ini.
 
-cd lms-scripts
-cp lms-mgc /usr/sbin
+Skopiujmy te skrypty do /usr/sbin aby by³y ³atwo dostêpne i zacznijmy je
+instalowaæ.
 
-Teraz, dodajmy now± sekcjê mgc do lms.ini, nazywaj±c j± 'ipchains', 
+Aby co miesi±c z u¿ytkowników by³a zdzierana jaka¶ kasa, nale¿y dodaæ
+lms-eachmonth do crona. Przyk³adowa linijka wygl±da tak:
+
+0 0 6 * *       /usr/sbin/lms-eachmonth
+
+Taki zapisa spowoduje ¿e ka¿dego szóstego dnia miesi±ca, o godzinie 0:00,
+z ka¿dy u¿ytkownik zostanie obci±¿ony op³at± abonamentow± w wysoko¶ci
+przewidzianej przez taryfê w jakiej siê znajduje. Oczywi¶cie zamiast
+szóstego mo¿e byæ inny dzieñ, jednak¿e radzê pamiêtaæ, ¿e 31 ka¿dego miesi±ca
+wystêpuje 8 razy do roku, a 29 luty wystêpuje co cztery lata, wiêc najpó¼niej
+op³aty mo¿na pobieraæ dwudziestego ósmego ka¿dego miesi±ca.
+
+Kolejny etap integracji LMS'a z Dzia³em Nêkania U¿ytkowników to wysy³anie
+powiadomieñ, czyli lms-notify:
+
+0 0 8 * *	/usr/sbin/lms-notify
+
+Czyli ósmego ka¿dego miesi±ca wy¶lemy przypominienie o tym, ¿e s± jakie¶
+zaleg³o¶ci (czyli aktualne saldo usera jest poni¿ej zera). Temat wiadomo¶ci
+oraz ¶cie¿kê do pliku tekstowego ustawiamy w /etc/lms/lms.ini. Przydatna
+bêdzie opcja debug która zaspamuje naszego mailboxa zamiast u¿ytkowników.
+Przyk³adowy template maila jest w sample/mailtemplate.txt.
+
+Trzeci i ostatni etap to odcinanie userów poni¿ej danego limitu:
+
+0 0 10 * *       /usr/sbin/lms-cutoff
+
+Limit ustawiamy w lms.ini jak zwykle.
+
+Okej. Teraz generowanie configów. Od tego s³u¿y lms-mgc. Jego konfiguracja
+jest zawi³a. Tak wiêc wróæmy do podstawowego zadania - zrobienia tylko
+firewalla (i to prostego) dla linuksa 2.2.
+
+Teraz, dodajmy now± sekcjê mgc do lms-mgc.ini, nazywaj±c j± 'ipchains', 
 oraz stwórzmy w tej sekcji prost± maskaradê per adres IP z lanu:
 
 [mgc:ipchains]
@@ -177,7 +226,7 @@ sekcjê:
 
 instances		= ipchains
 
-Teraz próba odpalenia lmg-mgc powinna zaowocowaæ wygenerowaniem
+Teraz próba odpalenia lms-mgc powinna zaowocowaæ wygenerowaniem
 /etc/rc.d/rc.masq, oraz jego odpaleniem.
 
 Mamy  dwie  mo¿liwo¶ci  wprowadzenia  w  ¿ycie tego generatorka - albo
@@ -188,24 +237,15 @@ by  umo¿liwiæ  odpalenie  lms-mgc  to dopisanie u¿ytkownika do sudo, a
 nastêpnie wpisy w sekcji [phpui] lms.ini:
 
 reload_type		= exec
-reload_execcmd		= "sudo /usr/bin/lms-mgc"
+reload_execcmd		= sudo /usr/sbin/lms-mgc
 
-4. Op³aty miesiêczne.
+Tak wiêc wszystko powinno dzia³aæ. Na dniach prawdopodobnie uka¿e siê
+plmsd - czyli demon perlowy pozwalaj±cy na normalniejsze (bez sudo)
+rekonfigurowanie systemu.
 
-Z lms-scripts nale¿y wyci±gn±æ lms-eachmonth, skopiowaæ go w jaki¶ 
-miejsce i do crontaba dopisaæ aby skrypt ten by³ odpalany co miesi±c:
-
-0 0 6 * *	/usr/sbin/lms-eachmont
-
-I w taki sposób szóstego ka¿dego miesi±ca ka¿dy dostanie w bonusie 
-obci±¿enie abonamentu.
-
-5. Od³±czanie.
-
-Podobnie jak w rozdziale wy¿ej, ale do tego s³u¿y skrypt lms-cutoff.
-
-6. Comiesiêczne wysy³anie maili.
-
-Hm, vide wy¿ej, skrypt siê zowie lms-notify.
+We¼cie tak¿e na poprawkê, i¿ ca³y projekt mimo tylu miesiêcy pisania
+dopiero od kilku tygodni nabiera normalnej formy, ale miejmy nadziejê
+i¿ szybko stanie siê stabilnym rozwi±zenim dla sieci osiedlowych i
+ma³ych ISP.
 
 $Id$
