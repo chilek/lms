@@ -23,7 +23,7 @@
 		</TD>
 		<TD width="1%" class="fbt" ALIGN="right">
 			<a href="?m=usersearch&search&s={$userlist.state}&o=balance{if $userlist.direction eq "asc" && $userlist.order eq "balance"},desc{/if}">Saldo:</A>&nbsp;{if $userlist.order eq "balance"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			Abonament:
+			<a href="?m=usersearch&search&s={$userlist.state}&o=tariff{if $userlist.direction eq "asc" && $userlist.order eq "tariff"},desc{/if}">Abonament:</A>&nbsp;{if $userlist.order eq "tariff"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD width="1%" class="frightu">
 			<NOBR><B>Razem: {$userlist.total}</B></NOBR>
