@@ -69,7 +69,7 @@ version 1.5.5 Anubis (??/??/????):
   - redesigned customers list (lexx)
   - BTS#0000311: fixed cash operation time setting after invoice edition (alec)
   - mail() -> SendMail(). We use Pear::Mail (chilek)
-  - notifications about new tickets (chilek)
+  - notifications about new tickets in UI and lms-rtparser (chilek/alec)
   - proper char encoding in mail notifications (chilek)
   - added confirm. dialog for generation of new PIN and node's password (alec)
 
