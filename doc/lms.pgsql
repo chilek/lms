@@ -17,6 +17,7 @@ CREATE TABLE admins (
 	lastloginip varchar(16) DEFAULT '' NOT NULL,
 	failedlogindate integer DEFAULT 0  NOT NULL,
 	failedloginip varchar(16) DEFAULT '' NOT NULL,
+	deleted smallint	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (login)
 );
@@ -51,6 +52,7 @@ CREATE TABLE cash (
 	adminid integer 	DEFAULT 0 NOT NULL,
 	type smallint 		DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
+	taxvalue numeric(9,2)	DEFAULT 0,
 	userid integer 		DEFAULT 0 NOT NULL,
 	comment varchar(255) 	DEFAULT '' NOT NULL,
 	invoiceid integer 	DEFAULT 0 NOT NULL,
@@ -102,7 +104,6 @@ CREATE TABLE nodes (
 	warning smallint 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name),
-	UNIQUE (mac),
 	UNIQUE (ipaddr)
 );
 
@@ -116,7 +117,7 @@ CREATE TABLE tariffs (
 	id integer DEFAULT nextval('tariffs_id_seq'::text) NOT NULL,
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
-	taxvalue numeric(9,2) 	DEFAULT 0 NOT NULL,
+	taxvalue numeric(9,2) 	DEFAULT 0,
 	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
 	uprate integer		DEFAULT 0 NOT NULL,
 	downrate integer	DEFAULT 0 NOT NULL,
@@ -172,7 +173,7 @@ CREATE TABLE invoices (
 CREATE TABLE invoicecontents (
 	invoiceid integer 	DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
-	taxvalue numeric(9,2) 	DEFAULT 0 NOT NULL,
+	taxvalue numeric(9,2) 	DEFAULT 0,
 	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
 	content varchar(16) 	DEFAULT '' NOT NULL,
 	count numeric(9,2) 	DEFAULT 0 NOT NULL,
@@ -219,6 +220,35 @@ CREATE TABLE users (
 	deleted smallint 	DEFAULT 0 NOT NULL,
 	message text		DEFAULT '' NOT NULL,
 	PRIMARY KEY (id)	
+);
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "usergroups" 
+-------------------------------------------------------- */
+DROP SEQUENCE "usergroups_id_seq";
+CREATE SEQUENCE "usergroups_id_seq";
+DROP TABLE usergroups;
+CREATE TABLE usergroups (
+	id integer DEFAULT nextval('usergroups_id_seq'::text) NOT NULL, 
+	name varchar(255) DEFAULT '' NOT NULL, 
+	description text DEFAULT '' NOT NULL, 
+	PRIMARY KEY (id), 
+	UNIQUE (name)
+);
+
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "userassignments" 
+-------------------------------------------------------- */
+DROP SEQUENCE "userassignments_id_seq";
+CREATE SEQUENCE "userassignments_id_seq";
+DROP TABLE userassignments;
+CREATE TABLE userassignments (
+	id integer DEFAULT nextval('userassignments_id_seq'::text) NOT NULL, 
+	usergroupid integer DEFAULT 0 NOT NULL, 
+	userid integer DEFAULT 0 NOT NULL, 
+	PRIMARY KEY (id),
+	UNIQUE (usergroupid, userid)
 );
 
 /* -------------------------------------------------------- 
@@ -355,4 +385,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004031402');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004042300');    
