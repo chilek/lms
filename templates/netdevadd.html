@@ -11,7 +11,7 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="FBT">
 			<B>Nazwa:</B>
-		<TD WIDTH="98%" CLASS="FRIGHTU" COLSPAN="2">
+		<TD WIDTH="98%" CLASS="FRIGHTU">
 			<INPUT TYPE="TEXT" NAME="netdev[name]" VALUE="{$netdev.name}" {tip trigger="name" bold=1}> 
 		</TD>
 	</TR>
@@ -22,7 +22,7 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>Producent:</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdev.producer}">
 		</TD>
 	</TR>
@@ -33,7 +33,7 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>Model:</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdev.model}">
 		</TD>
 	</TR>
@@ -44,7 +44,7 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>Numer seryjny:</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="netdev[serialnumber]" VALUE="{$netdev.serialnumber}">
 		</TD>
 	</TR>
@@ -55,7 +55,7 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>Ilo¶æ portów:</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdev.ports}" {tip trigger="ports"}>
 		</TD>
 	</TR>
@@ -66,7 +66,7 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>Lokalizacja:</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="netdev[location]" VALUE="{$netdev.location}">
 		</TD>
 	</TR>
@@ -77,14 +77,12 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>Opis:</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5">{$netdev.description}</TEXTAREA>
 		</TD>
 	</TR>
-
-
 	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="4" ALIGN="RIGHT">
+		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="javascript:document.netdevadd.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 			<A HREF="?m=netdevlist">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
