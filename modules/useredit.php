@@ -60,7 +60,7 @@ elseif(isset($userdata))
 	if($userdata['address']=='')
 		$error['address'] = trans('Address required!');
 
-	if($userdata['nip'] !='' && !check_fin($userdata['nip']))
+	if($userdata['nip'] !='' && !check_ten($userdata['nip']))
 		$error['nip'] = trans('Incorrect Tax Exempt Number!');
 
 	if(!check_ssn($userdata['pesel']) && $userdata['pesel'] != '')

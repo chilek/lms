@@ -60,7 +60,7 @@ function uptimef($ts)
 	return trim($result);
 }
 
-function check_fin($fin)
+function check_ten($ten)
 {
 	return TRUE;
 }
