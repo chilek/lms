@@ -7,7 +7,7 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
-TITLE="LMS - LAN Management System 1.2"
+TITLE="LMS - LAN Management System 1.3-cvs"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="A.L.E.C's LMS Daemon"
@@ -39,7 +39,7 @@ CELLSPACING="0"
 ><TH
 COLSPAN="3"
 ALIGN="center"
->LMS - LAN Management System 1.2</TH
+>LMS - LAN Management System 1.3-cvs</TH
 ></TR
 ><TR
 ><TD
@@ -98,7 +98,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1422"
+NAME="AEN1426"
 ></A
 ><P
 ><B
@@ -463,7 +463,7 @@ CLASS="PROMPT"
 ><P
 >debug_uin</P
 ><P
->Je¶li ustawione, na to konto zostan± wys³ane wszyskie wiadomo¶ci.
+>Je¶li ustawione, na to konto zostan± wys³ane wszystkie wiadomo¶ci.
 			    Domy¶lnie: puste.</P
 ><P
 >Przyk³ad: <SAMP
@@ -729,7 +729,8 @@ NAME="HOSTFILE-CONFIG"
 ><P
 >W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
 		    które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
-		    adresem, '%n' - nazw± komputera. Poni¿ej opcje udostêpniane przez ten modu³</P
+		    adresem, '%n' - nazw± komputera, '%domain' - domen±, '%net' - nazw± sieci. 
+		    Poni¿ej opcje udostêpniane przez ten modu³</P
 ><UL
 ><LI
 ><P
@@ -795,6 +796,28 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</SAMP
+></P
+></LI
+><LI
+><P
+>networks</P
+><P
+>Lista nazw sieci, które maj± byæ brane pod uwagê. Domy¶lnie: pusta (wszystkie sieci).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>networks = "lan1 lan2"</SAMP
+></P
+></LI
+><LI
+><P
+>skip_dev_ips</P
+><P
+>Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy urz±dzeñ sieciowych. Domy¶lnie: tak</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>skip_dev_ips = no</SAMP
 ></P
 ></LI
 ></UL
@@ -977,7 +1000,7 @@ CLASS="PROMPT"
 ><P
 >generic-forward</P
 ><P
->Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okreslonym
+>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
 			    'forward-patterns' nie bêdzie pliku odpowiadaj±cego nazwie domenowej sieci.
 			    Domy¶lnie: modules/dns/sample/forward/generic.</P
 ><P
@@ -1195,9 +1218,8 @@ NAME="OIDENT-DESC"
 >6.2.12.1. Opis</A
 ></H3
 ><P
->Modu³ do konfiguracji oidend. W zasadzie mo¿na to zrobiæ modu³em
-		    'hostfile', ale w 'oident' masz mo¿liwo¶æ okre¶lenia dla których sieci
-		    ma byæ tworzony konfig.</P
+>Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
+		    'hostfile', ale tutaj masz ju¿ gotowe ustawienia domy¶lne.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -1218,7 +1240,7 @@ NAME="OIDENT-CONFIG"
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->begin = "#Generowany utomatycznie\n"</SAMP
+>begin = "#Generowany automatycznie\n"</SAMP
 ></P
 ></LI
 ><LI
@@ -1258,18 +1280,18 @@ CLASS="PROMPT"
 ><P
 >networks</P
 ><P
->Lista sieci do uwzglêdnienia. Domy¶lnie: "192.168.0.0/16 10.0.0.0/8".</P
+>Lista nazw sieci do uwzglêdnienia. Domy¶lnie: pusta (wszystkie sieci).</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->networks = 192.168.1.0/24</SAMP
+>networks = 'lan1 lan2'</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >command</P
 ><P
->Polecenie do wykonania po utworzeniu pliku. Domyslnie: puste.</P
+>Polecenie do wykonania po utworzeniu pliku. Domy¶lnie: puste.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
