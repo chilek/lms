@@ -48,16 +48,16 @@ $LANGDEFS = array(
 		'pl' => array(
 			'name' => 'Polish',
 			'orig' => 'Polski',
-			'locale' => 'pl_PL',
-			'charset' => 'ISO-8859-2',
+			'locale' => 'pl_PL.UTF-8',
+			'charset' => 'UTF-8',
 			'html' => 'pl',
-			'money_format' => '%01.2f z³'
+			'money_format' => '%01.2f zÅ‚'
 			),
 		'en' => array(
 			'name' => 'English',
 			'orig' => 'English',
 			'locale' => 'en_US',
-			'charset' => 'ISO-8859-1',
+			'charset' => 'UTF-8',
 			'html' => 'en',
 			'money_format' => '$ %01.2f'
 			),

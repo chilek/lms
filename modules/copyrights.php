@@ -35,7 +35,7 @@ $authors = array(
 		     ),
 
 		'Baseciq' => array(
-			'realname' => '£ukasz Jaros³aw Mozer',
+			'realname' => 'Åukasz JarosÅ‚aw Mozer',
 			'www' => 'www.baseciq.org',
 			'info' => 'inventor & maintainer, code PHP, Perl, design, HTML, JavaScript, CSS, images, doc, project\'s WWW'
 			),
@@ -53,7 +53,7 @@ $authors = array(
 		'Lexx' => array(
 			'info' => 'code PHP, C, doc, project\'s  WWW',
 			'www' => 'www.lexx.w.pl',
-			'realname' => 'Marcin Król',
+			'realname' => 'Marcin KrÃ³l',
 		     ),
 	
 		);
@@ -89,18 +89,18 @@ $others = array(
 
 		'Bob_R' => array(
 			'info' => 'CSS, HTML, JavaScript',
-			'realname' => 'Pawe³ Czerski',
+			'realname' => 'PaweÅ‚ Czerski',
 			'www' => 'plug.atn.pl/~bober/',
 			),
 
 		'sickone' => array(
-			'realname' => 'Pawe³ Kisiela',
+			'realname' => 'PaweÅ‚ Kisiela',
 			'info' => 'CSS, HTML, JavaScript',
 			'www' => 'gamechannel.int.pl',
 			),
 
 		'DziQs' => array(
-			'realname' => 'Micha³ Zapalski',
+			'realname' => 'MichaÅ‚ Zapalski',
 			'info' => 'PHP i Perl',
 			),
 
