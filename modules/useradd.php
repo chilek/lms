@@ -44,10 +44,10 @@ elseif(isset($useradd))
 	if($useradd['address'] == '')
 		$error['address'] = trans('Address required!');
 	
-	if($useradd['nip'] !='' && !check_nip($useradd['nip']))
+	if($useradd['nip'] !='' && !check_fid($useradd['nip']))
 		$error['nip'] = trans('Incorrect FID!');
 
-	if($useradd['pesel'] != '' && !check_pesel($useradd['pesel']))
+	if($useradd['pesel'] != '' && !check_ssn($useradd['pesel']))
 		$error['pesel'] = trans('Incorrect SSN!');
 		
 	if($useradd['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$useradd['zip']))
