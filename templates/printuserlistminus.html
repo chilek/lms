@@ -36,7 +36,8 @@
 	</TR>
 	{cycle values="#FFFFFF,#EEEEEE" print=false}
 	{section name=userlist loop=$userlist}{if $userlist[userlist].id}
-
+    {if $userlist[userlist].balance < 0}
+	
 	<TR BGCOLOR="{cycle}">
 		<TD ALIGN="CENTER">
 		{counter}
@@ -58,5 +59,7 @@
 		</TD>
 
 	</TR>
+	    {/if}
+
 	{/if}{/section}
 </TABLE>
