@@ -3,38 +3,43 @@
 {include file="rtheader.html"}
 <H1><B>{$layout.pagetitle}</B></H1>
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%" NOWRAP>
+	<TR class="dark">
+		<TD class="fleftu" colspan="2" WIDTH="1%" NOWRAP>
 			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
 			<B>ID:</B><BR>
 			<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">
 			Data zg³oszenia:
 		</TD>
-		<TD CLASS="fbt" WIDTH="97%">
+		<TD class="fbt" WIDTH="97%">
 			<B>Temat:</B><BR>
 			Zg³aszaj±cy:
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
+		<TD class="fbt" WIDTH="1%" NOWRAP>
 			<B>W³a¶ciciel:</B><BR>
 			Data modyfikacji:
 		</TD>
-		<TD CLASS="frightu" WIDTH="1%" NOWRAP>
+		<TD class="frightu" WIDTH="1%" NOWRAP>
 			<B>Razem: {$queuetotal|default:"0"}</B>
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}		
 	{foreach from=$queue item=ticket}
 	<TR {if $ticket.state == 2}class="BLEND"{/if} bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
+		<TD class="fleft" onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
 			{if $ticket.state == 0}
 				<IMG src="img/new.gif" alt="" border="0" align="absmiddle">
-				<FONT style="color: red">
 			{elseif $ticket.state == 1}
 				<IMG src="img/open.gif" alt="" border="0" align="absmiddle">
 			{elseif $ticket.state == 2}
 				<IMG src="img/resolved.gif" alt="" border="0" align="absmiddle">
 			{elseif $ticket.state == 3}
 				<IMG src="img/dead.gif" alt="" border="0" align="absmiddle">
+			{/if}
+		</TD>
+		<TD NOWRAP onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
+			{if $ticket.state == 0}
+				<FONT style="color: red">
+			{elseif $ticket.state == 3}
 				<FONT style="color: brown">
 			{/if}
 			<B>{$ticket.id|string_format:"%06d"}</B><BR>
@@ -73,7 +78,7 @@
 	</TR>
 	{foreachelse}
 	<TR>
-		<TD COLSPAN="4" CLASS="flr" ALIGN="center">
+		<TD COLSPAN="5" class="flr" ALIGN="center">
 			<BR>
 			<BR>
 			<B>Ta kolejka jest pusta.</B><BR>
@@ -82,8 +87,8 @@
 		</TD>
 	</TR>
 	{/foreach}
-	<TR CLASS="light">
-		<TD COLSPAN="4" CLASS="fall" ALIGN="right">
+	<TR class="light">
+		<TD COLSPAN="5" class="fall" ALIGN="right">
 			<A HREF="?m=rtticketadd&id={$queuedata.id}">Nowe zg³oszenie <IMG src="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
 		</TD>
 	</TR>
