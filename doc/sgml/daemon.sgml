@@ -390,11 +390,9 @@ info = "Opcjonalny opis modu³u"
 		<title>Cutoff</title>
 		    <sect3 id="cutoff-desc">
 		    <title>Opis</title>
-		    <para>Cutoff zmienia na 'od³±czony' status komputerów u¿ytkownikom, którzy
-		    maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ nie zajmuje
-		    siê fizycznym blokowaniem dostêpu do sieci. Nale¿y pamiêtaæ aby uruchamiaæ
-		    go przed modu³ami takimi jak np. 'hostfile'. Wa¿na jest kolejno¶æ instancji
-		    na li¶cie w zmiennej 'instances'. Modu³ 'cutoff' najlepiej uruchamiaæ codziennie.</para>
+		    <para>Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza ostrze¿enia
+		    u¿ytkownikom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ 
+		    nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</para>
 		    </sect3>
 		    <sect3 id="cutoff-config">
 		    <title>Konfiguracja</title>
@@ -409,7 +407,8 @@ info = "Opcjonalny opis modu³u"
 			<listitem>
 			    <para>command</para>
 			    <para>Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co najmniej
-			    jeden u¿ytkownik zostanie od³±czony. Domy¶lnie: nieustawiona.</para>
+			    jeden u¿ytkownik zostanie od³±czony lub zostanie w³±czone ostrze¿enie. 
+			    Domy¶lnie: nieustawiona.</para>
 			    <para>Przyk³ad: <prompt>command = 'almsd -qi firewall'</prompt></para>
 			</listitem>
 			<listitem>
@@ -419,6 +418,12 @@ info = "Opcjonalny opis modu³u"
 			    Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
 			    Domy¶lnie: 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty (dd.mm.yyyy)".</para>
 			    <para>Przyk³ad: <prompt>warning = ""</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>warnings_only</para>
+			    <para>Ta opcja pozwala zdecydowaæ, czy chcemy u¿yæ naszego 
+			    modu³u wy³±cznie do w³±czania ostrze¿eñ. Domy¶lnie: wy³±czona.</para>
+			    <para>Przyk³ad: <prompt>warnings_only = true</prompt></para>
 			</listitem>
 		    </itemizedlist>
 		    </sect3>
