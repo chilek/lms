@@ -146,4 +146,3 @@ mt_srand ((double) microtime()* 100000000);
 $layout[fortune] = $fortunes[mt_rand(0,sizeof($fortunes)-1)];
 
 ?>
-?>
