@@ -198,7 +198,6 @@ switch($_GET['type'])
 				if($nodelist = $LMS->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, 
 					    ownerid, access, warning, netdev, nodes.info AS info, '
 					    .$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, 
-					    COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance
 					    FROM nodes LEFT JOIN users ON (ownerid = users.id)
 					    LEFT JOIN cash ON (cash.userid = users.id)
 					    GROUP BY nodes.id, ipaddr, mac, nodes.name, ownerid, access, warning, netdev, nodes.info, users.lastname, users.name
