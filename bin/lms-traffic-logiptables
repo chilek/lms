@@ -186,7 +186,7 @@ while (my $row = $dbq->fetchrow_hashref())
 
 close(OUTFILE);
 chown $cuid, $cgid, $outfile or print "Warning! Unable to set owner of $outfile to $cuid.$cgid.\n";
-chmod oct($cperm), $cfile or print "Warning! Unable to set permission $cperm to $outfile.\n";
+chmod oct($cperm), $outfile or print "Warning! Unable to set permission $cperm to $outfile.\n";
 
 my @info = `$iptables_binary -t mangle -L STAT -v -n -x`;
 my %uploads;
