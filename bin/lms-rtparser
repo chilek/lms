@@ -316,7 +316,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 		$dbq->execute();
 		if(my $row = $dbq->fetchrow_hashref())
 		{
-			$autoreply_from = $row->{'id'};
+			$autoreply_from = $row->{'email'};
 		}
 	}
 
