@@ -20,7 +20,7 @@ version 1.5.5 (??/??/????):
     phpui/helpdesk_sender_name for name of message sender (alec)
   - fixed bug in userassignmentedit.html when customer has " sign in name (alec)
   - BTS#0000283: added link 'Clear Account' on Customer Account (alec)
-  - added cash operations import interface (lexx)
+  - added cash operations import interface (lexx/alec)
   - sql queries speedup in GetTariff() and GetTariffList() (alec)
   - "all liabilities suspending" can be edited like other assignments (alec)
   - BTS#0000292: tariff's avg monthly income don't take into consideration

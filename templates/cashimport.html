@@ -2,6 +2,21 @@
 {include file="balanceheader.html"}
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
+{literal}
+<SCRIPT language=JavaScript>
+	<!--
+	function CheckAll()
+	{
+//		for (var i=0; i<document.import.elements.length; i++)
+//		{
+//			var e = document.import.elements[i];
+//			if (e.name != 'allbox')
+//			e.checked = document.import.allbox.checked;
+//		}
+	}
+	//-->
+</SCRIPT>
+{/literal}
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -14,10 +29,10 @@
 		<TD WIDTH="1%" CLASS="fbt">
 			{t}Value:{/t}
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt">
+		<TD WIDTH="40%" CLASS="fbt">
 			{t}Customer:{/t}
 		</TD>
-		<TD WIDTH="95%" CLASS="fbt">
+		<TD WIDTH="56%" CLASS="fbt">
 			{t}Description:{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" nowrap>
@@ -38,10 +53,10 @@
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$importlist[importlist].value|money_format} 
 		</TD>
-		<TD WIDTH="1%" ALIGN="LEFT">
+		<TD WIDTH="40%" ALIGN="LEFT">
 			{$importlist[importlist].customer}
 		</TD>
-		<TD WIDTH="95%" ALIGN="LEFT">
+		<TD WIDTH="56%" ALIGN="LEFT">
 			{$importlist[importlist].description}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
@@ -63,9 +78,7 @@
 	<TR>
 		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="6">
 			<P>&nbsp;</P>
-			<P>&nbsp;</P>
 			<P><B>{t}No cash operations to import.{/t}</B></P>
-			<P>&nbsp;</P>
 			<P>&nbsp;</P>
 		</TD>
 	</TR>	
@@ -76,5 +89,24 @@
 		</TD>
 	</TR>
 </TABLE>
+</P>
+<P><FORM name="parser" enctype="multipart/form-data" method="post" action="?m=cashimportparser">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fall" width="100%" colspan="2">
+			<B>{t}Enter path to file with data for import{/t}</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbl" width="99%" NOWRAP>
+		<IMG src="img/attach.gif" alt="" border="0" align="absmiddle">
+			<B>{t}Import file:{/t} </B><INPUT name="file" type="file" size="70" {tip text="Enter path to file or use 'View' button" trigger="file"}>
+		</TD>
+		<TD class="fbr" width="1%" align="right" nowrap>
+			<A href="javascript: document.parser.submit();">{t}Submit{/t} <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
 </P>
 {include file="footer.html"}
