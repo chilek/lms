@@ -96,7 +96,7 @@ if($_GET['is_sure'])
 		DBLoad($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
 	}
 	
-	header('Location: ?m='.$_SESSION['lastmodule']);
+	header('Location: ?m='.$SESSION->get('lastmodule'));
 	die;
 }else{
 	$layout['pagetitle'] = trans('Database Backup Recovery');

@@ -27,8 +27,8 @@
 if ((isset($_GET['id'])) && ($_GET['action']=='edit')) {
     $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
-    unset($_SESSION['invoicecontents']);
-    unset($_SESSION['invoicecustomer']);
+    $SESSION->remove('invoicecontents');
+    $SESSION->remove('invoicecustomer');
 
     foreach ($invoice['content'] as $item) {
 	$i++;
@@ -44,25 +44,27 @@ if ((isset($_GET['id'])) && ($_GET['action']=='edit')) {
 	$nitem["s_valuenetto"]		= str_replace(",",".",$item["totalbase"]);
         $nitem["s_valuebrutto"]		= str_replace(",",".",$item["total"]);
 	$nitem["posuid"]		= $i;
-        $_SESSION['invoicecontents'][] = $nitem;
+	$SESSION->restore('invoicecontents', $invoicecontents);
+	$invoicecontents[] = $nitem;
+	$SESSION->save('invoicecontents', $invoicecontents);
     }
-    $_SESSION['invoicecustomer'] = $LMS->GetUser($invoice["customerid"]);
-    $_SESSION['invoice'] = $invoice;
-    $_SESSION['invoiceid'] = $invoice['id'];
+    $SESSION->save('invoicecustomer', $LMS->GetUser($invoice["customerid"]));
+    $SESSION->save('invoice', $invoice);
+    $SESSION->save('invoiceid', $invoice['id']);
 }
 
 $users = $LMS->GetUserNames();
 $tariffs = $LMS->GetTariffs();
-$contents = $_SESSION['invoicecontents'];
-$customer = $_SESSION['invoicecustomer'];
-$invoice = $_SESSION['invoice'];
-$error = $_SESSION['invoiceediterror'];
+$SESSION->restore('invoicecontents', $contents);
+$SESSION->restore('invoicecustomer', $customer);
+$SESSION->restore('invoice', $invoice);
+$SESSION->restore('invoiceerror', $error);
 $itemdata = r_trim($_POST);
 
 $ntempl = $LMS->CONFIG['invoices']['number_template'];
-$ntempl = str_replace('%N', $_SESSION['invoice']['number'], $ntempl);
-$ntempl = str_replace('%M', $_SESSION['invoice']['month'], $ntempl);
-$ntempl = str_replace('%Y', $_SESSION['invoice']['year'], $ntempl);
+$ntempl = str_replace('%N', $invoice['number'], $ntempl);
+$ntempl = str_replace('%M', $invoice['month'], $ntempl);
+$ntempl = str_replace('%Y', $invoice['year'], $ntempl);
 
 $layout['pagetitle'] = trans('Invoice Edit: $0', $ntempl);
 
@@ -153,7 +155,7 @@ switch($_GET['action'])
 
 		if($contents && $customer)
 		{
-			$invoice['id'] = $_SESSION['invoiceid'];
+			$SESSION->restore('invoiceid', $invoice['id']);
 			$LMS->InvoiceUpdate(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
 			header('Location: ?m=invoice&id='.$invoice['id']);
 			die;
@@ -169,10 +171,10 @@ switch($_GET['action'])
 if($invoice['paytype'] == '')
 	$invoice['paytype'] = trans('CASH');
 
-$_SESSION['invoice'] = $invoice;
-$_SESSION['invoicecontents'] = $contents;
-$_SESSION['invoicecustomer'] = $customer;
-$_SESSION['invoiceediterror'] = $error;
+$SESSION->save('invoice', $invoice);
+$SESSION->save('invoicecontents', $contents);
+$SESSION->save('invoicecustomer', $customer);
+$SESSION->save('invoiceediterror', $error);
 
 if($_GET['action'] != '')
 {
