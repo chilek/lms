@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.0.3 (??/??/2003):
+wersja 1.0.3 (28/08/2003):
 
   - dodany contrib/lms_contract.patch (durden/lukasz)
   - zamienione wszystkie '<?' (krótkie tagi PHP) na '<?php' - w sumie tak
