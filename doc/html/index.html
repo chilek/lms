@@ -1,11 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML
 ><HEAD
 ><TITLE
 >LMS - LAN Management System 1.1-cvs</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="NEXT"
 TITLE="Wstêp"
 HREF="intro.html"><LINK
@@ -35,21 +35,23 @@ NAME="AEN2"
 CLASS="MEDIAOBJECT"
 ><P
 ><IMG
-SRC="images/logo-small.png"></P
+SRC="images/logo-small.png"
+></IMG
+></P
 ></DIV
 ><H3
 CLASS="CORPAUTHOR"
 >The LMS Developers</H3
 ><P
 CLASS="COPYRIGHT"
->Copyright &copy; 2003  The LMS Developers</P
+>Copyright &copy; 2003   The LMS Developers</P
 ><HR></DIV
 ><DIV
 CLASS="TOC"
 ><DL
 ><DT
 ><B
->Spis tre&#347;ci</B
+>Spis tre¶ci</B
 ></DT
 ><DT
 >1. <A
@@ -208,28 +210,52 @@ HREF="mgc-example.html"
 ></DD
 ><DT
 >6. <A
+HREF="daemon.html"
+>A.L.E.C's LMS Daemon</A
+></DT
+><DD
+><DL
+><DT
+>6.1. <A
+HREF="daemon.html#DAEMON-INTRO"
+>Informacje podstawowe</A
+></DT
+><DT
+>6.2. <A
+HREF="daemon-modules.html"
+>Modu³y</A
+></DT
+></DL
+></DD
+><DT
+>7. <A
 HREF="devel.html"
 >Dla dociekliwych</A
 ></DT
 ><DD
 ><DL
 ><DT
->6.1. <A
+>7.1. <A
 HREF="devel.html#DEVEL-CATALOGS"
 >Drzewo katalogów</A
 ></DT
 ><DT
->6.2. <A
+>7.2. <A
 HREF="devel-db.html"
 >Struktura bazy danych</A
 ></DT
 ><DT
->6.3. <A
+>7.3. <A
+HREF="devel-ini.html"
+>Format pliku konfiguracyjnego</A
+></DT
+><DT
+>7.4. <A
 HREF="devel-rights.html"
 >Poziomy dostêpu</A
 ></DT
 ><DT
->6.4. <A
+>7.5. <A
 HREF="devel-limits.html"
 >Ograniczenia</A
 ></DT
@@ -247,12 +273,17 @@ CLASS="LOT"
 ></DT
 ><DT
 >4-1. <A
-HREF="scripts-list.html#AEN748"
+HREF="scripts-list.html#AEN770"
 >Lista skryptów wykonywalnych</A
 ></DT
 ><DT
 >6-1. <A
-HREF="devel.html#AEN1182"
+HREF="daemon-modules.html#AEN1263"
+>Lista modu³ów demona almsd</A
+></DT
+><DT
+>7-1. <A
+HREF="devel.html#AEN1447"
 >Drzewo katalogów LMS</A
 ></DT
 ></DL
@@ -267,57 +298,57 @@ CLASS="LOT"
 ></DT
 ><DT
 >3-1. <A
-HREF="user.html#AEN478"
+HREF="user.html#AEN500"
 >LMS-UI: Logowanie</A
 ></DT
 ><DT
 >3-2. <A
-HREF="user-all.html#AEN488"
+HREF="user-all.html#AEN510"
 >LMS-UI: Panel g³ówny</A
 ></DT
 ><DT
 >3-3. <A
-HREF="user-all.html#AEN503"
+HREF="user-all.html#AEN525"
 >LMS-UI: U¿ytkownicy</A
 ></DT
 ><DT
 >3-4. <A
-HREF="user-all.html#AEN515"
+HREF="user-all.html#AEN537"
 >LMS-UI: Komputery</A
 ></DT
 ><DT
 >3-5. <A
-HREF="user-all.html#AEN524"
+HREF="user-all.html#AEN546"
 >LMS-UI: Osprzêt sieciowy</A
 ></DT
 ><DT
 >3-6. <A
-HREF="user-all.html#AEN533"
+HREF="user-all.html#AEN555"
 >LMS-UI: Sieci IP</A
 ></DT
 ><DT
 >3-7. <A
-HREF="user-all.html#AEN544"
+HREF="user-all.html#AEN566"
 >LMS-UI: Taryfy i finanse</A
 ></DT
 ><DT
 >3-8. <A
-HREF="user-all.html#AEN572"
+HREF="user-all.html#AEN594"
 >LMS-UI: Bazy danych</A
 ></DT
 ><DT
 >3-9. <A
-HREF="user-all.html#AEN581"
+HREF="user-all.html#AEN603"
 >LMS-UI: Administratorzy</A
 ></DT
 ><DT
 >3-10. <A
-HREF="user-staff.html#AEN719"
+HREF="user-staff.html#AEN741"
 >Statystyki wykorzystania ³±cza- filtr</A
 ></DT
 ><DT
 >3-11. <A
-HREF="user-staff.html#AEN726"
+HREF="user-staff.html#AEN748"
 >Statystyki wykorzystania ³±cza - wykres</A
 ></DT
 ></DL
@@ -328,22 +359,27 @@ CLASS="LOT"
 CLASS="LOT"
 ><DT
 ><B
->Spis przyk&#322;adów</B
+>Spis przyk³adów</B
 ></DT
 ><DT
 >4-1. <A
-HREF="scripts-notify.html#AEN813"
+HREF="scripts-notify.html#AEN835"
 >Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</A
 ></DT
 ><DT
 >4-2. <A
-HREF="scripts-notify.html#AEN816"
+HREF="scripts-notify.html#AEN838"
 >Lms-notify: Przyk³ad szablonu</A
 ></DT
 ><DT
 >5-1. <A
-HREF="mgc-example.html#AEN1170"
+HREF="mgc-example.html#AEN1192"
 >Lms-mgc: Przyk³ad instancji</A
+></DT
+><DT
+>7-1. <A
+HREF="devel-ini.html#AEN1632"
+>Format opcji konfiguracyjnych</A
 ></DT
 ></DL
 ></DIV
@@ -353,7 +389,6 @@ CLASS="NAVFOOTER"
 ><HR
 ALIGN="LEFT"
 WIDTH="100%"><TABLE
-SUMMARY="Footer navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -375,8 +410,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="intro.html"
-ACCESSKEY="N"
->Nast&#281;pny</A
+>Nastêpny</A
 ></TD
 ></TR
 ><TR

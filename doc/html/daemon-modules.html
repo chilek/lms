@@ -1,0 +1,688 @@
+<HTML
+><HEAD
+><TITLE
+>Modu³y</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.1-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="A.L.E.C's LMS Daemon"
+HREF="daemon.html"><LINK
+REL="PREVIOUS"
+TITLE="A.L.E.C's LMS Daemon"
+HREF="daemon.html"><LINK
+REL="NEXT"
+TITLE="Dla dociekliwych"
+HREF="devel.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.1-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="daemon.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia³ 6. A.L.E.C's LMS Daemon</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="devel.html"
+>Nastêpny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DAEMON-MODULES"
+>6.2. Modu³y</A
+></H1
+><P
+>Sam demon potrafi tylko uruchamiaæ modu³y i to one odwalaj± ca³± robotê. 
+	Wiêkszo¶æ modu³ów jest przeznaczona do okre¶lonego zastosowania, jedynie 'hostfile' 
+	mo¿na u¿ywaæ do ró¿nych konfigów (us³ug), np. ró¿nych typów firewalli. Przyk³ady 
+	konfiguracji demona i modu³ów zawiera plik <TT
+CLASS="FILENAME"
+>daemon/lms.ini.sample</TT
+>.
+	Parametry konfiguracyjne modu³ów umieszcza siê w sekcjach instancji je wywo³uj±cych.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-MODULESLIST"
+>6.2.1. Lista dostêpnych modu³ów</A
+></H2
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN1263"
+></A
+><P
+><B
+>Tabela 6-1. Lista modu³ów demona almsd</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><THEAD
+><TR
+><TH
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Nazwa</TH
+><TH
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Opis</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>dhcp</TD
+><TD
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Konfiguracja serwera dhcpd</TD
+></TR
+><TR
+><TD
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>cutoff</TD
+><TD
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Od³±czanie u¿ytkowników z zaleg³o¶ciami w op³atach</TD
+></TR
+><TR
+><TD
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>dns</TD
+><TD
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Konfiguracja serwera dns</TD
+></TR
+><TR
+><TD
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>ethers</TD
+><TD
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Tworzenie pliku /etc/ethers</TD
+></TR
+><TR
+><TD
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>hostfile</TD
+><TD
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Modu³ uniwersalny (np. tworzenie regó³ iptables)</TD
+></TR
+><TR
+><TD
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>notify</TD
+><TD
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach</TD
+></TR
+><TR
+><TD
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>payments</TD
+><TD
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Naliczanie op³at abonamentowych</TD
+></TR
+><TR
+><TD
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>oident</TD
+><TD
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Konfiguracja oident</TD
+></TR
+><TR
+><TD
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>tc</TD
+><TD
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Tworzenie regó³ HTB</TD
+></TR
+><TR
+><TD
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>traffic</TD
+><TD
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Statystyki wykorzystania ³±cza</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-PAYMENTS"
+>6.2.2. Payments</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="PAYMENTS-DESC"
+>6.2.2.1. Opis</A
+></H3
+><P
+>Modu³ nalicza u¿ytkownikom op³aty abonamentowe. Nale¿y go uruchamiaæ 
+		    codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
+		    taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn± 'comment'.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="PAYMENTS-CONFIG"
+>6.2.2.2. Konfiguracja</A
+></H3
+><P
+>Dla tego modu³u jest dostêpna tylko jedna zmienna kofiguracyjna:</P
+><UL
+><LI
+><P
+>comment</P
+><P
+>Komentarz do operacji. '%period' zostanie zamienione na daty od-do 
+			    nale¿nego abonamentu, np. '10.10.2003 - 09.11.2003'. Domy¶lnie: 'Abonament za okres %period'.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>comment = 'Abonament miesiêczny za okres %period' </TT
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-NOTIFY"
+>6.2.3. Notify</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="NOTIFY-DESC"
+>6.2.3.1. Opis</A
+></H3
+><P
+>Modu³ 'notify' s³u¿y do informowania u¿ytkowników o zaleg³o¶ciach
+		    w op³atach za pomoc± poczty elektronicznej. Aktualne saldo u¿ytkownika
+		    porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze - wiadomo¶æ
+		    zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego szablonu, 
+		    w którym mo¿na stosowaæ nastêpuj±ce zmienne:
+		    <UL
+><LI
+><P
+>%saldo - aktualne saldo u¿ytkownika</P
+></LI
+><LI
+><P
+>%name - imiê u¿ytkownika</P
+></LI
+><LI
+><P
+>%lastname - nazwisko/nazwa u¿ytkownika</P
+></LI
+><LI
+><P
+>%last_10_in_a_table - wyci±g ostatnich 10 operacji na kocie u¿ytkownika</P
+></LI
+></UL
+></P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="NOTIFY-CONFIG"
+>6.2.3.2. Konfiguracja</A
+></H3
+><P
+>Poni¿ej przedstawiono dostêpne opcje konfiguracyjne modu³u 'notify':</P
+><UL
+><LI
+><P
+>mailtemplate</P
+><P
+>Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>mailtemplate = modules/notify/sample/mailtemplate</TT
+></P
+></LI
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/mail</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>file = /tmp/mail.txt</TT
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie pow³oki wysy³aj±ce e-maila. '%address' zostanie zast±pione
+			    adresem e-mail u¿ytkownika. Domy¶lnie: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>command = 'mail %address -s "musisz zap³aciæ, bo jak nie..." &lt; /tmp/mail.txt'</TT
+></P
+></LI
+><LI
+><P
+>limit</P
+><P
+>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
+			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>limit = -20</TT
+></P
+></LI
+><LI
+><P
+>debug_mail</P
+><P
+>Okre¶la adres na który zostan± wys³ane wszystkie wiadomo¶ci, przydatne
+			    podczas testów. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>debug_mail = localhost@moja.net</TT
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-CUTOFF"
+>6.2.4. Cutoff</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="CUTOFF-DESC"
+>6.2.4.1. Opis</A
+></H3
+><P
+>Cutoff zmienia na 'od³±czony' status komputerów u¿ytkownikom, którzy
+		    maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ nie zajmuje
+		    siê fizycznym blokowaniem dostêpu do sieci. Nale¿y pamiêtaæ aby uruchamiaæ
+		    go przed modu³ami takimi jak np. 'hostfile'. Wa¿na jest kolejno¶æ instancji
+		    na li¶cie w zmiennej 'instances'. Modu³ 'cutoff' najlepiej uruchamiaæ codziennie.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="CUTOFF-CONFIG"
+>6.2.4.2. Konfiguracja</A
+></H3
+><P
+>Modu³ 'cutoff' posiada tylko jeden parametr:</P
+><UL
+><LI
+><P
+>limit</P
+><P
+>Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej
+			    kwoty okre¶lonej t± zmienn±. Domy¶lnie: 0.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>limit = -20</TT
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-DNS"
+>6.2.5. DNS</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="DNS-DESC"
+>6.2.5.1. Opis</A
+></H3
+><P
+>Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
+		    restartuje us³ugê. Zmienna 'command' umo¿liwia równie¿ wykonywanie innych 
+		    czynno¶ci (programów).</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="DNS-CONFIG"
+>6.2.5.2. Konfiguracja</A
+></H3
+><P
+>Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom 
+		    pliku konfiguracyjnego dhcpd, które w typowych zastosowaniach
+		    nie wymagaj± zmiany:</P
+><UL
+><LI
+><P
+>file</P
+><P
+>Okre¶la lokalizacjê pliku konfiguracyjnego serwera dhcp. 
+			    Domy¶lnie: /tmp/dhcpd.conf.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>file = /etc/dhcpd.conf</TT
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie wykonywane po utworzeniu pliku konfiguracyjnego. 
+			    Domy¶lnie: pusta.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>command = 'killall -HUP dhcpd'</TT
+></P
+></LI
+><LI
+><P
+>start</P
+><P
+>Nag³ówek pliku. Domy¶lnie: "shared-network LMS {".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>start = "shared-network LMS {"</TT
+></P
+></LI
+><LI
+><P
+>end</P
+><P
+>Stopka pliku. Domy¶lnie: "}".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>end = "\n}"</TT
+></P
+></LI
+><LI
+><P
+>subnet_start</P
+><P
+>Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Domy¶lnie: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>subnet_start = "subnet %a netmask %m {default-lease-time 3600;"</TT
+></P
+></LI
+><LI
+><P
+>subnet_end</P
+><P
+>Stopka podsieci. Domy¶lnie: "}".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>subnet_end = '\t}'</TT
+></P
+></LI
+><LI
+><P
+>subnet_gateway</P
+><P
+>Brama podsieci. '%i' zostanie zamienione na adres ip. Domy¶lnie: 'option routers %i;'.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>subnet_gateway = "option routers %i"</TT
+></P
+></LI
+><LI
+><P
+>subnet_dns</P
+><P
+>DNS'y podsieci. '%i - adresy dns'ów. Domy¶lnie: "option domain-name-servers %i;".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>subnet_dns = "option domain-name-servers 192.168.0.1"</TT
+></P
+></LI
+><LI
+><P
+>subnet_domain</P
+><P
+>Nazwa domenowa podsieci. '%n' - nazwa. Domy¶lnie: "option domain-name %n;".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>subnet_domain = "option domain-name test.%n;"</TT
+></P
+></LI
+><LI
+><P
+>subnet_wins</P
+><P
+>Serwery wins. '%i' - adres ip serwera. Domy¶lnie: "option netbios-name-servers %i;".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>subnet_wins = ""</TT
+></P
+></LI
+><LI
+><P
+>subnet_range</P
+><P
+>Zakres adresów podsieci. '%s' - adres pocz±tkowy, '%e' - koniec zakresu. Domy¶lnie: "range %s %e;".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>subnet_range = "range %s %e;"</TT
+></P
+></LI
+><LI
+><P
+>host</P
+><P
+>Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' - adres ip. 
+			    Domy¶lnie: "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>host = "host %n {hardware ethernet %m; fixed-address %i;}"</TT
+></P
+></LI
+></UL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="daemon.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Spis tre¶ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="devel.html"
+>Nastêpny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>A.L.E.C's LMS Daemon</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="daemon.html"
+>Pocz±tek rozdzia³u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Dla dociekliwych</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
