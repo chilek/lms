@@ -1,7 +1,7 @@
 <?
 
 /*
- * LMS version 1.0.0
+ * LMS version 1.1-cvs
  *
  *  (C) Copyright 2001-2003 LMS Developers
  *
@@ -129,7 +129,7 @@ $SMARTY->debugging = chkconfig($_CONFIG[phpui][smarty_debug]);
 
 $layout[logname]=$SESSION->logname;
 $layout[logid]=$SESSION->id;
-$layout[lmsv]='1.0.0 ('.$LMS->_version.'/'.$SESSION->_version.')';
+$layout[lmsv]='1.1-cvs ('.$LMS->_version.'/'.$SESSION->_version.')';
 $layout[smarty_version] = $SMARTY->_version;
 $layout[adodb_version] = eregi_replace('(.*)\(c\).*','\1',$ADODB_vers);
 $layout[uptime]=uptime();
