@@ -29,7 +29,7 @@ if(!$LMS->TariffExists($_GET[id]))
 	die;
 }
 $tariff = $LMS->GetTariff($_GET[id]);
-$layout[pagetitle] = "Informacja o taryfie: '".$tariff[name]."'";
+$layout[pagetitle] = "Informacja o taryfie: ".$tariff[name];
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
@@ -40,6 +40,9 @@ $SMARTY->display("tariffinfo.html");
 
 /*
  * $Log$
+ * Revision 1.16  2003/10/02 21:18:18  alec
+ * standardization with rest of UI
+ *
  * Revision 1.15  2003/09/26 17:44:10  alec
  * ujednolicone nag³ówki (dodany ':')
  *

@@ -13,65 +13,72 @@
 <H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD WIDTH="100%" COLSPAN="2" CLASS="FALL">
-			<B>{$tariff.name}</B>
+		<TD CLASS="fall" COLSPAN="2">
+			<IMG SRC="img/money.gif" ALT="" ALIGN="ABSMIDDLE">
+			<B>{$tariff.name} ({$tariff.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>Opis:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT">
-			{$tariff.description}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%" CLASS="fleft">
 			<B>Warto¶æ:</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT">
+		<TD CLASS="fright">
 			{$tariff.value|string_format:"%01.2f"} z³
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%" CLASS="fleft">
 			<B>Uprate:</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT">
+		<TD CLASS="fright">
 			{if $tariff.uprate}{$tariff.uprate}kb/s{else}brak limitu{/if}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
 			<B>Downrate:</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT">
+		<TD CLASS="fright">
 			{if $tariff.downrate}{$tariff.downrate}kb/s{else}brak limitu{/if}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
 			<B>Ilo¶æ&nbsp;u¿ytkowników:</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT">
+		<TD CLASS="fright">
 			{$tariff.userscount} {if $tariff.count neq $tariff.userscount}({$tariff.count}){/if}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft">
 			<B>Zysk&nbsp;miesiêczny:</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT">
+		<TD CLASS="fright">
 			{$tariff.totalval|string_format:"%01.2f"} z³
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FLR" ALIGN="RIGHT" COLSPAN="2">
-			<A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
+	{if $tariff.description}
+	<TR CLASS="light">	
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0">
 		</TD>
-	</TR>			
+		<TD CLASS="fright">
+			<TABLE WIDTH="100%" CELLPADDING="5"> 
+			    <TR><TD CLASS="fall" BGCOLOR="#F4F0EC">
+				    {$tariff.description|replace:"\n":"<BR>"}
+			    </TD></TR>
+			</TABLE>
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="light">
+	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="2">
+			    <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
+		</TD>
+	</TR>
 	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="2">
+		<TD WIDTH="100%" CLASS="fall" COLSPAN="2">
 			<B>U¿ytkownicy w tej taryfie:</B>
 		</TD>
 	</TR>
