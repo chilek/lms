@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     int port;					//
     dictionary *ini;				//config
     int reload = 0, counter = 0, reload_t = 0;	    
-    unsigned char *instance, *instances, *iopt;
+    unsigned char *instance, *instances, *iopt=NULL;
     unsigned char *command;
 
     	// read command line args
