@@ -7,7 +7,7 @@
 	<TR bgcolor="#CEBD9B" {popup text="`$lang.click_to_change_sort_order`"}>
 		<TD width="95%" class="fleftu">
 			<B>
-			<img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{$lang.lastname_and_name}:</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">Nazwisko i imiê:</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			<img src="img/phone.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">{$lang.phone}:</A></B> {if $listdata.order eq "phone"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{$lang.address}:</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
