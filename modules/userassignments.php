@@ -145,7 +145,7 @@ if($_GET['action'] == 'add' && isset($a))
 		if(checkdate($m, $d, $y))
 			$from = mktime(0, 0, 0, $m, $d, $y);
 		else
-			$error['datefrom'] = 'Koniec okresu naliczania jest niepoprawny!';
+			$error['datefrom'] = 'Pocz±tek okresu naliczania jest niepoprawny!';
 	}
 	else
 		$error['datefrom'] = 'Pocz±tek okresu naliczania jest niepoprawny!';
