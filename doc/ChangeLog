@@ -57,8 +57,9 @@ wersja 1.5.4 (??/??/????):
   - na bilansie u¿ytkownika oraz bilansie sieci dodano mo¿liwo¶æ wydruku 
     orygina³ów/kopii wybranych faktur (alec)
   - lms-payments (almsd/payments): jednej pozycji na fakturze odpowiada 
-    dok³adnie jedno obci±¿enie, tak¿e wtedy gdy pozycja sk³±da siê z wielu
+    dok³adnie jedno obci±¿enie, tak¿e wtedy gdy pozycja sk³ada siê z wielu
     podpozycji/taryf (alec)
+  - edycja i usuwanie faktur (lexx)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
