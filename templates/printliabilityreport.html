@@ -1,0 +1,130 @@
+<!--// $Id$ //-->
+{include file="clearheader.html"}
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="50%" ALIGN="LEFT" NOWRAP>
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="50%" ALIGN="RIGHT">
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
+			Sporz±dzone przez: {$layout.logname}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Lp.
+		</TD>
+		<TD WIDTH="91%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			U¿ytkownik
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kwota brutto
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kwota netto<BR>22%
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kwota VAT<BR>22%
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kwota netto<BR>7%
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kwota VAT<BR>7%
+		</TD>	
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kwota netto<BR>0%
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Zw.<BR>
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Suma VAT
+		</TD>
+	</TR>
+	{assign var="sum" value=0}
+	{assign var="sumval22" value=0}
+	{assign var="sumval7" value=0}
+	{assign var="sumval0" value=0}
+	{assign var="sumvalfree" value=0}
+	{assign var="sumtax22" value=0}
+	{assign var="sumtax7" value=0}
+	{assign var="sumtax" value=0}
+	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{foreach item=report from=$reportlist}
+	<TR BGCOLOR="{cycle}">
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{counter}
+		</TD>
+		<TD WIDTH="91%">
+			{$report.username}<BR>
+			{$report.address}
+			{if $report.nip}<BR>{$report.nip}{/if}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{$report.brutto|string_format:"%01.2f"}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{math equation="x/1.22" x=$report.val22 format="%01.2f"}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{math equation="x*0.22" x=$report.val22 format="%01.2f"}		
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{math equation="x/1.07" x=$report.val7 format="%01.2f"}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{math equation="x*0.07" x=$report.val7 format="%01.2f"}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{$report.val0|string_format:"%01.2f"}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{$report.valfree|string_format:"%01.2f"}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{math equation="x*0.22+y*0.07" x=$report.val22 y=$report.val7 format="%01.2f"}
+		</TD>
+	</TR>
+	{math assign="sum" equation="x+y" x=$sum y=$report.brutto format="%01.2f"}
+	{math assign="sumval22" equation="x+y/1.22" x=$sumval22 y=$report.val22 format="%01.2f" }
+	{math assign="sumval7" equation="x+y/1.07" x=$sumval7 y=$report.val7 format="%01.2f" }
+	{math assign="sumval0" equation="x+y" x=$sumval0 y=$report.val0 format="%01.2f" }
+	{math assign="sumvalfree" equation="x+y" x=$sumvalfree y=$report.valfree format="%01.2f" }
+	{math assign="sumtax22" equation="x+y*0.22" x=$sumtax22 y=$report.val22 format="%01.2f" }
+	{math assign="sumtax7" equation="x+y*0.07" x=$sumtax7 y=$report.val7 format="%01.2f" }
+	{math assign="sumtax" equation="x+y*0.22+z*0.07" x=$sumtax y=$report.val22 z=$report.val7 format="%01.2f" }
+	{/foreach}
+	<TR>
+		<TD COLSPAN="2" ALIGN="RIGHT" VALIGN="TOP">
+			<B>Razem:</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$sum|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$sumval22|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$sumtax22|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$sumval7|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$sumtax7|string_format:"%01.2f"}</B>
+		</TD>	
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$sumval0|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$sumvalfree|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$sumtax|string_format:"%01.2f"}</B>
+		</TD>
+	</TR>
+</TABLE>
