@@ -936,8 +936,21 @@ header_checks = regexp:/etc/postfix/header_checks
 # plik master.cf:
 filter unix - n n - 10 pipe
       -flags=Rq user=nobody argv=/path/to/lms-rtparser
-</screen>
-	    </para>
+</screen></para>
+	    <para>Kolejny listing to przyk³ad pod³±czenia parsera do Exima 
+	    przy u¿yciu filtrów systemowych:
+<screen>
+# plik exim.conf
+
+system_filter_pipe_transport = address_pipe
+
+# plik system_filter.txt
+
+if $recipients is "adres_kolejki@domena.pl"
+then 
+     pipe "/sciezka/do/lms-rtparser -q id_kolejki"
+endif
+</screen></para>
 	    <para><note><para>Je¿eli chcesz aby wiadomo¶ci wprowadzane poprzez <emphasis>lms-ui</emphasis>
 	    by³y kierowane do parsera, zamiast bezpo¶rednio zapisywane do bazy, powiniene¶ w³±czyæ
 	    opcjê konfiguracyjn± <filename>helpdesk_backend_mode</filename> w sekcji
