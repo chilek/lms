@@ -271,7 +271,6 @@ if(/charset\=\"([a-zA-Z0-9-]*)\"/ || /charset\=([a-zA-Z0-9-]*)/)
 	}
 }
 
-my $query;
 my $ticket_id;
 my $rt_msgid;
 my $reqcustid = 0;
