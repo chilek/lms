@@ -4,4 +4,3 @@ $Id$
 * ³adniejsza wizualizacja wyników statystyk
 * arpd (dokoñczyæ, support dla non-linux systems)
 * zorientowaæ siê jak wygl±da sprawa z SMTP-AUTH
-* dodaæ kolumnê ID do invoice_contents (id w obrêbie danej faktury, wystarczy bajt) 
