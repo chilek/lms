@@ -28,7 +28,7 @@
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=nodesearch&search&o={$listdata.order},{$listdata.direction|lower}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=nodesearch&search&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+			</B> ({$lang.rekordy} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {$lang.of} {$listdata.total})
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=nodelist loop=$nodelist start=$start max=$pagelimit}
@@ -47,10 +47,10 @@
 		</TD>
 		<TD class="fright" width="1%">
 			<nobr>
-			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if $nodelist[nodelist].access neq "Y"}no{/if}access.gif" border="0" alt="{if $nodelist[nodelist].access eq "Y"}[ Od³±cz ]{else}[ Pod³±cz ]{/if}"></A>
+			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if $nodelist[nodelist].access neq "Y"}no{/if}access.gif" border="0" alt="{if $nodelist[nodelist].access eq "Y"}[ {$lang.do_disconnect} ]{else}[ {$lang.do_connect} ]{/if}"></A>
 			<a href="?m=nodedel&id={$nodelist[nodelist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ komputer \'{$nodelist[nodelist].name|upper}\' z bazy danych?')"><img src="img/delete.gif" border="0" alt="[ {$lang.delete} ]"></A>
 			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" border="0" alt="[ {$lang.edit} ]"></A>
-			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" border="0" alt="[ Info ]"></A>
+			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" border="0" alt="[ {$lang.info} ]"></A>
 			</nobr>
 		</TD>
 	</TR>
@@ -73,7 +73,7 @@
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=nodesearch&search&o={$listdata.order},{$listdata.direction|lower}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=nodesearch&search&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total}
+			</B> ({$lang.rekordy} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {$lang.of} {$listdata.total}
 		</TD>
 	</TR>
 	<TR CLASS="light">
