@@ -309,6 +309,13 @@ $menu = array(
 			'tip' => trans('Serial Mail'),
 			'accesskey' =>'m',
 			'prio' =>'35',
+/*			'submenu' => array(
+				array(
+					'name' => trans('Execute mailing'),
+					'link' => '?m=mailing',
+					'tip' => trans('Serial Mail'),
+				),
+			),*/
 		),
 
 		array(
@@ -318,6 +325,13 @@ $menu = array(
 			'tip' => trans(''),
 			'accesskey' =>'r',
 			'prio' =>'40',
+/*			'submenu' => array(
+				array(
+					'name' => trans('Reload'),
+					'link' => '?m=reload',
+					'tip' => trans(''),
+				),
+			),*/
 		),
 
 		array(
@@ -416,6 +430,15 @@ $menu = array(
 					'tip' => trans('Searching of Events in Timetable'),
 				),
 			),				
+		),
+
+		array(
+			'name' => trans('Password'),
+			'img' => 'pass.gif',
+			'link' => '?m=chpasswd',
+			'tip' => trans('Allows you to change your password'),
+			'accesskey' => 'p',
+			'prio' => '60',
 		),
 	);
 
