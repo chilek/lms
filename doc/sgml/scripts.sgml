@@ -86,6 +86,10 @@
 			<entry>lms-makeopenbsdpf</entry>
 			<entry>Konfiguracja firewalla dla systemu OpenBSD</entry>
 			</row>
+			<row>
+			<entry>lms-updatewarnings</entry>
+			<entry>Ostrze¿enia dla u¿ytkowników zad³u¿onych</entry>
+			</row>
 		    </tbody>	
 		</tgroup>
 	    </table>
@@ -464,6 +468,21 @@ http://www.naszasiec.pl/</screen></example>
 		    <para>Przyk³ad:	<prompt>etherdesc_permission = 600</prompt></para>
 		</listitem>
 	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-updatewarnings">
+	 <title>lms-updatewarnings</title>
+	 <para>Skrypt automatycznie w³±cza ostrze¿enia (czyli ustawia odpiwedni± flagê w bazie
+	 danych) wszystkim komputerom u¿ytkownika z saldem mniejszym ni¿ kwota okre¶lona parametrem 'limit'.
+	 Regu³y firewalla przekierowuj±ce na stronê z ostrze¿eniem nale¿y wygenerowaæ innym skryptem.</para>
+         <para>Konfiguracjê dla lms-updatewarnings mo¿emy ustaliæ w pliku <filename>lms.ini</filename> 
+	 w sekcji <emphasis>[warnings]</emphasis>. Mo¿emy tam ustawiæ:</para>
+	 <itemizedlist>
+          <listitem>
+	   <para>limit (opcjonalny)</para>
+	   <para>Pozwala na ustalenie limitu bilansu. Domy¶lnie: 0</para>
+	   <para>Przyk³ad:	<prompt>limit = -20</prompt></para>
+	  </listitem>
+	 </itemizedlist>
     </sect2>
     </sect1>
 </chapter>
