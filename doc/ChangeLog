@@ -128,7 +128,17 @@ wersja 1.1.4 (??/??/2003):
   - poprawiony http://bts.rulez.pl/bug_view_page.php?bug_id=0000072 (lukasz)
   - od teraz wpisy w tablicy arp '00:00:00:00:00:00' nie s± ignorowane, za to
     wpisy statyczne (0x6/PERM) s± (lukasz)
-      
+  - dalej netdev, tym razem psujemy po³±czenia (Lexx)
+    MySql:
+	CREATE TABLE netlinks (
+	  id int(11) NOT NULL auto_increment,
+	  src int(11) NOT NULL default '0',
+	  dst int(11) NOT NULL default '0',
+	  PRIMARY KEY  (id)
+	) TYPE=MyISAM;
+    PosgreSQL"
+	???
+	
 wersja 1.1.3 (29/08/2003):
 
   - zmieniona filozofia u¿ytkowników - teraz usuniêcie u¿ytkownika tak
