@@ -1,11 +1,8 @@
-/**********************************************************
-*
-*	UTIL.C - Other staff
-*
-***********************************************************/
 /* $Id$ */
 
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <syslog.h>
 #include "util.h"
 
@@ -54,23 +51,23 @@ unsigned char * str_save(unsigned char *str, const unsigned char *val)
     return strcpy(str, val);
 }
 
-/* termination signals handling */
-void termination_handler(int signum)
-{
-#ifdef DEBUG1
-     syslog(LOG_INFO, "A.L.E.C's LMS Daemon exited.");
-#endif
-     exit(0);
-}
-
 /* Concatenate strings */
 unsigned char * str_concat(const unsigned char *s1, const unsigned char *s2)
 {
 	int l = strlen(s1) + strlen(s2) + 1;
-	unsigned char *ret = malloc(l);
+	unsigned char *ret = (unsigned char*) malloc(l);
 	
 	snprintf(ret, l, "%s%s", s1, s2);
 	//free(s1);
 	//free(s2);
 	return(ret);
+}
+
+/* termination signals handling */
+void termination_handler(int signum)
+{
+#ifdef DEBUG1
+         syslog(LOG_INFO, "A.L.E.C's LMS Daemon exited.");
+#endif
+	 exit(0);
 }
