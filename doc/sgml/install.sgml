@@ -501,6 +501,13 @@ database = /usr/local/lms/lms.db</screen>
     <para>Przyk³ad:	<prompt>use_current_payday = 1</prompt></para>
    </listitem>
    <listitem>
+    <para>lastonline_limit</para>
+    <para>Okre¶la czas (w sekundach), po którym komputer zostaje uznany za
+    nieaktywny. Powinien odpowiadaæ czêstotliwo¶ci uruchamiania skryptu
+    badaj±cego aktywno¶æ komputerów (np.lms-fping). Domy¶lnie: 600.</para>
+    <para>Przyk³ad:	<prompt>lastonline_limit = 300</prompt></para>
+   </listitem>
+   <listitem>
     <para>arpd_servers</para>
     <para>Lista serwerów arpd do zczytywania MAC'adresów z odleg³ych sieci.
     Lista ta powinna zawieraæ wpisy w postaci adresIP[:port] oddzielone
