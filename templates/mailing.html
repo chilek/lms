@@ -69,7 +69,7 @@
 			<B>E-mail nadawcy:</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<INPUT type="text" NAME="mailing[sender]" SIZE="40" value="{$mailing.sender}" {tip trigger="sender" text="Podaj adres e-mail nadawcy listu"}>
+			<INPUT type="text" NAME="mailing[sender]" SIZE="40" value="{if $mailing.sender}{$mailing.sender}{elseif $admininfo.email}{$admininfo.email}{/if}" {tip trigger="sender" text="Podaj adres e-mail nadawcy listu"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -80,7 +80,7 @@
 			<B>Nadawca:</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<INPUT type="text" NAME="mailing[from]" SIZE="40"  VALUE="{$mailing.from}" {tip trigger="from" text="Wpisz nadawcê listu"}>
+			<INPUT type="text" NAME="mailing[from]" SIZE="40"  VALUE="{if $mailing.from}{$mailing.from}{elseif $admininfo.name}{$admininfo.name}{/if}" {tip trigger="from" text="Wpisz nadawcê listu"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
