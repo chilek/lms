@@ -59,6 +59,11 @@ switch($_GET[type])
 		$SMARTY->display("printuserlist.html");
 	break;
 
+	case "userlistminus":
+		$SMARTY->assign("userlist",$LMS->GetUserList($_SESSION['ulo'],$_SESSION['uls']));
+		$SMARTY->display("printuserlistminus.html");
+	break;
+
 	case "nodelist":
 		$SMARTY->assign("nodelist",$LMS->GetNodeList($_SESSION['nlo']));
 		$SMARTY->display("printnodelist.html");
