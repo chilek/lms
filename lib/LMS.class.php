@@ -1124,19 +1124,18 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	{
 		$this->SetTS('nodes');
 		if($access)
-			return $this->DB->Execute('UPDATE nodes SET access=?, modid=? WHERE ownerid=?', array(1,$this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET access=1, modid=? WHERE ownerid=?', array($this->SESSION->id,$id));
 		else
-			return $this->DB->Execute('UPDATE nodes SET access=?, modid=? WHERE ownerid=?', array(0,$this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET access=0, modid=? WHERE ownerid=?', array($this->SESSION->id,$id));
 	}		
 
 	function NodeSetWarn($id,$warning=FALSE)
 	{
 		$this->SetTS('nodes');
 		if($warning)
-			return $this->DB->Execute('UPDATE nodes SET warning=?, modid=? WHERE id=?', array(1,$this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET warning=1, modid=? WHERE id=?', array($this->SESSION->id,$id));
 		else
-			return $this->DB->Execute('UPDATE nodes SET warning=?, modid=? WHERE id=?', array(0,$this->SESSION->id,$id));
-
+			return $this->DB->Execute('UPDATE nodes SET warning=0, modid=? WHERE id=?', array($this->SESSION->id,$id));
 	}
 
 	function NodeSwitchWarn($id)
