@@ -30,13 +30,13 @@
 #include "dhcp.h"
 
 unsigned long inet_addr(char *);
-char * inet_ntoa(unsigned long);
+unsigned char * inet_ntoa(unsigned long);
 
 void reload(GLOBAL *g, struct dhcp_module *dhcp)
 {
 	FILE *fh;
 	QUERY_HANDLE *res;
-	int i;
+	int i, j;
 	struct hostcache
 	{
 		unsigned char *name;
@@ -45,7 +45,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 	} *hosts = NULL;
 	int nh = 0;
 	unsigned char *name, *mac, *ipaddr;
-	
+
 	fh = fopen(dhcp->file, "w");
 	if(fh) {
 
@@ -70,30 +70,29 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 		fprintf(fh, "%s\n", dhcp->prefix);
 		
 		if( (res = g->db_query("SELECT address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks"))!=NULL ) {
-		
+
 			for(i=0; i<res->nrows; i++) {
 			
-				unsigned char *s, *s2, *d, *d2, *e;
+				unsigned char *s, *d, *d2, *e;
 				unsigned long netmask, network;
 			
+				e = g->db_get_data(res,i,"address");
+				d = g->db_get_data(res,i,"mask");
+				
 				s = strdup(dhcp->subnetstart);
-				s2 = g->str_replace(s, "%a", e = g->db_get_data(res,i,"address"));
-				free(s);
-				s = g->str_replace(s2, "%m", d = g->db_get_data(res,i,"mask"));
-				free(s2);
+				g->str_replace(&s, "%m", d);
+				g->str_replace(&s, "%a", e);
 				fprintf(fh, "%s\n", s);
-				free(s);
-			
+				free(s); 
+
 				network = inet_addr(e);
 				netmask = inet_addr(d);
 
 				if( (d = g->db_get_data(res,i,"dhcpstart")) && ((e = g->db_get_data(res,i,"dhcpend"))) ) {
 					if( strlen(d) && strlen(e) ) {
 						s = strdup(dhcp->rangeline);
-						s2 = g->str_replace(s, "%s", d);
-						free(s);
-						s = g->str_replace(s2, "%e", e);
-						free(s2);
+						g->str_replace(&s, "%s", d);
+						g->str_replace(&s, "%e", e);
 						fprintf(fh, "%s\n", s);
 						free(s);
 					}
@@ -102,68 +101,61 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				if( (d = g->db_get_data(res,i,"gateway")) ) {
 					if( strlen(d) ) {
 						s = strdup(dhcp->gateline);
-						s2 = g->str_replace(s, "%i", d);
+						g->str_replace(&s, "%i", d);
+						fprintf(fh, "%s\n", s);
 						free(s);
-						fprintf(fh, "%s\n", s2);
-						free(s2);
 					}
 				}
-
-				if( (d = g->db_get_data(res,i,"dns")) )
+				if( (d = g->db_get_data(res,i,"dns")) ) {
 					if( (d2 = g->db_get_data(res,i,"dns2")) ) {
 						if( strlen(d) && strlen(d2) ) {
+							e = (unsigned char*) malloc(strlen(d)+strlen(d2)+2);
 							sprintf(e,"%s,%s",d,d2);
 							s = strdup(dhcp->dnsline);
-							s2 = g->str_replace(s, "%i", e);
-							free(s);
-							fprintf(fh, "%s\n", s2);
-							free(s2);
+							g->str_replace(&s, "%i", e);
+							fprintf(fh, "%s\n", s);
+							free(s); free(e);
 						} else if (strlen(d)) {
 							s = strdup(dhcp->dnsline);
-							s2 = g->str_replace(s, "%i", d);
+							g->str_replace(&s, "%i", d);
+							fprintf(fh, "%s\n", s);
 							free(s);
-							fprintf(fh, "%s\n", s2);
-							free(s2);
 						}
 					}
-
+				}
 				if( (d = g->db_get_data(res,i,"domain")) ) {
 					if( strlen(d) ) {
 						s = strdup(dhcp->domainline);
-						s2 = g->str_replace(s, "%n", d);
+						g->str_replace(&s, "%n", d);
+						fprintf(fh, "%s\n", s);
 						free(s);
-						fprintf(fh, "%s\n", s2);
-						free(s2);
 					}
 				}
-
-				if( (d = g->db_get_data(res,i,"wins")) ) 
+				if( (d = g->db_get_data(res,i,"wins")) ) {
 					if( strlen(d) ) {
 						s = strdup(dhcp->winsline);
-						s2 = g->str_replace(s, "%i", d);
+						g->str_replace(&s, "%i", d);
+						fprintf(fh, "%s\n", s);
 						free(s);
-						fprintf(fh, "%s\n", s2);
-						free(s2);
-					}
-				
-				for(i=0; i<nh; i++) {
-					if( (hosts[i].ipaddr & netmask) == network ) {
-						s = strdup(dhcp->host);
-						s2 = g->str_replace(s, "%i", inet_ntoa(hosts[i].ipaddr));
-						free(s);
-						s = g->str_replace(s2, "%n", hosts[i].name);
-						free(s2);
-						s2 = g->str_replace(s, "%m", hosts[i].mac);
-						free(s);
-						fprintf(fh, "%s\n", s2);
-						free(s2);
 					}
 				}
-
+				for(j=0; j<nh; j++) {
+					if( (hosts[j].ipaddr & netmask) == network ) {
+						s = strdup(dhcp->host);
+						g->str_replace(&s, "%i", inet_ntoa(hosts[j].ipaddr));
+						g->str_replace(&s, "%n", hosts[j].name);
+						g->str_replace(&s, "%m", hosts[j].mac);
+						fprintf(fh, "%s\n", s);
+						free(s);
+					}
+				}
 				fprintf(fh, "%s\n", dhcp->subnetend);
 			}
-		g->db_free(res);
+			g->db_free(res);
 		}
+		fprintf(fh, "%s", dhcp->append);
+		fclose(fh);
+		system(dhcp->command);
 		
 		// cleanup
 		for(i=0; i<nh; i++) {
@@ -171,17 +163,13 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 			free(hosts[i].mac);
 		}
 		free(hosts);
-		
-		fprintf(fh, "%s", dhcp->append);
-		fclose(fh);
-		system(dhcp->command);
 #ifdef DEBUG1
 		syslog(LOG_INFO,"DEBUG: [%s/dhcp] reloaded", dhcp->base.instance);
 #endif
 	}
 	else
 		syslog(LOG_ERR, "[%s/dhcp] Unable to write a temporary file '%s'", dhcp->base.instance, dhcp->file);
-	
+
 	free(dhcp->prefix);
 	free(dhcp->append);
 	free(dhcp->subnetstart);
@@ -193,6 +181,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 	free(dhcp->rangeline);
 	free(dhcp->host);
 	free(dhcp->file);
+	free(dhcp->command);
 }
 
 struct dhcp_module * init(GLOBAL *g, MODULE *m)
@@ -203,7 +192,7 @@ struct dhcp_module * init(GLOBAL *g, MODULE *m)
 	
 	if(g->api_version != APIVERSION) 
 		return (NULL);
-	
+
 	instance = m->instance;
 
 	dhcp = (struct dhcp_module*) realloc(m, sizeof(struct dhcp_module));
@@ -244,6 +233,6 @@ struct dhcp_module * init(GLOBAL *g, MODULE *m)
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/dhcp] initialized", dhcp->base.instance);
 #endif	
-	return(dhcp);
+	return (dhcp);
 }
 
