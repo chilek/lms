@@ -25,7 +25,7 @@ if [ -z "$LMSVER" ]; then
 	exit
 fi
 
-echo -ne "TAG z CVS'a?: LMS_"
+echo -ne "TAG z CVS'a?: "
 read CVSTAG
 if [ -z "$CVSTAG" ]; then
 	echo "Nie ma mocnych ;) Bez tego nie ruszymy."
@@ -34,7 +34,7 @@ fi
 
 X=$RANDOM
 mkdir -p $TEMPDIR/$X
-wget --proxy=off "http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1&only_with_tag=LMS_${CVSTAG}" -O $TEMPDIR/$X/lms.tar.gz
+wget --proxy=off "http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1&only_with_tag=${CVSTAG}" -O $TEMPDIR/$X/lms.tar.gz
 umask 022
 cd $TEMPDIR/$X/
 tar -xzf lms.tar.gz
@@ -42,13 +42,15 @@ chmod 777 lms/{templates_c,backups}
 rm -Rf lms/devel
 cd lms
 rgrep -ir '1\.1-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.1-cvs/$LMSVER/g"
+rm -Rf devel
+chmod 777 templates_c backups
 cd ..
 tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
 cd lms/lib
 wget http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz
 tar -xzf Smarty-2.5.0.tar.gz
 mv Smarty-2.5.0/libs Smarty
-rm -Rf Smarty Smarty-2.5.0.tar.gz
+rm -Rf Smarty-2.5.0 Smarty-2.5.0.tar.gz
 cd ../..
 tar -czf $WORKDIR/lms-$LMSVER+libs.tar.gz lms
 cd $WORKDIR
