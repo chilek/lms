@@ -154,6 +154,7 @@
 				<member>name - device name</member>
 				<member>mac - MAC address</member>
 				<member>ipaddr - IP address</member>
+				<member>passwd - password</member>
 				<member>ownerid - serial number of the owner ('0' if network device)</member>
 				<member>creationdate - creation timestamp</member>
 				<member>moddate - last modification timestamp</member>
@@ -202,6 +203,20 @@
 				<member>invoiceid - serial number for invoice related to this operation</member>
 				<member>itemid - invoice item identifier</member>
 				<member>comment - description of operation</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="cashimport">
+			<title>Import of financial operations ('cashimport')</title>
+			<simplelist>
+				<member>id - serial number</member>
+				<member>date - timestamp of operation</member>
+				<member>customer - customer data</member>
+				<member>value - amount</member>
+				<member>taxvalue - tax rate in percent</member>
+				<member>customerid - customer's serial number</member>
+				<member>description - operation description</member>
+				<member>hash - unique operation identifier</member>
+				<member>closed - yes (1), if operation was moved to cash table</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="tariffs">
@@ -413,7 +428,7 @@
 				<member>adminid - event creator ID</member>
 				<member>userid - customer ID</member>
 				<member>private - status (private/public)</member>
-				<member>closed - closing status</member>
+				<member>closed - is event closed? (1-yes/0-no)</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="eventassignments">
