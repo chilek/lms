@@ -263,7 +263,7 @@ foreach my $key (keys %iftable)
 	
 }
 
-$dbq = $dbase->prepare("SELECT userid, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments, users, tariffs WHERE users.id = userid AND deleted = 0 AND tariffid = tariffs.id GROUP BY userid");
+$dbq = $dbase->prepare("SELECT userid, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments, users, tariffs WHERE users.id = userid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) GROUP BY userid");
 $dbq->execute();
 
 my $iptid = 0;
