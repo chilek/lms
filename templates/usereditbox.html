@@ -96,7 +96,7 @@
 			<IMG SRC="img/gg.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[gguin]" VALUE="{$userinfo.gguin}" SIZE="30" {tip text="Wpisz numer gadu-gadu (opcjonalnie)" trigger="gguin"}>
+			<INPUT TYPE="TEXT" NAME="userdata[gguin]" VALUE="{if $userinfo.gguin}{$userinfo.gguin}{/if}" SIZE="30" {tip text="Wpisz numer gadu-gadu (opcjonalnie)" trigger="gguin"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

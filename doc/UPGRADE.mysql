@@ -21,12 +21,13 @@ DROP TABLE IF EXISTS options;
 ALTER TABLE admins CHANGE lastlogindate lastlogindate INT(11) DEFAULT '0';
 ALTER TABLE admins CHANGE failedlogindate failedlogindate INT(11) DEFAULT '0';
 
-
 /* Nowe kolumny */
 ALTER TABLE users ADD deleted BOOL DEFAULT '0' NOT NULL;
 ALTER TABLE users ADD payday INT DEFAULT '1' NOT NULL;
 /* PESEL */
 ALTER TABLE users ADD pesel VARCHAR(11) DEFAULT '' AFTER nip;
+/* Kosmetyka */
+ALTER TABLE users CHANGE gguin gguin INT(11) DEFAULT '0';
 
 /* Nowe pola w tabeli */
 ALTER TABLE networks ADD dns2 VARCHAR(16) AFTER dns;

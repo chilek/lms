@@ -4,6 +4,13 @@ wersja ????? (??/??/????):
 
   - zmiana wersji biblioteki Smarty z 2.5.0 na 2.6.0 (alec)
   - dodane contrib/warn&msg (Rafa³ Ramocki/Tomasz Chiliñski)
+  - jeszcze jedna poprawka w bazie w zwi±zku z BTS#103 (alec)
+    MySQL:
+	ALTER TABLE `users` CHANGE `gguin` `gguin` INT(11) DEFAULT '0';
+    PostgreSQL:
+	UPDATE users SET gguin=0 WHERE gguin IS NULL;
+	ALTER TABLE users UPDATE gguin SET DEFAULT 0;
+	ALTER TABLE users UPDATE gguin SET NOT NULL;
   
 wersja 1.1.8 Cronos (01/02/2004):
 

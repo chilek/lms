@@ -31,6 +31,9 @@ ALTER TABLE users ADD deleted int2;
 UPDATE users SET deleted=0;
 ALTER TABLE users ALTER COLUMN deleted SET DEFAULT 0;
 ALTER TABLE users ALTER COLUMN deleted SET NOT NULL;
+UPDATE users SET gguin=0 WHERE gguin IS NULL;
+ALTER TABLE users UPDATE COLUMN gguin SET DEFAULT 0;
+ALTER TABLE users UPDATE COLUMN gguin SET NOT NULL;
 
 /* Dzieñ zap³aty */
 ALTER TABLE users ADD payday integer;
