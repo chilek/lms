@@ -140,6 +140,15 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld.org.pl
 
 $Log$
+Revision 1.8  2003/05/21 11:57:31  lukasz
+- fscking cvs recovery :(
+
+Revision 1.8.2.1  2003/05/18 22:54:18  lukasz
+- grrr
+
+Revision 1.8  2003/05/18 21:07:18  lukasz
+- 1.0.0
+
 Revision 1.7  2003/05/04 20:11:42  djrzulf
 - synchronized with spec at cvs.pld...
 
