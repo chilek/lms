@@ -186,7 +186,7 @@ CREATE TABLE assignments (
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
-) TYPE=MyISAM
+) TYPE=MyISAM;
 
 #
 # Struktura tabeli 'netdevices'
