@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.1.5 (18/10/2003):
+wersja 1.1.5 (??/??/2003):
 
   - dodane opcje do ustawienie w³a¶ciciela oraz praw dostêpu skryptów
     tworzonych przez lms-traffic-* (lukasz)
@@ -26,6 +26,9 @@ wersja 1.1.5 (18/10/2003):
     w pe³ni kompatybilna z daemonem w c i czê¶ciowo z lms-mgc (alec)
   - do lms.pgsql dodane sql'owe funkcje inet_ntoa() i inet_aton() dla
     przysz³ych zastosowañ (alec)
+  - poprawione b³êdne zliczanie userów w panelu powitalnym (alec)
+  - poprawione warto¶ci domy¶lne formularza dodawania userów (alec)
+  - usuniêcie usera na li¶cie nie powoduje ju¿ przej¶cia do userinfo (alec)
   
 wersja 1.1.4 Tanith (03/10/2003):
   
