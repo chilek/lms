@@ -1028,9 +1028,9 @@ CLASS="EMPHASIS"
 > wykonujemy wszystkie 
 	czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMS.</P
 ><P
->LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty wymagaj± 
+>LMS to tak¿e zestaw skryptów w jêzyku Perl, i to w³a¶nie te skrypty wymagaj± 
 	aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, 
-	musisz mieæ PERLa. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych 
+	musisz mieæ Perl'a. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych 
 	b±d¼ wysy³anie upomnieñ. Najwiêkszy z nich - <SPAN
 CLASS="emphasis"
 ><I
@@ -2226,6 +2226,19 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>lastonline_limit</P
+><P
+>Okre¶la czas (w sekundach), po którym komputer zostaje uznany za
+    nieaktywny. Powinien odpowiadaæ czêstotliwo¶ci uruchamiania skryptu
+    badaj±cego aktywno¶æ komputerów (np.lms-fping). Domy¶lnie: 600.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>lastonline_limit = 300</SAMP
+></P
+></LI
+><LI
+><P
 >arpd_servers</P
 ><P
 >Lista serwerów arpd do zczytywania MAC'adresów z odleg³ych sieci.
@@ -2664,8 +2677,22 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="MENU-USERS-WARNINGS"
+>3.2.6. Ostrze¿enia</A
+></H3
+><P
+>Tutaj mo¿na "hurtowo" przypisaæ tre¶æ wiadomo¶ci administracyjnej
+	    u¿ytkownikom, których wybiera siê z listy w lewym oknie. Mo¿liwe jest
+	    tak¿e w³±czenie lub wy³±czenie ostrze¿eñ wszystkim komputerom nale¿±cym
+	    do wybranych u¿ytkowników.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="MENU-USERS-PRINTS"
->3.2.6. Wydruki</A
+>3.2.7. Wydruki</A
 ></H3
 ><P
 >Zestaw modu³ów wy¶wietlaj±cych listy w formie przyjaznej dla drukarki
@@ -2919,6 +2946,44 @@ VALIGN="TOP"
 ><P
 >Do wygenerowania mapy potrzebna jest wbudowana w PHP obs³uga 
 		biblioteki graficznej GD.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+		</P
+><P
+>Na mapie hosty wy³±czone oznaczone s± kolorem czarnym. Ikona z pytajnikiem
+		oznacza, ¿e dany komputer nie by³ jeszcze skanowany/w³±czony. Aby skorzystaæ z 
+		tej funkcjonalno¶ci nale¿y, korzystaj±c z crona, uruchamiaæ skrypt skanuj±cy.
+		Na mapie komputer traktowany jest za w³±czony je¶li czas ostatniego pozytywnego
+		skanowania nie jest starszy od zadanej warto¶ci (domy¶lnie 600 sekund).
+		Parametr ten okre¶la siê przy pomocy opcji
+		<TT
+CLASS="FILENAME"
+>lastonline_limit</TT
+> w sekcji [phpui] pliku konfiguracyjnego.
+		Status komputerów jest tak¿e widoczny na li¶cie komputerów.
+		<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Do badania aktywno¶ci hostów mo¿na wykorzystaæ skrypt lms-fping lub demona almsd.</P
 ></TD
 ></TR
 ></TABLE
@@ -4143,6 +4208,12 @@ ALIGN="CENTER"><THEAD
 >lms-makemessages</TD
 ><TD
 >Generuje regu³ki przekierowuj±ce ruch u¿ytkowników, którym ustawiono wiadomo¶æ administracyjn±</TD
+></TR
+><TR
+><TD
+>lms-fping</TD
+><TD
+>Badanie aktywno¶ci komputerów.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -5621,6 +5692,70 @@ CLASS="PROMPT"
 ></LI
 ></UL
 ></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="LMS-FPING"
+>4.3.14. lms-fping</A
+></H3
+><P
+>Skrypt zapisuje do bazy informacje o aktywno¶ci komputerów. 
+	    Do skanowania wykorzystywany jest szybki program fping (z opcjami -ar1). 
+	    Najpierw tworzona jest lista hostów, a nastêpnie, po wywo³aniu fping'a, 
+	    komputerom w³±czonym zostaje przypisana data i czas skanowania. Dziêki temu 
+	    mamy w bazie informacje kiedy dany komputer by³ ostatnio w³±czony.</P
+><P
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[fping]</I
+></SPAN
+>
+	    w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
+><UL
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas skanowania.
+		    Je¶li nie ustawiono przeskanowane zostan± wszystkie komputery.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>fping_binary</P
+><P
+>Lokalizacja programu fping. Domy¶lnie: /usr/sbin/fping</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>fping_binary = /usr/local/sbin/fping</SAMP
+></P
+></LI
+><LI
+><P
+>temp_file</P
+><P
+>Lokalizacja pliku tymczasowego na listê hostów, który
+		    po wykonaniu skryptu zostaje usuniêty. Domy¶lnie: /tmp/fping_hosts.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>temp_file = /tmp/hosts</SAMP
+></P
+></LI
+></UL
+></DIV
 ></DIV
 ></DIV
 ><DIV
@@ -6873,6 +7008,12 @@ ALIGN="CENTER"><THEAD
 ><TD
 >Statystyki wykorzystania ³±cza</TD
 ></TR
+><TR
+><TD
+>pinger</TD
+><TD
+>Badanie aktywno¶ci u¿ytkowników</TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -7927,8 +8068,7 @@ CLASS="PROMPT"
 >Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
 <PRE
 CLASS="SCREEN"
-># %n
-$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x</PRE
+>$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x</PRE
 >
 			    </P
 ><P
@@ -8395,6 +8535,56 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >command = "killall -HUP midentd"</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-PINGER"
+>6.2.14. Pinger</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="PINGER-DESC"
+>6.2.14.1. Opis</A
+></H4
+><P
+>Modu³ pinger to odpowiednik perlowego skryptu lms-fping. Ró¿nice s± jednak
+		    zasadnicze. Nie potrzebuje zewnêtrznego programu i dzia³a przy wykorzystaniu
+		    protoko³u ARP. Powodem tego jest mniej wiêcej dwukrotnie szybsze wykonanie
+		    skanowania sieci. Nie ma tak¿e problemów z komputerami maj±cymi wy³±czone 
+		    odpowiadanie na pingi. Po skanowaniu, wszystkim w³±czonym komputerom jest
+		    ustawiany w bazie danych czas skanowania, wykorzystywany do obrazowania
+		    aktywno¶ci komputerów np. na mapie sieci.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="PINGER-CONFIG"
+>6.2.14.2. Konfiguracja</A
+></H4
+><P
+>Pinger udostêpnia tylko jedn± opcjê konfiguracyjn±:</P
+><UL
+><LI
+><P
+>networks</P
+><P
+>Lista nazw sieci, które maj± byæ skanowane. Domy¶lnie: pusta (wszystkie sieci).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>networks = 'lan1 lan2'</SAMP
 ></P
 ></LI
 ></UL
@@ -8890,6 +9080,10 @@ BORDER="0"
 ><TD
 >warning - ostrzegaj/nie ostrzegaj (1/0)</TD
 ></TR
+><TR
+><TD
+>lastonline - znacznik czasu ostatniej obecno¶ci w sieci</TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -9161,6 +9355,10 @@ BORDER="0"
 ><TR
 ><TD
 >invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)</TD
+></TR
+><TR
+><TD
+>suspended - zawieszenie p³atno¶ci (1 - tak, 0 - nie)</TD
 ></TR
 ></TBODY
 ></TABLE
