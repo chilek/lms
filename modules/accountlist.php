@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetAccountList($order='username,asc', $user=NULL, $type=NULL, $kind=NULL)
+function GetAccountList($order='username,asc', $user=NULL, $type=NULL, $kind=NULL, $domain='')
 {
 	global $LMS;
 
@@ -63,6 +63,7 @@ function GetAccountList($order='username,asc', $user=NULL, $type=NULL, $kind=NUL
 		.($type ? ' AND type & '.$type.' = '.$type : '')
 		.($kind == 1 ? ' AND expdate!= 0 AND expdate < ?NOW?' : '')
 		.($kind == 2 ? ' AND (expdate=0 OR expdate > ?NOW?)' : '')
+		.($domain != '' ? ' AND domainid = '.$domain : '')
 		.($sqlord != '' ? $sqlord : '')
 		);
 	
@@ -71,6 +72,7 @@ function GetAccountList($order='username,asc', $user=NULL, $type=NULL, $kind=NUL
 	$list['type'] = $type;
 	$list['kind'] = $kind;
 	$list['user'] = $user;
+	$list['domain'] = $domain;
 	$list['direction'] = $direction;
 
 	return $list;
@@ -100,6 +102,12 @@ else
 	$k = $_GET['k'];
 $_SESSION['alk'] = $k;
 
+if(!isset($_GET['d']))
+	$d = $_SESSION['ald'];
+else
+	$d = $_GET['d'];
+$_SESSION['ald'] = $d;
+
 if (isset($_SESSION['alp']) && !isset($_GET['page']))
 	$_GET['page'] = $_SESSION['alp'];
 	    
@@ -111,18 +119,20 @@ $_SESSION['alp'] = $page;
 
 $layout['pagetitle'] = 'Zarz±dzanie kontami';
 
-$accountlist = GetAccountList($o, $u, $t, $k);
+$accountlist = GetAccountList($o, $u, $t, $k, $d);
 $listdata['total'] = $accountlist['total'];
 $listdata['order'] = $accountlist['order'];
 $listdata['direction'] = $accountlist['direction'];
 $listdata['type'] = $accountlist['type'];
 $listdata['kind'] = $accountlist['kind'];
 $listdata['user'] = $accountlist['user'];
+$listdata['domain'] = $accountlist['domain'];
 unset($accountlist['total']);
 unset($accountlist['order']);
 unset($accountlist['type']);
 unset($accountlist['kind']);
 unset($accountlist['user']);
+unset($accountlist['domain']);
 unset($accountlist['direction']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
@@ -133,6 +143,7 @@ $SMARTY->assign('start', $start);
 $SMARTY->assign('accountlist',$accountlist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('userlist',$LMS->GetUserNames());
+$SMARTY->assign('domainlist',$LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('accountlist.html');
 

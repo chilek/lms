@@ -29,7 +29,7 @@
 				<INPUT type="HIDDEN" name="m" value="accountlist">
 				<INPUT type="HIDDEN" name="page" value="1">
 				<B>Filtruj: </B> U¿ytkownicy:
-				<SELECT size="1" class="bold" name="u" OnChange="document.filter.submit();">
+				<SELECT size="1" name="u" OnChange="document.filter.submit();">
 					<OPTION value=""{if $listdata.user eq ""} SELECTED{/if}>- wszyscy -</OPTION>
 					<OPTION value="0"{if $listdata.user eq "0"} SELECTED{/if}>KONTA SYSTEMOWE</OPTION>
 					{section name=userlist loop=$userlist}
@@ -37,7 +37,7 @@
 					{/section}
 				</SELECT>&nbsp;
 				Typ:
-				<SELECT size="1" class="bold" name="t" ONCHANGE="document.filter.submit();">
+				<SELECT size="1" name="t" ONCHANGE="document.filter.submit();">
 					<OPTION value="0"{if !$listdata.type} SELECTED {/if}>- wszystkie -</OPTION>
 					<OPTION value="1"{if $listdata.type eq 1} SELECTED {/if}>shell</OPTION>
 					<OPTION value="2"{if $listdata.type eq 2} SELECTED {/if}>mail</OPTION>
@@ -45,10 +45,18 @@
 					<OPTION value="8"{if $listdata.type eq 8} SELECTED {/if}>ftp</OPTION>
 				</SELECT>&nbsp;
 				Rodzaj:
-				<SELECT size="1" class="bold" name="k" OnChange="document.filter.submit();">
+				<SELECT size="1" name="k" OnChange="document.filter.submit();">
 					<OPTION value="0"{if !$listdata.kind} SELECTED {/if}>- wszystkie -</OPTION>
 					<OPTION value="1"{if $listdata.kind eq 1} SELECTED {/if}>przeterminowane</OPTION>
 					<OPTION value="2"{if $listdata.kind eq 2} SELECTED {/if}>aktywne</OPTION>
+				</SELECT>&nbsp;
+				Domena:
+				<SELECT size="1" name="d" OnChange="document.filter.submit();">
+					<OPTION value=""{if $listdata.domain eq ""} SELECTED{/if}>- wszystkie -</OPTION>
+					<OPTION value="0"{if $listdata.domain eq "0"} SELECTED{/if}>- bez domeny -</OPTION>
+					{section name=domainlist loop=$domainlist}
+					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domain} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
+					{/section}
 				</SELECT>
 			</FORM></P>
 		</TD>
