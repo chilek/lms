@@ -17,6 +17,7 @@ version 1.5.5 (??/??/????):
   - lms-payments print accounting messages on STDERR (lukasz/alec)
   - helpdesk: fixed encoding in message contents to UTF-8, added option
     phpui/helpdesk_sender_name for name of message sender (alec)
+  - fixed bug in userassignmentedit.html when customer has " sign in name (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
