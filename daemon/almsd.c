@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
 	    		}
 
 	    		// get instances list for reload
-	    		instances = strdup(iniparser_getstr(ini, "lmsd:instances"));
+	    		instances = strdup(iniparser_getstring(ini, "lmsd:instances",""));
 	    	
 			// let's initialize and reload instances/modules...
 	    		for( instance=strtok(instances," "); instance!=NULL; instance=strtok(NULL, " ") ) {	
