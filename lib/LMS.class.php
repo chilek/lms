@@ -3231,20 +3231,19 @@ class LMS
 					$this->DB->Execute('UPDATE dbinfo SET keyvalue=?NOW? WHERE keytype=?', array('last_check_for_updates_timestamp'));
 			}
 			ini_restore('default_socket_timeout');
+
+			$content = unserialize($content);
+			$content['regdata'] = unserialize($content['regdata']);
+			$this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
+			if(is_array($content['regdata']))
+			{
+				foreach(array('id', 'name', 'url', 'hidden') as $key)
+					$this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_'.$key, $content['regdata'][$key]));
+			}
+			
+			
 		}
 
-		$content = unserialize($content);
-		$content['regdata'] = unserialize($content['regdata']);
-
-		$this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
-
-		if(is_array($content['regdata']))
-		{
-
-			foreach(array('id', 'name', 'url', 'hidden') as $key)
-				$this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_'.$key, $content['regdata'][$key]));
-		}			
-		
 		return $content;
 	}
 
