@@ -51,6 +51,7 @@ $LANGDEFS = array(
 			'locale' => 'pl_PL',
 			'charset' => 'ISO-8859-2',
 			'html' => 'pl',
+			'money_format' => '%01.2f z³'
 			),
 		'en' => array(
 			'name' => 'English',
@@ -58,10 +59,11 @@ $LANGDEFS = array(
 			'locale' => 'en_US',
 			'charset' => 'ISO-8859-1',
 			'html' => 'en',
+			'money_format' => '$ %01.2f'
 			),
 		);
 
-$language = 'en'; // default language
+$_language = 'en'; // default language
 
 $langs = explode(',', ($_CONFIG['phpui']['lang'] ? $_CONFIG['phpui']['lang'] : $_SERVER['HTTP_ACCEPT_LANGUAGE']));
 foreach ($langs as $val) 
@@ -69,20 +71,20 @@ foreach ($langs as $val)
 	switch (substr($val, 0, 2))
 	{
 		case 'pl':
-			$language = 'pl';
+			$_language = 'pl';
     			break 2;
 		case 'en':
-			$language = 'en';
+			$_language = 'en';
 			break 2;
 	}
 }
 
 $_LANG = array();
 
-@include($_LIB_DIR.'/locale/'.$language.'.php');
+@include($_LIB_DIR.'/locale/'.$_language.'.php');
 
-setlocale(LC_COLLATE, $LANGDEFS[$language]['locale']);
-setlocale(LC_CTYPE, $LANGDEFS[$language]['locale']);
-setlocale(LC_TIME, $LANGDEFS[$language]['locale']);
+setlocale(LC_COLLATE, $LANGDEFS[$_language]['locale']);
+setlocale(LC_CTYPE, $LANGDEFS[$_language]['locale']);
+setlocale(LC_TIME, $LANGDEFS[$_language]['locale']);
 
 ?>

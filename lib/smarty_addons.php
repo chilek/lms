@@ -133,6 +133,7 @@ $SMARTY->register_function('size','_smarty_function_sizeof');
 $SMARTY->register_function('tip','_smarty_function_tip');
 $SMARTY->register_function('confirm','_smarty_function_confirm');
 $SMARTY->register_modifier('to_words','to_words');
+$SMARTY->register_modifier('money_format','moneyf');
 $SMARTY->register_modifier('striphtml','_smarty_modifier_striphtml');
 $SMARTY->register_block('t', '_smarty_block_translate');
 $SMARTY->assign('now', time());
