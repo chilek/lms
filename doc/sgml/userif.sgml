@@ -307,6 +307,34 @@
 			<para>Przyk³ad: <prompt>default_author = "specjalista d/s fakturowania"</prompt></para>
 		</listitem>
 		</itemizedlist>
+		Ponadto dostêpne s± zmienne:
+		<itemizedlist>
+		<listitem>
+			<para>cplace</para>
+			<para>Miejsce wystawienia faktury. Domy¶lnie: puste.</para>
+			<para>Przyk³ad: <prompt>cplace = Warszawa</prompt></para>
+		</listitem>
+		<listitem>
+			<para>template_file</para>
+			<para>Szablon faktury, który powinien znajdowaæ siê w
+			katalogu <filename>templates</filename>. Domy¶lnie: invoice.html.</para>
+			<para>Przyk³ad: <prompt>template_file = invoice-mynet.html</prompt></para>
+		</listitem>		
+		<listitem>
+			<para>content_type</para>
+			<para>Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
+			to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
+			Przydatne je¶li u¿ywasz w³asnego templejta, który wygeneruje np.rtf'a lub xls'a.
+			Domy¶lnie: 'text/html; charset=iso-8859-2'</para>
+			<para>Przyk³ad: <prompt>content_type = application/octet-stream</prompt></para>
+		</listitem>	
+		<listitem>
+			<para>attachment_name</para>
+			<para>Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
+			wydruk. Domy¶lnie: pusta.</para>
+			<para>Przyk³ad: <prompt>attachment_name = faktura.xls</prompt></para>
+		</listitem>
+		</itemizedlist>
 		</para>
 		<para>Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
 		na wykazie bilansu finansowego (ogólnego b±d¼ pojedyñczego u¿ytkownika), albo 
