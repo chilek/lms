@@ -49,6 +49,10 @@ class LMS
 		$this->modules[] = "CORE";
 		$this->CORE = &$this;
 
+		/* Generalnie chcemy zamkn±æ 1.1.x. Wiêc modu³y i inne duperelki zostawiamy
+		   do 1.3.x, gdzie siê skupimy g³ównie na przebudowie LMS'a a nie na zmianie
+		   jego funkcjonalno¶ci.
+
 		// za³aduj ekstra klasy:
 
 		if($dirhandle = opendir($this->CONFIG['directories']['lib_dir'].'/modules/'))
@@ -78,6 +82,8 @@ class LMS
 		foreach($this->modules as $module)
 			if(! ($this->$module != NULL ? $this->$module->_postinit() : TRUE))
 				trigger_error('Wyst±pi³y problemy z inicjalizacj± modu³u '.$module.'.');
+
+		*/
 
 		// to siê rozejdzie po modu³ach:
 
@@ -1172,7 +1178,7 @@ class LMS
 
 	function GetInvoicesList()
 	{
-		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value) AS value, COUNT(invoiceid) AS count FROM invoices LEFT JOIN invoicecontents ON invoiceid = id GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
+		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value) AS value, COUNT(invoiceid) AS count FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
 		{
 			foreach($result as $idx => $row)
 			{
@@ -1181,6 +1187,19 @@ class LMS
 			}
 			$result['startdate'] = $this->DB->GetOne('SELECT MIN(cdate) FROM invoices');
 			$result['enddate'] = $this->DB->GetOne('SELECT MAX(cdate) FROM invoices');
+		}
+		return $result;
+	}
+
+	function GetUnfishedInvoices()
+	{
+		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value) AS value, COUNT(invoiceid) AS count FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 0 GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
+		{
+			foreach($result as $idx => $row)
+			{
+				$result[$idx]['year'] = date('Y',$row['cdate']);
+				$result[$idx]['month'] = date('m',$row['cdate']);
+			}
 		}
 		return $result;
 	}
@@ -2194,6 +2213,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.313  2003/12/14 03:53:05  lukasz
+ * - okej, narazie dajmy spokój z modu³ami.
+ *
  * Revision 1.312  2003/12/14 00:35:42  lukasz
  * - nie do¶æ ¿e nie u¿ywane to jeszcze z jakimi¶ ^M na koñcu ka¿dej linii
  *
