@@ -1430,7 +1430,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetUserAssignments($id)
 	{
-		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, upceil, downceil, downrate, name, invoice, datefrom, dateto FROM assignments, tariffs WHERE userid=? AND tariffs.id = tariffid ORDER BY datefrom ASC', array($id)))
+		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, userid, period, at, suspended, value, uprate, upceil, downceil, downrate, name, invoice, datefrom, dateto FROM assignments LEFT JOIN tariffs ON (tariffid=tariffs.id) WHERE userid=? ORDER BY datefrom ASC', array($id)))
 		{
 			foreach($assignments as $idx => $row)
 			{
@@ -1474,6 +1474,15 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	{
 		$this->SetTS('assignments');
 		return $this->DB->Execute('INSERT INTO assignments (tariffid, userid, period, at, invoice, datefrom, dateto) VALUES (?, ?, ?, ?, ?, ?, ?)', array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at'], $assignmentdata['invoice'], $assignmentdata['datefrom'], $assignmentdata['dateto']));
+	}
+
+	function SuspendAssignment($id,$suspend = TRUE)
+	{
+		$this->SetTS('assignments');
+		if($suspend)
+			return $this->DB->Execute('UPDATE assignments SET suspended=1 WHERE id=?', array($id));
+		else
+			return $this->DB->Execute('UPDATE assignments SET suspended=0 WHERE id=?', array($id));
 	}
 
 	function AddInvoice($invoice)
