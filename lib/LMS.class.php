@@ -1642,7 +1642,7 @@ class LMS
 		{
 			foreach($return as $idx => $rr)
 			{
-				$return[$idx][links] = $this->ADB->GetOne("SELECT COUNT(*) FROM links WHERE id=?",array($rr[id]));
+				$return[$idx][links] = $this->ADB->GetOne("SELECT COUNT(*) FROM links WHERE category=?",array($rr[id]));
 			}
 		}
 		return $return;
@@ -1663,6 +1663,55 @@ class LMS
 	function LinksCategoryName($category)
 	{
 		return $this->ADB->GetOne("SELECT name FROM linkscategories WHERE id=?",array($category));
+	}
+
+	function LinksCategoryExists($id)
+	{
+		return $this->ADB->GetOne("SELECT id FROM linkscategories WHERE id=?",array($id));
+	}
+
+	function LinksCategoryUpdate($category)
+	{
+		return $this->ADB->Execute("UPDATE linkscategories SET name=?, description=? WHERE id=?",array($category[name],$category[description],$category[id]));
+	}
+
+	function LinksCategoryUp($id)
+	{
+		$currentweight = $this->ADB->GetOne("SELECT weight FROM linkscategories WHERE id=?",array($id));
+		$higherid = $this->ADB->GetOne("SELECT id FROM linkscategories WHERE weight > ? ORDER BY weight ASC",array($currentweight));
+		$higherweight = $this->ADB->GetOne("SELECT weight FROM linkscategories WHERE id=?",array($higherid));
+		if($higherweight > $currentweight AND $higherid)
+		{
+			$this->ADB->Execute("UPDATE linkscategories SET weight=? WHERE id=?",array($higherweight,$id));
+			$this->ADB->Execute("UPDATE linkscategories SET weight=? WHERE id=?",array($currentweight,$higherid));
+		}
+	}
+
+	function LinksCategoryDown($id)
+	{
+		$currentweight = $this->ADB->GetOne("SELECT weight FROM linkscategories WHERE id=?",array($id));
+		$lowerid = $this->ADB->GetOne("SELECT id FROM linkscategories WHERE weight < ? ORDER BY weight DESC",array($currentweight));
+		$lowerweight = $this->ADB->GetOne("SELECT weight FROM linkscategories WHERE id=?",array($lowerid));
+		if($lowerweight < $currentweight AND $lowerid)
+		{
+			$this->ADB->Execute("UPDATE linkscategories SET weight=? WHERE id=?",array($lowerweight,$id));
+			$this->ADB->Execute("UPDATE linkscategories SET weight=? WHERE id=?",array($currentweight,$lowerid));
+		}
+	}
+
+	function GetLink($id)
+	{
+		return $this->ADB->GetRow("SELECT links.id AS id, category, url, links.name AS name, links.description AS description, count, linkscategories.name AS categoryname FROM links, linkscategories WHERE links.id=? AND category=linkscategories.id",array($id));
+	}
+
+	function LinkUpdate($link)
+	{
+		return $this->ADB->Execute("UPDATE links SET name=?, category=?, url=?, description=? WHERE id=?",array($link[name],$link[category],$link[url],$link[description],$link[id]));
+	}
+
+	function LinkAdd($link)
+	{
+		return $this->ADB->Execute("INSERT INTO links (name, category, url, description) VALUES (?, ?, ?, ?)",array($link[name],$link[category],$link[url],$link[description]));
 	}
 
 }
