@@ -1,6 +1,6 @@
 $Id$
 
-wersja ????? (??/??/????):
+wersja 1.2.0rc1 (??/??/????):
 
   - zmiana wersji biblioteki Smarty z 2.5.0 na 2.6.0 (alec)
   - dodane contrib/warn&msg (Rafa³ Ramocki/Tomasz Chiliñski)
@@ -33,6 +33,23 @@ wersja ????? (??/??/????):
   - aktualizacja ethercodes.txt (alec)
   - BTS#0000109: poprawione b³êdne dzia³anie funkcji loadavg() i hostname()
     na systemach BSD w Sysinfo.class.php (sfor/alec)
+  - teraz w MGC mo¿emy zdefiniowaæ sekcje która bêdzie wywo³ywaæ inne
+    podsekcje - dla przyk³adu - mamy 5 sekcji dotycz±cych dns (dns1... dns5) -
+    tworzymy dla nich co¶ takiego:
+
+    [mgc:dns]
+    instances = dns1 dns2 dns3 dns4 dns5
+
+    i teraz je¿eli mo¿emy wywo³aæ:
+
+    lms-mgc -i dns
+
+    zamiast:
+
+    lms-mgc -i "dns1 dns2 dns3 dns4 dns5"
+
+    Je¿eli sekcja jaka¶ ma pole 'instances', to tylko to pole zostanie uznane,
+    a pozosta³e ustawienia sekcji zostan± zignorowane (lukasz)
             
 wersja 1.1.8 Cronos (01/02/2004):
 
