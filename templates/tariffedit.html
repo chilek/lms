@@ -4,61 +4,67 @@
 <FORM METHOD="POST" NAME="tedit" ACTION="?m=tariffedit&id={$tariff.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD WIDTH="100%" COLSPAN="2" CLASS="FALL">
+		<TD WIDTH="1%" CLASS="fleftu">
+			<IMG SRC="img/money.gif" BORDER="0" ALIGN="absmiddle" ALT="">
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" NOWRAP>
+			<B>Nazwa:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="frightu">
 			<INPUT TYPE="TEXT" VALUE="{$tariff.name}" NAME="tariff[name]" {tip trigger="name" bold=1}>
+			<B>&nbsp;({$tariff.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
-	<TR class="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>Opis:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.description}" NAME="tariff[description]" SIZE="40">
-		</TD>
-	</TR>
+
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/value.gif" BORDER="0" ALIGN="absmiddle" ALT="">
+		</TD>
+		<TD WIDTH="1%">
 			<B>Warto¶æ:</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]" {tip trigger="value"}> z³
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/uprate.gif" BORDER="0" ALIGN="absmiddle" ALT="">
+		</TD>
+		<TD WIDTH="1%">
 			<B>Uprate:</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" VALUE="{$tariff.uprate}" SIZE="8" NAME="tariff[uprate]" {tip trigger="uprate"}> kb/s
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/downrate.gif" BORDER="0" ALIGN="absmiddle" ALT="">
+		</TD>
+		<TD WIDTH="1%">
 			<B>Downrate:</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" VALUE="{$tariff.downrate}" SIZE="8" NAME="tariff[downrate]" {tip trigger="uprate"}> kb/s
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
+	<TR class="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>Ilo¶æ&nbsp;u¿ytkowników:</B>
+			<IMG SRC="img/usercomment.gif" BORDER="0" ALIGN="absmiddle" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT">
-			{$tariff.count}
+		<TD WIDTH="1%">
+			<B>Opis:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" VALUE="{$tariff.description}" NAME="tariff[description]" SIZE="40">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>Zysk&nbsp;miesiêczny:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT">
-			{$tariff.totalval}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT" CLASS="FBOTTOMU">
-			<A HREF="?m=tariffinfo&id={$tariff.id}">Anuluj <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> <A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">Usuñ <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{/if}
+		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT" CLASS="FBOTTOMU">
+			<A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">Usuñ <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{/if}
+			<A HREF="?m=tariffinfo&id={$tariff.id}">Anuluj <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> 
+		
 		</TD>
 	</TR>
 </TABLE>
