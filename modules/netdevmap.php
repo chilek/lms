@@ -239,6 +239,8 @@ else
 
 	$im_nd = imagecreatefrompng('img/netdev.png');
 	$im_n = imagecreatefrompng('img/node.png');
+	$im_n_off = imagecreatefrompng('img/node_off.png');
+	$im_n_on = imagecreatefrompng('img/node_on.png');
 
 //	print_r($nodemap);
 	
@@ -248,8 +250,15 @@ else
 		$cely = $node['y'];
 		$px = (($celx * ($cellw)) + $celllmargin);
 		$py = (($cely * ($cellh)) + $celltmargin);
-		imagecopy($im,$im_n,$px,$py,0,0,15,16);
-		$nodedata = $DB->GetRow('SELECT name, INET_NTOA(ipaddr) AS ip FROM nodes WHERE id=?',array($nodeid));
+		$nodedata = $DB->GetRow('SELECT name, INET_NTOA(ipaddr) AS ip, lastonline FROM nodes WHERE id=?',array($nodeid));
+		if ($nodedata['lastonline']) {	
+			if ((time()-$nodedata['lastonline'])>600)
+				imagecopy($im,$im_n_off,$px,$py,0,0,15,16);
+			else 
+				imagecopy($im,$im_n_on,$px,$py,0,0,15,16);
+		} else 
+			imagecopy($im,$im_n,$px,$py,0,0,15,16);
+		
 //		imagestring($im, 1, $px + 15, $py - 8, $nodeid.' ('.$celx.','.$cely.')', $blue);
 		imagestring($im, 1, $px + 15, $py - 8, $nodedata['ip'], $blue);
 		imagestring($im, 1, $px + 15, $py + 2, $nodedata['name'], $black);

@@ -5,7 +5,8 @@ wersja 1.3.6 Osiris (??/??/2004);
   - obici±¿enia s± naliczane wed³ug ich warto¶ci, rosn±co - w wypadku jak kto¶
     ma odliczenie jakie¶, zostanie ono naliczone jako pierwsze, przez co nawet
     przez chwilê saldo nie zejdzie poni¿ej zera (lukasz)
-
+  - dodana informacja kiedy dany komputer by³ ostatnio widziany w sieci (lexx)
+    
 wersja 1.3.5 Ju (30/07/2004):
 
   - usuniêty b³±d w skryptach perlowych, powoduj±cy b³êdne dzia³anie
