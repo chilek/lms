@@ -614,6 +614,13 @@ database = /usr/local/lms/lms.db</screen>
 	    <para>Przyk³ad:	<prompt>helpdesk_sender_name = Helpdesk</prompt></para>
 	</listitem>
 	<listitem>
+	    <para>newticket_notify</para>
+	    <para>W³±czenie tej opcji spowoduje, ¿e wszyscy u¿ytkownicy z prawami
+	    do kolejki dostan± powiadomienie mailem o dodaniu do niej nowego
+	    zg³oszenia. Domy¶lnie: wy³±czona.</para>
+	    <para>Przyk³ad:	<prompt>newticket_notify = 1</prompt></para>
+	</listitem>
+	<listitem>
 	    <para>contract_template</para>
 	    <para>W³asny szablon umowy z klientem. Mo¿e zawieraæ listê umów oddzielonych 
 	    przecinkami. Domy¶lnie: contract.html.</para>

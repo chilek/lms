@@ -1018,48 +1018,60 @@ Following parameters are valid:</para>
         	<listitem>
 		    <para>default_queue</para>
 		    <para>ID of the queue, to which requests should be sent if
-not specified on command line. If not set queue will be guessed according to
-recipient address. Command line -q will override this option. Default:
-undefined.</para>
+		    not specified on command line. If not set queue will be guessed according to
+		    recipient address. Command line -q will override this option. Default:
+		    undefined.</para>
 		    <para>Example:	<prompt>default_queue = </prompt></para>
 		</listitem>
 		<listitem>
 		    <para>mail_from</para>
 		    <para>Sender address for confirmations. If undefined, queue
-address will be used, to which ticket was assigned. Default: empty.</para>
+		    address will be used, to which ticket was assigned. Default: empty.</para>
 		    <para>Example:	<prompt>mail_from = rt@net.pl</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>mail_from_name</para>
 		    <para>Sender name for confirmations. Default:
-undefined.</para>
+		    undefined.</para>
 		    <para>Example:	<prompt>mail_from_name = 'BOK SuperLAN'</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>smtp_server</para>
 		    <para>SMTP server to be used for sending emails. Default:
-localhost.</para>
+		    localhost.</para>
 		    <para>Example:	<prompt>smtp_server = smtp.bigpro.com</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>mail_dir</para>
 		    <para>Directory where attachments should be saved. This
-directory will be accessed for read/write both by rtparser user and your Web
-Server user. If undefined attachments won't be recorded. Default:
-undefined.</para>
+		    directory will be accessed for read/write both by rtparser user and your Web
+		    Server user. If undefined attachments won't be recorded. Default:
+		    undefined.</para>
 		    <para>Example:	<prompt>mail_dir = /usr/local/lms/mail</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>tmp_dir</para>
 		    <para>Temp directory. By default it will be taken from
-environment or set to <filename>/tmp</filename>.</para>
+		    environment or set to <filename>/tmp</filename>.</para>
 		    <para>Example:	<prompt>tmp_dir = /home/user/tmp</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>auto_open</para>
 		    <para>This will force reopening closed/dead ticket if
-request is sent to it's ID. Default: Off.</para>
+		    request is sent to it's ID. Default: Off.</para>
 		    <para>Example:	<prompt>auto_open = 1</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>newticket_notify</para>
+		    <para>If enabled script will send notification about new ticket
+		    to all users with rights for current queue. Default: Off.</para>
+		    <para>Example:	<prompt>newticket_notify = 1</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>lms_url</para>
+		    <para>In notification about new ticket is appended link to this ticket
+		    in UI. Default: http://localhost/lms/.</para>
+		    <para>Example:	<prompt>lms_url = https://lms.domain.pl/</prompt></para>
 		</listitem>
 	    </itemizedlist>
     </sect2>

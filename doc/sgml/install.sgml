@@ -588,6 +588,12 @@ database = /usr/local/lms/lms.db</screen>
          <para>Example:     <prompt>helpdesk_sender_name = Helpdesk</prompt></para>
      </listitem>
      <listitem>
+         <para>newticket_notify</para>
+         <para>If enabled, after new ticket addition system will send notification
+         emails to all users with rights to the queue. Default: disabled.</para>
+         <para>Example:     <prompt>newticket_notify = On</prompt></para>
+     </listitem>
+     <listitem>
          <para>contract_template</para>
          <para>Specify contract template(s) for customer. You can provide comma separated list of
          contract templates. Default: contract.html.</para>
