@@ -58,20 +58,17 @@ $_DBNAME = (! $_CONFIG[database]['database'] ? "lms" : $_CONFIG[database]['datab
 // include required files
 
 require_once($_SMARTY_DIR.'/Smarty.class.php');
-require_once($_ADODB_DIR.'/adodb.inc.php');
+require_once($_LIB_DIR.'/LMSDB.php');
 require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 
-// Initialize ADODB object
+// Initialize LMSDB object
 
-$ADB = ADONewConnection($_DBTYPE);
-$ADB->Connect($_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME);
-
-$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
+$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
 // Initialize database and template classes
 
-$LMS = new LMS($ADB,NULL);
+$LMS = new LMS($DB,NULL);
 
 $SMARTY = new Smarty;
 
@@ -89,13 +86,7 @@ header('X-Powered-By: LMS/'.$layout[lmsv]);
 
 $_SERVER[REMOTE_ADDR] = str_replace("::ffff:","",$_SERVER[REMOTE_ADDR]);
 
-if (isset($_SERVER[HTTP_X_FORWARDED_FOR])) { 
-    $SMARTY->display("w3cache.html");
-    die();
-}
-
 $userid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER[REMOTE_ADDR]));
-
 $balance = $LMS->GetUserBalanceList($userid);
 $userinfo = $LMS->GetUser($userid);
 
