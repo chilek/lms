@@ -45,7 +45,7 @@ if(isset($admininfo))
 
 	if($admininfo[login] == "")
 		$error[login] = "Pole login nie mo¿e byæ puste!";
-	elseif(!eregi("^[a-z0-9.-_]+$",$adminadd[login]))
+	elseif(!eregi("^[a-z0-9.-_]+$",$admininfo[login]))
 		$error[login] = "Login zawiera niepoprawne znaki!";
 
 	if($admininfo[name] == "")
@@ -102,6 +102,9 @@ $SMARTY->assign("layout",$layout);
 $SMARTY->display("admininfo.html");
 /*
  * $Log$
+ * Revision 1.21  2003/09/15 10:48:45  lukasz
+ * - http://bts.rulez.pl/bug_view_page.php?bug_id=0000072
+ *
  * Revision 1.20  2003/09/05 13:11:23  lukasz
  * - nowy sposób wy¶wietlania informacji o b³êdach
  *
