@@ -20,10 +20,28 @@ wersja 1.1.4 (??/??/2003):
   - kosmetyka kodu (s/this->ADB->/this->DB->/g) (lukasz)
   - b³êdy s± wy¶wietlane na dole strony, a nie wci¶niête gdzie siê tylko da do
     tabelek z formularzami (lukasz)
-  - dodany (przeniesiony z contrib) modu³ traffic-stats, do korzystania
-    z niego wymagane jest utworzenie tabeli 'stats' w bazie danych 
-    (patrz lms.mysql/lms.pgsql) i bin/lms-traffic (alec)
-  - nowa dokumentacja (sgml/html) (alec)
+  - dodany (przeniesiony z contrib) modu³ traffic-stats i bin/lms-traffic, 
+    do korzystania z nich wymagane jest utworzenie tabeli 'stats' w bazie 
+    danych (alec)
+    MySQL:
+	DROP TABLE IF EXISTS stats;
+	CREATE TABLE stats (
+	    nodeid int(11) NOT NULL DEFAULT '0',
+	    dt int(11) NOT NULL DEFAULT '0',
+	    upload int(11) DEFAULT '0',
+	    download int(11) DEFAULT '0',
+	    PRIMARY KEY (nodeid, dt)
+	) TYPE=MyISAM;
+    PostgreSQL:
+	DROP TABLE stats;
+	CREATE TABLE stats (
+	    nodeid integer DEFAULT 0 NOT NULL,
+	    dt integer DEFAULT 0 NOT NULL,
+	    upload integer DEFAULT 0,
+	    download integer DEFAULT 0,
+	    PRIMARY KEY (nodeid, dt)
+	);    
+  - nowa dokumentacja (sgml/html/txt) (alec)
   - poprawiony bug pozwalaj±cy na zapisanie mac adresu ze znakiem '-' podczas
     edycji danych komputera - teraz podobnie jak podczas dodawania - zamienia
     wszystkie '-' na ':' (lukasz)
