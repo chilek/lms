@@ -61,7 +61,7 @@ if (isset($_SESSION['rtp']) && !isset($_GET['page']))
 	$_GET['page'] = $_SESSION['rtp'];
 
 $queuedata['total'] = $queue['total'];
-$queuedata['state'] = $_SESSION['rts'];;
+$queuedata['state'] = $queue['state'];
 $queuedata['order'] = $queue['order'];
 $queuedata['direction'] = $queue['direction'];
 unset($queue['total']);
