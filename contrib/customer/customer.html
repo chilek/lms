@@ -2,9 +2,9 @@
 <!--// $Id$ //-->
 <html><head>
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-<meta http-equiv="Content-Language" content="pl">
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
-{* WSTAW SWÓJ TYTUŁ STRONY *}
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
+{* INSERT PAGE TITLE / WSTAW SWÓJ TYTUŁ STRONY *}
 <title></title>
 {literal}
 <STYLE type="text/css">
@@ -24,25 +24,25 @@
 			<TABLE WIDTH="750" CELLPADDING="5">
 				<TR>
 					<TD COLSPAN="3" CLASS="FBOTTOM">
-						<H1>Informacje o użytkowniku</H1>
+						<H1>{t}Customer Informations{/t}</H1>
 					</TD>
 				</TR>
 				{if $userinfo}
 				<TR>
 					<TD WIDTH="1%" NOWRAP>
-						<B>Numer identyfikacyjny:</B>
+						<B>{t}ID:{/t}</B>
 					</TD>
 					<TD WIDTH="54%">
 						{$userinfo.id|string_format:"%04d"}
 					</TD>
 					<TD ROWSPAN="5" WIDTH="45%" ALIGN="CENTER">
-						<H1>SALDO KOŃCOWE:</H1>
-						<H1>{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} zł</B>{else}{$userinfo.balance|default:"0"} zł{/if}</H1>
+						<H1>{t}Balance:{/t}</H1>
+						<H1>{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|money_format}</B>{else}{$userinfo.balance|money_format}{/if}</H1>
 					</TD>
 				</TR>
 				<TR>
 					<TD WIDTH="1%" NOWRAP>
-						<B>Nazwa klienta:</B>
+						<B>{t}Name/Surname:{/t}</B>
 					</TD>
 					<TD WIDTH="54%">
 						{$userinfo.username}
@@ -50,7 +50,7 @@
 				</TR>
 				<TR>
 					<TD WIDTH="1%" NOWRAP>
-						<B>Adres:</B>
+						<B>{t}Address:{/t}</B>
 					</TD>
 					<TD WIDTH="54%">
 						{$userinfo.address}
@@ -59,7 +59,7 @@
 				</TR>
 				<TR>
 					<TD WIDTH="1%" NOWRAP>
-						<B>Telefon:</B>
+						<B>{t}Phone:{/t}</B>
 					</TD>
 					<TD WIDTH="54%">
 						{$userinfo.phone1}
@@ -67,23 +67,23 @@
 				</TR>
 				<TR>
 					<TD WIDTH="1%" NOWRAP>
-						<B>Miesięcznych opłat:</B>
+						<B>{t}Monthly payments:{/t}</B>
 					</TD>
 					<TD WIDTH="54%">
-						{$userinfo.tariffsvalue|string_format:"%01.2f"} zł/mc
+						{$userinfo.tariffsvalue|money_format}
 					</TD>
 				</TR>
 				{else}
 				<TR>
 					<TD COLSPAN="3" WIDTH="100%" ALIGN="CENTER">
-						<FONT COLOR="RED"><H5>Państwa adres IP nie został rozpoznany przez system. Proszę się upewnić iż korzystają Państwo z komputera podłączonego do naszej sieci, oraz iż nie korzystają Państwo z serwerów proxy. Informacje o Państwa saldzie dostępne są jedynie z Państwa domowego komputera.</H5></FONT>
+						<FONT COLOR="RED"><H5>{t}Your IP address was not recognized by system. Please to ensure that you are using computer connected to our network, and you are not using proxy servers. Informations about your balance are accessible only from registered computer.{/t}</H5></FONT>
 					</TD>
 				</TR>
 				{/if}
 				{if $balance}
 				<TR>
 					<TD COLSPAN="3" ALIGN="CENTER">
-						<B>Bilans finansowy:</B>
+						<B>{t}Balance Sheet:{/t}</B>
 					</TD>
 				</TR>
 				<TR>
@@ -91,22 +91,22 @@
 						<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1">
 							<TR BGCOLOR="#000000">
 								<TD>
-									<FONT COLOR="#FFFFFF"><B>Lp.</B></FONT>
+									<FONT COLOR="#FFFFFF"><B>{t}No.{/t}</B></FONT>
 								</TD>
 								<TD>
-									<FONT COLOR="#FFFFFF"><B>Data:</B></FONT>
+									<FONT COLOR="#FFFFFF"><B>{t}Date:{/t}</B></FONT>
 								</TD>
 								<TD>
-									<FONT COLOR="#FFFFFF"><B>Rodzaj:</B></FONT>
+									<FONT COLOR="#FFFFFF"><B>{t}Type:{/t}</B></FONT>
 								</TD>
 								<TD ALIGN="RIGHT">
-									<FONT COLOR="#FFFFFF"><B>Wartość:</B></FONT>
+									<FONT COLOR="#FFFFFF"><B>{t}Value:{/t}</B></FONT>
 								</TD>
 								<TD ALIGN="RIGHT">
-									<FONT COLOR="#FFFFFF"><B>Saldo po:</B></FONT>
+									<FONT COLOR="#FFFFFF"><B>{t}After:{/t}</B></FONT>
 								</TD>
 								<TD>
-									<FONT COLOR="#FFFFFF"><B>Komentarz:</B></FONT>
+									<FONT COLOR="#FFFFFF"><B>{t}Comment:{/t}</B></FONT>
 								</TD>
 							</TR>
 							{section name=b loop=$balance.id}
@@ -121,10 +121,10 @@
 									{$balance.name[b]}
 								</TD>
 								<TD ALIGN="RIGHT">
-									{$balance.value[b]|string_format:"%01.2f"} zł
+									{$balance.value[b]|money_format}
 								</TD>
 								<TD ALIGN="RIGHT">
-									{$balance.after[b]|string_format:"%01.2f"} zł
+									{$balance.after[b]|money_format}
 								</TD>
 								<TD>
 									{$balance.comment[b]}
@@ -135,7 +135,7 @@
 								<TD COLSPAN="6" ALIGN="CENTER">
 									<BR>
 									<BR>
-									<B>Brak danych!</B><BR>
+									<B>{t}No such operations.{/t}</B><BR>
 									<BR>
 									<BR>
 								</TD>
@@ -155,7 +155,7 @@
 						<IMG SRC="lms-powered.png" ALT="Powered by LMS!">
 					</TD>
 					<TD COLSPAN="2" WIDTH="99%" ALIGN="RIGHT">
-						<FONT CLASS="BLEND">Wygenerowano przy użyciu LMS {$layout.lmsv}<BR>
+						<FONT CLASS="BLEND">{t 0=$layout.lmsv}Generated by LMS $0{/t}<BR>
 							&copy; 2001-2005 LMS Developers - <A HREF="http://lms.rulez.pl">http://lms.rulez.pl</A>
 						</FONT>
 					</TD>
