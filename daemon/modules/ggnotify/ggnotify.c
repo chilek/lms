@@ -214,7 +214,7 @@ struct ggnotify_module * init(GLOBAL *g, MODULE *m)
 	
 	ini = g->iniparser_load(g->inifile);
 
-	s = g->str_concat(instance, ":ggtemplate");
+	s = g->str_concat(instance, ":template");
 	n->ggtemplate = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":uin");
 	n->uin = g->iniparser_getint(ini, s, 0);
