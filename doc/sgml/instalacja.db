@@ -56,11 +56,11 @@
 	    <sect3>
 	      <title>Serwer baz danych</title>
 	      <para>Preferowany to MySQL. 3.23.53 i nowszy, starszy mo¿e te¿ dzia³aæ, je¶li nie to daj nam o tym znaæ ;-)</para>
-	      <para>LMS-UI oraz LMS-MGC <emphasis>mo¿e</emphasis> tak¿e dzia³aæ z postgresql, jednak narazie nikomu do tej pory nie chce siê przetestowaæ LMSa przy wspó³pracy z tym serwerem, a tak¿e zrobiæ zrzut baz.</para>
+	      <para>LMS-UI oraz LMS-MGC <emphasis>powinien</emphasis> tak¿e dzia³aæ z postgresql, jednak ta konfiguracja jest narazie w fazie testów.</para>
 	    </sect3>
 	    <sect3>
              <title>Biblioteki: Smarty i ADOdb</title>
-             <para>LMS-UI do pracy wymaga jeszcze bibliotek Smarty (<ulink url="http://smarty.php.net">http://smarty.php.net</ulink>) w wersji 2.5.0 lub wy¿szej oraz ADOdb (<ulink url="http://php.weblogs.com/ADOdb">http://php.weblogs.com/ADOdb</ulink>) w wersji 3.2.0 lub wy¿szej.</para>
+             <para>LMS-UI do pracy wymaga jeszcze bibliotek Smarty (<ulink url="http://smarty.php.net">http://smarty.php.net</ulink>) w wersji 2.5.0 lub wy¿szej oraz ADOdb (<ulink url="http://php.weblogs.com/ADOdb">http://php.weblogs.com/ADOdb</ulink>) w wersji 2.90 lub wy¿szej.</para>
             </sect3>
             <sect3>
             <title>Perl</title>

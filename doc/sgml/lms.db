@@ -11,7 +11,7 @@
   <bookinfo>
     <date>2003-04-07</date>
     <title>LMS - LAN Management System</title>
-    <subtitle>$id$</subtitle>
+    <subtitle>$id:$</subtitle>
     <authorgroup>
       <author>
         <firstname>Marcin</firstname>
