@@ -31,7 +31,7 @@
 
 char * itoa(int i)
 {
-	static char string[52];
+	static char string[12];
 	sprintf(string, "%d", i);
 	return string;
 }
