@@ -137,7 +137,7 @@ foreach my $line (@lines)
     {
  	if($upload || $download) # don't need zeroes 
 	{   
-	$dbq = $dbase->prepare("INSERT INTO stats (nodeid, dt, download, upload) VALUES($table{$ip} , $utsfmt, $download, $upload)");
+	$dbq = $dbase->prepare("INSERT INTO stats (nodeid, dt, download, upload) VALUES ( ".$table{$ip}.", $utsfmt, $download, $upload)");
     	$dbq->execute();
 	}
     	if(!$quiet)
