@@ -26,7 +26,7 @@
 
 $instance = $LMS->DB->GetRow('SELECT id, name, hostid, description, module, crontab, priority, disabled FROM daemoninstances WHERE id=?', array($_GET['id']));
 
-$layout['pagetitle'] = trans('Edit Instance: $0', $instance['name']);
+$layout['pagetitle'] = trans('Instance Edit: $0', $instance['name']);
 
 if($instedit = $_POST['instance']) 
 {

@@ -68,7 +68,7 @@ elseif(isset($_GET['statuschange']))
 
 $instance = $LMS->DB->GetRow('SELECT daemoninstances.name AS name, daemonhosts.name AS hostname FROM daemoninstances, daemonhosts WHERE daemonhosts.id=hostid AND daemoninstances.id=?', array($config['instanceid']));
 
-$layout['pagetitle'] = trans('Edit Option: $0/$1/$2', $config['var'], $instance['name'], $instance['hostname']);
+$layout['pagetitle'] = trans('Option Edit: $0/$1/$2', $config['var'], $instance['name'], $instance['hostname']);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

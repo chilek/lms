@@ -32,7 +32,7 @@ function GetHostIdByName($name)
 
 $host = $LMS->DB->GetRow('SELECT id, name, description FROM daemonhosts WHERE id=?', array($_GET['id']));
 
-$layout['pagetitle'] = trans('Edit Host: $0', $host['name']);
+$layout['pagetitle'] = trans('Host Edit: $0', $host['name']);
 
 if($hostedit = $_POST['hostedit']) 
 {
