@@ -71,19 +71,20 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 		// set timestamps
 		if(execu)
 		{
-			g->db_exec("DELETE FROM timestamps WHERE tablename = 'users' OR tablename = '_global'");
+			g->db_exec("DELETE FROM timestamps WHERE tablename = 'users'");
 			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('users',%NOW%)");
-			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('_global',%NOW%)");
 		}
 		if(execn)
 		{
-			g->db_exec("DELETE FROM timestamps WHERE tablename = 'nodes' OR tablename = '_global'");
+			g->db_exec("DELETE FROM timestamps WHERE tablename = 'nodes'");
 			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('nodes',%NOW%)");
-			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('_global',%NOW%)");
-
 		}	
 		if(execn || execu)
+		{
+			g->db_exec("DELETE FROM timestamps WHERE tablename = '_global'");
+			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('_global',%NOW%)");
 			system(c->command);
+		}
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/cutoff] reloaded", c->base.instance);
 #endif
