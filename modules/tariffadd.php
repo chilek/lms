@@ -69,7 +69,7 @@ if(isset($tariffadd))
 	
 }
 
-$layout[pagetitle]="Dodaj taryfê";
+$layout[pagetitle]="Nowa taryfa";
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("error",$error);
@@ -78,6 +78,9 @@ $SMARTY->display("tariffadd.html");
 
 /*
  * $Log$
+ * Revision 1.26  2003/10/05 20:37:15  alec
+ * ujednolicenie interfejsu
+ *
  * Revision 1.25  2003/09/09 01:22:28  lukasz
  * - nowe finanse
  * - kosmetyka
