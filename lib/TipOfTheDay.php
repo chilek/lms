@@ -88,3 +88,11 @@ $tipoftheday[] = "01:04 < [hunter]> robiæ dokumentacje ?
 mt_srand ((double) microtime()* 100000000);
 $layout[tip] = $tipoftheday[mt_rand(0,sizeof($tipoftheday)-1)];
 
+/*
+ * $Log$
+ * Revision 1.15  2003/08/18 16:57:00  lukasz
+ * - more cvs tags :>
+ *
+ */
+
+?>
