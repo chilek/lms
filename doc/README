@@ -696,6 +696,10 @@ database = /usr/local/lms/lms.db
        Limit wy¶wietlanych pozycji na stronie w li¶cie domen. Domy¶lnie:
        100.
        Przyk³ad: domainlist_pagelimit = 25
+     * aliaslist_pagelimit
+       Limit wy¶wietlanych pozycji na stronie w li¶cie aliasów.
+       Domy¶lnie: 100.
+       Przyk³ad: aliaslist_pagelimit = 25
      * reload_type
        Typ reloadu. Dozwolone warto¶ci:
        exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo,
@@ -1382,9 +1386,11 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    11. Oznacza to, ¿e do rozpoznawania typu konta w warunkach WHERE
    zapytañ SQL nale¿y stosowaæ sumowanie binarne (jak na przyk³adach w
    dalszej czê¶ci rozdzia³u).
+
+   Masz tak¿e mo¿liwo¶æ definiowania domen i aliasów.
      _________________________________________________________________
 
-3.8.1. Lista
+3.8.1. Konta
 
    Na li¶cie przedstawione s± podstawowe informacje o kontach. Mo¿liwe
    jest dowolne sortowanie listy poprzez klikniêcie nazwy kolumny oraz
@@ -1395,13 +1401,34 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
 
 3.8.2. Nowe konto
 
-   Definiuj±c dane konto musisz podaæ unikalny login, has³o, wybraæ typ
-   konta oraz przypisaæ u¿ytkownika (lub utworzyæ tzw. konto systemowe).
-   Nazwa domeny oraz data wa¿no¶ci konta s± opcjonalne. Pozostawienie
-   pustego pola z dat± oznacza, ¿e konto nigdy nie wygasa.
+   Definiuj±c dane konto musisz podaæ login, has³o i wybraæ typ konta
+   oraz przypisaæ u¿ytkownika (lub utworzyæ tzw. konto systemowe). Nazwa
+   domeny jest wymagana tylko dla kont mailowych. Data wa¿no¶ci konta
+   jest opcjonalna. Pozostawienie pustego pola z dat± oznacza, ¿e konto
+   nigdy nie wygasa.
      _________________________________________________________________
 
-3.8.3. Przyk³ady
+3.8.3. Aliasy
+
+   Konta (g³ównie mailowe) mog± posiadaæ dowoln± ilo¶æ aliasów.
+   Administrator serwera pocztowego mo¿e przekierowaæ (lokalnie) pocztê z
+   wszystkich aliasów do jednego kota. Na li¶cie aliasów przedstawione s±
+   podstawowe informacje o nich i o kontach na które aliasy te wskazuj±.
+   Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy kolumny
+   oraz filtrowanie wg zadanych kryteriów. Nie ma mo¿liwo¶ci edycji
+   aliasu, nale¿y go usun±æ i utworzyæ nowy. Dodawanie nowego aliasu
+   nastêpuje poprzez formularz na dole listy.
+     _________________________________________________________________
+
+3.8.4. Domeny
+
+   Na li¶cie przedstawione s± podstawowe informacje o zdefiniowanych
+   domenach. Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie
+   nazwy kolumny. Mo¿liwa jest edycja danych domeny po wybraniu ikony
+   [Edytuj]. Do utworzenia nowej domeny s³u¿y formularz na dole listy.
+     _________________________________________________________________
+
+3.8.5. Przyk³ady
 
    Poni¿szy listing zawiera istotne fragmenty pliku konfiguracyjnego
    demona proftpd (w wersji 1.2.10) umo¿liwiaj±cy przechowywanie danych o
@@ -1494,6 +1521,7 @@ PGSQL_SELECT_CLAUSE SELECT login, \
 virtual_mailbox_base = /var/spool/mail/virtual
 virtual_mailbox_domains = pgsql:/etc/postfix/pgsql_virtual_domains_maps.cf
 virtual_mailbox_maps = pgsql:/etc/postfix/pgsql_virtual_mailbox_maps.cf
+virtual_alias_maps = pgsql:/etc/postfix/pgsql_virtual_alias_maps.cf
 
 # pgsql_virtual_domains_maps.cf (Postfix):
 
@@ -1516,6 +1544,19 @@ query = SELECT login || '/' FROM passwd, domains WHERE domainid = domains.id
         AND login = '%u' AND domains.name = '%d'
         AND type & 2 = 2
         AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+
+# pgsql_virtual_alias_maps.cf (Postfix):
+
+user = lms
+password = has³o
+hosts = localhost
+dbname = lms
+#query = SELECT CONCAT(passwd.login,'@',domains.name) FROM passwd, domains, aliases
+#       WHERE passwd.domainid = domains.id AND passwd.id = aliases.accountid
+#       AND aliases.login = '%u' AND domains.name = '%d'
+query = SELECT passwd.login || '@' domains.name FROM passwd, domains, aliases
+        WHERE passwd.domainid = domains.id AND passwd.id = aliases.accountid
+        AND aliases.login = '%u' AND domains.name = '%d'
      _________________________________________________________________
 
 3.9. Mailing
@@ -3857,16 +3898,30 @@ Rozdzia³ 7. Dla dociekliwych
    home - katalog domowy (/home/[login])
    type - typ konta (suma: 1-shell, 2-poczta, 4-www, 8-ftp)
    expdate - data wa¿no¶ci konta
-   domain - nazwa domeny (np. dla kont www i pocztowych)
+   domainid - identyfikator domeny z tabeli 'domains'
      _________________________________________________________________
 
-7.2.16. Historia ('timestamps')
+7.2.16. Domeny ('domains')
+
+   id - identyfikator rekordu
+   name - nazwa domeny
+   description - opis
+     _________________________________________________________________
+
+7.2.17. Aliasy ('aliases')
+
+   id - identyfikator rekordu
+   login - nazwa konta (bez domeny)
+   accountid - identyfikator konta
+     _________________________________________________________________
+
+7.2.18. Historia ('timestamps')
 
    time - czas ostatniej modyfikacji
    tablename - nazwa tabeli
      _________________________________________________________________
 
-7.2.17. Statystyki wykorzystania ³±cza ('stats')
+7.2.19. Statystyki wykorzystania ³±cza ('stats')
 
    nodeid - numer komputera
    dt - znacznik czasu
@@ -3874,7 +3929,7 @@ Rozdzia³ 7. Dla dociekliwych
    download - ilo¶æ danych odebranych, w bajtach
      _________________________________________________________________
 
-7.2.18. Helpdesk - kolejki ('rtqueues')
+7.2.20. Helpdesk - kolejki ('rtqueues')
 
    id - identyfikator
    name - nazwa
@@ -3882,7 +3937,7 @@ Rozdzia³ 7. Dla dociekliwych
    description - opis dodatkowy
      _________________________________________________________________
 
-7.2.19. Helpdesk - zg³oszenia ('rttickets')
+7.2.21. Helpdesk - zg³oszenia ('rttickets')
 
    id - identyfikator
    queueid - identyfikator kolejki
@@ -3894,7 +3949,7 @@ Rozdzia³ 7. Dla dociekliwych
    createtime - data zg³oszenia
      _________________________________________________________________
 
-7.2.20. Helpdesk - wiadomo¶ci ('rtmessages')
+7.2.22. Helpdesk - wiadomo¶ci ('rtmessages')
 
    id - identyfikator
    ticketid - identyfikator zg³oszenia
@@ -3910,14 +3965,14 @@ Rozdzia³ 7. Dla dociekliwych
    createtime - data utworzenia/wys³ania/odebrania
      _________________________________________________________________
 
-7.2.21. Helpdesk - za³±czniki ('rtattachments')
+7.2.23. Helpdesk - za³±czniki ('rtattachments')
 
    messageid - identyfikator wiadomo¶ci
    filename - nazwa pliku
    contenttype - typ pliku
      _________________________________________________________________
 
-7.2.22. Helpdesk - uprawnienia ('rtrights')
+7.2.24. Helpdesk - uprawnienia ('rtrights')
 
    id - identyfikator
    queueid - identyfikator kolejki
@@ -3925,7 +3980,7 @@ Rozdzia³ 7. Dla dociekliwych
    rights - (1-odczyt, 2-zapis)
      _________________________________________________________________
 
-7.2.23. Konfiguracja LMS-UI ('uiconfig')
+7.2.25. Konfiguracja LMS-UI ('uiconfig')
 
    id - identyfikator
    section - nazwa sekcji
@@ -3935,7 +3990,7 @@ Rozdzia³ 7. Dla dociekliwych
    disabled - wy³±czenie opcji (0-w³., 1-wy³.)
      _________________________________________________________________
 
-7.2.24. Informacje o bazie danych ('dbinfo')
+7.2.26. Informacje o bazie danych ('dbinfo')
 
    keytype - typ
    keyvalue - warto¶æ
@@ -4287,7 +4342,7 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
    jednego urz±dzenia mo¿na pod³±czyæ maksymalnie 24 komputery (tyle
    bêdzie widoczne na mapie, mo¿na pod³±czyæ wiêcej, ale zostan±
    pominiête). Podobnie wygl±da sprawa z urz±dzeniami. Ka¿de urz±dzenie
-   sieciowe mo¿e mieæ pod³±czonych 24 innych urz±dzeñ. Z tym, ¿e w w
+   sieciowe mo¿e mieæ pod³±czonych 24 innych urz±dzeñ. Z tym, ¿e w
    przypadku urz±dzeñ, w pewnych warunkach (czêsto) liczba ta mo¿e siê
    zmniejszyæ (w zale¿no¶ci od rozmieszczenia urz±dzeñ na siatce mapy).
    Po przekroczeniu tej liczby mog± wystêpowaæ b³êdne po³±czenia

@@ -295,7 +295,23 @@
 				<member>home - katalog domowy (/home/[login])</member>
 				<member>type - typ konta (suma: 1-shell, 2-poczta, 4-www, 8-ftp)</member>
 				<member>expdate - data wa¿no¶ci konta</member>
-				<member>domain - nazwa domeny (np. dla kont www i pocztowych)</member>
+				<member>domainid - identyfikator domeny z tabeli 'domains'</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="domains">
+			<title>Domeny ('domains')</title>
+			<simplelist>
+				<member>id - identyfikator rekordu</member>
+				<member>name - nazwa domeny</member>
+				<member>description - opis</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="aliases">
+			<title>Aliasy ('aliases')</title>
+			<simplelist>
+				<member>id - identyfikator rekordu</member>
+				<member>login - nazwa konta (bez domeny)</member>
+				<member>accountid - identyfikator konta</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="timestamps">
