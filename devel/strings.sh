@@ -9,7 +9,7 @@ for FILENAME in `ls ../templates/*.html`
 do
     echo -n "$FILENAME... "
 #    cat ../templates/$FILENAME | sed -r -e 's/(\/t\})/\1\n/g' | sed -r -n -e 's/.*\{t[^}]*\}([^{]*)\{\/t}.*/\1/gp' -e 's/.*text=\"([^"]*)\".*/\1/gp' >> tmp_strings
-    cat $FILENAME | sed -r -e 's/(\/t\})/\1\n/g' | perl -ne 'print if s/.*\{t[^}]*\}([^{]*)\{\/t}.*/$1/ or s/.*text=\"(.*?[^\\])\".*/$1/' >> tmp_strings
+    cat $FILENAME | perl -pe 's/(\/t\})/$1\n/g' | perl -ne 'print if s/.*\{t[^}]*\}([^{]*)\{\/t}.*/$1/ or s/.*text=\"(.*?[^\\])\".*/$1/' >> tmp_strings
     echo "done."
 done
 
