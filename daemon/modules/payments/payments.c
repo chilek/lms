@@ -55,7 +55,7 @@ unsigned char * get_period(struct tm *today, int period, int up_payments)
 	if( up_payments )
 		switch(period) {
 			case 1:	//year
-				t->tm_mday += 365;
+				t->tm_mon += 12;
 				break;
 			case 2:	//month
 				t->tm_mon += 1;
@@ -67,7 +67,7 @@ unsigned char * get_period(struct tm *today, int period, int up_payments)
 	else
 		switch(period) {
 			case 1:	//year
-				t->tm_mday -= 365;
+				t->tm_mon -= 12;
 				break;
 			case 2:	//month
 				t->tm_mon -= 1;
@@ -96,15 +96,17 @@ unsigned char * get_period(struct tm *today, int period, int up_payments)
 
 void reload(GLOBAL *g, struct payments_module *p)
 {
-	QUERY_HANDLE *res;
-	unsigned char *query, *insert, *w_period, *m_period, *y_period, *value;
-	int i, invoiceid, exec=0;
+	QUERY_HANDLE *res, *result;
+	unsigned char *query, *insert, *insert_inv, *update;
+	unsigned char *w_period, *m_period, *y_period, *value;
+	int i, invoiceid, last_userid=0, number=0, exec=0;
 
 	time_t t;
 	struct tm *tt;
 	unsigned char monthday[3], month[3], year[5], weekday[2], yearday[4];  //odjac jeden?
 	unsigned char yearstart[12], yearend[12];
 	
+	// get current date
 	t = time(NULL);
 	tt = localtime(&t);
 	strftime(monthday, 	sizeof(monthday), 	"%d", tt);
@@ -126,81 +128,21 @@ void reload(GLOBAL *g, struct payments_module *p)
 	strftime(yearend,	sizeof(yearend),	"%s",tt);
 
 	// first get max invoiceid for present year
-	query = strdup("SELECT MAX(invoiceid) AS invoiceid FROM cash WHERE time >= %yearstart AND time <= %yearend");
+	query = strdup("SELECT MAX(number) AS number FROM invoices WHERE cdate >= %yearstart AND cdate <= %yearend");
 	g->str_replace(&query, "%yearstart", yearstart);
 	g->str_replace(&query, "%yearend", yearend);
 
 	if( (res = g->db_query(query))!= NULL ) {
  
  		if( res->nrows )
-			invoiceid = atoi(g->db_get_data(res,0,"invoiceid"));
-		else
-			invoiceid = 0;
+			number = atoi(g->db_get_data(res,0,"number"));
 		g->db_free(res);
 		free(query);
 	
-		// monthly payments
-		query = strdup("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period = 0 AND at=%day");
-		g->str_replace(&query, "%day", monthday);
-
-		if( (res = g->db_query(query))!= NULL ) {
-	
-			for(i=0; i<res->nrows; i++) {
-			
-				if( atoi(value = g->db_get_data(res,i,"value")) ) {
-			
-    					insert = strdup("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (?NOW?, 4, %value, %userid, '%comment', %invoiceid)");
-				
-					if( atoi(g->db_get_data(res,i,"invoice")) )
-						g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
-					else
-						g->str_replace(&insert, "%invoiceid", "0");
-					
-					g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
-					g->str_replace(&insert, "%value", value);
-					g->str_replace(&insert, "%comment", p->comment);
-					g->str_replace(&insert, "%tariff", g->db_get_data(res,i,"name"));
-					g->str_replace(&insert, "%period", m_period);	
-					exec = g->db_exec(insert);
-					free(insert);
-				}
-			}
-    			g->db_free(res);
-		}	
-		free(query);
-
-		// weekly payments
-		query = strdup("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period = 1 AND at = %weekday");
+		// payments accounting and invoices writing
+		query = strdup("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, sww, uprate, downrate, tariffs.name AS tariff, invoice, (lastname || ' ' || users.name) AS name, address, zip, city, nip, phone1 AS phone  FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND ((period = 0 AND at = %monthday) OR (period = 1 AND at = %weekday) OR (period = 2 AND at = %yearday)) ORDER BY userid, value DESC");
+		g->str_replace(&query, "%monthday", monthday);
 		g->str_replace(&query, "%weekday", weekday);
-	
-		if( (res = g->db_query(query))!= NULL ) {
-	
-			for(i=0; i<res->nrows; i++) {
-			
-				if( atoi(value = g->db_get_data(res,i,"value")) ) {
-			
-    					insert = strdup("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (?NOW?, 4, %value, %userid, '%comment', %invoiceid)");
-			
-					if( atoi(g->db_get_data(res,i,"invoice")) )
-						g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
-					else
-						g->str_replace(&insert, "%invoiceid", "0");
-					
-					g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
-					g->str_replace(&insert, "%value", value);
-					g->str_replace(&insert, "%comment", p->comment);
-					g->str_replace(&insert, "%tariff", g->db_get_data(res,i,"name"));
-					g->str_replace(&insert, "%period", w_period);	
-					exec = g->db_exec(insert);
-					free(insert);
-				}
-			}
-    			g->db_free(res);
-		}	
-		free(query);	
-	
-		// yearly payments
-		query = strdup("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period = 2 AND at = %yearday");
 		g->str_replace(&query, "%yearday", yearday);
 	
 		if( (res = g->db_query(query))!= NULL ) {
@@ -209,26 +151,92 @@ void reload(GLOBAL *g, struct payments_module *p)
 			
 				if( atoi(value = g->db_get_data(res,i,"value")) ) {
 			
-    					insert = strdup("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (?NOW?, 4, %value, %userid, '%comment', %invoiceid)");
-			
-					if( atoi(g->db_get_data(res,i,"invoice")) )
-						g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
-					else
-						g->str_replace(&insert, "%invoiceid", "0");
-					
+    					// prepare insert to 'cash' table
+					insert = strdup("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (%now, 4, %value, %userid, '%comment', %invoiceid)");
+					g->str_replace(&insert, "%now", itoa((int)t));
+					g->str_replace(&insert, "%comment", p->comment);
 					g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
 					g->str_replace(&insert, "%value", value);
-					g->str_replace(&insert, "%comment", p->comment);
-					g->str_replace(&insert, "%tariff", g->db_get_data(res,i,"name"));
-					g->str_replace(&insert, "%period", y_period);	
-					exec = g->db_exec(insert);
+					g->str_replace(&insert, "%tariff", g->db_get_data(res,i,"tariff"));
+					switch( atoi(g->db_get_data(res,i,"period")) ) {
+						case 0:	g->str_replace(&insert, "%period", m_period); break;
+						case 1:	g->str_replace(&insert, "%period", w_period); break;
+						case 2: g->str_replace(&insert, "%period", y_period); break;
+					}
+					
+					if( atoi(g->db_get_data(res,i,"invoice")) ) {
+					
+						if( last_userid != atoi(g->db_get_data(res,i,"userid")) ) {
+							// prepare insert to 'invoices' table
+							insert_inv = strdup("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, cdate, paytime, finished) VALUES (%number, %customerid, '%name', '%address', '%zip', '%city', '%phone', '%nip', %cdate, 14, 1 )");
+							g->str_replace(&insert_inv, "%number", itoa(++number));
+							g->str_replace(&insert_inv, "%customerid", g->db_get_data(res,i,"userid"));				
+							g->str_replace(&insert_inv, "%name", g->db_get_data(res,i,"name"));
+							g->str_replace(&insert_inv, "%address", g->db_get_data(res,i,"address"));
+							g->str_replace(&insert_inv, "%zip", g->db_get_data(res,i,"zip"));
+							g->str_replace(&insert_inv, "%city", g->db_get_data(res,i,"city"));
+							g->str_replace(&insert_inv, "%phone", g->db_get_data(res,i,"phone"));
+							g->str_replace(&insert_inv, "%nip", g->db_get_data(res,i,"nip"));
+							g->str_replace(&insert_inv, "%cdate", itoa((int)t));
+							
+							g->db_exec(insert_inv);			
+							free(insert_inv);
+							
+							// ma³e uproszczenie w stosunku do lms-payments
+							if( (result = g->db_query("SELECT MAX(id) AS id FROM invoices"))!=NULL ) {
+								invoiceid = (result->nrows ? atoi(g->db_get_data(result,0,"id")) : 0);
+								g->db_free(result);
+							}
+						}
+						
+						free(query);
+						query = strdup("SELECT * FROM invoicecontents WHERE tariffid = %tariffid AND invoiceid = %invoiceid"); 
+						g->str_replace(&query, "%invoiceid", itoa(invoiceid));
+						g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
+						
+						if( (result = g->db_query(query))!=NULL ) {
+							
+							free(query);
+							if( result->nrows ) {
+								query = strdup("UPDATE invoicecontents SET count=count+1 WHERE tariffid = %tariffid AND invoiceid = %invoiceid");
+								g->str_replace(&query, "%invoiceid", itoa(invoiceid));
+								g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
+							} else {
+								query = strdup("INSERT INTO invoicecontents (invoiceid, value, taxvalue, sww, content, count, description, tariffid) VALUES (%invoiceid, %value, %taxvalue, '%sww', 'szt.', 1, '%description', %tariffid)");
+								g->str_replace(&query, "%invoiceid", itoa(invoiceid));
+								g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
+								g->str_replace(&query, "%value", g->db_get_data(res,i,"value"));
+								g->str_replace(&query, "%taxvalue", g->db_get_data(res,i,"taxvalue"));
+								g->str_replace(&query, "%sww", g->db_get_data(res,i,"sww"));
+								g->str_replace(&query, "%description", p->comment);
+								g->str_replace(&query, "%tariff",  g->db_get_data(res,i,"tariff")); //uwaga na %tariffid
+								switch( atoi(g->db_get_data(res,i,"period")) ) {
+								    case 0: g->str_replace(&query, "%period", m_period); break;
+								    case 1: g->str_replace(&query, "%period", w_period); break;
+								    case 2: g->str_replace(&query, "%period", y_period); break;
+								}
+							}
+							g->db_exec(query);									
+							g->db_free(result);
+						}
+						
+						g->str_replace(&insert, "%invoiceid", itoa(invoiceid));
+						exec = g->db_exec(insert);
+					
+					} else {
+						g->str_replace(&insert, "%invoiceid", "0");
+						exec = g->db_exec(insert);
+					}
+
+					last_userid = atoi(g->db_get_data(res,i,"userid"));
 					free(insert);
+					
 				}
 			}
     			g->db_free(res);
 		}	
-		free(query);			
-			
+		free(query);
+
 		// set timestamps
 		if( exec) {
 			g->db_exec("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
@@ -244,7 +252,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	} 
 	else {
 		free(query);
-		syslog(LOG_ERR, "[%s/payments] Unable to read 'cash' table for invoice max id",p->base.instance);
+		syslog(LOG_ERR, "[%s/payments] Unable to read 'invoices' table",p->base.instance);
 	}
 
 	// clean up
@@ -272,7 +280,7 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	s = g->str_concat(instance, ":comment");
 	p->comment = strdup(g->iniparser_getstring(ini, s, "Abonament wg taryfy: %tariff za okres: %period"));
 	free(s); s = g->str_concat(instance, ":up_payments");
-	p->up_payments = g->iniparser_getboolean(ini, s, 0);
+	p->up_payments = g->iniparser_getboolean(ini, s, 1);
 	
 	g->iniparser_freedict(ini);
 	free(s);
