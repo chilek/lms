@@ -58,6 +58,9 @@ elseif(isset($useradd))
 
 	if($useradd['gguin'] !=0 && !eregi('^[0-9]{4,}$',$useradd['gguin']))
 		$error['gguin'] = 'Podany numer GG jest niepoprawny!';
+
+        if(!eregi('[0-9]{4,}$',$useradd['pin']))
+	        $error['pin'] = 'Podany numer PIN jest niepoprawny!';
 	
 	if(!$error)
 	{
