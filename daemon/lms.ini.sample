@@ -48,7 +48,7 @@ module 		= /home/alec/devel/lmsd/modules/ethers/ethers.so
 ; module: ¶cie¿ka do modu³u (bezwglêdna lub wzglêdna). 
 
 file		= /etc/ethers
-; tmpfile: lokalizacja wygenerowanego pliku. Domyslnie: /tmp/ethers.
+; file: lokalizacja wygenerowanego pliku. Domyslnie: /tmp/ethers.
 
 command		= /bin/sh /tmp/ethers
 ; command: komenda do wykonania po wygenerowaniu pliku. Domy¶lnie pusta.
@@ -79,7 +79,7 @@ append  	= /usr/sbin/iptables -A filterchain -j REJECT\n
 ; append: co dopisaæ na koniec pliku?
 
 file		= /tmp/firewall
-; tempfile: gdzie zapisaæ plik? oczywi¶cie w przysz³o¶ci jaka¶ lokalizacja która
+; file: gdzie zapisaæ plik? oczywi¶cie w przysz³o¶ci jaka¶ lokalizacja która
 ; jest zapisywalna tylko przez lmsd'a
 
 command		= /bin/sh /tmp/firewall
