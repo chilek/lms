@@ -1371,11 +1371,16 @@ class LMS
 		$stan=-$stan;
 		return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (?NOW?, ?, ?, ?, ?)",array($this->SESSION->id, 3 , round("$stan",2) , $user_id));
 	}
+	
 	function AddBalance($addbalance)
 	{
 		$this->SetTS("cash");
-		return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
+		if($addbalance['time'])
+			return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES (?, ?, ?, ?, ?, ?, ?)",array($addbalance['time'],$this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
+		else
+			return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
 	}
+	
 	function GetBalanceList()
 	{
 		$adminlist = $this->DB->GetAllByKey('SELECT id, name FROM admins','id');
@@ -1926,7 +1931,6 @@ class LMS
 
 	function GetNetDevList($order="name,asc")
 	{
-
 		list($order,$direction) = explode(",",$order);
 
 		($direction=="desc") ? $direction = "desc" : $direction = "asc";
