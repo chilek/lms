@@ -30,6 +30,8 @@ if(!$LMS->NodeExists($_GET[id]))
 	else
 		header("Location: ?m=nodelist");
 
+$layout[pagetitle]="Informacje o komputerze";
+
 $nodeid = $_GET[id];
 $ownerid = $LMS->GetNodeOwner($nodeid);
 
@@ -41,6 +43,7 @@ if(!isset($_GET[ownerid]))
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($ownerid));
 $SMARTY->assign("userinfo",$LMS->GetUser($ownerid));
 $SMARTY->assign("nodeinfo",$LMS->GetNode($nodeid));
+$SMARTY->assign("layout",$layout);
 $SMARTY->display("nodeinfo.html");
 
 ?>
