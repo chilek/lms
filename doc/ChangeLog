@@ -3,7 +3,7 @@ $Id$
 wersja 1.2.7 Ayiana (15/10/2004):
 
   - nazwa interfejsu mo¿e siê teraz tak¿e odnosiæ do przestarza³ego systemu
-    aliasowania, b±d¼ intefejsów w VLAN'ach (JacekK/alec+lukasz)
+    aliasowania, b±d¼ interfejsów w VLAN'ach (JacekK/alec+lukasz)
   - naprawione sumowanie kolumny 0% w rejestrze sprzeda¿y (alec)
 
 wersja 1.2.6 Dreylock (24/09/2004):
