@@ -70,7 +70,7 @@ if(isset($nodeedit))
 	foreach($nodeedit as $key => $value)
 		$nodeedit[$key] = trim($value);
 	
-	if($nodeedit['ipaddr']=='' && $nodeedit['mac']=='' && $nodeedit['name']=='')
+	if($nodeedit['ipaddr']=='' && $nodeedit['mac']=='' && $nodeedit['name']=='' && $nodeedit['info']=='')
 	{
 		header('Location: ?m=nodeinfo&id='.$nodeedit['id']);
 		die;

@@ -82,6 +82,16 @@
 			{if $nodeinfo.lastonline}{$nodeinfo.lastonlinedate}{else}-{/if}
 		</TD>
 	</TR>
+{if $nodeinfo.info}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/info.gif" BORDER="0" ALT="Opis:">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			<TEXTAREA ROWS="5" COLS="50">{$nodeinfo.info}</TEXTAREA>
+		</TD>
+	</TR>
+{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
