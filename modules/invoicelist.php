@@ -33,12 +33,32 @@ if( sizeof($marks) )
 	foreach($marks as $marksid => $mark)
 		$marked[] = $mark;
 
-$invoicelist = $LMS->GetInvoicesList();
+if(isset($_POST['search']))
+	$s = $_POST['search'];
+else
+	$s = $_SESSION['ils'];
+$_SESSION['ils'] = $s;
+
+if(isset($_POST['cat']))
+	$c = $_POST['cat'];
+else
+	$c = $_SESSION['ilc'];
+$_SESSION['ilc'] = $c;
+
+if($c == 'cdate' && $s)
+{
+	list($year, $month, $day) = explode('/', $s);
+	$s = mktime(0,0,0, $month, $day, $year);
+}
+
+$invoicelist = $LMS->GetInvoicesList($s, $c);
 
 $listdata['startdate'] = $invoicelist['startdate'];
 $listdata['enddate'] = $invoicelist['enddate'];
 $listdata['startyear'] = date('Y',$listdata['startdate']);
 $listdata['endyear'] = date('Y',$listdata['enddate']);
+$listdata['cat'] = $_SESSION['ilc'];
+$listdata['search'] = $_SESSION['ils'];
 
 unset($invoicelist['startdate'], $invoicelist['enddate']);
 

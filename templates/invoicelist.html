@@ -69,6 +69,14 @@
 		document.page.target="";
 		document.page.submit();
 	}
+
+	function filter()
+	{
+		document.page.action="?m=invoicelist";
+		document.page.target="";
+		document.page.submit();
+	}
+
 	//-->
 </SCRIPT>
 {/literal}
@@ -96,6 +104,23 @@
 			&nbsp;
 		</TD>
 	</TR>
+	<TR class="DARK">
+		<TD class="fall" colspan="7" nowrap>
+				<B>{t}Filter:{/t} </B> 
+				<INPUT name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
+				<SELECT size="1" name="cat">
+					<OPTION value=""{if $listdata.cat eq ""} SELECTED{/if}>{t}- select filter category -{/t}</OPTION>
+					<OPTION value="cdate"{if $listdata.cat eq "cdate"} SELECTED{/if}>{t}date (YYYY/MM/DD){/t}</OPTION>
+					<OPTION value="number"{if $listdata.cat eq "number"} SELECTED{/if}>{t}number{/t}</OPTION>
+					<OPTION value="value"{if $listdata.cat eq "value"} SELECTED{/if}>{t}value{/t}</OPTION>
+					<OPTION value="name"{if $listdata.cat eq "name"} SELECTED{/if}>{t}customer name{/t}</OPTION>
+					<OPTION value="customerid"{if $listdata.cat eq "customerid"} SELECTED{/if}>{t}customer ID{/t}</OPTION>
+					<OPTION value="nip"{if $listdata.cat eq "nip"} SELECTED{/if}>{t}FIN{/t}</OPTION>
+					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{t}address{/t}</OPTION>
+				</SELECT>&nbsp;
+				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
+		</TD>
+	</TR>		
 	{if $listdata.totalpos != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">

@@ -1710,9 +1710,43 @@ class LMS
 		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE invoiceid=?', array($invoiceid)) >= 0 ? TRUE : FALSE;
 	}
 
-	function GetInvoicesList()
+	function GetInvoicesList($search=NULL, $cat=NULL)
 	{
-		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value*count) AS value, COUNT(invoiceid) AS count FROM invoices, invoicecontents WHERE invoiceid = id AND finished = 1 GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
+		if($search && $cat)
+		{
+			switch($cat)
+			{
+				case 'value':
+					$where = ' AND value*count = '.intval($search);
+					break;
+				case 'number':
+					$where = ' AND number = '.intval($search);
+					break;
+				case 'cdate':
+					$where = ' AND cdate >= '.$search.' AND cdate < '.($search+86400);
+					break;
+				case 'nip':
+					$where = ' AND nip = '.$search;
+					break;
+				case 'customerid':
+					$where = ' AND customerid = '.intval($search);
+					break;
+				case 'name':
+					$where = ' AND name ?LIKE? \'%'.$search.'%\'';
+					break;
+				case 'address':
+					$where = ' AND address ?LIKE? \'%'.$search.'%\'';
+					break;
+			}
+		}
+
+		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, 
+						SUM(value*count) AS value, COUNT(invoiceid) AS count 
+						FROM invoices, invoicecontents 
+						WHERE invoiceid = id AND finished = 1 '
+						.$where
+						.' GROUP BY id, number, cdate, customerid, name, address, zip, city, finished 
+						ORDER BY cdate ASC'))
 		{
 			$inv_paid = $this->DB->GetAllByKey('SELECT invoiceid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum FROM cash WHERE invoiceid!=0 GROUP BY invoiceid','id');
 			foreach($result as $idx => $row)
