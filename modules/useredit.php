@@ -46,10 +46,12 @@ if(isset($userdata))
 
 	if($userdata[zip] !="" && !eregi("^[0-9]{2}-[0-9]{3}$",$userdata[zip]))
 		$error[zip] = "Podany kod pocztowy jest b³êdny!";
-	
+
+	if($userdata[gguin] == 0)
+		unset($userdata[gguin]);
+
 	if($userdata[gguin] !="" && !eregi("^[0-9]{4,}$",$userdata[gguin]))
 		$error[gguin] = "Podany numer GG jest niepoprawny!";
-	elseif($userdata[gguin] =="") $userdata[gguin] = NULL;
 
 	if(!$LMS->TariffExists($userdata[tariff]))
 		$error[tariff] = "Proszê wybraæ taryfê!";
