@@ -36,10 +36,10 @@ SRC="images/logo-small.png"></P
 ></DIV
 ><H3
 CLASS="CORPAUTHOR"
->The LMS Developers</H3
+> LMS Developers</H3
 ><P
 CLASS="COPYRIGHT"
->Copyright &copy; 2003  The LMS Developers</P
+>Copyright &copy; 2001-2004  LMS Developers</P
 ><HR></DIV
 ><DIV
 CLASS="TOC"
@@ -114,6 +114,11 @@ HREF="#INSTALL-CONFIG"
 HREF="#INSTALL-RIGHTS"
 >Prawa dostêpu</A
 ></DT
+><DT
+>2.7. <A
+HREF="#INSTALL-UPGRADE"
+>Upgrade</A
+></DT
 ></DL
 ></DD
 ><DT
@@ -164,16 +169,21 @@ HREF="#SCRIPTS-NOTIFY"
 ></DT
 ><DT
 >4.4. <A
+HREF="#SCRIPTS-NOTIFY-SMS"
+>lms-notify-sms</A
+></DT
+><DT
+>4.5. <A
 HREF="#SCRIPTS-CUTOFF"
 >lms-cutoff</A
 ></DT
 ><DT
->4.5. <A
+>4.6. <A
 HREF="#SCRIPTS-PAYMENTS"
 >lms-payments</A
 ></DT
 ><DT
->4.6. <A
+>4.7. <A
 HREF="#SCRIPTS-TRAFFIC"
 >lms-traffic</A
 ></DT
@@ -246,11 +256,16 @@ HREF="#DEVEL-INI"
 ></DT
 ><DT
 >7.4. <A
+HREF="#DEVEL-GENFAKE"
+>Generowanie danych losowych</A
+></DT
+><DT
+>7.5. <A
 HREF="#DEVEL-RIGHTS"
 >Poziomy dostêpu</A
 ></DT
 ><DT
->7.5. <A
+>7.6. <A
 HREF="#DEVEL-LIMITS"
 >Ograniczenia</A
 ></DT
@@ -268,83 +283,18 @@ CLASS="LOT"
 ></DT
 ><DT
 >4-1. <A
-HREF="#AEN696"
+HREF="#AEN729"
 >Lista skryptów wykonywalnych</A
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN1189"
+HREF="#AEN1237"
 >Lista modu³ów demona almsd</A
 ></DT
 ><DT
 >7-1. <A
-HREF="#AEN1632"
+HREF="#AEN1680"
 >Drzewo katalogów LMS</A
-></DT
-></DL
-></DIV
-><DIV
-CLASS="LOT"
-><DL
-CLASS="LOT"
-><DT
-><B
->Spis rysunków</B
-></DT
-><DT
->3-1. <A
-HREF="#AEN505"
->LMS-UI: Logowanie</A
-></DT
-><DT
->3-2. <A
-HREF="#AEN515"
->LMS-UI: Panel g³ówny</A
-></DT
-><DT
->3-3. <A
-HREF="#AEN530"
->LMS-UI: U¿ytkownicy</A
-></DT
-><DT
->3-4. <A
-HREF="#AEN542"
->LMS-UI: Komputery</A
-></DT
-><DT
->3-5. <A
-HREF="#AEN551"
->LMS-UI: Osprzêt sieciowy</A
-></DT
-><DT
->3-6. <A
-HREF="#AEN560"
->LMS-UI: Sieci IP</A
-></DT
-><DT
->3-7. <A
-HREF="#AEN571"
->LMS-UI: Taryfy i finanse</A
-></DT
-><DT
->3-8. <A
-HREF="#AEN602"
->LMS-UI: Bazy danych</A
-></DT
-><DT
->3-9. <A
-HREF="#AEN611"
->LMS-UI: Administratorzy</A
-></DT
-><DT
->3-10. <A
-HREF="#AEN667"
->Statystyki wykorzystania ³±cza- filtr</A
-></DT
-><DT
->3-11. <A
-HREF="#AEN674"
->Statystyki wykorzystania ³±cza - wykres</A
 ></DT
 ></DL
 ></DIV
@@ -358,22 +308,22 @@ CLASS="LOT"
 ></DT
 ><DT
 >4-1. <A
-HREF="#AEN761"
+HREF="#AEN797"
 >Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</A
 ></DT
 ><DT
 >4-2. <A
-HREF="#AEN764"
+HREF="#AEN800"
 >Lms-notify: Przyk³ad szablonu</A
 ></DT
 ><DT
 >5-1. <A
-HREF="#AEN1118"
+HREF="#AEN1172"
 >Lms-mgc: Przyk³ad instancji</A
 ></DT
 ><DT
 >7-1. <A
-HREF="#AEN1850"
+HREF="#AEN1911"
 >Format opcji konfiguracyjnych</A
 ></DT
 ></DL
@@ -1686,7 +1636,7 @@ CLASS="PROMPT"
 >U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze 
 	   wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, 
 	   prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 
-	   'postgres' (PostgreSQL). Domy¶lnie: root</P
+	   'postgres' (PostgreSQL). Domy¶lnie: mysql</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -1990,11 +1940,13 @@ CLASS="PROMPT"
 ><P
 >reload_sqlquery</P
 ><P
->Query SQL'a. Generalnie, LMS przy nie ustawionym swoim w³asnym QUERY robi dziwne rzeczy, 
-    które ja ju¿ wymy¶li³em. Chwilowo pewnie wogóle nie kompatybilne z mteg'owym demonikiem, 
-    ale pracujemy nad uzgodnieniem formatu. Jak kto¶ bardzo chce, to mo¿na u¿yæ '%TIME%' jako podstawki 
-    pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest traktowany jako separator kwerend.
-    Tj. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka komend MySQL'a.</P
+>Zapytanie SQL wykonywane podczas reloadu, je¶li <SAMP
+CLASS="PROMPT"
+>reload_type = sql</SAMP
+>.  
+    Domy¶lnie zapytanie wrzuca do tabeli timestamps warto¶æ '_force'. W zapytaniu mo¿na u¿yæ 
+    '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest 
+    traktowany jako separator kwerend, tzn. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka zapytañ SQL.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -2090,7 +2042,7 @@ CLASS="SECT2"
 ><H3
 CLASS="SECT2"
 ><A
-NAME="AEN466"
+NAME="AEN467"
 >2.6.1. Idea</A
 ></H3
 ><P
@@ -2127,6 +2079,14 @@ NAME="AEN466"
 ><LI
 ><P
 >manipulowanie danymi komputerów</P
+></LI
+><LI
+><P
+>dostêp do statystyk</P
+></LI
+><LI
+><P
+>dostêp do korespondencji seryjnej</P
 ></LI
 ><LI
 ><P
@@ -2172,7 +2132,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN491"
+NAME="AEN496"
 >2.6.2. Jak to dzia³a?</A
 ></H3
 ><P
@@ -2207,6 +2167,57 @@ BORDER="0"
 		</P
 ></DIV
 ></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="INSTALL-UPGRADE"
+>2.7. Upgrade</A
+></H2
+><P
+>Uaktualnienie LMS'a z wersji 1.0.X do bie¿±cej przebiega w dwóch etapach. Najpierw
+      skopiuj pliki nowej wersji do katalogu, gdzie trzyma³e¶ star± wersjê
+      lub w inne miejsce, nastêpnie trzeba dokonaæ zmian w bazie.</P
+><P
+>Dla u³atwienia migracji danych przygotowano pliki
+      <TT
+CLASS="FILENAME"
+>UPGRADE.mysql</TT
+> i <TT
+CLASS="FILENAME"
+>UPGRADE.pgsql</TT
+>,
+      które umieszczono w katalogu z dokumentacj±. W nich znajdziesz krótki
+      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
+      mo¿na skasowaæ odpowiedni katalog</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></DIV
 ></DIV
 ><DIV
 CLASS="CHAPTER"
@@ -2223,7 +2234,15 @@ NAME="USER"
   Szybkie wyszukiwanie danych o u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji
   seryjnej do u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich hase³.
   Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania ³±cza, a tak¿e
-  tworzenie kopii bazy danych oraz zarz±dzanie skryptami wykonywalnymi.</P
+  tworzenia kopii bazy danych oraz zarz±dzania konfiguracj± us³ug na serwerze . 
+  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> posiada tak¿e wiele innych mo¿liwo¶ci, które w tym
+  rozdziale zostan± opisane.</P
 ><DIV
 CLASS="SECT1"
 ><HR><H2
@@ -2241,25 +2260,6 @@ NAME="USER-LOGIN"
 	za³o¿onego konta, zostaniesz przekierowany do modu³u tworzenia kont
 	administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
 	jednego modu³u.</P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN505"
-></A
-><P
-><B
->Rysunek 3-1. LMS-UI: Logowanie</B
-></P
-><A
-HREF="images/login.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/login-small.png"></SPAN
->
-			</A
-></DIV
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -2279,25 +2279,6 @@ NAME="USER-ALL"
 	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze
 	podaj±c ich numery.</P
 ><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN515"
-></A
-><P
-><B
->Rysunek 3-2. LMS-UI: Panel g³ówny</B
-></P
-><A
-HREF="images/welcome.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/welcome-small.png"></SPAN
->
-			</A
-></DIV
-><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
@@ -2311,15 +2292,49 @@ NAME="MENU-USERS"
 	na nazwie kolumny.</P
 ><P
 >Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu
-	z informacjami szczegó³owymi o nim i przypisanych mu komputerach oraz
-	operacjach finansowych. Tam te¿ mo¿esz zaksiêgowaæ wp³atê lub obci±¿enie jego
-	rachunku.</P
+	z informacjami szczegó³owymi o nim i przypisanych mu komputerach, taryfach oraz
+	operacjach finansowych. Tam te¿ mo¿esz modyfikowaæ dane u¿ytkownika, definiowaæ
+	op³aty abonamentowe i zaksiêgowaæ wp³atê lub obci±¿enie jego rachunku.</P
 ><P
->W menu znajduj±cym siê u góry okna masz do wyboru opcje: filtrowania listy,
-	dodawania nowych u¿ytkowników, wyszukiwania w bazie wg zadanych kryteriów oraz
-	wydruku listy.</P
+>W menu znajduj±cym siê u góry okna masz do wyboru opcje:
+	<UL
+><LI
 ><P
->Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony) u¿ytkowników.</P
+>Lista - Wy¶wietlenie listy u¿ytkowników, tej która pokazuje siê po
+	    wej¶ciu do panelu 'U¿ytkownicy'.</P
+></LI
+><LI
+><P
+>Od³±czeni - Wy¶wietlenie listy u¿ytkowników od³±czonych.</P
+></LI
+><LI
+><P
+>Zad³u¿eni - Wy¶wietlenie listy u¿ytkowników zad³u¿onych.</P
+></LI
+><LI
+><P
+>Nowy - Dodawanie nowego u¿ytkownika.</P
+></LI
+><LI
+><P
+>Szukaj - Wyszukiwanie u¿ytkowników wg zadanych kryteriów.</P
+></LI
+><LI
+><P
+>Wersja do druku - Wy¶wietlenie listy u¿ytkowników, w formacie przyjaznym dla
+	    drukarki.</P
+></LI
+><LI
+><P
+>Wydruk zad³u¿onych - Wy¶wietlenie listy u¿ytkowników zad³u¿onych, w formacie 
+	    przyjaznym dla drukarki.</P
+></LI
+></UL
+>
+	</P
+><P
+>Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony) wszystkich komputerów 
+	przypisanych danemu u¿ytkownikowi.</P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -2340,32 +2355,13 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Do automatycznego od³±czania u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
+>Do automatycznego od³±czania komputerów u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
 	s³u¿y skrypt lms-cutoff.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 ></P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN530"
-></A
-><P
-><B
->Rysunek 3-3. LMS-UI: U¿ytkownicy</B
-></P
-><A
-HREF="images/users.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/users-small.png"></SPAN
->
-			</A
-></DIV
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -2378,15 +2374,26 @@ NAME="MENU-NODES"
 ><P
 >Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie listy komputerów,
 	wyszukiwania komputerów o danej nazwie, IP lub MAC'u, dodawanie nowych lub usuwanie ju¿
-	wpisanych do bazy komputerów, a tak¿e podgl±d i zmianê informacji o nich. W górnym menu dostêpna
-	jest opcja wydruku listy. Zmiany statusu komputera 'w³±czony/wy³±czony' dokonuje siê
+	wpisanych do bazy komputerów, a tak¿e podgl±d i zmianê informacji o nich. Zmiany statusu 
+	komputera 'w³±czony/wy³±czony' dokonuje siê
 	klikniêciem na ikonê ¿arówki w odpowiedniej linii.</P
+><P
+>Górne menu udostêpnia nastêpuj±ce modu³y:
+	<UL
+><LI
+><P
+>Lista - Wy¶wietlenie listy komputerów, tej która pokazuje siê po
+	    wej¶ciu do panelu 'Komputery'. Listê mo¿na sortowaæ klikaj±c na nazwie kolumny.</P
+></LI
+><LI
+><P
+>Nowy - Dodawanie nowego komputera.</P
 ><P
 ><DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
-WIDTH="100%"
+WIDTH="90%"
 BORDER="0"
 ><TR
 ><TD
@@ -2401,32 +2408,54 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Aby dodaæ nowy komputer musisz wcze¶niej utworzyæ
-	u¿ytkownika oraz sieæ, którym go przypiszesz.</P
+>Aby wyszukaæ komputery w swojej sieci
+	    mo¿esz skorzystaæ z programu nbtscan. Je¶li jest on zainstalowany w systemie, po
+	    naci¶niêciu 'Skanuj' zobaczysz listê znalezionych komputerów.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 ></P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN542"
-></A
 ><P
-><B
->Rysunek 3-4. LMS-UI: Komputery</B
-></P
-><A
-HREF="images/nodes.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
 ><IMG
-SRC="images/nodes-small.png"></SPAN
->
-			</A
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Aby dodaæ komputer musisz mieæ sieæ i u¿ytkownika,
+	    którym go przypiszesz.</P
+></TD
+></TR
+></TABLE
 ></DIV
+></P
+></LI
+><LI
+><P
+>Szukaj - Wyszukiwanie komputerów wed³ug zadanych kryteriów.</P
+></LI
+><LI
+><P
+>Wersja do druku - Wy¶wietlenie listy komputerów, w formacie 
+	    przyjaznym dla drukarki.</P
+></LI
+></UL
+>
+	</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -2442,25 +2471,26 @@ NAME="MENU-NETDEVICES"
 	ilo¶æ dostêpnych portów. Klikniêcie na wybranym urz±dzeniu spowoduje
 	wy¶wietlenie informacji szczegó³owych o nim. Mo¿liwe jest definiowanie po³±czeñ
 	urz±dzeñ i komputerów oraz generowanie graficznej mapy ca³ej sieci.</P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN551"
-></A
 ><P
-><B
->Rysunek 3-5. LMS-UI: Osprzêt sieciowy</B
-></P
-><A
-HREF="images/netdev.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/netdev-small.png"></SPAN
+>W tym panelu mo¿esz skorzystaæ z menu:
+	<UL
+><LI
+><P
+>Lista - Wy¶wietlenie listy urz±dzeñ, tej która pokazuje siê po
+	    wej¶ciu do panelu 'Urz±dzenia sieciowe'. Listê mo¿na sortowaæ klikaj±c na nazwie kolumny.</P
+></LI
+><LI
+><P
+>Nowe - Dodawanie nowego urz±dzenia.</P
+></LI
+><LI
+><P
+>Mapa - Generowanie mapy sieci (po³±czeñ sieciowych). Mo¿esz zdefiniowaæ
+	    które urz±dzenie jest nadrzêdne w stosunku do pozosta³ych.</P
+></LI
+></UL
 >
-			</A
-></DIV
+	</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -2471,29 +2501,26 @@ NAME="USER-NETWORKS"
 >3.2.4. Sieci IP</A
 ></H3
 ><P
->Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, Gateway,
+>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
 	zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i dostepnych adresów.
 	Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ na podsieci,
 	albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN560"
-></A
 ><P
-><B
->Rysunek 3-6. LMS-UI: Sieci IP</B
-></P
-><A
-HREF="images/networks.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/networks-small.png"></SPAN
+>Modyfikowanie w³a¶ciwo¶ci sieci nastêpuje w module dostêpnym po wybraniu
+	sieci z listy lub bezpo¶rednio po klikniêciu ikony 'Edytuj'. Menu udostêpnia dwie opcje:
+	<UL
+><LI
+><P
+>Lista - Wy¶wietlenie listy sieci. tej która pokazuje siê po
+	    wej¶ciu do panelu 'Sieci IP'.</P
+></LI
+><LI
+><P
+>Nowa sieæ  - Dodawanie sieci.</P
+></LI
+></UL
 >
-			</A
-></DIV
+	</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -2506,32 +2533,86 @@ NAME="MENU-TARIFFS"
 ><P
 >Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami sieci.</P
 ><P
->Masz mo¿liwo¶æ definiowania taryf abonamentowych i okre¶lenia kwoty abonamentu oraz
-	ograniczeñ upstream, downstream wykorzystywanych pó¼niej podczas generowania plików
-	konfiguracyjnych.</P
+>Masz mo¿liwo¶æ definiowania taryf abonamentowych, op³at (zleceñ) sta³ych, ksiêgowania 
+	operacji finansowych, przegl±danie bilansu i historii rachunku oraz sporz±dzanie faktur. 
+	A oto wszystkie dostêpne modu³y:
+	<UL
+><LI
 ><P
->Dostêpny z górnego menu 'Bilans Finansowy' to historia rachunku z podsumowaniem
-	przychodu i rozchodu. 'Nowa Operacja' umo¿liwia zaksiêgowanie nowych wp³at i obci±¿eñ
-	u¿ytkowników lub wydatków i przychodów sieci.</P
+>Lista taryf - Wy¶wietlenie listy taryf. tej która pokazuje siê po
+	    wej¶ciu do panelu 'Taryfy i finanse'. Klikaj±c wybran± taryfê na li¶cie zostaniesz
+	    przeniesiony do modu³u 'Informacje o taryfie', gdzie mo¿esz edytowaæ jej parametry
+	    lub zamieniaæ u¿ytkownikom taryfy.</P
+></LI
+><LI
+><P
+>Nowa taryfa - Definiowanie nowej taryfy.</P
+></LI
+><LI
+><P
+>Lista op³at - Wy¶wietlenie listy op³at. Klikaj±c wybran± op³atê na li¶cie zostaniesz
+	    przeniesiony do modu³u 'Informacje o op³acie', gdzie mo¿esz edytowaæ jej parametry
+	    lub zaksiêgowaæ dan± op³atê w bazie operacji finansowych.</P
+></LI
+><LI
+><P
+>Nowa op³ata - Definiowanie nowej op³aty sta³ej.</P
+></LI
+><LI
+><P
+>Bilans finansowy - Historia operacji finansowych z podsumowaniem przychodu, rozchodu,
+	    wp³at i zobowi±zañ u¿ytkowników.</P
+></LI
+><LI
+><P
+>Nowa operacja - Wprowadzanie nowych operacji finansowych. Mo¿liwe jest
+	    zaksiêgowanie tej samej wp³aty lub obci±¿enia wielu u¿ytkownikom równocze¶nie.</P
+><P
 ><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN571"
-></A
-><P
-><B
->Rysunek 3-7. LMS-UI: Taryfy i finanse</B
-></P
-><A
-HREF="images/tariffs.png"
-TARGET="_top"
->					<SPAN
-CLASS="INLINEMEDIAOBJECT"
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
 ><IMG
-SRC="images/tariffs-small.png"></SPAN
->
-			</A
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Do naliczania sta³ych op³at abonamentowych najlepiej wykorzystywaæ
+	    skrypt lms-payments lub demona <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+>, które potrafi± równocze¶nie
+	    wystawiaæ faktury.</P
+></TD
+></TR
+></TABLE
 ></DIV
+></P
+></LI
+><LI
+><P
+>Lista faktur - lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych.</P
+></LI
+><LI
+><P
+>Nowa faktura - Rêczne wystawianie faktur dla wybranego u¿ytkownika.</P
+></LI
+></UL
+>
+	</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -2590,8 +2671,14 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami polecam.
-	skrypt lms-notify.</P
+>Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami mo¿na
+	wykorzystaæ skrypt lms-notify lub modu³y notify i ggnotify demona <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+>.</P
 ></TD
 ></TR
 ></TABLE
@@ -2687,25 +2774,6 @@ CLASS="FILENAME"
 ><P
 >Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
 	</P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN602"
-></A
-><P
-><B
->Rysunek 3-8. LMS-UI: Bazy danych</B
-></P
-><A
-HREF="images/db.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/db-small.png"></SPAN
->
-			</A
-></DIV
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -2722,25 +2790,135 @@ NAME="MENU-ADMINS"
 	o danym koncie, w tym o zdefiniowanych prawach dostêpu. W ka¿dej chwili mo¿liwa jest zmiana
 	danych i uprawnieñ za pomoc± przycisku 'Edytuj'. Aby za³o¿yæ nowe konto administratora
 	skorzystaj z górnego menu 'Nowy'.</P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN611"
-></A
-><P
-><B
->Rysunek 3-9. LMS-UI: Administratorzy</B
-></P
-><A
-HREF="images/admins.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/admins-small.png"></SPAN
->
-			</A
 ></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-STATS"
+>3.2.10. Statystyki</A
+></H3
+><P
+>Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
+	dostêpny w menu 'Statystyki'. Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
+	okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz ich wiêcej),
+	ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug downloadu).
+	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
+	ostatnich 30 dni lub ostatniego roku.</P
+><P
+> 
+	<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, albo demon <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	</P
+><P
+>W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci zapisu, mo¿e
+	nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
+	oczekiwania na rysowanie wykresów. Z tego powodu w oknie 'Kompaktowanie
+	bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy bez
+	utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
+	w nastêpuj±cy sposób:
+	<UL
+><LI
+><P
+>Poziom Niski: dane z poprzedniego dnia i starsze, zostan± u¶rednione
+	do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
+	to 6*24 wpisów zostanie zast±pione jednym.</P
+></LI
+><LI
+><P
+>Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
+	jednego dnia.</P
+></LI
+><LI
+><P
+>Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
+	jednej godziny.</P
+></LI
+></UL
+>
+	<DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/warning.gif"
+HSPACE="5"
+ALT="Ostrze&#380;enie"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Kompaktowanie bazy danych jest procesem nieodwracalnym.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	</P
+><P
+>Menu panelu 'Statystyki' obejmuje:
+	<UL
+><LI
+><P
+>Filtr - g³ówne okno do wprowadzania parametrów wykresów oraz do
+	    kompaktowania bazy danych.</P
+></LI
+><LI
+><P
+>Ostatnia godzina - statystyki z ostatniej godziny dla wszystkich sieci.</P
+></LI
+><LI
+><P
+>Ostatni dzieñ - statystyki z ostatniego dnia dla wszystkich sieci.</P
+></LI
+><LI
+><P
+>Ostatnie 30 dni - statystyki z ostatnich 30 dni dla wszystkich sieci.</P
+></LI
+><LI
+><P
+>Ostatni rok - statystyki z ostatnich 365 dni dla wszystkich sieci.</P
+></LI
+></UL
+>
+	</P
 ></DIV
 ></DIV
 ><DIV
@@ -2760,17 +2938,25 @@ NAME="USER-STAFF-FAKTURY"
 >3.3.1. Faktury</A
 ></H3
 ><P
->LMS umo¿liwia wystawianie faktur. W³±czenia tej opcji dokonuje siê podczas
-		przypisywania taryf u¿ytkownikom. Aktualnie w LMS nie ma mo¿liwo¶ci rêcznego wystawiania faktur. 
-		Do poprawnego dzia³ania i tworzenia wydruków
-		wymagane jest ustawienie podstawowych opcji w sekcji <SPAN
+>LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie dowolnej
+		faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Taryfy i finanse'. Automatyczne wystawianie faktur 
+		wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
+		zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+></P
+><P
+>Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
+		opcji w sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
->
-		<TT
+> <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >:
@@ -2824,8 +3010,14 @@ CLASS="PROMPT"
 >
 		</P
 ><P
->Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki na wykazie bilansu finansowego (ogólnego b±d¼ pojedyñczego u¿ytkownika), albo poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest tak¿e filtrowanie faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darka Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.
-		</P
+>Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
+		na wykazie bilansu finansowego (ogólnego b±d¼ pojedyñczego u¿ytkownika), albo 
+		poprzez 'Lista faktur' z menu 'Taryfy i finanse'. W przypadku listy faktur, mo¿liwe jest 
+		tak¿e filtrowanie faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y 
+		i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. 
+		Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ 
+		faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darkach 
+		Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.</P
 ><P
 >			<DIV
 CLASS="NOTE"
@@ -2846,7 +3038,9 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie stopki i nag³ówka, czy te¿ adresu na wydruku.</P
+>Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ 
+			konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie 
+			stopki i nag³ówka, czy te¿ adresu na wydruku.</P
 ></TD
 ></TR
 ></TABLE
@@ -2884,136 +3078,29 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="USER-STAFF-STATS"
->3.3.2. Statystyki</A
+NAME="USER-STAFF-CUSTOMER"
+>3.3.2. "Moje konto"</A
 ></H3
 ><P
->Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
-	dostêpny w menu 'Statystyki'. Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
-	okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz ich wiêcej),
-	ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug downloadu).
-	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
-	ostatnich 30 dni lub ostatniego roku.</P
+>W katalogu <TT
+CLASS="FILENAME"
+>contrib/customer</TT
+> znajduje siê
+		przyk³ad rozwi±zania, dziêki któremu ka¿dy u¿ytkownik twojej sieci
+		mo¿e sprawdziæ w³asny bilans finansowy.</P
 ><P
->	<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y go zainstalowaæ
-	aby mieæ w bazie dane do wykresów.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-	</P
-><P
->W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci, mo¿e
-	nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
-	oczekiwania na rysowanie wykresów. Z tego powodu w oknie 'Kompaktowanie
-	bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy bez
-	utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
-	w nastêpuj±cy sposób:
-	<UL
-><LI
-><P
->Poziom Niski: dane z poprzedniego dnia i starsze, zostan± u¶rednione
-	do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
-	to 6*24 wpisów zostanie zast±pione jednym.</P
-></LI
-><LI
-><P
->Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
-	jednego dnia.</P
-></LI
-><LI
-><P
->Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
-	jednej godziny.</P
-></LI
-></UL
->
-	<DIV
-CLASS="WARNING"
-><TABLE
-CLASS="WARNING"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/warning.gif"
-HSPACE="5"
-ALT="Ostrze&#380;enie"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Kompaktowanie bazy danych jest procesem nieodwracalnym.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-	</P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN667"
-></A
-><P
-><B
->Rysunek 3-10. Statystyki wykorzystania ³±cza- filtr</B
-></P
-><A
-HREF="images/stats.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/stats-small.png"></SPAN
->
-			</A
-></DIV
-><P
-></P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN674"
-></A
-><P
-><B
->Rysunek 3-11. Statystyki wykorzystania ³±cza - wykres</B
-></P
-><A
-HREF="images/statbars.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/statbars-small.png"></SPAN
->
-			</A
-></DIV
+>Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
+		bilans i informacje o u¿ytkowniku, który jest w³a¶cicielem komputera
+		o tym adresie. Pliki nale¿y skopiowaæ w dowolne miejsce i wystawiæ
+		pod adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie
+		ustawiæ poprawn± ¶cie¿kê do <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> w pliku 
+		<TT
+CLASS="FILENAME"
+>index.php</TT
+>.</P
 ></DIV
 ></DIV
 ></DIV
@@ -3078,7 +3165,7 @@ NAME="SCRIPTS-LIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN696"
+NAME="AEN729"
 ></A
 ><P
 ><B
@@ -3105,6 +3192,12 @@ ALIGN="CENTER"><THEAD
 >lms-notify</TD
 ><TD
 >Korespondencja seryjna do u¿ytkowników sieci</TD
+></TR
+><TR
+><TD
+>lms-notify-sms</TD
+><TD
+>Powiadamianie o zalego¶ciach sms'em</TD
 ></TR
 ><TR
 ><TD
@@ -3185,7 +3278,7 @@ CLASS="SECT2"
 ><H3
 CLASS="SECT2"
 ><A
-NAME="AEN742"
+NAME="AEN778"
 >4.3.1. Szablony</A
 ></H3
 ><P
@@ -3225,7 +3318,7 @@ NAME="AEN742"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN761"
+NAME="AEN797"
 ></A
 ><P
 ><B
@@ -3247,7 +3340,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN764"
+NAME="AEN800"
 ></A
 ><P
 ><B
@@ -3299,7 +3392,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN767"
+NAME="AEN803"
 >4.3.2. Konfiguracja</A
 ></H3
 ><P
@@ -3400,8 +3493,63 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
+NAME="SCRIPTS-NOTIFY-SMS"
+>4.4. lms-notify-sms</A
+></H2
+><P
+>lms-notify-sms to odpowiednik lms-notify, s³u¿±cy do wysy³ania
+	  smsów. Do wysy³ania wiadomo¶ci potrzebna jest komórka Nokii oraz oprogramowanie,
+	  które nale¿y pobraæ z (<A
+HREF="http://www.gnokii.org"
+TARGET="_top"
+>www.gnokii.org</A
+>)
+	  i zainstalowaæ w systemie.</P
+><P
+>Konfiguracjê dla lms-notify-sms mo¿na ustaliæ w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> 
+	  w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[notify-sms]</I
+></SPAN
+>, a masz do dyspozycji nastêpuj±ce opcje:</P
+><UL
+><LI
+><P
+>limit (opcjonalny)</P
+><P
+>Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika 
+	     zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>limit = -20</SAMP
+></P
+></LI
+><LI
+><P
+>smstemplate (wymagany)</P
+><P
+>Szablon wiadomo¶ci. Domy¶lnie nieustawione.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>smstemplate = /etc/lms/smstemplate.txt</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
 NAME="SCRIPTS-CUTOFF"
->4.4. lms-cutoff</A
+>4.5. lms-cutoff</A
 ></H2
 ><P
 >Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.</P
@@ -3436,10 +3584,11 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="SCRIPTS-PAYMENTS"
->4.5. lms-payments</A
+>4.6. lms-payments</A
 ></H2
 ><P
->Skrypt po uruchomieniu nalicza u¿ytkownikom op³atê abonamentow±. 
+>Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
+	 u¿ytkownikom oraz op³at sta³ych.
 	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</P
 ><P
 >Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.</P
@@ -3450,7 +3599,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="SCRIPTS-TRAFFIC"
->4.6. lms-traffic</A
+>4.7. lms-traffic</A
 ></H2
 ><P
 >Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
@@ -3470,8 +3619,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN828"
->4.6.1. Instalacja</A
+NAME="AEN882"
+>4.7.1. Instalacja</A
 ></H3
 ><P
 >Przed uruchomieniem lms-traffic nale¿y zadbaæ o utworzenie
@@ -4309,7 +4458,7 @@ NAME="MGC-EXAMPLE"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN1118"
+NAME="AEN1172"
 ></A
 ><P
 ><B
@@ -4485,51 +4634,6 @@ NAME="DAEMON-CONFIG"
 >6.1.3. Konfiguracja</A
 ></H3
 ><P
->Na pocz±tku nale¿y w pliku konfiguracyjnym <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS-UI</I
-></SPAN
->
-			(standardowo <TT
-CLASS="FILENAME"
->/etc/lms/lms.ini</TT
->) ustawiæ typ reloadu 
-			obs³ugiwany przez demona:
-<PRE
-CLASS="SCREEN"
->reload_type	= sql
-reload_sqlquery	= "INSERT INTO reload VALUES('reload')"</PRE
->
-			<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Struktura tabeli 'reload' jest dowolna, zatem musisz zadbaæ 
-			o odpowiedni insert.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-			</P
-><P
 >Przyk³adowy konfig demona i modu³ów zawarto w pliku <TT
 CLASS="FILENAME"
 >lms.ini.sample</TT
@@ -4546,8 +4650,8 @@ database        = lms           # nazwa bazy, domy¶lnie: lms
 port            = 0             # numer portu, domy¶lnie: 0
 
 [lmsd]
-sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma 
-                                # ma byæ sprawdzana tabela 'reload', domy¶lnie: 30
+sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma
+                                # byæ sprawdzane ¿±danie reloadu, domy¶lnie: 30
 instances       = hosts oident firewall       # lista instancji modu³ów</PRE
 >
 			<DIV
@@ -4598,17 +4702,16 @@ NAME="DAEMON-RUN"
 ></H3
 ><P
 >Program mo¿esz uruchamiaæ jako demona pracuj±cego w tle (opcja '-b'). Wtedy 
-			prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie, przez wpis do tabeli 
-			'reload'. Opcja 'sleeptime' (-s) okre¶la okres miêdzy
-			odczytami tej tabeli. Gdy do tabeli 'reload' zostan± zapisane dowolne dane 
-			(przy pomocy menu 'Prze³adowanie' w <SPAN
+			prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie, przy u¿yciu menu 
+			'Prze³adowanie' w <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->)
-			demon wykona modu³y okre¶lone opcj± 'instances' z <TT
+>. Opcja 'sleeptime' (-s) okre¶la okres miêdzy
+			odczytami bazy. Gdy demon wykryje ¿±danie wykonania reloadu, wywo³a 
+			modu³y okre¶lone opcj± 'instances' z <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >.
@@ -4670,7 +4773,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1189"
+NAME="AEN1237"
 ></A
 ><P
 ><B
@@ -4779,10 +4882,11 @@ NAME="PAYMENTS-DESC"
 >6.2.2.1. Opis</A
 ></H4
 ><P
->Modu³ nalicza u¿ytkownikom op³aty abonamentowe. Nale¿y go uruchamiaæ 
+>Modu³ nalicza op³aty abonamentowe u¿ytkowników oraz op³aty sta³e. Nale¿y go uruchamiaæ 
 		    codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
 		    taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn± 'comment'.
-		    Po naliczeniu op³at tworzone s± faktury.</P
+		    Po naliczeniu op³at tworzone s± faktury. Komentarz do op³aty sta³ej to zlepek
+		    sk³adaj±cy siê z jej nazwy oraz wierzyciela.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -5870,7 +5974,7 @@ NAME="DEVEL-CATALOGS"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1632"
+NAME="AEN1680"
 ></A
 ><P
 ><B
@@ -6118,6 +6222,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>pesel - numer PESEL</TD
+></TR
+><TR
+><TD
 >info - dodatkowe informacje</TD
 ></TR
 ><TR
@@ -6211,7 +6319,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NODES"
->7.2.4. Komputery ('nodes')</A
+>7.2.4. Komputery i adresy IP urz±dzeñ sieciowych ('nodes')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -6234,7 +6342,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->ownerid - identyfikator w³a¶ciciela (u¿ytkownika)</TD
+>ownerid - identyfikator w³a¶ciciela ('0' - dla adresu urz±dzenia)</TD
 ></TR
 ><TR
 ><TD
@@ -6402,7 +6510,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->value - warto¶æ netto w z³otych</TD
+>value - kwota</TD
 ></TR
 ><TR
 ><TD
@@ -6432,8 +6540,50 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="PAYMENTS"
+>7.2.9. Op³aty sta³e ('payments')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>name - nazwa</TD
+></TR
+><TR
+><TD
+>value - kwota</TD
+></TR
+><TR
+><TD
+>creditor - nazwa wierzyciela</TD
+></TR
+><TR
+><TD
+>period - typ okresu naliczania (co miesi±c/co tydzieñ/co rok)</TD
+></TR
+><TR
+><TD
+>at - dzieñ naliczenia</TD
+></TR
+><TR
+><TD
+>description - opis</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="ASSIGNMENTS"
->7.2.9. Powi±zania ('assignments')</A
+>7.2.10. Powi±zania ('assignments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -6452,7 +6602,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->period - okres (ilo¶æ dni)</TD
+>period - typ okresu </TD
 ></TR
 ><TR
 ><TD
@@ -6471,7 +6621,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICES"
->7.2.10. Faktury ('invoices')</A
+>7.2.11. Faktury ('invoices')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -6490,7 +6640,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->paytime - czas zap³aty (ilo¶æ dni)</TD
+>paytime - termin p³atno¶ci (ilo¶æ dni)</TD
+></TR
+><TR
+><TD
+>paytype - rodzaj p³atno¶ci (przelew/gotówka/etc.)</TD
 ></TR
 ><TR
 ><TD
@@ -6507,6 +6661,10 @@ BORDER="0"
 ><TR
 ><TD
 >nip - nip nabywcy</TD
+></TR
+><TR
+><TD
+>pesel - PESEL nabywcy</TD
 ></TR
 ><TR
 ><TD
@@ -6533,7 +6691,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.11. Faktury - cd. ('invoicecontents')</A
+>7.2.12. Faktury - cd. ('invoicecontents')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -6579,7 +6737,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.12. Znaczniki czasu ('timestamps')</A
+>7.2.13. Znaczniki czasu ('timestamps')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -6601,7 +6759,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.13. Statystyki wykorzystania ³±cza ('stats')</A
+>7.2.14. Statystyki wykorzystania ³±cza ('stats')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -6694,7 +6852,7 @@ NAME="PARAMS"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN1850"
+NAME="AEN1911"
 ></A
 ><P
 ><B
@@ -6738,8 +6896,80 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
+NAME="DEVEL-GENFAKE"
+>7.4. Generowanie danych losowych</A
+></H2
+><P
+>Dla osób chc±cych szybko sprawdziæ jak dzia³a LMS przygotowali¶my
+		modu³ 'genfake', s³u¿±cy do tworzenia bazy danych. </P
+><P
+>Aby wygenerowaæ dane
+		nale¿y, po zalogowaniu siê w LMS'ie wywo³aæ adres <TT
+CLASS="FILENAME"
+>		http://twoj.serwer.net/lms/?m=genfake</TT
+>, okre¶liæ ilu
+		u¿ytkowników ma zostaæ stworzonych i nacisn±æ ENTER. To wszystko.
+		<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Dla prawid³owego wygenerowania zale¿no¶ci, modu³ 'genfake'
+		nale¿y uruchamiaæ na pustej, nowoutworzonej bazie.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+		<DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/warning.gif"
+HSPACE="5"
+ALT="Ostrze&#380;enie"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Wszystkie dane (oprócz danych administratorów) zostan±
+		usuniête z bazy.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+		</P
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
 NAME="DEVEL-RIGHTS"
->7.4. Poziomy dostêpu</A
+>7.5. Poziomy dostêpu</A
 ></H2
 ><P
 >W  sumie  tutaj  to  wyt³umaczê  bardziej  dla developerów, gdy¿ osoby
@@ -6766,7 +6996,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="DEVEL-LIMITS"
->7.5. Ograniczenia</A
+>7.6. Ograniczenia</A
 ></H2
 ><P
 >Ka¿dy system ma ograniczenia. Pewne wynikaja z u¿ytego silnika SQL (DBMS)
@@ -6777,8 +7007,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN1863"
->7.5.1. Wynikaj±ce z naszego projektu</A
+NAME="AEN1933"
+>7.6.1. Wynikaj±ce z naszego projektu</A
 ></H3
 ><P
 >Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowujemy jako
@@ -6790,8 +7020,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN1866"
->7.5.2. Wynikaj±ce z u¿ywanego DMBS</A
+NAME="AEN1936"
+>7.6.2. Wynikaj±ce z u¿ywanego DMBS</A
 ></H3
 ><UL
 ><LI

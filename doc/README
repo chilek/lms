@@ -1,11 +1,10 @@
-
 LMS - LAN Management System 1.1-cvs
 
    [logo-small.png]
 
-The LMS Developers
+LMS Developers
 
-   Copyright (c) 2003 The LMS Developers
+   Copyright (c) 2001-2004 LMS Developers
      _________________________________________________________________
 
    Spis tre¶ci
@@ -24,6 +23,7 @@ The LMS Developers
         2.4. Instalacja serwera baz danych
         2.5. Konfiguracja podstawowa
         2.6. Prawa dostêpu
+        2.7. Upgrade
 
    3. Interfejs U¿ytkownika (LMS-UI)
 
@@ -36,9 +36,10 @@ The LMS Developers
         4.1. Instalacja
         4.2. Lista dostêpnych skryptów
         4.3. lms-notify
-        4.4. lms-cutoff
-        4.5. lms-payments
-        4.6. lms-traffic
+        4.4. lms-notify-sms
+        4.5. lms-cutoff
+        4.6. lms-payments
+        4.7. lms-traffic
 
    5. Generator plików konfiguracyjnych (lms-mgc)
 
@@ -56,26 +57,14 @@ The LMS Developers
         7.1. Drzewo katalogów
         7.2. Struktura bazy danych
         7.3. Format pliku konfiguracyjnego
-        7.4. Poziomy dostêpu
-        7.5. Ograniczenia
+        7.4. Generowanie danych losowych
+        7.5. Poziomy dostêpu
+        7.6. Ograniczenia
 
    Spis tabel
    4-1. Lista skryptów wykonywalnych
    6-1. Lista modu³ów demona almsd
    7-1. Drzewo katalogów LMS
-
-   Spis rysunków
-   3-1. LMS-UI: Logowanie
-   3-2. LMS-UI: Panel g³ówny
-   3-3. LMS-UI: U¿ytkownicy
-   3-4. LMS-UI: Komputery
-   3-5. LMS-UI: Osprzêt sieciowy
-   3-6. LMS-UI: Sieci IP
-   3-7. LMS-UI: Taryfy i finanse
-   3-8. LMS-UI: Bazy danych
-   3-9. LMS-UI: Administratorzy
-   3-10. Statystyki wykorzystania ³±cza- filtr
-   3-11. Statystyki wykorzystania ³±cza - wykres
 
    Spis przyk³adów
    4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych
@@ -509,7 +498,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
        zgodnie ze wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli
        chcesz u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz
        'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼
-       'postgres' (PostgreSQL). Domy¶lnie: root
+       'postgres' (PostgreSQL). Domy¶lnie: mysql
        Przyk³ad: user = lms
      * password
        Has³o do bazy danych. Domy¶lnie puste.
@@ -609,13 +598,12 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
        i wykonuje komendy pojedyñczo.
        Przyk³ad: reload_execcmd = "sudo /usr/bin/reload_lms.sh"
      * reload_sqlquery
-       Query SQL'a. Generalnie, LMS przy nie ustawionym swoim w³asnym
-       QUERY robi dziwne rzeczy, które ja ju¿ wymy¶li³em. Chwilowo pewnie
-       wogóle nie kompatybilne z mteg'owym demonikiem, ale pracujemy nad
-       uzgodnieniem formatu. Jak kto¶ bardzo chce, to mo¿na u¿yæ '%TIME%'
-       jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak
-       ¶rednika jest traktowany jako separator kwerend. Tj. oddzielaj±c
-       znakiem ¶rednika mo¿esz wpisaæ kilka komend MySQL'a.
+       Zapytanie SQL wykonywane podczas reloadu, je¶li reload_type = sql.
+       Domy¶lnie zapytanie wrzuca do tabeli timestamps warto¶æ '_force'.
+       W zapytaniu mo¿na u¿yæ '%TIME%' jako podstawki pod aktualny
+       timestamp unixowy. UWAGA! Znak ¶rednika jest traktowany jako
+       separator kwerend, tzn. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ
+       kilka zapytañ SQL.
        Przyk³ad: reload_sqlquery = "INSERT INTO reload VALUES
        ('1','%TIME%')"
      * force_ssl
@@ -666,6 +654,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
      * prze³adowywanie konfiguracji
      * manipulowanie danymi u¿ytkowników
      * manipulowanie danymi komputerów
+     * dostêp do statystyk
+     * dostêp do korespondencji seryjnej
      * brak dostêpu do modyfikacji i zak³adania kont administratorów
      * brak dostêpu
 
@@ -699,6 +689,24 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
    dostêpu.
      _________________________________________________________________
 
+2.7. Upgrade
+
+   Uaktualnienie LMS'a z wersji 1.0.X do bie¿±cej przebiega w dwóch
+   etapach. Najpierw skopiuj pliki nowej wersji do katalogu, gdzie
+   trzyma³e¶ star± wersjê lub w inne miejsce, nastêpnie trzeba dokonaæ
+   zmian w bazie.
+
+   Dla u³atwienia migracji danych przygotowano pliki UPGRADE.mysql i
+   UPGRADE.pgsql, które umieszczono w katalogu z dokumentacj±. W nich
+   znajdziesz krótki opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od
+   stosowanej bazy danych.
+
+   Notatka
+
+   W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana, mo¿na
+   skasowaæ odpowiedni katalog
+     _________________________________________________________________
+
 Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
 
    LMS'owy Interfejs U¿ytkownika to panel administracyjny do tworzenia i
@@ -709,8 +717,9 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji seryjnej do
    u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich
    hase³. Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania
-   ³±cza, a tak¿e tworzenie kopii bazy danych oraz zarz±dzanie skryptami
-   wykonywalnymi.
+   ³±cza, a tak¿e tworzenia kopii bazy danych oraz zarz±dzania
+   konfiguracj± us³ug na serwerze . LMS-UI posiada tak¿e wiele innych
+   mo¿liwo¶ci, które w tym rozdziale zostan± opisane.
      _________________________________________________________________
 
 3.1. Logowanie
@@ -723,9 +732,6 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    konta, zostaniesz przekierowany do modu³u tworzenia kont
    administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
    jednego modu³u.
-
-   Rysunek 3-1. LMS-UI: Logowanie
-   [login-small.png] 
      _________________________________________________________________
 
 3.2. Praca z LMS-UI
@@ -739,9 +745,6 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz
    równie¿ dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do
    informacji o u¿ytkowniku i komputerze podaj±c ich numery.
-
-   Rysunek 3-2. LMS-UI: Panel g³ówny
-   [welcome-small.png] 
      _________________________________________________________________
 
 3.2.1. U¿ytkownicy
@@ -751,24 +754,30 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    nazwie kolumny.
 
    Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu z
-   informacjami szczegó³owymi o nim i przypisanych mu komputerach oraz
-   operacjach finansowych. Tam te¿ mo¿esz zaksiêgowaæ wp³atê lub
+   informacjami szczegó³owymi o nim i przypisanych mu komputerach,
+   taryfach oraz operacjach finansowych. Tam te¿ mo¿esz modyfikowaæ dane
+   u¿ytkownika, definiowaæ op³aty abonamentowe i zaksiêgowaæ wp³atê lub
    obci±¿enie jego rachunku.
 
-   W menu znajduj±cym siê u góry okna masz do wyboru opcje: filtrowania
-   listy, dodawania nowych u¿ytkowników, wyszukiwania w bazie wg zadanych
-   kryteriów oraz wydruku listy.
+   W menu znajduj±cym siê u góry okna masz do wyboru opcje:
+     * Lista - Wy¶wietlenie listy u¿ytkowników, tej która pokazuje siê po
+       wej¶ciu do panelu 'U¿ytkownicy'.
+     * Od³±czeni - Wy¶wietlenie listy u¿ytkowników od³±czonych.
+     * Zad³u¿eni - Wy¶wietlenie listy u¿ytkowników zad³u¿onych.
+     * Nowy - Dodawanie nowego u¿ytkownika.
+     * Szukaj - Wyszukiwanie u¿ytkowników wg zadanych kryteriów.
+     * Wersja do druku - Wy¶wietlenie listy u¿ytkowników, w formacie
+       przyjaznym dla drukarki.
+     * Wydruk zad³u¿onych - Wy¶wietlenie listy u¿ytkowników zad³u¿onych,
+       w formacie przyjaznym dla drukarki.
 
    Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony)
-   u¿ytkowników.
+   wszystkich komputerów przypisanych danemu u¿ytkownikowi.
 
    Notatka
 
-   Do automatycznego od³±czania u¿ytkowników, których bilans jest poni¿ej
-   zadanej warto¶ci s³u¿y skrypt lms-cutoff.
-
-   Rysunek 3-3. LMS-UI: U¿ytkownicy
-   [users-small.png] 
+   Do automatycznego od³±czania komputerów u¿ytkowników, których bilans
+   jest poni¿ej zadanej warto¶ci s³u¿y skrypt lms-cutoff.
      _________________________________________________________________
 
 3.2.2. Komputery
@@ -776,18 +785,29 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie
    listy komputerów, wyszukiwania komputerów o danej nazwie, IP lub
    MAC'u, dodawanie nowych lub usuwanie ju¿ wpisanych do bazy komputerów,
-   a tak¿e podgl±d i zmianê informacji o nich. W górnym menu dostêpna
-   jest opcja wydruku listy. Zmiany statusu komputera
+   a tak¿e podgl±d i zmianê informacji o nich. Zmiany statusu komputera
    'w³±czony/wy³±czony' dokonuje siê klikniêciem na ikonê ¿arówki w
    odpowiedniej linii.
 
+   Górne menu udostêpnia nastêpuj±ce modu³y:
+     * Lista - Wy¶wietlenie listy komputerów, tej która pokazuje siê po
+       wej¶ciu do panelu 'Komputery'. Listê mo¿na sortowaæ klikaj±c na
+       nazwie kolumny.
+     * Nowy - Dodawanie nowego komputera.
+
    Notatka
 
-   Aby dodaæ nowy komputer musisz wcze¶niej utworzyæ u¿ytkownika oraz
-   sieæ, którym go przypiszesz.
+   Aby wyszukaæ komputery w swojej sieci mo¿esz skorzystaæ z programu
+   nbtscan. Je¶li jest on zainstalowany w systemie, po naci¶niêciu
+   'Skanuj' zobaczysz listê znalezionych komputerów.
 
-   Rysunek 3-4. LMS-UI: Komputery
-   [nodes-small.png] 
+       Notatka
+
+   Aby dodaæ komputer musisz mieæ sieæ i u¿ytkownika, którym go
+   przypiszesz.
+     * Szukaj - Wyszukiwanie komputerów wed³ug zadanych kryteriów.
+     * Wersja do druku - Wy¶wietlenie listy komputerów, w formacie
+       przyjaznym dla drukarki.
      _________________________________________________________________
 
 3.2.3. Osprzêt sieciowy
@@ -799,20 +819,30 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    Mo¿liwe jest definiowanie po³±czeñ urz±dzeñ i komputerów oraz
    generowanie graficznej mapy ca³ej sieci.
 
-   Rysunek 3-5. LMS-UI: Osprzêt sieciowy
-   [netdev-small.png] 
+   W tym panelu mo¿esz skorzystaæ z menu:
+     * Lista - Wy¶wietlenie listy urz±dzeñ, tej która pokazuje siê po
+       wej¶ciu do panelu 'Urz±dzenia sieciowe'. Listê mo¿na sortowaæ
+       klikaj±c na nazwie kolumny.
+     * Nowe - Dodawanie nowego urz±dzenia.
+     * Mapa - Generowanie mapy sieci (po³±czeñ sieciowych). Mo¿esz
+       zdefiniowaæ które urz±dzenie jest nadrzêdne w stosunku do
+       pozosta³ych.
      _________________________________________________________________
 
 3.2.4. Sieci IP
 
    Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y,
-   Gateway, zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i
+   bramê, zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i
    dostepnych adresów. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma
    sieciami lub dzielisz jedn± sieæ na podsieci, albo korzystasz z
    ró¿nych klas adresowych tutaj jest to mo¿liwe.
 
-   Rysunek 3-6. LMS-UI: Sieci IP
-   [networks-small.png] 
+   Modyfikowanie w³a¶ciwo¶ci sieci nastêpuje w module dostêpnym po
+   wybraniu sieci z listy lub bezpo¶rednio po klikniêciu ikony 'Edytuj'.
+   Menu udostêpnia dwie opcje:
+     * Lista - Wy¶wietlenie listy sieci. tej która pokazuje siê po
+       wej¶ciu do panelu 'Sieci IP'.
+     * Nowa sieæ - Dodawanie sieci.
      _________________________________________________________________
 
 3.2.5. Taryfy i Finanse
@@ -820,17 +850,36 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami
    sieci.
 
-   Masz mo¿liwo¶æ definiowania taryf abonamentowych i okre¶lenia kwoty
-   abonamentu oraz ograniczeñ upstream, downstream wykorzystywanych
-   pó¼niej podczas generowania plików konfiguracyjnych.
+   Masz mo¿liwo¶æ definiowania taryf abonamentowych, op³at (zleceñ)
+   sta³ych, ksiêgowania operacji finansowych, przegl±danie bilansu i
+   historii rachunku oraz sporz±dzanie faktur. A oto wszystkie dostêpne
+   modu³y:
+     * Lista taryf - Wy¶wietlenie listy taryf. tej która pokazuje siê po
+       wej¶ciu do panelu 'Taryfy i finanse'. Klikaj±c wybran± taryfê na
+       li¶cie zostaniesz przeniesiony do modu³u 'Informacje o taryfie',
+       gdzie mo¿esz edytowaæ jej parametry lub zamieniaæ u¿ytkownikom
+       taryfy.
+     * Nowa taryfa - Definiowanie nowej taryfy.
+     * Lista op³at - Wy¶wietlenie listy op³at. Klikaj±c wybran± op³atê na
+       li¶cie zostaniesz przeniesiony do modu³u 'Informacje o op³acie',
+       gdzie mo¿esz edytowaæ jej parametry lub zaksiêgowaæ dan± op³atê w
+       bazie operacji finansowych.
+     * Nowa op³ata - Definiowanie nowej op³aty sta³ej.
+     * Bilans finansowy - Historia operacji finansowych z podsumowaniem
+       przychodu, rozchodu, wp³at i zobowi±zañ u¿ytkowników.
+     * Nowa operacja - Wprowadzanie nowych operacji finansowych. Mo¿liwe
+       jest zaksiêgowanie tej samej wp³aty lub obci±¿enia wielu
+       u¿ytkownikom równocze¶nie.
 
-   Dostêpny z górnego menu 'Bilans Finansowy' to historia rachunku z
-   podsumowaniem przychodu i rozchodu. 'Nowa Operacja' umo¿liwia
-   zaksiêgowanie nowych wp³at i obci±¿eñ u¿ytkowników lub wydatków i
-   przychodów sieci.
+   Notatka
 
-   Rysunek 3-7. LMS-UI: Taryfy i finanse
-   [tariffs-small.png] 
+   Do naliczania sta³ych op³at abonamentowych najlepiej wykorzystywaæ
+   skrypt lms-payments lub demona almsd, które potrafi± równocze¶nie
+   wystawiaæ faktury.
+     * Lista faktur - lista wystawionych faktur z mo¿liwo¶ci± wydruku
+       wybranych.
+     * Nowa faktura - Rêczne wystawianie faktur dla wybranego
+       u¿ytkownika.
      _________________________________________________________________
 
 3.2.6. Mailing
@@ -845,7 +894,8 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    Notatka
 
    Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z
-   op³atami polecam. skrypt lms-notify.
+   op³atami mo¿na wykorzystaæ skrypt lms-notify lub modu³y notify i
+   ggnotify demona almsd.
      _________________________________________________________________
 
 3.2.7. Prze³adowanie
@@ -870,9 +920,6 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
 
    Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub
    zapisywaæ na lokalnym dysku.
-
-   Rysunek 3-8. LMS-UI: Bazy danych
-   [db-small.png] 
      _________________________________________________________________
 
 3.2.9. Administratorzy
@@ -885,20 +932,67 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'.
    Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu
    'Nowy'.
+     _________________________________________________________________
 
-   Rysunek 3-9. LMS-UI: Administratorzy
-   [admins-small.png] 
+3.2.10. Statystyki
+
+   Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci
+   prostych wykresów jest dostêpny w menu 'Statystyki'. Przed
+   wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry okre¶laj±ce okres
+   jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz
+   ich wiêcej), ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na
+   przyk³ad wed³ug downloadu). Korzystaj±c z górnego menu mo¿esz szybko
+   wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia, ostatnich
+   30 dni lub ostatniego roku.
+
+   Notatka
+
+   Zapisem danych do bazy zajmuje siê skrypt lms-traffic, albo demon
+   almsd.
+
+   W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci zapisu, mo¿e
+   nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie
+   czasu oczekiwania na rysowanie wykresów. Z tego powodu w oknie
+   'Kompaktowanie bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia
+   rozmiarów bazy bez utraty danych. Wybieraj±c poziom dok³adno¶ci
+   danych, dane zostan± u¶rednione w nastêpuj±cy sposób:
+     * Poziom Niski: dane z poprzedniego dnia i starsze, zostan±
+       u¶rednione do jednego dnia, czyli je¶li do bazy zapisywane by³y z
+       czêstotliwo¶ci± 10 minut, to 6*24 wpisów zostanie zast±pione
+       jednym.
+     * Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
+       jednego dnia.
+     * Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
+       jednej godziny.
+
+   Ostrze¿enie
+
+   Kompaktowanie bazy danych jest procesem nieodwracalnym.
+
+   Menu panelu 'Statystyki' obejmuje:
+     * Filtr - g³ówne okno do wprowadzania parametrów wykresów oraz do
+       kompaktowania bazy danych.
+     * Ostatnia godzina - statystyki z ostatniej godziny dla wszystkich
+       sieci.
+     * Ostatni dzieñ - statystyki z ostatniego dnia dla wszystkich sieci.
+     * Ostatnie 30 dni - statystyki z ostatnich 30 dni dla wszystkich
+       sieci.
+     * Ostatni rok - statystyki z ostatnich 365 dni dla wszystkich sieci.
      _________________________________________________________________
 
 3.3. Dodatki
 
 3.3.1. Faktury
 
-   LMS umo¿liwia wystawianie faktur. W³±czenia tej opcji dokonuje siê
-   podczas przypisywania taryf u¿ytkownikom. Aktualnie w LMS nie ma
-   mo¿liwo¶ci rêcznego wystawiania faktur. Do poprawnego dzia³ania i
-   tworzenia wydruków wymagane jest ustawienie podstawowych opcji w
-   sekcji [invoices] lms.ini:
+   LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne
+   wystawienie dowolnej faktury jest mo¿liwe z menu 'Nowa faktura' w
+   panelu 'Taryfy i finanse'. Automatyczne wystawianie faktur wymaga
+   w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim
+   wypadku zapisem faktur do bazy zajmuje siê skrypt lms-payments lub
+   demon almsd
+
+   Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie
+   podstawowych opcji w sekcji [invoices] lms.ini:
      * number_template
        Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer
        kolejny w roku, '%M' - miesi±c wystawienia, '%Y' - rok
@@ -921,14 +1015,14 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
 
    Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez
    ikonkê drukarki na wykazie bilansu finansowego (ogólnego b±d¼
-   pojedyñczego u¿ytkownika), albo poprzez 'Lista faktur' z menu
-   'Finanse'. W przypadku listy faktur, mo¿liwe jest tak¿e filtrowanie
+   pojedyñczego u¿ytkownika), albo poprzez 'Lista faktur' z menu 'Taryfy
+   i finanse'. W przypadku listy faktur, mo¿liwe jest tak¿e filtrowanie
    faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y i kopie,
    które s± oddzielone znacznikami podzia³u strony poprzez CSS. Tak wiêc
    ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo
    drukowaæ faktury ³adnie podzielone na strony. Funkcja ta by³a
-   testowana na przegl±darka Microsoft Internet Explorer 6.0, Opera 7.02
-   oraz Mozilla 1.3.
+   testowana na przegl±darkach Microsoft Internet Explorer 6.0, Opera
+   7.02 oraz Mozilla 1.3.
 
    Notatka
 
@@ -940,46 +1034,17 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    W bazie danych zapisywane s± kwoty brutto.
      _________________________________________________________________
 
-3.3.2. Statystyki
+3.3.2. "Moje konto"
 
-   Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci
-   prostych wykresów jest dostêpny w menu 'Statystyki'. Przed
-   wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry okre¶laj±ce okres
-   jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz
-   ich wiêcej), ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na
-   przyk³ad wed³ug downloadu). Korzystaj±c z górnego menu mo¿esz szybko
-   wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia, ostatnich
-   30 dni lub ostatniego roku.
+   W katalogu contrib/customer znajduje siê przyk³ad rozwi±zania, dziêki
+   któremu ka¿dy u¿ytkownik twojej sieci mo¿e sprawdziæ w³asny bilans
+   finansowy.
 
-   Notatka
-
-   Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y
-   go zainstalowaæ aby mieæ w bazie dane do wykresów.
-
-   W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci, mo¿e
-   nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie
-   czasu oczekiwania na rysowanie wykresów. Z tego powodu w oknie
-   'Kompaktowanie bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia
-   rozmiarów bazy bez utraty danych. Wybieraj±c poziom dok³adno¶ci
-   danych, dane zostan± u¶rednione w nastêpuj±cy sposób:
-     * Poziom Niski: dane z poprzedniego dnia i starsze, zostan±
-       u¶rednione do jednego dnia, czyli je¶li do bazy zapisywane by³y z
-       czêstotliwo¶ci± 10 minut, to 6*24 wpisów zostanie zast±pione
-       jednym.
-     * Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
-       jednego dnia.
-     * Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
-       jednej godziny.
-
-   Ostrze¿enie
-
-   Kompaktowanie bazy danych jest procesem nieodwracalnym.
-
-   Rysunek 3-10. Statystyki wykorzystania ³±cza- filtr
-   [stats-small.png] 
-
-   Rysunek 3-11. Statystyki wykorzystania ³±cza - wykres
-   [statbars-small.png] 
+   Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla bilans i
+   informacje o u¿ytkowniku, który jest w³a¶cicielem komputera o tym
+   adresie. Pliki nale¿y skopiowaæ w dowolne miejsce i wystawiæ pod
+   adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie ustawiæ
+   poprawn± ¶cie¿kê do lms.ini w pliku index.php.
      _________________________________________________________________
 
 Rozdzia³ 4. Skrypty
@@ -1010,6 +1075,7 @@ Rozdzia³ 4. Skrypty
    Tabela 4-1. Lista skryptów wykonywalnych
             Nazwa                              Opis
          lms-notify        Korespondencja seryjna do u¿ytkowników sieci
+       lms-notify-sms          Powiadamianie o zalego¶ciach sms'em
          lms-cutoff            Od³±czanie u¿ytkowników zad³u¿onych
         lms-payments       Naliczanie op³at okresowych (abonamentowych)
          lms-traffic           Zapis statystyk wykorzystania ³±cza
@@ -1134,7 +1200,25 @@ http://www.naszasiec.pl/
        Przyk³ad: debug_email = lexx@domain.pl
      _________________________________________________________________
 
-4.4. lms-cutoff
+4.4. lms-notify-sms
+
+   lms-notify-sms to odpowiednik lms-notify, s³u¿±cy do wysy³ania smsów.
+   Do wysy³ania wiadomo¶ci potrzebna jest komórka Nokii oraz
+   oprogramowanie, które nale¿y pobraæ z (www.gnokii.org) i zainstalowaæ
+   w systemie.
+
+   Konfiguracjê dla lms-notify-sms mo¿na ustaliæ w pliku lms.ini w sekcji
+   [notify-sms], a masz do dyspozycji nastêpuj±ce opcje:
+     * limit (opcjonalny)
+       Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika
+       zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0
+       Przyk³ad: limit = -20
+     * smstemplate (wymagany)
+       Szablon wiadomo¶ci. Domy¶lnie nieustawione.
+       Przyk³ad: smstemplate = /etc/lms/smstemplate.txt
+     _________________________________________________________________
+
+4.5. lms-cutoff
 
    Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu
    komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej
@@ -1149,15 +1233,16 @@ http://www.naszasiec.pl/
        Przyk³ad: limit = -20
      _________________________________________________________________
 
-4.5. lms-payments
+4.6. lms-payments
 
-   Skrypt po uruchomieniu nalicza u¿ytkownikom op³atê abonamentow±. Aby
-   dzia³a³ poprawnie powinien byæ uruchamiany codziennie.
+   Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
+   u¿ytkownikom oraz op³at sta³ych. Aby dzia³a³ poprawnie powinien byæ
+   uruchamiany codziennie.
 
    Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.
      _________________________________________________________________
 
-4.6. lms-traffic
+4.7. lms-traffic
 
    Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i
    wys³anych przez ka¿dy komputer w sieci lokalnej. W bazie danych
@@ -1171,7 +1256,7 @@ http://www.naszasiec.pl/
    dostêpne jest z g³ównego menu 'Statystyki'.
      _________________________________________________________________
 
-4.6.1. Instalacja
+4.7.1. Instalacja
 
    Przed uruchomieniem lms-traffic nale¿y zadbaæ o utworzenie pliku z
    danymi. Zawarto¶æ pliku powinna mieæ nastêpuj±cy format:
@@ -1540,16 +1625,6 @@ Rozdzia³ 6. A.L.E.C's LMS Daemon
 
 6.1.3. Konfiguracja
 
-   Na pocz±tku nale¿y w pliku konfiguracyjnym LMS-UI (standardowo
-   /etc/lms/lms.ini) ustawiæ typ reloadu obs³ugiwany przez demona:
-reload_type     = sql
-reload_sqlquery = "INSERT INTO reload VALUES('reload')"
-
-   Notatka
-
-   Struktura tabeli 'reload' jest dowolna, zatem musisz zadbaæ o
-   odpowiedni insert.
-
    Przyk³adowy konfig demona i modu³ów zawarto w pliku lms.ini.sample.
    Poni¿szy listing przedstawia podstawowe opcje dla demona (konfiguracjê
    modu³ów omówiono w osobnych rozdzia³ach ich dotycz±cych):
@@ -1562,7 +1637,7 @@ port            = 0             # numer portu, domy¶lnie: 0
 
 [lmsd]
 sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma
-                                # ma byæ sprawdzana tabela 'reload', domy¶lnie: 30
+                                # byæ sprawdzane ¿±danie reloadu, domy¶lnie: 30
 instances       = hosts oident firewall       # lista instancji modu³ów
 
    Notatka
@@ -1581,10 +1656,10 @@ info = "Opcjonalny opis modu³u"
 
    Program mo¿esz uruchamiaæ jako demona pracuj±cego w tle (opcja '-b').
    Wtedy prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie,
-   przez wpis do tabeli 'reload'. Opcja 'sleeptime' (-s) okre¶la okres
-   miêdzy odczytami tej tabeli. Gdy do tabeli 'reload' zostan± zapisane
-   dowolne dane (przy pomocy menu 'Prze³adowanie' w LMS-UI) demon wykona
-   modu³y okre¶lone opcj± 'instances' z lms.ini. Na przyk³ad:
+   przy u¿yciu menu 'Prze³adowanie' w LMS-UI. Opcja 'sleeptime' (-s)
+   okre¶la okres miêdzy odczytami bazy. Gdy demon wykryje ¿±danie
+   wykonania reloadu, wywo³a modu³y okre¶lone opcj± 'instances' z
+   lms.ini. Na przyk³ad:
 # almsd -b
 
    Innym sposobem uruchomienia jest jednorazowy reload w wykorzystaniem
@@ -1636,10 +1711,12 @@ info = "Opcjonalny opis modu³u"
 
 6.2.2.1. Opis
 
-   Modu³ nalicza u¿ytkownikom op³aty abonamentowe. Nale¿y go uruchamiaæ
-   codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
-   taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn±
-   'comment'. Po naliczeniu op³at tworzone s± faktury.
+   Modu³ nalicza op³aty abonamentowe u¿ytkowników oraz op³aty sta³e.
+   Nale¿y go uruchamiaæ codziennie. Op³aty naliczane na podstawie
+   przypisanych u¿ytkownikowi taryf zapisywane s± do bazy wraz z
+   komentarzem okre¶lonym zmienn± 'comment'. Po naliczeniu op³at tworzone
+   s± faktury. Komentarz do op³aty sta³ej to zlepek sk³adaj±cy siê z jej
+   nazwy oraz wierzyciela.
      _________________________________________________________________
 
 6.2.2.2. Konfiguracja
@@ -2099,6 +2176,7 @@ Rozdzia³ 7. Dla dociekliwych
    zip - kod pocztowy
    city - nazwa miasta
    nip - numer identyfikacji podatkowej NIP
+   pesel - numer PESEL
    info - dodatkowe informacje
    creationdate - czas utworzenia wpisu
    moddate - czas modyfikacji
@@ -2123,13 +2201,13 @@ Rozdzia³ 7. Dla dociekliwych
    dhcpend - koniec zakresu DHCP
      _________________________________________________________________
 
-7.2.4. Komputery ('nodes')
+7.2.4. Komputery i adresy IP urz±dzeñ sieciowych ('nodes')
 
    id - identyfikator
    name - nazwa
    mac - adres MAC
    ipaddr - adres IP
-   ownerid - identyfikator w³a¶ciciela (u¿ytkownika)
+   ownerid - identyfikator w³a¶ciciela ('0' - dla adresu urz±dzenia)
    creationdate - znacznik czasu utworzenia wpisu
    moddate - znacznik czasu ostatniej modyfikacji
    creatorid - identyfikator administratora tworz±cego wpis
@@ -2174,7 +2252,7 @@ Rozdzia³ 7. Dla dociekliwych
 
    id - identyfikator
    name - nazwa
-   value - warto¶æ netto w z³otych
+   value - kwota
    taxvalue - wysoko¶æ podatku w procentach
    pkwiu - numer PKWiU
    uprate - ograniczenie szybko¶ci transferu danych wychodz±cych
@@ -2182,33 +2260,46 @@ Rozdzia³ 7. Dla dociekliwych
    description - opis
      _________________________________________________________________
 
-7.2.9. Powi±zania ('assignments')
+7.2.9. Op³aty sta³e ('payments')
+
+   id - identyfikator
+   name - nazwa
+   value - kwota
+   creditor - nazwa wierzyciela
+   period - typ okresu naliczania (co miesi±c/co tydzieñ/co rok)
+   at - dzieñ naliczenia
+   description - opis
+     _________________________________________________________________
+
+7.2.10. Powi±zania ('assignments')
 
    id - identyfikator
    tariffid - identyfikator taryfy
    userid - identyfikator u¿ytkownika
-   period - okres (ilo¶æ dni)
+   period - typ okresu
    at - dzieñ naliczania
    invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)
      _________________________________________________________________
 
-7.2.10. Faktury ('invoices')
+7.2.11. Faktury ('invoices')
 
    id - identyfikator
    number - numer w roku
    cdate - data wystawienia
-   paytime - czas zap³aty (ilo¶æ dni)
+   paytime - termin p³atno¶ci (ilo¶æ dni)
+   paytype - rodzaj p³atno¶ci (przelew/gotówka/etc.)
    customerid - identyfikator u¿ytkownika-nabywcy
    name - nazwa (nazwisko i imiê) nabywcy
    address - adres nabywcy
    nip - nip nabywcy
+   pesel - PESEL nabywcy
    zip - kod pocztowy nabywcy
    phone - telefon nabywcy
    city - miasto nabywcy
    finished - pole okre¶laj±ce zamkniêcie faktury
      _________________________________________________________________
 
-7.2.11. Faktury - cd. ('invoicecontents')
+7.2.12. Faktury - cd. ('invoicecontents')
 
    invoiceid - identyfikator faktury
    value - kwota pozycji
@@ -2220,13 +2311,13 @@ Rozdzia³ 7. Dla dociekliwych
    tariffid - identyfikator taryfy
      _________________________________________________________________
 
-7.2.12. Znaczniki czasu ('timestamps')
+7.2.13. Znaczniki czasu ('timestamps')
 
    time - czas ostatniej modyfikacji
    tablename - nazwa tabeli
      _________________________________________________________________
 
-7.2.13. Statystyki wykorzystania ³±cza ('stats')
+7.2.14. Statystyki wykorzystania ³±cza ('stats')
 
    nodeid - numer komputera
    dt - znacznik czasu
@@ -2285,7 +2376,25 @@ key = "A.L.E.C's LMS Daemon is the best"
    linii z parametrami.
      _________________________________________________________________
 
-7.4. Poziomy dostêpu
+7.4. Generowanie danych losowych
+
+   Dla osób chc±cych szybko sprawdziæ jak dzia³a LMS przygotowali¶my
+   modu³ 'genfake', s³u¿±cy do tworzenia bazy danych.
+
+   Aby wygenerowaæ dane nale¿y, po zalogowaniu siê w LMS'ie wywo³aæ adres
+   http://twoj.serwer.net/lms/?m=genfake, okre¶liæ ilu u¿ytkowników ma
+   zostaæ stworzonych i nacisn±æ ENTER. To wszystko.
+   Notatka
+
+   Dla prawid³owego wygenerowania zale¿no¶ci, modu³ 'genfake' nale¿y
+   uruchamiaæ na pustej, nowoutworzonej bazie.
+   Ostrze¿enie
+
+   Wszystkie dane (oprócz danych administratorów) zostan± usuniête z
+   bazy.
+     _________________________________________________________________
+
+7.5. Poziomy dostêpu
 
    W sumie tutaj to wyt³umaczê bardziej dla developerów, gdy¿ osoby
    korzystaj±ce z LMS raczej nie bêd± zainteresowane.
@@ -2305,21 +2414,21 @@ key = "A.L.E.C's LMS Daemon is the best"
    znak, co da nam 384 kombinacje.
      _________________________________________________________________
 
-7.5. Ograniczenia
+7.6. Ograniczenia
 
    Ka¿dy system ma ograniczenia. Pewne wynikaja z u¿ytego silnika SQL
    (DBMS) inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez
    developerów. Nasz system takowe posiada:
      _________________________________________________________________
 
-7.5.1. Wynikaj±ce z naszego projektu
+7.6.1. Wynikaj±ce z naszego projektu
 
    Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowujemy
    jako 32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat bêdziecie
    nas nie lubiæ posiadaj±c oko³o 5000 u¿ytkowników.
      _________________________________________________________________
 
-7.5.2. Wynikaj±ce z u¿ywanego DMBS
+7.6.2. Wynikaj±ce z u¿ywanego DMBS
 
      * MySQL
           + Rozmiar bazy danych:
