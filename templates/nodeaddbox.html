@@ -8,7 +8,7 @@
 		<TD WIDTH="1%" CLASS="FBT">
 			<B>{t}Name:{/t}</B>
 		<TD WIDTH="98%" CLASS="FRIGHTU">
-			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name|upper}" MAXLENGTH="16" {tip text="Enter node's name" trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name|upper}" MAXLENGTH="16" {tip text="Enter node name" trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -41,7 +41,7 @@
 			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[access]" {tip text="Select node's status"}>
+			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[access]" {tip text="Select node status"}>
 				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>{t}connected{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>{t}disconnected{/t}</OPTION>
 			</SELECT>
@@ -55,7 +55,7 @@
 			<B>{t}Message:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[warning]" {tip text="Set node's message"}>
+			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[warning]" {tip text="Set message for node"}>
 				<OPTION VALUE="1"{if $nodedata.warning} SELECTED{/if}>{t}enabled{/t}</OPTION>
 				<OPTION VALUE="0"{if ! $nodedata.warning} SELECTED{/if}>{t}disabled{/t}</OPTION>
 			</SELECT>
