@@ -18,6 +18,7 @@ version 1.5.5 (??/??/????):
   - helpdesk: fixed encoding in message contents to UTF-8, added option
     phpui/helpdesk_sender_name for name of message sender (alec)
   - fixed bug in userassignmentedit.html when customer has " sign in name (alec)
+  - BTS#0000283: added link 'Clear Account' on Customer Account (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 

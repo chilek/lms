@@ -173,6 +173,10 @@
 				<TR bgcolor="#DFD5BD" title="Nowa operacja kasowa">
 					<TD colspan="3">
 						<A href="?m=prepayments&id={$balancelist.userid}">{t}Prepayments{/t} <IMG src="img/edit.gif" border="0" ALT="" align="absmiddle"></A>
+						{if $userinfo.balance < 0}
+						<A href="?m=userbalanceok&id={$userinfo.id}" OnClick="return confirmLink(this, '{t 0=$userinfo.username|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} <IMG src="img/edit.gif" border="0" ALT="" align="absmiddle"></A>
+						{/if}
+
 					</TD>
 					<TD align="right" colspan="6">
 						<A href="javascript:unpaidchoosewin();">{t}Select unpaid covenants{/t} <IMG src="img/search.gif" border="0" ALT="" align="absmiddle"></A>&nbsp;
@@ -185,4 +189,5 @@
 </FORM>
 <SCRIPT><!--
 var cal3 = new calendar(document.forms['addbalance'].elements['addbalance[time]']);
-//--></SCRIPT>
+//-->
+</SCRIPT>
