@@ -113,7 +113,7 @@ if($_GET['action'] == 'add' && isset($a))
 			{
 				$error['at'] = 'Niepoprawny format daty (DD/MM)';
 			}
-			elseif($_CONFIG['phpui']['use_current_payday'] && !$at['at'])
+			elseif($_CONFIG['phpui']['use_current_payday'] && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
@@ -137,7 +137,7 @@ if($_GET['action'] == 'add' && isset($a))
 		break;
 	}
 
-	if(trim($a['datefrom'] == ''))
+	if(trim($a['datefrom']) == '')
 		$from = 0;
 	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',trim($a['datefrom'])))
 	{
@@ -150,7 +150,7 @@ if($_GET['action'] == 'add' && isset($a))
 	else
 		$error['datefrom'] = 'Pocz±tek okresu naliczania jest niepoprawny!';
 
-	if(trim($a['dateto'] == ''))
+	if(trim($a['dateto']) == '')
 		$to = 0;
 	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',trim($a['dateto'])))
 	{
