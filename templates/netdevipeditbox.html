@@ -12,29 +12,29 @@
 			<IMG SRC="img/ip.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="ipadd[name]" VALUE="{$nodeipdata.name|upper}" MAXLENGTH="16" {tip text="Wpisz nazwê dla adresu" trigger="ipname" bold=1}>
+			<INPUT TYPE="TEXT" NAME="ipadd[name]" VALUE="{$nodeipdata.name|upper}" MAXLENGTH="16" {tip text="Enter address name" trigger="ipname" bold=1}>
 			<B>({$nodeipdata.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="Adres IP:">
+			<IMG SRC="img/ip.gif" BORDER="0" ALT="{t}IP address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-                       <INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Wpisz lub wybierz z listy adres IP" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'],{$nodeipdata.netid});" {tip text="Wybierz adres IP z listy"}>&raquo;&raquo;&raquo;</A>
+                       <INPUT TYPE="TEXT" NAME="ipadd[ipaddr]" VALUE="{$nodeipdata.ipaddr}" {tip text="Enter IP address or select from list" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editipaddr['ipadd[ipaddr]'],{$nodeipdata.netid});">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" BORDER="0" ALT="Adres MAC:">
+			<IMG SRC="img/mac.gif" BORDER="0" ALT="{t}MAC address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="ipadd[mac]" VALUE="{$nodeipdata.mac}" {tip text="Wpisz lub wybierz z listy adres MAC" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr['ipadd[mac]']);" {tip text="Wybierz adres MAC z listy"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="ipadd[mac]" VALUE="{$nodeipdata.mac}" {tip text="Enter MAC address or select from list" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editipaddr['ipadd[mac]']);">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/network.gif" BORDER="0" ALT="Sieæ:">
+			<IMG SRC="img/network.gif" BORDER="0" ALT="{t}Network:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<B><A HREF="?m=netinfo&id={$netdevinfo.netid}">{$nodeipdata.netname}</A></B>
@@ -45,9 +45,9 @@
 			<IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="ipadd[access]" {tip text="Wybierz status dla adresu"}>
-				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>pod³±czony</OPTION>
-				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>od³±czony</OPTION>
+			<SELECT SIZE="1" CLASS="BOLD" NAME="ipadd[access]" {tip text="Select address status"}>
+				<OPTION VALUE="1"{if $nodeipdata.access} SELECTED{/if}>{t}connected{/t}</OPTION>
+				<OPTION VALUE="0"{if ! $nodeipdata.access} SELECTED{/if}>{t}disconnected{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
@@ -56,7 +56,7 @@
 			<IMG SRC="img/info.gif" BORDER="0" ALT="Opis:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<TEXTAREA NAME="ipadd[info]" ROWS="5" COLS="40" {tip text="Informacje dodatkowe (opcjonalnie)"}>{$nodeipdata.info}</TEXTAREA>
+			<TEXTAREA NAME="ipadd[info]" ROWS="5" COLS="40" {tip text="Enter additional informations (optional)"}>{$nodeipdata.info}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -64,8 +64,8 @@
 			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Utworzony:<BR>
-			Zmodyfikowany:</B>
+			<B>{t}Created:{/t}<BR>
+			{t}Modified:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{$nodeipdata.createdby}, {$nodeipdata.creationdateh}<BR>
@@ -74,8 +74,8 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="javascript:document.editipaddr.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
-			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="javascript:document.editipaddr.submit();" ACCESSKEY="S">{t}Save{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
 	</TR>	
 </TABLE>
