@@ -300,9 +300,9 @@ info = "Opcjonalny opis modu³u"
 		    <para>Poni¿ej przedstawiono dostêpne opcje konfiguracyjne modu³u 'notify':</para>
 		    <itemizedlist>
 			<listitem>
-			    <para>mailtemplate</para>
+			    <para>template</para>
 			    <para>Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty</para>
-			    <para>Przyk³ad: <prompt>mailtemplate = modules/notify/sample/mailtemplate</prompt></para>
+			    <para>Przyk³ad: <prompt>template = modules/notify/sample/mailtemplate</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>file</para>
