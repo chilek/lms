@@ -200,7 +200,7 @@
 			{if $_config.phpui.to_words_short_version}
 				{$invoice.total|string_format:"%d"|to_words:0:"":1} {$invoice.totalg|string_format:"%02d"}/100
 			{else}
-				{$invoice.total|string_format:"%d"|to_words} z³ {$invoice.totalg|to_words} gr
+				{t 0=$invoice.total|string_format:"%d"|to_words 1=$invoice.totalg|to_words}$0 dollars $1 cents{/t}
 			{/if}
 		</TD>
 	</TR>
