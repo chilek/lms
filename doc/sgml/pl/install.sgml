@@ -591,22 +591,23 @@ database = /usr/local/lms/lms.db</screen>
       <para>Domy¶lnie zdefiniowanych jest osiem regu³ dostêpu. 
        <itemizedlist>
 	<listitem><para>pe³en dostêp</para></listitem>
-	<listitem><para>odczyt wszystkich danych</para></listitem>
-	<listitem><para>w³±czanie i od³±czanie komputerów</para></listitem>
-	<listitem><para>manipulacja finansami</para></listitem>
-	<listitem><para>prze³adowywanie konfiguracji</para></listitem>
-	<listitem><para>manipulacja danymi u¿ytkowników</para></listitem>
-	<listitem><para>manipulacja danymi komputerów</para></listitem>
-	<listitem><para>dostêp do statystyk</para></listitem>
-	<listitem><para>dostêp do korespondencji seryjnej</para></listitem>
-	<listitem><para>zarz±dzanie Helpdeskiem (RT)</para></listitem>
-	<listitem><para>obs³uga Helpdesku (RT)</para></listitem>
-	<listitem><para>manipulacja kontami</para></listitem>
-	<listitem><para>konfiguracja interfejsu u¿ytkownika</para></listitem>
-	<listitem><para>brak dostêpu do modyfikacji i zak³adania kont administratorów</para></listitem>
-	<listitem><para>brak dostêpu</para></listitem>
-	</itemizedlist>
-      Niektóre z nich zezwala na dostêp do modu³ów oraz dwie zabraniaj±. Modu³y do których 
+        <listitem><para>odczyt wszystkich danych (z wyj±tkiem Helpdesku)</para></listitem>
+        <listitem><para>pod³±czanie i od³±czanie komputerów</para></listitem>
+        <listitem><para>manipulowanie finansami</para></listitem>
+        <listitem><para>prze³adowywanie konfiguracji</para></listitem>
+        <listitem><para>manipulowanie danymi u¿ytkowników</para></listitem>
+        <listitem><para>manipulowanie danymi komputerów</para></listitem>
+        <listitem><para>dostêp do statystyk</para></listitem>
+        <listitem><para>dostêp do korespondencji seryjnej</para></listitem>
+        <listitem><para>zarz±dzanie Helpdeskiem (RT)</para></listitem>
+        <listitem><para>obs³uga Helpdesku (RT)</para></listitem>
+        <listitem><para>zarz±dzanie kontami</para></listitem>
+        <listitem><para>konfiguracja UI</para></listitem>
+        <listitem><para>zarz±dzanie sieciami i urz±dzeniami sieciowymi</para></listitem>
+        <listitem><para>brak dostêpu do modyfikacji i zak³adania kont administratorów</para></listitem>
+        <listitem><para>brak dostêpu</para></listitem>
+       </itemizedlist>
+      Niektóre z nich zezwalaj± na dostêp do modu³ów oraz dwie zabraniaj±. Modu³y do których 
       administrator ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
       chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostêp do reszty jest zdefiniowany regu³ami.</para>
       <note><para>Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie
