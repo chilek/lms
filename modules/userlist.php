@@ -24,62 +24,26 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Lista u¿ytkowników";
-
-$order=$_GET['o'];
-
-if(!isset($order)) $order="name";
-
-$state=$_GET['s'];
-
-if(!isset($state)) $state="3";
-
-$SMARTY->assign("order",$order);
-
-$sql="SELECT id, lastname, name, status, email, phone1, address, info FROM users ";
-
-switch ($state){
-	case "3":
-		$sql .= " WHERE status = 3 ";
-		break;
-	case "2":
-		$sql .= " WHERE status = 2 ";
-		break;
-	case "1":
-		$sql .= " WHERE status = 1 ";
-}
-
-switch ($order){
-	case "name":
-		$sql .= " ORDER BY lastname ASC";
-		$layout[sortmsg] = "Sortowanie wed³ug nazwiska.";
-		break;
-	case "addr":
-		$sql .= " ORDER BY address ASC";
-		$layout[sortmsg] = "Sortowanie wed³ug adresu.";
-		break;
-	case "id":
-		$sql .= " ORDER BY id ASC";
-		$layout[sortmsg] = "Sortowanie wed³ug ID.";
-		break;
-}
-
-$DB->ExecSQL($sql);
-
-while($DB->FetchRow()){
-	list($userlist[id][],$userlist[lastname][],$userlist[name][],$userlist[status][],$userlist[email][],$userlist[phone1][],$userlist[address][],$userlist[info][]) = $DB->row;
-}
-
-for($i=0;$i<sizeof($userlist[id]);$i++)
-	$userlist[balance][$i] = $LMS->GetUserBalance($userlist[id][$i]);
-
 $_SESSION[userdelfrom] = $QUERY_STRING;
 
-$SMARTY->assign("total",sizeof($userlist[id]));
+$layout[pagetitle]="Lista u¿ytkowników";
+
+if(!isset($_GET[o]))
+	$o = $_SESSION[o];
+else
+	$o = $_GET[o];
+$_SESSION[o] = $o;
+
+if(!isset($_GET[s]))
+	$s = $_SESSION[s];
+else
+	$s = $_GET[s];
+$_SESSION[s] = $s;
+
+$userlist=$LMS->GetUserList($o,$s);
+
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("userlist",$userlist);
-$SMARTY->assign("state",$state);
-$SMARTY->assign("order",$order);
 
 $SMARTY->display("header.html");
 $SMARTY->display("userlist.html");
