@@ -1,0 +1,164 @@
+  <chapter>
+    <title>Skrypty</title>
+       <sect1>
+        <title>Instalacja</title>
+        <para>Je¶li chcemy ustawiæ konfiguracjê którego¶ ze skryptów, robimy to w odpowiedniej sekcji <filename>lms.ini</filename>. Same skrypty przenosimy do katalogu <filename>/usr/sbin</filename>. Po przeniesieniu musimy je jeszcze dopisaæ do crontaba tak, aby by³y uruchamiane automatycznie w³a¶nie wtedy kiedy tego chcemy.</para>
+        <para>Pamiêtaj ¿e przewa¿nie bêdziesz chcia³ aby te skrypty by³y uruchamiane tylko raz w miesi±cu (no chyba ¿e chcesz naliczaæ u¿ytkownikom op³aty kilka razy w miesi±cu.)</para>
+        <para>Przyk³adowo, je¶li chcieliby¶my aby op³ata abonamentowa by³a naliczana uzytkownikom 5 dnia ka¿dego miesi±ca o godzinie 1:20, przyk³adowy wpis w <filename>crontab</filename> powinien wygl±daæ tak:</para>
+        <screen><para>20 1 5 * *       /usr/sbin/lms-eachmonth</para></screen>
+        <para>Po wiêcej informacji mo¿esz siêgn±æ do <command>man crontab</command></para>
+       </sect1>
+       <sect1>
+	<title>lms-notify</title>
+	 <sect2>
+	  <title>Szablony</title>
+          <!--
+          Na podstawie CVS; $Id$
+          -->
+	  <para>lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych [w iso-8859-2] i traktowania ich jako szablonów do mailingu.</para>
+	  <para>W plikach mo¿na u¿ywaæ nastêpuj±cych s³ów:</para>
+	  <itemizedlist>
+	    <listitem>
+	       <para>%date-m</para>
+	    </listitem>
+	    <listitem>
+	       <para>%date-y</para>
+	    </listitem>
+	    <listitem>
+	       <para>%saldo</para>
+	    </listitem>
+	    <listitem>
+	       <para>%abonament</para>
+	    </listitem>
+	    <listitem>
+	       <para>%b</para>
+	    </listitem>
+	    <listitem>
+	       <para>%B</para>
+	    </listitem>
+	    <listitem>
+	       <para>%last_10_in_a_table</para>
+	    </listitem>
+	  </itemizedlist>
+	  <para>które rozwijane s± do nastêpuj±cych danych:</para>
+	  <para><emphasis>%date-m</emphasis> zostanie zast±pione aktualnym miesi±cem, licz±c od 1 poprzedzone 0, np. 02</para>
+	  <para><emphasis>%date-y</emphasis> zostanie zast±pione aktualnym rokiem, np 2003</para>
+	  <para><emphasis>%saldo</emphasis> zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535</para>
+	  <para><emphasis>%abonament</emphasis> zostanie zast±pione kwot± abonamentu jaka jest do danego u¿ytkownika przypisana, np. 107</para>
+	  <para><emphasis>%b</emphasis> saldo z zanegowanym znakiem, np. 107</para>
+	  <para><emphasis>%B</emphasis> saldo z prawdziwym znakiem, np. -107</para>
+	  <para><emphasis>%last_10_in_a_table</emphasis> wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:</para>
+	  <example>
+	   <title>Przyk³adowy wyci±g 10 ostatnich operacji kasowych</title>
+<screen><para>Data       | Opis                                                 | Warto¶æ
+-----------+------------------------------------------------------+---------
+2003-02-02 | Abonament za miesi±c 2003/02                         |  107.00
+2003-02-01 | Wp³ata                                               | -107.00
+2003-02-01 | Abonament za miesi±c 2003/02                         |  107.00
+2003-02-01 | Wp³ata                                               | -321.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+-----------+------------------------------------------------------+---------</para></screen></example>
+	  <example>
+           <title>Przyk³ad szablonu:</title>
+<screen><para>UWAGA! Ta wiadomo¶æ zosta³a wygenerowana automatycznie.
+
+Uprzejmie informujemy i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za
+internet w wysoko¶ci %B z³.
+
+Je¿eli porozumieli siê ju¿ Pañstwo z administratorami w kwestii op³aty za
+bierz±cy miesi±c czyli %date-m %date-y roku, prosimy o
+zignorowanie tej wiadomo¶ci.
+
+W wypadku gdy uwa¿aj± Pañstwo i¿ zaleg³o¶æ ta jest nieporozumieniem prosimy o
+jak najszybszy kontakt.
+
+Wszelkie informacje na temat Pañstwa rozliczeñ mog± Pañstwo znale¼æ pod
+adresem http://www.naszasiec.pl/mojekonto/
+
+Je¿eli chcieliby Pañstwo uregulowaæ zaleg³o¶ci prosimy o kontakt:
+
+Dzia³ Rozliczeñ ASK NaszaSiec
+
+Gerwazy Regu³a
+telefon: 0-509031337
+email: gerwazy@staff.naszasiec.pl
+
+Gwidon Mniejwa¿ny
+telefon: 0-606666666
+email: gwidonm@naszasiec.pl
+
+ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
+system bilingowy na Pañstwa koncie:
+
+kwota operacji | typ operacji | data
+
+%last_10_in_a_table
+
+--
+Amatorska Sieæ Komputerowa NaszaSiec
+http://www.naszasiec.pl/</para></screen></example>
+          </sect2>
+	  <sect2>
+	  <title>Konfiguracja</title>
+           <!--
+           Na podstawie lms.ini
+           -->
+           <para>Konfiguracjê dla lms-notify mo¿emy ustaliæ w pliku <filename>lms.ini</filename> w sekcji <emphasis>[notify]</emphasis>. Mo¿emy tam ustawiæ nastêpuj±ce parametry:</para>
+	   <itemizedlist>
+            <listitem>
+	     <para>limit (opcjonalny)</para>
+	     <para>Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0</para>
+	     <example><title>Przyk³ad:</title><para>limit = -20</para></example>
+	    </listitem>
+            <listitem>
+	     <para>mailsubject (wymagany)</para>
+	     <para>Pozwala na ustalenie tematu emaila wysy³anego do u¿ytkownika. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie nieustawione.</para>
+	     <example><title>Przyk³ad:</title><para>mailsubject = Informacje o zaleg³o¶ciach w op³atach za internet</para></example>
+	    </listitem>
+	    <listitem>
+	     <para>mailtemplate (wymagany)</para>
+	     <para>Pozwala na wskazanie szablonu wiadomo¶ci która zostanie wys³ana do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie nieustawione</para>
+	     <example><title>Przyk³ad:</title><para>mailtemplate = /etc/lms/notifytemplate.txt</para></example>
+            </listitem>
+            <listitem>
+             <para>mailfrom</para>
+             <para>Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie nieustawione</para>
+             <example><title>Przyk³ad:</title><para>mailfrom	= staff@domain.pl</para></example>
+            </listitem>
+            <listitem>
+             <para>mailfname</para>
+             <para>Nazwa nadawcy maila</para>
+             <example><title>Przyk³ad:</title><para>mailfname	= Administratorzy</para></example>
+            </listitem>
+            <listitem>
+             <para>smtp_server</para>
+             <para>Serwer SMTP przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1</para>
+             <example><title>Przyk³ad:</title><para>smtp_server = smtp.mydomain.pl</para></example>
+            </listitem>
+            <listitem>
+             <para>debug_email (opcjonalny)</para>
+             <para>Adres email do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do u¿ytkowników. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie nieustawiony.</para>
+             <example><title>Przyk³ad:</title><para>lexx@domain.pl</para></example>
+            </listitem>
+          </itemizedlist>
+          </sect2>
+	</sect1>
+	<sect1>
+	 <title>lms-cutof</title>
+	 <para>Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez LMSd lub LMS-MGC.</para>
+         <para>Konfiguracjê dla lms-cutof mo¿emy ustaliæ w pliku <filename>lms.ini</filename> w sekcji <emphasis>[cutof]</emphasis>. Mo¿emy tam ustawiæ nastêpuj±ce parametry:</para>
+	 <itemizedlist>
+          <listitem>
+	   <para>limit (opcjonalny)</para>
+	   <para>Pozwala na ustalenie limitu bilansu poni¿ej którego do bazy danych zostanie zapisany stan od³±czony. Domy¶lnie limit = 0</para>
+	   <example><title>Przyk³ad:</title><para>limit = -20</para></example>
+	  </listitem>
+	 </itemizedlist>
+	</sect1>
+	<sect1>
+	 <title>lms-eachmonth</title>
+	 <para>Skrypt po uruchomieniu nalicza u¿ytkownikom op³atê abonamentow±. Aby dzia³a³ poprawnie powinien byæ uruchamiany tylko raz w miesi±cu (o ile u¿ytkownicy wnosz± op³aty co miesi±c). Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.</para>
+        </sect1>
+  </chapter>
