@@ -1,5 +1,10 @@
 $Id$
 
+wersja 1.2.5 (??/??/2004):
+
+  - poprawka w zapytaniu sql minimalnie przyspieszaj±ca wy¶wietlanie 
+    listy u¿ytkowników (alec)
+
 wersja 1.2.4 Jolinar (29/07/2004):
 
   - BTS#0000171: poprawiona obs³uga b³êdu braku portów w urz±dzeniu

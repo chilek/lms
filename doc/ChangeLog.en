@@ -1,6 +1,10 @@
 $Id$
 
-version 1.2.4 (??/??/2004):
+version 1.2.5 (??/??/2004):
+
+  - fix in sql query for users list speed up (alec)
+
+version 1.2.4 Jolinar (29/07/2004):
 
   - BTS#0000171: fixed lack of ports in device errors handling while
     first computer connecting (alec)
