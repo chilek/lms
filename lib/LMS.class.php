@@ -1173,7 +1173,7 @@ class LMS
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
 			$result['creationdateh'] = date('Y-m-d, H:i',$result['creationdate']);
 			$delta = time()-$result['lastonline'];
-			if($delta>$LMS->CONFIG['phpui']['lastonline_limit'])
+			if($delta>$this->CONFIG['phpui']['lastonline_limit'])
 				$result['lastonlinedate'] .= uptimef($delta).($delta>60 ? ' temu ' : '').'('.date('Y-m-d, H:i',$result['lastonline']).')';
 			else
 				$result['lastonlinedate'] .= 'aktualnie w³±czony';
@@ -2136,6 +2136,7 @@ class LMS
 				$row['broadcast'] = getbraddr($row['address'],$row['mask']);
 				$row['broadcastlong'] = ip_long($row['broadcast']);
 				$row['assigned'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?', array($row['addresslong'], $row['broadcastlong']));
+            			$row['online'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ? AND (?NOW? - lastonline < ?)', array($row['addresslong'], $row['broadcastlong'], $this->CONFIG['phpui']['lastonline_limit']));
 				$networks[$idx] = $row;
 				$networks['size'] += $row['size'];
 				$networks['assigned'] += $row['assigned'];

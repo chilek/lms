@@ -20,6 +20,7 @@ wersja 1.5.1 (??/??/????):
     aktualizacj± nieistniej±cych sekwencji (alec)
   - status online adresów urz±dzeñ w netdevinfo (alec)
   - poprawiony b³±d w zapytaniu sql w lms-notify (alec)
+  - na li¶cie sieci podajemy ilo¶æ komputerów online dla ka¿dej sieci (alec/lukas)
   
 wersja 1.5.0 Marduk (18/09/2004):
 
