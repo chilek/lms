@@ -43,15 +43,19 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 if(!isset($_GET[ownerid]))
 	$_SESSION[backto] .= "&ownerid=".$ownerid;
 
-if($nodeinfo['netdev'] == 0)
+if($nodeinfo['netdev'] == 0) {
 	$netdevices = $LMS->GetNetDevList();
-else
+	
+} else
 	$netdevices = $LMS->GetNetDev($nodeinfo['netdev']);
+
+unset($netdevices[total]);
+unset($netdevices[order]);
+unset($netdevices[direction]);
 
 $layout[pagetitle]="Informacje o komputerze: ".$nodeinfo[name];
 
 $SMARTY->assign("netdevices",$netdevices);
-$SMARTY->assign("netdevice",$netdevice);
 $SMARTY->assign("balancelist",$balancelist);
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("nodeinfo",$nodeinfo);
@@ -62,6 +66,9 @@ $SMARTY->display("nodeinfo.html");
 
 /*
  * $Log$
+ * Revision 1.24  2003/10/01 16:06:37  alec
+ * removed bad array members
+ *
  * Revision 1.23  2003/09/26 17:44:10  alec
  * ujednolicone nag³ówki (dodany ':')
  *
