@@ -30,10 +30,10 @@
 class LMS
 {
 
-	var $DB;			// obiekt bazy danych
-	var $SESSION;			// obiekt z Session.class.php (zarz±dzanie sesj±)
-	var $CONFIG;			// tablica zawieraj±ca zmienne z lms.ini
-	var $_version = '1.2-cvs';	// wersja klasy
+	var $DB;			// database object
+	var $SESSION;			// object from Session.class.php (sesj± management)
+	var $CONFIG;			// table with variables from lms.ini
+	var $_version = '1.2-cvs';	// class version
 	var $_revision = '$Revision$';
 	var $MENU = array();
 
@@ -77,7 +77,7 @@ class LMS
 
 		foreach($this->modules as $module)
 			if(! ($this->$module != NULL ? $this->$module->_postinit() : TRUE))
-				trigger_error('Wyst±pi³y problemy z inicjalizacj± modu³u '.$module.'.');
+				trigger_error(sprintf(_("Errors occured while module '%s' initialization."),$module));
 
 		// to siê rozejdzie po modu³ach:
 
@@ -100,7 +100,7 @@ class LMS
 	}
 
 	/*
-	 *  Funkcje podstawowe (ró¿ne)
+	 *  Basic functions (various)
 	 */
 
 	function AddMenu($name = '', $img = '', $link = '', $tip = '', $accesskey = '', $prio = 99)
@@ -117,7 +117,7 @@ class LMS
 		
 
 	/*
-	 *  Funkcje bazodanowe (backupy, timestampy)
+	 *  Database functions (backups, timestamps)
 	 */
 
 	function SetTS($table) // ustawia timestamp tabeli w tabeli 'timestamps'
@@ -1147,30 +1147,30 @@ class LMS
 				switch($row['period'])
 				{
 					case 0:
-						$row['period'] = 'co tydzieñ';
-						$dni = array('poniedzia³ek', 'wtorek', '¶roda', 'czwartek', 'pi±tek', 'sobota', 'niedziela');
+						$row['period'] = _('weekly');
+						$dni = array(_('monday'),_('tuesday'),_('wednesday'),_('thursday'),_('friday'),_('saturday'),_('sunday'));
 						$row['at'] = $dni[$row['at'] - 1];
 					break;
 					
 					case 1:
-						$row['period'] = 'co miesi±c';
+						$row['period'] = _('monthly');
 					break;
 					
 					case 2:
-						$row['period'] = 'co kwarta³';
+						$row['period'] = _('quarterly');
 						$row['at'] = sprintf("%02d/%02d", $row['at']%100, $row['at']/100+1);
 					break;
 					
 					case 3:
 					/*	
-						$row['period'] = 'co rok';
+						$row['period'] = _('yearly');
 						$miesiace = array('styczeñ','luty', 'marzec', 'kwiecieñ', 'maj', 'czerwiec', 'lipiec', 'sierpieñ', 'wrzesieñ', 'pa¼dziernik', 'listopad', 'grudzieñ');
 						$row['at'] --;
 						$ttime = $row['at'] * 86400 + mktime(12, 0, 0, 1, 1, 1990);
 						$row['at'] = date('j ',$ttime);
 						$row['at'] .= $miesiace[date('n',$ttime) - 1];
 					*/
-						$row['period'] = 'co rok';
+						$row['period'] = _('yearly');
 						$row['at'] = date('d/m',($row['at']-1)*86400);
 					break;
 				}
@@ -1492,24 +1492,24 @@ class LMS
 				switch($row['type'])
 				{
 					case "1":
-						$balancelist[$idx]['type'] = "przychód";
+						$balancelist[$idx]['type'] = _('income');
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $balancelist[$idx]['value'];
 						$balancelist['income'] = $balancelist['income'] + $balancelist[$idx]['value'];
 					break;
 
 					case "2":
-						$balancelist[$idx]['type'] = "rozchód";
+						$balancelist[$idx]['type'] = _('expenditure');
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] - $balancelist[$idx]['value'];
 						$balancelist['expense'] = $balancelist['expense'] + $balancelist[$idx]['value'];
 					break;
 
 					case "3":
-						$balancelist[$idx]['type'] = "wp³ata u¿";
+						$balancelist[$idx]['type'] = _("user payment");
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $balancelist[$idx]['value'];
 						$balancelist['incomeu'] = $balancelist['incomeu'] + $balancelist[$idx]['value'];
 					break;
 					case "4":
-						$balancelist[$idx]['type'] = "obci±¿enie u¿";
+						$balancelist[$idx]['type'] = _("user debt"); 
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
 						$balancelist['uinvoice'] = $balancelist['uinvoice'] + $balancelist[$idx]['value'];
 					break;
@@ -1542,26 +1542,26 @@ class LMS
 					case 0:
 				    		switch($row['at'])
 						{
-							case 1: $row['payday'] = "co tydzieñ (pon)"; break;
-							case 2: $row['payday'] = "co tydzieñ (wt)"; break;
-							case 3: $row['payday'] = "co tydzieñ (¶r)"; break;
-							case 4: $row['payday'] = "co tydzieñ (czw)"; break;
-							case 5: $row['payday'] = "co tydzieñ (pt)"; break;
-							case 6: $row['payday'] = "co tydzieñ (sob)"; break;
-							case 7: $row['payday'] = "co tydzieñ (nie)"; break;
-							default : $row['payday'] = "brak"; break;
+							case 1: $row['payday'] = _("weekly (mon)"); break;
+							case 2: $row['payday'] = _("weekly (tue)"); break;
+							case 3: $row['payday'] = _("weekly (wed)"); break;
+							case 4: $row['payday'] = _("weekly (thu)"); break;
+							case 5: $row['payday'] = _("weekly (fri)"); break;
+							case 6: $row['payday'] = _("weekly (sat)"); break;
+							case 7: $row['payday'] = _("weekly (sun)"); break;
+							default : $row['payday'] = _("missing"); break;
 					        }
 					break;
 					case 1:
-					        $row['payday'] = "co miesi±c (".$row['at'].")"; 
+					        $row['payday'] = sprintf(_("monthly (%d)"),$row['at']); 
 					break;
 					case 2:
 						$at = sprintf("%02d/%02d", $row['at']%100,$row['at']/100+1);
-						$row['payday'] = "co kwarta³ (".$at.")";
+						$row['payday'] = sprintf(_("quarterly (%d)"),$at);
 					break;
 					case 3:
 						$at = date("d/m",($row['at']-1)*86400);
-						$row['payday'] = "co rok (".$at.")";
+						$row['payday'] = sprintf(_("yearly (%d)"),$at);
 					break;
 				}
 				
