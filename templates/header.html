@@ -2,8 +2,8 @@
 <!--// $Id$ //-->
 <html><head>
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-<meta http-equiv="Content-Language" content="pl">
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
+<meta http-equiv="Content-Language" content="{$lang.code}">
+<meta http-equiv="Content-Type" content="text/html; charset={$lang.charset}">
 <title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/JavaScript" src="img/common.js"> </script>
@@ -17,9 +17,9 @@
 </td>
 <td width="50%">
 <p align="right">
-<a href="doc/">Dokumentacja</a> / <a href="http://lms.rulez.pl">Strona domowa</a>
+<a href="doc/">{$lang.documentation}</a> / <a href="http://lms.rulez.pl">{$lang.homepage}</a>
 </p>
-<p align="right"><B>Zalogowany jako: {$layout.logname}</FONT>
+<p align="right"><B>{$lang.logged_as}: {$layout.logname}</FONT>
 </B>
 </P>
 </td>
@@ -42,7 +42,7 @@
 				<TD width="100%" class="fbt" nowrap>
 					<P CLASS="separated">
 						<IMG SRC="img/pass.gif" BORDER="0" alt="" align="absmiddle">
-						<a href="?m=chpasswd" accesskey="p" {popup text="<B>Zmiana Twojego hasła dostępu</B>"}><B>Zmień hasło</B></A>
+						<a href="?m=chpasswd" accesskey="p" {popup text="<B>`$lang.tip_passwdchange`</B>"}><B>Zmień hasło</B></A>
 					</P>
 				</TD>
 			</TR>
@@ -50,13 +50,13 @@
 				<TD width="100%" class="fbt" nowrap>
 					<P CLASS="separated">
 						<IMG SRC="img/logout.gif" BORDER="0" ALT="" ALIGN="absmiddle">
-						<a href="?m=logout" onClick="return confirmLink(this,'Na pewno chcesz się wylogować?');" accesskey="q" {popup text="<B>Zakończenie pracy</B>"}><B>Wyloguj się</B></A>
+						<a href="?m=logout" onClick="return confirmLink(this,'{$lang.logout_confirm}');" accesskey="q" {popup text="<B>Zakończenie pracy</B>"}><B>{$lang.logout}</B></A>
 					</P>
 				</TD>
 			</TR>
 			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
 				<FORM METHOD="GET" ACTION="?m=userinfo">
-					<TD width="100%" class="fbt" nowrap {popup text="<B>Wpisz ID użytkownika i wciśnij Enter</B>"}>
+					<TD width="100%" class="fbt" nowrap {popup text="<B>`$lang.tip_userfield`</B>"}>
 						<P CLASS="separated">
 						<IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
 						<INPUT TYPE="text" NAME="id" VALUE="" SIZE="10">
@@ -67,7 +67,7 @@
 			</TR>
 			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
 				<FORM METHOD="GET" ACTION="?m=userinfo">
-					<TD width="100%" class="fbt" nowrap {popup text="<B>Wpisz ID komputera i wciśnij Enter</B>"}>
+					<TD width="100%" class="fbt" nowrap {popup text="<B>`$lang.tip_nodefield`</B>"}>
 						<P CLASS="separated">
 						<IMG SRC="img/node.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
 						<INPUT TYPE="text" NAME="id" VALUE="" SIZE="10">
@@ -80,4 +80,4 @@
 </p></td>
 <td width="99%" valign="top" style="border-right-style: dashed; border-right-width: 1pt; border-right-color: #333333;">
 {/if}
-{if $emptypasswd}<H1 align="center"><A HREF="?m=adminpasswd"><FONT COLOR="RED">Twoje konto posiada puste hasło! Natychmiast ustaw sobie hasło!</FONT></A></H1>{/if}
+{if $emptypasswd}<H1 align="center"><A HREF="?m=adminpasswd"><FONT COLOR="RED">{$lang.empty_passwd_notice}</FONT></A></H1>{/if}
