@@ -1,7 +1,28 @@
 $Id$
 
 wersja 1.1.4 (??/??/2003):
+  - ewidencja sprzêtu sieciowego, narazie brzydka i g³upia ale dzia³a,
+    oczywi¶cie potrzebna nowa tabela (lexx)
+    
+    Na MySQL robimy:
 
+    DROP TABLE IF EXISTS netdevices;
+    CREATE TABLE netdevices (
+      id int(11) NOT NULL auto_increment,
+      name varchar(32) default NULL,
+      description varchar(255) default NULL,
+      producer varchar(64) default NULL,
+      model varchar(32) default NULL,
+      serialnumber varchar(32) default NULL,
+      ports int(10) default NULL,
+      PRIMARY KEY  (id),
+      KEY name (name)
+    ) TYPE=MyISAM;
+		      
+    Na PostgreSQL robimy:
+    
+    ???
+    
   - lista taryf zlicza³a tak¿e u¿ytkowników usuniêtych (lukasz)
   - do listy sieci dodane nowe pole: interfejs - bardzo przydatne przy
     budowaniu skryptów iptables/ipchains/htb gdy mamy sieci adresowe na
