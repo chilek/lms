@@ -16,8 +16,8 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			{if $userinfo.status eq "3"}<B>{$lang.connected}</B>{/if}
-			{if $userinfo.status eq "2"}<B>oczekuj±cy</B>{/if}
-			{if $userinfo.status eq "1"}<B>zainteresowany</B>{/if}
+			{if $userinfo.status eq "2"}<B>{$lang.awaiting}</B>{/if}
+			{if $userinfo.status eq "1"}<B>{$lang.interested}</B>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -73,7 +73,7 @@
 		</TD>
 		<TD WIDTH="1%">
 			<B>{$lang.balance}:<BR>
-			Taryfa:</B>
+			{$lang.tariff}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} {$lang.currency}</B></FONT>{else}{$userinfo.balance|default:"0"} {$lang.currency}{/if}<BR>

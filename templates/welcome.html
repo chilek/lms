@@ -1,6 +1,6 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>Witaj :-)</H1>
+<H1>{$layout.pagetitle}</H1>
 <TABLE width="100%" cellpadding="3">
 	<TR>
 		<TD WIDTH="50%" VALIGN="TOP">
@@ -147,7 +147,7 @@
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
 						<B><A HREF="?m=userlist&s=0">{$lang.total}:</A><BR>
-						<A HREF="?m=userlistdebt">W tym zad³u¿onych:</A></B>
+							<A HREF="?m=userlistdebt">{$lang.in_debt}:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$userstats.total}<BR>
