@@ -149,6 +149,9 @@ wersja 1.1.4 (??/??/2003):
 	ALTER TABLE `nodes` ADD `netdev` INT(11) AFTER `modid` ;
     PosgreSQL:
 	ALTER TABLE nodes ADD netdev integer;  	
+  - update modu³u 'nodesearch' wynikaj±cy ze zmiany sposobu zapisu
+    adresów IP w bazie danych i inne drobne poprawki (alec)
+  - poprawione b³êdy w GetTariff() wystêpuj±ce na postgresie (alec)     
 	
 wersja 1.1.3 (29/08/2003):
 
