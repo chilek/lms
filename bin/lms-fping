@@ -169,7 +169,7 @@ foreach my $network (@networks)
 close(TMPFILE);
 
 #get list of on-line hosts (option -a)
-my @lines = `$fping -ar1 -f $tmpfile`;
+my @lines = `$fping -ar1 -f $tmpfile 2>/dev/null`;
 
 foreach my $line (@lines)
 {
