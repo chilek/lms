@@ -176,7 +176,7 @@ info = "Opcjonalny opis modu³u"
 				</row>
 				<row>
 				<entry>hostfile</entry>
-				<entry>Modu³ uniwersalny (np. tworzenie regó³ iptables)</entry>
+				<entry>Modu³ uniwersalny (np. tworzenie regu³ iptables)</entry>
 				</row>
 				<row>
 				<entry>notify</entry>
