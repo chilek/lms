@@ -38,7 +38,7 @@
 			    <BR>
 			    {$message.subject|escape}
 			</TD>
-			<TD width="97%" class="fbt" align="right">
+			<TD width="97%" class="fbt" align="right" nowrap>
 			    <A href="?m=rtmessageview&id={$message.id}">Podgl±d <IMG src="img/view.gif" alt="" border="0" align="absmiddle"></A>
 			    {if $ticket.state != 2}
 			    <A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">Odpowiedz <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
