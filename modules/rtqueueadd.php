@@ -34,10 +34,9 @@ if(isset($queue))
 	if($queue['email']!='' && !check_email($queue['email']))
 		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
 
-	foreach($queue['admins'] as $key => $value)
-	{
-		$queue['rights'][] = array('id' => $key, 'rights' => $value, 'name' => $queue['adminnames'][$key]);
-	}
+	if(isset($queue['admins']))
+		foreach($queue['admins'] as $key => $value)
+			$queue['rights'][] = array('id' => $key, 'rights' => $value, 'name' => $queue['adminnames'][$key]);
 
 	if(!$error)
 	{
