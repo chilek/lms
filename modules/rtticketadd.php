@@ -34,7 +34,7 @@ if(isset($ticket))
 
 	if($ticket['subject']=='' && $ticket['message']['body']=='')
 	{
-		$SESSION->redirect('?m=rtticketadd&id'.$queue);
+		$SESSION->redirect('?m=rtticketadd&id='.$queue);
 	}
 
 	if($LMS->GetAdminRightsRT($AUTH->id, $queue) < 2)
