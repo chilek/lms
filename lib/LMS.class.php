@@ -471,7 +471,7 @@ class LMS
 
 	function GetUserIDByIP($ipaddr)
 	{
-		return $this->DB->GetOne("SELECT ownerid FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
+		return $this->DB->GetOne("SELECT ownerid FROM nodes WHERE ipaddr=inet_aton(?)",array($ipaddr));
 	}
 
 	function GetCashByID($id)
@@ -694,9 +694,7 @@ class LMS
 
 	function GetUserNodes($id)
 	{
-		if($result = $this->DB->GetAll("SELECT id, name, mac, ipaddr, access FROM nodes WHERE ownerid=? ORDER BY name ASC",array($id))){
-			foreach($result as $idx => $row)
-				$result[$idx]['ip'] = long2ip($row['ipaddr']);
+		if($result = $this->DB->GetAll("SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, access FROM nodes WHERE ownerid=? ORDER BY name ASC",array($id))){
 			$result['total'] = sizeof($result);
 			$result['ownerid'] = $id;
 		}
@@ -813,7 +811,7 @@ class LMS
 	function NodeUpdate($nodedata)
 	{
 		$this->SetTS("nodes");
-		return $this->DB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, netdev=?, moddate=?NOW?, modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), ip_long($nodedata['ipaddr']), strtoupper($nodedata['mac']), $nodedata['netdev'], $this->SESSION->id, $nodedata['access'], $nodedata['ownerid'], $nodedata['id']));
+		return $this->DB->Execute("UPDATE nodes SET name=?, ipaddr=inet_aton(?), mac=?, netdev=?, moddate=?NOW?, modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), $nodedata['ipaddr'], strtoupper($nodedata['mac']), $nodedata['netdev'], $this->SESSION->id, $nodedata['access'], $nodedata['ownerid'], $nodedata['id']));
 	}
 
 	function DeleteNode($id)
@@ -829,7 +827,7 @@ class LMS
 
 	function GetNodeIDByIP($ipaddr)
 	{
-		return $this->DB->GetOne("SELECT id FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
+		return $this->DB->GetOne("SELECT id FROM nodes WHERE ipaddr=inet_aton(?)",array($ipaddr));
 	}
 
 	function GetNodeIDByMAC($mac)
@@ -844,7 +842,7 @@ class LMS
 
 	function GetNodeIPByID($id)
 	{
-		return long2ip($this->DB->GetOne("SELECT ipaddr FROM nodes WHERE id=?",array($id)));
+		return $this->DB->GetOne("SELECT inet_ntoa(ipaddr) FROM nodes WHERE id=?",array($id));
 	}
 
 	function GetNodeMACByID($id)
@@ -859,15 +857,13 @@ class LMS
 
 	function GetNodeNameByIP($ipaddr)
 	{
-		return $this->DB->GetOne("SELECT name FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
-
+		return $this->DB->GetOne("SELECT name FROM nodes WHERE ipaddr=inet_aton(?)",array($ipaddr));
 	}
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid, netdev FROM nodes WHERE id=?",array($id)))
+		if($result = $this->DB->GetRow("SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access, creationdate, moddate, creatorid, modid, netdev FROM nodes WHERE id=?",array($id)))
 		{
-			$result['ip'] = long2ip($result['ipaddr']);
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
 			$result['creationdateh'] = date("Y-m-d, H:i",$result['creationdate']);
@@ -915,11 +911,11 @@ class LMS
 			foreach($username as $idx => $row)
 				$usernames[$row['id']] = $row['username'];
 
-		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access, netdev FROM nodes WHERE ownerid > 0".($sqlord != "" ? $sqlord." ".$direction : "")))
+		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr,inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access, netdev FROM nodes WHERE ownerid > 0".($sqlord != "" ? $sqlord." ".$direction : "")))
 		{
 			foreach($nodelist as $idx => $row)
 			{
-				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
+			//	$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
 				($row['access']) ? $totalon++ : $totaloff++;
 			}
@@ -999,11 +995,11 @@ class LMS
 			foreach($username as $idx => $row)
 				$usernames[$row['id']] = $row['username'];
 		
-		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".$searchargs." ".($sqlord != "" ? $sqlord." ".$direction : "")))
+		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access FROM nodes ".$searchargs." ".($sqlord != "" ? $sqlord." ".$direction : "")))
 		{
 			foreach($nodelist as $idx => $row)
 			{
-				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
+				//$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
 				// filtr adresów IP
 				if($check_ip)
@@ -1075,7 +1071,7 @@ class LMS
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS("nodes");
-		if($this->DB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate) VALUES (?, ?, ?, ?, ?, ?NOW?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),ip_long($nodedata['ipaddr']),$nodedata['ownerid'],$this->SESSION->id)))
+		if($this->DB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate) VALUES (?, ?, inet_aton(?), ?, ?, ?NOW?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id)))
 			return $this->DB->GetOne("SELECT MAX(id) FROM nodes");
 		else
 			return FALSE;
@@ -1096,10 +1092,10 @@ class LMS
 
 	function GetNetdevLinkedNodes($id)
 	{
-		if($nodelist = $this->DB->GetAll("SELECT id, name, ownerid, ipaddr, netdev FROM nodes WHERE netdev=? AND ownerid > 0 ORDER BY name ASC",array($id)))
+		if($nodelist = $this->DB->GetAll("SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, netdev FROM nodes WHERE netdev=? AND ownerid > 0 ORDER BY name ASC",array($id)))
 			foreach($nodelist as $idx => $row)
 			{
-				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
+		//		$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $this->GetUsername($row['ownerid']);
 			}
 		return $nodelist;
@@ -1423,7 +1419,7 @@ class LMS
 
 	function IsIPFree($ip)
 	{
-		return !($this->DB->GetOne("SELECT * FROM nodes WHERE ipaddr=?",array(ip_long($ip))) ? TRUE : FALSE);
+		return !($this->DB->GetOne("SELECT * FROM nodes WHERE ipaddr=inet_aton(?)",array($ip)) ? TRUE : FALSE);
 	}
 
 	function GetPrefixList()
@@ -1480,8 +1476,8 @@ class LMS
 
 	function GetNetworkParams($id)
 	{
-		if($params = $this->DB->GetRow("SELECT *, address AS addresslong FROM networks WHERE id=?",array($id)))
-			$params['broadcast'] = ip_long(getbraddr($params['addresslong'],$params['mask']));
+		if($params = $this->DB->GetRow("SELECT *, inet_ntoa(address) AS netip FROM networks WHERE id=?",array($id)))
+			$params['broadcast'] = ip_long(getbraddr($params['netip'],$params['mask']));
 		return $params;
 	}
 
@@ -1689,7 +1685,7 @@ class LMS
 		}
 
 		if(sizeof($result['address']))
-			if($nodes = $this->DB->GetAll("SELECT name, id, ownerid, ipaddr FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",array(ip_long($address), ip_long(getbraddr($address,$mask)))))
+			if($nodes = $this->DB->GetAll("SELECT name, id, ownerid, ipaddr FROM nodes WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)",array($address, getbraddr($address,$mask))))
 				foreach($nodes as $node)
 				{
 					$pos = ($node['ipaddr'] - $addresslong - 1);
@@ -1909,9 +1905,9 @@ class LMS
 
 	function GetNetDevIPs($id)
 	{
-		if($result = $this->DB->GetAll("SELECT id, name, ipaddr, mac, access FROM nodes WHERE ownerid=0 AND netdev=?",array($id)))
-			foreach($result as $idx => $row)
-				$result[$idx]['ip'] = long2ip($row['ipaddr']);
+		if($result = $this->DB->GetAll("SELECT id, name, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access FROM nodes WHERE ownerid=0 AND netdev=?",array($id)))
+//			foreach($result as $idx => $row)
+//				$result[$idx]['ip'] = long2ip($row['ipaddr']);
 		return $result;
 	}
 	
@@ -2153,7 +2149,7 @@ class LMS
 			$limit = "";
 
 		// join query from parts
-		$query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE 1=1 AND ".$dt." ".$net." GROUP BY nodeid, name, ipaddr ".$order." ".$limit;
+		$query = "SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE 1=1 AND ".$dt." ".$net." GROUP BY nodeid, name, ipaddr ".$order." ".$limit;
 
 		// get results
 		if ($traffic = $this->DB->GetAll($query))
@@ -2164,10 +2160,10 @@ class LMS
 				$traffic['download']['data'][] = $row['download'];
 				$traffic['upload']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
 				$traffic['download']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
-				$traffic['upload']['ipaddr'][] = long2ip($row['ipaddr']);
+				$traffic['upload']['ipaddr'][] = $row['ip'];
 				$traffic['download']['nodeid'][] = $row['nodeid'];
 				$traffic['upload']['nodeid'][] = $row['nodeid'];
-				$traffic['download']['ipaddr'][] = long2ip($row['ipaddr']);
+				$traffic['download']['ipaddr'][] = $row['ip'];
 				$traffic['download']['sum']['data'] += $row['download'];
 				$traffic['upload']['sum']['data'] += $row['upload'];
 			}
@@ -2273,6 +2269,11 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.304  2003/12/10 21:23:33  alec
+ * - adresy IP przelicza teraz baza danych
+ * - teraz biore sie za testowanie lms'a pod katem ustabilizowania
+ *   linii 1.1.x
+ *
  * Revision 1.303  2003/12/09 17:56:02  alec
  * - adresy sieci na bigintach, niech to kto¶ sprawdzi na MySQL'u.
  *   UWAGA! Wymagane wersje Mysql 3.23.xx, PostgreSQL 7.3.x
