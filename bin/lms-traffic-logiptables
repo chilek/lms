@@ -116,12 +116,6 @@ if(! $wan_interfaces)
 	exit 1;
 }
 
-if(! $logfile)
-{
-	print STDERR "Fatal error: 'logfile' not defined, exiting.\n";
-	exit 1;
-}
-
 if($dbtype eq "mysql")
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
