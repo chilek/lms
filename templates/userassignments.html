@@ -13,10 +13,12 @@
 					<TD WIDTH="1%" NOWRAP class="fleftu"><B>Taryfa:</B></TD>
 					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Warto¶æ:</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt">Dzieñ zap³aty:</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Download:</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Upload:</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Downrate:</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Downceil:</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Uprate:</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Upceil:</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt">Faktura:</TD>
-					<TD WIDTH="94%" NOWRAP class="fbt">Okres:</TD>
+					<TD WIDTH="91%" NOWRAP class="fbt">Okres:</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 				</tr>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
@@ -26,17 +28,19 @@
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignment.value|string_format:"%01.2f"} z³</TD>
 					<TD WIDTH="1%" NOWRAP>{$assignment.period} ({$assignment.at})</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignment.downrate|default:"-"} kbps</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignment.downceil|default:"-"} kbps</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignment.uprate|default:"-"} kbps</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignment.upceil|default:"-"} kbps</TD>
 					<TD WIDTH="1%">{if $assignment.invoice}tak{else}&nbsp;{/if}</TD>
 					<TD WIDTH="1%">
 						{if $assignment.datefrom}od {$assignment.datefrom|date_format:"%Y/%m/%d"}{/if}
 						{if $assignment.dateto}do {$assignment.dateto|date_format:"%Y/%m/%d"}{/if}
 					</TD>
-					<TD WIDTH="94%" ALIGN="RIGHT" NOWRAP>{*<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê oraz zaksiêgowaæ wyrównanie od ostatniego zaksiêgowania do dnia dzisiejszego?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignment.id}&id={$balancelist.userid}&balance=1" {tip text="Usuwa taryfê z rekordu u¿ytkownika oraz ksiêguje wyrównanie od dnia ostatniego zdarzenia do dzisiaj"}>Usuñ i wyrównaj <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignment.id}&id={$balancelist.userid}" {tip text="Usuwa taryfê z rekordu u¿ytkownika"}>Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
+					<TD WIDTH="91%" ALIGN="RIGHT" NOWRAP>{*<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê oraz zaksiêgowaæ wyrównanie od ostatniego zaksiêgowania do dnia dzisiejszego?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignment.id}&id={$balancelist.userid}&balance=1" {tip text="Usuwa taryfê z rekordu u¿ytkownika oraz ksiêguje wyrównanie od dnia ostatniego zdarzenia do dzisiaj"}>Usuñ i wyrównaj <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignment.id}&id={$balancelist.userid}" {tip text="Usuwa taryfê z rekordu u¿ytkownika"}>Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD align="center" WIDTH="100%" colspan="9"><p>&nbsp;</p>
+					<TD align="center" WIDTH="100%" colspan="10"><p>&nbsp;</p>
 						<p><B>Ten u¿ytkownik nie ma przypisanych ¿adnych taryf.</B></p>
 						<p>&nbsp;</p>
 					</TD>
@@ -47,13 +51,15 @@
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format="%01.2f"} z³</TD>
 					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="downrate" default="-"} kbps</TD>
+					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="downceil" default="-"} kbps</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="uprate" default="-"} kbps</TD>
+					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="upceil" default="-"} kbps</TD>
 					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT" COLSPAN="2">&nbsp;</TD>
 				</TR>
 				<FORM METHOD="POST" NAME="addassignment" ACTION="?m=useredit&action=addassignment&id={$balancelist.userid}">
 				<TR bgcolor="#DFD5BD">
-					<TD COLSPAN="7">
+					<TD COLSPAN="9">
 						<B>Dodaj:</B>
 						<SELECT SIZE="1" NAME="tariffid" {tip text="Wybierz taryfê która ma byæ przypisana do u¿ytkownika"}>
 							<OPTION VALUE="0">... wybierz taryfê ...</OPTION>
@@ -70,12 +76,12 @@
 						<INPUT CLASS="box" TYPE="checkbox" NAME="invoice" VALUE="1"> wystawiaj fakturê
 						</NOBR>
 					</TD>
-					<TD ALIGN="RIGHT" ROWSPAN="2" NOWRAP>
+					<TD ALIGN="RIGHT" NOWRAP>
 						<A HREF="javascript:document.addassignment.submit()" {tip text="Przypisz t± taryfê do u¿ytkownika"}>Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
 					</TD>
 				</TR>
 				<TR bgcolor="#DFD5BD">
-					<TD COLSPAN="7">
+					<TD COLSPAN="10">
 						<B>Od:</B> <INPUT TYPE="TEXT" NAME="datefrom" OnClick="cal1.popup();" {tip text="Podaj datê w formacie RRRR/MM/DD od kiedy ma obowi±zywaæ dane zobowi±zanie. Je¶li nie chcesz okre¶laæ daty 'Od' pozostaw pole puste."} VALUE="" SIZE="10"> 
 						<B>Do:</B> <INPUT TYPE="TEXT" NAME="dateto" OnClick="cal2.popup();" {tip text="Podaj datê w formacie RRRR/MM/DD do kiedy ma obowi±zywaæ dane zobowi±zanie. Pozostaw puste pole je¿eli naliczenie ma obowi±zywaæ do momentu jego usuniêcia."} SIZE="10">
 					</TD>
