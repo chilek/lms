@@ -33,7 +33,7 @@ wersja 1.5.3 (??/??/????):
   - usuniêty b³±d w module payments demona, wystêpuj±cy na mysql'u, który
     powodowa³ niezapisywanie zawarto¶ci faktur (alec)
   - almsd: zmiana w funkcji db_query() dla mysql'a powoduj±ca, ¿e przy pustym
-    resultsecie nie zwracamy teraz NULL'a, czyli tak jak dla innych baz,
+    resultsecie nie zwracamy teraz NULL'a, tzn. tak jak dla innych baz,
     czyli po wywo³aniu tej funkcji nale¿y pamiêtaæ o sprawdzeniu pola 
     'nrows' wyniku (alec)
 
