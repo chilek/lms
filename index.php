@@ -30,9 +30,11 @@ $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
 // *******************************************************************
+
 ini_set('session.name','LMSSESSIONID');
 
 // Parse configuration file
+
 function lms_parse_ini_file($filename, $process_sections = false) 
 {
 	$ini_array = array();
