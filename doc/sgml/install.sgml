@@ -92,6 +92,10 @@
 		 <para>Skrypty wykonywalne z katalogu <filename>bin</filename> 
 		 najlepiej przenie¶æ do katalogu <filename>/usr/sbin</filename>.
 		 </para>
+		 <para><warning><para>Serwer www musi mieæ prawo odczytu pliku <filename>lms.ini</filename>
+		 oraz prawa odczytu i zapisu do katalogu <filename>backup</filename>. 
+		 Stanowi to potencjalne obni¿enie poziomu bezpieczeñstwa systemu.
+		 </para></warning></para>
 	</sect1>
 	<sect1 id="install-db">
 	<title>Instalacja serwera baz danych</title>
@@ -224,8 +228,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
  	    <para>G³ównym plikiem konfiguracyjnym LMS jest <filename>lms.ini</filename>,
 	    który nale¿y umie¶ciæ w katalogu <filename>/etc/lms</filename> lub w katalogu
 	    g³ównym LMS'a. Zawiera on zmienne konfiguracyjne <emphasis>LMS-UI</emphasis> 
-	    oraz wszystkich skryptów wykonywalnych z wyj±tkiem <emphasis>LMS-MGC</emphasis>.
-	    <note><para>Pamiêtaj o usuniêciu ¶redników na pocz±tku linii z ustawianym 
+	    oraz wszystkich skryptów wykonywalnych z wyj±tkiem <emphasis>LMS-MGC</emphasis>.</para>
+	    <para><note><para>Pamiêtaj o usuniêciu ¶redników na pocz±tku linii z ustawianym 
 	    parametrem konfiguracyjnym.</para></note></para>
 	    <sect2>
 	    <title>Sekcja [database] - ustawienia bazy danych</title>
