@@ -956,8 +956,8 @@ class LMS
 				{
 					array_multisort($iptable[iplong],($direction == "DESC" ? SORT_DESC : SORT_ASC),SORT_NUMERIC,$iptable[idx]);
 					foreach($iptable[idx] as $idx)
+						$nnodelist[] = $nodelist[$idx];
 				}
-				$nnodelist[] = $nodelist[$idx];
 				$nodelist = $nnodelist;
 			break;
 					
@@ -971,8 +971,8 @@ class LMS
 				{
 					array_multisort($ownertable[owner],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable[idx]);
 					foreach($ownertable[idx] as $idx)
+						$nnodelist[] = $nodelist[$idx];
 				}
-				$nnodelist[] = $nodelist[$idx];
 				$nodelist = $nnodelist;
 			break;
 		}
