@@ -30,7 +30,7 @@
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{if $unlockedit}
-			 <B><INPUT TYPE="TEXT" NAME="admininfo[name]" VALUE="{$admininfo.name|capitalize}" {tip trigger="name" bold=1}> ({$admininfo.id|string_format:"%04d"})</B>
+			 <B><INPUT TYPE="TEXT" NAME="admininfo[name]" VALUE="{$admininfo.name}" {tip trigger="name" bold=1}> ({$admininfo.id|string_format:"%04d"})</B>
 			{else}
 			<B>{$admininfo.name} ({$admininfo.id|string_format:"%04d"})</B>
 			{/if}
