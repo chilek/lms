@@ -2,6 +2,8 @@ $Id$
 
 wersja 1.1.4 (??/??/2003):
 
+  - dodany modu³ traffic-stats, na razie w contrib'ie, oraz wykorzystywana
+    przez niego tabela 'stats' (alec)
   - lista taryf zlicza³a tak¿e u¿ytkowników usuniêtych (lukasz)
   - do listy sieci dodane nowe pole: interfejs - bardzo przydatne przy
     budowaniu skryptów iptables/ipchains/htb gdy mamy sieci adresowe na
