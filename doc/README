@@ -82,6 +82,7 @@ LMS Developers
 
    Spis przyk³adów
    3-1. Konta. Konfiguracja proftpd.
+   3-2. Konta. Konfiguracja serwera pocztowego (postfix+sasl+courier).
    4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych
    4-2. Lms-notify: Przyk³ad szablonu
    5-1. Lms-mgc: Przyk³ad instancji
@@ -691,6 +692,10 @@ database = /usr/local/lms/lms.db
        Limit wy¶wietlanych pozycji na stronie w li¶cie kont. Domy¶lnie:
        100.
        Przyk³ad: accountlist_pagelimit = 25
+     * domainlist_pagelimit
+       Limit wy¶wietlanych pozycji na stronie w li¶cie domen. Domy¶lnie:
+       100.
+       Przyk³ad: domainlist_pagelimit = 25
      * reload_type
        Typ reloadu. Dozwolone warto¶ci:
        exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo,
@@ -767,6 +772,11 @@ database = /usr/local/lms/lms.db
        W³asny szablon umowy z u¿ytkownikiem. Mo¿na tak¿e dostosowaæ
        domy¶lny szablon. Domy¶lnie: contract.html.
        Przyk³ad: contract_template = "../my_templates/contract.html"
+     * to_words_short_format
+       Okre¶la format reprezentacji s³ownej kwot (na fakturach). Dla
+       warto¶ci "1" rozwiniêciem kwoty 123,15 bêdzie "jed dwa trz
+       15/100". Domy¶lnie: 0.
+       Przyk³ad: to_words_short_format = 1
      _________________________________________________________________
 
 2.6. Prawa dostêpu
@@ -1424,6 +1434,88 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
   # Sprawdzamy datê wa¿no¶ci konta oraz ograniczamy szukanie do kont ftp
   # SQLUserWhereClause "type & 8 = 8 AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())"
   SQLUserWhereClause "type & 8 = 8 AND (expdate = 0 OR expdate > EXTRACT(EPOCHFROM CURRENT_TIMESTAMP(0)))"
+
+   W kolejnym przyk³adzie przedstawimy jak skonfigurowaæ serwer Postfix
+   2.1.1 oraz Cyrus-SASL 2.1.19, Courier-IMAP/POP3 3.0.4, aby korzysta³y
+   z bazy danych LMSa. LMS'owe konta bêd± kontami wirtualnymi, a poczta
+   przechowywana bêdzie w formacie Maildir.
+
+   Poniewa¿ has³a w LMS'ie s± szyfrowane, wymagane jest zainstalowanie
+   SASL'a z ³at± pozwalaj±c± na to. W komentarzach podano warto¶ci opcji
+   charakterystycznych dla bazy MySQL. Listing zawiera tylko opcje
+   bezpo¶rednio zwi±zane z baz± danych:
+
+   Przyk³ad 3-2. Konta. Konfiguracja serwera pocztowego
+   (postfix+sasl+courier).
+# Plik smtpd.conf (Cyrus-SASL):
+
+pwcheck_method: auxprop
+#sql_engine: mysql
+sql_engine: pgsql
+sql_user: lms
+sql_passwd: has³o
+sql_hostnames: localhost
+sql_database: lms
+#sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
+#       AND login='%u' AND domains.name ='%r' AND type & 2 = 2
+#       AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
+sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
+        AND login='%u' AND domains.name ='%r' AND type & 2 = 2
+        AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+password_format: crypt
+mech_list: login plain
+
+# authpgsqlrc (lub authmysqlrc) (Courier):
+
+#MYSQL_PORT             3306
+PGSQL_PORT              5432
+#MYSQL_USERNAME         lms
+PGSQL_USERNAME          lms
+#MYSQL_PASSWORD         has³o
+PGSQL_PASSWORD          has³o
+#MYSQL_DATABASE         lms
+PGSQL_DATABASE          lms
+#MYSQL_SELECT_CLAUSE SELECT login, \
+#       password, '', 104, 104, '/var/spool/mail/virtual', \
+#       CONCAT(login,'/'), '', login, '' \
+#       FROM passwd, domains WHERE domainid = domains.id
+#       AND login = '$(local_part)' AND domains.name = '$(domain)' \
+#       AND type & 2 = 2 AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
+PGSQL_SELECT_CLAUSE SELECT login, \
+        password, '', 104, 104, '/var/spool/mail/virtual', \
+        login ||'/', '', login, '' \
+        FROM passwd, domains WHERE domainid = domains.id
+        AND login = '$(local_part)' AND domains.name = '$(domain)' \
+        AND type & 2 = 2 \
+        AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+
+# main.cf (Postfix):
+
+virtual_mailbox_base = /var/spool/mail/virtual
+virtual_mailbox_domains = pgsql:/etc/postfix/pgsql_virtual_domains_maps.cf
+virtual_mailbox_maps = pgsql:/etc/postfix/pgsql_virtual_mailbox_maps.cf
+
+# pgsql_virtual_domains_maps.cf (Postfix):
+
+user = lms
+password = has³o
+hosts = localhost
+dbname = lms
+query = SELECT name FROM domains WHERE name = '%s'
+
+# pgsql_virtual_mailbox_maps.cf (Postfix):
+
+user = lms
+password = has³o
+hosts = localhost
+dbname = lms
+#query = SELECT CONCAT(login,'/') FROM passwd, domains WHERE domainid = domains.id
+#       AND login = '%u' AND domains.name = '%d'
+#       AND type & 2 = 2 AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
+query = SELECT login || '/' FROM passwd, domains WHERE domainid = domains.id
+        AND login = '%u' AND domains.name = '%d'
+        AND type & 2 = 2
+        AND (expdate = 0 OR expdate > EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
      _________________________________________________________________
 
 3.9. Mailing
@@ -2293,6 +2385,19 @@ header_checks = regexp:/etc/postfix/header_checks
 # plik master.cf:
 filter unix - n n - 10 pipe
       -flags=Rq user=nobody argv=/path/to/lms-rtparser
+
+   Kolejny listing to przyk³ad pod³±czenia parsera do Exima przy u¿yciu
+   filtrów systemowych:
+# plik exim.conf
+
+system_filter_pipe_transport = address_pipe
+
+# plik system_filter.txt
+
+if $recipients is "adres_kolejki@domena.pl"
+then
+     pipe "/sciezka/do/lms-rtparser -q id_kolejki"
+endif
 
    Notatka
 
@@ -4118,6 +4223,7 @@ Rozdzia³ 9. FAQ
    9.5. Zrobiem parê poprawek. Jak mogê dodaæ je do LMSa?
    9.6. Która wersja LMSa jest najnowsza?
    9.7. Jak wypisaæ siê z listy mailingowej?
+   9.8. Jakie s± ograniczenia ilo¶ci urz±dzeñ na mapie?
 
    9.1. Co zrobiæ gdy nie generuje siê mapa sieci?
 
@@ -4174,3 +4280,15 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
    Informacja ta jest zawarta w nag³ówkach wszystkich wiadomo¶ci z listy
    mailingowej. Nale¿y wys³aæ wiadomo¶æ z tematem "unsubscribe" na adres
    lms-request@lists.rulez.pl.
+
+   9.8. Jakie s± ograniczenia ilo¶ci urz±dzeñ na mapie?
+
+   Algorytm zastosowany przy tworzeniu mapy nie jest doskona³y. Do
+   jednego urz±dzenia mo¿na pod³±czyæ maksymalnie 24 komputery (tyle
+   bêdzie widoczne na mapie, mo¿na pod³±czyæ wiêcej, ale zostan±
+   pominiête). Podobnie wygl±da sprawa z urz±dzeniami. Ka¿de urz±dzenie
+   sieciowe mo¿e mieæ pod³±czonych 24 innych urz±dzeñ. Z tym, ¿e w w
+   przypadku urz±dzeñ, w pewnych warunkach (czêsto) liczba ta mo¿e siê
+   zmniejszyæ (w zale¿no¶ci od rozmieszczenia urz±dzeñ na siatce mapy).
+   Po przekroczeniu tej liczby mog± wystêpowaæ b³êdne po³±czenia
+   wybiegaj±ce poza mapê, ¿adziej problemy z wygenerowaniem mapy.
