@@ -32,6 +32,13 @@ if [ -z "$CVSTAG" ]; then
 	exit
 fi
 
+echo -ne "Nazwa kodowa?: "
+read CODENAME
+if [ -z "$CODENAME" ]; then
+	echo "Nie ma mocnych ;) Bez tego nie ruszymy."
+	exit
+fi
+
 X=$RANDOM
 mkdir -p $TEMPDIR/$X
 wget --proxy=off "http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1&only_with_tag=${CVSTAG}" -O $TEMPDIR/$X/lms.tar.gz
@@ -41,7 +48,7 @@ tar -xzf lms.tar.gz
 chmod 777 lms/{templates_c,backups}
 rm -Rf lms/devel
 cd lms
-rgrep -ir '1\.1-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.1-cvs/$LMSVER/g"
+rgrep -ir '1\.1-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.1-cvs/$LMSVER $CODENAME/g"
 rm -Rf devel
 chmod 777 templates_c backups
 cd ..
