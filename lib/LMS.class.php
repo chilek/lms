@@ -683,7 +683,7 @@ class LMS
 		
 		if($state == 4) {
 			$deleted = 1;
-			// is non-sens to filter by usergroup and network 
+			// it is no use usergroup and network filtering
 			// when user is deleted because we drop group assignments and nodes
 			// in DeleteUser()
 			$network=NULL;
@@ -691,6 +691,7 @@ class LMS
 		}
 		else
 			$deleted = 0;
+			
 		$disabled = ($state == 5) ? 1 : 0;
 		
 		if(!isset($state) || $state>3)
@@ -767,8 +768,6 @@ class LMS
 				$userlist = $nuserelist;
 			break;
 		}
-		if($deleted) 
-			$state = 4;
 		$userlist['total']=sizeof($userlist);
 		$userlist['state']=$state;
 		$userlist['network']=$network;
