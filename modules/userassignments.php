@@ -167,6 +167,11 @@ if($_GET['action'] == 'add' && isset($a))
 	if($a['tariffid']=='')
 		$error['tariffid'] = trans('Tariff not selected!');
 
+	if($a['discount']=='')
+		$a['discount'] = 0;
+	elseif($a['discount']<0 || $a['discount']>100 || !is_numeric($a['discount']))
+		$error['discount'] = trans('Wrong discount value!');
+
 	if($a['tariffid']==0)
 	{
 		unset($error['at']);
@@ -175,7 +180,7 @@ if($_GET['action'] == 'add' && isset($a))
 
 	if(!$error) 
 	{
-		$LMS->AddAssignment(array('tariffid' => $a['tariffid'], 'userid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$a['invoice']), 'datefrom' => $from, 'dateto' => $to ));
+		$LMS->AddAssignment(array('tariffid' => $a['tariffid'], 'userid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$a['invoice']), 'datefrom' => $from, 'dateto' => $to, 'discount' => $a['discount'] ));
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 }

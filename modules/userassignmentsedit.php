@@ -161,9 +161,14 @@ if($a = $_POST['assignmentedit'])
 		$at = 0;
 	}
 
+	if($a['discount'] == '')
+		$a['discount'] = 0;
+	elseif($a['discount']<0 || $a['discount']>100 || !is_numeric($a['discount']))
+		$error['editdiscount'] = trans('Wrong discount value!');
+
 	if(!$error) 
 	{
-		$LMS->DB->Execute('UPDATE assignments SET tariffid=?, userid=?, period=?, at=?, invoice=?, datefrom=?, dateto=? WHERE id=?',
+		$LMS->DB->Execute('UPDATE assignments SET tariffid=?, userid=?, period=?, at=?, invoice=?, datefrom=?, dateto=?, discount=? WHERE id=?',
 			    array(  $a['tariffid'], 
 				    $userid, 
 				    $period, 
@@ -171,6 +176,7 @@ if($a = $_POST['assignmentedit'])
 				    sprintf('%d',$a['invoice']), 
 				    $from, 
 				    $to,
+				    $a['discount'],
 				    $a['id'] ));
 		$LMS->SetTS('assignments');
 		$SESSION->redirect('?'.$SESSION->get('backto'));
@@ -178,7 +184,7 @@ if($a = $_POST['assignmentedit'])
 }
 else
 {
-	$a = $LMS->DB->GetRow('SELECT assignments.id AS id, userid, tariffid, tariffs.name AS name, period, at, datefrom, dateto, value, invoice
+	$a = $LMS->DB->GetRow('SELECT assignments.id AS id, userid, tariffid, tariffs.name AS name, period, at, datefrom, dateto, value, invoice, discount
 				FROM assignments LEFT JOIN tariffs 
 				ON (tariffs.id = tariffid)
 				WHERE assignments.id = ?',array($_GET['id']));

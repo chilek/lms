@@ -1314,7 +1314,7 @@ class LMS
 
 	function GetUserAssignments($id)
 	{
-		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, userid, period, at, suspended, value, uprate, upceil, downceil, downrate, name, invoice, datefrom, dateto FROM assignments LEFT JOIN tariffs ON (tariffid=tariffs.id) WHERE userid=? ORDER BY datefrom ASC', array($id)))
+		if($assignments = $this->DB->GetAll('SELECT assignments.id AS id, tariffid, userid, period, at, suspended, value, uprate, upceil, downceil, downrate, name, invoice, datefrom, dateto, discount FROM assignments LEFT JOIN tariffs ON (tariffid=tariffs.id) WHERE userid=? ORDER BY datefrom ASC', array($id)))
 		{
 			foreach($assignments as $idx => $row)
 			{
@@ -1356,7 +1356,7 @@ class LMS
 	function AddAssignment($assignmentdata)
 	{
 		$this->SetTS('assignments');
-		return $this->DB->Execute('INSERT INTO assignments (tariffid, userid, period, at, invoice, datefrom, dateto) VALUES (?, ?, ?, ?, ?, ?, ?)', array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at'], $assignmentdata['invoice'], $assignmentdata['datefrom'], $assignmentdata['dateto']));
+		return $this->DB->Execute('INSERT INTO assignments (tariffid, userid, period, at, invoice, datefrom, dateto, discount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at'], $assignmentdata['invoice'], $assignmentdata['datefrom'], $assignmentdata['dateto'], $assignmentdata['discount']));
 	}
 
 	function SuspendAssignment($id,$suspend = TRUE)

@@ -263,6 +263,7 @@
 				<member>datefrom - data obowi±zywania zobowi±zania</member>
 				<member>dateto - data obowi±zywania zobowi±zania</member>
 				<member>invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)</member>
+				<member>discount - warto¶æ procentowa rabatu</member>
 				<member>suspended - zawieszenie p³atno¶ci (1 - tak, 0 - nie)</member>
 			</simplelist>
 		</sect2>
