@@ -23,6 +23,7 @@ wersja 1.1.4 (??/??/2003):
   - dodany (przeniesiony z contrib) modu³ traffic-stats, do korzystania
     z niego wymagane jest utworzenie tabeli 'stats' w bazie danych 
     (patrz lms.mysql/lms.pgsql) i bin/lms-traffic (alec)
+  - nowa dokumentacja (sgml/html) (alec)    
     
 wersja 1.1.3 (29/08/2003):
 
