@@ -51,6 +51,11 @@ class LMSDB_driver_postgres extends LMSDB_common
 		else
 			return FALSE;
 	}
+
+	function _dirver_disconnect()
+	{
+		return pg_close($this->_dblink);
+	}
 	
 	function _driver_execute($query)
 	{
@@ -115,6 +120,9 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.9  2003/09/10 00:16:19  lukasz
+ * - LMSDB::Destroy();
+ *
  * Revision 1.8  2003/08/28 21:07:33  lukasz
  * - added support for transactions
  *

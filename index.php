@@ -182,8 +182,13 @@ else
 	
 }
 
+$DB->Destroy();
+
 /*
  * $Log$
+ * Revision 1.101  2003/09/10 00:16:19  lukasz
+ * - LMSDB::Destroy();
+ *
  * Revision 1.100  2003/09/09 01:22:28  lukasz
  * - nowe finanse
  * - kosmetyka

@@ -63,7 +63,12 @@ Class LMSDB_common
 
 		// Inicjuje po³±czenie do bazy danych
 	
-		$this->_driver_connect($dbhost,$dbuser,$dbpasswd,$dbname);
+		return $this->_driver_connect($dbhost,$dbuser,$dbpasswd,$dbname);
+	}
+
+	function Destroy()
+	{
+		return $this->_driver_disconnect();
 	}
 
 	function Execute($query, $inputarray = NULL)
@@ -212,6 +217,9 @@ Class LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.16  2003/09/10 00:16:19  lukasz
+ * - LMSDB::Destroy();
+ *
  * Revision 1.15  2003/08/28 21:07:21  lukasz
  * - added support for transactions
  *
