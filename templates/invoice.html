@@ -1,10 +1,5 @@
 <!-- $Id$ -->
-{include file="clearheader.html"}
-</PRE>
-<DIV STYLE="page-break-after: always">
-	{$invoice.test|string_format:"%d"}
-</DIV>
-<DIV STYLE="page-break-after: always">
+<DIV{if !$invoice.last} STYLE="page-break-after: always"{/if}>
 <TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
 		<TD WIDTH="98%" CLASS="hdf" COLSPAN="2" VALIGN="TOP">
@@ -70,7 +65,7 @@
 	</TR>
 </TABLE>
 <TABLE WIDTH="100%" CELLPADDING="3">
-<TR CLASS="FALL">
+	<TR CLASS="FALL">
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>Lp.</B>
 	</TD>
@@ -102,7 +97,8 @@
 		<B>Warto¶æ brutto:</B>
 	</TD>
 </TR>
-{cycle values="#FFFFFF,#EEEEEE" print=false}
+{cycle values="#EEEEEE,#FFFFFF" print=false}
+{counter start=0 print=false}
 {foreach from=$invoice.content item=item}
 <TR BGCOLOR="{cycle}">
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT">{counter}.</TD>
@@ -136,8 +132,8 @@
 </TR>
 {/foreach}
 <TR>
-	<TD COLSPAN="6" WIDTH="96&" ALIGN="RIGHT" CLASS="ftop">
-		<B>Razem:</B>
+	<TD COLSPAN="6" WIDTH="96&" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
+		<P ALIGN="RIGHT"><B>Razem:</B></P>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
 		{$invoice.totalbase|string_format:"%.2f"} z³
@@ -180,5 +176,47 @@
 </TR>
 {/foreach}
 </TABLE>
-		
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="50%" ALIGN="CENTER" ROWSPAN="2">
+			Wystawi³: {$_config.invoices.default_author}
+		</TD>
+		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="hdf">
+			Do zap³aty: {$invoice.total|string_format:"%.2f"} z³
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="50%" ALIGN="RIGHT">
+			S³ownie: {$invoice.total|string_format:"%d"|to_words} z³ {$invoice.totalg|to_words} gr
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			<B>Uwagi:</B><BR>
+			<BLOCKQUOTE>Podstaw± do wystawienia faktury VAT bez podpisu osoby upowa¿nionej do jej wystawienia oraz odbioru, a tak¿e bez numeru NIP jest rozporz±dzenie Ministra Finansów z dnia 22.12.99 poz 1245 Dz.U nr 109/99.</BLOCKQUOTE>
+			<BLOCKQUOTE>W razie jakichkolwiek pytañ lub w±tpliwo¶ci prosimy o kontakt z naszym biurem obs³ugi klienta. Prosimy aby pamiêtali Pañstwo o swoim numerze klienta.</BLOCKQUOTE>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" ALIGN="CENTER" COLSPAN="2" CLASS="hd1">
+			<B>Dziêkujemy za korzystanie z naszych us³ug!</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" ALIGN="CENTER" COLSPAN="2">
+			{$_config.invoices.footer|replace:"\\n":"<BR>"}
+		</TD>
+	</TR>
+</TABLE>
+			
 </DIV>

@@ -18,7 +18,7 @@ TD.fbr		{ border-bottom-width: 1pt; border-bottom-style: solid; border-right-wid
 TD.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
 TD.red		{ color: #FF0000; }
 TD.blend	{ color: #888888; }
-TD.head		{ color: white; background-color: black; font-weight: bold; }
+TD.head		{ color: white; background-color: black; font-weight: bold; border-width: 1pt; border-style: solid; }
 TR.dark		{ background-color: #CEBD9B; }
 TR.light	{ background-color: #DFD5BD; }
 TR.blend	{ color: #888888; }

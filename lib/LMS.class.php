@@ -1196,6 +1196,7 @@ class LMS
 			
 		}
 		$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
+		$result['totalg'] = floor(($result['total'] - floor($result['total'])) * 100);
 		return $result;
 	}
 
@@ -2263,6 +2264,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.294  2003/12/01 13:24:56  lukasz
+ * - nowe fuckturki
+ *
  * Revision 1.293  2003/12/01 06:13:37  lukasz
  * - temporary save, do not touch
  *
