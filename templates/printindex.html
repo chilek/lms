@@ -13,7 +13,7 @@
 			<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Customers list:{/t}</B>
+			<B>{t}Customers List:{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -24,7 +24,7 @@
 						<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}Status:{/t}</B>
+						<B>{t}State:{/t}</B>
 					</TD>
 					<TD width="1%" {tip text="Select customer's group"}>
 						<NOBR><INPUT class="box" type="radio" name="filter" value="3" CHECKED>{t}connected{/t}</NOBR><BR>
@@ -102,7 +102,7 @@
 			<IMG src="img/money.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Network balance sheet{/t}</B>
+			<B>{t}Network Balance Sheet{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -113,10 +113,10 @@
 						<IMG src="img/admins.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>Administrator:</B>
+						<B>{t}User:{/t}</B>
 					</TD>
 					<TD width="1%">
-						<SELECT size="1" name="admin" {tip text="You can select customer to limit results"}>
+						<SELECT size="1" name="admin" {tip text="You can select user to limit results"}>
 							<OPTION value="">{t}- all -{/t}</OPTION>
 							{section name="admins" loop=$admins}
 							<OPTION value="{$admins[admins].id}">{$admins[admins].name|truncate:50:" ..."}</OPTION>
@@ -159,7 +159,7 @@ cal2.time_comp = false;
 			<IMG src="img/money.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>£±czny przychód bezrachunkowy sieci</B>
+			<B>{t}Total Invoiceless Income{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -202,7 +202,7 @@ cal6.time_comp = false;
 			<IMG src="img/money.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Invoices report{/t}</B>
+			<B>{t}Liability Report{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -239,7 +239,7 @@ cal6.time_comp = false;
 					<TD width="93%" {tip text="Select sorting direction and conditions"}>
 						<SELECT SIZE="1" name="order">
 							<OPTION value="username" SELECTED>{t}Name/surname and forename{/t}</OPTION>
-							<OPTION value="brutto">Kwota brutto</OPTION> 
+							<OPTION value="brutto">{t}Gross value{/t}</OPTION> 
 						</SELECT><BR><BR>
 						<SELECT SIZE="1" name="direction">
 							<OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
@@ -272,7 +272,7 @@ cal7.time_comp = false;
 			<IMG src="img/money.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>Rejestr sprzeda¿y</B>
+			<B>{t}Sale registry{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -319,7 +319,7 @@ cal9.time_comp = false;
 			<IMG src="img/money.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Customer balance sheet{/t}</B>
+			<B>{t}Customer Balance Sheet{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -375,7 +375,7 @@ cal4.time_comp = false;
 			<IMG src="img/money.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>Faktury</B>
+			<B>{t}Invoices{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -408,8 +408,8 @@ cal4.time_comp = false;
 						<IMG src="img/info.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="94%" nowrap>
-						<INPUT TYPE="checkbox" CLASS="box" NAME="invoiceorg" CHECKED>&nbsp;Orygina³&nbsp;
-						<INPUT TYPE="checkbox" CLASS="box" NAME="invoicecopy" CHECKED>&nbsp;Kopia
+						<INPUT TYPE="checkbox" CLASS="box" NAME="invoiceorg" CHECKED>&nbsp;{t}Original{/t}&nbsp;
+						<INPUT TYPE="checkbox" CLASS="box" NAME="invoicecopy" CHECKED>&nbsp;{t}Copy{/t}
 					</TD>
 				</TR>
 			</TABLE>
@@ -439,7 +439,7 @@ cal11.time_comp = false;
 			<IMG src="img/node.gif" alt="" BORDER="0" align="absmiddle">
 		</TD>
 		<TD class="frightu" width="99%">
-			<B>{t}Nodes list{/t}</B>
+			<B>{t}Nodes List{/t}</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -467,7 +467,7 @@ cal11.time_comp = false;
 						<SELECT SIZE="1" name="order">
 							<OPTION value="name" SELECTED>{t}Name{/t}</OPTION>
 							<OPTION value="id">{t}Id{/t}</OPTION> 
-							<OPTION value="owner">{t}Customer{/t}</OPTION> 
+							<OPTION value="owner">{t}Customer name{/t}</OPTION> 
 							<OPTION value="ownerid">{t}Customer ID{/t}</OPTION> 
 							<OPTION value="ip">{t}IP address{/t}</OPTION> 
 							<OPTION value="mac">{t}MAC address{/t}</OPTION>

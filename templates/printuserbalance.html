@@ -8,32 +8,32 @@
 		<TD WIDTH="50%" ALIGN="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
-			Sporz±dzone przez: {$layout.logname}
+			{t 0=$layout.logname}Prepared by: $0{/t}
 		</TD>
 	</TR>
 </TABLE>
 <TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			Lp
+			{t}Ord.{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			Data
+			{t}Date{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			Typ
+			{t}Type{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			Warto¶æ
+			{t}Value{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			VAT
+			{t}VAT{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			Po
+			{t}After{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			Opis
+			{t}Description{/t}
 		</TD>		
 	</TR>
 	{cycle values="#FFFFFF,#EEEEEE" print=false}
@@ -67,14 +67,14 @@
 	<TR>
 		<TD ALIGN="center" WIDTH="100%" COLSPAN="7">
 			<p>&nbsp;</p>
-			<p><B>Brak operacji kasowych</B></p>
+			<p><B>{t}No such transactions{/t}</B></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
 	<TR>
 		<TD ALIGN="right" COLSPAN="3" BGCOLOR="#EEEEEE">
-			<B>Razem:</B>
+			<B>{t}Total:{/t}</B>
 		</TD>
 		<TD ALIGN="right" nowrap BGCOLOR="#EEEEEE">
 			<B>{$balancelist.summary|money_format} </B>

@@ -8,32 +8,32 @@
 		<TD WIDTH="50%" ALIGN="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
-			Sporz±dzone przez: {$layout.logname}
+			{t 0=$layout.logname}Prepared by: $0{/t}
 		</TD>
 	</TR>
 </TABLE>
 <TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN=CENTER>
 	<TR>
 		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
-			Lp
+			{t}Ord{/t}
 		</TD>
 		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
-			Id
+			{t}ID{/t}
 		</TD>
 		<TD WIDTH="1%" ALIGN=RIGHT CLASS=head>
-			<B>Nazwa komputera
+			<B>{ty}Node name{/t}
 		</TD>
 		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
-			Adres IP
+			{t}IP address{/t}
 		</TD>
 		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
-			Adres MAC
+			{t}MAC address{/t}
 		</TD>
 		<TD WIDTH="1%" ALIGN=LEFT CLASS=head>
-			W³a¶ciciel
+			{t}Owner{/t}
 		</TD>
 		<TD WIDTH="94%" ALIGN=LEFT CLASS=head>
-			Opis
+			{t}Description{/t}
 		</TD>
 	</TR>
 	{cycle values="#FFFFFF,#EEEEEE" print=false}
