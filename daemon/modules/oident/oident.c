@@ -43,7 +43,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 
 	for( netname=strtok(o->networks," "); netname!=NULL; netname=strtok(NULL," ") ) { 
 
-		if( (res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')",netname))!=NULL ) {
+		if( (res = g->db_pquery("SELECT address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')",netname))!=NULL ) {
 
 			if(res->nrows) {
 			
@@ -57,7 +57,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 	}
 
 	if(!nc)
-		if( (res = g->db_query("SELECT name, domain, address, INET_ATON(mask) AS mask FROM networks"))!=NULL ) {
+		if( (res = g->db_query("SELECT address, INET_ATON(mask) AS mask FROM networks"))!=NULL ) {
 
 			for(nc=0; nc<res->nrows; nc++) {
 				
@@ -67,7 +67,6 @@ void reload(GLOBAL *g, struct oident_module *o)
 			}
 			g->db_free(res);
 		}
-	
 		
 	fh = fopen(o->file, "w");
 	if(fh) {
