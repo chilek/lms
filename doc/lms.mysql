@@ -61,6 +61,7 @@ CREATE TABLE networks (
   name varchar(255) NOT NULL default '',
   address varchar(255) NOT NULL default '',
   mask varchar(16) NOT NULL default '',
+  interface varchar(8) default NULL,
   gateway varchar(16) default NULL,
   dns varchar(16) default NULL,
   dns2 varchar(16) default NULL,

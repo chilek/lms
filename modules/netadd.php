@@ -71,7 +71,10 @@ if(isset($netadd))
 				$error[address] = "Podana sieæ pokrywa siê z inn± sieci±!";
 		}
 	}
-	
+
+	if($netadd[interface] != '' && !eregi('^[a-z0-9]+$',$netadd[interface]))
+		$error[interface] = "Niepoprawna nazwa interfejsu!";
+
 	if($netadd[dns]!="" && !check_ip($netadd[dns]))
 		$error[dns] = "Podany adres IP jest nieprawid³owy!";
 	
@@ -128,6 +131,9 @@ $SMARTY->display("netadd.html");
 
 /*
  * $Log$
+ * Revision 1.23  2003/08/30 01:11:21  lukasz
+ * - nowe pole w li¶cie sieci: interfejs
+ *
  * Revision 1.22  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

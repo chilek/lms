@@ -1271,7 +1271,7 @@ class LMS
 		if($netadd['prefix'] != "")
 			$netadd['mask'] = prefix2mask($netadd['prefix']);
 		$this->SetTS("networks");
-		if($this->ADB->Execute("INSERT INTO networks (name, address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",array(strtoupper($netadd['name']),$netadd['address'],$netadd['mask'],$netadd['gateway'],$netadd['dns'],$netadd['dns2'],$netadd['domain'],$netadd['wins'],$netadd['dhcpstart'],$netadd['dhcpend'])))
+		if($this->ADB->Execute("INSERT INTO networks (name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",array(strtoupper($netadd['name']),$netadd['address'],$netadd['mask'],strtolower($netadd['interface']),$netadd['gateway'],$netadd['dns'],$netadd['dns2'],$netadd['domain'],$netadd['wins'],$netadd['dhcpstart'],$netadd['dhcpend'])))
 			return $this->ADB->GetOne("SELECT id FROM networks WHERE address=?",array($netadd['address']));
 		else
 			return FALSE;
@@ -1313,7 +1313,7 @@ class LMS
 	function GetNetworkList()
 	{
 
-		if($networks = $this->ADB->GetAll("SELECT id, name, address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks"))
+		if($networks = $this->ADB->GetAll("SELECT id, name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks"))
 			foreach($networks as $idx => $row)
 			{
 				$row['prefix'] = mask2prefix($row['mask']);
@@ -1405,7 +1405,7 @@ class LMS
 	function NetworkUpdate($networkdata)
 	{
 		$this->SetTS("networks");
-		return $this->ADB->Execute("UPDATE networks SET name=?, address=?, mask=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?",array(strtoupper($networkdata['name']),$networkdata['address'],$networkdata['mask'],$networkdata['gateway'],$networkdata['dns'],$networkdata['dns2'],$networkdata['domain'],$networkdata['wins'],$networkdata['dhcpstart'],$networkdata['dhcpend'],$networkdata['id']));
+		return $this->ADB->Execute("UPDATE networks SET name=?, address=?, mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?",array(strtoupper($networkdata['name']),$networkdata['address'],$networkdata['mask'],strtolower($networkdata['interface']),$networkdata['gateway'],$networkdata['dns'],$networkdata['dns2'],$networkdata['domain'],$networkdata['wins'],$networkdata['dhcpstart'],$networkdata['dhcpend'],$networkdata['id']));
 	}
 				
 	
@@ -1448,7 +1448,7 @@ class LMS
 
 	function GetNetworkRecord($id,$page = 0, $plimit = 4294967296)
 	{
-		$network = $this->ADB->GetRow("SELECT id, name, address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?",array($id));
+		$network = $this->ADB->GetRow("SELECT id, name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?",array($id));
 		$network['prefix'] = mask2prefix($network['mask']);
 		$network['addresslong'] = ip_long($network['address']);
 		$network['size'] = pow(2,32-$network['prefix']);
@@ -1602,6 +1602,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.208  2003/08/30 01:11:21  lukasz
+ * - nowe pole w li¶cie sieci: interfejs
+ *
  * Revision 1.207  2003/08/29 22:53:19  lukasz
  * - lista taryf zlicza³a tak¿e u¿ytkowników usuniêtych
  *

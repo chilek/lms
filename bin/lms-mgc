@@ -286,7 +286,7 @@ sub instance($)
 	{
 		$srcnetwork = uc($srcnetwork);
 		print "debug: starting network $srcnetwork\n" if $debug;
-		my $dbq = $dbase->prepare("SELECT id, name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$srcnetwork'");
+		my $dbq = $dbase->prepare("SELECT id, name, address, mask, interface, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$srcnetwork'");
 		$dbq->execute();
 		my $row = $dbq->fetchrow_hashref();
 		if(!$row)
@@ -305,6 +305,7 @@ sub instance($)
 			$tnh =~ s/\%NAME/$row->{'NAME'}/g;
 			$tnh =~ s/\%ADDR/$row->{'address'}/g;
 			$tnh =~ s/\%MASK/$row->{'mask'}/g;
+			$tnh =~ s/\%IFACE/$row->{'interface'}/g;
 			$tnh =~ s/\%GATE/$row->{'gateway'}/g;
 			$tnh =~ s/\%DNS2/$row->{'dns2'}/g;
 			$tnh =~ s/\%DNS/$row->{'dns'}/g;
@@ -327,7 +328,7 @@ sub instance($)
 			foreach my $dstnetwork (@dst_networks)
 			{
 				$dstnetwork = uc($dstnetwork);
-				my $sdbq = $dbase->prepare("SELECT id, name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$dstnetwork'");
+				my $sdbq = $dbase->prepare("SELECT id, name, address, mask, interface, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$dstnetwork'");
 				$sdbq->execute();
 				my $srow = $sdbq->fetchrow_hashref();
 				my $dtnh = $dst_network_header;
@@ -335,6 +336,7 @@ sub instance($)
 				$dtnh =~ s/\%name/$row->{'name'}/g;
 				$dtnh =~ s/\%NAME/$row->{'NAME'}/g;
 				$dtnh =~ s/\%ADDR/$row->{'address'}/g;
+				$dtnh =~ s/\%IFACE/$row->{'interface'}/g;
 				$dtnh =~ s/\%MASK/$row->{'mask'}/g;
 				$dtnh =~ s/\%GATE/$row->{'gateway'}/g;
 				$dtnh =~ s/\%DNS/$row->{'dns'}/g;
@@ -349,6 +351,7 @@ sub instance($)
 				$dtnh =~ s/\%DID/$srow->{'id'}/g;
 				$dtnh =~ s/\%dname/$srow->{'name'}/g;
 				$dtnh =~ s/\%DNAME/$srow->{'NAME'}/g;
+				$dtnh =~ s/\%DIFACE/$srow->{'interface'}/g;
 				$dtnh =~ s/\%DADDR/$srow->{'address'}/g;
 				$dtnh =~ s/\%DMASK/$srow->{'mask'}/g;
 				$dtnh =~ s/\%DGATE/$srow->{'gateway'}/g;
@@ -371,6 +374,7 @@ sub instance($)
 			$tnb =~ s/\%NAME/$row->{'NAME'}/g;
 			$tnb =~ s/\%ADDR/$row->{'address'}/g;
 			$tnb =~ s/\%MASK/$row->{'mask'}/g;
+			$tnb =~ s/\%IFACE/$row->{'interface'}/g;
 			$tnb =~ s/\%GATE/$row->{'gateway'}/g;
 			$tnb =~ s/\%DNS/$row->{'dns'}/g;
 			$tnb =~ s/\%DOMAIN/$row->{'domain'}/g;
@@ -537,6 +541,7 @@ sub instance($)
 			$rule =~ s/\%nname/$row->{'name'}/g;
 			$rule =~ s/\%NNAME/$row->{'NAME'}/g;
 			$rule =~ s/\%NADDR/$row->{'address'}/g;
+			$rule =~ s/\%NIFACE/$row->{'interface'}/g;
 			$rule =~ s/\%NMASK/$row->{'mask'}/g;
 			$rule =~ s/\%NGATE/$row->{'gateway'}/g;
 			$rule =~ s/\%NDNS/$row->{'dns'}/g;
@@ -583,6 +588,7 @@ sub instance($)
 			$tnh =~ s/\%ADDR/$row->{'address'}/g;
 			$tnh =~ s/\%MASK/$row->{'mask'}/g;
 			$tnh =~ s/\%GATE/$row->{'gateway'}/g;
+			$tnh =~ s/\%IFACE/$row->{'interface'}/g;
 			$tnh =~ s/\%DNS/$row->{'dns'}/g;
 			$tnh =~ s/\%DOMAIN/$row->{'domain'}/g;
 			$tnh =~ s/\%WINS/$row->{'wins'}/g;

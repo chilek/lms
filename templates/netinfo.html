@@ -40,10 +40,23 @@
 	<TR class="light">
 		<td width="1%" class="fleft">
 			<nobr><img src="img/cmp.gif" border="0" align="absmiddle" alt=""> <B>Rozmiar sieci:</B>
-		</td>
-		<TD width="48%">
+		</TD>
+		<TD width="49%">
 			{$network.size} adresów
 		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/mac.gif" BORDER="0" ALIGN="asbmiddle" ALT=""> <B>Interfejs:</B>
+		</TD>
+		<TD COLSPAN="3" CLASS="FRIGHT" WIDTH="99%">
+			{if $unlockedit}
+			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}"{if $error.interface} CLASS="ALERT"><BR><FONT COLOR="RED"><B>{$error.interface}</B></FONT{/if}>
+			{else}
+			{$network.interface}
+			{/if}
+		</TD>
+	</TR>
 	<TR class="light">
 		<TD width="2%" class="fleft">
 			<nobr><img src="img/gateway.gif" border="0" align="absmiddle" alt=""> <B>Gateway:</B></nobr>
