@@ -163,7 +163,7 @@ foreach my $key (@networks)
 		{
 			if($maclist{$i})
 			{
-				my $mac  = lc($maclist{$i});
+				my $mac  = lc($maclist{$i});
 				my $name = lc($namelist{$i});
 			
 				$mac =~ s/://g;
