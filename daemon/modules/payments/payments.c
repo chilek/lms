@@ -1,5 +1,5 @@
 /*
- * LMS version 1.4-cvs
+ * LMS version 1.5-cvs
  *
  *  (C) Copyright 2001-2004 LMS Developers
  *
@@ -103,10 +103,10 @@ unsigned char * get_period(struct tm *today, int period, int up_payments)
 void reload(GLOBAL *g, struct payments_module *p)
 {
 	QUERY_HANDLE *res, *result, *sres;
-	unsigned char *query, *insert, *insert_inv, *update;
+	unsigned char *query, *insert, *insert_inv;
 	unsigned char *w_period, *m_period, *q_period, *y_period, *value, *taxvalue;
 	unsigned char *description;
-	int i, invoiceid, last_userid=0, number=0, exec=0, suspended=0;
+	int i, invoiceid=0, last_userid=0, number=0, exec=0, suspended=0;
 
 	time_t t;
 	struct tm *tt;
@@ -154,10 +154,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 	strftime(yearend,	sizeof(yearend),	"%s",tt);
 
 	/****** main payments *******/
-	if( (res = g->db_pquery("SELECT * FROM payments WHERE value <> 0 AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?))", weekday, monthday, quarterday, yearday))!= NULL ) {	
-
-		for(i=0; i<res->nrows; i++) {
-			
+	if( (res = g->db_pquery("SELECT * FROM payments WHERE value <> 0 AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?))", weekday, monthday, quarterday, yearday))!= NULL )
+	{
+		for(i=0; i<res->nrows; i++) 
+		{
 			exec = (g->db_pexec("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (%NOW%, 2, ?, 0, '? / ?', 0)",
 					g->db_get_data(res,i,"value"),
 					g->db_get_data(res,i,"name"),
@@ -173,25 +173,26 @@ void reload(GLOBAL *g, struct payments_module *p)
 		
 	/****** user payments *******/
 	// first get max invoiceid for present year
-	if( (res = g->db_pquery("SELECT MAX(number) AS number FROM invoices WHERE cdate >= ? AND cdate <= ?", yearstart, yearend))!= NULL ) {
- 
- 		if( res->nrows )
+	if( (res = g->db_pquery("SELECT MAX(number) AS number FROM invoices WHERE cdate >= ? AND cdate <= ?", yearstart, yearend))!= NULL ) 
+	{
+  		if( res->nrows )
 			number = atoi(g->db_get_data(res,0,"number"));
 		g->db_free(res);
 
 		// payments accounting and invoices writing
-		if( (res = g->db_pquery("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, users.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY userid, value DESC", weekday, monthday, quarterday, yearday))!= NULL ) {
-	
-			for(i=0; i<res->nrows; i++) {
-			
+		if( (res = g->db_pquery("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, users.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY userid, value DESC", weekday, monthday, quarterday, yearday))!= NULL ) 
+		{
+			for(i=0; i<res->nrows; i++) 
+			{
 				int uid = atoi(g->db_get_data(res,i,"userid"));
 				
 				// assignments suspending check
 				if(suspended != uid)
 				{
-					if( (sres = g->db_pquery("SELECT 1 FROM assignments, users WHERE userid = users.id AND tariffid = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND userid = ?", g->db_get_data(res,i,"userid"))) != NULL ) {
-				
-						if(sres->nrows) {
+					if( (sres = g->db_pquery("SELECT 1 FROM assignments, users WHERE userid = users.id AND tariffid = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND userid = ?", g->db_get_data(res,i,"userid"))) != NULL ) 
+					{
+						if(sres->nrows) 
+						{
 							suspended = uid;
 							continue;
 						}
@@ -207,7 +208,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 				g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
 				g->str_replace(&insert, "%value", value);
 				description = strdup(p->comment);
-				switch( atoi(g->db_get_data(res,i,"period")) ) {
+				switch( atoi(g->db_get_data(res,i,"period")) ) 
+				{
 					case 0: g->str_replace(&description, "%period", w_period); break;
 					case 1: g->str_replace(&description, "%period", m_period); break;
 					case 2: g->str_replace(&description, "%period", q_period); break;
@@ -220,9 +222,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 				else
 					g->str_replace(&insert, "%taxvalue", "NULL");
 				
-				if( atoi(g->db_get_data(res,i,"invoice")) ) {
-				
-					if( last_userid != uid ) {
+				if( atoi(g->db_get_data(res,i,"invoice")) ) 
+				{
+					if( last_userid != uid ) 
+					{
 						// prepare insert to 'invoices' table
 						insert_inv = strdup("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES (%number, %customerid, '%lastname %name', '%address', '%zip', '%city', '%phone', '%nip', '%pesel', %NOW%, %deadline, '%paytype', 1 )");
 						g->str_replace(&insert_inv, "%number", itoa(++number));
@@ -242,19 +245,24 @@ void reload(GLOBAL *g, struct payments_module *p)
 						free(insert_inv);
 						
 						// ma³e uproszczenie w stosunku do lms-payments
-						if( (result = g->db_query("SELECT MAX(id) AS id FROM invoices"))!=NULL ) {
+						if( (result = g->db_query("SELECT MAX(id) AS id FROM invoices"))!=NULL ) 
+						{
 							invoiceid = (result->nrows ? atoi(g->db_get_data(result,0,"id")) : 0);
 							g->db_free(result);
 						}
 					}
 					
-					if( (result = g->db_pquery("SELECT * FROM invoicecontents WHERE tariffid = ? AND invoiceid = ? AND description = '?'", g->db_get_data(res,i,"tariffid"), itoa(invoiceid), description))!=NULL ) {
-						
-						if( result->nrows ) {
+					if( (result = g->db_pquery("SELECT * FROM invoicecontents WHERE tariffid = ? AND invoiceid = ? AND description = '?'", g->db_get_data(res,i,"tariffid"), itoa(invoiceid), description))!=NULL ) 
+					{
+						if( result->nrows ) 
+						{
 							query = strdup("UPDATE invoicecontents SET count=count+1 WHERE tariffid = %tariffid AND invoiceid = %invoiceid AND description = '%desc'");
 							g->str_replace(&query, "%invoiceid", itoa(invoiceid));
 							g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
 							g->str_replace(&query, "%desc", description);
+#ifdef USE_MYSQL
+		}
+#endif
 						} else {
 							query = strdup("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (%invoiceid, %value, %taxvalue, '%pkwiu', 'szt.', 1, '%desc', %tariffid)");
 							g->str_replace(&query, "%invoiceid", itoa(invoiceid));
@@ -270,8 +278,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->db_exec(query);									
 						g->db_free(result);
 						free(query);
+#ifndef USE_MYSQL
 					}
-					
+#endif USE_MYSQL
 					g->str_replace(&insert, "%invoiceid", itoa(invoiceid));
 					exec = g->db_exec(insert);
 				
@@ -300,7 +309,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 	}
 
 	// set timestamps
-	if(exec) {
+	if(exec) 
+	{
 		g->db_exec("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
 		g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('cash', %NOW%)");
 		g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('_global', %NOW%)");

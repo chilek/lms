@@ -12,6 +12,8 @@ wersja 1.4.2 (??/??/????):
   - poprawione dzia³anie opcji --quiet w lms-payments (alec)
   - BTS#000254: funkcja writesyslog() dzia³a równie¿ na OpenBSD (kubatyszko)
   - usuniêty b³±d w dniu zap³aty przy dodawaniu zobowi±zañ rocznych (alec)
+  - usuniêty b³±d modu³u payments demona almsd, powoduj±cy wystawianie faktur
+    bez zawarto¶ci podczas pracy z baz± MySQL (alec)
 
 wersja 1.4.1 Teyla (15/11/2004):
 
