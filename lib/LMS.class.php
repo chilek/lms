@@ -1683,7 +1683,7 @@ class LMS
 			if( $network['nodes']['ownerid'][$i] == 0 && $network['nodes']['netdev'][$i] > 0) 
 			{
 				$netdev = $this->GetNetDevName($network['nodes']['netdev'][$i]);
-				$network['nodes']['name'][$i] = 'ND: '.$netdev['name']." ".$netdev['model'];
+				$network['nodes']['name'][$i] = $network['nodes']['name'][$i]." (".$netdev['name'].")";
 			}
 
 		}
@@ -1722,6 +1722,7 @@ class LMS
 					$result['nodename'][$pos] = $node['name'];
 					$result['ownerid'][$pos] = $node['ownerid'];
 				}
+		
 		return $result;
 	}
 
@@ -2166,6 +2167,23 @@ class LMS
 		}
 
 		return $traffic;
+	}
+
+	function TrafficHost($from, $to, $host)
+	{
+	    $query = "SELECT sum(upload) as upload, sum(download) as download FROM stats WHERE dt >=".$from." AND dt <".$to." AND nodeid=".$host.";";
+	    //echo $query;
+	    $row = $this->DB->GetRow($query);
+	    return $row;
+	}
+
+	function TrafficFirstRecord($host)
+	{
+	    $query = "select min(dt) from stats, nodes where id=".$host.";";
+	    //$query = "SELECT sum(upload) as upload, sum(download) as download FROM stats WHERE dt >=".$from." AND dt <".$to." AND nodeid=".$host.";";
+	    //echo $query;
+	    $row = $this->DB->GetOne($query);
+	    return $row;
 	}
 
 	/*
