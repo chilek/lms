@@ -169,6 +169,7 @@
 				<member>access - pod³±czony/od³±czony (1/0)</member>
 				<member>warning - ostrzegaj/nie ostrzegaj (1/0)</member>
 				<member>lastonline - znacznik czasu ostatniej obecno¶ci w sieci</member>
+				<member>info - informacje dodatkowe</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="netdevices">
