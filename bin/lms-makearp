@@ -210,7 +210,7 @@ foreach my $key (@networks)
 	{
 		my $dhcpend = dotquad2u32($row->{'dhcpend'}) || '0';
 		my $dhcpstart = dotquad2u32($row->{'dhcpstart'}) || '0';
-		my $longip = dotquad2u32($row->{'address'});
+		my $longip = $row->{'address'};
 		my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
 		for(my $i=$longip;$i<$longip+$netsize;$i++)
 		{
