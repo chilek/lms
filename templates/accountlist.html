@@ -6,16 +6,16 @@
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD width="20%" class="fleftu" NOWRAP>
-			<img src="img/user.gif" ALT="" align="absmiddle"> <B>Login:</B>
+			<IMG src="img/user.gif" alt="" align="absmiddle"> <A href="?m=accountlist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>Login:</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD width="77%" class="fbt">
-			<B>W³a¶ciciel:</B>
+			<A href="?m=accountlist&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}"><B>W³a¶ciciel:</B></A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD align="right" width="1%" class="fbt" NOWRAP>
-			<B>ID:</B>
+			<A href="?m=accountlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}"><B>ID:</B></A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" NOWRAP>
-			<B>Ostatnie logowanie:</B>
+			<A href="?m=accountlist&o=lastlogin{if $listdata.direction eq "asc" && $listdata.order eq "lastlogin"},desc{/if}"><B>Ostatnie logowanie:</B></A> {if $listdata.order eq "lastlogin"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu">
 			&nbsp;

@@ -24,13 +24,81 @@
  *  $Id$
  */
 
+function GetAccountList($order='username,asc', $owner=NULL)
+{
+	global $LMS;
+
+	list($order,$direction) = explode(',',$order);
+
+	($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+
+	switch($order)
+	{
+		case 'id':
+			$sqlord = " ORDER BY passwd.id $direction";
+		break;
+		case 'username':
+			$sqlord = " ORDER BY username $direction, login";
+		break;
+		case 'lastlogin':
+			$sqlord = " ORDER BY lastlogin $direction, username, login";
+		break;
+		default:
+			$sqlord = " ORDER BY login $direction, username";
+		break;
+	}
+
+	$list = $LMS->DB->GetAll(
+	        'SELECT passwd.id AS id, ownerid, login, lastlogin, '
+		.$LMS->DB->Concat('users.lastname', "' '",'users.name').
+		' AS username FROM passwd, users WHERE users.id = ownerid'
+		.($owner ? ' AND ownerid = '.$owner : '')
+		.($sqlord != '' ? $sqlord : '')
+		);
+	
+	$list['total'] = sizeof($list);
+	$list['order'] = $order;
+	$list['direction'] = $direction;
+
+	return $list;
+}
+
+if(!isset($_GET['o']))
+	$o = $_SESSION['alo'];
+else
+	$o = $_GET['o'];
+$_SESSION['alo'] = $o;
+
+if(!isset($_GET['u']))
+	$u = $_SESSION['alu'];
+else
+	$u = $_GET['u'];
+$_SESSION['alu'] = $u;
+
+if (isset($_SESSION['alp']) && !isset($_GET['page']))
+	$_GET['page'] = $_SESSION['alp'];
+	    
+$page = (! $_GET['page'] ? 1 : $_GET['page']); 
+$pagelimit = (! $LMS->CONFIG['phpui']['accountlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['accountlist_pagelimit']);
+$start = ($page - 1) * $pagelimit;
+
+$_SESSION['ulp'] = $page;
+
 $layout['pagetitle'] = 'Zarz±dzanie kontami';
 
-$accountlist = $LMS->DB->GetAll('SELECT passwd.id AS id, ownerid, login, lastlogin, '.$LMS->DB->Concat('users.lastname', "' '",'users.name').' AS username FROM passwd, users WHERE users.id = ownerid ORDER BY login, username');
-$listdata['total'] = sizeof($accountlist);
+$accountlist = GetAccountList($o, $u);
+$listdata['total'] = $accountlist['total'];
+$listdata['order'] = $accountlist['order'];
+$listdata['direction'] = $accountlist['direction'];
+unset($accountlist['total']);
+unset($accountlist['order']);
+unset($accountlist['direction']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
+$SMARTY->assign('pagelimit', $pagelimit);
+$SMARTY->assign('page', $page);
+$SMARTY->assign('start', $start);
 $SMARTY->assign('accountlist',$accountlist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('layout',$layout);
