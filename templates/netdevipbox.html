@@ -15,16 +15,16 @@
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<a href="?m=nodeset&id={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Pod³±cz"}{else}{tip text="Od³±cz"}{/if} border="0" align="absmiddle"></A>
 		</TD>
-		<TD WIDTH="97%" onClick="return self.location.href='?m=nodeinfo&id={$netdevips[list].id}';">
+		<TD WIDTH="97%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			<B>{$netdevips[list].name}</B><BR>	
 			{$netdevips[list].ip} / {$netdevips[list].mac}
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP" onClick="return self.location.href='?m=nodeinfo&id={$netdevips[list].id}';">
+		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			({$netdevips[list].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHT" NOWRAP>
 			<A HREF="?m=nodedel&id={$netdevips[list].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ adres \'{$netdevips[list].name|upper}\' z bazy danych?')"><IMG SRC="img/delete.gif" BORDER="0" ALT="" {tip text="Usuñ"} ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&netdev={$netdevips[list].id}"><IMG SRC="img/edit.gif" BORDER="0" ALT="" {tip text="Edytuj"} ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><IMG SRC="img/edit.gif" BORDER="0" ALT="" {tip text="Edytuj"} ALIGN="ABSMIDDLE"></A>
 		</TD>
 	</TR>
 	{/section}

@@ -78,31 +78,125 @@ case "connectnode":
 		header("Location: ?m=netdevinfo&id=".$_GET[id]);
 	break;
 
-// NetDevIp - Narazie tylko podstawa, pó¼niej sprawdzanie b³êdów i reszta
 case "addip":
 	$edit = 'addip';
 	break;
 
 case "editip":
-	$nodeipdata=$LMS->GetNode($_GET[netdev]);
+	$nodeipdata=$LMS->GetNode($_GET['ip']);
+	$nodeipdata[ipaddr] = $nodeipdata[ip];
 	$SMARTY->assign("nodeipdata",$nodeipdata);
 	$edit = 'ip';
 	break;
 
 case "formaddip":
-	$netdevipdata = $_POST['ipadd'];
-	$netdevipdata['ownerid']=0;
-	$LMS->NetDevLinkNode($LMS->NodeAdd($netdevipdata),$_GET[id]);
-	header("Location: ?m=netdevinfo&id=".$_GET[id]);
-	die;
+	$nodeipdata = $_POST['ipadd'];
+	$nodeipdata['ownerid']=0;
+	
+	$nodeipdata[mac] = str_replace("-",":",$nodeipdata[mac]);
+	foreach($nodeipdata as $key => $value)
+		$nodeipdata[$key] = trim($value);
+	
+	if($nodeipdata[ipaddr]=="" && $nodeipdata[mac]=="" && $nodeipdata[name]=="")
+	{
+		header("Location: ?m=netdevedit&action=addip&id=".$_GET['id']);
+		die;
+        }
+	
+	if($nodeipdata[name]=="")
+		$error[ipname] = "Proszê podaæ nazwê dla adresu!";
+	elseif(strlen($nodeipdata[name]) > 16)
+		$error[ipname] = "Podana nazwa jest za d³uga!";
+	elseif($LMS->GetNodeIDByName($nodeipdata[name]))
+		$error[ipname] = "Podana nazwa jest u¿ywana!";
+	elseif(!eregi("^[_a-z0-9-]+$",$nodeipdata[name]))
+		$error[ipname] = "Podana nazwa zawiera niepoprawne znaki!";		
 
+	if(!$nodeipdata[ipaddr])
+		$error[ipaddr] = "Proszê podac adres IP!";
+	elseif(!check_ip($nodeipdata[ipaddr]))
+		$error[ipaddr] = "Podany adres IP jest niepoprawny!";
+	elseif(!$LMS->IsIPValid($nodeipdata[ipaddr]))
+		$error[ipaddr] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
+	elseif(!$LMS->IsIPFree($nodeipdata[ipaddr]))
+		$error[ipaddr] = "Podany adres IP jest zajêty!";
+
+	if(!$nodeipdata[mac])
+		$error[mac] = "Proszê podac adres MAC!";
+	elseif($LMS->GetNodeIDByMAC($nodeipdata[mac]) && $LMS->CONFIG[phpui][allow_mac_sharing] == FALSE)
+		$error[mac] = "Podany MAC jest ju¿ w bazie!";
+	elseif(!check_mac($nodeipdata[mac]))
+		$error[mac] = "Podany adres MAC jest nieprawid³owy!";
+
+	if(!$error)
+	{
+		$LMS->NetDevLinkNode($LMS->NodeAdd($nodeipdata),$_GET[id]);
+		header("Location: ?m=netdevinfo&id=".$_GET[id]);
+		die;
+	}
+	$SMARTY->assign("nodeipdata",$nodeipdata); 
+	$edit='addip';
+	break;
+		
 case "formeditip":
-	$netdevipdata = $_POST['ipadd'];
-	$netdevipdata['ownerid']=0;
-	$netdevipdata['netdev']=$_GET[id];
-	$LMS->NodeUpdate($netdevipdata);
-	header("Location: ?m=netdevinfo&id=".$_GET[id]);
-	die;
+	$nodeipdata = $_POST['ipadd'];
+	$nodeipdata['ownerid']=0;
+	$nodeipdata['netdev']=$_GET[id];
+
+	$nodeipdata[mac] = str_replace("-",":",$nodeipdata[mac]);
+	foreach($nodeipdata as $key => $value)
+		$nodeipdata[$key] = trim($value);
+	
+	if($nodeipdata[ipaddr]=="" && $nodeipdata[mac]=="" && $nodeipdata[name]=="")
+	{
+		header("Location: ?m=netdevedit&action=editip&id=".$_GET['id']."&ip=".$_GET['ip']);
+		die;
+        }
+	
+	if($nodeipdata[name]=="")
+		$error[ipname] = "Proszê podaæ nazwê dla adresu!";
+	elseif(strlen($nodeipdata[name]) > 16)
+		$error[ipname] = "Podana nazwa jest za d³uga!";
+	elseif(
+		$LMS->GetNodeIDByName($nodeipdata[name]) &&
+		$LMS->GetNodeName($_GET['ip'])!=$nodeipdata[name]
+		)
+		$error[ipname] = "Podana nazwa jest u¿ywana!";
+	elseif(!eregi("^[_a-z0-9-]+$",$nodeipdata[name]))
+		$error[ipname] = "Podana nazwa zawiera niepoprawne znaki!";		
+
+	if(!$nodeipdata[ipaddr])
+		$error[ipaddr] = "Proszê podac adres IP!";
+	elseif(!check_ip($nodeipdata[ipaddr]))
+		$error[ipaddr] = "Podany adres IP jest niepoprawny!";
+	elseif(!$LMS->IsIPValid($nodeipdata[ipaddr]))
+		$error[ipaddr] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
+	elseif(
+		!$LMS->IsIPFree($nodeipdata[ipaddr]) &&
+		$LMS->GetNodeIPByID($_GET['ip'])!=$nodeipdata[ipaddr]
+		)
+		$error[ipaddr] = "Podany adres IP jest zajêty!";
+	
+	if(!$nodeipdata[mac])
+		$error[mac] = "Proszê podac adres MAC!";
+	elseif(
+		$LMS->GetNodeIDByMAC($nodeipdata[mac]) && 
+		$LMS->GetNodeMACByID($_GET['ip'])!=$nodeipdata[mac] &&
+		$LMS->CONFIG[phpui][allow_mac_sharing] == FALSE
+		)
+		$error[mac] = "Podany MAC jest ju¿ w bazie!";
+	elseif(!check_mac($nodeipdata[mac]))
+		$error[mac] = "Podany adres MAC jest nieprawid³owy!";
+
+	if(!$error)
+	{
+		$LMS->NodeUpdate($nodeipdata);	
+		header("Location: ?m=netdevinfo&id=".$_GET[id]);
+		die;
+	}
+	$SMARTY->assign("nodeipdata",$nodeipdata); 
+	$edit='ip';
+	break;
 }
 
 $netdevdata = $_POST[netdev];
@@ -145,6 +239,7 @@ unset($nodelist[order]);
 unset($nodelist[direction]);
 
 $replacelist = $LMS->GetNetDevList();
+$replacelisttotal = $replacelist[total];
 unset($replacelist[order]);
 unset($replacelist[total]);
 unset($replacelist[direction]);
@@ -162,6 +257,7 @@ $SMARTY->assign("nodelist",$nodelist);
 $SMARTY->assign("netdevips",$netdevips);
 $SMARTY->assign("restnetdevlist",$netdevlist);
 $SMARTY->assign("replacelist",$replacelist);
+$SMARTY->assign("replacelisttotal",$replacelisttotal);
 
 switch($edit)
 {
@@ -169,13 +265,14 @@ switch($edit)
 	$SMARTY->display('netdevedit.html');
     break;
     case 'ip':
-	$SMARTY->display('netdeveditip.html');
+	$SMARTY->display('netdevipedit.html');
     break;
     case 'addip':
-	$SMARTY->display('netdevaddip.html');
+	$SMARTY->display('netdevipadd.html');
     break;
     default:
 	$SMARTY->display('netdevinfo.html');
     break;
 }
 ?>
+
