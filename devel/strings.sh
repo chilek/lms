@@ -16,8 +16,8 @@ do
     echo "done."
 done
 perl -pi -e 's/\\\$/\$/g' html_strings   	# \$ -> $
-perl -pi -e 's/\\/\\\\\\\\/g' html_strings   	# \ -> \\
-perl -pi -e 's/\x27/\\\\\x27/g' html_strings	# ' -> \'
+perl -pi -e 's/\\/\\\\/g' html_strings   	# \ -> \\
+perl -pi -e 's/\x27/\\\x27/g' html_strings	# ' -> \'
 
 echo "Parsing modules"
 for FILENAME in `ls ../modules/*.php`
@@ -32,8 +32,8 @@ do
     perl -lne 'print for /trans\(\x27(.*?[^\\])\x27/g' $FILENAME >> php_strings
     echo "done."
 done
-perl -pi -e 's/\\/\\\\/g' php_strings   	# \ -> \\
-perl -pi -e 's/\x27/\\\x27/g' php_strings	# ' -> \'
+#perl -pi -e 's/\\/\\\\/g' php_strings   	# \ -> \\
+#perl -pi -e 's/\x27/\\\x27/g' php_strings	# ' -> \'
 
 echo -n "Sorting and removing duplicated lines... "
 cat html_strings >> tmp_strings
@@ -53,10 +53,11 @@ rm strings.php 2> /dev/null
 echo -e "<?php\n" >> strings.php
 cat ../doc/COPYRIGHTS >> strings.php
 echo "" >> strings.php
-while read LINE
-do
-    echo -E "\$_LANG['$LINE'] = '$LINE';" >> strings.php
-done < tmp_strings
+#while read LINE 
+#do
+#    echo -E "\$_LANG['${LINE}'] = '${LINE}';" >> strings.php
+#done < tmp_strings
+perl -lne 'print "\$_LANG[\x27$_\x27] = \x27$_\x27;"' tmp_strings >> strings.php 
 echo -e "\n?>" >> strings.php
 rm tmp_strings
 echo "done."
@@ -94,3 +95,5 @@ case "$1" in
 	echo "done. Lines: $DIFFLINESNUM"
     ;;
 esac
+#!/bin/bash
+
