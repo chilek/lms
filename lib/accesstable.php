@@ -49,6 +49,9 @@ $access[table][5][allow_reg]	= "^user(add|edit|del)$";
 $access[table][6][name]		= "manipulacja danymi komputerów";
 $access[table][6][allow_reg]	= "^(node(add|scan|del|edit|set)|choose(mac|ip))$";
 
+$access[table][7][name]         = "dostêp do statystyk";
+$access[table][7][allow_reg]    = "^traffic$";
+
 $access[table][253][name]	= "brak dostêpu do modyfikacji i zak³adania nowych kont administratorów";
 $access[table][253][deny_reg]	= "^(admin(add|del|edit|passwd))$";
 
@@ -57,6 +60,9 @@ $access[table][255][deny_reg]	= "^.*$";
 
 /*
  * $Log$
+ * Revision 1.14  2003/09/11 17:29:30  lexx
+ * - taffic
+ *
  * Revision 1.13  2003/09/10 13:38:34  lexx
  * - faktury
  *
