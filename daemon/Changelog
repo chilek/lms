@@ -1,3 +1,6 @@
+* 18.11.2003
+  - dodany modu³ 'traffic' odpowiednik perlowego lms-traffic (alec)
+
 * 12.11.2003
   - du¿a liczba poprawek, g³ównie usuniêcie memory leaks (alec)
 
