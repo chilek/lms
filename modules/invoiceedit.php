@@ -88,8 +88,14 @@ switch($_GET['action'])
 				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($taxvalue / 100 + 1),2);
 			elseif($itemdata['valuebrutto'] != 0)
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue + 100) * 100, 2);
-			$itemdata['s_valuenetto'] = $itemdata['valuenetto'] * $itemdata['count'];
-			$itemdata['s_valuebrutto'] = $itemdata['valuebrutto'] * $itemdata['count'];
+			
+			// str_replace here is needed because of bug in some PHP versions (4.3.10)
+			$itemdata['s_valuenetto'] = str_replace(',','.',$itemdata['valuenetto'] * $itemdata['count']);
+			$itemdata['s_valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto'] * $itemdata['count']);
+			$itemdata['valuenetto'] = str_replace(',','.',$itemdata['valuenetto']);
+			$itemdata['valuebrutto'] = str_replace(',','.',$itemdata['valuebrutto']);
+			$itemdata['taxvalue'] = str_replace(',','.',$itemdata['taxvalue']);
+			$itemdata['count'] = str_replace(',','.',$itemdata['count']);
 			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
 		}
