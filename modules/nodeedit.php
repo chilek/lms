@@ -48,6 +48,7 @@ if(isset($nodeedit))
 {
 	$nodeedit[ipaddr] = $_POST[nodeeditipaddr];
 	$nodeedit[mac] = $_POST[nodeeditmac];
+	$nodedata[mac] = str_replace("-",":",$nodedata[mac]);
 
 	foreach($nodeedit as $key => $value)
 		$nodeedit[$key] = trim($value);
@@ -129,6 +130,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.26  2003/09/07 18:52:39  lukasz
+ * - add $nodedata[mac] = str_replace("-",":",$nodedata[mac]);
+ *
  * Revision 1.25  2003/08/27 20:18:42  lukasz
  * - changed nodes.access from ENUM to BOOL;
  *
