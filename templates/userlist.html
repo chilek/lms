@@ -34,9 +34,9 @@
 	<TR CLASS="DARK">
 		<TD CLASS="fall" colspan="6">
 			<P><FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
-				<B>{t}Filter:{/t}</B> {t}Customers:{/t}
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="userlist">
 				<INPUT TYPE="HIDDEN" NAME="page" VALUE="1">
+				<B>{t}Filter:{/t}</B> {t}Customers:{/t}
 				<SELECT SIZE="1" CLASS="bold" NAME="s" ONCHANGE="document.choosefilter.submit();">
 					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
 					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>{t}connected {/t}</OPTION>
