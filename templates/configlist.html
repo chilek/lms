@@ -1,0 +1,72 @@
+{include file="header.html"}
+{include file="adminheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><TABLE cellpadding="3" WIDTH="100%">
+	<TR bgcolor="#CEBD9B">
+		<TD width="1%" class="fleftu" NOWRAP>
+			<IMG src="img/settings.gif" alt="" align="absmiddle"><B> Opcja:</B><BR>
+			<IMG src="img/empty.gif" alt="" align="absmiddle" width="16" height="16"> Sekcja:
+		</TD>
+		<TD width="1%" class="fbt" align="center">
+			Warto¶æ:
+		</TD>
+		<TD width="97%" class="frightu" align="center">
+			Komentarz:
+		</TD>
+	</TR>
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="3" CLASS="FALL">
+			<B>Strona:
+				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$configlist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{section name=configlist loop=$configlist start=$start max=$pagelimit}
+	<TR {if $configlist[configlist].disabled}class="BLEND"{/if} bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD class="fleft" valign="top" NOWRAP OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
+			<IMG src="img/settings.gif" alt="" align="absmiddle"><B> {$configlist[configlist].var}</B><BR>
+			<IMG src="img/empty.gif" alt="" align="absmiddle" width="16" height="16"> [{$configlist[configlist].section}]
+		</TD>
+		<TD align="right" valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
+			{$configlist[configlist].value}
+		</TD>
+		<TD class="fright" valign="top" OnClick="return self.location.href='?m=configedit&id={$configlist[configlist].id}';">
+			{$configlist[configlist].description|truncate:400:"..."}
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="3" align="center" class="flr">
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><B>Nie znaleziono opcji konfiguracyjnych. Przeczytaj w dokumentacji jak je przenie¶æ z pliku lms.ini.</B></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="3" CLASS="FALL">
+			<B>Strona:
+				{if $page > 1}<A HREF="?m={$layout.module}&t={$listdata.type}&k={$listdata.kind}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$configlist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&t={$listdata.type}&k={$listdata.kind}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&t={$listdata.type}&k={$listdata.kind}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+		</TD>
+	</TR>
+	{/if}
+</TABLE></P>
+{include file="footer.html"}
