@@ -107,7 +107,7 @@
 		</TD>
 	</TR>
 	<TR class="DARK">
-		<TD class="fall" colspan="7" nowrap>
+		<TD class="fall" colspan="7">
 				<B>{t}Filter:{/t} </B> 
 				<INPUT name="search" value="{$listdata.search}" {tip text="Enter value of searching data and select category"}>&nbsp;
 				<SELECT size="1" name="cat">
@@ -120,6 +120,14 @@
 					<OPTION value="nip"{if $listdata.cat eq "nip"} SELECTED{/if}>{t}TEN{/t}</OPTION>
 					<OPTION value="address"{if $listdata.cat eq "address"} SELECTED{/if}>{t}address{/t}</OPTION>
 				</SELECT>&nbsp;
+				{t}Group:{/t}
+				<SELECT size="1" name="group">
+					<OPTION value="0"{if !$listdata.group} SELECTED{/if}>{t}- all groups -{/t}</OPTION>
+					{section name="grouplist" loop=$grouplist}
+					<OPTION value="{$grouplist[grouplist].id}"{if $listdata.group eq $grouplist[grouplist].id} SELECTED{/if}>{$grouplist[grouplist].name|truncate:40:"..."}</OPTION>
+					{/section}
+				</SELECT>
+				<INPUT type="checkbox" name="groupexclude" style="border-style: none; background-color: #CEBD9B;"{if $listdata.groupexclude} CHECKED{/if}> {t}exclude group{/t}
 				<A href="javascript: filter();">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>		
