@@ -3,7 +3,6 @@
 ----------------------------------------------------------------------
                     Krótki podrêcznik instalacji
 ----------------------------------------------------------------------
-
 Witaj.  Zanim  zaczniesz instalowaæ LMS w swojej sieci, po¶wiêæ proszê
 kilka  minut  na przeczytanie tego tekstu. Zminimalizuje to do minimum
 bóle  porodowe  jakie mo¿esz odczuwaæ podczas instalacji LMS. Tak wiêc
@@ -29,11 +28,12 @@ po  zrobieniu kilku ma³ych przeróbek LMS pracowa³by tak¿e z PHP-4.1.x,
 ale  wybaczcie,  ja  wystarczaj±co du¿o czasu po¶wiêci³em na to by LMS
 wogóle powsta³. Reszta nale¿y do was :)
 
-Po trzecie: serwer baz danych MySQL lub PostgreSQL 
+Po trzecie: serwer baz danych MySQL lub PostgreSQL
 
-Aua. Tutaj to ja ju¿ wogóle zielony jestem. Pisa³em ca³o¶æ korzystaj±c
-z MySQL 3.23.53 i nie mam pojêcia która wersja jest wymagana.
-Je¶li chodzi o PostgreSQL to nie polecam wersji wcze¶niejszych od 7.2.3.
+Ca³o¶æ  projektu  by³a  pisana  z  wykorzystaniem  MySQL od 3.23.53 do
+3.23.57,  ale na niedu¿o starszych wersjach nie powinno byæ problemów.
+Je¶li  chodzi  o  PostgreSQL  to nie polecamy wersji wcze¶niejszych od
+7.2.3.
 
 Po czwarte: perl i modu³y do niego.
 
@@ -46,12 +46,13 @@ Po czwarte: perl i modu³y do niego.
 
 I  tyle  by  by³o  na  temat  wymagañ  samego  LMS'a.  Na koniec co do
 dystrybucji - LMS zosta³ odpalony na:
+
 - PLD 1.0 Ra (od 2.2.20 do 2.2.25 i od 2.4.18 do 2.4.20-5), PHP/4.2.3,
-  MySQL od  3.23.53  do  3.23.56,  PostgresSQL  7.2.3 (LMS by³ g³ównie
-  rozwijany na tej dystrybucji przez co ca³y LMS mo¿e zawieraæ
+  MySQL  od  3.23.53  do  3.23.56,  PostgresSQL 7.2.3 (LMS by³ g³ównie
+  rozwijany  na  tej  dystrybucji  przez  co  ca³y  LMS  mo¿e zawieraæ
   zboczenia charakterystyczne dla PLD)
 - PLD 1.0 Ra + PostgreSQL
-- PLD 1.99 Ac (pre-ac od Averne) - kernel 2.4.20, PHP/4.3.1, MySQL
+- PLD  1.99  Ac  (pre-ac  od Averne) - kernel 2.4.20, PHP/4.3.1, MySQL
   4.0.12, perl-5.8.0-0.32
 - Debianie 3.0 Woody
 - Windowsie z najnowszym EasyPHP
@@ -117,16 +118,15 @@ apache).
 ****UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA*****
 
 PAMIÊTAJ  ¯E  JE¯ELI ZOSTAWISZ PODKATALOG BACKUPS W PODKATALOGU LMS'a,
-DO TWOICH BACKUPÓW BÊDZIE MO¯NA SIÊ DOBRAÆ BEZ ¯ADNEJ AUTORYZACJI!!!
-
+DO  TWOICH  BACKUPÓW BÊDZIE MO¯NA SIÊ DOBRAÆ BEZ ¯ADNEJ AUTORYZACJI!!!
 Najlepiej  ustawiæ katalog z backupami np. na /var/backup/lms lub co¶,
 gdzie serwer WWW nie ma dostêpu!!!
 
 ****UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA*****
 
-Voila. Nastêpnie przygotowujemy serwer baz danych. Szczegó³owe informacje 
-znajdziesz w plikach INSTALL.mysql i INSTALL.pgsql - wybierz w³a¶ciwy dla 
-siebie.
+Voila.   Nastêpnie   przygotowujemy  serwer  baz  danych.  Szczegó³owe
+informacje  znajdziesz  w  plikach  INSTALL.mysql  i  INSTALL.pgsql  -
+wybierz w³a¶ciwy dla siebie.
 
 3. Postinstalacja.
 
@@ -136,10 +136,10 @@ uruchomiony  interface,  wszystko  chodzi  i  wogóle  cacy,  ale teraz
 kwestia  jak  to zgraæ z serwerem. Oki. Niezbêdne skrypty perlowe s± w
 katalogu bin tarbala z LMS. Kolejno te skrypty to:
 
-lms-cutoff      - skrypcik, który zmienia status komputerów 
+lms-cutoff      - skrypcik, który zmienia status komputerów
 lms-payments    - skrypcik, który obci±¿a ka¿dego u¿ytkownika
                   okre¶lon± wed³ug taryfy sum± w okre¶lonym w bazie
-		  dniu.
+                  dniu.
 lms-mgc         - magiczny generator czegokolwiek - czyli co¶, co
                   potrafi nam skonfigurowaæ cokolwiek co chcemy.
 lms-notify      - skrypt wysy³aj±cy upomnienia do u¿yszkodników, ¿e
@@ -157,9 +157,10 @@ lms-payments do crona. Przyk³adowa linijka wygl±da tak:
 
 0 0 * * *       /usr/sbin/lms-payments
 
-Pierwszy zapis spowoduje ¿e codziennie o pó³nocy lms sprawdzi którzy
-u¿ytkownicy maj± danego dnia zap³aciæ i ich obci±¿y op³at± abonamentow± 
-w wysoko¶ci  przewidzianej przez taryfê w jakiej siê znajduje.
+Zapis  ten  spowoduje  ¿e  codziennie  o  pó³nocy  lms sprawdzi którzy
+u¿ytkownicy   maj±   danego   dnia   zap³aciæ  i  ich  obci±¿y  op³at±
+abonamentow±  w  wysoko¶ci  przewidzianej  przez  taryfê  w jakiej siê
+znajduje.
 
 Kolejny  etap  integracji  LMS'a  z  Dzia³em  Nêkania  U¿ytkowników to
 wysy³anie powiadomieñ, czyli lms-notify:
@@ -179,23 +180,15 @@ szablonów  maili,  tak  ¿e  pierwszy  to  'naliczono abonament', drugi
 'pro¶ba  o uregulowanie wp³aty'. N-ty to 'za 24h zostaniesz odciêty od
 sieci'. Np:
 
-0 0 10 * * /usr/sbin/lms-notify -D conf/tekst_1.txt 
-0 0 15 * * /usr/sbin/lms-notify -D conf/tekst_2.txt 
-0 0 20 * * /usr/sbin/lms-notify -D conf/tekst_3.txt 
+0 0 10 * * /usr/sbin/lms-notify -D conf/tekst_1.txt
+0 0 15 * * /usr/sbin/lms-notify -D conf/tekst_2.txt
+0 0 20 * * /usr/sbin/lms-notify -D conf/tekst_3.txt
 
 Trzeci i ostatni etap to odcinanie userów poni¿ej danego limitu:
 
 0 0 10 * *       /usr/sbin/lms-cutoff
 
 Limit ustawiamy w lms.ini jak zwykle.
-
-Zatrzymajmy  siê  tutaj  i  dodajmy  co¶  do  crona,  tak dla ¶wiêtego
-spokoju[tm](C):
-
-12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o --add-drop-table --add-locks lms > backups/lms-auto-"$(date +%s)".sql
-
-Spowoduje to wykonywanie 12 po 4 rano, ka¿dego 3, 10, 17, 21 i 28 dnia
-miesi±ca automagicznie zrzutu danych z mysqla.
 
 Okej.   Teraz  generowanie  configów.  Od  tego  s³u¿y  lms-mgc.  Jego
 konfiguracja  jest  zawi³a.  Tak wiêc wróæmy do podstawowego zadania -
@@ -233,13 +226,9 @@ nastêpnie wpisy w sekcji [phpui] lms.ini:
 reload_type             = exec
 reload_execcmd          = sudo /usr/sbin/lms-mgc
 
-Tak wiêc wszystko powinno dzia³aæ. Na dniach prawdopodobnie uka¿e siê
-plmsd - czyli demon perlowy pozwalaj±cy na normalniejsze (bez sudo)
-rekonfigurowanie systemu.
-
-We¼cie  tak¿e  na poprawkê, i¿ ca³y projekt mimo tylu miesiêcy pisania
-dopiero  od kilku tygodni nabiera normalnej formy, ale miejmy nadziejê
-i¿  szybko  stanie  siê  stabilnym rozwi±zenim dla sieci osiedlowych i
-ma³ych ISP.
+Tak  wiêc  wszystko powinno dzia³aæ. We¼cie tak¿e na poprawkê, i¿ ca³y
+projekt  mimo  tylu  miesiêcy pisania dopiero od kilku tygodni nabiera
+normalnej  formy,  ale  miejmy nadziejê i¿ szybko stanie siê stabilnym
+rozwi±zenim dla sieci osiedlowych i ma³ych ISP.
 
 $Id$

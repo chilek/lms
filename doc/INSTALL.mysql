@@ -12,9 +12,9 @@ Spis tre¶ci:
     
 1. Wstêp
 
-Ta bardzo popularna baza jest dostêpna z wiêkszo¶ci± dystrybucji Linuksa.
-Je¿eli jednak bêdziesz musia³ j± zainstalowaæ samodzielnie, zacznij od 
-¶ci±gniêcia ¼róde³ z www.mysql.org.
+Ta  bardzo  popularna  baza  jest  dostêpna  z wiêkszo¶ci± dystrybucji
+Linuksa.  Je¿eli  jednak bêdziesz musia³ j± zainstalowaæ samodzielnie,
+zacznij od ¶ci±gniêcia ¼róde³ z www.mysql.org.
 
 2. Instalacja serwera MySQL
 
@@ -31,10 +31,10 @@ polecenia:
     
 3. Utworzenie bazy danych 
 
-Konieczne to jest je¿eli uruchamiamy LMS po raz PIERWSZY. 
-Je¿eli uaktualniamy LMS, odpowiednie adnotacje co nale¿y zrobiæ z baz± 
-danych s± w pliku ChangeLog. Tak wiêc, wejd¼ do katalogu w którym masz 
-LMS'a i uruchom shell mysql'a:
+Konieczne  to  jest  je¿eli  uruchamiamy  LMS  po raz PIERWSZY. Je¿eli
+uaktualniamy LMS, odpowiednie adnotacje co nale¿y zrobiæ z baz± danych
+s±  w pliku ChangeLog. Tak wiêc, wejd¼ do katalogu w którym masz LMS'a
+i uruchom shell mysql'a:
 
 mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
 Enter password:[podaj has³o]
@@ -48,18 +48,27 @@ mysql> source doc/lms.mysql;
 
 4. Konfiguracja LMS (lms.ini)
 
-Poniewa¿ MySQL jest domy¶ln± baz± dla LMS'u, konfiguracja ogranicza siê
-do podania w sekcji [database] pliku /etc/lms/lms.ini has³a i u¿ytkownika:
-    
+Poniewa¿  MySQL  jest  domy¶ln± baz± dla LMS'u, konfiguracja ogranicza
+siê  do  podania  w  sekcji  [database] pliku /etc/lms/lms.ini has³a i
+u¿ytkownika:
+   
     user	= lms
     password	= has³o_z_pkt.3
 
-Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy danych,
-mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
-nie ma ¿adnego konta administratora, jedyn± rzecz± jak± bêdziemy widzieæ
-bêdzie formularz dodania administratora. Je¿eli podamy prawid³owe dane
-administratora, LMS przeniesie nas na stronê logowania gdzie odrazu bêdziemy
-mogli u¿yæ nowo utworzonego konta.
+Po  takim  zabiegu,  o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
+danych,  mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
+bazie  danych  nie ma ¿adnego konta administratora, jedyn± rzecz± jak±
+bêdziemy  widzieæ  bêdzie  formularz  dodania  administratora.  Je¿eli
+podamy  prawid³owe  dane  administratora, LMS przeniesie nas na stronê
+logowania gdzie odrazu bêdziemy mogli u¿yæ nowo utworzonego konta.
+
+Zatrzymajmy  siê  tutaj  i  dodajmy  co¶  do  crona,  tak dla ¶wiêtego
+spokoju[tm](C):
+
+12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o --add-drop-table --add-locks lms > backups/lms-auto-"$(date +%s)".sql
+
+Spowoduje to wykonywanie 12 po 4 rano, ka¿dego 3, 10, 17, 21 i 28 dnia
+miesi±ca automagicznie zrzutu danych z mysqla.
 
 ------------------------------------------------------------------------
 $Id$
