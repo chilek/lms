@@ -71,8 +71,9 @@
 		<title>Struktura bazy danych</title>
 		<para>Poni¿ej przedstawiono ogóln± strukturê bazy danych LMS. Bardziej szczegó³owe
 		informacje o typach danych, ograniczeniach nak³adanych na pola oraz warto¶ci domy¶lne
-		zawarte s± w plikach <ulink url="../lms.mysql"><filename>lms.mysql</filename></ulink>
-		oraz <ulink url="../lms.pgsql"><filename>lms.pgsql</filename></ulink> w katalogu
+		zawarte s± w plikach <ulink url="../lms.mysql"><filename>lms.mysql</filename></ulink>,
+		<ulink url="../lms.pgsql"><filename>lms.pgsql</filename></ulink> i 
+		<ulink url="../lms.sqlite"><filename>lms.sqlite</filename></ulink> w katalogu
 		<filename>/doc</filename>.</para>
 		<sect2 id="admins">
 			<title>Administratorzy ('admins')</title>
@@ -112,6 +113,22 @@
 				<member>creatorid - identyfikator administratora tworz±cego wpis</member>
 				<member>modid - identyfikator administratora dokonuj±cego zmian danych</member>
 				<member>deleted - usuniêty z bazy (0/1)</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="usergroups">
+			<title>Grupy u¿ytkowników ('usergroups')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>name - nazwa</member>
+				<member>description - opis</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="userassignments">
+			<title>Grupy u¿ytkowników - c.d. ('userassignments')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>usergroupid - identyfikator grupy</member>
+				<member>userid - identyfikator u¿ytkownika</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="networks">
@@ -369,7 +386,7 @@ key = "A.L.E.C's LMS Daemon is the best"
 			posiadaj±c oko³o 5000 u¿ytkowników.</para>
 		</sect2>
 		<sect2 id="devel-limits-db">
-			<title>Wynikaj±ce z u¿ywanego DMBS</title>
+			<title>Wynikaj±ce z u¿ywanego DBMS</title>
 			<itemizedlist>
 			<listitem>
 			<para>MySQL</para>
@@ -416,7 +433,24 @@ mysql&gt; show table status;
 			</listitem>
 			</itemizedlist>
 			</listitem>
+			<listitem>
+			<para>SQLite</para>
+			<itemizedlist>
+			<listitem>
+			<para>Rozmiar bazy danych:</para>
+			<para>Od wersji 2.7.4 SQLite mo¿e obs³ugiwaæ bazy o rozmiarze do 2 terabajtów. 
+			Dodatkowym ograniczeniem jest objêto¶æ danych zapisanych w jednym rekordzie.
+			Wielko¶æ ta, ograniczona do 1 MB mo¿e zostaæ zwiêkszona do 16 MB podczas 
+			kompilacji.</para>
+			</listitem>
+			<listitem>
+			<para>Ilo¶æ rekordów:</para>
+			<para>Maksymalna ilo¶æ rekordów dla tej bazy to 2^32, ale nikt nie testowa³ nigdy takiej 
+			ilo¶ci.</para>
+			</listitem>
 			</itemizedlist>
-			</sect2>
+			</listitem>
+			</itemizedlist>
+		</sect2>
 	</sect1>
 </chapter>
