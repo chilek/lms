@@ -42,7 +42,25 @@
 			<NOBR><A href="?m=userdel&id={$userlist.id[userlist]}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.lastname[userlist]|upper} {$userlist.name[userlist]|capitalize} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A> <A href="?m=useredit&id={$userlist.id[userlist]}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=userinfo&id={$userlist.id[userlist]}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A></NOBR>
 		</TD>
 	</TR>{/section}
-	<tr>
-		<TD class="fbottomu" colspan="5"></TD>
-	</tr>
+	<TR bgcolor="#CEBD9B">
+		<TD width="95%" class="fleftu">
+			<B>
+			<img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$userlist.state}&o=username{if $userlist.direction eq 4 && $userlist.order eq "username"},desc{/if}">Nazwisko i imiê:</A></B> {if $userlist.order eq "username"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/phone.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$userlist.state}&o=phone{if $userlist.direction eq 4 && $userlist.order eq "phone"},desc{/if}">Telefon:</A></B> {if $userlist.order eq "phone"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+		</TD>
+		<TD align="right" width="1%" class="fbt">
+			<a href="?m=userlist&s={$userlist.state}&o=id{if $userlist.direction eq 4 && $userlist.order eq "id"},desc{/if}">ID:</A></B> {if $userlist.order eq "id"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			&nbsp;
+		</TD>
+		<TD width="1%" class="fbt">
+			<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$userlist.state}&o=address{if $userlist.direction eq 4 && $userlist.order eq "address"},desc{/if}">Adres:</A> {if $userlist.order eq "address"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<br>
+			<img src="img/mail.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$userlist.state}&o=email{if $userlist.direction eq 4 && $userlist.order eq "email"},desc{/if}">E-mail:</A> {if $userlist.order eq "email"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+		</TD>
+		<TD width="1%" class="fbt">
+			<img src="img/money.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$userlist.state}&o=balance{if $userlist.direction eq 4 && $userlist.order eq "balance"},desc{/if}">Saldo:</A>&nbsp;{if $userlist.order eq "balance"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+		</TD>
+		<TD width="1%" class="frightu">
+			&nbsp;
+		</TD>
+	</TR>
 </TABLE>

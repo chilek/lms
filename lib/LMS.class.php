@@ -82,6 +82,7 @@ class LMS {
 		`tariff` = '".$userdata[tariff]."',
 		`info` = '".trim($userdata[uwagi])."',
 		`modid` = '".$session->id."',
+		`status` = '".$userdata[status]."',
 		`moddate` = '".time()."'
 		WHERE `id` = '".$userdata[id]."' LIMIT 1");
 		return $result;
@@ -94,7 +95,7 @@ class LMS {
 		$db->FetchRow();
 		list($return[id],$return[username],$return[status],$return[email],$return[phone1],$return[phone2],$return[phone3],$return[address],$return[tariff],$return[info],$return[creationdate],$return[moddate],$return[creatorid],$return[modid])=$db->row;
 		$username = explode(" ",$return[username]);
-		$rusername = $username[0];
+		$rusername = strtoupper($username[0]);
 		for($i=1;$i<sizeof($username);$i++)
 			$rusername .= " " . $username[$i];
 		$return[username] = $rusername;
@@ -116,6 +117,7 @@ class LMS {
 		$sql="SELECT id, username, status, email, phone1, address, info FROM users ";
 
 		if(!isset($state)) $state="3";
+		if(!isset($order)) $order="username,asc";
 		
 		switch ($state){
 			case "3":
@@ -143,9 +145,14 @@ class LMS {
 				$userlist[info][]
 			) = $db->row;
 
-		for($i=0;$i<sizeof($userlist[id]);$i++)
+		for($i=0;$i<sizeof($userlist[id]);$i++){
 
+			$ruserlist = explode(" ",$userlist[username][$i]);
+			$userlist[username][$i] = strtoupper($ruserlist[0]);
+			for ($j=1;$j<sizeof($ruserlist);$j++)
+				$userlist[username][$i] .= " ".$ruserlist[$j];
 			$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
+		}
 		
 		list($order,$direction)=explode(",",$order);
 		
