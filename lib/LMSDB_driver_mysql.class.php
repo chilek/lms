@@ -49,6 +49,11 @@ class LMSDB_driver_mysql extends LMSDB_common
 		}
 		return $this->_dblink;
 	}
+
+	function _driver_disconnect()
+	{
+		return mysql_close($this->_dblink);
+	}
 	
 	function _driver_selectdb($dbname)
 	{
@@ -116,11 +121,14 @@ class LMSDB_driver_mysql extends LMSDB_common
 	function _driver_committrans()
 	{
 		return TRUE;
-	}		
+	}
 }
 
 /* 
  * $Log$
+ * Revision 1.15  2003/09/10 00:16:19  lukasz
+ * - LMSDB::Destroy();
+ *
  * Revision 1.14  2003/08/31 03:34:20  lukasz
  * - ma³a literówka powoduj±ca to i¿ driver od MySQL'a nie dostawa³ informacji
  *   o ho¶cie z lms.ini, a co za tym idzie zawsze ³±czy³ siê z localhostem.
