@@ -120,7 +120,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	{
 		print "User ID: $row->{'id'}\tValue: $row->{'value'}\n";
 	}
-	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'id'}', 'Op³ata za ".strftime("%Y/%m",gmtime)."')");
+	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'id'}', 'Op³ata za ".strftime("%Y/%m",localtime())."')");
 	$sdbq->execute();
 }
 $dbq = $dbase->prepare("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");

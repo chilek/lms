@@ -261,10 +261,10 @@ sub instance($)
 		}
 	}
 
-	my $time = strftime("%H%M",gmtime);
-	my $times = strftime("%H%M%S",gmtime);
+	my $time = strftime("%H%M",localtime());
+	my $times = strftime("%H%M%S",localtime());
 	my $utime = time();
-	my $date = strftime("%Y%m%d",gmtime);
+	my $date = strftime("%Y%m%d",localtime());
 		
 	if($header)
 	{
