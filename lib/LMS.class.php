@@ -813,11 +813,11 @@ class LMS
 			break;
 			
 			case "address":
-				$sqlord = "ORDER BY address, lastname, name, id";
+				$sqlord = "ORDER BY address";
 			break;
 			
 			case "email":
-				$sqlord = "ORDER BY email, lastname, name, id";
+				$sqlord = "ORDER BY email";
 			break;
 			
 			case "balance":
@@ -825,15 +825,15 @@ class LMS
 			break;
 
 			case "gg":
-			$sqlord = "ORDER BY gguin, lastname, name, id";
+			$sqlord = "ORDER BY gguin";
 			break;
 
 			case "nip":
-			$sqlord = "ORDER BY nip, lastname, name, id";
+			$sqlord = "ORDER BY nip";
 			break;
 			
 			default:
-				$sqlord = "ORDER BY lastname, name, id";
+				$sqlord = "ORDER BY ".$this->ADB->Concat("UPPER(lastname)","' '","name");
 			break;
 		}
 		
