@@ -32,7 +32,7 @@
 						{if $layout.dbtype == "mysql"}
 						<A HREF="http://www.mysql.com" target="_BLANK">{t}MySQL version:{/t}</A>
 						{elseif $layout.dbtype == "postgres"}
-						<A HREF="http://www.postgresql.org" target="_BLANK">{t}PostgreSQL: version{/t}</A>
+						<A HREF="http://www.postgresql.org" target="_BLANK">{t}PostgreSQL version{/t}</A>
 						{elseif $layout.dbtype == "sqlite"}
 						<A HREF="http://www.sqlite.org" target="_BLANK">{t}SQLite version:{/t}</A>
 						{elseif $layout.dbtype == "mssql"}
@@ -130,7 +130,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=2">{t}Awaiting for connection:{/t}</A></B>
+						<B><A HREF="?m=userlist&s=2">{t}Waiting:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$userstats.awaiting}
@@ -138,7 +138,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=1">{t}Intrested in connection:{/t}</A></B>
+						<B><A HREF="?m=userlist&s=1">{t}Intrested:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$userstats.interested}
@@ -147,11 +147,11 @@
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
 						<B><A HREF="?m=userlist&s=0">{t}Total:{/t}</A><BR>
-						<A HREF="?m=userlist&s=6">{t}In debt:{/t}</A></B>
+						<A HREF="?m=userlist&s=6">{t}Total Dues:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$userstats.total}<BR>
-						{$userstats.debt} (na kwotê {$userstats.debtvalue|string_format:"%01.2f"} z³)
+						{$userstats.debt} ({t}amount{/t} {$userstats.debtvalue|string_format:"%01.2f"})
 					</TD>
 				</TR>
 			</TABLE>
