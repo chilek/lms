@@ -1,0 +1,1062 @@
+<!-- $Id$ -->
+<chapter id="daemon">
+     <title>A.L.E.C's LMS Daemon</title>
+     <sect1 id="daemon-intro">
+     <title>Basics</title>
+     <para>Written in C program facilitate management of services. Daemon is
+         responsible for starting of appropriate modules on user demand only. Modules
+         are making configuration files based on data from LMS's database and
+         restarting selected services on a server.
+         </para>
+     <para>Why such name? The better part of daemon code was written by one of developers - Aleksander 
+     'A.L.E.C' Machniak, nevertheless must underline a contribution of Marcina 'Lexx' Krol. Program
+     include fragments of code of Mateusza 'mteg' Golicz's old daemon and use Nicolas Devillard's iniparser
+     library.
+     </para>
+          <sect2 id="daemon-requirements">
+          <title>Requirements</title>
+               <para><emphasis>A.L.E.C's LMS Daemon</emphasis> require:
+                     <itemizedlist>
+               <listitem>
+                    <para>LMS user interface installation</para>
+               </listitem>
+               <listitem>
+                    <para><filename>libmysqlclient</filename> (full MySQL installation or respective packet) 
+                    or <filename>libpq</filename> in case of PostgreSQL database or <filename>sqlite</filename></para>
+                     </listitem>
+               <listitem>
+                    <para><filename>libdl</filename> (that is in every present-day distribution)</para>
+               </listitem>
+               <listitem>
+                    <para>C compiler</para>
+               </listitem>
+               </itemizedlist>
+                     </para>
+          </sect2>
+          <sect2 id="daemon-install">
+          <title>Installation</title>
+               <para>Prior to compilation you must set options described on following listing
+               with help of <filename>./configure</filename> script (in brackets are shown
+               default values):
+<screen>
+  --help                help
+  --enable-debug0       SQL queries logging (disabled)
+  --enable-debug1       events logging (disabled)
+  --with-pgsql          enables using of PostgreSQL database (disabled)
+  --with-mysql          enables using of MySQL database (enabled)
+  --with-sqlite         enables using of SQLite database (disabled)
+  --prefix=DIR          program install directory (/usr/local/bin)
+  --libdir=DIR          location of database libraries (/usr/lib)
+  --incdir=DIR          location of database header files (/usr/include)
+</screen>
+               Then, required is to set database which you will use (--with-mysql 
+               or --with-pgsql) and location of libraries supplied with database (--incdir, --libdir).
+               You can use only one database. If you will change database, you must to recompile daemon.
+<screen>
+# ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include
+</screen>
+               After that you can compile and install (put daemon in directory
+               given with --prefix option):
+<screen>
+# make && make install
+</screen>
+               Finally, compiled modules (files with <filename>.so</filename> extension),
+               found in directory <filename>modules/module_name</filename> move to any 
+               directory. Their location you will set in configuration file.
+               </para>
+          </sect2>
+          <sect2 id="daemon-config">
+          <title>Configuration</title>
+               <para>Example daemon configuration you can find in file <filename>lms.ini.sample</filename>.
+               Following listing describe basic options for daemon (modules configuration is described 
+               in separate chapters concerning modules):
+<screen>
+[database]
+host            = localhost     # host name or IP, default: localhost
+user            = lms           # user name, default: lms
+password        = mypasswd      # database password, default: empty
+database        = lms           # database name, default: lms
+port            = 0             # port number, default: 0
+
+[lmsd]
+sleeptime       = 30            # time interval (in seconds) how often to
+                                # check for reload order, default: 30
+instances       = hosts oident firewall       # module instances list
+command         = 'echo Connecting...'        # shell command to run before every database connection 
+</screen>
+               <note><para>List of instances contains instances names detached with 
+               spaces. Instance is a name of section in configuration file.</para></note>
+               </para>
+               <para>In instance section, beside config modules params, you must specify
+               primary options, as on following listing:
+<screen>
+[instance_name]
+module = /path/to/module.so
+info = "Additional description of module"
+</screen>          
+               </para>
+               <para>Change of 'instances' and any option i instances sections do not
+               require daemon restart. For other global options restart is required.</para>>
+          </sect2>
+          <sect2 id="daemon-run">
+          <title>Starting</title>
+               <para>You can run program as a daemon working in background (option '-b'). Then
+               configuration and services reload is done on demand with use of 
+               'Reload' menu in <emphasis>LMS-UI</emphasis>. Option 'sleeptime' (-s) specify interval
+               between database reads. When daemon detects reload order, he runs
+               modules defined by 'instances' option in <filename>lms.ini</filename>.
+               For example:
+<screen>
+# almsd -b
+</screen>               
+               </para>
+               <para>Other way to run is disposable reload with usage of cron. 
+               You must to use this manner of reload for runing modules like 'payments'
+               'notify' or 'traffic'. In that case you can specify instances to reload
+               with use of option '-i'. Example crontab's entry:
+<screen>
+  1 0 * * *    /usr/local/bin/almsd -qi "payments notify"
+</screen>
+               </para>
+               <para>Following listing describe program command line options:
+<screen>
+  -c     path to config (default: /etc/lms/lms.ini)
+  -i     list of instances (separated by space) to reload
+  -b     run in background (daemon mode)
+  -s     'reload' table reading interval in sec. (default: 30)
+  -q      reload and quit
+  -h      prints command line options
+</screen>
+               </para>
+          </sect2>
+     </sect1>
+     <sect1 id="daemon-modules">
+     <title>Modules</title>
+     <para>Daemon can only run modules and they are doing all job. 
+     Most of modules are designed to specific application, only 'hostfile' 
+     can be used to many different configs (services), i.e. various firewall types. 
+     Daemon and modules configuration examples contains file <filename>daemon/lms.ini.sample</filename>.
+     Modules configuration parameters must be placed in appropriate instances sections.</para>
+          <sect2 id="daemon-moduleslist">
+          <title>Modules list</title>
+               <table>
+               <title>List of almsd daemon modules</title>
+               <tgroup cols="2">
+               <colspec ALIGN="center" COLWIDTH="200">
+               <colspec ALIGN="center" COLWIDTH="300">
+                    <thead>
+                    <row>
+                    <entry>Name</entry>
+                    <entry>Description</entry>
+                    </row>
+                    </thead>
+                    <tbody>
+                    <row>
+                    <entry><xref linkend="daemon-system"></entry>
+                    <entry>Shell commands execution</entry>
+                    </row>
+                    <row>
+                    <entry><xref linkend="daemon-dhcp"></entry>
+                    <entry>Configuration of DHCP server</entry>
+                    </row>
+                    <row>
+                    <entry><xref linkend="daemon-cutoff"></entry>
+                    <entry>Disconnection of indebted users</entry>
+                    </row>
+                    <row>
+                    <entry><xref linkend="daemon-dns"></entry>
+                    <entry>Configuration of DNS server</entry>
+                    </row>
+                    <row>
+                    <entry><xref linkend="daemon-ethers"></entry>
+                    <entry>Making of /etc/ethers file</entry>
+                    </row>
+                    <row>
+                    <entry><xref linkend="daemon-hostfile"></entry>
+                    <entry>Universal module (i.e. making iptables rules)</entry>
+                    </row>
+                    <row>
+                    <entry><xref linkend="daemon-notify"></entry>
+                    <entry>E-mail notifying users about payments</entry>
+                    </row>
+                    <row>
+                    <entry><xref linkend="daemon-ggnotify"></entry>
+                    <entry>Gadu-Gadu (polish internet messenger) notifying users about payments</entry>
+                    </row>
+                    <row>
+                    <entry><xref linkend="daemon-payments"></entry>
+                    <entry>Payments accounting</entry>
+                    </row>
+                    <row>
+                    <entry><xref linkend="daemon-oident"></entry>
+                    <entry>Configuration of oident daemon</entry>
+                    </row>
+                    <row>
+                    <entry><xref linkend="daemon-tc"></entry>
+                    <entry>Making HTB rules</entry>
+                    </row>
+                    <row>
+                    <entry><xref linkend="daemon-traffic"></entry>
+                    <entry>Internet link usage statistics</entry>
+                    </row>
+                    <row>
+                    <entry><xref linkend="daemon-pinger"></entry>
+                    <entry>Users activity scanning</entry>
+                    </row>
+                    </tbody>
+               </tgroup>
+               </table>
+          </sect2>
+          <sect2 id="daemon-system" xreflabel="system">
+          <title>System</title>
+              <sect3 id="system-desc">
+              <title>Opis</title>
+              <para>Jedyne co robi ten modu³ to wykonanie zadanego polecenia (listy poleceñ)
+              pow³oki. Mo¿e siê przydaæ gdy chcesz podczas prze³adowania konfiguracji 
+              wykonaæ jak±¶ komendê lub uruchomiæ zewnêtrzny skrypt, na przyk³ad jeden 
+              z tych, które mo¿esz znale¼æ w katalogu <filename>/bin</filename>.</para>
+              </sect3>
+              <sect3 id="system-config">
+              <title>Konfiguracja</title>
+              <para>W zwi±zku z powy¿szym mo¿esz zdefiniowaæ jedynie tre¶æ polecenia.
+              Pow³oka powinna sobie tak¿e poradziæ z list± poleceñ oddzielonych ¶rednikami:</para>
+              <itemizedlist>
+               <listitem>
+                   <para>command</para>
+                   <para>Polecenie pow³oki. Domy¶lnie: puste.</para>
+                   <para>Przyk³ad: <prompt>command = 'echo "tu modu³ system"'</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>
+          <sect2 id="daemon-payments" xreflabel="payments">
+          <title>Payments</title>
+              <sect3 id="payments-desc">
+              <title>Opis</title>
+              <para>Modu³ nalicza op³aty abonamentowe u¿ytkowników oraz op³aty sta³e. Nale¿y go uruchamiaæ 
+              codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
+              taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn± 'comment'.
+              Po naliczeniu op³at tworzone s± faktury. Komentarz do op³aty sta³ej to zlepek
+              sk³adaj±cy siê z jej nazwy oraz wierzyciela. Na koñcu usuwane s± z bazy nieaktualne
+              obci±¿enia u¿ytkowników.</para>
+              </sect3>
+              <sect3 id="payments-config">
+              <title>Konfiguracja</title>
+              <para>Dla tego modu³u s± dostêpne nastêpuj±ce zmienne kofiguracyjne:</para>
+              <itemizedlist>
+               <listitem>
+                   <para>comment</para>
+                   <para>Komentarz do operacji. '%period' zostanie zamienione na daty od-do 
+                   nale¿nego abonamentu, np. '10.10.2003 - 09.11.2003', a '%tariff' na nazwê
+                   odpowiedniej taryfy. Domy¶lnie: 'Abonament wg taryfy: '%tariff' za okres: %period'.</para>
+                   <para>Przyk³ad: <prompt>comment = 'Abonament miesiêczny za okres %period' </prompt></para>
+               </listitem>
+               <listitem>
+                   <para>up_payments</para>
+                   <para>"Naliczanie z góry", czyli czy okres w komentarzu ma byæ liczony do 
+                   przodu, czy do ty³u w stosunku do daty naliczenia op³aty. Domy¶lnie: yes.</para>
+                   <para>Przyk³ad: <prompt>up_payments = no</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>expiry_days</para>
+                   <para>Okre¶la liczbê dni od daty wyga¶niêcia przypisanych u¿ytkownikowi zobowi±zañ, 
+                   po której dane tego zobowi±zania zostan± usuniête z bazy. Przy ustawieniu na '0' dane
+                   zostan± usuniête natychmiast po dacie, do której obowi±zywa³o zobowi±zanie. Domy¶lnie: 30.</para>
+                   <para>Przyk³ad: <prompt>expiry_days = 365</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>deadline</para>
+                   <para>Termin p³atno¶ci podany w dniach. Domy¶lnie: 14.</para>
+                   <para>Przyk³ad: <prompt>deadline = 21</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>paytype</para>
+                   <para>Rozdzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'.</para>
+                   <para>Przyk³ad: <prompt>paytype = 'GOTÓWKA'</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>
+          <sect2 id="daemon-notify" xreflabel="notify">
+          <title>Notify</title>
+              <sect3 id="notify-desc">
+              <title>Opis</title>
+              <para>Modu³ 'notify' s³u¿y do informowania u¿ytkowników o zaleg³o¶ciach
+              w op³atach za pomoc± poczty elektronicznej. Aktualne saldo u¿ytkownika
+              porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze - wiadomo¶æ
+              zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego szablonu, 
+              w którym mo¿na stosowaæ nastêpuj±ce zmienne:
+              <itemizedlist>
+               <listitem>
+                   <para>%saldo - aktualne saldo u¿ytkownika</para>
+               </listitem>
+               <listitem>
+                   <para>%name - imiê u¿ytkownika</para>
+               </listitem>
+               <listitem>
+                   <para>%lastname - nazwisko/nazwa u¿ytkownika</para>
+               </listitem>
+               <listitem>
+                   <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji na kocie u¿ytkownika</para>
+               </listitem>
+              </itemizedlist></para>
+              </sect3>
+              <sect3 id="notify-config">
+              <title>Konfiguracja</title>
+              <para>Poni¿ej przedstawiono dostêpne opcje konfiguracyjne modu³u 'notify':</para>
+              <itemizedlist>
+               <listitem>
+                   <para>template</para>
+                   <para>Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty</para>
+                   <para>Przyk³ad: <prompt>template = modules/notify/sample/mailtemplate</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>file</para>
+                   <para>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/mail</para>
+                   <para>Przyk³ad: <prompt>file = /tmp/mail.txt</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>command</para>
+                   <para>Polecenie pow³oki wysy³aj±ce e-maila. '%address' zostanie zast±pione
+                   adresem e-mail u¿ytkownika. Domy¶lnie: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</para>
+                   <para>Przyk³ad: <prompt>command = 'mail %address -s "musisz zap³aciæ, bo jak nie..." &lt; /tmp/mail.txt'</prompt></para>
+               </listitem>          
+               <listitem>
+                   <para>limit</para>
+                   <para>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
+                   spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</para>
+                   <para>Przyk³ad: <prompt>limit = -20</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>debug_mail</para>
+                   <para>Okre¶la adres na który zostan± wys³ane wszystkie wiadomo¶ci, przydatne
+                   podczas testów. Domy¶lnie: puste.</para>
+                   <para>Przyk³ad: <prompt>debug_mail = localhost@moja.net</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>
+          <sect2 id="daemon-ggnotify" xreflabel="ggnotify">
+          <title>Ggnotify</title>
+              <sect3 id="ggnotify-desc">
+              <title>Opis</title>
+              <para>Odpowiednik modu³u 'notify' s³u¿±cy do wysy³ania wiadomo¶ci gadu-gadu.
+              Aktualne saldo u¿ytkownika porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze 
+              - wiadomo¶æ zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego szablonu, 
+              w którym mo¿na stosowaæ zmienne takie jak dla modu³u 'notify' (mo¿e to byæ te¿ ten sam 
+              szablon).</para>
+              <para>Modu³ wymaga zainstalowanej biblioteki <filename>libgadu</filename> oraz ¼róde³
+              programu <filename>ekg</filename>. Odpowiednie ¶cie¿ki do nich nale¿y ustawiæ
+              w <filename>modules/ggnotify/Makefile</filename> przed kompilacj± modu³u.</para>
+              </sect3>
+              <sect3 id="ggnotify-config">
+              <title>Konfiguracja</title>
+              <para>Podobnie jak w 'notify' masz do dyspozycji nastêpuj±ce zmienne:</para>
+              <itemizedlist>
+               <listitem>
+                   <para>template</para>
+                   <para>Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty.</para>
+                   <para>Przyk³ad: <prompt>template = modules/ggnotify/sample/mailtemplate</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>uin</para>
+                   <para>Identyfikator gadu-gadu u¿ytkownika wysy³aj±cego wiadomo¶ci. 
+                   Domy¶lnie: pusty.</para>
+                   <para>Przyk³ad: <prompt>uin = 1234567</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>password</para>
+                   <para>Has³o dla konta okre¶lonego zmienn± 'uin'. Domy¶lnie: puste.</para>
+                   <para>Przyk³ad: <prompt>password = "moje_trudne__has³o"</prompt></para>
+               </listitem>          
+               <listitem>
+                   <para>limit</para>
+                   <para>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
+                   spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</para>
+                   <para>Przyk³ad: <prompt>limit = -20</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>debug_uin</para>
+                   <para>Je¶li ustawione, na to konto zostan± wys³ane wszystkie wiadomo¶ci.
+                   Domy¶lnie: puste.</para>
+                   <para>Przyk³ad: <prompt>debug_uin = 7654321</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>
+          <sect2 id="daemon-cutoff" xreflabel="cutoff">
+          <title>Cutoff</title>
+              <sect3 id="cutoff-desc">
+              <title>Opis</title>
+              <para>Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza ostrze¿enia
+              u¿ytkownikom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ 
+              nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</para>
+              </sect3>
+              <sect3 id="cutoff-config">
+              <title>Konfiguracja</title>
+              <para>Dla modu³u 'cutoff' mamy nastêpuj±ce opcje:</para>
+              <itemizedlist>
+               <listitem>
+                   <para>limit</para>
+                   <para>Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej
+                   kwoty okre¶lonej t± zmienn±. Domy¶lnie: 0.</para>
+                   <para>Przyk³ad: <prompt>limit = -20</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>command</para>
+                   <para>Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co najmniej
+                   jeden u¿ytkownik zostanie od³±czony lub zostanie w³±czone ostrze¿enie. 
+                   Domy¶lnie: nieustawiona.</para>
+                   <para>Przyk³ad: <prompt>command = 'almsd -qi firewall'</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>warning</para>
+                   <para>W³±cza ostrze¿enie dla od³±czanego u¿ytkowanika i przypisuje mu 
+                   okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
+                   Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
+                   Domy¶lnie: 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty (dd.mm.yyyy)".</para>
+                   <para>Przyk³ad: <prompt>warning = ""</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>warnings_only</para>
+                   <para>Ta opcja pozwala zdecydowaæ, czy chcemy u¿yæ naszego 
+                   modu³u wy³±cznie do w³±czania ostrze¿eñ. Domy¶lnie: wy³±czona.</para>
+                   <para>Przyk³ad: <prompt>warnings_only = true</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>
+          <sect2 id="daemon-dhcp" xreflabel="dhcp">
+          <title>Dhcp</title>
+              <sect3 id="dhcp-desc">
+              <title>Opis</title>
+              <para>Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
+              restartuje us³ugê. Zmienna 'command' umo¿liwia równie¿ wykonywanie innych 
+              czynno¶ci (programów).</para>
+              </sect3>
+              <sect3 id="dhcp-config">
+              <title>Konfiguracja</title>
+              <para>Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom 
+              pliku konfiguracyjnego dhcpd, które w typowych zastosowaniach
+              nie wymagaj± zmiany:</para>
+              <itemizedlist>
+               <listitem>
+                   <para>file</para>
+                   <para>Okre¶la lokalizacjê pliku konfiguracyjnego serwera dhcp. 
+                   Domy¶lnie: /tmp/dhcpd.conf.</para>
+                   <para>Przyk³ad: <prompt>file = /etc/dhcpd.conf</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>command</para>
+                   <para>Polecenie wykonywane po utworzeniu pliku konfiguracyjnego. 
+                   Domy¶lnie: pusta.</para>
+                   <para>Przyk³ad: <prompt>command = 'killall -HUP dhcpd'</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>begin</para>
+                   <para>Nag³ówek pliku. Domy¶lnie: "shared-network LMS {".</para>
+                   <para>Przyk³ad: <prompt>begin = "shared-network LMS {"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>end</para>
+                   <para>Stopka pliku. Domy¶lnie: "}".</para>
+                   <para>Przyk³ad: <prompt>end = "\n}"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>subnet_start</para>
+                   <para>Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Domy¶lnie: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</para>
+                   <para>Przyk³ad: <prompt>subnet_start = "subnet %a netmask %m {default-lease-time 3600;"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>subnet_end</para>
+                   <para>Stopka podsieci. Domy¶lnie: "}".</para>
+                   <para>Przyk³ad: <prompt>subnet_end = '\t}'</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>subnet_gateway</para>
+                   <para>Brama podsieci. '%i' zostanie zamienione na adres ip. Domy¶lnie: 'option routers %i;'.</para>
+                   <para>Przyk³ad: <prompt>subnet_gateway = "option routers %i"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>subnet_dns</para>
+                   <para>DNS'y podsieci. '%i - adresy dns'ów. Domy¶lnie: "option domain-name-servers %i;".</para>
+                   <para>Przyk³ad: <prompt>subnet_dns = "option domain-name-servers 192.168.0.1"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>subnet_domain</para>
+                   <para>Nazwa domenowa podsieci. '%n' - nazwa. Domy¶lnie: "option domain-name %n;".</para>
+                   <para>Przyk³ad: <prompt>subnet_domain = "option domain-name test.%n;"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>subnet_wins</para>
+                   <para>Serwery wins. '%i' - adres ip serwera. Domy¶lnie: "option netbios-name-servers %i;".</para>
+                   <para>Przyk³ad: <prompt>subnet_wins = ""</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>subnet_range</para>
+                   <para>Zakres adresów podsieci. '%s' - adres pocz±tkowy, '%e' - koniec zakresu. Domy¶lnie: "range %s %e;".</para>
+                   <para>Przyk³ad: <prompt>subnet_range = "range %s %e;"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>host</para>
+                   <para>Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' - adres ip. 
+                   Domy¶lnie: "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}".</para>
+                   <para>Przyk³ad: <prompt>host = "host %n {hardware ethernet %m; fixed-address %i;}"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>networks</para>
+                   <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+                   Domy¶lnie: pusta (wszystkie sieci).</para>
+                   <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>usergroups</para>
+                   <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+                   Domy¶lnie: pusta (wszystkie grupy).</para>
+                   <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>
+          <sect2 id="daemon-hostfile" xreflabel="hostfile">
+          <title>Hostfile</title>
+              <sect3 id="hostfile-desc">
+              <title>Opis</title>
+              <para>Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
+              wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
+              status (od³±czony/pod³±czony), sieæ do której s± pod³aczone oraz
+              grupy do których nale¿± ich w³a¶ciciele, dlatego mo¿liwe jest tworzenie np. regu³
+              dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku 
+              i nastêpnie wykonuje okre¶lone polecenie pow³oki.</para>
+              </sect3>
+              <sect3 id="hostfile-config">
+              <title>Konfiguracja</title>
+              <para>W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
+              które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
+              adresem, '%n' - nazw± komputera, '%info' - opisem komputera, '%domain' - domen±, 
+              '%net' - nazw± sieci, '%gw' - adresem bramy w sieci do której nale¿y dany komputer.
+              Poni¿ej opcje udostêpniane przez ten modu³</para>
+              <itemizedlist>
+               <listitem>
+                   <para>file</para>
+                   <para>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/hostfile</para>
+                   <para>Przyk³ad: <prompt>file = /etc/rc.d/rc.firewall</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>command</para>
+                   <para>Polecenie pow³oki wyk. po utworzeniu pliku 'file'. Domy¶lnie: puste</para>
+                   <para>Przyk³ad: <prompt>command = '/bin/sh /etc/rc.d/rc.firewall'</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>begin</para>
+                   <para>Nag³ówek pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -F FORWARD\n"</para>
+                   <para>Przyk³ad: <prompt>begin = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>end</para>
+                   <para>Stopka pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</para>
+                   <para>Przyk³ad: <prompt>end = "$IPT -A FORWARD -J REJECT\n"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>grantedhost</para>
+                   <para>Tekst dla hosta pod³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</para>
+                   <para>Przyk³ad: <prompt>grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>deniedhost</para>
+                   <para>Tekst dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
+                   <para>Przyk³ad: <prompt>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>networks</para>
+                   <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+                   Domy¶lnie: pusta (wszystkie sieci).</para>
+                   <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>usergroups</para>
+                   <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+                   Domy¶lnie: pusta (wszystkie grupy).</para>
+                   <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>skip_dev_ips</para>
+                   <para>Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy urz±dzeñ sieciowych. Domy¶lnie: tak</para>
+                   <para>Przyk³ad: <prompt>skip_dev_ips = no</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>         
+          <sect2 id="daemon-traffic" xreflabel="traffic">
+          <title>Traffic</title>
+              <sect3 id="traffic-desc">
+              <title>Opis</title>
+              <para>'Traffic' to odpowiednik perlowego lms-traffic, zapisuj±cy do bazy statystyki
+              wykorzystania ³±cza z pliku utworzonego przez u¿ytkownika. Plik taki powinien mieæ 
+              format: ip_hosta upload download . Wiêcej informacji (w tym jak utworzyæ taki plik)
+              mo¿na znale¼æ w rozdziale dotycz±cym lms-traffic.</para>
+              </sect3>
+              <sect3 id="traffic-config">
+              <title>Konfiguracja</title>
+              <para>Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:</para>
+              <itemizedlist>
+               <listitem>
+                   <para>file</para>
+                   <para>Lokalizacja pliku ze statystykami firewalla. Domy¶lnie: /var/log/traffic.log</para>
+                   <para>Przyk³ad: <prompt>file = /tmp/log</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>
+          <sect2 id="daemon-tc" xreflabel="tc">
+          <title>Tc (HTB)</title>
+              <sect3 id="tc-desc">
+              <title>Opis</title>
+              <para>Modu³ generuj±cy skrypt zawieraj±cy polecenia iptables i tc s³u¿±ce
+              do ograniczania pasma i limitowania po³±czeñ u¿ytkownikom. Regu³ki dla 
+              komputerów mo¿na dowolnie zdefiniowaæ i wykorzystaæ nie tylko do "traffic 
+              control". Zasada dzia³ania skryptu przedstawia siê nastêpuj±co: Najpierw z bazy
+              pobierane s± dane dla wszystkich u¿ytkowników. Obliczane s± sumy ograniczeñ
+              (uprate, downrate, upceil, downceil, limity po³±czeñ) dla ka¿dego u¿ytkownika
+              Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy u¿ytkowników
+              i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s± ró¿ne od zera nastêpuje
+              zapis regu³ do pliku z podmian± zmiennych. W regu³kach mo¿na stosowaæ nastêpuj±ce
+              zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, %uprate, %downrate, %upceil, 
+              %downceil, %plimit, %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 
+              zwiêkszany o jeden dla ka¿dego komputera.</para>
+              <para>Domy¶lna polityka tworzenia klas htb zak³ada utworzenie jednej klasy dla
+              wszystkich komputerów u¿ytkownika. Mo¿e to byæ zmienione za pomoc± opcji
+              'one_class_per_host'.</para>
+              <para>Konfiguracja domy¶lna zak³ada, ¿e twój system jest przystosowany
+              do zastosowania htb oraz iptables z modu³ami limit, connlimit, mark i ipp2p.
+              Mo¿esz sam spatchowaæ j±dro lub skorzystaæ ze ¼róde³ dostêpnych na stronie
+              <ulink url="http://www.inet.one.pl">www.inet.one.pl</ulink>.</para>
+              </sect3>
+              <sect3 id="tc-config">
+              <title>Konfiguracja</title>
+              <para>Masz do dyspozycji standardowe parametry takie jak usergroups, file,
+              command, networks i dodatkowo opcje definiuj±ce tre¶æ regu³ek tc i firewalla.
+              Domy¶lna konfiguracja przeznaczona jest dla ³±cz 512/128 kbit i 100mbit.</para>
+              <para><note><para>Warto¶ci opcji konfiguracyjnych w <filename>lms.ini</filename>
+              nale¿y podawaæ w jednej linii. W przypadku tego modu³u mo¿e to byæ niezbyt wygodne,
+              dlatego mo¿esz stworzyæ plik z zawarto¶ci± ca³ego nag³ówka (opcja <filename>
+              begin</filename>), a nastêpnie u¿yæ opcji <filename>command</filename> do
+              jego sklejenia z reszt± skryptu wygenerowan± przez modu³.</para></note></para>
+              <itemizedlist>
+               <listitem>
+                   <para>file</para>
+                   <para>Lokalizacja pliku tymczasowego. Domy¶lnie: /etc/rc.d/rc.htb.</para>
+                   <para>Przyk³ad: <prompt>file = /tmp/rc.htb</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>command</para>
+                   <para>Polecenie pow³oki wykonywane po utworzeniu pliku. Domy¶lnie: "sh /etc/rc.d/rc.htb start".</para>
+                   <para>Przyk³ad: <prompt>command = "chmod 700 /tmp/rc.htb; /tmp/rc.htb start"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>begin</para>
+                   <para>Nag³ówek skryptu. Domy¶lnie:
+<screen>
+"#!/bin/sh
+IPT=/usr/sbin/iptables
+TC=/sbin/tc
+LAN=eth0
+WAN=eth1
+BURST="burst 30k"
+
+stop ()
+{
+$IPT -t mangle -D FORWARD -i $WAN -j LIMITS >/dev/null 2>&1
+$IPT -t mangle -D FORWARD -o $WAN -j LIMITS >/dev/null 2>&1
+$IPT -t mangle -F LIMITS >/dev/null 2>&1
+$IPT -t mangle -X LIMITS >/dev/null 2>&1
+$IPT -t mangle -F OUTPUT
+$IPT -t filter -F FORWARD
+$TC qdisc del dev $LAN root 2> /dev/null
+$TC qdisc del dev $WAN root 2> /dev/null
+}
+
+start ()
+{
+stop
+$IPT -t mangle -N LIMITS
+$IPT -t mangle -I FORWARD -i $WAN -j LIMITS
+$IPT -t mangle -I FORWARD -o $WAN -j LIMITS
+# incomming traffic
+$IPT -t mangle -A OUTPUT -j MARK --set-mark 1
+$TC qdisc add dev $LAN root handle 1:0 htb default 3 r2q 1
+$TC class add dev $LAN parent 1:0 classid 1:1 htb rate 99000kbit ceil 99000kbit quantum 1500
+$TC class add dev $LAN parent 1:1 classid 1:2 htb rate   500kbit ceil   500kbit
+$TC class add dev $LAN parent 1:1 classid 1:3 htb rate 98500kbit ceil 98500kbit prio 9 quantum 1500
+$TC qdisc add dev $LAN parent 1:3 esfq perturb 10 hash dst
+# priorities for ICMP, TOS 0x10 and ports 22 and 53
+$TC class add dev $LAN parent 1:2 classid 1:20 htb rate 50kbit ceil 500kbit $BURST prio 1 quantum 1500
+$TC qdisc add dev $LAN parent 1:20 esfq perturb 10 hash dst
+$TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xffff flowid 1:20
+$TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 53 0xffff flowid 1:20
+$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 1:20
+$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 1:20
+# server -> LAN
+$TC filter add dev $LAN parent 1:0 protocol ip prio 4 handle 1 fw flowid 1:3
+
+# outgoing traffic
+$TC qdisc add dev $WAN root handle 2:0 htb default 11 r2q 1
+$TC class add dev $WAN parent 2:0 classid 2:1 htb rate 120kbit ceil 120kbit
+# priorities for ACK, ICMP, TOS 0x10, ports 22 and 53
+$TC class add dev $WAN parent 2:1 classid 2:10 htb rate 60kbit ceil 120kbit prio 1 quantum 1500
+$TC qdisc add dev $WAN parent 2:10 esfq perturb 10 hash dst
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip protocol 6 0xff \
+match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 1 match u8 0x10 0xff at 33 flowid 2:10
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 22 0xffff flowid 2:10
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 53 0xffff flowid 2:10
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 2:10
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 2:10
+# server -> Internet
+$TC class add dev $WAN parent 2:1 classid 2:11 htb rate 30kbit ceil 120kbit prio 2 quantum 1500
+$TC qdisc add dev $WAN parent 2:11 esfq perturb 10 hash dst
+$TC filter add dev $WAN parent 2:0 protocol ip prio 3 handle 1 fw flowid 2:11
+$TC filter add dev $WAN parent 2:0 protocol ip prio 9 u32 match ip dst 0/0 flowid 2:11
+</screen></para>
+                   <para>Przyk³ad: <prompt>begin = "#!/bin/bash\n$TC=/usr/local/sbin/tc\n"</prompt></para>
+               </listitem>    
+               <listitem>
+                   <para>end</para>
+                   <para>Stopka skryptu. Domy¶lnie:
+<screen>
+}
+
+case "$1" in
+    'start')
+     start
+    ;;
+    'stop')
+     stop
+    ;;
+    'status')
+     echo "WAN Interface"
+     echo "============="
+     $TC class show dev $WAN | grep root
+     $TC class show dev $WAN | grep -v root | sort | nl
+     echo "LAN Interface"
+     echo "============="
+     $TC class show dev $LAN | grep root
+     $TC class show dev $LAN | grep -v root | sort | nl
+    ;;
+    *)
+     echo -e "\nUsage: rc.htb start|stop|status"
+    ;;
+esac
+</screen>
+                   </para>
+                   <para>Przyk³ad: <prompt>end = ""</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>one_class_per_host</para>
+                   <para>Okre¶la politykê tworzenia klas htb. W ustawieniu domy¶lnym
+                   wszystkie komputery u¿ytkownika zostan± wrzucone do jednej klasy.
+                   Ustawienie tej opcji na 'true' spowoduje, ¿e regu³y okre¶lone w 
+                   host_htb_up i host_htb_down zostan± wygenerowane dla wszystkich
+                   komputerów u¿ytkownika (z inn± warto¶ci± '%x'). Regu³y z host_mark_down,
+                   host_mark_up, host_plimit i host_climit generowane s± dla ka¿dego
+                   komputera niezale¿nie od ustawieñ tej zmiennej. Domy¶lnie: false</para>
+                   <para>Przyk³ad: <prompt>one_class_per_host = 1</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>host_mark_down</para>
+                   <para>Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
+<screen>
+# %n
+$IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
+</screen>
+                   </para>
+                   <para>Przyk³ad: <prompt>host_mark_down = ""</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>host_mark_up</para>
+                   <para>Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
+<screen>
+$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
+</screen>
+                   </para>
+                   <para>Przyk³ad: <prompt>host_mark_up = ""</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>host_htb_down</para>
+                   <para>Zestaw regu³ dla ka¿dego komutera, wykonywanych
+                   gdy uprate i downrate s± ró¿ne od zera. Domy¶lnie:
+<screen>
+$TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
+$TC qdisc add dev $LAN parent 1:%x esfq perturb 10 hash dst
+$TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%x
+</screen>
+                   </para>
+                   <para>Przyk³ad: <prompt>host_htb_down = ""</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>host_htb_up</para>
+                   <para>Zestaw regu³ dla ka¿dego komutera, wykonywanych
+                   gdy uprate i downrate s± ró¿ne od zera. Domy¶lnie:
+<screen>
+$TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
+$TC qdisc add dev $WAN parent 2:%x esfq perturb 10 hash dst
+$TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x
+</screen>
+                   </para>
+                   <para>Przyk³ad: <prompt>host_htb_up = ""</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>host_climit</para>
+                   <para>Regu³ka z ograniczeniem ilo¶ci równoczesnych po³±czeñ tcp. Wykonywana
+                   gdy climit w bazie jest ró¿ny od zera. Domy¶lnie:
+<screen>
+$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT
+</screen>
+                   </para>
+                   <para>Przyk³ad: <prompt>host_climit = "$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above -j REJECT"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>host_plimit</para>
+                   <para>Regu³ka z ograniczeniem ilo¶ci pakietów w jednostce czasu (tutaj sekunda). Wykonywana
+                   gdy plimit w bazie jest ró¿ny od zera. Domy¶lnie:
+<screen>
+$IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
+$IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
+</screen>
+                   </para>
+                   <para>Przyk³ad: <prompt>host_plimit = ""</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>networks</para>
+                   <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+                   Domy¶lnie: pusta (wszystkie sieci).</para>
+                   <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>usergroups</para>
+                   <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+                   Domy¶lnie: pusta (wszystkie grupy).</para>
+                   <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>
+          <sect2 id="daemon-dns" xreflabel="dns">
+          <title>Dns</title>
+              <sect3 id="dns-desc">
+              <title>Opis</title>
+              <para>Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej skomplikowanych.
+              Tworzy dla ka¿dej sieci pliki stref oraz odpowiednie wpisy w named.conf w oparciu
+              o szablony tych plików. Przyk³adowe szablony znajduj± siê w katalogu
+              <filename>/modules/dns/sample</filename>.</para>
+              </sect3>
+              <sect3 id="dns-config">
+              <title>Konfiguracja</title>
+              <para></para>
+              <itemizedlist>
+               <listitem>
+                   <para>forward-patterns</para>
+                   <para>Katalog z szablonami stref. Domy¶lnie: forward.</para>
+                   <para>Przyk³ad: <prompt>forward-patterns = /dns/patterns/forward</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>reverse-patterns</para>
+                   <para>Katalog z szablonami stref odwrotnych. Domy¶lnie: reverse.</para>
+                   <para>Przyk³ad: <prompt>reverse-patterns = /dns/patterns/revers</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>generic-forward</para>
+                   <para>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
+                   'forward-patterns' nie bêdzie pliku odpowiadaj±cego nazwie domenowej sieci.
+                   Domy¶lnie: modules/dns/sample/forward/generic.</para>
+                   <para>Przyk³ad: <prompt>generic-forward = /dns/patterns/forward</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>generic-reverse</para>
+                   <para>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
+                   'reverse-patterns' nie bêdzie pliku odpowiadaj±cego numerowi IP sieci.
+                   Domy¶lnie: modules/dns/sample/reverse/generic.</para>
+                   <para>Przyk³ad: <prompt>generic-reverse = /dns/patterns/forward</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>forward-zones</para>
+                   <para>Katalog na pliki wynikowe stref.
+                   Domy¶lnie: modules/dns/sample/out/forward.</para>
+                   <para>Przyk³ad: <prompt>forward-zones = /dns/forward</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>reverse-zones</para>
+                   <para>Katalog na pliki wynikowe stref odwrotnych.
+                   Domy¶lnie: modules/dns/sample/out/reverse.</para>
+                   <para>Przyk³ad: <prompt>reverse-zones = /dns/reverse</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>host-reverse</para>
+                   <para>Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
+                   Domy¶lnie: "%n IN A %i\n".</para>
+                   <para>Przyk³ad: <prompt>host-reverse = "\t %n IN A %i\n"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>host-forward</para>
+                   <para>Linia w pliku strefy odpowiadaj±ca ka¿demu komputerowi w danej sieci.
+                   Domy¶lnie: "%c IN PTR %n.%d.\n".</para>
+                   <para>Przyk³ad: <prompt>host-forward = "\t %c IN PTR %n.%d.\n"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>conf-pattern</para>
+                   <para>Lokalizacja szablonu g³ównego pliku konfiguracyjnego serwera.
+                   Domy¶lnie: modules/dns/sample/named.conf.</para>
+                   <para>Przyk³ad: <prompt>conf-pattern = /dns/patterns/named.conf</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>conf-output</para>
+                   <para>Lokalizacja g³ównego pliku konfiguracyjnego serwera.
+                   Domy¶lnie: /tmp/named.conf.</para>
+                   <para>Przyk³ad: <prompt>conf-output = /etc/named.conf</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>conf-forward-entry</para>
+                   <para>Wpis dla ka¿dej strefy w g³ównym pliku konfiguracyjnym.
+                   Domy¶lnie: 'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n}; \n'.</para>
+                   <para>Przyk³ad: <prompt>conf-forward-entry = 'zone "%n" { \n\ttype master; \n\tfile "forward/%n"; \n\tnotify yes; \n}; \n'</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>conf-reverse-entry</para>
+                   <para>Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
+                   Domy¶lnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</para>
+                   <para>Przyk³ad: <prompt>conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>command</para>
+                   <para>Polecenie wykonywane po utworzeniu plików konf. Domy¶lnie: puste.</para>
+                   <para>Przyk³ad: <prompt>command = ""</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>networks</para>
+                   <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+                   Domy¶lnie: pusta (wszystkie sieci).</para>
+                   <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>usergroups</para>
+                   <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+                   Domy¶lnie: pusta (wszystkie grupy).</para>
+                   <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>
+          <sect2 id="daemon-ethers" xreflabel="ethers">
+          <title>Ethers</title>
+              <sect3 id="ethers-desc">
+              <title>Opis</title>
+              <para>Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Ustawiaj±c opcjê
+              'dummy_macs' mo¿na sprawiæ, aby komputerom od³±czonym zosta³ przypisany 
+              mac-adres 00:00:00:00:00:00.</para>
+              </sect3>
+              <sect3 id="ethers-config">
+              <title>Konfiguracja</title>
+              <para>Tutaj s± tylko standardowe opcje:</para>
+              <itemizedlist>
+               <listitem>
+                   <para>file</para>
+                   <para>Lokalizacja pliku wynikowego. Domy¶lnie: /tmp/ethers.</para>
+                   <para>Przyk³ad: <prompt>file = /etc/ethers</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>command</para>
+                   <para>Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Domy¶lnie: puste.</para>
+                   <para>Przyk³ad: <prompt>command = "arp -f /etc/ethers"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>dummy_macs</para>
+                   <para>Je¶li ustawimy na 'yes', to komputerom od³±czonym zostanie
+                   przypisany mac-adres '00:00:00:00:00:00'. Domy¶lnie: "no".</para>
+                   <para>Przyk³ad: <prompt>dummy_macs = yes</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>networks</para>
+                   <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+                   Domy¶lnie: pusta (wszystkie sieci).</para>
+                   <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>usergroups</para>
+                   <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+                   Domy¶lnie: pusta (wszystkie grupy).</para>
+                   <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>
+          <sect2 id="daemon-oident" xreflabel="oident">
+          <title>Oident</title>
+              <sect3 id="oident-desc">
+              <title>Opis</title>
+              <para>Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
+              'hostfile', ale tutaj masz ju¿ gotowe ustawienia domy¶lne.</para>
+              </sect3>
+              <sect3 id="oident-config">
+              <title>Konfiguracja</title>
+              <para>A oto parametry modu³u 'oident'</para>
+              <itemizedlist>
+               <listitem>
+                   <para>begin</para>
+                   <para>Tekst wstawiany na pocz±tku pliku. Domy¶lnie: puste.</para>
+                   <para>Przyk³ad: <prompt>begin = "#Generowany automatycznie\n"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>end</para>
+                   <para>Tekst wstawiany na koñcu pliku. Domy¶lnie: puste.</para>
+                   <para>Przyk³ad: <prompt>end = ""</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>host</para>
+                   <para>Linia tekstu dla ka¿dego komputera. Domy¶lnie: "%i\t%n\tUNIX".</para>
+                   <para>Przyk³ad: <prompt>host = "%i %n WINDOWS"</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>file</para>
+                   <para>Tekst wstawiany na pocz±tku pliku. Domy¶lnie: /tmp/oidentd.conf.</para>
+                   <para>Przyk³ad: <prompt>file = /etc/identd.conf</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>networks</para>
+                   <para>Lista nazw sieci do uwzglêdnienia. Domy¶lnie: pusta (wszystkie sieci).</para>
+                   <para>Przyk³ad: <prompt>networks = 'lan1 lan2'</prompt></para>
+               </listitem>
+               <listitem>
+                   <para>command</para>
+                   <para>Polecenie do wykonania po utworzeniu pliku. Domy¶lnie: puste.</para>
+                   <para>Przyk³ad: <prompt>command = "killall -HUP midentd"</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>
+          <sect2 id="daemon-pinger" xreflabel="pinger">
+          <title>Pinger</title>
+              <sect3 id="pinger-desc">
+              <title>Opis</title>
+              <para>Modu³ pinger to odpowiednik perlowego skryptu lms-fping. Ró¿nice s± jednak
+              zasadnicze. Nie potrzebuje zewnêtrznego programu i dzia³a przy wykorzystaniu
+              protoko³u ARP. Powodem tego jest mniej wiêcej dwukrotnie szybsze wykonanie
+              skanowania sieci. Nie ma tak¿e problemów z komputerami maj±cymi wy³±czone 
+              odpowiadanie na pingi. Po skanowaniu, wszystkim w³±czonym komputerom jest
+              ustawiany w bazie danych czas skanowania, wykorzystywany do obrazowania
+              aktywno¶ci komputerów np. na mapie sieci.</para>
+              </sect3>
+              <sect3 id="pinger-config">
+              <title>Konfiguracja</title>
+              <para>Pinger udostêpnia tylko jedn± opcjê konfiguracyjn±:</para>
+              <itemizedlist>
+               <listitem>
+                   <para>networks</para>
+                   <para>Lista nazw sieci, które maj± byæ skanowane. Domy¶lnie: pusta (wszystkie sieci).</para>
+                   <para>Przyk³ad: <prompt>networks = 'lan1 lan2'</prompt></para>
+               </listitem>
+              </itemizedlist>
+              </sect3>
+          </sect2>
+     </sect1>
+</chapter>
+
+    
