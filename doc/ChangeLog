@@ -12,6 +12,7 @@ wersja 1.5.2 (??/??/????):
     je¶li nie powiedzie siê próba odczytania nazwy poprzez `hostname` (alec)
   - do danych komputera dodano pole 'info' (alec)
   - lms-mgc: dodana zmienna %INFO zawieraj±ca opis komputera j.w. (alec)
+  - dodana zmienna %info w regu³kach modu³u hostfile demona almsd (alec)
   - dokumentacja: uzupe³niony opis zmiennych lms-mgc (alec)
   - w statystykach dodany ¶redni transfer w KB/s (alec)
 
