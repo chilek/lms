@@ -1,0 +1,14 @@
+1. Wstêp.
+
+Katalog zawiera dodatkowe modu³y dla demona almsd:
+
+cbq-init:	generowanie plików dla znanego skryptu do zarz±dzania
+    		pasmem (http://sourceforge.net/projects/cbqinit)
+      
+2. Instalacja.
+
+    cp -r contrib/daemon/* daemon/modules/
+    cd daemon
+    ./configure	(z odpowiednimi opcjami)
+    make
+    
