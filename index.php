@@ -124,7 +124,6 @@ $layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['uptime'] = uptime();
 $layout['hostname'] = hostname();
-$layout['date'] = pldate();
 $layout['faktury'] = (! $_CONFIG['finances']['enable_faktury'] ? '0' : $_CONFIG['finances']['enable_faktury']);
 
 $SMARTY->assign('menu', $menu);
@@ -186,6 +185,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.108  2003/10/08 00:05:51  lukasz
+ * - lokalizowalna data
+ *
  * Revision 1.107  2003/10/02 10:00:32  lukasz
  * - code cleanups
  *
