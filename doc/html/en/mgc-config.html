@@ -158,27 +158,25 @@ NAME="MGC-CONFIG-LMS"
 >5.2.2. Section [mgc] - list of instances</A
 ></H2
 ><P
->W³a¶ciwa konfiguracja dotycz±ca generatorów poszczególnych plików konfiguracyjnych 
-	jest umieszczana w sekcji <SPAN
+>Significant parts of configuration are placed in section <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[mgc]</I
 ></SPAN
-> i pochodnych. W samej sekcji 
-	<SPAN
+> and its derivative sections. In <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[mgc]</I
 ></SPAN
-> mo¿emy u¿yæ nastêpuj±cego parametru:
+> alone you can use the following parameter:
    <UL
 ><LI
 ><P
 >instances</P
 ><P
->Lista "instancji" oddzielona spacjami.</P
+>List of instances (separated by spaces).</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -206,11 +204,10 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Zmienn± <TT
+>You can also place <TT
 CLASS="FILENAME"
 >instances</TT
-> mo¿na tak¿e umie¶ciæ w
-   sekcji dowolnej instancji. Patrz ni¿ej.</P
+> variable in any derivative instance section. See below.</P
 ></TD
 ></TR
 ></TABLE
@@ -227,14 +224,13 @@ NAME="MGC-CONFIG-INSTANCES"
 >5.2.3. Section [mgc:xxx] - instance configuration</A
 ></H2
 ><P
->Ka¿da instancja ma swoj± nazwê i jej konfiguracjê tworzy siê umieszczaj±c 
-	sekcjê o nazwie <SPAN
+>Each instance has its name and its configuration is created by creating derivative section of name <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->[mgc:nazwa]</I
+>[mgc:name]</I
 ></SPAN
->, czyli przyk³adowo: 
+>, eg.
 	<SPAN
 CLASS="emphasis"
 ><I
@@ -243,22 +239,19 @@ CLASS="EMPHASIS"
 ></SPAN
 ></P
 ><P
->W samych instancjach mo¿emy u¿ywaæ nastêpuj±cych opcji konfiguracyjnych:</P
+>All of those sections may include following configuration options:</P
 ><UL
 ><LI
 ><P
 >instances</P
 ><P
->Zmienna, w której mo¿esz podaæ listê innych instancji, aby nastêpnie
-     wywo³ywaæ mgc poleceniem '<SAMP
+>This variable allows you to group a list of other instances (eg. instances = ins1 ins2 ins3), and then call your mgc with '<SAMP
 CLASS="PROMPT"
->lms-mgc -i sekcja</SAMP
->' zamiast
-     '<SAMP
+>lms-mgc -i mydaemon</SAMP
+>'  instead of '<SAMP
 CLASS="PROMPT"
->lms-mgc -i "sekcja1 sekcja2 sekcja3"</SAMP
->'. Je¶li zostanie 
-     u¿yta, wszystkie pozosta³e zmienne tej sekcji zostan± zignorowane.</P
+>lms-mgc -i "ins1 ins2 ins3"</SAMP
+>'. If you use this variable all other settings in this section will be ignored.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -269,7 +262,7 @@ CLASS="PROMPT"
 ><P
 >outfile</P
 ><P
->Definiuje plik do którego ma byæ zapisany wynik dzia³ania bie¿±cej instancji (je¿eli ta zmienna bêdzie nie ustawiona, instancja siê zakoñczy)</P
+>Output file, where instance structured dump will be saved (instance will quit instantly if this variable is not set).</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -280,7 +273,7 @@ CLASS="PROMPT"
 ><P
 >append</P
 ><P
->Pozwala ustawiæ aby wynik dzia³ania instancji nie nadpisywa³ pliku wynikowego, lecz zosta³ dopisany na jego koñcu</P
+>It allows you to define to not overwrite outfile, but append to its end instead.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -291,7 +284,7 @@ CLASS="PROMPT"
 ><P
 >outfile_perm</P
 ><P
->Pozwala na ustawienie praw dostêpu do pliku wyj¶ciowego (domy¶lnie 600)</P
+>Permissions for output file. Default: 600 (-rw-------)</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -302,7 +295,7 @@ CLASS="PROMPT"
 ><P
 >outfile_owner</P
 ><P
->Pozwala na ustawienie w³a¶ciciela pliku wyj¶ciowego (domy¶lnie 0)</P
+>UID of output file owner. Default: 0</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -328,7 +321,7 @@ ALT="Warning"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->W³a¶ciciel musi byæ podany numerycznie!</P
+>You have to provide numerical UID, not username!</P
 ></TD
 ></TR
 ></TABLE
@@ -339,7 +332,7 @@ VALIGN="TOP"
 ><P
 >outfile_group</P
 ><P
->Pozwala na ustawienie grupy pliku wyj¶ciowego (domy¶lnie 0)</P
+>GID of output file owner. Default: 0</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -365,7 +358,7 @@ ALT="Warning"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Grupa musi byæ podana numerycznie!</P
+>You have to provide numerical GID, not group name!</P
 ></TD
 ></TR
 ></TABLE
@@ -376,8 +369,7 @@ VALIGN="TOP"
 ><P
 >header_file</P
 ><P
->Pozwala na umieszczenie w pliku wynikowym zawarto¶ci innego 
-     pliku jako nag³ówek (domy¶lnie nie ustawione)</P
+>Filename, that should be prepended at beginning of output file. Default: unset</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -388,12 +380,11 @@ CLASS="PROMPT"
 ><P
 >header</P
 ><P
->Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako 
-     nag³ówka (domy¶lnie puste)</P
+>String, which should be put at beginning of output file. Default: unset</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->header = option1 = bla\noption2 = blabla</SAMP
+>header = option1 = blah\noption2 = blab-la</SAMP
 ></P
 ><P
 ><DIV
@@ -415,8 +406,7 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Znak \n zosta³ tu u¿yty jako separator linii. Koñcowe \n nie jest 
-     wymagane.</P
+>You should use \n as line separator. You may omit line separator at the end of last line.</P
 ></TD
 ></TR
 ></TABLE
@@ -427,7 +417,9 @@ VALIGN="TOP"
 ><P
 >networks</P
 ><P
->Pozwala ustaliæ które z naszych sieci bêd± uwzglêdniane w pliku konfiguracyjnym (domy¶lnie wszystkie)</P
+>&#62;List of (space separated) networks, that should be
+considered while creating configuration file. If unset, configuration will
+include all networks.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -436,13 +428,13 @@ CLASS="PROMPT"
 ></LI
 ></UL
 ><P
->Teraz mgc pobiera kolejne sieci i wykonuje w kó³ko nastêpuj±ce czynno¶ci:</P
+>Mgc script now loops for each network and performs the following tasks:</P
 ><UL
 ><LI
 ><P
 >network_header</P
 ><P
->Generuje nag³ówek dla ka¿dej sieci (domy¶lnie puste):</P
+>String, which should be put at beginning of network section. Default: empty</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -453,7 +445,7 @@ CLASS="PROMPT"
 ><P
 >dst_networks</P
 ><P
->Pozwala ustawiæ sieci docelowe, czyli takie dla których bêdzie przetwarzany parametr: dst_network_header (domy¶lnie wszystkie):</P
+>List of destination network names, for which dst_network_header variable (see below) will be used. Default: all</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -464,7 +456,7 @@ CLASS="PROMPT"
 ><P
 >dst_network_header</P
 ><P
->Pozwala ustawiæ nag³ówek dla sieci docelowych</P
+>Lets you to set destination networks header.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -475,7 +467,7 @@ CLASS="PROMPT"
 ><P
 >network_body</P
 ><P
->Parametr jest przetwarzany po wys³aniu nag³ówków dla sieci, a przed rozpoczêciem analizy adresów IP</P
+>This parameter is parsed after network headers and before IP addresses loop.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -484,15 +476,13 @@ CLASS="PROMPT"
 ></LI
 ></UL
 ><P
->Teraz MGC rozpocznie przetwarzanie regu³ek dla kolejnych adresów IP. Robi to w dosyæ specyficzny sposób. 
-   Tzn. oblicza kolejny adres IP i sprawdza czy zdefiniowano regu³ê dla hosta i wykonuje pierwsz±.
-   Sprawdzanie jest wykonywane w nastepuj±cej kolejno¶ci:</P
+>Mgc script now loops into below rules for each IP address for given range. It takes each IP address and checks if a rule is defined for this address, if yes - it executes first rule that matches. Matches are being parsed in specific order, as described below:</P
 ><UL
 ><LI
 ><P
 >ignore</P
 ><P
->Pozwala na ustawienie listy adresów w postaci adres/prefix lub adres/maska oddzielanej spacjami dla której ma byæ ignorowane generowanie</P
+>Lets you setup list of addresses (in address/prefix or address/netmask form, space separated) which should be skipped.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -503,8 +493,7 @@ CLASS="PROMPT"
 ><P
 >node(IP)</P
 ><P
->Przy pomocy tej opcji mo¿na zdefiniowaæ regu³ê dla wybranego komputera. W nawiasie podaje siê jego adres IP. 
-     Ka¿da sekcja instancji mo¿e zawieraæ dowoln± ilo¶æ takich opcji.</P
+>Allows you to add line for given IP address. IP address should be provided in parenthesis. Each section may have unlimited number of such options.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -515,7 +504,7 @@ CLASS="PROMPT"
 ><P
 >allnodes</P
 ><P
->Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP.</P
+>Adds line for each non-ignored IP address.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -526,7 +515,7 @@ CLASS="PROMPT"
 ><P
 >allexistnodes</P
 ><P
->Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP który jest u¿ywany.</P
+>Adds line for each IP address that is 'owner' by a computer in database.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -537,7 +526,7 @@ CLASS="PROMPT"
 ><P
 >grantednode_priv</P
 ><P
->Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
+>Adds line for each IP address with 'connected' status in database (parsed only for private address classes).</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -548,7 +537,7 @@ CLASS="PROMPT"
 ><P
 >grantednode_publ</P
 ><P
->Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów publicznych)</P
+>Adds line for each IP address with 'connected' status in database (parsed only for public address classes).</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -559,7 +548,7 @@ CLASS="PROMPT"
 ><P
 >deniednode_priv</P
 ><P
->Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
+>Adds line for each IP address with 'disconnected' status in database (parsed only for private address classes).</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -570,7 +559,7 @@ CLASS="PROMPT"
 ><P
 >deniednode_publ</P
 ><P
->Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów publicznych)</P
+>Adds line for each IP address with 'disconnected' status in database (parsed only for public address classes).</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -581,7 +570,7 @@ CLASS="PROMPT"
 ><P
 >dhcpnode_priv</P
 ><P
->Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</P
+>Adds line for each IP address within DHCP dynamic range (parsed only for private address classes).</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -592,7 +581,7 @@ CLASS="PROMPT"
 ><P
 >dhcpnode_publ</P
 ><P
->Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów publicznych)</P
+>Adds line for each IP address within DHCP dynamic range (parsed only for public address classes).</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -603,7 +592,7 @@ CLASS="PROMPT"
 ><P
 >freeip_priv</P
 ><P
->Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów prywatnych)</P
+>Adds line for each IP address that is not occupied by any computer in database (parsed only for private address classes).</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -614,7 +603,7 @@ CLASS="PROMPT"
 ><P
 >freeip_publ</P
 ><P
->Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów publicznych)</P
+>Adds line for each IP address that is not occupied by any computer in database (parsed only for public address classes).</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -625,7 +614,7 @@ CLASS="PROMPT"
 ><P
 >default_priv</P
 ><P
->Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)</P
+>Default line, which is inserted when none of grantednode or deniednode matches for given IP address (parsed only for private address classes)</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -651,7 +640,7 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</P
+>Mgc automatically detects if given address belongs to private or public network.</P
 ></TD
 ></TR
 ></TABLE
@@ -662,7 +651,7 @@ VALIGN="TOP"
 ><P
 >default_publ</P
 ><P
->Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów publicznych)</P
+>Default line, which is inserted when none of grantednode or deniednode matches for given IP address (parsed only for public address classes)</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -671,14 +660,13 @@ CLASS="PROMPT"
 ></LI
 ></UL
 ><P
->W koñcu nastêpuje wygenerowanie koñcowej czê¶ci pliku i wykonanie
-    polecenia systemowego.</P
+>Mgc now is ready to append final part of the file and execute system command.</P
 ><UL
 ><LI
 ><P
 >network_footer</P
 ><P
->Pozwala na ustawienie stopki dla w³a¶nie przetwarzanej sieci</P
+>Adds line for currently processed network.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -689,7 +677,7 @@ CLASS="PROMPT"
 ><P
 >footer_file</P
 ><P
->Pozwala na umieszczenie w pliku wynikowym zawarto¶ci innego pliku jako stopka (domy¶lnie nie ustawione)</P
+>Filename, that should be appended at the end of output file. Default: unset</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -700,7 +688,7 @@ CLASS="PROMPT"
 ><P
 >footer</P
 ><P
->Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako stopki (domy¶lnie puste)</P
+>String, which should be put at the end of output file. Default: unset</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -711,7 +699,7 @@ CLASS="PROMPT"
 ><P
 >post_exec</P
 ><P
->Komenda do wywo³ania po wygenerowaniu pliku konfiguracyjnego</P
+>System command that should be executed after saving output file.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -729,14 +717,13 @@ NAME="MGC-CONFIG-VARS"
 >5.2.4. Configuration variables</A
 ></H2
 ><P
->W opcjach konfiguracyjnych mo¿na u¿ywaæ nastêpuj±cych zmiennych, 
-    które zostan± podmienione na odpowiednie dane z bazy:</P
+>You can use the following templates in your configuration variables. They all will be substituted with appropriate data from LMS database.</P
 ><P
->Zmienne dla komputerów:
+>Computer templates:
    <UL
 ><LI
 ><P
->%IP - adres IP komputera</P
+>%IP - IP address</P
 ></LI
 ><LI
 ><P
@@ -744,31 +731,31 @@ NAME="MGC-CONFIG-VARS"
 ></LI
 ><LI
 ><P
->%ID - ID komputera w bazie</P
+>%ID - ID of computer</P
 ></LI
 ><LI
 ><P
->%MAC - adres MAC karty sieciowej</P
+>%MAC - MAC address</P
 ></LI
 ><LI
 ><P
->%SMAC - adres MAC pisany ma³ymi literami z usuniêtymi dwukropkami</P
+>%SMAC - MAC address, in lowercase and without colon separators</P
 ></LI
 ><LI
 ><P
->%OWNER - w³a¶ciciel komputera</P
+>%OWNER - owner's name</P
 ></LI
 ><LI
 ><P
->%NAME - nazwa komputera du¿ymi znakami</P
+>%NAME - computer name, in uppercase</P
 ></LI
 ><LI
 ><P
->%name - nazwa komputera ma³ymi znakami</P
+>%name - computer name, in lowercase</P
 ></LI
 ><LI
 ><P
->%INFO - opis komputera</P
+>%INFO - computer description</P
 ></LI
 ><LI
 ><P
@@ -776,141 +763,141 @@ NAME="MGC-CONFIG-VARS"
 ></LI
 ><LI
 ><P
->%UPRATE - gwarantowany transfer dla danych wychodz±cych</P
+>%UPRATE - guaranteed upload rate</P
 ></LI
 ><LI
 ><P
->%DOWNRATE - gwarantowany transfer dla danych przychodz±cych</P
+>%DOWNRATE - guaranteed download rate</P
 ></LI
 ><LI
 ><P
->%UPCEIL - maksymalny transfer dla danych wychodz±cych</P
+>%UPCEIL - maximum upload rate</P
 ></LI
 ><LI
 ><P
->%DOWNCEIL - maksymalny transfer dla danych przychodz±cych</P
+>%DOWNCEIL - maximum download rate</P
 ></LI
 ><LI
 ><P
->%CLIMIT - limit równoczesnych po³±czeñ</P
+>%CLIMIT - limit of concurrent connections</P
 ></LI
 ><LI
 ><P
->%PLIMIT - limit pakietów</P
+>%PLIMIT - maximum number of packets per second</P
 ></LI
 ><LI
 ><P
->%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP</P
+>%1 %2 %3 %4 - consecutive (left to right) decimal octets of IP address</P
 ></LI
 ><LI
 ><P
->%NID - ID sieci, do której nale¿y komputer</P
+>%NID - network ID where computer belongs</P
 ></LI
 ><LI
 ><P
->%NNAME - nazwa sieci du¿ymi znakami</P
+>%NNAME - network name, in uppercase</P
 ></LI
 ><LI
 ><P
->%nname - nazwa sieci ma³ymi znakami</P
+>%nname - network name, in lowercase</P
 ></LI
 ><LI
 ><P
->%NADDR - adres sieci</P
+>%NADDR - network address</P
 ></LI
 ><LI
 ><P
->%NIFACE - interfejs sieci</P
+>%NIFACE - network interface</P
 ></LI
 ><LI
 ><P
->%NMASK - maska sieci</P
+>%NMASK - network mask</P
 ></LI
 ><LI
 ><P
->%NGATE - adres bramy</P
+>%NGATE - network gateway IP address</P
 ></LI
 ><LI
 ><P
->%NDNS - adres serwera DNS</P
+>%NDNS - primary DNS server IP address</P
 ></LI
 ><LI
 ><P
->%NDNS2 - adres drugiego serwera DNS</P
+>%NDNS2 - secondary DNS server IP address</P
 ></LI
 ><LI
 ><P
->%NDOMAIN - domena sieci</P
+>%NDOMAIN - domain name of the network</P
 ></LI
 ><LI
 ><P
->%NWINS - adres serwera WINS dla tej sieci</P
+>%NWINS - WINS server IP address</P
 ></LI
 ><LI
 ><P
->%NDHCPS - pierwszy adres DHCP sieci</P
+>%NDHCPS - first IP address of dynamic DHCP range</P
 ></LI
 ><LI
 ><P
->%NDHCPE - ostatni adres DHCP sieci</P
+>%NDHCPE - last IP address of dynamic DHCP range</P
 ></LI
 ></UL
 >
     </P
 ><P
->Zmienne dla sieci (w opcjach dotycz±cych tylko sieci):
+>Network templates (for sections relevant to networks only):
    <UL
 ><LI
 ><P
->%ID - ID sieci w bazie</P
+>%ID - network ID</P
 ></LI
 ><LI
 ><P
->%NAME - nazwa sieci du¿ymi znakami</P
+>%NAME - network name, in uppercase</P
 ></LI
 ><LI
 ><P
->%name - nazwa sieci ma³ymi znakami</P
+>%name - network name, in lowercase</P
 ></LI
 ><LI
 ><P
->%ADDR - adres sieci</P
+>%ADDR - network IP address</P
 ></LI
 ><LI
 ><P
->%IFACE - interfejs</P
+>%IFACE - network interface</P
 ></LI
 ><LI
 ><P
->%MASK - maska</P
+>%MASK - network IP mask</P
 ></LI
 ><LI
 ><P
->%GATE - brama sieci</P
+>%GATE - network gateway IP address</P
 ></LI
 ><LI
 ><P
->%DNS - serwer DNS tej sieci</P
+>%DNS - primary DNS server IP address</P
 ></LI
 ><LI
 ><P
->%DNS2 - drugi serwer DNS tej sieci</P
+>%DNS2 - secondary DNS server IP address</P
 ></LI
 ><LI
 ><P
->%DOMAIN - domena tej sieci</P
+>%DOMAIN - domain name of the network</P
 ></LI
 ><LI
 ><P
->%WINS - adres serwera WINS dla tej sieci</P
+>%WINS - WINS server IP address for the network</P
 ></LI
 ><LI
 ><P
->%DHCPS - pierwszy adres DHCP tej sieci</P
+>%DHCPS - first IP address of dynamic DHCP range for the network</P
 ></LI
 ><LI
 ><P
->%DHCPE - ostatni adres DHCP tej sieci</P
+>%DHCPE - last IP address of dynamic DHCP range for the network</P
 ></LI
 ></UL
 >
@@ -933,12 +920,10 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->W opcji konfiguracyjnej <SAMP
+>Additionally, <SAMP
 CLASS="PROMPT"
 >dst_network_header</SAMP
-> mo¿na
-    ponadto u¿yæ powy¿szych zmiennych ale poprzedzonych liter± D (np. %DADDR, %dname)
-    jako parametry sieci docelowych.</P
+> variable may include above templates prepended with D (ie. %DADDR, %dname) to get data relevant to destination networks.</P
 ></TD
 ></TR
 ></TABLE
@@ -946,23 +931,23 @@ CLASS="PROMPT"
 >
    </P
 ><P
->Zmienne które mo¿na stosowaæ we wszystkich opcjach:
+>Templates which can be used everywhere:
    <UL
 ><LI
 ><P
->%DATE - data w formacie YYYYMMDD;</P
+>%DATE - date in YYYYMMDD format;</P
 ></LI
 ><LI
 ><P
->%TIME - czas w formacie HHMM;</P
+>%TIME - time in HHMM format;</P
 ></LI
 ><LI
 ><P
->%TIMES - czas w formacie HHMMSS;</P
+>%TIMES - time in HHMMSS format;</P
 ></LI
 ><LI
 ><P
->%UTIME - czas w formacie unix timestamp;</P
+>%UTIME - time in unix timestamp format;</P
 ></LI
 ></UL
 >

@@ -1,5 +1,9 @@
 $Id$
 
+version 1.5.6 (??/??/????):
+
+  - finished translation of documentation (kondi)
+
 version 1.5.5 Anubis (25/03/2005):
 
   - fixed empty page printing on invoices when trying to print only 

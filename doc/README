@@ -2529,7 +2529,7 @@ endif
 
 Chapter 5. Configuration file generator (lms-mgc)
 
-   LMS-MGC is "magicall" configuration file generator. With some efforts,
+   LMS-MGC is "magical" configuration file generator. With some efforts,
    you can create virtually any configuration file using it (ie. zone
    definition file for BIND)
      _________________________________________________________________
@@ -2537,13 +2537,13 @@ Chapter 5. Configuration file generator (lms-mgc)
 5.1. Installation
 
    LMS-MGC has its own configuration file: lms-mgc.ini. You should
-   install it by moving it to /usr/sbin directory. LMS-MGC should be used
-   in two either ways: scheduled from cron (eg. hourly)
+   install script by moving it to /usr/sbin directory. LMS-MGC should be
+   used in two either ways: scheduled from cron (eg. hourly)
 0 * * * *       /usr/sbin/lms-mgc 1 > /dev/null
 
-   or called from LMS 'Reload' menu. Second setup requires sudo to use.
-   Unfortunately this method requires you to add user to sudo, and set in
-   [phpui] section of lms.ini:
+   or called from LMS 'Reload' menu. Second setup requires sudo to be
+   used. Unfortunately this method requires you to add user to sudo, and
+   set in [phpui] section of lms.ini:
 
    reload_type = exec
 
@@ -2593,263 +2593,257 @@ Chapter 5. Configuration file generator (lms-mgc)
 
 5.2.2. Section [mgc] - list of instances
 
-   W³a¶ciwa konfiguracja dotycz±ca generatorów poszczególnych plików
-   konfiguracyjnych jest umieszczana w sekcji [mgc] i pochodnych. W samej
-   sekcji [mgc] mo¿emy u¿yæ nastêpuj±cego parametru:
+   Significant parts of configuration are placed in section [mgc] and its
+   derivative sections. In [mgc] alone you can use the following
+   parameter:
      * instances
-       Lista "instancji" oddzielona spacjami.
+       List of instances (separated by spaces).
        Example: instaces = dhcp firewall squid
 
    Note
 
-   Zmienn± instances mo¿na tak¿e umie¶ciæ w sekcji dowolnej instancji.
-   Patrz ni¿ej.
+   You can also place instances variable in any derivative instance
+   section. See below.
      _________________________________________________________________
 
 5.2.3. Section [mgc:xxx] - instance configuration
 
-   Ka¿da instancja ma swoj± nazwê i jej konfiguracjê tworzy siê
-   umieszczaj±c sekcjê o nazwie [mgc:nazwa], czyli przyk³adowo:
-   [mgc:mydaemon]
+   Each instance has its name and its configuration is created by
+   creating derivative section of name [mgc:name], eg. [mgc:mydaemon]
 
-   W samych instancjach mo¿emy u¿ywaæ nastêpuj±cych opcji
-   konfiguracyjnych:
+   All of those sections may include following configuration options:
      * instances
-       Zmienna, w której mo¿esz podaæ listê innych instancji, aby
-       nastêpnie wywo³ywaæ mgc poleceniem 'lms-mgc -i sekcja' zamiast
-       'lms-mgc -i "sekcja1 sekcja2 sekcja3"'. Je¶li zostanie u¿yta,
-       wszystkie pozosta³e zmienne tej sekcji zostan± zignorowane.
+       This variable allows you to group a list of other instances (eg.
+       instances = ins1 ins2 ins3), and then call your mgc with 'lms-mgc
+       -i mydaemon' instead of 'lms-mgc -i "ins1 ins2 ins3"'. If you use
+       this variable all other settings in this section will be ignored.
        Example: instances = dns1 dns2 dns3
      * outfile
-       Definiuje plik do którego ma byæ zapisany wynik dzia³ania bie¿±cej
-       instancji (je¿eli ta zmienna bêdzie nie ustawiona, instancja siê
-       zakoñczy)
+       Output file, where instance structured dump will be saved
+       (instance will quit instantly if this variable is not set).
        Example: outfile = /etc/somefile
      * append
-       Pozwala ustawiæ aby wynik dzia³ania instancji nie nadpisywa³ pliku
-       wynikowego, lecz zosta³ dopisany na jego koñcu
+       It allows you to define to not overwrite outfile, but append to
+       its end instead.
        Example: append = 1
      * outfile_perm
-       Pozwala na ustawienie praw dostêpu do pliku wyj¶ciowego (domy¶lnie
-       600)
+       Permissions for output file. Default: 600 (-rw-------)
        Example: outfile_perm = 700
      * outfile_owner
-       Pozwala na ustawienie w³a¶ciciela pliku wyj¶ciowego (domy¶lnie 0)
+       UID of output file owner. Default: 0
        Example: outfile_owner = 0
 
        Warning
 
-   W³a¶ciciel musi byæ podany numerycznie!
+   You have to provide numerical UID, not username!
      * outfile_group
-       Pozwala na ustawienie grupy pliku wyj¶ciowego (domy¶lnie 0)
+       GID of output file owner. Default: 0
        Example: outfile_group = 0
 
        Warning
 
-   Grupa musi byæ podana numerycznie!
+   You have to provide numerical GID, not group name!
      * header_file
-       Pozwala na umieszczenie w pliku wynikowym zawarto¶ci innego pliku
-       jako nag³ówek (domy¶lnie nie ustawione)
+       Filename, that should be prepended at beginning of output file.
+       Default: unset
        Example: header_file = /etc/lms/myservice_header
      * header
-       Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako
-       nag³ówka (domy¶lnie puste)
-       Example: header = option1 = bla\noption2 = blabla
+       String, which should be put at beginning of output file. Default:
+       unset
+       Example: header = option1 = blah\noption2 = blab-la
 
        Note
 
-   Znak \n zosta³ tu u¿yty jako separator linii. Koñcowe \n nie jest
-   wymagane.
+   You should use \n as line separator. You may omit line separator at
+   the end of last line.
      * networks
-       Pozwala ustaliæ które z naszych sieci bêd± uwzglêdniane w pliku
-       konfiguracyjnym (domy¶lnie wszystkie)
+       >List of (space separated) networks, that should be considered
+       while creating configuration file. If unset, configuration will
+       include all networks.
        Example: networks = cust1-publ cust2-publ cust3-priv
 
-   Teraz mgc pobiera kolejne sieci i wykonuje w kó³ko nastêpuj±ce
-   czynno¶ci:
+   Mgc script now loops for each network and performs the following
+   tasks:
      * network_header
-       Generuje nag³ówek dla ka¿dej sieci (domy¶lnie puste):
+       String, which should be put at beginning of network section.
+       Default: empty
        Example: network_header = network %ADDR/%MASK { # Config section
        for %NAME
      * dst_networks
-       Pozwala ustawiæ sieci docelowe, czyli takie dla których bêdzie
-       przetwarzany parametr: dst_network_header (domy¶lnie wszystkie):
+       List of destination network names, for which dst_network_header
+       variable (see below) will be used. Default: all
        Example: dst_networks = main coalloc
      * dst_network_header
-       Pozwala ustawiæ nag³ówek dla sieci docelowych
+       Lets you to set destination networks header.
        Example: dst_network_header = \tallow to %DADDR/%DMASK;
      * network_body
-       Parametr jest przetwarzany po wys³aniu nag³ówków dla sieci, a
-       przed rozpoczêciem analizy adresów IP
+       This parameter is parsed after network headers and before IP
+       addresses loop.
        Example: network_body = \tnodes {
 
-   Teraz MGC rozpocznie przetwarzanie regu³ek dla kolejnych adresów IP.
-   Robi to w dosyæ specyficzny sposób. Tzn. oblicza kolejny adres IP i
-   sprawdza czy zdefiniowano regu³ê dla hosta i wykonuje pierwsz±.
-   Sprawdzanie jest wykonywane w nastepuj±cej kolejno¶ci:
+   Mgc script now loops into below rules for each IP address for given
+   range. It takes each IP address and checks if a rule is defined for
+   this address, if yes - it executes first rule that matches. Matches
+   are being parsed in specific order, as described below:
      * ignore
-       Pozwala na ustawienie listy adresów w postaci adres/prefix lub
-       adres/maska oddzielanej spacjami dla której ma byæ ignorowane
-       generowanie
+       Lets you setup list of addresses (in address/prefix or
+       address/netmask form, space separated) which should be skipped.
        Example: ignore = 192.168.0.100/32
      * node(IP)
-       Przy pomocy tej opcji mo¿na zdefiniowaæ regu³ê dla wybranego
-       komputera. W nawiasie podaje siê jego adres IP. Ka¿da sekcja
-       instancji mo¿e zawieraæ dowoln± ilo¶æ takich opcji.
+       Allows you to add line for given IP address. IP address should be
+       provided in parenthesis. Each section may have unlimited number of
+       such options.
        Example: node(192.168.0.20) = ??
      * allnodes
-       Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego
-       adresu IP.
+       Adds line for each non-ignored IP address.
        Example: allnodes = ??
      * allexistnodes
-       Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego
-       adresu IP który jest u¿ywany.
+       Adds line for each IP address that is 'owner' by a computer in
+       database.
        Example: allexistnodes = ??
      * grantednode_priv
-       Jest przetwarzana gdy dany adres komputer z danym adresem IP
-       istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka
-       przetwarzana dla adresów prywatnych)
+       Adds line for each IP address with 'connected' status in database
+       (parsed only for private address classes).
        Example: grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;
      * grantednode_publ
-       Jest przetwarzana gdy dany adres komputer z danym adresem IP
-       istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka
-       przetwarzana dla adresów publicznych)
+       Adds line for each IP address with 'connected' status in database
+       (parsed only for public address classes).
        Example: grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;
      * deniednode_priv
-       Jest przetwarzana gdy dany adres komputer z danym adresem IP
-       istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana
-       dla adresów prywatnych)
+       Adds line for each IP address with 'disconnected' status in
+       database (parsed only for private address classes).
        Example: deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;
      * deniednode_publ
-       Jest przetwarzana gdy dany adres komputer z danym adresem IP
-       istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana
-       dla adresów publicznych)
+       Adds line for each IP address with 'disconnected' status in
+       database (parsed only for public address classes).
        Example: deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;
      * dhcpnode_priv
-       Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP
-       (regu³ka przetwarzana dla adresów prywatnych)
+       Adds line for each IP address within DHCP dynamic range (parsed
+       only for private address classes).
        Example: dhcpnode_priv = node unknown (%IP) reject;
      * dhcpnode_publ
-       Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP
-       (regu³ka przetwarzana dla adresów publicznych)
+       Adds line for each IP address within DHCP dynamic range (parsed
+       only for public address classes).
        Example: dhcpnode_publ = node unknown (%IP) reject;
      * freeip_priv
-       Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego
-       komputera (regu³ka przetwarzana dla adresów prywatnych)
+       Adds line for each IP address that is not occupied by any computer
+       in database (parsed only for private address classes).
        Example: freeip_priv = node unknown (%IP) lock_as_unused;
      * freeip_publ
-       Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego
-       komputera (regu³ka przetwarzana dla adresów publicznych)
+       Adds line for each IP address that is not occupied by any computer
+       in database (parsed only for public address classes).
        Example: freeip_publ = node unknown (%IP) lock_as_unused;
      * default_priv
-       Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie
-       przetworzony przez ¿adn± regu³kê grantednode lub deniednode
-       (regu³ka przetwarzana dla adresów prywatnych)
+       Default line, which is inserted when none of grantednode or
+       deniednode matches for given IP address (parsed only for private
+       address classes)
        Example: default_priv = node unknown (%IP) lock_as_intruder;
 
        Note
 
-   lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który
-   do prywatnej.
+   Mgc automatically detects if given address belongs to private or
+   public network.
      * default_publ
-       Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie
-       przetworzony przez ¿adn± regu³kê grantednode lub deniednode
-       (regu³ka przetwarzana dla adresów publicznych)
+       Default line, which is inserted when none of grantednode or
+       deniednode matches for given IP address (parsed only for public
+       address classes)
        Example: default_publ = node unknown (%IP) lock_as_intruder;
 
-   W koñcu nastêpuje wygenerowanie koñcowej czê¶ci pliku i wykonanie
-   polecenia systemowego.
+   Mgc now is ready to append final part of the file and execute system
+   command.
      * network_footer
-       Pozwala na ustawienie stopki dla w³a¶nie przetwarzanej sieci
+       Adds line for currently processed network.
        Example: network_footer = ??
      * footer_file
-       Pozwala na umieszczenie w pliku wynikowym zawarto¶ci innego pliku
-       jako stopka (domy¶lnie nie ustawione)
+       Filename, that should be appended at the end of output file.
+       Default: unset
        Example: footer_file = /etc/lms/myservice_footer
      * footer
-       Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako
-       stopki (domy¶lnie puste)
+       String, which should be put at the end of output file. Default:
+       unset
        Example: footer = # End.
      * post_exec
-       Komenda do wywo³ania po wygenerowaniu pliku konfiguracyjnego
+       System command that should be executed after saving output file.
        Example: post_exec = killall -HUP mydaemon
      _________________________________________________________________
 
 5.2.4. Configuration variables
 
-   W opcjach konfiguracyjnych mo¿na u¿ywaæ nastêpuj±cych zmiennych, które
-   zostan± podmienione na odpowiednie dane z bazy:
+   You can use the following templates in your configuration variables.
+   They all will be substituted with appropriate data from LMS database.
 
-   Zmienne dla komputerów:
-     * %IP - adres IP komputera
+   Computer templates:
+     * %IP - IP address
      * %PIN - PIN of customer who owns node
-     * %ID - ID komputera w bazie
-     * %MAC - adres MAC karty sieciowej
-     * %SMAC - adres MAC pisany ma³ymi literami z usuniêtymi dwukropkami
-     * %OWNER - w³a¶ciciel komputera
-     * %NAME - nazwa komputera du¿ymi znakami
-     * %name - nazwa komputera ma³ymi znakami
-     * %INFO - opis komputera
+     * %ID - ID of computer
+     * %MAC - MAC address
+     * %SMAC - MAC address, in lowercase and without colon separators
+     * %OWNER - owner's name
+     * %NAME - computer name, in uppercase
+     * %name - computer name, in lowercase
+     * %INFO - computer description
      * %PASSWD - node password
-     * %UPRATE - gwarantowany transfer dla danych wychodz±cych
-     * %DOWNRATE - gwarantowany transfer dla danych przychodz±cych
-     * %UPCEIL - maksymalny transfer dla danych wychodz±cych
-     * %DOWNCEIL - maksymalny transfer dla danych przychodz±cych
-     * %CLIMIT - limit równoczesnych po³±czeñ
-     * %PLIMIT - limit pakietów
-     * %1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP
-     * %NID - ID sieci, do której nale¿y komputer
-     * %NNAME - nazwa sieci du¿ymi znakami
-     * %nname - nazwa sieci ma³ymi znakami
-     * %NADDR - adres sieci
-     * %NIFACE - interfejs sieci
-     * %NMASK - maska sieci
-     * %NGATE - adres bramy
-     * %NDNS - adres serwera DNS
-     * %NDNS2 - adres drugiego serwera DNS
-     * %NDOMAIN - domena sieci
-     * %NWINS - adres serwera WINS dla tej sieci
-     * %NDHCPS - pierwszy adres DHCP sieci
-     * %NDHCPE - ostatni adres DHCP sieci
+     * %UPRATE - guaranteed upload rate
+     * %DOWNRATE - guaranteed download rate
+     * %UPCEIL - maximum upload rate
+     * %DOWNCEIL - maximum download rate
+     * %CLIMIT - limit of concurrent connections
+     * %PLIMIT - maximum number of packets per second
+     * %1 %2 %3 %4 - consecutive (left to right) decimal octets of IP
+       address
+     * %NID - network ID where computer belongs
+     * %NNAME - network name, in uppercase
+     * %nname - network name, in lowercase
+     * %NADDR - network address
+     * %NIFACE - network interface
+     * %NMASK - network mask
+     * %NGATE - network gateway IP address
+     * %NDNS - primary DNS server IP address
+     * %NDNS2 - secondary DNS server IP address
+     * %NDOMAIN - domain name of the network
+     * %NWINS - WINS server IP address
+     * %NDHCPS - first IP address of dynamic DHCP range
+     * %NDHCPE - last IP address of dynamic DHCP range
 
-   Zmienne dla sieci (w opcjach dotycz±cych tylko sieci):
-     * %ID - ID sieci w bazie
-     * %NAME - nazwa sieci du¿ymi znakami
-     * %name - nazwa sieci ma³ymi znakami
-     * %ADDR - adres sieci
-     * %IFACE - interfejs
-     * %MASK - maska
-     * %GATE - brama sieci
-     * %DNS - serwer DNS tej sieci
-     * %DNS2 - drugi serwer DNS tej sieci
-     * %DOMAIN - domena tej sieci
-     * %WINS - adres serwera WINS dla tej sieci
-     * %DHCPS - pierwszy adres DHCP tej sieci
-     * %DHCPE - ostatni adres DHCP tej sieci
+   Network templates (for sections relevant to networks only):
+     * %ID - network ID
+     * %NAME - network name, in uppercase
+     * %name - network name, in lowercase
+     * %ADDR - network IP address
+     * %IFACE - network interface
+     * %MASK - network IP mask
+     * %GATE - network gateway IP address
+     * %DNS - primary DNS server IP address
+     * %DNS2 - secondary DNS server IP address
+     * %DOMAIN - domain name of the network
+     * %WINS - WINS server IP address for the network
+     * %DHCPS - first IP address of dynamic DHCP range for the network
+     * %DHCPE - last IP address of dynamic DHCP range for the network
 
    Note
 
-   W opcji konfiguracyjnej dst_network_header mo¿na ponadto u¿yæ
-   powy¿szych zmiennych ale poprzedzonych liter± D (np. %DADDR, %dname)
-   jako parametry sieci docelowych.
+   Additionally, dst_network_header variable may include above templates
+   prepended with D (ie. %DADDR, %dname) to get data relevant to
+   destination networks.
 
-   Zmienne które mo¿na stosowaæ we wszystkich opcjach:
-     * %DATE - data w formacie YYYYMMDD;
-     * %TIME - czas w formacie HHMM;
-     * %TIMES - czas w formacie HHMMSS;
-     * %UTIME - czas w formacie unix timestamp;
+   Templates which can be used everywhere:
+     * %DATE - date in YYYYMMDD format;
+     * %TIME - time in HHMM format;
+     * %TIMES - time in HHMMSS format;
+     * %UTIME - time in unix timestamp format;
      _________________________________________________________________
 
 5.3. Examples of use
 
-   Konfiguracja i zasada dzia³ania lms-mgc mo¿e siê wydawaæ do¶æ zawi³a,
-   dlatego pos³u¿ymy siê przyk³adem. Poni¿ej przedstawiono sposób
-   generowania i uruchamiania firewalla ipchains (bardzo prostego).
+   Configuration and implementation of lms-mgc might seem quite complex,
+   so we provide small example. Below you can find rules to create and
+   execute quite simple ipchains firewall.
 
    Example 5-1. Lms-mgc: Example instance
 
-   Zacznij od utworzenia nowej sekcji mgc w lms-mgc.ini, nazywaj±c j±
-   'ipchains' i stwórz w tej sekcji prost± maskaradê per adres IP z lanu:
+   You should start with creating new mgc section in lms-mgc.ini, with
+   relevant name ('ipchains') and put a simple masquerade rules, per IP,
+   inside:
 [mgc:ipchains]
 outfile           = /etc/rc.d/rc.masq
 outfile_perm      = 700
@@ -2857,13 +2851,13 @@ header            = #!/bin/sh\n/sbin/ipchains -F\n/sbin/ipchains -X\n/sbin/ipcha
 grantednode_priv  = /sbin/ipchains -A forward -s %IP -j MASQ
 post_exec         = /etc/rc.d/rc.masq
 
-   Dopiszmy tak¿e do sekcji g³ównej mgc informacjê ¿eby mgc uruchamia³ t±
-   sekcjê:
+   You can also add your ipchains subsection to main mgc section, so that
+   it executes it by default:
 [mgc]
 instances         = ipchains
 
-   Teraz próba odpalenia lms-mgc powinna zaowocowaæ wygenerowaniem
-   /etc/rc.d/rc.masq, oraz jego odpaleniem.
+   If you run lms-mgc now, without any arguments, you should have simple
+   script /etc/rc.d/rc.masq generated and already executed.
      _________________________________________________________________
 
 Chapter 6. A.L.E.C's LMS Daemon
