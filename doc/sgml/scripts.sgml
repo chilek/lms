@@ -151,6 +151,9 @@
 	    <listitem>
 	       <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:</para>
 	    </listitem>
+	    <listitem>
+	       <para>%pin - numer PIN u¿ytkownika.</para>
+	    </listitem>
 	  </itemizedlist>
 	  <example id="notify-example">
 	   <title>Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</title>
