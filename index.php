@@ -146,7 +146,7 @@ $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
 $SESSION = new Session($DB, $_TIMEOUT);
 
-$LMS = new LMS($DB, $SESSION);
+$LMS = new LMS($DB, $SESSION, $_CONFIG);
 $LMS->CONFIG = $_CONFIG;
 
 $SMARTY = new Smarty;
@@ -230,6 +230,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.117  2003/11/26 18:23:36  alec
+ * nie wiem czy to tak mia³o byæ, ale teraz dziala
+ *
  * Revision 1.116  2003/11/18 20:32:17  alec
  * 100of c & php iniparsers compatibility
  *
