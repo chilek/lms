@@ -258,14 +258,14 @@ while (my $row = $dbq->fetchrow_hashref())
 
 				if ($line =~ /\%last_10_in_a_table/ ) {
 					my $last10_dbq = $dbase->prepare("SELECT comment, value, type, time FROM cash WHERE 
-							userid='$row->{'id'}' AND (type>='3' ) ORDER BY time DESC LIMIT 10") ;
+							userid='$row->{'id'}' AND (type>='3' ) ORDER BY time ASC LIMIT 10") ;
 				# ok, now we are going to rise up system's load
 					$last10_dbq->execute();
  					$smtp->datasend("Data       | Opis                                                 | Warto¶æ\n");
 					$smtp->datasend("-----------+------------------------------------------------------+---------\n");
 					while (my $row_s = $last10_dbq->fetchrow_hashref())
 						{
-						my $aqq=($row_s->{'type'}==3)?-1:1;
+						my $aqq=($row_s->{'type'}==3)?1:-1;
 						my $op_amount=sprintf("%8.2f", $aqq*$row_s->{'value'});
 						my @typy = ('a', 'b', 'Abonament', 'Wp³ata', 'Instalacja', 'Inne');
 						my $op_type=@typy[$row_s->{'type'}] || "$row_s->{'type'}";
