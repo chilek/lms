@@ -578,7 +578,7 @@ database = /usr/local/lms/lms.db</screen>
 	</listitem>
 	<listitem>
 	    <para>contract_template</para>
-	    <para>Specific customer contract template. Default template can be adapted.
+	    <para>Specify customer contract template. Default template can be adapted.
 	    Default: contract.html.</para>
 	    <para>Example:     <prompt>contract_template = "../my_templates/contract.html"</prompt></para>
 	</listitem>
