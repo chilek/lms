@@ -36,9 +36,14 @@ if($_GET[action]=="disconnectnode") {
 
 if($_GET[action]=="connect") {
 	if(! $LMS->NetDevLink($_GET[netdev], $_GET[id]) )
-		$error[link] = "Po³±czenie istnieje lub brak wolnych portów w urz±dzeniu";
+		$error[link] = "Brak wolnych portów w urz±dzeniu";
     }
     
+if($_GET[action]=="connectnode") {
+	if(! $LMS->NetDevLinkComputer($_GET[nodeid], $_GET[id]) )
+		$error[linknode] = "Brak wolnych portów w urz±dzeniu";
+    }
+
 $netdevdata = $_POST[netdev];
 
 if(isset($netdevdata)) {
@@ -66,6 +71,13 @@ unset($netdevlist[total]);
 unset($netdevlist[order]);
 unset($netdevlist[direction]);
 
+$nodelist = $LMS->GetNodeList();
+unset($nodelist[totaloff]);
+unset($nodelist[totalon]);
+unset($nodelist[total]);
+unset($nodelist[order]);
+unset($nodelist[direction]);
+
 $layout[pagetitle]="Edycja urz±dzenia: ".$netdevdata[name]." ".$netdevdata[producer];
 
 $SMARTY->assign("layout",$layout);
@@ -73,11 +85,15 @@ $SMARTY->assign("error",$error);
 $SMARTY->assign("netdev",$netdevdata);
 $SMARTY->assign("netdevlist",$netdevconnected);
 $SMARTY->assign("netcomplist",$netcomplist);
+$SMARTY->assign("nodelist",$nodelist);
 $SMARTY->assign("restnetdevlist",$netdevlist);
 $SMARTY->display("netdevedit.html");
 
 /*
  * $Log$
+ * Revision 1.6  2003/10/04 20:05:36  alec
+ * now we can connect nodes to netdevices
+ *
  * Revision 1.5  2003/10/04 19:23:25  alec
  * now we can link net devices
  *
