@@ -43,7 +43,10 @@
 			dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i odwrotny, htb),</para>
 	  	</listitem>
 		<listitem>
-			<para>wizualizacja statystyk wykorzystania ³±cza.</para>
+			<para>wizualizacja statystyk wykorzystania ³±cza,</para>
+		</listitem>
+		<listitem>
+			<para>system obs³ugi zg³oszeñ (Helpdesk).</para>
 		</listitem>
 		</itemizedlist>
 		<para>Ca³o¶æ zosta³a wymy¶lona w ramach administracji <ulink url="http://www.netx.waw.pl/">ASK NetX</ulink> 
