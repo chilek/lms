@@ -589,12 +589,16 @@ class LMS
 
 		if($userlist = $this->DB->GetAll("SELECT users.id AS id, ".$this->DB->Concat("UPPER(lastname)","' '","users.name")." AS username, deleted, status, email, phone1, address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (type = 3 OR type = 4) WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." GROUP BY users.id, deleted, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info ".($sqlord !="" ? $sqlord." ".$direction:"")))
 		{
-			$tariffvalues = $this->DB->GetAllByKey("SELECT users.id AS id, SUM(value) AS value FROM users, assignments, tariffs WHERE users.id = assignments.userid AND tariffs.id = tariffid GROUP by users.id",'id');
+			$week = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND period = 0 GROUP BY users.id', 'id');
+			$month = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND period = 1 GROUP BY users.id', 'id');
+			$quarter = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)/3 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND period = 2 GROUP BY users.id', 'id');
+			$year = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND period = 3 GROUP BY users.id', 'id');
+
 			$access = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid",'id');
 
 			foreach($userlist as $idx => $row)
 			{
-				$userlist[$idx]['tariffvalue'] = $tariffvalues[$row['id']]['value'];
+				$userlist[$idx]['tariffvalue'] = $week[$row['id']]['value']+$month[$row['id']]['value']+$quarter[$row['id']]['value']+$year[$row['id']]['value'];
 				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'])
 					$userlist[$idx]['nodeac'] = 1;
 				elseif($access[$row['id']]['acsum'] == 0)
