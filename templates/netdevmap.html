@@ -1,0 +1,18 @@
+{include file="header.html"}
+<!-- $Id$ -->
+{include file="netdevheader.html"}
+<H1>{$layout.pagetitle}</H1>
+<P ALIGN="CENTER">
+<IMG SRC="?m=netdevmap&graph=true&start={$start}" BORDER="1">
+</P>
+<FORM METHOD="GET" ACTION="?m=netdevmap" NAME="x">
+	<P ALIGN="CENTER">Zacznij mapê od:
+	<INPUT TYPE="hidden" NAME="m" VALUE="netdevmap">
+	<SELECT SIZE="1" NAME="start" onChange="document.x.submit();">
+		{section name=a loop=$deviceslist}
+		<OPTION VALUE="{$deviceslist[a].id}">{$deviceslist[a].name}</OPTION>
+		{/section}
+	</SELECT>
+	</P>
+</FORM>
+{include file="footer.html"}
