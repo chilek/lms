@@ -2895,297 +2895,6 @@ class LMS
 	}
 	
 	/*
-	 * Pozosta³e funkcje...
-	 */
-	
-	function GetRemoteMACs($host = '127.0.0.1', $port = 1029)
-	{
-		if($socket = socket_create (AF_INET, SOCK_STREAM, 0))
-			if(@socket_connect ($socket, $host, $port))
-			{
-				while ($input = socket_read ($socket, 2048))
-					$inputbuf .= $input;
-				socket_close ($socket);
-			}
-		foreach(split("\n",$inputbuf) as $line)
-		{
-			list($ip,$hwaddr) = split(' ',$line);
-			if(check_mac($hwaddr))
-			{
-				$result['mac'][] = $hwaddr;
-				$result['ip'][] = $ip;
-				$result['longip'][] = ip_long($ip);
-				$result['nodename'][] = $this->GetNodeNameByMAC($mac);
-			}
-		}
-		return $result;
-	}
-
-	function GetMACs()
-	{
-		switch(PHP_OS)
-		{
-			case 'Linux':
-				if(@is_readable('/proc/net/arp'))
-					$file=fopen('/proc/net/arp','r');
-				else
-					return FALSE;
-				while(!feof($file))
-				{
-					$line=fgets($file,4096);
-					$line=eregi_replace("[\t ]+"," ",$line);
-					list($ip, $hwtype, $flags, $hwaddr, $mask, $device) = split(' ',$line);
-					if($flags != '0x6' && $hwaddr != '00:00:00:00:00:00')
-					{
-						$result['mac'][] = $hwaddr;
-						$result['ip'][] = $ip;
-						$result['longip'][] = ip_long($ip);
-						$result['nodename'][] = $this->GetNodeNameByMAC($mac);
-					}
-				}
-				break;
-
-			default:
-				exec('arp -an|grep -v incompl',$result);
-				foreach($result as $arpline)
-				{
-					list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(' ',$arpline);
-					$ip = str_replace('(','',str_replace(')','',$ip));
-					if($perm != "PERM")
-					{
-						$result['mac'][] = $mac;
-						$result['ip'][] = $ip;
-						$result['longip'][] = ip_long($ip);
-						$result['nodename'][] = $this->GetNodeNameByMAC($mac);
-					}
-				}
-				break;
-
-		}
-		array_multisort($result['longip'],$result['mac'],$result['ip'],$result['nodename']);
-		return $result;
-	}
-	
-	
-	function GetNodeByMAC($ip)
-	{
-		exec("arp -an | grep -v incompl | grep $ip" ,$result);
-		foreach ($result as $arpline)
-		{
-		    list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(' ',$arpline);
-		    $ip = str_replace('(','',str_replace(')','',$ip));
-
-		    $result['mac'] = $mac;
-		    $result['ip'] = $ip;
-		    $result['longip'] = ip_long($ip);
-		    $result['nodename'] = $this->GetNodeNameByMAC($mac);
-		}		
-		return $result;
-	}
-
-	function Mailing($mailing)
-	{
-		global $LANGDEFS;
-		if($emails = $this->GetEmails($mailing['group'], $mailing['network'], $mailing['usergroup']))
-		{
-			if($this->CONFIG['phpui']['debug_email'])
-				echo '<B>'.trans('Warning! Debug mode (using address $0).',$this->CONFIG['phpui']['debug_email']).'</B><BR>';
-
-			foreach($emails as $key => $row)
-			{
-				if($this->CONFIG['phpui']['debug_email'])
-					$row['email'] = $this->CONFIG['phpui']['debug_email'];
-
-				mail (
-					$row['username'].' <'.$row['email'].'>',
-					$mailing['subject'],
-					$mailing['body'],
-					'From: '.$mailing['from'].' <'.$mailing['sender'].">\n".'Content-Type: text/plain; charset='.$LANGDEFS[$this->lang]['charset'].";\n".'X-Mailer: LMS-'.$this->_version.'/PHP-'.phpversion()."\n".'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n".'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']."\n"
-				);
-				
-				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$0 of $1 ($2): $3 &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.2f',round((100/sizeof($emails))*($key+1),2)), $row['username'], $row['email'])."<BR>\n";
-				flush();
-			}
-		}
-	}
-
-	function LiabilityReport($date, $order='brutto,asc', $userid=NULL)
-	{
-		$yearday = date('z', $date);
-		$month = date('n', $date);
-		$monthday = date('j', $date);
-		$weekday = date('w', $date);
-		switch($month) 
-		{
-		    case 1:
-		    case 4:
-		    case 7:
-		    case 10: $quarterday = $monthday; break;
-		    case 2:
-		    case 5:
-		    case 8:
-		    case 11: $quarterday = $monthday + 100; break;
-		    default: $quarterday = $monthday + 200; break;
-		}
-		
-		list($order,$direction)=explode(',', $order);
-
-		($direction != 'desc') ? $direction = 'ASC' : $direction = 'DESC';
-
-		switch($order){
-
-			case 'username':
-				$sqlord = 'ORDER BY username';
-			break;
-			default:
-				$sqlord = 'ORDER BY brutto';
-			break;
-		}
-		
-		return $this->DB->GetAll('SELECT '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, '
-			    .$this->DB->Concat('city',"' '",'address').' AS address, nip, 
-			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS val22,  
-			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS val7, 
-			    SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS val0, 
-			    SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS valfree,
-			    SUM(value) AS brutto  
-			    FROM assignments, tariffs, users  
-			    WHERE userid = users.id AND tariffid = tariffs.id 
-			    AND deleted=0 AND (datefrom<=?) AND ((dateto>=?) OR dateto=0) 
-			    AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?)) '
-			    .($userid ? "AND userid=$userid" : ''). 
-			    'GROUP BY userid, lastname, users.name, city, address, nip '
-			    .($sqlord != '' ? $sqlord.' '.$direction : ''),
-			    array($date, $date, $weekday, $monthday, $quarterday, $yearday));
-	}
-
-	/*
-	 *  Stats
-	 */
-
-	function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
-	{
-		// period
-		if (is_array($from))
-			$fromdate = mktime($from[Hour],$from[Minute],0,$from[Month],$from[Day],$from[Year]);
-		else
-			$fromdate = $from;
-		if (is_array($to))
-			$todate = mktime($to[Hour],$to[Minute],59,$to[Month],$to[Day],$to[Year]);
-		else
-			$todate = $to;
-
-		$delta = ($todate-$fromdate) ? ($todate-$fromdate) : 1;
-
-		$dt = "( dt >= $fromdate AND dt <= $todate )";
-
-		// nets
-		if ($net != "allnets")
-		{
-			$params = $this->GetNetworkParams($net);
-			$params['address']++;
-			$params['broadcast']--;
-			$net = ' AND ( ipaddr > '.$params['address'].' AND ipaddr < '.$params['broadcast'].' )';
-		}
-		else
-			$net = '';
-
-		// order
-		switch ($order)
-		{
-			case 'nodeid':
-				$order = ' ORDER BY nodeid';
-			break;
-			case 'download':
-				$order = ' ORDER BY download DESC';
-			break;
-			case 'upload':
-				$order = ' ORDER BY upload DESC';
-			break;
-			case 'name':
-				$order = ' ORDER BY name';
-			break;
-			case 'ip':
-				$order = ' ORDER BY ipaddr';
-			break;
-		}
-
-		// limits
-		if($limit > 0)
-			$limit = ' LIMIT '.$limit;
-		else
-			$limit = '';
-
-		// join query from parts
-		$query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE 1=1 AND '.$dt.' '.$net.' GROUP BY nodeid, name, ipaddr '.$order.' '.$limit;
-
-		// get results
-		if ($traffic = $this->DB->GetAll($query))
-		{
-			foreach ($traffic as $idx => $row)
-			{
-				$traffic['upload']['data'][] = $row['upload'];
-				$traffic['download']['data'][] = $row['download'];
-				$traffic['upload']['avg'][] = $row['upload']/($delta*1024);
-				$traffic['download']['avg'][] = $row['download']/($delta*1024);
-				$traffic['upload']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
-				$traffic['download']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
-				$traffic['upload']['ipaddr'][] = $row['ip'];
-				$traffic['download']['nodeid'][] = $row['nodeid'];
-				$traffic['upload']['nodeid'][] = $row['nodeid'];
-				$traffic['download']['ipaddr'][] = $row['ip'];
-				$traffic['download']['sum']['data'] += $row['download'];
-				$traffic['upload']['sum']['data'] += $row['upload'];
-			}
-			$traffic['upload']['avgsum'] = $traffic['upload']['sum']['data']/($delta*1024);
-			$traffic['download']['avgsum'] = $traffic['download']['sum']['data']/($delta*1024);
-
-			// get maximum data from array
-
-			$maximum = max($traffic['download']['data']);
-			if($maximum < max($traffic['upload']['data']))
-				$maximum = max($traffic['upload']['data']);
-
-			if($maximum == 0)		// do not need divide by zero
-				$maximum = 1;
-
-			// make data for bars drawing
-			$x = 0;
-
-			foreach ($traffic['download']['data'] as $data)
-			{
-				$traffic['download']['bar'][] = round($data * 150 / $maximum);
-				list($traffic['download']['data'][$x], $traffic['download']['unit'][$x]) = setunits($data);
-				$x++;
-			}
-			$x = 0;
-
-			foreach ($traffic['upload']['data'] as $data)
-			{
-				$traffic['upload']['bar'][] = round($data * 150 / $maximum);
-				list($traffic['upload']['data'][$x], $traffic['upload']['unit'][$x]) = setunits($data);
-				$x++;
-			}
-
-			//set units for data
-			list($traffic['download']['sum']['data'], $traffic['download']['sum']['unit']) = setunits($traffic['download']['sum']['data']);
-			list($traffic['upload']['sum']['data'], $traffic['upload']['sum']['unit']) = setunits($traffic['upload']['sum']['data']);
-		}
-
-		return $traffic;
-	}
-
-	function TrafficHost($from, $to, $host)
-	{
-	    return $this->DB->GetRow('SELECT sum(upload) as upload, sum(download) as download FROM stats WHERE dt >='.$from.' AND dt <'.$to.' AND nodeid='.$host);
-	}
-
-	function TrafficFirstRecord($host)
-	{
-	    return $this->DB->GetOne('SELECT MIN(dt) FROM stats WHERE nodeid='.$host);
-	}
-
-	/*
 	 * Helpdesk
 	 *
          * Ticket States:
@@ -3526,78 +3235,6 @@ class LMS
 		return $this->DB->Execute('DELETE FROM rtmessages WHERE id = ?', array($id));
 	}
 
-	function RTSearch($search, $order='createtime,desc')
-	{
-		if(!$order)
-			$order = 'createtime,desc';
-	
-		list($order,$direction) = explode(',',$order);
-
-		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
-
-		switch($order)
-		{
-			case 'ticketid':
-				$sqlord = 'ORDER BY rttickets.id';
-			break;
-			case 'subject':
-				$sqlord = 'ORDER BY rttickets.subject';
-			break;
-			case 'requestor':
-				$sqlord = 'ORDER BY requestor';
-			break;
-			case 'owner':
-				$sqlord = 'ORDER BY ownername';
-			break;
-			case 'lastmodified':
-				$sqlord = 'ORDER BY lastmodified';
-			break;
-			default:
-				$sqlord = 'ORDER BY rttickets.createtime';
-			break;
-		}
-
-		$where  = ($search['queue']     ? 'AND queueid='.$search['queue'].' '          : '');
-		$where .= ($search['owner']     ? 'AND owner='.$search['owner'].' '            : '');
-		$where .= ($search['userid']    ? 'AND rttickets.userid='.$search['userid'].' '   : '');
-		$where .= ($search['subject']   ? 'AND rttickets.subject=\''.$search['subject'].'\' '       : '');
-		$where .= ($search['state']!='' ? 'AND state='.$search['state'].' '            : '');
-		$where .= ($search['name']!=''  ? 'AND requestor LIKE \''.$search['name'].'\' '  : '');
-		$where .= ($search['email']!='' ? 'AND requestor LIKE \''.$search['email'].'\' ' : '');
-		$where .= ($search['uptime']!='' ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
-		
-		if($search['username'])
-			$where = 'AND users.lastname ?LIKE? \'%'.$search['username'].'%\' OR requestor ?LIKE? \'%'.$search['username'].'%\' ';
-
-		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
-		    FROM rttickets 
-		    LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
-		    LEFT JOIN admins ON (owner = admins.id) 
-		    LEFT JOIN users ON (rttickets.userid = users.id)
-		    WHERE 1=1 '
-		    .$where 
-		    .'GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.userid, users.lastname, users.name '
-		    .($sqlord !='' ? $sqlord.' '.$direction:'')))
-		{
-			foreach($result as $idx => $ticket)
-			{
-				//$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
-				//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
-				if(!$ticket['userid'])
-					list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
-				else
-					list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
-				$result[$idx] = $ticket;
-				$result['total']++;
-			}
-		}
-		
-		$result['order'] = $order;
-		$result['direction'] = $direction;
-		
-		return $result;
-	}
-
 	/*
 	 * Konfiguracja LMS-UI
 	 */
@@ -3655,65 +3292,143 @@ class LMS
 	}
 
 	/*
-	 * Templates (not used)
-	 */
-
-	function GetTemplatesList()
+	 *  Miscalenous
+	 */ 
+	
+	function GetRemoteMACs($host = '127.0.0.1', $port = 1029)
 	{
-		if($handle = @opendir($this->CONFIG['directories']['config_templates_dir']))
+		if($socket = socket_create (AF_INET, SOCK_STREAM, 0))
+			if(@socket_connect ($socket, $host, $port))
+			{
+				while ($input = socket_read ($socket, 2048))
+					$inputbuf .= $input;
+				socket_close ($socket);
+			}
+		foreach(split("\n",$inputbuf) as $line)
 		{
-			while(FALSE !== ($file = readdir($handle)))
-				if(ereg('^.*\.tpl$',$file))
-					$templates[] = ereg_replace('\.tpl$','',$file);
-			closedir($handle);
+			list($ip,$hwaddr) = split(' ',$line);
+			if(check_mac($hwaddr))
+			{
+				$result['mac'][] = $hwaddr;
+				$result['ip'][] = $ip;
+				$result['longip'][] = ip_long($ip);
+				$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+			}
 		}
-		return $templates;
+		return $result;
 	}
 
-	function GetTemplateArrays()
+	function GetMACs()
 	{
-		$result['users'] = $this->DB->GetAllByKey('SELECT * FROM users','id');
-		$result['nodes'] = $this->DB->GetAllByKey('SELECT * FROM nodes ORDER BY ipaddr ASC','id');
-		$result['tariffs'] = $this->DB->GetAllByKey('SELECT * FROM tariffs','id');
-		$result['networks'] = $this->DB->GetAllByKey('SELECT *, address AS addresslong, inet_ntoa(address) AS address FROM networks','id');
-		
-		$temp['balance'] = $this->DB->GetAllByKey('SELECT users.id AS id, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id','id');
-		$temp['finances'] = $this->DB->GetAllByKey('SELECT userid, SUM(value) AS value, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments LEFT JOIN tariffs ON tariffs.id = assignments.tariffid WHERE (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY userid','userid');
-
-		foreach($temp['balance'] as $balance)
-			$result['users'][$balance['id']]['balance'] = $balance['balance'];
-
-		foreach($temp['finances'] as $userid => $financesrecord)
+		switch(PHP_OS)
 		{
-			$result['users'][$userid]['uprate'] = $financesrecord['uprate'];
-			$result['users'][$userid]['downrate'] = $financesrecord['downrate'];
-			$result['users'][$userid]['value'] = $financesrecord['value'];
-		}			
-
-		foreach($result['nodes'] as $nodeid => $noderecord)
-		{
-			$result['users'][$noderecord['ownerid']]['nodes'][$nodeid] = &$result['nodes'][$nodeid];
-			$result['nodes'][$nodeid]['owner'] = &$result['users'][$noderecord['ownerid']];
-			$result['nodes'][$nodeid]['iplong'] = $noderecord['ipaddr'];
-			$result['nodes'][$nodeid]['ipaddr'] = long2ip($noderecord['ipaddr']);
-		}
-
-		foreach($result['networks'] as $networkid => $networkrecord)
-		{
-			$result['networks'][$networkid]['addresslong'] = $networkrecord['addresslong'];
-			$result['networks'][$networkid]['endaddresslong'] = ip_long(getbraddr($networkrecord['address'],$networkrecord['mask']));
-			$result['networks'][$networkid]['prefix'] = mask2prefix($networkrecord['mask']);
-			if($networknodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?', array($result['networks'][$networkid]['addresslong'],$result['networks'][$networkid]['endaddresslong'])))
-				foreach($networknodes as $nodeid)
+			case 'Linux':
+				if(@is_readable('/proc/net/arp'))
+					$file=fopen('/proc/net/arp','r');
+				else
+					return FALSE;
+				while(!feof($file))
 				{
-					$result['networks'][$networkid]['nodes'][$nodeid] = &$result['nodes'][$nodeid];
-					$result['nodes'][$nodeid]['network'] = &$result['networks'][$networkid];
+					$line=fgets($file,4096);
+					$line=eregi_replace("[\t ]+"," ",$line);
+					list($ip, $hwtype, $flags, $hwaddr, $mask, $device) = split(' ',$line);
+					if($flags != '0x6' && $hwaddr != '00:00:00:00:00:00')
+					{
+						$result['mac'][] = $hwaddr;
+						$result['ip'][] = $ip;
+						$result['longip'][] = ip_long($ip);
+						$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+					}
 				}
-		}
+				break;
 
+			default:
+				exec('arp -an|grep -v incompl',$result);
+				foreach($result as $arpline)
+				{
+					list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(' ',$arpline);
+					$ip = str_replace('(','',str_replace(')','',$ip));
+					if($perm != "PERM")
+					{
+						$result['mac'][] = $mac;
+						$result['ip'][] = $ip;
+						$result['longip'][] = ip_long($ip);
+						$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+					}
+				}
+				break;
+
+		}
+		array_multisort($result['longip'],$result['mac'],$result['ip'],$result['nodename']);
 		return $result;
 	}
 	
+	function GetNodeByMAC($ip)
+	{
+		exec("arp -an | grep -v incompl | grep $ip" ,$result);
+		foreach ($result as $arpline)
+		{
+		    list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(' ',$arpline);
+		    $ip = str_replace('(','',str_replace(')','',$ip));
+
+		    $result['mac'] = $mac;
+		    $result['ip'] = $ip;
+		    $result['longip'] = ip_long($ip);
+		    $result['nodename'] = $this->GetNodeNameByMAC($mac);
+		}		
+		return $result;
+	}
+
+	function LiabilityReport($date, $order='brutto,asc', $userid=NULL)
+	{
+		$yearday = date('z', $date);
+		$month = date('n', $date);
+		$monthday = date('j', $date);
+		$weekday = date('w', $date);
+		switch($month) 
+		{
+		    case 1:
+		    case 4:
+		    case 7:
+		    case 10: $quarterday = $monthday; break;
+		    case 2:
+		    case 5:
+		    case 8:
+		    case 11: $quarterday = $monthday + 100; break;
+		    default: $quarterday = $monthday + 200; break;
+		}
+		
+		list($order,$direction)=explode(',', $order);
+
+		($direction != 'desc') ? $direction = 'ASC' : $direction = 'DESC';
+
+		switch($order){
+
+			case 'username':
+				$sqlord = 'ORDER BY username';
+			break;
+			default:
+				$sqlord = 'ORDER BY brutto';
+			break;
+		}
+		
+		return $this->DB->GetAll('SELECT '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, '
+			    .$this->DB->Concat('city',"' '",'address').' AS address, nip, 
+			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS val22,  
+			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS val7, 
+			    SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS val0, 
+			    SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS valfree,
+			    SUM(value) AS brutto  
+			    FROM assignments, tariffs, users  
+			    WHERE userid = users.id AND tariffid = tariffs.id 
+			    AND deleted=0 AND (datefrom<=?) AND ((dateto>=?) OR dateto=0) 
+			    AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?)) '
+			    .($userid ? "AND userid=$userid" : ''). 
+			    'GROUP BY userid, lastname, users.name, city, address, nip '
+			    .($sqlord != '' ? $sqlord.' '.$direction : ''),
+			    array($date, $date, $weekday, $monthday, $quarterday, $yearday));
+	}
+
 	function GetContractList()
 	{
 		$contractlist = explode(',', $this->CONFIG['phpui']['contract_template']);
@@ -3727,6 +3442,5 @@ class LMS
 		
 		return $clist;
 	}
-			
 }
 ?>

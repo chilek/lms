@@ -24,6 +24,78 @@
  *  $Id$
  */
 
+function RTSearch($search, $order='createtime,desc')
+{
+	global $LMS;
+
+	if(!$order)
+		$order = 'createtime,desc';
+	
+	list($order,$direction) = explode(',',$order);
+
+	($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+
+	switch($order)
+	{
+		case 'ticketid':
+			$sqlord = 'ORDER BY rttickets.id';
+		break;
+		case 'subject':
+			$sqlord = 'ORDER BY rttickets.subject';
+		break;
+		case 'requestor':
+			$sqlord = 'ORDER BY requestor';
+		break;
+		case 'owner':
+			$sqlord = 'ORDER BY ownername';
+		break;
+		case 'lastmodified':
+			$sqlord = 'ORDER BY lastmodified';
+		break;
+		default:
+			$sqlord = 'ORDER BY rttickets.createtime';
+		break;
+	}
+
+	$where  = ($search['queue']     ? 'AND queueid='.$search['queue'].' '          : '');
+	$where .= ($search['owner']     ? 'AND owner='.$search['owner'].' '            : '');
+	$where .= ($search['userid']    ? 'AND rttickets.userid='.$search['userid'].' '   : '');
+	$where .= ($search['subject']   ? 'AND rttickets.subject=\''.$search['subject'].'\' '       : '');
+	$where .= ($search['state']!='' ? 'AND state='.$search['state'].' '            : '');
+	$where .= ($search['name']!=''  ? 'AND requestor LIKE \''.$search['name'].'\' '  : '');
+	$where .= ($search['email']!='' ? 'AND requestor LIKE \''.$search['email'].'\' ' : '');
+	$where .= ($search['uptime']!='' ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
+		
+	if($search['username'])
+		$where = 'AND users.lastname ?LIKE? \'%'.$search['username'].'%\' OR requestor ?LIKE? \'%'.$search['username'].'%\' ';
+
+	if($result = $LMS->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
+			FROM rttickets 
+			LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
+			LEFT JOIN admins ON (owner = admins.id) 
+			LEFT JOIN users ON (rttickets.userid = users.id)
+			WHERE 1=1 '
+			.$where 
+			.'GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.userid, users.lastname, users.name '
+			.($sqlord !='' ? $sqlord.' '.$direction:'')))
+	{
+		foreach($result as $idx => $ticket)
+		{
+			if(!$ticket['userid'])
+				list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
+			else
+				list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
+			$result[$idx] = $ticket;
+			$result['total']++;
+		}
+	}
+		
+	$result['order'] = $order;
+	$result['direction'] = $direction;
+		
+	return $result;
+}
+
 $layout['pagetitle'] = trans('Ticket Search');
 
 $search = $_POST['search'];
@@ -66,7 +138,7 @@ if(isset($search) || $_GET['search'])
 	
 	if(!$error)
 	{
-		$queue = $LMS->RTSearch($search, $o);
+		$queue = RTSearch($search, $o);
 		
 		$_SESSION['rtsearch'] = $search;
 		
