@@ -5,23 +5,23 @@
 <table cellpadding="3" width="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD class="fleftu" width="96%">
-			<NOBR><IMG src="img/network.gif" border="0" ALT="" align="absmiddle"> <B>Nazwa:</B><BR><IMG src="img/ip.gif" border="0" ALT="" align="absmiddle"> Adres/prefix (interfejs):</NOBR>
+			<NOBR><IMG src="img/network.gif" border="0" ALT="" align="absmiddle"> <B>{t}Name:{/t}</B><BR><IMG src="img/ip.gif" border="0" ALT="" align="absmiddle"> {t}Network/prefix (interface):{/t}</NOBR>
 		</TD>
 		<TD class="fbt" valign="top" align="right" width="1%">
-			<NOBR><IMG src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">ID:</NOBR><BR>
-			<NOBR><IMG src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">Adresy (razem/zajête/online):</NOBR>
+			<NOBR><IMG src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">{t}ID:{/t}</NOBR><BR>
+			<NOBR><IMG src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">{t}Addresses (total/busy/online):{/t}</NOBR>
 		</TD>
 		<TD class="fbt" width="1%">
-			<NOBR><IMG src="img/dns.gif" border="0" ALT="" align="absmiddle"> Serwery DNS:<BR><IMG src="img/domain.gif" border="0" ALT="" align="absmiddle"> Domena:</NOBR>
+			<NOBR><IMG src="img/dns.gif" border="0" ALT="" align="absmiddle"> {t}DNS servers:{/t}<BR><IMG src="img/domain.gif" border="0" ALT="" align="absmiddle"> {t}Domain:{/t}</NOBR>
 		</TD>
 		<TD class="fbt" width="1%">
-			<NOBR><IMG src="img/gateway.gif" border="0" ALT="" align="absmiddle"> Gateway:<BR>	<IMG src="img/wins.gif" border="0" ALT="" align="absmiddle"> Serwer WINS:</NOBR>
+			<NOBR><IMG src="img/gateway.gif" border="0" ALT="" align="absmiddle"> {t}Gateway:{/t}<BR>	<IMG src="img/wins.gif" border="0" ALT="" align="absmiddle"> {t}WINS server:{/t}</NOBR>
 		</TD>
 		<TD class="fbt" valign="top" width="1%">
-			<NOBR><IMG src="img/dhcp.gif" align="absmiddle" ALT="" border="0"> Zakres DHCP:</NOBR>
+			<NOBR><IMG src="img/dhcp.gif" align="absmiddle" ALT="" border="0"> {t}DHCP range:{/t}</NOBR>
 		</TD>
 		<TD class="frightu" width="1%" align="right">
-			<NOBR><B>Razem: {$listdata.total}</B></NOBR>
+			<NOBR><B>{t}Total:{/t} {$listdata.total}</B></NOBR>
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
@@ -46,9 +46,9 @@
 		</TD>
 		<TD class="fright">
 			<nobr>
-			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ sieæ \'{$netlist[netlist].name|upper}\'?')"><IMG src="img/delete.gif" border="0" ALT="[ Usuñ ]"></A>
-			<a href="?m=netedit&id={$netlist[netlist].id}"><IMG src="img/edit.gif" border="0" ALT="[ Edytuj ]"></A>
-			<a href="?m=netinfo&id={$netlist[netlist].id}"><IMG src="img/info.gif" border="0" ALT="[ Info ]"></A></nobr>
+			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t}Are you sure you want to remove network{/t} \'{$netlist[netlist].name|upper}\'?')"><IMG src="img/delete.gif" border="0" ALT="[ {t}Remove{/t} ]"></A>
+			<a href="?m=netedit&id={$netlist[netlist].id}"><IMG src="img/edit.gif" border="0" ALT="[ {t}Edit{/t} ]"></A>
+			<a href="?m=netinfo&id={$netlist[netlist].id}"><IMG src="img/info.gif" border="0" ALT="[ {t}Info{/t} ]"></A></nobr>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -56,7 +56,7 @@
 		<TD colspan="6" class="flr" align="center" width="1%">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Nie posiadasz ¿adnych klas adresowych. Skorzystaj z opcji menu powy¿ej aby dodaæ nowe sieci.</B></p>
+			<p><B>{t}You have no address pools. Use menu above to add new networks.{/t}</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -64,9 +64,9 @@
 	{/section}
 	<TR bgcolor="#DFD5BD">
 		<TD width="99%" colspan="2" class="fleftu" align="right"> 
-			<B>Razem:<BR>
-			Adresów:<BR>
-			Przypisanych:</B>
+			<B>{t}Total:{/t}<BR>
+			{t}Addresses:{/t}<BR>
+			{t}Bound:{/t}</B>
 		</TD>
 		<TD width="1%" colspan="4" class="frightu">
 			<B>{$listdata.total}<BR>
