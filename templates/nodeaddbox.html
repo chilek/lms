@@ -81,7 +81,7 @@
 			<A HREF="?m=nodescan{if $userinfo.id}&ownerid={$userinfo.id}{/if}">Skanuj <IMG SRC="img/search.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 			<A HREF="?m={if $userinfo.id}userinfo&id={$userinfo.id}{else}nodelist{/if}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A><BR>
-			<input type="checkbox" name="nodedata[reuse]" value="ON" style="border-style: none;"{if $nodedata.reuse} checked{/if}> Wywo³aj ponownie ten formularz po dodaniu komputera
+			<INPUT type="checkbox" name="nodedata[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $nodedata.reuse}checked{/if}> Wywo³aj ponownie ten formularz po dodaniu komputera
 		</TD>
 	</TR>	
 </TABLE></FORM></P>
