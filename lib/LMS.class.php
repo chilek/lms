@@ -30,10 +30,12 @@
 class LMS {
 
 	var $db;
+	var $session;
 
-	function LMS($db)
+	function LMS($db,$session)
 	{
 		$this->db=$db;
+		$this->session=$session;
 	}
 
 	function DeleteUser($id)
@@ -71,6 +73,24 @@ class LMS {
 		$db->ExecSQL("SELECT `name` FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
 		$db->FetchRow();
 		return $db->row[0];
+	}
+
+	function UpdateUser($userdata)
+	{
+		$session=$this->session;
+		$db=$this->db;
+		$result = $db->ExecSQL("UPDATE `users` SET 
+		`phone1` = '".$userdata[phone1]."',
+		`phone2` = '".$userdata[phone2]."',
+		`phone3` = '".$userdata[phone3]."',
+		`address` = '".$userdata[address]."',
+		`email` = '".$userdata[email]."',
+		`tariff` = '".$userdata[tariff]."',
+		`info` = '".trim($userdata[uwagi])."',
+		`modid` = '".$session->id."',
+		`moddate` = '".time()."'
+		WHERE `id` = '".$userdata[id]."' LIMIT 1");
+		return $result;
 	}
 
 	function GetUserRecord($id)
@@ -146,6 +166,7 @@ class LMS {
 		
 		$userlist[state]=$state;
 		$userlist[order]=$order;
+		$userlist[total]=sizeof($userlist[id]);
 
 		return $userlist;
 
@@ -158,9 +179,21 @@ class LMS {
 		$db=$this->db;
 		$db->ExecSQL("SELECT * FROM `nodes` WHERE `ownerid` = '".$id."'");
 		while($db->FetchRow()){
-			list($return[id][],$return[name][],$return[mac][],$return[iplong][],$return[ownerid][],$return[creationdate][],$return[moddate][],$return[creatorid][],$return[modid][],$return[access][])=$db->row;
+			list(
+				$return[id][],
+				$return[name][],
+				$return[mac][],
+				$return[iplong][],
+				$return[ownerid][],
+				$return[creationdate][],
+				$return[moddate][],
+				$return[creatorid][],
+				$return[modid][],
+				$return[access][]
+			) = $db->row;
 			$return[ipaddr][] = long2ip($db->row[3]);
 		}
+		$return[total] = sizeof($return[id]);
 		return $return;
 	}
 	
@@ -189,7 +222,67 @@ class LMS {
 		}
 		return $return;
 	}
-		
+
+	function GetUserBalanceList($id)
+	{
+		$db=$this->db;
+
+		$db->ExecSQL("SELECT * FROM cash WHERE userid = '".$id."'");
+
+		while($db->FetchRow())
+
+		list(
+			$tsaldolist[id][],
+			$tsaldolist[time][],
+			$tsaldolist[adminid][],
+			$tsaldolist[type][],
+			$tsaldolist[value][],
+			$tsaldolist[userid][],
+			$tsaldolist[comment][]
+		) = $db->row;
+
+		for($i=0;$i<sizeof($tsaldolist[id]);$i++)
+		{
+			if($i>0) $tsaldolist[before][$i] = $tsaldolist[after][$i-1];
+			else $tsaldolist[before][$i] = 0;
+
+			switch ($tsaldolist[type][$i]){
+
+				case "3":
+					$tsaldolist[after][$i] = $tsaldolist[before][$i] + $tsaldolist[value][$i];
+					$tsaldolist[name][$i] = "wp³ata";
+				break;
+				case "4":
+					$tsaldolist[after][$i] = $tsaldolist[before][$i] - $tsaldolist[value][$i];
+					$tsaldolist[name][$i] = "op³ata";
+				break;
+			}
+
+			$tsaldolist[adminname][$i]=$this->GetAdminName($tsaldolist[adminid][$i]);
+			$tsaldolist[date][$i]=date("Y/m/d H:i",$tsaldolist[time][$i]);
+
+		}
+
+		$tsaldolist[balance] = $tsaldolist[after][sizeof($tsaldolist[id])-1];
+		$tsaldolist[total] = sizeof($tsaldolist[id]);
+	
+		return $tsaldolist;
+
+	}
+
+	function GetTariffs()
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT id, name, value FROM tariffs ORDER BY value DESC  ");
+		while($db->FetchRow())
+			list(
+				$tariffs[id][],
+				$tariffs[name][],
+				$tariffs[value][]
+			) = $db->row;
+		return $tariffs;
+	}
+
 	function GetUserAddress($id)
 	{
 		$db=$this->db;
