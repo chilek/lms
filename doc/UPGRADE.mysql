@@ -64,6 +64,7 @@ CREATE TABLE invoices (
       number INT NOT NULL ,
       cdate INT NOT NULL ,
       paytime TINYINT( 8 ) NOT NULL ,
+      paytype VARCHAR(255) NOT NULL default '',
       customerid INT NOT NULL ,
       name VARCHAR( 255 ) NOT NULL ,
       address VARCHAR( 255 ) NOT NULL ,
