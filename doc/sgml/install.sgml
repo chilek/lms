@@ -39,6 +39,9 @@
 	      <para>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 3.23.xx 
 	      </para>
 	      <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</para>
+	      <para>Wykorzystanie bazy SQLite dla LMS'a jest w fazie testów. Jedyn± przetestowan± wersj± 
+	      jest 2.8.11. O niedogodno¶ciach stosowania tego silnika mo¿esz poczytaæ w dalszej
+	      czê¶ci tego rozdzia³u.</para>
 	    </sect2>
 	    <sect2 id="install-req-smarty">
              <title>Biblioteka Smarty</title>
@@ -86,7 +89,7 @@
 		</filename>) dostêpnym dla serwera www:
 <screen>
 $ cd /var/www
-$ wget http://lms.rulez.pl/download/lms-x.x.x.tar.gz
+$ wget http://lms.rulez.pl/download/stable/lms-x.x.x.tar.gz
 $ tar zxf lms-x.x.x.tar.gz
 </screen>
 		</para>
@@ -234,9 +237,68 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 			<para>Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy danych,
 			mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
 			nie ma ¿adnego konta administratora, jedyn± rzecz± jak± zobaczysz
-			bêdzie formularz dodania administratora. Je¿eli podasz prawid³owe dane
-			administratora, LMS przeniesie Ciê na stronê logowania gdzie od razu bêdziesz
-			móg³ u¿yæ nowo utworzonego konta.</para>
+			bêdzie formularz dodania administratora.</para>
+		</sect3>
+		</sect2>
+		<sect2 id="install-sqlite">
+		<title>SQLite</title>
+		<sect3 id="install-sqlite-intro">
+		<title>Wstêp</title>
+			<para>Ta jednoplikowa baza jest chwalona za swoj± szybko¶æ, wg autorów
+			okre¶lan± na 2-3 krotnie szybsz± od MySQL. Poza tym przy odpowiedniej 
+			konfiguracji umo¿liwia wczytanie ca³ej bazy do pamiêci RAM przez co osi±gany jest
+			znaczny wzrost wydajno¶ci. Poni¿ej przedstawiono krótki opis instalacji.
+			¬ród³a mo¿na pobraæ z <ulink url="http://www.sqlite.org">
+			www.sqlite.org</ulink>.</para>
+			<para>Na obecn± chwilê z SQLite nie wspó³pracuje daemon almsd, ani 
+			skrypty perlowe. We wspó³pracy z LMS-UI nie ma wiêkszy problemów, ale
+			wystêpuj± b³êdy podczas odtwarzania backupu bazy, przy korzystaniu
+			z pól szybkiego wyszukiwania oraz brak kapitalizowania polskich
+			znaków diakrytycznych.</para>
+		</sect3>
+		<sect3 id="install-sqlite-server">
+		<title>Instalacja SQLite</title>
+			<para>Opisano tutaj sposób instalacji bibliotek SQLite oraz 
+			dodanie obs³ugi tej bazy przez PHP (PHP w wersji 5.0 ma wbudowan±
+			obs³ugê SQLite). Po rozpakowaniu ¼róde³, wejd¼ do katalogu z SQLite 
+			i wydaj kolejno polecenia (¶cie¿ki przyk³adowe):
+			<screen>
+$ ./configure
+$ make
+$ make install
+$ ldconfig
+$ pear download http://pecl.php.net/get/SQLite-1.0.2.tgz
+$ pear install SQLite-1.0.2.tgz</screen>
+			Nastêpnie w pliku php.ini ustaw:
+			<screen>
+extension=sqlite.so</screen>
+			Istnieje równie¿ mo¿liwo¶æ wkompilowania obs³ugi SQLite
+			w PHP przy pomocy opcji <prompt>--with-sqlite</prompt>.
+			</para>
+		</sect3>
+		<sect3 id="install-sqlite-dbcreate">
+		<title>Utworzenie bazy danych</title>
+			<para>Konieczne  to  jest  je¿eli  uruchamiasz  LMS  po raz PIERWSZY. 
+			Tak wiêc, wejd¼ do katalogu w którym masz LMS'a	i uruchom shell sqlite'a:
+			<screen>
+$ sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
+sqlite> .exit
+$ chown 99.98 /usr/local/lms/lms</screen>
+			</para>
+		</sect3>
+		<sect3 id="install-sqlite-lms">
+		<title>Konfiguracja LMS (lms.ini)</title>
+			<para>Jednym z ograniczeñ SQLite jest brak autentykacji u¿ytkowników, dlatego
+			konfiguracja ogranicza siê do podania typu oraz ¶cie¿ki do pliku bazy. W sekcji
+			[database] pliku /etc/lms/lms.ini podajemy:
+			<screen>
+type     = sqlite
+database = /usr/local/lms/lms.db</screen>
+		    </para>
+			<para>Po  takim  zabiegu, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
+			bazie danych nie ma ¿adnego konta administratora, jedyn± rzecz± jak±
+			zobaczysz bêdzie formularz dodania administratora.  
+			</para>
 		</sect3>
 		</sect2>
 	</sect1>  	
