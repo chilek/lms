@@ -163,9 +163,9 @@ while(my $row = $dbq->fetchrow_hashref())
 			if($debug_email)
 			{
 				$custemail = $debug_email;
-			}				
+			}
 			my $mail = build MIME::Entity Type=>"multipart/mixed";
-			$mail->head->add('To',$row->{'name'}.' <'.$debug_email.'>');
+			$mail->head->add('To',$row->{'name'}.' <'.$custemail.'>');
 			$mail->head->add('From', $sender_name.' <'.$sender_email.'>');
 			$mail->head->add('Reply-To', $sender_name.' <'.$sender_email.'>');
 			$mail->head->add('Subject', 'Faktura VAT nr. '.$invoice_number);
@@ -188,7 +188,7 @@ while(my $row = $dbq->fetchrow_hashref())
 					$response->content,
 				],
 			);
-			$mail->smtpsend('MailFrom' => $sender_email, 'To' => $debug_email, 'Return-path' => $sender_email);
+			$mail->smtpsend('MailFrom' => $sender_email, 'To' => $custemail, 'Return-path' => $sender_email);
 			
 		}
 		else
