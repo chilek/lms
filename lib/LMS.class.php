@@ -47,7 +47,6 @@ class LMS
 		$this->DB = &$DB;
 		$this->CONFIG = &$CONFIG;
 		$this->modules[] = "CORE";
-		$this->modules[] = "SESSION";
 		$this->CORE = &$this;
 
 		// za³aduj ekstra klasy:
@@ -2273,6 +2272,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.307  2003/12/11 12:27:52  lukasz
+ * - kurwaaaaaaa! no. zrobione
+ *
  * Revision 1.306  2003/12/11 12:26:25  lukasz
  * - another fix
  *
