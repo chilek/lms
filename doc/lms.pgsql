@@ -178,7 +178,7 @@ CREATE TABLE users (
 	phone1 varchar(255) DEFAULT NULL,
 	phone2 varchar(255) DEFAULT NULL,
 	phone3 varchar(255) DEFAULT NULL,
-	gguin integer DEFAULT NULL,
+	gguin integer DEFAULT 0 NOT NULL,
 	address varchar(255) DEFAULT '' NOT NULL,
 	zip varchar(6) DEFAULT NULL,
 	city varchar(32) DEFAULT NULL,
