@@ -8,7 +8,6 @@ BODY		{ font-size: 9pt; font-family: Tahoma, Verdana, Arial, Helvetica; backgrou
 TABLE		{ border-color: #000000; padding: 3pt; }
 TD		{ font-size: 9pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 TH		{ font-width: bold; font-size: 10pt; } 
-TD.WARNING	{ border-width: 0pt; background: #FFFFFF; }
 PRE.SCREEN	{ background: #F4F0EC; border: 1px solid #333333; padding: 3pt; }					
 IMG		{ border-width: 0pt; }
 FONT.blend	{ color: #888888; }
@@ -25,7 +24,8 @@ P		{ text-align: justify; }
 UL		{ list-style-position: outside;  }
 DIV.WARNING	{ text-align: center; }
 TABLE.WARNING	{ border-collapse: collapse; }
-TABLE.WARNING TD { background-color: #ffaaaa; border-width: 0pt; padding: 3pt; border-style: none }
+TABLE.WARNING TD { background: #EBC79E; border-width: 0pt; padding: 3pt; border-style: none }
+TABLE.WARNING P { text-align: center; color: #FF0000}
 HR		{ height: 1pt; }
 -->
 </STYLE>
