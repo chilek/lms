@@ -234,7 +234,7 @@ class LMS
 						fputs($dumpfile,implode(', ',$fields));
 						fputs($dumpfile,') VALUES (');
 						fputs($dumpfile,implode(', ',$values));
-						fputs($dumpfile,');\n');
+						fputs($dumpfile,");\n");
 						unset($fields);
 						unset($values);
 					}
