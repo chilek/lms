@@ -185,7 +185,17 @@ z ka¿dy u¿ytkownik zostanie obci±¿ony op³at± abonamentow± w wysoko¶ci
 przewidzianej przez taryfê w jakiej siê znajduje. Oczywi¶cie zamiast
 szóstego mo¿e byæ inny dzieñ, jednak¿e radzê pamiêtaæ, ¿e 31 ka¿dego miesi±ca
 wystêpuje 8 razy do roku, a 29 luty wystêpuje co cztery lata, wiêc najpó¼niej
-op³aty mo¿na pobieraæ dwudziestego ósmego ka¿dego miesi±ca.
+op³aty mo¿na pobieraæ dwudziestego ósmego ka¿dego miesi±ca, owa¿ni mog± to 
+zrobiæ w skrypcie /etc/cron.d/monthly obs³ugiwanym przez wiêkszo¶æ 
+wspó³czesnych dystrybucji, wykonywanym dok³adnie raz na miesi±c, czy wrêcz 
+w postaci wpisów w atd (demonie uruchamiaj±cym polecenia nie 'wcze¶niej 
+ni¿'). To dla tych którzy maj± np 'kalendarz naliczania' ostatniego dnia 
+miesi±ca.
+
+$ at -f /usr/sbin/lms-eachmonth 6:00 01/31/01
+$ at -f /usr/sbin/lms-eachmonth 6:00 02/28/01
+$ at -f /usr/sbin/lms-eachmonth 6:00 03/31/01
+(etc...)
 
 Kolejny etap integracji LMS'a z Dzia³em Nêkania U¿ytkowników to wysy³anie
 powiadomieñ, czyli lms-notify:
