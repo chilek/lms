@@ -296,25 +296,25 @@ $TC del dev $LAN root 2> /dev/null
 $TC del dev $WAN root 2> /dev/null
 # incomming traffic
 $TC qdisc add dev $LAN root handle 1:0 htb default 3 r2q 1
-$TC class add dev $LAN parent 1:0 classid 1:1 htb rate 100mbit ceil 100mbit
+$TC class add dev $LAN parent 1:0 classid 1:1 htb rate 99mbit ceil 99mbit
 $TC class add dev $LAN parent 1:1 classid 1:2 htb rate 640kbit ceil 640kbit $BURST
-$TC class add dev $LAN parent 1:1 classid 1:3 htb rate 99mbit ceil 99mbit prio 9
+$TC class add dev $LAN parent 1:1 classid 1:3 htb rate 98360kbit ceil 98360kbit prio 9
 $TC qdisc add dev $LAN parent 1:3 sfq perturb 10 hash dst
 # priorities for ICMP, TOS 0x10 and port 22
 $TC class add dev $LAN parent 1:2 classid 1:20 htb rate 50kbit ceil 50kbit $BURST prio 1 quantum 1500
 $TC qdisc add dev $LAN parent 1:20 sfq perturb 10 hash dst
-$TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xffff flowid 1:3
-$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0xff flowid 1:3
-$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 1:3
+$TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xffff flowid 1:20
+$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0xff flowid 1:20
+$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 1:20
 # server -> LAN
 $TC filter add dev $LAN parent 1:0 protocol ip prio 4 handle 1 fw flowid 1:3
 
 # outgoing traffic
-$TC qdisc add dev $WAN root handle 2:0 htb default 11
+$TC qdisc add dev $WAN root handle 2:0 htb default 11 r2q 1
 $TC class add dev $WAN parent 2:0 classid 2:1 htb rate 160kbit ceil 160kbit $BURST 
+# priorities for ACK, ICMP, TOS 0x10
 $TC class add dev $WAN parent 2:1 classid 2:10 htb rate 54kbit ceil 54kbit $BURST prio 1 quantum 1500
 $TC qdisc add dev $WAN parent 2:10 sfq perturb 10 hash dst
-# priorities for ACK, ICMP, TOS 0x10
 $TC filter add dev $WAN parent 2:0 protocol ip prio 2 u32 match ip protocol 6 0xff \
     match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 1 match u8 0x10 0xff at 33 flowid 2:10
 $TC filter add dev $WAN parent 2:0 protocol ip prio 2 u32 match ip dport 22 0xffff flowid 2:10
