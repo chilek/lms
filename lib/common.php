@@ -203,8 +203,12 @@ function hostname()
 		default:
 			$return = 'nieznany, '.PHP_OS;
 	}
-	if($hostname == '')
+	
+	if(!$hostname)
+		$hostname = $_ENV['HOSTNAME'] ? $_ENV['HOSTNAME'] : $_SERVER['SERVER_NAME'];
+	if(!$hostname)
 		$hostname='N.A.';
+		
 	return $hostname;
 }
 
