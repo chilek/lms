@@ -160,7 +160,7 @@ if(isset($networkdata))
 
 $prefixlist = $LMS->GetPrefixList();
 $networks = $LMS->GetNetworks();
-$layout[pagetitle]="Edytowanie sieci";
+$layout[pagetitle]="Edytowanie sieci: ".$network[name];
 $SMARTY->assign("unlockedit",TRUE);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("network",$network);
@@ -171,6 +171,9 @@ $SMARTY->assign("error",$error);
 $SMARTY->display("netinfo.html");
 /*
  * $Log$
+ * Revision 1.25  2003/10/03 15:59:46  alec
+ * ujednolicenie interfejsu
+ *
  * Revision 1.24  2003/09/05 13:11:24  lukasz
  * - nowy sposób wy¶wietlania informacji o b³êdach
  *

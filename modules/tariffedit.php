@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-$layout[pagetitle]="Edycja taryfy";
+
 if(!$LMS->TariffExists($_GET[id]))
 {
 	header("Location: ?m=tarifflist");
@@ -80,13 +80,16 @@ if(isset($tariff))
 }else
 	$tariff = $LMS->GetTariff($_GET[id]);
 	
-	
+$layout[pagetitle]="Edycja taryfy: ".$tariff[name];	
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("tariff",$tariff);
 $SMARTY->assign("error",$error);
 $SMARTY->display("tariffedit.html");
 /*
  * $Log$
+ * Revision 1.14  2003/10/03 16:02:45  alec
+ * ujednolicenie interfejsu
+ *
  * Revision 1.13  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
