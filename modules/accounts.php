@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.3-cvs
+ * LMS version 1.5-cvs
  *
  *  (C) Copyright 2001-2004 LMS Developers
  *
@@ -70,19 +70,20 @@ return false;
 $option = $_GET['op'];
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
-$layout['pagetitle'] = "Zarz±dzanie kontami";
+$layout['pagetitle'] = 'Zarz±dzanie kontami';
 
-switch ($option) {
+switch ($option) 
+{
     case 'newdlg':
-	$users=$LMS->GetUserList();	
-	unset ($users["total"]);
-	unset ($users["state"]);
-	unset ($users["order"]);
-	unset ($users["below"]);
-	unset ($users["over"]);
-	unset ($users["network"]);
-	unset ($users["usergroup"]);
-	unset ($users["direction"]);
+	$users = $LMS->GetUserList();
+	unset ($users['total']);
+	unset ($users['state']);
+	unset ($users['order']);
+	unset ($users['below']);
+	unset ($users['over']);
+	unset ($users['network']);
+	unset ($users['usergroup']);
+	unset ($users['direction']);
 	$SMARTY->assign('users',$users);
 	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('accountadd.html');
@@ -92,45 +93,48 @@ switch ($option) {
 	$passwd1 = $_POST['passwd']['passwd'];
 	$passwd2 = $_POST['passwd']['confirm'];
 	$ownerid = $_POST['ownerid'];
-	if(!eregi("^[a-z0-9.-_]+$",$login)) {
-    	    $layout['error'] = "Login zawiera niepoprawne znaki!";
-	}
-	if (AccountExists($login)) {
-	    $layout['error']="U¿ytkownik istnieje"; 
-	}
-	if ($passwd1 != $passwd2) {
-	    $layout['error']="Has³a nie mog± siê ró¿niæ"; 
-	}
-	if ($passwd1 == '') {
-	    $layout['error']="Has³a nie mog± byæ puste"; 
-	}
-	if ($layout['error']) {
-	    $users=$LMS->GetUserList();	
-	    unset ($users["total"]);
-	    unset ($users["state"]);
-	    unset ($users["order"]);
-	    unset ($users["below"]);
-	    unset ($users["over"]);
-	    unset ($users["direction"]);
-	    unset ($users["usergroup"]);
-	    unset ($users["direction"]);
+
+	if(!eregi("^[a-z0-9.-_]+$",$login))
+    	    $layout['error'] = 'Login zawiera niepoprawne znaki!';
+	    
+	if (AccountExists($login))
+	    $layout['error'] = 'U¿ytkownik istnieje'; 
+	    
+	if ($passwd1 != $passwd2)
+	    $layout['error'] = 'Has³a nie mog± siê ró¿niæ';
+	    
+	if ($passwd1 == '')
+	    $layout['error'] = 'Has³a nie mog± byæ puste';
+
+	if ($layout['error'])
+	{
+	    $users = $LMS->GetUserList();	
+	    unset ($users['total']);
+	    unset ($users['state']);
+	    unset ($users['order']);
+	    unset ($users['below']);
+	    unset ($users['over']);
+	    unset ($users['direction']);
+	    unset ($users['usergroup']);
+	    unset ($users['direction']);
 	    $SMARTY->assign('users',$users);
 	    $SMARTY->assign('layout',$layout);
 	    $SMARTY->display('accountadd.html');
 	    die(0);
 	}
-	$LMS->DB->Execute("INSERT INTO `passwd` ( `OwnerId` , `user` , `password`, `home` ) VALUES ( '".$ownerid."', '".$login."', '".crypt($passwd1)."', '/home/".$login."' )");
-	$LMS->DB->Execute("UPDATE `passwd` SET `uid` = id+2000 WHERE `user` = '".$login."'");
-	header("Location: ?m=accounts");	
+
+	$LMS->DB->Execute('INSERT INTO passwd (ownerid, login, password, home) VALUES (?, ?, ?, ?)', array($ownerid, $login, crypt($passwd1), '/home/'.$login));
+	$LMS->DB->Execute('UPDATE passwd SET uid = id+2000 WHERE login = ?',array($login));
+	header('Location: ?m=accounts');
 	die(0);	
     case 'delete':
 	$id = $_GET['id'];
-	$LMS->DB->Execute("DELETE FROM `passwd` WHERE `id` = '".$id."'");
-	header("Location: ?m=accounts");	
+	$LMS->DB->Execute("DELETE FROM passwd WHERE id = $id");
+	header('Location: ?m=accounts');
 	die(0);
     case 'chpasswddlg':
 	$id = $_GET['id'];
-	$account=$LMS->DB->GetRow("SELECT passwd.id, passwd.ownerid, passwd.user, DATE_FORMAT(passwd.lastlogin, '%Y-%m-%d, %H:%i') as lastlogin, users.name, users.lastname FROM passwd,users WHERE users.id=passwd.ownerid AND passwd.id=".$id);
+	$account = $LMS->DB->GetRow("SELECT passwd.id, passwd.ownerid, passwd.login, passwd.lastlogin, users.name, users.lastname FROM passwd,users WHERE users.id=passwd.ownerid AND passwd.id=$id");
 	$SMARTY->assign('account',$account);
 	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('accountpasswd.html');
@@ -139,30 +143,32 @@ switch ($option) {
 	$id = $_GET['id'];
 	$passwd1 = $_POST['passwd']['passwd'];
 	$passwd2 = $_POST['passwd']['confirm'];
-	if ($passwd1 != $passwd2) {
+	if ($passwd1 != $passwd2) 
+	{
 	    $layout['error']="Has³a nie mog± siê ró¿niæ"; 
-	    $account=$LMS->DB->GetRow("SELECT passwd.id, passwd.ownerid, passwd.user, DATE_FORMAT(passwd.lastlogin, '%Y-%m-%d, %H:%i') as lastlogin, users.name, users.lastname FROM passwd,users WHERE users.id=passwd.ownerid AND passwd.id=".$id);
+	    $account=$LMS->DB->GetRow("SELECT passwd.id, passwd.ownerid, passwd.login, passwd.lastlogin, users.name, users.lastname FROM passwd,users WHERE users.id=passwd.ownerid AND passwd.id=$id");
 	    $SMARTY->assign('account',$account);
 	    $SMARTY->assign('layout',$layout);
 	    $SMARTY->display('accountpasswd.html');
 	    die(0); 
 	}
-	if ($passwd1 == '') {
-	    $layout['error']="Has³a nie mog± byæ puste"; 
-	    $account=$LMS->DB->GetRow("SELECT passwd.id, passwd.ownerid, passwd.user, DATE_FORMAT(passwd.lastlogin, '%Y-%m-%d, %H:%i') as lastlogin, users.name, users.lastname FROM passwd,users WHERE users.id=passwd.ownerid AND passwd.id=".$id);
+	if ($passwd1 == '') 
+	{
+	    $layout['error'] = 'Has³a nie mog± byæ puste';
+	    $account=$LMS->DB->GetRow("SELECT passwd.id, passwd.ownerid, passwd.user, passwd.lastlogin, users.login, users.lastname FROM passwd,users WHERE users.id=passwd.ownerid AND passwd.id=$id");
 	    $SMARTY->assign('account',$account);
 	    $SMARTY->assign('layout',$layout);
 	    $SMARTY->display('accountpasswd.html');
 	    die(0); 
 	}
-	$LMS->DB->Execute("UPDATE `passwd` SET `password`='".crypt($passwd1)."' WHERE `id` = '".$id."'");
-	header("Location: ?m=accounts");	
+	$LMS->DB->Execute("UPDATE passwd SET password=crypt($passwd1) WHERE id = $id");
+	header('Location: ?m=accounts');
 	die(0);
 }
 
 
-$accountlist=$LMS->DB->GetAll("SELECT passwd.id, passwd.ownerid, passwd.user, DATE_FORMAT(passwd.lastlogin, '%Y-%m-%d, %H:%i') as lastlogin, users.name, users.lastname FROM passwd,users WHERE users.id=passwd.ownerid");
-$listdata['total']=sizeof($accountlist);
+$accountlist = $LMS->DB->GetAll("SELECT passwd.id, passwd.ownerid, login, passwd.lastlogin, users.name, users.lastname FROM passwd, users WHERE users.id = passwd.ownerid");
+$listdata['total'] = sizeof($accountlist);
 
 $SMARTY->assign('accountlist',$accountlist);
 $SMARTY->assign('listdata',$listdata);
