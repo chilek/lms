@@ -1078,7 +1078,7 @@ class LMS
 			return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?", array(0,$this->SESSION->id,$id));
 	}		
 
-	function NodeSetWarn($id)
+/*	function NodeSetWarn($id)
 	{
 		$this->SetTS("nodes");
 		if($this->DB->GetOne("SELECT warning FROM nodes WHERE id=?", array($id)) == 1 )
@@ -1094,7 +1094,7 @@ class LMS
 			return $this->DB->Execute("UPDATE nodes SET warning=?, modid=? WHERE ownerid=?", array(1,$this->SESSION->id,$id));
 		else
 			return $this->DB->Execute("UPDATE nodes SET warning=?, modid=? WHERE ownerid=?", array(0,$this->SESSION->id,$id));
-	}		
+	}		*/
 
 	function NodeSetWarn($id)
 	{
