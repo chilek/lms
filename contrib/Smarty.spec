@@ -1,16 +1,18 @@
 # $Revision$, $Date$
 # %define		_doc_version	2.4.0
+%include	/usr/lib/rpm/macros.php
 Summary:	Template engine for PHP
 Summary(pl):	System szablonów dla PHP
 Name:		Smarty
 Version:	2.5.0
-Release:	1
+Release:	2
 License:	LGPL
 Group:		Development/Languages/PHP
 Source0:	http://smarty.php.net/distributions/%{name}-%{version}.tar.gz
 Source1:	http://smarty.php.net/distributions/manual/en/%{name}-%{version}-docs.tar.gz
 Requires:	php
 Requires:	php-pear
+BuildRequires:	rpm-php-pearprov
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -47,11 +49,11 @@ Dokumentacja do systemu szablonów Smarty.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_datadir}/pear/%{name}/plugins
+install -d $RPM_BUILD_ROOT%{php_pear_dir}/%{name}/plugins
 
-install libs/{Config_File,Smarty{,_Compiler}}.class.php $RPM_BUILD_ROOT%{_datadir}/pear/%{name}
-install libs/debug.tpl $RPM_BUILD_ROOT%{_datadir}/pear/%{name}
-install libs/plugins/*.php $RPM_BUILD_ROOT%{_datadir}/pear/%{name}/plugins
+install libs/{Config_File,Smarty{,_Compiler}}.class.php $RPM_BUILD_ROOT%{php_pear_dir}/%{name}
+install libs/debug.tpl $RPM_BUILD_ROOT%{php_pear_dir}/%{name}
+install libs/plugins/*.php $RPM_BUILD_ROOT%{php_pear_dir}/%{name}/plugins
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -59,11 +61,11 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc BUGS ChangeLog FAQ INSTALL NEWS README RELEASE_NOTES TODO
-%dir %{_datadir}/pear/%{name}
-%dir %{_datadir}/pear/%{name}/plugins
-%{_datadir}/pear/%{name}/*.class.php
-%{_datadir}/pear/%{name}/debug.tpl
-%{_datadir}/pear/%{name}/plugins/*.php
+%dir %{php_pear_dir}/%{name}
+%dir %{php_pear_dir}/%{name}/plugins
+%{php_pear_dir}/%{name}/*.class.php
+%{php_pear_dir}/%{name}/debug.tpl
+%{php_pear_dir}/%{name}/plugins/*.php
 
 %files doc
 %defattr(644,root,root,755)
@@ -75,11 +77,15 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld.org.pl
 
 $Log$
-Revision 1.4  2003/04/14 23:09:23  lukasz
-- LMS_0100_pre10
+Revision 1.5  2003/04/15 04:17:22  lukasz
+- sync with PLD CVS
 
-Revision 1.3  2003/04/12 23:02:25  lukasz
-- updates (Smarty-2.5.0)
+Revision 1.7  2003/04/15 03:58:25  baseciq
+- added missing rpm macros
+- new br: rpm-php-pearprov
+- more macros and cleanups
+- More info: see thread starting at <19110162698.20030415000951@netx.waw.pl>
+  on pld-devel-pl mailing list
 
 Revision 1.6  2003/04/12 22:53:46  baseciq
 - temporary removed _doc_version
