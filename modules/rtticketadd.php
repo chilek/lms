@@ -74,19 +74,9 @@ if(isset($ticket))
 		$headers['Date'] = date('D, d F Y H:i:s T');
 	        $headers['From'] = '<'.$message['mailfrom'].'>';
 		$headers['To'] = '<'.$message['destination'].'>';
+		$headers['Content-Type'] = 'text/plain; charset=UTF-8'
 		$headers['Subject'] = $ticket['subject'];
 		$headers['Reply-To'] = $headers['From'];
-		$headers['X-Mailer'] = 'LMS-'.$LMS->_version.'/PHP-'.phpversion();
-		$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
-		$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
-
-		$msg[1]['content_type'] = 'text/plain; charset=UTF-8';
-		$msg[1]['filename'] = '';
-		$msg[1]['no_base64'] = TRUE;
-		$msg[1]['data'] = $ticket['body']."\n\nhttps://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'],
-			0, strrpos($_SERVER['REQUEST_URI'], '/') + 1).'?m=rtticketview&id='.$id;
-		$out = mp_new_message($msg);
-		$body = $out[0];
 
 		$body = $ticket['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 			.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)

@@ -3298,6 +3298,10 @@ class LMS
 		else
 			$params['auth'] = false;
 
+		$headers['X-Mailer'] = 'LMS-'.$this->_version;
+		$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
+		$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+
 		if ($files)
 		{
 			$boundary = '-LMS-'.str_replace(' ', '.', microtime());
