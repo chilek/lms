@@ -79,11 +79,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Sieci IP</title>
-	<inlinemediaobject>
+	<ulink url="images/login.png"><inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</inlinemediaobject>
+  	</inlinemediaobject></ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-tariffs">
@@ -91,11 +91,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Taryfy i finanse</title>
-	<inlinemediaobject>
+	<ulink url="images/login.png"><inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</inlinemediaobject>
+  	</inlinemediaobject></ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-mailing">
@@ -103,11 +103,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Mailing</title>
-	<inlinemediaobject>
+	<ulink url="images/login.png"><inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</inlinemediaobject>
+  	</inlinemediaobject></ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-reload">
@@ -115,11 +115,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Prze³adowanie</title>
-	<inlinemediaobject>
+	<ulink url="images/login.png"><inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</inlinemediaobject>
+  	</inlinemediaobject></ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-databases">
@@ -127,11 +127,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Bazy danych</title>
-	<inlinemediaobject>
+	<ulink url="images/login.png"><inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</inlinemediaobject>
+  	</inlinemediaobject></ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-admins">
@@ -139,11 +139,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Administratorzy</title>
-	<inlinemediaobject>
+	<ulink url="images/login.png"><inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</inlinemediaobject>
+  	</inlinemediaobject></ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-stats">
@@ -151,11 +151,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Statystyki</title>
-	<inlinemediaobject>
+	<ulink url="images/login.png"><inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</inlinemediaobject>
+  	</inlinemediaobject></ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-staff">
