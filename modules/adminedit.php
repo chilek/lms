@@ -81,7 +81,7 @@ foreach($LMS->GetAdminInfo($_GET[id]) as $key => $value)
 	if(!isset($admininfo[$key]))
 		$admininfo[$key] = $value;
 
-$layout[pagetitle]="Edycja danych administratora ".$LMS->GetAdminName($_GET[id]);
+$layout[pagetitle]="Edycja danych administratora: ".$LMS->GetAdminName($_GET[id]);
 
 $rights = $LMS->GetAdminRights($_GET[id]);
 
@@ -102,6 +102,9 @@ $SMARTY->assign("layout",$layout);
 $SMARTY->display("admininfo.html");
 /*
  * $Log$
+ * Revision 1.22  2003/10/03 15:02:52  alec
+ * ujednolicenie interfejsu
+ *
  * Revision 1.21  2003/09/15 10:48:45  lukasz
  * - http://bts.rulez.pl/bug_view_page.php?bug_id=0000072
  *
