@@ -144,9 +144,3 @@ CREATE TABLE "users" (
 );
 CREATE  UNIQUE INDEX "users_id_key" ON "users" ("id");
 
-/* -------------------------------------------------------- 
-  Ustawienie domy¶lnego konta administratora
--------------------------------------------------------- */
-
-INSERT INTO "admins" (login, name) VALUES ('admin', 'Domy¶lne konto administracyjne');
-

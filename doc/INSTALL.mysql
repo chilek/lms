@@ -54,11 +54,12 @@ do podania w sekcji [database] pliku /etc/lms/lms.ini has³a i u¿ytkownika:
     user	= lms
     password	= has³o_z_pkt.3
 
-Po takim zabiegu mo¿na dostaæ siê do LMS bez loginu i has³a. Oczywi¶cie
-jest to niedopuszczalne, wiêc wchodzimy do sekcji 'Administratorzy'
-(z menu po lewej stronie) i dodajemy sobie konto. Po dodaniu admina
-zostaniemy prawdopodobnie wylogowani i bêdziemy mogli skorzystaæ 
-z przed chwil± utworzonego konta.
+Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy danych,
+mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
+nie ma ¿adnego konta administratora, jedyn± rzecz± jak± bêdziemy widzieæ
+bêdzie formularz dodania administratora. Je¿eli podamy prawid³owe dane
+administratora, LMS przeniesie nas na stronê logowania gdzie odrazu bêdziemy
+mogli u¿yæ nowo utworzonego konta.
 
 ------------------------------------------------------------------------
 $Id$
