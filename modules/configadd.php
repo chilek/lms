@@ -37,13 +37,13 @@ if($config = $_POST['config'])
 		die;
 	}
 	
-	if(!eregi("^[a-z0-9_-]+$", $config['name']))
-    		$error['name'] = 'Nazwa opcji zawiera niepoprawne znaki!';
-
 	if($config['name']=='')
 		$error['name'] = 'Musisz podaæ nazwê opcji!';
-	    
-	if($LMS->GetConfigOptionId($config['name'], $config['section']))
+	elseif(strlen($config['name'])>64)
+		$error['name'] = 'Za d³uga nazwa opcji (max.64 znaki) !';
+	elseif(!eregi("^[a-z0-9_-]+$", $config['name']))
+    		$error['name'] = 'Nazwa opcji zawiera niepoprawne znaki!';
+	elseif($LMS->GetConfigOptionId($config['name'], $config['section']))
 		$error['name'] = 'Opcja ju¿ jest w bazie!'; 
 
 	if(!eregi("^[a-z0-9_-]+$", $config['section']) && $config['section']!='')
