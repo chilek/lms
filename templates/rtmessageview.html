@@ -55,7 +55,7 @@
 			<IMG src="img/mail.gif" alt="" border="0" align="absmiddle">
 		</TD>
 		<TD width="1%">
-			<B>Nag³ówki:</B>
+			<B>{t}Headers:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA rows="5" cols="100">{$message.headers|escape}</TEXTAREA>
@@ -118,7 +118,7 @@
 			<IMG src="img/attach.gif" alt="" border="0" align="absmiddle">
 		</TD>
 		<TD width="1%">
-			<B>Za³±czniki:</B>
+			<B>{t}Attachments:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			{foreach from=$message.attachments item=a}
@@ -129,8 +129,8 @@
 	{/if}
 	<TR class="LIGHT">
 		<TD colspan="3" width="100%" class="fbottomu" align="right" NOWRAP>
-			<A href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}">{t}Answer{/t} <IMG src="img/edit.gif" alt="" border="0" align="absmiddle"></A>
-			<A href="?m=rtticketview&id={$message.ticketid}">{t}cancel{/t} <IMG src="img/cancel.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}">{t}Reply{/t} <IMG src="img/edit.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=rtticketview&id={$message.ticketid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt="" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>

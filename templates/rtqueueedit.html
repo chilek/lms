@@ -8,34 +8,34 @@
 	    <TD width="1%" class="fleftu">
 		<IMG src="img/queue.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 	    </TD>
-	    <TD width="1%" class="fbt"><B>Nazwa:</B></TD>
+	    <TD width="1%" class="fbt"><B>{t}Name:{/t}</B></TD>
 	    <TD width="98%" class="frightu">
-		<INPUT TYPE="TEXT" NAME="queue[name]" VALUE="{$queue.name}" {tip text="{t}Enter name{/t}" trigger="name" bold=1}><B> ({$queue.id|string_format:"%04d"})</B>
+		<INPUT TYPE="TEXT" NAME="queue[name]" VALUE="{$queue.name}" {tip text="Enter queu name" trigger="name" bold=1}><B> ({$queue.id|string_format:"%04d"})</B>
 	    </TD>
 	</TR>
 	<TR class="LIGHT">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/mail.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 	    </TD>
-	    <TD width="1%"><B>E-mail:</B></TD>
+	    <TD width="1%"><B>{t}E-mail:{/t}</B></TD>
 	    <TD width="98%" class="fright">
-		    <INPUT TYPE="TEXT" SIZE="50" NAME="queue[email]" VALUE="{$queue.email}" {tip text="{t}Enter e-mail address{/t}" trigger="email"}>
+		    <INPUT TYPE="TEXT" SIZE="50" NAME="queue[email]" VALUE="{$queue.email}" {tip text="Enter e-mail address" trigger="email"}>
 	    </TD>
 	</TR>
 	<TR class="LIGHT">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 	    </TD>
-	    <TD width="1%"><B>Opis:</B></TD>
+	    <TD width="1%"><B>{t}Description:{/t}</B></TD>
 	    <TD width="98%" class="fright">
-		<TEXTAREA NAME="queue[description]" COLS="50" ROWS="3" {tip text="{t}Enter additional information (optional){/t}"}>{$queue.description}</TEXTAREA>
+		<TEXTAREA NAME="queue[description]" COLS="50" ROWS="3" {tip text="Enter additional informations (optional)"}>{$queue.description}</TEXTAREA>
 	    </TD>
 	</TR>
 	<TR class="LIGHT">
 	    <TD width="1%" class="fleft">
 		<IMG src="img/admins.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 	    </TD>
-	    <TD width="1%"><B>{t}Permissions:{/t}</B></TD>
+	    <TD width="1%"><B>{t}Privileges:{/t}</B></TD>
 	    <TD width="98%" class="fright">
 		    <TABLE width="100%" cellpadding="3">
 			<TR class="DARK">
@@ -73,8 +73,8 @@
 	</TR>
 	<TR class="LIGHT">
 	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	    	<A HREF="javascript:document.queue.submit();" accesskey="s">Zapisz <IMG src="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
-		<A HREF="?m=rtqueuedel&id={$queue.id}" {confirm text="{t}Are you sure you want to remove queue \"`$queue.name`\" and all assigned requests and messages?{/t}"} accesskey="d">{t}Delete{/t}<IMG src="img/delete.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+	    	<A HREF="javascript:document.queue.submit();" accesskey="s">{t}Save{/t} <IMG src="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+		<A HREF="?m=rtqueuedel&id={$queue.id}" {confirm 0=$queue.name text="Are you sure you want to remove queue \"$0\" and all assigned tickets and messages?"} accesskey="d">{t}Delete{/t}<IMG src="img/delete.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
 		<A HREF="?m=rtqueuelist">{t}Cancel{/t}<IMG src="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
 	    </TD>
 	</TR>

@@ -3,7 +3,7 @@
 	<TR CLASS="dark">
 		<TD width="100%" CLASS="fall">
 			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
-			<B>{t}Ticket no{/t} {$ticket.ticketid|string_format:"%06d"}</B>
+			<B>{t}Ticket No.{/t} {$ticket.ticketid|string_format:"%06d"}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -40,7 +40,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">
-			<B>{t}Ticket date:{/t}</B>
+			<B>{t}Create time:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
 			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
