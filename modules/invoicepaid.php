@@ -57,6 +57,7 @@ if ($invoiceid == 'multi')
 					$addbalance['taxvalue'] = $row['taxvalue'];
 					$addbalance['userid'] = $invoice['customerid'];
 					$addbalance['comment'] = $row['description'];
+					$addbalance['itemid'] = $row['itemid'];
 					$addbalance['invoiceid'] = $invoiceid;
 					$LMS->AddBalance($addbalance);
 				}
@@ -73,6 +74,7 @@ elseif (!$LMS->IsInvoicePaid($invoiceid) && $invoicecontent = $LMS->GetInvoiceCo
 		$addbalance['taxvalue'] = $row['taxvalue'];
 		$addbalance['userid'] = $invoicecontent['customerid'];
 		$addbalance['comment'] = $row['description'];
+		$addbalance['itemid'] = $row['itemid'];
 		$addbalance['invoiceid'] = $invoiceid;
 		$LMS->AddBalance($addbalance);
 	}
