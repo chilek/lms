@@ -607,6 +607,13 @@ database = /usr/local/lms/lms.db</screen>
 	    <para>Przyk³ad:	<prompt>helpdesk_backend_mode = 1</prompt></para>
 	</listitem>
 	<listitem>
+	    <para>helpdesk_sender_name</para>
+	    <para>Nazwa nadawcy wiadomo¶ci albo predefiniowane warto¶ci: 'queue'
+	    - nazwa kolejki do której nale¿y zg³oszenie, 'user' - nazwa zalogowanego
+	    u¿ytkownika (nadawcy). Domy¶lnie: pusta.</para>
+	    <para>Przyk³ad:	<prompt>helpdesk_sender_name = Helpdesk</prompt></para>
+	</listitem>
+	<listitem>
 	    <para>contract_template</para>
 	    <para>W³asny szablon umowy z klientem. Mo¿e zawieraæ listê umów oddzielonych 
 	    przecinkami. Domy¶lnie: contract.html.</para>

@@ -110,7 +110,14 @@ if(isset($message))
 					$message['mailfrom'] = '';
 			}
 		}
-		
+
+		if($mailfname = $LMS->CONFIG['phpui']['helpdesk_sender_name'])
+		{
+			if($mailfname == 'queue') $mailfname = $queue['name'];
+			if($mailfname == 'user') $mailfname = $admin['name'];
+			$mailfname = '"'.$mailfname.'"';
+		}
+	
 		if(!$LMS->CONFIG['phpui']['helpdesk_backend_mode'])
 		{
 			if($message['destination'] && $message['adminid'])
@@ -118,20 +125,21 @@ if(isset($message))
 				if($LMS->CONFIG['phpui']['debug_email'])
 					$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
 				$message['mailfrom'] = $queue['email'] ? $queue['email'] : $admin['email'];
-				$message['mailfrom'] = $LMS->CONFIG['rt']['mail_from'] ? $LMS->CONFIG['rt']['mail_from'] : '<'.$message['mailfrom'].'>';
-				$message['replyto'] = $message['mailfrom']; 
-				$message['headers'] = 'From: '.$message['mailfrom']."\n"
+				$message['mailfrom'] = '<'.$message['mailfrom'].'>';
+				$message['replyto'] = $message['mailfrom'];
+				
+				$message['headers'] = 'From: '.$mailfname.' '.$message['mailfrom']."\n"
 				    .($message['references'] ? 'References: '.$message['references']."\n" : '')
 				    .'Message-Id: '.$message['messageid']."\n"
 				    .'Reply-To: '.$message['replyto']."\n"
-				    .(!$file ? "Content-Type: text/plain; charset=ISO-8859-2;\n" : '')
+				    .(!$file ? "Content-Type: text/plain; charset=UTF-8;\n" : '')
 				    .'X-Mailer: LMS-'.$LMS->_version.'/PHP-'.phpversion()."\n"
 				    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
 				    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT'];
 			    	
 				if($file)
 				{
-					$msg[1]['content_type'] = 'text/plain; charset=ISO-8859-2';
+					$msg[1]['content_type'] = 'text/plain; charset=UTF-8';
 					$msg[1]['filename'] = '';
 					$msg[1]['no_base64'] = TRUE;
 					$msg[1]['data'] = $message['body'];
@@ -178,19 +186,20 @@ if(isset($message))
 			if($message['userid'])
 				$message['mailfrom'] = $LMS->GetUserEmail($message['userid']);
 
+			$message['mailfrom'] = '<'.$message['mailfrom'].'>';
 			$message['replyto'] = $message['mailfrom']; 
-			$message['headers'] = 'From: '.$message['mailfrom']."\n"
+			$message['headers'] = 'From: '.$mailfname.' '.$message['mailfrom']."\n"
 			    .($message['references'] ? 'References: '.$message['references']."\n" : '')
 			    .'Message-Id: '.$message['messageid']."\n"
 			    .'Reply-To: '.$message['replyto']."\n"
-			    .(!$file ? "Content-Type: text/plain; charset=ISO-8859-2;\n" : '')
+			    .(!$file ? "Content-Type: text/plain; charset=UTF-8;\n" : '')
 			    .'X-Mailer: LMS-'.$LMS->_version.'/PHP-'.phpversion()."\n"
 			    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
 			    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT'];
 
 			if($file)
 			{
-				$msg[1]['content_type'] = 'text/plain; charset=ISO-8859-2';
+				$msg[1]['content_type'] = 'text/plain; charset=UTF-8';
 				$msg[1]['filename'] = '';
 				$msg[1]['no_base64'] = TRUE;
 				$msg[1]['data'] = $message['body'];
