@@ -57,6 +57,10 @@ wersja 1.1.8 (??/??/????):
 	description text,
 	PRIMARY KEY (id)
     );
+  - poprawiona weryfikacja danych w taryfach: warto¶æ taryfy mo¿e byæ ujemna,
+    warto¶æ podatku nie mo¿e byæ ujemna (alec)
+  - na li¶cie u¿ytkowników, zamiast ¿arówki pojawia siê wykrzyknik, je¶li
+    u¿ytkownik nie posiada ¿adnych komputerów (alec)
     
 wersja 1.1.7 Hathor (14/12/2003):
 

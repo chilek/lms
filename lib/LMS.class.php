@@ -669,12 +669,15 @@ class LMS
 			foreach($userlist as $idx => $row)
 			{
 				$userlist[$idx]['tariffvalue'] = $tariffvalues[$row['id']]['value'];
+				$userlist[$idx]['account'] = $access[$row['id']]['account'];
+				
 				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'])
 					$userlist[$idx]['nodeac'] = 1;
 				elseif($access[$row['id']]['acsum'] == 0)
 					$userlist[$idx]['nodeac'] = 0;
 				else
 					$userlist[$idx]['nodeac'] = 2;
+					
 				if($userlist[$idx]['balance'] > 0)
 					$over += $userlist[$idx]['balance'];
 				elseif($userlist[$idx]['balance'] < 0)
