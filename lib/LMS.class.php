@@ -3017,9 +3017,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 				//$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
 				//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 				if(!$ticket['userid'])
-					sscanf($ticket['requestor'], "%[^<]<%[^>]", &$ticket['requestor'], &$ticket['requestoremail']);
+					list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
 				else
-					sscanf($ticket['requestor'], "<%[^>]", &$ticket['requestoremail']);
+					list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
 				$result[$idx] = $ticket;
 				$result['total']++;
 			}
@@ -3103,9 +3103,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			LEFT JOIN admins ON (admins.id = adminid)
 			WHERE ticketid = ? ORDER BY createtime ASC', array($id));
 		if(!$ticket['userid'])
-			sscanf($ticket['requestor'], "%[^<]<%[^>]", &$ticket['requestor'], &$ticket['requestoremail']);
+			list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
 		else
-			sscanf($ticket['requestor'], "<%[^>]", &$ticket['requestoremail']);
+			list($ticket['requetoremail']) = sscanf($ticket['requestor'], "<%[^>]");
 //		$ticket['requestoremail'] = ereg_replace('^.* <(.+@.+)>$','\1',$ticket['requestor']);
 //		$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 		$ticket['status'] = $this->rtstates[$ticket['state']];
@@ -3199,9 +3199,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 				//$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
 				//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 				if(!$ticket['userid'])
-					sscanf($ticket['requestor'], "%[^<]<%[^>]", &$ticket['requestor'], &$ticket['requestoremail']);
+					list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
 				else
-					sscanf($ticket['requestor'], "<%[^>]", &$ticket['requestoremail']);
+					list($ticket['requestoremail']) = sscanf($ticket['requestor'], "<%[^>]");
 				$result[$idx] = $ticket;
 				$result['total']++;
 			}
