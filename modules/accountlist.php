@@ -43,16 +43,23 @@ function GetAccountList($order='username,asc', $user=NULL, $type=NULL)
 		case 'lastlogin':
 			$sqlord = " ORDER BY lastlogin $direction, username, login";
 		break;
+		case 'domain':
+			$sqlord = " ORDER BY domain $direction, login";
+		break;
+		case 'expdate':
+			$sqlord = " ORDER BY expdate $direction, login";
+		break;
 		default:
 			$sqlord = " ORDER BY login $direction, username";
 		break;
 	}
 
 	$list = $LMS->DB->GetAll(
-	        'SELECT passwd.id AS id, ownerid, login, lastlogin, '
+	        'SELECT passwd.id AS id, ownerid, login, lastlogin, expdate, domain, type, '
 		.$LMS->DB->Concat('users.lastname', "' '",'users.name').
 		' AS username FROM passwd LEFT JOIN users ON users.id = ownerid WHERE 1=1'
 		.($user != '' ? ' AND ownerid = '.$user : '')
+		.($type ? ' AND type & '.$type.' = '.$type : '')
 		.($sqlord != '' ? $sqlord : '')
 		);
 	

@@ -1,10 +1,11 @@
 {include file="header.html"}
-{include file="userheader.html"}
+{include file="accountheader.html"}
 <!--// $Id$ //-->
+<SCRIPT LANGUAGE="JavaScript" SRC="img/calendar.js"></SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <P align="CENTER">
 <FORM method="POST" action="?m=accountadd" name="account">
-<TABLE width="1%" cellpadding="3" border="0">
+<TABLE width="100%" cellpadding="3" border="0">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
 			<img src="img/account.gif" border="0" align="absmiddle" ALT="">		
@@ -17,49 +18,111 @@
 		</TD>
 	</TR>
 	<TR class="light">
-		<TD width="1%" class="fleft">
-			<img src="img/pass.gif" border="0" align="absmiddle" ALT="">		
-		</TD>
-		<TD width="1%">
-			<B>Has³o:</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<input type="password" name="account[passwd1]" value="{$account.passwd1}" {tip text="Wprowad¼ has³o" trigger="passwd"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<img src="img/pass.gif" border="0" align="absmiddle" ALT="">		
-		</TD>
-		<TD width="1%" nowrap>
-			<B>Powtórz has³o:</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<input type="password" name="account[passwd2]" value="{$account.passwd2}" {tip text="Wprowad¼ has³o ponownie" trigger="passwd"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD width="1%" class="fleft">
-			<img src="img/user.gif" border="0" align="absmiddle" ALT="">		
-		</TD>
-		<TD width="1%">
-			<B>W³a¶ciciel:</B>
-		</TD>
-		<TD width="98%" class="fright">
-			<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Wybierz w³a¶ciciela tego konta lub \"KONTO SYSTEMOWE\" je¶li nie chcesz przypisywaæ tego konta ¿adnemu u¿ytkownikowi"}>
-			    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>KONTO SYSTEMOWE</OPTION>
-			    {section name=users loop=$users}
-			    <OPTION VALUE="{$users[users].id}"{if $account.ownerid == $users[users].id} SELECTED{/if}>{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
-			    {/section}
-			</SELECT>
-		</TD>
+	    <TD width="100%" colspan="3" class="flr">
+		<TABLE width="100%" cellpadding="0">
+		    <TR class="LIGHT">
+			<TD width="50%" valign="top">
+			    <TABLE width="100%" cellpadding="3">
+				<TR>
+				    <TD width="1%">
+					<img src="img/pass.gif" border="0" align="absmiddle" ALT="">		
+				    </TD>
+				    <TD width="1%">
+					<B>Has³o:</B>
+				    </TD>
+				    <TD width="98%">
+					<input type="password" name="account[passwd1]" value="{$account.passwd1}" {tip text="Wprowad¼ has³o" trigger="passwd"}>
+				    </TD>
+				</TR>
+				<TR>
+				    <TD width="1%">
+		    			<img src="img/pass.gif" border="0" align="absmiddle" ALT="">		
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>Powtórz has³o:</B>
+				    </TD>
+				    <TD width="98%">
+		    			<input type="password" name="account[passwd2]" value="{$account.passwd2}" {tip text="Wprowad¼ has³o ponownie" trigger="passwd"}>
+				    </TD>
+				</TR>
+				<TR>
+				    <TD width="1%">
+					<img src="img/network.gif" border="0" align="absmiddle" ALT="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>Domena:</B>
+				    </TD>
+				    <TD width="98%">
+					<input type="text" name="account[domain]" value="{$account.domain}" {tip text="Wprowad¼ nazwê domenow± (opcjonalnie)" trigger="domain"}>
+				    </TD>
+				</TR>
+				<TR>
+				    <TD width="1%">
+					<img src="img/time.gif" border="0" align="absmiddle" ALT="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>Data wa¿no¶ci:</B>
+				    </TD>
+				    <TD width="98%">
+					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Wprowad¼ lub kliknij by wybraæ datê wa¿no¶ci konta w formacie RRRR/MM/DD (Pole puste oznacza, ¿e konto nigdy nie wygasa)" trigger="expdate"}>
+				    </TD>
+				</TR>
+			    </TABLE>
+			</TD>
+			<TD width="50%" valign="top">
+			    <TABLE width="100%" cellpadding="3">
+			    	<TR>
+				    <TD width="1%">
+					<img src="img/user.gif" border="0" align="absmiddle" ALT="">
+				    </TD>
+				    <TD width="1%">
+					<B>W³a¶ciciel:</B>
+		    		    </TD>
+				    <TD width="98%">
+					<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Wybierz w³a¶ciciela tego konta lub \"KONTO SYSTEMOWE\" je¶li nie chcesz przypisywaæ tego konta ¿adnemu u¿ytkownikowi"}>
+    					    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>KONTO SYSTEMOWE</OPTION>
+					    {section name=users loop=$users}
+					    <OPTION VALUE="{$users[users].id}"{if $account.ownerid == $users[users].id} SELECTED{/if}>{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+					    {/section}
+					</SELECT>
+				    </TD>
+				</TR>
+				<TR>
+				    <TD width="1%">
+					<img src="img/account.gif" border="0" align="absmiddle" ALT="">
+				    </TD>
+				    <TD width="1%">
+					<B>Typ:</B>
+				    </TD>
+				    <TD width="98%">
+					<NOBR>
+					<INPUT type="checkbox" name="account[type][shell]" value="1" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 1) == 1}CHECKED{/if}> shell
+					<INPUT type="checkbox" name="account[type][mail]" value="2" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 2) == 2}CHECKED{/if}> poczta
+					<INPUT type="checkbox" name="account[type][www]" value="4" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 4) == 4}CHECKED{/if}> www
+					<INPUT type="checkbox" name="account[type][ftp]" value="8" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 8) == 8}CHECKED{/if}> ftp
+					</NOBR>
+				    </TD>
+				</TR>
+			    </TABLE>
+			</TD>
+		    </TR>
+		</TABLE>
+	    </TD>
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.account.submit();">Dodaj konto <img src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=accountlist">Anuluj <img src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A><BR>
+			<INPUT type="checkbox" name="account[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $account.reuse}checked{/if}> Wywo³aj ponownie ten formularz po dodaniu konta
 		</TD>
 	</TR>
-		
 </TABLE>
 </P>
+<SCRIPT>
+<!--
+var cal1 = new calendar(document.forms['account'].elements['account[expdate]']);
+cal1.time_comp = false;
+document.forms['account'].elements['account[login]'].focus();
+//-->
+</SCRIPT>
 {include file="footer.html"}
