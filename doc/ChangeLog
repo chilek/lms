@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.0pre4 (??/01/2003):
+wersja 1.0pre4 (21/01/2003):
 
   - pe³ne przeportowanie obs³ugi SQL'a na ADODB
   - support do MySQL i PostgreSQL
