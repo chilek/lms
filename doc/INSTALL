@@ -120,12 +120,15 @@ Teraz,  przyda³oby  siê  utworzyæ pierwsze konto administratora. Tak, wiem, to
 jest  pokrêcone i bardzo user-friendly, ale sorry, jako¶ nie doszed³em jeszcze
 do napisania wizarda który wszystko zrobi ³adnie za u¿ytkownika:
 
-mysql> insert into admins (login, passwd) values ('login', 'has³o')
+mysql> insert into admins (login, passwd) values ('login', '')
 
-Teraz   kilka   s³ów   wyja¶nieñ.   Login,   to  oczywi¶cie  login  pierwszego
-administratora   w   systemie,   natomiast   has³o   to   has³o  tego¿  admina
-przepuszczonego przez PHP'ow± funkcjê crypt(). Nie jest to niestety zbyt ³atwe
-do osi±gniêcia, ale nie pozostawiam was na lodzie :P
+Teraz  kilka  s³ów  wyja¶nieñ.  Login,  to oczywi¶cie login pierwszego
+administratora.  Co  do has³a, w przyk³adzie podejmy puste has³o ('').
+Spowoduje  to ¿e bêdzie mo¿na siê zalogowaæ na puste has³o do systemu.
+Oczywi¶cie  zaraz  potem  nale¿y  je  jak  najszybciej  zmieniæ.  Poza
+mo¿liwo¶ci±  pustego has³a, istnieje stara metoda na has³o cryptniête,
+ale sporo ludzi (dunno why) nie potrafi sobie z tym poradziæ. Mimo to,
+z tej sekcji nie ginie opis jak uzyskaæ has³o w md5:
 
 Metoda pierwsza (wymaga shella php) - odpalamy z shella PHP i wpisujemy:
 
