@@ -359,6 +359,11 @@ class LMS
 		return $this->ADB->GetOne("SELECT id FROM nodes WHERE ipaddr=?",array($ipaddr));
 	}
 
+	function GetUserIDByIP($ipaddr)
+	{
+		return $this->ADB->GetOne("SELECT ownerid FROM nodes WHERE ipaddr=?",array($ipaddr));
+	}
+
 	function GetNodeIDByMAC($mac)	
 	{
 		return $this->ADB->GetOne("SELECT id FROM nodes WHERE mac=?",array($mac));
