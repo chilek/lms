@@ -59,17 +59,5 @@ if($error)
 	$SMARTY->display("mailingsend-footer.html");
 	$SMARTY->display("footer.html");
 }
-/*
- * $Log$
- * Revision 1.19  2003/09/05 13:11:24  lukasz
- * - nowy sposób wy¶wietlania informacji o b³êdach
- *
- * Revision 1.18  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.17  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
+
 ?>

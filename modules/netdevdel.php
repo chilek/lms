@@ -58,16 +58,4 @@ $SMARTY->assign("body",$body);
 $SMARTY->display("dialog.html");
 $SMARTY->display("footer.html");
 
-/*
- * $Log$
- * Revision 1.3  2003/10/08 04:39:38  lukasz
- * - temporary save
- *
- * Revision 1.2  2003/09/21 18:07:47  lexx
- * - netdev
- *
- * Revision 1.1  2003/09/12 20:57:05  lexx
- * - netdev
- *
- */
 ?>

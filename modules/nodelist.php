@@ -64,18 +64,4 @@ $SMARTY->assign("nodelist",$nodelist);
 $SMARTY->assign("listdata",$listdata);
 $SMARTY->display("nodelist.html");
 
-/*
- * $Log$
- * Revision 1.26  2003/12/04 04:39:14  lukasz
- * - porz±dki
- * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
- *
- * Revision 1.25  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.24  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>

@@ -49,13 +49,4 @@ $SMARTY->assign("error",$error);
 $SMARTY->assign("netdev",$netdevdata);
 $SMARTY->display("netdevadd.html");
 
-/*
- * $Log$
- * Revision 1.2  2003/10/05 21:18:49  alec
- * ujenolicenie naglowkow
- *
- * Revision 1.1  2003/09/12 20:57:05  lexx
- * - netdev
- *
- */
 ?>

@@ -63,17 +63,4 @@ if(!$error)
 	$SMARTY->display("netinfo.html");
 }
 	
-/*
- * $Log$
- * Revision 1.17  2003/08/27 19:26:04  lukasz
- * - changed format of ipaddr storage in database
- *
- * Revision 1.16  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.15  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>

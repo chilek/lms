@@ -90,27 +90,4 @@ switch($_RELOAD_TYPE)
 
 $SMARTY->display("footer.html");
 
-/*
- * $Log$
- * Revision 1.21  2003/12/16 20:28:00  alec
- * - kosmetyka
- *
- * Revision 1.20  2003/12/04 04:39:14  lukasz
- * - porz±dki
- * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
- *
- * Revision 1.19  2003/09/07 18:46:57  lexx
- * - die ADOB, die!
- *
- * Revision 1.18  2003/08/31 19:05:14  lukasz
- * - 19:48.32| < Lexx__> Baseciq, ten tego w reload.php uzywasz sqlTSfmt() ktore jest zdaje sie obsolete
- *
- * Revision 1.17  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.16  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>
