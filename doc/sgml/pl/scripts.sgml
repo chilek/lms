@@ -598,7 +598,7 @@ wins    = 213.25.209.10</screen>
 	do wiadomo¶ci. Faktury generowane s± na podstawie szablonu dostêpnego w lms-ui,
 	dlatego wymagane jest podanie u¿ytkownika i has³a do interfejsu www lms-ui.</para>
 	<para>W odró¿nieniu od pozosta³ych skrytpów ten wymaga dodatkowych modu³ów perla:
-	Data::Dumper, LWP::UserAgent, MIME::Entity.</para>
+	LWP::UserAgent, MIME::Entity.</para>
 	<para>Konfiguracjê nale¿y umie¶ciæ w sekcji <emphasis>[sendinvoices]</emphasis>:
 	    <itemizedlist>
         	<listitem>
