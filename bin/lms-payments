@@ -294,7 +294,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 		}
 
 		$cdbq->execute();
-		print "$uid\t$assign->{'value'}\t$desc\n" if not $quiet;
+		print STDERR "$uid\t$assign->{'value'}\t$desc\n" if not $quiet;
 	}
 }	
 
@@ -306,7 +306,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 {
 	my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES ($currtime, 0, 2, $assign->{'value'}, 0, '$assign->{'name'}/$assign->{'creditor'}', 0)");
 	$sdbq->execute();
-	print "0\t$assign->{'value'}\t$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
+	print STDERR "0\t$assign->{'value'}\t$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
 }
 
 $dbq = $dbase->prepare("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
