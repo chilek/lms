@@ -1,0 +1,18 @@
+$Id$
+
+Ka¿dy system ma ograniczenia. Pewne wynikaja z u¿ytego silnika SQL (DBMS)
+inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez developerów.
+
+nasz system takowe posiada:
+
+Wynikaj±ce z naszego projektu:
+
+Ilo¶æ pieniêdzy (tabelka cash), pieni±¿ki (od lms-1.1) przechowujemy jako 
+32 bitow± liczbê ca³kowit±, i w zwi±zku z tym za 8 lat bêdziecie nas nie 
+lubiæ posiadaj±c oko³o 5000 u¿ytkowników.
+
+
+Wynikaj±ce z u¿ywania mysqla:
+ilo¶æ rekordów (?)
+rozmiar bazy danych (?)
+

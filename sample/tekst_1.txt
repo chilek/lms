@@ -1,0 +1,23 @@
+Dzieñ Dobry,     
+
+
+Abonament za %date-m %date-y za Internet.
+
+%date-m %date-y za Internet.                
+
+Wszystkie nale¿no¶ci prosimy wp³acaæ na konto:   
+
+Hunter, 
+Bank: Mbank
+Nr rachunku bankowego: 3141592-1024768-27182818284
+z dopiskiem numeru umowy: %phone_1
+
+Z powa¿aniem,
+NitroNet.
+
+ps. w trosce o Pañstwa wygodê za³±czamy 10 ostatnich operacji ksiêgowych 
+na Pañstwa koncie finansowym.
+
+Je¶li w 5s powiesz co reprezentuj± cyferki w nr konta masz zni¿kê 10% !
+
+%last_10_in_a_table

@@ -1,0 +1,82 @@
+$Id$
+
+Niniejszy  program  jest  oprogramowaniem  wolnodostêpnym;  mo¿esz  go
+rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej Licencji
+Publicznej  GNU, wydanej przez Fundacjê Wolnodostêpnego Oprogramowania
+- wed³ug wersji 2-giej tej Licencji lub której¶ z pó¼niejszych wersji.
+
+Niniejszy  program  rozpowszechniany  jest  z  nadziej±,  i¿ bêdzie on
+u¿yteczny  -  jednak  BEZ  JAKIEJKOLWIEK  GWARANCJI,  nawet  domy¶lnej
+gwarancji  PRZYDATNO¦CI  HANDLOWEJ  albo  PRZYDATNO¦CI  DO OKRE¦LONYCH
+ZASTOSOWAÑ.   W  celu  uzyskania  bli¿szych  informacji  -  Powszechna
+Licencja Publiczna GNU.
+
+Z  pewno¶ci±  wraz  z  niniejszym  programem otrzyma³e¶ te¿ egzemplarz
+Powszechnej  Licencji  Publicznej  GNU;  je¶li  nie  -  napisz do Free
+Software  Foundation,  Inc.,  59  Temple Place - Suite 330, Boston, MA
+02111-1307, USA.
+
+LMS zawiera fragmenty nastêpuj±cego oprogramowania:
+
+phpMyAdmin (http://phpwizard.net/projects/phpMyAdmin)
+phpsysinfo (http://phpsysinfo.sourceforge.net)
+NewsPortal (http://florian-amrhein.de/newsportal/index-english.php3)
+
+oraz przyk³ady kodu zawarte w Podrêczniku PHP (http://www.php.net/manual/pl)
+
+W rolach g³ównych wyst±plii:
+
+Kod PHP:
+
+£ukasz 'Baseciq' Mozer
+Micha³ 'DziQs' Zapalski
+Rados³aw 'Warden' Antoniuk
+Krzysztof 'hunter' Drewicz  
+
+Kod C:
+
+Mateusz 'mteg' Golicz  
+
+Kod Perl:
+
+£ukasz 'Baseciq' Mozer
+Micha³ 'DziQs' Zapalski
+Maciej 'agaran' Pijanka
+Krzysztof 'hunter' Drewicz  
+
+Design:
+
+£ukasz 'Baseciq' Mozer  
+
+HTML, JavaScript, CSS:
+
+£ukasz 'Baseciq' Mozer
+Pawe³ 'Bob_R' Czerski
+Pawe³ 'sickone' Kisiela  
+
+Grafika:
+
+Grzegorz 'byko' Cichowski
+Kuba 'kflis' Flis
+£ukasz 'Baseciq' Mozer  
+
+Support MySQL:
+
+Kuba 'shasta' Jankowski
+Rados³aw 'Warden' Antoniuk  
+
+Dokumentacja i strona WWW:
+
+Kuba 'shasta' Jankowski
+Grzegorz 'JaBBaS' Dziêgielewski
+£ukasz 'Baseciq' Mozer
+
+Betatesting:
+
+Grzegorz 'byko' Cichowski
+Rados³aw 'Warden' Antoniuk
+Tomasz 'dzwonek' Dzwonkowski
+Sebastian 'Victus' Frasunkiewicz
+Kuba 'kflis' Flis
+Krystian 'UFOczek' Kochanowski
+Grzegorz 'JaBBaS' Dziêgielewski 

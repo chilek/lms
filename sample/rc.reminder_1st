@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# $Id$
+# simle reminder, send 1st info, i.e. today payings are accounded.
+
+PLATNOSC_HOME=/home/hunter/platnosci
+
+cd $PLATNOSC_HOME
+
+echo "$(date) Platnosci przypominaja o nale¿nosci" >> log/rc-scripts
+
+LANG=pl
+LC_ALL=pl
+
+export LANG LC_ALL
+
+lms/bin/lms-notify -D $PLATNOSC_HOME/conf/tekst_1.txt --config-file \
+$PLATNOSC_HOME/conf/lms.ini | mail platnosci@nitronet.pl

@@ -1,0 +1,62 @@
+{include file="clearheader.html"}
+<!-- $id:$ -->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="1%" VALIGN="TOP" NOWRAP>
+			<H1>Lista komputerów</H1>
+		</TD>
+		<TD ALIGN="RIGHT">
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %e %B, %Y"|capitalize}<BR>
+			Sporz±dzone przez: {$layout.logname}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN=CENTER>
+	<TR>
+		<TD  ALIGN=CENTER CLASS=head>
+			LP:
+		</TD>
+		<TD  ALIGN=CENTER WIDTH=30 CLASS=head>
+			ID:
+		</TD>
+		<TD  ALIGN=CENTER CLASS=head>
+			<B>Nazwa komputera:
+		</TD>
+		<TD  ALIGN=CENTER CLASS=head>
+			IP:
+		</TD>
+		<TD  ALIGN=CENTER CLASS=head>
+			MAC:
+		</TD>
+		<TD  ALIGN=CENTER CLASS=head>
+			W³a¶ciciel:
+		</TD>
+		
+
+	</TR>
+	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{section name=nodelist loop=$nodelist}{if $nodelist[nodelist].id}
+	<TR BGCOLOR="{cycle}">
+		<TD ALIGN=CENTER>
+			{counter}
+		</TD>
+		<TD>
+			{$nodelist[nodelist].id|string_format:"%04d"}
+		</TD>
+		<TD ALIGN=CENTER>
+			<B>{$nodelist[nodelist].name}</B>
+		</TD>
+		<TD ALIGN=CENTER>
+			{$nodelist[nodelist].ipaddr}
+		</TD>
+		<TD ALIGN=CENTER>
+			{$nodelist[nodelist].mac}
+		</TD>
+		<TD ALIGN=CENTER>
+			{$nodelist[nodelist].owner}
+		</TD>
+
+	</TR>
+	{/if}{/section}
+</TABLE>

@@ -1,0 +1,16 @@
+
+Indeks plików dokumentacji (czyli tych w doc):
+
+
+00-Index.txt		w³a¶nie go czytasz :)
+AUTHORS				Autorki i Ci którzy psuj± LMSa
+COPYING				Licencja na jakiej udostêpniany jest lms (to nie jest licencja php/adodb/mysql/pgsql/smarty.. ???)
+COPYRIGHTS			Nag³ówek licencyjny do plików php/html/etc 
+ChangeLog			Plik z histori± zmian
+DB_info.txt			Opis struktury bazy danych.
+INSTALL				Opis instalacji
+TODO				Do-Zrobienia.
+limits.txt			Ograniczenia pakietu lms.
+lms.mysql			Polecenia zak³adaj±ce tabelki w mysqlu
+lms.pgsql			Polecenia zak³adaj±ce tabelki w postgresqlu
+mailing.txt			Opis plików tekstowych z mailingiem dla u¿ytkowników.

@@ -1,0 +1,75 @@
+-----------------------------------------------------------------------------
+
+    dMP     dMMMMMMMMb  .dMMMb
+   dMP     dMP"dMP"dMP dMP" VP
+  dMP     dMP dMP dMP  VMMMb    wersja 1.0-cvs
+ dMP     dMP dMP dMP dP .dMP    http://lms.rulez.pl
+dMMMMMP dMP dMP dMP  VMMMP" 
+
+(C) 2001-2003 ASK NetX
+(C) 2002-2003 Rulez Development Team
+(c) 2002-2003 Ró¿ni Fajni Ludzie (tm) (zerknij do doc/AUTHORS aby zobaczyæ
+              kto dok³adnie ;>)
+
+-----------------------------------------------------------------------------
+
+"LMS" jest skrótem od "LAN Management System". Jest to zestaw aplikacji w
+PHP i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi (popularnie
+zwanymi Amatorskimi Sieciami Komputerowymi), opartych o bazê danych MySQL
+(docelowo, do wyboru, MySQL lub PostgreSQL). G³ówne za³o¿enia to uzyskanie
+jako¶ci us³ug oraz obs³ugi u¿ytkowników na poziomie providera z prawdziwego
+zdarzenia.
+
+-----------------------------------------------------------------------------
+
+Oprócz tego pliku powiniene¶ zajrzeæ tak¿e do:
+
+AUTHORS           - lista autorów oraz innych osób wspomagaj±cych projekt.
+COPYING           - licencja pakietu.
+INSTALL           - krótkie how-to jak zainstalowaæ LMS'a.
+TODO              - lista rzeczy do zrobienia.
+ChangeLog         - lista ostatnich zmian w LMS.
+lms.mysql         - skrypt MySQL tworz±cy tabele LMS'a.
+lms.pgsql         - (nieaktualny) skrypt PostgreSQL tworz±cy tabele LMS'a.
+
+-----------------------------------------------------------------------------
+
+Kontakt z autorami:
+
+Najlepiej poprzez listê mailingow±, na któr± mo¿na siê zapisaæ wysy³aj±c
+pustego maila o temacie "subscribe lms" na adres <ecartis@rulez.pl>.
+
+-----------------------------------------------------------------------------
+
+Zg³aszanie b³êdów i pomys³ów:
+
+Aby efektywnie zg³osiæ, najlepiej jest zapisaæ siê na listê mailingow±
+gdzie kto¶ z autorów b±d¼ u¿ytkowników bêdzie mia³ szansê odpowiedzieæ
+na pytania Ciê nurtuj±ce. Dostêpny jest tak¿e dla testów BTS, gdzie mo¿na
+zg³aszaæ b³êdy po uprzedniej rejestracji. Raporty z BTS id± tak¿e na listê
+mailingow±, wiêc najlepiej siê zapisaæ, zg³osiæ b³±d poprzez BTS, wys³aæ
+linka na listê i czekaæ na rozwój wydarzeñ. Adres BTS to
+<http://bts.rulez.pl>
+
+-----------------------------------------------------------------------------
+
+Najnowsza wersja:
+
+Zawsze aktualn± werjsê LMS mo¿na pobraæ z repozytorium CVS za pomoc±
+interfejsu www: <http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1>,
+lub klasycznie (dostêp anonimowy, puste has³o):
+
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout
+
+Repozytorium CVS mo¿na tak¿e przegl±daæ przy pomocy interfejsu WWW pod
+adresem <http://cvs.rulez.pl>.
+
+¯yczymy udanego wdra¿ania ;->
+
+Psuje LMS'a (znaczy siê developerki)
+
+-----------------------------------------------------------------------------
+$Id$
+-----------------------------------------------------------------------------

@@ -1,0 +1,12 @@
+# $Id$
+# to jest przyk³adowy wpis dla programu crontab (man 5 crontab)
+
+
+# backup:
+13 1 * * * /home/hunter/platnosci/bin/rc.backup
+# naliczenie:
+15 2 1 * * /home/hunter/platnosci/bin/lms-eachmonth
+# przypomnienia:
+18 4 1 * * /home/hunter/platnosci/bin/rc.reminder_1st
+18 4 11 * * /home/hunter/platnosci/bin/rc.reminder_2nd
+18 4 24 * * /home/hunter/platnosci/bin/rc.reminder_3rd

@@ -1,0 +1,95 @@
+<H1>Wyszukiwanie</H1>
+<P>
+<FORM METHOD="POST" ACTION="?m=usersearch&search=1" NAME="usersearch">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="FALL" COLSPAN="2">
+			<B>Wy¶wietl u¿ytkowników spe³niaj±cych nastêpuj±ce kryteria:</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<NOBR><B>Imiê i nazwisko:</B></NOBR>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[username]" VALUE="{$search.username}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<NOBR><B>Adres:</B></NOBR>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[address]" VALUE="{$search.address}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<NOBR><B>Telefon:</B></NOBR>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[phone]" VALUE="{$search.phone}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<NOBR><B>E-mail:</B></NOBR>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[email]" VALUE="{$search.email}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<NOBR><B>Miasto:</B></NOBR>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[city]" VALUE="{$search.city}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<NOBR><B>Kod pocztowy:</B></NOBR>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[zip]" VALUE="{$search.zip}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<NOBR><B>NIP:</B></NOBR>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[nip]" VALUE="{$search.nip}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<NOBR><B>GG:</B></NOBR>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[gguin]" VALUE="{$search.gguin}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<NOBR><B>Status:</B></NOBR>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<SELECT SIZE="1" NAME="search[s]">
+				<OPTION VALUE="0">wszyscy</OPTION>
+				<OPTION VALUE="1">pod³±czeni</OPTION>
+				<OPTION VALUE="2">oczekuj±cy</OPTION>
+				<OPTION VALUE="3">zainteresowani</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
+			{*<a href="javascript:document.usersearch.reset();"><IMG SRC="img/delete.gif" BORDER="0" ALIGN="absmiddle" ALT="">Wyczy¶æ</A>*}
+			<A href="javascript:document.usersearch.submit();"><IMG SRC="img/search.gif" BORDER="0" ALIGN="absmiddle" ALT="">Szukaj</A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+</P>

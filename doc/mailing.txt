@@ -1,0 +1,37 @@
+$Id$
+
+lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy 
+sieci i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku
+[-nastu] plików tekstowych [w iso-8859-2] i traktowania ich jako wzorców
+do mailingu.
+
+W plikach mo¿na u¿ywaæ nastêpuj±cych s³ów:
+%date-m
+%date-y
+%saldo
+%abonament
+%b
+%B
+%last_10_in_a_table
+
+które rozwijane s± do nastêpuj±cych danych:
+
+date-m		aktualny miesi±c, licz±c od 1 poprzedzone 0 np 02
+date-y 		aktualny rok, np 2003
+saldo 		aktualne saldo u¿ytkownika np 535
+abonament 	kwota abonamentu jaka jest doñ przypisana np 107
+b 			-saldo	np 107
+B 			saldo 	np -107
+last_10_in_a_table 	ostanie 10 operacji na koncie u¿ytkownika z tabelki 
+cash, np
+
+Data       | Opis                                                 | Warto¶æ
+-----------+------------------------------------------------------+---------
+2003-02-02 | Abonament za miesi±c 2003/02                         |  107.00
+2003-02-01 | Wp³ata                                               | -107.00
+2003-02-01 | Abonament za miesi±c 2003/02                         |  107.00
+2003-02-01 | Wp³ata                                               | -321.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+-----------+------------------------------------------------------+---------

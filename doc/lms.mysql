@@ -1,0 +1,187 @@
+# phpMyAdmin MySQL-Dump
+# version 2.2.3
+# http://phpwizard.net/phpMyAdmin/
+# http://phpmyadmin.sourceforge.net/ (download page)
+#
+# Host: localhost
+# Czas wygenerowania: 16 Lis 2002, 03:15
+# Wersja serwera: 3.23.53
+# Wersja PHP: 4.2.3
+# Baza danych : `lms`
+# --------------------------------------------------------
+#
+# $Id$
+#
+# --------------------------------------------------------
+
+#
+# Struktura tabeli dla  `admins`
+#
+
+DROP TABLE IF EXISTS `admins`;
+CREATE TABLE `admins` (
+  `id` int(11) NOT NULL auto_increment,
+  `login` varchar(32) NOT NULL default '',
+  `name` varchar(64) NOT NULL default '',
+  `email` varchar(255) NOT NULL default '',
+  `rights` varchar(64) NOT NULL default '',
+  `passwd` varchar(255) NOT NULL default '',
+  `lastlogindate` int(11) default NULL,
+  `lastloginip` varchar(16) default NULL,
+  `failedlogindate` int(11) default NULL,
+  `failedloginip` varchar(16) default NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `id_2` (`id`)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Struktura tabeli dla  `cash`
+#
+
+DROP TABLE IF EXISTS `cash`;
+CREATE TABLE `cash` (
+  `id` int(11) NOT NULL auto_increment,
+  `time` int(11) NOT NULL default '0',
+  `adminid` int(11) NOT NULL default '0',
+  `type` int(11) NOT NULL default '0',
+  `value` double NOT NULL default '0',
+  `userid` int(11) NOT NULL default '0',
+  `comment` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `id_2` (`id`)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Struktura tabeli dla  `networks`
+#
+
+DROP TABLE IF EXISTS `networks`;
+CREATE TABLE `networks` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
+  `address` varchar(16) NOT NULL default '',
+  `mask` varchar(16) NOT NULL default '',
+  `gateway` varchar(16) default NULL,
+  `dns` varchar(16) default NULL,
+  `domain` varchar(64) NOT NULL default '',
+  `wins` varchar(16) default NULL,
+  `ispublic` char(1) NOT NULL default '',
+  `dhcpstart` varchar(16) default NULL,
+  `dhcpend` varchar(16) default NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `id_2` (`id`)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Struktura tabeli dla  `nodes`
+#
+
+DROP TABLE IF EXISTS `nodes`;
+CREATE TABLE `nodes` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(16) NOT NULL default '',
+  `mac` varchar(20) NOT NULL default '',
+  `ipaddr` varchar(16) NOT NULL default '',
+  `ownerid` int(11) default NULL,
+  `creationdate` int(11) NOT NULL default '0',
+  `moddate` int(11) NOT NULL default '0',
+  `creatorid` int(11) NOT NULL default '0',
+  `modid` int(11) NOT NULL default '0',
+  `access` char(1) NOT NULL default 'Y',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `nodeid_2` (`id`,`name`),
+  KEY `nodeid` (`id`)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Struktura tabeli dla  `options`
+#
+
+DROP TABLE IF EXISTS `options`;
+CREATE TABLE `options` (
+  `option` varchar(255) default NULL,
+  `value` varchar(255) default NULL
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Struktura tabeli dla  `tariffs`
+#
+
+DROP TABLE IF EXISTS `tariffs`;
+CREATE TABLE `tariffs` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL default '',
+  `value` double NOT NULL default '0',
+  `uprate` int NOT NULL default '0',
+  `downrate` int NOT NULL default '0',
+  `description` text NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `id_2` (`id`)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Struktura tabeli dla  `tokens`
+#
+
+DROP TABLE IF EXISTS `tokens`;
+CREATE TABLE `tokens` (
+  `id` varchar(255) NOT NULL default '',
+  `auth` varchar(255) NOT NULL default ''
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Struktura tabeli dla  `users`
+#
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL auto_increment,
+  `lastname` varchar(255) default NULL,
+  `name` varchar(255) default NULL,
+  `status` int(11) default NULL,
+  `email` varchar(255) default NULL,
+  `phone1` varchar(255) default NULL,
+  `phone2` varchar(255) default NULL,
+  `phone3` varchar(255) default NULL,
+  `gguin` INT default NULL,	    
+  `address` varchar(255) NOT NULL default '',
+  `zip` varchar(6) default NULL,
+  `city` varchar(32) default NULL, 
+  `nip` varchar(16) default NULL,
+  `tariff` int(11) NOT NULL default '0',
+  `info` text,
+  `creationdate` int(11) NOT NULL default '0',
+  `moddate` int(11) NOT NULL default '0',
+  `creatorid` int(11) NOT NULL default '0',
+  `modid` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `id_2` (`id`),
+  KEY `id` (`id`)
+) TYPE=MyISAM;
+
+#
+# Struktura tabeli dla  `timestamps`
+#
+
+DROP TABLE IF EXISTS `timestamps`;
+CREATE TABLE `timestamps` (
+  `time` int(14) NOT NULL default '0',
+  `tablename` varchar(255) NOT NULL default ''
+) TYPE=MyISAM;
+
+#
+# Ustawienie domy¶lnego administratora
+#
+
+INSERT INTO `admins` (`login`, `name`) VALUES ('admin', 'domy¶le konto administracyjne');
