@@ -8,12 +8,12 @@
 	</TR>
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" width="98%">
-			<img src="img/netdev.gif" alt="" align="absmiddle"> <B>Nazwa / Producent:</B><BR>
-			<img src="img/home.gif" alt="" align="absmiddle"> Lokalizacja:
+			<img src="img/netdev.gif" ALT="" align="absmiddle"> <B>Nazwa / Producent:</B><BR>
+			<img src="img/home.gif" ALT="" align="absmiddle"> Lokalizacja:
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
-			<img src="img/empty.gif" alt="" HEIGHT="16" WIDTH="16" align="absmiddle"> ID:<BR>
-			<img src="img/port.gif" alt="" align="absmiddle"> Porty (zajête):
+			<img src="img/empty.gif" ALT="" HEIGHT="16" WIDTH="16" align="absmiddle"> ID:<BR>
+			<img src="img/port.gif" ALT="" align="absmiddle"> Porty (zajête):
 		</TD>
 		<TD CLASS="frightu" width="1%">
 			&nbsp;
@@ -24,7 +24,7 @@
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD width="97%" CLASS="fleft" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" VALIGN="TOP" NOWRAP>
 			<IMG SRC="img/netdev.gif" ALT="" ALIGN="ABSMIDDLE"> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name} {if $netdevlist[netdevlist].producer}/ {$netdevlist[netdevlist].producer}{/if}</B></A><BR>
-			<img src="img/home.gif" alt="" align="absmiddle"> {$netdevlist[netdevlist].location}
+			<img src="img/home.gif" ALT="" align="absmiddle"> {$netdevlist[netdevlist].location}
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" NOWRAP>
 			<IMG SRC="img/empty.gif" HEIGHT="16" WIDTH="16" ALT="" ALIGN="ABSMIDDLE"> ({$netdevlist[netdevlist].id|string_format:"%04d"})<br>

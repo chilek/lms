@@ -8,12 +8,12 @@
 	</TR>
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" width="98%">
-			<img src="img/node.gif" alt="" align="absmiddle"> <B>Nazwa:</B><BR>
-			<img src="img/user.gif" alt="" align="absmiddle"> W³a¶ciciel:
+			<img src="img/node.gif" ALT="" align="absmiddle"> <B>Nazwa:</B><BR>
+			<img src="img/user.gif" ALT="" align="absmiddle"> W³a¶ciciel:
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
 			<img src="img/empty.gif" WIDTH="16" HEIGHT="16" align="absmiddle"> ID:<BR>
-			<img src="img/ip.gif" alt="" align="absmiddle"> Adres IP:
+			<img src="img/ip.gif" ALT="" align="absmiddle"> Adres IP:
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;	
@@ -24,7 +24,7 @@
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD width="99%" CLASS="fleft" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
 			<IMG SRC="img/node.gif" ALT="" ALIGN="ABSMIDDLE"> <B>{$netcomplist[netcomplist].name}</B><BR>
-			<img src="img/user.gif" alt="" ALIGN="absmiddle"> {$netcomplist[netcomplist].owner}
+			<img src="img/user.gif" ALT="" ALIGN="absmiddle"> {$netcomplist[netcomplist].owner}
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
 			<img src="img/empty.gif" WIDTH="16" HEIGHT="16" align="absmiddle"> ({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>

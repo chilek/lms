@@ -14,7 +14,7 @@
 	{if $usernodes[usernodes].id}
 	<tr bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if ! $usernodes[usernodes].access} class="blend"{/if}>
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<a href="?m=nodeset&id={$usernodes[usernodes].id}"><IMG src="img/{if ! $usernodes[usernodes].access}no{/if}access.gif" alt="[ {if ! $usernodes[usernodes].access}Pod³±cz{else}Od³±cz{/if} ]" border="0" align="absmiddle"></A>
+			<a href="?m=nodeset&id={$usernodes[usernodes].id}"><IMG src="img/{if ! $usernodes[usernodes].access}no{/if}access.gif" ALT="[ {if ! $usernodes[usernodes].access}Pod³±cz{else}Od³±cz{/if} ]" border="0" align="absmiddle"></A>
 		</TD>
 		<TD WIDTH="97%" onClick="return self.location.href='?m=nodeinfo&id={$usernodes[usernodes].id}';">
 			<B>{$usernodes[usernodes].name}</B><BR>

@@ -2,7 +2,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fall">
-			<IMG src="img/money.gif" border="0" alt="" align="absmiddle">
+			<IMG src="img/money.gif" border="0" ALT="" align="absmiddle">
 			<B><A name="balance">Zobowi±zania u¿ytkownika:</A></B>
 		</TD>
 	</TR>
@@ -15,7 +15,8 @@
 					<TD WIDTH="1%" NOWRAP class="fbt"><B>Okres:</B></TD>
 					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Download:</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Upload:</TD>
-					<TD WIDTH="95%" COLSPAN="2" class="frightu">&nbsp;</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Faktura:</TD>
+					<TD WIDTH="94%" COLSPAN="2" class="frightu">&nbsp;</TD>
 				</tr>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{section name=a loop=$assignments}
@@ -25,7 +26,8 @@
 					<TD WIDTH="1%" NOWRAP>{$assignments[a].period} ({$assignments[a].at})</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].downrate|default:"-"} kbps</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].uprate|default:"-"} kbps</TD>
-					<TD WIDTH="95%" ALIGN="RIGHT" COLSPAN="2">{*<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê oraz zaksiêgowaæ wyrównanie od ostatniego zaksiêgowania do dnia dzisiejszego?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}&balance=1" {tip text="Usuwa taryfê z rekordu u¿ytkownika oraz ksiêguje wyrównanie od dnia ostatniego zdarzenia do dzisiaj"}>Usuñ i wyrównaj <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}" {tip text="Usuwa taryfê z rekordu u¿ytkownika"}>Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{if $assignments[a].invoice}tak{else}&nbsp;{/if}</TD>
+					<TD WIDTH="94%" ALIGN="RIGHT" COLSPAN="2">{*<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê oraz zaksiêgowaæ wyrównanie od ostatniego zaksiêgowania do dnia dzisiejszego?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}&balance=1" {tip text="Usuwa taryfê z rekordu u¿ytkownika oraz ksiêguje wyrównanie od dnia ostatniego zdarzenia do dzisiaj"}>Usuñ i wyrównaj <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}" {tip text="Usuwa taryfê z rekordu u¿ytkownika"}>Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
 				</TR>
 				{sectionelse}
 				<TR>
@@ -41,11 +43,12 @@
 					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="downrate" default="-"} kbps</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="uprate" default="-"} kbps</TD>
+					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT" COLSPAN="2">&nbsp;</TD>
 				</TR>
 				<FORM METHOD="POST" NAME="addassignment" ACTION="?m=useredit&action=addassignment&id={$balancelist.userid}">
 				<TR bgcolor="#DFD5BD">
-					<TD NOWRAP COLSPAN="5" ALIGN="RIGHT"><B>Dodaj:</B>
+					<TD NOWRAP COLSPAN="6" ALIGN="RIGHT"><B>Dodaj:</B>
 						<SELECT SIZE="1" NAME="tariffid" {tip text="Wybierz taryfê która ma byæ przypisana do u¿ytkownika"}>
 							<OPTION VALUE="0">... wybierz taryfê ...</OPTION>
 							{section name=t loop=$tariffs}<OPTION VALUE="{$tariffs[t].id}">{$tariffs[t].name} ({$tariffs[t].value|string_format:"%01.2f"} z³{if $tariffs[t].downrate}, {$tariffs[t].downrate} down{/if}{if $tariffs[t].uprate}, {$tariffs[t].uprate} up{/if})</OPTION>{/section}
@@ -58,6 +61,7 @@
 							<OPTION VALUE="2">co rok</OPTION>
 						</SELECT>
 						<B>kiedy:</B> <INPUT TYPE="TEXT" NAME="at" {tip text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28) a dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia)."} SIZE="5">
+						<INPUT CLASS="box" TYPE="checkbox" NAME="invoice" VALUE="1"> wystawiaj fakturê
 					</TD>
 					<TD ALIGN="RIGHT" NOWRAP>
 						<A HREF="javascript:document.addassignment.submit()" {tip text="Przypisz t± taryfê do u¿ytkownika"}>Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
