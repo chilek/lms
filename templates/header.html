@@ -33,7 +33,7 @@
 				<TD width="100%" class="fbt" onClick="return self.location.href='{$menu.link[menu]}';" nowrap>
 					<P CLASS="separated">
 						<IMG SRC="img/{$menu.img[menu]}" BORDER="0" ALT="" ALIGN="absmiddle">
-						<a href="{$menu.link[menu]}"{if $menu.accesskey[menu]} accesskey="{$menu.accesskey[menu]}"{/if}{if $menu.tip[menu]} {tip text="<B>`$menu.tip[menu]`</B>"}{/if}><B>{$menu.name[menu]}</B></A>
+						<a href="{$menu.link[menu]}"{if $menu.accesskey[menu]} accesskey="{$menu.accesskey[menu]}"{/if}{if $menu.tip[menu]} {tip text="<B>\$0</B>" 0=$menu.tip[menu]}{/if}><B>{$menu.name[menu]}</B></A>
 					</P>
 				</TD>
 			</TR>
