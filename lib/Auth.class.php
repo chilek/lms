@@ -55,7 +55,7 @@ class Auth {
 		{
 			$this->login = $loginform['login'];
 			$this->passwd = $loginform['pwd'];
-			$SESSION->save('session_timestamp', time());
+			$this->SESSION->save('session_timestamp', time());
 			writesyslog('Login attempt by '.$this->login, LOG_INFO);
 		}
 		elseif($this->DB->GetOne('SELECT COUNT(id) FROM admins') == 0)
@@ -68,8 +68,8 @@ class Auth {
 		}
 		else
 		{
-			$SESSION->restore('session_login', $this->login);
-			$SESSION->restore('session_passwd', $this->passwd);
+			$this->SESSION->restore('session_login', $this->login);
+			$this->SESSION->restore('session_passwd', $this->passwd);
 		}
 		
 		if($this->VerifyPassword())
@@ -78,8 +78,8 @@ class Auth {
 			$admindata = $this->DB->GetRow('SELECT id, name FROM admins WHERE login=?',array($this->login));
 			$this->id = $admindata['id'];
 			$this->logname = $admindata['name'];
-			$SESSION->restore('session_last', $this->last);
-			$SESSION->restore('session_lastip', $this->lastip);
+			$this->SESSION->restore('session_last', $this->last);
+			$this->SESSION->restore('session_lastip', $this->lastip);
 			if(isset($loginform))
 			{
 				$admindata = $this->DB->GetRow('SELECT lastlogindate, lastloginip FROM admins WHERE id=?',array($this->id));
@@ -89,10 +89,10 @@ class Auth {
 				$this->DB->Execute('UPDATE admins SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(),$_SERVER['REMOTE_ADDR'],$this->id));
 				writesyslog('User '.$this->login.' logged in.', LOG_INFO);
 			}
-			$SESSION->save('session_login', $this->login);
-			$SESSION->save('session_passwd', $this->passwd);
-			$SESSION->save('session_last', $this->last);
-			$SESSION->save('session_lastip', $this->lastip);
+			$this->SESSION->save('session_login', $this->login);
+			$this->SESSION->save('session_passwd', $this->passwd);
+			$this->SESSION->save('session_last', $this->last);
+			$this->SESSION->save('session_lastip', $this->lastip);
 		}
 		else
 		{
@@ -118,7 +118,7 @@ class Auth {
 		session_destroy();
 		unset($this->login);
 		unset($this->password);
-		$SESSION->finish;
+		$this->SESSION->finish();
 	}		
 	
 	function VerifyPassword()
