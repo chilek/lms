@@ -39,7 +39,7 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" SIZE="30">
-			{if $error.address}<BR><FONT COLOR="RED"><B>{$error.address}</B></FONT>{/if}
+			{if $error.address}<FONT COLOR="RED"><B>{$error.address}</B></FONT>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -47,6 +47,7 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="10">
+			{if $error.zip}<FONT COLOR="RED"><B>{$error.zip}</B></FONT>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -77,7 +78,8 @@
 		<B>NIP</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[nip]" VALUE="{$userinfo.nip}" CLASS="red" SIZE="30"><BR>
+			<INPUT TYPE="TEXT" NAME="userdata[nip]" VALUE="{$userinfo.nip}" CLASS="red" SIZE="30">
+			{if $error.nip}<FONT COLOR="RED"><B>{$error.nip}</B></FONT>{/if}<BR>
 		</TD>
 	</TR>
 
