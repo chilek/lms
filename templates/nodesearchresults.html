@@ -58,9 +58,7 @@
 	<TR>
 		<TD colspan="4" class="fall" align="center">
 			<p>&nbsp;</p>
-			<p>&nbsp;</p>
 			<p><B>Nie znaleziono ¿adnych komputerów spe³niaj±cych podane kryteria.</b></p>
-			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -73,7 +71,7 @@
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=nodesearch&search&o={$listdata.order},{$listdata.direction|lower}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=nodesearch&search&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total}
+			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
 		</TD>
 	</TR>
 	<TR CLASS="light">
