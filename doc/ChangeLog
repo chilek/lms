@@ -63,6 +63,10 @@ wersja 1.1.4 (??/??/2003):
        godzinie 0:00.
 
     5) Voila.
+
+  - spieprzy³em nazwê kolumny (lukasz):
+    
+    ALTER TABLE assignments CHANGE peroid period INT(11) DEFAULT '0' NOT NULL
 		    
 wersja 1.1.3 (29/08/2003):
 
