@@ -138,7 +138,7 @@
 			<para>Poniewa¿  MySQL  jest  domy¶ln± baz± dla LMS'u, konfiguracja ogranicza
 			siê  do  podania  w  sekcji  [database] pliku /etc/lms/lms.ini has³a i u¿ytkownika:
 			<screen>
-	user	 = lms
+	user     = lms
 	password = has³o_z_pkt.3</screen>
 		    </para>
 			<para>Po  takim  zabiegu,  o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
@@ -151,7 +151,8 @@
 			<para>Zatrzymajmy  siê  tutaj  i  dodajmy  co¶  do  crona,  tak dla ¶wiêtego
 			spokoju[tm](C):
 			<screen>
-	12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o --add-drop-table --add-locks lms > backups/lms-auto-"$(date +%s)".sql</screen>
+	12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o \
+		    --add-drop-table --add-locks lms > backups/lms-auto-"$(date +%s)".sql</screen>
 			</para>
 			<para>Spowoduje to wykonywanie 12 po 4 rano, ka¿dego 3, 10, 17, 21 i 28 dnia
 			miesi±ca automagicznie zrzutu danych z mysqla.</para>
@@ -201,8 +202,8 @@
 			<para>Dla systemu LMS domy¶lnym serwerem baz danych jest MySQL, dlatego w sekcji
 			[database] pliku /etc/lms/lms.ini nale¿y ustawiæ nastêpuj±ce opcje:
    			<screen>
-	type 	 = postgres
-    	user	 = lms
+	type     = postgres
+    	user     = lms
     	password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 		    </para>
 			<para>Uwaga: Has³o jest wymagane w zale¿no¶ci od konfiguracji autentykacji
