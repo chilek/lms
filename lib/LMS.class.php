@@ -3304,9 +3304,18 @@ class LMS
 			$headers['Mime-Version'] = '1.0';
 			$headers['Content-Type'] = "multipart/mixed;\n  boundary=\"".$boundary.'"';
 			$buf = "\nThis is a multi-part message in MIME format.\n\n";
-			$buf = '--'.$boundary."\n";
+			$buf .= '--'.$boundary."\n";
 			$buf .= "Content-Type: text/plain; charset=UTF-8\n\n";
 			$buf .= $body."\n";
+			while (list(, $chunk) = each($files))
+			{
+				$buf .= '--'.$boundary."\n";
+				$buf .= "Content-Transfer-Encoding: base64\n";
+				$buf .= "Content-Type: ".$chunk['content_type']."; name=\"".$chunk['filename']."\"\n";
+				$buf .= "Content-Description:\n";
+				$buf .= "Content-Disposition: attachment; filename=\"".$chunk['filename']."\"\n\n";
+				$buf .= chunk_split(base64_encode($chunk['data']), 60, "\n");
+			}
 			$buf .= '--'.$boundary.'--';
 		}
 		else
