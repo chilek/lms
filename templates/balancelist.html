@@ -19,6 +19,9 @@
 		<TD width="1%" class="fbt" align="right">
 			<B>Warto¶æ:</B>
 		</TD>
+		<TD width="1%" class="fbt" align="right">
+			<B>VAT:</B>
+		</TD>
 		<TD width="1%" class="fbt" align="center">
 			<B>&raquo;</B>
 		</TD>
@@ -67,6 +70,13 @@
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top">
 			<NOBR>{$balancelist[balancelist].value|string_format:"%01.2f"} z³</NOBR>
+		</TD>
+		<TD width="1%" align="right" nowrap valign="top">
+			<NOBR>
+			{if $balancelist[balancelist].taxvalue}
+				{$balancelist[balancelist].taxvalue|string_format:"%01.2f"} %
+			{else}zw.{/if}
+			</NOBR>
 		</TD>
 		<TD width="1%" align="center" valign="top">
 			&raquo;

@@ -202,7 +202,15 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$icdbq->execute();
 			}
 		}
-		my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES ($time, 0, 4, $assign->{'value'}, $uid, '$txt', $gotinv{$uid})");
+		my $sdbq;
+		if ($assign->{'taxvalue'})
+		{
+			$sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid) VALUES ($time, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$txt', $gotinv{$uid})");
+		}
+		else
+		{
+			$sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid) VALUES ($time, 0, 4, $assign->{'value'}, NULL, $uid, '$txt', $gotinv{$uid})");
+		}
 		$sdbq->execute();
 		print "$uid\t$assign->{'value'}\t$txt\n";
 	}
