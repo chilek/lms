@@ -91,12 +91,49 @@ CREATE TABLE tariffs (
 	id integer DEFAULT nextval('tariffs_id_seq'::text) NOT NULL,
 	name varchar(255) NOT NULL,
 	value float4 DEFAULT 0 NOT NULL,
+	taxvalue integer DEFAULT 0 NOT NULL,
+	sww varchar(255) DEFAULT '' NOT NULL,
 	uprate integer,
 	downrate integer,
 	description text NOT NULL,
 	PRIMARY KEY (id)
 );
-	 
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "invoices" 
+-------------------------------------------------------- */
+DROP SEQUENCE "invoices_id_seq";
+CREATE SEQUENCE "invoices_id_seq";
+DROP TABLE invoices;
+CREATE TABLE invoices (
+	id integer DEFAULT nextval('invoices_id_seq'::text) NOT NULL,
+        number integer NOT NULL,
+        cdate integer NOT NULL,
+        paytime smallint NOT NULL,
+        customerid integer NOT NULL,
+        name varchar(255) NOT NULL,
+        address varchar(255) NOT NULL,
+        nip varchar(16) NOT NULL,
+        zip varchar(6) NOT NULL,
+        city varchar(32) NOT NULL,
+        phone varchar(255) NOT NULL,
+        finished smallint DEFAULT 0 NOT NULL
+);
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "invoicecontents" 
+-------------------------------------------------------- */
+CREATE TABLE invoicecontents (
+	invoiceid integer NOT NULL,
+	value float4 NOT NULL,
+	taxvalue integer NOT NULL,
+	sww varchar(255) DEFAULT '' NOT NULL,
+	content varchar(16) NOT NULL,
+	count integer NOT NULL,
+	description varchar(255) NOT NULL,
+	tariffid integer NOT NULL
+);	 
+
 /* -------------------------------------------------------- 
   Struktura tabeli "timestamps" 
 -------------------------------------------------------- */
@@ -126,13 +163,11 @@ CREATE TABLE users (
 	zip varchar(6) DEFAULT NULL,
 	city varchar(32) DEFAULT NULL,
 	nip varchar(16) DEFAULT NULL, 
-	-- tariff integer DEFAULT 0 NOT NULL,
 	info text,
 	creationdate integer DEFAULT 0 NOT NULL,
 	moddate integer DEFAULT 0 NOT NULL,
 	creatorid integer DEFAULT 0 NOT NULL,
 	modid integer DEFAULT 0 NOT NULL,
-	-- payday smallint DEFAULT 1 NOT NULL,
 	deleted smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)	
 );
@@ -206,3 +241,4 @@ SELECT
      split_part($1,''.'',3)::int8*256+
      split_part($1,''.'',4)::int8;
 ' LANGUAGE SQL;
+
