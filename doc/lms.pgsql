@@ -13,9 +13,9 @@ CREATE TABLE admins (
 	email varchar(255) DEFAULT '' NOT NULL,
 	rights varchar(64) DEFAULT '' NOT NULL,
 	passwd varchar(255) DEFAULT '' NOT NULL,
-	lastlogindate integer,
+	lastlogindate integer DEFAULT 0 NOT NULL,
 	lastloginip varchar(16),
-	failedlogindate integer,
+	failedlogindate integer DEFAULT 0 NOT NULL,
 	failedloginip varchar(16),
 	PRIMARY KEY (id)
 );

@@ -18,15 +18,25 @@ BEGIN;
 /* Tej tabeli ju¿ nie u¿ywamy */
 DROP TABLE options;
 
+/* Kosmetyka u adminów */
+UPDATE admins SET lastlogindate=0 WHERE lastlogindate IS NULL;
+UPDATE admins SET failedlogindate=0 WHERE failedlogindate IS NULL;	 
+ALTER TABLE admins UPDATE lastlogindate SET DEFAULT 0;
+ALTER TABLE admins UPDATE lastlogindate SET NOT NULL;
+ALTER TABLE admins UPDATE failedlogindate SET DEFAULT 0;
+ALTER TABLE admins UPDATE failedlogindate SET NOT NULL;
+	
 /* Teraz u¿ytkownicy nie s± usuwani z bazy */
 ALTER TABLE users ADD deleted int2;
 UPDATE users SET deleted=0;
 ALTER TABLE users ALTER COLUMN deleted SET DEFAULT 0;
 ALTER TABLE users ALTER COLUMN deleted SET NOT NULL;
+
 /* Dzieñ zap³aty */
 ALTER TABLE users ADD payday integer;
 ALTER TABLE users ALTER COLUMN payday SET DEFAULT 1;
 ALTER TABLE users ALTER COLUMN payday SET NOT NULL;
+
 /* pesel */
 ALTER TABLE users ADD pesel varchar(11);
 ALTER TABLE users ALTER COLUMN pesel SET DEFAULT NULL;

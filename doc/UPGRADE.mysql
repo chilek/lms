@@ -17,6 +17,11 @@ Na samym koñcu mo¿esz wyrzuciæ niepotrzebne rzeczy:
 /* Ta tabela ju¿ nie jest u¿ywana */
 DROP TABLE IF EXISTS options;
 
+/* Kosmetyka u adminów */
+ALTER TABLE admins CHANGE lastlogindate lastlogindate INT(11) DEFAULT '0';
+ALTER TABLE admins CHANGE failedlogindate failedlogindate INT(11) DEFAULT '0';
+
+
 /* Nowe kolumny */
 ALTER TABLE users ADD deleted BOOL DEFAULT '0' NOT NULL;
 ALTER TABLE users ADD payday INT DEFAULT '1' NOT NULL;
