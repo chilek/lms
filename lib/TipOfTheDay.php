@@ -88,5 +88,4 @@ $tipoftheday[] = "01:04 < [hunter]> robiæ dokumentacje ?
 
 mt_srand ((double) microtime()* 100000000);
 $layout[tip] = $tipoftheday[mt_rand(0,sizeof($tipoftheday)-1)];
-$layout[tip] = $tipoftheday[sizeof($tipoftheday)-1];
 
