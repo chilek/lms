@@ -31,6 +31,18 @@ define(DBVERSION, '2004121000'); // here should be always the newest version of 
  * This file contains procedures for upgradeing automagicly database.
  */
 
+function getdir($pwd = './', $pattern = '^.*$')
+{
+	if ($handle = @opendir($pwd))
+	{
+		while (($file = readdir($handle)) !== FALSE)
+			if(ereg($pattern,$file))
+				$files[] = $file;
+		closedir($handle);
+	}
+	return $files;
+}
+
 if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',array('dbversion')))
 	if(DBVERSION > $dbversion)
 	{
