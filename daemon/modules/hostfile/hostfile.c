@@ -147,9 +147,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 							break;
 					// groups test
 					if(strlen(hm->groups))
-						if( res1 = g->db_pquery("SELECT DISTINCT(usergroupid) AS groupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"))) {
+						if( res1 = g->db_pquery("SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"))) {
 							for(k=0; k<res1->nrows; k++) {
-								int groupid = atoi(g->db_get_data(res1, k, "groupid"));
+								int groupid = atoi(g->db_get_data(res1, k, "usergroupid"));
 								for(m=0; m<gc; m++) 
 									if(gps[m].id==groupid) 
 										break;
