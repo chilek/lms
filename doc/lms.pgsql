@@ -424,6 +424,24 @@ CREATE TABLE passwd (
 );
 
 /* ---------------------------------------------------
+    LMS-UI Configuration table
+------------------------------------------------------*/
+
+DROP SEQUENCE uiconfig_id_seq;
+CREATE SEQUENCE uiconfig_id_seq;
+DROP TABLE uiconfig;
+CREATE TABLE uiconfig (
+    id integer DEFAULT nextval('uiconfig_id_seq'::text) NOT NULL,
+    section varchar(255) NOT NULL DEFAULT '',
+    var varchar(255) NOT NULL DEFAULT '',
+    value text NOT NULL DEFAULT '',
+    description text NOT NULL DEFAULT '',
+    disabled smallint NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE (section, var)
+);
+
+/* ---------------------------------------------------
     Database info table
 ------------------------------------------------------*/
 
@@ -433,4 +451,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004112100');    
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004112700');

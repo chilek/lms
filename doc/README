@@ -781,22 +781,24 @@ database = /usr/local/lms/lms.db
    Domy¶lnie zdefiniowanych jest osiem regu³ dostêpu.
      * pe³en dostêp
      * odczyt wszystkich danych
-     * pod³±czanie i od³±czanie komputerów
-     * manipulowanie finansami
+     * w³±czanie i od³±czanie komputerów
+     * manipulacja finansami
      * prze³adowywanie konfiguracji
-     * manipulowanie danymi u¿ytkowników
-     * manipulowanie danymi komputerów
+     * manipulacja danymi u¿ytkowników
+     * manipulacja danymi komputerów
      * dostêp do statystyk
      * dostêp do korespondencji seryjnej
-     * brak dostêpu do modyfikacji i zak³adania kont administratorów
      * zarz±dzanie Helpdeskiem (RT)
      * obs³uga Helpdesku (RT)
+     * manipulacja kontami
+     * konfiguracja interfejsu u¿ytkownika
+     * brak dostêpu do modyfikacji i zak³adania kont administratorów
      * brak dostêpu
 
-   Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania. Modu³y
-   do których administrator ma zawsze dostêp to: welcome, copyrights,
-   logout, chpasswd (przy czym chpasswd umo¿liwia tylko zmianê w³asnego
-   has³a), dostêp do reszty jest zdefiniowany regu³ami.
+   Niektóre z nich zezwala na dostêp do modu³ów oraz dwie zabraniaj±.
+   Modu³y do których administrator ma zawsze dostêp to: welcome,
+   copyrights, logout, chpasswd (przy czym chpasswd umo¿liwia tylko
+   zmianê w³asnego has³a), dostêp do reszty jest zdefiniowany regu³ami.
    Notatka
 
    Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS
@@ -941,6 +943,28 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    wyczyszczenie bie¿±cej bazy danych i za³adowanie do niej danych z
    wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
    aktualnej bazy danych.
+     _________________________________________________________________
+
+3.2.5. Konfiguracja
+
+   Pocz±wszy od wersji 1.5.3 mo¿liwa jest konfiguracja interfejsu
+   u¿ytkownika tak¿e poprzez LMS-UI. Opcje przechowywane s± w bazie
+   danych i nale¿y je przenie¶æ z pliku lms.ini. Do tego celu s³u¿y modu³
+   upgrade02, który jest automatycznie wykonywany po klikniêciu linku
+   znajduj±cego siê na pustej li¶cie opcji konfiguracyjnych.
+
+   Notatka
+
+   Opcje konfigurowane w LMS-UI maj± wiêkszy priorytet od tych zapisanych
+   w lms.ini, co oznacza, ¿e plik konfiguracyjny jest tak¿e odczytywany,
+   ale warto¶ci zmiennych z tego pliku nadpisywane s± warto¶ciami
+   zapisanymi w bazie danych.
+
+   Aby dodaæ now± opcjê kliknij link 'Dodaj opcjê' na dole listy. Aby
+   wyedytowaæ parametry opcji kliknij na jej rekord. Zostaniesz
+   przeniesiony do formularza edycyjnego, gdzie mo¿esz równie¿ usun±æ
+   opcjê. Zmiana statusu opcji onacza w³±czenie/wy³±czenie jej dzia³ania,
+   co polega na przypisaniu jej warto¶ci domy¶lnej (je¿eli tak± posiada).
      _________________________________________________________________
 
 3.3. U¿ytkownicy
@@ -3791,7 +3815,17 @@ Rozdzia³ 7. Dla dociekliwych
    rights - (1-odczyt, 2-zapis)
      _________________________________________________________________
 
-7.2.23. Informacje o bazie danych ('dbinfo')
+7.2.23. Konfiguracja LMS-UI ('uiconfig')
+
+   id - identyfikator
+   section - nazwa sekcji
+   var - nazwa opcji konfiguracyjnej
+   value - warto¶æ
+   description - opis/komentarz
+   disabled - wy³±czenie opcji (0-w³., 1-wy³.)
+     _________________________________________________________________
+
+7.2.24. Informacje o bazie danych ('dbinfo')
 
    keytype - typ
    keyvalue - warto¶æ

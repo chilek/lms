@@ -2396,11 +2396,11 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></LI
 ><LI
 ><P
->pod³±czanie i od³±czanie komputerów</P
+>w³±czanie i od³±czanie komputerów</P
 ></LI
 ><LI
 ><P
->manipulowanie finansami</P
+>manipulacja finansami</P
 ></LI
 ><LI
 ><P
@@ -2408,11 +2408,11 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></LI
 ><LI
 ><P
->manipulowanie danymi u¿ytkowników</P
+>manipulacja danymi u¿ytkowników</P
 ></LI
 ><LI
 ><P
->manipulowanie danymi komputerów</P
+>manipulacja danymi komputerów</P
 ></LI
 ><LI
 ><P
@@ -2424,10 +2424,6 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></LI
 ><LI
 ><P
->brak dostêpu do modyfikacji i zak³adania kont administratorów</P
-></LI
-><LI
-><P
 >zarz±dzanie Helpdeskiem (RT)</P
 ></LI
 ><LI
@@ -2436,11 +2432,23 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></LI
 ><LI
 ><P
+>manipulacja kontami</P
+></LI
+><LI
+><P
+>konfiguracja interfejsu u¿ytkownika</P
+></LI
+><LI
+><P
+>brak dostêpu do modyfikacji i zak³adania kont administratorów</P
+></LI
+><LI
+><P
 >brak dostêpu</P
 ></LI
 ></UL
 >
-      Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania. Modu³y do których 
+      Niektóre z nich zezwala na dostêp do modu³ów oraz dwie zabraniaj±. Modu³y do których 
       administrator ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
       chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostêp do reszty jest zdefiniowany regu³ami.</P
 ><DIV
@@ -2752,6 +2760,79 @@ CLASS="FILENAME"
 	    Klikniêcie na ikonkê Odtwórz spowoduje wyczyszczenie bie¿±cej bazy danych i za³adowanie
 	    do niej danych z wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
 	    aktualnej bazy danych.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-UICONFIG"
+>3.2.5. Konfiguracja</A
+></H3
+><P
+>Pocz±wszy od wersji 1.5.3 mo¿liwa jest konfiguracja interfejsu
+	    u¿ytkownika tak¿e poprzez <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>. Opcje przechowywane 
+	    s± w bazie danych i nale¿y je przenie¶æ z pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>.
+	    Do tego celu s³u¿y modu³ <TT
+CLASS="FILENAME"
+>upgrade02</TT
+>, który jest
+	    automatycznie wykonywany po klikniêciu linku znajduj±cego siê na pustej
+	    li¶cie opcji konfiguracyjnych.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Opcje konfigurowane w <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> maj±
+	    wiêkszy priorytet od tych zapisanych w <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>, co
+	    oznacza, ¿e plik konfiguracyjny jest tak¿e odczytywany, ale warto¶ci 
+	    zmiennych z tego pliku nadpisywane s± warto¶ciami zapisanymi
+	    w bazie danych.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>Aby dodaæ now± opcjê kliknij link 'Dodaj opcjê' na dole listy.
+	    Aby wyedytowaæ parametry opcji kliknij na jej rekord. Zostaniesz przeniesiony 
+	    do formularza edycyjnego, gdzie mo¿esz równie¿ usun±æ opcjê. Zmiana statusu
+	    opcji onacza w³±czenie/wy³±czenie jej dzia³ania, co polega na przypisaniu
+	    jej warto¶ci domy¶lnej (je¿eli tak± posiada).</P
 ></DIV
 ></DIV
 ><DIV
@@ -10630,8 +10711,46 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="UICONFIG"
+>7.2.23. Konfiguracja LMS-UI ('uiconfig')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>section - nazwa sekcji</TD
+></TR
+><TR
+><TD
+>var - nazwa opcji konfiguracyjnej</TD
+></TR
+><TR
+><TD
+>value - warto¶æ</TD
+></TR
+><TR
+><TD
+>description - opis/komentarz</TD
+></TR
+><TR
+><TD
+>disabled - wy³±czenie opcji (0-w³., 1-wy³.)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="DBINFO"
->7.2.23. Informacje o bazie danych ('dbinfo')</A
+>7.2.24. Informacje o bazie danych ('dbinfo')</A
 ></H3
 ><TABLE
 BORDER="0"

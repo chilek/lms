@@ -41,7 +41,7 @@
 	    Ponadto znajdziesz tu przydatne lms'owe linki.</para>
 	</sect2>
 	<sect2 id="administration-admins">
-	<title>Administratorzy</title>
+	    <title>Administratorzy</title>
 	    <para>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, czyli osób
 	    korzystaj±cych z LMS'a, zak³adania i przegl±dania ich kont, zmiany hase³ i definiowania 
 	    praw dostêpu.</para>
@@ -72,6 +72,25 @@
 	    Klikniêcie na ikonkê Odtwórz spowoduje wyczyszczenie bie¿±cej bazy danych i za³adowanie
 	    do niej danych z wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
 	    aktualnej bazy danych.</para>
+	</sect2>
+	<sect2 id="administration-uiconfig">
+	    <title>Konfiguracja</title>
+	    <para>Pocz±wszy od wersji 1.5.3 mo¿liwa jest konfiguracja interfejsu
+	    u¿ytkownika tak¿e poprzez <emphasis>LMS-UI</emphasis>. Opcje przechowywane 
+	    s± w bazie danych i nale¿y je przenie¶æ z pliku <filename>lms.ini</filename>.
+	    Do tego celu s³u¿y modu³ <filename>upgrade02</filename>, który jest
+	    automatycznie wykonywany po klikniêciu linku znajduj±cego siê na pustej
+	    li¶cie opcji konfiguracyjnych.</para>
+	    <para><note><para>Opcje konfigurowane w <emphasis>LMS-UI</emphasis> maj±
+	    wiêkszy priorytet od tych zapisanych w <filename>lms.ini</filename>, co
+	    oznacza, ¿e plik konfiguracyjny jest tak¿e odczytywany, ale warto¶ci 
+	    zmiennych z tego pliku nadpisywane s± warto¶ciami zapisanymi
+	    w bazie danych.</para></note></para>
+	    <para>Aby dodaæ now± opcjê kliknij link 'Dodaj opcjê' na dole listy.
+	    Aby wyedytowaæ parametry opcji kliknij na jej rekord. Zostaniesz przeniesiony 
+	    do formularza edycyjnego, gdzie mo¿esz równie¿ usun±æ opcjê. Zmiana statusu
+	    opcji onacza w³±czenie/wy³±czenie jej dzia³ania, co polega na przypisaniu
+	    jej warto¶ci domy¶lnej (je¿eli tak± posiada).</para>
 	</sect2>
  </sect1>
  <sect1 id="menu-users">
