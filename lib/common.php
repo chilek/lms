@@ -31,12 +31,10 @@
 // ie $program = execute_program('netstat', '-anp | grep LIST');
 // NOT $program = execute_program('netstat', '-anp|grep LIST');
 
-
 function bsd_grab_key ($key)
 {
 	return execute_program('sysctl', '-n '.$key);
 }
-
 
 function find_program ($program)
 {
@@ -56,7 +54,6 @@ function execute_program ($program, $args = '')
 {
 	$buffer = '';
 	$program = find_program($program);
-
 
 	if (!$program) { return; }
 
@@ -98,11 +95,33 @@ function uptimef($ts)
 	$hours = floor($hours - ($days * 24));
 	$min= floor($min - ($days * 60 * 24) - ($hours * 60));
 	if ($days != 0)
-		$result = $days.' dni ';
-	if ($hours != 0)
-		$result .= $hours.' godzin ';
-	$result .= $min.' minut';
-	
+	{
+		$result = $days;
+		if($days==1)
+			$result .= ' dzieñ ';
+		else
+			$result .= ' dni ';
+	}
+	if ($hours != 0) 
+	{
+		$result .= $hours;
+		if($hours==1)
+			$result .= ' godzina ';
+		elseif(in_array($hours, array(2,3,4,22,23)))
+			$result .= ' godziny ';
+		else	
+			$result .= ' godzin ';
+	}
+	if($min != 0)
+	{
+		$result .= $min;
+		if($min==1)
+			$result .= ' minuta ';
+		elseif(in_array($min, array(2,3,4,22,23,24,32,33,34,42,43,44,52,53,54)))
+			$result .= ' minuty ';
+		else
+			$result .= ' minut ';
+	}
 	return $result;
 }
 
@@ -318,7 +337,6 @@ function check_mac($macaddr)
 
 function textwrap($text, $wrap=76, $break = "\n")
 {
-
 	// This function is takem from newsportal
 
 	$len = strlen($text);
@@ -370,8 +388,8 @@ function isipinstrict($ip,$net,$mask)
 		return false;
 }
 
-function getmicrotime(){
-
+function getmicrotime()
+{
 	// This function has been taken from PHP manual
 
 	list($usec, $sec) = explode(' ',microtime());
@@ -380,7 +398,6 @@ function getmicrotime(){
 
 function writesyslog($message,$type)
 {
-
 	// Untested on *BSD. Can anyone chek this out on *BSD machine? Thanx.
 
 	switch(PHP_OS)
@@ -513,22 +530,19 @@ function check_email( $email )
 }
 
 function check_nip($nip)
-
 {
+	$steps = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
 
-		$steps = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
+	$nip = str_replace('-', '', $nip);
+	$nip = str_replace(' ', '', $nip);
 
-		$nip = str_replace('-', '', $nip);
-		$nip = str_replace(' ', '', $nip);
+	if (strlen($nip) != 10) return FALSE;
 
-		if (strlen($nip) != 10) return FALSE;
+	for ($x = 0; $x < 9; $x++) $sum_nb += $steps[$x] * $nip[$x];
 
-		for ($x = 0; $x < 9; $x++) $sum_nb += $steps[$x] * $nip[$x];
+	if ($sum_nb % 11 == $nip[9]) return TRUE;
 
-		if ($sum_nb % 11 == $nip[9]) return TRUE;
-
-		return FALSE;
-
+	return FALSE;
 }
 
 function check_pesel($pesel)
@@ -574,7 +588,6 @@ function get_producer($mac)
 
 function to_words($num, $power = 0, $powsuffix = '')
 {
-
 	// Extracted from lang.pl.php by Piotr Klaban <makler at man dot torun dot pl>
 	// from PEAR package Number_Words-0.3.1
 
@@ -875,6 +888,5 @@ function getdir($pwd = './', $pattern = '^.*$')
 	}
 	return $files;
 }
-
 
 ?>
