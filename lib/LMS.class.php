@@ -677,7 +677,7 @@ class LMS
 				.'WHERE deleted = 0 '.($state !=0 ? ' AND status = '.$state :'') 
 				.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
 				.($usergroup ? ' AND usergroupid='.$usergroup : '') 
-				.'GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, users.address, gguin, nip, pesel, zip, city, info '
+				.' GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, users.address, gguin, nip, pesel, zip, city, info '
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{
