@@ -6,6 +6,8 @@ wersja 1.2.2 (??/??/2004):
   - poprawka w paymentedit.html: 'taryfa' -> 'op³ata' (alec)
   - BTS#00137: dodany komunikat o braku wolnych portów w urz±dzeniu sieciowym
     podczas pod³±czania komputera w nodeinfobox.html (alec)
+  - BTS#00151: przy obliczaniu ¶redniego zysku miesiêcznego nie bierzemy
+    pod uwagê u¿ytkowników oczekuj±cych i zainteresowanych (alec)
 
 wersja 1.2.1 Sarah (07/05/2004):
 
