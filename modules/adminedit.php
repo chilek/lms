@@ -41,16 +41,16 @@ if(isset($admininfo))
 		$admininfo[$key] = trim($value);
 
 	if($LMS->GetAdminIDByLogin($admininfo[login]) && $LMS->GetAdminIDByLogin($admininfo[login]) != $_GET[id])
-		$error[login] = "Podany login jest ju¿ zajêty!";
+		$error[login] = $lang[error_login_already_exists];
 
 	if($admininfo[login] == "")
-		$error[login] = "To pole nie mo¿e byæ puste!";
+		$error[login] = $lang[error_no_empty_field];
 
 	if($admininfo[name] == "")
-		$error[name] = "To pole nie mo¿e byæ puste!";
+		$error[name] = $lang[error_no_empty_field];
 
 	if($admininfo[email]!="" && !check_email($admininfo[email]))
-		$error[email] = "Podany email nie wydaje siê byæ poprawny!";
+		$error[email] = $lang[error_email_incorrect];
 				
 
 	// zróbmy maskê ACL...
@@ -79,7 +79,7 @@ foreach($LMS->GetAdminInfo($_GET[id]) as $key => $value)
 	if(!isset($admininfo[$key]))
 		$admininfo[$key] = $value;
 
-$layout[pagetitle]="Edycja danych administratora ".$LMS->GetAdminName($_GET[id]);
+$layout[pagetitle]=sprintf($lang[pagetitle_adminedit],$LMS->GetAdminName($_GET[id]));
 
 $rights = $LMS->GetAdminRights($_GET[id]);
 
