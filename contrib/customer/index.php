@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.3-cvs
+ * LMS version 1.5-cvs
  *
  *  (C) Copyright 2001-2003 LMS Developers
  *
@@ -141,7 +141,7 @@ $SMARTY = new Smarty;
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 
-$layout[lmsv]='1.3-cvs';
+$layout[lmsv]='1.5-cvs';
 
 $SMARTY->assign("menu",$menu);
 $SMARTY->assign("layout",$layout);

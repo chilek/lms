@@ -1,6 +1,6 @@
 #!/usr/bin/perl -Tw
 #
-# LMS version 1.3-cvs
+# LMS version 1.5-cvs
 #
 #  (C) 2001-2004 LMS Developers
 #
@@ -86,7 +86,7 @@ sub isprivate($)
 	return matchip($ip,"192.168.0.0","255.255.0.0") || matchip($ip,"10.0.0.0","255.0.0.0") || matchip($ip,"172.16.0.0","255.240.0.0");
 }
 
-my $_version = '1.3-cvs';
+my $_version = '1.5-cvs';
 
 my %options = (
 	"--config-file|C=s"	=>	\$configfile,

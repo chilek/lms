@@ -1,6 +1,6 @@
 #
 # **********************************************************
-# ****** Upgrade bazy danych LMS z wersji 1.0 do 1.3 *******
+# ****** Upgrade bazy danych LMS z wersji 1.0 do 1.5 *******
 # **********************************************************
 # Zaleca siê wcze¶niejszy backup bazy:
 # 	$ mysqldump -u lms lms > db.out
@@ -9,7 +9,7 @@
 #	mysql> grant select,insert,update,delete,create,alter on lms.* to lms@localhost identified by 'has³o';
 #	mysql> flush privileges;
 #	mysql> use lms;
-#	mysql> source doc/UPGRADE-1.0-1.3.mysql;
+#	mysql> source doc/UPGRADE-1.0-1.5.mysql;
 # Po tej operacji wystartuj LMS i uruchom modu³ ?m=upgrade01
 # Na samym koñcu mo¿esz wyrzuciæ niepotrzebne rzeczy:
 #	mysql> ALTER TABLE users DROP tariff, DROP payday;

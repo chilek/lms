@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.3-cvs
+ * LMS version 1.5-cvs
  *
  *  (C) Copyright 2001-2004 LMS Developers
  *
@@ -33,7 +33,7 @@ class LMS
 	var $DB;			// obiekt bazy danych
 	var $SESSION;			// obiekt z Session.class.php (zarz±dzanie sesj±)
 	var $CONFIG;			// tablica zawieraj±ca zmienne z lms.ini
-	var $_version = '1.3-cvs';	// wersja klasy
+	var $_version = '1.5-cvs';	// wersja klasy
 	var $_revision = '$Revision$';
 	var $MENU = array();
 
