@@ -78,13 +78,13 @@ Zacznijmy  od  doci±gniêcia biblioteki Smarty i umieszczenia jej w odpowiednim
 miejscu, tj w katalogu lib. Ta czynno¶æ wygl±da mniej wiêcej tak:
 
 cd lib
-wget http://smarty.php.net/distributions/Smarty-2.4.2.tar.gz
-tar -xzf Smarty-2.4.2.tar.gz
-mv Smarty-2.4.2 Smarty
+wget http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz
+tar -xzf Smarty-2.5.0.tar.gz
+mv Smarty-2.5.0/libs Smarty
 
 Do tego jeszcze ADOdb:
 
-wget http://phplens.com/lens/dl/adodb320.tgz
+wget http://phplens.com/lens/dl/adodb340.tgz
 tar -xzf adodb320.tgz
 
 W Debianie unstable wystarczy:
