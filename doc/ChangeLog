@@ -2,10 +2,14 @@ $Id$
 
 wersja 1.0pre5 (??/??/2003):
 
+  - PLIKI KONFIGURACYJNE PRZENIESIONE DO KATALOGU /etc/lms/ !!!
   - podzia³ listy u¿ytkowników na strony
   - poprawiony bug przy dodawaniu nowego usera
   - Pamiêtanie ostatniej wybranej podsieci i ostatniego wpisanego 
-    komentarza do wp³at.
+    komentarza do wp³at
+  - przyk³adowe configi przeniesione do sample
+  - utworzony katalog ze skryptami perlowymi - bin - znadjduj± siê
+    tam niektóre skrypty z modu³u lms-scripts
 
 wersja 1.0pre4 (21/01/2003):
 
