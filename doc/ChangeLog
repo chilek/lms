@@ -37,6 +37,8 @@ wersja 1.5.3 (??/??/????):
     czyli po wywo³aniu tej funkcji nale¿y pamiêtaæ o sprawdzeniu pola 
     'nrows' wyniku (alec)
   - usuniêta redefinicja funkcji chkconfig() z customer (chilek)
+  - w userinfo dodany link do listy kont u¿ytkownika (alec)
+  - listy kont i aliasów wspó³dziel± te same filtry (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 
