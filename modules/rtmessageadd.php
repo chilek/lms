@@ -39,9 +39,6 @@ if(isset($message))
 	if($message['body'] == '')
 		$error['body'] = "Nie poda³e¶ tre¶ci wiadomo¶ci!";
 
-	if($message['mailfrom']!='' && !check_email($message['mailfrom']))
-		$error['mailfrom'] = 'Podany email nie wydaje siê byæ poprawny!';
-
 	if($message['destination']!='' && !check_email($message['destination']))
 		$error['destination'] = 'Podany email nie wydaje siê byæ poprawny!';
 
@@ -51,9 +48,9 @@ if(isset($message))
 
 	if(!$error)
 	{
+		$message['mailfrom'] = '';
+		$message['userid'] = 0;
 		$message['inreplyto'] = ($reply['id'] ? $reply['id'] : 0);
-		$message['sender'] = $SESSION->id;
-
 		$LMS->MessageAdd($message);
 
 		// here will be message sending
@@ -75,10 +72,15 @@ else
 	$message['ticketid'] = $_GET['ticketid'];
 }
 
+$adminlist = $LMS->GetAdminList();
+unset($adminlist['total']);
+
 $layout['pagetitle'] = 'Nowa wiadomo¶æ';
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
+$SMARTY->assign('admin', $admin);
+$SMARTY->assign('adminlist', $adminlist);
 $SMARTY->assign('message', $message);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtmessageadd.html');

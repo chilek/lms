@@ -26,24 +26,17 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<IMG src="img/email.gif" alt="" border="0" align="absmiddle">
-			<B>E-mail nadawcy:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<INPUT type="text" size="25" name="message[mailfrom]" value="{$message.mailfrom}" {tip text="Wpisz tre¶æ wiadomo¶ci" trigger="mailfrom"}>
-		</TD>
-	</TR>
-{*
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/admins.gif" alt="" border="0" align="absmiddle">
 			<B>Nadawca:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT type="text" size="25" name="message[sender]" value="{$message.sender}" {tip text="Podaj nazwê nadawcy" trigger="sender"}>
+			<SELECT size="1" name="message[adminid]" {tip text="Wybierz nadawcê wiadomo¶ci"}>
+				{foreach from=$adminlist item=adminlist}
+				<OPTION value="{$adminlist.id}" {if $adminlist.id == $admin.id}SELECTED{/if}>{$adminlist.name}</OPTION>
+				{/foreach}
+			</SELECT>
 		</TD>
 	</TR>
-*}
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/email.gif" alt="" border="0" align="absmiddle">

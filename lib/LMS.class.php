@@ -2980,19 +2980,22 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			break;
 		}
 
-		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
+		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 		    FROM rtmessages LEFT JOIN rttickets ON (rttickets.id = rtmessages.ticketid)
 		    LEFT JOIN admins ON (owner = admins.id) 
 		    LEFT JOIN users ON (rttickets.userid = users.id)
 		    WHERE queueid = ? 
-		    GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name '
+		    GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.userid, users.lastname, users.name '
 		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
 		{
 			foreach($result as $idx => $ticket)
 			{
 				//$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
 				//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
-				sscanf($ticket['requestor'], "%[^<]<%[^>]", &$ticket['requestor'], &$ticket['requestoremail']);
+				if(!$ticket['userid'])
+					sscanf($ticket['requestor'], "%[^<]<%[^>]", &$ticket['requestor'], &$ticket['requestoremail']);
+				else
+					sscanf($ticket['requestor'], "<%[^>]", &$ticket['requestoremail']);
 				$result[$idx] = $ticket;
 				$result['total']++;
 			}
@@ -3078,7 +3081,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function SetTicketState($ticket, $state)
 	{
-		$tjis->SetTS('rttickets');
+		$this->SetTS('rttickets');
 		return $this->DB->Execute('UPDATE rttickets SET state=? WHERE id=?', array($state, $ticket));
 	}
 
