@@ -111,7 +111,7 @@ class LMS
 		if(!$filename)
 			return FALSE;
 		$file = fopen($filename,"r");
-		$this->ADB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
+//		$this->ADB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
 		while(!feof($file))
 		{
 			$line = fgets($file,4096);
@@ -121,7 +121,7 @@ class LMS
 				$this->ADB->Execute($line);
 			}
 		}
-		$this->ADB->CommitTrans();		
+//		$this->ADB->CommitTrans();		
 		fclose($file);
 
 		// Okej, zróbmy parê bzdurek db depend :S 
@@ -147,21 +147,22 @@ class LMS
 			foreach($this->ADB->ListTables() as $tablename)
 			{
 				fputs($dumpfile,"DELETE FROM $tablename;\n");
-				foreach($this->ADB->GetAll("SELECT * FROM ".$tablename) as $row)
-				{
-					fputs($dumpfile,"INSERT INTO $tablename (");
-					foreach($row as $field => $value)
+				if($dump = $this->ADB->GetAll("SELECT * FROM ".$tablename))
+					foreach($dump as $row)
 					{
-						$fields[] = $field;
-						$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
+						fputs($dumpfile,"INSERT INTO $tablename (");
+						foreach($row as $field => $value)
+						{
+							$fields[] = $field;
+							$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
+						}
+						fputs($dumpfile,implode(", ",$fields));
+						fputs($dumpfile,") VALUES (");
+						fputs($dumpfile,implode(", ",$values));
+						fputs($dumpfile,");\n");
+						unset($fields);
+						unset($values);
 					}
-					fputs($dumpfile,implode(", ",$fields));
-					fputs($dumpfile,") VALUES (");
-					fputs($dumpfile,implode(", ",$values));
-					fputs($dumpfile,");\n");
-					unset($fields);
-					unset($values);
-				}
 			}
 			fclose($dumpfile);
 		}
@@ -397,7 +398,7 @@ class LMS
 
 	function GetUserIDByIP($ipaddr)
 	{
-		return $this->ADB->GetOne("SELECT ownerid FROM nodes WHERE ipaddr=?",array($ipaddr));
+		return $this->ADB->GetOne("SELECT ownerid FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
 	}
 
 	function GetCashByID($id)
@@ -676,6 +677,8 @@ class LMS
 	function GetUserNodes($id)
 	{
 		if($result = $this->ADB->GetAll("SELECT id, name, mac, ipaddr, access FROM nodes WHERE ownerid=? ORDER BY name ASC",array($id))){
+			foreach($result as $idx => $row)
+				$result[$idx]['ip'] = long2ip($row['ipaddr']);
 			$result['total'] = sizeof($result);
 			$result['ownerid'] = $id;
 		}
@@ -791,7 +794,7 @@ class LMS
 	function NodeUpdate($nodedata)
 	{
 		$this->SetTS("nodes");
-		return $this->ADB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, moddate=?NOW?, modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), $nodedata['ipaddr'], strtoupper($nodedata['mac']), $this->SESSION->id, $nodedata['access'], $nodedata['ownerid'], $nodedata['id']));
+		return $this->ADB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, moddate=?NOW?, modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), ip_long($nodedata['ipaddr']), strtoupper($nodedata['mac']), $this->SESSION->id, $nodedata['access'], $nodedata['ownerid'], $nodedata['id']));
 	}
 
 	function DeleteNode($id)
@@ -806,7 +809,7 @@ class LMS
 
 	function GetNodeIDByIP($ipaddr)
 	{
-		return $this->ADB->GetOne("SELECT id FROM nodes WHERE ipaddr=?",array($ipaddr));
+		return $this->ADB->GetOne("SELECT id FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
 	}
 
 	function GetNodeIDByMAC($mac)	
@@ -821,7 +824,7 @@ class LMS
 
 	function GetNodeIPByID($id)
 	{
-		return $this->ADB->GetOne("SELECT ipaddr FROM nodes WHERE id=?",array($id));
+		return long2ip($this->ADB->GetOne("SELECT ipaddr FROM nodes WHERE id=?",array($id)));
 	}
 
 	function GetNodeMACByID($id)
@@ -836,19 +839,21 @@ class LMS
 
 	function GetNodeNameByIP($ipaddr)
 	{
-		return $this->ADB->GetOne("SELECT name FROM nodes WHERE ipaddr=?",array($ipaddr));
+		return $this->ADB->GetOne("SELECT name FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
+		
 	}
 
 	function GetNode($id)
 	{
 		if($result = $this->ADB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid FROM nodes WHERE id=?",array($id)))
 		{
+			$result['ip'] = long2ip($result['ipaddr']);
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
 			$result['creationdateh'] = date("Y-m-d, H:i",$result['creationdate']);
 			$result['moddateh'] = date("Y-m-d, H:i",$result['moddate']);
 			$result['owner'] = $this->GetUsername($result['ownerid']);
-			$result['netid'] = $this->GetNetIDByIP($result['ipaddr']);
+			$result['netid'] = $this->GetNetIDByIP($result['ip']);
 			$result['netname'] = $this->GetNetworkName($result['netid']);
 			$result['producer'] = get_producer($result['mac']);
 			return $result;
@@ -878,6 +883,10 @@ class LMS
 			case "mac":
 				$sqlord = " ORDER BY mac";
 			break;
+
+			case "ip":
+				$sqlord = " ORDER BY ipaddr";
+			break;
 		}
 
 		if($username = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
@@ -888,7 +897,7 @@ class LMS
 		{
 			foreach($nodelist as $idx => $row)
 			{
-				$nodelist[$idx]['iplong'] = ip_long($row['ipaddr']);
+				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
 				($row['access']=="Y") ? $totalon++ : $totaloff++;
 			}			
@@ -896,21 +905,6 @@ class LMS
 
 		switch($order)
 		{
-			case "ip":
-				foreach($nodelist as $idx => $row)
-				{
-					$iptable['idx'][] = $idx;
-					$iptable['iplong'][] = $row['iplong'];
-				}
-				if(is_array($iptable))
-				{
-					array_multisort($iptable['iplong'],($direction == "DESC" ? SORT_DESC : SORT_ASC),SORT_NUMERIC,$iptable['idx']);
-					foreach($iptable['idx'] as $idx)
-						$nnodelist[] = $nodelist[$idx];
-				}
-				$nodelist = $nnodelist;
-			break;
-					
 			case "owner":
 				foreach($nodelist as $idx => $row)
 				{
@@ -959,6 +953,10 @@ class LMS
 			case "mac":
 				$sqlord = " ORDER BY mac";
 			break;
+
+			case "ip":
+				$sqlord = " ORDER BY ipaddr";
+			break;
 		}
 
 		foreach($args as $idx => $value)
@@ -978,7 +976,7 @@ class LMS
 		{
 			foreach($nodelist as $idx => $row)
 			{
-				$nodelist[$idx]['iplong'] = ip_long($row['ipaddr']);
+				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
 				($row['access']=="Y") ? $totalon++ : $totaloff++;
 			}			
@@ -1042,7 +1040,7 @@ class LMS
 	{
 		$this->SetTS("nodes");
 
-		if($this->ADB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate) VALUES (?, ?, ?, ?, ?, ?NOW?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id)))
+		if($this->ADB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate) VALUES (?, ?, ?, ?, ?, ?NOW?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),ip_long($nodedata['ipaddr']),$nodedata['ownerid'],$this->SESSION->id)))
 			return $this->ADB->GetOne("SELECT MAX(id) FROM nodes");
 		else
 			return FALSE;
@@ -1248,12 +1246,12 @@ class LMS
 
 	function NetworkExists($id)
 	{
-		return ($this->ADB->GetOne("SELECT * FROM networks WHERE id=?",array($id))?TRUE:FALSE);
+		return ($this->ADB->GetOne("SELECT * FROM networks WHERE id=?",array($id)) ? TRUE : FALSE);
 	}	
 
 	function IsIPFree($ip)
 	{
-		return !($this->ADB->GetOne("SELECT * FROM nodes WHERE ipaddr=?",array($ip))?TRUE:FALSE);
+		return !($this->ADB->GetOne("SELECT * FROM nodes WHERE ipaddr=?",array(ip_long($ip))) ? TRUE : FALSE);
 	}
 
 	function GetPrefixList()
@@ -1313,32 +1311,20 @@ class LMS
 
 	function GetNetworkList()
 	{
-		$tnetworks = $this->ADB->GetAll("SELECT id, name, address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks");
-		if($tnetworks)
-			foreach($tnetworks as $idx => $row)
-				foreach($row as $field => $value)
-					$networks[$field][] = $value;
-		
-		$nodes = $this->ADB->GetAll("SELECT ipaddr FROM nodes");
-		$networks['total'] = sizeof($networks['id']);
-		if($networks['total'])
-		{
-			array_multisort($networks['name'],$networks['id'],$networks['address'],$networks['mask'],$networks['gateway'],$networks['wins'],$networks['domain'],$networks['dns'],$networks['dns2'],$networks['dhcpstart'],$networks['dhcpend']);
-			foreach($networks['id'] as $key => $value)
+
+		if($networks = $this->ADB->GetAll("SELECT id, name, address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks"))
+			foreach($networks as $idx => $row)
 			{
-				$networks['addresslong'][$key] = ip_long($networks['address'][$key]);
-				$networks['prefix'][$key] = mask2prefix($networks['mask'][$key]);
-				$networks['broadcast'][$key] = getbraddr($networks['address'][$key],$networks['mask'][$key]);
-				$networks['boradcastlong'][$key] = ip_long($networks['broadcast'][$key]);
-				$networks['size'][$key] = pow(2,(32-$networks['prefix'][$key]));
-				$networks['size']['total'] = $networks['size']['total'] + $networks['size'][$key];
-				if(sizeof($nodes))
-					foreach($nodes as $row)
-						if(isipin($row['ipaddr'],$networks['address'][$key],$networks['mask'][$key]))
-							$networks['assigned'][$key] ++;
-				$networks['assigned']['total'] = $networks['assigned']['total'] + $networks['assigned'][$key];
+				$row['prefix'] = mask2prefix($row['mask']);
+				$row['size'] = pow(2,(32 - $row['prefix']));
+				$row['addresslong'] = ip_long($row['address']);
+				$row['broadcast'] = getbraddr($row['address'],$row['mask']);
+				$row['broadcastlong'] = ip_long($row['broadcast']);
+				$row['assigned'] = $this->ADB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",array($row['addresslong'], $row['broadcastlong']));
+				$networks[$idx] = $row;
+				$networks['size'] += $row['size'];
+				$networks['assigned'] += $row['assigned'];
 			}
-		}
 		
 		return $networks;
 	}
@@ -1412,10 +1398,7 @@ class LMS
 	{
 		$this->SetTS("nodes");
 		$this->SetTS("networks");
-		if($nodes = $this->ADB->GetAll("SELECT ipaddr, id FROM nodes"))
-			foreach($nodes as $value)
-				if(isipin($value['ipaddr'],$network,$mask))
-					$this->ADB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array(long2ip(ip_long($value['ipaddr']) + $shift),$value['id']));
+		return $this->ADB->Execute("UPDATE nodes SET ipaddr = ipaddr + ? WHERE ipaddr >= ? AND ipaddr <= ?",array($shift,ip_long($network), ip_long(getbraddr($network,$mask))));
 	}
 
 	function NetworkUpdate($networkdata)
@@ -1436,7 +1419,7 @@ class LMS
 			if($value)
 			{
 				$address ++;
-				$this->ADB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array(long2ip($address),$value));
+				$this->ADB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array($address,$value));
 			}				
 		}
 	}
@@ -1450,46 +1433,66 @@ class LMS
 		foreach($network['source']['nodes']['id'] as $key => $value)
 			if($this->NodeExists($value))
 				$nodelist[] = $value;
-		$counter = 0;
+		$counter = 1;
 		if(sizeof($nodelist))
 			foreach($nodelist as $value)
 			{
 				while($this->NodeExists($network['dest']['nodes']['id'][$counter]))
 					$counter++;
-				$this->ADB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array($network['dest']['nodes']['address'][$counter],$value));
+				$this->ADB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array($network['dest']['nodes']['addresslong'][$counter],$value));
 				$counter++;
 			}
 		return $counter;
 	}
 
-	function GetNetworkRecord($id,$strip=TRUE)
+	function GetNetworkRecord($id,$page = 0, $plimit = 4294967296)
 	{
 		$network = $this->ADB->GetRow("SELECT id, name, address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?",array($id));
 		$network['prefix'] = mask2prefix($network['mask']);
 		$network['addresslong'] = ip_long($network['address']);
 		$network['size'] = pow(2,32-$network['prefix']);
-		$network['rows'] = ceil($network['size']/4);
 		$network['assigned'] = 0;
 		$network['broadcast'] = getbraddr($network['address'],$network['mask']);
+		$network['pagemax'] = ceil($network['size'] / $plimit);
 
-		$tnodes = $this->ADB->GetAll("SELECT id, name, ipaddr, ownerid FROM nodes");
-		foreach($tnodes as $idx => $row)
-			$nodes[ip_long($row['ipaddr'])] = $row;
+		if($page > $network['pagemax'])
+			$page = $network['pagemax'];
+		if($page < 1)
+			$page = 1;
 
-		for($i=0;$i<$network['size']-($strip ? 2 : 0);$i++)
+		$page --;
+		$start = $page * $plimit;
+		$end = ($network['size'] > $plimit ? $start + $plimit : $network['size']);
+
+		$nodes = $this->ADB->GetAllByKey("SELECT id, name, ipaddr, ownerid FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",'ipaddr',array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
+		
+		for($i = 0; $i < ($end - $start) ; $i ++)
 		{
-			$longip = $network['addresslong'] + $i + ($strip ? 1 : 0);
+			
+			$longip = $network['addresslong'] + $i + $start;
 			$node = $nodes["".$longip.""];
 			$network['nodes']['addresslong'][$i] = $longip;
 			$network['nodes']['address'][$i] = long2ip($longip);;
 			$network['nodes']['id'][$i] = $node['id'];
-			$network['nodes']['name'][$i] = $node['name'];
-			$network['nodes']['ownerid'][$i] = $node['ownerid'];
-			if(isset($node))
-				$network['assigned'] ++;
-		}
 
+			if( $network['nodes']['addresslong'][$i] == $network['addresslong'] || $network['nodes']['addresslong'][$i] == $network['addresslong'] + $network['size'] - 1)
+				$network['nodes']['name'][$i] = 'BROADCAST';
+			elseif($network['nodes']['addresslong'][$i] >= ip_long($network['dhcpstart']) && $network['nodes']['addresslong'][$i] <= ip_long($network['dhcpend']))
+				$network['nodes']['name'][$i] = 'DHCP';
+			else
+				$network['nodes']['name'][$i] = $node['name'];
+			$network['nodes']['ownerid'][$i] = $node['ownerid'];
+			if($node['id'])
+				$network['pageassigned'] ++;
+		}
+		
+		$network['assigned'] = $this->ADB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr < ?",array($network['addresslong'], $network['addresslong'] + $network['size']));
+		
+		$network['rows'] = ceil(sizeof($network['nodes']['address']) / 4);
 		$network['free'] = $network['size'] - $network['assigned'] - 2;
+		$network['pages'] = ceil($network['size'] / $plimit);
+		$network['page'] = $page + 1;
+
 		return $network;
 	}
 
@@ -1509,25 +1512,14 @@ class LMS
 		}
 		
 		if(sizeof($result['address']))
-		{
-			// wrapper do starego formatu
-			
-			if($tnodes = $this->ADB->GetAll("SELECT name, id, ownerid, ipaddr FROM nodes"))
-				foreach($tnodes as $row)
-					foreach($row as $column => $value)
-						$nodes[$column][] = $value;
-			
-			if(sizeof($nodes['id']))
-				foreach($nodes['id'] as $key => $value)
-					if(isipin($nodes['ipaddr'][$key],$address,$mask))
-					{
-						$pos = ip_long($nodes['ipaddr'][$key])-ip_long($address)-1;
-						$result['nodeid'][$pos] = $value;
-						$result['nodename'][$pos] = $nodes['name'][$key];
-						$result['ownerid'][$pos] = $nodes['ownerid'][$key];
-					}
-		}
-
+			if($nodes = $this->ADB->GetAll("SELECT name, id, ownerid, ipaddr FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",array(ip_long($address), ip_long(getbraddr($address,$mask)))))
+				foreach($nodes as $node)
+				{
+					$pos = ($node['ipaddr'] - ip_long($address) - 1);
+					$result['nodeid'][$pos] = $node['nodeid'];
+					$result['nodename'][$pos] = $node['name'];
+					$result['ownerid'][$pos] = $node['ownerid'];
+				}
 		return $result;
 	}
 
@@ -1609,6 +1601,10 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.200  2003/08/27 19:25:00  lukasz
+ * - changed format of ipaddr storage in database
+ * - propably improved performance
+ *
  * Revision 1.199  2003/08/25 02:14:05  lukasz
  * - zmieniona obs³uga usuwania userów
  *
