@@ -60,7 +60,7 @@
 				    </TD>
 				    <TD WIDTH="1%"><B>Opis:</B></TD>
 				    <TD WIDTH="98%">
-				        <INPUT TYPE="TEXT" VALUE="{$tariff.description}" NAME="tariff[description]" SIZE="40" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>
+				        <TEXTAREA NAME="tariff[description]" ROWS="5" COLS="50" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>{$tariff.description}</TEXTAREA>
 				    </TD>
 				</TR>
 			    </TABLE>
@@ -103,6 +103,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
+				    	<IMG SRC="img/online.gif" BORDER="0" ALIGN="absmiddle" ALT="">
 				    </TD>
 				    <TD WIDTH="1%" NOWRAP><B>Connection limit:</B></TD>
 				    <TD WIDTH="98%">
