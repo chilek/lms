@@ -113,16 +113,17 @@ info = "Opcjonalny opis modu³u"
 			</para>
 			<para>Innym sposobem uruchomienia jest jednorazowy reload w wykorzystaniem
 			crona. Z tego sposobu nale¿y korzystaæ uruchamiaj±c modu³y takie jak 'payments'
-			'notify' 'traffic'. W tym wypadku musisz stworzyæ osobny plik konfiguracyjny 
-			dla ka¿dego modu³u (zawieraj±cy równie¿ opcje dla demona) i podaæ go demonowi
-			przy pomocy opcji '-c'. Przyk³adowy wpis do crontab'a wygl±da nastêpuj±co:
+			'notify', 'traffic', czy 'pinger'. W tym wypadku mo¿esz okre¶liæ listê 
+			instancji do wykonania za pomoc± opcji '-i'.
+			Przyk³adowy wpis do crontab'a wygl±da nastêpuj±co:
 <screen>
-  1 0 * * *    /usr/local/bin/almsd -q -c /etc/lms/payments.lms.ini
+  1 0 * * *    /usr/local/bin/almsd -qi "payments notify"
 </screen>
 			</para>
 			<para>Poni¿szy listing przedstawia dostêpne opcje linii poleceñ programu:
 <screen>
   -c	¶cie¿ka do pliku konfiguracyjnego (domy¶lnie: /etc/lms/lms.ini)
+  -i	lista instancji (oddzielonych spacj±) do prze³adowania
   -b	uruchomienie w tle
   -s	czas w sek. miêdzy odczytami tabeli 'reload' (domy¶lnie: 30)
   -q 	wykonaj reload i zakoñcz
