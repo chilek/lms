@@ -9,16 +9,17 @@
     	danych z bazy LMS'a oraz restartowania odpowiednich us³ug na serwerze.
     	</para>
 	<para>Dlaczego taka nazwa? Wiêkszo¶æ kodu demona napisa³ jeden z developerów - Aleksander 
-	'A.L.E.C' Machniak, niemniej nale¿y tak¿e podkre¶liæ udzia³ Marcina 'Lexx' Króla. Je¶li Ty
-	masz ochotê napisaæ jaki¶ modu³ lub poprawiæ funkcjonalno¶æ demona jak najbardziej
-	do tego zachêcam.
+	'A.L.E.C' Machniak, niemniej nale¿y tak¿e podkre¶liæ udzia³ Marcina 'Lexx' Króla. Program zawiera
+	fragmenty kodu autorstwa Mateusza 'mteg' Golicza oraz korzysta z biblioteki
+	iniparser Nicolasa Devillarda. Je¶li Ty masz ochotê napisaæ jaki¶ modu³ lub poprawiæ 
+	funkcjonalno¶æ demona jak najbardziej do tego zachêcam.
 	</para>
 		<sect2 id="daemon-requirements">
 		<title>Wymagania</title>
 			<para><emphasis>A.L.E.C's LMS Daemon</emphasis> potrzebuje:
       			<itemizedlist>
 			<listitem>
-				<para>instalacja interfejsu u¿ytkownika <emphasis>LMS-UI</emphasis></para>
+				<para>instalacji interfejsu u¿ytkownika <emphasis>LMS-UI</emphasis></para>
 			</listitem>
 			<listitem>
 				<para><filename>libmysqlclient</filename> (tj. pe³nej instalacji MySQL'a lub odpowiedniego 
@@ -28,7 +29,7 @@
 				<para><filename>libdl</filename> (to w ka¿dej dzisiejszej dystrybucji jest)</para>
 			</listitem>
 			<listitem>
-				<para>kompilator jêzyka C</para>
+				<para>kompilatora jêzyka C </para>
 			</listitem>
 			</itemizedlist>
       			</para>
@@ -94,6 +95,14 @@ instances       = hosts oident firewall       # lista instancji modu³ów
 			<note><para>Lista instancji sk³ada siê z nazw instancji oddzielonych 
 			spacj±. Instancja to nazwa sekcji w pliku konfiguracyjnym.</para></note>
 			</para>
+			<para>W sekcji dotycz±cej instancji, oprócz parametrów konfiguracji
+			modu³ów, umieszcza siê opcje podstawowe, jak na poni¿szym listingu:
+<screen>
+[nazwa_instancji]
+module = /¶cie¿ka/nazwa_modu³u.so
+info = "Opcjonalny opis modu³u"
+</screen>		
+			</para>
 		</sect2>
 		<sect2 id="daemon-run">
 		<title>Uruchomienie</title>
@@ -130,7 +139,11 @@ instances       = hosts oident firewall       # lista instancji modu³ów
 	</sect1>
 	<sect1 id="daemon-modules">
 	<title>Modu³y</title>
-	<para></para>
+	<para>Sam demon potrafi tylko uruchamiaæ modu³y i to one odwalaj± ca³± robotê. 
+	Wiêkszo¶æ modu³ów jest przeznaczona do okre¶lonego zastosowania, jedynie 'hostfile' 
+	mo¿na u¿ywaæ do ró¿nych konfigów (us³ug), np. ró¿nych typów firewalli. Przyk³ady 
+	konfiguracji demona i modu³ów zawiera plik <filename>daemon/lms.ini.sample</filename>.
+	Parametry konfiguracyjne modu³ów umieszcza siê w sekcjach instancji je wywo³uj±cych.</para>
 		<sect2 id="daemon-moduleslist">
 		<title>Lista dostêpnych modu³ów</title>
 			<table>
@@ -199,16 +212,15 @@ instances       = hosts oident firewall       # lista instancji modu³ów
 		    </sect3>
 		    <sect3 id="payments-config">
 		    <title>Konfiguracja</title>
-		    <para>
+		    <para>Dla tego modu³u jest dostêpna tylko jedna zmienna kofiguracyjna:</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>comment</para>
 			    <para>Komentarz do operacji. '%period' zostanie zamienione na daty od-do 
-			    nale¿nego abonamentu, np. '10.10.2003 - 9.11.2003. Domy¶lnie: 'Abonament za okres %period'.</para>
+			    nale¿nego abonamentu, np. '10.10.2003 - 09.11.2003'. Domy¶lnie: 'Abonament za okres %period'.</para>
 			    <para>Przyk³ad: <prompt>comment = 'Abonament miesiêczny za okres %period' </prompt></para>
 			</listitem>
 		    </itemizedlist>
-		    </para>
 		    </sect3>
 		</sect2>
 		<sect2 id="daemon-notify">
@@ -237,8 +249,141 @@ instances       = hosts oident firewall       # lista instancji modu³ów
 		    </sect3>
 		    <sect3 id="notify-config">
 		    <title>Konfiguracja</title>
-		    <para></para>
+		    <para>Poni¿ej przedstawiono dostêpne opcje konfiguracyjne modu³u 'notify':</para>
+		    <itemizedlist>
+			<listitem>
+			    <para>mailtemplate</para>
+			    <para>Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty</para>
+			    <para>Przyk³ad: <prompt>mailtemplate = modules/notify/sample/mailtemplate</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>file</para>
+			    <para>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/mail</para>
+			    <para>Przyk³ad: <prompt>file = /tmp/mail.txt</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>command</para>
+			    <para>Polecenie pow³oki wysy³aj±ce e-maila. '%address' zostanie zast±pione
+			    adresem e-mail u¿ytkownika. Domy¶lnie: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</para>
+			    <para>Przyk³ad: <prompt>command = 'mail %address -s "musisz zap³aciæ, bo jak nie..." &lt; /tmp/mail.txt'</prompt></para>
+			</listitem>		
+			<listitem>
+			    <para>limit</para>
+			    <para>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
+			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</para>
+			    <para>Przyk³ad: <prompt>limit = -20</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>debug_mail</para>
+			    <para>Okre¶la adres na który zostan± wys³ane wszystkie wiadomo¶ci, przydatne
+			    podczas testów. Domy¶lnie: puste.</para>
+			    <para>Przyk³ad: <prompt>debug_mail = localhost@moja.net</prompt></para>
+			</listitem>
+		    </itemizedlist>
 		    </sect3>
 		</sect2>
+		<sect2 id="daemon-cutoff">
+		<title>Cutoff</title>
+		    <sect3 id="cutoff-desc">
+		    <title>Opis</title>
+		    <para>Cutoff zmienia na 'od³±czony' status komputerów u¿ytkownikom, którzy
+		    maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ nie zajmuje
+		    siê fizycznym blokowaniem dostêpu do sieci. Nale¿y pamiêtaæ aby uruchamiaæ
+		    go przed modu³ami takimi jak np. 'hostfile'. Wa¿na jest kolejno¶æ instancji
+		    na li¶cie w zmiennej 'instances'. Modu³ 'cutoff' najlepiej uruchamiaæ codziennie.</para>
+		    </sect3>
+		    <sect3 id="cutoff-config">
+		    <title>Konfiguracja</title>
+		    <para>Modu³ 'cutoff' posiada tylko jeden parametr:</para>
+		    <itemizedlist>
+			<listitem>
+			    <para>limit</para>
+			    <para>Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej
+			    kwoty okre¶lonej t± zmienn±. Domy¶lnie: 0.</para>
+			    <para>Przyk³ad: <prompt>limit = -20</prompt></para>
+			</listitem>
+		    </itemizedlist>
+		    </sect3>
+		</sect2>
+		<sect2 id="daemon-dns">
+		<title>DNS</title>
+		    <sect3 id="dns-desc">
+		    <title>Opis</title>
+		    <para>Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
+		    restartuje us³ugê. Zmienna 'command' umo¿liwia równie¿ wykonywanie innych 
+		    czynno¶ci (programów).</para>
+		    </sect3>
+		    <sect3 id="dns-config">
+		    <title>Konfiguracja</title>
+		    <para>Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom 
+		    pliku konfiguracyjnego dhcpd, które w typowych zastosowaniach
+		    nie wymagaj± zmiany:</para>
+		    <itemizedlist>
+			<listitem>
+			    <para>file</para>
+			    <para>Okre¶la lokalizacjê pliku konfiguracyjnego serwera dhcp. 
+			    Domy¶lnie: /tmp/dhcpd.conf.</para>
+			    <para>Przyk³ad: <prompt>file = /etc/dhcpd.conf</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>command</para>
+			    <para>Polecenie wykonywane po utworzeniu pliku konfiguracyjnego. 
+			    Domy¶lnie: pusta.</para>
+			    <para>Przyk³ad: <prompt>command = 'killall -HUP dhcpd'</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>start</para>
+			    <para>Nag³ówek pliku. Domy¶lnie: "shared-network LMS {".</para>
+			    <para>Przyk³ad: <prompt>start = "shared-network LMS {"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>end</para>
+			    <para>Stopka pliku. Domy¶lnie: "}".</para>
+			    <para>Przyk³ad: <prompt>end = "\n}"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>subnet_start</para>
+			    <para>Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Domy¶lnie: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</para>
+			    <para>Przyk³ad: <prompt>subnet_start = "subnet %a netmask %m {default-lease-time 3600;"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>subnet_end</para>
+			    <para>Stopka podsieci. Domy¶lnie: "}".</para>
+			    <para>Przyk³ad: <prompt>subnet_end = '\t}'</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>subnet_gateway</para>
+			    <para>Brama podsieci. '%i' zostanie zamienione na adres ip. Domy¶lnie: 'option routers %i;'.</para>
+			    <para>Przyk³ad: <prompt>subnet_gateway = "option routers %i"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>subnet_dns</para>
+			    <para>DNS'y podsieci. '%i - adresy dns'ów. Domy¶lnie: "option domain-name-servers %i;".</para>
+			    <para>Przyk³ad: <prompt>subnet_dns = "option domain-name-servers 192.168.0.1"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>subnet_domain</para>
+			    <para>Nazwa domenowa podsieci. '%n' - nazwa. Domy¶lnie: "option domain-name %n;".</para>
+			    <para>Przyk³ad: <prompt>subnet_domain = "option domain-name test.%n;"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>subnet_wins</para>
+			    <para>Serwery wins. '%i' - adres ip serwera. Domy¶lnie: "option netbios-name-servers %i;".</para>
+			    <para>Przyk³ad: <prompt>subnet_wins = ""</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>subnet_range</para>
+			    <para>Zakres adresów podsieci. '%s' - adres pocz±tkowy, '%e' - koniec zakresu. Domy¶lnie: "range %s %e;".</para>
+			    <para>Przyk³ad: <prompt>subnet_range = "range %s %e;"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>host</para>
+			    <para>Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' - adres ip. 
+			    Domy¶lnie: "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}".</para>
+			    <para>Przyk³ad: <prompt>host = "host %n {hardware ethernet %m; fixed-address %i;}"</prompt></para>
+			</listitem>
+		    </itemizedlist>
+		    </sect3>
+		</sect2>	    
 	</sect1>
 </chapter>
