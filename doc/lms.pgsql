@@ -278,6 +278,51 @@ SELECT
      split_part($1,''.'',4)::int8;
 ' LANGUAGE SQL;
 
+/* --------------------------------------------------
+    Tables for RT
+-----------------------------------------------------*/
+
+DROP SEQUENCE "rtqueues_id_seq";
+CREATE SEQUENCE "rtqueues_id_seq";
+DROP TABLE rtqueues;
+CREATE TABLE rtqueues (
+  id integer default nextval('rtqueues_id_seq'::text) NOT NULL,
+  name varchar(255) DEFAULT '' NOT NULL,
+  email varchar(255) DEFAULT '' NOT NULL,
+  PRIMARY KEY (id)
+);
+
+DROP SEQUENCE "rttickets_id_seq";
+CREATE SEQUENCE "rttickets_id_seq";
+DROP TABLE rttickets;
+CREATE TABLE rttickets (
+  id integer default nextval('rttickets_id_seq'::text) NOT NULL,  
+  queueid integer DEFAULT 0 NOT NULL,
+  requestor varchar(255) DEFAULT '' NOT NULL,
+  subject varchar(255) DEFAULT '' NOT NULL,
+  state smallint DEFAULT 0 NOT NULL,
+  owner integer DEFAULT 0 NOT NULL,
+  createtime integer DEFAULT 0 NOT NULL,
+  PRIMARY KEY (id)
+);
+
+DROP SEQUENCE "rtmessages_id_seq";
+CREATE SEQUENCE "rtmessages_id_seq";
+DROP TABLE rtmessages;
+CREATE TABLE rtmessages (
+  id integer default nextval('rtmessages_id_seq'::text) NOT NULL,
+  ticketid integer DEFAULT 0 NOT NULL,
+  sender integer DEFAULT 0 NOT NULL,
+  mailfrom varchar(255) DEFAULT '' NOT NULL,
+  subject varchar(255) DEFAULT '' NOT NULL,
+  messageid varchar(255) DEFAULT '' NOT NULL,
+  inreplyto integer DEFAULT 0 NOT NULL,
+  replyto text DEFAULT '' NOT NULL,
+  headers text DEFAULT '' NOT NULL,
+  body text DEFAULT '' NOT NULL,
+  PRIMARY KEY (id)
+);
+
 /* ---------------------------------------------------
     Database info table
 ------------------------------------------------------*/
@@ -287,5 +332,5 @@ CREATE TABLE dbinfo (
     keyvalue varchar(255) DEFAULT '' NOT NULL,
     PRIMARY KEY (keytype)
 );
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004030400');		  
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004030800');		  
   
