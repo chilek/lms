@@ -20,11 +20,11 @@ case "$1" in
     ;;
 
     'txt')	####### sgml -> text #######################
-	jade -t sgml -V nochunks -d lms.dsl index.sgml > index.html
+	jade -t sgml -V nochunks -d lms.dsl index.sgml > ../README.html
 	if [ $? -ne 0 ]
 	    then exit 1
 	fi
-	elinks -dump index.html > ../txt/manual
+	elinks -dump ../README.html > ../README
         if [$? -ne 0 ]
 	    then
 	    rm index.html
@@ -35,7 +35,7 @@ case "$1" in
     ;;
     
     *)
-	echo -e "runme.sh: Brak parametru.\nSposób u¿ycia: runme.sh html|txt"
+	echo -e "$0: Brak parametru.\nSposób u¿ycia: runme.sh html|txt"
     ;;
 esac
 
