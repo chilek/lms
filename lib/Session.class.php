@@ -50,6 +50,8 @@ class Session {
 			writesyslog("Login attempt by ".$this->login,LOG_INFO);
 		}elseif($this->ADB->GetOne('SELECT COUNT(*) FROM admins') == 0){
 			$this->islogged = TRUE;
+			$this->passwd = 'EMPTY';
+			$this->logname = 'nie zalogowany';
 			$_GET[m] = 'adminadd';
 			return TRUE;
 		}else{
@@ -131,6 +133,10 @@ class Session {
 
 /*
  * $Log$
+ * Revision 1.35  2003/08/19 09:53:21  lukasz
+ * - zabezpieczenie przed wy¶wietlaniem bezsensownego komunikatu o pustym
+ *   ha¶le podczas braku administratorów
+ *
  * Revision 1.34  2003/08/19 09:43:29  lukasz
  * - force adminadd module if there is no records in admins table
  * - removed weird things with empty passwords or sth
