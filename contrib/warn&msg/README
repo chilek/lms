@@ -1,8 +1,0 @@
-Dodatek do LMS-UI, dziêki któremu mo¿na u¿ytkownikom zdefiniowaæ okre¶lon±
-wiadomo¶æ, któr± nastêpnie mo¿na wy¶wietlaæ w zale¿no¶ci od stanu pola 
-'warning' je¶li nie p³ac± za Internet. Czyli nie blokowanie (cutoff) ale
-ostrzeganie.
-
-Wymagane zmiany w bazie pojawi± siê w pliku Changelog po na³o¿eniu patch'a.
-
-Autorzy: Rafa³ Ramocki i Tomasz Chiliñski.
