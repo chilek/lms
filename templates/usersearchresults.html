@@ -31,8 +31,8 @@
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=userlist loop=$userlist}{assign var="userlistshown" value="yes"}
 	{if $userlist[userlist].id}
-	<TR bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if $userlist[userlist].info} title="{$userlist[userlist].info}"{/if}{if $userlist[userlist].nodeac eq 0} class="blend"{/if}>
-		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" class="fleft" valign="top">
+	<TR bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if $userlist[userlist].nodeac eq 0} class="blend"{/if}>
+		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" class="fleft" valign="top"{if $userlist[userlist].info} {popup text=$userlist[userlist].info}{/if}>
 			<A name="{$userlist[userlist].id}"><IMG src="img/{if $userlist[userlist].status eq 1}unk{/if}{if $userlist[userlist].status eq 2}wait{/if}{if $userlist[userlist].status eq 3}user{/if}.gif" alt="" align="absmiddle" border="0">&nbsp;<B><nobr>{$userlist[userlist].username}</nobr></B>{if $userlist[userlist].info}<font color="#666666">...</FONT>{/if}</A>{if $userlist[userlist].phone1 neq ""}<BR>
 			<IMG src="img/phone.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].phone1}{/if}<BR>
 			<IMG SRC="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].address}{if $userlist[userlist].city neq ""},{/if} {$userlist[userlist].zip} {$userlist[userlist].city}
