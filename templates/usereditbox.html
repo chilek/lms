@@ -22,7 +22,7 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname}"{if $error.username} CLASS="ALERTB"{else} CLASS="BOLD"{/if}>
+						<INPUT TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname|escape:"html"}" {if $error.username} CLASS="ALERTB"{else} CLASS="BOLD"{/if}>
 					</TD>
 				</TR>
 				<TR>
