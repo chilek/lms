@@ -587,24 +587,29 @@ database = /usr/local/lms/lms.db</screen>
       <para>LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e
       zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu administratorowi mo¿na
       przydzieliæ dowoln± kombinacjê regu³ dostêpu.</para>
-      <para>Default zdefiniowanych jest osiem regu³ dostêpu. 
+      <para>Domy¶lnie zdefiniowanych jest osiem regu³ dostêpu. 
        <itemizedlist>
-     <listitem><para>pe³en dostêp</para></listitem>
-     <listitem><para>odczyt wszystkich danych</para></listitem>
-     <listitem><para>pod³±czanie i od³±czanie komputerów</para></listitem>
-     <listitem><para>manipulowanie finansami</para></listitem>
-     <listitem><para>prze³adowywanie konfiguracji</para></listitem>
-     <listitem><para>manipulowanie danymi u¿ytkowników</para></listitem>
-     <listitem><para>manipulowanie danymi komputerów</para></listitem>
-     <listitem><para>dostêp do statystyk</para></listitem>
-     <listitem><para>dostêp do korespondencji seryjnej</para></listitem>
-     <listitem><para>brak dostêpu do modyfikacji i zak³adania kont administratorów</para></listitem>
-     <listitem><para>brak dostêpu</para></listitem>
-     </itemizedlist>
-      Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania. Modu³y do których 
+	<listitem><para>pe³en dostêp</para></listitem>
+        <listitem><para>odczyt wszystkich danych (z wyj±tkiem Helpdesku)</para></listitem>
+        <listitem><para>pod³±czanie i od³±czanie komputerów</para></listitem>
+        <listitem><para>manipulowanie finansami</para></listitem>
+        <listitem><para>prze³adowywanie konfiguracji</para></listitem>
+        <listitem><para>manipulowanie danymi u¿ytkowników</para></listitem>
+        <listitem><para>manipulowanie danymi komputerów</para></listitem>
+        <listitem><para>dostêp do statystyk</para></listitem>
+        <listitem><para>dostêp do korespondencji seryjnej</para></listitem>
+        <listitem><para>zarz±dzanie Helpdeskiem (RT)</para></listitem>
+        <listitem><para>obs³uga Helpdesku (RT)</para></listitem>
+        <listitem><para>zarz±dzanie kontami</para></listitem>
+        <listitem><para>konfiguracja UI</para></listitem>
+        <listitem><para>zarz±dzanie sieciami i urz±dzeniami sieciowymi</para></listitem>
+        <listitem><para>brak dostêpu do modyfikacji i zak³adania kont administratorów</para></listitem>
+        <listitem><para>brak dostêpu</para></listitem>
+       </itemizedlist>
+      Niektóre z nich zezwalaj± na dostêp do modu³ów oraz dwie zabraniaj±. Modu³y do których 
       administrator ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
       chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostêp do reszty jest zdefiniowany regu³ami.</para>
-      <note><para>Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS Default
+      <note><para>Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie
       przydzieli mu regu³kê 0, czyli pe³en dostêp.</para></note>
       </sect2>
       <sect2 id="install-rights-how">
@@ -629,14 +634,18 @@ database = /usr/local/lms/lms.db</screen>
     </sect1>
     <sect1 id="install-upgrade">
       <title>Upgrade</title>
-      <para>Uaktualnienie LMS'a z wersji 1.0.X do bie¿±cej przebiega w dwóch etapach. Najpierw
-      utwórz katalog z plikami nowej wersji (nie nadpisuj starej wersji), nastêpnie trzeba 
-      dokonaæ zmian w bazie.</para>
-      <para>Dla u³atwienia migracji danych przygotowano pliki
-      <filename>UPGRADE.mysql</filename> i <filename>UPGRADE.pgsql</filename>,
-      które umieszczono w katalogu z dokumentacj±. W nich znajdziesz krótki
-      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.</para>
+      <para>Uaktualnienie LMS'a przebiega w dwóch etapach. Najpierw utwórz
+      katalog z plikami nowej wersji (nie zaleca siê nadpisywania starych plików
+      nowymi), nastêpnie trzeba dokonaæ zmian w bazie.</para>
+      <para>Dla u³atwienia migracji danych w katalogu <filename>/doc</filename>
+      przygotowano pliki <filename>UPGRADE-1.0-1.5.mysql</filename> i 
+      <filename>UPGRADE-1.0-1.5.pgsql</filename> dla przej¶cia od wersji 1.0 do wersji 1.5
+      oraz <filename>UPGRADE-1.2-1.5.mysql</filename> i <filename>UPGRADE-1.2-1.5.pgsql
+      </filename> przy migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. W nich znajdziesz krótki
+      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
+      W wersjach o numerze wy¿szym od 1.3.0 aktualizacja struktury bazy danych 
+      nastêpuje automatycznie podczas pierwszego logowania.</para>
       <para><note><para>W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
-      mo¿na skasowaæ odpowiedni katalog</para></note></para>
+      mo¿na skasowaæ odpowiedni katalog z katalogu <filename>/lib</filename></para></note></para>
     </sect1>
   </chapter>
