@@ -9,7 +9,7 @@
 			<img src="img/user.gif" border="0" alt="" align="absmiddle"> <A href="?m=nodesearch&search&o=owner{if $listdata.direction eq "ASC" && $listdata.order eq "owner"},desc{/if}">{$lang.owner}:</A> {if $listdata.order eq "owner"}<IMG SRC="img/{if $listdata.direction eq "DESC"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD Class="fbt" align="right" valign="top" width="1%" nowrap>
-			<img src="img/empty.gif" align="absmiddle" alt="" border="0" width="1" height="16"><A href="?m=nodesearch&search&o=id{if $listdata.direction eq "ASC" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "DESC"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/empty.gif" align="absmiddle" alt="" border="0" width="1" height="16"><A href="?m=nodesearch&search&o=id{if $listdata.direction eq "ASC" && $listdata.order eq "id"},desc{/if}">{$lang.id}:</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "DESC"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			<img src="img/empty.gif" align="absmiddle" alt="" border="0" width="1" height="16">{$lang.owner_id}:
 		</TD>
 		<TD CLASS="fbt" width="1%">
@@ -80,7 +80,7 @@
 		<TD WIDTH="98%" COLSPAN="2" CLASS="fleftu" ALIGN="right">
 			<B>
 				Razem:<BR>
-				Pod³±czonych:<BR>
+				P{$lang.disconnected}ch:<BR>
 				Od³±czonych:
 			</B>
 		</TD>

@@ -10,7 +10,7 @@
 			<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=address{if $userlist.direction eq "asc" && $userlist.order eq "address"},desc{/if}">{$lang.address}:</A> {if $userlist.order eq "address"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD align="right" width="1%" class="fbt">
-			<a href="?m=usersearch&search&s={$userlist.state}&o=id{if $userlist.direction eq "asc" && $userlist.order eq "id"},desc{/if}">ID:</A></B> {if $userlist.order eq "id"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<a href="?m=usersearch&search&s={$userlist.state}&o=id{if $userlist.direction eq "asc" && $userlist.order eq "id"},desc{/if}">{$lang.id}:</A></B> {if $userlist.order eq "id"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			&nbsp;
 		</TD>
 		<TD width="1%" class="fbt">
