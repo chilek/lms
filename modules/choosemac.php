@@ -14,11 +14,28 @@ $SMARTY->assign("layout",$layout);
 $SMARTY->assign("part",$p);
 $SMARTY->assign("js",$js);
 if($p == "main")
-	$SMARTY->assign("maclist",$LMS->GetMACs());
+{
+	$maclist = $LMS->GetMACs();
+	if($_CONFIG[phpui][arpd_servers])
+	{
+		$servers = split(' ',eregi_replace("[\t ]+"," ",$_CONFIG[phpui][arpd_servers]));
+		foreach($servers as $server)
+		{
+			list($addr,$port) = split(':',$server);
+			if($port == "")
+				$port = 1029;
+			$maclist = array_merge($maclist,$LMS->GetRemoteMACs($addr,$port));
+		}
+	}
+	$SMARTY->assign("maclist",$maclist);
+}
 $SMARTY->display("choosemac.html");
 
 /*
  * $Log$
+ * Revision 1.9  2003/09/17 03:10:39  lukasz
+ * - very experimental support for lms-arpd
+ *
  * Revision 1.8  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
