@@ -148,7 +148,7 @@ wersja 1.1.4 (??/??/2003):
     MySql:
 	ALTER TABLE `nodes` ADD `netdev` INT(11) AFTER `modid` ;
     PosgreSQL:
-	???  	
+	ALTER TABLE nodes ADD netdev integer;  	
 	
 wersja 1.1.3 (29/08/2003):
 
