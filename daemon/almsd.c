@@ -215,7 +215,6 @@ int main(int argc, char *argv[])
 				unsigned char *key;
 				MODULE *mod;
 				MODULE * (*init)(GLOBAL *, MODULE *);
-				void (*reload)(GLOBAL *, MODULE *);
 
 				// get module file name
 				key = str_concat(instance, ":module");
