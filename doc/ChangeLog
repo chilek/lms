@@ -11,6 +11,7 @@ wersja 1.4.0 Evalla (??/10/2004):
     poprawione sortowanie %last_10_in_a_table i znaki przy kwotach (alec)
   - pomijanie usuniêtych u¿ytkowników w szybkim wyszukiwaniu (alec)
   - ma³a optymalizacja modu³ów korzystaj±cych z listy adminów (alec)
+  - poprawiona kwota s³ownie w contrib/formularz_przelewu_wp³aty (alec)
 
 wersja 1.4.0rc3 Evalla (28/09/2004):
 
