@@ -29,6 +29,8 @@ version 1.5.6 Baal (??/??/????):
   - BTS#0000323: lms-rtparser: fixed multipart messages charset conversion
     and added decoding of quoted-printable encoded messages (alec)
   - added customer ID on Invoices Report (alec)
+  - we don't use capitalize in admininfo.
+    it fixes problem with lastname capitalization (chilek)
 
 version 1.5.5 Anubis (25/03/2005):
 
