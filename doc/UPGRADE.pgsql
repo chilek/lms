@@ -70,7 +70,7 @@ ALTER TABLE tariffs ALTER uprate DROP NOT NULL;
 ALTER TABLE tariffs ALTER uprate DROP DEFAULT;
 ALTER TABLE tariffs ALTER downrate DROP NOT NULL;
 ALTER TABLE tariffs ALTER downrate DROP DEFAULT; 
-
+ALTER TABLE tariffs ALTER description DROP NOT NULL;
 
 /* Faktury inaczej */
 ALTER TABLE cash ADD COLUMN invoiceid integer;
