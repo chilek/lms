@@ -55,7 +55,27 @@
 				<OPTION VALUE="1"{if $userinfo.status eq "1"} SELECTED{/if}>zainteresowany</OPTION>
 				</SELECT>{if $error.status}<BR><FONT CLASS="ALERT">{$error.status}</B>{/if}
 		</TD>
-	</TR>
+</TR>
+<!-- group select -->
+<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+				 {$userinfo.g_name}
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+
+            <!-- group select-->
+                <SELECT SIZE="1" CLASS="bold" NAME="userdata[usr_group]">
+                        {section name=dupa loop=$filters}
+                        <OPTION VALUE="{$filters[dupa].id}" 
+						{if $userinfo.usr_group eq $filters[dupa].id} SELECTED{/if}>
+						{$filters[dupa].g_name}-{$filters[dupa].count} zjeberów.
+						</OPTION>
+
+                        {/section}
+		</TD>
+</TR>
+
+
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/phone.gif" BORDER="0" ALT="">
