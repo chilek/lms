@@ -1,0 +1,11 @@
+$ORIGIN %c.in-addr.arpa.
+@		IN	SOA	ns1.%d.	hostmaster.%d. (
+			%s ; serial
+                        3600 ; refresh
+                        900 ; retry
+                        1209600 ; expire
+                        43200 ; default_ttl
+			)
+@		IN	NS	ns1.%d.
+@		IN	NS	ns2.%d.
+%h
