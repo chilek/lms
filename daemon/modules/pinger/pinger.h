@@ -27,7 +27,7 @@ struct net
 struct host
 {
 	unsigned char *id;
-	unsigned char *mac;
+//	unsigned char mac[ETH_ALEN];
 	unsigned long ipaddr;
 	int active;
 };

@@ -149,8 +149,8 @@ int send_arp_req(int sock, in_addr_t ip)
 	//uzupelnienie struktury adresowej do sendto()
 	memset(&str, 0, sizeof(str));
 	str.sll_family = PF_PACKET;
-	memcpy(str.sll_addr, descs[index].mac, ETH_ALEN);    	//htons(t);  //00:C0:26:2B:C9:09
-	str.sll_halen = 6;
+	memcpy(str.sll_addr, descs[index].mac, ETH_ALEN);
+	str.sll_halen = ETH_ALEN;
 	str.sll_ifindex = descs[index].index;
 
 	//.........budujemy naglowek Ethernetowy warstwy lacza danych...............
@@ -215,7 +215,6 @@ int recv_arp_reply()
 	struct sockaddr_ll str;
 	unsigned int sock, len, r, index, i, roz_arpha, roz_etha;
 	unsigned int dstip, srcip;
-	struct ethhdr *etha;
 	struct arphdr *arpha;
 	struct timeval tt, acttime, oldtime;
 
@@ -224,7 +223,7 @@ int recv_arp_reply()
 		return 1;
 	}
 
-	roz_arpha = sizeof(struct arphdr*);
+	roz_arpha = sizeof(struct arphdr);
 	roz_etha = sizeof(struct ethhdr);
 
 	str.sll_family = PF_PACKET;
@@ -262,17 +261,16 @@ int recv_arp_reply()
 		arpha = (struct arphdr *)(buf + sizeof(struct ethhdr));
 		if (ntohs(arpha->ar_op) == ARPOP_REPLY) {
 
+			memcpy(&dstip, buf + roz_etha + roz_arpha + ETH_ALEN + 4 + ETH_ALEN, 4);
+			memcpy(&srcip, buf + roz_etha + roz_arpha + ETH_ALEN, 4);
 
-			memcpy(&dstip, buf + roz_etha + roz_arpha + ETH_ALEN + 4 + ETH_ALEN + 4, 4);
-			memcpy(&srcip, buf + roz_etha + roz_arpha + ETH_ALEN + 4, 4);
-/*
 			// odnalezienie adresu IP z ktorego chcemy wysylac ramke
 			for (index = 0; index < descs_count; index++)
 				if (descs[index].network == (dstip & descs[index].netmask))
 					break;
 			
 			if (index < descs_count) {
-*/
+
 				gettimeofday(&oldtime, NULL);
 				
 				for(i=0; i<nh; i++)
@@ -280,7 +278,7 @@ int recv_arp_reply()
 						hosts[i].active = 1;
 						break;
 					}
-		//	}
+			}
 		}
 	}
 
@@ -343,7 +341,7 @@ void reload(GLOBAL *g, struct pinger_module *p)
 			if(j!=nc) {
 				hosts = (struct host*) realloc(hosts, sizeof(struct host) * (nh + 1));
 				hosts[nh].id = strdup(g->db_get_data(res,i,"id"));
-				hosts[nh].mac = strdup(g->db_get_data(res,i,"mac"));
+			//	hosts[nh].mac = strdup(g->db_get_data(res,i,"mac"));
 				hosts[nh].ipaddr = ip;
 				hosts[nh].active = 0;
 				nh++;
@@ -378,7 +376,7 @@ void reload(GLOBAL *g, struct pinger_module *p)
 	// cleanup
 	for(i=0; i<nh; i++) {
 		free(hosts[i].id);
-		free(hosts[i].mac);
+//		free(hosts[i].mac);
 	}
 	free(hosts);
 	free(nets);
