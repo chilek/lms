@@ -37,7 +37,7 @@ if (isset($_SESSION['ntlp'][$_GET['id']]) && !isset($_GET['page']))
 $_SESSION['ntlp'][$_GET['id']] = $_GET['page'];
 
 $networkdata = $_POST['networkdata'];
-$network = $LMS->GetNetworkRecord($_GET['id'],$_GET['page'],1024);
+$network = $LMS->GetNetworkRecord($_GET['id'],$_GET['page'], $LMS->CONFIG['phpui']['networkhosts_pagelimit']);
 
 
 if(isset($networkdata))

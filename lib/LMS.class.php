@@ -2070,7 +2070,7 @@ class LMS
 
 	function GetPrefixList()
 	{
-		for($i=30;$i>7;$i--)
+		for($i=30;$i>15;$i--)
 		{
 			$prefixlist['id'][] = $i;
 			$prefixlist['value'][] = $i." (".pow(2,32-$i)." adresów)";
@@ -2258,13 +2258,23 @@ class LMS
 		return $counter;
 	}
 
-	function GetNetworkRecord($id,$page = 0, $plimit = 4294967296)
+	function GetNetworkRecord($id,$page = 0, $plimit = 0)
 	{
 		$network = $this->DB->GetRow('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?', array($id));
 		$network['prefix'] = mask2prefix($network['mask']);
 		$network['size'] = pow(2,32-$network['prefix']);
 		$network['assigned'] = 0;
 		$network['broadcast'] = getbraddr($network['address'],$network['mask']);
+		
+		$network['assigned'] = $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr < ?", array($network['addresslong'], $network['addresslong'] + $network['size']));
+
+		$network['free'] = $network['size'] - $network['assigned'] - 2;
+		if ($network['dhcpstart'])
+			$network['free'] = $network['free'] - (ip_long($network['dhcpend']) - ip_long($network['dhcpstart']) + 1); 
+
+		if(!$plimit)
+			return $network;
+		
 		$network['pagemax'] = ceil($network['size'] / $plimit);
 
 		if($page > $network['pagemax'])
@@ -2275,9 +2285,8 @@ class LMS
 		$page --;
 		$start = $page * $plimit;
 		$end = ($network['size'] > $plimit ? $start + $plimit : $network['size']);
-
+	
 		$nodes = $this->DB->GetAllByKey('SELECT id, name, ipaddr, ownerid, netdev FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?','ipaddr', array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
-
 	
 		for($i = 0; $i < ($end - $start) ; $i ++)
 		{
@@ -2302,16 +2311,10 @@ class LMS
 				$netdev = $this->GetNetDevName($network['nodes']['netdev'][$i]);
 				$network['nodes']['name'][$i] = $network['nodes']['name'][$i]." (".$netdev['name'].")";
 			}
-
 		}
 		$network['nodes']['name'][0] = '*** NETWORK ***';
 		$network['nodes']['name'][$i-1] = '*** BROADCAST ***';
-
-		$network['assigned'] = $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr < ?", array($network['addresslong'], $network['addresslong'] + $network['size']));
-
 		$network['rows'] = ceil(sizeof($network['nodes']['address']) / 4);
-		$network['free'] = $network['size'] - $network['assigned'] - 2;
-		if ($network['dhcpstart']) { $network['free']=$network['free'] - (ip_long($network['dhcpend']) - ip_long($network['dhcpstart']) + 1); }
 		$network['pages'] = ceil($network['size'] / $plimit);
 		$network['page'] = $page + 1;
 

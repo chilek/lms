@@ -22,6 +22,8 @@ wersja 1.5.1 (??/??/????):
   - poprawiony b³±d w zapytaniu sql w lms-notify (alec)
   - na li¶cie sieci podajemy ilo¶æ komputerów online dla ka¿dej sieci (alec/lukas)
   - statystyki zg³oszeñ w welcome.html (alec)
+  - dodana opcja networkhosts_pagelimit, domy¶lnie pokazujemy 256 hostów
+    w netinfo (alec)
   
 wersja 1.5.0 Marduk (18/09/2004):
 
