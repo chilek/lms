@@ -1,5 +1,10 @@
 $Id$
 
+wersja 1.5.3 (??/??/????):
+
+  - w polu email przy dodawaniu/edycji u¿ytkownika mo¿na wpisaæ tylko jeden 
+    adres (alec)
+
 wersja 1.5.2 Isis (25/11/2004):
 
   - experymentalny driver do MS SQL Servera (alec)
