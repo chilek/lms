@@ -5,7 +5,8 @@ wersja 1.1.8 (??/??/????):
   - netdevmap korzysta z obrazków w formacie PNG (brak obs³ugi GIF na 
     niektórych systemach) (Lexx)
   - poprawione zliczanie rekordów na pustych listach, BTS#90 (alec)
-      
+  - dodane sortowanie listy userów wg wysoko¶ci abonamentu (alec)
+        
 wersja 1.1.7 Hathor (14/12/2003):
 
   - adresy sieci w bazie trzymamy teraz jako bigint, do przeliczeñ

@@ -681,7 +681,25 @@ class LMS
 					$below += $userlist[$idx]['balance'];
 			}
 		}
-
+		
+		switch($order)
+		{
+			case "tariff":
+				foreach($userlist as $idx => $row)
+				{
+					$tarifftable['idx'][] = $idx;
+					$tarifftable['tariffvalue'][] = $row['tariffvalue'];
+				}
+				if(is_array($tarifftable))
+				{
+					array_multisort($tarifftable['tariffvalue'],($direction == "desc" ? SORT_DESC : SORT_ASC),$tarifftable['idx']);
+					foreach($tarifftable['idx'] as $idx)
+						$nuserelist[] = $userlist[$idx];
+				}
+				$userlist = $nuserelist;
+			break;
+		}
+		
 		$userlist['total']=sizeof($userlist);
 		$userlist['state']=$state;
 		$userlist['order']=$order;
@@ -919,23 +937,7 @@ class LMS
 			}
 		}
 
-		switch($order)
-		{
-			case "owner":
-				foreach($nodelist as $idx => $row)
-				{
-					$ownertable['idx'][] = $idx;
-					$ownertable['owner'][] = $row['owner'];
-				}
-				if(is_array($ownertable))
-				{
-					array_multisort($ownertable['owner'],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable['idx']);
-					foreach($ownertable['idx'] as $idx)
-						$nnodelist[] = $nodelist[$idx];
-				}
-				$nodelist = $nnodelist;
-			break;
-		}
+	
 
 		$nodelist['total'] = sizeof($nodelist);
 		$nodelist['order'] = $order;
@@ -2224,6 +2226,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.316  2003/12/15 22:15:35  alec
+ * - dodane sortowanie listy userów wg abonamentu
+ *
  * Revision 1.315  2003/12/14 18:38:00  lukasz
  * - finisz z fakturami + kosmetyka
  *
