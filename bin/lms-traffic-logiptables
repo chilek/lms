@@ -1,0 +1,216 @@
+#!/usr/bin/perl -Tw
+#
+# LMS version 1.1-cvs
+#
+#  (C) 2001-2003 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($configfile $quiet $help $version);
+
+$ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
+
+sub u32todotquad($)
+{
+	my $p = shift @_;
+	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
+}		
+
+my $_version = '1.1-cvs';
+
+my %options = (
+	"--config-file|C=s"	=>	\$configfile,
+	"--quiet|q"		=>	\$quiet,
+	"--help|h"		=>	\$help,
+	"--version|v"		=>	\$version
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-traffic-logiptables, version $_version
+(C) 2001-2003 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
+-h, --help			print this help and exit;
+-v, --version			print version info and exit;
+-q, --quiet			suppress any output, except errors;
+
+EOF
+	exit 0;
+}
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-traffic-logiptables, version $_version
+(C) 2001-2003 LMS Developers
+
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms/lms.ini";
+}
+
+if(!$quiet)
+{
+	print STDOUT "lms-traffic-logiptables, version $_version\n";
+	print STDOUT "(C) 2001-2003 LMS Developers\n";
+	print STDOUT "Using file $configfile as config.\n";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+
+my $logfile = $ini->val('traffic-logiptables','logfile') || '';
+my $outfile = $ini->val('traffic-logiptables','outfile') || '/etc/rc.d/rc.stat';
+my $iptables_binary = $ini->val('traffic-logiptables','iptables_binary') || '/usr/sbin/iptables';
+my $wan_interface = $ini->val('traffic-logiptables','wan_interface') || '';
+my $local_ports = $ini->val('traffic-logiptables','local_ports') || '';
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+my $dbase;
+
+if(! $wan_interface)
+{
+	print STDERR "Fatal error: 'wan_interface' not defined, exiting.\n";
+	exit 1;
+}
+
+if(! $logfile)
+{
+	print STDERR "Fatal error: 'logfile' not defined, exiting.\n";
+	exit 1;
+}
+
+if($dbtype eq "mysql")
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+elsif($dbtype eq "postgres")
+{
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+
+open(OUTFILE, ">$outfile") or die("Fatal error: Unable to write $outfile, exiting.\n");
+
+print OUTFILE "#!/bin/bash
+$iptables_binary -t mangle -D FORWARD -i $wan_interface -j STAT 1>/dev/null 2>&1
+$iptables_binary -t mangle -D FORWARD -o $wan_interface -j STAT 1>/dev/null 2>&1
+$iptables_binary -t mangle -F STAT 1>/dev/null 2>&1
+$iptables_binary -t mangle -X STAT 1>/dev/null 2>&1
+$iptables_binary -t mangle -N STAT
+$iptables_binary -t mangle -I FORWARD -i $wan_interface -j STAT
+$iptables_binary -t mangle -I FORWARD -o $wan_interface -j STAT
+";
+
+my @local_ports_list = split(' ',$local_ports);
+foreach my $port (@local_ports_list)
+{
+	print "$iptables_binary -t mangle -I INPUT -p tcp --dport $port -j STAT\n";
+	print "$iptables_binary -t mangle -I OUTPUT -p tcp --sport $port -j STAT\n";
+}
+
+my $dbq = $dbase->prepare("SELECT ipaddr FROM nodes");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref())
+{
+	$row->{'ipaddr'} = u32todotquad($row->{'ipaddr'});
+	print OUTFILE "$iptables_binary -t mangle -A STAT -s $row->{'ipaddr'}\n";
+	print OUTFILE "$iptables_binary -t mangle -A STAT -d $row->{'ipaddr'}\n";
+}
+close(OUTFILE);
+
+my @info = `$iptables_binary -t mangle -L STAT -v -n -x`;
+my %uploads;
+my %downloads;
+
+foreach my $line (@info)
+{
+	chomp $line;
+	if($line =~ /^[ ]+([0-9]+)[ ]+([0-9]+).*all.* 0\.0\.0\.0\/0[ ]+([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/ )
+	{
+		$line =~ s/^[ ]+([0-9]+)[ ]+([0-9]+).*all.* 0\.0\.0\.0\/0[ ]+([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/$1 $2 $3/g;
+		my ($pkts, $bytes, $ipaddr) = split ' ',$line;
+		$downloads{$ipaddr} = $bytes;
+		
+	}
+	elsif($line =~ /^[ ]+([0-9]+)[ ]+([0-9]+).*all.* ([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})[ ]+0\.0\.0\.0\/0/ )
+	{
+		$line =~ s/^[ ]+([0-9]+)[ ]+([0-9]+).*all.* ([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})[ ]+0\.0\.0\.0\/0/$1 $2 $3/g;
+		my ($pkts, $bytes, $ipaddr) = split ' ',$line;
+		$uploads{$ipaddr} = $bytes;
+	}
+}
+
+if(open(LOGFILE, "<$logfile"))
+{
+	my(@lines) = <LOGFILE>;
+	close(LOGFILE);
+	foreach my $line (@lines)
+	{
+		if($line =~ /([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}) +([0-9]+) +([0-9]+)/ )
+		{
+			chomp $line;
+			my ($ipaddr,$upload,$download) = split(/ +/,$line);
+			$downloads{$ipaddr} += $download if ($downloads{$ipaddr}) or $downloads{$ipaddr} = $download;
+			$uploads{$ipaddr} += $upload if ($uploads{$ipaddr}) or $uploads{$ipaddr} = $upload;
+		}
+	}
+}
+
+if(open(LOGFILE, ">$logfile"))
+{
+	foreach my $key (keys %downloads)
+	{
+		print LOGFILE "$key $uploads{$key} $downloads{$key}\n";
+	}
+	close(LOGFILE);
+}
+else
+{
+	print STDERR "Fatal error: Unable to open $logfile for writing, exiting.\n";
+	exit 1;
+}
+
+system($outfile);
