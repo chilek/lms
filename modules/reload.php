@@ -72,9 +72,15 @@ switch($_RELOAD_TYPE)
 			}else
 				if($reloadtimestamp = $LMS->GetTS("_force"))
 				{
-					echo 'Wykryto zlecenie prze³adowania konfiguracji z '.date("Y/m/d H:i",time()).'.<BR>';
-					echo 'Kliknij <A HREF="?m=reload&cancel">tutaj</a> aby anulowaæ to zlecenie.';
-				}else{
+					if(!isset($_GET['refresh'])) 
+					{					
+						echo 'W bazie danych wykryto zlecenie prze³adowania z '.date("d.m.Y H:i",$reloadtimestamp).'.<BR>';
+						echo 'Mo¿esz je <A HREF="?m=reload&cancel">anulowaæ</A> lub <A HREF="?m=reload&refresh">ponowiæ</A>.';
+					} else {
+						echo 'Zapisano zlecenie prze³adowania konfiguracji w bazie danych.';
+						$LMS->SetTS("_force");
+					}
+				} else {
 					echo 'Zapisano zlecenie prze³adowania konfiguracji w bazie danych.';
 					$LMS->SetTS("_force");
 				}

@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     unsigned char *db, *user, *passwd, *host; //db connection params
     int port;				//
     dictionary *ini;			//config
-    int reload;    
+    int reload, reload_t = 0;    
     unsigned char *instance, *instances;
 
     	// read command line args
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
                 	break;
 		case 'h':
         	default:
-			printf("A.L.E.C's LMS Daemon v.1.0beta. Command line options:\n");
+			printf("A.L.E.C's LMS Daemon v.1.0. Command line options:\n");
 			printf(" -c \tpath to config file (default: /etc/lms/lms.ini)\n");
                 	printf(" -b \tfork in background\n");
                 	printf(" -s \tthe time the run sleeps for (seconds)\n");
@@ -147,6 +147,7 @@ int main(int argc, char *argv[])
 
     	// main loop ****************************************************
     	for (;;) {
+		int time;
 		reload = 0;
 	
 		// try to connect to database
@@ -160,9 +161,12 @@ int main(int argc, char *argv[])
         	if( quit )
    	    		reload = 1;
 		else {
-	    		if( (res =  db_query("SELECT COUNT(*) AS number FROM timestamps WHERE tablename = '_force'"))!=NULL ) {
-				if( atoi(db_get_data(res,0,"number"))>0 )
-	    	    		reload = 1;
+	    		if( (res =  db_query("SELECT time FROM timestamps WHERE tablename = '_force'"))!=NULL ) {
+				time = atoi(db_get_data(res,0,"time"));
+				if( time>0 && time!=reload_t ) {
+					reload = 1;
+					reload_t = time;
+				}
 				db_free(res);
 	    		}
 		}
@@ -237,11 +241,6 @@ int main(int argc, char *argv[])
 			free(instances);
 			iniparser_freedict(ini);
 
-	 		// empty reload table 
-			db_exec("DELETE FROM timestamps WHERE tablename = '_force'"); 
-#ifdef DEBUG1
-			syslog(LOG_INFO,"DEBUG: [lmsd] reload signal deleted");
-#endif
 		} // end of reload *****************************************
 		db_disconnect();	  
 		if (quit) termination_handler(0);

@@ -26,6 +26,10 @@ wersja ????? (??/??/????):
   - lista sieci domy¶lnie sortowana jest po nazwie (alec)
   - lista urz±dzeñ do pod³±czenia jest sortowana po nazwie (alec)
   - naprawiona nawigacja na li¶cie faktur - BTS#0000104 (alec)
+  - zmiany w reloadzie demona: z tabeli 'timestamps' odczytywany jest
+    czas i porównywany z czasem z poprzedniego prze³adowania, wpis 
+    '_force' nie jest usuwany, wiêc nie ma problemów z uruchamianiem
+    kilku demonów równocze¶nie (lexx/alec)
         
 wersja 1.1.8 Cronos (01/02/2004):
 
