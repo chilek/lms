@@ -1,3 +1,9 @@
+* 10.01.2004
+  - przebudowa 'payments', tzn. poprawione bugi, kosmetyka i dodana
+    obs³uga op³at sta³ych (alec)
+  - almsd nie korzysta ju¿ z tabeli 'reload' (lexx)
+  - usuniête `` w zapytaniach w almsd.c (alec)
+      
 * 09.12.2003
   - 'dhcp' i 'dns' przystosowane do nowego formatu adresu sieci (alec)
 
