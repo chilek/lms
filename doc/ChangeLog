@@ -24,6 +24,14 @@ wersja 1.0pre4 (??/01/2003):
   - wyszukiwanie u¿ytkowników;
   - mo¿liwo¶æ zdefiniowania sposobu reloadu (albo via sql, albo exec
     jakiej¶ komendy).
+  - dodanie kolumny iplong w tabeli nodes - docelowo ca³y LMS ma siê
+    opieraæ na d³ugich ipkach (uzupe³nienie bazy danych o long ip:
+    
+    ALTER TABLE nodes ADD iplong BIGINT NOT NULL AFTER ipaddr;
+    
+    Uzupe³nienie danych komputerów za³atwia skrypt:
+    http://twoj.serwer.pl/lms/?m=dbupgrade
+    
   
   
 wersja 1.0pre3 (27/12/2002):
