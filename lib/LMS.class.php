@@ -944,34 +944,33 @@ class LMS
 			}			
 		}
 
-		if(is_array($nodelist))
+		switch($order)
 		{
-			switch($order)
-			{
-				case "ip":
-					foreach($nodelist as $idx => $row)
-					{
-						$iptable[idx][] = $idx;
-						$iptable[iplong][] = $row[iplong];
-					}
+			case "ip":
+				foreach($nodelist as $idx => $row)
+				{
+					$iptable[idx][] = $idx;
+					$iptable[iplong][] = $row[iplong];
+				}
+				if(is_array($iptable))
 					array_multisort($iptable[iplong],($direction == "DESC" ? SORT_DESC : SORT_ASC),SORT_NUMERIC,$iptable[idx]);
-					foreach($iptable[idx] as $idx)
-						$nnodelist[] = $nodelist[$idx];
-					$nodelist = $nnodelist;
-				break;
+				foreach($iptable[idx] as $idx)
+					$nnodelist[] = $nodelist[$idx];
+				$nodelist = $nnodelist;
+			break;
 					
-				case "owner":
-					foreach($nodelist as $idx => $row)
-					{
-						$ownertable[idx][] = $idx;
-						$ownertable[owner][] = $row[owner];
-					}
+			case "owner":
+				foreach($nodelist as $idx => $row)
+				{
+					$ownertable[idx][] = $idx;
+					$ownertable[owner][] = $row[owner];
+				}
+				if(is_array($ownertable)
 					array_multisort($ownertable[owner],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable[idx]);
-					foreach($ownertable[idx] as $idx)
-						$nnodelist[] = $nodelist[$idx];
-					$nodelist = $nnodelist;
-				break;
-			}
+				foreach($ownertable[idx] as $idx)
+					$nnodelist[] = $nodelist[$idx];
+				$nodelist = $nnodelist;
+			break;
 		}
 
 		$nodelist[total] = sizeof($nodelist);
