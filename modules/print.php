@@ -518,8 +518,11 @@ switch($_GET['type'])
 				$month = date('n', $row['time']);
 				$list[$month]['covenant'] += $row['value'];
 				$list[$month]['payment'] += $payments[$row['id']]['value'];
-				$list[$month]['diff'] = $list[$month]['diff'] + $row['value'] - $payments[$row['id']]['value'];
+				$list[$month]['diff'] = $list[$month]['diff'] - $row['value'] + $payments[$row['id']]['value'];
+				$list['totalcovenant'] += $row['value'];
+				$list['totalpayment'] += $payments[$row['id']]['value'];
 			}	
+			$list['totaldiff'] = $list['totalpayment'] - $list['totalcovenant']; 
 			
 		for($i=1; $i<13; $i++) $months[$i] = strftime('%B', mktime(0,0,0,$i,1,1970));
 
