@@ -50,10 +50,23 @@ Class LMSDB_common
 	var $_query=NULL;
 	var $_result=NULL;
 
+	function LMSDB_common()
+	{
+		// zabezpieczmy siê przed inicjowaniem tej klasy samej w sobie
+		
+		die();
+
+	}
+	
 	function Connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
 		$this->_driver_connect($dbhost,$dbuser,$dbpasswd);
 		$this->_driver_selectdb($dbname);
+	}
+
+	function Execute($query)
+	{
+		return $this->_driver_execute($query);
 	}
 
 }

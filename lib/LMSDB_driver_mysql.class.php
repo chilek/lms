@@ -39,54 +39,37 @@ class LMSDB_driver_mysql extends LMSDB_common
 		$this->Connect($dbhost,$dbuser,$dbpasswd,$dbname);
 	}
 
-	function Connect($dbhost=NULL,$dbuser=NULL,$dbpasswd=NULL,$dbname=NULL)
+	function _driver_connect($dbhost,$dbuser,$dbpasswd)
 	{
-		if($dbhost)
+		if($this->_dblink = mysql_connect($dbaddr,$dbuser,$dbpasswd))
+		{
 			$this->_dbhost = $dbhost;
-		
-		if($dbuser)
 			$this->_dbuser = $dbuser;
-		
-		if($dbpasswd)
 			$this->_dbpasswd = $dbpasswd;
-		
-		if($dbname)
+		}
+		return $this->_dblink;
+	}
+	
+	function _driver_selectdb($dbname)
+	{
+		if($result = mysql_select_db($dbname,$this->_dblink))
 			$this->_dbname = $dbname;
-		
-		$this->_dblink = mysql_connect($this->_dbhost,$this->_dbuser,$this->_dbpasswd);
-
-		mysql_select_db($this->_dbname,$this->_dblink);
+		return $result;
 	}
 
-	function Execute($query=NULL)
+	function _driver_execute($query)
 	{
-		if($query)
+		if($this->_result = mysql_query($query,$this->_dblink))
+		{
 			$this->_query = $query;
-		
-		$this->_result = mysql_query($this->_query,$this->_dblink);
-		
+			$this->_error = FALSE;
+		}
+
 		return $this->_result;
 	}
 
-	function GetRow($query=NULL)
+	function _driver_fetchrow_assoc()
 	{
-		if($query)
-			$this->Execute($query);
-
-		return mysql_fetch_array($this->_result,MYSQL_ASSOC);
-	}		
-	
-	function GetAll($query=NULL)
-	{
-		if($query)
-			$this->_query = $query;
-		
-		$this->Execute();
-		
-		while($row = $this->GetRow())
-			$result[] = $row;
-		return $result;			
+		mysql_fetch_array($this->_result,MYSQL_ASSOC))
 	}
-		
-}
 ?>
