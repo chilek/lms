@@ -1,0 +1,231 @@
+#!/usr/bin/perl -Tw
+#
+# LMS version 1.0
+#
+#  (C) 2001-2003 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use Net::SMTP;
+use vars qw($configfile $quiet $help $version);
+use POSIX qw(strftime);
+
+my $_version = '1.0-cvs';
+my $my_template;
+
+my %options = (
+	"--config-file|C=s"	=>	\$configfile,
+	"--template-file|D=s" =>  \$my_template,
+	"--quiet|q"		=>	\$quiet,
+	"--help|h"		=>	\$help,
+	"--version|v"		=>	\$version
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-notify, version $_version
+(C) 2001-2003 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
+-D, --template-file=/etc/lms/another.template.txt	alternate (default in confing file);
+-h, --help			print this help and exit;
+-v, --version			print version info and exit;
+-q, --quiet			suppress any output, except errors;
+
+EOF
+	exit 0;
+}
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-notify, version $_version
+(C) 2001-2003 LMS Developers
+
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms/lms.ini";
+}
+
+if(!$quiet)
+{
+	print STDOUT "lms-notify, version $_version\n";
+	print STDOUT "(C) Copyright 2002-2003 Rulez.PL Development Team\n";
+	print STDOUT "(C) Copyright 2001-2002 NetX ACN\n";
+	print STDOUT "Using file $configfile as config.\n";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+my $limit = $ini->val('notify', 'limit') || 0;
+
+if(!$smsfile)
+{
+	print STDERR "Fatal error: smstemplate in $configfile unset! Can't continue, exiting.\n";
+	exit 1;
+}
+
+if(! -r $smsfile)
+{
+	print STDERR "Fatal error: unable to read mail template file $mtfile, exiting!\n";
+	exit 1;
+}
+
+my $dbase;
+
+if($dbtype eq "mysql")
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+elsif($dbtype eq "postgres")
+{
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+
+open(MTFILE, "$mtfile");
+my @mtempl = <MTFILE>;
+close MTFILE;
+
+my $dbq = $dbase->prepare("SELECT users.id, lastname, users.name, email, phone1,  tariffs.description FROM users,tariffs 
+		WHERE users.tariff=tariffs.id");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref())
+{
+	my $balance = 0;
+	my $sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type='3'");
+	$sdbq->execute();
+	if(my $srow = $sdbq->fetchrow_hashref())
+	{
+		$balance = $balance + (defined $srow->{'sum'} ? $srow->{'sum'} : 0);
+	}
+	$sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type>='4'");
+	$sdbq->execute();
+	if(my $srow = $sdbq->fetchrow_hashref())
+	{
+		$balance = $balance - (defined $srow->{'sum'} ? $srow->{'sum'} : 0);
+	}
+	if($balance < $limit)
+	{
+		if(!$quiet)
+		{
+			print STDOUT "$row->{'id'}\t($balance)\t$row->{'lastname'} $row->{'name'}\n";
+		}
+		# is it ok? what should be sms regexp?
+		if($row->{'phone1'} =~ 50{7}[0-9] )
+		if($row->{'phone1'} =~ 60{7}[0-9] )
+		if($row->{'phone1'} =~ 69{7}[0-9] )
+		{
+			if(!$quiet)
+			{
+				print STDOUT "Sending sms to $row->{'email'}\n";
+			}
+			my @desttempl = @mtempl;
+			my $subject = $mailsubject;
+			$subject =~ s/\%B/$balance/g;
+			{ my $amount = -$balance; $subject =~ s/\%b/$amount/g; } 
+			
+			if($debugsms)
+			{
+				$sms->to($debugsms);
+			}else{
+				$sms->to($row->{'phone1'});
+			}
+
+			$sms->data();
+
+			foreach my $line (@desttempl)
+			{
+				$line =~ s/\%B/$balance/g;
+				{ 	
+				my $amount = -$balance;
+				$line =~ s/\%b/$amount/g; 	
+				}
+
+				{ 
+				my $year = strftime( "%Y", localtime());
+				$line =~ s/\%date-y/$year/; 
+				}
+
+                {
+                my $phone = $row->{'phone1'};
+                $line =~ s/\%phone1/$phone/;
+				}
+				
+				my $month = strftime ( "%m", localtime()) ; 
+				$line =~ s/\%date-m/$month/;
+				
+				{
+				my $desc = $row->{'description'}; 
+				$line =~ s/\%desc/$desc/;
+				}
+
+				if ($line =~ /\%saldo/) {
+					my $saldo_dbq = $dbase->prepare("SELECT SUM(value) FROM cash WHERE 
+					userid='$row->{'id'}' AND (type>='4' )") ; 
+					$saldo_dbq->execute();
+					my $ow_s = $saldo_dbq->fetchrow_hashref();
+					$line =~ s/\%saldo/$ow_s->{'SUM(value)'}/;
+				}
+
+
+				if ($line =~ /\%abonament/) {
+					my $saldo_dbq = $dbase->prepare("SELECT users.id,tariffs.value,tariff FROM users,tariffs WHERE 
+					users.id='$row->{'id'}' AND tariffs.id=users.tariff") ; 
+					$saldo_dbq->execute();
+					my $ow_s = $saldo_dbq->fetchrow_hashref();
+					$line =~ s/\%abonament/$ow_s->{'value'}/;
+				}
+			if(!$quiet)
+			{
+				print STDOUT "This user don't have any sms capable number in database, call him if You can ($row->{'phone1'}).\n";
+			}
+		}
+	}
+	
+}
+$dbase->disconnect();
