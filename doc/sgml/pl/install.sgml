@@ -103,9 +103,9 @@ $ tar zxf lms-x.x.x.tar.gz
 		pobierz j± i umie¶æ w katalogu <filename>lib</filename>.
 <screen>
 $ cd /var/www/lms/lib
-$ wget http://smarty.php.net/distributions/Smarty-2.6.0.tar.gz
-$ tar zxf Smarty-2.6.0.tar.gz
-$ mv Smarty-2.6.0/libs Smarty
+$ wget http://smarty.php.net/distributions/Smarty-2.6.6.tar.gz
+$ tar zxf Smarty-2.6.6.tar.gz
+$ mv Smarty-2.6.6/libs Smarty
 </screen>
 		</para>
 		<para><note><para>Po³o¿enie wszystkich katalogów mo¿esz zmieniæ w sekcji
@@ -120,6 +120,24 @@ $ mv Smarty-2.6.0/libs Smarty
 		oraz prawa odczytu i zapisu do katalogu <filename>backup</filename>. 
 		Stanowi to potencjalne obni¿enie poziomu bezpieczeñstwa systemu.
 		</para></warning></para>
+	</sect1>
+	<sect1 id="install-locale">
+	<title>Lokalizacja</title>
+		<para>Domy¶lnym jêzykiem interfejsu u¿ytkownika jest angielski,
+		a znaki s± kodowane w UTF-8. Aby znaki narodowe innych jêzyków
+		by³y poprawnie wy¶wietlane nale¿y mieæ w systemie odpowiednie
+		locale. Np. dla jêzyka polskiego bêdzie to komenda:
+      <screen>
+# localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8
+</screen>
+		Je¶li w interfejsie u¿ytkownika znaki narodowe w dalszym ci±gu nie bêd± 
+		wy¶wietlane poprawnie mo¿liwe, ¿e trzeba bêdzie dodaæ do pliku 
+		konfiguracyjnego serwera www (httpd.conf) wpis:
+	<screen>
+AddDefaultCharset UTF-8
+</screen>
+		Informacje na temat konfiguracji kodowania bazy danych w dalszej
+		czê¶ci rozdzia³u.</para>
 	</sect1>
 	<sect1 id="install-db">
 	<title>Instalacja serwera baz danych</title>
@@ -222,9 +240,15 @@ $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &</scre
 			której w³a¶cicielem bêdzie u¿ytkownik z loginem 'lms'. 
 			<screen>
 $ /usr/local/pgsql/bin/createuser -d -A -P lms
-$ /usr/local/pgsql/bin/createdb -E LATIN2 -U lms lms
+$ /usr/local/pgsql/bin/createdb -E UNICODE -U lms lms
 $ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</screen>
 		</para>
+		<para><note><para>Kodowanie UNICODE jest prawid³owo obs³ugiwane
+		dla znaków spoza zakresu ASCII dopiero od wersji 8.0 PostgreSQLa.
+		Na wcze¶niejszych wersjach nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
+		z opcji konfiguracyjnej <filename>server_encoding</filename> w sekcji 
+		<filename>[database]</filename> pliku <filename>lms.ini</filename>.
+		</para></note></para>
 		</sect3>
 		<sect3 id="install-pgsql-lms">
 		<title>Konfiguracja LMS (lms.ini)</title>
@@ -352,6 +376,13 @@ database = /usr/local/lms/lms.db</screen>
 	   <para>database</para>
 	   <para>Nazwa bazy danych (a w przypadku SQLite ¶cie¿ka do pliku bazy), domy¶lnie lms.</para>
 	   <para>Przyk³ad:	<prompt>database = lms</prompt></para>
+	  </listitem>
+          <listitem>
+	   <para>server_encoding</para>
+	   <para>Opcja przeznaczona dla bazy PostgreSQL. Je¶li kodowanie bazy danych
+	   jest inne od UNICODE nale¿y ustawiæ tê opcjê na warto¶æ inn± ni¿ domy¶lna.
+	   Spowoduje to w³±czenie konwersji danych w komunikacji z baz±. Domy¶lnie: UNICODE</para>
+	   <para>Przyk³ad:	<prompt>server_encoding = LATIN2</prompt></para>
 	  </listitem>
          </itemizedlist>
 	</para>
@@ -609,6 +640,7 @@ database = /usr/local/lms/lms.db</screen>
         <listitem><para>zarz±dzanie kontami</para></listitem>
         <listitem><para>konfiguracja UI</para></listitem>
         <listitem><para>zarz±dzanie sieciami i urz±dzeniami sieciowymi</para></listitem>
+	<listitem><para>zarz±dzanie terminarzem</para></listitem>
         <listitem><para>brak dostêpu do modyfikacji i zak³adania kont administratorów</para></listitem>
         <listitem><para>brak dostêpu</para></listitem>
        </itemizedlist>
@@ -640,18 +672,50 @@ database = /usr/local/lms/lms.db</screen>
     </sect1>
     <sect1 id="install-upgrade">
       <title>Upgrade</title>
-      <para>Uaktualnienie LMS'a przebiega w dwóch etapach. Najpierw utwórz
+      <para>Uaktualnienie LMS'a przebiega w kilku etapach. Najpierw utwórz
       katalog z plikami nowej wersji (nie zaleca siê nadpisywania starych plików
-      nowymi), nastêpnie trzeba dokonaæ zmian w bazie.</para>
-      <para>Dla u³atwienia migracji danych w katalogu <filename>/doc</filename>
+      nowymi) oraz usuñ zawarto¶æ katalogu <filename>templates_c</filename>.</para>
+      <para><note><para>W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
+      mo¿na skasowaæ odpowiedni katalog z katalogu <filename>/lib</filename></para></note></para>
+      <para>Nastêpnie, je¶li nie masz jeszcze w systemie locali pl_PL.UTF-8, nale¿y
+      je utworzyæ komend±:
+      <screen>
+# localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8
+</screen>
+	Je¶li w interfejsie u¿ytkownika znaki narodowe nie bêd± wy¶wietlane poprawnie
+	mo¿liwe, ¿e trzeba bêdzie dodaæ do pliku konfiguracyjnego serwera www (httpd.conf)
+	wpis:
+	<screen>
+AddDefaultCharset UTF-8
+</screen></para>
+      <para>Kolejnym krokiem jest dokonanie zmian w bazie. Dla u³atwienia migracji 
+      struktury bazy danych w katalogu <filename>/doc</filename>
       przygotowano pliki <filename>UPGRADE-1.0-1.5.mysql</filename> i 
       <filename>UPGRADE-1.0-1.5.pgsql</filename> dla przej¶cia od wersji 1.0 do wersji 1.5
       oraz <filename>UPGRADE-1.2-1.5.mysql</filename> i <filename>UPGRADE-1.2-1.5.pgsql
       </filename> przy migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. W nich znajdziesz krótki
       opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
-      W wersjach o numerze wy¿szym od 1.3.0 aktualizacja struktury bazy danych 
-      nastêpuje automatycznie podczas pierwszego logowania.</para>
-      <para><note><para>W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
-      mo¿na skasowaæ odpowiedni katalog z katalogu <filename>/lib</filename></para></note></para>
+      Je¶li przeprowadzasz upgrade z wersji nowszej od 1.3.0 aktualizacja struktury bazy danych 
+      nast±pi automatycznie podczas pierwszego logowania.</para>
+      <para>Ostatni etap - konwersja danych do unicodu.
+      Pocz±wszy od wersji 1.5.4 zaleca siê przechowywanie danych zakodowanych w 
+      utf-8 (UNICODE), poni¿ej zostanie przedstawiony przyk³ad migracji z kodowania ISO-8859-2
+      do UNICODE na bazie danych PostgreSQL.</para>
+      <para>Zaczynamy od utworzenia backupu danych w LMSie. Nastêpnie przechodzimy do
+      katalogu z backupami i wykonujemy konwersjê pliku backupu.
+      <screen>
+# iconv --from-code=ISO-8859-2 --to-code=UTF-8 < plik_backupu > nowy_plik
+</screen>
+	Po czym zmieniamy nazwê nowopowsta³ego pliku na lms-xxxxxxx.sql, aby
+	plik ten by³ widoczny z poziomu <emphasis>LMS-UI</emphasis>. Teraz
+	nale¿y utworzyæ bazê danych z kodowaniem UNICODE (opis w dziale Instalacja).
+	Po czym uruchamiamy <emphasis>LMS-UI</emphasis> i odtwarzamy dane z 
+	przekonwertowanego backupu.</para>
+	<para><note><para>W przypadku bazy danych PostgreSQL mo¿liwa jest praca
+	z baz± danych z kodowaniem innym ni¿ UNICODE. W takim wypadku rezygnujemy
+	z ostatniego, opisanego wy¿ej, etapu i ustawiamy odpowiednio opcjê
+	konfiguracyjn± <filename>server_encoding</filename> w sekcji 
+	<filename>[database]</filename>. Rozwi±zanie to bêdzie mia³o z³y wp³yw
+	na wydajno¶æ.</para></note></para>
     </sect1>
   </chapter>

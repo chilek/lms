@@ -76,7 +76,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-CONFIG"
->2.5. Konfiguracja podstawowa</A
+>2.6. Konfiguracja podstawowa</A
 ></H1
 ><P
 >G³ównym plikiem konfiguracyjnym LMS jest <TT
@@ -134,7 +134,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-CONFIG-DB"
->2.5.1. Sekcja [database] - ustawienia bazy danych</A
+>2.6.1. Sekcja [database] - ustawienia bazy danych</A
 ></H2
 ><P
 >	    <UL
@@ -199,6 +199,19 @@ CLASS="PROMPT"
 >database = lms</SAMP
 ></P
 ></LI
+><LI
+><P
+>server_encoding</P
+><P
+>Opcja przeznaczona dla bazy PostgreSQL. Je¶li kodowanie bazy danych
+	   jest inne od UNICODE nale¿y ustawiæ tê opcjê na warto¶æ inn± ni¿ domy¶lna.
+	   Spowoduje to w³±czenie konwersji danych w komunikacji z baz±. Domy¶lnie: UNICODE</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>server_encoding = LATIN2</SAMP
+></P
+></LI
 ></UL
 >
 	</P
@@ -209,7 +222,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-CONFIG-DIR"
->2.5.2. Sekcja [directories] - ustawienia katalogów</A
+>2.6.2. Sekcja [directories] - ustawienia katalogów</A
 ></H2
 ><P
 >        
@@ -336,7 +349,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-CONFIG-UI"
->2.5.3. Sekcja [phpui] - ustawienia interfejsu</A
+>2.6.3. Sekcja [phpui] - ustawienia interfejsu</A
 ></H2
 ><UL
 ><LI
