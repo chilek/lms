@@ -38,6 +38,7 @@ if($a = $_POST['assignmentedit'])
 		$a[$key] = trim($val);
 	
 	$a['id'] = $_GET['id'];
+	$a['userid'] = $userid;
 
 	$period = sprintf('%d',$a['period']);
 
@@ -196,7 +197,7 @@ else
 	}
 }
 
-$layout['pagetitle'] = trans('Customer Charging Edit: $0',$a['username']);
+$layout['pagetitle'] = trans('Customer Charging Edit: $0',$LMS->GetUserName($userid));
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
