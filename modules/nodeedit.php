@@ -31,18 +31,8 @@ if(!$LMS->NodeExists($_GET[id]))
 		header("Location: ?m=nodelist");
 
 if ($_GET[action]==link) {
-	$netdevinfo=$LMS->GetNetDev($_GET[devid]);
-	if ($netdevinfo['ports']>$netdevinfo['takenports']) {
-	    $LMS->NetDevLinkComputer($_GET[id],$_GET[devid]);
-	    header("Location: ?m=nodeinfo&id=".$_GET[id]);
-	} else {
-            $body = "<P>Urz±dzenie do którego prubujesz siê pod³±czyæ ma zajête wszystkie porty.</P>";
-	    $SMARTY->display("header.html");
-	    $SMARTY->assign("body",$body);
-	    $SMARTY->display("dialog.html");
-	    $SMARTY->display("footer.html");
-	}
-	break;
+	$LMS->NetDevLinkComputer($_GET[id],$_GET[devid]);
+	header("Location: ?m=nodeinfo&id=".$_GET[id]);
     }
 
 $nodeid = $_GET[id];
@@ -165,8 +155,8 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
- * Revision 1.37  2003/10/04 12:32:59  lexx
- * - tego <br> powinno nie byc
+ * Revision 1.38  2003/10/04 12:41:28  lexx
+ * - co za duzo to nie zdrowo
  *
  * Revision 1.36  2003/10/02 20:14:13  alec
  * dodana mozliwosc odlaczenia kompa od urzadzenia
@@ -207,3 +197,5 @@ $SMARTY->display("nodeedit.html");
  *
  */
 ?>
+
+
