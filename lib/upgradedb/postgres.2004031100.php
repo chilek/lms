@@ -24,9 +24,19 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE rtmessages ADD createtime INT(11) DEFAULT 0 NOT NULL");
+$DB->Execute("
+    ALTER TABLE rtmessages ADD createtime integer;
+    ALTER TABLE rtmessages ALTER createtime SET DEFAULT 0;
+    UPDATE rtmessages SET createtime = 0;
+    ALTER TABLE rtmessages ALTER createtime SET NOT NULL
+");
 
-$DB->Execute("CREATE TABLE rtattachments (messageid INT DEFAULT 0 NOT NULL, filename VARCHAR(255) NOT NULL, contenttype VARCHAR(255) NOT NULL)");
+$DB->Execute("
+    CREATE TABLE rtattachments (
+	messageid integer DEFAULT 0 NOT NULL, 
+	filename VARCHAR(255) NOT NULL, 
+	contenttype VARCHAR(255) NOT NULL)
+");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004031100', 'dbversion'));
 

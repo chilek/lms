@@ -24,10 +24,22 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE rtmessages ADD createtime INT(11) DEFAULT 0 NOT NULL");
+// Some stuff by maniac.
 
-$DB->Execute("CREATE TABLE rtattachments (messageid INT DEFAULT 0 NOT NULL, filename VARCHAR(255) NOT NULL, contenttype VARCHAR(255) NOT NULL)");
+$DB->Execute("
+    ALTER TABLE users ADD message text;
+    ALTER TABLE users ALTER message SET DEFAULT '';
+    UPDATE users SET message='';
+    ALTER TABLE users ALTER message SET NOT NULL
+");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004031100', 'dbversion'));
+$DB->Execute("
+    ALTER TABLE nodes ADD warning smallint;
+    ALTER TABLE nodes ALTER warning SET DEFAULT 0;
+    UPDATE nodes SET warning=0;
+    ALTER TABLE nodes ALTER warning SET NOT NULL
+");
+
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004031000', 'dbversion'));
 
 ?>
