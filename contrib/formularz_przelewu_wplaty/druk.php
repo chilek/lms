@@ -90,6 +90,7 @@ for ( $i=0; $i<12; $i++ ) {
 <span style="position: absolute; top: 298px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;"><?php echo($USER_ID); ?></span>
 <span style="position: absolute; top: 327px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;"></span>
 
-
+<span style="position: absolute; top: 527px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">Wydrukowano przy u¿yciu LMS (http://lms.rulez.pl)</span>
+<span style="position: absolute; top: 546px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">LMS kompletny system sieciowo-ksiêgowy dla ma³ych ISPów i ASKów, dostêpny na licencji GNU GPL</span>
 
 </HTML>
