@@ -110,3 +110,22 @@ function sendvalue(targetfield,ipaddr)
 	window.close();
 	parent.window.close();
 }
+
+function showOrHide(elementslist)
+{
+	var elements_array = elementslist.split(" ");
+	var part_num = 0;
+	while (part_num < elements_array.length)
+	{
+		var elementid = elements_array[part_num];
+		if(document.getElementById(elementid).style.display != 'none')
+		{
+			document.getElementById(elementid).style.display = 'none';
+		}
+		else
+		{
+			document.getElementById(elementid).style.display = '';
+		}
+		part_num += 1;
+	}
+};
