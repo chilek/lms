@@ -16,6 +16,7 @@ version 1.5.6 Baal (??/??/????):
     * database connection options from command line or environment
     * selected hosts/routers reloading
     * WARNING: Old daemon not supported in Reload menu!
+  - suspension percentage for assignments can be specified in lms.ini (chilek)
 
 version 1.5.5 Anubis (25/03/2005):
 
