@@ -49,7 +49,7 @@ wersja 1.1.4 (??/??/2003):
 	KEY id_2 (id)
     ) TYPE=MyISAM
 
-    2) Uruchom modu³ 'upgrades/01' - czyli po zalogowaniu sie do LMS'a
+    2) Uruchom modu³ 'upgrade01' - czyli po zalogowaniu sie do LMS'a
     wpiszcie w url na koñcu '?m=upgrade01', np.
     'http://serwer.pl/lms/?m=upgrade01'. UWAGA! Modu³ ten nale¿y uruchomiæ
     TYLKO RAZ! Jak go uruchomisz wiêcej ni¿ raz, popsujesz sobie ca³± bazê
