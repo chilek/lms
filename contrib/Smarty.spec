@@ -77,6 +77,9 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld.org.pl
 
 $Log$
+Revision 1.8  2003/06/23 13:42:28  lukasz
+- force commit for LMS-1.1.0
+
 Revision 1.7  2003/05/21 12:10:42  lukasz
 - s/1.0.0/1.1-cvs/g
 

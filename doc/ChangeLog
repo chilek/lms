@@ -13,6 +13,8 @@ wersja 1.1.0 (23/06/2003):
     teksty (dla przyk³adu) 'Nazwisko i imiê' na 'Nazwisko/nazwa i imiê'. Brzmi
     durnie ale kompromis niez³y (lukasz)
   - dodany ChangeLog.en (warden)
+  - usuniêta nieu¿ywana tabela 'options' i wygenerowany od nowa lms.mysql
+    (lukasz)
 			
 wersja 1.0.0 (18/05/2003):
 
