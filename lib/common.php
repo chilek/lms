@@ -402,6 +402,7 @@ function writesyslog($message,$type)
 
 	switch(PHP_OS)
 	{
+		case 'OpenBSD':
 		case 'Linux':
 			define_syslog_variables();
 			// Taken from PHP manual. On my WinXP box with Easy PHP it's fuck's up

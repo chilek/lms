@@ -10,6 +10,7 @@ wersja 1.4.2 (??/??/????):
     adres (alec)
   - poprawiona walidacja PINu przy dodawaniu u¿ytkownika (alec)
   - poprawione dzia³anie opcji --quiet w lms-payments (alec)
+  - BTS#000254: funkcja writesyslog() dzia³a równie¿ na OpenBSD (kubatyszko)
 
 wersja 1.4.1 Teyla (15/11/2004):
 
