@@ -145,7 +145,7 @@ my $cfile = $ini->val('macs', 'macs_file') || '/etc/conf,d/rc.macs';
 my $cuid = $ini->val('macs', 'macs_owneruid') || '0';
 my $cgid = $ini->val('macs', 'macs_ownergid') || '0';
 my $cperm = $ini->val('macs', 'macs_permission') || '600';
-my $cfooter = $ini->val('macs', 'file_footer') || '';
+my $redir = $ini->val('macs', 'redirect_address') || '127.0.0.1:80';
 my $ipbin = $ini->val('macs', 'iptables_binary') || '/sbin/iptables';
 my $chain = $ini->val('macs', 'chain') || 'MACS';
 my $lock_na = $ini->val('macs', 'lock_noaccess') || '0';
@@ -276,7 +276,8 @@ foreach my $key (@networks)
 }
 
 $dbase->disconnect();
-print MACSFILE $cfooter."\n";
+print MACSFILE $ipbin." -t nat -A ".$chain." -p tcp --dport 80 -j DNAT --to ".$redir."\n";
+print MACSFILE $ipbin." -t nat -A ".$chain." -p tcp --dport 8080 -j DNAT --to ".$redir."\n";
 print MACSFILE $ipbin." -t nat -A ".$chain." -j DROP\n";
 close(MACSFILE);
 chown $cuid, $cgid, $cfile or print "Warning! Unable to set owner of $cfile to $cuid.$cgid.\n";
