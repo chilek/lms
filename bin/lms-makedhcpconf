@@ -128,6 +128,7 @@ if(! -r $configfile)
 my $ini = new Config::IniFiles -file => $configfile;
 
 my $networks_list = $ini->val('dhcp', 'networks') || '';
+my $usergroups_list = $ini->val('dhcp', 'usergroups') || '';
 my $deflease = $ini->val('dhcp', 'default_lease_time') || '86400';
 my $maxlease = $ini->val('dhcp', 'max_lease_time') || '86400';
 my $cfile = $ini->val('dhcp', 'config_file') || '/etc/dhcpd.conf';
@@ -135,6 +136,7 @@ my $cuid = $ini->val('dhcp','config_owneruid') || 0;
 my $cgid = $ini->val('dhcp','config_ownergid') || 0;
 my $cperm = $ini->val('dhcp','config_permission') || '0600';
 my $olddhcpd = $ini->val('dhcp','ignore_ddns') || '';
+my $logfacility = $ini->val('dhcp','log_facility') || '';
 
 my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
@@ -171,6 +173,11 @@ if(!$olddhcpd)
 	print DHCPDCONF "ddns-update-style none;\n";
 }
 
+if($logfacility)
+{
+	print DHCPDCONF "log-facility ".$logfacility.";\n";
+}
+
 print DHCPDCONF "shared-network LMS {\n";
 
 if(!$networks_list)
@@ -183,6 +190,27 @@ if(!$networks_list)
 }
 
 my @networks = split ' ',$networks_list;
+
+if(!$usergroups_list)
+{
+	my $dbq = $dbase->prepare("SELECT name FROM usergroups");
+	$dbq->execute();
+	while (my $row = $dbq->fetchrow_hashref()) {
+		$usergroups_list = "$usergroups_list $row->{'name'}";
+	}
+}
+
+my @usergroups = split ' ',$usergroups_list;
+
+my $dbq = $dbase->prepare("SELECT id, name FROM usergroups");
+$dbq->execute();
+
+my %usergrouplist;
+
+while (my $row = $dbq->fetchrow_hashref())
+{
+	$usergrouplist{$row->{'name'}} = $row->{'id'};
+}
 
 foreach my $key (@networks)
 {
@@ -226,39 +254,53 @@ foreach my $key (@networks)
 			print DHCPDCONF "\t\toption netbios-name-servers $row->{'wins'};\n";
 		}
 		print DHCPDCONF "\n";
-		my $dbq2 = $dbase->prepare("SELECT id, name, ipaddr, mac FROM nodes");
+		my $dbq2 = $dbase->prepare("SELECT id, name, ipaddr, mac, ownerid FROM nodes");
 		$dbq2->execute();
 		while (my $row2 = $dbq2->fetchrow_hashref())
 		{
 			$row2->{'ipaddr'} = u32todotquad($row2->{'ipaddr'});
 			if(matchip($row2->{'ipaddr'},$row->{'address'},$row->{'mask'}))
 			{
-				my $ipaddr = $row2->{'ipaddr'};
-				my $ndomain = $ini->val("dhcp:$ipaddr",'domain') || '';
-				my $ngateway = $ini->val("dhcp:$ipaddr",'gateway') || '';
-				my $ndns = $ini->val("dhcp:$ipaddr",'dns') || '';
-				my $nwins = $ini->val("dhcp:$ipaddr",'wins') || '';
-				print DHCPDCONF "\t\thost $row2->{'name'} { # ID: $row2->{'id'}\n";
-				print DHCPDCONF "\t\t\thardware ethernet $row2->{'mac'};\n";
-				print DHCPDCONF "\t\t\tfixed-address $row2->{'ipaddr'};\n";
-				if($ndomain)
+				my $usergroupscount;
+				foreach my $key2 (@usergroups)
 				{
-					print DHCPDCONF "\t\t\toption domain-name \"$ndomain\";\n";
+					my $dbq3 = $dbase->prepare("SELECT count(userid) as total FROM userassignments WHERE userid=$row2->{'ownerid'} AND usergroupid=".$usergrouplist{$key2});
+					$dbq3->execute();
+					my $srow = $dbq3->fetchrow_hashref();
+					if ($srow->{'total'} eq 1)
+					{
+						$usergroupscount++;
+					}
 				}
-				if($ngateway)
+				if ($usergroupscount)
 				{
-					print DHCPDCONF "\t\t\toption routers $ngateway;\n";
+					my $ipaddr = $row2->{'ipaddr'};
+					my $ndomain = $ini->val("dhcp:$ipaddr",'domain') || '';
+					my $ngateway = $ini->val("dhcp:$ipaddr",'gateway') || '';
+					my $ndns = $ini->val("dhcp:$ipaddr",'dns') || '';
+					my $nwins = $ini->val("dhcp:$ipaddr",'wins') || '';
+					print DHCPDCONF "\t\thost $row2->{'name'} { # ID: $row2->{'id'}\n";
+					print DHCPDCONF "\t\t\thardware ethernet $row2->{'mac'};\n";
+					print DHCPDCONF "\t\t\tfixed-address $row2->{'ipaddr'};\n";
+					if($ndomain)
+					{
+						print DHCPDCONF "\t\t\toption domain-name \"$ndomain\";\n";
+					}
+					if($ngateway)
+					{
+						print DHCPDCONF "\t\t\toption routers $ngateway;\n";
+					}
+					if($ndns)
+					{
+						print DHCPDCONF "\t\t\toption domain-name-servers $ndns;\n";
+					}
+					if($nwins)
+					{
+						print DHCPDCONF "\t\t\toption netbios-name-servers $nwins;\n";
+					}
+					print DHCPDCONF "\t\t}\n\n";
+					}
 				}
-				if($ndns)
-				{
-					print DHCPDCONF "\t\t\toption domain-name-servers $ndns;\n";
-				}
-				if($nwins)
-				{
-					print DHCPDCONF "\t\t\toption netbios-name-servers $nwins;\n";
-				}
-				print DHCPDCONF "\t\t}\n\n";
-			}
 		}
 		print DHCPDCONF "\t}\n\n";
 	}
