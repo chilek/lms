@@ -63,6 +63,7 @@
 				<OPTION VALUE="{$users[users].id}"{if $nodedata.ownerid eq $users[users].id} SELECTED{/if}>{$users[users].username} ({$users[users].id|string_format:"%04d"})</OPTION>
 				{/section}
 			</SELECT>
+			{if $error.user}<BR><B><FONT COLOR="RED">{$error.user}</FONT></B>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
