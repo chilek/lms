@@ -41,6 +41,7 @@ wersja 1.5.1 (??/??/????):
     informacje z ostatniego logowania, a nie z bie¿±cej sesji (alec)
   - po zmianie has³a wy¶wietlamy ostatni modu³ zamiast welcome (alec)
   - nazwa interfejsu mo¿e zawieraæ ':' i '.' (alec)
+  - naprawione sumowanie w kolumnie 0% w rejestrze sprzeda¿y (alec)
   
 wersja 1.5.0 Marduk (18/09/2004):
 
