@@ -23,7 +23,7 @@
 				</TR>
 				<TR>
 					<TD>
-						<B>Nazwisko:</B>
+						<B>{$lang.lastname}:</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -32,7 +32,7 @@
 				</TR>
 				<TR>
 					<TD>
-						<B>Imiê:</B>
+						<B>{$lang.username}:</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -79,7 +79,7 @@
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>Kod:</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="5"{if $error.zip} CLASS="ALERT"><BR>
+			<B>{$lang.zip}:</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="5"{if $error.zip} CLASS="ALERT"><BR>
 			<FONT CLASS="ALERT">{$error.zip}</FONT{/if}>
 		</TD>
 	</TR>
@@ -87,7 +87,7 @@
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>Miasto:</B><BR><INPUT TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" SIZE="30">
+			<B>{$lang.city}:</B><BR><INPUT TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" SIZE="30">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -108,7 +108,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-		<B>NIP</B>
+		<B>{$lang.taxid}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="userdata[nip]" VALUE="{$userinfo.nip}" SIZE="30"{if $error.nip} CLASS="ALERT"><BR><FONT CLASS="ALERT">{$error.nip}</FONT{/if}>
@@ -161,7 +161,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{$lang.save} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
 			<A HREF="?m=userinfo&id={$userinfo.id}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
 		</TD>
 	</TR>
