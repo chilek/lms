@@ -186,26 +186,6 @@ void reload(GLOBAL *g, struct tc_module *tc)
 							{
 								got_node = 1;
 							
-								if(h_climit)
-								{
-									g->str_replace(&cl, "%climit", itoa(h_climit));
-									g->str_replace(&cl, "%n", name);
-	    								g->str_replace(&cl, "%i", ipaddr);
-									g->str_replace(&cl, "%m", mac);
-									g->str_replace(&cl, "%x", itoa(x));
-									fprintf(fh, "%s", cl);
-								}
-								
-								if(h_plimit)
-								{
-									g->str_replace(&pl, "%plimit", itoa(h_plimit));
-									g->str_replace(&pl, "%n", name);
-									g->str_replace(&pl, "%i", ipaddr);
-									g->str_replace(&pl, "%m", mac);
-									g->str_replace(&pl, "%x", itoa(x));
-									fprintf(fh, "%s", pl);
-								}	
-							
 								if(h_uprate && h_downrate)
 								{
 									g->str_replace(&mark_up, "%n", name);
@@ -247,7 +227,27 @@ void reload(GLOBAL *g, struct tc_module *tc)
 										fprintf(fh, "%s", htb_down);
 									}
 								}
+
+								if(h_climit)
+								{
+									g->str_replace(&cl, "%climit", itoa(h_climit));
+									g->str_replace(&cl, "%n", name);
+	    								g->str_replace(&cl, "%i", ipaddr);
+									g->str_replace(&cl, "%m", mac);
+									g->str_replace(&cl, "%x", itoa(x));
+									fprintf(fh, "%s", cl);
+								}
 								
+								if(h_plimit)
+								{
+									g->str_replace(&pl, "%plimit", itoa(h_plimit));
+									g->str_replace(&pl, "%n", name);
+									g->str_replace(&pl, "%i", ipaddr);
+									g->str_replace(&pl, "%m", mac);
+									g->str_replace(&pl, "%x", itoa(x));
+									fprintf(fh, "%s", pl);
+								}	
+						
 								if(tc->one_class_per_host) x++;
 							}
 							
