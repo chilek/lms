@@ -55,6 +55,7 @@ $SMARTY->assign(
 			'tariffs' => $tariffs
 		     )
 		);
-$SMARTY->display('contract.html');
+
+$SMARTY->display($LMS->CONFIG['phpui']['contract_template']);
 
 ?>

@@ -528,6 +528,12 @@ database = /usr/local/lms/lms.db</screen>
     siê zapisem wiadomo¶ci do bazy danych. Domy¶lnie: wy³±czona.</para>
     <para>Przyk³ad:	<prompt>helpdesk_backend_mode = 1</prompt></para>
    </listitem>
+   <listitem>
+    <para>contract_template</para>
+    <para>W³asny szablon umowy z u¿ytkownikiem. Mo¿na tak¿e dostosowaæ domy¶lny
+    szablon. Domy¶lnie: contract.html.</para>
+    <para>Przyk³ad:	<prompt>contract_template = "../my_templates/contract.html"</prompt></para>
+   </listitem>
   </itemizedlist>
  	</sect2> 
     </sect1>
