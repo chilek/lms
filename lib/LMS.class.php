@@ -2070,7 +2070,7 @@ class LMS
 
 	function GetPrefixList()
 	{
-		for($i=30;$i>15;$i--)
+		for($i=30;$i>7;$i--)
 		{
 			$prefixlist['id'][] = $i;
 			$prefixlist['value'][] = $i." (".pow(2,32-$i)." adresów)";
@@ -3052,6 +3052,15 @@ class LMS
 		}
 		$stats['lastticket'] = $this->DB->GetOne('SELECT createtime FROM rttickets WHERE queueid = ? ORDER BY createtime DESC', array($id));
 		return $stats;
+	}
+	
+	function RTStats()
+	{
+		return $this->DB->GetRow('SELECT COUNT(CASE state WHEN 0 THEN 1 END) AS new,
+						    COUNT(CASE state WHEN 1 THEN state END) AS open,
+						    COUNT(CASE state WHEN 2 THEN state END) AS resolved,
+						    COUNT(CASE state WHEN 3 THEN 1 END) AS dead
+					     FROM rttickets');
 	}
 	
 	function GetQueueByTicketId($id)
