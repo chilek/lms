@@ -12,7 +12,7 @@
 			<img src="img/user.gif" ALT="" align="absmiddle"> {t}Owner:{/t}
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
-			<img src="img/empty.gif" WIDTH="16" HEIGHT="16" align="absmiddle"> {t}ID:{/t}<BR>
+			<img src="img/empty.gif" WIDTH="16" HEIGHT="16" align="absmiddle"> {t}Address:{/t}<BR>
 			<img src="img/ip.gif" ALT="" align="absmiddle"> {t}IP address:{/t}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
@@ -28,11 +28,11 @@
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
 			{if $netcomplist[netcomplist].linktype}
-			<A href="?m=netdevedit&action=switchnodelinktype&linktype=0&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/wireless.gif" alt="[ {t}Change connection type{/t} ]" align="absmiddle" border="0"></A> 
+			<A href="?m=netdevedit&action=switchnodelinktype&linktype=0&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/wireless.gif" alt="[ {t}Change connection type{/t} ]" align="absmiddle" border="0"></A>
 			{else}
-			<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]" align="absmiddle" border="0"></A> 
+			<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]" align="absmiddle" border="0"></A>
 			{/if}
-			({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>
+			{$netcomplist[netcomplist].address}<BR>
 			<IMG SRC="img/ip.gif" ALT="" ALIGN="ABSMIDDLE"> {$netcomplist[netcomplist].ip}
 		</TD>
 		<TD CLASS="fright" WIDTH="1%">
