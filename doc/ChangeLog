@@ -23,6 +23,9 @@ version 1.5.5 (??/??/????):
   - added cash operations import interface (lexx)
   - sql queries speedup in GetTariff() and GetTariffList() (alec)
   - "all liabilities suspending" can be edited like other assignments (alec)
+  - BTS#0000292: tariff's avg monthly income don't take into consideration
+    suspended liabilities (alec)
+  - added index on tariffid column in assignments table (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
