@@ -1,15 +1,19 @@
-# W wierszu szóstym zdefiniowane jest has³o ('haselko') dostêpu do bazy LMSa.
-# Powinno siê je zmieniæ na 'jakie¶' swoje.
-# Tworzenie bazy
-DROP DATABASE IF EXISTS lms1_2;
-CREATE DATABASE lms1_2;
-GRANT ALL PRIVILEGES ON lms1_2.* to LMS1_2@localhost identified by 'haselko';
-
-
+# phpMyAdmin MySQL-Dump
+# version 2.3.3pl1
+# http://www.phpmyadmin.net/ (download page)
+#
+# Host: localhost
+# Czas wygenerowania: 27 Sie 2003, 23:06
+# Wersja serwera: 3.23.57
+# Wersja PHP: 4.2.3
+# Baza danych : lms
+# --------------------------------------------------------
+# $Id$
+# --------------------------------------------------------
+#
 # Struktura tabeli dla  admins
 #
 
-USE lms1_2;
 DROP TABLE IF EXISTS admins;
 CREATE TABLE admins (
   id int(11) NOT NULL auto_increment,
