@@ -37,10 +37,10 @@ if(isset($queue))
 	$queue['id'] = $_GET['id'];
 	
 	if($queue['name'] == '')
-		$error['name'] = "Kolejka musi posiadaæ nazwê!";
+		$error['name'] = trans('Queue must have its name!');
 
 	if($queue['email']!='' && !check_email($queue['email']))
-		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+		$error['email'] = trans('Incorrect email!');
 
 	if(isset($queue['admins']))
 		foreach($queue['admins'] as $key => $value)
@@ -56,7 +56,7 @@ if(isset($queue))
 else
 	$queue = $LMS->GetQueue($_GET['id']);
 
-$layout['pagetitle'] = 'Edycja kolejki: '.$queue['name'];
+$layout['pagetitle'] = trans('Queue Edit: $0',$queue['name']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

@@ -64,7 +64,7 @@ foreach($admins as $admin)
 }
 $queue['rights'] = $queue['nrights'];
 
-$layout['pagetitle'] = trans('New queue');
+$layout['pagetitle'] = trans('New Queue');
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

@@ -255,7 +255,7 @@ else
 		$message['subject'] .= sprintf(" [RT#%06d]",$message['ticketid']); 
 }
 
-$layout['pagetitle'] = trans('New message');
+$layout['pagetitle'] = trans('New Message');
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
