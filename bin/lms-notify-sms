@@ -48,7 +48,7 @@ GetOptions(%options);
 if($help)
 {
 	print STDERR <<EOF;
-lms-notify, version $_version
+lms-notify-sms, version $_version
 (C) 2001-2003 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
@@ -65,7 +65,7 @@ EOF
 if($version)
 {
 	print STDERR <<EOF;
-lms-notify, version $_version
+lms-notify-sms, version $_version
 (C) 2001-2003 LMS Developers
 
 EOF
@@ -79,7 +79,7 @@ if(!$configfile)
 
 if(!$quiet)
 {
-	print STDOUT "lms-notify, version $_version\n";
+	print STDOUT "lms-notify-sms, version $_version\n";
 	print STDOUT "(C) Copyright 2002-2003 Rulez.PL Development Team\n";
 	print STDOUT "(C) Copyright 2001-2002 NetX ACN\n";
 	print STDOUT "Using file $configfile as config.\n";
