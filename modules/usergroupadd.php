@@ -40,7 +40,7 @@ if(isset($usergroupadd))
 	if($usergroupadd['name'] == '')
 		$error['name'] = 'Musisz podaæ nazwê grupy!';
 	else
-		if($LMS->UsergroupGetIdByName($usergroupadd['name']))
+		if($LMS->UsergroupGetId($usergroupadd['name']))
 			$error['name'] = "Istnieje ju¿ grupa o nazwie '".$usergroupadd['name']."'!";
 
 	if(!$error){
