@@ -141,7 +141,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		free(query);
 	
 		// payments accounting and invoices writing
-		query = strdup("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, (lastname || ' ' || users.name) AS name, address, zip, city, nip, pesel, phone1 AS phone  FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND ((period = 0 AND at = %monthday) OR (period = 1 AND at = %weekday) OR (period = 2 AND at = %yearday)) ORDER BY userid, value DESC");
+		query = strdup("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname), users.name AS name, address, zip, city, nip, pesel, phone1 AS phone  FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND ((period = 0 AND at = %monthday) OR (period = 1 AND at = %weekday) OR (period = 2 AND at = %yearday)) ORDER BY userid, value DESC");
 		g->str_replace(&query, "%monthday", monthday);
 		g->str_replace(&query, "%weekday", weekday);
 		g->str_replace(&query, "%yearday", yearday);
@@ -170,9 +170,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 					
 						if( last_userid != atoi(g->db_get_data(res,i,"userid")) ) {
 							// prepare insert to 'invoices' table
-							insert_inv = strdup("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, finished) VALUES (%number, %customerid, '%name', '%address', '%zip', '%city', '%phone', '%nip', '%pesel', %cdate, 14, 1 )");
+							insert_inv = strdup("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, finished) VALUES (%number, %customerid, '$lastname %name', '%address', '%zip', '%city', '%phone', '%nip', '%pesel', %cdate, 14, 1 )");
 							g->str_replace(&insert_inv, "%number", itoa(++number));
 							g->str_replace(&insert_inv, "%customerid", g->db_get_data(res,i,"userid"));				
+							g->str_replace(&insert_inv, "%lastname", g->db_get_data(res,i,"lastname"));
 							g->str_replace(&insert_inv, "%name", g->db_get_data(res,i,"name"));
 							g->str_replace(&insert_inv, "%address", g->db_get_data(res,i,"address"));
 							g->str_replace(&insert_inv, "%zip", g->db_get_data(res,i,"zip"));
