@@ -23,7 +23,7 @@
 			<B>Warto¶æ (z³):</B> 
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[value]" VALUE="{$tariffadd.value}" {tip trigger="value"}>
+			<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[value]" VALUE="{$tariffadd.value}" {tip text="Wpisz kwotê" trigger="value"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -34,7 +34,7 @@
 			<B>Stawka podatku (%):</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[taxvalue]" VALUE="{$tariffadd.taxvalue}" {tip trigger="taxvalue"}>
+			<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[taxvalue]" VALUE="{$tariffadd.taxvalue}" {tip text="Podaj stawkê podatku VAT (opcjonalnie)" trigger="taxvalue"}>
 		</TD>
 	</TR>												
 	<TR CLASS="LIGHT">
@@ -45,7 +45,7 @@
 			<B>PKWiU:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[sww]" VALUE="{$tariffadd.sww}" {tip trigger="sww"}>
+			<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[pkwiu]" VALUE="{$tariffadd.pkwiu}" {tip text="Podaj symbol PKWiU (opcjonalnie)" trigger="pkwiu"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -56,7 +56,7 @@
 			<B>Uprate (kb/s):</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<INPUT TYPE="TEXT" NAME="tariffadd[uprate]" SIZE="8" VALUE="{$tariffadd.uprate|default:" "}" {tip trigger="uprate"}>
+			<INPUT TYPE="TEXT" NAME="tariffadd[uprate]" SIZE="8" VALUE="{$tariffadd.uprate|default:" "}" {tip text="Podaj liczbê dla ograniczenia uploadu (opcjonalnie)" trigger="uprate"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">			
@@ -67,7 +67,7 @@
 			<B>Dowrate (kb/s):</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<INPUT TYPE="TEXT" NAME="tariffadd[downrate]" SIZE="8" VALUE="{$tariffadd.downrate|default:" "}" {tip trigger="downrate"}>
+			<INPUT TYPE="TEXT" NAME="tariffadd[downrate]" SIZE="8" VALUE="{$tariffadd.downrate|default:" "}" {tip text="Podaj liczbê dla ograniczenia downloadu (opcjonalnie)" trigger="downrate"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -78,7 +78,7 @@
 			<B>Opis:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<TEXTAREA NAME="tariffadd[description]" COLS="50" ROWS="5">{$tariffadd.description}</TEXTAREA>
+			<TEXTAREA NAME="tariffadd[description]" COLS="50" ROWS="5" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>{$tariffadd.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
