@@ -1,7 +1,7 @@
 <?
 
 /*
- * LMS version 1.0-cvs
+ * LMS version 1.3-cvs
  *
  *  (C) Copyright 2001-2003 LMS Developers
  *
@@ -24,13 +24,13 @@
  *  $Id$
  */
 
+include_once("class.php");
 
 $loginform = $_POST[loginform];
 $login = $loginform[login];
 $passwd = $loginform[pwd];
 
-
-$id = $LMS->GetUserIDByPhone1AndPIN($login, $passwd);
+$id = $LMS->DB->GetOne('SELECT id FROM users WHERE phone1 = ? AND pin = ?', array($login, $passwd));
 
 $SMARTY->assign("user",$LMS->GetUser($id));
 $SMARTY->assign("userinfo",$LMS->GetUser($id));
