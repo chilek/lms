@@ -1976,16 +1976,18 @@ class LMS
 	function AddBalance($addbalance)
 	{
 		$this->SetTS('cash');
+		$addbalance['value'] = str_replace(',','.',round($addbalance['value'],2));
+		$addbalance['taxvalue'] = $addbalance['taxvalue']!='' ? str_replace(',','.',round($addbalance['taxvalue'],2)) : '';
 		if($addbalance['time'])
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['adminid'] ? $addbalance['adminid'] : $this->SESSION->id), $addbalance['type'], round($addbalance['value'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['adminid'] ? $addbalance['adminid'] : $this->SESSION->id), $addbalance['type'], $addbalance['value'], $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['adminid'] ? $addbalance['adminid'] : $this->SESSION->id), $addbalance['type'], round($addbalance['value'],2), round($addbalance['taxvalue'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['adminid'] ? $addbalance['adminid'] : $this->SESSION->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 		else
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?)', array( ($addbalance['adminid'] ? $addbalance['adminid'] : $this->SESSION->id), $addbalance['type'], round($addbalance['value'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?)', array( ($addbalance['adminid'] ? $addbalance['adminid'] : $this->SESSION->id), $addbalance['type'], $addbalance['value'], $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', array( ($addbalance['adminid'] ? $addbalance['adminid'] : $this->SESSION->id), $addbalance['type'], round($addbalance['value'],2), round($addbalance['taxvalue'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0)  ));
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', array( ($addbalance['adminid'] ? $addbalance['adminid'] : $this->SESSION->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0)  ));
 	}
 
 	function DelBalance($id)
