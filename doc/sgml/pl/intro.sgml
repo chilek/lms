@@ -3,54 +3,41 @@
     <title>Wstêp</title>
 	<sect1 id="about-lms">
 		<title>Czym jest LMS</title>
-		<para>"LMS" jest skrótem od "LAN Management System". Jest to zestaw aplikacji 
-		w PHP, C i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi
-		(popularnie zwanymi Amatorskimi Sieciami Komputerowymi), korzystaj±cych z bazy danych 
-		MySQL, PostgreSQL lub SQLite. G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi 
-		u¿ytkowników na poziomie providera z prawdziwego zdarzenia. Najbardziej podstawowe 
-		cechy LMS to:</para>
+		<para>
+		"LMS" jest zintegrowanym systemem zarz±dzania sieciami przeznaczonym dla
+		ró¿nej wielko¶ci dostawców internetu (ISP).</para>
+		<para>Oprogramowanie to stworzone w PHP, C i Perlu, wspó³pracuj±ce z ró¿nymi bazami
+		danych, sk³ada siê z przyjaznego interfejsu u¿ytkownika (frontend) oraz
+		programów instalowanych na serwerze dostêpowym (backend) udostêpniaj±c
+		nastêpuj±ce funkcjonalno¶ci:</para>
 		<itemizedlist>
   	 	<listitem>
-	 	    	<para>baza danych u¿ytkowników (imiê, nazwisko, adres, numer telefonu, uwagi i inne),</para>
+	 	    	<para>zarz±dzanie dostêpem do internetu (w tym kontrola pasma i statystyki),</para>
 	  	</listitem>
-	  	<listitem>
-	   	    	<para>baza danych komputerów (adres IP, adres MAC),</para>
+  	 	<listitem>
+	 	    	<para>modu³y finansowo-ksiêgowe z fakturowaniem,</para>
 	  	</listitem>
-	  	<listitem>
-	   	    	<para>baza danych sprzêtu sieciowego (nazwa, ilo¶æ portów),</para>
+  	 	<listitem>
+	 	    	<para>korespondencja seryjna i wiadomo¶ci administracyjne do klientów,</para>
 	  	</listitem>
-		<listitem>
-	   	    	<para>generowanie mapy sieci,</para>
+  	 	<listitem>
+	 	    	<para>zarz±dzanie kontami i hostingiem,</para>
 	  	</listitem>
-		<listitem>
-	   	   	 <para>prowadzenie prostego rachunku operacji finansowych oraz stanu funduszów sieci,</para>
+  	 	<listitem>
+	 	    	<para>ewidencja klientów i sprzêtu (mapa sieci),</para>
 	  	</listitem>
-		<listitem>
-	   	   	 <para>zestawienia finansowe, fakturowanie,</para>
+  	 	<listitem>
+	 	    	<para>system obs³ugi zg³oszeñ (helpdesk),</para>
 	  	</listitem>
-	  	<listitem>
-	     		<para>ró¿ne op³aty i taryfy abonamentowe,</para>
+  	 	<listitem>
+	 	    	<para>zarz±dzanie dowolnymi us³ugami,</para>
 	  	</listitem>
-	  	<listitem>
-	   		<para>wysy³anie poczt± elektroniczn± upomnieñ do u¿ytkowników,</para>
+  	 	<listitem>
+	 	    	<para>zarz±dzanie czasem (terminarz),</para>
 	  	</listitem>
-	  	<listitem>
-	   		<para>automatyczne naliczanie op³at miesiêcznych,</para>
+  	 	<listitem>
+	 	    	<para>panel administracyjny dla abonenta.</para>
 	  	</listitem>
-	  	<listitem>
-	   		<para>generowanie praktycznie jakiegokolwiek konfiga na podstawie danych 
-			o komputerach w bazie (przyk³adowe konfigi obejmuj± rc.masq na iptables, 
-			dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i odwrotny, htb),</para>
-	  	</listitem>
-		<listitem>
-			<para>wizualizacja statystyk wykorzystania ³±cza,</para>
-		</listitem>
-		<listitem>
-			<para>system obs³ugi zg³oszeñ (Helpdesk),</para>
-		</listitem>
-		<listitem>
-			<para>terminarz (organizer).</para>
-		</listitem>
 		</itemizedlist>
 		<para>Ca³o¶æ zosta³a wymy¶lona w ramach administracji <ulink url="http://www.netx.waw.pl/">ASK NetX</ulink> 
 		i tam jest nieustannie rozwijana i poddawana testom.</para>
