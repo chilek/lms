@@ -39,10 +39,12 @@
 			<IMG SRC="img/netdev.gif" BORDER="0" ALT="Urz±dzenie sieciowe:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[netdev]">
-				<OPTION VALUE="0"{if ! $nodeinfo.netdev.id} SELECTED{/if}>--- Brak ---</OPTION>
+			<SELECT SIZE="1" NAME="nodeedit[netdev]"  {tip text="Wybierz urz±dzenie sieciowe z listy" trigger="netdev"}>
+				{if ! $nodeinfo.netdev.id}
+				<OPTION VALUE="0" SELECTED>--- Brak ---</OPTION>
+				{/if}
 				{section name="netdev" loop=$netdevices}
-				<OPTION VALUE="{$netdevices[netdev].id}" {if $nodeinfo.netdev.id == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {$netdevices[netdev].producer}{if $netdevice[netdev].location} / {$netdevices[netdev].location}{/if}</OPTION>
+				<OPTION VALUE="{$netdevices[netdev].id}" {if $nodeinfo.netdev.id == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {$netdevices[netdev].producer} / {$netdevices[netdev].location }</OPTION>
 				{/section}
 			</SELECT>
 		</TD>
