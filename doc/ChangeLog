@@ -35,6 +35,8 @@ wersja 1.5.2 (??/??/????):
     tego modu³u wy³±cznie do w³±czania ostrze¿eñ, gruntowna przebudowa (alec)
   - contrib/daemon/cutoff2 - ulepszony cutoff dla zobowi±zañ mies. (alec)
   - contrib/multiip_patch (alec/£.Wojciechowski/M.Adamski)
+  - BTS#0000237: na li¶cie wyboru taryfy w zobowi±zaniach u¿ytkownika pokazujemy
+    warto¶ci uprate, upceil, downrate, downceil (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 
