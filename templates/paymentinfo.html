@@ -16,7 +16,7 @@
 			<IMG SRC="img/creditor.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Wierzyciel:</B>
+			<B>{t}Creditor:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$payment.creditor}
@@ -27,7 +27,7 @@
 			<IMG SRC="img/value.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Warto¶æ:</B> 
+			<B>{t}Value:{/t}</B> 
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$payment.value|money_format} 
@@ -38,7 +38,7 @@
 			<IMG SRC="img/calendar.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Dzieñ naliczenia:</B>
+			<B>{t}Payment day:{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">								
 			{$payment.payday}
@@ -65,9 +65,9 @@
 				<INPUT TYPE="HIDDEN" NAME="addbalance[type]" VALUE="2">
 				<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{$payment.value}">
 				<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$payment.name} / {$payment.creditor}">
-				<A HREF="?m=paymentedit&id={$payment.id}">Edytuj <IMG SRC="img/edit.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
-				<A HREF="?m=paymentlist">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
-				<A HREF="javascript:document.addbalance.submit();">Nalicz <IMG SRC="img/save.gif" ALT="[ Zaksiêguj ]" ALIGN="absmiddle" BORDER="0"></A>
+				<A HREF="?m=paymentedit&id={$payment.id}">{t}Edit{/t} <IMG SRC="img/edit.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+				<A HREF="?m=paymentlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+				<A HREF="javascript:document.addbalance.submit();">{t}Account payment{/t} <IMG SRC="img/save.gif" ALT="" ALIGN="absmiddle" BORDER="0"></A>
 			</FORM></P>
 		</TD>
 	</TR>

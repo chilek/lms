@@ -17,7 +17,7 @@
 			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=lastmodified{if $queuedata.direction eq "asc" && $queuedata.order eq "lastmodified"},desc{/if}">{t}Last modified:{/t}:</A> {if $queuedata.order eq "lastmodified"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD class="frightu" WIDTH="1%" NOWRAP>
-			<B>{t}Summary:{/t} {$queuedata.total|default:"0"}</B>
+			<B>{t}Total:{/t} {$queuedata.total|default:"0"}</B>
 		</TD>
 	</TR>
 	<TR class="DARK">
