@@ -27,6 +27,7 @@ wersja 1.3.4  (??/06/2004):
     usuniêto wiod±ce zero dla kwot mniejszych od 10 (alec)
   - rozliczanie u¿ykowników w rozbiciu na stawki VAT (chilek)
   - mo¿liwo¶æ usuwania transakcji w bilansie u¿ytkowników (chilek)
+  - mo¿liwo¶æ usuwania transakcji w informacji o u¿ytkowniku (chilek)
 
 wersja 1.3.3 Sokar (05/05/2004):
   
