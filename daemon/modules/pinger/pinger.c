@@ -280,7 +280,7 @@ void reload(GLOBAL *g, struct pinger_module *p)
 
 	while( n>1 ) {
 		
-		n = sscanf(netnames, "%s %[a-zA-Z0-9- ]", netname, netnames);
+		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 
 		if( strlen(netname) ) {
 
