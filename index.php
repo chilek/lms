@@ -163,7 +163,7 @@ require_once($_LIB_DIR.'/Session.class.php');
 // test for proper version of Smarty
 
 if(version_compare('2.6.0', $SMARTY->_version) > 0)
-	die('<B>'.trans('Old version of Smarty engine! You must get newest from $0.','<A HREF="http://smarty.php.net/distributions/Smarty-2.6.0.tar.gz">http://smarty.php.net/distributions/Smarty-2.6.0.tar.gz</A>').'</B>');
+	die('<B>'.trans('Old version of Smarty engine! You must get newest from $0.','<A HREF="http://smarty.php.net/distributions/Smarty-2.6.7.tar.gz">http://smarty.php.net/distributions/Smarty-2.6.7.tar.gz</A>').'</B>');
 
 // Initialize Session, Auth and LMS classes
 
