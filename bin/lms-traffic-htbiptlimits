@@ -210,8 +210,8 @@ foreach my $local_dest (@local_dests_list)
 	print OUTFILE "$iptables_binary -t mangle -D FORWARD -d $ip -p tcp --dport $port -j LIMITS >/dev/null 2>&1\n";
 }
 
-print OUTFILE "$iptables_binary -t mangle -F LIMITS
-$iptables_binary -t mangle -X LIMITS
+print OUTFILE "$iptables_binary -t mangle -F LIMITS >/dev/null 2>&1
+$iptables_binary -t mangle -X LIMITS >/dev/null 2>&1
 $iptables_binary -t mangle -N LIMITS
 ";
 
