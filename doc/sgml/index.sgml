@@ -12,21 +12,18 @@
 
 <book lang=pl>
   <bookinfo>
-<mediaobject>
-  <imageobject>
-  <imagedata fileref="images/logo-small.png" format="png">
-  </imageobject>
-  </mediaobject>
     <title>LMS - LAN Management System &version;</title>
+    <mediaobject>
+	<imageobject>
+	    <imagedata fileref="images/logo-small.png" format="png">
+	</imageobject>
+    </mediaobject>
     <corpauthor>The LMS Developers</corpauthor>
     <copyright>
         <year>2003</year>
         <holder> The LMS Developers</holder>
     </copyright>
-  
   </bookinfo>
- 
-  
 <toc></toc>
 
 &rozdzial1;

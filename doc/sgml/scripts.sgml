@@ -18,7 +18,7 @@
 	<screen>
 -C=/plik    po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/lms.ini
 -q          wykonanie skryptu bez wy¶wietlania komunikatów               
--h          pomoc (a w zasadzie to tylko listingu opcji)
+-h          pomoc (a w zasadzie to tylko listing opcji)
 -v          informacja o wersji skryptu</screen>
        </sect1>
        <sect1 id="scripts-list">
@@ -50,6 +50,10 @@
 			<row>
 			<entry>lms-traffic</entry>
 			<entry>Zapis statystyk wykorzystania ³±cza</entry>
+			</row>
+			<row>
+			<entry>lms-traffic-logiptables</entry>
+			<entry>Wspó³praca lms-traffic z iptables</entry>
 			</row>
 			<row>
 			<entry>lms-makearp</entry>
