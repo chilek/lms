@@ -218,7 +218,6 @@ $_LANG['Compacting parameters'] = 'Parametry kompaktowania';
 $_LANG['compressed'] = 'skompresowaną';
 $_LANG['Computer $0 statistics have been removed<BR>'] = 'Dane statystyczne komputera $0 zostały usunięte<BR>';
 $_LANG['Computers found:'] = 'Znalezionych komputerów:';
-$_LANG['Configuration files'] = 'Pliki konfiguracyjne';
 $_LANG['configuration reload'] = 'przeładowanie konfiguracji';
 $_LANG['Configuration Reload'] = 'Przeładowanie konfiguracji';
 $_LANG['Confirm password'] = 'Powtórz hasło';

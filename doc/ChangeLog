@@ -9,6 +9,8 @@ version 1.5.5 (??/??/????):
     in configuration options if we use server_encoding != unicode (alec)
   - contrib/customer_otherip: changed login.html to customerlogin.html because
     of conflict with templates/login.html in Smarty cache (alec)
+  - size reduction of LMS main class, some one-time functions moved to 
+    modules i.e. Mailing(), Traffic() (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
