@@ -172,7 +172,6 @@ $layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['uptime'] = uptime();
 $layout['hostname'] = hostname();
-$layout['faktury'] = (! $_CONFIG['finances']['enable_faktury'] ? '0' : $_CONFIG['finances']['enable_faktury']);
 
 $SMARTY->assign('menu', $LMS->MENU);
 $SMARTY->assign('layout', $layout);
@@ -238,6 +237,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.120  2003/12/01 06:13:37  lukasz
+ * - temporary save, do not touch
+ *
  * Revision 1.119  2003/12/01 04:21:18  lukasz
  * - tsave (nowe faktury)
  * - kosmetyka

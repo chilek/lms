@@ -1176,15 +1176,26 @@ class LMS
 		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, period, at, invoice) VALUES (?, ?, ?, ?, ?)",array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at'], $assignmentdata['invoice']));
 	}
 
-	function GetInvoiceContent($invoiceid,$year)
+	function GetInvoiceContent($invoiceid)
 	{
-		$ystart = mktime(0, 0, 0, 1, 1, $year);
-		$yend = mktime(23, 59, 59, 12, 31, $year);
-		$result['userid'] = $this->DB->GetOne('SELECT userid FROM cash WHERE invoiceid = ? AND time >= ? AND time <= ?', array($invoiceid, $ystart, $yend));
-		$result['userdata'] = $this->GetUser($result['userid']);
-		$result['invoiceid'] = $invoiceid;
-		$result['year'] = $year;
-		$result['content'] = $this->DB->GetAll('SELECT * FROM cash WHERE invoiceid = ? AND time >= ? AND time <= ?', array($invoiceid, $ystart, $yend));
+		$result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, nip, cdate, paytime, finished FROM invoices WHERE id=?',array($invoiceid));
+		$result['content'] = $this->DB->GetAll('SELECT value, taxvalue, content, count, description, tariffid FROM invoicecontents WHERE invoiceid=?',array($invoiceid));
+		foreach($result['content'] as $idx => $row)
+		{
+			$result['content'][$idx]['basevalue'] = sprintf("%0.2f",($row['value'] / (100 + $row['taxvalue']) * 100));
+			$result['content'][$idx]['totalbase'] = $result['content'][$idx]['basevalue'] * $row['count'];
+			$result['content'][$idx]['totaltax'] = $row['value'] - $result['content'][$idx]['basevalue'] * $row['count'];
+			$result['content'][$idx]['total'] = $row['value'] * $row['count'];
+			$result['totalbase'] += $result['content'][$idx]['totalbase'];
+			$result['totaltax'] += $result['content'][$idx]['totaltax'];
+			$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['basevalue'];
+			$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
+			$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
+			$result['taxest'][$row['taxvalue']]['taxvalue'] += $row['taxvalue'];
+			$result['total'] += $result['content'][$idx]['total'];
+			
+		}
+		$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
 		return $result;
 	}
 
@@ -1225,12 +1236,13 @@ class LMS
 	function TariffAdd($tariffdata)
 	{
 		$this->SetTS("tariffs");
-		if($this->DB->Execute("INSERT INTO tariffs (name, description, value, uprate, downrate)
-			VALUES (?, ?, ?, ?, ?)",
+		if($this->DB->Execute("INSERT INTO tariffs (name, description, value, taxvalue, uprate, downrate)
+			VALUES (?, ?, ?, ?, ?, ?)",
 			array(
 				$tariffdata['name'],
 				$tariffdata['description'],
 				$tariffdata['value'],
+				$tariffdata['taxvalue'],
 				$tariffdata['uprate'],
 				$tariffdata['downrate']
 			)
@@ -2251,6 +2263,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.293  2003/12/01 06:13:37  lukasz
+ * - temporary save, do not touch
+ *
  * Revision 1.292  2003/12/01 04:20:17  lukasz
  * - grr, another tsave
  *
