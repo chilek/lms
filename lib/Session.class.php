@@ -54,7 +54,7 @@ class Session {
 		{
 			$this->islogged = TRUE;
 			$this->passwd = 'EMPTY';
-			$this->logname = 'nie zalogowany';
+			$this->logname = _('not logged');
 			$_GET['m'] = 'adminadd';
 			return TRUE;
 		}
@@ -114,7 +114,7 @@ class Session {
 	{
 		if( (time()-$_SESSION['session_timestamp']) > $timeout )
 		{
-			$this->error = "Przekroczy³e¶ limit czasu bezczynno¶ci (".$timeout." sekund).";
+			$this->error = sprintf(_("Exceeded idle time limit (%d sec.)."), $timeout);
 			return FALSE;
 		}
 		else
@@ -133,9 +133,9 @@ class Session {
 		else 
 		{
 			if(isset($this->login))
-				$this->error = "B³êdne has³o lub nazwa u¿ytkownika.";
+				$this->error = _('Wrong password or user name.');
 			else
-				$this->error = "Proszê siê zalogowaæ.";
+				$this->error = _('Log in yourself, please.');
 			return FALSE;
 		}
 	}
