@@ -224,6 +224,19 @@ CREATE TABLE netdevices (
 );
 
 /* ---------------------------------------------------
+	Struktura tabeli netlinks
+----------------------------------------------------*/
+DROP SEQUENCE "netlinks_id_seq";
+CREATE SEQUENCE "netlinks_id_seq";
+DROP TABLE netlinks;
+CREATE TABLE netlinks (
+   id integer default nextval('netlinks_id_seq'::text) NOT NULL,
+   src integer default 0 NOT NULL,
+   dst integer default 0 NOT NULL,
+   PRIMARY KEY  (id)
+);
+
+/* ---------------------------------------------------
     Functions for network address translations
 ------------------------------------------------------*/
 CREATE OR REPLACE FUNCTION inet_ntoa(bigint) RETURNS text AS '
@@ -244,4 +257,5 @@ SELECT
      split_part($1,''.'',3)::int8*256+
      split_part($1,''.'',4)::int8;
 ' LANGUAGE SQL;
+
 
