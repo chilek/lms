@@ -47,7 +47,8 @@ switch($_GET['type'])
 			break;
 			case 4: 
 				$layout['pagetitle'] = 'Lista u¿ytkowników od³±czonych'.($_POST['network'] ? ' od sieci '.$LMS->GetNetworkName($_POST['network']) : '');
-				$userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network']);
+				if($userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network']))
+				{
 				unset($userlist['total']);
 				unset($userlist['state']);
 				unset($userlist['order']);
@@ -58,12 +59,13 @@ switch($_GET['type'])
 				foreach($userlist as $idx => $row)
 					if(!$row['nodeac'])
 						$nuserlist[] = $userlist[$idx];
-						
+				}		
 				$SMARTY->assign('userlist', $nuserlist);
 			break;
 			case 5: 
 				$layout['pagetitle'] = 'Lista u¿ytkowników zad³u¿onych'.($_POST['network'] ? ' w sieci '.$LMS->GetNetworkName($_POST['network']) : '');
-				$userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network']);
+				if($userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network']))
+				{
 				unset($userlist['total']);
 				unset($userlist['state']);
 				unset($userlist['order']);
@@ -74,12 +76,13 @@ switch($_GET['type'])
 				foreach($userlist as $idx => $row)
 					if($row['balance'] < 0)
 						$nuserlist[] = $userlist[$idx];
-				
+				}
 				$SMARTY->assign('userlist', $nuserlist);
 			break;
 			case 6: 
 				$layout['pagetitle'] = 'Lista u¿ytkowników bez komputerów';
-				$userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction']);
+				if($userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction']))
+				{
 				unset($userlist['total']);
 				unset($userlist['state']);
 				unset($userlist['order']);
@@ -90,7 +93,7 @@ switch($_GET['type'])
 				foreach($userlist as $idx => $row)
 					if(! $row['account'])
 						$nuserlist[] = $userlist[$idx];
-				
+				}
 				$SMARTY->assign('userlist', $nuserlist);
 			break;	
 		}		
@@ -129,7 +132,8 @@ switch($_GET['type'])
 			break;
 			case 1:
 				$layout['pagetitle'] = 'Lista komputerów od³±czonych';
-				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']);
+				if($nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']))
+				{
 				unset($nodelist['total']);
 				unset($nodelist['totalon']);
 				unset($nodelist['totaloff']);
@@ -139,12 +143,13 @@ switch($_GET['type'])
 				foreach($nodelist as $idx => $row)
 					if(!$row['access'])
 						$nnodelist[] = $nodelist[$idx];
-				
+				}
 				$SMARTY->assign('nodelist', $nnodelist);
 			break;
 			case 2:
 				$layout['pagetitle'] = 'Lista komputerów pod³±czonych';
-				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']);
+				if($nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']))
+				{
 				unset($nodelist['total']);
 				unset($nodelist['totalon']);
 				unset($nodelist['totaloff']);
@@ -154,7 +159,7 @@ switch($_GET['type'])
 				foreach($nodelist as $idx => $row)
 					if($row['access'])
 						$nnodelist[] = $nodelist[$idx];
-				
+				}
 				$SMARTY->assign('nodelist', $nnodelist);
 			break;
 		}	
@@ -182,7 +187,8 @@ switch($_GET['type'])
 		
 		$layout['pagetitle'] = 'Bilans finansowy '.($admin ? 'dla administratora '.$admin.' ' : '').'za okres '.($from ? ' od '.$from.' ' : '').'do '.$to;
 
-		$balancelist = $LMS->GetBalanceList();
+		if($balancelist = $LMS->GetBalanceList())
+		{
 		unset($balancelist['incomeu']);
 		unset($balancelist['income']);
 		unset($balancelist['uinvoice']);
@@ -211,7 +217,7 @@ switch($_GET['type'])
 			}
 		
 		$listdata['total'] = $listdata['income'] + $listdata['incomeu'] - $listdata['expense'];
-			
+		}	
 		$SMARTY->assign('listdata', $listdata);
 		$SMARTY->assign('balancelist', $bbalancelist);
 		$SMARTY->display('printbalancelist.html');
