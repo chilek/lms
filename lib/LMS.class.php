@@ -1585,7 +1585,7 @@ class LMS
 
 	function CountNetDevLinks($id)
 	{
-		return $this->DB->GetOne("SELECT COUNT(id) FROM netlinks WHERE src = ? OR dst = ?",array($id,$id)) + $this->DB->GetOne("SELECT COUNT(Id) FROM nodes WHERE netdev = ?",array($id));
+		return $this->DB->GetOne("SELECT COUNT(*) FROM netlinks WHERE src = ? OR dst = ?",array($id,$id)) + $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE netdev = ?",array($id));
 	}
 
 	function GetNetDevConnected($id)
@@ -1649,7 +1649,7 @@ class LMS
 
 		if($netdevlist = $this->DB->GetAll("SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices ".($sqlord != "" ? $sqlord." ".$direction : "")))
 			foreach($netdevlist as $idx => $row)
-				$netdevlist[$idx]['takenports'] = $this -> CountNetDevLinks($row['id']);
+				$netdevlist[$idx]['takenports'] = $this->CountNetDevLinks($row['id']);
 
 		$netdevlist['total'] = sizeof($netdevlist);
 		$netdevlist['order'] = $order;
@@ -1947,6 +1947,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.266  2003/10/06 05:33:04  lukasz
+ * - temporary save / lot of fixes
+ *
  * Revision 1.265  2003/10/06 05:17:00  lukasz
  * - to by³o g³upie ;)
  *

@@ -58,6 +58,8 @@ $netdevdata = $_POST[netdev];
 
 if(isset($netdevdata))
 {
+	$netdevdata[id] = $_GET[id];
+
 	if($netdevdata[name] == "")
 		$error[name] = "Pole nazwa nie mo¿e byæ puste!";
 	
@@ -67,6 +69,8 @@ if(isset($netdevdata))
 		header("Location: ?m=netdevinfo&id=".$_GET[id]);
 		die;
 	}
+
+	$edit = TRUE;
 }
 else
 	$netdevdata = $LMS->GetNetDev($_GET[id]);
@@ -98,10 +102,19 @@ $SMARTY->assign("netdevlist",$netdevconnected);
 $SMARTY->assign("netcomplist",$netcomplist);
 $SMARTY->assign("nodelist",$nodelist);
 $SMARTY->assign("restnetdevlist",$netdevlist);
-$SMARTY->display("netdevedit.html");
+
+// chora konstrukcja
+
+if($edit)
+	$SMARTY->display("netdevedit.html");
+else
+	$SMARTY->display("netdevinfo.html");
 
 /*
  * $Log$
+ * Revision 1.9  2003/10/06 05:33:04  lukasz
+ * - temporary save / lot of fixes
+ *
  * Revision 1.8  2003/10/06 04:46:49  lukasz
  * - temp save
  *

@@ -73,8 +73,8 @@ Class LMSDB_common
 
 	function Execute($query, $inputarray = NULL)
 	{
-
 		// wykonuje query sql'owe, jednocze¶nie je parsuj±c
+//		echo $this->_query_parser($query,$inputarray)."<BR>";
 		$this->_driver_execute($this->_query_parser($query,$inputarray));
 		// i zwraca ilo¶æ zmodyfikowanych wierszy
 		return $this->_driver_affected_rows();
@@ -219,6 +219,9 @@ Class LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.18  2003/10/06 05:33:04  lukasz
+ * - temporary save / lot of fixes
+ *
  * Revision 1.17  2003/09/12 22:22:52  alec
  * Execute zwraca ilo¶æ zmodyfikowanych wierszy dla zapytañ UPDATE, DELETE, INSERT
  *
