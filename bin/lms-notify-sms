@@ -35,7 +35,7 @@ my $my_template;
 
 my %options = (
 	"--config-file|C=s"	=>	\$configfile,
-	"--template-file|D=s" =>  \$my_template,
+	"--template-file|D=s"	=>	\$my_template,
 	"--quiet|q"		=>	\$quiet,
 	"--help|h"		=>	\$help,
 	"--version|v"		=>	\$version,
@@ -158,9 +158,14 @@ while (my $row = $dbq->fetchrow_hashref())
 			print STDOUT "$row->{'id'}\t($balance)\t$row->{'lastname'} $row->{'name'}\n";
 		}
 		# is it ok? what should be sms regexp?
-		if($row->{'phone1'} =~ 50{7}[0-9] )
-		if($row->{'phone1'} =~ 60{7}[0-9] )
-		if($row->{'phone1'} =~ 69{7}[0-9] )
+		my $sms_phone_number;
+		if($row->{'phone1'} =~ "[50|60|69][0-9]{7}")
+			$sms_phone_number=$row->{'phone1'};
+		else if ($row->{'phone2'} =~ "[50|60|69][0-9]{7}")
+			$sms_phone_number=$row->{'phone2'};
+		else if ($row->{'phone3'} =~ "[50|60|69][0-9]{7}")
+			$sms_phone_number=$row->{'phone3'};
+		if ($sms_phone_number)
 		{
 			if(!$quiet)
 			{
@@ -171,7 +176,7 @@ while (my $row = $dbq->fetchrow_hashref())
 			$subject =~ s/\%B/$balance/g;
 			{ my $amount = -$balance; $subject =~ s/\%b/$amount/g; } 
 			
-				$sms_to($row->{'phone1'});
+				$sms_to=$sms_phone_number;
 				$sms_data="";
 
 				foreach my $line (@desttempl)
