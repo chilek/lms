@@ -18,7 +18,7 @@ CREATE TABLE admins (
 	failedlogindate integer DEFAULT 0  NOT NULL,
 	failedloginip varchar(16) DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
-	CONSTRAINT login UNIQUE (login)
+	UNIQUE (login)
 );
 
 /* ----------------------------------------------------
@@ -75,8 +75,8 @@ CREATE TABLE networks (
 	dhcpstart varchar(16) 	DEFAULT '' NOT NULL,
 	dhcpend varchar(16) 	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
-	CONSTRAINT name UNIQUE (name),
-	CONSTRAINT address (address)
+	UNIQUE (name),
+	UNIQUE (address)
 );
 
 /* -------------------------------------------------------- 
@@ -99,9 +99,9 @@ CREATE TABLE nodes (
 	access smallint 	DEFAULT 1 NOT NULL,
 	warning smallint 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
-	CONSTRAINT name UNIQUE (name),
-	CONSTRAINT mac UNIQUE (mac),
-	CONSTRAINT ipaddr UNIQUE (ipaddr)
+	UNIQUE (name),
+	UNIQUE (mac),
+	UNIQUE (ipaddr)
 );
 
 /* -------------------------------------------------------- 
@@ -120,7 +120,7 @@ CREATE TABLE tariffs (
 	downrate integer	DEFAULT 0 NOT NULL,
 	description text	DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
-	CONSTRAINT name UNIQUE (name)
+	UNIQUE (name)
 );
 
 /* ---------------------------------------------------------
@@ -185,7 +185,7 @@ DROP TABLE timestamps;
 CREATE TABLE timestamps (
 	time integer 		DEFAULT 0  NOT NULL,
 	tablename varchar(255) 	DEFAULT '' NOT NULL,
-	CONSTRAINT tablename UNIQUE (tablename)
+	UNIQUE (tablename)
 );
 
 /* -------------------------------------------------------- 
@@ -263,7 +263,7 @@ CREATE TABLE netlinks (
 	src integer 		DEFAULT 0 NOT NULL,
 	dst integer 		DEFAULT 0 NOT NULL,
 	PRIMARY KEY  (id),
-	CONSTRAINT link UNIQUE (src, dst)
+	UNIQUE (src, dst)
 );
 
 /* ---------------------------------------------------
@@ -307,8 +307,8 @@ CREATE TABLE rtqueues (
   name varchar(255) 	DEFAULT '' NOT NULL,
   email varchar(255) 	DEFAULT '' NOT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT name UNIQUE (name),
-  CONSTRAINT email UNIQUE (email)
+  UNIQUE (name),
+  UNIQUE (email)
 );
 
 DROP SEQUENCE "rttickets_id_seq";

@@ -24,9 +24,11 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE networks ADD CONSTRAINT name UNIQUE (name)");
-$DB->Execute("ALTER TABLE networks ADD CONSTRAINT address UNIQUE (address)");
-$DB->Execute("ALTER TABLE rtqueues ADD CONSTRAINT email UNIQUE (email)");
+$DB->Execute("BEGIN");
+$DB->Execute("ALTER TABLE networks ADD UNIQUE (name)");
+$DB->Execute("ALTER TABLE networks ADD UNIQUE (address)");
+$DB->Execute("ALTER TABLE rtqueues ADD UNIQUE (email)");
 $DB->Execute("UPDATE dbinfo SET keyvalue='2004031401' WHERE keytype='dbversion'");
+$DB->Execute("COMMIT");
 
 ?>

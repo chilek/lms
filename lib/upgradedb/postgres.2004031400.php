@@ -33,7 +33,7 @@ $DB->Execute("
 	ALTER TABLE admins ALTER lastloginip SET NOT NULL;
 	ALTER TABLE admins ALTER failedloginip SET NOT NULL;
 ");
-$DB->Execute("ALTER TABLE admins ADD CONSTRAINT login UNIQUE (login)");
+$DB->Execute("ALTER TABLE admins ADD UNIQUE (login)");
 
 $DB->Execute("
 	ALTER TABLE invoicecontents ALTER invoiceid SET DEFAULT 0;
@@ -87,7 +87,7 @@ $DB->Execute("
 	UPDATE netdevices SET ports=0 WHERE ports IS NULL;
 	ALTER TABLE netdevices ALTER ports SET NOT NULL;
 ");
-$DB->Execute("ALTER TABLE netlinks ADD CONSTRAINT link UNIQUE (src, dst)");
+$DB->Execute("ALTER TABLE netlinks ADD UNIQUE (src, dst)");
 
 $DB->Execute("
 	ALTER TABLE networks ALTER name SET DEFAULT '';
@@ -124,9 +124,9 @@ $DB->Execute("
 	ALTER TABLE nodes ALTER ipaddr SET DEFAULT 0;
 	ALTER TABLE nodes ALTER creationdate SET DEFAULT 0;
 	ALTER TABLE nodes ALTER creatorid SET DEFAULT 0;
-	ALTER TABLE nodes ADD CONSTRAINT name UNIQUE (name);
-	ALTER TABLE nodes ADD CONSTRAINT mac UNIQUE (mac);	
-	ALTER TABLE nodes ADD CONSTRAINT ipaddr UNIQUE (ipaddr);	
+	ALTER TABLE nodes ADD UNIQUE (name);
+	ALTER TABLE nodes ADD UNIQUE (mac);	
+	ALTER TABLE nodes ADD UNIQUE (ipaddr);	
 ");	
 $DB->Execute("
 	ALTER TABLE payments ALTER description SET DEFAULT '';
@@ -151,9 +151,10 @@ $DB->Execute("
 	ALTER TABLE tariffs ALTER description SET DEFAULT '';
 	UPDATE tariffs SET description='' WHERE description IS NULL;
 	ALTER TABLE tariffs ALTER description SET NOT NULL;	
-	ALTER TABLE tariffs ADD CONSTRAINT name UNIQUE (name);
+	ALTER TABLE tariffs ADD UNIQUE (name);
 ");
-$DB->Execute("ALTER TABLE timestamps ADD CONSTRAINT tablename UNIQUE (tablename)");
+$DB->Execute("ALTER TABLE timestamps ADD UNIQUE (tablename)");
+
 $DB->Execute("
 	ALTER TABLE users ALTER lastname SET DEFAULT '';
 	ALTER TABLE users ALTER name SET DEFAULT '';
