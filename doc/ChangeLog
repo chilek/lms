@@ -8,7 +8,12 @@ wersja 1.1.3 (??/??/2003):
     komputerów i nie widaæ go na li¶cie u¿ytkowników, natomiast w informacji o
     nim jest informacja o tym ¿e u¿ytkownik jest usuniêty, co oczywi¶cie
     wymaga modyfikacji bazy danych: (lukasz)
-    ALTER TABLE users ADD deleted BOOL DEFAULT '0' NOT NULL;
+    MySQL:
+	ALTER TABLE users ADD deleted BOOL DEFAULT '0' NOT NULL;
+    PostgreSQL:
+	ALTER TABLE users ADD deleted int2;
+	ALTER TABLE users ALTER COLUMN deleted SET DEFAULT 0;
+	ALTER TABLE users ALTER COLUMN deleted SET NOT NULL;
     (dla tych co zd±¿yli zrobiæ to na ENUM:
  	ALTER TABLE users CHANGE deleted deleted CHAR(1) DEFAULT 'N' NOT NULL;
 	UPDATE users SET deleted=1 WHERE deleted='Y';
@@ -18,32 +23,42 @@ wersja 1.1.3 (??/??/2003):
   - zmienione 'op³ata ab' na bardziej intuicyjne 'obci±¿enie' (lukasz)
   - zmiana formatu zapisu adresu IP w bazie danych, wymagane upgrejdy bazy
     (lukasz):
-
-  MySQL:
-
-  UPDATE nodes SET ipaddr=INET_ATON(ipaddr);
-  ALTER TABLE nodes CHANGE ipaddr ipaddr INT(16) UNSIGNED NOT NULL;
-
-  PostgreSQL:
-
-  UPDATE nodes SET ipaddr=(split_part(ipaddr,'.',1)::int4*(256^3)+split_part(ipaddr,'.',2)::int4*(256^2)+split_part(ipaddr,'.',3)::int4*256+split_part(ipaddr,'.',4)::int4);
-  ALTER TABLE nodes ADD COLUMN ipaddr2 BIGINT;
-  UPDATE nodes SET ipaddr2 = ipaddr; 
-  ALTER TABLE nodes DROP COLUMN ipaddr;
-  ALTER TABLE nodes RENAME COLUMN ipaddr2 to ipaddr;
-  ALTER TABLE nodes ALTER COLUMN ipaddr set NOT NULL;
+    MySQL:
+        UPDATE nodes SET ipaddr=INET_ATON(ipaddr);
+	ALTER TABLE nodes CHANGE ipaddr ipaddr INT(16) UNSIGNED NOT NULL;
+    PostgreSQL:
+	UPDATE nodes SET ipaddr=(split_part(ipaddr,'.',1)::int4*(256^3)+
+				split_part(ipaddr,'.',2)::int4*(256^2)+
+				split_part(ipaddr,'.',3)::int4*256+
+				split_part(ipaddr,'.',4)::int4);
+	ALTER TABLE nodes ADD ipaddr2 BIGINT;
+	UPDATE nodes SET ipaddr2 = ipaddr; 
+	ALTER TABLE nodes DROP COLUMN ipaddr;
+	ALTER TABLE nodes RENAME COLUMN ipaddr2 to ipaddr;
+	ALTER TABLE nodes ALTER COLUMN ipaddr set NOT NULL;
 
   - zmiana formatu zapisu czy komputer ma dostêp czy te¿ nie - teraz nie ma
     jakiego¶ g³upiego chara ale jest boolean (znaczy siê stary MySQL udaje ¿e
     to boolean i daje tinyint), a co za tym idzie kolejny upgrade (lukasz):
-
-    UPDATE nodes SET access='1' WHERE access='Y';
-    UPDATE nodes SET access='0' WHERE access='N';
-    ALTER TABLE nodes CHANGE access access BOOL NOT NULL DEFAULT '1';
-
+	UPDATE nodes SET access='1' WHERE access='Y';
+	UPDATE nodes SET access='0' WHERE access='N';
+	ALTER TABLE nodes CHANGE access access BOOL NOT NULL DEFAULT '1';
+    a w PostgreSQL pola sa typu int2
+	UPDATE nodes SET access= CASE access WHEN 'Y' THEN '1' ELSE '0' END;
+	ALTER TABLE nodes ADD access2 int2; 
+	UPDATE nodes SET access2 = access::text::int2; 
+	ALTER TABLE nodes DROP COLUMN access;
+	ALTER TABLE nodes RENAME COLUMN access2 TO access;
+	ALTER TABLE nodes ALTER COLUMN access SET NOT NULL;
+	ALTER TABLE nodes ALTER COLUMN access SET DEFAULT 0;
     dodatkowe operacje poprawiaj±ce bazê (zalecane):
-    ALTER TABLE nodes CHANGE ownerid ownerid INT(11) DEFAULT '0' NOT NULL;
-    ALTER TABLE nodes CHANGE mac mac VARCHAR(20) NOT NULL;
+    MySQL:
+	ALTER TABLE nodes CHANGE ownerid ownerid INT(11) DEFAULT '0' NOT NULL;
+	ALTER TABLE nodes CHANGE mac mac VARCHAR(20) NOT NULL;
+    PostgreSQL:
+	ALTER TABLE nodes ALTER COLUMN ownerid SET DEFAULT '0'; 
+	ALTER TABLE nodes ALTER COLUMN mac SET NOT NULL;
+	
   - zoptymalizowany kod do wy¶wietlania du¿ych sieci (lukasz)
   - podawanie dnia naliczania op³aty podczas dodawania usera nic dawa³o
     (lukasz)
