@@ -167,9 +167,10 @@ if($_GET['action'] == 'add' && isset($a))
 	if($a['tariffid']=='')
 		$error['tariffid'] = trans('Tariff not selected!');
 
+	$a['discount'] = str_replace(',','.',$a['discount']);
 	if($a['discount']=='')
 		$a['discount'] = 0;
-	elseif($a['discount']<0 || $a['discount']>99 || !is_numeric($a['discount']))
+	elseif($a['discount']<0 || $a['discount']>99.99 || !is_numeric($a['discount']))
 		$error['discount'] = trans('Wrong discount value!');
 
 	if($a['tariffid']==0)
