@@ -601,8 +601,8 @@ class LMS
 		if($searchargs)
 			$sqlsarg = implode(' AND ',$searchargs);
 
-		if(!isset($state))
-			$state = 3;
+		if($state>3)
+			$state = 0;
 
 		if($userlist = $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, deleted, status, email, phone1, address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 '.($state !=0 ? " AND status = '".$state."'":'').($sqlsarg !='' ? ' AND '.$sqlsarg :'').' GROUP BY users.id, deleted, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info '.($sqlord !='' ? $sqlord.' '.$direction:'')))
 		{
@@ -683,7 +683,7 @@ class LMS
 		
 		if($state == 4) {
 			$deleted = 1;
-			// it is no use usergroup and network filtering
+			// don't use usergroup and network filtering
 			// when user is deleted because we drop group assignments and nodes
 			// in DeleteUser()
 			$network=NULL;
@@ -695,8 +695,8 @@ class LMS
 		$disabled = ($state == 5) ? 1 : 0;
 		$indebted = ($state == 6) ? 1 : 0;
 		
-		if(!isset($state) || $state>3)
-			$state = 3;
+		if($state>3)
+			$state = 0;
 
 		if($network) 
 			$net = $this->GetNetworkParams($network);
