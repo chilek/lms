@@ -134,13 +134,13 @@
 			<A HREF="?m=userinfo&id={$invoice.customerid}">{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}</A>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
-			{cycle print=false}
-			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
-			{if !$invoice.paid}
+				{if !$invoice.paid}
 			<A HREF="javascript:invoicepay({$invoice.id})">
-			<IMG ALIGN="absmiddle" SRC="img/save.gif" ALT="[ Rozlicz ]" BORDER="0" TARGET="_BLANK"></A>
+			<IMG ALIGN="absmiddle" SRC="img/edit.gif" ALT="[ Rozlicz ]" BORDER="0" TARGET="_BLANK"></A>
 			{/if}
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0" TARGET="_BLANK"></A>
+			{cycle print=false}
+			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -213,7 +213,7 @@
 						<A HREF="javascript:prints();">Drukuj <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
 						<A HREF="javascript:prints_org();">Drukuj orygina³y <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
 						<A HREF="javascript:prints_cpy();">Drukuj kopie <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
-						<A HREF="javascript:pays();">Rozlicz <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
+						<A HREF="javascript:pays();">Rozlicz <IMG SRC="img/edit.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
 					</TD>
 				</TR>
 			</TABLE>
@@ -229,5 +229,6 @@ cal1.time_comp = false;
 var cal2 = new calendar(document.forms['page'].elements['to']);
 cal2.time_comp = false;
 var cal3 = new calendar(document.forms['page'].elements['invoicepaydate']);
+cal3.time_comp = false;
 //-->
 </SCRIPT>
