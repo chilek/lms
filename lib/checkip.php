@@ -69,4 +69,11 @@ if($_CONFIG[phpui][allow_from])
 
 }
 
+/*
+ * $Log$
+ * Revision 1.11  2003/08/18 16:57:00  lukasz
+ * - more cvs tags :>
+ *
+ */
+
 ?>

@@ -35,6 +35,9 @@ $SMARTY->assign("layout",$layout);
 $SMARTY->display("welcome.html");
 /*
  * $Log$
+ * Revision 1.24  2003/08/18 16:57:00  lukasz
+ * - more cvs tags :>
+ *
  * Revision 1.23  2003/08/18 16:52:19  lukasz
  * - added CVS Log tags
  *

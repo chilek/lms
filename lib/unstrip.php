@@ -47,4 +47,11 @@ if(get_magic_quotes_gpc())
 
 $_SERVER[REMOTE_ADDR] = str_replace("::ffff:","",$_SERVER[REMOTE_ADDR]);
 
+/*
+ * $Log$
+ * Revision 1.12  2003/08/18 16:57:00  lukasz
+ * - more cvs tags :>
+ *
+ */
+
 ?>
