@@ -21,9 +21,7 @@
 <body marginheight="0" marginwidth="0" bgcolor="#FFFFFF" link="#800000" vlink="#800000" alink="#336600">
 	<DIV ALIGN="CENTER">
 		<CENTER>
-
 			<TABLE WIDTH="750" CELLPADDING="5">
-
 				<TR>
 					<TD COLSPAN="3" CLASS="FBOTTOM">
 						<H1>Informacje o u¿ytkowniku</H1>
@@ -78,10 +76,11 @@
 				{else}
 				<TR>
 					<TD COLSPAN="3" WIDTH="100%" ALIGN="CENTER">
-						<B><FONT COLOR="RED">Pañstwa adres IP nie zosta³ rozpoznany przez system. Proszê siê upewniæ i¿ korzystaj± Pañstwo z komputera pod³±czonego do naszej sieci, oraz i¿ nie korzystaj± Pañstwo z serwerów proxy. Informacje o Pañstwa saldzie dostêpne s± jedynie z Pañstwa domowego komputera.</FONT></B>
+						<FONT COLOR="RED"><H5>Pañstwa adres IP nie zosta³ rozpoznany przez system. Proszê siê upewniæ i¿ korzystaj± Pañstwo z komputera pod³±czonego do naszej sieci, oraz i¿ nie korzystaj± Pañstwo z serwerów proxy. Informacje o Pañstwa saldzie dostêpne s± jedynie z Pañstwa domowego komputera.</H5></FONT>
 					</TD>
 				</TR>
 				{/if}
+				{if $balance}
 				<TR>
 					<TD COLSPAN="3" ALIGN="CENTER">
 						<B>Bilans finansowy:</B>
@@ -107,7 +106,7 @@
 									<FONT COLOR="#FFFFFF"><B>Saldo po:</B></FONT>
 								</TD>
 								<TD>
-									<FONT COLOR="#FFFFFF"><B>Komentarz</B></FONT>
+									<FONT COLOR="#FFFFFF"><B>Komentarz:</B></FONT>
 								</TD>
 							</TR>
 							{section name=b loop=$balance.id}
@@ -145,11 +144,7 @@
 						</TABLE>
 					</TD>
 				</TR>
-				<TR>
-					<TD COLSPAN="3">
-						&nbsp;
-					</TD>
-				</TR>
+				{/if}				
 				<TR>
 					<TD COLSPAN="3" CLASS="FBOTTOM">
 						&nbsp;

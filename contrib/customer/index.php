@@ -3,7 +3,7 @@
 /*
  * LMS version 1.5-cvs
  *
- *  (C) Copyright 2001-2003 LMS Developers
+ *  (C) Copyright 2001-2004 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -150,9 +150,12 @@ header('X-Powered-By: LMS/'.$layout[lmsv]);
 
 $_SERVER[REMOTE_ADDR] = str_replace("::ffff:","",$_SERVER[REMOTE_ADDR]);
 
-$userid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER[REMOTE_ADDR]));
-$balance = $LMS->GetUserBalanceList($userid);
-$userinfo = $LMS->GetUser($userid);
+
+if($userid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER[REMOTE_ADDR])))
+{
+	$balance = $LMS->GetUserBalanceList($userid);
+	$userinfo = $LMS->GetUser($userid);
+}
 
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("balance",$balance);
