@@ -35,6 +35,7 @@ $layout['pagetitle'] = 'Podgl±d kolejki '.$LMS->GetQueueName($_GET['id']);
 $queue = $LMS->GetQueueContent($_GET['id']);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('layout', $layout);
-$SMARTY->display('rtviewqueue.html');
+$SMARTY->display('rtqueueview.html');
+?><PRE><?
 print_r($queue);
 ?>
