@@ -24,15 +24,34 @@
  *  $Id$
  */
 
-function GetConfigList()
+function GetConfigList($order='var,asc')
 {
 	global $LMS;
-	$config = $LMS->DB->GetAll('SELECT id, section, var, value, description, disabled FROM uiconfig ORDER BY section, var');
+
+	list($order,$direction) = explode(',',$order);
+
+	($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+
+	switch($order)
+	{
+		case 'section':
+			$sqlord = " ORDER BY section $direction, var";
+		break;
+		default:
+			$sqlord = " ORDER BY var $direction";
+		break;
+	}
+
+	$config = $LMS->DB->GetAll('SELECT id, section, var, value, description, disabled FROM uiconfig'.$sqlord);
+
 	$config['total'] = sizeof($config);
+	$config['order'] = $order;
+	$config['direction'] = $direction;
+
 	return $config;
 }
 
-$layout['pagetitle'] = 'Konfiguracja LMS-UI';
+$layout['pagetitle'] = 'Konfiguracja interfejsu';
 
 if(!isset($_GET['o']))
 	$o = $_SESSION['clo'];
@@ -43,7 +62,7 @@ $_SESSION['clo'] = $o;
 if (isset($_SESSION['clp']) && !isset($_GET['page']))
 	$_GET['page'] = $_SESSION['clp'];
 
-$configlist = GetConfigList();
+$configlist = GetConfigList($o);
 $listdata['total'] = $configlist['total'];
 $listdata['order'] = $configlist['order'];
 $listdata['direction'] = $configlist['direction'];

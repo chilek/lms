@@ -5,8 +5,8 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD width="1%" class="fleftu" NOWRAP>
-			<IMG src="img/settings.gif" alt="" align="absmiddle"><B> Opcja:</B><BR>
-			<IMG src="img/empty.gif" alt="" align="absmiddle" width="16" height="16"> Sekcja:
+			<IMG src="img/settings.gif" alt="" align="absmiddle"><A href="?m=configlist&o=var{if $listdata.direction eq "asc" && $listdata.order eq "var"},desc{/if}"> <B>Nazwa:</B></A> {if $listdata.order eq "var"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<IMG src="img/empty.gif" alt="" align="absmiddle" width="16" height="16"><A href="?m=configlist&o=section{if $listdata.direction eq "asc" && $listdata.order eq "section"},desc{/if}"> Sekcja:</A> {if $listdata.order eq "section"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="center">
 			Warto¶æ:
@@ -68,5 +68,11 @@
 		</TD>
 	</TR>
 	{/if}
+	<TR CLASS="DARK">
+		<TD colspan="3" class="FALL" align="right">
+			<A href="?m=configadd">Dodaj opcjê <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
+		</TD>
+	</TR>
+
 </TABLE></P>
 {include file="footer.html"}

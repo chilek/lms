@@ -49,6 +49,9 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 	case 'balancelist_pagelimit':
 	    $desc = 'Limit wy¶wietlanych pozycji na stronie w li¶cie operacji finansowych. Domy¶lnie: 100';
 	    break;
+	case 'configlist_pagelimit':
+	    $desc = 'Limit wy¶wietlanych pozycji na stronie w li¶cie opcji konfiguracyjnych. Domy¶lnie: 100';
+	    break;
 	case 'invoicelist_pagelimit':
 	    $desc = 'Limit wy¶wietlanych pozycji na stronie w li¶cie faktury. Domy¶lnie: 100';
 	    break;
