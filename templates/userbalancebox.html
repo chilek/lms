@@ -1,4 +1,35 @@
 <!--// $Id$ //-->
+{literal}
+<SCRIPT language=JavaScript>
+	<!--
+
+	function CheckAll()
+	{
+		for (var i=0; i<document.delbalance.elements.length; i++)
+		{
+			var e = document.delbalance.elements[i];
+			if (e.name != 'allbox')
+				e.checked = document.delbalance.allbox.checked;
+		}
+	}
+
+	function CheckAll2()
+	{
+		document.delbalance.allbox.checked = !document.delbalance.allbox.checked;
+		CheckAll();
+	}
+
+	function DeleteMarked()
+	{
+		document.page.action="?m=balancedel";
+		document.page.target="";
+		document.page.submit();
+	}
+
+	//-->
+</SCRIPT>
+{/literal}
+<FORM name="delbalance" method="POST">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fleftu">
@@ -47,6 +78,8 @@
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.invoiceid[balancelist]}
 						<A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>
+						{else}
+						<INPUT STYLE="border-style: none;" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
 						{/if}</nobr>
 					</TD>
 					</TR>
@@ -62,6 +95,14 @@
 					</TD>
 				</TR>
 				{/section}
+				<TR bgcolor="#DFD5BD" title="Usuwanie operacji kasowych">
+					<TD CLASS="ftop" ALIGN="left">
+						<NOBR><A HREF="javascript:DeleteMarked();">Kasuj <IMG SRC="img/delete.gif" BORDER="0" ALT="Kasuj" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+					</TD>
+					<TD CLASS="ftop" ALIGN="right" COLSPAN="8">
+						<NOBR><A HREF="javascript:CheckAll2();">Zaznacz wszystkie</A><INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+					</TD>
+				</TR>
 				<TR bgcolor="#DFD5BD" title="Nowa operacja kasowa">
 					<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.userid}">
 						<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
@@ -99,6 +140,7 @@
 		</TD>
 	</TR>
 </TABLE>
+</FORM>
 <SCRIPT><!--
 var cal3 = new calendar(document.forms['addbalance'].elements['addbalance[time]']);
 //--></SCRIPT>
