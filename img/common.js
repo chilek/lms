@@ -129,3 +129,12 @@ function showOrHide(elementslist)
 		part_num += 1;
 	}
 };
+
+timer_now = new Date();
+timer_start = timer_now.getTime();
+
+function getSeconds()
+{
+	var timer_now2 = new Date();
+	return Math.round((timer_now2.getTime() - timer_start)/1000);
+}
