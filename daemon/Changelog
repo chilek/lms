@@ -1,3 +1,6 @@
+* 01.11.2003
+  - mo¿na korzystaæ z instancji (alec)
+
 * 31.10.2003
   - poprawiony b³±d z pustymi warto¶ciami zmiennych konfiguracyjnych (alec)
   - zrobiony nowy ./configure (alec)
