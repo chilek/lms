@@ -78,10 +78,20 @@ Do tego jeszcze ADOdb:
 wget http://phplens.com/lens/dl/adodb290.tgz
 tar -xzf adodb290.tgz
 
-Pozostaje  nam stworzyæ w katalogu z LMS podkatalog templates_c (o ile go nie 
-ma, bo bardzo niewykluczone ¿e pewien pacan pakuj±cy LMS'a zapomni go dodaæ)
-oraz zmieniæ jego w³a¶ciciela na u¿ytkownika z którego uruchominy jest serwer
-www (np. http albo apache). 
+Pozostaje  nam stworzyæ w katalogu z LMS podkatalogi templates_c i backups
+(o ile go nie ma, bo bardzo niewykluczone ¿e pewien pacan pakuj±cy LMS'a zapomni 
+go dodaæ) oraz zmieniæ jego w³a¶ciciela na u¿ytkownika z którego uruchominy jest
+serwer www (np. http albo apache).
+
+***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***
+
+PAMIÊTAJ ¯E JE¯ELI ZOSTAWISZ PODKATALOG BACKUPS W PODKATALOGU LMS'a, DO TWOICH
+BACKUPÓW BÊDZIE MO¯NA SIÊ DOBRAÆ BEZ ¯ADNEJ AUTORYZACJI!!!
+
+Najlepiej ustawiæ katalog z backupami np. na /var/backup/lms lub co¶, gdzie
+serwer WWW nie ma dostêpu!!!
+
+***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***
 
 Voila. Teraz
 przygotujmy  serwer  MySQL.  Wejd¼  do  katalogu w którym masz LMS'a i uruchom
