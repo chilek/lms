@@ -51,7 +51,14 @@ if(isset($message))
 		$message['mailfrom'] = '';
 		$message['userid'] = 0;
 		$message['inreplyto'] = ($reply['id'] ? $reply['id'] : 0);
-		$LMS->MessageAdd($message);
+				
+		if($LMS->MessageAdd($message))
+		{
+			if(!$LMS->GetTicketOwner($message['ticketid']))
+				$LMS->SetTicketOwner($message['ticketid']);
+			if(!$LMS->GetTicketState($message['ticketid']))
+				$LMS->SetTicketState($message['ticketid'], 1);
+		}
 
 		if(isset($_GET['mail']))
 		{

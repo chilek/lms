@@ -10,6 +10,9 @@ wersja 1.3.7 (??/??/2004):
     edytowany komputer/adres urz±dzenia (alec/lukas)
   - na mapie dodana informacja (w postaci ró¿nych ikon) o aktywno¶ci
     urz±dzeñ sieciowych (alec/lexx)
+  - podgl±d szczegó³ów wiadomo¶ci Helpdesku (alec)
+  - podczas odpowiadania na zg³oszenie nastêpuje zmiana statusu i w³a¶ciciela
+    je¶li nie by³y wcze¶niej ustawione (alec)
 
 wersja 1.3.6 Osiris (01/09/2004);
 
