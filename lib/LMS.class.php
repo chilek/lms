@@ -444,11 +444,10 @@ class LMS
 
 	function UserAdd($useradd)
 	{
-		$this->SetTS("users");
-
-		if($this->DB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->SESSION->id, $useradd['info'])))
+		if($this->DB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?)",array(ucwords($useradd['name']), $useradd['lastname'], $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->SESSION->id, $useradd['info']))) {
+			$this->SetTS("users");
 			return $this->DB->GetOne("SELECT MAX(id) FROM users");
-		else
+		} else
 			return FALSE;
 	}
 
@@ -464,7 +463,7 @@ class LMS
 	function UserUpdate($userdata)
 	{
 		$this->SetTS("users");
-		return $this->DB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, lastname=?, name=?, deleted=0 WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['pesel'], $this->SESSION->id, $userdata['info'], strtoupper($userdata['lastname']), $userdata['name'], $userdata['id'] ) );
+		return $this->DB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, lastname=UPPER(?), name=?, deleted=0 WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['pesel'], $this->SESSION->id, $userdata['info'], $userdata['lastname'], ucwords($userdata['name']), $userdata['id'] ) );
 	}
 
 	function GetUserNodesNo($id)
@@ -528,7 +527,6 @@ class LMS
 
 	function SearchUserList($order=NULL,$state=NULL,$search=NULL)
 	{
-
 		list($order,$direction)=explode(",",$order);
 
 		($direction != "desc") ? $direction = "asc" : $direction = "desc";
@@ -621,7 +619,6 @@ class LMS
 
 	function GetUserList($order="username,asc",$state=NULL)
 	{
-
 		list($order,$direction)=explode(",",$order);
 
 		($direction != "desc") ? $direction = "asc" : $direction = "desc";
@@ -713,7 +710,6 @@ class LMS
 
 	function GetUserBalanceList($id)
 	{
-
 		// wrapper do starego formatu
 
 		if($talist = $this->DB->GetAll("SELECT id, name FROM admins"))
@@ -883,7 +879,6 @@ class LMS
 
 	function GetNodeList($order="name,asc")
 	{
-
 		if($order=="")
 			$order="name,asc";
 
@@ -2272,6 +2267,11 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.309  2003/12/11 22:52:01  alec
+ * - poprawione kapitalizowanie pliterek w nazwisku (BTS#0000078)
+ * - Warden, mo¿e zrobisz tak w 1.0.x ?
+ * - kosmetyka
+ *
  * Revision 1.308  2003/12/11 20:22:16  alec
  * - GetUnlinkedNodes() zwraca takze ip w formacie x.x.x.x
  *
