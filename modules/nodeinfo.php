@@ -30,8 +30,6 @@ if(!$LMS->NodeExists($_GET[id]))
 	else
 		header("Location: ?m=nodelist");
 
-$layout[pagetitle]="Informacje o komputerze";
-
 $nodeid = $_GET[id];
 $ownerid = $LMS->GetNodeOwner($nodeid);
 $tariffs = $LMS->GetTariffs();
@@ -48,6 +46,8 @@ if(!isset($_GET[ownerid]))
 if($nodeinfo['netdevid'] == 0)
 	$netdevices = $LMS->GetNetDevList();
 
+$layout[pagetitle]="Informacje o komputerze ".$nodeinfo[name];
+
 $SMARTY->assign("netdevices",$netdevices);
 $SMARTY->assign("balancelist",$balancelist);
 $SMARTY->assign("userinfo",$userinfo);
@@ -59,6 +59,9 @@ $SMARTY->display("nodeinfo.html");
 
 /*
  * $Log$
+ * Revision 1.21  2003/09/22 17:47:28  alec
+ * added node name to page title
+ *
  * Revision 1.20  2003/09/19 11:00:03  lukasz
  * - temporary save
  *
