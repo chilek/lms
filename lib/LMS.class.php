@@ -594,82 +594,66 @@ class LMS
 	
 	function GetBalanceList()
 	{
-		if ($_SESSION[timestamps][getbalancelist][cash] != $this->GetTS("cash") || TRUE ||
-			$_SESSION[timestamps][getbalancelist][admins] != $this->GetTS("admins") ||
-			$_SESSION[timestamps][getbalancelist][users] != $this->GetTS("users")
-			
-			)
-		{
-
-			if($rs = $this->ADB->Execute("SELECT id, name FROM admins"))
-				while(!$rs->EOF)
-				{
-					$adminlist[$rs->fields[id]] = $rs->fields[name];
-					$rs->MoveNext();
-				}
-
-			if($rs = $this->ADB->Execute("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
-				while(!$rs->EOF)
-				{
-					$userslist[$rs->fields[id]] = $rs->fields[username];
-					$rs->MoveNext();
-				}
-
-			if($balancelist = $this->ADB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash ORDER BY time ASC"))
+		if($rs = $this->ADB->Execute("SELECT id, name FROM admins"))
+			while(!$rs->EOF)
 			{
-				foreach($balancelist as $idx => $row)
-				{
-					$balancelist[$idx][admin] = $adminlist[$row[adminid]];
-					$balancelist[$idx][value] = $row[value];
-					$balancelist[$idx][username] = $userslist[$row[userid]];
-					if($idx)
-						$balancelist[$idx][before] = $balancelist[$idx-1][after];
-					else
-						$balancelist[$idx][before] = 0;
-						
-					switch($row[type])
-					{
-						case "1":
-							$balancelist[$idx][type] = "przychód";
-							$balancelist[$idx][after] = $balancelist[$idx][before] + $balancelist[$idx][value];
-							$balancelist[income] = $balancelist[income] + $balancelist[$idx][value];
-						break;
-
-						case "2":
-							$balancelist[$idx][type] = "rozchód";
-							$balancelist[$idx][after] = $balancelist[$idx][before] - $balancelist[$idx][value];
-							$balancelist[expense] = $balancelist[expense] + $balancelist[$idx][value];
-						break;
-
-						case "3":
-							$balancelist[$idx][type] = "wp³ata u¿";
-							$balancelist[$idx][after] = $balancelist[$idx][before] + $balancelist[$idx][value];
-							$balancelist[incomeu] = $balancelist[incomeu] + $balancelist[$idx][value];
-						break;
-						case "4":
-							$balancelist[$idx][type] = "obci±¿enie u¿";
-							$balancelist[$idx][after] = $balancelist[$idx][before];
-							$balancelist[uinvoice] = $balancelist[uinvoice] + $balancelist[$idx][value];
-						break;
-						default:
-							$balancelist[$idx][type] = '<FONT COLOR="RED">???</FONT>';
-							$balancelist[$idx][after] = $balancelist[$idx][before];
-						break;
-					}
+				$adminlist[$rs->fields[id]] = $rs->fields[name];
+				$rs->MoveNext();
+			}
+		if($rs = $this->ADB->Execute("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
+			while(!$rs->EOF)
+			{
+				$userslist[$rs->fields[id]] = $rs->fields[username];
+				$rs->MoveNext();
+			}
+		
+		if($balancelist = $this->ADB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash ORDER BY time ASC"))
+		{
+			foreach($balancelist as $idx => $row)
+			{
+				$balancelist[$idx][admin] = $adminlist[$row[adminid]];
+				$balancelist[$idx][value] = $row[value];
+				$balancelist[$idx][username] = $userslist[$row[userid]];
+				if($idx)
+					$balancelist[$idx][before] = $balancelist[$idx-1][after];
+				else
+					$balancelist[$idx][before] = 0;
 					
+				switch($row[type])
+				{
+					case "1":
+						$balancelist[$idx][type] = "przychód";
+						$balancelist[$idx][after] = $balancelist[$idx][before] + $balancelist[$idx][value];
+						$balancelist[income] = $balancelist[income] + $balancelist[$idx][value];
+					break;
+
+					case "2":
+						$balancelist[$idx][type] = "rozchód";
+						$balancelist[$idx][after] = $balancelist[$idx][before] - $balancelist[$idx][value];
+						$balancelist[expense] = $balancelist[expense] + $balancelist[$idx][value];
+					break;
+
+					case "3":
+						$balancelist[$idx][type] = "wp³ata u¿";
+						$balancelist[$idx][after] = $balancelist[$idx][before] + $balancelist[$idx][value];
+						$balancelist[incomeu] = $balancelist[incomeu] + $balancelist[$idx][value];
+					break;
+					case "4":
+						$balancelist[$idx][type] = "obci±¿enie u¿";
+						$balancelist[$idx][after] = $balancelist[$idx][before];
+						$balancelist[uinvoice] = $balancelist[uinvoice] + $balancelist[$idx][value];
+					break;
+					default:
+						$balancelist[$idx][type] = '<FONT COLOR="RED">???</FONT>';
+						$balancelist[$idx][after] = $balancelist[$idx][before];
+					break;
 				}
 				
-				$balancelist[total] = $balancelist[$idx][after];
-
-				$_SESSION[timestamps][getbalancelist][cash] = $this->GetTS("cash");
-				$_SESSION[timestamps][getbalancelist][admins] = $this->GetTS("admins");
-				$_SESSION[timestamps][getbalancelist][users] = $this->GetTS("users");
-				$_SESSION[cache][getbalancelist] = $balancelist;
 			}
-				
-		}else{
-			$balancelist = $_SESSION[cache][getbalancelist];	
-		}
+			
+			$balancelist[total] = $balancelist[$idx][after];
+
+		}	
 
 		return $balancelist;
 	}
@@ -1163,84 +1147,72 @@ class LMS
 	function GetUserBalanceList($id)
 	{
 
+		// wrapper do starego formatu
 	
-		if($_SESSION[timestamps][getuserbalancelist][$id][cash] != $this->GetTS("cash") || 
-		$_SESSION[timestamps][getuserbalancelist][$id][admins] != $this->GetTS("admins")) 
-		{
+		if($talist = $this->ADB->GetAll("SELECT id, name FROM admins"))
+			foreach($talist as $idx => $row)
+				$adminslist[$row[id]] = $row[name];
 
-			// wrapper do starego formatu
-		
-			if($talist = $this->ADB->GetAll("SELECT id, name FROM admins"))
-				foreach($talist as $idx => $row)
-					$adminslist[$row[id]] = $row[name];
+		// wrapper do starego formatu
 
-			// wrapper do starego formatu
-
-			if($tslist = $this->ADB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash WHERE userid=?",array($id)))
-				foreach($tslist as $row)
-					foreach($row as $column => $value)
-						$saldolist[$column][] = $value;
+		if($tslist = $this->ADB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash WHERE userid=?",array($id)))
+			foreach($tslist as $row)
+				foreach($row as $column => $value)
+					$saldolist[$column][] = $value;
 					
 				
-			if(sizeof($saldolist[id]) > 0){
-				foreach($saldolist[id] as $i => $v)
-				{
-					if($i>0) $saldolist[before][$i] = $saldolist[after][$i-1];
-					else $saldolist[before][$i] = 0;
-				
-					$saldolist[adminname][$i] = $adminslist[$saldolist[adminid][$i]];
-					$saldolist[value][$i]=round($saldolist[value][$i],3);	
-
-					if (strlen($saldolist[comment][$i])<3)
-							$saldolist[comment][$i] = $saldolist[name][$i];
-					else
-							$saldolist[comment][$i] =  $saldolist[comment][$i];
-
-					
-					switch ($saldolist[type][$i]){
-
-						case "3":
-							$saldolist[after][$i] = round(($saldolist[before][$i] + $saldolist[value][$i]),4);
-							$saldolist[name][$i] = "Wp³ata";
-//							$saldolist[comment][$i] = "Abonament za".date("Y/m",$saldolist[time][$i]) || $saldolist[comment][$i];
-						break;
-						
-						case "4":
-							$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
-							$saldolist[name][$i] = "Obci±¿enie";
-						break;
-						
-					}
-					
-					$saldolist[date][$i]=date("Y/m/d H:i",$saldolist[time][$i]);
-					if (strlen($saldolist[comment][$i])<3)
-							$saldolist[comment][$i] = $saldolist[name][$i];
-					else
-							$saldolist[comment][$i] =  $saldolist[comment][$i];
-
-				}
-				
-				$saldolist[balance] = $saldolist[after][sizeof($saldolist[id])-1];
-				$saldolist[total] = sizeof($saldolist[id]);
-			
-			}else{
-				$saldolist[balance] = 0;
-			}
-
-			if($saldolist[total])
+		if(sizeof($saldolist[id]) > 0){
+			foreach($saldolist[id] as $i => $v)
 			{
-				foreach($saldolist[value] as $key => $value)
-					$saldolist[value][$key] = $value;
-				foreach($saldolist[after] as $key => $value)
-					$saldolist[after][$key] = $value;
-				foreach($saldolist[before] as $key => $value)
-					$saldolist[before][$key] = $value;
+				if($i>0) $saldolist[before][$i] = $saldolist[after][$i-1];
+				else $saldolist[before][$i] = 0;
+			
+				$saldolist[adminname][$i] = $adminslist[$saldolist[adminid][$i]];
+				$saldolist[value][$i]=round($saldolist[value][$i],3);	
+
+				if (strlen($saldolist[comment][$i])<3)
+					$saldolist[comment][$i] = $saldolist[name][$i];
+				else
+					$saldolist[comment][$i] =  $saldolist[comment][$i];
+
+					
+				switch ($saldolist[type][$i]){
+
+					case "3":
+						$saldolist[after][$i] = round(($saldolist[before][$i] + $saldolist[value][$i]),4);
+						$saldolist[name][$i] = "Wp³ata";
+//						$saldolist[comment][$i] = "Abonament za".date("Y/m",$saldolist[time][$i]) || $saldolist[comment][$i];
+					break;
+						
+					case "4":
+						$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
+						$saldolist[name][$i] = "Obci±¿enie";
+					break;
+						
+				}
+					
+				$saldolist[date][$i]=date("Y/m/d H:i",$saldolist[time][$i]);
+				if (strlen($saldolist[comment][$i])<3)
+					$saldolist[comment][$i] = $saldolist[name][$i];
+				else
+					$saldolist[comment][$i] =  $saldolist[comment][$i];
 			}
-			$_SESSION[timestamps][getuserbalancelist][$id][cash] = $this->GetTS("cash");
-			$_SESSION[timestamps][getuserbalancelist][$id][admins] = $this->GetTS("admins");
-			$_SESSION[cache][getuserbalancelist][$id] = $saldolist;
+				
+			$saldolist[balance] = $saldolist[after][sizeof($saldolist[id])-1];
+			$saldolist[total] = sizeof($saldolist[id]);
+			
 		}else{
-			$saldolist = $_SESSION[cache][getuserbalancelist][$id];
+			$saldolist[balance] = 0;
+		}
+
+		if($saldolist[total])
+		{
+			foreach($saldolist[value] as $key => $value)
+				$saldolist[value][$key] = $value;
+			foreach($saldolist[after] as $key => $value)
+				$saldolist[after][$key] = $value;
+			foreach($saldolist[before] as $key => $value)
+				$saldolist[before][$key] = $value;
 		}
 
 		$saldolist[userid] = $id;
