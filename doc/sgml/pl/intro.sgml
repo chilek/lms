@@ -46,7 +46,10 @@
 			<para>wizualizacja statystyk wykorzystania ³±cza,</para>
 		</listitem>
 		<listitem>
-			<para>system obs³ugi zg³oszeñ (Helpdesk).</para>
+			<para>system obs³ugi zg³oszeñ (Helpdesk),</para>
+		</listitem>
+		<listitem>
+			<para>terminarz (organizer).</para>
 		</listitem>
 		</itemizedlist>
 		<para>Ca³o¶æ zosta³a wymy¶lona w ramach administracji <ulink url="http://www.netx.waw.pl/">ASK NetX</ulink> 
@@ -69,14 +72,14 @@
 			<member><ulink url="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</ulink></member>
 			<member>Krzysztof 'hunter' Drewicz</member>
 			<member><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Król</ulink></member>
-			<member><ulink url="http://www.alec.k27.prv.pl">Aleksander A.L.E.C Machniak</ulink></member>
+			<member><ulink url="http://www.alec.pl">Aleksander A.L.E.C Machniak</ulink></member>
 			</simplelist>
 			</para>
 		</listitem>
 		<listitem>
 			<para>Kod C:
 			<simplelist>
-			<member><ulink url="http://k27.prv.pl/alec">Aleksander 'A.L.E.C' Machniak</ulink></member>
+			<member><ulink url="http://www.alec.pl">Aleksander 'A.L.E.C' Machniak</ulink></member>
 			<member><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Król</ulink></member>
 			</simplelist>
 			</para>
@@ -128,16 +131,16 @@
 			</para>
 		</listitem>
 		<listitem>
-			<para>Support Postgresql i SQLite:
+			<para>Support PostgreSQL i SQLite:
 			<simplelist>
-			<member><ulink url="http://alec.k27.prv.pl">Aleksander 'A.L.E.C' Machniak</ulink></member>
+			<member><ulink url="http://www.alec.pl">Aleksander 'A.L.E.C' Machniak</ulink></member>
 			</simplelist>
 			</para>
 		</listitem>
 		<listitem>
 			<para>Dokumentacja i strona WWW:
 			<simplelist>
-			<member><ulink url="http://alec.k27.prv.pl">Aleksander 'A.L.E.C' Machniak</ulink></member>
+			<member><ulink url="http://www.alec.pl">Aleksander 'A.L.E.C' Machniak</ulink></member>
 			<member><ulink url="http://s.atn.pl">Kuba 'shasta' Jankowski</ulink></member>
 			<member><ulink url="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziêgielewski</ulink></member>
 			<member><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></member>
@@ -156,7 +159,6 @@
 			<member>Krystian 'UFOczek' Kochanowski</member>
 			<member><ulink url="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziêgielewski</ulink></member>
 			<member>Andrzej 'chsh' Gr±dziel</member>
-			<member><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Król</ulink></member>
 			</simplelist>
 			</para>
 		</listitem>
