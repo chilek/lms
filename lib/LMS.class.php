@@ -953,9 +953,11 @@ class LMS
 					$iptable[iplong][] = $row[iplong];
 				}
 				if(is_array($iptable))
+				{
 					array_multisort($iptable[iplong],($direction == "DESC" ? SORT_DESC : SORT_ASC),SORT_NUMERIC,$iptable[idx]);
-				foreach($iptable[idx] as $idx)
-					$nnodelist[] = $nodelist[$idx];
+					foreach($iptable[idx] as $idx)
+				}
+				$nnodelist[] = $nodelist[$idx];
 				$nodelist = $nnodelist;
 			break;
 					
@@ -966,9 +968,11 @@ class LMS
 					$ownertable[owner][] = $row[owner];
 				}
 				if(is_array($ownertable))
+				{
 					array_multisort($ownertable[owner],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable[idx]);
-				foreach($ownertable[idx] as $idx)
-					$nnodelist[] = $nodelist[$idx];
+					foreach($ownertable[idx] as $idx)
+				}
+				$nnodelist[] = $nodelist[$idx];
 				$nodelist = $nnodelist;
 			break;
 		}
