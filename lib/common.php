@@ -309,7 +309,7 @@ function check_mask($mask)
 	$j=0;
 	$maskb=decbin(ip2long($mask));
 	if (strlen($maskb) < 32)
-		return 0;
+		return FALSE;
 	else
 	{
 		while (($maskb[$i] == '1') && ($i<32))
@@ -322,9 +322,9 @@ function check_mask($mask)
 			$j++;
 		}
 		if ($j<32)
-			return 0;
+			return FALSE;
 		else
-			return 1;
+			return TRUE;
 	}
 }
 
@@ -568,40 +568,41 @@ function check_nip($nip)
 		$nip = str_replace('-', '', $nip);
 		$nip = str_replace(' ', '', $nip);
 
-		if (strlen($nip) != 10) return 0;
+		if (strlen($nip) != 10) return FALSE;
 
 		for ($x = 0; $x < 9; $x++) $sum_nb += $steps[$x] * $nip[$x];
 
-		if ($sum_nb % 11 == $nip[9]) return 1;
+		if ($sum_nb % 11 == $nip[9]) return TRUE;
 
-		return 0;
+		return FALSE;
 
 }
 
 function check_pesel($pesel)
-
 {
- // AFAIR This doesn't cover people born after Y2k, they have month+20
- // Be warned.
-
-		if (strlen($pesel) != 11 || !is_numeric($pesel))
-				return 0;
-
-		$steps = array(1, 3, 7, 9, 1, 3, 7, 9, 1, 3);
-
-		for ($x = 0; $x < 10; $x++) {
-				$sum_nb += $steps[$x] * $pesel[$x];
-		}
-
-		$sum_m = 10 - $sum_nb % 10;
-
-		if ($sum_m == 10)
-				$sum_c = 0;
-		else
-				$sum_c = $sum_m;
-		if ($sum_c == $pesel[10])
-				return 1;
-		return 0;
+	// AFAIR This doesn't cover people born after Y2k, they have month+20
+	// Be warned.
+	
+	if (!eregi('^[0-9]{11}$',$pesel))
+		return FALSE;
+	
+	$steps = array(1, 3, 7, 9, 1, 3, 7, 9, 1, 3);
+	
+	for ($x = 0; $x < 10; $x++)
+	{
+		$sum_nb += $steps[$x] * $pesel[$x];
+	}
+	
+	$sum_m = 10 - $sum_nb % 10;
+	
+	if ($sum_m == 10)
+		$sum_c = 0;
+	else
+		$sum_c = $sum_m;
+	
+	if ($sum_c == $pesel[10])
+		return TRUE;
+	return FALSE;
 }
 
 function get_producer($mac)
@@ -901,6 +902,9 @@ function setunits($data)  // for traffic data
 
 /*
  * $Log$
+ * Revision 1.54  2003/12/04 03:03:40  lukasz
+ * - cosmetics
+ *
  * Revision 1.53  2003/10/08 00:05:51  lukasz
  * - lokalizowalna data
  *
