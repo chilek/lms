@@ -1700,6 +1700,7 @@ class LMS
 	
 	function Traffic($from = 0, $to = "?NOW?", $net = 0, $order = "", $limit = 0)
 	{
+	    // period
 	    if (is_array($from))
 		$fromdate = mktime($from[hour],$from[minute],$from[second],$from[month],$from[day],$from[year]);
 	    else $fromdate = $from;
@@ -1707,6 +1708,7 @@ class LMS
 		$todate = mktime($to[hour],$to[minute],$to[second],$to[month],$to[day],$to[year]);
 	    else $todate = $to;
 	    $dt = "( dt >= $fromdate AND dt <= $todate )";
+	    
 	    // nets
 	    if ($net != "allnets")
 		{
@@ -1715,6 +1717,7 @@ class LMS
 	    	$ipto = $params['broadcast']-1;
 		$net = " AND ( ipaddr > $ipfrom AND ipaddr < $ipto )";
 		} else $net = "";
+	    
 	    // order
 	    switch ($order)
 		{
@@ -1722,32 +1725,38 @@ class LMS
 	    	case "download" 	: $order = " ORDER BY download DESC"; 	break;
 	    	case "upload"   	: $order = " ORDER BY upload DESC"; 	break;
 	    	case "name"     	: $order = " ORDER BY name"; 	 		break;
-	    	case "ip"       		: $order = " ORDER BY ipaddr"; 	 		break;
+	    	case "ip"      		: $order = " ORDER BY ipaddr"; 	 		break;
 		}
+	    
 	    // limits
-	    if( $limit > 0 ) $limit = " LIMIT ".$limit;
+	    if( $limit > 0 ) $limit = " LIMIT ".$limit; else $limit = "";
+	    
+	    // join query from parts
 	    $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE $dt $net GROUP BY nodeid, name, ipaddr $order $limit";
 
+	    // get results
 	    if ($traffic = $this->DB->GetAll($query))
 		{
  		foreach ($traffic as $idx => $row)
     			{
    			$traffic[upload][data]		[] = $row[upload];
-    			$traffic[download][data]		[] = $row[download];
+    			$traffic[download][data]	[] = $row[download];
     			$traffic[upload][name]		[] = $row[name];
     			$traffic[download][name]	[] = $row[name];
-    			$traffic[upload][ipaddr]		[] = long2ip($row[ipaddr]);
+    			$traffic[upload][ipaddr]	[] = long2ip($row[ipaddr]);
     			$traffic[download][ipaddr]	[] = long2ip($row[ipaddr]);
-    			$traffic[download][sum] 		+= $row[download];
-    			$traffic[upload][sum] 		+= $row[upload];
+    			$traffic[download][sum][data] 	+= $row[download];
+    			$traffic[upload][sum][data] 	+= $row[upload];
     			}
+		
 		// get maximum data from array
 		$maximum = max($traffic[download][data]);
  		if ($maximum < max($traffic[upload][data]))
 			$maximum = max($traffic[upload][data]);
  		if($maximum == 0)		// do not need divide by zero
 			$maximum = 1;
- 		// make data for bars
+ 		
+		// make data for bars drawing
 		$x = 0;
 		foreach ($traffic[download][data] as $data)
     			{
@@ -1762,15 +1771,21 @@ class LMS
     			list($traffic[upload][data][$x], $traffic[upload][unit][$x]) = setunits($data);
     			$x++;
     			}
- 		list($traffic[download][sum][data], $traffic[download][sum][unit]) = setunits($traffic[download][sum]);
- 		list($traffic[upload][sum][data], $traffic[upload][sum][unit]) = setunits($traffic[download][sum]);
+		
+		//set units for data
+		list($traffic[download][sum][data], $traffic[download][sum][unit]) = setunits($traffic[download][sum][data]);
+ 		list($traffic[upload][sum][data], $traffic[upload][sum][unit]) = setunits($traffic[upload][sum][data]);
 		}
+		
 	    return $traffic;
 	}
 }
 
 /*
  * $Log$
+ * Revision 1.227  2003/09/16 18:35:50  alec
+ * Traffic() modified
+ *
  * Revision 1.226  2003/09/15 20:53:23  alec
  * function setunits for Traffic() added
  *
