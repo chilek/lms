@@ -53,10 +53,17 @@ if(isset($message))
 		$message['inreplyto'] = ($reply['id'] ? $reply['id'] : 0);
 		$LMS->MessageAdd($message);
 
-		// here will be message sending
-		// if(isset($_GET['mail']))
-		//	$LMS->MessageSend($message);
-		
+		if(isset($_GET['mail']))
+		{
+			$message['username'] = $LMS->DB->GetOne('SELECT '.$LMS->DB->Concat('lastname',"' '", 'name').' FROM users WHERE email=?', array($message['destination']));
+			$admin = $LMS->GetAdminInfo($message['adminid']);
+			$queue = $LMS->GetQueueByTicketId($message['ticketid']);
+			$message['sender'] = $admin['name'];
+			$message['from'] = $queue['email'] ? $queue['email'] : $admin['email'];
+			$message['references'] = $reply['messageid'];
+	
+			$LMS->MessageSend($message);
+		}
 		header("Location: ?m=rtticketview&id=".$message['ticketid']);
 		die;
 	}
