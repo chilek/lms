@@ -24,6 +24,7 @@
  *  $Id$
  */
 
+$DB->BeginTrans();
 $DB->Execute("
     CREATE SEQUENCE \"events_id_seq\";
     CREATE TABLE events (
@@ -51,5 +52,7 @@ $DB->Execute("
 $DB->Execute("CREATE INDEX events_date_idx ON events(date)");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005012600', 'dbversion'));
+
+$DB->CommitTrans();
 
 ?>
