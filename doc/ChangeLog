@@ -137,7 +137,14 @@ wersja 1.1.4 (??/??/2003):
 	  PRIMARY KEY  (id)
 	) TYPE=MyISAM;
     PosgreSQL"
-	???
+	CREATE SEQUENCE "netlinks_id_seq";
+	CREATE TABLE netlinks (
+	  id integer default nextval('netlinks_id_seq'::text) NOT NULL,
+	  src integer default 0 NOT NULL,
+	  dst integer default 0 NOT NULL,
+	  PRIMARY KEY  (id)
+	);
+	
 	
 wersja 1.1.3 (29/08/2003):
 
