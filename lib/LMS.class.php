@@ -3055,14 +3055,23 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function TicketUpdate($ticket)
 	{
-		$this->SetTS('rttickets');	
-		return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=? WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['ticketid']));
+		$this->SetTS('rttickets');
+		if($ticket['state']==2)
+			return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, resolvetime=?NOW? WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['ticketid']));
+		else
+		{
+			// check if ticket was resolved, then set resolvetime=0
+			if($this->GetTicketState($ticket['ticketid'])==2)
+				return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=?, resolvetime=0 WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['ticketid']));
+			else
+				return $this->DB->Execute('UPDATE rttickets SET queueid=?, subject=?, state=?, owner=? WHERE id=?', array($ticket['queueid'], $ticket['subject'], $ticket['state'], $ticket['owner'], $ticket['ticketid']));
+		}
 	}
 
 	function GetTicketContents($id)
 	{
 		$ticket = $this->DB->GetRow('
-			SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, userid, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, admins.name AS ownername, createtime, subject 
+			SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, userid, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, admins.name AS ownername, createtime, resolvetime, subject 
 			FROM rttickets 
 			LEFT JOIN rtqueues ON (queueid = rtqueues.id) 
 			LEFT JOIN admins ON (owner = admins.id)
@@ -3081,15 +3090,23 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 //		$ticket['requestoremail'] = ereg_replace('^.* <(.+@.+)>$','\1',$ticket['requestor']);
 //		$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 		$ticket['status'] = $this->rtstates[$ticket['state']];
+		$ticket['uptime'] = uptimef($ticket['resolvetime'] ? $ticket['resolvetime'] - $ticket['createtime'] : time() - $ticket['createtime']);
 		return $ticket;
+	}
+
+	function GetTicketState($id)
+	{
+		return $this->DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($id));
 	}
 
 	function SetTicketState($ticket, $state)
 	{
+		($state==2 ? $resolvetime = time() : $resolvetime = 0);
+			
 		if($this->DB->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticket))) 
-			$this->DB->Execute('UPDATE rttickets SET state=? WHERE id=?', array($state, $ticket));
+			$this->DB->Execute('UPDATE rttickets SET state=?, resolvetime=? WHERE id=?', array($state, $resolvetime, $ticket));
 		else
-			$this->DB->Execute('UPDATE rttickets SET state=?, owner=? WHERE id=?', array($state, $this->SESSION->id, $ticket));
+			$this->DB->Execute('UPDATE rttickets SET state=?, owner=?, resolvetime=? WHERE id=?', array($state, $this->SESSION->id, $resolvetime, $ticket));
 		$this->SetTS('rttickets');
 	}
 
