@@ -412,7 +412,6 @@ class LMS
 
 	function GetNetworkRecord($id)
 	{
-		$DB=$this->DB;
 		$network = $this->ADB->GetRow("SELECT id, name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?",array($id));
 		$network[prefix] = mask2prefix($network[mask]);
 		$network[addresslong] = ip_long($network[address]);
@@ -887,6 +886,10 @@ class LMS
 			{
 				$nodelist[$idx][iplong] = ip_long($row[ipaddr]);
 				$nodelist[$idx][owner] = $usernames[$row[ownerid]];
+				if($row[access]=="Y")
+					$totalon++;
+				else
+					$totaloff++;
 			}			
 		}
 
@@ -916,6 +919,12 @@ class LMS
 				$nodelist = $nnodelist;
 			break;
 		}
+
+		$nodelist[total] = sizeof($nodelist);
+		$nodelist[order] = $order;
+		$nodelist[direction] = $direction;
+		$nodelist[totalon] = $totalon;
+		$nodelist[totaloff] = $totaloff;
 
 		return $nodelist;
 	}
@@ -1028,8 +1037,6 @@ class LMS
 	{
 
 	
-		$DB=$this->DB;
-
 		if($_SESSION[timestamps][getuserbalancelist][$id][cash] != $this->GetTS("cash") || 
 		$_SESSION[timestamps][getuserbalancelist][$id][admins] != $this->GetTS("admins")) 
 		{
@@ -1182,7 +1189,6 @@ class LMS
 
 	function Mailing($mailing)
 	{
-		$DB=$this->DB;
 		$SESSION=$this->SESSION;
 		$emails = $this->GetEmails($mailing[group]);
 	
@@ -1229,31 +1235,32 @@ class LMS
 	function NetworkDelete($id)
 	{
 		$this->SetTS("networks");
-		return $DB->Execute("DELETE FROM networks WHERE id=?",array($id));
+		return $this->ADB->Execute("DELETE FROM networks WHERE id=?",array($id));
 	}
 
 	function GetAdminList()
 	{
-		$DB=$this->DB;
-		$admins=$DB->fetchTable("SELECT `id`, `login`, `name`, `lastlogindate`, `lastloginip` FROM `admins` ORDER BY `login` ASC");
-		$admins[total] = sizeof($admins[id]);
-		if($admins[total])
-			foreach($admins[id] as $key => $value)
+		if($adminslist = $this->ADB->GetAll("SELECT id, login, name, lastlogindate, lastloginip FROM admins ORDER BY login ASC"))
+		{
+			foreach($adminslist as $idx => $row)
 			{
-				if($admins[lastlogindate][$key])
-					$admins[lastlogin][$key] = date("Y/m/d H:i",$admins[lastlogindate][$key]);
+				if($row[lastlogindate])
+					$adminslist[$idx][lastlogin] = date("Y/m/d H:i",$row[lastlogindate]);
 				else
-					$admins[lastlogin][$key] = "-";
-				if(check_ip($admins[lastloginip][$key]))
-					$admins[lastloginhost][$key] = gethostbyaddr($admins[lastloginip][$key]);
+					$adminslist[$idx][lastlogin] = "-";
+
+				if(check_ip($row[lastloginip]))
+					$adminslist[$idx][lastloginhost] = gethostbyaddr($row[lastloginip]);
 				else
 				{
-					$admins[lastloginhost][$key] = "-";
-					$admins[lastloginip][$key] = "-";
+					$adminslist[$idx][lastloginhost] = "-";
+					$adminslist[$idx][lastloginip] = "-";
 				}
-					
 			}
-		return $admins;
+		}
+		
+		$adminslist[total] = sizeof($adminslist);		
+		return $adminslist;
 	}
 
 	function GetAdminIDByLogin($login)
@@ -1326,7 +1333,6 @@ class LMS
 
 	function GetAdminInfo($id)
 	{
-		$DB=$this->DB;
 		if($admininfo = $this->ADB->GetRow("SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip FROM admins WHERE id=?",array($id)))
 		{
 			if($admininfo[lastlogindate])
