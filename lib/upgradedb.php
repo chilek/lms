@@ -34,6 +34,8 @@ define(DBVERSION, '2004090800'); // here should be always the newest version of 
 if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',array('dbversion')))
 	if(DBVERSION > $dbversion)
 	{
+		$lastupgrade = $dbversion;
+		
 		$upgradelist = getdir($_LIB_DIR.'/upgradedb/', '^'.$_DBTYPE.'.[0-9]{10}.php$');
 		if(sizeof($upgradelist))
 			foreach($upgradelist as $upgrade)
@@ -48,12 +50,16 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 		{
 			sort($pendingupgrades);
 			foreach($pendingupgrades as $upgrade)
-			{
+			{	
 				include($_LIB_DIR.'/upgradedb/'.$_DBTYPE.'.'.$upgrade.'.php');
+				if(!sizeof($DB->errors))
+					$lastupgrade = $upgrade;
+				else
+					break;
 			}
 		}
 	}
 
-$layout['dbschversion'] = DBVERSION;
+$layout['dbschversion'] = $lastupgrade ? $lastupgrade : DBVERSION;
 
 ?>

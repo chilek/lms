@@ -32,6 +32,8 @@ wersja 1.5.1 (??/??/????):
   - mo¿liwo¶æ skasowania wiadomo¶ci w widoku zg³oszenia (chilek)
   - poprawiona kwota s³ownie w contrib/formularz_wp³aty (alec)
   - lms-rtparser: poprawione/dodane kodowanie nag³ówków potwierdzenia (alec)
+  - poprawiony auto-upgrade: w przypadku wyst±pienia b³êdu procedura zostaje
+    przerwana (alec)
   
 wersja 1.5.0 Marduk (18/09/2004):
 
