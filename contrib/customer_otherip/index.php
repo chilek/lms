@@ -4,7 +4,7 @@
 <meta name="GENERATOR" content="LMS">
 <meta http-equiv="Content-Language" content="pl">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
-<title>::: Witamy w LMS nitronet.pl :::</title>
+<title>::: Witamy w LMS  :::</title>
 <STYLE type="text/css"><!--
 BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
@@ -74,7 +74,7 @@ W celu sprawdzenia stanu konta, prosimy wypełnić poniższy formularz podając nume
 					<BR>
 					<BR>
 					<BR>
-					<A HREF="http://nitronet.pl"><FONT COLOR="#666666">strona domowa</FONT></A>
+					<A HREF="http://lms.rulez.pl"><FONT COLOR="#666666">strona domowa</FONT></A>
 				</p>
 			</TD>
 		</TR>
