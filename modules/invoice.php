@@ -54,6 +54,10 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	
 	sort($ids);
 	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
+	
+	$count = (strstr($which, '+') ? sizeof($ids)*2 : sizeof($ids));
+	$i=0;
+	
 	foreach($ids as $idx => $invoiceid)
 	{
 		echo '<PRE>';
@@ -62,6 +66,8 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 		$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 		foreach(split('\+', $which) as $type)
 		{
+			$i++;
+			if($i == $count) $invoice['last'] = TRUE;
 			$SMARTY->assign('type',$type);
 			$SMARTY->assign('invoice',$invoice);
 			$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
@@ -82,6 +88,9 @@ elseif($_GET['fetchallinvoices'])
 				array($_GET['from'], $_GET['to']));
 	if(!$ids) die;
 
+	$count = (strstr($which, '+') ? sizeof($ids)*2 : sizeof($ids));
+	$i=0;
+
 	foreach($ids as $idx => $invoiceid)
 	{
 		echo '<PRE>';
@@ -89,6 +98,8 @@ elseif($_GET['fetchallinvoices'])
 		$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 		foreach(split('\+', $which) as $type)
 		{
+			$i++;
+			if($i == $count) $invoice['last'] = TRUE;
 			$SMARTY->assign('type',$type);
 			$SMARTY->assign('invoice',$invoice);
 			$SMARTY->display($LMS->CONFIG['invoices']['template_file']);

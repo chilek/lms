@@ -1,5 +1,10 @@
 $Id$
 
+version 1.5.5 (??/??/????):
+
+  - fixed empty page printing on html invoices when trying to print only 
+    originals or copies (alec)
+
 wersja 1.5.4 Ramius (16/02/2005):
 
   - domy¶lnym jêzykiem interfejsu u¿ytkownika jest angielski (en), wykonano
