@@ -1,9 +1,5 @@
 #include <syslog.h>
-#include <stdio.h>
 #include <sys/ioctl.h>
-#include <arpa/inet.h>
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <linux/if_arp.h>
 #include <features.h>    /* for the glibc version number */
@@ -15,11 +11,7 @@
 #include <linux/if_packet.h>
 #include <linux/if_ether.h>   /* the L2 protocols */
 #endif
-#include <sys/time.h>
-#include <unistd.h>
 #include <errno.h>
-#include <string.h>
-#include <time.h>
 #include <stdlib.h>
 #include <signal.h>
 
