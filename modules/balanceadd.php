@@ -24,11 +24,20 @@
  *  $Id$
  */
 
-$addbalance = $_POST[addbalance];
+$addbalance = $_POST['addbalance'];
 
-$_SESSION[addbc] = $addbalance[comment];
+$_SESSION['addbc'] = $addbalance['comment'];
 
-$addbalance[value] = str_replace(",",".",$addbalance[value]);
+$addbalance['value'] = str_replace(",",".",$addbalance['value']);
+
+if($addbalance['time']) {
+	
+	$date = explode('-',$addbalance['time']);
+	if(checkdate($date[1],$date[0],$date[2]))
+		$addbalance['time'] = mktime(0,0,0,$date[1],$date[0],$date[2]);
+	else
+		unset($addbalance['time']);
+}
 
 if($addbalance[type]=="3"||$addbalance[type]=="4")
 	{
