@@ -5,7 +5,9 @@
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%" NOWRAP>
+			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
 			<B>ID:</B><BR>
+			<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">
 			Data zg³oszenia:
 		</TD>
 		<TD CLASS="fbt" WIDTH="99%">
@@ -19,18 +21,47 @@
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}		
 	{foreach from=$queue item=ticket}
-	<TR {if $ticket.state >= 2}class="BLEND"{/if} bgcolor="{if $ticket.state == 0}#F5F5F5{else}{cycle}{cycle print=false}{/if}" onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{if $ticket.state == 0}#F5F5F5{else}{cycle}{/if}')">
-		<TD CLASS="fleft" NOWRAP onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
+	<TR {if $ticket.state == 2}class="BLEND"{/if} bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD class="fleft" NOWRAP onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
+			{if $ticket.state == 0}
+				<IMG src="img/new.gif" alt="" border="0" align="absmiddle">
+				<FONT style="color: red">
+			{elseif $ticket.state == 1}
+				<IMG src="img/open.gif" alt="" border="0" align="absmiddle">
+			{elseif $ticket.state == 2}
+				<IMG src="img/resolved.gif" alt="" border="0" align="absmiddle">
+			{elseif $ticket.state == 3}
+				<IMG src="img/dead.gif" alt="" border="0" align="absmiddle">
+				<FONT style="color: brown">
+			{/if}
 			<B>{$ticket.id|string_format:"%06d"}</B><BR>
 			{$ticket.createtime|date_format:"%Y/%m/%d, %H:%M:%S"}
+			{if $ticket.state == 0 || $ticket.state == 3}</FONT>{/if}
 		</TD>
 		<TD onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
+			{if $ticket.state == 3}
+				<FONT style="color: brown">
+			{elseif $ticket.state == 0}
+				<FONT style="color: red">
+			{/if}
 			<B>{$ticket.subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B><BR>
-			{$ticket.requestor|escape} &lt;{if $ticket.state < 2}<A HREF="mailto:{$ticket.requestoremail}">{/if}{$ticket.requestoremail}{if $ticket.state < 2}</A>{/if}&gt;<BR>
+			{$ticket.requestor|escape} &lt;{if $ticket.state != 2}<A HREF="mailto:{$ticket.requestoremail}">{/if}{$ticket.requestoremail}{if $ticket.state != 2}</A>{/if}&gt;<BR>
+			{if $ticket.state == 0 || $ticket.state == 3}</FONT>{/if}
 		</TD>
 		<TD CLASS="fright" NOWRAP onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
-			{if $ticket.ownername}{if $ticket.state < 2}<A HREF="?m=admininfo&id={$ticket.ownerid}">{/if}{$ticket.ownername}{if $ticket.stat < 2}</A>{/if}{else}-{/if}</FONT><BR>
-			{$ticket.lastmodfied|date_format:"%Y/%m/%d, %H:%M:%S"|default:"-"}
+			{if $ticket.state == 3}
+				<FONT style="color: brown">
+			{elseif $ticket.state == 0}
+				<FONT style="color: red">
+			{/if}
+			{if $ticket.ownername}
+				{if $ticket.state != 2}
+					<A HREF="?m=admininfo&id={$ticket.ownerid}">
+				{/if}
+				{$ticket.ownername}
+				{if $ticket.stat != 2}</A>{/if}
+			{else}-{/if}<BR>{$ticket.lastmodfied|date_format:"%Y/%m/%d, %H:%M:%S"|default:"-"}
+			{if $ticket.state == 0 || $ticket.state == 3}</FONT>{/if}
 		</TD>
 	</TR>
 	{foreachelse}
