@@ -1572,7 +1572,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 			$nodedata['mac'] = makemac();
 			$nodedata['ownerid'] = $id;
 			$nodedata['access'] = 1;
-			$nodedata['warning'] = '';
+			$nodedata['warning'] = 0;
 			$LMS->NodeAdd($nodedata);
 		}
 		$startip ++;
@@ -1606,7 +1606,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$ip['mac'] = makemac();
 		$ip['name'] = "SWITCH_".$i;
 		$ip['access'] = 1;
-		$ip['warning'] = '';
+		$ip['warning'] = 0;
 		$LMS->NetDevLinkNode($LMS->NodeAdd($ip),$i);		
 		$startip++;
 		if($i>1)
