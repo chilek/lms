@@ -406,10 +406,9 @@ class LMS
 
 	function GetEmails($group, $network=NULL)
 	{
-		
 		if($network) {
 			$net = $this->GetNetworkParams($network);
-			return $this->DB->GetAll('SELECT email, '.$this->DB->Concat('lastname', "' '", 'users.name').' AS username FROM users, nodes WHERE users.id = ownerid AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].") AND deleted = 0 AND email != '' ".($state !=0 ? ' AND status = '.$state :''));
+			return $this->DB->GetAll('SELECT DISTINCT(email), '.$this->DB->Concat('lastname', "' '", 'users.name').' AS username FROM users, nodes WHERE users.id = ownerid AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].") AND deleted = 0 AND email != '' ".($state !=0 ? ' AND status = '.$state :''));
 		} else
 			return $this->DB->GetAll('SELECT email, '.$this->DB->Concat('lastname', "' '", 'users.name')." AS username FROM users WHERE deleted = 0 AND email != '' ".($group !=0 ? "AND status='".$group."'" : ''));
 	}
