@@ -501,21 +501,38 @@ wersja 1.0pre2 (25/12/2002):
 
 wersja 1.0pre1 (24/12/2002):
 
-   - przepisane obiektowo
-   - napisane z wykorzystaniem engine'u template'owego Smarty
-   - dodana opcja mailingu
-   - bardzo fajne sortowanie (tm) :-)
-   - wprowadzone cacheowanie wyników (nawala, ale co¶ tam dzia³a)
+  - przepisane obiektowo
+  - napisane z wykorzystaniem engine'u template'owego Smarty
+  - dodana opcja mailingu
+  - bardzo fajne sortowanie (tm) :-)
+  - wprowadzone cacheowanie wyników (nawala, ale co¶ tam dzia³a)
 
 wersja 0.4:
 
-   - napisana od nowa, ca³kowicie z wykorzystaniem sesji, oraz
-     paru u³atwieñ je¿eli chodzi o SQL'a
-   - dodana mo¿liwo¶æ definicji podsieci, nie ma ju¿
-     konieczno¶ci d³ubania w ¼ród³ach aby zmieniæ ustawienia
-     podsieci
-   - serwer jest konfigurowany poprzez demona w perlu, s³uchaj±cego
-     na sockecie TCP/IP
-   - rozbudowane sortowanie
-   - dane administratorów s± trzymane w bazie danych i nie trzeba
-     rêcznie ustawiaæ hase³ w pliku .htpasswd
+  - napisana od nowa, ca³kowicie z wykorzystaniem sesji, oraz
+    paru u³atwieñ je¿eli chodzi o SQL'a
+  - dodana mo¿liwo¶æ definicji podsieci, nie ma ju¿
+    konieczno¶ci d³ubania w ¼ród³ach aby zmieniæ ustawienia
+    podsieci
+  - serwer jest konfigurowany poprzez demona w perlu, s³uchaj±cego
+    na sockecie TCP/IP
+  - rozbudowane sortowanie
+  - dane administratorów s± trzymane w bazie danych i nie trzeba
+    rêcznie ustawiaæ hase³ w pliku .htpasswd
+
+wersja 0.3:
+   
+  - obs³uga finansów i rozliczeñ u¿ytkowników
+
+wersja 0.2:
+
+  - obs³uga komputerów, generowanie plików od maskarady na iptables i od
+    DHCP
+  - pomoc w wyszukiwaniu mac-adresów poprzez listowanie widocznych adresów w
+    trakcie dodawania
+
+wersja 0.1:
+
+  - autoryzacja oparta o .htpasswd w serwerze www
+  - prosta baza u¿ytkowników zawieraj±ca dane osobowe oraz status
+    u¿ytkowników
