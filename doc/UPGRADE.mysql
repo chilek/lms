@@ -36,7 +36,7 @@ ALTER TABLE nodes CHANGE access access BOOL NOT NULL DEFAULT '1';
 ALTER TABLE nodes CHANGE ownerid ownerid INT(11) DEFAULT '0' NOT NULL;
 ALTER TABLE nodes CHANGE mac mac VARCHAR(20) NOT NULL;
 /* Linki do urz±dzeñ */
-ALTER TABLE nodes ADD netdev INT(11) AFTER modid;
+ALTER TABLE nodes ADD netdev INT(11) NOT NULL DEFAULT '0' AFTER modid;
 
 /* Zmiana zapisu limitu */
 ALTER TABLE tariffs CHANGE uprate uprate INT(11), CHANGE downrate downrate INT(11);
