@@ -27,7 +27,7 @@
 // LMS Class - contains internal LMS database functions used
 // to fetch data like usernames, searching for mac's by ID, etc..
 
-class LMS 
+class LMS
 {
 
 	var $ADB;		// obiekt ADOdb
@@ -41,7 +41,7 @@ class LMS
 		$this->SESSION = $SESSION;
 		$this->DB = $DB;
 	}
-	
+
 	/*
 	 *  Funkcje bazodanowe (backupy, timestampy)
 	 */
@@ -68,7 +68,7 @@ class LMS
 	{
 		return $this->DB->Execute("DELETE FROM timestamps WHERE tablename=?",array($table));
 	}
-	
+
 	function DatabaseList() // zwraca listê kopii baz danych w katalogu z backupami
 	{
 		if ($handle = opendir($this->CONFIG['backup_dir']))
@@ -94,7 +94,7 @@ class LMS
 			array_multisort($dblist['time'],$dblist['size']);
 		$dblist['total'] = sizeof($dblist['time']);
 		return $dblist;
-	}		
+	}
 
 	function DatabaseRecover($dbtime) // wczytuje backup bazy danych o podanym timestampie
 	{
@@ -121,10 +121,10 @@ class LMS
 				$this->DB->Execute($line);
 			}
 		}
-		$this->DB->CommitTrans();		
+		$this->DB->CommitTrans();
 		fclose($file);
 
-		// Okej, zróbmy parê bzdurek db depend :S 
+		// Okej, zróbmy parê bzdurek db depend :S
 		// Postgres sux ! (warden)
 		// Tak, a ³y¿ka na to 'niemo¿liwe' i polecia³a za wann± potr±caj±c bannanem musztardê (lukasz)
 
@@ -136,7 +136,7 @@ class LMS
 					$this->DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
 			break;
 		}
-	}						
+	}
 
 	function DBDump($filename=NULL) // zrzuca bazê danych do pliku
 	{
@@ -169,7 +169,7 @@ class LMS
 		else
 			return FALSE;
 	}
-			
+
 	function DatabaseCreate() // wykonuje zrzut kopii bazy danych
 	{
 		return $this->DBDump($this->CONFIG['backup_dir'].'/lms-'.time().'.sql');
@@ -199,11 +199,11 @@ class LMS
 		else
 			return FALSE;
 	}
-	
+
 	/*
 	 *  Zarz±dzanie kontami administratorów
 	 */
- 	
+
 	function SetAdminPassword($id,$passwd) // ustawia has³o admina o id równym $id na $passwd
 	{
 		$this->SetTS("admins");
@@ -217,7 +217,7 @@ class LMS
 
 	function GetAdminList() // zwraca listê administratorów
 	{
-	    
+
 	    $query = "SELECT id, login, name, lastlogindate, lastloginip FROM admins ORDER BY login ASC";
 	    if($adminslist = $this->DB->GetAll($query))
 		{
@@ -237,8 +237,8 @@ class LMS
 				}
 			}
 		}
-		
-		$adminslist['total'] = sizeof($adminslist);		
+
+		$adminslist['total'] = sizeof($adminslist);
 		return $adminslist;
 	}
 
@@ -260,7 +260,7 @@ class LMS
 	{
 		return $this->DB->Execute("DELETE FROM admins WHERE id=?",array($id));
 	}
-	
+
 	function AdminExists($id) // zwraca TRUE/FALSE zale¿nie od tego czy admin istnieje czy nie
 	{
 		return ($this->DB->GetOne("SELECT * FROM admins WHERE id=?",array($id))?TRUE:FALSE);
@@ -371,7 +371,7 @@ class LMS
 	function UserAdd($useradd)
 	{
 		$this->SetTS("users");
-		
+
 		if($this->DB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['status'], $this->SESSION->id, $useradd['info'])))
 			return $this->DB->GetOne("SELECT MAX(id) FROM users");
 		else
@@ -453,44 +453,44 @@ class LMS
 
 	function SearchUserList($order=NULL,$state=NULL,$search=NULL)
 	{
-	
+
 		list($order,$direction)=explode(",",$order);
 
 		($direction != "desc") ? $direction = "asc" : $direction = "desc";
-		
+
 		switch($order){
-			
+
 			case "phone":
 				$sqlord = "ORDER BY deleted ASC, phone1";
 			break;
-			
+
 			case "id":
 				$sqlord = "ORDER BY deleted ASC, id";
 			break;
-			
+
 			case "address":
 				$sqlord = "ORDER BY deleted ASC, address";
 			break;
-			
+
 			case "email":
 				$sqlord = "ORDER BY deleted ASC, email";
 			break;
-			
+
 			case "balance":
 				$sqlord = "";
 			break;
-			
+
 			case "gg":
 				$sqlord = "ORDER BY deleted ASC, gguin";
 			break;
-			
+
 			case "nip":
 				$sqlord = "ORDER BY deleted ASC, nip";
 			break;
-			
+
 			default:
 				$sqlord = "ORDER BY deleted ASC, ".$this->DB->Concat("UPPER(lastname)","' '","name");
-			break;																			
+			break;
 		}
 
 		if(sizeof($search))
@@ -508,7 +508,7 @@ class LMS
 						$searchargs[] = $key." ?LIKE? ".$value;
 				}
 			}
-		
+
 		if($searchargs)
 			$sqlsarg = implode(" AND ",$searchargs);
 
@@ -534,12 +534,12 @@ class LMS
 					$below = $below + $balance[$value['id']];
 				if($balance[$value['id']] > 0)
 					$over = $over + $balance[$value['id']];
-				
+
 				$userlist[$key]['nodeac'] = $this->GetUserNodesAC($value['id']);
 				$userlist[$key]['tariffvalue'] = $tariffstlist[$value['id']]['value'];
 
 			}
-			
+
 			if($order == "balance")
 			{
 				foreach($userlist as $key => $value)
@@ -547,7 +547,7 @@ class LMS
 					$blst['key'][] = $key;
 					$blst['value'][] = $value['balance'];
 				}
-				
+
 				if($direction=="desc")
 					array_multisort($blst['value'],SORT_NUMERIC,SORT_DESC,$blst['key']);
 				else
@@ -560,7 +560,7 @@ class LMS
 
 				$userlist = $nuserlist;
 			}
-			
+
 			$userlist['total']=sizeof($userlist);
 			$userlist['state']=$state;
 			$userlist['order']=$order;
@@ -570,32 +570,32 @@ class LMS
 		}
 		return $userlist;
 	}
-			
+
 	function GetUserList($order="username,asc",$state=NULL)
 	{
-	
+
 		list($order,$direction)=explode(",",$order);
 
 		($direction != "desc")  ? $direction = "asc" : $direction = "desc";
-		
+
 		switch($order){
-			
+
 			case "phone":
 				$sqlord = "ORDER BY phone1";
 			break;
-			
+
 			case "id":
 				$sqlord = "ORDER BY id";
 			break;
-			
+
 			case "address":
 				$sqlord = "ORDER BY address";
 			break;
-			
+
 			case "email":
 				$sqlord = "ORDER BY email";
 			break;
-			
+
 			case "balance":
 				$sqlord = "";
 			break;
@@ -607,12 +607,12 @@ class LMS
 			case "nip":
 			$sqlord = "ORDER BY nip";
 			break;
-			
+
 			default:
 				$sqlord = "ORDER BY ".$this->DB->Concat("UPPER(lastname)","' '","name");
 			break;
 		}
-		
+
 		if(!isset($state))
 			$state = 3;
 
@@ -625,7 +625,7 @@ class LMS
 			if($blst = $this->DB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
 					foreach($blst as $row)
 							$balance[$row['id']] = $balance[$row['id']] - $row['value'];
-			
+
 			$tariffstlist = $this->DB->GetAllByKey("SELECT users.id AS id, sum(value) AS value FROM users, tariffs, assignments WHERE userid = users.id AND tariffid = tariffs.id GROUP BY id", "id");
 
 			foreach($userlist as $key => $value)
@@ -635,11 +635,11 @@ class LMS
 					$below = $below + $balance[$value['id']];
 				if($balance[$value['id']] > 0)
 					$over = $over + $balance[$value['id']];
-				
+
 				$userlist[$key]['nodeac'] = $this->GetUserNodesAC($value['id']);
 				$userlist[$key]['tariffvalue'] = $tariffstlist[$value['id']]['value'];
 			}
-			
+
 			if($order == "balance")
 			{
 				foreach($userlist as $key => $value)
@@ -647,7 +647,7 @@ class LMS
 					$blst['key'][] = $key;
 					$blst['value'][] = $value['balance'];
 				}
-				
+
 				($direction=="desc") ? array_multisort($blst['value'],SORT_NUMERIC,SORT_DESC,$blst['key']) : array_multisort($blst['value'],SORT_NUMERIC,SORT_ASC,$blst['key']);
 
 				foreach($blst['key'] as $value)
@@ -657,19 +657,19 @@ class LMS
 
 				$userlist = $nuserlist;
 			}
-			
+
 		}
-		
+
 		$userlist['total']=sizeof($userlist);
 		$userlist['state']=$state;
 		$userlist['order']=$order;
 		$userlist['below']=$below;
 		$userlist['over']=$over;
 		$userlist['direction']=$direction;
-				
+
 		return $userlist;
 	}
-			
+
 	function GetUserNodes($id)
 	{
 		if($result = $this->DB->GetAll("SELECT id, name, mac, ipaddr, access FROM nodes WHERE ownerid=? ORDER BY name ASC",array($id))){
@@ -692,7 +692,7 @@ class LMS
 	{
 
 		// wrapper do starego formatu
-	
+
 		if($talist = $this->DB->GetAll("SELECT id, name FROM admins"))
 			foreach($talist as $idx => $row)
 				$adminslist[$row['id']] = $row['name'];
@@ -703,18 +703,18 @@ class LMS
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
-					
-				
+
+
 		if(sizeof($saldolist['id']) > 0){
 			foreach($saldolist['id'] as $i => $v)
 			{
 				($i>0) ? $saldolist['before'][$i] = $saldolist['after'][$i-1] : $saldolist['before'][$i] = 0;
-			
+
 				$saldolist['adminname'][$i] = $adminslist[$saldolist['adminid'][$i]];
-				$saldolist['value'][$i] = round($saldolist['value'][$i],3);	
+				$saldolist['value'][$i] = round($saldolist['value'][$i],3);
 
 				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] =  $saldolist['comment'][$i];
-	
+
 				switch ($saldolist['type'][$i]){
 
 					case "3":
@@ -722,22 +722,22 @@ class LMS
 						$saldolist['name'][$i] = "Wp³ata";
 //						$saldolist['comment'][$i] = "Abonament za".date("Y/m",$saldolist['time'][$i]) || $saldolist['comment'][$i];
 					break;
-						
+
 					case "4":
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
 						$saldolist['name'][$i] = "Obci±¿enie";
 					break;
-						
+
 				}
-					
+
 				$saldolist['date'][$i]=date("Y/m/d H:i",$saldolist['time'][$i]);
 				// nie chce mi sie czytac, ale czy to nie jest pare linii wy¿ej ?
 				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] =  $saldolist['comment'][$i];
 			}
-				
+
 			$saldolist['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
 			$saldolist['total'] = sizeof($saldolist['id']);
-			
+
 		}else{
 			$saldolist['balance'] = 0;
 		}
@@ -801,14 +801,14 @@ class LMS
 	function GetNodeNameByMAC($mac)
 	{
 		return $this->DB->GetOne("SELECT name FROM nodes WHERE mac=?",array($mac));
-	}		
+	}
 
 	function GetNodeIDByIP($ipaddr)
 	{
 		return $this->DB->GetOne("SELECT id FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
 	}
 
-	function GetNodeIDByMAC($mac)	
+	function GetNodeIDByMAC($mac)
 	{
 		return $this->DB->GetOne("SELECT id FROM nodes WHERE mac=?",array($mac));
 	}
@@ -836,7 +836,7 @@ class LMS
 	function GetNodeNameByIP($ipaddr)
 	{
 		return $this->DB->GetOne("SELECT name FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
-		
+
 	}
 
 	function GetNode($id)
@@ -896,7 +896,7 @@ class LMS
 				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
 				($row['access']) ? $totalon++ : $totaloff++;
-			}			
+			}
 		}
 
 		switch($order)
@@ -975,7 +975,7 @@ class LMS
 				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
 				($row['access']) ? $totalon++ : $totaloff++;
-			}			
+			}
 		}
 
 		switch($order)
@@ -1046,7 +1046,7 @@ class LMS
 	{
 		return ($this->DB->GetOne("SELECT * FROM nodes WHERE id=?",array($id))?TRUE:FALSE);
 	}
-	
+
 	function NodeStats()
 	{
 		$result['connected'] = $this->DB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=1");
@@ -1104,7 +1104,7 @@ class LMS
 	{
 		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, period, at) VALUES (?, ?, ?, ?)",array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at']));
 	}
-	
+
 	function GetTariffList()
 	{
 		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
@@ -1124,7 +1124,7 @@ class LMS
 		$tarifflist['total'] = $total;
 
 		return $tarifflist;
-				
+
 	}
 
 	function TariffMove($from, $to)
@@ -1162,10 +1162,10 @@ class LMS
 		$this->SetTS("tariffs");
 		return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, uprate=?, downrate=? WHERE id=?",array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
 	}
-	
+
 	function TariffDelete($id)
 	{
-		 if (!$this->GetUsersWithTariff($id)) 
+		 if (!$this->GetUsersWithTariff($id))
 		 return $this->DB->Execute("DELETE FROM tariffs WHERE id=?",array($id));
 		 else
 		 return FALSE;
@@ -1212,7 +1212,7 @@ class LMS
 	function AddBalance($addbalance)
 	{
 		$this->SetTS("cash");
-		return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment']));	
+		return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment']));
 	}
 	function GetBalanceList()
 	{
@@ -1229,7 +1229,7 @@ class LMS
 					$balancelist[$idx]['before'] = $balancelist[$idx-1]['after'];
 				else
 					$balancelist[$idx]['before'] = 0;
-					
+
 				switch($row['type'])
 				{
 					case "1":
@@ -1259,16 +1259,16 @@ class LMS
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
 					break;
 				}
-				
+
 			}
-			
+
 			$balancelist['total'] = $balancelist[$idx]['after'];
 
-		}	
+		}
 
 		return $balancelist;
 	}
-	
+
 	function ScanNodes()
 	{
 		$networks = $this->GetNetworks();
@@ -1284,10 +1284,10 @@ class LMS
 					$row['mac'] = str_replace("-",":",trim($mac));
 					if(!$this->GetNodeIDByIP($row['ipaddr']) && $row['ipaddr'] && $row['mac'] != "00:00:00:00:00:00")
 						$result[] = $row;
-				}	
+				}
 			}
 		return $result;
-	}								
+	}
 
 	/*
 	 *  Obs³uga rekordów z sieciami
@@ -1296,7 +1296,7 @@ class LMS
 	function NetworkExists($id)
 	{
 		return ($this->DB->GetOne("SELECT * FROM networks WHERE id=?",array($id)) ? TRUE : FALSE);
-	}	
+	}
 
 	function IsIPFree($ip)
 	{
@@ -1310,7 +1310,7 @@ class LMS
 			$prefixlist['id'][] = $i;
 			$prefixlist['value'][] = $i." (".pow(2,32-$i)." adresów)";
 		}
-		
+
 		return $prefixlist;
 	}
 
@@ -1332,7 +1332,7 @@ class LMS
 	}
 
 	function GetNetworkName($id)
-	{	
+	{
 		return $this->DB->GetOne("SELECT name FROM networks WHERE id=?",array($id));
 	}
 
@@ -1354,15 +1354,15 @@ class LMS
 				$netlist[$idx]['addresslong'] = ip_long($row['address']);
 				$netlist[$idx]['prefix'] = mask2prefix($row['mask']);
 			}
-		
+
 		return $netlist;
 	}
-	
+
 	function GetNetworkParams($id)
 	{
 		if($params = $this->DB->GetRow("SELECT * FROM networks WHERE id=?",array($id)))
 		{
-			$params['broadcast'] = ip_long(getbraddr($params['address'],$params['mask']));	
+			$params['broadcast'] = ip_long(getbraddr($params['address'],$params['mask']));
 			$params['address'] = ip_long($params['address']);
 		}
 		return $params;
@@ -1384,7 +1384,7 @@ class LMS
 				$networks['size'] += $row['size'];
 				$networks['assigned'] += $row['assigned'];
 			}
-		
+
 		return $networks;
 	}
 
@@ -1421,12 +1421,12 @@ class LMS
 		$networks = $this->GetNetworks();
 		$cnetaddr = ip_long($network);
 		$cbroadcast = ip_long(getbraddr($network,$mask));
-		
+
 		if($networks = $this->GetNetworks())
 			foreach($networks as $idx => $row)
 			{
 				$broadcast = ip_long(getbraddr($row['address'],$row['mask']));
-				$netaddr = $row['addresslong'];					
+				$netaddr = $row['addresslong'];
 				if($row['id'] != $ignorenet)
 				{
 					if(
@@ -1447,12 +1447,12 @@ class LMS
 							 )
 							)
 						return TRUE;
-					
+
 				}
 			}
 		return FALSE;
 	}
-	
+
 	function NetworkShift($network="0.0.0.0",$mask="0.0.0.0",$shift=0)
 	{
 		$this->SetTS("nodes");
@@ -1465,8 +1465,8 @@ class LMS
 		$this->SetTS("networks");
 		return $this->DB->Execute("UPDATE networks SET name=?, address=?, mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?",array(strtoupper($networkdata['name']),$networkdata['address'],$networkdata['mask'],strtolower($networkdata['interface']),$networkdata['gateway'],$networkdata['dns'],$networkdata['dns2'],$networkdata['domain'],$networkdata['wins'],$networkdata['dhcpstart'],$networkdata['dhcpend'],$networkdata['id']));
 	}
-				
-	
+
+
 	function NetworkCompress($id,$shift=0)
 	{
 		$this->SetTS("nodes");
@@ -1479,7 +1479,7 @@ class LMS
 			{
 				$address ++;
 				$this->DB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array($address,$value));
-			}				
+			}
 		}
 	}
 
@@ -1524,10 +1524,10 @@ class LMS
 		$end = ($network['size'] > $plimit ? $start + $plimit : $network['size']);
 
 		$nodes = $this->DB->GetAllByKey("SELECT id, name, ipaddr, ownerid FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",'ipaddr',array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
-		
+
 		for($i = 0; $i < ($end - $start) ; $i ++)
 		{
-			
+
 			$longip = $network['addresslong'] + $i + $start;
 			$node = $nodes["".$longip.""];
 			$network['nodes']['addresslong'][$i] = $longip;
@@ -1544,9 +1544,9 @@ class LMS
 			if($node['id'])
 				$network['pageassigned'] ++;
 		}
-		
+
 		$network['assigned'] = $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr < ?",array($network['addresslong'], $network['addresslong'] + $network['size']));
-		
+
 		$network['rows'] = ceil(sizeof($network['nodes']['address']) / 4);
 		$network['free'] = $network['size'] - $network['assigned'] - 2;
 		$network['pages'] = ceil($network['size'] / $plimit);
@@ -1560,7 +1560,7 @@ class LMS
 		if($row = $this->DB->GetRow("SELECT address, mask, name FROM networks WHERE id=?",array($id)))
 			foreach($row as $field => $value)
 				$$field = $value;
-	
+
 		for($i=ip_long($address)+1;$i<ip_long(getbraddr($address,$mask));$i++)
 		{
 			$result['addresslong'][] = $i;
@@ -1569,7 +1569,7 @@ class LMS
 			$result['nodename'][] = "";
 			$result['ownerid'][] = 0;
 		}
-		
+
 		if(sizeof($result['address']))
 			if($nodes = $this->DB->GetAll("SELECT name, id, ownerid, ipaddr FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",array(ip_long($address), ip_long(getbraddr($address,$mask)))))
 				foreach($nodes as $node)
@@ -1637,7 +1637,7 @@ class LMS
 		{
 			if($this->CONFIG['debug_email'])
 				echo "<B>Uwaga! Tryb debug (u¿ywam adresu ".$this->CONFIG['debug_email']."</B><BR>";
-				
+
 			foreach($emails as $key => $row)
 			{
 				if($this->CONFIG['debug_email'])
@@ -1660,6 +1660,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.216  2003/09/09 21:19:45  lukasz
+ * - cleanup
+ *
  * Revision 1.215  2003/09/09 20:23:00  lukasz
  * - literówka, czyli Baseciq zna jêz. angielski
  *
