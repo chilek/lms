@@ -39,7 +39,8 @@ CREATE TABLE cash (
   comment VARCHAR(255) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
-  KEY id_2 (id)
+  KEY id_2 (id),
+  INDEX userid (userid)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 

@@ -1,5 +1,14 @@
 $Id$
 
+version 1.2.6 (??/??/2004):
+
+  - in sql scripts added index on 'userid' column in 'cash' table 
+    speeding up queries with joins of 'cash' and 'users' tables (alec)
+    PostgreSQL:
+	CREATE INDEX cash_userid_idx ON cash(userid);
+    MySQL:
+	ALTER TABLE cash ADD INDEX (userid);
+
 version 1.2.5.1 Sha-re (07/09/2004):
 
   - fixed errornous code name

@@ -37,6 +37,7 @@ CREATE TABLE cash (
 	invoiceid integer DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
+CREATE INDEX cash_userid_idx ON cash(userid);
 
 /* -------------------------------------------------------- 
   Struktura tabeli "networks" 

@@ -1,5 +1,15 @@
 $Id$
 
+wersja 1.2.6 (??/??/2004):
+
+  - w skryptach sql'owych dodany index na kolumnie 'userid' w tabeli 'cash' 
+    znacznie przyspieszaj±cy zapytania ze z³±czeniem tabel 'cash' 
+    i 'users', zalecana zmiana (alec)
+    PostgreSQL:
+	CREATE INDEX cash_userid_idx ON cash(userid);
+    MySQL:
+	ALTER TABLE cash ADD INDEX (userid);
+
 wersja 1.2.5.1 Sha-re (07/09/2004):
 
   - poprawiona nazwa kodowa
