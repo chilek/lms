@@ -113,7 +113,7 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 			}				
 		}
 
-		if($nodes = $DB->GetCol("SELECT id FROM nodes WHERE netdev=? ORDER BY name ASC",array($device)))
+		if($nodes = $DB->GetCol("SELECT id FROM nodes WHERE netdev=? AND ownerid>0 ORDER BY name ASC",array($device)))
 		{
 			foreach($nodes as $nodeid)
 			{
