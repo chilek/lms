@@ -22,26 +22,20 @@
 #
 #  $Id$
 
-#TODO - reply to a sender on a new ticket
-
 use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
 use vars qw($configfile $help $version $queue $debug);
 use POSIX qw(strftime);
-use File::Copy;
+#use File::Copy;
 use MIME::Parser;
-use Data::Dumper;
+#use Data::Dumper;
 use Sys::Hostname;
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
 sub basename($) { my @tmp = split '/',$_[0]; return pop @tmp }
-
-my $hostname = hostname || 'example.com';
-
-my $save_path = '/home/admins/baseciq/public_html/devel/lms/bin/attach';
 
 my $_version = '1.3-cvs';
 
@@ -59,7 +53,7 @@ GetOptions(%options);
 if($help)
 {
 	print STDERR <<EOF;
-lms-mgc, version $_version
+lms-rtparser, version $_version
 (C) 2001-2004 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini
@@ -78,7 +72,7 @@ EOF
 if($version)
 {
 	print STDERR <<EOF;
-lms-mgc, version $_version
+lms-rtparser, version $_version
 (C) 2001-2004 LMS Developers
 
 EOF
@@ -90,21 +84,27 @@ if(!$configfile)
 	$configfile = "/etc/lms/lms.ini";
 }
 
-if(! -r $configfile)
-{
-	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
-	exit 1;
-}
+my $hostname = hostname || 'example.com';
 
 my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
+
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
+my $save_path = $ini->val('rt', 'files_dir') || '';
+my $queue = $queue || $ini->val('rt', 'default_queue');
+my $autoreply_from = $ini->val('rt', 'autoreply_from') || "LMS RT System <rt\@$hostname>";
+
+if(!$queue)
+{
+	print STDERR "Fatal error: Queue ID not specified, exiting.\n";
+	exit 1;
+}
 
 # very ugly code, but we really need tempdir..
-# 
 my $tmpdir = (defined $ini->val('rt', 'tmp_dir') && ! ($ini->val('rt', 'tmp_dir') eq '')) || (defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '') ? $ENV{'TMP'} : '/tmp');
 
 my $parser = new MIME::Parser;
@@ -116,6 +116,7 @@ $parser->extract_uuencode(1);
 $parser->output_dir($tmpdir);
 
 my $entity = $parser->parse(\*STDIN);
+
 my $headers = $entity->head;
 my $mh_from = $headers->get('From');
 my $mh_to = $headers->get('To');
@@ -127,14 +128,6 @@ my $mailheaders = $headers->as_string;
 my $body;
 my $mailbody;
 my @attachments;
-
-#chomp $mh_from;
-
-#$mh_from =~ s/^.* (<.+\@.+>)$/\1/g;
-
-#print $mh_from;
-#print "\n";
-#die;
 
 # Taken from pl.comp.lang.perl FAQ - http://www.kt.agh.edu.pl/other/perl/faq/5.html#6
 
@@ -219,20 +212,31 @@ my $row = $dbq->fetchrow_hashref();
 my $timestamp = $row->{'timestamp'};
 
 # before we create new ticket try to find references...
+# no because: somebody would like to make new request while replying 
+# with new subject (without ticketdid)
 
 my $prev_tid = 0;
-$queue = 0 if($queue eq '');
-	
-# TODO - consider using references and In-Reply-To:
-#
-# no because: somebody would like to make new request while replying with new subject (without ticketdid)
+my $inreplytoid = 0;
+my @reftab = split(' ', $mh_references);
+my $lastref = $reftab[scalar(@reftab)-1];
 
-if( $mh_subject =~ /\[RT#[0-9]{6,}\]/ )
+#check 'References'
+$dbq = $dbase->prepare("SELECT id, ticketid FROM rtmessages WHERE messageid = '$lastref'");
+$dbq->execute();
+if($row = $dbq->fetchrow_hashref())
+{
+	$prev_tid = $row->{'ticketid'};
+	$inreplytoid = $row->{'id'};
+}
+
+# check email subject
+if( !$prev_tid && ($mh_subject =~ /\[RT#[0-9]{6,}\]/) )
 {
 	$prev_tid = $mh_subject;
 	$prev_tid =~ s/.*\[RT#([0-9]{6,})\].*/\1/;
 	$prev_tid = sprintf('%d',$prev_tid);
-	$dbq = $dbase->prepare("SELECT * FROM rttickets WHERE id = $prev_tid AND queueid = $queue");
+	
+	$dbq = $dbase->prepare("SELECT id FROM rttickets WHERE id = $prev_tid AND queueid = $queue");
 	$dbq->execute();
 	if(!($row = $dbq->fetchrow_hashref()))
 	{
@@ -242,30 +246,21 @@ if( $mh_subject =~ /\[RT#[0-9]{6,}\]/ )
 
 my $ticket_id;
 my $rt_msgid;
+my $reqcustid = 0;
+my $reqadminid = 0;
+my $fromemail = $mh_from;
+$fromemail =~ s/^.* <(.+\@.+)>$/\1/g;
 
 if(! $prev_tid) # generate new ticket if previous not found
 {
-	my $fromemail = $mh_from;
-	my $reqadminid = 0;
-	my $reqcustid = 0;
-	$fromemail =~ s/^.* <(.+\@.+)>$/\1/g;
-	
-	# find adminid
-	
-#	$dbq = $dbase->prepare("SELECT id FROM admins WHERE email = '$fromemail'");
-#	$dbq->execute();
-#	if(my $row = $dbq->fetchrow_hashref())
-#	{
-#		$reqadminid = $row->{'id'};
-#	}
-
+	# find userid
 	$dbq = $dbase->prepare("SELECT id FROM users WHERE email = '$fromemail'");
 	$dbq->execute();
 	if(my $row = $dbq->fetchrow_hashref())
 	{
 		$reqcustid = $row->{'id'};
 	}
-	
+
 	$dbq = $dbase->prepare("INSERT INTO rttickets (queueid, requestor, userid, subject, createtime) VALUES ($queue, '$mh_from', $reqcustid, '$mh_subject', $timestamp)");
 	$dbq->execute();
 	
@@ -279,19 +274,18 @@ if(! $prev_tid) # generate new ticket if previous not found
 	$dbq->execute();
 
 	# i think that this expr should be enought to fetch id of previously inserted message
-	
 	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $ticket_id AND messageid = '$mh_msgid' AND createtime = $timestamp");
 	$dbq->execute();
 	$row = $dbq->fetchrow_hashref();
 	$rt_msgid = $row->{'id'};	
-	
-	my $replymail = MIME::Entity->build(
+
+        my $replymail = MIME::Entity->build(
 		'Type' => "text/plain",
 		'Charset' => "ISO-8859-2",
-		'From' => "LMS RT System <parser\@netx.waw.pl>",
+		'From' => $autoreply_from,
 		'Encoding' => "quoted-printable",
 		'Subject' => "[RT#".sprintf("%06d",$ticket_id)."] Potwierdzenie przyjêcia zg³oszenia o temacie '".$mh_subject."'",
-		'To' => $mh_replyto,
+		'To' => $mh_replyto || $mh_from,
 		'References' => $mh_references.' '.$mh_msgid,
 		'Data' => [
 			"Uprzejmie informujemy ¿e Pañstwa zg³oszenie zosta³o zarejestrowane w naszym\n",
@@ -306,27 +300,24 @@ if(! $prev_tid) # generate new ticket if previous not found
 		'X-Mailer' => 'LMS/RT v.'.$_version
 	);
 	
-	# TODO - is sendmail via pipe is correct way?
-	
-	open SENDMAIL, "|/usr/lib/sendmail -t -oi -oem"
+	#TODO - is sendmail via pipe is correct way?
+	open SENDMAIL, "|/usr/sbin/sendmail -t -oi -oem"
 		or die "$0: open sendmail: $!\n";
 	$replymail->print(\*SENDMAIL);
 	close SENDMAIL;
 	die "sendmail failed" if ($? >> 255);
-	
 }
 else
 {
-	my @reftab = split(' ',$mh_references);
-	my $lastref = $reftab[(scalar @reftab)-1];
-	my $inreplytoid = 0;
-	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE messageid = '$lastref'");
+	# find adminid
+	$dbq = $dbase->prepare("SELECT id FROM admins WHERE email = '$fromemail'");
 	$dbq->execute();
-	if($row = $dbq->fetchrow_hashref())
+	if(my $row = $dbq->fetchrow_hashref())
 	{
-		$inreplytoid = $row->{'id'};
+		$reqadminid = $row->{'id'};
 	}
-	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, userid, subject, messageid, replyto, headers, body, inreplyto, createtime) VALUES ($prev_tid, '$mh_from', $reqcustid, '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $inreplytoid, $timestamp)");
+
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, userid, adminid, subject, messageid, replyto, headers, body, inreplyto, createtime) VALUES ($prev_tid, '$mh_from', $reqcustid, $reqadminid, '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $inreplytoid, $timestamp)");
 	$dbq->execute();
 	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $prev_tid AND messageid = '$mh_msgid' AND createtime = $timestamp");
 	$dbq->execute();
@@ -334,9 +325,9 @@ else
 	$rt_msgid = $row->{'id'};
 	
 	$ticket_id = $prev_tid;
-	
 }
-if(scalar @attachments)
+
+if(scalar @attachments && $save_path)
 {
 	mkdir($save_path.'/'.sprintf('%06d',$ticket_id));
 	mkdir($save_path.'/'.sprintf('%06d',$ticket_id).'/'.sprintf('%06d',$rt_msgid));
