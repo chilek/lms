@@ -52,6 +52,9 @@ $access[table][6][allow_reg]	= "^(node(add|scan|del|edit|set)|choose(mac|ip))$";
 $access[table][7][name]         = "dostêp do statystyk";
 $access[table][7][allow_reg]    = "^traffic$";
 
+$access[table][8][name]         = "dostêp do korespondencji seryjnej";
+$access[table][8][allow_reg]    = "^(mailing|mailingsend)$";
+
 $access[table][253][name]	= "brak dostêpu do modyfikacji i zak³adania nowych kont administratorów";
 $access[table][253][deny_reg]	= "^(admin(add|del|edit|passwd))$";
 

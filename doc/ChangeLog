@@ -16,8 +16,9 @@ wersja 1.1.8 (??/??/????):
   - dodane sprawdzenie czy wpisano liczbê w polu szybkiego wyszukiwania
     komputera i u¿ytkownika, co zapobiega b³êdowi w zapytaniu do bazy (alec)
   - lms-notify-sms nied³ugo bêdzie mo¿na wysy³aæ smsy z upomnieniami o
-    zaleg³o¶ciach. Wymagany pakiet gnokii.
-  
+    zaleg³o¶ciach. Wymagany pakiet gnokii (hunter)
+  - dodane uprawnienie 'dostêp do korespondencji seryjnej' (alec)
+    
 wersja 1.1.7 Hathor (14/12/2003):
 
   - adresy sieci w bazie trzymamy teraz jako bigint, do przeliczeñ
