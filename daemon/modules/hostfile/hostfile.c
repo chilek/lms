@@ -42,8 +42,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	char *netnames = strdup(hm->networks);	
 	char *netname = strdup(netnames);
 	
-	struct group *gps = (struct group *) malloc(sizeof(struct group));
-	char *groupnames = strdup(hm->groups);	
+	struct group *ugps = (struct group *) malloc(sizeof(struct group));
+	char *groupnames = strdup(hm->usergroups);	
 	char *groupname = strdup(groupnames);
 
 	while( n>1 ) {
@@ -95,9 +95,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 				if(res->nrows) {
 
-			    		gps = (struct group *) realloc(gps, (sizeof(struct group) * (gc+1)));
-					gps[gc].name = strdup(g->db_get_data(res,0,"name"));
-					gps[gc].id = atoi(g->db_get_data(res,0,"id"));
+			    		ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
+					ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
+					ugps[gc].id = atoi(g->db_get_data(res,0,"id"));
 					gc++;
 				}
 	    			g->db_free(res);
@@ -111,9 +111,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 			for(gc=0; gc<res->nrows; gc++) {
 				
-				gps = (struct group*) realloc(gps, (sizeof(struct group) * (gc+1)));
-				gps[gc].name = strdup(g->db_get_data(res,gc,"name"));
-				gps[gc].id = atoi(g->db_get_data(res,gc,"id"));
+				ugps = (struct group*) realloc(ugps, (sizeof(struct group) * (gc+1)));
+				ugps[gc].name = strdup(g->db_get_data(res,gc,"name"));
+				ugps[gc].id = atoi(g->db_get_data(res,gc,"id"));
 			}
 			g->db_free(res);
 		}
@@ -146,19 +146,19 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 						if(nets[j].address == (inet & nets[j].mask)) 
 							break;
 					// groups test
-					if(strlen(hm->groups))
+					if(strlen(hm->usergroups))
 						if( res1 = g->db_pquery("SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"))) {
 							for(k=0; k<res1->nrows; k++) {
 								int groupid = atoi(g->db_get_data(res1, k, "usergroupid"));
 								for(m=0; m<gc; m++) 
-									if(gps[m].id==groupid) 
+									if(ugps[m].id==groupid) 
 										break;
 								if(m!=gc) break;
 							}
 							g->db_free(res1);
 						}
 					
-					if( j!=nc && (m!=gc || (m==gc && !strlen(hm->groups))) ) {
+					if( j!=nc && (m!=gc || (m==gc && !strlen(hm->usergroups))) ) {
 
 						unsigned char *pattern, *s;
 
@@ -201,9 +201,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	free(nets);
 	
 	for(i=0;i<gc;i++) {
-		free(gps[i].name);
+		free(ugps[i].name);
 	}
-	free(gps);
+	free(ugps);
 	
 	free(hm->prefix);
 	free(hm->append);
@@ -212,7 +212,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	free(hm->file);
 	free(hm->command);
 	free(hm->networks);
-	free(hm->groups);
+	free(hm->usergroups);
 }
 
 struct hostfile_module * init(GLOBAL *g, MODULE *m)
@@ -249,8 +249,8 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	hm->command = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":networks");
 	hm->networks = strdup(g->iniparser_getstring(ini, s, ""));
-	free(s); s = g->str_concat(instance, ":groups");
-	hm->groups = strdup(g->iniparser_getstring(ini, s, ""));
+	free(s); s = g->str_concat(instance, ":usergroups");
+	hm->usergroups = strdup(g->iniparser_getstring(ini, s, ""));
 	
 	g->iniparser_freedict(ini);
 	free(instance);

@@ -10,7 +10,7 @@ struct net
 struct group
 {
 	unsigned char *name;
-	 int id;
+	int id;
 };
 
 struct hostfile_module
@@ -24,7 +24,7 @@ struct hostfile_module
 	unsigned char *file;
 	unsigned char *command;
 	unsigned char *networks;
-	unsigned char *groups;
+	unsigned char *usergroups;
 
 	int skip_dev_ips;
 };
