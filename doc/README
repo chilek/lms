@@ -1383,7 +1383,7 @@ Rozdzia³ 4. Skrypty
    lms-payments Naliczanie op³at okresowych (abonamentowych) z
    fakturowaniem
    lms-traffic Zapis statystyk wykorzystania ³±cza
-   lms-traffic-logiptables Wspó³praca lms-traffic z iptables
+   lms-traffic-logiptables Statystyki ³±cza dla iptables
    lms-makearp Tworzenie tablicy ARP (/etc/ethers)
    lms-makedhcpconf Konfiguracja serwera DHCP (/etc/dhcpd.conf)
    lms-makeiptables Konfiguracja firewalla iptables
@@ -1614,13 +1614,9 @@ http://www.naszasiec.pl/
    wys³anych przez ka¿dy komputer z sieci lokalnej, na podstawie
    liczników iptables. Dane sczytuje z firewalla, tworz±c jednocze¶nie
    odpowiednie regu³y. Zatem, nie jest konieczne rêczne tworzenie regu³
-   iptables. Dane zapisywane s± do pliku o formacie wymaganym przez
-   lms-traffic.
+   iptables, ani wywo³ywanie skryptu lms-traffic.
 
    Konfiguracjê nale¿y umie¶ciæ w sekcji [traffic-logiptables]:
-     * logfile
-       Lokalizacja pliku na dane. Domy¶lnie: niezdefiniowana.
-       Przyk³ad: logfile = /var/log/traffic.log
      * outfile
        Lokalizacja skryptu z regu³ami iptables. Domy¶lnie:
        /etc/rc.d/rc.stat
@@ -2376,6 +2372,7 @@ info = "Opcjonalny opis modu³u"
 
    Tabela 6-1. Lista modu³ów demona almsd
    Nazwa Opis
+   system Wywo³ywanie poleceñ pow³oki
    dhcp Konfiguracja serwera dhcpd
    cutoff Od³±czanie u¿ytkowników z zaleg³o¶ciami w op³atach
    dns Konfiguracja serwera dns
@@ -2391,9 +2388,29 @@ info = "Opcjonalny opis modu³u"
    traffic Statystyki wykorzystania ³±cza
      _________________________________________________________________
 
-6.2.2. Payments
+6.2.2. System
 
 6.2.2.1. Opis
+
+   Jedyne co robi ten modu³ to wykonanie zadanego polecenia (listy
+   poleceñ) pow³oki. Mo¿e siê przydaæ gdy chcesz podczas prze³adowania
+   konfiguracji wykonaæ jak±¶ komendê lub uruchomiæ zewnêtrzny skrypt, na
+   przyk³ad jeden z tych, które mo¿esz znale¼æ w katalogu /bin.
+     _________________________________________________________________
+
+6.2.2.2. Konfiguracja
+
+   W zwi±zku z powy¿szym mo¿esz zdefiniowaæ jedynie tre¶æ polecenia.
+   Pow³oka powinna sobie tak¿e poradziæ z list± poleceñ oddzielonych
+   ¶rednikami:
+     * command
+       Polecenie pow³oki. Domy¶lnie: puste.
+       Przyk³ad: command = 'echo "tu modu³ system"'
+     _________________________________________________________________
+
+6.2.3. Payments
+
+6.2.3.1. Opis
 
    Modu³ nalicza op³aty abonamentowe u¿ytkowników oraz op³aty sta³e.
    Nale¿y go uruchamiaæ codziennie. Op³aty naliczane na podstawie
@@ -2404,7 +2421,7 @@ info = "Opcjonalny opis modu³u"
    obci±¿enia u¿ytkowników.
      _________________________________________________________________
 
-6.2.2.2. Konfiguracja
+6.2.3.2. Konfiguracja
 
    Dla tego modu³u s± dostêpne nastêpuj±ce zmienne kofiguracyjne:
      * comment
@@ -2432,9 +2449,9 @@ info = "Opcjonalny opis modu³u"
        Przyk³ad: paytype = 'GOTÓWKA'
      _________________________________________________________________
 
-6.2.3. Notify
+6.2.4. Notify
 
-6.2.3.1. Opis
+6.2.4.1. Opis
 
    Modu³ 'notify' s³u¿y do informowania u¿ytkowników o zaleg³o¶ciach w
    op³atach za pomoc± poczty elektronicznej. Aktualne saldo u¿ytkownika
@@ -2448,12 +2465,12 @@ info = "Opcjonalny opis modu³u"
        u¿ytkownika
      _________________________________________________________________
 
-6.2.3.2. Konfiguracja
+6.2.4.2. Konfiguracja
 
    Poni¿ej przedstawiono dostêpne opcje konfiguracyjne modu³u 'notify':
-     * mailtemplate
+     * template
        Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty
-       Przyk³ad: mailtemplate = modules/notify/sample/mailtemplate
+       Przyk³ad: template = modules/notify/sample/mailtemplate
      * file
        Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/mail
        Przyk³ad: file = /tmp/mail.txt
@@ -2473,9 +2490,9 @@ info = "Opcjonalny opis modu³u"
        Przyk³ad: debug_mail = localhost@moja.net
      _________________________________________________________________
 
-6.2.4. Ggnotify
+6.2.5. Ggnotify
 
-6.2.4.1. Opis
+6.2.5.1. Opis
 
    Odpowiednik modu³u 'notify' s³u¿±cy do wysy³ania wiadomo¶ci gadu-gadu.
    Aktualne saldo u¿ytkownika porównywane jest ze zmienn± 'limit', je¶li
@@ -2488,12 +2505,12 @@ info = "Opcjonalny opis modu³u"
    modules/ggnotify/Makefile przed kompilacj± modu³u.
      _________________________________________________________________
 
-6.2.4.2. Konfiguracja
+6.2.5.2. Konfiguracja
 
    Podobnie jak w 'notify' masz do dyspozycji nastêpuj±ce zmienne:
-     * ggtemplate
+     * template
        Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty.
-       Przyk³ad: ggtemplate = modules/ggnotify/sample/mailtemplate
+       Przyk³ad: template = modules/ggnotify/sample/mailtemplate
      * uin
        Identyfikator gadu-gadu u¿ytkownika wysy³aj±cego wiadomo¶ci.
        Domy¶lnie: pusty.
@@ -2511,9 +2528,9 @@ info = "Opcjonalny opis modu³u"
        Przyk³ad: debug_uin = 7654321
      _________________________________________________________________
 
-6.2.5. Cutoff
+6.2.6. Cutoff
 
-6.2.5.1. Opis
+6.2.6.1. Opis
 
    Cutoff zmienia na 'od³±czony' status komputerów u¿ytkownikom, którzy
    maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ nie
@@ -2523,7 +2540,7 @@ info = "Opcjonalny opis modu³u"
    najlepiej uruchamiaæ codziennie.
      _________________________________________________________________
 
-6.2.5.2. Konfiguracja
+6.2.6.2. Konfiguracja
 
    Modu³ 'cutoff' posiada tylko jeden parametr:
      * limit
@@ -2532,16 +2549,16 @@ info = "Opcjonalny opis modu³u"
        Przyk³ad: limit = -20
      _________________________________________________________________
 
-6.2.6. Dhcp
+6.2.7. Dhcp
 
-6.2.6.1. Opis
+6.2.7.1. Opis
 
    Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
    restartuje us³ugê. Zmienna 'command' umo¿liwia równie¿ wykonywanie
    innych czynno¶ci (programów).
      _________________________________________________________________
 
-6.2.6.2. Konfiguracja
+6.2.7.2. Konfiguracja
 
    Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom pliku
    konfiguracyjnego dhcpd, które w typowych zastosowaniach nie wymagaj±
@@ -2597,9 +2614,9 @@ info = "Opcjonalny opis modu³u"
        %i;}"
      _________________________________________________________________
 
-6.2.7. Hostfile
+6.2.8. Hostfile
 
-6.2.7.1. Opis
+6.2.8.1. Opis
 
    Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ wykonuje
    pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich status
@@ -2609,7 +2626,7 @@ info = "Opcjonalny opis modu³u"
    pliku i nastêpnie wykonuje okre¶lone polecenie pow³oki.
      _________________________________________________________________
 
-6.2.7.2. Konfiguracja
+6.2.8.2. Konfiguracja
 
    W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne
    zmienne, które podczas zapisu do pliku zostan± zast±pione '%i' -
@@ -2656,9 +2673,9 @@ info = "Opcjonalny opis modu³u"
        Przyk³ad: skip_dev_ips = no
      _________________________________________________________________
 
-6.2.8. Traffic
+6.2.9. Traffic
 
-6.2.8.1. Opis
+6.2.9.1. Opis
 
    'Traffic' to odpowiednik perlowego lms-traffic, zapisuj±cy do bazy
    statystyki wykorzystania ³±cza z pliku utworzonego przez u¿ytkownika.
@@ -2667,7 +2684,7 @@ info = "Opcjonalny opis modu³u"
    dotycz±cym lms-traffic.
      _________________________________________________________________
 
-6.2.8.2. Konfiguracja
+6.2.9.2. Konfiguracja
 
    Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:
      * file
@@ -2676,9 +2693,9 @@ info = "Opcjonalny opis modu³u"
        Przyk³ad: file = /tmp/log
      _________________________________________________________________
 
-6.2.9. Tc (HTB)
+6.2.10. Tc (HTB)
 
-6.2.9.1. Opis
+6.2.10.1. Opis
 
    Do pliku okre¶lonego opcj± 'file' zapisywane s± dane dotycz±ce uploadu
    i downloadu dla komputerów okre¶lonego w taryfach, w formacie: upload,
@@ -2690,7 +2707,7 @@ info = "Opcjonalny opis modu³u"
    takiego skryptu.
      _________________________________________________________________
 
-6.2.9.2. Konfiguracja
+6.2.10.2. Konfiguracja
 
    Ten modu³ zawiera standardowe parametry:
      * file
@@ -2703,9 +2720,9 @@ info = "Opcjonalny opis modu³u"
        /tmp/tc.dat"
      _________________________________________________________________
 
-6.2.10. Dns
+6.2.11. Dns
 
-6.2.10.1. Opis
+6.2.11.1. Opis
 
    Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej
    skomplikowanych. Tworzy dla ka¿dej sieci pliki stref oraz odpowiednie
@@ -2713,7 +2730,7 @@ info = "Opcjonalny opis modu³u"
    szablony znajduj± siê w katalogu /modules/dns/sample.
      _________________________________________________________________
 
-6.2.10.2. Konfiguracja
+6.2.11.2. Konfiguracja
 
      * forward-patterns
        Katalog z szablonami stref. Domy¶lnie: forward.
@@ -2773,16 +2790,16 @@ info = "Opcjonalny opis modu³u"
        Przyk³ad: command = ""
      _________________________________________________________________
 
-6.2.11. Ethers
+6.2.12. Ethers
 
-6.2.11.1. Opis
+6.2.12.1. Opis
 
    Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Ustawiaj±c opcjê
    'dummy_macs' mo¿na sprawiæ, aby komputerom od³±czonym zosta³
    przypisany mac-adres 00:00:00:00:00:00.
      _________________________________________________________________
 
-6.2.11.2. Konfiguracja
+6.2.12.2. Konfiguracja
 
    Tutaj s± tylko standardowe opcje:
      * file
@@ -2798,15 +2815,15 @@ info = "Opcjonalny opis modu³u"
        Przyk³ad: dummy_macs = yes
      _________________________________________________________________
 
-6.2.12. Oident
+6.2.13. Oident
 
-6.2.12.1. Opis
+6.2.13.1. Opis
 
    Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
    'hostfile', ale tutaj masz ju¿ gotowe ustawienia domy¶lne.
      _________________________________________________________________
 
-6.2.12.2. Konfiguracja
+6.2.13.2. Konfiguracja
 
    A oto parametry modu³u 'oident'
      * begin
@@ -2878,7 +2895,8 @@ Rozdzia³ 7. Dla dociekliwych
    id - identyfikator
    lastname - nazwa/nazwisko
    name - imiê
-   status - pod³±czony/od³±czony
+   status - status u¿ytkownika (3-pod³±czony, 2-oczekuj±cy,
+   1-zainteresowany)
    email - adres poczty internetowej
    phone1 - telefon
    phone2 - telefon
