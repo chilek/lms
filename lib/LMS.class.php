@@ -1993,7 +1993,7 @@ class LMS
 		if ($lista = $this->GetNetDevConnected($id))
 			foreach($lista as $row)
 				$query = $query." and id!=".$row['dst'];
-		return $this->DB->GetAll($query);
+		return $this->DB->GetAll($query." ORDER BY name");
 	}
 
 	function GetNetDev($id)
