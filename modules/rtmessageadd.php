@@ -154,9 +154,6 @@ if(isset($message))
 					$headers['References'] = $message['references'];
 				$headers['Message-Id'] = $message['messageid'];
 				$headers['Reply-To'] = $headers['From'];
-				$headers['X-Mailer'] = 'LMS-'.$LMS->_version;
-				$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
-				$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
 
 				$body = $message['body'];
 				if ($message['destination'] == $queue['email'] || $message['destination'] == $admin['email'])
@@ -209,9 +206,6 @@ if(isset($message))
 				$headers['References'] = $message['references'];
 			$headers['Message-Id'] = $message['messageid'];
 			$headers['Reply-To'] = $headers['From'];
-			$headers['X-Mailer'] = 'LMS-'.$LMS->_version;
-			$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
-			$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
 			
 			$body = $message['body'];
 			if ($message['destination'] == $queue['email'] || $message['destination'] == $admin['email'])
