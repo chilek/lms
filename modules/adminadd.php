@@ -79,7 +79,7 @@ foreach($access[table] as $idx => $row)
 	$accesslist[] = $row;
 }
 
-$layout[pagetitle]="Dodaj nowego administratora";
+$layout[pagetitle]="Nowy administrator";
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("adminadd",$adminadd);
 $SMARTY->assign("error",$error);
@@ -88,6 +88,9 @@ $SMARTY->display("adminadd.html");
 
 /*
  * $Log$
+ * Revision 1.20  2003/10/05 21:09:28  alec
+ * ujednolicenie interfejsu
+ *
  * Revision 1.19  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
