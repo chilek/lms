@@ -210,17 +210,6 @@ if( $mh_subject =~ /\[RT#[0-9]{6,}\]/ )
 		$prev_tid = 0;
 	}
 }
-# create new ticket.
-#CREATE TABLE `tickets` (
-#`id` INT NOT NULL AUTO_INCREMENT ,
-#`queueid` INT DEFAULT '0' NOT NULL ,
-#`requestor` VARCHAR( 255 ) NOT NULL ,
-#`subject` VARCHAR( 255 ) NOT NULL ,
-#`state` TINYINT( 4 ) DEFAULT '0' NOT NULL ,
-#`owner` INT DEFAULT '0' NOT NULL ,
-#`createtime` INT DEFAULT '0' NOT NULL ,
-#PRIMARY KEY ( `id` ) 
-#);
 
 my $ticket_id;
 
@@ -280,19 +269,6 @@ else
 	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, subject, messageid, replyto, headers, body, inreplyto) VALUES ($prev_tid, '$mh_from', '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $inreplytoid)");
 	$dbq->execute();
 }
-#CREATE TABLE `rtmessages` (
-#`id` INT NOT NULL AUTO_INCREMENT ,
-#`ticketid` INT DEFAULT '0' NOT NULL ,
-#`sender` INT DEFAULT '0' NOT NULL ,
-#`mailfrom` VARCHAR( 255 ) NOT NULL ,
-#`subject` VARCHAR( 255 ) NOT NULL ,
-#`messageid` VARCHAR( 255 ) NOT NULL ,
-#`inreplyto` INT DEFAULT '0' NOT NULL ,
-#`replyto` TEXT NOT NULL ,
-#`headers` TEXT NOT NULL ,
-#`body` MEDIUMTEXT NOT NULL ,
-#PRIMARY KEY ( `id` ) 
-#);
 
 $parser->filer->purge;			# cleanup
 $dbq->finish();
