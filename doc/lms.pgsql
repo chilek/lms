@@ -462,8 +462,8 @@ CREATE SEQUENCE uiconfig_id_seq;
 DROP TABLE uiconfig;
 CREATE TABLE uiconfig (
     id integer DEFAULT nextval('uiconfig_id_seq'::text) NOT NULL,
-    section varchar(255) NOT NULL DEFAULT '',
-    var varchar(255) NOT NULL DEFAULT '',
+    section varchar(64) NOT NULL DEFAULT '',
+    var varchar(64) NOT NULL DEFAULT '',
     value text NOT NULL DEFAULT '',
     description text NOT NULL DEFAULT '',
     disabled smallint NOT NULL DEFAULT 0,
@@ -481,4 +481,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004120600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004121000');

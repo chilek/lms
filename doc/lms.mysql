@@ -473,8 +473,8 @@ CREATE TABLE aliases (
 DROP TABLE IF EXISTS uiconfig;
 CREATE TABLE uiconfig (
     id int(11) NOT NULL auto_increment,
-    section varchar(255) NOT NULL default '',
-    var varchar(255) NOT NULL default '',
+    section varchar(64) NOT NULL default '',
+    var varchar(64) NOT NULL default '',
     value text NOT NULL default '',
     description text NOT NULL default '',
     disabled tinyint(1) NOT NULL default '0',
@@ -482,4 +482,4 @@ CREATE TABLE uiconfig (
     UNIQUE KEY var (section, var)
 ) TYPE=MyISAM;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004120600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004121000');
