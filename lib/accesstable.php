@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+// lista modu³ów które zawsze s± dostêpne dla ka¿dego
+
 $access[allow] = "^(welcome|copyrights|logout|chpasswd)$";
 
 $access[table][0][name]		= "pe³en dostêp";
