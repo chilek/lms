@@ -128,7 +128,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 my $cfile = $ini->val('oidentd', 'config_file') || '/etc/oidentd_masq.conf';
 my $cuid = $ini->val('oidentd','config_owneruid') || 0;
 my $cgid = $ini->val('oidentd','config_ownergid') || 0;
-my $cperm = $ini->val('oidentd','config_permission') || '0600';
+my $cperm = $ini->val('oidentd','config_permission') || '0644';
 my $itempl = $ini->val('oidentd','identd_template') || 'm-%N';
 my $networks_list = $ini->val('oidentd','networks') || '';
 my $usergroups_list = $ini->val('oidentd','usergroups') || '';
