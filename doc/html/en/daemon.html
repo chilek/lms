@@ -10,8 +10,11 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.5-cvs"
 HREF="index.html"><LINK
 REL="PREVIOUS"
-TITLE="Upgrade"
-HREF="install-upgrade.html"><LINK
+TITLE="Invoices"
+HREF="install-invoices.html"><LINK
+REL="NEXT"
+TITLE="Modules"
+HREF="daemon-modules.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -41,7 +44,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="install-upgrade.html"
+HREF="install-invoices.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -54,7 +57,11 @@ VALIGN="bottom"
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
->&nbsp;</TD
+><A
+HREF="daemon-modules.html"
+ACCESSKEY="N"
+>Next</A
+></TD
 ></TR
 ></TABLE
 ><HR
@@ -67,6 +74,123 @@ CLASS="CHAPTER"
 NAME="DAEMON"
 ></A
 >Chapter 3. A.L.E.C's LMS Daemon</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>3.1. <A
+HREF="daemon.html#DAEMON-INTRO"
+>Basics</A
+></DT
+><DD
+><DL
+><DT
+>3.1.1. <A
+HREF="daemon.html#DAEMON-REQUIREMENTS"
+>Requirements</A
+></DT
+><DT
+>3.1.2. <A
+HREF="daemon.html#DAEMON-INSTALL"
+>Installation</A
+></DT
+><DT
+>3.1.3. <A
+HREF="daemon.html#DAEMON-CONFIG"
+>Configuration</A
+></DT
+><DT
+>3.1.4. <A
+HREF="daemon.html#DAEMON-RUN"
+>Starting</A
+></DT
+></DL
+></DD
+><DT
+>3.2. <A
+HREF="daemon-modules.html"
+>Modules</A
+></DT
+><DD
+><DL
+><DT
+>3.2.1. <A
+HREF="daemon-modules.html#DAEMON-MODULESLIST"
+>Modules list</A
+></DT
+><DT
+>3.2.2. <A
+HREF="daemon-modules.html#DAEMON-SYSTEM"
+>System</A
+></DT
+><DT
+>3.2.3. <A
+HREF="daemon-modules.html#DAEMON-PAYMENTS"
+>Payments</A
+></DT
+><DT
+>3.2.4. <A
+HREF="daemon-modules.html#DAEMON-NOTIFY"
+>Notify</A
+></DT
+><DT
+>3.2.5. <A
+HREF="daemon-modules.html#DAEMON-GGNOTIFY"
+>Ggnotify</A
+></DT
+><DT
+>3.2.6. <A
+HREF="daemon-modules.html#DAEMON-CUTOFF"
+>Cutoff</A
+></DT
+><DT
+>3.2.7. <A
+HREF="daemon-modules.html#DAEMON-DHCP"
+>Dhcp</A
+></DT
+><DT
+>3.2.8. <A
+HREF="daemon-modules.html#DAEMON-HOSTFILE"
+>Hostfile</A
+></DT
+><DT
+>3.2.9. <A
+HREF="daemon-modules.html#DAEMON-TRAFFIC"
+>Traffic</A
+></DT
+><DT
+>3.2.10. <A
+HREF="daemon-modules.html#DAEMON-TC"
+>Tc (HTB)</A
+></DT
+><DT
+>3.2.11. <A
+HREF="daemon-modules.html#DAEMON-DNS"
+>Dns</A
+></DT
+><DT
+>3.2.12. <A
+HREF="daemon-modules.html#DAEMON-ETHERS"
+>Ethers</A
+></DT
+><DT
+>3.2.13. <A
+HREF="daemon-modules.html#DAEMON-OIDENT"
+>Oident</A
+></DT
+><DT
+>3.2.14. <A
+HREF="daemon-modules.html#DAEMON-PINGER"
+>Pinger</A
+></DT
+></DL
+></DD
+></DL
+></DIV
 ><DIV
 CLASS="SECT1"
 ><H1
@@ -306,8 +430,8 @@ CLASS="SCREEN"
   -i     list of instances (separated by space) to reload
   -b     run in background (daemon mode)
   -s     'reload' table reading interval in sec. (default: 30)
-  -q     reload and quit
-  -h     prints command line options</PRE
+  -q      reload and quit
+  -h      prints command line options</PRE
 >
                </P
 ></DIV
@@ -329,7 +453,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="install-upgrade.html"
+HREF="install-invoices.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -346,14 +470,18 @@ ACCESSKEY="H"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->&nbsp;</TD
+><A
+HREF="daemon-modules.html"
+ACCESSKEY="N"
+>Next</A
+></TD
 ></TR
 ><TR
 ><TD
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Upgrade</TD
+>Invoices</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -363,7 +491,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->&nbsp;</TD
+>Modules</TD
 ></TR
 ></TABLE
 ></DIV

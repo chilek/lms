@@ -24,10 +24,15 @@ LMS Developers
         2.5. Basic Configuration
         2.6. Access rights
         2.7. Upgrade
+        2.8. Invoices
 
    3. A.L.E.C's LMS Daemon
 
         3.1. Basics
+        3.2. Modules
+
+   List of Tables
+   3-1. List of almsd daemon modules
      _________________________________________________________________
 
 Chapter 1. Intro
@@ -689,6 +694,10 @@ database = /usr/local/lms/lms.db
        On server should be running script lms-rtparser, which will write
        messages to database. Default: disabled.
        Example: helpdesk_backend_mode = On
+     * helpdesk_sender_name
+       Name of message sender or predefined values: 'queue' - ticket's
+       queue name, 'user' - name of logged user (sender). Default: empty.
+       Example: helpdesk_sender_name = Helpdesk
      * contract_template
        Specify customer contract template. Can include comma separated
        list of contract templates. Default: contract.html.
@@ -700,6 +709,9 @@ database = /usr/local/lms/lms.db
        value "1" verbal expand of 123,15 will be "one two thr 15/100".
        Default: 0.
        Example: to_words_short_format = 1
+     * nodepassword_length
+       Length of (auto-generated) node password. Max.32. Default: 16.
+       Example: nodepassword_length = 8
      _________________________________________________________________
 
 2.6. Access rights
@@ -775,6 +787,101 @@ database = /usr/local/lms/lms.db
 
    In 1.0.x and higher versions ADOdb library Is not required, you can
    remove applicable directory from lib/ directory.
+     _________________________________________________________________
+
+2.8. Invoices
+
+   In LMS is possible automatic and manual invoices settlement. Manual
+   invoices creation is is possible in 'New Invoice' module from
+   'Finances' menu. Automatic settlement need to enable that option while
+   liabilities ascribing to customers. In that case invoices are created
+   while accounting by lms-payments script or daemon almsd.
+
+   For proper working and printouts you will need to set custom options
+   in section [invoices] of lms.ini:
+     * number_template
+       Invoice number pattern. Accessible variables: '%N' - successive
+       number in year/month, '%M' - settlement month number, '%Y' -
+       settlement year number (four digits). Default: %N/LMS/%Y
+       Example: number_template = %N/%Y
+     * monthly_numbering
+       Enable this option when you need to reset invoice numbering on
+       start of every month. Default: disabled
+       Example: monthly_numbering = 1
+     * header
+       Seller. Can use string "\n" for lines separation. Default: empty.
+       Example: header = "SuperNet ISP\nNew Street 15\n12-000 City\n"
+     * footer
+       Invoice footer - e.g. seller description. Footer will be placed at
+       bottom of a invoice, small font. Like in header option use "\n" to
+       separate lines. Default: empty
+       Example: footer = "Internet Service Provider K-27, phone
+       555-23-23, etc."
+     * default_author
+       Invoice settler. Default: empty
+       Example: default_author = "invoicing expert"
+     * cplace
+       Invoice settlement place (city). Default: empty.
+       Example: cplace = Warsaw
+
+   Generated invoices can be viewed in double ways: by printer icon on
+   balance sheet or by 'Invoices List' in 'Finances' menu. In second
+   case, is also possible to filter invoices for printing.
+     _________________________________________________________________
+
+2.8.1. HTML
+
+   With default settings invoices are printed in html format with use of
+   default template. In [invoices] section are also options:
+     * template_file
+       Invoice template, which should be placed in templates directory.
+       Default: invoice.html.
+       Example: template_file = invoice-mynet.html
+     * content_type
+       Invoice content-type. If you enter here 'application/octet-stream'
+       then browser will send file to save on disk, instead of displaying
+       it. It's useful if you use your own template which generate e.g.
+       rtf or xls file. Default: 'text/html'
+       Example: content_type = application/octet-stream
+     * attachment_name
+       File name for saving finished invoice printout. WARNING: Setting
+       attachment_name with default content_type will (in case of MSIE)
+       print invoice + prompt for save on disk + bonus browser crash
+       (6.0SP1 on WInXP). Default: empty.
+       Example: attachment_name = invoice.xls
+
+   Generated HTML invoice consist originals and copies, which are
+   separated by CSS page-break markups. So every modern browser that
+   support CSS should print many-page invoices shallow. This function was
+   tested on Microsoft Internet Explorer 6.0, Opera 7.02 and Mozilla 1.3.
+
+   Note
+
+   Almost every internet browser has printing configuration, where
+   functions like header and footer or URL printing can be disabled.
+     _________________________________________________________________
+
+2.8.2. PDF
+
+   It's possible to create invoices as pdf files. Setting option type
+   from [invoices] section to 'pdf' will make, that invoice will be
+   created in pdf instead of html. Option template_file performs similiar
+   part like in html invoices, with one difference, it has predefined
+   values: 'standard' - basic invoice (invoice.html equivalent) and
+   'FT-0100' - invoice adjusted for printing on FT-0100 print including
+   payment form. You can set template_file option for php file name, but
+   this feature is assigned for advanced users. because it require
+   creation of more complicated php file than in html invoices simple
+   Smarty template.
+
+   Data for printout of payment form are stored in [finances] section of
+   lms.ini file. That is:
+   name - seller name
+   shortname - short seller name
+   address - seller address
+   zip - seller postal code
+   city - seller city
+   account - banking account number
      _________________________________________________________________
 
 Chapter 3. A.L.E.C's LMS Daemon
@@ -886,5 +993,711 @@ info = "Additional description of module"
   -i     list of instances (separated by space) to reload
   -b     run in background (daemon mode)
   -s     'reload' table reading interval in sec. (default: 30)
-  -q     reload and quit
-  -h     prints command line options
+  -q      reload and quit
+  -h      prints command line options
+     _________________________________________________________________
+
+3.2. Modules
+
+   Daemon can only run modules and they are doing all job. Most of
+   modules are designed to specific application, only 'hostfile' can be
+   used to many different configs (services), i.e. various firewall
+   types. Daemon and modules configuration examples contains file
+   daemon/lms.ini.sample. Modules configuration parameters must be placed
+   in appropriate instances sections.
+     _________________________________________________________________
+
+3.2.1. Modules list
+
+   Table 3-1. List of almsd daemon modules
+   Name Description
+   system Shell commands execution
+   dhcp Configuration of DHCP server
+   cutoff Disconnection of indebted users
+   dns Configuration of DNS server
+   ethers Making of /etc/ethers file
+   hostfile Universal module (i.e. making iptables rules)
+   notify E-mail notifying users about payments
+   ggnotify Gadu-Gadu (polish internet messenger) notifying users about
+   payments
+   payments Payments accounting
+   oident Configuration of oident daemon
+   tc Making HTB rules
+   traffic Internet link usage statistics
+   pinger Users activity scanning
+     _________________________________________________________________
+
+3.2.2. System
+
+3.2.2.1. Description
+
+   This module doing only one thing. It's executing of given command of
+   linux shell. It can be usefull when you want to execute some command
+   or run external script while configuration reload, e.g. one of them,
+   which are in LMS /bin directory.
+     _________________________________________________________________
+
+3.2.2.2. Configuration
+
+   By reason of above-mentioned you can define only command contents.
+   Shell should advise with list of commands separated by semicolons:
+     * command
+       Shell command. Default: empty.
+       Example: command = 'echo "hello"'
+     _________________________________________________________________
+
+3.2.3. Payments
+
+3.2.3.1. Description
+
+   Module accounts customers subscription payments and solid payments. It
+   should be executed commonly once a day. Payments are accounted on base
+   of customers liabilities and writed to database with description
+   defined in 'comment' option. After accounting are created invoices.
+   Description of solid payment is a mass of its name and creditor name.
+   At the end from database are removed out-of-dated customers
+   liabilities.
+     _________________________________________________________________
+
+3.2.3.2. Configuration
+
+   For that module you can use following options:
+     * comment
+       Operation description. '%period' will be replaced by dates from-to
+       of subscription, e.g. '10.10.2003 - 09.11.2003', and '%tariff' by
+       name of tariff. Default: 'Abonament wg taryfy: '%tariff' za okres:
+       %period'.
+       Example: comment = 'Subscription: %tariff for period %period'
+     * up_payments
+       Decision how should be counted period in comment - forward or
+       backward relatively to date of payment accounting. Default: yes.
+       Example: up_payments = no
+     * expiry_days
+       Defines number of days from date of liability expiration, after
+       which that liability will be removed from database. When you set
+       '0' data will be removed immediately after date, for which binds
+       that liability. Default: 30.
+       Example: expiry_days = 365
+     * deadline
+       Payment deadline in days. Default: 14.
+       Example: deadline = 21
+     * paytype
+       Payment type. Default: 'PRZELEW'.
+       Example: paytype = 'CASH'
+     _________________________________________________________________
+
+3.2.4. Notify
+
+3.2.4.1. Description
+
+   Module 'notify' is destined to inform customers of debt in payments
+   using electronic mail. Current customer balance is compared with
+   'limit' option, if is lower - message will be sent. Message content is
+   taken from prepared template, which can consists following variables:
+     * %saldo - current customer balance
+     * %name - customer forename
+     * %lastname - customer name/lastname
+     * %last_10_in_a_table - last 10 operations on customer account
+     _________________________________________________________________
+
+3.2.4.2. Configuration
+
+   Below are presented configuration options of 'notify' module:
+     * template
+       Location of message template file. Default: empty.
+       Example: template = modules/notify/sample/mailtemplate
+     * file
+       Location of temprary file. Default: /tmp/mail
+       Example: file = /tmp/mail.txt
+     * command
+       Shell command for e-maila sending. '%address' will be replaced by
+       customer e-mail address. Default: 'mail -s "Liabilities
+       Information" %address < /tmp/mail'.
+       Example: command = 'mail -s "You must pay or ..." $address <
+       /tmp/mail.txt'
+     * limit
+       Message is sended when customer balance will decrease below value
+       defined in that option. Default: 0
+       Example: limit = -20
+     * debug_mail
+       If set, at this address goes all messages. Useful for testing.
+       Default: empty.
+       Example: debug_mail = localhost@my.net
+     _________________________________________________________________
+
+3.2.5. Ggnotify
+
+3.2.5.1. Description
+
+   Equivalent of 'notify' module destined to sending gadu-gadu messages.
+   Gadu-Gadu it's a most popular polish internet messenger.
+
+   Module require installed libgadu library and sources of ekg program.
+   Appropriate paths for them must to be put in modules/ggnotify/Makefile
+   before module compilation.
+     _________________________________________________________________
+
+3.2.5.2. Configuration
+
+   Podobnie jak w 'notify' masz do dyspozycji nastêpuj±ce zmienne:
+     * template
+       Location of message template file. Default: empty.
+       Example: template = modules/notify/sample/mailtemplate
+     * uin
+       Gadu-gadu identifier of message sender. Default: empty.
+       Example: uin = 1234567
+     * password
+       Password for account specified in 'uin'. Default: empty.
+       Example: password = "my_HURD.password"
+     * limit
+       Message is sended when customer balance will decrease below value
+       defined in that option. Default: 0
+       Example: limit = -20
+     * debug_uin
+       If is set, there will go all messages. Default: empty.
+       Example: debug_uin = 7654321
+     _________________________________________________________________
+
+3.2.6. Cutoff
+
+3.2.6.1. Description
+
+   Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza
+   ostrze¿enia u¿ytkownikom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿
+   okre¶lony limit. Ten modu³ nie zajmuje siê fizycznym blokowaniem
+   dostêpu do sieci.
+     _________________________________________________________________
+
+3.2.6.2. Configuration
+
+   Dla modu³u 'cutoff' mamy nastêpuj±ce opcje:
+     * limit
+       Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej kwoty
+       okre¶lonej t± zmienn±. Default: 0.
+       Example: limit = -20
+     * command
+       Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co
+       najmniej jeden u¿ytkownik zostanie od³±czony lub zostanie w³±czone
+       ostrze¿enie. Default: nieustawiona.
+       Example: command = 'almsd -qi firewall'
+     * warning
+       W³±cza ostrze¿enie dla od³±czanego u¿ytkowanika i przypisuje mu
+       okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie
+       w³±czane. Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
+       Default: 'Automatyczna blokada spowodowana przekroczeniem terminu
+       wp³aty (dd.mm.yyyy)".
+       Example: warning = ""
+     * warnings_only
+       Ta opcja pozwala zdecydowaæ, czy chcemy u¿yæ naszego modu³u
+       wy³±cznie do w³±czania ostrze¿eñ. Default: wy³±czona.
+       Example: warnings_only = true
+     _________________________________________________________________
+
+3.2.7. Dhcp
+
+3.2.7.1. Description
+
+   Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
+   restartuje us³ugê. Zmienna 'command' umo¿liwia równie¿ wykonywanie
+   innych czynno¶ci (programów).
+     _________________________________________________________________
+
+3.2.7.2. Configuration
+
+   Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom pliku
+   konfiguracyjnego dhcpd, które w typowych zastosowaniach nie wymagaj±
+   zmiany:
+     * file
+       Okre¶la lokalizacjê pliku konfiguracyjnego serwera dhcp. Default:
+       /tmp/dhcpd.conf.
+       Example: file = /etc/dhcpd.conf
+     * command
+       Polecenie wykonywane po utworzeniu pliku konfiguracyjnego.
+       Default: pusta.
+       Example: command = 'killall -HUP dhcpd'
+     * begin
+       Nag³ówek pliku. Default: "shared-network LMS {".
+       Example: begin = "shared-network LMS {"
+     * end
+       Stopka pliku. Default: "}".
+       Example: end = "\n}"
+     * subnet_start
+       Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Default: "subnet %a
+       netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".
+       Example: subnet_start = "subnet %a netmask %m {default-lease-time
+       3600;"
+     * subnet_end
+       Stopka podsieci. Default: "}".
+       Example: subnet_end = '\t}'
+     * subnet_gateway
+       Brama podsieci. '%i' zostanie zamienione na adres ip. Default:
+       'option routers %i;'.
+       Example: subnet_gateway = "option routers %i"
+     * subnet_dns
+       DNS'y podsieci. '%i - adresy dns'ów. Default: "option
+       domain-name-servers %i;".
+       Example: subnet_dns = "option domain-name-servers 192.168.0.1"
+     * subnet_domain
+       Nazwa domenowa podsieci. '%n' - nazwa. Default: "option
+       domain-name %n;".
+       Example: subnet_domain = "option domain-name test.%n;"
+     * subnet_wins
+       Serwery wins. '%i' - adres ip serwera. Default: "option
+       netbios-name-servers %i;".
+       Example: subnet_wins = ""
+     * subnet_range
+       Zakres adresów podsieci. '%s' - adres pocz±tkowy, '%e' - koniec
+       zakresu. Default: "range %s %e;".
+       Example: subnet_range = "range %s %e;"
+     * host
+       Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' -
+       adres ip. Default: "\thost %n {\n\t\thardware ethernet %m;
+       fixed-address %i; \n\t}".
+       Example: host = "host %n {hardware ethernet %m; fixed-address
+       %i;}"
+     * networks
+       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
+       nie ma znaczenia. Default: pusta (wszystkie sieci).
+       Example: networks = "lan1 lan2"
+     * usergroups
+       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
+       Wielko¶æ liter nie ma znaczenia. Default: pusta (wszystkie grupy).
+       Example: usergroups = "grupa1 grupa2"
+     _________________________________________________________________
+
+3.2.8. Hostfile
+
+3.2.8.1. Description
+
+   Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ wykonuje
+   pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich status
+   (od³±czony/pod³±czony), sieæ do której s± pod³aczone oraz grupy do
+   których nale¿± ich w³a¶ciciele, dlatego mo¿liwe jest tworzenie np.
+   regu³ dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do
+   pliku i nastêpnie wykonuje okre¶lone polecenie pow³oki.
+     _________________________________________________________________
+
+3.2.8.2. Configuration
+
+   W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne
+   zmienne, które podczas zapisu do pliku zostan± zast±pione '%i' -
+   adresem ip, '%m' - mac adresem, '%n' - nazw± komputera, '%p' -
+   password, '%info' - opisem komputera, '%domain' - domen±, '%net' -
+   nazw± sieci, '%gw' - adresem bramy w sieci do której nale¿y dany
+   komputer. Poni¿ej opcje udostêpniane przez ten modu³
+     * file
+       Lokalizacja pliku tymczasowego. Default: /tmp/hostfile
+       Example: file = /etc/rc.d/rc.firewall
+     * command
+       Polecenie pow³oki wyk. po utworzeniu pliku 'file'. Default: puste
+       Example: command = '/bin/sh /etc/rc.d/rc.firewall'
+     * begin
+       Nag³ówek pliku tymczasowego. Default: "/usr/sbin/iptables -F
+       FORWARD\n"
+       Example: begin = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"
+     * end
+       Stopka pliku tymczasowego. Default: "/usr/sbin/iptables -A FORWARD
+       -J REJECT\n"
+       Example: end = "$IPT -A FORWARD -J REJECT\n"
+     * grantedhost
+       Tekst dla hosta pod³±czonego. Default: "/usr/sbin/iptables -A
+       FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"
+       Example: grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source
+       %m -j ACCEPT\n"
+     * deniedhost
+       Tekst dla hosta od³±czonego. Default: "/usr/sbin/iptables -A
+       FORWARD -s %i -m mac --mac-source %m -j REJECT\n"
+       Example: deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source
+       %m -j REJECT\n"
+     * networks
+       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
+       nie ma znaczenia. Default: pusta (wszystkie sieci).
+       Example: networks = "lan1 lan2"
+     * usergroups
+       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
+       Wielko¶æ liter nie ma znaczenia. Default: pusta (wszystkie grupy).
+       Example: usergroups = "grupa1 grupa2"
+     * skip_dev_ips
+       Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy
+       urz±dzeñ sieciowych. Default: tak
+       Example: skip_dev_ips = no
+     _________________________________________________________________
+
+3.2.9. Traffic
+
+3.2.9.1. Description
+
+   'Traffic' to odpowiednik perlowego lms-traffic, zapisuj±cy do bazy
+   statystyki wykorzystania ³±cza z pliku utworzonego przez u¿ytkownika.
+   Plik taki powinien mieæ format: ip_hosta upload download . Wiêcej
+   informacji (w tym jak utworzyæ taki plik) mo¿na znale¼æ w rozdziale
+   dotycz±cym lms-traffic.
+     _________________________________________________________________
+
+3.2.9.2. Configuration
+
+   Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:
+     * file
+       Lokalizacja pliku ze statystykami firewalla. Default:
+       /var/log/traffic.log
+       Example: file = /tmp/log
+     _________________________________________________________________
+
+3.2.10. Tc (HTB)
+
+3.2.10.1. Description
+
+   Modu³ generuj±cy skrypt zawieraj±cy polecenia iptables i tc s³u¿±ce do
+   ograniczania pasma i limitowania po³±czeñ u¿ytkownikom. Regu³ki dla
+   komputerów mo¿na dowolnie zdefiniowaæ i wykorzystaæ nie tylko do
+   "traffic control". Zasada dzia³ania skryptu przedstawia siê
+   nastêpuj±co: Najpierw z bazy pobierane s± dane dla wszystkich
+   u¿ytkowników. Obliczane s± sumy ograniczeñ (uprate, downrate, upceil,
+   downceil, limity po³±czeñ) dla ka¿dego u¿ytkownika Nastêpnie
+   wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy
+   u¿ytkowników i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s±
+   ró¿ne od zera nastêpuje zapis regu³ do pliku z podmian± zmiennych. W
+   regu³kach mo¿na stosowaæ nastêpuj±ce zmienne: %name - nazwa hosta, %i
+   - adres IP, %m - MAC, %uprate, %downrate, %upceil, %downceil, %plimit,
+   %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 zwiêkszany o
+   jeden dla ka¿dego komputera.
+
+   Domy¶lna polityka tworzenia klas htb zak³ada utworzenie jednej klasy
+   dla wszystkich komputerów u¿ytkownika. Mo¿e to byæ zmienione za pomoc±
+   opcji 'one_class_per_host'.
+
+   Configuration domy¶lna zak³ada, ¿e twój system jest przystosowany do
+   zastosowania htb oraz iptables z modu³ami limit, connlimit, mark i
+   ipp2p. Mo¿esz sam spatchowaæ j±dro lub skorzystaæ ze ¼róde³ dostêpnych
+   na stronie www.inet.one.pl.
+     _________________________________________________________________
+
+3.2.10.2. Configuration
+
+   Masz do dyspozycji standardowe parametry takie jak usergroups, file,
+   command, networks i dodatkowo opcje definiuj±ce tre¶æ regu³ek tc i
+   firewalla. Domy¶lna konfiguracja przeznaczona jest dla ³±cz 512/128
+   kbit i 100mbit.
+
+   Note
+
+   Warto¶ci opcji konfiguracyjnych w lms.ini nale¿y podawaæ w jednej
+   linii. W przypadku tego modu³u mo¿e to byæ niezbyt wygodne, dlatego
+   mo¿esz stworzyæ plik z zawarto¶ci± ca³ego nag³ówka (opcja begin), a
+   nastêpnie u¿yæ opcji command do jego sklejenia z reszt± skryptu
+   wygenerowan± przez modu³.
+     * file
+       Lokalizacja pliku tymczasowego. Default: /etc/rc.d/rc.htb.
+       Example: file = /tmp/rc.htb
+     * command
+       Polecenie pow³oki wykonywane po utworzeniu pliku. Default: "sh
+       /etc/rc.d/rc.htb start".
+       Example: command = "chmod 700 /tmp/rc.htb; /tmp/rc.htb start"
+     * begin
+       Nag³ówek skryptu. Default:
+"#!/bin/sh
+IPT=/usr/sbin/iptables
+TC=/sbin/tc
+LAN=eth0
+WAN=eth1
+BURST="burst 30k"
+
+stop ()
+{
+$IPT -t mangle -D FORWARD -i $WAN -j LIMITS >/dev/null 2>&1
+$IPT -t mangle -D FORWARD -o $WAN -j LIMITS >/dev/null 2>&1
+$IPT -t mangle -F LIMITS >/dev/null 2>&1
+$IPT -t mangle -X LIMITS >/dev/null 2>&1
+$IPT -t mangle -F OUTPUT
+$IPT -t filter -F FORWARD
+$TC qdisc del dev $LAN root 2> /dev/null
+$TC qdisc del dev $WAN root 2> /dev/null
+}
+
+start ()
+{
+stop
+$IPT -t mangle -N LIMITS
+$IPT -t mangle -I FORWARD -i $WAN -j LIMITS
+$IPT -t mangle -I FORWARD -o $WAN -j LIMITS
+# incomming traffic
+$IPT -t mangle -A OUTPUT -j MARK --set-mark 1
+$TC qdisc add dev $LAN root handle 1:0 htb default 3 r2q 1
+$TC class add dev $LAN parent 1:0 classid 1:1 htb rate 99000kbit ceil 99000kbit quantum 1500
+$TC class add dev $LAN parent 1:1 classid 1:2 htb rate   500kbit ceil   500kbit
+$TC class add dev $LAN parent 1:1 classid 1:3 htb rate 98500kbit ceil 98500kbit prio 9 quantum 1500
+$TC qdisc add dev $LAN parent 1:3 esfq perturb 10 hash dst
+# priorities for ICMP, TOS 0x10 and ports 22 and 53
+$TC class add dev $LAN parent 1:2 classid 1:20 htb rate 50kbit ceil 500kbit $BURST prio 1 quantum 1500
+$TC qdisc add dev $LAN parent 1:20 esfq perturb 10 hash dst
+$TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xffff flowid 1:20
+$TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 53 0xffff flowid 1:20
+$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 1:20
+$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 1:20
+# server -> LAN
+$TC filter add dev $LAN parent 1:0 protocol ip prio 4 handle 1 fw flowid 1:3
+
+# outgoing traffic
+$TC qdisc add dev $WAN root handle 2:0 htb default 11 r2q 1
+$TC class add dev $WAN parent 2:0 classid 2:1 htb rate 120kbit ceil 120kbit
+# priorities for ACK, ICMP, TOS 0x10, ports 22 and 53
+$TC class add dev $WAN parent 2:1 classid 2:10 htb rate 60kbit ceil 120kbit prio 1 quantum 1500
+$TC qdisc add dev $WAN parent 2:10 esfq perturb 10 hash dst
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip protocol 6 0xff \
+match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 1 match u8 0x10 0xff at 33 flowid 2:10
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 22 0xffff flowid 2:10
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 53 0xffff flowid 2:10
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 2:10
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 2:10
+# server -> Internet
+$TC class add dev $WAN parent 2:1 classid 2:11 htb rate 30kbit ceil 120kbit prio 2 quantum 1500
+$TC qdisc add dev $WAN parent 2:11 esfq perturb 10 hash dst
+$TC filter add dev $WAN parent 2:0 protocol ip prio 3 handle 1 fw flowid 2:11
+$TC filter add dev $WAN parent 2:0 protocol ip prio 9 u32 match ip dst 0/0 flowid 2:11
+       Example: begin = "#!/bin/bash\n$TC=/usr/local/sbin/tc\n"
+     * end
+       Stopka skryptu. Default:
+}
+
+case "$1" in
+    'start')
+     start
+    ;;
+    'stop')
+     stop
+    ;;
+    'status')
+     echo "WAN Interface"
+     echo "============="
+     $TC class show dev $WAN | grep root
+     $TC class show dev $WAN | grep -v root | sort | nl
+     echo "LAN Interface"
+     echo "============="
+     $TC class show dev $LAN | grep root
+     $TC class show dev $LAN | grep -v root | sort | nl
+    ;;
+    *)
+     echo -e "\nUsage: rc.htb start|stop|status"
+    ;;
+esac
+       Example: end = ""
+     * one_class_per_host
+       Okre¶la politykê tworzenia klas htb. W ustawieniu domy¶lnym
+       wszystkie komputery u¿ytkownika zostan± wrzucone do jednej klasy.
+       Ustawienie tej opcji na 'true' spowoduje, ¿e regu³y okre¶lone w
+       host_htb_up i host_htb_down zostan± wygenerowane dla wszystkich
+       komputerów u¿ytkownika (z inn± warto¶ci± '%x'). Regu³y z
+       host_mark_down, host_mark_up, host_plimit i host_climit generowane
+       s± dla ka¿dego komputera niezale¿nie od ustawieñ tej zmiennej.
+       Default: false
+       Example: one_class_per_host = 1
+     * host_mark_down
+       Regu³a markuj±ca dla ka¿dego komutera. Default:
+# %n
+$IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
+       Example: host_mark_down = ""
+     * host_mark_up
+       Regu³a markuj±ca dla ka¿dego komutera. Default:
+$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
+       Example: host_mark_up = ""
+     * host_htb_down
+       Zestaw regu³ dla ka¿dego komutera, wykonywanych gdy uprate i
+       downrate s± ró¿ne od zera. Default:
+$TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
+$TC qdisc add dev $LAN parent 1:%x esfq perturb 10 hash dst
+$TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%x
+       Example: host_htb_down = ""
+     * host_htb_up
+       Zestaw regu³ dla ka¿dego komutera, wykonywanych gdy uprate i
+       downrate s± ró¿ne od zera. Default:
+$TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
+$TC qdisc add dev $WAN parent 2:%x esfq perturb 10 hash dst
+$TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x
+       Example: host_htb_up = ""
+     * host_climit
+       Regu³ka z ograniczeniem ilo¶ci równoczesnych po³±czeñ tcp.
+       Wykonywana gdy climit w bazie jest ró¿ny od zera. Default:
+$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT
+       Example: host_climit = "$IPT -t filter -I FORWARD -p tcp -s %i -m
+       connlimit --connlimit-above -j REJECT"
+     * host_plimit
+       Regu³ka z ograniczeniem ilo¶ci pakietów w jednostce czasu (tutaj
+       sekunda). Wykonywana gdy plimit w bazie jest ró¿ny od zera.
+       Default:
+$IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
+$IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
+       Example: host_plimit = ""
+     * networks
+       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
+       nie ma znaczenia. Default: pusta (wszystkie sieci).
+       Example: networks = "lan1 lan2"
+     * usergroups
+       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
+       Wielko¶æ liter nie ma znaczenia. Default: pusta (wszystkie grupy).
+       Example: usergroups = "grupa1 grupa2"
+     _________________________________________________________________
+
+3.2.11. Dns
+
+3.2.11.1. Description
+
+   Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej
+   skomplikowanych. Tworzy dla ka¿dej sieci pliki stref oraz odpowiednie
+   wpisy w named.conf w oparciu o szablony tych plików. Przyk³adowe
+   szablony znajduj± siê w katalogu /modules/dns/sample.
+     _________________________________________________________________
+
+3.2.11.2. Configuration
+
+     * forward-patterns
+       Katalog z szablonami stref. Default: forward.
+       Example: forward-patterns = /dns/patterns/forward
+     * reverse-patterns
+       Katalog z szablonami stref odwrotnych. Default: reverse.
+       Example: reverse-patterns = /dns/patterns/revers
+     * generic-forward
+       Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu
+       okre¶lonym 'forward-patterns' nie bêdzie pliku odpowiadaj±cego
+       nazwie domenowej sieci. Default:
+       modules/dns/sample/forward/generic.
+       Example: generic-forward = /dns/patterns/forward
+     * generic-reverse
+       Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu
+       okre¶lonym 'reverse-patterns' nie bêdzie pliku odpowiadaj±cego
+       numerowi IP sieci. Default: modules/dns/sample/reverse/generic.
+       Example: generic-reverse = /dns/patterns/forward
+     * forward-zones
+       Katalog na pliki wynikowe stref. Default:
+       modules/dns/sample/out/forward.
+       Example: forward-zones = /dns/forward
+     * reverse-zones
+       Katalog na pliki wynikowe stref odwrotnych. Default:
+       modules/dns/sample/out/reverse.
+       Example: reverse-zones = /dns/reverse
+     * host-reverse
+       Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane
+       sieci. Default: "%n IN A %i\n".
+       Example: host-reverse = "\t %n IN A %i\n"
+     * host-forward
+       Linia w pliku strefy odpowiadaj±ca ka¿demu komputerowi w danej
+       sieci. Default: "%c IN PTR %n.%d.\n".
+       Example: host-forward = "\t %c IN PTR %n.%d.\n"
+     * conf-pattern
+       Lokalizacja szablonu g³ównego pliku konfiguracyjnego serwera.
+       Default: modules/dns/sample/named.conf.
+       Example: conf-pattern = /dns/patterns/named.conf
+     * conf-output
+       Lokalizacja g³ównego pliku konfiguracyjnego serwera. Default:
+       /tmp/named.conf.
+       Example: conf-output = /etc/named.conf
+     * conf-forward-entry
+       Wpis dla ka¿dej strefy w g³ównym pliku konfiguracyjnym. Default:
+       'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n};
+       \n'.
+       Example: conf-forward-entry = 'zone "%n" { \n\ttype master;
+       \n\tfile "forward/%n"; \n\tnotify yes; \n}; \n'
+     * conf-reverse-entry
+       Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
+       Default: 'zone "%c.in-addr.arpa" { \ntype master; \nfile
+       "reverse/%i"; \nnotify yes; \n}; \n'.
+       Example: conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype
+       master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'
+     * command
+       Polecenie wykonywane po utworzeniu plików konf. Default: puste.
+       Example: command = ""
+     * networks
+       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
+       nie ma znaczenia. Default: pusta (wszystkie sieci).
+       Example: networks = "lan1 lan2"
+     * usergroups
+       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
+       Wielko¶æ liter nie ma znaczenia. Default: pusta (wszystkie grupy).
+       Example: usergroups = "grupa1 grupa2"
+     _________________________________________________________________
+
+3.2.12. Ethers
+
+3.2.12.1. Description
+
+   Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Ustawiaj±c opcjê
+   'dummy_macs' mo¿na sprawiæ, aby komputerom od³±czonym zosta³
+   przypisany mac-adres 00:00:00:00:00:00.
+     _________________________________________________________________
+
+3.2.12.2. Configuration
+
+   Tutaj s± tylko standardowe opcje:
+     * file
+       Lokalizacja pliku wynikowego. Default: /tmp/ethers.
+       Example: file = /etc/ethers
+     * command
+       Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Default:
+       puste.
+       Example: command = "arp -f /etc/ethers"
+     * dummy_macs
+       Je¶li ustawimy na 'yes', to komputerom od³±czonym zostanie
+       przypisany mac-adres '00:00:00:00:00:00'. Default: "no".
+       Example: dummy_macs = yes
+     * networks
+       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
+       nie ma znaczenia. Default: pusta (wszystkie sieci).
+       Example: networks = "lan1 lan2"
+     * usergroups
+       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
+       Wielko¶æ liter nie ma znaczenia. Default: pusta (wszystkie grupy).
+       Example: usergroups = "grupa1 grupa2"
+     _________________________________________________________________
+
+3.2.13. Oident
+
+3.2.13.1. Description
+
+   Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
+   'hostfile', ale tutaj masz ju¿ gotowe ustawienia domy¶lne.
+     _________________________________________________________________
+
+3.2.13.2. Configuration
+
+   A oto parametry modu³u 'oident'
+     * begin
+       Tekst wstawiany na pocz±tku pliku. Default: puste.
+       Example: begin = "#Generowany automatycznie\n"
+     * end
+       Tekst wstawiany na koñcu pliku. Default: puste.
+       Example: end = ""
+     * host
+       Linia tekstu dla ka¿dego komputera. Default: "%i\t%n\tUNIX".
+       Example: host = "%i %n WINDOWS"
+     * file
+       Tekst wstawiany na pocz±tku pliku. Default: /tmp/oidentd.conf.
+       Example: file = /etc/identd.conf
+     * networks
+       Lista nazw sieci do uwzglêdnienia. Default: pusta (wszystkie
+       sieci).
+       Example: networks = 'lan1 lan2'
+     * command
+       Polecenie do wykonania po utworzeniu pliku. Default: puste.
+       Example: command = "killall -HUP midentd"
+     _________________________________________________________________
+
+3.2.14. Pinger
+
+3.2.14.1. Description
+
+   Modu³ pinger to odpowiednik perlowego skryptu lms-fping. Ró¿nice s±
+   jednak zasadnicze. Nie potrzebuje zewnêtrznego programu i dzia³a przy
+   wykorzystaniu protoko³u ARP. Powodem tego jest mniej wiêcej dwukrotnie
+   szybsze wykonanie skanowania sieci. Nie ma tak¿e problemów z
+   komputerami maj±cymi wy³±czone odpowiadanie na pingi. Po skanowaniu,
+   wszystkim w³±czonym komputerom jest ustawiany w bazie danych czas
+   skanowania, wykorzystywany do obrazowania aktywno¶ci komputerów np. na
+   mapie sieci.
+     _________________________________________________________________
+
+3.2.14.2. Configuration
+
+   Pinger udostêpnia tylko jedn± opcjê konfiguracyjn±:
+     * networks
+       Lista nazw sieci, które maj± byæ skanowane. Default: pusta
+       (wszystkie sieci).
+       Example: networks = 'lan1 lan2'
