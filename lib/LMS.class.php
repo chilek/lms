@@ -235,6 +235,12 @@ class LMS
 		$this->ADB->Execute("UPDATE admins SET passwd=? WHERE id=?",array(crypt($passwd),$id));
 	}
 
+	function SetAdminLang($id,$lang)
+	{
+		$this->SetTS("admins");
+		$this->ADB->Execute("UPDATE admins SET lang=? WHERE id=?",array($lang,$id));
+	}
+
 	function GetAdminName($id) // zwraca imiê admina
 	{
 		return $this->ADB->GetOne("SELECT name FROM admins WHERE id=?",array($id));
