@@ -71,6 +71,7 @@ wersja 1.5.4 (??/??/????):
   - mo¿liwo¶æ generowania faktur w PDF (lexx)
   - dla operacji fakturowanych dodano mo¿liwo¶æ powi±zywania obci±¿eñ z
     wp³atami/przedp³atami, co np. pozwala na czê¶ciowe rozliczanie faktur (alec)
+  - mo¿na edytowaæ opcje sekcji [finances] z poziomu UI (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
