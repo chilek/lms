@@ -406,7 +406,7 @@ class LMS
 
 	function GetEmails($group)
 	{
-		return $this->DB->GetAll("SELECT email, ".$this->DB->Concat("lastname", "' '", "name")." AS username FROM users WHERE email != '' ".($group !=0 ? "AND status='".$group."'" : ""));
+		return $this->DB->GetAll("SELECT email, ".$this->DB->Concat("lastname", "' '", "name")." AS username FROM users WHERE deleted = 0 AND email != '' ".($group !=0 ? "AND status='".$group."'" : ""));
 	}
 
 	function GetUserEmail($id)
