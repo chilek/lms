@@ -47,16 +47,16 @@ $dane = 1;
 switch($_GET['bar'])
 {
   case "hour":
-	$query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt < ?NOW? AND dt > ?NOW?-(60*60) GROUP BY nodeid";
+	$query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt < ?NOW? AND dt > ?NOW?-(60*60) GROUP BY nodeid ORDER BY download DESC";
 	break;
   case "day":
-	$query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24) GROUP BY nodeid";
+	$query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24) GROUP BY nodeid ORDER BY download DESC";
 	break;
   case "month":
-	$query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24*30)  GROUP BY nodeid";
+	$query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24*30)  GROUP BY nodeid ORDER BY download DESC";
 	break;
   case "year":
-	$query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24*365) GROUP BY nodeid";
+	$query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24*365) GROUP BY nodeid ORDER BY download DESC";
 	break;
   case "user": ##########################################################
 	$from = ArrayToTimestamp($_POST['from']);
