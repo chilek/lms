@@ -31,6 +31,8 @@ wersja 1.5.2 (??/??/????):
     operacji (alec)
   - pocz±tki modu³u do zarz±dzania kontami (lexx)
   - poprawki w genfake (lexx)
+  - almsd/cutoff: dodana opcja 'warnings_only' umo¿liwiaj±ca wykorzystanie
+    tego modu³u wy³±cznie do w³±czania ostrze¿eñ, gruntowna przebudowa (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 
