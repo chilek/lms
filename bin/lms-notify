@@ -51,7 +51,7 @@ lms-notify, version $_version
 (C) 2001-2003 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
--D, --template-file=/etc/lms/another.template.txt	alternate (default in confing file);
+-D, --template-file=/etc/lms/another.template.txt	alternate (default in config file);
 -h, --help			print this help and exit;
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
@@ -154,24 +154,11 @@ open(MTFILE, "$mtfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
-my $dbq = $dbase->prepare("SELECT users.id, lastname, users.name, email, phone1,  tariffs.description FROM users,tariffs 
-		WHERE users.tariff=tariffs.id");
+my $dbq = $dbase->prepare("SELECT users.id AS id, lastname, name, email, phone1, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id HAVING SUM((type * -2 + 7) * cash.value) < 0");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
-	my $balance = 0;
-	my $sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type='3'");
-	$sdbq->execute();
-	if(my $srow = $sdbq->fetchrow_hashref())
-	{
-		$balance = $balance + (defined $srow->{'sum'} ? $srow->{'sum'} : 0);
-	}
-	$sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type>='4'");
-	$sdbq->execute();
-	if(my $srow = $sdbq->fetchrow_hashref())
-	{
-		$balance = $balance - (defined $srow->{'sum'} ? $srow->{'sum'} : 0);
-	}
+	my $balance = $row->{'balance'};
 	if($balance < $limit)
 	{
 		if(!$quiet)
@@ -184,10 +171,15 @@ while (my $row = $dbq->fetchrow_hashref())
 			{
 				print STDOUT "Sending e-mail to $row->{'email'}\n";
 			}
+			
 			my @desttempl = @mtempl;
 			my $subject = $mailsubject;
+			
 			$subject =~ s/\%B/$balance/g;
-			{ my $amount = -$balance; $subject =~ s/\%b/$amount/g; } 
+			
+			{
+				my $amount = -$balance; $subject =~ s/\%b/$amount/g;
+			} 
 			
 			my $smtp = Net::SMTP->new("$smtpserver");
 			$smtp->mail("$mailfrom");
@@ -195,7 +187,9 @@ while (my $row = $dbq->fetchrow_hashref())
 			if($debugemail)
 			{
 				$smtp->to($debugemail);
-			}else{
+			}
+			else
+			{
 				$smtp->to($row->{'email'});
 			}
 
@@ -245,17 +239,12 @@ while (my $row = $dbq->fetchrow_hashref())
 				}
 
 				if ($line =~ /\%saldo/) {
-					my $saldo_dbq = $dbase->prepare("SELECT SUM(value) FROM cash WHERE 
-					userid='$row->{'id'}' AND (type>='4' )") ; 
-					$saldo_dbq->execute();
-					my $ow_s = $saldo_dbq->fetchrow_hashref();
-					$line =~ s/\%saldo/$ow_s->{'SUM(value)'}/;
+					$line =~ s/\%saldo/$row->{'balance'}/;
 				}
 
 
 				if ($line =~ /\%abonament/) {
-					my $saldo_dbq = $dbase->prepare("SELECT users.id,tariffs.value,tariff FROM users,tariffs WHERE 
-					users.id='$row->{'id'}' AND tariffs.id=users.tariff") ; 
+					my $saldo_dbq = $dbase->prepare("SELECT sum(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND userid=$row->{'id'}");
 					$saldo_dbq->execute();
 					my $ow_s = $saldo_dbq->fetchrow_hashref();
 					$line =~ s/\%abonament/$ow_s->{'value'}/;
