@@ -35,13 +35,13 @@ if(isset($queue))
 	}
 
 	if($queue['name'] == '')
-		$error['name'] = 'Kolejka musi posiadaæ nazwê!';
+		$error['name'] = trans('Queue must have its name!');
 
 	if($queue['name'] != '' && $LMS->GetQueueIdByName($queue['name']))
-		$error['name'] = 'Kolejka o podanej nazwie jest ju¿ w bazie!';
+		$error['name'] = trans('Queue with specified name already exists!');
 
 	if($queue['email']!='' && !check_email($queue['email']))
-		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+		$error['email'] = trans('Specified mail is not proper!');
 
 	if(isset($queue['admins']))
 		foreach($queue['admins'] as $key => $value)
@@ -64,7 +64,7 @@ foreach($admins as $admin)
 }
 $queue['rights'] = $queue['nrights'];
 
-$layout['pagetitle'] = 'Nowa kolejka';
+$layout['pagetitle'] = trans('New queue');
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

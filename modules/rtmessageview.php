@@ -74,7 +74,7 @@ if(!$message['userid'] && !$message['adminid'] && !$message['mailfrom'])
 	$message['requestor'] = $LMS->DB->GetOne('SELECT requestor FROM rttickets WHERE id=?', array($message['ticketid']));
 }
 
-$layout['pagetitle'] = 'Podgl±d wiadomo¶ci';
+$layout['pagetitle'] = trans('Ticket review');
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
