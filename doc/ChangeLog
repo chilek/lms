@@ -10,6 +10,8 @@ wersja 1.4.5 (??/??/????):
     (alec/WiktorRB)
   - BTS#0000316: dodane brakuj±ce przekierowanie SSL w contrib/customer_otherip
     (alec/WiktorRB) 
+  - BTS#0000317: na li¶cie u¿ytkowników poprawiono wy¶wietlanie tre¶ci
+    wiadomo¶ci administracyjnej (alec/WiktorRB)
 
 wersja 1.4.4 Skaara (02/03/2005):
 
