@@ -1607,10 +1607,21 @@ class LMS
 	function AddInvoice($invoice)
 	{
 		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : time();
-		$this->SetTS('invoices');
-		$this->SetTS('invoicecontents');
-		$number = $this->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate <= ?', array(mktime(0, 0, 0, 1, 1, date('Y',$cdate)), mktime(23, 59, 59, 12, 31, date('Y',$cdate))));
+		
+		if($this->CONFIG['invoices']['monthly_numbering'])
+		{
+			$start = mktime(0, 0, 0, date('n',$cdate), 1, date('Y',$cdate));
+			$end = mktime(0, 0, 0, date('n',$cdate)+1, 1, date('Y',$cdate));
+		}
+		else
+		{
+			$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
+			$end = mktime(0, 0, 0, 1, 1, date('Y',$cdate)+1);
+		}
+		
+		$number = $this->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
 		$number++;
+		
 		$this->DB->Execute('INSERT INTO invoices (number, cdate, paytime, paytype, customerid, name, address, nip, pesel, zip, city, phone, finished) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)', array($number, $cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['username'], $invoice['customer']['address'], $invoice['customer']['nip'], $invoice['customer']['pesel'], $invoice['customer']['zip'], $invoice['customer']['city'], $invoice['customer']['phone1']));
 		$iid = $this->DB->GetOne('SELECT id FROM invoices WHERE number = ? AND cdate = ?', array($number,$cdate));
 		foreach($invoice['contents'] as $idx => $item)
@@ -1628,6 +1639,10 @@ class LMS
 				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($iid, $item['valuebrutto'], $item['taxvalue'], $item['pkwiu'], $item['jm'], $item['count'], $item['name'], $item['tariffid']));
 			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'taxvalue' => $item['taxvalue'], 'userid' => $invoice['customer']['id'], 'comment' => $item['name'], 'invoiceid' => $iid));
 		}
+		
+		$this->SetTS('invoices');
+		$this->SetTS('invoicecontents');
+
 		return $iid;
 	}
 
