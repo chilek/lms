@@ -30,7 +30,7 @@ if(! $LMS->TicketExists($_GET['id']))
 	die;
 }
 
-if(! $LMS->GetAdminRightsRT($SESSION->id, 0, $_GET['id']))
+if(! $LMS->GetAdminRightsRT($AUTH->id, 0, $_GET['id']))
 {
 	$SMARTY->display('noaccess.html');
 	die;

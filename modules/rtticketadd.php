@@ -38,7 +38,7 @@ if(isset($ticket))
 		die;
 	}
 
-	if($LMS->GetAdminRightsRT($SESSION->id, $queue) < 2)
+	if($LMS->GetAdminRightsRT($AUTH->id, $queue) < 2)
 		$error['queue'] = trans('You have no privilleges to this queue!');
 
 	if($ticket['subject'] == '')

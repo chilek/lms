@@ -131,7 +131,7 @@ $_SESSION['rtp'] = $page;
 
 if(isset($search) || $_GET['search'])
 {
-	if($search['queue'] && !$LMS->GetAdminRightsRT($SESSION->id, $search['queue']))
+	if($search['queue'] && !$LMS->GetAdminRightsRT($AUTH->id, $search['queue']))
 		$error['queue'] = trans('You have no privilleges to review this queue!');
 	
 	$search = $search ? $search : $_SESSION['rtsearch'];

@@ -26,7 +26,7 @@
 
 function EventSearch($search)
 {
-	global $LMS, $SESSION;
+	global $LMS, $AUTH;
 
 	$list = $LMS->DB->GetAll(
 	        'SELECT events.id AS id, title, description, date, begintime, endtime, userid, closed, '
@@ -39,7 +39,7 @@ function EventSearch($search)
 		.($search['title'] ? ' AND title ?LIKE? \'%'.$search['title'].'%\'' : '')
 		.($search['description'] ? ' AND description ?LIKE? \'%'.$search['description'].'%\'' : '')
 		.($search['note'] ? ' AND note ?LIKE? \'%'.$search['note'].'%\'' : '')
-		.' ORDER BY date, begintime', array($SESSION->id));
+		.' ORDER BY date, begintime', array($AUTH->id));
 	
 	if($list)
 		foreach($list as $idx => $row)

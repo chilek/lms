@@ -28,7 +28,7 @@ $ticketedit = $_POST['ticket'];
 
 if(($id = $_GET['id']) && !isset($ticketedit))
 {
-	if($LMS->GetAdminRightsRT($SESSION->id, 0, $id) < 2)
+	if($LMS->GetAdminRightsRT($AUTH->id, 0, $id) < 2)
 	{
 		$SMARTY->display('noaccess.html');
 		die;
@@ -47,7 +47,7 @@ $ticket = $LMS->GetTicketContents($id);
 if(isset($ticketedit))
 {
 	$ticketedit['ticketid'] = $ticket['ticketid'];
-	if($LMS->GetAdminRightsRT($SESSION->id, $ticketedit['queueid']) < 2)
+	if($LMS->GetAdminRightsRT($AUTH->id, $ticketedit['queueid']) < 2)
 		$error['queue'] = trans('You have no privilleges to this queue!');
 	
 	if($ticketedit['subject'] == '')
