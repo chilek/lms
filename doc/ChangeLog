@@ -13,6 +13,7 @@ wersja 1.5.2 (??/??/????):
   - do danych komputera dodano pole 'info' (alec)
   - lms-mgc: dodana zmienna %INFO zawieraj±ca opis komputera j.w. (alec)
   - dokumentacja: uzupe³niony opis zmiennych lms-mgc (alec)
+  - w statystykach dodany ¶redni transfer w KB/s (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 

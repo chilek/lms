@@ -2775,7 +2775,7 @@ class LMS
 	 *  Statystyki
 	 */
 
-	function Traffic($from = 0, $to = '?NOW?', $net = 0, $order = '', $limit = 0)
+	function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 	{
 		// period
 		if (is_array($from))
@@ -2786,6 +2786,8 @@ class LMS
 			$todate = mktime($to[Hour],$to[Minute],59,$to[Month],$to[Day],$to[Year]);
 		else
 			$todate = $to;
+
+		$delta = ($todate-$fromdate) ? ($todate-$fromdate) : 1;
 
 		$dt = "( dt >= $fromdate AND dt <= $todate )";
 
@@ -2836,6 +2838,8 @@ class LMS
 			{
 				$traffic['upload']['data'][] = $row['upload'];
 				$traffic['download']['data'][] = $row['download'];
+				$traffic['upload']['avg'][] = $row['upload']/($delta*1024);
+				$traffic['download']['avg'][] = $row['download']/($delta*1024);
 				$traffic['upload']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
 				$traffic['download']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
 				$traffic['upload']['ipaddr'][] = $row['ip'];

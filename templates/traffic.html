@@ -18,7 +18,7 @@
 						<B><A HREF="?m=nodeinfo&id={$download.nodeid[download]}">{if $showips}{$download.ipaddr[download]}{else}{$download.name[download]|truncate:32:"..."}{/if}</A></B>
 					</TD>
 					<TD CLASS="fright" WIDTH="99%" NOWRAP>
-						<IMG SRC="img/redpx.gif" HEIGHT="12" WIDTH="{$download.bar[download]}" BORDER="1" ALT="" ALIGN="ABSMIDDLE"> {$download.data[download]|string_format:"%.2f"}&nbsp;{$download.unit[download]}
+						<IMG SRC="img/redpx.gif" HEIGHT="12" WIDTH="{$download.bar[download]}" BORDER="1" ALT="" ALIGN="ABSMIDDLE"> {$download.data[download]|string_format:"%.2f"}&nbsp;{$download.unit[download]} ({$upload.avg[upload]|string_format:"%.2f"}&nbsp;KB/s) 
 					</TD>
 				</TR>
 				{/section}
@@ -42,7 +42,7 @@
 						<B><A HREF="?m=nodeinfo&id={$upload.nodeid[upload]}">{if $showips}{$upload.ipaddr[upload]}{else}{$upload.name[upload]|truncate:32:"..."}{/if}</A></B>
 					</TD>
 					<TD CLASS="fright" WIDTH="99%" NOWRAP>
-						<IMG SRC="img/bluepx.gif" HEIGHT="12" WIDTH="{$upload.bar[upload]}" BORDER="1" ALT="" ALIGN="ABSMIDDLE"> {$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]}
+						<IMG SRC="img/bluepx.gif" HEIGHT="12" WIDTH="{$upload.bar[upload]}" BORDER="1" ALT="" ALIGN="ABSMIDDLE"> {$upload.data[upload]|string_format:"%.2f"}&nbsp;{$upload.unit[upload]} ({$upload.avg[upload]|string_format:"%.2f"}&nbsp;KB/s) 
 					</TD>
 				</TR>
 				{/section}
