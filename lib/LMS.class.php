@@ -1152,26 +1152,15 @@ class LMS
 	}
 	function GetBalanceList()
 	{
-		if($rs = $this->ADB->Execute("SELECT id, name FROM admins"))
-			while(!$rs->EOF)
-			{
-				$adminlist[$rs->fields['id']] = $rs->fields['name'];
-				$rs->MoveNext();
-			}
-		if($rs = $this->ADB->Execute("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
-			while(!$rs->EOF)
-			{
-				$userslist[$rs->fields['id']] = $rs->fields['username'];
-				$rs->MoveNext();
-			}
-		
+		$adminlist = $this->ADB->GetAllByKey('SELECT id, name FROM admins','id');
+		$userslist = $this->ADB->GetAllByKey("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users","id");
 		if($balancelist = $this->ADB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash ORDER BY time ASC"))
 		{
 			foreach($balancelist as $idx => $row)
 			{
-				$balancelist[$idx]['admin'] = $adminlist[$row['adminid']];
+				$balancelist[$idx]['admin'] = $adminlist[$row['adminid']]['name'];
 				$balancelist[$idx]['value'] = $row['value'];
-				$balancelist[$idx]['username'] = $userslist[$row['userid']];
+				$balancelist[$idx]['username'] = $userslist[$row['userid']]['username'];
 				if($idx)
 					$balancelist[$idx]['before'] = $balancelist[$idx-1]['after'];
 				else
@@ -1308,9 +1297,10 @@ class LMS
 	function GetNetworkList()
 	{
 		$tnetworks = $this->ADB->GetAll("SELECT id, name, address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks");
-		foreach($tnetworks as $idx => $row)
-			foreach($row as $field => $value)
-			$networks[$field][] = $value;
+		if($tnetworks)
+			foreach($tnetworks as $idx => $row)
+				foreach($row as $field => $value)
+					$networks[$field][] = $value;
 		
 		$nodes = $this->ADB->GetAll("SELECT ipaddr FROM nodes");
 		$networks['total'] = sizeof($networks['id']);
@@ -1602,6 +1592,10 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.197  2003/08/24 00:59:29  lukasz
+ * - LMSDB: GetAllByKey($query, $key, $inputarray)
+ * - LMS: more fixes for new DAL
+ *
  * Revision 1.196  2003/08/23 12:46:57  alec
  * literówka
  *

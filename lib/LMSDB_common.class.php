@@ -79,6 +79,17 @@ Class LMSDB_common
 		return $result;
 	}
 
+	function GetAllByKey($query = NULL, $key = NULL, $inputarray = NULL)
+	{
+		if($query)
+			$this->Execute($query, $inputarray);
+
+		while($row = $this->_driver_fetchrow_assoc())
+			$result[$row[$key]] = $row;
+
+		return $result;
+	}
+
 	function GetRow($query = NULL, $inputarray = NULL)
 	{
 		if($query)
@@ -175,6 +186,10 @@ Class LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.12  2003/08/24 00:59:29  lukasz
+ * - LMSDB: GetAllByKey($query, $key, $inputarray)
+ * - LMS: more fixes for new DAL
+ *
  * Revision 1.11  2003/08/22 13:15:17  lukasz
  * - ListTables()
  *
