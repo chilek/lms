@@ -40,7 +40,7 @@ if (!$LMS->NodeExists($_GET[id]))
 		$body .= "<P><A HREF=\"?m=nodedel&id=".$_GET[id]."&is_sure=1\">Tak, jestem pewien.</A></P>";
 		$body .= "<P><A HREF=\"?".$_SESSION[backto]."\">Nie, rozmy¶li³em siê.</A></P>";
 	}else{
-		$owner = $LMS->GetOwner($_GET[id]);
+		$owner = $LMS->GetNodeOwner($_GET[id]);
 		$LMS->DeleteNode($_GET[id]);
 		if(isset($_SESSION[backto]))
 			header("Location: ?".$_SESSION[backto]);
