@@ -41,7 +41,7 @@ int db_connect(const unsigned char *db, const unsigned char *user, const unsigne
     char connect_string[BUFFER_LENGTH];
     if( !port ) 
 	port = 5432;
-    snprintf(connect_string,sizeof(connect_string)-1,"host='%s' port=%d dbname='%s' user='%s' password='%s'",host,port,db,user,password);
+    snprintf(connect_string,sizeof(connect_string)-1,"host='%s' port=%d dbname='%s' user='%s' password='***'",host,port,db,user,password);
     connect_string[sizeof(connect_string)-1]='\x0';
     conn = PQconnectdb(connect_string);
     if(PQstatus(conn) == CONNECTION_BAD) {
