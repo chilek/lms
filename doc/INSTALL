@@ -57,6 +57,7 @@ dystrybucji - LMS zosta³ odpalony na:
 - Slackware 8.1 (2.4.20), Apache 1.3.27, PHP 4.2.3, MySQL 3.23.53
 - Slackware 8.1 (2.4.20SMP), Apache/1.3.27, PHP/4.3.1, MySQL 3.23.55
 - RedHat 8.0
+- FreeBSD 4.7-RELEASE, mysql 3.23.57, Apache/2.0.47 (z portsów do 4.7)
 
 I  prawdopodobnie pójdzie na czymkolwiek (w³±cznie z lodówk±) o ile to
 co¶  bêdzie  potrafi³o  zgry¼æ  MySQL'a i serwer WWW z PHP. Bêdê tak¿e
