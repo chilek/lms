@@ -40,7 +40,7 @@ $listdata[totalpos] = sizeof($balancelist);
 if (isset($_SESSION[blp]) && !isset($_GET[page]))
         $_GET[page] = $_SESSION[blp];
 	
-$pagelimit = (! $_CONFIG[phpui][balancelist_pagelimit] ? 50 : $_CONFIG[phpui][balancelist_pagelimit]);
+$pagelimit = (! $_CONFIG[phpui][balancelist_pagelimit] ? 100 : $_CONFIG[phpui][balancelist_pagelimit]);
 $page = (! $_GET[page] ? ceil($listdata[totalpos]/$pagelimit) : $_GET[page]); 
 $start = ($page - 1) * $pagelimit;
 $_SESSION[blp] = $page;
@@ -59,6 +59,9 @@ $SMARTY->display("balancelist.html");
 
 /*
  * $Log$
+ * Revision 1.23  2003/08/25 02:11:58  lukasz
+ * - changed default pagelimit from 50 to 100
+ *
  * Revision 1.22  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
