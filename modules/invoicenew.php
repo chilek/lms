@@ -25,37 +25,65 @@
  */
 
 $layout[pagetitle] = 'Nowa faktura';
+$users = $LMS->GetUserNames();
 $contents = $_SESSION[invoicecontents];
+$customer = $_SESSION[invoicecustomer];
 $itemdata = r_trim($_POST);
 
-if($_GET['deletepos'] != '')
-	if(sizeof($contents))
-		foreach($contents as $idx => $row)
-			if($row['posuid'] == $_GET['deletepos'])
-				unset($contents[$idx]);
+if($_GET['userid'] != '' && $LMS->UserExists($_GET['userid']))
+	$_GET['action'] = 'setcustomer';
 
-foreach(array('count', 'valuenetto', 'taxvalue', 'valuebrutto') as $key)
-	$itemdata[$key] = sprintf('%01.2f',$itemdata[$key]);
-
-if($itemdata['count'] > 0 && $itemdata['name'] != '')
+switch($_GET['action'])
 {
-	if($itemdata['taxvalue'] < 0 || $itemdata['taxvalue'] > 100)
-		$error['taxvalue'] = 'Niepoprawna wysoko¶æ podatku!';
-		
-	// warto¶æ netto ma priorytet
-	if($itemdata['valuenetto'] != 0)
-		$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($itemdata['taxvalue'] / 100 + 1),2);
-	elseif($itemdata['valuebrutto'] != 0)
-		$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($itemdata['taxvalue'] + 100) * 100, 2);
+	case 'additem':
+		$itemdata = r_trim($_POST);
+		foreach(array('count', 'valuenetto', 'taxvalue', 'valuebrutto') as $key)
+			$itemdata[$key] = sprintf('%01.2f',$itemdata[$key]);
+		if($itemdata['count'] > 0 && $itemdata['name'] != '')
+		{
+			if($itemdata['taxvalue'] < 0 || $itemdata['taxvalue'] > 100)
+				$error['taxvalue'] = 'Niepoprawna wysoko¶æ podatku!';
+			if($itemdata['valuenetto'] != 0)
+				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($itemdata['taxvalue'] / 100 + 1),2);
+			elseif($itemdata['valuebrutto'] != 0)
+				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($itemdata['taxvalue'] + 100) * 100, 2);
+			$itemdata['s_valuenetto'] = $itemdata['valuenetto'] * $itemdata['count'];
+			$itemdata['s_valuebrutto'] = $itemdata['valuebrutto'] * $itemdata['count'];
+			$itemdata['posuid'] = getmicrotime();
+			$contents[] = $itemdata;
+		}
+	break;
 
-	$itemdata['s_valuenetto'] = $itemdata['valuenetto'] * $itemdata['count'];
-	$itemdata['s_valuebrutto'] = $itemdata['valuebrutto'] * $itemdata['count'];
-	$itemdata['posuid'] = getmicrotime();
-	$contents[] = $itemdata;
+	case 'clear':
+		unset($contents);
+		unset($customer);
+	break;
+
+	case 'deletepos':
+		if(sizeof($contents))
+			foreach($contents as $idx => $row)
+				if($row['posuid'] == $_GET['posuid'])
+					unset($contents[$idx]);
+	break;
+
+	case 'setcustomer':
+		if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['userid'])))
+			$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['userid']));
+	break;
 }
 
 $_SESSION[invoicecontents] = $contents;
+$_SESSION[invoicecustomer] = $customer;
+
+if($_GET['action'] != '')
+{
+	// redirect, ¿eby refreshem nie spierdoliæ faktury
+	header('Location: ?m=invoicenew');
+	die;
+}
+
 $SMARTY->assign('contents',$contents);
+$SMARTY->assign('customer',$customer);
 $SMARTY->assign('users',$users);
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('invoicenew.html');

@@ -2,6 +2,51 @@
 <!-- $Id$ -->
 {include file="balanceheader.html"}
 <H1>{$layout.pagetitle}</H1>
+<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoicenew&action=setcustomer">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
+			<B>Dane u¿ytkownika:</B>
+		</TD>
+	</TR>
+	{if $customer}
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<B>Imiê i nazwisko / nazwa:<BR>
+			Adres:<BR>
+			<BR>
+			{if $customer.nip}NIP:<BR>{elseif $customer.pesel}PESEL:<BR>{/if}
+			{if $customer.phone1}Telefon:{/if}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			{$customer.username}<BR>
+			{$customer.address}<BR>
+			{$customer.zip} {$customer.city}<BR>
+			{if $customer.nip}{$customer.nip}<BR>{elseif $customer.pesel}{$customer.pesel}<BR>{/if}
+			{if $customer.phone1}{$customer.phone1}{/if}
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="light">
+		<TD CLASS="flr" WIDTH="100%" COLSPAN="2">
+			Wybierz u¿ytkownika:
+			<SELECT SIZE="1" NAME="user" onChange="document.setcustomer.userid.value=document.setcustomer.user.value">
+				{foreach from=$users item=user}
+				<OPTION VALUE="{$user.id}"{if $customer.id eq $user.id} SELECTED{/if}>{$user.username} ({$user.id|string_format:"%04d"})</OPTION>
+				{/foreach}
+			</SELECT>
+			lub wpisz jego ID:
+			<INPUT TYPE="TEXT" NAME="userid" VALUE="{$customer.id}" SIZE="5" onChange="document.setcustomer.user.value=document.setcustomer.userid.value">
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
+			<A HREF="javascript:document.setcustomer.submit();">Wybierz / zmieñ u¿ytkownika <IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<BR>	
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">
@@ -61,11 +106,11 @@
 			{$item.s_valuebrutto|string_format:"%02.2f z³"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP CLASS="fright">
-			<A HREF="?m=invoicenew&deletepos={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Skasuj t± pozycjê z listy"} BORDER="0"></A>
+			<A HREF="?m=invoicenew&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Skasuj t± pozycjê z listy"} BORDER="0"></A>
 		</TD>			
 	</TR>
 	{foreachelse}
-	<TR CLASS="light">
+	<TR>
 		<TD COLSPAN="8" ALIGN="CENTER" CLASS="flr">
 			<BR>
 			<BR>
@@ -75,7 +120,26 @@
 		</TD>
 	</TR>
 	{/foreach}
-	<FORM METHOD="POST" ACTION="?m=invoicenew" NAME="add">
+	{if $contents}
+	<TR CLASS="light">
+		<TD COLSPAN="4" WIDTH="96%" ALIGN="RIGHT" CLASS="fleftu">
+			<B>Razem:</B>
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
+			{sum array=$contents column=s_valuenetto string_format="%01.2f z³"}
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt">
+			&nbsp;
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
+			{sum array=$contents column=s_valuebrutto string_format="%01.2f z³"}
+		</TD>
+		<TD WIDTH="1%" CLASS="frightu">
+			&nbsp;
+		</TD>
+	</TR>
+	{/if}
+	<FORM METHOD="POST" ACTION="?m=invoicenew&action=additem" NAME="additem">
 	<TR CLASS="light">
 		<TD CLASS="ftl" WIDTH="1%" NOWRAP>
 			<B>{counter}.</B>
@@ -100,7 +164,7 @@
 			<INPUT TYPE="text" NAME="valuebrutto" SIZE="6"> z³
 		</TD>
 		<TD CLASS="ftr">
-			<A HREF="javascript:document.add.submit(); "><IMG SRC="img/save.gif" ALT="" BORDER="0" {tip text="Dodaj pozycjê"}></A>
+			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" BORDER="0" {tip text="Dodaj pozycjê"}></A>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -110,4 +174,9 @@
 	</TR>
 	</FORM>
 </TABLE>
+<SCRIPT LANGUAGE="JavaScript">
+	<!--
+	document.additem.name.focus();
+	//-->
+</SCRIPT>
 {include file="footer.html"}
