@@ -1,5 +1,9 @@
 $Id$
 
+wersja 1.1.1 (??/??/2003):
+
+  - mo¿liwo¶æ wydruku osób które s± zad³u¿one
+
 wersja 1.1.0 (23/06/2003):
 
   - support do drugiego serwera dns (w lms-mgc jako %DNS2)
