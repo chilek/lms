@@ -134,7 +134,7 @@
 		<TD align="right" valign="top" NOWRAP>
 			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|money_format}{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|money_format}</FONT>
 			{if $userlist[userlist].balance < 0}<BR>
-			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" OnClick="return confirmLink(this, '{t 0=$userlist[userlist].username}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} &raquo;</A>
+			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" OnClick="return confirmLink(this, '{t 0=$userlist[userlist].username|escape}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} &raquo;</A>
 			{/if}
 			</NOBR>
 		</TD>
