@@ -238,7 +238,7 @@ else
 	}
 
 	$im_nd = imagecreatefrompng('img/netdev.png');
-	$im_n = imagecreatefrompng('img/node.png');
+	$im_n_unk = imagecreatefrompng('img/node_unk.png');
 	$im_n_off = imagecreatefrompng('img/node_off.png');
 	$im_n_on = imagecreatefrompng('img/node_on.png');
 
@@ -257,7 +257,7 @@ else
 			else 
 				imagecopy($im,$im_n_on,$px,$py,0,0,15,16);
 		} else 
-			imagecopy($im,$im_n,$px,$py,0,0,15,16);
+			imagecopy($im,$im_n_unk,$px,$py,0,0,15,16);
 		
 //		imagestring($im, 1, $px + 15, $py - 8, $nodeid.' ('.$celx.','.$cely.')', $blue);
 		imagestring($im, 1, $px + 15, $py - 8, $nodedata['ip'], $blue);

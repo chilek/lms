@@ -45,7 +45,7 @@
 				<img src="img/node_on.gif" border="0" ALT="" align="absmiddle">
 			    {/if}
 			{else}
-			    <img src="img/node.gif" border="0" ALT="" align="absmiddle">
+			    <img src="img/node_unk.gif" border="0" ALT="" align="absmiddle">
 			{/if}
 			&nbsp;<B>{$nodelist[nodelist].name}</B></A><BR>
 			<img src="img/user.gif" border="0" ALT="" align="absmiddle">&nbsp;<A href="?m=userinfo&id={$nodelist[nodelist].ownerid}">{if ! $nodelist[nodelist].access}<font color="#888888">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</FONT>{/if}</A>

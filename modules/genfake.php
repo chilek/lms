@@ -1574,7 +1574,8 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 			$nodedata['ownerid'] = $id;
 			$nodedata['access'] = 1;
 			$nodedata['warning'] = 0;
-			$LMS->NodeAdd($nodedata);
+			$nodeid = $LMS->NodeAdd($nodedata);
+			$DB->Execute("UPDATE `nodes` SET `lastonline` = '".mt_rand(time()-2592000,time()+2592000)."' WHERE `id` = '".$nodeid."' ");
 		}
 		$startip ++;
 	}
@@ -1589,7 +1590,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$prod = mt_rand(0,$sprod-1);
 		$LMS->NetDevAdd(array(
 			'name' => "SWITCH_".$i,
-			'location' => "",
+			'location' => $streets[mt_rand(0,$ssize-1)].' '.mt_rand(1,50),
 			'description' => "",
 			'producer' => $producer[$prod],
 			'model' => "10/100 Mbps Switch",
