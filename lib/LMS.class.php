@@ -586,16 +586,29 @@ class LMS {
 	{
 		$DB=$this->DB;
 
-		if ($_SESSION[timestamps][getbalancelist] != $this->GetTS("cash"))
+		if (	$_SESSION[timestamps][getbalancelist][cash] != $this->GetTS("cash") ||
+			$_SESSION[timestamps][getbalancelist][admins] != $this->GetTS("admins") ||
+			$_SESSION[timestamps][getbalancelist][users] != $this->GetTS("users")
+			
+			)
 		{
-			$balancelist = $DB->fetchTable("SELECT `id`, `time`, `adminid`, `type`, `value`, `userid`, `comment` FROM `cash` ORDER BY `time` ASC");
+			$DB->execSQL("SELECT `id`, `name` FROM `admins`");
+			while($DB->fetchRow())
+				$adminslist[$DB->row[id]] = $DB->row[name];
+			$DB->execSQL("SELECT `id`, CONCAT(UPPER(`lastname`), ' ', `name`) AS `username` FROM `users`");
+			while($DB->fetchRow())
+				$userslist[$DB->row[id]] = $DB->row[username];
+				
+			$balancelist = $DB->fetchTable("SELECT `id`, `time`, `adminid`, `type` AS `type`, `value`, `userid`, `comment` FROM `cash` ORDER BY `time` ASC");
 			$balancelist[total] = sizeof($balancelist[id]);
 			
 			if($balancelist[total])
 				foreach($balancelist[id] as $key => $value)
 				{
-					$balancelist[admin][$key] = $this->GetAdminName($balancelist[adminid][$key]);
-					$balancelist[username][$key] = $this->GetUserName($balancelist[userid][$key]);
+					if($adminslist[$balancelist[adminid][$key]])
+						$balancelist[admin][$key] = $adminslist[$balancelist[adminid][$key]];
+					if($userslist[$balancelist[userid][$key]])
+						$balancelist[username][$key] = $userslist[$balancelist[userid][$key]];
 					$balancelist[value][$key]=str_replace(".",",",
 						round( str_replace (".",",",$balancelist[value][$key]) , 4 )
 					);
@@ -640,13 +653,16 @@ class LMS {
 				
 				$balancelist[total] = str_replace(".",",",$balancelist[after][$key]);
 
-				$_SESSION[timestamps][getbalancelist] = $this->GetTS("cash");
+				$_SESSION[timestamps][getbalancelist][cash] = $this->GetTS("cash");
+				$_SESSION[timestamps][getbalancelist][admins] = $this->GetTS("admins");
+				$_SESSION[timestamps][getbalancelist][users] = $this->GetTS("users");
 				$_SESSION[cache][getbalancelist] = $balancelist;
 				
 			}else{
 				$balancelist = $_SESSION[cache][getbalancelist];
 				
 			}
+
 		return $balancelist;
 	}
 
@@ -743,12 +759,11 @@ class LMS {
 		{
 			$nodelist[totalon]=0;
 			$nodelist[totaloff]=0;
-			$nodelist = $DB->fetchTable("SELECT `id`, `ipaddr`, `mac`, `name`, `ownerid`, `access` FROM `nodes`");
+			$nodelist = $DB->fetchTable("SELECT `nodes`.`id`, `ipaddr`, `mac`, `nodes`.`name`, `ownerid`, `access`, CONCAT(UPPER(`users`.`lastname`),' ',`users`.`name`) AS `owner` FROM `nodes`, `users` WHERE `users`.`id` = `ownerid`");
 			if(sizeof($nodelist[id]))
 				foreach($nodelist[id] as $key => $value)
 				{
 					$nodelist[iplong][$key] = ip_long($nodelist[ipaddr][$key]);
-					$nodelist[owner][$key] = $this->GetUserName($nodelist[ownerid][$key]);
 					if(strtoupper($nodelist[access][$key])=="Y")
 						$nodelist[totalon]++;
 					else
@@ -910,8 +925,12 @@ class LMS {
 
 	function GetUserBalance($id)
 	{
-		$return = str_replace(".",",",$this->GetUserBalanceList($id));
-		return $return[balance];
+		$DB=$this->DB;
+		$DB->fetchRow("SELECT SUM(value) AS value FROM cash WHERE userid = '".$id."' AND type = '3'");
+		$return = str_replace(".",",",$DB->row[value]);
+		$DB->fetchRow("SELECT SUM(value) AS value FROM cash WHERE userid = '".$id."' AND type = '4'");
+		$return = $return - str_replace(".",",",$DB->row[value]);
+		return $return;
 	}
 
 	function GetUserBalanceList($id)
@@ -920,7 +939,7 @@ class LMS {
 
 		if($_SESSION[timestamps][getuserbalancelist][$id][cash] != $this->GetTS("cash"))
 		{
-			$saldolist = $DB->fetchTable("SELECT `id`, `time`, `adminid`, `type`, `value`, `userid`, `comment` FROM cash WHERE userid = '".$id."'");
+			$saldolist = $DB->fetchTable("SELECT `cash`.`id`, `time`, `adminid`, `type`, `value`, `userid`, `comment`, `admins`.`name` AS `adminname` FROM `cash`, `admins` WHERE userid = '".$id."' AND `admins`.`id` = `cash`.`adminid`");
 			if(sizeof($saldolist[id]) > 0){
 				foreach($saldolist[id] as $i => $v)
 				{
@@ -944,7 +963,6 @@ class LMS {
 						break;
 					}
 					
-					$saldolist[adminname][$i]=$this->GetAdminName($saldolist[adminid][$i]);
 					$saldolist[date][$i]=date("Y/m/d H:i",$saldolist[time][$i]);
 					
 				}
@@ -971,7 +989,7 @@ class LMS {
 		}else{
 			$saldolist = $_SESSION[cache][getuserbalancelist][$id];
 		}
-			
+		
 		return $saldolist;
 
 	}
