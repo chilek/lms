@@ -74,4 +74,5 @@ else
 	header('Location: ?m=invoicelist');
 	die;
 }
+
 ?>

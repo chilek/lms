@@ -1,5 +1,31 @@
 <?php
 
+/*
+ * LMS version 1.1-cvs
+ *
+ *  (C) Copyright 2001-2003 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+$layout[pagetitle] = "Wybierz adres MAC";
+
 $p = $_GET[p];
 $netid = $_POST[netid];
 
@@ -8,11 +34,6 @@ if(!isset($p))
 if($p == "main")
 	$js = "var targetfield = parent.targetfield;";
 
-$layout[pagetitle] = "Wybierz adres MAC";
-
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("part",$p);
-$SMARTY->assign("js",$js);
 if($p == "main")
 {
 	$maclist = $LMS->GetMACs();
@@ -29,23 +50,10 @@ if($p == "main")
 	}
 	$SMARTY->assign("maclist",$maclist);
 }
+
+$SMARTY->assign("layout",$layout);
+$SMARTY->assign("part",$p);
+$SMARTY->assign("js",$js);
 $SMARTY->display("choosemac.html");
 
-/*
- * $Log$
- * Revision 1.10  2003/12/04 04:39:14  lukasz
- * - porz±dki
- * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
- *
- * Revision 1.9  2003/09/17 03:10:39  lukasz
- * - very experimental support for lms-arpd
- *
- * Revision 1.8  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.7  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>

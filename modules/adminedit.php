@@ -100,23 +100,5 @@ $SMARTY->assign("unlockedit",TRUE);
 $SMARTY->assign("error",$error);
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("admininfo.html");
-/*
- * $Log$
- * Revision 1.22  2003/10/03 15:02:52  alec
- * ujednolicenie interfejsu
- *
- * Revision 1.21  2003/09/15 10:48:45  lukasz
- * - http://bts.rulez.pl/bug_view_page.php?bug_id=0000072
- *
- * Revision 1.20  2003/09/05 13:11:23  lukasz
- * - nowy sposób wy¶wietlania informacji o b³êdach
- *
- * Revision 1.19  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.18  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
+
 ?>

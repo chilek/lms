@@ -25,7 +25,9 @@
  */
 
 $layout[pagetitle]="Podgl±d bazy danych";
+
 $database = $LMS->DatabaseFetchContent($_GET[db]);
+
 if($_GET[rawmode]=="true")
 {
 	$database[rawmode] = TRUE;
@@ -37,6 +39,7 @@ if($_GET[rawmode]=="true")
 	else
 		header("Content-Type: text/plain; charset=ISO-8859-2");
 }
+
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("database",$database);
 if(!$database[rawmode])
@@ -44,14 +47,4 @@ if(!$database[rawmode])
 $SMARTY->display("dbview.html");
 if(!$database[rawmode])
 	$SMARTY->display("footer.html");
-/*
- * $Log$
- * Revision 1.14  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.13  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>

@@ -38,7 +38,6 @@ else
 {
 	echo '<PRE>';
 	$arrays = $LMS->GetTemplateArrays();
-//	print_r($arrays[users]);
 	foreach($arrays as $arrayname => $array)
 		$SMARTY->assign($arrayname, &$array);
 	$SMARTY->template_dir = $LMS->CONFIG['directories']['config_templates_dir'];
@@ -46,4 +45,5 @@ else
 	$SMARTY->right_delimiter = '?>';
 	$SMARTY->display($_GET[tpl].'.tpl');
 }
+
 ?>

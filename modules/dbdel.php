@@ -29,7 +29,8 @@ if($_GET[is_sure])
 	$LMS->DatabaseDelete($_GET[db]);
 	header("Location: ?m=".$_SESSION[lastmodule]);
 	die;
-}else{
+} else
+{
 	$layout[pagetitle]="Usuniêcie bazy danych";
 	$SMARTY->assign("layout",$layout);
 	$SMARTY->display("header.html");
@@ -38,14 +39,5 @@ if($_GET[is_sure])
 	echo "<a href=\"?m=dbdel&db=".$_GET[db]."&is_sure=1\">Tak, jestem pewien</A>";
 	$SMARTY->display("footer.html");
 }
-/*
- * $Log$
- * Revision 1.15  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.14  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
+
 ?>

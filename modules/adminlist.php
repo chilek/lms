@@ -29,14 +29,5 @@ $layout[pagetitle] = "Administratorzy";
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("adminslist",$LMS->GetAdminList());
 $SMARTY->display("adminlist.html");
-/*
- * $Log$
- * Revision 1.13  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.12  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
+
 ?>

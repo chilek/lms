@@ -25,7 +25,9 @@
  */
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+
 $balancelist = $LMS->GetBalanceList();
+
 $listdata['incomeu'] = $balancelist['incomeu'];
 $listdata['income'] = $balancelist['income'];
 $listdata['uinvoice'] = $balancelist['uinvoice'];
@@ -55,24 +57,4 @@ $SMARTY->assign("pagelimit",$pagelimit);
 $SMARTY->assign("start",$start);
 $SMARTY->display("balancelist.html");
 
-/*
- * $Log$
- * Revision 1.25  2003/12/15 21:01:43  alec
- * - poprawiony BTS#00090 i trochê kosmetyki
- *
- * Revision 1.24  2003/12/04 04:39:14  lukasz
- * - porz±dki
- * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
- *
- * Revision 1.23  2003/08/25 02:11:58  lukasz
- * - changed default pagelimit from 50 to 100
- *
- * Revision 1.22  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.21  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>
