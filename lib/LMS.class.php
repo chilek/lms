@@ -92,9 +92,7 @@ class LMS {
 
 	function GetAdminName($id)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `name` FROM `admins` WHERE `id` = '".$id."' LIMIT 1") or $DB->row[name] = "-";
-		return $DB->row[name];
+		return $this->ADB->GetOne("SELECT name FROM admins WHERE id=?",array($id));
 	}
 
 	function AdminExists($id)
@@ -105,23 +103,17 @@ class LMS {
 
 	function GetNetworkName($id)
 	{	
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `name` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
-		return $DB->row[name];
+		return $this->ADB->GetOne("SELECT name FROM networks WHERE id=?",array($id));
 	}
 
 	function GetTariffValue($id)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `value` FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
-		return $DB->row[value];
+		return str_replace(".",",",$this->ADB->GetOne("SELECT value FROM tariffs WHERE id=?",array($id)));
 	}
 
 	function GetTariffName($id)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `name` FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
-		return $DB->row[name];
+		return $this->ADB->GetOne("SELECT name FROM tariffs WHERE id=?",array($id));
 	}
 
 	function UserUpdate($userdata)
@@ -1034,9 +1026,7 @@ class LMS {
 
 	function GetUserEmail($id)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `email` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
-		return $DB->row[email];
+		return $this->ADB->GetOne("SELECT email FROM users WHERE id=?",array($id));
 	}
 
 	function UserExists($id)
@@ -1177,9 +1167,7 @@ class LMS {
 
 	function GetAdminIDByLogin($login)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `id` FROM `admins` WHERE `login` = '".$login."' LIMIT 1");
-			return $DB->row[id];
+		return $this->ADB->GetOne("SELECT id FROM admins WHERE login=?",array($login));
 	}
 
 	function AdminAdd($adminadd)
@@ -1289,9 +1277,7 @@ class LMS {
 
 	function GetTariffIDByName($name)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `id` FROM `tariffs` WHERE `name` = '".$name."' LIMIT 1");
-		return $DB->row[id]; 
+		return $this->ADB->GetOne("SELECT id FROM tariffs WHERE name=?",array($name));
 	}
 
 	function TariffAdd($tariffdata)
