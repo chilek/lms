@@ -173,6 +173,7 @@
 				<member>at - dzieñ naliczania</member>
 			</simplelist>
 		</sect2>
+		<!-- niech mi kto¶ wyt³umaczy sens tej tabeli
 		<sect2 id="timestamps">
 			<title>Znaczniki czasu ('timestamps')</title>
 			<simplelist>
@@ -180,6 +181,7 @@
 				<member>tablename - nazwa tabeli</member>
 			</simplelist>
 		</sect2>
+		-->
 		<sect2 id="stats">
 			<title>Statystyki wykorzystania ³±cza ('stats')</title>
 			<simplelist>

@@ -178,6 +178,6 @@ CREATE TABLE netdevices (
 	model varchar(32) default NULL,
 	serialnumber varchar(32) default NULL,
 	ports integer default NULL,
-	PRIMARY KEY (id),
+	PRIMARY KEY (id)
 ) ;
 
