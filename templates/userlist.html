@@ -33,11 +33,12 @@
 	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=userlist loop=$userlist.id}
 	<TR bgcolor="{cycle}"{cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if $userlist.info[userlist]} title="{$userlist.info[userlist]}"{/if}>
 		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';" class="fleft">
-			<IMG src="img/{if $userlist.status[userlist] eq 1}unk{/if}{if $userlist.status[userlist] eq 2}wait{/if}{if $userlist.status[userlist] eq 3}user{/if}.gif" alt="" align="absmiddle" border="0">&nbsp;<B><nobr>{$userlist.username[userlist]}</nobr></B>{if $userlist.phone1[userlist] neq ""}{if $userlist.info[userlist]}<font color="#666666">...</FONT>{/if}<BR>
+			<A name="{$userlist.id[userlist]}"><IMG src="img/{if $userlist.status[userlist] eq 1}unk{/if}{if $userlist.status[userlist] eq 2}wait{/if}{if $userlist.status[userlist] eq 3}user{/if}.gif" alt="" align="absmiddle" border="0">&nbsp;<B><nobr>{$userlist.username[userlist]}</nobr></B>{if $userlist.phone1[userlist] neq ""}{if $userlist.info[userlist]}<font color="#666666">...</FONT>{/if}<BR></A>
 			<IMG src="img/phone.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.phone1[userlist]}{/if}
 		</TD>
-		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';" valign="top" align="right">
-			({$userlist.id[userlist]|string_format:"%04d"})
+		<TD {if $userlist.status[userlist] neq 3}onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';"{else}{if $userlist.nodeac[userlist] eq 1}onClick="return parent.location.href='?m=nodeset&ownerid={$userlist.id[userlist]}';"{else}{if $userlist.nodeac[userlist] eq 2}onClick="return parent.location.href='?m=nodeset&ownerid={$userlist.id[userlist]}';"{else}onClick="return parent.location.href='?m=nodeset&ownerid={$userlist.id[userlist]}&access=1';"{/if}{/if}{/if}valign="top" align="right">
+			<img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="">({$userlist.id[userlist]|string_format:"%04d"})<BR>
+			{if $userlist.status[userlist] eq 3}{if $userlist.nodeac[userlist] eq 1}<A HREF="?m=nodeset&ownerid={$userlist.id[userlist]}"><IMG SRC="img/access.gif" align="absmiddle" alt="" border="0"></A>{else}{if $userlist.nodeac[userlist] eq 2}<A HREF="?m=nodeset&ownerid={$userlist.id[userlist]}"><IMG SRC="img/mixaccess.gif" align="absmiddle" alt="" border="0"></A>{else}<A HREF="?m=nodeset&ownerid={$userlist.id[userlist]}&access=1"><IMG SRC="img/noaccess.gif" align="absmiddle" alt="" border="0"></A>{/if}{/if}{/if}
 		</TD>
 		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';" valign="top">
 			<IMG src="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.address[userlist]|replace:" ":"&nbsp;"}{if $userlist.email[userlist] neq ""}<BR>
