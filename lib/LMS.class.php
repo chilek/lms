@@ -912,7 +912,7 @@ class LMS
 		foreach($args as $idx => $value)
 		{
 			if($value!="")
-				$searchargs[] = $idx." LIKE '%".$value."%'";
+				$searchargs[] = $idx." ?LIKE? '%".$value."%'";
 		}
 
 		if($searchargs)
@@ -1861,6 +1861,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.235  2003/09/22 20:54:09  alec
+ * LIKE -> ?LIKE? in SearchNodeList
+ *
  * Revision 1.234  2003/09/22 18:07:56  lexx
  * - dalej netdev
  *
