@@ -120,11 +120,20 @@ if(isset($message))
 	
 		if(!$LMS->CONFIG['phpui']['helpdesk_backend_mode'])
 		{
+			if($message['destination'] == '')
+				$message['destination'] = $queue['email'];
 			if($message['destination'] && $message['adminid'])
 			{
 				if($LMS->CONFIG['phpui']['debug_email'])
 					$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
+				$recipients = $message['destination'];
 				$message['mailfrom'] = $queue['email'] ? $queue['email'] : $admin['email'];
+
+				$headers['Date'] = date('D, d F Y H:i:s T');
+				$headers['From'] = $message['mailfrom'];
+				$headers['To'] = $message['destination'];
+				$headers['Subject'] = $message['subject'];
+
 				$message['mailfrom'] = '<'.$message['mailfrom'].'>';
 				$message['replyto'] = $message['mailfrom'];
 				
@@ -137,26 +146,23 @@ if(isset($message))
 				    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
 				    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT'];
 			    	
+				$msg[1]['content_type'] = 'text/plain; charset=UTF-8';
+				$msg[1]['filename'] = '';
+				$msg[1]['no_base64'] = TRUE;
+				$msg[1]['data'] = $message['body']."\n\nhttps://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'],
+					0, strrpos($_SERVER['REQUEST_URI'], '/') + 1).'?m=rtticketview&id='.$message['ticketid'];
 				if($file)
 				{
-					$msg[1]['content_type'] = 'text/plain; charset=UTF-8';
-					$msg[1]['filename'] = '';
-					$msg[1]['no_base64'] = TRUE;
-					$msg[1]['data'] = $message['body'];
-			
 					$msg[2]['content_type'] = $_FILES['file']['type'];
 					$msg[2]['filename'] = $filename;
 					$msg[2]['data'] = $file;
 					$msg[2]['headers'] = '';
-					
-					$out = mp_new_message($msg);
-				}
-				
-				mail('<'.$message['destination'].'>', 
-					$message['subject'], 
-					($out[0] ? $out[0] : $message['body']), 
-					$message['headers']."\n".($out[1] ? "\n".$out[1] : ''));
-				flush();
+				}	
+				$out = mp_new_message($msg);
+
+				$body = $out[0].($out[1] ? "\n".$out[1] : '');
+
+				$LMS->SendMail($recipients, $headers, $body);
 			}
 			else 
 			{
@@ -177,7 +183,8 @@ if(isset($message))
 					$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
 			if($message['destination']=='') 
 					$message['destination'] = $queue['email'];
-				
+			$recipients = $message['destination'];
+
 			if($message['adminid'] && $addmsg)
 				$message['mailfrom'] = $queue['email'] ? $queue['email'] : $admin['email'];
 			if($message['adminid'] && !$addmsg)
@@ -185,6 +192,11 @@ if(isset($message))
 			
 			if($message['userid'])
 				$message['mailfrom'] = $LMS->GetUserEmail($message['userid']);
+
+			$headers['Date'] = date('D, d F Y H:i:s T');
+			$headers['From'] = $message['mailfrom'];
+			$headers['To'] = $message['destination'];
+			$headers['Subject'] = $message['subject'];
 
 			$message['mailfrom'] = '<'.$message['mailfrom'].'>';
 			$message['replyto'] = $message['mailfrom']; 
@@ -197,27 +209,20 @@ if(isset($message))
 			    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
 			    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT'];
 
+			$msg[1]['content_type'] = 'text/plain; charset=UTF-8';
+			$msg[1]['filename'] = '';
+			$msg[1]['no_base64'] = TRUE;
+			$msg[1]['data'] = $message['body']."\n\nhttps://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'],
+				0, strrpos($_SERVER['REQUEST_URI'], '/') + 1).'?m=rtticketview&id='.$message['ticketid'];
 			if($file)
 			{
-				$msg[1]['content_type'] = 'text/plain; charset=UTF-8';
-				$msg[1]['filename'] = '';
-				$msg[1]['no_base64'] = TRUE;
-				$msg[1]['data'] = $message['body'];
-
 				$msg[2]['content_type'] = $_FILES['file']['type'];
 				$msg[2]['filename'] = $filename;
 				$msg[2]['data'] = $file;
 				$msg[2]['headers'] = '';
-				
-				$out = mp_new_message($msg);
 			}
+			$out = mp_new_message($msg);
 
-			mail('<'.$message['destination'].'>', 
-				$message['subject'], 
-				($out[0] ? $out[0] : $message['body']), 
-				$message['headers'].($out[1] ? "\n".$out[1] : ''));
-			flush();
-			
 			// message to user is written to database
 			if($message['adminid'] && $addmsg) 
 				MessageAdd($message, $_FILES['file']);
