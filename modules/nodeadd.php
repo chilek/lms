@@ -94,6 +94,13 @@ if($_GET[ownerid]&&$LMS->UserExists($_GET[ownerid]))
 if(isset($_GET[preip])&&$nodedata[ipaddr]=="")
 	$nodedata[ipaddr] = $_GET[preip];
 
+if(isset($_GET[premac])&&$nodedata[mac]=="")
+	$nodedata[mac] = $_GET[premac];
+
+if(isset($_GET[prename])&&$nodedata[name]=="")
+	$nodedata[name] = $_GET[prename];
+		
+
 $layout[pagetitle]="Dodanie nowego komputera";
 
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($nodedata[ownerid]));

@@ -1,14 +1,15 @@
 {include file="header.html"}
 {include file="nodeheader.html"}
 <!-- $Id$ -->
-<H1>Informacje o komputerze {$nodeinfo.name|upper}</H1>
+<H1>Dodanie komputera {if $userinfo.id}(dla {$userinfo.username}){/if}</H1>
+{if $userinfo}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD VALIGN="TOP" WIDTH="50%">
 			{include file="userinfobox.html"}
 		</TD>
 		<TD VALIGN="TOP" WIDTH="50%">
-			{include file="nodeinfobox.html"}
+			{include file="nodescanbox.html"}
 		</TD>
 	</TR>
 	<TR>
@@ -17,4 +18,7 @@
 		</TD>
 	</TR>
 </TABLE>
+{else}
+{include file="nodescanbox.html"}
+{/if}
 {include file="footer.html"}
