@@ -203,7 +203,7 @@ struct notify_module * init(GLOBAL *g, MODULE *m)
 	free(s); s = g->str_concat(instance, ":file");
 	n->file = strdup(g->iniparser_getstring(ini, s, "/tmp/mail"));
 	free(s); s = g->str_concat(instance, ":command");
-	n->command = strdup(g->iniparser_getstring(ini, s, "mail %addres -s \"Inf. o zaleg³o¶ciach w op³atach za Internet\" < /tmp/mail"));
+	n->command = strdup(g->iniparser_getstring(ini, s, "mail %address -s \"Inf. o zaleg³o¶ciach w op³atach za Internet\" < /tmp/mail"));
 	free(s); s = g->str_concat(instance, ":limit");
 	n->limit = g->iniparser_getint(ini, s, 0);
 	free(s); s = g->str_concat(instance, ":debug_mail");
