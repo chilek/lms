@@ -82,7 +82,7 @@ lms-makedhcpconf, version $_version
 (C) Copyright 2002 Rulez.PL Development Team
 (C) Copyright 2001-2002 NetX ACN
 
--C, --config-file=/etc/lms/lms-scripts.ini	alternate config file (default: /etc/lms/lms-scripts.ini);
+-C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
 -h, --help			print this help and exit;
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
@@ -104,7 +104,7 @@ EOF
 
 if(!$configfile)
 {
-	$configfile = "/etc/lms/lms-scripts.ini";
+	$configfile = "/etc/lms/lms.ini";
 }
 
 if(!$quiet)
