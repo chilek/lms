@@ -76,7 +76,432 @@ NAME="DEVEL-DB"
 >6.2. Struktura bazy danych</A
 ></H1
 ><P
->		</P
+>Poni¿ej przedstawiono ogóln± strukturê bazy danych LMS. Bardziej szczegó³owe
+		informacje o typach danych, ograniczeniach nak³adanych na pola oraz warto¶ci domyslne
+		zawarte s± w plikach <A
+HREF="../lms.mysql"
+TARGET="_top"
+><TT
+CLASS="FILENAME"
+>lms.mysql</TT
+></A
+>
+		oraz <A
+HREF="../lms.pgsql"
+TARGET="_top"
+><TT
+CLASS="FILENAME"
+>lms.pgsql</TT
+></A
+> w katalogu
+		<TT
+CLASS="FILENAME"
+>/doc</TT
+>.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ADMINS"
+>6.2.1. Administratorzy ('admins')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>login - login</TD
+></TR
+><TR
+><TD
+>name - nazwa (nazwisko i imiê)</TD
+></TR
+><TR
+><TD
+>email - adres admina</TD
+></TR
+><TR
+><TD
+>rights - prawa dostêpu</TD
+></TR
+><TR
+><TD
+>passwd - has³o logowania</TD
+></TR
+><TR
+><TD
+>lastlogindate - data ostatniego logowania</TD
+></TR
+><TR
+><TD
+>lastloginip - adres IP, z którego nast±pi³o ostatnie logowanie</TD
+></TR
+><TR
+><TD
+>failedlogindate - data ostatniej nieudanej próby logowania</TD
+></TR
+><TR
+><TD
+>failedloginip - adres IP, z którego próbowano siê zalogowaæ</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USERS"
+>6.2.2. U¿ytkownicy ('users')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>lastname - nazwa/nazwisko</TD
+></TR
+><TR
+><TD
+>name - imiê</TD
+></TR
+><TR
+><TD
+>status - pod³±czony/od³±czony</TD
+></TR
+><TR
+><TD
+>email - adres poczty internetowej</TD
+></TR
+><TR
+><TD
+>phone1 - telefon</TD
+></TR
+><TR
+><TD
+>phone2 - telefon</TD
+></TR
+><TR
+><TD
+>phone3 - telefon</TD
+></TR
+><TR
+><TD
+>gguin - identyfikator gadu-gadu</TD
+></TR
+><TR
+><TD
+>address - adres (ulica, nr domu, nr lokalu)</TD
+></TR
+><TR
+><TD
+>zip - kod pocztowy</TD
+></TR
+><TR
+><TD
+>city - nazwa miasta</TD
+></TR
+><TR
+><TD
+>nip - numer identyfikacji podatkowej NIP</TD
+></TR
+><TR
+><TD
+>info - dodatkowe informacje</TD
+></TR
+><TR
+><TD
+>creationdate - czas utworzenia wpisu</TD
+></TR
+><TR
+><TD
+>moddate - czas modyfikacji</TD
+></TR
+><TR
+><TD
+>creatorid - identyfikator administratora tworz±cego wpis</TD
+></TR
+><TR
+><TD
+>modid - identyfikator administratora dokonuj±cego zmian danych</TD
+></TR
+><TR
+><TD
+>deleted - usuniêty z bazy</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NETWORKS"
+>6.2.3. Sieci ('networks')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>name - nazwa sieci</TD
+></TR
+><TR
+><TD
+>address - adres IP</TD
+></TR
+><TR
+><TD
+>mask - maska</TD
+></TR
+><TR
+><TD
+>interface - interfejs (np. eth1)</TD
+></TR
+><TR
+><TD
+>gateway - adres IP bramy</TD
+></TR
+><TR
+><TD
+>dns - adres IP serwera nazw</TD
+></TR
+><TR
+><TD
+>dns2 - adres IP zapasowego serwera nazw</TD
+></TR
+><TR
+><TD
+>domain - domena</TD
+></TR
+><TR
+><TD
+>wins - adres serwera WINS</TD
+></TR
+><TR
+><TD
+>dhcpstart - pocz±tek zakresu DHCP</TD
+></TR
+><TR
+><TD
+>dhcpend - koniec zakresu DHCP</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NODES"
+>6.2.4. Komputery ('nodes')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>name - nazwa</TD
+></TR
+><TR
+><TD
+>mac - adres MAC</TD
+></TR
+><TR
+><TD
+>ipaddr - adres IP</TD
+></TR
+><TR
+><TD
+>ownerid - identyfikator w³a¶ciciela (u¿ytkownika)</TD
+></TR
+><TR
+><TD
+>creationdate - znacznik czasu utworzenia wpisu</TD
+></TR
+><TR
+><TD
+>moddate - znacznik czasu ostatniej modyfikacji</TD
+></TR
+><TR
+><TD
+>creatorid - identyfikator administratora tworz±cego wpis</TD
+></TR
+><TR
+><TD
+>modid - identyfikator administratora </TD
+></TR
+><TR
+><TD
+>access - pod³±czony/od³aczony</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CASH"
+>6.2.5. Operacje finansowe ('cash')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>time - znacznik czasu zaksiêgowania operacji</TD
+></TR
+><TR
+><TD
+>adminid - identyfikator administratora dokonuj±cego operacji</TD
+></TR
+><TR
+><TD
+>type - typ operacji (przychów, rozchód, wp³ata, obci±¿enie)</TD
+></TR
+><TR
+><TD
+>value - warto¶æ w z³otych</TD
+></TR
+><TR
+><TD
+>userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy)</TD
+></TR
+><TR
+><TD
+>comment - opis operacji</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="TARIFFS"
+>6.2.6. Taryfy</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>name - nazwa</TD
+></TR
+><TR
+><TD
+>value - warto¶æ netto w z³otych</TD
+></TR
+><TR
+><TD
+>uprate - ograniczenie szybko¶ci transferu danych wychodz±cych</TD
+></TR
+><TR
+><TD
+>downrate - ograniczenie szybko¶ci transferu danych przychodz±cych</TD
+></TR
+><TR
+><TD
+>description - opis</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ASSIGNMENTS"
+>6.2.7. Powi±zania ('assignments')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>tariffid - identyfikator taryfy</TD
+></TR
+><TR
+><TD
+>userid - identyfikator u¿ytkownika</TD
+></TR
+><TR
+><TD
+>period - okres (ilo¶æ dni)</TD
+></TR
+><TR
+><TD
+>at - dzieñ naliczania</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="STATS"
+>6.2.8. Statystyki wykorzystania ³±cza ('stats')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>nodeid - numer komputera</TD
+></TR
+><TR
+><TD
+>dt - znacznik czasu</TD
+></TR
+><TR
+><TD
+>upload - ilo¶æ danych wys³anych w bajtach</TD
+></TR
+><TR
+><TD
+>download - ilo¶æ danych odebranych w bajtach</TD
+></TR
+></TBODY
+></TABLE
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
