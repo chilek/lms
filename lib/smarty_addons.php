@@ -62,12 +62,50 @@ function _smarty_function_tip($args, &$SMARTY)
 	return $result;
 }
 
+function _smarty_modifier_striphtml($args)
+{
+	$search = array ("'<script[^>]*?>.*?</script>'si",  // Strip out javascript
+			"'<[\/\!]*?[^<>]*?>'si",           // Strip out html tags
+			"'([\r\n])[\s]+'",                 // Strip out white space
+			"'&(quot|#34);'i",                 // Replace html entities
+			"'&(amp|#38);'i",
+			"'&(lt|#60);'i",
+			"'&(gt|#62);'i",
+			"'&(nbsp|#160);'i",
+			"'&(iexcl|#161);'i",
+			"'&(cent|#162);'i",
+			"'&(pound|#163);'i",
+			"'&(copy|#169);'i",
+			"'&#(\d+);'e");                    // evaluate as php
+	
+	$replace = array ("",
+			"\\1",
+			"\"",
+			"&",
+			"<",
+			">",
+			" ",
+			chr(161),
+			chr(162),
+			chr(163),
+			chr(169),
+			"chr(\\1)");
+
+	return preg_replace ($search, $replace, $args);
+	
+}
+
 $SMARTY->register_function('sum','_smarty_function_sum');
 $SMARTY->register_function('size','_smarty_function_sizeof');
 $SMARTY->register_function('tip','_smarty_function_tip');
 $SMARTY->register_modifier('to_words','to_words');
+$SMARTY->register_modifier('striphtml','_smarty_modifier_striphtml');
+
 /*
  * $Log$
+ * Revision 1.10  2003/10/06 22:02:10  lukasz
+ * - ju¿ nie psuje
+ *
  * Revision 1.9  2003/10/02 13:15:15  lukasz
  * - eskejepowanie
  *
