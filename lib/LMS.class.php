@@ -598,6 +598,33 @@ class LMS {
 		
 		return $nodelist;
 	}
+
+	function DatabaseList()
+	{
+		if ($handle = opendir(BACKUP_DIR))
+		{
+			while (false !== ($file = readdir($handle)))
+			{
+				if ($file != "." && $file != "..")
+				{
+					$path = pathinfo($file);
+					if($path[extension] = "sql")
+					{
+						if(substr($path[basename],0,4)=="lms-")
+						{
+							$dblist[time][] = substr($path[basename],4);
+							$dblist[size][] = filesize(BACKUP_DIR."/".$file);
+						}
+					}
+				}
+			}
+			closedir($handle);
+		}
+		if(sizeof($dblist[time]))
+			array_multisort($dblist[time],$dblist[size]);
+		$dblist[total] = sizeof($dblist[time]);
+		return $dblist;
+	}		
 	
 	function NodeSet($id)
 	{
