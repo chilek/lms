@@ -144,22 +144,6 @@
 			{if $userinfo.moddate}{$userinfo.modifiedby}, {$userinfo.moddateh}{else}-{/if}
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ticket.gif" BORDER="0" ALT="">
-		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT type="hidden" name="contract[subject]" value=""></INPUT>
-			<INPUT type="hidden" name="contract[userid]" value="{$userinfo.id}"></INPUT>
-			<INPUT type="hidden" name="contract[name]" value=""></INPUT>
-			<INPUT type="hidden" name="contract[email]" value=""></INPUT>
-			<INPUT type="hidden" name="contract[owner]" value="0"></INPUT>
-			<INPUT type="hidden" name="contract[queue]" value="0"></INPUT>
-			<INPUT type="hidden" name="contract[state]" value=""></INPUT>
-			<INPUT type="hidden" name="contract[uptime]" value=""></INPUT>
-			<A HREF="javascript: SearchTickets();">{t}Tickets searching{/t}</A>
-		</TD>
-	</TR>
 	{if $userinfo.info}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
@@ -194,6 +178,14 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+			<INPUT type="hidden" name="rtsearch[subject]" value=""></INPUT>
+			<INPUT type="hidden" name="rtsearch[userid]" value="{$userinfo.id}"></INPUT>
+			<INPUT type="hidden" name="rtsearch[name]" value=""></INPUT>
+			<INPUT type="hidden" name="rtsearch[email]" value=""></INPUT>
+			<INPUT type="hidden" name="rtsearch[owner]" value="0"></INPUT>
+			<INPUT type="hidden" name="rtsearch[queue]" value="0"></INPUT>
+			<INPUT type="hidden" name="rtsearch[state]" value=""></INPUT>
+			<INPUT type="hidden" name="rtsearch[uptime]" value=""></INPUT>
 			{if $userinfo.deleted}
 				<A HREF="?m=useredit&id={$userinfo.id}&action=recover">{t}Restore{/t} <IMG SRC="img/recover.gif" border="0" align="absmiddle" ALT="[ {t}Restore{/t} ]"></A>
 			{else}
@@ -207,9 +199,12 @@
 				{else}
 					<A href="?m=contract&id={$userinfo.id}" target="_blank">{t}Print contract{/t} <IMG src="img/print.gif" border="0" align="absmiddle" ALT="[ {t}Contract{/t} ]"></A>
 				{/if}
+				<NOBR>
+				<A HREF="javascript: SearchTickets();">{t}Tickets{/t}</A> <IMG src="img/ticket.gif" border="0" align="absmiddle" ALT="[ {t}Tickets{/t} ]"></A>
 				<A href="?m=accountlist&u={$userinfo.id}">{t}Accounts{/t} <IMG src="img/account.gif" border="0" align="absmiddle" ALT="[ {t}Accounts{/t} ]"></A>
 				<A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A>
 				<A href="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to remove that customer from database?\n\nIf that customer have any computers, they will be automatically removed from database too, and informations about them irreversible losed!{/t}')">{t}Delete{/t} <img border="0" align="absmiddle" src="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
+				</NOBR>
 			{/if}
 		</TD>
 	</TR>
