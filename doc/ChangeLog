@@ -22,6 +22,8 @@ wersja 1.0pre4 (??/01/2003):
   - oddzielny formularz dodawania u¿ytkowników;
   - zmiana designu ¿eby tabele siê mie¶ci³y nawet w ma³ej rozdzielczo¶ci;
   - wyszukiwanie u¿ytkowników;
+  - mo¿liwo¶æ zdefiniowania sposobu reloadu (albo via sql, albo exec
+    jakiej¶ komendy).
   
   
 wersja 1.0pre3 (27/12/2002):
