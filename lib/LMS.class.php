@@ -845,12 +845,12 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 					case "3":
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = "Wp³ata";
+						$saldolist['name'][$i] = "wp³ata";
 					break;
 
 					case "4":
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = "Obci±¿enie";
+						$saldolist['name'][$i] = "obci±¿enie";
 					break;
 				}
 
@@ -862,6 +862,11 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 					$list['before'][] = $saldolist['before'][$i];
 					$list['value'][] = $saldolist['value'][$i];
 					$list['name'][] = $saldolist['name'][$i];
+					switch($saldolist['name'][$i])
+					{ 
+						case 'wp³ata':	$list['summary'] += $saldolist['value'][$i]; break;
+						case 'obci±¿enie': $list['summary'] -= $saldolist['value'][$i]; break;
+					}	
 					$list['date'][] = date("Y/m/d H:i",$saldolist['time'][$i]);
 					$list['adminname'][] = $saldolist['adminname'][$i];
 					(strlen($saldolist['comment'][$i])<3) ? $list['comment'][] = $saldolist['name'][$i] : $list['comment'][] = $saldolist['comment'][$i];
