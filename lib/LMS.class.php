@@ -86,7 +86,8 @@ class LMS
 		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 10);
 		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 15);
 		$this->AddMenu('Osprzêt sieciowy', 'netdev.gif', '?m=netdevlist', 'Ewidencja sprzêtu sieciowego', 'o', 20);
-		$this->AddMenu('Sieci IP', 'network.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 's', 25);
+		$this->AddMenu('Sieci IP', '
+		network.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 's', 25);
 		$this->AddMenu('Taryfy i finanse', 'money.gif', '?m=tarifflist', 'Zarz±dzanie taryfami oraz finansami sieci', 't', 30);
 		$this->AddMenu('Mailing', 'mail.gif', '?m=mailing', 'Korespondencja seryjna', 'm', 35);
 		$this->AddMenu('Prze³adowanie', 'reload.gif', '?m=reload', '', 'r', 40);
@@ -2018,23 +2019,24 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 		$nodes = $this->DB->GetAllByKey("SELECT id, name, ipaddr, ownerid, netdev FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",'ipaddr', array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
 
+	
 		for($i = 0; $i < ($end - $start) ; $i ++)
 		{
 			$longip = $network['addresslong'] + $i + $start;
 			$node = $nodes["".$longip.""];
 			$network['nodes']['addresslong'][$i] = $longip;
-			$network['nodes']['address'][$i] = long2ip($longip);;
+			$network['nodes']['address'][$i] = long2ip($longip);
 			$network['nodes']['id'][$i] = $node['id'];
 			$network['nodes']['netdev'][$i] = $node['netdev'];
 
-			if( $network['nodes']['addresslong'][$i] == $network['addresslong'] || $network['nodes']['addresslong'][$i] == $network['addresslong'] + $network['size'] - 1)
-				$network['nodes']['name'][$i] = 'BROADCAST';
-			elseif($network['nodes']['addresslong'][$i] >= ip_long($network['dhcpstart']) && $network['nodes']['addresslong'][$i] <= ip_long($network['dhcpend']))
+			if( $network['nodes']['addresslong'][$i] >= ip_long($network['dhcpstart']) && $network['nodes']['addresslong'][$i] <= ip_long($network['dhcpend']) )
 				$network['nodes']['name'][$i] = 'DHCP';
 			else
 				$network['nodes']['name'][$i] = $node['name'];
+				
 			$network['nodes']['ownerid'][$i] = $node['ownerid'];
-			if($node['id'])
+			
+			if( $node['id'] )
 				$network['pageassigned'] ++;
 			if( $network['nodes']['ownerid'][$i] == 0 && $network['nodes']['netdev'][$i] > 0) 
 			{
@@ -2043,6 +2045,8 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			}
 
 		}
+		$network['nodes']['name'][0] = '*** NETWORK ***';
+		$network['nodes']['name'][$i-1] = '*** BROADCAST ***';
 
 		$network['assigned'] = $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr < ?", array($network['addresslong'], $network['addresslong'] + $network['size']));
 
