@@ -406,7 +406,7 @@ class LMS
 
 	function GetEmails($group)
 	{
-		return $this->DB->GetAll("SELECT email, ".$this->DB->Concat("lastname", "' '", "name")." AS username FROM users WHERE 1=1 ".($group !=0 ? " AND status='".$group."'" : "")." AND email != ''");
+		return $this->DB->GetAll("SELECT email, ".$this->DB->Concat("lastname", "' '", "name")." AS username FROM users WHERE email != '' ".($group !=0 ? "AND status='".$group."'" : ""));
 	}
 
 	function GetUserEmail($id)
@@ -2028,12 +2028,8 @@ class LMS
 
 	function Mailing($mailing)
 	{
-		$SESSION=$this->SESSION;
-		$emails = $this->GetEmails($mailing['group']);
-
 		if($emails = $this->GetEmails($mailing['group']))
 		{
-		
 			if($this->CONFIG['phpui']['debug_email'])
 				echo "<B>Uwaga! Tryb debug (u¿ywam adresu ".$this->CONFIG['phpui']['debug_email']."</B><BR>";
 
@@ -2051,7 +2047,6 @@ class LMS
 
 				echo "<img src=\"img/mail.gif\" border=\"0\" align=\"absmiddle\" alt=\"\"> ".($key+1)." z ".sizeof($emails)." (".sprintf("%02.2f",round((100/sizeof($emails))*($key+1),2))."%): ".$row['username']." &lt;".$row['email']."&gt;<BR>\n";
 				flush();
-
 			}
 		}
 	}
