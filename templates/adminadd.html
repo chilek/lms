@@ -6,7 +6,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="FLEFTU" WIDTH="1%">
-			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Login:</B>
+			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>{t}Login:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHTU" WIDTH="99%">
 			<INPUT TYPE="TEXT" NAME="adminadd[login]" VALUE="{$adminadd.login}" {tip trigger="login" bold=1}>
@@ -14,7 +14,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT" NOWRAP>
-			<IMG SRC="img/admins.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Imiê i nazwisko:</B>
+			<IMG SRC="img/admins.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>{t}Name and surname:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="adminadd[name]" VALUE="{$adminadd.name}">
@@ -22,7 +22,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT">
-			<IMG SRC="img/mail.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Email:</B>
+			<IMG SRC="img/mail.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>{t}E-mail:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="adminadd[email]" VALUE="{$adminadd.email}" {tip trigger="email"}>
@@ -30,7 +30,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT">
-			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Has³o:</B>
+			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>{t}Password:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="PASSWORD" NAME="adminadd[password]" {tip trigger="password"}>
@@ -38,7 +38,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT" VALIGN="TOP">
-			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Powtórz:</B>
+			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>{t}Repeat password:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="PASSWORD" NAME="adminadd[confirm]" {tip trigger="password"}>
@@ -46,13 +46,13 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FBOTTOMU" COLSPAN="2" ALIGN="RIGHT">
-			<A HREF="javascript:document.adminadd.submit();" accesskey="s">Zapisz <IMG SRC="img/save.gif" ALIGN="ABSMIDDLE" ALT="" BORDER="0"></A>
-			<A HREF="?m=adminlist">Anuluj <IMG SRC="img/cancel.gif" ALIGN="ABSMIDDLE" ALT="" BORDER="0"></A>
+			<A HREF="javascript:document.adminadd.submit();" accesskey="s">{t}Save{/t} <IMG SRC="img/save.gif" ALIGN="ABSMIDDLE" ALT="" BORDER="0"></A>
+			<A HREF="?m=adminlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALIGN="ABSMIDDLE" ALT="" BORDER="0"></A>
 		</TD>
 	</TR>
 	<TR CLASS="DARK">
 		<TD CLASS="FALL" COLSPAN="2">
-			<B>Uprawnienia:</B>
+			<B>{t}Access rights:{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
