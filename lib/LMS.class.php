@@ -476,7 +476,7 @@ class LMS
 
 	function GetCashByID($id)
 	{
-		return $this->DB->GetRow("SELECT time, adminid, type, value, userid, comment FROM `cash` WHERE id=?",array($id));
+		return $this->DB->GetRow("SELECT time, adminid, type, value, userid, comment FROM cash WHERE id=?",array($id));
 	}
 
 	function GetUserStatus($id)
@@ -2265,6 +2265,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.297  2003/12/01 20:27:39  alec
+ * poprawiony b³±d GetCashByID() - czy to komu¶ potrzebne, czy nie
+ *
  * Revision 1.296  2003/12/01 15:25:37  lukasz
  * - poprawki
  * - obs³uga kilku tych samych abonamentów w jednym dniu
