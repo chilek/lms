@@ -37,7 +37,7 @@ if($from) {
 }
 if($to) {
 	list($year, $month, $day) = split('/',$to);
-	$unixto = mktime(0,0,0,$month,$day,$year);
+	$unixto = mktime(23,59,59,$month,$day,$year);
 } else { 
 	$to = date("Y/m/d",time());
 	$unixto = mktime(23,59,59); //koniec dnia dzisiejszego
@@ -51,6 +51,7 @@ $listdata = $invoicelist['sum'];
 unset($invoicelist['sum']);
 
 $SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('layout',$layout);
 $SMARTY->assign('invoicelist',$invoicelist);
 $SMARTY->display('invoicereport.html');
 
