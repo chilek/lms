@@ -469,7 +469,6 @@
 	</sect2>
 	<sect2 id="accounts-examples">
 	    <title>Przyk³ady</title>
-	    <para></para>
 	    <para>Poni¿szy listing zawiera istotne fragmenty pliku konfiguracyjnego
 	    demona proftpd (w wersji 1.2.10) umo¿liwiaj±cy przechowywanie danych
 	    o kontach ftp w bazie LMSa. Przyk³ad zawiera konfiguracjê dla bazy
@@ -503,7 +502,83 @@
   # SQLUserWhereClause "type & 8 = 8 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())"
   SQLUserWhereClause "type & 8 = 8 AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))"
 </screen>
-	    </example></para>  
+	    </example></para>
+	    <para>W kolejnym przyk³adzie przedstawimy jak skonfigurowaæ serwer
+	    Postfix 2.1.1 oraz Cyrus-SASL 2.1.19, Courier-IMAP/POP3 3.0.4, aby korzysta³y
+	    z bazy danych LMSa. LMS'owe konta bêd± kontami wirtualnymi, a poczta
+	    przechowywana bêdzie w formacie Maildir.</para>
+	    <para>Poniewa¿ has³a w LMS'ie s± szyfrowane, wymagane jest zainstalowanie
+	    SASL'a z ³at± pozwalaj±c± na to. W komentarzach podano warto¶ci opcji
+	    charakterystycznych dla bazy MySQL. Listing zawiera tylko opcje bezpo¶rednio
+	    zwi±zane z baz± danych:
+	    <example id="accounts-e2">
+		<title>Konta. Konfiguracja serwera pocztowego (postfix+sasl+courier).</title>
+<screen>
+# Plik smtpd.conf (Cyrus-SASL):
+
+pwcheck_method: auxprop
+#sql_engine: mysql
+sql_engine: pgsql
+sql_user: lms
+sql_passwd: has³o
+sql_hostnames: localhost
+sql_database: lms
+#sql_select: SELECT password FROM passwd WHERE login='%u' AND domain ='%r' AND type & 2 = 2 
+#	AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
+sql_select: SELECT password FROM passwd WHERE login='%u' AND domain ='%r' AND type & 2 = 2 
+	AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+password_format: crypt
+mech_list: login plain
+
+# authpgsqlrc (lub authmysqlrc) (Courier):
+
+#MYSQL_PORT		3306
+PGSQL_PORT		5432
+#MYSQL_USERNAME		lms
+PGSQL_USERNAME		lms
+#MYSQL_PASSWORD		has³o
+PGSQL_PASSWORD		has³o
+#MYSQL_DATABASE		lms
+PGSQL_DATABASE		lms
+#MYSQL_SELECT_CLAUSE SELECT login, \
+#       password, '', 104, 104, '/var/spool/mail/virtual', \
+#       CONCAT(login,'/'), '', login, '' \
+#       FROM passwd WHERE login = '$(local_part)' AND domain = '$(domain)' \
+#       AND type & 2 = 2 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
+PGSQL_SELECT_CLAUSE SELECT login, \
+        password, '', 104, 104, '/var/spool/mail/virtual', \
+        login ||'/', '', login, '' \
+        FROM passwd WHERE login = '$(local_part)' AND domain = '$(domain)' \
+        AND type & 2 = 2 \
+        AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+
+# main.cf (Postfix):
+
+virtual_mailbox_base = /var/spool/mail/virtual
+virtual_mailbox_domains = pgsql:/etc/postfix/pgsql_virtual_domains_maps.cf
+virtual_mailbox_maps = pgsql:/etc/postfix/pgsql_virtual_mailbox_maps.cf
+
+# pgsql_virtual_domains_maps.cf (Postfix):
+
+user = lms
+password = has³o
+hosts = localhost
+dbname = lms
+query = SELECT domain FROM passwd WHERE domain = '%s' AND type & 2 = 2 LIMIT 1
+
+# pgsql_virtual_mailbox_maps.cf (Postfix):
+
+user = lms
+password = has³o
+hosts = localhost
+dbname = lms
+#query = SELECT CONCAT(login,'/') FROM passwd WHERE login = '%u' AND domain = '%d' 
+#       AND type & 2 = 2 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
+query = SELECT login || '/' FROM passwd WHERE login = '%u' AND domain = '%d' 
+        AND type & 2 = 2 
+        AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+</screen>
+	    </example></para>
 	</sect2>
  </sect1>
  <sect1 id="menu-mailing">
