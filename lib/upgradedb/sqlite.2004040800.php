@@ -38,7 +38,7 @@ $DB->Execute("CREATE TABLE cash (
 	comment varchar(255) 	DEFAULT '' NOT NULL,
 	invoiceid integer 	DEFAULT 0 NOT NULL
     )");
-$DB->Execute("INSERT INTO cash(id, time, adminid, type, value, taxvalue, userid, comment, invoiceid) SELECT id, time, adminid, type, value, NULL as taxvalue, userid, comment, invoiceid  FROM cash_temp");
+$DB->Execute("INSERT INTO cash(id, time, adminid, type, value, userid, comment, invoiceid) SELECT id, time, adminid, type, value, userid, comment, invoiceid  FROM cash_temp");
 $DB->Execute("DROP TABLE cash_temp");
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004040800', 'dbversion'));
 $DB->Execute("COMMIT");
