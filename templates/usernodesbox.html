@@ -15,6 +15,7 @@
 	<tr bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if ! $usernodes[usernodes].access} class="blend"{/if}>
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<a href="?m=nodeset&id={$usernodes[usernodes].id}"><IMG src="img/{if ! $usernodes[usernodes].access}no{/if}access.gif" ALT="[ {if ! $usernodes[usernodes].access}Pod³±cz{else}Od³±cz{/if} ]" border="0" align="absmiddle"></A>
+			<a href="?m=nodewarn&id={$usernodes[usernodes].id}"><IMG src="img/{if ! $usernodes[usernodes].warning}no{/if}access.gif" ALT="[ {if ! $usernodes[usernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]" border="0" align="absmiddle"></A>
 		</TD>
 		<TD WIDTH="97%" onClick="return self.location.href='?m=nodeinfo&id={$usernodes[usernodes].id}';">
 			<B>{$usernodes[usernodes].name}</B><BR>
@@ -46,6 +47,8 @@
 		<TD WIDTH="99%" COLSPAN="3" CLASS="FLEFTU">
 			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}&access=1"><IMG SRC="img/access.gif" ALIGN="ABSMIDDLE" BORDER="0"> Pod³±cz wszystkie</A><BR>
 			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}"><IMG SRC="img/noaccess.gif" ALIGN="ABSMIDDLE" BORDER="0"> Od³±cz wszystkie</A><BR>
+			<A HREF="?m=nodewarn&ownerid={$usernodes.ownerid}&warning=1"><IMG SRC="img/access.gif" ALIGN="ABSMIDDLE" BORDER="0"> Ostrzegaj wszystkie</A><BR>
+			<A HREF="?m=nodewarn&ownerid={$usernodes.ownerid}"><IMG SRC="img/noaccess.gif" ALIGN="ABSMIDDLE" BORDER="0"> Nie ostrzegaj ¿adnych</A><BR>
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHTU" NOWRAP VALIGN="BOTTOM" ALIGN="RIGHT">
 			{if $userinfo.status eq "3" and ! $userinfo.deleted}<A HREF="?m=nodeadd&ownerid={$usernodes.ownerid}">Nowy <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE" BORDER="0"></A>{else}<FONT CLASS="BLEND">Nowy <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE">{/if}

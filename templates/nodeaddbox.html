@@ -49,6 +49,20 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/{if ! $nodedata.warning}no{/if}access.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Ostrze¿enie:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[warning]" {tip text="Ustaw ostrze¿enie komputera"}>
+				<OPTION VALUE="1"{if $nodedata.warning} SELECTED{/if}>w³±czone</OPTION>
+				<OPTION VALUE="0"{if ! $nodedata.warning} SELECTED{/if}>wy³±czone</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/user.gif" BORDER="0" ALT="W³a¶ciciel:">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>

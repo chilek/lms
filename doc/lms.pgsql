@@ -78,6 +78,7 @@ CREATE TABLE nodes (
 	creatorid integer NOT NULL,
 	modid integer DEFAULT 0 NOT NULL,
 	access smallint DEFAULT 1 NOT NULL,
+	warning smallint DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -190,6 +191,7 @@ CREATE TABLE users (
 	creatorid integer DEFAULT 0 NOT NULL,
 	modid integer DEFAULT 0 NOT NULL,
 	deleted smallint DEFAULT 0 NOT NULL,
+	message text,
 	PRIMARY KEY (id)	
 );
 

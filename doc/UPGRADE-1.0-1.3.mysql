@@ -29,6 +29,7 @@ ALTER TABLE users ADD pesel VARCHAR(11) DEFAULT '' AFTER nip;
 # Kosmetyka 
 ALTER TABLE users CHANGE gguin gguin INT(11) DEFAULT '0';
 
+
 # Nowe pola w tabeli 
 ALTER TABLE networks ADD dns2 VARCHAR(16) AFTER dns;
 ALTER TABLE networks ADD interface VARCHAR(8) AFTER mask;
@@ -50,6 +51,7 @@ ALTER TABLE nodes CHANGE mac mac VARCHAR(20) NOT NULL;
 
 # Linki do urz±dzeñ 
 ALTER TABLE nodes ADD netdev INT(11) NOT NULL DEFAULT '0' AFTER modid;
+
 
 # Zmiana zapisu limitu 
 ALTER TABLE tariffs CHANGE uprate uprate INT(11), 
@@ -168,6 +170,10 @@ CREATE TABLE dbinfo (
 INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004030400');		  
 
 # Chyba o niczym nie zapomnia³em?
+
+# Wiadomosci administracyjne (winietkowanie)
+ALTER TABLE users ADD message TEXT';
+ALTER TABLE nodes ADD warning BOOL DEFAULT '0' NOT NULL;
 
 # $Id$
 
