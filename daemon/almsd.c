@@ -118,7 +118,10 @@ int main(int argc, char *argv[])
     	// set sleeptime
     	if( !sleeptime )
 		sleeptime = iniparser_getint(ini,"lmsd:sleeptime",30);
-    
+
+	// free ini
+	iniparser_freedict(ini);    
+
     	// main loop ****************************************************
     	for (;;) {
 		reload = 0;
@@ -132,7 +135,7 @@ int main(int argc, char *argv[])
 	
         	// need reload?
         	if( quit )
-    	    		reload = 1;
+   	    		reload = 1;
 		else {
 	    		if( (res =  db_query("SELECT COUNT(*) AS number FROM reload"))!=NULL ) {
 				if( atoi(db_get_data(res,0,"number"))>0 )
@@ -207,19 +210,19 @@ int main(int argc, char *argv[])
 				dlclose(mod->dlh);
 				free(mod->filename); free(mod->instance); free(mod);
 	    		}
-	    		// clean up
+  	   		// clean up
 			free(instances);
-	    		iniparser_freedict(ini);
+			iniparser_freedict(ini);
 
-	    		// empty reload table 
-	    		db_exec("DELETE FROM reload"); 
+	 		// empty reload table 
+			db_exec("DELETE FROM reload"); 
 #ifdef DEBUG1
-	    		syslog(LOG_INFO,"DEBUG: [lmsd] table reload flushed");
+			syslog(LOG_INFO,"DEBUG: [lmsd] table reload flushed");
 #endif
 		} // end of reload *****************************************
 		db_disconnect();	  
-        	if (quit) termination_handler(0);
-        	sleep(sleeptime);    
+		if (quit) termination_handler(0);
+		sleep(sleeptime);    
     	} // end of main loop **********************************************
-    	return 0;
+	return 0;
 }

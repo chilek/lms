@@ -100,7 +100,7 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	if(g->api_version != APIVERSION) 
 		return(NULL);
 
-	instance = strdup(m->instance);
+	instance = m->instance;
 	
 	hm = (struct hostfile_module *) realloc(m, sizeof(struct hostfile_module));
 	

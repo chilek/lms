@@ -91,7 +91,7 @@ int write_file(unsigned char *name, unsigned char *text)
 void reload(GLOBAL *g, struct dns_module *dns)
 {
 	QUERY_HANDLE *res;
-	unsigned char *configfile;
+	unsigned char *configfile = 0;
 	unsigned char *configentries = strdup("");
 	
 	struct hostcache
@@ -137,15 +137,14 @@ void reload(GLOBAL *g, struct dns_module *dns)
 			dnsserv = g->db_get_data(res,i,"dns");
 		
 			if ( d && e && name ) {
-				int prefixlen; /* in bytes! */
-				unsigned char *finfile;
-				unsigned char *rinfile;
+				int prefixlen; // in bytes! 
+				unsigned char *finfile, *ftmpfile;
+				unsigned char *rinfile, *rtmpfile;
 			
 				unsigned char *forwardzone;
 				unsigned char *reversezone;
 			
 				unsigned char *outfile;
-			
 			
 				if( strlen(d) && strlen(e) && strlen(name) ) {
 					unsigned long host_netmask;
@@ -158,28 +157,34 @@ void reload(GLOBAL *g, struct dns_module *dns)
 					netmask = inet_addr(d);
 
 					host_netmask = ntohl(netmask);
-					prefixlen = 1; /* in bytes! */
+					prefixlen = 1; // in bytes! 
 					if(host_netmask & 0x0001ffff) prefixlen = 2;
 					if(host_netmask & 0x000001ff) prefixlen = 3;
 
 
-					finfile = strdup(dns->fpatterns);
-					rinfile = strdup(dns->rpatterns);
+					finfile = dns->fpatterns;//strdup
+					rinfile = dns->rpatterns;//strdup
 
-					if(finfile[strlen(finfile) - 1] != '/')
-						finfile = g->str_concat(finfile, "/");
-
-					if(rinfile[strlen(rinfile) - 1] != '/')
-						rinfile = g->str_concat(rinfile, "/");
+					if(finfile[strlen(finfile) - 1] != '/') {
+						ftmpfile = g->str_concat(finfile, "/");
+					} else
+						ftmpfile = strdup(finfile);
+					
+					if(rinfile[strlen(rinfile) - 1] != '/') {
+						rtmpfile = g->str_concat(rinfile, "/");
+					} else 
+						rtmpfile = rinfile;
 				
-					finfile = g->str_concat(finfile, name);
-					rinfile = g->str_concat(rinfile, inet_ntoa(network));
-				
+					finfile = g->str_concat(ftmpfile, name);
+					rinfile = g->str_concat(rtmpfile, inet_ntoa(network));
+									
 					forwardzone = load_file(finfile);
 					reversezone = load_file(rinfile);
 				
 					free(finfile);
 					free(rinfile);
+					free(rtmpfile);
+					free(ftmpfile);
 				
 					if(!forwardzone) forwardzone = load_file(dns->fgeneric);
 					if(!reversezone) reversezone = load_file(dns->rgeneric);
@@ -188,13 +193,14 @@ void reload(GLOBAL *g, struct dns_module *dns)
 						unsigned char serial[12];
 						unsigned char netpart[30];
 						unsigned long ip;
-					
+												
 						for(j = 0; j<nh; j++) {
 							unsigned char *forwardhost;
 							unsigned char *reversehost;
 							unsigned char hostpart[30];
+							unsigned char *tmphosts;
 							unsigned long ip;
-					
+						
 							if( (hosts[i].ipaddr & netmask) == network) {
 								forwardhost = strdup(dns->forward);
 								reversehost = strdup(dns->reverse);
@@ -224,8 +230,16 @@ void reload(GLOBAL *g, struct dns_module *dns)
 								g->str_replace(&forwardhost, "%c", hostpart);
 								g->str_replace(&reversehost, "%c", hostpart);
 							
-								forwardhosts = g->str_concat(forwardhosts, forwardhost);
-								reversehosts = g->str_concat(reversehosts, reversehost);
+								tmphosts = strdup(forwardhosts); free(forwardhosts);
+								forwardhosts = g->str_concat(tmphosts, forwardhost);
+								free(tmphosts);
+								
+								tmphosts = strdup(reversehosts); free(reversehosts);
+								reversehosts = g->str_concat(tmphosts, reversehost);
+								free(tmphosts);
+								
+								free(forwardhost);
+								free(reversehost);
 							}
 						}
 			
@@ -262,43 +276,54 @@ void reload(GLOBAL *g, struct dns_module *dns)
 						g->str_replace(&forwardzone, "%v", dnsserv ? (dnsserv) : ((unsigned char*) "127.0.0.1"));
 						g->str_replace(&reversezone, "%v", dnsserv ? (dnsserv) : ((unsigned char*) "127.0.0.1"));
 				
-						finfile = strdup(dns->fzones);
-						rinfile = strdup(dns->rzones);
+						finfile = dns->fzones;//strdup
+						rinfile = dns->rzones;//strdup
 		
 						if(finfile[strlen(finfile) - 1] != '/')
-							finfile = g->str_concat(finfile, "/");
-	
+							ftmpfile = g->str_concat(finfile, "/");
+						else
+							ftmpfile = finfile;
+							
 						if(rinfile[strlen(rinfile) - 1] != '/')
-							rinfile = g->str_concat(rinfile, "/");
-				
-						finfile = g->str_concat(finfile, name);
-						rinfile = g->str_concat(rinfile, inet_ntoa(network));
+							rtmpfile = g->str_concat(rinfile, "/");
+						else
+							rtmpfile = rinfile;
+						
+						finfile = g->str_concat(ftmpfile, name);
+						rinfile = g->str_concat(rtmpfile, inet_ntoa(network));
 				
 						if(write_file(finfile, forwardzone) < 0)
 							syslog(LOG_WARNING, "[%s/dns] Unable to open output forward zone file '%s' for domain '%s', skipping forward zone for this domain.", dns->base.instance, finfile, name);
 						else {
-							unsigned char *zone;
+							unsigned char *zone, *tmpconf;
 							zone = strdup(dns->confforward);
 							g->str_replace(&zone, "%n", name);
 							g->str_replace(&zone, "%c", netpart);
 							g->str_replace(&zone, "%i", inet_ntoa(network));
-							configentries = g->str_concat(configentries, zone);
+							tmpconf = strdup(configentries);
+							free(configentries);
+							configentries = g->str_concat(tmpconf, zone);
+							free(tmpconf);
 							free(zone);
 						}
 
 						if(write_file(rinfile, reversezone) < 0)
 							syslog(LOG_WARNING, "[%s/dns] Unable to open output reverse zone file '%s' for domain '%s', skipping reverse zone for this domain.", dns->base.instance, rinfile, name);
 						else {
-							unsigned char *zone;
+							unsigned char *zone, *tmpconf;
 							zone = strdup(dns->confreverse);
 							g->str_replace(&zone, "%n", name);
 							g->str_replace(&zone, "%c", netpart);
 							g->str_replace(&zone, "%i", inet_ntoa(network));
-							configentries = g->str_concat(configentries, zone);
+							tmpconf = strdup(configentries);
+							free(configentries);
+							configentries = g->str_concat(tmpconf, zone);
+							free(tmpconf);
 							free(zone);
 						}	
 						
-					
+						free(rtmpfile);
+						free(ftmpfile);
 						free(finfile);
 						free(rinfile);
 						free(forwardzone);
@@ -323,15 +348,14 @@ void reload(GLOBAL *g, struct dns_module *dns)
 		if(write_file(dns->confout, configfile) < 0)
 			syslog(LOG_ERR, "[%s/dns] Unable to write DNS configuration file '%s'", dns->base.instance, dns->confout);
 		free(configfile);
-
-	system(dns->command);
+		system(dns->command);
 #ifdef DEBUG1
-	syslog(LOG_INFO, "DEBUG: [%s/dns] reloaded",dns->base.instance);
-#endif	
+		syslog(LOG_INFO, "DEBUG: [%s/dns] reloaded",dns->base.instance);
+#endif
 	}
 	else
 		syslog(LOG_ERR, "[%s/dns] Unable to open DNS pattern file '%s'", dns->base.instance, dns->confpattern);
-	
+
 	free(configentries);
 	free(dns->fpatterns);
 	free(dns->rpatterns);

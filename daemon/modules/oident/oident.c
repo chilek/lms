@@ -43,7 +43,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 	if(fh) {
 		fprintf(fh, "%s\n", o->prefix);
 
-		if( (res = g->db_query("SELECT name, mac, ipaddr FROM nodes"))!=NULL ) {
+		if( (res = g->db_query("SELECT name, mac, ipaddr FROM nodes ORDER BY ipaddr"))!=NULL ) {
 		
 			for(i=0; i<res->nrows; i++) {
 				unsigned char *name, *mac, *ipaddr;
@@ -60,7 +60,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 						if(o->networks[j].network == (inet & o->networks[j].netmask)) 
 							break;
 					
-					if( i != o->netcount ) {
+					if( j != o->netcount ) {
 						unsigned char my_mac[13];
 						if( strlen(mac) >= 17 )
 							snprintf(my_mac, 13, "%c%c%c%c%c%c%c%c%c%c%c%c", mac[0], mac[1], mac[3], mac[4], mac[6], mac[7], mac[9], mac[10], mac[12], mac[13], mac[15], mac[16]);
@@ -99,15 +99,15 @@ void reload(GLOBAL *g, struct oident_module *o)
 struct oident_module * init(GLOBAL *g, MODULE *m)
 {
 	struct oident_module *o;
-	unsigned char *networks, *nextnet;
+	unsigned char *networks, *net;
 	unsigned char *instance, *s;
 	dictionary *ini;
-	int i, nc = 0;
+	int nc = 0;
 	
 	if(g->api_version != APIVERSION) 
 		return (NULL);
 	
-	instance = strdup(m->instance);
+	instance = m->instance;
 	
 	o = (struct oident_module*) realloc(m, sizeof(struct oident_module));
 	
@@ -129,22 +129,18 @@ struct oident_module * init(GLOBAL *g, MODULE *m)
 	free(s); s = g->str_concat(instance, ":networks");
 	networks = strdup(g->iniparser_getstring(ini, s, "192.168.0.0/16 10.0.0.0/8"));
 	o->networks = NULL;
-	
+
 	g->iniparser_freedict(ini);
 	free(instance);
 	free(s);
 	
-	while( *networks ) {
+	for( net=strtok(networks," "); net!=NULL; net=strtok(NULL," ") ) { 
 		unsigned char *prefixlen;
 		unsigned long network;
 		unsigned long netmask;
 		unsigned char netmask_valid;
-		
-		nextnet = index(networks, ' ');
+		prefixlen = index(net, '/');
 
-		if( nextnet ) *nextnet = 0;
-		prefixlen = index(networks, '/');
-		
 		netmask_valid = 0;
 
 		if( prefixlen ) {
@@ -169,34 +165,25 @@ struct oident_module * init(GLOBAL *g, MODULE *m)
 			}
 		}
 	
-		network = inet_addr(networks);
-		if( !netmask_valid ) { /* network mask autosense */
+		network = inet_addr(net);
+		if( !netmask_valid ) { // network mask autosense 
 		
 			if(! (network & 0x000000ff)) netmask = 0xffffff00;
 			if(! (network & 0x0000ffff)) netmask = 0xffff0000;
 			if(! (network & 0x00ffffff)) netmask = 0xff000000;
 		}
 		
-		o->networks = realloc(o->networks, (sizeof(struct oident_net) * (nc + 1)));
+		o->networks = realloc(o->networks, (sizeof(struct oident_net) * (nc+1)));
 		o->networks[nc].network = network;
 		o->networks[nc].netmask = netmask;
 		nc++;
-//		fprintf(stderr, "Network: %s\n", inet_ntoa(network));
-//		fprintf(stderr, "Netmask: %s\n", inet_ntoa(netmask));
-
-		if( nextnet ) {
-			networks = nextnet;
-			networks ++;
-		}
-		else
-			break;	
 	}
-	
+	free(networks);
+
 	if( !(o->netcount = nc) ) {
 		syslog(LOG_ERR, "[%s/oident] No networks for oidentd. Set 'networks' in lms.ini section [%s]", o->base.instance, o->base.instance);
 		return(NULL);
 	}
-
 #ifdef DEBUG1
 	syslog(LOG_INFO, "[%s/oident] Initialized",o->base.instance);
 #endif
