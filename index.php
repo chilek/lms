@@ -121,8 +121,6 @@ elseif(is_readable($_LIB_DIR.'/lang/'.$_LANG.'.php'))
 else
 	require_once($_LIB_DIR.'/lang/pl.php');
 		
-print_r($SESSION);
-
 // test for proper version of Smarty
 
 if(version_compare('2.5.0',$SMARTY->_version) > 0)
