@@ -7,7 +7,7 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="FBT">
 			<B>Nazwa:</B>
-		<TD WIDTH="98%" CLASS="FRIGHTU" COLSPAN="2">
+		<TD WIDTH="98%" CLASS="FRIGHTU">
 			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name|upper}" {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
@@ -18,7 +18,7 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>Adres IP:</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}" {tip trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr);" {tip text="Wybierz adres IP z listy"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
@@ -29,7 +29,7 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>Adres MAC:</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="nodedatamac" VALUE="{$nodedata.mac}" {tip trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.nodeadd.nodedatamac);" {tip text="Wybierz adres MAC z listy"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
@@ -40,7 +40,7 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>Status:</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[access]">
 				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>pod³±czony</OPTION>
 				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>od³±czony</OPTION>
@@ -54,7 +54,7 @@
 		<TD WIDTH="1%" NOWRAP>
 			<B>W³a¶ciciel:</B>
 		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+		<TD WIDTH="98%" CLASS="FRIGHT">
 			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip trigger="user"}>
 				{section name=users loop=$users}
 				<OPTION VALUE="{$users[users].id}"{if $nodedata.ownerid eq $users[users].id} SELECTED{/if}>{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
@@ -63,7 +63,7 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="4" ALIGN="RIGHT">
+		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="?m=nodescan{if $userinfo.id}&ownerid={$userinfo.id}{/if}">Skanuj <IMG SRC="img/search.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 			<A HREF="?m={if $userinfo.id}userinfo&id={$userinfo.id}{else}nodelist{/if}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
