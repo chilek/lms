@@ -64,8 +64,131 @@
 	</sect1>
 	<sect1 id="devel-db">
 		<title>Struktura bazy danych</title>
-		<para>
-		</para>
+		<para>Poni¿ej przedstawiono ogóln± strukturê bazy danych LMS. Bardziej szczegó³owe
+		informacje o typach danych, ograniczeniach nak³adanych na pola oraz warto¶ci domyslne
+		zawarte s± w plikach <ulink url="../lms.mysql"><filename>lms.mysql</filename></ulink>
+		oraz <ulink url="../lms.pgsql"><filename>lms.pgsql</filename></ulink> w katalogu
+		<filename>/doc</filename>.</para>
+		<sect2 id="admins">
+			<title>Administratorzy ('admins')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>login - login</member>
+				<member>name - nazwa (nazwisko i imiê)</member>
+				<member>email - adres admina</member>
+				<member>rights - prawa dostêpu</member>
+				<member>passwd - has³o logowania</member>
+				<member>lastlogindate - data ostatniego logowania</member>
+				<member>lastloginip - adres IP, z którego nast±pi³o ostatnie logowanie</member>
+				<member>failedlogindate - data ostatniej nieudanej próby logowania</member>
+				<member>failedloginip - adres IP, z którego próbowano siê zalogowaæ</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="users">
+			<title>U¿ytkownicy ('users')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>lastname - nazwa/nazwisko</member>
+				<member>name - imiê</member>
+				<member>status - pod³±czony/od³±czony</member>
+				<member>email - adres poczty internetowej</member>
+				<member>phone1 - telefon</member>
+				<member>phone2 - telefon</member>
+				<member>phone3 - telefon</member>
+				<member>gguin - identyfikator gadu-gadu</member>
+				<member>address - adres (ulica, nr domu, nr lokalu)</member>
+				<member>zip - kod pocztowy</member>
+				<member>city - nazwa miasta</member>
+				<member>nip - numer identyfikacji podatkowej NIP</member>
+				<member>info - dodatkowe informacje</member>
+				<member>creationdate - czas utworzenia wpisu</member>
+				<member>moddate - czas modyfikacji</member>
+				<member>creatorid - identyfikator administratora tworz±cego wpis</member>
+				<member>modid - identyfikator administratora dokonuj±cego zmian danych</member>
+				<member>deleted - usuniêty z bazy</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="networks">
+			<title>Sieci ('networks')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>name - nazwa sieci</member>
+				<member>address - adres IP</member>
+				<member>mask - maska</member>
+				<member>interface - interfejs (np. eth1)</member>
+				<member>gateway - adres IP bramy</member>
+				<member>dns - adres IP serwera nazw</member>
+				<member>dns2 - adres IP zapasowego serwera nazw</member>
+				<member>domain - domena</member>
+				<member>wins - adres serwera WINS</member>
+				<member>dhcpstart - pocz±tek zakresu DHCP</member>
+				<member>dhcpend - koniec zakresu DHCP</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="nodes">
+			<title>Komputery ('nodes')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>name - nazwa</member>
+				<member>mac - adres MAC</member>
+				<member>ipaddr - adres IP</member>
+				<member>ownerid - identyfikator w³a¶ciciela (u¿ytkownika)</member>
+				<member>creationdate - znacznik czasu utworzenia wpisu</member>
+				<member>moddate - znacznik czasu ostatniej modyfikacji</member>
+				<member>creatorid - identyfikator administratora tworz±cego wpis</member>
+				<member>modid - identyfikator administratora </member>
+				<member>access - pod³±czony/od³aczony</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="cash">
+			<title>Operacje finansowe ('cash')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>time - znacznik czasu zaksiêgowania operacji</member>
+				<member>adminid - identyfikator administratora dokonuj±cego operacji</member>
+				<member>type - typ operacji (przychów, rozchód, wp³ata, obci±¿enie)</member>
+				<member>value - warto¶æ w z³otych</member>
+				<member>userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy)</member>
+				<member>comment - opis operacji</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="tariffs">
+			<title>Taryfy</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>name - nazwa</member>
+				<member>value - warto¶æ netto w z³otych</member>
+				<member>uprate - ograniczenie szybko¶ci transferu danych wychodz±cych</member>
+				<member>downrate - ograniczenie szybko¶ci transferu danych przychodz±cych</member>
+				<member>description - opis</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="assignments">
+			<title>Powi±zania ('assignments')</title>
+   			<simplelist>
+				<member>id - identyfikator</member>
+				<member>tariffid - identyfikator taryfy</member>
+				<member>userid - identyfikator u¿ytkownika</member>
+				<member>period - okres (ilo¶æ dni)</member>
+				<member>at - dzieñ naliczania</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="timestamps">
+			<title>Znaczniki czasu ('timestamps')</title>
+			<simplelist>
+				<member>time - znacznik czasu</member>
+				<member>tablename - nazwa tabeli</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="stats">
+			<title>Statystyki wykorzystania ³±cza ('stats')</title>
+			<simplelist>
+				<member>nodeid - numer komputera</member>
+				<member>dt - znacznik czasu</member>
+				<member>upload - ilo¶æ danych wys³anych w bajtach</member>
+				<member>download - ilo¶æ danych odebranych w bajtach</member>
+			</simplelist>
+		</sect2>
 	</sect1>
 	<sect1 id="devel-rights">
 		<title>Poziomy dostêpu</title>
@@ -89,7 +212,7 @@
 	<sect1 id="devel-limits">
 		<title>Ograniczenia</title>
 		<para>Ka¿dy system ma ograniczenia. Pewne wynikaja z u¿ytego silnika SQL (DBMS)
-		inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez developerów. Nasz system 
+		inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez developerów. Nasz system
 		takowe posiada:</para>
 		<sect2>
 			<title>Wynikaj±ce z naszego projektu</title>
