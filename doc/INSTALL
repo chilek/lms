@@ -50,6 +50,8 @@ dystrybucji - LMS zosta³ odpalony na:
   rozwijany na tej dystrybucji przez co ca³y LMS mo¿e zawieraæ
   zboczenia charakterystyczne dla PLD)
 - PLD 1.0 Ra + PostgreSQL
+- PLD 1.99 Ac (pre-ac od Averne) - kernel 2.4.20, PHP/4.3.1, MySQL
+  4.0.12, Perl-5.8.0 (problemy z wysy³aniem maili przez lms-notify)
 - Debianie 3.0 Woody
 - Windowsie z najnowszym EasyPHP
 - Slackware 8.1 (2.4.20), Apache 1.3.27, PHP 4.2.3, MySQL 3.23.53
