@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if(!$LMS->UserExists($_GET[id]))
+if($LMS->UserExists($_GET[id]) == 0)
 	header("Location: ?m=userlist");
 
 $userinfo=$LMS->GetUser($_GET[id]);
@@ -44,6 +44,9 @@ $SMARTY->display("userinfo.html");
 
 /*
  * $Log$
+ * Revision 1.23  2003/08/25 02:12:37  lukasz
+ * - zmieniona obs³uga usuwania userów
+ *
  * Revision 1.22  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

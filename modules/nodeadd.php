@@ -24,6 +24,12 @@
  *  $Id$
  */
 
+if($LMS->UserExists($_GET[ownerid]) < 0)
+{
+	header('Location: ?m=userinfo&id='.$_GET[ownerid]);
+	die;
+}
+
 $nodedata = $_POST[nodedata];
 
 $users = $LMS->GetUserNames();
@@ -70,10 +76,10 @@ if(isset($nodedata))
 	elseif(!check_mac($nodedata[mac]))
 		$error[mac] = "Podany adres MAC jest nieprawid³owy!";
 
-	if(!$LMS->UserExists($nodedata[ownerid]))
+	if(! $LMS->UserExists($nodedata[ownerid]))
 		$error[user] = "Proszê wybraæ u¿ytkownika!";
 
-	if($LMS->GetUserStatus($nodedata[ownerid]) != 3)
+	if($LMS->GetUserStatus($nodedata[ownerid]) != 3 || $LMS->UserExists($nodedata[ownerid]) == -1)
 		$error[user] = "Wybrany u¿ytkownik jest b³êdny!";
 
 	if(!$error)
@@ -85,7 +91,7 @@ if(isset($nodedata))
 		
 }
 
-if($_GET[ownerid]&&$LMS->UserExists($_GET[ownerid]))
+if($_GET[ownerid] && $LMS->UserExists($_GET[ownerid]) > 0)
 {
 	$nodedata[ownerid] = $_GET[ownerid];
 	$userinfo = $LMS->GetUser($_GET[ownerid]);
@@ -114,6 +120,9 @@ $SMARTY->display("nodeadd.html");
 
 /*
  * $Log$
+ * Revision 1.32  2003/08/25 02:12:13  lukasz
+ * - zmieniona obs³uga usuwania userów
+ *
  * Revision 1.31  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
