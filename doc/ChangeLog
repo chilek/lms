@@ -12,6 +12,7 @@ wersja 1.3.3 (??/??/2004):
     sobie Mozilla (alec)
   - dodana obs³uga stawek VAT w operacjach finansowych - tablica cash
     pole taxvalue (chilek)
+  - w wydrukach bilansów uzwglêdnianie s± stawki VAT (chilek)
 
 wersja 1.3.2 Kinsey (03/04/2004):
   

@@ -27,6 +27,9 @@
 			Warto¶æ
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
+			VAT
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
 			Po
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
@@ -50,6 +53,11 @@
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$balancelist[balancelist].value|string_format:"%01.2f"} z³
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{if $balancelist[balancelist].taxvalue}
+				{$balancelist[balancelist].taxvalue|string_format:"%01.2f"} %
+			{else}zw.{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$balancelist[balancelist].after|string_format:"%01.2f"} z³
@@ -83,7 +91,7 @@
 			{$listdata.expense|string_format:"%01.2f"} z³<BR>
 			<NOBR><B>{$listdata.total|string_format:"%01.2f"} z³</B><NOBR>
 		</TD>
-		<TD COLSPAN="2" BGCOLOR="#EEEEEE">
+		<TD COLSPAN="3" BGCOLOR="#EEEEEE">
 		</TD>
 	</TR>
 </TABLE>
