@@ -39,12 +39,12 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/{if $nodeinfo.access neq "Y"}no{/if}access.gif" BORDER="0" ALT="">
+			<IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[access]">
-				<OPTION VALUE="Y"{if $nodeinfo.access eq "Y"} SELECTED{/if}>pod³±czony</OPTION>
-				<OPTION VALUE="N"{if $nodeinfo.access eq "N"} SELECTED{/if}>od³±czony</OPTION>
+				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>pod³±czony</OPTION>
+				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>od³±czony</OPTION>
 			</SELECT>
 		</TD>
 	</TR>

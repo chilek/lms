@@ -34,11 +34,13 @@
 		$LMS->NodeSet($_GET[id]);
 		$backid = $_GET[id];
 	}
-
 	header("Location: ?".$_SESSION[backto]."#".$backid);
 
 /*
  * $Log$
+ * Revision 1.10  2003/08/27 20:18:42  lukasz
+ * - changed nodes.access from ENUM to BOOL;
+ *
  * Revision 1.9  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

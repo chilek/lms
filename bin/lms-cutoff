@@ -137,7 +137,7 @@ while (my $row = $dbq->fetchrow_hashref())
 		{
 			print STDOUT "$row->{'id'}\t($balance)\t$row->{'lastname'} $row->{'name'}\n";
 		}
-		$sdbq = $dbase->prepare("UPDATE nodes SET access='N' WHERE ownerid='$row->{'id'}'");
+		$sdbq = $dbase->prepare("UPDATE nodes SET access=0 WHERE ownerid='$row->{'id'}'");
 		$sdbq->execute();
 	}
 	

@@ -225,7 +225,7 @@ foreach my $key (@networks)
 	my $dbq = $dbase->prepare("SELECT address, mask FROM networks WHERE name = '$key'");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
-		my $sdbq = $dbase->prepare("SELECT ipaddr FROM nodes WHERE access = 'Y'");
+		my $sdbq = $dbase->prepare("SELECT ipaddr FROM nodes WHERE access = 1");
 		$sdbq->execute();
 		while(my $srow = $sdbq->fetchrow_hashref())
 		{

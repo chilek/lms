@@ -38,15 +38,15 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/{if $nodedata.access neq "Y" && $nodedata.access neq ""}no{/if}access.gif" BORDER="0" ALT="">
+			<IMG SRC="img/{if ! $nodedata.access}no{/if}access.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>Status:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[access]">
-				<OPTION VALUE="Y"{if $nodedata.access eq "Y"} SELECTED{/if}>pod³±czony</OPTION>
-				<OPTION VALUE="N"{if $nodedata.access eq "N"} SELECTED{/if}>od³±czony</OPTION>
+				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>pod³±czony</OPTION>
+				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>od³±czony</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
