@@ -38,8 +38,8 @@ done
 echo -n "Sorting and removing duplicated lines... "
 cat html_strings >> tmp_strings
 cat php_strings >> tmp_strings
-sort tmp_strings 2>/dev/null | uniq > strings
-LINESNUM=`cat strings | wc -l`
+sort tmp_strings 2>/dev/null | uniq > strings.txt
+LINESNUM=`cat strings.txt | wc -l`
 echo "done. Lines: $LINESNUM"
 
 # delete temp files
@@ -48,15 +48,11 @@ rm php_strings 2>/dev/null
 rm tmp_strings 2> /dev/null
 
 echo -n "Creating strings.php file... "
-cp strings tmp_strings
+cp strings.txt tmp_strings
 rm strings.php 2> /dev/null
 echo -e "<?php\n" >> strings.php
 cat ../doc/COPYRIGHTS >> strings.php
 echo "" >> strings.php
-#while read LINE 
-#do
-#    echo -E "\$_LANG['${LINE}'] = '${LINE}';" >> strings.php
-#done < tmp_strings
 perl -lne 'print "\$_LANG[\x27$_\x27] = \x27$_\x27;"' tmp_strings >> strings.php 
 echo -e "\n?>" >> strings.php
 rm tmp_strings
