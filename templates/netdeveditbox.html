@@ -1,5 +1,6 @@
-<P><FORM NAME="netdevedit" METHOD="POST" ACTION="?m=netdevedit&id={$netdevinfo.id}">
+<P>
 <TABLE WIDTH="100%" CELLPADDING="3">
+	<FORM NAME="netdevedit" METHOD="POST" ACTION="?m=netdevedit&id={$netdevinfo.id}">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
 			<IMG SRC="img/netdev.gif" BORDER="0" ALT="">
@@ -90,4 +91,22 @@
 			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
 	</TR>	
-</TABLE></FORM></P>
+	</FORM>
+	{if $netdevinfo.id}
+	<TR CLASS="DARK">
+		<TD WIDTH="100%" CLASS="fall" COLSPAN=4 ALIGN="center">
+			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
+			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
+			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
+			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
+			<A HREF="javascript:document.replace.submit(); "><B>Wymieñ urz±dzenie:</B></A>
+			<SELECT NAME="netdev" {tip trigger="replace"}>
+				{section name=replacelist loop=$replacelist}
+				<OPTION VALUE="{$replacelist[replacelist].id}">{$replacelist[replacelist].name} {if $replacelist[replacelist].producer}/ {$replacelist[replacelist].producer}{/if} {if $replacelist[replacelist].location}({$replacelist[replacelist].location}){/if}</OPTION>
+				{/section}
+			</SELECT>
+			</FORM></P>
+		</TD>
+	</TR>
+	{/if}
+</TABLE></P>

@@ -103,4 +103,22 @@
 			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">Edytuj <IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=netdevdel&id={$netdevinfo.id}" {confirm text="Jeste¶ pewien ¿e chcesz usun±æ urz±dzenie `$netdevinfo.name` z bazy danych?"}>Usuñ <img border="0" align="absmiddle" src="img/delete.gif" alt=""></A>
 		</TD>
 	</TR>
+	{if $netdevinfo.id}
+	<TR CLASS="DARK">
+		<TD WIDTH="100%" CLASS="fall" COLSPAN=3 ALIGN="center">
+			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
+			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
+			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
+			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
+			<A HREF="javascript:document.replace.submit(); "><B>Wymieñ urz±dzenie:</B></A>
+			<SELECT NAME="netdev" {tip trigger="replace"}>
+				{section name=replacelist loop=$replacelist}
+				<OPTION VALUE="{$replacelist[replacelist].id}">{$replacelist[replacelist].name} {if $replacelist[replacelist].producer}/ {$replacelist[replacelist].producer}{/if} {if $replacelist[replacelist].location}({$replacelist[replacelist].location}){/if}</OPTION>
+				{/section}
+			</SELECT>
+			</FORM></P>
+		</TD>
+	</TR>
+	{/if}
 </TABLE>
+
