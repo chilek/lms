@@ -11,6 +11,7 @@ wersja 1.4.1 (??/??/2004):
     dzia³aniem ip2long() w PHP5 (alec)
   - BTS#0000229: contrib/customer - uwzglêdniona sytuacja, gdy ³±czymy siê z
     adresu IP bez w³a¶ciciela, czyli z urz±dzenia sieciowego (alec)
+  - lms-rtparser: usuniêty b³±d w dzia³aniu opcji tmp_dir (alec)
 
 wersja 1.4.0 Evalla (15/10/2004):
 
