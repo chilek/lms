@@ -2,19 +2,6 @@ $Id$
 
 wersja 1.0pre5 (??/??/2003):
  
-  -dodano nowe pola w tablicy z u¿ytkownikami, aby je wykorzystaæ i 
-  bezproblemowo móc ich u¿ywaæ nale¿y wykonaæ nastêpuj±ce komendy: 
-
-  cat > tmp.sql << EOF 
-  BEGIN
-  ALTER TABLE `users` ADD `ekg-nr` BIGINT NOT NULL AFTER `phone3` ;
-  ALTER TABLE `users` ADD `miasto` BIGINT NOT NULL AFTER `adres` DEFAULT 'Warszawa';
-  ALTER TABLE `users` ADD `kod` BIGINT NOT NULL AFTER `adres` DEFAULT '12-345';
-  COMMIT
-  EOF
-  $ mysql -u lms -p lms 
-  teraz has³o
-  mysql> source tmp.sql;
   - PLIKI KONFIGURACYJNE PRZENIESIONE DO KATALOGU /etc/lms/ !!!
   - podzia³ listy u¿ytkowników na strony
   - poprawiony bug przy dodawaniu nowego usera
@@ -27,7 +14,14 @@ wersja 1.0pre5 (??/??/2003):
   - informacje o taryfie i mo¿liwo¶æ jej edycji wreszcie.
   - poprawione parsowanie wprowadzanych danych w niektórych miejscach
     poprzez u¿ycie regexpów (dziêki mteg za podsuniêcie pomys³u)
+  - dodano nowe pola w tablicy z u¿ytkownikami, aby je wykorzystaæ i
+    bezproblemowo móc ich u¿ywaæ nale¿y wykonaæ nastêpuj±ce komendy z
+    poziomu klienta mysql:
 
+    ALTER TABLE `users` ADD `gguin` INT AFTER `phone3`;
+    ALTER TABLE `users` ADD `zip` VARCHAR( 6 ) AFTER `address` ,
+    ADD `city` VARCHAR( 32 ) AFTER `zip` ;
+	  
 wersja 1.0pre4 (21/01/2003):
 
   - pe³ne przeportowanie obs³ugi SQL'a na ADODB
