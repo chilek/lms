@@ -1,3 +1,7 @@
+* 05.11.2003
+  - dodany modu³ 'dns' (alec)
+  - za³atane dziury w db_free() i iniparser_load() (alec)
+
 * 03.11.2003
   - zmiana w obs³udzie instancji w lms.ini nie ma ju¿ load0, load1, args0 itd.
     teraz w sekcji [lmsd] mamy 'instances = lista instancji', a argumenty 
