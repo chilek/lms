@@ -27,13 +27,15 @@
 // Faktury w PDF, do u¿ycia z formularzami FT-0100 (c) Polarnet
 // w razie pytañ mailto:lexx@polarnet.org
 
-function text_autosize($x,$y,$size,$text,$width) {
+function text_autosize($x,$y,$size,$text,$width) 
+{
     global $pdf;
     while ($pdf->getTextWidth($size,$text)>$width) $size=$size-1;
     $pdf->addtext($x,$y,$size,$text);
 }
 
-function invoice_simple_form_fill($x,$y,$scale)  {
+function invoice_simple_form_fill($x,$y,$scale)  
+{
     global $pdf,$invoice,$_CONFIG;
     $finances = $_CONFIG['finances'];
     $pdf->setlinestyle(1);
@@ -66,11 +68,12 @@ function invoice_simple_form_fill($x,$y,$scale)  {
     $tmp = str_replace("%Y",$invoice['year'],$tmp);
     $tmp = str_replace("%M",$invoice['month'],$tmp);
 
-    text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,"Op³ata za FV: ".$tmp,350*$scale);
+    text_autosize(15*$scale+$x,215*$scale+$y,30*$scale,trans('Payment for invoice No. $0',$tmp),350*$scale);
 
 }
 
-function invoice_main_form_fill($x,$y,$scale)	{
+function invoice_main_form_fill($x,$y,$scale)	
+{
     global $pdf,$invoice,$_CONFIG;
     $finances = $_CONFIG['finances'];
     $pdf->setlinestyle(1);
@@ -87,7 +90,7 @@ function invoice_main_form_fill($x,$y,$scale)	{
     text_autosize(15*$scale+$x,555*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",$finances['account']),950*$scale);
     $pdf->addtext(330*$scale+$x,495*$scale+$y,30*$scale,'X');
     text_autosize(550*$scale+$x,495*$scale+$y,30*$scale,"*".number_format($invoice['total'],2,',','')."*",400*$scale);
-    text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,to_words(floor($invoice['total']))." z³, ".to_words(round(($invoice['total']-floor($invoice['total']))*100))." gr",950*$scale);
+    text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,trans('$0 dollars $1 cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100))),950*$scale);
     text_autosize(15*$scale+$x,372*$scale+$y,30*$scale,$invoice['name'],950*$scale);
     text_autosize(15*$scale+$x,312*$scale+$y,30*$scale,$invoice['address']." ".$invoice['zip']." ".$invoice['city'],950*$scale);
     $tmp = $_CONFIG['invoices'];
@@ -95,7 +98,7 @@ function invoice_main_form_fill($x,$y,$scale)	{
     $tmp = str_replace("%N",$invoice['number'],$tmp);
     $tmp = str_replace("%Y",$invoice['year'],$tmp);
     $tmp = str_replace("%M",$invoice['month'],$tmp);
-    text_autosize(15*$scale+$x,250*$scale+$y,30*$scale,trans('Payment for invoice no. $0'),$tmp,950*$scale));
+    text_autosize(15*$scale+$x,250*$scale+$y,30*$scale,trans('Payment for invoice No. $0',$tmp),950*$scale);
 
 }
 
@@ -126,37 +129,39 @@ function text_wrap($x,$y,$width,$size,$text,$justify)
 function invoice_dates($x,$y) {
     global $invoice,$pdf;
     $font_size=12;
-    text_align_right($x,$y,$font_size,'Data wystawienia: ');
-    $y=$y-text_align_left($x,$y,$font_size,date("d.m.Y",$invoice['cdate']));
-    text_align_right($x,$y,$font_size,'Data sprzeda¿y: ');
-    $y=$y-text_align_left($x,$y,$font_size,date("d.m.Y",$invoice['cdate']));
-    text_align_right($x,$y,$font_size,'Termin zap³aty: ');
-    $y=$y-text_align_left($x,$y,$font_size,date("d.m.Y",$invoice['pdate']));
-    text_align_right($x,$y,$font_size,'Sposób zap³aty: ');
+    text_align_right($x,$y,$font_size,trans('Settlement date:').' ');
+    $y=$y-text_align_left($x,$y,$font_size,date("Y/m/d",$invoice['cdate']));
+    text_align_right($x,$y,$font_size,trans('Sale date:').' ');
+    $y=$y-text_align_left($x,$y,$font_size,date("Y/m/d",$invoice['cdate']));
+    text_align_right($x,$y,$font_size,trans('Deadline:').' ');
+    $y=$y-text_align_left($x,$y,$font_size,date("Y/m/d",$invoice['pdate']));
+    text_align_right($x,$y,$font_size,trans('Payment type:').' ');
     $y=$y-text_align_left($x,$y,$font_size,$invoice['paytype']);
     return $y;
 }
 
-function invoice_buyer($x,$y) {
+function invoice_buyer($x,$y) 
+{
     global $invoice,$pdf;
     $font_size=10;
-    $y=$y-text_align_left($x,$y,$font_size,'<b>Nabywca:</b>');
+    $y=$y-text_align_left($x,$y,$font_size,'<b>'.trans('Purchaser:').'</b>');
     $y=$y-text_align_left($x,$y,$font_size,$invoice['name']);
     $y=$y-text_align_left($x,$y,$font_size,$invoice['address']);
     $y=$y-text_align_left($x,$y,$font_size,$invoice['zip']." ".$invoice['city']);
-    if ($invoice['phone']) $y=$y-text_align_left($x,$y,$font_size,'Tel: '.$invoice['phone']);
+    if ($invoice['phone']) $y=$y-text_align_left($x,$y,$font_size,trans('Phone:').' '.$invoice['phone']);
     if ($invoice['nip']) 
-	$y=$y-text_align_left($x,$y,$font_size,'NIP: '.$invoice['nip']);
+	$y=$y-text_align_left($x,$y,$font_size,trans('TEN:').' '.$invoice['nip']);
     else if ($invoice['pesel']) 
-	$y=$y-text_align_left($x,$y,$font_size,'PESEL: '.$invoice['pesel']);
-    $y=$y-text_align_left($x,$y,$font_size,'<b>Numer klienta: '.sprintf('%04d',$invoice['customerid']).'</b>');
+	$y=$y-text_align_left($x,$y,$font_size,trans('SSN:').' '.$invoice['pesel']);
+    $y=$y-text_align_left($x,$y,$font_size,'<b>'.trans('Customer No.: $0 ',sprintf('%04d',$invoice['customerid'])).'</b>');
     return $y;
 }
 
-function invoice_seller($x,$y) {
+function invoice_seller($x,$y) 
+{
     global $invoice,$pdf,$_CONFIG;
     $font_size=10;
-    $y=$y-text_align_left($x,$y,$font_size,'<b>Sprzedawca:</b>');
+    $y=$y-text_align_left($x,$y,$font_size,'<b>'.trans('Seller:').'</b>');
     $tmp = iconv("UTF-8","ISO-8859-2",$_CONFIG['invoices']['header']);
     $tmp = str_replace('\n',"\n",$tmp);
     $tmp = explode("\n",$tmp);
@@ -165,7 +170,8 @@ function invoice_seller($x,$y) {
     return $y;
 }
 
-function invoice_title($x,$y) {
+function invoice_title($x,$y) 
+{
     global $invoice,$pdf,$_CONFIG,$type;
     $font_size=16;
     $tmp = $_CONFIG['invoices'];
@@ -173,12 +179,13 @@ function invoice_title($x,$y) {
     $tmp = str_replace("%N",$invoice['number'],$tmp);
     $tmp = str_replace("%Y",$invoice['year'],$tmp);
     $tmp = str_replace("%M",$invoice['month'],$tmp);
-    $y=$y-text_align_left($x,$y,$font_size,'<b>Faktura VAT nr: '.$tmp."</b>");
+    $y=$y-text_align_left($x,$y,$font_size,'<b>'.trans('Invoice No. $0 ',$tmp).'</b>');
     $y=$y-text_align_left($x,$y,$font_size,$type);
     return $y;
 }
 
-function invoice_address_box($x,$y) {
+function invoice_address_box($x,$y) 
+{
     global $invoice,$pdf;
     $font_size=12;
     $y=$y-text_align_left($x,$y,$font_size,"<b>".$invoice['name']."</b>");
@@ -192,7 +199,8 @@ function invoice_address_box($x,$y) {
     return $y;
 }
 
-function invoice_data_row($x,$y,$width,$font_size,$margin,$data,$t_width,$t_justify) {
+function invoice_data_row($x,$y,$width,$font_size,$margin,$data,$t_width,$t_justify) 
+{
     global $pdf;
     $fy=$y-$margin-$pdf->GetFontHeight($font_size);    
     $left = $x+$margin;
@@ -213,7 +221,8 @@ function invoice_data_row($x,$y,$width,$font_size,$margin,$data,$t_width,$t_just
     return($y);
 }
 
-function invoice_short_data_row($x,$y,$width,$font_size,$margin,$data,$t_width,$t_justify) {
+function invoice_short_data_row($x,$y,$width,$font_size,$margin,$data,$t_width,$t_justify) 
+{
     global $pdf;
     $fy=$y-$margin-$pdf->GetFontHeight($font_size);    
     $left = $x+$margin;
@@ -235,7 +244,8 @@ function invoice_short_data_row($x,$y,$width,$font_size,$margin,$data,$t_width,$
     return($y);
 }
 
-function invoice_data($x,$y,$width,$font_size,$margin) {
+function invoice_data($x,$y,$width,$font_size,$margin) 
+{
     global $invoice,$pdf;
     $pdf->setlinestyle(0.5);
     $pdf->line($x,$y,$x+$width,$y);
@@ -302,10 +312,11 @@ function invoice_data($x,$y,$width,$font_size,$margin) {
     $y = $y - 5;
 
     $fy=$y-$margin-$pdf->GetFontHeight($font_size);    
-    text_align_right($x-$margin,$fy,$font_size,"<b>W tym:</b>");
+    text_align_right($x-$margin,$fy,$font_size,'<b>'.trans('in it:').'</b>');
     $pdf->line($x,$y,$x+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+8*$margin,$y);
     
-    foreach ($invoice['taxest'] as $item) {
+    foreach ($invoice['taxest'] as $item) 
+    {
 	$t_data[7] = iconv("UTF-8","ISO-8859-2",moneyf($item['base']));
 	$t_data[8] = $item['taxvalue']." %";
 	$t_data[9] = iconv("UTF-8","ISO-8859-2",moneyf($item['tax']));
@@ -316,31 +327,35 @@ function invoice_data($x,$y,$width,$font_size,$margin) {
     return $return;
 }
 
-function invoice_to_pay($x,$y) {
+function invoice_to_pay($x,$y) 
+{
     global $pdf, $invoice;
-    $y = $y - text_align_left($x,$y,14,"Do zap³aty: ".iconv("UTF-8","ISO-8859-2",moneyf($invoice['total'])));
-    $y = $y - text_align_left($x,$y,10,"S³ownie: ".to_words(floor($invoice['total']))." z³, ".to_words(round(($invoice['total']-floor($invoice['total']))*100))." gr");
+    $y = $y - text_align_left($x,$y,14,trans('To pay: ').iconv("UTF-8","ISO-8859-2",moneyf($invoice['total'])));
+    $y = $y - text_align_left($x,$y,10,trans('In words:').' '.trans('$0 dollars $1 cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100))));
     return $y;
 }
 
-function invoice_expositor ($x,$y) {
+function invoice_expositor ($x,$y) 
+{
     global $pdf, $_CONFIG;
-    $y = $y - text_align_left($x,$y,10,"Wystawi³: ".iconv("UTF-8","ISO-8859-2",$_CONFIG['invoices']['default_author']));
+    $y = $y - text_align_left($x,$y,10,trans('Expositor:').' '.iconv("UTF-8","ISO-8859-2",$_CONFIG['invoices']['default_author']));
     return $y;
 }
 
-function invoice_footnote($x, $y, $width, $font_size) {
+function invoice_footnote($x, $y, $width, $font_size) 
+{
     global $pdf, $_CONFIG;
     if ($_CONFIG['invoices']['footer']) {
 	$y = $y - $pdf->getFontHeight($font_size);
-	$y = $y - text_align_left($x,$y,$font_size,"<b>Uwagi:</b>");
+	$y = $y - text_align_left($x,$y,$font_size,'<b>'.trans('Notes:').'</b>');
 	$tmp = iconv("UTF-8","ISO-8859-2",$_CONFIG['invoices']['footer']);
         $tmp = explode("\n",$tmp);
 	foreach ($tmp as $line) $y = text_wrap($x,$y,$width,$font_size,$line,"full");
     }
 }
 
-function invoice_body() {
+function invoice_body() 
+{
     global $invoice,$pdf,$id,$_CONFIG;
     switch ($_CONFIG['invoices']['template_file']) {
 	case "standard":
@@ -394,7 +409,7 @@ $diff=array(177=>'aogonek',161=>'Aogonek',230=>'cacute',198=>'Cacute',234=>'eogo
 //$pdf =& new Cezpdf('A4','landscape');
 $pdf =& new Cezpdf('A4','portrait');
 $pdf->addInfo('Producer','LMS Developers');
-$pdf->addInfo('Title','Faktury VAT');
+$pdf->addInfo('Title',trans('Invoices'));
 $pdf->addInfo('Creator','LMS '.$layout['lmsv']);
 $pdf->setPreferences('FitWindow','1');
 $pdf->ezSetMargins(0,0,0,0);
