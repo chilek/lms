@@ -190,6 +190,9 @@ lub
 
 @monthly	/usr/sbin/lms-eachmonth
 
+(nie dzia³a z ka¿dym cronem, sprawd¼ w dokumentacji swojego crona czy
+obs³uguje tê opcjê)
+
 Pierwszy zapis spowoduje ¿e ka¿dego szóstego dnia miesi±ca, o godzinie 0:00,
 ze  ka¿dy u¿ytkownik  zostanie obci±¿ony op³at±  abonamentow± w wysoko¶ci
 przewidzianej przez taryfê w jakiej siê znajduje, natomiast drugi zrobi to
