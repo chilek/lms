@@ -18,7 +18,7 @@
 		<TD width="1%" class="fbt" VALIGN="TOP" NOWRAP>
 			<img src="img/mail.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=email{if $listdata.direction eq "asc" && $listdata.order eq "email"},desc{/if}">{t}E-mail:{/t}</A> {if $listdata.order eq "email"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			<img src="img/gg.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=gg{if $listdata.direction eq "asc" && $listdata.order eq "gg"},desc{/if}">{t}IM:{/t}</A> {if $listdata.order eq "gg"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<a href="?m={$layout.module}&s={$listdata.state}&o=nip{if $listdata.direction eq "asc" && $listdata.order eq "nip"},desc{/if}">{t}FIN/SSN:{/t}</A> {if $listdata.order eq "nip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<a href="?m={$layout.module}&s={$listdata.state}&o=nip{if $listdata.direction eq "asc" && $listdata.order eq "nip"},desc{/if}">{t}TEN/SSN:{/t}</A> {if $listdata.order eq "nip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 		</TD>
 		<TD width="1%" class="fbt">
 			<img src="img/money.gif" ALT="" align="absmiddle">
@@ -126,7 +126,7 @@
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" valign="top">
 			{if $userlist[userlist].email}<IMG src="img/mail.gif" ALT="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].email|default:"&nbsp;"}</A><BR>{/if}
 			{if $userlist[userlist].gguin}<IMG src="img/gg.gif" ALT="" align="absmiddle" border="0">&nbsp;{if $userlist[userlist].gguin}{$userlist[userlist].gguin}{else}&nbsp;{/if}<BR>{/if}
-			{if $userlist[userlist].nip}<IMG SRC="img/empty.gif" ALT="" align="absmiddle" height="16" width="1"><B>{t}FIN{/t}:</B>&nbsp;<NOBR>{$userlist[userlist].nip}</NOBR>{else}{if $userlist[userlist].pesel}<IMG SRC="img/empty.gif" ALT="" align="absmiddle" height="16" width="1"><B>{t}SSN{/t}:</B>&nbsp;<NOBR>{$userlist[userlist].pesel}</NOBR>{/if}{/if}
+			{if $userlist[userlist].nip}<IMG SRC="img/empty.gif" ALT="" align="absmiddle" height="16" width="1"><B>{t}TEN{/t}:</B>&nbsp;<NOBR>{$userlist[userlist].nip}</NOBR>{else}{if $userlist[userlist].pesel}<IMG SRC="img/empty.gif" ALT="" align="absmiddle" height="16" width="1"><B>{t}SSN{/t}:</B>&nbsp;<NOBR>{$userlist[userlist].pesel}</NOBR>{/if}{/if}
 		</TD>
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" valign="middle">
 			<IMG src="img/money.gif" align="left" border="0" ALT="">

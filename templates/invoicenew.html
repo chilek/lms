@@ -53,7 +53,7 @@
 			<B>{t}Name/surname and forename:{/t}<BR>
 			{t}Address:{/t}<BR>
 			<BR>
-			{if $customer.nip}{t}FIN:{/t}<BR>{elseif $customer.pesel}{t}SSN:{/t}<BR>{/if}
+			{if $customer.nip}{t}TEN:{/t}<BR>{elseif $customer.pesel}{t}SSN:{/t}<BR>{/if}
 			{if $customer.phone1}{t}Phone:{/t}{/if}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
@@ -125,7 +125,7 @@
 			{t}Name of product, commodity or service:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%">
-			{t}PKWiU:{/t}
+			{t}Product ID:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
 			{t}Amount:{/t}<BR>
@@ -136,7 +136,7 @@
 			{t}Net Value:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
-			{t}VAT:{/t}
+			{t}Tax:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{t}Gross Price:{/t}<BR>
@@ -235,7 +235,7 @@
 			<INPUT TYPE="text" NAME="valuenetto" SIZE="6">
 		</TD>
 		<TD CLASS="ftop" NOWRAP>
-			<SELECT size="1" name="taxvalue" value="22" {tip text="Select VAT rate"}>
+			<SELECT size="1" name="taxvalue" value="22" {tip text="Select Tax rate"}>
 				<OPTION value="22">22%</OPTION>
 				<OPTION value="7">7%</OPTION>
 				<OPTION value="0">0%</OPTION>
@@ -259,7 +259,7 @@
 			{else}
 			<A HREF="?m=invoicenew&action=save" target="_BLANK">
 			{/if}
-			{t}Save & End{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/save.gif" ALT="Dodaj" BORDER="0"></A>
+			{t}Save & Print{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/save.gif" ALT="Dodaj" BORDER="0"></A>
 		</TD>
 	</TR>
 	</FORM>

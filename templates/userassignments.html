@@ -52,7 +52,7 @@
 				<TR>
 					<TD align="center" WIDTH="100%" colspan="10">
 						<P>&nbsp;</P>
-						<P><B>{t}That customer haven't got any attributed tariffs.{/t}</B></P>
+						<P><B>{t}That customer hasn't got any attributed tariffs.{/t}</B></P>
 						<P>&nbsp;</P>
 					</TD>
 				</TR>
@@ -101,7 +101,7 @@
 								    </SELECT>
 								    <B>{t}When:{/t}</B> <INPUT type="TEXT" name="assignment[at]" value="{$assignment.at}" {tip text="Enter accounting time. For weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter month and day in format DD/MM (15/09 means 15 September), and for quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="5">
 								    <B>{t}from:{/t}</B> <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" OnClick="cal1.popup();" {tip text="Enter date in format YYYY/MM/DD when to start accounting. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10"> 
-								    <B>{t}to:{/t}</B> <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal2.popup();" {tip text="Enter date in format YYYY/MM/DD when to stop accounting. Leave this field empty if you don't want to set expiry date" trigger="dateto"} SIZE="10">
+								    <B>{t}to:{/t}</B> <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal2.popup();" {tip text="Enter date in format YYYY/MM/DD when to stop accounting. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
 								</TD>
 							</TR>
 						</TABLE>

@@ -39,7 +39,7 @@
 			{$invoice.zip} {$invoice.city}<BR>
 			{t}Poland{/t}<BR>
 			{if $invoice.phone neq ""}{t}Phone:{/t} {$invoice.phone}<BR>{/if}
-			{if $invoice.nip neq ""}{t}FIN:{/t} {$invoice.nip}<BR>{elseif $invoice.pesel neq ""}{t}SSN:{/t} {$invoice.pesel}<BR>{/if}
+			{if $invoice.nip neq ""}{t}TEN:{/t} {$invoice.nip}<BR>{elseif $invoice.pesel neq ""}{t}SSN:{/t} {$invoice.pesel}<BR>{/if}
 			<BR>
 			<B>{t}Customer ID:{/t} {$invoice.customerid|string_format:"%04d"}</B>
 		</TD>
@@ -73,7 +73,7 @@
 		<B>{t}Name of product, commodity or service:{/t}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>{t}PKWiU:{/t}</B>
+		<B>{t}Product ID:{/t}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>{t}Unit:{/t}</B>
@@ -221,7 +221,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD WIDTH="100%" ALIGN="CENTER" COLSPAN="2" CLASS="hd1">
-			<B>{t}Thanks for using of our services!{/t}</B>
+			<B>{t}Thanks for using our services!{/t}</B>
 		</TD>
 	</TR>
 	<TR>

@@ -37,7 +37,7 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" {tip text="Enter customer forename" trigger="username" bold=1}>
+						<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" {tip text="Enter customer name" trigger="username" bold=1}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -98,10 +98,10 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						<B>{t}FIN{/t}</B>
+						<B>{t}TEN{/t}</B>
 					</TD>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {tip text="Enter customer Financial Identification Number (optional)" trigger="nip"}>
+						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {tip text="Enter customer Tax Exempt Number (optional)" trigger="nip"}>
 					</TD>
 				</TR>
 				<TR>
@@ -128,7 +128,7 @@
 				{$useradd.serviceaddr}
 			    </TEXTAREA></NOBR>
 			<P><NOBR><IMG src="img/usercomment.gif" ALT="" align="absmiddle" border="0">
-			    <TEXTAREA rows="4" cols="60" name="useradd[info]" {tip text="Enter aditional informations (optional)"}>
+			    <TEXTAREA rows="4" cols="60" name="useradd[info]" {tip text="Enter additional informations (optional)"}>
 				{$useradd.info}
 			    </TEXTAREA></NOBR>
 			<P><NOBR><IMG src="img/mail.gif" ALT="" align="absmiddle" border="0">

@@ -71,7 +71,7 @@ if($cfg = $_POST['config'])
     		$error['section'] = trans('Section name contains forbidden characters!');
 	    
 	if($cfg['value']=='')
-		$error['value'] = trans('Empty option value not allowed!');
+		$error['value'] = trans('Empty option value is not allowed!');
 	elseif($msg = $LMS->CheckOption($cfg['var'], $cfg['value']))
 		$error['value'] = $msg;
 	

@@ -112,7 +112,7 @@
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
 			<A HREF="javascript:document.replace.submit(); "><B>{t}Replace device:{/t}</B></A>
-			<SELECT NAME="netdev" {tip trigger="replace" text="Select device from list to replace"}>
+			<SELECT NAME="netdev" {tip trigger="replace" text="Select device from list for replacement"}>
 				{section name=replacelist loop=$replacelist}
 					{if $replacelist[replacelist].id != $netdevinfo.id}
 					<OPTION VALUE="{$replacelist[replacelist].id}">{$replacelist[replacelist].name} {if $replacelist[replacelist].producer}/ {$replacelist[replacelist].producer}{/if} {if $replacelist[replacelist].location}({$replacelist[replacelist].location}){/if}</OPTION>
@@ -121,7 +121,7 @@
 			</SELECT>
 			</FORM></P>
 			{else}
-			<B>{t}No device for replace{/t}</B>
+			<B>{t}No device for replacement.{/t}</B>
 			{/if}
 		</TD>
 	</TR>

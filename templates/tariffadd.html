@@ -35,7 +35,7 @@
 				    </TD>
 				    <TD WIDTH="1%" NOWRAP><B>{t}Tax:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<SELECT SIZE="1" NAME="tariffadd[taxvalue]" VALUE="{$tariffadd.taxvalue}" {tip text="Enter VAT rate" trigger="taxvalue"}>
+					<SELECT SIZE="1" NAME="tariffadd[taxvalue]" VALUE="{$tariffadd.taxvalue}" {tip text="Enter Tax rate" trigger="taxvalue"}>
 					    <OPTION VALUE="22">22%</OPTION>
 					    <OPTION VALUE="7">7%</OPTION>
 					    <OPTION VALUE="0">0%</OPTION>
@@ -47,9 +47,9 @@
 				    <TD WIDTH="1%">
 					<IMG SRC="img/class.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>{t}PKWiU:{/t}</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Product ID:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[pkwiu]" VALUE="{$tariffadd.pkwiu}" {tip text="Enter PKWiU symbol (optional)" trigger="pkwiu"}>
+					<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[pkwiu]" VALUE="{$tariffadd.pkwiu}" {tip text="Enter Product ID number (optional)" trigger="pkwiu"}>
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -79,7 +79,7 @@
 				    </TD>
 				    <TD WIDTH="1%" NOWRAP><B>{t}Upload ceil:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariffadd[upceil]" SIZE="8" VALUE="{if $tariffadd.upceil}{$tariffadd.upceil}{/if}" {tip text="Enter maximal upload value (optional)" trigger="upceil"}> kbit/s
+					<INPUT TYPE="TEXT" NAME="tariffadd[upceil]" SIZE="8" VALUE="{if $tariffadd.upceil}{$tariffadd.upceil}{/if}" {tip text="Enter maximum upload value (optional)" trigger="upceil"}> kbit/s
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">			
@@ -96,7 +96,7 @@
 				    </TD>
 				    <TD WIDTH="1%" NOWRAP><B>{t}Download ceil:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariffadd[downceil]" SIZE="8" VALUE="{if $tariffadd.downceil}{$tariffadd.downceil}{/if}" {tip text="Enter maximal download value (optional)" trigger="downceil"}> kbit/s
+					<INPUT TYPE="TEXT" NAME="tariffadd[downceil]" SIZE="8" VALUE="{if $tariffadd.downceil}{$tariffadd.downceil}{/if}" {tip text="Enter maximum download value (optional)" trigger="downceil"}> kbit/s
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">			

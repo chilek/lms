@@ -33,7 +33,7 @@
 		<TD width="1%" class="fright">
 			<nobr>
 			<a href="?m=adminpasswd&id={$adminslist[adminslist].id}"><img src="img/keys.gif" border="0" align="absmiddle" ALT="[ {t}Change password{/t} ]"></A>
-			{if $adminslist[adminslist].id neq $layout.logid}<a href="?m=admindel&id={$adminslist[adminslist].id}" onClick="return confirmLink(this, '{t}Are you sure? This administrator account will be irreversible deleted from system!{/t}');">{/if}<img src="img/delete.gif" border="0" align="absmiddle" ALT="[ {t}Delete{/t} ]"></A>
+			{if $adminslist[adminslist].id neq $layout.logid}<a href="?m=admindel&id={$adminslist[adminslist].id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{/if}<img src="img/delete.gif" border="0" align="absmiddle" ALT="[ {t}Delete{/t} ]"></A>
 			<a href="?m=adminedit&id={$adminslist[adminslist].id}"><img src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A>
 			<a href="?m=admininfo&id={$adminslist[adminslist].id}"><img src="img/info.gif" border="0" align="absmiddle" ALT="[ {t}Info{/t} ]"></A>
 		</TD>

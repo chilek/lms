@@ -50,7 +50,7 @@ if(isset($adminadd))
 		$error['name'] = trans('You must enter name and surname!');
 
 	if($adminadd['password']=='')
-		$error['password'] = trans('Empty passwords not allowed!');
+		$error['password'] = trans('Empty passwords are not allowed!');
 	elseif($adminadd['password']!=$adminadd['confirm'])
 		$error['password'] = trans('Passwords do not match!');
 
