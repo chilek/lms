@@ -5,67 +5,76 @@
 {if $unlockedit}<FORM NAME="adminedit" METHOD="POST" ACTION="?m=adminedit&id={$admininfo.id}">{/if}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD CLASS="fall">
-			<IMG SRC="img/admins.gif" ALT="" ALIGN="ABSMIDDLE"> <B>
-				{if $unlockedit}<INPUT TYPE="TEXT" NAME="admininfo[name]" VALUE="{$admininfo.name|capitalize}" SIZE="30" {tip trigger="name" bold=1}>
-				{else}{$admininfo.name|capitalize}{/if} ({$admininfo.id|string_format:"%04d"})
-			</B>
+		{if $unlockedit}
+		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
+			<IMG SRC="img/admins.gif" ALT="" ALIGN="ABSMIDDLE">
+			<B>Imiê i nazwisko:</B>
+		</TD>
+		<TD CLASS="frightu">
+			 <B><INPUT TYPE="TEXT" NAME="admininfo[name]" VALUE="{$admininfo.name|capitalize}" {tip trigger="name" bold=1}> ({$admininfo.id|string_format:"%04d"})</B>
+		</TD>
+		{else}
+		<TD CLASS="fall" COLSPAN="2" NOWRAP>
+			<IMG SRC="img/admins.gif" ALT="" ALIGN="ABSMIDDLE">
+			<B>{$admininfo.name|capitalize} ({$admininfo.id|string_format:"%04d"})</B>
+		</TD>	
+		{/if}
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/pass.gif" ALT="" ALIGN="ABSMIDDLE"> <B>Login:</B>
+		</TD>
+		<TD CLASS="fright">
+			{if $unlockedit}
+			<INPUT TYPE="TEXT" NAME="admininfo[login]" VALUE="{$admininfo.login}" {tip trigger="login"}>
+			{else}
+			{$admininfo.login}
+			{/if}
 		</TD>
 	</TR>
 	<TR CLASS="light">
-		<TD CLASS="fall">
-			<TABLE WIDTH="100%" CELLPADDING="1">
-				<TR>
-					<TD WIDTH="1%" NOWRAP>
-						<IMG SRC="img/pass.gif" ALT="" ALIGN="ABSMIDDLE"> <B>Login:</B>
-					</TD>
-					<TD>
-						{if $unlockedit}
-						<INPUT TYPE="TEXT" NAME="admininfo[login]" VALUE="{$admininfo.login}" {tip trigger="login"}>
-						{else}
-						{$admininfo.login}
-						{/if}
-					</TD>
-				</TR>
-				<TR>
-					<TD WIDTH="1%" NOWRAP>
-						<IMG SRC="img/mail.gif" ALT="" ALIGN="ABSMIDDLE"> <B>E-mail:</B>
-					</TD>
-					<TD>
-						{if $unlockedit}<INPUT TYPE="TEXT" NAME="admininfo[email]" VALUE="{$admininfo.email}" CLASS="RED">{else}
-						{if $admininfo.email}<A HREF="mailto:{$admininfo.email}">{$admininfo.email}</A>{else}-{/if}{/if}
-					</TD>
-				</TR>
-				<TR>
-					<TD WIDTH="1%" NOWRAP>
-						<IMG SRC="img/empty.gif" WIDTH="16" HEIGHT="16" ALT="" BORDER="0"> <B><NOBR>Ostatnio zalogowany:</NOBR></B>
-					</TD>
-					<TD>
-						{$admininfo.lastlogin}, {$admininfo.lastloginip} {if $admininfo.lastloginip neq $admininfo.lastloginhost}({$admininfo.lastloginhost}){/if}
-					</TD>
-				</TR>
-				<TR>
-					<TD WIDTH="1%" NOWRAP>
-						<IMG SRC="img/empty.gif" WIDTH="16" HEIGHT="16" ALT="" BORDER="0"> <B><NOBR>Ostatnie nieudane logowanie:</NOBR></B>
-					</TD>
-					<TD>
-						{$admininfo.faillogin}, {$admininfo.failedloginip} {if $admininfo.failedloginip neq $admininfo.failloginhost}({$admininfo.failloginhost}){/if}
-					</TD>
-				</TR>
-				<TR>
-					<TD COLSPAN="2" ALIGN="right">
-						{if $unlockedit}<A HREF="javascript:document.adminedit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">{else}
-							<A HREF="?m=adminedit&id={$admininfo.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>{/if} <a href="?m=admindel&id={$admininfo.id}" onClick="return confirmLink(this, 'Jeste¶ pewien i ¶wiadom ¿e chcesz usun±æ tego administratora? Konto to zostanie bezpowrotnie usuniête z systemu!');">Usuñ <img src="img/delete.gif" border="0" align="absmiddle" alt=""></A> <A HREF="?m=adminpasswd&id={$admininfo.id}">Zmieñ has³o <IMG SRC="img/keys.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> {if $unlockedit}<A HREF="?m=admininfo&id={$admininfo.id}">Anuluj <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
-			</TABLE>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/mail.gif" ALT="" ALIGN="ABSMIDDLE"> <B>E-mail:</B>
+		</TD>
+		<TD CLASS="fright">
+			{if $unlockedit}<INPUT TYPE="TEXT" NAME="admininfo[email]" VALUE="{$admininfo.email}" CLASS="RED">{else}
+			{if $admininfo.email}<A HREF="mailto:{$admininfo.email}">{$admininfo.email}</A>{else}-{/if}{/if}
+		</TD>
+	</TR>
+	{if ! $unlockedit}
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/empty.gif" WIDTH="16" HEIGHT="16" ALT="" BORDER="0"> <B><NOBR>Ostatnio zalogowany:</NOBR></B>
+		</TD>
+		<TD CLASS="fright">
+			{$admininfo.lastlogin}, {$admininfo.lastloginip} {if $admininfo.lastloginip neq $admininfo.lastloginhost}({$admininfo.lastloginhost}){/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/empty.gif" WIDTH="16" HEIGHT="16" ALT="" BORDER="0"> <B><NOBR>Ostatnie nieudane logowanie:</NOBR></B>
+		</TD>
+		<TD CLASS="fright">
+			{$admininfo.faillogin}, {$admininfo.failedloginip} {if $admininfo.failedloginip neq $admininfo.failloginhost}({$admininfo.failloginhost}){/if}
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="light">
+		<TD COLSPAN="2" CLASS="fbottomu" ALIGN="right">
+			{if $unlockedit}
+			<A HREF="javascript:document.adminedit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
+			{else}
+			<A HREF="?m=adminedit&id={$admininfo.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>{/if} <a href="?m=admindel&id={$admininfo.id}" onClick="return confirmLink(this, 'Jeste¶ pewien i ¶wiadom ¿e chcesz usun±æ tego administratora? Konto to zostanie bezpowrotnie usuniête z systemu!');">Usuñ <img src="img/delete.gif" border="0" align="absmiddle" alt=""></A> <A HREF="?m=adminpasswd&id={$admininfo.id}">Zmieñ has³o <IMG SRC="img/keys.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> {if $unlockedit}<A HREF="?m=admininfo&id={$admininfo.id}">Anuluj <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			{/if}
 		</TD>
 	</TR>
 	<TR CLASS="DARK">
-		<TD CLASS="FALL">
+		<TD CLASS="fbottomu" COLSPAN="2">
 			<B>Uprawnienia:</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD CLASS="FALL">
+		<TD CLASS="FALL" COLSPAN="2">
 			{if $unlockedit}
 			{section name=acl loop=$accesslist}
 			<input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" class="clean"{if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
