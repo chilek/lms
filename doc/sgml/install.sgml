@@ -496,8 +496,8 @@ database = /usr/local/lms/lms.db</screen>
    </listitem>
    <listitem>
     <para>use_current_payday</para>
-    <para>Okre¶la, czy ma byæ u¿yty aktualny dzieñ miesi±ca jako dzieñ zap³aty
-    zamiast najczê¶ciej u¿ywanego. Domy¶lnie wy³±czone.</para>
+    <para>Okre¶la, czy ma byæ u¿yta aktualna data jako dzieñ zap³aty podczas
+    przypisywania zobowi±zañ u¿ytkownikom. Domy¶lnie wy³±czone.</para>
     <para>Przyk³ad:	<prompt>use_current_payday = 1</prompt></para>
    </listitem>
   </itemizedlist>
