@@ -1,5 +1,10 @@
 $Id$
 
+wersja 1.0pre6 (??/??/2003):
+
+  - mo¿liwo¶æ edycji imienia i nazwiska u¿ytkownika
+  - sporo kosmetyki, poprawek w sortowaniu i nie tylko
+
 wersja 1.0pre5 (26/01/2003):
  
   - PLIKI KONFIGURACYJNE PRZENIESIONE DO KATALOGU /etc/lms/ !!!
