@@ -3,7 +3,7 @@
 	<TR CLASS="dark">
 		<TD width="100%" CLASS="fall">
 			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
-			<B>Zg³oszenie Nr {$ticket.ticketid|string_format:"%06d"}</B>
+			<B>{t}Ticket no{/t} {$ticket.ticketid|string_format:"%06d"}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -15,7 +15,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
-			<B>Temat:</B>
+			<B>{t}Subject:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%" NOWRAP>
 		        {$ticket.subject|escape|truncate:50:"..."}
@@ -24,7 +24,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/user.gif" alt="" border="0" align="absmiddle">
-			<B>Zg³aszaj±cy:</B>
+			<B>{t}Submitter:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%" NOWRAP>
 			{if $ticket.userid}
@@ -40,7 +40,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">
-			<B>Data zg³oszenia:</B>
+			<B>{t}Ticket date:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
 			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
@@ -49,7 +49,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/time.gif" alt="" border="0" align="absmiddle">
-			<B>Uptime:</B>
+			<B>{t}Uptime:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
 			{$ticket.uptime}
@@ -62,7 +62,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 			<IMG src="img/admins.gif" alt="" border="0" align="absmiddle">
-			<B>W³a¶ciciel:</B>
+			<B>{t}Owner:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
 			<A href="?m=admininfo&id={$ticket.owner}">{$ticket.ownername}</A>
@@ -71,7 +71,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/queue.gif" alt="" border="0" align="absmiddle">
-			<B>Kolejka:</B>
+			<B>{t}Queue:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
 			<A HREF="?m=rtqueueview&id={$ticket.queueid}">{$ticket.queuename}</A>
@@ -80,7 +80,7 @@
 		<TR>
 		    <TD WIDTH="1%" NOWRAP>
 		    	<IMG src="img/dead.gif" alt="" border="0" align="absmiddle">
-			<B>Status:</B>
+			<B>{t}Status:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
 			{$ticket.status}
@@ -95,11 +95,11 @@
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" ALIGN="RIGHT">
 			{if $ticket.state < 2}
-			<A href="?m=rtticketedit&id={$ticket.ticketid}&state=2">Rozwi±¿ <IMG src="img/resolved.gif" alt="" border="0" align="absmiddle"></A>&nbsp;
+			<A href="?m=rtticketedit&id={$ticket.ticketid}&state=2">{t}Resolve: {/t} <IMG src="img/resolved.gif" alt="" border="0" align="absmiddle"></A>&nbsp;
 			{/if}
-			<A href="?m=rtticketedit&id={$ticket.ticketid}">Edytuj <IMG src="img/edit.gif" alt="" border="0" align="absmiddle"></A>
-			<A href="?m=rtticketprint&id={$ticket.ticketid}" target="_BLANK">Drukuj <IMG src="img/print.gif" alt="" border="0" align="absmiddle"></A>
-			<A href="?m=rtqueueview&id={$ticket.queueid}">Anuluj <IMG src="img/cancel.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=rtticketedit&id={$ticket.ticketid}">{t}Edit{/t} <IMG src="img/edit.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=rtticketprint&id={$ticket.ticketid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=rtqueueview&id={$ticket.queueid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt="" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>

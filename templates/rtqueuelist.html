@@ -6,21 +6,21 @@
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="95%">
 			<IMG src="img/queue.gif" ALT="" BORDER="0" ALIGN="absmiddle">
-			<B>Kolejka:</B><BR>
+			<B>{t}Queue{/t}:</B><BR>
 			<IMG src="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
-			Opis:
+			{t}Description{/t}:
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" align="right" NOWRAP>
-			<B>E-mail:</B>
+			<B>{t}E-mail:{/t}</B>
 		</TD>
 		<TD CLASS="fbt" align="right"  WIDTH="1%">
-			Nowych:
+			{t}New:{/t}
 		</TD>
 		<TD CLASS="fbt" align="right" WIDTH="1%">
-			Otwartych:
+			{t}Opened:{/t}
 		</TD>
 		<TD CLASS="fbt" align="right" WIDTH="1%" ALIGN="CENTER">
-			Ostatni:
+			{t}Last:{/t}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;
@@ -49,10 +49,10 @@
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD CLASS="fright" NOWRAP>
-			<A HREF="?m=rtqueueinfo&id={$queue.id}"><IMG SRC="img/info.gif" ALT="[ Info ]" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" ALT="[ Przegl±daj ]" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=rtqueuedel&id={$queue.id}" {confirm text="Czy jeste¶ pewien, ¿e chcesz usun±æ kolejkê `$queue.name` z bazy danych?"}><IMG SRC="img/delete.gif" ALT="[ Usuñ ]" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtqueueinfo&id={$queue.id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtqueuedel&id={$queue.id}" {confirm text="Are you sure you want to remove queue `$queue.name` from database?"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -60,7 +60,7 @@
 		<TD colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Nie ma ¿adnych kolejek.</B></p>
+			<p><B>{t}There are no queues.{/t}<B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -69,7 +69,7 @@
 	<TR CLASS="light">
 		<TD COLSPAN="2" ALIGN="RIGHT" CLASS="fleftu">
 			<IMG src="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">
-			<B>Razem:</B>
+			<B>{t}Summary{/t}:</B>
 		</TD>
 		<TD ALIGN="CENTER" CLASS="fbt">
 			<B>{sum array=$queues column=new}</B>

@@ -5,7 +5,7 @@
 		<TD width="100%" align="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
-			Sporz±dzone przez: {$layout.logname}
+			{t}Created by:{/t} {$layout.logname}
 		</TD>
 	</TR>
 </TABLE>
@@ -13,12 +13,12 @@
 <TABLE width="600" cellpadding="3" border="1" align="CENTER">
 	<TR>
 		<TD class="HEAD" colspan="2">
-			<H1>Zg³oszenie Nr {$ticket.ticketid|string_format:"%06d"}</H1>
+			<H1>{t}Ticket no{/t} {$ticket.ticketid|string_format:"%06d"}</H1>
 		</TD>
 	</TR>
 	<TR>
 		<TD width="1%">
-			<B>Temat:</B>
+			<B>{t}Subject:{/t}</B>
 		</TD>
 		<TD width="99%" NOWRAP>
 		        {$ticket.subject|escape|truncate:50:"..."}
@@ -26,7 +26,7 @@
 	</TR>
 	<TR>
 	        <TD width="1%">
-			<B>Zg³aszaj±cy:</B>
+			<B>{t}Submitter:{/t}</B>
 	        </TD>
 	        <TD width="99%" NOWRAP>
 			{if $ticket.userid}
@@ -41,7 +41,7 @@
 	</TR>
 	<TR>
 		<TD width="1%" NOWRAP>
-			<B>Data zg³oszenia:</B>
+			<B>{t}Ticket date:{/t}</B>
 		</TD>
 		<TD width="99%">
 			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
@@ -50,7 +50,7 @@
 	{if $ticket.ownername}
 	<TR>
 		<TD width="1%">
-			<B>W³a¶ciciel:</B>
+			<B>{t}Owner{/t}</B>
 		</TD>
 		<TD width="99%" NOWRAP>
 			{$ticket.ownername}
@@ -60,7 +60,7 @@
 {*
 	<TR>
 	        <TD width="1%">
-			<B>Status:</B>
+			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD width="99%">
 			{$ticket.status}
@@ -68,7 +68,7 @@
 	</TR>
 	<TR>
 	        <TD width="1%">
-			<B>Uptime:</B>
+			<B>{t}Uptime:{/t}</B>
 		</TD>
 		<TD width="99%" NOWRAP>
 			{$ticket.uptime}
@@ -76,7 +76,7 @@
 	</TR>
 	<TR>
 	        <TD width="1%">
-			<B>Kolejka:</B>
+			<B>{t}Queue:{/t}</B>
 		</TD>
 		<TD width="99%" NOWRAP>
 			{$ticket.queuename}
@@ -85,7 +85,7 @@
 *}
 	<TR>
 	        <TD width="1%">
-			<B>Wiadomo¶æ:</B>
+			<B>{t}Message:{/t}</B>
 		</TD>
 		<TD width="99%">
 			{$ticket.messages.0.body|escape|replace:"\n":"<BR>"}
@@ -96,7 +96,7 @@
 <TABLE width="600" cellpadding="3" border="1" align="CENTER">
 	<TR>
 		<TD width="100%" class="HEAD">
-			Uwagi:
+		{t}Notes:{/t}	
 		</TD>
 	</TR>
 	<TR>

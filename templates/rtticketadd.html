@@ -7,23 +7,23 @@
 	<TR CLASS="dark">
 		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
 			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
-			<B>Temat:</B>
+			<B>{t}Subject:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="frightu">
-			<INPUT type="text" size="50" name="ticket[subject]" value="{$ticket.subject|escape}" {tip text="Podaj temat zg³oszenia" trigger="subject"}></INPUT>
+			<INPUT type="text" size="50" name="ticket[subject]" value="{$ticket.subject|escape}" {tip text="Enter subject" trigger="subject"}></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/user.gif" alt="" border="0" align="absmiddle">
-			<B>Zg³aszaj±cy:</B>
+			<B>{t}Submitter:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
 			<TABLE width="100%" cellpadding="1">
 			    <TR>
 			    	<TD width="100%" colspan="2">
-				    <SELECT size="1" name="ticket[userid]" {if !$ticket.userid}{tip trigger="requestor"}{/if} {tip text="Wybierz u¿ytkownika z listy lub wprowad¼ jego dane jesli nie jest klientem sieci"}>
-					<OPTION value="0">- wybierz u¿ytkownika -</OPTION>
+				    <SELECT size="1" name="ticket[userid]" {if !$ticket.userid}{tip trigger="requestor"}{/if} {tip text="select user from list or enter his data if not a customer"}>
+					<OPTION value="0">- {t}select user{/t} -</OPTION>
 					{foreach from=$userlist item=userlist}
 					    <OPTION value="{$userlist.id}" {if $userlist.id == $user}SELECTED{/if}>{$userlist.username} ({$userlist.id|string_format:"%04d"})</OPTION>
 					{/foreach}
@@ -31,16 +31,16 @@
 				</TD>
 			    </TR>
 			    <TR>
-				<TD width="1%">Nazwisko:</TD>
-				<TD width="99%"><INPUT type="text" name="ticket[surname]" value="{$ticket.surname}" {tip text="Wybierz u¿ytkownika z listy lub wprowad¼ jego dane jesli nie jest klientem sieci" trigger="surname"}></TD>
+				<TD width="1%">{t}Name:{/t}</TD>
+				<TD width="99%"><INPUT type="text" name="ticket[surname]" value="{$ticket.surname}" {tip text="select user from list or enter his data if not a customer" trigger="surname"}></TD>
 			    </TR>
 			    <TR>
-				<TD width="1%">Imiê:</TD>
-				<TD width="99%"><INPUT type="text" name="ticket[name]" value="{$ticket.name}" {tip text="Wybierz u¿ytkownika z listy lub wprowad¼ jego dane jesli nie jest klientem sieci"}></TD>
+				<TD width="1%">{t}Firstname{/t}:</TD>
+				<TD width="99%"><INPUT type="text" name="ticket[name]" value="{$ticket.name}" {tip text="select user from list or enter his data if not a customer"}></TD>
 			    </TR>
 			    <TR>
-				<TD width="1%">E-mail:</TD>
-				<TD width="99%"><INPUT type="text" name="ticket[email]" value="{$ticket.email}" {tip trigger="email" text="Wybierz u¿ytkownika z listy lub wprowad¼ jego dane jesli nie jest klientem sieci"}></TD>
+				<TD width="1%">{t}E-mail:{/t}</TD>
+				<TD width="99%"><INPUT type="text" name="ticket[email]" value="{$ticket.email}" {tip trigger="email" text="select user from list or enter his data if not a customer"}></TD>
 			    </TR>
 			</TABLE>
 		</TD>
@@ -48,10 +48,10 @@
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/queue.gif" alt="" border="0" align="absmiddle">
-			<B>Kolejka:</B>
+			<B>{t}Queue:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<SELECT size="1" name="ticket[queue]" {tip text="Wybierz kolejkê" trigger="queue"}>
+			<SELECT size="1" name="ticket[queue]" {tip text="Select queue" trigger="queue"}>
 			{foreach from=$queuelist item=queuelist}
 				<OPTION value="{$queuelist.id}" {if $queuelist.id == $queue}SELECTED{/if}>{$queuelist.name}</OPTION>
 			{/foreach}
@@ -61,16 +61,16 @@
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/mail.gif" alt="" border="0" align="absmiddle">
-			<B>Tre¶æ:</B>
+			<B>{t}Content{/t}:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Wpisz tre¶æ zg³oszenia" trigger="body"} >{$ticket.body}</TEXTAREA>
+			<TEXTAREA name="ticket[body]" cols="50" rows="5" {tip text="Enter ticker content" trigger="body"} >{$ticket.body}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
-			<A href="javascript: document.ticket.submit();" accesskey="s">Zapisz <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
-			<A href="?m={if $queue}rtqueueview&id={$queue}{else}rtqueuelist{/if}">Anuluj <IMG src="img/cancel.gif" border="0" alt="" align="absmiddle"></A>
+			<A href="javascript: document.ticket.submit();" accesskey="s">{t}Save {/t}<IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
+			<A href="?m={if $queue}rtqueueview&id={$queue}{else}rtqueuelist{/if}">{t}Cancel {/t}<IMG src="img/cancel.gif" border="0" alt="" align="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -2,11 +2,11 @@
 <P><TABLE width="100%" cellpadding="3">
     <TR class="dark">
 	<TD class="fleftu" width="1%" NOWRAP>
-	    <IMG src="img/open.gif" alt="" border="0" align="absmiddle"> <B>Historia zg³oszenia</B>
+	    <IMG src="img/open.gif" alt="" border="0" align="absmiddle"> <B>{t}Ticket history{/t}</B>
 	</TD>
 	<TD class="frightu" width="99%" align="right" NOWRAP>
 	    {if $ticket.state != 2}
-	    <A href="?m=rtmessageadd&ticketid={$ticket.ticketid}">Nowa wiadomo¶æ <IMG src="img/mail.gif" alt="" border="0" align="absmiddle"></A>
+	    <A href="?m=rtmessageadd&ticketid={$ticket.ticketid}">{t}New message{/t} <IMG src="img/mail.gif" alt="" border="0" align="absmiddle"></A>
 	    {/if}
 	</TD>
     </TR>
@@ -20,7 +20,7 @@
 			    <B>{$message.createtime|date_format:"%Y/%m/%d<BR>%H:%M.%S"}</B>
 			</TD>
 			<TD width="1%" class="fbt" ALIGN="RIGHT">
-			    <B>Od:<BR>Temat:</B>
+			    <B>{t}From:{/t}<BR>{t}Subject:{/t}</B>
 			</TD>
 			<TD width="1%" class="fbt" NOWRAP>
 			    {if $message.userid}
@@ -39,12 +39,12 @@
 			    {$message.subject|escape}
 			</TD>
 			<TD width="97%" class="fbt" align="right" nowrap>
-			    <A href="?m=rtmessageview&id={$message.id}">Podgl±d <IMG src="img/view.gif" alt="" border="0" align="absmiddle"></A>
+			    <A href="?m=rtmessageview&id={$message.id}">{t}Details{/t} <IMG src="img/view.gif" alt="" border="0" align="absmiddle"></A>
 			    {if $ticket.state != 2}
-			    <A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">Odpowiedz <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
+			    <A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">{t}Answer{/t} <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
 			    {/if}
 			    {if $msgidx > 0}
-			    <A href="?m=rtticketview&id={$ticket.ticketid}&delmsgid={$message.id}" onClick="return confirmLink(this,'Na pewno chcesz usun±æ wiadomo¶æ?');">Usuñ <IMG src="img/delete.gif" alt="" border="0" align="absmiddle"></A>
+			    <A href="?m=rtticketview&id={$ticket.ticketid}&delmsgid={$message.id}" onClick="return confirmLink(this,'Are you sure you want to delete message?');">{t}Delete{/t} <IMG src="img/delete.gif" alt="" border="0" align="absmiddle"></A>
 			    {/if}
 			</TD>
 		    </TR>
