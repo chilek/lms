@@ -24,19 +24,19 @@
  *  $Id$
  */
 
-if(!$LMS->TariffExists($_GET[id]))
+if(!$LMS->TariffExists($_GET['id']))
 {
 	header("Location: ?m=tarifflist");
 	die;
 }
-$tariff = $LMS->GetTariff($_GET[id]);
-$layout[pagetitle] = "Informacja o taryfie: ".$tariff[name];
+$tariff = $LMS->GetTariff($_GET['id']);
+$layout['pagetitle'] = "Informacja o taryfie: ".$tariff['name'];
 
-$_SESSION[backto] = $_SERVER[QUERY_STRING];
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("tariff",$tariff);
-$SMARTY->assign("tariffs",$LMS->GetTariffs());
-$SMARTY->display("tariffinfo.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('tariff',$tariff);
+$SMARTY->assign('tariffs',$LMS->GetTariffs());
+$SMARTY->display('tariffinfo.html');
 
 ?>

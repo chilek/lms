@@ -81,7 +81,7 @@ if(!isset($useradd['city']))
 if(!isset($useradd['address']))	
 	$useradd['address'] = $LMS->CONFIG['phpui']['default_address'];
 
-$layout['pagetitle']='Nowy u¿ytkownik';
+$layout['pagetitle'] = 'Nowy u¿ytkownik';
 
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('useradd',$useradd);

@@ -24,45 +24,45 @@
  *  $Id$
  */
 
-$search = $_POST[search];
+$search = $_POST['search'];
 
-if(isset($search[s]))
-	$_GET[s] = $search[s];
+if(isset($search['s']))
+	$_GET['s'] = $search['s'];
 
-$layout[pagetitle]="Wyszukiwanie u¿ytkowników";
+$layout['pagetitle'] = 'Wyszukiwanie u¿ytkowników';
 if(!isset($search))
-	$search = $_SESSION[usersearch];
+	$search = $_SESSION['usersearch'];
 else
-	$_SESSION[usersearch] = $search;
+	$_SESSION['usersearch'] = $search;
 
-if(!isset($_GET[o]))
-	$o = $_SESSION[uslo];
+if(!isset($_GET['o']))
+	$o = $_SESSION['uslo'];
 else
-	$o = $_GET[o];
+	$o = $_GET['o'];
 
-$_SESSION[uslo] = $o;
+$_SESSION['uslo'] = $o;
 
-if(!isset($_GET[s]))
-	$s = $_SESSION[usls];	
+if(!isset($_GET['s']))
+	$s = $_SESSION['usls'];	
 else
-	$s = $_GET[s];
+	$s = $_GET['s'];
 	
-$_SESSION[usls] = $s;
+$_SESSION['usls'] = $s;
 				
-$layout[pagetitle]="Wyszukiwanie u¿ytkownika";
-$SMARTY->assign("layout",$layout);
-$SMARTY->display("header.html");
-$SMARTY->display("userheader.html");
+$layout['pagetitle'] = "Wyszukiwanie u¿ytkownika";
+$SMARTY->assign('layout',$layout);
+$SMARTY->display('header.html');
+$SMARTY->display('userheader.html');
 
-if($_GET[search]==1 || isset($_GET[search]))
+if($_GET['search']==1 || isset($_GET['search']))
 {
 	$userlist = $LMS->SearchUserList($o,$s,$search);
-	$SMARTY->assign("userlist",$userlist);
-	$SMARTY->display("usersearchresults.html");
+	$SMARTY->assign('userlist',$userlist);
+	$SMARTY->display('usersearchresults.html');
 }
 else
-	$SMARTY->display("usersearch.html");
+	$SMARTY->display('usersearch.html');
 
-$SMARTY->display("footer.html");
+$SMARTY->display('footer.html');
 
 ?>

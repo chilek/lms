@@ -36,7 +36,7 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 		if($junk)
 			$ids[] = $markid;
 	sort($ids);
-	$which = ($_GET[which] != '' ? $_GET[which] : 'ORYGINA£+KOPIA');
+	$which = ($_GET['which'] != '' ? $_GET['which'] : 'ORYGINA£+KOPIA');
 	foreach($ids as $idx => $invoiceid)
 	{
 		echo '<PRE>';

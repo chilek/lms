@@ -121,11 +121,11 @@ if(isset($payment))
 		$payment['at'] = sprintf("%02d/%02d",($payment['at']%100),$payment['at']/100+1);
 }
 	
-$layout['pagetitle']="Edycja op³aty sta³ej: ".$payment['name'];	
+$layout['pagetitle'] = "Edycja op³aty sta³ej: ".$payment['name'];	
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("payment",$payment);
-$SMARTY->assign("error",$error);
-$SMARTY->display("paymentedit.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('payment',$payment);
+$SMARTY->assign('error',$error);
+$SMARTY->display('paymentedit.html');
 
 ?>

@@ -24,43 +24,43 @@
  *  $Id$
  */
 
-if(!$LMS->NetworkExists($_GET[id])||!$LMS->NetworkExists($_GET[mapto]))
+if(!$LMS->NetworkExists($_GET['id'])||!$LMS->NetworkExists($_GET['mapto']))
 {
 	header("Location: ?m=netlist");
 	die;
 }
 
-$network[source] = $LMS->GetNetworkRecord($_GET[id],$_SESSION[ntlp][$_GET[id]],1024);
-$network[dest] = $LMS->GetNetworkRecord($_GET[mapto]);
+$network['source'] = $LMS->GetNetworkRecord($_GET['id'],$_SESSION['ntlp'][$_GET['id']],1024);
+$network['dest'] = $LMS->GetNetworkRecord($_GET['mapto']);
 
-if($network[source][assigned] > $network[dest][free])
-	$error[remap] = TRUE;
+if($network['source']['assigned'] > $network['dest']['free'])
+	$error['remap'] = TRUE;
 
 if(!$error)
 {
-	if($_GET[is_sure])
+	if($_GET['is_sure'])
 	{
 
-		$LMS->NetworkRemap($network[source][id],$network[dest][id]);
-		header("Location: ?m=netinfo&id=".$network[dest][id]);
+		$LMS->NetworkRemap($network['source']['id'],$network['dest']['id']);
+		header("Location: ?m=netinfo&id=".$network['dest']['id']);
 		die;
 
 	}else{
-		$layout[pagetitle]="Readresowanie sieci ".strtoupper($network[source][name]);
-		$SMARTY->assign("layout",$layout);
-		$SMARTY->display("header.html");
-		echo "<H1>Readresowanie sieci ".strtoupper($network[source][name])."</H1>";
-		echo "<p>Jeste¶ pewien ¿e chcesz przeadresowaæ sieæ ".strtoupper($network[source][name])." (".$network[source][address]."/".$network[source][prefix].") do sieci ".strtoupper($network[dest][name])." (".$network[dest][address]."/".$network[dest][prefix].") ?</p>";
-		echo "<a href=\"?m=netremap&id=".$_GET[id]."&mapto=".$_GET[mapto]."&is_sure=1\">Tak, jestem pewien</A>";
-		$SMARTY->display("footer.html");
+		$layout['pagetitle'] = "Readresowanie sieci ".strtoupper($network['source']['name']);
+		$SMARTY->assign('layout',$layout);
+		$SMARTY->display('header.html');
+		echo "<H1>Readresowanie sieci ".strtoupper($network['source']['name'])."</H1>";
+		echo "<p>Jeste¶ pewien ¿e chcesz przeadresowaæ sieæ ".strtoupper($network['source']['name'])." (".$network['source']['address']."/".$network['source']['prefix'].") do sieci ".strtoupper($network['dest']['name'])." (".$network['dest']['address']."/".$network['dest']['prefix'].") ?</p>";
+		echo "<a href=\"?m=netremap&id=".$_GET['id']."&mapto=".$_GET['mapto']."&is_sure=1\">Tak, jestem pewien</A>";
+		$SMARTY->display('footer.html');
 	}
 }else{
 	$networks = $LMS->GetNetworks();
-	$SMARTY->assign("layout",$layout);
-	$SMARTY->assign("network",$network[source]);
-	$SMARTY->assign("networks",$networks);
-	$SMARTY->assign("error",$error);
-	$SMARTY->display("netinfo.html");
+	$SMARTY->assign('layout',$layout);
+	$SMARTY->assign('network',$network['source']);
+	$SMARTY->assign('networks',$networks);
+	$SMARTY->assign('error',$error);
+	$SMARTY->display('netinfo.html');
 }
 	
 ?>

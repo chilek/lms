@@ -23,7 +23,7 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Statystyki wykorzystania ³±cza";
+$layout['pagetitle'] = "Statystyki wykorzystania ³±cza";
 
 $bars = 1;
 
@@ -50,14 +50,14 @@ switch($_GET['bar'])
 	break;
 
 	default: // set filter window
-		$SMARTY->assign("netlist",$LMS->GetNetworks());
-		$SMARTY->assign("nodelist",$LMS->GetNodeList());
+		$SMARTY->assign('netlist',$LMS->GetNetworks());
+		$SMARTY->assign('nodelist',$LMS->GetNodeList());
 		$bars = 0;
 	break;
 }
 
-$download = $traffic[download];
-$upload = $traffic[upload];
+$download = $traffic['download'];
+$upload = $traffic['upload'];
 
 // fuck this anyway... Maybe i write function in LMS:: for this, but not now
 
@@ -68,15 +68,15 @@ $endyear = date('Y',$endtime);
 
 unset($traffic);
 
-$SMARTY->assign("starttime",$starttime);
-$SMARTY->assign("startyear",$startyear);
-$SMARTY->assign("endtime",$endtime);
-$SMARTY->assign("endyear",$endyear);
-$SMARTY->assign("showips",$_POST['showips']);
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("download",$download);
-$SMARTY->assign("upload",$upload);
-$SMARTY->assign("bars",$bars);
-$SMARTY->display("traffic.html");
+$SMARTY->assign('starttime',$starttime);
+$SMARTY->assign('startyear',$startyear);
+$SMARTY->assign('endtime',$endtime);
+$SMARTY->assign('endyear',$endyear);
+$SMARTY->assign('showips',$_POST['showips']);
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('download',$download);
+$SMARTY->assign('upload',$upload);
+$SMARTY->assign('bars',$bars);
+$SMARTY->display('traffic.html');
 
 ?>

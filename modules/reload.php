@@ -29,7 +29,7 @@
 
 $layout[$pagetitle]="Prze³adowanie konfiguracji";
 
-$SMARTY->display("header.html");
+$SMARTY->display('header.html');
 
 ?><H1>Prze³adowanie konfiguracji</H1><?php
 
@@ -94,6 +94,6 @@ switch($_RELOAD_TYPE)
 
 }
 
-$SMARTY->display("footer.html");
+$SMARTY->display('footer.html');
 
 ?>

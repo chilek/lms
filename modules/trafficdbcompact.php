@@ -30,12 +30,12 @@ $removedeleted = $_POST['removedeleted'];
 
 if (!($level || $delete || $removedeleted))
 {
-    $SMARTY->display("traffic.html");
+    $SMARTY->display('traffic.html');
     die;
 }
 
-$SMARTY->display("header.html");
-$SMARTY->display("trafficheader.html");
+$SMARTY->display('header.html');
+$SMARTY->display('trafficheader.html');
 
 ?><PRE><B>Kompaktowanie bazy danych</B><BR><?
 echo "Przed kompaktowaniem w bazie jest ".$LMS->DB->GetOne("SELECT COUNT(*) FROM stats")." rekordów.\n";
@@ -72,19 +72,19 @@ if($level)
     $nodes = $LMS->DB->GetAll("SELECT id, name FROM nodes ORDER BY name");
     foreach($nodes as $node)
     {
-        echo "'".$node[name]."'\t: "; 
+        echo "'".$node['name']."'\t: "; 
 	$deleted = 0;
 	$inserted = 0;
 	$LMS->DB->BeginTrans();
 	$maxtime = $period;
 	while($maxtime > $mintime)
 	{
-	    $data = $LMS->DB->GetRow("SELECT sum(upload) as upload, sum(download) as download FROM stats WHERE dt >= $maxtime - $step AND dt < $maxtime AND nodeid=$node[id] GROUP BY nodeid");
-	    $deleted += $LMS->DB->Execute("DELETE FROM stats WHERE nodeid=$node[id] AND dt >= $maxtime - $step AND dt < $maxtime"); 
-	    $download = ($data[download]?$data[download]:0);
-	    $upload = ($data[upload]?$data[upload]:0);
+	    $data = $LMS->DB->GetRow("SELECT sum(upload) as upload, sum(download) as download FROM stats WHERE dt >= $maxtime - $step AND dt < $maxtime AND nodeid=$node['id'] GROUP BY nodeid");
+	    $deleted += $LMS->DB->Execute("DELETE FROM stats WHERE nodeid=$node['id'] AND dt >= $maxtime - $step AND dt < $maxtime"); 
+	    $download = ($data['download']?$data['download']:0);
+	    $upload = ($data['upload']?$data['upload']:0);
 	    if($download || $upload)
-		$inserted += $LMS->DB->Execute("INSERT INTO stats (nodeid, dt, upload, download) VALUES ($node[id], $maxtime, $upload, $download )");
+		$inserted += $LMS->DB->Execute("INSERT INTO stats (nodeid, dt, upload, download) VALUES ($node['id'], $maxtime, $upload, $download )");
 	    $maxtime -= $step;
 	}
 	
@@ -94,6 +94,6 @@ if($level)
 }
 echo "Po kompaktowaniu w bazie pozostaje ".$LMS->DB->GetOne("SELECT COUNT(*) FROM stats")." rekordów.";
 
-$SMARTY->display("footer.html");
+$SMARTY->display('footer.html');
 
 ?>

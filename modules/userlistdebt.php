@@ -24,67 +24,67 @@
  *  $Id$
  */
 
-$_SESSION[backto] = $_SERVER[QUERY_STRING];
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$layout[pagetitle]="Lista u¿ytkowników zad³u¿onych";
-$layout[ultitle]=" zad³u¿onych";
+$layout['pagetitle'] = "Lista u¿ytkowników zad³u¿onych";
+$layout['ultitle']=" zad³u¿onych";
 
-if(!isset($_GET[o]))
-	$o = $_SESSION[ulo];
+if(!isset($_GET['o']))
+	$o = $_SESSION['ulo'];
 else
-	$o = $_GET[o];
-$_SESSION[ulo] = $o;
+	$o = $_GET['o'];
+$_SESSION['ulo'] = $o;
 
-if(!isset($_GET[s]))
-	$s = $_SESSION[uls];
+if(!isset($_GET['s']))
+	$s = $_SESSION['uls'];
 else
-	$s = $_GET[s];
-$_SESSION[uls] = $s;
+	$s = $_GET['s'];
+$_SESSION['uls'] = $s;
 
-if (isset($_SESSION[ulp]) && !isset($_GET[page]))
-	$_GET[page] = $_SESSION[ulp];
+if (isset($_SESSION['ulp']) && !isset($_GET['page']))
+	$_GET['page'] = $_SESSION['ulp'];
 	    
 
 $userlist=$LMS->GetUserList($o,$s);
-$listdata[state] = $userlist[state];
-$listdata[order] = $userlist[order];
-$listdata[direction] = $userlist[direction];
+$listdata['state'] = $userlist['state'];
+$listdata['order'] = $userlist['order'];
+$listdata['direction'] = $userlist['direction'];
 
-$_SESSION[ulp] = $page;
+$_SESSION['ulp'] = $page;
 
-unset($userlist[total]);
-unset($userlist[state]);
-unset($userlist[order]);
-unset($userlist[below]);
-unset($userlist[over]);
-unset($userlist[direction]);
+unset($userlist['total']);
+unset($userlist['state']);
+unset($userlist['order']);
+unset($userlist['below']);
+unset($userlist['over']);
+unset($userlist['direction']);
 
 foreach($userlist as $idx => $row)
 {
-	if($row[balance] < 0)
+	if($row['balance'] < 0)
 	{
 		$nuserlist[] = $userlist[$idx];
-		if($row[balance] < 0)
-			$listdata[below] = $listdata[below] + $row[balance];
-		elseif($row[balance] > 0)
-			$listdata[over] = $listdata[over] + $row[balance];
+		if($row['balance'] < 0)
+			$listdata['below'] = $listdata['below'] + $row['balance'];
+		elseif($row['balance'] > 0)
+			$listdata['over'] = $listdata['over'] + $row['balance'];
 	}
 }
 
 $userlist = $nuserlist;
-$listdata[total] = sizeof($userlist);
+$listdata['total'] = sizeof($userlist);
 
-$page = (! $_GET[page] ? 1 : $_GET[page]);
-$pagelimit = (! $LMS->CONFIG[phpui][userlist_pagelimit] ? $listdata[total] : $LMS->CONFIG[phpui][userlist_pagelimit]);
+$page = (! $_GET['page'] ? 1 : $_GET['page']);
+$pagelimit = (! $LMS->CONFIG['phpui']['userlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['userlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("userlist",$userlist);
-$SMARTY->assign("listdata",$listdata);
-$SMARTY->assign("pagelimit",$pagelimit);
-$SMARTY->assign("page",$page);
-$SMARTY->assign("start",$start);
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('userlist',$userlist);
+$SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('pagelimit',$pagelimit);
+$SMARTY->assign('page',$page);
+$SMARTY->assign('start',$start);
 
-$SMARTY->display("userlist.html");
+$SMARTY->display('userlist.html');
 
 ?>

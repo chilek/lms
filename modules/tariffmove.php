@@ -24,13 +24,13 @@
  *  $Id$
  */
 
-if($LMS->TariffExists($_GET[from]) && $LMS->TariffExists($_GET[to]) && $_GET[is_sure] = 1)
+if($LMS->TariffExists($_GET['from']) && $LMS->TariffExists($_GET['to']) && $_GET['is_sure'] = 1)
 {
-	$LMS->TariffMove($_GET[from],$_GET[to]);
-	header("Location: ?m=tariffinfo&id=".$_GET[to]);
+	$LMS->TariffMove($_GET['from'],$_GET['to']);
+	header("Location: ?m=tariffinfo&id=".$_GET['to']);
 	die;
 }
 else
-	header("Location: ?".$_SESSION[backto]);
+	header("Location: ?".$_SESSION['backto']);
 
 ?>

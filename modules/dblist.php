@@ -24,14 +24,14 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Bazy danych";
+$layout['pagetitle'] = "Bazy danych";
 
 $dblist = $LMS->DatabaseList();
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("dblist",$dblist);
-$SMARTY->display("header.html");
-$SMARTY->display("dblist.html");
-$SMARTY->display("footer.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('dblist',$dblist);
+$SMARTY->display('header.html');
+$SMARTY->display('dblist.html');
+$SMARTY->display('footer.html');
 
 ?>

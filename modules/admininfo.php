@@ -30,7 +30,7 @@ if(!$LMS->AdminExists($_GET['id']))
 	die;
 }
 
-$layout['pagetitle']="Informacje o administratorze: ".$LMS->GetAdminName($_GET['id']);
+$layout['pagetitle'] = "Informacje o administratorze: ".$LMS->GetAdminName($_GET['id']);
 $admininfo=$LMS->GetAdminInfo($_GET['id']);
 
 $rights = $LMS->GetAdminRights($_GET['id']);
@@ -38,9 +38,9 @@ foreach($rights as $right)
 	if($access['table'][$right]['name'])
 		$accesslist[] = $access['table'][$right]['name'];
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("admininfo",$admininfo);
-$SMARTY->assign("accesslist",$accesslist);
-$SMARTY->display("admininfo.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('admininfo',$admininfo);
+$SMARTY->assign('accesslist',$accesslist);
+$SMARTY->display('admininfo.html');
 
 ?>
