@@ -217,7 +217,7 @@
 	<note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y go zainstalowaæ
 	aby mieæ w bazie dane do wykresów.</para></note>
 	</para>
-	<para>W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci, mo¿e 
+	<para>W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci, mo¿e
 	nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
 	oczekiwania na rysowanie wykresów. Z tego powodu w oknie 'Kompaktowanie
 	bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy bez
@@ -227,13 +227,13 @@
 	<listitem><para>Poziom Niski: dane z poprzedniego dnia i starsze, zostan± u¶rednione
 	do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
 	to 6*24 wpisów zostanie zast±pione jednym.</para></listitem>
-	<listitem><para>Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do 
+	<listitem><para>Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
 	jednego dnia.</para></listitem>
-	<listitem><para>Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do 
+	<listitem><para>Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
 	jednej godziny.</para></listitem>
 	</itemizedlist>
 	<warning><para>Kompaktowanie bazy danych jest procesem nieodwracalnym.</para></warning>
-	</para>   
+	</para>
 	<figure>
 		<title>LMS-UI: Statystyki - filtr</title>
 			<ulink url="images/stats.png">
@@ -247,6 +247,160 @@
 	<para></para>
 	<figure>
 		<title>LMS-UI: Statystyki - wykres</title>
+			<ulink url="images/statbars.png">
+				<inlinemediaobject>
+  				<imageobject>
+  					<imagedata fileref="images/statbars-small.png" format="png">
+  				</imageobject>
+  				</inlinemediaobject>
+			</ulink>
+	</figure>
+ </sect2>
+ </sect1>
+ <sect1 id="user-staff">
+ 	<title>Dodatki</title>
+	<sect2 id="user-staff-faktury">
+		<title>Faktury</title>
+		<para>LMS umo¿liwia wystawianie faktur. Opcja ta jest standardowo wy³±czona, dlatego na wstêpie
+		musisz w sekcji <emphasis>[finances]</emphasis> <filename>lms.ini</filename> ustawiæ nastêpuj±ce 
+		parametry:
+		<itemizedlist>
+		<listitem>
+			<para>enable_faktury</para>
+			<para>W³±czenie modu³u wystawiania faktur</para>
+			<para>Przyk³ad: <prompt>enable_faktury = 1</prompt></para>
+		</listitem>
+		<listitem>
+			<para>name</para>
+			<para>Nazwa sieci/organizacji na fakturze</para>
+			<para>Przyk³ad: <prompt>name = "Blokowa Sieæ Komputerowa K-27"</prompt></para>
+		</listitem>
+		<listitem>
+			<para>address</para>
+			<para>Adres sieci</para>
+			<para>Przyk³ad: <prompt>address = "Wiosenna 52"</prompt></para>
+		</listitem>
+		<listitem>
+			<para>zip</para>
+			<para>Kod pocztowy</para>
+			<para>Przyk³ad: <prompt>zip = "39-300"</prompt></para>
+		</listitem>
+		<listitem>
+			<para>city</para>
+			<para>Nazwa miasta</para>
+			<para>Przyk³ad: <prompt>city = "Mielec"</prompt></para>
+		</listitem>
+		<listitem>
+			<para>deadline</para>
+			<para>Termin zaplaty w dniach</para>
+			<para>Przyk³ad: <prompt>deadline = 5</prompt></para>
+		</listitem>
+		<listitem>
+			<para>bank</para>
+			<para>Nazwa banku</para>
+			<para>Przyk³ad: <prompt>bank = "Bank S.A. O/Mielec"</prompt></para>
+		</listitem>
+		<listitem>
+			<para>account</para>
+			<para>Numer konta bankowego</para>
+			<para>Przyk³ad: <prompt>account = "123-456789-01"</prompt></para>
+		</listitem>
+		<listitem>
+			<para>footer</para>
+			<para>Stopka widoczna na fakturze</para>
+			<para>Przyk³ad: <prompt>footer = "BSK K-27 w Mielcu, tel.5839455, fax.1234567"</prompt></para>
+		</listitem>
+		<listitem>
+			<para>template</para>
+			<para>Szablon faktury do u¿ycia</para>
+			<para>Przyk³ad: <prompt>template = /etc/lms/faktura.rtf</prompt></para>
+		</listitem>
+		</itemizedlist>
+		</para>
+		<para>Szablon jest niczym innym jak dokumentem tekstowym w formacie RTF (tekstowym)
+		lub html który mo¿na stworzyæ pod dowolnym programem obs³uguj±cym RTF. Plik ten
+		powinien wygl±daæ jak gotowa faktura, a pozycje które maj± byæ rozwijane przez
+		LMS nale¿y zast±piæ nastêpuj±cymi s³owami kluczowymi:
+		<itemizedlist>
+		<listitem><para>%nabywca - jest rozwijany do imienia i nazwiska nabywcy</para></listitem>
+		<listitem><para>%nab_adres - jest rozwijany do adresu nabywcy (ulica)</para></listitem>
+		<listitem><para>%nab_adres_cd - jest rozwijany do adresu nabywcy (kod pocztowy i miasto)</para></listitem>
+		<listitem><para>%nip - nip nabywcy</para></listitem>
+		<listitem><para>%nr_klienta - numer klienta (ID) z bazy u¿ytkowników</para></listitem>
+		<listitem><para>%sprzedawca - nazwa sprzedawcy</para></listitem>
+		<listitem><para>%sprzed_adres - adres sprzedawcy</para></listitem>
+		<listitem><para>%sprzed_adres_cd - ci±g dalszy adreu sprzedawcy</para></listitem>
+		<listitem><para>%numer - numer kolejny faktury w postaci id_operacji_kasowej/rok</para></listitem>
+		<listitem><para>%data - data wystawienia faktury</para></listitem>
+		<listitem><para>%termin - termin zap³aty (ilo¶æ dni ustawia siê w lms.ini)</para></listitem>
+		<listitem><para>%dni - ilo¶æ dni do zap³aty, mo¿na ustawiæ j/w</para></listitem>
+		<listitem><para>%usluga - nazwa us³ugi, jak nazwa jest pobierany opis operacji kasowej</para></listitem>
+		<listitem><para>%od - pierwszy dzieñ okresu ¶wiadczenia us³ugi (pierwszy dzieñ
+                   		miesi±ca, w ktorym by³o wpisane obci±¿enie do bazy)</para></listitem>
+		<listitem><para>%do - ostatni dzieñ okresu ¶wiadczenia us³ugi (ostatni dzieñ
+                   		miesi±ca, w ktorym by³o wpisane obci±¿enie do bazy)</para></listitem>
+		<listitem><para>%netto - warto¶æ us³ugi netto, bezpo¶rednio przepisana z bazy</para></listitem>
+		<listitem><para>%brutto - netto + 7% VAT</para></listitem>
+		<listitem><para>%vat - warto¶æ VAT (netto * 7%)</para></listitem>
+		<listitem><para>%slownie - kwota do zap³aty s³ownie</para></listitem>
+		<listitem><para>%konto - jest rozwijane do numeru konta bankowego</para></listitem>
+		<listitem><para>%wystawil - jest rozwijane do danych administratora zalogowanego aktualnie w LMS</para></listitem>
+		<listitem><para>%stopka - pozwala na wpisanie danych do stopki</para></listitem>
+		</itemizedlist>
+		<note><para>Przyk³adowy szablon znajduje siê w katalogu sample (faktura.rtf) i by³
+				testowany pod OpenOffice i M$ Office.</para></note>
+		</para>
+		<para>Wystawianie faktur jest dostêpne w oknie 'Rachunek u¿ytkownika', do
+		którego trafisz wybieraj±c ¿±danego u¿ytkownika z listy u¿ytkownków.
+		<warning><para>W bazie danych zapisywane s± kwoty netto. Jak na razie, nie ma
+				mo¿liwo¶ci ustawienia kilku stawek podatku VAT.</para></warning>
+		<warning><para>Do postaci s³ownej rozwi±zywane s± liczby mniejsze od 999.</para></warning>
+		</para>
+ </sect2>
+ <sect2 id="user-staff-stats">
+	<title>Statystyki</title>
+	<para>Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
+	dostêpny w menu 'Statystyki'. Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
+	okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz ich wiêcej),
+	ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug downloadu).
+	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
+	ostatnich 30 dni lub ostatniego roku.</para>
+	<para><note><para>Menu 'Statystyki' jest standardowo niedostêpne. Aby je w³±czyæ, nale¿y w sekcji
+	<emphasis>[phpui]</emphasis> pliku <filename>lms.ini</filename> ustawiæ zmienn±:
+	<prompt>enable_stats = 1</prompt>.</para></note>
+	<note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y go zainstalowaæ
+	aby mieæ w bazie dane do wykresów.</para></note>
+	</para>
+	<para>W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci, mo¿e
+	nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
+	oczekiwania na rysowanie wykresów. Z tego powodu w oknie 'Kompaktowanie
+	bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy bez
+	utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
+	w nastêpuj±cy sposób:
+	<itemizedlist>
+	<listitem><para>Poziom Niski: dane z poprzedniego dnia i starsze, zostan± u¶rednione
+	do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
+	to 6*24 wpisów zostanie zast±pione jednym.</para></listitem>
+	<listitem><para>Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
+	jednego dnia.</para></listitem>
+	<listitem><para>Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
+	jednej godziny.</para></listitem>
+	</itemizedlist>
+	<warning><para>Kompaktowanie bazy danych jest procesem nieodwracalnym.</para></warning>
+	</para>
+	<figure>
+		<title>Statystyki wykorzystania ³±cza- filtr</title>
+			<ulink url="images/stats.png">
+				<inlinemediaobject>
+  				<imageobject>
+  					<imagedata fileref="images/stats-small.png" format="png">
+  				</imageobject>
+  				</inlinemediaobject>
+			</ulink>
+	</figure>
+	<para></para>
+	<figure>
+		<title>Statystyki wykorzystania ³±cza - wykres</title>
 			<ulink url="images/statbars.png">
 				<inlinemediaobject>
   				<imageobject>
