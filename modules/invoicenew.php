@@ -65,6 +65,7 @@ switch($_GET['action'])
 	case 'clear':
 		unset($contents);
 		unset($customer);
+		unset($invoice);
 	break;
 
 	case 'deletepos':

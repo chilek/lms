@@ -61,7 +61,7 @@
 			<B>Data wystawienia:</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{if $invoice.cdate}{$invoice.cdate|date_format:"%Y/%m/%d"}{else}{$smarty.now|date_format:"%Y/%m/%d"}{/if}" SIZE="10" {tip text="Wpisz datê wystawienia w formacie RRRR/MM/DD lub kliknij by wybraæ z kalendarza. Pole puste oznacza datê dzisiejsz±." trigger="cdate"} OnClick="javascript:cal1.popup();" >
+			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Wpisz datê wystawienia w formacie RRRR/MM/DD lub kliknij by wybraæ z kalendarza. Pole puste oznacza datê dzisiejsz±." trigger="cdate"} OnClick="javascript:cal1.popup();" >
 			{if $invoice.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="invoice[cdatewarning]" VALUE="1">
 			{/if}
