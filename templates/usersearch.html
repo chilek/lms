@@ -7,12 +7,12 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="FALL" COLSPAN="2">
-			<B>Wy¶wietl u¿ytkowników spe³niaj±cych nastêpuj±ce kryteria:</B>
+			<B>{t}Display users matching to following conditions:{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>Nazwisko/nazwa i imiê:</B></NOBR>
+			<NOBR><B>{t}Name/surname and forename:{/t}</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[username]" VALUE="{$search.username}">
@@ -20,7 +20,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>Adres:</B></NOBR>
+			<NOBR><B>{t}Address:{/t}</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[address]" VALUE="{$search.address}">
@@ -28,7 +28,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>Telefon:</B></NOBR>
+			<NOBR><B>{t}Phone:{/t}</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[phone]" VALUE="{$search.phone}">
@@ -36,7 +36,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>E-mail:</B></NOBR>
+			<NOBR><B>{t}E-mail:{/t}</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[email]" VALUE="{$search.email}">
@@ -44,7 +44,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>Miasto:</B></NOBR>
+			<NOBR><B>{t}City:{/t}</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[city]" VALUE="{$search.city}">
@@ -52,7 +52,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>Kod pocztowy:</B></NOBR>
+			<NOBR><B>{t}Postcode:{/t}</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[zip]" VALUE="{$search.zip}">
@@ -60,7 +60,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>NIP:</B></NOBR>
+			<NOBR><B>{t}NIP:{/t}</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[nip]" VALUE="{$search.nip}">
@@ -68,7 +68,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>GG:</B></NOBR>
+			<NOBR><B>{t}GG UIN:{/t}</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[gguin]" VALUE="{$search.gguin}">
@@ -76,7 +76,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>PESEL:</B></NOBR>
+			<NOBR><B>{t}PESEL:{/t}</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[pesel]" VALUE="{$search.pesel}">
@@ -84,20 +84,20 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>Status:</B></NOBR>
+			<NOBR><B>{t}Status:{/t}</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<SELECT SIZE="1" NAME="search[s]">
-				<OPTION VALUE="0">wszyscy</OPTION>
-				<OPTION VALUE="3">pod³±czeni</OPTION>
-				<OPTION VALUE="2">oczekuj±cy</OPTION>
-				<OPTION VALUE="1">zainteresowani</OPTION>
+				<OPTION VALUE="0">{t}all users{/t}</OPTION>
+				<OPTION VALUE="3">{t}connected{/t}</OPTION>
+				<OPTION VALUE="2">{t}waiting{/t}</OPTION>
+				<OPTION VALUE="1">{t}interested{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
-			<A ACCESSKEY="S" href="javascript:document.usersearch.submit();">Szukaj <IMG SRC="img/search.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+			<A ACCESSKEY="S" href="javascript:document.usersearch.submit();">{t}Search{/t} <IMG SRC="img/search.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -24,20 +24,20 @@
 			<TABLE>
 				<TR>
 					<TD>
-						<B>Nazwisko/nazwa:</B>
+						<B>{t}Name/surname:{/t}</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="useradd[lastname]" VALUE="{$useradd.lastname}" {tip text="Wpisz nazwisko u¿ytkownika lub nazwê firmy" trigger="username" bold=1}>
+						<INPUT TYPE="TEXT" NAME="useradd[lastname]" VALUE="{$useradd.lastname}" {tip text="Enter customer surname or company name" trigger="username" bold=1}>
 					</TD>
 				</TR>
 				<TR>
 					<TD>
-						<B>Imiê:</B>
+						<B>{t}Forename:{/t}</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" {tip text="Wpisz imiê u¿ytkownika" trigger="username" bold=1}>
+						<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" {tip text="Enter customer forename" trigger="username" bold=1}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -53,10 +53,10 @@
 						{if $useradd.status eq "1"}<IMG SRC="img/unk.gif" ALT="" border="0">{/if}
 					</tD>
 					<TD width="99%">
-						<SELECT size="1" name="useradd[status]" {tip text="Wybierz status u¿ytkownika" trigger="status"}>
-							<OPTION VALUE="3"{if $useradd.status eq "3"} SELECTED{/if}><B>pod³±czony</B></OPTION>
-							<OPTION VALUE="2"{if $useradd.status eq "2"} SELECTED{/if}><B>oczekuj±cy</B></option>
-							<OPTION VALUE="1"{if $useradd.status eq "1"} SELECTED{/if}><B>zainteresowany</B></OPTION>
+						<SELECT size="1" name="useradd[status]" {tip text="Select customer status" trigger="status"}>
+							<OPTION VALUE="3"{if $useradd.status eq "3"} SELECTED{/if}><B>{t}connected{/t}</B></OPTION>
+							<OPTION VALUE="2"{if $useradd.status eq "2"} SELECTED{/if}><B>{t}waiting{/t}</B></option>
+							<OPTION VALUE="1"{if $useradd.status eq "1"} SELECTED{/if}><B>{t}interested{/t}</B></OPTION>
 						</SELECT>
 					</TD>
 				</tr>
@@ -64,7 +64,7 @@
 					<TD width="1%" valign="top">
 						<IMG src="img/phone.gif" ALT="" border="0" width="16" width="16" height="16"><BR>
 					</TD>
-					<TD width="99%" {tip text="Wpisz telefon kontaktowy"}>
+					<TD width="99%" {tip text="Enter contact phone's"}>
 						<INPUT TYPE="text" size="40" value="{$useradd.phone1}" name="useradd[phone1]"><BR>
 						<INPUT TYPE="text" size="40" value="{$useradd.phone2}" name="useradd[phone2]"><BR>
 						<INPUT TYPE="text" size="40" value="{$useradd.phone3}" name="useradd[phone3]">
@@ -76,8 +76,8 @@
 						<IMG src="img/home.gif" ALT="" align="absmiddle" border="0" width="16" height="16">
 					</td>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.address}" name="useradd[address]" {tip text="Wpisz adres" trigger="address"}><BR>
-						<B>Kod:</B> <INPUT TYPE="text" SIZE="5" VALUE="{$useradd.zip}" NAME="useradd[zip]" {tip text="Wpisz kod pocztowy" trigger="zip"}> <B>Miasto:</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$useradd.city}" NAME="useradd[city]" {tip text="Wpisz miasto" trigger="city"}>
+						<INPUT TYPE="text" size="40" value="{$useradd.address}" name="useradd[address]" {tip text="Enter customer address" trigger="address"}><BR>
+						<B>{t}Zip:{/t}</B> <INPUT TYPE="text" SIZE="5" VALUE="{$useradd.zip}" NAME="useradd[zip]" {tip text="Enter address code" trigger="zip"}> <B>{t}City:{/t}</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$useradd.city}" NAME="useradd[city]" {tip text="Enter customer city" trigger="city"}>
 					</td>
 				</TR>
 				<TR>
@@ -85,7 +85,7 @@
 						<IMG src="img/mail.gif" ALT="" align="absmiddle" border="0" width="16" height="16">
 					</td>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.email}" name="useradd[email]" {tip text="Wpisz adres e-mail (opcjonalnie)" trigger="email"}>
+						<INPUT TYPE="text" size="40" value="{$useradd.email}" name="useradd[email]" {tip text="Enter customer e-mail address (optional)" trigger="email"}>
 					</td>
 				</TR>
 				<TR>
@@ -93,55 +93,55 @@
 						<IMG src="img/gg.gif" ALT="" align="absmiddle" border="0" width="16" height="16">
 					</td>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{if $useradd.gguin}{$useradd.gguin}{/if}" name="useradd[gguin]" {tip text="Wpisz numer GaduGadu (opcjonalnie)" trigger="gguin"}>
+						<INPUT TYPE="text" size="40" value="{if $useradd.gguin}{$useradd.gguin}{/if}" name="useradd[gguin]" {tip text="Enter customer GaduGadu UIN (optional)" trigger="gguin"}>
 					</td>
 				</TR>
 				<TR>
 					<TD width="1%">
-						<B>NIP</B>
+						<B>{t}NIP{/t}</B>
 					</TD>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {tip text="Wpisz NIP u¿ytkownika (opcjonalnie)" trigger="nip"}>
+						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {tip text="Enter customer NIP (optional)" trigger="nip"}>
 					</td>
 				</TR>
 				<TR>
 					<TD width="1%">
-						<B>PSL</B>
+						<B>{t}PSL{/t}</B>
 					</TD>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.pesel}" name="useradd[pesel]" {tip text="Wpisz PESEL u¿ytkownika (opcjonalnie)" trigger="pesel"}>
+						<INPUT TYPE="text" size="40" value="{$useradd.pesel}" name="useradd[pesel]" {tip text="Enter customer PESEL (optional)" trigger="pesel"}>
 					</td>
 				</TR>
 				<TR>
 					<TD width="1%">
-						<B>PIN</B>
+						<B>{t}PIN{/t}</B>
 					</TD>
 					<TD width="99%">
-						<INPUT TYPE="text" size="6" value="{if $useradd.pin}{$useradd.pin}{/if}" name="useradd[pin]" {tip text="Wpisz min.4 i max.6 cyfrowy numer PIN (opcjonalnie)" trigger="pin"}>&nbsp;<A href="javascript: randomize()" {tip text="[ Generuj PIN ]"}>&raquo;&raquo;&raquo;</A>
+						<INPUT TYPE="text" size="6" value="{if $useradd.pin}{$useradd.pin}{/if}" name="useradd[pin]" {tip text="Enter 4 to 6 digths pin number (optional)" trigger="pin"}>&nbsp;<A href="javascript: randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
 					</td>
 				</TR>
 			</TABLE>
 		</td>
 		<TD width="50%" bgcolor="#DFD5BD" class="fright" ALIGN="LEFT">
 			<P><NOBR><IMG src="img/post.gif" ALT="" align="absmiddle" border="0">
-			    <TEXTAREA rows="4" cols="60" name="useradd[serviceaddr]" {tip text="Adres do dorêczeñ (opcjonalnie)"}>
+			    <TEXTAREA rows="4" cols="60" name="useradd[serviceaddr]" {tip text="Enter delivery address (optional)"}>
 				{$useradd.serviceaddr}
 			    </TEXTAREA></NOBR>
 			<P><NOBR><IMG src="img/usercomment.gif" ALT="" align="absmiddle" border="0">
-			    <TEXTAREA rows="4" cols="60" name="useradd[info]" {tip text="Informacje dodatkowe (opcjonalnie)"}>
+			    <TEXTAREA rows="4" cols="60" name="useradd[info]" {tip text="Enter aditional informations (optional)"}>
 				{$useradd.info}
 			    </TEXTAREA></NOBR>
 			<P><NOBR><IMG src="img/mail.gif" ALT="" align="absmiddle" border="0">
-			    <TEXTAREA rows="4" cols="60" name="useradd[message]" {tip text="Wiadomo¶æ administracyjna do u¿ytkownika (opcjonalnie)"}>
+			    <TEXTAREA rows="4" cols="60" name="useradd[message]" {tip text="Enter message to customer (optional)"}>
 				{$useradd.message}
 			    </TEXTAREA></NOBR>
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD width="100%" colspan="2" class="fbottomu" align="right">
-			<A href="javascript:document.useradd.submit();" ACCESSKEY="S">Zapisz <img src="img/save.gif" ALT="" align="absmiddle" border="0"></A>
-			<A href="?m=userlist">Anuluj <img src="img/cancel.gif" ALT="" align="absmiddle" border="0"></A><BR>
-			<INPUT type="checkbox" name="useradd[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $useradd.reuse}checked{/if}> Wywo³aj ponownie ten formularz po dodaniu u¿ytkownika
+			<A href="javascript:document.useradd.submit();" ACCESSKEY="S">{t}Save{/t} <img src="img/save.gif" ALT="" align="absmiddle" border="0"></A>
+			<A href="?m=userlist">{t}Cancel{/t} <img src="img/cancel.gif" ALT="" align="absmiddle" border="0"></A><BR>
+			<INPUT type="checkbox" name="useradd[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $useradd.reuse}checked{/if}> {t}Display this form after addition of user again{/t}
 		</td>
 	</TR>
 </TABLE>
