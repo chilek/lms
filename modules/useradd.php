@@ -37,7 +37,7 @@ if($useradd[name]=="" && $useradd[lastname]=="" && $useradd[phone1]=="" && $user
 }
 elseif(isset($useradd))
 {
-	if($useradd[name]=="")
+	if($useradd[lastname]=="")
 		$error[username]=TRUE;
 	
 	if($useradd[address]=="")
@@ -73,10 +73,13 @@ elseif(isset($useradd))
 }
 
 $layout[pagetitle]="Nowy u¿ytkownik";
+$tariffs = $LMS->GetTariffs();
+if(!isset($useradd[tariff]))
+	$useradd[tariff] = $tariffs[common];	
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("useradd",$useradd);
 $SMARTY->assign("error",$error);
-$SMARTY->assign("tariffs",$LMS->GetTariffs());
+$SMARTY->assign("tariffs",$tariffs);
 $SMARTY->display("useradd.html");
 
 ?>

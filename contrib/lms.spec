@@ -2,8 +2,8 @@
 Summary:	LAN Managment System
 Summary(pl):	System Zarz±dzania Siec± Lokaln±
 Name:		lms
-Version:	1.0pre5
-Release:	0.4
+Version:	1.0pre8
+Release:	0.1
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://lms.rulez.pl/download/%{name}-%{version}.tar.gz
@@ -12,14 +12,11 @@ Vendor:		Rulez.PL
 Requires:	php
 Requires:	php-posix
 Requires:	webserver
-Requires:	mysql
 Requires:	perl-Net-SMTP-Server
 Requires:	perl-Config-IniFiles
 Requires:	perl-DBI
-Requires:	perl-DBD-mysql
-Requires:	perl-DBD-Pg
-Requires:	Smarty
-Requires:	ADOdb
+Requires:	Smarty >= 2.4.2
+Requires:	adodb
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -76,15 +73,18 @@ Najbardziej podstawowe cechy LMS to:
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_lmsdir}/{img,lib,modules,templates,templates_c}
+install -d $RPM_BUILD_ROOT%{_lmsdir}/{img,lib,modules,templates,templates_c,backups}
 install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
 install -d $RPM_BUILD_ROOT%{_bindir}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
+install -d $RPM_BUILD_ROOT%{_localstatedir}/backup
 
 install *.php $RPM_BUILD_ROOT%{_lmsdir}
-install -d {img,lib,modules,templates,templates_c} $RPM_BUILD_ROOT%{_lmsdir}
-install -d backup $RPM_BUILD_ROOT%{_localstatedir}
 install bin/* $RPM_BUILD_ROOT%{_bindir}
+install lib/* $RPM_BUILD_ROOT%{_lmsdir}/lib
+install img/* $RPM_BUILD_ROOT%{_lmsdir}/img
+install modules/* $RPM_BUILD_ROOT%{_lmsdir}/modules
+install templates/* $RPM_BUILD_ROOT%{_lmsdir}/templates
 install sample/%{name}.ini $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 
 %clean
@@ -96,13 +96,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/lms-*
 %dir %{_lmsdir}
 %attr(770,root,http) %{_lmsdir}/templates_c
+%attr(770,root,http) %{_lmsdir}/backups
 %{_lmsdir}/*.php
 %{_lmsdir}/img
 %{_lmsdir}/lib
 %{_lmsdir}/modules
 %{_lmsdir}/templates
 %{_localstatedir}
-%{_sysconfdir}/%{name}
+%dir %{_sysconfdir}/%{name}
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/%{name}/*.ini
 
 %define date	%(echo `LC_ALL="C" date +"%a %b %d %Y"`)
 %changelog
@@ -110,17 +112,42 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld.org.pl
 
 $Log$
-Revision 1.1  2003/04/11 22:00:33  lukasz
-- recovery from lms-1.0pre8
+Revision 1.2  2003/04/11 22:22:11  lukasz
+- to najnowsze zmiany jakie uda³o mi siê znale¼æ
 
-Revision 1.1  2003/04/11 21:07:32  lukasz
-- recovered from lms-1.0pre8
+Revision 1.10  2003/04/09 10:16:21  lukasz
+- LMS doesn't depend on some particular database, so we shouldn't require
+  mysql or postgresql, and even drivers (are they provide: something like
+  sqlserver or database server?)
 
-Revision 1.8  2003/03/16 16:23:58  lukasz
-- no, it isn't required ;)
+Revision 1.9  2003/04/09 06:28:08  djrzulf
+- merged from PLD CVS,
 
-Revision 1.7  2003/02/25 21:42:07  djrzulf
-- aktualizacja
+Revision 1.15  2003/04/09 06:25:40  djrzulf
+- updated
+
+Revision 1.14  2003/04/09 05:36:17  pbern
+- update to pre8
+- force to use Smarty >= 2.4.2
+
+Revision 1.13  2003/03/31 12:48:47  qboosh
+- missing dir (%%{_sysconfdir}/%%{name})
+
+Revision 1.12  2003/03/29 22:11:21  mwinkler
+- next bug fixed, now works
+
+Revision 1.11  2003/03/29 21:43:19  mwinkler
+- templates fix
+
+Revision 1.10  2003/03/29 21:28:57  mwinkler
+- update to 1.0pre7
+- simplifications & cleaning
+
+Revision 1.9  2003/03/19 09:34:13  djrzulf
+- change requires
+
+Revision 1.8  2003/03/17 17:28:56  pbern
+- update to 1.0pre6
 
 Revision 1.7  2003/02/25 21:40:48  djrzulf
 - release 0.4,

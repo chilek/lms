@@ -28,8 +28,14 @@ $layout[pagetitle]="Lista taryf";
 
 $tarifflist = $LMS->GetTariffList();
 
-$SMARTY->assign("tarifflist",$tarifflist);
+$listdata[total] = $tarifflist[total];
+$listdata[totalincome] = $tarifflist[totalincome];
+$listdata[totalusers] = $tarifflist[totalusers];
 
+unset($tarifflist[total],$tarifflist[totalincome],$tarifflist[totalusers]);
+
+$SMARTY->assign("tarifflist",$tarifflist);
+$SMARTY->assign("listdata",$listdata);
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("tarifflist.html");
 ?>

@@ -13,23 +13,23 @@
 		<TABLE width="100%" title="Dodaj now± sieæ">
 				<TR>
 					<TD width="1%"><IMG src="img/network.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="92%"><INPUT accesskey="a" TYPE="TEXT" SIZE="23" title="Nazwa sieci" name="netadd[name]" value="{$netadd.name}"{if $error.name} class="alertb"><BR><FONT COLOR="red"><B>{$error.name}</B></FONT{else} class="bold"{/if}></TD>
+					<TD width="92%"><B>Nazwa sieci:</B><BR><INPUT accesskey="a" TYPE="TEXT" SIZE="23" title="Nazwa sieci" name="netadd[name]" value="{$netadd.name}"{if $error.name} class="alertb"><BR><FONT COLOR="red"><B>{$error.name}</B></FONT{else} class="bold"{/if}></TD>
 					<TD width="1%"><IMG src="img/dns.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="1%"><INPUT TYPE="TEXT" SIZE="20" title="Serwer DNS" name="netadd[dns]" value="{$netadd.dns}"{if $error.dns} class="alert"><BR><FONT COLOR="red"><B>{$error.dns}</B></FONT{/if}></TD>
+					<TD width="1%"><B>Serwer DNS:</B><BR><INPUT TYPE="TEXT" SIZE="20" title="Serwer DNS" name="netadd[dns]" value="{$netadd.dns}"{if $error.dns} class="alert"><BR><FONT COLOR="red"><B>{$error.dns}</B></FONT{/if}></TD>
 					<TD width="1%"><IMG src="img/gateway.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="1%"><INPUT TYPE="TEXT" SIZE="15" title="Gateway" name="netadd[gateway]" value="{$netadd.gateway}"{if $error.gateway} class="alert"><BR><FONT COLOR="red"><B>{$error.gateway}</B></FONT{/if}></TD>
+					<TD width="1%"><B>Gateway:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Gateway" name="netadd[gateway]" value="{$netadd.gateway}"{if $error.gateway} class="alert"><BR><FONT COLOR="red"><B>{$error.gateway}</B></FONT{/if}></TD>
 					<TD width="1%"><IMG src="img/dhcpstart.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="1%"><INPUT TYPE="TEXT" SIZE="15" title="Pocz±tek zakresu DHCP" name="netadd[dhcpstart]" value="{$netadd.dhcpstart}"{if $error.dhcpstart} class="alert"><BR><FONT COLOR="red"><B>{$error.gateway}</B></FONT{/if}></TD>
+					<TD width="1%"><B>Pocz±tek DHCP:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Pocz±tek zakresu DHCP" name="netadd[dhcpstart]" value="{$netadd.dhcpstart}"{if $error.dhcpstart} class="alert"><BR><FONT COLOR="red"><B>{$error.gateway}</B></FONT{/if}></TD>
 				</TR>
 				<TR>
 					<TD width="1%"><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="92%"><INPUT TYPE="TEXT" SIZE="15" title="Adres sieci" name="netadd[address]" value="{$netadd.address}"{if $error.address} class="alert"{/if}><B> / </B><SELECT size="1" title="Prefixlen" name="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{if $error.address}<BR><FONT COLOR="red"><B>{$error.address}</B></FONT>{/if}
+					<TD width="92%"><B>Adres sieci / maska:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Adres sieci" name="netadd[address]" value="{$netadd.address}"{if $error.address} class="alert"{/if}><B> / </B><SELECT size="1" title="Prefixlen" name="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{if $error.address}<BR><FONT COLOR="red"><B>{$error.address}</B></FONT>{/if}
 					<TD width="1%"><IMG src="img/node.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="1%"><INPUT TYPE="TEXT" SIZE="20" title="Domena" name="netadd[domain]" value="{$netadd.domain}"{if $error.domain} class="alert"><BR><FONT COLOR="red"><B>{$error.domain}</B></FONT{/if}></TD>
+					<TD width="1%"><B>Domena:</B><BR><INPUT TYPE="TEXT" SIZE="20" title="Domena" name="netadd[domain]" value="{$netadd.domain}"{if $error.domain} class="alert"><BR><FONT COLOR="red"><B>{$error.domain}</B></FONT{/if}></TD>
 					<TD width="1%"><IMG src="img/wins.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="1%"><INPUT TYPE="TEXT" SIZE="15" title="Serwer WINS" name="netadd[wins]" value="{$netadd.wins}"{if $error.wins} class="alert"><BR><FONT COLOR="red"><B>{$error.wins}</B></FONT{/if}></TD>
+					<TD width="1%"><B>Serwer WINS:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Serwer WINS" name="netadd[wins]" value="{$netadd.wins}"{if $error.wins} class="alert"><BR><FONT COLOR="red"><B>{$error.wins}</B></FONT{/if}></TD>
 					<TD width="1%"><IMG src="img/dhcpend.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="1%"><INPUT TYPE="TEXT" SIZE="15" title="Koniec zakresu DHCP" name="netadd[dhcpend]" value="{$netadd.dhcpend}"{if $error.dhcpend} class="alert"><BR><FONT COLOR="red"><B>{$error.dhcpend}</B></FONT{/if}>{if $error.dhcp}<BR><FONT COLOR="red"><B>{$error.dhcp}</B></FONT>{/if}</TD>
+					<TD width="1%"><B>Koniec DHCP:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Koniec zakresu DHCP" name="netadd[dhcpend]" value="{$netadd.dhcpend}"{if $error.dhcpend} class="alert"><BR><FONT COLOR="red"><B>{$error.dhcpend}</B></FONT{/if}>{if $error.dhcp}<BR><FONT COLOR="red"><B>{$error.dhcp}</B></FONT>{/if}</TD>
 				</TR>
 				<TR>
 					<TD width="100%" colspan="8" align="right">

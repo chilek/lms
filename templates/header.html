@@ -9,6 +9,7 @@
 <script language="JavaScript" type="text/JavaScript" src="img/common.js"> </script>
 </head>
 <body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+{popup_init src="img/overlib.js"}
 <table bgcolor="#CEBD9B" cellpadding="3" cellspacing="0" width="100%" style="border-width: 1pt; border-style: solid;">
 <tr>
 <td width="50%" valign="middle">
@@ -34,7 +35,7 @@
 				<TD width="100%" class="fbt" nowrap>
 					<P CLASS="separated">
 						<IMG SRC="img/{$menu.img[menu]}" BORDER="0" ALT="" ALIGN="absmiddle">
-						<a href="{$menu.link[menu]}"{if $menu.accesskey[menu]} accesskey="{$menu.accesskey[menu]}"{/if}><B>{$menu.name[menu]}</B></A>
+						<a href="{$menu.link[menu]}"{if $menu.accesskey[menu]} accesskey="{$menu.accesskey[menu]}"{/if}{if $menu.tip[menu]} {popup text="<B>$menu.tip[menu]</B>"}{/if}><B>{$menu.name[menu]}</B></A>
 					</P>
 				</TD>
 			</TR>
@@ -43,7 +44,7 @@
 				<TD width="100%" class="fbt" nowrap>
 					<P CLASS="separated">
 						<IMG SRC="img/pass.gif" BORDER="0" alt="" align="absmiddle">
-						<a href="?m=adminpasswd&id={$layout.logid}" accesskey="p"><B>Zmieñ has³o</B></A>
+						<a href="?m=adminpasswd&id={$layout.logid}" accesskey="p" {popup text="<B>Zmiana Twojego has³a dostêpu</B>"}><B>Zmieñ has³o</B></A>
 					</P>
 				</TD>
 			</TR>
@@ -51,13 +52,13 @@
 				<TD width="100%" class="fbt" nowrap>
 					<P CLASS="separated">
 						<IMG SRC="img/logout.gif" BORDER="0" ALT="" ALIGN="absmiddle">
-						<a href="?m=logout" onClick="return confirmLink(this,'Na pewno chcesz siê wylogowaæ?');" accesskey="q"><B>Wyloguj siê</B></A>
+						<a href="?m=logout" onClick="return confirmLink(this,'Na pewno chcesz siê wylogowaæ?');" accesskey="q" {popup text="<B>Zakoñczenie pracy</B>"}><B>Wyloguj siê</B></A>
 					</P>
 				</TD>
 			</TR>
 			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
 				<FORM METHOD="GET" ACTION="?m=userinfo">
-					<TD width="100%" class="fbt" nowrap>
+					<TD width="100%" class="fbt" nowrap {popup text="<B>Wpisz ID u¿ytkownika i wci¶nij Enter</B>"}>
 						<P CLASS="separated">
 						<IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
 						<INPUT TYPE="text" NAME="id" VALUE="" SIZE="10">
@@ -68,7 +69,7 @@
 			</TR>
 			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
 				<FORM METHOD="GET" ACTION="?m=userinfo">
-					<TD width="100%" class="fbt" nowrap>
+					<TD width="100%" class="fbt" nowrap {popup text="<B>Wpisz ID komputera i wci¶nij Enter</B>"}>
 						<P CLASS="separated">
 						<IMG SRC="img/node.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
 						<INPUT TYPE="text" NAME="id" VALUE="" SIZE="10">

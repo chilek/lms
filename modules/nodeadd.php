@@ -33,7 +33,7 @@ if(isset($nodedata))
 	$nodedata[ipaddr] = $_POST[nodedataipaddr];
 	$nodedata[mac] = $_POST[nodedatamac];
 	$nodedata[mac] = str_replace("-",":",$nodedata[mac]);
-	
+
 	foreach($nodedata as $key => $value)
 		$nodedata[$key] = trim($value);
 
@@ -53,7 +53,7 @@ if(isset($nodedata))
 		$error[name] = "Podana nazwa jest za d³uga!";
 	elseif($LMS->GetNodeIDByName($nodedata[name]))
 		$error[name] = "Podana nazwa jest u¿ywana!";
-	elseif(!eregi("^[a-z0-9-]+$",$nodedata[name]))
+	elseif(!eregi("^[_a-z0-9-]+$",$nodedata[name]))
 		$error[name] = "Podana nazwa zawiera niepoprawne znaki";		
 
 	if(!$nodedata[ipaddr])

@@ -81,7 +81,7 @@ if(isset($networkdata))
 
 	if($networkdata[name]=="")
 		$error[name] = "Musisz podaæ nazwê sieci!";
-	elseif(!eregi("^[a-z0-9-]+$",$networkdata[name]))
+	elseif(!eregi("^[.a-z0-9-]+$",$networkdata[name]))
 		$error[name] = "Podana nazwa zawiera nieprawid³owe znaki!";
 
 	if($networkdata[domain]!="" && !eregi("^[.a-z0-9-]+$",$networkdata[domain]))

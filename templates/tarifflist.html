@@ -23,7 +23,7 @@
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
 			<NOBR>
-			<B>Zysk m-c:</B>
+			<B>Dochód m-c:</B>
 			</NOBR>
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu">
@@ -33,37 +33,37 @@
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
-	{section name=tariffs loop=$tarifflist.id}
+	{section name=tariffs loop=$tarifflist}
 	<TR BGCOLOR="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-		<TD WIDTH="95%" CLASS="fleft" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist.id[tariffs]}';" class="fleft">
-			<B>{$tarifflist.name[tariffs]}</B><BR>
-			{$tarifflist.description[tariffs]}
+		<TD WIDTH="95%" CLASS="fleft" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';" class="fleft">
+			<B>{$tarifflist[tariffs].name}</B><BR>
+			{$tarifflist[tariffs].description}
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist.id[tariffs]}';">
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
-			{if $tarifflist.downrate[tariffs]}{$tarifflist.downrate[tariffs]} kbit{else}-{/if}<BR>
-			{if $tarifflist.uprate[tariffs]}{$tarifflist.uprate[tariffs]} kbit{else}-{/if}
+			{if $tarifflist[tariffs].downrate}{$tarifflist[tariffs].downrate} kbit{else}-{/if}<BR>
+			{if $tarifflist[tariffs].uprate}{$tarifflist[tariffs].uprate} kbit{else}-{/if}
 			</NOBR>
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist.id[tariffs]}';">
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
-			{$tarifflist.value[tariffs]|string_format:"%01.2f"} z³
+			{$tarifflist[tariffs].value|string_format:"%01.2f"} z³
 			</NOBR>
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist.id[tariffs]}';">
-			({$tarifflist.id[tariffs]|string_format:"%04d"})
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+			({$tarifflist[tariffs].id|string_format:"%04d"})
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist.id[tariffs]}';">
-			{$tarifflist.users[tariffs]}
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+			{$tarifflist[tariffs].users}
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist.id[tariffs]}';">
-			{$tarifflist.income[tariffs]|string_format:"%01.2f"} z³
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+			{$tarifflist[tariffs].income|string_format:"%01.2f"} z³
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
-			{if $tarifflist.users[tariffs]}<A HREF="javascript:alert('Nie mo¿na usun±æ taryfy z której korzystaj± jacy¶ u¿ytkownicy!');">{else}<A HREF="?m=tariffdelete&id={$tarifflist.id[tariffs]}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ t± taryfê?');">{/if}<IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0"></A>
-				<A HREF="?m=tariffedit&id={$tarifflist.id[tariffs]}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" BORDER="0"></A>
-				<A HREF="?m=tariffinfo&id={$tarifflist.id[tariffs]}"><IMG SRC="img/info.gif" ALT="[ Info ]" BORDER="0"></A>
+			{if $tarifflist[tariffs].users}<A HREF="javascript:alert('Nie mo¿na usun±æ taryfy z której korzystaj± jacy¶ u¿ytkownicy!');">{else}<A HREF="?m=tariffdelete&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ t± taryfê?');">{/if}<IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0"></A>
+				<A HREF="?m=tariffedit&id={$tarifflist[tariffs].id}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" BORDER="0"></A>
+				<A HREF="?m=tariffinfo&id={$tarifflist[tariffs].id}"><IMG SRC="img/info.gif" ALT="[ Info ]" BORDER="0"></A>
 			</NOBR>
 		</TD>
 	</TR>
@@ -83,7 +83,7 @@
 			<B>Razem:</B>
 		</TD>
 		<TD CLASS="frightu" COLSPAN="2" WIDTH="2%">
-			<B>{$tarifflist.totalincome|string_format:"%01.2f"} z³</B>
+			<B>{$listdata.totalincome|string_format:"%01.2f"} z³</B>
 		</TD>
 	</TR>
 </TABLE>
