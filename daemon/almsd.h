@@ -21,8 +21,10 @@ struct global
 	
 	//db functions
 	QUERY_HANDLE * (*db_query)(unsigned char *);
+	QUERY_HANDLE * (*db_pquery)(unsigned char *, ...);
 	void (*db_free)(QUERY_HANDLE *);
 	int (*db_exec)(unsigned char *);
+	int (*db_pexec)(unsigned char *, ...);
 	int (*db_begin)();
 	int (*db_commit)();
 	int (*db_abort)();

@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <syslog.h>
+#include <stdarg.h>
 #include "db.h"
 #include "util.h"
 
@@ -112,6 +113,47 @@ QUERY_HANDLE * db_query(unsigned char *q)
     return query;
 }
 
+/* Prepares and executes SELECT query */
+QUERY_HANDLE * db_pquery(unsigned char *q, ... ) 
+{
+    QUERY_HANDLE *query;
+    va_list ap;
+    int i;
+    unsigned char *p, *s, *result, *temp, *stmt;
+
+    // first parse query (to remove special sequences like '?NOW?')
+    stmt = strdup(q);
+    parse_query_stmt(&stmt);
+    
+    result = (unsigned char*) strdup("");
+    s = (unsigned char *) malloc (sizeof(unsigned char*));    
+    
+    // now parse
+    va_start(ap, stmt);
+    for(p=stmt; *p; p++) {
+	    if( *p != '?' ) {
+		    i = strlen(result)+2;
+		    s = (unsigned char*) realloc(s, i);
+	    	    snprintf(s, i,"%s%c", result, *p);
+	    } else {
+        	    temp = va_arg(ap, unsigned char*);
+		    i = strlen(temp)+strlen(result)+1;
+		    s = (unsigned char*) realloc(s, i);
+		    snprintf(s, i, "%s%s", result, temp);
+	    }
+	    free(result);
+	    result = (unsigned char *) strdup(s);
+    } 
+    va_end(ap);
+    
+    // and execute prepared query
+    query = db_query(result);
+    // free temporary vars
+    free(s); free(stmt); free(result);
+    
+    return query;
+}
+
 /* executes a INSERT, UPDATE, DELETE queries */
 int db_exec(unsigned char *q)
 {
@@ -142,6 +184,46 @@ int db_exec(unsigned char *q)
 #endif
     free(stmt);
     return result;
+}
+
+/* Prepares and executes INSERT, UPDATE, DELETE queries */
+int db_pexec(unsigned char *q, ... ) 
+{
+    va_list ap;
+    int i, res;
+    unsigned char *p, *s, *result, *temp;
+
+    // first parse query (to remove special sequences like '?NOW?')
+    unsigned char *stmt = strdup(q);
+    parse_query_stmt(&stmt);
+    
+    result = (unsigned char*) strdup("");
+    s = (unsigned char *) malloc (sizeof(unsigned char*));    
+    
+    // now parse
+    va_start(ap, stmt);
+    for(p=stmt; *p; p++) {
+	    if( *p != '?' ) {
+		    i = strlen(result)+2;
+		    s = (unsigned char*) realloc(s, i);
+	    	    snprintf(s, i,"%s%c", result, *p);
+	    } else {
+        	    temp = va_arg(ap, unsigned char*);
+		    i = strlen(temp)+strlen(result)+1;
+		    s = (unsigned char*) realloc(s, i);
+		    snprintf(s, i, "%s%s", result, temp);
+	    }
+	    free(result);
+	    result = (unsigned char *) strdup(s);
+    } 
+    va_end(ap);
+    
+    // and execute prepared query
+    res = db_exec(result);
+    // free temporary vars
+    free(s); free(stmt); free(result);
+    
+    return res;
 }
 
 /* Internal function for SELECT query result fetching */
@@ -209,7 +291,6 @@ static QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
 	my_row[i].value = (VALUE *) calloc(query->ncols, sizeof(VALUE));
         for (j = 0; j < query->ncols; j++) {
 	    val = &(my_row[i].value[j]);
-	    //buf = (unsigned char *) row[j];
 	    buf = (unsigned char *) ( row[j] ? row[j] : "");
 	    val->data = str_save(val->data,buf);
 	}
@@ -381,7 +462,6 @@ void db_free(QUERY_HANDLE *query)
     
 	free(query->col);
 	free(query->row);
-	//free(query->handle);
 	free(query);
     }
 }
@@ -392,12 +472,7 @@ void db_free(QUERY_HANDLE *query)
 unsigned char * db_get_data(QUERY_HANDLE *query, int row, const char *colname) 
 {
     int i=1;
-    // row number validation
-//    if( row > query->nrows ) {
-//	syslog(LOG_CRIT,"[db_get_str] Row number too big");
-//	return "row number too big";
-//    }
-    // get column number
+
     for(i=0; i<query->ncols; i++) {
 	if( !strcmp(query->col[i].name,colname) )
 	    break;

@@ -71,11 +71,19 @@ int db_disconnect(void);
 /* Executes SELECT query. Returns handle to query results */
 QUERY_HANDLE * db_query(unsigned char *);
 
+/* Prepares and executes SELECT query. Returns handle to query results.
+   Args must be type of unsigned char* */
+QUERY_HANDLE * db_pquery(unsigned char *, ...);
+
 /* Free memory allocated in db_select() */
 void db_free(QUERY_HANDLE *);
 
 /* Executes UPDATE, INSERT, DELETE query. Returns number of affected rows */
 int db_exec(unsigned char *);
+
+/* Preparse and executes UPDATE, INSERT, DELETE query. Returns number of affected rows 
+   Args must be type of unsigned char* */
+int db_pexec(unsigned char *, ...);
 
 /* Begin transaction */
 int db_begin();

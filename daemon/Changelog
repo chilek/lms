@@ -1,3 +1,6 @@
+* 04.12.2003
+  - dodane funkcje db_pexec() i db_pquery() (alec)
+ 
 * 02.12.2003
   - modu³ 'payments' przystosowany do nowych faktur (alec)
 
