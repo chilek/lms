@@ -60,7 +60,8 @@ CREATE TABLE cash (
   userid int(11) NOT NULL default '0',
   comment varchar(255) NOT NULL default '',
   invoiceid int(11) NOT NULL default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  INDEX userid (userid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -419,4 +420,4 @@ CREATE TABLE userassignments (
   UNIQUE KEY userassignment (usergroupid, userid)
 ) TYPE=MyISAM;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004081800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004090700');

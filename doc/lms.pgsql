@@ -59,6 +59,7 @@ CREATE TABLE cash (
 	invoiceid integer 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
+CREATE INDEX cash_userid_idx ON cash(userid);
 
 /* -------------------------------------------------------- 
   Struktura tabeli "networks" 
@@ -379,7 +380,7 @@ CREATE TABLE rtmessages (
   inreplyto integer 	DEFAULT 0 NOT NULL,
   replyto text 		DEFAULT '' NOT NULL,
   headers text 		DEFAULT '' NOT NULL,
-  body text 		DEFAULT '' NOT NULL,
+  body text		DEFAULT '' NOT NULL,
   createtime integer	DEFAULT 0 NOT NULL,
   PRIMARY KEY (id)
 );
@@ -406,4 +407,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004081800');    
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004090700');    
