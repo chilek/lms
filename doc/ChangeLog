@@ -11,7 +11,8 @@ wersja ????? (??/??/????):
 	UPDATE users SET gguin=0 WHERE gguin IS NULL;
 	ALTER TABLE users UPDATE gguin SET DEFAULT 0;
 	ALTER TABLE users UPDATE gguin SET NOT NULL;
-  
+  - w genfake.php dodane generowanie przyk³. op³at sta³ych (alec)
+    
 wersja 1.1.8 Cronos (01/02/2004):
 
   - netdevmap korzysta z obrazków w formacie PNG (brak obs³ugi GIF na 
