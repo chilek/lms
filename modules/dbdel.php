@@ -32,7 +32,6 @@ if($_GET['is_sure'])
 } else
 {
 	$layout['pagetitle'] = "Usuniêcie bazy danych";
-	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('header.html');
 	echo "<H1>Usuniêcie bazy danych</H1>";
 	echo "<p>Czy jeste¶ pewien ¿e chcesz usun±æ bazê danych utworzon± ".date("Y/m/d H:i.s",$_GET['db'])."?</p>";

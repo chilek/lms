@@ -133,7 +133,6 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 }
 
 $layout['pagetitle'] = "Mapa po³±czeñ sieciowych";
-$SMARTY->assign('layout',$layout);
 
 if($_GET['graph'] == "")
 {

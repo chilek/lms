@@ -52,7 +52,6 @@ $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('assignments',$assigments);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('userinfo',$userinfo);
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->display('userinfo.html');
 

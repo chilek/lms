@@ -78,7 +78,6 @@ $page = (! $_GET['page'] ? 1 : $_GET['page']);
 $pagelimit = (! $LMS->CONFIG['phpui']['userlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['userlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('userlist',$userlist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);

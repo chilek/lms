@@ -73,7 +73,6 @@ $SMARTY->assign('startyear',$startyear);
 $SMARTY->assign('endtime',$endtime);
 $SMARTY->assign('endyear',$endyear);
 $SMARTY->assign('showips',$_POST['showips']);
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('download',$download);
 $SMARTY->assign('upload',$upload);
 $SMARTY->assign('bars',$bars);

@@ -39,7 +39,6 @@ if($_GET['is_sure'])
 	die;
 }else{
 	$layout['pagetitle'] = "Porz±dkowanie sieci ".strtoupper($network['name']);
-	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('header.html');
 	echo "<H1>Porz±dkowanie sieci ".strtoupper($network['name'])."</H1>";
 	echo "<p>Czy jeste¶ pewien ¿e chcesz uporz±dkowaæ t± sieæ?</p>";

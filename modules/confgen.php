@@ -31,7 +31,6 @@ if($_GET['tpl'] == '')
 	$layout['pagetitle'] = 'Pliki konfiguracyjne';
 	$templateslist = $LMS->GetTemplatesList();
 	$SMARTY->assign('templateslist',$templateslist);
-	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('confgen.html');
 }
 else

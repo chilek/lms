@@ -122,7 +122,6 @@ $layout['pagetitle'] = "Nowa sieæ";
 
 $prefixlist = $LMS->GetPrefixList();
 $netlist = $LMS->GetNetworkList();
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('netadd',$netadd);
 $SMARTY->assign('prefixlist',$prefixlist);

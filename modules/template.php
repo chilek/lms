@@ -25,7 +25,6 @@
  */
 
 $layout['pagetitle'] = "Tytu³ modu³u";
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('header.html');
 
 // Tutaj odpowiednie dzia³ania

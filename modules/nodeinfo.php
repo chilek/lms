@@ -78,7 +78,6 @@ $SMARTY->assign('userinfo',$userinfo);
 $SMARTY->assign('nodeinfo',$nodeinfo);
 $SMARTY->assign('assignments',$assignments);
 $SMARTY->assign('tariffs',$tariffs);
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('nodeinfo.html');
 
 ?>

@@ -83,7 +83,6 @@ if(!isset($useradd['address']))
 
 $layout['pagetitle'] = 'Nowy u¿ytkownik';
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('useradd',$useradd);
 $SMARTY->assign('error',$error);
 $SMARTY->display('useradd.html');

@@ -44,7 +44,6 @@ if(isset($netdevdata)) {
 
 $layout['pagetitle'] = "Nowe urz±dzenie";
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('netdev',$netdevdata);
 $SMARTY->display('netdevadd.html');

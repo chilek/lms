@@ -37,7 +37,6 @@ $layout['dbtype'] = $LMS->CONFIG['database']['type'];
 $SMARTY->assign('sysinfo',$SI->get_sysinfo());
 $SMARTY->assign('userstats',$LMS->UserStats());
 $SMARTY->assign('nodestats',$LMS->NodeStats());
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('welcome.html');
 
 ?>

@@ -25,7 +25,6 @@
  */
 
 $layout['pagetitle'] = "Wydruki";
-$SMARTY->assign('layout',$layout);
 
 $su = $DB->GetOne("SELECT min(time) FROM cash");
 $eu = $DB->GetOne("SELECT max(time) FROM cash");

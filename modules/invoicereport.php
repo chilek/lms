@@ -51,7 +51,6 @@ $listdata = $invoicelist['sum'];
 unset($invoicelist['sum']);
 
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('invoicelist',$invoicelist);
 $SMARTY->display('invoicereport.html');
 

@@ -26,7 +26,6 @@
 
 $layout['pagetitle'] = "Mailing";
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('mailing.html');
 
 ?>

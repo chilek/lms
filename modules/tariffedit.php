@@ -86,7 +86,6 @@ if(isset($tariff))
 	$tariff = $LMS->GetTariff($_GET['id']);
 	
 $layout['pagetitle'] = "Edycja taryfy: ".$tariff['name'];	
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('tariff',$tariff);
 $SMARTY->assign('error',$error);
 $SMARTY->display('tariffedit.html');

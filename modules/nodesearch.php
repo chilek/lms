@@ -25,7 +25,6 @@
  */
 
 $layout['pagetitle'] = "Wyszukiwanie komputerów";
-$SMARTY->assign('layout',$layout);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

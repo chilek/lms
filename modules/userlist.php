@@ -64,7 +64,6 @@ unset($userlist['order']);
 unset($userlist['below']);
 unset($userlist['over']);
 unset($userlist['direction']);
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('userlist',$userlist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);

@@ -51,7 +51,6 @@ $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('start',$start);
 $SMARTY->assign('page',$page);
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('marks',$marks);
 $SMARTY->assign('marked',$marked);
 $SMARTY->assign('invoicelist',$invoicelist);

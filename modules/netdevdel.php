@@ -31,7 +31,6 @@ if(! $LMS->NetDevExists($_GET['id']))
 }		
 
 $layout['pagetitle'] = "Usuniêcie urz±dzenia ID: ".sprintf("%04d",$_GET['id']);
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('netdevid',$_GET['id']);
 
 if($LMS->CountNetDevLinks($_GET['id'])>0)

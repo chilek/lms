@@ -37,7 +37,6 @@ unset($tarifflist['total'],$tarifflist['totalincome'],$tarifflist['totalusers'],
 
 $SMARTY->assign('tarifflist',$tarifflist);
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('tarifflist.html');
 
 ?>

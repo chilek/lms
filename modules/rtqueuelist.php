@@ -29,7 +29,5 @@ $layout['pagetitle'] = 'Obs³uga zg³oszeñ';
 $queues = $LMS->GetQueueList();
 
 $SMARTY->assign('queues', $queues);
-$SMARTY->assign('layout', $layout);
 $SMARTY->display('rtqueuelist.html');
-
 ?>

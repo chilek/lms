@@ -30,7 +30,6 @@ if($LMS->CONFIG['invoices']['attachment_name'] != '')
 if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
 	$layout['pagetitle'] = 'Faktury VAT';
-	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('clearheader.html');
 	foreach($_POST['marks'] as $markid => $junk)
 		if($junk)
@@ -58,7 +57,6 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
 	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
 	$layout['pagetitle'] = 'Faktura VAT nr '.$ntempl;	
-	$SMARTY->assign('layout',$layout);
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');
 	$SMARTY->assign('type','ORYGINA£');

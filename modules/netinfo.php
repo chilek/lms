@@ -39,7 +39,6 @@ $network = $LMS->GetNetworkRecord($_GET['id'],$_GET['page'],1024);
 
 $layout['pagetitle'] = "Informacja o sieci: ".$network['name'];
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('network',$network);
 $SMARTY->display('netinfo.html');
 

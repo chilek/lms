@@ -26,7 +26,6 @@
 
 $layout['pagetitle'] = "Administratorzy";
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('adminslist',$LMS->GetAdminList());
 $SMARTY->display('adminlist.html');
 

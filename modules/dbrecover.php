@@ -32,7 +32,6 @@ if($_GET['is_sure'])
 	die;
 }else{
 	$layout['pagetitle'] = "Odtworzenie bazy danych danych";
-	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('header.html');
 	echo "<H1>Odtworzenie bazy danych danych</H1>";
 	echo "<p>Czy jeste¶ pewien ¿e chcesz odtworzyæ bazê danych utworzon± dnia ".date("Y/m/d H:i.s",$_GET['db'])."?</p>";

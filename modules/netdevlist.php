@@ -28,7 +28,6 @@ $layout['pagetitle'] = "Osprzêt sieciowy";
 
 $_SESSION['backto']=$_SERVER['QUERY_STRING'];
 
-$SMARTY->assign('layout',$layout);
 
 if(!isset($_GET['o']))
 	$o = $_SESSION['ndlo'];
