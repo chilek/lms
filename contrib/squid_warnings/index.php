@@ -30,48 +30,59 @@ $CONFIG_FILE = '/etc/lms/lms.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
+// *******************************************************************
 
 // Parse configuration file
 
-function lms_parse_ini_file($filename, $process_sections = false)
+function lms_parse_ini_file($filename, $process_sections = false) 
 {
 	$ini_array = array();
-	$sec_name = "";
+	$section = '';
 	$lines = file($filename);
-	foreach($lines as $line)
+	foreach($lines as $line) 
 	{
 		$line = trim($line);
-
-		if($line == "" || $line[0] == ";" || $line[0] == "#")
+		
+		if($line == '' || $line[0] == ';' || $line[0] == '#') 
 			continue;
-
-		if( sscanf($line, "[%[^]]", &$sec_name)==1 )
-			$sec_name = trim($sec_name);
-		else
+		
+		list($sec_name) = sscanf($line, "[%[^]]");
+		
+		if( $sec_name )
+			$section = trim($sec_name);
+		else 
 		{
-			if ( sscanf($line, "%[^=] = '%[^']'", &$property, &$value) != 2 )
-				if ( sscanf($line, "%[^=] = \"%[^\"]\"", &$property, &$value) != 2 )
-					if( sscanf($line, "%[^=] = %[^;#]", &$property, &$value) != 2 )
+			list($property, $value) = sscanf($line, "%[^=] = '%[^']'");
+			if ( !$property || !$value ) 
+			{
+				list($property, $value) = sscanf($line, "%[^=] = \"%[^\"]\"");
+				if ( !$property || !$value ) 
+				{
+					list($property, $value) = sscanf($line, "%[^=] = %[^;#]");
+					if( !$property || !$value ) 
 						continue;
 					else
 						$value = trim($value, "\"'");
-
+				}
+			}
+		
 			$property = trim($property);
 			$value = trim($value);
-
-			if($process_sections)
-				$ini_array[$sec_name][$property] = $value;
-			else
+			
+			if($process_sections) 
+				$ini_array[$section][$property] = $value;
+			else 
 				$ini_array[$property] = $value;
 		}
 	}
+	
 	return $ini_array;
 }
 
-foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key=>$val) $_CONFIG[$key] = $val;
+foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
+	$_CONFIG[$key] = $val;
 
-// Define directories and configuration vars
-
+// Check for configuration vars and set default values
 $_CONFIG['directories']['sys_dir'] = (! $_CONFIG['directories']['sys_dir'] ? getcwd() : $_CONFIG['directories']['sys_dir']);
 $_CONFIG['directories']['backup_dir'] = (! $_CONFIG['directories']['backup_dir'] ? $_CONFIG['directories']['sys_dir'].'/backups' : $_CONFIG['directories']['backup_dir']);
 $_CONFIG['directories']['lib_dir'] = (! $_CONFIG['directories']['lib_dir'] ? $_CONFIG['directories']['sys_dir'].'/lib' : $_CONFIG['directories']['lib_dir']);
@@ -99,67 +110,77 @@ $_DBUSER = $_CONFIG['database']['user'];
 $_DBPASS = $_CONFIG['database']['password'];
 $_DBNAME = $_CONFIG['database']['database'];
 
-// include required files
+// Init database 
 
-require_once($_SMARTY_DIR.'/Smarty.class.php');
 require_once($_LIB_DIR.'/LMSDB.php');
-require_once($_LIB_DIR.'/common.php');
-require_once($_LIB_DIR.'/LMS.class.php');
-
-// Initialize LMSDB object
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
-// Initialize database and template classes
+// Initialize templates engine
 
-$SESSION = NULL;
-
-$LMS = new LMS($DB,$SESSION,$_CONFIG);
+require_once($_SMARTY_DIR.'/Smarty.class.php');
 
 $SMARTY = new Smarty;
+$SESSION = NULL;
 
+// Include required files (including sequence is important)
+
+require_once($_LIB_DIR.'/language.php');
+require_once($_LIB_DIR.'/common.php');
+require_once($_LIB_DIR.'/LMS.class.php');
+
+// Initialize LMS class
+
+$LMS = new LMS($DB, $SESSION, $_CONFIG);
+$LMS->CONFIG = $_CONFIG;
+$LMS->lang = $_language;
+
+// set some template and layout variables
+
+$SMARTY->assign_by_ref('_LANG', $_LANG);
+$SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
+$SMARTY->assign_by_ref('_language', $LMS->lang);
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 
-$layout[lmsv] = '1.5-cvs';
+require_once($_LIB_DIR.'/smarty_addons.php');
+include('lang.php');
 
-$SMARTY->assign('menu', $menu);
-$SMARTY->assign('layout', $layout);
+$SMARTY->assign_by_ref('layout', $layout);
 
 header('X-Powered-By: LMS/'.$layout[lmsv]);
 
 if (isset($_SERVER[HTTP_X_FORWARDED_FOR])) 
 {
-    $forwarded_ip = explode(',', $_SERVER[HTTP_X_FORWARDED_FOR]);
-    $nodeid = $LMS->GetNodeIDByIP($forwarded_ip['0']);    
+	$forwarded_ip = explode(',', $_SERVER[HTTP_X_FORWARDED_FOR]);
+	$nodeid = $LMS->GetNodeIDByIP($forwarded_ip['0']);    
 } 
 else 
-    $nodeid = $LMS->GetNodeIDByIP(str_replace('::ffff:','',$_SERVER[REMOTE_ADDR]));    
+	$nodeid = $LMS->GetNodeIDByIP(str_replace('::ffff:','',$_SERVER[REMOTE_ADDR]));    
 
 
 if (isset($_GET['readed']))
 {
-    $LMS->DB->Execute('UPDATE nodes SET warning = 0 WHERE id = ?',array($nodeid));
+	$LMS->DB->Execute('UPDATE nodes SET warning = 0 WHERE id = ?', array($nodeid));
 
-    if ($_GET['oldurl']) 
-    {
-	header('Location: '.$_GET['oldurl']);
-	die;
-    } 
-    else 
-    {
-	$layout['message'] = 'Wiadomo¶æ administracyjna oznaczona jako przeczytana.';
-    }
+	if ($_GET['oldurl']) 
+	{
+		header('Location: '.$_GET['oldurl']);
+		die;
+	} 
+	else 
+	{
+		$layout['message'] = trans('Administration message marked as readed.');
+	}
 } 
 else 
 {
-    $userinfo = $LMS->GetUser($LMS->GetNodeOwner($nodeid));
-    $layout['oldurl'] = $_GET['oldurl'];
-    $layout['messageurl'] = $_CONFIG['squid-warnings']['redirect'];
-    $SMARTY->assign('userinfo', $userinfo);
+	$userinfo = $LMS->GetUser($LMS->GetNodeOwner($nodeid));
+	$layout['oldurl'] = $_GET['oldurl'];
+	$layout['messageurl'] = $_CONFIG['squid-warnings']['redirect'];
+	$SMARTY->assign('userinfo', $userinfo);
 }
 
-$SMARTY->assign('layout', $layout);
 $SMARTY->display('message.html');
 
 ?>
