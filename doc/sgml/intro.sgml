@@ -1,0 +1,126 @@
+<chapter id="intro">
+    <title>Wstêp</title>
+	<sect1 id="about-lms">
+		<title>Czym jest LMS</title>
+		<para>"LMS" jest skrótem od "LAN Management System". Jest to zestaw aplikacji 
+		w PHP i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi 
+		(popularnie zwanymi Amatorskimi Sieciami Komputerowymi), opartych o bazê danych 
+		MySQL lub PostgreSQL. G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi 
+		u¿ytkowników na poziomie providera z prawdziwego zdarzenia. Najbardziej podstawowe 
+		cechy LMS to:</para>
+		<itemizedlist>
+  	 	<listitem>
+	 	    	<para>baza danych u¿ytkowników (imiê, nazwisko, adres, numer telefonu, uwagi i inne);</para>
+	  	</listitem>
+	  	<listitem>
+	   	    	<para>baza danych komputerów (adres IP, adres MAC);</para>
+	  	</listitem>
+	  	<listitem>
+	   	   	 <para>prowadzenie prostego rachunku operacji finansowych oraz stanu funduszów sieci;</para>
+	  	</listitem>
+	  	<listitem>
+	     		<para>ró¿ne taryfy abonamentowe;</para>
+	  	</listitem>
+	  	<listitem>
+	   		<para>wysy³anie poczt± elektroniczn± upomnieñ do u¿ytkowników;</para>
+	  	</listitem>
+	  	<listitem>
+	   		<para>automatyczne naliczanie op³at miesiêcznych;</para>
+	  	</listitem>
+	  	<listitem>
+	   		<para>generowanie praktycznie jakiegokolwiek konfiga na podstawie danych 
+			o komputerach w bazie (przyk³adowe konfigi obejmuj± rc.masq na iptables, 
+			dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i odwrotny);</para>
+	  	</listitem>
+		</itemizedlist>
+		<para>Ca³o¶æ zosta³a wymy¶lona w ramach administracji <ulink url="http://www.netx.waw.pl/">ASK NetX</ulink> 
+		i tam jest nieustannie rozwijana i poddawana testom.</para>
+		<para>LMS nie zast±pi Ci umiejêtno¶ci jakie powinien mieæ administrator. 
+		Je¶li nie potrafisz wykonaæ tak prostych czynno¶æ jak instalacja czy konfiguracja, 
+		prawdopodobnie nie bêdziesz umia³ dostroiæ LMS do swojego systemu. Tak wiêc bez 
+		znajomo¶ci systemów U*IX siê nie obejdzie.</para>
+   	</sect1>
+	<sect1 id="authors">
+		<title>The LMS Development Group</title>	
+		<itemizedlist>
+		<listitem>
+			<para>Kod PHP:</para>
+			<para><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></para>
+			<para>Micha³ 'DziQs' Zapalski</para>
+			<para><ulink url="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</ulink></para>
+			<para>Krzysztof 'hunter' Drewicz</para>
+		</listitem>
+		<listitem>
+			<para>Kod C:</para>
+			<para>Mateusz 'mteg' Golicz</para>
+		</listitem>
+		<listitem>
+			<para>Kod Perl:</para>
+			<para><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></para>
+			<para>Micha³ 'DziQs' Zapalski</para>
+			<para>Maciej 'agaran' Pijanka</para>
+			<para>Krzysztof 'hunter' Drewicz</para>
+		</listitem>
+		<listitem>
+		    <para>Design:</para>	
+		    <para><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></para>
+		</listitem>
+		<listitem>
+			<para>HTML, JavaScript, CSS:</para>
+			<para><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></para>
+			<para><ulink url="http://plug.atn.pl/~bober/">Pawe³ 'Bob_R' Czerski</ulink></para>
+			<para><ulink url="http://gamechannel.int.pl">Pawe³ 'sickone' Kisiela</ulink></para>
+		</listitem>
+		<listitem>
+			<para>Grafika:</para>
+			<para><ulink url="http://pierzak.melanz.org">Piotr 'Pierzak' M.</ulink></para>
+			<para><ulink url="http://byko.pawlacz.net">Grzegorz 'byko' Cichowski</ulink></para>
+			<para><ulink url="http://www.kflis.net">Kuba 'kflis' Flis</ulink></para>
+			<para><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></para>
+		</listitem>
+		<listitem>
+			<para>Support MySQL:</para>	
+			<para><ulink url="http://s.atn.pl">Kuba 'shasta' Jankowski</ulink></para>
+			<para><ulink url="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</ulink></para>
+		</listitem>
+		<listitem>
+			<para>Support PostgreSQL:</para>
+			<para><ulink url="http://k27.prv.pl/alec">Aleksander 'A.L.E.C' Machniak</ulink></para>
+		</listitem>
+		<listitem>
+			<para>Dokumentacja i strona WWW:</para>
+			<para><ulink url="http://k27.prv.pl/alec">Aleksander 'A.L.E.C' Machniak</ulink></para>
+			<para><ulink url="http://s.atn.pl">Kuba 'shasta' Jankowski</ulink></para>
+			<para><ulink url="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziêgielewski</ulink></para>
+			<para><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></para>
+			<para><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Król</ulink></para>
+		</listitem>
+		<listitem>
+			<para>Betatesterzy:</para>
+			<para><ulink url="http://byko.pawlacz.net">Grzegorz 'byko' Cichowski</ulink></para>
+			<para><ulink url="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</ulink></para>
+			<para>Tomasz 'dzwonek' Dzwonkowski</para>
+			<para>Sebastian 'Victus' Frasunkiewicz</para>
+			<para><ulink url="http://www.kflis.net">Kuba 'kflis' Flis</ulink></para>
+			<para>Krystian 'UFOczek' Kochanowski</para>
+			<para><ulink url="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziêgielewski</ulink></para>
+			<para>Andrzej 'chsh' Gr±dziel</para>
+			<para><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Król</ulink></para>
+		</listitem>
+	    </itemizedlist>
+	</sect1>
+	<sect1 id="legalnotice">
+		<title>Licencja</title>
+	   <para>Niniejszy  program  jest  oprogramowaniem  wolnodostêpnym;  
+		mo¿esz  go rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej 
+		Licencji Publicznej  GNU, wydanej przez Fundacjê Wolnodostêpnego Oprogramowania 
+		- wed³ug wersji 2-giej tej Licencji lub której¶ z pó¼niejszych wersji.</para>
+    	   <para>Niniejszy program rozpowszechniany jest z nadziej±, i¿ bêdzie on u¿yteczny 
+		- jednak  BEZ JAKIEJKOLWIEK GWARANCJI, nawet domy¶lnej gwarancji  
+		PRZYDATNO¦CI HANDLOWEJ albo PRZYDATNO¦CI DO OKRE¦LONYCH ZASTOSOWAÑ.   
+		W celu uzyskania bli¿szych informacji - Powszechna Licencja Publiczna GNU.</para>
+    	   <para>Z  pewno¶ci±  wraz  z  niniejszym  programem otrzyma³e¶ te¿ egzemplarz 
+		Powszechnej Licencji Publicznej GNU; je¶li nie - napisz do Free Software 
+		Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. </para>
+	</sect1>
+</chapter>

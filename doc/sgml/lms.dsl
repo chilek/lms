@@ -1,14 +1,7 @@
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY dbstyle PUBLIC "-//Norman Walsh//DOCUMENT DocBook HTML Stylesheet//EN" CDATA DSSSL>
 ]>
-<!--
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;  Konwersjê do HTML wykonuje polecenie:
-;  jade -t sgml -d lms.dsl index.sgml 
-;  lub:
-;  jade -u -t sgml -d lms.dsl index.html > index.html
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
--->
+<!-- $Id$ -->
 <style-sheet>
 <style-specification use="docbook">
 <style-specification-body>

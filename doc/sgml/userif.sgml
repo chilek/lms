@@ -1,0 +1,162 @@
+<!-- $Id$ -->
+<chapter id="user">
+ <title>Interfejs U¿ytkownika (lms-ui)</title>
+ <para>LMS'owy Interfejs U¿ytkownika to panel administracyjny do tworzenia 
+ i zarz±dzania baz± u¿ytkowników i komputerów. Umo¿liwia wprowadzanie danych komputerów,
+ przypisanie ich do u¿ytkowników i sieci. Definiowanie op³at i zarz±dzanie finansami sieci,
+  Szybkie wyszukiwanie danych o u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji
+  seryjnej do u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich hase³.
+  Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania ³±cza, a tak¿e 
+  tworzenie kopii bazy danych oraz zarz±dzanie skryptami wykonywalnymi.</para>
+ <sect1 id="user-login">
+	<title>Logowanie</title>
+	<para>co¶ o pierwszym logowaniu</para>
+	<figure>
+	<title>LMS-UI: Logowanie</title>
+	<mediaobject>
+  		<imageobject>
+  		<imagedata fileref="images/logo-small.png" format="png">
+  		</imageobject>
+  	</mediaobject>
+	</figure>
+ </sect1>
+ <sect1 id="user-all">
+	<title>Praca z LMS-UI</title>
+	<para>Po zalogowaniu do LMS'a zobaczysz panel powitalny, na którym znajdziesz
+	podstawowe informacje na temat naszego systemu: wersjê LMS i jego sk³adników, 
+	wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i komputerów w bazie oraz ich 
+	stan (pod³±czony/od³±czony), liczbê zad³u¿onych i kwota oraz przydatne lms'owe linki.</para>
+	<para>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
+	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze 
+	podaj±c ich numery.</para>
+	<figure>
+	<title>LMS-UI: Panel g³ówny</title>
+	<mediaobject>
+  		<imageobject>
+  		<imagedata fileref="images/logo-small.png" format="png">
+  		</imageobject>
+  	</mediaobject>
+	</figure>
+ <sect2 id="menu-users">
+	<title>U¿ytkownicy</title>
+	<para>Po wej¶ciu do panelu 'U¿ytkownicy' uka¿e siê lista u¿ytkowników,
+	któr± mo¿esz filtrowaæ wed³ug wybranych kryteriów lub sortowaæ klikaj±c
+	na nazwie kolumny.</para>
+	<para>Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu
+	z informacjami szczegó³owymi o nim i przypisanym mu komputerach oraz
+	operacja finansowych. Tam te¿ mo¿esz zaksiêgowaæ wp³atê lub obci±¿enie jego
+	rachunku.</para>
+	<para>W menu znajduj±cym siê u góry okna masz do wyboru opcje: filtrowania listy, 
+	dodawania nowych u¿ytkowników, wyszukiwania w bazie wg zadanych kryteriów oraz
+	wydruku listy.</para>
+	<figure>
+	<title>LMS-UI: U¿ytkownicy</title>
+	<mediaobject>
+  		<imageobject>
+  		<imagedata fileref="images/logo-small.png" format="png">
+  		</imageobject>
+  	</mediaobject>
+	</figure>
+ </sect2>
+ <sect2 id="menu-nodes">
+	<title>Komputery</title>
+	<para>babla</para>
+	<figure>
+	<title>LMS-UI: Komputery</title>
+	<mediaobject>
+  		<imageobject>
+  		<imagedata fileref="images/logo-small.png" format="png">
+  		</imageobject>
+  	</mediaobject>
+	</figure>
+ </sect2>
+ <sect2 id="user-networks">
+	<title>Sieci IP</title>
+	<para>blabla</para>
+	<figure>
+	<title>LMS-UI: Sieci IP</title>
+	<mediaobject>
+  		<imageobject>
+  		<imagedata fileref="images/logo-small.png" format="png">
+  		</imageobject>
+  	</mediaobject>
+	</figure>
+ </sect2>
+ <sect2 id="menu-tariffs">
+	<title>Taryfy i Finanse</title>
+	<para>blabla</para>
+	<figure>
+	<title>LMS-UI: Taryfy i finanse</title>
+	<mediaobject>
+  		<imageobject>
+  		<imagedata fileref="images/logo-small.png" format="png">
+  		</imageobject>
+  	</mediaobject>
+	</figure>
+ </sect2>
+ <sect2 id="menu-mailing">
+	<title>Mailing</title>
+	<para>blabla</para>
+	<figure>
+	<title>LMS-UI: Mailing</title>
+	<mediaobject>
+  		<imageobject>
+  		<imagedata fileref="images/logo-small.png" format="png">
+  		</imageobject>
+  	</mediaobject>
+	</figure>
+ </sect2>
+ <sect2 id="menu-reload">
+	<title>Prze³adowanie</title>
+	<para>blabla</para>
+	<figure>
+	<title>LMS-UI: Prze³adowanie</title>
+	<mediaobject>
+  		<imageobject>
+  		<imagedata fileref="images/logo-small.png" format="png">
+  		</imageobject>
+  	</mediaobject>
+	</figure>
+ </sect2>
+ <sect2 id="menu-databases">
+	<title>Bazy danych</title>
+	<para>blabla</para>
+	<figure>
+	<title>LMS-UI: Bazy danych</title>
+	<mediaobject>
+  		<imageobject>
+  		<imagedata fileref="images/logo-small.png" format="png">
+  		</imageobject>
+  	</mediaobject>
+	</figure>
+ </sect2>
+ <sect2 id="menu-admins">
+	<title>Administratorzy</title>
+	<para>blabla</para>
+	<figure>
+	<title>LMS-UI: Administratorzy</title>
+	<mediaobject>
+  		<imageobject>
+  		<imagedata fileref="images/logo-small.png" format="png">
+  		</imageobject>
+  	</mediaobject>
+	</figure>
+ </sect2>
+ <sect2 id="menu-stats">
+	<title>Statystyki</title>
+	<para>blabla</para>
+	<figure>
+	<title>LMS-UI: Statystyki</title>
+	<mediaobject>
+  		<imageobject>
+  		<imagedata fileref="images/logo-small.png" format="png">
+  		</imageobject>
+  	</mediaobject>
+	</figure>
+ </sect2>
+ <sect2 id="menu-staff">
+	<title>Funkcje dodatkowe</title>
+	<para>blabla</para>
+ </sect2>
+ </sect1>
+</chapter>
