@@ -321,7 +321,7 @@ database = /usr/local/lms/lms.db</screen>
           <listitem>
 	   <para>host</para>
 	   <para>Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj 
-	   wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie 'localhost:/path/to/socket'). 
+	   wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie '/path/to/socket'). 
 	   Domy¶lnie: localhost</para>
 	   <para>Przyk³ad:	<prompt>host = localhost</prompt></para>
 	  </listitem>
