@@ -42,7 +42,7 @@
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[netdev]">
 				<OPTION VALUE="0"{if ! $nodeinfo.netdev.id} SELECTED{/if}>--- Brak ---</OPTION>
 				{section name="netdev" loop=$netdevices}
-				<OPTION VALUE="{$netdevices[netdev].id}" {if $nodeinfo.netdev.id == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {$netdevices[netdev].producer} / {$netdevices[netdev].location }</OPTION>
+				<OPTION VALUE="{$netdevices[netdev].id}" {if $nodeinfo.netdev.id == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {$netdevices[netdev].producer}{if $netdevice[netdev].location} / {$netdevices[netdev].location}{/if}</OPTION>
 				{/section}
 			</SELECT>
 		</TD>
