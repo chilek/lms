@@ -21,6 +21,9 @@
 
 	function DeleteMarked()
 	{
+		if(! confirm('{/literal}{t}Are you sure, you want to delete selected operation and/or invoice?{/t}{literal}'))
+			return;
+
 		document.addbalance.action="?m=balancedel";
 		document.addbalance.target="";
 		document.addbalance.submit();
