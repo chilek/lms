@@ -488,8 +488,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
     <sect1 id="install-upgrade">
       <title>Upgrade</title>
       <para>Uaktualnienie LMS'a z wersji 1.0.X do bie¿±cej przebiega w dwóch etapach. Najpierw
-      skopiuj pliki nowej wersji do katalogu, gdzie trzyma³e¶ star± wersjê
-      lub w inne miejsce, nastêpnie trzeba dokonaæ zmian w bazie.</para>
+      utwórz katalog z plikami nowej wersji (nie nadpisuj starej wersji), nastêpnie trzeba 
+      dokonaæ zmian w bazie.</para>
       <para>Dla u³atwienia migracji danych przygotowano pliki
       <filename>UPGRADE.mysql</filename> i <filename>UPGRADE.pgsql</filename>,
       które umieszczono w katalogu z dokumentacj±. W nich znajdziesz krótki
