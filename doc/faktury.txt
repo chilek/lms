@@ -6,10 +6,10 @@ LMS mo¿e wystawiaæ faktury, aby mu to umo¿liwiæ trzeba przygotowaæ parê rzeczy:
 
 Szablon
 
-Szablon jest niczym innym jak dokumentem tekstowym w formacie RTF (tekstowym) który
-mo¿na stworzyæ pod dowolnym programem obs³uguj±cym RTF. Plik ten powinien wygl±daæ
-jak gotowa faktura, a pozycje które maj± byæ ustawiane przez LMS nale¿y zast±piæ
-nastêpuj±cymi s³owami kluczowymi:
+Szablon jest niczym innym jak dokumentem tekstowym w formacie RTF (tekstowym) 
+lub html który mo¿na stworzyæ pod dowolnym programem obs³uguj±cym RTF. Plik ten 
+powinien wygl±daæ jak gotowa faktura, a pozycje które maj± byæ rozwijane przez 
+LMS nale¿y zast±piæ nastêpuj±cymi s³owami kluczowymi:
 
 %nabywca         - jest rozwijany do imienia i nazwiska nabywcy
 %nab_adres       - jest rozwijany do adresu nabywcy (ulica)
@@ -24,20 +24,23 @@ nastêpuj±cymi s³owami kluczowymi:
 %termin          - termin zap³aty, ilo¶æ dni mo¿na ustawiæ w lms.ini
 %dni             - ilo¶æ dni do zap³aty, mo¿na ustawiæ j/w
 %usluga          - nazwa us³ugi, jak nazwa jest pobierany opis operacji kasowej
-%od              - pierwszy dzieñ okresu ¶wiadczenia us³ugi (pierwszy dzieñ miesi±ca
-                   w ktorym by³o wpisane obci±¿enie do bazy)
-%do              - ostatni dzieñ okresu ¶wiadczenia us³ugi (ostatni dzieñ miesi±ca w
-                   ktorym by³o wpisane obci±¿enie do bazy)
+%od              - pierwszy dzieñ okresu ¶wiadczenia us³ugi (pierwszy dzieñ 
+                   miesi±ca w ktorym by³o wpisane obci±¿enie do bazy)
+%do              - ostatni dzieñ okresu ¶wiadczenia us³ugi (ostatni dzieñ 
+                   miesi±ca w ktorym by³o wpisane obci±¿enie do bazy)
 %netto           - warto¶æ us³ugi netto, bezpo¶rednio przepisana z bazy
 %brutto          - netto + 7% VAT
 %vat             - warto¶æ VAT (netto * 7%)
 %slownie         - kwota do zap³aty s³ownie
-%konto           - jest rozwijane do numeru konta bankowego, ustawiane w lms.ini
-%wystawil        - jest rozwijane do danych administratora zalogowanego aktualnie w LMS
-%stopka          - pozwala na wpisanie danych do stopki, dane ustawiamy w lms.ini
+%konto           - jest rozwijane do numeru konta bankowego, ustawiane w 
+                   lms.ini
+%wystawil        - jest rozwijane do danych administratora zalogowanego 
+                   aktualnie w LMS
+%stopka          - pozwala na wpisanie danych do stopki, dane ustawiamy w 
+                   lms.ini
 
-Przyk³adowy szablon znajduje siê w katalogu sample (faktura.rtf) i by³ testowany
-pod OpenOffice i M$ Office.
+Przyk³adowy szablon znajduje siê w katalogu sample (faktura.rtf) i by³ 
+testowany pod OpenOffice i M$ Office.
 
 lms.ini
 
