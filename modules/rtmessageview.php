@@ -37,7 +37,6 @@ if($message['adminid'])
 if($message['userid'])
 	$message['username'] = $LMS->GetUserName($message['userid']);
 	
-print_r($message);
 $layout['pagetitle'] = 'Podgl±d wiadomo¶ci';
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
