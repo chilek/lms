@@ -100,6 +100,7 @@ my $queue = $queue || $ini->val('rt', 'default_queue');
 my $autoreply_from = $ini->val('rt', 'mail_from') || '';
 my $autoreply_name = $ini->val('rt', 'mail_from_name') || '';
 my $smtpserver = $ini->val('rt', 'smtp_server') || 'localhost';
+my $auto_open = $ini->val('rt', 'auto_open') || 0;
 
 # very ugly code, but we really need tempdir..
 my $tmpdir = (defined $ini->val('rt', 'tmp_dir') && ! ($ini->val('rt', 'tmp_dir') eq '')) || (defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '') ? $ENV{'TMP'} : '/tmp');
@@ -377,6 +378,12 @@ else
 	$row = $dbq->fetchrow_hashref();
 	$rt_msgid = $row->{'id'};
 	
+	if($auto_open)
+	{
+		$dbq = $dbase->prepare("UPDATE rttickets SET state=1 WHERE id=$prev_tid AND state>1");
+		$dbq->execute();
+	}
+
 	$ticket_id = $prev_tid;
 }
 
