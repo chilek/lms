@@ -87,6 +87,10 @@ if(isset($ticket))
 			0, strrpos($_SERVER['REQUEST_URI'], '/') + 1).'?m=rtticketview&id='.$id;
 		$out = mp_new_message($msg);
 		$body = $out[0];
+
+		$body = $ticket['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+			.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+			.'?m=rtticketview&id='.$id;
 		$LMS->SendMail($recipients, $headers, $body);
 
 		$SESSION->redirect('?m=rtticketview&id='.$id);

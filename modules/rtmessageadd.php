@@ -168,6 +168,9 @@ if(isset($message))
 
 				$body = $out[0].($out[1] ? "\n".$out[1] : '');
 
+				$body = $message['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+					.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+					.'?m=rtticketview&id='.$message['ticketid'];
 				$LMS->SendMail($recipients, $headers, $body);
 			}
 			else 
@@ -238,6 +241,9 @@ if(isset($message))
 
 			$body = $out[0].($out[1] ? "\n".$out[1] : '');
 
+			$body = $message['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+				.'?m=rtticketview&id='.$message['ticketid'];
 			$LMS->SendMail($recipients, $headers, $body);
 
 			// message to user is written to database
