@@ -343,7 +343,7 @@ CREATE TABLE rtqueues (
   email varchar(255) 	DEFAULT '' NOT NULL,
   description text	DEFAULT '' NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE (name),
+  UNIQUE (name)
 );
 
 DROP SEQUENCE "rttickets_id_seq";
