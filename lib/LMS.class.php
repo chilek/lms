@@ -726,7 +726,7 @@ class LMS
 				.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
 				.($usergroup ? ' AND usergroupid='.$usergroup : '') 
 				.' GROUP BY users.id, lastname, users.name, status, email, phone1, users.address, gguin, nip, pesel, zip, city, info '
-				.($indebted ? ' HAVING SUM((type * -2 + 7) * value) < 0 ' : '')
+		//		.($indebted ? ' HAVING SUM((type * -2 + 7) * value) < 0 ' : '')
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{
@@ -764,8 +764,11 @@ class LMS
 						$below += $userlist[$idx]['balance'];
 				if ($disabled && $userlist[$idx]['nodeac'] != 1)
 					$userlist2[] = $userlist[$idx];
+				
+				if ($indebted && $userlist[$idx]['balance'] < 0)
+					$userlist2[] = $userlist[$idx];
 			}
-			if ($disabled)
+			if ($disabled || $indebted)
 				$userlist = $userlist2;
 		}
 
