@@ -19,6 +19,7 @@ wersja 1.5.3 (??/??/????):
   - mo¿na okre¶liæ datê wystawienia nowej faktury (alec)
   - w oknie bilansu u¿ytkownika dodany link 'Wystaw fakturê' (alec)
   - BTS#0000254: funkcja writesyslog() dzia³a równie¿ na OpenBSD (kubatyszko)
+  - edycja zobowi±zañ u¿ytkownika (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 
