@@ -24,7 +24,7 @@
 			({$netdevips[list].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHT" NOWRAP>
-			<A HREF="?m=nodedel&id={$netdevips[list].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ adres \'{$netdevips[list].name|upper}\' z bazy danych?')"><IMG SRC="img/delete.gif" BORDER="0" ALT="" {tip text="Delete"} ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=nodedel&id={$netdevips[list].id}" onClick="return confirmLink(this, '{t 0=$netdevips[list].name|upper}Are you sure, you want to delete address \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" BORDER="0" ALT="" {tip text="Delete"} ALIGN="ABSMIDDLE"></A>
 			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><IMG SRC="img/edit.gif" BORDER="0" ALT="" {tip text="Edit"} ALIGN="ABSMIDDLE"></A>
 		</TD>
 	</TR>
