@@ -90,7 +90,7 @@ switch($_GET['action'])
 		if($invoice['paytime'] < 0)
 			$invoice['paytime'] = 14;
 
-		if($invoice['cdate'] && !$invoice['cdatewarning'])
+		if($invoice['cdate']) // && !$invoice['cdatewarning'])
 		{
 			list($year, $month, $day) = split('/',$invoice['cdate']);
 			if(checkdate($month, $day, $year))
@@ -117,16 +117,18 @@ switch($_GET['action'])
 	break;
 
 	case 'save':
+
 		if($contents && $customer)
 		{
 			$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
+		
+			unset($_SESSION['invoicecontents']);
+			unset($_SESSION['invoicecustomer']);
+			unset($_SESSION['invoice']);
+			unset($_SESSION['invoicenewerror']);
+			header('Location: ?m=invoice&id='.$iid);
+			die;
 		}
-		unset($_SESSION['invoicecontents']);
-		unset($_SESSION['invoicecustomer']);
-		unset($_SESSION['invoice']);
-		unset($_SESSION['invoicenewerror']);
-		header('Location: ?m=invoice&id='.$iid);
-		die;
 	break;
 }
 
