@@ -308,6 +308,16 @@ http://www.naszasiec.pl/</screen></example>
 	   <para>deadline (opcjonalny)</para>
 	   <para>Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14</para>
 	   <para>Przyk³ad:	<prompt>deadline = 7</prompt></para>
+         <listitem>
+          <para>comment (opcjonalny)>/<para>
+          <para>Opis pozycji na fakturze za naliczane zobowi±zanie</para>
+          <para>Domy¶lnie: 'Abonament wg taryfy %tariff za okres %period'</para>
+          <para>Niektóre ze s³ów kluczowych s± zastêpowane:<para>
+          <para>%tariff Nazwa taryfy</para>
+          <para>%period Okres (liczony od dzi¶ do ostatniego dnia cyklu rozliczeniowego, w formacie YYYY/MM/DD)</para>
+          <para>%%current_month Okres od pierwszego dnia bierz±cego miesi±ca do jego koñca</para>
+          <para>Przyk³ad:       <prompt>paytype = 'Abonament za %current_month w/g taryfy %tariff '</prompt></para>
+	   
 	  </listitem>
 	  <listitem>
 	   <para>paytype (opcjonalny)</para>
