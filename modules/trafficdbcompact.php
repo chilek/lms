@@ -37,8 +37,8 @@ if (!($level || $delete || $removedeleted))
 $SMARTY->display('header.html');
 $SMARTY->display('trafficheader.html');
 
-?><PRE><B>Kompaktowanie bazy danych</B><BR><?
-echo "Przed kompaktowaniem w bazie jest ".$LMS->DB->GetOne("SELECT COUNT(*) FROM stats")." rekordów.\n";
+echo '<PRE><B>'._('Stats database compactiong').'</B><BR>';
+printf(_("Before compacting in database was %d records.<BR>"),$LMS->DB->GetOne("SELECT COUNT(*) FROM stats"));
 
 if($delete)
 {
@@ -55,7 +55,7 @@ if($removedeleted)
 	{
 	    if(!in_array($node,$nodes))
 		if($LMS->DB->Execute("DELETE FROM stats WHERE nodeid = ".$node))
-		    echo "Usuniêto statystyki komputera o ID: ".$node."\n";
+		    printf(_("Removed stats for node with ID: %d\n"),$node);
 	}
     }
 }
@@ -92,11 +92,11 @@ if($level)
 	    }
 	
 	    $LMS->DB->CommitTrans();
-	    echo ($deleted?$deleted:0)." - usuniêtych, ".($inserted?$inserted:0)." - wstawionych\n";
+	    echo ($deleted?$deleted:0)._(" - removed, ").($inserted?$inserted:0)._(" - insertedh\n");
 	}
     }
 }
-echo "Po kompaktowaniu w bazie pozostaje ".$LMS->DB->GetOne("SELECT COUNT(*) FROM stats")." rekordów.";
+printf(_("After compacting in database is %d records."), $LMS->DB->GetOne("SELECT COUNT(*) FROM stats"));
 
 $SMARTY->display('footer.html');
 

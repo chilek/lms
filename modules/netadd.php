@@ -49,65 +49,65 @@ if(isset($netadd))
 
 
 	if($netadd['name']=="")
-		$error['name'] = "Musisz podaæ nazwê sieci!";
+		$error['name'] = _("You must enter network name!");
 	elseif(!eregi("^[.a-z0-9-]+$",$netadd['name']))
-		$error['name'] = "Podana nazwa sieci zawiera niepoprawne znaki!";
+		$error['name'] = _("Network name contains forbidden characters!");
 	
 	if($netadd['domain'] != "" && !eregi("^[.a-z0-9-]+$",$netadd['domain']))
-		$error['domain'] = "Podana nazwa domeny zawiera niepoprawne znaki!";
+		$error['domain'] = _("Domain name contains forbidden characters!");
 	
 	if(!check_ip($netadd['address']))
-		$error['address'] = "Podany adres IP sieci jest nieprawid³owy!";
+		$error['address'] = _("Network IP address isn't correct!");
 	else
 	{
 		if(getnetaddr($netadd['address'],prefix2mask($netadd['prefix']))!=$netadd['address'])
 		{
-			$error['address'] = "Podany adres nie jest pocz±tkowym adresem sieci, ustawiam na ".getnetaddr($netadd['address'],prefix2mask($netadd['prefix']));
+			$error['address'] = _("That address isn't network address, setting to ").getnetaddr($netadd['address'],prefix2mask($netadd['prefix']));
 			$netadd['address'] = getnetaddr($netadd['address'],prefix2mask($netadd['prefix']));
 		}
 		else
 		{
 			if($LMS->NetworkOverlaps($netadd['address'],prefix2mask($netadd['prefix'])))
-				$error['address'] = "Podany adres sieci pokrywa siê z inn± sieci±!";
+				$error['address'] = _("That address overlaps with other network!");
 		}
 	}
 
 	if($netadd['interface'] != '' && !eregi('^[a-z0-9]+$',$netadd['interface']))
-		$error['interface'] = "Niepoprawna nazwa interfejsu!";
+		$error['interface'] = _("Incorrect interface name!");
 
 	if($netadd['dns']!="" && !check_ip($netadd['dns']))
-		$error['dns'] = "Podany adres IP serwera DNS jest nieprawid³owy!";
+		$error['dns'] = _("Incorrect DNS server IP address!");
 	
 	if($netadd[dns2]!="" && !check_ip($netadd[dns2]))
-		$error[dns2] = "Podany adres IP serwera DNS jest nieprawid³owy!";
+		$error[dns2] = _("Incorrect DNS server IP address!");
 	
 	if($netadd['wins']!="" && !check_ip($netadd['wins']))
-		$error['wins'] = "Podany adres IP serwera WINS jest nieprawid³owy!";
+		$error['wins'] = _("Incorrect WINS server IP address!";
 	
 	if($netadd['gateway']!="")
 		if(!check_ip($netadd['gateway']))
-			$error['gateway'] = "Podany adres IP bramy jest nieprawid³owy!";
+			$error['gateway'] = _("Incorrect Gateway IP address!");
 	elseif(!isipin($netadd['gateway'],getnetaddr($netadd['address'],prefix2mask($netadd['prefix'])),prefix2mask($netadd['prefix'])))
-		$error['gateway'] = "Podany adres bramy nie pasuje do adresu sieci!";
+		$error['gateway'] = _("Gateway IP address don't match with network address class!");
 	
 	if($netadd['dhcpstart']!="")
 		if(!check_ip($netadd['dhcpstart']))
-			$error['dhcpstart'] = "Podany adres IP pocz±tku zakresu DHCP jest nieprawid³owy!";
+			$error['dhcpstart'] = _("Incorrect IP address for start of DHCP range!");
 	elseif(!isipin($netadd['dhcpstart'],getnetaddr($netadd['address'],prefix2mask($netadd['prefix'])),prefix2mask($netadd['prefix'])) && $netadd['address']!="")
-		$error['dhcpstart'] = "Podany adres IP pocz±tku zakresu DHCP nie nale¿y do tej sieci!";
+		$error['dhcpstart'] = _("IP address for start of DHCP range not overlaps with this network!");
 	
 	if($netadd['dhcpend']!="")
 		if(!check_ip($netadd['dhcpend']))
-			$error['dhcpend'] = "Podany adres IP koñca zakresu DHCP jest nieprawid³owy!";
+			$error['dhcpend'] = _("Incorrect IP address for end of DHCP range!");
 	elseif(!isipin($netadd['dhcpend'],getnetaddr($netadd['address'],prefix2mask($netadd['prefix'])),prefix2mask($netadd['prefix'])) && $netadd['address']!="")
-		$error['dhcpend'] = "Podany adres IP koñca zakresu DHCP nie nale¿y do tej sieci!";
+		$error['dhcpend'] = _("IP address for end of DHCP range not overlaps with this network!";
 	
 	if(!$error['dhcpstart'] && !$error['dhcpend'])
 	{
 		if(($netadd['dhcpstart']!="" && $netadd['dhcpend']=="")||($netadd['dhcpstart']=="" && $netadd['dhcpend']!=""))
-			$error['dhcp'] = "Musisz podaæ obydwa zakresy IP dla DHCP!";
+			$error['dhcp'] = _("Required both IP addresses for DHCP range!");
 		if($netadd['dhcpstart']!="" && $netadd['dhcpend']!="" && !(ip_long($netadd['dhcpend']) > ip_long($netadd['dhcpstart'])))
-			$error['dhcp'] = "Koniec zakresu DHCP musi byæ wiêkszy ni¿ start!";
+			$error['dhcp'] = _("End of DHCP range must be greater than start!");
 	}
 	
 	if(!$error)
@@ -118,7 +118,7 @@ if(isset($netadd))
 
 }
 
-$layout['pagetitle'] = "Nowa sieæ";
+$layout['pagetitle'] = _("New network");
 
 $prefixlist = $LMS->GetPrefixList();
 $netlist = $LMS->GetNetworkList();

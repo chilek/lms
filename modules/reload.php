@@ -27,11 +27,11 @@
 // Agggrrr. Nie zwracajcie uwagi na styl pisania *TEGO* kawa³ka kodu :)
 // Jest 7:35 a ja ca³± noc nie spa³em :)
 
-$layout[$pagetitle]="Prze³adowanie konfiguracji";
+$layout['pagetitle']= _("Configuration Reload");
 
 $SMARTY->display('header.html');
 
-?><H1>Prze³adowanie konfiguracji</H1><?php
+echo '<H1>'.$layout['pagetitle'].'</H1>';
 
 $_RELOAD_TYPE = $LMS->CONFIG['phpui']['reload_type'];
 $_EXECCMD = $LMS->CONFIG['phpui']['reload_execcmd'];
@@ -59,7 +59,7 @@ switch($_RELOAD_TYPE)
 			foreach($sqlqueries as $query)
 			{
 				$query = str_replace("%TIME%","?NOW?",$query);
-				echo "<P><B>Wykonuje:</B></P>";
+				echo "<P><B>"._('Runing:')."</B></P>";
 				echo "<PRE>".$query."</PRE>";
 				$LMS->DB->Execute($query);
 			}
@@ -67,21 +67,21 @@ switch($_RELOAD_TYPE)
 		}else{
 			if(isset($_GET['cancel']))
 			{
-				echo 'Usuniêto zlecenie prze³adowania konfiguracji.';
+				echo _('Reload order deleted.');
 				$LMS->DeleteTS("_force");
 			}else
 				if($reloadtimestamp = $LMS->GetTS("_force"))
 				{
 					if(!isset($_GET['refresh'])) 
 					{					
-						echo 'W bazie danych wykryto zlecenie prze³adowania z '.date("d.m.Y H:i",$reloadtimestamp).'.<BR>';
-						echo 'Mo¿esz je <A HREF="?m=reload&cancel">anulowaæ</A> lub <A HREF="?m=reload&refresh">ponowiæ</A>.';
+						printf(_("Reload order from '%s' was discovered in database.<BR>"), date("d.m.Y H:i",$reloadtimestamp));
+						printf(_("You can %s cancel %s or %s refresh %s them."), '<A HREF="?m=reload&cancel">','</A>', '<A HREF="?m=reload&refresh">', '</A>');
 					} else {
-						echo 'Zapisano zlecenie prze³adowania konfiguracji w bazie danych.';
+						echo _('Reload order saved.');
 						$LMS->SetTS("_force");
 					}
 				} else {
-					echo 'Zapisano zlecenie prze³adowania konfiguracji w bazie danych.';
+					echo _('Reload order saved.');
 					$LMS->SetTS("_force");
 				}
 		}
@@ -89,7 +89,7 @@ switch($_RELOAD_TYPE)
 
 	default:
 
-		echo "<P><B><FONT COLOR=\"RED\">B³±d! Niepoprawny typ reloadu: '".$_RELOAD_TYPE."' !</FONT></B></P>";
+		echo "<P><B><FONT COLOR=\"RED\">".sprintf(_("Error. Incorrect reload type: '%s'!"),$_RELOAD_TYPE)."</FONT></B></P>";
 	break;
 
 }

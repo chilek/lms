@@ -24,23 +24,23 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Mailing";
+$layout['pagetitle'] = _('Mailing');
 
 $mailing = $_POST['mailing'];
 
 if($mailing['group'] < 0 || $mailing['group'] > 3)
-	$error['group'] = "Wybra³e¶ b³êdn± grupê u¿ytkowników";
+	$error['group'] = _("You've got choose incorrect users group");
 
 if($mailing['sender']==""){
-	$error['sender'] = "Proszê podaæ e-mail nadawcy!";
+	$error['sender'] = _("Enter sender e-mail address!");
 }elseif(!check_email($mailing['sender']))
-	$error['sender'] = "Podany e-mail nie wydaje siê poprawny!";
+	$error['sender'] = _("E-mail isn't correct!");
 
 if($mailing['from']=="")
-	$error['from'] = "Proszê podaæ nadawcê!";
+	$error['from'] = _("Enter sender!");
 
 if($mailing['subject']=="")
-	$error['subject'] = "Proszê podaæ temat listu!";
+	$error['subject'] = _("Enter e-mail subject!");
 
 if($error)
 {

@@ -41,18 +41,18 @@ if(isset($admininfo))
 		$admininfo[$key] = trim($value);
 
 	if($LMS->GetAdminIDByLogin($admininfo['login']) && $LMS->GetAdminIDByLogin($admininfo['login']) != $_GET['id'])
-		$error['login'] = "Podany login jest ju¿ zajêty!";
+		$error['login'] = _('Login exists yet!');
 
 	if($admininfo['login'] == "")
-		$error['login'] = "Pole login nie mo¿e byæ puste!";
+		$error['login'] = _('Login field can\'t be empty!');
 	elseif(!eregi("^[a-z0-9.-_]+$",$admininfo['login']))
-		$error['login'] = "Login zawiera niepoprawne znaki!";
+		$error['login'] = _('Login contains forbidden characters!');
 
 	if($admininfo['name'] == "")
-		$error['name'] = "Pole 'imiê i nazwisko' nie mo¿e byæ puste!";
+		$error['name'] = _("Field 'name and surname' can't be empty!");
 
 	if($admininfo['email']!="" && !check_email($admininfo['email']))
-		$error['email'] = "Podany email nie wydaje siê byæ poprawny!";
+		$error['email'] = _("E-mail isn\'t correct!");
 				
 
 	// zróbmy maskê ACL...
@@ -81,7 +81,7 @@ foreach($LMS->GetAdminInfo($_GET['id']) as $key => $value)
 	if(!isset($admininfo[$key]))
 		$admininfo[$key] = $value;
 
-$layout['pagetitle'] = "Edycja danych administratora: ".$LMS->GetAdminName($_GET['id']);
+$layout['pagetitle'] = _('Edit Administrator: ').$LMS->GetAdminName($_GET['id']);
 
 $rights = $LMS->GetAdminRights($_GET['id']);
 

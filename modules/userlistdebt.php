@@ -26,8 +26,8 @@
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$layout['pagetitle'] = "Lista u¿ytkowników zad³u¿onych";
-$layout['ultitle']=" zad³u¿onych";
+$layout['pagetitle'] = _('In Debt Users List');
+$layout['ultitle']= _(' debted');
 
 if(!isset($_GET['o']))
 	$o = $_SESSION['ulo'];

@@ -28,7 +28,7 @@
 
 if($_GET['tpl'] == '')
 {
-	$layout['pagetitle'] = 'Pliki konfiguracyjne';
+	$layout['pagetitle'] = _('Configuration files');
 	$templateslist = $LMS->GetTemplatesList();
 	$SMARTY->assign('templateslist',$templateslist);
 	$SMARTY->assign('layout',$layout);

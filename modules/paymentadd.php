@@ -40,16 +40,16 @@ if(isset($payment))
 	$payment['value'] = str_replace(",",".",$payment['value']);
 
 	if(!(ereg("^[-]?[0-9.,]+$",$payment['value'])))
-		$error['value'] = "Podana warto¶æ nie jest poprawna!";
+		$error['value'] = "Incorrect payment value!");
 
 	if($payment['creditor'] == "")
-		$error['creditor'] = "Musisz podaæ nazwê wierzyciela!";
+		$error['creditor'] = _("Creditor name is required!");
 
 	if($payment['name'] == "")
-		$error['name'] = "Musisz podaæ nazwê op³aty sta³ej!";
+		$error['name'] = _("Payment name is required!");
 	else
 		if($LMS->GetPaymentIDByName($payment['name']))
-			$error['name'] = "Istnieje ju¿ op³ata o nazwie '".$payment['name']."'!";
+			$error['name'] = sprintf(_("Payment '%s' exists!"),$payment['name']);
 
 	$period = sprintf('%d',$payment['period']);
 	
@@ -61,7 +61,7 @@ if(isset($payment))
 		case 0:
 			$at = sprintf('%d',$payment['at']);
 			if($at < 1 || $at > 7)
-				$error['at'] = 'Niepoprawny dzieñ tygodnia';
+				$error['at'] = _("Incorrect day of week");
 		break;
 		case 1:
 			$at = sprintf('%d',$payment['at']);
@@ -72,24 +72,24 @@ if(isset($payment))
 					$at = 1;
 			}
 			if($at < 1 || $at > 28)
-		    		$error['at'] = 'Niepoprawny dzieñ miesi±ca';
+		    		$error['at'] = _('Incorrect day of month');
 		break;
 		case 2:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
-				$error['at'] = 'Niepoprawny format daty';
+				$error['at'] = _('Incorrect date format');
 			else {
 				list($d,$m) = split('/',trim($payment['at']));
 				if($d>30 || $d<1)
-					$error['at'] = 'Niepoprawna liczba dni w miesi±cu';
+					$error['at'] = _('Incorrect day of month number');
 				if($m>3 || $m<1)
-					$error['at'] = 'Niepoprawny numer miesi±ca (max.3)';
+					$error['at'] = _('Incorrect month number (max.3)');
 				
 				$at = ($m-1) * 100 + $d;
 			};
 		break;
 		case 3:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
-				$error['at'] = 'Niepoprawny format daty';
+				$error['at'] = _('Incorrect date format');
 			else
 				list($d,$m) = split('/',trim($payment['at']));
 			$ttime = mktime(12, 0, 0, $m, $d, 1990);
@@ -115,7 +115,7 @@ if(isset($payment))
 	}
 }
 
-$layout['pagetitle'] = "Nowa op³ata sta³a";
+$layout['pagetitle'] = _('New Payment');
 
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('error',$error);

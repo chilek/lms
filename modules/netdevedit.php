@@ -38,10 +38,10 @@ case "replace":
 	$dev1 = $LMS->GetNetDev($_GET['id']);
 	$dev2 = $LMS->GetNetDev($_GET['netdev']);
 	if ($dev1['ports']<$dev2['takenports']) {
-	    $error['replace'] = "Brak wystarczaj±cej liczby portów w urz±dzeniu ¼ród³owym";
+	    $error['replace'] = _("It scants ports in source device");
 	    $edit = FALSE;
 	} elseif ($dev2['ports']<$dev1['takenports']) {
-	    $error['replace'] = "Brak wystarczaj±cej liczby portów w urz±dzeniu docelowym";
+	    $error['replace'] = _("It scants ports in destination device");
 	    $edit = FALSE;
 	} else {
 	    $LMS->NetDevReplace($_GET['id'],$_GET['netdev']);
@@ -64,7 +64,7 @@ case "connect":
 	if(! $LMS->NetDevLink($_GET['netdev'], $_GET['id']) )
 	{
 		$edit = FALSE;
-		$error['link'] = "Brak wolnych portów w urz±dzeniu";
+		$error['link'] = _("Device does not have free ports");
 	} else
 		header("Location: ?m=netdevinfo&id=".$_GET['id']);
 	break;
@@ -72,7 +72,7 @@ case "connect":
 case "connectnode":
 	if(! $LMS->NetDevLinkNode($_GET['nodeid'], $_GET['id']) )
 	{
-		$error['linknode'] = "Brak wolnych portów w urz±dzeniu";
+		$error['linknode'] = _("Device does not have free ports");
 		$edit = FALSE;
 	} else
 		header("Location: ?m=netdevinfo&id=".$_GET['id']);
@@ -104,29 +104,29 @@ case "formaddip":
         }
 	
 	if($nodeipdata['name']=="")
-		$error['ipname'] = "Proszê podaæ nazwê dla adresu!";
+		$error['ipname'] = _("Name for address is required!");
 	elseif(strlen($nodeipdata['name']) > 16)
-		$error['ipname'] = "Podana nazwa jest za d³uga!";
+		$error['ipname'] = _("Name is too long!");
 	elseif($LMS->GetNodeIDByName($nodeipdata['name']))
-		$error['ipname'] = "Podana nazwa jest u¿ywana!";
+		$error['ipname'] = _("Name is in use yet!");
 	elseif(!eregi("^[_a-z0-9-]+$",$nodeipdata['name']))
-		$error['ipname'] = "Podana nazwa zawiera niepoprawne znaki!";		
+		$error['ipname'] = _("Name consist forbidden characters!");		
 
 	if(!$nodeipdata['ipaddr'])
-		$error['ipaddr'] = "Proszê podac adres IP!";
+		$error['ipaddr'] = _("IP address is required!");
 	elseif(!check_ip($nodeipdata['ipaddr']))
-		$error['ipaddr'] = "Podany adres IP jest niepoprawny!";
+		$error['ipaddr'] = _("Incorrect IP address!");
 	elseif(!$LMS->IsIPValid($nodeipdata['ipaddr']))
-		$error['ipaddr'] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
+		$error['ipaddr'] = _("IP address not belongs to any network!");
 	elseif(!$LMS->IsIPFree($nodeipdata['ipaddr']))
-		$error['ipaddr'] = "Podany adres IP jest zajêty!";
+		$error['ipaddr'] = _("IP address is in use!");
 
 	if(!$nodeipdata['mac'])
-		$error['mac'] = "Proszê podac adres MAC!";
+		$error['mac'] = _("MAC address is required!");
 	elseif($LMS->GetNodeIDByMAC($nodeipdata['mac']) && $LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE)
-		$error['mac'] = "Podany MAC jest ju¿ w bazie!";
+		$error['mac'] = _("MAC address is in use yet!");
 	elseif(!check_mac($nodeipdata['mac']))
-		$error['mac'] = "Podany adres MAC jest nieprawid³owy!";
+		$error['mac'] = _("Incorrect MAC address!");
 
 	if(!$error)
 	{
@@ -154,39 +154,39 @@ case "formeditip":
         }
 	
 	if($nodeipdata['name']=="")
-		$error['ipname'] = "Proszê podaæ nazwê dla adresu!";
+		$error['ipname'] = _("Name for address is required!");
 	elseif(strlen($nodeipdata['name']) > 16)
-		$error['ipname'] = "Podana nazwa jest za d³uga!";
+		$error['ipname'] = _("Name is too long!");
 	elseif(
 		$LMS->GetNodeIDByName($nodeipdata['name']) &&
 		$LMS->GetNodeName($_GET['ip'])!=$nodeipdata['name']
 		)
-		$error['ipname'] = "Podana nazwa jest u¿ywana!";
+		$error['ipname'] = _("Name is in use yet!");
 	elseif(!eregi("^[_a-z0-9-]+$",$nodeipdata['name']))
-		$error['ipname'] = "Podana nazwa zawiera niepoprawne znaki!";		
+		$error['ipname'] = _("Name consist forbidden characters!");		
 
 	if(!$nodeipdata['ipaddr'])
-		$error['ipaddr'] = "Proszê podac adres IP!";
+		$error['ipaddr'] = _("IP address is required!");
 	elseif(!check_ip($nodeipdata['ipaddr']))
-		$error['ipaddr'] = "Podany adres IP jest niepoprawny!";
+		$error['ipaddr'] = _("Incorrect IP address!");
 	elseif(!$LMS->IsIPValid($nodeipdata['ipaddr']))
-		$error['ipaddr'] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
+		$error['ipaddr'] = _("IP address not belongs to any network!");
 	elseif(
 		!$LMS->IsIPFree($nodeipdata['ipaddr']) &&
 		$LMS->GetNodeIPByID($_GET['ip'])!=$nodeipdata['ipaddr']
 		)
-		$error['ipaddr'] = "Podany adres IP jest zajêty!";
+		$error['ipaddr'] = _("IP address is in use!");
 	
 	if(!$nodeipdata['mac'])
-		$error['mac'] = "Proszê podac adres MAC!";
+		$error['mac'] = _("MAC address is required!");
 	elseif(
 		$LMS->GetNodeIDByMAC($nodeipdata['mac']) && 
 		$LMS->GetNodeMACByID($_GET['ip'])!=$nodeipdata['mac'] &&
 		$LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE
 		)
-		$error['mac'] = "Podany MAC jest ju¿ w bazie!";
+		$error['mac'] = _("MAC address is in use yet!");
 	elseif(!check_mac($nodeipdata['mac']))
-		$error['mac'] = "Podany adres MAC jest nieprawid³owy!";
+		$error['mac'] = _("Incorrect MAC address!");
 
 	if(!$error)
 	{
@@ -205,10 +205,10 @@ if(isset($netdevdata))
 	$netdevdata['id'] = $_GET['id'];
 
 	if($netdevdata['name'] == "")
-		$error['name'] = "Pole nazwa nie mo¿e byæ puste!";
+		$error['name'] = _("Name can't be empty!");
 
 	if($netdevdata['ports'] < $LMS->CountNetDevLinks($_GET['id']))
-		$error['ports'] = "Liczba pod³±czonych urz±dzeñ przekracza liczbê portów!";
+		$error['ports'] = "Number of connected devices surpasses number of ports!");
 	
 	if(!$error)
 	{
@@ -246,7 +246,7 @@ unset($replacelist['direction']);
 
 $netdevips = $LMS->GetNetDevIPs($_GET['id']);
 
-$layout['pagetitle'] = "Edycja urz±dzenia: ".$netdevdata['name']." ".$netdevdata['producer'];
+$layout['pagetitle'] = _("Editing device: ").$netdevdata['name']." ".$netdevdata['producer'];
 
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('error',$error);

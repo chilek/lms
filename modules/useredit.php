@@ -77,13 +77,13 @@ elseif($_GET['action'] == 'addassignment')
 
 		case 2:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($_POST['at'])))
-				$error[] = 'Niepoprawny format daty';
+				$error[] = _('Incorrect date format');
 			else {
 				list($d,$m) = split('/',trim($_POST['at']));
 				if($d>30 || $d<1)
-					$error[] = 'Niepoprawna liczba dni w miesi±cu';
+					$error[] = _('Incorrect day of month number');
 				if($m>3 || $m<1)
-					$error[] = 'Niepoprawny numer miesi±ca (max.3)';
+					$error[] = _('Incorrect month number (max.3)');
 				
 				$at = ($m-1) * 100 + $d;
 			}
@@ -91,7 +91,7 @@ elseif($_GET['action'] == 'addassignment')
 
 		case 3:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($_POST['at'])))
-				$error[] = 'Niepoprawny format daty';
+				$error[] = _('Incorrect date format');
 			else
 				list($d,$m) = split('/',trim($_POST['at']));
 			$ttime = mktime(12, 0, 0, $m, $d, 1990);
@@ -113,28 +113,28 @@ elseif(isset($userdata))
 		$userdata[$key] = trim($value);
 
 	if($userdata['lastname']=='')
-		$error['username'] = 'Pola \'nazwisko/nazwa\' oraz imiê nie mog± byæ puste!';
+		$error['username'] = _("Name of user is required!');
 	
 	if($userdata['address']=='')
-		$error['address'] = 'Proszê podaæ adres!';
+		$error['address'] = _('Address of user is required!');
 
 	if($userdata['nip'] !='' && !eregi('^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$',$userdata['nip']) && !eregi('^[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}$',$userdata['nip']) && !check_nip($userdata['nip']))
-		$error['nip'] = 'Podany NIP jest b³êdny!';
+		$error['nip'] = _('Incorrect NIP identifier!');
 
 	if(!check_pesel($userdata['pesel']) && $userdata['pesel'] != '')
-		$error['pesel'] = 'Podany PESEL jest b³êdny!';
+		$error['pesel'] = _('Incorrect PESEL identifier!');
 
 	if($userdata['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$userdata['zip']))
-		$error['zip'] = 'Podany kod pocztowy jest b³êdny!';
+		$error['zip'] = _('Incorrect postal code!');
 
 	if($userdata['gguin'] == '')
 		$userdata['gguin'] = 0;
 
 	if($userdata['gguin']!=0 && !eregi('^[0-9]{4,}$',$userdata['gguin']))
-		$error['gguin'] = 'Podany numer GG jest niepoprawny!';
+		$error['gguin'] = _('Incorrect Gadu-Gadu identifier!');
 
 	if($userdata['status']!=3&&$LMS->GetUserNodesNo($userdata['id'])) 
-		$error['status'] = 'Tylko pod³±czony u¿ytkownik mo¿e posiadaæ komputery!';
+		$error['status'] = _('Only connected user can have nodes!');
 		
 	if (!isset($error)){
 		$LMS->UserUpdate($userdata);
@@ -160,7 +160,7 @@ elseif(isset($userdata))
 		$userinfo['shownodes'] = TRUE;
 }
 
-$layout['pagetitle'] = 'Edycja danych u¿ytkownika: '.$userinfo['username'];
+$layout['pagetitle'] = _('Edit User: ').$userinfo['username'];
 $SMARTY->assign('usernodes',$LMS->GetUserNodes($userinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($userinfo['id']));
 $SMARTY->assign('tariffs',$LMS->GetTariffs());

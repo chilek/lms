@@ -29,14 +29,14 @@ if($LMS->CONFIG['invoices']['attachment_name'] != '')
 
 if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
-	$layout['pagetitle'] = 'Faktury VAT';
+	$layout['pagetitle'] = _('Invoices');
 	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('clearheader.html');
 	foreach($_POST['marks'] as $markid => $junk)
 		if($junk)
 			$ids[] = $markid;
 	sort($ids);
-	$which = ($_GET['which'] != '' ? $_GET['which'] : 'ORYGINA£+KOPIA');
+	$which = ($_GET['which'] != '' ? $_GET['which'] : _('ORIGINAL+COPY'));
 	foreach($ids as $idx => $invoiceid)
 	{
 		echo '<PRE>';
@@ -57,13 +57,13 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$ntempl = str_replace('%N',$invoice['number'],$ntempl);
 	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
 	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
-	$layout['pagetitle'] = 'Faktura VAT nr '.$ntempl;	
+	$layout['pagetitle'] = _('Invoice No.').$ntempl;	
 	$SMARTY->assign('layout',$layout);
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');
-	$SMARTY->assign('type','ORYGINA£');
+	$SMARTY->assign('type','ORIGINAL');
 	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
-	$SMARTY->assign('type','KOPIA');
+	$SMARTY->assign('type','COPY');
 	$invoice['last'] = TRUE;
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);

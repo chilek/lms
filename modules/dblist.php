@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Bazy danych";
+$layout['pagetitle'] = _('Database backups');
 
 $dblist = $LMS->DatabaseList();
 

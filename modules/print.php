@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Wydruki";
+$layout['pagetitle'] = _('Printing');
 $SMARTY->assign('layout',$layout);
 
 $su = $DB->GetOne("SELECT min(time) FROM cash");

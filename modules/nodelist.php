@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Lista komputerów";
+$layout['pagetitle'] = _("Nodes List");
 
 $_SESSION['backto']=$_SERVER['QUERY_STRING'];
 

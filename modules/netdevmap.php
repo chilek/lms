@@ -33,6 +33,8 @@
 jak macie w³asne pomys³y, to nie modyfikujcie tego pliku a zróbcie tymczasowy
 nowy.
 
+if You know how to do this in better way, write this in other file.
+
 */
 
 function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)

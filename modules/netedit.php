@@ -49,22 +49,22 @@ if(isset($networkdata))
 	$networkdata['addresslong'] = ip_long($networkdata['address']);
 	$networkdata['mask'] = prefix2mask($networkdata['prefix']);
 	if(!check_ip($networkdata['address']))
-		$error['address'] = "Podany adres IP sieci jest nieprawid³owy!";
+		$error['address'] = _("Incorrect network IP address!");
 	else
 	{
 		if(getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix']))!=$networkdata['address'])
 		{
-			$error['address'] = "Podany adres nie jest pocz±tkowym adresem sieci,<BR> ustawiam na ".getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix']));
+			$error['address'] = _("IP address isn't a correct network address,<BR> setting on ").getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix']));
 			$networkdata['address'] = getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix']));
 		}
 		else
 		{
 			if($LMS->NetworkOverlaps($networkdata['address'],prefix2mask($networkdata['prefix']),$networkdata['id']))
-				$error['address'] = "Podana sieæ pokrywa siê z inn± sieci±!";
+				$error['address'] = _("Network overlaps with other network!");
 			else
 			{
 				if($network['assigned'] > ($networkdata['size']-2))
-					$error['address'] = "Nowa sieæ jest za ma³a!";
+					$error['address'] = _("New network is too small!");
 				else
 				{
 
@@ -85,52 +85,52 @@ if(isset($networkdata))
 	}
 
 	if($networkdata['interface'] != "" && !eregi('^[a-z0-9]+$',$networkdata['interface']))
-		$error['interface'] = "Niepoprawna nazwa interfejsu!";
+		$error['interface'] = _("Incorrect interface name!");
 
 	if($networkdata['name']=="")
-		$error['name'] = "Musisz podaæ nazwê sieci!";
+		$error['name'] = _("Network name is required!");
 	elseif(!eregi("^[.a-z0-9-]+$",$networkdata['name']))
-		$error['name'] = "Podana nazwa sieci zawiera nieprawid³owe znaki!";
+		$error['name'] = _("Network name consists forbidden characters!");
 
 	if($networkdata['domain']!="" && !eregi("^[.a-z0-9-]+$",$networkdata['domain']))
-		$error['domain'] = "Podana domena zawiera nieprawid³ow znaki";
+		$error['domain'] = _("Domain name consists forbidden characters!");
 
 	if($networkdata['dns']!="" && !check_ip($networkdata['dns']))
-		$error['dns'] = "Podany adres IP serwera DNS jest nie prawid³owy!";
+		$error['dns'] = _("Incorrect DNS server IP address!");
 
 	if($networkdata[dns2]!="" && !check_ip($networkdata[dns2]))
-		$error[dns2] = "Podany adres IP serwera DNS jest nie prawid³owy!";
+		$error[dns2] = _("Incorrect DNS server IP address!");
 
 	if($networkdata['wins']!="" && !check_ip($networkdata['wins']))
-		$error['wins'] = "Podany adres IP jest nie prawid³owy!";
+		$error['wins'] = _("Incorrect WINS IP address!");
 
 	if($networkdata['gateway']!="")
 		if(!check_ip($networkdata['gateway']))
-			$error['gateway'] = "Podany adres IP bramy jest nie prawid³owy!";
+			$error['gateway'] = _("Incorrect gateway IP address!");
 		else
 			if(!isipin($networkdata['gateway'],getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])),prefix2mask($networkdata['prefix'])))
-				$error['gateway'] = "Podany adres bramy nie pasuje do adresu sieci!";
+				$error['gateway'] = _("Gateway IP address mismatches for network address class!");
 
 	if($networkdata['dhcpstart']!="")
 		if(!check_ip($networkdata['dhcpstart']))
-			$error['dhcpstart'] = "Podany adres IP pocz±tka zakresu DHCP jest nieprawid³owy!";
+			$error['dhcpstart'] = _("Incorrect IP address for begin of DHCP range!");
 		else
 			if(!isipin($networkdata['dhcpstart'],getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])),prefix2mask($networkdata['prefix'])) && $networkdata['address']!="")
-				$error['dhcpstart'] = "Podany adres IP pocz±tka zakresu DHCP nie nale¿y do tej sieci!";
+				$error['dhcpstart'] = _("IP address for begin of DHCP range missmatches for network address class!");
 
 	if($networkdata['dhcpend']!="")
 		if(!check_ip($networkdata['dhcpend']))
-			$error['dhcpend'] = "Podany adres IP koñca zakresu DHCP jest nieprawid³owy!";
+			$error['dhcpend'] = _("Incorrect IP address for end of DHCP range!");
 		else
 			if(!isipin($networkdata['dhcpend'],getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])),prefix2mask($networkdata['prefix'])) && $networkdata['address']!="")
-				$error['dhcpend'] = "Podany adres IP koñca zakresu DHCP nie nale¿y do tej sieci!";
+				$error['dhcpend'] = _("IP address for end of DHCP range mismatches for network address class!");
 	
 	if(!$error['dhcpstart'] && !$error['dhcpend'])
 	{
 		if(($networkdata['dhcpstart']!="" && $networkdata['dhcpend']=="")||($networkdata['dhcpstart']=="" && $networkdata['dhcpend']!=""))
-			$error['dhcp'] = "Musisz podaæ obydwa zakresy IP dla DHCP!";
+			$error['dhcp'] = _("Both IP address for DHCP range are required!");
 		if($networkdata['dhcpstart']!="" && $networkdata['dhcpend']!="" && !(ip_long($networkdata['dhcpend']) > ip_long($networkdata['dhcpstart'])))
-			$error['dhcp'] = "Koniec zakresu DHCP musi byæ wiêkszy ni¿ pocz±tek!";
+			$error['dhcp'] = _("End of DHCP range must be greater than begin!");
 	}
 	
 	if(!$error)
@@ -160,7 +160,7 @@ if(isset($networkdata))
 
 $prefixlist = $LMS->GetPrefixList();
 $networks = $LMS->GetNetworks();
-$layout['pagetitle'] = "Edytowanie sieci: ".$network['name'];
+$layout['pagetitle'] = _("Edit network: ").$network['name'];
 $SMARTY->assign('unlockedit',TRUE);
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('network',$network);

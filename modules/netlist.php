@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Sieci IP";
+$layout['pagetitle'] = _("IP networks");
 
 $netlist = $LMS->GetNetworkList();
 

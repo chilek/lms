@@ -46,12 +46,12 @@ if(!$error)
 		die;
 
 	}else{
-		$layout['pagetitle'] = "Readresowanie sieci ".strtoupper($network['source']['name']);
+		$layout['pagetitle'] = _("Readdressing network ").strtoupper($network['source']['name']);
 		$SMARTY->assign('layout',$layout);
 		$SMARTY->display('header.html');
-		echo "<H1>Readresowanie sieci ".strtoupper($network['source']['name'])."</H1>";
-		echo "<p>Jeste¶ pewien ¿e chcesz przeadresowaæ sieæ ".strtoupper($network['source']['name'])." (".$network['source']['address']."/".$network['source']['prefix'].") do sieci ".strtoupper($network['dest']['name'])." (".$network['dest']['address']."/".$network['dest']['prefix'].") ?</p>";
-		echo "<a href=\"?m=netremap&id=".$_GET['id']."&mapto=".$_GET['mapto']."&is_sure=1\">Tak, jestem pewien</A>";
+		echo '<H1>'._("Readdressing network ").strtoupper($network['source']['name'])."</H1>";
+		echo "<p>"._("Are You sure, You want to readdressing network ").strtoupper($network['source']['name'])." (".$network['source']['address']."/".$network['source']['prefix'].") do sieci ".strtoupper($network['dest']['name'])." (".$network['dest']['address']."/".$network['dest']['prefix'].") ?</p>";
+		echo "<a href=\"?m=netremap&id=".$_GET['id']."&mapto=".$_GET['mapto']."&is_sure=1\">"._("Yes, I am sure.")."</A>";
 		$SMARTY->display('footer.html');
 	}
 }else{

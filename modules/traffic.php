@@ -23,7 +23,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Statystyki wykorzystania ³±cza";
+$layout['pagetitle'] = _("Interface Usage Stats");
 
 $bars = 1;
 

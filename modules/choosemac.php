@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Wybierz adres MAC";
+$layout['pagetitle'] = _('Choose MAC address');
 
 $p = $_GET['p'];
 $netid = $_POST['netid'];

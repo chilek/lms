@@ -25,15 +25,14 @@
  */
 
 $SMARTY->display('header.html');
-?><PRE><B>Upgrade bazy danych: zmiana formatu finansów:</B>
-<?
+echo '<PRE><B>'._('Database upgrade: finances format change:').'</B>';
 
 $users = $DB->GetAll('SELECT * FROM users');
 $tariffs = $DB->GetAllByKey('SELECT * FROM tariffs','id');
 foreach($users as $idx => $row)
 {
 	echo $row['lastname']." ".$row['name'].": ";
-	echo "taryfa: '".$tariffs[$row['tariff']]['name']."'... ";
+	echo _("tariff: '").$tariffs[$row['tariff']]['name']."'... ";
 	$LMS->AddAssignment(array('tariffid' => $row['tariff'], 'at' => $row['payday'], 'userid' => $row['id'], 'period' => 1, 'invoice' => 0));
 	echo "ok.\n";
 }

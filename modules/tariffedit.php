@@ -46,30 +46,30 @@ if(isset($tariff))
 		$tariff['downrate'] = 0;
 	
 	if($tariff['name'] == "")
-		$error['name'] = "Proszê podaæ nazwê taryfy!";
+		$error['name'] = _("Tariff name is required!");
 	elseif($LMS->GetTariffIDByName($tariff['name']) && $tariff['name'] != $LMS->GetTariffName($_GET['id']))
-		$error['name'] = "Istnieje ju¿ taryfa o takiej nazwie!";	
+		$error['name'] = _("Tariff name is in use!");	
 
 	if($tariff['value'] == "")
-		$error['value'] = "Proszê podaæ warto¶æ!";
+		$error['value'] = _("Tariff value is required!");
 	elseif(!(ereg("^[-]?[0-9.,]+$", $tariff['value'])))
-		$error['value'] = "Podana warto¶æ jest niepoprawna!";
+		$error['value'] = _("Incorrect tariff value!");
 	
 	if($tariff['taxvalue'] != '')
 		if(!(ereg("^[0-9.,]+$", $tariff['taxvalue'])) || $tariff['taxvalue'] < 0 || $tariff['taxvalue'] > 100)
-			$error['taxvalue'] = "Podana stawka podatku jest niepoprawna!";
+			$error['taxvalue'] = _("Incorrect tariff tax value!");
 
 	if(!(ereg("^[0-9]+$", $tariff['uprate'])))
-		$error['uprate'] = "To pole musi zawieraæ liczbê ca³kowit±";
+		$error['uprate'] = _("Uprate value must be integer!");
 	
 	if(!ereg("^[0-9]+$", $tariff['downrate']))
-		$error['downrate'] = "To pole musi zawieraæ liczbê ca³kowit±";
+		$error['downrate'] = _("Downrate value must be integer!");
 	
 	if(($tariff['uprate'] < 8 || $tariff['uprate'] > 4096) && $tariff['uprate'] != 0)
-		$error['uprate'] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
+		$error['uprate'] = _("Uprate must be in range of 8 - 4096");
 	
 	if(($tariff['downrate'] < 8 || $tariff['downrate'] > 4096) && $tariff['downrate'] != 0)
-		$error['downrate'] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
+		$error['downrate'] = _("Downrate must be in range of 8 - 4096");
 
 	$tariff['id'] = $_GET['id'];
 	if(!$error)
@@ -82,7 +82,7 @@ if(isset($tariff))
 }else
 	$tariff = $LMS->GetTariff($_GET['id']);
 	
-$layout['pagetitle'] = "Edycja taryfy: ".$tariff['name'];	
+$layout['pagetitle'] = _("Edit tariff: ").$tariff['name'];	
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('tariff',$tariff);
 $SMARTY->assign('error',$error);

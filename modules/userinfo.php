@@ -44,7 +44,7 @@ $tariffs = $LMS->GetTariffs();
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$layout['pagetitle'] = 'Informacje o u¿ytkowniku: '.$userinfo['username'];
+$layout['pagetitle'] = _('Info User: ').$userinfo['username'];
 
 $usernodes['ownerid'] = $_GET['id'];
 $SMARTY->assign('usernodes',$usernodes);

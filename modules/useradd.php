@@ -39,25 +39,25 @@ elseif(isset($useradd))
 {
 
 	if($useradd['lastname']=='')
-		$error['username']='Pola \'nazwisko/nazwa\' oraz \'imiê\' nie mog± byæ puste!';
+		$error['username']= _('Name of user is required');
 	
 	if($useradd['address']=='')
-		$error['address']='Proszê podaæ adres!';
+		$error['address']= _('Address of user is required!');
 	
 	if($useradd['nip'] !='' && !eregi('^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$',$useradd['nip']) && !eregi('^[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}$',$useradd['nip']))
-		$error['nip'] = 'Podany NIP jest b³êdny!';
+		$error['nip'] = _('Incorrect NIP identifier!');
 
 	if($useradd['pesel'] != '' && !check_pesel($useradd['pesel']))
-		$error['pesel'] = 'Podany PESEL jest b³êdny!';
+		$error['pesel'] = _('Incorrect PESEL identifier!');
 		
 	if($useradd['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$useradd['zip']))
-		$error['zip'] = 'Podany kod pocztowy jest b³êdny!';
+		$error['zip'] = _('Incorrect postal code!');
 
 	if($useradd['gguin'] == '')
-		$useradd['gguin'] = 0;  // specjalnie dla postgresa
+		$useradd['gguin'] = 0;  // for postgres
 
 	if($useradd['gguin'] !=0 && !eregi('^[0-9]{4,}$',$useradd['gguin']))
-		$error['gguin'] = 'Podany numer GG jest niepoprawny!';
+		$error['gguin'] = _('Incorrect GG identifier!');
 	
 	if(!$error)
 	{
@@ -81,7 +81,7 @@ if(!isset($useradd['city']))
 if(!isset($useradd['address']))	
 	$useradd['address'] = $LMS->CONFIG['phpui']['default_address'];
 
-$layout['pagetitle'] = 'Nowy u¿ytkownik';
+$layout['pagetitle'] = _('New user');
 
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('useradd',$useradd);

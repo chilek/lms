@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Podgl±d bazy danych";
+$layout['pagetitle'] = _('Database backup view');
 
 $database = $LMS->DatabaseFetchContent($_GET['db']);
 

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Tytu³ modu³u";
+$layout['pagetitle'] = _("Module title");
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('header.html');
 

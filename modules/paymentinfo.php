@@ -32,7 +32,7 @@ if(!$LMS->PaymentExists($_GET['id']))
 
 $payment = $LMS->GetPayment($_GET['id']);
 
-$layout['pagetitle'] = "Informacja o op³acie sta³ej: ".$payment['name'];
+$layout['pagetitle'] = _('Info payment: ').$payment['name'];
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

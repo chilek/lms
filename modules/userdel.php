@@ -24,28 +24,27 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Usuniêcie u¿ytkownika ID: ".sprintf("%04d",$_GET['id']);
+$layout['pagetitle'] = _("Delete user of ID: ").sprintf("%04d",$_GET['id']);
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('userid',$_GET['id']);
 
 if (!$LMS->UserExists($_GET['id']))
 {
-	$body = "<H1>".$layout['pagetitle']."</H1><P>Podany przez Ciebie ID jest b³êdny b±d¼ nie istnieje w bazie danych.</P>";
+	$body = "<H1>".$layout['pagetitle']."</H1><P>"._("That user's ID is incorrect or not exists.")."</P>";
 }else{
 
 	if($_GET['is_sure']!=1)
 	{
 		$body = "<H1>".$layout['pagetitle']."</H1>";
-		$body .= "<P>Czy jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika ".$LMS->GetUserName($_GET['id'])."?</P>"; 
-		$body .= "<P>Wszystkie dane u¿ytkownika zostan± utracone, a tak¿e wszystkie przypisane temu u¿ytkownikowi komputery zostan± usuniête.</P>";
-		$body .= "<P><A HREF=\"?m=userdel&id=".$_GET['id']."&is_sure=1\">Tak, jestem pewien.</A></P>";
+		$body .= "<P>"._("Are You sure, You want to delete user ").$LMS->GetUserName($_GET['id'])."?</P>"; 
+		$body .= "<P>"._("All user's data will be lost and all his nodes will be removed from database.")."</P>";
+		$body .= "<P><A HREF=\"?m=userdel&id=".$_GET['id']."&is_sure=1\">"._("Yes, I am sure.")."</A></P>";
 	}else{
 		header("Location: ?".$_SESSION['backto']);
 		$body = "<H1>".$layout['pagetitle']."</H1>";
-		$body .= "<P>U¿ytkownik ".$LMS->GetUserName($_GET['id'])." zosta³ usuniêty.</P>";
+		$body .= "<P>".sprintf(_("User %s deleted."), $LMS->GetUserName($_GET['id']))."</P>";
 		$LMS->DeleteUser($_GET['id']);
 	}
-		
 }
 
 $SMARTY->display('header.html');

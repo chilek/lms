@@ -47,35 +47,35 @@ if(isset($nodedata))
 		}
 	
 	if($nodedata['name']=="")
-		$error['name'] = "Proszê podaæ nazwê komputera!";
+		$error['name'] = _("Node name is required!");
 	elseif(strlen($nodedata['name']) > 16)
-		$error['name'] = "Podana nazwa jest za d³uga!";
+		$error['name'] = _("Node name is too long!");
 	elseif($LMS->GetNodeIDByName($nodedata['name']))
-		$error['name'] = "Podana nazwa jest u¿ywana!";
+		$error['name'] = _("Node name is in use!");
 	elseif(!eregi("^[_a-z0-9-]+$",$nodedata['name']))
-		$error['name'] = "Podana nazwa zawiera niepoprawne znaki!";		
+		$error['name'] = _("Node name consists forbidden characters!");		
 
 	if(!$nodedata['ipaddr'])
-		$error['ipaddr'] = "Proszê podac adres IP!";
+		$error['ipaddr'] = _("IP address is required!");
 	elseif(!check_ip($nodedata['ipaddr']))
-		$error['ipaddr'] = "Podany adres IP jest niepoprawny!";
+		$error['ipaddr'] = _("Incorrect IP address!");
 	elseif(!$LMS->IsIPValid($nodedata['ipaddr']))
-		$error['ipaddr'] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
+		$error['ipaddr'] = _("IP address not belongs to any network!");
 	elseif(!$LMS->IsIPFree($nodedata['ipaddr']))
-		$error['ipaddr'] = "Podany adres IP jest zajêty!";
+		$error['ipaddr'] = _("IP address is in use!");
 
 	if(!$nodedata['mac'])
-		$error['mac'] = "Proszê podac adres MAC!";
+		$error['mac'] = _("MAC address is required!");
 	elseif($LMS->GetNodeIDByMAC($nodedata['mac']) && $LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE)
-		$error['mac'] = "Podany MAC jest ju¿ w bazie!";
+		$error['mac'] = _("MAC address is in use yet!");
 	elseif(!check_mac($nodedata['mac']))
-		$error['mac'] = "Podany adres MAC jest nieprawid³owy!";
+		$error['mac'] = _("Incorrect MAC address!");
 
 	if(! $LMS->UserExists($nodedata['ownerid']))
-		$error['user'] = "Proszê wybraæ u¿ytkownika!";
+		$error['user'] = _("Choose a owner for that node!");
 
 	if($LMS->GetUserStatus($nodedata['ownerid']) != 3 || $LMS->UserExists($nodedata['ownerid']) != TRUE)
-		$error['user'] = "Wybrany u¿ytkownik ".$nodedata['ownerid']." jest b³êdny!";
+		$error['user'] = sprintf(_("Incorrect chosen user %s!"), $nodedata['ownerid']);
 
 	if(!$error)
 	{
@@ -115,7 +115,7 @@ if(isset($_GET['prename'])&&$nodedata['name']=="")
 	$nodedata['name'] = $_GET['prename'];
 		
 
-$layout['pagetitle'] = "Nowy komputer";
+$layout['pagetitle'] = _("New Node");
 
 $tariffs = $LMS->GetTariffs();
 $balancelist = $LMS->GetUserBalanceList($nodedata['ownerid']);

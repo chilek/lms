@@ -33,17 +33,17 @@ if($from) {
 	$unixfrom = mktime(0,0,0,$month,$day,$year);
 } else { 
 	$from = date("Y/m/d",time());
-	$unixfrom = mktime(0,0,0); //pocz±tek dnia dzisiejszego
+	$unixfrom = mktime(0,0,0); //start of today's day
 }
 if($to) {
 	list($year, $month, $day) = split('/',$to);
 	$unixto = mktime(23,59,59,$month,$day,$year);
 } else { 
 	$to = date("Y/m/d",time());
-	$unixto = mktime(23,59,59); //koniec dnia dzisiejszego
+	$unixto = mktime(23,59,59); //end of today's day
 }
 
-$layout['pagetitle'] = 'Rejestr sprzeda¿y za okres '.$from.' - '.$to;
+$layout['pagetitle'] = _('Sale register for period '.$from.' - '.$to;
 
 $invoicelist = $LMS->InvoicesReport($unixfrom, $unixto);
 

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Lista faktur';
+$layout['pagetitle'] = _('Invoices List');
 
 $marks = $_POST['marks'];
 unset($marked);

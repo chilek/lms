@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Wyszukiwanie komputerów";
+$layout['pagetitle'] = _("Nodes Search");
 $SMARTY->assign('layout',$layout);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];

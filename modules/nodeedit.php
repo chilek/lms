@@ -46,7 +46,7 @@ if(!isset($_GET['ownerid']))
 							
 $owner = $ownerid;
 $userinfo=$LMS->GetUser($owner);
-$layout['pagetitle'] = "Informacje o u¿ytkowniku: ".$userinfo['username']." - edycja komputera: ".$LMS->GetNodeName($_GET['id']);
+$layout['pagetitle'] = sprintf(_("Info user: %s - Edit node: %s"),$userinfo['username'], $LMS->GetNodeName($_GET['id']));
 
 $nodeedit = $_POST['nodeedit'];
 $usernodes = $LMS->GetUserNodes($owner);
@@ -72,17 +72,17 @@ if(isset($nodeedit))
 		{
 			if(!$LMS->IsIPFree($nodeedit['ipaddr'])&&$LMS->GetNodeIPByID($nodeedit['id'])!=$nodeedit['ipaddr'])
 			{
-				$error['ipaddr'] = "Podany adres IP jest zajêty!";
+				$error['ipaddr'] = _("IP address is in use!");
 			}
 		}
 		else
 		{
-			$error['ipaddr'] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
+			$error['ipaddr'] = _("IP address mismatches for any network!");
 		}
 	}
 	else
 	{
-		$error['ipaddr'] = "Podany adres IP jest niepoprawny!";
+		$error['ipaddr'] = _("Incorrect IP address!");
 	}
 
 	if(check_mac($nodeedit['mac']))
@@ -93,20 +93,20 @@ if(isset($nodeedit))
 				$LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE
 		)
 		{
-			$error['mac'] = "Podany adres MAC jest ju¿ przypisany do innego komputera!";
+			$error['mac'] = _("MAC address is in use!");
 		}
 	}
 	else
 	{
-		$error['mac'] = "Podany adres MAC jest b³êdny!";
+		$error['mac'] = _("Incorrect MAC address!");
 	}
 
 	if($nodeedit['name']=="")
-		$error['name'] = "Podaj nazwê!";
+		$error['name'] = _("Node name is required!");
 	elseif($LMS->GetNodeIDByName($nodeedit['name']) && $LMS->GetNodeIDByNAME($nodeedit['name']) != $nodeedit['id'])
-		$error['name'] = "Ta nazwa jest zajêta!";
+		$error['name'] = _("Name is in use!");
 	elseif(!eregi("^[_a-z0-9-]+$",$nodeedit['name']))
-		$error['name'] = "Podana nazwa zawiera niepoprawne znaki!";
+		$error['name'] = _("Name consists forbidden characters!");
 
 	if($nodeedit['access']!=1)
 		$nodeedit['access'] = 0;
@@ -115,7 +115,7 @@ if(isset($nodeedit))
 	{
 		$netdev = $LMS->GetNetDev($nodeedit['netdev']); 
 		if($netdev['ports'] <= $netdev['takenports'])
-		    $error['netdev'] = "Brak wolnych portów w wybranym urz±dzeniu!";
+		    $error['netdev'] = _("Not enough ports in chosen device!";
 		$nodeinfo['netdev'] = $nodeedit['netdev'];
 	}
 	

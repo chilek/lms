@@ -70,7 +70,7 @@ unset($netdevices['total']);
 unset($netdevices['order']);
 unset($netdevices['direction']);
 
-$layout['pagetitle'] = "Informacje o komputerze: ".$nodeinfo['name'];
+$layout['pagetitle'] = _("Info node: ").$nodeinfo['name'];
 
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);

@@ -30,7 +30,7 @@ if(!$LMS->UserExists($_GET['id']))
 $username=$LMS->GetUserName($_GET['id']);
 $id = $_GET['id'];
 
-$layout['pagetitle'] = 'Rachunek u¿ytkownika: <A HREF="?m=userinfo&id='.$_GET['id'].'">'.$username.'</A>';
+$layout['pagetitle'] = _('Account of user: ').'<A HREF="?m=userinfo&id='.$_GET['id'].'">'.$username.'</A>';
 
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($_GET['id']));
 $SMARTY->assign('layout',$layout);

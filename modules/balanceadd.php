@@ -38,7 +38,7 @@ if($addbalance['time']) {
 	list($date,$time) = split(' ',$addbalance['time']);
 	$date = explode('/',$date);
 	$time = explode(':',$time);
-	if(checkdate($date[1],$date[2],$date[0])) //je¶li z³a data, zapisujemy pod dzisiejsz±
+	if(checkdate($date[1],$date[2],$date[0])) //if date is bad, get today's date
 		$addbalance['time'] = mktime($time[0],$time[1],0,$date[1],$date[2],$date[0]);
 	else
 		unset($addbalance['time']);

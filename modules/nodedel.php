@@ -24,21 +24,21 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Usuniêcie komputera ".$LMS->GetNodeName($_GET['id']);
+$layout['pagetitle'] = _("Delete Node ").$LMS->GetNodeName($_GET['id']);
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('nodeid',$_GET['id']);
 
 if (!$LMS->NodeExists($_GET['id']))
 {
-	$body = "<H1>".$layout['pagetitle']."</H1><P>Podany przez Ciebie ID jest b³êdny b±d¼ nie istnieje w bazie danych.</P>";
+	$body = "<H1>".$layout['pagetitle']."</H1><P>"._("Entered ID is incorrect or not exists.")."</P>";
 }else{
 
 	if($_GET['is_sure']!=1)
 	{
 		$body = "<H1>".$layout['pagetitle']."</H1>";
-		$body .= "<P>Czy jeste¶ pewien ¿e chcesz usun±æ komputer ".$LMS->GetNodeName($_GET['id'])."?</P>"; 
-		$body .= "<P><A HREF=\"?m=nodedel&id=".$_GET['id']."&is_sure=1\">Tak, jestem pewien.</A></P>";
-		$body .= "<P><A HREF=\"?".$_SESSION['backto']."\">Nie, rozmy¶li³em siê.</A></P>";
+		$body .= "<P>".sprintf(_("Are You sure, You want to delete node %s?"),$LMS->GetNodeName($_GET['id']))."</P>"; 
+		$body .= "<P><A HREF=\"?m=nodedel&id=".$_GET['id']."&is_sure=1\">"._("Yes, I am sure.")."</A></P>";
+		$body .= "<P><A HREF=\"?".$_SESSION['backto']."\">".("No, I've change opinion.")."</A></P>";
 	}else{
 		$owner = $LMS->GetNodeOwner($_GET['id']);
 		$LMS->DeleteNode($_GET['id']);
@@ -47,7 +47,7 @@ if (!$LMS->NodeExists($_GET['id']))
 		else
 			header("Location: ?m=userinfo&id=".$owner);
 		$body = "<H1>".$layout['pagetitle']."</H1>";
-		$body .= "<P>Komputer ".$LMS->GetNodeName($_GET['id'])." zosta³ usuniêty.</P>";
+		$body .= "<P>".sprintf(_("Node %s was deleted"),$LMS->GetNodeName($_GET['id']))."</P>";
 	}
 		
 }

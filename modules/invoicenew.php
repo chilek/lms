@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Nowa faktura';
+$layout['pagetitle'] = _('New Invoice');
 $users = $LMS->GetUserNames();
 $tariffs = $LMS->GetTariffs();
 $contents = $_SESSION['invoicecontents'];
@@ -49,7 +49,7 @@ switch($_GET['action'])
 			if($taxvalue == '')
 				$taxvalue = 0;
 			if($taxvalue < 0 || $taxvalue > 100)
-				$error['taxvalue'] = 'Niepoprawna wysoko¶æ podatku!';
+				$error['taxvalue'] = _('Incorrect tax value!');
 			if($itemdata['valuenetto'] != 0)
 				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($itemdata['taxvalue'] / 100 + 1),2);
 			elseif($itemdata['valuebrutto'] != 0)
@@ -97,7 +97,7 @@ switch($_GET['action'])
 if($invoice['paytime'] < 0)
 	$invoice['paytime'] = 14;
 if($invoice['paytype'] == '')
-	$invoice['paytype'] = 'GOTÓWKA';
+	$invoice['paytype'] = 'Cash';
 
 $_SESSION['invoice'] = $invoice;
 $_SESSION['invoicecontents'] = $contents;

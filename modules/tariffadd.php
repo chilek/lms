@@ -40,31 +40,31 @@ if(isset($tariffadd))
 	$tariffadd['value'] = str_replace(",",".",$tariffadd['value']);
 
 	if(!(ereg("^[-]?[0-9.,]+$",$tariffadd['value'])))
-		$error['value'] = "Podana warto¶æ taryfy jest niepoprawna!";
+		$error['value'] = _('Incorrect tariff value!');
 
 	if($tariffadd['taxvalue'] != '')
 		if(!(ereg("^[0-9.,]+$",$tariffadd['taxvalue'])) || $tariffadd['taxvalue'] < 0 || $tariffadd['taxvalue'] > 100)
-			$error['taxvalue'] = "Podana stawka podatku jest niepoprawna!";
+			$error['taxvalue'] = _('Incorrect tariff tax value!');
 
 	if(!(ereg("^[0-9]+$", $tariffadd['uprate'])) && $tariffadd['uprate'] != "")
-		$error['uprate'] = "Pole uprate musi zawieraæ liczbê ca³kowit±";
+		$error['uprate'] = _("Uprate value must be integer");
 	if($tariffadd['uprate']=="") $tariffadd['uprate']=0;
 		
 	if(!ereg("^[0-9]+$", $tariffadd['downrate']) && $tariffadd['downrate'] != "")
-		$error['downrate'] = "Pole downrate zawieraæ liczbê ca³kowit±";
+		$error['downrate'] = _("Downrate value must be integer");
 	if($tariffadd['downrate']=="") $tariffadd['downrate']=0;
 	
 	if(($tariffadd['uprate'] < 8 || $tariffadd['uprate'] > 4096) && $tariffadd['uprate'] != "")
-		$error['uprate'] = "Pole uprate musi zawieraæ liczbê z przedzia³u 8 - 4096";
+		$error['uprate'] = _("Uprate must be in range of 8 - 4096");
 
 	if(($tariffadd['downrate'] < 8 || $tariffadd['downrate'] > 4096) && $tariffadd['downrate'] != "")
-		$error['downrate'] = "Pole downrate musi zawieraæ liczbê z przedzia³u 8 - 4096";
+		$error['downrate'] = _("Downrate must be in range of 8 - 4096");
 	
 	if($tariffadd['name'] == "")
-		$error['name'] = "Musisz podaæ nazwê taryfy!";
+		$error['name'] = _("Tariff name is required!");
 	else
 		if($LMS->GetTariffIDByName($tariffadd['name']))
-			$error['name'] = "Istnieje ju¿ taryfa o nazwie '".$tariffadd['name']."'!";
+			$error['name'] = sprintf(_("Tariff name '%s' exists!"), $tariffadd['name']);
 
 	if(!$error){
 		header("Location: ?m=tarifflist&id=".$LMS->TariffAdd($tariffadd));
@@ -73,7 +73,7 @@ if(isset($tariffadd))
 	
 }
 
-$layout['pagetitle'] = "Nowa taryfa";
+$layout['pagetitle'] = _("New tariff");
 
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('error',$error);

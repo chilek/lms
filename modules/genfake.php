@@ -1479,7 +1479,7 @@ echo '<H1>Generowanie danych losowych</H1>';
 	
 if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 {
-	echo '<B>Czyszczê bazê danych...</B><BR>';
+	echo '<B>._('Database cleaning...').'</B><BR>';
 	$DB->Execute('DELETE FROM nodes');
 	$DB->Execute('DELETE FROM users');
 	$DB->Execute('DELETE FROM cash');
@@ -1502,7 +1502,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$DB->Execute("DROP SEQUENCE \"netlinks_id_seq\";   CREATE SEQUENCE \"netlinks_id_seq\"");
 	}
 
-	echo '<B>Generuje taryfy...</B><BR>';
+	echo '<B>'._('Create tariffs...').'</B><BR>';
 	$tariffdata = array( name => 'Lite', description => 'Taryfa Lite', value => '30', taxvalue => '7', uprate => '64', downrate => '128');
 	$LMS->TariffAdd($tariffdata);
 	$tariffdata = array( name => 'Standard', description => 'Taryfa Standard', value => '60', taxvalue => '7', uprate => '128', downrate => '256');
@@ -1510,7 +1510,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 	$tariffdata = array( name => 'Gold', description => 'Taryfa Gold', value => '120', taxvalue => '7', uprate => '256', downrate => '512');
 	$LMS->TariffAdd($tariffdata);
 
-	echo '<B>Generuje op³aty sta³e...</B><BR>';
+	echo '<B>'._('Create payments...').'</B><BR>';
 	$paymentdata = array( name => 'DSL-512', description => 'Abonament za ³±cze', value => '200', creditor => 'Internet Super Provider S.A.', period => '1', at => '10');
 	$LMS->PaymentAdd($paymentdata);
 	$paymentdata = array( name => 'Serwerownia', description => 'Wynajem lokalu', value => '300', creditor => 'Spó³dzielnia Mieszkaniowa "WIDOK"', period => '1', at => '20');
@@ -1518,11 +1518,11 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 	$paymentdata = array( name => 'Domena', description => 'Op³ata za domenê "nasza.net"', value => '150', creditor => 'NASK', period => '3', at => '31');
 	$LMS->PaymentAdd($paymentdata);
 	
-	echo '<B>Generuje sieæ...</B><BR>';
+	echo '<B>'._('Create networks...').'</B><BR>';
 	$netdata = array( name => 'LAN1', address => '192.168.0.0', prefix => '22', gateway => '192.168.0.1', dns => '192.168.0.1', dns2 => '192.168.3.254', domain => 'ultralan.net.pl', wins => '192.168.0.2', dhcpstart => '192.168.3.230', dhcpend => '192.168.3.253');
 	$LMS->NetworkAdd($netdata);
 
-	echo '<B>Generuje u¿ytkowników...</B><BR>';	
+	echo '<B>'._('Create users accounts...').'</B><BR>';	
 	$startip = ip_long('192.168.0.0');
 	$cnt = 0;
 	$lnsize = sizeof($lastnames);
@@ -1563,8 +1563,8 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$startip ++;
 	}
 	
-	echo '<B>Generuje osprzêt i po³±czenia sieciowe...</B><BR>';	
-	$nodes = $DB->GetOne("SELECT count(id) FROM nodes");
+	echo '<B>'._('Create network devices and links...').'</B><BR>';	
+	$nodes = $DB->GetOne('SELECT count(id) FROM nodes');
 	$sprod = sizeof($producer);
 	$i = 0;
 	while($nodes)

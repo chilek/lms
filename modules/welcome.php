@@ -29,7 +29,7 @@ require_once($_LIB_DIR."/fortunes.php");
 
 $SI = new Sysinfo;
 
-$layout['pagetitle'] = "LAN Management System";
+$layout['pagetitle'] = _('LAN Management System');
 
 $layout['dbversion'] = $LMS->DB->GetDBVersion();
 $layout['dbtype'] = $LMS->CONFIG['database']['type'];
