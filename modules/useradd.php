@@ -69,11 +69,14 @@ elseif(isset($useradd))
 		$useradd = $reuse;
 		$useradd[reuse] = "1";
 	}
-}else{
-	$useradd[zip] = $_CONFIG[phpui][default_zip];
-	$useradd[city] = $_CONFIG[phpui][default_city];
-	$useradd[address] = $_CONFIG[phpui][default_address];
 }
+
+if(!isset($useradd[zip]))	
+	$useradd[zip] = $_CONFIG[phpui][default_zip];
+if(!isset($useradd[city]))	
+	$useradd[city] = $_CONFIG[phpui][default_city];
+if(!isset($useradd[address]))	
+	$useradd[address] = $_CONFIG[phpui][default_address];
 
 $layout[pagetitle]="Nowy u¿ytkownik";
 
@@ -84,6 +87,9 @@ $SMARTY->display("useradd.html");
 
 /*
  * $Log$
+ * Revision 1.39  2003/11/22 17:32:12  alec
+ * poprawka http://lists.rulez.pl/lms/1482.html
+ *
  * Revision 1.38  2003/11/22 17:11:58  alec
  * po co tu GetTariffs?
  *
