@@ -38,6 +38,13 @@ if($id && !ConfigOptionExists($id))
 	die;
 }
 
+if($_GET['statuschange'])
+{
+	$LMS->DB->Execute('UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?',array($id));
+	header('Location: ?m=configlist');
+	die;
+}
+
 $config = $LMS->DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
 $option = $config['var'];
 
