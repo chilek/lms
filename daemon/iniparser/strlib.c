@@ -193,23 +193,24 @@ char * strstrip(char * s)
 }
 
 /* ----------------------------------------------------------
-* Added function for parse special chars in ini values
+* Added function for parse special char sequences in ini values
 * 
 * LMS Developers : www.lms.rulez.pl 
 * Author Aleksander Machniak : amachniak@go2.pl	
 * -----------------------------------------------------------*/
-unsigned char *parse(unsigned char *string)
+unsigned char * parse(unsigned char *string)
 {
     unsigned char *out;
     unsigned char c,d,e;
-    int i,k;
+    int i, k, n;
 
-    out = (char*) malloc(strlen(string)); // in the worst case we'll need so much 
+    n = strlen(string);
+    out = (char *) malloc(n+1); // in the worst case we'll need so much 
     k = 0; 
-    for(i=0; string[i]!=0; i++) { // foreach character in string 
-    
+    for(i=0; i<n; i++) { // foreach character in string 
+
 	if(string[i]=='\\') { // is it '\' ? 
-	
+
 	    c=string[i+1]; // get next character
 	    if(!c) continue; // if it's end of string, forget that 
 	    if(c=='n') {
@@ -221,28 +222,28 @@ unsigned char *parse(unsigned char *string)
 		continue;
 	    }
 	    if(c=='x') { // x - means hexadecimal code of character 
-	        if((d=string[i+2])) // get first hex digit 
-	        {
-	    	    if((e=string[i+3])) // get second hex digit 
-		    {
+	        
+		if( (d=string[i+2]) ) { // get first hex digit 
+	        
+	    	    if( (e=string[i+3]) ) { // get second hex digit 
+		    
 		        if(d>='a' && d<='f') d=d-'a'+10; else d-='0';
 		        if(e>='a' && e<='f') e=e-'a'+10; else e-='0';
-		        out[k++]=d << 4 | e; // calculate character code and write into final string 
-			i+=3; // x<hex_digit><hex_digit> 
+		        out[k++] = d << 4 | e; // calculate character code and write into final string 
+			i += 3; // x<hex_digit><hex_digit> 
 			continue; 
 		    }
 		}
 	    }
-	    out[k++]=c; i++; // just an escaped character
+	    out[k++] = c; i++; // just an escaped character
 	}
 	else
 	{
-	    if(string[i]=='\0') break; // we reached end of string
-	    out[k++]=string[i]; // add that end marker to final string
+	    out[k++] = string[i]; // add that end marker to final string
 	}
     }
     out[k]=0;
-    return(out);
+    return out;
 }
 
 #ifdef TEST
