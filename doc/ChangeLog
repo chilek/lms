@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.5.2 (??/??/????):
+wersja 1.5.2 Isis (25/11/2004):
 
   - experymentalny driver do MS SQL Servera (alec)
   - poprawne tworzenie shared-network w lms-makedhcpconf (alec)
@@ -29,7 +29,6 @@ wersja 1.5.2 (??/??/????):
   - contrib/daemon/cbq-init: dodatkowy modu³ demona (alec)
   - dodane sprawdzenie czy zaznaczono u¿ytkowników przy dodawaniu nowej
     operacji (alec)
-  - pocz±tki modu³u do zarz±dzania kontami (lexx)
   - poprawki w genfake (lexx)
   - almsd/cutoff: dodana opcja 'warnings_only' umo¿liwiaj±ca wykorzystanie
     tego modu³u wy³±cznie do w³±czania ostrze¿eñ, gruntowna przebudowa (alec)
@@ -45,6 +44,8 @@ wersja 1.5.2 (??/??/????):
   - przebudowana struktura menu: Administratorzy, Bazy danych, Witamy!
     zebrane w jednym 'Administracja' (alec)
   - poprawki formularzy u³atwiaj±ce szybsz± obs³ugê bez u¿ycia myszy (alec)
+  - Konta (lexx/alec)
+  - contrib/daemon/shaper (M.Adamski)
 
 wersja 1.5.1 Eamon (25/10/2004):
 
