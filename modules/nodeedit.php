@@ -140,6 +140,8 @@ $users = $LMS->GetUserNames();
 $tariffs = $LMS->GetTariffs();
 $assignments = $LMS->GetUserAssignments($ownerid);
 $balancelist = $LMS->GetUserBalanceList($owner);
+$usergroups = $LMS->UsergroupGetForUser($ownerid);
+$otherusergroups = $LMS->GetGroupNamesWithoutUser($ownerid);
 
 $nodeinfo['netdev'] = $LMS->GetNetDev($nodeinfo['netdev']);
 $netdevices = $LMS->GetNetDevList();
@@ -150,6 +152,8 @@ unset($netdevices['order']);
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('assignments',$assignments);
+$SMARTY->assign('usergroups',$usergroups);
+$SMARTY->assign('otherusergroups',$otherusergroups);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('userinfo',$userinfo);
