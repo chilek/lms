@@ -698,7 +698,7 @@ class LMS
 
 		// wrapper do starego formatu
 
-		if($tslist = $this->ADB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash WHERE userid=?",array($id)))
+		if($tslist = $this->ADB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash WHERE userid=? ORDER BY time",array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
