@@ -69,7 +69,7 @@
 		do katalogu <filename>modules</filename>, a pliki <filename>sql.html, sqlprint.html, 
 		adminheader.html</filename> do katalogu <filename>templates</filename>.
 		Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu 
-		<emphasis>Administratorzy->SQL.</emphasis></para>
+		<emphasis>Administracja->SQL.</emphasis></para>
 		</sect2>
 	</sect1>
 	<sect1 id="contrib-squid-warn">
