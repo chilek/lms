@@ -1278,7 +1278,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
 			$item['count'] = str_replace(',','.',$item['count']);
 			if ($item['taxvalue'] == 'zw.')
-				$item['taxvalue'] == '';
+				$item['taxvalue'] = '';
 			else
 				$item['taxvalue'] = str_replace(',','.',$item['taxvalue']);
 			
@@ -1446,7 +1446,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function TariffAdd($tariffdata)
 	{
 		$this->SetTS("tariffs");
-		if($tariffdata['taxvalue']=='')
+		if($tariffdata['taxvalue'] == '')
 			$result = $this->DB->Execute("INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate)
 				VALUES (?, ?, ?, NULL, ?, ?, ?)",
 				array(
@@ -1480,7 +1480,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function TariffUpdate($tariff)
 	{
 		$this->SetTS("tariffs");
-		if ($tariff['taxvalue'])
+		if ($tariff['taxvalue'] == '')
 			return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, pkwiu=?, uprate=?, downrate=? WHERE id=?", array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
 		else
 			return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=NULL, pkwiu=?, uprate=?, downrate=? WHERE id=?", array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
