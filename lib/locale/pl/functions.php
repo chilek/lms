@@ -37,7 +37,7 @@ function uptimef($ts)
 	{
 		$result = $days;
 		if($days==1)
-			$result .= ' dzieñ ';
+			$result .= ' dzieÅ„ ';
 		else
 			$result .= ' dni ';
 	}
@@ -137,7 +137,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 		$replacements[2] = "dwa ";
 	        $replacements[3] = "trz ";
     		$replacements[4] = "czt ";
-    	        $replacements[5] = "piê ";
+    	        $replacements[5] = "piÄ™ ";
 	        $replacements[6] = "sze ";
 	        $replacements[7] = "sie ";
     		$replacements[8] = "osi ";
@@ -149,51 +149,51 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 	$ret = '';
 	$_sep = ' ';
 	$_minus = 'minus';
-	$_digits = array(0 => 'zero', 'jeden', 'dwa', 'trzy', 'cztery', 'piêæ', 'sze¶æ', 'siedem', 'osiem', 'dziewiêæ');		
+	$_digits = array(0 => 'zero', 'jeden', 'dwa', 'trzy', 'cztery', 'piÄ™Ä‡', 'szeÅ›Ä‡', 'siedem', 'osiem', 'dziewiÄ™Ä‡');		
 	$_exponent = array(
 			0 => array('','',''),
-			3 => array('tysi±c','tysi±ce','tysiêcy'),
-			6 => array('milion','miliony','milionów'),
-			9 => array('miliard','miliardy','miliardów'),
-			12 => array('bilion','biliony','bilionów'),
-			15 => array('biliard','biliardy','biliardów'),
-			18 => array('trylion','tryliony','trylionów'),
-			21 => array('tryliard','tryliardy','tryliardów'),
-			24 => array('kwadrylion','kwadryliony','kwadrylionów'),
-			27 => array('kwadryliard','kwadryliardy','kwadryliardów'),
-			30 => array('kwintylion','kwintyliony','kwintylionów'),
-			33 => array('kwintyliiard','kwintyliardy','kwintyliardów'),
-			36 => array('sekstylion','sekstyliony','sekstylionów'),
-			39 => array('sekstyliard','sekstyliardy','sekstyliardów'),
-			42 => array('septylion','septyliony','septylionów'),
-			45 => array('septyliard','septyliardy','septyliardów'),
-			48 => array('oktylion','oktyliony','oktylionów'),
-			51 => array('oktyliard','oktyliardy','oktyliardów'),
-			54 => array('nonylion','nonyliony','nonylionów'),
-			57 => array('nonyliard','nonyliardy','nonyliardów'),
-			60 => array('decylion','decyliony','decylionów'),
-			63 => array('decyliard','decyliardy','decyliardów'),
-			100 => array('centylion','centyliony','centylionów'),
-			103 => array('centyliard','centyliardy','centyliardów'),
+			3 => array('tysiÄ…c','tysiÄ…ce','tysiÄ™cy'),
+			6 => array('milion','miliony','milionÃ³w'),
+			9 => array('miliard','miliardy','miliardÃ³w'),
+			12 => array('bilion','biliony','bilionÃ³w'),
+			15 => array('biliard','biliardy','biliardÃ³w'),
+			18 => array('trylion','tryliony','trylionÃ³w'),
+			21 => array('tryliard','tryliardy','tryliardÃ³w'),
+			24 => array('kwadrylion','kwadryliony','kwadrylionÃ³w'),
+			27 => array('kwadryliard','kwadryliardy','kwadryliardÃ³w'),
+			30 => array('kwintylion','kwintyliony','kwintylionÃ³w'),
+			33 => array('kwintyliiard','kwintyliardy','kwintyliardÃ³w'),
+			36 => array('sekstylion','sekstyliony','sekstylionÃ³w'),
+			39 => array('sekstyliard','sekstyliardy','sekstyliardÃ³w'),
+			42 => array('septylion','septyliony','septylionÃ³w'),
+			45 => array('septyliard','septyliardy','septyliardÃ³w'),
+			48 => array('oktylion','oktyliony','oktylionÃ³w'),
+			51 => array('oktyliard','oktyliardy','oktyliardÃ³w'),
+			54 => array('nonylion','nonyliony','nonylionÃ³w'),
+			57 => array('nonyliard','nonyliardy','nonyliardÃ³w'),
+			60 => array('decylion','decyliony','decylionÃ³w'),
+			63 => array('decyliard','decyliardy','decyliardÃ³w'),
+			100 => array('centylion','centyliony','centylionÃ³w'),
+			103 => array('centyliard','centyliardy','centyliardÃ³w'),
 			120 => array('wicylion','wicylion','wicylion'),
-			123 => array('wicyliard','wicyliardy','wicyliardów'),
+			123 => array('wicyliard','wicyliardy','wicyliardÃ³w'),
 			180 => array('trycylion','trycylion','trycylion'),
-			183 => array('trycyliard','trycyliardy','trycyliardów'),
+			183 => array('trycyliard','trycyliardy','trycyliardÃ³w'),
 			240 => array('kwadragilion','kwadragilion','kwadragilion'),
-			243 => array('kwadragiliard','kwadragiliardy','kwadragiliardów'),
+			243 => array('kwadragiliard','kwadragiliardy','kwadragiliardÃ³w'),
 			300 => array('kwinkwagilion','kwinkwagilion','kwinkwagilion'),
-			303 => array('kwinkwagiliard','kwinkwagiliardy','kwinkwagiliardów'),
+			303 => array('kwinkwagiliard','kwinkwagiliardy','kwinkwagiliardÃ³w'),
 			360 => array('seskwilion','seskwilion','seskwilion'),
-			363 => array('seskwiliard','seskwiliardy','seskwiliardów'),
+			363 => array('seskwiliard','seskwiliardy','seskwiliardÃ³w'),
 			420 => array('septagilion','septagilion','septagilion'),
-			423 => array('septagiliard','septagiliardy','septagiliardów'),
+			423 => array('septagiliard','septagiliardy','septagiliardÃ³w'),
 			480 => array('oktogilion','oktogilion','oktogilion'),
-			483 => array('oktogiliard','oktogiliardy','oktogiliardów'),
+			483 => array('oktogiliard','oktogiliardy','oktogiliardÃ³w'),
 			540 => array('nonagilion','nonagilion','nonagilion'),
-			543 => array('nonagiliard','nonagiliardy','nonagiliardów'),
-			600 => array('centylion','centyliony','centylionów'),
-			603 => array('centyliard','centyliardy','centyliardów'),
-			6000018 => array('milinilitrylion','milinilitryliony','milinilitrylionów')
+			543 => array('nonagiliard','nonagiliardy','nonagiliardÃ³w'),
+			600 => array('centylion','centyliony','centylionÃ³w'),
+			603 => array('centyliard','centyliardy','centyliardÃ³w'),
+			6000018 => array('milinilitrylion','milinilitryliony','milinilitrylionÃ³w')
 	);
 
 	if (substr($num, 0, 1) == '-')
@@ -262,7 +262,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 	switch ($h)
 	{
 		case 9:
-			$ret .= $_sep . 'dziewiêæset';
+			$ret .= $_sep . 'dziewiÄ™Ä‡set';
 			break;
 
 		case 8:
@@ -274,11 +274,11 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 			break;
 
 		case 6:
-			$ret .= $_sep . 'sze¶æset';
+			$ret .= $_sep . 'szeÅ›Ä‡set';
 			break;
 
 		case 5:
-			$ret .= $_sep . 'piêæset';
+			$ret .= $_sep . 'piÄ™Ä‡set';
 			break;
 
 		case 4:
@@ -290,7 +290,7 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 			break;
 
 		case 2:
-			$ret .= $_sep . 'dwie¶cie';
+			$ret .= $_sep . 'dwieÅ›cie';
 			break;
 
 		case 1:
@@ -305,53 +305,53 @@ function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 		case 7:
 		case 6:
 		case 5:
-			$ret .= $_sep . $_digits[$t] . 'dziesi±t';
+			$ret .= $_sep . $_digits[$t] . 'dziesiÄ…t';
 			break;
 
 		case 4:
-			$ret .= $_sep . 'czterdzie¶ci';
+			$ret .= $_sep . 'czterdzieÅ›ci';
 			break;
 
 		case 3:
-			$ret .= $_sep . 'trzydzie¶ci';
+			$ret .= $_sep . 'trzydzieÅ›ci';
 			break;
 
 		case 2:
-			$ret .= $_sep . 'dwadzie¶cia';
+			$ret .= $_sep . 'dwadzieÅ›cia';
 			break;
 
 		case 1:
 			switch ($d)
 			{
 				case 0:
-					$ret .= $_sep . 'dziesiêæ';
+					$ret .= $_sep . 'dziesiÄ™Ä‡';
 					break;
 
 				case 1:
-					$ret .= $_sep . 'jedena¶cie';
+					$ret .= $_sep . 'jedenaÅ›cie';
 					break;
 
 				case 2:
 				case 3:
 				case 7:
 				case 8:
-					$ret .= $_sep . $_digits[$d] . 'na¶cie';
+					$ret .= $_sep . $_digits[$d] . 'naÅ›cie';
 					break;
 
 				case 4:
-					$ret .= $_sep . 'czterna¶cie';
+					$ret .= $_sep . 'czternaÅ›cie';
 					break;
 
 				case 5:
-					$ret .= $_sep . 'piêtna¶cie';
+					$ret .= $_sep . 'piÄ™tnaÅ›cie';
 					break;
 
 				case 6:
-					$ret .= $_sep . 'szesna¶cie';
+					$ret .= $_sep . 'szesnaÅ›cie';
 					break;
 
 				case 9:
-					$ret .= $_sep . 'dziewiêtna¶cie';
+					$ret .= $_sep . 'dziewiÄ™tnaÅ›cie';
 					break;
 			}
 			break;
