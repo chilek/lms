@@ -1,4 +1,4 @@
-  <chapter>
+  <chapter id="instalacja">
     <title>Na pocz±tek</title>
     <sect1>
       <title>Czym jest LMS</title>
@@ -42,8 +42,8 @@
 	<para>LMS Nie zast±pi Ci umiejêtno¶ci jakie powinien mieæ administrator. Je¶li nie potrafisz wykonaæ tak prostych czynno¶æ jak instalacja czy konfiguracja, prawdopodobnie nie bêdziesz umia³ dostroiæ LMS do swojego systemu. Tak wiêc bez znajomo¶ci systemów U*IX siê nie obejdzie.</para>
     </sect1>
     <sect1>
-      <title>Co wchodzi w sk³ad LMSa</title>
-	<para>LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <emphasis>LMS-UI</emphasis> (User Interface). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy danych (w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w LMS-UI wykonujemy wszystkie czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMSa.</para>
+      <title>Co wchodzi w sk³ad LMS</title>
+	<para>LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <emphasis>LMS-UI</emphasis> (User Interface). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy danych (w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w LMS-UI wykonujemy wszystkie czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMS.</para>
 	<para>LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty wymagaj± aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, musisz mieæ PERLa. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych b±d¼ wysy³anie upomnieñ. Jest jeszcze LMS-MGC, który te¿ jest skryptem ale na tyle uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny, i zrestartowaæ us³ugê.</para>
 	<!--
           Czyszczenie dokumentacji przed wydaniem stabilnym
@@ -56,11 +56,11 @@
 	  <title>Wymagania</title>
 	    <sect3>
 	      <title>Serwer WWW</title>
-	      <para>Poniewa¿ LMS-UI jest napisane w PHP, potrzebujemy serwer WWW który bêdzie ten jêzyk obs³ugiwa³. Preferowanym serwerem jest Apache <ulink url="http://www.apache.org">www.apache.org</ulink></para>
+	      <para>Poniewa¿ LMS-UI jest napisane w PHP, niezbêdny jest serwer WWW z interpreterem tego jêzyka. Preferowanym serwerem jest Apache <ulink url="http://www.apache.org">www.apache.org</ulink></para>
 	    </sect3>
 	    <sect3>
 	      <title>Interpreter PHP</title>
-	      <para>Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a te¿ poprawnie na 4.1.x (ale poniewa¿ devepolerzy pracuj± na 4.2.3, nie mo¿na zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿emy sci±gn±æ ze strony <ulink url="http://www.php.net">www.php.net</ulink></para>
+	      <para>Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a te¿ poprawnie na 4.1.x (ale poniewa¿ devepolerzy pracuj± na 4.2.3, nie mo¿na zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿na sci±gn±æ ze strony <ulink url="http://www.php.net">www.php.net</ulink></para>
 	    </sect3>
 	    <sect3>
 	      <title>Serwer baz danych</title>
@@ -101,9 +101,9 @@
 	-->
 	</SECT2>
 	<sect2>
-	  <title>Sci±gamy LMSa</title>
-	  <para><emphasis>Nota redaktorska:</emphasis> Opis sci±gania wersji CVSowej przy wydaniu stabilnym jest IMHO bezsensowny, ale teraz niech zostanie.</para>
-	  <para>LMSa mo¿emy sci±gn±æ ze strony domowej projektu (<ulink url="http://lms.rulez.pl">lms.rulez.pl</ulink>), lub bezpo¶rednio z CVS:</para>
+	  <title>Sci±gamy LMS</title>
+	  <note><para>Opis sci±gania wersji CVSowej przy wydaniu stabilnym jest IMHO bezsensowny, ale teraz niech zostanie.</para></note>
+	  <para>LMS mo¿emy sci±gn±æ ze strony domowej projektu (<ulink url="http://lms.rulez.pl">lms.rulez.pl</ulink>), lub bezpo¶rednio z CVS:</para>
 	  <screen><prompt>lexx@troll:~$</prompt> <userinput>wget http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1</userinput></screen>
  	  <para>je¶li chcemy sci±gn±æ przez interfejs webowy lub je¶li mamy CVS mo¿emy wykonaæ komendê:</para>
 	  <!-- <command>cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot get lms</command> -->
@@ -111,7 +111,7 @@
 	</sect2>
 	<sect2>
 	  <title>Umieszczamy LMS na dysku</title>
-	  <para>Je¶li ¶ci±gneli¶my archwiwum to je teraz rozpakowujemy, a nastêpnie przenosimy pliki z lms-ui do katalogu osi±galnego z poziomy przegl±darki www (np. <filename>/var/www/lms</filename>). Pliki z konfiguracj± umieszczamy w katalogu <filename>/etc/lms</filename>).</para>
+	  <para>Je¶li ¶ci±gneli¶my archwiwum to je teraz rozpakowujemy, a nastêpnie przenosimy pliki z lms-ui do katalogu osi±galnego z poziomu przegl±darki www (np. <filename>/var/www/lms</filename>). Pliki z konfiguracj± umieszczamy w katalogu <filename>/etc/lms</filename>).</para>
 	</sect2>
 	<sect2>
 	  <title>Biblioteki</title>
@@ -133,7 +133,7 @@
     </sect1>
     <sect1>
       <title>Konfiguracja</title>
-      <para>Po ¶ci±gniêciu i zainstalowaniu LMSa musimy jeszcze ustawiæ dwie rzeczy. Bazê danych, oraz podstawowe opcje w <filename>lms.ini</filename></para>
+      <para>Po ¶ci±gniêciu i zainstalowaniu LMS nale¿y jeszcze ustawiæ dwie rzeczy. Bazê danych, oraz podstawow± konfiguracjê w <filename>lms.ini</filename></para>
 	<sect2>
 	  <title>MySQL</title>
 	  <screen><prompt>lexx@troll:~$</prompt> <userinput>mysql -u [U¿ytkownik z pe³nym dostêpem do bazy] -p</userinput>
@@ -156,13 +156,13 @@
 	  </listitem>
           <listitem>
 	   <para>host</para>
-	   <para>Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj wstawiæ cokolwiek (ipek, domena, path to socketa w formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost</para>
+	   <para>Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost</para>
 	   <example><title>Przyk³ad:</title><para>host = localhost</para></example>
 	  </listitem>
           <listitem>
 	   <para>user</para>
 	   <para>U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 'postgres' (PostgreSQL). Domy¶lnie: root</para>
-	   <example><title>Przyk³ad:</title><para>user = mysql</para></example>
+	   <example><title>Przyk³ad:</title><para>user = lms</para></example>
 	  </listitem>
           <listitem>
 	   <para>password</para>
@@ -184,7 +184,7 @@
 	  </listitem>
           <listitem>
 	   <para>modules_dir</para>
-	   <para>Katalog z "modu³ami" LMS'a - kawa³kami kodu które szumnie kto¶ (czyli Baseciq) nazwa³ modu³ami. Domy¶lnie jest to podkatalog modules w sys_dir.</para>
+	   <para>Katalog z "modu³ami" LMS'a. Czyli zawarto¶æ katalogu modules. Domy¶lnie jest to podkatalog modules w sys_dir.</para>
 	   <example><title>Przyk³ad:</title><para>modules_dir = /usr/share/lms/modules/</para></example>
 	  </listitem>
           <listitem>
@@ -194,8 +194,9 @@
 	  </listitem>
           <listitem>
 	   <para>backup_dir</para>
-	   <para>Katalog z backupami SQL'owymi - miejsce gdzie LMS zapisuje dumpy z bazy. Domy¶lnie jest to podkatalog 'backups'. Naprawdê dobrze by by³o go przenie¶æ poza miejsce osi±galne przez przegl±darkê.</para>
+	   <para>Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje zrzuty z bazy. Domy¶lnie jest to podkatalog 'backups'.</para>
 	   <example><title>Przyk³ad:</title><para>backup_dir = /var/backup/lms/</para></example>
+	   <warning><para>Je¶li katalog z kopiami zapasowymi bêdzie osi±galny z poziomu WWW, to ka¿dy bez autoryzacji bêdzie mia³ do nich dostêp.</para></warning>
 	  </listitem>
           <listitem>
 	   <para>smarty_dir</para>
@@ -204,12 +205,12 @@
 	  </listitem>
           <listitem>
 	   <para>smarty_compile_dir</para>
-	   <para>Katalog kompilacji Smartyego. Miejsce gdzie Smarty kompiluje nasze templejty. Domy¶lnie to templates_c w katalogu sysdir.</para>
+	   <para>Katalog kompilacji Smartyego. Miejsce gdzie Smarty kompiluje szablony. Domy¶lnie to templates_c w katalogu sysdir.</para>
 	   <example><title>Przyk³ad:</title><para>smarty_compile_dir = /var/smarty/compile/lms</para></example>
 	  </listitem>
           <listitem>
 	   <para>smarty_templates_dir</para>
-	   <para>Katalog z templejtami którymi karmimy Smartiego. Domy¶lnie to podkatalog templates z sys_dir'a.</para>
+	   <para>Katalog z szablonami którymi Smartiego. Domy¶lnie to podkatalog templates z sys_dir'a.</para>
 	   <example><title>Przyk³ad:</title><para>smarty_templates_dir = /usr/share/lms/templates</para></example>
 	  </listitem>
           <listitem>
@@ -221,12 +222,15 @@
     </sect1>
     <sect1>
       <title>Prawa dostêpu</title>
-      <para>LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu adminowi mo¿na przydzieliæ dowoln± kombinacjê regu³ dostêpu.</para>
+      <para>LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu administratorowi mo¿na przydzieliæ dowoln± kombinacjê regu³ dostêpu.</para>
       <para>Domy¶lnie zdefiniowanych  jest  osiem regu³ dostêpu. Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania.</para>
       <para>Modu³y do których administrator ma zawsze dostêp to: welcome,  copyrights,  logout, chpasswd (przy czym chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostep do reszty jest zdefiniowany regu³ami. Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie przydzieli mu regu³kê 0 czyli pe³en dostêp.</para>
     </sect1>
+    <!--
+    A to tu po co? ¯adne rewelacje
     <sect1>
       <title>Bezpieczeñstwo</title>
         <para>Dostêp do lms-ui powinien byæ mo¿liwy tylko po SSL (co zreszt± mo¿na wymusiæ flag± <command>force_ssl</command> w <filename>lms.ini</filename>), a katalog z kopiami zapasowymi baz danych powinien zostaæ przeniesiony do katalogu gdzie serwer WWW nie ma dostêpu (np. <filename>/var/backup/lms</filename>), bo inaczej do plików z kopiami zapasowymi bazy bêdzie siê mo¿na dostaæ z poziomu www bez autoryzacji.</para>
     </sect1>
+    -->
   </chapter>

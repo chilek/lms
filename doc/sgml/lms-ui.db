@@ -1,9 +1,12 @@
-<chapter>
+<chapter id="lms-ui">
  <title>LMS UI (User Interface)</title>
- <para>Tutaj bêdzie opis LMS-UI</para>
+ <!--
+   Narazie nie ma opisu UI to po co ¶mieciæ
+   <para>Tutaj bêdzie opis LMS-UI</para>
+ -->
  <sect1>
   <title>Konfiguracja.</title>
-  <para>Konfiguracjê dla lms-ui mo¿emy ustaliæ w pliku <filename>lms.ini</filename> w sekcji <emphasis>[phpui]</emphasis>. Mo¿emy tam ustawiæ nastêpuj±ce parametry:</para>
+  <para>Konfiguracjê dla LMS-UI mo¿emy ustaliæ w pliku <filename>lms.ini</filename> w sekcji <emphasis>[phpui]</emphasis>. Mo¿emy tam ustawiæ nastêpuj±ce parametry:</para>
   <itemizedlist>
    <listitem>
     <para>allow_from  (opcjonalny)</para>
