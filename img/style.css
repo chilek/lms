@@ -53,11 +53,11 @@ SELECT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; borde
 SELECT.alert	{ background-color: #FF9B9B; }
 BUTTON		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 0pt; background-color: #DFD5BD; }
 .hdf		{ font-size: 12pt; }
-.click-menu     { width: 150px; padding: 0px 0px; margin-top: 0; margin-bottom: 0; }
-.click-menu .box1       { background-color: #CEBD9B; color: #000000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; }
-.click-menu .box1-hover { background-color: #CCFFCC; color: #800000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; }
-.click-menu .box1-open  { background-color: #DACAB2; color: #800000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; }
-.click-menu .box1-open-hover    { background-color: #CCFFCC; color: #800000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; }
+.click-menu     { width: 140px; padding: 0px 0px; margin-top: 0; margin-bottom: 0; }
+.click-menu .box1       { background-color: #F4F0EC; color: #800000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative;}
+.click-menu .box1-hover { background-color: #EBE4D6; color: #800000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; }
+.click-menu .box1-open  { background-color: #EBE4D6; color: #000000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; }
+.click-menu .box1-open-hover    { background-color: #EBE4D6; color: #800000; font-weight: bold; padding: 5px 5px; cursor: default; position: relative; }
 .click-menu .section    { background-color: #EBE4D6; line-height: 15px; padding: 0px 0px 0px 0px; display: none; }
 .click-menu .section a  { color: #800000; text-decoration: none; white-space: nowrap; }
 .click-menu .section a:hover    { color: #336600; text-decoration: none; white-space: nowrap; }
@@ -65,6 +65,6 @@ BUTTON		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; borde
 .click-menu .box2-hover { padding: 0px 21px; background: #CCFFCC; }
 .click-menu .section .active,
 .click-menu .section .active:hover { color: yellow; }
-.tip		{ width: 150px; } 
+.tip		{ width: 140px; } 
 //-->
 </STYLE>
