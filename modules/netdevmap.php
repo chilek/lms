@@ -280,6 +280,7 @@ else
 		if($deviceip[2]) imagestring($im, 1, $px + 20, $py + 17, $deviceip[2], $blue);
 		if($deviceip[3]) imagestring($im, 1, $px + 20, $py + 26, $deviceip[3], $blue);
 		imagestring($im, 3, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), $darkred);
+		imagestring($im, 2, $px + 20, $py + 18, $DB->GetOne('SELECT location FROM netdevices WHERE id=?',array($deviceid)), $green);
 	}
 	
 		
