@@ -283,6 +283,21 @@
 				<member>tariffid - identyfikator taryfy</member>
 			</simplelist>
 		</sect2>
+		<sect2 id="passwd">
+			<title>Konta ('passwd')</title>
+			<simplelist>
+				<member>id - identyfikator rekordu</member>
+				<member>ownerid - identyfikator u¿ytkownika (0 - konto "systemowe")</member>
+				<member>login - nazwa konta</member>
+				<member>password - has³o zaszyfrowane funkcj± crypt()</member>
+				<member>lastlogin - data ostatniego logowania</member>
+				<member>uid - identyfikator systemowy konta</member>
+				<member>home - katalog domowy (/home/<login>)</member>
+				<member>type - typ konta (suma: 1-shell, 2-poczta, 4-www, 8-ftp)</member>
+				<member>expdate - data wa¿no¶ci konta</member>
+				<member>domain - nazwa domeny (np. dla kont www i pocztowych)</member>
+			</simplelist>
+		</sect2>
 		<sect2 id="timestamps">
 			<title>Historia ('timestamps')</title>
 			<simplelist>
