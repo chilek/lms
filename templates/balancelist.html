@@ -35,34 +35,34 @@
 <TABLE width="100%" cellpadding="3">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
-			<B>ID:</B>
+			<B>{t}ID:{/t}</B>
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>Data:</B>
+			<B>{t}Date:{/t}</B>
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>Admin:</B>
+			<B>{t}User:{/t}</B>
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>Typ:</B>
+			<B>{t}Type:{/t}</B>
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			<B>Warto¶æ:</B>
+			<B>{t}Value:{/t}</B>
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			<B>VAT:</B>
+			<B>{t}VAT:{/t}</B>
 		</TD>
 		<TD width="1%" class="fbt" align="center">
 			<B>&raquo;</B>
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			<B>Po:</B>
+			<B>{t}After:{/t}</B>
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>U¿ytkownik:</B>
+			<B>{t}Customer:{/t}</B>
 		</TD>
 		<TD width="90%" class="fbt">
-			<B>Opis:</B>
+			<B>{t}Description:{/t}</B>
 		</TD>
 		<TD width="1%" CLASS="frightu">
 			&nbsp;
@@ -71,15 +71,18 @@
 	{if $listdata.totalpos != 0}
 	<TR class="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="11">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$balancelist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=balancelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=balancelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
-			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
-
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
 		</TD>
 	</TR>
 	{/if}
@@ -105,7 +108,7 @@
 			<NOBR>
 			{if $balancelist[balancelist].taxvalue!=''}
 				{$balancelist[balancelist].taxvalue|string_format:"%01.2f"} %
-			{else}zw.{/if}
+			{else}{t}tax-free{/t}{/if}
 			</NOBR>
 		</TD>
 		<TD width="1%" align="center" valign="top">
@@ -122,7 +125,7 @@
 		</TD>
 		<TD width="1%" class="fright">
 			{if $balancelist[balancelist].invoiceid}
-			<A HREF="?m=invoice&id={$balancelist[balancelist].invoiceid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>
+			<A HREF="?m=invoice&id={$balancelist[balancelist].invoiceid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"} BORDER="0"></A>
 			{else}
 			{cycle print=false}
 			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
@@ -134,7 +137,7 @@
 		<TD WIDTH="100%" class="fall" ALIGN="center" COLSPAN="11">
 	    		<p>&nbsp;</p>
 			<P>&nbsp;<?P>
-			<P><B>Nie znaleziono ¿adnych operacji finansowych w bazie danych</B></P>
+			<P><B>{t}Not found any transactions in database.{/t}</B></P>
 			<P>&nbsp;</P>
 			<P>&nbsp;</P>
 		</TD>
@@ -145,10 +148,10 @@
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD ALIGN="left">
-						<NOBR><A HREF="javascript:DeleteMarked();">Kasuj <IMG SRC="img/delete.gif" BORDER="0" ALT="Kasuj" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" BORDER="0" ALT="{t}Delete{/t}" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
 					</TD>
 					<TD ALIGN="right">
-						<NOBR><A HREF="javascript:CheckAll2();">Zaznacz wszystkie</A><INPUT STYLE="border:0; background-color:#CEBD9B;" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT STYLE="border:0; background-color:#CEBD9B;" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
 			</TABLE>
@@ -157,24 +160,28 @@
 	{if $listdata.totalpos != 0}
 	<TR class="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="11">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$balancelist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=balancelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=balancelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
-			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
 		</TD>
 	</TR>
 	{/if}
 	<TR class="light">
 		<TD colspan="4" width="4%" align="right" class="fleftu" NOWRAP>
-			<B>Zobowi±zania u¿ytkowników:</B><HR>
-			<B>Wp³aty u¿ytkowników:</B><BR>
-			<B>Przychód:</B><BR>
-			<B>Rozchód:</B><HR>
-			<B>Razem:</B>
+			<B>{t}Customers covenants:{/t}</B><HR>
+			<B>{t}Customers payments:{/t}</B><BR>
+			<B>{t}Income:{/t}</B><BR>
+			<B>{t}Expenditure:{/t}</B><HR>
+			<B>{t}Total:{/t}</B>
 		</TD>
 		<TD width="1%" nowrap class="fbt" align="right">
 			<NOBR>
