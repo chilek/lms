@@ -223,8 +223,8 @@ DROP TABLE IF EXISTS stats;
 CREATE TABLE stats (
   nodeid INT(11) NOT NULL default '0',
   dt INT(11) NOT NULL default '0',
-  upload INT(11) default '0',
-  download INT(11) default '0',        
+  upload BIGINT default '0',
+  download BIGINT default '0',        
   PRIMARY KEY (nodeid, dt)
 ) TYPE=MyISAM;
 

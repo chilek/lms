@@ -6,6 +6,25 @@ wersja 1.2.4 (??/??/2004):
     podczas pierwszego pod³±czenia komputera (alec)
   - dodane brakuj±ce warunki sprawdzaj±ce d³ugo¶æ nazw komputerów 
     i urz±dzeñ sieciowych (alec)
+  - zmiana typu kolumn w tabeli statystyk, z uwagi na d³êdy podczas
+    kompaktowania bazy danych - zalecana gdy siê ma w sieci u¿ytkowników
+    pobieraj±cych ponad 2GB danych dziennie (alec)
+    MySQL:
+	ALTER TABLE stats CHANGE upload upload BIGINT DEFAULT '0';
+        ALTER TABLE stats CHANGE download download BIGINT DEFAULT '0';
+    PostgreSQL:
+	ALTER TABLE stats ADD down bigint;
+        ALTER TABLE stats ADD up bigint;
+	ALTER TABLE stats ALTER down SET DEFAULT 0;
+        ALTER TABLE stats ALTER up SET DEFAULT 0;
+	UPDATE stats SET up=upload;
+	UPDATE stats SET down=download;
+	ALTER TABLE stats DROP upload;
+        ALTER TABLE stats DROP download;
+        ALTER TABLE stats RENAME up TO upload;
+	ALTER TABLE stats RENAME down TO download;
+  - naprawione dzia³anie zmiennej 'use_current_day' (alec)
+  - dzia³aj± error-triggery przy dodawaniu zobowi±zañ (alec)
 
 wersja 1.2.3 Anise (06/07/2004):
 

@@ -19,24 +19,26 @@
 					<TD WIDTH="94%" COLSPAN="2" class="frightu">&nbsp;</TD>
 				</tr>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
-				{section name=a loop=$assignments}
+				{foreach item=a from=$assignments}
 				<tr bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=tariffinfo&id={$assignments[a].tariffid}">{$assignments[a].name}</A></B></TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].value|string_format:"%01.2f"} z³</TD>
-					<TD WIDTH="1%" NOWRAP>{$assignments[a].period} ({$assignments[a].at})</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].downrate|default:"-"} kbps</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].uprate|default:"-"} kbps</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{if $assignments[a].invoice}tak{else}&nbsp;{/if}</TD>
-					<TD WIDTH="94%" ALIGN="RIGHT" COLSPAN="2">{*<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê oraz zaksiêgowaæ wyrównanie od ostatniego zaksiêgowania do dnia dzisiejszego?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}&balance=1" {tip text="Usuwa taryfê z rekordu u¿ytkownika oraz ksiêguje wyrównanie od dnia ostatniego zdarzenia do dzisiaj"}>Usuñ i wyrównaj <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}" {tip text="Usuwa taryfê z rekordu u¿ytkownika"}>Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
+					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=tariffinfo&id={$assignments[a].tariffid}">{$a.name}</A></B></TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$a.value|string_format:"%01.2f"} z³</TD>
+					<TD WIDTH="1%" NOWRAP>{$a.period} ({$a.at})</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$a.downrate|default:"-"} kbps</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$a.uprate|default:"-"} kbps</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{if $a.invoice}tak{else}&nbsp;{/if}</TD>
+					<TD WIDTH="94%" ALIGN="RIGHT" COLSPAN="2">
+					    {*<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê oraz zaksiêgowaæ wyrównanie od ostatniego zaksiêgowania do dnia dzisiejszego?')" HREF="?m=userassignments&action=delete&aid={$a.id}&id={$balancelist.userid}" {tip text="Usuwa taryfê z rekordu u¿ytkownika oraz ksiêguje wyrównanie od dnia ostatniego zdarzenia do dzisiaj"}>Usuñ i wyrównaj <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}
+					    <A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê?')" HREF="?m=userassignments&action=delete&aid={$a.id}&id={$balancelist.userid}" {tip text="Usuwa taryfê z rekordu u¿ytkownika"}>Usuñ <IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
 				</TR>
-				{sectionelse}
+				{foreachelse}
 				<TR>
 					<TD align="center" WIDTH="100%" colspan="7"><p>&nbsp;</p>
 						<p><B>Ten u¿ytkownik nie ma przypisanych ¿adnych taryf.</B></p>
 						<p>&nbsp;</p>
 					</TD>
 				</TR>
-				{/section}
+				{/foreach}
 				<TR bgcolor="#DFD5BD">
 					<TD CLASS="ftop" ALIGN="RIGHT"><B>Razem:</B></TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format="%01.2f"} z³</TD>
@@ -46,28 +48,30 @@
 					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT" COLSPAN="2">&nbsp;</TD>
 				</TR>
-				<FORM METHOD="POST" NAME="addassignment" ACTION="?m=useredit&action=addassignment&id={$balancelist.userid}">
+				<FORM METHOD="POST" NAME="assignment" ACTION="?m=userassignments&action=add&id={$balancelist.userid}">
 				<TR bgcolor="#DFD5BD">
 					<TD NOWRAP COLSPAN="6" ALIGN="RIGHT"><B>Dodaj:</B>
-						<SELECT SIZE="1" NAME="tariffid" {tip text="Wybierz taryfê która ma byæ przypisana do u¿ytkownika"}>
+						<SELECT SIZE="1" NAME="assignment[tariffid]" {tip text="Wybierz taryfê która ma byæ przypisana do u¿ytkownika" trigger="tariffid"}>
 							<OPTION VALUE="0">... wybierz taryfê ...</OPTION>
-							{section name=t loop=$tariffs}<OPTION VALUE="{$tariffs[t].id}">{$tariffs[t].name} ({$tariffs[t].value|string_format:"%01.2f"} z³{if $tariffs[t].downrate}, {$tariffs[t].downrate} down{/if}{if $tariffs[t].uprate}, {$tariffs[t].uprate} up{/if})</OPTION>{/section}
+							{section name=t loop=$tariffs}
+							<OPTION VALUE="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>{$tariffs[t].name} ({$tariffs[t].value|string_format:"%01.2f"} z³{if $tariffs[t].downrate}, {$tariffs[t].downrate} down{/if}{if $tariffs[t].uprate}, {$tariffs[t].uprate} up{/if})</OPTION>
+							{/section}
 						</SELECT>
 					</TD>
 					<TD>
 						<NOBR>
-						<SELECT SIZE="1" NAME="period" {tip text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
-							<OPTION VALUE="0">co tydzieñ</OPTION>
-							<OPTION VALUE="1" SELECTED>co miesi±c</OPTION>
-							<OPTION VALUE="2">co kwarta³</OPTION>
-							<OPTION VALUE="3">co rok</OPTION>
+						<SELECT SIZE="1" NAME="assignment[period]" {tip text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
+							<OPTION VALUE="0" {if $assignment.period==0}SELECTED{/if}>co tydzieñ</OPTION>
+							<OPTION VALUE="1" {if $assignment.period==1 || $assignment.period==''}SELECTED{/if}>co miesi±c</OPTION>
+							<OPTION VALUE="2" {if $assignment.period==2}SELECTED{/if}>co kwarta³</OPTION>
+							<OPTION VALUE="3" {if $assignment.period==3}SELECTED{/if}>co rok</OPTION>
 						</SELECT>
-						<B>kiedy:</B> <INPUT TYPE="TEXT" NAME="at" {tip text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28), dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia), a dla kwartalnej DD/MM (MM <= 3)."} SIZE="5">
-						<INPUT CLASS="box" TYPE="checkbox" NAME="invoice" VALUE="1"> wystawiaj fakturê
+						<B>kiedy:</B> <INPUT TYPE="TEXT" NAME="assignment[at]" VALUE="{$assignment.at}" {tip text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28), dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia), a dla kwartalnej DD/MM (MM <= 3)." trigger="at"} SIZE="5">
+						<INPUT CLASS="box" TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice}CHECKED{/if}> wystawiaj fakturê
 						</NOBR>
 					</TD>
 					<TD ALIGN="RIGHT" NOWRAP>
-						<A HREF="javascript:document.addassignment.submit()" {tip text="Przypisz t± taryfê do u¿ytkownika"}>Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+						<A HREF="javascript:document.assignment.submit()" {tip text="Przypisz t± taryfê do u¿ytkownika"}>Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
 					</TD>
 				</TR>
 				</FORM>

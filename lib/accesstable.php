@@ -44,7 +44,7 @@ $access[table][4][name]         = "prze³adowywanie konfiguracji";
 $access[table][4][allow_reg]    = "^reload$";
 
 $access[table][5][name]		= "manipulacja kontami u¿ytkowników";
-$access[table][5][allow_reg]	= "^user(add|edit|del)$";
+$access[table][5][allow_reg]	= "^user(add|edit|del|assignments)$";
 
 $access[table][6][name]		= "manipulacja danymi komputerów";
 $access[table][6][allow_reg]	= "^(node(add|scan|del|edit|set)|choose(mac|ip))$";

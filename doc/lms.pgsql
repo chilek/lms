@@ -200,8 +200,8 @@ DROP TABLE stats;
 CREATE TABLE stats (
 	nodeid integer DEFAULT 0 NOT NULL,
 	dt integer DEFAULT 0 NOT NULL,
-	upload integer DEFAULT 0,
-	download integer DEFAULT 0,
+	upload bigint DEFAULT 0,
+	download bigint DEFAULT 0,
 	PRIMARY KEY (nodeid, dt)
 );
 /* Ma³y dopalacz niektórych zapytañ */

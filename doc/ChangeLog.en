@@ -5,6 +5,24 @@ version 1.2.4 (??/??/2004):
   - BTS#0000171: fixed lack of ports in device errors handling while
     first computer connecting (alec)
   - added missing checking of length of comupters and devices names (alec)
+  - change of column types in stats table, because of errors in database
+    compacting procedure (alec)
+    MySQL:
+	ALTER TABLE stats CHANGE upload upload BIGINT DEFAULT '0';
+        ALTER TABLE stats CHANGE download download BIGINT DEFAULT '0';
+    PostgreSQL:
+	ALTER TABLE stats ADD down bigint;
+        ALTER TABLE stats ADD up bigint;
+	ALTER TABLE stats ALTER down SET DEFAULT 0;
+        ALTER TABLE stats ALTER up SET DEFAULT 0;
+	UPDATE stats SET up=upload;
+	UPDATE stats SET down=download;
+	ALTER TABLE stats DROP upload;
+        ALTER TABLE stats DROP download;
+        ALTER TABLE stats RENAME up TO upload;
+	ALTER TABLE stats RENAME down TO download;
+  - fixed 'use_current_day' option behaviour (alec)
+  - error-triggers in user assignments window are working now (alec)
 
 version 1.2.3 Anise (06/07/2004):
 
