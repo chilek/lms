@@ -1,0 +1,66 @@
+{include file="clearheader.html"}
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="50%" VALIGN="TOP">
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="50%" ALIGN="RIGHT">
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
+			Sporz±dzone przez: {$layout.logname}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			Lp
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			Data
+		</TD>
+		<TD CLASS="HEAD" ALIGN="RIGHT">
+			Type
+		</TD>
+		<TD CLASS="HEAD" ALIGN="RIGHT">
+			Warto¶æ
+		</TD>
+		<TD CLASS="HEAD" ALIGN="RIGHT">
+			Po
+		</TD>
+		<TD CLASS="HEAD" ALIGN="LEFT">
+			Opis
+		</TD>		
+	</TR>
+	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{section name=balancelist loop=$balancelist.id}
+	<TR BGCOLOR="{cycle}">
+		<TD ALIGN="CENTER">
+			{counter}
+		</TD>
+		<TD ALIGN="CENTER" NOWRAP>
+			{$balancelist.date[balancelist]}
+		</TD>
+		<TD ALIGN="RIGHT">
+			{$balancelist.name[balancelist]}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$balancelist.value[balancelist]|string_format:"%01.2f"} z³
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$balancelist.after[balancelist]|string_format:"%01.2f"} z³
+		</TD>
+		<TD ALIGN="LEFT">
+			{$balancelist.comment[balancelist]}
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD ALIGN="center" WIDTH="100%" COLSPAN="6">
+			<p>&nbsp;</p>
+			<p><B>Brak operacji kasowych</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+</TABLE>

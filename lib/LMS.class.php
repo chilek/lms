@@ -837,6 +837,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 				
 				if($saldolist['time'][$i]>=$date['from'] && $saldolist['time'][$i]<=$date['to'])
 				{
+					$list['id'][] = $saldolist['id'][$i];
 					$list['after'][] = $saldolist['after'][$i];
 					$list['before'][] = $saldolist['before'][$i];
 					$list['value'][] = $saldolist['value'][$i];
@@ -848,7 +849,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			}
 
 			$list['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
-			$list['total'] = sizeof($saldolist['id']);
+			$list['total'] = sizeof($list['id']);
 
 		} else
 			$list['balance'] = 0;

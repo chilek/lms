@@ -82,7 +82,29 @@ switch($_GET['type'])
 	break;
 
 	case 'userbalance':
-		$layout['pagetitle'] = 'Bilans u¿ytkownika';	
+	
+		$from = $_POST['from'];
+		$to = $_POST['to'];
+
+		// date format 'yyyy/mm/dd'	
+		if($from) {
+			list($year, $month, $day) = split('/',$from);
+			$date['from'] = mktime(0,0,0,$month,$day,$year);
+		} else { 
+			$from = date("Y/m/d",time());
+			$date['from'] = mktime(0,0,0); //pocz±tek dnia dzisiejszego
+		}
+		if($to) {
+			list($year, $month, $day) = split('/',$to);
+			$date['to'] = mktime(0,0,0,$month,$day,$year);
+		} else { 
+			$to = date("Y/m/d",time());
+			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+		}
+
+		$layout['pagetitle'] = 'Bilans u¿ytkownika '.$LMS->GetUserName($_POST['user']).' za okres '.$from.'-'.$to;	
+		$balancelist = $LMS->GetUserBalanceListByDate($_POST['user'],$date);
+		$SMARTY->assign('balancelist', $balancelist);
 		$SMARTY->display('printuserbalance.html');
 	break;	
 	
