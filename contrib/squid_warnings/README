@@ -1,5 +1,9 @@
 $Id$
 
+!!!UWAGA!!!
+Ten skrypt jest wycofywany i zostanie usuniêty w przysz³ych wersjach LMSa.
+Zamiast niego u¿yj lms_redirector.
+
 0. Co to?
 
 Ten ma³y zestaw narzêdzi pozwala za pomoc± squida w dosyæ elegancki sposób 
