@@ -43,12 +43,15 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 if(!isset($_GET[ownerid]))
 	$_SESSION[backto] .= "&ownerid=".$ownerid;
 
-if($nodeinfo['netdevid'] == 0)
+if($nodeinfo['netdev'] == 0)
 	$netdevices = $LMS->GetNetDevList();
+else
+	$netdevices = $LMS->GetNetDev($nodeinfo['netdev']);
 
 $layout[pagetitle]="Informacje o komputerze ".$nodeinfo[name];
 
 $SMARTY->assign("netdevices",$netdevices);
+$SMARTY->assign("netdevice",$netdevice);
 $SMARTY->assign("balancelist",$balancelist);
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("nodeinfo",$nodeinfo);
@@ -59,6 +62,9 @@ $SMARTY->display("nodeinfo.html");
 
 /*
  * $Log$
+ * Revision 1.22  2003/09/22 18:12:33  lexx
+ * - komputery moga sie linkowac
+ *
  * Revision 1.21  2003/09/22 17:47:28  alec
  * added node name to page title
  *
