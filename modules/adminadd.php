@@ -24,46 +24,46 @@
  *  $Id$
  */
 
-$adminadd = $_POST[adminadd];
-$acl = $_POST[acl];
+$adminadd = $_POST['adminadd'];
+$acl = $_POST['acl'];
 
 if(isset($adminadd))
 {
 	foreach($adminadd as $key => $value)
 		$adminadd[$key] = trim($value);
 	
-	if($adminadd[login]==""&&$adminadd[name]==""&&$adminadd[password]==""&&$adminadd[confirm]=="")
+	if($adminadd['login']==""&&$adminadd['name']==""&&$adminadd['password']==""&&$adminadd['confirm']=="")
 	{
 		header("Location: ?m=adminadd");
 		die;
 	}
 	
-	if($LMS->GetAdminIDByLogin($adminadd[login]))
-		$error[login] = "Podany login istnieje!";
-	elseif(!eregi("^[a-z0-9.-_]+$",$adminadd[login]))
-		$error[login] = "Login zawiera niepoprawne znaki!";
+	if($LMS->GetAdminIDByLogin($adminadd['login']))
+		$error['login'] = "Podany login istnieje!";
+	elseif(!eregi("^[a-z0-9.-_]+$",$adminadd['login']))
+		$error['login'] = "Login zawiera niepoprawne znaki!";
 
-	if($adminadd[email]!="" && !check_email($adminadd[email]))
-		$error[email] = "Podany email nie wydaje siê byæ poprawny!";
+	if($adminadd['email']!="" && !check_email($adminadd['email']))
+		$error['email'] = "Podany email nie wydaje siê byæ poprawny!";
 
-	if($adminadd[password]=="")
-		$error[password] = "Has³o nie mo¿e byæ puste!";
-	elseif($adminadd[password]!=$adminadd[confirm])
-		$error[password] = "Has³a nie s± takie same!";
+	if($adminadd['password']=="")
+		$error['password'] = "Has³o nie mo¿e byæ puste!";
+	elseif($adminadd['password']!=$adminadd['confirm'])
+		$error['password'] = "Has³a nie s± takie same!";
 
 	// zróbmy maskê ACL...
 
 	for($i=0;$i<256;$i++)
 		$mask .= "0";
 
-	foreach($access[table] as $idx => $row)
+	foreach($access['table'] as $idx => $row)
 		if($acl[$idx]=="1")
 			$mask[255-$idx] = "1";
 
 	for($i=0;$i<256;$i += 4)
 		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
 
-	$adminadd[rights] = ereg_replace('^[0]*(.*)$','\1',$outmask);
+	$adminadd['rights'] = ereg_replace('^['0']*(.*)$','\1',$outmask);
 
 	if(!$error)
 	{
@@ -71,15 +71,15 @@ if(isset($adminadd))
 		die;
 	}
 }
-foreach($access[table] as $idx => $row)
+foreach($access['table'] as $idx => $row)
 {
-	$row[id] = $idx;
+	$row['id'] = $idx;
 	if($acl[$idx] == "1")
-		$row[enabled] = TRUE;
+		$row['enabled'] = TRUE;
 	$accesslist[] = $row;
 }
 
-$layout[pagetitle]="Nowy administrator";
+$layout['pagetitle']="Nowy administrator";
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("adminadd",$adminadd);
 $SMARTY->assign("error",$error);
