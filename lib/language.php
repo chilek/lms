@@ -24,23 +24,12 @@
  *  $Id$
  */
 
-$language = 'en';
-$langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-foreach ($langs as $val) {
-    switch (substr($val, 0, 2)) {
-	case 'pl':
-            $language = 'pl';
-	    setlocale(LC_MESSAGES, 'pl_PL');
-	    setlocale(LC_TIME, 'pl_PL');
-            break 2;
-        case 'en':
-	    $language = 'en';
-	    setlocale(LC_ALL, 'en_US');
-	    break 2;
-    }
-}
+// Plik do ustawiania locales i do translacji...
+// Chwilowo tutaj nie ma nic, naprawdê nic, poprostu potrzebne do eksperymentów paru.
 
-bindtextdomain("lms", "$_LIB_DIR/locale");
-textdomain("lms");
+// ustawienie komunikatów syst. na polskie
+setlocale(LC_MESSAGES,'pl_PL');
+// ustawienie formatu czasu na polski
+setlocale(LC_TIME,'pl_PL')
 
 ?>
