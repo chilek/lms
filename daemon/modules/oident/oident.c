@@ -116,7 +116,7 @@ struct oident_module * init(GLOBAL *g, MODULE *m)
 	
 	ini = g->iniparser_load(g->inifile);
 	
-	s = g->str_concat(instance, ":start");
+	s = g->str_concat(instance, ":begin");
 	o->prefix = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":end");
 	o->append = strdup(g->iniparser_getstring(ini, s, ""));

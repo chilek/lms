@@ -202,7 +202,7 @@ struct dhcp_module * init(GLOBAL *g, MODULE *m)
 
 	ini = g->iniparser_load(g->inifile);
 
-	s = g->str_concat(instance, ":start"); 
+	s = g->str_concat(instance, ":begin"); 
 	dhcp->prefix = strdup(g->iniparser_getstring(ini, s, "shared-network LMS {"));
 	free(s); s = g->str_concat(instance, ":end"); 
 	dhcp->append = strdup(g->iniparser_getstring(ini, s, "}"));

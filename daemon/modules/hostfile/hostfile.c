@@ -109,9 +109,9 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	
 	ini = g->iniparser_load(g->inifile);
 
-	s = g->str_concat(instance,":prefix");
+	s = g->str_concat(instance,":begin");
 	hm->prefix = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -F FORWARD\n"));
-	free(s); s = g->str_concat(instance,":append");
+	free(s); s = g->str_concat(instance,":end");
 	hm->append = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -A FORWARD -j REJECT\n"));
 	free(s); s = g->str_concat(instance,":grantedhost");	
 	hm->grant = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"));
