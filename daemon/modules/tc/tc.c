@@ -320,7 +320,7 @@ $TC class add dev $LAN parent 1:2 classid 1:20 htb rate 50kbit ceil 500kbit $BUR
 $TC qdisc add dev $LAN parent 1:20 esfq perturb 10 hash dst
 $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xffff flowid 1:20
 $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 53 0xffff flowid 1:20
-$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0xff flowid 1:20
+$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 1:20
 $TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 1:20
 # server -> LAN
 $TC filter add dev $LAN parent 1:0 protocol ip prio 4 handle 1 fw flowid 1:3
