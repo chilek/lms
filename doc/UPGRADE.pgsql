@@ -110,7 +110,7 @@ ALTER TABLE cash ADD COLUMN invoiceid integer;
 ALTER TABLE cash ALTER COLUMN invoiceid SET default 0;
 UPDATE cash SET invoice = 0;
 ALTER TABLE cash ALTER COLUMN invoiceid SET NOT NULL; 
-ALTER TABLE tariffs ADD taxvalue integer;
+ALTER TABLE tariffs ADD taxvalue decimal(9,2);
 UPDATE tariffs SET taxvalue = 0;
 ALTER TABLE tariffs ALTER COLUMN taxvalue SET DEFAULT 0;
 ALTER TABLE tariffs ALTER COLUMN taxvalue SET NOT NULL;
@@ -137,11 +137,11 @@ CREATE TABLE invoices (
 
 CREATE TABLE invoicecontents (
 	invoiceid integer NOT NULL,
-	value float4 NOT NULL,
-	taxvalue integer NOT NULL,
+	value numeric(9,2) NOT NULL,
+	taxvalue numeric(9,2) NOT NULL,
 	pkwiu varchar(255) DEFAULT NULL,
 	content varchar(16) NOT NULL,
-	count integer NOT NULL,
+	count numeric(9,2) NOT NULL,
 	description varchar(255) NOT NULL,
 	tariffid integer NOT NULL
 );	 
