@@ -27,11 +27,12 @@ wersja 1.3.3 (??/??/2004):
   - wybór stawki VAT w nowej pozycji faktury za pomoc± comboboxa (chilek)
   - wybór stawki VAT w taryfach za pomoc± comboboxa (chilek)
   - dodany formularz zarz±dzania wiadomo¶ciami administracyjnymi (chilek)
+  - grupy u¿ytkowników (chilek/alec)
 
 wersja 1.3.2 Kinsey (03/04/2004):
   
-  - przeniesienie warning&messages z contrib do glownej galezi 
-    dodanie lms-updatewarnings (maniac/alec/Tomasz Chiliñski)
+  - przeniesienie warning&messages z contrib do g³ównej ga³êzi
+    dodanie lms-updatewarnings (maniac/alec/chilek)
   - poprawione b³êdy w module 'hostfile' demona, dodane zmienne 
     %domain - zamieniana na nazwê domeny i %net - na nazwê sieci (alec)
   - w zmiennej 'networks' dla modu³ów hostfile i oident nie podajemy adresów, 
