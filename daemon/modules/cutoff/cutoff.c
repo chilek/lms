@@ -40,7 +40,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 		
 			balance = atoi(g->db_get_data(res,i,"balance"));
 			
-			if( balance < (c->limit*-1) ) {
+			if( balance < c->limit ) {
 			
 				update = strdup("UPDATE nodes SET access = 0 WHERE ownerid = %id");
 				g->str_replace(&update, "%id", g->db_get_data(res,i,"id"));
