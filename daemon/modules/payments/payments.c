@@ -36,9 +36,9 @@ char * itoa(int i)
 	return string;
 }
 
-unsigned char * get_period(struct tm *today, int period)
+unsigned char * get_period(struct tm *today, int period, int up_payments)
 {
-    	struct tm *t;
+	struct tm *t;
 	static time_t new_time, old_time;
 	static char from[11], to[11];
 	unsigned char *result;
@@ -52,27 +52,45 @@ unsigned char * get_period(struct tm *today, int period)
 	
 	old_time = mktime(today);
 	
-	switch(period) {
-		case 1:	//year
-			t->tm_mday -= 365;
-			break;
-		case 2:	//month
-			t->tm_mon -= 1;
-			break;
-		case 3:	//week
-			t->tm_mday -= 7;
-			break;
-	}
-
+	if( up_payments )
+		switch(period) {
+			case 1:	//year
+				t->tm_mday += 365;
+				break;
+			case 2:	//month
+				t->tm_mon += 1;
+				break;
+			case 3:	//week
+				t->tm_mday += 7;
+				break;
+		}
+	else
+		switch(period) {
+			case 1:	//year
+				t->tm_mday -= 365;
+				break;
+			case 2:	//month
+				t->tm_mon -= 1;
+				break;
+			case 3:	//week
+				t->tm_mday -= 7;
+				break;
+		}
+		
 	new_time = mktime(t);
 
 	strftime(to, 11, "%d.%m.%Y", localtime(&old_time)); 	
 	strftime(from, 11, "%d.%m.%Y", localtime(&new_time)); 
 	
 	result = (unsigned char *) malloc(strlen(from)+strlen(to)+3);
-	sprintf(result, "%s-%s", from, to);
-
+	
+	if( up_payments )
+		sprintf(result, "%s-%s", to, from);
+	else
+		sprintf(result, "%s-%s", from, to);
+		
 	today = localtime(&old_time);
+	
 	return result;
 }
 
@@ -95,9 +113,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 	strftime(month, 	sizeof(month), 		"%m", tt);	
 	strftime(year, 		sizeof(year), 		"%Y", tt);
 
-	y_period = get_period(tt,1);
-	m_period = get_period(tt,2);
-	w_period = get_period(tt,3);
+	y_period = get_period(tt, 1, p->up_payments);
+	m_period = get_period(tt, 2, p->up_payments);
+	w_period = get_period(tt, 3, p->up_payments);
 
 	// set begin and end date for present year 
 	tt->tm_sec = 0; tt->tm_min = 0; tt->tm_hour = 0; tt->tm_mday = 1; tt->tm_mon = 1;
@@ -133,8 +151,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 			
     					insert = strdup("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (?NOW?, 4, %value, %userid, '%comment', %invoiceid)");
 				
+					if( atoi(g->db_get_data(res,i,"invoice")) )
+						g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
+					else
+						g->str_replace(&insert, "%invoiceid", "0");
+					
 					g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
-					g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
 					g->str_replace(&insert, "%value", value);
 					g->str_replace(&insert, "%comment", p->comment);
 					g->str_replace(&insert, "%tariff", g->db_get_data(res,i,"name"));
@@ -159,8 +181,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 			
     					insert = strdup("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (?NOW?, 4, %value, %userid, '%comment', %invoiceid)");
 			
+					if( atoi(g->db_get_data(res,i,"invoice")) )
+						g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
+					else
+						g->str_replace(&insert, "%invoiceid", "0");
+					
 					g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
-					g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
 					g->str_replace(&insert, "%value", value);
 					g->str_replace(&insert, "%comment", p->comment);
 					g->str_replace(&insert, "%tariff", g->db_get_data(res,i,"name"));
@@ -185,8 +211,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 			
     					insert = strdup("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (?NOW?, 4, %value, %userid, '%comment', %invoiceid)");
 			
+					if( atoi(g->db_get_data(res,i,"invoice")) )
+						g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
+					else
+						g->str_replace(&insert, "%invoiceid", "0");
+					
 					g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
-					g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
 					g->str_replace(&insert, "%value", value);
 					g->str_replace(&insert, "%comment", p->comment);
 					g->str_replace(&insert, "%tariff", g->db_get_data(res,i,"name"));
@@ -241,6 +271,8 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 
 	s = g->str_concat(instance, ":comment");
 	p->comment = strdup(g->iniparser_getstring(ini, s, "Abonament wg taryfy: %tariff za okres: %period"));
+	free(s); s = g->str_concat(instance, ":up_payments");
+	p->up_payments = g->iniparser_getboolean(ini, s, 0);
 	
 	g->iniparser_freedict(ini);
 	free(s);
