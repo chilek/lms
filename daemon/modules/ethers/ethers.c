@@ -40,13 +40,17 @@ void reload(GLOBAL *g, struct ethers_module *fm)
     fh = fopen(fm->file, "w");
     if(fh) {
 	
-	if( (res = g->db_query("SELECT mac, ipaddr FROM nodes ORDER BY ipaddr"))!= NULL) {
+	if( (res = g->db_query("SELECT mac, ipaddr, access FROM nodes ORDER BY ipaddr"))!= NULL) {
 	
 	    fprintf(fh, "# Wygenerowany automatycznie\n\n");
 
 	    for(i=0; i<res->nrows; i++) 
-		fprintf(fh, "%s\t%s\n", inet_ntoa(inet_addr(g->db_get_data(res,i,"ipaddr"))), g->db_get_data(res,i,"mac"));
-	    
+		
+		    if( atoi(g->db_get_data(res,i,"access")) )
+			    fprintf(fh, "%s\t%s\n", inet_ntoa(inet_addr(g->db_get_data(res,i,"ipaddr"))), g->db_get_data(res,i,"mac"));
+		    else
+			    fprintf(fh, "%s\t00:00:00:00:00:00\n", inet_ntoa(inet_addr(g->db_get_data(res,i,"ipaddr"))));	
+		
     	    g->db_free(res);
 	}	
 	
