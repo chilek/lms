@@ -1486,6 +1486,7 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 	$LMS->TariffAdd($tariffdata);
 	$tariffdata = array( name => 'Gold', description => 'Taryfa Gold', value => '120', uprate => '256', downrate => '512');
 	$LMS->TariffAdd($tariffdata);
+	echo '<B>Generuje sieæ...</B><BR>';
 	$netdata = array( name => 'LAN1', address => '192.168.0.0', prefix => '22', gateway => '192.168.0.1', dns => '192.168.0.1', dns2 => '192.168.3.254', domain => 'ultralan.net.pl', wins => '192.168.0.2', dhcpstart => '192.168.3.230', dhcpend => '192.168.3.253');
 	$LMS->NetworkAdd($netdata);
 	$startip = ip_long('192.168.0.0');
@@ -1495,6 +1496,7 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 	$ppsize = sizeof($phoneprefix);
 	$ssize = sizeof($streets);
 	$esize = sizeof($emaildomains);
+	echo '<B>Generuje u¿ytkowników...</B><BR>';
 	for($i = 0; $i < sprintf('%d',$_GET[l]); $i++)
 	{
 		$useradd['lastname'] = $lastnames[mt_rand(0,$lnsize-1)];
@@ -1527,7 +1529,7 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 		
 		
 }else
-	echo '<FORM METHOD="GET" ACTION="?"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">Ile rekordów wygenerowaæ? (max: 250) <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
+	echo '<FORM METHOD="GET" ACTION="?"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">Ile rekordów wygenerowaæ? (max: 250, <FONT COLOR="RED">UWAGA! TO USUNIE WSZYSTKIE DANE Z BAZY!!!</FONT>) <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
 	
 $SMARTY->display("footer.html");
 
