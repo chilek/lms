@@ -1,5 +1,11 @@
 $Id$
 
+wersja 1.0pre3 (??/??/????):
+
+  - poprawione pobieranie hostname i uptime (Marcoos)
+  - zmiana typu kolumny value w tabeli cash z float na double
+
+
 wersja 1.0pre2 (25/12/2002):
 
   - parsowanie configa nie zapisuje odrazu zmiennych odczytanych
