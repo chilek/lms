@@ -2,12 +2,12 @@
 <!--// $Id$ //-->
 <TABLE WIDTH="100%">
 	<TR>
-		<TD WIDTH="1%" VALIGN="TOP" NOWRAP>
+		<TD WIDTH="50%" VALIGN="TOP">
 			<H1>{$layout.pagetitle}</H1>
 		</TD>
-		<TD ALIGN="RIGHT">
+		<TD WIDTH="50%" ALIGN="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %e %B, %Y"|capitalize}<BR>
+			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
 			Sporz±dzone przez: {$layout.logname}
 		</TD>
 	</TR>
@@ -15,25 +15,23 @@
 <TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN=CENTER>
 	<TR>
 		<TD  ALIGN=CENTER CLASS=head>
-			LP:
+			Lp
 		</TD>
 		<TD  ALIGN=CENTER WIDTH=30 CLASS=head>
-			ID:
+			Id
+		</TD>
+		<TD  ALIGN=RIGHT CLASS=head>
+			<B>Nazwa komputera
 		</TD>
 		<TD  ALIGN=CENTER CLASS=head>
-			<B>Nazwa komputera:
+			Adres IP
 		</TD>
 		<TD  ALIGN=CENTER CLASS=head>
-			IP:
+			Adres MAC
 		</TD>
-		<TD  ALIGN=CENTER CLASS=head>
-			MAC:
+		<TD  ALIGN=LEFT CLASS=head>
+			W³a¶ciciel
 		</TD>
-		<TD  ALIGN=CENTER CLASS=head>
-			W³a¶ciciel:
-		</TD>
-		
-
 	</TR>
 	{cycle values="#FFFFFF,#EEEEEE" print=false}
 	{section name=nodelist loop=$nodelist}{if $nodelist[nodelist].id}
@@ -41,10 +39,10 @@
 		<TD ALIGN=CENTER>
 			{counter}
 		</TD>
-		<TD>
+		<TD ALIGN=CENTER>
 			{$nodelist[nodelist].id|string_format:"%04d"}
 		</TD>
-		<TD ALIGN=CENTER>
+		<TD ALIGN=RIGHT>
 			<B>{$nodelist[nodelist].name}</B>
 		</TD>
 		<TD ALIGN=CENTER>
@@ -53,10 +51,9 @@
 		<TD ALIGN=CENTER>
 			{$nodelist[nodelist].mac}
 		</TD>
-		<TD ALIGN=CENTER>
+		<TD ALIGN=LEFT>
 			{$nodelist[nodelist].owner}
 		</TD>
-
 	</TR>
 	{/if}{/section}
 </TABLE>
