@@ -43,6 +43,37 @@ ALTER TABLE tariffs CHANGE uprate uprate INT(11), CHANGE downrate downrate INT(1
 
 /* Faktury inaczej */
 ALTER TABLE cash ADD invoiceid INT DEFAULT '0' NOT NULL;
+ALTER TABLE tariffs ADD taxvalue INT DEFAULT '0' NOT NULL AFTER value;
+ALTER TABLE tariffs ADD sww VARCHAR(255) DEFAULT '' NOT NULL AFTER taxvalue;
+    
+CREATE TABLE invoices (
+      id INT NOT NULL AUTO_INCREMENT ,
+      number INT NOT NULL ,
+      cdate INT NOT NULL ,
+      paytime TINYINT( 8 ) NOT NULL ,
+      customerid INT NOT NULL ,
+      name VARCHAR( 255 ) NOT NULL ,
+      address VARCHAR( 255 ) NOT NULL ,
+      nip VARCHAR( 16 ) NOT NULL ,
+      zip VARCHAR( 6 ) NOT NULL ,
+      city VARCHAR( 32 ) NOT NULL ,
+      phone VARCHAR( 255 ) NOT NULL ,
+      finished TINYINT( 1 ) NOT NULL DEFAULT '0',
+      PRIMARY KEY (id),
+      UNIQUE KEY id (id),
+      KEY id_2 (id)
+) TYPE=MyISAM;
+
+CREATE TABLE invoicecontents (
+    invoiceid INT NOT NULL,
+    value DOUBLE NOT NULL,
+    taxvalue INT NOT NULL,
+    sww VARCHAR( 255 ) NOT NULL DEFAULT '',
+    content VARCHAR( 16 ) NOT NULL,
+    count INT NOT NULL,
+    description VARCHAR( 255 ) NOT NULL,
+    tariffid INT NOT NULL
+) TYPE=MyISAM;
 
 /* Nowa tabela dla statystyk */
 DROP TABLE IF EXISTS stats;
