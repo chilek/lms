@@ -32,7 +32,8 @@ class LMS {
 
 	var $db;
 	var $session;
-	var $version = '1.0.36';
+	var $_version = '1.0.36';
+	var $_usecache = FALSE;
 
 	function LMS($db,$session)
 	{
@@ -40,15 +41,41 @@ class LMS {
 		$this->session=$session;
 	}
 
+	function Cache($arg=FALSE)
+	{
+		if($arg)
+			$this->_usecache = TRUE;
+		else
+			$this->_usecache = FALSE;
+	}
+
+	function SetTS($table)
+	{
+		$db=$this->db;
+		$time=time();
+		$db->ExecSQL("UPDATE `timestamps` SET `time` = '".$time."' WHERE `table` = '_'");
+		$db->ExecSQL("UPDATE `timestamps` SET `time` = '".$time."' WHERE `table` = '".$table."'");
+	}
+
+	function GetTS($table)
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT `time` FROM `timestamps` WHERE `table` = '".$table."'");
+		return $db->row[time];
+	}
+
 	function SetAdminPassword($id,$passwd)
 	{
 		$db=$this->db;
+//		$this->SetTS("admins");
 		return $db->ExecSQL("UPDATE `admins` SET `passwd` = '".crypt($passwd)."' WHERE `id` = '".$id."' LIMIT 1");
 	}
 
 	function DeleteUser($id)
 	{
 		$db=$this->db;
+//		$this->SetTS("users");
+//		$this->SetTS("nodes");
 		$db->ExecSQL("DELETE FROM `nodes` WHERE `ownerid` = '".$id."'");
 		return $db->ExecSQL("DELETE FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 	}
@@ -56,6 +83,7 @@ class LMS {
 	function DeleteNode($id)
 	{
 		$db=$this->db;
+//		$this->SetTS("nodes");
 		return $db->ExecSQL("DELETE FROM `nodes` WHERE `id` = '".$id."'");
 	}
 
@@ -91,6 +119,7 @@ class LMS {
 	{
 		$session=$this->session;
 		$db=$this->db;
+//		$this->SetTS("users");
 		return $db->ExecSQL("UPDATE `users` SET 
 		`phone1` = '".$userdata[phone1]."',
 		`phone2` = '".$userdata[phone2]."',
@@ -127,7 +156,6 @@ class LMS {
 
 	function GetNetworkList()
 	{
-		$db=$this->db;
 		$networks = $db->FetchArray("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks`");
 		$networks[total] = sizeof($networks[id]);
 		if($networks[total])
@@ -278,6 +306,8 @@ class LMS {
 	function NetworkShift($network="0.0.0.0",$mask="0.0.0.0",$shift=0)
 	{
 		$db=$this->db;
+//		$this->SetTS("nodes");
+//		$this->SetTS("networks");
 		$nodes = $db->FetchArray("SELECT `ipaddr`, `id` FROM `nodes`");
 		if(sizeof($nodes[ipaddr]))
 			foreach($nodes[ipaddr] as $key => $value)
@@ -288,6 +318,7 @@ class LMS {
 	function NetworkUpdate($networkdata)
 	{
 		$db=$this->db;
+//		$this->SetTS("networks");
 		return $db->ExecSQL("UPDATE `networks` SET `name` = '".strtoupper($networkdata[name])."', `address` = '".$networkdata[address]."', `mask` = '".$networkdata[mask]."', `gateway` = '".$networkdata[gateway]."', `dns` = '".$networkdata[dns]."', `domain` = '".$networkdata[domain]."', `wins` = '".$networkdata[wins]."', `dhcpstart` = '".$networkdata[dhcpstart]."', `dhcpend` = '".$networkdata[dhcpend]."' WHERE `id` = '".$networkdata[id]."' LIMIT 1");
 	}
 				
@@ -295,6 +326,8 @@ class LMS {
 	function NetworkCompress($id,$shift=0)
 	{
 		$db=$this->db;
+//		$this->SetTS("nodes");
+//		$this->SetTS("networks");
 		$network=$this->GetNetworkRecord($id);
 		$address = $network[addresslong]+$shift;
 		foreach($network[nodes][id] as $key => $value)
@@ -310,6 +343,8 @@ class LMS {
 	function NetworkRemap($src,$dst)
 	{
 		$db=$this->db;
+//		$this->SetTS("nodes");
+//		$this->SetTS("networks");
 		$network[source] = $this->GetNetworkRecord($src);
 		$network[dest] = $this->GetNetworkRecord($dst);
 		foreach($network[source][nodes][id] as $key => $value)
@@ -455,7 +490,7 @@ class LMS {
 	{
 		$db=$this->db;
 
-		$balancelist = $db->FetchArray("SELECT * FROM `cash` WHERE `type` != 4 ORDER BY `time` ASC");
+		$balancelist = $db->FetchArray("SELECT * FROM `cash` ORDER BY `time` ASC");
 
 		$balancelist[total] = sizeof($balancelist[id]);
 
@@ -482,9 +517,14 @@ class LMS {
 						$balancelist[expense] = $balancelist[expense] + $balancelist[value][$key];
 					break;
 					case "3":
-						$balancelist[type][$key] = "wp³ata";
+						$balancelist[type][$key] = "wp³ata u¿";
 						$balancelist[after][$key] = $balancelist[before][$key] + $balancelist[value][$key];
 						$balancelist[incomeu] = $balancelist[incomeu] + $balancelist[value][$key];
+					break;
+					case "4":
+						$balancelist[type][$key] = "obci±¿enie u¿";
+						$balancelist[after][$key] = $balancelist[before][$key];
+						$balancelist[uinvoice] = $balancelist[uinvoice] + $balancelist[value][$key];
 					break;
 					default:
 						$balancelist[type][$key] = '<FONT COLOR="RED">???</FONT>';
@@ -714,6 +754,7 @@ class LMS {
 	function NodeSet($id)
 	{
 		$db=$this->db;
+//		$this->SetTS("nodes");
 		$db->FetchRow("SELECT `access` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
 		if($db->row[access]=="Y")
 			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'N' WHERE `id` = '".$id."' LIMIT 1");
@@ -724,6 +765,7 @@ class LMS {
 	function NodeSetU($id,$access=FALSE)
 	{
 		$db=$this->db;
+//		$this->SetTS("nodes");
 		if($access)
 			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'Y' WHERE `ownerid` = '".$id."'");
 		else
@@ -801,6 +843,7 @@ class LMS {
 	function NodeAdd($nodedata)
 	{
 		$db=$this->db;
+//		$this->SetTS("nodes");
 		$session=$this->session;
 		$db->ExecSQL("INSERT INTO `nodes` (`name`, `mac`, `ipaddr`, `ownerid`, `creatorid`, `creationdate`) VALUES ('".strtoupper($nodedata[name])."', '".strtoupper($nodedata[mac])."', '".$nodedata[ipaddr]."', '".$nodedata[ownerid]."', '".$session->id."', '".time()."')");
 		$db->FetchRow("SELECT max(id) FROM `nodes`");
@@ -810,6 +853,7 @@ class LMS {
 	function UserAdd($useradd)
 	{
 		$db=$this->db;
+//		$this->SetTS("users");
 		$session=$this->session;
 		if(!isset($useradd[status]))
 			$useradd[status] = 1;
@@ -862,6 +906,7 @@ class LMS {
 	function AddBalance($addbalance)
 	{
 		$db=$this->db;
+//		$this->SetTS("cash");
 		$session=$this->session;
 		return $db->ExecSQL("INSERT INTO `cash`	(time, adminid, type, value, userid, comment) VALUES ('".time()."','".$session->id."','".$addbalance[type]."','".$addbalance[value]."','".$addbalance[userid]."','".$addbalance[comment]."' )");
 	}
@@ -927,7 +972,7 @@ class LMS {
 
 		if($netadd[prefix] != "")
 			$netadd[mask] = prefix2mask($netadd[prefix]);
-		
+//		$this->SetTS("networks");
 		$db->ExecSQL("
 		INSERT INTO `networks` (`name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend`)
 		VALUES ( '".strtoupper($netadd[name])."','".$netadd[address]."','".$netadd[mask]."','".$netadd[gateway]."',
@@ -943,6 +988,7 @@ class LMS {
 	function NetworkDelete($id)
 	{
 		$db=$this->db;
+//		$this->SetTS("networks");
 		return $db->ExecSQL("DELETE FROM `networks` WHERE `id` = '".$id."'");
 	}
 }
