@@ -2474,6 +2474,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function DeleteNetDev($id)
 	{
 		$this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id));
+		$this->DB->Execute('DELETE FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
 		$this->DB->Execute('UPDATE nodes SET netdev=0 WHERE netdev=?', array($id));
 		$this->SetTS('nodes');
 		$this->SetTS('netlinks');
