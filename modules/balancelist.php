@@ -49,11 +49,8 @@ $layout['pagetitle'] = "Bilans finansowy";
 $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('start',$start);
-$SMARTY->assign('prev',$prev);
-$SMARTY->assign('next',$next);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('pagelimit',$pagelimit);
-$SMARTY->assign('start',$start);
 $SMARTY->display('balancelist.html');
 
 ?>
