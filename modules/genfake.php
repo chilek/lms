@@ -1511,6 +1511,7 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 		$useradd['email'] = strtolower($useradd['name']).'.'.strtolower($useradd['lastname']).'@'.$emaildomains[mt_rand(0,$esize-1)];
 		$useradd['status'] = 3;
 		$useradd['tariff'] = mt_rand(1,3);
+		$useradd['payday'] = mt_rand(1,28);
 		$id = $LMS->UserAdd($useradd);
 		$nodes = mt_rand(1,3);
 		for($j = 0; $j < $nodes; $j++)
