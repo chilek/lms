@@ -466,12 +466,8 @@ class LMS
 		foreach($tnodes as $idx => $row)
 			$nodes[ip_long($row[ipaddr])] = $row;
 
-		if($strip)
-			echo "Strip";
-
 		for($i=0;$i<$network[size]-($strip ? 2 : 0);$i++)
 		{
-//			$node = $nodes["".($network[addresslong]+$i).""];
 			$longip = $network[addresslong] + $i + ($strip ? 1 : 0);
 			$node = $nodes["".$longip.""];
 			$network[nodes][addresslong][$i] = $longip;
