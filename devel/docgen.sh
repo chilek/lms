@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Skrypt s³u¿y do tworzenia dokumentacji w ró¿nych formatach
+# rypt s³u¿y do tworzenia dokumentacji w ró¿nych formatach
 # (html, txt) na podstawie ¼ród³owych plików sgml
 # Przed u¿yciem nale¿y zainstalowaæ w systemie sgml-tools
 # z openjade (lynx'a pewnie ka¿dy ma)
@@ -15,7 +15,7 @@ case "$1" in
 	if [ $? -ne 0 ]
 	    then exit 1
 	fi
-	mv ./*.html ../html/
+	mv ./*.html ../html/en/
 	exit 0
     ;;
 
@@ -25,7 +25,7 @@ case "$1" in
 	    then exit 1
 	fi
 #	elinks -dump ../README.html > ../README
-	lynx -dump ../README.html -display_charset=ISO-8859-2 -raw -nolist -dont_wrap_pre > ../README
+	lynx -dump ../README.html -display_charset=ISO-8859-1 -raw -nolist -dont_wrap_pre > ../README
         if [ $? -ne 0 ]
 	    then
 	    exit 2
@@ -38,13 +38,13 @@ case "$1" in
 	if [ $? -ne 0 ]
 	    then exit 1
 	fi
-	mv ./*.html ../html/
+	mv ./*.html ../html/en/
 
 	jade -t sgml -V nochunks -d lms.dsl index.sgml > ../README.html
 	if [ $? -ne 0 ]
 	    then exit 1
 	fi
-	lynx -dump ../README.html -display_charset=ISO-8859-2 -raw -nolist -dont_wrap_pre > ../README
+	lynx -dump ../README.html -display_charset=ISO-8859-1 -raw -nolist -dont_wrap_pre > ../README
         if [ $? -ne 0 ]
 	    then
 	    exit 2
