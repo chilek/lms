@@ -30,7 +30,7 @@ if(!$LMS->TariffExists($_GET['id']))
 	die;
 }
 $tariff = $LMS->GetTariff($_GET['id']);
-$layout['pagetitle'] = "Informacja o taryfie: ".$tariff['name'];
+$layout['pagetitle'] = trans('Tariff Information $0',$tariff['name']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
