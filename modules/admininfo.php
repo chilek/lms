@@ -30,7 +30,7 @@ if(!$LMS->AdminExists($_GET[id]))
 	die;
 }
 
-$layout[pagetitle]="Informacje o administratorze ".$LMS->GetAdminName($_GET[id]);
+$layout[pagetitle]="Informacje o administratorze: ".$LMS->GetAdminName($_GET[id]);
 $admininfo=$LMS->GetAdminInfo($_GET[id]);
 
 $rights = $LMS->GetAdminRights($_GET[id]);
@@ -44,6 +44,9 @@ $SMARTY->assign("accesslist",$accesslist);
 $SMARTY->display("admininfo.html");
 /*
  * $Log$
+ * Revision 1.18  2003/09/26 17:44:10  alec
+ * ujednolicone nag³ówki (dodany ':')
+ *
  * Revision 1.17  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

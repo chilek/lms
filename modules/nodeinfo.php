@@ -48,7 +48,7 @@ if($nodeinfo['netdev'] == 0)
 else
 	$netdevices = $LMS->GetNetDev($nodeinfo['netdev']);
 
-$layout[pagetitle]="Informacje o komputerze ".$nodeinfo[name];
+$layout[pagetitle]="Informacje o komputerze: ".$nodeinfo[name];
 
 $SMARTY->assign("netdevices",$netdevices);
 $SMARTY->assign("netdevice",$netdevice);
@@ -62,6 +62,9 @@ $SMARTY->display("nodeinfo.html");
 
 /*
  * $Log$
+ * Revision 1.23  2003/09/26 17:44:10  alec
+ * ujednolicone nag³ówki (dodany ':')
+ *
  * Revision 1.22  2003/09/22 18:12:33  lexx
  * - komputery moga sie linkowac
  *
