@@ -19,7 +19,7 @@
 			<img src="img/money.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$userlist.state}&o=balance{if $userlist.direction eq 4 && $userlist.order eq "balance"},desc{/if}">Saldo:</A>&nbsp;{if $userlist.order eq "balance"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu">
-			<B>Razem: {$userlist.total}</B>
+			<NOBR><B>Razem: {$userlist.total}</B></NOBR>
 		</TD>
 	</TR>
 	<TR bgColor="CEBD9B">
@@ -54,7 +54,13 @@
 	{sectionelse}
 	<TR>
 		<TD colspan="5" align="center" class="flr">
-			<B>Nie posiadasz ¿adnych u¿ytkowników o podanym statusie. U¿yj formularza poni¿ej aby dodaæ nowego u¿ytkownika.</B>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><B>Nie posiadasz ¿adnych u¿ytkowników o podanym statusie. U¿yj formularza poni¿ej aby dodaæ nowego u¿ytkownika.</B></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
 	{/section}
 	<TR bgColor="#DFD5BD">
 		<TD colspan="2" class="fleftu" align="right" valign="top">
