@@ -529,6 +529,8 @@ database = /usr/local/lms/lms.db</screen>
 	<listitem><para>dostêp do statystyk</para></listitem>
 	<listitem><para>dostêp do korespondencji seryjnej</para></listitem>
 	<listitem><para>brak dostêpu do modyfikacji i zak³adania kont administratorów</para></listitem>
+	<listitem><para>zarz±dzanie Helpdeskiem (RT)</para></listitem>
+	<listitem><para>obs³uga Helpdesku (RT)</para></listitem>
 	<listitem><para>brak dostêpu</para></listitem>
 	</itemizedlist>
       Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania. Modu³y do których 
