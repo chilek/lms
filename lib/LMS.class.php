@@ -1395,6 +1395,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	{
 		$result['connected'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE access=1 AND ownerid>0');
 		$result['disconnected'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE access=0 AND ownerid>0');
+		$result['online'] = $this->DB->GetOne('SELECT COUNT(id) FROM nodes WHERE ?NOW?-lastonline < ? AND ownerid>0', array($this->CONFIG['phpui']['lastonline_limit']));
 		$result['total'] = $result['connected'] + $result['disconnected'];
 		return $result;
 	}
