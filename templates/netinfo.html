@@ -118,7 +118,7 @@
 			{if $unlockedit}
 			<form name="remap" action="" method="get">
 				<A href="?m=netcmp&id={$network.id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to connect new addresses for all computers? Remember, it can make problems for your network :){/t}');">{t}Put in order{/t} <img src="img/cmp.gif" align="absmiddle" ALT="[ {t}Put in order{/t} ]" border="0"></A><BR>
-				<input type="hidden" name="is_sure">
+				<input type="hidden" name="is_sure" value="1">
 				<input type="hidden" name="m" value="netremap">
 				<input type="hidden" name="id" value="{$network.id}">
 				<a href="javascript:document.remap.submit()" onClick="return confirm('{t 0=$network.name}Are you sure, you want to change network $0 to network '+getText(document.remap.mapto.value)+'?{/t}');">{t}Reassign to network:{/t}</A> 
