@@ -805,11 +805,11 @@ class LMS
 			break;
 			
 			case "address":
-				$sqlord = "ORDER BY address";
+				$sqlord = "ORDER BY address, lastname, name, id";
 			break;
 			
 			case "email":
-				$sqlord = "ORDER BY email";
+				$sqlord = "ORDER BY email, lastname, name, id";
 			break;
 			
 			case "balance":
@@ -817,11 +817,11 @@ class LMS
 			break;
 
 			case "gg":
-				$sqlord = "ORDER BY gguin";
+				$sqlord = "ORDER BY gguin, lastname, name, id";
 			break;
 			
 			default:
-				$sqlord = "ORDER BY lastname, name";
+				$sqlord = "ORDER BY lastname, name, id";
 			break;
 		}
 		
