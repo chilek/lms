@@ -138,10 +138,10 @@ void reload(GLOBAL *g, struct shaper_module *shaper)
 					char *downrate = g->db_get_data(ures,i,"downrate");
 					char *upceil = g->db_get_data(ures,i,"upceil");
 					char *downceil = g->db_get_data(ures,i,"downceil");
-					int n_upceil = atoi(upceil);					
-					int n_downceil = atoi(downceil);					
-					int n_uprate = atoi(uprate);					
-					int n_downrate = atoi(downrate);					
+					int n_upceil = atoi(upceil);
+					int n_downceil = atoi(downceil);
+					int n_uprate = atoi(uprate);
+					int n_downrate = atoi(downrate);
 					
 					int got_node = 0;
 
@@ -198,7 +198,6 @@ void reload(GLOBAL *g, struct shaper_module *shaper)
 									}
 								}
 
-						
 								if(shaper->one_class_per_host) x++;
 							}
 							
@@ -215,7 +214,7 @@ void reload(GLOBAL *g, struct shaper_module *shaper)
 								g->str_replace(&htb, "%downrate", downrate);
 								if(!n_downceil)
 									g->str_replace(&htb, "%downceil", downrate);
-								else						
+								else
 									g->str_replace(&htb, "%downceil", downceil);
 							
 								// write to file
