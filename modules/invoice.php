@@ -39,7 +39,9 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	$which = ($_GET[which] != '' ? $_GET[which] : 'ORYGINA£+KOPIA');
 	foreach($ids as $idx => $invoiceid)
 	{
+		echo '<PRE>';
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
+		print_r($invoice);
 		foreach(split('\+', $which) as $type)
 		{
 			$SMARTY->assign('type',$type);

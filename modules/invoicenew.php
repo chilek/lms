@@ -26,6 +26,7 @@
 
 $layout[pagetitle] = 'Nowa faktura';
 $users = $LMS->GetUserNames();
+$tariffs = $LMS->GetTariffs();
 $contents = $_SESSION[invoicecontents];
 $customer = $_SESSION[invoicecustomer];
 $itemdata = r_trim($_POST);
@@ -70,6 +71,17 @@ switch($_GET['action'])
 		if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['userid'])))
 			$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['userid']));
 	break;
+
+	case 'save':
+		if($contents && $customer)
+		{
+			$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents));
+		}
+		unset($_SESSION[invoicecontents]);
+		unset($_SESSION[invoicecustomer]);
+		header('Location: ?m=invoicelist&openonload='.$iid);
+		die;
+	break;
 }
 
 $_SESSION[invoicecontents] = $contents;
@@ -84,6 +96,7 @@ if($_GET['action'] != '')
 
 $SMARTY->assign('contents',$contents);
 $SMARTY->assign('customer',$customer);
+$SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('users',$users);
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('invoicenew.html');

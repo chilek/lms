@@ -55,6 +55,7 @@ $SMARTY->assign('layout',$layout);
 $SMARTY->assign('marks',$marks);
 $SMARTY->assign('marked',$marked);
 $SMARTY->assign('invoicelist',$invoicelist);
+$SMARTY->assign('openonload',$_GET['openonload']);
 $SMARTY->display('invoicelist.html');
 
 ?>
