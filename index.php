@@ -93,15 +93,13 @@ require_once($_LIB_DIR.'/Session.class.php');
 require_once($_LIB_DIR.'/leftmenu.php');
 require_once($_LIB_DIR.'/accesstable.php');
 
-// Initialize ADODB object
-
-$ADB = DBInit($_DBTYPE,$_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME);
+$DB = DBInit($_DBTYPE,$_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME);
 
 // Initialize database and template classes
 
-$SESSION = new Session($ADB,$_TIMEOUT);
+$SESSION = new Session($DB,$_TIMEOUT);
 
-$LMS = new LMS($ADB,$SESSION);
+$LMS = new LMS($DB,$SESSION);
 $LMS->CONFIG['backup_dir'] = $_BACKUP_DIR;
 $LMS->CONFIG['debug_email'] = $_CONFIG['phpui']['debug_email'];
 
@@ -119,7 +117,7 @@ $SMARTY->debugging = chkconfig($_CONFIG['phpui']['smarty_debug']);
 $layout['logname']=$SESSION->logname;
 $layout['logid']=$SESSION->id;
 $layout['lmsv']='1.1-cvs ('.$LMS->_version.'/'.$SESSION->_version.')';
-$layout['lmsdbv']=$ADB->_version;
+$layout['lmsdbv']=$DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['uptime']=uptime();
 $layout['hostname']=hostname();
@@ -183,6 +181,9 @@ else
 
 /*
  * $Log$
+ * Revision 1.97  2003/09/05 02:07:04  lukasz
+ * - massive attack: s/this->ADB->/this->DB->/g
+ *
  * Revision 1.96  2003/09/01 22:21:40  lukasz
  * - literówka
  *

@@ -35,11 +35,11 @@ class LMS
 	var $CONFIG;		// tablica zawieraj±ca zmienne z lms.ini
 	var $_version = NULL;	// wersja klasy
 
-	function LMS($ADB,$SESSION) // ustawia zmienne klasy
+	function LMS($DB,$SESSION) // ustawia zmienne klasy
 	{
 		$this->_version = eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$');
-		$this->SESSION=$SESSION;
-		$this->ADB=$ADB;
+		$this->SESSION = $SESSION;
+		$this->DB = $DB;
 	}
 	
 	/*
@@ -48,25 +48,25 @@ class LMS
 
 	function SetTS($table) // ustawia timestamp tabeli w tabeli 'timestamps'
 	{
-		if($this->ADB->GetOne('SELECT * FROM timestamps WHERE tablename=?',array($table)))
-			$this->ADB->Execute('UPDATE timestamps SET time = ?NOW? WHERE tablename=?',array($table));
+		if($this->DB->GetOne('SELECT * FROM timestamps WHERE tablename=?',array($table)))
+			$this->DB->Execute('UPDATE timestamps SET time = ?NOW? WHERE tablename=?',array($table));
 		else
-			$this->ADB->Execute('INSERT INTO timestamps (tablename, time) VALUES (?, ?NOW?)',array($table));
+			$this->DB->Execute('INSERT INTO timestamps (tablename, time) VALUES (?, ?NOW?)',array($table));
 
-		if($this->ADB->GetOne('SELECT * FROM timestamps WHERE tablename=?',array('_global')))
-			$this->ADB->Execute('UPDATE timestamps SET time = ?NOW? WHERE tablename=?',array('_global'));
+		if($this->DB->GetOne('SELECT * FROM timestamps WHERE tablename=?',array('_global')))
+			$this->DB->Execute('UPDATE timestamps SET time = ?NOW? WHERE tablename=?',array('_global'));
 		else
-			$this->ADB->Execute('INSERT INTO timestamps (tablename, time) VALUES (?, ?NOW?)',array('_global'));
+			$this->DB->Execute('INSERT INTO timestamps (tablename, time) VALUES (?, ?NOW?)',array('_global'));
 	}
 
 	function GetTS($table) // zwraca timestamp tabeli zapisany w tabeli 'timestamps'
 	{
-		return $this->ADB->GetOne("SELECT time FROM timestamps WHERE tablename=?",array($table));
+		return $this->DB->GetOne("SELECT time FROM timestamps WHERE tablename=?",array($table));
 	}
 
 	function DeleteTS($table) // usuwa timestamp tabeli zapisany w tabeli 'timestamps'
 	{
-		return $this->ADB->Execute("DELETE FROM timestamps WHERE tablename=?",array($table));
+		return $this->DB->Execute("DELETE FROM timestamps WHERE tablename=?",array($table));
 	}
 	
 	function DatabaseList() // zwraca listê kopii baz danych w katalogu z backupami
@@ -111,29 +111,29 @@ class LMS
 		if(!$filename)
 			return FALSE;
 		$file = fopen($filename,"r");
-		$this->ADB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
+		$this->DB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
 		while(!feof($file))
 		{
 			$line = fgets($file,4096);
 			if($line!="")
 			{
 				$line=str_replace(";\n","",$line);
-				$this->ADB->Execute($line);
+				$this->DB->Execute($line);
 			}
 		}
-		$this->ADB->CommitTrans();		
+		$this->DB->CommitTrans();		
 		fclose($file);
 
 		// Okej, zróbmy parê bzdurek db depend :S 
 		// Postgres sux ! (warden)
 		// Tak, a ³y¿ka na to 'niemo¿liwe' i polecia³a za wann± potr±caj±c bannanem musztardê (lukasz)
 
-		switch($this->ADB->databaseType)
+		switch($this->DB->databaseType)
 		{
 			case "postgres":
 				// uaktualnijmy sequencery postgresa
-				foreach($this->ADB->ListTables() as $tablename)
-					$this->ADB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
+				foreach($this->DB->ListTables() as $tablename)
+					$this->DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
 			break;
 		}
 	}						
@@ -144,10 +144,10 @@ class LMS
 			return FALSE;
 		if($dumpfile = fopen($filename,"w"))
 		{
-			foreach($this->ADB->ListTables() as $tablename)
+			foreach($this->DB->ListTables() as $tablename)
 			{
 				fputs($dumpfile,"DELETE FROM $tablename;\n");
-				if($dump = $this->ADB->GetAll("SELECT * FROM ".$tablename))
+				if($dump = $this->DB->GetAll("SELECT * FROM ".$tablename))
 					foreach($dump as $row)
 					{
 						fputs($dumpfile,"INSERT INTO $tablename (");
@@ -207,19 +207,19 @@ class LMS
 	function SetAdminPassword($id,$passwd) // ustawia has³o admina o id równym $id na $passwd
 	{
 		$this->SetTS("admins");
-		$this->ADB->Execute("UPDATE admins SET passwd=? WHERE id=?",array(crypt($passwd),$id));
+		$this->DB->Execute("UPDATE admins SET passwd=? WHERE id=?",array(crypt($passwd),$id));
 	}
 
 	function GetAdminName($id) // zwraca imiê admina
 	{
-		return $this->ADB->GetOne("SELECT name FROM admins WHERE id=?",array($id));
+		return $this->DB->GetOne("SELECT name FROM admins WHERE id=?",array($id));
 	}
 
 	function GetAdminList() // zwraca listê administratorów
 	{
 	    
 	    $query = "SELECT id, login, name, lastlogindate, lastloginip FROM admins ORDER BY login ASC";
-	    if($adminslist = $this->ADB->GetAll($query))
+	    if($adminslist = $this->DB->GetAll($query))
 		{
 			foreach($adminslist as $idx => $row)
 			{
@@ -244,32 +244,32 @@ class LMS
 
 	function GetAdminIDByLogin($login) // zwraca id admina na podstawie loginu
 	{
-		return $this->ADB->GetOne("SELECT id FROM admins WHERE login=?",array($login));
+		return $this->DB->GetOne("SELECT id FROM admins WHERE login=?",array($login));
 	}
 
 	function AdminAdd($adminadd) // dodaje admina. wymaga tablicy zawieraj±cej dane admina
 	{
 		$this->SetTS("admins");
-		if($this->ADB->Execute("INSERT INTO admins (login, name, email, passwd, rights) VALUES (?, ?, ?, ?, ?)",array($adminadd['login'], $adminadd['name'], $adminadd['email'], crypt($adminadd['password']),$adminadd['rights'])))
-			return $this->ADB->GetOne("SELECT id FROM admins WHERE login=?",array($adminadd['login']));
+		if($this->DB->Execute("INSERT INTO admins (login, name, email, passwd, rights) VALUES (?, ?, ?, ?, ?)",array($adminadd['login'], $adminadd['name'], $adminadd['email'], crypt($adminadd['password']),$adminadd['rights'])))
+			return $this->DB->GetOne("SELECT id FROM admins WHERE login=?",array($adminadd['login']));
 		else
 			return FALSE;
 	}
 
 	function AdminDelete($id) // usuwa admina o podanym id
 	{
-		return $this->ADB->Execute("DELETE FROM admins WHERE id=?",array($id));
+		return $this->DB->Execute("DELETE FROM admins WHERE id=?",array($id));
 	}
 	
 	function AdminExists($id) // zwraca TRUE/FALSE zale¿nie od tego czy admin istnieje czy nie
 	{
-		return ($this->ADB->GetOne("SELECT * FROM admins WHERE id=?",array($id))?TRUE:FALSE);
+		return ($this->DB->GetOne("SELECT * FROM admins WHERE id=?",array($id))?TRUE:FALSE);
 	}
 
 
 	function GetAdminInfo($id) // zwraca pe³ne info o podanym adminie
 	{
-		if($admininfo = $this->ADB->GetRow("SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip FROM admins WHERE id=?",array($id)))
+		if($admininfo = $this->DB->GetRow("SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip FROM admins WHERE id=?",array($id)))
 		{
 			if($admininfo['lastlogindate'])
 				$admininfo['lastlogin'] = date("Y/m/d H:i",$admininfo['lastlogindate']);
@@ -304,12 +304,12 @@ class LMS
 	function AdminUpdate($admininfo) // uaktualnia rekord admina.
 	{
 		$this->SetTS("admins");
-		return $this->ADB->Execute("UPDATE admins SET login=?, name=?, email=?, rights=? WHERE id=?",array($admininfo['login'],$admininfo['name'],$admininfo['email'],$admininfo['rights'],$admininfo['id']));
+		return $this->DB->Execute("UPDATE admins SET login=?, name=?, email=?, rights=? WHERE id=?",array($admininfo['login'],$admininfo['name'],$admininfo['email'],$admininfo['rights'],$admininfo['id']));
 	}
 
 	function GetAdminRights($id)
 	{
-		$mask = $this->ADB->GetOne("SELECT rights FROM admins WHERE id=?",array($id));
+		$mask = $this->DB->GetOne("SELECT rights FROM admins WHERE id=?",array($id));
 		if($mask == "")
 			$mask = "1";
 		$len = strlen($mask);
@@ -327,23 +327,23 @@ class LMS
 
 	function GetUserName($id)
 	{
-		return $this->ADB->GetOne("SELECT ".$this->ADB->Concat("UPPER(lastname)","' '","name")." FROM users WHERE id=?",array($id));
+		return $this->DB->GetOne("SELECT ".$this->DB->Concat("UPPER(lastname)","' '","name")." FROM users WHERE id=?",array($id));
 	}
 
 	function GetEmails($group)
 	{
-		return $this->ADB->GetAll("SELECT email, ".$this->ADB->Concat("lastname", "' '", "name")." AS username FROM users WHERE 1=1 ".($group !=0 ? " AND status='".$group."'" : "")." AND email != ''");
+		return $this->DB->GetAll("SELECT email, ".$this->DB->Concat("lastname", "' '", "name")." AS username FROM users WHERE 1=1 ".($group !=0 ? " AND status='".$group."'" : "")." AND email != ''");
 	}
 
 	function GetUserEmail($id)
 	{
-		return $this->ADB->GetOne("SELECT email FROM users WHERE id=?",array($id));
+		return $this->DB->GetOne("SELECT email FROM users WHERE id=?",array($id));
 	}
 
 	function UserExists($id)
 	{
-		$got = $this->ADB->GetOne("SELECT deleted FROM users WHERE id=?",array($id));
-		switch($this->ADB->GetOne("SELECT deleted FROM users WHERE id=?",array($id)))
+		$got = $this->DB->GetOne("SELECT deleted FROM users WHERE id=?",array($id));
+		switch($this->DB->GetOne("SELECT deleted FROM users WHERE id=?",array($id)))
 		{
 			case '0':
 				return TRUE;
@@ -360,20 +360,20 @@ class LMS
 
 	function RecoverUser($id)
 	{
-		return $this->ADB->Execute("UPDATE users SET deleted=0 WHERE id=?",array($id));
+		return $this->DB->Execute("UPDATE users SET deleted=0 WHERE id=?",array($id));
 	}
 
 	function GetUsersWithTariff($id)
 	{
-		return $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE tariff=? AND status=3 AND deleted=0",array($id));
+		return $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE tariff=? AND status=3 AND deleted=0",array($id));
 	}
 
 	function UserAdd($useradd)
 	{
 		$this->SetTS("users");
 		
-		if($this->ADB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, tariff, creationdate, creatorid, info, payday) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['status'], $useradd['tariff'], $this->SESSION->id, $useradd['info'], $useradd['payday'])))
-			return $this->ADB->GetOne("SELECT MAX(id) FROM users");
+		if($this->DB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, tariff, creationdate, creatorid, info, payday) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['status'], $useradd['tariff'], $this->SESSION->id, $useradd['info'], $useradd['payday'])))
+			return $this->DB->GetOne("SELECT MAX(id) FROM users");
 		else
 			return FALSE;
 	}
@@ -382,40 +382,40 @@ class LMS
 	{
 		$this->SetTS("users");
 		$this->SetTS("nodes");
-		$res1=$this->ADB->Execute("DELETE FROM nodes WHERE ownerid=?",array($id));
-		$res2=$this->ADB->Execute("UPDATE users SET deleted=1 WHERE id=?",array($id));
+		$res1=$this->DB->Execute("DELETE FROM nodes WHERE ownerid=?",array($id));
+		$res2=$this->DB->Execute("UPDATE users SET deleted=1 WHERE id=?",array($id));
 		return $res1 || $res2;
 	}
 
 	function UserUpdate($userdata)
 	{
 		$this->SetTS("users");
-		return $this->ADB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, tariff=?, moddate=?NOW?, modid=?, info=?, lastname=?, name=?, payday=?, deleted=0 WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['tariff'], $this->SESSION->id, $userdata['info'], strtoupper($userdata['lastname']), $userdata['name'], $userdata['payday'], $userdata['id'] ) );
+		return $this->DB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, tariff=?, moddate=?NOW?, modid=?, info=?, lastname=?, name=?, payday=?, deleted=0 WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['tariff'], $this->SESSION->id, $userdata['info'], strtoupper($userdata['lastname']), $userdata['name'], $userdata['payday'], $userdata['id'] ) );
 	}
 
 	function GetUserNodesNo($id)
 	{
-		return $this->ADB->GetOne("SELECT COUNT(*) FROM nodes WHERE ownerid=?",array($id));
+		return $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ownerid=?",array($id));
 	}
 
 	function GetUserIDByIP($ipaddr)
 	{
-		return $this->ADB->GetOne("SELECT ownerid FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
+		return $this->DB->GetOne("SELECT ownerid FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
 	}
 
 	function GetCashByID($id)
 	{
-		return $this->ADB->GetRow("SELECT time, adminid, type, value, userid, comment FROM `cash` WHERE id=?",array($id));
+		return $this->DB->GetRow("SELECT time, adminid, type, value, userid, comment FROM `cash` WHERE id=?",array($id));
 	}
 
 	function GetUserStatus($id)
 	{
-		return $this->ADB->GetOne("SELECT status FROM users WHERE id=?",array($id));
+		return $this->DB->GetOne("SELECT status FROM users WHERE id=?",array($id));
 	}
 
 	function GetUser($id)
 	{
-		if($result = $this->ADB->GetRow("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid, payday, deleted FROM users WHERE id=?",array($id)))
+		if($result = $this->DB->GetRow("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid, payday, deleted FROM users WHERE id=?",array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
@@ -431,12 +431,12 @@ class LMS
 
 	function GetUserNames()
 	{
-		return $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users WHERE status=3 AND deleted = 0 ORDER BY username");
+		return $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users WHERE status=3 AND deleted = 0 ORDER BY username");
 	}
 
 	function GetUserNodesAC($id)
 	{
-		if($acl = $this->ADB->GetALL("SELECT access FROM nodes WHERE ownerid=?",array($id)))
+		if($acl = $this->DB->GetALL("SELECT access FROM nodes WHERE ownerid=?",array($id)))
 		{
 			foreach($acl as $value)
 				if($value['access'])
@@ -447,7 +447,7 @@ class LMS
 			if($y && !$n) return TRUE;
 			if($n && !$y) return FALSE;
 		}
-		if($this->ADB->GetOne("SELECT COUNT(*) FROM nodes WHERE ownerid=?",array($id)))
+		if($this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ownerid=?",array($id)))
 			return 2;
 		else
 			return FALSE;
@@ -491,7 +491,7 @@ class LMS
 			break;
 			
 			default:
-				$sqlord = "ORDER BY deleted ASC, ".$this->ADB->Concat("UPPER(lastname)","' '","name");
+				$sqlord = "ORDER BY deleted ASC, ".$this->DB->Concat("UPPER(lastname)","' '","name");
 			break;																			
 		}
 
@@ -505,7 +505,7 @@ class LMS
 					if($key=="phone")
 						$searchargs[] = "(phone1 ?LIKE? $value OR phone2 ?LIKE? $value OR phone3 ?LIKE? $value)";
 					elseif($key=="username")
-						$searchargs[] = $this->ADB->Concat("UPPER(lastname)","' '","name")." ?LIKE? ".$value;
+						$searchargs[] = $this->DB->Concat("UPPER(lastname)","' '","name")." ?LIKE? ".$value;
 					elseif($key!="s")
 						$searchargs[] = $key." ?LIKE? ".$value;
 				}
@@ -517,18 +517,18 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, tariff, nip, zip, city, gguin, deleted FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
+		if($userlist = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, tariff, nip, zip, city, gguin, deleted FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
 		{
-			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
+			if($blst = $this->DB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
 				foreach($blst as $row)
 					$balance[$row['id']] = $row['value'];
 
-			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
+			if($blst = $this->DB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
 				foreach($blst as $row)
 					$balance[$row['id']] = $balance[$row['id']] - $row['value'];
 
 
-			foreach($this->ADB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
+			foreach($this->DB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
 				$tlist[$row['id']] = $row['value'];
 			
 			foreach($userlist as $key => $value)
@@ -612,25 +612,25 @@ class LMS
 			break;
 			
 			default:
-				$sqlord = "ORDER BY ".$this->ADB->Concat("UPPER(lastname)","' '","name");
+				$sqlord = "ORDER BY ".$this->DB->Concat("UPPER(lastname)","' '","name");
 			break;
 		}
 		
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, gguin, nip, zip, city, info, tariff FROM users WHERE deleted = 0 ".($state !=0 ? " AND status = '".$state."'":"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
+		if($userlist = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, gguin, nip, zip, city, info, tariff FROM users WHERE deleted = 0 ".($state !=0 ? " AND status = '".$state."'":"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
 		{
-			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
+			if($blst = $this->DB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
 				foreach($blst as $row)
 					$balance[$row['id']] = $row['value'];
 
-			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
+			if($blst = $this->DB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
 					foreach($blst as $row)
 							$balance[$row['id']] = $balance[$row['id']] - $row['value'];
 
 
-			foreach($this->ADB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
+			foreach($this->DB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
 				$tlist[$row['id']] = $row['value'];
 
 			foreach($userlist as $key => $value)
@@ -677,7 +677,7 @@ class LMS
 			
 	function GetUserNodes($id)
 	{
-		if($result = $this->ADB->GetAll("SELECT id, name, mac, ipaddr, access FROM nodes WHERE ownerid=? ORDER BY name ASC",array($id))){
+		if($result = $this->DB->GetAll("SELECT id, name, mac, ipaddr, access FROM nodes WHERE ownerid=? ORDER BY name ASC",array($id))){
 			foreach($result as $idx => $row)
 				$result[$idx]['ip'] = long2ip($row['ipaddr']);
 			$result['total'] = sizeof($result);
@@ -688,8 +688,8 @@ class LMS
 
 	function GetUserBalance($id)
 	{
-		$bin = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='3'",array($id));
-		$bou = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='4'",array($id));
+		$bin = $this->DB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='3'",array($id));
+		$bou = $this->DB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='4'",array($id));
 		return round($bin-$bou,2);
 	}
 
@@ -698,13 +698,13 @@ class LMS
 
 		// wrapper do starego formatu
 	
-		if($talist = $this->ADB->GetAll("SELECT id, name FROM admins"))
+		if($talist = $this->DB->GetAll("SELECT id, name FROM admins"))
 			foreach($talist as $idx => $row)
 				$adminslist[$row['id']] = $row['name'];
 
 		// wrapper do starego formatu
 
-		if($tslist = $this->ADB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash WHERE userid=? ORDER BY time",array($id)))
+		if($tslist = $this->DB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash WHERE userid=? ORDER BY time",array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -764,13 +764,13 @@ class LMS
 
 	function UserStats()
 	{
-		$result['total'] = $this->ADB->GetOne("SELECT COUNT(id) FROM users");
-		$result['connected'] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=3");
-		$result['awaiting'] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=2");
-		$result['interested'] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=1");
+		$result['total'] = $this->DB->GetOne("SELECT COUNT(id) FROM users");
+		$result['connected'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=3");
+		$result['awaiting'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=2");
+		$result['interested'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=1");
 		$result['debt'] = 0;
 		$result['debtvalue'] = 0;
-		if($users = $this->ADB->GetAll("SELECT id FROM users"))
+		if($users = $this->DB->GetAll("SELECT id FROM users"))
 			foreach($users as $idx => $row)
 			{
 				$row['balance'] = $this->GetUserBalance($row['id']);
@@ -789,64 +789,64 @@ class LMS
 
 	function GetNodeOwner($id)
 	{
-		return $this->ADB->GetOne("SELECT ownerid FROM nodes WHERE id=?",array($id));
+		return $this->DB->GetOne("SELECT ownerid FROM nodes WHERE id=?",array($id));
 	}
 
 	function NodeUpdate($nodedata)
 	{
 		$this->SetTS("nodes");
-		return $this->ADB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, moddate=?NOW?, modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), ip_long($nodedata['ipaddr']), strtoupper($nodedata['mac']), $this->SESSION->id, $nodedata['access'], $nodedata['ownerid'], $nodedata['id']));
+		return $this->DB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, moddate=?NOW?, modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), ip_long($nodedata['ipaddr']), strtoupper($nodedata['mac']), $this->SESSION->id, $nodedata['access'], $nodedata['ownerid'], $nodedata['id']));
 	}
 
 	function DeleteNode($id)
 	{
-		return $this->ADB->Execute("DELETE FROM nodes WHERE id=?",array($id));
+		return $this->DB->Execute("DELETE FROM nodes WHERE id=?",array($id));
 	}
 
 	function GetNodeNameByMAC($mac)
 	{
-		return $this->ADB->GetOne("SELECT name FROM nodes WHERE mac=?",array($mac));
+		return $this->DB->GetOne("SELECT name FROM nodes WHERE mac=?",array($mac));
 	}		
 
 	function GetNodeIDByIP($ipaddr)
 	{
-		return $this->ADB->GetOne("SELECT id FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
+		return $this->DB->GetOne("SELECT id FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
 	}
 
 	function GetNodeIDByMAC($mac)	
 	{
-		return $this->ADB->GetOne("SELECT id FROM nodes WHERE mac=?",array($mac));
+		return $this->DB->GetOne("SELECT id FROM nodes WHERE mac=?",array($mac));
 	}
 
 	function GetNodeIDByName($name)
 	{
-		return $this->ADB->GetOne("SELECT id FROM nodes WHERE name=?",array($name));
+		return $this->DB->GetOne("SELECT id FROM nodes WHERE name=?",array($name));
 	}
 
 	function GetNodeIPByID($id)
 	{
-		return long2ip($this->ADB->GetOne("SELECT ipaddr FROM nodes WHERE id=?",array($id)));
+		return long2ip($this->DB->GetOne("SELECT ipaddr FROM nodes WHERE id=?",array($id)));
 	}
 
 	function GetNodeMACByID($id)
 	{
-		return $this->ADB->GetOne("SELECT mac FROM nodes WHERE id=?",array($id));
+		return $this->DB->GetOne("SELECT mac FROM nodes WHERE id=?",array($id));
 	}
 
 	function GetNodeName($id)
 	{
-		return $this->ADB->GetOne("SELECT name FROM nodes WHERE id=?",array($id));
+		return $this->DB->GetOne("SELECT name FROM nodes WHERE id=?",array($id));
 	}
 
 	function GetNodeNameByIP($ipaddr)
 	{
-		return $this->ADB->GetOne("SELECT name FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
+		return $this->DB->GetOne("SELECT name FROM nodes WHERE ipaddr=?",array(ip_long($ipaddr)));
 		
 	}
 
 	function GetNode($id)
 	{
-		if($result = $this->ADB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid FROM nodes WHERE id=?",array($id)))
+		if($result = $this->DB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid FROM nodes WHERE id=?",array($id)))
 		{
 			$result['ip'] = long2ip($result['ipaddr']);
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
@@ -890,11 +890,11 @@ class LMS
 			break;
 		}
 
-		if($username = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
+		if($username = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
 			foreach($username as $idx => $row)
 				$usernames[$row['id']] = $row['username'];
 
-		if($nodelist = $this->ADB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".($sqlord != "" ? $sqlord." ".$direction : "")))
+		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".($sqlord != "" ? $sqlord." ".$direction : "")))
 		{
 			foreach($nodelist as $idx => $row)
 			{
@@ -969,11 +969,11 @@ class LMS
 		if($searchargs)
 			$searchargs = " WHERE 1=1 AND ".implode(" AND ",$searchargs);
 
-		if($username = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
+		if($username = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
 			foreach($username as $idx => $row)
 				$usernames[$row['id']] = $row['username'];
 
-		if($nodelist = $this->ADB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".$searchargs." ".($sqlord != "" ? $sqlord." ".$direction : "")))
+		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".$searchargs." ".($sqlord != "" ? $sqlord." ".$direction : "")))
 		{
 			foreach($nodelist as $idx => $row)
 			{
@@ -1022,40 +1022,40 @@ class LMS
 	function NodeSet($id)
 	{
 		$this->SetTS("nodes");
-		if($this->ADB->GetOne("SELECT access FROM nodes WHERE id=?",array($id)) == 1 )
-			return $this->ADB->Execute("UPDATE nodes SET access=0 WHERE id=?",array($id));
+		if($this->DB->GetOne("SELECT access FROM nodes WHERE id=?",array($id)) == 1 )
+			return $this->DB->Execute("UPDATE nodes SET access=0 WHERE id=?",array($id));
 		else
-			return $this->ADB->Execute("UPDATE nodes SET access=1 WHERE id=?",array($id));
+			return $this->DB->Execute("UPDATE nodes SET access=1 WHERE id=?",array($id));
 	}
 
 	function NodeSetU($id,$access=FALSE)
 	{
 		$this->SetTS("nodes");
 		if($access)
-			return $this->ADB->Execute("UPDATE nodes SET access=? WHERE ownerid=?",array(1,$id));
+			return $this->DB->Execute("UPDATE nodes SET access=? WHERE ownerid=?",array(1,$id));
 		else
-			return $this->ADB->Execute("UPDATE nodes SET access=? WHERE ownerid=?",array(0,$id));
+			return $this->DB->Execute("UPDATE nodes SET access=? WHERE ownerid=?",array(0,$id));
 	}
 
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS("nodes");
 
-		if($this->ADB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate) VALUES (?, ?, ?, ?, ?, ?NOW?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),ip_long($nodedata['ipaddr']),$nodedata['ownerid'],$this->SESSION->id)))
-			return $this->ADB->GetOne("SELECT MAX(id) FROM nodes");
+		if($this->DB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate) VALUES (?, ?, ?, ?, ?, ?NOW?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),ip_long($nodedata['ipaddr']),$nodedata['ownerid'],$this->SESSION->id)))
+			return $this->DB->GetOne("SELECT MAX(id) FROM nodes");
 		else
 			return FALSE;
 	}
 
 	function NodeExists($id)
 	{
-		return ($this->ADB->GetOne("SELECT * FROM nodes WHERE id=?",array($id))?TRUE:FALSE);
+		return ($this->DB->GetOne("SELECT * FROM nodes WHERE id=?",array($id))?TRUE:FALSE);
 	}
 	
 	function NodeStats()
 	{
-		$result['connected'] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=1");
-		$result['disconnected'] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=0");
+		$result['connected'] = $this->DB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=1");
+		$result['disconnected'] = $this->DB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=0");
 		$result['total'] = $result['connected'] + $result['disconnected'];
 		return $result;
 	}
@@ -1066,7 +1066,7 @@ class LMS
 	
 	function GetTariffList()
 	{
-		if($tarifflist = $this->ADB->GetAll("SELECT id, name, value, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
+		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
 			foreach($tarifflist as $idx => $row)
 			{
 				$tarifflist[$idx]['users'] = $this->GetUsersWithTariff($row['id']);
@@ -1083,13 +1083,13 @@ class LMS
 
 	function GetTariffIDByName($name)
 	{
-		return $this->ADB->GetOne("SELECT id FROM tariffs WHERE name=?",array($name));
+		return $this->DB->GetOne("SELECT id FROM tariffs WHERE name=?",array($name));
 	}
 
 	function TariffAdd($tariffdata)
 	{
 		$this->SetTS("tariffs");
-		if($this->ADB->Execute("INSERT INTO tariffs (name, description, value, uprate, downrate)
+		if($this->DB->Execute("INSERT INTO tariffs (name, description, value, uprate, downrate)
 			VALUES (?, ?, ?, ?, ?)",
 			array(
 				$tariffdata['name'],
@@ -1099,7 +1099,7 @@ class LMS
 				$tariffdata['downrate']
 			)
 		))
-			return $this->ADB->GetOne("SELECT id FROM tariffs WHERE name=?",array($tariffdata['name']));
+			return $this->DB->GetOne("SELECT id FROM tariffs WHERE name=?",array($tariffdata['name']));
 		else
 			return FALSE;
 	}
@@ -1107,51 +1107,51 @@ class LMS
 	function TariffUpdate($tariff)
 	{
 		$this->SetTS("tariffs");
-		return $this->ADB->Execute("UPDATE tariffs SET name=?, description=?, value=?, uprate=?, downrate=? WHERE id=?",array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
+		return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, uprate=?, downrate=? WHERE id=?",array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
 	}
 	
 	function TariffDelete($id)
 	{
 		 if (!$this->GetUsersWithTariff($id)) 
-		 return $this->ADB->Execute("DELETE FROM tariffs WHERE id=?",array($id));
+		 return $this->DB->Execute("DELETE FROM tariffs WHERE id=?",array($id));
 		 else
 		 return FALSE;
 	}
 
 	function GetTariffValue($id)
 	{
-		return $this->ADB->GetOne("SELECT value FROM tariffs WHERE id=?",array($id));
+		return $this->DB->GetOne("SELECT value FROM tariffs WHERE id=?",array($id));
 	}
 
 	function GetTariffName($id)
 	{
-		return $this->ADB->GetOne("SELECT name FROM tariffs WHERE id=?",array($id));
+		return $this->DB->GetOne("SELECT name FROM tariffs WHERE id=?",array($id));
 	}
 
 	function GetTariff($id)
 	{
-		$result = $this->ADB->GetRow("SELECT id, name, value, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
+		$result = $this->DB->GetRow("SELECT id, name, value, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
 		$result['count'] = $this->GetUsersWithTariff($id);
 		$result['totalval'] = $result['value'] * $result['count'];
-		$result['users'] = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat('upper(lastname)',"' '",'name')." AS username FROM users WHERE tariff=? AND status=3 ORDER BY username",array($id));
+		$result['users'] = $this->DB->GetAll("SELECT id, ".$this->DB->Concat('upper(lastname)',"' '",'name')." AS username FROM users WHERE tariff=? AND status=3 ORDER BY username",array($id));
 		$result['rows'] = ceil(sizeof($result['users'])/2);
 		return $result;
 	}
 
 	function GetTariffs()
 	{
-		if($ttlist = $this->ADB->GetAll("SELECT id, name, value, uprate, downrate FROM tariffs ORDER BY value DESC"))
+		if($ttlist = $this->DB->GetAll("SELECT id, name, value, uprate, downrate FROM tariffs ORDER BY value DESC"))
 			foreach($ttlist as $row)
 				foreach($row as $column => $value)
 					$tarifflist[$column][] = $value;
-		$tarifflist['common'] = $this->ADB->GetOne("SELECT tariff, COUNT(tariff) AS common FROM users WHERE tariff=tariff GROUP BY tariff ORDER BY common DESC");
-		$tarifflist['commonpayday'] = $this->ADB->GetOne("SELECT payday, COUNT(payday) AS common FROM users WHERE payday=payday GROUP BY payday ORDER BY common DESC");
+		$tarifflist['common'] = $this->DB->GetOne("SELECT tariff, COUNT(tariff) AS common FROM users WHERE tariff=tariff GROUP BY tariff ORDER BY common DESC");
+		$tarifflist['commonpayday'] = $this->DB->GetOne("SELECT payday, COUNT(payday) AS common FROM users WHERE payday=payday GROUP BY payday ORDER BY common DESC");
 		return $tarifflist;
 	}
 
 	function TariffExists($id)
 	{
-		return ($this->ADB->GetOne("SELECT * FROM tariffs WHERE id=?",array($id))?TRUE:FALSE);
+		return ($this->DB->GetOne("SELECT * FROM tariffs WHERE id=?",array($id))?TRUE:FALSE);
 	}
 
 	function SetBalanceZero($user_id)
@@ -1159,18 +1159,18 @@ class LMS
 		$this->SetTS("cash");
 		$stan=$this->GetUserBalance($user_id);
 		$stan=-$stan;
-		return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (?NOW?, ?, ?, ?, ?)",array($this->SESSION->id, 3 , round("$stan",2) , $user_id));
+		return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (?NOW?, ?, ?, ?, ?)",array($this->SESSION->id, 3 , round("$stan",2) , $user_id));
 	}
 	function AddBalance($addbalance)
 	{
 		$this->SetTS("cash");
-		return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment']));	
+		return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment']));	
 	}
 	function GetBalanceList()
 	{
-		$adminlist = $this->ADB->GetAllByKey('SELECT id, name FROM admins','id');
-		$userslist = $this->ADB->GetAllByKey("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users","id");
-		if($balancelist = $this->ADB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash ORDER BY time ASC"))
+		$adminlist = $this->DB->GetAllByKey('SELECT id, name FROM admins','id');
+		$userslist = $this->DB->GetAllByKey("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users","id");
+		if($balancelist = $this->DB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash ORDER BY time ASC"))
 		{
 			foreach($balancelist as $idx => $row)
 			{
@@ -1247,12 +1247,12 @@ class LMS
 
 	function NetworkExists($id)
 	{
-		return ($this->ADB->GetOne("SELECT * FROM networks WHERE id=?",array($id)) ? TRUE : FALSE);
+		return ($this->DB->GetOne("SELECT * FROM networks WHERE id=?",array($id)) ? TRUE : FALSE);
 	}	
 
 	function IsIPFree($ip)
 	{
-		return !($this->ADB->GetOne("SELECT * FROM nodes WHERE ipaddr=?",array(ip_long($ip))) ? TRUE : FALSE);
+		return !($this->DB->GetOne("SELECT * FROM nodes WHERE ipaddr=?",array(ip_long($ip))) ? TRUE : FALSE);
 	}
 
 	function GetPrefixList()
@@ -1271,8 +1271,8 @@ class LMS
 		if($netadd['prefix'] != "")
 			$netadd['mask'] = prefix2mask($netadd['prefix']);
 		$this->SetTS("networks");
-		if($this->ADB->Execute("INSERT INTO networks (name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",array(strtoupper($netadd['name']),$netadd['address'],$netadd['mask'],strtolower($netadd['interface']),$netadd['gateway'],$netadd['dns'],$netadd['dns2'],$netadd['domain'],$netadd['wins'],$netadd['dhcpstart'],$netadd['dhcpend'])))
-			return $this->ADB->GetOne("SELECT id FROM networks WHERE address=?",array($netadd['address']));
+		if($this->DB->Execute("INSERT INTO networks (name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",array(strtoupper($netadd['name']),$netadd['address'],$netadd['mask'],strtolower($netadd['interface']),$netadd['gateway'],$netadd['dns'],$netadd['dns2'],$netadd['domain'],$netadd['wins'],$netadd['dhcpstart'],$netadd['dhcpend'])))
+			return $this->DB->GetOne("SELECT id FROM networks WHERE address=?",array($netadd['address']));
 		else
 			return FALSE;
 	}
@@ -1280,18 +1280,18 @@ class LMS
 	function NetworkDelete($id)
 	{
 		$this->SetTS("networks");
-		return $this->ADB->Execute("DELETE FROM networks WHERE id=?",array($id));
+		return $this->DB->Execute("DELETE FROM networks WHERE id=?",array($id));
 	}
 
 	function GetNetworkName($id)
 	{	
-		return $this->ADB->GetOne("SELECT name FROM networks WHERE id=?",array($id));
+		return $this->DB->GetOne("SELECT name FROM networks WHERE id=?",array($id));
 	}
 
 
 	function GetNetIDByIP($ipaddr)
 	{
-		if($networks = $this->ADB->GetAll("SELECT id, address, mask FROM networks"))
+		if($networks = $this->DB->GetAll("SELECT id, address, mask FROM networks"))
 			foreach($networks as $idx => $row)
 				if(isipin($ipaddr,$row['address'],$row['mask']))
 					return $row['id'];
@@ -1300,7 +1300,7 @@ class LMS
 
 	function GetNetworks()
 	{
-		if($netlist = $this->ADB->GetAll("SELECT id, name, address, mask FROM networks"))
+		if($netlist = $this->DB->GetAll("SELECT id, name, address, mask FROM networks"))
 			foreach($netlist as $idx => $row)
 			{
 				$netlist[$idx]['addresslong'] = ip_long($row['address']);
@@ -1312,7 +1312,7 @@ class LMS
 	
 	function GetNetworkParams($id)
 	{
-		if($params = $this->ADB->GetRow("SELECT * FROM networks WHERE id=?",array($id)))
+		if($params = $this->DB->GetRow("SELECT * FROM networks WHERE id=?",array($id)))
 		{
 			$params['broadcast'] = ip_long(getbraddr($params['address'],$params['mask']));	
 			$params['address'] = ip_long($params['address']);
@@ -1323,7 +1323,7 @@ class LMS
 	function GetNetworkList()
 	{
 
-		if($networks = $this->ADB->GetAll("SELECT id, name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks"))
+		if($networks = $this->DB->GetAll("SELECT id, name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks"))
 			foreach($networks as $idx => $row)
 			{
 				$row['prefix'] = mask2prefix($row['mask']);
@@ -1331,7 +1331,7 @@ class LMS
 				$row['addresslong'] = ip_long($row['address']);
 				$row['broadcast'] = getbraddr($row['address'],$row['mask']);
 				$row['broadcastlong'] = ip_long($row['broadcast']);
-				$row['assigned'] = $this->ADB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",array($row['addresslong'], $row['broadcastlong']));
+				$row['assigned'] = $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",array($row['addresslong'], $row['broadcastlong']));
 				$networks[$idx] = $row;
 				$networks['size'] += $row['size'];
 				$networks['assigned'] += $row['assigned'];
@@ -1409,13 +1409,13 @@ class LMS
 	{
 		$this->SetTS("nodes");
 		$this->SetTS("networks");
-		return $this->ADB->Execute("UPDATE nodes SET ipaddr = ipaddr + ? WHERE ipaddr >= ? AND ipaddr <= ?",array($shift,ip_long($network), ip_long(getbraddr($network,$mask))));
+		return $this->DB->Execute("UPDATE nodes SET ipaddr = ipaddr + ? WHERE ipaddr >= ? AND ipaddr <= ?",array($shift,ip_long($network), ip_long(getbraddr($network,$mask))));
 	}
 
 	function NetworkUpdate($networkdata)
 	{
 		$this->SetTS("networks");
-		return $this->ADB->Execute("UPDATE networks SET name=?, address=?, mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?",array(strtoupper($networkdata['name']),$networkdata['address'],$networkdata['mask'],strtolower($networkdata['interface']),$networkdata['gateway'],$networkdata['dns'],$networkdata['dns2'],$networkdata['domain'],$networkdata['wins'],$networkdata['dhcpstart'],$networkdata['dhcpend'],$networkdata['id']));
+		return $this->DB->Execute("UPDATE networks SET name=?, address=?, mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?",array(strtoupper($networkdata['name']),$networkdata['address'],$networkdata['mask'],strtolower($networkdata['interface']),$networkdata['gateway'],$networkdata['dns'],$networkdata['dns2'],$networkdata['domain'],$networkdata['wins'],$networkdata['dhcpstart'],$networkdata['dhcpend'],$networkdata['id']));
 	}
 				
 	
@@ -1430,7 +1430,7 @@ class LMS
 			if($value)
 			{
 				$address ++;
-				$this->ADB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array($address,$value));
+				$this->DB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array($address,$value));
 			}				
 		}
 	}
@@ -1450,7 +1450,7 @@ class LMS
 			{
 				while($this->NodeExists($network['dest']['nodes']['id'][$counter]))
 					$counter++;
-				$this->ADB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array($network['dest']['nodes']['addresslong'][$counter],$value));
+				$this->DB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array($network['dest']['nodes']['addresslong'][$counter],$value));
 				$counter++;
 			}
 		return $counter;
@@ -1458,7 +1458,7 @@ class LMS
 
 	function GetNetworkRecord($id,$page = 0, $plimit = 4294967296)
 	{
-		$network = $this->ADB->GetRow("SELECT id, name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?",array($id));
+		$network = $this->DB->GetRow("SELECT id, name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?",array($id));
 		$network['prefix'] = mask2prefix($network['mask']);
 		$network['addresslong'] = ip_long($network['address']);
 		$network['size'] = pow(2,32-$network['prefix']);
@@ -1475,7 +1475,7 @@ class LMS
 		$start = $page * $plimit;
 		$end = ($network['size'] > $plimit ? $start + $plimit : $network['size']);
 
-		$nodes = $this->ADB->GetAllByKey("SELECT id, name, ipaddr, ownerid FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",'ipaddr',array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
+		$nodes = $this->DB->GetAllByKey("SELECT id, name, ipaddr, ownerid FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",'ipaddr',array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
 		
 		for($i = 0; $i < ($end - $start) ; $i ++)
 		{
@@ -1497,7 +1497,7 @@ class LMS
 				$network['pageassigned'] ++;
 		}
 		
-		$network['assigned'] = $this->ADB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr < ?",array($network['addresslong'], $network['addresslong'] + $network['size']));
+		$network['assigned'] = $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr < ?",array($network['addresslong'], $network['addresslong'] + $network['size']));
 		
 		$network['rows'] = ceil(sizeof($network['nodes']['address']) / 4);
 		$network['free'] = $network['size'] - $network['assigned'] - 2;
@@ -1509,7 +1509,7 @@ class LMS
 
 	function GetNetwork($id)
 	{
-		if($row = $this->ADB->GetRow("SELECT address, mask, name FROM networks WHERE id=?",array($id)))
+		if($row = $this->DB->GetRow("SELECT address, mask, name FROM networks WHERE id=?",array($id)))
 			foreach($row as $field => $value)
 				$$field = $value;
 	
@@ -1523,7 +1523,7 @@ class LMS
 		}
 		
 		if(sizeof($result['address']))
-			if($nodes = $this->ADB->GetAll("SELECT name, id, ownerid, ipaddr FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",array(ip_long($address), ip_long(getbraddr($address,$mask)))))
+			if($nodes = $this->DB->GetAll("SELECT name, id, ownerid, ipaddr FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",array(ip_long($address), ip_long(getbraddr($address,$mask)))))
 				foreach($nodes as $node)
 				{
 					$pos = ($node['ipaddr'] - ip_long($address) - 1);
@@ -1612,6 +1612,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.212  2003/09/05 02:07:04  lukasz
+ * - massive attack: s/this->ADB->/this->DB->/g
+ *
  * Revision 1.211  2003/08/31 19:48:34  alec
  * removed bug in GetNetworkParams()
  *
