@@ -34,10 +34,15 @@
 		$LMS->NodeSet($_GET[id]);
 		$backid = $_GET[id];
 	}
-	header("Location: ?".$_SESSION[backto]."#".$backid);
+	if(strstr($_SESSION[backto],"nodelist"))
+	    header("Location: ?".$_SESSION[backto]);
+	else header("Location: ?".$_SESSION[backto]."#".$backid);
 
 /*
  * $Log$
+ * Revision 1.11  2003/09/22 17:31:16  alec
+ * naprawiona zmiana statusu komputera przy pomocy ikony zarowki na liscie kompow
+ *
  * Revision 1.10  2003/08/27 20:18:42  lukasz
  * - changed nodes.access from ENUM to BOOL;
  *
