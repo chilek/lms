@@ -3,13 +3,17 @@ $Id$
 wersja 1.0pre11 (??/??/2003):
 
   - przymiarki do dokumentacji (Lexx)
-  - porz±dki w LMS.class.php
+  - porz±dki w LMS.class.php (lukasz)
   - contrib/customers - prosta strona dla ciekawych u¿ytkowników - w zwi±zku z
     czym znikn±³ obskurny button ze strony logowania z napisem 'Stan konta'
-  - przymiarki do ró¿nych poziomów dostêpu
-  - poprawione lms-notify
-  - dodane 'u¿yteczne linki' do strony powitalnej
+    (lukasz)
+  - zrobione wstêpnie ró¿ne poziomy dostêpu (lukasz)
+  - poprawione lms-notify (lukasz)
+  - dodane 'u¿yteczne linki' do strony powitalnej (lukasz)
   - poprawione wydruki: listing wed³ug aktualnego sortowania oraz filtra (warden)
+  - dodane 'skanuj' przy dodawaniu komputera - wyszukuje hosty przy u¿yciu
+    programu nbtscan (kennyGRV/lukasz)
+  - dodana informacja o producencie karty sieciowej w nodeinfobox (lukasz)
   
 wersja 1.0pre10 (15/04/2003):
 
