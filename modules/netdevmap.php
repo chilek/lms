@@ -37,14 +37,15 @@ nowy.
 
 function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 {
+//	$fields[] = array( 'x' => -1, 'y' => 1 );
 	$fields[] = array( 'x' => 0, 'y' => 1 );
-	$fields[] = array( 'x' => 1, 'y' => 1 );
+	$fields[] = array( 'x' => 1, 'y' => 1 );     
 	$fields[] = array( 'x' => 1, 'y' => 0 );
 	$fields[] = array( 'x' => 1, 'y' => -1 );
 	$fields[] = array( 'x' => 0, 'y' => -1 );
 	$fields[] = array( 'x' => -1, 'y' => -1 );
 	$fields[] = array( 'x' => -1, 'y' => 0 );
-	$fields[] = array( 'x' => -1, 'y' => 0 );
+	$fields[] = array( 'x' => -1, 'y' => 1 );
 
 	if($device == 0)
 	{
