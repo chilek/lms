@@ -38,7 +38,8 @@ CREATE TABLE assignments (
   dateto int(11) NOT NULL default '0',
   invoice tinyint(1) NOT NULL default '0',
   suspended tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  INDEX tariffid (tariffid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -59,7 +60,8 @@ CREATE TABLE cash (
   itemid smallint NOT NULL default '0',
   PRIMARY KEY  (id),
   INDEX userid (userid),
-  INDEX invoiceid (invoiceid)
+  INDEX invoiceid (invoiceid),
+  INDEX time (time)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -87,7 +89,8 @@ CREATE TABLE invoicecontents (
   content varchar(16) NOT NULL default '',
   count decimal(9,2) NOT NULL default '0.00',
   description varchar(255) NOT NULL default '',
-  tariffid int(11) NOT NULL default '0'
+  tariffid int(11) NOT NULL default '0',
+  INDEX invoiceid (invoiceid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -110,7 +113,8 @@ CREATE TABLE invoices (
   city varchar(32) NOT NULL default '',
   phone varchar(255) NOT NULL default '',
   finished tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  INDEX cdate (cdate)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -177,6 +181,7 @@ CREATE TABLE nodes (
   name varchar(16) NOT NULL default '',
   mac varchar(20) NOT NULL default '',
   ipaddr int(16) unsigned NOT NULL default '0',
+  passwd varchar(32) NOT NULL default '',
   ownerid int(11) NOT NULL default '0',
   creationdate int(11) NOT NULL default '0',
   moddate int(11) NOT NULL default '0',
@@ -190,7 +195,8 @@ CREATE TABLE nodes (
   info text NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
-  UNIQUE KEY ipaddr (ipaddr)
+  UNIQUE KEY ipaddr (ipaddr),
+  INDEX netdev (netdev)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -270,7 +276,8 @@ CREATE TABLE rttickets (
   userid int(11) NOT NULL default '0',
   createtime int(11) NOT NULL default '0',
   resolvetime int(11) NOT NULL default '0',
-  PRIMARY KEY  (id)
+  PRIMARY KEY  (id),
+  INDEX queueid (queueid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
@@ -486,4 +493,37 @@ CREATE TABLE eventassignments (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005021500');
+#
+# Structure of table sessions
+#
+DROP TABLE IF EXISTS sessions;
+CREATE TABLE sessions (
+    id varchar(50) NOT NULL default '', 
+    ctime int(11) NOT NULL default 0, 
+    mtime int(11) NOT NULL default 0, 
+    atime int(11) NOT NULL default 0, 
+    vdata text NOT NULL, 
+    content text NOT NULL, 
+    PRIMARY KEY (id)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table cashimport
+#
+DROP TABLE IF EXISTS cashimport;
+CREATE TABLE cashimport (
+    id int(11) NOT NULL auto_increment,
+    date int(11) NOT NULL default '0',
+    value decimal(9,2) NOT NULL default '0.00',
+    customer varchar(150) NOT NULL default '',
+    description varchar(150) NOT NULL default '',
+    customerid int(11) NOT NULL default '0',
+    hash varchar(50) NOT NULL default '',
+    closed tinyint(1) NOT NULL default '0',
+    PRIMARY KEY (id),
+    INDEX hash (hash)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005031000');
