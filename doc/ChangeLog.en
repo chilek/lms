@@ -23,6 +23,7 @@ version 1.2.4 (??/??/2004):
 	ALTER TABLE stats RENAME down TO download;
   - fixed 'use_current_day' option behaviour (alec)
   - error-triggers in user assignments window are working now (alec)
+  - added missing </FORM> tag in nodeeditbox.html (alec)
 
 version 1.2.3 Anise (06/07/2004):
 
