@@ -91,6 +91,8 @@ if(isset($nodedata))
 		
 }
 
+$nodedata[access] = 1;
+
 if($_GET[ownerid] && $LMS->UserExists($_GET[ownerid]) > 0)
 {
 	$nodedata[ownerid] = $_GET[ownerid];
@@ -120,6 +122,9 @@ $SMARTY->display("nodeadd.html");
 
 /*
  * $Log$
+ * Revision 1.34  2003/09/01 12:34:05  lukasz
+ * - BTS #0000066
+ *
  * Revision 1.33  2003/08/27 19:26:15  lukasz
  * - changed format of ipaddr storage in database
  *
