@@ -314,6 +314,8 @@
 	<para>Konfiguracja i zasada dzia³ania lms-mgc mo¿e siê wydawaæ do¶æ zawi³a, dlatego
 	pos³u¿ymy siê przyk³adem. Poni¿ej przedstawiono sposób generowania i uruchamiania firewalla
 	ipchains (bardzo prostego).</para>
+	<example>
+	<title>Lms-mgc: Przyk³ad instancji</title>
 	<para>Zacznij od utworzenia nowej sekcjê mgc w <filename>lms-mgc.ini</filename>, 
 	nazywaj±c j± 'ipchains' i stwórz w tej sekcji prost± maskaradê per adres IP z lanu:
 	<screen>
@@ -329,5 +331,6 @@ post_exec         = /etc/rc.d/rc.masq</screen>
 instances         = ipchains</screen>
 	</para><para>Teraz próba odpalenia lms-mgc powinna zaowocowaæ wygenerowaniem
 	<filename>/etc/rc.d/rc.masq</filename>, oraz jego odpaleniem.</para>
+	</example>
   </sect1>
 </chapter>
