@@ -93,11 +93,19 @@ class LMSDB_driver_postgres extends LMSDB_common
 		$return = implode(' || ',$input);
 		return $return;
 	}
+
+	function _driver_listtables()
+	{
+		return $this->GetCol('SELECT relname AS name FROM pg_class WHERE relkind = \'r\' and relname !~ \'^pg_\'');
+	}		
 		
 }
 
 /* 
  * $Log$
+ * Revision 1.3  2003/08/22 18:03:57  lukasz
+ * - added _driver_listtables()
+ *
  * Revision 1.2  2003/08/22 13:16:23  lukasz
  * - fixed _driver_concat() (PG uses '||' not '+' as concat sign)
  *
