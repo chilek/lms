@@ -53,12 +53,6 @@ class LMS {
 		return $db->row[0];
 	}
 	
-	function GetNodeArp($id)
-	{
-		$db=$this->db;
-		return $db->SExecSQL("SELECT `mac` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
-	}
-
 	function GetTariffValue($id)
 	{
 		$db=$this->db;
@@ -98,8 +92,12 @@ class LMS {
 		$db=$this->db;
 		$db->ExecSQL("SELECT * FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 		$db->FetchRow();
-		list($return[id],$return[lastname],$return[name],$return[status],$return[email],$return[phone1],$return[phone2],$return[phone3],$return[address],$return[tariff],$return[info],$return[creationdate],$return[moddate],$return[creatorid],$return[modid])=$db->row;
-		$return[username] = strtoupper($return[lastname])." ".($return[name]);
+		list($return[id],$return[username],$return[status],$return[email],$return[phone1],$return[phone2],$return[phone3],$return[address],$return[tariff],$return[info],$return[creationdate],$return[moddate],$return[creatorid],$return[modid])=$db->row;
+		$username = explode(" ",$return[username]);
+		$rusername = $username[0];
+		for($i=1;$i<sizeof($username);$i++)
+			$rusername .= " " . $username[$i];
+		$return[username] = $rusername;
 		$return[createdby] = $this->GetAdminName($return[creatorid]);
 		$return[modifiedby] = $this->GetAdminName($return[modid]);
 		$return[creationdateh] = date("Y-m-d, H:i",$return[creationdate]);
@@ -115,7 +113,7 @@ class LMS {
 
 		$db=$this->db;
 
-		$sql="SELECT id, lastname, name, status, email, phone1, address, info FROM users ";
+		$sql="SELECT id, username, status, email, phone1, address, info FROM users ";
 
 		if(!isset($state)) $state="3";
 		
@@ -131,28 +129,13 @@ class LMS {
 			break;
 		}
 		
-		if(!isset($order)) $order="name";
-
-		switch ($order){
-			case "name":
-				$sql .= " ORDER BY lastname ASC";
-			break;
-			case "addr":
-				$sql .= " ORDER BY address ASC";
-			break;
-			case "id":
-				$sql .= " ORDER BY id ASC";
-			break;
-		}
-
 		$db->ExecSQL($sql);
 
 		while($db->FetchRow())
 
 			list(
 				$userlist[id][],
-				$userlist[lastname][],
-				$userlist[name][],
+				$userlist[username][],
 				$userlist[status][],
 				$userlist[email][],
 				$userlist[phone1][],
@@ -164,10 +147,37 @@ class LMS {
 
 			$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
 		
+		list($order,$direction)=explode(",",$order);
+		
+		if($direction != "desc") $direction = 4;
+		else $direction = 3;
+
+		switch($order){
+			case "username":
+				array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
+				break;
+			case "id":
+				array_multisort($userlist[id],$direction,SORT_NUMERIC,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
+				break;
+			case "email":
+				array_multisort($userlist[email],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
+				break;
+			case "address":
+				array_multisort($userlist[address],$direction,$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[balance]);
+				break;
+			case "balance":
+				array_multisort($userlist[balance],$direction,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info]);
+				break;
+			case "phone":
+				array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance]);
+				break;
+		}
+
 		$userlist[state]=$state;
 		$userlist[order]=$order;
+		$userlist[direction]=$direction;
 		$userlist[total]=sizeof($userlist[id]);
-
+		
 		return $userlist;
 
 	}
@@ -200,9 +210,14 @@ class LMS {
 	function GetUserName($id)
 	{
 		$db=$this->db;
-		$db->ExecSQL("SELECT `lastname`, `name` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
+		$db->ExecSQL("SELECT `username` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 		$db->FetchRow();
-		return strtoupper($db->row[0])." ".($db->row[1]);
+		$username = explode(" ",$db->row[0]);
+                $rusername = $username[0];
+                for($i=1;$i<sizeof($username);$i++)
+                        $rusername .= " " . $username[$i];
+	
+		return $rusername;
 	}
 
 	function GetUserBalance($id)

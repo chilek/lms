@@ -48,4 +48,5 @@ $SMARTY->assign("userlist",$userlist);
 $SMARTY->display("header.html");
 $SMARTY->display("userlist.html");
 $SMARTY->display("footer.html");
+
 ?>
