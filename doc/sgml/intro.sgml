@@ -32,10 +32,13 @@
                zone file for bind, static arp entries, oident, htb and more...)</para>
             </listitem>
           <listitem>
-               <para>visualization of internet link usage stats.</para>
+               <para>visualization of internet link usage stats,</para>
           </listitem>
           <listitem>
-                    <para>request tracker system (Helpdesk))</para>
+                    <para>request tracker system (Helpdesk),</para>
+          </listitem>
+	  <listitem>
+                    <para>timetable (organizer).</para>
           </listitem>
           </itemizedlist>
           <para>All stuff was invented for administration of <ulink url="http://www.netx.waw.pl/">ASK NetX</ulink> 
@@ -145,7 +148,6 @@
                <member>Krystian 'UFOczek' Kochanowski</member>
                <member><ulink url="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziegielewski</ulink></member>
                <member>Andrzej 'chsh' Gradziel</member>
-               <member><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Krol</ulink></member>
                </simplelist>
                </para>
           </listitem>
