@@ -170,6 +170,8 @@ if($_GET['action'] == 'add' && isset($a))
 	if($a['tariffid']=='')
 		$error['tariffid'] = 'Nie wybra³e¶ taryfy!';
 
+	if($a['tariffid']==0)
+		unset($error['at']);
 
 	if(!$error) 
 	{
