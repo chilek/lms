@@ -146,7 +146,7 @@
 		<TD WIDTH="1%" NOWRAP>
 			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
-		<TD WIDTH="1%" NOWRAP>
+		<TD WIDTH="1%" NOWRAP align="right">
 			{$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
