@@ -8,13 +8,13 @@
 		<TD WIDTH="50%" ALIGN="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
-			Sporz±dzone przez: {$layout.logname}
+			{t 0=$layout.logname}Prepared by: $0{/t}
 		</TD>
 	</TR>
 </TABLE>
 <TABLE WIDTH="100%" CELLPADDING="3" BORDER="1">
 	<TR>
-		<TD CLASS="head"><B>Lp.</B></TD>
+		<TD CLASS="head"><B>{t}No.{/t}</B></TD>
 		{foreach from=$colnames item=col}
 		<TD CLASS="head"><B>{$col}</B></TD>
 		{/foreach}
