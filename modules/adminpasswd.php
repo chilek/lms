@@ -47,7 +47,7 @@ if($LMS->AdminExists($id))
 
 	$passwd['realname'] = $LMS->GetAdminName($id);
 	$passwd['id'] = $id;
-	$layout['pagetitle'] = sprintf(trans('Password Change for User %s'),$passwd['realname']);
+	$layout['pagetitle'] = trans('Password Change for User $0',$passwd['realname']);
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('passwd', $passwd);
 	$SMARTY->display('adminpasswd.html');

@@ -61,7 +61,7 @@ if(isset($netadd))
 	{
 		if(getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])) != $netadd['address'])
 		{
-			$error['address'] = sprintf(trans('That address isn\'t network address, setting to %s'),getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])));
+			$error['address'] = trans('That address isn\'t network address, setting to $0',getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])));
 			$netadd['address'] = getnetaddr($netadd['address'], prefix2mask($netadd['prefix']));
 		}
 		else

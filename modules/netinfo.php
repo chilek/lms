@@ -26,7 +26,7 @@
 
 if(!$LMS->NetworkExists($_GET['id']))
 {
-	header("Location: ?m=netlist");
+	header('Location: ?m=netlist');
 	die;
 }
 
@@ -37,9 +37,9 @@ $_SESSION['ntlp'][$_GET['id']] = $_GET['page'];
 
 $network = $LMS->GetNetworkRecord($_GET['id'],$_GET['page'], $LMS->CONFIG['phpui']['networkhosts_pagelimit']);
 
-$layout['pagetitle'] = "Informacja o sieci: ".$network['name'];
+$layout['pagetitle'] = trans('Info Network: $0', $network['name']);
 
-$SMARTY->assign('network',$network);
+$SMARTY->assign('network', $network);
 $SMARTY->display('netinfo.html');
 
 ?>

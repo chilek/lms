@@ -28,15 +28,19 @@ function trans()
 {
 	global $_LANG, $SMARTY;
 
-	@list($content, $args) = func_get_args();
-	$content = trim($content);
+	$content = trim(func_get_arg(0));
+
 	if(isset($_LANG[$content]))
 		$content = trim($_LANG[$content]);
 	else
 		$SMARTY->_tpl_vars['missing_strings'][] = $content;
-	if(is_array($args))
-		foreach($args as $argid => $argval)
-			$content = str_replace('$'.$argid, $argval, $content);
+
+	$argc = func_num_args();
+	for($i = 1; $i < $argc; $i++)
+	{
+		$arg = func_get_arg($i);
+		$content = str_replace('$'.($i-1), $arg, $content);
+	}
 	return $content;
 }
 
@@ -73,8 +77,6 @@ foreach ($langs as $val)
 	}
 }
 
-
-
 $_LANG = array();
 
 @include($_LIB_DIR.'/locale/'.$language.'.php');
@@ -82,5 +84,5 @@ $_LANG = array();
 setlocale(LC_COLLATE, $LANGDEFS[$language]['locale']);
 setlocale(LC_CTYPE, $LANGDEFS[$language]['locale']);
 setlocale(LC_TIME, $LANGDEFS[$language]['locale']);
-	
+
 ?>

@@ -35,7 +35,7 @@ if($_GET['is_sure'])
 	$SMARTY->display('header.html');
 	$SMARTY->display('adminheader.html');
 	echo '<H1>'.trans('Database Backup Recovery').'</H1>';
-	echo '<P>'.sprintf(trans('Are you shure, you want to recover database created at %s?'),date('Y/m/d H:i.s',$_GET['db'])).'</P>';
+	echo '<P>'.trans('Are you shure, you want to recover database created at $0?', date('Y/m/d H:i.s',$_GET['db'])).'</P>';
 	echo '<A href="?m=dbrecover&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am shure').'</A>';
 	$SMARTY->display('footer.html');
 }

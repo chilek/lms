@@ -46,7 +46,7 @@ if($id && !DomainExists($id))
 
 $domain = $LMS->DB->GetRow('SELECT id, name, description FROM domains WHERE id = ?', array($id));
 
-$layout['pagetitle'] = sprintf(trans('Edit Domain: %s'),$domain['name']);
+$layout['pagetitle'] = trans('Edit Domain: $0', $domain['name']);
 
 if($_POST['domain'])
 {

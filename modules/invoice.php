@@ -84,7 +84,7 @@ elseif($_GET['fetchsingle'])
 	$ntempl = str_replace('%N',$invoice['number'],$ntempl);
 	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
 	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
-	$layout['pagetitle'] = sprintf(trans('Invoice No. %s'),$ntempl);
+	$layout['pagetitle'] = trans('Invoice No. $0', $ntempl);
 	$invoice['last'] = TRUE;
 	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
@@ -99,7 +99,7 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$ntempl = str_replace('%N',$invoice['number'],$ntempl);
 	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
 	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
-	$layout['pagetitle'] = sprintf(trans('Invoice No. %s'),$ntempl);
+	$layout['pagetitle'] = trans('Invoice No. $0', $ntempl);
 	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');

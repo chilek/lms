@@ -43,7 +43,7 @@ if($to) {
 	$unixto = mktime(23,59,59); //koniec dnia dzisiejszego
 }
 
-$layout['pagetitle'] = sprintf(trans('Sale Registry for period %s - %s'),$from,$to);
+$layout['pagetitle'] = trans('Sale Registry for period $0 - $1', $from, $to);
 
 $invoicelist = $LMS->InvoicesReport($unixfrom, $unixto);
 

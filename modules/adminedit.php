@@ -79,7 +79,7 @@ foreach($LMS->GetAdminInfo($_GET['id']) as $key => $value)
 	if(!isset($admininfo[$key]))
 		$admininfo[$key] = $value;
 
-$layout['pagetitle'] = sprintf(trans('Edit User: %s'), $LMS->GetAdminName($_GET['id']));
+$layout['pagetitle'] = trans('Edit User: $0', $LMS->GetAdminName($_GET['id']));
 
 $rights = $LMS->GetAdminRights($_GET['id']);
 

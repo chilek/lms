@@ -45,9 +45,9 @@ if(!$error)
 	}
 	else
 	{
-		$layout['pagetitle'] = sprintf(trans('Removing network %s'),strtoupper($network['name']));
+		$layout['pagetitle'] = trans('Removing network $0', strtoupper($network['name']));
 		$SMARTY->display('header.html');
-		echo '<H1>'.sprintf(trans('Removing network %s'),strtoupper($network['name'])).'</H1>';
+		echo '<H1>'.$layout['pagetitle'].'</H1>';
 		echo '<P>'.trans('Are you shure, you want to delete that network?').'</P>';
 		echo '<A href="?m=netdel&id='.$network['id'].'&is_sure=1">'.trans('Yes, I am shure').'</A>';
 		$SMARTY->display('footer.html');
@@ -55,7 +55,7 @@ if(!$error)
 }
 else
 {
-	$layout['pagetitle'] = sprintf(trans('Info Network: %s'),$network['name']);
+	$layout['pagetitle'] = trans('Info Network: $0', $network['name']);
 	$SMARTY->assign('network',$network);
 	$SMARTY->assign('networks', $LMS->GetNetworks());
 	$SMARTY->assign('error',$error);

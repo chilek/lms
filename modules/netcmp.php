@@ -38,9 +38,9 @@ if($_GET['is_sure'])
 	header('Location: ?m='.$_SESSION['lastmodule'].'&id='.$_GET['id']);
 	die;
 }else{
-	$layout['pagetitle'] = sprintf(trans('Readdressing network %s'),strtoupper($network['name']));
+	$layout['pagetitle'] = trans('Readdressing network $0', strtoupper($network['name']));
 	$SMARTY->display('header.html');
-	echo '<H1>'.sprintf(trans('Readdressing network %s'),strtoupper($network['name'])).'</H1>';
+	echo '<H1>'.trans('Readdressing network $0', strtoupper($network['name'])).'</H1>';
 	echo '<P>'.trans('Are you shure, you want to reorder that network?').'</P>';
 	echo '<A href="?m=netcmp&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I am sure').'</A>';
 	$SMARTY->display('footer.html');
