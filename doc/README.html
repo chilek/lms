@@ -325,6 +325,11 @@ HREF="#CONTRIB-SQUID-WARN"
 ></DT
 ></DL
 ></DD
+><DT
+>9. <A
+HREF="#FAQ"
+>FAQ</A
+></DT
 ></DL
 ></DIV
 ><DIV
@@ -685,6 +690,14 @@ TARGET="_top"
 HREF="http://wwww.baseciq.org"
 TARGET="_top"
 >£ukasz 'Baseciq' Mozer</A
+></TD
+></TR
+><TR
+><TD
+><A
+HREF="http://jimmac.musichall.cz"
+TARGET="_top"
+>Jakub 'Jimmac' Steiner</A
 ></TD
 ></TR
 ></TBODY
@@ -7987,11 +8000,9 @@ NAME="CUTOFF-DESC"
 >6.2.6.1. Opis</A
 ></H4
 ><P
->Cutoff zmienia na 'od³±czony' status komputerów u¿ytkownikom, którzy
-		    maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ nie zajmuje
-		    siê fizycznym blokowaniem dostêpu do sieci. Nale¿y pamiêtaæ aby uruchamiaæ
-		    go przed modu³ami takimi jak np. 'hostfile'. Wa¿na jest kolejno¶æ instancji
-		    na li¶cie w zmiennej 'instances'. Modu³ 'cutoff' najlepiej uruchamiaæ codziennie.</P
+>Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza ostrze¿enia
+		    u¿ytkownikom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ 
+		    nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -8021,7 +8032,8 @@ CLASS="PROMPT"
 >command</P
 ><P
 >Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co najmniej
-			    jeden u¿ytkownik zostanie od³±czony. Domy¶lnie: nieustawiona.</P
+			    jeden u¿ytkownik zostanie od³±czony lub zostanie w³±czone ostrze¿enie. 
+			    Domy¶lnie: nieustawiona.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -8040,6 +8052,18 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >warning = ""</SAMP
+></P
+></LI
+><LI
+><P
+>warnings_only</P
+><P
+>Ta opcja pozwala zdecydowaæ, czy chcemy u¿yæ naszego 
+			    modu³u wy³±cznie do w³±czania ostrze¿eñ. Domy¶lnie: wy³±czona.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>warnings_only = true</SAMP
 ></P
 ></LI
 ></UL
@@ -11064,6 +11088,302 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >img</TT
 >.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="CHAPTER"
+><HR><H1
+><A
+NAME="FAQ"
+></A
+>Rozdzia&#322; 9. FAQ</H1
+><DIV
+CLASS="QANDASET"
+><DL
+><DT
+>9.1. <A
+HREF="#Q1"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Co zrobiæ gdy nie generuje siê mapa sieci?</B
+></SPAN
+></A
+></DT
+><DT
+>9.2. <A
+HREF="#Q2"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Jak dodaæ dwa komputery z tym samym adresem IP?</B
+></SPAN
+></A
+></DT
+><DT
+>9.3. <A
+HREF="#Q3"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Jak dodaæ dwa komputery z tym samym adresem MAC?</B
+></SPAN
+></A
+></DT
+><DT
+>9.4. <A
+HREF="#Q4"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Co oznacza b³±d <SAMP
+CLASS="PROMPT"
+>Can't locate Config/IniFiles.pm in @INC ...</SAMP
+>?</B
+></SPAN
+></A
+></DT
+><DT
+>9.5. <A
+HREF="#Q5"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Zrobiem parê poprawek. Jak mogê dodaæ je do LMSa?</B
+></SPAN
+></A
+></DT
+><DT
+>9.6. <A
+HREF="#Q6"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Która wersja LMSa jest najnowsza?</B
+></SPAN
+></A
+></DT
+></DL
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q1"
+></A
+><B
+>9.1. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Co zrobiæ gdy nie generuje siê mapa sieci?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Pierwsze co nale¿y sprawdziæ, to logi serwera www. 
+		Najczê¶ciej pomaga zwiêkszenie parametru <SAMP
+CLASS="PROMPT"
+>memory_limit</SAMP
+>
+		w <TT
+CLASS="FILENAME"
+>php.ini</TT
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q2"
+></A
+><B
+>9.2. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Jak dodaæ dwa komputery z tym samym adresem IP?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Nie ma takiej mo¿liwo¶ci. Co wiêcej, autorzy nie przewiduj±
+		takiej funkcjonalno¶ci w najbli¿szej przysz³o¶ci. Jednak masz jeszcze
+		szansê skorzystaæ z patch'a <SAMP
+CLASS="PROMPT"
+>multiip</SAMP
+> znajduj±cego
+		siê w <SAMP
+CLASS="PROMPT"
+>contrib</SAMP
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q3"
+></A
+><B
+>9.3. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Jak dodaæ dwa komputery z tym samym adresem MAC?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>A dokumentacjê przejrza³e¶? Do tego s³u¿y opcja <SAMP
+CLASS="PROMPT"
+>		allow_mac_sharing = 1</SAMP
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q4"
+></A
+><B
+>9.4. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Co oznacza b³±d <SAMP
+CLASS="PROMPT"
+>Can't locate Config/IniFiles.pm in @INC ...</SAMP
+>?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Prawdopodobnie nie masz zainstalowanych wymaganych modu³ow 
+		Perla, w tym wypadku chodzi o <TT
+CLASS="FILENAME"
+>Config::IniFiles</TT
+>.
+		Najwygodniejszym sposobem instalacji modu³ów jest skorzystanie z CPANu
+		w nastêpuj±cy sposób: 
+		<SAMP
+CLASS="PROMPT"
+>perl -MCPAN -e 'install Config::IniFiles'</SAMP
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q5"
+></A
+><B
+>9.5. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Zrobiem parê poprawek. Jak mogê dodaæ je do LMSa?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Poprawki najlepiej zg³aszaæ na listê mailingow±. Do wiadomo¶ci,
+		z krótkim opisem poprawki, nale¿y do³±czyæ diff'a (najlepiej do aktualnej
+		wersji cvs'owej), którego mo¿na wykonaæ w nastêpuj±cy sposób:
+<PRE
+CLASS="SCREEN"
+>$ cd lms
+$ cvs -z7 diff -u &#62; /tmp/moja_latka.patch</PRE
+>
+		Je¿eli jeste¶ zainteresowany do³±czeniem do grona developerów
+		i otrzymaniem praw zapisu do CVSu zg³o¶ tak± chêæ na listê. Wcze¶niej
+		jednak powiniene¶ siê daæ poznaæ na li¶cie jako odpowiedzialna 
+		i kompetentna osoba np. przysy³aj±c popraweki.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q6"
+></A
+><B
+>9.6. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Która wersja LMSa jest najnowsza?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Wersje LMSa s± numerowane analogicznie do j±dra Linuksa. 
+		I tak w LMS-x.y.z mamy: x - g³ówny numer wersji, y - jak parzysty
+		to wersja stabilna, jak nieparzysty to rozwojowa (niestabilna), 
+		z - mniej istotny numer podwersji. W zwi±zku z tym, je¶li uka¿e siê 
+		wersja stabilna np. 1.4.0, to w tej ga³êzi (1.4) nie bêdzie ju¿ dodawana
+		nowa funkcjonalno¶æ, bêd± usuwane tylko ewentualne b³êdy. Jednocze¶nie
+		powstaje wersja rozwojowa 1.5.x, która przez dodanie nowych rzeczy,
+		mo¿e byæ niestabilna/nie dzia³aj±ca prawid³owo.</P
+><P
+>Archiwum wszystkich wersji LMS znajduje siê pod adresem
+		<A
+HREF="http://lms.rulez.pl/download/"
+TARGET="_top"
+>lms.rulez.pl/download</A
+></P
+></DIV
 ></DIV
 ></DIV
 ></DIV

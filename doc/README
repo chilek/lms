@@ -73,6 +73,8 @@ LMS Developers
         8.3. Panel SQL
         8.4. Ostrze¿enia + squid
 
+   9. FAQ
+
    Spis tabel
    4-1. Lista skryptów wykonywalnych
    6-1. Lista modu³ów demona almsd
@@ -160,6 +162,7 @@ Rozdzia³ 1. Wstêp
        Grzegorz 'byko' Cichowski
        Kuba 'kflis' Flis
        £ukasz 'Baseciq' Mozer
+       Jakub 'Jimmac' Steiner
      * Support MySQL:
 
        Kuba 'shasta' Jankowski
@@ -2857,12 +2860,10 @@ info = "Opcjonalny opis modu³u"
 
 6.2.6.1. Opis
 
-   Cutoff zmienia na 'od³±czony' status komputerów u¿ytkownikom, którzy
-   maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ nie
-   zajmuje siê fizycznym blokowaniem dostêpu do sieci. Nale¿y pamiêtaæ
-   aby uruchamiaæ go przed modu³ami takimi jak np. 'hostfile'. Wa¿na jest
-   kolejno¶æ instancji na li¶cie w zmiennej 'instances'. Modu³ 'cutoff'
-   najlepiej uruchamiaæ codziennie.
+   Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza
+   ostrze¿enia u¿ytkownikom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿
+   okre¶lony limit. Ten modu³ nie zajmuje siê fizycznym blokowaniem
+   dostêpu do sieci.
      _________________________________________________________________
 
 6.2.6.2. Konfiguracja
@@ -2874,8 +2875,8 @@ info = "Opcjonalny opis modu³u"
        Przyk³ad: limit = -20
      * command
        Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co
-       najmniej jeden u¿ytkownik zostanie od³±czony. Domy¶lnie:
-       nieustawiona.
+       najmniej jeden u¿ytkownik zostanie od³±czony lub zostanie w³±czone
+       ostrze¿enie. Domy¶lnie: nieustawiona.
        Przyk³ad: command = 'almsd -qi firewall'
      * warning
        W³±cza ostrze¿enie dla od³±czanego u¿ytkowanika i przypisuje mu
@@ -2884,6 +2885,10 @@ info = "Opcjonalny opis modu³u"
        Domy¶lnie: 'Automatyczna blokada spowodowana przekroczeniem
        terminu wp³aty (dd.mm.yyyy)".
        Przyk³ad: warning = ""
+     * warnings_only
+       Ta opcja pozwala zdecydowaæ, czy chcemy u¿yæ naszego modu³u
+       wy³±cznie do w³±czania ostrze¿eñ. Domy¶lnie: wy³±czona.
+       Przyk³ad: warnings_only = true
      _________________________________________________________________
 
 6.2.7. Dhcp
@@ -3970,3 +3975,63 @@ redirect        = http://nasz.serwer.pl/winetka/
 
    Do katalogu gdzie ma byæ widoczna winetka kopiujemy pliki index.php,
    message.html i zawarto¶æ katalogu img.
+     _________________________________________________________________
+
+Rozdzia³ 9. FAQ
+
+   9.1. Co zrobiæ gdy nie generuje siê mapa sieci?
+   9.2. Jak dodaæ dwa komputery z tym samym adresem IP?
+   9.3. Jak dodaæ dwa komputery z tym samym adresem MAC?
+   9.4. Co oznacza b³±d Can't locate Config/IniFiles.pm in @INC ...?
+   9.5. Zrobiem parê poprawek. Jak mogê dodaæ je do LMSa?
+   9.6. Która wersja LMSa jest najnowsza?
+
+   9.1. Co zrobiæ gdy nie generuje siê mapa sieci?
+
+   Pierwsze co nale¿y sprawdziæ, to logi serwera www. Najczê¶ciej pomaga
+   zwiêkszenie parametru memory_limit w php.ini.
+
+   9.2. Jak dodaæ dwa komputery z tym samym adresem IP?
+
+   Nie ma takiej mo¿liwo¶ci. Co wiêcej, autorzy nie przewiduj± takiej
+   funkcjonalno¶ci w najbli¿szej przysz³o¶ci. Jednak masz jeszcze szansê
+   skorzystaæ z patch'a multiip znajduj±cego siê w contrib.
+
+   9.3. Jak dodaæ dwa komputery z tym samym adresem MAC?
+
+   A dokumentacjê przejrza³e¶? Do tego s³u¿y opcja allow_mac_sharing = 1.
+
+   9.4. Co oznacza b³±d Can't locate Config/IniFiles.pm in @INC ...?
+
+   Prawdopodobnie nie masz zainstalowanych wymaganych modu³ow Perla, w
+   tym wypadku chodzi o Config::IniFiles. Najwygodniejszym sposobem
+   instalacji modu³ów jest skorzystanie z CPANu w nastêpuj±cy sposób:
+   perl -MCPAN -e 'install Config::IniFiles'.
+
+   9.5. Zrobiem parê poprawek. Jak mogê dodaæ je do LMSa?
+
+   Poprawki najlepiej zg³aszaæ na listê mailingow±. Do wiadomo¶ci, z
+   krótkim opisem poprawki, nale¿y do³±czyæ diff'a (najlepiej do
+   aktualnej wersji cvs'owej), którego mo¿na wykonaæ w nastêpuj±cy
+   sposób:
+$ cd lms
+$ cvs -z7 diff -u > /tmp/moja_latka.patch
+
+   Je¿eli jeste¶ zainteresowany do³±czeniem do grona developerów i
+   otrzymaniem praw zapisu do CVSu zg³o¶ tak± chêæ na listê. Wcze¶niej
+   jednak powiniene¶ siê daæ poznaæ na li¶cie jako odpowiedzialna i
+   kompetentna osoba np. przysy³aj±c popraweki.
+
+   9.6. Która wersja LMSa jest najnowsza?
+
+   Wersje LMSa s± numerowane analogicznie do j±dra Linuksa. I tak w
+   LMS-x.y.z mamy: x - g³ówny numer wersji, y - jak parzysty to wersja
+   stabilna, jak nieparzysty to rozwojowa (niestabilna), z - mniej
+   istotny numer podwersji. W zwi±zku z tym, je¶li uka¿e siê wersja
+   stabilna np. 1.4.0, to w tej ga³êzi (1.4) nie bêdzie ju¿ dodawana nowa
+   funkcjonalno¶æ, bêd± usuwane tylko ewentualne b³êdy. Jednocze¶nie
+   powstaje wersja rozwojowa 1.5.x, która przez dodanie nowych rzeczy,
+   mo¿e byæ niestabilna/nie dzia³aj±ca prawid³owo.
+
+   Archiwum wszystkich wersji LMS znajduje siê pod adresem
+   lms.rulez.pl/download
