@@ -22,7 +22,7 @@
 	</TD>
 	<TD class="fright" width="1%" align="right" nowrap> 
 		<nobr>
-		<a href="?m=dbdel&db={$dblist.time[dblist]}" onClick="return confirmLink(this, 'Czy napewno chcesz usun±æ t± kopiê bazy danych?')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A>
+		<a href="?m=dbdel&db={$dblist.time[dblist]}" onClick="return confirmLink(this, 'Czy napewno chcesz usun±æ t± kopiê bazy danych?')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ {$lang.delete} ]"></A>
 		<a href="?m=dbrecover&db={$dblist.time[dblist]}" onClick="return confirmLink(this, 'Czy napewno chcesz przywróciæ t± kopiê bazy danych?\nUWAGA! Ta operacja spowoduje automatyczne zrobienie kopii zapasowej aktualnej bazy')"><IMG src="img/recover.gif" align="absmiddle" border="0" alt="[ Odtwórz ]"></A>
 		<a href="?m=dbview&db={$dblist.time[dblist]}"><img src="img/view.gif" alt="[ Podgl±d ]" border="0" align="absmiddle"></A>
 		<A href="?m=dbview&db={$dblist.time[dblist]}&rawmode=true&save=true&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql"><img src="img/save.gif" alt="[ Zapisz ]" border="0" align="absmiddle"></A>
