@@ -140,6 +140,9 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld.org.pl
 
 $Log$
+Revision 1.8.2.3  2003/06/21 10:19:24  lukasz
+- bump up rel to release
+
 Revision 1.8.2.2  2003/05/21 12:11:03  lukasz
 - s/1.0.0/1.0-cvs/g
 
