@@ -160,7 +160,11 @@ Class LMSDB_common
 
 }
 
-/* $ChangeLog:$
+/* $Log$
+/* Revision 1.8  2003/08/18 16:46:50  lukasz
+/* - fixed CVS tags
+/* - beta state - need testing
+/*
  */
 
 ?>
