@@ -69,8 +69,6 @@ if(isset($netdevdata))
 		header("Location: ?m=netdevinfo&id=".$_GET[id]);
 		die;
 	}
-
-	$edit = TRUE;
 }
 else
 	$netdevdata = $LMS->GetNetDev($_GET[id]);
@@ -102,16 +100,13 @@ $SMARTY->assign("netdevlist",$netdevconnected);
 $SMARTY->assign("netcomplist",$netcomplist);
 $SMARTY->assign("nodelist",$nodelist);
 $SMARTY->assign("restnetdevlist",$netdevlist);
-
-// chora konstrukcja
-
-if($edit)
-	$SMARTY->display("netdevedit.html");
-else
-	$SMARTY->display("netdevinfo.html");
+$SMARTY->display("netdevedit.html");
 
 /*
  * $Log$
+ * Revision 1.10  2003/10/06 08:14:55  lexx
+ * - nie zawsze rozpoczynamy edycje przez post
+ *
  * Revision 1.9  2003/10/06 05:33:04  lukasz
  * - temporary save / lot of fixes
  *
