@@ -79,7 +79,7 @@
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="10"{if $error.zip} CLASS="ALERT"><BR>
+			<B>Kod:</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="5"{if $error.zip} CLASS="ALERT"><BR>
 			<FONT CLASS="ALERT">{$error.zip}</FONT{/if}>
 		</TD>
 	</TR>
@@ -87,7 +87,7 @@
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" SIZE="30">
+			<B>Miasto:</B><BR><INPUT TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" SIZE="30">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

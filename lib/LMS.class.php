@@ -1524,7 +1524,6 @@ class LMS
 	
 	function GetTariffList()
 	{
-		// wrapper do starego formatu
 		if($tarifflist = $this->ADB->GetAll("SELECT id, name, value, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
 			foreach($tarifflist as $idx => $row)
 			{

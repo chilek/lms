@@ -4,7 +4,7 @@
 <H1>Lista u¿ytkowników{$layout.ultitle}</H1>
 <P>
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR bgcolor="#CEBD9B">
+	<TR bgcolor="#CEBD9B" {popup text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
 		<TD width="95%" class="fleftu">
 			<B>
 			<img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">Nazwisko i imiê:</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
