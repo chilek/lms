@@ -210,10 +210,16 @@
 	<sect2 id="user-staff-faktury">
 		<title>Faktury</title>
 		<para>LMS umo¿liwia wystawianie faktur. W³±czenia tej opcji dokonuje siê podczas
-		przypisywania taryf u¿ytkownikowie. Do poprawnego dzia³ania i tworzenia wydruków
+		przypisywania taryf u¿ytkownikom. Do poprawnego dzia³ania i tworzenia wydruków
 		wymagane jest ustawienie podstawowych opcji w sekcji <emphasis>[invoices]</emphasis> 
 		<filename>lms.ini</filename>:
 		<itemizedlist>
+		<listitem>
+			<para>number_template</para>
+			<para>Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku,
+			'%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</para>
+			<para>Przyk³ad: <prompt>number_template = %N/%Y"</prompt></para>
+		</listitem>
 		<listitem>
 			<para>seller</para>
 			<para>Dane sprzedawcy. Domy¶lnie: pusty</para>
@@ -279,9 +285,7 @@
 	ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug downloadu).
 	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
 	ostatnich 30 dni lub ostatniego roku.</para>
-	<para><note><para>Menu 'Statystyki' jest standardowo niedostêpne. Aby je w³±czyæ, nale¿y w sekcji
-	<emphasis>[phpui]</emphasis> pliku <filename>lms.ini</filename> ustawiæ zmienn±:
-	<prompt>enable_stats = 1</prompt>.</para></note>
+	<para>
 	<note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y go zainstalowaæ
 	aby mieæ w bazie dane do wykresów.</para></note>
 	</para>

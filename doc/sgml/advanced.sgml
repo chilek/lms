@@ -27,6 +27,10 @@
 				<entry>Dodatki stworzone przez u¿ytkowników LMS</entry>
 				</row>
 				<row>
+				<entry>daemon</entry>
+				<entry>A.L.E.C's LMS Daemon</entry>
+				</row>
+				<row>
 				<entry>devel</entry>
 				<entry>Skrypty przydatne dla developerów</entry>
 				</row>
