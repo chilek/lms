@@ -45,6 +45,7 @@ wersja 1.5.4 (??/??/????):
   - zmiana warto¶ci domy¶lnej opcji invoices/content_type: usuniêto definicjê
     charsetu (alec)
   - numeracja miesiêczna faktur: invoices/monthly_numbering (alec)
+  - BTS#0000299: poprawka w funkcji sprawdzaj±cej poprawno¶æ MAC'a (lukas)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 

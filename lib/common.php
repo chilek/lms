@@ -296,7 +296,7 @@ function mask2prefix($mask)
 function check_mac($macaddr)
 {
 	$macaddr = str_replace('-',':',$macaddr);
-	return eregi('^[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}',$macaddr);
+	return eregi('^[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}$',$macaddr);
 }
 
 function textwrap($text, $wrap=76, $break = "\n")
