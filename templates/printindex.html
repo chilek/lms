@@ -117,7 +117,7 @@
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="admin" {tip text="You can select customer to limit results"}>
-							<OPTION value="">- wszyscy -</OPTION>
+							<OPTION value="">{t}- all -{/t}</OPTION>
 							{section name="admins" loop=$admins}
 							<OPTION value="{$admins[admins].id}">{$admins[admins].name|truncate:50:" ..."}</OPTION>
 							{/section}
@@ -213,11 +213,11 @@ cal6.time_comp = false;
 						<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}User:{/t}</B>
+						<B>{t}Customer:{/t}</B>
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="user" {tip text="Select customer"}>
-							<OPTION value="0" SELECTED>- wszyscy -</OPTION>
+							<OPTION value="0" SELECTED>{t}- all -{/t}</OPTION>
 							{section name="users" loop=$users}
 							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
@@ -330,7 +330,7 @@ cal9.time_comp = false;
 						<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}User:{/t}</B>
+						<B>{t}Customer:{/t}</B>
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="user" {tip text="Select customer"}>
@@ -386,11 +386,11 @@ cal4.time_comp = false;
 						<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>{t}User:{/t}</B>
+						<B>{t}Customer:{/t}</B>
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="user" {tip text="You can select customer to limit results"}>
-							<OPTION value="0">- wszyscy -</OPTION>
+							<OPTION value="0">{t}- all -{/t}</OPTION>
 							{section name="users" loop=$users}
 							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."}</OPTION>
 							{/section}
