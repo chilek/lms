@@ -69,7 +69,7 @@
 			<NOBR>{$balancelist[balancelist].after|string_format:"%01.2f"} z³</NOBR>
 		</TD>
 		<TD width="1%" nowrap valign="top">
-			{if $balancelist[balancelist].userid}<NOBR><A HREF="?m=userinfo&id={$balancelist[balancelist].userid}">{$balancelist[balancelist].username|truncate:20:"..."}</A></NOBR>{else} - {/if}
+			{if $balancelist[balancelist].userid}<NOBR><A HREF="?m=userbalance&id={$balancelist[balancelist].userid}">{$balancelist[balancelist].username|truncate:20:"..."}</A></NOBR>{else} - {/if}
 		</TD>
 		<TD width="92%" class="fright">
 			{$balancelist[balancelist].comment}
