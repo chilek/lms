@@ -42,7 +42,7 @@ $access['table'][3]['allow_reg']	= '^((tariff)(add|info|list|move|edit|delete)|(
 $access['table'][4]['name']    		= 'prze³adowywanie konfiguracji';
 $access['table'][4]['allow_reg']    	= '^reload$';
 
-$access['table'][5]['name']		= 'manipulacja kontami u¿ytkowników';
+$access['table'][5]['name']		= 'manipulacja danymi u¿ytkowników';
 $access['table'][5]['allow_reg']	= '^(user(add|edit|del|assignments|warn)|nodewarn|usergroup(add|edit|delete|move))$';
 
 $access['table'][6]['name'] 		= 'manipulacja danymi komputerów';
@@ -59,6 +59,9 @@ $access['table'][9]['allow_reg']    	= '^(rtsearch|(rtqueue|rtticket|rtmessage)(
 
 $access['table'][10]['name']        	= 'obs³uga Helpdesku (RT)';
 $access['table'][10]['allow_reg']   	= '^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage)(add|edit|info|view|print))$';
+
+$access['table'][11]['name']        	= 'manipulacja kontami';
+$access['table'][11]['allow_reg']   	= '^(account(list|edit|add|del))$';
 
 $access['table'][253]['name']		= 'brak dostêpu do modyfikacji i zak³adania nowych kont administratorów';
 $access['table'][253]['deny_reg']	= '^(admin(add|del|edit|passwd))$';
