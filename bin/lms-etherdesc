@@ -87,7 +87,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 my $networks_list = $ini->val('ether', 'networks') || '';
 my $cfile = $ini->val('ether', 'etherdesc_file') || '/var/lib/iptraf/ethernet.desc';
 my $cuid = $ini->val('ether', 'etherdesc_owneruid') || '0';
-my $cgid = $ini->val('ether', 'etherdesc_ownergif') || '0';
+my $cgid = $ini->val('ether', 'etherdesc_ownergid') || '0';
 my $cperm = $ini->val('ether', 'etherdesc_permission') || '600';
 
 my $dbtype = $ini->val('database', 'type') || 'mysql';
@@ -112,23 +112,66 @@ else
 	exit 1;
 }
 
-open(ETHERDESC, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.\n");
+sub mask2prefix($)
+{
+	my $mask = shift @_;
+	my @tmp = split('\.',$mask,4);
+	my $q = sprintf("%b%b%b%b",$tmp[0],$tmp[1],$tmp[2],$tmp[3]);
+	$q =~ s/0*$//;
+	if ($q =~ /0/) {
+		print " You idiot. error in mask\n";
+	}
+	my $len = length($q) ;
+	return $len;
+}
 
-my $dbq = $dbase->prepare("SELECT name, mac FROM nodes");
+open(ETHERSFILE, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.\n");
+
+my $allnetworks = "";
+
+my $dbq = $dbase->prepare("SELECT name FROM networks");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref()) {
+	$allnetworks = "$allnetworks $row->{'name'}";
+}
+
+if(!$networks_list) {
+	$networks_list = $allnetworks;
+}
+
+my @networks = split ' ',$networks_list;
+
+$dbq = $dbase->prepare("SELECT name, mac, ipaddr FROM nodes");
 $dbq->execute();
 my %maclist;
+my %namelist;
 
-while (my $row = $dbq->fetchrow_hashref())
+while (my $row = $dbq->fetchrow_hashref()) {
+	$maclist{$row->{'ipaddr'}} = $row->{'mac'};
+	$namelist{$row->{'ipaddr'}} = $row->{'name'};
+}
+
+foreach my $key (@networks)
 {
-  my $mac  = $row->{'mac' };
-  my $name = $row->{'name'};
+	my $dbq = $dbase->prepare("SELECT address, mask FROM networks WHERE name = UPPER('$key')");
+	$dbq->execute();
+	while (my $row = $dbq->fetchrow_hashref()) 
+	{
+		my $longip = $row->{'address'};
+		my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
+		for(my $i=$longip;$i<$longip+$netsize;$i++)
+		{
+			if($maclist{$i})
+			{
+				my $mac  = lc($maclist{$i});
+				my $name = lc($namelist{$i});
+			
+				$mac =~ s/://g;
 
-  $mac =~ s/://g;
-
-  $mac  = lc($mac);
-  $name = lc($name);
-
-  print ETHERDESC "$mac:$name\n";
+				print ETHERSFILE "$mac:$name\n";
+			}
+		}
+	}
 }
 
 $dbase->disconnect();
