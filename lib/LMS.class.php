@@ -34,7 +34,7 @@ class LMS
 	var $ADB;
 	var $SESSION;
 	var $CONFIG;
-	var $_version = '1.0.65';
+	var $_version = '1.0.109';
 
 	function LMS($ADB,$SESSION)
 	{
