@@ -80,9 +80,9 @@ if(isset($nodeedit))
 		if($LMS->IsIPValid($nodeedit['ipaddr'])) 
 		{
 			$ip = $LMS->GetNodeIPByID($nodeedit['id']);
-			if(!$LMS->IsIPFree($nodeedit['ipaddr']) && $ip!=$nodeedit['ipaddr'])
+			if($ip!=$nodeedit['ipaddr'] && !$LMS->IsIPFree($nodeedit['ipaddr']))
 				$error['ipaddr'] = trans('Specified IP address is in use!');
-			if($LMS->IsIPGateway($nodeedit['ipaddr']) && $ip!=$nodeedit['ipaddr'])
+			elseif($ip!=$nodeedit['ipaddr'] && $LMS->IsIPGateway($nodeedit['ipaddr']))
 				$error['ipaddr'] = trans('Specified IP address is network gateway!');
 		}
 		else
