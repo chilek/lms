@@ -29,16 +29,16 @@ $_SESSION[userdelfrom] = $QUERY_STRING;
 $layout[pagetitle]="Lista u¿ytkowników";
 
 if(!isset($_GET[o]))
-	$o = $_SESSION[o];
+	$o = $_SESSION[ulo];
 else
 	$o = $_GET[o];
-$_SESSION[o] = $o;
+$_SESSION[ulo] = $o;
 
 if(!isset($_GET[s]))
-	$s = $_SESSION[s];
+	$s = $_SESSION[uls];
 else
 	$s = $_GET[s];
-$_SESSION[s] = $s;
+$_SESSION[uls] = $s;
 
 $userlist=$LMS->GetUserList($o,$s);
 
