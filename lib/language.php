@@ -28,12 +28,14 @@ $langs = explode(',', ($_CONFIG['phpui']['lang'] ? $_CONFIG['phpui']['lang'] : $
 foreach ($langs as $val) {
     switch (substr($val, 0, 2)) {
 	case 'pl':
-            $language = 'pl';
+            define('LANG', 'pl');
+	    define('CHARSET', 'iso-8859-2');
 	    setlocale(LC_MESSAGES, 'pl_PL');
 	    setlocale(LC_TIME, 'pl_PL');
             break 2;
         case 'en':
-	    $language = 'en';
+	    define('LANG', 'en');
+	    define('CHARSET','iso-8859-1');
 	    setlocale(LC_ALL, 'en_US');
 	    break 2;
     }
