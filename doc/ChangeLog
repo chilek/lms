@@ -1,5 +1,10 @@
 $Id$
 
+wersja 1.2.4 (??/??/2004):
+
+  - BTS#0000171: poprawiona obs³uga b³êdu braku portów w urz±dzeniu
+    podczas pierwszego pod³±czenia komputera (alec)
+
 wersja 1.2.3 Anise (06/07/2004):
 
   - poprawiona zawarto¶æ pól from i sender w nag³ówku wiadomo¶ci e-mail 

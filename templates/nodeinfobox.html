@@ -43,9 +43,9 @@
 			{if $netdevices}
 			<P>
 			<FORM METHOD="GET" ACTION="?m=nodeedit" NAME="nodelink"><INPUT TYPE="HIDDEN" NAME="m" VALUE="nodeedit"><INPUT TYPE="HIDDEN" NAME="id" VALUE="{$nodeinfo.id}"><INPUT TYPE="HIDDEN" NAME="action" VALUE="link">
-				<SELECT SIZE="1" NAME="devid">
+				<SELECT SIZE="1" NAME="devid" {tip text="Wybierz urz±dzenie aby pod³±czyæ komputer" trigger="netdev"}>
 					{section name=netdev loop=$netdevices}
-					<OPTION VALUE="{$netdevices[netdev].id}">{$netdevices[netdev].name} {$netdevices[netdev].producer}{if $netdevices[netdev].location} / {$netdevices[netdev].location}{/if}</OPTION>
+					<OPTION VALUE="{$netdevices[netdev].id}" {if $netdevices[netdev].id==$netdevice}SELECTED{/if}>{$netdevices[netdev].name} {$netdevices[netdev].producer}{if $netdevices[netdev].location} / {$netdevices[netdev].location}{/if}</OPTION>
 					{/section}
 				</SELECT>
 				<A HREF="javascript:document.nodelink.submit(); ">Pod³±cz <IMG SRC="img/edit.gif" ALT="" ALIGN="ABSMIDDLE" BORDER="0"></A>

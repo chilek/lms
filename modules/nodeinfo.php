@@ -47,6 +47,13 @@ elseif($LMS->GetNodeOwner($_GET['id']) == 0)
 	die;
 }
 
+if($_GET['devid'])
+{
+	$error['netdev'] = 'Brak wolnych portów w wybranym urz±dzeniu!';
+	$SMARTY->assign('error, $error);
+	$SMARTY->assign('netdevice', $_GET['devid']);
+}
+
 $nodeid = $_GET['id'];
 $ownerid = $LMS->GetNodeOwner($nodeid);
 $tariffs = $LMS->GetTariffs();
