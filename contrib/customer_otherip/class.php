@@ -156,5 +156,6 @@ require_once($_LIB_DIR.'/smarty_addons.php');
 $layout['lmsv'] = '1.5-cvs';
 
 $SMARTY->assign_by_ref('layout', $layout);
+$SMARTY->assign_by_ref('_config', $_CONFIG);
 
 ?>

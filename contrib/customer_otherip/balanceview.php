@@ -40,6 +40,9 @@ $id = GetUserIDByIDAndPIN($login, $pin);
 
 if($id)
 {
+	session_start();
+	$_SESSION['uid'] = $id;
+
 	$SMARTY->assign('userinfo',$LMS->GetUser($id));
 	$SMARTY->assign('balancelist',$LMS->GetUserBalanceList($id));
 	$SMARTY->assign('limit',15);

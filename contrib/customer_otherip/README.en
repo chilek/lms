@@ -40,7 +40,7 @@ httpd config.
 
 4) aferword
 
-panel requires to set sys_dir in lms.ini file (sectoin [directories]).
+panel requires to set sys_dir in lms.ini file (section [directories]).
 
 
 5) In balanceview.php one could find:

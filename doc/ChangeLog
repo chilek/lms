@@ -29,6 +29,7 @@ version 1.5.5 (??/??/????):
   - BTS#0000284: user login is unique and can't be reused - changed content
     of warning message (alec)
   - added 'in debt', 'deleted' and 'disconnected' filters for mailing (alec) 
+  - contrib/customer_otherip: invoices printing (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
