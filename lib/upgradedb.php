@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-define(DBVERSION, '2004120400'); // here should be always the newest version of database!
+define(DBVERSION, '2004120600'); // here should be always the newest version of database!
 // it placed here to avoid read disk every time when we call this file.
 
 /*
@@ -42,7 +42,7 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 			{
 				$upgradeversion = ereg_replace('^'.$_DBTYPE.'.([0-9]{10}).php$','\1',$upgrade);
 				
-				if($upgradeversion > $dbversion)
+				if($upgradeversion > $dbversion && $upgradeversion <= DBVERSION)
 					$pendingupgrades[] = $upgradeversion;
 			}
 			
