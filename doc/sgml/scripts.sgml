@@ -249,7 +249,8 @@ http://www.naszasiec.pl/</screen></example>
 	</sect1>
 	<sect1 id="scripts-payments">
 	 <title>lms-payments</title>
-	 <para>Skrypt po uruchomieniu nalicza u¿ytkownikom op³atê abonamentow±. 
+	 <para>Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
+	 u¿ytkownikom oraz op³at sta³ych.
 	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</para>
 	 <para>Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.</para>
         </sect1>
