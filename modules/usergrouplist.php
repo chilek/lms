@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Lista grup";
+$layout['pagetitle'] = trans('Group List');
 
 $usergrouplist = $LMS->UsergroupGetList();
 

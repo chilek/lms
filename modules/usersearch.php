@@ -48,7 +48,7 @@ else
 	
 $_SESSION['usls'] = $s;
 				
-$layout['pagetitle'] = 'Wyszukiwanie u¿ytkowników';
+$layout['pagetitle'] = trans('Customer Search');
 
 if($_GET['search']==1 || isset($_GET['search']))
 {

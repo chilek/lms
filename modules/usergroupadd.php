@@ -38,13 +38,13 @@ if(isset($usergroupadd))
 	}
 	
 	if($usergroupadd['name'] == '')
-		$error['name'] = 'Musisz podaæ nazwê grupy!';
+		$error['name'] = trans('Group name required!');
 	elseif(strlen($usergroupadd['name']) > 16)
-		$error['name'] = 'Podana nazwa jest za d³uga!';
+		$error['name'] = trans('Group name is too long!');
 	elseif($LMS->UsergroupGetId($usergroupadd['name']))
-		$error['name'] = 'Istnieje ju¿ grupa o nazwie '.$usergroupadd['name'];
+		$error['name'] = trans('Group with name $0 already exists!',$usergroupadd['name']);
 	elseif(!eregi("^[._a-z0-9-]+$",$usergroupadd['name']))
-		$error['name'] = 'Podana nazwa zawiera niepoprawne znaki!';
+		$error['name'] = trans('Invalid chars in group name!');
 
 	if(!$error){
 		header('Location: ?m=usergrouplist&id='.$LMS->UsergroupAdd($usergroupadd));
@@ -53,7 +53,7 @@ if(isset($usergroupadd))
 	
 }
 
-$layout['pagetitle'] = 'Nowa grupa';
+$layout['pagetitle'] = trans('New Group');
 
 $SMARTY->assign('error',$error);
 $SMARTY->assign('usergroupadd',$usergroupadd);
