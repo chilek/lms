@@ -60,11 +60,11 @@ elseif(isset($userdata))
 	if($userdata['address']=='')
 		$error['address'] = trans('Address required!');
 
-	if($userdata['nip'] !='' && !check_fid($userdata['nip']))
-		$error['nip'] = trans('Incorrect FID!');
+	if($userdata['nip'] !='' && !check_fin($userdata['nip']))
+		$error['nip'] = trans('Incorrect Financial Identification Number!');
 
 	if(!check_ssn($userdata['pesel']) && $userdata['pesel'] != '')
-		$error['pesel'] = trans('Incorrect SSN!');
+		$error['pesel'] = trans('Incorrect Social Security Number!');
 
 	if($userdata['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$userdata['zip']))
 		$error['zip'] = trans('Incorrect ZIP code!');

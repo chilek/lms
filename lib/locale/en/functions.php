@@ -60,7 +60,7 @@ function uptimef($ts)
 	return trim($result);
 }
 
-function check_fid($fid)
+function check_fin($fin)
 {
 	return TRUE;
 }

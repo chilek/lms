@@ -64,18 +64,18 @@ function uptimef($ts)
 	return $result;
 }
 
-function check_fid($fid)
+function check_fin($fin)
 {
 	$steps = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
 
-	$fid = str_replace('-', '', $fid);
-	$fid = str_replace(' ', '', $fid);
+	$fin = str_replace('-', '', $fin);
+	$fin = str_replace(' ', '', $fin);
 
-	if (strlen($fid) != 10) return FALSE;
+	if (strlen($fin) != 10) return FALSE;
 
-	for ($x = 0; $x < 9; $x++) $sum_nb += $steps[$x] * $fid[$x];
+	for ($x = 0; $x < 9; $x++) $sum_nb += $steps[$x] * $fin[$x];
 
-	if ($sum_nb % 11 == $fid[9]) return TRUE;
+	if ($sum_nb % 11 == $fin[9]) return TRUE;
 
 	return FALSE;
 }
