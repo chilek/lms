@@ -915,9 +915,16 @@ class LMS
                     switch($idx)
                     {
                         case "ipaddr" : 
-                             if (ip_long($value))
-                                   $searchargs[] = "ipaddr = ".ip_long($value);
-                        break;
+			    if (ip_long($value))
+                            {
+			           $searchargs[] = "ipaddr = ".ip_long($value);
+                    	    } else 
+			    {
+				list($net,$broadcast) = get_ip_range_from_ip_part($value);
+				if(check_ip($net) && check_ip($broadcast)) //na wszelki wypadek
+				    $searchargs[] = "ipaddr > ".ip_long($net)." AND ipaddr < ".ip_long($broadcast);
+			    }
+			break;
                         default : 
                              $searchargs[] = $idx." ?LIKE? '%".$value."%'";
                         break;
@@ -1861,6 +1868,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.238  2003/09/23 18:57:43  alec
+ * new method for ip search in SearchNodeList()
+ *
  * Revision 1.237  2003/09/23 14:25:25  alec
  * update SearchNodeList() ze wzglêdu na nowy format zapisu adresu IP w bazie, dodany ¶rednik w CountNetDevLinks()
  *
