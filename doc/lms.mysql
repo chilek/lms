@@ -42,7 +42,7 @@ CREATE TABLE cash (
   time int(11) NOT NULL default '0',
   adminid int(11) NOT NULL default '0',
   type int(11) NOT NULL default '0',
-  value double NOT NULL default '0',
+  value decimal(9,2) NOT NULL default '0',
   userid int(11) NOT NULL default '0',
   invoiceid int(11) NOT NULL default '0',
   comment varchar(255) NOT NULL default '',
@@ -147,7 +147,7 @@ DROP TABLE IF EXISTS tariffs;
 CREATE TABLE tariffs (
   id int(11) NOT NULL auto_increment,
   name varchar(255) NOT NULL default '',
-  value float NOT NULL default '0',
+  value decimal(9,2) NOT NULL default '0',
   taxvalue int(7) NOT NULL default '0',
   pkwiu varchar(255) NOT NULL default '',
   uprate int(11) NOT NULL default '0',

@@ -91,6 +91,20 @@ ALTER TABLE tariffs ALTER downrate DROP NOT NULL;
 ALTER TABLE tariffs ALTER downrate DROP DEFAULT; 
 ALTER TABLE tariffs ALTER description DROP NOT NULL;
 
+/* Zmiana typów pul numerycznych */
+ALTER TABLE cash ADD val numeric(9,2);
+UPDATE cash SET val=value;
+ALTER TABLE cash ALTER val SET NOT NULL;
+ALTER TABLE cash ALTER val SET DEFAULT 0;
+ALTER TABLE cash DROP COLUMN value;
+ALTER TABLE cash RENAME val TO value;
+ALTER TABLE tariffs ADD val numeric(9,2);
+UPDATE tariffs SET val=value;
+ALTER TABLE tariffs ALTER val SET NOT NULL;
+ALTER TABLE tariffs ALTER val SET DEFAULT 0;
+ALTER TABLE tariffs DROP COLUMN value;
+ALTER TABLE tariffs RENAME val TO value;
+
 /* Faktury inaczej */
 ALTER TABLE cash ADD COLUMN invoiceid integer;
 ALTER TABLE cash ALTER COLUMN invoiceid SET default 0;
