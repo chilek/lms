@@ -21,6 +21,11 @@ wersja 1.1.8 (??/??/????):
   - urz±dzeniom sieciowym mo¿na przypisywaæ adresy IP oraz MAC (lexx/alec)
   - w genfake.php poprawione czyszczenie bazy oraz dodane generowanie
     danych osprzêtu i po³±czeñ sieciowych (alec)
+  - mo¿liwo¶æ podania terminu i rodzaju p³atno¶ci przy pisaniu faktury z palca
+    (lukasz):
+    MySQL:
+    	ALTER TABLE `invoices` ADD `paytype` VARCHAR( 255 ) NOT NULL AFTER
+    `paytime` ;
   - 'op³aty sta³e' (alec)
     MySQL:
     CREATE TABLE payments (
@@ -47,6 +52,7 @@ wersja 1.1.8 (??/??/????):
 	description text,
 	PRIMARY KEY (id)
     );
+>>>>>>> 1.214
     
 wersja 1.1.7 Hathor (14/12/2003):
 

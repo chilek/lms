@@ -16,7 +16,7 @@
 			{$invoice.cdate|date_format:"%d.%m.%Y"} {if $_config.invoices.cplace neq ""}, {$_config.invoices.cplace}{/if}<BR>
 			{$invoice.cdate|date_format:"%d.%m.%Y"}<BR>
 			{$invoice.pdate|date_format:"%d.%m.%Y"}<BR>
-			przelew
+			{$invoice.paytype|default:"PRZELEW"}
 		</TD>
 	</TR>
 	<TR>

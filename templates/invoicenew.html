@@ -45,9 +45,26 @@
 	</TR>
 	{/if}
 	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			<B>Termin p³atno¶ci (dni):</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}">
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			<B>Typ p³atno¶ci (gotówka/przelew/etc.):</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="invoice[paytype]" VALUE="{$invoice.paytype}">
+		</TD>
+	</TR>			
+	<TR CLASS="light">
 		<TD CLASS="flr" WIDTH="100%" COLSPAN="2">
 			Wybierz u¿ytkownika:
 			<SELECT SIZE="1" NAME="user" onChange="document.setcustomer.userid.value=document.setcustomer.user.value">
+				<OPTION VALUE="0">... wybierz u¿ytkownika ...</OPTION>
 				{foreach from=$users item=user}
 				<OPTION VALUE="{$user.id}"{if $customer.id eq $user.id} SELECTED{/if}>{$user.username} ({$user.id|string_format:"%04d"})</OPTION>
 				{/foreach}
