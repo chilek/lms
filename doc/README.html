@@ -188,11 +188,6 @@ HREF="#MENU-STATS"
 HREF="#MENU-HELPDESK"
 >Helpdesk</A
 ></DT
-><DT
->3.13. <A
-HREF="#USER-STAFF"
->Dodatki</A
-></DT
 ></DL
 ></DD
 ><DT
@@ -298,6 +293,30 @@ HREF="#DEVEL-RIGHTS"
 >7.6. <A
 HREF="#DEVEL-LIMITS"
 >Ograniczenia</A
+></DT
+></DL
+></DD
+><DT
+>8. <A
+HREF="#CONTRIB"
+>Dodatki</A
+></DT
+><DD
+><DL
+><DT
+>8.1. <A
+HREF="#CONTRIB-CUSTOMER"
+>"Moje konto"</A
+></DT
+><DT
+>8.2. <A
+HREF="#CONTRIB-SQLPANEL"
+>Panel SQL</A
+></DT
+><DT
+>8.3. <A
+HREF="#CONTRIB-SQUID-WARN"
+>Ostrze¿enia + squid</A
 ></DT
 ></DL
 ></DD
@@ -3900,121 +3919,6 @@ NAME="MENU-HELPDESK-NEWTICKET"
 	    oraz zg³aszaj±cego u¿ytkownika. Osoby spoza sieci wpisujemy w polach Nazwisko i Imiê.
 	    Opcjonalnie, je¶li wiadomo¶æ zosta³a zg³oszona poczt± elektroniczn± podajemy adres 
 	    e-mail (tak¿e dla u¿ytkownika zapisanego w bazie).</P
-></DIV
-></DIV
-><DIV
-CLASS="SECT1"
-><HR><H2
-CLASS="SECT1"
-><A
-NAME="USER-STAFF"
->3.13. Dodatki</A
-></H2
-><DIV
-CLASS="SECT2"
-><H3
-CLASS="SECT2"
-><A
-NAME="USER-STAFF-CUSTOMER"
->3.13.1. "Moje konto"</A
-></H3
-><P
->W katalogu <TT
-CLASS="FILENAME"
->contrib/customer</TT
-> znajduje siê
-		przyk³ad rozwi±zania, dziêki któremu ka¿dy u¿ytkownik twojej sieci
-		mo¿e sprawdziæ w³asny bilans finansowy.</P
-><P
->Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
-		bilans i informacje o u¿ytkowniku, który jest w³a¶cicielem komputera
-		o tym adresie. Pliki nale¿y skopiowaæ w dowolne miejsce i wystawiæ
-		pod adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie
-		ustawiæ poprawn± ¶cie¿kê do <TT
-CLASS="FILENAME"
->lms.ini</TT
-> w pliku 
-		<TT
-CLASS="FILENAME"
->index.php</TT
->.</P
-></DIV
-><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
-><A
-NAME="USER-STAFF-SQLPANEL"
->3.13.2. Panel SQL</A
-></H3
-><DIV
-CLASS="SECT3"
-><H4
-CLASS="SECT3"
-><A
-NAME="SQLPANEL-INTRO"
->3.13.2.1. Wstêp</A
-></H4
-><P
->W katalogu <TT
-CLASS="FILENAME"
->contrib/sqlpanel</TT
-> znajdziesz
-		modu³, dziêki któremu bêdziesz mia³ mo¿liwo¶æ bezpo¶redniego dostêpu 
-		do bazy danych poprzez zadawanie zapytañ SQL. Wyniki wy¶wietlane s±
-		w formie tabeli. Ponadto podawany jest czas wykonania zapytania. 
-		Mo¿liwe jest tak¿e drukowanie wyników zapytania.</P
-><P
->Ilo¶æ wy¶wietlanych wierszy na jednej stronie ograniczana jest
-		domy¶lnie do 50. Mo¿na to zmieniæ przy pomocy zmiennej '<SAMP
-CLASS="PROMPT"
->sqlpanel_pagelimit</SAMP
->'
-		w sekcji <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->[phpui]</I
-></SPAN
-> pliku konfiguracyjnego <TT
-CLASS="FILENAME"
->lms.ini</TT
->.</P
-></DIV
-><DIV
-CLASS="SECT3"
-><HR><H4
-CLASS="SECT3"
-><A
-NAME="SQLPANEL-INSTALL"
->3.13.2.2. Instalacja</A
-></H4
-><P
->Instalacja polega na skopiowaniu plików w odpowiednie miejsca
-		w drzewie katalogów lms'a. Plik <TT
-CLASS="FILENAME"
->sql.php</TT
-> skopiuj
-		do katalogu <TT
-CLASS="FILENAME"
->modules</TT
->, a pliki <TT
-CLASS="FILENAME"
->sql.html, sqlprint.html, 
-		adminheader.html</TT
-> do katalogu <TT
-CLASS="FILENAME"
->templates</TT
->.
-		Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu 
-		<SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Administratorzy-&#62;SQL.</I
-></SPAN
-></P
-></DIV
 ></DIV
 ></DIV
 ></DIV
@@ -10042,6 +9946,240 @@ CLASS="SCREEN"
 ></UL
 ></LI
 ></UL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="CHAPTER"
+><HR><H1
+><A
+NAME="CONTRIB"
+></A
+>Rozdzia&#322; 8. Dodatki</H1
+><P
+>W niniejszym rozdziale zostan± opisane dodatkowe modu³y i rozwi±zania
+	zwiêkszaj±ce funkcjonalno¶æ LMS'a znajduj±ce siê w katalogu 
+	<TT
+CLASS="FILENAME"
+>contrib</TT
+>. Czê¶æ z nich nale¿y dostosowaæ do w³asnych 
+	potrzeb, a niektóre integruj± siê z interfejsem <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>.</P
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="CONTRIB-CUSTOMER"
+>8.1. "Moje konto"</A
+></H2
+><DIV
+CLASS="SECT2"
+><H3
+CLASS="SECT2"
+><A
+NAME="CUSTOMER-INTRO"
+>8.1.1. Wstêp</A
+></H3
+><P
+>W katalogu <TT
+CLASS="FILENAME"
+>contrib/customer</TT
+> znajduje siê
+		przyk³ad rozwi±zania, dziêki któremu ka¿dy u¿ytkownik twojej sieci
+		mo¿e sprawdziæ w³asny bilans finansowy.</P
+><P
+>Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
+		bilans i informacje o u¿ytkowniku, który jest w³a¶cicielem komputera
+		o tym adresie.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="CUSTOMER-INSTALL"
+>8.1.2. Instalacja</A
+></H3
+><P
+>Pliki nale¿y skopiowaæ w dowolne miejsce i wystawiæ
+		pod adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie
+		ustawiæ poprawn± ¶cie¿kê do <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> w pliku 
+		<TT
+CLASS="FILENAME"
+>index.php</TT
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="CONTRIB-SQLPANEL"
+>8.2. Panel SQL</A
+></H2
+><DIV
+CLASS="SECT2"
+><H3
+CLASS="SECT2"
+><A
+NAME="SQLPANEL-INTRO"
+>8.2.1. Wstêp</A
+></H3
+><P
+>W katalogu <TT
+CLASS="FILENAME"
+>contrib/sqlpanel</TT
+> znajdziesz
+		modu³, dziêki któremu bêdziesz mia³ mo¿liwo¶æ bezpo¶redniego dostêpu 
+		do bazy danych poprzez zadawanie zapytañ SQL. Wyniki wy¶wietlane s±
+		w formie tabeli. Ponadto podawany jest czas wykonania zapytania. 
+		Mo¿liwe jest tak¿e drukowanie wyników zapytania.</P
+><P
+>Ilo¶æ wy¶wietlanych wierszy na jednej stronie ograniczana jest
+		domy¶lnie do 50. Mo¿na to zmieniæ przy pomocy zmiennej '<SAMP
+CLASS="PROMPT"
+>sqlpanel_pagelimit</SAMP
+>'
+		w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+> pliku konfiguracyjnego <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="SQLPANEL-INSTALL"
+>8.2.2. Instalacja</A
+></H3
+><P
+>Instalacja polega na skopiowaniu plików w odpowiednie miejsca
+		w drzewie katalogów lms'a. Plik <TT
+CLASS="FILENAME"
+>sql.php</TT
+> skopiuj
+		do katalogu <TT
+CLASS="FILENAME"
+>modules</TT
+>, a pliki <TT
+CLASS="FILENAME"
+>sql.html, sqlprint.html, 
+		adminheader.html</TT
+> do katalogu <TT
+CLASS="FILENAME"
+>templates</TT
+>.
+		Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu 
+		<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Administratorzy-&#62;SQL.</I
+></SPAN
+></P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="CONTRIB-SQUID-WARN"
+>8.3. Ostrze¿enia + squid</A
+></H2
+><DIV
+CLASS="SECT2"
+><H3
+CLASS="SECT2"
+><A
+NAME="SQUID-WARN-INTRO"
+>8.3.1. Wstêp</A
+></H3
+><P
+>Ten ma³y zestaw narzêdzi pozwala za pomoc± squida 
+		w dosyæ elegancki sposób wy¶wietlaæ wiadomo¶ci administracyjne.
+		Oczywi¶cie aby to dzia³a³o w 100%, wszyscy u¿ytkownicy musz± 
+		korzystaæ ze squida.</P
+><P
+>Kluczowym elementem jest redirector. Odpowiada on za to, 
+		aby w momencie ustawienia dla danego komputera flagi warn, 
+		przekierowywa³ wszystkie ¿±dania wysy³ane do serwera proxy na nasz, 
+		ustalony wcze¶niej adres. Przekierowaniu nie ulegaj± adresy zawieraj±ce 
+		adres naszej winetki, tak aby umo¿liwiæ za³adowanie siê obrazków.
+		Po przekierowaniu u¿ytkownik ma mo¿liwo¶æ oznaczenia wiadomo¶ci jako 
+		przeczytanej, po czym skrypt automatycznie kieruje przegl±darkê na 
+		pierwotnie wywo³ywany URL. Wiêcej informacji znajdziesz w pliku
+		<TT
+CLASS="FILENAME"
+>README</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="SQUID-WARN-INSTALL"
+>8.3.2. Instalacja</A
+></H3
+><P
+>Zaczynamy od konfiguracji squida (<TT
+CLASS="FILENAME"
+>squid.conf</TT
+>):
+<PRE
+CLASS="SCREEN"
+>redirector_bypass on
+redirect_program /sciezka/do/lms-squid-warnings</PRE
+>
+		które informuj± squida aby dla ka¿dego adresu u¿ywa³ naszego 
+		redirectora. Nastêpnie nale¿y skonfigurowaæ redirectora. Otwieramy 
+		w naszym ulubionym edytorze plik lms-squid-warnings i praktycznie
+		wszystko co mo¿na w nim ustawiæ to:
+<PRE
+CLASS="SCREEN"
+>my $configfile = '/etc/lms/lms.ini';</PRE
+>
+		Czyli po³o¿enie pliku konfiguracyjnego. Reszta konfiguracji 
+		ustawiana jest w <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>, gdzie dopisujemy sekcjê 
+		<TT
+CLASS="FILENAME"
+>[squid-warnings]</TT
+> i definiujemy adres winetki:
+<PRE
+CLASS="SCREEN"
+>[squid-warnings]
+redirect        = http://nasz.serwer.pl/winetka/</PRE
+>
+		Do katalogu gdzie ma byæ widoczna winetka kopiujemy pliki
+		<TT
+CLASS="FILENAME"
+>index.php, message.html</TT
+> i zawarto¶æ katalogu 
+		<TT
+CLASS="FILENAME"
+>img</TT
+>.</P
 ></DIV
 ></DIV
 ></DIV

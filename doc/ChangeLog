@@ -31,7 +31,9 @@ wersja 1.3.6 Osiris (??/??/2004);
   - BTS#0000189: poprawiony trigger dns2 w formularzu netadd.html (alec)
   - dodany modu³ pinger (szybszy odpowiednik lms-fping) do demona (alec)
   - w demonie wszystkie komunikaty informacyjne s± w DEBUG1 (alec)
-  - usuniête b³êdy przy allow_call_time_pass_reference=Off w php.ini (alec)    
+  - usuniête b³êdy przy allow_call_time_pass_reference=Off w php.ini (alec)
+  - dodane contrib/squid_warnings (lexx)
+  - w dokum. dodany rozdzia³ 'Dodatki' opisuj±cy zawarto¶æ kat. contrib (alec)
   
 wersja 1.3.5 Ju (30/07/2004):
 
