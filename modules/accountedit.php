@@ -47,7 +47,7 @@ switch ($option)
 {
     case 'chpasswddlg':
 	
-	$layout['pagetitle'] = sprintf(trans('Password Change for Account: %s'),$account['login']);
+	$layout['pagetitle'] = trans('Password Change for Account: $0',$account['login']);
 	$template = 'accountpasswd.html';
 	break;	
 
@@ -70,7 +70,7 @@ switch ($option)
 		die;
 	}
 	
-	$layout['pagetitle'] = sprintf(trans('Password Change for Account: %s'),$account['login']);
+	$layout['pagetitle'] = trans('Password Change for Account: $0',$account['login']);
 	$template = 'accountpasswd.html';
         break;
     

@@ -117,7 +117,7 @@ class Session {
 	{
 		if( (time() - $_SESSION['session_timestamp']) > $timeout )
 		{
-			$this->error = sprintf(trans('Exceeded idle time limit (%d sec.)'),$timeout);
+			$this->error = trans('Exceeded idle time limit ($0 sec.)',$timeout);
 			return FALSE;
 		}
 		else
