@@ -128,8 +128,7 @@ class Session {
 	
 	function VerifyPassword()
 	{
-		$dbpasswd = $this->DB->GetOne('SELECT passwd FROM admins WHERE login=?',array($this->login));
-		$dblogin = $this->DB->GetOne('SELECT login FROM admins WHERE login=?',array($this->login));
+		$dbpasswd = $this->DB->GetOne('SELECT passwd FROM admins WHERE login=? AND deleted=0',array($this->login));
 		if (crypt($this->passwd,$dbpasswd)==$dbpasswd)
 			return TRUE;
 		else 
