@@ -660,21 +660,26 @@ class LMS
 				$sqlord = 'ORDER BY nip, pesel';
 			break;
 			default:
-				$sqlord = 'ORDER BY '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name');
+				$sqlord = 'ORDER BY username';
 			break;
 		}
 
 		if(!isset($state))
 			$state = 3;
 
-		// JOIN with table nodes is slowest, so we have got two queries here
-		if($network) {
+		if($network) 
 			$net = $this->GetNetworkParams($network);
-			$query = 'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, email, phone1, users.address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users, '.($usergroup != '' ? ' userassignments, ':'').'cash, nodes WHERE '.($usergroup != '' ? 'users.id = userassignments.userid AND userassignments,usergroupid='.$usergroup.' AND ':'').'users.id = cash.userid AND users.id = ownerid AND (type = 3 OR type = 4) AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') AND deleted = 0 '.($state !=0 ? ' AND status = '.$state :'').' GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, users.address, gguin, nip, pesel, zip, city, info '.($sqlord !='' ? $sqlord.' '.$direction:'');
-		} else
-			$query = 'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, email, phone1, address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users'. ($usergroup != '' ? ', userassignments ' : ' ') .'LEFT JOIN cash ON users.id = cash.userid AND (type = 3 OR type = 4) WHERE '. ($usergroup != '' ? 'userassignments.userid=users.id AND userassignments.usergroupid='.$usergroup.' AND ' : '') .'deleted = 0 '.($state !=0 ? ' AND status = '.$state :'').' GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info '.($sqlord !='' ? $sqlord.' '.$direction:'');
-
-		if($userlist = $this->DB->GetAll($query))
+		
+		if($userlist = $this->DB->GetAll( 
+				'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, email, phone1, users.address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON (users.id=cash.userid AND (type = 3 OR type = 4)) '
+				.($network ? 'LEFT JOIN nodes ON (users.id=ownerid) ' : '')
+				.($usergroup ? 'LEFT JOIN userassignments ON (users.id=userassignments.userid) ':'')
+				.'WHERE deleted = 0 '.($state !=0 ? ' AND status = '.$state :'') 
+				.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
+				.($usergroup ? ' AND usergroupid='.$usergroup : '') 
+				.'GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, users.address, gguin, nip, pesel, zip, city, info '
+				.($sqlord !='' ? $sqlord.' '.$direction:'')
+				))
 		{
 			$week = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
 			$month = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
