@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * LMS version 1.1-cvs
@@ -28,6 +28,10 @@ $LMS->DatabaseCreate();
 header("Location: ?m=".$_SESSION[lastmodule]);
 /*
  * $Log$
+ * Revision 1.12  2003/08/24 13:12:54  lukasz
+ * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
+ *   redhat's :>
+ *
  * Revision 1.11  2003/08/18 16:52:19  lukasz
  * - added CVS Log tags
  *

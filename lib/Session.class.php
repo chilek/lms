@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * LMS version 1.1-cvs
@@ -133,6 +133,10 @@ class Session {
 
 /*
  * $Log$
+ * Revision 1.37  2003/08/24 13:12:54  lukasz
+ * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
+ *   redhat's :>
+ *
  * Revision 1.36  2003/08/22 20:32:58  lukasz
  * - fixed bug in COUNT(*) (i hope, i don't have postgres installed)
  *

@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * LMS version 1.1-cvs
@@ -49,6 +49,10 @@ $_SERVER[REMOTE_ADDR] = str_replace("::ffff:","",$_SERVER[REMOTE_ADDR]);
 
 /*
  * $Log$
+ * Revision 1.13  2003/08/24 13:12:54  lukasz
+ * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
+ *   redhat's :>
+ *
  * Revision 1.12  2003/08/18 16:57:00  lukasz
  * - more cvs tags :>
  *

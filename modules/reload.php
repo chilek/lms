@@ -31,7 +31,7 @@ $layout[$pagetitle]="Prze³adowanie ustawieñ";
 
 $SMARTY->display("header.html");
 
-?><H1>Prze³adowanie ustawieñ</H1><?
+?><H1>Prze³adowanie ustawieñ</H1><?php
 
 $_RELOAD_TYPE = (! $_CONFIG[phpui]['reload_type'] ? "sql" : $_CONFIG[phpui]['reload_type']);
 $_EXECCMD = (! $_CONFIG[phpui]['reload_execcmd'] ? "/bin/true" : $_CONFIG[phpui]['reload_execcmd']);
@@ -92,6 +92,10 @@ $SMARTY->display("footer.html");
 
 /*
  * $Log$
+ * Revision 1.17  2003/08/24 13:12:54  lukasz
+ * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
+ *   redhat's :>
+ *
  * Revision 1.16  2003/08/18 16:52:19  lukasz
  * - added CVS Log tags
  *

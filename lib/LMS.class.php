@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * LMS version 1.1-cvs
@@ -1592,6 +1592,10 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.198  2003/08/24 13:12:54  lukasz
+ * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
+ *   redhat's :>
+ *
  * Revision 1.197  2003/08/24 00:59:29  lukasz
  * - LMSDB: GetAllByKey($query, $key, $inputarray)
  * - LMS: more fixes for new DAL

@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * LMS version 1.1-cvs
@@ -40,6 +40,10 @@ if(!is_writable($_BACKUP_DIR))
 
 /*
  * $Log$
+ * Revision 1.17  2003/08/24 13:12:54  lukasz
+ * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
+ *   redhat's :>
+ *
  * Revision 1.16  2003/08/18 16:57:00  lukasz
  * - more cvs tags :>
  *
