@@ -109,8 +109,6 @@ function _smarty_modifier_striphtml($args)
 
 function _smarty_block_translate($args, $content, &$SMARTY)
 {
-    $content = trim($content);
-    
     if($SMARTY->_tpl_vars['_LANG'][$content])
 	    $content = trim($SMARTY->_tpl_vars['_LANG'][$content]);
     else
