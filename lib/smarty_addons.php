@@ -50,7 +50,7 @@ function _smarty_function_confirm($args, &$SMARTY)
         if($SMARTY->_tpl_vars['_LANG'][$text])
 	        $text = trim($SMARTY->_tpl_vars['_LANG'][$text]);
 	else
-		if(!in_array($text, $SMARTY->_tpl_vars['missing_strings']) && $text !='')
+		if(!in_array($text, (array) $SMARTY->_tpl_vars['missing_strings']) && $text !='')
 			$SMARTY->_tpl_vars['missing_strings'][] = $text;	    
 	if(is_array($args))
 		foreach($args as $argid => $argval)
@@ -77,7 +77,7 @@ function _smarty_function_tip($args, &$SMARTY)
         if($SMARTY->_tpl_vars['_LANG'][$text])
 	        $text = trim($SMARTY->_tpl_vars['_LANG'][$text]);
 	else
-		if(!in_array($text, $SMARTY->_tpl_vars['missing_strings']) && $text !='')
+		if(!in_array($text, (array) $SMARTY->_tpl_vars['missing_strings']) && $text !='')
 			$SMARTY->_tpl_vars['missing_strings'][] = $text;	    
 	if(is_array($args))
 		foreach($args as $argid => $argval)
@@ -141,7 +141,7 @@ function _smarty_block_translate($args, $content, &$SMARTY)
     if($SMARTY->_tpl_vars['_LANG'][$content])
 	    $content = trim($SMARTY->_tpl_vars['_LANG'][$content]);
     else
-	    if(!in_array($content, $SMARTY->_tpl_vars['missing_strings']) && $content !='')
+	    if(!in_array($content, (array) $SMARTY->_tpl_vars['missing_strings']) && $content !='')
 		    $SMARTY->_tpl_vars['missing_strings'][] = $content;	    
     
     if(is_array($args))
