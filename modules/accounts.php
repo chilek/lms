@@ -25,6 +25,7 @@
  */
 
 function AccountExists($login) {
+/*
     $service_port = 25;
     $address = gethostbyname('poczta.polarnet.gliwice.pl');
 
@@ -62,7 +63,8 @@ function AccountExists($login) {
     } else {
         return true; 
     }
-
+*/
+return true;
 }
 
 $option = $_GET['op'];
