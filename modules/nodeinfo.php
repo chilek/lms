@@ -31,7 +31,7 @@ if(!$LMS->NodeExists($_GET[id]))
 		header("Location: ?m=nodelist");
 
 $nodeid = $_GET[id];
-$ownerid = $LMS->GetOwner($nodeid);
+$ownerid = $LMS->GetNodeOwner($nodeid);
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
