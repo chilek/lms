@@ -160,9 +160,21 @@
      <para>Przyk³ad:	<prompt>network_body = \tnodes {</prompt></para>
     </listitem>
    </itemizedlist>
-   <para>Teraz MGC rozpocznie przetwarzanie kolejnych adresów IP. Robi to w dosyæ specyficzny sposób. 
-   Tzn. oblicza kolejny adres IP i kolejno sprawdza:</para>
+   <para>Teraz MGC rozpocznie przetwarzanie regu³ek dla kolejnych adresów IP. Robi to w dosyæ specyficzny sposób. 
+   Tzn. oblicza kolejny adres IP i sprawdza czy zdefiniowano regu³ê dla hosta i wykonuje pierwsz±.
+   Sprawdzanie jest wykonywane w nastepuj±cej kolejno¶ci:</para>
     <itemizedlist>
+    <listitem>
+     <para>ignore</para>
+     <para>Pozwala na ustawienie listy adresów w postaci adres/prefix lub adres/maska oddzielanej spacjami dla której ma byæ ignorowane generowanie</para>
+     <para>Przyk³ad:	<prompt>ignore = 192.168.0.100/32</prompt></para>
+    </listitem>
+    <listitem>
+     <para>node(IP)</para>
+     <para>Przy pomocy tej opcji mo¿na zdefiniowaæ regu³ê dla wybranego komputera. W nawiasie podaje siê jego adres IP. 
+     Ka¿da sekcja instancji mo¿e zawieraæ dowoln± ilo¶æ takich opcji.</para>
+     <para>Przyk³ad:	<prompt>node(192.168.0.20) = ??</prompt></para>
+    </listitem>
     <listitem>
      <para>allnodes</para>
      <para>Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP.</para>
@@ -174,9 +186,9 @@
      <para>Przyk³ad:	<prompt>allexistnodes = ??</prompt></para>
     </listitem>
     <listitem>
-     <para>ignore</para>
-     <para>Pozwala na ustawienie listy adresów w postaci adres/prefix lub adres/maska oddzielanej spacjami dla której ma byæ ignorowane generowanie</para>
-     <para>Przyk³ad:	<prompt>ignore = ??</prompt></para>
+     <para>grantednode_priv</para>
+     <para>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</para>
+     <para>Przyk³ad:	<prompt>grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>
     </listitem>
     <listitem>
      <para>grantednode_publ</para>
@@ -184,9 +196,9 @@
      <para>Przyk³ad:	<prompt>grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>
     </listitem>
     <listitem>
-     <para>grantednode_priv</para>
-     <para>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</para>
-     <para>Przyk³ad:	<prompt>grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>
+     <para>deniednode_priv</para>
+     <para>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)</para>
+     <para>Przyk³ad:	<prompt>deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;</prompt></para>
     </listitem>
     <listitem>
      <para>deniednode_publ</para>
@@ -194,9 +206,9 @@
      <para>Przyk³ad:	<prompt>deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;</prompt></para>
     </listitem>
     <listitem>
-     <para>deniednode_priv</para>
-     <para>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)</para>
-     <para>Przyk³ad:	<prompt>deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;</prompt></para>
+     <para>dhcpnode_priv</para>
+     <para>Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</para>
+     <para>Przyk³ad:	<prompt>dhcpnode_priv = node unknown (%IP) reject;</prompt></para>
     </listitem>
     <listitem>
      <para>dhcpnode_publ</para>
@@ -204,9 +216,9 @@
      <para>Przyk³ad:	<prompt>dhcpnode_publ = node unknown (%IP) reject;</prompt></para>
     </listitem>
     <listitem>
-     <para>dhcpnode_priv</para>
-     <para>Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</para>
-     <para>Przyk³ad:	<prompt>dhcpnode_priv = node unknown (%IP) reject;</prompt></para>
+     <para>freeip_priv</para>
+     <para>Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów prywatnych)</para>
+     <para>Przyk³ad:	<prompt>freeip_priv = node unknown (%IP) lock_as_unused;</prompt></para>
     </listitem>
     <listitem>
      <para>freeip_publ</para>
@@ -214,21 +226,20 @@
      <para>Przyk³ad:	<prompt>freeip_publ = node unknown (%IP) lock_as_unused;</prompt></para>
     </listitem>
     <listitem>
-     <para>freeip_priv</para>
-     <para>Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów prywatnych)</para>
-     <para>Przyk³ad:	<prompt>freeip_priv = node unknown (%IP) lock_as_unused;</prompt></para>
+     <para>default_priv</para>
+     <para>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)</para>
+     <para>Przyk³ad:	<prompt>default_priv = node unknown (%IP) lock_as_intruder;</prompt></para>
+     <para><note><para>lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</para></note></para>
     </listitem>
     <listitem>
      <para>default_publ</para>
      <para>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów publicznych)</para>
      <para>Przyk³ad:	<prompt>default_publ = node unknown (%IP) lock_as_intruder;</prompt></para>
     </listitem>
-    <listitem>
-     <para>default_priv</para>
-     <para>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)</para>
-     <para>Przyk³ad:	<prompt>default_priv = node unknown (%IP) lock_as_intruder;</prompt></para>
-     <para><note><para>lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</para></note></para>
-    </listitem>
+    </itemizedlist>
+    <para>W koñcu nastêpuje wygenerowanie koñcowej czê¶ci pliku i wykonanie
+    polecenia systemowego.</para>
+    <itemizedlist>
     <listitem>
      <para>network_footer</para>
      <para>Pozwala na ustawienie stopki dla w³a¶nie przetwarzanej sieci</para>
