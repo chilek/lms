@@ -34,12 +34,14 @@
 		$LMS->NodeSet($_GET[id]);
 		$backid = $_GET[id];
 	}
-	if(strstr($_SESSION[backto],"nodelist"))
-	    header("Location: ?".$_SESSION[backto]);
-	else header("Location: ?".$_SESSION[backto]."#".$backid);
+	
+	header("Location: ?".$_SESSION[backto]."#".$backid);
 
 /*
  * $Log$
+ * Revision 1.12  2003/09/22 19:12:36  alec
+ * ma³± zamotka z tymi ¿arówkami
+ *
  * Revision 1.11  2003/09/22 17:31:16  alec
  * naprawiona zmiana statusu komputera przy pomocy ikony zarowki na liscie kompow
  *
