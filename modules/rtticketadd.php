@@ -31,16 +31,45 @@ $queue = $_GET['id'];
 if(isset($ticket))
 {
 	$queue = $ticket['queue'];
-	if(! $LMS->GetAdminRightsRT($SESSION->id, $queue))
+
+	if($ticket['subject']=='' && $ticket['message']['body']=='')
+	{
+		header('Location: ?m=rtticketadd&id'.$queue);
+		die;
+	}
+
+	if($LMS->GetAdminRightsRT($SESSION->id, $queue) < 2)
 		$error['queue'] = "Nie masz uprawnieñ do tej kolejki!";
-	
-	if($ticket['name'] == '')
-		$error['name'] = "Zg³oszenie musi posiadaæ tytu³!";
+
+	if($ticket['subject'] == '')
+		$error['subject'] = "Zg³oszenie musi posiadaæ tytu³!";
+
+	if($ticket['body'] == '')
+		$error['body'] = "Zg³oszenie musi mieæ tre¶æ!";
 
 	if($ticket['email']!='' && !check_email($ticket['email']))
 		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
 
-	$user = $ticket['user'];
+	if($ticket['surname']=='' && $ticket['userid']==0)
+		$error['surname'] = 'Musisz podaæ nazwê/nazwisko zg³aszaj±cego!';
+
+	if(($user = $ticket['userid'])==0 && !$error)
+	{
+		$requestor  = ($ticket['surname'] ? $ticket['surname'].' ' : '');
+		$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');	    
+		$requestor .= ($ticket['email'] ? '<'.$ticket['email'].'>' : '');
+		$ticket['requestor'] = trim($requestor);
+	}
+	elseif($user && !$error)
+	{
+		$ticket['requestor'] = '';
+		if($ticket['email']=='') 
+			$ticket['email'] = $LMS->GetUserEmail($user);
+		$ticket['requestor'] = $LMS->GetUserName($user);
+		$ticket['requestor'] .= ($ticket['email'] ? ' <'.$ticket['email'].'>' : '');
+	}
+	
+	$ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
 
 	if(!$error)
 	{
@@ -57,7 +86,7 @@ $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
-$SMARTY->assign('user', $queue);
+$SMARTY->assign('user', $user);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtticketadd.html');

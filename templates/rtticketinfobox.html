@@ -27,7 +27,10 @@
 			<B>Zg³aszaj±cy:</B>
 		    </TD>
 		    <TD WIDTH="99%">
-			{$ticket.requestor|escape} &lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
+			{$ticket.requestor|escape} 
+			{if $ticket.requestoremail}
+				&lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
+			{/if}
 		    </TD>
 		</TR>
 		<TR>
