@@ -154,6 +154,14 @@ int main(int argc, char *argv[])
 		int time;
 		reload = 0;
 		
+		// don't reload while daemon starting in background mode
+		if( !quit && !counter ) {
+			counter++;
+			sleep(sleeptime);
+			continue;
+		}
+		
+		// run shell command, i.e. secure connections tuneling
 		system(command);
 	
 		// try to connect to database
@@ -166,16 +174,15 @@ int main(int argc, char *argv[])
         	// need reload?
         	if( quit )
    	    		reload = 1;
-		else {
+		else 
 	    		if( (res =  db_query("SELECT time FROM timestamps WHERE tablename = '_force'"))!=NULL ) {
 				time = atoi(db_get_data(res,0,"time"));
-				if( time>0 && time!=reload_t && counter>0 ) {
+				if( time>0 && time!=reload_t ) {
 					reload = 1;
 					reload_t = time;
 				}
 				db_free(res);
 	    		}
-		}
 
 		if( reload ) { // **********************************************
 #ifdef DEBUG1
