@@ -48,7 +48,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 	while( n>1 ) {
 		
-		n = sscanf(netnames, "%s %[a-zA-Z0-9- ]", netname, netnames);
+		n = sscanf(netnames, "%s %[a-zA-Z0-9-_ ]", netname, netnames);
 
 		if( strlen(netname) ) {
 
@@ -89,7 +89,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 	while( k>1 ) {
 		
-		k = sscanf(groupnames, "%s %[a-zA-Z0-9- ]", groupname, groupnames);
+		k = sscanf(groupnames, "%s %[a-zA-Z0-9-_ ]", groupname, groupnames);
 
 		if( strlen(groupname) ) {
 
@@ -143,12 +143,16 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				if(ip && mac && access) {
 					
 					unsigned long inet = inet_addr(ip);
+					int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
+					
 					// networks test
 					for(j=0; j<nc; j++)
 						if(nets[j].address == (inet & nets[j].mask)) 
 							break;
+					
 					// groups test
-					if(strlen(hm->usergroups))
+					m = gc;
+					if(ownerid)
 						if( res1 = g->db_pquery("SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"))) {
 							for(k=0; k<res1->nrows; k++) {
 								int groupid = atoi(g->db_get_data(res1, k, "usergroupid"));
@@ -160,7 +164,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 							g->db_free(res1);
 						}
 					
-					if( j!=nc && (m!=gc || (m==gc && !strlen(hm->usergroups))) ) {
+					if( j!=nc && (strlen(hm->usergroups)==0 || m!=gc) ) {
 
 						unsigned char *pattern, *s;
 
