@@ -223,7 +223,6 @@ class Sysinfo {
 		}
 		return $results;
 	}
-											    
 }
 
 ?>

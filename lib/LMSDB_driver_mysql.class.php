@@ -79,7 +79,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 	function _driver_execute($query)
 	{
 		$this->_query = $query;
-//echo $query."<BR>";
+
 		if($this->_result = mysql_query($query,$this->_dblink))
 			$this->_error = FALSE;
 		else
