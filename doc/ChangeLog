@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.1.7 (??/??/????):
+wersja 1.1.7 Hathor (14/12/2003):
 
   - adresy sieci w bazie trzymamy teraz jako bigint, do przeliczeñ
     u¿ywamy funkcji INET_NTOA() i INET_ATON(), zwi±zane z tym
@@ -57,13 +57,37 @@ wersja 1.1.7 (??/??/????):
 	ALTER TABLE cash ALTER val SET NOT NULL;
 	ALTER TABLE cash ALTER val SET DEFAULT 0;
 	ALTER TABLE cash DROP COLUMN value;
-	ALTER TABLE cash RENAME val TO value;
+	ALTER TABLE cash RENAME val TO value;	
 	ALTER TABLE tariffs ADD val numeric(9,2);
+	ALTER TABLE tariffs ADD taxv numeric(9,2);
 	UPDATE tariffs SET val=value;
+	UPDATE tariffs SET taxv=taxvalue;
 	ALTER TABLE tariffs ALTER val SET NOT NULL;
 	ALTER TABLE tariffs ALTER val SET DEFAULT 0;
 	ALTER TABLE tariffs DROP COLUMN value;
-	ALTER TABLE tariffs RENAME val TO value;
+	ALTER TABLE tariffs RENAME val TO value;	
+	ALTER TABLE tariffs ALTER taxv SET NOT NULL;
+	ALTER TABLE tariffs ALTER taxv SET DEFAULT 0;
+	ALTER TABLE tariffs DROP COLUMN taxvalue;
+	ALTER TABLE tariffs RENAME taxv TO taxvalue;
+	ALTER TABLE invoicecontents ADD val numeric(9,2);
+	ALTER TABLE invoicecontents ADD taxv numeric(9,2);
+	ALTER TABLE invoicecontents ADD cnt numeric(9,2);
+	UPDATE invoicecontents SET val=value;
+	UPDATE invoicecontents SET taxv=taxvalue;
+	UPDATE invoicecontents SET cnt=count;
+	ALTER TABLE invoicecontents ALTER val SET NOT NULL
+	ALTER TABLE invoicecontents ALTER val SET DEFAULT 0;
+	ALTER TABLE invoicecontents ALTER taxv SET NOT NULL
+	ALTER TABLE invoicecontents ALTER taxv SET DEFAULT 0;
+	ALTER TABLE invoicecontents ALTER cnt SET NOT NULL
+	ALTER TABLE invoicecontents ALTER cnt SET DEFAULT 0;
+	ALTER TABLE invoicecontents DROP COLUMN value;
+	ALTER TABLE invoicecontents RENAME val TO value;
+	ALTER TABLE invoicecontents DROP COLUMN taxvalue;
+	ALTER TABLE invoicecontents RENAME taxv TO taxvalue;
+	ALTER TABLE invoicecontents DROP COLUMN count;
+	ALTER TABLE invoicecontents RENAME cnt TO count;	
   - dodana mo¿liwo¶æ tworzenia faktur poprzez PHP-UI (lukasz)
   - ujednolicony reload dla almsd i ui, teraz almsd prze³adowuje siê przy 
     standardowych ustawieniach ui (nie wymagana tabela reload) (Lexx)
