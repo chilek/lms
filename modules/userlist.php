@@ -73,21 +73,4 @@ $SMARTY->assign("start",$start);
 
 $SMARTY->display("userlist.html");
 
-/*
- * $Log$
- * Revision 1.33  2003/12/04 04:39:14  lukasz
- * - porz±dki
- * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
- *
- * Revision 1.32  2003/09/08 09:10:59  lukasz
- * - removed unused assign with GetTariffs()
- *
- * Revision 1.31  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.30  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>

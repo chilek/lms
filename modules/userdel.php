@@ -47,25 +47,10 @@ if (!$LMS->UserExists($_GET[id]))
 	}
 		
 }
+
 $SMARTY->display("header.html");
 $SMARTY->assign("body",$body);
 $SMARTY->display("dialog.html");
 $SMARTY->display("footer.html");
 
-/*
- * $Log$
- * Revision 1.21  2003/11/22 17:44:48  alec
- * je¶li usuwamy usera z listy to wracamy do listy, a nie do userinfo
- *
- * Revision 1.20  2003/08/27 20:32:54  lukasz
- * - changed another ENUM (users.deleted) to BOOL
- *
- * Revision 1.19  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.18  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>

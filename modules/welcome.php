@@ -23,6 +23,7 @@
  *
  *  $Id$
  */
+
 require_once($_LIB_DIR."/Sysinfo.class.php");
 require_once($_LIB_DIR."/fortunes.php");
 
@@ -34,23 +35,5 @@ $SMARTY->assign("userstats",$LMS->UserStats());
 $SMARTY->assign("nodestats",$LMS->NodeStats());
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("welcome.html");
-/*
- * $Log$
- * Revision 1.27  2003/09/24 22:33:54  lukasz
- * - s/TipOfTheDay/fortunes/g
- *
- * Revision 1.26  2003/08/28 11:36:47  lukasz
- * - http://bts.rulez.pl/bug_view_page.php?bug_id=0000057
- *
- * Revision 1.25  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.24  2003/08/18 16:57:00  lukasz
- * - more cvs tags :>
- *
- * Revision 1.23  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
+
 ?>
