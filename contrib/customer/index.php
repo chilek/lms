@@ -33,23 +33,85 @@ $CONFIG_FILE = "/etc/lms/lms.ini";
 
 // Parse configuration file
 
-foreach(parse_ini_file($CONFIG_FILE, true) as $key=>$val) $_CONFIG[$key] = $val;
+function lms_parse_ini_file($filename, $process_sections = false)
+{
+	$ini_array = array();
+	$sec_name = "";
+	$lines = file($filename);
+	foreach($lines as $line)
+	{
+		$line = trim($line);
+
+		if($line == "" || $line[0] == ";" || $line[0] == "#")
+			continue;
+
+		if( sscanf($line, "[%[^]]", &$sec_name)==1 )
+			$sec_name = trim($sec_name);
+		else
+		{
+			if ( sscanf($line, "%[^=] = '%[^']'", &$property, &$value) != 2 )
+				if ( sscanf($line, "%[^=] = \"%[^\"]\"", &$property, &$value) != 2 )
+					if( sscanf($line, "%[^=] = %[^;#]", &$property, &$value) != 2 )
+						continue;
+					else
+						$value = trim($value, "\"'");
+
+			$property = trim($property);
+			$value = trim($value);
+
+			if($process_sections)
+				$ini_array[$sec_name][$property] = $value;
+			else
+				$ini_array[$property] = $value;
+		}
+	}
+	return $ini_array;
+}
+
+foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key=>$val) $_CONFIG[$key] = $val;
 
 // Define directories and configuration vars
 
-$_SYSTEM_DIR = (! $_CONFIG[directories]['sys_dir'] ? getcwd() : $_CONFIG[directories]['sys_dir']);
-$_LIB_DIR = (! $_CONFIG[directories]['lib_dir'] ? $_SYSTEM_DIR."/lib/" : $_CONFIG[directories]['lib_dir']);
-$_SMARTY_DIR = (! $_CONFIG[directories]['smarty_dir'] ? $_LIB_DIR."/Smarty/" : $_CONFIG[directories]['smarty_dir']);
-$_SMARTY_COMPILE_DIR = (! $_CONFIG[directories]['smarty_compile_dir'] ? $_SYSTEM_DIR."/templates_c" : $_CONFIG[directories]['smarty_compile_dir']);
-$_ADODB_DIR = (! $_CONFIG[directories]['adodb_dir'] ? $_LIB_DIR."/adodb/" : $_CONFIG[directories]['adodb_dir']);
+$_CONFIG['directories']['sys_dir'] = (! $_CONFIG['directories']['sys_dir'] ? getcwd() : $_CONFIG['directories']['sys_dir']);
+$_CONFIG['directories']['backup_dir'] = (! $_CONFIG['directories']['backup_dir'] ? $_CONFIG['directories']['sys_dir'].'/backups' : $_CONFIG['directories']['backup_dir']);
+$_CONFIG['directories']['lib_dir'] = (! $_CONFIG['directories']['lib_dir'] ? $_CONFIG['directories']['sys_dir'].'/lib' : $_CONFIG['directories']['lib_dir']);
+$_CONFIG['directories']['modules_dir'] = (! $_CONFIG['directories']['modules_dir'] ? $_CONFIG['directories']['sys_dir'].'/modules' : $_CONFIG['directories']['modules_dir']);
+$_CONFIG['directories']['config_templates_dir'] = (! $_CONFIG['directories']['config_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/config_templates' : $_CONFIG['directories']['config_templates_dir']);
+$_CONFIG['directories']['smarty_dir'] = (! $_CONFIG['directories']['smarty_dir'] ? (is_readable('/usr/share/php/smarty/libs/Smarty.class.php') ? '/usr/share/php/smarty/libs' : $_CONFIG['directories']['lib_dir'].'/Smarty') : $_CONFIG['directories']['smarty_dir']);
+$_CONFIG['directories']['smarty_compile_dir'] = (! $_CONFIG['directories']['smarty_compile_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates_c' : $_CONFIG['directories']['smarty_compile_dir']);
+$_CONFIG['directories']['smarty_templates_dir'] = (! $_CONFIG['directories']['smarty_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates' : $_CONFIG['directories']['smarty_templates_dir']);
 
-// Define database variables
+foreach(lms_parse_ini_file($_CONFIG['directories']['lib_dir'].'/config_defaults.ini', TRUE) as $section => $values)
+	foreach($values as $key => $val)
+		if(! isset($_CONFIG[$section][$key]))
+			$_CONFIG[$section][$key] = $val;
 
-$_DBTYPE = (! $_CONFIG[database]['type'] ? "mysql" : $_CONFIG[database]['type']);
-$_DBHOST = (! $_CONFIG[database]['host'] ? "localhost" : $_CONFIG[database]['host']);
-$_DBUSER = (! $_CONFIG[database]['user'] ? "root" : $_CONFIG[database]['user']);
-$_DBPASS = (! $_CONFIG[database]['password'] ? "" : $_CONFIG[database]['password']);
-$_DBNAME = (! $_CONFIG[database]['database'] ? "lms" : $_CONFIG[database]['database']);
+function chkconfig($value, $default = FALSE)
+{
+	if(eregi('^(1|y|on|yes|true|tak|t)$', $value))
+		return TRUE;
+	elseif(eregi('^(0|n|no|off|false|nie)$', $value))
+		return FALSE;
+	elseif(!isset($value) || $value == '')
+		return $default;
+	else
+		trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
+}
+
+$_SYSTEM_DIR = $_CONFIG['directories']['sys_dir'];
+$_BACKUP_DIR = $_CONFIG['directories']['backup_dir'];
+$_LIB_DIR = $_CONFIG['directories']['lib_dir'];
+$_MODULES_DIR = $_CONFIG['directories']['modules_dir'];
+$_SMARTY_DIR = $_CONFIG['directories']['smarty_dir'];
+$_SMARTY_COMPILE_DIR = $_CONFIG['directories']['smarty_compile_dir'];
+$_SMARTY_TEMPLATES_DIR = $_CONFIG['directories']['smarty_templates_dir'];
+$_TIMEOUT = $_CONFIG['phpui']['timeout'];
+$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
+$_DBTYPE = $_CONFIG['database']['type'];
+$_DBHOST = $_CONFIG['database']['host'];
+$_DBUSER = $_CONFIG['database']['user'];
+$_DBPASS = $_CONFIG['database']['password'];
+$_DBNAME = $_CONFIG['database']['database'];
 
 // Set our sweet polish locales :>
 
