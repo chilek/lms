@@ -217,9 +217,8 @@ class LMS
 
 	function GetAdminList() // zwraca listê administratorów
 	{
-
-	    $query = "SELECT id, login, name, lastlogindate, lastloginip FROM admins ORDER BY login ASC";
-	    if($adminslist = $this->DB->GetAll($query))
+		$query = "SELECT id, login, name, lastlogindate, lastloginip FROM admins ORDER BY login ASC";
+		if($adminslist = $this->DB->GetAll($query))
 		{
 			foreach($adminslist as $idx => $row)
 			{
@@ -550,7 +549,7 @@ class LMS
 
 		list($order,$direction)=explode(",",$order);
 
-		($direction != "desc")  ? $direction = "asc" : $direction = "desc";
+		($direction != "desc") ? $direction = "asc" : $direction = "desc";
 
 		switch($order){
 
@@ -664,7 +663,7 @@ class LMS
 				$saldolist['adminname'][$i] = $adminslist[$saldolist['adminid'][$i]];
 				$saldolist['value'][$i] = round($saldolist['value'][$i],3);
 
-				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] =  $saldolist['comment'][$i];
+				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] = $saldolist['comment'][$i];
 
 				switch ($saldolist['type'][$i]){
 
@@ -683,7 +682,7 @@ class LMS
 
 				$saldolist['date'][$i]=date("Y/m/d H:i",$saldolist['time'][$i]);
 				// nie chce mi sie czytac, ale czy to nie jest pare linii wy¿ej ?
-				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] =  $saldolist['comment'][$i];
+				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] = $saldolist['comment'][$i];
 			}
 
 			$saldolist['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
@@ -881,102 +880,104 @@ class LMS
 
 	function SearchNodeList($args, $order="name,asc")
 	{
-	    if($order=="")
-    		$order="name,asc";
-
-            list($order,$direction) = explode(",",$order);
-
-	    ($direction=="desc") ? $direction = "desc" : $direction = "asc";
-
-    	    switch($order)
-    	    {
-    		case "name":
-        	        $sqlord = " ORDER BY name";
-        		break;
-    	        case "id":
-        	        $sqlord = " ORDER BY id";
-        		break;
-        	case "mac":
-        	        $sqlord = " ORDER BY mac";
-            		break;
-    		case "ip":
-                	$sqlord = " ORDER BY ipaddr";
-        		break;
-    	    }
-
-    	    foreach($args as $idx => $value)
-    	    {
-    		if($value!="")
-        	{
-        	    switch($idx)
-            	    {
-            		case "ipaddr" :
-		    	        $check_ip = trim($value);
-				break;
-                	default :
-                        	$searchargs[] = $idx." ?LIKE? '%".$value."%'";
-            	    }
-        	}
-    	    }
-
-    	    if($searchargs)
-    		$searchargs = " WHERE 1=1 AND ".implode(" AND ",$searchargs);
-
-    	    if($username = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
-    		foreach($username as $idx => $row)
-        	    $usernames[$row['id']] = $row['username'];
-
-    	    if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".$searchargs." ".($sqlord != "" ? $sqlord." ".$direction : "")))
-    	    {
-    		foreach($nodelist as $idx => $row)
-        	{
-            	    $nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
-		    $nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
-		    // filtr adresów IP
-		    if($check_ip)
-		    {
-			if( !strstr($nodelist[$idx]['ip'],$check_ip) )
-			{
-		    	    unset($nodelist[$idx]);
-		    	    continue;
-			}
-		    }
-            	    ($row['access']) ? $totalon++ : $totaloff++;
-    		}
-		//uporz±dkowanie indeksów tablicy po filtrowaniu IP
-		if($check_ip)
+		if($order=="")
+			$order="name,asc";
+		
+		list($order,$direction) = explode(",",$order);
+		
+		($direction=="desc") ? $direction = "desc" : $direction = "asc";
+		
+		switch($order)
 		{
-	    	    foreach($nodelist as $node)
-	    	    {
-			$templist[] = $node;
-		    }
-		    unset($nodelist);
-		    $nodelist = $templist;
+			case "name":
+				$sqlord = " ORDER BY name";
+			break;
+			case "id":
+				$sqlord = " ORDER BY id";
+			break;
+			case "mac":
+				$sqlord = " ORDER BY mac";
+			break;
+			case "ip":				
+				$sqlord = " ORDER BY ipaddr";
+			break;
 		}
-	    }
-	
-    	    switch($order)
-    	    {
-    		case "owner":
-            		foreach($nodelist as $idx => $row)
-                	{
-                	    $ownertable['idx'][] = $idx;
-                    	    $ownertable['owner'][] = $row['owner'];
-                	}
-                	array_multisort($ownertable['owner'],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable['idx']);
-                	foreach($ownertable['idx'] as $idx)
-                    	    $nnodelist[] = $nodelist[$idx];
-			$nodelist = $nnodelist;
-            		break;
-	    }
+		
+		foreach($args as $idx => $value)
+		{
+			if($value!="")	
+			{
+				switch($idx)
+				{
+					case "ipaddr" :
+						$check_ip = trim($value);
+					break;
+					default :
+						$searchargs[] = $idx." ?LIKE? '%".$value."%'";
+				}
+			}
+		}
+		
+		if($searchargs)
+			$searchargs = " WHERE 1=1 AND ".implode(" AND ",$searchargs);
+		
+		if($username = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
+			foreach($username as $idx => $row)
+				$usernames[$row['id']] = $row['username'];
+		
+		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".$searchargs." ".($sqlord != "" ? $sqlord." ".$direction : "")))
+		{
+			foreach($nodelist as $idx => $row)
+			{
+				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
+				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
+				// filtr adresów IP
+				if($check_ip)
+				{
+					if( !strstr($nodelist[$idx]['ip'],$check_ip) )
+					{
+						unset($nodelist[$idx]);
+						continue;
+					}
+				}
+				($row['access']) ? $totalon++ : $totaloff++;
+			}
+			//uporz±dkowanie indeksów tablicy po filtrowaniu IP
+			if($check_ip)
+			{
+				foreach($nodelist as $node)
+				{
+					$templist[] = $node;
+					unset($nodelist);
+					$nodelist = $templist;
+				}
+			}
+			
+			switch($order)
+			{
+				case "owner":
+					foreach($nodelist as $idx => $row)					
+					{
+						$ownertable['idx'][] = $idx;
+						$ownertable['owner'][] = $row['owner'];
+					}
+					array_multisort($ownertable['owner'],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable['idx']);
+					foreach($ownertable['idx'] as $idx)
+						$nnodelist[] = $nodelist[$idx];
+					$nodelist = $nnodelist;
+				break;
+			}
+			
+			$nodelist['total'] = sizeof($nodelist);
+			$nodelist['order'] = $order;
+			$nodelist['direction'] = $direction;
+			$nodelist['totalon'] = $totalon;
+			$nodelist['totaloff'] = $totaloff;
+			
+			return $nodelist;
+		}
 
-	    $nodelist['total'] = sizeof($nodelist);
-	    $nodelist['order'] = $order;
-    	    $nodelist['direction'] = $direction;
-    	    $nodelist['totalon'] = $totalon;
-    	    $nodelist['totaloff'] = $totaloff;
-
-    	    return $nodelist;
+		return FALSE;
 	}
 
 	function NodeSet($id)
@@ -991,11 +992,11 @@ class LMS
 	function NodeSetU($id,$access=FALSE)
 	{
 		$this->SetTS("nodes");
-	  if($access)
+		if($access)
 			return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?",array(1,$this->SESSION->id,$id));
 		else
 			return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?",array(0,$this->SESSION->id,$id));
-	}
+	}		
 
 	function NodeAdd($nodedata)
 	{
@@ -1184,7 +1185,7 @@ class LMS
 		$result['userscount'] = sizeof($result['users']);
 		$result['count'] = $this->GetUsersWithTariff($id);
 		$result['totalval'] = $result['value'] * $result['count'];
-	  $result['rows'] = ceil(sizeof($result['users'])/2);
+		$result['rows'] = ceil(sizeof($result['users'])/2);
 		return $result;
 	}
 
@@ -1276,13 +1277,13 @@ class LMS
 				{
 					list($ipaddr,$name,$null,$login,$mac)=split(":",$line);
 					$row['ipaddr'] = trim($ipaddr);
-			 if($row['ipaddr'])
-			 {
-			    $row['name'] = trim($name);
-					   $row['mac'] = str_replace("-",":",trim($mac));
-					   if(!$this->GetNodeIDByIP($row['ipaddr']) && $row['ipaddr'] && $row['mac'] != "00:00:00:00:00:00")
-						  $result[] = $row;
-			 }
+					if($row['ipaddr'])
+					{
+						$row['name'] = trim($name);
+						$row['mac'] = str_replace("-",":",trim($mac));
+						if(!$this->GetNodeIDByIP($row['ipaddr']) && $row['ipaddr'] && $row['mac'] != "00:00:00:00:00:00")
+							$result[] = $row;
+					}
 				}
 			}
 		return $result;
@@ -1667,10 +1668,10 @@ class LMS
 	function GetNotConnectedDevices($id)
 	{
 		$query = "SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id!=".$id;
-	  if ($lista = $this -> GetNetDevConnected($id))
+		if ($lista = $this -> GetNetDevConnected($id))
 			foreach($lista as $row)
 				$query = $query." and id!=".$row[dst];
-	  return $this->DB->GetAll($query);
+		return $this->DB->GetAll($query);
 	}
 
 	function GetNetDev($id)
@@ -1707,32 +1708,32 @@ class LMS
 
 	function IsNetDevLink($dev1, $dev2)
 	{
-	   return $this->DB->GetOne("SELECT COUNT(id) FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)",array($dev1, $dev2, $dev1, $dev2));
-	}    
+		return $this->DB->GetOne("SELECT COUNT(id) FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)",array($dev1, $dev2, $dev1, $dev2));
+	} 
 
 	function NetDevLink($dev1, $dev2)
 	{
-	  	if($dev1 != $dev2)
-	{
-    	    if( $this->IsNetDevLink($dev1,$dev2))
-		return FALSE;
-	
-	    $netdev1 = $this->GetNetDev($dev1);
-	    $netdev2 = $this->GetNetDev($dev2);
-	    
-	    if( $netdev1[takenports] >= $netdev1[ports] || $netdev2[takenports] >= $netdev2[ports])
-		return FALSE;
-	
-	    $this->DB->Execute("INSERT INTO netlinks (src, dst) VALUES ($dev1, $dev2)"); 
-	    $this->SetTS("netlinks");
-	}    
-	return TRUE;
+		if($dev1 != $dev2)
+		{
+			if($this->IsNetDevLink($dev1,$dev2))
+				return FALSE;
+			
+			$netdev1 = $this->GetNetDev($dev1);
+			$netdev2 = $this->GetNetDev($dev2);
+			
+			if( $netdev1[takenports] >= $netdev1[ports] || $netdev2[takenports] >= $netdev2[ports])
+				return FALSE;
+			
+			$this->DB->Execute("INSERT INTO netlinks (src, dst) VALUES ($dev1, $dev2)"); 
+			$this->SetTS("netlinks");
+		}
+		return TRUE;
 	}	
 	
 	function NetDevUnLink($dev1, $dev2)
 	{
-	   $this->SetTS("netlinks");
-	   $this->DB->Execute("DELETE FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)",array($dev1, $dev2, $dev1, $dev2));
+		$this->SetTS("netlinks");
+		$this->DB->Execute("DELETE FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)",array($dev1, $dev2, $dev1, $dev2));
 	}
 	
 	/*
@@ -1954,6 +1955,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.269  2003/10/07 18:47:58  lukasz
+ * - rence opadajom...
+ *
  * Revision 1.268  2003/10/07 18:30:51  alec
  * nie potrzebujemy ju¿ get_ip_range...(), teraz przeszukiwanie po adresie czê¶ciowym zosta³o przerzucone z sql'a na php w SearchNodeList()
  *
