@@ -69,7 +69,7 @@ $fortunes[] = "Drobne awarie nie isniej±, je¿eli mia³a jednak miejsce drobna awa
 $fortunes[] = "Im doskonalej program wykonuje swoje funkcje, tym dotkliwiej ciê zawiedzie. Ka¿dy inny program zawodzi tak samo dotkliwie. Tylko niepotrzebny nikomu program, dzia³a bez zak³óceñ.";
 $fortunes[] = "Masz zawsze o jeden wirus wiêcej ni¿ s±dzisz.";
 $fortunes[] = "Program kalkulacyjny, który daje w³a¶ciwy i przyjazny wynik - k³amie.";
-$fortunes[] = "Wyj±tki s± liczniejsze od regu³. Od wszystkich uznanych wyj±tków isniej± wyj±tki.";
+$fortunes[] = "Wyj±tki s± liczniejsze od regu³. Od wszystkich uznanych wyj±tków istniej± wyj±tki.";
 $fortunes[] = "Klientowi nigdy nie przyjdzie na my¶l ile kosztuje projekt, tylko ile mo¿na na tym projekcie zaoszczêdziæ. Je¿eli uda³o ci siê wprowadziæ w programie wymagane przez klienta poprawki, wtedy on z nich zrezygnuje. ¯aden klient nie wie czego w³a¶ciwie chce. Ka¿dy klient wie dok³adnie czego nie chce. ¯aden klient nie chce tego co masz ju¿ gotowe. Nie wie tak¿e co chcia³by mieæ zamiast tego. Klient, który najmniej p³aci, marudzi najwiêcej. Klient ¿±da najwiêkszych zmian dok³adnie wtedy, kiedy produkt jest ju¿ gotowy.";
 $fortunes[] = "Na polecenie \"napisz tak lub nie\" u¿ytkownik wpisuje \"tak lub nie\". Na polecenie \"wci¶nij Enter\" u¿ytkownik wpisuje \"Enter\". Na polecenie \"naci¶nij dowolny klawisz\", u¿ytkownik naciska na klawisz \"reset\". Wniosek: Nie ma programów ca³kowicie idiotoodpornych.";
 $fortunes[] = "W zespole programistów ka¿dy ma genialny plan rozwi±zania problemu. Wszystkie plany siê wzajemnie wykluczaj± i ¿aden nie prowadzi do poprawnego rozwi±zania. Liczba osób w zespole programistycznym ma tendencje wzrastaj±ce, niezale¿nie od ilo¶ci pracy.";
@@ -96,6 +96,9 @@ $layout[fortune] = $fortunes[mt_rand(0,sizeof($fortunes)-1)];
 
 /*
  * $Log$
+ * Revision 1.2  2003/11/18 20:49:46  alec
+ * literówka bts#00000079
+ *
  * Revision 1.1  2003/09/24 22:31:43  lukasz
  * - changed 'TipOfTheDay' to 'fortunes'
  *
