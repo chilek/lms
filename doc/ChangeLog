@@ -5,7 +5,11 @@ wersja 1.0pre4 (??/01/2003):
   - pe³ne przeportowanie obs³ugi SQL'a na ADODB
   - support do MySQL i PostgreSQL
   - pola uprate i downrate w taryfach
-
+  - lista u¿ytkowników: dodana kwota abonamentu miesiêcznego poni¿ej
+    aktualnego salda u¿ytkownika (Goblin)
+  - lista u¿ytkowników: u¿ytkownik którego komputery s± od³±czone
+    jest pokazywany na szaro
+  
 wersja 1.0pre3 (27/12/2002):
 
   - poprawione pobieranie hostname i uptime (Marcoos)
