@@ -13,6 +13,7 @@ wersja 1.0pre6 (??/??/2003):
   - Warden, co psu³e¶ jeszcze?
   - dodano lms.spec do contrib/ zgodnego ze specyfikacj± PLD,
   - ³atka usprawniaj±ca odpalenie LMS w PLD,
+  - support do pustych hase³
 
 wersja 1.0pre5 (26/01/2003):
  
