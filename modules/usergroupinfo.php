@@ -34,12 +34,15 @@ if ($id = $_GET['id'])
 }
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
-
-$usergroup = $LMS->UsergroupGet($_GET['id']);
 $layout['pagetitle'] = 'Informacja o grupie: '.$usergroup['name'];
 
+$usergroup = $LMS->UsergroupGet($_GET['id']);
+$users = $LMS->GetUserWithoutGroupNames($_GET['id']);
+$userscount = sizeof($users);
+
 $SMARTY->assign('usergroup',$usergroup);
-$SMARTY->assign('users',$LMS->GetUserWithoutGroupNames($_GET['id']));
+$SMARTY->assign('users', $users);
+$SMARTY->assign('userscount', $userscount);
 $SMARTY->display('usergroupinfo.html');
 
 ?>
