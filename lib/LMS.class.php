@@ -152,9 +152,9 @@ class LMS
 				if ($file != '.' && $file != '..')
 				{
 					$path = pathinfo($file);
-					if($path['extension'] = 'sql')
+					if($path['extension'] == 'sql')
 					{
-						if(substr($path['basename'],0,4)=='lms-')
+						if(substr($path['basename'],0,4) == 'lms-')
 						{
 							$dblist['time'][] = substr(basename("$file",'.sql'),4);
 							$dblist['size'][] = filesize($this->CONFIG['directories']['backup_dir'].'/'.$file);
