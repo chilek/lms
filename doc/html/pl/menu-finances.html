@@ -247,12 +247,24 @@ CLASS="FILENAME"
 ><P
 >number_template</P
 ><P
->Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku,
+>Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
 			'%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >number_template = %N/%Y</SAMP
+></P
+></LI
+><LI
+><P
+>monthly_numbering</P
+><P
+>W³±czenie tej opcji spowoduje zerowanie numeracji faktur na pocz±tku ka¿dego miesi±ca.
+			Domy¶lnie: wy³±czona</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>monthly_numbering = 1</SAMP
 ></P
 ></LI
 ><LI
@@ -325,7 +337,7 @@ CLASS="PROMPT"
 >Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
 			to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
 			Przydatne je¶li u¿ywasz w³asnego templejta, który wygeneruje np.rtf'a lub xls'a.
-			Domy¶lnie: 'text/html; charset=iso-8859-2'</P
+			Domy¶lnie: 'text/html'</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"

@@ -194,6 +194,9 @@ foreach($LMS->CONFIG['invoices'] as $key => $val)
      case 'attachment_name':
          $desc = trans('File name for save finished invoice printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) invoices printing, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP).');
          break;
+     case 'monthly_numbering':
+         $desc = trans('Enabling this option will reset numbering of invoices on start of every month.');
+         break;
      default:
          $desc = trans('Unknown option. No description.');
          break;

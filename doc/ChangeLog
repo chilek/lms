@@ -44,6 +44,7 @@ wersja 1.5.4 (??/??/????):
     uwzglêdnia³o tak¿e u¿ytkowników z bilansem równym zero (alec)
   - zmiana warto¶ci domy¶lnej opcji invoices/content_type: usuniêto definicjê
     charsetu (alec)
+  - numeracja miesiêczna faktur: invoices/monthly_numbering (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
