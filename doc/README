@@ -2718,8 +2718,8 @@ info = "Opcjonalny opis modu³u"
    W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne
    zmienne, które podczas zapisu do pliku zostan± zast±pione '%i' -
    adresem ip, '%m' - mac adresem, '%n' - nazw± komputera, '%domain' -
-   domen±, '%net' - nazw± sieci. Poni¿ej opcje udostêpniane przez ten
-   modu³
+   domen±, '%net' - nazw± sieci, '%gw' - adresem bramy w sieci do której
+   nale¿y dany komputer. Poni¿ej opcje udostêpniane przez ten modu³
      * file
        Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/hostfile
        Przyk³ad: file = /etc/rc.d/rc.firewall
@@ -2789,16 +2789,19 @@ info = "Opcjonalny opis modu³u"
    komputerów mo¿na dowolnie zdefiniowaæ i wykorzystaæ nie tylko do
    "traffic control". Zasada dzia³ania skryptu przedstawia siê
    nastêpuj±co: Najpierw z bazy pobierane s± dane dla wszystkich
-   u¿ytkowników. Obliczane s± warto¶ci ¶rednie (uprate, downrate, upceil,
-   downceil, limity po³±czeñ) dla ka¿dego pod³±czonego komputera na
-   podstawie sumy z taryf jego w³a¶ciciela z zaokr±gleniem ca³kowitym.
-   Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do
-   grupy u¿ytkowników i sieci (je¶li okre¶lono). Je¶li warto¶ci
-   ograniczeñ s± ró¿ne od zera nastêpuje zapis regu³ do pliku z podmian±
-   zmiennych. W regu³kach mo¿na stosowaæ nastêpuj±ce zmienne: %name -
-   nazwa hosta, %i - adres IP, %m - MAC, %uprate, %downrate, %upceil,
-   %downceil, %plimit, %climit oraz %x - licznik o warto¶ci pocz±tkowej
-   100 zwiêkszany o jeden dla ka¿dego komputera.
+   u¿ytkowników. Obliczane s± sumy ograniczeñ (uprate, downrate, upceil,
+   downceil, limity po³±czeñ) dla ka¿dego u¿ytkownika Nastêpnie
+   wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy
+   u¿ytkowników i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s±
+   ró¿ne od zera nastêpuje zapis regu³ do pliku z podmian± zmiennych. W
+   regu³kach mo¿na stosowaæ nastêpuj±ce zmienne: %name - nazwa hosta, %i
+   - adres IP, %m - MAC, %uprate, %downrate, %upceil, %downceil, %plimit,
+   %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 zwiêkszany o
+   jeden dla ka¿dego komputera.
+
+   Domy¶lna polityka tworzenia klas htb zak³ada utworzenie jednej klasy
+   dla wszystkich komputerów u¿ytkownika. Mo¿e to byæ zmienione za pomoc±
+   opcji 'one_class_per_host'.
 
    Konfiguracja domy¶lna zak³ada, ¿e twój system jest przystosowany do
    zastosowania htb oraz iptables z modu³ami limit, connlimit, mark i
@@ -2834,11 +2837,14 @@ IPT=/usr/sbin/iptables
 TC=/sbin/tc
 LAN=eth0
 WAN=eth1
-BURST="burst 5k"
+BURST="burst 30k"
 
 stop ()
 {
-$IPT -t mangle -F PREROUTING
+$IPT -t mangle -D FORWARD -i $WAN -j LIMITS >/dev/null 2>&1
+$IPT -t mangle -D FORWARD -o $WAN -j LIMITS >/dev/null 2>&1
+$IPT -t mangle -F LIMITS >/dev/null 2>&1
+$IPT -t mangle -X LIMITS >/dev/null 2>&1
 $IPT -t mangle -F OUTPUT
 $IPT -t filter -F FORWARD
 $TC qdisc del dev $LAN root 2> /dev/null
@@ -2848,6 +2854,9 @@ $TC qdisc del dev $WAN root 2> /dev/null
 start ()
 {
 stop
+$IPT -t mangle -N LIMITS
+$IPT -t mangle -I FORWARD -i $WAN -j LIMITS
+$IPT -t mangle -I FORWARD -o $WAN -j LIMITS
 # incomming traffic
 $IPT -t mangle -A OUTPUT -j MARK --set-mark 1
 $TC qdisc add dev $LAN root handle 1:0 htb default 3 r2q 1
@@ -2860,7 +2869,7 @@ $TC class add dev $LAN parent 1:2 classid 1:20 htb rate 50kbit ceil 500kbit $BUR
 $TC qdisc add dev $LAN parent 1:20 esfq perturb 10 hash dst
 $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xffff flowid 1:20
 $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 53 0xffff flowid 1:20
-$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0xff flowid 1:20
+$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 1:20
 $TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 1:20
 # server -> LAN
 $TC filter add dev $LAN parent 1:0 protocol ip prio 4 handle 1 fw flowid 1:3
@@ -2909,20 +2918,42 @@ case "$1" in
     ;;
 esac
        Przyk³ad: end = ""
-     * host
+     * one_class_per_host
+       Okre¶la politykê tworzenia klas htb. W ustawieniu domy¶lnym
+       wszystkie komputery u¿ytkownika zostan± wrzucone do jednej klasy.
+       Ustawienie tej opcji na 'true' spowoduje, ¿e regu³y okre¶lone w
+       host_htb_up i host_htb_down zostan± wygenerowane dla wszystkich
+       komputerów u¿ytkownika (z inn± warto¶ci± '%x'). Regu³y z
+       host_mark_down, host_mark_up, host_plimit i host_climit generowane
+       s± dla ka¿dego komputera niezale¿nie od ustawieñ tej zmiennej.
+       Domy¶lnie: false
+       Przyk³ad: one_class_per_host = 1
+     * host_mark_down
+       Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
+# %n
+$IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
+       Przyk³ad: host_mark_down = ""
+     * host_mark_up
+       Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
+# %n
+$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
+       Przyk³ad: host_mark_up = ""
+     * host_htb_down
        Zestaw regu³ dla ka¿dego komutera, wykonywanych gdy uprate i
        downrate s± ró¿ne od zera. Domy¶lnie:
-# %n
-$IPT -t mangle -A PREROUTING -s %i -j MARK --set-mark %x
 $TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $LAN parent 1:%x esfq perturb 10 hash dst
-$TC filter add dev $LAN parent 1:0 protocol ip prio 5 u32 match ip dst %i flowid 1:%x
+$TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%x
+       Przyk³ad: host_htb_down = ""
+     * host_htb_up
+       Zestaw regu³ dla ka¿dego komutera, wykonywanych gdy uprate i
+       downrate s± ró¿ne od zera. Domy¶lnie:
 $TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $WAN parent 2:%x esfq perturb 10 hash dst
 $TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x
-       Przyk³ad: host = ""
+       Przyk³ad: host_htb_up = ""
      * host_climit
-       Regu³ka z ograniczeniem ilo¶ci równoczesnych po³aczeñ tcp.
+       Regu³ka z ograniczeniem ilo¶ci równoczesnych po³±czeñ tcp.
        Wykonywana gdy climit w bazie jest ró¿ny od zera. Domy¶lnie:
 $IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT
        Przyk³ad: host_climit = "$IPT -t filter -I FORWARD -p tcp -s %i -m
@@ -3139,6 +3170,7 @@ Rozdzia³ 7. Dla dociekliwych
    creatorid - identyfikator administratora tworz±cego wpis
    modid - identyfikator administratora dokonuj±cego zmian danych
    deleted - usuniêty z bazy (0/1)
+   message - komunikat do wy¶wietlenia przy w³aczonych ostrze¿eniach
      _________________________________________________________________
 
 7.2.3. Grupy u¿ytkowników ('usergroups')
@@ -3185,6 +3217,7 @@ Rozdzia³ 7. Dla dociekliwych
    netdev - identyfikator urz±dzenia sieciowego do którego jest
    pod³±czony komputer
    access - pod³±czony/od³±czony (1/0)
+   warning - ostrzegaj/nie ostrzegaj (1/0)
      _________________________________________________________________
 
 7.2.7. Sprzêt sieciowy ('netdevices')
