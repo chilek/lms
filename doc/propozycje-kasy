@@ -1,27 +1,25 @@
 Propopnowany zmiany dla ksiêgowo¶ci:
 
-users:
--user_id ($)--------1------+
-                           |
-assigments(users(1)-tarrifs(oo))           
--assinged_id($)   --1---+  |         tarrifs
--user---------------oo--|--+          -value
--tarrif-------------oo--|----------1- -tarrif_id($)		
--step in (y, m, w, d, never)          -type (+/-)
--when                   |
--description            |
--from                   |
--to                     |
--deadline               |
+    bills                     accounting
+    -bill_id($)-1-----------oo-- -bill
+    -assigment----oo----+        -account_id($)       
+    -value              |        -payed
+    -description        |        -date/time
                         |
-       bills            |         accounting
-       -bill_id($)-1----|-------oo-- -bill
-       -assigment----oo-+            -account_id($)       
-       -value                        -payed
-       -description                  -date/time
-
-
-
+ 			         |        users:                 
+                        |  +--1---user_id ($)
+                        |  |                    
+assigments(users(1)-tarrifs(oo))           
+-assinged_id($)   --1---+  |     tarrifs
+-user---------------oo-----+     -value
+-tarrif-------------oo--------1- -tarrif_id($)		
+-step in (y, m, w, d, never)     -type (+/-)
+-when                   
+-description            
+-from                   
+-to                     
+-deadline               
+                        
 Opis obrazka: 
  ($)     klucz g³ówny
  1----oo relacja jeden do wielu 
