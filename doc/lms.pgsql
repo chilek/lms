@@ -173,11 +173,12 @@ DROP TABLE netdevices;
 CREATE TABLE netdevices (
 	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
 	name varchar(32) default NULL,
+	location varchar(255),
 	description varchar(255) default NULL,
 	producer varchar(64) default NULL,
 	model varchar(32) default NULL,
 	serialnumber varchar(32) default NULL,
 	ports integer default NULL,
 	PRIMARY KEY (id)
-) ;
+);
 
