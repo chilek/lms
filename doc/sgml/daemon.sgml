@@ -578,7 +578,7 @@ info = "Opcjonalny opis modu³u"
 		    komputerów mo¿na dowolnie zdefiniowaæ i wykorzystaæ nie tylko do "traffic 
 		    control". Zasada dzia³ania skryptu przedstawia siê nastêpuj±co: Najpierw z bazy
 		    pobierane s± dane dla wszystkich u¿ytkowników. Obliczane s± warto¶ci ¶rednie
-		    (uprate, downrate, upceil, downceil, limity po³aczeñ) dla ka¿dego pod³aczonego
+		    (uprate, downrate, upceil, downceil, limity po³aczeñ) dla ka¿dego pod³±czonego
 		    komputera na podstawie sumy z taryf jego w³a¶ciciela z zaokr±gleniem ca³kowitym.
 		    Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy u¿ytkowników
 		    i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s± ró¿ne od zera nastêpuje
@@ -600,7 +600,7 @@ info = "Opcjonalny opis modu³u"
 		    nale¿y podawaæ w jednej linii. W przypadku tego modu³u mo¿e to byæ niezbyt wygodne,
 		    dlatego mo¿esz stworzyæ plik z zawarto¶ci± ca³ego nag³ówka (opcja <filename>
 		    begin</filename>), a nastêpnie u¿yæ opcji <filename>command</filename> do
-		    jego sklejenia z reszt± skryptu wygenerowan± przez modu³.
+		    jego sklejenia z reszt± skryptu wygenerowan± przez modu³.</para></note></para>
 		    <itemizedlist>
 			<listitem>
 			    <para>file</para>
@@ -614,8 +614,8 @@ info = "Opcjonalny opis modu³u"
 			</listitem>
 			<listitem>
 			    <para>begin</para>
-			    <para>Domy¶lnie:
-			    <prompt>
+			    <para>Nag³ówek skryptu. Domy¶lnie:
+<screen>
 "#!/bin/sh
 IPT=/usr/sbin/iptables
 TC=/sbin/tc
@@ -669,13 +669,13 @@ $TC class add dev $WAN parent 2:1 classid 2:11 htb rate 30kbit ceil 120kbit prio
 $TC qdisc add dev $WAN parent 2:11 esfq perturb 10 hash dst
 $TC filter add dev $WAN parent 2:0 protocol ip prio 3 handle 1 fw flowid 2:11
 $TC filter add dev $WAN parent 2:0 protocol ip prio 9 u32 match ip dst 0/0 flowid 2:11
-</prompt></para>
+</screen></para>
 			    <para>Przyk³ad: <prompt>begin = "#!/bin/bash\n$TC=/usr/local/sbin/tc\n"</prompt></para>
 			</listitem>    
 			<listitem>
 			    <para>end</para>
-			    <para>Domy¶lnie:
-			    <prompt>
+			    <para>Stopka skryptu. Domy¶lnie:
+<screen>
 }
 
 case \"$1\" in
@@ -699,14 +699,15 @@ case \"$1\" in
 	echo -e \"\\nUsage: rc.htb start|stop|status\"
     ;;
 esac
-			    </prompt>
+</screen>
 			    </para>
 			    <para>Przyk³ad: <prompt>end = ""</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>host</para>
-			    <para>Domy¶lnie:
-			    <prompt>
+			    <para>Zestaw regu³ dla ka¿dego komutera, wykonywanych
+			    gdy uprate i downrate s± ró¿ne od zera. Domy¶lnie:
+<screen>
 # %n
 $IPT -t mangle -A PREROUTING -s %i -j MARK --set-mark %x
 $TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
@@ -715,28 +716,30 @@ $TC filter add dev $LAN parent 1:0 protocol ip prio 5 u32 match ip dst %i flowid
 $TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $WAN parent 2:%x esfq perturb 10 hash dst
 $TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x
-</prompt>
+</screen>
 			    </para>
-			    <para>Przyk³ad: <prompt>host = ""</para>
+			    <para>Przyk³ad: <prompt>host = ""</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>host_climit</para>
-			    <para>Domy¶lnie:
-			    <prompt>
+			    <para>Regu³ka z ograniczeniem ilo¶ci równoczesnych po³aczeñ tcp. Wykonywana
+			    gdy climit w bazie jest ró¿ny od zera. Domy¶lnie:
+<screen>
 $IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT
-</prompt>
+</screen>
 			    </para>
-			    <para>Przyk³ad: <prompt>host_climit = "$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above -j REJECT"</para>
+			    <para>Przyk³ad: <prompt>host_climit = "$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above -j REJECT"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>host_plimit</para>
-			    <para>Domy¶lnie:
-			    <prompt>
+			    <para>Regu³ka z ograniczeniem ilo¶ci pakietów w jednostce czasu (tutaj sekunda). Wykonywana
+			    gdy plimit w bazie jest ró¿ny od zera. Domy¶lnie:
+<screen>
 $IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
 $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
-</prompt>
+</screen>
 			    </para>
-			    <para>Przyk³ad: <prompt>host_plimit = ""</para>
+			    <para>Przyk³ad: <prompt>host_plimit = ""</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>networks</para>
