@@ -15,6 +15,7 @@ wersja 1.5.3 (??/??/????):
   - wydruk faktur za dany okres z mo¿liwo¶ci± wyboru u¿ytkownika (alec)
   - lms-payments: poprawione dzia³anie opcji --quiet, dodana opcja
     -f, --fakedate=YYYY/MM/DD (alec/RIP)
+  - usuniêty b³±d powoduj±cy brak mo¿liwo¶ci edycji konta systemowego (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 

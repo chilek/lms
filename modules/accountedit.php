@@ -47,7 +47,7 @@ if($id && !AccountExists($id))
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$account = $LMS->DB->GetRow('SELECT passwd.id AS id, ownerid, login, lastlogin, domain, expdate, type, '.$LMS->DB->Concat('users.lastname', "' '", 'users.name').' AS username FROM passwd, users WHERE users.id = ownerid AND passwd.id = ?', array($id));
+$account = $LMS->DB->GetRow('SELECT passwd.id AS id, ownerid, login, lastlogin, domain, expdate, type, '.$LMS->DB->Concat('users.lastname', "' '", 'users.name').' AS username FROM passwd LEFT JOIN users ON users.id = ownerid WHERE passwd.id = ?', array($id));
 
 switch ($option) 
 {
