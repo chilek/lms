@@ -1862,7 +1862,9 @@ class LMS
 			if($result['content'] = $this->DB->GetAll('SELECT value, taxvalue, pkwiu, content, count, description, tariffid FROM invoicecontents WHERE invoiceid=?', array($invoiceid)))
 				foreach($result['content'] as $idx => $row)
 				{
-					$result['content'][$idx]['basevalue'] = sprintf("%0.2f",($row['value'] / (100 + $row['taxvalue']) * 100));
+				
+					$result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $row['taxvalue']) * 100),2);
+					echo $result['content'][$idx]['basevalue']."<BR>";
 					$result['content'][$idx]['totalbase'] = $result['content'][$idx]['basevalue'] * $row['count'];
 					$result['content'][$idx]['totaltax'] = ($row['value'] - $result['content'][$idx]['basevalue']) * $row['count'];
 					$result['content'][$idx]['total'] = $row['value'] * $row['count'];
@@ -1873,6 +1875,7 @@ class LMS
 					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
 					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
 					$result['total'] += $result['content'][$idx]['total'];
+					print_r($result);
 					
 				}
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
