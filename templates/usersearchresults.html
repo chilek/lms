@@ -6,17 +6,17 @@
 		<TD width="95%" class="fleftu">
 			<B>
 			<img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=username{if $userlist.direction eq "asc" && $userlist.order eq "username"},desc{/if}">Nazwisko i imiê:</A></B> {if $userlist.order eq "username"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<img src="img/phone.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=phone{if $userlist.direction eq "asc" && $userlist.order eq "phone"},desc{/if}">Telefon:</A></B> {if $userlist.order eq "phone"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=address{if $userlist.direction eq "asc" && $userlist.order eq "address"},desc{/if}">Adres:</A> {if $userlist.order eq "address"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<img src="img/phone.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=phone{if $userlist.direction eq "asc" && $userlist.order eq "phone"},desc{/if}">{$lang.phone}:</A></B> {if $userlist.order eq "phone"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=address{if $userlist.direction eq "asc" && $userlist.order eq "address"},desc{/if}">{$lang.address}:</A> {if $userlist.order eq "address"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD align="right" width="1%" class="fbt">
 			<a href="?m=usersearch&search&s={$userlist.state}&o=id{if $userlist.direction eq "asc" && $userlist.order eq "id"},desc{/if}">ID:</A></B> {if $userlist.order eq "id"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			&nbsp;
 		</TD>
 		<TD width="1%" class="fbt">
-			<img src="img/mail.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=email{if $userlist.direction eq "asc" && $userlist.order eq "email"},desc{/if}">E-mail:</A> {if $userlist.order eq "email"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/mail.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=email{if $userlist.direction eq "asc" && $userlist.order eq "email"},desc{/if}">{$lang.email}:</A> {if $userlist.order eq "email"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			<img src="img/gg.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=gg{if $userlist.direction eq "asc" && $userlist.order eq "gg"},desc{/if}">GG:</A> {if $userlist.order eq "gg"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<a href="?m=usersearch&search&s={$userlist.state}&o=nip{if $userlist.direction eq "asc" && $userlist.order eq "nip"},desc{/if}">NIP:</A> {if $userlist.order eq "nip"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<a href="?m=usersearch&search&s={$userlist.state}&o=nip{if $userlist.direction eq "asc" && $userlist.order eq "nip"},desc{/if}">{$lang.taxid}:</A> {if $userlist.order eq "nip"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt">
 			<img src="img/money.gif" alt="" align="absmiddle">
@@ -44,7 +44,7 @@
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" valign="top">
 			<IMG src="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].email}<BR>
 			<IMG src="img/gg.gif" alt="" align="absmiddle" border="0">&nbsp;{if $userlist[userlist].gguin}{$userlist[userlist].gguin}{else}&nbsp;{/if}<BR>
-			<IMG SRC="img/empty.gif" alt="" align="absmiddle" height="16" width="1"><B>NIP:</B>&nbsp;{$userlist[userlist].nip}						
+			<IMG SRC="img/empty.gif" alt="" align="absmiddle" height="16" width="1"><B>{$lang.taxid}:</B>&nbsp;{$userlist[userlist].nip}						
 		</TD>
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" valign="middle">
 			<IMG src="img/money.gif" align="left" border="0" alt="">
@@ -54,7 +54,7 @@
 			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz rozliczyæ WSZYSTKIE nale¿no¶ci u¿ytkownika: {$userlist[userlist].username|upper} z bazy danych?\n\n')">Rozlicz &raquo;</A>{/if}
 		</TD>
 		<TD class="fright">
-			<NOBR><A href="?m=userdel&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.username[userlist]|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A> <A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A></NOBR>
+			<NOBR><A href="?m=userdel&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.username[userlist]|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ {$lang.delete} ]"></A> <A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ {$lang.edit} ]"></A> <A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A></NOBR>
 		</TD>
 	</TR>
 	{/if}
