@@ -98,13 +98,13 @@
      <para>outfile_owner</para>
      <para>Pozwala na ustawienie w³a¶ciciela pliku wyj¶ciowego (domy¶lnie 0)</para>
      <para>Przyk³ad:	<prompt>outfile_owner = 0</prompt></para>
-     <warning><para>W³a¶ciciel musi byæ podany numerycznie!</para></warning>
+     <para><warning><para>W³a¶ciciel musi byæ podany numerycznie!</para></warning></para>
     </listitem>
     <listitem>
      <para>outfile_group</para>
      <para>Pozwala na ustawienie grupy pliku wyj¶ciowego (domy¶lnie 0)</para>
      <para>Przyk³ad:	<prompt>outfile_group = 0</prompt></para>
-     <warning><para>Grupa musi byæ podana numerycznie!</para></warning>
+     <para><warning><para>Grupa musi byæ podana numerycznie!</para></warning></para>
     </listitem>
     <listitem>
      <para>header_file</para>
@@ -117,8 +117,8 @@
      <para>Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako 
      nag³ówka (domy¶lnie puste)</para>
      <para>Przyk³ad:	<prompt>header = option1 = bla\noption2 = blabla</prompt></para>
-     <note><para>Znak \n zosta³ tu u¿yty jako seperator linii. Koñcowe \n nie jest 
-     wymagane.</para></note>
+     <para><note><para>Znak \n zosta³ tu u¿yty jako seperator linii. Koñcowe \n nie jest 
+     wymagane.</para></note></para>
     </listitem>
     <listitem>
      <para>networks</para>
@@ -216,10 +216,8 @@
      <para>default_prv</para>
      <para>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)</para>
      <para>Przyk³ad:	<prompt>default_publ = node unknown (%IP) lock_as_intruder;</prompt></para>
+     <para><note><para>lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</para></note></para>
     </listitem>
-    </itemizedlist>
-   <para><note><para>lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</para></note></para>
-    <itemizedlist>
     <listitem>
      <para>network_footer</para>
      <para>Pozwala na ustawienie stopki dla w³a¶nie przetwarzanej sieci</para>

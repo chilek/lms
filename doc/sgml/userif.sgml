@@ -60,10 +60,9 @@
 	<para>W menu znajduj±cym siê u góry okna masz do wyboru opcje: filtrowania listy,
 	dodawania nowych u¿ytkowników, wyszukiwania w bazie wg zadanych kryteriów oraz
 	wydruku listy.</para>
-	<para>Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony) u¿ytkowników.
-	<note><para>Do automatycznego od³±czania u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
-	s³u¿y skrypt lms-cutoff.</para></note>
-	</para>
+	<para>Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony) u¿ytkowników.</para>
+	<para><note><para>Do automatycznego od³±czania u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
+	s³u¿y skrypt lms-cutoff.</para></note></para>
 	<figure>
 		<title>LMS-UI: U¿ytkownicy</title>
 			<ulink url="images/users.png">
@@ -81,10 +80,9 @@
 	wyszukiwania komputerów o danej nazwie, IP lub MAC'u, dodawanie nowych lub usuwanie ju¿
 	wpisanych do bazy komputerów, a tak¿e podgl±d i zmianê informacji o nich. W górnym menu dostêpna
 	jest opcja wydruku listy. Zmiany statusu komputera 'w³±czony/wy³±czony' dokonuje siê
-	klikniêciem na ikonê ¿arówki w odpowiedniej linii.
-	<note><para>Aby dodaæ nowy komputer musisz wcze¶niej utworzyæ
-	u¿ytkownika oraz sieæ, którym go przypiszesz.</para></note>
-	</para>
+	klikniêciem na ikonê ¿arówki w odpowiedniej linii.</para>
+	<para><note><para>Aby dodaæ nowy komputer musisz wcze¶niej utworzyæ
+	u¿ytkownika oraz sieæ, którym go przypiszesz.</para></note></para>
 	<figure>
 		<title>LMS-UI: Komputery</title>
 			<ulink url="images/nodes.png">
@@ -137,11 +135,10 @@
 	<title>Mailing</title>
 	<para>Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
 	u¿ytkowników twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
-	do której zostanie wys³any e-mail.
-	<note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji mail().</para></note>
+	do której zostanie wys³any e-mail.</para>
+	<para><note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji mail().</para></note>
 	<note><para>Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami polecam.
-	skrypt lms-notify.</para></note>
-	</para>
+	skrypt lms-notify.</para></note></para>
  </sect2>
  <sect2 id="menu-reload">
 	<title>Prze³adowanie</title>
@@ -154,8 +151,8 @@
 	<para>Z panelu 'Bazy danych' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy lms'a.
 	Kopia bazy to plik tekstowy z zawarto¶ci± wszystkich tabel w bazie, zapisywany w
 	katalogu zdefiniowanym w sekcji <emphasis>[directories]</emphasis> <filename>lms.ini</filename>
-	zmienn± <prompt>backup_dir</prompt>.
-	<note><para>Domy¶lnie kopie zapisywane s± w katalogu <filename>lms/backups</filename>
+	zmienn± <prompt>backup_dir</prompt>.</para>
+	<para><note><para>Domy¶lnie kopie zapisywane s± w katalogu <filename>lms/backups</filename>
 	dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</para></note></para>
 	<para>Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
 	</para>
@@ -196,8 +193,8 @@
 	okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz ich wiêcej),
 	ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug downloadu).
 	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
-	ostatnich 30 dni lub ostatniego roku.
-	<note><para>Menu 'Statystyki' jest standardowo niedostêpne. Aby je w³±czyæ, nale¿y w sekcji
+	ostatnich 30 dni lub ostatniego roku.</para>
+	<para><note><para>Menu 'Statystyki' jest standardowo niedostêpne. Aby je w³±czyæ, nale¿y w sekcji
 	<emphasis>[phpui]</emphasis> pliku <filename>lms.ini</filename> ustawiæ zmienn±:
 	<prompt>enable_stats = 1</prompt>.</para></note>
 	<note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y go zainstalowaæ

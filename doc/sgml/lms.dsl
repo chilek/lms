@@ -12,7 +12,6 @@
 (define %stylesheet% "style.css")
 (define %html-header-tags% 
     '(("META" ("HTTP-EQUIV" "Content-Type")("CONTENT" "text/html; charset=ISO-8859-2"))))
-(define %html40% #t)
 (define %section-autolabel% #t)
 (define (toc-depth nd)
   (cond ((string=? (gi nd) (normalize "book")) 2)
@@ -22,6 +21,14 @@
 	((string=? (gi nd) (normalize "section")) 2)
 	(else 1)))
 (define %spacing-paras% #f)
+(define %generate-article-toc% #t)
+(define %admon-graphics% #t)
+(define %admon-graphics-path% "images/")
+(define %body-attr%
+(list
+    (list "BGCOLOR" "#EBE4D6")
+    (list "TEXT" "#000000")))
+
 
 </style-specification-body>
 </style-specification>
