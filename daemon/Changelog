@@ -1,3 +1,6 @@
+* 09.12.2003
+  - 'dhcp' i 'dns' przystosowane do nowego formatu adresu sieci (alec)
+
 * 04.12.2003
   - dodane funkcje db_pexec() i db_pquery() (alec)
   - w zapytaniach u¿ywamy teraz '%NOW%' zamiast '?NOW?' (alec)
