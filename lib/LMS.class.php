@@ -1268,10 +1268,13 @@ class LMS
                     {
                          list($ipaddr,$name,$null,$login,$mac)=split(":",$line);
                          $row['ipaddr'] = trim($ipaddr);
-                         $row['name'] = trim($name);
-                         $row['mac'] = str_replace("-",":",trim($mac));
-                         if(!$this->GetNodeIDByIP($row['ipaddr']) && $row['ipaddr'] && $row['mac'] != "00:00:00:00:00:00")
-                              $result[] = $row;
+			 if($row['ipaddr'])
+			 {
+			    $row['name'] = trim($name);
+                            $row['mac'] = str_replace("-",":",trim($mac));
+                            if(!$this->GetNodeIDByIP($row['ipaddr']) && $row['ipaddr'] && $row['mac'] != "00:00:00:00:00:00")
+                                $result[] = $row;
+			 }
                     }
                }
           return $result;
@@ -1931,6 +1934,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.261  2003/10/04 20:51:07  alec
+ * brak prog. nbtscan powodowal bledy w funkcji ScanNodes() - poprawione
+ *
  * Revision 1.260  2003/10/04 20:15:02  alec
  * netdev id can be 0 in NetDevLinkComputer()
  *
