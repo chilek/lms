@@ -25,6 +25,7 @@
  */
 
 $layout['pagetitle'] = 'Lista faktur';
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
 $marks = $_POST['marks'];
 unset($marked);
