@@ -2,7 +2,7 @@
 {include file="trafficheader.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{if $dane}
+{if $bars}
 <TABLE WIDTH=620 ALIGN="center">
     <TR>
 	<TD VALIGN="top">
@@ -17,9 +17,9 @@
 		    {section name=download loop=$download.name}
 		    <TABLE>
 		    <TR>
-			<TD ALIGN="right" WIDTH=85>{if $showips}{$download.ipaddr[download]}{else}{$download.name[download]|truncate:10:"..."}{/if}</TD>
+			<TD ALIGN="right" WIDTH=85>{if $showips}{$download.ipaddr[download]}{else}{$download.name[download]|truncate:12:"..."}{/if}</TD>
     		    	<TD WIDTH={$download.bar[download]} BGCOLOR="#FFBD9B"></TD>
-    			<TD>{$download.dane[download]|string_format:"%.2f "}{$download.jedn[download]}</TD>
+    			<TD>{$download.data[download]|string_format:"%.2f "}{$download.unit[download]}</TD>
 		    <TR>
 		    </TABLE>
 		    {/section}
@@ -27,7 +27,7 @@
 		</TR>
 		<TR class="LIGHT">
 		    <TD ALIGN="center" class="FALL">
-		    <P><B>Razem: {$download_sum.dane|string_format:"%.2f "}{$download_sum.jedn}</B></P>
+		    <P><B>Razem: {$download.sum.data|string_format:"%.2f "}{$download.sum.unit}</B></P>
 		    </TD>
 		</TR>
 	    </TABLE>
@@ -44,9 +44,9 @@
 		    {section name=upload loop=$upload.name}
 		    <TABLE>
 		    <TR>
-			<TD ALIGN="right" WIDTH=85>{if $showips}{$upload.ipaddr[upload]}{else}{$upload.name[upload]|truncate:10:"..."}{/if}</TD>
+			<TD ALIGN="right" WIDTH=85>{if $showips}{$upload.ipaddr[upload]}{else}{$upload.name[upload]|truncate:12:"..."}{/if}</TD>
 			<TD WIDTH={$upload.bar[upload]} BGCOLOR="#CEBD9B"></TD>
-			<TD>{$upload.dane[upload]|string_format:"%.2f "}{$upload.jedn[upload]}</TD>
+			<TD>{$upload.data[upload]|string_format:"%.2f "}{$upload.unit[upload]}</TD>
 		    <TR>
 		    </TABLE>
 		    {/section}
@@ -54,7 +54,7 @@
 		</TR>
 		<TR class="LIGHT">
 		    <TD ALIGN="center"class="FALL">
-		    <P><B>Razem: {$upload_sum.dane|string_format:"%.2f "}{$upload_sum.jedn}</B></P>
+		    <P><B>Razem: {$upload.sum.data|string_format:"%.2f "}{$upload.sum.unit}</B></P>
 		    </TD>
 		</TR>
 	    </TABLE>
