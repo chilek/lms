@@ -1,5 +1,10 @@
 $Id$
 
+wersja 1.4.1 (??/??/2004):
+
+  - poprawione b³êdne dzia³anie pola 'adres IP' przy edycji komputera, gdy
+    podany adres jest b³êdny/zajêty (lukas/alec)
+
 wersja 1.4.0 Evalla (15/10/2004):
 
   - kosmetyka w footer.html (alec)
