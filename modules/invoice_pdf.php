@@ -287,7 +287,10 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 	$t_data[5] = $item['count'];
 	$t_data[6] = iconv("UTF-8","ISO-8859-2",moneyf($item['basevalue']));
 	$t_data[7] = iconv("UTF-8","ISO-8859-2",moneyf($item['totalbase']));
-	$t_data[8] = $item['taxvalue']." %";
+	if ($item['taxvalue']) 
+	    $t_data[8] = $item['taxvalue']." %";
+	else
+	    $t_data[8] = trans('Tax free');
 	$t_data[9] = iconv("UTF-8","ISO-8859-2",moneyf($item['totaltax']));
 	$t_data[10] = iconv("UTF-8","ISO-8859-2",moneyf($item['total']));
 	
