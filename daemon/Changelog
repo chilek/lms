@@ -1,3 +1,10 @@
+* 10.02.2004
+  - zmiany w reloadzie: z tabeli timestamps odczytywany jest czas
+    i porównywany z czasem zapisanym przy ostatnim prze³adowaniu,
+    wpis nie jest usuwany, wiêc nie ma problemów z dzia³aniem wiêcej 
+    ni¿ jednego demona równocze¶nie (lexx/alec)
+  - almsd ju¿ nie jest wersj± 'beta' (alec)
+
 * 09.02.2004
   - poprawki w 'payments' uwzglêdniaj±ce op³aty kwartalne oraz
     zmiany w kolumnie period (alec)
