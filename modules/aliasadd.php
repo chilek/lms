@@ -59,15 +59,15 @@ if($aliasadd = $_POST['aliasadd'])
 	elseif($aliasadd['accountid'])
 	{
 		if(AliasExists($aliasadd['login'], $aliasadd['accountid']))
-			$error['login'] = trans('This account have alias with specified name!');
+			$error['login'] = trans('This account has alias with specified name!');
 		else
 		{
 			$domain = $LMS->DB->GetOne('SELECT domainid FROM passwd WHERE id = ?', array($aliasadd['accountid']));
 			
 			if($aliasadd['accountid'] && AliasExistsInDomain($aliasadd['login'], $domain))
-				$error['login'] = trans('In that domain exists alias with specified login!');
+				$error['login'] = trans('Alias with specified login already exists in that domain!');
 			elseif($aliasadd['accountid'] && AccountExistsInDomain($aliasadd['login'], $domain))
-				$error['login'] = trans('In that domain exists account with specified login!');
+				$error['login'] = trans('Account with specified login already exists in that domain!');
 		}
 	}
 		

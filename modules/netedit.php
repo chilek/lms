@@ -60,11 +60,11 @@ if(isset($networkdata))
 		else
 		{
 			if($LMS->NetworkOverlaps($networkdata['address'],prefix2mask($networkdata['prefix']),$networkdata['id']))
-				$error['address'] = trans('Specified address overlaps with other network!');
+				$error['address'] = trans('Specified IP address overlaps with other network!');
 			else
 			{
 				if($network['assigned'] > ($networkdata['size']-2))
-					$error['address'] = trans('New network is to small!');
+					$error['address'] = trans('New network is too small!');
 				else
 				{
 					if($network['addresslong'] != $networkdata['addresslong'])
@@ -108,21 +108,21 @@ if(isset($networkdata))
 			$error['gateway'] = trans('Incorrect gateway IP address!');
 		else
 			if(!isipin($networkdata['gateway'],getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])),prefix2mask($networkdata['prefix'])))
-				$error['gateway'] =  trans('Specified gateway address don\'t match with network address!');
+				$error['gateway'] =  trans('Specified gateway address does not match with network address!');
 
 	if($networkdata['dhcpstart']!='')
 		if(!check_ip($networkdata['dhcpstart']))
-			$error['dhcpstart'] = trans('Incorrect IP address for start of DHCP range!');
+			$error['dhcpstart'] = trans('Incorrect IP address for DHCP range start!');
 		else
 			if(!isipin($networkdata['dhcpstart'],getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])),prefix2mask($networkdata['prefix'])) && $networkdata['address']!="")
-				$error['dhcpstart'] = trans('IP address for start of DHCP range don\'t match with network address!');
+				$error['dhcpstart'] = trans('IP address for DHCP range start does not match with network address!');
 
 	if($networkdata['dhcpend']!='')
 		if(!check_ip($networkdata['dhcpend']))
-			$error['dhcpend'] =  trans('Incorrect IP address for end of DHCP range!');
+			$error['dhcpend'] =  trans('Incorrect IP address for DHCP range end!');
 		else
 			if(!isipin($networkdata['dhcpend'],getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])),prefix2mask($networkdata['prefix'])) && $networkdata['address']!="")
-				$error['dhcpend'] = trans('IP address for end of DHCP range don\'t match with network address!');
+				$error['dhcpend'] = trans('IP address for DHCP range end does not match with network address!');
 	
 	if(!$error['dhcpstart'] && !$error['dhcpend'])
 	{

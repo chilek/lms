@@ -95,7 +95,7 @@ function invoice_main_form_fill($x,$y,$scale)	{
     $tmp = str_replace("%N",$invoice['number'],$tmp);
     $tmp = str_replace("%Y",$invoice['year'],$tmp);
     $tmp = str_replace("%M",$invoice['month'],$tmp);
-    text_autosize(15*$scale+$x,250*$scale+$y,30*$scale,'Op³ata za fakturê VAT nr: '.$tmp,950*$scale);
+    text_autosize(15*$scale+$x,250*$scale+$y,30*$scale,trans('Payment for invoice no. $0'),$tmp,950*$scale));
 
 }
 
@@ -239,16 +239,16 @@ function invoice_data($x,$y,$width,$font_size,$margin) {
     global $invoice,$pdf;
     $pdf->setlinestyle(0.5);
     $pdf->line($x,$y,$x+$width,$y);
-    $t_data[1] = "<b>Lp.</b>";
-    $t_data[2] = "<b>Nazwa wyrobu, towaru lub us³ugi:</b>";
-    $t_data[3] = "<b>PKWiU:</b>";
-    $t_data[4] = "<b>JM:</b>";
-    $t_data[5] = "<b>Ilo¶æ:</b>";
-    $t_data[6] = "<b>Cena jedn. netto:</b>";
-    $t_data[7] = "<b>Warto¶æ netto:</b>";
-    $t_data[8] = "<b>St. PTU:</b>";
-    $t_data[9] = "<b>Kwota PTU:</b>";
-    $t_data[10] = "<b>Warto¶æ brutto:</b>";
+    $t_data[1] = '<b>'.trans('No.').'</b>';
+    $t_data[2] = '<b>'.trans('Name of product, commodity or service:').'</b>';
+    $t_data[3] = '<b>'.trans('Product ID:').'</b>';
+    $t_data[4] = '<b>'.trans('Amount:').'</b>';
+    $t_data[5] = '<b>'.trans('Unit:').'</b>';
+    $t_data[6] = '<b>'.trans('Net Price:').'</b>';
+    $t_data[7] = '<b>'.trans('Net Value:').'</b>';
+    $t_data[8] = '<b>'.trans('Tax Rate:').'</b>';
+    $t_data[9] = '<b>'.trans('Tax Value:').'</b>';
+    $t_data[10] = '<b>'.trans('Gross Value:').'</b>';
     for ($i = 1; $i <= 10; $i++) $t_justify[$i]="left";
     for ($i = 1; $i <= 10; $i++) $t_width[$i]=$pdf->getTextWidth($font_size,$t_data[$i])+2*$margin+1;
     // tutaj jeszcze trzeba bêdzie sprawdziæ jak± szeroko¶æ maj± pola w tabelce pu¼niej

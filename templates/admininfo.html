@@ -66,7 +66,7 @@
 			{if $unlockedit}
 			<A HREF="javascript:document.adminedit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
 			{else}
-			<A HREF="?m=adminedit&id={$admininfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>{/if} <a href="?m=admindel&id={$admininfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversible delete that account?{/t}');">{t}Delete{/t} <img src="img/delete.gif" border="0" align="absmiddle" ALT=""></A> <A HREF="?m=adminpasswd&id={$admininfo.id}">{t}Change password{/t} <IMG SRC="img/keys.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> {if $unlockedit}<A HREF="?m=admininfo&id={$admininfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=adminedit&id={$admininfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>{/if} <a href="?m=admindel&id={$admininfo.id}" onClick="return confirmLink(this, '{t}Are you sure, you want to irreversibly delete that user account?{/t}');">{t}Delete{/t} <img src="img/delete.gif" border="0" align="absmiddle" ALT=""></A> <A HREF="?m=adminpasswd&id={$admininfo.id}">{t}Change password{/t} <IMG SRC="img/keys.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> {if $unlockedit}<A HREF="?m=admininfo&id={$admininfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
 			{/if}
 		</TD>
 	</TR>

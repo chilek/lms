@@ -86,7 +86,7 @@ if(isset($nodeedit))
 				$error['ipaddr'] = trans('Specified IP address is network gateway!');
 		}
 		else
-			$error['ipaddr'] = trans('Specified IP address not overlaps with any network!');
+			$error['ipaddr'] = trans('Specified IP address does not overlap with any network!');
 	}
 	else
 		$error['ipaddr'] = trans('Incorrect IP address!');

@@ -67,7 +67,7 @@ if(isset($netadd))
 		else
 		{
 			if($LMS->NetworkOverlaps($netadd['address'], prefix2mask($netadd['prefix'])))
-				$error['address'] = trans('Specified address overlaps with other network!');
+				$error['address'] = trans('Specified IP address overlaps with other network!');
 		}
 	}
 
@@ -87,19 +87,19 @@ if(isset($netadd))
 		if(!check_ip($netadd['gateway']))
 			$error['gateway'] = trans('Incorrect gateway IP address!');
 	elseif(!isipin($netadd['gateway'], getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])), prefix2mask($netadd['prefix'])))
-		$error['gateway'] = trans('Specified gateway address don\'t match with network address!');
+		$error['gateway'] = trans('Specified gateway address does not match with network address!');
 	
 	if($netadd['dhcpstart'] != '')
 		if(!check_ip($netadd['dhcpstart']))
-			$error['dhcpstart'] = trans('Incorrect IP address for start of DHCP range!');
+			$error['dhcpstart'] = trans('Incorrect IP address for DHCP range start!');
 	elseif(!isipin($netadd['dhcpstart'], getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])), prefix2mask($netadd['prefix'])) && $netadd['address'] != '')
-		$error['dhcpstart'] = trans('IP address for start of DHCP range don\'t match with network address!');
+		$error['dhcpstart'] = trans('IP address for DHCP range start does not match with network address!');
 	
 	if($netadd['dhcpend'] != '')
 		if(!check_ip($netadd['dhcpend']))
-			$error['dhcpend'] = trans('Incorrect IP address for end of DHCP range!');
+			$error['dhcpend'] = trans('Incorrect IP address for DHCP range end!');
 	elseif(!isipin($netadd['dhcpend'], getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])), prefix2mask($netadd['prefix'])) && $netadd['address'] != '')
-		$error['dhcpend'] = trans('IP address for end of DHCP range don\'t match with network address!');
+		$error['dhcpend'] = trans('IP address for DHCP range end does not match with network address!');
 	
 	if(!$error['dhcpstart'] && !$error['dhcpend'])
 	{

@@ -61,7 +61,7 @@ elseif(isset($userdata))
 		$error['address'] = trans('Address required!');
 
 	if($userdata['nip'] !='' && !check_fin($userdata['nip']))
-		$error['nip'] = trans('Incorrect Financial Identification Number!');
+		$error['nip'] = trans('Incorrect Tax Exempt Number!');
 
 	if(!check_ssn($userdata['pesel']) && $userdata['pesel'] != '')
 		$error['pesel'] = trans('Incorrect Social Security Number!');

@@ -37,7 +37,7 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
          $desc = trans('User interface language symbol. When is not set, language will be based on html browser settings. Default: en.');
          break;
      case 'timeout':
-         $desc = trans('Timeout of www session. After that time (in seconds) user will be log out if not take some action. Default: 600.');
+         $desc = trans('Timeout of www session. After that time (in seconds) user will be logged out if not take some action. Default: 600.');
          break;
      case 'userlist_pagelimit':
          $desc = trans('Limit of displayed positions on one page on users list. Default: no limit.');
@@ -73,10 +73,10 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
          $desc = trans('SSL Enforcing. Setting this option to 1 will make that LMS will enforce SSL connection doing redirect to \'https://\'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every access without SSL. Default: 0 (off).');
          break;
      case 'reload_type':
-         $desc = trans('Reload type. Allowed values: exec - calling of some command (most often with sudo, some script or something else, configurable below); sql - doing SQL writes (also can be set concrete query).');
+         $desc = trans('Reload type. Allowed values: exec - calling of some command (most often with sudo, some script or something else, configurable below); sql - writes don in SQL (concrete sql query can also be set).');
          break;
      case 'reload_execcmd':
-         $desc = trans('Command to run during reload, if reload_type is set to \'exec\'. By default /bin/true. That string is send to command system(), so I propose consideration what you do and how :) Altogether, semicolons should be parsed by bash, but LMS splits that string and execute commands singly.');
+         $desc = trans('Command to run during reload, if reload_type is set to \'exec\'. By default /bin/true. That string is sent to command system(), so I propose consideration what you do and how :) Altogether, semicolons should be parsed by bash, but LMS splits that string and execute commands singly.');
          break;
      case 'reload_sqlquery':
          $desc = trans('SQL query executed while reload, if reload_type = sql. By default, query inserts into table \'timestamps\' value \'_force\'. In query can be used \'%TIME%\' as replacement to current unix timestamp. WARNING! Semicolon is handled by a queries separator, that means you can enter couple of SQL queries separate them by semicolon sign.');
@@ -87,7 +87,7 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
      case 'default_zip':
      case 'default_city':
      case 'default_address':
-         $desc = trans('Default zip code, city, street, used while inserting of new user. Useful when we have many users on the same street.');
+         $desc = trans('Default zip code, city, street, used while inserting a new user. Useful when we have many users on the same street.');
          break;
      case 'lastonline_limit':
          $desc = trans('Specify time (in seconds), after which node will be treated as inactive. It should match with frequency of running script inspecting nodes activity (i.e. lms-fping). Default: 600.');
@@ -96,25 +96,25 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
          $desc = trans('Qualify to use current day of month for payment day instead of most often used day. Default: 0 (off).');
          break;
      case 'smarty_debug':
-         $desc = trans('Enable Smarty\'s debug console. Usefull for tracking values passed from PHP to Smarty. Default: 0 (off).');
+         $desc = trans('Enable Smarty\'s debug console. Useful for tracking values passed from PHP to Smarty. Default: 0 (off).');
          break;
      case 'debug_email':
-         $desc = trans('E-mail address for debugging - at this address will goes messages sended from madule \'Mailing\', instead of proper users.');
+         $desc = trans('E-mail address for debugging - messages from madule \'Mailing\' will be sent at this address, instead of real users.');
          break;
      case 'arpd_servers':
          $desc = trans('List of arpd servers for reading of MAC addresses from remote networks. That list should include items IP[:port] separated with spaces. Default: empty.');
          break;
      case 'helpdesk_backend_mode':
-         $desc = trans('When enabled, all messages in helpdesk system (except sended to requestor) will be send to mail server at address of right queue. On server should be running script lms-rtparser, which will write messages to database. Default: disabled.');
+         $desc = trans('When enabled, all messages in helpdesk system (except sent to requestor) will be sent to mail server at address of right queue. Script lms-rtparser should be running on server. Messages to database will be written by script. Default: disabled.');
          break;
      case 'contract_template':
          $desc = trans('Specify customer contract template. It can include comma separated list of contract templates with their names. Default: contract.html.');
          break;
      case 'to_words_short_version':
-         $desc = trans('Specify format of verbal amounts representation (on invoices). For value "1" verbal expand of 123,15 will be "one two thr 15/100". Default: 0.');
+         $desc = trans('Specify format of verbal amounts representation (on invoices). e.g. for value "1" verbal expand of 123,15 will be "one two thr 15/100". Default: 0.');
          break;
      case 'lang_debug':
-         $desc = trans('Enable LMS language console. Usefull for tracking missing translation strings. Default: 0 (off).');
+         $desc = trans('Enable LMS language console. Useful for tracking missing translation strings. Default: 0 (off).');
          break;
      case 'timetable_days_forward':
          $desc = trans('Number of days (including current day) on timetable. Default: 7.');
@@ -177,10 +177,10 @@ foreach($LMS->CONFIG['invoices'] as $key => $val)
          $desc = trans('It is a seller data. A new line replacement is "\n" sign, e.g. header = SuperNet ISP\n00-950 Warsaw\nWiosenna 52\n0 49 3883838\n\nksiegowosc@supernet.pl\n\nNIP: 123-123-12-23');
          break;
      case 'footer':
-         $desc = trans('Small font footer will be at the bottom of page, e.g. footer = Nasz Bank: Sratytaty, nazwa r-ku: SNETISP, nr r-ku: 828823917293871928371\nBiuro obs³ug klienta 329 29 29. Dzia³ windykacji: 329 28 28');
+         $desc = trans('Small font footer will be at the bottom of page, e.g. footer = Our Bank: SNETISP, 828823917293871928371\nPhone number 555 123 123');
          break;
      case 'default_author':
-         $desc = trans('Default person makeing invoice');
+         $desc = trans('Default person making invoice');
          break;
      case 'number_template':
          $desc = trans('Invoice number template. Default: number/LMS/year, i.e. %N/LMS/%Y. Allowed variables: %N - successive number in year, %M - drow-up month, %Y - drow-up year.');
@@ -192,10 +192,10 @@ foreach($LMS->CONFIG['invoices'] as $key => $val)
          $desc = trans('Invoice template file. Default: "invoice.html". Should be placed in templates directory.');
          break;
      case 'content_type':
-         $desc = trans('Content-type for invoice. If you enter "application/octet-stream", browser will send file for save on disk, instead of display it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html; charset=UTF-8".');
+         $desc = trans('Content-type for invoice. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html; charset=UTF-8".');
          break;
      case 'attachment_name':
-         $desc = trans('File name for save finished invoice printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) invoices printing, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP).');
+         $desc = trans('File name for saving finished invoice printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print invoice, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP).');
          break;
      case 'monthly_numbering':
          $desc = trans('Enabling this option will reset numbering of invoices on start of every month.');

@@ -53,7 +53,7 @@ if($account = $_POST['account'])
 		$error['passwd'] = trans('Passwords do not match!');
 	    
 	if($account['passwd1'] == '')
-		$error['passwd'] = trans('Empty passwords not allowed!');
+		$error['passwd'] = trans('Empty passwords are not allowed!');
 	
 	if($account['expdate'] == '')
 		$account['expdate'] = 0;

@@ -60,7 +60,7 @@ if(isset($nodedata))
 	elseif(!check_ip($nodedata['ipaddr']))
 		$error['ipaddr'] = trans('Incorrect node IP address!');
 	elseif(!$LMS->IsIPValid($nodedata['ipaddr']))
-		$error['ipaddr'] = trans('Specified IP address not overlaps with any network!');
+		$error['ipaddr'] = trans('Specified IP address does not overlap with any network!');
 	elseif(!$LMS->IsIPFree($nodedata['ipaddr']))
 		$error['ipaddr'] = trans('Specified IP address is in use!');
 	elseif($LMS->IsIPGateway($nodedata['ipaddr']))

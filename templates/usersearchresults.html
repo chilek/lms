@@ -18,7 +18,7 @@
 		<TD width="1%" class="fbt">
 			<img src="img/mail.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=email{if $userlist.direction eq "asc" && $userlist.order eq "email"},desc{/if}">{t}E-mail:{/t}</A> {if $userlist.order eq "email"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			<img src="img/gg.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=gg{if $userlist.direction eq "asc" && $userlist.order eq "gg"},desc{/if}">{t}IM:{/t}</A> {if $userlist.order eq "gg"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<a href="?m=usersearch&search&s={$userlist.state}&o=nip{if $userlist.direction eq "asc" && $userlist.order eq "nip"},desc{/if}">{t}FIN:{/t}</A> {if $userlist.order eq "nip"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<a href="?m=usersearch&search&s={$userlist.state}&o=nip{if $userlist.direction eq "asc" && $userlist.order eq "nip"},desc{/if}">{t}TEN:{/t}</A> {if $userlist.order eq "nip"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD width="1%" class="fbt">
 			<img src="img/money.gif" ALT="" align="absmiddle">
@@ -75,7 +75,7 @@
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" valign="top">
 			<IMG src="img/mail.gif" ALT="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].email}<BR>
 			<IMG src="img/gg.gif" ALT="" align="absmiddle" border="0">&nbsp;{if $userlist[userlist].gguin}{$userlist[userlist].gguin}{else}&nbsp;{/if}<BR>
-			<IMG src="img/empty.gif" ALT="" align="absmiddle" height="16" width="1"><B>{t}FIN{/t}:</B>&nbsp;{$userlist[userlist].nip}
+			<IMG src="img/empty.gif" ALT="" align="absmiddle" height="16" width="1"><B>{t}TEN{/t}:</B>&nbsp;{$userlist[userlist].nip}
 		</TD>
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" valign="middle">
 			<IMG src="img/money.gif" align="left" border="0" ALT="">

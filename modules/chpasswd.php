@@ -33,7 +33,7 @@ if($LMS->AdminExists($id))
 	if(isset($passwd))
 	{
 		if($passwd['passwd'] == '' || $passwd['confirm'] == '')
-			$error['password'] = trans('Empty passwords not allowed!');
+			$error['password'] = trans('Empty passwords are not allowed!');
 		
 		if($passwd['passwd'] != $passwd['confirm'])
 			$error['password'] = trans('Passwords do not match!');

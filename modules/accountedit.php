@@ -60,7 +60,7 @@ switch ($option)
 	    $error['passwd'] = trans('Passwords do not match!'); 
 	
 	if($account['passwd1'] == '') 
-	    $error['passwd'] = trans('Empty passwords not allowed!');
+	    $error['passwd'] = trans('Empty passwords are not allowed!');
 	
 	if(!$error)
 	{

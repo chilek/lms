@@ -71,7 +71,7 @@ case 'connect':
 	if(! $LMS->NetDevLink($_GET['netdev'], $_GET['id'], $linktype) )
 	{
 		$edit = FALSE;
-		$error['link'] = trans('Device does not have free ports!');
+		$error['link'] = trans('Device has not free ports!');
 	} else
 		header('Location: ?m=netdevinfo&id='.$_GET['id']);
 	break;
@@ -81,7 +81,7 @@ case 'connectnode':
 	$_SESSION['nodelinktype'] = $linktype;
 	if(! $LMS->NetDevLinkNode($_GET['nodeid'], $_GET['id'], $linktype) )
 	{
-		$error['linknode'] = trans('Device does not have free ports!');
+		$error['linknode'] = trans('Device has not free ports!');
 		$edit = FALSE;
 	} else
 		header('Location: ?m=netdevinfo&id='.$_GET['id']);
@@ -136,7 +136,7 @@ case 'formaddip':
 	elseif(!check_ip($nodeipdata['ipaddr']))
 		$error['ipaddr'] = trans('Incorrect IP address!');
 	elseif(!$LMS->IsIPValid($nodeipdata['ipaddr']))
-		$error['ipaddr'] = trans('Specified address not belongs to any network!');
+		$error['ipaddr'] = trans('Specified address does not belongs to any network!');
 	elseif(!$LMS->IsIPFree($nodeipdata['ipaddr']))
 		$error['ipaddr'] = trans('IP address is in use!');
 
@@ -191,7 +191,7 @@ case 'formeditip':
 	elseif(!check_ip($nodeipdata['ipaddr']))
 		$error['ipaddr'] = trans('Incorrect IP address!');
 	elseif(!$LMS->IsIPValid($nodeipdata['ipaddr']))
-		$error['ipaddr'] =  trans('Specified address not belongs to any network!');
+		$error['ipaddr'] =  trans('Specified address does not belongs to any network!');
 	elseif(
 		!$LMS->IsIPFree($nodeipdata['ipaddr']) &&
 		$LMS->GetNodeIPByID($_GET['ip'])!=$nodeipdata['ipaddr']
