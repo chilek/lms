@@ -95,11 +95,15 @@ class LMSDB_driver_mysql extends LMSDB_common
 	}
 }
 
-/* $Log$
-/* Revision 1.6  2003/08/18 16:46:50  lukasz
-/* - fixed CVS tags
-/* - beta state - need testing
-/*
+/* 
+ * $Log$
+ * Revision 1.7  2003/08/18 16:47:37  lukasz
+ * - once again fixed CVS tags
+ *
+ * Revision 1.6  2003/08/18 16:46:50  lukasz
+ * - fixed CVS tags
+ * - beta state - need testing
+ *
  */
 
 ?>	
