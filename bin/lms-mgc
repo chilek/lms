@@ -194,7 +194,7 @@ sub instance($)
 	my $post_exec = $ini->val("mgc:$instanceno", 'post_exec') || '';
 	my $ignore_list = $ini->val("mgc:$instanceno", 'ignore') || '';
 	
-	my $allnetworks;
+	my $allnetworks = '';
 
 	my $dbq = $dbase->prepare("SELECT name FROM networks");
 
@@ -290,7 +290,7 @@ sub instance($)
 		my $row = $dbq->fetchrow_hashref();
 		if(!$row)
 		{
-			print STDERR "Fatal error: Didn't find any network matching $srcnetwork, exiting.\nHint: Do you know that PostgreSQL have case-sensitive queries by default?\n";
+			print STDERR "Fatal error: Didn't find any network matching $srcnetwork, exiting.\n";
 			return 1;
 		}
 		$row->{'name'} = lc($row->{'name'});
@@ -339,7 +339,7 @@ sub instance($)
 				$dtnh =~ s/\%MASK/$row->{'mask'}/g;
 				$dtnh =~ s/\%GATE/$row->{'gateway'}/g;
 				$dtnh =~ s/\%DNS/$row->{'dns'}/g;
-				$dtnh =~ s/\%DOMAIN/lc($row->{'domain'}/g;
+				$dtnh =~ s/\%DOMAIN/$row->{'domain'}/g;
 				$dtnh =~ s/\%WINS/$row->{'wins'}/g;
 				$dtnh =~ s/\%DHCPS/$row->{'dhcpstart'}/g;
 				$dtnh =~ s/\%DHCPE/$row->{'dhcpend'}/g;
@@ -348,8 +348,8 @@ sub instance($)
 				$dtnh =~ s/\%UTIME/$utime/g;
 				$dtnh =~ s/\%DATE/$date/g;
 				$dtnh =~ s/\%DID/$srow->{'id'}/g;
-				$dtnh =~ s/\%dname/$srow->{'name'}/g;
-				$dtnh =~ s/\%DNAME/$srow->{'NAME'}/g;
+				$dtnh =~ s/\%dname/lc($srow->{'name'})/g;
+				$dtnh =~ s/\%DNAME/uc($srow->{'name'})/g;
 				$dtnh =~ s/\%DIFACE/$srow->{'interface'}/g;
 				$dtnh =~ s/\%DADDR/$srow->{'address'}/g;
 				$dtnh =~ s/\%DMASK/$srow->{'mask'}/g;
