@@ -31,27 +31,27 @@ $authors = array(
 		'alec' => array(
 			'realname' => 'Aleksander Machniak',
 			'www' => 'www.alec.pl',
-			'info' => 'code PHP, C, Perl, HTML, JavaScript, images, doc, PostgreSQL, SQLite'
+			'info' => 'PHP, C, Perl, HTML, JavaScript, images, doc, PostgreSQL, SQLite'
 		     ),
 
 		'Baseciq' => array(
 			'realname' => 'Łukasz Jarosław Mozer',
 			'www' => 'www.baseciq.org',
-			'info' => 'inventor & maintainer, code PHP, Perl, design, HTML, JavaScript, CSS, images, doc, project\'s WWW'
+			'info' => 'inventor & maintainer, PHP, Perl, design, HTML, JavaScript, CSS, images, doc, project\'s WWW'
 			),
 
 		'chilek' => array(
-			'info' => 'kod PHP, Perl',
+			'info' => 'PHP, Perl',
 			'realname' => 'Tomasz Chilinski',
 			),
 
 		'hunter' => array(
-			'info' => 'kod PHP, Perl',
+			'info' => 'PHP, Perl',
 			'realname' => 'Krzysztof Drewicz',
 			),
 
 		'Lexx' => array(
-			'info' => 'code PHP, C, doc, project\'s  WWW',
+			'info' => 'PHP, C, doc, project\'s  WWW',
 			'www' => 'www.lexx.w.pl',
 			'realname' => 'Marcin Król',
 		     ),
@@ -101,7 +101,7 @@ $others = array(
 
 		'DziQs' => array(
 			'realname' => 'Michał Zapalski',
-			'info' => 'PHP i Perl',
+			'info' => 'PHP, Perl',
 			),
 
 		'Pierzak' => array(
