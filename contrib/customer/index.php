@@ -89,7 +89,12 @@ header('X-Powered-By: LMS/'.$layout[lmsv]);
 
 $_SERVER[REMOTE_ADDR] = str_replace("::ffff:","",$_SERVER[REMOTE_ADDR]);
 
-$userid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP((isset($_SERVER[HTTP_X_FORWARDED_FOR]) ? $_SERVER[HTTP_X_FORWARDED_FOR] : $_SERVER[REMOTE_ADDR])));
+if (isset($_SERVER[HTTP_X_FORWARDED_FOR])) { 
+    $SMARTY->display("w3cache.html");
+    die();
+}
+
+$userid = $LMS->GetNodeOwner($LMS->GetNodeIDByIP($_SERVER[REMOTE_ADDR]));
 
 $balance = $LMS->GetUserBalanceList($userid);
 $userinfo = $LMS->GetUser($userid);
