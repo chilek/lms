@@ -296,6 +296,9 @@
      <para>%INFO - opis komputera</para>
     </listitem>
     <listitem>
+     <para>%PASSWD - node password</para>
+    </listitem>
+    <listitem>
      <para>%UPRATE - gwarantowany transfer dla danych wychodz±cych</para>
     </listitem>
     <listitem>

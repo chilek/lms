@@ -440,7 +440,7 @@ sub instance($)
 		
 		# BUILD NODELIST
 		
-		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info, pin FROM nodes, users WHERE users.id=nodes.ownerid");
+		$dbq = $dbase->prepare("SELECT ipaddr, mac, passwd, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info, pin FROM nodes, users WHERE users.id=nodes.ownerid");
 		$dbq->execute();
 
 		my %maclist;
@@ -452,11 +452,13 @@ sub instance($)
 		my %ownerlist;
 		my %infolist;
 		my %pinlist;
+		my %passlist;
 		
 		while (my $row = $dbq->fetchrow_hashref())
 		{
 			$row->{'ipaddr'} = u32todotquad($row->{'ipaddr'}); 
 			$maclist{$row->{'ipaddr'}} = $row->{'mac'};
+			$passlist{$row->{'ipaddr'}} = $row->{'passwd'};
 			$accesslist{$row->{'ipaddr'}} = $row->{'access'};
 			$warninglist{$row->{'ipaddr'}} = $row->{'warning'};
 			$idlist{$row->{'ipaddr'}} = $row->{'id'};
@@ -604,6 +606,7 @@ sub instance($)
 			my $plimit = $plimits{$owner} || '';
 			my $info = $infolist{$ipaddr} || '';
 			my $pin = $pinlist{$ipaddr} || '';
+			my $passwd = $passlist{$ipaddr} || '';
 			my $macs = lc($mac);
 			$macs =~ s/://g;
 			my ($q1,$q2,$q3,$q4) = split('\.',$ipaddr,4);
@@ -640,6 +643,7 @@ sub instance($)
 			$rule =~ s/\%UTIME/$utime/g;
 			$rule =~ s/\%DATE/$date/g;
 			$rule =~ s/\%PIN/$pin/g;
+			$rule =~ s/\%PASSWD/$passwd/g;
 			$rule =~ s/\%1/$q1/g;
 			$rule =~ s/\%2/$q2/g;
 			$rule =~ s/\%3/$q3/g;

@@ -593,6 +593,11 @@ database = /usr/local/lms/lms.db</screen>
          verbal expand of 123,15 will be "one two thr 15/100". Default: 0.</para>
          <para>Example:     <prompt>to_words_short_format = 1</prompt></para>
      </listitem>
+     <listitem>
+         <para>nodepassword_length</para>
+         <para>Length of (auto-generated) node password. Max.32. Default: 16.</para>
+         <para>Example:     <prompt>nodepassword_length = 8</prompt></para>
+     </listitem>
      </itemizedlist>
       </sect2> 
     </sect1>

@@ -126,20 +126,21 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		fprintf(fh, "%s", hm->prefix);
 		
 		if(hm->skip_dev_ips)
-			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, ownerid, access, info FROM nodes WHERE ownerid<>0 ORDER BY ipaddr");
+			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, passwd, ownerid, access, info FROM nodes WHERE ownerid<>0 ORDER BY ipaddr");
 		else
-			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, ownerid, access, info FROM nodes ORDER BY ipaddr");
+			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, passwd, ownerid, access, info FROM nodes ORDER BY ipaddr");
 			
 		if( (res = g->db_query(query))!=NULL ) {
 		
 			for(i=0; i<res->nrows; i++) {
-				unsigned char *mac, *ip, *access, *name, *info;
+				unsigned char *mac, *ip, *access, *name, *info, *passwd;
 			
 				mac 	= g->db_get_data(res,i,"mac");
 				ip  	= g->db_get_data(res,i,"ip");
 				access 	= g->db_get_data(res,i,"access");
 				name 	= g->db_get_data(res,i,"name");
 				info 	= g->db_get_data(res,i,"info");
+				passwd 	= g->db_get_data(res,i,"passwd");
 
 				if(ip && mac && access) {
 					
@@ -183,6 +184,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 						g->str_replace(&s, "%i", ip);
 						g->str_replace(&s, "%m", mac);
 						g->str_replace(&s, "%n", name);
+						g->str_replace(&s, "%p", passwd);
 						
 						fprintf(fh, "%s", s);
 						free(s);
