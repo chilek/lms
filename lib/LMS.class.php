@@ -1309,6 +1309,16 @@ class LMS
 		
 		return $netlist;
 	}
+	
+	function GetNetworkParams($id)
+	{
+		if($params = $this->ADB->GetRow("SELECT * FROM networks WHERE id=?",array($id));
+		{
+			$params['address'] = ip_long($params['address']);
+			$params['broadcast'] = ip_long(getbraddr($params['address'],$params['mask']));
+		}
+		return $params;
+	}
 
 	function GetNetworkList()
 	{
@@ -1602,6 +1612,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.209  2003/08/31 19:16:54  alec
+ * added GetNetworkParams
+ *
  * Revision 1.208  2003/08/30 01:11:21  lukasz
  * - nowe pole w li¶cie sieci: interfejs
  *
