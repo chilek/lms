@@ -2938,7 +2938,11 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetQueueContents($id)
 	{
-		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, requestor, rttickets.subject AS subject, state, owner AS ownerid, name AS ownername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified FROM rtmessages, rttickets LEFT JOIN admins ON (owner = admins.id AND rttickets.id = ticketid) WHERE queueid = ? GROUP BY ticketid ORDER BY rttickets.createtime DESC', array($id)))
+		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, requestor, rttickets.subject AS subject, state, owner AS ownerid, name AS ownername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
+		    FROM rtmessages LEFT JOIN rttickets ON (rttickets.id = rtmessages.ticketid)
+		    LEFT JOIN admins ON (owner = admins.id) WHERE queueid = ? 
+		    GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, name
+		    ORDER BY rttickets.createtime DESC', array($id)))
 		{
 			foreach($result as $idx => $ticket)
 			{
