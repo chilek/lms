@@ -26,30 +26,16 @@
 
 $invoice = $LMS->GetInvoiceContent($_GET[id]);
 $layout[pagetitle] = 'Faktura VAT nr '.$invoice[number].'/LMS/'.date('Y',$invoice[cdate]);
-echo '<PRE>';
-print_r($invoice);
-$invoice[test] = 128.34;
-//$invoice[content][vat] = $invoice[content][value] * 0.07;
-//$invoice[content][brutto] = $invoice[content][vat] + $invoice[content][value];
-
-// WTF is this?
-// $kesz = explode(".",sprintf("%1.2f",$invoice[content][brutto]));
-// $invoice[content][text] = $LMS->NumberSpell($kesz[0])." ".$kesz[1]."/100 z³otych";
-
-$invoice[totalvalue] = 
-$invoice[provider][name] 	= $_CONFIG[finances][name];
-$invoice[provider][address] 	= $_CONFIG[financesces][address];
-$invoice[provider][zip] 	= $_CONFIG[finances][zip];
-$invoice[provider][city] 	= $_CONFIG[finances][city];
-$invoice[provider][footer] 	= $_CONFIG[finances][footer];
-$invoice[provider][bank] 	= $_CONFIG[finances][bank];
-$invoice[provider][account] 	= $_CONFIG[finances][account];
-$invoice[deadline] 		= $_CONFIG[finances][deadline];
-
-//setlocale(LC_ALL, "pl_PL");
 
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('invoice',$invoice);
+$SMARTY->display('clearheader.html');
+$SMARTY->assign('type','ORGINA£');
 $SMARTY->display('invoice.html');
+$SMARTY->assign('type','KOPIA');
+$invoice[last] = TRUE;
+$SMARTY->assign('invoice',$invoice);
+$SMARTY->display('invoice.html');
+$SMARTY->display('clearfooter.html');
 
 ?>
