@@ -31,7 +31,7 @@ class LMS {
 
 	var $db;
 	var $session;
-	var $version = '1.0.18';
+	var $version = '1.0.20';
 
 	function LMS($db,$session)
 	{
