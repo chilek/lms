@@ -237,7 +237,7 @@ function ip_long($sip)
 	if(check_ip($sip)){
 		return sprintf('%u',ip2long($sip));
 	}else{
-		return false;
+		return 0;
 	}
 }
 
