@@ -8,6 +8,8 @@ wersja 1.3.1 (??/??/????):
     powodowa³ tak¿e zapisywanie niepoprawnych danych do tabeli 'cash' 
     podczas dodawania nowej faktury - BTS#0000114 (alec)
   - multilanguage? mo¿e tak (RFD) (lexx)
+  - w almsd, do modu³u hostfile dodano nowe opcje konfiguracyjne 'networks'
+    oraz 'skip_dev_ips' (alec)
 
 wersja 1.3.0 Apophis (18/02/2004):
 
