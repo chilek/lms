@@ -84,6 +84,9 @@ if(isset($networkdata))
 		}
 	}
 
+	if($networkdata[interface] != "" && !eregi('^[a-z0-9]+$',$networkdata[interface]))
+		$error[interface] = "Niepoprawna nazwa interfejsu!";
+
 	if($networkdata[name]=="")
 		$error[name] = "Musisz podaæ nazwê sieci!";
 	elseif(!eregi("^[.a-z0-9-]+$",$networkdata[name]))
@@ -140,7 +143,8 @@ if(isset($networkdata))
 		header("Location: ?m=netinfo&id=".$networkdata[id]);
 		die;
 	}	
-	
+
+	$network[interface] = $networkdata[interface];
 	$network[prefix] = $networkdata[prefix];
 	$network[address] = $networkdata[address];
 	$network[size] = $networkdata[size];
@@ -167,6 +171,9 @@ $SMARTY->assign("error",$error);
 $SMARTY->display("netinfo.html");
 /*
  * $Log$
+ * Revision 1.23  2003/08/30 01:11:21  lukasz
+ * - nowe pole w li¶cie sieci: interfejs
+ *
  * Revision 1.22  2003/08/27 19:25:42  lukasz
  * - changed format of ipaddr storage in database
  *

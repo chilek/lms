@@ -3,6 +3,14 @@ $Id$
 wersja 1.1.4 (??/??/2003):
 
   - lista taryf zlicza³a tak¿e u¿ytkowników usuniêtych (lukasz)
+  - do listy sieci dodane nowe pole: interfejs - bardzo przydatne przy
+    budowaniu skryptów iptables/ipchains/htb gdy mamy sieci adresowe na
+    ró¿nych interfejsach, dostêpne w lms-mgc jako %IFACE, %DIFACE i %NIFACE,
+    co jak zwykle niesie upgrade formatu bazy (lukasz):
+    MySQL:
+        ALTER TABLE networks ADD interface VARCHAR(8) AFTER mask;
+    PostgreSQL:
+    	ALTER TABLE networks ADD interface VARCHAR(8);    
 
 wersja 1.1.3 (29/08/2003):
 

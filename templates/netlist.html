@@ -5,7 +5,7 @@
 <table cellpadding="3" width="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD class="fleftu" width="96%">
-			<NOBR><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>Nazwa:</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> Adres/prefix:</NOBR>
+			<NOBR><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>Nazwa:</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> Adres/prefix (interfejs):</NOBR>
 		</TD>
 		<TD class="fbt" valign="top" align="right" width="1%">
 			ID:
@@ -27,7 +27,7 @@
 	{section name=netlist loop=$netlist}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD class="fleft" width="96%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>{$netlist[netlist].name}</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> {$netlist[netlist].address} / {$netlist[netlist].prefix}</nobr>
+			<nobr><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>{$netlist[netlist].name}</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</nobr>
 		</TD>
 		<TD valign="top" align="right" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';" width="1%">
 			<nobr><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">({$netlist[netlist].id|string_format:"%04d"})<BR><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">rozmiar: {$netlist[netlist].size} (zaj: {$netlist[netlist].assigned|string_format:"%01d"})</nobr>
