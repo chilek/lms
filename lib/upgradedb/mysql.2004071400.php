@@ -24,23 +24,9 @@
  *  $Id$
  */
 
-$DB->Execute("
-    BEGIN;
-    ALTER TABLE rtmessages ADD userid integer;
-    ALTER TABLE rtmessages ALTER userid SET DEFAULT 0;
-    UPDATE rtmessages SET userid=0;
-    ALTER TABLE rtmessages ALTER userid SET NOT NULL;
-    
-    ALTER TABLE rtmessages ADD adminid integer;
-    ALTER TABLE rtmessages ALTER adminid SET DEFAULT 0;
-    UPDATE rtmessages SET adminid=sender;
-    ALTER TABLE rtmessages ALTER adminid SET NOT NULL;
-    ALTER TABLE rtmessages DROP COLUMN sender;
+$DB->Execute("ALTER TABLE stats CHANGE upload upload BIGINT DEFAULT '0'");
+$DB->Execute("ALTER TABLE stats CHANGE download download BIGINT DEFAULT '0'");
 
-    ALTER TABLE rtqueues DROP CONSTRAINT rtqueues_email_key;
-
-    UPDATE dbinfo SET keyvalue = '2004071200' WHERE keytype = 'dbversion';
-    COMMIT;
-");
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004071400', 'dbversion'));
 
 ?>

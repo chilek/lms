@@ -12,6 +12,8 @@ wersja 1.3.5 (??/??/????):
     nazwisko u¿ytkownika (alec)
   - w lms-mgc poprawiony b³±d w zapytaniu wybieraj±cym dane do htb oraz dodane
     zmienne %UPCEIL, %DOWNCEIL, %CLIMIT, %PLIMIT (alec)
+  - zmiana typu kolumn statystyk na BIGINT zapobiegaj±ca b³êdom przy
+    kompaktowaniu je¶li u¿ytkownicy ¶ci±gaj± ponad 2 GB danych dziennie (alec)
 
 wersja 1.3.4 Terok (06/07/2004):
 

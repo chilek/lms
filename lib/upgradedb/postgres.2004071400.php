@@ -26,20 +26,18 @@
 
 $DB->Execute("
     BEGIN;
-    ALTER TABLE rtmessages ADD userid integer;
-    ALTER TABLE rtmessages ALTER userid SET DEFAULT 0;
-    UPDATE rtmessages SET userid=0;
-    ALTER TABLE rtmessages ALTER userid SET NOT NULL;
+    ALTER TABLE stats ADD down bigint;
+    ALTER TABLE stats ADD up bigint;
+    ALTER TABLE stats ALTER down SET DEFAULT 0;
+    ALTER TABLE stats ALTER up SET DEFAULT 0;
+    UPDATE stats SET up=upload;
+    UPDATE stats SET down=download;
+    ALTER TABLE stats DROP upload;
+    ALTER TABLE stats DROP download;
+    ALTER TABLE stats RENAME up TO upload;
+    ALTER TABLE stats RENAME down TO download;
     
-    ALTER TABLE rtmessages ADD adminid integer;
-    ALTER TABLE rtmessages ALTER adminid SET DEFAULT 0;
-    UPDATE rtmessages SET adminid=sender;
-    ALTER TABLE rtmessages ALTER adminid SET NOT NULL;
-    ALTER TABLE rtmessages DROP COLUMN sender;
-
-    ALTER TABLE rtqueues DROP CONSTRAINT rtqueues_email_key;
-
-    UPDATE dbinfo SET keyvalue = '2004071200' WHERE keytype = 'dbversion';
+    UPDATE dbinfo SET keyvalue = '2004071400' WHERE keytype = 'dbversion';
     COMMIT;
 ");
 
