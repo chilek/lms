@@ -1,5 +1,9 @@
 $Id$
 
+wersja 1.2.8 (??/??/????):
+
+  - poprawione dzia³anie pola 'adres IP' przy edycji komputera (lukas/alec)
+
 wersja 1.2.7 Ayiana (15/10/2004):
 
   - nazwa interfejsu mo¿e siê teraz tak¿e odnosiæ do przestarza³ego systemu
