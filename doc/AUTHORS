@@ -22,7 +22,6 @@ phpMyAdmin (http://phpwizard.net/projects/phpMyAdmin)
 phpsysinfo (http://phpsysinfo.sourceforge.net)
 NewsPortal (http://florian-amrhein.de/newsportal/index-english.php3)
 procedury konwersji liczb na postaæ s³own± autorstwa Piotra Klabana
-
 oraz przyk³ady kodu zawarte w Podrêczniku PHP (http://www.php.net/manual/pl)
 
 W rolach g³ównych wyst±plii:
@@ -33,10 +32,12 @@ Kod PHP:
 Micha³ 'DziQs' Zapalski
 Rados³aw 'Warden' Antoniuk
 Krzysztof 'hunter' Drewicz  
+Aleksander 'A.L.E.C' Machniak
 
 Kod C:
 
-Mateusz 'mteg' Golicz  
+Aleksander 'A.L.E.C' Machniak
+Karol 'Lexx' Król  
 
 Kod Perl:
 
@@ -69,7 +70,7 @@ Kuba 'shasta' Jankowski
 Rados³aw 'Warden' Antoniuk  
 Przemyslaw Babiñski
 
-Supprot PostgreSQL:
+Supprot PostgreSQL i SQLite:
 
 Aleksander 'A.L.E.C' Machniak
 
