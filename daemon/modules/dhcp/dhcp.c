@@ -109,6 +109,8 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 
 					// groups test
 					if(gc) {
+						if(ownerid==0)
+							continue;
 						m = gc;
 						if( res1 = g->db_pquery("SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"))) {
 							for(k=0; k<res1->nrows; k++) {
@@ -120,7 +122,7 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 							}
 							g->db_free(res1);
 						}
-						if(m==gc || ownerid==0)
+						if(m==gc)
 							continue;
 					}
 
