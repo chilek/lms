@@ -61,12 +61,17 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		{cycle values="#DFD5BD,#EBE4D6" print=false}
-		{section name=l1 loop=$usergroup.users max=$usergroup.rows}
-		{section name=l2 loop=$usergroup.users start=$smarty.section.l1.index step=$usergroup.rows}
-		<TD WIDTH="1%" CLASS="fleft" bgcolor="{cycle}" {cycle print=false} onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '{cycle}')" {cycle print=false} onclick="return self.location.href='?m=userinfo&id={$usergroup.users[l2].id}'"><IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> <A HREF="?m=userinfo&id={$usergroup.users[l2].id}">({$usergroup.users[l2].id|string_format:"%04d"}) {$usergroup.users[l2].username|truncate:50:" ..."} {if $usergroup.users[l2].cnt > 1}({$usergroup.users[l2].cnt}){/if}</A></TD>
-		{/section}{cycle print=false}
-		{sectionelse}
+		{if $usergroup.userscount}
+		<TD WIDTH="1%" CLASS="fleft">
+			<SELECT SIZE="20" NAME="usergroupinfo[muserid][]" multiple>
+				{section name=user loop=$usergroup.users}
+					<OPTION VALUE="{$users[user].id}">
+					{$usergroup.users[user].username|truncate:50:" ..."} ({$usergroup.users[user].id|string_format:"%04d"})
+					</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+		{else}
 		<TD WIDTH="1%" CLASS="fleft" ALIGN="CENTER">
 			<BR>
 			<BR>
@@ -74,7 +79,7 @@
 			<BR>
 			<BR>
 		</TD>
-		{/section}
+		{/if}
 		<TD WIDTH="99%" CLASS="fright" COLSPAN="2">
 			<INPUT TYPE="hidden" NAME="usergroupinfo[backid]" VALUE="{$usergroup.id}">
 			<SELECT SIZE="20" NAME="usergroupinfo[muserid][]" multiple>
