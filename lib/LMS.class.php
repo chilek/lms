@@ -437,6 +437,11 @@ class LMS
 		return $this->DB->GetOne('SELECT email FROM users WHERE id=?', array($id));
 	}
 
+	function GetUserServiceAddress($id)
+	{
+		return $this->DB->GetOne('SELECT serviceaddr FROM users WHERE id=?', array($id));
+	}
+
 	function UserExists($id)
 	{
 		switch($this->DB->GetOne('SELECT deleted FROM users WHERE id=?', array($id)))
@@ -468,7 +473,7 @@ class LMS
 
 	function UserAdd($useradd)
 	{
-		if($this->DB->Execute('INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info, message) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?)', array(ucwords($useradd['name']), $useradd['lastname'], $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->SESSION->id, $useradd['info'], $useradd['message']))) {
+		if($this->DB->Execute('INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info, serviceaddr, message) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?)', array(ucwords($useradd['name']), $useradd['lastname'], $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->SESSION->id, $useradd['info'], $useradd['serviceaddr'], $useradd['message']))) {
 			$this->SetTS('users');
 			return $this->DB->GetOne('SELECT MAX(id) FROM users');
 		} else
@@ -489,7 +494,7 @@ class LMS
 	function UserUpdate($userdata)
 	{
 		$this->SetTS('users');
-		return $this->DB->Execute('UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, lastname=UPPER(?), name=?, deleted=0, message=? WHERE id=?', array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['pesel'], $this->SESSION->id, $userdata['info'], $userdata['lastname'], ucwords($userdata['name']), $userdata['message'], $userdata['id'] ) );
+		return $this->DB->Execute('UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=? WHERE id=?', array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['pesel'], $this->SESSION->id, $userdata['info'], $userdata['serviceaddr'], $userdata['lastname'], ucwords($userdata['name']), $userdata['message'], $userdata['id'] ) );
 	}
 
 	function GetUserNodesNo($id)
@@ -514,7 +519,7 @@ class LMS
 
 	function GetUser($id)
 	{
-		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, pesel, city, info, creationdate, moddate, creatorid, modid, deleted, message FROM users WHERE id=?', array($id)))
+		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, pesel, city, info, serviceaddr, creationdate, moddate, creatorid, modid, deleted, message FROM users WHERE id=?', array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);

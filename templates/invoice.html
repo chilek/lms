@@ -49,8 +49,12 @@
 			<BR>
 			<BR>
 			<B>{$invoice.name}<BR>
+			{if $invoice.serviceaddr neq ""}
+				{$invoice.serviceaddr|replace:"\n":"<BR>"}<BR>
+			{else}
 			{$invoice.address}<BR>
 			{$invoice.zip} {$invoice.city}<BR>
+			{/if}
 			Polska</B>
 		</TD>
 	</TR>

@@ -40,10 +40,10 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	{
 		echo '<PRE>';
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
+		$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 		foreach(split('\+', $which) as $type)
 		{
 			$SMARTY->assign('type',$type);
-
 			$SMARTY->assign('invoice',$invoice);
 			$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
 		}
@@ -59,6 +59,7 @@ elseif($_GET['fetchsingle'])
 	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
 	$layout['pagetitle'] = 'Faktura VAT nr '.$ntempl;
 	$invoice['last'] = TRUE;
+	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');
 	$SMARTY->assign('type','ORYGINA£');
@@ -72,6 +73,7 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
 	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
 	$layout['pagetitle'] = 'Faktura VAT nr '.$ntempl;	
+	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');
 	$SMARTY->assign('type','ORYGINA£');
