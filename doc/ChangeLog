@@ -33,6 +33,8 @@ wersja 1.3.3 (??/??/2004):
     u¿ytkowniku i edycji u¿ytkownika (chilek)
   - mo¿liwo¶æ ustalania przynale¿no¶ci do grup w formularzach informacji o
     komputerze i edycji komputera (chilek)
+  - obs³uga grup u¿ytkowników lms-makedhcpconf, lms-makeoidentconf,
+    lms-makemacs, lms-makehosts (chilek)
   - naprawione filtrowanie listy userów wg grupy i sieci (alec) 
   - poprawka w bazie przywracaj±ca mo¿liwo¶æ dublowania MAC'ów (alec)
 
