@@ -581,7 +581,7 @@ class LMS {
 		if($n && !$y) return FALSE;
 		return 2;
 	}
-		
+	
 	function GetBalanceList()
 	{
 		$DB=$this->DB;
@@ -673,64 +673,81 @@ class LMS {
 
 		if(!isset($state)) $state="3";
 		if(!isset($order)) $order="username,asc";
+
+		list($order,$direction)=explode(",",$order);
+
+		switch($order){
+
+			case "phone":
+				$sqlord = "ORDER BY phone1";
+				break;
+
+			case "id":
+				$sqlord = "ORDER BY id";
+				break;
+
+			case "address":
+				$sqlord = "ORDER BY address";
+				break;
+
+			case "email":
+				$sqlord = "ORDER BY email";
+				break;
 			
-		$userlist = $DB->fetchTable("SELECT id, lastname, name, status, email, phone1, address, info FROM users");
-			
-		if(sizeof($userlist[id]))
-			foreach($userlist[id] as $i => $v)
-				$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
+			case "balance":
+				$sqlord = "";
+				break;
+
+			default:
+				$sqlord = "ORDER BY lastname, name";
+				break;
+		}
+
+		if($direction != "desc")
+			$direction = "asc";
+		else
+			$direction = "desc";
+
+		$userlist = $DB->fetchTable("SELECT id, CONCAT(UPPER(lastname),' ', name) AS username, status, email, phone1, address, info FROM users ".($state !=0 ? "WHERE status = '".$state."'":"")." ".$sqlord." ".($sqlord!="" ? $direction : ""));
+
+		$DB->execSQL("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid");
+
+		while($DB->fetchRow())
+			$balance[$DB->row[id]] = str_replace(".",",",$DB->row[value]);
+
+		$DB->execSQL("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid");
+
+		while($DB->fetchRow())
+			$balance[$DB->row[id]] = $balance[$DB->row[id]] - str_replace(".",",",$DB->row[value]);
 
 		if(sizeof($userlist[id]))
+		{
 			foreach($userlist[id] as $i => $v)
 			{
-				$userlist[balance][$i] = $this->GetUserBalance($v);
+				$userlist[balance][$i] = $balance[$v];
 				if($userlist[balance][$i] > 0)
 					$userlist[over] = $userlist[over] + $userlist[balance][$i];
 				if($userlist[balance][$i] < 0)
 					$userlist[below] = $userlist[below] - $userlist[balance][$i];
 			}
 		
-		list($order,$direction)=explode(",",$order);
-		
-		if($direction != "desc")
-			$direction = SORT_ASC;
-		else
-			$direction = SORT_DESC;
-		
-		if(sizeof($userlist[id]))
-			switch($order){
-				case "username":
-					array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
-				break;
-				case "id":
-					array_multisort($userlist[id],$direction,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
-				break;
-				case "email":
-					array_multisort($userlist[email],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
-				break;
-				case "address":
-					array_multisort($userlist[address],$direction,$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[balance]);
-				break;
-				case "balance":
-					array_multisort($userlist[balance],$direction,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info]);
-				break;
-				case "phone":
-					array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance]);
-				break;
-			}
-		
-		if(sizeof($userlist[id]))
+			if($order=="balance")
+				if($direction=="desc")
+					array_multisort($userlist[balance],SORT_DESC,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info]);
+				else
+					array_multisort($userlist[balance],SORT_ASC,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info]);
+
 			foreach($userlist[id] as $i => $v)
 				if($userlist[status][$i] == 3)
 					$userlist[nodeac][$i] = $this->GetUserNodesAC($userlist[id][$i]);
 				else
 					$userlist[nodeac][$i] = FALSE;
+		}
+		
 		$userlist[state]=$state;
 		$userlist[order]=$order;
 		$userlist[direction]=$direction;
 		$userlist[total]=sizeof($userlist[id]);
-//		echo "<pre>";	
-//		print_r($userlist);
 		return $userlist;
 	}
 			
@@ -930,22 +947,28 @@ class LMS {
 		$return = str_replace(".",",",$DB->row[value]);
 		$DB->fetchRow("SELECT SUM(value) AS value FROM cash WHERE userid = '".$id."' AND type = '4'");
 		$return = $return - str_replace(".",",",$DB->row[value]);
-		return $return;
+		return round($return,2);
 	}
 
 	function GetUserBalanceList($id)
 	{
 		$DB=$this->DB;
 
-		if($_SESSION[timestamps][getuserbalancelist][$id][cash] != $this->GetTS("cash"))
+		if($_SESSION[timestamps][getuserbalancelist][$id][cash] != $this->GetTS("cash") || 
+		$_SESSION[timestamps][getuserbalancelist][$id][admins] != $this->GetTS("admins"))
 		{
-			$saldolist = $DB->fetchTable("SELECT `cash`.`id`, `time`, `adminid`, `type`, `value`, `userid`, `comment`, `admins`.`name` AS `adminname` FROM `cash`, `admins` WHERE userid = '".$id."' AND `admins`.`id` = `cash`.`adminid`");
+			$DB->execSQL("SELECT id, name FROM admins");
+			while($DB->fetchRow())
+				$adminslist[$DB->row[id]] = $DB->row[name];
+				
+			$saldolist = $DB->fetchTable("SELECT `id`, `time`, `adminid`, `type`, `value`, `userid`, `comment` FROM `cash` WHERE userid = '".$id."'");
 			if(sizeof($saldolist[id]) > 0){
 				foreach($saldolist[id] as $i => $v)
 				{
 					if($i>0) $saldolist[before][$i] = $saldolist[after][$i-1];
 					else $saldolist[before][$i] = 0;
-					
+				
+					$saldolist[adminname][$i] = $adminslist[$saldolist[adminid][$i]];
 					// zachcia³o mi siê kurwa pierdolonych locales :S
 					// zak³adam siê ¿e w trakcie pisania wyjdzie jeszcze kwiatek
 					// z zapisem do mysql'a :S
@@ -985,6 +1008,7 @@ class LMS {
 			}
 			$saldolist[balance] = str_replace(".",",",$saldolist[balance]);
 			$_SESSION[timestamps][getuserbalancelist][$id][cash] = $this->GetTS("cash");
+			$_SESSION[timestamps][getuserbalancelist][$id][admins] = $this->GetTS("admins");
 			$_SESSION[cache][getuserbalancelist][$id] = $saldolist;
 		}else{
 			$saldolist = $_SESSION[cache][getuserbalancelist][$id];
@@ -1075,7 +1099,7 @@ class LMS {
 		$DB=$this->DB;
 		$this->SetTS("cash");
 		$SESSION=$this->SESSION;
-		return $DB->execSQL("INSERT INTO `cash`	(time, adminid, type, value, userid, comment) VALUES (UNIX_TIMESTAMP(),'".$SESSION->id."','".$addbalance[type]."','".$addbalance[value]."','".$addbalance[userid]."','".$addbalance[comment]."' )");
+		return $DB->execSQL("INSERT INTO `cash` (time, adminid, type, value, userid, comment) VALUES (UNIX_TIMESTAMP(),'".$SESSION->id."','".$addbalance[type]."','".$addbalance[value]."','".$addbalance[userid]."','".$addbalance[comment]."' )");
 	}
 
 	function GetEmails($group)
@@ -1084,12 +1108,8 @@ class LMS {
 		if($group == 0)
 			$emails = $DB->fetchTable("SELECT `id`, `email` FROM `users`");
 		else
-			$emails = $DB->fetchTable("SELECT `id`, `email` FROM `users` WHERE `status` = '".$group."'");
+			$emails = $DB->fetchTable("SELECT `id`, `email`, CONCAT(lastname,' ',name) AS username FROM `users` WHERE `status` = '".$group."'");
 		$emails[total]=sizeof($emails[id]);
-		if($emails[total])
-			foreach($emails[id] as $key => $value)
-				$emails[username][$key] = ucwords(strtolower($this->GetUserName($value)));
-			
 		return $emails;
 	}
 
