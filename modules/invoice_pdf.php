@@ -250,11 +250,11 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     $pdf->setlinestyle(0.5);
     $pdf->line($x,$y,$x+$width,$y);
     $t_data[1] = '<b>'.trans('No.').'</b>';
-    $t_data[2] = '<b>'.trans('Name of product, commodity or service:').'</b>';
+    $t_data[2] = '<b>'.trans('Name of Product, Commodity or Service:').'</b>';
     $t_data[3] = '<b>'.trans('Product ID:').'</b>';
-    $t_data[4] = '<b>'.trans('Amount:').'</b>';
-    $t_data[5] = '<b>'.trans('Unit:').'</b>';
-    $t_data[6] = '<b>'.trans('Net Price:').'</b>';
+    $t_data[4] = '<b>'.trans('Unit:').'</b>';
+    $t_data[5] = '<b>'.trans('Amount:').'</b>';
+    $t_data[6] = '<b>'.trans('Unitary Net Value:').'</b>';
     $t_data[7] = '<b>'.trans('Net Value:').'</b>';
     $t_data[8] = '<b>'.trans('Tax Rate:').'</b>';
     $t_data[9] = '<b>'.trans('Tax Value:').'</b>';
