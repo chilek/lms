@@ -1278,12 +1278,17 @@ class LMS
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
-			$result['creationdateh'] = date('Y-m-d, H:i',$result['creationdate']);
+			$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
 			$delta = time()-$result['lastonline'];
 			if($delta>$this->CONFIG['phpui']['lastonline_limit'])
-				$result['lastonlinedate'] .= uptimef($delta).($delta>60 ? ' temu ' : '').'('.date('Y/m/d, H:i',$result['lastonline']).')';
+			{
+				if($delta>59)
+					$result['lastonlinedate'] = trans('$0 ago ($1)', uptimef($delta), date('Y/m/d, H:i',$result['lastonline']));
+				else
+					$result['lastonlinedate'] = '('.date('Y/m/d, H:i',$result['lastonline']).')';
+			}
 			else
-				$result['lastonlinedate'] .= trans('on-line');
+				$result['lastonlinedate'] = trans('on-line');
 			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
 			$result['owner'] = $this->GetUsername($result['ownerid']);
 			$result['netid'] = $this->GetNetIDByIP($result['ip']);
