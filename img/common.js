@@ -1,4 +1,4 @@
-// $Id: common.js,v 1.1 2002/12/29 15:41:35 lukasz Exp $
+// $Id: common.js,v 1.1 2003/01/06 15:39:47 lukasz Exp $
 
 function confirmLink(theLink, message)
 {

@@ -112,6 +112,9 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld.org.pl
 
 $Log$
+Revision 1.3  2003/04/12 22:31:06  lukasz
+- lms-1.0pre9
+
 Revision 1.2  2003/04/11 22:22:11  lukasz
 - to najnowsze zmiany jakie uda³o mi siê znale¼æ
 
