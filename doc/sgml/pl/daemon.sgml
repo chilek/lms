@@ -642,11 +642,6 @@
 		    <para>Masz do dyspozycji standardowe parametry takie jak usergroups, file,
 		    command, networks i dodatkowo opcje definiuj±ce tre¶æ regu³ek tc i firewalla.
 		    Domy¶lna konfiguracja przeznaczona jest dla ³±cz 512/128 kbit i 100mbit.</para>
-		    <para><note><para>Warto¶ci opcji konfiguracyjnych w <filename>lms.ini</filename>
-		    nale¿y podawaæ w jednej linii. W przypadku tego modu³u mo¿e to byæ niezbyt wygodne,
-		    dlatego mo¿esz stworzyæ plik z zawarto¶ci± ca³ego nag³ówka (opcja <filename>
-		    begin</filename>), a nastêpnie u¿yæ opcji <filename>command</filename> do
-		    jego sklejenia z reszt± skryptu wygenerowan± przez modu³.</para></note></para>
 		    <itemizedlist>
 			<listitem>
 			    <para>file</para>
