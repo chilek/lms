@@ -42,16 +42,11 @@
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
 						<B><A HREF="http://smarty.php.net" target="_BLANK">Wersja Smarty:</A></B>
 					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					<TD WIDTH="50%" CLASS="FBR">
 						{$layout.smarty_version}
-					</TD>
-				</TR>
-				<TR CLASS="LIGHT">
-					<TD COLSPAN="2" CLASS="FBOTTOMU">
-						&nbsp;
 					</TD>
 				</TR>
 			</TABLE>
@@ -59,7 +54,7 @@
 		<TD WIDTH="50%" VALIGN="TOP">
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
-					<TD HEIGHT="24" ALIGN="CENTER" COLSPAN="2" CLASS="FALL">
+					<TD HEIGHT="24" ALIGN="CENTER" COLSPAN="2" CLASS="FALL" NOWRAP>
 						<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>Informacje o systemie:</B>
 					</TD>
 				</TR>
@@ -96,18 +91,13 @@
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
-					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
 						<B>Obci±¿enie:</B>
 					</TD>
-					<TD WIDTH="50%" CLASS="FRIGHT">
+					<TD WIDTH="50%" CLASS="FBR">
 						{$sysinfo.loadavg.0} {$sysinfo.loadavg.1} {$sysinfo.loadavg.2}
 					</TD>
 				</TR>
-				<TR CLASS="LIGHT">
-					<TD COLSPAN="2" CLASS="FBOTTOMU">
-						&nbsp;
-					</TD>
-				</TR>			
 			</TABLE>
 		</TD>					
 	</TR>
@@ -180,7 +170,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B>Razem:</B>
+						<B><A HREF="?m=nodelist">Razem:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$nodestats.total}
