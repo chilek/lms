@@ -43,14 +43,14 @@ if($_GET['print'] == 'cached' && sizeof($_SESSION['ilp_marks']))
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$SMARTY->assign('type','ORYGINA£');
 		$SMARTY->assign('invoice',$invoice);
-		$SMARTY->display('invoice.html');
+		$SMARTY->display($LMS->CONFIG['invoices']['template_file'].'.html');
 		$SMARTY->assign('type','KOPIA');
 		if(! $ids[$idx+1])
 		{
 			$invoice['last'] = TRUE;
 			$SMARTY->assign('invoice',$invoice);
 		}
-		$SMARTY->display('invoice.html');
+		$SMARTY->display($LMS->CONFIG['invoices']['template_file'].'.html');
 	}
 	$SMARTY->display('clearfooter.html');
 }
@@ -65,11 +65,11 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');
 	$SMARTY->assign('type','ORYGINA£');
-	$SMARTY->display('invoice.html');
+	$SMARTY->display($LMS->CONFIG['invoices']['template_file'].'.html');
 	$SMARTY->assign('type','KOPIA');
 	$invoice['last'] = TRUE;
 	$SMARTY->assign('invoice',$invoice);
-	$SMARTY->display('invoice.html');
+	$SMARTY->display($LMS->CONFIG['invoices']['template_file'].'.html');
 	$SMARTY->display('clearfooter.html');
 }
 else
