@@ -22,7 +22,7 @@
     <sect1 id="install-requirements">
         <title>Requirements</title>
         <sect2 id="install-req-www">
-    	    <title>WWW Server</title>
+             <title>WWW Server</title>
             <para>Because <emphasis>LMS-UI</emphasis> is written in PHP, necessary is WWW server with interpreter of 
             that language. Perefered server is Apache (<ulink url="http://www.apache.org">www.apache.org</ulink>).</para>
         </sect2>
@@ -243,20 +243,22 @@ password = password_entered_while_user_lms_account_creation</screen>
           <sect2 id="install-sqlite">
           <title>SQLite</title>
           <sect3 id="install-sqlite-intro">
-          <title>Wstêp</title>
-               <para>Ta jednoplikowa baza jest chwalona za swoj± szybko¶æ, wg autorów
-               okre¶lan± na 2-3 krotnie szybsz± od MySQL. Poza tym przy odpowiedniej 
-               konfiguracji umo¿liwia wczytanie ca³ej bazy do pamiêci RAM przez co osi±gany jest
-               znaczny wzrost wydajno¶ci. Poni¿ej przedstawiono krótki opis instalacji.
-               ¬ród³a mo¿na pobraæ z <ulink url="http://www.sqlite.org">
+          <title>Intro</title>
+               <para>This one-file database is commend for speed. Authors define
+               that it is 2-3 times faster than MySQL. Furthermore, with properly 
+               configuration it's possible to load whole database in to the RAM 
+               menory, during this the efficiency highly increases.
+               Below is short description of installation.
+               Sources can be downloaded from: <ulink url="http://www.sqlite.org">
                www.sqlite.org</ulink>.</para>
           </sect3>
           <sect3 id="install-sqlite-server">
           <title>Instalacja SQLite</title>
-               <para>Opisano tutaj sposób instalacji bibliotek SQLite oraz 
-               dodanie obs³ugi tej bazy do PHP (PHP w wersji 5.0 ma wbudowan±
-               obs³ugê SQLite). Po rozpakowaniu ¼róde³, wejd¼ do katalogu z SQLite 
-               i wydaj kolejno polecenia (¶cie¿ki przyk³adowe):
+               <para>Here You can see how to install the SQLite libraries and
+               adding this service to PHP database (in PHP 5.0 ver. have SQLite
+               built in).
+               After unpacking sources go to SQLite directory and type in
+               Commands step by step (for example):
                <screen>
 $ ./configure
 $ make
@@ -264,17 +266,16 @@ $ make install
 $ ldconfig
 $ pear download http://pecl.php.net/get/SQLite-1.0.2.tgz
 $ pear install SQLite-1.0.2.tgz</screen>
-               Nastêpnie w pliku php.ini ustaw:
+               Next in php.ini set:
                <screen>
 extension=sqlite.so</screen>
-               Istnieje równie¿ mo¿liwo¶æ wkompilowania obs³ugi SQLite
-               w PHP przy pomocy opcji <prompt>--with-sqlite</prompt>.
+               There is option to compile-in SQLite into PHP : <prompt>--with-sqlite</prompt>.
                </para>
           </sect3>
           <sect3 id="install-sqlite-dbcreate">
-          <title>Utworzenie bazy danych</title>
-               <para>Konieczne  to  jest  je¿eli  uruchamiasz  LMS  po raz PIERWSZY. 
-               Tak wiêc, wejd¼ do katalogu w którym masz LMS'a     i uruchom shell sqlite'a:
+          <title>Database Creation</title>
+               <para>It's necessarily when You running LMS FIRST TIME!
+               Go to Yours LMS directory and run SQlite shell:
                <screen>
 $ sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
 sqlite> .exit
@@ -282,17 +283,17 @@ $ chown 99.98 /usr/local/lms/lms</screen>
                </para>
           </sect3>
           <sect3 id="install-sqlite-lms">
-          <title>Konfiguracja LMS (lms.ini)</title>
-               <para>Jednym z ograniczeñ SQLite jest brak autentykacji u¿ytkowników, dlatego
-               konfiguracja ogranicza siê do podania typu oraz ¶cie¿ki do pliku bazy. W sekcji
-               [database] pliku /etc/lms/lms.ini podajemy:
+          <title>LMS Configuration (lms.ini)</title>
+               <para>One of the SQLite limits is no authenticity of users, 
+               that's why configuration request only setting type and path to
+               the database file. In section <filename>[database]</filename>
+               pliku <filename>/etc/lms/lms.ini</filename> set:
                <screen>
 type     = sqlite
 database = /usr/local/lms/lms.db</screen>
               </para>
-               <para>Po  takim  zabiegu, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
-               bazie danych nie ma ¿adnego konta administratora, jedyn± rzecz± jak±
-               zobaczysz bêdzie formularz dodania administratora.  
+               <para>Now we can get in to the system. But if in Database is no 
+               user account, we will see add user account form.
                </para>
           </sect3>
           </sect2>
@@ -347,7 +348,7 @@ database = /usr/local/lms/lms.db</screen>
      <title>Section [directories] - Directories Settings</title>
       <para>        
      <itemizedlist>
-	<listitem>
+     <listitem>
         <para>sys_dir</para>
         <para>System directory. It is a place where is entire content of LMS's UI, that means index.php, graphics, 
         templates and the rest. By default index.php seek in filesystem 
@@ -398,199 +399,199 @@ database = /usr/local/lms/lms.db</screen>
         <title>Section [phpui] - Interface Setting</title>
         <itemizedlist>
         <listitem>
-    	    <para>allow_from  (optional)</para>
-    	    <para>Lis of networks and IP addresses, which have access to LMS. If empty, every IP address has 
-    	    access to LMS. When you write here list of addresses or address classes,
-    	    LMS dismiss every unwanted user with HTTP 403 error.</para>
-    	    <para>Example:          <prompt>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>lang</para>
-	    <para>User interface language symbol. When is not set, language will be based on
-	    html browser settings. Default: en.</para>
-	    <para>Example:     <prompt>lang = pl</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>timeout</para>
-	    <para>Timeout of www session. After that time (in seconds) user will be log out if 
-	    not take some action. Default: 600.</para>
-	    <para>Example:     <prompt>timeout = 900</prompt></para>
-	    <para><warning><para>There is not possible to set no timeout. If you set this value
-	    on zero, you'll can't use LMS!</para></warning></para>
-	</listitem>
-	<listitem>
-	    <para>userlist_pagelimit</para>
-	    <para>Limit of displayed positions on one page on users list. Default: no limit.</para>
-	    <para>Example:     <prompt>userlist_pagelimit = 10</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>nodelist_pagelimit</para>
-	    <para>Limit of displayed records on page on nodes list. Default: no limit.</para>
-	    <para>Example:     <prompt>nodelist_pagelimit = 10</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>balancelist_pagelimit</para>
-	    <para>Limit of displayed records on page on user's balance. Default: 100.</para>
-	    <para>Example:     <prompt>balancelist_pagelimit = 50</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>invoicelist_pagelimit</para>
-	    <para>Limit of displayed records on page on invoices list. Default: 100</para>
-	    <para>Example:     <prompt>invoicelist_pagelimit = 50</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>ticketlist_pagelimit</para>
-	    <para>Limit of displayed records on page on tickets (requests) list. Default: 100</para>
-	    <para>Example:     <prompt>ticketlist_pagelimit = 50</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>networkhosts_pagelimit</para>
-	    <para>Limit of displayed nodes on one page in Network Information. Default: 256</para>
-	    <para>Example:     <prompt>networkhosts_pagelimit = 1024</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>accountlist_pagelimit</para>
-	    <para>Limit of displayed records on page on accounts list. Default: 100</para>
-	    <para>Example:     <prompt>accountlist_pagelimit = 50</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>domainlist_pagelimit</para>
-	    <para>Limit of displayed records on page on domains list. Default: 100</para>
-	    <para>Example:     <prompt>domainlist_pagelimit = 50</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>aliaslist_pagelimit</para>
-	    <para>Limit of displayed records on page on aliases list. Default: 100</para>
-	    <para>Example:     <prompt>aliaslist_pagelimit = 50</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>configlist_pagelimit</para>
-	    <para>Limit of displayed records on page on UI config options list. Default: 100</para>
-	    <para>Example:     <prompt>configlist_pagelimit = 50</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>reload_type</para>
-	    <para>Reload type. Allowed values:</para>
-	    <para>exec - calling of some command (most often with sudo, some script or something
-	    else, configurable below)</para>
-	    <para>sql  - doing SQL writes (also can be set concrete query)</para>
-	    <para>Default: sql.</para>
-	    <para>Example:     <prompt>reload_type = exec</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>reload_execcmd</para>
-	    <para>Command to run during reload, if reload_type is set to 'exec'. By default
-	    <filename>/bin/true</filename>. That string is send to command system(), so I propose consideration 
-	    what you do and how :) Altogether, semicolons should be parsed by bash, but
-	    LMS splits that string and execute commands singly.</para>
-	    <para>Example:     <prompt>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>reload_sqlquery</para>
-	    <para>SQL query executed while reload, if <prompt>reload_type = sql</prompt>.  
-	    By default, query inserts into table 'timestamps' value '_force'. In query can be used
-	    '%TIME%' as replacement to current unix timestamp. WARNING! Semicolon is handled by
-	    a queries separator, that means you can enter couple of SQL queries separate them by
-	    semicolon sign.</para>
-	    <para>Example:     <prompt>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>force_ssl</para>
-	    <para>SSL Enforcing. Setting this option to 1 will make that LMS will enforce SSL connection 
-	    doing redirect to 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every access
-	    without SSL. Default: 0 (off).</para>
-	    <para>Example:     <prompt>force_ssl = 1</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>allow_mac_sharing</para>
-	    <para>Permission for addition of nodes with duplicated MAC address (not checking
-	    that some computer have that MAC yet). Default: 0 (off)</para>
-	    <para>Example:     <prompt>allow_mac_sharing = 1</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>smarty_debug</para>
-	    <para>Enable Smarty's debug console. Usefull for tracking values passed from PHP 
-	    to Smarty. Default: 0 (off).</para>
-	    <para>Example:     <prompt>smarty_debug = 1</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>lang_debug</para>
-	    <para>Enable LMS language console. Usefull for tracking missing translation strings.
-	    Default: 0 (off).</para>
-	    <para>Example:     <prompt>lang_debug = 1</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>debug_email</para>
-    	    <para>E-mail address for debugging - at this address will goes messages sended from madule 'Mailing', 
-	    instead of proper users.</para>
-	    <para>Example:     <prompt>debug_email = root@localhost</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>default_zip, default_city, default_address</para>
-	    <para>Default zip code, city, street, used while inserting of new user.
-	    Useful when we have many users on the same street.</para>
-	    <para>Example:     <prompt>default_zip = 39-300</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>use_current_payday</para>
-	    <para>Qualify to use current day of month for payment day
-	    instead of most often used day. Default: 0 (off).</para>
-	    <para>Example:     <prompt>use_current_payday = 1</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>lastonline_limit</para>
-	    <para>Specify time (in seconds), after which node will be treated
-	    as inactive. It should match with frequency of running script inspecting
-	    nodes activity (i.e. lms-fping). Default: 600.</para>
-	    <para>Example:     <prompt>lastonline_limit = 300</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>timetable_days_forward</para>
-	    <para>Specify number of days (including current day) on timetable.
-	    Default: 7.</para>
-	    <para>Example:     <prompt>timetable_days_forward = 2</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>arpd_servers</para>
-	    <para>List of arpd servers for reading of MAC addresses from remote networks.
-	    That list should include items IP[:port] separated with spaces.
-	    Default: empty.</para>
-	    <para>Example:     <prompt>arpd_servers = 192.168.1.1 192.168.2.1</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>helpdesk_backend_mode</para>
-	    <para>When enabled, all messages in helpdesk system (except sended to requestor)
-	    will be send to mail server at address of right queue.
-	    On server should be running script lms-rtparser, which will write
-	    messages to database. Default: disabled.</para>
-	    <para>Example:     <prompt>helpdesk_backend_mode = On</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>contract_template</para>
-	    <para>Specify customer contract template. Can include comma separated 
-	    list of contract templates. Default: contract.html.</para>
-	    <para>Example:     <prompt>contract_template = "../my_templates/contract.html"</prompt></para>
-	    <para>Example:     <prompt>contract_template = "contract.html:Default Contract, file.html:Contract Plus"</prompt></para>
-	</listitem>
-	<listitem>
-	    <para>to_words_short_format</para>
-	    <para>Specify format of verbal amounts representation (on invoices). For value "1"
-	    verbal expand of 123,15 will be "one two thr 15/100". Default: 0.</para>
-	    <para>Example:     <prompt>to_words_short_format = 1</prompt></para>
-	</listitem>
-	</itemizedlist>
+             <para>allow_from  (optional)</para>
+             <para>Lis of networks and IP addresses, which have access to LMS. If empty, every IP address has 
+             access to LMS. When you write here list of addresses or address classes,
+             LMS dismiss every unwanted user with HTTP 403 error.</para>
+             <para>Example:          <prompt>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</prompt></para>
+     </listitem>
+     <listitem>
+         <para>lang</para>
+         <para>User interface language symbol. When is not set, language will be based on
+         html browser settings. Default: en.</para>
+         <para>Example:     <prompt>lang = pl</prompt></para>
+     </listitem>
+     <listitem>
+         <para>timeout</para>
+         <para>Timeout of www session. After that time (in seconds) user will be log out if 
+         not take some action. Default: 600.</para>
+         <para>Example:     <prompt>timeout = 900</prompt></para>
+         <para><warning><para>There is not possible to set no timeout. If you set this value
+         on zero, you'll can't use LMS!</para></warning></para>
+     </listitem>
+     <listitem>
+         <para>userlist_pagelimit</para>
+         <para>Limit of displayed positions on one page on users list. Default: no limit.</para>
+         <para>Example:     <prompt>userlist_pagelimit = 10</prompt></para>
+     </listitem>
+     <listitem>
+         <para>nodelist_pagelimit</para>
+         <para>Limit of displayed records on page on nodes list. Default: no limit.</para>
+         <para>Example:     <prompt>nodelist_pagelimit = 10</prompt></para>
+     </listitem>
+     <listitem>
+         <para>balancelist_pagelimit</para>
+         <para>Limit of displayed records on page on user's balance. Default: 100.</para>
+         <para>Example:     <prompt>balancelist_pagelimit = 50</prompt></para>
+     </listitem>
+     <listitem>
+         <para>invoicelist_pagelimit</para>
+         <para>Limit of displayed records on page on invoices list. Default: 100</para>
+         <para>Example:     <prompt>invoicelist_pagelimit = 50</prompt></para>
+     </listitem>
+     <listitem>
+         <para>ticketlist_pagelimit</para>
+         <para>Limit of displayed records on page on tickets (requests) list. Default: 100</para>
+         <para>Example:     <prompt>ticketlist_pagelimit = 50</prompt></para>
+     </listitem>
+     <listitem>
+         <para>networkhosts_pagelimit</para>
+         <para>Limit of displayed nodes on one page in Network Information. Default: 256</para>
+         <para>Example:     <prompt>networkhosts_pagelimit = 1024</prompt></para>
+     </listitem>
+     <listitem>
+         <para>accountlist_pagelimit</para>
+         <para>Limit of displayed records on page on accounts list. Default: 100</para>
+         <para>Example:     <prompt>accountlist_pagelimit = 50</prompt></para>
+     </listitem>
+     <listitem>
+         <para>domainlist_pagelimit</para>
+         <para>Limit of displayed records on page on domains list. Default: 100</para>
+         <para>Example:     <prompt>domainlist_pagelimit = 50</prompt></para>
+     </listitem>
+     <listitem>
+         <para>aliaslist_pagelimit</para>
+         <para>Limit of displayed records on page on aliases list. Default: 100</para>
+         <para>Example:     <prompt>aliaslist_pagelimit = 50</prompt></para>
+     </listitem>
+     <listitem>
+         <para>configlist_pagelimit</para>
+         <para>Limit of displayed records on page on UI config options list. Default: 100</para>
+         <para>Example:     <prompt>configlist_pagelimit = 50</prompt></para>
+     </listitem>
+     <listitem>
+         <para>reload_type</para>
+         <para>Reload type. Allowed values:</para>
+         <para>exec - calling of some command (most often with sudo, some script or something
+         else, configurable below)</para>
+         <para>sql  - doing SQL writes (also can be set concrete query)</para>
+         <para>Default: sql.</para>
+         <para>Example:     <prompt>reload_type = exec</prompt></para>
+     </listitem>
+     <listitem>
+         <para>reload_execcmd</para>
+         <para>Command to run during reload, if reload_type is set to 'exec'. By default
+         <filename>/bin/true</filename>. That string is send to command system(), so I propose consideration 
+         what you do and how :) Altogether, semicolons should be parsed by bash, but
+         LMS splits that string and execute commands singly.</para>
+         <para>Example:     <prompt>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</prompt></para>
+     </listitem>
+     <listitem>
+         <para>reload_sqlquery</para>
+         <para>SQL query executed while reload, if <prompt>reload_type = sql</prompt>.  
+         By default, query inserts into table 'timestamps' value '_force'. In query can be used
+         '%TIME%' as replacement to current unix timestamp. WARNING! Semicolon is handled by
+         a queries separator, that means you can enter couple of SQL queries separate them by
+         semicolon sign.</para>
+         <para>Example:     <prompt>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</prompt></para>
+     </listitem>
+     <listitem>
+         <para>force_ssl</para>
+         <para>SSL Enforcing. Setting this option to 1 will make that LMS will enforce SSL connection 
+         doing redirect to 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every access
+         without SSL. Default: 0 (off).</para>
+         <para>Example:     <prompt>force_ssl = 1</prompt></para>
+     </listitem>
+     <listitem>
+         <para>allow_mac_sharing</para>
+         <para>Permission for addition of nodes with duplicated MAC address (not checking
+         that some computer have that MAC yet). Default: 0 (off)</para>
+         <para>Example:     <prompt>allow_mac_sharing = 1</prompt></para>
+     </listitem>
+     <listitem>
+         <para>smarty_debug</para>
+         <para>Enable Smarty's debug console. Usefull for tracking values passed from PHP 
+         to Smarty. Default: 0 (off).</para>
+         <para>Example:     <prompt>smarty_debug = 1</prompt></para>
+     </listitem>
+     <listitem>
+         <para>lang_debug</para>
+         <para>Enable LMS language console. Usefull for tracking missing translation strings.
+         Default: 0 (off).</para>
+         <para>Example:     <prompt>lang_debug = 1</prompt></para>
+     </listitem>
+     <listitem>
+         <para>debug_email</para>
+             <para>E-mail address for debugging - at this address will goes messages sended from madule 'Mailing', 
+         instead of proper users.</para>
+         <para>Example:     <prompt>debug_email = root@localhost</prompt></para>
+     </listitem>
+     <listitem>
+         <para>default_zip, default_city, default_address</para>
+         <para>Default zip code, city, street, used while inserting of new user.
+         Useful when we have many users on the same street.</para>
+         <para>Example:     <prompt>default_zip = 39-300</prompt></para>
+     </listitem>
+     <listitem>
+         <para>use_current_payday</para>
+         <para>Qualify to use current day of month for payment day
+         instead of most often used day. Default: 0 (off).</para>
+         <para>Example:     <prompt>use_current_payday = 1</prompt></para>
+     </listitem>
+     <listitem>
+         <para>lastonline_limit</para>
+         <para>Specify time (in seconds), after which node will be treated
+         as inactive. It should match with frequency of running script inspecting
+         nodes activity (i.e. lms-fping). Default: 600.</para>
+         <para>Example:     <prompt>lastonline_limit = 300</prompt></para>
+     </listitem>
+     <listitem>
+         <para>timetable_days_forward</para>
+         <para>Specify number of days (including current day) on timetable.
+         Default: 7.</para>
+         <para>Example:     <prompt>timetable_days_forward = 2</prompt></para>
+     </listitem>
+     <listitem>
+         <para>arpd_servers</para>
+         <para>List of arpd servers for reading of MAC addresses from remote networks.
+         That list should include items IP[:port] separated with spaces.
+         Default: empty.</para>
+         <para>Example:     <prompt>arpd_servers = 192.168.1.1 192.168.2.1</prompt></para>
+     </listitem>
+     <listitem>
+         <para>helpdesk_backend_mode</para>
+         <para>When enabled, all messages in helpdesk system (except sended to requestor)
+         will be send to mail server at address of right queue.
+         On server should be running script lms-rtparser, which will write
+         messages to database. Default: disabled.</para>
+         <para>Example:     <prompt>helpdesk_backend_mode = On</prompt></para>
+     </listitem>
+     <listitem>
+         <para>contract_template</para>
+         <para>Specify customer contract template. Can include comma separated 
+         list of contract templates. Default: contract.html.</para>
+         <para>Example:     <prompt>contract_template = "../my_templates/contract.html"</prompt></para>
+         <para>Example:     <prompt>contract_template = "contract.html:Default Contract, file.html:Contract Plus"</prompt></para>
+     </listitem>
+     <listitem>
+         <para>to_words_short_format</para>
+         <para>Specify format of verbal amounts representation (on invoices). For value "1"
+         verbal expand of 123,15 will be "one two thr 15/100". Default: 0.</para>
+         <para>Example:     <prompt>to_words_short_format = 1</prompt></para>
+     </listitem>
+     </itemizedlist>
       </sect2> 
     </sect1>
     <sect1 id="install-rights">
       <title>Prawa dostêpu</title>
       <sect2 id="install-rights-idea">
                 <title>Idea</title>
-      <para>LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e
-      zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu administratorowi mo¿na
-      przydzieliæ dowoln± kombinacjê regu³ dostêpu.</para>
-      <para>Domy¶lnie zdefiniowanych jest osiem regu³ dostêpu. 
+      <para>LMS may define up to 256 rules of access to the system. 
+      Each can forbid or permit access to definite modules. 
+      To each user we can freely assign combination of access rules.</para>
+      <para>By default following access rules list is defined:
        <itemizedlist>
-	<listitem><para>full access</para></listitem>
+        <listitem><para>full access</para></listitem>
         <listitem><para>read only (excluding Helpdesk)</para></listitem>
         <listitem><para>nodes connection/disconnection</para></listitem>
         <listitem><para>finances management</para></listitem>
@@ -604,50 +605,47 @@ database = /usr/local/lms/lms.db</screen>
         <listitem><para>accounts management</para></listitem>
         <listitem><para>UI configuration</para></listitem>
         <listitem><para>networks and devices management</para></listitem>
-	<listitem><para>timetable management</para></listitem>
+        <listitem><para>timetable management</para></listitem>
         <listitem><para>users edition and addition forbidden</para></listitem>
         <listitem><para>no access</para></listitem>
        </itemizedlist>
-      Niektóre z nich zezwalaj± na dostêp do modu³ów oraz dwie zabraniaj±. Modu³y do których 
-      administrator ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
-      chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostêp do reszty jest zdefiniowany regu³ami.</para>
-      <note><para>Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie
-      przydzieli mu regu³kê 0, czyli pe³en dostêp.</para></note>
+      Some of them permit access to modules and two forbid. Modules that user
+      has always access is: welcome, copyrights,  logout, chpasswd 
+      (chpasswd can change only own password), access to others is defined by rules.</para>
+      <note><para>If we do not define to user any access rule, then LMS implicitly define 
+      rule 0 for him - full access.</para></note>
       </sect2>
       <sect2 id="install-rights-how">
-                <title>Jak to dzia³a?</title>
-          <para>Decyzja  czy  u¿ytkownik  ma prawo dostêpu do modu³u czy nie przebiega nastêpuj±co:
+                <title>How does it work?</title>
+          <para> Decision if user have right to access to module or not, looks like this:          
           <simplelist>
-          <member>-  najpierw  sprawdzana  jest  lista  modu³ów, do których zawsze ma siê
-          dostêp,</member>
-          <member>-  potem  nastêpuje sprawdzenie czy modu³ pasuje do regu³ w poszczególnych
-          poziomach, do których administrator ma dostêp,</member>
-          <member>-  na  koñcu podejmowana jest decyzja czy u¿ytkownik ma uprawnienia by
-          do  modu³u siê dobraæ. Je¿eli modu³ siê za³apa³ na którykolwiek poziom, który zabrania dostêpu,
-          dostêp  zostanie  zabroniony  nawet  je¿eli administrator ma ustawiony poziom, który pozwala
-          na dostêp do modu³u (np.  kto¶  ma  pe³ny  dostêp oraz brak dostêpu do modu³u dodawania
-          komputerów,  nie  bêdzie  on  móg³ siê odwo³aæ do tego modu³u). Je¿eli modu³ pasuje do
-          poziomu, który pozwala na dostêp do danego modu³u LMS zezwala na dalsz± pracê.
-          Je¿eli natomiast modu³ siê nie "za³apa³" na ¿aden poziom równie¿ zostanie mu wy¶wietlony
-          komunikat o braku dostêpu.</member>
+          <member>-  First of all: checking list of modules that user always have access.</member>
+          <member>-  Next:  checking if module mach to rules in each levels that user
+          have access.</member>
+          <member>-  Finally: Decision if user have authorizations to access to modules. If module 
+          mach to any level that forbid access then access will be forbiden even if user have 
+          level that permit access to module. (for example. Someone have full access and no access 
+          to adding computer module then he would not be able to appeal to this module). 
+          If module  maches to level that permit access to module. Then LMS permit farther work. 
+          But if module does not match” on any level then also will be printed no-access-msg.</member>
           </simplelist>
           </para>
      </sect2>
     </sect1>
     <sect1 id="install-upgrade">
       <title>Upgrade</title>
-      <para>Uaktualnienie LMS'a przebiega w dwóch etapach. Najpierw utwórz
-      katalog z plikami nowej wersji (nie zaleca siê nadpisywania starych plików
-      nowymi), nastêpnie trzeba dokonaæ zmian w bazie.</para>
-      <para>Dla u³atwienia migracji danych w katalogu <filename>/doc</filename>
-      przygotowano pliki <filename>UPGRADE-1.0-1.5.mysql</filename> i 
-      <filename>UPGRADE-1.0-1.5.pgsql</filename> dla przej¶cia od wersji 1.0 do wersji 1.5
-      oraz <filename>UPGRADE-1.2-1.5.mysql</filename> i <filename>UPGRADE-1.2-1.5.pgsql
-      </filename> przy migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. W nich znajdziesz krótki
-      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
-      W wersjach o numerze wy¿szym od 1.3.0 aktualizacja struktury bazy danych 
-      nastêpuje automatycznie podczas pierwszego logowania.</para>
-      <para><note><para>W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
-      mo¿na skasowaæ odpowiedni katalog z katalogu <filename>/lib</filename></para></note></para>
+      <para>LMS upgrade process in two stages. First make directory of new version 
+      (overwriting old files with new ones is not recommended) then we have to make 
+      some changes in database.</para>
+      <para>For easy migration of data in catalog<filename>/doc</filename>
+      we prepared file:<filename>UPGRADE-1.0-1.5.mysql</filename> and 
+      <filename>UPGRADE-1.0-1.5.pgsql</filename> for upgrade from 1.0 to 1.5 version. 
+      Also <filename>UPGRADE-1.2-1.5.mysql</filename> and <filename>UPGRADE-1.2-1.5.pgsql
+      </filename> For migration from version 1.3 (and 1.3.0) to current  version. In those 
+      files you can find short description how to upgrade in dependence of used database. 
+      In versions 1.3.0 and higher upgrade of database structure is automatically 
+      executed while first logon.</para>
+      <para><note><para>In 1.0.x and higher versions ADOdb library Is not required, 
+      you can remove applicable directory from <filename>lib/</filename> directory.</para></note></para>
     </sect1>
   </chapter>
