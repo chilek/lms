@@ -1,0 +1,9 @@
+Aby to skompilowaæ trzeba mieæ libgadu w systemie, i ¼ród³a ekg.
+
+¦cie¿ki do ¼róde³ i libgadu s± w Makefile, jak nie dzia³a dostosowaæ 
+do swojego systemu.
+
+Konfiguracja jest w sample, mo¿na u¿ywaæ tych samych szablonów co w 
+zwyk³ym notify.
+
+$Id$
