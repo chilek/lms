@@ -83,7 +83,7 @@
 			<A HREF="javascript:document.connect.submit(); "><B>Pod³±cz urz±dzenie:</B></A>
 			<SELECT NAME="netdev" {tip trigger="link"}>
 				{section name=restnetdevlist loop=$restnetdevlist }
-				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}">{$restnetdevlist[restnetdevlist].name} / {$restnetdevlist[restnetdevlist].producer}</OPTION>
+				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}">{$restnetdevlist[restnetdevlist].name} {if $restnetdevlist[restnetdevlist].producer}/ {$restnetdevlist[restnetdevlist].producer}{/if} {if $restnetdevlist[restnetdevlist].location}({$restnetdevlist[restnetdevlist].location}){/if}</OPTION>
 				{/section}
 			</SELECT>
 			</FORM></P>
