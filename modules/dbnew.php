@@ -24,7 +24,10 @@
  *  $Id$
  */
 
-$LMS->DatabaseCreate();
+if ($_GET['gz'])
+	$LMS->DatabaseCreate(TRUE);
+else
+	$LMS->DatabaseCreate();
 
 header('Location: ?m='.$_SESSION['lastmodule']);
 
