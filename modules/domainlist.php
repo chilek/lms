@@ -104,7 +104,7 @@ $start = ($page - 1) * $pagelimit;
 
 $_SESSION['dlp'] = $page;
 
-$layout['pagetitle'] = trans('Domains Management');
+$layout['pagetitle'] = trans('Domains List');
 
 $domainlist = GetDomainList($o);
 $listdata['total'] = $domainlist['total'];

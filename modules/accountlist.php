@@ -117,7 +117,7 @@ $start = ($page - 1) * $pagelimit;
 
 $_SESSION['alp'] = $page;
 
-$layout['pagetitle'] = trans('Accounts Management');
+$layout['pagetitle'] = trans('Accounts List');
 
 $accountlist = GetAccountList($o, $u, $t, $k, $d);
 $listdata['total'] = $accountlist['total'];

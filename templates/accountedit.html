@@ -11,10 +11,10 @@
 			<img src="img/account.gif" border="0" align="absmiddle" ALT="">		
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>Login:</B>
+			<B>{t}Login:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<input name="account[login]" value="{$account.login}" {tip text="Podaj nazwê konta" trigger="login"}>
+			<input name="account[login]" value="{$account.login}" {tip text="Enter account name" trigger="login"}>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -28,11 +28,11 @@
 					<img src="img/network.gif" border="0" align="absmiddle" ALT="">
 				    </TD>
 				    <TD width="1%" nowrap>
-					<B>Domena:</B>
+					<B>{t}Domain:{/t}</B>
 				    </TD>
 				    <TD width="98%">
-				    	<select name="account[domainid]" {tip text="Wybierz nazwê domenow± (opcjonalnie)" trigger="domainid"}>
-					    <option value="0" {if !$account.domainid}SELECTED{/if}>- wybierz domenê -</option>
+				    	<select name="account[domainid]" {tip text="Select domain name (optional)" trigger="domainid"}>
+					    <option value="0" {if !$account.domainid}SELECTED{/if}>{t}- select domain -{/t}</option>
 					    {section name=domainlist loop=$domainlist}
 					    <option value="{$domainlist[domainlist].id}" {if $domainlist[domainlist].id eq $account.domainid}SELECTED{/if}>{$domainlist[domainlist].name}</option>
 					    {/section}
@@ -44,10 +44,10 @@
 					<img src="img/calendar.gif" border="0" align="absmiddle" ALT="">
 				    </TD>
 				    <TD width="1%" nowrap>
-					<B>Data wa¿no¶ci:</B>
+					<B>{t}Expiry date:{/t}</B>
 				    </TD>
 				    <TD width="98%">
-					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Wprowad¼ lub kliknij by wybraæ datê wa¿no¶ci konta w formacie RRRR/MM/DD (Pole puste oznacza, ¿e konto nigdy nie wygasa)" trigger="expdate"}>
+					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter or click to choose expiry date for account in format YYYY/MM/DD (Empty field means account never expiry)" trigger="expdate"}>
 				    </TD>
 				</TR>
 			    </TABLE>
@@ -59,11 +59,11 @@
 					<img src="img/user.gif" border="0" align="absmiddle" ALT="">
 				    </TD>
 				    <TD width="1%">
-					<B>W³a¶ciciel:</B>
+					<B>{t}Owner:{/t}</B>
 		    		    </TD>
 				    <TD width="98%">
-					<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Wybierz w³a¶ciciela tego konta lub \"KONTO SYSTEMOWE\" je¶li nie chcesz przypisywaæ tego konta ¿adnemu u¿ytkownikowi"}>
-    					    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>KONTO SYSTEMOWE</OPTION>
+					<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Select owner or \"SYSTEM ACCOUNT\" if you don't want to assign it to any customer"}>
+    					    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
 					    {section name=users loop=$users}
 					    <OPTION VALUE="{$users[users].id}"{if $account.ownerid == $users[users].id} SELECTED{/if}>{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 					    {/section}
@@ -75,14 +75,14 @@
 					<img src="img/account.gif" border="0" align="absmiddle" ALT="">
 				    </TD>
 				    <TD width="1%">
-					<B>Typ:</B>
+					<B>{t}Type:{/t}</B>
 				    </TD>
 				    <TD width="98%">
 					<NOBR>
-					<INPUT type="checkbox" name="account[type][shell]" value="1" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 1) == 1}CHECKED{/if}> shell
-					<INPUT type="checkbox" name="account[type][mail]" value="2" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 2) == 2}CHECKED{/if}> poczta
-					<INPUT type="checkbox" name="account[type][www]" value="4" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 4) == 4}CHECKED{/if}> www
-					<INPUT type="checkbox" name="account[type][ftp]" value="8" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 8) == 8}CHECKED{/if}> ftp
+					<INPUT type="checkbox" name="account[type][shell]" value="1" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 1) == 1}CHECKED{/if}> {t}shell{/t}
+					<INPUT type="checkbox" name="account[type][mail]" value="2" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 2) == 2}CHECKED{/if}> {t}mail{/t}
+					<INPUT type="checkbox" name="account[type][www]" value="4" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 4) == 4}CHECKED{/if}> {t}www{/t}
+					<INPUT type="checkbox" name="account[type][ftp]" value="8" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 8) == 8}CHECKED{/if}> {t}ftp{/t}
 					</NOBR>
 				    </TD>
 				</TR>
@@ -94,9 +94,9 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.account.submit();" accesskey="s">Zapisz <img src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
-			<A href="?m=accountlist">Anuluj <img src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A>
-			<A href="?m=aliaslist&accountid={$account.id}#aliasadd">Utwórz alias <img src="img/alias.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="javascript:document.account.submit();" accesskey="s">{t}Save{/t} <img src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=accountlist">{t}Cancel{/t} <img src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=aliasadd&accountid={$account.id}">{t}Create alias{/t} <img src="img/alias.gif" border="0" align="absmiddle" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
