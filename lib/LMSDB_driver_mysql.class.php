@@ -106,11 +106,24 @@ class LMSDB_driver_mysql extends LMSDB_common
 		$this->_result = mysql_list_tables($this->_dbname,$this->_dblink);
 		return $this->GetCol();
 	}
-		
+
+	function _driver_begintrans()
+	{
+		// mysql nie obs³uguje transakcji
+		return TRUE;
+	}
+
+	function _driver_committrans()
+	{
+		return TRUE;
+	}		
 }
 
 /* 
  * $Log$
+ * Revision 1.13  2003/08/28 21:07:26  lukasz
+ * - added support for transactions
+ *
  * Revision 1.12  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
