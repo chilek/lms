@@ -90,16 +90,14 @@
 			{if $userlist[userlist].warncount}
 				{if $userlist[userlist].status eq 3}
 					{if $userlist[userlist].nodewarn eq 1}
-						<A HREF="?m=nodewarn&ownerid={$userlist[userlist].id}"><IMG SRC="img/access.gif" align="absmiddle" ALT="[ Nie ostrzegaj ¿adnych ]" border="0"></A>
+						<A HREF="?m=nodewarn&ownerid={$userlist[userlist].id}"><IMG SRC="img/warningon.gif" align="absmiddle" ALT="[ Nie ostrzegaj ¿adnych ]" border="0"></A>
 					{else}
 						{if $userlist[userlist].nodewarn eq 2}
-							<A HREF="?m=nodewarn&ownerid={$userlist[userlist].id}"><IMG SRC="img/mixaccess.gif" align="absmiddle" ALT="[ Nie ostrzegaj ¿adnych ]" border="0"></A>
-						{else}<A HREF="?m=nodewarn&ownerid={$userlist[userlist].id}&warning=1"><IMG SRC="img/noaccess.gif" align="absmiddle" ALT="[ Ostrzegaj wszystkie ]" border="0"></A>
+							<A HREF="?m=nodewarn&ownerid={$userlist[userlist].id}"><IMG SRC="img/warningmix.gif" align="absmiddle" ALT="[ Nie ostrzegaj ¿adnych ]" border="0"></A>
+						{else}<A HREF="?m=nodewarn&ownerid={$userlist[userlist].id}&warning=1"><IMG SRC="img/warningoff.gif" align="absmiddle" ALT="[ Ostrzegaj wszystkie ]" border="0"></A>
 						{/if}
 					{/if}
 				{/if}
-			{else}
-				<IMG src="img/exclamation.gif" align="absmiddle" border="0" ALT="Brak przypisanych komputerów">
 			{/if}			
 		</TD>
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" valign="top">
