@@ -90,6 +90,14 @@ class LMSDB_driver_mysql extends LMSDB_common
 			return FALSE;
 	}
 
+	function _driver_affected_rows()
+	{
+		if(! $this->_error)
+			return mysql_affected_rows($this->_result);
+		else
+			return FALSE;
+	}
+	
 	function _driver_now()
 	{
 		return 'UNIX_TIMESTAMP()';
@@ -126,6 +134,9 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.16  2003/09/12 22:22:52  alec
+ * Execute zwraca ilo¶æ zmodyfikowanych wierszy dla zapytañ UPDATE, DELETE, INSERT
+ *
  * Revision 1.15  2003/09/10 00:16:19  lukasz
  * - LMSDB::Destroy();
  *

@@ -85,6 +85,14 @@ class LMSDB_driver_postgres extends LMSDB_common
 		else
 			return FALSE;
 	}
+	
+	function _driver_affected_rows()
+	{
+		if(! $this->_error)
+			return pg_affected_rows($this->_result);
+		else
+			return FALSE;
+	}
 
 	function _driver_now()
 	{
@@ -120,6 +128,9 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.11  2003/09/12 22:22:52  alec
+ * Execute zwraca ilo¶æ zmodyfikowanych wierszy dla zapytañ UPDATE, DELETE, INSERT
+ *
  * Revision 1.10  2003/09/10 20:17:17  alec
  * fatal error in postgres disconnect()
  *
