@@ -30,8 +30,12 @@
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=netdevlist&o={$listdata.order},{$listdata.direction|lower}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=netdevlist&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> 
-			({t}records{/t} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {t}of{/t} {$listdata.total})
+			</B>
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
 		</TD>
 	</TR>
 	{/if}
@@ -79,8 +83,12 @@
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=netdevlist&o={$listdata.order},{$listdata.direction|lower}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=netdevlist&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> 
-			({t}records{/t} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {t}of{/t} {$listdata.total})
+			</B>
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
 		</TD>
 	</TR>
 	{/if}
