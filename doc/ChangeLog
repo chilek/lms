@@ -13,6 +13,8 @@ wersja 1.5.3 (??/??/????):
     poprawki (J.Krzymin/alec)
   - poprawki w Mailingu dot. obs³ugi b³êdów i kosmetyka interfejsu (alec)
   - wydruk faktur za dany okres z mo¿liwo¶ci± wyboru u¿ytkownika (alec)
+  - lms-payments: poprawione dzia³anie opcji --quiet, dodane opcje
+    --fakedate=YYYY/MM/DD i --balancecheck (alec/RIP)
 
 wersja 1.5.2 Isis (25/11/2004):
 

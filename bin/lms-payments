@@ -26,9 +26,10 @@ use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
-use vars qw($configfile $quiet $help $version $fakedate);
+use vars qw($configfile $quiet $help $version $fakedate $balance_check);
 use POSIX qw(strftime);
 use POSIX qw(mktime);
+use Time::Local;
 
 my $_version = '1.5-cvs';
 
@@ -38,6 +39,7 @@ my %options = (
 	"--help|h"		=>	\$help,
 	"--version|v"		=>	\$version,
 	"--fakedate|f=s"	=>	\$fakedate,
+	"--balancecheck|b"	=>	\$balance_check
 );
 
 Getopt::Long::config("no_ignore_case");
@@ -54,6 +56,7 @@ lms-payments, version $_version
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
 -f, --fakedate=YYYYMMDD		override system date
+-b, --balancecheck		account payments for "indebted" users only
 
 EOF
 	exit 0;
@@ -123,18 +126,40 @@ else
 	exit 1;
 }
 
-if($fakedate)
+sub localtime2()
 {
-	my @fakedate = split(//, $fakedate);
-	print @fakedate[0..1];
-	die;
+	if($fakedate)
+	{
+		my @fakedate = split(/\//, $fakedate);
+		return localtime(timelocal(0,0,0,$fakedate[2],$fakedate[1]-1,$fakedate[0]));
+	}
+	else
+	{
+		return localtime();
+	}
 }
 
-my $month = sprintf("%d",strftime("%m",localtime()));
-my $day = strftime("%e",localtime());
-my $year = strftime("%Y",localtime());
-my $weekday = strftime("%u",localtime());
-my $yearday = strftime("%j",localtime());
+if($fakedate)
+{
+	$utsfmt = strftime("%s", localtime2());
+}
+
+my %balancelist;
+if($balance_check)
+{
+	my $dbq = $dbase->prepare("SELECT users.id AS uid, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id");
+	$dbq->execute();
+	while(my $row = $dbq->fetchrow_hashref())
+	{
+		$balancelist{$row->{'uid'}} = $row->{'balance'};
+	}
+}
+
+my $month = sprintf("%d",strftime("%m",localtime2()));
+my $day = strftime("%e",localtime2());
+my $year = strftime("%Y",localtime2());
+my $weekday = strftime("%u",localtime2());
+my $yearday = strftime("%j",localtime2());
 my $quarter;
 if($month==1 || $month==4 || $month==7 || $month==10) {
 	$quarter = $day;
@@ -143,8 +168,8 @@ if($month==1 || $month==4 || $month==7 || $month==10) {
 } else {
 	$quarter = $day + 200;
 }
-my %txts;
 
+my %txts;
 $txts{0} = "Abonament tygodniowy \"%\" (za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day + 7, $month - 1, $year - 1900).")";
 $txts{1} = "Abonament miesiêczny \"%\" (za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month, $year - 1900).")";
 $txts{2} = "Abonament kwartalny \"%\" (za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month + 2, $year - 1900).")";
@@ -158,16 +183,17 @@ $dbq->execute();
 my $row = $dbq->fetchrow_hashref();
 my $number = $row->{'number'} || 0;
 my %gotinv;
-my $time = strftime("%s",localtime());
+my $time = strftime("%s",localtime2());
 my $icdbq;
 my $suspended = 0;
+my $notbalanced = 0;
 
 # dobra, query wybiera *WSZYSTKIE* mo¿liwe assigmenty na dany dzieñ.
 
 $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) ORDER BY userid, value ASC");
 $dbq->execute();
 
-print "UID:\tKwota:\tZa:\n";
+print "UID:\tKwota:\tZa:\n" if not $quiet;
 
 while(my $assign = $dbq->fetchrow_hashref())
 {
@@ -185,6 +211,25 @@ while(my $assign = $dbq->fetchrow_hashref())
 		}
 	} else {
 		next;
+	}
+	# sprawdzamy, czy bilans usera jest wiêkszy od naliczanej nale¿no¶ci
+	# je¶li nie, to naliczamy p³atno¶ci
+	if($balance_check && $notbalanced!=$uid)
+	{
+		my $xdbq = $dbase->prepare("SELECT SUM(value) AS payment FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND userid = $uid");
+		$xdbq->execute();
+		my $xrow = $xdbq->fetchrow_hashref();
+	
+		if($balancelist{$uid} - $xrow->{'payment'} < 0)
+		{
+			$notbalanced = $uid;
+		}
+		else
+		{
+			print "$uid - bilans wiêkszy od sumy nale¿no¶ci (Bilans: $balancelist{$uid}\tP³atno¶æ: $xrow->{'payment'})\n" if not $quiet;
+			$suspended = $uid;
+			next;
+		}
 	}
 
 	my $txt = $txts{$assign->{'period'}};
@@ -238,7 +283,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 			$sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid) VALUES ($time, 0, 4, $assign->{'value'}, NULL, $uid, '$txt', $gotinv{$uid})");
 		}
 		$sdbq->execute();
-		print "$uid\t$assign->{'value'}\t$txt\n";
+		print "$uid\t$assign->{'value'}\t$txt\n" if not $quiet;
 	}
 }	
 
@@ -250,7 +295,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 {
 	my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES ($time, 0, 2, $assign->{'value'}, 0, '$assign->{'name'}/$assign->{'creditor'}', 0)");
 	$sdbq->execute();
-	print "0\t$assign->{'value'}\t$assign->{'name'}/$assign->{'creditor'}\n";
+	print "0\t$assign->{'value'}\t$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
 }
 
 $dbq = $dbase->prepare("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
