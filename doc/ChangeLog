@@ -19,6 +19,7 @@ wersja 1.1.4 (??/??/2003):
   - reload.php uzywa³ sqlTSfmt() który jest obsolete (lexx/lukasz)
   - nowo dodawany komputer domy¶lnie nie mia³ dostêpu (lukasz)
   - ilo¶æ sieci w podsumowaniu by³a zwiêkszana o 2 (lukasz)
+  - kosmetyka kodu (s/this->ADB->/this->DB->/g) (lukasz)
 
 wersja 1.1.3 (29/08/2003):
 
