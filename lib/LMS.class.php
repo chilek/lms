@@ -44,16 +44,15 @@ class LMS {
 	function SetTS($table)
 	{
 		$db=$this->db;
-		$time=time();
 		if($db->CountRows("SELECT * FROM `timestamps` WHERE `table` = '_'"))
-			$db->ExecSQL("UPDATE `timestamps` SET `time` = '".$time."' WHERE `table` = '_'");
+			$db->ExecSQL("UPDATE `timestamps` SET `time` = UNIX_TIMESTAMP() WHERE `table` = '_'");
 		else
-			$db->ExecSQL("INSERT INTO `timestamps` VALUES ('".$time."', '_')");
+			$db->ExecSQL("INSERT INTO `timestamps` VALUES (UNIX_TIMESTAMP(), '_')");
 		if($db->CountRows("SELECT * FROM `timestamps` WHERE `table` = '".$table."'"))
-			$db->ExecSQL("UPDATE `timestamps` SET `time` = '".$time."' WHERE `table` = '".$table."'");
+			$db->ExecSQL("UPDATE `timestamps` SET `time` = UNIX_TIMESTAMP() WHERE `table` = '".$table."'");
 		else
-			$db->ExecSQL("INSERT INTO `timestamps` VALUES ('".$time."', '".$table."')");
-		return $time;
+			$db->ExecSQL("INSERT INTO `timestamps` VALUES (UNIX_TIMESTAMP(), '".$table."')");
+		return $this->GetTS($table);
 	}
 
 	function GetTS($table)
@@ -96,6 +95,12 @@ class LMS {
 		return $db->row[name];
 	}
 
+	function AdminExists($id)
+	{
+		$db=$this->db;
+		return $db->FetchRow("SELECT * FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
+	}
+
 	function GetNetworkName($id)
 	{	
 		$db=$this->db;
@@ -132,7 +137,7 @@ class LMS {
 		`info` = '".trim($userdata[uwagi])."',
 		`modid` = '".$session->id."',
 		`status` = '".$userdata[status]."',
-		`moddate` = '".time()."'
+		`moddate` = UNIX_TIMESTAMP()
 		WHERE `id` = '".$userdata[id]."' LIMIT 1");
 	}
 
@@ -970,7 +975,7 @@ class LMS {
 		$db=$this->db;
 		$this->SetTS("nodes");
 		$session=$this->session;
-		$db->ExecSQL("INSERT INTO `nodes` (`name`, `mac`, `ipaddr`, `ownerid`, `creatorid`, `creationdate`) VALUES ('".strtoupper($nodedata[name])."', '".strtoupper($nodedata[mac])."', '".$nodedata[ipaddr]."', '".$nodedata[ownerid]."', '".$session->id."', '".time()."')");
+		$db->ExecSQL("INSERT INTO `nodes` (`name`, `mac`, `ipaddr`, `ownerid`, `creatorid`, `creationdate`) VALUES ('".strtoupper($nodedata[name])."', '".strtoupper($nodedata[mac])."', '".$nodedata[ipaddr]."', '".$nodedata[ownerid]."', '".$session->id."', UNIX_TIMESTAMP())");
 		$db->FetchRow("SELECT max(id) FROM `nodes`");
 		return $db->row["max(id)"];
 	}
@@ -982,7 +987,7 @@ class LMS {
 		$session=$this->session;
 		if(!isset($useradd[status]))
 			$useradd[status] = 1;
-		$db->ExecSQL("INSERT INTO `users` (`name`, `lastname`, `phone1`, `phone2`, `phone3`, `address`, `email`, `status`, `tariff`, `creationdate`, `moddate`, `creatorid`, `modid` ) VALUES ('".ucwords($useradd[name])."', '".strtoupper($useradd[lastname])."', '".$useradd[phone1]."', '".$useradd[phone2]."', '".$useradd[phone3]."', '".$useradd[address]."', '".$useradd[email]."', '".$useradd[status]."', '".$useradd[tariff]."', '".time()."', '".time()."', '".$session->id."', '".$session->id."')");
+		$db->ExecSQL("INSERT INTO `users` (`name`, `lastname`, `phone1`, `phone2`, `phone3`, `address`, `email`, `status`, `tariff`, `creationdate`, `moddate`, `creatorid`, `modid` ) VALUES ('".ucwords($useradd[name])."', '".strtoupper($useradd[lastname])."', '".$useradd[phone1]."', '".$useradd[phone2]."', '".$useradd[phone3]."', '".$useradd[address]."', '".$useradd[email]."', '".$useradd[status]."', '".$useradd[tariff]."', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '".$session->id."', '".$session->id."')");
 		$db->FetchRow("SELECT max(id) FROM `users`");
 		return $db->row["max(id)"];
 	}
@@ -1033,7 +1038,7 @@ class LMS {
 		$db=$this->db;
 		$this->SetTS("cash");
 		$session=$this->session;
-		return $db->ExecSQL("INSERT INTO `cash`	(time, adminid, type, value, userid, comment) VALUES ('".time()."','".$session->id."','".$addbalance[type]."','".$addbalance[value]."','".$addbalance[userid]."','".$addbalance[comment]."' )");
+		return $db->ExecSQL("INSERT INTO `cash`	(time, adminid, type, value, userid, comment) VALUES (UNIX_TIMESTAMP(),'".$session->id."','".$addbalance[type]."','".$addbalance[value]."','".$addbalance[userid]."','".$addbalance[comment]."' )");
 	}
 
 	function GetEmails($group)
@@ -1176,7 +1181,7 @@ class LMS {
 		return $db->ExecSQL("UPDATE `nodes` SET `name` = '".strtoupper($nodedata[name])."',
 		`ipaddr` = '".$nodedata[ipaddr]."',
 		`mac` = '".$nodedata[mac]."',
-		`moddate` = '".time()."',
+		`moddate` = UNIX_TIMESTAMP(),
 		`modid` = '".$session->id."'
 		WHERE `id` = '".$nodedata[id]."' LIMIT 1");
 	}
@@ -1202,7 +1207,41 @@ class LMS {
 			}
 		return $tarifflist;
 	}
-								
-}
 
+	function GetAdminInfo($id)
+	{
+		$db=$this->db;
+		$admins = $db->FetchRow("SELECT `id`, `login`, `name`, `email`, `lastlogindate`, `lastloginip`, `failedlogindate`, `failedloginip` FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
+		if($admins[id])
+		{
+			if($admins[lastlogindate])
+				$admins[lastlogin] = date("Y/m/d H:i",$admins[lastlogindate]);
+			else
+				$admins[lastlogin] = "-";
+			
+			if($admins[failedlogindate])
+				$admins[faillogin] = date("Y/m/d H:i",$admins[failedlogindate]);
+			else
+				$admins[faillogin] = "-";
+			
+			
+			if(check_ip($admins[lastloginip]))
+				$admins[lastloginhost] = gethostbyaddr($admins[lastloginip]);
+			else
+			{
+				$admins[lastloginhost] = "-";
+				$admins[lastloginip] = "-";
+			}
+
+			if(check_ip($admins[failedloginip]))
+				$admins[failloginhost] = gethostbyaddr($admins[failedloginip]);
+			else
+			{
+				$admins[failloginhost] = "-";
+				$admins[failloginip] = "-";
+			}
+		}
+		return $admins;
+	}
+}
 ?>
