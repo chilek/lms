@@ -125,7 +125,6 @@ elseif($_GET['fetchsingle'])
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');
 	$SMARTY->assign('type',trans('ORIGINAL'));
-	$SMARTY->assign('type',trans('ORIGINAL+COPY'));
 	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
 	$SMARTY->display('clearfooter.html');
 }
