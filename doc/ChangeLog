@@ -144,7 +144,11 @@ wersja 1.1.4 (??/??/2003):
 	  dst integer default 0 NOT NULL,
 	  PRIMARY KEY  (id)
 	);
-	
+  - komputery mog± siê l±czyæ do urz±dzeñ sieciowych (Lexx)
+    MySql:
+	ALTER TABLE `nodes` ADD `netdev` INT(11) AFTER `modid` ;
+    PosgreSQL:
+	???  	
 	
 wersja 1.1.3 (29/08/2003):
 
