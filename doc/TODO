@@ -1,14 +1,19 @@
 $Id$
 
-TODO do zrobienia w 1.0:
+PROPOSALS:
+25.06.2003:
+< zim> dlatego dorabiam do lmsa taki patent
+< zim> ze dzwoni klient
+< zim> i mowi 'nie dziala'
+< zim> to ja klikam lms
+< zim> i wpisuje mu 'zglosil blablabla dnia blablabla, wyslalem do niego blablabla'
+< zim> i drukuje sie papierek
+< zim> i potem ten papierek do mnie wraca
+< zim> i wklikowuje znowu do lms 'pan blablabla naprawil, zepsute bylo blablabla'
+< zim> i mam historie
+< zim> jak klient znowu zadzwoni
+< zim> albo jak przyjdzie z reklamacja
+< zim> ze mu przez 30 dni nie dzialalo
+<@Warden> To jak zrobisz to wy¶lij mnie lub basecikowi...
+< zim> to moge sprawdzic ze nie przez 30 tylko przez 2
 
-- NAPISAÆ DOKUMENTACJÊ!
-- sortowanie wg taryfy userlisty.
-
-TODO:
-
-- typy taryf, taryfa podstawowa + za ka¿dy komp, etc (baseciq, kto¶ jeszcze)
-- "mojekonto" (tm)
-- mo¿liwo¶æ samodzielnej zmiany mac przez usera. (troche bez sensu? jak zmieni to i tak nie bedzie mial sieci)
-- ewidencja sprzetu sieciowego.
-- raporty wydruki itp.
