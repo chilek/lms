@@ -202,6 +202,7 @@ CREATE TABLE nodes (
   access tinyint(1) NOT NULL default '1',
   warning tinyint(1) NOT NULL default '0',
   lastonline int(11) NOT NULL default '0',
+  info text NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   UNIQUE KEY ipaddr (ipaddr)
@@ -423,4 +424,20 @@ CREATE TABLE userassignments (
   UNIQUE KEY userassignment (usergroupid, userid)
 ) TYPE=MyISAM;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004101800');
+DROP TABLE IF EXISTS passwd;
+CREATE TABLE passwd (
+    id int(11) NOT NULL auto_increment,
+    ownerid int(11) NOT NULL default 0,
+    login varchar(200) NOT NULL default '',
+    password varchar(200) NOT NULL default '',
+    lastlogin int(11) NOT NULL default 0,
+    uid int(11)	NOT NULL default 0,
+    home varchar(255) NOT NULL default '',
+    type smallint NOT NULL default 0,
+    expdate int(11) NOT NULL default 0,
+    domain varchar(255)	NOT NULL default '',
+    PRIMARY KEY (id),
+    UNIQUE KEY login (login)
+) TYPE=MyISAM;
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004112100');
