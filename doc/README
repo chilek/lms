@@ -2,9 +2,10 @@ LMS - LAN Management System 1.2-cvs
 
    [logo-small.png]
 
-LMS Developers
+Aleksander 'A.L.E.C' Machniak, Karol 'Lexx' Król
 
-   Copyright (c) 2001-2004 LMS Developers
+   Copyright (c) 2003-2004 Aleksander 'A.L.E.C' Machniak, Karol 'Lexx'
+   Król
      _________________________________________________________________
 
    Spis tre¶ci
@@ -179,10 +180,11 @@ Rozdzia³ 1. Wstêp
 
 1.3. Licencja
 
-   Niniejszy program jest oprogramowaniem wolnodostêpnym; mo¿esz go
-   rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej Licencji
-   Publicznej GNU, wydanej przez Fundacjê Wolnodostêpnego Oprogramowania
-   - wed³ug wersji 2-giej tej Licencji lub której¶ z pó¼niejszych wersji.
+   Niniejszy program (z wy³±czeniem dokumentacji) jest oprogramowaniem
+   wolnodostêpnym; mo¿esz go rozprowadzaæ dalej i/lub modyfikowaæ na
+   warunkach Powszechnej Licencji Publicznej GNU, wydanej przez Fundacjê
+   Wolnodostêpnego Oprogramowania - wed³ug wersji 2-giej tej Licencji lub
+   której¶ z pó¼niejszych wersji.
 
    Niniejszy program rozpowszechniany jest z nadziej±, i¿ bêdzie on
    u¿yteczny - jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domy¶lnej
@@ -196,6 +198,9 @@ Rozdzia³ 1. Wstêp
    02111-1307, USA.
 
    Angielski tekst tej licencji znajduje siê tutaj.
+
+   Autorzy niniejszej dokumentacji wyra¿aj± zgodê na jej kopiowanie i
+   niekomercyjne rozprowadzanie wraz z systemem LMS.
      _________________________________________________________________
 
 1.4. Informacje dodatkowe
