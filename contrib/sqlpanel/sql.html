@@ -50,7 +50,7 @@
 	{$result}
 	{if $nrows > $pagelimit}
 	<TR CLASS="dark">
-		<TD WIDTH="100%" COLSPAN="{$ncols+1}">
+		<TD WIDTH="100%" COLSPAN="{math equation="x+1" x=$ncols}">
 			<B>Strona: 
 			{if $page > 1} 
 				<A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;
