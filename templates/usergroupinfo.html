@@ -1,5 +1,6 @@
 {include file="header.html"}
 {include file="userheader.html"}
+<!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <P><TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -14,7 +15,7 @@
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/users.gif" BORDER="0" ALT="" ALIGN="absmiddle">
 		</TD>
-		<TD WIDTH="1%" NOWRAP><B>Ilo¶æ u¿ytkowników:</B>
+		<TD WIDTH="1%" NOWRAP><B>{t}Members Count:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$usergroup.userscount}
@@ -36,7 +37,7 @@
 	{/if}
 	<TR CLASS="light">
 	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="3">
-			    <A HREF="?m=usergroupedit&id={$usergroup.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $usergroup.count eq 0} <A HREF="?m=usergroupdelete&id={$usergroup.id}">Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
+			    <A HREF="?m=usergroupedit&id={$usergroup.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $usergroup.count eq 0} <A HREF="?m=usergroupdelete&id={$usergroup.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
 		</TD>
 	</TR>
 </TABLE></P>

@@ -9,7 +9,7 @@
 			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>Nazwa:</B>
+			<B>{t}Name:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="frightu">
 			<INPUT TYPE="TEXT" NAME="usergroupadd[name]" VALUE="{$usergroupadd.name}" {tip trigger="name" bold=1}>
@@ -20,16 +20,16 @@
 			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Opis:</B>
+			<B>{t}Description:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<TEXTAREA NAME="usergroupadd[description]" COLS="50" ROWS="5" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>{$usergroupadd.description}</TEXTAREA>
+			<TEXTAREA NAME="usergroupadd[description]" COLS="50" ROWS="5" {tip text="Enter additional informations (optional)"}>{$usergroupadd.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.usergroupadd.submit();" accesskey="s">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
-			<A HREF="?m=usergrouplist">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+			<A HREF="javascript:document.usergroupadd.submit();" accesskey="s">{t}Save{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+			<A HREF="?m=usergrouplist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE></FORM></P>

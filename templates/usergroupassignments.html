@@ -7,6 +7,7 @@
 	}
 	//-->
 {/literal}																</script>
+<!--// $Id$ //-->
 <P>
 <FORM NAME="userassignments" METHOD="POST" ACTION="?m=usergroupedit">
 <INPUT TYPE="hidden" NAME="userassignments[backid]" VALUE="{$usergroup.id}">
@@ -16,7 +17,7 @@
 	    <TABLE WIDTH="100%" CELLPADDING="3">
 		<TR CLASS="DARK">
 		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
-			<IMG SRC="img/user.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<B>U¿ytkownicy w grupie:</B>
+			<IMG SRC="img/user.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<B>{t}Group members:{/t}</B>
 		    </TD>
 		</TR>
 		<TR CLASS="LIGHT">
@@ -32,7 +33,7 @@
 		    {else}
 			<BR>
 			<BR>
-			<B>W tej grupie nie ma u¿ytkowników</B><BR>
+			<B>{t}This group haven't got any members.{/t}</B><BR>
 			<BR>
 			<BR>
 		    {/if}
@@ -40,7 +41,7 @@
 		</TR>
 		<TR CLASS="LIGHT">
 		    <TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT" NOWRAP>
-			<A HREF="javascript:removeUsers();">Usuñ <IMG SRC="img/cancel.gif" BORDER="0" ALT=""></A>
+			<A HREF="javascript:removeUsers();">{t}Delete{/t} <IMG SRC="img/cancel.gif" BORDER="0" ALT=""></A>
 		    </TD>
 		</TR>
 	    </TABLE>
@@ -51,7 +52,7 @@
 	    <TABLE WIDTH="100%" CELLPADDING="3">
 		<TR CLASS="DARK">
 		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
-			<IMG SRC="img/user.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<B>Dodaj nowych u¿ytkowników:</B>
+			<IMG SRC="img/user.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<B>{t}Add new member(s):{/t}</B>
 		    </TD>
 		</TR>
 		<TR CLASS="LIGHT">
@@ -67,7 +68,7 @@
 			{else}
 			<BR>
 			<BR>
-			<B>Wszyscy u¿ytkownicy nale¿± do tej grupy</B><BR>
+			<B>{t}All customers are members of this group.{/t}</B><BR>
 			<BR>
 			<BR>
 			{/if}
@@ -75,7 +76,7 @@
 		</TR>
 		<TR CLASS="LIGHT">
 		    <TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT" NOWRAP>
-			<A HREF="javascript:document.userassignments.submit();">Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
+			<A HREF="javascript:document.userassignments.submit();">{t}Add{/t} <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
 		    </TD>
 		</TR>
 	</TABLE>
