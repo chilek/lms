@@ -13,34 +13,32 @@
 					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{t}Tariff:{/t}</B></TD>
 					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Value:{/t}</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt">{t}Accounting day:{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Downrate:{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Downceil:{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Uprate:{/t}</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Upceil:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Downrate (ceil):{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Uprate (ceil):{/t}</TD>
 					<TD WIDTH="1%" NOWRAP class="fbt">{t}Invoice:{/t}</TD>
-					<TD WIDTH="91%" NOWRAP class="fbt">{t}Period:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{t}Discount:{/t}</TD>
+					<TD WIDTH="92%" NOWRAP class="fbt">{t}Period:{/t}</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 				</TR>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{foreach from=$assignments item=a}
 				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')" {if ($a.dateto < $smarty.now && $a.dateto) || ($a.datefrom > $smarty.now && $a.datefrom) || $a.suspended}CLASS="blend"{/if}>
 					{if !$a.tariffid}
-					<TD WIDTH="8%" COLSPAN="8"><B>{t}Suspending of all liabilities{/t}</B></TD>
+					<TD WIDTH="7%" COLSPAN="7"><B>{t}Suspending of all liabilities{/t}</B></TD>
 					{else}
 					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'"><B><A HREF="?m=tariffinfo&id={$a.tariffid}">{$a.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.value|money_format}</TD>
 					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.period} ({$a.at})</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.downrate|default:"-"} kbps</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.downceil|default:"-"} kbps</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.uprate|default:"-"} kbps</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.upceil|default:"-"} kbps</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.downrate|default:"-"}({$a.downceil|default:"-"}) kbps</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.uprate|default:"-"}({$a.upceil|default:"-"}) kbps</TD>
 					<TD WIDTH="1%" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{if $a.invoice}{t}yes{/t}{else}&nbsp;{/if}</TD>
+					<TD WIDTH="1%" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{if $a.discount}{$a.discount}%{else}-{/if}</TD>
 					{/if}
-					<TD WIDTH="1%" {if $a.tariffid}OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'"{/if}>
+					<TD WIDTH="92%" {if $a.tariffid}OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'"{/if}>
 						{if $a.datefrom}od {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
 						{if $a.dateto}do {$a.dateto|date_format:"%Y/%m/%d"}{/if}
 					</TD>
-					<TD WIDTH="91%" ALIGN="RIGHT" NOWRAP>
+					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP>
 						{if $a.tariffid}
 						<A href="?m=userassignments&action=suspend&id={$balancelist.userid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" ALT="[ {if $a.suspended}{t}Restore{/t}{else}{t}Suspend{/t}{/if} ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
 						{/if}
@@ -50,7 +48,7 @@
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD align="center" WIDTH="100%" colspan="10">
+					<TD align="center" WIDTH="100%" colspan="9">
 						<P>&nbsp;</P>
 						<P><B>{t}That customer hasn't got any attributed tariffs.{/t}</B></P>
 						<P>&nbsp;</P>
@@ -61,16 +59,14 @@
 					<TD CLASS="ftop" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format=$LANGDEFS.$_language.money_format}</TD>
 					<TD CLASS="ftop">&nbsp;</TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="downrate" default="-"} kbps</TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="downceil" default="-"} kbps</TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="uprate" default="-"} kbps</TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="upceil" default="-"} kbps</TD>
+					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="downrate" default="-"}({sum array=$assignments column="downceil" default="-"}) kbps</TD>
+					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="uprate" default="-"}({sum array=$assignments column="upceil" default="-"}) kbps</TD>
 					<TD CLASS="ftop">&nbsp;</TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT" COLSPAN="2">&nbsp;</TD>
+					<TD CLASS="ftop" COLSPAN="3">&nbsp;</TD>
 				</TR>
 				<FORM METHOD="POST" NAME="assignment" ACTION="?m=userassignments&action=add&id={$balancelist.userid}">
 				<TR bgcolor="#DFD5BD">
-					<TD COLSPAN="9">
+					<TD COLSPAN="8">
 						<TABLE>
 							<TR>
 								<TD>
@@ -100,8 +96,9 @@
 									<OPTION VALUE="3" {if $assignment.period==3}SELECTED{/if}>{t}yearly{/t}</OPTION>
 								    </SELECT>
 								    <B>{t}When:{/t}</B> <INPUT type="TEXT" name="assignment[at]" value="{$assignment.at}" {tip text="Enter accounting time. For weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter month and day in format DD/MM (15/09 means 15 September), and for quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="5">
-								    <B>{t}from:{/t}</B> <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" OnClick="cal1.popup();" {tip text="Enter date in format YYYY/MM/DD when to start accounting. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10"> 
-								    <B>{t}to:{/t}</B> <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal2.popup();" {tip text="Enter date in format YYYY/MM/DD when to stop accounting. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
+								    {t}from:{/t} <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" OnClick="cal1.popup();" {tip text="Enter date in format YYYY/MM/DD when to start accounting. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10"> 
+								    {t}to:{/t} <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal2.popup();" {tip text="Enter date in format YYYY/MM/DD when to stop accounting. Leave this field empty if you don't want to set expiration date" trigger="dateto"} SIZE="10">
+								    <B>{t}Discount:{/t} <INPUT type="TEXT" name="assignment[discount]" value="{$assignment.discount|default:""}" size="3" {tip text="Enter discount percentage" trigger="discount"}>
 								</TD>
 							</TR>
 						</TABLE>

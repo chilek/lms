@@ -243,6 +243,7 @@
 				<member>datefrom - start date for assignment</member>
 				<member>dateto - end date for assignment</member>
 				<member>invoice - invoice writeout? (1 - yes, 0 - no)</member>
+				<member>discount - discount percentage</member>
 				<member>suspended - is this payment suspended? (1 - yes, 0 - no)</member>
 			</simplelist>
 		</sect2>
