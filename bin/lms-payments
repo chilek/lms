@@ -159,10 +159,11 @@ my $number = $row->{'number'} || 0;
 my %gotinv;
 my $time = strftime("%s",localtime());
 my $icdbq;
+my $suspended = 0;
 
 # dobra, query wybiera *WSZYSTKIE* mo¿liwe assigmenty na dany dzieñ.
 
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) ORDER BY value ASC");
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) ORDER BY userid, value ASC");
 $dbq->execute();
 
 print "UID:\tKwota:\tZa:\n";
@@ -170,6 +171,21 @@ print "UID:\tKwota:\tZa:\n";
 while(my $assign = $dbq->fetchrow_hashref())
 {
 	my $uid = $assign->{'userid'};
+	
+	# sprawdzamy, czy wszystkie p³atno¶ci usera nie s± zawieszone
+	if($suspended != $uid)
+	{
+		my $xdbq = $dbase->prepare("SELECT 1 FROM assignments, users WHERE userid = users.id AND tariffid = 0 AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND userid = $uid");
+		$xdbq->execute();
+		if(my $xrow = $xdbq->fetchrow_hashref())
+		{
+			$suspended = $uid;
+			next;
+		}
+	} else {
+		next;
+	}
+
 	my $txt = $txts{$assign->{'period'}};
 	$txt =~ s/\%/$assign->{'name'}/g;
 	$gotinv{$uid} = 0 if not defined $gotinv{$uid};
