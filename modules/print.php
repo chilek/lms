@@ -55,12 +55,12 @@ $SMARTY->assign("monthlist",$monthlist);
 switch($_GET[type])
 {
 	case "userlist":
-		$SMARTY->assign("userlist",$LMS->GetUserList("username",$_SESSION['uls']));
+		$SMARTY->assign("userlist",$LMS->GetUserList($_SESSION['ulo'],$_SESSION['uls']));
 		$SMARTY->display("printuserlist.html");
 	break;
 
 	case "nodelist":
-		$SMARTY->assign("nodelist",$LMS->GetNodeList());
+		$SMARTY->assign("nodelist",$LMS->GetNodeList($_SESSION['nlo']));
 		$SMARTY->display("printnodelist.html");
 	break;
 
