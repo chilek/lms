@@ -5,34 +5,34 @@
 <TABLE WIDTH="100%" CELLPADDING="5">
 	<TR class="dark">
 		<TD WIDTH="93%" CLASS="fleftu">
-			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Nazwa:</B><BR>
-			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;Opis:
+			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{t}Name:{/t}</B><BR>
+			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{t}Description:{/t}
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			ID:
+			{t}ID:{/t}
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			Downrate:<BR>
-			Uprate:
+			{t}Downrate:{/t}<BR>
+			{t}Uprate{/t}:
 		</TD>	
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			Downceil:<BR>
-			Upceil:
+			{t}Downceil:{/t}<BR>
+			{t}Upceil:{/t}
 		</TD>	
 
 		<TD NOWRAP WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			Warto¶æ:<BR>
-			Stawka VAT:
+			{t}Value:{/t}<BR>
+			{t}VAT:{/t}
 		</TD>	
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			Korzysta:
+			{t}Assigned:{/t}
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			<NOBR>¦r. zysk mies.:</NOBR>
+			<NOBR>{t}Avg. monthly income:{/t}</NOBR>
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
 			<NOBR>
-			<B>Razem: {$listdata.total}</B>
+			<B>{t 0=$listdata.total}Razem: $0{/t}</B>
 			</NOBR>
 		</TD>
 	</TR>
@@ -62,7 +62,7 @@
 			<NOBR>
 			{$tarifflist[tariffs].value|money_format} <BR>
 			{if $tarifflist[tariffs].taxvalue}{$tarifflist[tariffs].taxvalue}%
-			{else}zw.{/if}
+			{else}{t}tax-free{/t}{/if}
 			</NOBR>
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
@@ -73,9 +73,9 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
-			{if $tarifflist[tariffs].users}<A HREF="javascript:alert('Nie mo¿na usun±æ taryfy z której korzystaj± jacy¶ u¿ytkownicy!');">{else}<A HREF="?m=tariffdelete&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ t± taryfê?');">{/if}<IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0"></A>
-				<A HREF="?m=tariffedit&id={$tarifflist[tariffs].id}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" BORDER="0"></A>
-				<A HREF="?m=tariffinfo&id={$tarifflist[tariffs].id}"><IMG SRC="img/info.gif" ALT="[ Info ]" BORDER="0"></A>
+			{if $tarifflist[tariffs].users}<A HREF="javascript:alert('Nie mo¿na usun±æ taryfy z której korzystaj± jacy¶ u¿ytkownicy!');">{else}<A HREF="?m=tariffdelete&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that tariff?{/t}');">{/if}<IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" BORDER="0"></A>
+				<A HREF="?m=tariffedit&id={$tarifflist[tariffs].id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" BORDER="0"></A>
+				<A HREF="?m=tariffinfo&id={$tarifflist[tariffs].id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]" BORDER="0"></A>
 			</NOBR>
 		</TD>
 	</TR>
@@ -84,7 +84,7 @@
 		<TD COLSPAN="8" ALIGN="center" CLASS="fall">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Nie ma wprowadzonych ¿adnych taryf do bazy danych!</B></p>
+			<p><B>{t}No such tariffs in database.{/t}</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -92,7 +92,7 @@
 	{/section}
 	<TR CLASS="light">
 		<TD CLASS="fleftu" COLSPAN="5" WIDTH="97%" ALIGN="right">
-			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Razem:</B>
+			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{t}Total:{/t}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
 			<B>{$listdata.totalcount}({$listdata.totalusers},{$listdata.totalassignmentcount})</B>

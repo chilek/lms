@@ -31,7 +31,7 @@
 				<TD WIDTH="1%" NOWRAP>
 				    <IMG SRC="img/value.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 				</TD>
-				<TD WIDTH="1%"><B>Warto¶æ:</B></TD>
+				<TD WIDTH="1%"><B>{t}Value:{/t}</B></TD>
 				<TD WIDTH="98%">
 				    {$tariff.value|money_format} 
 				</TD>
@@ -40,18 +40,18 @@
 				<TD WIDTH="1%" NOWRAP>
 				    <IMG SRC="img/tax.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 				</TD>
-				<TD WIDTH="1%"><B>Stawka podatku:</B></TD>
+				<TD WIDTH="1%"><B>{t}Tax:{/t}</B></TD>
 				<TD WIDTH="98%">
 				    {if $tariff.taxvalue}
 					{$tariff.taxvalue} %
-				    {else}zw.{/if}
+				    {else}{t}tax-free{/t}{/if}
 				</TD>
 			    </TR>
 			    <TR class="LIGHT">
 				<TD WIDTH="1%" NOWRAP>
 				    <IMG SRC="img/class.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 				</TD>
-				<TD WIDTH="1%"><B>PKWiU:</B></TD>
+				<TD WIDTH="1%"><B>{t}PKWiU:{/t}</B></TD>
 				<TD WIDTH="98%">
 				    {$tariff.pkwiu}
 				</TD>
@@ -60,7 +60,7 @@
 				<TD WIDTH="1%">
 				    <IMG SRC="img/users.gif" BORDER="0" ALT="" ALIGN="absmiddle">
 				</TD>
-				<TD WIDTH="1%" NOWRAP><B>Ilo¶æ u¿ytkowników:</B></TD>
+				<TD WIDTH="1%" NOWRAP><B>{t}Amount of customers:{/t}</B></TD>
 				<TD WIDTH="98%">
 				    {$tariff.userscount} ({$tariff.count},{$tariff.assignmentcount})
 				</TD>
@@ -69,7 +69,7 @@
 				<TD WIDTH="1%" NOWRAP>
 				    <IMG SRC="img/values.gif" BORDER="0" ALT="" ALIGN="absmiddle">
 				</TD>
-				<TD WIDTH="1%" NOWRAP><B>¦r. zysk miesiêczny:</B></TD>
+				<TD WIDTH="1%" NOWRAP><B>{t}Avg monthly income:{/t}</B></TD>
 				<TD WIDTH="98%">
 				    {$tariff.totalval|money_format} 
 				</TD>
@@ -82,51 +82,51 @@
 				<TD WIDTH="1%">
 				    <IMG SRC="img/uprate.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 				</TD>
-				<TD WIDTH="1%" NOWRAP><B>Upload rate:</B></TD>
+				<TD WIDTH="1%" NOWRAP><B>{t}Upload rate:{/t}</B></TD>
 				<TD WIDTH="98%">
-				    {if $tariff.uprate}{$tariff.uprate} kbit/s{else}brak limitu{/if}
+				    {if $tariff.uprate}{$tariff.uprate} kbit/s{else}{t}no limits{/t}{/if}
 				</TD>
 			    </TR>
 			    <TR CLASS="LIGHT">
 				<TD WIDTH="1%">
 				</TD>
-				<TD WIDTH="1%" NOWRAP><B>Upload ceil:</B></TD>
+				<TD WIDTH="1%" NOWRAP><B>{t}Upload ceil:{/t}</B></TD>
 				<TD WIDTH="98%">
-				    {if $tariff.upceil}{$tariff.upceil} kbit/s{else}brak limitu{/if}
+				    {if $tariff.upceil}{$tariff.upceil} kbit/s{else}{t}no limits{/t}{/if}
 				</TD>
 			    </TR>
 			    <TR CLASS="light">
 				<TD WIDTH="1%">
 				    <IMG SRC="img/downrate.gif" BORDER="0" ALT="" ALIGN="absmiddle">
 				</TD>
-				<TD WIDTH="1%" NOWRAP><B>Download rate:</B></TD>
+				<TD WIDTH="1%" NOWRAP><B>{t}Download rate:{/t}</B></TD>
 				<TD WIDTH="98%">
-				    {if $tariff.downrate}{$tariff.downrate} kbit/s{else}brak limitu{/if}
+				    {if $tariff.downrate}{$tariff.downrate} kbit/s{else}{t}no limits{/t}{/if}
 				</TD>
 			    </TR>
 			    <TR CLASS="light">
 				<TD WIDTH="1%">
 				</TD>
-				<TD WIDTH="1%" NOWRAP><B>Download ceil:</B></TD>
+				<TD WIDTH="1%" NOWRAP><B>{t}Download ceil:{/t}</B></TD>
 				<TD WIDTH="98%">
-				    {if $tariff.downceil}{$tariff.downceil} kbit/s{else}brak limitu{/if}
+				    {if $tariff.downceil}{$tariff.downceil} kbit/s{else}{t}no limits{/t}{/if}
 				</TD>
 			    </TR>
 			    <TR CLASS="light">
 				<TD WIDTH="1%">
 				    <IMG SRC="img/online.gif" ALT="" ALIGN="ABSMIDDLE">
 				</TD>
-				<TD WIDTH="1%" NOWRAP><B>Connection limit:</B></TD>
+				<TD WIDTH="1%" NOWRAP><B>{t}Connection limit:{/t}</B></TD>
 				<TD WIDTH="98%">
-				    {if $tariff.climit}{$tariff.climit}{else}brak limitu{/if}
+				    {if $tariff.climit}{$tariff.climit}{else}{t}no limits{/t}{/if}
 				</TD>
 			    </TR>
 			    <TR CLASS="light">
 				<TD WIDTH="1%">
 				</TD>
-				<TD WIDTH="1%" NOWRAP><B>Packet limit:</B></TD>
+				<TD WIDTH="1%" NOWRAP><B>{t}Packet limit:{/t}</B></TD>
 				<TD WIDTH="98%">
-				    {if $tariff.plimit}{$tariff.plimit}{else}brak limitu{/if}
+				    {if $tariff.plimit}{$tariff.plimit}{else}{t}no limits{/t}{/if}
 				</TD>
 			    </TR>
 			</TABLE>
@@ -151,12 +151,12 @@
 	{/if}
 	<TR CLASS="light">
 	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="2">
-			    <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
+			    <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="DARK">
 		<TD CLASS="fall" COLSPAN="2">
-			<B>U¿ytkownicy w tej taryfie:</B>
+			<B>{t}Customers in Tariff:{/t}</B>
 		</TD>
 	</TR>
 	<TR>
@@ -174,7 +174,7 @@
 					<TD WIDTH="100%" ALIGN="CENTER">
 						<BR>
 						<BR>
-						<B>¯aden z klientów nie korzysta z tej taryfy</B><BR>
+						<B>{t}No such customers with that tariff.{/t}</B><BR>
 						<BR>
 						<BR>
 					</TD>
@@ -190,7 +190,7 @@
 				<INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
 				<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="from">
 				<input type="hidden" name="is_sure">
-				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'Jeste¶ pewien ¿e chcesz przenie¶æ u¿ytkowników do taryfy '+getText(document.tmove.to.value)+'?','1');">Przenie¶ tych u¿ytkowników do taryfy:</A> </B>
+				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'{t}Are you sure, you want to move customers to tariff {/t}'+getText(document.tmove.to.value)+'?','1');">{t}Move customers to tariff:{/t}</A> </B>
 				<SELECT SIZE="1" NAME="to">
 					{section name=lt loop=$tariffs}
 					{if $tariffs[lt].id neq $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value|money_format} )</OPTION>{/if}
