@@ -93,10 +93,21 @@ class LMSDB_driver_mysql extends LMSDB_common
 	{
 		return 'LIKE';
 	}
+
+	function Concat()
+	{
+		$input = func_get_args();
+		$return = implode(', ',$input);
+		return 'CONCAT('.$return.')';
+	}
+		
 }
 
 /* 
  * $Log$
+ * Revision 1.8  2003/08/18 17:16:25  lukasz
+ * - temporary save
+ *
  * Revision 1.7  2003/08/18 16:47:37  lukasz
  * - once again fixed CVS tags
  *
@@ -106,4 +117,4 @@ class LMSDB_driver_mysql extends LMSDB_common
  *
  */
 
-?>	
+?>
