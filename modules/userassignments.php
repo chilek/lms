@@ -55,12 +55,11 @@ if($_GET['action'] == 'add' && isset($a))
 			
 			if($_CONFIG['phpui']['use_current_payday'] && $at==0)
 			{
-				$at = date('w', time());
-				if($at==0) $at = 7;
+				$at = strftime('%u', time());
 			}
 			
 			if($at < 1 || $at > 7)
-				$error['at'] = 'Nieprawid³owy dzieñ tygodnia!';
+				$error['at'] = 'Nieprawid³owy dzieñ tygodnia (1-7)!';
 		break;
 
 		case 1:
@@ -70,13 +69,13 @@ if($_GET['action'] == 'add' && isset($a))
 				$at = date('j', time());
 
 			if($at > 28 || $at < 1)
-				$error['at'] = 'Nieprawid³owy dzieñ miesi±ca!';
+				$error['at'] = 'Nieprawid³owy dzieñ miesi±ca (1-28)!';
 		break;
 
 		case 2:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
-				$error['at'] = 'Niepoprawny format daty';
+				$error['at'] = 'Niepoprawny format daty (DD/MM)';
 			}
 			elseif($_CONFIG['phpui']['use_current_payday'] && !$a['at'])
 			{
@@ -103,7 +102,7 @@ if($_GET['action'] == 'add' && isset($a))
 		case 3:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
-				$error['at'] = 'Niepoprawny format daty';
+				$error['at'] = 'Niepoprawny format daty (DD/MM)';
 			}
 			elseif($_CONFIG['phpui']['use_current_payday'] && !$at['at'])
 			{
