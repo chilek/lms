@@ -27,6 +27,8 @@ wersja 1.5.2 (??/??/????):
   - BTS#0000245: poprawiona godzina w 'data do' na 23:59:59 w wydrukach
     bilansu finansowego sieci i u¿ytkownika (alec)
   - contrib/daemon/cbq-init: dodatkowy modu³ demona (alec)
+  - dodane sprawdzenie czy zaznaczono u¿ytkowników przy dodawaniu nowej
+    operacji (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 

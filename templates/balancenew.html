@@ -10,12 +10,25 @@
 		var group = document.forms['addbalance'].elements['addbalance[type]'];
 	
 		for(var i=0; i<group.length; i++)
-			if(group[i].checked) break;
+			if(group[i].checked) 
+			{
+				var type = group[i].value;
+				break;
+			}
 		
-		if(i!=group.length)
-			document.forms['addbalance'].submit();
-		else
-			alert('Musisz wybraæ typ operacji!');
+		if(i==group.length) 
+		{
+			alert('Nie wybra³e¶ typu operacji!');
+			return;
+		}
+
+		if((type==3 || type==4) && document.forms['addbalance'].elements['selectededit'].value==0)
+		{
+			alert('Nie zaznaczy³e¶ u¿ytkowników!');
+			return;
+		}
+		
+		document.forms['addbalance'].submit();
 	}
 
 	function CheckCharge(i)
