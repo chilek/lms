@@ -104,6 +104,7 @@
 				<member>zip - kod pocztowy</member>
 				<member>city - nazwa miasta</member>
 				<member>nip - numer identyfikacji podatkowej NIP</member>
+				<member>pesel - numer PESEL</member>
 				<member>info - dodatkowe informacje</member>
 				<member>creationdate - czas utworzenia wpisu</member>
 				<member>moddate - czas modyfikacji</member>
@@ -130,13 +131,13 @@
 			</simplelist>
 		</sect2>
 		<sect2 id="nodes">
-			<title>Komputery ('nodes')</title>
+			<title>Komputery i adresy IP urz±dzeñ sieciowych ('nodes')</title>
 			<simplelist>
 				<member>id - identyfikator</member>
 				<member>name - nazwa</member>
 				<member>mac - adres MAC</member>
 				<member>ipaddr - adres IP</member>
-				<member>ownerid - identyfikator w³a¶ciciela (u¿ytkownika)</member>
+				<member>ownerid - identyfikator w³a¶ciciela ('0' - dla adresu urz±dzenia)</member>
 				<member>creationdate - znacznik czasu utworzenia wpisu</member>
 				<member>moddate - znacznik czasu ostatniej modyfikacji</member>
 				<member>creatorid - identyfikator administratora tworz±cego wpis</member>
@@ -215,6 +216,7 @@
 				<member>name - nazwa (nazwisko i imiê) nabywcy</member>
 				<member>address - adres nabywcy</member>
 				<member>nip - nip nabywcy</member>
+				<member>pesel - PESEL nabywcy</member>
 				<member>zip - kod pocztowy nabywcy</member>
 				<member>phone - telefon nabywcy</member>
 				<member>city - miasto nabywcy</member>
