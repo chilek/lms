@@ -141,7 +141,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 
 my $networks_list = $ini->val('messages', 'networks') || '';
 my $usergroups_list = $ini->val('messages', 'usergroups') || '';
-my $cfile = $ini->val('messages', 'config_file') || '/etc/rc.d/rc.messages';
+my $cfile = $ini->val('messages', 'config_file') || '/etc/rc.d/rc.warnings';
 my $cuid = $ini->val('messages', 'config_owneruid') || '0';
 my $cgid = $ini->val('messages', 'config_ownergid') || '0';
 my $cperm = $ini->val('messages', 'config_permission') || '700';
@@ -241,7 +241,7 @@ while (my $row = $dbq->fetchrow_hashref())
 			$usergroupscount++;
 		}
 	}
-	if($usergroupscount)
+	if($usergroupscount || !$usergroups_list)
 	{
 	        my $tmpname = lc($row->{'name'});
 		my $ipaddr = u32todotquad($row->{'ipaddr'});

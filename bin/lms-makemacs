@@ -263,7 +263,7 @@ foreach my $key (@networks)
 					}
 
 				}
-				if($usergroupscount)
+				if($usergroupscount || !$usergroups_list)
 				{
 					if(!$lock_na || ($accesslist{$ipaddr} eq 1))
 					{

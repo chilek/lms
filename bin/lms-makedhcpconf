@@ -272,7 +272,7 @@ foreach my $key (@networks)
 						$usergroupscount++;
 					}
 				}
-				if ($usergroupscount)
+				if ($usergroupscount || !$usergroups_list)
 				{
 					my $ipaddr = $row2->{'ipaddr'};
 					my $ndomain = $ini->val("dhcp:$ipaddr",'domain') || '';

@@ -228,7 +228,7 @@ foreach my $key (@networks)
                                         }
 
                                 }
-                                if($usergroupscount)
+                                if($usergroupscount || !$usergroups_list)
                                 {
 					print HOSTSFILE "$ipaddr\t$namelist{$ipaddr}\n";
 				}
