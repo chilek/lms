@@ -34,6 +34,7 @@ class LMS {
 	var $session;
 	var $_version = '1.0.36';
 	var $_usecache = FALSE;
+	var $_debug = TRUE;
 
 	function LMS($db,$session)
 	{
@@ -53,29 +54,36 @@ class LMS {
 	{
 		$db=$this->db;
 		$time=time();
-		$db->ExecSQL("UPDATE `timestamps` SET `time` = '".$time."' WHERE `table` = '_'");
-		$db->ExecSQL("UPDATE `timestamps` SET `time` = '".$time."' WHERE `table` = '".$table."'");
+		if($db->CountRows("SELECT * FROM `timestamps` WHERE `table` = '_'"))
+			$db->ExecSQL("UPDATE `timestamps` SET `time` = '".$time."' WHERE `table` = '_'");
+		else
+			$db->ExecSQL("INSERT INTO `timestamps` VALUES ('".$time."', '_')");
+		if($db->CountRows("SELECT * FROM `timestamps` WHERE `table` = '".$table."'"))
+			$db->ExecSQL("UPDATE `timestamps` SET `time` = '".$time."' WHERE `table` = '".$table."'");
+		else
+			$db->ExecSQL("INSERT INTO `timestamps` VALUES ('".$time."', '".$table."')");
+		return $time;
 	}
 
 	function GetTS($table)
 	{
 		$db=$this->db;
-		$db->ExecSQL("SELECT `time` FROM `timestamps` WHERE `table` = '".$table."'");
+		$db->FetchRow("SELECT `time` FROM `timestamps` WHERE `table` = '".$table."'");
 		return $db->row[time];
 	}
 
 	function SetAdminPassword($id,$passwd)
 	{
 		$db=$this->db;
-//		$this->SetTS("admins");
+		$this->SetTS("admins");
 		return $db->ExecSQL("UPDATE `admins` SET `passwd` = '".crypt($passwd)."' WHERE `id` = '".$id."' LIMIT 1");
 	}
 
 	function DeleteUser($id)
 	{
 		$db=$this->db;
-//		$this->SetTS("users");
-//		$this->SetTS("nodes");
+		$this->SetTS("users");
+		$this->SetTS("nodes");
 		$db->ExecSQL("DELETE FROM `nodes` WHERE `ownerid` = '".$id."'");
 		return $db->ExecSQL("DELETE FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 	}
@@ -83,7 +91,7 @@ class LMS {
 	function DeleteNode($id)
 	{
 		$db=$this->db;
-//		$this->SetTS("nodes");
+		$this->SetTS("nodes");
 		return $db->ExecSQL("DELETE FROM `nodes` WHERE `id` = '".$id."'");
 	}
 
@@ -119,7 +127,7 @@ class LMS {
 	{
 		$session=$this->session;
 		$db=$this->db;
-//		$this->SetTS("users");
+		$this->SetTS("users");
 		return $db->ExecSQL("UPDATE `users` SET 
 		`phone1` = '".$userdata[phone1]."',
 		`phone2` = '".$userdata[phone2]."',
@@ -143,19 +151,27 @@ class LMS {
 	function GetNetworks()
 	{
 		$db=$this->db;
-		$return = $db->FetchArray("SELECT `id`, `name`, `address`, `mask` FROM `networks` ORDER BY `address` ASC");
-		if(sizeof($return[id]))
-			foreach($return[id] as $i => $v)
-			{
-				$return[addresslong][$i] = ip_long($return[address][$i]);
-				$return[prefix][$i] = mask2prefix($return[mask][$i]);
-			}
+		if($_SESSION[timestamps][getnetworks][networks] != $this->GetTS("networks"))
+		{
+			$return = $db->FetchArray("SELECT `id`, `name`, `address`, `mask` FROM `networks` ORDER BY `address` ASC");
+			if(sizeof($return[id]))
+				foreach($return[id] as $i => $v)
+				{
+					$return[addresslong][$i] = ip_long($return[address][$i]);
+					$return[prefix][$i] = mask2prefix($return[mask][$i]);
+				}
+			$_SESSION[timestamps][getnetworks][networks] = $this->GetTS("networks");
+			$_SESSION[cache][getnetworks] = $return;
+		}else{
+			$return = $_SESSION[cache][getnetworks];
+		}
 		
 		return $return;
 	}
 
 	function GetNetworkList()
 	{
+		$db=$this->db;
 		$networks = $db->FetchArray("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks`");
 		$networks[total] = sizeof($networks[id]);
 		if($networks[total])
@@ -306,8 +322,8 @@ class LMS {
 	function NetworkShift($network="0.0.0.0",$mask="0.0.0.0",$shift=0)
 	{
 		$db=$this->db;
-//		$this->SetTS("nodes");
-//		$this->SetTS("networks");
+		$this->SetTS("nodes");
+		$this->SetTS("networks");
 		$nodes = $db->FetchArray("SELECT `ipaddr`, `id` FROM `nodes`");
 		if(sizeof($nodes[ipaddr]))
 			foreach($nodes[ipaddr] as $key => $value)
@@ -318,7 +334,7 @@ class LMS {
 	function NetworkUpdate($networkdata)
 	{
 		$db=$this->db;
-//		$this->SetTS("networks");
+		$this->SetTS("networks");
 		return $db->ExecSQL("UPDATE `networks` SET `name` = '".strtoupper($networkdata[name])."', `address` = '".$networkdata[address]."', `mask` = '".$networkdata[mask]."', `gateway` = '".$networkdata[gateway]."', `dns` = '".$networkdata[dns]."', `domain` = '".$networkdata[domain]."', `wins` = '".$networkdata[wins]."', `dhcpstart` = '".$networkdata[dhcpstart]."', `dhcpend` = '".$networkdata[dhcpend]."' WHERE `id` = '".$networkdata[id]."' LIMIT 1");
 	}
 				
@@ -326,8 +342,8 @@ class LMS {
 	function NetworkCompress($id,$shift=0)
 	{
 		$db=$this->db;
-//		$this->SetTS("nodes");
-//		$this->SetTS("networks");
+		$this->SetTS("nodes");
+		$this->SetTS("networks");
 		$network=$this->GetNetworkRecord($id);
 		$address = $network[addresslong]+$shift;
 		foreach($network[nodes][id] as $key => $value)
@@ -343,8 +359,8 @@ class LMS {
 	function NetworkRemap($src,$dst)
 	{
 		$db=$this->db;
-//		$this->SetTS("nodes");
-//		$this->SetTS("networks");
+		$this->SetTS("nodes");
+		$this->SetTS("networks");
 		$network[source] = $this->GetNetworkRecord($src);
 		$network[dest] = $this->GetNetworkRecord($dst);
 		foreach($network[source][nodes][id] as $key => $value)
@@ -403,38 +419,57 @@ class LMS {
 	function GetNetwork($id)
 	{
 		$db=$this->db;
-		if($id=="ALL") $db->ExecSQL("SELECT `address`, `mask`, `name` FROM `networks`");
-		else $db->ExecSQL("SELECT `address`, `mask`, `name` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
-		while($db->FetchRow()){
-			foreach($db->row as $key => $value)
-				$$key = $value;
-			
-			$c=0;
-			for($i=ip_long($address)+1;$i<ip_long(getbraddr($address,$mask));$i++)
-			{
-				$return[addresslong][] = $i;
-				$return[address][] = long2ip($i);
-				if($c == "0")
-					$return[mark][] = $name;
-				else
-					$return[mark][] = "";
-				$c++;
-				
-			}
-		}
-		if(sizeof($return[address]))
+
+		if(
+				$_SESSION[timestamps][getnetwork][$id][networks] != $this->GetTS("networks")
+				||
+				$_SESSION[timestamps][getnetwork][$id][nodes] != $this->GetTS("nodes")
+		  )
 		{
-			foreach($return[address] as $i => $v)
-			{
-				if($db->FetchRow("SELECT `name`, `id`, `ownerid` FROM `nodes` WHERE `ipaddr` = '".$return[address][$i]."' LIMIT 1"))
-					$return[totalnodes]++;
-				$return[nodeid][$i]= $db->row[id];
-				$return[nodename][$i] = $db->row[name];
-				$return[ownerid][$i] = $db->row[ownerid];
+			if($id=="ALL")
+				$db->ExecSQL("SELECT `address`, `mask`, `name` FROM `networks`");
+			else
+				$db->ExecSQL("SELECT `address`, `mask`, `name` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
+			while($db->FetchRow()){
+				foreach($db->row as $key => $value)
+					$$key = $value;
+				
+				$c=0;
+				for($i=ip_long($address)+1;$i<ip_long(getbraddr($address,$mask));$i++)
+				{
+					$return[addresslong][] = $i;
+					$return[address][] = long2ip($i);
+					if($c == "0")
+						$return[mark][] = $name;
+					else
+						$return[mark][] = "";
+					$c++;	
+				}
 			}
-			array_multisort($return[addresslong],$return[address],$return[nodeid],$return[nodename],$return[mark]);
-		}
+			
+			if(sizeof($return[address]))
+			{
+				foreach($return[address] as $i => $v)
+				{
+					if($db->FetchRow("SELECT `name`, `id`, `ownerid` FROM `nodes` WHERE `ipaddr` = '".$return[address][$i]."' LIMIT 1"))
+						$return[totalnodes]++;
+					$return[nodeid][$i]= $db->row[id];
+					$return[nodename][$i] = $db->row[name];
+					$return[ownerid][$i] = $db->row[ownerid];
+				}
+				array_multisort($return[addresslong],$return[address],$return[nodeid],$return[nodename],$return[mark]);
+			}
+
+			$_SESSION[cache][getnetwork][$id] = $return;
+			$_SESSION[timestamps][getnetwork][$id][nodes] = $this->GetTS("nodes");
+			$_SESSION[timestamps][getnetwork][$id][networks] = $this->GetTS("networks");
+
+		}else{
 		
+			$return = $_SESSION[cache][getnetwork][$id];
+
+		}
+			
 		return $return;
 	}
 			
@@ -459,14 +494,25 @@ class LMS {
 	
 		$db=$this->db;
 
-		$usernames = $db->FetchArray("SELECT `id`, `name`, `lastname` FROM `users` WHERE `status` = '3'");
-
-		if(sizeof($usernames[id]))
+		if($_SESSION[timestamps][getusernames] != $this->GetTS("users"))
 		{
-			foreach ($usernames[id] as $key => $value)
-				$usernames[username][$key] = strtoupper($usernames[lastname][$key])." ".ucwords($usernames[name][$key]);		
-			array_multisort($usernames[username],4,$usernames[id],$usernames[name],$usernames[lastname]);
+			$usernames = $db->FetchArray("SELECT `id`, `name`, `lastname` FROM `users` WHERE `status` = '3'");
+			
+			if(sizeof($usernames[id]))
+			{
+				foreach ($usernames[id] as $key => $value)
+					$usernames[username][$key] = strtoupper($usernames[lastname][$key])." ".ucwords($usernames[name][$key]);		
+				array_multisort($usernames[username],4,$usernames[id],$usernames[name],$usernames[lastname]);
+			}
+			$_SESSION[timestamps][getusernames] = $this->GetTS("users");
+			$_SESSION[cache][getusernames] = $usernames;
+			
+		}else{
+
+			$usernames = $_SESSION[cache][getusernames];
+
 		}
+		
 		return $usernames;
 
 	}
@@ -490,50 +536,66 @@ class LMS {
 	{
 		$db=$this->db;
 
-		$balancelist = $db->FetchArray("SELECT * FROM `cash` ORDER BY `time` ASC");
-
-		$balancelist[total] = sizeof($balancelist[id]);
-
-		if($balancelist[total])
-			foreach($balancelist[id] as $key => $value)
-			{
-				$balancelist[admin][$key] = $this->GetAdminName($balancelist[adminid][$key]);
-				$balancelist[username][$key] = $this->GetUserName($balancelist[userid][$key]);
-				if($key)
-					$balancelist[before][$key] = $balancelist[after][$key-1];
-				else
-					$balancelist[before][$key] = 0;
-
-				switch($balancelist[type][$key])
+		if ($_SESSION[timestamps][getbalancelist] != $this->GetTS("cash"))
+		{
+			$balancelist = $db->FetchArray("SELECT * FROM `cash` ORDER BY `time` ASC");
+			$balancelist[total] = sizeof($balancelist[id]);
+			
+			if($balancelist[total])
+				foreach($balancelist[id] as $key => $value)
 				{
-					case "1":
-						$balancelist[type][$key] = "przychód";
-						$balancelist[after][$key] = $balancelist[before][$key] + $balancelist[value][$key];
-						$balancelist[income] = $balancelist[income] + $balancelist[value][$key];
-					break;
-					case "2":
-						$balancelist[type][$key] = "rozchód";
-						$balancelist[after][$key] = $balancelist[before][$key] - $balancelist[value][$key];
-						$balancelist[expense] = $balancelist[expense] + $balancelist[value][$key];
-					break;
-					case "3":
-						$balancelist[type][$key] = "wp³ata u¿";
-						$balancelist[after][$key] = $balancelist[before][$key] + $balancelist[value][$key];
-						$balancelist[incomeu] = $balancelist[incomeu] + $balancelist[value][$key];
-					break;
-					case "4":
-						$balancelist[type][$key] = "obci±¿enie u¿";
-						$balancelist[after][$key] = $balancelist[before][$key];
-						$balancelist[uinvoice] = $balancelist[uinvoice] + $balancelist[value][$key];
-					break;
-					default:
-						$balancelist[type][$key] = '<FONT COLOR="RED">???</FONT>';
-						$balancelist[after][$key] = $balancelist[before][$key];
-					break;
-				}
+					$balancelist[admin][$key] = $this->GetAdminName($balancelist[adminid][$key]);
+					$balancelist[username][$key] = $this->GetUserName($balancelist[userid][$key]);
+					$balancelist[value][$key]=round(str_replace(".",",",$balancelist[value][$key]),4);
+					if($key)
+						$balancelist[before][$key] = $balancelist[after][$key-1];
+					else
+						$balancelist[before][$key] = 0;
+					
+					switch($balancelist[type][$key])
+					{
 
+						// Hm. Wykonywanie round(arg,4) daje o wiele lepszy rezultat ni¿
+						// rzutowanie typów.
+						
+						case "1":
+							$balancelist[type][$key] = "przychód";
+							$balancelist[after][$key] = round($balancelist[before][$key] + $balancelist[value][$key],4);
+							$balancelist[income] = round($balancelist[income] + $balancelist[value][$key],4);
+						break;
+						case "2":
+							$balancelist[type][$key] = "rozchód";
+							$balancelist[after][$key] = round($balancelist[before][$key] - $balancelist[value][$key],4);
+							$balancelist[expense] = round($balancelist[expense] + $balancelist[value][$key],4);
+						break;
+						case "3":
+							$balancelist[type][$key] = "wp³ata u¿";
+							$balancelist[after][$key] = round($balancelist[before][$key] + $balancelist[value][$key],4);
+							$balancelist[incomeu] = round($balancelist[incomeu] + $balancelist[value][$key],4);
+						break;
+						case "4":
+							$balancelist[type][$key] = "obci±¿enie u¿";
+							$balancelist[after][$key] = round($balancelist[before][$key],4);
+							$balancelist[uinvoice] = round($balancelist[uinvoice] + $balancelist[value][$key],4);
+						break;
+						default:
+							$balancelist[type][$key] = '<FONT COLOR="RED">???</FONT>';
+							$balancelist[after][$key] = round($balancelist[before][$key],4);
+						break;
+					}
+					
+				}
+				
+				$balancelist[total] = $balancelist[after][$key];
+
+				$_SESSION[timestamps][getbalancelist] = $this->GetTS("cash");
+				$_SESSION[cache][getbalancelist] = $balancelist;
+				
+			}else{
+				$balancelist = $_SESSION[cache][getbalancelist];
+				
 			}
-		$balancelist[total] = $balancelist[after][$key];
+//		var_dump($balancelist);
 		return $balancelist;
 	}
 
@@ -542,80 +604,94 @@ class LMS {
 
 		$db=$this->db;
 
-		$sql="SELECT id, lastname, name, status, email, phone1, address, info, creationdate, moddate, creatorid, modid FROM users ";
-
-		if(!isset($state)) $state="3";
-		if(!isset($order)) $order="username,asc";
-		
-		switch ($state){
-			case "3":
-				$sql .= " WHERE status = 3 ";
-			break;
-			case "2":
-				$sql .= " WHERE status = 2 ";
-			break;
-			case "1":
-				$sql .= " WHERE status = 1 ";
-			break;
-		}
-	
-		$userlist = $db->FetchArray($sql);
-
-		$userlist[crdate] = $userlist[creationdate];
-		$userlist[crid] = $userlist[creatorid];
-
-		if(sizeof($userlist[id]))
-			foreach($userlist[id] as $i => $v)
-			{
-				$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
-				$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
-				if($userlist[balance][$i] > 0)
-					$userlist[over] = $userlist[over] + $userlist[balance][$i];
-				if($userlist[balance][$i] < 0)
-					$userlist[below] = $userlist[below] - $userlist[balance][$i];
-				if($userlist[status][$i] == 3)
-					$userlist[nodeac][$i] = $this->GetUserNodesAC($userlist[id][$i]);
-				else
-					$userlist[nodeac][$i] = FALSE;
+		if(
+			$_SESSION[timestamps][getuserlist][users] != $this->GetTS("users")
+			||
+			$_SESSION[timestamps][getuserlist][nodes] != $this->GetTS("nodes")
+			||
+			$_SESSION[timestamps][getuserlist][cash]  != $this->GetTS("cash")
+		  )
+		{
+			$sql="SELECT id, lastname, name, status, email, phone1, address, info, creationdate, moddate, creatorid, modid FROM users ";
+			
+			if(!isset($state)) $state="3";
+			if(!isset($order)) $order="username,asc";
+			
+			switch ($state){
+				case "3":
+					$sql .= " WHERE status = 3 ";
+				break;
+				case "2":
+					$sql .= " WHERE status = 2 ";
+				break;
+				case "1":
+					$sql .= " WHERE status = 1 ";
+				break;
 			}
+			
+			$userlist = $db->FetchArray($sql);
+			
+			$userlist[crdate] = $userlist[creationdate];
+			$userlist[crid] = $userlist[creatorid];
+			
+			if(sizeof($userlist[id]))
+				foreach($userlist[id] as $i => $v)
+				{
+					$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
+					$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
+					if($userlist[balance][$i] > 0)
+						$userlist[over] = $userlist[over] + $userlist[balance][$i];
+					if($userlist[balance][$i] < 0)
+						$userlist[below] = $userlist[below] - $userlist[balance][$i];
+					if($userlist[status][$i] == 3)
+						$userlist[nodeac][$i] = $this->GetUserNodesAC($userlist[id][$i]);
+					else
+						$userlist[nodeac][$i] = FALSE;
+				}
+
+			$_SESSION[cache][getuserlist] = $userlist;
+			$_SESSION[timestamps][getuserlist][users] = $this->GetTS("users");
+			$_SESSION[timestamps][getuserlist][nodes] = $this->GetTS("nodes");
+			$_SESSION[timestamps][getuserlist][cash] = $this->GetTS("cash");
+			
+		}else{
+			$userlist = $_SESSION[cache][getuserlist];
+
+		}
 			
 		list($order,$direction)=explode(",",$order);
 		
 		if($direction != "desc") $direction = 4;
 		else $direction = 3;
-
+		
 		if(sizeof($userlist[id])) switch($order){
 			case "username":
 				array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
-				break;
+			break;
 			case "id":
 				array_multisort($userlist[id],$direction,SORT_NUMERIC,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
-				break;
+			break;
 			case "email":
 				array_multisort($userlist[email],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
-				break;
+			break;
 			case "address":
 				array_multisort($userlist[address],$direction,$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
-				break;
+			break;
 			case "balance":
 				array_multisort($userlist[balance],$direction,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
-				break;
+			break;
 			case "phone":
 				array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
-				break;
+			break;
 		}
-
 		$userlist[state]=$state;
 		$userlist[order]=$order;
 		$userlist[direction]=$direction;
 		$userlist[total]=sizeof($userlist[id]);
 		
 		return $userlist;
-
 	}
-		
-		
-
+			
 	function GetUserNodes($id)
 	{
 		$db=$this->db;
@@ -632,12 +708,28 @@ class LMS {
 	function GetNodeList($order=NULL)
 	{
 		$db=$this->db;
-		$nodelist = $db->FetchArray("SELECT `id`, `ipaddr`, `mac`, `name`, `ownerid`, `access` FROM `nodes`");
-		if(sizeof($nodelist[id]))
-			foreach($nodelist[id] as $key => $value){ 
-				$nodelist[iplong][$key] = ip_long($nodelist[ipaddr][$key]);
-				$nodelist[owner][$key] = $this->GetUserName($nodelist[ownerid][$key]);
-			}
+
+		if(
+				$_SESSION[timestamps][getnodelist][nodes] != $this->GetTS("nodes")
+				||
+				$_SESSION[timestamps][getnodelist][users] != $this->GetTS("users")
+		  )
+		{
+			$nodelist = $db->FetchArray("SELECT `id`, `ipaddr`, `mac`, `name`, `ownerid`, `access` FROM `nodes`");
+			if(sizeof($nodelist[id]))
+				foreach($nodelist[id] as $key => $value)
+				{
+					$nodelist[iplong][$key] = ip_long($nodelist[ipaddr][$key]);
+					$nodelist[owner][$key] = $this->GetUserName($nodelist[ownerid][$key]);
+				}
+
+			$_SESSION[timestamps][getnodelist][nodes] = $this->GetTS("nodes");
+			$_SESSION[timestamps][getnodelist][users] = $this->GetTS("users");
+			$_SESSION[cache][getnodelist] = $nodelist;
+			
+		}else{
+			$nodelist = $_SESSION[cache][getnodelist];
+		}
 
 		if(!isset($order)) $order="name,asc";
 
@@ -754,7 +846,7 @@ class LMS {
 	function NodeSet($id)
 	{
 		$db=$this->db;
-//		$this->SetTS("nodes");
+		$this->SetTS("nodes");
 		$db->FetchRow("SELECT `access` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
 		if($db->row[access]=="Y")
 			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'N' WHERE `id` = '".$id."' LIMIT 1");
@@ -765,7 +857,7 @@ class LMS {
 	function NodeSetU($id,$access=FALSE)
 	{
 		$db=$this->db;
-//		$this->SetTS("nodes");
+		$this->SetTS("nodes");
 		if($access)
 			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'Y' WHERE `ownerid` = '".$id."'");
 		else
@@ -789,40 +881,50 @@ class LMS {
 	{
 		$db=$this->db;
 
-		$saldolist = $db->FetchArray("SELECT * FROM cash WHERE userid = '".$id."'");
-		if(sizeof($saldolist[id]) > 0){
-			foreach($saldolist[id] as $i => $v)
-			{
-				if($i>0) $saldolist[before][$i] = $saldolist[after][$i-1];
-				else $saldolist[before][$i] = 0;
-	
-				// zachcia³o mi siê kurwa pierdolonych locales :S
-				// zak³adam siê ¿e w trakcie pisania wyjdzie jeszcze kwiatek
-				// z zapisem do mysql'a :S
-				$saldolist[value][$i]=str_replace(".",",",$saldolist[value][$i]);
-				$saldolist[value][$i]=round($saldolist[value][$i],2);	
-				switch ($saldolist[type][$i]){
-					case "3":
-						$saldolist[after][$i] = round(($saldolist[before][$i] + $saldolist[value][$i]),4);
-						$saldolist[name][$i] = "wp³ata";
-					break;
-				
-					case "4":
-						$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
-						$saldolist[name][$i] = "op³ata ab";
-					break;
+		if($_SESSION[timestamps][getuserbalancelist][$id][cash] != $this->GetTS("cash"))
+		{
+			$saldolist = $db->FetchArray("SELECT * FROM cash WHERE userid = '".$id."'");
+			if(sizeof($saldolist[id]) > 0){
+				foreach($saldolist[id] as $i => $v)
+				{
+					if($i>0) $saldolist[before][$i] = $saldolist[after][$i-1];
+					else $saldolist[before][$i] = 0;
+					
+					// zachcia³o mi siê kurwa pierdolonych locales :S
+					// zak³adam siê ¿e w trakcie pisania wyjdzie jeszcze kwiatek
+					// z zapisem do mysql'a :S
+					$saldolist[value][$i]=str_replace(".",",",$saldolist[value][$i]);
+					$saldolist[value][$i]=round($saldolist[value][$i],2);	
+					switch ($saldolist[type][$i]){
+						case "3":
+							$saldolist[after][$i] = round(($saldolist[before][$i] + $saldolist[value][$i]),4);
+							$saldolist[name][$i] = "wp³ata";
+						break;
+						
+						case "4":
+							$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
+							$saldolist[name][$i] = "op³ata ab";
+						break;
+					}
+					
+					$saldolist[adminname][$i]=$this->GetAdminName($saldolist[adminid][$i]);
+					$saldolist[date][$i]=date("Y/m/d H:i",$saldolist[time][$i]);
+					
 				}
-				$saldolist[adminname][$i]=$this->GetAdminName($saldolist[adminid][$i]);
-				$saldolist[date][$i]=date("Y/m/d H:i",$saldolist[time][$i]);
-
+				
+				$saldolist[balance] = $saldolist[after][sizeof($saldolist[id])-1];
+				$saldolist[total] = sizeof($saldolist[id]);
+			
+			}else{
+				$saldolist[balance] = 0;
 			}
 
-			$saldolist[balance] = $saldolist[after][sizeof($saldolist[id])-1];
-			$saldolist[total] = sizeof($saldolist[id]);
+			$_SESSION[timestamps][getuserbalancelist][$id][cash] = $this->GetTS("cash");
+			$_SESSION[cache][getuserbalancelist][$id] = $saldolist;
 		}else{
-			$saldolist[balance] = 0;
+			$saldolist = $_SESSION[cache][getuserbalancelist][$id];
 		}
-
+			
 		return $saldolist;
 
 	}
@@ -843,7 +945,7 @@ class LMS {
 	function NodeAdd($nodedata)
 	{
 		$db=$this->db;
-//		$this->SetTS("nodes");
+		$this->SetTS("nodes");
 		$session=$this->session;
 		$db->ExecSQL("INSERT INTO `nodes` (`name`, `mac`, `ipaddr`, `ownerid`, `creatorid`, `creationdate`) VALUES ('".strtoupper($nodedata[name])."', '".strtoupper($nodedata[mac])."', '".$nodedata[ipaddr]."', '".$nodedata[ownerid]."', '".$session->id."', '".time()."')");
 		$db->FetchRow("SELECT max(id) FROM `nodes`");
@@ -853,7 +955,7 @@ class LMS {
 	function UserAdd($useradd)
 	{
 		$db=$this->db;
-//		$this->SetTS("users");
+		$this->SetTS("users");
 		$session=$this->session;
 		if(!isset($useradd[status]))
 			$useradd[status] = 1;
@@ -906,7 +1008,7 @@ class LMS {
 	function AddBalance($addbalance)
 	{
 		$db=$this->db;
-//		$this->SetTS("cash");
+		$this->SetTS("cash");
 		$session=$this->session;
 		return $db->ExecSQL("INSERT INTO `cash`	(time, adminid, type, value, userid, comment) VALUES ('".time()."','".$session->id."','".$addbalance[type]."','".$addbalance[value]."','".$addbalance[userid]."','".$addbalance[comment]."' )");
 	}
@@ -972,15 +1074,8 @@ class LMS {
 
 		if($netadd[prefix] != "")
 			$netadd[mask] = prefix2mask($netadd[prefix]);
-//		$this->SetTS("networks");
-		$db->ExecSQL("
-		INSERT INTO `networks` (`name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend`)
-		VALUES ( '".strtoupper($netadd[name])."','".$netadd[address]."','".$netadd[mask]."','".$netadd[gateway]."',
-		'".$netadd[dns]."',
-		'".$netadd[domain]."',
-		'".$netadd[wins]."',
-		'".$netadd[dhcpstart]."',
-		'".$netadd[dhcpend]."' )");
+		$this->SetTS("networks");
+		$db->ExecSQL("INSERT INTO `networks` (`name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend`) VALUES ( '".strtoupper($netadd[name])."','".$netadd[address]."','".$netadd[mask]."','".$netadd[gateway]."', '".$netadd[dns]."', '".$netadd[domain]."', '".$netadd[wins]."', '".$netadd[dhcpstart]."', '".$netadd[dhcpend]."' )");
 		$db->FetchRow("SELECT id FROM `networks` WHERE `address` = '".$netadd[address]."'");
 		return $db->row[id];
 	}
@@ -988,7 +1083,7 @@ class LMS {
 	function NetworkDelete($id)
 	{
 		$db=$this->db;
-//		$this->SetTS("networks");
+		$this->SetTS("networks");
 		return $db->ExecSQL("DELETE FROM `networks` WHERE `id` = '".$id."'");
 	}
 }
