@@ -159,6 +159,8 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $dbase;
 
+sub instance($);
+
 sub instance($)
 {
 	my($instanceno) = @_;
@@ -193,6 +195,21 @@ sub instance($)
 	my $append = $ini->val("mgc:$instanceno", 'append') || '0';
 	my $post_exec = $ini->val("mgc:$instanceno", 'post_exec') || '';
 	my $ignore_list = $ini->val("mgc:$instanceno", 'ignore') || '';
+	my $instances = $ini->val("mgc:$instanceno", 'instances') || '';
+	
+	
+	if(! $instances eq '')
+	{
+		my @instanceslist = split " ",$instances;
+		
+		foreach my $instance (@instanceslist)
+		{
+			print "Running $instance (via alias from $instanceno)\n" unless $quiet;
+			my $rcode = instance($instance);
+			print "$instance finished with rcode $rcode.\n" unless $quiet;
+		}
+		return 0;
+	}
 	
 	my $allnetworks = '';
 
