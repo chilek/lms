@@ -7,6 +7,9 @@ wersja 1.5.2 (??/??/????):
   - dokumentacja: dodany opis lms-makedhcpconf (alec)
   - dodane brakuj±ce defaulty do niektórych kolumn w tabeli rtmessages
     w lms.mysql (alec)
+  - w funkcji odczytuj±cej nazwê hosta (któr± nastêpnie widaæ w nag³ówkach 
+    stron) dodano sprawdzenie sta³ych $_ENV['HOSTNAME'] i $_SERVER[SERVER_NAME']
+    je¶li nie powiedzie siê próba odczytania nazwy poprzez `hostname` (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 
