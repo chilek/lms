@@ -134,6 +134,7 @@ if($aliasadd = $_POST['aliasadd'])
 		$LMS->DB->Execute('INSERT INTO aliases (login, accountid) VALUES (?,?)',
 				    array($aliasadd['login'], $aliasadd['accountid']));
 		$LMS->SetTS('aliases');
+		unset($aliasadd['login']);
 	}
 }	
 
