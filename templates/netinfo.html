@@ -15,9 +15,18 @@
 <TABLE cellpadding="3" width="100%">
 	{if $unlockedit}<FORM METHOD="POST" ACTION="?m=netedit&id={$network.id}" NAME="netedit">{/if}
 	<TR class="dark">
+		{if !$unlockedit}
 		<TD width="100%" class="fall" colspan="4">
-			<IMG SRC="img/network.gif" border="0" align="absmiddle" ALT=""> {if $unlockedit}<INPUT TYPE="text" NAME="networkdata[name]" VALUE="{$network.name|upper}" {tip trigger="name" bold=1}>{else}<B>{$network.name|upper}</B>{/if} <B>({$network.id|string_format:"%04d"})</B>
+			<IMG SRC="img/network.gif" border="0" align="absmiddle" ALT=""> <B>{$network.name|upper} ({$network.id|string_format:"%04d"})</B>
 		</TD>
+		{else}
+		<TD width="1%" class="fleftu" nowarp>
+			<IMG SRC="img/network.gif" border="0" align="absmiddle" ALT=""> <B>Nazwa:</B>
+		</TD>
+		<TD width="99%" class="frightu" colspan="3">
+			 <INPUT TYPE="text" NAME="networkdata[name]" VALUE="{$network.name|upper}" {tip trigger="name" bold=1}> <B>({$network.id|string_format:"%04d"})</B>
+		</TD>
+		{/if}
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
@@ -105,7 +114,7 @@
 	</TR>
 {if $unlockedit}</form>{/if}
 	<TR class="light">
-		<TD width="100%" class="flr" colspan="4" align="right">
+		<TD width="100%" class="fbottomu" colspan="4" align="right">
 			{if $unlockedit}
 			<form name="remap" action="" method="get">
 				<A {confirm text="Jeste¶ pewien ¿e chcesz przyznaæ wszystkim komputerom adresy od nowa? Pamiêtaj, ¿e mo¿e to wywo³aæ niez³e zamieszanie w sieci :)" href="?m=netcmp&id=`$network.id`"}>Porz±dkuj sieæ <img src="img/cmp.gif" align="absmiddle" ALT="[ Posortuj ]" border="0"></A><BR>
@@ -130,6 +139,7 @@
 		</TD>
 			{/if}
 	</TR>
+	{if $network.page}
 	<TR class="dark">
 		<TD width="50%" class="fleftu" colspan="2">
 			<img src="img/ip.gif" align="absmiddle" ALT="" border="0"> <B>Wykorzystanie adresów IP:</B>
@@ -165,5 +175,6 @@
 			</table>
 		</TD>
 	</TR>
+	{/if}
 </TABLE>
 {include file="footer.html"}
