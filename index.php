@@ -124,7 +124,6 @@ if(version_compare("2.5.0",$SMARTY->_version) > 0)
 
 $SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
-$SMARTY->cache_dir = $_SYSTEM_DIR.'/cache/';
 $SMARTY->debugging = chkconfig($_CONFIG[phpui][smarty_debug]);
 
 $layout[logname]=$SESSION->logname;
