@@ -1264,7 +1264,7 @@ class LMS
 					$row['ipaddr'] = trim($ipaddr);
 					$row['name'] = trim($name);
 					$row['mac'] = str_replace("-",":",trim($mac));
-					if(!$this->GetNodeIDByIP($row['ipaddr']) && $row['ipaddr'])
+					if(!$this->GetNodeIDByIP($row['ipaddr']) && $row['ipaddr'] && $row['mac'] != "00:00:00:00:00:00")
 						$result[] = $row;
 				}	
 			}
@@ -1637,6 +1637,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.193  2003/08/21 03:14:29  lukasz
+ * - http://lists.rulez.pl/lms/0835.html
+ *
  * Revision 1.192  2003/08/20 01:46:12  lukasz
  * - do not display MAC's '00:00:00:00:00:00'
  *
