@@ -224,25 +224,25 @@ class LMS
 			foreach($this->DB->ListTables() as $tablename)
 			{
 				fputs($dumpfile,"DELETE FROM $tablename;\n");
-				if($dump = $this->DB->GetAll('SELECT * FROM '.$tablename))
-					foreach($dump as $row)
+				$this->DB->Execute('SELECT * FROM '.$tablename);
+				while($row = $this->DB->_driver_fetchrow_assoc())
+				{
+					fputs($dumpfile,"INSERT INTO $tablename (");
+					foreach($row as $field => $value)
 					{
-						fputs($dumpfile,"INSERT INTO $tablename (");
-						foreach($row as $field => $value)
-						{
-							$fields[] = $field;
-							if(isset($value))
-								$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
-							else
-								$values[] = 'NULL';
-						}
-						fputs($dumpfile,implode(', ',$fields));
-						fputs($dumpfile,') VALUES (');
-						fputs($dumpfile,implode(', ',$values));
-						fputs($dumpfile,");\n");
-						unset($fields);
-						unset($values);
+						$fields[] = $field;
+						if(isset($value))
+							$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
+						else
+							$values[] = 'NULL';
 					}
+					fputs($dumpfile,implode(', ',$fields));
+					fputs($dumpfile,') VALUES (');
+					fputs($dumpfile,implode(', ',$values));
+					fputs($dumpfile,");\n");
+					unset($fields);
+					unset($values);
+				}
 			}
 			fclose($dumpfile);
 		}
