@@ -2,26 +2,24 @@
 Summary:	LAN Managment System
 Summary(pl):	System Zarz±dzania Siec± Lokaln±
 Name:		lms
-Version:	1.0pre8
+Version:	1.0pre10
 Release:	0.1
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://lms.rulez.pl/download/%{name}-%{version}.tar.gz
-Patch0:		%{name}.ini-PLD.patch
-Vendor:		Rulez.PL
+Patch0:		%{name}-PLD.patch
+Vendor:		LMS Developers
+URL:		http://lms.rulez.pl
 Requires:	php
 Requires:	php-posix
 Requires:	webserver
-Requires:	perl-Net-SMTP-Server
-Requires:	perl-Config-IniFiles
-Requires:	perl-DBI
-Requires:	Smarty >= 2.4.2
-Requires:	adodb
+Requires:	Smarty >= 2.5.0
+Requires:	adodb >= 2.90
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_lmsdir		/home/services/httpd/html/%{name}
-%define		_localstatedir	/var/lib/lms
+%define		_sharedstatedir	/var/lib
 
 %description
 This is a package of applications in PHP and Perl for managing LANs.
@@ -67,24 +65,45 @@ Najbardziej podstawowe cechy LMS to:
 - generowanie wpisów ARP (blokada adresów IP po ARP);
 - generowanie wpisów do DNS.
 
+%package scripts
+Summary:	LAN Managment System - scripts
+Summary(pl):	LAN Managment System - skrypty
+Requires:	perl-Net-SMTP-Server
+Requires:	perl-Config-IniFiles
+Requires:	perl-DBI
+BuildArch:	noarch
+Group:		Networking/Utilities
+
+%description scripts
+This package contains scripts to integrate LMS with your system, monthly
+billing, notify users about their debts and cutting off customers. Also
+you can build propably any kind of config file using lms-mgc.
+
+%description scripts -l pl
+Ten pakiet zawiera skrypty do zintegrowania LMS z twoim systemem,
+naliczania comiesiêcznych op³at, powiadamiania u¿ytkowników o ich
+zad³u¿eniu oraz ich automagicznego od³±czania. Mo¿esz tak¿e zbudowaæ
+prawdopodobnie ka¿dy typ pliku konfiguracyjnego przy u¿yciu lms-mgc.
+
 %prep
 %setup -q -n lms
 %patch0 -p1
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_lmsdir}/{img,lib,modules,templates,templates_c,backups}
+install -d $RPM_BUILD_ROOT%{_lmsdir}/img
 install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
 install -d $RPM_BUILD_ROOT%{_bindir}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
-install -d $RPM_BUILD_ROOT%{_localstatedir}/backup
+install -d $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}/{backups,templates_c}
+install -d $RPM_BUILD_ROOT%{_libexecdir}/%{name}/{lib,modules,templates}
 
 install *.php $RPM_BUILD_ROOT%{_lmsdir}
 install bin/* $RPM_BUILD_ROOT%{_bindir}
-install lib/* $RPM_BUILD_ROOT%{_lmsdir}/lib
+install lib/* $RPM_BUILD_ROOT%{_libexecdir}/%{name}/lib
 install img/* $RPM_BUILD_ROOT%{_lmsdir}/img
-install modules/* $RPM_BUILD_ROOT%{_lmsdir}/modules
-install templates/* $RPM_BUILD_ROOT%{_lmsdir}/templates
+install modules/* $RPM_BUILD_ROOT%{_libexecdir}/%{name}/modules
+install templates/* $RPM_BUILD_ROOT%{_libexecdir}/%{name}/templates
 install sample/%{name}.ini $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 
 %clean
@@ -92,19 +111,23 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc doc sample/lms-mgc* sample/*txt sample/rc.reminder_1st
-%attr(755,root,root) %{_bindir}/lms-*
+%doc doc sample/*.ini sample/*txt sample/rc.reminder_1st sample/crontab-entry
 %dir %{_lmsdir}
-%attr(770,root,http) %{_lmsdir}/templates_c
-%attr(770,root,http) %{_lmsdir}/backups
+%dir %{_libexecdir}/%{name}
+%dir %{_sharedstatedir}/%{name}
+%attr(770,root,http) %{_sharedstatedir}/%{name}/templates_c
+%attr(770,root,http) %{_sharedstatedir}/%{name}/backups
 %{_lmsdir}/*.php
 %{_lmsdir}/img
-%{_lmsdir}/lib
-%{_lmsdir}/modules
-%{_lmsdir}/templates
-%{_localstatedir}
+%{_libexecdir}/%{name}/lib
+%{_libexecdir}/%{name}/modules
+%{_libexecdir}/%{name}/templates
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/%{name}/*.ini
+
+%files scripts
+%attr(755,root,root) %{_bindir}/lms-*
+%doc sample/*.ini
 
 %define date	%(echo `LC_ALL="C" date +"%a %b %d %Y"`)
 %changelog
@@ -112,22 +135,26 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld.org.pl
 
 $Log$
-Revision 1.4  2003/04/14 23:09:23  lukasz
-- LMS_0100_pre10
+Revision 1.5  2003/04/15 04:17:22  lukasz
+- sync with PLD CVS
 
-Revision 1.3  2003/04/12 22:31:06  lukasz
-- lms-1.0pre9
+Revision 1.19  2003/04/15 04:16:47  baseciq
+- moved perl scripts into separated package
 
-Revision 1.2  2003/04/11 22:22:11  lukasz
-- to najnowsze zmiany jakie uda³o mi siê znale¼æ
+Revision 1.18  2003/04/14 23:00:18  baseciq
+- another reorganization
+- don't change default macros like localstate and etc, just define
+  _sharedstatedir that already in rpm-build-4.1.x
+- pre10
+- cosmetics
 
-Revision 1.10  2003/04/09 10:16:21  lukasz
+Revision 1.17  2003/04/14 22:07:27  djrzulf
+- reorganization
+
+Revision 1.16  2003/04/09 10:15:32  baseciq
 - LMS doesn't depend on some particular database, so we shouldn't require
   mysql or postgresql, and even drivers (are they provide: something like
   sqlserver or database server?)
-
-Revision 1.9  2003/04/09 06:28:08  djrzulf
-- merged from PLD CVS,
 
 Revision 1.15  2003/04/09 06:25:40  djrzulf
 - updated
