@@ -169,7 +169,7 @@ if($_GET['graph'] == "")
 	$widthy = $maxy - $miny;
 	$cellw = 70;
 	$cellh = 30;
-	$celltmargin = 10;
+	$celltmargin = 20;
 	$celllmargin = 10;
 	$imgwx = $cellw * ($widthx + 2);
 	$imgwy = $cellh * ($widthy + 2);
@@ -196,7 +196,7 @@ if($_GET['graph'] == "")
 			}
 		}
 	}
-	sort($nodemap);
+	if(sizeof($nodemap)) sort($nodemap);
 	sort($devicemap);
 
 	$SMARTY->assign('devicemap',$devicemap);
@@ -235,7 +235,7 @@ else
 	$widthy = $maxy - $miny;
 	$cellw = 70;
 	$cellh = 30;
-	$celltmargin = 10;
+	$celltmargin = 20;
 	$celllmargin = 10;
 	$imgwx = $cellw * ($widthx + 2);
 	$imgwy = $cellh * ($widthy + 2);
@@ -288,7 +288,7 @@ else
 		imageline($im, $src_px+9, $src_py+9, $dst_px+9, $dst_py+9, $green);
 	}
 
-	foreach($nodemap as $node)
+	if($nodemap) foreach($nodemap as $node)
 	{
 		$src_celx = $node['x'];
 		$src_cely = $node['y'];
@@ -308,7 +308,7 @@ else
 	$im_d_off = imagecreatefrompng('img/netdev_off.png');
 	$im_d_on = imagecreatefrompng('img/netdev_on.png');
 
-	foreach($nodemap as $nodeid => $node)
+	if($nodemap) foreach($nodemap as $nodeid => $node)
 	{
 		$celx = $node['x'];
 		$cely = $node['y'];
