@@ -6,7 +6,7 @@
 <TABLE WIDTH="100%" ALIGN="center" CELLPADDING="3">
 	<TR>
 		<TD VALIGN="top" WIDTH="50%">
-			<TABLE WIDTH="100%" CELLPADDING="3">
+			<TABLE WIDTH="100%" CELLPADDING="2">
 				<TR class="DARK">
 					<TD class="FALL" align="center" COLSPAN="2">
 						<P><B>Download</B></P>
@@ -30,7 +30,7 @@
 			</TABLE>
 		</TD>
 		<TD VALIGN="top" WIDTH="100%">
-			<TABLE WIDTH="100%" CELLPADDING="3">
+			<TABLE WIDTH="100%" CELLPADDING="2">
 				<TR class="DARK">
 					<TD class="FALL" align="center" COLSPAN="2">
 						<P><B>Upload</B></P>
@@ -64,7 +64,7 @@
 			<B>Wprowad¼ parametry przeszukiwania</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR CLASS="light" {tip text="Ograniczenie wyników do podanego okresu"}>
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
 			<B>Od (dzieñ/miesi±c/rok gg:mm):</B>
 		</TD>
@@ -74,7 +74,7 @@
 			{html_select_time field_array="from" prefix="" time=$starttime display_seconds=0}
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR CLASS="light" {tip text="Ograniczenie wyników do podanego okresu"}>
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
 			<B>Do (dzieñ/miesi±c/rok gg:mm):</B>
 		</TD>
@@ -84,7 +84,7 @@
 			{html_select_time field_array="to" prefix="" time=$endtime display_seconds=0}
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR CLASS="light" {tip text="Ograniczenie wyników do wybranej sieci"}>
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
 			<B>Sieæ:</B>
 		</TD>
@@ -97,7 +97,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR CLASS="light" {tip text="Okre¶lenie sortowania wyników"}>
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
 			<B>Sortowanie:</B>
 		</TD>
@@ -111,7 +111,7 @@
 			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="light">
+	<TR CLASS="light" {tip text="Ograniczenie wyników do x komputerów"}>
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
 			<B>Ograniczenie wyników do:</B>
 		</TD>
@@ -119,10 +119,8 @@
 			<INPUT NAME="limit" SIZE="3"></INPUT> <B>komputerów</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
-			&nbsp;
-		</TD>
+	<TR CLASS="light" {tip text="Sposób przedstawienia komputerów na wykresach"}>
+		<TD WIDTH="300" ALIGN="right" CLASS="fleft"></TD>
 		<TD CLASS="fright">
 			<INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="checkbox" NAME="showips" VALUE="1"><B>&nbsp;adresy IP zamiast nazw hostów</B></INPUT>
 		</TD>
@@ -134,41 +132,33 @@
 	</TR>
 </TABLE>
 </FORM>
-<BR><BR><BR>
+<BR>
 <FORM NAME="trafficdbcompact" METHOD="POST" ACTION="?m=trafficdbcompact">
 <TABLE ALIGN="center" WIDTH="600" CELLPADDING="3">
 	<TR CLASS="dark">
-		<TD COLSPAN="4" ALIGN="center" CLASS="fall">
+		<TD COLSPAN="2" ALIGN="center" CLASS="fall">
 			<B>Kompaktowanie bazy danych</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
-		<TD WIDTH="295" CLASS="fleft">
-			<P ALIGN="JUSTIFY">
-			Kompaktowanie bazy danych polega na usuniêciu zbêdnych danych z bazy oraz u¶rednieniu isniej±cych danych, co spowoduje zmniejszenie ilo¶ci rekordów w bazie, a zatem skróci czas oczekiwania na wyniki oraz zmniejszy ich dok³adno¶æ.<BR>
-			<FONT CLASS="alert">Uwaga: Proces jest nieodwracalny.</FONT>
-			</P>
-		</TD>
-		<TD WIDTH="5">
-			&nbsp;
-		</TD>
-		<TD WIDTH="170" ALIGN="left">
+	 	<TD WIDTH="50%" ALIGN="right" CLASS="fleft" {tip text="Kompaktowanie bazy danych polega na usuniêciu zbêdnych danych z bazy oraz u¶rednieniu isniej±cych danych, co spowoduje zmniejszenie ilo¶ci rekordów w bazie, a zatem skróci czas oczekiwania na wyniki oraz zmniejszy ich dok³adno¶æ."}>
 			<B>Poziom dok³adno¶ci danych:</B>
 		</TD>
-		<TD CLASS="fright">
-			<B><INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="1">Niski</INPUT><BR>
-				<INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="2">¦redni</INPUT><BR>
-				<INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="3">Wysoki</INPUT><BR></B>
+		<TD WIDTH="50%" CLASS="fright">
+			<B><INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="1" {tip text="Dane starsze ni¿ dzieñ zostan± u¶rednione do jednego dnia"}>Niski</INPUT>&nbsp;
+			   <INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="2" {tip text="Dane starsze ni¿ miesi±c zostan± u¶rednione do jednego dnia"}>¦redni</INPUT>&nbsp;
+			   <INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="3" {tip text="Dane starsze ni¿ miesi±c zostan± u¶rednione do jednej godziny"}>Wysoki</INPUT>
+			</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
-		<TD COLSPAN="3" WIDTH="295" CLASS="fleft">
-			<INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="checkbox" NAME="delete" VALUE="1"><B>&nbsp;Usuñ dane ponadroczne</B></INPUT>								
+		<TD WIDTH="50%" CLASS="fleft"></TD>
+		<TD WIDTH="50%" CLASS="fright" {tip text="Zaznaczenie tej opcji spowoduje usuniêcie z bazy wpisów starszych ni¿ rok"}>
+		    <INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="checkbox" NAME="delete" VALUE="1"><B>&nbsp;Usuñ dane ponadroczne</B></INPUT>
 		</TD>
-		<TD CLASS="fright"></TD>
 	</TR>
 	<TR CLASS="light">
-		<TD COLSPAN="4" ALIGN="right" CLASS="fbottomu">
+		<TD COLSPAN="2" ALIGN="right" CLASS="fbottomu">
 			<A HREF="javascript:document.trafficdbcompact.submit();" ACCESSKEY="K">Kompaktuj <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
 	</TR>
