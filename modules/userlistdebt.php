@@ -82,7 +82,6 @@ $start = ($page - 1) * $pagelimit;
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("userlist",$userlist);
 $SMARTY->assign("listdata",$listdata);
-$SMARTY->assign("tariffs",$LMS->GetTariffs());
 $SMARTY->assign("pagelimit",$pagelimit);
 $SMARTY->assign("page",$page);
 $SMARTY->assign("start",$start);
@@ -91,6 +90,9 @@ $SMARTY->display("userlist.html");
 
 /*
  * $Log$
+ * Revision 1.12  2003/09/08 09:10:58  lukasz
+ * - removed unused assign with GetTariffs()
+ *
  * Revision 1.11  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
