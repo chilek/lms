@@ -1903,7 +1903,7 @@ class LMS
 
 	function GetUnlinkedNodes()
 	{
-		return $this->DB->GetAll("SELECT * FROM nodes WHERE netdev=0 ORDER BY name ASC");
+		return $this->DB->GetAll("SELECT *, inet_ntoa(ipaddr) AS ip FROM nodes WHERE netdev=0 ORDER BY name ASC");
 	}
 
 	function GetNetDevIPs($id)
@@ -2272,6 +2272,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.308  2003/12/11 20:22:16  alec
+ * - GetUnlinkedNodes() zwraca takze ip w formacie x.x.x.x
+ *
  * Revision 1.307  2003/12/11 12:27:52  lukasz
  * - kurwaaaaaaa! no. zrobione
  *
