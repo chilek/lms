@@ -1,0 +1,471 @@
+----------------------------------------------------------
+-- $Id$
+----------------------------------------------------------
+
+--
+-- Struktura tabeli dla  admins
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='admins' AND type='U') 
+    DROP TABLE admins;
+CREATE TABLE admins (
+  id int NOT NULL IDENTITY (1,1),
+  login varchar(32) NOT NULL DEFAULT '',
+  name varchar(64) NOT NULL DEFAULT '',
+  email varchar(255) NOT NULL DEFAULT '',
+  rights varchar(64) NOT NULL DEFAULT '',
+  passwd varchar(255) NOT NULL DEFAULT '',
+  lastlogindate int NOT NULL DEFAULT 0,
+  lastloginip varchar(16) NOT NULL DEFAULT '',
+  failedlogindate int NOT NULL DEFAULT 0,
+  failedloginip varchar(16) NOT NULL DEFAULT '',
+  deleted tinyint NOT NULL DEFAULT 0,
+  PRIMARY KEY  (id),
+  UNIQUE (login)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  assignments
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='assignments' AND type='U') 
+    DROP TABLE assignments;
+CREATE TABLE assignments (
+  id int NOT NULL IDENTITY(1,1),
+  tariffid int NOT NULL DEFAULT 0,
+  userid int NOT NULL DEFAULT 0,
+  period int NOT NULL DEFAULT 0,
+  at int NOT NULL DEFAULT 0,
+  datefrom int NOT NULL DEFAULT 0,
+  dateto int NOT NULL DEFAULT 0,
+  invoice tinyint NOT NULL DEFAULT 0,
+  suspended tinyint NOT NULL DEFAULT 0,
+  PRIMARY KEY  (id)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  cash
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='cash' AND type='U') 
+    DROP TABLE cash;
+CREATE TABLE cash (
+  id int NOT NULL IDENTITY(1,1),
+  time int NOT NULL DEFAULT 0,
+  adminid int NOT NULL DEFAULT 0,
+  type int NOT NULL DEFAULT 0,
+  value decimal(9,2) NOT NULL DEFAULT '0.00',
+  taxvalue decimal(9,2) DEFAULT '0.00',
+  userid int NOT NULL DEFAULT 0,
+  comment varchar(255) NOT NULL DEFAULT '',
+  invoiceid int NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+);
+
+CREATE INDEX userid ON cash(userid);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  dbinfo
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='dbinfo' AND type='U') 
+    DROP TABLE dbinfo;
+CREATE TABLE dbinfo (
+  keytype varchar(255) NOT NULL DEFAULT '',
+  keyvalue varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY  (keytype)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  invoicecontents
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='invoicecontents' AND type='U') 
+    DROP TABLE invoicecontents;
+CREATE TABLE invoicecontents (
+  invoiceid int NOT NULL DEFAULT 0,
+  value decimal(9,2) NOT NULL DEFAULT '0.00',
+  taxvalue decimal(9,2) DEFAULT '0.00',
+  pkwiu varchar(255) NOT NULL DEFAULT '',
+  content varchar(16) NOT NULL DEFAULT '',
+  count decimal(9,2) NOT NULL DEFAULT '0.00',
+  description varchar(255) NOT NULL DEFAULT '',
+  tariffid int NOT NULL DEFAULT 0
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  invoices
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='invoices' AND type='U') 
+    DROP TABLE invoices;
+CREATE TABLE invoices (
+  id int NOT NULL IDENTITY(1,1),
+  number int NOT NULL DEFAULT 0,
+  cdate int NOT NULL DEFAULT 0,
+  paytime tinyint NOT NULL DEFAULT 0,
+  paytype varchar(255) NOT NULL DEFAULT '',
+  customerid int NOT NULL DEFAULT 0,
+  name varchar(255) NOT NULL DEFAULT '',
+  address varchar(255) NOT NULL DEFAULT '',
+  nip varchar(16) NOT NULL DEFAULT '',
+  pesel varchar(11) NOT NULL DEFAULT '',
+  zip varchar(6) NOT NULL DEFAULT '',
+  city varchar(32) NOT NULL DEFAULT '',
+  phone varchar(255) NOT NULL DEFAULT '',
+  finished tinyint NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  netdevices
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='netdevices' AND type='U') 
+    DROP TABLE netdevices;
+CREATE TABLE netdevices (
+  id int NOT NULL IDENTITY(1,1),
+  name varchar(32) NOT NULL DEFAULT '',
+  location varchar(255) NOT NULL DEFAULT '',
+  description varchar(255) NOT NULL DEFAULT '',
+  producer varchar(64) NOT NULL DEFAULT '',
+  model varchar(32) NOT NULL DEFAULT '',
+  serialnumber varchar(32) NOT NULL DEFAULT '',
+  ports int NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  netlinks
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='netlinks' AND type='U') 
+    DROP TABLE netlinks;
+CREATE TABLE netlinks (
+  id int NOT NULL IDENTITY(1,1),
+  src int NOT NULL DEFAULT 0,
+  dst int NOT NULL DEFAULT 0,
+  type tinyint NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+  UNIQUE (src,dst)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  networks
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='networks' AND type='U') 
+    DROP TABLE networks;
+CREATE TABLE networks (
+  id int NOT NULL IDENTITY(1,1),
+  name varchar(255) NOT NULL DEFAULT '',
+  address bigint NOT NULL DEFAULT 0,
+  mask varchar(16) NOT NULL DEFAULT '',
+  gateway varchar(16) NOT NULL DEFAULT '',
+  interface varchar(8) NOT NULL DEFAULT '',
+  dns varchar(16) NOT NULL DEFAULT '',
+  dns2 varchar(16) NOT NULL DEFAULT '',
+  domain varchar(64) NOT NULL DEFAULT '',
+  wins varchar(16) NOT NULL DEFAULT '',
+  dhcpstart varchar(16) NOT NULL DEFAULT '',
+  dhcpend varchar(16) NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
+  UNIQUE (name),
+  UNIQUE (address)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  nodes
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='nodes' AND type='U') 
+    DROP TABLE nodes;
+CREATE TABLE nodes (
+  id int NOT NULL IDENTITY(1,1),
+  name varchar(16) NOT NULL DEFAULT '',
+  mac varchar(20) NOT NULL DEFAULT '',
+  ipaddr bigint NOT NULL DEFAULT 0,
+  ownerid int NOT NULL DEFAULT 0,
+  creationdate int NOT NULL DEFAULT 0,
+  moddate int NOT NULL DEFAULT 0,
+  creatorid int NOT NULL DEFAULT 0,
+  modid int NOT NULL DEFAULT 0,
+  netdev int NOT NULL DEFAULT 0,
+  linktype tinyint NOT NULL DEFAULT 0,
+  access tinyint NOT NULL DEFAULT '1',
+  warning tinyint NOT NULL DEFAULT 0,
+  lastonline int NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+  UNIQUE (name),
+  UNIQUE (ipaddr)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  payments
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='payments' AND type='U') 
+    DROP TABLE payments;
+CREATE TABLE payments (
+  id int NOT NULL IDENTITY(1,1),
+  name varchar(255) NOT NULL DEFAULT '',
+  value decimal(9,2) NOT NULL DEFAULT '0.00',
+  creditor varchar(255) NOT NULL DEFAULT '',
+  period int NOT NULL DEFAULT 0,
+  at int NOT NULL DEFAULT 0,
+  description text NOT NULL,
+  PRIMARY KEY (id)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  rtattachments
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='rtattachments' AND type='U') 
+    DROP TABLE rtattachments;
+CREATE TABLE rtattachments (
+  messageid int NOT NULL DEFAULT 0,
+  filename varchar(255) NOT NULL DEFAULT '',
+  contenttype varchar(255) NOT NULL DEFAULT ''
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  rtmessages
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='rtmessages' AND type='U') 
+    DROP TABLE rtmessages;
+CREATE TABLE rtmessages (
+  id int NOT NULL IDENTITY(1,1),
+  ticketid int NOT NULL DEFAULT 0,
+  adminid int NOT NULL DEFAULT 0,
+  userid int NOT NULL DEFAULT 0,
+  mailfrom varchar(255) NOT NULL DEFAULT '',
+  subject varchar(255) NOT NULL DEFAULT '',
+  messageid varchar(255) NOT NULL DEFAULT '',
+  inreplyto int NOT NULL DEFAULT 0,
+  replyto text NOT NULL,
+  headers text NOT NULL,
+  body text NOT NULL,
+  createtime int NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  rtqueues
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='rtqueues' AND type='U') 
+    DROP TABLE rtqueues;
+CREATE TABLE rtqueues (
+  id int NOT NULL IDENTITY(1,1),
+  name varchar(255) NOT NULL DEFAULT '',
+  email varchar(255) NOT NULL DEFAULT '',
+  description text NOT NULL DEFAULT '',
+  PRIMARY KEY  (id),
+  UNIQUE (name)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  rttickets
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='rttickets' AND type='U') 
+    DROP TABLE rttickets;
+CREATE TABLE rttickets (
+  id int NOT NULL IDENTITY(1,1),
+  queueid int NOT NULL DEFAULT 0,
+  requestor varchar(255) NOT NULL DEFAULT '',
+  subject varchar(255) NOT NULL DEFAULT '',
+  state tinyint NOT NULL DEFAULT 0,
+  owner int NOT NULL DEFAULT 0,
+  userid int NOT NULL DEFAULT 0,
+  createtime int NOT NULL DEFAULT 0,
+  resolvetime int NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  rtrights
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='rtrights' AND type='U') 
+    DROP TABLE rtrights;
+CREATE TABLE rtrights (
+    id int NOT NULL IDENTITY(1,1), 
+    adminid int DEFAULT 0 NOT NULL,
+    queueid int DEFAULT 0 NOT NULL,
+    rights int DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (adminid, queueid)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  stats
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='stats' AND type='U') 
+    DROP TABLE stats;
+CREATE TABLE stats (
+  nodeid int NOT NULL DEFAULT 0,
+  dt int NOT NULL DEFAULT 0,
+  upload bigint DEFAULT 0,
+  download bigint DEFAULT 0,
+  UNIQUE (nodeid,dt)
+);
+
+----------------------------------------------------------
+-- Struktura tabeli dla  tariffs
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='tariffs' AND type='U') 
+    DROP TABLE tariffs;
+CREATE TABLE tariffs (
+  id int NOT NULL IDENTITY(1,1),
+  name varchar(255) NOT NULL DEFAULT '',
+  value decimal(9,2) NOT NULL DEFAULT '0.00',
+  taxvalue decimal(9,2) DEFAULT '0.00',
+  pkwiu varchar(255) NOT NULL DEFAULT '',
+  uprate int NOT NULL DEFAULT 0,
+  upceil int NOT NULL DEFAULT 0,
+  downrate int NOT NULL DEFAULT 0,
+  downceil int NOT NULL DEFAULT 0,
+  climit int NOT NULL DEFAULT 0,
+  plimit int NOT NULL DEFAULT 0,
+  description text NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (name)
+);
+
+-----------------------------------------------------
+-- Struktura tabeli dla  timestamps
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='timestamps' AND type='U') 
+    DROP TABLE timestamps;
+CREATE TABLE timestamps (
+  time int NOT NULL DEFAULT 0,
+  tablename varchar(255) NOT NULL DEFAULT '',
+  UNIQUE (tablename)
+);
+
+----------------------------------------------------
+-- Struktura tabeli dla  users
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='users' AND type='U') 
+    DROP TABLE users;
+CREATE TABLE users (
+  id int NOT NULL IDENTITY(1,1),
+  lastname varchar(255) NOT NULL DEFAULT '',
+  name varchar(255) NOT NULL DEFAULT '',
+  status int NOT NULL DEFAULT 0,
+  email varchar(255) NOT NULL DEFAULT '',
+  phone1 varchar(255) NOT NULL DEFAULT '',
+  phone2 varchar(255) NOT NULL DEFAULT '',
+  phone3 varchar(255) NOT NULL DEFAULT '',
+  gguin int NOT NULL DEFAULT 0,
+  address varchar(255) NOT NULL DEFAULT '',
+  zip varchar(6) NOT NULL DEFAULT '',
+  city varchar(32) NOT NULL DEFAULT '',
+  nip varchar(16) NOT NULL DEFAULT '',
+  pesel varchar(11) NOT NULL DEFAULT '',
+  info varchar(4096) NOT NULL,
+  serviceaddr text NOT NULL DEFAULT '',
+  creationdate int NOT NULL DEFAULT 0,
+  moddate int NOT NULL DEFAULT 0,
+  creatorid int NOT NULL DEFAULT 0,
+  modid int NOT NULL DEFAULT 0,
+  deleted tinyint NOT NULL DEFAULT 0,
+  message text NOT NULL,
+  pin int NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+);
+
+------------------------------------------------------
+-- Struktura tabeli dla usergroups
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='usergroups' AND type='U') 
+    DROP TABLE usergroups;
+CREATE TABLE usergroups (
+  id int NOT NULL IDENTITY(1,1), 
+  name varchar(255) NOT NULL DEFAULT '', 
+  description text NOT NULL, 
+  PRIMARY KEY (id), 
+  UNIQUE (name)
+);
+
+---------------------------------------------------------------
+-- Struktura tabeli dla userassignments
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='userassignments' AND type='U') 
+    DROP TABLE userassignments;
+CREATE TABLE userassignments (
+  id int NOT NULL IDENTITY(1,1), 
+  usergroupid int NOT NULL DEFAULT 0, 
+  userid int NOT NULL DEFAULT 0, 
+  PRIMARY KEY (id),
+  UNIQUE (usergroupid, userid)
+);
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='inet_ntoa' AND type='FN')
+     DROP FUNCTION inet_ntoa;
+CREATE FUNCTION inet_ntoa(@ip bigint) RETURNS varchar(15) AS 
+BEGIN
+RETURN 
+     CAST(@ip/(256*256*256) AS varchar)
+     +'.'+
+     CAST(@ip/(256*256) - @ip/(256*256*256)*256 AS varchar)
+     +'.'+
+     CAST(@ip/256 - @ip/(256*256)*256 AS varchar)
+     +'.'+
+     CAST(@ip - @ip/256*256 AS varchar)
+END;
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='inet_aton' AND type='FN')
+     DROP FUNCTION inet_aton;
+CREATE FUNCTION inet_aton(@ip varchar(15)) RETURNS bigint AS 
+BEGIN
+     DECLARE @i int;
+     DECLARE @n int;
+     DECLARE @ipaddr bigint;
+     DECLARE @part varchar(3);
+     DECLARE @x char(1);
+     DECLARE @len int;     
+
+     SET @ipaddr = 0
+     SET @len = LEN(@ip)
+     SET @i = 0
+     SET @n = 0
+     WHILE (@n<4)
+     BEGIN
+          SET @n = @n + 1
+          SET @part = ''
+          WHILE (1=1)
+          BEGIN          
+               SET @i = @i + 1
+               SET @x = SUBSTRING(@ip,@i,1);
+               IF(@x!='.' AND @i<=@len)
+                    SET @part = @part + @x
+               ELSE
+                    BREAK
+          END
+          SET @ipaddr = @ipaddr + 
+               CASE @n
+                   WHEN 1 THEN
+                         CAST(@part AS bigint)*(256*256*256)
+               WHEN 2 THEN
+                    CAST(@part AS bigint)*(256*256)
+               WHEN 3 THEN
+                    CAST(@part AS bigint)*256
+               WHEN 4 THEN
+                    CAST(@part AS bigint)
+          END
+     END
+
+     RETURN @ipaddr
+END;
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004101800');

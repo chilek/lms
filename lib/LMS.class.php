@@ -3093,7 +3093,7 @@ class LMS
 	function RTStats()
 	{
 		return $this->DB->GetRow('SELECT COUNT(CASE state WHEN 0 THEN 1 END) AS new,
-						    COUNT(CASE state WHEN 1 THEN 1 END) AS open,
+						    COUNT(CASE state WHEN 1 THEN 1 END) AS opened,
 						    COUNT(CASE state WHEN 2 THEN 1 END) AS resolved,
 						    COUNT(CASE state WHEN 3 THEN 1 END) AS dead
 					     FROM rttickets');
