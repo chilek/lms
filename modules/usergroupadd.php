@@ -39,9 +39,12 @@ if(isset($usergroupadd))
 	
 	if($usergroupadd['name'] == '')
 		$error['name'] = 'Musisz podaæ nazwê grupy!';
-	else
-		if($LMS->UsergroupGetId($usergroupadd['name']))
-			$error['name'] = "Istnieje ju¿ grupa o nazwie '".$usergroupadd['name']."'!";
+	elseif(strlen($usergroupadd['name']) > 16)
+		$error['name'] = 'Podana nazwa jest za d³uga!';
+	elseif($LMS->UsergroupGetId($usergroupadd['name']))
+		$error['name'] = 'Istnieje ju¿ grupa o nazwie'.$usergroupadd['name'];
+	elseif(!eregi("^[_a-z0-9-]+$",$usergroupadd['name']))
+		$error['name'] = 'Podana nazwa zawiera niepoprawne znaki!';
 
 	if(!$error){
 		header('Location: ?m=usergrouplist&id='.$LMS->UsergroupAdd($usergroupadd));
