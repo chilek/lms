@@ -27,6 +27,8 @@ use DBI;
 use Config::IniFiles;
 use Getopt::Long;
 use vars qw($configfile $quiet $help $version);
+use POSIX qw(strftime);
+use Time::Local;
 
 sub mask2prefix($)
 {
@@ -212,6 +214,8 @@ if(!$usergroups_list)
 
 my @usergroups = split ' ',$usergroups_list;
 
+my $currtime = strftime("%s",localtime());
+
 #
 # Build nodes list
 #
@@ -225,7 +229,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	$usergrouplist{$row->{'name'}} = $row->{'id'};
 }
 
-$dbq = $dbase->prepare("SELECT id, lastname, name FROM users WHERE deleted=0");
+$dbq = $dbase->prepare("SELECT users.id AS id, lastname, name, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id, lastname, name HAVING SUM((type * -2 + 7) * cash.value) < 0");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
@@ -242,23 +246,14 @@ while (my $row = $dbq->fetchrow_hashref())
 	}
 	if($usergroupscount || !$iniusergroups)
 	{
-		my $balance = 0;
-		my $sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type='3'");
+		my $balance = $row->{'balance'};
+		my $sdbq = $dbase->prepare("SELECT MAX(at) AS at, SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= $currtime OR datefrom = 0) AND (dateto >= $currtime OR dateto = 0) AND userid = '$row->{'id'}' GROUP BY userid HAVING SUM(value) > 0");
 		$sdbq->execute();
-		if(my $srow = $sdbq->fetchrow_hashref())
-		{
-			$balance = $balance + (defined $srow->{'sum'} ? $srow->{'sum'} : 0);
-		}
-
-		$sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type='4'");
-		$sdbq->execute();
-		if(my $srow = $sdbq->fetchrow_hashref())
-		{
-			$balance = $balance - (defined $srow->{'sum'} ? $srow->{'sum'} : 0);
-		}
 
 		if($balance < $limit)
 		{
+#		print STDOUT "$row->{'lastname'}\t$balance\n";
+
 			$sdbq = $dbase->prepare("SELECT ipaddr, name FROM nodes WHERE ownerid='$row->{'id'}'");
 			$sdbq->execute();
 			while (my $srow = $sdbq->fetchrow_hashref())
