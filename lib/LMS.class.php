@@ -1682,16 +1682,20 @@ class LMS
 
      function NetDevLink($dev1, $dev2)
      {
-       	if( $this->IsNetDevLink($dev1,$dev2))
+       	if($dev1 != $dev2)
+	{
+    	    if( $this->IsNetDevLink($dev1,$dev2))
 		return FALSE;
 	
-	$netdev1 = $this->GetNetDev($dev1);
-	$netdev2 = $this->GetNetDev($dev2);
-	if( $netdev1[takenports] >= $netdev1[ports] || $netdev2[takenports] >= $netdev2[ports])
+	    $netdev1 = $this->GetNetDev($dev1);
+	    $netdev2 = $this->GetNetDev($dev2);
+	    
+	    if( $netdev1[takenports] >= $netdev1[ports] || $netdev2[takenports] >= $netdev2[ports])
 		return FALSE;
 	
-	$this->DB->Execute("INSERT INTO netlinks (src, dst) VALUES ($dev1, $dev2)"); 
-	$this->SetTS("netlinks");
+	    $this->DB->Execute("INSERT INTO netlinks (src, dst) VALUES ($dev1, $dev2)"); 
+	    $this->SetTS("netlinks");
+	}    
 	return TRUE;
      }	
      
@@ -1920,6 +1924,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.257  2003/10/04 19:22:34  alec
+ * some changes in NetDevLink()
+ *
  * Revision 1.256  2003/10/04 13:17:40  alec
  * new function NetDevLink()
  *
