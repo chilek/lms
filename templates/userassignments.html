@@ -27,7 +27,7 @@
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].downrate|default:"-"} kbps</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].uprate|default:"-"} kbps</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{if $assignments[a].invoice}tak{else}&nbsp;{/if}</TD>
-					<TD WIDTH="94%" ALIGN="RIGHT" COLSPAN="2">{*<A onClick="return confirmLink(this, '{t}Are you sure, you want to remove this tariff and pass an account of alignment to today's day?{/t}')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}&balance=1" {tip text="Delete this tariff from user's record and pass an account of alignment to today's day?"}>{t}Delete and align{/t} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}<A onClick="return confirmLink(this, '{t}Are you sure, you want to remove tariff from that user?{/t}')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}" {tip text="Delete tariff from user's record"}>{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
+					<TD WIDTH="94%" ALIGN="RIGHT" COLSPAN="2">{*<A onClick="return confirmLink(this, '{t}Are you sure, you want to remove this tariff and pass an account of alignment to today\\'s day?{/t}')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}&balance=1" {tip text="Delete this tariff from user's record and pass an account of alignment to today's day?"}>{t}Delete and align{/t} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}<A onClick="return confirmLink(this, '{t}Are you sure, you want to remove tariff from that user?{/t}')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}" {tip text="Delete tariff from user's record"}>{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
 				</TR>
 				{sectionelse}
 				<TR>
@@ -62,8 +62,8 @@
 							<OPTION VALUE="2">{t}quarterly{/t}</OPTION>
 							<OPTION VALUE="3">{t}yearly{/t}</OPTION>
 						</SELECT>
-						<B>kiedy:</B> <INPUT TYPE="TEXT" NAME="at" {tip text="Enter day of tariff payment. For weekly payment enter day of week (monday = 1), for monthly payment enter day of month (from 1 to 28), for yearly payment enter month and day in format DD/MM (15/09 stand for 15-th september), and for quarterly DD/MM (MM <= 3)."} SIZE="5">
-						<INPUT CLASS="box" TYPE="checkbox" NAME="invoice" VALUE="1"> wystawiaj fakturê
+						<B>{t}at{/t}:</B> <INPUT TYPE="TEXT" NAME="at" {tip text="Enter day of tariff payment. For weekly payment enter day of week (monday = 1), for monthly payment enter day of month (from 1 to 28), for yearly payment enter month and day in format DD/MM (15/09 stand for 15-th september), and for quarterly DD/MM (MM <= 3)."} SIZE="5">
+						<INPUT CLASS="box" TYPE="checkbox" NAME="invoice" VALUE="1"> {t}with invoice{/t}
 						</NOBR>
 					</TD>
 					<TD ALIGN="RIGHT" NOWRAP>

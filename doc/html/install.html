@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Instalacja i konfiguracja</TITLE
+>Installation and configuration</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,16 +10,16 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.2-cvs"
 HREF="index.html"><LINK
 REL="PREVIOUS"
-TITLE="Informacje dodatkowe"
+TITLE="Other Information"
 HREF="moreinfo.html"><LINK
 REL="NEXT"
-TITLE="Wymagania"
+TITLE="Requirements"
 HREF="install-requirements.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
 ><BODY
 CLASS="CHAPTER"
 BGCOLOR="#EBE4D6"
@@ -46,7 +46,7 @@ VALIGN="bottom"
 ><A
 HREF="moreinfo.html"
 ACCESSKEY="P"
->Poprzedni</A
+>Prev</A
 ></TD
 ><TD
 WIDTH="80%"
@@ -60,7 +60,7 @@ VALIGN="bottom"
 ><A
 HREF="install-requirements.html"
 ACCESSKEY="N"
->Nast&#281;pny</A
+>Next</A
 ></TD
 ></TR
 ></TABLE
@@ -73,67 +73,72 @@ CLASS="CHAPTER"
 ><A
 NAME="INSTALL"
 ></A
->Rozdzia&#322; 2. Instalacja i konfiguracja</H1
+>Chapter 2. Installation and configuration</H1
 ><DIV
 CLASS="TOC"
 ><DL
 ><DT
 ><B
->Spis tre&#347;ci</B
+>Table of Contents</B
 ></DT
 ><DT
 >2.1. <A
 HREF="install.html#INSTALL-INTRO"
->Wstêp</A
+>Intro</A
 ></DT
 ><DT
 >2.2. <A
 HREF="install-requirements.html"
->Wymagania</A
+>Requirements</A
 ></DT
 ><DD
 ><DL
 ><DT
 >2.2.1. <A
 HREF="install-requirements.html#INSTALL-REQ-WWW"
->Serwer WWW</A
+>WWW Server</A
 ></DT
 ><DT
 >2.2.2. <A
 HREF="install-requirements.html#INSTALL-REQ-PHP"
->Interpreter PHP</A
+>PHP Interpreter</A
 ></DT
 ><DT
 >2.2.3. <A
 HREF="install-requirements.html#INSTALL-REQ-DB"
->Serwer baz danych</A
+>Database Server</A
 ></DT
 ><DT
 >2.2.4. <A
 HREF="install-requirements.html#INSTALL-REQ-SMARTY"
->Biblioteka Smarty</A
+>Smarty Library</A
 ></DT
 ><DT
 >2.2.5. <A
+HREF="install-requirements.html#INSTALL-REQ-GETTEXT"
+>Gettext Library</A
+></DT
+><DT
+>2.2.6. <A
 HREF="install-requirements.html#INSTALL-REQ-PERL"
 >Perl</A
 ></DT
 ><DT
->2.2.6. <A
+>2.2.7. <A
 HREF="install-requirements.html#INSTALL-REQ-C"
->Kompilator jêzyka C</A
+>C Compiler</A
 ></DT
 ></DL
 ></DD
 ><DT
 >2.3. <A
 HREF="install-install.html"
->Instalacja LMS</A
+>LMS Installation</A
 ></DT
 ><DT
 >2.4. <A
 HREF="install-db.html"
->Instalacja serwera baz danych</A
+>Database Server Installation</A
 ></DT
 ><DD
 ><DL
@@ -152,51 +157,27 @@ HREF="install-db.html#INSTALL-PGSQL"
 ><DT
 >2.5. <A
 HREF="install-config.html"
->Konfiguracja podstawowa</A
+>Basic Configuration</A
 ></DT
 ><DD
 ><DL
 ><DT
 >2.5.1. <A
 HREF="install-config.html#INSTALL-CONFIG-DB"
->Sekcja [database] - ustawienia bazy danych</A
+>Section [database] - Database Settings</A
 ></DT
 ><DT
 >2.5.2. <A
 HREF="install-config.html#INSTALL-CONFIG-DIR"
->Sekcja [directories] - ustawienia katalogów</A
+>Section [directories] - Directories Settings</A
 ></DT
 ><DT
 >2.5.3. <A
 HREF="install-config.html#INSTALL-CONFIG-UI"
->Sekcja [phpui] - ustawienia interfejsu</A
+>Section [phpui] - Interface Setting</A
 ></DT
 ></DL
 ></DD
-><DT
->2.6. <A
-HREF="install-rights.html"
->Prawa dostêpu</A
-></DT
-><DD
-><DL
-><DT
->2.6.1. <A
-HREF="install-rights.html#INSTALL-RIGHTS-IDEA"
->Idea</A
-></DT
-><DT
->2.6.2. <A
-HREF="install-rights.html#INSTALL-RIGHTS-HOW"
->Jak to dzia³a?</A
-></DT
-></DL
-></DD
-><DT
->2.7. <A
-HREF="install-upgrade.html"
->Upgrade</A
-></DT
 ></DL
 ></DIV
 ><DIV
@@ -205,56 +186,56 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-INTRO"
->2.1. Wstêp</A
+>2.1. Intro</A
 ></H1
 ><P
->LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <SPAN
+>LMS consist a few modules, body of LMS is <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
 > 
-	(interfejs u¿ytkownika). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy danych 
-	(w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w <SPAN
+	(user interface). It is in integrity written in PHP and for work require database 
+	(in fact every module require database). Exactly in <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
-> wykonujemy wszystkie 
-	czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMS.</P
+> we perform all 
+	actions, the rest of modules is only for automate work of LMS.</P
 ><P
->LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty wymagaj± 
-	aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, 
-	musisz mieæ PERLa. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych 
-	b±d¼ wysy³anie upomnieñ. Jest jeszcze <SPAN
+>LMS is also set of PERL scripts, and exactly these scripts requires 
+	to have that language interpreter. If you will want use these scripts, 
+	you must have PERL. Among others, scripts allow on monthly counting of subscription fees, 
+	or sending of admonitions. It is also <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-MGC</I
 ></SPAN
->, który te¿ jest skryptem ale na tyle 
-	uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i zrestartowaæ 
-	us³ugê na twoim serwerze.</P
+>, witch is script too, but
+	so much universal that can generate practically any config file and restart 
+	service on your server.</P
 ><P
->Jest jeszcze <SPAN
+>At the end it is also <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >A.L.E.C's LMS Daemon</I
 ></SPAN
->, napisany w jêzyku C. Jest on przeznaczony 
-	(a w³a¶ciwie jego wtyczki) do generowania plików konfiguracyjnych i restartowania us³ug. 
-	Mo¿na go stosowaæ jako zamiennik lub uzupe³nienie skryptów perlowych.
-	Odpowiada on za to, aby to co zosta³o zmienione w <SPAN
+>, written in C language, which is assigned 
+	(in fact his plugins) for configuration files generation and services restarting. 
+	It can be used as replacement or addition of perl's scripts.
+	It responds for what has been changed in <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
-> zosta³o zmienione tak¿e 
-	w rzeczywisto¶ci.</P
+> was made also 
+	in real.</P
 ></DIV
 ></DIV
 ><DIV
@@ -275,7 +256,7 @@ VALIGN="top"
 ><A
 HREF="moreinfo.html"
 ACCESSKEY="P"
->Poprzedni</A
+>Prev</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -284,7 +265,7 @@ VALIGN="top"
 ><A
 HREF="index.html"
 ACCESSKEY="H"
->Spis tre&#347;ci</A
+>Home</A
 ></TD
 ><TD
 WIDTH="33%"
@@ -293,7 +274,7 @@ VALIGN="top"
 ><A
 HREF="install-requirements.html"
 ACCESSKEY="N"
->Nast&#281;pny</A
+>Next</A
 ></TD
 ></TR
 ><TR
@@ -301,7 +282,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Informacje dodatkowe</TD
+>Other Information</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -311,7 +292,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Wymagania</TD
+>Requirements</TD
 ></TR
 ></TABLE
 ></DIV

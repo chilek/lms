@@ -208,7 +208,7 @@ if(isset($netdevdata))
 		$error['name'] = _("Name can't be empty!");
 
 	if($netdevdata['ports'] < $LMS->CountNetDevLinks($_GET['id']))
-		$error['ports'] = "Number of connected devices surpasses number of ports!");
+		$error['ports'] = _("Number of connected devices surpasses number of ports!");
 	
 	if(!$error)
 	{

@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Konfiguracja podstawowa</TITLE
+>Basic Configuration</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,19 +10,16 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.2-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Instalacja i konfiguracja"
+TITLE="Installation and configuration"
 HREF="install.html"><LINK
 REL="PREVIOUS"
-TITLE="Instalacja serwera baz danych"
+TITLE="Database Server Installation"
 HREF="install-db.html"><LINK
-REL="NEXT"
-TITLE="Prawa dostêpu"
-HREF="install-rights.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="style.css"><META
 HTTP-EQUIV="Content-Type"
-CONTENT="text/html; charset=ISO-8859-2"></HEAD
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#EBE4D6"
@@ -49,22 +46,18 @@ VALIGN="bottom"
 ><A
 HREF="install-db.html"
 ACCESSKEY="P"
->Poprzedni</A
+>Prev</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 2. Instalacja i konfiguracja</TD
+>Chapter 2. Installation and configuration</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
-><A
-HREF="install-rights.html"
-ACCESSKEY="N"
->Nast&#281;pny</A
-></TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ><HR
@@ -76,25 +69,25 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-CONFIG"
->2.5. Konfiguracja podstawowa</A
+>2.5. Basic Configuration</A
 ></H1
 ><P
->G³ównym plikiem konfiguracyjnym LMS jest <TT
+>Main configuration file of LMS is <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >,
-	    który nale¿y umie¶ciæ w katalogu <TT
+	    which must be placed in directory <TT
 CLASS="FILENAME"
 >/etc/lms</TT
-> lub w katalogu
-	    g³ównym LMS'a. Zawiera on zmienne konfiguracyjne <SPAN
+> or in root
+	    directory of LMS. It contains configuration options of <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
-> 
-	    oraz wszystkich skryptów wykonywalnych z wyj±tkiem <SPAN
+>
+	    and all script with exception of <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -116,13 +109,13 @@ VALIGN="TOP"
 ><IMG
 SRC="images/note.gif"
 HSPACE="5"
-ALT="Notatka"></TD
+ALT="Note"></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Pamiêtaj o usuniêciu ¶redników na pocz±tku linii z ustawianym 
-	    parametrem konfiguracyjnym.</P
+>Remember to remove semicolons from begining of line
+	    with seted parameter.</P
 ></TD
 ></TR
 ></TABLE
@@ -134,7 +127,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-CONFIG-DB"
->2.5.1. Sekcja [database] - ustawienia bazy danych</A
+>2.5.1. Section [database] - Database Settings</A
 ></H2
 ><P
 >	    <UL
@@ -142,10 +135,10 @@ NAME="INSTALL-CONFIG-DB"
 ><P
 >type</P
 ><P
->Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak na razie nie 
-	   widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</P
+>Database type. Actually in 100% supported is 'mysql', but for the time being
+	   isn't seen problems with 'postgres'. Default: mysql</P
 ><P
->Przyk³ad: <SAMP
+>Example: <SAMP
 CLASS="PROMPT"
 >type = mysql</SAMP
 ></P
@@ -154,11 +147,11 @@ CLASS="PROMPT"
 ><P
 >host</P
 ><P
->Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj 
-	   wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie 'localhost:/path/to/socket'). 
-	   Domy¶lnie: localhost</P
+>Host where database is installed. Most often, localhost, but can 
+	   here set anything (IP, domain, path to socket in format 'localhost:/path/to/socket'). 
+	   Default: localhost</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >host = localhost</SAMP
 ></P
@@ -167,12 +160,12 @@ CLASS="PROMPT"
 ><P
 >user</P
 ><P
->U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze 
-	   wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, 
-	   prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 
-	   'postgres' (PostgreSQL). Domy¶lnie: mysql</P
+>Name of database user account. In many cases (if you've go by documentation) 
+	   that will be 'lms'. When you'll want to use privileged account, 
+	   probably you'll enter 'root' (MySQL on most of *nixes), 'mysql' (on PLD) or
+	   'postgres' (PostgreSQL). Default: mysql</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >user = lms</SAMP
 ></P
@@ -181,9 +174,9 @@ CLASS="PROMPT"
 ><P
 >password</P
 ><P
->Has³o do bazy danych. Domy¶lnie puste.</P
+>Database password. Default: empty.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >password = password</SAMP
 ></P
@@ -192,9 +185,9 @@ CLASS="PROMPT"
 ><P
 >database</P
 ><P
->Nazwa bazy danych, domy¶lnie lms.</P
+>Name of database. Default: lms.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >database = lms</SAMP
 ></P
@@ -209,7 +202,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-CONFIG-DIR"
->2.5.2. Sekcja [directories] - ustawienia katalogów</A
+>2.5.2. Section [directories] - Directories Settings</A
 ></H2
 ><P
 >        
@@ -218,11 +211,11 @@ NAME="INSTALL-CONFIG-DIR"
 ><P
 >sys_dir</P
 ><P
->Katalog systemowy. Jest to miejsce gdzie jest ca³a zawarto¶æ UI LMS'a, czyli index.php, grafiki, 
-	   templejty i reszta. Domy¶lnie, index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale 
-	   lepiej by by³o gdyby mu powiedzieæ gdzie jest:</P
+>System directory. It is a place where is entire content of LMS's UI, that means index.php, graphics, 
+	   templates and the rest. By default index.php seek in filesystem 
+	   using getcwd(), but better is to say him where hi is:</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >sys_dir = /var/www/htdocs/lms/</SAMP
 ></P
@@ -231,10 +224,13 @@ CLASS="PROMPT"
 ><P
 >modules_dir</P
 ><P
->Katalog z "modu³ami" LMS'a. Czyli zawarto¶æ katalogu modules. Domy¶lnie jest to podkatalog 
-	   modules w sys_dir.</P
+>Directory with "modules" of LMS. That is content of /modules directory. By default 
+	   it is subdirectory <TT
+CLASS="FILENAME"
+>modules</TT
+> in sys_dir.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >modules_dir = /usr/share/lms/modules/</SAMP
 ></P
@@ -243,9 +239,13 @@ CLASS="PROMPT"
 ><P
 >lib_dir</P
 ><P
->Katalog z "bibliotekami" LMS'a. Czyli zawarto¶æ katalogu lib. Domy¶lnie to podkatalog lib w sys_dir.</P
+>Directory with "libraries" of LMS. That is content of /lib directory. By default 
+	   it is subdirectory <TT
+CLASS="FILENAME"
+>lib</TT
+> in sys_dir.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >lib_dir = /usr/share/lms/lib/</SAMP
 ></P
@@ -254,10 +254,13 @@ CLASS="PROMPT"
 ><P
 >backup_dir</P
 ><P
->Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje zrzuty z bazy. 
-	   Domy¶lnie jest to podkatalog 'backups'.</P
+>Directory for database backup files - place where LMS write database snapshots. 
+	   By default it is subdirectory <TT
+CLASS="FILENAME"
+>backups</TT
+> in sys_dir.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >backup_dir = /var/backup/lms/</SAMP
 ></P
@@ -276,13 +279,13 @@ VALIGN="TOP"
 ><IMG
 SRC="images/warning.gif"
 HSPACE="5"
-ALT="Ostrze&#380;enie"></TD
+ALT="Warning"></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Je¶li katalog z kopiami zapasowymi bêdzie osi±galny z poziomu WWW, to ka¿dy 
-	   bez autoryzacji bêdzie mia³ do nich dostêp.</P
+>If directory with backups will be accessible from WWW level, 
+	   then anybody will can to access them without authorization.</P
 ></TD
 ></TR
 ></TABLE
@@ -293,9 +296,12 @@ VALIGN="TOP"
 ><P
 >smarty_dir</P
 ><P
->Katalog z bibliotek± Smarty - domy¶lnie podkatalog Smarty w lib_dir.</P
+>Directory with Smarty library - By default, subdirectory <TT
+CLASS="FILENAME"
+>Smarty</TT
+> in lib_dir.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >smarty_dir = /usr/lib/php/Smarty</SAMP
 ></P
@@ -304,13 +310,13 @@ CLASS="PROMPT"
 ><P
 >smarty_compile_dir</P
 ><P
->Katalog kompilacji Smartyego. Miejsce gdzie Smarty kompiluje szablony. Domy¶lnie to 
-	   <TT
+>Smarty's compilation directory. Place where Smarty compile templates. By default  
+	   it is subdirectory <TT
 CLASS="FILENAME"
 >templates_c</TT
-> w katalogu sysdir.</P
+> in sys_dir.</P
 ><P
->Przyk³ad: 	<SAMP
+>Example: 	<SAMP
 CLASS="PROMPT"
 >smarty_compile_dir = /var/smarty/compile/lms</SAMP
 ></P
@@ -319,9 +325,13 @@ CLASS="PROMPT"
 ><P
 >smarty_templates_dir</P
 ><P
->Katalog z szablonami którymi Smartiego. Domy¶lnie to podkatalog templates z sys_dir'a.</P
+>Directory with Smarty's templates. By default it is subdirectory <TT
+CLASS="FILENAME"
+>templates</TT
+>
+	   in sys_dir.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >smarty_templates_dir = /usr/share/lms/templates</SAMP
 ></P
@@ -336,18 +346,18 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-CONFIG-UI"
->2.5.3. Sekcja [phpui] - ustawienia interfejsu</A
+>2.5.3. Section [phpui] - Interface Setting</A
 ></H2
 ><UL
 ><LI
 ><P
->allow_from  (opcjonalny)</P
+>allow_from  (optional)</P
 ><P
->Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste, ka¿dy adres IP ma dostêp do LMS'a, 
-	je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego 
-	niechcianego u¿ytkownika.</P
+>Lis of networks and IP addresses, which have access to LMS. If empty, every IP address has 
+	access to LMS. When you write here list of addresses or address classes,
+	LMS dismiss every unwanted user with HTTP 403 error.</P
 ><P
->Przyk³ad:		<SAMP
+>Example:		<SAMP
 CLASS="PROMPT"
 >allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</SAMP
 ></P
@@ -356,10 +366,10 @@ CLASS="PROMPT"
 ><P
 >timeout</P
 ><P
->Timeout sesji www. Po tym czasie (w sekundach) u¿ytkownik zostanie wylogowany je¿eli nie 
-    podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</P
+>Timeout of www session. After that time (in seconds) user will be log out if 
+    not take some action. Default: 600.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >timeout = 900</SAMP
 ></P
@@ -378,13 +388,13 @@ VALIGN="TOP"
 ><IMG
 SRC="images/warning.gif"
 HSPACE="5"
-ALT="Ostrze&#380;enie"></TD
+ALT="Warning"></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie 
-    bêdziesz móg³ korzystaæ z LMS!</P
+>There is not possible to set no timeout. If you set this value
+    on zero, you'll can't use LMS!</P
 ></TD
 ></TR
 ></TABLE
@@ -395,9 +405,9 @@ VALIGN="TOP"
 ><P
 >userlist_pagelimit</P
 ><P
->Limit wy¶wietlanych pozycji na stronie w li¶cie u¿ytkowników. Domy¶lnie brak limitu.</P
+>Limit of displayed positions on one page on users list. Default: no limit.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >userlist_pagelimit = 10</SAMP
 ></P
@@ -406,9 +416,9 @@ CLASS="PROMPT"
 ><P
 >nodelist_pagelimit</P
 ><P
->Limit wy¶wietlanych pozycji na stronie w li¶cie komputerów. Domy¶lnie brak limitu.</P
+>Limit of displayed records on page on nodes list. Default: no limit.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >nodelist_pagelimit = 10</SAMP
 ></P
@@ -417,9 +427,9 @@ CLASS="PROMPT"
 ><P
 >balancelist_pagelimit</P
 ><P
->Limit wy¶wietlanych pozycji na stronie na rachunku u¿ytkownika. Domy¶lnie: 100.</P
+>Limit of displayed records on page on user's balance. Default: 100.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >balancelist_pagelimit = 50</SAMP
 ></P
@@ -428,9 +438,9 @@ CLASS="PROMPT"
 ><P
 >invoicelist_pagelimit</P
 ><P
->Limit wy¶wietlanych pozycji na stronie w li¶cie faktur. Domy¶lnie: 100</P
+>Limit of displayed records on page on invoices list. Default: 100</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >invoicelist_pagelimit = 50</SAMP
 ></P
@@ -439,16 +449,16 @@ CLASS="PROMPT"
 ><P
 >reload_type</P
 ><P
->Typ reloadu. Dozwolone warto¶ci:</P
+>Reload type. Allowed values:</P
 ><P
->exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶ skrypt lub co¶, konfigurowalny
-     poni¿ej)</P
+>exec - calling of some command (most often with sudo, some script or something
+    else, configurable below)</P
 ><P
->sql  - zrobienie wpisów w SQL'u (te¿ mo¿na ustawiæ konkretne query SQL'a)</P
+>sql  - doing SQL writes (also can be set concrete query)</P
 ><P
 >Domy¶lna warto¶æ to 'sql'.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >reload_type = exec</SAMP
 ></P
@@ -457,15 +467,15 @@ CLASS="PROMPT"
 ><P
 >reload_execcmd</P
 ><P
->Komenda do wykonania podczas reloadu je¿eli reload_type jest ustawione na 'exec'. Domy¶lnie
+>Command to run during reload, if reload_type is set to 'exec'. By default
     <TT
 CLASS="FILENAME"
 >/bin/true</TT
->. String ten puszczany do komendy system() wiêc proponujê rozwagê 
-    i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru 
-    wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedynczo.</P
+>. That string is send to command system(), so I propose consideration 
+    what you do and how :) Altogether, semicolons should be parsed by bash, but
+    LMS splits that string and execute commands singly.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >reload_execcmd = "sudo /usr/bin/reload_lms.sh"</SAMP
 ></P
@@ -474,15 +484,16 @@ CLASS="PROMPT"
 ><P
 >reload_sqlquery</P
 ><P
->Zapytanie SQL wykonywane podczas reloadu, je¶li <SAMP
+>SQL query executed while reload, if <SAMP
 CLASS="PROMPT"
 >reload_type = sql</SAMP
 >.  
-    Domy¶lnie zapytanie wrzuca do tabeli timestamps warto¶æ '_force'. W zapytaniu mo¿na u¿yæ 
-    '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest 
-    traktowany jako separator kwerend, tzn. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka zapytañ SQL.</P
+    By default, query inserts into table 'timestamps' value '_force'. In query can be used
+    '%TIME%' as replacement to current unix timestamp. WARNING! Semicolon is handled by
+    a queries separator, that means you can enter couple of SQL queries separate them by
+    semicolon sign.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</SAMP
 ></P
@@ -491,35 +502,35 @@ CLASS="PROMPT"
 ><P
 >force_ssl</P
 ><P
->Wymuszanie SSL'a. Ustawienie tej zmiennej na 1 spowoduje ¿e LMS bêdzie wymusza³ po³±czenie 
-    SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej 
-    próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</P
+>SSL Enforcing. Setting this option to 1 will make that LMS will enforce SSL connection 
+    doing redirect to 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every access
+    without SSL. Default: 0 (off).</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
->force_ssl = 0</SAMP
+>force_ssl = 1</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >allow_mac_sharing</P
 ><P
->Przyzwolenie na dodawanie rekordów komputerów z adresami MAC ju¿ istniej±cymi (nie sprawdza 
-    czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone</P
+>Permission for addition of nodes with duplicated MAC address (not checking
+    that some computer have that MAC yet). Default: 0 (off)</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
->allow_mac_sharing	= 1</SAMP
+>allow_mac_sharing = 1</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >smarty_debug</P
 ><P
->W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP 
-    do Smartyego. Domy¶lnie wy³±czone.</P
+>Enable Smarty's debug console. Usefull for tracking values passed from PHP 
+    to Smarty. Default: 0 (off).</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >smarty_debug = 1</SAMP
 ></P
@@ -528,10 +539,10 @@ CLASS="PROMPT"
 ><P
 >debug_email</P
 ><P
->Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Mailing' LMS'a, 
-    zamiast do w³a¶ciwych u¿ytkowników.</P
+>E-mail address for debugging - at this address will goes messages sended from madule 'Mailing', 
+    instead of proper users.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >debug_email = root@localhost</SAMP
 ></P
@@ -540,10 +551,10 @@ CLASS="PROMPT"
 ><P
 >default_zip, default_city, default_address</P
 ><P
->Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
-    u¿ytkownika. Przydatne gdy mamy do wpisania wielu u¿ytkowników z tej samej ulicy.</P
+>Default zip code, city, street, used while inserting of new user.
+    Useful when we have many users on the same street.</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >default_zip = 39-300</SAMP
 ></P
@@ -552,10 +563,10 @@ CLASS="PROMPT"
 ><P
 >use_current_payday</P
 ><P
->Okre¶la, czy ma byæ u¿yty aktualny dzieñ miesi±ca jako dzieñ zap³aty
-    zamiast najczê¶ciej u¿ywanego. Domy¶lnie wy³±czone.</P
+>Qualify to use current day of month for payment day
+    instead of most often used day. Default: 0 (off).</P
 ><P
->Przyk³ad:	<SAMP
+>Example:	<SAMP
 CLASS="PROMPT"
 >use_current_payday = 1</SAMP
 ></P
@@ -581,7 +592,7 @@ VALIGN="top"
 ><A
 HREF="install-db.html"
 ACCESSKEY="P"
->Poprzedni</A
+>Prev</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -590,24 +601,20 @@ VALIGN="top"
 ><A
 HREF="index.html"
 ACCESSKEY="H"
->Spis tre&#347;ci</A
+>Home</A
 ></TD
 ><TD
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
-><A
-HREF="install-rights.html"
-ACCESSKEY="N"
->Nast&#281;pny</A
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Instalacja serwera baz danych</TD
+>Database Server Installation</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -615,13 +622,13 @@ VALIGN="top"
 ><A
 HREF="install.html"
 ACCESSKEY="U"
->Pocz&#261;tek rozdzia&#322;u</A
+>Up</A
 ></TD
 ><TD
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Prawa dostêpu</TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ></DIV

@@ -8,28 +8,28 @@
 			<B>ID:</B>
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>Data:</B>
+			<B>{t}Date{/t}:</B>
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>Admin:</B>
+			<B>{t}Admin{/t}:</B>
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>Typ:</B>
+			<B>{t}Type{/t}:</B>
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			<B>Warto¶æ:</B>
+			<B>{t}Value{/t}:</B>
 		</TD>
 		<TD width="1%" class="fbt" align="center">
 			<B>&raquo;</B>
 		</TD>
 		<TD width="1%" class="fbt" align="right">
-			<B>Po:</B>
+			<B>{t}After{/t}:</B>
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>U¿ytkownik:</B>
+			<B>{t}User{/t}:</B>
 		</TD>
 		<TD width="90%" class="fbt">
-			<B>Opis:</B>
+			<B>{t}Description{/t}:</B>
 		</TD>
 		<TD width="1%" CLASS="frightu">
 			&nbsp;
@@ -66,13 +66,13 @@
 			<NOBR><B>{$balancelist[balancelist].type}</B></NOBR>
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top">
-			<NOBR>{$balancelist[balancelist].value|string_format:"%01.2f"} {t}z³{/t}</NOBR>
+			<NOBR>{$balancelist[balancelist].value|string_format:"%01.2f"}</NOBR>
 		</TD>
 		<TD width="1%" align="center" valign="top">
 			&raquo;
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top"> 
-			<NOBR>{$balancelist[balancelist].after|string_format:"%01.2f"} {t}z³{/t}</NOBR>
+			<NOBR>{$balancelist[balancelist].after|string_format:"%01.2f"}</NOBR>
 		</TD>
 		<TD width="1%" nowrap valign="top">
 			{if $balancelist[balancelist].userid}<NOBR><A HREF="?m=userbalance&id={$balancelist[balancelist].userid}">{$balancelist[balancelist].username|truncate:20:"..."}</A></NOBR>{else} - {/if}
@@ -119,11 +119,11 @@
 		</TD>
 		<TD width="1%" nowrap class="fbt" align="right">
 			<NOBR>
-			{$listdata.uinvoice|string_format:"%01.2f"} {t}z³{/t}<HR>
-			{$listdata.incomeu|string_format:"%01.2f"} {t}z³{/t}<BR>
-			{$listdata.income|string_format:"%01.2f"} {t}z³{/t}<BR>
-			{$listdata.expense|string_format:"%01.2f"} {t}z³{/t}<HR>
-			{$listdata.total|string_format:"%01.2f"} {t}z³{/t}
+			{$listdata.uinvoice|string_format:"%01.2f"}<HR>
+			{$listdata.incomeu|string_format:"%01.2f"}<BR>
+			{$listdata.income|string_format:"%01.2f"}<BR>
+			{$listdata.expense|string_format:"%01.2f"}<HR>
+			{$listdata.total|string_format:"%01.2f"}
 			</NOBR>
 		</TD>
 		<TD width="95%" colspan="5" class="frightu">

@@ -764,13 +764,13 @@ class LMS
 
 					case "3":
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = "Wp³ata";
-//						$saldolist['comment'][$i] = "Abonament za".date("Y/m",$saldolist['time'][$i]) || $saldolist['comment'][$i];
+						$saldolist['name'][$i] = _('Payment');
+//						$saldolist['comment'][$i] = _("Subscription for ").date("Y/m",$saldolist['time'][$i]) || $saldolist['comment'][$i];
 					break;
 
 					case "4":
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = "Obci±¿enie";
+						$saldolist['name'][$i] = _('Covenant');
 					break;
 
 				}
