@@ -30,7 +30,7 @@
 class LMS
 {
 
-     var $ADB;          // obiekt ADOdb
+     var $DB;          // obiekt bazy danych
      var $SESSION;          // obiekt z Session.class.php (zarz±dzanie sesj±)
      var $CONFIG;          // tablica zawieraj±ca zmienne z lms.ini
      var $_version = NULL;     // wersja klasy
@@ -1893,6 +1893,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.251  2003/09/30 18:33:54  alec
+ * rest of ADO removed
+ *
  * Revision 1.250  2003/09/30 18:21:38  alec
  * removed doubled query in UserExists()
  *
