@@ -599,6 +599,9 @@ class LMS
 			foreach($userlist as $idx => $row)
 			{
 				$userlist[$idx]['tariffvalue'] = $week[$row['id']]['value']+$month[$row['id']]['value']+$quarter[$row['id']]['value']+$year[$row['id']]['value'];
+				$userlist[$idx]['account'] = $access[$row['id']]['account'];
+				$userlist[$idx]['warncount'] = $warning[$row['id']]['warncount'];
+
 				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'])
 					$userlist[$idx]['nodeac'] = 1;
 				elseif($access[$row['id']]['acsum'] == 0)
