@@ -122,22 +122,7 @@ class LMS
 
 	function UserUpdate($userdata)
 	{
-
-		$SESSION=$this->SESSION;
-		$DB=$this->DB;
-		$this->SetTS("users");
-		return $DB->execSQL("UPDATE `users` SET 
-		`phone1` = '".$userdata[phone1]."',
-		`phone2` = '".$userdata[phone2]."',
-		`phone3` = '".$userdata[phone3]."',
-		`address` = '".$userdata[address]."',
-		`email` = '".$userdata[email]."',
-		`tariff` = '".$userdata[tariff]."',
-		`info` = '".trim($userdata[uwagi])."',
-		`modid` = '".$SESSION->id."',
-		`status` = '".$userdata[status]."',
-		`moddate` = UNIX_TIMESTAMP()
-		WHERE `id` = '".$userdata[id]."' LIMIT 1");
+		return $this->ADB->Execute("UPDATE users SET phone1=?, phone2=?, phone3=?, address=?, email=?, tariff=?, info=?, modid=".$this->sqlTSfmt().", status=?, moddate=? WHERE id=?",array($userdata[phone1],$userdata[phone2],$userdata[phone3],$userdata[address],$userdata[email],$userdata[tariff],$userdata[uwagi],$userdata[status],$this->sqlTSfmt,$userdata[id]));
 	}
 
 	function GetUserNodesNo($id)
@@ -357,7 +342,6 @@ class LMS
 
 	function NetworkShift($network="0.0.0.0",$mask="0.0.0.0",$shift=0)
 	{
-		$DB=$this->DB;
 		$this->SetTS("nodes");
 		$this->SetTS("networks");
 		if($nodes = $this->ADB->GetAll("SELECT ipaddr, id FROM nodes"))
@@ -368,9 +352,8 @@ class LMS
 
 	function NetworkUpdate($networkdata)
 	{
-		$DB=$this->DB;
 		$this->SetTS("networks");
-		return $DB->execSQL("UPDATE `networks` SET `name` = '".strtoupper($networkdata[name])."', `address` = '".$networkdata[address]."', `mask` = '".$networkdata[mask]."', `gateway` = '".$networkdata[gateway]."', `dns` = '".$networkdata[dns]."', `domain` = '".$networkdata[domain]."', `wins` = '".$networkdata[wins]."', `dhcpstart` = '".$networkdata[dhcpstart]."', `dhcpend` = '".$networkdata[dhcpend]."' WHERE `id` = '".$networkdata[id]."' LIMIT 1");
+		return $this->ADB->Execute("UPDATE networks SET name=?, address=?, mask=?, gateway=?, dns=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?",array(strtoupper($networkdata[name]),$networkdata[address],$networkdata[mask],$networkdata[gateway],$networkdata[dns],$networkdata[domain],$networkdata[wins],$networkdata[dhcpstart],$networkdata[dhcpend],$networkdata[id]));
 	}
 				
 	
@@ -524,21 +507,22 @@ class LMS
 
 	function GetUserNames()
 	{
-		return $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users WHERE status=3");
+		return $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users WHERE status=3 ORDER BY username");
 	}
 
 	function GetUserNodesAC($id)
 	{
-		$DB=$this->DB;
-		$acl = $DB->fetchTable("SELECT `access` FROM `nodes` WHERE `ownerid` = '".$id."'");
-		if(sizeof($acl))
-			foreach($acl[access] as $value)
-				if(strtoupper($value) == "Y")
-					$y ++;
+		if($acl = $this->ADB->GetALL("SELECT access FROM nodes WHERE ownerid=?",array($id)))
+		{
+			foreach($acl as $value)
+				if(strtoupper($value[access]) == "Y")
+					$y++;
 				else
-					$n ++;
-		if($y && !$n) return TRUE;
-		if($n && !$y) return FALSE;
+					$n++;
+
+			if($y && !$n) return TRUE;
+			if($n && !$y) return FALSE;
+		}
 		return 2;
 	}
 	
@@ -888,9 +872,9 @@ class LMS
 		$DB=$this->DB;
 		$this->SetTS("nodes");
 		if($access)
-			return $DB->execSQL("UPDATE `nodes` SET `access` = 'Y' WHERE `ownerid` = '".$id."'");
+			return $this->ADB->Execute("UPDATE nodes SET access=? WHERE ownerid=?",array("Y",$id));
 		else
-			return $DB->execSQL("UPDATE `nodes` SET `access` = 'N' WHERE `ownerid` = '".$id."'");
+			return $this->ADB->Execute("UPDATE nodes SET access=? WHERE ownerid=?",array("N",$id));
 	}
 
 	function GetOwner($id)
@@ -902,7 +886,7 @@ class LMS
 	{
 		$bin = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='3'",array($id));
 		$bab = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='4'",array($id));
-		return round(str_replace(".",",",$bin) - str_replace(".",",",$bab));
+		return round(str_replace(".",",",$bin) - str_replace(".",",",$bab),2);
 	}
 
 	function GetUserBalanceList($id)
