@@ -109,7 +109,7 @@ if(isset($_GET[prename])&&$nodedata[name]=="")
 	$nodedata[name] = $_GET[prename];
 		
 
-$layout[pagetitle]="Dodanie nowego komputera";
+$layout[pagetitle]="Nowy komputer";
 
 $tariffs = $LMS->GetTariffs();
 $balancelist = $LMS->GetUserBalanceList($nodedata[ownerid]);
@@ -128,6 +128,9 @@ $SMARTY->display("nodeadd.html");
 
 /*
  * $Log$
+ * Revision 1.37  2003/10/07 19:15:05  alec
+ * ujednolicenie naglowka
+ *
  * Revision 1.36  2003/09/12 02:52:57  lukasz
  * - cosmetics
  *
