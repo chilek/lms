@@ -292,7 +292,7 @@
 				<member>password - has³o zaszyfrowane funkcj± crypt()</member>
 				<member>lastlogin - data ostatniego logowania</member>
 				<member>uid - identyfikator systemowy konta</member>
-				<member>home - katalog domowy (/home/<login>)</member>
+				<member>home - katalog domowy (/home/[login])</member>
 				<member>type - typ konta (suma: 1-shell, 2-poczta, 4-www, 8-ftp)</member>
 				<member>expdate - data wa¿no¶ci konta</member>
 				<member>domain - nazwa domeny (np. dla kont www i pocztowych)</member>
