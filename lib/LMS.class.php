@@ -169,47 +169,30 @@ class LMS
 
 	function GetNetworkList()
 	{
-	
-		if(
-			$_SESSION[timestamps][getnetworklist][networks] != $this->GetTS("networks")
-			||
-			$_SESSION[timestamps][getnetworklist][nodes] != $this->GetTS("nodes")
-		)
+		$tnetworks = $this->ADB->GetAll("SELECT id, name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks");
+		foreach($tnetworks as $idx => $row)
+			foreach($row as $field => $value)
+			$networks[$field][] = $value;
+		
+		$nodes = $this->ADB->GetAll("SELECT ipaddr FROM nodes");
+		$networks[total] = sizeof($networks[id]);
+		if($networks[total])
 		{
-			$tnetworks = $this->ADB->GetAll("SELECT id, name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks");
-			foreach($tnetworks as $idx => $row)
-				foreach($row as $field => $value)
-					$networks[$field][] = $value;
-									
-			$nodes = $this->ADB->GetAll("SELECT ipaddr FROM nodes");
-			$networks[total] = sizeof($networks[id]);
-			if($networks[total])
+			array_multisort($networks[name],$networks[id],$networks[address],$networks[mask],$networks[gateway],$networks[wins],$networks[domain],$networks[dns],$networks[dhcpstart],$networks[dhcpend]);
+			foreach($networks[id] as $key => $value)
 			{
-				array_multisort($networks[name],$networks[id],$networks[address],$networks[mask],$networks[gateway],$networks[wins],$networks[domain],$networks[dns],$networks[dhcpstart],$networks[dhcpend]);
-				foreach($networks[id] as $key => $value)
-				{
-					$networks[addresslong][$key] = ip_long($networks[address][$key]);
-					$networks[prefix][$key] = mask2prefix($networks[mask][$key]);
-					$networks[broadcast][$key] = getbraddr($networks[address][$key],$networks[mask][$key]);
-					$networks[boradcastlong][$key] = ip_long($networks[broadcast][$key]);
-					$networks[size][$key] = pow(2,(32-$networks[prefix][$key]));
-					$networks[size][total] = $networks[size][total] + $networks[size][$key];
-					if(sizeof($nodes))
-						foreach($nodes as $row)
-							if(isipin($row[ipaddr],$networks[address][$key],$networks[mask][$key]))
-								$networks[assigned][$key] ++;
-					$networks[assigned][total] = $networks[assigned][total] + $networks[assigned][$key];
-				}
+				$networks[addresslong][$key] = ip_long($networks[address][$key]);
+				$networks[prefix][$key] = mask2prefix($networks[mask][$key]);
+				$networks[broadcast][$key] = getbraddr($networks[address][$key],$networks[mask][$key]);
+				$networks[boradcastlong][$key] = ip_long($networks[broadcast][$key]);
+				$networks[size][$key] = pow(2,(32-$networks[prefix][$key]));
+				$networks[size][total] = $networks[size][total] + $networks[size][$key];
+				if(sizeof($nodes))
+					foreach($nodes as $row)
+						if(isipin($row[ipaddr],$networks[address][$key],$networks[mask][$key]))
+							$networks[assigned][$key] ++;
+				$networks[assigned][total] = $networks[assigned][total] + $networks[assigned][$key];
 			}
-
-			$_SESSION[timestamps][getnetworklist][networks] = $this->GetTS("networks");
-			$_SESSION[timestamps][getnetworklist][nodes] = $this->GetTS("nodes");
-			$_SESSION[cache][getnetworklist] = $networks;
-
-		}
-		else
-		{
-			$networks = $_SESSION[cache][getnetworklist];
 		}
 		
 		return $networks;
@@ -1399,9 +1382,9 @@ class LMS
 			{
 				$tarifflist[users][$idx] = $this->GetUsersWithTariff($id);
 				$tarifflist[value][$idx] = str_replace(".",",",$tarifflist[value][$idx]);
-				$tarifflist[totalusers] = $tarifflist[totalusers] + $tarifflist[users][$key];
-				$tarifflist[income][$key] = $tarifflist[users][$key] * $tarifflist[value][$key];
-				$tarifflist[totalincome] = $tarifflist[totalincome] + $tarifflist[income][$key];
+				$tarifflist[totalusers] = $tarifflist[totalusers] + $tarifflist[users][$idx];
+				$tarifflist[income][$idx] = $tarifflist[users][$idx] * $tarifflist[value][$idx];
+				$tarifflist[totalincome] = $tarifflist[totalincome] + $tarifflist[income][$idx];
 			}
 
 		}
