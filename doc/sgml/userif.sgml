@@ -523,9 +523,11 @@ sql_user: lms
 sql_passwd: has³o
 sql_hostnames: localhost
 sql_database: lms
-#sql_select: SELECT password FROM passwd WHERE login='%u' AND domain ='%r' AND type & 2 = 2 
+#sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
+#       AND login='%u' AND domains.name ='%r' AND type & 2 = 2 
 #	AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
-sql_select: SELECT password FROM passwd WHERE login='%u' AND domain ='%r' AND type & 2 = 2 
+sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
+	AND login='%u' AND domains.name ='%r' AND type & 2 = 2 
 	AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 password_format: crypt
 mech_list: login plain
@@ -543,12 +545,14 @@ PGSQL_DATABASE		lms
 #MYSQL_SELECT_CLAUSE SELECT login, \
 #       password, '', 104, 104, '/var/spool/mail/virtual', \
 #       CONCAT(login,'/'), '', login, '' \
-#       FROM passwd WHERE login = '$(local_part)' AND domain = '$(domain)' \
+#       FROM passwd, domains WHERE domainid = domains.id 
+#       AND login = '$(local_part)' AND domains.name = '$(domain)' \
 #       AND type & 2 = 2 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
 PGSQL_SELECT_CLAUSE SELECT login, \
         password, '', 104, 104, '/var/spool/mail/virtual', \
         login ||'/', '', login, '' \
-        FROM passwd WHERE login = '$(local_part)' AND domain = '$(domain)' \
+        FROM passwd, domains WHERE domainid = domains.id 
+        AND login = '$(local_part)' AND domains.name = '$(domain)' \
         AND type & 2 = 2 \
         AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 
@@ -564,7 +568,7 @@ user = lms
 password = has³o
 hosts = localhost
 dbname = lms
-query = SELECT domain FROM passwd WHERE domain = '%s' AND type & 2 = 2 LIMIT 1
+query = SELECT name FROM domains WHERE name = '%s'
 
 # pgsql_virtual_mailbox_maps.cf (Postfix):
 
@@ -572,9 +576,11 @@ user = lms
 password = has³o
 hosts = localhost
 dbname = lms
-#query = SELECT CONCAT(login,'/') FROM passwd WHERE login = '%u' AND domain = '%d' 
+#query = SELECT CONCAT(login,'/') FROM passwd, domains WHERE domainid = domains.id
+#       AND login = '%u' AND domains.name = '%d' 
 #       AND type & 2 = 2 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
-query = SELECT login || '/' FROM passwd WHERE login = '%u' AND domain = '%d' 
+query = SELECT login || '/' FROM passwd, domains WHERE domainid = domains.id
+        AND login = '%u' AND domains.name = '%d' 
         AND type & 2 = 2 
         AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
 </screen>

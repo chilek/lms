@@ -1845,8 +1845,23 @@ header_checks = regexp:/etc/postfix/header_checks
 # plik master.cf:
 filter unix - n n - 10 pipe
       -flags=Rq user=nobody argv=/path/to/lms-rtparser</PRE
->
-	    </P
+></P
+><P
+>Kolejny listing to przyk³ad pod³±czenia parsera do Exima 
+	    przy u¿yciu filtrów systemowych:
+<PRE
+CLASS="SCREEN"
+># plik exim.conf
+
+system_filter_pipe_transport = address_pipe
+
+# plik system_filter.txt
+
+if $recipients is "adres_kolejki@domena.pl"
+then 
+     pipe "/sciezka/do/lms-rtparser -q id_kolejki"
+endif</PRE
+></P
 ><P
 ><DIV
 CLASS="NOTE"
