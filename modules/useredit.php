@@ -35,6 +35,15 @@ if(isset($userdata))
 	foreach($userdata as $key=>$value)
 		$userdata[$key] = trim($value);
 
+	// avoid stupid data in payday field
+
+	$userdata[payday] = sprintf('%d',$userdata[payday]);
+	
+	if($userdata[payday] < 1)
+		$userdata[payday] = 1;
+	elseif($userdata[payday] > 28)
+		$userdata[payday] = 28;
+
 	if($userdata[lastname]=="")
 		$error[username] = "To pole nie mo¿e byæ puste!";
 	
@@ -83,12 +92,16 @@ if(isset($userdata))
 		$userinfo[shownodes] = TRUE;
 }
 
+for($i=1;$i<29;$i++)
+	$paydays[] = $i;
+
 $layout[pagetitle]="Edycja danych u¿ytkownika ".$userinfo[username];
 $SMARTY->assign("usernodes",$LMS->GetUserNodes($userinfo[id]));
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($userinfo[id]));
 $SMARTY->assign("tariffs",$LMS->GetTariffs());
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("layout",$layout);
+$SMARTY->assign("paydays",$paydays);
 $SMARTY->display("useredit.html");
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];

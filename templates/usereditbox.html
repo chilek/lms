@@ -121,7 +121,8 @@
 		</TD>
 		<TD WIDTH="1%">
 			<B>Saldo:<BR>
-			Taryfa:</B>
+			Taryfa:<BR>
+			Dzieñ zap³aty:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{if $userinfo.balance < 0}<FONT CLASS="ALERT">{$userinfo.balance|default:"0"} z³</FONT>{else}{$userinfo.balance|default:"0"} z³{/if}<BR>
@@ -130,7 +131,12 @@
 				<OPTION VALUE="{$tariffs.id[t]}"{if $tariffs.id[t] eq $userinfo.tariff} SELECTED{/if}>{$tariffs.name[t]} ({$tariffs.value[t]} z³/mc)</OPTION>
 				{/section}
 			</SELECT>
-			{if $error.tariff}<BR><FONT CLASS="ALERT">{$error.tariff}</FONT>{/if}
+			{if $error.tariff}<BR><FONT CLASS="ALERT">{$error.tariff}</FONT>{/if}<BR>
+			<SELECT SIZE="1" NAME="userdata[payday]">
+				{section name=t loop=$paydays}
+				<OPTION VALUE="{$paydays[t]}"{if $paydays[t] eq $userinfo.payday} SELECTED{/if}>{$paydays[t]}</OPTION>
+				{/section}
+			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

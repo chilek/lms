@@ -108,7 +108,8 @@
 						<TABLE>
 							<TR>
 								<TD>
-									<B>Taryfa:</B>
+									<B>Taryfa:</B><BR>
+									<B>Dzieñ zap³aty:</B>
 								</TD>
 								<TD>
 									&nbsp;
@@ -121,7 +122,12 @@
 									</SELECT>
 									{if $error.tariff}
 									<FONT COLOR="Red"><B>Proszê wybraæ taryfê!</B></FONT>
-									{/if}
+									{/if}<BR>
+									<SELECT size="1" name="useradd[payday]">
+										{section name=t loop=$paydays}
+										<OPTION VALUE="{$paydays[t]}"{if $paydays[t] eq $useradd.payday} SELECTED{/if}>{$paydays[t]}</OPTION>
+										{/section}
+									</SELECT>
 								</TD>
 							</TR>
 						</TABLE>
