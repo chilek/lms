@@ -46,7 +46,7 @@
 		</TD>
 		<TD class="fright">
 			<nobr>
-			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t}Are you sure you want to remove network{/t} \'{$netlist[netlist].name|upper}\'?')"><IMG src="img/delete.gif" border="0" ALT="[ {t}Remove{/t} ]"></A>
+			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'{t 0=$netlist[netlist].name|upper}Are you sure, you want to remove network \'$0\'?{/t}')"><IMG src="img/delete.gif" border="0" ALT="[ {t}Remove{/t} ]"></A>
 			<a href="?m=netedit&id={$netlist[netlist].id}"><IMG src="img/edit.gif" border="0" ALT="[ {t}Edit{/t} ]"></A>
 			<a href="?m=netinfo&id={$netlist[netlist].id}"><IMG src="img/info.gif" border="0" ALT="[ {t}Info{/t} ]"></A></nobr>
 		</TD>

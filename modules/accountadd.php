@@ -61,7 +61,7 @@ if($account = $_POST['account'])
 	{
 		$date = explode('/',$account['expdate']);
 		if(!checkdate($date[1],$date[2],$date[0]))
-			$error['expdate'] = trans('Incorrect date format! Enter date in format YYYY/MM/DD.');
+			$error['expdate'] = trans('Incorrect date format! Enter date in format YYYY/MM/DD!');
 		elseif(!$error)
 			$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
 	}
