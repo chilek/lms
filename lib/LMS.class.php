@@ -610,12 +610,29 @@ class LMS
 		return $balancelist;
 	}
 
-	function GetUserList($order=NULL,$state=NULL)
+	function GetUserList($order=NULL,$state=NULL,$search=NULL)
 	{
 
 		$DB=$this->DB;
 
-		if(!isset($state)) $state="3";
+		if($search != NULL)
+			foreach($search as $key => $value)
+				if(trim($value)!="")
+				{
+					$sarr[] = "$key LIKE '%".trim(str_replace(" ","%",$value))."%'";
+					$uarr[] = "$key=$value";
+				}
+				
+		if(!isset($state)) 
+			$state="3";
+
+		if($state != 0)
+			$sarr[] = "status='".$state."'";
+
+		$ssqlstr = "WHERE ".implode(" AND ",$sarr);
+		$ssqlstr = str_replace("username","CONCAT(UPPER(lastname),' ', name)",$ssqlstr);
+		$surlstr = "&search&".implode("&",$uarr);
+		
 		if(!isset($order)) $order="username,asc";
 
 		list($order,$direction)=explode(",",$order);
@@ -652,7 +669,7 @@ class LMS
 		else
 			$direction = "desc";
 
-		$userlist = $DB->fetchTable("SELECT id, CONCAT(UPPER(lastname),' ', name) AS username, status, email, phone1, address, info FROM users ".($state !=0 ? "WHERE status = '".$state."'":"")." ".$sqlord." ".($sqlord!="" ? $direction : ""));
+		$userlist = $DB->fetchTable("SELECT id, CONCAT(UPPER(lastname),' ', name) AS username, status, email, phone1, address, info FROM users ".$ssqlstr." ".$sqlord." ".($sqlord!="" ? $direction : ""));
 
 		$DB->execSQL("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid");
 
@@ -692,6 +709,7 @@ class LMS
 		$userlist[order]=$order;
 		$userlist[direction]=$direction;
 		$userlist[total]=sizeof($userlist[id]);
+		$userlist[urlsstr]=$surlstr;
 		return $userlist;
 	}
 			

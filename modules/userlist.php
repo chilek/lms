@@ -41,11 +41,23 @@ else
 	$s = $_GET[s];
 $_SESSION[uls] = $s;
 
-$userlist=$LMS->GetUserList($o,$s);
+if(isset($_GET[search]))
+{
+	$SMARTY->assign("search",TRUE);
+	$search[username] = $_GET[username];
+	$search[address] = $_GET[address];
+	$search[phone1] = $_GET[phone];
+	$search[phone2] = $_GET[phone];
+	$search[phone3] = $_GET[phone];
+	$search[email] = $_GET[email];
+	$userlist=$LMS->GetUserList($o,$s,$search);
+}else
+	$userlist=$LMS->GetUserList($o,$s);
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("userlist",$userlist);
 $SMARTY->assign("tariffs",$LMS->GetTariffs());
+
 
 $SMARTY->display("header.html");
 $SMARTY->display("userlist.html");
