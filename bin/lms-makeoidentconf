@@ -48,7 +48,7 @@ lms-makeoidentconf, version $_version
 (C) Copyright 2002 Rulez.PL Development Team
 (C) Copyright 2001-2002 NetX ACN
 
--C, --config-file=/etc/lms/lms-scripts.ini	alternate config file (default: /etc/lms/lms-scripts.ini);
+-C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
 -h, --help			print this help and exit;
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
@@ -70,7 +70,7 @@ EOF
 
 if(!$configfile)
 {
-	$configfile = "/etc/lms/lms-scripts.ini";
+	$configfile = "/etc/lms/lms.ini";
 }
 
 if(!$quiet)
@@ -119,7 +119,7 @@ else
 
 open(OIDENTDCONF, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.\n");
 
-my $dbq = $dbase->prepare("SELECT id, name, ipaddr FROM nodes");
+my $dbq = $dbase->prepare("SELECT id, name, ipaddr, ownerid FROM nodes");
 
 $dbq->execute();
 
@@ -128,6 +128,7 @@ while (my $row = $dbq->fetchrow_hashref()) {
 	my $ident = $itempl;
 	$ident =~ s/\%N/$row->{'name'}/;
 	$ident =~ s/\%I/$row->{'id'}/;
+	$ident =~ s/\%O/$row->{'ownerid'}/;
 	print OIDENTDCONF "$ident\tUNIX\n";
 }
 
