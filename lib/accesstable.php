@@ -49,6 +49,9 @@ $access[table][5][allow_reg]	= "^user(add|edit|del)$";
 $access[table][6][name]		= "manipulacja danymi komputerów";
 $access[table][6][allow_reg]	= "^(node(add|scan|del|edit|set)|choose(mac|ip))$";
 
+$access[table][253][name]	= "brak dostêpu do modyfikacji i zak³adania nowych kont administratorów";
+$access[table][253][deny_reg]	= "^(admin(add|del|edit|passwd))$";
+
 $access[table][255][name]	= "brak dostêpu";
 $access[table][255][deny_reg]	= "^.*$";
 
