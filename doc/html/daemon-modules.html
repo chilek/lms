@@ -823,7 +823,8 @@ NAME="HOSTFILE-CONFIG"
 ><P
 >W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
 		    które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
-		    adresem, '%n' - nazw± komputera, '%domain' - domen±, '%net' - nazw± sieci. 
+		    adresem, '%n' - nazw± komputera, '%domain' - domen±, '%net' - nazw± sieci, 
+		    '%gw' - adresem bramy w sieci do której nale¿y dany komputer.
 		    Poni¿ej opcje udostêpniane przez ten modu³</P
 ><UL
 ><LI
@@ -998,15 +999,18 @@ NAME="TC-DESC"
 		    do ograniczania pasma i limitowania po³±czeñ u¿ytkownikom. Regu³ki dla 
 		    komputerów mo¿na dowolnie zdefiniowaæ i wykorzystaæ nie tylko do "traffic 
 		    control". Zasada dzia³ania skryptu przedstawia siê nastêpuj±co: Najpierw z bazy
-		    pobierane s± dane dla wszystkich u¿ytkowników. Obliczane s± warto¶ci ¶rednie
-		    (uprate, downrate, upceil, downceil, limity po³±czeñ) dla ka¿dego pod³±czonego
-		    komputera na podstawie sumy z taryf jego w³a¶ciciela z zaokr±gleniem ca³kowitym.
+		    pobierane s± dane dla wszystkich u¿ytkowników. Obliczane s± sumy ograniczeñ
+		    (uprate, downrate, upceil, downceil, limity po³±czeñ) dla ka¿dego u¿ytkownika
 		    Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy u¿ytkowników
 		    i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s± ró¿ne od zera nastêpuje
 		    zapis regu³ do pliku z podmian± zmiennych. W regu³kach mo¿na stosowaæ nastêpuj±ce
 		    zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, %uprate, %downrate, %upceil, 
 		    %downceil, %plimit, %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 
 		    zwiêkszany o jeden dla ka¿dego komputera.</P
+><P
+>Domy¶lna polityka tworzenia klas htb zak³ada utworzenie jednej klasy dla
+		    wszystkich komputerów u¿ytkownika. Mo¿e to byæ zmienione za pomoc± opcji
+		    'one_class_per_host'.</P
 ><P
 >Konfiguracja domy¶lna zak³ada, ¿e twój system jest przystosowany
 		    do zastosowania htb oraz iptables z modu³ami limit, connlimit, mark i ipp2p.
@@ -1102,11 +1106,14 @@ IPT=/usr/sbin/iptables
 TC=/sbin/tc
 LAN=eth0
 WAN=eth1
-BURST="burst 5k"
+BURST="burst 30k"
 
 stop ()
 {
-$IPT -t mangle -F PREROUTING
+$IPT -t mangle -D FORWARD -i $WAN -j LIMITS &#62;/dev/null 2&#62;&#38;1
+$IPT -t mangle -D FORWARD -o $WAN -j LIMITS &#62;/dev/null 2&#62;&#38;1
+$IPT -t mangle -F LIMITS &#62;/dev/null 2&#62;&#38;1
+$IPT -t mangle -X LIMITS &#62;/dev/null 2&#62;&#38;1
 $IPT -t mangle -F OUTPUT
 $IPT -t filter -F FORWARD
 $TC qdisc del dev $LAN root 2&#62; /dev/null
@@ -1116,6 +1123,9 @@ $TC qdisc del dev $WAN root 2&#62; /dev/null
 start ()
 {
 stop
+$IPT -t mangle -N LIMITS
+$IPT -t mangle -I FORWARD -i $WAN -j LIMITS
+$IPT -t mangle -I FORWARD -o $WAN -j LIMITS
 # incomming traffic
 $IPT -t mangle -A OUTPUT -j MARK --set-mark 1
 $TC qdisc add dev $LAN root handle 1:0 htb default 3 r2q 1
@@ -1128,7 +1138,7 @@ $TC class add dev $LAN parent 1:2 classid 1:20 htb rate 50kbit ceil 500kbit $BUR
 $TC qdisc add dev $LAN parent 1:20 esfq perturb 10 hash dst
 $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xffff flowid 1:20
 $TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 53 0xffff flowid 1:20
-$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0xff flowid 1:20
+$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 1:20
 $TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 1:20
 # server -&#62; LAN
 $TC filter add dev $LAN parent 1:0 protocol ip prio 4 handle 1 fw flowid 1:3
@@ -1197,18 +1207,83 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->host</P
+>one_class_per_host</P
+><P
+>Okre¶la politykê tworzenia klas htb. W ustawieniu domy¶lnym
+			    wszystkie komputery u¿ytkownika zostan± wrzucone do jednej klasy.
+			    Ustawienie tej opcji na 'true' spowoduje, ¿e regu³y okre¶lone w 
+			    host_htb_up i host_htb_down zostan± wygenerowane dla wszystkich
+			    komputerów u¿ytkownika (z inn± warto¶ci± '%x'). Regu³y z host_mark_down,
+			    host_mark_up, host_plimit i host_climit generowane s± dla ka¿dego
+			    komputera niezale¿nie od ustawieñ tej zmiennej. Domy¶lnie: false</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>one_class_per_host = 1</SAMP
+></P
+></LI
+><LI
+><P
+>host_mark_down</P
+><P
+>Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
+<PRE
+CLASS="SCREEN"
+># %n
+$IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x</PRE
+>
+			    </P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>host_mark_down = ""</SAMP
+></P
+></LI
+><LI
+><P
+>host_mark_up</P
+><P
+>Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
+<PRE
+CLASS="SCREEN"
+># %n
+$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x</PRE
+>
+			    </P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>host_mark_up = ""</SAMP
+></P
+></LI
+><LI
+><P
+>host_htb_down</P
 ><P
 >Zestaw regu³ dla ka¿dego komutera, wykonywanych
 			    gdy uprate i downrate s± ró¿ne od zera. Domy¶lnie:
 <PRE
 CLASS="SCREEN"
-># %n
-$IPT -t mangle -A PREROUTING -s %i -j MARK --set-mark %x
-$TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
+>$TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $LAN parent 1:%x esfq perturb 10 hash dst
-$TC filter add dev $LAN parent 1:0 protocol ip prio 5 u32 match ip dst %i flowid 1:%x
-$TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
+$TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%x</PRE
+>
+			    </P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>host_htb_down = ""</SAMP
+></P
+></LI
+><LI
+><P
+>host_htb_up</P
+><P
+>Zestaw regu³ dla ka¿dego komutera, wykonywanych
+			    gdy uprate i downrate s± ró¿ne od zera. Domy¶lnie:
+<PRE
+CLASS="SCREEN"
+>$TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $WAN parent 2:%x esfq perturb 10 hash dst
 $TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x</PRE
 >
@@ -1216,14 +1291,14 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x</
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->host = ""</SAMP
+>host_htb_up = ""</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >host_climit</P
 ><P
->Regu³ka z ograniczeniem ilo¶ci równoczesnych po³aczeñ tcp. Wykonywana
+>Regu³ka z ograniczeniem ilo¶ci równoczesnych po³±czeñ tcp. Wykonywana
 			    gdy climit w bazie jest ró¿ny od zera. Domy¶lnie:
 <PRE
 CLASS="SCREEN"
