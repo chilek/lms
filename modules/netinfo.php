@@ -25,14 +25,19 @@
  *  $Id$
  */
 
+if(!$LMS->NetworkExists($_GET[id]))
+{
+	header("Location: ?m=netlist");
+	exit(0);
+}
+
 $network = $LMS->GetNetworkRecord($_GET[id]);
-$networkip = $LMS->GetNetwork($_GET[id]);
-$networkip[rows] = ceil(sizeof($networkip[nodeid])/4);
+$networks = $LMS->GetNetworks();
 $layout[pagetitle]="Informacja o sieci";
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("network",$network);
-$SMARTY->assign("networkip",$networkip);
+$SMARTY->assign("networks",$networks);
 $SMARTY->display("header.html");
 $SMARTY->display("netinfo.html");
 $SMARTY->display("footer.html");
-?><pre><? print_r($networkip);
+?>
