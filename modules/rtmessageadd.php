@@ -133,18 +133,25 @@ if(isset($message))
 				$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
 				$headers['To'] = $message['destination'];
 				$headers['Subject'] = $message['subject'];
+				if ($message['references'])
+					$headers['References'] = $message['references'];
+				$headers['Message-Id'] = $message['messageid'];
+				$headers['Reply-To'] = $headers['From'];
+				$headers['X-Mailer'] = 'LMS-'.$LMS->_version.'/PHP-'.phpversion();
+				$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
+				$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
 
-				$message['mailfrom'] = '<'.$message['mailfrom'].'>';
-				$message['replyto'] = $message['mailfrom'];
+//				$message['mailfrom'] = '<'.$message['mailfrom'].'>';
+//				$message['replyto'] = $message['mailfrom'];
 				
-				$message['headers'] = 'From: '.$mailfname.' '.$message['mailfrom']."\n"
-				    .($message['references'] ? 'References: '.$message['references']."\n" : '')
-				    .'Message-Id: '.$message['messageid']."\n"
-				    .'Reply-To: '.$message['replyto']."\n"
-				    .(!$file ? "Content-Type: text/plain; charset=UTF-8;\n" : '')
-				    .'X-Mailer: LMS-'.$LMS->_version.'/PHP-'.phpversion()."\n"
-				    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
-				    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT'];
+//				$message['headers'] = 'From: '.$mailfname.' '.$message['mailfrom']."\n"
+//				    .($message['references'] ? 'References: '.$message['references']."\n" : '')
+//				    .'Message-Id: '.$message['messageid']."\n"
+//				    .'Reply-To: '.$message['replyto']."\n"
+//				    .(!$file ? "Content-Type: text/plain; charset=UTF-8;\n" : '')
+//				    .'X-Mailer: LMS-'.$LMS->_version.'/PHP-'.phpversion()."\n"
+//				    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
+//				    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT'];
 			    	
 				$msg[1]['content_type'] = 'text/plain; charset=UTF-8';
 				$msg[1]['filename'] = '';
@@ -197,17 +204,24 @@ if(isset($message))
 			$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
 			$headers['To'] = $message['destination'];
 			$headers['Subject'] = $message['subject'];
+			if ($message['references'])
+				$headers['References'] = $message['references'];
+			$headers['Message-Id'] = $message['messageid'];
+			$headers['Reply-To'] = $headers['From'];
+			$headers['X-Mailer'] = 'LMS-'.$LMS->_version.'/PHP-'.phpversion();
+			$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
+			$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
 
-			$message['mailfrom'] = '<'.$message['mailfrom'].'>';
-			$message['replyto'] = $message['mailfrom']; 
-			$message['headers'] = 'From: '.$mailfname.' '.$message['mailfrom']."\n"
-			    .($message['references'] ? 'References: '.$message['references']."\n" : '')
-			    .'Message-Id: '.$message['messageid']."\n"
-			    .'Reply-To: '.$message['replyto']."\n"
-			    .(!$file ? "Content-Type: text/plain; charset=UTF-8;\n" : '')
-			    .'X-Mailer: LMS-'.$LMS->_version.'/PHP-'.phpversion()."\n"
-			    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
-			    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT'];
+//			$message['mailfrom'] = '<'.$message['mailfrom'].'>';
+//			$message['replyto'] = $message['mailfrom']; 
+//			$message['headers'] = 'From: '.$mailfname.' '.$message['mailfrom']."\n"
+//			    .($message['references'] ? 'References: '.$message['references']."\n" : '')
+//			    .'Message-Id: '.$message['messageid']."\n"
+//			    .'Reply-To: '.$message['replyto']."\n"
+//			    .(!$file ? "Content-Type: text/plain; charset=UTF-8;\n" : '')
+//			    .'X-Mailer: LMS-'.$LMS->_version.'/PHP-'.phpversion()."\n"
+//			    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
+//			    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT'];
 
 			$msg[1]['content_type'] = 'text/plain; charset=UTF-8';
 			$msg[1]['filename'] = '';
