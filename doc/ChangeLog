@@ -3,6 +3,7 @@ $Id$
 wersja 1.2.0 Janet (??/04/2004):
 
   - BTS#0000131: poprawki w rejestrze sprzeda¿y (alec)
+  - poprawki w lms-notify zapobiegaj±ce b³êdom na postgresie (alec)
 
 wersja 1.2.0rc4 Janet (29/03/2004):
 
