@@ -40,7 +40,6 @@ $id = GetUserIDByPhone1AndPIN($login, $pin);
 
 if($id)
 {
-	$SMARTY->assign('user',$LMS->GetUser($id));
 	$SMARTY->assign('userinfo',$LMS->GetUser($id));
 	$SMARTY->assign('balancelist',$LMS->GetUserBalanceList($id));
 	$SMARTY->assign('limit',15);
