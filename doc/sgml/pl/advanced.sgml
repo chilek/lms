@@ -159,6 +159,7 @@
 				<member>name - nazwa</member>
 				<member>mac - adres MAC</member>
 				<member>ipaddr - adres IP</member>
+				<member>passwd - has³o np. pppoe</member>
 				<member>ownerid - identyfikator w³a¶ciciela ('0' - dla adresu urz±dzenia)</member>
 				<member>creationdate - znacznik czasu utworzenia wpisu</member>
 				<member>moddate - znacznik czasu ostatniej modyfikacji</member>
@@ -207,6 +208,19 @@
 				<member>invoiceid - identyfikator faktury obejmuj±cej dan± operacjê</member>
 				<member>itemid - nr pozycji na fakturze</member>
 				<member>comment - opis operacji</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="cashimport">
+			<title>Import operacji finansowych ('cashimport')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>date - znacznik czasu operacji</member>
+				<member>value - kwota operacji</member>
+				<member>customer - dane wp³acaj±cego</member>
+				<member>description - opis operacji</member>
+				<member>customerid - identyfikator klienta</member>
+				<member>hash - unikalny skrót danych operacji</member>
+				<member>closed - status operacji</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="tariffs">
@@ -420,6 +434,17 @@
 			<simplelist>
 				<member>eventid - identyfikator zdarzenia</member>
 				<member>adminid - identyfikator u¿ytkownika</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="sessions">
+			<title>Sesje ('sessions')</title>
+			<simplelist>
+				<member>id - identyfikator sesji</member>
+				<member>ctime - czas utworzenia</member>
+				<member>mtime - czas modyfikacji</member>
+				<member>atime - czas ost. dostêpu</member>
+				<member>vdata - dane weryfikuj±ce</member>
+				<member>content - dane</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="dbinfo">
