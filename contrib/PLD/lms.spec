@@ -15,7 +15,7 @@ Release:	0.7.4
 License:	GPL
 Vendor:		LMS Developers
 Group:		Networking/Utilities
-Source0:	http://lms.rulez.pl/download/%{name}-%{version}.tar.gz
+Source0:	http://lms.rulez.pl/download/%{version}/%{name}-%{version}.tar.gz
 Source1:	%{name}.conf
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -306,6 +306,9 @@ echo
 All persons listed below can be reached at <cvs_login>@pld-linux.org
 
 $Log$
+Revision 1.1.2.2  2004/10/15 11:51:10  averne
+- fixed Source0
+
 Revision 1.1.2.1  2004/10/15 11:33:52  averne
 - new release from PLD CVS
 
