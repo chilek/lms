@@ -20,27 +20,6 @@
 			{if $userinfo.status eq "1"}<B>zainteresowany</B>{/if}
 		</TD>
 	</TR>
-	{section name=phone loop=$userphones}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			{if $userphones[phone].type eq "tel"}
-				<IMG SRC="img/phone.gif" BORDER="0" ALT="[ Telefon ]">
-			{elseif $userphones[phone].type eq "fax"}
-				<IMG SRC="img/fax.gif" BORDER="0" ALT="[ Faks ]">
-			{elseif $userphones[phone].type eq "cell"}
-				<IMG SRC="img/cellular.gif" BORDER="0" ALT="[ Tel. komórkowy ]">
-			{else}
-				<IMG SRC="img/unk.gif">
-			{/if}
-		</TD>
-		<TD WIDTH="1%">
-			{if $userphones[phone].is_primary eq 'Y'}<B>{$userphones[phone].phone}</B>{else}{$userphones[phone].phone}{/if}
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			{if $userphones[phone].description}({$userphones[phone].description}){/if}
-		</TD>
-	</TR>
-	{/section}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/phone.gif" BORDER="0" ALT="">
