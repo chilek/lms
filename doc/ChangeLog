@@ -7,6 +7,8 @@ version 1.5.5 (??/??/????):
   - fixed encoding conversion of some strings on pdf invoices (peter/alec)
   - index.php: localization before uiconfig reading, to have proper encoding 
     in configuration options if we use server_encoding != unicode (alec)
+  - contrib/customer_otherip: changed login.html to customerlogin.html because
+    of conflict with templates/login.html in Smarty cache (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
