@@ -1,0 +1,39 @@
+$Id$
+
+0. Co to?
+
+Ten modu³ s³u¿y do automatycznego, masowego wype³niania formularzy 
+przelewu/wp³aty. Zosta³ dostosowany do formularzy 2 odcinkowych z 
+potwierdzeniem drukowanych przez firmê Michalczyk i Prokop (druki innych firm
+mog± wymagaæ ma³ego "tuningu" w po³o¿eniu poszczególnych tekstów. Adres 
+korespondencji jest drukowany tak, aby formularz po z³o¿eniu pasowa³ do kopert 
+DL z okienkiem po lewej stronie koperty. Przyk³ad wygenerowanego formularza 
+le¿y w samples.
+
+1. Instalacja.
+
+Katalog ezpdf kopiujemy do katalogu lib lmsa.
+Plik druki_przelewu.php kopiujemy do katalogu modules lmsa.
+
+Nastêpnie edytujemy lms.ini i ustawiamy:
+
+[finances]
+name = "Nasza nazwa"
+shortname = "Nasza krótka nazwa"
+address = "Adres"
+zip = "Kod pocztowy"
+city = "Miasto"
+service = "Nazwa us³ugi"
+account = "nr. konta bankowego"
+
+2. W dzia³aniu.
+
+Wchodzimy do lmsa, i wywo³ujemy modu³ poprzez podanie ?m=druki_przelewu w 
+pasku adresu. Je¶li wszystko pujdzie dobrze, zostanie wygenerowany PDF 
+zawieraj±cy dane wszystkich, zad³u¿onych osób. Teraz wystarczy w³o¿yæ
+formularze do drukarki i nacisn±æ drukuj.
+
+Uwagi odno¶nie Adobe Acrobat Reader -  dobrze jest w menu drukowania wy³±czyæ
+wszelkie dopasowywania stron do wydruku, bo mo¿e to spowodowaæ rozjechanie siê
+druku wzglêdem pól formularza.
+
