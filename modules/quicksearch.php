@@ -51,7 +51,7 @@ switch($_GET['mode'])
 			$target = '?m=rtticketview&id='.$search;
 		else
 		{
-			$_SESSION['rtsearch']['username'] = $search;
+			$SESSION->save('rtsearch.username', $search);
 			$target = '?m=rtsearch&search=1';
 		}
 	break;
