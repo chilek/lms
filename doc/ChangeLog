@@ -30,6 +30,8 @@ wersja 1.5.3 (??/??/????):
   - Konta/Aliasy/Domeny 
 	!!! UWAGA: Domeny nie s± ju¿ trzymane w passwd !!! (alec)
   - dodany filtr 'on-line' do listy u¿ytkowników (alec)
+  - usuniêty b³±d w module payments demona, wystêpuj±cy na mysql'u, który
+    powodowa³ niezapisywanie zawarto¶ci faktur (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 
