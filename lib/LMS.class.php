@@ -161,7 +161,10 @@ class LMS {
 
 	function GetMACs()
 	{
-		$file=fopen("/proc/net/arp","r");
+		if(is_readable("/proc/net/arp"))
+			$file=fopen("/proc/net/arp","r");
+		else
+			return FALSE;
 		while(!feof($file))
 		{
 			$line=fgets($file);
@@ -226,8 +229,7 @@ class LMS {
 		$db=$this->db;
 		$network = $db->FetchRow("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks` WHERE `id` = '".$id."'");
 		$network[prefix] = mask2prefix($network[mask]);
-
-		
+		$network[size] = pow(2,32-$network[prefix]);		
 		
 		return $network;
 	}
@@ -246,8 +248,10 @@ class LMS {
 			{
 				$return[addresslong][] = $i;
 				$return[address][] = long2ip($i);
-				if($c == "0") $return[mark][] = $name;
-				else $return[mark][] = "";
+				if($c == "0")
+					$return[mark][] = $name;
+				else
+					$return[mark][] = "";
 				$c++;
 				
 			}
@@ -256,10 +260,11 @@ class LMS {
 		{
 			foreach($return[address] as $i => $v)
 			{
-				if($db->FetchRow("SELECT `name`, `id` FROM `nodes` WHERE `ipaddr` = '".$return[address][$i]."' LIMIT 1"))
+				if($db->FetchRow("SELECT `name`, `id`, `ownerid` FROM `nodes` WHERE `ipaddr` = '".$return[address][$i]."' LIMIT 1"))
 					$return[totalnodes]++;
 				$return[nodeid][$i]= $db->row[id];
 				$return[nodename][$i] = $db->row[name];
+				$return[ownerid][$i] = $db->row[ownerid];
 			}
 			array_multisort($return[addresslong],$return[address],$return[nodeid],$return[nodename],$return[mark]);
 		}
@@ -299,6 +304,30 @@ class LMS {
 
 	}
 
+	function GetUserNodesAC($id)
+	{
+		$db=$this->db;
+		$acl = $db->FetchArray("SELECT `access` FROM `nodes` WHERE `ownerid` = '".$id."'");
+		if(sizeof($acl))
+//		{
+			foreach($acl[access] as $value)
+//			{
+				if(strtoupper($value) == "Y")
+//				{
+					$y ++;
+//				}
+				else
+//				{
+					$n ++;
+//				}
+//			}
+//		}
+		if($y && !$n) return TRUE;
+		if($n && !$y) return FALSE;
+		return 2;
+	}
+		
+
 	function GetUserList($order=NULL,$state=NULL)
 	{
 
@@ -335,6 +364,10 @@ class LMS {
 					$userlist[over] = $userlist[over] + $userlist[balance][$i];
 				if($userlist[balance][$i] < 0)
 					$userlist[below] = $userlist[below] - $userlist[balance][$i];
+				if($userlist[status][$i] == 3)
+					$userlist[nodeac][$i] = $this->GetUserNodesAC($userlist[id][$i]);
+				else
+					$userlist[nodeac][$i] = FALSE;
 			}
 			
 		list($order,$direction)=explode(",",$order);
@@ -344,22 +377,22 @@ class LMS {
 
 		if(sizeof($userlist[id])) switch($order){
 			case "username":
-				array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
+				array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
 				break;
 			case "id":
-				array_multisort($userlist[id],$direction,SORT_NUMERIC,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
+				array_multisort($userlist[id],$direction,SORT_NUMERIC,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
 				break;
 			case "email":
-				array_multisort($userlist[email],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
+				array_multisort($userlist[email],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
 				break;
 			case "address":
-				array_multisort($userlist[address],$direction,$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
+				array_multisort($userlist[address],$direction,$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
 				break;
 			case "balance":
-				array_multisort($userlist[balance],$direction,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
+				array_multisort($userlist[balance],$direction,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
 				break;
 			case "phone":
-				array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
+				array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
 				break;
 		}
 
@@ -448,6 +481,15 @@ class LMS {
 			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'N' WHERE `id` = '".$id."' LIMIT 1");
 		else
 			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'Y' WHERE `id` = '".$id."' LIMIT 1");
+	}
+
+	function NodeSetU($id,$access=FALSE)
+	{
+		$db=$this->db;
+		if($access)
+			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'Y' WHERE `ownerid` = '".$id."'");
+		else
+			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'N' WHERE `ownerid` = '".$id."'");
 	}
 
 	function GetOwner($id)
