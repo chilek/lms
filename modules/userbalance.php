@@ -30,7 +30,7 @@ if(!$LMS->UserExists($_GET[id]))
 $username=$LMS->GetUserName($_GET[id]);
 $id = $_GET[id];
 
-$layout[pagetitle]='Rachunek u¿ytkownika '.$username;
+$layout[pagetitle]='Rachunek u¿ytkownika <A HREF="?m=userinfo&id='.$_GET[id].'">'.$username.'</A>';
 
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($_GET[id]));
 $SMARTY->assign("layout",$layout);
@@ -40,6 +40,9 @@ $SMARTY->display("userbalance.html");
 
 /*
  * $Log$
+ * Revision 1.19  2003/10/06 22:02:09  lukasz
+ * - ju¿ nie psuje
+ *
  * Revision 1.18  2003/10/06 18:53:22  lexx
  * - odsy³acz psu³ tytu³ strony
  *
