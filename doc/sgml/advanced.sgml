@@ -327,11 +327,19 @@
 				<member>mailfrom - e-mail nadawcy</member>
 				<member>subject - temat wiadomo¶ci</member>
 				<member>messageid - pocztowy identyfikator wiadomo¶ci</member>
-				<member>inreplyto - identyfikator wiadomo¶ci</member>
-				<member>replyto - </member>
-				<member>headers - </member>
+				<member>inreplyto - identyfikator poprzedniej wiadomo¶ci</member>
+				<member>replyto - nag³ówek wiadomo¶ci</member>
+				<member>headers - wszystkie nag³ówki pocztowe wiadomo¶ci</member>
 				<member>body - tre¶æ wiadomo¶ci</member>
-				<member>createtime - data utworzenia/wys³ania </member>
+				<member>createtime - data utworzenia/wys³ania/odebrania </member>
+			</simplelist>
+		</sect2>
+		<sect2 id="rtattachments">
+			<title>Helpdesk - za³±czniki ('rtattachments')</title>
+			<simplelist>
+				<member>messageid - identyfikator wiadomo¶ci</member>
+				<member>filename - nazwa pliku</member>
+				<member>contenttype - typ pliku</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="rtrights">
