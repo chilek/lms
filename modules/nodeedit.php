@@ -49,12 +49,12 @@ $layout[pagetitle]="Informacje o u¿ytkowniku: ".$userinfo[username]."<BR>- edycj
 $nodeedit = $_POST[nodeedit];
 $usernodes = $LMS->GetUserNodes($owner);
 $nodeinfo = $LMS->GetNode($_GET[id]);
+
 if(isset($nodeedit))
 {
 	$nodeedit[ipaddr] = $_POST[nodeeditipaddr];
 	$nodeedit[mac] = $_POST[nodeeditmac];
 	$nodeedit[mac] = str_replace("-",":",$nodeedit[mac]);
-
 	foreach($nodeedit as $key => $value)
 		$nodeedit[$key] = trim($value);
 	
@@ -114,6 +114,7 @@ if(isset($nodeedit))
 	$nodeinfo[ipaddr] = $nodeedit[ipaddr];
 	$nodeinfo[access] = $nodeedit[access];
 	$nodeinfo[ownerid] = $nodeedit[ownerid];
+	$nodeinfo[netdev] = $nodeedit[netdev];
 
 	if(!$error)
 	{
@@ -128,6 +129,13 @@ $tariffs = $LMS->GetTariffs();
 $assignments = $LMS->GetUserAssignments($ownerid);
 $balancelist = $LMS->GetUserBalanceList($owner);
 
+$nodeinfo[netdev] = $LMS->GetNetDev($nodeinfo[netdev]);
+$netdevices = $LMS->GetNetDevList();
+unset($netdevices[total]);
+unset($netdevices[direction]);
+unset($netdevices[order]);
+
+$SMARTY->assign("netdevices",$netdevices);
 $SMARTY->assign("balancelist",$balancelist);
 $SMARTY->assign("assignments",$assignments);
 $SMARTY->assign("tariffs",$tariffs);
@@ -139,6 +147,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.33  2003/10/01 16:07:19  alec
+ * now we can change netdevice assigned to node
+ *
  * Revision 1.32  2003/09/23 19:11:46  alec
  * kosmetyka - dodany dwukropek
  *
