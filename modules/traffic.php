@@ -25,39 +25,50 @@
 $layout[pagetitle]="Statystyki wykorzystania ³±cza";
 
 $bars = 1;
+
 switch($_GET['bar'])
 {
-  case "hour":
-	$traffic = $LMS->Traffic( "?NOW?-(60*60)", "?NOW?", 0, "download");
+	case "hour":
+		$traffic = $LMS->Traffic( "?NOW?-(60*60)", "?NOW?", 0, "download");
 	break;
-  case "day":
-	$traffic = $LMS->Traffic( "?NOW?-(60*60*24)","?NOW?",  0, "download");
+
+	case "day":
+		$traffic = $LMS->Traffic( "?NOW?-(60*60*24)","?NOW?",  0, "download");
 	break;
-  case "month":
-	$traffic = $LMS->Traffic( "?NOW?-(60*60*24*30)", "?NOW?", 0, "download");
+
+	case "month":
+		$traffic = $LMS->Traffic( "?NOW?-(60*60*24*30)", "?NOW?", 0, "download");
 	break;
-  case "year":
-	$traffic = $LMS->Traffic( "?NOW?-(60*60*24*365)", "?NOW?", 0, "download");
+
+	case "year":
+		$traffic = $LMS->Traffic( "?NOW?-(60*60*24*365)", "?NOW?", 0, "download");
 	break;
-  case "user": 
-  	$traffic = $LMS->Traffic($_POST['from'], $_POST['to'], $_POST['net'], $_POST['order'], $_POST['limit']);
+
+	case "user":
+		$traffic = $LMS->Traffic($_POST['from'], $_POST['to'], $_POST['net'], $_POST['order'], $_POST['limit']);
 	break;
-  default: // set filter window
-	$now[rok]   = date("Y");
-	$now[mies]  = date("n");
-	$now[dzien] = date("j");
-	$now[godz]  = date("H");
-	$now[min]   = date("i");
-	for($x=1990; $x<=$now[rok]; $x++) $data[year][]=$x;
-	for($x=1; $x<=12; $x++) $data[month][]=$x;
-	for($x=1; $x<=31; $x++) $data[day][]=$x;
-	for($x=0; $x<=23; $x++) $data[hour][] = $x;
-	for($x=0; $x<=59; $x++) $data[minute][] = $x;
-	$SMARTY->assign("data",$data);
-	$SMARTY->assign("now",$now);
-	$SMARTY->assign("netlist",$LMS->GetNetworks());
-	$SMARTY->assign("nodelist",$LMS->GetNodeList());
-	$bars = 0;
+
+	default: // set filter window
+		$now[rok]   = date("Y");
+		$now[mies]  = date("n");
+		$now[dzien] = date("j");
+		$now[godz]  = date("H");
+		$now[min]   = date("i");
+		for($x=1990; $x<=$now[rok]; $x++)
+			$data[year][]=$x;
+		for($x=1; $x<=12; $x++)
+			$data[month][]=$x;
+		for($x=1; $x<=31; $x++)
+			$data[day][]=$x;
+		for($x=0; $x<=23; $x++)
+			$data[hour][] = $x;
+		for($x=0; $x<=59; $x++)
+			$data[minute][] = $x;
+		$SMARTY->assign("data",$data);
+		$SMARTY->assign("now",$now);
+		$SMARTY->assign("netlist",$LMS->GetNetworks());
+		$SMARTY->assign("nodelist",$LMS->GetNodeList());
+		$bars = 0;
 	break;
 }
 
