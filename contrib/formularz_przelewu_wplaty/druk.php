@@ -9,8 +9,8 @@
 
 <?php 
 
-// ustaw prawid³ow± ¶cie¿kê do pliku common.php z katalogu /lib lmsa
-require_once("../../lib/common.php");
+// ustaw prawid³ow± ¶cie¿kê do pliku z funkcj± to_words()
+require_once("../../lib/locale/pl/functions.php");
 
 //  NRB 26 cyfr, 2 kontrolne, 8 nr banku, 16 nr konta 
 
