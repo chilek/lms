@@ -40,7 +40,7 @@
 				</row>
 				<row>
 				<entry>img</entry>
-				<entry>Obrazki do Interfejsu U¿ytkownka</entry>
+				<entry>Obrazki do Interfejsu U¿ytkownika</entry>
 				</row>
 				<row>
 				<entry>lib</entry>
@@ -69,7 +69,7 @@
 	<sect1 id="devel-db">
 		<title>Struktura bazy danych</title>
 		<para>Poni¿ej przedstawiono ogóln± strukturê bazy danych LMS. Bardziej szczegó³owe
-		informacje o typach danych, ograniczeniach nak³adanych na pola oraz warto¶ci domyslne
+		informacje o typach danych, ograniczeniach nak³adanych na pola oraz warto¶ci domy¶lne
 		zawarte s± w plikach <ulink url="../lms.mysql"><filename>lms.mysql</filename></ulink>
 		oraz <ulink url="../lms.pgsql"><filename>lms.pgsql</filename></ulink> w katalogu
 		<filename>/doc</filename>.</para>
@@ -143,7 +143,7 @@
 				<member>creatorid - identyfikator administratora tworz±cego wpis</member>
 				<member>modid - identyfikator administratora </member>
 				<member>netdev - identyfikator urz±dzenia sieciowego do którego jest pod³±czony komputer</member>
-				<member>access - pod³±czony/od³aczony</member>
+				<member>access - pod³±czony/od³±czony</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="netdevices">
@@ -174,7 +174,7 @@
 				<member>id - identyfikator</member>
 				<member>time - znacznik czasu zaksiêgowania operacji</member>
 				<member>adminid - identyfikator administratora dokonuj±cego operacji</member>
-				<member>type - typ operacji (przychów, rozchód, wp³ata, obci±¿enie)</member>
+				<member>type - typ operacji (przychód, rozchód, wp³ata, obci±¿enie)</member>
 				<member>value - warto¶æ w z³otych</member>
 				<member>userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy)</member>
 				<member>invoiceid - identyfikator faktury obejmuj±cej dan± operacjê</member>
@@ -336,8 +336,8 @@ key = "A.L.E.C's LMS Daemon is the best"
 		<para>Oryginalnie poziomy dostêpu mia³y byæ definiowane poprzez ró¿ne litery.
 		By³o to  za³o¿enie  z  czasów LMS-0.4, lecz nigdy nie wykorzystane. Z
 		racji  tego,  ¿e  wesz³o  to  do 1.0, d³ugo siê g³owi³em jak wykorzystaæ
-		64-znakowego  stringa. Otó¿ w kolumnie rights jest poprostu 64-znakowa
-		(256-bitowa)  liczba  hexadecymalna.  Ka¿dy jej znak mo¿e opisaæ
+		64-znakowego  stringa. Otó¿ w kolumnie rights jest po prostu 64-znakowa
+		(256-bitowa)  liczba  heksadecymalna.  Ka¿dy jej znak mo¿e opisaæ
 		maksymalnie  cztery bity kombinacji (4*64 = 256 - st±d ilo¶æ mo¿liwych
 		poziomów).  Tak  wiêc  w³±czenie  jakiego¶  poziomu  dostêpu  powoduje
 		ustawienie  w  tej  liczbie  odpowiedniego  bitu.  I tak je¿eli "pe³en
@@ -350,7 +350,7 @@ key = "A.L.E.C's LMS Daemon is the best"
 	</sect1>
 	<sect1 id="devel-limits">
 		<title>Ograniczenia</title>
-		<para>Ka¿dy system ma ograniczenia. Pewne wynikaja z u¿ytego silnika SQL (DBMS)
+		<para>Ka¿dy system ma ograniczenia. Pewne wynikaj± z u¿ytego silnika SQL (DBMS)
 		inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez developerów. Nasz system
 		takowe posiada:</para>
 		<sect2 id="devel-limits-lms">
@@ -383,7 +383,7 @@ mysql&gt; show table status;
 ...| Avg_row_length | Data_length | Max_data_length | Index_length |
 ...|             44 |       24136 |      4294967295 |        19456 |</screen>
 			<para>Zauwa¿ymy ¿e miejsca wystarczy na oko³o 175 000 razy tyle ile mamy
-			aktualnie wpisów w tabelce. (czyt.: mo¿esz spaæ spkojnie, chyba ¿e
+			aktualnie wpisów w tabelce. (czyt.: mo¿esz spaæ spokojnie, chyba ¿e
 			planujesz posiadanie ponad 100000 u¿ytkowników :-)</para>
 			</listitem>
 			</itemizedlist>
@@ -395,7 +395,7 @@ mysql&gt; show table status;
 			<para>Rozmiar bazy danych:</para>
 			<para>PostgreSQL zapisuje dane w porcjach po 8 kB. Liczba tych bloków jest
 			ograniczona do 32-bitowej liczby ca³kowitej ze znakiem, daj±c maksymaln±
-			wielko¶c tabeli wynosz±c± 16 terabajtów. Z uwagi na ograniczenia systemów
+			wielko¶æ tabeli wynosz±c± 16 terabajtów. Z uwagi na ograniczenia systemów
 			operacyjnych dane przechowywane s± w wielu plikach o wielko¶ci 1 GB ka¿dy.</para>
 			</listitem>
 			<listitem>
