@@ -64,7 +64,10 @@ elseif(isset($useradd))
 
         if($userdata['pin']!=0 && !eregi('^[0-9]{4,6}$',$useradd['pin']))
 	        $error['pin'] = 'Podany numer PIN jest niepoprawny!';
-	
+
+	if($userdata['email']!='' && !check_email($userdata['email']))
+		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+
 	if(!$error)
 	{
 		$id = $LMS->UserAdd($useradd);
