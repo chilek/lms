@@ -199,10 +199,11 @@ info = "Opcjonalny opis modu³u"
 		<title>Payments</title>
 		    <sect3 id="payments-desc">
 		    <title>Opis</title>
-		    <para>Modu³ nalicza u¿ytkownikom op³aty abonamentowe. Nale¿y go uruchamiaæ 
+		    <para>Modu³ nalicza op³aty abonamentowe u¿ytkowników oraz op³aty sta³e. Nale¿y go uruchamiaæ 
 		    codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
 		    taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn± 'comment'.
-		    Po naliczeniu op³at tworzone s± faktury.</para>
+		    Po naliczeniu op³at tworzone s± faktury. Komentarz do op³aty sta³ej to zlepek
+		    sk³adaj±cy siê z jej nazwy oraz wierzyciela.</para>
 		    </sect3>
 		    <sect3 id="payments-config">
 		    <title>Konfiguracja</title>
