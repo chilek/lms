@@ -28,8 +28,8 @@ $netdevinfo = $LMS->GetNetDev($_GET[id]);
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET[id]);
 $netcomplist = $LMS->GetNetdevLinkedNodes($_GET[id]);
 $netdevlist = $LMS->GetNotConnectedDevices($_GET[id]);
+$nodelist = $LMS->GetUnlinkedNodes();
 
-$nodelist = $LMS->GetNodeList();
 unset($nodelist[total]);
 unset($nodelist[order]);
 unset($nodelist[totalon]);
@@ -52,6 +52,14 @@ $SMARTY->display("netdevinfo.html");
 
 /*
  * $Log$
+ * Revision 1.7  2003/10/08 04:01:29  lukasz
+ * - html fixes in netdevices
+ * - added new smarty function called {confirm text="confirm message"}
+ * - little bugfix with netdev field in nodes (alec, pse, add this to
+ *   changelog, also consider making 'UPGRADING' chapter in doc if it not
+ *   exists yet)
+ * - lot of small changes, mainly cosmetic
+ *
  * Revision 1.6  2003/10/07 19:37:35  alec
  * unset nieporzebnych elem.
  *

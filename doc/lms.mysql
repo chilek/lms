@@ -86,6 +86,7 @@ CREATE TABLE nodes (
   mac varchar(20) NOT NULL default '',
   ipaddr int(16) unsigned NOT NULL default '0',
   ownerid int(11) NOT NULL default '0',
+  netdev int(11) NOT NULL default '0',
   creationdate int(11) NOT NULL default '0',
   moddate int(11) NOT NULL default '0',
   creatorid int(11) NOT NULL default '0',

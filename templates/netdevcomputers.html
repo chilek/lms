@@ -1,73 +1,55 @@
 <!-- $Id$ -->
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/node.gif" BORDER="0" ALT="">
-		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="4">
+		<TD WIDTH="100%" CLASS="fall" COLSPAN="3">
+			<IMG SRC="img/node.gif" BORDER="0" ALT="" ALIGN="absmiddle">
 			<B>Komputery pod³±czone:</B>
 		</TD>
 	</TR>
 	<TR CLASS="dark">
-		<TD CLASS="fleftu" width="1%">
-			<img src="img/node.gif" alt="" align="absmiddle"><BR>
-			<img src="img/user.gif" alt="" align="absmiddle">
+		<TD CLASS="fleftu" width="98%">
+			<img src="img/node.gif" alt="" align="absmiddle"> <B>Nazwa:</B><BR>
+			<img src="img/user.gif" alt="" align="absmiddle"> W³a¶ciciel:
 		</TD>
-		<TD CLASS="fbt" width="49%">
-			Nazwa:</B><BR>
-			W³a¶ciciel:
+		<TD CLASS="fbt" width="1%" NOWRAP>
+			<img src="img/empty.gif" WIDTH="16" HEIGHT="16"> ID:<BR>
+			<img src="img/ip.gif" alt="" align="absmiddle"> Adres IP:
 		</TD>
-		<TD CLASS="fbt" width="1%">
-			<BR>
-			<img src="img/ip.gif" alt="" align="absmiddle">
+		<TD CLASS="frightu" WIDTH="1%">
+			&nbsp;	
 		</TD>
-		<TD CLASS="fbt" width="45%">
-			ID:<BR>
-			Adres IP:
-		</TD>
-		<TD CLASS="frightu" WIDTH="4%"></TD>
 	</TR>
 
 	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=netcomplist loop=$netcomplist start=$start}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-		<TD width="1%" CLASS="fleft" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
-			<IMG SRC="img/node.gif" ALT="" ALIGN="ABSMIDDLE"><BR>
-			<img src="img/user.gif" alt="" align="absmiddle">
+		<TD width="99%" CLASS="fleft" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
+			<IMG SRC="img/node.gif" ALT="" ALIGN="ABSMIDDLE"> <B>{$netcomplist[netcomplist].name}</B><BR>
+			<img src="img/user.gif" alt="" ALIGN="absmiddle"> {$netcomplist[netcomplist].owner}
 		</TD>
-		<TD  width="49%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
-			<B>{$netcomplist[netcomplist].name}</B><BR>
-			{$netcomplist[netcomplist].owner}
+		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
+			<img src="img/empty.gif" WIDTH="16" HEIGHT="16"> ({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>
+			<IMG SRC="img/ip.gif" ALT="" ALIGN="ABSMIDDLE"> {$netcomplist[netcomplist].ip}
 		</TD>
-		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
-			<br>
-			<IMG SRC="img/ip.gif" ALT="" ALIGN="ABSMIDDLE">
-		</TD>
-		<TD width="45%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
-			({$netcomplist[netcomplist].id|string_format:"%04d"})<br>
-			{$netcomplist[netcomplist].ip}
-		</TD>
-		<TD CLASS="fright" WIDTH="4%">
-			<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG SRC="img/delete.gif" ALIGN="absmiddle" ALT="[ Od³±cz ]" BORDER="0"></A>
+		<TD CLASS="fright" WIDTH="1%">
+			<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}" {confirm text="Napewno chcesz usun±æ to po³±cznie?"}><IMG SRC="img/delete.gif" ALIGN="absmiddle" ALT="" BORDER="0" {tip text="Usuñ to po³±czenie"}></A>
 		</TD>
 	</TR>
-	{if $netcomplist[netcomplist.index_next].ownerid eq $netcomplist.ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
 	{sectionelse}
 	<TR>
-		<TD colspan="5" CLASS="fall" align="center">
+		<TD colspan="3" CLASS="fall" align="center">
 			<p>&nbsp;</p>
 			<p><B>Nie posiadasz ¿adnych pod³±czonych komputerów.</b></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
 	{/section}
-        <TR CLASS="light">
-                <TD WIDTH="100%" COLSPAN="5" CLASS="ftop">
-                </TD>
-        </TR>
-	{if $netdevinfo.id}
 	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="fbl"></TD>
-		<TD WIDTH="99%" CLASS="fbr" COLSPAN=4>
+		<TD WIDTH="100%" CLASS="fall" COLSPAN="3" ALIGN="CENTER">
+			{if $netdevinfo.ports eq $netdevinfo.takenports}
+			<B>Wszystkie porty w tym urz±dzeniu s± zajête</B>
+			{elseif $nodelist eq NULL}
+			<B>Nie ma komputerów do pod³±czenia</B>
+			{else}
 			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connectnode">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
@@ -75,17 +57,10 @@
 			<A HREF="javascript:document.connectnode.submit(); "><B>Pod³±cz komputer:</B></A>
 			<SELECT NAME="nodeid" {tip trigger="linknode"}>
 				{section name=nodelist loop=$nodelist}
-				{* a na ten patent tutaj to really - dwa tygodnie dumania na sraczyku i bym nie wpad³ ;> *}
-				{if $nodelist[nodelist].netdev == 0}
 				<OPTION VALUE="{$nodelist[nodelist].id}">{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
-				{/if}
-				{sectionelse}
-				{* w³a¶nie - jak siê zachowa tutaj LMS? nie zkaszani bazy? *}
-				<OPTION VALUE="0">... wszystkie komputery s± pod³±czone </OPTION>
 				{/section}
-			</SELECT>
-			</FORM></P>
+			</SELECT></FORM></P>
+			{/if}
 		</TD>
 	</TR>
-	{/if}
 </TABLE>
