@@ -3,6 +3,7 @@ struct net
 	unsigned char *name;
 	unsigned char *domain;
 	unsigned char *interface;
+	unsigned char *gateway;
 	unsigned long address;
 	unsigned long mask;
 };
