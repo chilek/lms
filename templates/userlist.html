@@ -23,14 +23,11 @@
 		</TD>
 	</TR>
 	<TR bgColor="CEBD9B">
-		<TD colspan="3" class="fleftu">
+		<TD colspan="5" class="fall">
 			<B>Filtruj: <img src="img/user.gif" align="absmiddle" border="0" alt=""> {if $userlist.state neq 3}<a href="?m=userlist&s=3">{else}<U>{/if}pod³±czeni{if $userlist.state neq 3}</a>{else}</U>{/if} <img src="img/wait.gif" align="absmiddle" border="0" alt=""> {if $userlist.state neq 2}<a href="?m=userlist&s=2">{else}<U>{/if}oczekuj±cy{if $userlist.state neq 2}</a>{else}</U>{/if} <img src="img/unk.gif" align="absmiddle" border="0" alt=""> {if $userlist.state neq 1}<a href="?m=userlist&s=1">{else}<U>{/if}zainteresowani{if $userlist.state neq 1}</a>{else}</U>{/if}</a> <img src="img/user.gif" align="absmiddle" border="0" alt=""> {if $userlist.state neq 0}<a href="?m=userlist&s=0">{else}<U>{/if}wszyscy{if $userlist.state neq 0}</a>{else}</U>{/if}</B>	
 		</TD>
-		<TD colspan="2" class="frightu" align="right">
-			&nbsp;
-		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=userlist loop=$userlist.id}
+	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=userlist loop=$userlist.id}{if $userlist.status[userlist] eq $userlist.state || $userlist.state eq 0}{assign var="userlistshown" value="yes"}
 	<TR bgcolor="{cycle}"{cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if $userlist.info[userlist]} title="{$userlist.info[userlist]}"{/if}>
 		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';" class="fleft">
 			<A name="{$userlist.id[userlist]}"><IMG src="img/{if $userlist.status[userlist] eq 1}unk{/if}{if $userlist.status[userlist] eq 2}wait{/if}{if $userlist.status[userlist] eq 3}user{/if}.gif" alt="" align="absmiddle" border="0">&nbsp;<B><nobr>{$userlist.username[userlist]}</nobr></B>{if $userlist.phone1[userlist] neq ""}{if $userlist.info[userlist]}<font color="#666666">...</FONT>{/if}<BR></A>
@@ -51,7 +48,8 @@
 			<NOBR><A href="?m=userdel&id={$userlist.id[userlist]}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.username[userlist]|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A> <A href="?m=useredit&id={$userlist.id[userlist]}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=userinfo&id={$userlist.id[userlist]}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A></NOBR>
 		</TD>
 	</TR>
-	{sectionelse}
+	{/if}{/section}
+	{if $userlistshown neq "yes"}
 	<TR>
 		<TD colspan="5" align="center" class="flr">
 			<p>&nbsp;</p>
@@ -61,7 +59,7 @@
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
-	{/section}
+	{/if}
 	<TR bgColor="#DFD5BD">
 		<TD colspan="2" class="fleftu" align="right" valign="top">
 			<IMG SRC="img/info2.gif" border="0" alt="" align="absmiddle"> <B>Razem: {$userlist.total}</B>	
