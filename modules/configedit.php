@@ -100,6 +100,7 @@ if($cfg = $_POST['config'])
 					$cfg['disabled'],
 					$cfg['id']
 					));
+		$LMS->SetTS('uiconfig');
 		header('Location: ?m=configlist');
 		die;
 	}

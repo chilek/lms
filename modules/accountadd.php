@@ -88,6 +88,7 @@ if($account = $_POST['account'])
 					$account['type']
 					));
 		$LMS->DB->Execute('UPDATE passwd SET uid = id+2000 WHERE login = ?',array($account['login']));
+		$LMS->SetTS('passwd');
 		if(!$account['reuse'])
 		{
 			header('Location: ?m=accountlist');

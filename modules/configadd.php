@@ -86,6 +86,8 @@ if($config = $_POST['config'])
 					$config['description'],
 					$config['disabled']
 					));
+		$LMS->SetTS('uiconfig');
+		
 		if(!$config['reuse'])
 		{
 			header('Location: ?m=configlist');
