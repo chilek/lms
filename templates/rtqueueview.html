@@ -71,7 +71,7 @@
 			{else}-{/if}<BR>{$ticket.lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
 			{if $ticket.state == 0 || $ticket.state == 3}</FONT>{/if}
 		</TD>
-		<TD class="fright">
+		<TD class="fright" align="right">
 			<A href="?m=rtticketview&id={$ticket.id}"><IMG src="img/info.gif" alt="[ Info ]" border="0" align="absmiddle"></A>
 			<A href="?m=rtticketedit&id={$ticket.id}"><IMG src="img/edit.gif" alt="[ Edytuj ]" border="0" align="absmiddle"></A>
 		</TD>
