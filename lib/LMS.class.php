@@ -531,7 +531,11 @@ class LMS
 					$userlist[$idx]['nodeac'] = 0;
 				else
 					$userlist[$idx]['nodeac'] = 2;
-			}																														 
+				if($userlist[$idx]['balance'] > 0)
+					$over += $userlist[$idx]['balance'];
+				elseif($userlist[$idx]['balance'] < 0)
+					$below += $userlist[$idx]['balance'];
+			}																														
 			$userlist['total']=sizeof($userlist);
 			$userlist['state']=$state;
 			$userlist['order']=$order;
@@ -601,6 +605,10 @@ class LMS
 					$userlist[$idx]['nodeac'] = 0;
 				else
 					$userlist[$idx]['nodeac'] = 2;
+				if($userlist[$idx]['balance'] > 0)
+					$over += $userlist[$idx]['balance'];
+				elseif($userlist[$idx]['balance'] < 0)
+					$below += $userlist[$idx]['balance'];
 			}
 		}
 
@@ -1610,6 +1618,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.221  2003/09/12 20:43:51  lukasz
+ * - more cosmetics
+ *
  * Revision 1.220  2003/09/12 20:32:24  lukasz
  * - cosmetics
  *
