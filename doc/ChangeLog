@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.4.0 Evalla (??/10/2004):
+wersja 1.4.0rc4 Evalla (05/10/2004):
 
   - usuniête pliki zwi±zane z niedokoñczonym pomys³em config_templates (alec)
   - w welcome.html dodane okno ze statystykami Helpdesku (alec)
@@ -12,6 +12,7 @@ wersja 1.4.0 Evalla (??/10/2004):
   - pomijanie usuniêtych u¿ytkowników w szybkim wyszukiwaniu (alec)
   - ma³a optymalizacja modu³ów korzystaj±cych z listy adminów (alec)
   - poprawiona kwota s³ownie w contrib/formularz_przelewu_wp³aty (alec)
+  - lms-rtparser: poprawione/dodane kodowanie nag³ówków potwierdzenia (alec)
 
 wersja 1.4.0rc3 Evalla (28/09/2004):
 
