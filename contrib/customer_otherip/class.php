@@ -86,18 +86,6 @@ foreach(lms_parse_ini_file($_CONFIG['directories']['lib_dir'].'/config_defaults.
 		if(! isset($_CONFIG[$section][$key]))
 			$_CONFIG[$section][$key] = $val;
 
-function chkconfig($value, $default = FALSE)
-{
-	if(eregi('^(1|y|on|yes|true|tak|t)$', $value))
-		return TRUE;
-	elseif(eregi('^(0|n|no|off|false|nie)$', $value))
-		return FALSE;
-	elseif(!isset($value) || $value == '')
-		return $default;
-	else
-		trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
-}
-
 $_SYSTEM_DIR = $_CONFIG['directories']['sys_dir'];
 $_BACKUP_DIR = $_CONFIG['directories']['backup_dir'];
 $_LIB_DIR = $_CONFIG['directories']['lib_dir'];
