@@ -157,6 +157,7 @@ if(isset($search) || $_GET['search'])
 		$SMARTY->assign('page',$page);
 		$SMARTY->assign('start',$start);
 		$SMARTY->display('rtsearchresults.html');
+		$SESSION->close();
 		die;
 	}
 }

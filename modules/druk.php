@@ -26,8 +26,7 @@
 
 if(! $invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
-	header('Location: ?m=invoicelist');
-	die;
+	$SESSION->redirect('?m=invoicelist');
 }
 
 //echo '<PRE>';print_r($invoice);

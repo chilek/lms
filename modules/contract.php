@@ -26,14 +26,12 @@
 
 if(!eregi('^[0-9]+$',$_GET['id']))
 {
-	header('Location: ?m=userlist');
-	die;
+	$SESSION->redirect('?m=userlist');
 }
 
 if($LMS->UserExists($_GET['id']) == 0)
 {
-	header('Location: ?m=userlist');
-	die;
+	$SESSION->redirect('?m=userlist');
 }
 
 $userinfo = $LMS->GetUser($_GET['id']);

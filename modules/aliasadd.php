@@ -48,8 +48,7 @@ if($aliasadd = $_POST['aliasadd'])
 
 	if($aliasadd['login']=='' && $aliasadd['accountid']==0)
 	{
-		header('Location: ?m=aliaslist');
-		die;
+		$SESSION->redirect('?m=aliaslist');
 	}
 	
 	if($aliasadd['login'] == '')
@@ -82,8 +81,7 @@ if($aliasadd = $_POST['aliasadd'])
 		
 		if(!$aliasadd['reuse'])
 		{
-			header('Location: ?m=aliaslist');
-			die;
+			$SESSION->redirect('?m=aliaslist');
 		}
 		unset($aliasadd['login']);
 	}

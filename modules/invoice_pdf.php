@@ -469,7 +469,11 @@ elseif($_GET['fetchallinvoices'])
 				.($_GET['userid'] ? ' AND customerid = '.$_GET['userid'] : '')
 				.' ORDER BY cdate',
 				array($_GET['from'], $_GET['to']));
-	if(!$ids) die;
+	if(!$ids)
+	{
+		$SESSION->close();
+		die;
+	}
 
 	$count = (strstr($which,'+') ? sizeof($ids)*2 : sizeof($ids));
 	$i=0;
@@ -507,8 +511,7 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 }
 else
 {
-	header('Location: ?m=invoicelist');
-	die;
+	$SESSION->redirect('?m=invoicelist');
 }
 
 global $pdf;

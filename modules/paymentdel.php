@@ -27,7 +27,6 @@
 if($_GET['is_sure']=='1')
 	$LMS->PaymentDelete($_GET['id']);	
 
-header('Location: ?m=paymentlist');
-die;
+$SESSION->redirect('?m=paymentlist');
 
 ?>

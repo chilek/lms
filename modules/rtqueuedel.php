@@ -44,8 +44,7 @@ if (!$LMS->QueueExists($_GET['id']))
 		//$body = "<H1>".$layout['pagetitle']."</H1>";
 		//$body .= "<P>Kolejka ".$LMS->GetQueueName($_GET['id'])." zosta³a usuniêta.</P>";
 		$LMS->QueueDelete($_GET['id']);
-		header('Location: ?m=rtqueuelist');
-		die;
+		$SESSION->redirect('?m=rtqueuelist');
 	}
 }
 

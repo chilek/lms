@@ -40,8 +40,7 @@ $id = $_GET['id'];
 
 if($id && !DomainExists($id))
 {
-	header('Location: ?'.$SESSION->get('backto'));
-	die;
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 $domain = $LMS->DB->GetRow('SELECT id, name, description FROM domains WHERE id = ?', array($id));
@@ -58,8 +57,7 @@ if($_POST['domain'])
 	
 	if($domain['name']=='' && $domain['description']=='')
 	{
-		header('Location: ?'.$SESSION->get('backto'));
-		die;
+		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 	
 	if($domain['name'] == '')
@@ -75,8 +73,7 @@ if($_POST['domain'])
 				$domain['id']
 				));
 		$LMS->SetTS('domains');
-		header('Location: ?m=domainlist');
-		die;
+		$SESSION->redirect('?m=domainlist');
 	}
 }
 

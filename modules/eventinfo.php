@@ -26,8 +26,7 @@
 
 if(!$_GET['id'])
 {
-	header('Location: ?m=eventlist');
-	die;
+	$SESSION->redirect('?m=eventlist');
 }
 
 $event = $LMS->DB->GetRow('SELECT events.id AS id, title, description, note, adminid, userid, begintime, endtime, date, private, closed, '

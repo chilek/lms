@@ -34,8 +34,7 @@ if(isset($adminadd))
 	
 	if($adminadd['login']=='' && $adminadd['name']=='' && $adminadd['password']=='' && $adminadd['confirm']=='')
 	{
-		header('Location: ?m=adminadd');
-		die;
+		$SESSION->redirect('?m=adminadd');
 	}
 	
 	if($adminadd['login']=='')
@@ -72,8 +71,7 @@ if(isset($adminadd))
 
 	if(!$error)
 	{
-		header('Location: ?m=admininfo&id='.$LMS->AdminAdd($adminadd));
-		die;
+		$SESSION->redirect('?m=admininfo&id='.$LMS->AdminAdd($adminadd));
 	}
 }
 foreach($access['table'] as $idx => $row)

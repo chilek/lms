@@ -26,8 +26,7 @@
 
 if(! $LMS->QueueExists($_GET['id']))
 {
-	header('Location: ?m=rtqueuelist');
-	die;
+	$SESSION->redirect('?m=rtqueuelist');
 }
 
 $queue = $_POST['queue'];
@@ -49,8 +48,7 @@ if(isset($queue))
 	if(!$error)
 	{
 		$LMS->QueueUpdate($queue);
-		header("Location: ?m=rtqueueinfo&id=".$queue['id']);
-		die;
+		$SESSION->redirect('?m=rtqueueinfo&id='.$queue['id']);
 	}
 }
 else

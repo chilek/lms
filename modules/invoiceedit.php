@@ -157,15 +157,13 @@ switch($_GET['action'])
 		{
 			$SESSION->restore('invoiceid', $invoice['id']);
 			$LMS->InvoiceUpdate(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
-			header('Location: ?m=invoice&id='.$invoice['id']);
-			die;
+			$SESSION->redirect('?m=invoice&id='.$invoice['id']);
 		}
 	break;
 
 	case 'invoicedel':
 	    $LMS->InvoiceDelete($_GET['id']);
-	    header('Location: ?m=invoicelist');
-	    die;
+	    $SESSION->redirect('?m=invoicelist');
 }
 
 if($invoice['paytype'] == '')
@@ -179,8 +177,7 @@ $SESSION->save('invoiceediterror', $error);
 if($_GET['action'] != '')
 {
 	// redirect, ¿eby refreshem nie spierdoliæ faktury
-	header('Location: ?m=invoiceedit');
-	die;
+	$SESSION->redirect('?m=invoiceedit');
 }
 
 $SMARTY->assign('error', $error);

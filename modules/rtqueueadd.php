@@ -30,8 +30,7 @@ if(isset($queue))
 {
 	if($queue['name']=='' && $queue['email']=='' && $queue['description']=='')
 	{
-		header('Location: ?m=rtqueuelist');
-		die;
+		$SESSION->redirect('?m=rtqueuelist');
 	}
 
 	if($queue['name'] == '')
@@ -50,8 +49,7 @@ if(isset($queue))
 	if(!$error)
 	{
 		$id = $LMS->QueueAdd($queue);
-		header("Location: ?m=rtqueueinfo&id=".$id);
-		die;
+		$SESSION->redirect('?m=rtqueueinfo&id='.$id);
 	}
 }
 

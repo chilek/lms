@@ -35,8 +35,7 @@ $option = $_GET['op'];
 
 if($id && !AccountExists($id))
 {
-	header('Location: ?'.$SESSION->get('backto'));
-	die;
+	$SESSION->redirect($SESSION->get('backto'));
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
@@ -66,8 +65,7 @@ switch ($option)
 	{
 		$LMS->DB->Execute('UPDATE passwd SET password = ? WHERE id = ?', array(crypt($account['passwd1']), $id));
 		$LMS->SetTS('passwd');
-		header('Location: ?m=accountlist');
-		die;
+		$SESSION->redirect('?m=accountlist');
 	}
 	
 	$layout['pagetitle'] = trans('Password Change for Account: $0',$account['login']);
@@ -119,8 +117,7 @@ switch ($option)
 					$account['id']
 					));
 			$LMS->SetTS('passwd');
-			header('Location: ?m=accountlist');
-			die;
+			$SESSION->redirect('?m=accountlist');
 		}
 	}
 	

@@ -33,8 +33,7 @@ if(isset($payment))
 
 	if($payment['creditor']=='' && $payment['name']=='' && $payment['value']=='')
 	{
-		header('Location: ?m=paymentlist');
-		die;
+		$SESSION->redirect('?m=paymentlist');
 	}
 
 	$payment['value'] = str_replace(',','.',$payment['value']);
@@ -103,8 +102,7 @@ if(isset($payment))
 		$payment['at'] = $at;
 		if($payment['reuse'] =='')
 		{
-			header('Location: ?m=paymentlist&id='.$LMS->PaymentAdd($payment));
-			die;
+			$SESSION->redirect('?m=paymentlist&id='.$LMS->PaymentAdd($payment));
 		} else
 			$LMS->PaymentAdd($payment);
 			

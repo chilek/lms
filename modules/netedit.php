@@ -26,8 +26,7 @@
 
 if(!$LMS->NetworkExists($_GET['id']))
 {
-	header('Location: ?m=netlist');
-	die;
+	$SESSION->redirect('?m=netlist');
 }
 
 if($SESSION->is_set('ntlp.'.$_GET['id']) && ! isset($_GET['page']))
@@ -139,8 +138,7 @@ if(isset($networkdata))
 		if($networkdata['needshft'])
 			$LMS->NetworkShift($network['address'],$network['mask'],($networkdata['addresslong'] - $network['addresslong']));
 		$LMS->NetworkUpdate($networkdata);
-		header('Location: ?m=netinfo&id='.$networkdata['id']);
-		die;
+		$SESSION->redirect('?m=netinfo&id='.$networkdata['id']);
 	}	
 
 	$network['interface'] = $networkdata['interface'];

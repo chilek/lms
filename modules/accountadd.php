@@ -38,8 +38,7 @@ if($account = $_POST['account'])
 {
 	if(!($account['login'] || $account['passwd1'] || $account['passwd2']))
 	{
-		header('Location: ?m=accountlist');
-		die;
+		$SESSION->redirect('?m=accountlist');
 	}
 	
 	$account['type'] = array_sum($account['type']);
@@ -84,8 +83,7 @@ if($account = $_POST['account'])
 		$LMS->SetTS('passwd');
 		if(!$account['reuse'])
 		{
-			header('Location: ?m=accountlist');
-			die;
+			$SESSION->redirect('?m=accountlist');
 		}
 		
 		unset($account['login']);

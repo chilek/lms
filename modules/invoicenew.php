@@ -213,8 +213,7 @@ switch($_GET['action'])
 			$SESSION->remove('invoicecustomer');
 			$SESSION->remove('invoice');
 			$SESSION->remove('invoicenewerror');
-			header('Location: ?m=invoice&id='.$iid);
-			die;
+			$SESSION->redirect('?m=invoice&id='.iid);
 		}
 	break;
 }
@@ -230,8 +229,7 @@ $SESSION->save('invoicenewerror', $error);
 if($_GET['action'] != '')
 {
 	// redirect, ¿eby refreshem nie spierdoliæ faktury
-	header('Location: ?m=invoicenew');
-	die;
+	$SESSION->redirect('?m=invoicenew');
 }
 
 $SMARTY->assign('error', $error);

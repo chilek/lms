@@ -111,8 +111,7 @@ if(isset($netadd))
 	
 	if(!$error)
 	{
-		header('Location: ?m=netinfo&id='.$LMS->NetworkAdd($netadd));
-		die;
+		$SESSION->redirect('?m=netinfo&id='.$LMS->NetworkAdd($netadd));
 	}
 
 }

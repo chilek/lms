@@ -28,8 +28,7 @@ $userid = $LMS->DB->GetOne('SELECT userid FROM assignments WHERE id=?', array($_
 
 if(!$userid)
 {
-	header('Location: ?'.$SESSION->get('backto'));
-	die;
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 if($a = $_POST['assignmentedit'])
@@ -174,8 +173,7 @@ if($a = $_POST['assignmentedit'])
 				    $to,
 				    $a['id'] ));
 		$LMS->SetTS('assignments');
-		header('Location: ?'.$SESSION->get('backto'));
-		die;
+		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 }
 else

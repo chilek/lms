@@ -27,7 +27,6 @@
 if(!$LMS->UsergroupWithUserGet($_GET['id'])&&$_GET['is_sure']="1")
 	$LMS->UsergroupDelete($_GET['id']);	
 
-header("Location: ?m=usergrouplist");
-die;
+$SESSION->redirect('?m=usergrouplist');
 
 ?>

@@ -34,8 +34,7 @@ if(isset($ticket))
 
 	if($ticket['subject']=='' && $ticket['message']['body']=='')
 	{
-		header('Location: ?m=rtticketadd&id'.$queue);
-		die;
+		$SESSION->redirect('?m=rtticketadd&id'.$queue);
 	}
 
 	if($LMS->GetAdminRightsRT($AUTH->id, $queue) < 2)
@@ -63,8 +62,7 @@ if(isset($ticket))
 	if(!$error)
 	{
 		$id = $LMS->TicketAdd($ticket);
-		header("Location: ?m=rtticketview&id=".$id);
-		die;
+		$SESSION->redirect('?m=rtticketview&id='.$id);
 	}
 }
 	

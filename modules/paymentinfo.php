@@ -26,8 +26,7 @@
 
 if(!$LMS->PaymentExists($_GET['id']))
 {
-	header('Location: ?m=paymentlist');
-	die;
+	$SESSION->redirect('?m=paymentlist');
 }
 
 $payment = $LMS->GetPayment($_GET['id']);

@@ -26,8 +26,7 @@
 
 if(!$LMS->AdminExists($_GET['id']))
 {
-	header('Location: ?m=adminlist');
-	die;
+	$SESSION->redirect('?m=adminlist');
 }
 
 $admininfo = $_POST['admininfo'];
@@ -69,8 +68,7 @@ if(isset($admininfo))
 	if(!$error)
 	{
 		$LMS->AdminUpdate($admininfo);
-		header('Location: ?m=admininfo&id='.$admininfo['id']);
-		die;
+		$SESSION->redirect('?m=admininfo&id='.$admininfo['id']);
 	}
 
 }

@@ -26,25 +26,21 @@
 
 if(!eregi('^[0-9]+$',$_GET['id']))
 {
-	header('Location: ?m=nodelist');
-	die;
+	$SESSION->redirect('?m=nodelist');
 }
 
 if(!$LMS->NodeExists($_GET['id']))
 	if(isset($_GET['ownerid']))
 	{
-		header('Location: ?m=userinfo&id='.$_GET['ownerid']);
-		die;
+		$SESSION->redirect('?m=userinfo&id='.$_GET['ownerid']);
 	}
 	else
 	{
-		header('Location: ?m=nodelist');
-		die;
+		$SESSION->redirect('?m=nodelist');
 	}
 elseif($LMS->GetNodeOwner($_GET['id']) == 0)
 {
-	header('Location: ?m=netdevinfo&id='.$LMS->GetNetDevIDByNode($_GET['id']));
-	die;
+	$SESSION->redirect('?m=netdevinfo&id='.$LMS->GetNetDevIDByNode($_GET['id']));
 }
 
 if($_GET['devid'])

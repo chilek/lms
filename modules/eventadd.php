@@ -28,8 +28,7 @@ if($event = $_POST['event'])
 {
 	if(!($event['title'] || $event['description'] || $event['date']))
 	{
-		header('Location: ?m=eventlist');
-		die;
+		$SESSION->redirect('?m=eventlist');
 	}
 	
 	if($event['title'] == '')
@@ -68,8 +67,7 @@ if($event = $_POST['event'])
 		
 		if(!$event['reuse'])
 		{
-			header('Location: ?m=eventlist');
-			die;
+			$SESSION->redirect('?m=eventlist');
 		}
 		
 		unset($event['title']);

@@ -65,8 +65,7 @@ $date = $_GET['day'];
 
 if(!$date)
 {
-	header('Location: ?m=eventlist');
-	die;
+	$SESSION->redirect('?m=eventlist');
 }
 
 $eventlist = GetEvents($date, $_GET['a'], $_GET['u']);

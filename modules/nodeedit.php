@@ -37,13 +37,11 @@ if($_GET['action']=='link')
 	if($netdev['ports'] > $netdev['takenports']) 
 	{
 		$LMS->NetDevLinkNode($_GET['id'],$_GET['devid']);
-		header('Location: ?m=nodeinfo&id='.$_GET['id']);
-		die;
+		$SESSION->redirect('?m=nodeinfo&id='.$_GET['id']);
 	}
 	else
 	{
-		header('Location: ?m=nodeinfo&id='.$_GET['id'].'&devid='.$_GET['devid']);
-		die;
+		$SESSION->redirect('?m=nodeinfo&id='.$_GET['id'].'&devid='.$_GET['devid']);
 	}	
 }
 
@@ -71,8 +69,7 @@ if(isset($nodeedit))
 	
 	if($nodeedit['ipaddr']=='' && $nodeedit['mac']=='' && $nodeedit['name']=='' && $nodeedit['info']=='' && $nodeedit['passwd']=='')
 	{
-		header('Location: ?m=nodeinfo&id='.$nodeedit['id']);
-		die;
+		$SESSION->redirect('?m=nodeinfo&id='.$nodeedit['id']);
 	}
 
 	if(check_ip($nodeedit['ipaddr']))

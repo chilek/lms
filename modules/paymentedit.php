@@ -26,8 +26,7 @@
 
 if(!$LMS->PaymentExists($_GET['id']))
 {
-	header('Location: ?m=paymentlist');
-	die;
+	$SESSION->redirect('?m=paymentlist');
 }
 
 $payment = $_POST['payment'];
@@ -108,8 +107,7 @@ if(isset($payment))
 	{
 		$payment['at'] = $at;
 		$LMS->PaymentUpdate($payment);
-		header('Location: ?m=paymentinfo&id='.$payment['id']);
-		die;
+		$SESSION->redirect('?m=paymentinfo&id='.$payment['id']);
 	}
 
 } else 

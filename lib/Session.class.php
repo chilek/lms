@@ -192,6 +192,13 @@ class Session {
 			return NULL;
 	}
 
+	function redirect($location)
+	{
+		$this->close();
+		header('Location: '.$location);
+		die;
+	}
+
 }
 
 ?>

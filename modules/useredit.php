@@ -28,26 +28,22 @@ $userdata = $_POST['userdata'];
 
 if($LMS->UserExists($_GET['id']) < 0 && $_GET['action'] != 'recover')
 {
-	header('Location: ?m=userinfo&id='.$_GET['id']);
-	die;
+	$SESSION->redirect('?m=userinfo&id='.$_GET['id']);
 }
 elseif(! $LMS->UserExists($_GET['id']))
 {
-	header('Location: ?m=userlist');
-	die;
+	$SESSION->redirect('?m=userlist');
 }
 elseif($_GET['action'] == 'usergroupdelete')
 {
 	$LMS->UserassignmentDelete(array('userid' => $_GET['id'], 'usergroupid' => $_GET['usergroupid']));
-	header('Location: ?m=userinfo&id='.$_GET['id']);
-	die;
+	$SESSION->redirect('?m=userinfo&id='.$_GET['id']);
 }
 elseif($_GET['action'] == 'usergroupadd')
 {
 	if ($LMS->UsergroupExists($_POST['usergroupid']))
 		$LMS->UserassignmentAdd(array('userid' => $_GET['id'], 'usergroupid' => $_POST['usergroupid']));
-	header('Location: ?m=userinfo&id='.$_GET['id']);
-	die;
+	$SESSION->redirect('?m=userinfo&id='.$_GET['id']);
 }
 elseif(isset($userdata))
 {
@@ -89,8 +85,7 @@ elseif(isset($userdata))
 		
 	if (!isset($error)){
 		$LMS->UserUpdate($userdata);
-		header('Location: ?m=userinfo&id='.$userdata['id']);
-		die;
+		$SESSION->redirect('?m=userinfo&id='.$userdata['id']);
 	}else{
 		$olddata=$LMS->GetUser($_GET['id']);
 		$userinfo=$userdata;

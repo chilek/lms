@@ -27,10 +27,9 @@
 if($LMS->UsergroupExists($_GET['from']) && $LMS->UsergroupExists($_GET['to']) && $_GET['is_sure'] = 1)
 {
 	$LMS->UsergroupMove($_GET['from'],$_GET['to']);
-	header("Location: ?m=usergroupinfo&id=".$_GET['to']);
-	die;
+	$SESSION->redirect('?m=usergroupinfo&id='.$_GET['to']);
 }
 else
-	header("Location: ?".$SESSION->get('backto'));
+	header('Location: ?'.$SESSION->get('backto'));
 
 ?>

@@ -229,8 +229,7 @@ if(isset($message))
 		if(!$LMS->GetTicketState($message['ticketid']))
 			$LMS->SetTicketState($message['ticketid'], 1);
 
-		header("Location: ?m=rtticketview&id=".$message['ticketid']);
-		die;
+		$SESSION->redirect('?m=rtticketview&id='.$message['ticketid']);
 	}
 }
 else

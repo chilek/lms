@@ -38,14 +38,14 @@ if($filename = $_GET['file'])
 			header('Content-Disposition: attachment; filename='.$filename);
 			@readfile($file);
 		}
+		$SESSION->close();
 		die;
 	}
 }
 
 if(! $_GET['id'])
 {
-	header('Location: ?'.$SESSION->get('backto'));
-	die;
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 

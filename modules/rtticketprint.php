@@ -26,13 +26,13 @@
 
 if(! $LMS->TicketExists($_GET['id']))
 {
-	header('Location: ?m=rtqueuelist');
-	die;
+	$SESSION->redirect('?m=rtqueuelist');
 }
 
 if(! $LMS->GetAdminRightsRT($AUTH->id, 0, $_GET['id']))
 {
 	$SMARTY->display('noaccess.html');
+	$SESSION->close();
 	die;
 }
 

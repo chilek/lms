@@ -37,8 +37,7 @@ if($_GET['is_sure'])
 		@unlink($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
 	}
 
-	header('Location: ?m='.$SESSION->get('lastmodule'));
-	die;
+	$SESSION->redirect('?m='.$SESSION->get('lastmodule'));
 } 
 else
 {

@@ -37,8 +37,7 @@ if(isset($userassignments))
 			$assignment['userid'] = $value;
 			$LMS->UserassignmentDelete($assignment);
 		}
-		header('Location: ?'.$SESSION->get('backto'));
-		die;
+		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 
 	if (sizeof($userassignments['muserid']) && $oper=='1')
@@ -50,15 +49,13 @@ if(isset($userassignments))
 			if(! $LMS->UserassignmentExist($assignment['usergroupid'],$value))
 				$LMS->UserassignmentAdd($assignment);
 		}
-		header('Location: ?'.$SESSION->get('backto'));
-		die;
+		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 }
 
 if(!$LMS->UsergroupExists($_GET['id']))
 {
-	header('Location: ?m=usergrouplist');
-	die;
+	$SESSION->redirect('?m=usergrouplist');
 }
 
 $usergroup = $LMS->UsergroupGet($_GET['id']);
@@ -87,8 +84,7 @@ if(isset($usergroupedit))
 	if(!$error)
 	{
 		$LMS->UsergroupUpdate($usergroupedit);
-		header('Location: ?m=usergroupinfo&id='.$usergroup['id']);
-		die;
+		$SESSION->redirect('?m=usergroupinfo&id='.$usergroup['id']);
 	}
 
 	$usergroup['description'] = $usergroupedit['description'];

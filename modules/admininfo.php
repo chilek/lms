@@ -26,8 +26,7 @@
 
 if(!$LMS->AdminExists($_GET['id']))
 {
-	header('Location: ?m=adminlist');
-	die;
+	$SESSION->redirect('?m=adminlist');
 }
 
 $layout['pagetitle'] = trans('User Info: $0', $LMS->GetAdminName($_GET['id']));

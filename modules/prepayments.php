@@ -28,8 +28,7 @@ $userid = $_GET['id'];
 
 if(!$userid || $LMS->UserExists($userid)!=TRUE)
 {
-	header('Location: ?m='.$SESSION->get('backto'));
-	die;
+	$SESSION->redirect('?m='.$SESSION->get('backto'));
 }
 
 $pmarks = $_POST['pmarks'];

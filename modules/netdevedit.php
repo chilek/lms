@@ -26,8 +26,7 @@
 
 if(! $LMS->NetDevExists($_GET['id']))
 {
-	header('Location: ?m=netdevlist');
-	die;
+	$SESSION->redirect('?m=netdevlist');
 }		
 
 $edit = data;
@@ -50,20 +49,17 @@ case 'replace':
 	else 
 	{
 	    $LMS->NetDevReplace($_GET['id'],$_GET['netdev']);
-	    header('Location: ?m=netdevinfo&id='.$_GET['id']);
-	    die;
+	    $SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
 	break;
 	
 case 'disconnect':
 	$LMS->NetDevUnLink($_GET['id'],$_GET['devid']);
-	header('Location: ?m=netdevinfo&id='.$_GET['id']);
-	die;
+	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 
 case 'disconnectnode':
 	$LMS->NetDevLinkNode($_GET['nodeid'],0);
-	header('Location: ?m=netdevinfo&id='.$_GET['id']);
-	die;
+	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 
 case 'connect':
 	$linktype = $_GET['linktype'] ? $_GET['linktype'] : '0';
@@ -118,8 +114,7 @@ case 'formaddip':
 	
 	if($nodeipdata['ipaddr']=='' && $nodeipdata['mac']=='' && $nodeipdata['name']=='')
 	{
-		header('Location: ?m=netdevedit&action=addip&id='.$_GET['id']);
-		die;
+		$SESSION->redirect('?m=netdevedit&action=addip&id='.$_GET['id']);
         }
 	
 	if($nodeipdata['name']=='')
@@ -153,8 +148,7 @@ case 'formaddip':
 		$nodeipdata['warning'] = 0;
 		$nodeipdata['passwd'] = '';
 		$LMS->NetDevLinkNode($LMS->NodeAdd($nodeipdata),$_GET['id']);
-		header('Location: ?m=netdevinfo&id='.$_GET['id']);
-		die;
+		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
 	$SMARTY->assign('nodeipdata',$nodeipdata); 
 	$edit='addip';
@@ -171,8 +165,7 @@ case 'formeditip':
 	
 	if($nodeipdata['ipaddr']=='' && $nodeipdata['mac']=='' && $nodeipdata['name']=='')
 	{
-		header('Location: ?m=netdevedit&action=editip&id='.$_GET['id'].'&ip='.$_GET['ip']);
-		die;
+		$SESSION->redirect('?m=netdevedit&action=editip&id='.$_GET['id'].'&ip='.$_GET['ip']);
         }
 	
 	if($nodeipdata['name']=='')
@@ -213,8 +206,7 @@ case 'formeditip':
 	if(!$error)
 	{
 		$LMS->NodeUpdate($nodeipdata);	
-		header('Location: ?m=netdevinfo&id='.$_GET['id']);
-		die;
+		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
 	$SMARTY->assign('nodeipdata',$nodeipdata); 
 	$edit='ip';
@@ -237,8 +229,7 @@ if(isset($netdevdata))
 	if(!$error)
 	{
 		$LMS->NetDevUpdate($netdevdata);
-		header('Location: ?m=netdevinfo&id='.$_GET['id']);
-		die;
+		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
 }
 else

@@ -27,6 +27,7 @@
 if (strtolower($_CONFIG['invoices']['type']) == 'pdf')
 {
     include('invoice_pdf.php');
+    $SESSION->close();
     die;
 }
 
@@ -86,7 +87,11 @@ elseif($_GET['fetchallinvoices'])
 				.($_GET['userid'] ? ' AND customerid = '.$_GET['userid'] : '')
 				.' ORDER BY cdate',
 				array($_GET['from'], $_GET['to']));
-	if(!$ids) die;
+	if(!$ids)
+	{
+		$SESSION->close();
+		die;
+	}
 
 	$count = (strstr($which, '+') ? sizeof($ids)*2 : sizeof($ids));
 	$i=0;
@@ -120,6 +125,7 @@ elseif($_GET['fetchsingle'])
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');
 	$SMARTY->assign('type',trans('ORIGINAL'));
+	$SMARTY->assign('type',trans('ORIGINAL+COPY'));
 	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
 	$SMARTY->display('clearfooter.html');
 }
@@ -133,9 +139,9 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');
-	$SMARTY->assign('type',trans('ORIGINAL'));
-	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
-	$SMARTY->assign('type',trans('COPY'));
+#	$SMARTY->assign('type',trans('ORIGINAL'));
+#	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
+	$SMARTY->assign('type',trans('ORIGINAL+COPY'));
 	$invoice['last'] = TRUE;
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
@@ -143,8 +149,7 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 }
 else
 {
-	header('Location: ?m=invoicelist');
-	die;
+	$SESSION->redirect('?m=invoicelist');
 }
 
 ?>
