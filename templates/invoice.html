@@ -3,20 +3,20 @@
 <TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
 		<TD WIDTH="98%" CLASS="hdf" COLSPAN="2" VALIGN="TOP">
-			<B>Faktura VAT nr {$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}</B><BR>
+			<B>{t 0=$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}Invoice No. $0{/t}</B><BR>
 			<B>{$type}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" VALIGN="TOP" CLASS="sdr">
-			Data wystawienia:<BR>
-			Data sprzeda¿y:<BR>
-			Termin zap³aty:<BR>
-			Sposób zap³aty:
+			{t}Draw-up date:{/t}<BR>
+			{t}Sale date:{/t}<BR>
+			{t}Deadline:{/t}<BR>
+			{t}Payment type:{/t}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="LEFT" VALIGN="TOP" CLASS="sdr">
-			{$invoice.cdate|date_format:"%d.%m.%Y"} {if $_config.invoices.cplace neq ""}, {$_config.invoices.cplace}{/if}<BR>
-			{$invoice.cdate|date_format:"%d.%m.%Y"}<BR>
-			{$invoice.pdate|date_format:"%d.%m.%Y"}<BR>
-			{$invoice.paytype|default:"PRZELEW"}
+			{$invoice.cdate|date_format:"%Y/%m/%d"} {if $_config.invoices.cplace neq ""}, {$_config.invoices.cplace}{/if}<BR>
+			{$invoice.cdate|date_format:"%Y/%m/%d"}<BR>
+			{$invoice.pdate|date_format:"%Y/%m/%d"}<BR>
+			{$invoice.paytype}
 		</TD>
 	</TR>
 	<TR>
@@ -28,20 +28,20 @@
 <TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
 		<TD WIDTH="66%" VALIGN="TOP">
-			<B>Sprzedawca:</B><BR>
+			<B>{t}Seller:{/t}</B><BR>
 			<BR>
 			{$_config.invoices.header|replace:"\\n":"<BR>"}
 			<BR><BR>
-			<B>Nabywca:</B><BR>
+			<B>{t}Purchaser:{/t}</B><BR>
 			<BR>
 			{$invoice.name}<BR>
 			{$invoice.address}<BR>
 			{$invoice.zip} {$invoice.city}<BR>
-			Polska<BR>
-			{if $invoice.phone neq ""}Tel: {$invoice.phone}<BR>{/if}
-			{if $invoice.nip neq ""}NIP: {$invoice.nip}<BR>{elseif $invoice.pesel neq ""}PESEL: {$invoice.pesel}<BR>{/if}
+			{t}Poland{/t}<BR>
+			{if $invoice.phone neq ""}{t}Phone:{/t} {$invoice.phone}<BR>{/if}
+			{if $invoice.nip neq ""}{t}FID:{/t} {$invoice.nip}<BR>{elseif $invoice.pesel neq ""}{t}SSN:{/t} {$invoice.pesel}<BR>{/if}
 			<BR>
-			<B>Numer klienta: {$invoice.customerid|string_format:"%04d"}</B>
+			<B>{t}Customer ID:{/t} {$invoice.customerid|string_format:"%04d"}</B>
 		</TD>
 		<TD WIDTH="34%" VALIGN="TOP" CLASS="sdr">
 			<BR>
@@ -54,7 +54,7 @@
 			{$invoice.address}<BR>
 			{$invoice.zip} {$invoice.city}<BR>
 			{/if}
-			Polska</B>
+			{t}Poland{/t}</B>
 		</TD>
 	</TR>
 	<TR>
@@ -67,34 +67,34 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="FALL">
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>Lp.</B>
+		<B>{t}No.{/t}</B>
 	</TD>
 	<TD WIDTH="91%" CLASS="head" ALIGN="CENTER">
-		<B>Nazwa wyrobu, towaru lub us³ugi:</B>
+		<B>{t}Name of product, commodity or service:{/t}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>PKWiU:</B>
+		<B>{t}PKWiU:{/t}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>JM:</B>
+		<B>{t}Unit:{/t}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>Ilo¶æ:</B>
+		<B>{t}Amount:{/t}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>Cena jedn. netto:</B>
+		<B>{t}Unitary net value:{/t}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>Warto¶æ netto:</B>
+		<B>{t}Net value:{/t}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>St. PTU:</B>
+		<B>{t}Tax rate:{/t}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>Kwota PTU:</B>
+		<B>{t}Tax value:{/t}</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>Warto¶æ brutto:</B>
+		<B>{t}Gross value:{/t}</B>
 	</TD>
 </TR>
 {cycle values="#EEEEEE,#FFFFFF" print=false}
@@ -115,39 +115,39 @@
 		{$item.count}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
-		{$item.basevalue|string_format:"%.2f"} z³
+		{$item.basevalue|money_format}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
-		{$item.totalbase|string_format:"%.2f"} z³
+		{$item.totalbase|money_format}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
 		{if $item.taxvalue}
 			{$item.taxvalue}%
-		{else}zw.{/if}
+		{else}{t}tax-free{/t}{/if}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
-		{$item.totaltax|string_format:"%.2f"} z³
+		{$item.totaltax|money_format}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
-		{$item.total|string_format:"%.2f"} z³
+		{$item.total|money_format}
 	</TD>
 </TR>
 {/foreach}
 <TR>
 	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
-		<P ALIGN="RIGHT"><B>Razem:</B></P>
+		<P ALIGN="RIGHT"><B>{t}Total:{/t}</B></P>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
-		{$invoice.totalbase|string_format:"%.2f"} z³
+		{$invoice.totalbase|money_format}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
 		<B>x</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$invoice.totaltax|string_format:"%.2f"} z³
+		{$invoice.totaltax|money_format}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$invoice.total|string_format:"%.2f"} z³
+		{$invoice.total|money_format}
 	</TD>
 </TR>
 <TR>
@@ -155,7 +155,7 @@
 		&nbsp;
 	</TD>
 	<TD COLSPAN="4" WIDTH="4%" ALIGN="CENTER">
-		<B>w tym:</B>
+		<B>{t}in it:{/t}</B>
 	</TD>
 </TR>
 {foreach from=$invoice.taxest item=item}
@@ -164,18 +164,18 @@
 		&nbsp;
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
-		{$item.base|string_format:"%.2f"} z³
+		{$item.base|money_format}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
 		{if $item.taxvalue}
 			{$item.taxvalue}%
-		{else}zw.{/if}
+		{else}{t}tax-free{/t}{/if}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$item.tax|string_format:"%.2f"} z³
+		{$item.tax|money_format}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
-		{$item.total|string_format:"%.2f"} z³
+		{$item.total|money_format}
 	</TD>
 </TR>
 {/foreach}
@@ -188,18 +188,19 @@
 	</TR>
 	<TR>
 		<TD WIDTH="50%" ALIGN="CENTER" ROWSPAN="2">
-			Wystawi³: {$_config.invoices.default_author}
+			{t}Expositor:{/t} {$_config.invoices.default_author}
 		</TD>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="hdf">
-			Do zap³aty: {$invoice.total|string_format:"%.2f"} z³
+			{t}To pay:{/t} {$invoice.total|money_format}
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="SDR">
+			{t}In words:{/t}
 			{if $_config.phpui.to_words_short_version}
-			S³ownie: {$invoice.total|string_format:"%d"|to_words:0:"":1} {$invoice.totalg|string_format:"%02d"}/100
+				{$invoice.total|string_format:"%d"|to_words:0:"":1} {$invoice.totalg|string_format:"%02d"}/100
 			{else}
-			S³ownie: {$invoice.total|string_format:"%d"|to_words} z³ {$invoice.totalg|to_words} gr
+				{$invoice.total|string_format:"%d"|to_words} z³ {$invoice.totalg|to_words} gr
 			{/if}
 		</TD>
 	</TR>
@@ -210,8 +211,8 @@
 	</TR>
 	<TR>
 		<TD WIDTH="100%" COLSPAN="2">
-			<B>Uwagi:</B><BR>
-			<BLOCKQUOTE>W razie jakichkolwiek pytañ lub w±tpliwo¶ci prosimy o kontakt z naszym biurem obs³ugi klienta. Prosimy aby pamiêtali Pañstwo o swoim numerze klienta.</BLOCKQUOTE>
+			<B>{t}Cautions:{/t}</B><BR>
+			<BLOCKQUOTE>{t}In case of any questions or doubts, contact with our Service Bureau. Remeber your Customer ID, please.{/t}</BLOCKQUOTE>
 		</TD>
 	</TR>
 </TABLE>
@@ -220,7 +221,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD WIDTH="100%" ALIGN="CENTER" COLSPAN="2" CLASS="hd1">
-			<B>Dziêkujemy za korzystanie z naszych us³ug!</B>
+			<B>{t}Thanks for using of our services!{/t}</B>
 		</TD>
 	</TR>
 	<TR>

@@ -61,10 +61,10 @@ elseif(isset($userdata))
 		$error['address'] = trans('Address required!');
 
 	if($userdata['nip'] !='' && !check_nip($userdata['nip']))
-		$error['nip'] = trans('Incorrect Vat Reg No.!');
+		$error['nip'] = trans('Incorrect FID!');
 
 	if(!check_pesel($userdata['pesel']) && $userdata['pesel'] != '')
-		$error['pesel'] = trans('Incorrect Personal ID!');
+		$error['pesel'] = trans('Incorrect SSN!');
 
 	if($userdata['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$userdata['zip']))
 		$error['zip'] = trans('Incorrect ZIP code!');
