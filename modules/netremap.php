@@ -30,7 +30,7 @@ if(!$LMS->NetworkExists($_GET['id'])||!$LMS->NetworkExists($_GET['mapto']))
 	die;
 }
 
-$network['source'] = $LMS->GetNetworkRecord($_GET['id'],$_SESSION['ntlp'][$_GET['id']],1024);
+$network['source'] = $LMS->GetNetworkRecord($_GET['id'],$SESSION->get('ntlp'.$_GET['id'],1024));
 $network['dest'] = $LMS->GetNetworkRecord($_GET['mapto']);
 
 if($network['source']['assigned'] > $network['dest']['free'])

@@ -54,13 +54,13 @@ function GetConfigList($order='var,asc')
 $layout['pagetitle'] = trans('User Interface Configuration');
 
 if(!isset($_GET['o']))
-	$o = $_SESSION['clo'];
+	$SESSION->restore('clo', $o);
 else
 	$o = $_GET['o'];
-$_SESSION['clo'] = $o;
+$SESSION->save('clo', $o);
 
-if (isset($_SESSION['clp']) && !isset($_GET['page']))
-	$_GET['page'] = $_SESSION['clp'];
+if ($SESSION->is_set('clp') && !isset($_GET['page']))
+	$SESSION->restore('clp', $_GET['page']);
 
 $configlist = GetConfigList($o);
 $listdata['total'] = $configlist['total'];
@@ -74,7 +74,7 @@ $page = (! $_GET['page'] ? 1 : $_GET['page']);
 $pagelimit = (! $LMS->CONFIG['phpui']['configlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['configlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$_SESSION['clp'] = $page;
+$SESSION->save('clp', $page);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 

@@ -37,7 +37,7 @@ if(isset($userassignments))
 			$assignment['userid'] = $value;
 			$LMS->UserassignmentDelete($assignment);
 		}
-		header('Location: ?'.$_SESSION['backto']);
+		header('Location: ?'.$SESSION->get('backto'));
 		die;
 	}
 
@@ -50,7 +50,7 @@ if(isset($userassignments))
 			if(! $LMS->UserassignmentExist($assignment['usergroupid'],$value))
 				$LMS->UserassignmentAdd($assignment);
 		}
-		header('Location: ?'.$_SESSION['backto']);
+		header('Location: ?'.$SESSION->get('backto'));
 		die;
 	}
 }

@@ -41,9 +41,6 @@ class Auth {
 
 	function Auth(&$DB, &$SESSION)
 	{
-		session_start();		// we will remove this when all references
-						// to $_SESSION variable will be replaced
-		
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
 		
@@ -115,7 +112,6 @@ class Auth {
 	{
 		if ($this->islogged)
 			writesyslog('User '.$this->login.' logged out.',LOG_INFO);
-		session_destroy();
 		unset($this->login);
 		unset($this->password);
 		$this->SESSION->finish();

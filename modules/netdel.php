@@ -40,7 +40,7 @@ if(!$error)
 	if($_GET['is_sure'])
 	{
 		$LMS->NetworkDelete($network['id']);
-		header('Location: ?m='.$_SESSION['lastmodule'].'&id='.$_GET['id']);
+		header('Location: ?m='.$SESSION->get('lastmodule').'&id='.$_GET['id']);
 		die;
 	}
 	else

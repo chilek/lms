@@ -30,23 +30,23 @@ if(isset($search['s']))
 	$_GET['s'] = $search['s'];
 
 if(!isset($search))
-	$search = $_SESSION['usersearch'];
+	$SESSION->restore('usersearch', $search);
 else
-	$_SESSION['usersearch'] = $search;
+	$SESSION->save('usersearch', $search);
 
 if(!isset($_GET['o']))
-	$o = $_SESSION['uslo'];
+	$SESSION->restore('uslo', $o);
 else
 	$o = $_GET['o'];
 
-$_SESSION['uslo'] = $o;
+$SESSION->save('uslo', $o);
 
 if(!isset($_GET['s']))
-	$s = $_SESSION['usls'];	
+	$SESSION->restore('usls', $s);	
 else
 	$s = $_GET['s'];
 	
-$_SESSION['usls'] = $s;
+$SESSION->save('usls', $s);
 				
 $layout['pagetitle'] = trans('Customer Search');
 

@@ -44,7 +44,7 @@ if($filename = $_GET['file'])
 
 if(! $_GET['id'])
 {
-	header('Location: ?'.$_SESSION['backto']);
+	header('Location: ?'.$SESSION->get('backto'));
 	die;
 }
 
