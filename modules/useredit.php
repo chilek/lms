@@ -90,15 +90,6 @@ elseif(isset($userdata))
 	foreach($userdata as $key=>$value)
 		$userdata[$key] = trim($value);
 
-	// avoid stupid data in payday field
-
-	$userdata[payday] = sprintf('%d',$userdata[payday]);
-	
-	if($userdata[payday] < 1)
-		$userdata[payday] = 1;
-	elseif($userdata[payday] > 28)
-		$userdata[payday] = 28;
-
 	if($userdata[lastname]=="")
 		$error[username] = "Pola 'nazwisko/nazwa' oraz imiê nie mog± byæ puste!";
 	
@@ -117,9 +108,6 @@ elseif(isset($userdata))
 	if($userdata[gguin] !="" && !eregi("^[0-9]{4,}$",$userdata[gguin]))
 		$error[gguin] = "Podany numer GG jest niepoprawny!";
 
-//	if(!$LMS->TariffExists($userdata[tariff]))
-//		$error[tariff] = "Proszê wybraæ taryfê!";
-		
 	if($userdata[status]!=3&&$LMS->GetUserNodesNo($userdata[id])) 
 		$error[status] = "Tylko pod³±czony u¿ytkownik mo¿e posiadaæ komputery!";
 		
@@ -147,9 +135,6 @@ elseif(isset($userdata))
 		$userinfo[shownodes] = TRUE;
 }
 
-for($i=1;$i<29;$i++)
-	$paydays[] = $i;
-
 $layout[pagetitle]="Edycja danych u¿ytkownika ".$userinfo[username];
 $SMARTY->assign("usernodes",$LMS->GetUserNodes($userinfo[id]));
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($userinfo[id]));
@@ -157,7 +142,6 @@ $SMARTY->assign("tariffs",$LMS->GetTariffs());
 $SMARTY->assign("assignments",$LMS->GetUserAssignments($_GET[id]));
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("layout",$layout);
-$SMARTY->assign("paydays",$paydays);
 $SMARTY->assign("recover",($_GET[action] == 'recover' ? 1 : 0));
 $SMARTY->display("useredit.html");
 
@@ -165,6 +149,9 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 /*
  * $Log$
+ * Revision 1.43  2003/09/09 01:24:26  lukasz
+ * - cosmetics
+ *
  * Revision 1.42  2003/09/09 01:22:28  lukasz
  * - nowe finanse
  * - kosmetyka
