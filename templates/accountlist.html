@@ -30,7 +30,7 @@
 				<INPUT type="HIDDEN" name="page" value="1">
 				<B>{t}Filter:{/t} </B> {t}Owner:{/t}
 				<SELECT size="1" name="u" OnChange="document.filter.submit();">
-					<OPTION value=""{if $listdata.user eq ""} SELECTED{/if}>{t}- all -{/t}</OPTION>
+					<OPTION value=""{if $listdata.user eq ""} SELECTED{/if}>{t}- all owners -{/t}</OPTION>
 					<OPTION value="0"{if $listdata.user eq "0"} SELECTED{/if}>{t}SYSTEM ACCOUNT{/t}</OPTION>
 					{section name=userlist loop=$userlist}
 					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.user} SELECTED{/if}>{$userlist[userlist].username|truncate:40:"..."}</OPTION>

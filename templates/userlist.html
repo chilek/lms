@@ -45,18 +45,18 @@
 					<OPTION VALUE="5"{if $listdata.state eq 5} SELECTED{/if}>{t}disconnected{/t}</OPTION>
 					<OPTION VALUE="6"{if $listdata.state eq 6} SELECTED{/if}>{t}in debt{/t}</OPTION>
 					<OPTION VALUE="7"{if $listdata.state eq 7} SELECTED{/if}>{t}online{/t}</OPTION>
-					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{t}- all -{/t}</OPTION>
+					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
 				</SELECT>&nbsp;
 				{t}Network:{/t}
 				<SELECT SIZE="1" CLASS="bold" NAME="n" ONCHANGE="document.choosefilter.submit();">
-					<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all -{/t}</OPTION>
+					<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all networks -{/t}</OPTION>
 					{section name=networks loop=$networks}
 					<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"..."}</OPTION>
 					{/section}
 				</SELECT>&nbsp;
 				{t}Group:{/t}
 				<SELECT SIZE="1" CLASS="bold" NAME="g" ONCHANGE="document.choosefilter.submit();">
-					<OPTION value="" {if !$listdata.usergroup} SELECTED {/if}>{t}- all -{/t}</OPTION>
+					<OPTION value="" {if !$listdata.usergroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
 					{section name=usergroups loop=$usergroups}
 					<OPTION value="{$usergroups[usergroups].id}" {if $listdata.usergroup eq $usergroups[usergroups].id} SELECTED {/if}>{$usergroups[usergroups].name|truncate:50:"..."}</OPTION>
 					{/section}
