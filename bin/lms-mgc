@@ -227,7 +227,9 @@ sub instance($)
 	{
 		print "debug: no networks defined, using '$allnetworks'\n" if $debug;
 		$networks = $allnetworks;
-	}else{
+	}
+	else
+	{
 		print "debug: networks defined are: '$networks'\n" if $debug;
 	}
 	
@@ -235,7 +237,9 @@ sub instance($)
 	{
 		print "debug: no dst_networks defined, using '$allnetworks'\n" if $debug;
 		$dst_networks = $allnetworks;
-	}else{
+	}
+	else
+	{
 		print "debug: dst_networks are: '$dst_networks'\n" if $debug;
 	}
 			
@@ -251,7 +255,9 @@ sub instance($)
 	if($append)
 	{
 		open(OUTFILE, ">>$outfile") or $cantwrite = 1;
-	}else{
+	}
+	else
+	{
 		open(OUTFILE, ">$outfile") or $cantwrite = 1;
 	}
 	
@@ -267,7 +273,9 @@ sub instance($)
 		if(! -r $header_file)
 		{
 			print STDERR "Warning: unable to read $header_file!\n";
-		}else{
+		}
+		else
+		{
 			open(HEADERFILE, "$header_file");
 			my @headercontents = <HEADERFILE>;
 			close HEADERFILE;
@@ -496,13 +504,17 @@ sub instance($)
 				if(!$imask)
 				{
 					$imask = "255.255.255.255";
-				}elsif($imask =~ /^\d+\.\d+\.\d+\.\d+$/)
+				}
+				elsif($imask =~ /^\d+\.\d+\.\d+\.\d+$/)
 				{
 					# nope; mask is good
-				}elsif($imask >= 0 && $imask <= 32)
+				}
+				elsif($imask >= 0 && $imask <= 32)
 				{
 					$imask = prefix2mask($imask);
-				}else{
+				}
+				else
+				{
 					print STDERR "Warning! Wrong ignore item: $iip/$imask!\n";
 				}
 
@@ -511,11 +523,19 @@ sub instance($)
 					$ignored = 1;
 				}
 			}
-						
+			
+			my $pernoderule = $ini->val("mgc:$instanceno", 'node('.$ipaddr.')') || '';
+			
 			if($ignored)
 			{
 				print "ignoring.\n" if $debug;
-			}elsif($allnodes)
+			}
+			elsif($pernoderule)
+			{
+				print "using per node rule.\n" if $debug;
+				$rule = $pernoderule;
+			}
+			elsif($allnodes)
 			{
 				print "using default rule for ALL nodes.\n" if $debug;
 				$rule = $allnodes;
@@ -559,7 +579,8 @@ sub instance($)
 			{
 				print "doesn't match previous rules, but default exists, applying.\n" if $debug;
 				$rule = $default;
-			}else
+			}
+			else
 			{
 				print "no matching rule or (what is more possible) no rule exists in config file. I do nothing with this address.\n" if $debug;
 				$rule = '';
@@ -672,7 +693,9 @@ sub instance($)
 		if(! -r $footer_file)
 		{
 			print STDERR "Warning: unable to read $footer_file!\n";
-		}else{
+		}
+		else
+		{
 			open(FOOTERFILE, "$footer_file");
 			my @footercontents = <FOOTERFILE>;
 			close FOOTERFILE;
@@ -726,10 +749,13 @@ my $instances;
 if($instances_cmd)
 {
 	$instances = $instances_cmd;
-}elsif($instances_cfg)
+}
+elsif($instances_cfg)
 {
 	$instances = $instances_cfg;
-}else{
+}
+else
+{
 	print STDERR "Fatal error: you didn't define instances to run. Set this in $configfile, or\nusing -i switch from cmdline, exiting.\n";
 	$dbase->disconnect();
 	exit(1);
