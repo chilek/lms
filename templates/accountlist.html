@@ -6,7 +6,7 @@
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD width="20%" class="fleftu" NOWRAP>
-			<IMG src="img/user.gif" alt="" align="absmiddle"> <A href="?m=accountlist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>Login:</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<IMG src="img/account.gif" alt="" align="absmiddle"> <A href="?m=accountlist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>Login:</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD width="77%" class="fbt">
 			<A href="?m=accountlist&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}"><B>W³a¶ciciel:</B></A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
@@ -25,7 +25,7 @@
 	{section name=accountlist loop=$accountlist}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD class="fleft">
-			<nobr><IMG src="img/user.gif" ALT="" align="absmiddle" border="0"><B> {$accountlist[accountlist].login}</B></nobr>
+			<nobr><IMG src="img/account.gif" ALT="" align="absmiddle" border="0"><B> {$accountlist[accountlist].login}</B></nobr>
 		</TD>
 		<TD NOWRAP>
 			<A href="?m=userinfo&id={$accountlist[accountlist].ownerid}">

@@ -6,23 +6,46 @@
 <FORM method="POST" action="?m=accountadd" name="account">
 <TABLE width="1%" cellpadding="3" border="0">
 	<TR class="dark">
-		<TD class="fall" nowrap colspan="2" nowrap>
-			<NOBR><img src="img/user.gif" border="0" align="absmiddle" ALT=""> <B>Dodaj nowe konto:</B></NOBR>
+		<TD width="1%" class="fleftu">
+			<img src="img/account.gif" border="0" align="absmiddle" ALT="">		
 		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="fleft" align="right" nowrap>
-			<NOBR><B>Login:</B></NOBR>
+		<TD width="1%" class="fbt">
+			<B>Login:</B>
 		</TD>
-		<TD class="fright" nowrap>
+		<TD width="98%" class="frightu">
 			<input name="account[login]" value="{$account.login}" {tip text="Podaj nazwê konta" trigger="login"}>
 		</TD>
 	</TR>
 	<TR class="light">
-		<TD class="fleft" align="right" nowrap>
-			<NOBR><B>W³a¶ciciel:</B></NOBR>
+		<TD width="1%" class="fleft">
+			<img src="img/pass.gif" border="0" align="absmiddle" ALT="">		
 		</TD>
-		<TD class="fright" nowrap>
+		<TD width="1%">
+			<B>Has³o:</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<input type="password" name="account[passwd1]" value="{$account.passwd1}" {tip text="Wprowad¼ has³o" trigger="passwd"}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<img src="img/pass.gif" border="0" align="absmiddle" ALT="">		
+		</TD>
+		<TD width="1%" nowrap>
+			<B>Powtórz has³o:</B>
+		</TD>
+		<TD width="98%" class="fright">
+			<input type="password" name="account[passwd2]" value="{$account.passwd2}" {tip text="Wprowad¼ has³o ponownie" trigger="passwd"}>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<img src="img/user.gif" border="0" align="absmiddle" ALT="">		
+		</TD>
+		<TD width="1%">
+			<B>W³a¶ciciel:</B>
+		</TD>
+		<TD width="98%" class="fright">
 			<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Wybierz w³a¶ciciela tego konta"}>
 			    {section name=users loop=$users}
 			    <OPTION VALUE="{$users[users].id}"{if $account.ownerid == $users[users].id} SELECTED{/if}>{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
@@ -31,24 +54,7 @@
 		</TD>
 	</TR>
 	<TR class="light">
-		<TD class="fleft" align="right" nowrap>
-			<NOBR><B>Has³o:</B></NOBR>
-		</TD>
-		<TD class="fright" nowrap>
-			<input type="password" name="account[passwd1]" value="{$account.passwd1}" {tip text="Wprowad¼ has³o" trigger="passwd"}>
-		</TD>
-	</TR>
-	<TR class="light">
-		<TD class="fleft" align="right" nowrap>
-			<NOBR><B>Powtórz has³o:</B></NOBR>
-		</TD>
-		<TD class="fright" nowrap>
-			<input type="password" name="account[passwd2]" value="{$account.passwd2}" {tip text="Wprowad¼ has³o" trigger="passwd"}>
-		</TD>
-		
-	</TR>
-	<TR class="light">
-		<TD class="fbottomu" align="right" colspan="2">
+		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.account.submit();">Dodaj konto <img src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
 		</TD>
 	</TR>
