@@ -37,14 +37,14 @@
 				<INPUT type="HIDDEN" name="m" value="eventlist">
 				<B>{t}Filter:{/t} </B> {t}User:{/t}
 				<SELECT size="1" name="a" OnChange="document.filter.submit();">
-					<OPTION value="0"{if $listdata.adminid eq ""} SELECTED{/if}>{t}- all -{/t}</OPTION>
+					<OPTION value="0"{if $listdata.adminid eq ""} SELECTED{/if}>{t}- all users -{/t}</OPTION>
 					{section name=adminlist loop=$adminlist}
 					    <OPTION value="{$adminlist[adminlist].id}"{if $adminlist[adminlist].id eq $listdata.adminid} SELECTED{/if}>{$adminlist[adminlist].name|truncate:40:"..."}</OPTION>
 					{/section}
 				</SELECT>&nbsp;
 				{t}Customer:{/t}
 				<SELECT size="1" name="u" OnChange="document.filter.submit();">
-					<OPTION value="0"{if $listdata.userid eq ""} SELECTED{/if}>{t}- all -{/t}</OPTION>
+					<OPTION value="0"{if $listdata.userid eq ""} SELECTED{/if}>{t}- all customers -{/t}</OPTION>
 					{section name=userlist loop=$userlist}
 					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.userid} SELECTED{/if}>{$userlist[userlist].username|truncate:40:"..."}</OPTION>
 					{/section}

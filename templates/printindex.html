@@ -42,13 +42,13 @@
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="network" {tip text="Select network"}>
-							<OPTION value="0" SELECTED>{t}- all -{/t}</OPTION>
+							<OPTION value="0" SELECTED>{t}- all networks -{/t}</OPTION>
 							{section name="networks" loop=$networks}
 							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:50:" ..."}</OPTION>
 							{/section}
 						</SELECT><BR><BR>
 						<SELECT size="1" name="usergroup" {tip text="Select group"}>
-							<OPTION value="0" SELECTED>{t}- all -{/t}</OPTION>
+							<OPTION value="0" SELECTED>{t}- all groups -{/t}</OPTION>
 							{section name="usergroups" loop=$usergroups}
 							<OPTION value="{$usergroups[usergroups].id}">{$usergroups[usergroups].name|truncate:50:" ..."}</OPTION>
 							{/section}
@@ -115,7 +115,7 @@ cal12.time_comp = false;
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="admin" {tip text="You can select user to limit results"}>
-							<OPTION value="">{t}- all -{/t}</OPTION>
+							<OPTION value="">{t}- all users -{/t}</OPTION>
 							{section name="admins" loop=$admins}
 							<OPTION value="{$admins[admins].id}">{$admins[admins].name|truncate:50:" ..."}</OPTION>
 							{/section}
@@ -215,7 +215,7 @@ cal6.time_comp = false;
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="user" {tip text="Select customer"}>
-							<OPTION value="0" SELECTED>{t}- all -{/t}</OPTION>
+							<OPTION value="0" SELECTED>{t}- all customers -{/t}</OPTION>
 							{section name="users" loop=$users}
 							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
@@ -388,7 +388,7 @@ cal4.time_comp = false;
 					</TD>
 					<TD width="1%">
 						<SELECT size="1" name="user" {tip text="You can select customer to limit results"}>
-							<OPTION value="0">{t}- all -{/t}</OPTION>
+							<OPTION value="0">{t}- all customers -{/t}</OPTION>
 							{section name="users" loop=$users}
 							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."}</OPTION>
 							{/section}
