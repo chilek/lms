@@ -25,7 +25,7 @@
  */
 
 // modules with access for everyone
-$access['allow'] = '^(welcome|copyrights|logout|chpasswd|quicksearch)$';
+$access['allow'] = '^(welcome|copyrights|logout|chpasswd|quicksearch|calendar)$';
 
 $access['table'][0]['name']		= trans('full access');
 $access['table'][0]['allow_reg']	= '^.*$';

@@ -2,9 +2,10 @@
 <!--// $Id$ //-->
 <html><head>
 <meta name="GENERATOR" content="LMS">
-<meta http-equiv="Content-Language" content="pl">
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-2">
-<title>::: LMS : Wybierz datę :::</title>
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
+<title>::: LMS : {t}Select date{/t} :::</title>
+{literal}
 <link href="../img/style.css" rel="stylesheet" type="text/css">
 <!--
 Title: Tigra Calendar
@@ -26,14 +27,14 @@ About us: Our company provides offshore IT consulting services.
 <script language="JavaScript">
 
 // months as they appear in the calendar's title
-var ARR_MONTHS = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
-		"Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"];
+var ARR_MONTHS = [{/literal}"{$months.0}", "{$months.1}", "{$months.2}", "{$months.3}", "{$months.4}", "{$months.5}",
+		"{$months.6}", "{$months.7}", "{$months.8}", "{$months.9}", "{$months.10}", "{$months.11}"{literal}];
 // week day titles as they appear on the calendar
-var ARR_WEEKDAYS = ["Nie", "Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
+var ARR_WEEKDAYS = [{/literal}"{$weekdays.6}", "{$weekdays.0}", "{$weekdays.1}", "{$weekdays.2}", "{$weekdays.3}", "{$weekdays.4}", "{$weekdays.5}"{literal}];
 // day week starts from (normally 0-Su or 1-Mo)
 var NUM_WEEKSTART = 1;
 // path to the directory where calendar images are stored. trailing slash req.
-var STR_ICONPATH = '../img/';
+var STR_ICONPATH = 'img/';
 
 var re_url = new RegExp('datetime=(\\-?\\d+)');
 var dt_current = (re_url.exec(String(window.location))
@@ -49,7 +50,7 @@ if (obj_caller && obj_caller.year_scroll) {
 	dt_prev_year.setFullYear(dt_prev_year.getFullYear() - 1);
 	if (dt_prev_year.getDate() != dt_current.getDate())
 		dt_prev_year.setDate(0);
-	
+
 	// get same date in the next year
 	var dt_next_year = new Date(dt_current);
 	dt_next_year.setFullYear(dt_next_year.getFullYear() + 1);
@@ -155,6 +156,7 @@ while (dt_current_day.getMonth() == dt_current.getMonth() ||
 if (obj_caller && obj_caller.time_comp)
 	document.write('<form onsubmit="javascript:set_datetime('+dt_current.valueOf()+', true)" name="cal"><tr><td colspan="7" bgcolor="#CEBD9B">Godzina: <INPUT type="text" name="time" value="'+obj_caller.gen_time(this.dt_current)+'" size="5" maxlength="5"></td></tr></form>');
 </script>
+{/literal}
 </table></tr></td>
 </table>
 </body>

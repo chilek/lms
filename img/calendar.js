@@ -35,7 +35,7 @@ function calendar(obj_target) {
 	if (!obj_target)
 		return cal_error("Error calling the calendar: no target control specified");
 	if (obj_target.value == null)
-		return cal_error("Error calling the calendar: parameter specified is not valid tardet control");
+		return cal_error("Error calling the calendar: parameter specified is not valid target control");
 	this.target = obj_target;
 	this.time_comp = BUL_TIMECOMPONENT;
 	this.year_scroll = BUL_YEARSCROLL;
@@ -49,14 +49,9 @@ function cal_popup1 (str_datetime) {
 	this.dt_current = this.prs_tsmp(str_datetime ? str_datetime : this.target.value);
 	if (!this.dt_current) return;
 	
-	if(str_datetime!=null) 
-		var dir = '../';
-	else
-		var dir = '';
-
 	var obj_calwindow = window.open(
-		dir+'templates/calendar.html?datetime=' + this.dt_current.valueOf()+ '&id=' + this.id,
-		'Calendar', 'width=200,height='+(this.time_comp ? 215 : 190)+
+		'?m=calendar&datetime=' + this.dt_current.valueOf()+ '&id=' + this.id,
+		'Calendar', 'width=210,height='+(this.time_comp ? 215 : 190)+
 		',status=no,resizable=no,top=200,left=200,dependent=yes,alwaysRaised=yes'
 	);
 	obj_calwindow.opener = window;
