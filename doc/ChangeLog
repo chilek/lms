@@ -8,7 +8,8 @@ wersja 1.0pre2 (25/12/2002):
   - dodane sprawdzanie czy istniej± katalogi backups i templates_c 
     oraz czy mo¿na do nich zapisywaæ
   - naprawiony modu³ od dodawania taryf
-  - posprz±tane w niektórych plikach    
+  - posprz±tane w niektórych plikach
+  - poprawiony plik doc/lms.mysql i doc/INSTALL
 
 wersja 1.0pre1 (24/12/2002):
 
