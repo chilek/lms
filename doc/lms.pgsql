@@ -99,6 +99,23 @@ CREATE TABLE tariffs (
 	PRIMARY KEY (id)
 );
 
+/* ---------------------------------------------------------
+  Struktura tabeli "payments"
+--------------------------------------------------------- */
+DROP SEQUENCE "payments_id_seq";
+CREATE SEQUENCE "payments_id_seq";
+DROP TABLE payments;
+CREATE TABLE payments (
+	id integer DEFAULT nextval('payments_id_seq'::text) NOT NULL,
+	name varchar(255) DEFAULT '' NOT NULL,
+	value numeric(9,2) DEFAULT 0 NOT NULL,
+	creditor varchar(255) DEFAULT '' NOT NULL,
+	period integer DEFAULT 0 NOT NULL,
+	at integer DEFAULT 0 NOT NULL,
+	description text,
+	PRIMARY KEY (id)
+);
+
 /* -------------------------------------------------------- 
   Struktura tabeli "invoices" 
 -------------------------------------------------------- */

@@ -178,6 +178,19 @@ CREATE TABLE netlinks (
    PRIMARY KEY  (id)
 );
 
+/* Nowa tabela - op³aty sta³e */
+CREATE SEQUENCE "payments_id_seq";
+CREATE TABLE payments (
+	id integer DEFAULT nextval('payments_id_seq'::text) NOT NULL,
+	name VARCHAR(255) DEFAULT '' NOT NULL,
+	value NUMERIC(9,2) DEFAULT 0 NOT NULL,
+	creditor VARCHAR(255) DEFAULT '' NOT NULL,
+	period integer DEFAULT 0 NOT NULL,
+	at integer DEFAULT 0 NOT NULL,
+	description text,
+	PRIMARY KEY (id)
+);
+
 /* Na koniec rewolucja w finansach */
 CREATE SEQUENCE "assignments_id_seq";
 CREATE TABLE assignments (
