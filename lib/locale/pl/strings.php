@@ -870,7 +870,7 @@ $_LANG['New User'] = 'Nowy użytkownik';
 $_LANG['No.'] = 'Lp.';
 $_LANG['no access'] = 'brak dostępu';
 $_LANG['No computers were found, either all are in the database or program nbtscan not found in the system.'] = 'Nie znaleziono żadnych komputerów bądź wszystkie komputery są już w bazie danych lub program mbtscan nie jest dostępny w systemie';
-$_LANG['No configuration options in database. Click <A href="?m=configload">here</A> to import them from lms.ini.'] = 'Brak opcji konfiguracyjnych w bazie danych. Kliknij <A href="?m=configload">here</A> aby je zaimportować z bazy danych.';
+$_LANG['No configuration options in database. Click <A href="?m=configload">here</A> to import them from lms.ini.'] = 'Brak opcji konfiguracyjnych w bazie danych. Kliknij <A href="?m=configload">tutaj</A> aby je zaimportować do bazy.';
 $_LANG['Node $0 was deleted'] = 'Komputer $0 został usunięty';
 $_LANG['Node ID:'] = 'Identyfikator komputera:';
 $_LANG['Node Info: $0'] = 'Imformacje o komputerze: $0';
