@@ -3,21 +3,21 @@
 {include file="rtheader.html"}
 <H1><B>{$layout.pagetitle}</B></H1>
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR class="dark" {tip text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
+	<TR class="dark" {tip text="Select sorting direction and conditions"}>
 		<TD class="fleftu" colspan="2" WIDTH="1%" NOWRAP>
-			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>ID:</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=createtime{if $queuedata.direction eq "asc" && $queuedata.order eq "createtime"},desc{else},asc{/if}">Data zg³oszenia:</A>{if $queuedata.order eq "createtime"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>{t}ID:{/t}</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">&nbsp;<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=createtime{if $queuedata.direction eq "asc" && $queuedata.order eq "createtime"},desc{else},asc{/if}">{t}Request date:{/t}</A>{if $queuedata.order eq "createtime"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD class="fbt" WIDTH="97%">
-			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=subject{if $queuedata.direction eq "asc" && $queuedata.order eq "subject"},desc{/if}"><B>Temat:</B></A> {if $queuedata.order eq "subject"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=requestor{if $queuedata.direction eq "asc" && $queuedata.order eq "requestor"},desc{/if}">Zg³aszaj±cy:</A> {if $queuedata.order eq "requestor"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=subject{if $queuedata.direction eq "asc" && $queuedata.order eq "subject"},desc{/if}"><B>{t}Subject:{/t}</B></A> {if $queuedata.order eq "subject"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=requestor{if $queuedata.direction eq "asc" && $queuedata.order eq "requestor"},desc{/if}">{t}Submitter{/t}:</A> {if $queuedata.order eq "requestor"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD class="fbt" WIDTH="1%" NOWRAP>
-			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=owner{if $queuedata.direction eq "asc" && $queuedata.order eq "owner"},desc{/if}"><B>W³a¶ciciel:</B></A> {if $queuedata.order eq "owner"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=lastmodified{if $queuedata.direction eq "asc" && $queuedata.order eq "lastmodified"},desc{/if}">Ostatnia modyfikacja:</A> {if $queuedata.order eq "lastmodified"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=owner{if $queuedata.direction eq "asc" && $queuedata.order eq "owner"},desc{/if}"><B>{t}Owner:{/t}</B></A> {if $queuedata.order eq "owner"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<a href="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o=lastmodified{if $queuedata.direction eq "asc" && $queuedata.order eq "lastmodified"},desc{/if}">{t}Last modification:{/t}:</A> {if $queuedata.order eq "lastmodified"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD class="frightu" WIDTH="1%" NOWRAP>
-			<B>Razem: {$queuedata.total|default:"0"}</B>
+			<B>{t}Summary:{/t} {$queuedata.total|default:"0"}</B>
 		</TD>
 	</TR>
 	<TR class="DARK">
@@ -26,14 +26,14 @@
 				<INPUT type="HIDDEN" name="m" value="rtqueueview">
 				<INPUT type="HIDDEN" name="id" value="{$queuedata.id}">
 				<INPUT type="HIDDEN" name="page" value="1">
-				<B>Filtruj: </B> Status:
+				<B>{t}Filter:{/t} </B> {t}Status:{/t}
 				<SELECT size="1" class="bold" name="s" OnChange="document.filter.submit();">
-					<OPTION value=""{if $queuedata.state eq ""} SELECTED{/if}>- wszystkie -</OPTION>
-					<OPTION value="0"{if $queuedata.state eq "0"} SELECTED{/if}>nowe</OPTION>
-					<OPTION value="1"{if $queuedata.state eq "1"} SELECTED{/if}>otwarte</OPTION>
-					<OPTION value="2"{if $queuedata.state eq "2"} SELECTED{/if}>rozwi±zane</OPTION>
-					<OPTION value="3"{if $queuedata.state eq "3"} SELECTED{/if}>martwe</OPTION>
-					<OPTION value="-1"{if $queuedata.state eq "-1"} SELECTED{/if}>nierozwi±zane</OPTION>
+					<OPTION value=""{if $queuedata.state eq ""} SELECTED{/if}>- {t}all{/t} -</OPTION>
+					<OPTION value="0"{if $queuedata.state eq "0"} SELECTED{/if}>{t}new{/t}</OPTION>
+					<OPTION value="1"{if $queuedata.state eq "1"} SELECTED{/if}>{t}opened{/t}</OPTION>
+					<OPTION value="2"{if $queuedata.state eq "2"} SELECTED{/if}>{t}solved{/t}</OPTION>
+					<OPTION value="3"{if $queuedata.state eq "3"} SELECTED{/if}>{t}dead{/t}</OPTION>
+					<OPTION value="-1"{if $queuedata.state eq "-1"} SELECTED{/if}>{t}unsolved{/t}</OPTION>
 				</SELECT>
 			</FORM></P>
 		</TD>
@@ -114,7 +114,7 @@
 		<TD COLSPAN="5" class="flr" ALIGN="center">
 			<BR>
 			<BR>
-			<B>Ta kolejka jest pusta.</B><BR>
+			<B>{t}This queue is empty{/t}.</B><BR>
 			<BR>
 			<BR>
 		</TD>
@@ -136,7 +136,7 @@
 	{/if}
 	<TR class="light">
 		<TD COLSPAN="5" class="fall" ALIGN="right">
-			<A HREF="?m=rtticketadd&id={$queuedata.id}">Nowe zg³oszenie <IMG src="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
+			<A HREF="?m=rtticketadd&id={$queuedata.id}">{t}New request {/t}<IMG src="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -6,32 +6,32 @@
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR class="dark" {tip text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
 		<TD class="fleftu" colspan="2" WIDTH="1%" NOWRAP>
-			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">&nbsp;<a href="?m={$layout.module}&search=1&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>ID:</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">&nbsp;<a href="?m={$layout.module}&search=1&o=createtime{if $queuedata.direction eq "asc" && $queuedata.order eq "createtime"},desc{else},asc{/if}">Data zg³oszenia:</A>{if $queuedata.order eq "createtime"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">&nbsp;<a href="?m={$layout.module}&search=1&o=ticketid{if $queuedata.direction eq "asc" && $queuedata.order eq "ticketid"},desc{/if}"><B>{t}ID:{/t}</B></A> {if $queuedata.order eq "ticketid"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">&nbsp;<a href="?m={$layout.module}&search=1&o=createtime{if $queuedata.direction eq "asc" && $queuedata.order eq "createtime"},desc{else},asc{/if}">{t}Ticket Date{/t}</A>{if $queuedata.order eq "createtime"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD class="fbt" WIDTH="97%">
-			<a href="?m={$layout.module}&search=1&o=subject{if $queuedata.direction eq "asc" && $queuedata.order eq "subject"},desc{/if}"><B>Temat:</B></A> {if $queuedata.order eq "subject"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<a href="?m={$layout.module}&search=1&o=requestor{if $queuedata.direction eq "asc" && $queuedata.order eq "requestor"},desc{/if}">Zg³aszaj±cy:</A> {if $queuedata.order eq "requestor"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<a href="?m={$layout.module}&search=1&o=subject{if $queuedata.direction eq "asc" && $queuedata.order eq "subject"},desc{/if}"><B>{t}Subject:{/t}</B></A> {if $queuedata.order eq "subject"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<a href="?m={$layout.module}&search=1&o=requestor{if $queuedata.direction eq "asc" && $queuedata.order eq "requestor"},desc{/if}">{t}Submitter{/t}</A> {if $queuedata.order eq "requestor"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD class="fbt" WIDTH="1%" NOWRAP>
-			<a href="?m={$layout.module}&search=1&o=owner{if $queuedata.direction eq "asc" && $queuedata.order eq "owner"},desc{/if}"><B>W³a¶ciciel:</B></A> {if $queuedata.order eq "owner"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<a href="?m={$layout.module}&search=1&o=lastmodified{if $queuedata.direction eq "asc" && $queuedata.order eq "lastmodified"},desc{/if}">Ostatnia modyfikacja:</A> {if $queuedata.order eq "lastmodified"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<a href="?m={$layout.module}&search=1&o=owner{if $queuedata.direction eq "asc" && $queuedata.order eq "owner"},desc{/if}"><B>{t}Owner:{/t}</B></A> {if $queuedata.order eq "owner"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<a href="?m={$layout.module}&search=1&o=lastmodified{if $queuedata.direction eq "asc" && $queuedata.order eq "lastmodified"},desc{/if}">{t}Last modification:{/t}</A> {if $queuedata.order eq "lastmodified"}<IMG SRC="img/{if $queuedata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD class="frightu" WIDTH="1%" NOWRAP>
-			<B>Razem: {$queuedata.total|default:"0"}</B>
+			<B>{t}Summary:{/t} {$queuedata.total|default:"0"}</B>
 		</TD>
 	</TR>
 	{if $queuedata.total != 0}
 	<TR class="DARK">
 		<TD colspan="5" class="FALL">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m={$layout.module}&search=1&o={$queuedata.order},{$queuedata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$queue step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&search=1&o={$queuedata.order},{$queuedata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&search=1&o={$queuedata.order},{$queuedata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
-			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $queuedata.total}{$queuedata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$queuedata.total})
+			({t}records{/t} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $queuedata.total}{$queuedata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {t}of{/t} {$queuedata.total})
 		</TD>
 	</TR>
 	{/if}
@@ -87,8 +87,8 @@
 			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
 		</TD>
 		<TD class="fright" align="right">
-			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ Info ]" border="0" align="absmiddle"></A>
-			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ Edytuj ]" border="0" align="absmiddle"></A>
+			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" border="0" align="absmiddle"></A>
+			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -105,20 +105,20 @@
 	{if $queuedata.total != 0}
 	<TR class="DARK">
 		<TD colspan="5" class="FALL">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m={$layout.module}&search=1&o={$queuedata.order},{$queuedata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$queue step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&search=1&o={$queuedata.order},{$queuedata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&search=1&o={$queuedata.order},{$queuedata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
-			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $queuedata.total}{$queuedata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$queuedata.total})
+			({t}records{/t} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $queuedata.total}{$queuedata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {t}of{/t} {$queuedata.total})
 		</TD>
 	</TR>
 	{/if}
 	<TR class="light">
 		<TD COLSPAN="5" class="fall" ALIGN="right">
-			<A HREF="?m=rtticketadd&id={$queuedata.queue}">Nowe zg³oszenie <IMG src="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
+			<A HREF="?m=rtticketadd&id={$queuedata.queue}">{t}New ticket{/t}<IMG src="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>

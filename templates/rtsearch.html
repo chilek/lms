@@ -6,29 +6,29 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD WIDTH="100%" CLASS="fall" colspan="2" NOWRAP>
-			<B>Wy¶wietl zg³oszenia spe³niaj±ce nastêpuj±ce kryteria:</B>
+			<B>{t}Display tickets matching to following conditions{/t}:</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
-			<B>Temat:</B>
+			<B>{t}Subject:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT type="text" size="50" name="search[subject]" value="{$search.subject}" {tip text="Podaj temat zg³oszenia"}></INPUT>
+			<INPUT type="text" size="50" name="search[subject]" value="{$search.subject}" {tip text="Enter subject"}></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/user.gif" alt="" border="0" align="absmiddle">
-			<B>Zg³aszaj±cy:</B>
+			<B>{t}Submitter:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
 			<TABLE width="100%" cellpadding="1">
 			    <TR>
 			    	<TD width="100%" colspan="2">
-				    <SELECT size="1" name="search[userid]" {tip text="Wybierz u¿ytkownika z listy lub wprowad¼ jego dane jesli nie jest klientem sieci"}>
-					<OPTION value="0">- wszyscy -</OPTION>
+				    <SELECT size="1" name="search[userid]" {tip text="select user from list or enter his data if not a customer"}>
+					<OPTION value="0">- {t}all{/t} -</OPTION>
 					{foreach from=$userlist item=userlist}
 					    <OPTION value="{$userlist.id}" {if $userlist.id == $search.userid}SELECTED{/if}>{$userlist.username} ({$userlist.id|string_format:"%04d"})</OPTION>
 					{/foreach}
@@ -36,12 +36,12 @@
 				</TD>
 			    </TR>
 			    <TR>
-				<TD width="1%" NOWRAP>Nazwisko i imiê:</TD>
-				<TD width="99%"><INPUT type="text" name="search[name]" value="{$search.name}" {tip text="Wybierz u¿ytkownika z listy lub wprowad¼ jego dane jesli nie jest klientem sieci"}></TD>
+				<TD width="1%" NOWRAP>{t}Lastname, Firstname{/t}</TD>
+				<TD width="99%"><INPUT type="text" name="search[name]" value="{$search.name}" {tip text="select user from list or enter his data if not a customer"}></TD>
 			    </TR>
 			    <TR>
-				<TD width="1%">E-mail:</TD>
-				<TD width="99%"><INPUT type="text" name="search[email]" value="{$search.email}" {tip text="Wybierz u¿ytkownika z listy lub wprowad¼ jego dane jesli nie jest klientem sieci"}></TD>
+				<TD width="1%">{t}E-mail:{/t}</TD>
+				<TD width="99%"><INPUT type="text" name="search[email]" value="{$search.email}" {tip text="select user from list or enter his data if not a customer"}></TD>
 			    </TR>
 			</TABLE>
 		</TD>
@@ -49,11 +49,11 @@
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/admins.gif" alt="" border="0" align="absmiddle">
-			<B>W³a¶ciciel:</B>
+			<B>{t}Owner:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<SELECT size="1" name="search[owner]" {tip text="Wybierz administratora/w³a¶ciciela zg³oszenia"}>
-				<OPTION value="0">- wszyscy -</OPTION>
+			<SELECT size="1" name="search[owner]" {tip text="Select administrator/owner of the ticket"}>
+				<OPTION value="0">- all -</OPTION>
 				{foreach from=$adminlist item=adminlist}
 			        <OPTION value="{$adminlist.id}" {if $adminlist.id == $search.owner}SELECTED{/if}>{$adminlist.name}</OPTION>
 				{/foreach}
@@ -63,11 +63,11 @@
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/queue.gif" alt="" border="0" align="absmiddle">
-			<B>Kolejka:</B>
+			<B>{t}Queue:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<SELECT size="1" name="search[queue]" {tip text="Wybierz kolejkê" trigger="queue"}>
-				<OPTION value="0" SELECTED>- wszystkie -</OPTION>
+			<SELECT size="1" name="search[queue]" {tip text="Select queue" trigger="queue"}>
+				<OPTION value="0" SELECTED>- {t}all{/t} -</OPTION>
 			{foreach from=$queuelist item=queuelist}
 				<OPTION value="{$queuelist.id}" {if $queuelist.id == $search.queue}SELECTED{/if}>{$queuelist.name}</OPTION>
 			{/foreach}
@@ -77,35 +77,35 @@
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/dead.gif" alt="" border="0" align="absmiddle">
-			<B>Status:</B>
+			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<SELECT SIZE="1" name="search[state]" {tip text="Wybierz status zg³oszenia"}>
-				<OPTION value="" {if $search.state==""}SELECTED{/if}>- wszystkie -</OPTION>
-				<OPTION value="0" {if $search.state=="0"}SELECTED{/if}>nowy</OPTION>
-				<OPTION value="1" {if $search.state=="1"}SELECTED{/if}>otwarty</OPTION>
-				<OPTION value="2" {if $search.state=="2"}SELECTED{/if}>rozwi±zany</OPTION>
-				<OPTION value="3" {if $search.state=="3"}SELECTED{/if}>martwy</OPTION>
+			<SELECT SIZE="1" name="search[state]" {tip text="Select ticket status"}>
+				<OPTION value="" {if $search.state==""}SELECTED{/if}>- all -</OPTION>
+				<OPTION value="0" {if $search.state=="0"}SELECTED{/if}>new</OPTION>
+				<OPTION value="1" {if $search.state=="1"}SELECTED{/if}>opened</OPTION>
+				<OPTION value="2" {if $search.state=="2"}SELECTED{/if}>resolved</OPTION>
+				<OPTION value="3" {if $search.state=="3"}SELECTED{/if}>dead</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG src="img/time.gif" alt="" border="0" align="absmiddle">
-			<B>Min. Uptime:</B>
+			<B>{t}Minimum Uptime{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<SELECT SIZE="1" name="search[uptime]" {tip text="Wybierz uptime zg³oszenia"}>
-				<OPTION value="" {if $search.uptime==""}SELECTED{/if}>- wszystkie -</OPTION>
-				<OPTION value="604800" {if $search.uptime=="604800"}SELECTED{/if}>7 dni</OPTION>
-				<OPTION value="2592000" {if $search.uptime=="2592000"}SELECTED{/if}>30 dni</OPTION>
-				<OPTION value="31536000" {if $search.uptime=="31536000"}SELECTED{/if}>365 dni</OPTION>
+			<SELECT SIZE="1" name="search[uptime]" {tip text="Select ticket uptime"}>
+				<OPTION value="" {if $search.uptime==""}SELECTED{/if}>- {t}all{/t} -</OPTION>
+				<OPTION value="604800" {if $search.uptime=="604800"}SELECTED{/if}>{t}7 days{/t}</OPTION>
+				<OPTION value="2592000" {if $search.uptime=="2592000"}SELECTED{/if}>{t}30 days{/t}</OPTION>
+				<OPTION value="31536000" {if $search.uptime=="31536000"}SELECTED{/if}>{t}365 days{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
-			<A href="javascript: document.search.submit();" accesskey="s">Szukaj <IMG src="img/search.gif" border="0" alt="" align="absmiddle"></A>
+			<A href="javascript: document.search.submit();" accesskey="s">{t}Search{/t}<IMG src="img/search.gif" border="0" alt="" align="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>
