@@ -22,22 +22,19 @@
  *  USA.
  *
  *  $Id$
+ */
 
-                                 _
- _   ___      ____ _  __ _  __ _| |
-| | | \ \ /\ / / _` |/ _` |/ _` | |
-| |_| |\ V  V / (_| | (_| | (_| |_|
- \__,_| \_/\_/ \__,_|\__, |\__,_(_)
-                     |___/
-
-jak macie w³asne pomys³y, to nie modyfikujcie tego pliku a zróbcie tymczasowy
-nowy.
-
-*/
+function drawtext($image, $font, $x, $y, $text, $color, $bgcolor)
+{
+	imagestring($image, $font, $x + 1, $y + 1, $text, $bgcolor);
+	imagestring($image, $font, $x + 1, $y - 1, $text, $bgcolor);
+	imagestring($image, $font, $x - 1, $y + 1, $text, $bgcolor);
+	imagestring($image, $font, $x - 1, $y - 1, $text, $bgcolor);
+	imagestring($image, $font, $x, $y, $text, $color);
+}
 
 function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 {
-//	$fields[] = array( 'x' => -1, 'y' => 1 );
 	$fields[] = array( 'x' => 0, 'y' => 5 );
 	$fields[] = array( 'x' => 5, 'y' => 5 );     
 	$fields[] = array( 'x' => 5, 'y' => 0 );
@@ -298,8 +295,6 @@ else
 	$im_n_unk = imagecreatefrompng('img/node_unk.png');
 	$im_n_off = imagecreatefrompng('img/node_off.png');
 	$im_n_on = imagecreatefrompng('img/node_on.png');
-
-//	print_r($nodemap);
 	
 	foreach($nodemap as $nodeid => $node)
 	{
@@ -316,9 +311,8 @@ else
 		} else 
 			imagecopy($im,$im_n_unk,$px,$py,0,0,15,16);
 		
-//		imagestring($im, 1, $px + 15, $py - 8, $nodeid.' ('.$celx.','.$cely.')', $blue);
-		imagestring($im, 1, $px + 15, $py - 8, $nodedata['ip'], $blue);
-		imagestring($im, 1, $px + 15, $py + 2, $nodedata['name'], $black);
+		drawtext($im, 1, $px + 15, $py - 8, $nodedata['ip'], $blue, $lightbrown);
+		drawtext($im, 1, $px + 15, $py + 2, $nodedata['name'], $black, $lightbrown);
 	}
 				
 		
@@ -330,14 +324,14 @@ else
 		$px = (($celx * ($cellw)) + $celllmargin);
 		$py = (($cely * ($cellh)) + $celltmargin);
 		imagecopy($im,$im_nd,$px,$py,0,0,16,16);
-//		imagestring($im, 1, $px + 20, $py - 8, $deviceid.' ('.$celx.','.$cely.')', $blue);
 		$deviceip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM nodes WHERE ownerid=0 AND netdev=? ORDER BY ipaddr', array($deviceid));
-		if($deviceip[0]) imagestring($im, 1, $px + 20, $py - ($deviceip[1]?17:8), $deviceip[0], $blue);
-		if($deviceip[1]) imagestring($im, 1, $px + 20, $py - 8, $deviceip[1], $blue);
-		if($deviceip[2]) imagestring($im, 1, $px + 20, $py + 17, $deviceip[2], $blue);
-		if($deviceip[3]) imagestring($im, 1, $px + 20, $py + 26, $deviceip[3], $blue);
-		imagestring($im, 3, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), $darkred);
-		imagestring($im, 2, $px + 20, $py + 18, $DB->GetOne('SELECT location FROM netdevices WHERE id=?',array($deviceid)), $green);
+		if($deviceip[0]) drawtext($im, 1, $px + 20, $py - ($deviceip[1]?17:8), $deviceip[0], $blue, $lightbrown);
+		if($deviceip[1]) drawtext($im, 1, $px + 20, $py - 8, $deviceip[1], $blue, $lightbrown);
+		if($deviceip[2]) drawtext($im, 1, $px + 20, $py + 17, $deviceip[2], $blue, $lightbrown);
+		if($deviceip[3]) drawtext($im, 1, $px + 20, $py + 26, $deviceip[3], $blue, $lightbrown);
+		drawtext($im, 3, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), $darkred, $lightbrown);
+		$location=$DB->GetOne('SELECT location FROM netdevices WHERE id=?',array($deviceid));
+		drawtext($im, 2, $px + 20, $py + 18, $location, $green, $lightbrown);
 	}
 	
 		
