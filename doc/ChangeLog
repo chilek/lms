@@ -4,6 +4,9 @@ wersja 1.4.0 Evalla (??/10/2004):
 
   - kosmetyka w footer.html (alec)
   - usuniêty b³±d obcinaj±cy 1px z obrazków urz±dzeñ na mapie (alec)
+  - poprawiony auto-upgrade bazy: w przypadku wyst±pienia b³êdu procedura
+    zostaje przerwana, a wersja bazy wskazuje na faktyczn± wersjê - postgres, 
+    sqlite lub ostatni nieudany upgrade - mysql (alec)
 
 wersja 1.4.0rc4 Evalla (05/10/2004):
 
