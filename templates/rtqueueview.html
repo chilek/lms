@@ -110,6 +110,7 @@
 		<TD class="fright" align="right" NOWRAP>
 			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" border="0" align="absmiddle"></A>
 			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" border="0" align="absmiddle"></A>
+			<A href="?m=rtqueueview&id={$queuedata.id}&delticketid={$queue[ticket].id}" onClick="return confirmLink(this, '{t 0=$queue[ticket].id}Are you sure, you want to remove ticket $0?{/t}')"><IMG src="img/delete.gif" alt="[ {t}Delete{/t} ]" border="0" align="absmiddle"></A>
 			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
