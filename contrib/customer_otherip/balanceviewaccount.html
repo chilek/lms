@@ -1,0 +1,69 @@
+<!-- $Id$ -->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="FLEFTU">
+<!--			<IMG SRC="img/user.gif" BORDER="0" ALT=""> -->
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+<!--			<B>{$userinfo.username}</B> -->
+		<B>Zmiana danych oraz rozliczanie p³atno¶ci</B>
+<!-- ({$userinfo.id|string_format:"%04d"})</B>-->
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/mail.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+		<A HREF="mailto:"></A>
+		<!-- tu w przysz³o¶ci link do w³a¶ciwego admia etc...-->
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/money.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		{if $userinfo.balance > 0}<FONT COLOR="RED"><H2>Prosimy o terminow± wp³atê w wysoko¶ci: <B>{$userinfo.balance|default:"0"} z³</B> tytu³em: {$userinfo.phone1}</FONT></H2>{elseif $userinfo.balance < 0}Masz wobec nas nadp³aty w wysoko¶ci: { $userinfo.balance} z³, zostan± one automatycznie przeniesione jako wp³aty za kolejne abonamenty lub us³ugi.{else}Nie masz wobec nas zaleg³o¶ci.{/if}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+		</TD>
+		<TD WIDTH=99% Class="fright">
+		Wszystkie nale¿no¶ci prosimy wp³acaæ na konto: 
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+		Bank:<BR>
+		Konto:
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+<H2>Suzuki Bank<BR>
+00 1234578 1234 5678 9012 3456 7890 </H2>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+		Wydruk<BR>
+		Formularza<BR>
+		Wp³aty<BR>
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+<A HREF="/clients/druk.php?ILE={$userinfo.balance}&UID={$userinfo.phone1}&OD={$userinfo.name} {$userinfo.lastname} {$userinfo.Kod} {$userinfo.city} {$userinfo.address}"><IMG SRC="/clients/ico_przelew.png" ALT="Wydruk Formularza"></A>
+		</TD>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+		</TD>
+	</TR>
+</TABLE>
+
+{*
+<TR CLASS="LIGHT">
+<TD WIDTH="1%" CLASS="FLEFT">
+</TD>
+<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+</TD>
+</TR>
+*}
