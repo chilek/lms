@@ -653,19 +653,12 @@ database = /usr/local/lms/lms.db</screen>
     </sect1>
     <sect1 id="install-upgrade">
       <title>Upgrade</title>
-      <para>LMS upgrade process in two stages. First make directory of new version 
-      (overwriting old files with new ones is not recommended) then we have to make 
-      some changes in database.</para>
-      <para>For easy migration of data in catalog<filename>/doc</filename>
-      we prepared file:<filename>UPGRADE-1.0-1.5.mysql</filename> and 
-      <filename>UPGRADE-1.0-1.5.pgsql</filename> for upgrade from 1.0 to 1.5 version. 
-      Also <filename>UPGRADE-1.2-1.5.mysql</filename> and <filename>UPGRADE-1.2-1.5.pgsql
-      </filename> For migration from version 1.3 (and 1.3.0) to current  version. In those 
-      files you can find short description how to upgrade in dependence of used database. 
-      In versions 1.3.0 and higher upgrade of database structure is automatically 
-      executed while first logon.</para>
-      <para><note><para>In 1.0.x and higher versions ADOdb library Is not required, 
-      you can remove applicable directory from <filename>lib/</filename> directory.</para></note></para>
+      <para>Since 1.5.4 version LMS was only polish system. If you have prior version 
+      read polish documentation for upgrade description. In newest versions upgrade is 
+      very easy. That process has two stages. First, overwrite old files with new 
+      ones and remove contents of <filename>templates_c</filename> directory (or
+      better create new LMS directory tree). Second stage is a database structure 
+      change. It's self-acting process executed on first logon to the UI.</para>
     </sect1>
     <sect1 id="install-invoices">
 	<title>Invoices</title>
