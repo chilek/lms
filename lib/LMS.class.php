@@ -2867,7 +2867,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetQueueList()
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, email, description FROM rtqueues'))
+		if($result = $this->DB->GetAll('SELECT id, name, email, description FROM rtqueues ORDER BY name'))
 		{
 			foreach($result as $idx => $row)
 				foreach($this->GetQueueStats($row['id']) as $sidx => $row)
