@@ -16,7 +16,7 @@ Dopiero na koñcu mo¿na usun±æ niepotrzebne rzeczy:
 BEGIN;
 
 /* Tej tabeli ju¿ nie u¿ywamy */
-DROP TABLE options;
+--DROP TABLE options;
 
 /* Teraz u¿ytkownicy nie s± usuwani z bazy */
 ALTER TABLE users ADD deleted int2;
@@ -24,12 +24,12 @@ UPDATE users SET deleted=0;
 ALTER TABLE users ALTER COLUMN deleted SET DEFAULT 0;
 ALTER TABLE users ALTER COLUMN deleted SET NOT NULL;
 /* Dzieñ zap³aty */
-ALTER TABLE users ADD payday integer;
+--ALTER TABLE users ADD payday integer;
 ALTER TABLE users ALTER COLUMN payday SET DEFAULT 1;
 ALTER TABLE users ALTER COLUMN payday SET NOT NULL;
 
 /* Nowe kolumny w tabeli */
-ALTER TABLE networks ADD dns2 VARCHAR(16);
+--ALTER TABLE networks ADD dns2 VARCHAR(16);
 ALTER TABLE networks ADD interface VARCHAR(8);
 
 /*
@@ -57,7 +57,10 @@ ALTER TABLE nodes ALTER COLUMN access SET DEFAULT 0;
 ALTER TABLE nodes ALTER COLUMN ownerid SET DEFAULT '0';
 ALTER TABLE nodes ALTER COLUMN mac SET NOT NULL;
 /* Linki do urz±dzeñ sieciowych*/
-ALTER TABLE nodes ADD netdev integer;  	
+ALTER TABLE nodes ADD netdev integer;
+ALTER TABLE nodes ALTER COLUMN netdev SET default 0;
+UPDATE nodes SET netdev = 0;
+ALTER TABLE nodes ALTER COLUMN netdev SET NOT NULL;  	
 
 /* Zmiana zapisu limitu */
 ALTER TABLE tariffs ALTER uprate DROP NOT NULL;
@@ -65,14 +68,14 @@ ALTER TABLE tariffs ALTER uprate DROP DEFAULT;
 ALTER TABLE tariffs ALTER downrate DROP NOT NULL;
 ALTER TABLE tariffs ALTER downrate DROP DEFAULT; 
 
-/* Nowa tabela dla statystyk */
+/* Nowa tabela dla statystyk 
 CREATE TABLE stats (
     nodeid integer DEFAULT 0 NOT NULL,
     dt integer DEFAULT 0 NOT NULL,
     upload integer DEFAULT 0,
     download integer DEFAULT 0,
     PRIMARY KEY (nodeid, dt)
-);
+);*/
 
 /* Nowa tabela - urz±dzenia sieciowe */
 CREATE SEQUENCE "netdevices_id_seq";

@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.1.5 (18.10.2003):
+wersja 1.1.5 (18/10/2003):
 
   - dodane opcje do ustawienie w³a¶ciciela oraz praw dostêpu skryptów
     tworzonych przez lms-traffic-* (lukasz)
@@ -179,7 +179,10 @@ wersja 1.1.4 Tanith (03/10/2003):
     MySql:
 	ALTER TABLE `nodes` ADD `netdev` INT(11) NOT NULL default '0' AFTER `modid` ;
     PosgreSQL:
-	ALTER TABLE nodes ADD netdev integer default 0 NOT NULL;  	
+	ALTER TABLE nodes ADD netdev integer;
+	ALTER TABLE nodes ALTER COLUMN netdev SET default 0;
+	UPDATE nodes SET netdev = 0;
+	ALTER TABLE nodes ALTER COLUMN netdev SET NOT NULL;  	
   - update modu³u 'nodesearch' wynikaj±cy ze zmiany sposobu zapisu
     adresów IP w bazie danych i inne drobne poprawki (alec)
   - poprawione b³êdy w GetTariff() wystêpuj±ce na postgresie (alec)
