@@ -1,5 +1,5 @@
 <!--// $Id$ //-->
-{if $emptypasswd}<H1 align="center"><A HREF="?m=adminpasswd"><FONT COLOR="RED">Twoje konto posiada puste has³o! Natychmiast ustaw sobie has³o!</FONT></A></H1>{/if}
+{if $emptypasswd}<H1 align="center"><A HREF="?m=adminpasswd"><FONT COLOR="RED">{$lang.empty_passwd_notice}</FONT></A></H1>{/if}
 {if !$layout.nomenu}		</TD>
 	</TR>
 </TABLE>{/if}
@@ -13,7 +13,7 @@
 				<b>
 					LMS {$layout.lmsv} @ {$layout.hostname}<br>
 					{$layout.date}<br>
-					Uptime: {$layout.uptime}
+					{$lang.uptime}: {$layout.uptime}
 				</b>
 			</p>
 		</TD>
