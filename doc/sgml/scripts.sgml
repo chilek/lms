@@ -311,6 +311,11 @@ http://www.naszasiec.pl/</screen></example>
 	   <para>Przyk³ad:	<prompt>paytype = 'GOTÓWKA'</prompt></para>
 	  </listitem>
 	 </itemizedlist>
+	 <para>Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ
+	 <prompt>--fakedate</prompt> (<prompt>-f</prompt>). Przy jego u¿yciu mo¿na 
+	 sprawiæ, aby skrypt dzia³a³ z podmienion± dat± systemow± (w formacie YYYY/MM/DD),
+	 na przyk³ad <prompt>--fakedate=2004/10/10</prompt>.
+	 </para>
         </sect2>
     <sect2 id="lms-traffic" xreflabel="lms-traffic">
     <title>lms-traffic</title>

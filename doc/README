@@ -1782,6 +1782,11 @@ http://www.naszasiec.pl/
      * paytype (opcjonalny)
        Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'
        Przyk³ad: paytype = 'GOTÓWKA'
+
+   Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ
+   --fakedate (-f). Przy jego u¿yciu mo¿na sprawiæ, aby skrypt dzia³a³ z
+   podmienion± dat± systemow± (w formacie YYYY/MM/DD), na przyk³ad
+   --fakedate=2004/10/10.
      _________________________________________________________________
 
 4.3.5. lms-traffic
