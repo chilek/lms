@@ -10,8 +10,10 @@ wersja 1.3.6 Osiris (??/??/2004);
     (lexx)
   - poprawiony b³±d w zapytaniu przy wyszukiwaniu zg³oszeñ po temacie (alec)
   - uprawnienie 'manipulacja finansami' obejmuje tak¿e rozliczanie faktur (alec)
-  - bts #0000180 - zliczanie wolnych adresów w sieci nie bierze pod uwagê 
-    zarezerwowanych dla dhcp (lexx)
+  - BTS#0000180: zliczanie wolnych adresów w sieci nie bierze pod uwagê 
+    zarezerwowanych dla DHCP (lexx)
+  - BTS#0000181: okienko wyboru adresu IP nie pozwala wybraæ adresu 
+    zarezerwowanego dla DHCP (lexx)
     
 wersja 1.3.5 Ju (30/07/2004):
 
