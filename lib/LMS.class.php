@@ -1198,14 +1198,14 @@ class LMS
 		foreach($invoice['contents'] as $idx => $item)
 		{
 			$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',array($iid, $item['valuebrutto'], $item['taxvalue'], $item['pkwiu'], $item['jm'], $item['count'], $item['name'], $item['tariffid']));
-			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto'], 'userid' => $invoice['customer']['id'], 'comment' => $item['name'], 'invoiceid' => $iid));
+			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'userid' => $invoice['customer']['id'], 'comment' => $item['name'], 'invoiceid' => $iid));
 		}
 		return $iid;
 	}
 
 	function GetInvoicesList()
 	{
-		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value) AS value, COUNT(invoiceid) AS count FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
+		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value*count) AS value, COUNT(invoiceid) AS count FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
 		{
 			foreach($result as $idx => $row)
 			{
