@@ -1,4 +1,4 @@
-<?
+<?php
 
 $p = $_GET[p];
 $netid = $_POST[netid];

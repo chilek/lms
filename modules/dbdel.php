@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * LMS version 1.0-cvs

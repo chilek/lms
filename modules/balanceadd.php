@@ -1,4 +1,4 @@
-<?
+<?php
 $addbalance = $_POST[addbalance];
 
 $_SESSION[addbc] = $addbalance[comment];

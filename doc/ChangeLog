@@ -3,6 +3,8 @@ $Id$
 wersja 1.0.3 (??/??/2003):
 
   - dodany contrib/lms_contract.patch (durden/lukasz)
+  - zamienione wszystkie '<?' (krótkie tagi PHP) na '<?php' - w sumie tak
+    powinno byæ od pocz±tku, ale kto by na to wpad³, co nie? (lukasz)
 
 wersja 1.0.2 (13/08/2003):
   

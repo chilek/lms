@@ -1,4 +1,4 @@
-<?
+<?php
 
 	if($LMS->UserExists($_GET[ownerid]))
 	{
