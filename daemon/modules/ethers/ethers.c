@@ -40,7 +40,7 @@ void reload(GLOBAL *g, struct ethers_module *fm)
     fh = fopen(fm->tmpfile, "w");
     if(fh) {
 	
-	if( (res = g->db_query("SELECT mac, ipaddr FROM nodes"))!= NULL) {
+	if( (res = g->db_query("SELECT mac, ipaddr FROM nodes ORDER BY ipaddr"))!= NULL) {
 	
 	    fprintf(fh, "# Wygenerowany automatycznie\n\n");
 
@@ -52,6 +52,9 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 	
 	fclose(fh);
 	system(fm->command);
+#ifdef DEBUG
+	syslog(LOG_INFO, "DEBUG: mod_ethers reload complited");
+#endif
     }
     else
 	syslog(LOG_ERR, "mod_ethers: Unable to write a temporary file '%s'", fm->tmpfile);
@@ -70,10 +73,12 @@ struct ethers_module * init(GLOBAL *g, MODULE *m)
 	fm->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 
 	ini = g->iniparser_load(g->inifile);
-	fm->tmpfile = strdup(g->iniparser_getstring(ini, "ethers:tempfile", "/tmp/mod_ethers"));
-	fm->command = strdup(g->iniparser_getstring(ini, "ethers:command", ""));
+	fm->tmpfile = g->iniparser_getstring(ini, "ethers:tempfile", "/tmp/mod_ethers");
+	fm->command = g->iniparser_getstring(ini, "ethers:command", "");
 	g->iniparser_freedict(ini);
-	
+#ifdef DEBUG
+	syslog(LOG_INFO,"DEBUG: mod_ethers initialized");
+#endif	
 	return(fm);
 }
 
