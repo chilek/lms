@@ -24,71 +24,68 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Prze³adowanie konfiguracji';
+$layout['pagetitle'] = trans('Configuration Reload');
 
 $SMARTY->display('header.html');
 $SMARTY->display('reloadheader.html');
 
-echo '<H1>Prze³adowanie konfiguracji</H1>';
+echo '<H1>'.$layout['pagetitle'].'</H1>';
 
 $_RELOAD_TYPE = $LMS->CONFIG['phpui']['reload_type'];
 $_EXECCMD = $LMS->CONFIG['phpui']['reload_execcmd'];
 
 switch($_RELOAD_TYPE)
 {
-	case "exec":
-		$execlist = explode(";",$_EXECCMD);
+	case 'exec':
+		$execlist = explode(';',$_EXECCMD);
 		echo '<TABLE WIDTH="100%" BGCOLOR="#F4F0EC" CELLPADDING="5"><TR><TD CLASS="FALL">';
 		foreach($execlist as $execcmd)
 		{
-			echo "<P><B>".$execcmd."</B>:</P>";
-			echo "<PRE>";
-			passthru($execcmd);
-			echo "</PRE>";
+			echo '<P><B>'.$execcmd.'</B>:</P>';
+			echo '<PRE>'.passthru($execcmd).'</PRE>';
 		}
 		echo '</TD></TR></TABLE>';
 	break;
 
-	case "sql":
+	case 'sql':
 		if(isset($LMS->CONFIG['phpui']['reload_sqlquery']))
 		{
-			$sqlqueries = explode(";",($LMS->CONFIG['phpui']['reload_sqlquery']));
+			$sqlqueries = explode(';',($LMS->CONFIG['phpui']['reload_sqlquery']));
 			echo '<TABLE WIDTH="100%" BGCOLOR="#F4F0EC" CELLPADDING="5"><TR><TD CLASS="FALL">';
 			foreach($sqlqueries as $query)
 			{
-				$query = str_replace("%TIME%","?NOW?",$query);
-				echo "<P><B>Wykonuje:</B></P>";
-				echo "<PRE>".$query."</PRE>";
+				$query = str_replace('%TIME%','?NOW?',$query);
+				echo '<P><B>'.trans('Running:').'</B></P>';
+				echo '<PRE>'.$query.'</PRE>';
 				$LMS->DB->Execute($query);
 			}
 			echo '</TD></TR></TABLE>';
 		}else{
 			if(isset($_GET['cancel']))
 			{
-				echo 'Usuniêto zlecenie prze³adowania konfiguracji.';
-				$LMS->DeleteTS("_force");
+				echo trans('Reload order deleted.');
+				$LMS->DeleteTS('_force');
 			}else
-				if($reloadtimestamp = $LMS->GetTS("_force"))
+				if($reloadtimestamp = $LMS->GetTS('_force'))
 				{
 					if(!isset($_GET['refresh'])) 
 					{					
-						echo 'W bazie danych wykryto zlecenie prze³adowania z '.date("d.m.Y H:i",$reloadtimestamp).'.<BR>';
-						echo 'Mo¿esz je <A HREF="?m=reload&cancel">anulowaæ</A> lub <A HREF="?m=reload&refresh">ponowiæ</A>.';
+						echo trans('Discovered reload order from date $0.', date('Y/m/d H:i',$reloadtimestamp)).'<BR>';
+						echo trans('You can $0cancel$1 or $2refresh$3 them.','<A HREF="?m=reload&cancel">','</A>','<A HREF="?m=reload&refresh">','</A>');
 					} else {
-						echo 'Zapisano zlecenie prze³adowania konfiguracji w bazie danych.';
-						$LMS->SetTS("_force");
+						echo trans('Reload order saved.');
+						$LMS->SetTS('_force');
 					}
 				} else {
-					echo 'Zapisano zlecenie prze³adowania konfiguracji w bazie danych.';
-					$LMS->SetTS("_force");
+					echo trans('Reload order saved.');
+					$LMS->SetTS('_force');
 				}
 		}
 	break;
 
 	default:
-		echo "<P><B><FONT COLOR=\"RED\">B³±d! Niepoprawny typ reloadu: '".$_RELOAD_TYPE."' !</FONT></B></P>";
+		echo '<P><B><FONT COLOR="RED">'.trans('Error: Unknown reload type: "$0"!', $_RELOAD_TYPE).'</FONT></B></P>';
 	break;
-
 }
 
 $SMARTY->display('footer.html');

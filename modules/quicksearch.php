@@ -55,9 +55,6 @@ switch($_GET['mode'])
 			$target = '?m=rtsearch&search=1';
 		}
 	break;
-	
-	
-
 }
 
 if($target == '')

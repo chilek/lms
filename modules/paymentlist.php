@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Lista op³at sta³ych";
+$layout['pagetitle'] = trans('Payments List');
 
 $paymentlist = $LMS->GetPaymentList();
 

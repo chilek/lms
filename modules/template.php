@@ -24,10 +24,11 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Tytu³ modu³u";
+$layout['pagetitle'] = trans('Module Title');
+
 $SMARTY->display('header.html');
 
-// Tutaj odpowiednie dzia³ania
+// module body
 
 $SMARTY->display('footer.html');
 

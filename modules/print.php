@@ -30,23 +30,23 @@ switch($_GET['type'])
 		switch($_POST['filter'])
 		{
 			case 0:
-				$layout['pagetitle'] = 'Lista u¿ytkowników'.($_POST['network'] ? ' sieci '.$LMS->GetNetworkName($_POST['network']) : '').($_POST['usergroup'] ? ' w grupie '.$LMS->UsergroupGetName($_POST['usergroup']) : '');
+				$layout['pagetitle'] = trans('Users List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : ''));
 				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['usergroup']));
 			break;
 			case 1:
-				$layout['pagetitle'] = 'Lista u¿ytkowników zainteresowanych ';
+				$layout['pagetitle'] = trans('Interested Users List');
 				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter']));
 			break;
 			case 2:
-				$layout['pagetitle'] = 'Lista u¿ytkowników oczekuj±cych';
+				$layout['pagetitle'] = trans('Awaiting Users List');
 				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter']));
 			break;
 			case 3:
-				$layout['pagetitle'] = 'Lista u¿ytkowników pod³±czonych'.($_POST['network'] ? ' do sieci '.$LMS->GetNetworkName($_POST['network']) : '').($_POST['usergroup'] ? ' w grupie '.$LMS->UsergroupGetName($_POST['usergroup']) : '');
+				$layout['pagetitle'] = trans('Connected Users List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : '')); 
 				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['usergroup']));
 			break;
 			case 4: 
-				$layout['pagetitle'] = 'Lista u¿ytkowników od³±czonych'.($_POST['network'] ? ' od sieci '.$LMS->GetNetworkName($_POST['network']) : '').($_POST['usergroup'] ? ' w grupie '.$LMS->UsergroupGetName($_POST['usergroup']) : '');
+				$layout['pagetitle'] = trans('Disconnected Users List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : ''));
 				if($userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network'], $_POST['usergroup']))
 				{
 				unset($userlist['total']);
@@ -63,8 +63,8 @@ switch($_GET['type'])
 				$SMARTY->assign('userlist', $nuserlist);
 			break;
 			case 5: 
-				$layout['pagetitle'] = 'Lista u¿ytkowników zad³u¿onych'.($_POST['network'] ? ' w sieci '.$LMS->GetNetworkName($_POST['network']) : '').($_POST['usergroup'] ? ' w grupie '.$LMS->UsergroupGetName($_POST['usergroup']) : '');
-				if($userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network'], $_POST['usergroup']))
+				$layout['pagetitle'] = trans('Indebted Users List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : ''));
+				if($userlist = $LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network'], $_POST['usergroup']))
 				{
 				unset($userlist['total']);
 				unset($userlist['state']);
@@ -80,8 +80,8 @@ switch($_GET['type'])
 				$SMARTY->assign('userlist', $nuserlist);
 			break;
 			case 6: 
-				$layout['pagetitle'] = 'Lista u¿ytkowników bez komputerów'.($_POST['usergroup'] ? ' w grupie '.$LMS->UsergroupGetName($_POST['usergroup']) : '');
-				if($userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['usergroup']))
+				$layout['pagetitle'] = trans('Users Without Nodes List $0$1',($_POST['network'] ? trans(' (Net: $0)',$LMS->GetNetworkName($_POST['network'])) : ''),($_POST['usergroup'] ? trans('(Group: $0)',$LMS->UsergroupGetName($_POST['usergroup'])) : ''));
+				if($userlist = $LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['usergroup']))
 				{
 				unset($userlist['total']);
 				unset($userlist['state']);
@@ -113,11 +113,11 @@ switch($_GET['type'])
 			list($year, $month, $day) = split('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
 		} else { 
-			$to = date("Y/m/d",time());
+			$to = date('Y/m/d',time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 
-		$layout['pagetitle'] = 'Bilans u¿ytkownika '.$LMS->GetUserName($_POST['user']).' za okres '.($from ? 'od '.$from.' ' : '').'do '.$to;	
+		$layout['pagetitle'] = trans('Customer $0 Balance Sheet ($1 to $2)',$LMS->GetUserName($_POST['user']), ($from ? $from : ''), $to);
 		$balancelist = $LMS->GetUserBalanceListByDate($_POST['user'],$date);
 		$SMARTY->assign('balancelist', $balancelist);
 		$SMARTY->display('printuserbalance.html');
@@ -127,11 +127,11 @@ switch($_GET['type'])
 		switch($_POST['filter'])
 		{
 			case 0:
-				$layout['pagetitle'] = 'Lista komputerów';
+				$layout['pagetitle'] = trans('Nodes List');
 				$SMARTY->assign('nodelist', $LMS->GetNodeList($_POST['order'].','.$_POST['direction']));
 			break;
 			case 1:
-				$layout['pagetitle'] = 'Lista komputerów od³±czonych';
+				$layout['pagetitle'] = trans('Disconnected Nodes List');
 				if($nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']))
 				{
 				unset($nodelist['total']);
@@ -147,7 +147,7 @@ switch($_GET['type'])
 				$SMARTY->assign('nodelist', $nnodelist);
 			break;
 			case 2:
-				$layout['pagetitle'] = 'Lista komputerów pod³±czonych';
+				$layout['pagetitle'] = trans('Connected Nodes List');
 				if($nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']))
 				{
 				unset($nodelist['total']);
@@ -179,14 +179,15 @@ switch($_GET['type'])
 			list($year, $month, $day) = split('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
 		} else {
-			$to = date("Y/m/d",time());
+			$to = date('Y/m/d',time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 		
-		$admin = $_POST['admin'];
-		
-		$layout['pagetitle'] = 'Bilans finansowy '.($admin ? 'dla administratora '.$LMS->GetAdminName($admin).' ' : '').'za okres '.($from ? ' od '.$from.' ' : '').'do '.$to;
-
+		if($admin = $_POST['admin'])
+			$layout['pagetitle'] = trans('Balance Sheet of User: $0 ($1 to $2)', $LMS->GetAdminName($admin), ($from ? $from : ''), $to);
+		else
+			$layout['pagetitle'] = trans('Balance Sheet ($1 to $2)', ($from ? $from : ''), $to);
+			
 		$userslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users','id');
 		
 		if($date['from'])
@@ -219,26 +220,26 @@ switch($_GET['type'])
 				switch($row['type'])
 				{
 					case 1:
-						$list[$x]['type'] = 'przychód';
+						$list[$x]['type'] = trans('income');
 						$list[$x]['after'] = $lastafter + $list[$x]['value'];
 						$listdata['income'] += $list[$x]['value'];
 					break;
 					case 2:
-						$list[$x]['type'] = 'rozchód';
+						$list[$x]['type'] = trans('expense');
 						$list[$x]['after'] = $lastafter - $list[$x]['value'];
 						$listdata['expense'] += $list[$x]['value'];
 					break;
 					case 3:
-						$list[$x]['type'] = 'wp³ata u¿.';
+						$list[$x]['type'] = trans('cust. payment');
 						$list[$x]['after'] = $lastafter + $list[$x]['value'];
 						$listdata['incomeu'] += $list[$x]['value'];
 					break;
 					case 4:
-						$list[$x]['type'] = 'obci±¿enie u¿.';
+						$list[$x]['type'] = trans('cust. covenant');
 						$list[$x]['after'] = $lastafter;
 					break;
 					default:
-						$list[$x]['type'] = '<FONT COLOR="RED">???</FONT>';
+						$list[$x]['type'] = '???';
 						$list[$x]['after'] = $lastafter;
 					break;
 				}
@@ -294,14 +295,14 @@ switch($_GET['type'])
 			list($year, $month, $day) = split('/',$to);
 			$date['to'] = mktime(23,59,59,$month,$day,$year);
 		} else { 
-			$to = date("Y/m/d",time());
+			$to = date('Y/m/d',time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 
 		if($_POST['invoiceorg'] && !$_POST['invoicecopy']) $witch = 'ORYGINA£';
 		if(!$_POST['invoiceorg'] && $_POST['invoicecopy']) $witch = 'KOPIA';
 		
-		$layout['pagetitle'] = 'Faktury';
+		$layout['pagetitle'] = trans('Invoices');
 		header('Location: ?m=invoice&fetchallinvoices=1&which='.$witch.'&userid='.$_POST['user'].'&from='.$date['from'].'&to='.$date['to']);
 	break;	
 
@@ -313,14 +314,14 @@ switch($_GET['type'])
 		} else 
 			$reportday = time();
 		
-		$layout['pagetitle'] = 'Raport wierzytelno¶ci na dzieñ '.date('Y/m/d', $reportday);
+		$layout['pagetitle'] = trans('Liability Report on $0',date('Y/m/d', $reportday));
 
 		$SMARTY->assign('reportlist', $LMS->LiabilityReport($reportday, $_POST['order'].','.$_POST['direction'], $_POST['user']));
 		$SMARTY->display('printliabilityreport.html');
 	break;
 		
 	default: /*******************************************************/
-		$layout['pagetitle'] = 'Wydruki';
+		$layout['pagetitle'] = trans('Print');
 		$SMARTY->assign('users', $LMS->GetUserNames());
 		$SMARTY->assign('admins', $LMS->GetAdminNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
