@@ -50,6 +50,7 @@ CREATE TABLE cash (
 	comment varchar(255) 	DEFAULT '' NOT NULL,
 	invoiceid integer 	DEFAULT 0 NOT NULL
 );
+CREATE INDEX cash_userid_idx ON cash(userid);
 
 /* -------------------------------------------------------- 
   Struktura tabeli "networks" 
@@ -152,7 +153,7 @@ CREATE TABLE invoices (
 /* -------------------------------------------------------- 
   Struktura tabeli "invoicecontents" 
 -------------------------------------------------------- */
-DROP TABLE invoicecontents
+DROP TABLE invoicecontents;
 CREATE TABLE invoicecontents (
 	invoiceid integer 	DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
@@ -332,4 +333,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004081800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004090700');
