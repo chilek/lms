@@ -1,9 +1,5 @@
 $Id$
 
-koniecznie w 1.3:
-* Helpdesk: Poprawiæ i przetestowaæ lms-rtparser
-* Helpdesk: Dopracowaæ wysy³anie wiadomo¶ci
-------------------------------------------------------------------------
 * okresowa procentowa obni¿ka abonamentu
 * ³adniejsza wizualizacja wyników statystyk
 * arpd (dokoñczyæ, support dla non-linux systems)
