@@ -21,7 +21,7 @@
 					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=usergroupinfo&id={$usergroup.id}">{$usergroup.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$usergroup.description}</TD>
 					<TD WIDTH="97%" NOWRAP>({$usergroup.id|string_format:"%04d"})</TD>
-					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{t}Are you sure, you want to remove customer from group?{/t}')" HREF="?m=useredit&action=usergroupdelete&usergroupid={$usergroup.id}&id={$userinfo.id}" {tip text="{t}Remove customer from group"}>{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
+					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{t}Are you sure, you want to remove customer from group?{/t}')" HREF="?m=useredit&action=usergroupdelete&usergroupid={$usergroup.id}&id={$userinfo.id}" {tip text="Remove customer from group"}>{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
 				</TR>
 				{foreachelse}
 				<TR>

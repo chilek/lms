@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Queue List');
+$layout['pagetitle'] = trans('Queues List');
 
 $queues = $LMS->GetQueueList();
 

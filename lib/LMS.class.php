@@ -1636,7 +1636,7 @@ class LMS
 				$value = sprintf('%0.2f',$row['value']);
 				$list[$id]['custname'] = $row['name'];
 				$list[$id]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
-				$list[$id]['nip'] = ($row['nip'] ? trans('NIP').' '.$row['nip'] : ($row['pesel'] ? trans('PID').' '.$row['pesel'] : ''));
+				$list[$id]['nip'] = ($row['nip'] ? trans('FIN').' '.$row['nip'] : ($row['pesel'] ? trans('SSN').' '.$row['pesel'] : ''));
 				$list[$id]['number'] = $row['number'];
 				$list[$id]['cdate'] = $row['cdate'];
 				$list[$id]['year'] = date('Y',$row['cdate']);

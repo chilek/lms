@@ -62,7 +62,7 @@ if(isset($payment))
 		case 0:
 			$at = sprintf('%d',$payment['at']);
 			if($at < 1 || $at > 7)
-				$error['at'] = trans('Incorrect day of week!');
+				$error['at'] = trans('Incorrect day of week (1-7)!');
 		break;
 		
 		case 1:
@@ -74,7 +74,7 @@ if(isset($payment))
 					$at = 1;
 			}
 			if($at < 1 || $at > 28)
-				$error['at'] = trans('Incorrect day of month!');
+				$error['at'] = trans('Incorrect day of month (1-28)!');
 		break;
 			
 		case 2:
@@ -83,7 +83,7 @@ if(isset($payment))
 			else {
 				list($d,$m) = split('/',trim($payment['at']));
 				if($d>30 || $d<1)
-					$error['at'] = trans('Incorrect day of month number!');
+					$error['at'] = trans('Incorrect day of month (1-30)!');
 				if($m>3 || $m<1)
 					$error['at'] = trans('Incorrect month number (max.3)!');
 				
