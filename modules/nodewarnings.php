@@ -21,21 +21,22 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-if($LMS->UserExists($_GET['ownerid']))
-{
-	$LMS->NodeSetWarnU($_GET['ownerid'], $_GET['warning']);
-	$backid = $_GET['ownerid'];
-}
+$layout['pagetitle'] = "Ustawianie ostrze¿eñ";
 
-if($LMS->NodeExists($_GET['id']))
-{
-	$LMS->NodeSwitchWarn($_GET['id']);
-	$backid = $_GET['id'];
-}
+$_SESSION['backto']=$_SERVER['QUERY_STRING'];
 
-header("Location: ?".$_SESSION['backto']."#".$backid);
+$nodelist = $LMS->GetNodeList();
+unset($nodelist['total']);
+unset($nodelist['order']);
+unset($nodelist['direction']);
+unset($nodelist['totalon']);
+unset($nodelist['totaloff']);
+
+$SMARTY->assign('warnmessage', $_SESSION['warnmessage']);
+$SMARTY->assign('warnon', $_SESSION['warnon']);
+$SMARTY->assign('nodelist',$nodelist);
+$SMARTY->display('nodewarnings.html');
 
 ?>
