@@ -393,6 +393,7 @@ CREATE TABLE users (
   modid int(11) NOT NULL default '0',
   deleted tinyint(1) NOT NULL default '0',
   message text NOT NULL,
+  pin varchar(6) NO NULL default '',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
