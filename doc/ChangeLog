@@ -61,6 +61,8 @@ wersja 1.1.8 (??/??/????):
     warto¶æ podatku nie mo¿e byæ ujemna (alec)
   - na li¶cie u¿ytkowników, zamiast ¿arówki pojawia siê wykrzyknik, je¶li
     u¿ytkownik nie posiada ¿adnych komputerów (alec)
+  - naprawione b³êdne przeliczanie adresów sieci w lms-makeiptables 
+    i lms-makeipchains wynikaj±ce ze zmiany formatu pola w bazie (alec)
     
 wersja 1.1.7 Hathor (14/12/2003):
 
