@@ -312,6 +312,8 @@ key = "A.L.E.C's LMS Daemon is the best"
 		u¿ytkowników ma zostaæ stworzonych i nacisn±æ ENTER. To wszystko.
 		<note><para>Dla prawid³owego wygenerowania zale¿no¶ci, modu³ 'genfake'
 		nale¿y uruchamiaæ na pustej, nowoutworzonej bazie.</para></note>
+		<warning><para>Wszystkie dane (oprócz danych administratorów) zostan±
+		usuniête z bazy.</para></warning>
 		</para>
 	</sect1>
 	<sect1 id="devel-rights">

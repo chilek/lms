@@ -19,6 +19,8 @@ wersja 1.1.8 (??/??/????):
     zaleg³o¶ciach. Wymagany pakiet gnokii (hunter)
   - dodane uprawnienie 'dostêp do korespondencji seryjnej' (alec)
   - urz±dzeniom sieciowym mo¿na przypisywaæ adresy IP oraz MAC (lexx/alec)
+  - w genfake.php poprawione czyszczenie bazy oraz dodane generowanie
+    danych osprzêtu i po³±czeñ sieciowych (alec)
     
 wersja 1.1.7 Hathor (14/12/2003):
 
