@@ -728,7 +728,7 @@ class LMS
 						
 					case "4":
 						$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
-						$saldolist[name][$i] = "Obci.¿enie";
+						$saldolist[name][$i] = "Obci±¿enie";
 					break;
 						
 				}
@@ -1228,7 +1228,7 @@ class LMS
 						$balancelist[incomeu] = $balancelist[incomeu] + $balancelist[$idx][value];
 					break;
 					case "4":
-						$balancelist[$idx][type] = "obci.¿enie u¿";
+						$balancelist[$idx][type] = "obci±¿enie u¿";
 						$balancelist[$idx][after] = $balancelist[$idx][before];
 						$balancelist[uinvoice] = $balancelist[uinvoice] + $balancelist[$idx][value];
 					break;
