@@ -1,0 +1,201 @@
+#!/usr/bin/perl
+#
+# LMS version 1.3-cvs
+#
+#  (C) 2001-2004 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+
+#TODO - CHECK FOR ALL NEEDED CONFIGURATION OPTIONS!
+#       THERE IS NO SUCH CHECK AT THIS TIME!
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($configfile $help $version $queue $debug);
+use POSIX qw(strftime);
+use Data::Dumper;
+use LWP::UserAgent ();
+use MIME::Entity;
+
+$ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
+
+my $_version = '1.3-cvs';
+
+my %options = (
+	"--config-file|C=s"     =>      \$configfile,
+	"--help|h"              =>      \$help,
+	"--version|v"           =>      \$version,
+	"--debug|d"             =>      \$debug,
+	"--queue|q=s"		=>	\$queue
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-mgc, version $_version
+(C) 2001-2004 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini
+		alternate config file (default: /etc/lms/lms.ini);
+-h, --help	print this help and exit;
+-v, --version	print version info and exit;
+
+EOF
+	exit 0;
+}							
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-mgc, version $_version
+(C) 2001-2004 LMS Developers
+
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms/lms.ini";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+my $invoice_ntemplate = $ini->val('invoices', 'number_template') || '%N/LMS/%Y';
+my $lms_url = $ini->val('sendinvoices', 'lms_url') || 'http://localhost/lms/';
+my $lms_user = $ini->val('sendinvoices', 'lms_user') || '';
+my $lms_password = $ini->val('sendinvoices', 'lms_password') || '';
+my $debug_email = $ini->val('sendinvoices', 'debug_email') || '';
+my $sender_name = $ini->val('sendinvoices', 'sender_name') || '';
+my $sender_email = $ini->val('sendinvoices', 'sender_email') || '';
+
+# very ugly code, but we really need tempdir..
+# 
+my $tmpdir = (defined $ini->val('sendinvoices', 'tmp_dir') && ! ($ini->val('sendinvoices', 'tmp_dir') eq '')) || (defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '') ? $ENV{'TMP'} : '/tmp');
+
+my $dbase;
+my $utsfmt;
+
+if($dbtype eq "mysql")
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "UNIX_TIMESTAMP()";
+}
+elsif($dbtype eq "postgres")
+{
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+
+my $dbq = $dbase->prepare("SELECT $utsfmt AS timestamp");
+$dbq->execute();
+my $timestamp = 0;
+if(my $row = $dbq->fetchrow_hashref())
+{
+	$timestamp = $row->{'timestamp'}
+}
+else
+{
+	print STDERR "Database error, exiting!\n";
+	exit 1;
+}
+
+my $month = sprintf("%d",strftime("%m",localtime()));
+my $day = strftime("%e",localtime());
+my $year = strftime("%Y",localtime());
+my $daystart = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
+my $dayend = strftime("%s", 59, 59, 23, $day, $month - 1, $year - 1900);
+
+$dbq = $dbase->prepare('SELECT invoices.id AS id, number, cdate, email, invoices.name AS name, customerid FROM invoices LEFT JOIN users ON users.id = customerid WHERE cdate >= '.$daystart.' AND cdate <= '.$dayend);
+$dbq->execute();
+while(my $row = $dbq->fetchrow_hashref())
+{
+	my $invoice_number = $invoice_ntemplate;
+	$invoice_number =~ s/\%N/$row->{'number'}/g;
+	$invoice_number =~ s/\%Y/$year/g;
+	$invoice_number =~ s/\%M/$month/g;
+	print "Faktura VAT nr. $invoice_number dla ";
+	if($row->{'email'})
+	{
+		my $ua = LWP::UserAgent->new;
+		$ua->timeout(10);
+		my $response = $ua->get($lms_url.'/?m=invoice&fetchsingle=1&override=1&id='.$row->{'id'}.'&loginform[login]='.$lms_user.'&loginform[pwd]='.$lms_password);
+		if ($response->is_success)
+		{
+			my $custemail = $row->{'email'};
+			print $row->{'name'}.' <'.$custemail.'>'."\n";
+			if($debug_email)
+			{
+				$custemail = $debug_email;
+			}				
+			my $mail = build MIME::Entity Type=>"multipart/mixed";
+			$mail->head->add('To',$row->{'name'}.' <'.$debug_email.'>');
+			$mail->head->add('From', $sender_name.' <'.$sender_email.'>');
+			$mail->head->add('Reply-To', $sender_name.' <'.$sender_email.'>');
+			$mail->head->add('Subject', 'Faktura VAT nr. '.$invoice_number);
+			$mail->head->add('Message-ID', '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>');
+			$mail->head->add('Return-path', '<'.$sender_email.'>');
+			$mail->attach(
+				Type => 'text/plain',
+				Charset => 'ISO-8859-2',
+				Encoding => 'quoted-printable',
+				Data => [
+					"W za³±czeniu, faktura VAT nr. $invoice_number\n",
+					],
+			);
+			$mail->attach(
+				Type => 'text/html',
+				Charset => 'ISO-8859-2',
+				Encoding => 'quoted-printable',
+				Filename => 'faktura_'.$row->{'id'}.'.html',
+				Data => [
+					$response->content,
+				],
+			);
+			$mail->smtpsend('MailFrom' => $sender_email, 'To' => $debug_email, 'Return-path' => $sender_email);
+			
+		}
+		else
+		{
+			die $response->status_line;
+		}
+	}
+}
+$dbq->finish();
+$dbase->disconnect();
