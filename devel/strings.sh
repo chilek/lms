@@ -11,8 +11,8 @@ echo "Parsing templates"
 for FILENAME in `ls ../templates/*.html`
 do
     echo -n "$FILENAME... "
-#    cat ../templates/$FILENAME | sed -r -e 's/(\/t\})/\1\n/g' | sed -r -n -e 's/.*\{t[^}]*\}([^{]*)\{\/t}.*/\1/gp' -e 's/.*text=\"([^"]*)\".*/\1/gp' >> tmp_strings
-    cat $FILENAME | perl -pe 's/(\/t\})/$1\n/g' | perl -ne 'print if s/.*\{t[^}]*\}([^{]*)\{\/t}.*/$1/ or s/.*text=\"(.*?[^\\])\".*/$1/' >> html_strings
+    perl -lne 'print for /text="(.*?[^\\])"/g' $FILENAME >> html_strings
+    perl -lne 'print for /\{t[^}]*\}([^{]*)\{\/t}/g' $FILENAME >> html_strings
     echo "done."
 done
 perl -pi -e 's/\\/\\\\\\\\/g' html_strings   	# \ -> \\
@@ -22,13 +22,13 @@ echo "Parsing modules"
 for FILENAME in `ls ../modules/*.php`
 do
     echo -n "$FILENAME... "
-    cat $FILENAME | grep trans | perl -ne 'print if s/.*trans\(\x27(.*?[^\\])\x27.*/$1/' >> php_strings
+    perl -lne 'print for /trans\(\x27(.*?[^\\])\x27/g' $FILENAME >> php_strings
     echo "done."
 done
-for FILENAME in `ls ../lib/*.php | grep -v CVS`
+for FILENAME in `ls ../lib/*.php`
 do
     echo -n "$FILENAME... "
-    cat $FILENAME | grep trans | perl -ne 'print if s/.*trans\(\x27(.*?[^\\])\x27.*/$1/' >> php_strings
+    perl -lne 'print for /trans\(\x27(.*?[^\\])\x27/g' $FILENAME >> php_strings
     echo "done."
 done
 perl -pi -e 's/\\/\\\\/g' php_strings   	# \ -> \\
