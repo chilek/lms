@@ -43,7 +43,7 @@ $access['table'][4]['name']    		= 'prze³adowywanie konfiguracji';
 $access['table'][4]['allow_reg']    	= '^reload$';
 
 $access['table'][5]['name']		= 'manipulacja danymi u¿ytkowników';
-$access['table'][5]['allow_reg']	= '^(user(add|edit|del|assignments|warn)|nodewarn|usergroup(add|edit|delete|move))$';
+$access['table'][5]['allow_reg']	= '^(user(add|edit|del|assignments|assignmentsedit|warn)|nodewarn|usergroup(add|edit|delete|move))$';
 
 $access['table'][6]['name'] 		= 'manipulacja danymi komputerów';
 $access['table'][6]['allow_reg']  	= '^(node(add|scan|del|edit|set|warn)|choose(mac|ip))$';
