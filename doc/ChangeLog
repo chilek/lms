@@ -21,6 +21,7 @@ wersja 1.5.2 (??/??/????):
   - BTS#0000229: contrib/customer - uwzglêdniona sytuacja, gdy ³±czymy siê z
     urz±dzenia sieciowego (alec)
   - lms-arping (T.Ciaszczyk/alec)
+  - lms-rtparser: usuniêty b³±d w dzia³aniu opcji tmp_dir (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 
