@@ -25,15 +25,15 @@
  */
 
 $DB->Execute("
-    CREATE TABLE `passwd` (
-	`id` int(11) NOT NULL auto_increment,
-	`OwnerId` int(11) NOT NULL default '0',
-	`user` varchar(200) NOT NULL default '',
-        `password` varchar(200) NOT NULL default '',
-	`LastLogin` timestamp(14) NOT NULL,
-	`uid` int(11) NOT NULL default '0',
-	`home` varchar(25) NOT NULL default '',
-	PRIMARY KEY  (`id`)
+    CREATE TABLE passwd (
+	id int(11) NOT NULL auto_increment,
+	ownerid int(11) NOT NULL default '0',
+	login varchar(200) NOT NULL default '',
+        password varchar(200) NOT NULL default '',
+	lastlogin timestamp(14),
+	uid int(11) NOT NULL default '0',
+	home varchar(25) NOT NULL default '',
+	PRIMARY KEY (id)
     ) TYPE=MyISAM
 ");
 
