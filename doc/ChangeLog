@@ -6,6 +6,8 @@ wersja 1.4.3 (??/??/????):
     u¿ytkownika (alec)
   - lms-mgc ignoruje wpis node(x.x.x.x) je¿eli host x.x.x.x nie istnieje
     (dzwonus/lukasz)
+  - poprawiony b³±d przy usuwaniu op³aty sta³ej powoduj±cy usuniêcie op³aty
+    bez potwierdzenia (alec)
 
 wersja 1.4.2 Lya (14/12/2004):
 
