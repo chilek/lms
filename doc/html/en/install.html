@@ -1,0 +1,325 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Installation and configuration</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Other Information"
+HREF="moreinfo.html"><LINK
+REL="NEXT"
+TITLE="Requirements"
+HREF="install-requirements.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="moreinfo.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="install-requirements.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="INSTALL"
+></A
+>Chapter 2. Installation and configuration</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>2.1. <A
+HREF="install.html#INSTALL-INTRO"
+>Intro</A
+></DT
+><DT
+>2.2. <A
+HREF="install-requirements.html"
+>Requirements</A
+></DT
+><DD
+><DL
+><DT
+>2.2.1. <A
+HREF="install-requirements.html#INSTALL-REQ-WWW"
+>WWW Server</A
+></DT
+><DT
+>2.2.2. <A
+HREF="install-requirements.html#INSTALL-REQ-PHP"
+>PHP Interpreter</A
+></DT
+><DT
+>2.2.3. <A
+HREF="install-requirements.html#INSTALL-REQ-DB"
+>Database Server</A
+></DT
+><DT
+>2.2.4. <A
+HREF="install-requirements.html#INSTALL-REQ-SMARTY"
+>Smarty Library</A
+></DT
+><DT
+>2.2.5. <A
+HREF="install-requirements.html#INSTALL-REQ-PERL"
+>Perl</A
+></DT
+><DT
+>2.2.6. <A
+HREF="install-requirements.html#INSTALL-REQ-C"
+>C Compiler</A
+></DT
+></DL
+></DD
+><DT
+>2.3. <A
+HREF="install-install.html"
+>LMS Installation</A
+></DT
+><DT
+>2.4. <A
+HREF="install-db.html"
+>Database Server Installation</A
+></DT
+><DD
+><DL
+><DT
+>2.4.1. <A
+HREF="install-db.html#INSTALL-MYSQL"
+>MySQL</A
+></DT
+><DT
+>2.4.2. <A
+HREF="install-db.html#INSTALL-PGSQL"
+>PostgreSQL</A
+></DT
+><DT
+>2.4.3. <A
+HREF="install-db.html#INSTALL-SQLITE"
+>SQLite</A
+></DT
+></DL
+></DD
+><DT
+>2.5. <A
+HREF="install-config.html"
+>Basic Configuration</A
+></DT
+><DD
+><DL
+><DT
+>2.5.1. <A
+HREF="install-config.html#INSTALL-CONFIG-DB"
+>Section [database] - Database Settings</A
+></DT
+><DT
+>2.5.2. <A
+HREF="install-config.html#INSTALL-CONFIG-DIR"
+>Section [directories] - Directories Settings</A
+></DT
+><DT
+>2.5.3. <A
+HREF="install-config.html#INSTALL-CONFIG-UI"
+>Section [phpui] - Interface Setting</A
+></DT
+></DL
+></DD
+><DT
+>2.6. <A
+HREF="install-rights.html"
+>Access rights</A
+></DT
+><DD
+><DL
+><DT
+>2.6.1. <A
+HREF="install-rights.html#INSTALL-RIGHTS-IDEA"
+>Idea</A
+></DT
+><DT
+>2.6.2. <A
+HREF="install-rights.html#INSTALL-RIGHTS-HOW"
+>How does it work?</A
+></DT
+></DL
+></DD
+><DT
+>2.7. <A
+HREF="install-upgrade.html"
+>Upgrade</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INSTALL-INTRO"
+>2.1. Intro</A
+></H1
+><P
+>LMS consist a few modules, body of LMS is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> 
+     (user interface). It is in integrity written in PHP and for work require database 
+     (in fact every module require database). Exactly in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> we perform all 
+     actions, the rest of modules is only for automate work of LMS.</P
+><P
+>LMS is also set of PERL scripts, and exactly these scripts requires 
+     to have that language interpreter. If you will want use these scripts, 
+     you must have PERL. Among others, scripts allow on monthly counting of subscription fees, 
+     or sending of admonitions. It is also <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-MGC</I
+></SPAN
+>, witch is script too, but
+     so much universal that can generate practically any config file and restart 
+     service on your server.</P
+><P
+>At the end it is also <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>A.L.E.C's LMS Daemon</I
+></SPAN
+>, written in C language, which 
+     is assigned (in fact his plugins) for configuration files generation and services restarting. 
+     It can be used as replacement or addition of perl scripts.
+     It responds for what has been changed in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> was made also 
+     in real.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="moreinfo.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="install-requirements.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Other Information</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Requirements</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,833 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Basic Configuration</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Installation and configuration"
+HREF="install.html"><LINK
+REL="PREVIOUS"
+TITLE="Database Server Installation"
+HREF="install-db.html"><LINK
+REL="NEXT"
+TITLE="Access rights"
+HREF="install-rights.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="install-db.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Installation and configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="install-rights.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INSTALL-CONFIG"
+>2.5. Basic Configuration</A
+></H1
+><P
+>Main configuration file of LMS is <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>,
+         which must be placed in directory <TT
+CLASS="FILENAME"
+>/etc/lms</TT
+> or in root
+         directory of LMS. It contains configuration options of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>
+         and all script with exception of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-MGC</I
+></SPAN
+>.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Remember to remove semicolons from begining of line
+         with seted parameter.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-CONFIG-DB"
+>2.5.1. Section [database] - Database Settings</A
+></H2
+><P
+>         <UL
+><LI
+><P
+>type</P
+><P
+>Database type. Actually in 100% supported is 'mysql', but for the time being
+        isn't seen problems with 'postgres' and 'sqlite'. Default: mysql</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>type = mysql</SAMP
+></P
+></LI
+><LI
+><P
+>host</P
+><P
+>Host where database is installed. Most often, localhost, but can 
+        here set anything (IP, domain, path to socket in format 'localhost:/path/to/socket'). 
+        Default: localhost</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>host = localhost</SAMP
+></P
+></LI
+><LI
+><P
+>user</P
+><P
+>Name of database user account. In many cases (if you've go by documentation) 
+        that will be 'lms'. When you'll want to use privileged account, 
+        probably you'll enter 'root' (MySQL on most of *nixes), 'mysql' (on PLD) or
+        'postgres' (PostgreSQL). Default: mysql</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>user = lms</SAMP
+></P
+></LI
+><LI
+><P
+>password</P
+><P
+>Database password. Default: empty.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>password = password</SAMP
+></P
+></LI
+><LI
+><P
+>database</P
+><P
+>Name of database (for SQLite path to database file). Default: lms.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>database = lms</SAMP
+></P
+></LI
+><LI
+><P
+>server_encoding</P
+><P
+>Database encoding. Use if your database encoding is not unicode.
+	Postgres is taking up conversion by himself, but in case of
+	mysql for conversion is used php/iconv in LMS db-drivers.
+	Default: unicode.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>server_encoding = latin2</SAMP
+></P
+></LI
+></UL
+>
+     </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-CONFIG-DIR"
+>2.5.2. Section [directories] - Directories Settings</A
+></H2
+><P
+>        
+     <UL
+><LI
+><P
+>sys_dir</P
+><P
+>System directory. It is a place where is entire content of LMS's UI, that means index.php, graphics, 
+        templates and the rest. By default index.php seek in filesystem 
+        using getcwd(), but better is to say him where hi is:</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>sys_dir = /var/www/htdocs/lms/</SAMP
+></P
+></LI
+><LI
+><P
+>modules_dir</P
+><P
+>Directory with "modules" of LMS. That is content of /modules directory. By default 
+        it is subdirectory <TT
+CLASS="FILENAME"
+>modules</TT
+> in sys_dir.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>modules_dir = /usr/share/lms/modules/</SAMP
+></P
+></LI
+><LI
+><P
+>lib_dir</P
+><P
+>Directory with "libraries" of LMS. That is content of /lib directory. By default 
+        it is subdirectory <TT
+CLASS="FILENAME"
+>lib</TT
+> in sys_dir.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>lib_dir = /usr/share/lms/lib/</SAMP
+></P
+></LI
+><LI
+><P
+>backup_dir</P
+><P
+>Directory for database backup files - place where LMS write database snapshots. 
+        By default it is subdirectory <TT
+CLASS="FILENAME"
+>backups</TT
+> in sys_dir.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>backup_dir = /var/backup/lms/</SAMP
+></P
+><P
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/warning.gif"
+HSPACE="5"
+ALT="Warning"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>If directory with backups will be accessible from WWW level, 
+        then anybody will can to access them without authorization.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></LI
+><LI
+><P
+>smarty_dir</P
+><P
+>Directory with Smarty library - By default, subdirectory <TT
+CLASS="FILENAME"
+>Smarty</TT
+> in lib_dir.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>smarty_dir = /usr/lib/php/Smarty</SAMP
+></P
+></LI
+><LI
+><P
+>smarty_compile_dir</P
+><P
+>Smarty's compilation directory. Place where Smarty compile templates. By default  
+        it is subdirectory <TT
+CLASS="FILENAME"
+>templates_c</TT
+> in sys_dir.</P
+><P
+>Example:      <SAMP
+CLASS="PROMPT"
+>smarty_compile_dir = /var/smarty/compile/lms</SAMP
+></P
+></LI
+><LI
+><P
+>smarty_templates_dir</P
+><P
+>Directory with Smarty's templates. By default it is subdirectory <TT
+CLASS="FILENAME"
+>templates</TT
+>
+        in sys_dir.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>smarty_templates_dir = /usr/share/lms/templates</SAMP
+></P
+></LI
+></UL
+>
+     </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-CONFIG-UI"
+>2.5.3. Section [phpui] - Interface Setting</A
+></H2
+><UL
+><LI
+><P
+>allow_from  (optional)</P
+><P
+>Lis of networks and IP addresses, which have access to LMS. If empty, every IP address has 
+             access to LMS. When you write here list of addresses or address classes,
+             LMS dismiss every unwanted user with HTTP 403 error.</P
+><P
+>Example:          <SAMP
+CLASS="PROMPT"
+>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</SAMP
+></P
+></LI
+><LI
+><P
+>lang</P
+><P
+>User interface language symbol. When is not set, language will be based on
+         html browser settings. Default: en.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>lang = pl</SAMP
+></P
+></LI
+><LI
+><P
+>timeout</P
+><P
+>Timeout of www session. After that time (in seconds) user will be log out if 
+         not take some action. Default: 600.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>timeout = 900</SAMP
+></P
+><P
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/warning.gif"
+HSPACE="5"
+ALT="Warning"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>There is not possible to set no timeout. If you set this value
+         on zero, you'll can't use LMS!</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></LI
+><LI
+><P
+>customerlist_pagelimit</P
+><P
+>Limit of displayed positions on one page on customers list. Default: no limit.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>customerlist_pagelimit = 10</SAMP
+></P
+></LI
+><LI
+><P
+>nodelist_pagelimit</P
+><P
+>Limit of displayed records on page on nodes list. Default: no limit.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>nodelist_pagelimit = 10</SAMP
+></P
+></LI
+><LI
+><P
+>balancelist_pagelimit</P
+><P
+>Limit of displayed records on page on user's balance. Default: 100.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>balancelist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>invoicelist_pagelimit</P
+><P
+>Limit of displayed records on page on invoices list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>invoicelist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>ticketlist_pagelimit</P
+><P
+>Limit of displayed records on page on tickets (requests) list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>ticketlist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>networkhosts_pagelimit</P
+><P
+>Limit of displayed nodes on one page in Network Information. Default: 256</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>networkhosts_pagelimit = 1024</SAMP
+></P
+></LI
+><LI
+><P
+>accountlist_pagelimit</P
+><P
+>Limit of displayed records on page on accounts list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>accountlist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>domainlist_pagelimit</P
+><P
+>Limit of displayed records on page on domains list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>domainlist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>aliaslist_pagelimit</P
+><P
+>Limit of displayed records on page on aliases list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>aliaslist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>configlist_pagelimit</P
+><P
+>Limit of displayed records on page on UI config options list. Default: 100</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>configlist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>reload_type</P
+><P
+>Reload type. Allowed values:</P
+><P
+>exec - calling of some command (most often with sudo, some script or something
+         else, configurable below)</P
+><P
+>sql  - doing SQL writes (also can be set concrete query)</P
+><P
+>Default: sql.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>reload_type = exec</SAMP
+></P
+></LI
+><LI
+><P
+>reload_execcmd</P
+><P
+>Command to run during reload, if reload_type is set to 'exec'. By default
+         <TT
+CLASS="FILENAME"
+>/bin/true</TT
+>. That string is send to command system(), so I propose consideration 
+         what you do and how :) Altogether, semicolons should be parsed by bash, but
+         LMS splits that string and execute commands singly.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</SAMP
+></P
+></LI
+><LI
+><P
+>reload_sqlquery</P
+><P
+>SQL query executed while reload, if <SAMP
+CLASS="PROMPT"
+>reload_type = sql</SAMP
+>.  
+         By default, query inserts into table 'timestamps' value '_force'. In query can be used
+         '%TIME%' as replacement to current unix timestamp. WARNING! Semicolon is handled by
+         a queries separator, that means you can enter couple of SQL queries separate them by
+         semicolon sign.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</SAMP
+></P
+></LI
+><LI
+><P
+>force_ssl</P
+><P
+>SSL Enforcing. Setting this option to 1 will make that LMS will enforce SSL connection 
+         doing redirect to 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every access
+         without SSL. Default: 0 (off).</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>force_ssl = 1</SAMP
+></P
+></LI
+><LI
+><P
+>allow_mac_sharing</P
+><P
+>Permission for addition of nodes with duplicated MAC address (not checking
+         that some computer have that MAC yet). Default: 0 (off)</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>allow_mac_sharing = 1</SAMP
+></P
+></LI
+><LI
+><P
+>smarty_debug</P
+><P
+>Enable Smarty's debug console. Usefull for tracking values passed from PHP 
+         to Smarty. Default: 0 (off).</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>smarty_debug = 1</SAMP
+></P
+></LI
+><LI
+><P
+>lang_debug</P
+><P
+>Enable LMS language console. Usefull for tracking missing translation strings.
+         Default: 0 (off).</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>lang_debug = 1</SAMP
+></P
+></LI
+><LI
+><P
+>debug_email</P
+><P
+>E-mail address for debugging - at this address will goes messages sended from madule 'Mailing', 
+         instead of proper users.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>debug_email = root@localhost</SAMP
+></P
+></LI
+><LI
+><P
+>default_zip, default_city, default_address</P
+><P
+>Default zip code, city, street, used while inserting of new user.
+         Useful when we have many users on the same street.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>default_zip = 39-300</SAMP
+></P
+></LI
+><LI
+><P
+>use_current_payday</P
+><P
+>Qualify to use current day of month for payment day
+         instead of most often used day. Default: 0 (off).</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>use_current_payday = 1</SAMP
+></P
+></LI
+><LI
+><P
+>lastonline_limit</P
+><P
+>Specify time (in seconds), after which node will be treated
+         as inactive. It should match with frequency of running script inspecting
+         nodes activity (i.e. lms-fping). Default: 600.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>lastonline_limit = 300</SAMP
+></P
+></LI
+><LI
+><P
+>timetable_days_forward</P
+><P
+>Specify number of days (including current day) on timetable.
+         Default: 7.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>timetable_days_forward = 2</SAMP
+></P
+></LI
+><LI
+><P
+>arpd_servers</P
+><P
+>List of arpd servers for reading of MAC addresses from remote networks.
+         That list should include items IP[:port] separated with spaces.
+         Default: empty.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>arpd_servers = 192.168.1.1 192.168.2.1</SAMP
+></P
+></LI
+><LI
+><P
+>helpdesk_backend_mode</P
+><P
+>When enabled, all messages in helpdesk system (except sended to requestor)
+         will be send to mail server at address of right queue.
+         On server should be running script lms-rtparser, which will write
+         messages to database. Default: disabled.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>helpdesk_backend_mode = On</SAMP
+></P
+></LI
+><LI
+><P
+>contract_template</P
+><P
+>Specify customer contract template. Can include comma separated 
+         list of contract templates. Default: contract.html.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>contract_template = "../my_templates/contract.html"</SAMP
+></P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>contract_template = "contract.html:Default Contract, file.html:Contract Plus"</SAMP
+></P
+></LI
+><LI
+><P
+>to_words_short_format</P
+><P
+>Specify format of verbal amounts representation (on invoices). For value "1"
+         verbal expand of 123,15 will be "one two thr 15/100". Default: 0.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>to_words_short_format = 1</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="install-db.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="install-rights.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Database Server Installation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="install.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Access rights</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
