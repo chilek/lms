@@ -1,20 +1,20 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <FORM name="mailing" method="post" action="?m=mailingsend" TARGET="_blank">
-<p class="txt"><b>1.</B> Wybierz grupê odbiorców:<BR>
+<p class="txt"><b>1.</B> Grupa odbiorców:<BR>
 <select name="mailing[group]" {tip trigger="group"}>
 	<option value="3">u¿ytkownicy pod³±czeni</option>
 	<option value="2">osoby oczekuj±ce na pod³±czenie</option>
 	<option value="1">osoby zainteresowane</option>
 	<option value="0">wszyskie adresy E-mail zapisane w bazie</option>
 </select></P>
-<p class="txt"><B>2.</B><BR>
+<p class="txt"><B>2.</B> E-mail nadawcy listu:<BR>
 <input type="text" name="mailing[sender]" size="60" value="{$mailing.sender}" {tip trigger="sender"}></P>
-<P class="txt"><B>3.</B><BR>
+<P class="txt"><B>3.</B> Nadawca:<BR>
 <input type="text" name="mailing[from]" size="60"  VALUE="{$mailing.from}" {tip trigger="from"}></p>
-<P class="txt"><B>4.</B><BR>
+<P class="txt"><B>4.</B> Temat wiadomo¶ci:<BR>
 <input type="text" name="mailing[subject]" size="60" VALUE="{$mailing.subject}" {tip trigger="subject"}></p>
-<P class="txt"><B>5.</B> Wpisz tre¶æ wiadomo¶ci:<BR>
+<P class="txt"><B>5.</B> Tre¶æ wiadomo¶ci:<BR>
 <textarea name="mailing[body]" cols="80" rows="25">{$mailing.body}</textarea><BR>
 <img src="img/tip.gif" ALT="[ TIP ]" border="0" align="absmiddle"> U¿ywaj klawisza Enter po to tylko by zamkn±æ akapit. LMS sam sformatuje wiadomo¶æ i po³amie linijki.</P>
 <P class="txt"><B>6.</B> Wy¶lij wiadomo¶æ: <input type="SUBMIT" name="mailing[submit]" value="Wy¶lij &raquo;"></p>
