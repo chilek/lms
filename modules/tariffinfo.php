@@ -26,8 +26,7 @@
 
 if(!$LMS->TariffExists($_GET['id']))
 {
-	header('Location: ?m=tarifflist');
-	die;
+	$SESSION->redirect('?m=tarifflist');
 }
 
 $tariff = $LMS->GetTariff($_GET['id']);

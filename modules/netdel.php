@@ -26,8 +26,7 @@
 
 if(!$LMS->NetworkExists($_GET['id']))
 {
-	header('Location: ?m=netlist');
-	die;
+	$SESSION->redirect('?m=netlist');
 }
 
 $network = $LMS->GetNetworkRecord($_GET['id']);
@@ -40,8 +39,7 @@ if(!$error)
 	if($_GET['is_sure'])
 	{
 		$LMS->NetworkDelete($network['id']);
-		header('Location: ?m='.$SESSION->get('lastmodule').'&id='.$_GET['id']);
-		die;
+		$SESSION->redirect('?m='.$SESSION->get('lastmodule').'&id='.$_GET['id']);
 	}
 	else
 	{

@@ -26,12 +26,11 @@
 
 if(!$LMS->NetworkExists($_GET['id']))
 {
-	header('Location: ?m=netlist');
-	die;
+	$SESSION->redirect('?m=netlist');
 }
 
 if($SESSION->is_set('ntlp.'.$_GET['id']) && !isset($_GET['page']))
-	$SESSION->restore('ntlp.'.$_GET['id'], $_GET['page'])
+	$SESSION->restore('ntlp.'.$_GET['id'], $_GET['page']);
 
 $SESSION->save('ntlp.'.$_GET['id'], $_GET['page']);
 

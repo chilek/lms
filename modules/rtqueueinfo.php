@@ -26,8 +26,7 @@
 
 if(! $LMS->QueueExists($_GET['id']))
 {
-	header('Location: ?m=rtqueuelist');
-	die;
+	$SESSION->redirect('?m=rtqueuelist');
 }
 
 $queue = $LMS->GetQueue($_GET['id']);

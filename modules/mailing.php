@@ -128,8 +128,9 @@ if($mailing = $_POST['mailing'])
 			}
 		}
 		
-		$SMARTY->display("mailingsend-footer.html");
+		$SMARTY->display('mailingsend-footer.html');
 		$SMARTY->display('footer.html');
+		$SESSION->close();
 		die;
 	}
 }

@@ -88,8 +88,7 @@ if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
 		
 	}
 	
-	header('Location: ?m=cashimport');
-	die;
+	$SESSION->redirect('?m=cashimport');
 } 
 else // upload errors
 	switch($_FILES['file']['error'])

@@ -26,8 +26,7 @@
 
 if(! $LMS->QueueExists($_GET['id']))
 {
-	header('Location: ?m=rtqueuelist');
-	die;
+	$SESSION->redirect('?m=rtqueuelist');
 }
 
 $queuedata['id'] = $_GET['id'];
@@ -35,6 +34,7 @@ $queuedata['id'] = $_GET['id'];
 if(! $LMS->GetAdminRightsRT($AUTH->id, $queuedata['id']))
 {
 	$SMARTY->display('noaccess.html');
+	$SESSION->close();
 	die;
 }
 

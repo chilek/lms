@@ -32,8 +32,7 @@ if(sizeof($useradd))
 
 if($useradd['name'] == '' && $useradd['lastname'] == '' && $useradd[phone1] == '' && $useradd['address'] == '' && $useradd['email'] == '' && isset($useradd))
 {
-	header('Location: ?m=useradd');
-	die;
+	$SESSION->redirect('?m=useradd');
 }
 elseif(isset($useradd))
 {
@@ -73,8 +72,7 @@ elseif(isset($useradd))
 		$id = $LMS->UserAdd($useradd);
 		if($useradd['reuse'] =='')
 		{
-			header('Location: ?m=userinfo&id='.$id);
-			die;
+			$SESSION->redirect('?m=userinfo&id='.$id);
 		}
 		$reuse['status'] = $useradd['status'];
 		unset($useradd);

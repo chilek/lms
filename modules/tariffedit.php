@@ -26,8 +26,7 @@
 
 if(!$LMS->TariffExists($_GET['id']))
 {
-	header('Location: ?m=tarifflist');
-	die;
+	$SESSION->redirect('?m=tarifflist');
 }
 
 $tariff = $_POST['tariff'];
@@ -88,8 +87,7 @@ if(isset($tariff))
 	if(!$error)
 	{
 		$LMS->TariffUpdate($tariff);
-		header('Location: ?m=tariffinfo&id='.$tariff['id']);
-		die;
+		$SESSION->redirect('?m=tariffinfo&id='.$tariff['id']);
 	}
 
 }else

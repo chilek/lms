@@ -92,6 +92,7 @@ if($event = $_POST['event'])
 	$SMARTY->assign('eventlist', $eventlist);
 	$SMARTY->assign('daylist', $daylist);
 	$SMARTY->display('eventsearchresults.html');
+	$SESSION->close();
 	die;
 }
 

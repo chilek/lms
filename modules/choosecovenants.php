@@ -31,6 +31,7 @@ $userid = $_GET['id'];
 if(isset($_POST['marks']))
 {
 	$SESSION->save('unpaid.'.$userid, $_POST['marks']);
+	$SESSION->close();
 	die;
 }
 

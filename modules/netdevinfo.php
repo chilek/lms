@@ -26,8 +26,7 @@
 
 if(! $LMS->NetDevExists($_GET['id']))
 {
-	header('Location: ?m=netdevlist');
-	die;
+	$SESSION->redirect('?m=netdevlist');
 }
 
 $netdevinfo = $LMS->GetNetDev($_GET['id']);

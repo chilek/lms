@@ -26,8 +26,7 @@
 
 if(!$LMS->NetworkExists($_GET['id']))
 {
-	header('Location: ?m=netlist');
-	die;
+	$SESSION->redirect('?m=netlist');
 }
 
 $network['name'] = $LMS->GetNetworkName($_GET['id']);
@@ -35,8 +34,7 @@ $network['name'] = $LMS->GetNetworkName($_GET['id']);
 if($_GET['is_sure'])
 {
 	$LMS->NetworkCompress($_GET['id']);
-	header('Location: ?m='.$SESSION->get('lastmodule').'&id='.$_GET['id']);
-	die;
+	$SESSION->redirect('?m='.$SESSION->get('lastmodule').'&id='.$_GET['id']);
 }else{
 	$layout['pagetitle'] = trans('Readdressing Network $0', strtoupper($network['name']));
 	$SMARTY->display('header.html');

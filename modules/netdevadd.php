@@ -36,8 +36,7 @@ if($netdevdata = $_POST['netdev'])
         if(!$error)
         {
 	    $netdevid = $LMS->NetDevAdd($netdevdata);
-	    header('Location: ?m=netdevinfo&id='.$netdevid);
-	    die;
+	    $SESSION->redirect('?m=netdevinfo&id='.$netdevid);
         }
 }
 		

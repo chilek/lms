@@ -34,15 +34,13 @@ $id = $_GET['id'];
 
 if($id && !ConfigOptionExists($id))
 {
-	header('Location: ?m=configlist');
-	die;
+	$SESSION->redirect('?m=configlist');
 }
 
 if($_GET['statuschange'])
 {
 	$LMS->DB->Execute('UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?',array($id));
-	header('Location: ?m=configlist');
-	die;
+	$SESSION->redirect('?m=configlist');
 }
 
 $config = $LMS->DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
@@ -88,8 +86,7 @@ if($cfg = $_POST['config'])
 					$cfg['id']
 					));
 		$LMS->SetTS('uiconfig');
-		header('Location: ?m=configlist');
-		die;
+		$SESSION->redirect('?m=configlist');
 	}
 	$config = $cfg;
 }

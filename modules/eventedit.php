@@ -28,22 +28,19 @@ if($_GET['action'] == 'open')
 {
 	$LMS->DB->Execute('UPDATE events SET closed = 0 WHERE id = ?',array($_GET['id']));
 	$LMS->SetTS('events');
-	header('Location: ?m=eventlist');
-	die;
+	$SESSION->redirect('?m=eventlist');
 }
 elseif($_GET['action'] == 'close')
 {
 	$LMS->DB->Execute('UPDATE events SET closed = 1 WHERE id = ?',array($_GET['id']));
 	$LMS->SetTS('events');
-	header('Location: ?m=eventlist');
-	die;
+	$SESSION->redirect('?m=eventlist');
 }
 elseif($_GET['action'] == 'dropadmin')
 {
 	$LMS->DB->Execute('DELETE FROM eventassignments WHERE eventid = ? AND adminid = ?',array($_GET['eid'], $_GET['aid']));
 	$LMS->SetTS('eventassignments');
-	header('Location: ?'.$SESSION->get('backto'));
-	die;
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 $event = $LMS->DB->GetRow('SELECT events.id AS id, title, description, note, 
@@ -95,8 +92,7 @@ if(isset($_POST['event']))
 			}
 		}
 
-		header('Location: ?m=eventlist');
-		die;
+		$SESSION->redirect('?m=eventlist');
 	}
 }
 

@@ -27,8 +27,7 @@
 if($LMS->TariffExists($_GET['from']) && $LMS->TariffExists($_GET['to']) && $_GET['is_sure'] = 1)
 {
 	$LMS->TariffMove($_GET['from'],$_GET['to']);
-	header("Location: ?m=tariffinfo&id=".$_GET['to']);
-	die;
+	$SESSION->redirect('?m=tariffinfo&id='.$_GET['to']);
 }
 else
 	header("Location: ?".$SESSION->get('backto'));

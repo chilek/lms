@@ -28,8 +28,7 @@ if ($id = $_GET['id'])
 {
 	if (!$LMS->UsergroupExists($id))
 	{
-		header('Location: ?m=usergrouplist');
-		die;
+		$SESSION->redirect('?m=usergrouplist');
 	}
 }
 

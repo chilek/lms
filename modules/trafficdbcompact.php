@@ -33,6 +33,7 @@ $removedeleted = $_POST['removedeleted'];
 if (!($level || $delete || $removedeleted))
 {
     $SMARTY->display('trafficdbcompact.html');
+    $SESSION->close();
     die;
 }
 

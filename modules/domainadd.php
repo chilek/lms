@@ -37,8 +37,7 @@ if($domainadd = $_POST['domainadd'])
 	
 	if($domainadd['name']=='' && $domainadd['description']=='')
 	{
-		header('Location: ?m=domainlist');
-		die;
+		$SESSION->redirect('?m=domainlist');
 	}
 	
 	if($domainadd['name'] == '')
@@ -54,8 +53,7 @@ if($domainadd = $_POST['domainadd'])
 		
 		if(!$domainadd['reuse'])
 		{
-			header('Location: ?m=domainlist');
-			die;
+			$SESSION->redirect('?m=domainlist');
 		}
 		
 		unset($domainadd['name']);

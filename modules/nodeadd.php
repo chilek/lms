@@ -39,11 +39,9 @@ if(isset($nodedata))
 	if($nodedata['ipaddr']=='' && $nodedata['mac']=='' && $nodedata['name']=='')
 		if($_GET['ownerid'])
 		{
-			header('Location: ?m=userinfo&id='.$_GET['ownerid']);
-			die;
+			$SESSION->redirect('?m=userinfo&id='.$_GET['ownerid']);
 		}else{
-			header('Location: ?m=nodelist');
-			die;
+			$SESSION->redirect('?m=nodelist');
 		}
 	
 	if($nodedata['name']=='')
@@ -87,8 +85,7 @@ if(isset($nodedata))
 		$nodeid = $LMS->NodeAdd($nodedata);
 		if($nodedata['reuse']=='')
 		{
-			header('Location: ?m=nodeinfo&id='.$nodeid);
-			die;
+			$SESSION->redirect('?m=nodeinfo&id='.$nodeid);
 		}
 		unset($nodedata);
 		$nodedata['reuse'] = '1';
@@ -98,8 +95,7 @@ if(isset($nodedata))
 
 if($LMS->UserExists($_GET['ownerid']) < 0)
 {
-	header('Location: ?m=userinfo&id='.$_GET['ownerid']);
-	die;
+	$SESSION->redirect('?m=userinfo&id='.$_GET['ownerid']);
 }
 
 $nodedata['access'] = 1;

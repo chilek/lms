@@ -26,8 +26,7 @@
 
 if(!$LMS->NetworkExists($_GET['id'])||!$LMS->NetworkExists($_GET['mapto']))
 {
-	header('Location: ?m=netlist');
-	die;
+	$SESSION->redirect('?m=netlist');
 }
 
 $network['source'] = $LMS->GetNetworkRecord($_GET['id'],$SESSION->get('ntlp'.$_GET['id'],1024));
@@ -41,8 +40,7 @@ if(!$error)
 	if($_GET['is_sure'])
 	{
 		$LMS->NetworkRemap($network['source']['id'],$network['dest']['id']);
-		header('Location: ?m=netinfo&id='.$network['dest']['id']);
-		die;
+		$SESSION->redirect('?m=netinfo&id='.$network['dest']['id']);
 
 	}else{
 		$layout['pagetitle'] = trans('Readdressing Network $0',strtoupper($network['source']['name']));

@@ -45,8 +45,7 @@ if(sizeof($setwarnings['mnodeid']))
 	$SESSION->save('warnon', $setwarnings['warnon']);
 	$SESSION->save('warnoff', $setwarnings['warnoff']);
 	
-	header('Location: ?'.$SESSION->get('backto'));
-	die;
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 if($backid = $_GET['ownerid'])
@@ -54,8 +53,7 @@ if($backid = $_GET['ownerid'])
 	if($LMS->UserExists($backid))
 	{
 		$LMS->NodeSetWarnU($backid, $_GET['warning']);
-		header('Location: ?'.$SESSION->get('backto').'#'.$backid);
-		die;
+		$SESSION->redirect('?'.$SESSION->get('backto').'#'.$backid);
 	}
 }
 
@@ -64,8 +62,7 @@ if($backid = $_GET['id'])
 	if($LMS->NodeExists($backid))
 	{
 		$LMS->NodeSwitchWarn($backid);
-		header('Location: ?'.$SESSION->get('backto').'#'.$backid);
-		die;
+		$SESSION->redirect('?'.$SESSION->get('backto').'#'.$backid);
 	}
 }
 

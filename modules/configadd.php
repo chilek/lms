@@ -33,8 +33,7 @@ if($config = $_POST['config'])
 	
 	if(!($config['name'] || $config['value'] || $config['description']))
 	{
-		header('Location: ?m=configlist');
-		die;
+		$SESSION->redirect('?m=configlist');
 	}
 	
 	if($config['name']=='')
@@ -69,8 +68,7 @@ if($config = $_POST['config'])
 		
 		if(!$config['reuse'])
 		{
-			header('Location: ?m=configlist');
-			die;
+			$SESSION->redirect('?m=configlist');
 		}
 		unset($config);
 	}

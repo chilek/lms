@@ -33,8 +33,7 @@ if(isset($usergroupadd))
 
 	if($usergroupadd['name']=='' && $usergroupadd['description']=='')
 	{
-		header("Location: ?m=usergrouplist");
-		die;
+		$SESSION->redirect('?m=usergrouplist');
 	}
 	
 	if($usergroupadd['name'] == '')
@@ -47,8 +46,7 @@ if(isset($usergroupadd))
 		$error['name'] = trans('Invalid chars in group name!');
 
 	if(!$error){
-		header('Location: ?m=usergrouplist&id='.$LMS->UsergroupAdd($usergroupadd));
-		die;
+		$SESSION->redirect('?m=usergrouplist&id='.$LMS->UsergroupAdd($usergroupadd));
 	}
 	
 }

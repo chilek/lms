@@ -31,14 +31,14 @@ if(($id = $_GET['id']) && !isset($ticketedit))
 	if($LMS->GetAdminRightsRT($AUTH->id, 0, $id) < 2)
 	{
 		$SMARTY->display('noaccess.html');
+		$SESSION->close();
 		die;
 	}
 
 	if($_GET['state'])
 	{
 		$LMS->SetTicketState($id, $_GET['state']);
-		header('Location: ?m=rtticketview&id='.$id);
-		die;
+		$SESSION->redirect('?m=rtticketview&id='.$id);
 	}
 }
 
@@ -63,8 +63,7 @@ if(isset($ticketedit))
 	if(!$error)
 	{
 		$LMS->TicketUpdate($ticketedit);
-		header("Location: ?m=rtticketview&id=".$id);
-		die;
+		$SESSION->redirect('Location: ?m=rtticketview&id='.$id);
 	}
 	
 	$ticket['subject'] = $ticketedit['subject'];

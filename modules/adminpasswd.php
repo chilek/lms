@@ -55,8 +55,7 @@ if($LMS->AdminExists($id))
 }
 else
 {
-	header('Location: ?m='. $SESSION->get('lastmodule'));
-	die;
+	$SESSION->redirect('?m='. $SESSION->get('lastmodule'));
 }
 
 ?>

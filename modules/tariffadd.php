@@ -33,8 +33,7 @@ if(isset($tariffadd))
 
 	if($tariffadd['name']=='' && $tariffadd['comment']=='' && $tariffadd['value']=='')
 	{
-		header("Location: ?m=tarifflist");
-		die;
+		$SESSION->redirect('Location: ?m=tarifflist');
 	}
 
 	$tariffadd['value'] = str_replace(',','.',$tariffadd['value']);
@@ -83,8 +82,7 @@ if(isset($tariffadd))
 
 	if(!$error)
 	{
-		header('Location: ?m=tarifflist&id='.$LMS->TariffAdd($tariffadd));
-		die;
+		$SESSION->redirect('?m=tarifflist&id='.$LMS->TariffAdd($tariffadd));
 	}
 	
 }

@@ -46,8 +46,7 @@ if(sizeof($setwarnings['muserid']))
 	$SESSION->save('warnon', $setwarnings['warnon']);
 	$SESSION->save('warnoff', $setwarnings['warnoff']);
 	
-	header('Location: ?'.$SESSION->get('backto'));
-	die;
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

@@ -26,8 +26,7 @@
 
 if(! $LMS->NetDevExists($_GET['id']))
 {
-	header('Location: ?m=netdevlist');
-	die;
+	$SESSION->redirect('?m=netdevlist');
 }		
 
 $layout['pagetitle'] = trans('Deletion of Device with ID: $0',sprintf('%04d',$_GET['id']));

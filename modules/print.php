@@ -214,6 +214,7 @@ switch($_GET['type'])
 				
 				$SMARTY->assign('nodelist', $nodelist);
 				$SMARTY->display('printindebtnodelist.html');
+				$SESSION->close();
 				die;
 			break;
 		}	
