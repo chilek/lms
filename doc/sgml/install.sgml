@@ -86,6 +86,10 @@
 		 <screen>$ tar zxvf lms-x.x.x.tar.gz</screen>
 		 a nastêpnie przenie¶ pliki z <emphasis>LMS-UI</emphasis> do katalogu osi±galnego 
 		 z poziomu serwera www (np. <filename>/var/www/lms</filename>).</para> 
+		 <para>Je¿eli nie skorzysta³e¶ z wersji zawieraj±cej bibliotekê Smarty,
+		 pobierz j± i umie¶æ w katalogu <filename>lib</filename>.</para>
+		 <para><note><para>Po³o¿enie wszystkich katalogów mo¿esz zmieniæ w sekcji
+		 <emphasis>[directories]</emphasis> pliku <filename>lms.ini</filename>.</para></note></para>
 		 <para>Pliki z konfiguracj± (<filename>sample/lms.ini</filename> i <filename>
 		 sample/lms-mgc.ini</filename>) umie¶æ w katalogu <filename>/etc/lms</filename>.
 		 </para>
