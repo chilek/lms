@@ -24,18 +24,10 @@
  *  $Id$
  */
 
-$SMARTY->display('header.html');
-$SMARTY->display('adminheader.html');
-
 $LMS->DB->BeginTrans();
 
-echo '<PRE>';
-echo '<B>Przenoszenie opcji konfiguracyjnych sekcji [phpui]:</B><BR>';
-echo '<TABLE>';
 foreach($LMS->CONFIG['phpui'] as $key => $val)
 {
-    echo "<TR><TD width=\"200\"><B>$key:</B></TD><TD>$val</TD></TR>";
-
     switch($key)
     {
 	case 'allow_from':
@@ -118,14 +110,10 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 		array('phpui', $key, $val, $desc)
 		);
 }
-echo '</TABLE>';
+
 /*
-echo '&nbsp;<BR><B>Przenoszenie opcji konfiguracyjnych sekcji [directories]:</B><BR>';
-echo '<TABLE>';
 foreach($LMS->CONFIG['directories'] as $key => $val)
 {
-    echo "<TR><TD width=\"200\"><B>$key:</B></TD><TD>$val</TD></TR>";
-
     switch($key)
     {
 	case 'sys_dir':
@@ -161,14 +149,10 @@ foreach($LMS->CONFIG['directories'] as $key => $val)
 		array('directories', $key, $val, $desc)
 		);
 }
-echo '</TABLE>';
 */
-echo '&nbsp;<BR><B>Przenoszenie opcji konfiguracyjnych sekcji [invoices]:</B><BR>';
-echo '<TABLE>';
+
 foreach($LMS->CONFIG['invoices'] as $key => $val)
 {
-    echo "<TR><TD width=\"200\"><B>$key:</B></TD><TD>$val</TD></TR>";
-
     switch($key)
     {
 	case 'header':
@@ -204,10 +188,9 @@ foreach($LMS->CONFIG['invoices'] as $key => $val)
 		array('invoices', $key, $val, $desc)
 		);
 }
-echo '</TABLE>';
-echo '</PRE>';
 
 $LMS->DB->CommitTrans();
 
-$SMARTY->display('footer.html');
+header('Location: ?m=configlist');
+
 ?>
