@@ -121,9 +121,10 @@ wersja 1.1.4 (??/??/2003):
   - Ewidencja urz±dzeñ sieciowych - dodano pole lokalizacja, oczywi¶cie
     upgrade bazy (Lexx)
     MySql:
-    ALTER TABLE `netdevices` ADD `location` VARCHAR( 255 ) AFTER `name` ;
+	ALTER TABLE `netdevices` ADD `location` VARCHAR( 255 ) AFTER `name` ;
     PosgreSQL:
-    ???
+	ALTER TABLE netdevices ADD COLUMN location varchar(255);
+  - do modu³u 'Statystyki' dodano mo¿liwo¶æ kompaktowania bazy danych (alec)
       
 wersja 1.1.3 (29/08/2003):
 
