@@ -12,6 +12,8 @@ wersja 1.3.4  (??/??/????):
   - na listach u¿ytkowników filtr 'wszyscy' wybiera z bazy wszystkich oprócz
     usuniêtych (nie bierze pod uwagê pola status), a nie tylko pod³±czonych 
     jak dotychczas (alec)
+  - przy obliczaniu ¶redniego zysku miesiêcznego taryfy nie uwzglêdniamy 
+    u¿ytkowników zainteresowanych i oczekuj±cych - BTS#0000151 (alec)
 
 wersja 1.3.3 Sokar (05/05/2004):
   
