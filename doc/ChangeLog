@@ -24,6 +24,8 @@ wersja 1.3.6 Osiris (??/??/2004);
   - BTS#0000052: od³±czenie u¿ytkownika poprzez cutoff powoduje automatyczne 
     owinetkowanie komputerów u¿ytkownika, oraz ustawienie wiadomo¶ci 
     administracyjnej (lexx)
+  - poprawiony BTS#0000157: gubienie urz±dzeñ i b³êdne po³±czenia 
+    na mapie (alec)
     
 wersja 1.3.5 Ju (30/07/2004):
 
