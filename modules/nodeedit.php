@@ -113,6 +113,8 @@ if(isset($nodeedit))
 
 	if($nodeedit['name']=="")
 		$error['name'] = "Podaj nazwê!";
+	elseif(strlen($nodeedit['name']) > 16)
+		$error['name'] = "Podana nazwa jest za d³uga!";
 	elseif($LMS->GetNodeIDByName($nodeedit['name']) && $LMS->GetNodeIDByNAME($nodeedit['name']) != $nodeedit['id'])
 		$error['name'] = "Ta nazwa jest zajêta!";
 	elseif(!eregi("^[_a-z0-9-]+$",$nodeedit['name']))
