@@ -1,6 +1,6 @@
 $Id$
 
-wersja ????? (??/??/????):
+wersja 1.2.0rc1 (??/??/????):
 
   - Smarty libs version change 2.5.0 -> 2.6.0 (alec)
   - added contrib/warn&msg (Rafa³ Ramocki/Tomasz Chiliñski)
@@ -30,6 +30,22 @@ wersja ????? (??/??/????):
     time and compared with time from previous reload, '_force' record 
     isn't deleted, so there are no problems with many daemons (lexx/alec)
   - ethercodes.txt up-to-date (alec)
+  - BTS#0000109: fixes of bugs on BSD systems in loadavg() and hostname() 
+    from Sysinfo.class.php (sfor/alec)
+  - now some MGC section can have 'instances' that he calls other subsections
+    - for example - if we have 5 sections related to the dns (dns1... dns5) -
+    we can build sth like that:
+
+    [mgc:dns]
+    instances = dns1 dns2 dns3 dns4 dns5
+
+    and now we do run of lms-mgc like that:   lms-mgc -i dns
+    not like:    lms-mgc -i "dns1 dns2 dns3 dns4 dns5"
+
+    If section have 'instances' variable, that variable will be respected,
+    and others settings in this section ignored (lukasz)
+  - now you can set time of the finance operations (alec)
+  - fixed e-mails formatting, removed empty lines (lexx)
 
 wersja 1.1.8 Cronos (01/02/2004):
 
