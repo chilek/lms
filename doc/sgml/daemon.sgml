@@ -82,6 +82,7 @@ port            = 0             # numer portu, domy¶lnie: 0
 sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma
                                 # byæ sprawdzane ¿±danie reloadu, domy¶lnie: 30
 instances       = hosts oident firewall       # lista instancji modu³ów
+command         = 'echo "³±czê siê z baz±"'   # polecenie wykonywane przed ka¿dym po³±czeniem z baz±	
 </screen>
 			<note><para>Lista instancji sk³ada siê z nazw instancji oddzielonych 
 			spacj±. Instancja to nazwa sekcji w pliku konfiguracyjnym.</para></note>
@@ -94,6 +95,9 @@ module = /¶cie¿ka/nazwa_modu³u.so
 info = "Opcjonalny opis modu³u"
 </screen>		
 			</para>
+			<para>Zmiana opcji 'instances' oraz dowolnej opcji w sekcjach
+			instancji, w odró¿nieniu od pozosta³ych opcji globalnych,
+			nie wymaga restartu demona.</para> 
 		</sect2>
 		<sect2 id="daemon-run">
 		<title>Uruchomienie</title>

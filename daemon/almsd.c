@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
     int quit = 0;			//
     unsigned char *ini_file="/etc/lms/lms.ini";
     unsigned char *db, *user, *passwd, *host; //db connection params
+    unsigned char *command;
     int port;				//
     dictionary *ini;			//config
     int reload, reload_t = 0;    
@@ -139,8 +140,9 @@ int main(int argc, char *argv[])
     	user = strdup(iniparser_getstring(ini,"database:user","lms"));
     	passwd = strdup(iniparser_getstring(ini,"database:password",""));
     	port = iniparser_getint(ini,"database:port",0);
-    
-    	// set sleeptime
+    	command = strdup(iniparser_getstring(ini,"lmsd:command",""));
+    	
+	// set sleeptime
     	if( !sleeptime )
 		sleeptime = iniparser_getint(ini,"lmsd:sleeptime",30);
 
@@ -151,6 +153,8 @@ int main(int argc, char *argv[])
     	for (;;) {
 		int time;
 		reload = 0;
+	
+		system(command);
 	
 		// try to connect to database
 		if( !db_connect(db,user,passwd,host,port) ) {
