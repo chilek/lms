@@ -74,8 +74,7 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-cutoff, version $_version\n";
-	print STDOUT "(C) Copyright 2002 Rulez.PL Development Team\n";
-	print STDOUT "(C) Copyright 2001-2002 NetX ACN\n";
+	print STDOUT "(C) 2001-2003 LMS Developers\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 
