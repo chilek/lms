@@ -1125,7 +1125,6 @@ class LMS
 			{
 				$tarifflist[$idx]['users'] = $this->GetUsersWithTariff($row['id']);
 				$tarifflist[$idx]['userscount'] = sizeof($this->DB->GetCol("SELECT userid FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY userid",array($row['id'])));
-				echo mysql_error();
 				$tarifflist[$idx]['income'] = $tarifflist[$idx]['users'] * $row['value'];
 				$tarifflist['totalincome'] += $tarifflist[$idx]['income'];
 				$tarifflist['totalusers'] += $tarifflist[$idx]['users'];
@@ -2174,6 +2173,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.281  2003/11/18 20:55:26  alec
+ * http://lists.rulez.pl/lms/1477.html
+ *
  * Revision 1.280  2003/10/23 19:57:23  alec
  * poprawiona literowka w zapytaniu w GetTemplateList()
  *
