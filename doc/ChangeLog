@@ -31,6 +31,7 @@ version 1.5.6 Baal (??/??/????):
   - added customer ID on Invoices Report (alec)
   - we don't use capitalize in admininfo.
     it fixes problem with lastname capitalization (chilek)
+  - we show total assignments with discounts in userassignments (chilek)
 
 version 1.5.5 Anubis (25/03/2005):
 
