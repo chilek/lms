@@ -50,7 +50,7 @@ function GetAliasList($order='login,asc', $user=NULL, $kind=NULL, $domain='')
 			$sqlord = " ORDER BY passwd.login $direction, aliases.login";
 		break;
 		default:
-			$sqlord = " ORDER BY aliases.login $direction, username";
+			$sqlord = " ORDER BY aliases.login $direction, domain";
 		break;
 	}
 
@@ -79,10 +79,22 @@ function GetAliasList($order='login,asc', $user=NULL, $kind=NULL, $domain='')
 	return $list;
 }
 
-function LoginExists($login)
+function AliasExists($login, $account)
 {
 	global $LMS;
-	return ($LMS->DB->GetOne('SELECT id FROM passwd WHERE login = ? UNION SELECT id FROM aliases WHERE login = ?', array($login, $login)) ? TRUE : FALSE);
+	return ($LMS->DB->GetOne('SELECT id FROM aliases WHERE login = ? AND accountid = ?', array($login, $account)) ? TRUE : FALSE);
+}
+
+function AccountExistsInDomain($login, $domain)
+{
+	global $LMS;
+	return ($LMS->DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?', array($login, $domain)) ? TRUE : FALSE);
+}
+
+function AliasExistsInDomain($login, $domain)
+{
+	global $LMS;
+	return ($LMS->DB->GetOne('SELECT 1 FROM aliases, passwd WHERE accountid = passwd.id AND aliases.login = ? AND domainid = ?', array($login, $domain)) ? TRUE : FALSE);
 }
 
 if($aliasadd = $_POST['aliasadd']) 
@@ -99,8 +111,20 @@ if($aliasadd = $_POST['aliasadd'])
 		$error['login'] = 'Nie poda³e¶ nazwy aliasu!';
 	elseif(!eregi("^[a-z0-9._-]+$", $aliasadd['login']))
     	    $error['login'] = 'Login zawiera niepoprawne znaki!';
-	elseif(LoginExists($aliasadd['login']))
-		$error['login'] = 'Alias/konto o podanej nazwie ju¿ istnieje!';
+	elseif($aliasadd['accountid'])
+	{
+		if(AliasExists($aliasadd['login'], $aliasadd['accountid']))
+			$error['login'] = 'To konto ma ju¿ alias o podanej nazwie!';
+		else
+		{
+			$domain = $LMS->DB->GetOne('SELECT domainid FROM passwd WHERE id = ?', array($aliasadd['accountid']));
+			
+			if($aliasadd['accountid'] && AliasExistsInDomain($aliasadd['login'], $domain))
+				$error['login'] = 'W tej domenie jest ju¿ alias o podanej nazwie!';
+			elseif($aliasadd['accountid'] && AccountExistsInDomain($aliasadd['login'], $domain))
+				$error['login'] = 'W tej domenie istnieje konto o podanej nazwie!';
+		}
+	}
 		
 	if(!$aliasadd['accountid'])
 		$error['accountid'] = 'Musisz wybraæ konto na które ma wskazywaæ alias!';
@@ -176,7 +200,7 @@ $SMARTY->assign('aliaslist', $aliaslist);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('domainlist', $LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
-$SMARTY->assign('accountlist', $LMS->DB->GetAll('SELECT passwd.id AS id, login, domains.name AS domain FROM passwd LEFT JOIN domains ON domainid = domains.id ORDER BY login'));
+$SMARTY->assign('accountlist', $LMS->DB->GetAll('SELECT passwd.id AS id, login, domains.name AS domain FROM passwd, domains WHERE domainid = domains.id ORDER BY login, domains.name'));
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('aliaslist.html');
 

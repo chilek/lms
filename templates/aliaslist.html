@@ -132,7 +132,7 @@
 			<SELECT size="1" name="aliasadd[accountid]" {tip text="Wybierz konto dla aliasu" trigger="accountid"}>
 				<OPTION value="0"{if !$aliasadd.accountid} SELECTED{/if}>- wybierz konto -</OPTION>
 				{section name=accountlist loop=$accountlist}
-				    <OPTION value="{$accountlist[accountlist].id}"{if $accountlist[accountlist].id eq $aliasadd.accountid} SELECTED{/if}>{$accountlist[accountlist].login}{if $accountlist[accountlist].domain}@{$accountlist[accountlist].domain}{/if}</OPTION>
+				    <OPTION value="{$accountlist[accountlist].id}"{if $accountlist[accountlist].id eq $aliasadd.accountid} SELECTED{/if}>{$accountlist[accountlist].login}@{$accountlist[accountlist].domain}</OPTION>
 				{/section}
 			</SELECT>
 		</TD>
