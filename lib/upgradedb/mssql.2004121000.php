@@ -51,11 +51,11 @@ $DB->Execute("CREATE TABLE passwd (
     type smallint NOT NULL DEFAULT 0,
     expdate int NOT NULL DEFAULT 0,
     domainid int NOT NULL DEFAULT 0,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
     UNIQUE (login))");
 
 $DB->Execute("IF EXISTS (SELECT name FROM sysobjects WHERE name='aliases' AND type='U') 
-    DROP TABLE alises");
+    DROP TABLE aliases");
 $DB->Execute("CREATE TABLE aliases (
     id int NOT NULL IDENTITY(1,1),
     login varchar(255) NOT NULL DEFAULT '',
