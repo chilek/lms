@@ -1180,7 +1180,8 @@ Rozdzia³ 4. Skrypty
    lms-cutoff Od³±czanie u¿ytkowników zad³u¿onych
    lms-etherdesc Generowanie pliku dla iptraf zawieraj±cego pary MAC
    adres - nazwa hosta
-   lms-payments Naliczanie op³at okresowych (abonamentowych)
+   lms-payments Naliczanie op³at okresowych (abonamentowych) z
+   fakturowaniem
    lms-traffic Zapis statystyk wykorzystania ³±cza
    lms-traffic-logiptables Wspó³praca lms-traffic z iptables
    lms-makearp Tworzenie tablicy ARP (/etc/ethers)
@@ -1189,6 +1190,7 @@ Rozdzia³ 4. Skrypty
    lms-makeipchains Konfiguracja firewalla ipchains
    lms-makeiodenconf Konfiguracja oident
    lms-makeopenbsdpf Konfiguracja firewalla dla systemu OpenBSD
+   lms-sendinvoices Wysy³anie faktur do u¿ytkowników
    lms-updatewarnings Ostrze¿enia dla u¿ytkowników zad³u¿onych
      _________________________________________________________________
 
@@ -1345,10 +1347,17 @@ http://www.naszasiec.pl/
 4.3.4. lms-payments
 
    Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
-   u¿ytkownikom oraz op³at sta³ych. Aby dzia³a³ poprawnie powinien byæ
-   uruchamiany codziennie.
+   u¿ytkownikom oraz op³at sta³ych. Ponadto zapisuje dane do faktur. Aby
+   dzia³a³ poprawnie powinien byæ uruchamiany codziennie.
 
-   Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.
+   Skrypt ten udostêpnia dwie opcje do fakturowania, które mo¿na ustawiæ
+   w sekcji [payments] pliku lms.ini:
+     * deadline (opcjonalny)
+       Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14
+       Przyk³ad: deadline = 7
+     * paytype (opcjonalny)
+       Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'
+       Przyk³ad: paytype = 'GOTÓWKA'
      _________________________________________________________________
 
 4.3.5. lms-traffic
@@ -1520,7 +1529,43 @@ http://www.naszasiec.pl/
        Przyk³ad: etherdesc_permission = 600
      _________________________________________________________________
 
-4.3.9. lms-updatewarnings
+4.3.9. lms-sendinvoices
+
+   Skrypt s³u¿y do wysy³ania poczt± elektroniczn± faktur, jako
+   za³±czników do wiadomo¶ci. Faktury generowane s± na podstawie szablonu
+   dostêpnego w lms-ui, dlatego wymagane jest podanie u¿ytkownika i has³a
+   do interfejsu www lms-ui.
+
+   W odró¿nieniu od pozosta³ych skrytpów ten wymaga dodatkowych modu³ów
+   perla: Data::Dumper, LWP::UserAgent, MIME::Entity.
+
+   Konfiguracjê nale¿y umie¶ciæ w sekcji [sendinvoices]:
+     * lms_url
+       Adres do lms-ui. Domy¶lnie: http://localhost/lms/
+       Przyk³ad: lms_url = http://lms.mynet.pl
+     * lms_user
+       Login administratora. Domy¶lnie: pusty
+       Przyk³ad: lms_user = admin
+     * lms_password
+       Has³o do lms-ui. Domy¶lnie: puste
+       Przyk³ad: lms_password = moje_has³o
+     * debug_email
+       Konto pocztowe do testów. Domy¶lnie: niezdefiniowane.
+       Przyk³ad: debug_email = admin@mynet.pl
+     * sender_name
+       Nadawca listu. Domy¶lnie: niezdefiniowany.
+       Przyk³ad: sender_name = ASK MyNet
+     * sender_email
+       Adres nadawcy listu. Domy¶lnie: niezdefiniowany.
+       Przyk³ad: sender_email = admin@mynet.pl
+     * tmp_dir
+       Lokalizacja katalogu tymczasowego. Je¶li nie podano katalog
+       odczytywany jest ze zmiennej ¶rodowiskowej 'TMP' lub przyjmowany
+       jest katalog '/tmp'.
+       Przyk³ad: tmp_dir = /home/user/tmp
+     _________________________________________________________________
+
+4.3.10. lms-updatewarnings
 
    Skrypt automatycznie w³±cza ostrze¿enia (czyli ustawia odpiwedni±
    flagê w bazie danych) wszystkim komputerom u¿ytkownika z saldem
@@ -2001,6 +2046,12 @@ info = "Opcjonalny opis modu³u"
        bazy. Przy ustawieniu na '0' dane zostan± usuniête natychmiast po
        dacie, do której obowi±zywa³o zobowi±zanie. Domy¶lnie: 30.
        Przyk³ad: expiry_days = 365
+     * deadline
+       Termin p³atno¶ci podany w dniach. Domy¶lnie: 14.
+       Przyk³ad: deadline = 21
+     * paytype
+       Rozdzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'.
+       Przyk³ad: paytype = 'GOTÓWKA'
      _________________________________________________________________
 
 6.2.3. Notify

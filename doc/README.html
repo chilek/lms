@@ -263,17 +263,17 @@ CLASS="LOT"
 ></DT
 ><DT
 >4-1. <A
-HREF="#AEN805"
+HREF="#SCRIPTS-TABLE"
 >Lista skryptów wykonywalnych</A
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN1486"
+HREF="#MODULES-LIST"
 >Lista modu³ów demona almsd</A
 ></DT
 ><DT
 >7-1. <A
-HREF="#AEN1944"
+HREF="#CATALOG-TREE"
 >Drzewo katalogów LMS</A
 ></DT
 ></DL
@@ -288,22 +288,22 @@ CLASS="LOT"
 ></DT
 ><DT
 >4-1. <A
-HREF="#AEN881"
+HREF="#NOTIFY-EXAMPLE"
 >Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</A
 ></DT
 ><DT
 >4-2. <A
-HREF="#AEN884"
+HREF="#NOTIFY-TEMPLATE"
 >Lms-notify: Przyk³ad szablonu</A
 ></DT
 ><DT
 >5-1. <A
-HREF="#AEN1421"
+HREF="#INSTANCE-EXAMPLE"
 >Lms-mgc: Przyk³ad instancji</A
 ></DT
 ><DT
 >7-1. <A
-HREF="#AEN2182"
+HREF="#CONFIG-FORMAT"
 >Format opcji konfiguracyjnych</A
 ></DT
 ></DL
@@ -3429,7 +3429,7 @@ NAME="SCRIPTS-LIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN805"
+NAME="SCRIPTS-TABLE"
 ></A
 ><P
 ><B
@@ -3479,7 +3479,7 @@ ALIGN="CENTER"><THEAD
 ><TD
 >lms-payments</TD
 ><TD
->Naliczanie op³at okresowych (abonamentowych)</TD
+>Naliczanie op³at okresowych (abonamentowych) z fakturowaniem</TD
 ></TR
 ><TR
 ><TD
@@ -3528,6 +3528,12 @@ ALIGN="CENTER"><THEAD
 >lms-makeopenbsdpf</TD
 ><TD
 >Konfiguracja firewalla dla systemu OpenBSD</TD
+></TR
+><TR
+><TD
+>lms-sendinvoices</TD
+><TD
+>Wysy³anie faktur do u¿ytkowników</TD
 ></TR
 ><TR
 ><TD
@@ -3604,7 +3610,7 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN881"
+NAME="NOTIFY-EXAMPLE"
 ></A
 ><P
 ><B
@@ -3626,7 +3632,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN884"
+NAME="NOTIFY-TEMPLATE"
 ></A
 ><P
 ><B
@@ -3874,10 +3880,44 @@ NAME="LMS-PAYMENTS"
 ></H3
 ><P
 >Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
-	 u¿ytkownikom oraz op³at sta³ych.
+	 u¿ytkownikom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
 	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</P
 ><P
->Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.</P
+>Skrypt ten udostêpnia dwie opcje do fakturowania, które mo¿na ustawiæ
+	 w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[payments]</I
+></SPAN
+> pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>:</P
+><UL
+><LI
+><P
+>deadline (opcjonalny)</P
+><P
+>Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>deadline = 7</SAMP
+></P
+></LI
+><LI
+><P
+>paytype (opcjonalny)</P
+><P
+>Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>paytype = 'GOTÓWKA'</SAMP
+></P
+></LI
+></UL
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -4366,8 +4406,115 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="LMS-SENDINVOICES"
+>4.3.9. lms-sendinvoices</A
+></H3
+><P
+>Skrypt s³u¿y do wysy³ania poczt± elektroniczn± faktur, jako za³±czników
+	do wiadomo¶ci. Faktury generowane s± na podstawie szablonu dostêpnego w lms-ui,
+	dlatego wymagane jest podanie u¿ytkownika i has³a do interfejsu www lms-ui.</P
+><P
+>W odró¿nieniu od pozosta³ych skrytpów ten wymaga dodatkowych modu³ów perla:
+	Data::Dumper, LWP::UserAgent, MIME::Entity.</P
+><P
+>Konfiguracjê nale¿y umie¶ciæ w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[sendinvoices]</I
+></SPAN
+>:
+	    <UL
+><LI
+><P
+>lms_url</P
+><P
+>Adres do lms-ui. Domy¶lnie: http://localhost/lms/</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>lms_url = http://lms.mynet.pl</SAMP
+></P
+></LI
+><LI
+><P
+>lms_user</P
+><P
+>Login administratora. Domy¶lnie: pusty</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>lms_user = admin</SAMP
+></P
+></LI
+><LI
+><P
+>lms_password</P
+><P
+>Has³o do lms-ui. Domy¶lnie: puste</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>lms_password = moje_has³o</SAMP
+></P
+></LI
+><LI
+><P
+>debug_email</P
+><P
+>Konto pocztowe do testów. Domy¶lnie: niezdefiniowane.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>debug_email = admin@mynet.pl</SAMP
+></P
+></LI
+><LI
+><P
+>sender_name</P
+><P
+>Nadawca listu. Domy¶lnie: niezdefiniowany.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>sender_name = ASK MyNet</SAMP
+></P
+></LI
+><LI
+><P
+>sender_email</P
+><P
+>Adres nadawcy listu. Domy¶lnie: niezdefiniowany.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>sender_email = admin@mynet.pl</SAMP
+></P
+></LI
+><LI
+><P
+>tmp_dir</P
+><P
+>Lokalizacja katalogu tymczasowego. Je¶li nie podano katalog 
+		    odczytywany jest ze zmiennej ¶rodowiskowej 'TMP' lub przyjmowany jest 
+		    katalog '/tmp'.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>tmp_dir = /home/user/tmp</SAMP
+></P
+></LI
+></UL
+>
+	</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="LMS-UPDATEWARNINGS"
->4.3.9. lms-updatewarnings</A
+>4.3.10. lms-updatewarnings</A
 ></H3
 ><P
 >Skrypt automatycznie w³±cza ostrze¿enia (czyli ustawia odpiwedni± flagê w bazie
@@ -5207,7 +5354,7 @@ NAME="MGC-EXAMPLE"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN1421"
+NAME="INSTANCE-EXAMPLE"
 ></A
 ><P
 ><B
@@ -5522,7 +5669,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1486"
+NAME="MODULES-LIST"
 ></A
 ><P
 ><B
@@ -5685,6 +5832,28 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >expiry_days = 365</SAMP
+></P
+></LI
+><LI
+><P
+>deadline</P
+><P
+>Termin p³atno¶ci podany w dniach. Domy¶lnie: 14.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>deadline = 21</SAMP
+></P
+></LI
+><LI
+><P
+>paytype</P
+><P
+>Rozdzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>paytype = 'GOTÓWKA'</SAMP
 ></P
 ></LI
 ></UL
@@ -6759,7 +6928,7 @@ NAME="DEVEL-CATALOGS"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1944"
+NAME="CATALOG-TREE"
 ></A
 ><P
 ><B
@@ -7667,7 +7836,7 @@ NAME="PARAMS"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN2182"
+NAME="CONFIG-FORMAT"
 ></A
 ><P
 ><B
