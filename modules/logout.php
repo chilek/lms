@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-if($_GET['is_sure']=="1") 
+if($_GET['is_sure'] === 1) 
 {
 	$SESSION->LogOut();
-	header("Location: ?m=welcome");
+	header('Location: ?m=welcome');
 } else
-	header("Location: ?m=".$_SESSION['lastmodule']);    
+	header('Location: ?m='.$_SESSION['lastmodule']);    
 
 ?>
