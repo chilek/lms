@@ -23,21 +23,19 @@
  *
  *  $Id$
  */
-function microtime_diff($a, $b)
-{
-	list($a_usec, $a_sec) = explode(' ', $a);
-	list($b_usec, $b_sec) = explode(' ', $b);
-	return $b_sec - $a_sec + $b_usec - $a_usec;
-}
  
 $layout['pagetitle'] = 'SQL';
 
 if($query = $_POST['query'])
 {
-	$t = microtime();
+	$pagelimit = ( $_CONFIG['phpui']['sqlpanel_pagelimit'] ? $_CONFIG['lmsui']['sqlpanel_pagelimit'] : 50 );
+	$page = (! $_GET['page'] ? 1 : $_GET['page']); 
+	$start = ($page - 1) * $pagelimit;
+
+	$t = getmicrotime();
 	$rows = $LMS->DB->Execute($query);
-	$duration = microtime_diff($t, microtime());
-	
+	$duration = getmicrotime() - $t;
+
 	if(sizeof($LMS->DB->errors)) 
 	{
 		$error['query'] = 'Zapytanie nie jest poprawne!';
@@ -47,21 +45,18 @@ if($query = $_POST['query'])
 		die;
 	}
 	
-	if( ! eregi('^SELECT',$query) && ! eregi('^EXPLAIN',$query))
+	$layout['pagetitle'] = 'SQL - Wyniki zapytania';
+	
+	if( ! eregi('^SELECT',$query) && ! eregi('^EXPLAIN',$query) && ! eregi('^ANALYZE',$query))
 	{
-		$SMARTY->display('header.html');
-		$SMARTY->display('adminheader.html');
-		echo '<H1>SQL - Wyniki zapytania</H1>';		
-		echo '<B>Zapytanie dotyczy³o '.$rows.' wiersza(y).</B><BR>';
-		printf('<B>Czas wykonania: %0.3f sek.</B>',$t);
-		$SMARTY->display('footer.html');
-		die;
-	}
-
-	unset($result);
-
-	switch($_CONFIG['database']['type'])
+		$nrows = $rows;
+	} 
+	else
 	{
+		unset($result);
+
+		switch($_CONFIG['database']['type'])
+		{
 		case 'postgres':
 			$cols = pg_num_fields($LMS->DB->_result);
 			for($i=0; $i < $cols; $i++)
@@ -72,38 +67,43 @@ if($query = $_POST['query'])
 			for($i=0; $i < $cols; $i++)
 				$colnames[] = mysql_field_name($LMS->DB->_result, $i);
 		break;
+		case 'sqlite':
+			$cols = sqlite_num_fields($LMS->DB->_result);
+			for($i=0; $i < $cols; $i++)
+				$colnames[] = sqlite_field_name($LMS->DB->_result, $i);
+		break;
+		}
+
+		$i = 0;
+		while($row = $LMS->DB->_driver_fetchrow_assoc())
+		{
+			$i++;
+			if ( $i > $start && $i < ($start+$pagelimit+1) )
+			{
+				$result .= "<TR CLASS=\"LIGHT\"><TD>$i</TD>";
+				foreach($colnames as $column)	
+				{
+					$result .= "<TD>$row[$column]</TD>";
+				}
+				$result .= '</TR>';
+			}
+		}
+		$nrows = $i;
 	}
 
-	$SMARTY->display('header.html');
-	$SMARTY->display('adminheader.html');
-	echo '<H1>SQL - Wyniki zapytania</H1>';		
-	echo '<P><TABLE CELLPADDING="3"><TR><TD CLASS="fall">';
-	echo '<TABLE CELLPADDING="3">';
-	echo '<TR CLASS="DARK">';
-	foreach($colnames as $column)	
-	{
-		echo "<TD ALIGN=\"center\"><B>$column</B></TD>";
-	}
-	echo '</TR>';
-	
-	while($row = $LMS->DB->_driver_fetchrow_assoc())
-	{
-		echo '<TR CLASS="LIGHT">';
-		foreach($colnames as $column)	
-		{
-			echo '<TD>'.$row[$column].'</TD>';
-		}
-		echo '</TR>';
-	}
-	
-	echo '</TABLE>';
-	echo '</TD></TR></TABLE></P>';
-	printf('<B>Czas wykonania: %0.3f sek.</B>',$t);
-	$SMARTY->display('footer.html');
-	die;
+	$SMARTY->assign('start', $start);
+	$SMARTY->assign('page', $page);
+	$SMARTY->assign('pagelimit', $pagelimit);
+	$SMARTY->assign('nrows', $nrows);
+	$SMARTY->assign('ncols', $cols+1);
+	$SMARTY->assign('colnames', $colnames);
+	$SMARTY->assign('executetime', $duration);
+	$SMARTY->assign('result', $result);
 }
 
 $SMARTY->assign('query', $query);
 $SMARTY->display('sql.html');
 
 ?>
+
+

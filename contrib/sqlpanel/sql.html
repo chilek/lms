@@ -1,13 +1,81 @@
 {include file="header.html"}
 {include file="adminheader.html"}
 <!--// $Id$ //-->
+{literal}
+<SCRIPT language=JavaScript>
+	<!--
+	function page_change(page)
+	{
+		document.sql.action="?m=sql&page="+page;
+		document.sql.target="";
+		document.sql.submit();
+	}
+	//-->
+</SCRIPT>
+{/literal}
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="sql" method="post" action="?m=sql">
-<INPUT TYPE="hidden" NAME="run" VALUE="1">
+{if $page}
+	{if $executetime}
+	<P><TABLE WIDTH="100%" CELLPADDING="3">
+		<TR class="dark">
+			<TD width="1%"><B>Zapytanie:</B></TD>
+			<TD width="99%">{$query}</TD>
+		</TR>
+		<TR class="light">
+			<TD width="1%" NOWRAP><B>Czas wykonania:</B></TD>
+			<TD width="99%">{$executetime|string_format:"%0.3f"} s</TD>
+		</TR>
+		<TR class="light">
+			<TD width="1%"><B>Wierszy:</B></TD>
+			<TD width="99%">{$nrows}</TD>
+		</TR>
+		<TR class="light">
+			<TD><INPUT type="hidden" name="query" value="{$query}"></INPUT></TD>
+			<TD align="right" nowrap>
+			<A href="javascript: document.sql.submit();">Wykonaj ponownie <IMG src="img/save.gif" border="0" align="absmiddle" alt=""></A>
+			<A href="?m=sql">Anuluj <IMG src="img/cancel.gif" border="0" align="absmiddle" alt=""></A>
+			</TD>
+		</TR>
+	</TABLE></P>
+	{/if}
+	{if $result}
+	<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR class="dark">
+		<TD><B>Lp.</B></TD>
+		{foreach from=$colnames item=col}
+		<TD><B>{$col}</B></TD>
+		{/foreach}
+	</TR>
+	{$result}
+	{if $nrows > $pagelimit}
+	<TR CLASS="dark">
+		<TD WIDTH="100%" COLSPAN="{$ncols+1}">
+			<B>Strona: 
+			{if $page > 1} 
+				<A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;
+			{/if} 
+			{section name=pcnt loop=$nrows  step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">
+				{/if}
+				{$smarty.section.pcnt.rownum}
+				{if $page eq $smarty.section.pcnt.rownum}]{else}</A> 
+				{/if}
+			{/section} 
+			{if $page < $smarty.section.pcnt.rownum}
+				<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;
+			{/if}
+			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $nrows}{$nrows}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$nrows})
+		</TD>
+	</TR>
+	{/if}
+	</TABLE>
+	{/if}
+{else}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="FLEFTU" WIDTH="1%">
-			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
+			<IMG SRC="img/producer.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD CLASS="FRIGHTU" WIDTH="99%" COLSPAN="2"NOWRAP>
 			<B>Zapytanie SQL do bazy danych</B>
@@ -30,5 +98,6 @@
 		</TD>
 	</TR>
 </TABLE>
+{/if}
 </FORM>
 {include file="footer.html"}
