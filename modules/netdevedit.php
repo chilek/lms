@@ -32,6 +32,23 @@ if(! $LMS->NetDevExists($_GET[id]))
 
 $edit = TRUE;
 
+if($_GET[action]=="replace")
+{
+	$dev1 = $LMS->GetNetDev($_GET[id]);
+	$dev2 = $LMS->GetNetDev($_GET[netdev]);
+	if ($dev1.ports<$dev2.portstaken) {
+	    $error[replace] = "Brak wystarczaj±cej liczby portów w urz±dzeniu ¼ród³owym";
+	    $edit = FALSE;
+	}
+	if ($dev2.ports<$dev1.portstaken) {
+	    $error[replace] = "Brak wystarczaj±cej liczby portów w urz±dzeniu docelowym";
+	    $edit = FALSE;
+	}
+	$LMS->NetDevReplace($_GET[id],$_GET[netdev]);
+	header("Location: ?m=netdevinfo&id=".$_GET[id]);
+	die;
+}
+
 if($_GET[action]=="disconnect")
 {
 	$LMS->NetDevUnLink($_GET[id],$_GET[devid]);
@@ -69,7 +86,6 @@ if($_GET[action]=="connectnode")
 }
 
 $netdevdata = $_POST[netdev];
-
 if(isset($netdevdata))
 {
 	$netdevdata[id] = $_GET[id];
@@ -106,6 +122,12 @@ unset($nodelist[total]);
 unset($nodelist[order]);
 unset($nodelist[direction]);
 
+$replacelist = $LMS->GetNetDevList();
+
+unset($replacelist[order]);
+unset($replacelist[total]);
+unset($replacelist[direction]);
+
 $layout[pagetitle]="Edycja urz±dzenia: ".$netdevdata[name]." ".$netdevdata[producer];
 
 $SMARTY->assign("layout",$layout);
@@ -115,6 +137,7 @@ $SMARTY->assign("netdevlist",$netdevconnected);
 $SMARTY->assign("netcomplist",$netcomplist);
 $SMARTY->assign("nodelist",$nodelist);
 $SMARTY->assign("restnetdevlist",$netdevlist);
+$SMARTY->assign("replacelist",$replacelist);
 
 if($edit)
 	$SMARTY->display('netdevedit.html');
@@ -123,6 +146,9 @@ else
 
 /*
  * $Log$
+ * Revision 1.15  2003/10/10 12:25:58  lexx
+ * - Dodana mo¿liwo¶æ zamiany urz±dzeñ miejscami
+ *
  * Revision 1.14  2003/10/08 04:39:38  lukasz
  * - temporary save
  *

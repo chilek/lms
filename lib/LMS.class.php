@@ -1696,6 +1696,47 @@ class LMS
 		return $result;
 	}
 
+	function NetDevDelLinks($id)
+	{
+		return $this->DB->Execute("DELETE FROM netlinks WHERE src=? OR dst=?",array($id,$id));
+		$nodes = GetNetdevLinkedNodes($id);
+		if ($nodes) foreach($nodes as $node) {
+			$this->NetDevLinkComputer($node[id],0);
+		}
+	}
+	
+	function NetDevReplace($sid, $did)
+	{
+		$dev1=$this -> GetNetDev($sid);
+		$dev2=$this -> GetNetDev($did);
+		$location = $dev1[location];
+		$dev1[location] = $dev2[location];
+		$dev2[location] = $location;
+		$links1 = $this -> GetNetDevConnected($sid);
+		$links2 = $this -> GetNetDevConnected($did);
+		$nodes1 = $this -> GetNetdevLinkedNodes($sid);
+		$nodes2 = $this -> GetNetdevLinkedNodes($did);
+		$this -> NetDevDelLinks($sid);
+		$this -> NetDevDelLinks($did);
+		if ($links1) foreach($links1 as $row) {
+			$this -> NetDevLink($did,$row[dst]);
+		}
+		if ($links2) foreach($links2 as $row) {
+			$this -> NetDevLink($sid,$row[dst]);
+		}
+		if ($nodes1) foreach($nodes1 as $row) {
+			$this->NetDevLinkComputer($row[id],$did);
+		}
+		if ($nodes2) foreach($nodes2 as $row) {
+			$this->NetDevLinkComputer($row[id],$sid);
+		}
+		$this -> NetDevUpdate($dev1);
+		$this -> NetDevUpdate($dev2);
+		//echo('<pre>');
+		//var_dump($links1);
+		//var_dump($links2);
+	}
+
 	function DeleteNetDev($id)
 	{
 		$this->DB->Execute("DELETE FROM netlinks WHERE src=? OR dst=?",array($id));
@@ -1983,6 +2024,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.274  2003/10/10 12:25:58  lexx
+ * - Dodana mo¿liwo¶æ zamiany urz±dzeñ miejscami
+ *
  * Revision 1.273  2003/10/08 20:55:11  alec
  * SetTS() added to DELETE queries
  *
