@@ -179,6 +179,7 @@ require_once($_LIB_DIR.'/smarty_addons.php');
 $SMARTY->assign_by_ref('_LANG', $_LANG);
 $SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
 $SMARTY->assign_by_ref('_language', $LMS->lang);
+$SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->lang) ? 'doc/html/'.$LMS->lang.'/' : 'doc/html/en/');
 
 $layout['logname'] = $SESSION->logname;
 $layout['logid'] = $SESSION->id;
