@@ -7,51 +7,51 @@
 	<TR CLASS="DARK" COLSPAN="2">
 		<TD WIDTH="1%" CLASS="fleftu" NOWRAP>
 			<IMG SRC="img/network.gif" BORDER="0" ALT="" ALIGN="absmiddle">
-			<B>Nazwa sieci:</B>
+			<B>{t}Network name:{/t}</B>
 		</TD>
 		<TD CLASS="frightu">
 			<INPUT TYPE="TEXT" SIZE="23" NAME="netadd[name]" VALUE="{$netadd.name}" {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/ip.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>Adres sieci/maska:</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[address]" VALUE="{$netadd.address}" {tip text="Podaj adres IP i wybierz maskê" trigger="address"}><B> / </B><SELECT SIZE="1" TITLE="Prefixlen" NAME="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/ip.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>{t}Network address/mask:{/t}</B></TD>
+		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[address]" VALUE="{$netadd.address}" {tip text="Enter IP address and select mask" trigger="address"}><B> / </B><SELECT SIZE="1" TITLE="Prefixlen" NAME="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/mac.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>Interfejs:</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[interface]" VALUE="{$netadd.interface}" {tip text="Podaj interfejs, do którego pod³±czona jest sieæ (opcjonalnie)" trigger="interface"}></TD>					
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/mac.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>{t}Interface:{/t}</B></TD>
+		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[interface]" VALUE="{$netadd.interface}" {tip text="Enter network interface (option)" trigger="interface"}></TD>					
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/node.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>Domena:</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[domain]" VALUE="{$netadd.domain}" {tip text="Podaj nazwê domenow± sieci (opcjonalnie)" trigger="domain"}></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/node.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>{t}Domain:{/t}</B></TD>
+		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[domain]" VALUE="{$netadd.domain}" {tip text="Enter network domain (option)" trigger="domain"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/gateway.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>Gateway:</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[gateway]" VALUE="{$netadd.gateway}" {tip text="Podaj bramê sieci (opcjonalnie)" trigger="gateway"}></TD>
+		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[gateway]" VALUE="{$netadd.gateway}" {tip text="Enter gateway (option)" trigger="gateway"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" ROWSPAN="2" CLASS="fleft" NOWRAP><IMG SRC="img/dns.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>Serwery DNS:</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dns]" VALUE="{$netadd.dns}" {tip text="Podaj adres podstawowego serwera DNS (opcjonalnie)" trigger="dns"}></TD>
+		<TD WIDTH="1%" ROWSPAN="2" CLASS="fleft" NOWRAP><IMG SRC="img/dns.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>{t}DNS Servers:{/t}</B></TD>
+		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dns]" VALUE="{$netadd.dns}" {tip text="Enter primary DNS address (option)" trigger="dns"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dns2]" VALUE="{$netadd.dns2}" {tip text="Podaj adres dodatkowego serwera DNS (opcjonalnie)" trigger="dns2"}></TD>
+		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dns2]" VALUE="{$netadd.dns2}" {tip text="Enter secondary DNS address (option)" trigger="dns2"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/wins.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>Serwer WINS:</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[wins]" VALUE="{$netadd.wins}" {tip text="Podaj adres serwera WINS (opcjonalnie)" trigger="wins"}></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/wins.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>{t}WINS Server:{/t}</B></TD>
+		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[wins]" VALUE="{$netadd.wins}" {tip text="Enter WINS address (option)" trigger="wins"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/dhcpstart.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>Pocz±tek zakresu DHCP:</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dhcpstart]" VALUE="{$netadd.dhcpstart}" {tip text="Podaj pocz±tek zakresu adresów DHCP (opcjonalnie)" trigger="dhcpstart"}></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/dhcpstart.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>{t}Begin of DHCP addresses:{/t}</B></TD>
+		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dhcpstart]" VALUE="{$netadd.dhcpstart}" {tip text="Enter begin of DHCP addresses (option)" trigger="dhcpstart"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/dhcpend.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>Koniec zakresu DHCP:</B></TD>
-		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dhcpend]" VALUE="{$netadd.dhcpend}" {tip text="Podaj koniec zakresu adresów DHCP (opcjonalnie)" trigger="wins"}></TD>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP><IMG SRC="img/dhcpend.gif" BORDER="0" ALT="" ALIGN="absmiddle"> <B>{t}End of DHCP addresses:{/t}</B></TD>
+		<TD CLASS="fright"><INPUT TYPE="TEXT" SIZE="23" NAME="netadd[dhcpend]" VALUE="{$netadd.dhcpend}" {tip text="Enter end of DHCP addresses (option)" trigger="wins"}></TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
-			<A HREF="javascript:document.netadd.submit();" accesskey="s">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" align="absmiddle"></A>
-			<A HREF="?m=netlist">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALT="" align="absmiddle"></A>
+			<A HREF="javascript:document.netadd.submit();" accesskey="s">{t}Save{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" align="absmiddle"></A>
+			<A HREF="?m=netlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" BORDER="0" ALT="" align="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>
