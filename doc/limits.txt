@@ -47,6 +47,21 @@ Zauwa¿ymy ¿e miejsca wystarczy na oko³o 175 000 razy tyle ile mamy
 aktualnie wpisów w tabelce. (czyt.: mo¿esz spaæ spkojnie, chyba ¿e 
 planujesz posiadanie ponad 100000 u¿ytkowników :-)
 
- b) Postgresql (???)
+ b) PostgreSQL 
+ 
+Rozmiar bazy danych:
+
+PostgreSQL zapisuje dane w porcjach po 8 kB. Liczba tych bloków jest 
+ograniczona do 32-bitowej liczby ca³kowitej ze znakiem, daj±c maksymaln±
+wielko¶c tabeli wynosz±c± 16 terabajtów. Z uwagi na ograniczenia systemów 
+operacyjnych dane przechowywane s± w wielu plikach o wielko¶ci 1 GB ka¿dy.
+
+Ilo¶æ rekordów:
+
+PostgreSQL nie narzuca ograniczenia na liczbê wierszy w dowolnej tabeli.
+Jednak funkcja COUNT zwraca 32-bitow± liczbê ca³kowit±, a zatem dla tabel 
+zawieraj±cych ponad dwa miliardy wierszy wynik tej funkcji bêdzie 
+nieprawid³owy. (Informacja dot. PostgreSQL 7.1)
+
 
 
