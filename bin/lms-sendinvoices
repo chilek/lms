@@ -32,8 +32,6 @@ use LWP::UserAgent;
 use MIME::Entity;
 use Time::Local;
 
-$ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
-
 my $_version = '1.5-cvs';
 
 my %options = (
