@@ -67,8 +67,8 @@
 			<entry>Tworzenie tablicy ARP (/etc/ethers)</entry>
 			</row>
 			<row>
-			<entry>lms-makedhcpconf</entry>
-			<entry>Konfiguracja serwera DHCP (/etc/dhcpd.conf)</entry>
+			<entry><xref linkend="lms-makedhcpconf"></entry>
+			<entry>Konfiguracja serwera DHCP (dhcpd.conf)</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-makeiptables"></entry>
@@ -396,6 +396,83 @@ http://www.naszasiec.pl/</screen></example>
 		    <para>Przyk³ad:	<prompt>script_permission = 700</prompt></para>
 		</listitem>
 	    </itemizedlist>
+	</para>
+    </sect2>
+    <sect2 id="lms-makedhcpconf" xreflabel="lms-makedhcpconf">
+	<title>lms-makedhcpconf</title>
+	<para>Tworzenie pliku konfiguracyjnego serwera DHCP - dhcpd.conf. Konfiguracjê
+	skryptu umieszcza siê w sekcji <emphasis>[dhcp]</emphasis>:
+	    <itemizedlist>
+           	<listitem>
+		    <para>config_file</para>
+		    <para>Lokalizacja pliku wynikowego. Domy¶lnie: /etc/dhcpd.conf</para>
+		    <para>Przyk³ad:	<prompt>config_file = /tmp/dhcpd.conf</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>usergroups</para>
+		    <para>Lista nazw grup (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich grup.</para>
+		    <para>Przyk³ad:	<prompt>usergroups = grupa1 grupa2</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>default_lease_time</para>
+		    <para>Domy¶lny czas dzier¿awy. Domy¶lnie: 86400.</para>
+		    <para>Przyk³ad:	<prompt>default_lease_time = 43200</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>max_lease_time</para>
+		    <para>Maksymalny czas dzier¿awy. Domy¶lnie: 86400.</para>
+		    <para>Przyk³ad:	<prompt>max_lease_time = 43200</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>ignore_ddns</para>
+		    <para>Nie generuj wpisu 'ddns-update-style none;' na pocz±tku pliku.
+		    Przydatne przy starszych (2.2) wersjach demona dhcpd. Domy¶lnie: wy³±czone.</para>
+		    <para>Przyk³ad:	<prompt>ignore_ddns = 1</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>log_facility</para>
+		    <para>Ustawienie trybu logowania daemona dhcp. Je¿eli puste to tryb domy¶lny.</para>
+		    <para>Przyk³ad:	<prompt>log_facility = 7</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>script_owneruid</para>
+		    <para>UID w³a¶ciciela skryptu okre¶lonego w 'config_file'. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>script_owneruid = 0</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>script_ownergid</para>
+		    <para>GID w³a¶ciciela skryptu okre¶lonego w 'config_file'. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>script_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>script_permission</para>
+		    <para>Uprawnienia skryptu okre¶lonego w 'config_file'. Domy¶lnie: 600 (rwx------).</para>
+		    <para>Przyk³ad:	<prompt>script_permission = 700</prompt></para>
+		</listitem>
+	    </itemizedlist>
+	</para>
+	<para>Mo¿esz podaæ czasy dzier¿awy dla konkretnych sieci poprzez stworzenie
+	sekcji <prompt>[dhcp:nazwasieci]</prompt> np.:
+<screen>
+[dhcp:public-custa] # nazwa sieci ma³ymi literami!
+default_lease_time = 3600
+max_lease_time     = 3600</screen>
+
+Mo¿esz podaæ gateway, serwer dns, nazwê domeny i wins dla konkretnego
+hosta poprzez stworzenie sekcji <prompt>[dhcp:adresip]</prompt> np.:
+<screen>
+[dhcp:213.25.209.216]
+domain  = anotherdomain.pl
+gateway = 213.25.209.251
+dns     = 213.25.209.8
+wins    = 213.25.209.10</screen>
 	</para>
     </sect2>
     <sect2 id="lms-makeiptables" xreflabel="lms-makeiptables">

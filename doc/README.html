@@ -4129,9 +4129,12 @@ HREF="#LMS-TRAFFIC-LOGIPTABLES"
 ></TR
 ><TR
 ><TD
->lms-makedhcpconf</TD
+><A
+HREF="#LMS-MAKEDHCPCONF"
+>lms-makedhcpconf</A
+></TD
 ><TD
->Konfiguracja serwera DHCP (/etc/dhcpd.conf)</TD
+>Konfiguracja serwera DHCP (dhcpd.conf)</TD
 ></TR
 ><TR
 ><TD
@@ -4835,8 +4838,170 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="LMS-MAKEDHCPCONF"
+>4.3.7. lms-makedhcpconf</A
+></H3
+><P
+>Tworzenie pliku konfiguracyjnego serwera DHCP - dhcpd.conf. Konfiguracjê
+	skryptu umieszcza siê w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[dhcp]</I
+></SPAN
+>:
+	    <UL
+><LI
+><P
+>config_file</P
+><P
+>Lokalizacja pliku wynikowego. Domy¶lnie: /etc/dhcpd.conf</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_file = /tmp/dhcpd.conf</SAMP
+></P
+></LI
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups</P
+><P
+>Lista nazw grup (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich grup.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>usergroups = grupa1 grupa2</SAMP
+></P
+></LI
+><LI
+><P
+>default_lease_time</P
+><P
+>Domy¶lny czas dzier¿awy. Domy¶lnie: 86400.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>default_lease_time = 43200</SAMP
+></P
+></LI
+><LI
+><P
+>max_lease_time</P
+><P
+>Maksymalny czas dzier¿awy. Domy¶lnie: 86400.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>max_lease_time = 43200</SAMP
+></P
+></LI
+><LI
+><P
+>ignore_ddns</P
+><P
+>Nie generuj wpisu 'ddns-update-style none;' na pocz±tku pliku.
+		    Przydatne przy starszych (2.2) wersjach demona dhcpd. Domy¶lnie: wy³±czone.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>ignore_ddns = 1</SAMP
+></P
+></LI
+><LI
+><P
+>log_facility</P
+><P
+>Ustawienie trybu logowania daemona dhcp. Je¿eli puste to tryb domy¶lny.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>log_facility = 7</SAMP
+></P
+></LI
+><LI
+><P
+>script_owneruid</P
+><P
+>UID w³a¶ciciela skryptu okre¶lonego w 'config_file'. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_ownergid</P
+><P
+>GID w³a¶ciciela skryptu okre¶lonego w 'config_file'. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_permission</P
+><P
+>Uprawnienia skryptu okre¶lonego w 'config_file'. Domy¶lnie: 600 (rwx------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_permission = 700</SAMP
+></P
+></LI
+></UL
+>
+	</P
+><P
+>Mo¿esz podaæ czasy dzier¿awy dla konkretnych sieci poprzez stworzenie
+	sekcji <SAMP
+CLASS="PROMPT"
+>[dhcp:nazwasieci]</SAMP
+> np.:
+<PRE
+CLASS="SCREEN"
+>[dhcp:public-custa] # nazwa sieci ma³ymi literami!
+default_lease_time = 3600
+max_lease_time     = 3600</PRE
+>
+
+Mo¿esz podaæ gateway, serwer dns, nazwê domeny i wins dla konkretnego
+hosta poprzez stworzenie sekcji <SAMP
+CLASS="PROMPT"
+>[dhcp:adresip]</SAMP
+> np.:
+<PRE
+CLASS="SCREEN"
+>[dhcp:213.25.209.216]
+domain  = anotherdomain.pl
+gateway = 213.25.209.251
+dns     = 213.25.209.8
+wins    = 213.25.209.10</PRE
+>
+	</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="LMS-MAKEIPTABLES"
->4.3.7. lms-makeiptables, lms-makeipchains</A
+>4.3.8. lms-makeiptables, lms-makeipchains</A
 ></H3
 ><P
 >Para skryptów s³u¿±cych do generowania plików zawieraj±cych
@@ -5000,7 +5165,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-ETHERDESC"
->4.3.8. lms-etherdesc</A
+>4.3.9. lms-etherdesc</A
 ></H3
 ><P
 >Skrypt s³u¿±cy do generowania pliku zawieraj±cego MAC adresy oraz
@@ -5090,7 +5255,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-SENDINVOICES"
->4.3.9. lms-sendinvoices</A
+>4.3.10. lms-sendinvoices</A
 ></H3
 ><P
 >Skrypt s³u¿y do wysy³ania poczt± elektroniczn± faktur, jako za³±czników
@@ -5197,7 +5362,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-MAKEMACS"
->4.3.10. lms-makemacs</A
+>4.3.11. lms-makemacs</A
 ></H3
 ><P
 >Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra filtruj±ce ruch
@@ -5343,7 +5508,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-MAKEHOSTS"
->4.3.11. lms-makehosts</A
+>4.3.12. lms-makehosts</A
 ></H3
 ><P
 >Skrypt s³u¿±cy do generowania pliku /etc/hosts zawieraj±cego odwzorowania nazw komputerów
@@ -5449,7 +5614,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-MAKEWARNINGS"
->4.3.12. lms-makewarnings</A
+>4.3.13. lms-makewarnings</A
 ></H3
 ><P
 >Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
@@ -5589,7 +5754,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-MAKEMESSAGES"
->4.3.13. lms-makemessages</A
+>4.3.14. lms-makemessages</A
 ></H3
 ><P
 >Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
@@ -5718,7 +5883,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-FPING"
->4.3.14. lms-fping</A
+>4.3.15. lms-fping</A
 ></H3
 ><P
 >Skrypt zapisuje do bazy informacje o aktywno¶ci komputerów. 
@@ -5782,7 +5947,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-RTPARSER"
->4.3.15. lms-rtparser</A
+>4.3.16. lms-rtparser</A
 ></H3
 ><P
 >Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który wspó³pracuj±c
