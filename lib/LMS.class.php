@@ -1330,9 +1330,8 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function IsInvoicePaid($invoiceid)
 	{
-		$topay = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE type=4 AND invoiceid=?', array($invoiceid));
-		$paid = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE type=3 AND invoiceid=?', array($invoiceid));
-		if ($topay - $paid == 0)
+		$balance = $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE invoiceid=?', array($invoiceid));
+		if ($balance == 0)
 			return TRUE;
 		return FALSE;
 	}
