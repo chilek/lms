@@ -129,8 +129,8 @@ $ mv Smarty-2.6.0/libs Smarty
 		<title>Wstêp</title>
 			<para>Ta  bardzo  popularna  baza  jest  dostêpna  z wiêkszo¶ci± dystrybucji
 			Linuksa.  Je¿eli  jednak bêdziesz musia³ j± zainstalowaæ samodzielnie,
-			zacznij od ¶ci±gniêcia ¼róde³ z <ulink url="http://www.mysql.org">
-			www.mysql.org</ulink>.</para>
+			zacznij od ¶ci±gniêcia ¼róde³ z <ulink url="http://www.mysql.com">
+			www.mysql.com</ulink>.</para>
 		</sect3>
 		<sect3 id="install-mysql-server">
 		<title>Instalacja serwera MySQL</title>
