@@ -4,7 +4,7 @@ Uprzejmie informujemy i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za
 internet w wysoko¶ci %B z³. 
 
 Je¿eli porozumieli siê ju¿ Pañstwo z administratorami w kwestii op³aty za
-bierz±cy miesi±c czyli %date-m %date-y roku, prosimy o 
+bie¿±cy miesi±c czyli %date-m %date-y roku, prosimy o 
 zignorowanie tej wiadomo¶ci.
 
 W wypadku gdy uwa¿aj± Pañstwo i¿ zaleg³o¶æ ta jest nieporozumieniem prosimy o
