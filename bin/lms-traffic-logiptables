@@ -27,6 +27,7 @@ use DBI;
 use Config::IniFiles;
 use Getopt::Long;
 use vars qw($configfile $quiet $help $version);
+use POSIX qw(strftime);
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
@@ -93,7 +94,6 @@ if(! -r $configfile)
 
 my $ini = new Config::IniFiles -file => $configfile;
 
-my $logfile = $ini->val('traffic-logiptables','logfile') || '';
 my $outfile = $ini->val('traffic-logiptables','outfile') || '/etc/rc.d/rc.stat';
 my $iptables_binary = $ini->val('traffic-logiptables','iptables_binary') || '/usr/sbin/iptables';
 my $wan_interfaces = $ini->val('traffic-logiptables','wan_interfaces') || '';
@@ -108,6 +108,7 @@ my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $dbase;
+my $utsfmt;
 
 if(! $wan_interfaces)
 {
@@ -124,14 +125,17 @@ if(! $logfile)
 if($dbtype eq "mysql")
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "UNIX_TIMESTAMP()";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
 }
 elsif($dbtype eq "sqlite")
 {
 	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "strftime('%s','now')";	
 }
 else
 {
@@ -164,7 +168,6 @@ foreach my $port (@local_ports_list)
 print OUTFILE "$iptables_binary -t mangle -F STAT
 $iptables_binary -t mangle -X STAT
 $iptables_binary -t mangle -N STAT
-$iptables_binary -t mangle -F STAT
 ";
 
 foreach my $wan_interface (@wan_interfaces_list)
@@ -216,36 +219,44 @@ foreach my $line (@info)
 
 system("$outfile 1>/dev/null 2>&1");
 
-if(open(LOGFILE, "<$logfile"))
-{
-	my(@lines) = <LOGFILE>;
-	close(LOGFILE);
-	foreach my $line (@lines)
+$dbq = $dbase->prepare("SELECT id, ipaddr FROM nodes");
+$dbq->execute();
+my $dbqi;
+my $ip;
+my $download;
+my $upload;
+while (my $row = $dbq->fetchrow_hashref())
+{    
+	$ip = u32todotquad($row->{'ipaddr'});
+	if (!$downloads{$ip})
 	{
-		if($line =~ /([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}) +([0-9]+) +([0-9]+)/ )
-		{
-			chomp $line;
-			my ($ipaddr,$upload,$download) = split(/ +/,$line);
-			$downloads{$ipaddr} = 0 if not defined $downloads{$ipaddr};
-			$downloads{$ipaddr} += $download;
-			$uploads{$ipaddr} = 0 if not defined $uploads{$ipaddr};
-			$uploads{$ipaddr} += $upload;
+		$download = 0;
+	} else {
+		$download = $downloads{$ip};
+	}
+	if (!$uploads{$ip})
+	{
+		$upload = 0;
+	} else {
+		$upload = $uploads{$ip};
+	}
+	
+ 	if( $upload || $download ) # don't need zeroes 
+	{   
+		$dbqi = $dbase->prepare("INSERT INTO stats (nodeid, dt, download, upload) VALUES ( $row->{'id'} , $utsfmt, $download, $upload)");
+    		$dbqi->execute();
+		if(!$quiet)
+    		{
+    			print "IP: $ip\tSend: $upload\t Recv: $download\n";
+    		}
+	} 
+	else
+	{
+		if(!$quiet)
+    		{
+			print "IP: $ip\tSkipped - null data\n";
 		}
 	}
 }
-
-if(open(LOGFILE, ">$logfile"))
-{
-	foreach my $key (keys %downloads)
-	{
-		print LOGFILE "$key $uploads{$key} $downloads{$key}\n" if($uploads{$key} ne 0 || $downloads{$key} ne 0);
-	}
-	close(LOGFILE);
-}
-else
-{
-	print STDERR "Fatal error: Unable to open $logfile for writing, exiting.\n";
-	exit 1;
-}
-
+# finally 
 $dbase->disconnect();
