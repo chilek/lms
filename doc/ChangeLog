@@ -72,7 +72,7 @@ wersja 1.1.5 Amaonet (04/12/2003):
     	    invoiceid INT NOT NULL ,
     	    value DOUBLE NOT NULL ,
     	    taxvalue INT NOT NULL ,
-	    sww VARCHAR( 255 ) DEFAULT '';
+	    sww VARCHAR( 255 ) DEFAULT '',
     	    content VARCHAR( 16 ) NOT NULL ,
     	    count INT NOT NULL ,
 	    description VARCHAR( 255 ) NOT NULL ,
