@@ -353,13 +353,13 @@ key = "A.L.E.C's LMS Daemon is the best"
 		<para>Ka¿dy system ma ograniczenia. Pewne wynikaja z u¿ytego silnika SQL (DBMS)
 		inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez developerów. Nasz system
 		takowe posiada:</para>
-		<sect2>
+		<sect2 id="devel-limits-lms">
 			<title>Wynikaj±ce z naszego projektu</title>
 			<para>Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowujemy jako
 			32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat bêdziecie nas nie lubiæ
 			posiadaj±c oko³o 5000 u¿ytkowników.</para>
 		</sect2>
-		<sect2>
+		<sect2 id="devel-limits-db">
 			<title>Wynikaj±ce z u¿ywanego DMBS</title>
 			<itemizedlist>
 			<listitem>
