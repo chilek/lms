@@ -28,15 +28,10 @@ $tariffadd = $_POST[tariffadd];
 
 if(isset($tariffadd))
 {
-	$ec = 0;
 	foreach($tariffadd as $key => $value)
-	{
 		$tariffadd[$key] = trim($value);
-		if(trim($value)=="")
-			$ec++;
-	}
 
-	if($ec == 3)
+	if($tariffadd[name]=="" && $tariffadd[comment]=="" && $tariffadd[value]=="")
 	{
 		header("Location: ?m=tarifflist");
 		exit(0);
@@ -78,11 +73,7 @@ if(isset($tariffadd))
 	
 }
 
-$layout[pagetitle]="Lista taryf";
-
-$tarifflist = $LMS->GetTariffList();
-
-$SMARTY->assign("tarifflist",$tarifflist);
+$layout[pagetitle]="Dodaj taryfê";
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("error",$error);
