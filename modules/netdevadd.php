@@ -30,19 +30,21 @@ if(isset($netdevdata)) {
 	// Jakby to dzia³a³o to by by³o mi³o... :P
 	//if($netdevdata['ports'] !="" && !eregi("^[0-9]{,4}$",$netdevdata['ports']))
         //        $error['ports'] = "Podana ilo¶æ portów jest b³êdna!";
-	if($netdevdata['name'] == "")
-		$error['name'] = "Pole nazwa nie mo¿e byæ puste!";
+	if($netdevdata['ports'] =='')
+		$netdevdata['ports'] = 0;
+	if($netdevdata['name'] == '')
+		$error['name'] = 'Pole nazwa nie mo¿e byæ puste!';
 
         if(!$error)
         {
 	    $netdevid=$LMS->NetDevAdd($netdevdata);
-	    header("Location: ?m=netdevinfo&id=".$netdevid);
+	    header('Location: ?m=netdevinfo&id='.$netdevid);
 	    die;
         }
 }
 		
 
-$layout['pagetitle'] = "Nowe urz±dzenie";
+$layout['pagetitle'] = 'Nowe urz±dzenie';
 
 $SMARTY->assign('error',$error);
 $SMARTY->assign('netdev',$netdevdata);
