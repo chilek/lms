@@ -3,9 +3,6 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {if $dane}
-{*
- {if !($upload_sum.dane == 0 && $download_sum.dane == 0)}
-*}
 <TABLE WIDTH=610 ALIGN="center">
     <TR>
 	<TD VALIGN="top">
@@ -20,7 +17,7 @@
 		    {section name=download loop=$download.name}
 		    <TABLE>
 		    <TR>
-			<TD ALIGN="right" WIDTH=75>{$download.name[download]|truncate:10:"..."}</TD>
+			<TD ALIGN="right" WIDTH=75>{if $showips}{$download.ipaddr[download]}{else}{$download.name[download]|truncate:10:"..."}{/if}</TD>
     		    	<TD WIDTH={$download.bar[download]} BGCOLOR="#FFBD9B"></TD>
     			<TD>{$download.dane[download]|string_format:"%.2f "}{$download.jedn[download]}</TD>
 		    <TR>
@@ -47,7 +44,7 @@
 		    {section name=upload loop=$upload.name}
 		    <TABLE>
 		    <TR>
-			<TD ALIGN="right" WIDTH=75>{$upload.name[upload]|truncate:10:"..."}</TD>
+			<TD ALIGN="right" WIDTH=75>{if $showips}{$upload.ipaddr[upload]}{else}{$upload.name[upload]|truncate:10:"..."}{/if}</TD>
 			<TD WIDTH={$upload.bar[upload]} BGCOLOR="#CEBD9B"></TD>
 			<TD>{$upload.dane[upload]|string_format:"%.2f "}{$upload.jedn[upload]}</TD>
 		    <TR>
@@ -155,6 +152,8 @@
 	</TD>
 	<TD CLASS="fright">&nbsp;
 	<SELECT SIZE=1 NAME="order">
+	<OPTION VALUE="name">Nazwa hosta</OPTION>
+	<OPTION VALUE="ip">Adres IP hosta</OPTION>
 	<OPTION VALUE="nodeid">Numer hosta</OPTION>
 	<OPTION VALUE="download" SELECTED>Download</OPTION>
 	<OPTION VALUE="upload">Upload</OPTION>
@@ -167,6 +166,13 @@
 	</TD>
 	<TD CLASS="fright">&nbsp;
 	<INPUT NAME="limit" SIZE=3></INPUT><B>&nbsp;komputerów</B>
+	</TD>
+    </TR>
+    <TR CLASS="light">
+	<TD WIDTH=300 ALIGN="right" CLASS="fleft">
+	</TD>
+	<TD CLASS="fright">&nbsp;
+	<INPUT TYPE="checkbox" NAME="showips" VALUE="1"><B>&nbsp;adresy IP zamiast nazw hostów</B></INPUT>
 	</TD>
     </TR>
     <TR CLASS="light">
