@@ -24,22 +24,28 @@
 procedury konwersji liczb na postaæ s³own± autorstwa Piotra Klabana<BR>
 oraz przyk³ady kodu zawarte w <a href="http://www.php.net/manual/pl/">Podrêczniku PHP</A></P>
 <p align="center"><B>W rolach g³ównych (w kolejno¶ci alfabetycznej):</B></P>
-{foreach from=$authors item=author}
 <TABLE WIDTH="100%" CELLPADDING="5">
-	<TR>
-		<TD BGCOLOR="#F4F0EC" CLASS="fleftu" WIDTH="1%">
-			<IMG SRC="img/{$author.nick|lower}.icon.gif" BORDER="1">
+	{foreach from=$authors item=author name=authors key=nick}
+	{if $smarty.foreach.authors.iteration is odd}<TR>{/if}
+		<TD WIDTH="50%" VALIGN="TOP">
+			<TABLE WIDTH="100%" CELLPADDING="5">
+				<TR>
+					<TD BGCOLOR="#F4F0EC" CLASS="fleftu" WIDTH="1%">
+						<IMG SRC="img/{$nick|lower}.icon.gif" BORDER="1">
+					</TD>
+					<TD BGCOLOR="#F4F0EC" CLASS="frightu" WIDTH="99%">
+						<B>{$nick}</B><BR>
+						{$author.realname}<BR>
+						{if $author.www}<A HREF="http://{$author.www}" TARGET="_BLANK">{$author.www}</A>{/if}&nbsp;<BR>
+						{$author.info}
+					</TD>
+				</TR>
+			</TABLE>
 		</TD>
-		<TD BGCOLOR="#F4F0EC" CLASS="frightu" WIDTH="99%">
-			<B>{$author.nick}</B><BR>
-			{$author.realname}<BR>
-			{if $author.www}<A HREF="http://{$author.www}" TARGET="_BLANK">{$author.www}</A>{/if}<BR>
-			{$author.info}
-		</TD>
-	</TR>
+	{if $smarty.foreach.authors.iteration is even}</TR>{/if}
+	{/foreach}
+	{if $smarty.foreach.authors.iteration is odd}</TR>{/if}
 </TABLE>
-<BR>
-{/foreach}
 <P align="center"><a href="http://smarty.php.net/"><B>LMS korzysta z silnika template'owego Smarty - http://smarty.php.net</B></A></P>
 <P align="center"><a href="http://smarty.php.net/"><img src="img/smarty_icon.gif" border="0" ALT="* smarty"></A></p>
 {*
