@@ -8,20 +8,20 @@ c) nie chc± aby dzieci/ma³¿onkowie/pracownicy mieli wgl±d w dane fiansowe
 dotycz±ce ich dostêpu do sieci/innych us³ug sprzedawanych przez LMS.
 
 
-Testowa³em *tylko* z mysqlem wiêc móg³by kto¶ sprawdziæ...
-
-
 Na pocz±tek kolumna pin:
 
-mysql> alter table users add column pin int(5)=31337;
+mysql> ALTER TABLE users ADD COLUMN pin int(5)=31337;
+pgsql> ALTER TABLE users ADD COLUMN pin integer;
 
 *warto¶æ domy¶ln± pinu dobrze jest zmieniæ*
 
 Potem dla ka¿dego u¿ytkownika warto¶æ domy¶lna:
 
-mysql> update users set pin=RAND() + RAND()*10 + RAND()*100 + RAND()*1000 
-	+ RAND()*10000;
-
+mysql> UPDATE users SET pin=RAND()*10 + RAND()*100 + RAND()*1000 
+	+ RAND()*10000 + RAND()*100000-1;
+pgsql> UPDATE users SET pin=random()*10 + random()*100 + random()*1000 
+	+ random()*10000 + random()*100000-1;
+	
 Dobrze jest te¿ powiadomiæ u¿ytkowników w co rocznym/miesiêcznym/tygodniowym 
 mailu rozrachunkowo-newsletterowym:
 
@@ -34,15 +34,16 @@ http://www.TwójUrl.pl/lms/contrib/clients/
 
 Pañstwa PIN to: %pin
 "
-
-
 Oraz zmieniæ lms-notify np tak (dodaæ pin w zapytaniu SELECT):
 
-(okolice 170 linni)
+(okolice 160 linni)
 
 #V+
-my $dbq = $dbase->prepare("SELECT users.id, pin, lastname, users.name, email, phone1,  tariffs.description FROM users,tariffs
-                WHERE users.tariff=tariffs.id and status!=4");
+my $dbq = $dbase->prepare("SELECT users.id AS id, pin, lastname, name, email, phone1
+			SUM((type * -1 + 7) * value) AS balance 
+			FROM users LEFT JOIN cash ON users.id = cash.userid
+			GROUP BY users.id, lastname, name, pin, email, phone1 
+			HAVING ...");
 #v-
 	
 Oraz dodaæ mo¿liwo¶æ podmiany %pin w mailach (opkolice 250 linijki):
