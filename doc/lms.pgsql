@@ -179,6 +179,7 @@ CREATE TABLE invoices (
 /* -------------------------------------------------------- 
   Struktura tabeli "invoicecontents" 
 -------------------------------------------------------- */
+DROP TABLE invoicecontents;
 CREATE TABLE invoicecontents (
 	invoiceid integer 	DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
@@ -247,7 +248,6 @@ CREATE TABLE usergroups (
 	UNIQUE (name)
 );
 
-
 /* -------------------------------------------------------- 
   Struktura tabeli "userassignments" 
 -------------------------------------------------------- */
@@ -273,9 +273,7 @@ CREATE TABLE stats (
 	download bigint 	DEFAULT 0,
 	PRIMARY KEY (nodeid, dt)
 );
-/* Ma³y dopalacz niektórych zapytañ */
 CREATE INDEX stats_nodeid_idx ON stats(nodeid);
-
 
 /* ---------------------------------------------------
 	Struktura tabeli netdevices
@@ -475,6 +473,7 @@ CREATE TABLE uiconfig (
     Database info table
 ------------------------------------------------------*/
 
+DROP TABLE dbinfo;
 CREATE TABLE dbinfo (
     keytype varchar(255) DEFAULT '' NOT NULL,
     keyvalue varchar(255) DEFAULT '' NOT NULL,
