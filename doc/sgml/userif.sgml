@@ -58,12 +58,8 @@
 	    <para>Szukaj - Wyszukiwanie u¿ytkowników wg zadanych kryteriów.</para>
 	    </listitem>
 	    <listitem>
-	    <para>Wersja do druku - Wy¶wietlenie listy u¿ytkowników, w formacie przyjaznym dla
-	    drukarki.</para>
-	    </listitem>
-	    <listitem>
-	    <para>Wydruk zad³u¿onych - Wy¶wietlenie listy u¿ytkowników zad³u¿onych, w formacie 
-	    przyjaznym dla drukarki.</para>
+	    <para>Wydruki - Listy oraz bilansy u¿ytkowników, w formacie przyjaznym dla
+	    drukarki z mo¿liwo¶ci± definiowania filtrów i sortowania</para>
 	    </listitem>
 	</itemizedlist>
 	</para>
@@ -97,8 +93,8 @@
 	    <para>Szukaj - Wyszukiwanie komputerów wed³ug zadanych kryteriów.</para>
 	    </listitem>
 	     <listitem>
-	    <para>Wersja do druku - Wy¶wietlenie listy komputerów, w formacie 
-	    przyjaznym dla drukarki.</para>
+	    <para>Wydruki - Wy¶wietlenie list komputerów, w formacie 
+	    przyjaznym dla drukarki z mo¿liwo¶ci± definiowania filtrów i sortowania.</para>
 	    </listitem>
 	</itemizedlist>
 	</para>
