@@ -90,7 +90,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 	function _driver_concat($input)
 	{
-		$return = implode('+',$input);
+		$return = implode(' || ',$input);
 		return $return;
 	}
 		
@@ -98,6 +98,9 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.2  2003/08/22 13:16:23  lukasz
+ * - fixed _driver_concat() (PG uses '||' not '+' as concat sign)
+ *
  * Revision 1.1  2003/08/19 01:00:13  lukasz
  * - untested driver for pgsql
  *
