@@ -377,20 +377,6 @@ class LMS
 		return $this->DB->GetOne('SELECT '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' FROM users WHERE id=?', array($id));
 	}
 
-	function GetEmails($group, $network=NULL, $usergroup=NULL)
-	{
-		if($network) 
-			$net = $this->GetNetworkParams($network);
-		
-		return $this->DB->GetAll('SELECT email, '.$this->DB->Concat('lastname', "' '", 'users.name').' AS username FROM users ' 
-			.($network ? ', nodes' : '')
-			.($usergroup ? ', userassignments' : '')
-			." WHERE deleted = 0 AND email != '' ".($state ? ' AND status = '.$state : '')
-			.($network ? ' AND users.id=nodes.ownerid AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
-			.($usergroup ? ' AND users.id=userassignments.userid AND usergroupid='.$usergroup : '')
-			.' GROUP BY email, lastname, users.name ORDER BY username'); 
-	}
-
 	function GetUserEmail($id)
 	{
 		return $this->DB->GetOne('SELECT email FROM users WHERE id=?', array($id));

@@ -24,11 +24,63 @@
  *  $Id$
  */
 
+function GetEmails($group, $network=NULL, $usergroup=NULL)
+{
+	global $LMS;
+	
+	if($group == 4)
+	{
+		$deleted = 1;
+		$network = NULL;
+		$usergroup = NULL;
+	}
+	else
+		$deleted = 0;
+	
+	$disabled = ($group == 5) ? 1 : 0;
+	$indebted = ($group == 6) ? 1 : 0;
+	
+	if($group>3) $group = 0;
+	
+	if($network) 
+		$net = $LMS->GetNetworkParams($network);
+	
+	if($emails = $LMS->DB->GetAll('SELECT users.id AS id, email, '.$LMS->DB->Concat('lastname', "' '", 'users.name').' AS username, '
+		.'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance '
+		.'FROM users LEFT JOIN cash ON (users.id=cash.userid AND (type=3 OR type=4)) '
+		.($network ? 'LEFT JOIN nodes ON (user.id=ownerid) ' : '')
+		.($usergroup ? 'LEFT JOIN userassignments ON (users.id=userassignments.userid) ' : '')
+		.' WHERE deleted = '.$deleted
+		.' AND email != \'\''
+		.($group!=0 ? ' AND status = '.$group : '')
+		.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
+		.($usergroup ? ' AND usergroupid='.$usergroup : '')
+		.' GROUP BY email, lastname, users.name, users.id ORDER BY username'))
+	{
+		if($disabled)
+			$access = $LMS->DB->GetAllByKey('SELECT ownerid AS id FROM nodes GROUP BY ownerid HAVING (SUM(access) != COUNT(access))','id'); 
+			
+		foreach($emails as $idx => $row)
+		{
+			if($disabled && $access[$row['id']])
+				$emails2[] = $row;
+			elseif($indebted)
+				if($row['balance'] < 0)
+					$emails2[] = $row;
+		}
+	
+		if($disabled || $indebted)
+			$emails = $emails2;
+	}
+
+	return $emails;
+}
+
 $layout['pagetitle'] = trans('Serial Mail');
 
 if($mailing = $_POST['mailing'])
 {
-	if($mailing['group'] < 0 || $mailing['group'] > 3)
+	if($mailing['group'] < 0 || $mailing['group'] > 6)
 		$error['group'] = trans('Incorrect customers group!');
 
 	if($mailing['sender']=='')
@@ -54,7 +106,7 @@ if($mailing = $_POST['mailing'])
 		$SMARTY->display('header.html');
 		$SMARTY->display('mailingsend.html');
 		
-		if($emails = $LMS->GetEmails($mailing['group'], $mailing['network'], $mailing['usergroup']))
+		if($emails = GetEmails($mailing['group'], $mailing['network'], $mailing['usergroup']))
 		{
 			if($LMS->CONFIG['phpui']['debug_email'])
 				echo '<B>'.trans('Warning! Debug mode (using address $0).',$LMS->CONFIG['phpui']['debug_email']).'</B><BR>';
