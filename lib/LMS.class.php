@@ -977,18 +977,19 @@ class LMS
      {
           $this->SetTS("nodes");
           if($this->DB->GetOne("SELECT access FROM nodes WHERE id=?",array($id)) == 1 )
-               return $this->DB->Execute("UPDATE nodes SET access=0, modid=? WHERE id=?",array($id,$SESSION->id));
+               return $this->DB->Execute("UPDATE nodes SET access=0, modid=? WHERE id=?",array($this->SESSION->id,$id));
           else
-               return $this->DB->Execute("UPDATE nodes SET access=1, modid=? WHERE id=?",array($id,$SESSION->id));
+               return $this->DB->Execute("UPDATE nodes SET access=1, modid=? WHERE id=?",array($this->SESSION->id,$id));
      }
 
      function NodeSetU($id,$access=FALSE)
      {
           $this->SetTS("nodes");
-          if($access)
-               return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?",array(1,$id,$SESSION->id));
+          echo $this->SESSION->id."<BR>";
+	  if($access)
+               return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?",array(1,$this->SESSION->id,$id));
           else
-               return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?",array(0,$id,$SESSION->id));
+               return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?",array(0,$this->SESSION->id,$id));
      }
 
      function NodeAdd($nodedata)
@@ -1894,6 +1895,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.248  2003/09/30 16:07:22  alec
+ * poprawione zmienne Session->id w funkcjach NodeSet() i NodeSetU() powodujace bledne dzialanie tych funkcji
+ *
  * Revision 1.247  2003/09/26 02:02:12  lukasz
  * - hide data of deleted nodes in traffic
  *
