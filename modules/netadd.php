@@ -105,7 +105,7 @@ if(isset($netadd))
 	
 	if(!$error)
 	{
-		header("Location: ?m=netedit&id=".$LMS->NetworkAdd($netadd));
+		header("Location: ?m=netinfo&id=".$LMS->NetworkAdd($netadd));
 		exit(0);
 	}
 

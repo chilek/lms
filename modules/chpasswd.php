@@ -24,21 +24,40 @@
  *  $Id$
  */
 
-if(!$LMS->AdminExists($_GET[id]))
+$passwd = $_POST[passwd];
+
+$id = $SESSION->id;
+
+if($LMS->AdminExists($id))
 {
-	header("Location: ?m=adminlist");
+	if(isset($passwd))
+	{
+		if($passwd[passwd] == "" || $passwd[confirm] == "")
+			$error[password] .= "Has³o nie mo¿e byæ puste!<BR>";
+		
+		if($passwd[passwd] != $passwd[confirm])
+			$error[password] .= "Podane has³a siê ró¿ni±!";
+		
+		if(!$error)
+		{
+			$LMS->SetAdminPassword($id,$passwd[passwd]);
+			header("Location: ?m=welcome");
+		}
+	}
+
+	$passwd[realname] = $LMS->GetAdminName($id);
+	$passwd[id] = $id;
+	$layout[pagetitle]="Zmiana has³a";
+	$SMARTY->assign("layout",$layout);
+	$SMARTY->assign("error",$error);
+	$SMARTY->assign("passwd",$passwd);
+	$SMARTY->display("adminpasswd.html");
+
+}
+else
+{
+	header("Location: ?m=".$_SESSION[lastmodule]);
 	exit(0);
 }
 
-$layout[pagetitle]="Informacje o administratorze ".$LMS->GetAdminName($_GET[id]);
-$admininfo=$LMS->GetAdminInfo($_GET[id]);
-
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("admininfo",$admininfo);
-$rights = $LMS->GetAdminRights($_GET[id]);
-foreach($rights as $right)
-	if($access[table][$right][name])
-		$accesslist[] = $access[table][$right][name];
-$SMARTY->assign("accesslist",$accesslist);
-$SMARTY->display("admininfo.html");
 ?>

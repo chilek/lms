@@ -1,4 +1,4 @@
-<!-- // $Id: style.css,v 1.7 2003/04/12 22:31:06 lukasz Exp $ // -->
+<!-- // $Id: style.css,v 1.8 2003/04/14 23:09:24 lukasz Exp $ // -->
 <STYLE type="text/css"><!--
 BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
@@ -30,6 +30,7 @@ P.txt		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-a
 P.separated	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; margin-top: 5; margin-bottom: 5 }
 H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; border-color: #000000;  }
+INPUT.clean	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; background-color: #DFD5BD; border-color: #000000; border-width: 0pt; }
 INPUT.bold	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; font-weight: bold; background-color: #EBE4D6; border-color: #000000; }
 INPUT.red	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; color: #800000; }
 INPUT.alert	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; font-color: #800000;}

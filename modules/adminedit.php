@@ -34,6 +34,7 @@ $admininfo=$_POST[admininfo];
 
 if(isset($admininfo))
 {
+	$acl = $_POST[acl];
 	$admininfo[id] = $_GET[id];
 	
 	foreach($admininfo as $key => $value)
@@ -47,6 +48,19 @@ if(isset($admininfo))
 
 	if($admininfo[name] == "")
 		$error[name] = "To pole nie mo¿e byæ puste!";
+
+	// zróbmy maskê ACL...
+
+	for($i=0;$i<256;$i++)
+		$mask .= "0";
+	
+	foreach($access[table] as $idx => $row)
+		if($acl[$idx]=="1")
+			$mask[255-$idx] = "1";
+	for($i=0;$i<256;$i += 4)
+		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
+
+	$admininfo[rights] = ereg_replace('^[0]*(.*)$','\1',$outmask);
 
 	if(!$error)
 	{
@@ -63,7 +77,18 @@ foreach($LMS->GetAdminInfo($_GET[id]) as $key => $value)
 
 $layout[pagetitle]="Edycja danych administratora ".$LMS->GetAdminName($_GET[id]);
 
+$rights = $LMS->GetAdminRights($_GET[id]);
+
+foreach($access[table] as $idx => $row)
+{
+	$row[id] = $idx;
+	foreach($rights as $right)
+		if($right == $idx)
+			$row[enabled]=TRUE;
+	$accesslist[] = $row;
+}
 $SMARTY->assign("layout",$layout);
+$SMARTY->assign("accesslist",$accesslist);
 $SMARTY->assign("admininfo",$admininfo);
 $SMARTY->assign("unlockedit",TRUE);
 $SMARTY->assign("error",$error);

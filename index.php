@@ -96,6 +96,7 @@ require_once($_LIB_DIR."/LMS.class.php");
 require_once($_LIB_DIR."/Session.class.php");
 require_once($_LIB_DIR."/leftmenu.php");
 require_once($_LIB_DIR."/TipOfTheDay.php");
+require_once($_LIB_DIR."/accesstable.php");
 
 // Initialize ADODB object
 
@@ -149,8 +150,24 @@ if($SESSION->islogged)
 	
 	if (file_exists($_MODULES_DIR."/".$module.'.php'))
 	{
-		$layout[module]=$module;
-		include($_MODULES_DIR."/".$module.'.php');
+		if(eregi($access[allow],$module))
+			$allow = TRUE;
+		else{
+			$rights = $LMS->GetAdminRights($SESSION->id);
+			if($rights)
+				foreach($rights as $level)
+					if(isset($access[table][$level][deny_reg]) && eregi($access[table][$level][deny_reg],$module))
+						$deny = TRUE;
+					elseif(isset($access[table][$level][allow_reg]) && eregi($access[table][$level][allow_reg],$module))
+						$allow = TRUE;
+		}
+
+		if($allow && ! $deny)
+		{
+			$layout[module]=$module;
+			include($_MODULES_DIR."/".$module.'.php');
+		}else
+			$SMARTY->display("noaccess.html");
 	}else{
 		$layout[module]="welcome";
 		include($_MODULES_DIR.'/welcome.php');
