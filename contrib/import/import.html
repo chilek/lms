@@ -1,0 +1,99 @@
+{include file="header.html"}
+{include file="balanceheader.html"}
+<!--// $Id$ //-->
+{literal}
+<SCRIPT language=JavaScript>
+	<!--
+	function CheckAll()
+	{
+		for (var i=0; i<document.lmsimport.elements.length; i++)
+		{
+			var e = document.lmsimport.elements[i];
+			if (e.name != 'allbox')
+			e.checked = document.lmsimport.allbox.checked;
+		}
+	}
+	//-->
+</SCRIPT>
+{/literal}
+<H1><B>{$layout.pagetitle}</B></H1>
+{if $import}
+<P><FORM name="lmsimport" method="post" action="?m=import">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD width="1%" class="fleftu">
+			<IMG src="img/attach.gif" alt="" border="0" align="absmiddle">
+		</TD>
+		<TD width="1%" class="fbt" align="center">
+			<B>Lp.</B>
+		</TD>
+		<TD width="1%" class="fbt" align="center"><B>ID</B></TD>
+		<TD width="1%" class="fbt" align="center"><B>Nazwisko/nazwa i imiê</B></TD>
+		<TD width="1%" class="fbt" align="center"><B>Kwota</B></TD>
+		<TD width="94%" class="fbt" align="center"><B>Opis</B></TD>
+		<TD width="1%" class="frightu" align="center"><B>Data</B></TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{counter start=0 print=false}
+	{section name=import loop=$import.id}
+	{counter assign=n}
+		<TR bgcolor="{cycle}">
+			<TD width="1%" class="fleft" align="center" NOWRAP>
+				{cycle print=false}
+				<INPUT type="checkbox" name="import[{$n}][box]" style="border-style: none; background-color: {cycle};" {if !$import.error[import]}CHECKED{/if}>
+			</TD>
+			<TD width="1%" align="right">
+				{$n|string_format:"%04d"}
+			</TD>
+			<TD width="1%" align="right">
+				<INPUT type="text" name="import[{$n}][id]" value="{$import.id[import]|string_format:"%04d"}" size="4">
+			</TD>
+			<TD width="1%" align="left" NOWRAP>
+				{$import.name[import]} {$import.lastname[import]}
+			</TD>
+			<TD width="1%" align="right" NOWRAP>
+				<INPUT type="text" name="import[{$n}][value]" value="{$import.value[import]|string_format:"%0.2f"}" size="7"> <B>z³</B>
+			</TD>
+			<TD width="94%">
+				<INPUT type="text" name="import[{$n}][comment]" value="{$import.comment[import]|escape}" size="75">
+			</TD>
+			<TD width="1%" class="fright">
+				<INPUT type="text" name="import[{$n}][time]" value="{$import.time[import]|date_format:"%Y/%m/%d"}" size="10">
+			</TD>
+		</TR>
+	{/section}
+	<TR class="DARK">
+		<TD width="100%" class="fleftu" colspan="5">
+			<INPUT style="border-style: none; background-color: #CEBD9B;" type="checkbox" name="allbox" onClick="CheckAll();" value="Check All Boxes">  Zaznacz wszystkie
+		</TD>
+		<TD width="100%" class="frightu" colspan="2" align="right">
+			<A href="javascript: document.lmsimport.submit();">Importuj zaznaczone <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>		
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{else}
+<P>
+<FORM name="lmsimport" enctype="multipart/form-data" method="post" action="?m=import&upload=1">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fall" width="100%">
+			
+			<B>Podaj ¶cie¿kê do pliku z danymi do importu</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" NOWRAP>
+		<IMG src="img/attach.gif" alt="" border="0" align="absmiddle">
+			<B>Plik importu: </B><INPUT name="file" type="file" size="70" {tip text="Podaj ¶cie¿kê do pliku lub skorzystaj z przycisku 'Przegl±daj'" trigger="file"}>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" align="right">
+			<A href="javascript: document.lmsimport.submit();">Wczytaj <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{/if}
+{include file="footer.html"}
