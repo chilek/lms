@@ -23,7 +23,7 @@
 			<TABLE>
 				<TR>
 					<TD>
-						<B>ID:</B>
+						<B>{t}ID:{/t}</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -32,20 +32,20 @@
 				</TR>
 				<TR>
 					<TD>
-						<B>Nazwisko:</B>
+						<B>{t}Name:{/t}</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname|escape}" {tip text="Wpisz nazwê/nazwisko u¿ytkownika" trigger="username" bold=1}>
+						<INPUT TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname|escape}" {tip text="Enter name/surname of customer" trigger="username" bold=1}>
 					</TD>
 				</TR>
 				<TR>
 					<TD>
-						<B>Imiê:</B>
+						<B>{t}Forename:{/t}</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name|escape}" {tip text="Wpisz imiê u¿ytkownika" trigger="username" bold=1}>
+						<INPUT TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name|escape}" {tip text="Enter forename of customer (optional)" trigger="username" bold=1}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -58,10 +58,10 @@
 			{if $userinfo.status eq "1"}<IMG SRC="img/unk.gif" ALT="" border="0">{/if}
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" NAME="userdata[status]" {tip text="Wybierz status u¿ytkownika" trigger="status"}>
-				<OPTION VALUE="3"{if $userinfo.status eq "3"} SELECTED{/if}>pod³±czony</OPTION>
-				<OPTION VALUE="2"{if $userinfo.status eq "2"} SELECTED{/if}>oczekuj±cy</OPTION>
-				<OPTION VALUE="1"{if $userinfo.status eq "1"} SELECTED{/if}>zainteresowany</OPTION>
+			<SELECT SIZE="1" NAME="userdata[status]" {tip text="Select customer state" trigger="status"}>
+				<OPTION VALUE="3"{if $userinfo.status eq "3"} SELECTED{/if}>{t}connected{/t}</OPTION>
+				<OPTION VALUE="2"{if $userinfo.status eq "2"} SELECTED{/if}>{t}waiting{/t}</OPTION>
+				<OPTION VALUE="1"{if $userinfo.status eq "1"} SELECTED{/if}>{t}interested{/t}</OPTION>
 				</SELECT>
 		</TD>
 	</TR>
@@ -69,7 +69,7 @@
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/phone.gif" BORDER="0" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2" {tip text="Wpisz numer telefonu"}>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2" {tip text="Enter phone number(s)"}>
 			<INPUT TYPE="TEXT" NAME="userdata[phone1]" VALUE="{$userinfo.phone1}"><BR>
 			<INPUT TYPE="TEXT" NAME="userdata[phone2]" VALUE="{$userinfo.phone2}"><BR>
 			<INPUT TYPE="TEXT" NAME="userdata[phone3]" VALUE="{$userinfo.phone3}">
@@ -80,21 +80,21 @@
 			<IMG SRC="img/home.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" SIZE="30" {tip text="Podaj adres" trigger="address"}>
+			<INPUT TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" SIZE="30" {tip text="Enter address" trigger="address"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>Kod:</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="5" {tip text="Wpisz kod pocztowy" trigger="zip"}><BR>
+			<B>{t}Zip:{/t}</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="5" {tip text="Enter post code" trigger="zip"}><BR>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>Miasto:</B><BR><INPUT TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" SIZE="30" {tip text="Wpisz nazwê miasta"}>
+			<B>{t}City:{/t}</B><BR><INPUT TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" SIZE="30" {tip text="Enter city"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -102,7 +102,7 @@
 			<IMG SRC="img/mail.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[email]" VALUE="{$userinfo.email}" SIZE="30" {tip text="Wpisz adres e-mail (opcjonalnie)" trigger="email" }><BR>
+			<INPUT TYPE="TEXT" NAME="userdata[email]" VALUE="{$userinfo.email}" SIZE="30" {tip text="Enter e-mail address (optional)" trigger="email" }><BR>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -110,23 +110,23 @@
 			<IMG SRC="img/gg.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[gguin]" VALUE="{if $userinfo.gguin}{$userinfo.gguin}{/if}" SIZE="30" {tip text="Wpisz numer gadu-gadu (opcjonalnie)" trigger="gguin"}>
+			<INPUT TYPE="TEXT" NAME="userdata[gguin]" VALUE="{if $userinfo.gguin}{$userinfo.gguin}{/if}" SIZE="30" {tip text="Enter Internet Messenger UID (optional)" trigger="gguin"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>NIP</B>
+			<B>{t}NIP{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[nip]" VALUE="{$userinfo.nip}" SIZE="30" {tip text="Wpisz numer identyfikacji podatkowej (opcjonalnie)" trigger="nip"}>
+			<INPUT TYPE="TEXT" NAME="userdata[nip]" VALUE="{$userinfo.nip}" SIZE="30" {tip text="Enter Vat Registry Number (optional)" trigger="nip"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>PSL</B>
+			<B>{t}PID{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[pesel]" VALUE="{$userinfo.pesel}" SIZE="30" {tip text="Wpisz PESEL u¿ytkownika (opcjonalnie)" trigger="pesel"}>
+			<INPUT TYPE="TEXT" NAME="userdata[pesel]" VALUE="{$userinfo.pesel}" SIZE="30" {tip text="Enter Personal ID (optional)" trigger="pesel"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -134,11 +134,11 @@
 			<IMG SRC="img/pin.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>PIN:</B>
+			<B>{t}PIN:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="userdata[pin]" VALUE="{if $userinfo.pin}{$userinfo.pin}{/if}" SIZE="6" {tip text="Wpisz min.4 i max.6 cyfrowy numer PIN (opcjonalnie)" trigger="pin"}>&nbsp;
-			<A href="javascript: randomize()" {tip text="[ Generuj PIN ]"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="userdata[pin]" VALUE="{if $userinfo.pin}{$userinfo.pin}{/if}" SIZE="6" {tip text="Enter min.4 i max.6 digit PIN number (optional)" trigger="pin"}>&nbsp;
+			<A href="javascript: randomize()" {tip text="[ {t}Generate PIN{/t} ]"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	
@@ -147,10 +147,10 @@
 			<IMG SRC="img/money.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Saldo:</B>
+			<B>{t}Balance:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			{if $userinfo.balance < 0}<FONT CLASS="ALERT">{$userinfo.balance|default:"0"} z³</FONT>{else}{$userinfo.balance|default:"0"} z³{/if}
+			{if $userinfo.balance < 0}<FONT CLASS="ALERT">{$userinfo.balance|money_format}</FONT>{else}{$userinfo.balance|money_format}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -158,8 +158,8 @@
 			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Utworzony:<BR>
-			Zmodyfikowany:</B>
+			<B>{t}Created:{/t}<BR>
+			{t}Modified:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{$userinfo.createdby}, {$userinfo.creationdateh}<BR>
@@ -173,7 +173,7 @@
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<TABLE WIDTH="1%" CELLPADDING="5">
 				<TR>
-					<TD CLASS="FALL" BGCOLOR="#F4F0EC" {tip text="Adres do dorêczeñ (opcjonalnie)"}>
+					<TD CLASS="FALL" BGCOLOR="#F4F0EC" {tip text="Enter service address (optional)"}>
 						<TEXTAREA NAME="userdata[serviceaddr]" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5">{$userinfo.serviceaddr}</TEXTAREA>
 					</TD>
 				</TR>
@@ -187,7 +187,7 @@
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<TABLE WIDTH="1%" CELLPADDING="5">
 				<TR>
-					<TD CLASS="FALL" BGCOLOR="#F4F0EC" {tip text="Informacje dodatkowe (opcjonalnie)"}>
+					<TD CLASS="FALL" BGCOLOR="#F4F0EC" {tip text="Enter additional informations (optional)"}>
 						<TEXTAREA NAME="userdata[info]" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5">{$userinfo.info}</TEXTAREA>
 					</TD>
 				</TR>
@@ -201,7 +201,7 @@
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<TABLE WIDTH="1%" CELLPADDING="5">
 				<TR>
-					<TD CLASS="FALL" BGCOLOR="#F4F0EC" {tip text="Wiadomo¶æ administracyjna do u¿ytkownika (opcjonalnie)"}>
+					<TD CLASS="FALL" BGCOLOR="#F4F0EC" {tip text="Enter warning message contents (optional)"}>
 						<TEXTAREA NAME="userdata[message]" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5">{$userinfo.message}</TEXTAREA>
 					</TD>
 				</TR>
@@ -210,8 +210,8 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=userinfo&id={$userinfo.id}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{t}Save{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=userinfo&id={$userinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
 		</TD>
 	</TR>
 </TABLE>
