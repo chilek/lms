@@ -4,7 +4,7 @@
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
 <meta http-equiv="Content-Language" content="pl">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
-<title>::: Witamy w LMS {$layout.lmsv} :::</title>
+<title>::: {t}Welcome in LMS{/t} {$layout.lmsv} :::</title>
 {literal}
 <STYLE type="text/css"><!--
 BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
@@ -32,7 +32,7 @@ INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border
 								<TD ALIGN="CENTER" STYLE="border-width: 1pt; border-style: solid; background-color: #DFD5BD; border-color: #888888" WIDTH="300">
 									<DIV ALIGN="CENTER">
 										<CENTER>
-											<B>LMS wersja {$layout.lmsv}<BR><BR>
+											<B>{t}LMS version{/t} {$layout.lmsv}<BR><BR>
 											&copy; 2001-2004 LMS Developers</B><BR><BR><BR>
 											 {if $error}<FONT COLOR="red"><B>{$error}</B></FONT>{else}&nbsp;{/if}<BR>
 											 <BR>
@@ -40,7 +40,7 @@ INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border
 												<TABLE>
 													<TR>
 														<TD align="right">
-															<B>Login:&nbsp;</B>
+															<B>{t}Login:{/t}&nbsp;</B>
 														</TD>
 														<TD>
 															<INPUT TYPE="TEXT" NAME="loginform[login]" SIZE="10" ACCESSKEY="l">
@@ -48,7 +48,7 @@ INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border
 													</TR>
 													<TR>
 														<TD align="right">
-															<B>Hasło:&nbsp;</B>
+															<B>{t}Password:{/t}&nbsp;</B>
 														</TD>
 														<TD>
 															<INPUT TYPE="PASSWORD" NAME="loginform[pwd]" SIZE="10"><BR>
@@ -61,7 +61,7 @@ INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border
 													</TR>
 													<TR>
 														<TD COLSPAN="2" align="CENTER">
-															<INPUT TYPE="SUBMIT" NAME="loginform[submit]" VALUE="Zaloguj się">
+															<INPUT TYPE="SUBMIT" NAME="loginform[submit]" VALUE="{t}Login{/t}">
 														</TD>
 													</TR>
 												</TABLE>
@@ -69,8 +69,8 @@ INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border
 											<BR>
 											<BR>
 											<BR>
-											<A HREF="doc/html/"><FONT COLOR="#888888">dokumentacja</FONT></A><BR>
-											<A HREF="http://lms.rulez.pl/"><FONT COLOR="#888888">strona domowa</FONT></A>
+											<A HREF="doc/html/"><FONT COLOR="#888888">{t}Documentation{/t}</FONT></A><BR>
+											<A HREF="http://lms.rulez.pl/"><FONT COLOR="#888888">{t}LMS Project home page{/t}</FONT></A>
 										</CENTER>
 									</DIV>								
 								</TD>
