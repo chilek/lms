@@ -1529,6 +1529,10 @@ user = lms
 password = has³o
 hosts = localhost
 dbname = lms
+#MySQL nie obs³uguje opcji query, dlatego budujemy zapytanie w inny sposób
+#select_field = name
+#table = domains
+#where_field = name
 query = SELECT name FROM domains WHERE name = '%s'
 
 # pgsql_virtual_mailbox_maps.cf (Postfix):
@@ -1537,8 +1541,10 @@ user = lms
 password = has³o
 hosts = localhost
 dbname = lms
-#query = SELECT CONCAT(login,'/') FROM passwd, domains WHERE domainid = domains.id
-#       AND login = '%u' AND domains.name = '%d'
+#table = passwd, domains
+#select_field = CONCAT(login,'/')
+#where_field = CONCAT(login,'@',domains.name)
+additional_conditions = AND domainid = domains.id
 #       AND type & 2 = 2 AND (expdate = 0 OR expdate > UNIX_TIMESTAMP())
 query = SELECT login || '/' FROM passwd, domains WHERE domainid = domains.id
         AND login = '%u' AND domains.name = '%d'
@@ -1551,9 +1557,10 @@ user = lms
 password = has³o
 hosts = localhost
 dbname = lms
-#query = SELECT CONCAT(passwd.login,'@',domains.name) FROM passwd, domains, aliases
-#       WHERE passwd.domainid = domains.id AND passwd.id = aliases.accountid
-#       AND aliases.login = '%u' AND domains.name = '%d'
+#table = passwd, domains, aliases
+#select_field = CONCAT(passwd.login,'@',domains.name)
+#where_field = CONCAT(aliases.login,'@',domains.name)
+#additional_conditions = AND  passwd.domainid = domains.id AND passwd.id = aliases.accountid
 query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
         WHERE passwd.domainid = domains.id AND passwd.id = aliases.accountid
         AND aliases.login = '%u' AND domains.name = '%d'
@@ -4279,6 +4286,7 @@ Rozdzia³ 9. FAQ
    9.6. Która wersja LMSa jest najnowsza?
    9.7. Jak wypisaæ siê z listy mailingowej?
    9.8. Jakie s± ograniczenia ilo¶ci urz±dzeñ na mapie?
+   9.9. Insecure $ENV{BASH_ENV} while running -T switch...
 
    9.1. Co zrobiæ gdy nie generuje siê mapa sieci?
 
@@ -4314,7 +4322,7 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
    Je¿eli jeste¶ zainteresowany do³±czeniem do grona developerów i
    otrzymaniem praw zapisu do CVSu zg³o¶ tak± chêæ na listê. Wcze¶niej
    jednak powiniene¶ siê daæ poznaæ na li¶cie jako odpowiedzialna i
-   kompetentna osoba np. przysy³aj±c popraweki.
+   kompetentna osoba np. przysy³aj±c poprawki.
 
    9.6. Która wersja LMSa jest najnowsza?
 
@@ -4347,3 +4355,12 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
    zmniejszyæ (w zale¿no¶ci od rozmieszczenia urz±dzeñ na siatce mapy).
    Po przekroczeniu tej liczby mog± wystêpowaæ b³êdne po³±czenia
    wybiegaj±ce poza mapê, ¿adziej problemy z wygenerowaniem mapy.
+
+   9.9. Insecure $ENV{BASH_ENV} while running -T switch...
+
+   Powo³any b³±d pojawia siê podczas uruchamiania skryptów perlowych
+   korzystaj±cych z zewnêtrznych programów na niektórych systemach. Opis
+   problemu i sposoby jego rozwi±zania podane s± w manualu perla (man
+   perlsec) w dziale "Cleaning Up Your Path". Naprostszym rozwi±zaniem
+   jest usuniêcie przy³±cznika -T (który odpowiada za to zamieszanie) z
+   pierwszej linii skryptu.

@@ -59,7 +59,7 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 		Je¿eli jeste¶ zainteresowany do³±czeniem do grona developerów
 		i otrzymaniem praw zapisu do CVSu zg³o¶ tak± chêæ na listê. Wcze¶niej
 		jednak powiniene¶ siê daæ poznaæ na li¶cie jako odpowiedzialna 
-		i kompetentna osoba np. przysy³aj±c popraweki.</para>
+		i kompetentna osoba np. przysy³aj±c poprawki.</para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>
@@ -103,6 +103,20 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 		zale¿no¶ci od rozmieszczenia urz±dzeñ na siatce mapy). Po przekroczeniu
 		tej liczby mog± wystêpowaæ b³êdne po³±czenia wybiegaj±ce poza mapê, ¿adziej
 		problemy z wygenerowaniem mapy.
+		</para>
+	    </answer>
+	</qandaentry>
+	<qandaentry>
+	    <question id="q9">
+	    	<para><emphasis role="bold">Insecure $ENV{BASH_ENV} while running -T switch...</emphasis></para>
+	    </question>
+	    <answer>
+	        <para>Powo³any b³±d pojawia siê podczas uruchamiania skryptów
+		perlowych korzystaj±cych z zewnêtrznych programów na niektórych 
+		systemach. Opis problemu i sposoby jego rozwi±zania podane s± w manualu
+		perla (man perlsec) w dziale "Cleaning Up Your Path". Naprostszym rozwi±zaniem jest
+		usuniêcie przy³±cznika -T (który odpowiada za to zamieszanie) z pierwszej 
+		linii skryptu.
 		</para>
 	    </answer>
 	</qandaentry>
