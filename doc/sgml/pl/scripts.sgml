@@ -301,7 +301,7 @@ http://www.naszasiec.pl/</screen></example>
 	 <para>Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
 	 klientom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
 	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</para>
-	 <para>Skrypt ten udostêpnia dwie opcje do fakturowania, które mo¿na ustawiæ
+	 <para>Skrypt ten udostêpnia trzy opcje do fakturowania, które mo¿na ustawiæ
 	 w sekcji <emphasis>[payments]</emphasis> pliku <filename>lms.ini</filename>:</para>
 	  <itemizedlist>
           <listitem>
@@ -313,6 +313,13 @@ http://www.naszasiec.pl/</screen></example>
 	   <para>paytype (opcjonalny)</para>
 	   <para>Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'</para>
 	   <para>Przyk³ad:	<prompt>paytype = 'GOTÓWKA'</prompt></para>
+	  </listitem>
+          <listitem>
+	   <para>comment</para>
+	   <para>Opis operacji, w którym mo¿na skorzystaæ ze zmiennych: %tariff
+	   - zamienianej na nazwê taryfy, %period - okres i %desc - opis taryfy. 
+	   Domy¶lnie: 'Abonament wg taryfy %tariff za okres %period'</para>
+	   <para>Przyk³ad:	<prompt>comment = %desc</prompt></para>
 	  </listitem>
 	 </itemizedlist>
 	 <para>Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ
