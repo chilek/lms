@@ -1,11 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Instalacja i konfiguracja</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="HOME"
 TITLE="LMS - LAN Management System 1.1-cvs"
 HREF="index.html"><LINK
@@ -27,7 +27,6 @@ TEXT="#000000"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
-SUMMARY="Header navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -45,7 +44,6 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="moreinfo.html"
-ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
@@ -59,8 +57,7 @@ ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="install-requirements.html"
-ACCESSKEY="N"
->Nast&#281;pny</A
+>Nastêpny</A
 ></TD
 ></TR
 ></TABLE
@@ -72,14 +69,14 @@ CLASS="CHAPTER"
 ><H1
 ><A
 NAME="INSTALL"
-></A
->Rozdzia&#322; 2. Instalacja i konfiguracja</H1
+>Rozdzia³ 2. Instalacja i konfiguracja</A
+></H1
 ><DIV
 CLASS="TOC"
 ><DL
 ><DT
 ><B
->Spis tre&#347;ci</B
+>Spis tre¶ci</B
 ></DT
 ><DT
 >2.1. <A
@@ -95,28 +92,33 @@ HREF="install-requirements.html"
 ><DL
 ><DT
 >2.2.1. <A
-HREF="install-requirements.html#AEN179"
+HREF="install-requirements.html#AEN184"
 >Serwer WWW</A
 ></DT
 ><DT
 >2.2.2. <A
-HREF="install-requirements.html#AEN184"
+HREF="install-requirements.html#AEN189"
 >Interpreter PHP</A
 ></DT
 ><DT
 >2.2.3. <A
-HREF="install-requirements.html#AEN188"
+HREF="install-requirements.html#AEN193"
 >Serwer baz danych</A
 ></DT
 ><DT
 >2.2.4. <A
-HREF="install-requirements.html#AEN192"
+HREF="install-requirements.html#AEN197"
 >Biblioteka Smarty</A
 ></DT
 ><DT
 >2.2.5. <A
-HREF="install-requirements.html#AEN197"
+HREF="install-requirements.html#AEN202"
 >Perl</A
+></DT
+><DT
+>2.2.6. <A
+HREF="install-requirements.html#AEN220"
+>Kompilator jêzyka C</A
 ></DT
 ></DL
 ></DD
@@ -153,17 +155,17 @@ HREF="install-config.html"
 ><DL
 ><DT
 >2.5.1. <A
-HREF="install-config.html#AEN285"
+HREF="install-config.html#AEN307"
 >Sekcja [database] - ustawienia bazy danych</A
 ></DT
 ><DT
 >2.5.2. <A
-HREF="install-config.html#AEN314"
+HREF="install-config.html#AEN336"
 >Sekcja [directories] - ustawienia katalogów</A
 ></DT
 ><DT
 >2.5.3. <A
-HREF="install-config.html#AEN357"
+HREF="install-config.html#AEN379"
 >Sekcja [phpui] - ustawienia interfejsu</A
 ></DT
 ></DL
@@ -177,12 +179,12 @@ HREF="install-rights.html"
 ><DL
 ><DT
 >2.6.1. <A
-HREF="install-rights.html#AEN439"
+HREF="install-rights.html#AEN461"
 >Idea</A
 ></DT
 ><DT
 >2.6.2. <A
-HREF="install-rights.html#AEN464"
+HREF="install-rights.html#AEN486"
 >Jak to dzia³a?</A
 ></DT
 ></DL
@@ -198,35 +200,38 @@ NAME="INSTALL-INTRO"
 >2.1. Wstêp</A
 ></H1
 ><P
->LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <SPAN
-CLASS="emphasis"
-><I
+>LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <I
 CLASS="EMPHASIS"
 >LMS-UI</I
-></SPAN
 > 
 	(interfejs u¿ytkownika). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy danych 
-	(w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w <SPAN
-CLASS="emphasis"
-><I
+	(w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w <I
 CLASS="EMPHASIS"
 >LMS-UI</I
-></SPAN
 > wykonujemy wszystkie 
 	czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMS.</P
 ><P
 >LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty wymagaj± 
 	aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, 
 	musisz mieæ PERLa. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych 
-	b±d¼ wysy³anie upomnieñ. Jest jeszcze <SPAN
-CLASS="emphasis"
-><I
+	b±d¼ wysy³anie upomnieñ. Jest jeszcze <I
 CLASS="EMPHASIS"
 >LMS-MGC</I
-></SPAN
 >, który te¿ jest skryptem ale na tyle 
 	uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i zrestartowaæ 
 	us³ugê na twoim serwerze.</P
+><P
+>Jest jeszcze <I
+CLASS="EMPHASIS"
+>A.L.E.C's LMS Daemon</I
+>, napisany w jêzyku C. Jest on przeznaczony 
+	(a w³a¶ciwie jego wtyczki) do generowania plików konfiguracyjnych i restartowania us³ug. 
+	Mo¿na go stosowaæ jako zamiennik lub uzupe³nienie skryptów perlowych.
+	Odpowiada on za to, aby to co zosta³o zmienione w <I
+CLASS="EMPHASIS"
+>LMS-UI</I
+> zosta³o zmienione tak¿e 
+	w rzeczywisto¶ci.</P
 ></DIV
 ></DIV
 ><DIV
@@ -234,7 +239,6 @@ CLASS="NAVFOOTER"
 ><HR
 ALIGN="LEFT"
 WIDTH="100%"><TABLE
-SUMMARY="Footer navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -246,7 +250,6 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="moreinfo.html"
-ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
@@ -255,8 +258,7 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="index.html"
-ACCESSKEY="H"
->Spis tre&#347;ci</A
+>Spis tre¶ci</A
 ></TD
 ><TD
 WIDTH="33%"
@@ -264,8 +266,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="install-requirements.html"
-ACCESSKEY="N"
->Nast&#281;pny</A
+>Nastêpny</A
 ></TD
 ></TR
 ><TR

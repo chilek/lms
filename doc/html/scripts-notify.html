@@ -1,11 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML
 ><HEAD
 ><TITLE
 >lms-notify</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="HOME"
 TITLE="LMS - LAN Management System 1.1-cvs"
 HREF="index.html"><LINK
@@ -30,7 +30,6 @@ TEXT="#000000"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
-SUMMARY="Header navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -48,22 +47,20 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="scripts-list.html"
-ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 4. Skrypty</TD
+>Rozdzia³ 4. Skrypty</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="scripts-cutoff.html"
-ACCESSKEY="N"
->Nast&#281;pny</A
+>Nastêpny</A
 ></TD
 ></TR
 ></TABLE
@@ -83,7 +80,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN794"
+NAME="AEN816"
 >4.3.1. Szablony</A
 ></H2
 ><P
@@ -123,11 +120,11 @@ NAME="AEN794"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN813"
+NAME="AEN835"
 ></A
 ><P
 ><B
->Przyk&#322;ad 4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</B
+>Przyk³ad 4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</B
 ></P
 ><PRE
 CLASS="SCREEN"
@@ -145,11 +142,11 @@ CLASS="SCREEN"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN816"
+NAME="AEN838"
 ></A
 ><P
 ><B
->Przyk&#322;ad 4-2. Lms-notify: Przyk³ad szablonu</B
+>Przyk³ad 4-2. Lms-notify: Przyk³ad szablonu</B
 ></P
 ><PRE
 CLASS="SCREEN"
@@ -197,19 +194,16 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN819"
+NAME="AEN841"
 >4.3.2. Konfiguracja</A
 ></H2
 ><P
 >Konfiguracjê dla lms-notify mo¿na ustaliæ w pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
-> w sekcji <SPAN
-CLASS="emphasis"
-><I
+> w sekcji <I
 CLASS="EMPHASIS"
 >[notify]</I
-></SPAN
 >. 
 	   Mo¿esz tam ustawiæ nastêpuj±ce parametry:</P
 ><UL
@@ -219,9 +213,9 @@ CLASS="EMPHASIS"
 ><P
 >Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:	<TT
 CLASS="PROMPT"
->limit = -20</SAMP
+>limit = -20</TT
 ></P
 ></LI
 ><LI
@@ -230,9 +224,9 @@ CLASS="PROMPT"
 ><P
 >Pozwala na ustalenie tematu emaila wysy³anego do u¿ytkownika. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie nieustawione.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:	<TT
 CLASS="PROMPT"
->mailsubject = Informacje o zaleg³o¶ciach w op³atach za internet</SAMP
+>mailsubject = Informacje o zaleg³o¶ciach w op³atach za internet</TT
 ></P
 ></LI
 ><LI
@@ -241,9 +235,9 @@ CLASS="PROMPT"
 ><P
 >Pozwala na wskazanie szablonu wiadomo¶ci która zostanie wys³ana do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie nieustawione</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:	<TT
 CLASS="PROMPT"
->mailtemplate = /etc/lms/notifytemplate.txt</SAMP
+>mailtemplate = /etc/lms/notifytemplate.txt</TT
 ></P
 ></LI
 ><LI
@@ -252,9 +246,9 @@ CLASS="PROMPT"
 ><P
 >Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie nieustawione</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:	<TT
 CLASS="PROMPT"
->mailfrom = staff@domain.pl</SAMP
+>mailfrom = staff@domain.pl</TT
 ></P
 ></LI
 ><LI
@@ -263,9 +257,9 @@ CLASS="PROMPT"
 ><P
 >Nazwa nadawcy maila</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:	<TT
 CLASS="PROMPT"
->mailfname = Administratorzy</SAMP
+>mailfname = Administratorzy</TT
 ></P
 ></LI
 ><LI
@@ -274,9 +268,9 @@ CLASS="PROMPT"
 ><P
 >Serwer SMTP przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:	<TT
 CLASS="PROMPT"
->smtp_server = smtp.mydomain.pl</SAMP
+>smtp_server = smtp.mydomain.pl</TT
 ></P
 ></LI
 ><LI
@@ -285,9 +279,9 @@ CLASS="PROMPT"
 ><P
 >Adres email do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do u¿ytkowników. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie nieustawiony.</P
 ><P
->Przyk³ad:	<SAMP
+>Przyk³ad:	<TT
 CLASS="PROMPT"
->debug_email = lexx@domain.pl</SAMP
+>debug_email = lexx@domain.pl</TT
 ></P
 ></LI
 ></UL
@@ -298,7 +292,6 @@ CLASS="NAVFOOTER"
 ><HR
 ALIGN="LEFT"
 WIDTH="100%"><TABLE
-SUMMARY="Footer navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -310,7 +303,6 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="scripts-list.html"
-ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
@@ -319,8 +311,7 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="index.html"
-ACCESSKEY="H"
->Spis tre&#347;ci</A
+>Spis tre¶ci</A
 ></TD
 ><TD
 WIDTH="33%"
@@ -328,8 +319,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="scripts-cutoff.html"
-ACCESSKEY="N"
->Nast&#281;pny</A
+>Nastêpny</A
 ></TD
 ></TR
 ><TR
@@ -344,8 +334,7 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="scripts.html"
-ACCESSKEY="U"
->Pocz&#261;tek rozdzia&#322;u</A
+>Pocz±tek rozdzia³u</A
 ></TD
 ><TD
 WIDTH="33%"
