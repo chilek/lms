@@ -26,7 +26,7 @@ use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
-use vars qw($configfile $quiet $help $version);
+use vars qw($configfile $quiet $help $version $fakedate);
 use POSIX qw(strftime);
 use POSIX qw(mktime);
 
@@ -37,6 +37,7 @@ my %options = (
 	"--quiet|q"		=>	\$quiet,
 	"--help|h"		=>	\$help,
 	"--version|v"		=>	\$version,
+	"--fakedate|f=s"	=>	\$fakedate,
 );
 
 Getopt::Long::config("no_ignore_case");
@@ -52,6 +53,7 @@ lms-payments, version $_version
 -h, --help			print this help and exit;
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
+-f, --fakedate=YYYYMMDD		override system date
 
 EOF
 	exit 0;
@@ -120,6 +122,13 @@ else
 	exit 1;
 }
 
+if($fakedate)
+{
+	my @fakedate = split(//, $fakedate);
+	print @fakedate[0..1];
+	die;
+}
+
 my $month = sprintf("%d",strftime("%m",localtime()));
 my $day = strftime("%e",localtime());
 my $year = strftime("%Y",localtime());
@@ -153,7 +162,7 @@ my $icdbq;
 
 # dobra, query wybiera *WSZYSTKIE* mo¿liwe assigmenty na dany dzieñ.
 
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0)");
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) ORDER BY value ASC");
 $dbq->execute();
 
 print "UID:\tKwota:\tZa:\n";
