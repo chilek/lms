@@ -69,16 +69,10 @@ if($c == 'cdate' && $s)
 
 $invoicelist = $LMS->GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $o);
 
-$listdata['startdate'] = $invoicelist['startdate'];
-$listdata['enddate'] = $invoicelist['enddate'];
-$listdata['startyear'] = date('Y',$listdata['startdate']);
-$listdata['endyear'] = date('Y',$listdata['enddate']);
 $listdata['cat'] = $_SESSION['ilc'];
 $listdata['search'] = $_SESSION['ils'];
 $listdata['group'] = $_SESSION['ilg'];
 $listdata['groupexclude'] = $_SESSION['ilge'];
-
-unset($invoicelist['startdate'], $invoicelist['enddate']);
 
 $listdata['totalpos'] = sizeof($invoicelist);
 
