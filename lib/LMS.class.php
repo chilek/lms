@@ -980,6 +980,96 @@ class LMS
 		return $nodelist;
 	}
 
+	function SearchNodeList($args, $order="name,asc")
+	{
+
+		if($order=="")
+			$order="name,asc";
+
+		list($order,$direction) = explode(",",$order);
+
+		if($direction=="desc")
+			$direction = "DESC";
+		else
+			$direction = "ASC";
+
+		switch($order)
+		{
+			case "name":
+				$sqlord = " ORDER BY name";
+			break;
+
+			case "id":
+				$sqlord = " ORDER BY id";
+			break;
+
+			case "mac":
+				$sqlord = " ORDER BY mac";
+			break;
+		}
+
+		foreach($args as $idx => $value)
+		{
+			if($value!="")
+				$searchargs[] = $idx." LIKE '%".$value."%'";
+		}
+
+		if($searchargs)
+			$searchargs = " WHERE 1=1 AND ".implode(" AND ",$searchargs);
+
+		if($username = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
+			foreach($username as $idx => $row)
+				$usernames[$row[id]] = $row[username];
+
+		if($nodelist = $this->ADB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".$searchargs." ".($sqlord != "" ? $sqlord." ".$direction : "")))
+		{
+			foreach($nodelist as $idx => $row)
+			{
+				$nodelist[$idx][iplong] = ip_long($row[ipaddr]);
+				$nodelist[$idx][owner] = $usernames[$row[ownerid]];
+				if($row[access]=="Y")
+					$totalon++;
+				else
+					$totaloff++;
+			}			
+		}
+
+		switch($order)
+		{
+			case "ip":
+				foreach($nodelist as $idx => $row)
+				{
+					$iptable[idx][] = $idx;
+					$iptable[iplong][] = $row[iplong];
+				}
+				array_multisort($iptable[iplong],($direction == "DESC" ? SORT_DESC : SORT_ASC),SORT_NUMERIC,$iptable[idx]);
+				foreach($iptable[idx] as $idx)
+					$nnodelist[] = $nodelist[$idx];
+				$nodelist = $nnodelist;
+			break;
+
+			case "owner":
+				foreach($nodelist as $idx => $row)
+				{
+					$ownertable[idx][] = $idx;
+					$ownertable[owner][] = $row[owner];
+				}
+				array_multisort($ownertable[owner],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable[idx]);
+				foreach($ownertable[idx] as $idx)
+					$nnodelist[] = $nodelist[$idx];
+				$nodelist = $nnodelist;
+			break;
+		}
+
+		$nodelist[total] = sizeof($nodelist);
+		$nodelist[order] = $order;
+		$nodelist[direction] = $direction;
+		$nodelist[totalon] = $totalon;
+		$nodelist[totaloff] = $totaloff;
+
+		return $nodelist;
+	}
+	
 	function DatabaseList()
 	{
 		if ($handle = opendir($this->CONFIG[backup_dir]))
