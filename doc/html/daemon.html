@@ -342,7 +342,8 @@ port            = 0             # numer portu, domy¶lnie: 0
 [lmsd]
 sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma
                                 # byæ sprawdzane ¿±danie reloadu, domy¶lnie: 30
-instances       = hosts oident firewall       # lista instancji modu³ów</PRE
+instances       = hosts oident firewall       # lista instancji modu³ów
+command         = 'echo "³±czê siê z baz±"'   # polecenie wykonywane przed ka¿dym po³±czeniem z baz±	</PRE
 >
 			<DIV
 CLASS="NOTE"
@@ -381,6 +382,10 @@ module = /¶cie¿ka/nazwa_modu³u.so
 info = "Opcjonalny opis modu³u"</PRE
 >		
 			</P
+><P
+>Zmiana opcji 'instances' oraz dowolnej opcji w sekcjach
+			instancji, w odró¿nieniu od pozosta³ych opcji globalnych,
+			nie wymaga restartu demona.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -414,12 +419,12 @@ CLASS="SCREEN"
 ><P
 >Innym sposobem uruchomienia jest jednorazowy reload w wykorzystaniem
 			crona. Z tego sposobu nale¿y korzystaæ uruchamiaj±c modu³y takie jak 'payments'
-			'notify' 'traffic'. W tym wypadku musisz stworzyæ osobny plik konfiguracyjny 
-			dla ka¿dego modu³u (zawieraj±cy równie¿ opcje dla demona) i podaæ go demonowi
-			przy pomocy opcji '-c'. Przyk³adowy wpis do crontab'a wygl±da nastêpuj±co:
+			'notify', 'traffic', czy 'pinger'. W tym wypadku mo¿esz okre¶liæ listê 
+			instancji do wykonania za pomoc± opcji '-i'.
+			Przyk³adowy wpis do crontab'a wygl±da nastêpuj±co:
 <PRE
 CLASS="SCREEN"
->  1 0 * * *    /usr/local/bin/almsd -q -c /etc/lms/payments.lms.ini</PRE
+>  1 0 * * *    /usr/local/bin/almsd -qi "payments notify"</PRE
 >
 			</P
 ><P
@@ -427,6 +432,7 @@ CLASS="SCREEN"
 <PRE
 CLASS="SCREEN"
 >  -c	¶cie¿ka do pliku konfiguracyjnego (domy¶lnie: /etc/lms/lms.ini)
+  -i	lista instancji (oddzielonych spacj±) do prze³adowania
   -b	uruchomienie w tle
   -s	czas w sek. miêdzy odczytami tabeli 'reload' (domy¶lnie: 30)
   -q 	wykonaj reload i zakoñcz

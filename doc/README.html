@@ -2982,6 +2982,8 @@ VALIGN="TOP"
 CLASS="FILENAME"
 >lastonline_limit</TT
 > w sekcji [phpui] pliku konfiguracyjnego.
+		Powy¿sze odnosi siê równie¿ do urz±dzeñ z tym, ¿e status urz±dzenia okre¶la
+		siê na podstawie statusu wszystkich jego adresów.
 		Status komputerów jest tak¿e widoczny na li¶cie komputerów.
 		<DIV
 CLASS="NOTE"
@@ -4118,6 +4120,12 @@ ALIGN="CENTER"><THEAD
 >lms-fping</TD
 ><TD
 >Badanie aktywno¶ci komputerów.</TD
+></TR
+><TR
+><TD
+>lms-rtparser</TD
+><TD
+>Backend do Helpdesk'a.</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -5660,6 +5668,126 @@ CLASS="PROMPT"
 ></LI
 ></UL
 ></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="LMS-RTPARSER"
+>4.3.15. lms-rtparser</A
+></H3
+><P
+>Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który wspó³pracuj±c
+	    z serwerm pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
+	    adresy Helpdesk'a. Skrypt pobiera z wej¶cia wiadomo¶æ pocztow±, parsuje zawarto¶æ
+	    i umieszcza zg³oszenie w kolejce, wysy³aj±c do zg³aszaj±cych
+	    potwierdzenie przyjêcia wiadomo¶ci. W temacie potwierdzenia znajduje siê symbol
+	    zg³oszenia. Podczas parsowania wiadomo¶ci nastêpuje, na 
+	    podstawie tematu wiadomo¶ci, próba rozpoznania czy wiadomo¶æ nie jest odpowiedzi± na inn± wiadomo¶æ z ju¿
+	    przypisanym numerem zg³oszenia. Od wiadomo¶ci zostaj± od³±czone za³±czniki
+	    i umieszczone w katalogu zdefiniowanym w opcji <TT
+CLASS="FILENAME"
+>mail_dir</TT
+>.</P
+><P
+>Skrypt mo¿na uruchamiaæ na wiele sposobów. Jednym z nich jest
+	    stworzenie skryptu pow³oki, który odczytuj±c skrzynkê pocztow± wywo³a lms-rtparser 
+	    dla ka¿dego maila. Wygodniejszym zastosowaniem jest jednak zintegrowanie
+	    go z serwerem pocztowym. Poni¿ej przedstawiono sposób pod³±czenia go do
+	    postfixa przy u¿yciu opcji header_checks.
+<PRE
+CLASS="SCREEN"
+># plik main.cf:
+header_checks = regexp:/etc/postfix/header_checks
+
+# plik header_checks
+/^To:.*adres@domena.*/ FILTER filter:dummy
+
+# plik master.cf:
+filter unix - n n - 10 pipe
+      -flags=Rq user=nobody argv=/path/to/lms-rtparser</PRE
+>
+	    </P
+><P
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[rt]</I
+></SPAN
+>
+	    w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
+><UL
+><LI
+><P
+>default_queue</P
+><P
+>Numer ID kolejki, do której trafi± zg³oszenia. Je¶li nie
+		    podano, Kolejka zostanie odszukana na podstawie adresu odbiorcy maila.
+		    Opcja ta mo¿e zostaæ nadpisana przy pomocy parametru -q przy
+		    uruchomieniu skryptu. Domy¶lnie: niezdefiniowana.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>default_queue = </SAMP
+></P
+></LI
+><LI
+><P
+>sendmail_binary</P
+><P
+>Lokalizacja programu sendmail. Domy¶lnie: /usr/sbin/sendmail</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>sendmail_binary = /usr/lib/sandmail</SAMP
+></P
+></LI
+><LI
+><P
+>autoreply_from</P
+><P
+>Nadawca potwierdzenia. Je¶li nie zdefiniowano, zostanie u¿yty adres
+		    kolejki do której zapisano zg³oszenie. Domy¶lnie: pusty.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>autoreply_from = &lt;rt@net.pl&gt;</SAMP
+></P
+></LI
+><LI
+><P
+>mail_dir</P
+><P
+>Katalog w którym zostan± zapisane za³±czniki. Katalog ten powinien byæ
+		    dostêpny dla apache'a i u¿ytkownika uruchamiaj±cego lms-rtparser. Gdy nie ustawiono, 
+		    za³±czniki zostan± utracone. Domy¶lnie: niezdefiniowany.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mail_dir = /usr/local/lms/mail</SAMP
+></P
+></LI
+><LI
+><P
+>tmp_dir</P
+><P
+>Katalog tymczasowy. Domy¶lnie zostanie u¿yty katalog 
+		    zdefiniowany w zmiennej systemowej lub <TT
+CLASS="FILENAME"
+>/tmp</TT
+>.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>tmp_dir = /home/user/tmp</SAMP
+></P
+></LI
+></UL
+></DIV
 ></DIV
 ></DIV
 ><DIV
@@ -6697,7 +6825,8 @@ port            = 0             # numer portu, domy¶lnie: 0
 [lmsd]
 sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma
                                 # byæ sprawdzane ¿±danie reloadu, domy¶lnie: 30
-instances       = hosts oident firewall       # lista instancji modu³ów</PRE
+instances       = hosts oident firewall       # lista instancji modu³ów
+command         = 'echo "³±czê siê z baz±"'   # polecenie wykonywane przed ka¿dym po³±czeniem z baz±	</PRE
 >
 			<DIV
 CLASS="NOTE"
@@ -6736,6 +6865,10 @@ module = /¶cie¿ka/nazwa_modu³u.so
 info = "Opcjonalny opis modu³u"</PRE
 >		
 			</P
+><P
+>Zmiana opcji 'instances' oraz dowolnej opcji w sekcjach
+			instancji, w odró¿nieniu od pozosta³ych opcji globalnych,
+			nie wymaga restartu demona.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -6769,12 +6902,12 @@ CLASS="SCREEN"
 ><P
 >Innym sposobem uruchomienia jest jednorazowy reload w wykorzystaniem
 			crona. Z tego sposobu nale¿y korzystaæ uruchamiaj±c modu³y takie jak 'payments'
-			'notify' 'traffic'. W tym wypadku musisz stworzyæ osobny plik konfiguracyjny 
-			dla ka¿dego modu³u (zawieraj±cy równie¿ opcje dla demona) i podaæ go demonowi
-			przy pomocy opcji '-c'. Przyk³adowy wpis do crontab'a wygl±da nastêpuj±co:
+			'notify', 'traffic', czy 'pinger'. W tym wypadku mo¿esz okre¶liæ listê 
+			instancji do wykonania za pomoc± opcji '-i'.
+			Przyk³adowy wpis do crontab'a wygl±da nastêpuj±co:
 <PRE
 CLASS="SCREEN"
->  1 0 * * *    /usr/local/bin/almsd -q -c /etc/lms/payments.lms.ini</PRE
+>  1 0 * * *    /usr/local/bin/almsd -qi "payments notify"</PRE
 >
 			</P
 ><P
@@ -6782,6 +6915,7 @@ CLASS="SCREEN"
 <PRE
 CLASS="SCREEN"
 >  -c	¶cie¿ka do pliku konfiguracyjnego (domy¶lnie: /etc/lms/lms.ini)
+  -i	lista instancji (oddzielonych spacj±) do prze³adowania
   -b	uruchomienie w tle
   -s	czas w sek. miêdzy odczytami tabeli 'reload' (domy¶lnie: 30)
   -q 	wykonaj reload i zakoñcz
@@ -7509,6 +7643,30 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >host = "host %n {hardware ethernet %m; fixed-address %i;}"</SAMP
+></P
+></LI
+><LI
+><P
+>networks</P
+><P
+>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+			    Domy¶lnie: pusta (wszystkie sieci).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>networks = "lan1 lan2"</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups</P
+><P
+>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    Domy¶lnie: pusta (wszystkie grupy).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>usergroups = "grupa1 grupa2"</SAMP
 ></P
 ></LI
 ></UL
@@ -8272,6 +8430,30 @@ CLASS="PROMPT"
 >command = ""</SAMP
 ></P
 ></LI
+><LI
+><P
+>networks</P
+><P
+>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+			    Domy¶lnie: pusta (wszystkie sieci).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>networks = "lan1 lan2"</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups</P
+><P
+>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    Domy¶lnie: pusta (wszystkie grupy).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>usergroups = "grupa1 grupa2"</SAMP
+></P
+></LI
 ></UL
 ></DIV
 ></DIV
@@ -8339,6 +8521,30 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >dummy_macs = yes</SAMP
+></P
+></LI
+><LI
+><P
+>networks</P
+><P
+>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+			    Domy¶lnie: pusta (wszystkie sieci).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>networks = "lan1 lan2"</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups</P
+><P
+>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    Domy¶lnie: pusta (wszystkie grupy).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>usergroups = "grupa1 grupa2"</SAMP
 ></P
 ></LI
 ></UL
@@ -9552,15 +9758,15 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->inreplyto - identyfikator wiadomo¶ci</TD
+>inreplyto - identyfikator poprzedniej wiadomo¶ci</TD
 ></TR
 ><TR
 ><TD
->replyto - </TD
+>replyto - nag³ówek wiadomo¶ci</TD
 ></TR
 ><TR
 ><TD
->headers - </TD
+>headers - wszystkie nag³ówki pocztowe wiadomo¶ci</TD
 ></TR
 ><TR
 ><TD
@@ -9568,7 +9774,33 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->createtime - data utworzenia/wys³ania </TD
+>createtime - data utworzenia/wys³ania/odebrania </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="RTATTACHMENTS"
+>7.2.20. Helpdesk - za³±czniki ('rtattachments')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>messageid - identyfikator wiadomo¶ci</TD
+></TR
+><TR
+><TD
+>filename - nazwa pliku</TD
+></TR
+><TR
+><TD
+>contenttype - typ pliku</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -9579,7 +9811,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.20. Helpdesk - uprawnienia ('rtrights')</A
+>7.2.21. Helpdesk - uprawnienia ('rtrights')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -9609,7 +9841,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.21. Informacje o bazie danych ('dbinfo')</A
+>7.2.22. Informacje o bazie danych ('dbinfo')</A
 ></H3
 ><TABLE
 BORDER="0"
