@@ -308,6 +308,10 @@ Rozdzia³ 2. Instalacja i konfiguracja
 
    Przy wspó³pracy LMS'a z baz± danych SQLite nie stwierdzono ¿adnych
    problemów z tym, ¿e jedyn± przetestowan± wersj± jest wersja 2.8.11.
+
+   W celach eksperymentalnych/poznawczych wprowadzono mo¿liwo¶æ
+   uruchomienia interfejsu u¿ytkownika na bazie danych MS SQL Server
+   2000.
      _________________________________________________________________
 
 2.2.4. Biblioteka Smarty
@@ -545,6 +549,16 @@ database = /usr/local/lms/lms.db
    Po takim zabiegu, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli
    jednak w bazie danych nie ma ¿adnego konta administratora, jedyn±
    rzecz± jak± zobaczysz bêdzie formularz dodania administratora.
+     _________________________________________________________________
+
+2.4.4. MS SQL Server
+
+   LMS na bazie Microsoftu? Czemu nie. W celach poznawczych i
+   eksperymentalnych dodano mo¿liwo¶æ pod³aczenia LMSa do tej bazy. Nie
+   nale¿y jednak liczyæ na jakikolwiek support z tym zwi±zany, ale
+   traktowaæ to raczej jako ciekawostkê. Nie mo¿na tak¿e zagwarantowaæ ¿e
+   pomys³ bêdzie rozwijany. Niemniej ze wstêpnych testów przy u¿yciu MS
+   SQL Server 2000 wynika, ¿e jest to mo¿liwe.
      _________________________________________________________________
 
 2.5. Konfiguracja podstawowa
@@ -2853,11 +2867,23 @@ info = "Opcjonalny opis modu³u"
 
 6.2.6.2. Konfiguracja
 
-   Modu³ 'cutoff' posiada tylko jeden parametr:
+   Dla modu³u 'cutoff' mamy nastêpuj±ce opcje:
      * limit
        Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej kwoty
        okre¶lonej t± zmienn±. Domy¶lnie: 0.
        Przyk³ad: limit = -20
+     * command
+       Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co
+       najmniej jeden u¿ytkownik zostanie od³±czony. Domy¶lnie:
+       nieustawiona.
+       Przyk³ad: command = 'almsd -qi firewall'
+     * warning
+       W³±cza ostrze¿enie dla od³±czanego u¿ytkowanika i przypisuje mu
+       okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie
+       w³±czane. Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
+       Domy¶lnie: 'Automatyczna blokada spowodowana przekroczeniem
+       terminu wp³aty (dd.mm.yyyy)".
+       Przyk³ad: warning = ""
      _________________________________________________________________
 
 6.2.7. Dhcp
@@ -2950,9 +2976,10 @@ info = "Opcjonalny opis modu³u"
 
    W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne
    zmienne, które podczas zapisu do pliku zostan± zast±pione '%i' -
-   adresem ip, '%m' - mac adresem, '%n' - nazw± komputera, '%domain' -
-   domen±, '%net' - nazw± sieci, '%gw' - adresem bramy w sieci do której
-   nale¿y dany komputer. Poni¿ej opcje udostêpniane przez ten modu³
+   adresem ip, '%m' - mac adresem, '%n' - nazw± komputera, '%info' -
+   opisem komputera, '%domain' - domen±, '%net' - nazw± sieci, '%gw' -
+   adresem bramy w sieci do której nale¿y dany komputer. Poni¿ej opcje
+   udostêpniane przez ten modu³
      * file
        Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/hostfile
        Przyk³ad: file = /etc/rc.d/rc.firewall
@@ -3494,6 +3521,7 @@ Rozdzia³ 7. Dla dociekliwych
    access - pod³±czony/od³±czony (1/0)
    warning - ostrzegaj/nie ostrzegaj (1/0)
    lastonline - znacznik czasu ostatniej obecno¶ci w sieci
+   info - informacje dodatkowe
      _________________________________________________________________
 
 7.2.7. Sprzêt sieciowy ('netdevices')

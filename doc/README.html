@@ -1147,6 +1147,9 @@ NAME="INSTALL-REQ-DB"
 ><P
 >Przy wspó³pracy LMS'a z baz± danych SQLite nie stwierdzono ¿adnych
 	      problemów z tym, ¿e jedyn± przetestowan± wersj± jest wersja 2.8.11.</P
+><P
+>W celach eksperymentalnych/poznawczych wprowadzono mo¿liwo¶æ uruchomienia
+	      interfejsu u¿ytkownika na bazie danych MS SQL Server 2000.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -1744,6 +1747,22 @@ database = /usr/local/lms/lms.db</PRE
 			zobaczysz bêdzie formularz dodania administratora.  
 			</P
 ></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="INSTALL-MSSQL"
+>2.4.4. MS SQL Server</A
+></H3
+><P
+>LMS na bazie Microsoftu? Czemu nie. W celach poznawczych
+			i eksperymentalnych dodano mo¿liwo¶æ pod³aczenia LMSa do tej bazy.
+			Nie nale¿y jednak liczyæ na jakikolwiek support z tym zwi±zany, ale
+			traktowaæ to raczej jako ciekawostkê. Nie mo¿na tak¿e zagwarantowaæ
+			¿e pomys³ bêdzie rozwijany. Niemniej ze wstêpnych testów
+			przy u¿yciu MS SQL Server 2000 wynika, ¿e jest to mo¿liwe.</P
 ></DIV
 ></DIV
 ><DIV
@@ -7983,7 +8002,7 @@ NAME="CUTOFF-CONFIG"
 >6.2.6.2. Konfiguracja</A
 ></H4
 ><P
->Modu³ 'cutoff' posiada tylko jeden parametr:</P
+>Dla modu³u 'cutoff' mamy nastêpuj±ce opcje:</P
 ><UL
 ><LI
 ><P
@@ -7995,6 +8014,32 @@ NAME="CUTOFF-CONFIG"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >limit = -20</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co najmniej
+			    jeden u¿ytkownik zostanie od³±czony. Domy¶lnie: nieustawiona.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = 'almsd -qi firewall'</SAMP
+></P
+></LI
+><LI
+><P
+>warning</P
+><P
+>W³±cza ostrze¿enie dla od³±czanego u¿ytkowanika i przypisuje mu 
+			    okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
+			    Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
+			    Domy¶lnie: 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty (dd.mm.yyyy)".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>warning = ""</SAMP
 ></P
 ></LI
 ></UL
@@ -8231,8 +8276,8 @@ NAME="HOSTFILE-CONFIG"
 ><P
 >W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
 		    które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
-		    adresem, '%n' - nazw± komputera, '%domain' - domen±, '%net' - nazw± sieci, 
-		    '%gw' - adresem bramy w sieci do której nale¿y dany komputer.
+		    adresem, '%n' - nazw± komputera, '%info' - opisem komputera, '%domain' - domen±, 
+		    '%net' - nazw± sieci, '%gw' - adresem bramy w sieci do której nale¿y dany komputer.
 		    Poni¿ej opcje udostêpniane przez ten modu³</P
 ><UL
 ><LI
@@ -9725,6 +9770,10 @@ BORDER="0"
 ><TR
 ><TD
 >lastonline - znacznik czasu ostatniej obecno¶ci w sieci</TD
+></TR
+><TR
+><TD
+>info - informacje dodatkowe</TD
 ></TR
 ></TBODY
 ></TABLE

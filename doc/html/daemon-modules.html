@@ -644,7 +644,7 @@ NAME="CUTOFF-CONFIG"
 >6.2.6.2. Konfiguracja</A
 ></H3
 ><P
->Modu³ 'cutoff' posiada tylko jeden parametr:</P
+>Dla modu³u 'cutoff' mamy nastêpuj±ce opcje:</P
 ><UL
 ><LI
 ><P
@@ -656,6 +656,32 @@ NAME="CUTOFF-CONFIG"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >limit = -20</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co najmniej
+			    jeden u¿ytkownik zostanie od³±czony. Domy¶lnie: nieustawiona.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = 'almsd -qi firewall'</SAMP
+></P
+></LI
+><LI
+><P
+>warning</P
+><P
+>W³±cza ostrze¿enie dla od³±czanego u¿ytkowanika i przypisuje mu 
+			    okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
+			    Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
+			    Domy¶lnie: 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty (dd.mm.yyyy)".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>warning = ""</SAMP
 ></P
 ></LI
 ></UL
@@ -892,8 +918,8 @@ NAME="HOSTFILE-CONFIG"
 ><P
 >W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
 		    które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
-		    adresem, '%n' - nazw± komputera, '%domain' - domen±, '%net' - nazw± sieci, 
-		    '%gw' - adresem bramy w sieci do której nale¿y dany komputer.
+		    adresem, '%n' - nazw± komputera, '%info' - opisem komputera, '%domain' - domen±, 
+		    '%net' - nazw± sieci, '%gw' - adresem bramy w sieci do której nale¿y dany komputer.
 		    Poni¿ej opcje udostêpniane przez ten modu³</P
 ><UL
 ><LI
