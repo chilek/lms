@@ -129,7 +129,7 @@
  <sect2 id="user-networks">
 	<title>Sieci IP</title>
 	<para>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
-	zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i dostepnych adresów.
+	zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i dostêpnych adresów.
 	Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ na podsieci,
 	albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</para>
 	<para>Modyfikowanie w³a¶ciwo¶ci sieci nastêpuje w module dostêpnym po wybraniu
@@ -337,7 +337,7 @@
 		</itemizedlist>
 		</para>
 		<para>Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
-		na wykazie bilansu finansowego (ogólnego b±d¼ pojedyñczego u¿ytkownika), albo 
+		na wykazie bilansu finansowego (ogólnego b±d¼ pojedynczego u¿ytkownika), albo 
 		poprzez 'Lista faktur' z menu 'Taryfy i finanse'. W przypadku listy faktur, mo¿liwe jest 
 		tak¿e filtrowanie faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y 
 		i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. 

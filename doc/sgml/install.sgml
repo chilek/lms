@@ -30,8 +30,8 @@
 	    <sect2 id="install-req-php">
 	      <title>Interpreter PHP</title>
 	      <para>Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a te¿ 
-		poprawnie na 4.1.x (ale poniewa¿ devepolerzy pracuj± na 4.2.3, nie mo¿na 
-		zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿na sci±gn±æ ze 
+		poprawnie na 4.1.x (ale poniewa¿ developerzy pracuj± na 4.2.3, nie mo¿na 
+		zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿na ¶ci±gn±æ ze 
 		strony <ulink url="http://www.php.net">www.php.net</ulink>.</para>
 	    </sect2>
 	    <sect2 id="install-req-db">
@@ -49,7 +49,7 @@
             <title>Perl</title>
 	  <para>O ile dla <emphasis>LMS-UI</emphasis> wystarczy to co powy¿ej, to ¿eby mieæ dzia³aj±cy 
 		<emphasis>LMS-MGC</emphasis> i resztê skryptów potrzebujemy 
-		tak¿e perla i modu³y do niego czyli:
+		tak¿e Perla i modu³y do niego czyli:
 	  <itemizedlist>
 	    <listitem>
 	       <para>perl w³a¶ciwy i jego podstawowe modu³y (POSIX, GetOpt::Long);</para>
@@ -235,7 +235,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 			mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
 			nie ma ¿adnego konta administratora, jedyn± rzecz± jak± zobaczysz
 			bêdzie formularz dodania administratora. Je¿eli podasz prawid³owe dane
-			administratora, LMS przeniesie Ciê na stronê logowania gdzie od razu bêdzisz
+			administratora, LMS przeniesie Ciê na stronê logowania gdzie od razu bêdziesz
 			móg³ u¿yæ nowo utworzonego konta.</para>
 		</sect3>
 		</sect2>
@@ -254,7 +254,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 	    <itemizedlist>
             <listitem>
 	    <para>type</para>
-	   <para>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie 
+	   <para>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak na razie nie 
 	   widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</para>
 	   <para>Przyk³ad: <prompt>type = mysql</prompt></para>
 	  </listitem>
@@ -347,7 +347,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
    </listitem>
    <listitem>
     <para>timeout</para>
-    <para>Timeout sesji www. Po tym czasie (w sekudnach) u¿ytkownik zostanie wylogowany je¿eli nie 
+    <para>Timeout sesji www. Po tym czasie (w sekundach) u¿ytkownik zostanie wylogowany je¿eli nie 
     podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</para>
     <para>Przyk³ad:	<prompt>timeout = 900</prompt></para>
     <para><warning><para>Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie 
@@ -385,9 +385,9 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
    <listitem>
     <para>reload_execcmd</para>
     <para>Komenda do wykonania podczas reloadu je¿eli reload_type jest ustawione na 'exec'. Domy¶lnie
-    <filename>/bin/true</filename>. String ten puszczany do komendy system() wiêc pronuje rozwagê 
+    <filename>/bin/true</filename>. String ten puszczany do komendy system() wiêc proponujê rozwagê 
     i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru 
-    zglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedyñczo.</para>
+    wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedynczo.</para>
     <para>Przyk³ad:	<prompt>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</prompt></para>
    </listitem>
    <listitem>
@@ -400,7 +400,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
    </listitem>
    <listitem>
     <para>force_ssl</para>
-    <para>Wymuszanie SSL'a. Ustawinie tej zmiennej na 1 spowoduje ¿e LMS bêdzie wymusza³ po³±czenie 
+    <para>Wymuszanie SSL'a. Ustawienie tej zmiennej na 1 spowoduje ¿e LMS bêdzie wymusza³ po³±czenie 
     SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej 
     próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</para>
     <para>Przyk³ad:	<prompt>force_ssl = 0</prompt></para>
@@ -419,7 +419,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
    </listitem>
    <listitem>
     <para>debug_email</para>
-    <para>Adres e-mail do debugowania - pod ten email bêd± sz³y maile wysy³ane z sekcji 'mailing' LMS'a, 
+    <para>Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Mailing' LMS'a, 
     zamiast do w³a¶ciwych u¿ytkowników.</para>
     <para>Przyk³ad:	<prompt>debug_email = root@localhost</prompt></para>
    </listitem>
@@ -461,7 +461,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 	</itemizedlist>
       Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania. Modu³y do których 
       administrator ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
-      chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostep do reszty jest zdefiniowany regu³ami.</para>
+      chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostêp do reszty jest zdefiniowany regu³ami.</para>
       <note><para>Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie
       przydzieli mu regu³kê 0, czyli pe³en dostêp.</para></note>
       </sect2>
