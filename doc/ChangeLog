@@ -8,6 +8,8 @@ wersja 1.4.5 (??/??/????):
     U¿ytkownika (alec/WiktorRB)
   - BTS#0000315: przy usuwaniu u¿ytkownika usuwane s± tak¿e jego zobowi±zania
     (alec/WiktorRB)
+  - BTS#0000316: dodane brakuj±ce przekierowanie SSL w contrib/customer_otherip
+    (alec/WiktorRB) 
 
 wersja 1.4.4 Skaara (02/03/2005):
 

@@ -113,9 +113,13 @@ $_DBUSER = $_CONFIG['database']['user'];
 $_DBPASS = $_CONFIG['database']['password'];
 $_DBNAME = $_CONFIG['database']['database'];
 
-// Set our sweet polish locales :>
+// Redirect to SSL
 
-//setlocale (LC_ALL, 'pl_PL');
+if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
+{
+	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+	exit(0);
+}
 
 // include required files
 
@@ -141,7 +145,7 @@ $SMARTY = new Smarty;
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 
-$layout[lmsv]='1.4-cvs';
+$layout['lmsv']='1.4-cvs';
 
 $SMARTY->assign('menu',$menu);
 $SMARTY->assign('layout',$layout);
