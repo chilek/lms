@@ -475,6 +475,11 @@ database = /usr/local/lms/lms.db</screen>
 	    <para>Example:     <prompt>aliaslist_pagelimit = 50</prompt></para>
 	</listitem>
 	<listitem>
+	    <para>configlist_pagelimit</para>
+	    <para>Limit of displayed records on page on UI config options list. Default: 100</para>
+	    <para>Example:     <prompt>configlist_pagelimit = 50</prompt></para>
+	</listitem>
+	<listitem>
 	    <para>reload_type</para>
 	    <para>Reload type. Allowed values:</para>
 	    <para>exec - calling of some command (most often with sudo, some script or something
