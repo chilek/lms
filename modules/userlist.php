@@ -26,7 +26,7 @@
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$layout['pagetitle'] = trans('Customer List');
+$layout['pagetitle'] = trans('Customers List');
 
 if(!isset($_GET['o']))
 	$o = $_SESSION['ulo'];
