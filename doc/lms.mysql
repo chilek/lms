@@ -310,7 +310,7 @@ CREATE TABLE rtmessages (
   headers text NOT NULL default '',
   body mediumtext NOT NULL default '',
   PRIMARY KEY  (id)
-) TYPE=MyISAM");
+) TYPE=MyISAM;
 
 #
 # Struktura tabeli 'dbinfo'
