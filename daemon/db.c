@@ -165,7 +165,7 @@ static QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
 
 	field = mysql_fetch_field_direct(result, i);
 
-	col->name = save_string(col->name, field->name);
+	col->name = str_save(col->name, field->name);
 	col->size = field->length;
 	
 	// set column data type 
@@ -201,7 +201,7 @@ static QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
         for (j = 0; j < query->ncols; j++) {
 	    val = &(my_row[i].value[j]);
 	    buf = (unsigned char *) row[j];
-	    val->data = save_string(val->data,buf);
+	    val->data = str_save(val->data,buf);
 	}
 	i++;
     }
@@ -226,7 +226,7 @@ static QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
 	my_col[i].name = (unsigned char *) malloc(sizeof(char *));
        	col = &(my_col[i]);
 	
-	col->name = save_string(col->name,PQfname(res,i));
+	col->name = str_save(col->name,PQfname(res,i));
 
 	dtype = PQftype(res, i);
 
@@ -276,7 +276,7 @@ static QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
         for (j = 0; j < query->ncols; j++) {
             val = &(my_row[i].value[j]);
 	    buf = (unsigned char *) PQgetvalue(res, i, j); 
-	    val->data = save_string(val->data,buf);
+	    val->data = str_save(val->data,buf);
 	}
     }
     

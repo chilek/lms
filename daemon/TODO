@@ -1,10 +1,8 @@
 $Id$
 
-- porz±dne ./configure
 - m±drzejsze wykrywanie czy nast±pi³y zmiany w bazie...(?)
 - przemy¶leæ reload, tak aby nie trzeba by³o uruchamiaæ wszystkich 
   modu³ów, tylko wybrane
-- inicjowanie modu³ów podczas reloadu, a nie startu daemona
 - przepisaæ modu³y z lmsd i napisaæ wiêcej modu³ów .. wiêcej wiêcej wiêcej
 - sprawdziæ czy nie ma memory leaks
   

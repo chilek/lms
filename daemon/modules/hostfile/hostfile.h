@@ -8,6 +8,6 @@ struct hostfile_module
 	unsigned char *grant;
 	unsigned char *deny;
 
-	unsigned char *tmpfile;
+	unsigned char *file;
 	unsigned char *command;
 };

@@ -38,19 +38,20 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	QUERY_HANDLE *res;
 	int i;
 	
-	fh = fopen(hm->tmpfile, "w");
+	fh = fopen(hm->file, "w");
 	if(fh)
 	{
 		fprintf(fh, "%s", hm->prefix);
 		
-		if( (res = g->db_query("SELECT mac, ipaddr, access FROM nodes ORDER BY ipaddr"))!=NULL) {
+		if( (res = g->db_query("SELECT name, mac, ipaddr, access FROM nodes ORDER BY ipaddr"))!=NULL) {
 		
 			for(i=0; i<res->nrows; i++) {
-				unsigned char *literal_mac, *literal_ip, *literal_access;
+				unsigned char *literal_mac, *literal_ip, *literal_access, *name;
 			
 				literal_mac = g->db_get_data(res,i,"mac");
 				literal_ip  = inet_ntoa(inet_addr(g->db_get_data(res,i,"ipaddr")));
 				literal_access = g->db_get_data(res,i,"access");
+				name = (unsigned char *)g->str_lwc(g->db_get_data(res,i,"name"));
 
 				if(literal_ip && literal_mac && literal_access) {
 					
@@ -64,6 +65,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 					s = strdup(pattern);
 					s = g->str_replace(s, "%i", literal_ip);
 					s = g->str_replace(s, "%m", literal_mac);
+					s = g->str_replace(s, "%n", name);
 				
 					fprintf(fh, "%s", s);
 					free(s);
@@ -75,50 +77,56 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		fclose(fh);
 		system(hm->command);
 #ifdef DEBUG1
-		syslog(LOG_INFO,"DEBUG: [mod_hostfile] reloaded");
+		syslog(LOG_INFO,"DEBUG: [%s/hostfile] reloaded",hm->base.instance);
 #endif
 	}
 	else
-		syslog(LOG_ERR, "mod_hostfile: Unable to write a temporary file '%s'", hm->tmpfile);
+		syslog(LOG_ERR, "mod_hostfile: Unable to write a temporary file '%s'", hm->file);
+	
+	free(hm->prefix);
+	free(hm->append);
+	free(hm->grant);	
+	free(hm->deny);
+	free(hm->file);
+	free(hm->command);
 }
 
 struct hostfile_module * init(GLOBAL *g, MODULE *m)
 {
 	struct hostfile_module *hm;
-	unsigned char *instance = "hostfile";
-	unsigned char *s;
+	unsigned char *instance, *s;
 	dictionary *ini;
-	int i;
 	
 	if(g->api_version != APIVERSION) 
 		return(NULL);
-	
-	for(i=0; m->args[i].key; i++)
-		if(strcmp(m->args[i].key, "instance") == 0) instance = m->args[i].val;
+
+	instance = strdup(m->instance);
 	
 	hm = (struct hostfile_module *) realloc(m, sizeof(struct hostfile_module));
 	
 	hm->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
+	hm->base.instance = strdup(instance);
 	
 	ini = g->iniparser_load(g->inifile);
-	
+
 	s = g->str_concat(instance,":prefix");
 	hm->prefix = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -F FORWARD\n"));
-	s = g->str_concat(instance,":append");
+	free(s); s = g->str_concat(instance,":append");
 	hm->append = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -A FORWARD -j REJECT\n"));
-	s = g->str_concat(instance,":grantedhost");	
+	free(s); s = g->str_concat(instance,":grantedhost");	
 	hm->grant = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"));
-	s = g->str_concat(instance,":deniedhost");
+	free(s); s = g->str_concat(instance,":deniedhost");
 	hm->deny = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"));
-	s = g->str_concat(instance,":tmpfile");
-	hm->tmpfile = strdup(g->iniparser_getstring(ini, s, "/tmp/mod_hostfile"));
-	s = g->str_concat(instance,":command");
+	free(s); s = g->str_concat(instance,":file");
+	hm->file = strdup(g->iniparser_getstring(ini, s, "/tmp/hostfile"));
+	free(s); s = g->str_concat(instance,":command");
 	hm->command = strdup(g->iniparser_getstring(ini, s, ""));
 
 	g->iniparser_freedict(ini);
+	free(instance);
 	free(s);
 #ifdef DEBUG1
-	syslog(LOG_INFO,"DEBUG: [mod_hostfile] initialized");
+	syslog(LOG_INFO,"DEBUG: [%s/hostfile] initialized", hm->base.instance);
 #endif
 	return(hm);
 }

@@ -46,7 +46,7 @@ unsigned char * str_replace(unsigned char *string, const unsigned char *old, con
 }
 
 /* Save value to string (needed i.e. for database routines)*/
-unsigned char * save_string(unsigned char *str, const unsigned char *val)
+unsigned char * str_save(unsigned char *str, const unsigned char *val)
 {
     str = (unsigned char *) realloc(str, strlen(val)+1);
     return strcpy(str, val);
@@ -57,58 +57,6 @@ void termination_handler(int signum)
 {
      syslog(LOG_INFO, "A.L.E.C's LMS Daemon exited.");
      exit(0);
-}
-
-/* Parsing module args string */
-MOD_ARGS * parse_module_argstring(unsigned char *argstring)
-{
-	int argc = 0;
-	MOD_ARGS *argv = NULL;
-	unsigned char * eq;
-	
-	while((eq = index(argstring, '=')))
-	{
-		unsigned char *key;
-		unsigned char *value;
-		int l;
-		
-		*eq = 0;
-		key = strdup(argstring);
-		eq++;
-
-		if(*eq == '"')
-		{
-			value = ini_parse(eq + 1, &l, '"');
-			if(*(eq + l) == 0)
-				eq += l;
-			else
-				eq += l + 1;
-				
-			argstring = eq;
-		}
-		else
-		{
-			if(*eq == 0) break;
-			value = ini_parse(eq, &l, ',');
-
-			if(*(eq + l) == 0)
-				eq += l;
-			else
-				eq += l + 1;
-
-			argstring = eq;
-		}
-		
-		argv = (MOD_ARGS *) realloc(argv, (argc + 1) * sizeof(MOD_ARGS));
-		argv[argc].key = key;
-		argv[argc].val = value;
-		argc++;
-		
-	}
-	argv = (MOD_ARGS*) realloc(argv, (argc + 1) * sizeof(MOD_ARGS));
-	argv[argc].key = NULL;
-	argv[argc].val = NULL;
-	return(argv);
 }
 
 /* Parsing args line. Needed for parse_module_argstring() */
