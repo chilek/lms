@@ -625,7 +625,13 @@ class LMS {
 		$dblist[total] = sizeof($dblist[time]);
 		return $dblist;
 	}		
-	
+
+	function DatabaseCreate()
+	{
+		$db=$this->db;
+		return $db->Dump(BACKUP_DIR.'/lms-'.time().'.sql');
+	}
+
 	function NodeSet($id)
 	{
 		$db=$this->db;
