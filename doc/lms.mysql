@@ -46,7 +46,7 @@ CREATE TABLE `cash` (
   `time` int(11) NOT NULL default '0',
   `adminid` int(11) NOT NULL default '0',
   `type` int(11) NOT NULL default '0',
-  `value` DECIMAL(9,2) NOT NULL default '0',
+  `value` double NOT NULL default '0',
   `userid` int(11) NOT NULL default '0',
   `comment` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
@@ -119,7 +119,7 @@ DROP TABLE IF EXISTS `tariffs`;
 CREATE TABLE `tariffs` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
-  `value` DECIMAL(9,2) NOT NULL default '0',
+  `value` double NOT NULL default '0',
   `uprate` int NOT NULL default '0',
   `downrate` int NOT NULL default '0',
   `description` text NOT NULL,
