@@ -9,7 +9,7 @@
     pop.document.write('<PRE>');
 
     {foreach item=string from=$missing_strings}
-	    pop.document.write('$_LANG[\'{$string|replace:"'":"\'"|escape:"javascript"}\'] = \'{$string|replace:"'":"\'"|escape:"javascript"}\';\n');
+	    pop.document.write('$_LANG[\'{$string|replace:"'":"\'"|replace:"\n":"\\n"|escape:"javascript"}\'] = \'{$string|replace:"'":"\'"|replace:"\n":"\\n"|escape:"javascript"}\';\n');
     {/foreach}
 
     pop.document.write('</BODY></HTML>');
