@@ -294,7 +294,7 @@
 		<listitem>
 			<para>header</para>
 			<para>Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</para>
-			<para>Przyk³ad: <prompt>seller = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</prompt></para>
+			<para>Przyk³ad: <prompt>header = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</prompt></para>
 		</listitem>
 		<listitem>
 			<para>footer</para>
