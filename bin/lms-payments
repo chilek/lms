@@ -167,8 +167,18 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$gotinv{$uid} = $irow->{'id'};
 			}
 			
-			my $icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, sww, content, count, description, tariffid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxvalue'}, '$assign->{'sww'}', 'szt', 1, '$txt', $assign->{'tariffid'})");
+			my $icdbq = $dbase->prepare("SELECT * FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid}");
 			$icdbq->execute();
+			if(my $icrow = $icdbq->fetchrow_hashref())
+			{
+				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid}");
+				$icdbq->execute();
+			}
+			else
+			{
+				$icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, sww, content, count, description, tariffid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxvalue'}, '$assign->{'sww'}', 'szt', 1, '$txt', $assign->{'tariffid'})");
+				$icdbq->execute();
+			}
 		}
 		my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES ($time, 0, 4, $assign->{'value'}, $uid, '$txt', $gotinv{$uid})");
 		$sdbq->execute();
