@@ -32,7 +32,7 @@ class LMS {
 
 	var $db;
 	var $session;
-	var $_version = '1.0.36';
+	var $_version = '1.0.41';
 	var $_usecache = FALSE;
 	var $_debug = TRUE;
 
@@ -478,7 +478,7 @@ class LMS {
 	function GetUser($id)
 	{
 		$db=$this->db;
-		$return = $db->FetchRow("SELECT * FROM `users` WHERE `id` = '".$id."' LIMIT 1");
+		$return = $db->FetchRow("SELECT `id`, `lastname`, `name`, `status`, `email`, `phone1`, `phone2`, `phone3`, `address`, `tariff`, `info`, `creationdate`, `moddate`, `creatorid`, `modid` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 		$return[username] = strtoupper($return[lastname])." ".$return[name];
 		$return[createdby] = $this->GetAdminName($return[creatorid]);
 		$return[modifiedby] = $this->GetAdminName($return[modid]);
@@ -539,7 +539,7 @@ class LMS {
 
 		if ($_SESSION[timestamps][getbalancelist] != $this->GetTS("cash"))
 		{
-			$balancelist = $db->FetchArray("SELECT * FROM `cash` ORDER BY `time` ASC");
+			$balancelist = $db->FetchArray("SELECT `id`, `time`, `adminid`, `type`, `value`, `userid`, `comment` FROM `cash` ORDER BY `time` ASC");
 			$balancelist[total] = sizeof($balancelist[id]);
 			
 			if($balancelist[total])
@@ -695,7 +695,7 @@ class LMS {
 	function GetUserNodes($id)
 	{
 		$db=$this->db;
-		$db->ExecSQL("SELECT * FROM `nodes` WHERE `ownerid` = '".$id."' ORDER BY `name` ASC");
+		$db->ExecSQL("SELECT `id`, `name`, `mac`, `ipaddr`, `ownerid`, `access` FROM `nodes` WHERE `ownerid` = '".$id."' ORDER BY `name` ASC");
 		while($db->FetchRow()){
 			foreach($db->row as $key => $value)
 				$return[$key][] = $value;
@@ -883,7 +883,7 @@ class LMS {
 
 		if($_SESSION[timestamps][getuserbalancelist][$id][cash] != $this->GetTS("cash"))
 		{
-			$saldolist = $db->FetchArray("SELECT * FROM cash WHERE userid = '".$id."'");
+			$saldolist = $db->FetchArray("SELECT `id`, `time`, `adminid`, `type`, `value`, `userid`, `comment` FROM cash WHERE userid = '".$id."'");
 			if(sizeof($saldolist[id]) > 0){
 				foreach($saldolist[id] as $i => $v)
 				{
@@ -1085,6 +1085,30 @@ class LMS {
 		$db=$this->db;
 		$this->SetTS("networks");
 		return $db->ExecSQL("DELETE FROM `networks` WHERE `id` = '".$id."'");
+	}
+
+	function GetAdminList()
+	{
+		$db=$this->db;
+		$admins=$db->FetchArray("SELECT `id`, `login`, `name`, `lastlogindate`, `lastloginip` FROM `admins` ORDER BY `login` ASC");
+		$admins[total] = sizeof($admins[id]);
+		if($admins[total])
+			foreach($admins[id] as $key => $value)
+			{
+				if($admins[lastlogindate][$key])
+					$admins[lastlogin][$key] = date("Y/m/d H:i",$admins[lastlogindate][$key]);
+				else
+					$admins[lastlogin][$key] = "-";
+				if(check_ip($admins[lastloginip][$key]))
+					$admins[lastloginhost][$key] = gethostbyaddr($admins[lastloginip][$key]);
+				else
+				{
+					$admins[lastloginhost][$key] = "-";
+					$admins[lastloginip][$key] = "0.0.0.0";
+				}
+					
+			}
+		return $admins;
 	}
 }
 
