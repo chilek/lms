@@ -277,22 +277,41 @@ class LMS {
 	
 	function GetMACs()
 	{
-		if(is_readable("/proc/net/arp"))
-			$file=fopen("/proc/net/arp","r");
-		else
-			return FALSE;
-		while(!feof($file))
+		switch(PHP_OS)
 		{
-			$line=fgets($file,4096);
-			$mac=trim(substr($line,35,25));
-			$ip=trim(substr($line,0,15));
-			if(check_mac($mac))
-			{
-				$return[mac][] = $mac;
-				$return[ip][] = $ip;
-				$return[longip][] = ip_long($ip);
-				$return[nodename][] = $this->GetNodeNameByIP($ip);
-			}
+			case "Linux":
+				if(is_readable("/proc/net/arp"))
+					$file=fopen("/proc/net/arp","r");
+				else
+					return FALSE;
+				while(!feof($file))
+				{
+					$line=fgets($file,4096);
+					$mac=trim(substr($line,35,25));
+					$ip=trim(substr($line,0,15));
+					if(check_mac($mac))
+					{
+						$return[mac][] = $mac;
+						$return[ip][] = $ip;
+						$return[longip][] = ip_long($ip);
+						$return[nodename][] = $this->GetNodeNameByIP($ip);
+					}
+				}
+				break;
+
+			default:
+				exec("arp -an|grep -v incompl",$return);
+				foreach($return as $arpline)
+				{
+					list($empty,$ip,$empty,$mac) = explode(" ",$arpline);
+					$ip = str_replace("(","",str_replace(")","",$ip));
+					$return[mac][] = $mac;
+					$return[ip][] = $ip;
+					$return[longip][] = ip_long($ip);
+					$return[nodename][] = $this->GetNodeNameByIP($ip);
+				}
+				break;
+
 		}
 		array_multisort($return[longip],$return[mac],$return[ip],$return[nodename]);
 		return $return;
