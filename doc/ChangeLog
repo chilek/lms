@@ -1,5 +1,11 @@
 $Id$
 
+wersja 1.0pre11 (??/??/2003):
+
+  - porz±dki w LMS.class.php
+  - contrib/customers - prosta strona dla ciekawych u¿ytkowników
+  - 
+
 wersja 1.0pre10 (15/04/2003):
 
   - poprawki zgodno¶ci ze Smarty-2.5.0 (niestety, automatycznie 2.5.0 jest
