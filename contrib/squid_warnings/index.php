@@ -86,18 +86,6 @@ foreach(lms_parse_ini_file($_CONFIG['directories']['lib_dir'].'/config_defaults.
 		if(! isset($_CONFIG[$section][$key]))
 			$_CONFIG[$section][$key] = $val;
 
-function chkconfig($value, $default = FALSE)
-{
-	if(eregi('^(1|y|on|yes|true|tak|t)$', $value))
-		return TRUE;
-	elseif(eregi('^(0|n|no|off|false|nie)$', $value))
-		return FALSE;
-	elseif(!isset($value) || $value == '')
-		return $default;
-	else
-		trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
-}
-
 $_SYSTEM_DIR = $_CONFIG['directories']['sys_dir'];
 $_BACKUP_DIR = $_CONFIG['directories']['backup_dir'];
 $_LIB_DIR = $_CONFIG['directories']['lib_dir'];
@@ -105,8 +93,6 @@ $_MODULES_DIR = $_CONFIG['directories']['modules_dir'];
 $_SMARTY_DIR = $_CONFIG['directories']['smarty_dir'];
 $_SMARTY_COMPILE_DIR = $_CONFIG['directories']['smarty_compile_dir'];
 $_SMARTY_TEMPLATES_DIR = $_CONFIG['directories']['smarty_templates_dir'];
-$_TIMEOUT = $_CONFIG['phpui']['timeout'];
-$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
 $_DBTYPE = $_CONFIG['database']['type'];
 $_DBHOST = $_CONFIG['database']['host'];
 $_DBUSER = $_CONFIG['database']['user'];
