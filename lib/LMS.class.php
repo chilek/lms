@@ -168,7 +168,7 @@ class LMS
 		return $this->DB->Execute('DELETE FROM timestamps WHERE tablename=?', array($table));
 	}
 
-	function DBDump($filename=NULL,$gzipped=FALSE) // zrzuca bazê danych do pliku
+	function DBDump($filename=NULL,$gzipped=FALSE) // dump database to file
 	{
 		if(! $filename)
 			return FALSE;
@@ -211,16 +211,17 @@ class LMS
 			return FALSE;
 	}
 
-	function DatabaseCreate($gzipped=FALSE) // wykonuje zrzut kopii bazy danych
+	function DatabaseCreate($gzipped=FALSE) // create database backup
 	{
+		$basename = 'lms-'.time().'-'.DBVERSION;
 		if (($gzipped)&&(extension_loaded('zlib')))
-			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/lms-'.time().'.sql.gz',TRUE);
+			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz',TRUE);
 		else
-			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/lms-'.time().'.sql');
+			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql');
 	}
 
 	/*
-	 *  Zarz±dzanie kontami administratorów
+	 *  Users (Administrators)
 	 */
 
 	function SetAdminPassword($id,$passwd) // ustawia has³o admina o id równym $id na $passwd

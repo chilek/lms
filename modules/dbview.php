@@ -24,34 +24,36 @@
  *  $Id$
  */
 
-function DatabaseFetchContent($dbtime,$save=FALSE)
+function DatabaseFetchContent($db,$save=FALSE)
 {
 	global $LMS;
 	
-	if(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql'))
+	if(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
 	{
-		$content = file($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
+		$content = file($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql');
 		foreach($content as $value)
 			$database['content'] .= $value;
-		$database['size'] = filesize($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
-		$database['time'] = $dbtime;
+		$database['size'] = filesize($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql');
+		$database['name'] = $db;
+		list($database['time']) = explode('-',$db);
 		return $database;
 	}
-	elseif((extension_loaded('zlib'))&&(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz')))
+	elseif((extension_loaded('zlib'))&&(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz')))
 	{
 		if($save==TRUE)
 		{
-			$file=fopen($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz',"r"); //tutaj przepisuje plik binarny 
+			$file=fopen($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz',"r"); //tutaj przepisuje plik binarny 
 			while($part = fread($file,8192))
                             	$database .= $part; 
 		}
 		else
 		{
-			$content = gzfile($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
+			$content = gzfile($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
                 	foreach($content as $value)
                         	$database['content'] .= $value;
-                	$database['size'] = filesize($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
-                	$database['time'] = $dbtime;
+                	$database['size'] = filesize($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
+                	$database['name'] = $db;
+			list($database['time']) = explode('-',$db);
 		}
                 return $database;
 	}

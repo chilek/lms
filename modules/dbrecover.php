@@ -85,15 +85,15 @@ if($_GET['is_sure'])
 	else
 		$LMS->DatabaseCreate();
 
-	$dbtime = $_GET['db'];
+	$db = $_GET['db'];
 
-	if(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql'))
+	if(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
 	{
-		DBLoad($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
+		DBLoad($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql');
 	}
-	elseif ((extension_loaded('zlib'))&&(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz')))
+	elseif ((extension_loaded('zlib'))&&(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz')))
 	{
-		DBLoad($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
+		DBLoad($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
 	}
 	
 	$SESSION->redirect('?m='.$SESSION->get('lastmodule'));

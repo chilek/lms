@@ -26,18 +26,18 @@
 
 if($_GET['is_sure'])
 {
-	$dbtime = $_GET['db'];
+	$basename = 'lms-'.$_GET['db'];
 	
-	if(@file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql'))
+	if(@file_exists($LMS->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql'))
 	{
-		@unlink($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
+		@unlink($LMS->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql');
 	}
-	elseif((extension_loaded('zlib'))&&((@file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz'))))
+	elseif((extension_loaded('zlib'))&&((@file_exists($LMS->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz'))))
 	{
-		@unlink($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
+		@unlink($LMS->CONFIG['directories']['backup_dir'].'/'.$basename.'.sql.gz');
 	}
 
-	$SESSION->redirect('?m='.$SESSION->get('lastmodule'));
+	$SESSION->redirect('?m=dblist');
 } 
 else
 {

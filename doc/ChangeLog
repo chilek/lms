@@ -59,6 +59,8 @@ version 1.5.5 Anubis (??/??/????):
   - almsd/dhcp,oident,ethers: changed defaults of 'file' and 'command'
     options (alec)
   - translated to english documentation chapter 'A.L.E.C's LMS Daemon' (alec)
+  - database backups can be restored only on system version according 
+    with database version where backup was created (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 

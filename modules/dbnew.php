@@ -29,6 +29,6 @@ if ($_GET['gz'])
 else
 	$LMS->DatabaseCreate();
 
-header('Location: ?m='.$SESSION->get('lastmodule'));
+header('Location: ?m=dblist');
 
 ?>
