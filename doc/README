@@ -1162,34 +1162,32 @@ info = "Additional description of module"
 
 3.2.6.1. Description
 
-   Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza
-   ostrze¿enia u¿ytkownikom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿
-   okre¶lony limit. Ten modu³ nie zajmuje siê fizycznym blokowaniem
-   dostêpu do sieci.
+   Cutoff do change nodes status to 'disconnected' and/or enable warnings
+   for customers, which have debts at an account greater than specified
+   limit. This module do not blocking network access.
      _________________________________________________________________
 
 3.2.6.2. Configuration
 
-   Dla modu³u 'cutoff' mamy nastêpuj±ce opcje:
+   For module 'cutoff' we have following options:
      * limit
-       Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej kwoty
-       okre¶lonej t± zmienn±. Default: 0.
+       Disconnection ensue if customer balance will decrease below
+       specified value. Default: 0.
        Example: limit = -20
      * command
-       Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co
-       najmniej jeden u¿ytkownik zostanie od³±czony lub zostanie w³±czone
-       ostrze¿enie. Default: nieustawiona.
+       Specify system command, wich will be executed if at least one
+       customer will be disconnected or warning will be enabled. Default:
+       empty.
        Example: command = 'almsd -qi firewall'
      * warning
-       W³±cza ostrze¿enie dla od³±czanego u¿ytkowanika i przypisuje mu
-       okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie
-       w³±czane. Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
-       Default: 'Automatyczna blokada spowodowana przekroczeniem terminu
-       wp³aty (dd.mm.yyyy)".
+       Enable warning for disconnected customer and write specified by
+       this option message. If empty, warning will be not enabled. Date
+       in message is hidden in '%time' variable. Default: 'Automatyczna
+       blokada spowodowana przekroczeniem terminu wp³aty (dd.mm.yyyy)".
        Example: warning = ""
      * warnings_only
-       Ta opcja pozwala zdecydowaæ, czy chcemy u¿yæ naszego modu³u
-       wy³±cznie do w³±czania ostrze¿eñ. Default: wy³±czona.
+       Here you can to decide, if you want to use this module only for
+       warnings enabling. Default: false.
        Example: warnings_only = true
      _________________________________________________________________
 
@@ -1197,129 +1195,126 @@ info = "Additional description of module"
 
 3.2.7.1. Description
 
-   Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
-   restartuje us³ugê. Zmienna 'command' umo¿liwia równie¿ wykonywanie
-   innych czynno¶ci (programów).
+   Module for management of DHCP server, creates configuration file and
+   restarts service. Option 'command' make possible execution of other
+   functions (programs).
      _________________________________________________________________
 
 3.2.7.2. Configuration
 
-   Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom pliku
-   konfiguracyjnego dhcpd, które w typowych zastosowaniach nie wymagaj±
-   zmiany:
+   Most of configuration parameters match with parts of dhcpd
+   configuration file, which in typical purposes do not need change:
      * file
-       Okre¶la lokalizacjê pliku konfiguracyjnego serwera dhcp. Default:
-       /tmp/dhcpd.conf.
-       Example: file = /etc/dhcpd.conf
+       Specify location of dhcp server configuration file. Default:
+       /etc/dhcpd.conf.
+       Example: file = /etc/dhcp/dhcpd.conf
      * command
-       Polecenie wykonywane po utworzeniu pliku konfiguracyjnego.
-       Default: pusta.
-       Example: command = 'killall -HUP dhcpd'
+       Shell command executed after file generation. Default: 'killall
+       dhcpd; /usr/sbin/dhcpd'.
+       Example: command = '/etc/rc.d/rc.dhcpd restart'
      * begin
-       Nag³ówek pliku. Default: "shared-network LMS {".
+       File header. Default: "shared-network LMS {".
        Example: begin = "shared-network LMS {"
      * end
-       Stopka pliku. Default: "}".
+       File footer. Default: "}".
        Example: end = "\n}"
      * subnet_start
-       Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Default: "subnet %a
+       Subnet header. '%a' - name, '%m' - mask. Default: "subnet %a
        netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".
        Example: subnet_start = "subnet %a netmask %m {default-lease-time
        3600;"
      * subnet_end
-       Stopka podsieci. Default: "}".
+       Subnet footer. Default: "}".
        Example: subnet_end = '\t}'
      * subnet_gateway
-       Brama podsieci. '%i' zostanie zamienione na adres ip. Default:
+       Subnet gateway. '%i' will be changed to ip address. Default:
        'option routers %i;'.
        Example: subnet_gateway = "option routers %i"
      * subnet_dns
-       DNS'y podsieci. '%i - adresy dns'ów. Default: "option
+       Subnet DNS servers. '%i - dns addresses. Default: "option
        domain-name-servers %i;".
        Example: subnet_dns = "option domain-name-servers 192.168.0.1"
      * subnet_domain
-       Nazwa domenowa podsieci. '%n' - nazwa. Default: "option
-       domain-name %n;".
+       Subnet domain name. '%n' - name. Default: "option domain-name
+       %n;".
        Example: subnet_domain = "option domain-name test.%n;"
      * subnet_wins
-       Serwery wins. '%i' - adres ip serwera. Default: "option
+       WINS servers. '%i' - server IP address. Default: "option
        netbios-name-servers %i;".
        Example: subnet_wins = ""
      * subnet_range
-       Zakres adresów podsieci. '%s' - adres pocz±tkowy, '%e' - koniec
-       zakresu. Default: "range %s %e;".
+       Subnet address range. '%s' - initial address, '%e' - end of range.
+       Default: "range %s %e;".
        Example: subnet_range = "range %s %e;"
      * host
-       Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' -
-       adres ip. Default: "\thost %n {\n\t\thardware ethernet %m;
+       Hosts parameters, where '%n' - host name, '%m' - MAC, '%i' - IP
+       address. Default: "\thost %n {\n\t\thardware ethernet %m;
        fixed-address %i; \n\t}".
        Example: host = "host %n {hardware ethernet %m; fixed-address
        %i;}"
      * networks
-       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
-       nie ma znaczenia. Default: pusta (wszystkie sieci).
+       List of network names to take into consideration. Letters size is
+       not important. Default: empty (all networks).
        Example: networks = "lan1 lan2"
      * usergroups
-       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
-       Wielko¶æ liter nie ma znaczenia. Default: pusta (wszystkie grupy).
-       Example: usergroups = "grupa1 grupa2"
+       List of customers groups to take into consideration. Letters size
+       is not important. Default: empty (all groups).
+       Example: usergroups = "group1 group2"
      _________________________________________________________________
 
 3.2.8. Hostfile
 
 3.2.8.1. Description
 
-   Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ wykonuje
-   pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich status
-   (od³±czony/pod³±czony), sieæ do której s± pod³aczone oraz grupy do
-   których nale¿± ich w³a¶ciciele, dlatego mo¿liwe jest tworzenie np.
-   regu³ dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do
-   pliku i nastêpnie wykonuje okre¶lone polecenie pow³oki.
+   Module 'hostfile' is a rather multipurposed tool. It performs loop on
+   all hosts from database distingue status of them
+   (connected/diconnected), network for which are they connected and
+   groups of they owners. Because of that it is possible to create e.g.
+   any firewall rules, or file /etc/hosts. Data are writed to file and
+   after that is executed specified shell command.
      _________________________________________________________________
 
 3.2.8.2. Configuration
 
-   W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne
-   zmienne, które podczas zapisu do pliku zostan± zast±pione '%i' -
-   adresem ip, '%m' - mac adresem, '%n' - nazw± komputera, '%p' -
-   password, '%info' - opisem komputera, '%domain' - domen±, '%net' -
-   nazw± sieci, '%gw' - adresem bramy w sieci do której nale¿y dany
-   komputer. Poni¿ej opcje udostêpniane przez ten modu³
+   In 'grantedhost' and 'deniedhost' options can be used special
+   sequences, which during write to file will be replaced by '%i' - IP
+   address, '%m' - MAC address, '%n' - host name, '%p' - password,
+   '%info' - node description, '%domain' - domain, '%net' - net name,
+   '%gw' - gateway address of network for which belongs given node. This
+   module has following options:
      * file
-       Lokalizacja pliku tymczasowego. Default: /tmp/hostfile
+       Location of generated file. Default: /tmp/hostfile
        Example: file = /etc/rc.d/rc.firewall
      * command
-       Polecenie pow³oki wyk. po utworzeniu pliku 'file'. Default: puste
+       Shell command(s) executed after 'file' generation. Default: empty
        Example: command = '/bin/sh /etc/rc.d/rc.firewall'
      * begin
-       Nag³ówek pliku tymczasowego. Default: "/usr/sbin/iptables -F
-       FORWARD\n"
+       File header. Default: "/usr/sbin/iptables -F FORWARD\n"
        Example: begin = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"
      * end
-       Stopka pliku tymczasowego. Default: "/usr/sbin/iptables -A FORWARD
-       -J REJECT\n"
+       File footer. Default: "/usr/sbin/iptables -A FORWARD -J REJECT\n"
        Example: end = "$IPT -A FORWARD -J REJECT\n"
      * grantedhost
-       Tekst dla hosta pod³±czonego. Default: "/usr/sbin/iptables -A
+       Text of rule for connected node. Default: "/usr/sbin/iptables -A
        FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"
        Example: grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source
        %m -j ACCEPT\n"
      * deniedhost
-       Tekst dla hosta od³±czonego. Default: "/usr/sbin/iptables -A
-       FORWARD -s %i -m mac --mac-source %m -j REJECT\n"
+       Text of rule for disconnected node. Default: "/usr/sbin/iptables
+       -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"
        Example: deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source
        %m -j REJECT\n"
      * networks
-       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
-       nie ma znaczenia. Default: pusta (wszystkie sieci).
+       List of network names for consideration. Letters size doesn't
+       matter. Default: empty (all networks).
        Example: networks = "lan1 lan2"
      * usergroups
-       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
-       Wielko¶æ liter nie ma znaczenia. Default: pusta (wszystkie grupy).
+       List of customers groups names for consideration. Letters size
+       doesn't matter. Default: empty (all groups).
        Example: usergroups = "grupa1 grupa2"
      * skip_dev_ips
-       Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy
-       urz±dzeñ sieciowych. Default: tak
+       If enabled (yes, true) addresses of network devices will be
+       ignored (omitted). Default: yes
        Example: skip_dev_ips = no
      _________________________________________________________________
 
@@ -1327,18 +1322,18 @@ info = "Additional description of module"
 
 3.2.9.1. Description
 
-   'Traffic' to odpowiednik perlowego lms-traffic, zapisuj±cy do bazy
-   statystyki wykorzystania ³±cza z pliku utworzonego przez u¿ytkownika.
-   Plik taki powinien mieæ format: ip_hosta upload download . Wiêcej
-   informacji (w tym jak utworzyæ taki plik) mo¿na znale¼æ w rozdziale
-   dotycz±cym lms-traffic.
+   'Traffic' is an equivalent of perl's script lms-traffic, load to
+   database internet link stats from file created by user. That file must
+   have format: host_IP upload download. More informations (including how
+   to make such file) can be found in chapter with lms-traffic
+   description.
      _________________________________________________________________
 
 3.2.9.2. Configuration
 
-   Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:
+   Only one available option is also mandatory:
      * file
-       Lokalizacja pliku ze statystykami firewalla. Default:
+       Location of file with firewall stats. Default:
        /var/log/traffic.log
        Example: file = /tmp/log
      _________________________________________________________________
@@ -1347,54 +1342,49 @@ info = "Additional description of module"
 
 3.2.10.1. Description
 
-   Modu³ generuj±cy skrypt zawieraj±cy polecenia iptables i tc s³u¿±ce do
-   ograniczania pasma i limitowania po³±czeñ u¿ytkownikom. Regu³ki dla
-   komputerów mo¿na dowolnie zdefiniowaæ i wykorzystaæ nie tylko do
-   "traffic control". Zasada dzia³ania skryptu przedstawia siê
-   nastêpuj±co: Najpierw z bazy pobierane s± dane dla wszystkich
-   u¿ytkowników. Obliczane s± sumy ograniczeñ (uprate, downrate, upceil,
-   downceil, limity po³±czeñ) dla ka¿dego u¿ytkownika Nastêpnie
-   wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy
-   u¿ytkowników i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s±
-   ró¿ne od zera nastêpuje zapis regu³ do pliku z podmian± zmiennych. W
-   regu³kach mo¿na stosowaæ nastêpuj±ce zmienne: %name - nazwa hosta, %i
-   - adres IP, %m - MAC, %uprate, %downrate, %upceil, %downceil, %plimit,
-   %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 zwiêkszany o
-   jeden dla ka¿dego komputera.
+   Generate script containing iptables and tc rules for traffic control
+   i.e. band and customer connections limiting. Rules for nodes can be
+   freely defined and used not only for traffic control. Principle of
+   operation of this module is following: First of all are retrived data
+   of all customers. Accounted are totals of limitations (uprate,
+   downrate, upceil, downceil, connection limit) for each customer. Then
+   is performed loop with checking of networks and groups (if specified).
+   If limit values are not zeroes rules are writed to file with variables
+   replacement. In rules can be used following variables: %name - host
+   name, %i - IP address, %m - MAC, %uprate, %downrate, %upceil,
+   %downceil, %plimit, %climit, and %x - counter with initial value 100
+   incremented by one for each node.
 
-   Domy¶lna polityka tworzenia klas htb zak³ada utworzenie jednej klasy
-   dla wszystkich komputerów u¿ytkownika. Mo¿e to byæ zmienione za pomoc±
-   opcji 'one_class_per_host'.
+   Default policy of htb class creating assume one class for all nodes of
+   each customer. In can be changed with 'one_class_per_host' option.
 
-   Configuration domy¶lna zak³ada, ¿e twój system jest przystosowany do
-   zastosowania htb oraz iptables z modu³ami limit, connlimit, mark i
-   ipp2p. Mo¿esz sam spatchowaæ j±dro lub skorzystaæ ze ¼róde³ dostêpnych
-   na stronie www.inet.one.pl.
+   Default configuration assume that your system supports htb and
+   iptables with modules limit, connlimit, mark and ipp2p. You can patch
+   kernel or use sources available at polish project www.inet.one.pl.
      _________________________________________________________________
 
 3.2.10.2. Configuration
 
-   Masz do dyspozycji standardowe parametry takie jak usergroups, file,
-   command, networks i dodatkowo opcje definiuj±ce tre¶æ regu³ek tc i
-   firewalla. Domy¶lna konfiguracja przeznaczona jest dla ³±cz 512/128
-   kbit i 100mbit.
+   For your disposal we have basic options like groups of customers,
+   file, command, networks and extra options which are define tc and
+   firewall rules. Default config is designed for 512/128 kbit and
+   100mbit links.
 
    Note
 
-   Warto¶ci opcji konfiguracyjnych w lms.ini nale¿y podawaæ w jednej
-   linii. W przypadku tego modu³u mo¿e to byæ niezbyt wygodne, dlatego
-   mo¿esz stworzyæ plik z zawarto¶ci± ca³ego nag³ówka (opcja begin), a
-   nastêpnie u¿yæ opcji command do jego sklejenia z reszt± skryptu
-   wygenerowan± przez modu³.
+   Values of configuration options in lms.ini must be putted in one line.
+   In case of that module it can be not very handy, so you can create
+   file containing whole header (option begin), and then use option
+   command for join with the rest of file generated by this module.
      * file
-       Lokalizacja pliku tymczasowego. Default: /etc/rc.d/rc.htb.
+       Location of file. Default: /etc/rc.d/rc.htb.
        Example: file = /tmp/rc.htb
      * command
-       Polecenie pow³oki wykonywane po utworzeniu pliku. Default: "sh
+       Shell command executed after file creation. Default: "sh
        /etc/rc.d/rc.htb start".
        Example: command = "chmod 700 /tmp/rc.htb; /tmp/rc.htb start"
      * begin
-       Nag³ówek skryptu. Default:
+       Script header. Default:
 "#!/bin/sh
 IPT=/usr/sbin/iptables
 TC=/sbin/tc
@@ -1456,7 +1446,7 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 3 handle 1 fw flowid 2:11
 $TC filter add dev $WAN parent 2:0 protocol ip prio 9 u32 match ip dst 0/0 flowid 2:11
        Example: begin = "#!/bin/bash\n$TC=/usr/local/sbin/tc\n"
      * end
-       Stopka skryptu. Default:
+       Script footer. Default:
 }
 
 case "$1" in
@@ -1482,58 +1472,56 @@ case "$1" in
 esac
        Example: end = ""
      * one_class_per_host
-       Okre¶la politykê tworzenia klas htb. W ustawieniu domy¶lnym
-       wszystkie komputery u¿ytkownika zostan± wrzucone do jednej klasy.
-       Ustawienie tej opcji na 'true' spowoduje, ¿e regu³y okre¶lone w
-       host_htb_up i host_htb_down zostan± wygenerowane dla wszystkich
-       komputerów u¿ytkownika (z inn± warto¶ci± '%x'). Regu³y z
-       host_mark_down, host_mark_up, host_plimit i host_climit generowane
-       s± dla ka¿dego komputera niezale¿nie od ustawieñ tej zmiennej.
-       Default: false
+       Specify policy of htb class creation. In default setting all
+       computers of customer will be placed in one class. Setting it on
+       'true' will made that rules specified in host_htb_up and
+       host_htb_down will be generated for all customer's computers (with
+       different value of '%x'). Rules host_mark_down, host_mark_up,
+       host_plimit and host_climit are generated for each node regardless
+       of this option setting. Default: false
        Example: one_class_per_host = 1
      * host_mark_down
-       Regu³a markuj±ca dla ka¿dego komutera. Default:
+       Mark rule for each computer. Default:
 # %n
 $IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
        Example: host_mark_down = ""
      * host_mark_up
-       Regu³a markuj±ca dla ka¿dego komutera. Default:
+       Mark rule for each computer. Default:
 $IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
        Example: host_mark_up = ""
      * host_htb_down
-       Zestaw regu³ dla ka¿dego komutera, wykonywanych gdy uprate i
-       downrate s± ró¿ne od zera. Default:
+       Rules for each computer executed when uprate and downrate are not
+       zeroes. Default:
 $TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $LAN parent 1:%x esfq perturb 10 hash dst
 $TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%x
        Example: host_htb_down = ""
      * host_htb_up
-       Zestaw regu³ dla ka¿dego komutera, wykonywanych gdy uprate i
-       downrate s± ró¿ne od zera. Default:
+       Rules for each computer executed when uprate and downrate are not
+       zeroes. Default:
 $TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $WAN parent 2:%x esfq perturb 10 hash dst
 $TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x
        Example: host_htb_up = ""
      * host_climit
-       Regu³ka z ograniczeniem ilo¶ci równoczesnych po³±czeñ tcp.
-       Wykonywana gdy climit w bazie jest ró¿ny od zera. Default:
+       Rule with simultaneous tcp connections limit. Executed when climit
+       in not a zero. Default:
 $IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT
        Example: host_climit = "$IPT -t filter -I FORWARD -p tcp -s %i -m
        connlimit --connlimit-above -j REJECT"
      * host_plimit
-       Regu³ka z ograniczeniem ilo¶ci pakietów w jednostce czasu (tutaj
-       sekunda). Wykonywana gdy plimit w bazie jest ró¿ny od zera.
-       Default:
+       Rule with limiting of packets in time unit (here second). Executed
+       when plimit is not a zero. Default:
 $IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
 $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
        Example: host_plimit = ""
      * networks
-       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
-       nie ma znaczenia. Default: pusta (wszystkie sieci).
+       List of network names for consideration. Case insensitive.
+       Default: empty (all networks).
        Example: networks = "lan1 lan2"
      * usergroups
-       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
-       Wielko¶æ liter nie ma znaczenia. Default: pusta (wszystkie grupy).
+       List of customers groups for consideration. Case insensitive.
+       Default: empty (all groups).
        Example: usergroups = "grupa1 grupa2"
      _________________________________________________________________
 
@@ -1541,77 +1529,74 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 
 3.2.11.1. Description
 
-   Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej
-   skomplikowanych. Tworzy dla ka¿dej sieci pliki stref oraz odpowiednie
-   wpisy w named.conf w oparciu o szablony tych plików. Przyk³adowe
-   szablony znajduj± siê w katalogu /modules/dns/sample.
+   Configuration of named zones. This is a one from most complicated
+   modules. Create zone files for each network and equivalent entries in
+   named.conf on the basis of templates of this files. Example templates
+   are placed in /modules/dns/sample directory.
      _________________________________________________________________
 
 3.2.11.2. Configuration
 
      * forward-patterns
-       Katalog z szablonami stref. Default: forward.
+       Directory with zone templates. Default: forward.
        Example: forward-patterns = /dns/patterns/forward
      * reverse-patterns
-       Katalog z szablonami stref odwrotnych. Default: reverse.
+       Directory with reverse zone templates. Default: reverse.
        Example: reverse-patterns = /dns/patterns/revers
      * generic-forward
-       Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu
-       okre¶lonym 'forward-patterns' nie bêdzie pliku odpowiadaj±cego
-       nazwie domenowej sieci. Default:
-       modules/dns/sample/forward/generic.
+       Default template. It'll be used if in directory specified by
+       'forward-patterns' will not found file with name corresponding to
+       network domain name. Default: modules/dns/sample/forward/generic.
        Example: generic-forward = /dns/patterns/forward
      * generic-reverse
-       Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu
-       okre¶lonym 'reverse-patterns' nie bêdzie pliku odpowiadaj±cego
-       numerowi IP sieci. Default: modules/dns/sample/reverse/generic.
+       Default template. It'll be used if in directory specified by
+       'reverse-patterns' will not found file with name corresponding to
+       network IP address. Default: modules/dns/sample/reverse/generic.
        Example: generic-reverse = /dns/patterns/forward
      * forward-zones
-       Katalog na pliki wynikowe stref. Default:
+       Directory for generated zones files. Default:
        modules/dns/sample/out/forward.
        Example: forward-zones = /dns/forward
      * reverse-zones
-       Katalog na pliki wynikowe stref odwrotnych. Default:
+       Directory for generated reverse zones files. Default:
        modules/dns/sample/out/reverse.
        Example: reverse-zones = /dns/reverse
      * host-reverse
-       Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane
-       sieci. Default: "%n IN A %i\n".
+       Line in reverse zone file for each computer of given network.
+       Default: "%n IN A %i\n".
        Example: host-reverse = "\t %n IN A %i\n"
      * host-forward
-       Linia w pliku strefy odpowiadaj±ca ka¿demu komputerowi w danej
-       sieci. Default: "%c IN PTR %n.%d.\n".
+       Line in zone file for each computer of given network.. Default:
+       "%c IN PTR %n.%d.\n".
        Example: host-forward = "\t %c IN PTR %n.%d.\n"
      * conf-pattern
-       Lokalizacja szablonu g³ównego pliku konfiguracyjnego serwera.
-       Default: modules/dns/sample/named.conf.
+       Location of main template of server configuration file. Default:
+       modules/dns/sample/named.conf.
        Example: conf-pattern = /dns/patterns/named.conf
      * conf-output
-       Lokalizacja g³ównego pliku konfiguracyjnego serwera. Default:
-       /tmp/named.conf.
+       Location of main configuration file. Default: /tmp/named.conf.
        Example: conf-output = /etc/named.conf
      * conf-forward-entry
-       Wpis dla ka¿dej strefy w g³ównym pliku konfiguracyjnym. Default:
-       'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n};
-       \n'.
+       Entry for each zone in main configuration file. Default: 'zone
+       "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n}; \n'.
        Example: conf-forward-entry = 'zone "%n" { \n\ttype master;
        \n\tfile "forward/%n"; \n\tnotify yes; \n}; \n'
      * conf-reverse-entry
-       Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
-       Default: 'zone "%c.in-addr.arpa" { \ntype master; \nfile
-       "reverse/%i"; \nnotify yes; \n}; \n'.
+       Entry for each reverse zone in main configuration file. Default:
+       'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i";
+       \nnotify yes; \n}; \n'.
        Example: conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype
        master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'
      * command
-       Polecenie wykonywane po utworzeniu plików konf. Default: puste.
-       Example: command = ""
+       Shell command executed after creation of files. Default: empty.
+       Example: command = "killall -HUP named"
      * networks
-       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
-       nie ma znaczenia. Default: pusta (wszystkie sieci).
+       List of network names for consideration. Case insensitive.
+       Default: empty (all networks).
        Example: networks = "lan1 lan2"
      * usergroups
-       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
-       Wielko¶æ liter nie ma znaczenia. Default: pusta (wszystkie grupy).
+       List of customer (user) groups for consideration. Case
+       insensitive. Default: empty (all groups).
        Example: usergroups = "grupa1 grupa2"
      _________________________________________________________________
 
@@ -1619,32 +1604,32 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 
 3.2.12.1. Description
 
-   Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Ustawiaj±c opcjê
-   'dummy_macs' mo¿na sprawiæ, aby komputerom od³±czonym zosta³
-   przypisany mac-adres 00:00:00:00:00:00.
+   This module creates configuration of system ARP table. Setting option
+   'dummy_macs' you can make that all disconnected computers will have
+   mac address 00:00:00:00:00:00.
      _________________________________________________________________
 
 3.2.12.2. Configuration
 
-   Tutaj s± tylko standardowe opcje:
+   Basic options:
      * file
-       Lokalizacja pliku wynikowego. Default: /tmp/ethers.
-       Example: file = /etc/ethers
+       Location of file. Default: /etc/ethers.
+       Example: file = /tmp/ethers
      * command
-       Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Default:
-       puste.
-       Example: command = "arp -f /etc/ethers"
+       Shell command to execute after config creation. Default: 'erp -f
+       /etc/ethers'.
+       Example: command = ""
      * dummy_macs
-       Je¶li ustawimy na 'yes', to komputerom od³±czonym zostanie
-       przypisany mac-adres '00:00:00:00:00:00'. Default: "no".
+       If you set to 'yes', disconnected computers will get MAC
+       '00:00:00:00:00:00'. Default: "no".
        Example: dummy_macs = yes
      * networks
-       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
-       nie ma znaczenia. Default: pusta (wszystkie sieci).
+       List of network names for consideration. Letters size doesn't
+       matter. Default: empty (all networks).
        Example: networks = "lan1 lan2"
      * usergroups
-       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
-       Wielko¶æ liter nie ma znaczenia. Default: pusta (wszystkie grupy).
+       List of customer groups names for consideration. Letter size
+       doesn't matter. Default: empty (all groups).
        Example: usergroups = "grupa1 grupa2"
      _________________________________________________________________
 
@@ -1652,52 +1637,50 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 
 3.2.13.1. Description
 
-   Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
-   'hostfile', ale tutaj masz ju¿ gotowe ustawienia domy¶lne.
+   Module for oidentd configuration. Basically it can be made with
+   hostfile module, but here you have ready-made default settings for
+   that purpose.
      _________________________________________________________________
 
 3.2.13.2. Configuration
 
-   A oto parametry modu³u 'oident'
+   And here are the options of oident:
      * begin
-       Tekst wstawiany na pocz±tku pliku. Default: puste.
-       Example: begin = "#Generowany automatycznie\n"
+       Text inserted on the beginning of file. Default: empty.
+       Example: begin = "#Auto-generated\n"
      * end
-       Tekst wstawiany na koñcu pliku. Default: puste.
+       Text inserted on the end of file. Default: empty.
        Example: end = ""
      * host
-       Linia tekstu dla ka¿dego komputera. Default: "%i\t%n\tUNIX".
+       Line of text for each of computers. Default: "%i\t%n\tUNIX".
        Example: host = "%i %n WINDOWS"
      * file
-       Tekst wstawiany na pocz±tku pliku. Default: /tmp/oidentd.conf.
-       Example: file = /etc/identd.conf
+       Configuration file. Default: /etc/oidentd.conf.
+       Example: file = /tmp/identd.conf
      * networks
-       Lista nazw sieci do uwzglêdnienia. Default: pusta (wszystkie
-       sieci).
+       List of networks. Default: empty (all networks).
        Example: networks = 'lan1 lan2'
      * command
-       Polecenie do wykonania po utworzeniu pliku. Default: puste.
-       Example: command = "killall -HUP midentd"
+       Shell command(s) to execute after file creation. Default: empty.
+       Example: command = "killall -HUP oidentd"
      _________________________________________________________________
 
 3.2.14. Pinger
 
 3.2.14.1. Description
 
-   Modu³ pinger to odpowiednik perlowego skryptu lms-fping. Ró¿nice s±
-   jednak zasadnicze. Nie potrzebuje zewnêtrznego programu i dzia³a przy
-   wykorzystaniu protoko³u ARP. Powodem tego jest mniej wiêcej dwukrotnie
-   szybsze wykonanie skanowania sieci. Nie ma tak¿e problemów z
-   komputerami maj±cymi wy³±czone odpowiadanie na pingi. Po skanowaniu,
-   wszystkim w³±czonym komputerom jest ustawiany w bazie danych czas
-   skanowania, wykorzystywany do obrazowania aktywno¶ci komputerów np. na
-   mapie sieci.
+   Module pinger it's an equivalent to perl's script lms-fping. However
+   differences are fundamental. It not need external program and work
+   with use of ARP protocol. It follows more or less twice faster
+   execution of network scanning. Also there are not problems with hosts
+   wich have disabled ping responsing. After scanning, for all online
+   hosts in database is set time of scanning, used to illustrate hosts
+   activity e.g. on network map.
      _________________________________________________________________
 
 3.2.14.2. Configuration
 
-   Pinger udostêpnia tylko jedn± opcjê konfiguracyjn±:
+   Pinger has only one config option:
      * networks
-       Lista nazw sieci, które maj± byæ skanowane. Default: pusta
-       (wszystkie sieci).
+       List of network names. Default: empty (all networks).
        Example: networks = 'lan1 lan2'

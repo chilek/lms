@@ -3569,9 +3569,9 @@ NAME="CUTOFF-DESC"
 >3.2.6.1. Description</A
 ></H4
 ><P
->Cutoff zmienia status komputerów na 'od³±czony' i/lub w³±cza ostrze¿enia
-              u¿ytkownikom, którzy maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ 
-              nie zajmuje siê fizycznym blokowaniem dostêpu do sieci.</P
+>Cutoff do change nodes status to 'disconnected' and/or enable warnings
+              for customers, which have debts at an account greater than specified limit.
+              This module do not blocking network access.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -3582,14 +3582,14 @@ NAME="CUTOFF-CONFIG"
 >3.2.6.2. Configuration</A
 ></H4
 ><P
->Dla modu³u 'cutoff' mamy nastêpuj±ce opcje:</P
+>For module 'cutoff' we have following options:</P
 ><UL
 ><LI
 ><P
 >limit</P
 ><P
->Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej
-                   kwoty okre¶lonej t± zmienn±. Default: 0.</P
+>Disconnection ensue if customer balance will decrease below
+                   specified value. Default: 0.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3600,9 +3600,9 @@ CLASS="PROMPT"
 ><P
 >command</P
 ><P
->Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co najmniej
-                   jeden u¿ytkownik zostanie od³±czony lub zostanie w³±czone ostrze¿enie. 
-                   Default: nieustawiona.</P
+>Specify system command, wich will be executed if at least one
+                   customer will be disconnected or warning will be enabled. 
+                   Default: empty.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3613,9 +3613,9 @@ CLASS="PROMPT"
 ><P
 >warning</P
 ><P
->W³±cza ostrze¿enie dla od³±czanego u¿ytkowanika i przypisuje mu 
-                   okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
-                   Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
+>Enable warning for disconnected customer and write specified 
+                   by this option message. If empty, warning will be not enabled.
+                   Date in message is hidden in '%time' variable.
                    Default: 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty (dd.mm.yyyy)".</P
 ><P
 >Example: <SAMP
@@ -3627,8 +3627,8 @@ CLASS="PROMPT"
 ><P
 >warnings_only</P
 ><P
->Ta opcja pozwala zdecydowaæ, czy chcemy u¿yæ naszego 
-                   modu³u wy³±cznie do w³±czania ostrze¿eñ. Default: wy³±czona.</P
+>Here you can to decide, if you want to use this module
+                   only for warnings enabling. Default: false.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3655,9 +3655,9 @@ NAME="DHCP-DESC"
 >3.2.7.1. Description</A
 ></H4
 ><P
->Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
-              restartuje us³ugê. Zmienna 'command' umo¿liwia równie¿ wykonywanie innych 
-              czynno¶ci (programów).</P
+>Module for management of DHCP server, creates configuration file
+              and restarts service. Option 'command' make possible execution of other 
+              functions (programs).</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -3668,39 +3668,39 @@ NAME="DHCP-CONFIG"
 >3.2.7.2. Configuration</A
 ></H4
 ><P
->Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom 
-              pliku konfiguracyjnego dhcpd, które w typowych zastosowaniach
-              nie wymagaj± zmiany:</P
+>Most of configuration parameters match with parts of 
+              dhcpd configuration file, which in typical purposes do not need
+              change:</P
 ><UL
 ><LI
 ><P
 >file</P
 ><P
->Okre¶la lokalizacjê pliku konfiguracyjnego serwera dhcp. 
-                   Default: /tmp/dhcpd.conf.</P
+>Specify location of dhcp server configuration file. 
+                   Default: /etc/dhcpd.conf.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->file = /etc/dhcpd.conf</SAMP
+>file = /etc/dhcp/dhcpd.conf</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >command</P
 ><P
->Polecenie wykonywane po utworzeniu pliku konfiguracyjnego. 
-                   Default: pusta.</P
+>Shell command executed after file generation. 
+                   Default: 'killall dhcpd; /usr/sbin/dhcpd'.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->command = 'killall -HUP dhcpd'</SAMP
+>command = '/etc/rc.d/rc.dhcpd restart'</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >begin</P
 ><P
->Nag³ówek pliku. Default: "shared-network LMS {".</P
+>File header. Default: "shared-network LMS {".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3711,7 +3711,7 @@ CLASS="PROMPT"
 ><P
 >end</P
 ><P
->Stopka pliku. Default: "}".</P
+>File footer. Default: "}".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3722,7 +3722,7 @@ CLASS="PROMPT"
 ><P
 >subnet_start</P
 ><P
->Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Default: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
+>Subnet header. '%a' - name, '%m' - mask. Default: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3733,7 +3733,7 @@ CLASS="PROMPT"
 ><P
 >subnet_end</P
 ><P
->Stopka podsieci. Default: "}".</P
+>Subnet footer. Default: "}".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3744,7 +3744,7 @@ CLASS="PROMPT"
 ><P
 >subnet_gateway</P
 ><P
->Brama podsieci. '%i' zostanie zamienione na adres ip. Default: 'option routers %i;'.</P
+>Subnet gateway. '%i' will be changed to ip address. Default: 'option routers %i;'.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3755,7 +3755,7 @@ CLASS="PROMPT"
 ><P
 >subnet_dns</P
 ><P
->DNS'y podsieci. '%i - adresy dns'ów. Default: "option domain-name-servers %i;".</P
+>Subnet DNS servers. '%i - dns addresses. Default: "option domain-name-servers %i;".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3766,7 +3766,7 @@ CLASS="PROMPT"
 ><P
 >subnet_domain</P
 ><P
->Nazwa domenowa podsieci. '%n' - nazwa. Default: "option domain-name %n;".</P
+>Subnet domain name. '%n' - name. Default: "option domain-name %n;".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3777,7 +3777,7 @@ CLASS="PROMPT"
 ><P
 >subnet_wins</P
 ><P
->Serwery wins. '%i' - adres ip serwera. Default: "option netbios-name-servers %i;".</P
+>WINS servers. '%i' - server IP address. Default: "option netbios-name-servers %i;".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3788,7 +3788,7 @@ CLASS="PROMPT"
 ><P
 >subnet_range</P
 ><P
->Zakres adresów podsieci. '%s' - adres pocz±tkowy, '%e' - koniec zakresu. Default: "range %s %e;".</P
+>Subnet address range. '%s' - initial address, '%e' - end of range. Default: "range %s %e;".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3799,7 +3799,7 @@ CLASS="PROMPT"
 ><P
 >host</P
 ><P
->Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' - adres ip. 
+>Hosts parameters, where '%n' - host name, '%m' - MAC, '%i' - IP address. 
                    Default: "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}".</P
 ><P
 >Example: <SAMP
@@ -3811,8 +3811,8 @@ CLASS="PROMPT"
 ><P
 >networks</P
 ><P
->Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
-                   Default: pusta (wszystkie sieci).</P
+>List of network names to take into consideration. Letters size is not important.
+                   Default: empty (all networks).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3823,12 +3823,12 @@ CLASS="PROMPT"
 ><P
 >usergroups</P
 ><P
->Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
-                   Default: pusta (wszystkie grupy).</P
+>List of customers groups to take into consideration. Letters size is not important.
+                   Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->usergroups = "grupa1 grupa2"</SAMP
+>usergroups = "group1 group2"</SAMP
 ></P
 ></LI
 ></UL
@@ -3851,12 +3851,12 @@ NAME="HOSTFILE-DESC"
 >3.2.8.1. Description</A
 ></H4
 ><P
->Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
-              wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
-              status (od³±czony/pod³±czony), sieæ do której s± pod³aczone oraz
-              grupy do których nale¿± ich w³a¶ciciele, dlatego mo¿liwe jest tworzenie np. regu³
-              dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku 
-              i nastêpnie wykonuje okre¶lone polecenie pow³oki.</P
+>Module 'hostfile' is a rather multipurposed tool. It performs 
+              loop on all hosts from database distingue status of them
+              (connected/diconnected), network for which are they connected and
+              groups of they owners. Because of that it is possible to create e.g. any
+              firewall rules, or file /etc/hosts. Data are writed to file 
+              and after that is executed specified shell command.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -3867,17 +3867,17 @@ NAME="HOSTFILE-CONFIG"
 >3.2.8.2. Configuration</A
 ></H4
 ><P
->W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
-              które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
-              adresem, '%n' - nazw± komputera, '%p' - password, '%info' - opisem komputera, '%domain' - domen±, 
-              '%net' - nazw± sieci, '%gw' - adresem bramy w sieci do której nale¿y dany komputer.
-              Poni¿ej opcje udostêpniane przez ten modu³</P
+>In 'grantedhost' and 'deniedhost' options can be used special sequences,
+              which during write to file will be replaced by '%i' - IP address, '%m' - MAC
+              address, '%n' - host name, '%p' - password, '%info' - node description, '%domain' - domain, 
+              '%net' - net name, '%gw' - gateway address of network for which belongs given node.
+              This module has following options:</P
 ><UL
 ><LI
 ><P
 >file</P
 ><P
->Lokalizacja pliku tymczasowego. Default: /tmp/hostfile</P
+>Location of generated file. Default: /tmp/hostfile</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3888,7 +3888,7 @@ CLASS="PROMPT"
 ><P
 >command</P
 ><P
->Polecenie pow³oki wyk. po utworzeniu pliku 'file'. Default: puste</P
+>Shell command(s) executed after 'file' generation. Default: empty</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3899,7 +3899,7 @@ CLASS="PROMPT"
 ><P
 >begin</P
 ><P
->Nag³ówek pliku tymczasowego. Default: "/usr/sbin/iptables -F FORWARD\n"</P
+>File header. Default: "/usr/sbin/iptables -F FORWARD\n"</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3910,7 +3910,7 @@ CLASS="PROMPT"
 ><P
 >end</P
 ><P
->Stopka pliku tymczasowego. Default: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</P
+>File footer. Default: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3921,7 +3921,7 @@ CLASS="PROMPT"
 ><P
 >grantedhost</P
 ><P
->Tekst dla hosta pod³±czonego. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</P
+>Text of rule for connected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3932,7 +3932,7 @@ CLASS="PROMPT"
 ><P
 >deniedhost</P
 ><P
->Tekst dla hosta od³±czonego. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</P
+>Text of rule for disconnected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3943,8 +3943,8 @@ CLASS="PROMPT"
 ><P
 >networks</P
 ><P
->Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
-                   Default: pusta (wszystkie sieci).</P
+>List of network names for consideration. Letters size doesn't matter.
+                   Default: empty (all networks).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3955,8 +3955,8 @@ CLASS="PROMPT"
 ><P
 >usergroups</P
 ><P
->Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
-                   Default: pusta (wszystkie grupy).</P
+>List of customers groups names for consideration. Letters size doesn't matter. 
+                   Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3967,7 +3967,7 @@ CLASS="PROMPT"
 ><P
 >skip_dev_ips</P
 ><P
->Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy urz±dzeñ sieciowych. Default: tak</P
+>If enabled (yes, true) addresses of network devices will be ignored (omitted). Default: yes</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -3994,10 +3994,10 @@ NAME="TRAFFIC-DESC"
 >3.2.9.1. Description</A
 ></H4
 ><P
->'Traffic' to odpowiednik perlowego lms-traffic, zapisuj±cy do bazy statystyki
-              wykorzystania ³±cza z pliku utworzonego przez u¿ytkownika. Plik taki powinien mieæ 
-              format: ip_hosta upload download . Wiêcej informacji (w tym jak utworzyæ taki plik)
-              mo¿na znale¼æ w rozdziale dotycz±cym lms-traffic.</P
+>'Traffic' is an equivalent of perl's script lms-traffic, load to 
+	      database internet link stats from file created by user. That file must
+	      have format: host_IP upload download. More informations (including how to make 
+	      such file) can be found in chapter with lms-traffic description.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -4008,13 +4008,13 @@ NAME="TRAFFIC-CONFIG"
 >3.2.9.2. Configuration</A
 ></H4
 ><P
->Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:</P
+>Only one available option is also mandatory:</P
 ><UL
 ><LI
 ><P
 >file</P
 ><P
->Lokalizacja pliku ze statystykami firewalla. Default: /var/log/traffic.log</P
+>Location of file with firewall stats. Default: /var/log/traffic.log</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4041,26 +4041,25 @@ NAME="TC-DESC"
 >3.2.10.1. Description</A
 ></H4
 ><P
->Modu³ generuj±cy skrypt zawieraj±cy polecenia iptables i tc s³u¿±ce
-              do ograniczania pasma i limitowania po³±czeñ u¿ytkownikom. Regu³ki dla 
-              komputerów mo¿na dowolnie zdefiniowaæ i wykorzystaæ nie tylko do "traffic 
-              control". Zasada dzia³ania skryptu przedstawia siê nastêpuj±co: Najpierw z bazy
-              pobierane s± dane dla wszystkich u¿ytkowników. Obliczane s± sumy ograniczeñ
-              (uprate, downrate, upceil, downceil, limity po³±czeñ) dla ka¿dego u¿ytkownika
-              Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy u¿ytkowników
-              i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s± ró¿ne od zera nastêpuje
-              zapis regu³ do pliku z podmian± zmiennych. W regu³kach mo¿na stosowaæ nastêpuj±ce
-              zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, %uprate, %downrate, %upceil, 
-              %downceil, %plimit, %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 
-              zwiêkszany o jeden dla ka¿dego komputera.</P
+>Generate script containing iptables and tc rules for traffic control
+              i.e. band and customer connections limiting. Rules for nodes can be freely
+              defined and used not only for traffic control. Principle of operation of this 
+	      module is following: First of all are retrived data of all customers.
+              Accounted are totals of limitations (uprate, downrate, upceil, downceil, connection limit) 
+	      for each customer. Then is performed loop with checking of networks and groups
+	      (if specified). If limit values are not zeroes rules are writed to file with
+              variables replacement. In rules can be used following variables:
+              %name - host name, %i - IP address, %m - MAC, %uprate, %downrate, %upceil, 
+              %downceil, %plimit, %climit, and %x - counter with initial value 100 incremented 
+              by one for each node.</P
 ><P
->Domy¶lna polityka tworzenia klas htb zak³ada utworzenie jednej klasy dla
-              wszystkich komputerów u¿ytkownika. Mo¿e to byæ zmienione za pomoc± opcji
-              'one_class_per_host'.</P
+>Default policy of htb class creating assume one class for
+              all nodes of each customer. In can be changed with 
+              'one_class_per_host' option.</P
 ><P
->Configuration domy¶lna zak³ada, ¿e twój system jest przystosowany
-              do zastosowania htb oraz iptables z modu³ami limit, connlimit, mark i ipp2p.
-              Mo¿esz sam spatchowaæ j±dro lub skorzystaæ ze ¼róde³ dostêpnych na stronie
+>Default configuration assume that your system supports
+	      htb and iptables with modules limit, connlimit, mark and ipp2p.
+              You can patch kernel or use sources available at polish project
               <A
 HREF="http://www.inet.one.pl"
 TARGET="_top"
@@ -4076,9 +4075,10 @@ NAME="TC-CONFIG"
 >3.2.10.2. Configuration</A
 ></H4
 ><P
->Masz do dyspozycji standardowe parametry takie jak usergroups, file,
-              command, networks i dodatkowo opcje definiuj±ce tre¶æ regu³ek tc i firewalla.
-              Domy¶lna konfiguracja przeznaczona jest dla ³±cz 512/128 kbit i 100mbit.</P
+>For your disposal we have basic options like groups of customers, 
+	      file, command, networks and extra options which are define tc and firewall
+	      rules.
+              Default config is designed for 512/128 kbit and 100mbit links.</P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -4099,19 +4099,19 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Warto¶ci opcji konfiguracyjnych w <TT
+>Values of configuration options in <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >
-              nale¿y podawaæ w jednej linii. W przypadku tego modu³u mo¿e to byæ niezbyt wygodne,
-              dlatego mo¿esz stworzyæ plik z zawarto¶ci± ca³ego nag³ówka (opcja <TT
+              must be putted in one line. In case of that module it can be not very handy,
+              so you can create file containing whole header (option <TT
 CLASS="FILENAME"
 >              begin</TT
->), a nastêpnie u¿yæ opcji <TT
+>), and then use option <TT
 CLASS="FILENAME"
 >command</TT
-> do
-              jego sklejenia z reszt± skryptu wygenerowan± przez modu³.</P
+> for
+              join with the rest of file generated by this module.</P
 ></TD
 ></TR
 ></TABLE
@@ -4122,7 +4122,7 @@ CLASS="FILENAME"
 ><P
 >file</P
 ><P
->Lokalizacja pliku tymczasowego. Default: /etc/rc.d/rc.htb.</P
+>Location of file. Default: /etc/rc.d/rc.htb.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4133,7 +4133,7 @@ CLASS="PROMPT"
 ><P
 >command</P
 ><P
->Polecenie pow³oki wykonywane po utworzeniu pliku. Default: "sh /etc/rc.d/rc.htb start".</P
+>Shell command executed after file creation. Default: "sh /etc/rc.d/rc.htb start".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4144,7 +4144,7 @@ CLASS="PROMPT"
 ><P
 >begin</P
 ><P
->Nag³ówek skryptu. Default:
+>Script header. Default:
 <PRE
 CLASS="SCREEN"
 >"#!/bin/sh
@@ -4217,7 +4217,7 @@ CLASS="PROMPT"
 ><P
 >end</P
 ><P
->Stopka skryptu. Default:
+>Script footer. Default:
 <PRE
 CLASS="SCREEN"
 >}
@@ -4255,13 +4255,13 @@ CLASS="PROMPT"
 ><P
 >one_class_per_host</P
 ><P
->Okre¶la politykê tworzenia klas htb. W ustawieniu domy¶lnym
-                   wszystkie komputery u¿ytkownika zostan± wrzucone do jednej klasy.
-                   Ustawienie tej opcji na 'true' spowoduje, ¿e regu³y okre¶lone w 
-                   host_htb_up i host_htb_down zostan± wygenerowane dla wszystkich
-                   komputerów u¿ytkownika (z inn± warto¶ci± '%x'). Regu³y z host_mark_down,
-                   host_mark_up, host_plimit i host_climit generowane s± dla ka¿dego
-                   komputera niezale¿nie od ustawieñ tej zmiennej. Default: false</P
+>Specify policy of htb class creation. In default setting
+                   all computers of customer will be placed in one class.
+                   Setting it on 'true' will made that rules specified in  
+                   host_htb_up and host_htb_down will be generated for all
+                   customer's computers (with different value of '%x'). Rules host_mark_down,
+                   host_mark_up, host_plimit and host_climit are generated for each
+                   node regardless of this option setting. Default: false</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4272,7 +4272,7 @@ CLASS="PROMPT"
 ><P
 >host_mark_down</P
 ><P
->Regu³a markuj±ca dla ka¿dego komutera. Default:
+>Mark rule for each computer. Default:
 <PRE
 CLASS="SCREEN"
 ># %n
@@ -4289,7 +4289,7 @@ CLASS="PROMPT"
 ><P
 >host_mark_up</P
 ><P
->Regu³a markuj±ca dla ka¿dego komutera. Default:
+>Mark rule for each computer. Default:
 <PRE
 CLASS="SCREEN"
 >$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x</PRE
@@ -4305,8 +4305,8 @@ CLASS="PROMPT"
 ><P
 >host_htb_down</P
 ><P
->Zestaw regu³ dla ka¿dego komutera, wykonywanych
-                   gdy uprate i downrate s± ró¿ne od zera. Default:
+>Rules for each computer executed when uprate and downrate 
+		   are not zeroes. Default:
 <PRE
 CLASS="SCREEN"
 >$TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
@@ -4324,8 +4324,8 @@ CLASS="PROMPT"
 ><P
 >host_htb_up</P
 ><P
->Zestaw regu³ dla ka¿dego komutera, wykonywanych
-                   gdy uprate i downrate s± ró¿ne od zera. Default:
+>Rules for each computer executed when uprate and downrate 
+		   are not zeroes. Default:
 <PRE
 CLASS="SCREEN"
 >$TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
@@ -4343,8 +4343,8 @@ CLASS="PROMPT"
 ><P
 >host_climit</P
 ><P
->Regu³ka z ograniczeniem ilo¶ci równoczesnych po³±czeñ tcp. Wykonywana
-                   gdy climit w bazie jest ró¿ny od zera. Default:
+>Rule with simultaneous tcp connections limit. Executed
+                   when climit in not a zero. Default:
 <PRE
 CLASS="SCREEN"
 >$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT</PRE
@@ -4360,8 +4360,8 @@ CLASS="PROMPT"
 ><P
 >host_plimit</P
 ><P
->Regu³ka z ograniczeniem ilo¶ci pakietów w jednostce czasu (tutaj sekunda). Wykonywana
-                   gdy plimit w bazie jest ró¿ny od zera. Default:
+>Rule with limiting of packets in time unit (here second). Executed
+                   when plimit is not a zero. Default:
 <PRE
 CLASS="SCREEN"
 >$IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
@@ -4378,8 +4378,8 @@ CLASS="PROMPT"
 ><P
 >networks</P
 ><P
->Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
-                   Default: pusta (wszystkie sieci).</P
+>List of network names for consideration. Case insensitive.
+                   Default: empty (all networks).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4390,8 +4390,8 @@ CLASS="PROMPT"
 ><P
 >usergroups</P
 ><P
->Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
-                   Default: pusta (wszystkie grupy).</P
+>List of customers groups for consideration. Case insensitive. 
+                   Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4418,13 +4418,13 @@ NAME="DNS-DESC"
 >3.2.11.1. Description</A
 ></H4
 ><P
->Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej skomplikowanych.
-              Tworzy dla ka¿dej sieci pliki stref oraz odpowiednie wpisy w named.conf w oparciu
-              o szablony tych plików. Przyk³adowe szablony znajduj± siê w katalogu
+>Configuration of named zones. This is a one from most complicated modules.
+              Create zone files for each network and equivalent entries in named.conf on the
+              basis of templates of this files. Example templates are placed in
               <TT
 CLASS="FILENAME"
 >/modules/dns/sample</TT
->.</P
+> directory.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -4441,7 +4441,7 @@ NAME="DNS-CONFIG"
 ><P
 >forward-patterns</P
 ><P
->Katalog z szablonami stref. Default: forward.</P
+>Directory with zone templates. Default: forward.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4452,7 +4452,7 @@ CLASS="PROMPT"
 ><P
 >reverse-patterns</P
 ><P
->Katalog z szablonami stref odwrotnych. Default: reverse.</P
+>Directory with reverse zone templates. Default: reverse.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4463,8 +4463,8 @@ CLASS="PROMPT"
 ><P
 >generic-forward</P
 ><P
->Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
-                   'forward-patterns' nie bêdzie pliku odpowiadaj±cego nazwie domenowej sieci.
+>Default template. It'll be used if in directory specified by
+                   'forward-patterns' will not found file with name corresponding to network domain name.
                    Default: modules/dns/sample/forward/generic.</P
 ><P
 >Example: <SAMP
@@ -4476,8 +4476,8 @@ CLASS="PROMPT"
 ><P
 >generic-reverse</P
 ><P
->Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
-                   'reverse-patterns' nie bêdzie pliku odpowiadaj±cego numerowi IP sieci.
+>Default template. It'll be used if in directory specified by
+                   'reverse-patterns' will not found file with name corresponding to network IP address.
                    Default: modules/dns/sample/reverse/generic.</P
 ><P
 >Example: <SAMP
@@ -4489,7 +4489,7 @@ CLASS="PROMPT"
 ><P
 >forward-zones</P
 ><P
->Katalog na pliki wynikowe stref.
+>Directory for generated zones files.
                    Default: modules/dns/sample/out/forward.</P
 ><P
 >Example: <SAMP
@@ -4501,7 +4501,7 @@ CLASS="PROMPT"
 ><P
 >reverse-zones</P
 ><P
->Katalog na pliki wynikowe stref odwrotnych.
+>Directory for generated reverse zones files.
                    Default: modules/dns/sample/out/reverse.</P
 ><P
 >Example: <SAMP
@@ -4513,7 +4513,7 @@ CLASS="PROMPT"
 ><P
 >host-reverse</P
 ><P
->Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
+>Line in reverse zone file for each computer of given network.
                    Default: "%n IN A %i\n".</P
 ><P
 >Example: <SAMP
@@ -4525,7 +4525,7 @@ CLASS="PROMPT"
 ><P
 >host-forward</P
 ><P
->Linia w pliku strefy odpowiadaj±ca ka¿demu komputerowi w danej sieci.
+>Line in zone file for each computer of given network..
                    Default: "%c IN PTR %n.%d.\n".</P
 ><P
 >Example: <SAMP
@@ -4537,7 +4537,7 @@ CLASS="PROMPT"
 ><P
 >conf-pattern</P
 ><P
->Lokalizacja szablonu g³ównego pliku konfiguracyjnego serwera.
+>Location of main template of server configuration file.
                    Default: modules/dns/sample/named.conf.</P
 ><P
 >Example: <SAMP
@@ -4549,7 +4549,7 @@ CLASS="PROMPT"
 ><P
 >conf-output</P
 ><P
->Lokalizacja g³ównego pliku konfiguracyjnego serwera.
+>Location of main configuration file.
                    Default: /tmp/named.conf.</P
 ><P
 >Example: <SAMP
@@ -4561,8 +4561,8 @@ CLASS="PROMPT"
 ><P
 >conf-forward-entry</P
 ><P
->Wpis dla ka¿dej strefy w g³ównym pliku konfiguracyjnym.
-                   Default: 'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n}; \n'.</P
+>Entry for each zone in main configuration file.
+		   Default: 'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n}; \n'.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4573,7 +4573,7 @@ CLASS="PROMPT"
 ><P
 >conf-reverse-entry</P
 ><P
->Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
+>Entry for each reverse zone in main configuration file.
                    Default: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</P
 ><P
 >Example: <SAMP
@@ -4585,19 +4585,19 @@ CLASS="PROMPT"
 ><P
 >command</P
 ><P
->Polecenie wykonywane po utworzeniu plików konf. Default: puste.</P
+>Shell command executed after creation of files. Default: empty.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->command = ""</SAMP
+>command = "killall -HUP named"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >networks</P
 ><P
->Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
-                   Default: pusta (wszystkie sieci).</P
+>List of network names for consideration. Case insensitive.
+                   Default: empty (all networks).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4608,8 +4608,8 @@ CLASS="PROMPT"
 ><P
 >usergroups</P
 ><P
->Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
-                   Default: pusta (wszystkie grupy).</P
+>List of customer (user) groups for consideration. Case insensitive. 
+                   Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4636,9 +4636,9 @@ NAME="ETHERS-DESC"
 >3.2.12.1. Description</A
 ></H4
 ><P
->Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Ustawiaj±c opcjê
-              'dummy_macs' mo¿na sprawiæ, aby komputerom od³±czonym zosta³ przypisany 
-              mac-adres 00:00:00:00:00:00.</P
+>This module creates configuration of system ARP table. Setting option
+              'dummy_macs' you can make that all disconnected computers will have 
+              mac address 00:00:00:00:00:00.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -4649,36 +4649,36 @@ NAME="ETHERS-CONFIG"
 >3.2.12.2. Configuration</A
 ></H4
 ><P
->Tutaj s± tylko standardowe opcje:</P
+>Basic options:</P
 ><UL
 ><LI
 ><P
 >file</P
 ><P
->Lokalizacja pliku wynikowego. Default: /tmp/ethers.</P
+>Location of file. Default: /etc/ethers.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->file = /etc/ethers</SAMP
+>file = /tmp/ethers</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >command</P
 ><P
->Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Default: puste.</P
+>Shell command to execute after config creation. Default: 'erp -f /etc/ethers'.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->command = "arp -f /etc/ethers"</SAMP
+>command = ""</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >dummy_macs</P
 ><P
->Je¶li ustawimy na 'yes', to komputerom od³±czonym zostanie
-                   przypisany mac-adres '00:00:00:00:00:00'. Default: "no".</P
+>If you set to 'yes', disconnected computers will get
+                   MAC '00:00:00:00:00:00'. Default: "no".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4689,8 +4689,8 @@ CLASS="PROMPT"
 ><P
 >networks</P
 ><P
->Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
-                   Default: pusta (wszystkie sieci).</P
+>List of network names for consideration. Letters size doesn't matter.
+                   Default: empty (all networks).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4701,8 +4701,8 @@ CLASS="PROMPT"
 ><P
 >usergroups</P
 ><P
->Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
-                   Default: pusta (wszystkie grupy).</P
+>List of customer groups names for consideration. Letter size doesn't matter. 
+                   Default: empty (all groups).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4729,8 +4729,9 @@ NAME="OIDENT-DESC"
 >3.2.13.1. Description</A
 ></H4
 ><P
->Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
-              'hostfile', ale tutaj masz ju¿ gotowe ustawienia domy¶lne.</P
+>Module for oidentd configuration. Basically it can be made
+              with hostfile module, but here you have ready-made default settings
+	      for that purpose.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -4741,24 +4742,24 @@ NAME="OIDENT-CONFIG"
 >3.2.13.2. Configuration</A
 ></H4
 ><P
->A oto parametry modu³u 'oident'</P
+>And here are the options of oident:</P
 ><UL
 ><LI
 ><P
 >begin</P
 ><P
->Tekst wstawiany na pocz±tku pliku. Default: puste.</P
+>Text inserted on the beginning of file. Default: empty.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->begin = "#Generowany automatycznie\n"</SAMP
+>begin = "#Auto-generated\n"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >end</P
 ><P
->Tekst wstawiany na koñcu pliku. Default: puste.</P
+>Text inserted on the end of file. Default: empty.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4769,7 +4770,7 @@ CLASS="PROMPT"
 ><P
 >host</P
 ><P
->Linia tekstu dla ka¿dego komputera. Default: "%i\t%n\tUNIX".</P
+>Line of text for each of computers. Default: "%i\t%n\tUNIX".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4780,18 +4781,18 @@ CLASS="PROMPT"
 ><P
 >file</P
 ><P
->Tekst wstawiany na pocz±tku pliku. Default: /tmp/oidentd.conf.</P
+>Configuration file. Default: /etc/oidentd.conf.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->file = /etc/identd.conf</SAMP
+>file = /tmp/identd.conf</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >networks</P
 ><P
->Lista nazw sieci do uwzglêdnienia. Default: pusta (wszystkie sieci).</P
+>List of networks. Default: empty (all networks).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -4802,11 +4803,11 @@ CLASS="PROMPT"
 ><P
 >command</P
 ><P
->Polecenie do wykonania po utworzeniu pliku. Default: puste.</P
+>Shell command(s) to execute after file creation. Default: empty.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->command = "killall -HUP midentd"</SAMP
+>command = "killall -HUP oidentd"</SAMP
 ></P
 ></LI
 ></UL
@@ -4829,13 +4830,13 @@ NAME="PINGER-DESC"
 >3.2.14.1. Description</A
 ></H4
 ><P
->Modu³ pinger to odpowiednik perlowego skryptu lms-fping. Ró¿nice s± jednak
-              zasadnicze. Nie potrzebuje zewnêtrznego programu i dzia³a przy wykorzystaniu
-              protoko³u ARP. Powodem tego jest mniej wiêcej dwukrotnie szybsze wykonanie
-              skanowania sieci. Nie ma tak¿e problemów z komputerami maj±cymi wy³±czone 
-              odpowiadanie na pingi. Po skanowaniu, wszystkim w³±czonym komputerom jest
-              ustawiany w bazie danych czas skanowania, wykorzystywany do obrazowania
-              aktywno¶ci komputerów np. na mapie sieci.</P
+>Module pinger it's an equivalent to perl's script lms-fping. However differences
+              are fundamental. It not need external program and work with use of
+              ARP protocol. It follows more or less twice faster execution of 
+              network scanning. Also there are not problems with hosts wich have disabled
+              ping responsing. After scanning, for all online hosts in database is set
+              time of scanning, used to illustrate hosts activity e.g. on network 
+	      map.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -4846,13 +4847,13 @@ NAME="PINGER-CONFIG"
 >3.2.14.2. Configuration</A
 ></H4
 ><P
->Pinger udostêpnia tylko jedn± opcjê konfiguracyjn±:</P
+>Pinger has only one config option:</P
 ><UL
 ><LI
 ><P
 >networks</P
 ><P
->Lista nazw sieci, które maj± byæ skanowane. Default: pusta (wszystkie sieci).</P
+>List of network names. Default: empty (all networks).</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
