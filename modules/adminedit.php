@@ -27,7 +27,7 @@
 if(!$LMS->AdminExists($_GET[id]))
 {
 	header("Location: ?m=adminlist");
-	exit(0);
+	die;
 }
 
 $admininfo=$_POST[admininfo];
@@ -70,7 +70,7 @@ if(isset($admininfo))
 	{
 		$LMS->AdminUpdate($admininfo);
 		header("Location: ?m=admininfo&id=".$admininfo[id]);
-		exit(0);
+		die;
 	}
 
 }

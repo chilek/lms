@@ -27,7 +27,7 @@
 if(!$LMS->NetworkExists($_GET[id]))
 {
 	header("Location: ?m=netlist");
-	exit(0);
+	die;
 }
 
 $network = $LMS->GetNetworkRecord($_GET[id]);
@@ -42,7 +42,7 @@ if(!$error)
 	{
 		$LMS->NetworkDelete($network[id]);
 		header("Location: ?m=".$_SESSION[lastmodule]."&id=".$_GET[id]);
-		exit(0);
+		die;
 	}else{
 		$layout[pagetitle]="Usuniêcie sieci ".strtoupper($network[name]);
 		$SMARTY->assign("layout",$layout);

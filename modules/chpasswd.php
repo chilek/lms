@@ -58,7 +58,7 @@ if($LMS->AdminExists($id))
 else
 {
 	header("Location: ?m=".$_SESSION[lastmodule]);
-	exit(0);
+	die;
 }
 
 ?>

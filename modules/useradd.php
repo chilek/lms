@@ -33,7 +33,7 @@ if(sizeof($useradd))
 if($useradd[name]=="" && $useradd[lastname]=="" && $useradd[phone1]=="" && $useradd[address]=="" && $useradd[email]=="" && isset($useradd))
 {
 	header("Location: ?m=useradd");
-	exit(0);
+	die;
 }
 elseif(isset($useradd))
 {
@@ -64,7 +64,7 @@ elseif(isset($useradd))
 		if($useradd[reuse] =="")
 		{
 			header("Location: ?m=userinfo&id=".$id);
-			exit(0);
+			die;
 		}
 		$reuse[status] = $useradd[status];
 		$reuse[tariff] = $useradd[tariff];

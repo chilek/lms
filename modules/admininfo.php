@@ -27,7 +27,7 @@
 if(!$LMS->AdminExists($_GET[id]))
 {
 	header("Location: ?m=adminlist");
-	exit(0);
+	die;
 }
 
 $layout[pagetitle]="Informacje o administratorze ".$LMS->GetAdminName($_GET[id]);

@@ -62,7 +62,7 @@ if(isset($userdata))
 	if (!isset($error)){
 		$LMS->UserUpdate($userdata);
 		header("Location: ?m=userinfo&id=".$userdata[id]);
-		exit(0);
+		die;
 	}else{
 		$olddata=$LMS->GetUser($_GET[id]);
 		$userinfo=$userdata;

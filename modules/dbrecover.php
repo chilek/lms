@@ -29,7 +29,7 @@ if($_GET[is_sure])
 	$LMS->DatabaseCreate();
 	$LMS->DatabaseRecover($_GET[db]);
 	header("Location: ?m=".$_SESSION[lastmodule]);
-	exit(0);
+	die;
 }else{
 	$layout[pagetitle]="Odtworzenie bazy danych danych";
 	$SMARTY->assign("layout",$layout);
