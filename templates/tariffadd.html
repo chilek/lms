@@ -2,13 +2,14 @@
 {include file="balanceheader.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<P>
 <FORM METHOD="POST" NAME="tariffadd" ACTION="?m=tariffadd">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 	    <TD WIDTH="1%" CLASS="fleftu">
 		<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 	    </TD>
-	    <TD WIDTH="1%" CLASS="fbt"><B>Nazwa:</B></TD>
+	    <TD WIDTH="1%" CLASS="fbt"><B>{t}Nazwa:{/t}</B></TD>
 	    <TD WIDTH="98%" CLASS="frightu">
 		<INPUT TYPE="TEXT" NAME="tariffadd[name]" VALUE="{$tariffadd.name}" {tip trigger="name" bold=1}>
 	    </TD>
@@ -23,22 +24,22 @@
 				    <TD WIDTH="1%">
 					<IMG SRC="img/value.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>Warto¶æ (z³):</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Value:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					    <INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[value]" VALUE="{$tariffadd.value}" {tip text="Wpisz kwotê" trigger="value"}>
+					    <INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[value]" VALUE="{$tariffadd.value}" {tip text="Enter value" trigger="value"}>
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
 					<IMG SRC="img/tax.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>Stawka podatku (%):</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Tax:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<SELECT SIZE="1" NAME="tariffadd[taxvalue]" VALUE="{$tariffadd.taxvalue}" {tip text="Wybierz stawkê podatku VAT" trigger="taxvalue"}>
+					<SELECT SIZE="1" NAME="tariffadd[taxvalue]" VALUE="{$tariffadd.taxvalue}" {tip text="Enter VAT rate" trigger="taxvalue"}>
 					    <OPTION VALUE="22">22%</OPTION>
 					    <OPTION VALUE="7">7%</OPTION>
 					    <OPTION VALUE="0">0%</OPTION>
-					    <OPTION VALUE="">zw.</OPTION>
+					    <OPTION VALUE="">{t}tax-free{/t}</OPTION>
 					</SELECT>
 				    </TD>
 				</TR>												
@@ -46,18 +47,18 @@
 				    <TD WIDTH="1%">
 					<IMG SRC="img/class.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>PKWiU:</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}PKWiU:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[pkwiu]" VALUE="{$tariffadd.pkwiu}" {tip text="Podaj symbol PKWiU (opcjonalnie)" trigger="pkwiu"}>
+					<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[pkwiu]" VALUE="{$tariffadd.pkwiu}" {tip text="Enter PKWiU symbol (optional)" trigger="pkwiu"}>
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
 					<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 				    </TD>
-				    <TD WIDTH="1%"><B>Opis:</B></TD>
+				    <TD WIDTH="1%"><B>{t}Description:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<TEXTAREA NAME="tariffadd[description]" COLS="50" ROWS="5" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>{$tariffadd.description}</TEXTAREA>
+					<TEXTAREA NAME="tariffadd[description]" COLS="50" ROWS="5" {tip text="Enter additional informations (optional)"}>{$tariffadd.description}</TEXTAREA>
 				    </TD>
 				</TR>
 			</TABLE>
@@ -68,51 +69,51 @@
 				    <TD WIDTH="1%">
 					<IMG SRC="img/uprate.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>Upload rate (kbit/s):</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Upload rate:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariffadd[uprate]" SIZE="8" VALUE="{if $tariffadd.uprate}{$tariffadd.uprate}{/if}" {tip text="Podaj minimaln± gwarantowan± warto¶æ uploadu (opcjonalnie)" trigger="uprate"}>
+					<INPUT TYPE="TEXT" NAME="tariffadd[uprate]" SIZE="8" VALUE="{if $tariffadd.uprate}{$tariffadd.uprate}{/if}" {tip text="Enter minimal warranted upload value (optional)" trigger="uprate"}> kbit/s
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>Upload ceil (kbit/s):</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Upload ceil:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariffadd[upceil]" SIZE="8" VALUE="{if $tariffadd.upceil}{$tariffadd.upceil}{/if}" {tip text="Podaj maksymaln± warto¶æ uploadu (opcjonalnie)" trigger="upceil"}>
+					<INPUT TYPE="TEXT" NAME="tariffadd[upceil]" SIZE="8" VALUE="{if $tariffadd.upceil}{$tariffadd.upceil}{/if}" {tip text="Enter maximal upload value (opcjonalnie)" trigger="upceil"}> kbit/s
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">			
 				    <TD WIDTH="1%">
 					<IMG SRC="img/downrate.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>Download rate (kbit/s):</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Download rate:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariffadd[downrate]" SIZE="8" VALUE="{if $tariffadd.downrate}{$tariffadd.downrate}{/if}" {tip text="Podaj minimaln± gwarantowan± warto¶æ downloadu (opcjonalnie)" trigger="downrate"}>
+					<INPUT TYPE="TEXT" NAME="tariffadd[downrate]" SIZE="8" VALUE="{if $tariffadd.downrate}{$tariffadd.downrate}{/if}" {tip text="Enter minimal warranted download value (optional)" trigger="downrate"}> kbit/s
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>Download ceil (kbit/s):</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Download ceil:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariffadd[downceil]" SIZE="8" VALUE="{if $tariffadd.downceil}{$tariffadd.downceil}{/if}" {tip text="Podaj maksymaln± warto¶æ downloadu (opcjonalnie)" trigger="downceil"}>
+					<INPUT TYPE="TEXT" NAME="tariffadd[downceil]" SIZE="8" VALUE="{if $tariffadd.downceil}{$tariffadd.downceil}{/if}" {tip text="Enter maximal download value (optional)" trigger="downceil"}> kbit/s
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">			
 				    <TD WIDTH="1%">
 				    	<IMG SRC="img/online.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>Connection limit:</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Connection limit:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariffadd[climit]" SIZE="8" VALUE="{if $tariffadd.climit}{$tariffadd.climit}{/if}" {tip text="Okre¶l limit równoczesnych po³±czeñ (opcjonalnie)" trigger="climit"}>
+					<INPUT TYPE="TEXT" NAME="tariffadd[climit]" SIZE="8" VALUE="{if $tariffadd.climit}{$tariffadd.climit}{/if}" {tip text="Enter limit of simultaneous connections (optional)" trigger="climit"}>
 				    </TD>
 				</TR>
 				<TR CLASS="LIGHT">
 				    <TD WIDTH="1%">
 				    </TD>
-				    <TD WIDTH="1%" NOWRAP><B>Packet limit:</B></TD>
+				    <TD WIDTH="1%" NOWRAP><B>{t}Packet limit:{/t}</B></TD>
 				    <TD WIDTH="98%">
-					<INPUT TYPE="TEXT" NAME="tariffadd[plimit]" SIZE="8" VALUE="{if $tariffadd.plimit}{$tariffadd.plimit}{/if}" {tip text="Okre¶l limit pakietów (opcjonalnie)" trigger="plimit"}>
+					<INPUT TYPE="TEXT" NAME="tariffadd[plimit]" SIZE="8" VALUE="{if $tariffadd.plimit}{$tariffadd.plimit}{/if}" {tip text="Enter limit of pockets in time unit (optional)" trigger="plimit"}>
 				    </TD>
 				</TR>
 			    </TABLE>
@@ -123,8 +124,8 @@
 	</TR>
 	<TR CLASS="LIGHT">
 	    <TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
-	    	<A HREF="javascript:document.tariffadd.submit();" accesskey="s">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
-		<A HREF="?m=tarifflist">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+	    	<A HREF="javascript:document.tariffadd.submit();" accesskey="s">{t}Save{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+		<A HREF="?m=tarifflist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
 	    </TD>
 	</TR>
 </TABLE></FORM></P>

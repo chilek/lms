@@ -54,7 +54,7 @@ if(isset($tariff))
 	if($tariff['value'] == '')
 		$error['value'] = trans('Value required!');
 	elseif(!(ereg('^[-]?[0-9.,]+$', $tariff['value'])))
-		$error['value'] = trans('Incorrect value!';
+		$error['value'] = trans('Incorrect value!');
 	
 	if($tariff['taxvalue'] != '')
 	  	if(!(ereg('^[0-9.,]+$', $tariff['taxvalue'])) || $tariff['taxvalue'] < 0 || $tariff['taxvalue'] > 100)
@@ -95,7 +95,7 @@ if(isset($tariff))
 }else
 	$tariff = $LMS->GetTariff($_GET['id']);
 	
-$layout['pagetitle'] = trans('Tariff Edit $0',$tariff['name']);
+$layout['pagetitle'] = trans('Tariff Edit: $0',$tariff['name']);
 $SMARTY->assign('tariff',$tariff);
 $SMARTY->assign('error',$error);
 $SMARTY->display('tariffedit.html');
