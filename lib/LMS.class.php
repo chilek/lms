@@ -1629,6 +1629,29 @@ class LMS
 	 * Pozosta³e funkcje...
 	 */
 
+	function GetRemoteMACs($host = "127.0.0.1", $port = 1029)
+	{
+		if($socket = socket_create (AF_INET, SOCK_STREAM, 0))
+			if(@socket_connect ($socket, $host, $port))
+			{
+				while ($input = socket_read ($socket, 2048))
+					$inputbuf .= $input;
+				socket_close ($socket);				
+			}
+		foreach(split("\n",$inputbuf) as $line)
+		{
+			list($ip,$hwaddr) = split(' ',$line);
+			if(check_mac($hwaddr))
+			{
+				$result['mac'][] = $hwaddr;
+				$result['ip'][] = $ip;
+				$result['longip'][] = ip_long($ip);
+				$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+			}
+		}
+		return $result;
+	}
+
 	function GetMACs()
 	{
 		switch(PHP_OS)
@@ -1792,6 +1815,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.230  2003/09/17 03:10:39  lukasz
+ * - very experimental support for lms-arpd
+ *
  * Revision 1.229  2003/09/17 02:14:09  lukasz
  * - to samo co poprzednio dla innych osów
  *
