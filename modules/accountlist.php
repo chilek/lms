@@ -106,7 +106,7 @@ $page = (! $_GET['page'] ? 1 : $_GET['page']);
 $pagelimit = (! $LMS->CONFIG['phpui']['accountlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['accountlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$_SESSION['ulp'] = $page;
+$_SESSION['alp'] = $page;
 
 $layout['pagetitle'] = 'Zarz±dzanie kontami';
 
