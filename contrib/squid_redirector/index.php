@@ -26,8 +26,7 @@
 
 // REPLACE THIS WITH PATH TO YOU CONFIG FILE
 
-//$CONFIG_FILE = '/etc/lms/lms.ini';
-$CONFIG_FILE = '/var/www/devel/lms/lms.ini';
+$CONFIG_FILE = '/etc/lms/lms.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
