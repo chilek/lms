@@ -30,24 +30,24 @@ switch($_GET['type'])
 		switch($_POST['filter'])
 		{
 			case 0:
-				$layout['pagetitle'] = 'Lista u¿ytkowników';
-				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
+				$layout['pagetitle'] = 'Lista u¿ytkowników'.($_POST['network'] ? ' sieci '.$LMS->GetNetworkName($_POST['network']) : '');
+				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network']));
 			break;
 			case 1:
 				$layout['pagetitle'] = 'Lista u¿ytkowników zainteresowanych ';
-				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
+				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter']));
 			break;
 			case 2:
 				$layout['pagetitle'] = 'Lista u¿ytkowników oczekuj±cych';
-				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
+				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter']));
 			break;
 			case 3:
-				$layout['pagetitle'] = 'Lista u¿ytkowników pod³±czonych';
-				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
+				$layout['pagetitle'] = 'Lista u¿ytkowników pod³±czonych'.($_POST['network'] ? ' do sieci '.$LMS->GetNetworkName($_POST['network']) : '');
+				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network']));
 			break;
 			case 4: 
-				$layout['pagetitle'] = 'Lista u¿ytkowników od³±czonych';
-				$userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction']);
+				$layout['pagetitle'] = 'Lista u¿ytkowników od³±czonych'.($_POST['network'] ? ' od sieci '.$LMS->GetNetworkName($_POST['network']) : '');
+				$userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network']);
 				unset($userlist['total']);
 				unset($userlist['state']);
 				unset($userlist['order']);
@@ -62,8 +62,8 @@ switch($_GET['type'])
 				$SMARTY->assign('userlist', $nuserlist);
 			break;
 			case 5: 
-				$layout['pagetitle'] = 'Lista u¿ytkowników zad³u¿onych';
-				$userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction']);
+				$layout['pagetitle'] = 'Lista u¿ytkowników zad³u¿onych'.($_POST['network'] ? ' w sieci '.$LMS->GetNetworkName($_POST['network']) : '');
+				$userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network']);
 				unset($userlist['total']);
 				unset($userlist['state']);
 				unset($userlist['order']);
@@ -152,6 +152,7 @@ switch($_GET['type'])
 	default:
 		$layout['pagetitle'] = 'Wydruki';
 		$SMARTY->assign('users', $LMS->GetUserNames());
+		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('printmenu', $_GET['menu']);
 		$SMARTY->display('printindex.html');
 	break;
