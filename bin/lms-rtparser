@@ -341,7 +341,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 else
 {
 	# find adminid
-	$dbq = $dbase->prepare("SELECT id FROM admins WHERE email = '$fromemail'");
+	$dbq = $dbase->prepare("SELECT id FROM admins WHERE email = '$fromemail' AND email!=''");
 	$dbq->execute();
 	if(my $row = $dbq->fetchrow_hashref())
 	{
@@ -349,7 +349,7 @@ else
 	}
 
 	# find userid
-	$dbq = $dbase->prepare("SELECT id FROM users WHERE email = '$fromemail'");
+	$dbq = $dbase->prepare("SELECT id FROM users WHERE email = '$fromemail' AND email!=''");
 	$dbq->execute();
 	if(my $row = $dbq->fetchrow_hashref())
 	{
