@@ -39,7 +39,11 @@ class LMS
 
 	function LMS(&$DB, &$SESSION, &$CONFIG) // ustawia zmienne klasy
 	{
-		$this->SESSION = &$SESSION;
+		if($SESSION !== NULL)
+		{
+			$this->SESSION = &$SESSION;
+			$this->modules[] = "SESSION";
+		}
 		$this->DB = &$DB;
 		$this->CONFIG = &$CONFIG;
 		$this->modules[] = "CORE";
@@ -2269,6 +2273,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.306  2003/12/11 12:26:25  lukasz
+ * - another fix
+ *
  * Revision 1.305  2003/12/11 12:23:06  lukasz
  * - tsave
  *
