@@ -80,8 +80,11 @@ if(isset($nodeedit))
 	{
 		if($LMS->IsIPValid($nodeedit['ipaddr'])) 
 		{
-			if(!$LMS->IsIPFree($nodeedit['ipaddr']) && $LMS->GetNodeIPByID($nodeedit['id'])!=$nodeedit['ipaddr'])
+			$ip = $LMS->GetNodeIPByID($nodeedit['id']);
+			if($ip!=$nodeedit['ipaddr'] && !$LMS->IsIPFree($nodeedit['ipaddr']))
 				$error['ipaddr'] = 'Podany adres IP jest zajêty!';
+			elseif($ip!=$nodeedit['ipaddr'] && $LMS->IsIPGateway($nodeedit['ipaddr']))
+				$error['ipaddr'] = 'Podany adres IP jest adresem bramy!';
 		}
 		else
 			$error['ipaddr'] = 'Podany adres IP nie nale¿y do ¿adnej sieci!';

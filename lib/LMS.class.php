@@ -2071,6 +2071,11 @@ class LMS
 		return !($this->DB->GetOne('SELECT * FROM nodes WHERE ipaddr=inet_aton(?)', array($ip)) ? TRUE : FALSE);
 	}
 
+	function IsIPGateway($ip)
+	{
+		return ($this->DB->GetOne('SELECT gateway FROM networks WHERE gateway = ?', array($ip)) ? TRUE : FALSE);
+	}
+
 	function GetPrefixList()
 	{
 		for($i=30;$i>15;$i--)
@@ -2290,7 +2295,6 @@ class LMS
 
 		$nodes = $this->DB->GetAllByKey('SELECT id, name, ipaddr, ownerid, netdev FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?','ipaddr', array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
 
-	
 		for($i = 0; $i < ($end - $start) ; $i ++)
 		{
 			$longip = $network['addresslong'] + $i + $start;
@@ -2314,10 +2318,15 @@ class LMS
 				$netdev = $this->GetNetDevName($network['nodes']['netdev'][$i]);
 				$network['nodes']['name'][$i] = $network['nodes']['name'][$i]." (".$netdev['name'].")";
 			}
-
+			
+			if( $longip == $network['addresslong'] )
+				$network['nodes']['name'][$i] = '*** NETWORK ***';
+			if( $network['nodes']['address'][$i]  == $network['broadcast'] )
+				$network['nodes']['name'][$i] = '*** BROADCAST ***';
+			if( $network['nodes']['address'][$i]  == $network['gateway'] && $node['name']=='' )
+				$network['nodes']['name'][$i] = '*** GATEWAY ***';	
 		}
-		$network['nodes']['name'][0] = '*** NETWORK ***';
-		$network['nodes']['name'][$i-1] = '*** BROADCAST ***';
+	
 		$network['rows'] = ceil(sizeof($network['nodes']['address']) / 4);
 		$network['pages'] = ceil($network['size'] / $plimit);
 		$network['page'] = $page + 1;

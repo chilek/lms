@@ -63,6 +63,8 @@ if(isset($nodedata))
 		$error['ipaddr'] = 'Podany adres IP nie nale¿y do ¿adnej sieci!';
 	elseif(!$LMS->IsIPFree($nodedata['ipaddr']))
 		$error['ipaddr'] = 'Podany adres IP jest zajêty!';
+	elseif($LMS->IsIPGateway($nodedata['ipaddr']))
+		$error['ipaddr'] = 'Podany adres IP jest adresem bramy!';
 
 	if(!$nodedata['mac'])
 		$error['mac'] = 'Proszê podac adres MAC!';

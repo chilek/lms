@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.4.3 (??/??/????):
+wersja 1.4.3 Velis (13/01/2005):
 
   - BTS#0000269: poprawiona walidacja NIPu przy edycji i dodawaniu
     u¿ytkownika (alec)
@@ -19,6 +19,10 @@ wersja 1.4.3 (??/??/????):
     podatku na rejestrze sprzeda¿y (.PaKud/alec)
   - w zobowi±zaniach u¿ytkownika zamieniono myl±ce 'Dzieñ zap³aty' na
     'Dzieñ naliczenia' (alec)
+  - BTS#0000274: Nie mo¿na przypisaæ komputerowi adresu gatewaya (alec)
+  - usuniêty b³±d powoduj±cy z³e rozpoznawanie adresu sieci i broadcastu na
+    li¶cie hostów w danej sieci, je¶li lista ta by³a na wiêcej ni¿ jednej
+    stronie (alec)
 
 wersja 1.4.2 Lya (14/12/2004):
 
