@@ -126,6 +126,9 @@
 	
 	function GenPasswd()
 	{
+		if(! confirm('{/literal}{t}Are you sure, you want to generate new password?{/t}{literal}'))
+			return;
+	    
 		var passwd = new Array();
 		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		var length = {/literal}{$_config.phpui.nodepassword_length|default:"16"}{literal};

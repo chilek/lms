@@ -71,6 +71,7 @@ version 1.5.5 Anubis (??/??/????):
   - mail() -> SendMail(). We use Pear::Mail (chilek)
   - notifications about new tickets (chilek)
   - proper char encoding in mail notifications (chilek)
+  - added confirm. dialog for generation of new PIN and node's password (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
