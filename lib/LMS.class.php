@@ -881,98 +881,102 @@ class LMS
 
 	function SearchNodeList($args, $order="name,asc")
 	{
-		if($order=="")
-			$order="name,asc";
+	    if($order=="")
+    		$order="name,asc";
 
-		list($order,$direction) = explode(",",$order);
+            list($order,$direction) = explode(",",$order);
 
-		($direction=="desc") ? $direction = "desc" : $direction = "asc";
+	    ($direction=="desc") ? $direction = "desc" : $direction = "asc";
 
-		switch($order)
-		{
-			case "name":
-				$sqlord = " ORDER BY name";
-			break;
+    	    switch($order)
+    	    {
+    		case "name":
+        	        $sqlord = " ORDER BY name";
+        		break;
+    	        case "id":
+        	        $sqlord = " ORDER BY id";
+        		break;
+        	case "mac":
+        	        $sqlord = " ORDER BY mac";
+            		break;
+    		case "ip":
+                	$sqlord = " ORDER BY ipaddr";
+        		break;
+    	    }
 
-			case "id":
-				$sqlord = " ORDER BY id";
-			break;
+    	    foreach($args as $idx => $value)
+    	    {
+    		if($value!="")
+        	{
+        	    switch($idx)
+            	    {
+            		case "ipaddr" :
+		    	        $check_ip = trim($value);
+				break;
+                	default :
+                        	$searchargs[] = $idx." ?LIKE? '%".$value."%'";
+            	    }
+        	}
+    	    }
 
-			case "mac":
-				$sqlord = " ORDER BY mac";
-			break;
+    	    if($searchargs)
+    		$searchargs = " WHERE 1=1 AND ".implode(" AND ",$searchargs);
 
-			case "ip":
-				$sqlord = " ORDER BY ipaddr";
-			break;
-		}
+    	    if($username = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
+    		foreach($username as $idx => $row)
+        	    $usernames[$row['id']] = $row['username'];
 
-		foreach($args as $idx => $value)
-		{
-			if($value!="")
+    	    if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".$searchargs." ".($sqlord != "" ? $sqlord." ".$direction : "")))
+    	    {
+    		foreach($nodelist as $idx => $row)
+        	{
+            	    $nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
+		    $nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
+		    // filtr adresów IP
+		    if($check_ip)
+		    {
+			if( !strstr($nodelist[$idx]['ip'],$check_ip) )
 			{
-				switch($idx)
-				{
-					case "ipaddr" :
-						$address = get_ip_range_from_ip_part($value);
-						$ipfindquery = "(";
-						for($i=0; $i<3; $i++)
-						{
-						    if($address[$i][0] && $address[$i][1])
-						    {
-							    if($i >= 1) $ipfindquery .= " OR ";
-							    $ipfindquery .= "(ipaddr >= ".ip_long($address[$i][0])." AND ipaddr <= ".ip_long($address[$i][1]).")";
-						    }
-						}
-						$ipfindquery .= ")";
-						if(strlen($ipfindquery) > 5) $searchargs[] = $ipfindquery;
-						break;
-					default :
-						$searchargs[] = $idx." ?LIKE? '%".$value."%'";
-					break;
-				}
+		    	    unset($nodelist[$idx]);
+		    	    continue;
 			}
-		}
-
-		if($searchargs)
-			$searchargs = " WHERE 1=1 AND ".implode(" AND ",$searchargs);
-
-		if($username = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
-			foreach($username as $idx => $row)
-				$usernames[$row['id']] = $row['username'];
-
-		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".$searchargs." ".($sqlord != "" ? $sqlord." ".$direction : "")))
+		    }
+            	    ($row['access']) ? $totalon++ : $totaloff++;
+    		}
+		//uporz±dkowanie indeksów tablicy po filtrowaniu IP
+		if($check_ip)
 		{
-			foreach($nodelist as $idx => $row)
-			{
-				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
-				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
-				($row['access']) ? $totalon++ : $totaloff++;
-			}
+	    	    foreach($nodelist as $node)
+	    	    {
+			$templist[] = $node;
+		    }
+		    unset($nodelist);
+		    $nodelist = $templist;
 		}
+	    }
+	
+    	    switch($order)
+    	    {
+    		case "owner":
+            		foreach($nodelist as $idx => $row)
+                	{
+                	    $ownertable['idx'][] = $idx;
+                    	    $ownertable['owner'][] = $row['owner'];
+                	}
+                	array_multisort($ownertable['owner'],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable['idx']);
+                	foreach($ownertable['idx'] as $idx)
+                    	    $nnodelist[] = $nodelist[$idx];
+			$nodelist = $nnodelist;
+            		break;
+	    }
 
-		switch($order)
-		{
-			case "owner":
-				foreach($nodelist as $idx => $row)
-				{
-					$ownertable['idx'][] = $idx;
-					$ownertable['owner'][] = $row['owner'];
-				}
-				array_multisort($ownertable['owner'],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable['idx']);
-				foreach($ownertable['idx'] as $idx)
-					$nnodelist[] = $nodelist[$idx];
-				$nodelist = $nnodelist;
-			break;
-		}
+	    $nodelist['total'] = sizeof($nodelist);
+	    $nodelist['order'] = $order;
+    	    $nodelist['direction'] = $direction;
+    	    $nodelist['totalon'] = $totalon;
+    	    $nodelist['totaloff'] = $totaloff;
 
-		$nodelist['total'] = sizeof($nodelist);
-		$nodelist['order'] = $order;
-		$nodelist['direction'] = $direction;
-		$nodelist['totalon'] = $totalon;
-		$nodelist['totaloff'] = $totaloff;
-
-		return $nodelist;
+    	    return $nodelist;
 	}
 
 	function NodeSet($id)
@@ -1950,6 +1954,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.268  2003/10/07 18:30:51  alec
+ * nie potrzebujemy ju¿ get_ip_range...(), teraz przeszukiwanie po adresie czê¶ciowym zosta³o przerzucone z sql'a na php w SearchNodeList()
+ *
  * Revision 1.267  2003/10/06 22:18:23  alec
  * nowa rozbudowana funkcja SearchNodeList() - na adresach IP dzia³a prawie jak LIKE
  *
@@ -2191,5 +2198,3 @@ class LMS
  * - more cvs tags :>
  *
  */
-
-?>

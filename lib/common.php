@@ -341,90 +341,6 @@ function prefix2mask($prefix)
 		return false;
 }
 
-function get_ip_range_from_ip_part($part_ip)
-{
-	//funkcja np. dla "192.168.2" zwraca "192.168.2.0","192.168.2.255"
-	//				     "192.168.20.0","192.168.29.255"
-	//				     "192.168.200.0","192.168.255.255"
-	
-	$part_trim = trim($part_ip,'.');
-	
-	if($part_trim == $part_ip) 
-		$isdot = FALSE; 
-	else 
-		$isdot = TRUE;
-	
-	$part[1] = explode(".",$part_trim);
-	$size = sizeof($part[1]);
-	
-	if(!$isdot)
-	{
-	    $number = $part[1][$size-1];
-	    switch(strlen($number))
-	    {
-		case '2': 
-			$result[] = $number."0";
-			if($number == "25" )
-			    $result[] = "255"; 
-			else
-			    $result[] = $number."9";    
-			break;
-		case '1':
-			switch($number[0])
-			{
-			    case '1': 
-				    $result[] = "10";
-				    $result[] = "19";
-				    $result[] = "100";
-				    $result[] = "199";
-				    break;
-			    case '2': 
-				    $result[] = "20";
-				    $result[] = "29";
-				    $result[] = "200";
-				    $result[] = "255";
-			}
-	    }
-	    if(strlen($number) < 3 && $number != "0")
-	    {
-		$x=3;
-		foreach($result as $value)
-		{
-		    for($i=0; $i<$size-1; $i++)
-		    {
-			    $part[$x][$i] = $part[1][$i];
-		    }	    
-		    $part[$x][$size-1] = $value;
-		    for($i=$size; $i<4; $i++)
-		    {	
-			    if($x % 2) 
-				$part[$x][$i] = "0";
-			    else 
-				$part[$x][$i] = "255";
-		    }
-		$x++;
-		}
-	    }
-	}
-	for($i=0; $i<$size-1; $i++)
-	{
-	    $part[2][$i] = $part[1][$i];
-	}
-	$part[2][$size-1] = $part[1][$size-1];
-	for($i=$size; $i<4; $i++)
-	{
-	    $part[1][$i] = "0";
-	    $part[2][$i] = "255";
-	}
-	
-	$count = sizeof($part);
-	for($i=1; $i<$count; $i+=2)
-	{
-	    $tab_ip[] = array($part[$i][0].".".$part[$i][1].".".$part[$i][2].".".$part[$i][3],$part[$i+1][0].".".$part[$i+1][1].".".$part[$i+1][2].".".$part[$i+1][3]);
-	}		
-	return $tab_ip;
-}
-
 function mask2prefix($mask)
 {
 	if(check_mask($mask))
@@ -1019,6 +935,9 @@ function setunits($data)  // for traffic data
 
 /*
  * $Log$
+ * Revision 1.52  2003/10/07 18:30:51  alec
+ * nie potrzebujemy ju¿ get_ip_range...(), teraz przeszukiwanie po adresie czê¶ciowym zosta³o przerzucone z sql'a na php w SearchNodeList()
+ *
  * Revision 1.51  2003/10/06 22:21:33  alec
  * jeszcze jeden warunek w get_ip_range...()
  *
