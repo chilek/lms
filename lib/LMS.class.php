@@ -98,6 +98,7 @@ class LMS
 		$this->AddMenu(trans('Reload'), 'reload.gif', '?m=reload', '', 'r', 40);
 		$this->AddMenu(trans('Stats'), 'traffic.gif', '?m=traffic', trans('Statistics of Internet Link Usage'), 'x', 45);
 		$this->AddMenu(trans('Helpdesk'), 'ticket.gif', '?m=rtqueuelist', trans('Requests Tracking'), 'h', 50);
+		$this->AddMenu(trans('Timetable'), 'calendar.gif', '?m=eventlist', trans('Events Tracking'), 'v', 55);
 	}
 
 	function _postinit()

@@ -69,6 +69,9 @@ $access['table'][12]['allow_reg']   	= '^(config(list|edit|add|del|load))$';
 $access['table'][13]['name']        	= trans('networks and devices management');
 $access['table'][13]['allow_reg']   	= '^((net|netdev)(info|list|edit|add|del|cmp|map|remap)|choose(mac|ip))$';
 
+$access['table'][14]['name']        	= trans('timetable management');
+$access['table'][14]['allow_reg']   	= '^(event(list|edit|add|del|search))$';
+
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(admin(add|del|edit|passwd))$';
 
