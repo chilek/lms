@@ -12,6 +12,7 @@ Vendor:		LMS Developers
 URL:		http://lms.rulez.pl
 Requires:	php
 Requires:	php-posix
+Requires:	php-pcre
 Requires:	webserver
 Requires:	Smarty >= 2.5.0
 Requires:	adodb >= 2.90
@@ -135,6 +136,9 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld.org.pl
 
 $Log$
+Revision 1.6  2003/04/28 12:30:38  lukasz
+- added missing br: php-pcre (tnx byko)
+
 Revision 1.5  2003/04/15 04:17:22  lukasz
 - sync with PLD CVS
 
