@@ -217,7 +217,7 @@ if(open(LOGFILE, ">$logfile"))
 {
 	foreach my $key (keys %downloads)
 	{
-		print LOGFILE "$key $uploads{$key} $downloads{$key}\n";
+		print LOGFILE "$key $uploads{$key} $downloads{$key}\n" if($uploads{$key} ne 0 || $downloads{$key} ne 0);
 	}
 	close(LOGFILE);
 }
