@@ -365,7 +365,7 @@ class LMS
 
 	function GetUsersWithTariff($id)
 	{
-		return $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE tariff=? AND status=3",array($id));
+		return $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE tariff=? AND status=3 AND deleted=0",array($id));
 	}
 
 	function UserAdd($useradd)
@@ -1602,6 +1602,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.207  2003/08/29 22:53:19  lukasz
+ * - lista taryf zlicza³a tak¿e u¿ytkowników usuniêtych
+ *
  * Revision 1.206  2003/08/29 01:16:28  lukasz
  * - w³±czenie transakcji przy odczytywaniu backup bazy z dysku
  *
