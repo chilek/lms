@@ -1,0 +1,82 @@
+{include file="header.html"}
+{include file="netdevheader.html"}
+<!-- $Id$ -->
+<H1>{$layout.pagetitle}</H1>
+
+<P><FORM NAME="netdevadd" METHOD="POST" ACTION="?m=netdevadd">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="FLEFTU">
+			<IMG SRC="img/netdev.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="1%" CLASS="FBT">
+			<B>Nazwa:</B>
+		<TD WIDTH="98%" CLASS="FRIGHTU" COLSPAN="2">
+			<INPUT TYPE="TEXT" NAME="netdev[name]" VALUE="{$netdev.name}" CLASS="{if $error.name}ALERTB{else}BOLD{/if}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev_producer.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Producent:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdev.producer}" CLASS="bold">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev_model.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Model:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdev.model}" CLASS="bold">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev_serialnumber.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Numer seryjny:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+			<INPUT TYPE="TEXT" NAME="netdev[serialnumber]" VALUE="{$netdev.serialnumber}" CLASS="bold">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev_ports.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Ilo¶æ portów:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdev.ports}" CLASS="{if $error.ports}ALERTB{else}BOLD{/if}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev_description.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Opis:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
+			<INPUT TYPE="TEXT" NAME="netdev[description]" VALUE="{$netdev.description}" CLASS="bold">
+		</TD>
+	</TR>
+
+
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="4" ALIGN="RIGHT">
+			<A HREF="javascript:document.netdevadd.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="?m=netdevlist">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+		</TD>
+	</TR>	
+</TABLE></FORM></P>
+{include file="footer.html"}

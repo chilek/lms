@@ -1539,6 +1539,81 @@ class LMS
 				}
 		return $result;
 	}
+	
+	/*
+	 * Ewidencja sprzêtu sieciowego
+	 */
+	 
+	function GetNetDevList($order="name,asc")
+	{
+
+		if($order=="")
+			$order="name,asc";
+
+		list($order,$direction) = explode(",",$order);
+
+		($direction=="desc") ? $direction = "DESC" : $direction = "ASC";
+
+		switch($order)
+		{
+			case "name":
+				$sqlord = " ORDER BY name";
+			break;
+
+			case "id":
+				$sqlord = " ORDER BY id";
+			break;
+
+			case "producer":
+				$sqlord = " ORDER BY producer";
+			break;
+
+			case "model":
+				$sqlord = " ORDER BY model";
+			break;
+
+			case "ports":
+				$sqlord = " ORDER BY ports";
+			break;
+
+			case "serialnumber":
+				$sqlord = " ORDER BY serialnumber";
+			break;
+		}
+
+		$netdevlist = $this->DB->GetAll("SELECT id, name, description, producer, model, serialnumber, ports FROM netdevices ".($sqlord != "" ? $sqlord." ".$direction : ""));
+
+		$netdevlist['total'] = sizeof($netdevlist);
+		$netdevlist['order'] = $order;
+		$netdevlist['direction'] = $direction;
+
+		return $netdevlist;
+	}
+	 
+	function GetNetDev($id)
+	{
+		$result = $this->DB->GetRow("SELECT name, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?",array($id));
+		return $result;
+	}
+
+	function DeleteNetDev($id)
+	{
+		return $this->DB->Execute("DELETE FROM netdevices WHERE id=?",array($id));
+	}
+
+	function NetDevAdd($netdevdata)
+	{
+		$this->SetTS("netdevices");
+		if($this->DB->Execute("INSERT INTO netdevices (name, description, producer, model, serialnumber, ports) VALUES (?, ?, ?, ?, ?, ?)",array($netdevdata['name'],$netdevdata['description'],$netdevdata['producer'],$netdevdata['model'],$netdevdata['serialnumber'],$netdevdata['ports'])))
+			return $this->DB->GetOne("SELECT MAX(id) FROM netdevices");
+		else
+			return FALSE;
+	}
+
+	function NetDevUpdate($netdevdata)
+	{
+		$this->DB->Execute("UPDATE netdevices SET name=?, description=?, producer=?, model=?, serialnumber=?, ports=? WHERE id=?", array( $netdevdata['name'], $netdevdata['description'], $netdevdata['producer'], $netdevdata['model'], $netdevdata['serialnumber'], $netdevdata['ports'], $netdevdata['id'] ) );
+	}
 
 	/*
 	 * Pozosta³e funkcje...
@@ -1618,6 +1693,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.222  2003/09/12 20:59:20  lexx
+ * - netdev
+ *
  * Revision 1.221  2003/09/12 20:43:51  lukasz
  * - more cosmetics
  *
