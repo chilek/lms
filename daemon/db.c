@@ -78,8 +78,174 @@ static void lower_f(sqlite_func *context, int argc, const char **argv)
 }
 #endif
 
-/************************* CONNECTION FUNCTIONS *************************/
+/* Internal function for SELECT query result fetching */
+static QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
+{
+    QUERY_HANDLE *query;
+    COLUMN *my_col, *col;
+    ROW *my_row;
+    VALUE *val;
+    int i, j;
+    unsigned char *buf;
+#ifdef USE_MYSQL
+    MYSQL_ROW row;
+    MYSQL_FIELD *field;
+    enum enum_field_types dtype;
 
+    query = (QUERY_HANDLE *) malloc(sizeof(QUERY_HANDLE));
+    //query->handle = result; //we need this?
+    query->ncols = mysql_num_fields(result);
+    query->nrows = mysql_num_rows(result);
+    
+    my_col = (COLUMN *) malloc(query->ncols * sizeof(COLUMN));
+    my_row = (ROW *) malloc(query->nrows * sizeof(ROW));
+    
+    // get columns defs 
+    for (i = 0; i < query->ncols; i++) {
+
+	my_col[i].name = (char *) malloc(sizeof(char *));
+        col = &(my_col[i]);
+
+	field = mysql_fetch_field_direct(result, i);
+
+	col->name = str_save(col->name, field->name);
+	col->size = field->length;
+	
+	// set column data type 
+	switch (field->type) {
+	    case FIELD_TYPE_SHORT:
+	    case FIELD_TYPE_LONG:
+	    case FIELD_TYPE_LONGLONG:
+		col->type = DB_INT;
+		break;
+	    case FIELD_TYPE_TINY:
+	    case FIELD_TYPE_VAR_STRING:
+	    case FIELD_TYPE_STRING:
+	    case FIELD_TYPE_BLOB:
+		col->type = DB_CHAR;
+		break;
+	    case FIELD_TYPE_DOUBLE:
+	    case FIELD_TYPE_FLOAT:
+		col->type = DB_DOUBLE;
+		break;
+	    default:
+		col->type = DB_UNKNOWN;
+		break;
+	}
+    }	
+    
+    // add column defs to query table
+    query->col = my_col;   
+    
+    // get data
+    i = 0;
+    while ((row = mysql_fetch_row(result)) != NULL) {
+	my_row[i].value = (VALUE *) calloc(query->ncols, sizeof(VALUE));
+        for (j = 0; j < query->ncols; j++) {
+	    val = &(my_row[i].value[j]);
+	    buf = (unsigned char *) ( row[j] ? row[j] : "");
+	    val->data = str_save(val->data,buf);
+	}
+	i++;
+    }
+
+    //add rows to query table
+    query->row = my_row;
+#endif
+#ifdef USE_PGSQL
+    Oid dtype;
+
+    query = (QUERY_HANDLE *) malloc(sizeof(QUERY_HANDLE));
+    //query->handle = result; //don't need this?
+    query->nrows = PQntuples(result); 
+    query->ncols = PQnfields(result); 
+
+    my_col = (COLUMN *) malloc(query->ncols * sizeof(COLUMN));
+    my_row = (ROW *) malloc(query->nrows * sizeof(ROW));
+        
+    // get columns defs 
+    for (i = 0; i < query->ncols; i++) {
+
+	my_col[i].name = (unsigned char *) malloc(sizeof(char *));
+       	col = &(my_col[i]);
+	
+	col->name = str_save(col->name,PQfname(res,i));
+
+	dtype = PQftype(res, i);
+
+	// set column data type & size
+	switch (dtype) {
+	    case INT8OID:
+	    case INT2OID:
+	    case INT4OID:
+	    case OIDOID:
+	    case POSTGISUNKNOWNOID:
+		col->type = DB_INT;
+		col->size = PQfsize(res, i);
+		break;
+	    case CHAROID:
+	    case BPCHAROID:
+	    case VARCHAROID:
+	    case TEXTOID:
+	    case POSTGISPOINTOID:
+		col->type = DB_CHAR;
+		col->size = PQfmod(res, i) - 4; // Looks strange but works
+		break;
+            case FLOAT4OID:
+	    case FLOAT8OID:
+		col->type = DB_DOUBLE;
+		col->size = PQfsize(res, i);
+		break;
+	    case DATEOID:
+		col->type = DB_DATE;
+		col->size = 10; // YYYY-MM-DD 
+		break;
+	    case TIMEOID:
+		col->type = DB_TIME;
+		col->size = 8; // HH-MM-SS 
+		break;
+	    default:
+    		col->type = DB_UNKNOWN;
+		break;
+	}
+    }	
+    
+    // add column defs to query table
+    query->col = my_col;
+    
+    // get data
+    for (i = 0; i < query->nrows; i++) {
+    	my_row[i].value = (VALUE *) calloc(query->ncols, sizeof(VALUE));
+        for (j = 0; j < query->ncols; j++) {
+            val = &(my_row[i].value[j]);
+	    buf = (unsigned char *) PQgetvalue(res, i, j); 
+	    val->data = str_save(val->data,buf);
+	}
+    }
+    
+    //add rows to query table
+    query->row = my_row;
+#endif
+    return query;
+}
+
+/* Parse query statement */
+static void parse_query_stmt(unsigned char **stmt)
+{
+#ifdef USE_MYSQL
+    str_replace(stmt,"%NOW%","UNIX_TIMESTAMP()");
+#endif
+#ifdef USE_SQLITE
+    str_replace(stmt,"%NOW%","strftime('%s','now')");
+#endif
+#ifdef USE_PGSQL
+    str_replace(stmt,"%NOW%","EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))");
+    str_replace(stmt,"LIKE","ILIKE");
+    str_replace(stmt,"like","ILIKE");
+#endif
+}
+
+/************************* CONNECTION FUNCTIONS *************************/
 /* Opens a connection to the db server */
 int db_connect(const unsigned char *db, const unsigned char *user, const unsigned char *password, 
 		const unsigned char *host, int port)
@@ -366,172 +532,6 @@ int db_pexec(unsigned char *q, ... )
     return res;
 }
 
-/* Internal function for SELECT query result fetching */
-QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
-{
-    QUERY_HANDLE *query;
-    COLUMN *my_col, *col;
-    ROW *my_row;
-    VALUE *val;
-    int i, j;
-    unsigned char *buf;
-#ifdef USE_MYSQL
-    MYSQL_ROW row;
-    MYSQL_FIELD *field;
-    enum enum_field_types dtype;
-
-    query = (QUERY_HANDLE *) malloc(sizeof(QUERY_HANDLE));
-    //query->handle = result; //we need this?
-    query->ncols = mysql_num_fields(result);
-    query->nrows = mysql_num_rows(result);
-    
-    my_col = (COLUMN *) malloc(query->ncols * sizeof(COLUMN));
-    my_row = (ROW *) malloc(query->nrows * sizeof(ROW));
-    
-    // get columns defs 
-    for (i = 0; i < query->ncols; i++) {
-
-	my_col[i].name = (char *) malloc(sizeof(char *));
-        col = &(my_col[i]);
-
-	field = mysql_fetch_field_direct(result, i);
-
-	col->name = str_save(col->name, field->name);
-	col->size = field->length;
-	
-	// set column data type 
-	switch (field->type) {
-	    case FIELD_TYPE_SHORT:
-	    case FIELD_TYPE_LONG:
-	    case FIELD_TYPE_LONGLONG:
-		col->type = DB_INT;
-		break;
-	    case FIELD_TYPE_TINY:
-	    case FIELD_TYPE_VAR_STRING:
-	    case FIELD_TYPE_STRING:
-	    case FIELD_TYPE_BLOB:
-		col->type = DB_CHAR;
-		break;
-	    case FIELD_TYPE_DOUBLE:
-	    case FIELD_TYPE_FLOAT:
-		col->type = DB_DOUBLE;
-		break;
-	    default:
-		col->type = DB_UNKNOWN;
-		break;
-	}
-    }	
-    
-    // add column defs to query table
-    query->col = my_col;   
-    
-    // get data
-    i = 0;
-    while ((row = mysql_fetch_row(result)) != NULL) {
-	my_row[i].value = (VALUE *) calloc(query->ncols, sizeof(VALUE));
-        for (j = 0; j < query->ncols; j++) {
-	    val = &(my_row[i].value[j]);
-	    buf = (unsigned char *) ( row[j] ? row[j] : "");
-	    val->data = str_save(val->data,buf);
-	}
-	i++;
-    }
-
-    //add rows to query table
-    query->row = my_row;
-#endif
-#ifdef USE_PGSQL
-    Oid dtype;
-
-    query = (QUERY_HANDLE *) malloc(sizeof(QUERY_HANDLE));
-    //query->handle = result; //don't need this?
-    query->nrows = PQntuples(result); 
-    query->ncols = PQnfields(result); 
-
-    my_col = (COLUMN *) malloc(query->ncols * sizeof(COLUMN));
-    my_row = (ROW *) malloc(query->nrows * sizeof(ROW));
-        
-    // get columns defs 
-    for (i = 0; i < query->ncols; i++) {
-
-	my_col[i].name = (unsigned char *) malloc(sizeof(char *));
-       	col = &(my_col[i]);
-	
-	col->name = str_save(col->name,PQfname(res,i));
-
-	dtype = PQftype(res, i);
-
-	// set column data type & size
-	switch (dtype) {
-	    case INT8OID:
-	    case INT2OID:
-	    case INT4OID:
-	    case OIDOID:
-	    case POSTGISUNKNOWNOID:
-		col->type = DB_INT;
-		col->size = PQfsize(res, i);
-		break;
-	    case CHAROID:
-	    case BPCHAROID:
-	    case VARCHAROID:
-	    case TEXTOID:
-	    case POSTGISPOINTOID:
-		col->type = DB_CHAR;
-		col->size = PQfmod(res, i) - 4; // Looks strange but works
-		break;
-            case FLOAT4OID:
-	    case FLOAT8OID:
-		col->type = DB_DOUBLE;
-		col->size = PQfsize(res, i);
-		break;
-	    case DATEOID:
-		col->type = DB_DATE;
-		col->size = 10; // YYYY-MM-DD 
-		break;
-	    case TIMEOID:
-		col->type = DB_TIME;
-		col->size = 8; // HH-MM-SS 
-		break;
-	    default:
-    		col->type = DB_UNKNOWN;
-		break;
-	}
-    }	
-    
-    // add column defs to query table
-    query->col = my_col;
-    
-    // get data
-    for (i = 0; i < query->nrows; i++) {
-    	my_row[i].value = (VALUE *) calloc(query->ncols, sizeof(VALUE));
-        for (j = 0; j < query->ncols; j++) {
-            val = &(my_row[i].value[j]);
-	    buf = (unsigned char *) PQgetvalue(res, i, j); 
-	    val->data = str_save(val->data,buf);
-	}
-    }
-    
-    //add rows to query table
-    query->row = my_row;
-#endif
-    return query;
-}
-
-/* Parse query statement */
-void parse_query_stmt(unsigned char **stmt)
-{
-#ifdef USE_MYSQL
-    str_replace(stmt,"%NOW%","UNIX_TIMESTAMP()");
-#endif
-#ifdef USE_SQLITE
-    str_replace(stmt,"%NOW%","strftime('%s','now')");
-#endif
-#ifdef USE_PGSQL
-    str_replace(stmt,"%NOW%","EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))");
-    str_replace(stmt,"LIKE","ILIKE");
-    str_replace(stmt,"like","ILIKE");
-#endif
-}
 
 /* Starts transaction */
 int db_begin()
