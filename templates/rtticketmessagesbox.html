@@ -26,8 +26,10 @@
 				    <A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
 			    {elseif $message.adminid}
 				    <A href="?m=admininfo&id={$message.adminid}">{$message.adminname}</A>
-			    {else}
+			    {elseif $message.mailfrom}
 				    <A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
+			    {else}
+				    {$ticket.requestor}
 			    {/if}
 			    <BR>
 			    {$message.subject|escape}
