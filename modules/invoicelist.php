@@ -25,7 +25,7 @@
  */
 
 $layout['pagetitle'] = 'Lista faktur';
-
+/*
 if($_GET['action'] == 'updatemarks')
 {
 	if(sizeof($_POST['mark']))
@@ -37,6 +37,7 @@ if($_GET['action'] == 'updatemarks')
 }
 elseif($_GET['action'] == 'clearmarks')
 	unset($_SESSION['ilp_marks']);
+*/
 
 $invoicelist = $LMS->GetInvoicesList();
 
