@@ -2,36 +2,6 @@ $Id$
 
 wersja 1.1.4 (??/??/2003):
   
-  - ewidencja sprzêtu sieciowego, narazie brzydka i g³upia ale dzia³a,
-    oczywi¶cie potrzebna nowa tabela (lexx)
-    MySQL:
-    DROP TABLE IF EXISTS netdevices;
-    CREATE TABLE netdevices (
-	id int(11) NOT NULL auto_increment,
-	name varchar(32) default NULL,
-        description varchar(255) default NULL,
-        producer varchar(64) default NULL,
-        model varchar(32) default NULL,
-        serialnumber varchar(32) default NULL,
-        ports int(10) default NULL,
-        PRIMARY KEY  (id),
-        KEY name (name)
-    ) TYPE=MyISAM;
-    
-    PostgreSQL:
-    DROP SEQUENCE "netdevices_id_seq";
-    CREATE SEQUENCE "netdevices_id_seq";
-    DROP TABLE netdevices;
-    CREATE TABLE netdevices (
-	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
-	name varchar(32) default NULL,
-	description varchar(255) default NULL,
-	producer varchar(64) default NULL,
-	model varchar(32) default NULL,
-	serialnumber varchar(32) default NULL,
-	ports integer default NULL,
-	PRIMARY KEY (id),
-    );    
   - lista taryf zlicza³a tak¿e u¿ytkowników usuniêtych (lukasz)
   - do listy sieci dodane nowe pole: interfejs - bardzo przydatne przy
     budowaniu skryptów iptables/ipchains/htb gdy mamy sieci adresowe na
@@ -118,7 +88,37 @@ wersja 1.1.4 (??/??/2003):
     akceptowalnego przez lms-traffic alec'a, wiêcej info w sample/lms.ini
     (lukasz)
   - optymalizacja kodu w wielu miejscach (lukasz)
-		    
+  - ewidencja sprzêtu sieciowego, narazie brzydka i g³upia ale dzia³a,
+    oczywi¶cie potrzebna nowa tabela (lexx)
+    MySQL:
+    DROP TABLE IF EXISTS netdevices;
+    CREATE TABLE netdevices (
+        id int(11) NOT NULL auto_increment,
+        name varchar(32) default NULL,
+        description varchar(255) default NULL,
+        producer varchar(64) default NULL,
+        model varchar(32) default NULL,
+        serialnumber varchar(32) default NULL,
+        ports int(10) default NULL,
+        PRIMARY KEY  (id),
+        KEY name (name)
+    ) TYPE=MyISAM;
+
+    PostgreSQL:
+    DROP SEQUENCE "netdevices_id_seq";
+    CREATE SEQUENCE "netdevices_id_seq";
+    DROP TABLE netdevices;
+    CREATE TABLE netdevices (
+        id integer default nextval('netdevices_id_seq'::text) NOT NULL,
+        name varchar(32) default NULL,
+        description varchar(255) default NULL,
+        producer varchar(64) default NULL,
+        model varchar(32) default NULL,
+        serialnumber varchar(32) default NULL,
+        ports integer default NULL,
+        PRIMARY KEY (id),
+    );
+
 wersja 1.1.3 (29/08/2003):
 
   - zmieniona filozofia u¿ytkowników - teraz usuniêcie u¿ytkownika tak
