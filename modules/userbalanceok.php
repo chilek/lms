@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Rozliczenie u¿ytkownika ID: ".sprintf("%04d",$_GET['id']);
+$layout['pagetitle'] = trans('Accounts Clear With Customer ID: $0',sprintf("%04d",$_GET['id']));
 $SMARTY->assign('userid',$_GET['id']);
 
 if (!$LMS->UserExists($_GET['id']))
 {
-	$body = "<H1>".$layout['pagetitle']."</H1><P>Podany przez Ciebie ID jest b³êdny b±d¼ nie istnieje w bazie danych.</P>";
+	$body = '<H1>'.$layout['pagetitle'].'</H1><P>'.trans('Incorrect customer ID').'</P>';
 }
 else
 {
