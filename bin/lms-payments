@@ -167,11 +167,11 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$gotinv{$uid} = $irow->{'id'};
 			}
 			
-			my $icdbq = $dbase->prepare("SELECT * FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid}");
+			my $icdbq = $dbase->prepare("SELECT * FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid} AND description='$txt'");
 			$icdbq->execute();
 			if(my $icrow = $icdbq->fetchrow_hashref())
 			{
-				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid}");
+				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid} AND description='$txt'");
 				$icdbq->execute();
 			}
 			else
