@@ -2,7 +2,7 @@
 {include file="rtheader.html"}
 <!-- $Id$ -->
 <H1><B>{$layout.pagetitle}</B></H1>
-<P><FORM method="POST" name="message" action="?m=rtmessageadd">
+<P><FORM method="POST" name="message" action="?m=rtmessageadd" enctype="multipart/form-data">
 <INPUT type="hidden" name="message[inreplyto]" value ="{$message.inreplyto|default:"0"}">
 <INPUT type="hidden" name="message[references]" value ="{$message.references|escape|default:""}">
 <INPUT type="hidden" name="message[ticketid]" value ="{$message.ticketid}">
@@ -43,6 +43,15 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
 			<TEXTAREA name="message[body]" cols="75" rows="10" {tip text="Wpisz tre¶æ wiadomo¶ci" trigger="body"}>{$message.body}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/attach.gif" alt="" border="0" align="absmiddle">
+			<B>Za³±cznik:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<INPUT name="file" type="file" size="55" {tip text="Podaj ¶cie¿kê do pliku lub skorzystaj z przycisku 'Przegl±daj'" trigger="file"}>
 		</TD>
 	</TR>
 	<TR CLASS="light">
