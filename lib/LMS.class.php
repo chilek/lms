@@ -1776,6 +1776,12 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			else
 				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?)', array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2), round($addbalance['taxvalue'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
 	}
+
+	function DelBalance($id)
+	{
+		$this->SetTS('cash');
+		return $this->DB->Execute('DELETE FROM cash WHERE id=?', array($id));
+	}
 	
 	function GetBalanceList()
 	{
