@@ -272,6 +272,9 @@
      <para>%IP - adres IP komputera</para>
     </listitem>
     <listitem>
+     <para>%PIN - PIN of customer who owns node</para>
+    </listitem>
+    <listitem>
      <para>%ID - ID komputera w bazie</para>
     </listitem>
     <listitem>
