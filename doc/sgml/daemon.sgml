@@ -516,8 +516,8 @@ info = "Opcjonalny opis modu³u"
 		    <title>Konfiguracja</title>
 		    <para>W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
 		    które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
-		    adresem, '%n' - nazw± komputera, '%domain' - domen±, '%net' - nazw± sieci, 
-		    '%gw' - adresem bramy w sieci do której nale¿y dany komputer.
+		    adresem, '%n' - nazw± komputera, '%info' - opisem komputera, '%domain' - domen±, 
+		    '%net' - nazw± sieci, '%gw' - adresem bramy w sieci do której nale¿y dany komputer.
 		    Poni¿ej opcje udostêpniane przez ten modu³</para>
 		    <itemizedlist>
 			<listitem>
