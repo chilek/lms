@@ -428,8 +428,8 @@ CLASS="EMPHASIS"
 > pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
->:</P
-><UL
+>:
+	  <UL
 ><LI
 ><P
 >deadline (opcjonalny)</P
@@ -439,6 +439,27 @@ CLASS="FILENAME"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >deadline = 7</SAMP
+></P
+></LI
+><LI
+><P
+>comment (opcjonalny)</P
+><P
+>Opis pozycji na fakturze za naliczane zobowi±zanie</P
+><P
+>Domy¶lnie: 'Abonament wg taryfy %tariff za okres %period'</P
+><P
+>Niektóre ze s³ów kluczowych s± zastêpowane:</P
+><P
+>%tariff Nazwa taryfy</P
+><P
+>%period Okres (liczony od dzi¶ do ostatniego dnia cyklu rozliczeniowego, w formacie YYYY/MM/DD)</P
+><P
+>%%current_month Okres od pierwszego dnia bie¿±cego miesi±ca do jego koñca</P
+><P
+>Przyk³ad:       <SAMP
+CLASS="PROMPT"
+>paytype = 'Abonament za %current_month w/g taryfy %tariff '</SAMP
 ></P
 ></LI
 ><LI
@@ -465,7 +486,33 @@ CLASS="PROMPT"
 >comment = %desc</SAMP
 ></P
 ></LI
+><LI
+><P
+>suspension_percentage (opcjonalny)</P
+><P
+>Warto¶æ procentowa obci±¿enia generowana dla obci±¿eñ zablokowanych.
+	   Domy¶lnie: '0'</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>suspension_percentage = %desc</SAMP
+></P
+></LI
+><LI
+><P
+>suspension_description (opcjonalny)</P
+><P
+>Tekst dodawany na koñcu opisu operacji dla obci±¿eñ zablokowanych. 
+	   Domy¶lnie: ''</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>suspension_description = (zawieszenie)</SAMP
+></P
+></LI
 ></UL
+>
+	 </P
 ><P
 >Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ
 	 <SAMP
