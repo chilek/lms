@@ -3206,7 +3206,7 @@ class LMS
 		}
 		return $uiid;
 	}
-
+	
 	function CheckUpdates()
 	{
 		$uiid = $this->GetUniqueInstallationID();
@@ -3218,7 +3218,7 @@ class LMS
 		{
 			list($v, $codename) = split(' ', $this->_version);
 			ini_set('default_socket_timeout', 5);
-			if($updatefile = fopen('http://lms.rulez.pl/update.php?uiid='.$uiid.'&v='.$v, 'r'))
+			if($updatefile = @fopen('http://lms.rulez.pl/update.php?uiid='.$uiid.'&v='.$v, 'r'))
 			{
 				while(! feof($updatefile))
 					$content .= fgets($updatefile, 4096);
@@ -3230,7 +3230,36 @@ class LMS
 			}
 			ini_restore('default_socket_timeout');
 		}
+
+		$content = unserialize($content);
+		$content['regdata'] = unserialize($content['regdata']);
+
+		$this->DB->Execute('DELETE FROM dbinfo WHERE keytype LIKE ?', array('regdata_%'));
+
+		if(is_array($content['regdata']))
+		{
+
+			foreach(array('id', 'name', 'url', 'hidden') as $key)
+				$this->DB->Execute('INSERT INTO dbinfo (keytype, keyvalue) VALUES (?, ?)', array('regdata_'.$key, $content['regdata'][$key]));
+		}			
+		
 		return $content;
+	}
+
+	function GetRegisterData()
+	{
+		if($regdata = $this->DB->GetAll('SELECT * FROM dbinfo WHERE keytype LIKE ?', array('regdata_%')))
+		{
+			foreach($regdata as $regline)
+				$registerdata[str_replace('regdata_', '', $regline['keytype'])] = $regline['keyvalue'];
+			return $registerdata;
+		}
+		return NULL;
+	}
+
+	function UpdateRegisterData()
+	{
+		return FALSE;
 	}
 
 	function SendMail($recipients, $headers, $body)
