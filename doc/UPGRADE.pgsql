@@ -68,20 +68,58 @@ ALTER TABLE tariffs ALTER uprate DROP DEFAULT;
 ALTER TABLE tariffs ALTER downrate DROP NOT NULL;
 ALTER TABLE tariffs ALTER downrate DROP DEFAULT; 
 
+
 /* Faktury inaczej */
 ALTER TABLE cash ADD COLUMN invoiceid integer;
 ALTER TABLE cash ALTER COLUMN invoiceid SET default 0;
 UPDATE cash SET invoice = 0;
 ALTER TABLE cash ALTER COLUMN invoiceid SET NOT NULL; 
+ALTER TABLE tariffs ADD taxvalue integer;
+UPDATE tariffs SET taxvalue = 0;
+ALTER TABLE tariffs ALTER COLUMN taxvalue SET DEFAULT 0;
+ALTER TABLE tariffs ALTER COLUMN taxvalue SET NOT NULL;
+ALTER TABLE tariffs ADD	sww varchar(255);
+UPDATE tariffs SET sww = '';
+ALTER TABLE tariffs ALTER COLUMN sww SET DEFAULT '';
+ALTER TABLE tariffs ALTER COLUMN sww SET NOT NULL;
 
-/* Nowa tabela dla statystyk 
+CREATE SEQUENCE "invoices_id_seq";
+CREATE TABLE invoices (
+	id integer DEFAULT nextval('invoices_id_seq'::text) NOT NULL,
+        number integer NOT NULL,
+        cdate integer NOT NULL,
+        paytime smallint NOT NULL,
+        customerid integer NOT NULL,
+        name varchar(255) NOT NULL,
+        address varchar(255) NOT NULL,
+        nip varchar(16) NOT NULL,
+        zip varchar(6) NOT NULL,
+        city varchar(32) NOT NULL,
+        phone varchar(255) NOT NULL,
+        finished smallint DEFAULT 0 NOT NULL,
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE invoicecontents (
+	invoiceid integer NOT NULL,
+	value float4 NOT NULL,
+	taxvalue integer NOT NULL,
+	sww varchar(255) DEFAULT '' NOT NULL,
+	content varchar(16) NOT NULL,
+	count integer NOT NULL,
+	description varchar(255) NOT NULL,
+	tariffid integer NOT NULL
+);	 
+
+
+/* Nowa tabela dla statystyk */
 CREATE TABLE stats (
     nodeid integer DEFAULT 0 NOT NULL,
     dt integer DEFAULT 0 NOT NULL,
     upload integer DEFAULT 0,
     download integer DEFAULT 0,
     PRIMARY KEY (nodeid, dt)
-);*/
+);
 
 /* Nowa tabela - urz±dzenia sieciowe */
 CREATE SEQUENCE "netdevices_id_seq";
@@ -144,3 +182,4 @@ COMMIT;
 /*
 $Id$
 */
+
