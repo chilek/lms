@@ -39,7 +39,7 @@ void reload(GLOBAL *g, struct oident_module *o)
 	int i, nc=0, n=2;
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
-	char *netnames = strdup(hm->networks);	
+	char *netnames = strdup(o->networks);	
 	char *netname = strdup(netnames);
 
 	while( n>1 ) {
