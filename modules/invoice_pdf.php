@@ -350,6 +350,7 @@ function invoice_footnote($x, $y, $width, $font_size)
 	$y = $y - $pdf->getFontHeight($font_size);
 	$y = $y - text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Notes:')).'</b>');
 	$tmp = iconv("UTF-8","ISO-8859-2",$_CONFIG['invoices']['footer']);
+	$tmp = str_replace('\n',"\n",$tmp);
         $tmp = explode("\n",$tmp);
 	foreach ($tmp as $line) $y = text_wrap($x,$y,$width,$font_size,$line,"full");
     }
