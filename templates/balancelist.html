@@ -60,13 +60,13 @@
 			<NOBR><B>{$balancelist[balancelist].type}</B></NOBR>
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top">
-			<NOBR>{$balancelist[balancelist].value|string_format:"%01.2f"} {.currency}</NOBR>
+			<NOBR>{$balancelist[balancelist].value|string_format:"%01.2f"} {$lang.currency}</NOBR>
 		</TD>
 		<TD width="1%" align="center" valign="top">
 			&raquo;
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top"> 
-			<NOBR>{$balancelist[balancelist].after|string_format:"%01.2f"} {.currency}</NOBR>
+			<NOBR>{$balancelist[balancelist].after|string_format:"%01.2f"} {$lang.currency}</NOBR>
 		</TD>
 		<TD width="1%" nowrap valign="top">
 			{if $balancelist[balancelist].userid}<NOBR><A HREF="?m=userbalance&id={$balancelist[balancelist].userid}">{$balancelist[balancelist].username|truncate:20:"..."}</A></NOBR>{else} - {/if}
@@ -97,11 +97,11 @@
 			<B>Razem:</B>
 		</TD>
 		<TD width="1%" nowrap class="fbt" align="right">
-			<NOBR>{$listdata.income|string_format:"%01.2f"} {.currency}<BR>
-			{$listdata.uinvoice|string_format:"%01.2f"} {.currency}<BR>
-			{$listdata.incomeu|string_format:"%01.2f"} {.currency}<BR>
-			{$listdata.expense|string_format:"%01.2f"} {.currency}<HR>
-			{$listdata.total|string_format:"%01.2f"} {.currency}</NOBR>
+			<NOBR>{$listdata.income|string_format:"%01.2f"} {$lang.currency}<BR>
+			{$listdata.uinvoice|string_format:"%01.2f"} {$lang.currency}<BR>
+			{$listdata.incomeu|string_format:"%01.2f"} {$lang.currency}<BR>
+			{$listdata.expense|string_format:"%01.2f"} {$lang.currency}<HR>
+			{$listdata.total|string_format:"%01.2f"} {$lang.currency}</NOBR>
 		</TD>
 		<TD width="95%" colspan="4" class="frightu">
 			&nbsp;
