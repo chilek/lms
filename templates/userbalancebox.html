@@ -17,6 +17,7 @@
 					<TD width="1%" class="fbt">Admin:</TD>
 					<TD width="1%" class="fbt"><B>Typ:</B></TD>
 					<TD width="1%" class="fbt" align="right">Warto¶æ:</TD>
+					<TD width="1%" class="fbt" align="right">VAT:</TD>
 					<TD width="1%" class="fbt" align="center">&raquo;</TD>
 					<TD width="1%" class="fbt" align="right">Po:</TD>
 					<TD width="93%" class="fbt">Opis:</TD>
@@ -35,6 +36,11 @@
 					<TD width="1%">{$balancelist.adminname[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
 					<TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
 					<TD width="1%" align="right"><nobr>{$balancelist.value[balancelist]|string_format:"%01.2f"} z³</nobr></TD>
+					<TD width="1%" align="right"><nobr>
+						{if $balancelist.taxvalue[balancelist]}
+							{$balancelist.taxvalue[balancelist]|string_format:"%01.2f"} %
+						{else}zw.{/if}
+						</nobr></TD>
 					<TD width="1%" align="center">&raquo;</TD>
 					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|string_format:"%01.2f"} z³{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
 					<TD width="93%">{$balancelist.comment[balancelist]}</TD>
@@ -57,7 +63,7 @@
 					<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.userid}">
 						<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
 						<TD class="ftop">
-							<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Wpisz czas operacji w formacie 'rrrr/mm/dd gg:mm' (pole puste oznacza datê dzisiejsz±). Kliknij na to pole bywybraæ datê z kalendarza."} onClick="cal3.popup();">
+							<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Wpisz czas operacji w formacie 'rrrr/mm/dd gg:mm' (pole puste oznacza datê dzisiejsz±). Kliknij na to pole by wybraæ datê z kalendarza."} onClick="cal3.popup();">
 							{*<nobr>{$smarty.now|date_format:"%Y/%m/%d %H:%M"}</nobr>*}
 						</TD>
 						<TD class="ftop">
@@ -71,6 +77,9 @@
 						</TD>
 						<TD colspan="2" class="ftop" nowrap>
 							<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s" {tip text="Wpisz warto¶æ operacji"}> z³
+						</TD>
+						<TD colspan="2" class="ftop" nowrap>
+							<INPUT TYPE="text" size="12" name="addbalance[taxvalue]" accesskey="s" {tip text="Wpisz stawkê VAT"}> %
 						</TD>
 						<TD colspan="3" align="right" class="ftop">
 							<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Podaj opis dla tej operacji finansowej"}> <A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A>

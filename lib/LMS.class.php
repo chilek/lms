@@ -482,7 +482,7 @@ class LMS
 
 	function GetCashByID($id)
 	{
-		return $this->DB->GetRow('SELECT time, adminid, type, value, userid, comment FROM cash WHERE id=?', array($id));
+		return $this->DB->GetRow('SELECT time, adminid, type, value, taxvalue, userid, comment FROM cash WHERE id=?', array($id));
 	}
 
 	function GetUserStatus($id)
@@ -758,7 +758,7 @@ class LMS
 to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 */
 		// wrapper do starego formatu
-		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, userid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE userid=? ORDER BY time', array($id)))
+		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, userid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE userid=? ORDER BY time', array($id)))
 //		if($tslist = $this->DB->GetAll("SELECT id, time, adminid, type, value, userid, comment, invoiceid FROM cash  WHERE userid=? ORDER BY time", array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
@@ -813,7 +813,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetUserBalanceListByDate($id, $date=NULL)
 	{
-		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, userid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE userid=? ORDER BY time', array($id)))
+		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, userid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE userid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -1273,7 +1273,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, NULL, ?, ?, ?, ?, ?)', array($iid, $item['valuebrutto'], $item['pkwiu'], $item['jm'], $item['count'], $item['name'], $item['tariffid']));
 			else
 				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($iid, $item['valuebrutto'], $item['taxvalue'], $item['pkwiu'], $item['jm'], $item['count'], $item['name'], $item['tariffid']));
-			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'userid' => $invoice['customer']['id'], 'comment' => $item['name'], 'invoiceid' => $iid));
+			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'taxvalue' => $item['taxvalue'], 'userid' => $invoice['customer']['id'], 'comment' => $item['name'], 'invoiceid' => $iid));
 		}
 		return $iid;
 	}
@@ -1529,28 +1529,35 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$this->SetTS('cash');
 		$stan=$this->GetUserBalance($user_id);
 		$stan=-$stan;
-		return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?)', array($this->SESSION->id, 3 , round("$stan",2) , $user_id, 'Rozliczono'));
+		return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, NULL, ?, ?, ?)', array($this->SESSION->id, 3 , round("$stan",2) , $user_id, 'Rozliczono'));
 	}
 	
 	function AddBalance($addbalance)
 	{
 		$this->SetTS('cash');
 		if($addbalance['time'])
-			return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES (?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'],$this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
+			if($addbalance['taxvalue'] == '')
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?)', array($addbalance['time'],$this->SESSION->id, $addbalance['type'], round($addbalance['value'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
+			else
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'],$this->SESSION->id, $addbalance['type'], round($addbalance['value'],2), round($addbalance['taxvalue'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
 		else
-			return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)', array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
+			if($addbalance['taxvalue'] == '')
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?)', array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
+			else
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?)', array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2), round($addbalance['taxvalue'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
 	}
 	
 	function GetBalanceList()
 	{
 		$adminlist = $this->DB->GetAllByKey('SELECT id, name FROM admins','id');
 		$userslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users','id');
-		if($balancelist = $this->DB->GetAll('SELECT id, time, adminid, type, value, userid, comment, invoiceid FROM cash ORDER BY time ASC'))
+		if($balancelist = $this->DB->GetAll('SELECT id, time, adminid, type, value, taxvalue, userid, comment, invoiceid FROM cash ORDER BY time ASC'))
 		{
 			foreach($balancelist as $idx => $row)
 			{
 				$balancelist[$idx]['admin'] = $adminlist[$row['adminid']]['name'];
 				$balancelist[$idx]['value'] = $row['value'];
+				$balancelist[$idx]['taxvalue'] = $row['taxvalue'];
 				$balancelist[$idx]['username'] = $userslist[$row['userid']]['username'];
 				if($idx)
 					$balancelist[$idx]['before'] = $balancelist[$idx-1]['after'];
