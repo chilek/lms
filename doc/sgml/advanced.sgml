@@ -1,0 +1,151 @@
+<chapter id="devel">
+	<title>Dla dociekliwych</title>
+	<sect1 id="devel-catalogs">
+		<title>Drzewo katalogów</title>
+			<table>
+				<title>Drzewo katalogów LMS</title>
+			<tgroup cols="2">
+				<colspec ALIGN="center" COLWIDTH="200">
+				<colspec ALIGN="center" COLWIDTH="300">
+		    	<thead>
+				<row>
+				<entry>Nazwa</entry>
+				<entry>Opis</entry>
+				</row>
+		    	</thead>
+		    	<tbody>
+				<row>
+				<entry>backups</entry>
+				<entry>Kopie zapasowe bazy danych</entry>
+				</row>
+				<row>
+				<entry>bin</entry>
+				<entry>Skrypty wykonywalne lms-...</entry>
+				</row>
+				<row>
+				<entry>contrib</entry>
+				<entry>Dodatki stworzone przez u¿ytkowników LMS</entry>
+				</row>
+				<row>
+				<entry>devel</entry>
+				<entry>Skrypty przydatne dla developerów</entry>
+				</row>
+				<row>
+				<entry>doc</entry>
+				<entry>Dokumentacja</entry>
+				</row>
+				<row>
+				<entry>img</entry>
+				<entry>Obrazki do Interfejsu U¿ytkownka</entry>
+				</row>
+				<row>
+				<entry>lib</entry>
+				<entry>LMS'owy zbiór bibliotek PHP oraz Smarty</entry>
+				</row>
+				<row>
+				<entry>modules</entry>
+				<entry>Modu³y Interfejsu U¿ytkownika</entry>
+				</row>
+				<row>
+				<entry>sample</entry>
+				<entry>Przyk³adowe skrypty i inne dodatki</entry>
+				</row>
+				<row>
+				<entry>templates</entry>
+				<entry>Temlejty Smarty dla Interfejsu U¿ytkownika</entry>
+				</row>
+				<row>
+				<entry>templates_c</entry>
+				<entry>Pliki tymczasowe</entry>
+				</row>
+			</tbody>
+			</tgroup>
+	    		</table>
+	</sect1>
+	<sect1 id="devel-db">
+		<title>Struktura bazy danych</title>
+		<para>
+		</para>
+	</sect1>
+	<sect1 id="devel-rights">
+		<title>Poziomy dostêpu</title>
+		<para>W  sumie  tutaj  to  wyt³umaczê  bardziej  dla developerów, gdy¿ osoby
+		korzystaj±ce z LMS raczej nie bêd± zainteresowane.</para>
+		<para>Oryginalnie poziomy dostêpu mia³y byæ definiowane poprzez ró¿ne litery.
+		By³o to  za³o¿enie  z  czasów LMS-0.4, lecz nigdy nie wykorzystane. Z
+		racji  tego,  ¿e  wesz³o  to  do 1.0, d³ugo siê g³owi³em jak wykorzystaæ
+		64-znakowego  stringa. Otó¿ w kolumnie rights jest poprostu 64-znakowa
+		(256-bitowa)  liczba  hexadecymalna.  Ka¿dy jej znak mo¿e opisaæ
+		maksymalnie  cztery bity kombinacji (4*64 = 256 - st±d ilo¶æ mo¿liwych
+		poziomów).  Tak  wiêc  w³±czenie  jakiego¶  poziomu  dostêpu  powoduje
+		ustawienie  w  tej  liczbie  odpowiedniego  bitu.  I tak je¿eli "pe³en
+		dostêp"  ma pozycjê 0 w lib/accesstable.php, zostanie ustawiony bit 0,
+		czyli  bêdzie  to liczba 1. Wiêc poziomy mog± mieæ numery od 0 do 255.
+		Nie jest to finalne ograniczenie. Stosuj±c wiêcej liter i znaków mo¿na
+		rozszerzyæ ilo¶æ mo¿liwych kombinacji do przynajmniej 6 bitów na znak,
+		co da nam 384 kombinacje.
+		</para>
+	</sect1>
+	<sect1 id="devel-limits">
+		<title>Ograniczenia</title>
+		<para>Ka¿dy system ma ograniczenia. Pewne wynikaja z u¿ytego silnika SQL (DBMS)
+		inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez developerów. Nasz system 
+		takowe posiada:</para>
+		<sect2>
+			<title>Wynikaj±ce z naszego projektu</title>
+			<para>Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowujemy jako
+			32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat bêdziecie nas nie lubiæ
+			posiadaj±c oko³o 5000 u¿ytkowników.</para>
+		</sect2>
+		<sect2>
+			<title>Wynikaj±ce z u¿ywanego DMBS</title>
+			<itemizedlist>
+			<listitem>
+			<para>MySQL</para>
+			<itemizedlist>
+			<listitem>
+			<para>Rozmiar bazy danych:</para>
+			<para>Jak mówi dokumentacja do MySQL'a (rozdzia³: Table size, paragraf "How Big Can
+			MySQL Tables Be?"), MySQL wersja 3.22 by³ ograniczony do 4 GB na tabelkê.
+			W wersji za¶ 3.23 zosta³o to podniesione do 8 milionów terabajtów (czyli
+			2^63 bajtów). Jednak warto zauwa¿yæ ¿e ró¿ne systemy operacyjne maj±
+			limity nak³adane przez systemy plików, najczê¶ciej jest to 2 lub 4 GB.</para>
+			</listitem>
+			<listitem>
+			<para>Ilo¶æ rekordów:</para>
+			<para>Prawdziwe informacje na temat limitów uzyskamy dopiero po wydaniu polecenia:
+			(w interpreterze poleceñ mysql)</para>
+			<screen>
+mysql&gt; show table status;
+
+...| Avg_row_length | Data_length | Max_data_length | Index_length |
+...|             44 |       24136 |      4294967295 |        19456 |</screen>
+			<para>Zauwa¿ymy ¿e miejsca wystarczy na oko³o 175 000 razy tyle ile mamy
+			aktualnie wpisów w tabelce. (czyt.: mo¿esz spaæ spkojnie, chyba ¿e
+			planujesz posiadanie ponad 100000 u¿ytkowników :-)</para>
+			</listitem>
+			</itemizedlist>
+			</listitem>
+			<listitem>
+			<para>PostgreSQL</para>
+			<itemizedlist>
+			<listitem>
+			<para>Rozmiar bazy danych:</para>
+			<para>PostgreSQL zapisuje dane w porcjach po 8 kB. Liczba tych bloków jest
+			ograniczona do 32-bitowej liczby ca³kowitej ze znakiem, daj±c maksymaln±
+			wielko¶c tabeli wynosz±c± 16 terabajtów. Z uwagi na ograniczenia systemów
+			operacyjnych dane przechowywane s± w wielu plikach o wielko¶ci 1 GB ka¿dy.</para>
+			</listitem>
+			<listitem>
+			<para>Ilo¶æ rekordów:</para>
+			<para>PostgreSQL nie narzuca ograniczenia na liczbê wierszy w dowolnej tabeli.
+			Jednak funkcja COUNT zwraca 32-bitow± liczbê ca³kowit±, a zatem dla tabel
+			zawieraj±cych ponad dwa miliardy wierszy wynik tej funkcji bêdzie
+			nieprawid³owy. (Informacja dot. PostgreSQL 7.1)</para>
+			</listitem>
+			</itemizedlist>
+			</listitem>
+			</itemizedlist>
+			</sect2>
+	</sect1>
+</chapter>

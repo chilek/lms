@@ -129,7 +129,8 @@
 		<sect2>
 			<title>Kontakt z autorami</title>
 			<para>Najlepiej poprzez listê mailingow±, na któr± mo¿na siê zapisaæ wysy³aj±c
-			pustego maila o temacie "subscribe lms" na adres ecartis@rulez.pl.
+			pustego maila o temacie "subscribe lms" na adres <ulink url="mailto: ecartis@lists.rulez.pl">
+			ecartis@lists.rulez.pl</ulink>, a maile wysy³a siê na adres lms@lists.rulez.pl.
 			</para>
 		</sect2>
 		<sect2>
@@ -155,6 +156,12 @@ cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
 			<para>Repozytorium CVS mo¿na tak¿e przegl±daæ przy pomocy interfejsu WWW pod
 			adresem <ulink url="http://cvs.rulez.pl">http://cvs.rulez.pl</ulink>.
 			</para>
+		</sect2>
+		<sect2>
+			<title>Historia zmian</title>
+			<para>Informacje o zmianach jakie zasz³y w kolejnych 
+			wersjach LMS zawarte s± w pliku <ulink url="../ChangeLog">
+			ChangeLog</ulink>.</para>
 		</sect2>
 	</sect1>
 </chapter>
