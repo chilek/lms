@@ -111,7 +111,7 @@
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
 			<A HREF="javascript:document.replace.submit(); "><B>Wymieñ urz±dzenie:</B></A>
-			<SELECT NAME="netdev" {tip trigger="replace"}>
+			<SELECT NAME="netdev" {tip trigger="replace" text="Wybierz z listy urz±dzenie do zamiany"}>
 				{section name=replacelist loop=$replacelist}
 				<OPTION VALUE="{$replacelist[replacelist].id}">{$replacelist[replacelist].name} {if $replacelist[replacelist].producer}/ {$replacelist[replacelist].producer}{/if} {if $replacelist[replacelist].location}({$replacelist[replacelist].location}){/if}</OPTION>
 				{/section}

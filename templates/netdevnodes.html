@@ -55,7 +55,7 @@
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connectnode">
 			<A HREF="javascript:document.connectnode.submit(); "><B>Pod³±cz komputer:</B></A>
-			<SELECT NAME="nodeid" {tip trigger="linknode"}>
+			<SELECT NAME="nodeid" {tip trigger="linknode" text="Wybierz z listy komputer, który chcesz pod³±czyæ do tego urz±dzenia"}>
 				{section name=nodelist loop=$nodelist}
 				<OPTION VALUE="{$nodelist[nodelist].id}">{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
 				{/section}

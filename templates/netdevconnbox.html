@@ -55,7 +55,7 @@
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connect">
 			<A HREF="javascript:document.connect.submit(); "><B>Pod³±cz urz±dzenie:</B></A>
-			<SELECT NAME="netdev" {tip trigger="link"}>
+			<SELECT NAME="netdev" {tip trigger="link" text="Wybierz z listy urz±dzenie do pod³aczenia"}>
 				{section name=restnetdevlist loop=$restnetdevlist}
 				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}">{$restnetdevlist[restnetdevlist].name} {if $restnetdevlist[restnetdevlist].producer}/ {$restnetdevlist[restnetdevlist].producer}{/if} {if $restnetdevlist[restnetdevlist].location}({$restnetdevlist[restnetdevlist].location}){/if}</OPTION>
 				{/section}
