@@ -45,6 +45,12 @@ class LMS {
 		return $db->ExecSQL("DELETE FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 	}
 
+	function DeleteNode($id)
+	{
+		$db=$this->db;
+		return $db->ExecSQL("DELETE FROM `nodes` WHERE `id` = '".$id."'");
+	}
+
 	function GetAdminName($id)
 	{
 		$db=$this->db;
@@ -113,10 +119,47 @@ class LMS {
 		return $return;
 	}
 
+	function IsIPValid($ip)
+	{
+		$networks = $this->GetNetworks();
+		for($i=0;$i<sizeof($networks);$i++)
+			if((ip_long($ip) > $networks[addresslong][$i])&&(ip_long($ip) < ip_long(getbraddr($networks[address][$i],$networks[mask][$i])))	)
+				return TRUE;
+		return FALSE;
+	}
+
+	function GetMACs()
+	{
+		$file=fopen("/proc/net/arp","r");
+		while(!feof($file))
+		{
+			$line=fgets($file);
+			$mac=trim(substr($line,35,25));
+			$ip=trim(substr($line,0,15));
+			if(check_mac($mac))
+			{
+				$return[mac][] = $mac;
+				$return[ip][] = $ip;
+				$return[longip][] = ip_long($ip);
+				$return[nodename][] = $this->GetNodeNameByIP($ip);
+			}
+		}
+		array_multisort($return[longip],$return[mac],$return[ip],$return[nodename]);
+		return $return;
+	}
+
 	function GetNodeIDByIP($ipaddr)
 	{
 		$db=$this->db;
 		$db->ExecSQL("SELECT `id` FROM `nodes` WHERE `ipaddr` = '".$ipaddr."' LIMIT 1");
+		$db->FetchRow();
+		return $db->row[0];
+	}
+
+	function GetNodeIDByMAC($mac)	
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT `id` FROM `nodes` WHERE `mac` = '".$mac."' LIMIT 1");
 		$db->FetchRow();
 		return $db->row[0];
 	}
@@ -268,7 +311,7 @@ class LMS {
 	function GetUserNodes($id)
 	{
 		$db=$this->db;
-		$db->ExecSQL("SELECT * FROM `nodes` WHERE `ownerid` = '".$id."'");
+		$db->ExecSQL("SELECT * FROM `nodes` WHERE `ownerid` = '".$id."' ORDER BY `name` ASC");
 		while($db->FetchRow()){
 			list(
 				$return[id][],
@@ -299,6 +342,25 @@ class LMS {
                         $rusername .= " " . $username[$i];
 	
 		return $rusername;
+	}
+
+	function NodeSet($id)
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT `access` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		$db->FetchRow();
+		if($db->row[0]=="Y")
+			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'N' WHERE `id` = '".$id."' LIMIT 1");
+		else
+			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'Y' WHERE `id` = '".$id."' LIMIT 1");
+	}
+
+	function GetOwner($id)
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT `ownerid` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		$db->FetchRow();
+		return $db->row[0];
 	}
 
 	function GetUserBalance($id)
@@ -387,6 +449,15 @@ class LMS {
 		return $db->row[0];
 	}
 
+	function AddNode($nodedata)
+	{
+		$db=$this->db;
+		$session=$this->session;
+		return $db->ExecSQL("INSERT INTO `nodes` (`name`, `mac`, `ipaddr`, `ownerid`, `creatorid`, `creationdate`) VALUES ('".strtoupper($nodedata[name])."', '".strtoupper($nodedata[mac])."', '".$nodedata[ipaddr]."', '".$nodedata[ownerid]."', '".$session->id."', '".time()."')");
+	}
+
+		
+
 	function GetUserEmail($id)
 	{
 		$db=$this->db;
@@ -408,6 +479,21 @@ class LMS {
 	{
 		$db=$this->db;
 		return $db->CountRows("SELECT * FROM `users` WHERE `id` = '".$id."' LIMIT 1");
+	}
+
+	function IsIPFree($ip)
+	{
+		$db=$this->db;
+		if($db->CountRows("SELECT * FROM `nodes` WHERE `ipaddr` = '".$ip."' LIMIT 1"))
+			return FALSE;
+		else
+			return TRUE;
+	}
+
+	function NodeExists($id)
+	{
+		$db=$this->db;
+		return $db->CountRows("SELECT * FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
 	}
 }
 
