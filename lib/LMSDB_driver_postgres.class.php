@@ -41,7 +41,14 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 	function _driver_connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
-		if($this->_dblink = pg_connect(($host != '' ? 'host='.$dbhost : '' ).' user='.$dbuser.' password='.$dbpasswd.' dbname='.$dbname))
+		$cstring = join(' ',array(
+			($dbhost != '' ? 'host='.$dbhost : ''),
+			($dbuser != '' ? 'user='.$dbuser : ''),
+			($dbpasswd != '' ? 'password='.$dbpasswd : ''),
+			($dbname != '' ? 'dbname='.$dbname : '')
+		));
+		
+		if($this->_dblink = pg_connect($cstring))
 		{
 			$this->_dbhost = $dbhost;
 			$this->_dbuser = $dbuser;
@@ -128,6 +135,9 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.12  2003/10/11 03:45:20  lukasz
+ * - http://lists.rulez.pl/lms/1242.html
+ *
  * Revision 1.11  2003/09/12 22:22:52  alec
  * Execute zwraca ilo¶æ zmodyfikowanych wierszy dla zapytañ UPDATE, DELETE, INSERT
  *
