@@ -52,7 +52,7 @@
 			<nobr>
 			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" border="0" ALT="{if ! $nodelist[nodelist].access}[ Pod³±cz ]{else}[ Od³±cz ]{/if}"></A>
                         <a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].warning}no{/if}access.gif" border="0" ALT="{if ! $nodelist[nodelist].warning}[ Ostrzegaj ]{else}[ Nie ostrzegaj ]{/if}"></A>
-			<a href="?m=nodedel&id={$nodelist[nodelist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ komputer \'{$nodelist[nodelist].name|upper}\' z bazy danych?')"><img src="img/delete.gif" border="0" ALT="[ Usuñ ]"></A>
+			<a {confirm href="?m=nodedel&id=`$nodelist[nodelist].id`" text="Jeste¶ pewien ¿e chcesz usun±æ komputer '`$nodelist[nodelist].name`' z bazy danych?"}><img src="img/delete.gif" border="0" ALT="[ Usuñ ]"></A>
 			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" border="0" ALT="[ Edytuj ]"></A>
 			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" border="0" ALT="[ Info ]"></A>
 			</nobr>
