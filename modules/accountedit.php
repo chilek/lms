@@ -87,14 +87,14 @@ switch ($option)
 		$account = $_POST['account'];
 		$account['id'] = $id;
 		
-		if(!eregi("^[a-z0-9.-_]+$", $account['login']))
+		if(!eregi("^[a-z0-9._-]+$", $account['login']))
     			$error['login'] = 'Login zawiera niepoprawne znaki!';
 	    
 		if($account['login'] != $oldlogin)
 			if(GetAccountIdByLogin($account['login']))
 				$error['login'] = 'Konto o podanej nazwie ju¿ istnieje!'; 
 	
-		if(!eregi("^[a-z0-9.-_]+$", $account['domain']) && $account['domain']!='')
+		if(!eregi("^[a-z0-9._-]+$", $account['domain']) && $account['domain']!='')
     			$error['domain'] = 'Domena zawiera niepoprawne znaki!';
 	    
 		if($account['expdate'] == '')
