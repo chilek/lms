@@ -1736,7 +1736,7 @@ class LMS
 					
 				}
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
-			$result['totalg'] = ($result['total'] - floor($result['total'])) * 100;
+			$result['totalg'] = round( ($result['total'] - floor($result['total'])) * 100);
 			$result['year'] = date('Y',$result['cdate']);
 			$result['month'] = date('m',$result['cdate']);
 			$result['paid'] = $this->IsInvoicePaid($invoiceid);
