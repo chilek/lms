@@ -30,11 +30,10 @@ $netlist = $LMS->GetNetworkList();
 
 $listdata['size'] = $netlist['size'];
 $listdata['assigned'] = $netlist['assigned'];
-$listdata['total'] = $netlist['total'];
 
 unset($netlist['assigned']);
 unset($netlist['size']);
-unset($netlist['total']);
+$listdata['total'] = sizeof($netlist);
 
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('netadd',$netadd);
