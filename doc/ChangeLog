@@ -49,6 +49,7 @@ wersja 1.5.3 (??/??/????):
   - z szablonu faktury usuniêta informacja powo³uj±ca siê na nieaktualne
     przepisy prawne (alec)
   - poprawiona walidacja NIPu przy edycji i dodawaniu u¿ytkownika (alec)
+  - contrib/formularz_przelewu_wplaty_2 (lexx)
 
 wersja 1.5.2 Isis (25/11/2004):
 
