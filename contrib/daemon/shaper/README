@@ -1,0 +1,43 @@
+1. Wstêp.
+
+Generator konfigów dla shapera. http://sp9wun.republika.pl/index.html
+
+2. Konfiguracja.
+
+* file
+
+Lokalizacja pliku tymczasowego. Domy¶lnie: /etc/shaper/iplist.0
+
+* command
+
+Polecenie pow³oki wykonywane po utworzeniu pliku. Domy¶lnie: "sh /etc/init.d/shaperd restart".
+
+* begin
+
+Nag³ówek skryptu. Domy¶lnie: "# Lista ip\n#1.1.1.1=eth0 eth0\n"
+
+* end
+
+Stopka skryptu. Domy¶lnie: "# koniec listy\n"
+
+* host_htb
+
+Regu³ka dla ka¿dego hosta. Domy¶lnie: "%i=eth1 eth0 %downrate %downceil %uprate %upceil \"\" \"\""
+
+* one_class_per_host = w testach
+
+* networks
+
+Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma 
+znaczenia. Domy¶lnie: pusta (wszystkie sieci).
+
+Przyk³ad: networks = "lan1 lan2"
+
+* usergroups
+
+Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. 
+Wielko¶æ liter nie ma znaczenia. Domy¶lnie: pusta (wszystkie grupy).
+
+Przyk³ad: usergroups = "grupa1 grupa2"
+
+
