@@ -8,16 +8,22 @@
 #include <string.h>
 #include <syslog.h>
 #include <stdarg.h>
+#include <unistd.h>
 #include "db.h"
 #include "util.h"
 
 #ifdef USE_MYSQL
 CONN_HANDLE conn;
+RESULT_HANDLE *res=NULL;
 #endif
 #ifdef USE_PGSQL
 CONN_HANDLE *conn=NULL;
-#endif
 RESULT_HANDLE *res=NULL;
+#endif
+#ifdef USE_SQLITE
+CONN_HANDLE *conn=NULL;
+RESULT_HANDLE res=0;
+#endif
 
 /************************* CONNECTION FUNCTIONS *************************/
 
@@ -43,11 +49,25 @@ int db_connect(const unsigned char *db, const unsigned char *user, const unsigne
     snprintf(connect_string,sizeof(connect_string)-1,"host='%s' dbname='%s' user='%s' port='%d' password='%s'",host,db,user,port,password);
     connect_string[sizeof(connect_string)-1]='\x0';
     conn = PQconnectdb(connect_string);
-    if(PQstatus(conn) == CONNECTION_BAD) {
+    if( PQstatus(conn) == CONNECTION_BAD ) {
 	syslog(LOG_CRIT,"[db_connect] Unable to connect to database. Error: %s",PQerrorMessage(conn));
 	PQfinish(conn);
         return ERROR;
     }
+#endif
+#ifdef USE_SQLITE
+    char *error = NULL;
+    /* first check file, because if file isn't exist sqlite_open() creates file */
+    if( access(db, F_OK)!=0 ) {
+	syslog(LOG_CRIT,"[db_connect] Error: Database file not exist, check config!");
+	return ERROR;
+    }
+    conn = sqlite_open(db, 0, &error);
+    if( error ) {
+    	syslog(LOG_CRIT,"[db_connect] Unable to connect to database. Error: %s", error);
+	sqlite_freemem(error);
+        return ERROR;
+    }	   
 #endif
 #ifdef DEBUG0
 	syslog(LOG_INFO, "DEBUG: [lmsd] Connected with params: db='%s' host='%s' user='%s' port='%d' passwd='*'",db, host, user, port);
@@ -59,16 +79,19 @@ int db_connect(const unsigned char *db, const unsigned char *user, const unsigne
 int db_disconnect(void)
 {
 #ifdef USE_MYSQL
-     mysql_close(&conn);
+    mysql_close(&conn);
 #endif
 #ifdef USE_PGSQL
-     if( PQstatus(conn) != CONNECTION_BAD )
-          PQfinish(conn);
+    if( PQstatus(conn) != CONNECTION_BAD )
+	PQfinish(conn);
+#endif
+#ifdef USE_SQLITE
+    sqlite_close(conn);
 #endif
 #ifdef DEBUG0
     syslog(LOG_INFO, "DEBUG: [lmsd] Disconnected");
 #endif
-     return OK;
+    return OK;
 }
 
 /************************* QUERY FUNCTIONS ************************/
@@ -77,6 +100,18 @@ QUERY_HANDLE * db_query(unsigned char *q)
 {
     QUERY_HANDLE *query;
     unsigned char *stmt = strdup(q);
+#ifdef USE_SQLITE
+    COLUMN *my_col, *col;
+    ROW *my_row;
+    VALUE *val;
+    char *error = NULL;
+    const char *query_tail = NULL;
+    sqlite_vm *vm = NULL;
+    const char **results = NULL;
+    const char **columnNames = NULL;
+    int i, numCols = 0;
+    unsigned char *buf;
+#endif
     parse_query_stmt(&stmt);
 #ifdef DEBUG0
     syslog(LOG_INFO,"DEBUG: [SQL] %s", stmt);
@@ -102,7 +137,48 @@ QUERY_HANDLE * db_query(unsigned char *q)
 	return NULL;
     }
 #endif
+#ifdef USE_SQLITE
+    sqlite_compile(conn, stmt, &query_tail, &vm, &error);
+    if( error ) {
+    	syslog(LOG_CRIT,"[db_query] Query failed. %s", error);
+	sqlite_freemem(error);
+        free(stmt);
+	return NULL;
+    }
+    query = (QUERY_HANDLE *) malloc(sizeof(QUERY_HANDLE));
+    my_row = (ROW *) malloc(sizeof(ROW));
+    query->nrows = 0;
+    
+    while( sqlite_step(vm, &numCols, &results, &columnNames)==SQLITE_ROW ) {
+	
+	    my_row = (ROW *) realloc(my_row, sizeof(ROW) * (query->nrows+1)); 
+    	    my_row[query->nrows].value = (VALUE *) calloc(numCols, sizeof(VALUE));
+            
+	    for( i=0; i<numCols; i++ ) {
+	   
+    		    val = &(my_row[query->nrows].value[i]);
+		    buf = (unsigned char *) (results[i] ? results[i] : "");
+		    val->data = str_save(val->data,buf);
+	    }
+	    query->nrows++; 
+    }
+    query->row = my_row;
+    query->ncols = numCols; 
+    my_col = (COLUMN *) malloc(query->ncols * sizeof(COLUMN));
+    for( i=0; i<numCols; i++ ) {
+  	    
+	    my_col[i].name = (char *) malloc(sizeof(char *));
+    	    col = &(my_col[i]);
+	    col->name = str_save(col->name, columnNames[i]);
+	    col->size = DB_UNKNOWN;
+	    col->type = DB_UNKNOWN;
+    }
+    query->col = my_col;
+    sqlite_finalize(vm, NULL);
+#endif
+#ifndef USE_SQLITE  /* we don't need get_query_result() for SQLiteDB */
     query = get_query_result(res);
+#endif
 #ifdef USE_MYSQL
     mysql_free_result(res);
 #endif
@@ -153,8 +229,11 @@ QUERY_HANDLE * db_pquery(unsigned char *q, ... )
 /* executes a INSERT, UPDATE, DELETE queries */
 int db_exec(unsigned char *q)
 {
-    int result;
+    int result = 0;
     unsigned char *stmt = strdup(q);
+#ifdef USE_SQLITE
+    char *error = NULL;
+#endif
     parse_query_stmt(&stmt);
 #ifdef DEBUG0
     syslog(LOG_INFO,"DEBUG: [SQL] %s", stmt);
@@ -177,6 +256,16 @@ int db_exec(unsigned char *q)
     }
     result = atoi(PQcmdTuples(res));
     PQclear(res);
+#endif
+#ifdef USE_SQLITE
+    res = sqlite_exec(conn, stmt, NULL, NULL, &error);
+    if( res!=SQLITE_OK ) {
+    	syslog(LOG_CRIT,"[db_exec] Query failed. %s",error);
+	sqlite_freemem(error);
+	free(stmt);
+        return ERROR;
+    }
+    result = sqlite_changes(conn);
 #endif
     free(stmt);
     return result;
@@ -221,7 +310,7 @@ int db_pexec(unsigned char *q, ... )
 /* Internal function for SELECT query result fetching */
 static QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
 {
-    QUERY_HANDLE * query;
+    QUERY_HANDLE *query;
     COLUMN *my_col, *col;
     ROW *my_row;
     VALUE *val;
@@ -375,6 +464,9 @@ void parse_query_stmt(unsigned char **stmt)
 #ifdef USE_MYSQL
     str_replace(stmt,"%NOW%","UNIX_TIMESTAMP()");
 #endif
+#ifdef USE_SQLITE
+    str_replace(stmt,"%NOW%","strftime('%s','now')");
+#endif
 #ifdef USE_PGSQL
     str_replace(stmt,"%NOW%","EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))");
     str_replace(stmt,"LIKE","ILIKE");
@@ -397,6 +489,18 @@ int db_begin()
     }
     PQclear(res);
 #endif
+#ifdef USE_SQLITE
+    char *error = NULL;
+    res = sqlite_exec(conn,"BEGIN", NULL, NULL, &error);
+#ifdef DEBUG0
+    syslog(LOG_INFO,"DEBUG: [SQL] BEGIN");
+#endif
+    if(res!=SQLITE_OK) {
+    	syslog(LOG_CRIT,"[db_begin] Query failed. Error: %s",error);
+	sqlite_freemem(error);
+        return ERROR;
+    }
+#endif
     return OK;
 }
 
@@ -415,6 +519,18 @@ int db_commit()
     }
     PQclear(res);
 #endif
+#ifdef USE_SQLITE
+    char *error = NULL;
+    res = sqlite_exec(conn,"COMMIT", NULL, NULL, &error);
+#ifdef DEBUG0
+    syslog(LOG_INFO,"DEBUG: [SQL] COMMIT");
+#endif
+    if(res!=SQLITE_OK) {
+    	syslog(LOG_CRIT,"[db_commit] Query failed. Error: %s",error);
+	sqlite_freemem(error);
+        return ERROR;
+    }
+#endif
     return OK;
 }
 
@@ -432,6 +548,18 @@ int db_abort()
         return ERROR;
     }
     PQclear(res);
+#endif
+#ifdef USE_SQLITE
+    char *error = NULL;
+    res = sqlite_exec(conn,"ROLLBACK", NULL, NULL, &error);
+#ifdef DEBUG0
+    syslog(LOG_INFO,"DEBUG: [SQL] BEGIN");
+#endif
+    if(res!=SQLITE_OK) {
+    	syslog(LOG_CRIT,"[db_abort] Query failed. Error: %s",error);
+	sqlite_freemem(error);
+        return ERROR;
+    }
 #endif
     return OK;
 }
@@ -470,7 +598,7 @@ unsigned char * db_get_data(QUERY_HANDLE *query, int row, const char *colname)
 	    break;
     }
     if( i>=query->ncols ) {
-	syslog(LOG_CRIT,"[db_get_str] Column '%s' not found",colname);
+	syslog(LOG_CRIT,"[db_get_data] Column '%s' not found",colname);
 	return "NULL";
     }
     

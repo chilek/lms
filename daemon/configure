@@ -1,9 +1,10 @@
 #! /bin/sh
 
-# Initialize some variables set by options.
+# Initialize default variables
 prefix="/usr/local/bin"
 incdir="/usr/include"
 libdir="/usr/lib"
+with_mysql=yes
 
 # Parse options *****************************************************************
 ac_prev=
@@ -76,6 +77,7 @@ Options: [defaults in brackets after descriptions]
   --enable-debug1	events logging (disabled)
   --with-pgsql		enables use of PostgreSQL database (disabled)
   --with-mysql		enables use of MySQL database (enabled)
+  --with-sqlite		enables use of SQLite database (disabled)
   --prefix=DIR		sets program and modules install location 
 			(/usr/local/bin)
   --libdir=DIR		sets location of database library (/usr/lib)
@@ -102,11 +104,17 @@ then
 	LIBS="-lpq -ldl"
 	FLAGS="-DUSE_PGSQL"
 	echo " PostgreSQL"
+elif test "${with_sqlite+set}" = set
+then
+	LIBS="-lsqlite -ldl"
+	FLAGS="-DUSE_SQLITE"
+	echo " SQLite"
 else
 	LIBS="-lmysqlclient -ldl"
 	FLAGS="-DUSE_MYSQL"
 	echo " MySQL"
 fi
+
 
 # Set up lib/includes location
 echo -n "Library location..."
