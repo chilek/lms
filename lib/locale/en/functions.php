@@ -67,6 +67,11 @@ function check_ten($ten)
 
 function check_ssn($ssn)
 {
+	$ssn = str_replace(array('-','/',' ',"\t","\n"), '', $ssn);
+	
+	if(!is_numeric($ssn) || strlen($ssn) != 9)
+		return FALSE;
+	
 	return TRUE;
 }
 
