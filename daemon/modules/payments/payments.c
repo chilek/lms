@@ -104,7 +104,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 {
 	QUERY_HANDLE *res, *result;
 	unsigned char *query, *insert, *insert_inv, *update;
-	unsigned char *w_period, *m_period, *q_period, *y_period, *value;
+	unsigned char *w_period, *m_period, *q_period, *y_period, *value, *taxvalue;
 	unsigned char *description;
 	int i, invoiceid, last_userid=0, number=0, exec=0;
 
@@ -185,6 +185,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			for(i=0; i<res->nrows; i++) {
 			
     				value = g->db_get_data(res,i,"value");
+				taxvalue = g->db_get_data(res,i,"taxvalue");
 				// prepare insert to 'cash' table
 				insert = strdup("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (%NOW%, 4, %value, %userid, '%comment', %invoiceid)");
 				g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
@@ -239,9 +240,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 							g->str_replace(&query, "%invoiceid", itoa(invoiceid));
 							g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
 							g->str_replace(&query, "%value", g->db_get_data(res,i,"value"));
-							g->str_replace(&query, "%taxvalue", g->db_get_data(res,i,"taxvalue"));
 							g->str_replace(&query, "%pkwiu", g->db_get_data(res,i,"pkwiu"));
 							g->str_replace(&query, "%desc", description);
+							if( strlen(taxvalue) )
+								g->str_replace(&query, "%taxvalue", taxvalue);
+							else
+								g->str_replace(&query, "%taxvalue", "NULL");
 						}
 						g->db_exec(query);									
 						g->db_free(result);
