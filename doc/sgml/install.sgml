@@ -251,9 +251,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 			¬ród³a mo¿na pobraæ z <ulink url="http://www.sqlite.org">
 			www.sqlite.org</ulink>.</para>
 			<para>Na obecn± chwilê z SQLite nie wspó³pracuje daemon almsd, ani 
-			skrypty perlowe. We wspó³pracy z LMS-UI nie ma wiêkszy problemów, ale
-			wystêpuj± b³êdy przy korzystaniu z pól szybkiego wyszukiwania oraz brak 
-			jest kapitalizowania polskich znaków diakrytycznych.</para>
+			skrypty perlowe. We wspó³pracy z LMS-UI nie ma wiêkszych problemów, ale
+			wystêpuje b³±d przy korzystaniu z pól szybkiego wyszukiwania.</para>
 		</sect3>
 		<sect3 id="install-sqlite-server">
 		<title>Instalacja SQLite</title>
