@@ -888,11 +888,11 @@ class LMS
 			break;
 		}
 
-		if($username = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
+		if($username = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users "))
 			foreach($username as $idx => $row)
 				$usernames[$row['id']] = $row['username'];
 
-		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access, netdev FROM nodes ".($sqlord != "" ? $sqlord." ".$direction : "")))
+		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access, netdev FROM nodes WHERE ownerid > 0".($sqlord != "" ? $sqlord." ".$direction : "")))
 		{
 			foreach($nodelist as $idx => $row)
 			{
@@ -970,7 +970,7 @@ class LMS
 		}
 		
 		if($searchargs)
-			$searchargs = " WHERE 1=1 AND ".implode(" AND ",$searchargs);
+			$searchargs = " WHERE ownerid > 0 AND ".implode(" AND ",$searchargs);
 		
 		if($username = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
 			foreach($username as $idx => $row)
@@ -1073,7 +1073,7 @@ class LMS
 
 	function GetNetdevLinkedNodes($id)
 	{
-		if($nodelist = $this->DB->GetAll("SELECT id, name, ownerid, ipaddr, netdev FROM nodes WHERE netdev=? ORDER BY name ASC",array($id)))
+		if($nodelist = $this->DB->GetAll("SELECT id, name, ownerid, ipaddr, netdev FROM nodes WHERE netdev=? AND ownerid > 0 ORDER BY name ASC",array($id)))
 			foreach($nodelist as $idx => $row)
 			{
 				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
@@ -1588,7 +1588,7 @@ class LMS
 		$start = $page * $plimit;
 		$end = ($network['size'] > $plimit ? $start + $plimit : $network['size']);
 
-		$nodes = $this->DB->GetAllByKey("SELECT id, name, ipaddr, ownerid FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",'ipaddr',array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
+		$nodes = $this->DB->GetAllByKey("SELECT id, name, ipaddr, ownerid, netdev FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",'ipaddr',array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
 
 		for($i = 0; $i < ($end - $start) ; $i ++)
 		{
@@ -1598,6 +1598,7 @@ class LMS
 			$network['nodes']['addresslong'][$i] = $longip;
 			$network['nodes']['address'][$i] = long2ip($longip);;
 			$network['nodes']['id'][$i] = $node['id'];
+			$network['nodes']['netdev'][$i] = $node['netdev'];
 
 			if( $network['nodes']['addresslong'][$i] == $network['addresslong'] || $network['nodes']['addresslong'][$i] == $network['addresslong'] + $network['size'] - 1)
 				$network['nodes']['name'][$i] = 'BROADCAST';
@@ -1608,6 +1609,11 @@ class LMS
 			$network['nodes']['ownerid'][$i] = $node['ownerid'];
 			if($node['id'])
 				$network['pageassigned'] ++;
+			if( $network['nodes']['ownerid'][$i] == 0 && $network['nodes']['netdev'][$i] > 0) {
+				$netdev = $this->GetNetDevName($network['nodes']['netdev'][$i]);
+				$network['nodes']['name'][$i] = 'ND: '.$netdev['name']." ".$netdev['model'];
+			}
+
 		}
 
 		$network['assigned'] = $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr < ?",array($network['addresslong'], $network['addresslong'] + $network['size']));
@@ -1668,7 +1674,7 @@ class LMS
 
 	function CountNetDevLinks($id)
 	{
-		return $this->DB->GetOne("SELECT COUNT(*) FROM netlinks WHERE src = ? OR dst = ?",array($id,$id)) + $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE netdev = ?",array($id));
+		return $this->DB->GetOne("SELECT COUNT(*) FROM netlinks WHERE src = ? OR dst = ?",array($id,$id)) + $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE netdev = ? AND ownerid > 0",array($id));
 	}
 
 	function GetNetDevConnected($id)
@@ -2222,6 +2228,10 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.286  2003/11/28 11:15:21  lexx
+ * - lms teraz powinien poprawnie dzialac jesli mamy node z ownerid = 0
+ *   (potrzebne do netdevipbox)
+ *
  * Revision 1.285  2003/11/28 09:48:04  lukasz
  * - tsave
  *
