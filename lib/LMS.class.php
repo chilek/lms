@@ -1012,13 +1012,17 @@ class LMS
 				fputs($dumpfile,"DELETE FROM $tablename;\n");
 				foreach($this->ADB->GetAll("SELECT * FROM ".$tablename) as $row)
 				{
-					fputs($dumpfile,"INSERT INTO $tablename VALUES (");
-					foreach($row as $value)
+					fputs($dumpfile,"INSERT INTO $tablename (");
+					foreach($row as $field => $value)
 					{
+						$fields[] = $field;
 						$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
 					}
+					fputs($dumpfile,implode(", ",$fields));
+					fputs($dumpfile,") VALUES (");
 					fputs($dumpfile,implode(", ",$values));
 					fputs($dumpfile,");\n");
+					unset($fields);
 					unset($values);
 				}
 			}
