@@ -1,0 +1,57 @@
+<!--// $Id$ //-->
+<!-- *  (C) Copyright 2003 Hunter@pld.org.pl <Krzysztof Drewicz> -->
+
+<H1>Lista Grup</H1>
+<TABLE WIDTH="100%" CELLPADDING="5">
+		<TR class="dark">
+		<TD WIDTH="5%"	CLASS="frightu">
+				<B>Nazwa</B>
+		</TD>
+		<TD WIDTH="95%" CLASS="fleftu">
+				<B>Liczba (oczekuj±cych/zjebanych/pod³±czonych/[w sumie]):<BR>
+				Opis:</B>
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+    {section name=dupa loop=$filters}
+	<TR BGCOLOR="{cycle}"{cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+			<TD WIDTH="5%" CLASS="fleft">
+			<!--		{$filters[dupa].id}-->
+			<B>{$filters[dupa].g_name}</B>
+			</TD>
+			<TD WIDTH="95%" CLASS="fright" onClick="return self.location.href='?m=groupsedit&id={$filters[dupa].id}';" class="right">
+					<PRE><I>{$filters[dupa].count_1|string_format:"%4.0d"}/</I><NOBR>
+{if $filters[dupa].count_2 gt 0} 
+<FONT CLASS="ALERT">
+					<B><I>{$filters[dupa].count_2|string_format:"%4.0d"}/</I></B><NOBR>
+</FONT>		
+{else}		
+					<I>{$filters[dupa].count_2|string_format:"%4.0d"}/</I><NOBR>
+</FONT>{/if}
+					<I>{$filters[dupa].count_3|string_format:"%4.0d"}/</I><NOBR>
+					[{$filters[dupa].count|string_format:"%4.0d"}]</PRE>
+					<I>{$filters[dupa].description}</I>
+
+					{if $filters[dupa].count eq 0}<A HREF="?m=groupsdelete&id={$filters[dupa].id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ t± grupê zjeberów?')"><IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0"></A>
+					{/if}
+			</TD>					
+	</TR>					
+	{sectionelse}
+	<TR>
+		<TD COLSPAN="7" ALIGN="center" CLASS="fall">
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	<TR CLASS="light">
+		<TD CLASS="fleftu" COLSPAN="5" WIDTH="98%" ALIGN="right">
+			<B>Razem:</B>
+		</TD>
+	</TR>
+</TABLE>
+<P><FORM METHOD="POST" NAME="groupsadd" ACTION="?m=groupsadd">
+      <INPUT TYPE="TEXT" NAME="group[description]" SIZE="30" VALUE="{$group.description}">
+	  <INPUT TYPE="TEXT" NAME="group[g_name]" SIZE="30" VALUE="{$group.g_name}">
+      <A HREF="javascript:document.groupsadd.submit();">Dodaj <IMG SRC="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+</FORM></P>

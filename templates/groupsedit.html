@@ -1,0 +1,39 @@
+{include file="header.html"}
+{include file="balanceheader.html"}
+<H1>Edycja grupy {$group.g_name}</H1>
+<FORM METHOD="POST" NAME="g_edit" ACTION="?m=groupsedit&id={$group.id}">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="100%" COLSPAN="2" CLASS="FALL">
+			<INPUT TYPE="TEXT" VALUE="{$group.g_name}" NAME="group[g_name]" CLASS="BOLD">{if $error.g_name} <FONT COLOR="RED"><B>{$error.g_name}</B></FONT>{/if}
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<B>Opis:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" VALUE="{$group.description}" NAME="group[description]" SIZE="40">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<B>Ilo¶æ&nbsp;u¿ytkowników:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT">
+			{$group.count}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT" CLASS="FBOTTOMU">
+				<A HREF="?m=groupsinfo&id={$group.id}">Anuluj<IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+				<A HREF="javascript:document.g_edit.submit();">Zapisz<IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+
+				                    {if $group.count eq 0}<A HREF="?m=groupsdelete&id={$group.id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ t± grupê zjeberów?')"><IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0"></A>
+									                    {/if}
+
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{include file="footer.html"}
