@@ -1,4 +1,6 @@
 <!-- $Id$ -->
+<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.userid}">
+<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fleftu">
@@ -23,7 +25,7 @@
 				</tr>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{section name=balancelist loop=$balancelist.id start=$limit}
-				<tr bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+				<tr bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
 					<TD width="1%">{$balancelist.adminname[balancelist]|replace:" ":"&nbsp;"|truncate:16:"..."}</TD>
 					<TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
@@ -41,30 +43,27 @@
 				</TR>
 				{/section}
 				<TR bgcolor="#DFD5BD" title="Nowa operacja kasowa">
-					<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.userid}">
-						<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
-						<TD class="ftop">
-							<nobr>{$smarty.now|date_format:"%Y/%m/%d %H:%M"}</nobr>
-						</TD>
-						<TD class="ftop">
-							{$layout.logname|replace:" ":"&nbsp;"}
-						</TD>
-						<TD class="ftop">
-							<SELECT SIZE="1" name="addbalance[type]">
-								<OPTION value="3">wp³ata</OPTION>
-								<OPTION value="4">op³ata ab</OPTION>
-							</SELECT>
-						</TD>
-						<TD colspan="2" class="ftop" nowrap>
-							<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s"> {$lang.currency}
-						</TD>
-						<TD colspan="2" align="right" class="ftop">
-							<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]"> <A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
-						</TD>
-					</FORM>
+					<TD class="ftop">
+						<nobr>{$smarty.now|date_format:"%Y/%m/%d %H:%M"}</nobr>
+					</TD>
+					<TD class="ftop">
+						{$layout.logname|replace:" ":"&nbsp;"}
+					</TD>
+					<TD class="ftop">
+						<SELECT SIZE="1" name="addbalance[type]">
+							<OPTION value="3">wp³ata</OPTION>
+							<OPTION value="4">op³ata ab</OPTION>
+						</SELECT>
+					</TD>
+					<TD colspan="2" class="ftop" nowrap>
+						<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s"> {$lang.currency}
+					</TD>
+					<TD colspan="2" align="right" class="ftop">
+						<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]"> <A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
+					</TD>
 				</TR>
 			</table>
 		</TD>
 	</TR>
 </TABLE>
-				
+</FORM>	
