@@ -1082,8 +1082,8 @@ class LMS
 
 	function NodeStats()
 	{
-		$result['connected'] = $this->DB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=1");
-		$result['disconnected'] = $this->DB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=0");
+		$result['connected'] = $this->DB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=1 AND ownerid>0");
+		$result['disconnected'] = $this->DB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=0 AND ownerid>0");
 		$result['total'] = $result['connected'] + $result['disconnected'];
 		return $result;
 	}
