@@ -168,6 +168,8 @@ class LMS
 		gguin=?,
 		nip=?,
 		tariff=?,
+		moddate=".$this->sqlTSfmt().",
+		modid=?,
 		info=? WHERE id=?",
 		array(
 			$userdata[status],
@@ -181,6 +183,7 @@ class LMS
 			$userdata[gguin],
 			$userdata[nip],
 			$userdata[tariff],
+			$this->SESSION->id,
 			$userdata[uwagi],
 			$userdata[id]
 		     )
