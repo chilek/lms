@@ -1,31 +1,10 @@
-/* -------------------------------------------------------- 
-  phpPgAdmin 2.4.2 DB Dump
-  http://sourceforge.net/projects/phppgadmin/
-  Host: localhost:5432
-  Baza danych  : "lms"
-  2002-12-30 09:12:45
-  $Id$
--------------------------------------------------------- */ 
-
-/* -------------------------------------------------------- 
-  Sekwencje 
--------------------------------------------------------- */ 
-DROP SEQUENCE "admins_id_seq";
-CREATE SEQUENCE "admins_id_seq" START 1 INCREMENT 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1; 
-DROP SEQUENCE "cash_id_seq";
-CREATE SEQUENCE "cash_id_seq" START 1 INCREMENT 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1; 
-DROP SEQUENCE "networks_id_seq";
-CREATE SEQUENCE "networks_id_seq" START 1 INCREMENT 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1; 
-DROP SEQUENCE "nodes_id_seq";
-CREATE SEQUENCE "nodes_id_seq" START 1 INCREMENT 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1; 
-DROP SEQUENCE "tariffs_id_seq";
-CREATE SEQUENCE "tariffs_id_seq" START 1 INCREMENT 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1; 
-DROP SEQUENCE "users_id_seq";
-CREATE SEQUENCE "users_id_seq" START 1 INCREMENT 1 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1; 
+/* $Id$ */ 
 
 /* -------------------------------------------------------- 
   Struktura tabeli "admins" 
 -------------------------------------------------------- */
+DROP SEQUENCE "admins_id_seq";
+CREATE SEQUENCE "admins_id_seq";
 DROP TABLE admins;
 CREATE TABLE admins (
    id integer DEFAULT nextval('admins_id_seq'::text) NOT NULL,
@@ -37,13 +16,15 @@ CREATE TABLE admins (
    lastlogindate integer,
    lastloginip varchar(16),
    failedlogindate integer,
-   failedloginip varchar(16)
+   failedloginip varchar(16),
+   PRIMARY KEY (id)
 );
-CREATE UNIQUE INDEX "admins_id_key" ON admins(id);
 
 /* -------------------------------------------------------- 
   Struktura tabeli "cash" 
 -------------------------------------------------------- */
+DROP SEQUENCE "cash_id_seq";
+CREATE SEQUENCE "cash_id_seq";
 DROP TABLE cash;
 CREATE TABLE cash (
    id integer DEFAULT nextval('cash_id_seq'::text) NOT NULL,
@@ -52,13 +33,15 @@ CREATE TABLE cash (
    type smallint DEFAULT 0 NOT NULL,
    value float4 DEFAULT 0 NOT NULL,
    userid integer DEFAULT 0 NOT NULL,
-   comment varchar(255) DEFAULT '' NOT NULL
+   comment varchar(255) DEFAULT '' NOT NULL,
+   PRIMARY KEY (id);
 );
-CREATE  UNIQUE INDEX "cash_id_key" ON "cash" ("id");
 
 /* -------------------------------------------------------- 
   Struktura tabeli "networks" 
 -------------------------------------------------------- */
+DROP SEQUENCE "networks_id_seq";
+CREATE SEQUENCE "networks_id_seq";
 DROP TABLE networks;
 CREATE TABLE networks (
    id int4 DEFAULT nextval('networks_id_seq'::text) NOT NULL,
@@ -72,13 +55,15 @@ CREATE TABLE networks (
    domain varchar(64),
    wins varchar(16),
    dhcpstart varchar(16),
-   dhcpend varchar(16)
+   dhcpend varchar(16),
+   PRIMARY KEY (id)
 );
-CREATE UNIQUE INDEX "networks_id_key" ON networks(id);
 
 /* -------------------------------------------------------- 
   Struktura tabeli "nodes" 
 -------------------------------------------------------- */
+DROP SEQUENCE "nodes_id_seq";
+CREATE SEQUENCE "nodes_id_seq";
 DROP TABLE nodes;
 CREATE TABLE nodes (
    id integer DEFAULT nextval('nodes_id_seq'::text) NOT NULL,
@@ -90,24 +75,25 @@ CREATE TABLE nodes (
    moddate integer DEFAULT 0 NOT NULL,
    creatorid integer NOT NULL,
    modid integer DEFAULT 0 NOT NULL,
-   access smallint DEFAULT 1 NOT NULL
+   access smallint DEFAULT 1 NOT NULL,
+   PRIMARY KEY (id)
 );
-
-CREATE UNIQUE INDEX "nodes_id_key" ON nodes(id);
 
 /* -------------------------------------------------------- 
   Struktura tabeli "tariffs" 
 -------------------------------------------------------- */
+DROP SEQUENCE "tariffs_id_seq";
+CREATE SEQUENCE "tariffs_id_seq"; 
 DROP TABLE tariffs;
 CREATE TABLE tariffs (
    id integer DEFAULT nextval('tariffs_id_seq'::text) NOT NULL,
    name varchar(255) NOT NULL,
    value float4 DEFAULT 0 NOT NULL,
-   uprate integer DEFAULT 0 NOT NULL,
-   downrate integer DEFAULT 0 NOT NULL,
-   description text NOT NULL
+   uprate integer,
+   downrate integer,
+   description text NOT NULL,
+   PRIMARY KEY (id)
 );
-CREATE UNIQUE INDEX "tariffs_id_key" ON tariffs(id);
     
 /* -------------------------------------------------------- 
   Struktura tabeli "timestamps" 
@@ -121,6 +107,8 @@ CREATE TABLE timestamps (
 /* -------------------------------------------------------- 
   Struktura tabeli "users" 
 -------------------------------------------------------- */
+DROP SEQUENCE "users_id_seq";
+CREATE SEQUENCE "users_id_seq";
 DROP TABLE users;
 CREATE TABLE users (
    id integer DEFAULT nextval('users_id_seq'::text) NOT NULL,
@@ -136,16 +124,16 @@ CREATE TABLE users (
    zip varchar(6) DEFAULT NULL,
    city varchar(32) DEFAULT NULL,
    nip varchar(16) DEFAULT NULL, 
-   tariff integer DEFAULT 0 NOT NULL,
+   -- tariff integer DEFAULT 0 NOT NULL,
    info text,
    creationdate integer DEFAULT 0 NOT NULL,
    moddate integer DEFAULT 0 NOT NULL,
    creatorid integer DEFAULT 0 NOT NULL,
    modid integer DEFAULT 0 NOT NULL,
-   payday smallint DEFAULT 1 NOT NULL,
-   deleted smallint DEFAULT 0 NOT NULL
+   -- payday smallint DEFAULT 1 NOT NULL,
+   deleted smallint DEFAULT 0 NOT NULL,
+   PRIMARY KEY (id)	
 );
-CREATE UNIQUE INDEX "users_id_key" ON users(id);
 
 /* -------------------------------------------------------- 
   Struktura tabeli "stats" 
@@ -160,3 +148,18 @@ CREATE TABLE stats (
 );
 /* Ma³y dopalacz niektórych zapytañ */
 CREATE INDEX stats_nodeid_idx ON stats(nodeid);
+
+/* ----------------------------------------------------
+    Struktura tabeli assignments
+---------------------------------------------------*/
+DROP SEQUENCE "assignments_id_seq";
+CREATE SEQUENCE "assignments_id_seq";
+DROP TABLE assignments;
+CREATE TABLE assignments (
+    	id integer default nextval('assignments_id_seq'::text) NOT NULL,
+	tariffid integer default 0 NOT NULL,
+	userid integer default 0 NOT NULL,
+	period integer default 0 NOT NULL,
+	at integer default 0 NOT NULL,
+	PRIMARY KEY (id)
+);
