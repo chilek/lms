@@ -911,4 +911,16 @@ function r_trim($array)
 	return $array;
 }
 
+function getdir($pwd = './', $pattern = '^.*$')
+{
+	if ($handle = @opendir($pwd))
+	{
+		while (($file = readdir($handle)) !== FALSE)
+			if(ereg($pattern,$file))
+				$files[] = $file;
+		closedir($handle);
+	}
+	return $files;
+}
+
 ?>
