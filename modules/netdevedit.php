@@ -36,17 +36,17 @@ if($_GET[action]=="replace")
 {
 	$dev1 = $LMS->GetNetDev($_GET[id]);
 	$dev2 = $LMS->GetNetDev($_GET[netdev]);
-	if ($dev1.ports<$dev2.portstaken) {
+	if ($dev1[ports]<$dev2[takenports]) {
 	    $error[replace] = "Brak wystarczaj±cej liczby portów w urz±dzeniu ¼ród³owym";
 	    $edit = FALSE;
-	}
-	if ($dev2.ports<$dev1.portstaken) {
+	} elseif ($dev2[ports]<$dev1[takenports]) {
 	    $error[replace] = "Brak wystarczaj±cej liczby portów w urz±dzeniu docelowym";
 	    $edit = FALSE;
+	} else {
+	    $LMS->NetDevReplace($_GET[id],$_GET[netdev]);
+	    header("Location: ?m=netdevinfo&id=".$_GET[id]);
+	    die;
 	}
-	$LMS->NetDevReplace($_GET[id],$_GET[netdev]);
-	header("Location: ?m=netdevinfo&id=".$_GET[id]);
-	die;
 }
 
 if($_GET[action]=="disconnect")
@@ -58,7 +58,7 @@ if($_GET[action]=="disconnect")
 
 if($_GET[action]=="disconnectnode")
 {
-	$LMS->NetDevLinkComputer($_GET[nodeid],0);
+	$LMS->NetDevLinkNode($_GET[nodeid],0);
 	header("Location: ?m=netdevinfo&id=".$_GET[id]);
 	die;
 }
@@ -76,7 +76,7 @@ if($_GET[action]=="connect")
     
 if($_GET[action]=="connectnode") 
 {
-	if(! $LMS->NetDevLinkComputer($_GET[nodeid], $_GET[id]) )
+	if(! $LMS->NetDevLinkNode($_GET[nodeid], $_GET[id]) )
 	{
 		$error[linknode] = "Brak wolnych portów w urz±dzeniu";
 		$edit = FALSE;
@@ -149,6 +149,9 @@ else
 
 /*
  * $Log$
+ * Revision 1.17  2003/10/11 10:17:03  lexx
+ * - computer -> node i inne drobne poprawki
+ *
  * Revision 1.16  2003/10/10 12:38:01  lexx
  * - Jak do 5 portowego swicha pod³±czyæ 10 urz±dzeñ ;)
  *
