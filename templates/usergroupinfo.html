@@ -4,7 +4,7 @@
 <script language="javascript">
 	<!--
 	function removeUsers() {
-		document.usergroupinfo.oper = 0;
+		document.usergroupinfo.oper.value="0";
 		document.usergroupinfo.submit();
 	}
 	//-->
@@ -12,7 +12,7 @@
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="usergroupinfo" METHOD="POST" ACTION="?m=usergroupinfo">
 <INPUT TYPE="hidden" NAME="usergroupinfo[backid]" VALUE="{$usergroup.id}">
-<INPUT TYPE="hidden" NAME="usergroupinfo[oper]" VALUE="1">
+<INPUT TYPE="hidden" NAME="oper" VALUE="1">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="fleftu">
@@ -66,7 +66,7 @@
 		<TD WIDTH="1%" CLASS="fleft">
 			<SELECT SIZE="20" NAME="usergroupinfo[gmuserid][]" multiple>
 				{section name=user loop=$usergroup.users}
-					<OPTION VALUE="{$users[user].id}">
+					<OPTION VALUE="{$usergroup.users[user].id}">
 					{$usergroup.users[user].username|truncate:50:" ..."} ({$usergroup.users[user].id|string_format:"%04d"})
 					</OPTION>
 				{/section}

@@ -25,8 +25,9 @@
  */
 
 $usergroupinfo = $_POST['usergroupinfo'];
+$oper = $_POST['oper'];
 
-if (sizeof($usergroupinfo['gmuserid']) && $usergroupinfo['oper']==0)
+if (sizeof($usergroupinfo['gmuserid']) && $oper=='0')
 {
 	$userassignment['usergroupid'] = $usergroupinfo['backid'];
 	foreach($usergroupinfo['gmuserid'] as $value)
@@ -38,13 +39,13 @@ if (sizeof($usergroupinfo['gmuserid']) && $usergroupinfo['oper']==0)
 	die;
 }
 
-if (sizeof($usergroupinfo['muserid']) && $usergroupinfo['oper']==1)
+if (sizeof($usergroupinfo['muserid']) && $oper=='1')
 {
 	$userassignment['usergroupid'] = $usergroupinfo['backid'];
 	foreach($usergroupinfo['muserid'] as $value)
 	{
 		$userassignment['userid'] = $value;
-		$LMS->UserassignmentDelete($userassignment);
+		$LMS->UserassignmentAdd($userassignment);
 	}
 	header("Location: ?".$_SESSION['backto']);
 	die;
