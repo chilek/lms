@@ -2939,6 +2939,11 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $this->DB->GetOne('SELECT name FROM rtqueues WHERE id=?', array($id));
 	}
 
+	function GetQueueEmail($id)
+	{
+		return $this->DB->GetOne('SELECT email FROM rtqueues WHERE id=?', array($id));
+	}
+
 	function GetQueueContents($id)
 	{
 		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, requestor, rttickets.subject AS subject, state, owner AS ownerid, name AS ownername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
@@ -2971,6 +2976,14 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$stats['lastticket'] = $this->DB->GetOne('SELECT createtime FROM rttickets WHERE queueid = ? ORDER BY createtime DESC', array($id));
 		return $stats;
 	}
+	
+	function GetQueueByTicketId($id)
+	{
+		if($queueid = $this->DB->GetOne('SELECT queueid FROM rttickets WHERE id=?', array($id)))
+			return $this->DB->GetRow('SELECT * FROM rtqueues WHERE id=?', array($queueid));
+		else
+			return NULL;
+	}
 
 	function TicketExists($id)
 	{
@@ -2984,8 +2997,8 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 				    VALUES (?, ?, ?, ?, 0, 0, ?)', array($ticket['queue'], $ticket['userid'], $ticket['requestor'], $ticket['subject'], $ts));
 		// here possibly wrong way to get inserted ticket id
 		$id = $this->DB->GetOne('SELECT id FROM rttickets WHERE createtime=?', array($ts));
-		$this->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, sender, mailfrom)
-				    VALUES (?, ?, ?, ?, ?, ?)', array($id, $ts, $ticket['subject'], $ticket['body'], $ticket['userid'], $ticket['mailfrom']));
+		$this->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, mailfrom)
+				    VALUES (?, ?, ?, ?, ?)', array($id, $ts, $ticket['subject'], $ticket['body'], $ticket['mailfrom']));
 		$this->SetTS('rttickets');	
 		$this->SetTS('rtmessages');
 		
@@ -3011,7 +3024,20 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function SetTicketState($ticket, $state)
 	{
+		$tjis->SetTs('rttickets');
 		return $this->DB->Execute('UPDATE rttickets SET state=? WHERE id=?', array($state, $ticket));
+	}
+
+	function GetMessage($id)
+	{
+		return $this->DB->GetRow('SELECT * FROM rtmessages WHERE id=?', array($id));
+	}
+
+	function MessageAdd($msg)
+	{
+		$this->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, sender, mailfrom, inreplyto)
+				    VALUES (?, ?NOW?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $msg['subject'], $msg['body'], $msg['sender'], $msg['mailfrom'], $msg['inreplyto']));
+		$this->SetTS('rtmessages');
 	}
 
 	/*

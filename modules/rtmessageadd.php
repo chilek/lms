@@ -24,38 +24,62 @@
  *  $Id$
  */
 
-$msg = $_POST['message'];
+$message = $_POST['message'];
 
-if(isset($msg))
+if($_GET['id'])
+	$reply = $LMS->GetMessage($_GET['id']); 
+
+if(isset($message))
 {
-	$msg['ticketid'] = $_GET['ticketid'];
-	
-	if($msg['subject'] == '')
+	$message['ticketid'] = $_GET['ticketid'];
+
+	if($message['subject'] == '')
 		$error['subject'] = "Wiadomo¶æ musi mieæ tytu³!";
 
-	if($msg['body'] == '')
+	if($message['body'] == '')
 		$error['body'] = "Nie poda³e¶ tre¶ci wiadomo¶ci!";
 
-/*
-	if($queue['email']!='' && !check_email($queue['email']))
-		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+	if($message['mailfrom']!='' && !check_email($message['mailfrom']))
+		$error['mailfrom'] = 'Podany email nie wydaje siê byæ poprawny!';
 
-*/
+	if($message['destination']!='' && !check_email($message['destination']))
+		$error['destination'] = 'Podany email nie wydaje siê byæ poprawny!';
+
+	if($message['destination']=='' && isset($_GET['mail']))
+		$error['destination'] = 'Nie mo¿na wys³aæ wiadomo¶ci bez adresu odbiorcy!';
+
+
 	if(!$error)
 	{
-		$LMS->MessageAdd($msg);
-		header("Location: ?m=rtticketinfo&id=".$msg['ticketid']);
+		$message['inreplyto'] = ($reply['id'] ? $reply['id'] : 0);
+		$message['sender'] = $SESSION->id;
+
+		$LMS->MessageAdd($message);
+
+		// here will be message sending
+		// if(isset($_GET['mail']))
+		//	$LMS->MessageSend($message);
+		
+		header("Location: ?m=rtticketview&id=".$message['ticketid']);
 		die;
 	}
 }
+else
+{
+	if($_GET['ticketid'])
+		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
+	$admin = $LMS->GetAdminInfo($SESSION->id);
 
-$msg['ticketid'] = $_GET['ticketid'];
+	$message['mailfrom'] = ($queue['email'] ? $queue['email'] : $admin['email']);
+	$message['destination'] = ($reply['replyto'] ? $reply['replyto'] : $reply['mailfrom']);
+	$message['ticketid'] = $_GET['ticketid'];
+}
 
 $layout['pagetitle'] = 'Nowa wiadomo¶æ';
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$SMARTY->assign('message', $msg);
+$SMARTY->assign('message', $message);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtmessageadd.html');
 

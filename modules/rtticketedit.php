@@ -56,6 +56,9 @@ if(isset($ticketedit))
 	if($ticketedit['state']>0 && !$ticketedit['owner'])
 		$error['owner'] = 'Tylko \'nowe\' zg³oszenie mo¿e nie mieæ w³a¶ciciela!';
 
+	if($ticketedit['state']==0 && $ticketedit['owner'])
+		$ticketedit['state'] = 1;
+
 
 	if(!$error)
 	{
