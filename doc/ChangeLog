@@ -2,7 +2,10 @@ $Id$
 
 wersja 1.2.2 (??/??/2004):
 
-  - dodane error-triggery w adminpasswd.html (alec)
+  - dodane brakuj±ce error-triggery w adminpasswd.html (alec)
+  - poprawka w paymentedit.html: 'taryfa' -> 'op³ata' (alec)
+  - BTS#00137: dodany komunikat o braku wolnych portów w urz±dzeniu sieciowym
+    podczas pod³±czania komputera w nodeinfobox.html (alec)
 
 wersja 1.2.1 Sarah (07/05/2004):
 

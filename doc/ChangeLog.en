@@ -2,7 +2,10 @@ $Id$
 
 version 1.2.2 (??/??/2004):
 
-  - added error-triggers in adminpasswd.html (alec)
+  - added missing error-triggers in adminpasswd.html (alec)
+  - fixed misprint in paymentedit.html (alec)
+  - bugfix BTS#0000137: added error-message about lack of free ports when
+    connecting computer to net device from nodeinfobox.html (alec)
 
 version 1.2.1 Sarah (04/05/2004):
 
