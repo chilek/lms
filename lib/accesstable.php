@@ -38,7 +38,7 @@ $access[table][2][name]		= "w³±czanie i od³±czanie komputerów";
 $access[table][2][allow_reg]	= "^nodeset$";
 
 $access[table][3][name]		= "manipulacja finansami";
-$access[table][3][allow_reg]	= "^((tariff)(add|info|list|move|edit|delete)|(payment)(add|del|edit|info|list)|(balance|balance|userbalance)(new|add|ok)|(invoice|invoice(list|new|report)))$";
+$access[table][3][allow_reg]	= "^((tariff)(add|info|list|move|edit|delete)|(payment)(add|del|edit|info|list)|(balance|balance|userbalance)(new|add|ok)|(invoice|invoice(list|new|report|paid)))$";
 
 $access[table][4][name]         = "prze³adowywanie konfiguracji";
 $access[table][4][allow_reg]    = "^reload$";
