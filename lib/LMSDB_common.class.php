@@ -1,9 +1,9 @@
 <?php
 
 /*
- * LMS version 1.5-cvs
+ * LMS version 1.3-cvs
  *
- *  (C) Copyright 2001-2005 LMS Developers
+ *  (C) Copyright 2001-2004 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -30,7 +30,7 @@
 
 Class LMSDB_common
 {
-	var $_version = '1.5-cvs';
+	var $_version = '1.3-cvs';
 	var $_revision = '$Revision$';
 	
 	// Driver powinien nadpisaæ t± zmienn± warto¶ci± TRUE, ¿eby
@@ -51,6 +51,7 @@ Class LMSDB_common
 	var $_result = NULL;
 
 	var $errors = array();
+	var $debug = FALSE;
 
 	function LMSDB_common()
 	{
@@ -60,8 +61,22 @@ Class LMSDB_common
 	
 	function Connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
-		// Inicjuje po³±czenie do bazy danych
-		return $this->_driver_connect($dbhost,$dbuser,$dbpasswd,$dbname);
+		if(method_exists($this, '_driver_shutdown'))
+			register_shutdown_function(array($this, '_driver_shutdown'));
+		
+		// Inicjuje po³±czenie do bazy danych, nie musimy zwracaæ
+		// dblinka na zewn±trz gdy¿ jest to niepotrzebne.
+		
+		if($this->_driver_connect($dbhost,$dbuser,$dbpasswd,$dbname))
+			return $this->_dblink;
+		else
+		{
+			$this->errors[] = array(
+					'query' => 'database connect',
+					'error' => $this->_driver_geterror(),
+					);
+			return FALSE;
+		}
 	}
 
 	function Destroy()
@@ -71,14 +86,16 @@ Class LMSDB_common
 
 	function Execute($query, $inputarray = NULL)
 	{
-	//	echo $this->_query_parser($query,$inputarray).'<HR>';
-		if(! $this->_driver_execute($this->_query_parser($query,$inputarray)))
-		{
+		if(! $this->_driver_execute($this->_query_parser($query, $inputarray)))
 			$this->errors[] = array(
 					'query' => $this->_query,
 					'error' => $this->_driver_geterror()
 					);
-		}
+		elseif($this->debug)
+			$this->errors[] = array(
+					'query' => $this->_query,
+					'error' => 'DEBUG: NOERROR'
+					);
 		return $this->_driver_affected_rows();
 	}
 
@@ -89,7 +106,7 @@ Class LMSDB_common
 		if($query)
 			$this->Execute($query, $inputarray);
 
-		unset($result);
+		$result = NULL;
 
 		while($row = $this->_driver_fetchrow_assoc())
 			$result[] = $row;
@@ -102,7 +119,7 @@ Class LMSDB_common
 		if($query)
 			$this->Execute($query, $inputarray);
 
-		unset($result);
+		$result = NULL;
 
 		while($row = $this->_driver_fetchrow_assoc())
 			$result[$row[$key]] = $row;
@@ -123,11 +140,11 @@ Class LMSDB_common
 		if($query)
 			$this->Execute($query, $inputarray);
 
-		unset($result);
+		$result = NULL;
 
 		while($row = $this->_driver_fetchrow_num())
 			$result[] = $row[0];
-
+		
 		return $result;
 	}
 
@@ -136,7 +153,7 @@ Class LMSDB_common
 		if($query)
 			$this->Execute($query, $inputarray);
 
-		unset($result);
+		$result = NULL;
 
 		list($result) = $this->_driver_fetchrow_num();
 
