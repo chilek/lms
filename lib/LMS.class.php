@@ -1372,7 +1372,7 @@ class LMS
 	function NodeUpdate($nodedata)
 	{
 		$this->SetTS("nodes");
-		return $this->ADB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, moddate=".$this->sqlTSfmt().", modid=? WHERE id=?",array(strtoupper($nodedata[name]), $nodedata[ipaddr], $nodedata[mac], $this->SESSION->id, $nodedata[id]));
+		return $this->ADB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, moddate=".$this->sqlTSfmt().", modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata[name]), $nodedata[ipaddr], $nodedata[mac], $this->SESSION->id, $nodedata[access], $nodedata[ownerid], $nodedata[id]));
 	}
 
 	function GetUsersWithTariff($id)
