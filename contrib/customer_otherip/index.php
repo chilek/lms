@@ -3,7 +3,7 @@
 /*
  * LMS version 1.4-cvs
  *
- *  (C) Copyright 2001-2004 LMS Developers
+ *  (C) Copyright 2001-2005 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -53,7 +53,7 @@ INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border
                                 </P>
                                 <P>
                                 <B>
-                                        &copy; 2001-2004 LMS Developers - <a href="http://lms.rulez.pl/" target="_blank">http://lms.rulez.pl</A><BR>
+                                        &copy; 2001-2005 LMS Developers - <a href="http://lms.rulez.pl/" target="_blank">http://lms.rulez.pl</A><BR>
                                         &copy; 2001-2003 ASK NetX - <a href="http://www.netx.waw.pl/" target="_blank">http://www.netx.waw.pl</A><BR>
 				</B>
 				</P>

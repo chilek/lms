@@ -2,7 +2,7 @@
 #
 # LMS version 1.4-cvs
 #
-#  (C) 2001-2004 LMS Developers
+#  (C) 2001-2005 LMS Developers
 #
 #  Please, see the doc/AUTHORS for more information about authors!
 #
@@ -84,7 +84,7 @@ sub configure_hook
 	{
 		print STDERR <<EOF;
 lms-arpd, version $_version
-(C) 2001-2004 LMS Developers
+(C) 2001-2005 LMS Developers
 
 -h, --help		print this help and exit;
 -v, --version		print version info and exit;

@@ -30,7 +30,7 @@ if($help)
 {
 	print STDERR <<EOF;
 lms-eachmonth, version $_version
-(C) 2001-2004 LMS Developers
+(C) 2001-2005 LMS Developers
 
 -f, --traffic-log-file=/var/log/traffic.log	traffic log file (default: /var/log/traffic.log);
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
@@ -46,7 +46,7 @@ if($version)
 {
 	print STDERR <<EOF;
 lms-traffic, version $_version
-(C) 2001-2004 LMS Developers
+(C) 2001-2005 LMS Developers
 
 EOF
 	exit 0;
@@ -60,7 +60,7 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-traffic, version $_version\n";
-	print STDOUT "(C) Copyright 2001-2004 LMS Developers\n";
+	print STDOUT "(C) Copyright 2001-2005 LMS Developers\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 
