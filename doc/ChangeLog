@@ -34,6 +34,8 @@ version 1.5.5 (??/??/????):
   - fixed month and year in invoice number in 'setcustomer' action of file
     invoiceedit.php (alec)
   - BTS#0000305: helpdesk - fixed design in queue info (alec)
+  - database speedup - added indexes: nodes/netdev, rttickets/queueid, cash/time,
+    invoices/cdate, invoicecontents/invoiceid, cashimport/hash (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
