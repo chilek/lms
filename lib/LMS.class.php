@@ -977,18 +977,18 @@ class LMS
      {
           $this->SetTS("nodes");
           if($this->DB->GetOne("SELECT access FROM nodes WHERE id=?",array($id)) == 1 )
-               return $this->DB->Execute("UPDATE nodes SET access=0 WHERE id=?",array($id));
+               return $this->DB->Execute("UPDATE nodes SET access=0, modid=? WHERE id=?",array($id,$SESSION->id));
           else
-               return $this->DB->Execute("UPDATE nodes SET access=1 WHERE id=?",array($id));
+               return $this->DB->Execute("UPDATE nodes SET access=1, modid=? WHERE id=?",array($id,$SESSION->id));
      }
 
      function NodeSetU($id,$access=FALSE)
      {
           $this->SetTS("nodes");
           if($access)
-               return $this->DB->Execute("UPDATE nodes SET access=? WHERE ownerid=?",array(1,$id));
+               return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?",array(1,$id,$SESSION->id));
           else
-               return $this->DB->Execute("UPDATE nodes SET access=? WHERE ownerid=?",array(0,$id));
+               return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?",array(0,$id,$SESSION->id));
      }
 
      function NodeAdd($nodedata)
@@ -1868,6 +1868,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.240  2003/09/25 11:18:19  lukasz
+ * - little fix
+ *
  * Revision 1.239  2003/09/23 19:21:50  alec
  * poprawione zliczanie zysku miesiecznego oraz bledy w zapytaniu wystepujace na postgresie
  *
