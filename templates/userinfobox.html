@@ -5,7 +5,7 @@
 			<IMG SRC="img/user.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
-			<B>{$userinfo.username} ({$userinfo.id|string_format:"%04d"}){if $userinfo.deleted} <FONT COLOR="RED">({t}deleted user{/t})</FONT>{/if}</B>
+			<B>{$userinfo.username} ({$userinfo.id|string_format:"%04d"}){if $userinfo.deleted} <FONT COLOR="RED">({t}deleted customer{/t})</FONT>{/if}</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -163,7 +163,7 @@
 			{if $userinfo.deleted}
 				<A HREF="?m=useredit&id={$userinfo.id}&action=recover">{t}Restore{/t} <IMG SRC="img/recover.gif" border="0" align="absmiddle" ALT="[ {t}Restore{/t} ]"></A>
 			{else}
-				<A href="?m=accountlist&u={$userinfo.id}">{t}Accounts{/t} <IMG src="img/account.gif" border="0" align="absmiddle" ALT="[ {t}Customer's accounts{/t} ]"></A>
+				<A href="?m=accountlist&u={$userinfo.id}">{t}Accounts{/t} <IMG src="img/account.gif" border="0" align="absmiddle" ALT="[ {t}Accounts{/t} ]"></A>
 				<A href="?m=contract&id={$userinfo.id}" target="_blank">{t}Print contract{/t} <IMG src="img/print.gif" border="0" align="absmiddle" ALT="[ {t}Contract{/t} ]"></A>
 				<A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A>
 				<A href="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, 'Are you sure, you want to remove user: {$userinfo.username} from database?\n\nIf that user have any computers, they will be automatically removed from database too, and informations about them irreversible losed!')">{t}Delete{/t} <img border="0" align="absmiddle" src="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
