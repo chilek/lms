@@ -42,7 +42,7 @@ if ($_GET['delmsgid'] && $LMS->FirstMessage($_GET['id']) != $_GET['delmsgid'])
 $ticket = $LMS->GetTicketContents($_GET['id']);
 $layout['pagetitle'] = trans('Ticket Review: No. $0',sprintf("%06d",$ticket['ticketid']));
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->display('rtticketview.html');

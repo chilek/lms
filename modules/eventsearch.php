@@ -66,7 +66,7 @@ function EventSearch($search)
 
 $layout['pagetitle'] = trans('Event Search');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if($event = $_POST['event'])
 {

@@ -123,6 +123,6 @@ $SMARTY->assign('userinfo',$userinfo);
 $SMARTY->assign('recover',($_GET['action'] == 'recover' ? 1 : 0));
 $SMARTY->display('useredit.html');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 ?>

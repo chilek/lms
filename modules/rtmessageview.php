@@ -76,7 +76,7 @@ if(!$message['userid'] && !$message['adminid'] && !$message['mailfrom'])
 
 $layout['pagetitle'] = trans('Ticket Review');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('message', $message);
 $SMARTY->display('rtmessageview.html');

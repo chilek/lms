@@ -80,7 +80,7 @@ if($_POST['domain'])
 	}
 }
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('domain', $domain);

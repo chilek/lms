@@ -32,7 +32,7 @@ $listdata['total'] = $paymentlist['total'];
 
 unset($paymentlist['total']);
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('paymentlist',$paymentlist);
 $SMARTY->assign('listdata',$listdata);

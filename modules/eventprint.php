@@ -73,7 +73,7 @@ $eventlist = GetEvents($date, $_GET['a'], $_GET['u']);
 
 $layout['pagetitle'] = trans('Timetable');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('eventlist', $eventlist);
 $SMARTY->assign('date', $date);

@@ -69,7 +69,7 @@ if($backid = $_GET['id'])
 	}
 }
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Messages');
 

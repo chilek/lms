@@ -115,7 +115,7 @@ for($i=1; $i<$daysnum+1; $i++)
 	$days['sel'][] = ($i == $day);
 }
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $_SESSION['edate'] = sprintf('%04d/%02d/%02d', $year, $month, $day);
 
 $SMARTY->assign('eventlist',$eventlist);

@@ -25,7 +25,7 @@
  */
 
 $layout['pagetitle'] = trans('Invoices List');
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $marks = $_POST['marks'];
 unset($marked);

@@ -128,7 +128,7 @@ unset($aliaslist['user']);
 unset($aliaslist['domain']);
 unset($aliaslist['direction']);
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);

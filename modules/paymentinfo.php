@@ -34,7 +34,7 @@ $payment = $LMS->GetPayment($_GET['id']);
 
 $layout['pagetitle'] = trans('Payment Info: $0',$payment['name']);
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('payment',$payment);
 $SMARTY->display('paymentinfo.html');

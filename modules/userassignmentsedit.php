@@ -203,7 +203,7 @@ else
 
 $layout['pagetitle'] = trans('Customer Charging Edit: $0',$LMS->GetUserName($userid));
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('tariffs', $LMS->GetTariffs());
 $SMARTY->assign('error', $error);

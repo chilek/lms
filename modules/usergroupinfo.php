@@ -39,7 +39,7 @@ $userscount = sizeof($users);
 
 $layout['pagetitle'] = trans('Group Info: $0',$usergroup['name']);
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('usergroup',$usergroup);
 $SMARTY->assign('users', $users);

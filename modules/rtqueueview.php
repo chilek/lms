@@ -60,7 +60,7 @@ $queuedata['name'] = $LMS->GetQueueName($queuedata['id']);
 $layout['pagetitle'] = trans('Queue Review: $0',$queuedata['name']);
 $queue = $LMS->GetQueueContents($_GET['id'], $o, $s);
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if (isset($_SESSION['rtp']) && !isset($_GET['page']))
 	$_GET['page'] = $_SESSION['rtp'];

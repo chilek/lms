@@ -34,7 +34,7 @@ $queue = $LMS->GetQueue($_GET['id']);
 
 $layout['pagetitle'] = trans('Queue Info: $0',$queue['name']);
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queue', $queue);
 $SMARTY->display('rtqueueinfo.html');
