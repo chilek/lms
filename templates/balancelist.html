@@ -66,13 +66,13 @@
 			<NOBR><B>{$balancelist[balancelist].type}</B></NOBR>
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top">
-			<NOBR>{$balancelist[balancelist].value|string_format:"%01.2f"} z³</NOBR>
+			<NOBR>{$balancelist[balancelist].value|string_format:"%01.2f"} {t}z³{/t}</NOBR>
 		</TD>
 		<TD width="1%" align="center" valign="top">
 			&raquo;
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top"> 
-			<NOBR>{$balancelist[balancelist].after|string_format:"%01.2f"} z³</NOBR>
+			<NOBR>{$balancelist[balancelist].after|string_format:"%01.2f"} {t}z³{/t}</NOBR>
 		</TD>
 		<TD width="1%" nowrap valign="top">
 			{if $balancelist[balancelist].userid}<NOBR><A HREF="?m=userbalance&id={$balancelist[balancelist].userid}">{$balancelist[balancelist].username|truncate:20:"..."}</A></NOBR>{else} - {/if}
@@ -81,7 +81,7 @@
 			{$balancelist[balancelist].comment}
 		</TD>
 		<TD width="1%" class="fright">
-			{if $balancelist[balancelist].invoiceid}<A HREF="?m=invoice&id={$balancelist[balancelist].invoiceid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>{/if}
+			{if $balancelist[balancelist].invoiceid}<A HREF="?m=invoice&id={$balancelist[balancelist].invoiceid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"} BORDER="0"></A>{/if}
 		</TD>
 	</TR>
 	{sectionelse}
@@ -89,7 +89,7 @@
 		<TD WIDTH="100%" class="fall" ALIGN="center" COLSPAN="10">
 	    		<p>&nbsp;</p>
 			<P>&nbsp;<?P>
-			<P><B>Nie znaleziono ¿adnych operacji finansowych w bazie danych</B></P>
+			<P><B>{t}There is no financial operations in database.{/t}</B></P>
 			<P>&nbsp;</P>
 			<P>&nbsp;</P>
 		</TD>
@@ -111,19 +111,19 @@
 	{/if}
 	<TR class="light">
 		<TD colspan="4" width="4%" align="right" class="fleftu" NOWRAP>
-			<B>Zobowi±zania u¿ytkowników:</B><HR>
-			<B>Wp³aty u¿ytkowników:</B><BR>
-			<B>Przychód:</B><BR>
-			<B>Rozchód:</B><HR>
-			<B>Razem:</B>
+			<B>{t}Users covenants{/t}:</B><HR>
+			<B>{t}Users payments{/t}:</B><BR>
+			<B>{t}Income{/t}:</B><BR>
+			<B>{t}Expenditure{/t}:</B><HR>
+			<B>{t}Total{/t}:</B>
 		</TD>
 		<TD width="1%" nowrap class="fbt" align="right">
 			<NOBR>
-			{$listdata.uinvoice|string_format:"%01.2f"} z³<HR>
-			{$listdata.incomeu|string_format:"%01.2f"} z³<BR>
-			{$listdata.income|string_format:"%01.2f"} z³<BR>
-			{$listdata.expense|string_format:"%01.2f"} z³<HR>
-			{$listdata.total|string_format:"%01.2f"} z³
+			{$listdata.uinvoice|string_format:"%01.2f"} {t}z³{/t}<HR>
+			{$listdata.incomeu|string_format:"%01.2f"} {t}z³{/t}<BR>
+			{$listdata.income|string_format:"%01.2f"} {t}z³{/t}<BR>
+			{$listdata.expense|string_format:"%01.2f"} {t}z³{/t}<HR>
+			{$listdata.total|string_format:"%01.2f"} {t}z³{/t}
 			</NOBR>
 		</TD>
 		<TD width="95%" colspan="5" class="frightu">
