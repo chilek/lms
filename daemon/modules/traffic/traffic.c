@@ -1,5 +1,5 @@
 /*
- * LMS version 1.1-cvs
+ * LMS version 1.3-cvs
  *
  *  (C) Copyright 2001-2004 LMS Developers
  *
