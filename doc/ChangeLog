@@ -21,6 +21,32 @@ wersja 1.1.8 (??/??/????):
   - urz±dzeniom sieciowym mo¿na przypisywaæ adresy IP oraz MAC (lexx/alec)
   - w genfake.php poprawione czyszczenie bazy oraz dodane generowanie
     danych osprzêtu i po³±czeñ sieciowych (alec)
+  - 'op³aty sta³e' (alec)
+    MySQL:
+    CREATE TABLE payments (
+	id INT(11) NOT NULL auto_increment,
+	name VARCHAR(255) NOT NULL default '',
+	value DECIMAL(9,2) NOT NULL default '0',
+	creditor VARCHAR(255) NOT NULL default '',
+	period INT(11) NOT NULL default '0',
+	at INT(11) NOT NULL default '0',
+	description text,
+	PRIMARY KEY  (id),
+	UNIQUE KEY id (id),
+	KEY id_2 (id)
+    ) TYPE=MyISAM;
+    PostgreSQL:
+    CREATE SEQUENCE "payments_id_seq";
+    CREATE TABLE payments (
+	id integer DEFAULT nextval('payments_id_seq'::text) NOT NULL,
+	name VARCHAR(255) DEFAULT '' NOT NULL,
+	value NUMERIC(9,2) DEFAULT 0 NOT NULL,
+	creditor VARCHAR(255) DEFAULT '' NOT NULL,
+	period integer DEFAULT 0 NOT NULL,
+	at integer DEFAULT 0 NOT NULL,
+	description text,
+	PRIMARY KEY (id)
+    );
     
 wersja 1.1.7 Hathor (14/12/2003):
 
