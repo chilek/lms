@@ -24,12 +24,16 @@
  *  $Id$
  */
 
-$DB->Execute("
+// upgrade nie potrzebny dla bazy powy¿ej 1.2.0rc5 dla ga³êzi 1.2
+
+if($DB->GetOne("SELECT 1 FROM pg_class, pg_attribute WHERE attname='taxvalue' AND attrelid=pg_class.oid AND relname='tariffs' AND attnotnull=true"))
+    $DB->Execute("
     BEGIN;
     ALTER TABLE tariffs ALTER taxvalue DROP NOT NULL;
     ALTER TABLE invoicecontents ALTER taxvalue DROP NOT NULL;
-    UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?;
-    COMMIT",
-    array('2004040701', 'dbversion'));
+    COMMIT"
+);
+
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2004040701', 'dbversion'));
 
 ?>
