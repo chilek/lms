@@ -1,19 +1,17 @@
 
 Indeks plików dokumentacji (czyli tych w doc):
 
+00-Index.txt	- w³a¶nie go czytasz :)
+AUTHORS		- Autorki i Ci którzy psuj± LMSa
+COPYING		- Licencja na jakiej udostêpniany jest LMS
+COPYRIGHTS	- Nag³ówek licencyjny do plików php/html/etc
+ChangeLog	- Plik z histori± zmian
+README		- Podrêcznik u¿ytkownika
+TODO		- Do-Zrobienia.
+lms.mysql	- Polecenia zak³adaj±ce tabelki w mysqlu
+lms.pgsql	- Polecenia zak³adaj±ce tabelki w postgresqlu
 
-00-Index.txt			w³a¶nie go czytasz :)
-AUTHORS				Autorki i Ci którzy psuj± LMSa
-COPYING				Licencja na jakiej udostêpniany jest lms (to nie jest licencja php/adodb/mysql/pgsql/smarty.. ???)
-COPYRIGHTS			Nag³ówek licencyjny do plików php/html/etc 
-ChangeLog			Plik z histori± zmian
-INSTALL				Opis instalacji
-INSTALL.mysql			Instalacja i konfiguracja bazy MySQL
-INSTALL.pgsql			Instalacja i konfiguracja bazy PostgreSQL
-README				Informacje ogólne
-TODO				Do-Zrobienia.
-lms.mysql			Polecenia zak³adaj±ce tabelki w mysqlu
-lms.pgsql			Polecenia zak³adaj±ce tabelki w postgresqlu
+html/		- katalog z podrêcznikem u¿yszkodnika w wersji HTML
 
 --------------------------------------------------------------------------
 $Id$
