@@ -546,6 +546,49 @@ class LMS {
 		$session=$this->session;
 		return $db->ExecSQL("INSERT INTO `cash`	(time, adminid, type, value, userid, comment) VALUES ('".time()."','".$session->id."','".$addbalance[type]."','".$addbalance[value]."','".$addbalance[userid]."','".$addbalance[comment]."' )");
 	}
+
+	function GetEmails($group)
+	{
+		$db=$this->db;
+		if($group == 0)
+			$emails = $db->FetchArray("SELECT `id`, `email` FROM `users`");
+		else
+			$emails = $db->FetchArray("SELECT `id`, `email` FROM `users` WHERE `status` = '".$group."'");
+		if(sizeof($emails[id]))
+			foreach($emails[id] as $key => $value)
+				$emails[username][$key] = ucwords(strtolower($this->GetUserName($value)));
+			
+		return $emails;
+	}
+
+	function Mailing($mailing)
+	{
+		$db=$this->db;
+		$session=$this->session;
+		$emails = $this->GetEmails($mailing[group]);
+		
+		if(sizeof($emails[id]))
+			foreach($emails[id] as $key => $value)
+			{
+				
+				if($emails[email][$key] != "")
+				{
+//					$emails[email][$key] = "lukasz@netx.waw.pl";
+					mail(
+						$emails[username][$key]." <".$emails[email][$key].">",
+						$mailing[subject],
+						$mailing[body],
+						"From: ".$mailing[sender]." <".$mailing[from].">\r\n".
+						"Content-type: text/plain; charset=\"iso-8859-2\"\r\n".
+						"X-Mailer: LMS-".$this->version."/PHP-".phpversion()."\r\n".
+						"X-Remote-IP: ".$_SERVER['REMOTE_ADDR']."\r\n".
+						"X-HTTP-User-Agent: ".$_SERVER['HTTP_USER_AGENT']."\r\n");
+						$return[] = $emails[username][$key]." &lt;".$emails[email][$key]."&gt;";
+				}
+				
+			}
+		return $return;
+	}
 }
 
 ?>
