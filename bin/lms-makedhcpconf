@@ -176,7 +176,7 @@ my @networks = split ' ',$networks_list;
 
 foreach my $key (@networks)
 {
-	my $dbq = $dbase->prepare("SELECT id, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$key'");
+	my $dbq = $dbase->prepare("SELECT id, address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$key'");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
 		$key = lc($key);
@@ -197,9 +197,15 @@ foreach my $key (@networks)
 		{
 			print DHCPDCONF "\t\toption routers $row->{'gateway'};\n";
 		}
-		if($row->{'dns'})
+		if($row->{'dns'} && $row->{'dns2'})
+		{
+			print DHCPDCONF "\t\toption domain-name-servers $row->{'dns'}, $row->{'dns2'};\n";
+		}elsif($row->{'dns'})
 		{
 			print DHCPDCONF "\t\toption domain-name-servers $row->{'dns'};\n";
+		}elsif($row->{'dns2'})
+		{
+			print DHCPDCONF "\t\toption domain-name-servers $row->{'dns2'};\n";
 		}
 		if($row->{'domain'})
 		{

@@ -306,6 +306,7 @@ sub instance($)
 			$tnh =~ s/\%ADDR/$row->{'address'}/g;
 			$tnh =~ s/\%MASK/$row->{'mask'}/g;
 			$tnh =~ s/\%GATE/$row->{'gateway'}/g;
+			$tnh =~ s/\%DNS2/$row->{'dns2'}/g;
 			$tnh =~ s/\%DNS/$row->{'dns'}/g;
 			$tnh =~ s/\%DOMAIN/$row->{'domain'}/g;
 			$tnh =~ s/\%WINS/$row->{'wins'}/g;
