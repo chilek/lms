@@ -5,27 +5,27 @@
 <P><TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD width="1%" class="fleftu" NOWRAP>
-			<IMG src="img/settings.gif" alt="" align="absmiddle"><A href="?m=configlist&o=var{if $listdata.direction eq "asc" && $listdata.order eq "var"},desc{/if}"> <B>Nazwa:</B></A> {if $listdata.order eq "var"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<IMG src="img/empty.gif" alt="" align="absmiddle" width="16" height="16"><A href="?m=configlist&o=section{if $listdata.direction eq "asc" && $listdata.order eq "section"},desc{/if}"> Sekcja:</A> {if $listdata.order eq "section"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<IMG src="img/settings.gif" alt="" align="absmiddle"><A href="?m=configlist&o=var{if $listdata.direction eq "asc" && $listdata.order eq "var"},desc{/if}"> <B>{t}Name:{/t}</B></A> {if $listdata.order eq "var"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<IMG src="img/empty.gif" alt="" align="absmiddle" width="16" height="16"><A href="?m=configlist&o=section{if $listdata.direction eq "asc" && $listdata.order eq "section"},desc{/if}"> {t}Section:{/t}</A> {if $listdata.order eq "section"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD width="1%" class="fbt" align="center">
-			Warto¶æ:
+			{t}Value:{/t}
 		</TD>
 		<TD width="98%" class="frightu" align="center">
-			Komentarz:
+			{t}Comment:{/t}
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="3" CLASS="FALL">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$configlist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
-			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+			({t}records{/t} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {t}from{/t} {$listdata.total})
 		</TD>
 	</TR>
 	{/if}
@@ -48,7 +48,7 @@
 		<TD colspan="3" align="center" class="fall">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Brak opcji konfiguracyjnych w bazie danych. Kliknij <A href="?m=upgrade02">tutaj</A> aby dokonaæ importu z pliku lms.ini.</B></p>
+			<p><B>{t}No configuration options in database. Click <A href="?m=upgrade02">here</A> to import them from lms.ini.{/t}</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -57,20 +57,20 @@
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="3" CLASS="FALL">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m={$layout.module}&t={$listdata.type}&k={$listdata.kind}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$configlist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&t={$listdata.type}&k={$listdata.kind}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&t={$listdata.type}&k={$listdata.kind}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
-			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+			({t}records{/t} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {t}from{/t} {$listdata.total})
 		</TD>
 	</TR>
 	{/if}
 	<TR CLASS="DARK">
 		<TD colspan="3" class="FALL" align="right">
-			<A href="?m=configadd">Dodaj opcjê <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=configadd">{t}Add option{/t} <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
 
