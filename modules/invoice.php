@@ -23,6 +23,13 @@
  *
  *  $Id$
  */
+
+if (strtolower($_CONFIG['invoices']['type'])=='pdf')
+{
+    include("invoice_pdf.php");
+    die;
+}
+
 header('Content-Type: '.$LMS->CONFIG['invoices']['content_type']);
 if($LMS->CONFIG['invoices']['attachment_name'] != '')
 	header('Content-Disposition: attachment; filename='.$LMS->CONFIG['invoices']['attachment_name']);
