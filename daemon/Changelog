@@ -1,3 +1,11 @@
+* 07.11.2003
+  - przebudowana funkcja str_replace() i co siê z tym wi±¿e za³atana
+    powa¿na dziura, teraz funkcja zwraca ilo¶æ wyst±pieñ zamienianego
+    ci±gu, co mo¿na bêdzie te¿ gdzie¶ wykorzystaæ (alec)
+  - poprawione b³êdy w module dns powoduj±ce wysypanie programu gdy w 
+    danych s± dwa dns'y oraz niezapisywanie do dhcpd.conf wiêcej ni¿
+    jednej podsieci (alec/lexx)
+
 * 05.11.2003
   - dodany modu³ 'dns' (alec)
   - za³atane dziury w db_free() i iniparser_load() (alec)
