@@ -240,7 +240,7 @@
 						<B><A href="?m=rtqueuelist">Razem:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
-						{$rtstats.open+$rtstats.new+$rtstats.dead+$rtstats.resolved|default:"0"}
+						{math equation="a+b+c+d" a=$rtstats.open b=$rtstats.new c=$rtstats.dead d=$rtstats.resolved}
 					</TD>
 				</TR>
 			</TABLE>
