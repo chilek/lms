@@ -5,4 +5,5 @@ $Id$
   modu³ów, tylko wybrane
 - przepisaæ modu³y z lmsd i napisaæ wiêcej modu³ów .. wiêcej wiêcej wiêcej
 - sprawdziæ czy nie ma memory leaks
-  
+- zaimplementowaæ obs³ugê modu³ów wykonywanych okresowo takich jak lms-cutoff, 
+  lms-payments, na pocz±tek mo¿e byæ przy u¿yciu crona, docelowo bez niego
