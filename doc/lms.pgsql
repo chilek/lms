@@ -166,10 +166,3 @@ CREATE TABLE "users" (
    "modid" int4 DEFAULT '0' NOT NULL
 );
 CREATE  UNIQUE INDEX "users_id_key" ON "users" ("id");
-
-/* -------------------------------------------------------- 
-  Ustawienie domy¶lnego administratora
--------------------------------------------------------- */
-
-INSERT INTO `admins` (`login`, `name`) VALUES ('admin', 'domy¶le konto administracyjne');
-
