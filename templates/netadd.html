@@ -1,39 +1,39 @@
 {include file="header.html"}
 {include file="netheader.html"}
 <!--// $Id$ //-->
-<H1>Dodaj now± sieæ</H1>
+<H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD width="1%" class="fall" width="1%">
-			<P><FORM method="POST" ACTION="?m=netadd" name="netadd"><B>Dodaj now± sieæ:</B></P>
+			<P><FORM method="POST" ACTION="?m=netadd" name="netadd"><B>{$lang.add_new_network}:</B></P>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FALL">
-		<TABLE width="100%" title="Dodaj now± sieæ">
+			<TABLE width="100%">
 				<TR>
 					<TD width="1%"><IMG src="img/network.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="92%"><B>{$lang.name} sieci:</B><BR><INPUT accesskey="a" TYPE="TEXT" SIZE="23" title="{$lang.name} sieci" name="netadd[name]" value="{$netadd.name}"{if $error.name} class="alertb"><BR><FONT COLOR="red"><B>{$error.name}</B></FONT{else} class="bold"{/if}></TD>
+					<TD width="92%"><B>{$lang.network_name}:</B><BR><INPUT accesskey="a" TYPE="TEXT" SIZE="23" title="{$lang.name} sieci" name="netadd[name]" value="{$netadd.name}"{if $error.name} class="alertb"><BR><FONT COLOR="red"><B>{$error.name}</B></FONT{else} class="bold"{/if}></TD>
 					<TD width="1%"><IMG src="img/dns.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="1%"><B>Serwer DNS:</B><BR><INPUT TYPE="TEXT" SIZE="20" title="Serwer DNS" name="netadd[dns]" value="{$netadd.dns}"{if $error.dns} class="alert"><BR><FONT COLOR="red"><B>{$error.dns}</B></FONT{/if}></TD>
+					<TD width="1%"><B>{$lang.dns_server}:</B><BR><INPUT TYPE="TEXT" SIZE="20" title="{$lang.dns_server}" name="netadd[dns]" value="{$netadd.dns}"{if $error.dns} class="alert"><BR><FONT COLOR="red"><B>{$error.dns}</B></FONT{/if}></TD>
 					<TD width="1%"><IMG src="img/gateway.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="1%"><B>Gateway:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Gateway" name="netadd[gateway]" value="{$netadd.gateway}"{if $error.gateway} class="alert"><BR><FONT COLOR="red"><B>{$error.gateway}</B></FONT{/if}></TD>
+					<TD width="1%"><B>{$lang.gateway}:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Gateway" name="netadd[gateway]" value="{$netadd.gateway}"{if $error.gateway} class="alert"><BR><FONT COLOR="red"><B>{$error.gateway}</B></FONT{/if}></TD>
 					<TD width="1%"><IMG src="img/dhcpstart.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="1%"><B>Pocz±tek DHCP:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Pocz±tek zakresu DHCP" name="netadd[dhcpstart]" value="{$netadd.dhcpstart}"{if $error.dhcpstart} class="alert"><BR><FONT COLOR="red"><B>{$error.gateway}</B></FONT{/if}></TD>
+					<TD width="1%"><B>{$lang.dhcp_start}:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Pocz±tek zakresu DHCP" name="netadd[dhcpstart]" value="{$netadd.dhcpstart}"{if $error.dhcpstart} class="alert"><BR><FONT COLOR="red"><B>{$error.gateway}</B></FONT{/if}></TD>
 				</TR>
 				<TR>
 					<TD width="1%"><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="92%"><B>Adres sieci / maska:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Adres sieci" name="netadd[address]" value="{$netadd.address}"{if $error.address} class="alert"{/if}><B> / </B><SELECT size="1" title="Prefixlen" name="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{if $error.address}<BR><FONT COLOR="red"><B>{$error.address}</B></FONT>{/if}
+					<TD width="92%"><B>{$lang.network_address_mask}:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Adres sieci" name="netadd[address]" value="{$netadd.address}"{if $error.address} class="alert"{/if}><B> / </B><SELECT size="1" title="Prefixlen" name="netadd[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $netadd.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{if $error.address}<BR><FONT COLOR="red"><B>{$error.address}</B></FONT>{/if}
 					<TD width="1%"><IMG src="img/node.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="1%"><B>Domena:</B><BR><INPUT TYPE="TEXT" SIZE="20" title="Domena" name="netadd[domain]" value="{$netadd.domain}"{if $error.domain} class="alert"><BR><FONT COLOR="red"><B>{$error.domain}</B></FONT{/if}></TD>
+					<TD width="1%"><B>{$lang.domain}:</B><BR><INPUT TYPE="TEXT" SIZE="20" title="{$lang.domain}" name="netadd[domain]" value="{$netadd.domain}"{if $error.domain} class="alert"><BR><FONT COLOR="red"><B>{$error.domain}</B></FONT{/if}></TD>
 					<TD width="1%"><IMG src="img/wins.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="1%"><B>Serwer WINS:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Serwer WINS" name="netadd[wins]" value="{$netadd.wins}"{if $error.wins} class="alert"><BR><FONT COLOR="red"><B>{$error.wins}</B></FONT{/if}></TD>
+					<TD width="1%"><B>{$lang.wins_server}:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Serwer WINS" name="netadd[wins]" value="{$netadd.wins}"{if $error.wins} class="alert"><BR><FONT COLOR="red"><B>{$error.wins}</B></FONT{/if}></TD>
 					<TD width="1%"><IMG src="img/dhcpend.gif" border="0" alt="" align="absmiddle"></TD>
-					<TD width="1%"><B>Koniec DHCP:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Koniec zakresu DHCP" name="netadd[dhcpend]" value="{$netadd.dhcpend}"{if $error.dhcpend} class="alert"><BR><FONT COLOR="red"><B>{$error.dhcpend}</B></FONT{/if}>{if $error.dhcp}<BR><FONT COLOR="red"><B>{$error.dhcp}</B></FONT>{/if}</TD>
+					<TD width="1%"><B>{$lang.dhcp_end}:</B><BR><INPUT TYPE="TEXT" SIZE="15" title="Koniec zakresu DHCP" name="netadd[dhcpend]" value="{$netadd.dhcpend}"{if $error.dhcpend} class="alert"><BR><FONT COLOR="red"><B>{$error.dhcpend}</B></FONT{/if}>{if $error.dhcp}<BR><FONT COLOR="red"><B>{$error.dhcp}</B></FONT>{/if}</TD>
 				</TR>
 				<TR>
 					<TD width="100%" colspan="8" align="right">
-						<a href="javascript:document.netadd.submit();">Dodaj sieæ <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
+						<a href="javascript:document.netadd.submit();">{$lang.add_network} <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
 					</TD>
 				</TR>
 			</TABLE>

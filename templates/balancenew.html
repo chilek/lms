@@ -1,7 +1,7 @@
 {include file="header.html"}
 {include file="balanceheader.html"}
 <!--// $Id$ //-->
-<H1>Nowa operacja finansowa</H1>
+<H1>{$layout.pagetitle}</H1>
 <P><FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
 <TABLE width="100%" cellpadding="3">
 	<TR>
@@ -9,12 +9,12 @@
 			<TABLE width="100%" cellpadding="3">
 				<TR CLASS="DARK">
 					<TD CLASS="FALL">
-						<B>U¿ytkownicy:</B>
+						<B>{$lang.users}:</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL">
-						Wybierz u¿ytkowników których dotyczyæ ma ta operacja finansowa. Je¿eli typ operacji nie jest obci±¿eniem b±d¼ wp³at± u¿ytkownika, system zignoruje listê u¿ytkowników.<BR><BR>
+						{$lang.select_users_for_payment}<BR><BR>
 						<SELECT size="20" name="addbalance[muserid][]" multiple>
 							{section name=users loop=$users}
 							<OPTION value="{$users[users].id}">{$users[users].username} ({$users[users].id|string_format:"%04d"})</OPTION>
@@ -28,21 +28,21 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD CLASS="FALL">
-						<B>Wybierz typ operacji:</B>
+						<B>{$lang.select_operation_type}:</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL">
-						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="1" STYLE="border-width: 0pt;"> <B>przychód</B><BR>pieni±dze zarobione przez sieæ, np. w wyniku sprzeda¿y osprzêtu sieciowego u¿ytkownikowi</P>
-						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="2" STYLE="border-width: 0pt;"> <B>rozchód</B><BR>pieni±dze wydane przez sieæ, np. na zakup osprzêtu sieciowego, op³aty abonamentowe dla ISP, etc.</P>
-						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="3" STYLE="border-width: 0pt;"> <B>wp³ata u¿ytkownika</B><BR>pieni±dze które wp³aci³ u¿ytkownik na poczet abonamentu</P>
-						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="4" STYLE="border-width: 0pt;"> <B>obci±¿enie u¿ytkownika</B><BR>obci±¿enie konta u¿ytkownika, np. dodatkow± kwot± abonamentow±</P>
+						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="1" STYLE="border-width: 0pt;"> <B>{$lang.income|lower}</B><BR>{$lang.income_operation_desc}</P>
+						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="2" STYLE="border-width: 0pt;"> <B>{$lang.expenditure|lower}</B><BR>{$lang.expenditure_operation_desc}</P>
+						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="3" STYLE="border-width: 0pt;"> <B>{$lang.user_payment}</B><BR>{$lang.user_payment_desc}</P>
+						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="4" STYLE="border-width: 0pt;"> <B>{$lang.user_charge}</B><BR>{$lang.user_charge_desc}</P>
 					</TD>
 				</TR>
 				<TR><TD>&nbsp;</TD></TR>
 				<TR CLASS="DARK">
 					<TD CLASS="FALL">
-						<B>Kwota i opis:</B>
+						<B>{$lang.amount_and_description}:</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -50,7 +50,7 @@
 						<TABLE CELLPADDING="1" WIDTH="100%">
 							<TR>
 								<TD WIDTH="1%">
-									<B>Kwota:</B>
+									<B>{$amount}:</B>
 								</TD>
 								<TD WIDTH="99%">
 									<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}"><BR>
@@ -70,7 +70,7 @@
 				<TR><TD>&nbsp;</TD></TR>
 				<TR>
 					<TD ALIGN="right">
-						<A HREF="javascript:document.addbalance.submit();">Wykonaj <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
+						<A HREF="javascript:document.addbalance.submit();">{$lang.execute} <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
 					</TD>
 				</TR>
 			</TABLE>
