@@ -114,8 +114,26 @@ class LMS
 		}
 		return FALSE;
 	}
-		
 
+	/*
+	 *  Logowanie
+	 *	0 - wy³±czone
+	 *	1 - logowanie do systemu i wywo³ania modu³ów bez uprawnieñ 
+	 *	2 - j.w. oraz dodawanie i usuwanie
+	 *	3 - j.w. oraz zmiany
+	 *	4 - paranoid, czyli wszystkie powy¿sze i wywo³ania wszystkich modu³ów
+	 */
+
+	function Log($loglevel=0, $message=NULL)
+	{
+		if( $loglevel <= $this->CONFIG['phpui']['loglevel'] && $message )
+		{
+			$this->DB->Execute('INSERT INTO syslog (time, adminid, level, message)
+					    VALUES (?NOW?, ?, ?, ?)', array($this->SESSION->id, $loglevel, $message));
+			//my¶lê, ¿e SetTS('syslog') mo¿emy sobie odpu¶ciæ
+		}
+	}
+	
 	/*
 	 *  Funkcje bazodanowe (backupy, timestampy)
 	 */
