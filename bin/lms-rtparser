@@ -39,6 +39,8 @@ $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
 my $hostname = hostname || 'example.com';
 
+my $save_path = 'some_dir';
+
 my $_version = '1.3-cvs';
 
 my %options = (
@@ -91,20 +93,25 @@ if(! -r $configfile)
 	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
 	exit 1;
 }
-		
-my $ini = new Config::IniFiles -file => $configfile;
 
+my $ini = new Config::IniFiles -file => $configfile;
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
+# very ugly code, but we really need tempdir..
+# 
+my $tmpdir = (defined $ini->val('rt', 'tmp_dir') && ! ($ini->val('rt', 'tmp_dir') eq '')) || (defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '') ? $ENV{'TMP'} : '/tmp');
+
 my $parser = new MIME::Parser;
+
+# TODO - FIXME - better handling of temporary dir - we should use sth simillar to mktemp();
 
 $parser->decode_headers(1);
 $parser->extract_uuencode(1);
-$parser->output_to_core(1);
+$parser->output_dir($tmpdir);
 
 my $entity = $parser->parse(\*STDIN);
 my $headers = $entity->head;
@@ -117,27 +124,32 @@ my $mh_references = $headers->get('References');
 my $mailheaders = $headers->as_string;
 my $body;
 my $mailbody;
+my @attachments;
+
+# Taken from pl.comp.lang.perl FAQ - http://www.kt.agh.edu.pl/other/perl/faq/5.html#6
 
 if($entity->mime_type =~ m|multipart/|i) # if we deal with multipart message...
 {
-	#
-	# At this moment, we are unable to parse multiparted messages,
-	# ie, this with attachments
-	#
-#	$num_parts = $entity->parts;
-#	for($i=0;$i<$num_parts;$i++)
-#	{
-#		$body = $entity->parts($i);	# this is MIME::Body object
-#		print $body->as_string;		# this returns base64 encoded
-#						# attachment, even if we see
-#	}					# binary data in Dumper :-(
+	for(my $partnum = 0; $partnum < $entity->parts; $partnum++)
+	{
+		if(($body = $entity->parts($partnum))->mime_type =~ m|text/|i && $mailbody eq '') # if we have empty body now.
+		{
+			$body = $entity->parts($partnum);
+			$mailbody = $body->as_string;
+		}
+		else
+		{
+			# queue attachments for later copy
+			$body = $entity->parts($partnum);
+			push @attachments, $body->bodyhandle->path;
+		}
+	}
 }
 else
 {
 	$body = $entity->bodyhandle;
 	$mailbody = $body->as_string;
 }
-
 
 chomp $mh_from;
 chomp $mh_subject;
@@ -215,21 +227,45 @@ if( $mh_subject =~ /\[RT#[0-9]{6,}\]/ )
 }
 
 my $ticket_id;
+my $rt_msgid;
 
 if(! $prev_tid) # generate new ticket if previous not found
 {
-	$dbq = $dbase->prepare("INSERT INTO rttickets (queueid, requestor, subject, createtime) VALUES ($queue, '$mh_from', '$mh_subject', '$timestamp')");
+
+	$dbq = $dbase->prepare("INSERT INTO rttickets (queueid, requestor, subject, createtime) VALUES ($queue, '$mh_from', '$mh_subject', $timestamp)");
 	$dbq->execute();
 	
-	# fetch assigned ID
+	# fuck postgres :>
 	
-	$dbq = $dbase->prepare("SELECT id FROM rttickets WHERE queueid = '$queue' AND requestor = '$mh_from' AND subject = '$mh_subject' AND createtime = '$timestamp'");
+#	if($dbtype eq 'pgsql')
+#	{
+		# fetch assigned ID
+		
+	$dbq = $dbase->prepare("SELECT id FROM rttickets WHERE queueid = '$queue' AND requestor = '$mh_from' AND subject = '$mh_subject' AND createtime = $timestamp");
 	
 	$dbq->execute();
 	$row = $dbq->fetchrow_hashref();
 	$ticket_id = $row->{'id'};
-	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, subject, messageid, replyto, headers, body) VALUES ($ticket_id, '$mh_from', '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody')");
+
+#	}
+#	elsif($dbtype eq 'mysql')
+#	{
+#		$dbq = $dbase->prepare("SELECT LAST_INSERT_ID() AS ticket_id");
+#		$dbq->execute();
+#		$row = $dbq->fetchrow_hashref();
+#		$ticket_id = $row->{'ticket_id'};
+#	}
+	
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, subject, messageid, replyto, headers, body, createtime) VALUES ($ticket_id, '$mh_from', '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $timestamp)");	
 	$dbq->execute();
+
+	# i think that this expr should be enought to fetch id of previously inserted message
+	
+	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $ticket_id AND messageid = '$mh_msgid' AND createtime = $timestamp");
+	$dbq->execute();
+	$row = $dbq->fetchrow_hashref();
+	$rt_msgid = $row->{'id'};	
+	
 	my $replymail = MIME::Entity->build(
 		'Type' => "text/plain",
 		'Charset' => "ISO-8859-2",
@@ -263,7 +299,6 @@ if(! $prev_tid) # generate new ticket if previous not found
 else
 {
 	my @reftab = split(' ',$mh_references);
-	print Data::Dumper::Dumper @reftab;
 	my $lastref = $reftab[(scalar @reftab)-1];
 	my $inreplytoid = 0;
 	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE messageid = '$lastref'");
@@ -272,10 +307,26 @@ else
 	{
 		$inreplytoid = $row->{'id'};
 	}
-	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, subject, messageid, replyto, headers, body, inreplyto) VALUES ($prev_tid, '$mh_from', '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $inreplytoid)");
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, subject, messageid, replyto, headers, body, inreplyto, createtime) VALUES ($prev_tid, '$mh_from', '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $inreplytoid, $timestamp)");
 	$dbq->execute();
+	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $prev_tid AND messageid = '$mh_msgid' AND createtime = $timestamp");
+	$dbq->execute();
+	$row = $dbq->fetchrow_hashref();
+	$rt_msgid = $row->{'id'};
+	
+	$ticket_id = $prev_tid;
+	
 }
-
+if(scalar @attachments)
+{
+	# TODO : saveing attachments info into database, _CONTENTTYPE_ !!!
+	mkdir($save_path.'/'.sprintf('%06d',$ticket_id));
+	mkdir($save_path.'/'.sprintf('%06d',$ticket_id).'/'.sprintf('%06d',$rt_msgid));
+	foreach my $attachment (@attachments)
+	{
+		copy($attachment, $save_path.'/'.sprintf('%06d',$ticket_id).'/'.sprintf('%06d',$rt_msgid));
+	}
+}
 $parser->filer->purge;			# cleanup
 $dbq->finish();
 $dbase->disconnect();
