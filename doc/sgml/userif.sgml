@@ -94,6 +94,23 @@
 			</ulink>
 	</figure>
  </sect2>
+ <sect2 id="menu-netdevices">
+	<title>Osprzêt sieciowy</title>
+	<para>W panelu przeznaczonym do ewidencji sprzêtu mo¿na przegl±daæ listê
+	urz±dzeñ sieciowych, zawieraj±c± ich nazwy i symbole, po³o¿enie i opis, a ponadto 
+	ilo¶æ dostêpnych portów. Klikniêcie na wybranym urz±dzeniu spowoduje
+	wy¶wietlenie informacji szczegó³owych o nim.</para>
+	<figure>
+		<title>LMS-UI: Osprzêt sieciowy</title>
+			<ulink url="images/netdev.png">
+				<inlinemediaobject>
+  				<imageobject>
+  					<imagedata fileref="images/netdev-small.png" format="png">
+		  		</imageobject>
+  				</inlinemediaobject>
+			</ulink>
+	</figure
+ </sect2>
  <sect2 id="user-networks">
 	<title>Sieci IP</title>
 	<para>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, Gateway,
