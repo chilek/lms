@@ -28,6 +28,12 @@ if($_GET[action]=="disconnect") {
 	$LMS->NetDevUnLink($_GET[id],$_GET[devid]);
 	header("Location: ?m=netdevinfo&id=".$_GET[id]);
     }
+
+if($_GET[action]=="disconnectnode") {
+	$LMS->NetDevLinkComputer($_GET[nodeid],0);
+	header("Location: ?m=netdevinfo&id=".$_GET[id]);
+    }
+
 $netdevdata = $_POST[netdev];
 
 if(isset($netdevdata)) {
@@ -62,6 +68,9 @@ $SMARTY->display("netdevedit.html");
 
 /*
  * $Log$
+ * Revision 1.4  2003/10/03 19:55:21  alec
+ * teraz mozna tutaj od³±czaæ kompy
+ *
  * Revision 1.3  2003/10/03 19:22:09  alec
  * now we can netdev disconnect
  *
