@@ -64,7 +64,7 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 	{
 		if($LMS->UserExists($addbalance['userid']))
 		{
-			if($unpaid = $SESSION->get('unpaid.'.$addbalance['userid'])
+			if($unpaid = $SESSION->get('unpaid.'.$addbalance['userid']))
 			{
 				foreach($unpaid as $cashid)
 				{
