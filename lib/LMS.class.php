@@ -66,16 +66,8 @@ class LMS
 
 	function SetTS($table)
 	{
-		$DB=$this->DB;
-		if($DB->countRows("SELECT * FROM `timestamps` WHERE `tablename` = '_global'"))
-			$DB->execSQL("UPDATE `timestamps` SET `time` = ".$this->sqlTSfmt." WHERE `tablename` = '_global'");
-		else
-			$DB->execSQL("INSERT INTO `timestamps` VALUES (".$this->sqlTSfmt.", '_global')");
-		if($DB->countRows("SELECT * FROM `timestamps` WHERE `tablename` = '".$table."'"))
-			$DB->execSQL("UPDATE `timestamps` SET `time` = ".$this->sqlTSfmt." WHERE `tablename` = '".$table."'");
-		else
-			$DB->execSQL("INSERT INTO `timestamps` VALUES (".$this->sqlTSfmt.", '".$table."')");
-		return $this->GetTS($table);
+		$this->ADB->Replace("timestamps",array("tablename" => "'_global'","time" => $this->sqlTSfmt() ),"tablename");
+		return $this->ADB->Replace("timestamps",array("tablename" => "'".$table."'","time" => $this->sqlTSfmt() ),"tablename");
 	}
 
 	function GetTS($table)
@@ -85,25 +77,22 @@ class LMS
 
 	function SetAdminPassword($id,$passwd)
 	{
-		$DB=$this->DB;
 		$this->SetTS("admins");
-		return $DB->execSQL("UPDATE `admins` SET `passwd` = '".crypt($passwd)."' WHERE `id` = '".$id."' LIMIT 1");
+		$this->ADB->Execute("UPDATE admins SET passwd=? WHERE id=?",array(crypt($passwd),$id));
 	}
 
 	function DeleteUser($id)
 	{
-		$DB=$this->DB;
 		$this->SetTS("users");
 		$this->SetTS("nodes");
-		$DB->execSQL("DELETE FROM `nodes` WHERE `ownerid` = '".$id."'");
-		return $DB->execSQL("DELETE FROM `users` WHERE `id` = '".$id."' LIMIT 1");
+		$res1=$this->ADB->Execute("DELETE FROM nodes WHERE ownerid=?",array($id));
+		$res2=$this->ADB->Execute("DELETE FROM users WHERE id=?",array($id));
+		return $res1 || $res2;
 	}
 
 	function DeleteNode($id)
 	{
-		$DB=$this->DB;
-		$this->SetTS("nodes");
-		return $DB->execSQL("DELETE FROM `nodes` WHERE `id` = '".$id."'");
+		return $this->ADB->Execute("DELETE FROM nodes WHERE id=?",array($id));
 	}
 
 	function GetAdminName($id)
@@ -133,6 +122,7 @@ class LMS
 
 	function UserUpdate($userdata)
 	{
+
 		$SESSION=$this->SESSION;
 		$DB=$this->DB;
 		$this->SetTS("users");
@@ -152,8 +142,7 @@ class LMS
 
 	function GetUserNodesNo($id)
 	{
-		$DB=$this->DB;
-		return $DB->countRows("SELECT * FROM `nodes` WHERE `ownerid` = '".$id."'");		
+		return $this->ADB->GetOne("SELECT COUNT(*) FROM nodes WHERE ownerid=?",array($id));
 	}
 
 	function GetNetworks()
@@ -371,11 +360,10 @@ class LMS
 		$DB=$this->DB;
 		$this->SetTS("nodes");
 		$this->SetTS("networks");
-		$nodes = $DB->fetchTable("SELECT `ipaddr`, `id` FROM `nodes`");
-		if(sizeof($nodes[ipaddr]))
-			foreach($nodes[ipaddr] as $key => $value)
-				if(isipin($value,$network,$mask))
-					$DB->execSQL("UPDATE `nodes` SET `ipaddr` = '".long2ip(ip_long($value) + $shift)."' WHERE `id` = '".$nodes[id][$key]."' LIMIT 1");
+		if($nodes = $this->ADB->GetAll("SELECT ipaddr, id FROM nodes"))
+			foreach($nodes as $value)
+				if(isipin($value[ipaddr],$network,$mask))
+					$this->ADB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array(long2ip(ip_long($value[ipaddr]) + $shift),$value[id]));
 	}
 
 	function NetworkUpdate($networkdata)
@@ -519,45 +507,24 @@ class LMS
 
 	function GetUser($id)
 	{
-		$DB=$this->DB;
-		$return = $DB->fetchRow("SELECT `id`, `lastname`, `name`, `status`, `email`, `phone1`, `phone2`, `phone3`, `address`, `tariff`, `info`, `creationdate`, `moddate`, `creatorid`, `modid` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
-		$return[username] = strtoupper($return[lastname])." ".$return[name];
-		$return[createdby] = $this->GetAdminName($return[creatorid]);
-		$return[modifiedby] = $this->GetAdminName($return[modid]);
-		$return[creationdateh] = date("Y-m-d, H:i",$return[creationdate]);
-		$return[moddateh] = date("Y-m-d, H:i",$return[moddate]);
-		$return[tariffvalue] = $this->GetTariffValue($return[tariff]);
-		$return[tariffname] = $this->GetTariffName($return[tariff]);
-		$return[balance] = $this->GetUserBalance($return[id]);
-		return $return;
+		if($return = $this->ADB->GetRow("SELECT id, lastname, name, status, email, phone1, phone2, phone3, address, tariff, info, creationdate, moddate, creatorid, modid FROM users WHERE id=?",array($id)))
+		{
+			$return[username] = strtoupper($return[lastname])." ".$return[name];	
+			$return[createdby] = $this->GetAdminName($return[creatorid]);
+			$return[modifiedby] = $this->GetAdminName($return[modid]);
+			$return[creationdateh] = date("Y-m-d, H:i",$return[creationdate]);
+			$return[moddateh] = date("Y-m-d, H:i",$return[moddate]);
+			$return[tariffvalue] = $this->GetTariffValue($return[tariff]);
+			$return[tariffname] = $this->GetTariffName($return[tariff]);
+			$return[balance] = $this->GetUserBalance($return[id]);
+			return $return;
+		}else
+			return FALSE;
 	}
 
 	function GetUserNames()
 	{
-	
-		$DB=$this->DB;
-
-		if($_SESSION[timestamps][getusernames] != $this->GetTS("users"))
-		{
-			$usernames = $DB->fetchTable("SELECT `id`, `name`, `lastname` FROM `users` WHERE `status` = '3'");
-			
-			if(sizeof($usernames[id]))
-			{
-				foreach ($usernames[id] as $key => $value)
-					$usernames[username][$key] = strtoupper($usernames[lastname][$key])." ".ucwords($usernames[name][$key]);		
-				array_multisort($usernames[username],4,$usernames[id],$usernames[name],$usernames[lastname]);
-			}
-			$_SESSION[timestamps][getusernames] = $this->GetTS("users");
-			$_SESSION[cache][getusernames] = $usernames;
-			
-		}else{
-
-			$usernames = $_SESSION[cache][getusernames];
-
-		}
-		
-		return $usernames;
-
+		return $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users WHERE status=3");
 	}
 
 	function GetUserNodesAC($id)
