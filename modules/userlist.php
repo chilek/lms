@@ -56,6 +56,10 @@ $listdata[direction] = $userlist[direction];
 $page = (! $_GET[page] ? 1 : $_GET[page]); 
 $pagelimit = (! $_CONFIG[phpui][userlist_pagelimit] ? $listdata[total] : $_CONFIG[phpui][userlist_pagelimit]);
 $start = ($page - 1) * $pagelimit;
+
+if($page > $pagelimit)
+	$page = $pagelimit;
+
 $_SESSION[ulp] = $page;
 
 unset($userlist[total]);
