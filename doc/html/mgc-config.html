@@ -1,0 +1,749 @@
+<HTML
+><HEAD
+><TITLE
+>Konfiguracja</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.1.4"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Generator plików konfiguracyjnych (lms-mgc)"
+HREF="mgc.html"><LINK
+REL="PREVIOUS"
+TITLE="Generator plików konfiguracyjnych (lms-mgc)"
+HREF="mgc.html"><LINK
+REL="NEXT"
+TITLE="Przyk³ad zastosowania lms-mgc"
+HREF="mgc-example.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.1.4</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="mgc.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="mgc-example.html"
+>Nastêpny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MGC-CONFIG"
+>5.2. Konfiguracja</A
+></H1
+><P
+>Konfiguracjê dla LMS-MGC przeprowadza siê w pliku <TT
+CLASS="FILENAME"
+>lms-mgc.ini</TT
+></P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MGC-CONFIG-DB"
+>5.2.1. Sekcja [database] - ustawienia bazy danych</A
+></H2
+><UL
+><LI
+><P
+>type</P
+><P
+>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>type = mysql</TT
+></P
+></LI
+><LI
+><P
+>host</P
+><P
+>Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj wstawiæ cokolwiek (ipek, domena, path to socketa w formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>host = localhost</TT
+></P
+></LI
+><LI
+><P
+>user</P
+><P
+>U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze wskazówkami w doc/INSTALL) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 'postgres' (PostgreSQL). Domy¶lnie: root</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>user = mysql</TT
+></P
+></LI
+><LI
+><P
+>password</P
+><P
+>Has³o do bazy danych. Domy¶lnie puste.</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>password = tajne_haslo</TT
+></P
+></LI
+><LI
+><P
+>database</P
+><P
+>Nazwa bazy danych, domy¶lnie lms.</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>database = lms</TT
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MGC-CONFIG-LMS"
+>5.2.2. Sekcja [mgc] - lista instancji</A
+></H2
+><P
+>W³a¶ciwa konfiguracja dotycz±ca generatorów poszczególnych plików konfiguracyjnych 
+	jest umieszczana w sekcji <I
+CLASS="EMPHASIS"
+>[mgc]</I
+> i pochodnych. W samej sekcji 
+	<I
+CLASS="EMPHASIS"
+>[mgc]</I
+> mo¿emy u¿yæ nastêpuj±cego parametru:</P
+><UL
+><LI
+><P
+>instances</P
+><P
+>Lista "instancji" oddzielona spacjami.</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>instaces = dhcp firewall squid</TT
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MGC-CONFIG-INSTANCES"
+>5.2.3. Sekjca [mgc:xxx] - konfiguracja instancji</A
+></H2
+><P
+>Ka¿da instancja ma swoj± nazwê i jej konfigruacjê tworzy siê umieszczaj±c 
+	sekcjê o nazwie <I
+CLASS="EMPHASIS"
+>[mgc:nazwa]</I
+>, czyli przyk³adowo: 
+	<I
+CLASS="EMPHASIS"
+>[mgc:mydaemon]</I
+></P
+><P
+>W samych instancjach mo¿emy u¿ywaæ nastêpuj±cych opcji konfiguracyjnych:</P
+><UL
+><LI
+><P
+>outfile</P
+><P
+>Definiuje plik do którego ma byæ zapisany wynik dzia³ania bierz±cej instancji (je¿eli ta zmienna zmienna bêdzie nie ustawiona, instancja siê zakoñczy)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>outfile = /etc/somefile</TT
+></P
+></LI
+><LI
+><P
+>append</P
+><P
+>Pozwala ustawiæ aby wynik dzia³ania instancji nie nadpisywa³ pliku wynikowego, lecz zosta³ dopisany na jego koñcu</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>append = 1</TT
+></P
+></LI
+><LI
+><P
+>outfile_perm</P
+><P
+>Pozwala na ustawienie praw dostêpu do pliku wyj¶ciowego (domy¶lnie 600)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>outfile_perm = 700</TT
+></P
+></LI
+><LI
+><P
+>outfile_owner</P
+><P
+>Pozwala na ustawienie w³a¶ciciela pliku wyj¶ciowego (domy¶lnie 0)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>outfile_owner = 0</TT
+></P
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="90%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Ostrze¿enie</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>W³a¶ciciel musi byæ podany numerycznie!</P
+></TD
+></TR
+></TABLE
+></DIV
+></LI
+><LI
+><P
+>outfile_group</P
+><P
+>Pozwala na ustawienie grupy pliku wyj¶ciowego (domy¶lnie 0)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>outfile_group = 0</TT
+></P
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="90%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Ostrze¿enie</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>Grupa musi byæ podana numerycznie!</P
+></TD
+></TR
+></TABLE
+></DIV
+></LI
+><LI
+><P
+>header_file</P
+><P
+>Pozwala na umieszczenie w pliku wynikowym zawaro¶ci innego 
+     pliku jako nag³ówek (domy¶lnie nie ustawione)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>header_file = /etc/lms/myservice_header</TT
+></P
+></LI
+><LI
+><P
+>header</P
+><P
+>Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako 
+     nag³ówka (domy¶lnie puste)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>header = option1 = bla\noption2 = blabla</TT
+></P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Notatka: </B
+>Znak \n zosta³ tu u¿yty jako seperator linii. Koñcowe \n nie jest 
+     wymagane.</P
+></BLOCKQUOTE
+></DIV
+></LI
+><LI
+><P
+>networks</P
+><P
+>Pozwala ustaliæ które z naszych sieci bêd± uwzglêdniane w pliku konfiguracyjnym (domy¶lnie wszystkie)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>networks = cust1-publ cust2-publ cust3-priv</TT
+></P
+></LI
+></UL
+><P
+>Teraz mgc pobiera kolejne sieci i wykonuje w kó³ko nastêpuj±ce czynno¶ci:</P
+><UL
+><LI
+><P
+>network_header</P
+><P
+>Generuje nag³ówek dla ka¿dej sieci (domy¶lnie puste):</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>network_header = network %ADDR/%MASK { # Config section for %NAME</TT
+></P
+></LI
+><LI
+><P
+>dst_networks</P
+><P
+>Pozwala ustawiæ sieci docelowe, czyli takie dla których bêdzie przetwarzany parametr: dst_network_header (domy¶lnie wszystkie):</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>dst_networks = main coalloc</TT
+></P
+></LI
+><LI
+><P
+>dst_network_header</P
+><P
+>Pozwala ustawiæ nag³ówek dla sieci docelowych</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>dst_network_header = \tallow to %DADDR/%DMASK;</TT
+></P
+></LI
+><LI
+><P
+>network_body</P
+><P
+>Parametr jest przetwarzany po wys³aniu nag³ówków dla sieci, a przed rozpoczêciem analizy adresów IP</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>network_body = \tnodes {</TT
+></P
+></LI
+></UL
+><P
+>Teraz MGC rozpocznie przetwarzanie kolejnych adresów IP. Robi to w dosyæ specyficzny sposób. 
+   Tzn. oblicza kolejny adres IP i kolejno sprawdza:</P
+><UL
+><LI
+><P
+>allnodes</P
+><P
+>Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP.</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>allnodes = ??</TT
+></P
+></LI
+><LI
+><P
+>allexistnodes</P
+><P
+>Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP który jest u¿ywany.</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>allexistnodes = ??</TT
+></P
+></LI
+><LI
+><P
+>ignore</P
+><P
+>Pozwala na ustawienie listy adresów w postaci adres/prefix lub adres/maska oddzielanej spacjami dla której ma byæ ignorowane generowanie</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>ignore = ??</TT
+></P
+></LI
+><LI
+><P
+>grantednode_publ</P
+><P
+>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów publicznych)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;</TT
+></P
+></LI
+><LI
+><P
+>grantednode_prv</P
+><P
+>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>grantednode_prv = \t\tnode %NAME (%IP/%MAC) unique %ID;</TT
+></P
+></LI
+><LI
+><P
+>deniednode_publ</P
+><P
+>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów publicznych)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;</TT
+></P
+></LI
+><LI
+><P
+>deniednode_prv</P
+><P
+>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>deniednode_prv = node %NAME (%IP/%MAC) unique %ID deny;</TT
+></P
+></LI
+><LI
+><P
+>dhcpnode_publ</P
+><P
+>Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów publicznych)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>dhcpnode_publ = node unknown (%IP) reject;</TT
+></P
+></LI
+><LI
+><P
+>dhcpnode_prv</P
+><P
+>Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>dhcpnode_prv = node unknown (%IP) reject;</TT
+></P
+></LI
+><LI
+><P
+>freeip_publ</P
+><P
+>Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów publicznych)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>freeip_publ = node unknown (%IP) lock_as_unused;</TT
+></P
+></LI
+><LI
+><P
+>freeip_prv</P
+><P
+>Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów prywatnych)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>freeip_prv = node unknown (%IP) lock_as_unused;</TT
+></P
+></LI
+><LI
+><P
+>default_publ</P
+><P
+>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów publicznych)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>default_publ = node unknown (%IP) lock_as_intruder;</TT
+></P
+></LI
+><LI
+><P
+>default_prv</P
+><P
+>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>default_publ = node unknown (%IP) lock_as_intruder;</TT
+></P
+></LI
+></UL
+><P
+>lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</P
+><UL
+><LI
+><P
+>network_footer</P
+><P
+>Pozwala na ustawienie stopki dla w³a¶nie przetwarzanej sieci</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>network_footer = ??</TT
+></P
+></LI
+><LI
+><P
+>footer_file</P
+><P
+>Pozwala na umieszczenie w pliku wynikowym zawaro¶ci innego pliku jako stopka (domy¶lnie nie ustawione)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>footer_file = /etc/lms/myservice_footer</TT
+></P
+></LI
+><LI
+><P
+>footer</P
+><P
+>Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako stopki (domy¶lnie puste)</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>footer = # End.</TT
+></P
+></LI
+><LI
+><P
+>post_exec</P
+><P
+>Komenda do wywo³ania po wygenerowaniu pliku konfiguracyjnego</P
+><P
+>Przyk³ad:	<TT
+CLASS="PROMPT"
+>post_exec = killall -HUP mydaemon</TT
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MGC-CONFIG-VARS"
+>5.2.4. Zmienne konfiguracyjne</A
+></H2
+><P
+>Oprócz tego w czê¶ci opcji konfiguracyjnych mo¿emy u¿ywaæ nastêpuj±cych zmiennych:</P
+><UL
+><LI
+><P
+>%IP - zostanie rozwiniête do adresu IP</P
+></LI
+><LI
+><P
+>%ID - ID sieci w bazie</P
+></LI
+><LI
+><P
+>%MAC - zostanie rozwiniête do adresu MAC karty sieciowej</P
+></LI
+><LI
+><P
+>%OWNER - w³a¶ciciel komputera</P
+></LI
+><LI
+><P
+>%NAME - nazwa sieci du¿ymi znakami</P
+></LI
+><LI
+><P
+>%name - nazwa sieci ma³ymi znakami</P
+></LI
+><LI
+><P
+>%UPRATE - limit transferu dla danych wychodz±cych</P
+></LI
+><LI
+><P
+>%DOWNRATE - limit transferu dla danych przychodz±cych</P
+></LI
+><LI
+><P
+>%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP </P
+></LI
+><LI
+><P
+>%ADDR - adres sieci</P
+></LI
+><LI
+><P
+>%GATE - brama sieci</P
+></LI
+><LI
+><P
+>%DNS - serwer DNS tej sieci</P
+></LI
+><LI
+><P
+>%DOMAIN - domena tej sieci</P
+></LI
+><LI
+><P
+>%WINS - adres serwera WINS dla tej sieci</P
+></LI
+><LI
+><P
+>%DHCPS - pierwszy adres DHCP tej sieci</P
+></LI
+><LI
+><P
+>%DHCPE - ostatni adres DHCP tej sieci</P
+></LI
+><LI
+><P
+>%DATE - data w formacie YYYYMMDD;</P
+></LI
+><LI
+><P
+>%TIME - czas w formacie HHMM;</P
+></LI
+><LI
+><P
+>%TIMES - czas w formacie HHMMSS;</P
+></LI
+><LI
+><P
+>%UTIME - czas w formacie unix timestamp;</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="mgc.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Spis tre¶ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="mgc-example.html"
+>Nastêpny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Generator plików konfiguracyjnych (lms-mgc)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="mgc.html"
+>Pocz±tek rozdzia³u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Przyk³ad zastosowania lms-mgc</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
