@@ -112,6 +112,7 @@ if(isset($_GET[prename])&&$nodedata[name]=="")
 $layout[pagetitle]="Dodanie nowego komputera";
 
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($nodedata[ownerid]));
+$SMARTY->assign("assignments",$LMS->GetUserAssignments($nodedata[ownerid]));
 $SMARTY->assign("users",$users);
 $SMARTY->assign("error",$error);
 $SMARTY->assign("userinfo",$userinfo);
@@ -122,6 +123,9 @@ $SMARTY->display("nodeadd.html");
 
 /*
  * $Log$
+ * Revision 1.35  2003/09/09 01:44:07  lukasz
+ * - poprawki node{edit,info,add}
+ *
  * Revision 1.34  2003/09/01 12:34:05  lukasz
  * - BTS #0000066
  *
