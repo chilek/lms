@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.5-cvs
+ * LMS version 1.4-cvs
  *
  *  (C) Copyright 2001-2004 LMS Developers
  *
@@ -24,11 +24,11 @@
  *  $Id$
  */
 
+$DB->BeginTrans();
 $DB->Execute("
-    BEGIN;
     CREATE INDEX cash_userid_idx ON cash(userid);
     UPDATE dbinfo SET keyvalue = '2004090700' WHERE keytype = 'dbversion';
-    COMMIT;
 ");
+$DB->CommitTrans();
 
 ?>
