@@ -55,13 +55,16 @@
 						</SELECT>
 					</TD>
 					<TD>
+						<NOBR>
 						<SELECT SIZE="1" NAME="period" {tip text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
-							<OPTION VALUE="0">co miesi±c</OPTION>
-							<OPTION VALUE="1">co tydzieñ</OPTION>
-							<OPTION VALUE="2">co rok</OPTION>
+							<OPTION VALUE="0">co tydzieñ</OPTION>
+							<OPTION VALUE="1" SELECTED>co miesi±c</OPTION>
+							<OPTION VALUE="2">co kwarta³</OPTION>
+							<OPTION VALUE="3">co rok</OPTION>
 						</SELECT>
-						<B>kiedy:</B> <INPUT TYPE="TEXT" NAME="at" {tip text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28) a dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia)."} SIZE="5">
+						<B>kiedy:</B> <INPUT TYPE="TEXT" NAME="at" {tip text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28), dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia), a dla kwartalnej DD/MM (MM <= 3)."} SIZE="5">
 						<INPUT CLASS="box" TYPE="checkbox" NAME="invoice" VALUE="1"> wystawiaj fakturê
+						</NOBR>
 					</TD>
 					<TD ALIGN="RIGHT" NOWRAP>
 						<A HREF="javascript:document.addassignment.submit()" {tip text="Przypisz t± taryfê do u¿ytkownika"}>Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>

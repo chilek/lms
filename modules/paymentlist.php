@@ -29,37 +29,8 @@ $layout['pagetitle']="Lista op³at sta³ych";
 $paymentlist = $LMS->GetPaymentList();
 
 $listdata['total'] = $paymentlist['total'];
-unset($paymentlist[total]);
 
-foreach($paymentlist as $idx => $value)
-{
-	switch($paymentlist[$idx]['period'])
-	{
-		case '0':
-			$paymentlist[$idx]['payday'] = "co miesi±c (".$paymentlist[$idx]['at'].")"; 
-		break;
-		case '1':
-			switch($paymentlist[$idx]['at'])
-			{
-				case '1': $paymentlist[$idx]['payday'] = "co tydzieñ (pon)"; break;
-				case '2': $paymentlist[$idx]['payday'] = "co tydzieñ (wt)"; break;
-				case '3': $paymentlist[$idx]['payday'] = "co tydzieñ (¶r)"; break;
-				case '4': $paymentlist[$idx]['payday'] = "co tydzieñ (czw)"; break;
-				case '5': $paymentlist[$idx]['payday'] = "co tydzieñ (pt)"; break;
-				case '6': $paymentlist[$idx]['payday'] = "co tydzieñ (sob)"; break;
-				case '7': $paymentlist[$idx]['payday'] = "co tydzieñ (nie)"; break;
-				default : $paymentlist[$idx]['payday'] = "brak"; break;
-			}
-		break;
-		case '2':
-			$at = date("d/m",($paymentlist[$idx]['at']-1)*86400);
-			$paymentlist[$idx]['payday'] = "co rok (".$at.")";
-		break;
-		default:
-			$paymentlist[$idx]['payday'] = "brak";
-		break;
-	}
-}
+unset($paymentlist[total]);
 
 $_SESSION['backto'] = $_SERVER[QUERY_STRING];
 

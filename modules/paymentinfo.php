@@ -32,33 +32,6 @@ if(!$LMS->PaymentExists($_GET['id']))
 
 $payment = $LMS->GetPayment($_GET['id']);
 
-switch($payment['period'])
-{
-	case '0':
-		$payment['payday'] = "co miesi±c (".$payment['at'].")"; 
-	break;
-	case '1':
-		switch($payment['at'])
-		{
-			case '1': $payment['payday'] = "co tydzieñ (pon)"; break;
-			case '2': $payment['payday'] = "co tydzieñ (wt)"; break;
-			case '3': $payment['payday'] = "co tydzieñ (¶r)"; break;
-			case '4': $payment['payday'] = "co tydzieñ (czw)"; break;
-			case '5': $payment['payday'] = "co tydzieñ (pt)"; break;
-			case '6': $payment['payday'] = "co tydzieñ (sob)"; break;
-			case '7': $payment['payday'] = "co tydzieñ (nie)"; break;
-			default : $payment['payday'] = "brak"; break;
-		}
-	break;
-	case '2':
-		$at = date("d/m",($payment['at']-1)*86400);
-		$payment['payday'] = "co rok (".$at.")";
-	break;
-	default:
-		$payment['payday'] = "brak";
-	break;
-}
-
 $layout['pagetitle'] = "Informacja o op³acie sta³ej: ".$payment['name'];
 
 $_SESSION['backto'] = $_SERVER[QUERY_STRING];

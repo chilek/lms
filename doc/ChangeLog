@@ -12,7 +12,18 @@ wersja ????? (??/??/????):
 	ALTER TABLE users UPDATE gguin SET DEFAULT 0;
 	ALTER TABLE users UPDATE gguin SET NOT NULL;
   - w genfake.php dodane generowanie przyk³. op³at sta³ych (alec)
-    
+  - naliczanie kwartalne taryf i op³at sta³ych, przy okazji ma³e 
+    usystematyzowanie w kolumnie period (naliczanie: 0-tygodniowe, 
+    1-miesiêczne, 2-kwartalne, 3-roczne) (alec)
+	UPDATE assignments SET period = 4 WHERE period = 1;
+	UPDATE assignments SET period = 1 WHERE period = 0;
+	UPDATE assignments SET period = 0 WHERE period = 4;
+	UPDATE assignments SET period = 3 WHERE period = 2;
+	UPDATE payments SET period = 4 WHERE period = 1;
+	UPDATE payments SET period = 1 WHERE period = 0;
+	UPDATE payments SET period = 0 WHERE period = 4;
+	UPDATE payments SET period = 3 WHERE period = 2;
+      
 wersja 1.1.8 Cronos (01/02/2004):
 
   - netdevmap korzysta z obrazków w formacie PNG (brak obs³ugi GIF na 

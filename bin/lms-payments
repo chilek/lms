@@ -118,12 +118,20 @@ my $day = strftime("%e",localtime());
 my $year = strftime("%Y",localtime());
 my $weekday = strftime("%u",localtime());
 my $yearday = strftime("%j",localtime());
-
+my $quarter;
+if($month==1 || $month==4 || $month==7 || $month==10) {
+	$quarter = $day;
+} elsif ($month==2 || $month==5 || $month==8 || $month==11) {
+	$quarter = $day + 100;
+} else {
+	$quarter = $day + 200;
+}
 my %txts;
 
-$txts{0} = "Abonament miesiêczny \"%\" (za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month, $year - 1900).")";
-$txts{1} = "Abonament tygodniowy \"%\" (za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day + 7, $month - 1, $year - 1900).")";
-$txts{2} = "Abonamnet roczny \"%\" (za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month - 1, $year - 1900 + 1).")";
+$txts{0} = "Abonament tygodniowy \"%\" (za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day + 7, $month - 1, $year - 1900).")";
+$txts{1} = "Abonament miesiêczny \"%\" (za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month, $year - 1900).")";
+$txts{2} = "Abonament kwartalny \"%\" (za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month + 2, $year - 1900).")";
+$txts{3} = "Abonament roczny \"%\" (za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month - 1, $year - 1900 + 1).")";
 
 my $yearstart = strftime("%s", 0, 0, 0, 1, 0, $year - 1900);
 my $yearend = strftime("%s", 59, 59, 23, 31, 11, $year - 1900);
@@ -138,7 +146,7 @@ my $icdbq;
 
 # dobra, query wybiera *WSZYSTKIE* mo¿liwe assigmenty na dany dzieñ.
 
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND ((period = 0 AND at=$day) OR (period = 1 AND at=$weekday) OR (period = 2 AND at = $yearday))");
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday))");
 $dbq->execute();
 
 print "UID:\tKwota:\tZa:\n";
@@ -187,7 +195,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 }	
 
 # op³aty sta³e
-$dbq = $dbase->prepare("SELECT * FROM payments WHERE value <> 0 AND ((period = 0 AND at=$day) OR (period = 1 AND at=$weekday) OR (period = 2 AND at = $yearday))");
+$dbq = $dbase->prepare("SELECT * FROM payments WHERE value <> 0 AND ((period = 0 AND at=$weekday) OR (period = 1 AND at=$day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday))");
 $dbq->execute();
 
 while(my $assign = $dbq->fetchrow_hashref())

@@ -54,12 +54,18 @@ if(isset($payment))
 
 	$period = sprintf('%d',$payment['period']);
 	
-	if($period < 0 || $period > 2)
-		$period = 0;
+	if($period < 0 || $period > 3)
+		$period = 1;
 
 	switch($period)
 	{
 		case 0:
+			$at = sprintf('%d',$payment['at']);
+			if($at < 1 || $at > 7)
+				$error['at'] = 'Niepoprawny dzieñ tygodnia';
+		break;
+		
+		case 1:
 			$at = sprintf('%d',$payment['at']);
 			if($at == 0)
 			{
@@ -67,44 +73,53 @@ if(isset($payment))
 				if($at > 28)
 					$at = 1;
 			}
-			if($at < 1)
-				$at = 1;
-			elseif($at > 28)
-				$at = 28;
+			if($at < 1 || $at > 28)
+				$error['at'] = 'Niepoprawny dzieñ miesi±ca';
 		break;
-		case 1:
-			$at = sprintf('%d',$payment['at']);
-			if($at < 1)
-				$at = 1;
-			elseif($at > 7)
-				$at = 7;
-		break;
+			
 		case 2:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
-				$error[] = 'Niepoprawny format daty';
+				$error['at'] = 'Niepoprawny format daty';
+			else {
+				list($d,$m) = split('/',trim($payment['at']));
+				if($d>30 || $d<1)
+					$error['at'] = 'Niepoprawna liczba dni w miesi±cu';
+				if($m>3 || $m<1)
+					$error['at'] = 'Niepoprawny numer miesi±ca (max.3)';
+				
+				$at = ($m-1) * 100 + $d;
+			};
+		break;
+		
+		case 3:
+			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
+				$error['at'] = 'Niepoprawny format daty';
 			else
 				list($d,$m) = split('/',trim($payment['at']));
 			$ttime = mktime(12, 0, 0, $m, $d, 1990);
 			$at = date('z',$ttime) + 1;
-		break;	
+		break;
 	}
 	
 	$payment['period'] = $period;
-	$payment['at'] = $at;
 	$payment['id'] = $_GET['id'];
 
 	if(!$error)
 	{
+		$payment['at'] = $at;
 		$LMS->PaymentUpdate($payment);
 		header("Location: ?m=paymentinfo&id=".$payment['id']);
 		die;
 	}
 
-} else
+} else 
+{
 	$payment = $LMS->GetPayment($_GET['id']);
-
-if($payment['period']==2)
-	$payment['at'] = date("d/m",($payment['at']-1)*86400);
+	if($payment['period']==3)
+		$payment['at'] = date("d/m",($payment['at']-1)*86400);
+	if($payment['period']==2)
+		$payment['at'] = sprintf("%02d/%02d",($payment['at']%100),$payment['at']/100+1);
+}
 	
 $layout['pagetitle']="Edycja op³aty sta³ej: ".$payment['name'];	
 
