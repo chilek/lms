@@ -88,9 +88,9 @@ function openWindow(theURL,winName,myWidth,myHeight,isCenter)
 	return false;
 }
 
-function ipchoosewin(formfield){
-	
-	okno = openSelectWindow('?m=chooseip','chooseip',250,300,'true',formfield)
+function ipchoosewin(formfield,netid){
+
+       okno = openSelectWindow('?m=chooseip&netid=' + netid,'chooseip',250,300,'true',formfield)
 	return false;
 
 }

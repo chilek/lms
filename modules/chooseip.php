@@ -35,10 +35,10 @@ $networks = $LMS->GetNetworks();
 
 if (isset($_POST['netid']))
     $netid= $_POST['netid'];
-
+elseif (isset($_GET['netid']))
+    $netid = $_GET['netid'];
 elseif (isset($_SESSION['netid']))
     $netid = $_SESSION['netid'];
-    
 else
     $netid = $networks[0]['id'];
 
@@ -53,6 +53,7 @@ $SMARTY->assign('part',$p);
 $SMARTY->assign('js',$js);
 $SMARTY->assign('networks',$networks);
 $SMARTY->assign('network',$network);
+$SMARTY->assign('netid',$netid);
 $SMARTY->display('chooseip.html');
 
 ?>
