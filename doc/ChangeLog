@@ -18,6 +18,7 @@ wersja 1.5.3 (??/??/????):
   - usuniêty b³±d powoduj±cy brak mo¿liwo¶ci edycji konta systemowego (alec)
   - mo¿na okre¶liæ datê wystawienia nowej faktury (alec)
   - w oknie bilansu u¿ytkownika dodany link 'Wystaw fakturê' (alec)
+  - BTS#0000254: funkcja writesyslog() dzia³a równie¿ na OpenBSD (kubatyszko)
 
 wersja 1.5.2 Isis (25/11/2004):
 
