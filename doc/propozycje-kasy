@@ -6,13 +6,13 @@ Propopnowany zmiany dla ksiêgowo¶ci:
     -value              |        -payed
     -description        |        -date/time
                         |
- 			         |        users:                 
+	                     		|        users:                 
                         |  +--1---user_id ($)
                         |  |                    
 assigments(users(1)-tarrifs(oo))           
 -assinged_id($)   --1---+  |     tarrifs
 -user---------------oo-----+     -value
--tarrif-------------oo--------1- -tarrif_id($)		
+-tarrif-------------oo--------1---tarrif_id($)		
 -step in (y, m, w, d, never)     -type (+/-)
 -when                   
 -description            
