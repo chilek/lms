@@ -4,6 +4,9 @@ wersja 1.4.1 (??/??/2004):
 
   - poprawione b³êdne dzia³anie pola 'adres IP' przy edycji komputera, gdy
     podany adres jest b³êdny/zajêty (lukas/alec)
+  - dodane brakuj±ce warto¶ci domy¶lne niektórych kolumn w tabeli rtmessages
+    w pliku lms.mysql (alec)
+  - dokumentacja: dodany opis lms-makedhcpconf (alec)
 
 wersja 1.4.0 Evalla (15/10/2004):
 
