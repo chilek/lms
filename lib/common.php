@@ -165,11 +165,11 @@ function uptime()
 				$hours = floor($mins / 60);
 				$str = sprintf('You have been using your computer for: %d Milliseconds, or %d Seconds or %d mins or %d hours %d mins.',	$ticks,	$secs, $mins, $hours, $mins - ($hours*60));
 			}else{
-				$result = 'nieznany (brak w32api)';
+				$result = trans('unknown (no w32api)');
 			}
 		break;
 		default:
-			$result = 'nieznany os ('.PHP_OS.')';
+			$result = trans('unknown OS ($0)', PHP_OS);
 		break;
 	}
 
@@ -201,7 +201,7 @@ function hostname()
 			$hostname=$return[0];
 			break;
 		default:
-			$return = 'nieznany, '.PHP_OS;
+			$return = trans('unknown OS ($0)', PHP_OS);
 	}
 	
 	if(!$hostname)
@@ -458,7 +458,7 @@ function rmkdir($dir)
 function isvalidstring($string)
 {
 	for($i=0;$i<sizeof($string);$i++)
-		if(!($string[$i] >= "a" && $string[$i] <= "z") && !($string[$i] >= '0' && $string[$i] <= "9") && !($string[$i] == "_") && !($string[$i] == "-"))
+		if(!($string[$i] >= 'a' && $string[$i] <= 'z') && !($string[$i] >= '0' && $string[$i] <= '9') && !($string[$i] == '_') && !($string[$i] == '-'))
 			return false;
 	return true;
 }
@@ -494,14 +494,6 @@ function striphtml($text)
 	"chr(\\1)");
 
 	return preg_replace ($search, $replace, $text);
-}
-
-function writelog($msg,$newline)
-{
-	global $_CONFIG;
-	$file = fopen($_CONFIG['phpui']['adodb_debug_log'],'a');
-	fwrite($file,date('Y/m/d H:i ',time()).striphtml($msg)."\n");
-	fclose($file);
 }
 
 function check_email( $email )
@@ -579,12 +571,12 @@ function check_pesel($pesel)
 function get_producer($mac)
 {
 	global $_LIB_DIR;
-	$mac = strtoupper(str_replace(":","-",substr($mac,0,8)));
-	if($macfile = fopen($_LIB_DIR."/ethercodes.txt","r"))
+	$mac = strtoupper(str_replace(':','-',substr($mac,0,8)));
+	if($macfile = fopen($_LIB_DIR.'/ethercodes.txt','r'))
 		while($mac != $prefix && ! feof($macfile))
 		{
 			$line=fgets($macfile,4096);
-			list($prefix,$producer) = split(":",trim($line));
+			list($prefix,$producer) = split(':',trim($line));
 		}
 	fclose($macfile);
 	return $producer;
@@ -946,7 +938,7 @@ function chkconfig($value, $default = FALSE)
 	elseif(!isset($value) || $value == '')
 		return $default;
 	else
-		trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
+		trigger_error(trans('Incorrect option value: $0',$value));
 }
 
 function moneyf($value)
