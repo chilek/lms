@@ -34,8 +34,8 @@
 			<B>({$daylist[daylist]|date_format:"%x"})</B>
 		</TD>
 		<TD width="3%" colspan="3" class="frightu" align="right">
-			<A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.userid}&a={$listdata.adminid}" target="_BLANK">Print <IMG src="img/print.gif" alt="" align="absmiddle" border="0"></A>
-			<A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">Add Event <IMG src="img/save.gif" alt="" align="absmiddle" border="0"></A>
+			<A href="?m=eventprint&day={$daylist[daylist]}&u={$listdata.userid}&a={$listdata.adminid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt="" align="absmiddle" border="0"></A>
+			<A href="?m=eventadd&day={$daylist[daylist]|date_format:"%d"}&month={$daylist[daylist]|date_format:"%m"}&year={$daylist[daylist]|date_format:"%Y"}">{t}Add Event{/t} <IMG src="img/save.gif" alt="" align="absmiddle" border="0"></A>
 		</TD>
 	</TR>
 	{if $counter%2 && $counter!=0}{cycle print=false}{/if}
