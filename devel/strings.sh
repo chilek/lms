@@ -15,6 +15,7 @@ do
     perl -lne 'print for /\{t[^}]*\}([^{]*)\{\/t}/g' $FILENAME >> html_strings
     echo "done."
 done
+perl -pi -e 's/\\\$/\$/g' html_strings   	# \$ -> $
 perl -pi -e 's/\\/\\\\\\\\/g' html_strings   	# \ -> \\
 perl -pi -e 's/\x27/\\\\\x27/g' html_strings	# ' -> \'
 
