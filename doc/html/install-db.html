@@ -165,7 +165,7 @@ NAME="AEN192"
 			siê  do  podania  w  sekcji  [database] pliku /etc/lms/lms.ini has³a i u¿ytkownika:
 			<PRE
 CLASS="SCREEN"
->	user	 = lms
+>	user     = lms
 	password = has³o_z_pkt.3</PRE
 >
 		    </P
@@ -182,7 +182,8 @@ CLASS="SCREEN"
 			spokoju[tm](C):
 			<PRE
 CLASS="SCREEN"
->	12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o --add-drop-table --add-locks lms &#62; backups/lms-auto-"$(date +%s)".sql</PRE
+>	12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o \
+		    --add-drop-table --add-locks lms &#62; backups/lms-auto-"$(date +%s)".sql</PRE
 >
 			</P
 ><P
@@ -276,8 +277,8 @@ NAME="AEN214"
 			[database] pliku /etc/lms/lms.ini nale¿y ustawiæ nastêpuj±ce opcje:
    			<PRE
 CLASS="SCREEN"
->	type 	 = postgres
-    	user	 = lms
+>	type     = postgres
+    	user     = lms
     	password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</PRE
 >
 		    </P
