@@ -11,6 +11,9 @@ wersja 1.5.4 (??/??/????):
     braku potwierdzenia przy rozliczaniu u¿ytkownika (alec)
   - BTS#0000275: poprawiony b³±d w zapytaniu sql podczas wyszukiwania zg³oszeñ
     wg nazwiska zg³aszaj±cego (rejmer)
+  - BTS#0000278: dodane uprawnienie 'zarz±dzanie sieciami i urz±dzeniami' oraz
+    wy³±czono z uprawnienia 'zarz±dzanie komputerami' od³±czanie/w³±czanie
+    komputerów (rejmer/alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
