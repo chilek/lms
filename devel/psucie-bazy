@@ -15,23 +15,22 @@ mia³y co¶ do powiedzenia o programach do faktur etc..
 W/w kawa³ek powinien wygl±daæ tak:
 
 ID   type   value   taxvalue      TaxID
-1 |    4 | 70.00 |               |  0  | Abonament miesiêczny "Pakiet 256"
-2 |    4 | 30.00 | 30*.22==6.60  |  3  | karta sieciowa
+1 |    4 | 70.00 |               |  1  | Abonament miesiêczny "Pakiet 256"
+2 |    4 | 30.00 | 30*.22==6.60  |  4  | karta sieciowa
 
 aha, wp³ata to zawsze:
 
-9 |    3 | 36.60 |               |     | Wp³ata za kartê sieciow±
+9 |    3 | 36.60 |               |  0  | Wp³ata za kartê sieciow±
 
 
-TaxID to niestety kolejny tabelek wygl±daj±cy tak:
-ID | Taxed | TaxRate   desc [ | valid from | valid to | -> tego byæ ju¿ nie musi ]
-0  |   0   | 0.00   |   zw. / vat free
-1  |   1   | 0.00   |   0%
-2  |   1   | 7.00   |   7%
-3  |   1   | 22.00  |   22%
+TaxID to niestety kolejny tabelek (taxes?) wygl±daj±cy tak:
+ID | Taxed | TaxRate|   desc [ | valid from | valid to | -> tego byæ ju¿ nie musi ]
+1  |   0   | 0.00   |   zw. / vat free
+2  |   1   | 0.00   |   0%
+3  |   1   | 7.00   |   7%
+4  |   1   | 22.00  |   22%
 
 etc.. wystarcz± smallinty na ID i taxed, tax rate jako numeric (4,2) 
-
 
 Aha, jak ju¿ kto¶ psuje to sugerujê dodaæ do cash:
 
