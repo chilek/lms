@@ -63,7 +63,7 @@ if(isset($adminadd))
 	for($i=0;$i<256;$i += 4)
 		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
 
-	$adminadd['rights'] = ereg_replace('^[\'0\']*(.*)$','\1',$outmask);
+	$adminadd['rights'] = ereg_replace('^[0]*(.*)$','\1',$outmask);
 
 	if(!$error)
 	{
