@@ -61,7 +61,7 @@ ALTER TABLE tariffs MODIFY value DECIMAL(9,2);
 
 # Faktury inaczej 
 ALTER TABLE cash ADD invoiceid INT DEFAULT '0' NOT NULL;
-ALTER TABLE tariffs ADD taxvalue DECIMAL(9,2) DEFAULT '0' NOT NULL AFTER value;
+ALTER TABLE tariffs ADD taxvalue DECIMAL(9,2) DEFAULT '0' AFTER value;
 ALTER TABLE tariffs ADD pkwiu VARCHAR(255) DEFAULT NULL AFTER taxvalue;
 
 CREATE TABLE invoices (
@@ -87,7 +87,7 @@ CREATE TABLE invoices (
 CREATE TABLE invoicecontents (
     invoiceid INT NOT NULL,
     value DECIMAL(9,2) NOT NULL,
-    taxvalue DECIMAL(9,2) NOT NULL,
+    taxvalue DECIMAL(9,2) DEFAULT '0',
     pkwiu VARCHAR( 255 ) DEFAULT NULL,
     content VARCHAR( 16 ) NOT NULL,
     count DECIMAL(9,2) NOT NULL,
