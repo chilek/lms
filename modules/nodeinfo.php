@@ -24,6 +24,12 @@
  *  $Id$
  */
 
+if(!eregi("^[0-9]+$",$_GET[id]))
+{
+	header("Location: ?m=nodelist");
+	die;
+}
+
 if(!$LMS->NodeExists($_GET[id]))
 	if(isset($_GET[ownerid]))
 	{
