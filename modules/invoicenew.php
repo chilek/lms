@@ -62,12 +62,6 @@ switch($_GET['action'])
 		}
 	break;
 
-	case 'clear':
-		unset($contents);
-		unset($customer);
-		unset($invoice);
-	break;
-
 	case 'deletepos':
 		if(sizeof($contents))
 			foreach($contents as $idx => $row)
@@ -76,7 +70,9 @@ switch($_GET['action'])
 	break;
 
 	case 'setcustomer':
-		
+
+		$oldmonth = $invoice['month'];
+		$oldyear  = $invoice['year'];		
 		unset($invoice); 
 		unset($customer);
 		unset($error);
@@ -90,11 +86,38 @@ switch($_GET['action'])
 		if($invoice['paytime'] < 0)
 			$invoice['paytime'] = 14;
 
+		$invoice['number'] = $_POST['invoice']['number'];
+
 		if($invoice['cdate']) // && !$invoice['cdatewarning'])
 		{
 			list($year, $month, $day) = split('/',$invoice['cdate']);
-			if(checkdate($month, $day, $year))
+			if(checkdate($month, $day, $year)) 
+			{
 				$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
+				echo $invoice['year'];
+				if (($oldmonth!=$month) || ($oldyear!=$year))
+				{
+					if($this->CONFIG['invoices']['monthly_numbering'])
+			    			{
+				            		$start = mktime(0, 0, 0, date('n',$invoice['cdate']), 1, date('Y',$invoice['cdate']));
+			    				$end = mktime(0, 0, 0, date('n',$invoice['cdate'])+1, 1, date('Y',$invoice['cdate']));
+						}
+					else
+				    		{
+				            		$start = mktime(0, 0, 0, 1, 1, date('Y',$invoice['cdate']));
+		            				$end = mktime(0, 0, 0, 1, 1, date('Y',$invoice['cdate'])+1);
+				    		}
+						
+					$number = $LMS->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
+					if (!$number) $number=0;
+					$invoice['number']=++$number;
+					$invoice['month'] = $month;
+					$invoice['year']  = $year;
+				} else {
+					$invoice['month'] = $oldmonth;
+					$invoice['year']  = $oldyear;
+				}
+			}
 			else
 				$error['cdate'] = trans('Incorrect date format!');
 		}
@@ -111,6 +134,25 @@ switch($_GET['action'])
 		
 		$invoice['userid'] = $_POST['userid'];
 		
+		if($this->CONFIG['invoices']['monthly_numbering'])
+			{
+		    		$start = mktime(0, 0, 0, date('n',$invoice['cdate']), 1, date('Y',$invoice['cdate']));
+				$end = mktime(0, 0, 0, date('n',$invoice['cdate'])+1, 1, date('Y',$invoice['cdate']));
+			}
+				else
+			{
+		    		$start = mktime(0, 0, 0, 1, 1, date('Y',$invoice['cdate']));
+				$end = mktime(0, 0, 0, 1, 1, date('Y',$invoice['cdate'])+1);
+			}
+						
+		if ($LMS->DB->GetOne('SELECT number FROM invoices WHERE cdate >= ? AND cdate < ? AND number = ?', array($start, $end, $invoice['number'])))
+		{
+			$error['number'] = trans('This invoice number is already taken!');
+			$number = $LMS->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
+			if (!$number) $number=0;
+			$invoice['number']=++$number;			
+		}
+
 		if(!$error)
 			if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user'])))
 				$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user']));
@@ -130,6 +172,32 @@ switch($_GET['action'])
 			die;
 		}
 	break;
+
+	case 'init':
+
+    		unset($invoice);
+    		unset($contents);
+    		unset($customer);
+    		unset($error);
+		if($this->CONFIG['invoices']['monthly_numbering'])
+	    		{
+		                $start = mktime(0, 0, 0, date('n',time()), 1, date('Y',time()));
+			        $end = mktime(0, 0, 0, date('n',time())+1, 1, date('Y',time()));
+			}
+		else
+		        {
+		                $start = mktime(0, 0, 0, 1, 1, date('Y',time()));
+		                $end = mktime(0, 0, 0, 1, 1, date('Y',time())+1);
+		        }
+
+		$number = $LMS->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
+		$invoice['number']=++$number;
+		$invoice['month'] = date("m");
+		$invoice['year']  = date("Y");
+		$invoice['cdate'] = time();
+		$invoice['paytime'] = 14;
+																
+	break;
 }
 
 if($invoice['paytype'] == '')
@@ -140,6 +208,7 @@ $_SESSION['invoicecontents'] = $contents;
 $_SESSION['invoicecustomer'] = $customer;
 $_SESSION['invoicenewerror'] = $error;
 
+//var_dump($invoice);
 if($_GET['action'] != '')
 {
 	// redirect, ¿eby refreshem nie spierdoliæ faktury

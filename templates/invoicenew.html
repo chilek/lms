@@ -38,6 +38,15 @@
 			<B>{t}Customer data:{/t}</B>
 		</TD>
 	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			<B>{t}Invoice number:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="invoice[number]" VALUE="{$invoice.number}" SIZE="10" {tip text="Enter invoice number. WARNING! Changing this number can be DANGEROUS!" trigger="number"}>		
+			({$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month})
+		</TD>
+	</TR>
 	{if $customer}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
@@ -242,7 +251,7 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="8" CLASS="fbottomu" ALIGN="RIGHT">
-			<A HREF="?m=invoicenew&action=clear">{t}Clear Contents{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/delete.gif" BORDER="0"></A> 
+			<A HREF="?m=invoicenew&action=init">{t}Clear Contents{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/delete.gif" BORDER="0"></A> 
 			{if !$customer}
 			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
 			{elseif !$contents}
