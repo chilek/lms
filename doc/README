@@ -1040,8 +1040,10 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    traktowany jest za w³±czony je¶li czas ostatniego pozytywnego
    skanowania nie jest starszy od zadanej warto¶ci (domy¶lnie 600
    sekund). Parametr ten okre¶la siê przy pomocy opcji lastonline_limit w
-   sekcji [phpui] pliku konfiguracyjnego. Status komputerów jest tak¿e
-   widoczny na li¶cie komputerów.
+   sekcji [phpui] pliku konfiguracyjnego. Powy¿sze odnosi siê równie¿ do
+   urz±dzeñ z tym, ¿e status urz±dzenia okre¶la siê na podstawie statusu
+   wszystkich jego adresów. Status komputerów jest tak¿e widoczny na
+   li¶cie komputerów.
    Notatka
 
    Do badania aktywno¶ci hostów mo¿na wykorzystaæ skrypt lms-fping lub
@@ -1466,6 +1468,7 @@ Rozdzia³ 4. Skrypty
    lms-makemessages Generuje regu³ki przekierowuj±ce ruch u¿ytkowników,
    którym ustawiono wiadomo¶æ administracyjn±
    lms-fping Badanie aktywno¶ci komputerów.
+   lms-rtparser Backend do Helpdesk'a.
      _________________________________________________________________
 
 4.3. Opis i konfiguracja
@@ -2046,6 +2049,61 @@ http://www.naszasiec.pl/
        Przyk³ad: temp_file = /tmp/hosts
      _________________________________________________________________
 
+4.3.15. lms-rtparser
+
+   Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który
+   wspó³pracuj±c z serwerm pocztowym zapisuje do bazy danych wszystkie
+   wiadomo¶ci skierowane na adresy Helpdesk'a. Skrypt pobiera z wej¶cia
+   wiadomo¶æ pocztow±, parsuje zawarto¶æ i umieszcza zg³oszenie w
+   kolejce, wysy³aj±c do zg³aszaj±cych potwierdzenie przyjêcia
+   wiadomo¶ci. W temacie potwierdzenia znajduje siê symbol zg³oszenia.
+   Podczas parsowania wiadomo¶ci nastêpuje, na podstawie tematu
+   wiadomo¶ci, próba rozpoznania czy wiadomo¶æ nie jest odpowiedzi± na
+   inn± wiadomo¶æ z ju¿ przypisanym numerem zg³oszenia. Od wiadomo¶ci
+   zostaj± od³±czone za³±czniki i umieszczone w katalogu zdefiniowanym w
+   opcji mail_dir.
+
+   Skrypt mo¿na uruchamiaæ na wiele sposobów. Jednym z nich jest
+   stworzenie skryptu pow³oki, który odczytuj±c skrzynkê pocztow± wywo³a
+   lms-rtparser dla ka¿dego maila. Wygodniejszym zastosowaniem jest
+   jednak zintegrowanie go z serwerem pocztowym. Poni¿ej przedstawiono
+   sposób pod³±czenia go do postfixa przy u¿yciu opcji header_checks.
+# plik main.cf:
+header_checks = regexp:/etc/postfix/header_checks
+
+# plik header_checks
+/^To:.*adres@domena.*/ FILTER filter:dummy
+
+# plik master.cf:
+filter unix - n n - 10 pipe
+      -flags=Rq user=nobody argv=/path/to/lms-rtparser
+
+   Konfiguracjê tego skryptu zawiera sekcja [rt] w pliku lms.ini:
+     * default_queue
+       Numer ID kolejki, do której trafi± zg³oszenia. Je¶li nie podano,
+       Kolejka zostanie odszukana na podstawie adresu odbiorcy maila.
+       Opcja ta mo¿e zostaæ nadpisana przy pomocy parametru -q przy
+       uruchomieniu skryptu. Domy¶lnie: niezdefiniowana.
+       Przyk³ad: default_queue =
+     * sendmail_binary
+       Lokalizacja programu sendmail. Domy¶lnie: /usr/sbin/sendmail
+       Przyk³ad: sendmail_binary = /usr/lib/sandmail
+     * autoreply_from
+       Nadawca potwierdzenia. Je¶li nie zdefiniowano, zostanie u¿yty
+       adres kolejki do której zapisano zg³oszenie. Domy¶lnie: pusty.
+       Przyk³ad: autoreply_from = <rt@net.pl>
+     * mail_dir
+       Katalog w którym zostan± zapisane za³±czniki. Katalog ten powinien
+       byæ dostêpny dla apache'a i u¿ytkownika uruchamiaj±cego
+       lms-rtparser. Gdy nie ustawiono, za³±czniki zostan± utracone.
+       Domy¶lnie: niezdefiniowany.
+       Przyk³ad: mail_dir = /usr/local/lms/mail
+     * tmp_dir
+       Katalog tymczasowy. Domy¶lnie zostanie u¿yty katalog zdefiniowany
+       w zmiennej systemowej lub /tmp.
+       Przyk³ad: tmp_dir = /home/user/tmp
+     _________________________________________________________________
+
 Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
 
    LMS-MGC to "magiczny" generator plików konfiguracyjnych. Przy
@@ -2425,6 +2483,7 @@ port            = 0             # numer portu, domy¶lnie: 0
 sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma
                                 # byæ sprawdzane ¿±danie reloadu, domy¶lnie: 30
 instances       = hosts oident firewall       # lista instancji modu³ów
+command         = 'echo "³±czê siê z baz±"'   # polecenie wykonywane przed ka¿dym po³±czeniem z baz±
 
    Notatka
 
@@ -2436,6 +2495,10 @@ instances       = hosts oident firewall       # lista instancji modu³ów
 [nazwa_instancji]
 module = /¶cie¿ka/nazwa_modu³u.so
 info = "Opcjonalny opis modu³u"
+
+   Zmiana opcji 'instances' oraz dowolnej opcji w sekcjach instancji, w
+   odró¿nieniu od pozosta³ych opcji globalnych, nie wymaga restartu
+   demona.
      _________________________________________________________________
 
 6.1.4. Uruchomienie
@@ -2450,14 +2513,14 @@ info = "Opcjonalny opis modu³u"
 
    Innym sposobem uruchomienia jest jednorazowy reload w wykorzystaniem
    crona. Z tego sposobu nale¿y korzystaæ uruchamiaj±c modu³y takie jak
-   'payments' 'notify' 'traffic'. W tym wypadku musisz stworzyæ osobny
-   plik konfiguracyjny dla ka¿dego modu³u (zawieraj±cy równie¿ opcje dla
-   demona) i podaæ go demonowi przy pomocy opcji '-c'. Przyk³adowy wpis
-   do crontab'a wygl±da nastêpuj±co:
-  1 0 * * *    /usr/local/bin/almsd -q -c /etc/lms/payments.lms.ini
+   'payments' 'notify', 'traffic', czy 'pinger'. W tym wypadku mo¿esz
+   okre¶liæ listê instancji do wykonania za pomoc± opcji '-i'.
+   Przyk³adowy wpis do crontab'a wygl±da nastêpuj±co:
+  1 0 * * *    /usr/local/bin/almsd -qi "payments notify"
 
    Poni¿szy listing przedstawia dostêpne opcje linii poleceñ programu:
   -c    ¶cie¿ka do pliku konfiguracyjnego (domy¶lnie: /etc/lms/lms.ini)
+  -i    lista instancji (oddzielonych spacj±) do prze³adowania
   -b    uruchomienie w tle
   -s    czas w sek. miêdzy odczytami tabeli 'reload' (domy¶lnie: 30)
   -q    wykonaj reload i zakoñcz
@@ -2719,6 +2782,15 @@ info = "Opcjonalny opis modu³u"
        fixed-address %i; \n\t}".
        Przyk³ad: host = "host %n {hardware ethernet %m; fixed-address
        %i;}"
+     * networks
+       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
+       nie ma znaczenia. Domy¶lnie: pusta (wszystkie sieci).
+       Przyk³ad: networks = "lan1 lan2"
+     * usergroups
+       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
+       Wielko¶æ liter nie ma znaczenia. Domy¶lnie: pusta (wszystkie
+       grupy).
+       Przyk³ad: usergroups = "grupa1 grupa2"
      _________________________________________________________________
 
 6.2.8. Hostfile
@@ -3063,6 +3135,15 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
      * command
        Polecenie wykonywane po utworzeniu plików konf. Domy¶lnie: puste.
        Przyk³ad: command = ""
+     * networks
+       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
+       nie ma znaczenia. Domy¶lnie: pusta (wszystkie sieci).
+       Przyk³ad: networks = "lan1 lan2"
+     * usergroups
+       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
+       Wielko¶æ liter nie ma znaczenia. Domy¶lnie: pusta (wszystkie
+       grupy).
+       Przyk³ad: usergroups = "grupa1 grupa2"
      _________________________________________________________________
 
 6.2.12. Ethers
@@ -3088,6 +3169,15 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
        Je¶li ustawimy na 'yes', to komputerom od³±czonym zostanie
        przypisany mac-adres '00:00:00:00:00:00'. Domy¶lnie: "no".
        Przyk³ad: dummy_macs = yes
+     * networks
+       Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter
+       nie ma znaczenia. Domy¶lnie: pusta (wszystkie sieci).
+       Przyk³ad: networks = "lan1 lan2"
+     * usergroups
+       Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê.
+       Wielko¶æ liter nie ma znaczenia. Domy¶lnie: pusta (wszystkie
+       grupy).
+       Przyk³ad: usergroups = "grupa1 grupa2"
      _________________________________________________________________
 
 6.2.13. Oident
@@ -3409,14 +3499,21 @@ Rozdzia³ 7. Dla dociekliwych
    mailfrom - e-mail nadawcy
    subject - temat wiadomo¶ci
    messageid - pocztowy identyfikator wiadomo¶ci
-   inreplyto - identyfikator wiadomo¶ci
-   replyto -
-   headers -
+   inreplyto - identyfikator poprzedniej wiadomo¶ci
+   replyto - nag³ówek wiadomo¶ci
+   headers - wszystkie nag³ówki pocztowe wiadomo¶ci
    body - tre¶æ wiadomo¶ci
-   createtime - data utworzenia/wys³ania
+   createtime - data utworzenia/wys³ania/odebrania
      _________________________________________________________________
 
-7.2.20. Helpdesk - uprawnienia ('rtrights')
+7.2.20. Helpdesk - za³±czniki ('rtattachments')
+
+   messageid - identyfikator wiadomo¶ci
+   filename - nazwa pliku
+   contenttype - typ pliku
+     _________________________________________________________________
+
+7.2.21. Helpdesk - uprawnienia ('rtrights')
 
    id - identyfikator
    queueid - identyfikator kolejki
@@ -3424,7 +3521,7 @@ Rozdzia³ 7. Dla dociekliwych
    rights - (1-odczyt, 2-zapis)
      _________________________________________________________________
 
-7.2.21. Informacje o bazie danych ('dbinfo')
+7.2.22. Informacje o bazie danych ('dbinfo')
 
    keytype - typ
    keyvalue - warto¶æ

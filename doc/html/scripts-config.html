@@ -1605,6 +1605,126 @@ CLASS="PROMPT"
 ></LI
 ></UL
 ></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-RTPARSER"
+>4.3.15. lms-rtparser</A
+></H2
+><P
+>Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który wspó³pracuj±c
+	    z serwerm pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
+	    adresy Helpdesk'a. Skrypt pobiera z wej¶cia wiadomo¶æ pocztow±, parsuje zawarto¶æ
+	    i umieszcza zg³oszenie w kolejce, wysy³aj±c do zg³aszaj±cych
+	    potwierdzenie przyjêcia wiadomo¶ci. W temacie potwierdzenia znajduje siê symbol
+	    zg³oszenia. Podczas parsowania wiadomo¶ci nastêpuje, na 
+	    podstawie tematu wiadomo¶ci, próba rozpoznania czy wiadomo¶æ nie jest odpowiedzi± na inn± wiadomo¶æ z ju¿
+	    przypisanym numerem zg³oszenia. Od wiadomo¶ci zostaj± od³±czone za³±czniki
+	    i umieszczone w katalogu zdefiniowanym w opcji <TT
+CLASS="FILENAME"
+>mail_dir</TT
+>.</P
+><P
+>Skrypt mo¿na uruchamiaæ na wiele sposobów. Jednym z nich jest
+	    stworzenie skryptu pow³oki, który odczytuj±c skrzynkê pocztow± wywo³a lms-rtparser 
+	    dla ka¿dego maila. Wygodniejszym zastosowaniem jest jednak zintegrowanie
+	    go z serwerem pocztowym. Poni¿ej przedstawiono sposób pod³±czenia go do
+	    postfixa przy u¿yciu opcji header_checks.
+<PRE
+CLASS="SCREEN"
+># plik main.cf:
+header_checks = regexp:/etc/postfix/header_checks
+
+# plik header_checks
+/^To:.*adres@domena.*/ FILTER filter:dummy
+
+# plik master.cf:
+filter unix - n n - 10 pipe
+      -flags=Rq user=nobody argv=/path/to/lms-rtparser</PRE
+>
+	    </P
+><P
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[rt]</I
+></SPAN
+>
+	    w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
+><UL
+><LI
+><P
+>default_queue</P
+><P
+>Numer ID kolejki, do której trafi± zg³oszenia. Je¶li nie
+		    podano, Kolejka zostanie odszukana na podstawie adresu odbiorcy maila.
+		    Opcja ta mo¿e zostaæ nadpisana przy pomocy parametru -q przy
+		    uruchomieniu skryptu. Domy¶lnie: niezdefiniowana.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>default_queue = </SAMP
+></P
+></LI
+><LI
+><P
+>sendmail_binary</P
+><P
+>Lokalizacja programu sendmail. Domy¶lnie: /usr/sbin/sendmail</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>sendmail_binary = /usr/lib/sandmail</SAMP
+></P
+></LI
+><LI
+><P
+>autoreply_from</P
+><P
+>Nadawca potwierdzenia. Je¶li nie zdefiniowano, zostanie u¿yty adres
+		    kolejki do której zapisano zg³oszenie. Domy¶lnie: pusty.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>autoreply_from = &lt;rt@net.pl&gt;</SAMP
+></P
+></LI
+><LI
+><P
+>mail_dir</P
+><P
+>Katalog w którym zostan± zapisane za³±czniki. Katalog ten powinien byæ
+		    dostêpny dla apache'a i u¿ytkownika uruchamiaj±cego lms-rtparser. Gdy nie ustawiono, 
+		    za³±czniki zostan± utracone. Domy¶lnie: niezdefiniowany.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mail_dir = /usr/local/lms/mail</SAMP
+></P
+></LI
+><LI
+><P
+>tmp_dir</P
+><P
+>Katalog tymczasowy. Domy¶lnie zostanie u¿yty katalog 
+		    zdefiniowany w zmiennej systemowej lub <TT
+CLASS="FILENAME"
+>/tmp</TT
+>.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>tmp_dir = /home/user/tmp</SAMP
+></P
+></LI
+></UL
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
