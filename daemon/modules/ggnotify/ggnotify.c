@@ -29,6 +29,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <time.h>
 
 #include "almsd.h"
 #include "ggnotify.h"
@@ -78,10 +79,8 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 {
 	QUERY_HANDLE *res, *result;
 	unsigned char *message = 0;
-	unsigned char *command, *id;
 	int i, j, balance;
 	struct gg_session *sess;
-	struct gg_event *e;
 	struct gg_login_params p;
 
 	memset(&p, 0, sizeof(p));
