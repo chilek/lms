@@ -737,7 +737,6 @@ $IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
 			    <para>host_mark_up</para>
 			    <para>Regu³a markuj±ca dla ka¿dego komutera. Domy¶lnie:
 <screen>
-# %n
 $IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
 </screen>
 			    </para>
