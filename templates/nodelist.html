@@ -1,8 +1,8 @@
-<!--// $Id$ //-->
 {include file="header.html"}
 {include file="nodeheader.html"}
+<!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<table cellpadding="3" width="100%">
+<TABLE cellpadding="3" width="100%">
 	<TR class="dark" {tip text="Click on column's name for sorting order change"}>
 		<TD class="fleftu" width="97%">
 			<img src="img/node.gif" border="0" ALT="" align="absmiddle"> <A href="?m=nodelist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
@@ -17,7 +17,7 @@
 			<img src="img/mac.gif" border="0" ALT="" align="absmiddle">&nbsp;<A href="?m=nodelist&o=mac{if $listdata.direction eq "asc" && $listdata.order eq "mac"},desc{/if}">{t}MAC address:{/t}</A> {if $listdata.order eq "mac"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right">
-			<NOBR><B>{t}Total:{/t} {$listdata.total}</B></NOBR>
+			<NOBR><B>{t 0=$listdata.total}Total: $0{/t}</B></NOBR>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -64,10 +64,10 @@
 		<TD class="fright" width="1%">
 			<nobr>
 			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" border="0" ALT="{if ! $nodelist[nodelist].access}[ {t}Connect{/t} ]{else}[ {t}Disconnect{/t} ]{/if}"></A>
-                        <a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" border="0" ALT="{if ! $nodelist[nodelist].warning}[ {t}Show message{/t} ]{else}[ {t}Don't show message{/t} ]{/if}"></A>
-			<a onClick="return confirmLink(this, '{t}Are you sure, you want to remove node \'{$nodelist[nodelist].name|upper}\' from database?{/t}')" href="?m=nodedel&id={$nodelist[nodelist].id}"><img src="img/delete.gif" border="0" ALT="[ {t}Delete{/t} ]"></A>
-			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" border="0" ALT="[ Edytuj ]"></A>
-			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" border="0" ALT="[ Info ]"></A>
+                        <a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" border="0" ALT="{if ! $nodelist[nodelist].warning}[ {t}Enable warning{/t} ]{else}[ {t}Disable warning{/t} ]{/if}"></A>
+			<a onClick="return confirmLink(this, '{t 0=$nodelist[nodelist].name|upper}Are you sure, you want to remove node \'$0\' from database?{/t}')" href="?m=nodedel&id={$nodelist[nodelist].id}"><img src="img/delete.gif" border="0" ALT="[ {t}Delete{/t} ]"></A>
+			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" border="0" ALT="[ {t}Edit{/t} ]"></A>
+			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" border="0" ALT="[ {t}Info{/t} ]"></A>
 			</nobr>
 		</TD>
 	</TR>
@@ -100,9 +100,9 @@
 	<TR CLASS="light">
 		<TD WIDTH="98%" COLSPAN="2" CLASS="fleftu" ALIGN="right">
 			<B>
-				{t}Total{/t}:<BR>
-				{t}Connected{/t}:<BR>
-				{t}Disconnected{/t}:
+				{t}Total:{/t}<BR>
+				{t}Connected:{/t}<BR>
+				{t}Disconnected:{/t}
 			</B>
 		</TD>
 		<TD WIDTH="2%" COLSPAN="2" CLASS="frightu" VALIGN="TOP">
