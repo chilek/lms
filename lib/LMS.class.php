@@ -164,6 +164,14 @@ class LMS {
 		return $db->row[0];
 	}
 
+	function GetNodeIDByName($name)
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT `id` FROM `nodes` WHERE `name` = '".$name."' LIMIT 1");
+		$db->FetchRow();
+		return $db->row[0];
+	}
+
 	function GetNodeName($id)
 	{
 		$db=$this->db;
