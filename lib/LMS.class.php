@@ -1750,7 +1750,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		foreach(array('22.0', '7.0', '0.0', 'zw.') as $key)
 		{
 			$stan=$this->GetUserBalance($user_id, $key);
-			if ($stan != 0)
+			if ($stan < 0)
 			{
 				$stan=-$stan;
 				if ($key == 'zw.')
