@@ -2604,7 +2604,7 @@ class LMS
 
 	function GetNetDevIPs($id)
 	{
-		return $this->DB->GetAll('SELECT id, name, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
+		return $this->DB->GetAll('SELECT id, name, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access, info FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
 	}
 	
 	/*

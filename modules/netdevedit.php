@@ -143,7 +143,6 @@ case 'formaddip':
 		if($LMS->GetNodeIDByMAC($nodeipdata['mac']))
 			$error['mac'] = 'Podany MAC jest ju¿ w bazie!';
 
-	
 	if(!$error)
 	{
 		$nodeipdata['warning'] = 0;
@@ -293,4 +292,3 @@ switch($edit)
     break;
 }
 ?>
-
