@@ -12,9 +12,9 @@
 			<B>{t}Name:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
-			<INPUT name="config[var]" value="{$config.var}" {tip text="Podaj nazwê opcji konfiguracyjnej" trigger="var" bold=1}>&nbsp;
+			<INPUT name="config[var]" value="{$config.var}" {tip text="Enter option name" trigger="var" bold=1}>&nbsp;
 			<B>{t}Section:{/t}</B>
-			<SELECT size="1" name="config[section]" {tip text="Wybierz sekcjê" trigger="section"}>
+			<SELECT size="1" name="config[section]" {tip text="Select section" trigger="section"}>
 			    <OPTION name="config[name]" value="phpui" {if $config.section eq "phpui"}SELECTED{/if}>phpui</OPTION>
 			    <OPTION name="config[name]" value="invoices" {if $config.section eq "invoices"}SELECTED{/if}>invoices</OPTION>
 			</SELECT>
@@ -28,7 +28,7 @@
 			<B>{t}Value:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<TEXTAREA rows="5" cols="50" name="config[value]" {tip text="Wprowad¼ warto¶æ opcji" trigger="value"}>{$config.value}</TEXTAREA>
+			<TEXTAREA rows="5" cols="50" name="config[value]" {tip text="Enter option value" trigger="value"}>{$config.value}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -39,7 +39,7 @@
 			<B>{t}Comment:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<TEXTAREA rows="5" cols="50" name="config[description]" {tip text="Opis opcji (opcjonalnie)" trigger="description"}>{$config.description}</TEXTAREA>
+			<TEXTAREA rows="5" cols="50" name="config[description]" {tip text="Enter description (optional)" trigger="description"}>{$config.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -56,7 +56,7 @@
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
 			<A href="javascript:document.config.submit();" accesskey="s">{t}Save{/t} <img src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
-			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t}Are sure you want to delete option \'{$config.var}\' from database?{/t}')">{t}Delete{/t} <img src="img/delete.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t 0=$config.var}Are you sure, you want to delete option \'$0\' from database?{/t}')">{t}Delete{/t} <img src="img/delete.gif" border="0" align="absmiddle" ALT=""></A>
 			<A href="?m=configlist">{t}Cancel{/t} <img src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A>
 		</TD>
 	</TR>
