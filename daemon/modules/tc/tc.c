@@ -341,11 +341,9 @@ struct tc_module * init(GLOBAL *g, MODULE *m)
 	ini = g->iniparser_load(g->inifile);
 	
 	s = g->str_concat(instance, ":file");
-	//tc->file = strdup(g->iniparser_getstring(ini, s, "/etc/rc.d/rc.htb"));
-	tc->file = strdup(g->iniparser_getstring(ini, s, "/etc/rc.d/rc.htb-new"));
+	tc->file = strdup(g->iniparser_getstring(ini, s, "/etc/rc.d/rc.htb"));
 	free(s); s = g->str_concat(instance, ":command");
-	//tc->command = strdup(g->iniparser_getstring(ini, s, "sh /etc/rc.d/rc.htb start"));
-	tc->command = strdup(g->iniparser_getstring(ini, s, ""));
+	tc->command = strdup(g->iniparser_getstring(ini, s, "sh /etc/rc.d/rc.htb start"));
 	free(s); s = g->str_concat(instance, ":begin");
 	tc->begin = strdup(g->iniparser_getstring(ini, s, "\
 #!/bin/sh\n\
