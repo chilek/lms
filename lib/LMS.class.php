@@ -1376,10 +1376,10 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	{
 		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate FROM tariffs ORDER BY name ASC"))
 		{
-			$week = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 GROUP BY tariffid', 'tariffid');
-			$month = $this->DB->GetAllByKey('SELECT tariffid, SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 GROUP BY tariffid', 'tariffid');
-			$quarter = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)/4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 GROUP BY tariffid', 'tariffid');
-			$year = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 GROUP BY tariffid', 'tariffid');
+			$week = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) GROUP BY tariffid', 'tariffid');
+			$month = $this->DB->GetAllByKey('SELECT tariffid, SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) GROUP BY tariffid', 'tariffid');
+			$quarter = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)/4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) GROUP BY tariffid', 'tariffid');
+			$year = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) GROUP BY tariffid', 'tariffid');
 
 			foreach($tarifflist as $idx => $row)
 			{
@@ -1464,10 +1464,10 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$result = $this->DB->GetRow('SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate FROM tariffs WHERE id=?', array($id));
 		$result['users'] = $this->DB->GetAll('SELECT users.id AS id, COUNT(users.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS username FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY users.id, username', array($id));
 		
-		$week = $this->DB->GetOne('SELECT SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND tariffid = ?', array($id));
-		$month = $this->DB->GetOne('SELECT SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 AND tariffid = ?', array($id));
-		$quarter = $this->DB->GetOne('SELECT SUM(value)/4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 AND tariffid = ?', array($id));
-		$year = $this->DB->GetOne('SELECT SUM(value)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 AND tariffid = ?', array($id));
+		$week = $this->DB->GetOne('SELECT SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) AND tariffid = ?', array($id));
+		$month = $this->DB->GetOne('SELECT SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0))AND tariffid = ?', array($id));
+		$quarter = $this->DB->GetOne('SELECT SUM(value)/4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0))AND tariffid = ?', array($id));
+		$year = $this->DB->GetOne('SELECT SUM(value)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0))AND tariffid = ?', array($id));
 		
 		$result['userscount'] = sizeof($result['users']);
 		$result['count'] = $this->GetUsersWithTariff($id);
