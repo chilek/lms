@@ -103,7 +103,6 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 	function _driver_listtables()
 	{
-		echo 'ulalala';
 		$this->_result = mysql_list_tables($this->_dbname,$this->_dblink);
 		return $this->GetCol();
 	}
@@ -112,6 +111,9 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.11  2003/08/24 00:37:07  lukasz
+ * *** empty log message ***
+ *
  * Revision 1.10  2003/08/22 13:15:27  lukasz
  * - ListTables()
  *
