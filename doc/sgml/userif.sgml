@@ -8,7 +8,9 @@
   Szybkie wyszukiwanie danych o u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji
   seryjnej do u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich hase³.
   Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania ³±cza, a tak¿e
-  tworzenie kopii bazy danych oraz zarz±dzanie skryptami wykonywalnymi.</para>
+  tworzenia kopii bazy danych oraz zarz±dzania konfiguracj± us³ug na serwerze . 
+  <emphasis>LMS-UI</emphasis> posiada tak¿e wiele innych mo¿liwo¶ci, które w tym
+  rozdziale zostan± opisane.</para>
  <sect1 id="user-login">
 	<title>Logowanie</title>
 	<para>Po wpisaniu w przegl±darce adresu do strony z lms'em, powita ciê
@@ -18,16 +20,6 @@
 	za³o¿onego konta, zostaniesz przekierowany do modu³u tworzenia kont
 	administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
 	jednego modu³u.</para>
-	<figure>
-		<title>LMS-UI: Logowanie</title>
-			<ulink url="images/login.png">
-				<inlinemediaobject>
-  				<imageobject>
-  					<imagedata fileref="images/login-small.png" format="png">
-  				</imageobject>
-  				</inlinemediaobject>
-			</ulink>
-	</figure>
  </sect1>
  <sect1 id="user-all">
 	<title>Praca z LMS-UI</title>
@@ -38,61 +30,78 @@
 	<para>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
 	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze
 	podaj±c ich numery.</para>
-	<figure>
-		<title>LMS-UI: Panel g³ówny</title>
-			<ulink url="images/welcome.png">
-				<inlinemediaobject>
-  				<imageobject>
-  					<imagedata fileref="images/welcome-small.png" format="png">
-  				</imageobject>
-  				</inlinemediaobject>
-			</ulink>
-	</figure>
  <sect2 id="menu-users">
 	<title>U¿ytkownicy</title>
 	<para>Po wej¶ciu do panelu 'U¿ytkownicy' uka¿e siê lista u¿ytkowników,
 	któr± mo¿esz filtrowaæ wed³ug wybranych kryteriów lub sortowaæ klikaj±c
 	na nazwie kolumny.</para>
 	<para>Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu
-	z informacjami szczegó³owymi o nim i przypisanych mu komputerach oraz
-	operacjach finansowych. Tam te¿ mo¿esz zaksiêgowaæ wp³atê lub obci±¿enie jego
-	rachunku.</para>
-	<para>W menu znajduj±cym siê u góry okna masz do wyboru opcje: filtrowania listy,
-	dodawania nowych u¿ytkowników, wyszukiwania w bazie wg zadanych kryteriów oraz
-	wydruku listy.</para>
-	<para>Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony) u¿ytkowników.</para>
-	<para><note><para>Do automatycznego od³±czania u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
+	z informacjami szczegó³owymi o nim i przypisanych mu komputerach, taryfach oraz
+	operacjach finansowych. Tam te¿ mo¿esz modyfikowaæ dane u¿ytkownika, definiowaæ
+	op³aty abonamentowe i zaksiêgowaæ wp³atê lub obci±¿enie jego rachunku.</para>
+	<para>W menu znajduj±cym siê u góry okna masz do wyboru opcje:
+	<itemizedlist>
+	    <listitem>
+	    <para>Lista - Wy¶wietlenie listy u¿ytkowników, tej która pokazuje siê po
+	    wej¶ciu do panelu 'U¿ytkownicy'.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Od³±czeni - Wy¶wietlenie listy u¿ytkowników od³±czonych.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Zad³u¿eni - Wy¶wietlenie listy u¿ytkowników zad³u¿onych.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Nowy - Dodawanie nowego u¿ytkownika.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Szukaj - Wyszukiwanie u¿ytkowników wg zadanych kryteriów.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Wersja do druku - Wy¶wietlenie listy u¿ytkowników, w formacie przyjaznym dla
+	    drukarki.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Wydruk zad³u¿onych - Wy¶wietlenie listy u¿ytkowników zad³u¿onych, w formacie 
+	    przyjaznym dla drukarki.</para>
+	    </listitem>
+	</itemizedlist>
+	</para>
+	<para>Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony) wszystkich komputerów 
+	przypisanych danemu u¿ytkownikowi.</para>
+	<para><note><para>Do automatycznego od³±czania komputerów u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
 	s³u¿y skrypt lms-cutoff.</para></note></para>
-	<figure>
-		<title>LMS-UI: U¿ytkownicy</title>
-			<ulink url="images/users.png">
-				<inlinemediaobject>
-  				<imageobject>
-  					<imagedata fileref="images/users-small.png" format="png">
-  				</imageobject>
-  				</inlinemediaobject>
-			</ulink>
-	</figure>
  </sect2>
  <sect2 id="menu-nodes">
 	<title>Komputery</title>
 	<para>Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie listy komputerów,
 	wyszukiwania komputerów o danej nazwie, IP lub MAC'u, dodawanie nowych lub usuwanie ju¿
-	wpisanych do bazy komputerów, a tak¿e podgl±d i zmianê informacji o nich. W górnym menu dostêpna
-	jest opcja wydruku listy. Zmiany statusu komputera 'w³±czony/wy³±czony' dokonuje siê
+	wpisanych do bazy komputerów, a tak¿e podgl±d i zmianê informacji o nich. Zmiany statusu 
+	komputera 'w³±czony/wy³±czony' dokonuje siê
 	klikniêciem na ikonê ¿arówki w odpowiedniej linii.</para>
-	<para><note><para>Aby dodaæ nowy komputer musisz wcze¶niej utworzyæ
-	u¿ytkownika oraz sieæ, którym go przypiszesz.</para></note></para>
-	<figure>
-		<title>LMS-UI: Komputery</title>
-			<ulink url="images/nodes.png">
-				<inlinemediaobject>
-  				<imageobject>
-  					<imagedata fileref="images/nodes-small.png" format="png">
-		  		</imageobject>
-  				</inlinemediaobject>
-			</ulink>
-	</figure>
+	<para>Górne menu udostêpnia nastêpuj±ce modu³y:
+	<itemizedlist>
+	    <listitem>
+	    <para>Lista - Wy¶wietlenie listy komputerów, tej która pokazuje siê po
+	    wej¶ciu do panelu 'Komputery'. Listê mo¿na sortowaæ klikaj±c na nazwie kolumny.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Nowy - Dodawanie nowego komputera.</para>
+	    <para><note><para>Aby wyszukaæ komputery w swojej sieci
+	    mo¿esz skorzystaæ z programu nbtscan. Je¶li jest on zainstalowany w systemie, po
+	    naci¶niêciu 'Skanuj' zobaczysz listê znalezionych komputerów.</para></note></para>
+	    <para><note><para>Aby dodaæ komputer musisz mieæ sieæ i u¿ytkownika,
+	    którym go przypiszesz.</para></note></para>
+	    </listitem>
+	    <listitem>
+	    <para>Szukaj - Wyszukiwanie komputerów wed³ug zadanych kryteriów.</para>
+	    </listitem>
+	     <listitem>
+	    <para>Wersja do druku - Wy¶wietlenie listy komputerów, w formacie 
+	    przyjaznym dla drukarki.</para>
+	    </listitem>
+	</itemizedlist>
+	</para>
  </sect2>
  <sect2 id="menu-netdevices">
 	<title>Osprzêt sieciowy</title>
@@ -101,53 +110,76 @@
 	ilo¶æ dostêpnych portów. Klikniêcie na wybranym urz±dzeniu spowoduje
 	wy¶wietlenie informacji szczegó³owych o nim. Mo¿liwe jest definiowanie po³±czeñ
 	urz±dzeñ i komputerów oraz generowanie graficznej mapy ca³ej sieci.</para>
-	<figure>
-		<title>LMS-UI: Osprzêt sieciowy</title>
-			<ulink url="images/netdev.png">
-				<inlinemediaobject>
-  				<imageobject>
-  					<imagedata fileref="images/netdev-small.png" format="png">
-		  		</imageobject>
-  				</inlinemediaobject>
-			</ulink>
-	</figure>
+	<para>W tym panelu mo¿esz skorzystaæ z menu:
+	<itemizedlist>
+	    <listitem>
+	    <para>Lista - Wy¶wietlenie listy urz±dzeñ, tej która pokazuje siê po
+	    wej¶ciu do panelu 'Urz±dzenia sieciowe'. Listê mo¿na sortowaæ klikaj±c na nazwie kolumny.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Nowe - Dodawanie nowego urz±dzenia.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Mapa - Generowanie mapy sieci (po³±czeñ sieciowych). Mo¿esz zdefiniowaæ
+	    które urz±dzenie jest nadrzêdne w stosunku do pozosta³ych.</para>
+	    </listitem>
+	</itemizedlist>
+	</para>
  </sect2>
  <sect2 id="user-networks">
 	<title>Sieci IP</title>
-	<para>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, Gateway,
+	<para>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
 	zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i dostepnych adresów.
 	Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ na podsieci,
 	albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</para>
-	<figure>
-		<title>LMS-UI: Sieci IP</title>
-			<ulink url="images/networks.png">
-				<inlinemediaobject>
-  				<imageobject>
-  					<imagedata fileref="images/networks-small.png" format="png">
-  				</imageobject>
-  				</inlinemediaobject>
-			</ulink>
-	</figure>
+	<para>Modyfikowanie w³a¶ciwo¶ci sieci nastêpuje w module dostêpnym po wybraniu
+	sieci z listy lub bezpo¶rednio po klikniêciu ikony 'Edytuj'. Menu udostêpnia dwie opcje:
+	<itemizedlist>
+	    <listitem>
+	    <para>Lista - Wy¶wietlenie listy sieci. tej która pokazuje siê po
+	    wej¶ciu do panelu 'Sieci IP'.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Nowa sieæ  - Dodawanie sieci.</para>
+	    </listitem>
+	</itemizedlist>
+	</para>
  </sect2>
  <sect2 id="menu-tariffs">
 	<title>Taryfy i Finanse</title>
 	<para>Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami sieci.</para>
-	<para>Masz mo¿liwo¶æ definiowania taryf abonamentowych i okre¶lenia kwoty abonamentu oraz
-	ograniczeñ upstream, downstream wykorzystywanych pó¼niej podczas generowania plików
-	konfiguracyjnych.</para>
-	<para>Dostêpny z górnego menu 'Bilans Finansowy' to historia rachunku z podsumowaniem
-	przychodu i rozchodu. 'Nowa Operacja' umo¿liwia zaksiêgowanie nowych wp³at i obci±¿eñ
-	u¿ytkowników lub wydatków i przychodów sieci.</para>
-	<figure>
-		<title>LMS-UI: Taryfy i finanse</title>
-			<ulink url="images/tariffs.png">
-					<inlinemediaobject>
-  					<imageobject>
-  						<imagedata fileref="images/tariffs-small.png" format="png">
-  					</imageobject>
-  					</inlinemediaobject>
-			</ulink>
-	</figure>
+	<para>Masz mo¿liwo¶æ definiowania taryf abonamentowych, ksiêgowania operacji finansowych,
+	przegl±danie bilansu i historii rachunku oraz sporz±dzanie faktur. A oto
+	wszystkie dostêpne modu³y:
+	<itemizedlist>
+	    <listitem>
+	    <para>Lista taryf - Wy¶wietlenie listy taryf. tej która pokazuje siê po
+	    wej¶ciu do panelu 'Taryfy i finanse'. Klikaj±c wybran± taryfê na li¶cie zostaniesz
+	    przeniesiony do modu³u 'Informacje o taryfie', gdzie mo¿esz edytowaæ jej parametry
+	    lub zamieniaæ u¿ytkownikom taryfy.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Nowa taryfa - Definiowanie nowej taryfy.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Bilans finansowy - Historia operacji finansowych z podsumowaniem przychodu, rozchodu,
+	    wp³at i zobowi±zañ u¿ytkowników.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Nowa operacja - Wprowadzanie nowych operacji finansowych. Mo¿liwe jest
+	    zaksiêgowanie tej samej wp³aty lub obci±¿enia wielu u¿ytkownikom równocze¶nie.</para>
+	    <para><note><para>Do naliczania sta³ych op³at abonamentowych najlepiej wykorzystywaæ
+	    skrypt lms-payments lub demona <emphasis>almsd</emphasis>, które potrafi± równocze¶nie
+	    wystawiaæ faktury.</para></note></para>
+	    </listitem>
+	    <listitem>
+	    <para>Lista faktur - lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Nowa faktura - Rêczne wystawianie faktur dla wybranego u¿ytkownika.</para>
+	    </listitem>
+	</itemizedlist>
+	</para>
  </sect2>
  <sect2 id="menu-mailing">
 	<title>Mailing</title>
@@ -155,8 +187,8 @@
 	u¿ytkowników twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
 	do której zostanie wys³any e-mail.</para>
 	<para><note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji mail().</para></note>
-	<note><para>Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami polecam.
-	skrypt lms-notify.</para></note></para>
+	<note><para>Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami mo¿na
+	wykorzystaæ skrypt lms-notify lub modu³y notify i ggnotify demona <emphasis>almsd</emphasis>.</para></note></para>
  </sect2>
  <sect2 id="menu-reload">
 	<title>Prze³adowanie</title>
@@ -174,16 +206,6 @@
 	dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</para></note></para>
 	<para>Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
 	</para>
-	<figure>
-		<title>LMS-UI: Bazy danych</title>
-			<ulink url="images/db.png">
-				<inlinemediaobject>
-  				<imageobject>
-  					<imagedata fileref="images/db-small.png" format="png">
-  				</imageobject>
-  				</inlinemediaobject>
-			</ulink>
-	</figure>
  </sect2>
  <sect2 id="menu-admins">
 	<title>Administratorzy</title>
@@ -193,27 +215,67 @@
 	o danym koncie, w tym o zdefiniowanych prawach dostêpu. W ka¿dej chwili mo¿liwa jest zmiana
 	danych i uprawnieñ za pomoc± przycisku 'Edytuj'. Aby za³o¿yæ nowe konto administratora
 	skorzystaj z górnego menu 'Nowy'.</para>
-	<figure>
-		<title>LMS-UI: Administratorzy</title>
-			<ulink url="images/admins.png">
-				<inlinemediaobject>
-  				<imageobject>
-  					<imagedata fileref="images/admins-small.png" format="png">
-  				</imageobject>
-  				</inlinemediaobject>
-			</ulink>
-	</figure>
+ </sect2>
+ <sect2 id="menu-stats">
+	<title>Statystyki</title>
+	<para>Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
+	dostêpny w menu 'Statystyki'. Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
+	okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz ich wiêcej),
+	ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug downloadu).
+	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
+	ostatnich 30 dni lub ostatniego roku.</para>
+	<para> 
+	<note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, albo demon <emphasis>almsd</emphasis>.</para></note>
+	</para>
+	<para>W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci zapisu, mo¿e
+	nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
+	oczekiwania na rysowanie wykresów. Z tego powodu w oknie 'Kompaktowanie
+	bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy bez
+	utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
+	w nastêpuj±cy sposób:
+	<itemizedlist>
+	<listitem><para>Poziom Niski: dane z poprzedniego dnia i starsze, zostan± u¶rednione
+	do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
+	to 6*24 wpisów zostanie zast±pione jednym.</para></listitem>
+	<listitem><para>Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
+	jednego dnia.</para></listitem>
+	<listitem><para>Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
+	jednej godziny.</para></listitem>
+	</itemizedlist>
+	<warning><para>Kompaktowanie bazy danych jest procesem nieodwracalnym.</para></warning>
+	</para>
+	<para>Menu panelu 'Statystyki' obejmuje:
+	<itemizedlist>
+	    <listitem>
+	    <para>Filtr - g³ówne okno do wprowadzania parametrów wykresów oraz do
+	    kompaktowania bazy danych.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Ostatnia godzina - statystyki z ostatniej godziny dla wszystkich sieci.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Ostatni dzieñ - statystyki z ostatniego dnia dla wszystkich sieci.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Ostatnie 30 dni - statystyki z ostatnich 30 dni dla wszystkich sieci.</para>
+	    </listitem>
+	    <listitem>
+	    <para>Ostatni rok - statystyki z ostatnich 365 dni dla wszystkich sieci.</para>
+	    </listitem>
+	</itemizedlist>
+	</para>
  </sect2>
  </sect1>
  <sect1 id="user-staff">
  	<title>Dodatki</title>
 	<sect2 id="user-staff-faktury">
 		<title>Faktury</title>
-		<para>LMS umo¿liwia wystawianie faktur. W³±czenia tej opcji dokonuje siê podczas
-		przypisywania taryf u¿ytkownikom. Aktualnie w LMS nie ma mo¿liwo¶ci rêcznego wystawiania faktur. 
-		Do poprawnego dzia³ania i tworzenia wydruków
-		wymagane jest ustawienie podstawowych opcji w sekcji <emphasis>[invoices]</emphasis>
-		<filename>lms.ini</filename>:
+		<para>LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie dowolnej
+		faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Taryfy i finanse'. Automatyczne wystawianie faktur 
+		wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
+		zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <emphasis>almsd</emphasis></para>
+		<para>Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
+		opcji w sekcji <emphasis>[invoices]</emphasis> <filename>lms.ini</filename>:
 		<itemizedlist>
 		<listitem>
 			<para>number_template</para>
@@ -238,63 +300,20 @@
 		</listitem>
 		</itemizedlist>
 		</para>
-		<para>Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki na wykazie bilansu finansowego (ogólnego b±d¼ pojedyñczego u¿ytkownika), albo poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest tak¿e filtrowanie faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darka Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.
-		</para>
+		<para>Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
+		na wykazie bilansu finansowego (ogólnego b±d¼ pojedyñczego u¿ytkownika), albo 
+		poprzez 'Lista faktur' z menu 'Taryfy i finanse'. W przypadku listy faktur, mo¿liwe jest 
+		tak¿e filtrowanie faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y 
+		i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. 
+		Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ 
+		faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darkach 
+		Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.</para>
 		<para>
-			<note><para>Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie stopki i nag³ówka, czy te¿ adresu na wydruku.</para></note>
+			<note><para>Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ 
+			konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie 
+			stopki i nag³ówka, czy te¿ adresu na wydruku.</para></note>
 			<warning><para>W bazie danych zapisywane s± kwoty brutto. </para></warning>
 		</para>
- </sect2>
- <sect2 id="user-staff-stats">
-	<title>Statystyki</title>
-	<para>Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
-	dostêpny w menu 'Statystyki'. Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
-	okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz ich wiêcej),
-	ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug downloadu).
-	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
-	ostatnich 30 dni lub ostatniego roku.</para>
-	<para>
-	<note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y go zainstalowaæ
-	aby mieæ w bazie dane do wykresów.</para></note>
-	</para>
-	<para>W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci, mo¿e
-	nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
-	oczekiwania na rysowanie wykresów. Z tego powodu w oknie 'Kompaktowanie
-	bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy bez
-	utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
-	w nastêpuj±cy sposób:
-	<itemizedlist>
-	<listitem><para>Poziom Niski: dane z poprzedniego dnia i starsze, zostan± u¶rednione
-	do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
-	to 6*24 wpisów zostanie zast±pione jednym.</para></listitem>
-	<listitem><para>Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
-	jednego dnia.</para></listitem>
-	<listitem><para>Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
-	jednej godziny.</para></listitem>
-	</itemizedlist>
-	<warning><para>Kompaktowanie bazy danych jest procesem nieodwracalnym.</para></warning>
-	</para>
-	<figure>
-		<title>Statystyki wykorzystania ³±cza- filtr</title>
-			<ulink url="images/stats.png">
-				<inlinemediaobject>
-  				<imageobject>
-  					<imagedata fileref="images/stats-small.png" format="png">
-  				</imageobject>
-  				</inlinemediaobject>
-			</ulink>
-	</figure>
-	<para></para>
-	<figure>
-		<title>Statystyki wykorzystania ³±cza - wykres</title>
-			<ulink url="images/statbars.png">
-				<inlinemediaobject>
-  				<imageobject>
-  					<imagedata fileref="images/statbars-small.png" format="png">
-  				</imageobject>
-  				</inlinemediaobject>
-			</ulink>
-	</figure>
  </sect2>
  </sect1>
 </chapter>
