@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Language" content="pl">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
+<title>::: LMS : Dokumentacja :::</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<table bgcolor="#CEBD9B" cellpadding="3" cellspacing="0" width="100%" style="border-width: 1pt; border-style: solid;">
+<tr>
+<td width="50%" valign="middle">
+	<img border="0" src="logo-small.png" align="left" alt="LMS 1.0">
+</td>
+<td width="50%">
+<p align="right">
+<a href="http://lms.rulez.pl">Strona domowa</a>
+</p>
+</td>
+</tr>
+<TR>
+<TD width="50%">
+<p><a href="lms.html">&lt;&lt; Poprzednia</a></p>
+</TD>
+<TD width="50%">
+<p align="right">
+<a href="lms-mgc.html">Następna &gt;&gt;</a></p>
+</TD>
+</TR>
+</table>
+<table border="0" cellpadding="10" cellspacing="0" width="100%"><tr><td width="1%" style="border-right-style: dashed; border-right-width: 1pt; border-right-color: #333333; border-left-style: dashed; border-left-width: 1pt; border-left-color: #333333;" bgcolor="#F4F0EC" valign="top">
+<table width="100%">
+<TR>
+<TD width="100%" nowrap>
+<!-- Spis treci idzie tutaj -->
+<H2>Zawartość</H2>
+<img src="tab1.gif"><a href="index.html">Przedmowa</a><br><br>
+<img src="tab1.gif"><a href="lms.html">Rozdział 1 - Na początek</a><br>
+<img src="tab2.gif"><a href="lms.html#1">Czym jest LMS</a><br>
+<img src="tab2.gif"><a href="lms.html#2">Co LMS może a czego nie</a><br>
+<img src="tab2.gif"><a href="lms.html#3">Co wchodzi w skład LMS</a><br>
+<img src="tab2.gif"><a href="lms.html#4">Instalacja</a><br>
+<img src="tab2.gif"><a href="lms.html#5">Konfiguracja</a><br>
+<img src="tab2.gif"><a href="lms.html#6">Pierwsze logowanie</a><br>
+<img src="tab2.gif"><a href="lms.html#7">Prawa dostępu</a><br>
+<img src="tab1.gif"><a href="lms-ui.html">Rozdział 2 - LMS UI (User Interface)</a><br>
+<img src="tab2.gif"><a href="lms-ui.html#1">Konfiguracja</a><br>
+<img src="tab1.gif"><a href="lms-mgc.html">Rozdział 3 - LMS-MGC</a><br>
+<img src="tab1.gif"><a href="lms-scr.html">Rozdział 4 - Skrypty</a><br>
+<img src="tab2.gif"><a href="lms-scr.html#1">Instalacja</a><br>
+<img src="tab2.gif"><a href="lms-scr.html#2">lms-notify</a><br>
+<img src="tab2.gif"><a href="lms-scr.html#3">lms-cutoff</a><br>
+<img src="tab2.gif"><a href="lms-scr.html#4">lms-eachmonth</a><br>
+<!-- A tutaj spis się kończy -->
+</td>
+</TR>				
+</TABLE>
+</p></td>
+<td width="99%" valign="top" style="border-right-style: dashed; border-right-width: 1pt; border-right-color: #333333;">
+<!-- A tutaj zaczyna się tresć -->
+<H1
+>Rozdział 2. LMS UI (User Interface)</H1
+>
+ <P
+align="justify">LMS UI jest najbardziej rozbudowaną częścią LMS, i co za tym idzie dosyć złożoną, jednak w miarę intuicyjną w użytkowaniu.
+   <H2
+><a name="1">Konfiguracja</a></H2
+>
+  <P
+align="justify">Konfigurację dla LMS-UI możemy ustalić w pliku <TT
+>lms.ini</TT
+> w sekcji <I
+>[phpui]</I
+>. Możemy tam ustawić następujące parametry:
+  <P><UL
+>   <LI>    <P
+align="justify">allow_from  (opcjonalny)
+    <P
+align="justify">Lista sieci i adresów IP które mają dostęp do LMS. Jeżeli puste, każdy adres IP ma dostęp do LMS'a, jeżeli wpiszemy tutaj listę adresów bądź klas adresowych, LMS odrzuci błędem HTTP 403 każdego niechcianego użytkownika.
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</P
+>
+   <P>
+   <LI>    <P
+align="justify">timeout
+    <P
+align="justify">Timeout sesji www. Po tym czasie (w sekudnach) użytkownik zostanie wylogowany jeżeli nie podejmie żadnej akcji. Domyślnie 600 sekund.
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">timeout = 900</P
+>
+    <P><FONT
+color="red"
+><B
+>Uwaga!:</B
+></FONT
+><BLOCKQUOTE
+><P
+align="justify">Nie ma możliwości ustawienia braku timeoutu. Jeżeli ustawisz tą wartość na zero, nie będziesz mógł korzystać z LMS!</BLOCKQUOTE
+>
+   <P>
+   <LI>    <P
+align="justify">userlist_pagelimit
+    <P
+align="justify">Limit wyświetlanych pozycji na stronie w liście użytkowników. Domyślnie brak limitu.
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">userlist_pagelimit	= 10</P
+>
+   <P>
+   <LI>    <P
+align="justify">nodelist_pagelimit
+    <P
+align="justify">Limit wyświetlanych pozycji na stronie w liście komputerów. Domyślnie brak limitu.
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">nodelist_pagelimit	= 10</P
+>
+   <P>
+   <LI>    <P
+align="justify">reload_type
+    <P
+align="justify">Typ reloadu. Dozwolone wartości:
+    <P
+align="justify">exec - wywoływanie jakiejś komendy (najczęściej coś przez sudo, jakiś skrypt lub coś, konfigurowalny poniżej)
+    <P
+align="justify">sql  - zrobienie wpisów w SQL'u (też można ustawić konkretne query SQL'a)
+    <P
+align="justify">Domyślna wartość to 'sql'.
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">reload_type = exec</P
+>
+   <P>
+   <LI>    <P
+align="justify">reload_execcmd
+    <P
+align="justify">Komenda do wykonania podczas reloadu jeżeli reload_type jest ustawione na 'exec'. Domyślnie /bin/true. String ten puszczany do komendy system() więc pronuje rozwagę i pomyślenie co się robi i jak :) Generalnie średniki powinny być parsowane przez bash'a, ale z paru względów LMS sam dzieli poniższy ciąg pod względem średników i wykonuje komendy pojedyńczo.
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">reload_execcmd = "sudo /usr/bin/reload_lms.sh"</P
+>
+   <P>
+   <LI>    <P
+align="justify">reload_sqlquery
+    <P
+align="justify">Query SQL'a. Generalnie, LMS przy nie ustawionym swoim własnym QUERY robi dziwne rzeczy które ja już wymyśliłem. Chwilowo pewnie wogóle nie kompatybilne z mteg'owym demonikiem, ale pracujemy nad uzgodnieniem formatu. Jak ktoś bardzo chce, to można użyć '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak średnika (czyli ;) jest traktowany jako separator kwerend. Tj. oddzielając znakiem średnika możesz wpisać kilka komend MySQL'a.
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</P
+>
+   <P>
+   <LI>    <P
+align="justify">force_ssl
+    <P
+align="justify">Wymuszanie SSL'a. Ustawinie tej zmiennej na 1 spowoduje że LMS będzie wymuszał połączenie SSL powodując redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy każdej próbie dostępu bez SSL. Domyślnie wyłączone.
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">force_ssl = 0</P
+>
+   <P>
+   <LI>    <P
+align="justify">allow_mac_sharing
+    <P
+align="justify">Przyzwolenie na dodawanie rekordów komputerów z adresami MAC już istniejącymi (nie sprawdza czy jakiś inny komputer posiada taki adres MAC). Domyślnie wyłączone
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">allow_mac_sharing	= 1</P
+>
+   <P>
+   <LI>    <P
+align="justify">smarty_debug
+    <P
+align="justify">Włączenie konsoli debugowej Smartyego, przydatne do śledzenia wartości przekazywanych z PHP do Smartyego. Domyślnie wyłączone.
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">smarty_debug = 1</P
+>
+   <P>
+   <LI>    <P
+align="justify">adodb_debug
+    <P
+align="justify">Włączenie debugu ADOdb, przydatne w śledzeniu błędów w kwerendach SQL. Domyślnie wyłączone.
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">adodb_debug = 1</P
+>
+   <P>
+   <LI>    <P
+align="justify">adodb_debug_log
+    <P
+align="justify">Plik z logiem debugu ADOdb. Jeżeli włączymy adodb_debug i podamy tutaj nazwę pliku (do którego będzie mógł zapisać serwer www) cały debug będzie szedł do pliku, a na interface jedynie krytyczne błędy SQL'a. Domyślnie puste.
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">adodb_debug_log	= /var/log/debug/lms-adodb.log</P
+>
+   <P>
+   <LI>    <P
+align="justify">debug_mail
+    <P
+align="justify">Adres e-mail do debugowania - pod ten email będą szły maile wysyłane z sekcji 'mailing' LMS'a, zamiast do właściwych użytkowników.
+    <P
+><B
+>Przykład:</B
+><P
+align="justify">debug_mail = root@localhost</P
+>
+   <P>
+  </UL
+>
+<!-- A tutaj konczy się tresć -->
+</TD>
+</TR>
+</TABLE><TABLE cellpadding="3" cellspacing="0" style="border-width: 1pt; border-style: solid; border-collapse:collapse" bordercolor="#000000" width="100%" bgcolor="#CEBD9B">
+<TR>
+<TD width="50%">
+<p><a href="lms.html">&lt;&lt; Poprzednia</a><br><br>
+<a href="index.html#autorzy">&copy; 2001-2003 LMS Developers<br></A></p>
+</TD>
+<TD width="50%">
+<p align="right">
+<a href="lms-mgc.html">Następna &gt;&gt;</a><br><br>
+<b>LMS 1.0</b>
+</p>
+</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
