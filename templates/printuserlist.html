@@ -7,29 +7,29 @@
 		<TD ALIGN="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %e %B, %Y"|capitalize}<BR>
-			Sporz±dzone przez: {$layout.logname}
+			{t}Prepared by{/t}: {$layout.logname}
 		</TD>
 	</TR>
 </TABLE>
 <TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD ALIGN="CENTER" CLASS="HEAD">
-			LP:
+			{t}No{/t}:
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
 			ID:
 		</TD>
 		<TD CLASS="HEAD">
-			<B>Nazwisko i imiê:</B><BR>
-			Adres:<BR>
-			Telefon:
+			<B>{t}Name{/t}:</B><BR>
+			{t}Address{/t}:<BR>
+			{t}Phone{/t}:
 		</TD>
 		<TD CLASS="HEAD" VALIGN="TOP">
 			E-mail:<BR>
-			Taryfa:
+			{t}Tariff{/t}:
 		</TD>
 		<TD CLASS="HEAD">
-			Saldo:
+			{t}Balance{/t}:
 		</TD>
 		
 
@@ -51,10 +51,10 @@
 		</TD>
 		<TD VALIGN="ABSMIDDLE">
 			{$userlist[userlist].email}<BR>
-			{$userlist[userlist].tariffvalue|string_format:"%01.2f"} z³ / mc
+			{$userlist[userlist].tariffvalue|string_format:"%01.2f"} {t}per month{/t}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$userlist[userlist].balance|string_format:"%01.2f"} z³
+			{$userlist[userlist].balance|string_format:"%01.2f"}
 		</TD>
 
 	</TR>

@@ -8,20 +8,20 @@
 		<TD ALIGN="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %e %B, %Y"|capitalize}<BR>
-			Sporz±dzone przez: {$layout.logname}
+			{t}Prepared by{/t}: {$layout.logname}
 		</TD>
 	</TR>
 </TABLE>
 <TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN=CENTER>
 	<TR>
 		<TD  ALIGN=CENTER CLASS=head>
-			LP:
+			{t}No{/t}:
 		</TD>
 		<TD  ALIGN=CENTER WIDTH=30 CLASS=head>
 			ID:
 		</TD>
 		<TD  ALIGN=CENTER CLASS=head>
-			<B>Nazwa komputera:
+			<B>{t}Node name{/t}:
 		</TD>
 		<TD  ALIGN=CENTER CLASS=head>
 			IP:
@@ -30,7 +30,7 @@
 			MAC:
 		</TD>
 		<TD  ALIGN=CENTER CLASS=head>
-			W³a¶ciciel:
+			{t}Owner{/t}:
 		</TD>
 		
 

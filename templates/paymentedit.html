@@ -50,7 +50,7 @@
 				<OPTION VALUE="2" {if $payment.period eq 2}SELECTED{/if}>{t}quarterly{/t}</OPTION>
 				<OPTION VALUE="3" {if $payment.period eq 3}SELECTED{/if}>{t}yearly{/t}</OPTION>
 			</SELECT>&nbsp;
-    			<INPUT TYPE="TEXT" NAME="payment[at]" VALUE="{$payment.at}"{tip text="Enter due date. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28), dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia), a dla kwartalnej DD/MM (MM <= 3)." trigger="at"} SIZE="5">
+    			<INPUT TYPE="TEXT" NAME="payment[at]" VALUE="{$payment.at}"{tip text="Enter due date. For weekly payment enter day of week (monday = 1), for monthly payment enter day of month (from 1 to 28), for yearly payment enter month and day in format DD/MM (15/09 stands for 15-th september), and for quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="5">
 		</TD>
 	</TR>	
 	<TR CLASS="light">	
@@ -58,17 +58,17 @@
 			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Opis:</B>
+			<B>{t}Description{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<TEXTAREA NAME="payment[description]" COLS="50" ROWS="5" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>{$payment.description}</TEXTAREA>
+			<TEXTAREA NAME="payment[description]" COLS="50" ROWS="5" {tip text="Enter additional informations (optionally)"}>{$payment.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="3">
-			<A HREF="javascript:document.paymentedit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=paymentdel&id={$payment.id}">Usuñ <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=paymentlist">Anuluj <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> 
+			<A HREF="javascript:document.paymentedit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=paymentdel&id={$payment.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=paymentlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> 
 		</TD>
 	</TR>
 </TABLE>
