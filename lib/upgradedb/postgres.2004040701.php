@@ -24,13 +24,17 @@
  *  $Id$
  */
 
-// upgrade nie potrzebny dla bazy powy¿ej 1.2.0rc5 dla ga³êzi 1.2
+// upgrade nie potrzebny dla bazy powy¿ej 1.2.0rc5 dla ga³êzi 1.2, za³atwmy to transakcj±
 
-if($DB->GetOne("SELECT 1 FROM pg_class, pg_attribute WHERE attname='taxvalue' AND attrelid=pg_class.oid AND relname='tariffs' AND attnotnull=true"))
-    $DB->Execute("
+$DB->Execute("
+    BEGIN;
+    ALTER TABLE invoicecontents ALTER taxvalue DROP NOT NULL;
+    COMMIT"
+);
+
+$DB->Execute("
     BEGIN;
     ALTER TABLE tariffs ALTER taxvalue DROP NOT NULL;
-    ALTER TABLE invoicecontents ALTER taxvalue DROP NOT NULL;
     COMMIT"
 );
 
