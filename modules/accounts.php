@@ -114,7 +114,7 @@ switch ($option)
 	    unset ($users['order']);
 	    unset ($users['below']);
 	    unset ($users['over']);
-	    unset ($users['direction']);
+	    unset ($users['network']);
 	    unset ($users['usergroup']);
 	    unset ($users['direction']);
 	    $SMARTY->assign('users',$users);
@@ -155,19 +155,18 @@ switch ($option)
 	if ($passwd1 == '') 
 	{
 	    $layout['error'] = 'Has³a nie mog± byæ puste';
-	    $account=$LMS->DB->GetRow("SELECT passwd.id, passwd.ownerid, passwd.user, passwd.lastlogin, users.login, users.lastname FROM passwd,users WHERE users.id=passwd.ownerid AND passwd.id=$id");
+	    $account=$LMS->DB->GetRow('SELECT passwd.id, passwd.ownerid, passwd.user, passwd.lastlogin, users.login, users.lastname FROM passwd, users WHERE users.id = passwd.ownerid AND passwd.id = '.$id);
 	    $SMARTY->assign('account',$account);
 	    $SMARTY->assign('layout',$layout);
 	    $SMARTY->display('accountpasswd.html');
 	    die(0); 
 	}
-	$LMS->DB->Execute("UPDATE passwd SET password=crypt($passwd1) WHERE id = $id");
+	$LMS->DB->Execute('UPDATE passwd SET password=? WHERE id = ?', array(crypt($passwd1),$id));
 	header('Location: ?m=accounts');
 	die(0);
 }
 
-
-$accountlist = $LMS->DB->GetAll("SELECT passwd.id, passwd.ownerid, login, passwd.lastlogin, users.name, users.lastname FROM passwd, users WHERE users.id = passwd.ownerid");
+$accountlist = $LMS->DB->GetAll('SELECT passwd.id, passwd.ownerid, login, passwd.lastlogin, users.name, users.lastname FROM passwd, users WHERE users.id = passwd.ownerid ORDER BY name, lastname, login');
 $listdata['total'] = sizeof($accountlist);
 
 $SMARTY->assign('accountlist',$accountlist);
