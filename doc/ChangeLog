@@ -30,7 +30,8 @@ wersja ????? (??/??/????):
     czas i porównywany z czasem z poprzedniego prze³adowania, wpis 
     '_force' nie jest usuwany, wiêc nie ma problemów z uruchamianiem
     kilku demonów równocze¶nie (lexx/alec)
-        
+  - aktualizacja ethercodes.txt (alec)
+          
 wersja 1.1.8 Cronos (01/02/2004):
 
   - netdevmap korzysta z obrazków w formacie PNG (brak obs³ugi GIF na 
