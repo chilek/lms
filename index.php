@@ -115,6 +115,7 @@ if(version_compare('2.5.0',$SMARTY->_version) > 0)
 $SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 $SMARTY->debugging = chkconfig($_CONFIG['phpui']['smarty_debug']);
+require_once($_LIB_DIR.'/smarty_addons.php');
 
 $layout['logname']=$SESSION->logname;
 $layout['logid']=$SESSION->id;
@@ -183,6 +184,10 @@ else
 
 /*
  * $Log$
+ * Revision 1.99  2003/09/08 03:13:00  lukasz
+ * - dodane rozszerzenie do smartyego. WHAZAA! Jeszcze mniej roboty w pehapie
+ *   bêdzie ;-)
+ *
  * Revision 1.98  2003/09/05 19:48:59  lexx
  * - enable_stats
  *
