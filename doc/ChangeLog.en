@@ -1,11 +1,24 @@
 $Id$
 
-wersja 1.2.0rc2 Janet (??/??/????):
+wersja 1.2.0rc3 Janet (??/??/2004):
+
+  - bugfix in almsd's 'hostfile' module, in hosts templates added two 
+    vars: %domain - replaced by network domain and %net - by name (alec)
+  - in config option 'networks' for hostfile and oident modules now we
+    write in networks names list, not addresses (alec)
+  - added 'Sale register' - invoices inventory (alec)
+
+wersja 1.2.0rc2 Janet (03/03/2004):
 
   - interface cosmetics (lukasz)
   - code ceanup (lukasz)
   - BTS#0000112, BTS#0000114 bugfixes (alec) 
-
+  - polish documentation cleanup (alec)
+  - added config options 'networks' and 'skip_dev_ips' for almsd's hostfile
+    module (alec)
+  - bugfixes in upgrade: monthly tariff accounting, not weekly, fixed sql
+    queries in UPGRADE.pgsql and comments in UPGRADE.mysql (alec)
+    
 wersja 1.2.0rc1 Janet (18/02/2004):
 
   - Smarty libs version change 2.5.0 -> 2.6.0 (alec)
