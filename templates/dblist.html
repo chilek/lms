@@ -16,7 +16,7 @@
 </TR>
 {cycle values="#DFD5BD,#EBE4D6" print=false}
 {section name=dblist loop=$dblist.time}
-<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+<TR {if $dblist.dbv[dblist] != $layout.dbschversion}CLASS="BLEND" {/if}bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 	<TD class="fleft" width="98%" onClick="return self.location.href='?m=dbview&db={$dblist.time[dblist]}';">
 		<IMG src="img/time.gif" align="absmiddle" ALT="" border="0"> {$dblist.time[dblist]|date_format:"%x %X (%A)"}
 	</TD>
@@ -29,10 +29,12 @@
 	</TD>
 	<TD class="fright" width="1%" align="right" nowrap> 
 		<nobr>
-		<a href="?m=dbdel&db={$dblist.time[dblist]}" onClick="return confirmLink(this, '{t}Are you sure, you want to delete this database backup?{/t}')"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ {t}Delete{/t} ]"></A>
-		<a href="?m=dbrecover&db={$dblist.time[dblist]}{if $dblist.type[dblist]=="gz"}&gz=1{elseif $dblist.type[dblist]=="plain"}{/if}" onClick="return confirmLink(this, '{t}Are you sure, you want to restore this database backup?{/t}\n{t}WARNING! It will cause automatic creation of backup of present database{/t}')"><IMG src="img/recover.gif" align="absmiddle" border="0" ALT="[ {t}Restore{/t} ]"></A>
-		<a href="?m=dbview&db={$dblist.time[dblist]}&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/view.gif" ALT="[ {t}View{/t} ]" border="0" align="absmiddle"></A>
-		<A href="?m=dbview&db={$dblist.time[dblist]}&rawmode=true&save=true&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/save.gif" ALT="[ {t}Save{/t} ]" border="0" align="absmiddle"></A>
+		{if $dblist.dbv[dblist] == $layout.dbschversion}
+		<a href="?m=dbrecover&db={$dblist.name[dblist]}{if $dblist.type[dblist]=="gz"}&gz=1{elseif $dblist.type[dblist]=="plain"}{/if}" onClick="return confirmLink(this, '{t}Are you sure, you want to restore this database backup?{/t}\n{t}WARNING! It will cause automatic creation of backup of present database{/t}')"><IMG src="img/recover.gif" align="absmiddle" border="0" ALT="[ {t}Restore{/t} ]"></A>
+		{/if}
+		<a href="?m=dbdel&db={$dblist.name[dblist]}" onClick="return confirmLink(this, '{t}Are you sure, you want to delete this database backup?{/t}')"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ {t}Delete{/t} ]"></A>
+		<a href="?m=dbview&db={$dblist.name[dblist]}&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/view.gif" ALT="[ {t}View{/t} ]" border="0" align="absmiddle"></A>
+		<A href="?m=dbview&db={$dblist.name[dblist]}&rawmode=true&save=true&file=/lms-{$dblist.time[dblist]|date_format:"%Y%m%d-%H%M%S"}.sql{if $dblist.type[dblist]=="gz"}.gz{elseif $dblist.type[dblist]=="plain"}{/if}"><img src="img/save.gif" ALT="[ {t}Save{/t} ]" border="0" align="absmiddle"></A>
 		</nobr>
 	</TD>
 </TR>	

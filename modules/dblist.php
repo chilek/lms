@@ -37,7 +37,9 @@ if ($handle = opendir($LMS->CONFIG['directories']['backup_dir']))
 			{
 				if(substr($path['basename'],0,4) == 'lms-')
 				{
-					$dblist['time'][] = substr(basename("$file",'.sql'),4);
+					$name = substr(basename($file,'.sql'),4,25);
+					list($dblist['time'][],$dblist['dbv'][]) = explode('-', $name);
+					$dblist['name'][] = $name;
 					$dblist['size'][] = filesize($LMS->CONFIG['directories']['backup_dir'].'/'.$file);
 					$dblist['type'][] = 'plain';
 				}
@@ -46,7 +48,9 @@ if ($handle = opendir($LMS->CONFIG['directories']['backup_dir']))
 			{
 				if((($path['extension'] == 'gz')&&(strstr($file, "sql.gz")))&& (substr($path['basename'],0,4) == 'lms-'))
 				{
-					$dblist['time'][] = substr(basename("$file",'.sql.gz'),4);
+					$name = substr(basename($file,'.sql.gz'),4,25);
+					list($dblist['time'][],$dblist['dbv'][]) = explode('-', $name);
+					$dblist['name'][] = $name;
 					$dblist['size'][] = filesize($LMS->CONFIG['directories']['backup_dir'].'/'.$file);
 					$dblist['type'][] = 'gz';
 				}
@@ -57,7 +61,7 @@ if ($handle = opendir($LMS->CONFIG['directories']['backup_dir']))
 }
 
 if(sizeof($dblist['time']))
-	array_multisort($dblist['time'],$dblist['size'],$dblist['type']);
+	array_multisort($dblist['time'],$dblist['size'],$dblist['type'],$dblist['dbv'],$dblist['name']);
 
 $dblist['total'] = sizeof($dblist['time']);
 

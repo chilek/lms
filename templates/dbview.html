@@ -28,12 +28,12 @@
 	</TR>
 	<TR>
 		<TD width="100%">
-			<A href="?m=dbview&db={$database.time}&rawmode=true&file=/lms-{$database.time|date_format:"%Y%m%d-%H%M%S"}.sql"><img src="img/view.gif" border="0" ALT="" align="absmiddle"> {t}View without headers{/t}</A>
+			<A href="?m=dbview&db={$database.name}&rawmode=true&file=/lms-{$database.time|date_format:"%Y%m%d-%H%M%S"}.sql"><img src="img/view.gif" border="0" ALT="" align="absmiddle"> {t}View without headers{/t}</A>
 		</TD>
 	</TR>
 	<TR>
 		<TD widht="100%">
-			<A href="?m=dbview&db={$database.time}&rawmode=true&save=true&file=/lms-{$database.time|date_format:"%Y%m%d-%H%M%S"}.sql{if $use_gzip=='true'}.gz{/if}"><img src="img/save.gif" border="0" ALT="" align="absmiddle"> {t}Save on local disk{/t}</A><BR>
+			<A href="?m=dbview&db={$database.name}&rawmode=true&save=true&file=/lms-{$database.time|date_format:"%Y%m%d-%H%M%S"}.sql{if $use_gzip=='true'}.gz{/if}"><img src="img/save.gif" border="0" ALT="" align="absmiddle"> {t}Save on local disk{/t}</A><BR>
 		</TR>
 	</TR>
 </TABLE>
