@@ -31,7 +31,7 @@
 	//-->
 </script>		
 <H1>{$layout.pagetitle}</H1>
-<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoicenew&action=setcustomer">
+<FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoiceedit&action=setcustomer">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
@@ -73,9 +73,7 @@
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}" SIZE="10" {tip text="Enter deadline in days (optional)"}>
-			{if $invoice.cdate}
-				({$invoice.cdate+$invoice.paytime*86400|date_format:"%Y/%m/%d"})
-			{/if}
+			({$invoice.cdate+$invoice.paytime*86400|date_format:"%Y/%m/%d"})
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -168,7 +166,7 @@
 			{$item.s_valuebrutto|money_format}
 		</TD>
 		<TD WIDTH="1%" NOWRAP CLASS="fright">
-			<A HREF="?m=invoicenew&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"} BORDER="0"></A>
+			<A HREF="?m=invoiceedit&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"} BORDER="0"></A>
 		</TD>			
 	</TR>
 	{foreachelse}
@@ -201,7 +199,7 @@
 		</TD>
 	</TR>
 	{/if}
-	<FORM METHOD="POST" ACTION="?m=invoicenew&action=additem" NAME="additem">
+	<FORM METHOD="POST" ACTION="?m=invoiceedit&action=additem" NAME="additem">
 	<INPUT TYPE="HIDDEN" NAME="tariffid" VALUE="0">
 	<TR CLASS="light">
 		<TD CLASS="ftl" WIDTH="1%" NOWRAP>
@@ -242,13 +240,13 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="8" CLASS="fbottomu" ALIGN="RIGHT">
-			<A HREF="?m=invoicenew&action=clear">{t}Clear Contents{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/delete.gif" BORDER="0"></A> 
+			<A HREF="?m=invoiceedit&action=clear">{t}Clear Contents{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/delete.gif" BORDER="0"></A> 
 			{if !$customer}
 			<A HREF="javascript:alert('{t}Customer not selected!{/t}');">
 			{elseif !$contents}
 			<A HREF="javascript:alert('{t}Invoice have no items!{/t}');">
 			{else}
-			<A HREF="?m=invoicenew&action=save" target="_BLANK">
+			<A HREF="?m=invoiceedit&action=save" target="_BLANK">
 			{/if}
 			{t}Save & End{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/save.gif" ALT="Dodaj" BORDER="0"></A>
 		</TD>

@@ -1630,10 +1630,11 @@ class LMS
 		
 		$this->DB->Execute('INSERT INTO invoices (number, cdate, paytime, paytype, customerid, name, address, nip, pesel, zip, city, phone, finished) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)', array($number, $cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['username'], $invoice['customer']['address'], $invoice['customer']['nip'], $invoice['customer']['pesel'], $invoice['customer']['zip'], $invoice['customer']['city'], $invoice['customer']['phone1']));
 		$iid = $this->DB->GetOne('SELECT id FROM invoices WHERE number = ? AND cdate = ?', array($number,$cdate));
+		
+		$itemid=0;
 		foreach($invoice['contents'] as $idx => $item)
 		{
-			$itemid=$this->DB->GetOne('SELECT MAX(itemid) FROM invoicecontents where invoiceid=?', array ($iid));
-			$itemid=($itemid?$itemid>0:0)+1;
+			$itemid++;
 			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
 			$item['count'] = str_replace(',','.',$item['count']);
 			if ($item['taxvalue'] == trans('tax-free'))
@@ -1670,6 +1671,66 @@ class LMS
 		$this->SetTS('invoicecontents');
 
 		return $iid;
+	}
+
+	function InvoiceUpdate($invoice)
+	{
+		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : time();
+		
+		$iid = $invoice['invoice']['id'];
+
+		$this->DB->Execute('UPDATE invoices SET cdate = ?, paytime = ?, paytype = ?, customerid = ?, name = ?, address = ?, nip = ?, pesel = ?, zip = ?, city = ?, phone = ? WHERE id = ?', array($cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['username'], $invoice['customer']['address'], $invoice['customer']['nip'], $invoice['customer']['pesel'], $invoice['customer']['zip'], $invoice['customer']['city'], $invoice['customer']['phone1'], $iid));
+		$this->DB->Execute('DELETE FROM invoicecontents WHERE invoiceid = ?', array($iid));
+		$this->DB->Execute('DELETE FROM cash WHERE invoiceid = ? AND type = 4', array($iid));
+		
+		$itemid=0;
+		foreach($invoice['contents'] as $idx => $item)
+		{
+			$itemid++;
+			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
+			$item['count'] = str_replace(',','.',$item['count']);
+			if ($item['taxvalue'] == trans('tax-free'))
+				$item['taxvalue'] = '';
+			else
+				$item['taxvalue'] = str_replace(',','.',$item['taxvalue']);
+			
+			if ($item['taxvalue'] == '')
+				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
+				array(
+					$iid,
+					$itemid ,
+					$item['valuebrutto'], 
+					$item['pkwiu'], 
+					$item['jm'], 
+					$item['count'], 
+					$item['name'], 
+					$item['tariffid']));
+			else
+				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array(
+					$iid, 
+					$itemid, 
+					$item['valuebrutto'], 
+					$item['taxvalue'], 
+					$item['pkwiu'],
+					$item['jm'], 
+					$item['count'], 
+					$item['name'], 
+					$item['tariffid']));
+			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'taxvalue' => $item['taxvalue'], 'userid' => $invoice['customer']['id'], 'comment' => $item['name'], 'invoiceid' => $iid, 'itemid'=>$itemid));
+		}
+		
+		$this->SetTS('invoices');
+		$this->SetTS('invoicecontents');
+	}
+
+	function InvoiceDelete($invoiceid)
+	{
+		$this->DB->Execute('DELETE FROM invoices WHERE id = ?', array($invoiceid));
+		$this->DB->Execute('DELETE FROM invoicecontents WHERE invoiceid = ?', array($invoiceid));
+		$this->DB->Execute('DELETE FROM cash WHERE invoiceid = ? AND type = 4', array($invoiceid));
+		$this->DB->Execute('UPDATE cash SET invoiceid = 0, itemid = 0 WHERE invoiceid = ?', array($invoiceid));
+		$this->SetTS('invoices');
+		$this->SetTS('invoicecontents');
 	}
 
 	function InvoicesReport($from, $to)

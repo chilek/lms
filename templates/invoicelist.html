@@ -157,11 +157,15 @@
 			<A HREF="?m=userinfo&id={$invoice.customerid}">{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}</A>
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
-				{if !$invoice.paid}
-			<A HREF="javascript:invoicepay({$invoice.id})">
-			<IMG ALIGN="absmiddle" SRC="img/edit.gif" ALT="[ {t}Account{/t} ]" BORDER="0" TARGET="_BLANK"></A>
+			{if !$invoice.paid}
+				<A HREF="javascript:invoicepay({$invoice.id})">
+				<IMG ALIGN="absmiddle" SRC="img/invoice_pay.gif" ALT="[ {t}Account{/t} ]" BORDER="0" TARGET="_BLANK"></A>
+			{else}
+				<IMG ALIGN="absmiddle" SRC="img/empty.gif" ALT="" WIDTH="16" BORDER="0">
 			{/if}
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ {t}Print{/t} ]" BORDER="0" TARGET="_BLANK"></A>
+			<A {if $invoice.paid}onClick="return confirmLink(this, '{t 0=$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}Invoice \'$0\' has been paid. Are you sure, you want to edit it?{/t}')"{/if} HREF="?m=invoiceedit&id={$invoice.id}&action=edit"><IMG ALIGN="absmiddle" SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" BORDER="0" TARGET="_BLANK"></A>
+			<A onClick="return confirmLink(this, '{t 0=$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}Are you sure, you want to remove invoice \'$0\' from database?{/t}')" HREF="?m=invoiceedit&id={$invoice.id}&action=invoicedel"><IMG ALIGN="absmiddle" SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" BORDER="0" TARGET="_BLANK"></A>
 			{cycle print=false}
 			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
 		</TD>
@@ -197,7 +201,7 @@
 						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
 						<NOBR><A HREF="javascript:prints_org();">{t}Print originals{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
 						<NOBR><A HREF="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:pays();">{t}Account{/t} <IMG SRC="img/edit.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:pays();">{t}Account{/t} <IMG SRC="img/invoice_pay.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
 						<NOBR><INPUT TYPE="text" NAME="invoicepaydate" SIZE="10" onclick="javascript:cal1.popup()" {tip text="Enter accounting date in format 'YYYY/MM/DD' (empty field means current date)"}>&nbsp;<IMG SRC="img/calendar.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></NOBR>
 					</TD>
 					<TD ALIGN="right">	
