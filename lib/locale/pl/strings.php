@@ -1347,6 +1347,7 @@ $_LANG['To add a new network see menu "IP Networks".'] = 'Aby dodać nową sieć
 $_LANG['To (day/month/year hh:mm):'] = 'Do (dzień/miesiąc/rok gg:mm):';
 $_LANG['To pay:'] = 'Do zapłaty:';
 $_LANG['Total:'] = 'Razem:';
+$_LANG['Total with discounts:'] = 'Razem z rabatami:';
 $_LANG['Total: $0'] = 'Razem: $0';
 $_LANG['Total Dues:'] = 'W tym zadłużonych:';
 $_LANG['Total Invoiceless Income'] = 'Łączny przychód bezrachunkowy';
