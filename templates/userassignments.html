@@ -23,7 +23,10 @@
 				</TR>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{foreach from=$assignments item=a}
-				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')" {if ($a.dateto < $smarty.now && $a.dateto) || ($a.datefrom > $smarty.now && $a.datefrom)}CLASS="blend"{/if}>
+				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')" {if ($a.dateto < $smarty.now && $a.dateto) || ($a.datefrom > $smarty.now && $a.datefrom) || $a.suspended}CLASS="blend"{/if}>
+					{if !$a.tariffid}
+					<TD WIDTH="8%" COLSPAN="8"><B>Zawieszenie naliczania wszystkich p³atno¶ci</B></TD>
+					{else}
 					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=tariffinfo&id={$a.tariffid}">{$a.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$a.value|string_format:"%01.2f"} z³</TD>
 					<TD WIDTH="1%" NOWRAP>{$a.period} ({$a.at})</TD>
@@ -32,15 +35,16 @@
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$a.uprate|default:"-"} kbps</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$a.upceil|default:"-"} kbps</TD>
 					<TD WIDTH="1%">{if $a.invoice}tak{else}&nbsp;{/if}</TD>
+					{/if}
 					<TD WIDTH="1%">
 						{if $a.datefrom}od {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
 						{if $a.dateto}do {$a.dateto|date_format:"%Y/%m/%d"}{/if}
 					</TD>
 					<TD WIDTH="91%" ALIGN="RIGHT" NOWRAP>
-						{*
-						<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê oraz zaksiêgowaæ wyrównanie od ostatniego zaksiêgowania do dnia dzisiejszego?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignment.id}&id={$balancelist.userid}&balance=1" {tip text="Usuwa taryfê z rekordu u¿ytkownika oraz ksiêguje wyrównanie od dnia ostatniego zdarzenia do dzisiaj"}>Usuñ i wyrównaj <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> 
-						*}
-						<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê?')" HREF="?m=userassignments&action=delete&aid={$a.id}&id={$balancelist.userid}" {tip text="Usuwa taryfê z rekordu u¿ytkownika"}>Usuñ <IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
+						{if $a.tariffid}
+						<A href="?m=userassignments&action=suspend&id={$balancelist.userid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="W³±cza/Wy³±cza naliczanie wybranego zobowi±zania"}><IMG SRC="img/wait.gif" ALT="[ {if $a.suspended}Przywróæ{else}Zawie¶{/if} ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
+						{/if}
+						<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi to zobowi±zanie?')" HREF="?m=userassignments&action=delete&aid={$a.id}&id={$balancelist.userid}" {tip text="Usuwa zobowi±zanie z rekordu u¿ytkownika"}><IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
 					</TD>
 				</TR>
 				{foreachelse}
@@ -66,8 +70,9 @@
 				<TR bgcolor="#DFD5BD">
 					<TD COLSPAN="9">
 						<B>Dodaj:</B>
-						<SELECT size="1" name="assignment[tariffid]" {tip text="Wybierz taryfê która ma byæ przypisana do u¿ytkownika" trigger="tariffid"}>
-							<OPTION value="0" SELECTED>... wybierz taryfê ...</OPTION>
+						<SELECT size="1" name="assignment[tariffid]" {tip text="Wybierz taryfê która ma byæ przypisana do u¿ytkownika lub zawie¶ naliczanie wszystkich p³atno¶ci na dany okres" trigger="tariffid"}>
+							<OPTION value="" SELECTED>... wybierz taryfê ...</OPTION>
+							<OPTION value="0">- zawieszenie wszystkich p³atno¶ci -</OPTION>
 							{section name=t loop=$tariffs}
 							<OPTION VALUE="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>{$tariffs[t].name} ({$tariffs[t].value|string_format:"%01.2f"} z³{if $tariffs[t].downrate}, {$tariffs[t].downrate} down{/if}{if $tariffs[t].uprate}, {$tariffs[t].uprate} up{/if})</OPTION>
 							{/section}
