@@ -1,11 +1,12 @@
 {include file="header.html"}
 {include file="balanceheader.html"}
+<!--// $Id$ //-->
 <script language="javascript">
 	<!--
 	function getText(index)
 	{literal}{{/literal}
-		{section name=tf loop=$tariffs.id}
-		if(index=={$tariffs.id[tf]}) return '{$tariffs.name[tf]} ({$tariffs.value[tf]} z³/mc)';
+		{section name=lt loop=$tariffs}
+		if(index=={$tariffs[lt].id}) return '{$tariffs[lt].name} ({$tariffs[lt].value} z³)';
 		{/section}
 	{literal}}{/literal}
 	//-->
@@ -146,7 +147,7 @@
 				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'Jeste¶ pewien ¿e chcesz przenie¶æ u¿ytkowników do taryfy '+getText(document.tmove.to.value)+'?','1');">Przenie¶ tych u¿ytkowników do taryfy:</A> </B>
 				<SELECT SIZE="1" NAME="to">
 					{section name=lt loop=$tariffs}
-					{if $tariffs[lt].id neq $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value} z³/mc)</OPTION>{/if}
+					{if $tariffs[lt].id neq $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value} z³)</OPTION>{/if}
 					{/section}
 				</SELECT>
 			</FORM>
