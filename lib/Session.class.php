@@ -36,7 +36,7 @@ class Session {
 	var $lastip;
 	var $error;
 	var $_version = '1.1-cvs';
-	var $_revision = '$Revision:';
+	var $_revision = '$Revision$';
 
 	function Session(&$DB,$timeout = 600)
 	{
@@ -138,6 +138,9 @@ class Session {
 
 /*
  * $Log$
+ * Revision 1.40  2003/12/01 04:10:46  lukasz
+ * - typo
+ *
  * Revision 1.39  2003/12/01 04:09:31  lukasz
  * - tsave
  *
