@@ -3,8 +3,7 @@
 /*
  * LMS version 1.0-cvs
  *
- *  (C) Copyright 2002-2003 Rulez Development Team
- *  (C) Copyright 2001-2003 ASK NetX
+ *  (C) Copyright 2001-2003 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
