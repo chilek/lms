@@ -56,8 +56,12 @@ Uwaga: Has³o jest wymagane w zale¿no¶ci od konfiguracji autentykacji
        u¿ytkowników postgresa w /usr/local/pgsql/data/pg_hba.conf. 
        Domy¶lnie has³o nie jest wymagane.
 
-Teraz ju¿ mo¿emy zalogowaæ siê do systemu LMS na konto 'admin' 
-z pustym has³em. 
+Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy danych,
+mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
+nie ma ¿adnego konta administratora, jedyn± rzecz± jak± bêdziemy widzieæ
+bêdzie formularz dodania administratora. Je¿eli podamy prawid³owe dane
+administratora, LMS przeniesie nas na stronê logowania gdzie odrazu bêdziemy
+mogli u¿yæ nowo utworzonego konta.
 
 ------------------------------------------------------------------------
 $Id$
