@@ -1606,6 +1606,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$result['users'] = $this->DB->GetAll('SELECT users.id AS id, COUNT(users.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS username FROM userassignments, users WHERE users.id = userid AND usergroupid = ? GROUP BY users.id, username', array($id));
 		$result['userscount'] = sizeof($result['users']);
 		$result['count'] = $this->UsergroupWithUserGet($id);
+		$result['rows'] = ceil(sizeof($result['users'])/2);
 		return $result;
 	}
 
