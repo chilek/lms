@@ -151,8 +151,8 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 
 // test for proper version of Smarty
 
-if(version_compare('2.5.0', $SMARTY->_version) > 0)
-	die('<B>'.trans('Old version of Smarty engine! You must get newest from $0.','<A HREF="http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz">http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz</A>').'</B>');
+if(version_compare('2.6.0', $SMARTY->_version) > 0)
+	die('<B>'.trans('Old version of Smarty engine! You must get newest from $0.','<A HREF="http://smarty.php.net/distributions/Smarty-2.6.0.tar.gz">http://smarty.php.net/distributions/Smarty-2.6.0.tar.gz</A>').'</B>');
 
 // Include required files (including sequence is important)
 
@@ -257,4 +257,5 @@ else
 
 $SESSION->close();
 $DB->Destroy();
+
 ?>
