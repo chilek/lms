@@ -100,22 +100,22 @@ class Sysinfo {
 	{
 		switch(PHP_OS)
 		{
-			case "Linux":
-				exec("hostname -f",$return);
+			case 'Linux':
+				exec('hostname -f',$return);
 				$hostname=$return[0];
 				break;
-			case "FreeBSD":
-			case "OpenBSD":
-			case "NetBSD":
-			case "WinNT":
-				exec("hostname",$return);
+			case 'FreeBSD':
+			case 'OpenBSD':
+			case 'NetBSD':
+			case 'WinNT':
+				exec('hostname',$return);
 				$hostname=$return[0];
 				break;
 			default:
-				$return = "nieznany, ".PHP_OS;
+				$return = sprintf(trans('unknown OS (%s)'),PHP_OS);
 		}
-		if($hostname=="")
-			$hostname="N.A.";
+		if($hostname=='')
+			$hostname='N.A.';
 		return $hostname;
 	}
 		
@@ -127,31 +127,31 @@ class Sysinfo {
 				
 		switch (PHP_OS)
 		{
-			case "Linux":
+			case 'Linux':
 				$fd = fopen('/proc/uptime', 'r');
 				$ar_buf = split(' ', fgets($fd, 4096));
 				fclose($fd);
 				$sys_ticks = trim($ar_buf[0]);
 				$result = uptimef($sys_ticks);
 			break;
-			case "FreeBSD":
+			case 'FreeBSD':
 				$s = explode(' ', $this->bsd_grab_key('kern.boottime'));
 				$a = ereg_replace('{ ', '', $s[3]);
 				$sys_ticks = time() - $a;
 				$result = uptimef($sys_ticks);
 			break;
-			case "NetBSD":
+			case 'NetBSD':
 				$a = $this->bsd_grab_key('kern.boottime');
 				$sys_ticks = time() - $a;
 				$result = uptimef($sys_ticks);
 			break;
-			case "OpenBSD":
+			case 'OpenBSD':
 				$a = $this->bsd_grab_key('kern.boottime');
 				$sys_ticks = time() - $a;
 				$result = uptimef($sys_ticks);
 			break;
 			default:
-				$result = "nieznany os (".PHP_OS.")";
+				$result = sprintf(trans('unknown OS (%s)'),PHP_OS);
 			break;
 		}
 		return $result;
@@ -162,10 +162,10 @@ class Sysinfo {
 		switch(PHP_OS)
 		{
 			
-			case "WinNT":
+			case 'WinNT':
 				$result = 'Windows NT/2000/XP N.A.';
 			break;
-			case "Win32":
+			case 'Win32':
 				$result = 'Windows 95/98/ME N.A.';
 			break;
 			default:
@@ -182,8 +182,8 @@ class Sysinfo {
 	{
 		switch(PHP_OS)
 		{
-			case "WinNT":
-			case "Win32":
+			case 'WinNT':
+			case 'Win32':
 				$result = "N.A.";
 			default:
 				$who = split('=', execute_program('who', '-q'));
@@ -200,7 +200,7 @@ class Sysinfo {
 	{
 		switch(PHP_OS)
 		{
-			case "Linux":
+			case 'Linux':
 				if ($fd = fopen('/proc/loadavg', 'r'))
 				{
 					$results = split(' ', fgets($fd, 4096));
@@ -209,9 +209,9 @@ class Sysinfo {
 				else
 					$results = array('N.A.','N.A.','N.A.');
 			break;
-			case "FreeBSD":
-			case "NetBSD":
-			case "OpenBSD":			
+			case 'FreeBSD':
+			case 'NetBSD':
+			case 'OpenBSD':			
 				$s = $this->bsd_grab_key('vm.loadavg');
 				$s = ereg_replace('{ ', '', $s);
 				$s = ereg_replace(' }', '', $s);

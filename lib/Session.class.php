@@ -56,7 +56,7 @@ class Session {
 		{
 			$this->islogged = TRUE;
 			$this->passwd = 'EMPTY';
-			$this->logname = 'nie zalogowany';
+			$this->logname = trans('not logged in');
 			$_GET['m'] = 'adminadd';
 			return TRUE;
 		}
@@ -66,7 +66,8 @@ class Session {
 			$this->passwd = $_SESSION['session_passwd'];
 		}
 		
-		if($this->VerifyPassword()&&$this->TimeOut($timeout)){
+		if($this->VerifyPassword() && $this->TimeOut($timeout))
+		{
 			$this->islogged = TRUE;
 			$admindata = $this->DB->GetRow('SELECT id, name FROM admins WHERE login=?',array($this->login));
 			$this->id = $admindata['id'];
@@ -116,7 +117,7 @@ class Session {
 	{
 		if( (time() - $_SESSION['session_timestamp']) > $timeout )
 		{
-			$this->error = 'Przekroczy³e¶ limit czasu bezczynno¶ci ('.$timeout.' sekund).';
+			$this->error = sprintf(trans('Exceeded idle time limit (%d sec.)'),$timeout);
 			return FALSE;
 		}
 		else
@@ -134,9 +135,9 @@ class Session {
 		else 
 		{
 			if(isset($this->login))
-				$this->error='B³êdne has³o lub nazwa u¿ytkownika.';
+				$this->error = trans('Wrong password or login.');
 			else
-				$this->error='Proszê siê zalogowaæ.';
+				$this->error = trans('Login yourself, please.');
 			return FALSE;
 		}
 	}
