@@ -40,8 +40,6 @@
 	      <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</para>
 	      <para>Przy wspó³pracy LMS'a z baz± danych SQLite nie stwierdzono ¿adnych
 	      problemów z tym, ¿e jedyn± przetestowan± wersj± jest wersja 2.8.11.</para>
-	      <para>W celach eksperymentalnych/poznawczych wprowadzono mo¿liwo¶æ uruchomienia
-	      interfejsu u¿ytkownika na bazie danych MS SQL Server 2000.</para>
 	    </sect2>
 	    <sect2 id="install-req-smarty">
              <title>Biblioteka Smarty</title>
@@ -323,15 +321,6 @@ database = /usr/local/lms/lms.db</screen>
 			zobaczysz bêdzie formularz dodania administratora.  
 			</para>
 		</sect3>
-		</sect2>
-		<sect2 id="install-mssql">
-		<title>MS SQL Server</title>
-			<para>LMS na bazie Microsoftu? Czemu nie. W celach poznawczych
-			i eksperymentalnych dodano mo¿liwo¶æ pod³aczenia LMSa do tej bazy.
-			Nie nale¿y jednak liczyæ na jakikolwiek support z tym zwi±zany, ale
-			traktowaæ to raczej jako ciekawostkê. Nie mo¿na tak¿e zagwarantowaæ
-			¿e pomys³ bêdzie rozwijany. Niemniej ze wstêpnych testów
-			przy u¿yciu MS SQL Server 2000 wynika, ¿e jest to mo¿liwe.</para>
 		</sect2>
 	</sect1>  	
  	<sect1 id="install-config">
