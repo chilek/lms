@@ -198,8 +198,8 @@ my %accesslist;
 
 while (my $row = $dbq->fetchrow_hashref())
 {
-	$maclist{$row->{'ipaddr'}} = $row->{'mac'};
-	$accesslist{$row->{'ipaddr'}} = $row->{'access'};
+	$maclist{u32todotquad($row->{'ipaddr'})} = $row->{'mac'};
+	$accesslist{u32todotquad($row->{'ipaddr'})} = $row->{'access'};
 }
 
 foreach my $key (@networks)
