@@ -1,10 +1,14 @@
 #include <syslog.h>
 #include <sys/ioctl.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <linux/if_arp.h>
 #include <features.h>    /* for the glibc version number */
-#if __GLIBC__ >= 2 && __GLIBC_MINOR >= 1
+#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 3
+#include <net/if.h>
 #include <netpacket/packet.h>
+#include <net/ethernet.h>     /* the L2 protocols */
+#elif __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
 #include <net/ethernet.h>     /* the L2 protocols */
 #else
 #include <asm/types.h>
@@ -14,6 +18,9 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/time.h>
 
 #define KB 1024
 #define MAXIFN 16
