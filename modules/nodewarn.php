@@ -71,7 +71,7 @@ if($backid = $_GET['id'])
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$layout['pagetitle'] = 'Ostrze¿enia';
+$layout['pagetitle'] = trans('Messages');
 
 $nodelist = $LMS->GetNodeList();
 unset($nodelist['total']);
@@ -87,4 +87,3 @@ $SMARTY->assign('nodelist',$nodelist);
 $SMARTY->display('nodewarnings.html');
 
 ?>
-

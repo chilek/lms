@@ -24,32 +24,32 @@
  *  $Id$
  */
 
-if(!eregi("^[0-9]+$",$_GET['id']))
+if(!eregi('^[0-9]+$',$_GET['id']))
 {
-	header("Location: ?m=nodelist");
+	header('Location: ?m=nodelist');
 	die;
 }
 
 if(!$LMS->NodeExists($_GET['id']))
 	if(isset($_GET['ownerid']))
 	{
-		header("Location: ?m=userinfo&id=".$_GET['ownerid']);
+		header('Location: ?m=userinfo&id='.$_GET['ownerid']);
 		die;
 	}
 	else
 	{
-		header("Location: ?m=nodelist");
+		header('Location: ?m=nodelist');
 		die;
 	}
 elseif($LMS->GetNodeOwner($_GET['id']) == 0)
 {
-	header("Location: ?m=netdevinfo&id=".$LMS->GetNetDevIDByNode($_GET['id']));
+	header('Location: ?m=netdevinfo&id='.$LMS->GetNetDevIDByNode($_GET['id']));
 	die;
 }
 
 if($_GET['devid'])
 {
-	$error['netdev'] = 'Brak wolnych portów w wybranym urz±dzeniu!';
+	$error['netdev'] = trans('It scants free ports in selected device!');
 	$SMARTY->assign('error', $error);
 	$SMARTY->assign('netdevice', $_GET['devid']);
 }
@@ -67,19 +67,18 @@ $otherusergroups = $LMS->GetGroupNamesWithoutUser($ownerid);
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
 if(!isset($_GET['ownerid']))
-	$_SESSION['backto'] .= "&ownerid=".$ownerid;
+	$_SESSION['backto'] .= '&ownerid='.$ownerid;
 
-if($nodeinfo['netdev'] == 0) {
+if($nodeinfo['netdev'] == 0) 
 	$netdevices = $LMS->GetNetDevList();
-	
-} else
+else
 	$netdevices = $LMS->GetNetDev($nodeinfo['netdev']);
 
 unset($netdevices['total']);
 unset($netdevices['order']);
 unset($netdevices['direction']);
 
-$layout['pagetitle'] = "Informacje o komputerze: ".$nodeinfo['name'];
+$layout['pagetitle'] = trans('Info Node: $0',$nodeinfo['name']);
 
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);

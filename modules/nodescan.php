@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-if($_GET['ownerid']&&$LMS->UserExists($_GET['ownerid']))
+if($_GET['ownerid'] && $LMS->UserExists($_GET['ownerid']))
 {
 	$userinfo = $LMS->GetUser($_GET['ownerid']);
 }
 
-$layout['pagetitle'] = "Wyszukiwanie komputerów";
+$layout['pagetitle'] = trans('Nodes Scanning');
 
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($_GET['ownerid']));
 $SMARTY->assign('users',$users);

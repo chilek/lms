@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Wyszukiwanie komputerów";
+$layout['pagetitle'] = trans('Nodes Searching');
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
