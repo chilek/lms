@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Kompaktowanie bazy statystyk';
+$layout['pagetitle'] = trans('Network Statistics Compation');
 
 $delete = $_POST['delete'];
 $level = $_POST['level'];
@@ -39,13 +39,13 @@ if (!($level || $delete || $removedeleted))
 $SMARTY->display('header.html');
 $SMARTY->display('trafficheader.html');
 
-echo '<PRE><B>Kompaktowanie bazy danych</B><BR>';
-echo 'Przed kompaktowaniem w bazie jest '.$LMS->DB->GetOne('SELECT COUNT(*) FROM stats')." rekordów.\n";
+echo '<PRE><B>'.trans('Database compaction').'</B><BR>';
+echo trans('$0 records before compaction.\n',$LMS->DB->GetOne('SELECT COUNT(*) FROM stats'));
 
 if($delete)
 {
     $yeardeleted = $LMS->DB->Execute('DELETE FROM stats where dt < ?NOW? - 365*24*60*60');
-    echo 'Usuniêto ponadrocznych '.$yeardeleted." rekordów.\n";
+    echo trans('$0 at least one year old records have been removed.\n',$yeardeleted);
 }
 
 if($removedeleted)
@@ -57,7 +57,7 @@ if($removedeleted)
 	{
 	    if(!in_array($node,$nodes))
 		if($LMS->DB->Execute('DELETE FROM stats WHERE nodeid = '.$node))
-		    echo 'Usuniêto statystyki komputera o ID: '.$node."\n";
+		    echo trans('Computer $0 statistics have been removed\n',$node);
 	}
     }
 }
@@ -67,16 +67,16 @@ if($level)
     $time = time();
     switch($level)
     {
-	case 1 : $period = $time-24*60*60; $step = 24*60*60; break; //1 dzieñ, dzieñ  
-	case 2 : $period = $time-30*24*60*60; $step = 24*60*60; break;//mies, dzieñ
-	case 3 : $period = $time-365*24*60*60; $step = 60*60; break; //po miesi±c, godz	
+	case 1 : $period = $time-24*60*60; $step = 24*60*60; break; //1 day, day
+	case 2 : $period = $time-30*24*60*60; $step = 24*60*60; break;//month, day
+	case 3 : $period = $time-365*24*60*60; $step = 60*60; break; //month, hour
     }
     if($mintime = $LMS->DB->GetOne('SELECT MIN(dt) FROM stats'))
     {
 	$nodes = $LMS->DB->GetAll('SELECT id, name FROM nodes ORDER BY name');
 	foreach($nodes as $node)
 	{
-    	    echo "'".$node['name']."'\t: "; 
+    	    echo '\''.$node['name'].'\'\t: '; 
 	    $deleted = 0;
 	    $inserted = 0;
 	    $LMS->DB->BeginTrans();
@@ -92,11 +92,11 @@ if($level)
 		$maxtime -= $step;
 	    }
 	    $LMS->DB->CommitTrans();
-	    echo ($deleted?$deleted:0)." - usuniêtych, ".($inserted?$inserted:0)." - wstawionych\n";
+	    echo trans('$0 - removed, $1 - inserted\n', ($deleted ? $deleted : 0), ($inserted ? $inserted : 0));
 	}
     }
 }
-echo "Po kompaktowaniu w bazie pozostaje ".$LMS->DB->GetOne("SELECT COUNT(*) FROM stats")." rekordów.";
+echo trans('$0 records after compaction.\n',$LMS->DB->GetOne("SELECT COUNT(*) FROM stats"));
 
 $SMARTY->display('footer.html');
 
