@@ -19,14 +19,18 @@ $KONTO_DO = '0000000000000000000000000';
 $ISP1_DO = 'xxxxxxxxxxxxxxxxxxxxxxx';
 $ISP2_DO = 'xxxxxxxxxxxxxxxxxxxxxxx';
 
-$KWOTA = $_GET['ILE'];
-$USER_OD = $_GET['OD'];
 $USER_TY = 'Abonament - ID:'.sprintf('%04d',$_GET['UID']);
 $CURR = 'PLN';
 $SHORT_TO_WORDS = 0;	// 1 - krótki format kwoty s³ownej 'jed dwa trz 15/100'
 			// 0 - d³ugi format kwoty s³ownej 'sto dwadzie¶cia trzy 15/100 z³'
 
+$USE_ICONV = 1;		// w³±cza przekodowywanie ci±gów z UTF-8 do ISO-8859-2
+
 /************** Koniec konfiguracji ****************/
+
+$KWOTA = trim($_GET['ILE']);
+$USER_OD = trim($_GET['OD']);
+$USER_OD = $USE_ICONV ? iconv('UTF-8','ISO-8859-2',$USER_OD) : $USER_OD;
 
 $KWOTA_NR = str_replace(',','.',$KWOTA);  // na wszelki wypadek
 $KWOTA_GR = sprintf('%02d',round(($KWOTA_NR - floor($KWOTA_NR))*100));
@@ -34,11 +38,13 @@ $KWOTA_GR = sprintf('%02d',round(($KWOTA_NR - floor($KWOTA_NR))*100));
 if($SHORT_TO_WORDS)
 {
 	$KWOTA_ZL = to_words(floor($KWOTA_NR), 0, '', 1);
+	if($USE_ICONV) $KWOTA_ZL = iconv('UTF-8','ISO-8859-2',$KWOTA_ZL);
 	$KWOTA_X = $KWOTA_ZL .' '. $KWOTA_GR. '/100';
 }
 else
 {
 	$KWOTA_ZL = to_words(floor($KWOTA_NR));
+	if($USE_ICONV) $KWOTA_ZL = iconv('UTF-8','ISO-8859-2',$KWOTA_ZL);
 	$KWOTA_X = $KWOTA_ZL .' '. $KWOTA_GR. '/100 z³otych';
 }
 
