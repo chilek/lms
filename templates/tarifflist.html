@@ -23,7 +23,7 @@
 			Korzysta:
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			<NOBR>Dochód m-c:</NOBR>
+			<NOBR>¦r. dochód</NOBR><BR>miesiêczny:
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
 			<NOBR>
@@ -54,7 +54,7 @@
 			({$tarifflist[tariffs].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			{$tarifflist[tariffs].users} {if $tarifflist[tariffs].userscount neq $tarifflist[tariffs].users}({$tarifflist[tariffs].userscount}){/if}
+			{$tarifflist[tariffs].userscount} {if $tarifflist[tariffs].userscount neq $tarifflist[tariffs].users}({$tarifflist[tariffs].users}){/if}
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			{$tarifflist[tariffs].income|string_format:"%01.2f"} z³
@@ -83,7 +83,7 @@
 			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Razem:</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
-			<B>{$listdata.totalusers} {if $listdata.totalcount neq $listdata.totalusers}({$listdata.totalcount}){/if}</B>
+			<B>{$listdata.totalcount} {if $listdata.totalcount neq $listdata.totalusers}({$listdata.totalusers}){/if}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
 			<B>{$listdata.totalincome|string_format:"%01.2f"} z³</B>
