@@ -93,7 +93,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 	function _driver_affected_rows()
 	{
 		if(! $this->_error)
-			return mysql_affected_rows($this->_result);
+			return mysql_affected_rows();
 		else
 			return FALSE;
 	}
@@ -134,6 +134,9 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.17  2003/09/12 22:34:21  alec
+ * bug fix (I think so)
+ *
  * Revision 1.16  2003/09/12 22:22:52  alec
  * Execute zwraca ilo¶æ zmodyfikowanych wierszy dla zapytañ UPDATE, DELETE, INSERT
  *
