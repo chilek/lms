@@ -44,7 +44,7 @@
 			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M.%S"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			{$_config.invoices.number_template|default:"%N/LMS/%Y"|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}
+			{$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$invoice.value|string_format:"%0.2f"} z³
@@ -78,7 +78,7 @@
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD WIDTH="99%">
-						<TABLE WIDTH="100%">
+						{*<TABLE WIDTH="100%">
 							<TR>
 								<TD WIDTH="1%" ROWSPAN="2">
 									<INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="action" VALUE="markrange">
@@ -106,7 +106,7 @@
 									<B>Dzisiejszy dzieñ</B>
 								</TD>
 							</TR>								
-						</TABLE>
+						</TABLE>*}
 					</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="right">
 						<A HREF="javascript:document.marks.submit(); ">Uaktualnij zaznaczenia <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
