@@ -3286,7 +3286,7 @@ class LMS
 
 	function SendMail($recipients, $headers, $body, $files=NULL)
 	{
-		include('Mail.php');
+		include_once('Mail.php');
 
 		$params['host'] = $this->CONFIG['phpui']['smtp_host'];
 		$params['port'] = $this->CONFIG['phpui']['smtp_port'];
