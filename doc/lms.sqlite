@@ -1,7 +1,7 @@
 /* $Id$ */ 
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "admins" 
+  Structure of table "admins" 
 -------------------------------------------------------- */
 DROP TABLE admins;
 CREATE TABLE admins (
@@ -20,7 +20,7 @@ CREATE TABLE admins (
 );
 
 /* ----------------------------------------------------
-	 Struktura tabeli assignments
+	 Structure of table assignments
 ---------------------------------------------------*/
 DROP TABLE assignments;
 CREATE TABLE assignments (
@@ -36,7 +36,7 @@ CREATE TABLE assignments (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "cash" 
+  Structure of table "cash" 
 -------------------------------------------------------- */
 DROP TABLE cash;
 CREATE TABLE cash (
@@ -48,12 +48,14 @@ CREATE TABLE cash (
 	taxvalue numeric(9,2)   DEFAULT 0,
 	userid integer 		DEFAULT 0 NOT NULL,
 	comment varchar(255) 	DEFAULT '' NOT NULL,
-	invoiceid integer 	DEFAULT 0 NOT NULL
+	invoiceid integer 	DEFAULT 0 NOT NULL,
+	itemid smallint		DEFAULT 0 NOT NULL
 );
 CREATE INDEX cash_userid_idx ON cash(userid);
+CREATE INDEX cash_invoiceid_idx ON cash(invoiceid);
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "networks" 
+  Structure of table "networks" 
 -------------------------------------------------------- */
 DROP TABLE networks;
 CREATE TABLE networks (
@@ -74,7 +76,7 @@ CREATE TABLE networks (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "nodes" 
+  Structure of table "nodes" 
 -------------------------------------------------------- */
 DROP TABLE nodes;
 CREATE TABLE nodes (
@@ -98,7 +100,7 @@ CREATE TABLE nodes (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "tariffs" 
+  Structure of table "tariffs" 
 -------------------------------------------------------- */
 DROP TABLE tariffs;
 CREATE TABLE tariffs (
@@ -118,7 +120,7 @@ CREATE TABLE tariffs (
 );
 
 /* ---------------------------------------------------------
-  Struktura tabeli "payments"
+  Structure of table "payments"
 --------------------------------------------------------- */
 DROP TABLE payments;
 CREATE TABLE payments (
@@ -132,7 +134,7 @@ CREATE TABLE payments (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "invoices" 
+  Structure of table "invoices" 
 -------------------------------------------------------- */
 DROP TABLE invoices;
 CREATE TABLE invoices (
@@ -146,18 +148,19 @@ CREATE TABLE invoices (
         address varchar(255) 	DEFAULT '' NOT NULL,
         nip varchar(16) 	DEFAULT '' NOT NULL,
 	pesel varchar(11) 	DEFAULT '' NOT NULL,
-        zip varchar(6) 		DEFAULT '' NOT NULL,
+        zip varchar(10)		DEFAULT '' NOT NULL,
         city varchar(32) 	DEFAULT '' NOT NULL,
         phone varchar(255) 	DEFAULT '' NOT NULL,
         finished smallint 	DEFAULT 0 NOT NULL
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "invoicecontents" 
+  Structure of table "invoicecontents" 
 -------------------------------------------------------- */
 DROP TABLE invoicecontents;
 CREATE TABLE invoicecontents (
 	invoiceid integer 	DEFAULT 0 NOT NULL,
+	itemid smallint		DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	taxvalue numeric(9,2) 	DEFAULT 0,
 	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
@@ -168,7 +171,7 @@ CREATE TABLE invoicecontents (
 );	 
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "timestamps" 
+  Structure of table "timestamps" 
 -------------------------------------------------------- */
 DROP TABLE timestamps;
 CREATE TABLE timestamps (
@@ -178,7 +181,7 @@ CREATE TABLE timestamps (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "users" 
+  Structure of table "users" 
 -------------------------------------------------------- */
 DROP TABLE users;
 CREATE TABLE users (
@@ -192,7 +195,7 @@ CREATE TABLE users (
 	phone3 varchar(255) 	DEFAULT '' NOT NULL,
 	gguin integer 		DEFAULT 0 NOT NULL,
 	address varchar(255) 	DEFAULT '' NOT NULL,
-	zip varchar(6) 		DEFAULT '' NOT NULL,
+	zip varchar(10) 	DEFAULT '' NOT NULL,
 	city varchar(32) 	DEFAULT '' NOT NULL,
 	nip varchar(16) 	DEFAULT '' NOT NULL,
 	pesel varchar(11) 	DEFAULT '' NOT NULL,
@@ -208,7 +211,7 @@ CREATE TABLE users (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "usergroups" 
+  Structure of table "usergroups" 
 -------------------------------------------------------- */
 DROP TABLE usergroups;
 CREATE TABLE usergroups (
@@ -219,7 +222,7 @@ CREATE TABLE usergroups (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "userassignments" 
+  Structure of table "userassignments" 
 -------------------------------------------------------- */
 DROP TABLE userassignments;
 CREATE TABLE userassignments (
@@ -230,7 +233,7 @@ CREATE TABLE userassignments (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "stats" 
+  Structure of table "stats" 
 -------------------------------------------------------- */
 DROP TABLE stats;
 CREATE TABLE stats (
@@ -244,7 +247,7 @@ CREATE TABLE stats (
 CREATE INDEX stats_nodeid_idx ON stats(nodeid);
 
 /* ---------------------------------------------------
-	Struktura tabeli netdevices
+	Structure of table netdevices
 ----------------------------------------------------*/
 DROP TABLE netdevices;
 CREATE TABLE netdevices (
@@ -259,7 +262,7 @@ CREATE TABLE netdevices (
 );
 
 /* ---------------------------------------------------
-	Struktura tabeli netlinks
+	Structure of table netlinks
 ----------------------------------------------------*/
 DROP TABLE netlinks;
 CREATE TABLE netlinks (
@@ -386,6 +389,32 @@ CREATE TABLE uiconfig (
 );
 
 /* --------------------------------------------------
+    Timetable tables
+------------------------------------------------------*/
+
+DROP TABLE events;
+CREATE TABLE events (
+	id integer PRIMARY KEY,
+	title varchar(255) DEFAULT '' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+	note text DEFAULT '' NOT NULL,
+	date integer DEFAULT 0 NOT NULL,
+	begintime smallint DEFAULT 0 NOT NULL,
+	endtime smallint DEFAULT 0 NOT NULL,
+	adminid integer DEFAULT 0 NOT NULL,
+	userid integer DEFAULT 0 NOT NULL,
+	private smallint DEFAULT 0 NOT NULL,
+	closed smallint DEFAULT 0 NOT NULL
+);
+
+DROP TABLE eventassignments;
+CREATE TABLE eventassignments (
+	eventid integer DEFAULT 0 NOT NULL,
+	adminid integer DEFAULT 0 NOT NULL,
+	UNIQUE (eventid, adminid)
+);
+
+/* --------------------------------------------------
     Database info table
 ------------------------------------------------------*/
 
@@ -396,4 +425,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004121000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005021500');
