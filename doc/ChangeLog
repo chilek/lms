@@ -11,6 +11,8 @@ wersja 1.0pre6 (??/??/2003):
   - zrobiony usersearch i parê innych rzeczy ;)
   - ma³y update dokumentacji
   - Warden, co psu³e¶ jeszcze?
+  - dodano lms.spec do contrib/ zgodnego ze specyfikacj± PLD,
+  - ³atka usprawniaj±ca odpalenie LMS w PLD,
 
 wersja 1.0pre5 (26/01/2003):
  
