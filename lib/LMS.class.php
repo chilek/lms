@@ -2219,7 +2219,7 @@ class LMS
 	{
 		$this->SetTS('nodes');
 		$this->SetTS('networks');
-		$network = $this->GetNetworkRecord($id,0,4294967296);
+		$network = $this->GetNetworkRecord($id);
 		$address = $network['addresslong']+$shift;
 		foreach($network['nodes']['id'] as $key => $value)
 		{
@@ -2235,8 +2235,8 @@ class LMS
 	{
 		$this->SetTS('nodes');
 		$this->SetTS('networks');
-		$network['source'] = $this->GetNetworkRecord($src,0,4294967296);
-		$network['dest'] = $this->GetNetworkRecord($dst,0,4294967296);
+		$network['source'] = $this->GetNetworkRecord($src);
+		$network['dest'] = $this->GetNetworkRecord($dst);
 		foreach($network['source']['nodes']['id'] as $key => $value)
 			if($this->NodeExists($value))
 				$nodelist[] = $value;
@@ -2252,7 +2252,7 @@ class LMS
 		return $counter;
 	}
 
-	function GetNetworkRecord($id, $page = 0, $plimit = 0)
+	function GetNetworkRecord($id, $page = 0, $plimit = 4294967296)
 	{
 		$network = $this->DB->GetRow('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?', array($id));
 		$network['prefix'] = mask2prefix($network['mask']);
