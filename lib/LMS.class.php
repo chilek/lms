@@ -277,7 +277,7 @@ class LMS {
 			return FALSE;
 		while(!feof($file))
 		{
-			$line=fgets($file);
+			$line=fgets($file,4096);
 			$mac=trim(substr($line,35,25));
 			$ip=trim(substr($line,0,15));
 			if(check_mac($mac))
@@ -1172,6 +1172,27 @@ class LMS {
 		`moddate` = '".time()."',
 		`modid` = '".$session->id."'
 		WHERE `id` = '".$nodedata[id]."' LIMIT 1");
+	}
+
+	function GetUsersWithTariff($id)
+	{
+		$db=$this->db;
+		return $db->CountRows("SELECT * FROM `users` WHERE `tariff` = '".$id."'");
+	}
+	
+	function GetTariffList()
+	{
+		$db=$this->db;
+		$tarifflist = $db->FetchArray("SELECT `id`, `name`, `value`, `description` FROM `tariffs` ORDER BY `value` DESC");
+		$tarifflist[total] = sizeof($tarifflist[id]);
+		if($tarifflist[total])
+			foreach($tarifflist[id] as $key => $value)
+			{
+				$tarifflist[users][$key] = $this->GetUsersWithTariff($value);
+				$tarifflist[income][$key] = $tarifflist[users][$key] * $tarifflist[value][$key];
+				$tarifflist[totalincome] = $tarifflist[totalincome] + $tarifflist[income][$key];
+			}
+		return $tarifflist;
 	}
 								
 }
