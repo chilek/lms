@@ -51,7 +51,9 @@ $listdata[direction] = $userlist[direction];
 
 $page = (! $_GET[page] ? 1 : $_GET[page]); 
 $pagelimit = (! $_CONFIG[phpui][userlist_pagelimit] ? $listdata[total] : $_CONFIG[phpui][userlist_pagelimit]);
-$start = ($page - 1) * $pagelimit + 1;
+$start = ($page - 1) * $pagelimit;
+//echo "<pre>";
+//print_r($userlist);
 
 unset($userlist[total]);
 unset($userlist[state]);
