@@ -142,7 +142,7 @@ print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('macs', 'networks') || '';
 my $usergroups_list = $ini->val('macs', 'usergroups') || '';
-my $cfile = $ini->val('macs', 'config_file') || '/etc/conf,d/rc.macs';
+my $cfile = $ini->val('macs', 'config_file') || '/etc/rc.d/rc.macs';
 my $cuid = $ini->val('macs', 'config_owneruid') || '0';
 my $cgid = $ini->val('macs', 'config_ownergid') || '0';
 my $cperm = $ini->val('macs', 'config_permission') || '700';
