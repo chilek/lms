@@ -38,7 +38,8 @@ my %options = (
 	"--template-file|D=s" =>  \$my_template,
 	"--quiet|q"		=>	\$quiet,
 	"--help|h"		=>	\$help,
-	"--version|v"		=>	\$version
+	"--version|v"		=>	\$version,
+	"--debug|d"		=>	\$debug
 );
 
 Getopt::Long::config("no_ignore_case");
@@ -51,10 +52,11 @@ lms-notify, version $_version
 (C) 2001-2003 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
--D, --template-file=/etc/lms/another.template.txt	alternate (default in confing file);
+-D, --template-file=/etc/lms/smstemplate.txt	alternate (default in confing file);
 -h, --help			print this help and exit;
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
+-d, --debug			do debugging. don't actually send anything.
 
 EOF
 	exit 0;
@@ -97,7 +99,8 @@ my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
-my $limit = $ini->val('notify', 'limit') || 0;
+my $limit = $ini->val('notify-sms', 'limit') || 0;
+my $smsfile = $ini->val('notify-sms', 'smstemplate') || 0;
 
 if(!$smsfile)
 {
@@ -107,7 +110,7 @@ if(!$smsfile)
 
 if(! -r $smsfile)
 {
-	print STDERR "Fatal error: unable to read mail template file $mtfile, exiting!\n";
+	print STDERR "Fatal error: unable to read mail template file $smsfile, exiting!\n";
 	exit 1;
 }
 
@@ -127,7 +130,7 @@ else
 	exit 1;
 }
 
-open(MTFILE, "$mtfile");
+open(MTFILE, "$smsfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
@@ -169,63 +172,62 @@ while (my $row = $dbq->fetchrow_hashref())
 			$subject =~ s/\%B/$balance/g;
 			{ my $amount = -$balance; $subject =~ s/\%b/$amount/g; } 
 			
-			if($debugsms)
-			{
-				$sms->to($debugsms);
-			}else{
-				$sms->to($row->{'phone1'});
-			}
+				$sms_to($row->{'phone1'});
+				$sms_data="";
 
-			$sms->data();
-
-			foreach my $line (@desttempl)
-			{
-				$line =~ s/\%B/$balance/g;
-				{ 	
-				my $amount = -$balance;
-				$line =~ s/\%b/$amount/g; 	
-				}
-
-				{ 
-				my $year = strftime( "%Y", localtime());
-				$line =~ s/\%date-y/$year/; 
-				}
-
-                {
-                my $phone = $row->{'phone1'};
-                $line =~ s/\%phone1/$phone/;
-				}
-				
-				my $month = strftime ( "%m", localtime()) ; 
-				$line =~ s/\%date-m/$month/;
-				
+				foreach my $line (@desttempl)
 				{
-				my $desc = $row->{'description'}; 
-				$line =~ s/\%desc/$desc/;
-				}
+					$line =~ s/\%B/$balance/g;
+					{ 	
+						my $amount = -$balance;
+						$line =~ s/\%b/$amount/g; 	
+					}
 
-				if ($line =~ /\%saldo/) {
-					my $saldo_dbq = $dbase->prepare("SELECT SUM(value) FROM cash WHERE 
-					userid='$row->{'id'}' AND (type>='4' )") ; 
-					$saldo_dbq->execute();
-					my $ow_s = $saldo_dbq->fetchrow_hashref();
-					$line =~ s/\%saldo/$ow_s->{'SUM(value)'}/;
-				}
+					{ 
+						my $year = strftime( "%Y", localtime());
+						$line =~ s/\%date-y/$year/; 
+					}
+
+					{
+						my $phone = $row->{'phone1'};
+						$line =~ s/\%phone1/$phone/;
+					}
+
+					{
+						my $month = strftime ( "%m", localtime()) ; 
+						$line =~ s/\%date-m/$month/;
+					}
+
+					{
+						my $desc = $row->{'description'}; 
+						$line =~ s/\%desc/$desc/;
+					}
+
+					if ($line =~ /\%saldo/) {
+						my $saldo_dbq = $dbase->prepare("SELECT SUM(value) FROM cash WHERE 
+							userid='$row->{'id'}' AND (type>='4' )") ; 
+						$saldo_dbq->execute();
+						my $ow_s = $saldo_dbq->fetchrow_hashref();
+						$line =~ s/\%saldo/$ow_s->{'SUM(value)'}/;
+					}
 
 
-				if ($line =~ /\%abonament/) {
-					my $saldo_dbq = $dbase->prepare("SELECT users.id,tariffs.value,tariff FROM users,tariffs WHERE 
-					users.id='$row->{'id'}' AND tariffs.id=users.tariff") ; 
-					$saldo_dbq->execute();
-					my $ow_s = $saldo_dbq->fetchrow_hashref();
-					$line =~ s/\%abonament/$ow_s->{'value'}/;
+					if ($line =~ /\%abonament/) {
+						my $saldo_dbq = $dbase->prepare("SELECT users.id,tariffs.value,tariff FROM users,tariffs WHERE 
+							users.id='$row->{'id'}' AND tariffs.id=users.tariff") ; 
+						$saldo_dbq->execute();
+						my $ow_s = $saldo_dbq->fetchrow_hashref();
+						$line =~ s/\%abonament/$ow_s->{'value'}/;
+					}
+
+					$sms_data+=$line;
+					}
+					else
+					if(!$quiet)
+					{
+						print STDOUT "This user don't have any sms capable number in database, call him if You can ($row->{'phone1'}).\n";
 				}
-			if(!$quiet)
-			{
-				print STDOUT "This user don't have any sms capable number in database, call him if You can ($row->{'phone1'}).\n";
 			}
-		}
-	}
-	
+
 }
 $dbase->disconnect();
