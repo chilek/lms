@@ -21,6 +21,8 @@ wersja 1.3.7 (??/??/2004):
     gdy nazwa sieci zawiera³a kropkê (alec)
   - BTS#0000183: dodany indeks na kolumnie userid w tabeli cash, powoduj±cy
     znaczne przyspieszenie zapytañ sql ze z³±czeniami tabel cash i users (alec)
+  - w formularzu nowej operacji napisy okre¶laj±ce typ operacji uaktywniaj±
+    odpowiadaj±ce im radio-buttony (chilek)
 
 wersja 1.3.6 Osiris (01/09/2004);
 
