@@ -10,7 +10,8 @@ wersja 1.3.1 (??/??/????):
   - multilanguage? mo¿e tak (RFD) (lexx)
   - w almsd, do modu³u hostfile dodano nowe opcje konfiguracyjne 'networks'
     oraz 'skip_dev_ips' (alec)
-
+  - poprawione b³êdy w wyra¿eniu regularnym w adminadd i adminedit (alec)
+  
 wersja 1.3.0 Apophis (18/02/2004):
 
   - zmiana wersji biblioteki Smarty z 2.5.0 na 2.6.0 (alec)
