@@ -335,7 +335,6 @@ $names[] = "Adrian";
 $names[] = "Agata";
 $names[] = "Andrzej";
 $names[] = "Anna";
-$names[] = "Array";
 $names[] = "Artur";
 $names[] = "Barnaba";
 $names[] = "Bartek";
@@ -1513,6 +1512,7 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 		$useradd['tariff'] = mt_rand(1,3);
 		$useradd['payday'] = mt_rand(1,28);
 		$id = $LMS->UserAdd($useradd);
+		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'peroid' => 0, 'at' => $useradd['payday']));
 		$nodes = mt_rand(1,3);
 		for($j = 0; $j < $nodes; $j++)
 		{
