@@ -1612,9 +1612,6 @@ class LMS
 	function GetNetDevList($order="name,asc")
 	{
 
-		if($order=="")
-			$order="name,asc";
-
 		list($order,$direction) = explode(",",$order);
 
 		($direction=="desc") ? $direction = "desc" : $direction = "asc";
@@ -1950,6 +1947,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.265  2003/10/06 05:17:00  lukasz
+ * - to by³o g³upie ;)
+ *
  * Revision 1.264  2003/10/06 04:46:49  lukasz
  * - temp save
  *
