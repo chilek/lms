@@ -44,6 +44,7 @@ $userlist=$LMS->GetUserList($o,$s);
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("userlist",$userlist);
+$SMARTY->assign("tariffs",$LMS->GetTariffs());
 
 $SMARTY->display("header.html");
 $SMARTY->display("userlist.html");
