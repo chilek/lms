@@ -510,28 +510,16 @@ class LMS
 
 		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
-		switch($order){
-
-			case 'phone':
-				$sqlord = 'ORDER BY deleted ASC, phone1';
-			break;
+		switch($order)
+		{
 			case 'id':
 				$sqlord = 'ORDER BY deleted ASC, id';
 			break;
 			case 'address':
 				$sqlord = 'ORDER BY deleted ASC, address';
 			break;
-			case 'email':
-				$sqlord = 'ORDER BY deleted ASC, email';
-			break;
 			case 'balance':
 				$sqlord = 'ORDER BY deleted ASC, balance';
-			break;
-			case 'gg':
-				$sqlord = 'ORDER BY deleted ASC, gguin';
-			break;
-			case 'nip':
-				$sqlord = 'ORDER BY deleted ASC, nip, pesel';
 			break;
 			default:
 				$sqlord = 'ORDER BY deleted ASC, '.$this->DB->Concat('UPPER(lastname)',"' '",'name');
@@ -560,7 +548,7 @@ class LMS
 		if($state>3)
 			$state = 0;
 
-		if($userlist = $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, deleted, status, email, phone1, address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 '.($state !=0 ? " AND status = '".$state."'":'').($sqlsarg !='' ? ' AND '.$sqlsarg :'').' GROUP BY users.id, deleted, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info '.($sqlord !='' ? $sqlord.' '.$direction:'')))
+		if($userlist = $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, deleted, status, address, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 '.($state !=0 ? " AND status = '".$state."'":'').($sqlsarg !='' ? ' AND '.$sqlsarg :'').' GROUP BY users.id, deleted, lastname, users.name, status, address, zip, city, info '.($sqlord !='' ? $sqlord.' '.$direction:'')))
 		{
 			$week = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND suspended = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
 			$month = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 AND suspended = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
@@ -611,26 +599,14 @@ class LMS
 
 		switch($order)
 		{
-			case 'phone':
-				$sqlord = 'ORDER BY phone1';
-			break;
 			case 'id':
 				$sqlord = 'ORDER BY users.id';
 			break;
 			case 'address':
 				$sqlord = 'ORDER BY address';
 			break;
-			case 'email':
-				$sqlord = 'ORDER BY email';
-			break;
 			case 'balance':
 				$sqlord = 'ORDER BY balance';
-			break;
-			case 'gg':
-				$sqlord = 'ORDER BY gguin';
-			break;
-			case 'nip':
-				$sqlord = 'ORDER BY nip, pesel';
 			break;
 			default:
 				$sqlord = 'ORDER BY username';
@@ -659,7 +635,7 @@ class LMS
 			$net = $this->GetNetworkParams($network);
 		
 		if($userlist = $this->DB->GetAll( 
-				'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, email, phone1, users.address, gguin, nip, pesel, zip, city, users.info AS info, '
+				'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, users.address, zip, city, users.info AS info, '
 				.($network ? 'COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance ' : 'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance ')
 				.'FROM users LEFT JOIN cash ON (users.id=cash.userid AND (type = 3 OR type = 4)) '
 				.($network ? 'LEFT JOIN nodes ON (users.id=ownerid) ' : '')
@@ -669,7 +645,7 @@ class LMS
 				.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
 				.($usergroup ? ' AND usergroupid='.$usergroup : '')
 				.($time ? ' AND time < '.$time : '')
-				.' GROUP BY users.id, lastname, users.name, status, email, phone1, users.address, gguin, nip, pesel, zip, city, users.info '
+				.' GROUP BY users.id, lastname, users.name, status, users.address, zip, city, users.info '
 		// ten fragment nie chcial dzialac na mysqlu		
 		//		.($indebted ? ' HAVING SUM((type * -2 + 7) * value) < 0 ' : '')
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
