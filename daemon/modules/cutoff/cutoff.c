@@ -21,6 +21,7 @@
  *
  *  $Id$
  */
+
 #include <stdio.h>
 #include <syslog.h>
 #include <string.h>
@@ -32,8 +33,7 @@
 void reload(GLOBAL *g, struct cutoff_module *c)
 {
 	QUERY_HANDLE *res;
-	unsigned char *update;
-	int i, balance, exec = 0, u = 0;
+	int i, execu=0, execn=0, u=0, n=0;
 	char time_fmt[20];
 	size_t tmax=20;
 	char fmt[]="(%d.%m.%Y)";
@@ -44,47 +44,46 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	wsk=localtime(&t);
 	
 	strftime(time_fmt,tmax,fmt,wsk);
+	if(*c->warning)
+		g->str_replace(&c->warning, "%time", time_fmt);
 
-	if( (res = g->db_query("SELECT users.id AS id, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) GROUP BY users.id"))!=NULL) 
+	if( (res = g->db_pquery("SELECT users.id AS id FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id HAVING SUM((type * -2 + 7) * cash.value) < ?", c->limit))!=NULL) 
 	{
 		for(i=0; i<res->nrows; i++) 
 		{
-			balance = atoi(g->db_get_data(res,i,"balance"));
+			char *userid = g->db_get_data(res,i,"id");
 			
-			if( balance < c->limit ) 
-			{
-				update = strdup("UPDATE nodes SET access = 0 %w WHERE ownerid = %id AND access = 1");
-				g->str_replace(&update, "%id", g->db_get_data(res,i,"id"));
-				if(*c->warning)
-					g->str_replace(&update, "%w", ", warning = 1");
-				else
-					g->str_replace(&update, "%w", "");
+    			if(!c->warn_only)
+				n = g->db_pexec("UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), userid);
+			else 
+				n = g->db_pexec("UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", userid);
 
-				u = g->db_exec(update);
-				free(update);
-				
-				if(*c->warning && u)
-				{
-					update = strdup("UPDATE users SET message = '%message' WHERE id = %id");
-					g->str_replace(&update, "%message", c->warning);
-					g->str_replace(&update, "%id", g->db_get_data(res,i,"id"));
-					g->str_replace(&update, "%time", time_fmt);
-					g->db_exec(update);
-					free(update);
-				}
-				exec = u ? 1 : exec;
+			execn = n ? 1 : execn;
+			
+			if(*c->warning && n)
+			{
+				u = g->db_pexec("UPDATE users SET message = '?' WHERE id = ?", c->warning, userid);
+				execu = u ? 1 : execu;
 			}
 		}	
 		g->db_free(res);
 
 		// set timestamps
-		if(exec) 
+		if(execu)
+		{
+			g->db_exec("DELETE FROM timestamps WHERE tablename = 'users' OR tablename = '_global'");
+			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('users',%NOW%)");
+			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('_global',%NOW%)");
+		}
+		if(execn)
 		{
 			g->db_exec("DELETE FROM timestamps WHERE tablename = 'nodes' OR tablename = '_global'");
 			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('nodes',%NOW%)");
 			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('_global',%NOW%)");
-			system(c->command);
+
 		}	
+		if(execn || execu)
+			system(c->command);
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/cutoff] reloaded", c->base.instance);
 #endif
@@ -94,6 +93,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 
 	free(c->warning);
 	free(c->command);
+	free(c->limit);
 }
 
 struct cutoff_module * init(GLOBAL *g, MODULE *m)
@@ -115,7 +115,9 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 	ini = g->iniparser_load(g->inifile);
 
 	s = g->str_concat(instance, ":limit");
-	c->limit = g->iniparser_getint(ini, s, 0);
+	c->limit = strdup(g->iniparser_getstring(ini, s, "0"));
+	free(s); s = g->str_concat(instance, ":warnings_only");
+	c->warn_only = g->iniparser_getboolean(ini, s, 0);
 	free(s); s = g->str_concat(instance, ":warning");
 	c->warning = strdup(g->iniparser_getstring(ini, s, "Automatyczna blokada spowodowana przekroczeniem terminu wp³aty %time"));
 	free(s); s = g->str_concat(instance, ":command");
