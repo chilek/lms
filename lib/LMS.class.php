@@ -157,9 +157,9 @@ class LMS
 		$this->SetTS("users");
 		return $this->ADB->Execute(
 		"UPDATE users SET 
-		phone1=?, phone2=?, phone3=?, address=?, email=?, tariff=?, info=?, modid=?, status=?, moddate=".$this->sqlTSfmt()." WHERE id=?",
+		phone1=?, phone2=?, phone3=?, address=?, email=?, gguin=?, nip=?, city=?, zip=?, tariff=?, info=?, modid=?, status=?, moddate=".$this->sqlTSfmt()." WHERE id=?",
 		array(
-		$userdata[phone1],$userdata[phone2],$userdata[phone3],$userdata[address],$userdata[email],$userdata[tariff],$userdata[uwagi],$this->SESSION->id,$userdata[status],$userdata[id]));	
+		$userdata[phone1],$userdata[phone2],$userdata[phone3],$userdata[address],$userdata[city],$userdata[gguin],$userdata[nip],$userdata[zip],$userdata[email],$userdata[tariff],$userdata[uwagi],$this->SESSION->id,$userdata[status],$userdata[id]));	
 	}
 
 	function GetUserNodesNo($id)
@@ -501,7 +501,7 @@ class LMS
 
 	function GetUser($id)
 	{
-		if($return = $this->ADB->GetRow("SELECT id, lastname, name, status, email, phone1, phone2, phone3, address, tariff, info, creationdate, moddate, creatorid, modid FROM users WHERE id=?",array($id)))
+		if($return = $this->ADB->GetRow("SELECT id, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid FROM users WHERE id=?",array($id)))
 		{
 			$return[username] = strtoupper($return[lastname])." ".$return[name];	
 			$return[createdby] = $this->GetAdminName($return[creatorid]);
@@ -1212,7 +1212,7 @@ class LMS
 	{
 		$this->SetTS("users");
 		
-		if($this->ADB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, address, email, status, tariff, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ".$this->sqlTSfmt().", ?, ?)",array(ucwords($useradd[name]), strtoupper($useradd[lastname]), $useradd[phone1], $useradd[phone2], $useradd[phone3], $useradd[address], $useradd[email], $useradd[status], $useradd[tariff], $this->SESSION->id, $useradd[info])))
+		if($this->ADB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, tariff, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ".$this->sqlTSfmt().", ?, ?)",array(ucwords($useradd[name]), strtoupper($useradd[lastname]), $useradd[phone1], $useradd[phone2], $useradd[phone3], $useradd[gguin], $useradd[address], $useradd[zip], $useradd[city], $useradd[email], $useradd[nip], $useradd[status], $useradd[tariff], $this->SESSION->id, $useradd[info])))
 			return $this->ADB->GetOne("SELECT MAX(id) FROM users");
 		else
 			return FALSE;
