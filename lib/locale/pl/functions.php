@@ -64,18 +64,18 @@ function uptimef($ts)
 	return $result;
 }
 
-function check_fin($fin)
+function check_ten($ten)
 {
 	$steps = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
 
-	$fin = str_replace('-', '', $fin);
-	$fin = str_replace(' ', '', $fin);
+	$ten = str_replace('-', '', $ten);
+	$ten = str_replace(' ', '', $ten);
 
-	if (strlen($fin) != 10) return FALSE;
+	if (strlen($ten) != 10) return FALSE;
 
-	for ($x = 0; $x < 9; $x++) $sum_nb += $steps[$x] * $fin[$x];
+	for ($x = 0; $x < 9; $x++) $sum_nb += $steps[$x] * $ten[$x];
 
-	if ($sum_nb % 11 == $fin[9]) return TRUE;
+	if ($sum_nb % 11 == $ten[9]) return TRUE;
 
 	return FALSE;
 }

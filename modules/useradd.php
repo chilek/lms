@@ -44,7 +44,7 @@ elseif(isset($useradd))
 	if($useradd['address'] == '')
 		$error['address'] = trans('Address required!');
 	
-	if($useradd['nip'] !='' && !check_fin($useradd['nip']))
+	if($useradd['nip'] !='' && !check_ten($useradd['nip']))
 		$error['nip'] = trans('Incorrect Tax Exempt Number!');
 
 	if($useradd['pesel'] != '' && !check_ssn($useradd['pesel']))
