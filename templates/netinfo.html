@@ -24,14 +24,14 @@
 			<nobr><IMG SRC="img/ip.gif" border="0" align="absmiddle" ALT=""> <B>Adres / prefix:</B></nobr>
 		</TD>
 		<TD width="48%">
-			<NOBR>{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[address]" VALUE="{$network.address}" {tip trigger="address"}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $network.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{else}{$network.address}/{$network.prefix}{/if}</NOBR>
+			<NOBR>{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[address]" VALUE="{$network.address}" {tip text="Wpisz adres sieci i wybierz maskê" trigger="address"}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $network.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{else}{$network.address}/{$network.prefix}{/if}</NOBR>
 		</TD>
 		<TD width="2%" rowspan="2">
 			<NOBR><IMG src="img/dhcp.gif" border="0" align="absmiddle" ALT=""> <B>Zakres DHCP:</B></NOBR>	
 		</TD>
 		<TD width="48%" class="fright" rowspan="2">
-			{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[dhcpstart]" VALUE="{$network.dhcpstart}" {tip trigger="dhcpstart"}><BR>
-			<INPUT TYPE="text" NAME="networkdata[dhcpend]" VALUE="{$network.dhcpend}" {tip trigger="dhcpend"}>{else}
+			{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[dhcpstart]" VALUE="{$network.dhcpstart}" {tip text="Podaj pocz±tek zakresu adresów DHCP (opcjonalnie)" trigger="dhcpstart"}><BR>
+			<INPUT TYPE="text" NAME="networkdata[dhcpend]" VALUE="{$network.dhcpend}" {tip text="Podaj koniec zakresu adresów DHCP (opcjonalnie)" trigger="dhcpend"}>{else}
 			{$network.dhcpstart}<BR>
 			{$network.dhcpend}
 			{/if}
@@ -51,7 +51,7 @@
 		</TD>
 		<TD COLSPAN="3" CLASS="FRIGHT" WIDTH="99%">
 			{if $unlockedit}
-			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}" {tip trigger="interface"}>
+			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}" {tip text="Podaj interfejs, do którego pod³±czona jest sieæ (opcjonalnie)" trigger="interface"}>
 			{else}
 			{$network.interface}
 			{/if}
@@ -63,7 +63,7 @@
 		</TD>		
 		<TD width="48%">
 			{if $unlockedit}
-			<INPUT TYPE="text" NAME="networkdata[gateway]" VALUE="{$network.gateway}" {tip trigger="gateway"}> 
+			<INPUT TYPE="text" NAME="networkdata[gateway]" VALUE="{$network.gateway}" {tip text="Podaj bramê sieci (opcjonalnie)" trigger="gateway"}> 
 			{else}
 			{$network.gateway}
 			{/if}
@@ -73,8 +73,8 @@
 		</TD>
 		<TD width="48%" class="fright">
 			{if $unlockedit}
-			<INPUT TYPE="text" NAME="networkdata[dns]" VALUE="{$network.dns}" {tip trigger="dns"}><BR>
-			<INPUT TYPE="text" NAME="networkdata[dns2]" VALUE="{$network.dns2}" {tip trigger="dns2"}>
+			<INPUT TYPE="text" NAME="networkdata[dns]" VALUE="{$network.dns}" {tip text="Podaj adres podstawowego serwera DNS (opcjonalnie)" trigger="dns"}><BR>
+			<INPUT TYPE="text" NAME="networkdata[dns2]" VALUE="{$network.dns2}" {tip text="Podaj adres dodatkowego serwera DNS (opcjonalnie)" trigger="dns2"}>
 			{else}
 			{$network.dns}<BR>
 			{$network.dns2}
@@ -87,7 +87,7 @@
 		</TD>
 		<TD width="48%">
 			{if $unlockedit}
-			<INPUT TYPE="text" NAME="networkdata[wins]" VALUE="{$network.wins}" {tip trigger="wins"}>
+			<INPUT TYPE="text" NAME="networkdata[wins]" VALUE="{$network.wins}" {tip text="Podaj adres serwera WINS (opcjonalnie)" trigger="wins"}>
 			{else}
 			{$network.wins}
 			{/if}
@@ -97,7 +97,7 @@
 		</TD>
 		<TD width="48%" class="fright">
 			{if $unlockedit}
-			<INPUT TYPE="text" NAME="networkdata[domain]" VALUE="{$network.domain}" {tip trigger="domain"}>
+			<INPUT TYPE="text" NAME="networkdata[domain]" VALUE="{$network.domain}" {tip text="Podaj nazwê domenow± sieci (opcjonalnie)" trigger="domain"}>
 			{else}
 			{$network.domain}
 			{/if}
@@ -113,7 +113,7 @@
 				<input type="hidden" name="m" value="netremap">
 				<input type="hidden" name="id" value="{$network.id}">
 				<a href="javascript:document.remap.submit()" onClick="return confirmForm(is_sure,'Jeste¶ pewien ¿e chcesz przeadresowaæ sieæ {$network.name} do sieci '+getText(document.remap.mapto.value)+'?','1');">Przeadresuj do sieci:</A> 
-					<select size="1" name="mapto">
+					<select size="1" name="mapto" {tip text="Wybierz sieæ, do której chcesz przenie¶æ komputery"}>
 						{section name=networks loop=$networks}
 						{if $networks[networks].id neq $network.id}
 						<option value="{$networks[networks].id}">{$networks[networks].name} ({$networks[networks].address}/{$networks[networks].prefix})</option>
