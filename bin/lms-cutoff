@@ -96,6 +96,7 @@ my $limit = $ini->val('cutoff', 'limit') || 0;
 
 my $dbase;
 my $utsfmt;
+my $now_date = strftime "(%d.%m.%Y)", localtime;
 
 if($dbtype eq "mysql")
 {
@@ -141,7 +142,9 @@ while (my $row = $dbq->fetchrow_hashref())
 		{
 			print STDOUT "$row->{'id'}\t($balance)\t$row->{'lastname'} $row->{'name'}\n";
 		}
-		$sdbq = $dbase->prepare("UPDATE nodes SET access=0 WHERE ownerid='$row->{'id'}'");
+		$sdbq = $dbase->prepare("UPDATE nodes SET access=0, warning=1 WHERE ownerid='$row->{'id'}'");
+		$sdbq->execute();
+		$sdbq = $dbase->prepare("UPDATE users SET message='Automatyczna blokada spowodowana przekroczeniem terminu wp³aty $now_date' WHERE id ='$row->{'id'}'");
 		$sdbq->execute();
 	}
 	
