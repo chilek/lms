@@ -46,35 +46,43 @@ if ($invoiceid == 'multi')
 			if ($junk)
 				$ids[] = $markid;
 		foreach($ids as $idx => $invoiceid)
-			if (!$LMS->IsInvoicePaid($invoiceid) && $invoicecontent = $LMS->GetInvoiceContent($invoiceid))
+			if (!$LMS->IsInvoicePaid($invoiceid))
 			{
-				$invoice = $LMS->DB->GetRow('SELECT customerid FROM invoices WHERE id=?', array($invoiceid));
-				foreach($invoicecontent['content'] as $idx2 => $row)
+				$custid = $LMS->DB->GetOne('SELECT customerid FROM invoices WHERE id=?', array($invoiceid));
+				$items = $LMS->DB->GetAll('SELECT itemid AS id, taxvalue, userid, comment FROM cash WHERE invoiceid=? GROUP BY itemid, taxvalue, userid, comment ORDER BY itemid', array($invoiceid));
+								
+				foreach($items as $item)
 				{
+					$addbalance['value'] = $LMS->GetItemUnpaidValue($invoiceid, $item['id']);
 					$addbalance['time'] = $invoicepaydate;
 					$addbalance['type'] = 3;
-					$addbalance['value'] = $row['value'] * $row['count'];
-					$addbalance['taxvalue'] = $row['taxvalue'];
-					$addbalance['userid'] = $invoice['customerid'];
-					$addbalance['comment'] = $row['description'];
-					$addbalance['itemid'] = $row['itemid'];
+					$addbalance['taxvalue'] = $item['taxvalue'];
+					$addbalance['userid'] = $custid;
+					$addbalance['comment'] = $item['comment'];
+					$addbalance['itemid'] = $item['id'];
 					$addbalance['invoiceid'] = $invoiceid;
 					$LMS->AddBalance($addbalance);
 				}
 			}
 	}
 }
-elseif (!$LMS->IsInvoicePaid($invoiceid) && $invoicecontent = $LMS->GetInvoiceContent($invoiceid))
+elseif (!$LMS->IsInvoicePaid($invoiceid))
 {
-	foreach($invoicecontent['content'] as $idx => $row)
+	$custid = $LMS->DB->GetOne('SELECT customerid FROM invoices WHERE id=?', array($invoiceid));
+	$items = $LMS->DB->GetAll('SELECT itemid AS id, taxvalue, userid, comment 
+				FROM cash WHERE invoiceid=? 
+				GROUP BY itemid, taxvalue, userid, comment 
+				ORDER BY itemid', array($invoiceid));
+							
+	foreach($items as $item)
 	{
+		$addbalance['value'] = $LMS->GetItemUnpaidValue($invoiceid, $item['id']);
 		$addbalance['time'] = $invoicepaydate;
 		$addbalance['type'] = 3;
-		$addbalance['value'] = $row['value'] * $row['count'];
-		$addbalance['taxvalue'] = $row['taxvalue'];
-		$addbalance['userid'] = $invoicecontent['customerid'];
-		$addbalance['comment'] = $row['description'];
-		$addbalance['itemid'] = $row['itemid'];
+		$addbalance['taxvalue'] = $item['taxvalue'];
+		$addbalance['userid'] = $custid;
+		$addbalance['comment'] = $item['comment'];
+		$addbalance['itemid'] = $item['id'];
 		$addbalance['invoiceid'] = $invoiceid;
 		$LMS->AddBalance($addbalance);
 	}
