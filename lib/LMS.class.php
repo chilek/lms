@@ -610,106 +610,19 @@ class LMS
 		return $balancelist;
 	}
 
-	function GetUserList($order=NULL,$state=NULL,$search=NULL)
+	function GetUserList($order=NULL,$state=NULL)
 	{
-
-		$DB=$this->DB;
-
-		if($search != NULL)
-			foreach($search as $key => $value)
-				if(trim($value)!="")
-				{
-					$sarr[] = "$key LIKE '%".trim(str_replace(" ","%",$value))."%'";
-					$uarr[] = "$key=$value";
-				}
-				
-		if(!isset($state)) 
-			$state="3";
-
-		if($state != 0)
-			$sarr[] = "status='".$state."'";
-
-		$ssqlstr = "WHERE ".implode(" AND ",$sarr);
-		$ssqlstr = str_replace("username","CONCAT(UPPER(lastname),' ', name)",$ssqlstr);
-		$surlstr = "&search&".implode("&",$uarr);
 		
-		if(!isset($order)) $order="username,asc";
-
-		list($order,$direction)=explode(",",$order);
-
-		switch($order){
-
-			case "phone":
-				$sqlord = "ORDER BY phone1";
-				break;
-
-			case "id":
-				$sqlord = "ORDER BY id";
-				break;
-
-			case "address":
-				$sqlord = "ORDER BY address";
-				break;
-
-			case "email":
-				$sqlord = "ORDER BY email";
-				break;
-			
-			case "balance":
-				$sqlord = "";
-				break;
-
-			default:
-				$sqlord = "ORDER BY lastname, name";
-				break;
-		}
-
-		if($direction != "desc")
-			$direction = "asc";
-		else
-			$direction = "desc";
-
-		$userlist = $DB->fetchTable("SELECT id, CONCAT(UPPER(lastname),' ', name) AS username, status, email, phone1, address, info FROM users ".$ssqlstr." ".$sqlord." ".($sqlord!="" ? $direction : ""));
-
-		$DB->execSQL("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid");
-
-		while($DB->fetchRow())
-			$balance[$DB->row[id]] = str_replace(".",",",$DB->row[value]);
-
-		$DB->execSQL("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid");
-
-		while($DB->fetchRow())
-			$balance[$DB->row[id]] = $balance[$DB->row[id]] - str_replace(".",",",$DB->row[value]);
-
-		if(sizeof($userlist[id]))
+		$userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, tariff FROM users");
+		foreach($this->ADB->GetAll("SELECT id, value FROM tariffs") as $key => $value)
+			$tlist[$value[id]] = $value[value];
+		foreach($userlist as $key => $value)
 		{
-			foreach($userlist[id] as $i => $v)
-			{
-				$userlist[balance][$i] = $balance[$v];
-				if($userlist[balance][$i] > 0)
-					$userlist[over] = $userlist[over] + $userlist[balance][$i];
-				if($userlist[balance][$i] < 0)
-					$userlist[below] = $userlist[below] - $userlist[balance][$i];
-			}
-		
-			if($order=="balance")
-				if($direction=="desc")
-					array_multisort($userlist[balance],SORT_DESC,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info]);
-				else
-					array_multisort($userlist[balance],SORT_ASC,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info]);
-
-			foreach($userlist[id] as $i => $v)
-				if($userlist[status][$i] == 3)
-					$userlist[nodeac][$i] = $this->GetUserNodesAC($userlist[id][$i]);
-				else
-					$userlist[nodeac][$i] = FALSE;
+			$userlist[$key][balance] = $this->GetUserBalance($value[id]);
+			$userlist[$key][tariffvalue] = str_replace(".",",",$tlist[$value[tariff]]);
+			$userlist[$key][nodeac] = $this->GetUserNodesAC($value[id]);
 		}
-		
-		$userlist[state]=$state;
-		$userlist[order]=$order;
-		$userlist[direction]=$direction;
-		$userlist[total]=sizeof($userlist[id]);
-		$userlist[urlsstr]=$surlstr;
+		$userlist[total]=sizeof($userlist);
 		return $userlist;
 	}
 			
