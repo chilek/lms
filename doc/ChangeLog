@@ -1,5 +1,10 @@
 $Id$
 
+wersja 1.3.5 (??/??/????):
+
+  - usuniêty b³±d w skryptach perlowych, powoduj±cy b³êdne dzia³anie
+    przy pustej zmiennej konfiguracyjnej 'usergroups' (alec)
+
 wersja 1.3.4 Terok (06/07/2004):
 
   - naprawiony combobox ze stawk± podatku w 'Rachunku u¿ytkownika' (alec)
