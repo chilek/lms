@@ -24,9 +24,10 @@
  *  $Id$
  */
 
-// REPLACE THIS WITH PATH TO YOU CONFIG FILE
+// By default LMS searches current directory for lms.ini. If you wish
+// to keep the configuration file elsewhere, please define it here.
 
-$CONFIG_FILE = '/etc/lms/lms.ini';
+$CONFIG_FILE = './lms.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
@@ -34,7 +35,6 @@ $CONFIG_FILE = '/etc/lms/lms.ini';
 ini_set('session.name','LMSSESSIONID');
 
 // Parse configuration file
-
 foreach(parse_ini_file($CONFIG_FILE, true) as $key=>$val) $_CONFIG[$key] = $val;
 
 // config value tester
@@ -74,15 +74,11 @@ if($_FORCE_SSL && $_SERVER[HTTPS] != 'on')
 
 // Define database variables
 
-$_DBTYPE = (! $_CONFIG[database]['type'] ? 'mysql' : $_CONFIG[database]['type']);
-$_DBHOST = (! $_CONFIG[database]['host'] ? 'localhost' : $_CONFIG[database]['host']);
-$_DBUSER = (! $_CONFIG[database]['user'] ? 'root' : $_CONFIG[database]['user']);
-$_DBPASS = (! $_CONFIG[database]['password'] ? '' : $_CONFIG[database]['password']);
-$_DBNAME = (! $_CONFIG[database]['database'] ? 'lms' : $_CONFIG[database]['database']);
-
-// Set our sweet polish locales :>
-
-//setlocale (LC_ALL, 'pl_PL');
+$_DBTYPE = (! $_CONFIG['database']['type'] ? 'mysql' : $_CONFIG['database']['type']);
+$_DBHOST = (! $_CONFIG['database']['host'] ? 'localhost' : $_CONFIG['database']['host']);
+$_DBUSER = (! $_CONFIG['database']['user'] ? 'root' : $_CONFIG['database']['user']);
+$_DBPASS = (! $_CONFIG['database']['password'] ? '' : $_CONFIG['database']['password']);
+$_DBNAME = (! $_CONFIG['database']['database'] ? 'lms' : $_CONFIG['database']['database']);
 
 // include required files
 
@@ -101,10 +97,10 @@ require_once($_LIB_DIR.'/accesstable.php');
 // Initialize ADODB object
 
 $ADB = ADONewConnection($_DBTYPE);
-$ADB->debug = chkconfig($_CONFIG[phpui][adodb_debug]);
+$ADB->debug = chkconfig($_CONFIG['phpui']['adodb_debug']);
 if($_CONFIG[phpui][adodb_debug_log] && is_writeable($_CONFIG[phpui][adodb_debug_log]))
 	define(ADODB_OUTP,'writelog');
-$ADB->Connect($_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME);
+if (!@$ADB->Connect($_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME)) die('<h4><FONT COLOR=#ff0000>Nie mogê po³±czyæ siê z baz±! Sprawd¼ nazwê u¿ytkownika i has³o w lms.ini.</FONT></h4>');
 
 $ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 
