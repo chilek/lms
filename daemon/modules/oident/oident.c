@@ -36,25 +36,32 @@ void reload(GLOBAL *g, struct oident_module *o)
 {
 	FILE * fh;
 	QUERY_HANDLE *res;
-	unsigned char *netname;
 	int i, nc=0;
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
+	char *netnames = strdup(hm->networks);	
+	char *netname = strdup(netnames);
 
-	for( netname=strtok(o->networks," "); netname!=NULL; netname=strtok(NULL," ") ) { 
+	while( n>1 ) {
+		
+		n = sscanf(netnames, "%s %[a-zA-Z0-9- ]", netname, netnames);
 
-		if( (res = g->db_pquery("SELECT address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')",netname))!=NULL ) {
+		if( strlen(netname) ) {
 
-			if(res->nrows) {
-			
-			    	nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
-				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
-			}
-			g->db_free(res);
-			nc++;		
+			if( res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')",netname)) {
+
+				if(res->nrows) {
+
+			    		nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
+					nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
+					nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
+					nc++;
+				}
+	    			g->db_free(res);
+			}				
 		}
 	}
+	free(netname); free(netnames);
 
 	if(!nc)
 		if( (res = g->db_query("SELECT address, INET_ATON(mask) AS mask FROM networks"))!=NULL ) {
@@ -169,4 +176,3 @@ struct oident_module * init(GLOBAL *g, MODULE *m)
 #endif
 	return (o);
 }
-

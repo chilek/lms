@@ -3,6 +3,8 @@ $Id$
 wersja 1.2.0 (??/03/2004):
 
   - poprawione sortowanie list u¿ytkowników wg salda (alec)
+  - poprawione b³êdy w modu³ach hostfile i oident demona, powoduj±ce
+    niewykonywanie instancji wyst. po tych modu³ach (alec)
 
 wersja 1.2.0rc3 Janet (12/03/2004):
 
