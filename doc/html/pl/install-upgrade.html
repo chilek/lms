@@ -76,36 +76,15 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-UPGRADE"
->2.7. Upgrade</A
+>2.8. Upgrade</A
 ></H1
 ><P
->Uaktualnienie LMS'a przebiega w dwóch etapach. Najpierw utwórz
+>Uaktualnienie LMS'a przebiega w kilku etapach. Najpierw utwórz
       katalog z plikami nowej wersji (nie zaleca siê nadpisywania starych plików
-      nowymi), nastêpnie trzeba dokonaæ zmian w bazie.</P
-><P
->Dla u³atwienia migracji danych w katalogu <TT
+      nowymi) oraz usuñ zawarto¶æ katalogu <TT
 CLASS="FILENAME"
->/doc</TT
->
-      przygotowano pliki <TT
-CLASS="FILENAME"
->UPGRADE-1.0-1.5.mysql</TT
-> i 
-      <TT
-CLASS="FILENAME"
->UPGRADE-1.0-1.5.pgsql</TT
-> dla przej¶cia od wersji 1.0 do wersji 1.5
-      oraz <TT
-CLASS="FILENAME"
->UPGRADE-1.2-1.5.mysql</TT
-> i <TT
-CLASS="FILENAME"
->UPGRADE-1.2-1.5.pgsql
-      </TT
-> przy migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. W nich znajdziesz krótki
-      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
-      W wersjach o numerze wy¿szym od 1.3.0 aktualizacja struktury bazy danych 
-      nastêpuje automatycznie podczas pierwszego logowania.</P
+>templates_c</TT
+>.</P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -131,6 +110,111 @@ VALIGN="TOP"
 CLASS="FILENAME"
 >/lib</TT
 ></P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>Nastêpnie, je¶li nie masz jeszcze w systemie locali pl_PL.UTF-8, nale¿y
+      je utworzyæ komend±:
+      <PRE
+CLASS="SCREEN"
+># localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8</PRE
+>
+	Je¶li w interfejsie u¿ytkownika znaki narodowe nie bêd± wy¶wietlane poprawnie
+	mo¿liwe, ¿e trzeba bêdzie dodaæ do pliku konfiguracyjnego serwera www (httpd.conf)
+	wpis:
+	<PRE
+CLASS="SCREEN"
+>AddDefaultCharset UTF-8</PRE
+></P
+><P
+>Kolejnym krokiem jest dokonanie zmian w bazie. Dla u³atwienia migracji 
+      struktury bazy danych w katalogu <TT
+CLASS="FILENAME"
+>/doc</TT
+>
+      przygotowano pliki <TT
+CLASS="FILENAME"
+>UPGRADE-1.0-1.5.mysql</TT
+> i 
+      <TT
+CLASS="FILENAME"
+>UPGRADE-1.0-1.5.pgsql</TT
+> dla przej¶cia od wersji 1.0 do wersji 1.5
+      oraz <TT
+CLASS="FILENAME"
+>UPGRADE-1.2-1.5.mysql</TT
+> i <TT
+CLASS="FILENAME"
+>UPGRADE-1.2-1.5.pgsql
+      </TT
+> przy migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. W nich znajdziesz krótki
+      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
+      Je¶li przeprowadzasz upgrade z wersji nowszej od 1.3.0 aktualizacja struktury bazy danych 
+      nast±pi automatycznie podczas pierwszego logowania.</P
+><P
+>Ostatni etap - konwersja danych do unicodu.
+      Pocz±wszy od wersji 1.5.4 zaleca siê przechowywanie danych zakodowanych w 
+      utf-8 (UNICODE), poni¿ej zostanie przedstawiony przyk³ad migracji z kodowania ISO-8859-2
+      do UNICODE na bazie danych PostgreSQL.</P
+><P
+>Zaczynamy od utworzenia backupu danych w LMSie. Nastêpnie przechodzimy do
+      katalogu z backupami i wykonujemy konwersjê pliku backupu.
+      <PRE
+CLASS="SCREEN"
+># iconv --from-code=ISO-8859-2 --to-code=UTF-8 &#60; plik_backupu &#62; nowy_plik</PRE
+>
+	Po czym zmieniamy nazwê nowopowsta³ego pliku na lms-xxxxxxx.sql, aby
+	plik ten by³ widoczny z poziomu <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>. Teraz
+	nale¿y utworzyæ bazê danych z kodowaniem UNICODE (opis w dziale Instalacja).
+	Po czym uruchamiamy <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> i odtwarzamy dane z 
+	przekonwertowanego backupu.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>W przypadku bazy danych PostgreSQL mo¿liwa jest praca
+	z baz± danych z kodowaniem innym ni¿ UNICODE. W takim wypadku rezygnujemy
+	z ostatniego, opisanego wy¿ej, etapu i ustawiamy odpowiednio opcjê
+	konfiguracyjn± <TT
+CLASS="FILENAME"
+>server_encoding</TT
+> w sekcji 
+	<TT
+CLASS="FILENAME"
+>[database]</TT
+>. Rozwi±zanie to bêdzie mia³o z³y wp³yw
+	na wydajno¶æ.</P
 ></TD
 ></TR
 ></TABLE

@@ -13,8 +13,8 @@ REL="UP"
 TITLE="Instalacja i konfiguracja"
 HREF="install.html"><LINK
 REL="PREVIOUS"
-TITLE="Instalacja LMS"
-HREF="install-install.html"><LINK
+TITLE="Lokalizacja"
+HREF="install-locale.html"><LINK
 REL="NEXT"
 TITLE="Konfiguracja podstawowa"
 HREF="install-config.html"><LINK
@@ -47,7 +47,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="install-install.html"
+HREF="install-locale.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -76,7 +76,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-DB"
->2.4. Instalacja serwera baz danych</A
+>2.5. Instalacja serwera baz danych</A
 ></H1
 ><DIV
 CLASS="SECT2"
@@ -84,7 +84,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-MYSQL"
->2.4.1. MySQL</A
+>2.5.1. MySQL</A
 ></H2
 ><DIV
 CLASS="SECT3"
@@ -92,7 +92,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-MYSQL-INTRO"
->2.4.1.1. Wstêp</A
+>2.5.1.1. Wstêp</A
 ></H3
 ><P
 >Ta  bardzo  popularna  baza  jest  dostêpna  z wiêkszo¶ci± dystrybucji
@@ -109,7 +109,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-MYSQL-SERVER"
->2.4.1.2. Instalacja serwera MySQL</A
+>2.5.1.2. Instalacja serwera MySQL</A
 ></H3
 ><P
 >Po rozpakowaniu, wejd¼ do katalogu z naszym MySQL i wydaj kolejno
@@ -132,7 +132,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-MYSQL-DBCREATE"
->2.4.1.3. Utworzenie bazy danych</A
+>2.5.1.3. Utworzenie bazy danych</A
 ></H3
 ><P
 >Konieczne  to  jest  je¿eli  uruchamiasz  LMS  po raz PIERWSZY. Je¿eli
@@ -158,7 +158,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-MYSQL-LMS"
->2.4.1.4. Konfiguracja LMS (lms.ini)</A
+>2.5.1.4. Konfiguracja LMS (lms.ini)</A
 ></H3
 ><P
 >Poniewa¿  MySQL  jest  domy¶ln± baz± dla LMS'u, konfiguracja ogranicza
@@ -196,7 +196,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-PGSQL"
->2.4.2. PostgreSQL</A
+>2.5.2. PostgreSQL</A
 ></H2
 ><DIV
 CLASS="SECT3"
@@ -204,7 +204,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-PGSQL-INTRO"
->2.4.2.1. Wstêp</A
+>2.5.2.1. Wstêp</A
 ></H3
 ><P
 >LMS jest testowany na PostgreSQL 7.3.4 i nowszych, ale poniewa¿ ¿adne
@@ -223,7 +223,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-PGSQL-SERVER"
->2.4.2.2. Instalacja</A
+>2.5.2.2. Instalacja</A
 ></H3
 ><P
 >Jest to wersja skrócona instalacji, wiêcej informacji znajdziesz
@@ -250,7 +250,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-PGSQL-DBCREATE"
->2.4.2.3. Utworzenie bazy danych</A
+>2.5.2.3. Utworzenie bazy danych</A
 ></H3
 ><P
 >Maj±c uruchomiony serwer mo¿esz przyst±piæ do tworzenia bazy o nazwie 'lms',
@@ -258,10 +258,50 @@ NAME="INSTALL-PGSQL-DBCREATE"
 			<PRE
 CLASS="SCREEN"
 >$ /usr/local/pgsql/bin/createuser -d -A -P lms
-$ /usr/local/pgsql/bin/createdb -E LATIN2 -U lms lms
+$ /usr/local/pgsql/bin/createdb -E UNICODE -U lms lms
 $ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</PRE
 >
 		</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Kodowanie UNICODE jest prawid³owo obs³ugiwane
+		dla znaków spoza zakresu ASCII dopiero od wersji 8.0 PostgreSQLa.
+		Na wcze¶niejszych wersjach nale¿y za³o¿yæ bazê w LATIN2 i skorzystaæ
+		z opcji konfiguracyjnej <TT
+CLASS="FILENAME"
+>server_encoding</TT
+> w sekcji 
+		<TT
+CLASS="FILENAME"
+>[database]</TT
+> pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>.
+		</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -269,7 +309,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-PGSQL-LMS"
->2.4.2.4. Konfiguracja LMS (lms.ini)</A
+>2.5.2.4. Konfiguracja LMS (lms.ini)</A
 ></H3
 ><P
 >Dla systemu LMS domy¶lnym serwerem baz danych jest MySQL, dlatego w sekcji
@@ -325,7 +365,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-SQLITE"
->2.4.3. SQLite</A
+>2.5.3. SQLite</A
 ></H2
 ><DIV
 CLASS="SECT3"
@@ -333,7 +373,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-SQLITE-INTRO"
->2.4.3.1. Wstêp</A
+>2.5.3.1. Wstêp</A
 ></H3
 ><P
 >Ta jednoplikowa baza jest chwalona za swoj± szybko¶æ, wg autorów
@@ -352,7 +392,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-SQLITE-SERVER"
->2.4.3.2. Instalacja SQLite</A
+>2.5.3.2. Instalacja SQLite</A
 ></H3
 ><P
 >Opisano tutaj sposób instalacji bibliotek SQLite oraz 
@@ -386,7 +426,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-SQLITE-DBCREATE"
->2.4.3.3. Utworzenie bazy danych</A
+>2.5.3.3. Utworzenie bazy danych</A
 ></H3
 ><P
 >Konieczne  to  jest  je¿eli  uruchamiasz  LMS  po raz PIERWSZY. 
@@ -405,7 +445,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-SQLITE-LMS"
->2.4.3.4. Konfiguracja LMS (lms.ini)</A
+>2.5.3.4. Konfiguracja LMS (lms.ini)</A
 ></H3
 ><P
 >Jednym z ograniczeñ SQLite jest brak autentykacji u¿ytkowników, dlatego
@@ -430,7 +470,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-MSSQL"
->2.4.4. MS SQL Server</A
+>2.5.4. MS SQL Server</A
 ></H2
 ><P
 >LMS na bazie Microsoftu? Czemu nie. W celach poznawczych
@@ -457,7 +497,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="install-install.html"
+HREF="install-locale.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -485,7 +525,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Instalacja LMS</TD
+>Lokalizacja</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
