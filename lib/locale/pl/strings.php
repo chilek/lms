@@ -435,7 +435,7 @@ $_LANG['End of DHCP range must be greater than start!'] = 'Koniec zakresu DHCP m
 $_LANG['End time must be older than begin time!'] = 'Czas zakończenia musi być późniejszy niż czas rozpoczęcia!';
 $_LANG['Enter 4 to 6 digits PIN number (optional)'] = 'Wprowadź 4 do 6-u cyfr numeru PIN (opcjonalnie)';
 $_LANG['Enter accounting date in format \'YYYY/MM/DD\' (empty field means current date)'] = 'Wprowadź datę naliczania w formacie \'RRRR/MM/DD\' (puste pole oznacza datę dzisiejszą)';
-$_LANG['Enter accounting time. For weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter month and day in format DD/MM (15/09 means 15 September), and for quarterly DD/MM (MM <= 3)'] = 'Wprowadź czas naliczania. Dla tygodniowego naliczania wprowadź dzień tygodnia (poniedziałek = 1), dla tygodniowego wprowadź dzień miesiąca (1 do 28), dla rocznego wprowadź miesiąc i dzień w formacie DD/MM (15/09 znaczy 15 Września) a dla kwartalnego DD/MM (MM <=3)';
+$_LANG['Enter accounting time. For weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter day and month in format DD/MM (15/09 means 15 September), and for quarterly DD/MM (MM <= 3)'] = 'Wprowadź czas naliczania. Dla tygodniowego naliczania wprowadź dzień tygodnia (poniedziałek = 1), dla tygodniowego wprowadź dzień miesiąca (1 do 28), dla rocznego wprowadź dzień i miesiąc w formacie DD/MM (15/09 znaczy 15 Września) a dla kwartalnego DD/MM (MM <=3)';
 $_LANG['Enter account name'] = 'Wprowadź nazwę konta';
 $_LANG['Enter additional informations'] = 'Wprowadź dodatkowe informacje';
 $_LANG['Enter additional informations (optional)'] = 'Wprowadź dodatkowe informacje (opcjonalnie)';
@@ -555,7 +555,7 @@ $_LANG['Enter value'] = 'Podaj kwotę';
 $_LANG['Enter value of operation'] = 'Podaj kwotę operacji';
 $_LANG['Enter value of searching data and select category'] = 'Wprowadź szukane dane i wybierz kategorię';
 $_LANG['Enter warning message contents (optional)'] = 'Wprowadź treść ostrzeżenia (opcjonalnie)';
-$_LANG['Enter when to account payment. For weekly payment enter day of week (Monday = 1), for monthly payment enter day of month (from 1 to 28), for yearly payment enter month and day in format DD/MM (15/09 means 15 September), and quarterly DD/MM (MM <= 3)'] = 'Podaj kiedy naliczać opłatę. Dla opłaty tygodniowej wprowadź dzień tygodnia (Poniedziałek = 1), dla opłat miesięcznych wprowadź dzień miesiąca (od 1 do 28), dla rocznych miesiąc i dzień w formacie DD/MM (np.15/09 oznacza 15 września), a dla kwartalnych DD/MM (MM <= 3)';
+$_LANG['Enter when to account payment. For weekly payment enter day of week (Monday = 1), for monthly payment enter day of month (from 1 to 28), for yearly payment enter day and month in format DD/MM (15/09 means 15 September), and quarterly DD/MM (MM <= 3)'] = 'Podaj kiedy naliczać opłatę. Dla opłaty tygodniowej wprowadź dzień tygodnia (Poniedziałek = 1), dla opłat miesięcznych wprowadź dzień miesiąca (od 1 do 28), dla rocznych dzień i miesiąc w formacie DD/MM (np.15/09 oznacza 15 września), a dla kwartalnych DD/MM (MM <= 3)';
 $_LANG['Enter WINS address (optional)'] = 'Wprowadź adres WINS (opcjonalnie)';
 $_LANG['Enter WINS server address (optional)'] = 'Wprowadź adres serwera WINS (opcjonalnie)';
 $_LANG['Error:'] = 'Błąd:';

@@ -49,7 +49,7 @@
 				<OPTION VALUE="2" {if $payment.period eq 2}SELECTED{/if}>{t}quarterly{/t}</OPTION>
 				<OPTION VALUE="3" {if $payment.period eq 3}SELECTED{/if}>{t}yearly{/t}</OPTION>
 			</SELECT>&nbsp;
-    			<INPUT TYPE="TEXT" NAME="payment[at]" VALUE="{$payment.at}"{tip text="Enter when to account payment. For weekly payment enter day of week (Monday = 1), for monthly payment enter day of month (from 1 to 28), for yearly payment enter month and day in format DD/MM (15/09 means 15 September), and quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="5">
+    			<INPUT TYPE="TEXT" NAME="payment[at]" VALUE="{$payment.at}"{tip text="Enter when to account payment. For weekly payment enter day of week (Monday = 1), for monthly payment enter day of month (from 1 to 28), for yearly payment enter day and month in format DD/MM (15/09 means 15 September), and quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="5">
 		</TD>
 	</TR>	
 	<TR CLASS="light">	
