@@ -1,0 +1,88 @@
+{include file="header.html"}
+{include file="balanceheader.html"}
+<!--// $Id$ //-->
+{include file="calendar_js.html"}
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="fleftu" WIDTH="1%">
+			<B>{t}ID:{/t}</B>
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt">
+			<B>{t}Date:{/t}</B>
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt">
+			<B>{t}Value:{/t}</B>
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt">
+			<B>{t}Customer:{/t}</B>
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt">
+			<B>{t}Description:{/t}</B>
+		</TD>
+		<TD WIDTH="1%" CLASS="frightu">
+			<B>{t}Link to:{/t}</B>
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{if $importlist.total > 0}
+	{section name=importlist loop=$importlist}
+	{if $importlist[importlist].id}
+	<TR bgcolor="{cycle}">
+		<TD WIDTH="1%" CLASS="fleft">
+			{$importlist[importlist].id|string_format:"%04d"}
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			{$importlist[importlist].date|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{$importlist[importlist].value|money_format} 
+		</TD>
+		<TD WIDTH="48%" ALIGN="LEFT">
+			{$importlist[importlist].customer}
+		</TD>
+		<TD WIDTH="48%" ALIGN="LEFT">
+			{$importlist[importlist].description}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
+			<FORM NAME="assign{$importlist[importlist].id}" ACTION="?m=cashimport&id={$importlist[importlist].id}&op=assign" METHOD="post">
+			<SELECT NAME="customer" {tip text="Select customer" trigger=$importlist[importlist].id}>
+				<OPTION VALUE="0">{t}Select customer{/t}</OPTION>
+				{section name=userlist loop=$userlist}
+				<OPTION VALUE="{$userlist[userlist].id}" {if $userlist[userlist].id == $importlist[importlist].customerid}SELECTED{/if}>{$userlist[userlist].username|truncate:50:" ..."} ({$userlist[userlist].id|string_format:"%04d"})</OPTION>
+				{/section}
+			</SELECT>
+			<A HREF="javascript:document.assign{$importlist[importlist].id}.submit(); "><IMG ALIGN="absmiddle" SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" BORDER="0"></A>
+			<A HREF="?m=cashimport&id={$importlist[importlist].id}&op=del"><IMG ALIGN="absmiddle" SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" BORDER="0"></a>
+			</FORM>
+		</TD>
+	</TR>
+	{/if}
+	{/section}
+	{else}
+	<TR>
+		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="7">
+			<P>&nbsp;</P>
+			<P>&nbsp;</P>
+			<P><B>{t}No cash operations to import.{/t}</B></P>
+			<P>&nbsp;</P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>	
+	{/if}
+	<TR CLASS="dark">
+		<TD CLASS="fall" COLSPAN="6">
+			<TABLE WIDTH="100%">
+				<TR>
+					<TD ALIGN="left">
+						&nbsp;
+					</TD>
+					<TD ALIGN="right">	
+						<IMG SRC="img/info2.gif" border="0" ALT="" align="absmiddle"> <B>{t}Total:{/t} {$importlist.total}</B>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}
