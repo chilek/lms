@@ -1179,7 +1179,7 @@ class LMS
 	function GetInvoiceContent($invoiceid)
 	{
 		$result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, nip, cdate, paytime, finished FROM invoices WHERE id=?',array($invoiceid));
-		$result['content'] = $this->DB->GetAll('SELECT value, taxvalue, content, count, description, tariffid FROM invoicecontents WHERE invoiceid=?',array($invoiceid));
+		$result['content'] = $this->DB->GetAll('SELECT value, taxvalue, sww, content, count, description, tariffid FROM invoicecontents WHERE invoiceid=?',array($invoiceid));
 		foreach($result['content'] as $idx => $row)
 		{
 			$result['content'][$idx]['basevalue'] = sprintf("%0.2f",($row['value'] / (100 + $row['taxvalue']) * 100));
@@ -1202,7 +1202,7 @@ class LMS
 
 	function GetTariffList()
 	{
-		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, taxvalue, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
+		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, taxvalue, sww, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
 		{
 			$total = sizeof($tarifflist);
 			foreach($tarifflist as $idx => $row)
@@ -1237,13 +1237,14 @@ class LMS
 	function TariffAdd($tariffdata)
 	{
 		$this->SetTS("tariffs");
-		if($this->DB->Execute("INSERT INTO tariffs (name, description, value, taxvalue, uprate, downrate)
-			VALUES (?, ?, ?, ?, ?, ?)",
+		if($this->DB->Execute("INSERT INTO tariffs (name, description, value, taxvalue, sww, uprate, downrate)
+			VALUES (?, ?, ?, ?, ?, ?, ?)",
 			array(
 				$tariffdata['name'],
 				$tariffdata['description'],
 				$tariffdata['value'],
 				$tariffdata['taxvalue'],
+				$tariffdata['sww'],
 				$tariffdata['uprate'],
 				$tariffdata['downrate']
 			)
@@ -1256,7 +1257,7 @@ class LMS
 	function TariffUpdate($tariff)
 	{
 		$this->SetTS("tariffs");
-		return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, uprate=?, downrate=? WHERE id=?",array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
+		return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, sww=?, uprate=?, downrate=? WHERE id=?",array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['sww'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
 	}
 
 	function TariffDelete($id)
@@ -1281,7 +1282,7 @@ class LMS
 
 	function GetTariff($id)
 	{
-		$result = $this->DB->GetRow("SELECT id, name, value, taxvalue, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
+		$result = $this->DB->GetRow("SELECT id, name, value, taxvalue, sww, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
 		$result['users'] = $this->DB->GetAll("SELECT users.id AS id, COUNT(users.id) AS cnt, ".$this->DB->Concat('upper(lastname)',"' '",'name')." AS username FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY users.id, username",array($id));
 		$result['userscount'] = sizeof($result['users']);
 		$result['count'] = $this->GetUsersWithTariff($id);
@@ -2264,6 +2265,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.295  2003/12/01 14:14:17  lukasz
+ * - dodane SWW do faktur
+ *
  * Revision 1.294  2003/12/01 13:24:56  lukasz
  * - nowe fuckturki
  *

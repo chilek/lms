@@ -83,6 +83,7 @@ CREATE TABLE invoicecontents (
   invoiceid INT NOT NULL ,
   value DOUBLE NOT NULL ,
   taxvalue INT NOT NULL ,
+  sww VARCHAR( 255 ) NOT NULL DEFAULT '',
   content VARCHAR( 16 ) NOT NULL ,
   count INT NOT NULL ,
   description VARCHAR( 255 ) NOT NULL ,

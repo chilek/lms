@@ -138,7 +138,7 @@ my $icdbq;
 
 # dobra, query wybiera *WSZYSTKIE* mo¿liwe assigmenty na dany dzieñ.
 
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND ((period = 0 AND at=$day) OR (period = 1 AND at=$weekday) OR (period = 2 AND at = $yearday))");
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, sww, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND ((period = 0 AND at=$day) OR (period = 1 AND at=$weekday) OR (period = 2 AND at = $yearday))");
 $dbq->execute();
 
 print "UID:\tKwota:\tZa:\n";
@@ -167,7 +167,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 				$gotinv{$uid} = $irow->{'id'};
 			}
 			
-			my $icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, content, count, description, tariffid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxvalue'}, 'szt', 1, '$txt', $assign->{'tariffid'})");
+			my $icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, sww, content, count, description, tariffid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxvalue'}, '$assign->{'sww'}', 'szt', 1, '$txt', $assign->{'tariffid'})");
 			$icdbq->execute();
 		}
 		my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES ($time, 0, 4, $assign->{'value'}, $uid, '$txt', $gotinv{$uid})");

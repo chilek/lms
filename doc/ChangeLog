@@ -32,7 +32,7 @@ wersja 1.1.5 (??/??/2003):
     poprawek w bazie danych (lukasz):
     
     ALTER TABLE `tariffs` ADD `taxvalue` INT DEFAULT '0' NOT NULL AFTER `value`;
-    ALTER TABLE `tariffs` ADD `sww` VARCHAR(255) DEFAULT '' NOT NULL AFTER 'taxvalue';
+    ALTER TABLE `tariffs` ADD `sww` VARCHAR(255) DEFAULT '' NOT NULL AFTER `taxvalue`;
     ALTER TABLE `assignments` ADD `invoice` TINYINT( 1 ) DEFAULT '0' NOT NULL;
     ALTER TABLE `cash` ADD `invoiceid` INT DEFAULT '0' NOT NULL ;
     
@@ -58,6 +58,7 @@ wersja 1.1.5 (??/??/2003):
         `invoiceid` INT NOT NULL ,
         `value` DOUBLE NOT NULL ,
         `taxvalue` INT NOT NULL ,
+	`sww` VARCHAR( 255 ) NOT NULL DEFAULT '';
         `content` VARCHAR( 16 ) NOT NULL ,
         `count` INT NOT NULL ,
 	`description` VARCHAR( 255 ) NOT NULL ,
