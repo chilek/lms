@@ -25,10 +25,7 @@ $Id$
 
     * ustaw CFLAGS i LDFLAGS w ./configure tak aby wskazywa³y na biblioteki 
       i includes MySQL'a w Twoim systemie
-    * ./configure
-	Dostêpne opcje: --with-pgsql 	(nie trzeba t³umaczyæ)
-			--debug 	(logowanie zapytañ)
-			--with-mysql 	(opcja domy¶lna, mo¿na pomin±æ)
+    * ./configure (dostêpne opcje ./configure --help)
     * make
     
 - URUCHOMIENIE
