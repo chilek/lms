@@ -7,14 +7,15 @@
 # Sposób u¿ycia:
 #	$ mysql -u lms
 #	mysql> use lms;
-#	mysql> source doc/UPGRADE.mysql;
+#	mysql> source doc/UPGRADE-1.0-1.3.mysql;
 # Po tej operacji wystartuj LMS i uruchom modu³ ?m=upgrade01
 # Na samym koñcu mo¿esz wyrzuciæ niepotrzebne rzeczy:
 #	mysql> ALTER TABLE users DROP tariff, DROP payday;
 # **********************************************************
 
-# Ta tabela ju¿ nie jest u¿ywana 
+# Te tabele ju¿ nie s± u¿ywane
 DROP TABLE IF EXISTS options;
+DROP TABLE IF EXISTS tokens;
 
 # Kosmetyka u adminów 
 ALTER TABLE admins CHANGE lastlogindate lastlogindate INT(11) DEFAULT '0';
