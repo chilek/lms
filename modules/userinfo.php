@@ -30,24 +30,34 @@ if($LMS->UserExists($_GET[id]) == 0)
 	die;
 }
 
-$userinfo=$LMS->GetUser($_GET[id]);
+$userinfo = $LMS->GetUser($_GET[id]);
+$assigments = $LMS->GetUserAssignments($_GET[id]);
+$balancelist = $LMS->GetUserBalanceList($_GET[id]);
+$usernodes = $LMS->GetUserNodes($_GET[id]);
+$tariffs = $LMS->GetTariffs();
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 $layout[pagetitle]="Informacje o u¿ytkowniku ".$userinfo[username];
 
-$usernodes = $LMS->GetUserNodes($_GET[id]);
-
 $usernodes[ownerid] = $_GET[id];
 $SMARTY->assign("usernodes",$usernodes);
-$SMARTY->assign("balancelist",$LMS->GetUserBalanceList($_GET[id]));
+$SMARTY->assign("balancelist",$balancelist);
+$SMARTY->assign("assignments",$assigments);
 $SMARTY->assign("error",$error);
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("layout",$layout);
+$SMARTY->assign("tariffs",$tariffs);
 $SMARTY->display("userinfo.html");
 
 /*
  * $Log$
+ * Revision 1.26  2003/09/09 01:22:28  lukasz
+ * - nowe finanse
+ * - kosmetyka
+ * - bugfixy
+ * - i inne rzeczy o których aktualnie nie pamiêtam
+ *
  * Revision 1.25  2003/08/27 20:32:54  lukasz
  * - changed another ENUM (users.deleted) to BOOL
  *

@@ -184,6 +184,12 @@ else
 
 /*
  * $Log$
+ * Revision 1.100  2003/09/09 01:22:28  lukasz
+ * - nowe finanse
+ * - kosmetyka
+ * - bugfixy
+ * - i inne rzeczy o których aktualnie nie pamiêtam
+ *
  * Revision 1.99  2003/09/08 03:13:00  lukasz
  * - dodane rozszerzenie do smartyego. WHAZAA! Jeszcze mniej roboty w pehapie
  *   bêdzie ;-)
@@ -223,4 +229,5 @@ else
  * - more cvs tags :>
  *
  */
+
 ?>

@@ -26,7 +26,7 @@
 
 $userdata=$_POST[userdata];
 
-if($LMS->UserExists($_GET[id]) < 0 && $_GET[recover] == "")
+if($LMS->UserExists($_GET[id]) < 0 && $_GET[action] != "recover")
 {
 	header('Location: ?m=userinfo&id='.$_GET[id]);
 	die;
@@ -36,8 +36,55 @@ elseif(! $LMS->UserExists($_GET[id]))
 	header("Location: ?m=userlist");
 	die;
 }
+if($_GET[action] == "assignmentdelete")
+{
+	$LMS->DeleteAssignment($_GET[id],$_GET[balance]);
+	header('Location: ?m=userinfo&id='.$_GET[userid]);
+	die;
+}
+elseif($_GET[action] == "addassignment")
+{
+	$peroid = sprintf('%d',$_POST[peroid]);
 
-if(isset($userdata))
+	if($peroid < 0 || $peroid > 2)
+		$peroid = 0;
+
+	switch($peroid)
+	{
+		case 0:
+			$at = sprintf('%d',$_POST[at]);
+			if($at < 1)
+				$at = 1;
+			elseif($at > 28)
+				$at = 28;
+		break;
+
+		case 1:
+			$at = sprintf('%d',$_POST[at]);
+			if($at < 1)
+				$at = 1;
+			elseif($at > 7)
+				$at = 7;
+		break;
+
+		case 2:
+			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($_POST[at])))
+				$error[] = "Niepoprawny format daty";
+			else
+				list($d,$m) = split('/',trim($_POST[at]));
+			$ttime = mktime(12, 0, 0, $m, $d, 1990);
+			$at = date('z',$ttime) + 1;
+		break;
+	}
+
+	if($LMS->TariffExists($_POST[tariffid]) && !$error)
+		$LMS->AddAssignment(array('tariffid' => $_POST[tariffid], 'userid' => $_GET[id], 'peroid' => $peroid, 'at' => $at));
+		
+	header('Location: ?m=userinfo&id='.$_GET[id]);
+	die;
+			
+}
+elseif(isset($userdata))
 {
 
 	foreach($userdata as $key=>$value)
@@ -70,8 +117,8 @@ if(isset($userdata))
 	if($userdata[gguin] !="" && !eregi("^[0-9]{4,}$",$userdata[gguin]))
 		$error[gguin] = "Podany numer GG jest niepoprawny!";
 
-	if(!$LMS->TariffExists($userdata[tariff]))
-		$error[tariff] = "Proszê wybraæ taryfê!";
+//	if(!$LMS->TariffExists($userdata[tariff]))
+//		$error[tariff] = "Proszê wybraæ taryfê!";
 		
 	if($userdata[status]!=3&&$LMS->GetUserNodesNo($userdata[id])) 
 		$error[status] = "Tylko pod³±czony u¿ytkownik mo¿e posiadaæ komputery!";
@@ -96,7 +143,7 @@ if(isset($userdata))
 }else{
 
 	$userinfo=$LMS->GetUser($_GET[id]);
-	if($userinfo[status]==3)
+	if($userinfo[status] == 3)
 		$userinfo[shownodes] = TRUE;
 }
 
@@ -107,16 +154,23 @@ $layout[pagetitle]="Edycja danych u¿ytkownika ".$userinfo[username];
 $SMARTY->assign("usernodes",$LMS->GetUserNodes($userinfo[id]));
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($userinfo[id]));
 $SMARTY->assign("tariffs",$LMS->GetTariffs());
+$SMARTY->assign("assignments",$LMS->GetUserAssignments($_GET[id]));
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("paydays",$paydays);
-$SMARTY->assign("recover",$_GET[recover]);
+$SMARTY->assign("recover",($_GET[action] == 'recover' ? 1 : 0));
 $SMARTY->display("useredit.html");
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 /*
  * $Log$
+ * Revision 1.42  2003/09/09 01:22:28  lukasz
+ * - nowe finanse
+ * - kosmetyka
+ * - bugfixy
+ * - i inne rzeczy o których aktualnie nie pamiêtam
+ *
  * Revision 1.41  2003/09/05 13:11:24  lukasz
  * - nowy sposób wy¶wietlania informacji o b³êdach
  *

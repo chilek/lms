@@ -26,7 +26,7 @@
 
 // Funkcje dodatkowe, do roszerzenia Smarty.
 
-function sum($args, $SMARTY)
+function _smarty_function_sum($args, $SMARTY)
 {
 	$array = $args['array'];
 	$column = $args['column'];
@@ -38,10 +38,16 @@ function sum($args, $SMARTY)
 	return sprintf($format,(isset($result) ? $result : $default));
 }
 
-$SMARTY->register_function('sum','sum');
+$SMARTY->register_function('sum','_smarty_function_sum');
 
 /*
  * $Log$
+ * Revision 1.3  2003/09/09 01:22:28  lukasz
+ * - nowe finanse
+ * - kosmetyka
+ * - bugfixy
+ * - i inne rzeczy o których aktualnie nie pamiêtam
+ *
  * Revision 1.2  2003/09/08 03:15:14  lukasz
  * - added string_format="%d"
  *

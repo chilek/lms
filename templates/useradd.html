@@ -89,37 +89,6 @@
 						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {if $error.nip}CLASS="alert"{/if}>
 					</td>
 				</TR>
-
-				<TR>
-					<TD>
-						<img src="img/money.gif" border="0" alt="">
-					</TD>
-					<TD>
-						<TABLE>
-							<TR>
-								<TD>
-									<B>Taryfa:</B><BR>
-									<B>Dzieñ zap³aty:</B>
-								</TD>
-								<TD>
-									&nbsp;
-								</TD>
-								<TD>
-									<SELECT size="1" name="useradd[tariff]">
-										{section name=tariffs loop=$tariffs.id}
-										<OPTION VALUE="{$tariffs.id[tariffs]}"{if $tariffs.id[tariffs] eq $useradd.tariff} SELECTED{/if}> {$tariffs.name[tariffs]} ({$tariffs.value[tariffs]} z³)</OPTION>
-										{/section}
-									</SELECT>
-									<SELECT size="1" name="useradd[payday]">
-										{section name=t loop=$paydays}
-										<OPTION VALUE="{$paydays[t]}"{if $paydays[t] eq $useradd.payday} SELECTED{/if}>{$paydays[t]}</OPTION>
-										{/section}
-									</SELECT>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-				</TR>
             		</TABLE>
 		</td>
 		<TD width="50%" bgcolor="#DFD5BD" class="fright">

@@ -28,14 +28,24 @@ if(!$LMS->TariffExists($_GET[id]))
 	header("Location: ?m=tarifflist");
 	die;
 }
-$layout[pagetitle]="Informacja o taryfie";
+$tariff = $LMS->GetTariff($_GET[id]);
+$layout[pagetitle] = "Informacja o taryfie '".$tariff[name]."'";
+
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
+
 $SMARTY->assign("layout",$layout);
-$SMARTY->assign("tariff",$LMS->GetTariff($_GET[id]));
+$SMARTY->assign("tariff",$tariff);
 $SMARTY->assign("tariffs",$LMS->GetTariffs());
 $SMARTY->display("tariffinfo.html");
+
 /*
  * $Log$
+ * Revision 1.14  2003/09/09 01:22:28  lukasz
+ * - nowe finanse
+ * - kosmetyka
+ * - bugfixy
+ * - i inne rzeczy o których aktualnie nie pamiêtam
+ *
  * Revision 1.13  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
