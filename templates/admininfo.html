@@ -1,7 +1,7 @@
 {include file="header.html"}
 {include file="adminheader.html"}
 <!--// $Id$ //-->
-<h1>Informacje o administatorze {$admininfo.name|capitalize}</h1>
+<h1>{$layout.pagetitle}</h1>
 {if $unlockedit}<FORM NAME="adminedit" METHOD="POST" ACTION="?m=adminedit&id={$admininfo.id}">{/if}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -18,7 +18,7 @@
 			<TABLE WIDTH="100%" CELLPADDING="1">
 				<TR>
 					<TD WIDTH="1%" NOWRAP>
-						<IMG SRC="img/pass.gif" ALT="" ALIGN="ABSMIDDLE"> <B>Login:</B>
+						<IMG SRC="img/pass.gif" ALT="" ALIGN="ABSMIDDLE"> <B>{$lang.login}:</B>
 					</TD>
 					<TD>
 						{if $unlockedit}
@@ -39,7 +39,7 @@
 				</TR>
 				<TR>
 					<TD WIDTH="1%" NOWRAP>
-						<IMG SRC="img/empty.gif" WIDTH="16" HEIGHT="16" ALT="" BORDER="0"> <B><NOBR>Ostatnio zalogowany:</NOBR></B>
+						<IMG SRC="img/empty.gif" WIDTH="16" HEIGHT="16" ALT="" BORDER="0"> <B><NOBR>{$lang.last_logged}:</NOBR></B>
 					</TD>
 					<TD>
 						{$admininfo.lastlogin}, {$admininfo.lastloginip} {if $admininfo.lastloginip neq $admininfo.lastloginhost}({$admininfo.lastloginhost}){/if}
@@ -47,7 +47,7 @@
 				</TR>
 				<TR>
 					<TD WIDTH="1%" NOWRAP>
-						<IMG SRC="img/empty.gif" WIDTH="16" HEIGHT="16" ALT="" BORDER="0"> <B><NOBR>Ostatnie nieudane logowanie:</NOBR></B>
+						<IMG SRC="img/empty.gif" WIDTH="16" HEIGHT="16" ALT="" BORDER="0"> <B><NOBR>{$lang.last_fail_logged}:</NOBR></B>
 					</TD>
 					<TD>
 						{$admininfo.faillogin}, {$admininfo.failedloginip} {if $admininfo.failedloginip neq $admininfo.failloginhost}({$admininfo.failloginhost}){/if}
