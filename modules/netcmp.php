@@ -35,7 +35,7 @@ $network['name'] = $LMS->GetNetworkName($_GET['id']);
 if($_GET['is_sure'])
 {
 	$LMS->NetworkCompress($_GET['id']);
-	header('Location: ?m='.$_SESSION['lastmodule'].'&id='.$_GET['id']);
+	header('Location: ?m='.$SESSION->get('lastmodule').'&id='.$_GET['id']);
 	die;
 }else{
 	$layout['pagetitle'] = trans('Readdressing Network $0', strtoupper($network['name']));

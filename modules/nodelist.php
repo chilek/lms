@@ -29,10 +29,10 @@ $layout['pagetitle'] = trans('Nodes List');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(!isset($_GET['o']))
-	$o = $_SESSION['nlo'];
+	$SESSION->restore('nlo', $o);
 else
 	$o = $_GET['o'];
-$_SESSION['nlo'] = $o;
+$SESSION->save('nlo', $o)
 
 $nodelist = $LMS->GetNodeList($o);
 $listdata['total'] = $nodelist['total'];
@@ -47,14 +47,14 @@ unset($nodelist['direction']);
 unset($nodelist['totalon']);
 unset($nodelist['totaloff']);
 
-if (isset($_SESSION['nlp']) && !isset($_GET['page']))
-        $_GET['page'] = $_SESSION['nlp'];
+if ($SESSION->is_set('nlp') && !isset($_GET['page']))
+	$SESSION->restore('nlp', $_GET['page']);
 	
 $page = (! $_GET['page'] ? 1 : $_GET['page']);
 $pagelimit = (! $LMS->CONFIG['phpui']['nodelist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['nodelist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$_SESSION['nlp'] = $page;
+$SESSION->save('nlp', $page);
 
 $SMARTY->assign('page',$page);
 $SMARTY->assign('pagelimit',$pagelimit);

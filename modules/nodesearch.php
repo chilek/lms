@@ -31,18 +31,18 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $search = $_POST['search'];
 
 if(!isset($search))
-	$search = $_SESSION['usersearch'];
+	$SESSION->restore('usersearch', $search);
 else
-	$_SESSION['usersearch'] = $search;		
+	$SESSION->save('usersearch', $search);
 
 if($_GET['search']==1 || isset($_GET['search'])) 
 {
 	if(!isset($_GET['o']))
-		$o = $_SESSION['snlo'];
+		$SESSION->restore('snlo', $o);
 	else
 		$o = $_GET['o'];
 
-	$_SESSION['snlo'] = $o;
+	$SESSION->save('snlo', $o);
 			
 	$nodelist = $LMS->SearchNodeList($search,$o);
 
@@ -58,14 +58,14 @@ if($_GET['search']==1 || isset($_GET['search']))
 	unset($nodelist['totalon']);
 	unset($nodelist['totaloff']);
 	
-	if (isset($_SESSION['nslp']) && !isset($_GET['page']))
-		$_GET['page'] = $_SESSION['nslp'];
+	if ($SESSION->is_set('nslp') && !isset($_GET['page']))
+		$SESSION->restore('nslp', $_GET['page']);
 		
 	$page = (! $_GET['page'] ? 1 : $_GET['page']);
 	
 	$pagelimit = (! $LMS->CONFIG['phpui']['nodelist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['nodelist_pagelimit']);
 	$start = ($page - 1) * $pagelimit;
-	$_SESSION['nslp'] = $page;
+	$SESSION->save('nslp', $page);
 	
 	$SMARTY->assign('page',$page);
 	$SMARTY->assign('pagelimit',$pagelimit);
