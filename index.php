@@ -115,16 +115,6 @@ $_DBNAME = $_CONFIG['database']['database'];
 require_once($_LIB_DIR.'/checkdirs.php');
 require_once($_LIB_DIR.'/checkconfig.php');
 
-$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
-
-// Redirect to SSL
-
-if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
-{
-	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-	exit(0);
-}
-
 // Init database 
 
 require_once($_LIB_DIR.'/LMSDB.php');
@@ -140,6 +130,16 @@ require_once($_LIB_DIR.'/upgradedb.php');
 if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
 	foreach($cfg as $row)
 		$_CONFIG[$row['section']][$row['var']] = $row['value'];
+
+// Redirect to SSL
+
+$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
+
+if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
+{
+	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+	exit(0);
+}
 
 $_TIMEOUT = $_CONFIG['phpui']['timeout'];
 
