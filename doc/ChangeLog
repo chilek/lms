@@ -15,6 +15,8 @@ wersja 1.4.3 (??/??/????):
     od³±czanie/w³±czanie, które jest objête osobnym uprawnieniem (rejmer)
   - BTS#0000279: poprawiono zamienione miejscami pola z nazw± i emailem 
     nadawcy na szablonie wysy³ania wiadomo¶ci (alec)
+  - BTS#0000280: poprawione b³êdne zaokr±glanie i wyliczenie ogólnej kwoty 
+    podatku na rejestrze sprzeda¿y (.PaKud/alec)
 
 wersja 1.4.2 Lya (14/12/2004):
 
