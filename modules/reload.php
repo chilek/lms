@@ -33,8 +33,8 @@ $SMARTY->display("header.html");
 
 ?><H1>Prze³adowanie ustawieñ</H1><?php
 
-$_RELOAD_TYPE = (! $_CONFIG[phpui]['reload_type'] ? "sql" : $_CONFIG[phpui]['reload_type']);
-$_EXECCMD = (! $_CONFIG[phpui]['reload_execcmd'] ? "/bin/true" : $_CONFIG[phpui]['reload_execcmd']);
+$_RELOAD_TYPE = $LMS->CONFIG['phpui']['reload_type'];
+$_EXECCMD = $LMS->CONFIG['phpui']['reload_execcmd'];
 
 switch($_RELOAD_TYPE)
 {
@@ -52,9 +52,9 @@ switch($_RELOAD_TYPE)
 	break;
 
 	case "sql":
-		if(isset($_CONFIG[phpui]['reload_sqlquery']))
+		if(isset($LMS->CONFIG['phpui']['reload_sqlquery']))
 		{
-			$sqlqueries = explode(";",($_CONFIG[phpui]['reload_sqlquery']));
+			$sqlqueries = explode(";",($LMS->CONFIG['phpui']['reload_sqlquery']));
 			echo '<TABLE WIDTH="100%" BGCOLOR="#F4F0EC" CELLPADDING="5"><TR><TD CLASS="FALL">';
 			foreach($sqlqueries as $query)
 			{
@@ -65,7 +65,7 @@ switch($_RELOAD_TYPE)
 			}
 			echo '</TD></TR></TABLE>';
 		}else{
-			if(isset($_GET[cancel]))
+			if(isset($_GET['cancel']))
 			{
 				echo 'Usuniêto zlecenie prze³adowania konfiguracji.';
 				$LMS->DeleteTS("_force");
@@ -92,6 +92,10 @@ $SMARTY->display("footer.html");
 
 /*
  * $Log$
+ * Revision 1.20  2003/12/04 04:39:14  lukasz
+ * - porz±dki
+ * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
+ *
  * Revision 1.19  2003/09/07 18:46:57  lexx
  * - die ADOB, die!
  *

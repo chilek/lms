@@ -75,11 +75,11 @@ elseif(isset($useradd))
 }
 
 if(!isset($useradd['zip']))	
-	$useradd['zip'] = $_CONFIG['phpui']['default_zip'];
+	$useradd['zip'] = $LMS->CONFIG['phpui']['default_zip'];
 if(!isset($useradd['city']))	
-	$useradd['city'] = $_CONFIG['phpui']['default_city'];
+	$useradd['city'] = $LMS->CONFIG['phpui']['default_city'];
 if(!isset($useradd['address']))	
-	$useradd['address'] = $_CONFIG['phpui']['default_address'];
+	$useradd['address'] = $LMS->CONFIG['phpui']['default_address'];
 
 $layout['pagetitle']='Nowy u¿ytkownik';
 
@@ -90,6 +90,10 @@ $SMARTY->display('useradd.html');
 
 /*
  * $Log$
+ * Revision 1.41  2003/12/04 04:39:14  lukasz
+ * - porz±dki
+ * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
+ *
  * Revision 1.40  2003/12/04 03:43:51  lukasz
  * - dodany PESEL do rekordu u¿ytkownika, upgrade bazy
  *   Je¿eli u¿ytkownik nie posiada NIPu, to wtedy na fakturze umieszczany jest

@@ -16,9 +16,9 @@ $SMARTY->assign("js",$js);
 if($p == "main")
 {
 	$maclist = $LMS->GetMACs();
-	if($_CONFIG[phpui][arpd_servers])
+	if($LMS->CONFIG[phpui][arpd_servers])
 	{
-		$servers = split(' ',eregi_replace("[\t ]+"," ",$_CONFIG[phpui][arpd_servers]));
+		$servers = split(' ',eregi_replace("[\t ]+"," ",$LMS->CONFIG[phpui][arpd_servers]));
 		foreach($servers as $server)
 		{
 			list($addr,$port) = split(':',$server);
@@ -33,6 +33,10 @@ $SMARTY->display("choosemac.html");
 
 /*
  * $Log$
+ * Revision 1.10  2003/12/04 04:39:14  lukasz
+ * - porz±dki
+ * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
+ *
  * Revision 1.9  2003/09/17 03:10:39  lukasz
  * - very experimental support for lms-arpd
  *

@@ -24,45 +24,40 @@
  *  $Id$
  */
 
-$layout[pagetitle] = 'Lista faktur';
-echo '<PRE>';
-print_r($_POST);
-print_r($_GET);
-echo '</PRE>';
+$layout['pagetitle'] = 'Lista faktur';
 
-if($_GET[action] == 'updatemarks')
+if($_GET['action'] == 'updatemarks')
 {
-	if(sizeof($_POST[mark]))
-		foreach($_POST[mark] as $markid => $mark)
-			if($_SESSION[ilp_marks][$markid])
-				unset($_SESSION[ilp_marks][$markid]);
+	if(sizeof($_POST['mark']))
+		foreach($_POST['mark'] as $markid => $mark)
+			if($_SESSION['ilp_marks'][$markid])
+				unset($_SESSION['ilp_marks'][$markid]);
 			else
-				$_SESSION[ilp_marks][$markid] = TRUE;
-//	switch($_POST
+				$_SESSION['ilp_marks'][$markid] = TRUE;
 }
-elseif($_GET[action] == 'clearmarks')
-	unset($_SESSION[ilp_marks]);
+elseif($_GET['action'] == 'clearmarks')
+	unset($_SESSION['ilp_marks']);
 
 $invoicelist = $LMS->GetInvoicesList();
 
-$listdata[startdate] = $invoicelist['startdate'];
-$listdata[enddate] = $invoicelist['enddate'];
-$listdata[startyear] = date('Y',$listdata[startdate]);
-$listdata[endyear] = date('Y',$listdata[enddate]);
+$listdata['startdate'] = $invoicelist['startdate'];
+$listdata['enddate'] = $invoicelist['enddate'];
+$listdata['startyear'] = date('Y',$listdata['startdate']);
+$listdata['endyear'] = date('Y',$listdata['enddate']);
 
 unset($invoicelist['startdate'], $invoicelist['enddate']);
 
-$listdata[totalpos] = sizeof($invoicelist);
+$listdata['totalpos'] = sizeof($invoicelist);
 
-if (isset($_SESSION[blp]) && !isset($_GET[page]))
-	$_GET[page] = $_SESSION[ilp];
+if (isset($_SESSION['blp']) && !isset($_GET['page']))
+	$_GET['page'] = $_SESSION['ilp'];
 
-$pagelimit = (! $_CONFIG[phpui][invoicelist_pagelimit] ? 100 : $_CONFIG[phpui][invoicelist_pagelimit]);
-$page = (! $_GET[page] ? ceil($listdata[totalpos]/$pagelimit) : $_GET[page]);
+$pagelimit = $LMS->CONFIG['phpui']['invoicelist_pagelimit'];
+$page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']);
 $start = ($page - 1) * $pagelimit;
-$_SESSION[ilp] = $page;
+$_SESSION['ilp'] = $page;
 
-$marks = $_SESSION[ilp_marks];
+$marks = $_SESSION['ilp_marks'];
 
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-header('Content-Type: '.($_CONFIG['invoices']['content_type'] != '' ? $_CONFIG['invoices']['content_type'] : 'text/html; charset=iso-8859-2'));
-if($_CONFIG['invoices']['attachment_name'] != '')
-	header('Content-Disposition: attachment; filename='.$_CONFIG['invoices']['attachment_name']);
+header('Content-Type: '.$LMS->CONFIG['invoices']['content_type']);
+if($LMS->CONFIG['invoices']['attachment_name'] != '')
+	header('Content-Disposition: attachment; filename='.$LMS->CONFIG['invoices']['attachment_name']);
 				
 
 if($_GET['print'] == 'cached' && sizeof($_SESSION['ilp_marks']))
@@ -56,7 +56,7 @@ if($_GET['print'] == 'cached' && sizeof($_SESSION['ilp_marks']))
 }
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
-	$ntempl = ($_CONFIG['invoices']['number_template'] != '' ? $_CONFIG['invoices']['number_template'] : '%N/LMS/%Y');
+	$ntempl = $LMS->CONFIG['invoices']['number_template'];
 	$ntempl = str_replace('%N',$invoice['number'],$ntempl);
 	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
 	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
