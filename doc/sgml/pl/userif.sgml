@@ -623,10 +623,12 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	<title>Konfiguracja</title>
 	    <para>W tym miejscu konfigurujemy demona <amphasis>lmsd</emphasis>.
 	    Konfiguracjê zaczyna siê od zdefiniowania hostów, na których dzia³a
-	    demon. Musisz zdefiniowaæ co najmniej jeden host, nawet je¶li jest to 
+	    demon. Musisz zdefiniowaæ co najmniej jeden host, nawet je¶li jest to
 	    localhost (na którym dzia³a <emphasis>LMS-UI</emphasis>). Nastêpnie
 	    klikaj±c na wybranym ho¶cie przechodzisz ju¿ do w³a¶ciwej konfiguracji
 	    (to co dawniej by³o zapisywane w pliku <filename>lms.ini</filename>).</para>
+	    <para><note><para>Nazwa hosta powinna odpowiadaæ rzeczywistej nazwie hosta,
+	    któr± zwraca polecenie <filename>hostname</filename>.</para></note></para>
 	    <para>Konfiguracja jest bardziej szczegó³owo opisana w rozdziale dotycz±cym
 	    demona.</para>
 	</sect2>
