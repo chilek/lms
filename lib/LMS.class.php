@@ -578,33 +578,33 @@ class LMS {
 						
 						case "1":
 							$balancelist[type][$key] = "przychód";
-							$balancelist[after][$key] = round($balancelist[before][$key] + $balancelist[value][$key],4);
-							$balancelist[income] = round($balancelist[income] + $balancelist[value][$key],4);
+							$balancelist[after][$key] = str_replace(".",",",round($balancelist[before][$key] + $balancelist[value][$key],4));
+							$balancelist[income] = str_replace(".",",",round($balancelist[income] + $balancelist[value][$key],4));
 						break;
 						case "2":
 							$balancelist[type][$key] = "rozchód";
-							$balancelist[after][$key] = round($balancelist[before][$key] - $balancelist[value][$key],4);
-							$balancelist[expense] = round($balancelist[expense] + $balancelist[value][$key],4);
+							$balancelist[after][$key] = str_replace(".",",",round($balancelist[before][$key] - $balancelist[value][$key],4));
+							$balancelist[expense] = str_replace(".",",",round($balancelist[expense] + $balancelist[value][$key],4));
 						break;
 						case "3":
 							$balancelist[type][$key] = "wp³ata u¿";
-							$balancelist[after][$key] = round($balancelist[before][$key] + $balancelist[value][$key],4);
-							$balancelist[incomeu] = round($balancelist[incomeu] + $balancelist[value][$key],4);
+							$balancelist[after][$key] = str_replace(".",",",round($balancelist[before][$key] + $balancelist[value][$key],4));
+							$balancelist[incomeu] = str_replace(".",",",round($balancelist[incomeu] + $balancelist[value][$key],4));
 						break;
 						case "4":
 							$balancelist[type][$key] = "obci±¿enie u¿";
-							$balancelist[after][$key] = round($balancelist[before][$key],4);
-							$balancelist[uinvoice] = round($balancelist[uinvoice] + $balancelist[value][$key],4);
+							$balancelist[after][$key] = str_replace(".",",",round($balancelist[before][$key],4));
+							$balancelist[uinvoice] = str_replace(".",",",round($balancelist[uinvoice] + $balancelist[value][$key],4));
 						break;
 						default:
 							$balancelist[type][$key] = '<FONT COLOR="RED">???</FONT>';
-							$balancelist[after][$key] = round($balancelist[before][$key],4);
+							$balancelist[after][$key] = str_replace(".",",",round($balancelist[before][$key],4));
 						break;
 					}
 					
 				}
 				
-				$balancelist[total] = $balancelist[after][$key];
+				$balancelist[total] = str_replace(".",",",$balancelist[after][$key]);
 
 				$_SESSION[timestamps][getbalancelist] = $this->GetTS("cash");
 				$_SESSION[cache][getbalancelist] = $balancelist;
@@ -626,8 +626,6 @@ class LMS {
 			$_SESSION[timestamps][getuserlist][users] != $this->GetTS("users")
 			||
 			$_SESSION[timestamps][getuserlist][nodes] != $this->GetTS("nodes")
-			||
-			$_SESSION[timestamps][getuserlist][cash]  != $this->GetTS("cash")
 		  )
 		{
 			
@@ -641,18 +639,7 @@ class LMS {
 			
 			if(sizeof($userlist[id]))
 				foreach($userlist[id] as $i => $v)
-				{
 					$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
-					$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
-					if($userlist[balance][$i] > 0)
-						$userlist[over] = $userlist[over] + $userlist[balance][$i];
-					if($userlist[balance][$i] < 0)
-						$userlist[below] = $userlist[below] - $userlist[balance][$i];
-					if($userlist[status][$i] == 3)
-						$userlist[nodeac][$i] = $this->GetUserNodesAC($userlist[id][$i]);
-					else
-						$userlist[nodeac][$i] = FALSE;
-				}
 
 			$_SESSION[cache][getuserlist] = $userlist;
 			$_SESSION[timestamps][getuserlist][users] = $this->GetTS("users");
@@ -663,7 +650,16 @@ class LMS {
 			$userlist = $_SESSION[cache][getuserlist];
 
 		}
-			
+		
+		foreach($userlist[id] as $i => $v)
+		{
+			$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
+			if($userlist[balance][$i] > 0)
+				$userlist[over] = $userlist[over] + $userlist[balance][$i];
+			if($userlist[balance][$i] < 0)
+				$userlist[below] = $userlist[below] - $userlist[balance][$i];
+		}
+		
 		list($order,$direction)=explode(",",$order);
 		
 		if($direction != "desc") $direction = 4;
@@ -671,24 +667,29 @@ class LMS {
 		
 		if(sizeof($userlist[id])) switch($order){
 			case "username":
-				array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
+				array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 			break;
 			case "id":
-				array_multisort($userlist[id],$direction,SORT_NUMERIC,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
+				array_multisort($userlist[id],$direction,SORT_NUMERIC,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 			break;
 			case "email":
-				array_multisort($userlist[email],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
+				array_multisort($userlist[email],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 			break;
 			case "address":
-				array_multisort($userlist[address],$direction,$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
+				array_multisort($userlist[address],$direction,$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 			break;
 			case "balance":
-				array_multisort($userlist[balance],$direction,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
+				array_multisort($userlist[balance],$direction,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 			break;
 			case "phone":
-				array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid],$userlist[nodeac]);
+				array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 			break;
 		}
+		foreach($userlist[id] as $i => $v)
+			if($userlist[status][$i] == 3)
+				$userlist[nodeac][$i] = $this->GetUserNodesAC($userlist[id][$i]);
+			else
+				$userlist[nodeac][$i] = FALSE;
 		$userlist[state]=$state;
 		$userlist[order]=$order;
 		$userlist[direction]=$direction;
@@ -878,7 +879,7 @@ class LMS {
 
 	function GetUserBalance($id)
 	{
-		$return = $this->GetUserBalanceList($id);
+		$return = str_replace(".",",",$this->GetUserBalanceList($id));
 		return $return[balance];
 	}
 
@@ -924,6 +925,16 @@ class LMS {
 				$saldolist[balance] = 0;
 			}
 
+			if($saldolist[total])
+			{
+				foreach($saldolist[value] as $key => $value)
+					$saldolist[value][$key] = str_replace(".",",",$value);
+				foreach($saldolist[after] as $key => $value)
+					$saldolist[after][$key] = str_replace(".",",",$value);
+				foreach($saldolist[before] as $key => $value)
+					$saldolist[before][$key] = str_replace(".",",",$value);
+			}
+			$saldolist[balance] = str_replace(".",",",$saldolist[balance]);
 			$_SESSION[timestamps][getuserbalancelist][$id][cash] = $this->GetTS("cash");
 			$_SESSION[cache][getuserbalancelist][$id] = $saldolist;
 		}else{
