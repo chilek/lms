@@ -2,8 +2,8 @@
 <!--// $Id$ //-->
 <html><head>
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-<meta http-equiv="Content-Language" content="pl">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
 <title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle|striphtml} :{/if}::</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/JavaScript" src="img/common.js"> </script>
@@ -93,4 +93,3 @@
 </p></td>
 <td width="99%" valign="top" style="border-right-style: dashed; border-right-width: 1pt; border-right-color: #333333;">
 {/if}
-{if $emptypasswd}<H1 align="center"><A HREF="?m=adminpasswd"><FONT COLOR="RED">Twoje konto posiada puste has³o! Natychmiast ustaw sobie has³o!</FONT></A></H1>{/if}
