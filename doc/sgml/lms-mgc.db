@@ -1,10 +1,10 @@
-<chapter>
+<chapter id="lms-mgc">
  <title>LMS-MGC</title>
   <!--
    Na podstawie CVS; $Id$
   -->
-  <para>LMS-MGC to "magiczny" generator plików konfiguracyjnych. Przy odrobinie wysi³ku mo¿emy stworzyæ przy jego pomocy dowolnego rodzaju plik konfiguracyjny (np. generuj±cy odpowiednie strefy dla DNS)</para>
-  <para>Konfiguracjê dla LMS-MGC mo¿emy ustaliæ w pliku <filename>lms-mgc.ini</filename>, kótry jest podzielony na kilka sekcji. Podstawowe opcje mo¿emy ustawiæ w sekcji <emphasis>[database]</emphasis>:</para>
+  <para>LMS-MGC to "magiczny" generator plików konfiguracyjnych. Przy odrobinie wysi³ku mo¿na stworzyæ przy jego pomocy dowolnego rodzaju plik konfiguracyjny (np. generuj±cy odpowiednie strefy dla DNS)</para>
+  <para>Konfiguracjê dla LMS-MGC mo¿na ustaliæ w pliku <filename>lms-mgc.ini</filename>, kótry jest podzielony na kilka sekcji. Podstawowe opcje mo¿na ustawiæ w sekcji <emphasis>[database]</emphasis>:</para>
    <itemizedlist>
     <listitem>
      <para>type</para>
