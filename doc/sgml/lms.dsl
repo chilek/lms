@@ -2,9 +2,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
+; lms.dsl      - Szablon do konwersji z DocBook do HTML dla lms bazowany na:
 ; dbtohtml.dsl - DSSSL style sheet for DocBook to HTML conversion (jadeware)
 ;
-; Author          : Mark Burton (markb@ordern.com)
+; Author 	  : Marcin Król (lexx@polarnet.gliwice.pl)
+;
+; Oryginal Author : Mark Burton (markb@ordern.com)
 ; Created On      : Fri Jun 13 18:21:14 1997
 ; Last Modified By: Mark Burton
 ; Last Modified On: Tue Jun 24 11:39:23 1997
@@ -35,18 +38,19 @@
 (declare-flow-object-class formatting-instruction
   "UNREGISTERED::James Clark//Flow Object Class::formatting-instruction")
 (declare-characteristic preserve-sdata?
-  "UNREGISTERED::James Clark//Characteristic::preserve-sdata?" #f)
+ "UNREGISTERED::James Clark//Characteristic::preserve-sdata?" #f)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; variables
 
 (define %no-split-output% #f)
 (define %no-make-toc% #f)
-(define %no-make-index% #f)
+(define %no-make-index% #t)
 (define %no-shade-screen% #f)
 (define %html-public-id% "-//W3C//DTD HTML 3.2 Final//EN")
 (define %output-basename% "DOCPART")
 (define %output-suffix% ".html")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; top-level sections
@@ -71,7 +75,7 @@
                        (process-children)
                        (cond ((not %no-make-index%)
                               (make sequence
-                                (make-fat-rule)
+                                ;;(make-fat-rule)
                                 (make-index)))
                              (#t (empty-sosofo)))))))))
         (#t
@@ -79,7 +83,8 @@
            (make-split-file (string-append %output-basename%
                                            %output-suffix%)
                             (make sequence
-                              (process-first-descendant "TITLE")
+                              ;; Po co tutaj tytu³
+                              ;; (process-first-descendant "TITLE")
                               (process-first-descendant "BOOKINFO")))
            (process-matching-children "PREFACE" "CHAPTER" "APPENDIX")
            (cond ((not %no-make-index%)
@@ -101,7 +106,7 @@
             (make element
               gi: "HEAD"
 	      (make empty-element 
-		gi: "LINK" attributes: '(("href" "style.css")("rel" "stylesheet")("type" "text/css")))
+		gi: "LINK" attributes: '(("href" "style.css")("rel" "stylesheet")("type" "text/css"))
               (make element
                 gi: "TITLE"
                 (with-mode extract-title-text
@@ -118,7 +123,7 @@
   (cond (%no-split-output%
          (make sequence
            (make-anchor)
-           (make-fat-rule)
+           ;;(make-fat-rule)
            (process-children)))
         (#t
          (make-split-file (link-file-name (current-node)) (process-children)))))
@@ -257,6 +262,13 @@
 (element NOTE
   (make-special-para "Notatka:"))
 
+(element COPYRIGHT
+  (make sequence
+   (make empty-element gi: "P")
+   (make element gi: "B"
+    (literal "(c)"))
+   (process-children)))
+  
 (element PARA
   (make sequence
     (make empty-element
@@ -281,7 +293,7 @@
           (make element
             gi: "TABLE"
             attributes: '(("border" "1")
-                          ("bgcolor" "#CEBD9B")
+                          ("bgcolor" "#F4F0EC")
                           ("width" "100%"))
             (make element
               gi: "TR"
@@ -664,10 +676,10 @@
       (process-children))
     (cond ((not %no-make-toc%)
            (make sequence
-             (make-fat-rule)
+             ;;(make-fat-rule)
              (make element
                gi: "H2"
-               (literal "Contents"))
+               (literal "Zawarto¶æ"))
              (make element
                gi: "ul"
                (with-mode make-toc-links
@@ -701,6 +713,23 @@
   (make element
     gi: "B"))
 
+(element TITLE
+  (make element
+    gi: "H1"))
+
+(element LEGALNOTICE
+  (make sequence
+    (make empty-element
+      gi: "P")
+    (process-children)))
+
+(element YEAR
+  (make element
+    gi: "B"))
+
+(element HOLDER
+  (make element
+    gi: "B"))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TOC
 
@@ -795,7 +824,7 @@
 (element BOLD
   (make element gi: "B"))
 
-;; Jakieœ takie dziwne i inne
+;; Jakie¶ takie dziwne i inne
 
 (element PROMPT
   (make element gi: "B"))

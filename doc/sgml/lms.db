@@ -9,9 +9,7 @@
 ]>
 <book>
   <bookinfo>
-    <date>2003-04-07</date>
     <title>LMS - LAN Management System</title>
-    <subtitle>$id:$</subtitle>
     <authorgroup>
       <author>
         <firstname>Marcin</firstname>
@@ -42,7 +40,13 @@
   &rozdzial2;
   &rozdzial3;
   &rozdzial4;
-  &rozdzial5;
+  <!-- 
+    Tego nie bedzie w wydaniu stabilnym
+    &rozdzial5;
+  -->
   &rozdzial6;
-  &rozdzial7;
+  <!--
+    A tego nie ma narazie
+    &rozdzial7;
+  -->
 </book>

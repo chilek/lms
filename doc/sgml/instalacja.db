@@ -26,10 +26,16 @@
 	     <para>generowanie praktycznie jakiegkolwiek konfiga na podstawie danych o komputerach w bazie (przyk³adowe configi obejmuj± rc.masq na iptables, dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i odwrotny);</para>
 	  </listitem>
 	</itemizedlist>
-	<para>Aktualne prace zmierzaj± tak¿e w kierunku rozbudowy LMS'a o prostego CMS'a (Content Managment System) a tak¿e inne funkcje.</para>
-	<para><emphasis>UWAGA!</emphasis> Jako ¿e developerzy LMS'a s± band± niezdecydowanych i wiecznie marudz±cych person, prawdopodobnie prêdzej siê doczekacie koñca recesji ni¿ wersji stabilnej LMS'a. Do tego czasu macie dwie mo¿liwo¶ci: albo u¿ywaæ wersji 1.0pre5 która chodzi dobrze, albo mêczyæ siê z wersj± CVS i marudziæ na li¶cie mailingowej.</para>
-	<para>Rozbudowa o dodatkowe funkcje bêdzie zale¿eæ od potrzeb i sugestii u¿ytkowników. Projekt jest w powijakach i nie wiadomo do koñca, w któr± stronê bêdzie ewoluowa³. Ca³o¶æ zosta³a wymy¶lona w ramach administracji <ulink url="http://www.netx.waw.pl/">ASK NetX</ulink> i tam jest nieustannie rozwijana i poddawana testom ;)</para>
-	<para>Ca³o¶æ kodu publikowana jest na licencji GNU GPL v2.</para>
+	<!--
+	  Czyszczenie dokumentacji przed wydaniem stabilnym
+	  <para>Aktualne prace zmierzaj± tak¿e w kierunku rozbudowy LMS'a o prostego CMS'a (Content Managment System) a tak¿e inne funkcje.</para>
+	  <para><emphasis>UWAGA!</emphasis> Jako ¿e developerzy LMS'a s± band± niezdecydowanych i wiecznie marudz±cych person, prawdopodobnie prêdzej siê doczekacie koñca recesji ni¿ wersji stabilnej LMS'a. Do tego czasu macie dwie mo¿liwo¶ci: albo u¿ywaæ wersji 1.0pre5 która chodzi dobrze, albo mêczyæ siê z wersj± CVS i marudziæ na li¶cie mailingowej.</para>
+	  <para>Rozbudowa o dodatkowe funkcje bêdzie zale¿eæ od potrzeb i sugestii u¿ytkowników. Projekt jest w powijakach i nie wiadomo do koñca, w któr± stronê bêdzie ewoluowa³.</para>
+         -->
+        <para>Ca³o¶æ zosta³a wymy¶lona w ramach administracji <ulink url="http://www.netx.waw.pl/">ASK NetX</ulink> i tam jest nieustannie rozwijana i poddawana testom ;)</para>
+	<!--
+          <para>Ca³o¶æ kodu publikowana jest na licencji GNU GPL v2.</para>
+        -->
     </sect1>
     <sect1>
       <title>Co LMS mo¿e a czego nie</title>
@@ -39,7 +45,10 @@
       <title>Co wchodzi w sk³ad LMSa</title>
 	<para>LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <emphasis>LMS-UI</emphasis> (User Interface). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy danych (w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w LMS-UI wykonujemy wszystkie czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMSa.</para>
 	<para>LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty wymagaj± aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, musisz mieæ PERLa. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych b±d¼ wysy³anie upomnieñ. Jest jeszcze LMS-MGC, który te¿ jest skryptem ale na tyle uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny, i zrestartowaæ us³ugê.</para>
-	<para>Jest jeszcze LMSd (LMS Daemon), napisany w jêzyku C. Jest on przeznaczony (a w³a¶ciwie jego wtyczki) do generowania plików konfiguracyjnych i restartowania us³ug. Odpowiada on za to, aby to co zosta³o zmienione w LMS-UI zosta³o zmienione tak¿e w rzeczywisto¶ci.</para>
+	<!--
+          Czyszczenie dokumentacji przed wydaniem stabilnym
+          <para>Jest jeszcze LMSd (LMS Daemon), napisany w jêzyku C. Jest on przeznaczony (a w³a¶ciwie jego wtyczki) do generowania plików konfiguracyjnych i restartowania us³ug. Odpowiada on za to, aby to co zosta³o zmienione w LMS-UI zosta³o zmienione tak¿e w rzeczywisto¶ci.</para>
+        -->
     </sect1>
     <sect1>
       <title>Instalacja</title>
@@ -86,7 +95,10 @@
 	    </listitem>
 	  </itemizedlist>
 	  </sect3>
+	<!--
+          Czyszczenie dokumentacji przed wydaniem stabilnym
 	  <para>A je¶li chcesz uruchomiæ LMSd potrzebujesz dzia³aj±cy kompilator jêzyka C.</para>
+	-->
 	</SECT2>
 	<sect2>
 	  <title>Sci±gamy LMSa</title>
@@ -206,6 +218,12 @@
 	   <example><title>Przyk³ad:</title><para>adodb_dir = /usr/lib/php/adodb</para></example>
 	  </listitem>
          </itemizedlist>
+    </sect1>
+    <sect1>
+      <title>Prawa dostêpu</title>
+      <para>LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu adminowi mo¿na przydzieliæ dowoln± kombinacjê regu³ dostêpu.</para>
+      <para>Domy¶lnie zdefiniowanych  jest  osiem regu³ dostêpu. Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania.</para>
+      <para>Modu³y do których administrator ma zawsze dostêp to: welcome,  copyrights,  logout, chpasswd (przy czym chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostep do reszty jest zdefiniowany regu³ami. Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie przydzieli mu regu³kê 0 czyli pe³en dostêp.</para>
     </sect1>
     <sect1>
       <title>Bezpieczeñstwo</title>

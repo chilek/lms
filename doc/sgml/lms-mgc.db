@@ -206,58 +206,52 @@
      <para>%IP - zostanie rozwiniête do adresu IP</para>
     </listitem>
     <listitem>
-     <para>%ID</para>
+     <para>%ID - ID sieci w bazie</para>
     </listitem>
     <listitem>
-     <para>%MAC</para>
+     <para>%MAC - zostanie rozwiniête do adresu MAC karty sieciowej</para>
     </listitem>
     <listitem>
-     <para>%OWNER</para>
+     <para>%OWNER - w³a¶ciciel komputera</para>
     </listitem>
     <listitem>
-     <para>%NAME</para>
+     <para>%NAME - nazwa sieci du¿ymi znakami</para>
     </listitem>
     <listitem>
-     <para>%name</para>
+     <para>%name - nazwa sieci ma³ymi znakami</para>
     </listitem>
     <listitem>
-     <para>%UPRATE</para>
+     <para>%UPRATE - limit transferu dla danych wychodz±cych</para>
     </listitem>
     <listitem>
-     <para>%DOWNRATE</para>
+     <para>%DOWNRATE - limit transferu dla danych przychodz±cych</para>
     </listitem>
     <listitem>
-     <para>%1 %2 %3 %4</para>
+     <para>%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP </para>
     </listitem>
     <listitem>
-     <para>%ADDR</para>
+     <para>%ADDR - adres sieci</para>
     </listitem>
     <listitem>
-     <para>%GATE</para>
+     <para>%GATE - brama sieci</para>
     </listitem>
     <listitem>
-     <para>%DNS</para>
+     <para>%DNS - serwer DNS tej sieci</para>
     </listitem>
     <listitem>
-     <para>%DOMAIN</para>
+     <para>%DOMAIN - domena tej sieci</para>
     </listitem>
     <listitem>
-     <para>%WINS</para>
+     <para>%WINS - adres serwera WINS dla tej sieci</para>
     </listitem>
     <listitem>
-     <para>%DHCPS</para>
+     <para>%DHCPS - pierwszy adres DHCP tej sieci</para>
     </listitem>
     <listitem>
-     <para>%DHCPE</para>
+     <para>%DHCPE - ostatni adres DHCP tej sieci</para>
     </listitem>
     <listitem>
-     <para>%DNAME</para>
-    </listitem>
-    <listitem>
-     <para>%DADDR</para>
-    </listitem>
-    <listitem>
-     <para>%DATE	- data w formacie YYYYMMDD;</para>
+     <para>%DATE - data w formacie YYYYMMDD;</para>
     </listitem>
     <listitem>
      <para>%TIME - czas w formacie HHMM;</para>
