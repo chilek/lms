@@ -1,0 +1,23 @@
+1. Wstêp.
+
+PATCH pozwala na dopisywanie w obrêbie jednego u¿ytkownika wielu
+komputerów o tym samym adresie IP, ale o ró¿nych mac'ach. Zmiany dotycz±
+tylko i wy³±cznie bazy danych oraz interfejsu www.
+
+2. Instalacja.
+
+Skopiuj patcha do rozpakowanego katalogu LMS'a i wykonaj:
+$ patch -p1 <multiip-patch.diff
+
+Nastêpnie nale¿y usun±æ klucz unikalny w bazie danych:
+$ mysql -u lms -D lms -e "ALTER TABLE nodes DROP INDEX ipaddr"
+$ psql -U lms -d lms -c "ALTER TABLE nodes DROP CONSTRAINT nodes_ipaddr_key"
+
+Dla przyspieszenia niektórych zapytañ mo¿na dodaæ index na adresie IP:
+$ mysql -u lms -D lms -e "ALTER TABLE nodes ADD INDEX ipaddr(ipaddr)"
+$ psql -U lms -d lms -c "CREATE INDEX nodes_ipaddr_idx ON nodes(ipaddr)"
+
+3. Autorzy.
+
+£ukasz Wojciechowski
+Marek Adamski
