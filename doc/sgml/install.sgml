@@ -192,7 +192,7 @@ password = your_password</screen>
                www.postgresql.org</ulink>.</para>
           </sect3>
           <sect3 id="install-pgsql-server">
-          <title>Instalacja</title>
+          <title>Instalation</title>
                <para>That is a short version of installation procedure, more info
                can be find in postgres documentation. After download and extraction
                go to main directory and run following commands:
@@ -253,7 +253,7 @@ password = password_entered_while_user_lms_account_creation</screen>
                www.sqlite.org</ulink>.</para>
           </sect3>
           <sect3 id="install-sqlite-server">
-          <title>Instalacja SQLite</title>
+          <title>Instalation SQLite</title>
                <para>Here You can see how to install the SQLite libraries and
                adding this service to PHP database (in PHP 5.0 ver. have SQLite
                built in).
