@@ -24,15 +24,8 @@
  *  $Id$
  */
 
-if($LMS->UserExists($_GET[ownerid]) < 0)
-{
-	header('Location: ?m=userinfo&id='.$_GET[ownerid]);
-	die;
-}
 
 $nodedata = $_POST[nodedata];
-
-$users = $LMS->GetUserNames();
 
 if(isset($nodedata))
 {
@@ -87,10 +80,21 @@ if(isset($nodedata))
 	if(!$error)
 	{
 		$nodeid=$LMS->NodeAdd($nodedata);
-		header("Location: ?m=nodeinfo&id=".$nodeid);
-		die;
+		if($nodedata['reuse']=='')
+		{
+			header("Location: ?m=nodeinfo&id=".$nodeid);
+			die;
+		}
+		unset($nodedata);
+		$nodedata['reuse'] = '1';
 	}
-		
+
+}
+
+if($LMS->UserExists($_GET[ownerid]) < 0)
+{
+	header('Location: ?m=userinfo&id='.$_GET[ownerid]);
+	die;
 }
 
 $nodedata[access] = 1;
@@ -116,6 +120,7 @@ $layout[pagetitle]="Nowy komputer";
 $tariffs = $LMS->GetTariffs();
 $balancelist = $LMS->GetUserBalanceList($nodedata[ownerid]);
 $assignments = $LMS->GetUserAssignments($nodedata[ownerid]);
+$users = $LMS->GetUserNames();
 
 $SMARTY->assign("balancelist",$balancelist);
 $SMARTY->assign("assignments",$assignments);
@@ -130,6 +135,9 @@ $SMARTY->display("nodeadd.html");
 
 /*
  * $Log$
+ * Revision 1.40  2003/12/16 23:18:47  alec
+ * - dodane 'wywo³aj ponownie formularz' w nodeadd
+ *
  * Revision 1.39  2003/12/12 18:29:12  alec
  * - dodane sprawdzenie czy MAC jest pusty i odpowiedni komunikat
  *
@@ -164,3 +172,4 @@ $SMARTY->display("nodeadd.html");
  *
  */
 ?>
+
