@@ -35,8 +35,8 @@ $pin = ($loginform['pwd'] ? $loginform['pwd'] : 0);
 
 //sposoby autoryzacji u¿ytkownika
 $id = GetUserIDByPhone1AndPIN($login, $pin);
-//$id = $GetUserIDByContractAndPIN($login, $pin);
-//$id = $GetUserIDByIDAndPIN($login, $pin);
+//$id = GetUserIDByContractAndPIN($login, $pin);
+//$id = GetUserIDByIDAndPIN($login, $pin);
 
 if($id)
 {
