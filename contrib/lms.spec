@@ -142,6 +142,9 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld-linux.org
 
 $Log$
+Revision 1.12  2003/06/23 13:42:28  lukasz
+- force commit for LMS-1.1.0
+
 Revision 1.11  2003/06/13 05:30:24  lukasz
 - sync with PLD version of specfile
 
