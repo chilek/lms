@@ -215,6 +215,12 @@ if(!$usergroups_list)
 my @usergroups = split ' ',$usergroups_list;
 
 my $currtime = strftime("%s",localtime());
+my $plimit = 0;
+if (substr($limit, length($limit) - 1, 1) eq "%")
+{
+	$plimit = 1;
+	$limit = substr($limit, 0, length($limit) - 1);
+}
 
 #
 # Build nodes list
@@ -244,19 +250,23 @@ while (my $row = $dbq->fetchrow_hashref())
 			$usergroupscount++;
 		}
 	}
+	my $srow;
 	if($usergroupscount || !$iniusergroups)
 	{
 		my $balance = $row->{'balance'};
 		my $sdbq = $dbase->prepare("SELECT MAX(at) AS at, SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= $currtime OR datefrom = 0) AND (dateto >= $currtime OR dateto = 0) AND userid = '$row->{'id'}' GROUP BY userid HAVING SUM(value) > 0");
 		$sdbq->execute();
+		$srow = $sdbq->fetchrow_hashref();
 
-		if($balance < $limit)
+		if (!defined($srow->{'value'}))
 		{
-#		print STDOUT "$row->{'lastname'}\t$balance\n";
-
+			$srow->{'value'} = 0;
+		}
+		if((!$plimit && $balance < $limit) || ($plimit && $balance < ($limit * -$srow->{'value'}) / 100))
+		{
 			$sdbq = $dbase->prepare("SELECT ipaddr, name FROM nodes WHERE ownerid='$row->{'id'}'");
 			$sdbq->execute();
-			while (my $srow = $sdbq->fetchrow_hashref())
+			while ($srow = $sdbq->fetchrow_hashref())
 			{
 			        my $tmpname = lc($srow->{'name'});
 			        my $ipaddr = u32todotquad($srow->{'ipaddr'});
