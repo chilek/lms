@@ -36,12 +36,18 @@ my $lanspeed = "100"; # przepustowo¶æ karty od lanu w megabitach
 my $wanspeed = 100; # przepustowo¶æ karty od internetu w megabitach
 my $speed = 2300; # prêdko¶æ ³±cza w kilobitach
 my $shiftid = 1000; # o ile powiêkszyæ ID do uzyskania kopii ID... hm. Powinno byæ wiêksze ni¿ maksymalne ID komputera w bazie
-                    # czyli warto¶æ 1000 pozwala nam na poprawne dzia³anie o ile ID w bazie nie przekracza '1000';
+		    # czyli warto¶æ 1000 pozwala nam na poprawne dzia³anie o ile ID w bazie nie przekracza '1000';
 
 my $year = strftime("%Y",localtime());
 my $day = strftime("%d",localtime());
 my $month = strftime("%m",localtime());
 
+sub u32todotquad($)
+{
+	my $p = shift @_;
+	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
+}
+		
 open(OUTFILE, ">/etc/rc.d/rc.stats");
 
 print OUTFILE "#!/bin/bash\n";
@@ -65,6 +71,7 @@ $dbq->execute();
 
 while (my $row = $dbq->fetchrow_hashref())
 {
+	$row->{'ipaddr'} = u32todotquad($row->{'ipaddr'});
 	my $id = $row->{'id'};
 	$id += $shiftid;
 	print OUTFILE "$iptbin -t mangle -A FORWARD -i eth1 -o eth0 -d $row->{'ipaddr'} -j MARK --set-mark $row->{'id'}\n";

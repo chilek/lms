@@ -33,6 +33,12 @@ my $year = strftime("%Y",localtime());
 my $day = strftime("%d",localtime());
 my $month = strftime("%m",localtime());
 
+sub u32todotquad($)
+{
+	my $p = shift @_;
+	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
+}
+
 open(OUTFILE, ">/etc/rc.d/rc.stats");
 
 print OUTFILE "#!/bin/bash\n";
@@ -47,6 +53,7 @@ while (my $row = $dbq->fetchrow_hashref())
 {
 	my $id = $row->{'id'};
 	$id += 1000;
+	$row->{'ipaddr'} = u32todotquad($row->{'ipaddr'});
 	print OUTFILE "$iptbin -t mangle -A FORWARD -i eth1 -o eth0 -d $row->{'ipaddr'} -j MARK --set-mark $row->{'id'}\n";
 	print OUTFILE "$iptbin -t mangle -A OUTPUT -p tcp --sport 1080 -d $row->{'ipaddr'} -j MARK --set-mark $row->{'id'}\n";
 	print OUTFILE "$iptbin -t mangle -A OUTPUT -p tcp --sport 8080 -d $row->{'ipaddr'} -j MARK --set-mark $row->{'id'}\n";
