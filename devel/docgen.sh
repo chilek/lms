@@ -25,7 +25,7 @@ case "$1" in
 	    then exit 1
 	fi
 #	elinks -dump ../README.html > ../README
-	lynx -dump ../README.html -display_charset=ISO-8859-2 -raw -nolist > ../README
+	lynx -dump ../README.html -display_charset=ISO-8859-2 -raw -nolist -dont_wrap_pre > ../README
         if [ $? -ne 0 ]
 	    then
 	    exit 2
