@@ -43,8 +43,6 @@ my %options = (
 	"--config-file|C=s"     =>      \$configfile,
 	"--help|h"              =>      \$help,
 	"--version|v"           =>      \$version,
-	"--debug|d"             =>      \$debug,
-	"--queue|q=s"		=>	\$queue
 );
 
 Getopt::Long::config("no_ignore_case");
@@ -53,7 +51,7 @@ GetOptions(%options);
 if($help)
 {
 	print STDERR <<EOF;
-lms-mgc, version $_version
+lms-sendinvoices, version $_version
 (C) 2001-2004 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini
@@ -68,7 +66,7 @@ EOF
 if($version)
 {
 	print STDERR <<EOF;
-lms-mgc, version $_version
+lms-sendinvoices, version $_version
 (C) 2001-2004 LMS Developers
 
 EOF
