@@ -33,6 +33,7 @@
 			<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]" align="absmiddle" border="0"></A>
 			{/if}
 			{$netcomplist[netcomplist].address}<BR>
+			{if $netcomplist[netcomplist].city neq " "}{$netcomplist[netcomplist].city}<BR>{/if}
 			<IMG SRC="img/ip.gif" ALT="" ALIGN="ABSMIDDLE"> {$netcomplist[netcomplist].ip}
 		</TD>
 		<TD CLASS="fright" WIDTH="1%">
