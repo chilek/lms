@@ -4,7 +4,7 @@
 	<sect1 id="about-lms">
 		<title>Czym jest LMS</title>
 		<para>"LMS" jest skrótem od "LAN Management System". Jest to zestaw aplikacji 
-		w PHP i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi 
+		w PHP i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi
 		(popularnie zwanymi Amatorskimi Sieciami Komputerowymi), opartych o bazê danych 
 		MySQL lub PostgreSQL. G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi 
 		u¿ytkowników na poziomie providera z prawdziwego zdarzenia. Najbardziej podstawowe 
@@ -123,5 +123,38 @@
     	   <para>Z  pewno¶ci±  wraz  z  niniejszym  programem otrzyma³e¶ te¿ egzemplarz 
 		Powszechnej Licencji Publicznej GNU; je¶li nie - napisz do Free Software 
 		Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. </para>
+	</sect1>
+	<sect1 id="moreinfo">
+		<title>Informacje dodatkowe</title>
+		<sect2>
+			<title>Kontakt z autorami</title>
+			<para>Najlepiej poprzez listê mailingow±, na któr± mo¿na siê zapisaæ wysy³aj±c
+			pustego maila o temacie "subscribe lms" na adres ecartis@rulez.pl.
+			</para>
+		</sect2>
+		<sect2>
+			<title>Zg³aszanie b³êdów i pomys³ów</title>
+			<para>Aby efektywnie zg³osiæ b³±d lub nowy pomys³, najlepiej jest zapisaæ siê na listê mailingow±
+			gdzie kto¶ z autorów b±d¼ u¿ytkowników bêdzie mia³ szansê odpowiedzieæ
+			na pytania Ciê nurtuj±ce. Dostêpny jest tak¿e dla testów BTS, gdzie mo¿na
+			zg³aszaæ b³êdy po uprzedniej rejestracji. Raporty z BTS id± tak¿e na listê
+			mailingow±, wiêc najlepiej siê zapisaæ, zg³osiæ b³±d poprzez BTS, wys³aæ
+			linka na listê i czekaæ na rozwój wydarzeñ. Adres BTS to <ulink url="http://bts.rulez.pl">
+			http://bts.rulez.pl</ulink>.
+			</para>
+		</sect2>
+		<sect2>
+			<title>Najnowsza wersja</title>
+			<para>Zawsze aktualn± werjsê LMS mo¿na pobraæ z repozytorium CVS za pomoc±
+			interfejsu www <ULINK URL="http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">tutaj</ulink>,
+			lub klasycznie (dostêp anonimowy, puste has³o):</para>
+			<screen>
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
+			<para>Repozytorium CVS mo¿na tak¿e przegl±daæ przy pomocy interfejsu WWW pod
+			adresem <ulink url="http://cvs.rulez.pl">http://cvs.rulez.pl</ulink>.
+			</para>
+		</sect2>
 	</sect1>
 </chapter>
