@@ -1,19 +1,19 @@
 <!-- // $Id$ // -->
 <STYLE type="text/css"><!--
 BOOK		{ background: #CEBD9B; }
-DIV.NAVHEADER	{ background: #CEBD9B; }
-DIV.NAVFOOTER	{ background: #CEBD9B; }
-DIV.TITLEPAGE  	{ background: #CEBD9B; }
+DIV.NAVHEADER	{ background: #EBE4D6; }
+DIV.NAVFOOTER	{ background: #EBE4D6; }
+DIV.TITLEPAGE  	{ background: #EBE4D6; }
 BODY		{ font-size: 9pt; font-family: Tahoma, Verdana, Arial, Helvetica; background: #EBE4D6;}
-TABLE		{ border-color: #000000; }
+TABLE		{ border-color: #000000; padding: 3pt; }
 TD		{ font-size: 9pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 TH		{ font-width: bold; font-size: 10pt; } 
 TD.WARNING	{ border-width: 0pt; background: #FFFFFF; }
-PRE.SCREEN	{ background: #CEBD9B; }
+PRE.SCREEN	{ background: #F4F0EC; border: 1px solid #333333; padding: 3pt; }					
 IMG		{ border-width: 0pt; }
 FONT.blend	{ color: #888888; }
 FONT.alert	{ color: #FF0000; font-weight: bold; }
-A		{ text-decoration: none; }
+A		{ text-decoration: none; color: #800000 }
 A:hover		{ text-decoration: underline; color: #336600; }
 P		{ font-size:  9pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 LI		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
@@ -21,6 +21,11 @@ H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 H2		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 H3		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 H4		{ font-size:  9pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-UL		{ list-style-position: outside;}
+P		{ text-align: justify; }
+UL		{ list-style-position: outside;  }
+DIV.WARNING	{ text-align: center; }
+TABLE.WARNING	{ border-collapse: collapse; }
+TABLE.WARNING TD { background-color: #ffaaaa; border-width: 0pt; padding: 3pt; border-style: none }
+HR		{ height: 1pt; }
 -->
 </STYLE>
