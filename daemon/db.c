@@ -366,6 +366,7 @@ void db_free(QUERY_HANDLE *query)
 	    for (j=0; j<query->ncols; j++) {
 		free(query->row[i].value[j].data);
 	    }
+	    free(query->row[i].value);
 	}
     
 	for(i=0; i<query->ncols; i++) 
