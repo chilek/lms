@@ -1,0 +1,251 @@
+diff -Naur -x Smarty -x adodb -x backups -x index.php -x lms.ini -x templates_c lms-1.0.2/lib/LMS.class.php lms_contract/lib/LMS.class.php
+--- lms-1.0.2/lib/LMS.class.phpWed Aug 13 02:28:29 2003
++++ lms_contract/lib/LMS.class.phpSat Aug 23 13:14:09 2003
+@@ -371,7 +371,7 @@
+ {
+ $this->SetTS("users");
+ 
+-if($this->ADB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, tariff, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ".$this->sqlTSfmt().", ?, ?)",array(ucwords($useradd[name]), strtoupper($useradd[lastname]), $useradd[phone1], $useradd[phone2], $useradd[phone3], $useradd[gguin], $useradd[address], $useradd[zip], $useradd[city], $useradd[email], $useradd[nip], $useradd[status], $useradd[tariff], $this->SESSION->id, $useradd[info])))
++if($this->ADB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, tariff, creationdate, creatorid, info, contract) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ".$this->sqlTSfmt().", ?, ?, ?)", array(ucwords($useradd[name]), strtoupper($useradd[lastname]), $useradd[phone1], $useradd[phone2], $useradd[phone3], $useradd[gguin], $useradd[address], $useradd[zip], $useradd[city], $useradd[email], $useradd[nip], $useradd[status], $useradd[tariff], $this->SESSION->id, $useradd[info], $useradd[contract])))
+ return $this->ADB->GetOne("SELECT MAX(id) FROM users");
+ else
+ return FALSE;
+@@ -389,7 +389,7 @@
+ function UserUpdate($userdata)
+ {
+ $this->SetTS("users");
+-return $this->ADB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, tariff=?, moddate=".$this->sqlTSfmt().", modid=?, info=?, lastname=?, name=? WHERE id=?", array( $userdata[status], $userdata[phone1], $userdata[phone2], $userdata[phone3], $userdata[address], $userdata[zip], $userdata[city], $userdata[email], $userdata[gguin], $userdata[nip], $userdata[tariff], $this->SESSION->id, $userdata[info], strtoupper($userdata[lastname]), $userdata[name], $userdata[id] ) );
++return $this->ADB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, tariff=?, moddate=".$this->sqlTSfmt().", modid=?, info=?, contract=?, lastname=?, name=? WHERE id=?", array( $userdata[status], $userdata[phone1], $userdata[phone2], $userdata[phone3], $userdata[address], $userdata[zip], $userdata[city], $userdata[email], $userdata[gguin], $userdata[nip], $userdata[tariff], $this->SESSION->id, $userdata[info], $userdata[contract], strtoupper($userdata[lastname]), $userdata[name], $userdata[id] ) );
+ }
+ 
+ function GetUserNodesNo($id)
+@@ -409,7 +409,7 @@
+ 
+ function GetUser($id)
+ {
+-if($result = $this->ADB->GetRow("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid FROM users WHERE id=?",array($id)))
++if($result = $this->ADB->GetRow("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, contract, creationdate, moddate, creatorid, modid FROM users WHERE id=?",array($id)))
+ {
+ $result['createdby'] = $this->GetAdminName($result['creatorid']);
+ $result['modifiedby'] = $this->GetAdminName($result['modid']);
+@@ -484,6 +484,10 @@
+ $sqlord = "ORDER BY nip";
+ break;
+ 
++case "contract":
++$sqlord = "ORDER BY contract";
++break; 
++
+ default:
+ $sqlord = "ORDER BY ".$this->ADB->Concat("UPPER(lastname)","' '","name");
+ break;
+@@ -513,7 +517,7 @@
+ if(!isset($state))
+ $state = 3;
+ 
+-if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, tariff, nip, zip, city, gguin FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
++if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, contract, tariff, nip, zip, city, gguin FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
+ {
+ if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
+ foreach($blst as $row)
+@@ -607,6 +611,10 @@
+ $sqlord = "ORDER BY nip";
+ break;
+ 
++case "contract":
++$sqlord = "ORDER BY contract";
++break;
++
+ default:
+ $sqlord = "ORDER BY ".$this->ADB->Concat("UPPER(lastname)","' '","name");
+ break;
+@@ -615,7 +623,7 @@
+ if(!isset($state))
+ $state = 3;
+ 
+-if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, gguin, nip, zip, city, info, tariff FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
++if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, gguin, nip, zip, city, info, contract, tariff FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
+ {
+ if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
+ foreach($blst as $row)
+diff -Naur -x Smarty -x adodb -x backups -x index.php -x lms.ini -x templates_c lms-1.0.2/modifications/usersearch.html lms_contract/modifications/usersearch.html
+--- lms-1.0.2/modifications/usersearch.htmlThu Jan  1 01:00:00 1970
++++ lms_contract/modifications/usersearch.htmlWed Aug 20 20:07:55 2003
+@@ -0,0 +1,8 @@
++        <TR CLASS="LIGHT">
++                <TD CLASS="fleft" WIDTH="1%" NOWRAP>
++                        <NOBR><B>INFO:</B></NOBR>
++                </TD>
++                <TD CLASS="fright" WIDTH="99%">
++                        <INPUT TYPE="text" NAME="search[info]" VALUE="{$search.info}">
++                </TD>
++        </TR>
+diff -Naur -x Smarty -x adodb -x backups -x index.php -x lms.ini -x templates_c lms-1.0.2/templates/printuserlist.html lms_contract/templates/printuserlist.html
+--- lms-1.0.2/templates/printuserlist.htmlWed Aug 13 02:22:59 2003
++++ lms_contract/templates/printuserlist.htmlSat Aug 23 11:58:39 2003
+@@ -22,7 +22,7 @@
+ <TD CLASS="HEAD">
+ <B>Nazwisko i imiê:</B><BR>
+ Adres:<BR>
+-Telefon:
++Telefon:&nbsp;&nbsp;&nbsp;&nbsp;Numer umowy:
+ </TD>
+ <TD CLASS="HEAD" VALIGN="TOP">
+ Email:<BR>
+@@ -47,7 +47,7 @@
+ <TD>
+ <B>{$userlist[userlist].username}</B><BR>
+ {$userlist[userlist].address}{if $userlist[userlist].city neq ""},{/if} {$userlist[userlist].zip} {$userlist[userlist].city}<BR>
+-{$userlist[userlist].phone1}
++{$userlist[userlist].phone1}&nbsp;&nbsp;&nbsp;({$userlist[userlist].contract})
+ </TD>
+ <TD VALIGN="ABSMIDDLE">
+ {$userlist[userlist].email}<BR>
+diff -Naur -x Smarty -x adodb -x backups -x index.php -x lms.ini -x templates_c lms-1.0.2/templates/printuserlistminus.html lms_contract/templates/printuserlistminus.html
+--- lms-1.0.2/templates/printuserlistminus.htmlWed Aug 13 02:22:59 2003
++++ lms_contract/templates/printuserlistminus.htmlSat Aug 23 11:59:47 2003
+@@ -22,7 +22,7 @@
+ <TD CLASS="HEAD">
+ <B>Nazwisko i imiê:</B><BR>
+ Adres:<BR>
+-Telefon:
++Telefon:&nbsp;&nbsp;&nbsp;Numer umowy:
+ </TD>
+ <TD CLASS="HEAD" VALIGN="TOP">
+ Email:<BR>
+@@ -48,7 +48,7 @@
+ <TD>
+ <B>{$userlist[userlist].username}</B><BR>
+ {$userlist[userlist].address}{if $userlist[userlist].city neq ""},{/if} {$userlist[userlist].zip} {$userlist[userlist].city}<BR>
+-{$userlist[userlist].phone1}
++{$userlist[userlist].phone1}}&nbsp;&nbsp;&nbsp;({$userlist[userlist].contract})
+ </TD>
+ <TD VALIGN="ABSMIDDLE">
+ {$userlist[userlist].email}<BR>
+diff -Naur -x Smarty -x adodb -x backups -x index.php -x lms.ini -x templates_c lms-1.0.2/templates/useradd.html lms_contract/templates/useradd.html
+--- lms-1.0.2/templates/useradd.htmlWed Aug 13 02:22:59 2003
++++ lms_contract/templates/useradd.htmlFri Aug 22 18:33:29 2003
+@@ -54,6 +54,13 @@
+ </SELECT>
+ </TD>
+ </tr>
++                                        <TD width="1%" valign="top">
++                                                &nbsp;<BR>
++                                        <TD width="99%">Numer umowy<br>
++                                                <INPUT TYPE="text" size="30" value="{$useradd.contract}" name="useradd[contract]"><BR>
++                                        </TD>
++
++                                </TR>
+ <TR>
+ <TD width="1%" valign="top">
+ <IMG src="img/phone.gif" alt="" border="0" width="16" width="16" height="16"><BR>
+diff -Naur -x Smarty -x adodb -x backups -x index.php -x lms.ini -x templates_c lms-1.0.2/templates/usereditbox.html lms_contract/templates/usereditbox.html
+--- lms-1.0.2/templates/usereditbox.htmlWed Aug 13 02:22:59 2003
++++ lms_contract/templates/usereditbox.htmlFri Aug 22 18:35:00 2003
+@@ -56,6 +56,13 @@
+ </SELECT>{if $error.status}<BR><FONT CLASS="ALERT">{$error.status}</B>{/if}
+ </TD>
+ </TR>
++        <TR CLASS="LIGHT">
++                <TD WIDTH="1%" CLASS="FLEFT">
++                </TD>
++                <TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2"><B>Numer umowy</B><BR>
++                        <INPUT TYPE="text"  NAME="userdata[contract]" VALUE="{$userinfo.contract}"><BR>
++                </TD>
++        </TR>
+ <TR CLASS="LIGHT">
+ <TD WIDTH="1%" CLASS="FLEFT">
+ <IMG SRC="img/phone.gif" BORDER="0" ALT="">
+diff -Naur -x Smarty -x adodb -x backups -x index.php -x lms.ini -x templates_c lms-1.0.2/templates/userinfobox.html lms_contract/templates/userinfobox.html
+--- lms-1.0.2/templates/userinfobox.htmlWed Aug 13 02:22:59 2003
++++ lms_contract/templates/userinfobox.htmlFri Aug 22 18:37:58 2003
+@@ -20,6 +20,14 @@
+ {if $userinfo.status eq "1"}<B>zainteresowany</B>{/if}
+ </TD>
+ </TR>
++        <TR CLASS="LIGHT">
++                <TD WIDTH="1%" CLASS="FLEFT">
++                &nbsp;<br>
++                </TD>
++                <TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">Numer umowy <br>
++                {$userinfo.contract}<BR>
++                </TD>
++        </TR>
+ <TR CLASS="LIGHT">
+ <TD WIDTH="1%" CLASS="FLEFT">
+ <IMG SRC="img/phone.gif" BORDER="0" ALT="">
+diff -Naur -x Smarty -x adodb -x backups -x index.php -x lms.ini -x templates_c lms-1.0.2/templates/userlist.html lms_contract/templates/userlist.html
+--- lms-1.0.2/templates/userlist.htmlWed Aug 13 02:22:59 2003
++++ lms_contract/templates/userlist.htmlSat Aug 23 11:49:20 2003
+@@ -9,10 +9,13 @@
+ <B>
+ <img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">Nazwisko i imiê:</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+ <img src="img/phone.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">Telefon:</A></B> {if $listdata.order eq "phone"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+-<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">Adres:</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
++<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">Adres:</A>{if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
++<img src="img/usercomment.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=contract{if $listdata.direction eq "asc" && $listdata.order eq "contract"},desc{/if}">Numer umowy:</A>{if $listdata.order eq "contract"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+ </TD>
+ <TD align="right" width="1%" class="fbt" VALIGN="top">
+-<a href="?m=userlist&s={$listdata.state}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A></B> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
++<a href="?m=userlist&s={$listdata.state}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A></B> 
++                        {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">
++{/if}<BR>
+ &nbsp;
+ </TD>
+ <TD width="1%" class="fbt" VALIGN="TOP">
+@@ -64,6 +67,8 @@
+ <TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" class="fleft" valign="top">
+ <A name="{$userlist[userlist].id}"><IMG src="img/{if $userlist[userlist].status eq 1}unk{/if}{if $userlist[userlist].status eq 2}wait{/if}{if $userlist[userlist].status eq 3}user{/if}.gif" alt="" align="absmiddle" border="0">{if $userlist[userlist].info}&nbsp;<img src="img/usercomment.gif" alt="" align="absmiddle" {capture name="userinfo"}{$userlist[userlist].info|replace:"\n":"<BR>"}{/capture}{popup text=$smarty.capture.userinfo}>{/if}&nbsp;<B><nobr>{$userlist[userlist].username}</nobr></B></A><BR>{if $userlist[userlist].phone1}<IMG src="img/phone.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].phone1}{/if}<BR>
+ <IMG SRC="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].address}{if $userlist[userlist].city neq ""},{/if} {$userlist[userlist].zip} {$userlist[userlist].city}
++&nbsp;<b>(</b>Numer umowy:&nbsp;{$userlist[userlist].contract}<b>)</b>
++
+ </TD>
+ <TD {if $userlist[userlist].status neq 3}onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';"{else}{if $userlist[userlist].nodeac eq 1}onClick="return self.location.href='?m=nodeset&ownerid={$userlist[userlist].id}';"{else}{if $userlist[userlist].nodeac eq 2}onClick="return self.location.href='?m=nodeset&ownerid={$userlist[userlist].id}';"{else}onClick="return self.location.href='?m=nodeset&ownerid={$userlist[userlist].id}&access=1';"{/if}{/if}{/if}valign="top" align="right">
+ <img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">({$userlist[userlist].id|string_format:"%04d"})<BR>
+diff -Naur -x Smarty -x adodb -x backups -x index.php -x lms.ini -x templates_c lms-1.0.2/templates/usersearch.html lms_contract/templates/usersearch.html
+--- lms-1.0.2/templates/usersearch.htmlWed Aug 13 02:22:59 2003
++++ lms_contract/templates/usersearch.htmlFri Aug 22 18:49:39 2003
+@@ -71,6 +71,24 @@
+ <INPUT TYPE="text" NAME="search[gguin]" VALUE="{$search.gguin}">
+ </TD>
+ </TR>
++        <TR CLASS="LIGHT">
++                <TD CLASS="fleft" WIDTH="1%" NOWRAP>
++                        <NOBR><B>Info:</B></NOBR>
++                </TD>
++                <TD CLASS="fright" WIDTH="99%">
++                        <INPUT TYPE="text" NAME="search[info]" VALUE="{$search.info}">
++                </TD>
++        </TR>
++        <TR CLASS="LIGHT">
++                <TD CLASS="fleft" WIDTH="1%" NOWRAP>
++                        <NOBR><B>Numer umowy:</B></NOBR>
++                </TD>
++                <TD CLASS="fright" WIDTH="99%">
++                        <INPUT TYPE="text" NAME="search[contract]" VALUE="{$search.contract}">
++                </TD>
++        </TR>
++
++
+ <TR CLASS="LIGHT">
+ <TD CLASS="fleft" WIDTH="1%" NOWRAP>
+ <NOBR><B>Status:</B></NOBR>
+diff -Naur -x Smarty -x adodb -x backups -x index.php -x lms.ini -x templates_c lms-1.0.2/templates/usersearchresults.html lms_contract/templates/usersearchresults.html
+--- lms-1.0.2/templates/usersearchresults.htmlWed Aug 13 02:22:59 2003
++++ lms_contract/templates/usersearchresults.htmlSat Aug 23 11:48:54 2003
+@@ -8,6 +8,7 @@
+ <img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=username{if $userlist.direction eq "asc" && $userlist.order eq "username"},desc{/if}">Nazwisko i imiê:</A></B> {if $userlist.order eq "username"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+ <img src="img/phone.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=phone{if $userlist.direction eq "asc" && $userlist.order eq "phone"},desc{/if}">Telefon:</A></B> {if $userlist.order eq "phone"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+ <img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=address{if $userlist.direction eq "asc" && $userlist.order eq "address"},desc{/if}">Adres:</A> {if $userlist.order eq "address"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
++<img src="img/usercomment.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$listdata.state}&o=contract{if $userlist.direction eq "asc" && $userlist.order eq "contract"},desc{/if}">Numer umowy:</A>{if $userlist.order eq "contract"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+ </TD>
+ <TD align="right" width="1%" class="fbt">
+ <a href="?m=usersearch&search&s={$userlist.state}&o=id{if $userlist.direction eq "asc" && $userlist.order eq "id"},desc{/if}">ID:</A></B> {if $userlist.order eq "id"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+@@ -36,6 +37,7 @@
+ <A name="{$userlist[userlist].id}"><IMG src="img/{if $userlist[userlist].status eq 1}unk{/if}{if $userlist[userlist].status eq 2}wait{/if}{if $userlist[userlist].status eq 3}user{/if}.gif" alt="" align="absmiddle" border="0">{if $userlist[userlist].info} <img src="img/usercomment.gif" alt="" align="absmiddle" {capture name="userinfo"}{$userlist[userlist].info|replace:"\n":"<BR>"}{/capture}{popup text=$smarty.capture.userinfo}>{/if}&nbsp;<B><nobr>{$userlist[userlist].username}</nobr></B></A>{if $userlist[userlist].phone1 neq ""}<BR>
+ <IMG src="img/phone.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].phone1}{/if}<BR>
+ <IMG SRC="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].address}{if $userlist[userlist].city neq ""},{/if} {$userlist[userlist].zip} {$userlist[userlist].city}
++                        &nbsp;<b>(</b>Numer umowy:&nbsp;{$userlist[userlist].contract}<b>)</b>
+ </TD>
+ <TD {if $userlist[userlist].status neq 3}onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';"{else}{if $userlist[userlist].nodeac eq 1}onClick="return self.location.href='?m=nodeset&ownerid={$userlist[userlist].id}';"{else}{if $userlist[userlist].nodeac eq 2}onClick="return self.location.href='?m=nodeset&ownerid={$userlist[userlist].id}';"{else}onClick="return self.location.href='?m=nodeset&ownerid={$userlist[userlist].id}&access=1';"{/if}{/if}{/if}valign="top" align="right">
+ <img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="">({$userlist[userlist].id|string_format:"%04d"})<BR>

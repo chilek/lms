@@ -1,0 +1,16 @@
+Message-ID: <200308231449400256.00F129F4@smtp.go2.pl>
+Date: Sat, 23 Aug 2003 14:49:40 +0200
+From: "durden" <durden@tlen.pl>
+To: lms@lists.rulez.pl
+Subject: [lms] Maly patch na 1.0.2.
+
+        Witam,
+        Malutki patch na dolozenie do LMS'a mozliwosci wpisywania numerow umow uzytkownikow, wyszukiwania itd.
+Jesli ktos chcialby to patch w zalaczniku do wersji 1.0.2 (1.176.2.5/1.27.2.4). Aha, trzeba dodac odpowiednie pole do tabeli 'users':
+ALTER TABLE `users` ADD `contract` TEXT AFTER `modid`;
+
+        pozdrawiam,
+        Lukasz
+
+ps. To jest moja radosna tworczosc.
+
