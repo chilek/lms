@@ -31,8 +31,18 @@ if(!$LMS->NodeExists($_GET[id]))
 		header("Location: ?m=nodelist");
 
 if ($_GET[action]==link) {
-	$LMS->NetDevLinkComputer($_GET[id],$_GET[devid]);
-	header("Location: ?m=nodeinfo&id=".$_GET[id]);
+	$netdevinfo=$LMS->GetNetDev($_GET[devid]);
+	if ($netdevinfo['ports']>$netdevinfo['takenports']) {
+	    $LMS->NetDevLinkComputer($_GET[id],$_GET[devid]);
+	    header("Location: ?m=nodeinfo&id=".$_GET[id]);
+	} else {
+            $body = "<P>Urz±dzenie do którego prubujesz siê pod³±czyæ ma zajête wszystkie porty.</P>";
+	    $SMARTY->display("header.html");
+	    $SMARTY->assign("body",$body);
+	    $SMARTY->display("dialog.html");
+	    $SMARTY->display("footer.html");
+	}
+	break;
     }
 
 $nodeid = $_GET[id];
@@ -44,7 +54,7 @@ if(!isset($_GET[ownerid]))
 							
 $owner = $ownerid;
 $userinfo=$LMS->GetUser($owner);
-$layout[pagetitle]="Informacje o u¿ytkowniku: ".$userinfo[username]."<BR>- edycja komputera: ".$LMS->GetNodeName($_GET[id]);
+$layout[pagetitle]="Informacje o u¿ytkowniku: ".$userinfo[username]." - edycja komputera: ".$LMS->GetNodeName($_GET[id]);
 
 $nodeedit = $_POST[nodeedit];
 $usernodes = $LMS->GetUserNodes($owner);
@@ -155,6 +165,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.37  2003/10/04 12:32:59  lexx
+ * - tego <br> powinno nie byc
+ *
  * Revision 1.36  2003/10/02 20:14:13  alec
  * dodana mozliwosc odlaczenia kompa od urzadzenia
  *
