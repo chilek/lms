@@ -1,6 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 {include file="balanceheader.html"}
+<SCRIPT LANGUAGE="JavaScript" SRC="img/calendar.js"></SCRIPT>
 <script language="javascript">
 	<!--
 	function setItem(index)
@@ -57,10 +58,21 @@
 	{/if}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>Termin p³atno¶ci (dni):</B>
+			<B>Data wystawienia:</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}">
+			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{if $invoice.cdate}{$invoice.cdate|date_format:"%Y/%m/%d"}{else}{$smarty.now|date_format:"%Y/%m/%d"}{/if}" SIZE="10" {tip text="Wpisz datê wystawienia w formacie RRRR/MM/DD lub kliknij by wybraæ z kalendarza. Pole puste oznacza datê dzisiejsz±." trigger="cdate"} OnClick="javascript:cal1.popup();" >
+			{if $invoice.cdatewarning}
+			<INPUT TYPE="HIDDEN" NAME="invoice[cdatewarning]" VALUE="1">
+			{/if}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			<B>Termin p³atno¶ci:</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%" NOWRAP>
+			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}" SIZE="10" {tip text="Podaj termin p³atno¶ci w dniach (opcjonalnie)"}>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -68,7 +80,7 @@
 			<B>Typ p³atno¶ci (gotówka/przelew/etc.):</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[paytype]" VALUE="{$invoice.paytype}">
+			<INPUT TYPE="TEXT" NAME="invoice[paytype]" VALUE="{$invoice.paytype}" SIZE="10" {tip text="Wpisz typ p³atno¶ci"}>
 		</TD>
 	</TR>			
 	<TR CLASS="light">
@@ -77,11 +89,11 @@
 			<SELECT SIZE="1" NAME="user" onChange="document.setcustomer.userid.value=document.setcustomer.user.value">
 				<OPTION VALUE="0">... wybierz u¿ytkownika ...</OPTION>
 				{foreach from=$users item=user}
-				<OPTION VALUE="{$user.id}"{if $customer.id eq $user.id} SELECTED{/if}>{$user.username} ({$user.id|string_format:"%04d"})</OPTION>
+				<OPTION VALUE="{$user.id}"{if $customer.id eq $user.id || $invoice.userid eq $user.id} SELECTED{/if}>{$user.username} ({$user.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
 			lub wpisz jego ID:
-			<INPUT TYPE="TEXT" NAME="userid" VALUE="{$customer.id}" SIZE="5" onChange="document.setcustomer.user.value=document.setcustomer.userid.value">
+			<INPUT TYPE="TEXT" NAME="userid" VALUE="{if $customer.id}{$customer.id}{else}{$invoice.userid}{/if}" SIZE="5" onChange="document.setcustomer.user.value=document.setcustomer.userid.value">
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -234,8 +246,10 @@
 	</FORM>
 </TABLE>
 <SCRIPT LANGUAGE="JavaScript">
-	<!--
-	document.additem.name.focus();
-	//-->
+<!--
+var cal1 = new calendar(document.forms['setcustomer'].elements['invoice[cdate]']);
+cal1.time_comp = false;
+document.forms['setcustomer'].elements['invoice[cdate]'].focus();
+//-->
 </SCRIPT>
 {include file="footer.html"}
