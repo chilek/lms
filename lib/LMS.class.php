@@ -360,7 +360,7 @@ class LMS
 
 	function RecoverUser($id)
 	{
-		return $this->ADB->Execute("UPDATE users SET deleted='0' WHERE id=?",array($id));
+		return $this->ADB->Execute("UPDATE users SET deleted=0 WHERE id=?",array($id));
 	}
 
 	function GetUsersWithTariff($id)
@@ -1602,6 +1602,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.204  2003/08/27 21:38:13  alec
+ * removed two ' :)
+ *
  * Revision 1.203  2003/08/27 21:00:33  alec
  * Popr. RecoverUser()
  *
