@@ -3,6 +3,8 @@ $Id$
 wersja 1.4.2 (??/??/????):
 
   - BTS#0000246: na FreeBSD hostname uruchamiamy bez opcji -f (alec)
+  - BTS#0000248: zmiana statusu/ostrze¿enia komputera nie powoduje zmiany
+    administratora "ostatniej modyfikacji" (alec)
 
 wersja 1.4.1 Teyla (15/11/2004):
 
