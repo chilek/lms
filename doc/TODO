@@ -21,7 +21,12 @@ PROPOSALS:
 - faktury
 - dokumentacja podrêczna (tooltipy, popupy)
 - tooltipy przy b³±dach
-- nodesearch - wyszukiwanie po czê¶ciowym adresie IP
+- nodesearch - dok³adniejsze wyszukiwanie po czê¶ciowym adresie IP 
+    teraz jest tak:
+    je¶li wpiszesz 192.16 - wyszuka adresy z zakresu 192.16.0.0 - 192.16.255.255
+    docelowo:
+    je¶li wpiszesz 192.16 - wyszuka adresy z zakresu 192.16.0.0 - 192.16.255.255
+                                                oraz 192.160.0.0 - 192.169.255.255
 - netdevices
 - zdjêcia u¿ytkowników (taki niepotrzebny bajer :-) 
 - mail mngmnt
