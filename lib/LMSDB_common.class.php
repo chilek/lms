@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * LMS version 1.1-cvs
@@ -60,16 +60,25 @@ Class LMSDB_common
 	
 	function Connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
+
+		// Inicjuje po³±czenie do bazy danych
+	
 		$this->_driver_connect($dbhost,$dbuser,$dbpasswd,$dbname);
 	}
 
 	function Execute($query, $inputarray = NULL)
 	{
+
+		// wykonuje query sql'owe, jednocze¶nie je parsuj±c
+	
 		return $this->_driver_execute($this->_query_parser($query,$inputarray));
 	}
 
 	function GetAll($query = NULL, $inputarray = NULL)
 	{
+
+		// zwraca tablicê z ca³ym wynikiem
+	
 		if($query)
 			$this->Execute($query, $inputarray);
 
@@ -186,6 +195,10 @@ Class LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.13  2003/08/24 13:10:26  lukasz
+ * - added few comments
+ * - s/<?/<?php/g
+ *
  * Revision 1.12  2003/08/24 00:59:29  lukasz
  * - LMSDB: GetAllByKey($query, $key, $inputarray)
  * - LMS: more fixes for new DAL
