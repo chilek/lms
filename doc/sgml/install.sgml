@@ -51,7 +51,8 @@
             <title>Perl</title>
 	  <para>O ile dla <emphasis>LMS-UI</emphasis> wystarczy to co powy¿ej, to ¿eby mieæ dzia³aj±cy 
 		<emphasis>LMS-MGC</emphasis> i resztê skryptów potrzebujemy 
-		tak¿e Perla i modu³y do niego czyli:
+		tak¿e Perla i modu³y do niego, które mo¿na pobraæ z <ulink url="http://www.cpan.org">www.cpan.org</ulink>,
+		czyli:
 	  <itemizedlist>
 	    <listitem>
 	       <para>perl w³a¶ciwy i jego podstawowe modu³y (POSIX, GetOpt::Long);</para>
