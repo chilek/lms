@@ -39,11 +39,16 @@ switch($_GET['action'])
 {
 	case 'additem':
 		$itemdata = r_trim($_POST);
-		foreach(array('count', 'valuenetto', 'taxvalue', 'valuebrutto') as $key)
+		foreach(array('count', 'valuenetto', 'valuebrutto') as $key)
 			$itemdata[$key] = sprintf('%01.2f',$itemdata[$key]);
+		if($itemdata['taxvalue'] != '')
+			$itemdata['taxvalue'] = sprintf('%01.2f', $itemdata['taxvalue']);
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
-			if($itemdata['taxvalue'] < 0 || $itemdata['taxvalue'] > 100)
+			$taxvalue = $itemdata['taxvalue'];
+			if($taxvalue == '')
+				$taxvalue = 0;
+			if($taxvalue < 0 || $taxvalue > 100)
 				$error['taxvalue'] = 'Niepoprawna wysoko¶æ podatku!';
 			if($itemdata['valuenetto'] != 0)
 				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($itemdata['taxvalue'] / 100 + 1),2);
@@ -54,6 +59,7 @@ switch($_GET['action'])
 			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
 		}
+
 	break;
 
 	case 'clear':
@@ -69,8 +75,8 @@ switch($_GET['action'])
 	break;
 
 	case 'setcustomer':
-		if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['userid'])))
-			$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['userid']));
+		if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user'])))
+			$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user']));
 		$invoice['paytime'] = sprintf('%d', $_POST['invoice']['paytime']);
 		$invoice['paytype'] = trim($_POST['invoice']['paytype']);
 	break;
@@ -88,7 +94,7 @@ switch($_GET['action'])
 	break;
 }
 
-if($invoice['paytime'] < 1)
+if($invoice['paytime'] < 0)
 	$invoice['paytime'] = 14;
 if($invoice['paytype'] == '')
 	$invoice['paytype'] = 'GOTÓWKA';

@@ -117,8 +117,10 @@
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
 		{$item.totalbase|string_format:"%.2f"} z³
 	</TD>
-	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT">
-		{$item.taxvalue}%
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{if $item.taxvalue}
+			{$item.taxvalue}%
+		{else}zw.{/if}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
 		{$item.totaltax|string_format:"%.2f"} z³
@@ -129,7 +131,7 @@
 </TR>
 {/foreach}
 <TR>
-	<TD COLSPAN="6" WIDTH="96&" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT" CLASS="ftop" STYLE="text-align: right">
 		<P ALIGN="RIGHT"><B>Razem:</B></P>
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
@@ -146,7 +148,7 @@
 	</TD>
 </TR>
 <TR>
-	<TD COLSPAN="6" WIDTH="96&" ALIGN="RIGHT">
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT">
 		&nbsp;
 	</TD>
 	<TD COLSPAN="4" WIDTH="4%" ALIGN="CENTER">
@@ -155,14 +157,16 @@
 </TR>
 {foreach from=$invoice.taxest item=item}
 <TR>
-	<TD COLSPAN="6" WIDTH="96&" ALIGN="RIGHT">
+	<TD COLSPAN="6" WIDTH="96%" ALIGN="RIGHT">
 		&nbsp;
 	</TD>
 	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
 		{$item.base|string_format:"%.2f"} z³
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
-		{$item.taxvalue}%
+		{if $item.taxvalue}
+			{$item.taxvalue}%
+		{else}zw.{/if}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{$item.tax|string_format:"%.2f"} z³

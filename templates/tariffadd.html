@@ -34,7 +34,12 @@
 			<B>Stawka podatku (%):</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[taxvalue]" VALUE="{$tariffadd.taxvalue}" {tip text="Podaj stawkê podatku VAT (opcjonalnie)" trigger="taxvalue"}>
+			<SELECT SIZE="1" NAME="tariff[taxvalue]" VALUE="{$tariff.taxvalue}" {tip text="Wybierz wysoko¶æ podatku VAT" trigger="taxvalue"}>
+				<OPTION VALUE="22" {if $tariff.taxvalue == 22}SELECTED{/if}>22%</OPTION>
+				<OPTION VALUE="7" {if $tariff.taxvalue == 7}SELECTED{/if}>7%</OPTION>
+				<OPTION VALUE="0" {if $tariff.taxvalue == 0}SELECTED{/if}>0%</OPTION>
+				<OPTION VALUE="" {if !$tariff.taxvalue}SELECTED{/if}>zw.</OPTION>
+			</SELECT>
 		</TD>
 	</TR>												
 	<TR CLASS="LIGHT">
