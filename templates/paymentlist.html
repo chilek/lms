@@ -1,0 +1,90 @@
+{include file="header.html"}
+{include file="balanceheader.html"}
+<!-- $Id$ -->
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR class="dark">
+		<TD WIDTH="1%" CLASS="fleftu">
+			<IMG SRC="img/payment.gif" ALT="" BORDER="0" ALIGN="absmiddle"><BR>
+			<IMG SRC="img/creditor.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="95%" CLASS="fbt" ALIGN="left">
+			<B>Nazwa:</B><BR>
+			Wierzyciel:
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" ALIGN="right">
+			ID:
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt" ALIGN="right">
+			Warto¶æ:
+		</TD>	
+		<TD NOWRAP WIDTH="1%" CLASS="fbt" ALIGN="right">
+			Dzieñ zap³aty:
+		</TD>
+		<TD NOWRAP WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
+			<B>Razem: {$listdata.total}</B>
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{section name=payments loop=$paymentlist}
+	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD WIDTH="1%" CLASS="fleft" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';" class="fleft">
+			<IMG SRC="img/payment.gif" ALT="" BORDER="0" ALIGN="absmiddle"><BR>
+			<IMG SRC="img/creditor.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="95%" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
+			<B>{$paymentlist[payments].name}</B><BR>
+			{$paymentlist[payments].creditor}
+		</TD>
+		<TD WIDTH="1%" ALIGN="right" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
+			({$paymentlist[payments].id|string_format:"%04d"})
+		</TD>
+		<TD WIDTH="1%" ALIGN="right" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
+			<NOBR>
+			{$paymentlist[payments].value|string_format:"%01.2f"} z³
+			</NOBR>
+		</TD>
+		<TD WIDTH="1%" ALIGN="right" onClick="return self.location.href='?m=paymentinfo&id={$paymentlist[payments].id}';">
+			<NOBR>
+			{$paymentlist[payments].payday} 
+			</NOBR>
+		</TD>
+		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
+			<P><FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
+				<INPUT TYPE="HIDDEN" NAME="m" VALUE="balanceadd">
+				<INPUT TYPE="HIDDEN" NAME="addbalance[type]" VALUE="2">
+				<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{$paymentlist[payments].value}">
+				<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$paymentlist[payments].name} / {$paymentlist[payments].creditor}">
+				<NOBR>
+				<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ t± op³atê?');"><IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0"></A>
+				<A HREF="?m=paymentedit&id={$paymentlist[payments].id}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" BORDER="0"></A>
+				<A HREF="?m=paymentinfo&id={$paymentlist[payments].id}"><IMG SRC="img/info.gif" ALT="[ Info ]" BORDER="0"></A>&nbsp;
+				<A HREF="javascript:document.addbalance.submit();"><IMG SRC="img/save.gif" ALT="[ Nalicz ]" BORDER="0"></A>
+				</NOBR>
+			</FORM></P>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD COLSPAN="6" ALIGN="center" CLASS="fall">
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><B>Nie ma wprowadzonych ¿adnych op³at sta³ych do bazy danych!</B></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	<TR CLASS="light">
+		<TD CLASS="fleftu" COLSPAN="4" WIDTH="98%">
+			&nbsp;
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" ALIGN="right">
+			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Razem:</B>
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%" ALIGN="left">
+			<B>{$listdata.total}</B>
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}
