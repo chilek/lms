@@ -60,6 +60,8 @@ wersja 1.5.4 (??/??/????):
     dok³adnie jedno obci±¿enie, tak¿e wtedy gdy pozycja sk³ada siê z wielu
     podpozycji/taryf (alec)
   - edycja i usuwanie faktur (lexx)
+  - dodano index na kolumnie invoiceid w tabeli cash, przyspieszaj±cy niektóre
+    zapytania SQL (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 

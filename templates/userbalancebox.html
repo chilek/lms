@@ -55,6 +55,11 @@
 		document.addbalance.submit();
 	}
 
+	function unpaidchoosewin()
+	{
+		pop = window.open('?m=choosecovenants&id={/literal}{$balancelist.userid}{literal}', 'choosecash','toolbar=no,location=no,directories=no,status=no,menubar=no,width=500,height=300,scrollbars=yes,resizable=no');
+    	}
+
 	//-->
 </SCRIPT>
 {/literal}
@@ -105,7 +110,7 @@
 					<TD width="92%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.invoiceid[balancelist]}
-						<A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"} BORDER="0"></A>
+						<A href="?m=invoice&id={$balancelist.invoiceid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"} BORDER="0"></A>
 						{/if}
 						{cycle print=false}
 						<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
@@ -125,13 +130,14 @@
 				{/section}
 				<TR bgcolor="#DFD5BD">
 					<TD CLASS="ftop" ALIGN="left" colspan="7">
-						<NOBR><A HREF="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" BORDER="0" ALT="{t}Delete{/t}" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:prints_org();">{t}Print originals{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A href="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" BORDER="0" ALT="{t}Delete{/t}" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A href="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A href="javascript:prints_org();">{t}Print originals{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A href="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+
 					</TD>
 					<TD CLASS="ftop" ALIGN="right" COLSPAN="2">
-						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						<NOBR><A href="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
 				<TR bgcolor="#DFD5BD" title="Nowa operacja kasowa">
@@ -148,10 +154,10 @@
 							<OPTION value="4">{t}covenant{/t}</OPTION>
 						</SELECT>
 					</TD>
-					<TD class="ftop" nowrap>
+					<TD class="ftop">
 						<INPUT TYPE="text" size="8" name="addbalance[value]" accesskey="s" {tip text="Enter transaction value"}>
 					</TD>
-					<TD class="ftop" nowrap>
+					<TD class="ftop" colspan="2">
 						<SELECT SIZE="1" name="addbalance[taxvalue]" {tip text="Select Tax value"}>
 							<OPTION value="22">22%</OPTION>
 							<OPTION value="7">7%</OPTION>
@@ -159,11 +165,16 @@
 							<OPTION value="{t}tax-free{/t}">{t}tax-free{/t}</OPTION>
 						</SELECT>
 					</TD>
-					<TD colspan="4" align="right" class="ftop">
-						<B>{t}Description:{/t}</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Enter short description of transaction"}> 
-						<NOBR><A href="javascript:AddBalance();">{t}Submit{/t} <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A></NOBR>
+					<TD class="ftop"></TD>
+					<TD class="ftop" colspan="2">
+						<INPUT TYPE="text" size="30" align="left" name="addbalance[comment]" {tip text="Enter short description of transaction"}> 
 					</TD>
 				</TR>
+				<TR bgcolor="#DFD5BD" title="Nowa operacja kasowa">
+					<TD align="right" colspan="9">
+						<A href="javascript:unpaidchoosewin();">{t}Select unpaid covenants{/t} <IMG src="img/search.gif" border="0" ALT="" align="absmiddle"></A>&nbsp;
+						<A href="javascript:AddBalance();">{t}Submit{/t} <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A>
+					</TD>
 			</TABLE>
 		</TD>
 	</TR>
