@@ -221,6 +221,8 @@ while (my $row = $dbq->fetchrow_hashref())
 					}
 
 					$sms_data+=$line;
+
+					system("echo $sms_data | gnokii --sendsms $phone1");
 					}
 					else
 					if(!$quiet)
