@@ -1,4 +1,197 @@
+{include file="header.html"}
 <!--// $Id$ //-->
+<H1>Witaj :-)</H1>
+<TABLE width="100%" cellpadding="3">
+	<TR>
+		<TD WIDTH="50%" VALIGN="TOP">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD ALIGN="CENTER" COLSPAN="2" CLASS="FALL">
+						<B>Informacje o LMS:</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Wersja LMS:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$layout.lmsv}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Zalogowany jako:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$layout.logname}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>ID:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$layout.logid|string_format:"%04d"}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A HREF="http://smarty.php.net" target="_BLANK">Wersja Smarty:</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$layout.smarty_version}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A HREF="http://php.weblogs.com/ADOdb" target="_BLANK">Wersja ADOdb:</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$layout.adodb_version}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD COLSPAN="2" CLASS="FBOTTOMU">
+						&nbsp;
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+		<TD WIDTH="50%" VALIGN="TOP">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD ALIGN="CENTER" COLSPAN="2" CLASS="FALL">
+						<B>Informacje o systemie:</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Nazwa hosta:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$sysinfo.hostname}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Wersja j±dra:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$sysinfo.kernel}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Uptime:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$sysinfo.uptime}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Zalogowanych u¿ytkowników:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$sysinfo.users}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Obci±¿enie:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$sysinfo.loadavg.0} {$sysinfo.loadavg.1} {$sysinfo.loadavg.2}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD COLSPAN="2" CLASS="FBOTTOMU">
+						&nbsp;
+					</TD>
+				</TR>			
+			</TABLE>
+		</TD>					
+	</TR>
+	<TR>
+		<TD WIDTH="50%" VALIGN="TOP">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
+						<IMG SRC="img/user.gif" ALIGN="ABSMIDDLE"> <B>U¿ytkownicy:</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A HREF="?m=userlist&s=3">Pod³±czeni:</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$userstats.connected}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A HREF="?m=userlist&s=2">Oczekuj±cy na pod³±czenie:</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$userstats.awaiting}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B><A HREF="?m=userlist&s=1">Zainteresowani pod³±czeniem:</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$userstats.interested}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
+						<B><A HREF="?m=userlist&s=0">Razem:</A><BR>
+						<A HREF="?m=userlistdebt">W tym zad³u¿onych:</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHTU">
+						{$userstats.total}<BR>
+						{$userstats.debt} (na kwotê {$userstats.debtvalue} z³)
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+		<TD WIDTH="50%" VALIGN="TOP">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
+						<IMG SRC="img/node.gif" ALIGN="ABSMIDDLE"> <B>Komputery</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Pod³±czone:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$nodestats.connected}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Od³±czone:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$nodestats.disconnected}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
+						<B>Razem:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHTU">
+						{$nodestats.total}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>							
+</TABLE>
+<BR><BR><BR>
 <TABLE width="100%" cellpadding="10">
 	<TR bgcolor="#F4F0EC">
 		<TD class="fleftu" width="1%">
@@ -9,3 +202,4 @@
 		</TD>
 	</TR>
 </TABLE>
+{include file="footer.html"}

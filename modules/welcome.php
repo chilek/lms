@@ -23,18 +23,14 @@
  *
  *  $Id$
  */
+require_once($_LIB_DIR."/Sysinfo.class.php");
+
+$SI = new Sysinfo;
 
 $layout[pagetitle]="Witamy w LMS :-) !";
+$SMARTY->assign("sysinfo",$SI->get_sysinfo());
+$SMARTY->assign("userstats",$LMS->UserStats());
+$SMARTY->assign("nodestats",$LMS->NodeStats());
 $SMARTY->assign("layout",$layout);
-$SMARTY->display("header.html");
-echo '<H1 align="center">Witamy!</H1>
-
-LMS wersja '.$layout[lmsv].'<BR>
-Wersja Smarty: '.$SMARTY->_version.'<BR>
-Wersja ADODB: '.$ADODB_vers.'<BR>
-Host: '.hostname().'<BR>';
-
-// Tutaj odpowiednie dzia³ania
 $SMARTY->display("welcome.html");
-$SMARTY->display("footer.html");
 ?>

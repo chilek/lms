@@ -1603,5 +1603,34 @@ class LMS
 			return FALSE;
 	}
 
+	function UserStats()
+	{
+		$return[total] = $this->ADB->GetOne("SELECT COUNT(id) FROM users");
+		$return[connected] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=3");
+		$return[awaiting] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=2");
+		$return[interested] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=1");
+		$return[debt] = 0;
+		$return[debtvalue] = 0;
+		if($users = $this->ADB->GetAll("SELECT id FROM users"))
+			foreach($users as $idx => $row)
+			{
+				$row[balance] = $this->GetUserBalance($row[id]);
+				if($row[balance] < 0)
+				{
+					$return[debt] ++;
+					$return[debtvalue] -= $row[balance];
+				}
+			}
+		return $return;
+	}
+
+	function NodeStats()
+	{
+		$return[connected] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access='Y'");
+		$return[disconnected] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access='N'");
+		$return[total] = $return[connected] + $return[disconnected];
+		return $return;
+	}
+
 }
 ?>
