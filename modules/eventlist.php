@@ -26,7 +26,7 @@
 
 function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $userid=0, $adminid=0)
 {
-	global $LMS, $SESSION;
+	global $LMS, $AUTH;
 
 	if(!$year) $year = date('Y',time());
 	if(!$month) $month = date('n',time());
@@ -42,7 +42,7 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $userid=0,
 		 WHERE date >= ? AND date < ? AND (private = 0 OR (private = 1 AND adminid = ?)) '
 		.($userid ? 'AND userid = '.$userid : '')
 		.' ORDER BY date, begintime',
-		 array($startdate, $enddate, $SESSION->id));
+		 array($startdate, $enddate, $AUTH->id));
 	
 	if($list)
 		foreach($list as $idx => $row)

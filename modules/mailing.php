@@ -138,7 +138,7 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('mailing', $mailing);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
-$SMARTY->assign('admininfo', $LMS->GetAdminInfo($SESSION->id));
+$SMARTY->assign('admininfo', $LMS->GetAdminInfo($AUTH->id));
 $SMARTY->display('mailing.html');
 
 ?>

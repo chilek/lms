@@ -90,13 +90,13 @@ if(isset($message))
 	if(!$error)
 	{
 		$queue = $LMS->GetQueueByTicketId($message['ticketid']);
-		$admin = $LMS->GetAdminInfo($SESSION->id);
+		$admin = $LMS->GetAdminInfo($AUTH->id);
 		
 		$message['messageid'] = '<msg.'.$message['ticketid'].'.'.$queue['id'].'.'.time().'@rtsystem.'.gethostbyaddr(gethostbyname($_SERVER['SERVER_NAME'])).'>';
 
 		if($message['sender']=='admin')
 		{
-			$message['adminid'] = $SESSION->id;
+			$message['adminid'] = $AUTH->id;
 			$message['userid'] = 0;
 		}
 		else
@@ -237,7 +237,7 @@ else
 {
 	if($_GET['ticketid'])
 		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
-	$admin = $LMS->GetAdminInfo($SESSION->id);
+	$admin = $LMS->GetAdminInfo($AUTH->id);
 	
 	$message['ticketid'] = $_GET['ticketid'];
 	$message['userid'] = $LMS->DB->GetOne('SELECT userid FROM rttickets WHERE id = ?', array($message['ticketid']));

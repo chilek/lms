@@ -24,40 +24,40 @@
  *  $Id$
  */
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Customers List');
 
 if(!isset($_GET['o']))
-	$o = $_SESSION['ulo'];
+	$SESSION->restore('ulo', $o);
 else
 	$o = $_GET['o'];
-$_SESSION['ulo'] = $o;
+$SESSION->save('ulo', $o);
 
 if(!isset($_GET['s']))
-	$s = $_SESSION['uls'];
+	$SESSION->restore('uls', $s);
 else
 	$s = $_GET['s'];
-$_SESSION['uls'] = $s;
+$SESSION->save('uls', $s);
 
 if(!isset($_GET['n']))
-	$n = $_SESSION['uln'];
+	$SESSION->restore('uln', $n);
 else
 	$n = $_GET['n'];
-$_SESSION['uln'] = $n;
+$SESSION->save('uln', $n);
 
 if(!isset($_GET['g']))
-	$g = $_SESSION['ulg'];
+	$SESSION->restore('ulg', $g);
 else
 	$g = $_GET['g'];
-$_SESSION['ulg'] = $g;
+$SESSION->save('ulg', $g);
 
-if (isset($_SESSION['ulp']) && !isset($_GET['page']))
-	$_GET['page'] = $_SESSION['ulp'];
+if (! isset($_GET['page']))
+	$SESSION->restore('page', $_GET['page']);
 	    
-$userlist=$LMS->GetUserList($o, $s, $n, $g);
+$userlist = $LMS->GetUserList($o, $s, $n, $g);
 $listdata['total'] = $userlist['total'];
-$listdata['state'] = $_SESSION['uls'];;
+$SESSION->restore('uls', $listdata['state']);
 $listdata['network'] = $userlist['network'];
 $listdata['usergroup'] = $userlist['usergroup'];
 $listdata['order'] = $userlist['order'];
@@ -69,7 +69,7 @@ $page = (! $_GET['page'] ? 1 : $_GET['page']);
 $pagelimit = (! $LMS->CONFIG['phpui']['customerlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['customerlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$_SESSION['ulp'] = $page;
+$SESSION->save('ulp', $page);
 
 unset($userlist['total']);
 unset($userlist['state']);

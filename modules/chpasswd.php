@@ -26,7 +26,7 @@
 
 $passwd = $_POST['passwd'];
 
-$id = $SESSION->id;
+$id = $AUTH->id;
 
 if($LMS->AdminExists($id))
 {

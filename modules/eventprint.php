@@ -26,7 +26,7 @@
 
 function GetEvents($date=NULL, $adminid=0, $userid=0)
 {
-	global $LMS, $SESSION;
+	global $LMS, $AUTH;
 
 	$list = $LMS->DB->GetAll(
 	        'SELECT events.id AS id, title, description, begintime, endtime, closed, note, '
@@ -36,7 +36,7 @@ function GetEvents($date=NULL, $adminid=0, $userid=0)
 		 WHERE date = ? AND (private = 0 OR (private = 1 AND adminid = ?)) '
 		 .($userid ? 'AND userid = '.$userid : '')
 		 .' ORDER BY begintime',
-		 array($date, $SESSION->id));
+		 array($date, $AUTH->id));
 
 	if($list)
 		foreach($list as $idx => $row)
