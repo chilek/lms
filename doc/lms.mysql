@@ -150,6 +150,7 @@ CREATE TABLE netlinks (
   id int(11) NOT NULL auto_increment,
   src int(11) NOT NULL default '0',
   dst int(11) NOT NULL default '0',
+  type tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY src (src,dst)
 ) TYPE=MyISAM;
@@ -197,6 +198,7 @@ CREATE TABLE nodes (
   creatorid int(11) NOT NULL default '0',
   modid int(11) NOT NULL default '0',
   netdev int(11) NOT NULL default '0',
+  linktype tinyint(1) NOT NULL default '0',
   access tinyint(1) NOT NULL default '1',
   warning tinyint(1) NOT NULL default '0',
   lastonline int(11) NOT NULL default '0',
@@ -421,4 +423,4 @@ CREATE TABLE userassignments (
   UNIQUE KEY userassignment (usergroupid, userid)
 ) TYPE=MyISAM;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004090800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004101800');
