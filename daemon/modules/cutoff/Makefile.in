@@ -1,8 +1,8 @@
 
-SOURCES = cutoff.c
+SOURCES = cutoff2.c
 OBJECTS = ${SOURCES:.c=.o}
 
-OUT = cutoff.so
+OUT = cutoff2.so
 
 all: $(OUT)
 

@@ -1,0 +1,24 @@
+1. Wstêp.
+
+Modu³ cutoff zosta³ tak zmodyfikowany, aby umo¿liwiæ procentowe okre¶lenie
+progu zaleg³o¶ci oraz okre¶lenie liczby dni, po których ma nast±piæ 
+od³±czenie/w³±czenie ostrze¿eñ. Jako dzieñ p³atno¶ci przyjmowany jest
+najwiêkszy dzieñ p³atno¶ci z wszystkich zobowi±zañ miesiêcznych ka¿dego 
+u¿ytkownika. Tak¿e do obliczenia kwoty miesiêcznego zobowi±zania, brane s±
+pod uwagê tylko zobowi±zania p³atne co miesi±c.
+
+2. Konfiguracja.
+
+Modu³ oprócz opcji dostêpnych w standardowym cutoff posiada:
+
+deadline = 14
+
+Termin p³atno¶ci. Ilo¶æ dni od naliczenia op³aty, kiedy ma nast±piæ
+od³±czenie. Domy¶lnie 0, czyli od³±czenie nast±pi od razu po przekroczeniu
+limitu zaleg³o¶ci.
+
+limit = 100%
+
+Limit zaleg³o¶ci - kwotowy lub procentowy. Je¶li jej warto¶æ zawiera
+znak '%' bilans u¿ytkownika bêdzie porównywany z odp. procentem sumy jego
+zobowi±zañ miesiêcznych. Domy¶lnie 0.
