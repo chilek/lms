@@ -82,7 +82,7 @@ class LMSDB_driver_sqlite extends LMSDB_common
 			$this->_error = FALSE;
 		else
 			$this->_error = TRUE;
-echo $query.'<BR>';
+
 		return $this->_result;
 	}
 
