@@ -33,7 +33,16 @@
 			{/if}
 		</TD>
 	{if $smarty.section.iplist.index is not even}</TR>{/if}
+	{sectionelse}
+	</table>
+	<TABLE width="100%" height="100%">
+	<TR title="Kliknij aby zamkn±æ to okno" onclick="parent.window.close();">
+		<TD width="100%" align="center">
+			<P><B>Nie posiadasz ¿adnych sieci IP.<BR><BR>Aby dodaæ now±, zajrzyj do sekcji "sieci".</B></P>
+		</TD>
+	</TR>			
 	{/section}
+	</table>
 </body>
 {/if}
 {if $part eq "top"}
@@ -50,6 +59,8 @@
 			<SELECT SIZE="1" onchange="document.selectnet.submit();" NAME="netid">
 				{section name=networks loop=$networks.id}
 				<OPTION VALUE="{$networks.id[networks]}">{$networks.name[networks]}: {$networks.address[networks]}/{$networks.prefix[networks]}</OPTION>
+				{sectionelse}
+				<OPTION VALUE="ALL">nie posiadasz ¿adnych sieci!</OPTION>
 				{/section}
 				<OPTION VALUE="ALL">Poka¿ wszystkie...</OPTION>
 			</SELECT>
