@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function AccountExists($login) 
+function GetAccountIdByLogin($login) 
 {
 	global $LMS;
 	return $LMS->DB->GetOne('SELECT id FROM passwd WHERE login = ?', array($login));
@@ -34,10 +34,17 @@ $layout['pagetitle'] = 'Utworzenie nowego konta';
 
 if($account = $_POST['account'])
 {
-	if(!eregi("^[a-z0-9.-_]+$",$account['login']))
+
+	if(!($account['login'] || $account['passwd1'] || $account['passwd2']))
+	{
+		header('Location: ?m=accountlist');
+		die;
+	}
+	
+	if(!eregi("^[a-z0-9.-_]+$", $account['login']))
     	    $error['login'] = 'Login zawiera niepoprawne znaki!';
 	    
-	if(AccountExists($account['login']))
+	if(GetAccountIdByLogin($account['login']))
 	    $error['login'] = 'Konto o podanej nazwie ju¿ istnieje!'; 
 	    
 	if($account['passwd1'] != $account['passwd2'])
@@ -55,7 +62,7 @@ if($account = $_POST['account'])
 					'/home/'.$account['login']
 					));
 		$LMS->DB->Execute('UPDATE passwd SET uid = id+2000 WHERE login = ?',array($account['login']));
-		header('Location: ?m=accounts');
+		header('Location: ?m=accountlist');
 	}
 }
 

@@ -6,15 +6,15 @@
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD width="20%" class="fleftu" NOWRAP>
-			<B><img src="img/user.gif" ALT="" align="absmiddle"> Login:</B>
+			<img src="img/user.gif" ALT="" align="absmiddle"> <B>Login:</B>
 		</TD>
 		<TD width="77%" class="fbt">
 			<B>W³a¶ciciel:</B>
 		</TD>
-		<TD align="right" width="1%" class="fbt" VALIGN="top" NOWRAP>
+		<TD align="right" width="1%" class="fbt" NOWRAP>
 			<B>ID:</B>
 		</TD>
-		<TD width="1%" class="fbt" VALIGN="TOP" NOWRAP>
+		<TD width="1%" class="fbt" NOWRAP>
 			<B>Ostatnie logowanie:</B>
 		</TD>
 		<TD width="1%" class="frightu">
@@ -24,24 +24,24 @@
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{section name=accountlist loop=$accountlist}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-		<TD class="fleft" valign="top">
+		<TD class="fleft">
 			<nobr><IMG src="img/user.gif" ALT="" align="absmiddle" border="0"><B> {$accountlist[accountlist].login}</B></nobr>
 		</TD>
-		<TD valign="top" NOWRAP>
+		<TD NOWRAP>
 			<A href="?m=userinfo&id={$accountlist[accountlist].ownerid}">
-			{$accountlist[accountlist].name} {$accountlist[accountlist].lastname} ({$accountlist[accountlist].ownerid|string_format:"%04d"})
+			{$accountlist[accountlist].username|truncate:50:"..."} ({$accountlist[accountlist].ownerid|string_format:"%04d"})
 			</A>
 		</TD>
-		<TD valign="top" align="right">
+		<TD align="right">
 			<B>{$accountlist[accountlist].id|string_format:"%04d"}</B>
 		</TD>
-		<TD valign="top" align="right">
-			<nobr>{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}</nobr>
+		<TD align="right">
+			<nobr>{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"%Y/%m/%d %H:%M"}{/if}</nobr>
 		</TD>
 		<TD class="fright">
 			<NOBR>
 			<A href="?m=accountdel&id={$accountlist[accountlist].id}" OnClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ konto \'{$accountlist[accountlist].login}\' z bazy danych?')"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ Usuñ ]"></A> 
-			<A href="?m=accountedit&op=chpasswddlg&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" border="0" align="absmiddle" ALT="[ Edytuj ]"></A> 
+			<A href="?m=accountedit&op=chpasswddlg&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" border="0" align="absmiddle" ALT="[ Zmieñ has³o ]"></A> 
 			</NOBR>
 		</TD>
 	</TR>
