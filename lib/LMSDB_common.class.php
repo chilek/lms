@@ -71,6 +71,7 @@ Class LMSDB_common
 
 	function Execute($query, $inputarray = NULL)
 	{
+	//	echo $this->_query_parser($query,$inputarray).'<HR>';
 		if(! $this->_driver_execute($this->_query_parser($query,$inputarray)))
 		{
 			$this->errors[] = array(

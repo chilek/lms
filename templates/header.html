@@ -55,23 +55,25 @@
 				</TD>
 			</TR>
 			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
-				<FORM METHOD="GET" ACTION="?m=userinfo">
-					<TD width="100%" class="fbt" nowrap {tip text="<B>Wpisz ID u¿ytkownika i wci¶nij Enter</B>"}>
+				<FORM METHOD="GET" ACTION="?m=quicksearch">
+					<TD width="100%" class="fbt" nowrap {tip text="<B>Wpisz ID, nazwisko/nazwê, fragment adresu, telefon b±d¼ adres e-mail u¿ytkownika i wci¶nij Enter</B>"}>
 						<P CLASS="separated">
 						<IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
-						<INPUT TYPE="text" NAME="id" VALUE="" SIZE="10">
-						<INPUT TYPE="hidden" NAME="m" VALUE="userinfo">
+						<INPUT TYPE="text" NAME="what" VALUE="" SIZE="10">
+						<INPUT TYPE="hidden" NAME="m" VALUE="quicksearch">
+						<INPUT TYPE="hidden" NAME="mode" VALUE="user">
 						</P>
 					</TD>
 				</FORM>
 			</TR>
 			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
-				<FORM METHOD="GET" ACTION="?m=userinfo">
-					<TD width="100%" class="fbt" nowrap {tip text="<B>Wpisz ID komputera i wci¶nij Enter</B>"}>
+				<FORM METHOD="GET" ACTION="?m=quicksearch">
+					<TD width="100%" class="fbt" nowrap {tip text="<B>Wpisz ID, nazwê, adres IP lub adres MAC komputera i wci¶nij Enter</B>"}>
 						<P CLASS="separated">
 						<IMG SRC="img/node.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
-						<INPUT TYPE="text" NAME="id" VALUE="" SIZE="10">
-						<INPUT TYPE="hidden" NAME="m" VALUE="nodeinfo">
+						<INPUT TYPE="text" NAME="what" VALUE="" SIZE="10">
+						<INPUT TYPE="hidden" NAME="m" VALUE="quicksearch">
+						<INPUT TYPE="hidden" NAME="mode" VALUE="node">
 						</P>
 					</TD>
 				</FORM>
