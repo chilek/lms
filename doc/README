@@ -1719,6 +1719,9 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    permissions won't be able to see queue and tickets placed in it until
    he's given access to that queue. Enabling 'write' (tickets and
    comments edit ability) to user automatically gives him 'read' access.
+   'Notices' privilege is used for notification users about new tickets.
+   If option 'newticket_notify' is enabled all users with that right will
+   get notifications by email.
      _________________________________________________________________
 
 3.12.3. Searching
