@@ -2,7 +2,7 @@
 {include file="netdevheader.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-{if ! $gderror}
+{if !$gderror && !$emptydb}
 <P ALIGN="CENTER">
 <IMG SRC="?m=netdevmap&graph=true&start={$start}" ALT="" USEMAP="#devices" BORDER="0">
 <MAP NAME="devices">
@@ -25,9 +25,13 @@
 	<INPUT TYPE="SUBMIT" VALUE="Generuj">
 	</P>
 </FORM>
-{else}
+{elseif $gderror}
     <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
 	<BR><BR><B><FONT COLOR="RED">Twoje PHP nie obs³uguje biblioteki graficznej GD, wymaganej do wygenerowania obrazu mapy!</FONT></B>
+    </TD></TR></TABLE>
+{elseif $emptydb}
+    <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
+	<BR><BR><B><FONT COLOR="RED">Brak urz±dzeñ sieciowych w bazie danych!</FONT></B>
     </TD></TR></TABLE>
 {/if}
 {include file="footer.html"}
