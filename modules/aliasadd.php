@@ -92,7 +92,7 @@ if($aliasadd = $_POST['aliasadd'])
 if($accountid = $_GET['accountid'])
 	$aliasadd['accountid'] = $accountid;
 
-$layout['pagetitle'] = trans('Add Alias');
+$layout['pagetitle'] = trans('New Alias');
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

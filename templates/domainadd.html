@@ -1,0 +1,43 @@
+{include file="header.html"}
+{include file="accountheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><FORM name="domainadd" method="POST" action="?m=domainadd">
+<TABLE cellpadding="3" WIDTH="100%">
+	<TR class="DARK">
+		<TD width="1%" class="fleftu">
+			<IMG src="img/network.gif" alt="" align="absmiddle" border="0">
+		</TD>
+		<TD width="1%" class="fbt" align="center" NOWRAP>
+			<B>{t}Domain:{/t}
+		</TD>
+		<TD width="98%" class="frightu" NOWRAP>
+			<INPUT type="text" name="domainadd[name]" value="{$domainadd.name}" {tip text="Enter domain name" trigger="name"} size="20">
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/info.gif" alt="" align="absmiddle" border="0">
+		</TD>
+		<TD width="1%" align="center">
+			<B>{t}Description:{/t}
+		</TD>
+		<TD width="98%" class="fright">
+			<TEXTAREA name="domainadd[description]" rows="5" cols="50" {tip text="Enter additional informations (optional)"}>{$domainadd.description}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" colspan="3" align="right" NOWRAP>
+			<A href="javascript: document.domainadd.submit();">{t}Save{/t} <IMG SRC="img/save.gif" border="0" ALT="" align="absmiddle"></A>
+			<A href="?m=domainlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" border="0" ALT="" align="absmiddle"></A><BR>
+			<INPUT type="checkbox" name="domainadd[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $domainadd.reuse}checked{/if}> {t}Display this form after addition of domain again{/t}
+		</TD>
+	</TR>
+</TABLE>
+</FORM></P>
+<SCRIPT language="JavaScript">
+<!--//
+document.forms['aliasadd'].elements['aliasadd[login]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

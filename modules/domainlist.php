@@ -54,41 +54,6 @@ function GetDomainList($order='name,asc')
 	return $list;
 }
 
-function GetDomainIdByName($name)
-{
-	global $LMS;
-	return $LMS->DB->GetOne('SELECT id FROM domains WHERE name = ?', array($name));
-}
-
-if($domainadd = $_POST['domainadd']) 
-{
-	$domainadd['name'] = trim($domainadd['name']);
-	$domainadd['description'] = trim($domainadd['description']);
-	
-	if($domainadd['name']=='' && $domainadd['description']=='')
-	{
-		header('Location: ?m=domainlist');
-		die;
-	}
-	
-	if($domainadd['name'] == '')
-		$error['name'] = trans('Domain name is required!');
-	elseif(GetDomainIdByName($domainadd['name']))
-		$error['name'] = trans('Domain with specified name exists!');
-	
-	if(!$error)
-	{
-		$LMS->DB->Execute('INSERT INTO domains (name, description) VALUES (?,?)',
-				    array($domainadd['name'], $domainadd['description']));
-		$LMS->SetTS('domains');
-	}
-	else
-	{
-		$SMARTY->assign('error', $error);
-		$SMARTY->assign('domainadd', $domainadd);
-	}
-}	
-
 if(!isset($_GET['o']))
 	$o = $_SESSION['dlo'];
 else
