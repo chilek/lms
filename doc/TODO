@@ -1,5 +1,6 @@
 $Id$
 
+koniecznie w 1.3:
 * Helpdesk:
     a) Backend do Helpdesk'a - poprawiæ i przetestowaæ lms-rtparser
     b) zmiana statusu ticketu podczas odpowiadania
@@ -7,6 +8,8 @@ $Id$
 * Dopracowaæ wysy³anie wiadomo¶ci
 * Obs³uga networks i usergroups w skryptach i demonie, tam gdzie jeszcze
   jej nie ma a mo¿e siê przydaæ.
+------------------------------------------------------------------------
+* okresowa procentowa obni¿ka abonamentu
 * ³adniejsza wizualizacja wyników statystyk
 * mail mngmnt
 * arpd (dokoñczyæ, support dla non-linux systems)
