@@ -1724,6 +1724,26 @@ class LMS
 		$this->SetTS('invoicecontents');
 	}
 
+	function InvoiceContentDelete($invoiceid, $itemid=0)
+	{
+		if($itemid)
+		{
+			$this->DB->Execute('DELETE FROM invoicecontents WHERE invoiceid=? AND itemid=?', array($invoiceid, $itemid));
+			
+			if(!$this->DB->GetOne('SELECT COUNT(*) FROM invoicecontents WHERE invoiceid=?', array($invoiceid)))
+			{
+				// if that was the last item of invoice contents
+				$this->DB->Execute('DELETE FROM invoices WHERE id = ?', array($invoiceid));
+			}
+			$this->DB->Execute('DELETE FROM cash WHERE invoiceid = ? AND itemid = ? AND type = 4', array($invoiceid, $itemid));
+			$this->DB->Execute('UPDATE cash SET invoiceid=0, itemid=0 WHERE invoiceid=? AND itemid=?', array($invoiceid, $itemid));
+			$this->SetTS('invoices');
+			$this->SetTS('invoicecontents');
+		}
+		else
+			$this->InvoiceDelete($invoiceid);
+	}
+
 	function InvoicesReport($from, $to)
 	{
 		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, nip, pesel, taxvalue, SUM(value*count) AS value FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 AND (cdate BETWEEN ? AND ?) GROUP BY id, number, taxvalue, cdate, customerid, name, address, zip, city, nip, pesel, finished ORDER BY cdate ASC', array($from, $to)))
@@ -2071,8 +2091,14 @@ class LMS
 
 	function DelBalance($id)
 	{
+		$row = $this->DB->GetRow('SELECT invoiceid, itemid, type FROM cash WHERE id=?', array($id));
+		
+		if($row['type']=='4' && $row['invoiceid'] && $row['itemid'])
+			$this->InvoiceContentDelete($row['invoiceid'], $row['itemid']);
+		else
+			$this->DB->Execute('DELETE FROM cash WHERE id=?', array($id));
+		
 		$this->SetTS('cash');
-		return $this->DB->Execute('DELETE FROM cash WHERE id=?', array($id));
 	}
 	
 	function GetBalanceList()
