@@ -1,6 +1,6 @@
 $Id$
 
-version 1.2.6 (??/??/2004):
+version 1.2.6 Dreylock (24/09/2004):
 
   - in sql scripts added index on 'userid' column in 'cash' table 
     speeding up queries with joins of 'cash' and 'users' tables (alec)
@@ -8,6 +8,8 @@ version 1.2.6 (??/??/2004):
 	CREATE INDEX cash_userid_idx ON cash(userid);
     MySQL:
 	ALTER TABLE cash ADD INDEX (userid);
+  - BTS#0000206: fixed IE bug while downloading database backup file 
+    with secure http connection (alec/lexx)
 
 version 1.2.5.1 Sha-re (07/09/2004):
 

@@ -48,7 +48,7 @@ cd $TEMPDIR/$X/
 tar -xzf lms.tar.gz
 chmod 777 lms/{templates_c,backups}
 cd lms
-rgrep -ir '1\.2-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.2-cvs/$LMSVER $CODENAME/g"
+grep -ir '1\.2-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.2-cvs/$LMSVER $CODENAME/g"
 rm -Rf $NOTDISTRIB
 chmod 777 templates_c backups
 cd ..

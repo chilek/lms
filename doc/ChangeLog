@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.2.6 (??/??/2004):
+wersja 1.2.6 Dreylock (24/09/2004):
 
   - w skryptach sql'owych dodany index na kolumnie 'userid' w tabeli 'cash' 
     znacznie przyspieszaj±cy zapytania ze z³±czeniem tabel 'cash' 
@@ -9,6 +9,8 @@ wersja 1.2.6 (??/??/2004):
 	CREATE INDEX cash_userid_idx ON cash(userid);
     MySQL:
 	ALTER TABLE cash ADD INDEX (userid);
+  - BTS#0000206: poprawiony b³±d wystêpuj±cy na IE przy pobieraniu pliku
+    backupu bazy po https (alec/lexx)
 
 wersja 1.2.5.1 Sha-re (07/09/2004):
 
