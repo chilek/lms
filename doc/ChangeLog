@@ -20,6 +20,8 @@ wersja 1.1.4 (??/??/2003):
   - nowo dodawany komputer domy¶lnie nie mia³ dostêpu (lukasz)
   - ilo¶æ sieci w podsumowaniu by³a zwiêkszana o 2 (lukasz)
   - kosmetyka kodu (s/this->ADB->/this->DB->/g) (lukasz)
+  - b³êdy s± wy¶wietlane na dole strony, a nie wci¶niête gdzie siê tylko da do
+    tabelek z formularzami (lukasz)
 
 wersja 1.1.3 (29/08/2003):
 
