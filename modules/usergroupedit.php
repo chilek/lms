@@ -61,41 +61,44 @@ if(!$LMS->UsergroupExists($_GET['id']))
 	die;
 }
 
-$usergroup = $_POST['usergroup'];
+$usergroup = $LMS->UsergroupGet($_GET['id']);
+$users = $LMS->GetUserWithoutGroupNames($usergroup['id']);
 
-if(isset($usergroup))
+$layout['pagetitle'] = 'Edycja grupy: '.$usergroup['name'];	
+
+$usergroupedit = $_POST['usergroup'];
+
+if(isset($usergroupedit))
 {
-	foreach($usergroup as $key => $value)
-		$usergroup[$key] = trim($value);
+	foreach($usergroupedit as $key => $value)
+		$usergroupedit[$key] = trim($value);
 
-	if($usergroup['name'] == '')
+	$usergroupedit['id'] = $_GET['id'];
+	
+	if($usergroupedit['name'] == '')
 		$error['name'] = 'Musisz podaæ nazwê grupy!';
-	elseif(strlen($usergroup['name']) > 16)
+	elseif(strlen($usergroupedit['name']) > 16)
 		$error['name'] = 'Podana nazwa jest za d³uga!';
-	elseif($LMS->UsergroupGetId($usergroup['name']) && $LMS->UsergroupGetName($usergroup['id'] != $usergroup['name']))
-		$error['name'] = 'Istnieje ju¿ grupa o nazwie '.$usergroup['name'];
-	elseif(!eregi("^[._a-z0-9-]+$",$usergroup['name']))
+	elseif( ($id = $LMS->UsergroupGetId($usergroupedit['name'])) && $id != $usergroupedit['id'])
+		$error['name'] = 'Istnieje ju¿ grupa o nazwie '.$usergroupedit['name'];
+	elseif(!eregi("^[._a-z0-9-]+$",$usergroupedit['name']))
 		$error['name'] = 'Podana nazwa zawiera niepoprawne znaki!';
-
-	$usergroup['id'] = $_GET['id'];
 
 	if(!$error)
 	{
-		$LMS->UsergroupUpdate($usergroup);
+		$LMS->UsergroupUpdate($usergroupedit);
 		header('Location: ?m=usergroupinfo&id='.$usergroup['id']);
 		die;
 	}
+
+	$usergroup['description'] = $usergroupedit['description'];
+	$usergroup['name'] = $usergroupedit['name'];
 }
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$layout['pagetitle'] = 'Edycja grupy: '.$usergroup['name'];	
-
-$usergroup = $LMS->UsergroupGet($_GET['id']);
-$users = $LMS->GetUserWithoutGroupNames($_GET['id']);
-
 $SMARTY->assign('usergroup',$usergroup);
-$SMARTY->assign('error',$error);
+$SMARTY->assign('error', $error);
 $SMARTY->assign('users', $users);
 $SMARTY->assign('userscount', sizeof($users));
 $SMARTY->display('usergroupedit.html');

@@ -100,7 +100,7 @@ if(isset($nodeedit))
 
 	if($nodeedit['name']=='')
 		$error['name'] = 'Podaj nazwê!';
-	elseif($LMS->GetNodeIDByName($nodeedit['name']) && $LMS->GetNodeIDByNAME($nodeedit['name']) != $nodeedit['id'])
+	elseif($LMS->GetNodeIDByName($nodeedit['name']) && $LMS->GetNodeIDByName($nodeedit['name']) != $nodeedit['id'])
 		$error['name'] = 'Ta nazwa jest zajêta!';
 	elseif(!eregi("^[_a-z0-9-]+$",$nodeedit['name']))
 		$error['name'] = 'Podana nazwa zawiera niepoprawne znaki!';
