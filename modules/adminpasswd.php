@@ -46,7 +46,7 @@ if($LMS->AdminExists($id))
 	}
 
 	$passwd[realname] = $LMS->GetAdminName($id);
-	$passwd[id] = $id
+	$passwd[id] = $id;
 	$layout[pagetitle]="Zmiana has³a dla ".$passwd[realname];
 	$SMARTY->assign("layout",$layout);
 	$SMARTY->assign("error",$error);
