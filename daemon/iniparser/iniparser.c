@@ -479,15 +479,13 @@ dictionary * iniparser_load(char * ininame)
                    ||  sscanf (where, "%[^=] = '%[^\']'",   key, val) == 2
                    ||  sscanf (where, "%[^=] = %[^;#]",     key, val) == 2) {
                 strcpy(key, strlwc(strcrop(key)));
-                /*
+                strcpy(val, strcrop(val));
+		/*
                  * sscanf cannot handle "" or '' as empty value,
                  * this is done here
                  */
-                if (!strcmp(val, "\"\"") || !strcmp(val, "''")) {
+                if (!strcmp(val, "\"\"") || !strcmp(val, "''"))
                     val[0] = (char)0;
-                } else {
-                    strcpy(val, strcrop(val));
-                }
                 iniparser_add_entry(d, sec, key, parse(val));
             }
         }
