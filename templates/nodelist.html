@@ -39,7 +39,7 @@
 		<TD width="95%" class="fleft" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';">
 			<a name="{$nodelist[nodelist].id}">
 			{if $nodelist[nodelist].lastonline}
-			    {if ($smarty.now-$nodelist[nodelist].lastonline) > 600}
+			    {if ($smarty.now-$nodelist[nodelist].lastonline) > $_config.phpui.lastonline_limit}
 				<img src="img/node_off.gif" border="0" ALT="" align="absmiddle">
 			    {else}
 				<img src="img/node_on.gif" border="0" ALT="" align="absmiddle">
