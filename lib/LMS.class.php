@@ -3160,6 +3160,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$where .= ($search['state']!='' ? 'AND state='.$search['state'].' '            : '');
 		$where .= ($search['name']!=''  ? 'AND requestor LIKE \''.$search['name']/'\' '  : '');
 		$where .= ($search['email']!='' ? 'AND requestor LIKE \''.$search['email'].'\' ' : '');
+		$where .= ($search['uptime']!='' ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
 		
 		if($search['username'])
 			$where = 'AND users.lastname ?LIKE? \'%'.$search['username'].'%\' OR requestor ?LIKE? \'%'.$search['username'].'%\' ';
