@@ -111,7 +111,7 @@ switch($_GET['type'])
 
 		if($to) {
 			list($year, $month, $day) = split('/',$to);
-			$date['to'] = mktime(0,0,0,$month,$day,$year);
+			$date['to'] = mktime(23,59,59,$month,$day,$year);
 		} else { 
 			$to = date("Y/m/d",time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
@@ -177,7 +177,7 @@ switch($_GET['type'])
 		
 		if($to) {
 			list($year, $month, $day) = split('/',$to);
-			$date['to'] = mktime(0,0,0,$month,$day,$year);
+			$date['to'] = mktime(23,59,59,$month,$day,$year);
 		} else {
 			$to = date("Y/m/d",time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
@@ -234,7 +234,7 @@ switch($_GET['type'])
 		
 		if($to) {
 			list($year, $month, $day) = split('/',$to);
-			$date['to'] = mktime(0,0,0,$month,$day,$year);
+			$date['to'] = mktime(23,59,59,$month,$day,$year);
 		} else {
 			$to = date("Y/m/d",time());
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
