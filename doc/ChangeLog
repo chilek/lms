@@ -40,6 +40,8 @@ wersja 1.5.4 (??/??/????):
     ostatnich operacji (alec)
   - poprawiony b³±d w ustawianiu daty wystawienia nowej faktury (alec)
   - dodano zabezpieczenie przed wystawieniem faktury bez zawarto¶ci (alec)
+  - BTS#0000281: poprawiono wy¶wietlanie listy zad³u¿onych, które na MySQLu
+    uwzglêdnia³o tak¿e u¿ytkowników z bilansem równym zero (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
