@@ -27,9 +27,9 @@
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
 					<TD width="1%">{$balancelist.adminname[balancelist]|replace:" ":"&nbsp;"|truncate:16:"..."}</TD>
 					<TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
-					<TD width="1%" align="right"><nobr>{$balancelist.value[balancelist]|string_format:"%01.2f"} {.currency}</nobr></TD>
+					<TD width="1%" align="right"><nobr>{$balancelist.value[balancelist]|string_format:"%01.2f"} {$lang.currency}</nobr></TD>
 					<TD width="1%" align="center">&raquo;</TD>
-					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|string_format:"%01.2f"} {.currency}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
+					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|string_format:"%01.2f"} {$lang.currency}{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
 					<TD width="93%">{$balancelist.comment[balancelist]}</TD>
 				</TR>
 				{sectionelse}
@@ -56,7 +56,7 @@
 							</SELECT>
 						</TD>
 						<TD colspan="2" class="ftop" nowrap>
-							<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s"> {.currency}
+							<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s"> {$lang.currency}
 						</TD>
 						<TD colspan="2" align="right" class="ftop">
 							<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]"> <A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>

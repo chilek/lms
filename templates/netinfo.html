@@ -93,7 +93,7 @@
 		<TD width="100%" class="flr" colspan="4" align="right">
 			{if $unlockedit}
 			<form name="remap" action="" method="get">
-			<A href="?m=netcmp&id={$network.id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz przyznaæ wszystkim komputerom adresy od nowa? Pamiêtaj, ¿e mo¿e to wywo³aæ nie{.currency}e zamieszanie w sieci :)')">Porz±dkuj sieæ <img src="img/cmp.gif" align="absmiddle" alt="[ Posortuj ]" border="0"></A><BR>
+			<A href="?m=netcmp&id={$network.id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz przyznaæ wszystkim komputerom adresy od nowa? Pamiêtaj, ¿e mo¿e to wywo³aæ nie{$lang.currency}e zamieszanie w sieci :)')">Porz±dkuj sieæ <img src="img/cmp.gif" align="absmiddle" alt="[ Posortuj ]" border="0"></A><BR>
 				<input type="hidden" name="is_sure">
 				<input type="hidden" name="m" value="netremap">
 				<input type="hidden" name="id" value="{$network.id}">
