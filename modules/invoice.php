@@ -24,6 +24,11 @@
  *  $Id$
  */
 
+header('Content-Type: '.($_CONFIG['invoices']['content_type'] != '' ? $_CONFIG['invoices']['content_type'] : 'text/html; charset=iso-8859-2'));
+if($_CONFIG['invoices']['attachment_name'] != '')
+	header('Content-Disposition: attachment; filename='.$_CONFIG['invoices']['attachment_name']);
+				
+
 if($_GET['print'] == 'cached' && sizeof($_SESSION['ilp_marks']))
 {
 	$layout['pagetitle'] = 'Faktury VAT';
