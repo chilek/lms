@@ -28,8 +28,9 @@ wersja 1.0pre5 (??/??/2003):
   - Teraz %b we wzorcu wiadomo¶ci rozwija siê do - (saldo) (czyli jest to
 	kwota do zap³aty, ksiêgowi nie znaj± liczb ujemnych :)
   - %date-y %date-m %desc rozwijaj± siê odpowiednio do: aktualnego roku, 
-    nazwy miesi±ca (set LANG=pl ?) i opisu pakietu z tariffs.
-  
+    nazwy miesi±ca (set LANG=pl ?) i opisu pakietu z tariffs. 
+	%last_10_in_a_table zmienia siê w maksymalnie 10 ostatnich operacji na
+	koncie, kto u licha wie co oznaczaj± typy ? gdzie je dokumentowaæ ?
 	  
 wersja 1.0pre4 (21/01/2003):
 
