@@ -11,6 +11,7 @@ wersja 1.4.4 (??/??/????):
     wykorzystany - zmieniono tre¶æ komunikatu o b³êdzie przy zmianie loginu 
     lub tworzeniu nowego konta (alec)
   - przy dodawaniu administratora 'imiê i nazwisko' nie mo¿e byæ puste (alec) 
+  - BTS#0000305: helpdesk - poprawiony interfejs w informacjach o kolejce (alec)
 
 wersja 1.4.3 Velis (13/01/2005):
 
