@@ -51,7 +51,7 @@ int db_connect(const unsigned char *db, const unsigned char *user, const unsigne
     }
 #endif
 #ifdef DEBUG
-    syslog(LOG_INFO, "DEBUG: Connected with params: db=%s host=%s user=%s passwd=%s port=%d",db, host, user, passwd, port);
+    syslog(LOG_INFO, "DEBUG: Connected with params: db=%s host=%s user=%s passwd=%s port=%d",db, host, user, password, port);
 #endif
     return OK;
 }
