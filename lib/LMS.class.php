@@ -1585,6 +1585,14 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return ($this->DB->GetOne('SELECT id FROM usergroups WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
+	function UsergroupMove($from, $to)
+	{
+		$this->SetTS('userassignments');
+		$ids = $this->DB->GetCol('SELECT userassignments.id AS id FROM userassignments, users WHERE userid = users.id AND usergroupid = ?', array($from));
+		foreach($ids as $id)
+			$this->DB->Execute('UPDATE userassignments SET usergroupid=? WHERE id=? AND usergroupid=?', array($to, $id, $from));
+	}
+
 	function UsergroupGetId($name)
 	{
 		return $this->DB->GetOne('SELECT id FROM usergroups WHERE name=?', array($name));
