@@ -1175,7 +1175,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			if((time()-$result['lastonline'])>600)
 			{
 				$result['lastonlinedate'] = date('Y-m-d, H:i',$result['lastonline'])."<br>";
-				$result['lastonlinedate'] .= date('(i \m\i\n\u\t, G \g\o\d\z\i\n, ',time()-$result['lastonline']);
+				$result['lastonlinedate'] .= date('(i \m\i\n\u\t, G \g\o\d\z\i\n, ',time()-$result['lastonline']-3600);
 				$result['lastonlinedate'] .= round((time()-$result['lastonline'])/86400)." dni temu)";			
 			} else
 				$result['lastonlinedate'] .= "aktualnie w³±czony";
