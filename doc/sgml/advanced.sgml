@@ -137,6 +137,7 @@
 				<member>moddate - znacznik czasu ostatniej modyfikacji</member>
 				<member>creatorid - identyfikator administratora tworz±cego wpis</member>
 				<member>modid - identyfikator administratora </member>
+				<member>netdev - identyfikator urz±dzenia sieciowego do którego jest pod³±czony komputer</member>
 				<member>access - pod³±czony/od³aczony</member>
 			</simplelist>
 		</sect2>
@@ -153,6 +154,15 @@
 				<member>ports - ilo¶æ portów</member>
 			</simplelist>
 		</sect2>
+		<sect2 id="netlinks">
+			<title>Po³±czenia sieciowe ('netlinks')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>src - jeden koniec</member>
+				<member>dst- drugi koniec</member>
+			</simplelist>
+		</sect2>
+
 		<sect2 id="cash">
 			<title>Operacje finansowe ('cash')</title>
 			<simplelist>
