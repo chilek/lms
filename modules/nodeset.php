@@ -9,6 +9,6 @@
 		$LMS->NodeSet($_GET[id]);
 	}
 
-	header("Location: ?".$_SESSION[backto]);
+	header("Location: ?".$_SESSION[backto]."#".$_GET[ownerid]);
 
 ?>
