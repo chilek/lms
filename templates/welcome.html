@@ -7,12 +7,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD ALIGN="CENTER" COLSPAN="2" CLASS="FALL">
-						<IMG SRC="img/logo-ico.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>Informacje o LMS:</B>
+						<IMG SRC="img/logo-ico.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>{$lang.LMS_INFO}:</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://lms.rulez.pl" target="_BLANK">Wersja LMS:</A></B>
+						<B><A HREF="http://lms.rulez.pl" target="_BLANK">{$lang.LMS_VER}:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$layout.lmsv}
@@ -20,7 +20,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://lms.rulez.pl" target="_BLANK">Wersja LMSDB:</A></B>
+						<B><A HREF="http://lms.rulez.pl" target="_BLANK">{$lang.LMSDB_VER}:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$layout.lmsdbv}
@@ -29,7 +29,7 @@
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
 						<B>
 						{if $layout.dbtype == "mysql"}
-						<A HREF="http://www.mysql.com" target="_BLANK"> Wersja MySQL:</A>
+						<A HREF="http://www.mysql.com" target="_BLANK">{$lang.MYSQL_VER}:</A>
 						{else}
 						<A HREF="http://www.postgresql.org" target="_BLANK">Wersja PostgreSQL:</A>
 						{/if}
@@ -41,7 +41,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://www.php.net/" target="_BLANK">Wersja PHP:</A></B>
+						<B><A HREF="http://www.php.net/" target="_BLANK">{$lang.PHP_VER}:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.phpversion}
@@ -49,7 +49,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
-						<B><A HREF="http://smarty.php.net" target="_BLANK">Wersja Smarty:</A></B>
+						<B><A HREF="http://smarty.php.net" target="_BLANK">{$lang.SMARTY_VER}:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FBR">
 						{$layout.smarty_version}
@@ -61,12 +61,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD HEIGHT="24" ALIGN="CENTER" COLSPAN="2" CLASS="FALL" NOWRAP>
-						<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>Informacje o systemie:</B>
+						<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>{$lang.SYS_INFO}:</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Nazwa hosta:</B>
+						<B>{$lang.HOST_NAME}:</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.hostname}
@@ -74,7 +74,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Wersja systemu:</B>
+						<B>{$lang.SYS_VER}:</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.kernel}
@@ -82,7 +82,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Uptime:</B>
+						<B>{$lang.UPTIME}:</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.uptime}
@@ -98,7 +98,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
-						<B>Obci±¿enie:</B>
+						<B>{$lang.LOAD}:</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FBR">
 						{$sysinfo.loadavg.0} {$sysinfo.loadavg.1} {$sysinfo.loadavg.2}
@@ -112,12 +112,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/user.gif" ALIGN="ABSMIDDLE"> <B>U¿ytkownicy:</B>
+						<IMG SRC="img/user.gif" ALIGN="ABSMIDDLE"> <B>{$lang.USERS}:</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=3">Pod³±czeni:</A></B>
+						<B><A HREF="?m=userlist&s=3">{$lang.CONNECTED}:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$userstats.connected}
@@ -125,7 +125,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=2">Oczekuj±cy na pod³±czenie:</A></B>
+						<B><A HREF="?m=userlist&s=2">{$lang.WAIT_FOR_CONNECTION}:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$userstats.awaiting}
@@ -133,7 +133,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=1">Zainteresowani pod³±czeniem:</A></B>
+						<B><A HREF="?m=userlist&s=1">{$lang.INTERESTED_FOR_CONNECTION}:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$userstats.interested}
@@ -141,8 +141,8 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="?m=userlist&s=0">Razem:</A><BR>
-						<A HREF="?m=userlistdebt">W tym zad³u¿onych:</A></B>
+						<B><A HREF="?m=userlist&s=0">{$lang.ALL}:</A><BR>
+						<A HREF="?m=userlistdebt">{$lang.IN_DEBT}:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$userstats.total}<BR>
@@ -155,12 +155,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/node.gif" ALIGN="ABSMIDDLE"> <B>Komputery</B>
+						<IMG SRC="img/node.gif" ALIGN="ABSMIDDLE"> <B>{$lang.NODES}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Pod³±czone:</B>
+						<B>{$lang.CONNECTED}:</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$nodestats.connected}
@@ -168,7 +168,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Od³±czone:</B>
+						<B>{$lang.DISCONNECTED}:</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$nodestats.disconnected}
@@ -176,7 +176,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="?m=nodelist">Razem:</A></B>
+						<B><A HREF="?m=nodelist">{$lang.ALL}:</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$nodestats.total}
@@ -190,12 +190,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/tip.gif" ALIGN="ABSMIDDLE"> <B>Przydatne linki</B>
+						<IMG SRC="img/tip.gif" ALIGN="ABSMIDDLE"> <B>{$lang.USEFUL_LINKS}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL" ALIGN="CENTER">
-						<B><A HREF="http://lms.rulez.pl" TARGET="_BLANK">Strona domowa LMS</A><BR>
+						<B><A HREF="http://lms.rulez.pl" TARGET="_BLANK">{$lang.LMS_HOMEPAGE}</A><BR>
 							<A HREF="doc/html/" TARGET="_BLANK">Dokumentacja on-line</A><BR>
 							<A HREF="doc/ChangeLog" TARGET="_BLANK">ChangeLog</A><BR>
 							<A HREF="http://lists.rulez.pl/lms/" TARGET="_BLANK">Archiwum listy mailingowej</A><BR>
