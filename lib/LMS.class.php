@@ -257,6 +257,7 @@ class LMS
 
 	function AdminDelete($id) // usuwa admina o podanym id
 	{
+		$this->SetTS("admins");
 		return $this->DB->Execute("DELETE FROM admins WHERE id=?",array($id));
 	}
 
@@ -745,6 +746,7 @@ class LMS
 
 	function DeleteNode($id)
 	{
+		$this->SetTS("nodes");
 		return $this->DB->Execute("DELETE FROM nodes WHERE id=?",array($id));
 	}
 
@@ -1092,6 +1094,7 @@ class LMS
 
 	function DeleteAssignment($id,$balance = FALSE)
 	{
+		$this->SetTS("assignments");
 		return $this->DB->Execute('DELETE FROM assignments WHERE id=?',array($id));
 	}
 
@@ -1163,9 +1166,11 @@ class LMS
 	function TariffDelete($id)
 	{
 		 if (!$this->GetUsersWithTariff($id))
-		 return $this->DB->Execute("DELETE FROM tariffs WHERE id=?",array($id));
-		 else
-		 return FALSE;
+		 {
+			$this->SetTS("tariffs");
+			return $this->DB->Execute("DELETE FROM tariffs WHERE id=?",array($id));
+		 } else
+			return FALSE;
 	}
 
 	function GetTariffValue($id)
@@ -1978,6 +1983,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.273  2003/10/08 20:55:11  alec
+ * SetTS() added to DELETE queries
+ *
  * Revision 1.272  2003/10/08 15:54:15  alec
  * poprawka w Traffic() umo¿liwiaj±ca wy¶wietlanie statów dla komputeró usuniêtych
  *
