@@ -383,7 +383,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 	if($notify)
 	{
 		# find admins emails
-		$dbq = $dbase->prepare("SELECT name, email FROM admins, rtrights WHERE admins.id=adminid AND queueid = '$queue' AND email!=''");
+		$dbq = $dbase->prepare("SELECT name, email FROM admins, rtrights WHERE admins.id=adminid AND queueid = '$queue' AND email!='' AND rtrights.rights>2");
 		$dbq->execute();
 		while(my $row = $dbq->fetchrow_hashref())
 		{

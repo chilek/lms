@@ -1,6 +1,6 @@
 $Id$
 
-version 1.5.5 Anubis (??/??/????):
+version 1.5.5 Anubis (25/03/2005):
 
   - fixed empty page printing on invoices when trying to print only 
     originals or only copies (alec)
@@ -72,6 +72,7 @@ version 1.5.5 Anubis (??/??/????):
   - notifications about new tickets in UI and lms-rtparser (chilek/alec)
   - proper char encoding in mail notifications (chilek)
   - added confirm. dialog for generation of new PIN and node's password (alec)
+  - added "Notices" privilage for helpdesk queues (alec) 
 
 version 1.5.4 Ramius (16/02/2005):
 
