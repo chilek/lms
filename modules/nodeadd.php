@@ -63,6 +63,8 @@ if(isset($nodedata))
 		$error['ipaddr'] = trans('Specified IP address not overlaps with any network!');
 	elseif(!$LMS->IsIPFree($nodedata['ipaddr']))
 		$error['ipaddr'] = trans('Specified IP address is in use!');
+	elseif($LMS->IsIPGateway($nodedata['ipaddr']))
+		$error['ipaddr'] = trans('Specified IP address is network gateway!');
 
 	if(!$nodedata['mac'])
 		$error['mac'] = trans('MAC address is required!');

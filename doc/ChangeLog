@@ -31,6 +31,10 @@ wersja 1.5.4 (??/??/????):
     'From:' potwierdzenia wstawiamy nazwê kolejki (rejmer/alec)
   - BTS#0000282: lms-rtparser: w polu 'Do:' potwierdzenia wstawiamy tylko
     adres email bez nazwy konta zg³aszaj±cego (rejmer/alec)
+  - BTS#0000274: Nie mo¿na przypisaæ komputerowi adresu gatewaya (alec)
+  - usuniêty b³±d powoduj±cy z³e rozpoznawanie adresu sieci i broadcastu na 
+    li¶cie hostów w danej sieci, je¶li lista ta by³a na wiêcej ni¿ jednej
+    stronie (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
