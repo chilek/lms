@@ -40,7 +40,7 @@ if (!$LMS->UserExists($_GET[id]))
 		$body .= "<P>Wszystkie dane u¿ytkownika zostan± utracone, a tak¿e wszystkie przypisane temu u¿ytkownikowi komputery zostan± usuniête.</P>";
 		$body .= "<P><A HREF=\"?m=userdel&id=".$_GET[id]."&is_sure=1\">Tak, jestem pewien.</A></P>";
 	}else{
-		header("Location: ?m=".$_SESSION[lastmodule]);
+		header("Location: ?m=userinfo&id=".$_GET[id]);
 		$body = "<H1>".$layout[pagetitle]."</H1>";
 		$body .= "<P>U¿ytkownik ".$LMS->GetUserName($_GET[id])." zosta³ usuniêty.</P>";
 		$LMS->DeleteUser($_GET[id]);
@@ -54,6 +54,9 @@ $SMARTY->display("footer.html");
 
 /*
  * $Log$
+ * Revision 1.20  2003/08/27 20:32:54  lukasz
+ * - changed another ENUM (users.deleted) to BOOL
+ *
  * Revision 1.19  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

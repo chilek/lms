@@ -8,7 +8,7 @@ wersja 1.1.3 (??/??/2003):
     komputerów i nie widaæ go na li¶cie u¿ytkowników, natomiast w informacji o
     nim jest informacja o tym ¿e u¿ytkownik jest usuniêty, co oczywi¶cie
     wymaga modyfikacji bazy danych: (lukasz)
-    ALTER TABLE users ADD deleted ENUM('Y','N') DEFAULT 'N' NOT NULL;
+    ALTER TABLE users ADD deleted BOOL DEFAULT '0' NOT NULL;
   - zmienione 'op³ata ab' na bardziej intuicyjne 'obci±¿enie' (lukasz)
   - zmiana formatu zapisu adresu IP w bazie danych, wymagane upgrejdy bazy
     (lukasz):

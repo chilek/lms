@@ -113,7 +113,7 @@ else
 	exit 1;
 }
 
-my $dbq = $dbase->prepare("SELECT users.id AS id, tariffs.value AS value FROM users,tariffs WHERE users.tariff = tariffs.id AND status = 3 AND deleted = 'N' AND payday = $payday");
+my $dbq = $dbase->prepare("SELECT users.id AS id, tariffs.value AS value FROM users,tariffs WHERE users.tariff = tariffs.id AND status = 3 AND deleted = 0 AND payday = $payday");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
