@@ -171,6 +171,7 @@ $layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['uptime'] = uptime();
 $layout['hostname'] = hostname();
+$layout['lmsvs'] = '1.1-cvs';
 
 $SMARTY->assign('menu', $LMS->MENU);
 $SMARTY->assign('layout', $layout);
@@ -236,6 +237,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.124  2004/01/27 10:44:45  lukasz
+ * - ziaf. cosmetics.
+ *
  * Revision 1.123  2003/12/04 22:20:36  alec
  *  - mala poprawka parsera uwzgledniajaca puste zmienne np.""
  *
