@@ -26,13 +26,16 @@
 
 if($_SERVER['REQUEST_METHOD'] == 'POST')
 {
-	print_r($_POST);
+	$LMS->UpdateRegisterData($_POST['name'], $_POST['url'], ($_POST['hidden'] == 1 ? TRUE : FALSE));
+	header('Location: ?m=register');
+	die;
 }
+
+
 
 $layout['pagetitle'] = trans('Register your installation today! ;-)');
 
-print_r($LMS->GetRegisterData());
-
+$SMARTY->assign('uiid', $LMS->GetUniqueInstallationID());
 $SMARTY->assign('regdata', $LMS->GetRegisterData());
 $SMARTY->display('register.html');
 
