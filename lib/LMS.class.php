@@ -746,13 +746,15 @@ class LMS
 
 	function GetUserBalanceList($id)
 	{
-		// wrapper do starego formatu
+/*		// wrapper do starego formatu
 		if($talist = $this->DB->GetAll("SELECT id, name FROM admins"))
 			foreach($talist as $idx => $row)
 				$adminslist[$row['id']] = $row['name'];
-
+to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
+*/
 		// wrapper do starego formatu
-		if($tslist = $this->DB->GetAll("SELECT id, time, adminid, type, value, userid, comment, invoiceid FROM cash WHERE userid=? ORDER BY time", array($id)))
+		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, userid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE userid=? ORDER BY time', array($id)))
+//		if($tslist = $this->DB->GetAll("SELECT id, time, adminid, type, value, userid, comment, invoiceid FROM cash  WHERE userid=? ORDER BY time", array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -763,7 +765,7 @@ class LMS
 			{
 				($i>0) ? $saldolist['before'][$i] = $saldolist['after'][$i-1] : $saldolist['before'][$i] = 0;
 
-				$saldolist['adminname'][$i] = $adminslist[$saldolist['adminid'][$i]];
+//				$saldolist['adminname'][$i] = $adminslist[$saldolist['adminid'][$i]];
 				$saldolist['value'][$i] = round($saldolist['value'][$i],3);
 
 				switch ($saldolist['type'][$i]){
@@ -777,7 +779,6 @@ class LMS
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
 						$saldolist['name'][$i] = "Obci±¿enie";
 					break;
-
 				}
 
 				$saldolist['date'][$i]=date("Y/m/d H:i",$saldolist['time'][$i]);
@@ -788,9 +789,8 @@ class LMS
 			$saldolist['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
 			$saldolist['total'] = sizeof($saldolist['id']);
 
-		}else{
+		} else 
 			$saldolist['balance'] = 0;
-		}
 
 		if($saldolist['total'])
 		{
@@ -804,9 +804,69 @@ class LMS
 
 		$saldolist['userid'] = $id;
 		return $saldolist;
-
 	}
 
+	function GetUserBalanceListByDate($id, $date=NULL)
+	{
+		if($tslist = $this->DB->GetAll("SELECT cash.id AS id, time, type, value, userid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE userid=? ORDER BY time", array($id)))
+			foreach($tslist as $row)
+				foreach($row as $column => $value)
+					$saldolist[$column][] = $value;
+
+		if(sizeof($saldolist['id']) > 0)
+		{
+			foreach($saldolist['id'] as $i => $v)
+			{
+				($i>0) ? $saldolist['before'][$i] = $saldolist['after'][$i-1] : $saldolist['before'][$i] = 0;
+
+				$saldolist['value'][$i] = round($saldolist['value'][$i],3);
+
+				switch ($saldolist['type'][$i]){
+
+					case "3":
+						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
+						$saldolist['name'][$i] = "Wp³ata";
+					break;
+
+					case "4":
+						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
+						$saldolist['name'][$i] = "Obci±¿enie";
+					break;
+				}
+
+				
+				if($saldolist['time'][$i]>=$date['from'] && $saldolist['time'][$i]<=$date['to'])
+				{
+					$list['after'][] = $saldolist['after'][$i];
+					$list['before'][] = $saldolist['before'][$i];
+					$list['value'][] = $saldolist['value'][$i];
+					$list['name'][] = $saldolist['name'][$i];
+					$list['date'][] = date("Y/m/d H:i",$saldolist['time'][$i]);
+					$list['adminname'][] = $saldolist['adminname'][$i];
+					(strlen($saldolist['comment'][$i])<3) ? $list['comment'][] = $saldolist['name'][$i] : $list['comment'][] = $saldolist['comment'][$i];
+				}
+			}
+
+			$list['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
+			$list['total'] = sizeof($saldolist['id']);
+
+		} else
+			$list['balance'] = 0;
+
+		if($list['total'])
+		{
+			foreach($list['value'] as $key => $value)
+				$list['value'][$key] = $value;
+			foreach($list['after'] as $key => $value)
+				$list['after'][$key] = $value;
+			foreach($list['before'] as $key => $value)
+				$list['before'][$key] = $value;
+		}
+
+		$list['userid'] = $id;
+		return $list;
+	}
+	
 	function UserStats()
 	{
 		$result['total'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE deleted=0");
