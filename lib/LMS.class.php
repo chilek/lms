@@ -1129,7 +1129,13 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			return $this->DB->Execute('UPDATE nodes SET access=?, modid=? WHERE ownerid=?', array(0,$this->SESSION->id,$id));
 	}		
 
-	function NodeSetWarn($id)
+	function NodeSetWarn($id,$warning=FALSE)
+	{
+		$this->SetTS('nodes');
+		return $this->DB->Execute('UPDATE nodes SET warning=?, modid=? WHERE id=?', array($warning,$this->SESSION->id,$id));
+	}
+
+	function NodeSwitchWarn($id)
 	{
 		$this->SetTS('nodes');
 		if($this->DB->GetOne('SELECT warning FROM nodes WHERE id=?', array($id)) == 1 )

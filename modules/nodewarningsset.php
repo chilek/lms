@@ -21,21 +21,27 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
  *
- *  $Id$
  */
 
-if($LMS->UserExists($_GET['ownerid']))
+$setwarnings = $_POST['setwarnings'];
+
+$_SESSION['warnmessage'] = $setwarnings['message'];
+$_SESSION['warnon'] = $setwarnings['warnon'];
+
+if(isset($setwarnings['mnodeid']))
 {
-	$LMS->NodeSetWarnU($_GET['ownerid'], $_GET['warning']);
-	$backid = $_GET['ownerid'];
+	foreach($setwarnings['mnodeid'] as $value)
+	{
+		if (isset($setwarnings['warnon']) && $LMS->NodeExists($value))
+			$LMS->NodeSetWarn($value, ($setwarnings['warnon']) ? TRUE : FALSE);
+		if (isset($setwarnings['message']))
+		{
+			$LMS->SetTS('users');
+			$LMS->DB->Execute('UPDATE users SET message=? WHERE id=?', array($setwarnings['message'],$LMS->GetNodeOwner($value)));
+		}
+	}
 }
 
-if($LMS->NodeExists($_GET['id']))
-{
-	$LMS->NodeSwitchWarn($_GET['id']);
-	$backid = $_GET['id'];
-}
-
-header("Location: ?".$_SESSION['backto']."#".$backid);
+header("Location: ?".$_SESSION['backto']);
 
 ?>

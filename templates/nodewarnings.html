@@ -1,0 +1,76 @@
+{include file="header.html"}
+{include file="nodeheader.html"}
+<!--// $Id$ //-->
+<SCRIPT LANGUAGE="JavaScript" SRC="img/calendar.js"></SCRIPT>
+{literal}
+<SCRIPT LANGUAGE=JavaScript" TYPE="text/javascript">
+<!--
+	function SelectAllNodes()
+	{
+		for (var i = 0; i < document.setwarnings.elements[0].length; i++)
+			document.setwarnings.elements[0].options[i].selected = true;
+	}
+//-->
+</SCRIPT>
+{/literal}
+<H1>{$layout.pagetitle}</H1>
+<P><FORM NAME="setwarnings" METHOD="POST" ACTION="?m=nodewarningsset">
+<TABLE width="100%" cellpadding="3">
+	<TR>
+		<TD WIDTH="1%" VALIGN="TOP">
+			<TABLE width="100%" cellpadding="3">
+				<TR CLASS="DARK">
+					<TD CLASS="FALL">
+						<IMG SRC="img/user.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>Komputery:</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD CLASS="FALL">
+						Wybierz komputery którym chcesz zmodyfikowaæ wiadomo¶æ administracyjn±:<BR><BR>
+						<SELECT size="19" name="setwarnings[mnodeid][]" multiple>
+							{section name=nodelist loop=$nodelist}
+							<OPTION value="{$nodelist[nodelist].id}">{if $nodelist[nodelist].warning}* {/if}{$nodelist[nodelist].name|truncate:50:" ..."} / {$nodelist[nodelist].ip} ({$nodelist[nodelist].id|string_format:"%04d"})</OPTION>
+							{/section}
+						</SELECT><BR><BR>
+						<A HREF="javascript:SelectAllNodes()">Zaznacz wszystkie <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+		<TD WIDTH="99%" VALIGN="TOP">
+			<TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
+					<TD CLASS="FALL" COLSPAN="3">
+						<IMG SRC="img/mail.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>Wiadomo¶æ administracyjna:</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="100%" CLASS="ftopu" COLSPAN="3">
+						Wpisz wiadomo¶æ administracyjn±:<BR><BR>
+						<TABLE WIDTH="1%" CELLPADDING="3">
+							<TD CLASS="FALL" COLSPAN="3" BGCOLOR="#F4F0EC" {tip text="Wiadomo¶æ administracyjna do u¿ytkownika"}>
+								<TEXTAREA NAME="setwarnings[message]" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" ROWS="21" COLS="50">{$warnmessage}</TEXTAREA>
+							</TD>
+						</TABLE>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD CLASS="fbottomu" COLSPAN="3">
+						<TABLE WIDTH="100%" CELLPADDING="3">
+							<TD ALIGN="left" COLSPAN="2">
+								<INPUT TYPE="checkbox" NAME="setwarnings[warnon]" {if $warnon}CHECKED{/if}>W³±cz ostrze¿enia</INPUT>
+							</TD>
+							<TD ALIGN="right" COLSPAN="1">
+								<A HREF="javascript:document.setwarnings.submit()">Ustaw <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
+							</TD>
+						</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+
+</P>
+{include file="footer.html"}
