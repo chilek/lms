@@ -50,7 +50,7 @@ elseif($LMS->GetNodeOwner($_GET['id']) == 0)
 if($_GET['devid'])
 {
 	$error['netdev'] = 'Brak wolnych portów w wybranym urz±dzeniu!';
-	$SMARTY->assign('error, $error);
+	$SMARTY->assign('error', $error);
 	$SMARTY->assign('netdevice', $_GET['devid']);
 }
 
