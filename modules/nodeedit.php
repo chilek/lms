@@ -33,16 +33,18 @@ if(!$LMS->NodeExists($_GET['id']))
 if($_GET['action']=="link")
 {
 	$netdev = $LMS->GetNetDev($_GET['devid']); 
-	if($netdev['ports'] <= $netdev['takenports'])
-	        $error['netdev'] = "Brak wolnych portów w wybranym urz±dzeniu!";
-	$errorlinkdev = $netdev;
 
-	if(!$error) 
+	if($netdev['ports'] <= $netdev['takenports']) 
 	{
 		$LMS->NetDevLinkNode($_GET['id'],$_GET['devid']);
 		header("Location: ?m=nodeinfo&id=".$_GET['id']);
 		die;
 	}
+	else
+	{
+		header('Location: ?m=nodeinfo&id='.$_GET['id'].'&devid='.$_GET['devid']);
+		die;
+	}	
 }
 
 $nodeid = $_GET['id'];
@@ -150,7 +152,6 @@ $balancelist = $LMS->GetUserBalanceList($owner);
 $usergroups = $LMS->UsergroupGetForUser($ownerid);
 $otherusergroups = $LMS->GetGroupNamesWithoutUser($ownerid);
 
-$nodeinfo['netdev'] = $errorlinkdev ? $netdev : $LMS->GetNetDev($nodeinfo['netdev']);
 $netdevices = $LMS->GetNetDevList();
 unset($netdevices['total']);
 unset($netdevices['direction']);

@@ -16,6 +16,8 @@ wersja 1.3.5 (??/??/????):
     kompaktowaniu je¶li u¿ytkownicy ¶ci±gaj± ponad 2 GB danych dziennie (alec)
   - BTS#0000168: poprawione dzia³anie zmiennej 'use_current_payday', przy 
     okazji wreszcie dzia³aj± error-triggery dla zobowi±zañ (alec)
+  - BTS#0000171: poprawiona obs³uga b³êdu przy braku wolnych portów 
+    w urz±dzeniu przy pierwszym pod³±czeniu komputera (alec)
 
 wersja 1.3.4 Terok (06/07/2004):
 
