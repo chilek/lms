@@ -30,20 +30,23 @@ function sum($args, $SMARTY)
 {
 	$array = $args['array'];
 	$column = $args['column'];
+	$format = (isset($args['string_format']) ? $args['string_format'] : '%d');
 	$default = (isset($args['default']) ? $args['default'] : 0);
 	if($array)
 		foreach($array as $row)
 			$result += $row[$column];
-	return (isset($result) ? $result : $default);
+	return sprintf($format,(isset($result) ? $result : $default));
 }
 
 $SMARTY->register_function('sum','sum');
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/08 03:15:14  lukasz
+ * - added string_format="%d"
+ *
  * Revision 1.1  2003/09/08 03:12:22  lukasz
  * - dodane {sum array=$array column="columnname" default="default value"}
- *
  *
  */
 
