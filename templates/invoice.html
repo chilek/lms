@@ -27,38 +27,36 @@
 </TABLE>
 <TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
-		<TD WIDTH="10%" VALIGN="TOP" ALIGN="RIGHT">
-			<B>Sprzedawca:</B>
-		</TD>
-		<TD WIDTH="40%" VALIGN="TOP">
+		<TD WIDTH="66%" VALIGN="TOP">
+			<B>Sprzedawca:</B><BR>
+			<BR>
 			{$_config.invoices.header|replace:"\\n":"<BR>"}
-		</TD>
-		<TD WIDTH="10%" VALIGN="TOP" ALIGN="RIGHT">
+			<BR>
 			<B>Nabywca:</B><BR>
 			<BR>
-			<BR>
-			<BR>
-			<BR>
-			<BR>
-			<BR>
-			<B>Nr. klienta:</B>
-			
-		</TD>
-		<TD WIDTH="40%" VALIGN="TOP">
 			{$invoice.name}<BR>
 			{$invoice.address}<BR>
 			{$invoice.zip} {$invoice.city}<BR>
+			Polska<BR>
+			<BR>
+			{if $invoice.phone neq ""}Tel: {$invoice.phone}<BR>{/if}
+			{if $invoice.nip neq ""}NIP: {$invoice.nip}<BR>{/if}
+			<BR>
+			<B>Numer klienta: {$invoice.customerid|string_format:"%04d"}</B>
+		</TD>
+		<TD WIDTH="34%" VALIGN="TOP" CLASS="sdr">
 			<BR>
 			<BR>
-			{if $invoice.nip neq ""}NIP: {$invoice.nip}{/if}<BR>
-			{if $invoice.phone neq ""}Tel: {$invoice.phone}{/if}<BR>
-			{$invoice.customerid|string_format:"%04d"}
-			
-			
+			<BR>
+			<BR>
+			<B>{$invoice.name}<BR>
+			{$invoice.address}<BR>
+			{$invoice.zip} {$invoice.city}<BR>
+			Polska</B>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" COLSPAN="4">
+		<TD WIDTH="100%" COLSPAN="2">
 			&nbsp;<BR>
 			&nbsp;
 		</TD>
