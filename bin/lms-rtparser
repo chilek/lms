@@ -31,6 +31,7 @@ use POSIX qw(strftime);
 use File::Copy;
 use MIME::Parser;
 use MIME::Words qw(:all);
+use MIME::QuotedPrint;
 use Net::SMTP;
 use Sys::Hostname;
 use Text::Iconv;
@@ -141,7 +142,12 @@ if($entity->mime_type =~ m|multipart/|i) # if we deal with multipart message...
 		if(($body = $entity->parts($partnum))->mime_type =~ m|text/|i && $mailbody eq '') # if we have empty body now.
 		{
 			$body = $entity->parts($partnum);
-			$mailbody = $body->as_string;
+			my $tmp_body = $body->as_string;
+			$mailbody = $body->bodyhandle->as_string;
+			if($tmp_body =~ m|Content-Transfer-Encoding: quoted-printable|i)
+			{
+				$mailbody = decode_qp($mailbody);
+			}
 		}
 		else
 		{
@@ -255,7 +261,12 @@ if( !$prev_tid && ($mh_subject =~ /\[RT#[0-9]{6,}\]/) )
 }
 
 # let's convert message to proper encoding (if needed)
-$_ = $mailheaders;
+if(my $tmp_body = $entity->parts(0)) #if multipart message, read encoding from first part, not from headers
+{
+	$_ = $tmp_body->as_string;
+} else {
+	$_ = $mailheaders;
+}
 if(/charset\=\"([a-zA-Z0-9-]*)\"/ || /charset\=([a-zA-Z0-9-]*)/)
 {
 	my $charset = uc($1);
@@ -265,6 +276,7 @@ if(/charset\=\"([a-zA-Z0-9-]*)\"/ || /charset\=([a-zA-Z0-9-]*)/)
 	}
 	if($charset ne $dbencoding)
 	{
+
 		my $converter = Text::Iconv->new($charset, $dbencoding);
 		$mailbody = $converter->convert($mailbody);
 		$orig_mailbody = $converter->convert($orig_mailbody);

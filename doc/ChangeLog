@@ -26,6 +26,8 @@ version 1.5.6 Baal (??/??/????):
     errors should be now displayed by app, not by php itself (lukasz)
   - on covenants report fixed columns summary and parse errors in eval()
     functions with polish locale (alec)
+  - BTS#0000323: lms-rtparser: fixed multipart messages charset conversion
+    and added decoding of quoted-printable encoded messages (alec)
 
 version 1.5.5 Anubis (25/03/2005):
 
