@@ -2172,6 +2172,11 @@ class LMS
 			array($date['from'], $date['to']));
 	}
 
+	function GetItemUnpaidValue($invoiceid, $itemid)
+	{
+		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 FROM cash WHERE invoiceid=? AND itemid=?', array($invoiceid, $itemid));
+	}
+
 	/*
 	*   Payments
 	*/
