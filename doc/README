@@ -39,7 +39,6 @@ LMS Developers
         3.10. Administratorzy
         3.11. Statystyki
         3.12. Helpdesk
-        3.13. Dodatki
 
    4. Skrypty
 
@@ -66,6 +65,12 @@ LMS Developers
         7.4. Generowanie danych losowych
         7.5. Poziomy dostêpu
         7.6. Ograniczenia
+
+   8. Dodatki
+
+        8.1. "Moje konto"
+        8.2. Panel SQL
+        8.3. Ostrze¿enia + squid
 
    Spis tabel
    4-1. Lista skryptów wykonywalnych
@@ -1409,45 +1414,6 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    polach Nazwisko i Imiê. Opcjonalnie, je¶li wiadomo¶æ zosta³a zg³oszona
    poczt± elektroniczn± podajemy adres e-mail (tak¿e dla u¿ytkownika
    zapisanego w bazie).
-     _________________________________________________________________
-
-3.13. Dodatki
-
-3.13.1. "Moje konto"
-
-   W katalogu contrib/customer znajduje siê przyk³ad rozwi±zania, dziêki
-   któremu ka¿dy u¿ytkownik twojej sieci mo¿e sprawdziæ w³asny bilans
-   finansowy.
-
-   Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla bilans i
-   informacje o u¿ytkowniku, który jest w³a¶cicielem komputera o tym
-   adresie. Pliki nale¿y skopiowaæ w dowolne miejsce i wystawiæ pod
-   adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie ustawiæ
-   poprawn± ¶cie¿kê do lms.ini w pliku index.php.
-     _________________________________________________________________
-
-3.13.2. Panel SQL
-
-3.13.2.1. Wstêp
-
-   W katalogu contrib/sqlpanel znajdziesz modu³, dziêki któremu bêdziesz
-   mia³ mo¿liwo¶æ bezpo¶redniego dostêpu do bazy danych poprzez zadawanie
-   zapytañ SQL. Wyniki wy¶wietlane s± w formie tabeli. Ponadto podawany
-   jest czas wykonania zapytania. Mo¿liwe jest tak¿e drukowanie wyników
-   zapytania.
-
-   Ilo¶æ wy¶wietlanych wierszy na jednej stronie ograniczana jest
-   domy¶lnie do 50. Mo¿na to zmieniæ przy pomocy zmiennej
-   'sqlpanel_pagelimit' w sekcji [phpui] pliku konfiguracyjnego lms.ini.
-     _________________________________________________________________
-
-3.13.2.2. Instalacja
-
-   Instalacja polega na skopiowaniu plików w odpowiednie miejsca w
-   drzewie katalogów lms'a. Plik sql.php skopiuj do katalogu modules, a
-   pliki sql.html, sqlprint.html, adminheader.html do katalogu templates.
-   Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu
-   Administratorzy->SQL.
      _________________________________________________________________
 
 Rozdzia³ 4. Skrypty
@@ -3614,3 +3580,96 @@ mysql> show table status;
           + Ilo¶æ rekordów:
             Maksymalna ilo¶æ rekordów dla tej bazy to 2^32, ale nikt nie
             testowa³ nigdy takiej ilo¶ci.
+     _________________________________________________________________
+
+Rozdzia³ 8. Dodatki
+
+   W niniejszym rozdziale zostan± opisane dodatkowe modu³y i rozwi±zania
+   zwiêkszaj±ce funkcjonalno¶æ LMS'a znajduj±ce siê w katalogu contrib.
+   Czê¶æ z nich nale¿y dostosowaæ do w³asnych potrzeb, a niektóre
+   integruj± siê z interfejsem LMS-UI.
+     _________________________________________________________________
+
+8.1. "Moje konto"
+
+8.1.1. Wstêp
+
+   W katalogu contrib/customer znajduje siê przyk³ad rozwi±zania, dziêki
+   któremu ka¿dy u¿ytkownik twojej sieci mo¿e sprawdziæ w³asny bilans
+   finansowy.
+
+   Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla bilans i
+   informacje o u¿ytkowniku, który jest w³a¶cicielem komputera o tym
+   adresie.
+     _________________________________________________________________
+
+8.1.2. Instalacja
+
+   Pliki nale¿y skopiowaæ w dowolne miejsce i wystawiæ pod adresem
+   dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie ustawiæ poprawn±
+   ¶cie¿kê do lms.ini w pliku index.php.
+     _________________________________________________________________
+
+8.2. Panel SQL
+
+8.2.1. Wstêp
+
+   W katalogu contrib/sqlpanel znajdziesz modu³, dziêki któremu bêdziesz
+   mia³ mo¿liwo¶æ bezpo¶redniego dostêpu do bazy danych poprzez zadawanie
+   zapytañ SQL. Wyniki wy¶wietlane s± w formie tabeli. Ponadto podawany
+   jest czas wykonania zapytania. Mo¿liwe jest tak¿e drukowanie wyników
+   zapytania.
+
+   Ilo¶æ wy¶wietlanych wierszy na jednej stronie ograniczana jest
+   domy¶lnie do 50. Mo¿na to zmieniæ przy pomocy zmiennej
+   'sqlpanel_pagelimit' w sekcji [phpui] pliku konfiguracyjnego lms.ini.
+     _________________________________________________________________
+
+8.2.2. Instalacja
+
+   Instalacja polega na skopiowaniu plików w odpowiednie miejsca w
+   drzewie katalogów lms'a. Plik sql.php skopiuj do katalogu modules, a
+   pliki sql.html, sqlprint.html, adminheader.html do katalogu templates.
+   Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu
+   Administratorzy->SQL.
+     _________________________________________________________________
+
+8.3. Ostrze¿enia + squid
+
+8.3.1. Wstêp
+
+   Ten ma³y zestaw narzêdzi pozwala za pomoc± squida w dosyæ elegancki
+   sposób wy¶wietlaæ wiadomo¶ci administracyjne. Oczywi¶cie aby to
+   dzia³a³o w 100%, wszyscy u¿ytkownicy musz± korzystaæ ze squida.
+
+   Kluczowym elementem jest redirector. Odpowiada on za to, aby w
+   momencie ustawienia dla danego komputera flagi warn, przekierowywa³
+   wszystkie ¿±dania wysy³ane do serwera proxy na nasz, ustalony
+   wcze¶niej adres. Przekierowaniu nie ulegaj± adresy zawieraj±ce adres
+   naszej winetki, tak aby umo¿liwiæ za³adowanie siê obrazków. Po
+   przekierowaniu u¿ytkownik ma mo¿liwo¶æ oznaczenia wiadomo¶ci jako
+   przeczytanej, po czym skrypt automatycznie kieruje przegl±darkê na
+   pierwotnie wywo³ywany URL. Wiêcej informacji znajdziesz w pliku
+   README.
+     _________________________________________________________________
+
+8.3.2. Instalacja
+
+   Zaczynamy od konfiguracji squida (squid.conf):
+redirector_bypass on
+redirect_program /sciezka/do/lms-squid-warnings
+
+   które informuj± squida aby dla ka¿dego adresu u¿ywa³ naszego
+   redirectora. Nastêpnie nale¿y skonfigurowaæ redirectora. Otwieramy w
+   naszym ulubionym edytorze plik lms-squid-warnings i praktycznie
+   wszystko co mo¿na w nim ustawiæ to:
+my $configfile = '/etc/lms/lms.ini';
+
+   Czyli po³o¿enie pliku konfiguracyjnego. Reszta konfiguracji ustawiana
+   jest w lms.ini, gdzie dopisujemy sekcjê [squid-warnings] i definiujemy
+   adres winetki:
+[squid-warnings]
+redirect        = http://nasz.serwer.pl/winetka/
+
+   Do katalogu gdzie ma byæ widoczna winetka kopiujemy pliki index.php,
+   message.html i zawarto¶æ katalogu img.

@@ -1,12 +1,12 @@
 <!-- $Id$ -->
 <chapter id="contrib">
 <title>Dodatki</title>
-	<sect1 id="contrib-customer">
-    	<title>"Moje konto"</title>
 	<para>W niniejszym rozdziale zostan± opisane dodatkowe modu³y i rozwi±zania
 	zwiêkszaj±ce funkcjonalno¶æ LMS'a znajduj±ce siê w katalogu 
 	<filename>contrib</filename>. Czê¶æ z nich nale¿y dostosowaæ do w³asnych 
 	potrzeb, a niektóre integruj± siê z interfejsem <emphasis>LMS-UI</emphasis>.</para>
+	<sect1 id="contrib-customer">
+    	<title>"Moje konto"</title>
 		<sect2 id="customer-intro">
 		<title>Wstêp</title>
 		<para>W katalogu <filename>contrib/customer</filename> znajduje siê
