@@ -53,16 +53,12 @@ Class LMSDB_common
 	function LMSDB_common()
 	{
 		// zabezpieczmy siê przed inicjowaniem tej klasy samej w sobie
-		
 		die();
-
 	}
 	
 	function Connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
-
 		// Inicjuje po³±czenie do bazy danych
-	
 		return $this->_driver_connect($dbhost,$dbuser,$dbpasswd,$dbname);
 	}
 
@@ -74,7 +70,6 @@ Class LMSDB_common
 	function Execute($query, $inputarray = NULL)
 	{
 		// wykonuje query sql'owe, jednocze¶nie je parsuj±c
- // 		echo $this->_query_parser($query,$inputarray)."<BR>";
 		$this->_driver_execute($this->_query_parser($query,$inputarray));
 		// i zwraca ilo¶æ zmodyfikowanych wierszy
 		return $this->_driver_affected_rows();
@@ -82,7 +77,6 @@ Class LMSDB_common
 
 	function GetAll($query = NULL, $inputarray = NULL)
 	{
-
 		// zwraca tablicê z ca³ym wynikiem
 	
 		if($query)
@@ -165,6 +159,11 @@ Class LMSDB_common
 	function CommitTrans()
 	{
 		return $this->_driver_committrans();
+	}
+
+	function GetDBVersion()
+	{
+		return $this->_driver_dbversion();
 	}
 
 	function _query_parser($query, $inputarray = NULL)

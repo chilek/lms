@@ -68,6 +68,7 @@ wersja 1.1.8 (??/??/????):
     case-sensitive (alec)
   - poprawiony interfejs 'mailingu', dodane sprawdzanie poprawno¶ci e-maila
     oraz nieuwzglêdnianie u¿ytkowników usuniêtych (alec)
+  - w oknie 'Informacje o LMS' dodana wersja serwera bazy danych (alec)
     
 wersja 1.1.7 Hathor (14/12/2003):
 
