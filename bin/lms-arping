@@ -1,0 +1,208 @@
+#!/usr/bin/perl -Tw
+#
+# LMS version 1.5-cvs
+#
+#  (C) 2001-2004 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($configfile $quiet $help $version);
+
+$ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
+
+my $_version = '1.5-cvs';
+
+my %options = (
+	"--config-file|C=s"  	=>	\$configfile,
+        "--quiet|q"          	=>     	\$quiet,
+        "--help|h"		=>     	\$help,
+        "--version|v"          	=>     	\$version
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+sub u32todotquad($)
+{
+     my $p = shift @_;
+     return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
+}
+
+sub dotquad2u32($)
+{
+     my $dq = shift||'0.0.0.0';
+     my @dq = split('\.',$dq,4);
+     return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
+}
+
+sub mask2prefix($)
+{
+    my $mask = shift @_;
+    my @tmp = split('\.',$mask,4);
+    my $q = sprintf("%b%b%b%b",$tmp[0],$tmp[1],$tmp[2],$tmp[3]);
+    $q =~ s/0*$//;
+    if ($q =~ /0/) {
+            print " You idiot. error in mask\n";
+    }
+    my $len = length($q) ;
+    return $len;
+}
+
+if($help)
+{
+     print STDERR <<EOF;
+lms-arping, version $_version
+(C) 2001-2004 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini     alternate config file (default: /etc/lms/lms.ini);
+-h, --help			print this help and exit;
+-v, --version               	print version info and exit;
+-q, --quiet               	suppress any output, except errors;
+
+EOF
+     exit 0;
+}
+
+if($version)
+{
+     print STDERR <<EOF;
+lms-arping, version $_version
+(C) 2001-2004 LMS Developers
+
+EOF
+     exit 0;
+}
+
+if(!$configfile)
+{
+     $configfile = "/etc/lms/lms.ini";
+}
+
+if(!$quiet)
+{
+     print STDOUT "lms-arping, version $_version\n";
+     print STDOUT "(C) 2001-2004 LMS Developers\n";
+     print STDOUT "Using file $configfile as config.\n";
+}
+
+if(! -r $configfile)
+{
+     print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+     exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
+
+my $networks_list = $ini->val('arping','networks') || '';
+my $arping = $ini->val('arping','arping_binary') || '/usr/sbin/arping';
+
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+my $dbase;
+my $utsfmt;
+
+if($dbtype eq "mysql")
+{
+     $dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+     $utsfmt = "UNIX_TIMESTAMP()";
+}
+elsif($dbtype eq "postgres")
+{
+     $dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+     $utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+}
+elsif($dbtype eq "sqlite")
+{
+     $dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+     $utsfmt = "strftime('%s','now')";
+     $dbase->func('inet_ntoa',1,'u32todotquad','create_function');
+     $dbase->func('inet_aton',1,'dotquad2u32','create_function');     
+
+}
+else
+{
+     print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+     exit 1;
+}
+
+if(!$networks_list)
+{
+     my $dbq = $dbase->prepare("SELECT name FROM networks");
+     $dbq->execute();
+     while (my $row = $dbq->fetchrow_hashref()) {
+          $networks_list = "$networks_list $row->{'name'}";
+     }
+}
+
+my @networks = split ' ', $networks_list;
+
+my @ips;
+my @lines;
+
+foreach my $network (@networks)
+{
+     my $dbq = $dbase->prepare("SELECT name, INET_NTOA(address) AS address, mask FROM networks WHERE UPPER(name) = UPPER('$network')");
+     $dbq->execute();
+     
+     if(my $row = $dbq->fetchrow_hashref())
+     {
+          my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
+
+          my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr FROM nodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
+          $ndbq->execute();
+          
+          while(my $nodrow = $ndbq->fetchrow_hashref())
+          {
+               push(@ips, "$nodrow->{'ipaddr'}");
+          }
+     }
+}
+
+foreach my $ip (@ips) 
+{
+     system("$arping -i eth1 $ip -c1 -q -d");
+     if ( "$?" == "0" ) 
+     { 
+          push(@lines, "$ip");
+     }
+
+}
+
+foreach my $line (@lines)
+{
+     $line =~ s/^\s+//;
+     $line =~ s/\s+$//;
+     my $idbq = $dbase->prepare("UPDATE nodes SET lastonline=$utsfmt WHERE ipaddr=INET_ATON('$line')");
+     $idbq->execute();
+     if(!$quiet)
+     {
+          print "$line\n";
+     }
+}
+
+$dbase->disconnect();
