@@ -137,9 +137,11 @@ mysql> flush privileges;
 mysql> use lms;
 mysql> source doc/lms.mysql;
 
-Po takim zabiegu mo¿na siê ju¿ zalogowaæ do LMS u¿ywaj±c konta 'admin'
-i   pustego   has³a.   Oczywi¶cie   po  pierwszym  zalogowaniu  nale¿y
-NATYCHMIAST zmieniæ sobie has³o na jakie¶ normalne.
+Po takim zabiegu mo¿na dostaæ siê do LMS bez loginu i has³a. Oczywi¶cie
+jest to niedopuszczalne, wiêc wchodzimy do sekcji 'Administratorzy'
+(z menu po lewej stronie) i dodajemy sobie konto. Po dodaniu admina
+zostaniemy prawdopodobnie wylogowani i bêdziemy mogli skorzystaæ 
+z przed chwil± utworzonego konta.
 
 I to (narazie) na tyle.
 

@@ -110,9 +110,12 @@ class Session {
 	
 	function VerifyPassword()
 	{
+		// Return TRUE (so, authorize user) if admins table is empty
+		if($this->ADB->GetOne("SELECT COUNT(id) FROM admins") == 0)
+			return TRUE;
 		$dbpasswd = $this->ADB->GetOne("SELECT passwd FROM admins WHERE login=?",array($this->login));
 		$dblogin = $this->ADB->GetOne("SELECT login FROM admins WHERE login=?",array($this->login));
-		if (crypt($this->passwd,$dbpasswd)==$dbpasswd || ($dblogin != "" && $dbpasswd == "" && $this->passwd == ""))
+		if (crypt($this->passwd,$dbpasswd)==$dbpasswd)
 			return TRUE;
 		else 
 		{

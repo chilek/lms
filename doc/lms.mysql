@@ -179,9 +179,3 @@ CREATE TABLE `timestamps` (
   `time` int(14) NOT NULL default '0',
   `tablename` varchar(255) NOT NULL default ''
 ) TYPE=MyISAM;
-
-#
-# Ustawienie domy¶lnego administratora
-#
-
-INSERT INTO `admins` (`login`, `name`) VALUES ('admin', 'domy¶le konto administracyjne');
