@@ -23,8 +23,8 @@
 			<B>{t}Submitter:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT style="border-style: none; background: #DFD5BD" type="radio" name="message[sender]" value="admin" CHECKED>{t}administrator{/t}</INPUT>
-			<INPUT style="border-style: none; background: #DFD5BD" type="radio" name="message[sender]" value="user" {if $message.sender eq 'user'}CHECKED{/if}>{t}user{/t}</INPUT>
+			<INPUT style="border-style: none; background: #DFD5BD" type="radio" name="message[sender]" value="admin" CHECKED>{t}User{/t}</INPUT>
+			<INPUT style="border-style: none; background: #DFD5BD" type="radio" name="message[sender]" value="user" {if $message.sender eq 'user'}CHECKED{/if}>{t}customer{/t}</INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -33,7 +33,7 @@
 			<B>{t}Recipient's e-mail:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="enter recipient's e-mail if sender is administrator and message should be sent (optional)" trigger="destination"}>
+			<INPUT type="text" size="25" name="message[destination]" value="{$message.destination|escape}" {tip text="enter recipient's e-mail if sender is user and message should be sent (optional)" trigger="destination"}>
 		</TD>
 	</TR>
 	<TR CLASS="light">
