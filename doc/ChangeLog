@@ -23,6 +23,7 @@ wersja ????? (??/??/????):
 	UPDATE payments SET period = 1 WHERE period = 0;
 	UPDATE payments SET period = 0 WHERE period = 4;
 	UPDATE payments SET period = 3 WHERE period = 2;
+  - lista sieci domy¶lnie sortowana jest po nazwie (alec)
       
 wersja 1.1.8 Cronos (01/02/2004):
 
