@@ -1,0 +1,16 @@
+$Id$
+
+TODO do zrobienia w 1.0:
+
+- podzia³ list na strony
+- edycja taryf
+- poprawienie poprawno¶ci wprowadzanych danych
+- wyczarowanie czego¶ w netinfo.
+
+TODO:
+
+- typy taryf, taryfa podstawowa + za ka¿dy komp, etc (baseciq, kto¶ jeszcze)
+- mozliwosc sprawdzenia statusu oplat / "mojekonto" (tm)
+- mo¿liwo¶æ samodzielnej zmiany mac przez usera.
+- ewidencja sprzetu sieciowego.
+- raporty wydruki itp.
