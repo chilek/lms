@@ -4,6 +4,9 @@ version 1.5.5 (??/??/????):
 
   - fixed empty page printing on invoices when trying to print only 
     originals or only copies (alec)
+  - fixed encoding conversion of some strings on pdf invoices (peter/alec)
+  - index.php: localization before uiconfig reading, to have proper encoding 
+    in configuration options if we use server_encoding != unicode (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
