@@ -26,13 +26,13 @@
 
 $addbalance = $_POST['addbalance'];
 
-$_SESSION['addtype'] = $addbalance['type'];
-$_SESSION['addbc'] = $addbalance['comment'];
-$_SESSION['addbt'] = $addbalance['time'];
-$_SESSION['addbv'] = $addbalance['value'];
+$SESSION->save('addtype', $addbalance['type']);
+$SESSION->save('addbc', $addbalance['comment']);
+$SESSION->save('addbt', $addbalance['time']);
+$SESSION->save('addbv', $addbalance['value']);
 if($addbalance['taxvalue'] == 'tax-free') //don't translate 'tax-free' here!
 	$addbalance['taxvalue'] = '';
-$_SESSION['addbtax'] = $addbalance['taxvalue'];
+$SESSION->save('addbtax', $addbalance['taxvalue']);
 
 $addbalance['value'] = str_replace(',','.',$addbalance['value']);
 $addbalance['taxvalue'] = str_replace(',','.',$addbalance['taxvalue']);
@@ -64,7 +64,7 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 	{
 		if($LMS->UserExists($addbalance['userid']))
 		{
-			if($unpaid = $_SESSION['unpaid'][$addbalance['userid']])
+			if($unpaid = $SESSION->get('unpaid.'.$addbalance['userid'])
 			{
 				foreach($unpaid as $cashid)
 				{
@@ -92,7 +92,7 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 					$addbalance['value'] = $oldvalue - $balance['value'];
 				}
 				
-				unset($_SESSION['unpaid'][$addbalance['userid']]);
+				$SESSION->remove('unpaid.'.$addbalance['userid']);
 			}
 			
 			if($addbalance['value'] != 0)
@@ -107,6 +107,6 @@ if($addbalance['type']=='2' || $addbalance['type']=='1')
 	$LMS->AddBalance($addbalance);
 }
 
-header('Location: ?'.$_SESSION['backto']);
+header('Location: ?'.$SESSION->get('backto'));
 
 ?>

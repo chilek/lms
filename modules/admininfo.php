@@ -38,7 +38,7 @@ foreach($rights as $right)
 	if($access['table'][$right]['name'])
 		$accesslist[] = $access['table'][$right]['name'];
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('admininfo', $admininfo);
 $SMARTY->assign('accesslist', $accesslist);

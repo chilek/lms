@@ -94,7 +94,7 @@ if($account = $_POST['account'])
 	}
 }
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING'];
 
 if(!$account['type']) $account['type'] = 32767;
 

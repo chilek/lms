@@ -24,14 +24,14 @@
  *  $Id$
  */
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('New Balance');
-$SMARTY->assign('operation',$_SESSION['addtype']);
-$SMARTY->assign('comment',$_SESSION['addbc']);
-$SMARTY->assign('taxvalue', $_SESSION['addbtax']);
-$SMARTY->assign('time', $_SESSION['addbt']);
-$SMARTY->assign('value', $_SESSION['addbv']);
+$SMARTY->assign('operation',$SESSION->get('addtype'));
+$SMARTY->assign('comment', $SESSION->get('addbc'));
+$SMARTY->assign('taxvalue', $SESSION->get('addbtax'));
+$SMARTY->assign('time', $SESSION->get('addbt'));
+$SMARTY->assign('value', $SESSION->get('addbv'));
 $SMARTY->assign('users',$LMS->GetUserNames());
 $SMARTY->display('balancenew.html');
 

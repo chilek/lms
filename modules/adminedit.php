@@ -92,7 +92,7 @@ foreach($access['table'] as $idx => $row)
 	$accesslist[] = $row;
 }
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('accesslist',$accesslist);
 $SMARTY->assign('admininfo',$admininfo);
