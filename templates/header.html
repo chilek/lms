@@ -16,8 +16,9 @@
 <td width="50%" valign="middle">
 	<img border="0" src="img/logo-small.png" align="left" ALT="LMS {$layout.lmsv}"><b> @ {$layout.hostname}</b>
 </td>
-<td width="50%">
+<td width="50%" nowrap>
 <p align="right">
+<B>LMS {$layout.lmsv} DB: {$layout.dbschversion}</B><br>
 <a href="{$_dochref}">{t}Documentation{/t}</a> / <a href="http://lms.rulez.pl">{t}LMS Project Homepage{/t}</a><br>
 <B>{t}Logged in as:{/t} {$layout.logname}</B>
 </P>
@@ -79,6 +80,9 @@
 			</td>
 		</tr>
 		</form>
+		<tr>
+			<td nowrap><BR><A href="?m=copyrights">&nbsp;&copy; 2001-2005 LMS Developers</A><BR>&nbsp;</td>
+		</tr>
 	</table>
 	<script type="text/javascript">
 		var clickMenu1 = new ClickShowHideMenu('click-menu1');
