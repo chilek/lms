@@ -29,6 +29,6 @@ if ($_GET['gz'])
 else
 	$LMS->DatabaseCreate();
 
-header('Location: ?m='.$_SESSION['lastmodule']);
+header('Location: ?m='.$SESSION->get('lastmodule'));
 
 ?>

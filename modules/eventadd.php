@@ -77,7 +77,7 @@ if($event = $_POST['event'])
 	}
 }
 
-$event['date'] = $event['date'] ? $event['date'] : $_SESSION['edate'];
+$event['date'] = $event['date'] ? $event['date'] : $SESSION->get('edate');
 
 if($_GET['day'] && $_GET['month'] && $_GET['year'])
 {

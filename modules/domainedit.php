@@ -40,7 +40,7 @@ $id = $_GET['id'];
 
 if($id && !DomainExists($id))
 {
-	header('Location: ?'.$_SESSION['backto']);
+	header('Location: ?'.$SESSION->get('backto'));
 	die;
 }
 
@@ -58,7 +58,7 @@ if($_POST['domain'])
 	
 	if($domain['name']=='' && $domain['description']=='')
 	{
-		header('Location: ?'.$_SESSION['backto']);
+		header('Location: ?'.$SESSION->get('backto'));
 		die;
 	}
 	

@@ -42,7 +42,7 @@ elseif($_GET['action'] == 'dropadmin')
 {
 	$LMS->DB->Execute('DELETE FROM eventassignments WHERE eventid = ? AND adminid = ?',array($_GET['eid'], $_GET['aid']));
 	$LMS->SetTS('eventassignments');
-	header('Location: ?'.$_SESSION['backto']);
+	header('Location: ?'.$SESSION->get('backto'));
 	die;
 }
 
