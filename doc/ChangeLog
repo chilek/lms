@@ -9,6 +9,7 @@ wersja 1.4.0 Evalla (??/10/2004):
   - przebudowany/poprawiony lms-notify-sms (alec)
   - lms-notify: uzupe³niona dokumentacja (%phone1, %date_month_name),
     poprawione sortowanie %last_10_in_a_table i znaki przy kwotach (alec)
+  - pomijanie usuniêtych u¿ytkowników w szybkim wyszukiwaniu (alec)
 
 wersja 1.4.0rc3 Evalla (28/09/2004):
 
