@@ -1,7 +1,7 @@
 {include file="header.html"}
 {include file="adminheader.html"}
 <!--// $Id$ //-->
-<h1>Informacje o administatorze {$admininfo.name|capitalize}</h1>
+<H1>{$layout.pagetitle}</H1>
 {if $unlockedit}<FORM NAME="adminedit" METHOD="POST" ACTION="?m=adminedit&id={$admininfo.id}">{/if}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
