@@ -1,5 +1,10 @@
 $Id$
 
+version 1.2.7 Ayiana (15./10/2004):
+
+  - network interface name can include ':' and '.' (JacekK/lukasz+alec)
+  - fixed summary of column 0% in invoicereport (alec)
+
 version 1.2.6 Dreylock (24/09/2004):
 
   - in sql scripts added index on 'userid' column in 'cash' table 
