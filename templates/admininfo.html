@@ -10,7 +10,7 @@
 			<IMG SRC="img/admins.gif" ALT="" ALIGN="ABSMIDDLE">
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" NOWRAP>
-			<B>Imiê i nazwisko:</B>
+			<B>{t}Name and surname:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="frightu">
 			 <B><INPUT TYPE="TEXT" NAME="admininfo[name]" VALUE="{$admininfo.name|capitalize}" {tip trigger="name" bold=1}> ({$admininfo.id|string_format:"%04d"})</B>
@@ -26,7 +26,7 @@
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/pass.gif" ALT="" ALIGN="ABSMIDDLE">
 		</TD>
-		<TD WIDTH="1%"><B>Login:</B></TD>
+		<TD WIDTH="1%"><B>{t}Login:{/t}</B></TD>
 		<TD WIDTH="98%"CLASS="fright">
 			{if $unlockedit}
 			<INPUT TYPE="TEXT" NAME="admininfo[login]" VALUE="{$admininfo.login}" {tip trigger="login"}>
@@ -39,7 +39,7 @@
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/mail.gif" ALT="" ALIGN="ABSMIDDLE">
 		</TD>
-		<TD WIDTH="1%"><B>E-mail:</B></TD>
+		<TD WIDTH="1%"><B>{t}E-mail:{/t}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{if $unlockedit}<INPUT TYPE="TEXT" NAME="admininfo[email]" VALUE="{$admininfo.email}" CLASS="RED">{else}
 			{if $admininfo.email}<A HREF="mailto:{$admininfo.email}">{$admininfo.email}</A>{else}-{/if}{/if}
@@ -48,14 +48,14 @@
 	{if ! $unlockedit}
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft"></TD>
-		<TD WIDTH="1%" NOWRAP><B>Ostatnio zalogowany:</B></TD>
+		<TD WIDTH="1%" NOWRAP><B>{t}Last login:{/t}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$admininfo.lastlogin}, {$admininfo.lastloginip} {if $admininfo.lastloginip neq $admininfo.lastloginhost}({$admininfo.lastloginhost}){/if}
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft"></TD>
-		<TD WIDTH="1%" NOWRAP><B>Ostatnie nieudane logowanie:</B></TD>
+		<TD WIDTH="1%" NOWRAP><B>{t}Last unsuccessful login:{/t}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$admininfo.faillogin}, {$admininfo.failedloginip} {if $admininfo.failedloginip neq $admininfo.failloginhost}({$admininfo.failloginhost}){/if}
 		</TD>
@@ -64,15 +64,15 @@
 	<TR CLASS="light">
 		<TD COLSPAN="3" CLASS="fbottomu" ALIGN="right">
 			{if $unlockedit}
-			<A HREF="javascript:document.adminedit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
+			<A HREF="javascript:document.adminedit.submit();" ACCESSKEY="S">{t}Save{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
 			{else}
-			<A HREF="?m=adminedit&id={$admininfo.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>{/if} <a href="?m=admindel&id={$admininfo.id}" onClick="return confirmLink(this, 'Jeste¶ pewien i ¶wiadom ¿e chcesz usun±æ tego administratora? Konto to zostanie bezpowrotnie usuniête z systemu!');">Usuñ <img src="img/delete.gif" border="0" align="absmiddle" ALT=""></A> <A HREF="?m=adminpasswd&id={$admininfo.id}">Zmieñ has³o <IMG SRC="img/keys.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> {if $unlockedit}<A HREF="?m=admininfo&id={$admininfo.id}">Anuluj <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=adminedit&id={$admininfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>{/if} <a href="?m=admindel&id={$admininfo.id}" onClick="return confirmLink(this, '{t}Are you sure? This administrator account will be irreversible deleted from system!{/t}');">{t}Delete{/t} <img src="img/delete.gif" border="0" align="absmiddle" ALT=""></A> <A HREF="?m=adminpasswd&id={$admininfo.id}">{t}Change password{/t} <IMG SRC="img/keys.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> {if $unlockedit}<A HREF="?m=admininfo&id={$admininfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
 			{/if}
 		</TD>
 	</TR>
 	<TR CLASS="DARK">
 		<TD CLASS="fbottomu" COLSPAN="3">
-			<B>Uprawnienia:</B>
+			<B>{t}Access rights:{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

@@ -9,11 +9,11 @@
 			<img src="img/settings.gif" border="0" align="absmiddle" ALT="">
 		</TD>
 		<TD width="1%" class="fbt">
-			<B>Nazwa:</B>
+			<B>{t}Name:{/t}</B>
 		</TD>
 		<TD width="98%" class="frightu">
 			<INPUT name="config[var]" value="{$config.var}" {tip text="Podaj nazwê opcji konfiguracyjnej" trigger="var" bold=1}>&nbsp;
-			<B>Sekcja:</B>
+			<B>{t}Section:{/t}</B>
 			<SELECT size="1" name="config[section]" {tip text="Wybierz sekcjê" trigger="section"}>
 			    <OPTION name="config[name]" value="phpui" {if $config.section eq "phpui"}SELECTED{/if}>phpui</OPTION>
 			    <OPTION name="config[name]" value="invoices" {if $config.section eq "invoices"}SELECTED{/if}>invoices</OPTION>
@@ -25,7 +25,7 @@
 			<img src="img/producer.gif" border="0" align="absmiddle" ALT="">
 		</TD>
 		<TD width="1%">
-			<B>Warto¶æ:</B>
+			<B>{t}Value:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA rows="5" cols="50" name="config[value]" {tip text="Wprowad¼ warto¶æ opcji" trigger="value"}>{$config.value}</TEXTAREA>
@@ -36,7 +36,7 @@
 			<img src="img/usercomment.gif" border="0" align="absmiddle" ALT="">
 		</TD>
 		<TD width="1%">
-			<B>Opis:</B>
+			<B>{t}Comment:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
 			<TEXTAREA rows="5" cols="50" name="config[description]" {tip text="Opis opcji (opcjonalnie)" trigger="description"}>{$config.description}</TEXTAREA>
@@ -47,17 +47,17 @@
 			<img src="img/wait.gif" border="0" align="absmiddle" ALT="">
 		</TD>
 		<TD width="1%">
-			<B>Status:</B>
+			<B>{t}Status:{/t}</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<INPUT type="checkbox" class="box" value="1" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="Mo¿esz wy³±czyæ opcjê"}> wy³±czona
+			<INPUT type="checkbox" class="box" value="1" name="config[disabled]" {if $config.disabled}CHECKED{/if} {tip text="You can turn it off"}> {t}Off{/t}
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.config.submit();" accesskey="s">Zapisz <img src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
-			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ opcjê \'{$config.var}\' z bazy danych?')">Usuñ <img src="img/delete.gif" border="0" align="absmiddle" ALT=""></A>
-			<A href="?m=configlist">Anuluj <img src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="javascript:document.config.submit();" accesskey="s">{t}Save{/t} <img src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=configdel&id={$config.id}" OnClick="return confirmLink(this, '{t}Are sure you want to delete option \'{$config.var}\' from database?{/t}')">{t}Delete{/t} <img src="img/delete.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="?m=configlist">{t}Cancel{/t} <img src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
