@@ -32,31 +32,31 @@ if($LMS->AdminExists($id))
 {
 	if(isset($passwd))
 	{
-		if($passwd['passwd'] == "" || $passwd['confirm'] == "")
-			$error['password'] .= "Has³o nie mo¿e byæ puste!<BR>";
+		if($passwd['passwd'] == '' || $passwd['confirm'] == '')
+			$error['password'] = 'Has³o nie mo¿e byæ puste!';
 		
 		if($passwd['passwd'] != $passwd['confirm'])
-			$error['password'] .= "Podane has³a siê ró¿ni±!";
+			$error['password'] = 'Podane has³a siê ró¿ni±!';
 		
 		if(!$error)
 		{
 			$LMS->SetAdminPassword($id,$passwd['passwd']);
-			header("Location: ?m=welcome");
+			header('Location: ?'.$_SESSION['backto']);
 		}
 	}
 
 	$passwd['realname'] = $LMS->GetAdminName($id);
 	$passwd['id'] = $id;
-	$layout['pagetitle'] = "Zmiana has³a";
-	$SMARTY->assign('error',$error);
-	$SMARTY->assign('passwd',$passwd);
-	$SMARTY->assign('target',"?m=chpasswd");
+	$layout['pagetitle'] = 'Zmiana has³a';
+	$SMARTY->assign('error', $error);
+	$SMARTY->assign('passwd', $passwd);
+	$SMARTY->assign('target', '?m=chpasswd');
 	$SMARTY->display('adminpasswd.html');
 
 }
 else
 {
-	header("Location: ?m=".$_SESSION['lastmodule']);
+	header('Location: ?m='.$_SESSION['lastmodule']);
 	die;
 }
 

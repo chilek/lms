@@ -24,11 +24,11 @@
  *  $Id$
  */
 
-if($_GET['is_sure']=="1")
+if($_GET['is_sure']=='1')
 {
 	$LMS->AdminDelete($_GET['id']);
 }
 
-header("Location: ?m=".$_SESSION['lastmodule']);
+header('Location: ?m='.$_SESSION['lastmodule']);
 
 ?>

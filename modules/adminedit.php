@@ -26,11 +26,11 @@
 
 if(!$LMS->AdminExists($_GET['id']))
 {
-	header("Location: ?m=adminlist");
+	header('Location: ?m=adminlist');
 	die;
 }
 
-$admininfo=$_POST['admininfo'];
+$admininfo = $_POST['admininfo'];
 
 if(isset($admininfo))
 {
@@ -41,28 +41,28 @@ if(isset($admininfo))
 		$admininfo[$key] = trim($value);
 
 	if($LMS->GetAdminIDByLogin($admininfo['login']) && $LMS->GetAdminIDByLogin($admininfo['login']) != $_GET['id'])
-		$error['login'] = "Podany login jest ju¿ zajêty!";
+		$error['login'] = 'Podany login jest ju¿ zajêty!';
 
-	if($admininfo['login'] == "")
+	if($admininfo['login'] == '')
 		$error['login'] = "Pole login nie mo¿e byæ puste!";
 	elseif(!eregi("^[a-z0-9.-_]+$",$admininfo['login']))
-		$error['login'] = "Login zawiera niepoprawne znaki!";
+		$error['login'] = 'Login zawiera niepoprawne znaki!';
 
-	if($admininfo['name'] == "")
+	if($admininfo['name'] == '')
 		$error['name'] = "Pole 'imiê i nazwisko' nie mo¿e byæ puste!";
 
-	if($admininfo['email']!="" && !check_email($admininfo['email']))
-		$error['email'] = "Podany email nie wydaje siê byæ poprawny!";
+	if($admininfo['email']!='' && !check_email($admininfo['email']))
+		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
 				
 
 	// zróbmy maskê ACL...
 
 	for($i=0;$i<256;$i++)
-		$mask .= "0";
+		$mask .= '0';
 	
 	foreach($access['table'] as $idx => $row)
 		if($acl[$idx]=="1")
-			$mask[255-$idx] = "1";
+			$mask[255-$idx] = '1';
 	for($i=0;$i<256;$i += 4)
 		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
 
@@ -71,7 +71,7 @@ if(isset($admininfo))
 	if(!$error)
 	{
 		$LMS->AdminUpdate($admininfo);
-		header("Location: ?m=admininfo&id=".$admininfo['id']);
+		header('Location: ?m=admininfo&id='.$admininfo['id']);
 		die;
 	}
 
@@ -81,7 +81,7 @@ foreach($LMS->GetAdminInfo($_GET['id']) as $key => $value)
 	if(!isset($admininfo[$key]))
 		$admininfo[$key] = $value;
 
-$layout['pagetitle'] = "Edycja danych administratora: ".$LMS->GetAdminName($_GET['id']);
+$layout['pagetitle'] = 'Edycja danych administratora: '.$LMS->GetAdminName($_GET['id']);
 
 $rights = $LMS->GetAdminRights($_GET['id']);
 
@@ -93,6 +93,9 @@ foreach($access['table'] as $idx => $row)
 			$row['enabled']=TRUE;
 	$accesslist[] = $row;
 }
+
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+
 $SMARTY->assign('accesslist',$accesslist);
 $SMARTY->assign('admininfo',$admininfo);
 $SMARTY->assign('unlockedit',TRUE);
