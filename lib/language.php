@@ -24,14 +24,64 @@
  *  $Id$
  */
 
-// Plik do ustawiania locales i do translacji...
-// Chwilowo tutaj nie ma nic, naprawdê nic, poprostu potrzebne do eksperymentów paru.
+$LANGDEFS = array(
+		'pl' => array(
+			'name' => 'Polish',
+			'orig' => 'Polski',
+			'locale' => 'pl_PL',
+			'charset' => 'ISO-8859-2',
+			'html' => 'pl',
+			),
+		'en' => array(
+			'name' => 'English',
+			'orig' => 'English',
+			'locale' => 'en_US',
+			'charset' => 'ISO-8859-1',
+			'html' => 'en',
+			),
+		);
 
-// ustawienie komunikatów syst. na polskie
-setlocale(LC_MESSAGES,'pl_PL');
-// ustawienie formatu czasu na polski
-setlocale(LC_TIME,'pl_PL');
-// kapitalizowanie literek
-setlocale(LC_CTYPE,'pl_PL');
+$LMS->lang = 'en'; // default language
+
+$langs = explode(',', ($_CONFIG['phpui']['lang'] ? $_CONFIG['phpui']['lang'] : $_SERVER['HTTP_ACCEPT_LANGUAGE']));
+foreach ($langs as $val) 
+{
+	switch (substr($val, 0, 2))
+	{
+		case 'pl':
+			$LMS->lang = 'pl';
+    			break 2;
+		case 'en':
+			$LMS->lang = 'en';
+			break 2;
+	}
+}
+
+setlocale(LC_COLLATE, $LANGDEFS[$LMS->lang]['locale']);
+setlocale(LC_CTYPE, $LANGDEFS[$LMS->lang]['locale']);
+setlocale(LC_TIME, $LANGDEFS[$LMS->lang]['locale']);
+	
+$_LANG = array();
+
+@include($_LIB_DIR.'/locale/'.$LMS->lang.'.php');
+
+$SMARTY->assign_by_ref('_LANG', $_LANG);
+$SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
+
+function trans()
+{
+	global $_LANG, $SMARTY;
+
+	@list($content, $args) = func_get_args();
+	$content = trim($content);
+	if(isset($_LANG[$content]))
+		$content = trim($_LANG[$content]);
+	else
+		$SMARTY->_tpl_vars['missing_strings'][] = $content;
+	if(is_array($args))
+		foreach($args as $argid => $argval)
+			$content = str_replace('$'.$argid, $argval, $content);
+	return $content;
+}
 
 ?>
