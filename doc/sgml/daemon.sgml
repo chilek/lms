@@ -230,6 +230,16 @@ info = "Opcjonalny opis modu³u"
 			    zostan± usuniête natychmiast po dacie, do której obowi±zywa³o zobowi±zanie. Domy¶lnie: 30.</para>
 			    <para>Przyk³ad: <prompt>expiry_days = 365</prompt></para>
 			</listitem>
+			<listitem>
+			    <para>deadline</para>
+			    <para>Termin p³atno¶ci podany w dniach. Domy¶lnie: 14.</para>
+			    <para>Przyk³ad: <prompt>deadline = 21</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>paytype</para>
+			    <para>Rozdzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'.</para>
+			    <para>Przyk³ad: <prompt>paytype = 'GOTÓWKA'</prompt></para>
+			</listitem>
 		    </itemizedlist>
 		    </sect3>
 		</sect2>

@@ -52,7 +52,7 @@
 			</row>
 			<row>
 			<entry>lms-payments</entry>
-			<entry>Naliczanie op³at okresowych (abonamentowych)</entry>
+			<entry>Naliczanie op³at okresowych (abonamentowych) z fakturowaniem</entry>
 			</row>
 			<row>
 			<entry>lms-traffic</entry>
@@ -85,6 +85,10 @@
 			<row>
 			<entry>lms-makeopenbsdpf</entry>
 			<entry>Konfiguracja firewalla dla systemu OpenBSD</entry>
+			</row>
+			<row>
+			<entry>lms-sendinvoices</entry>
+			<entry>Wysy³anie faktur do u¿ytkowników</entry>
 			</row>
 			<row>
 			<entry>lms-updatewarnings</entry>
@@ -262,9 +266,22 @@ http://www.naszasiec.pl/</screen></example>
 	<sect2 id="lms-payments">
 	 <title>lms-payments</title>
 	 <para>Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
-	 u¿ytkownikom oraz op³at sta³ych.
+	 u¿ytkownikom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
 	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</para>
-	 <para>Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.</para>
+	 <para>Skrypt ten udostêpnia dwie opcje do fakturowania, które mo¿na ustawiæ
+	 w sekcji <emphasis>[payments]</emphasis> pliku <filename>lms.ini</filename>:</para>
+	  <itemizedlist>
+          <listitem>
+	   <para>deadline (opcjonalny)</para>
+	   <para>Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14</para>
+	   <para>Przyk³ad:	<prompt>deadline = 7</prompt></para>
+	  </listitem>
+	  <listitem>
+	   <para>paytype (opcjonalny)</para>
+	   <para>Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'</para>
+	   <para>Przyk³ad:	<prompt>paytype = 'GOTÓWKA'</prompt></para>
+	  </listitem>
+	 </itemizedlist>
         </sect2>
     <sect2 id="lms-traffic">
     <title>lms-traffic</title>
@@ -468,6 +485,55 @@ http://www.naszasiec.pl/</screen></example>
 		    <para>Przyk³ad:	<prompt>etherdesc_permission = 600</prompt></para>
 		</listitem>
 	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-sendinvoices">
+	<title>lms-sendinvoices</title>
+	<para>Skrypt s³u¿y do wysy³ania poczt± elektroniczn± faktur, jako za³±czników
+	do wiadomo¶ci. Faktury generowane s± na podstawie szablonu dostêpnego w lms-ui,
+	dlatego wymagane jest podanie u¿ytkownika i has³a do interfejsu www lms-ui.</para>
+	<para>W odró¿nieniu od pozosta³ych skrytpów ten wymaga dodatkowych modu³ów perla:
+	Data::Dumper, LWP::UserAgent, MIME::Entity.</para>
+	<para>Konfiguracjê nale¿y umie¶ciæ w sekcji <emphasis>[sendinvoices]</emphasis>:
+	    <itemizedlist>
+        	<listitem>
+		    <para>lms_url</para>
+		    <para>Adres do lms-ui. Domy¶lnie: http://localhost/lms/</para>
+		    <para>Przyk³ad:	<prompt>lms_url = http://lms.mynet.pl</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>lms_user</para>
+		    <para>Login administratora. Domy¶lnie: pusty</para>
+		    <para>Przyk³ad:	<prompt>lms_user = admin</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>lms_password</para>
+		    <para>Has³o do lms-ui. Domy¶lnie: puste</para>
+		    <para>Przyk³ad:	<prompt>lms_password = moje_has³o</prompt></para>
+		</listitem>		
+           	<listitem>
+		    <para>debug_email</para>
+		    <para>Konto pocztowe do testów. Domy¶lnie: niezdefiniowane.</para>
+		    <para>Przyk³ad:	<prompt>debug_email = admin@mynet.pl</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>sender_name</para>
+		    <para>Nadawca listu. Domy¶lnie: niezdefiniowany.</para>
+		    <para>Przyk³ad:	<prompt>sender_name = ASK MyNet</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>sender_email</para>
+		    <para>Adres nadawcy listu. Domy¶lnie: niezdefiniowany.</para>
+		    <para>Przyk³ad:	<prompt>sender_email = admin@mynet.pl</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>tmp_dir</para>
+		    <para>Lokalizacja katalogu tymczasowego. Je¶li nie podano katalog 
+		    odczytywany jest ze zmiennej ¶rodowiskowej 'TMP' lub przyjmowany jest 
+		    katalog '/tmp'.</para>
+		    <para>Przyk³ad:	<prompt>tmp_dir = /home/user/tmp</prompt></para>
+		</listitem>
+	    </itemizedlist>
+	</para>
     </sect2>
     <sect2 id="lms-updatewarnings">
 	 <title>lms-updatewarnings</title>
