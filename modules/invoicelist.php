@@ -45,13 +45,23 @@ else
 	$c = $_SESSION['ilc'];
 $_SESSION['ilc'] = $c;
 
+if(isset($_POST['group'])) {
+	$g = $_POST['group'];
+	$ge = $_POST['groupexclude'];
+} else {
+	$g = $_SESSION['ilg'];
+	$ge = $_SESSION['ilge'];
+}
+$_SESSION['ilg'] = $g;
+$_SESSION['ilge'] = $ge;
+
 if($c == 'cdate' && $s)
 {
 	list($year, $month, $day) = explode('/', $s);
 	$s = mktime(0,0,0, $month, $day, $year);
 }
 
-$invoicelist = $LMS->GetInvoicesList($s, $c);
+$invoicelist = $LMS->GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge));
 
 $listdata['startdate'] = $invoicelist['startdate'];
 $listdata['enddate'] = $invoicelist['enddate'];
@@ -59,6 +69,8 @@ $listdata['startyear'] = date('Y',$listdata['startdate']);
 $listdata['endyear'] = date('Y',$listdata['enddate']);
 $listdata['cat'] = $_SESSION['ilc'];
 $listdata['search'] = $_SESSION['ils'];
+$listdata['group'] = $_SESSION['ilg'];
+$listdata['groupexclude'] = $_SESSION['ilge'];
 
 unset($invoicelist['startdate'], $invoicelist['enddate']);
 
@@ -74,6 +86,7 @@ $SMARTY->assign('start',$start);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('marks',$marks);
 $SMARTY->assign('marked',$marked);
+$SMARTY->assign('grouplist',$LMS->UsergroupGetAll());
 $SMARTY->assign('invoicelist',$invoicelist);
 $SMARTY->display('invoicelist.html');
 

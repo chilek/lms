@@ -1804,7 +1804,7 @@ class LMS
 		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE invoiceid=?', array($invoiceid)) >= 0 ? TRUE : FALSE;
 	}
 
-	function GetInvoicesList($search=NULL, $cat=NULL)
+	function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL)
 	{
 		if($search && $cat)
 		{
@@ -1843,12 +1843,26 @@ class LMS
 						ORDER BY cdate ASC'))
 		{
 			$inv_paid = $this->DB->GetAllByKey('SELECT invoiceid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum FROM cash WHERE invoiceid!=0 GROUP BY invoiceid','id');
+			
+			if($group['group'])
+				$users = $this->DB->GetAllByKey('SELECT userid AS id FROM userassignments WHERE usergroupid=?', 'id', array($group['group']));
+
 			foreach($result as $idx => $row)
 			{
 				$result[$idx]['year'] = date('Y',$row['cdate']);
 				$result[$idx]['month'] = date('m',$row['cdate']);
 				$result[$idx]['paid'] = ( $inv_paid[$row['id']]['sum'] >=0 ? TRUE : FALSE );
+				
+				if($group['group'])
+					if(!$group['exclude'] && $users[$result[$idx]['customerid']])
+						$result1[] = $result[$idx]; 
+					elseif($group['exclude'] && !$users[$result[$idx]['customerid']])
+						$result1[] = $result[$idx];
 			}
+			
+			if($group['group'])
+				$result = $result1;
+			
 			$result['startdate'] = $this->DB->GetOne('SELECT MIN(cdate) FROM invoices');
 			$result['enddate'] = $this->DB->GetOne('SELECT MAX(cdate) FROM invoices');
 		}
