@@ -33,11 +33,37 @@ $invoice = $_SESSION['invoice'];
 $error = $_SESSION['invoicenewerror'];
 $itemdata = r_trim($_POST);
 
-if($_GET['userid'] != '' && $LMS->UserExists($_GET['userid']))
-	$_GET['action'] = 'setcustomer';
 
 switch($_GET['action'])
 {
+	case 'init':
+
+    		unset($invoice);
+    		unset($contents);
+    		unset($customer);
+    		unset($error);
+		
+		if($LMS->CONFIG['invoices']['monthly_numbering'])
+	    	{
+		        $start = mktime(0, 0, 0, date('n',time()), 1, date('Y',time()));
+		        $end = mktime(0, 0, 0, date('n',time())+1, 1, date('Y',time()));
+		}
+		else
+		{
+		        $start = mktime(0, 0, 0, 1, 1, date('Y',time()));
+		        $end = mktime(0, 0, 0, 1, 1, date('Y',time())+1);
+		}
+
+		$number = $LMS->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
+		$invoice['number'] = $number ? ++$number : 1;
+		$invoice['month'] = date("m");
+		$invoice['year']  = date("Y");
+		$invoice['cdate'] = time();
+		$invoice['paytime'] = 14;
+		if($_GET['userid'] != '' && $LMS->UserExists($_GET['userid']))
+			$customer = $LMS->GetUser($_GET['userid']);
+	break;
+
 	case 'additem':
 		$itemdata = r_trim($_POST);
 		foreach(array('count', 'valuenetto', 'valuebrutto') as $key)
@@ -183,33 +209,6 @@ switch($_GET['action'])
 			header('Location: ?m=invoice&id='.$iid);
 			die;
 		}
-	break;
-
-	case 'init':
-
-    		unset($invoice);
-    		unset($contents);
-    		unset($customer);
-    		unset($error);
-		
-		if($LMS->CONFIG['invoices']['monthly_numbering'])
-	    	{
-		        $start = mktime(0, 0, 0, date('n',time()), 1, date('Y',time()));
-		        $end = mktime(0, 0, 0, date('n',time())+1, 1, date('Y',time()));
-		}
-		else
-		{
-		        $start = mktime(0, 0, 0, 1, 1, date('Y',time()));
-		        $end = mktime(0, 0, 0, 1, 1, date('Y',time())+1);
-		}
-
-		$number = $LMS->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
-		$invoice['number'] = $number ? ++$number : 1;
-		$invoice['month'] = date("m");
-		$invoice['year']  = date("Y");
-		$invoice['cdate'] = time();
-		$invoice['paytime'] = 14;
-																
 	break;
 }
 

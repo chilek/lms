@@ -1642,7 +1642,7 @@ class LMS
 				$item['taxvalue'] = str_replace(',','.',$item['taxvalue']);
 			
 			if ($item['taxvalue'] == '')
-				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
+				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?)', 
 				array(
 					$iid,
 					$itemid ,
