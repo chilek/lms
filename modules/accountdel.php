@@ -29,6 +29,7 @@ $id = $_GET['id'];
 if($id && $_GET['is_sure']=='1')
 {
 	$LMS->DB->Execute('DELETE FROM passwd WHERE id = ?', array($id));
+	$LMS->SetTS('passwd');
 }
 
 header('Location: ?m=accountlist');

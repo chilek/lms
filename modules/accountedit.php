@@ -71,6 +71,7 @@ switch ($option)
 	if(!$error)
 	{
 		$LMS->DB->Execute('UPDATE passwd SET password = ? WHERE id = ?', array(crypt($account['passwd1']), $id));
+		$LMS->SetTS('passwd');
 		header('Location: ?m=accountlist');
 		die;
 	}
@@ -121,6 +122,7 @@ switch ($option)
 					$account['type'],
 					$account['id']
 					));
+			$LMS->SetTS('passwd');
 			header('Location: ?m=accountlist');
 			die;
 		}
