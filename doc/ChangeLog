@@ -50,6 +50,7 @@ version 1.5.5 Anubis (??/??/????):
     put into separate class (lukasz)
   - BTS#0000308: added lost customer's groups table while adding new node for 
     a customer (alec)
+  - added support for dynamic tooltips (lexx)
 
 version 1.5.4 Ramius (16/02/2005):
 
