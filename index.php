@@ -84,19 +84,6 @@ function lms_parse_ini_file($filename, $process_sections = false)
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
 	$_CONFIG[$key] = $val;
 
-// config value tester
-function chkconfig($value, $default = FALSE)
-{
-	if(eregi('^(1|y|on|yes|true|tak|t)$', $value))
-		return TRUE;
-	elseif(eregi('^(0|n|no|off|false|nie)$', $value))
-		return FALSE;
-	elseif(!isset($value) || $value == '')
-		return $default;
-	else
-		trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
-}
-
 // Check for configuration vars and set default values
 $_CONFIG['directories']['sys_dir'] = (! $_CONFIG['directories']['sys_dir'] ? getcwd() : $_CONFIG['directories']['sys_dir']);
 $_CONFIG['directories']['backup_dir'] = (! $_CONFIG['directories']['backup_dir'] ? $_CONFIG['directories']['sys_dir'].'/backups' : $_CONFIG['directories']['backup_dir']);
