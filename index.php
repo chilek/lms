@@ -114,11 +114,6 @@ $_DBNAME = $_CONFIG['database']['database'];
 
 // include required files
 
-require_once($_LIB_DIR.'/common.php');
-require_once($_LIB_DIR.'/checkip.php');
-require_once($_LIB_DIR.'/checkdirs.php');
-require_once($_LIB_DIR.'/unstrip.php');
-require_once($_LIB_DIR.'/accesstable.php');
 require_once($_LIB_DIR.'/LMSDB.php');
 
 // Init database 
@@ -136,7 +131,7 @@ if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0
 		$_CONFIG[$row['section']][$row['var']] = $row['value'];
 
 $_TIMEOUT = $_CONFIG['phpui']['timeout'];
-$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
+$_FORCE_SSL = $_CONFIG['phpui']['force_ssl'];
 
 // Redirect to SSL
 
@@ -146,12 +141,19 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 	exit(0);
 }
 
-// Initialize session and template classes
+// Include required files (including sequence is important)
 
+require_once($_LIB_DIR.'/unstrip.php');
 require_once($_SMARTY_DIR.'/Smarty.class.php');
 require_once($_LIB_DIR.'/language.php');
+require_once($_LIB_DIR.'/common.php');
+require_once($_LIB_DIR.'/checkip.php');
+require_once($_LIB_DIR.'/checkdirs.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
+require_once($_LIB_DIR.'/accesstable.php');
+
+// Initialize session and template classes
 
 $SESSION = new Session($DB, $_TIMEOUT);
 
@@ -166,6 +168,8 @@ $SMARTY->assign('_config',$_CONFIG);
 
 if(version_compare('2.5.0', $SMARTY->_version) > 0)
 	die('<B>Niepoprawna wersja engine Smarty! Proszê sci±gn±æ nowszê wersjê spod adresu <A HREF="http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz">http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz</A>!</B>');
+
+// set some template and layout variables
 
 $SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
