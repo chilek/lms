@@ -98,6 +98,7 @@ CREATE TABLE nodes (
 	ipaddr bigint 		DEFAULT 0 NOT NULL,
 	ownerid integer 	DEFAULT 0 NOT NULL,
 	netdev integer 		DEFAULT 0 NOT NULL,
+	linktype smallint	DEFAULT 0 NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
 	moddate integer 	DEFAULT 0 NOT NULL,
 	creatorid integer 	DEFAULT 0 NOT NULL,
@@ -303,6 +304,7 @@ CREATE TABLE netlinks (
 	id integer default nextval('netlinks_id_seq'::text) NOT NULL,
 	src integer 		DEFAULT 0 NOT NULL,
 	dst integer 		DEFAULT 0 NOT NULL,
+	type smallint		DEFAULT 0 NOT NULL,
 	PRIMARY KEY  (id),
 	UNIQUE (src, dst)
 );
@@ -408,4 +410,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004090800');    
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004101800');    
