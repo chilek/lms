@@ -1172,8 +1172,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
 			$result['creationdateh'] = date('Y-m-d, H:i',$result['creationdate']);
-			if((time()-$result['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit'])
-				$result['lastonlinedate'] .= uptimef(time()-$result['lastonline']).' temu ('.date('Y-m-d, H:i',$result['lastonline']).')';
+			$delta = time()-$result['lastonline'];
+			if($delta>$LMS->CONFIG['phpui']['lastonline_limit'])
+				$result['lastonlinedate'] .= uptimef($delta).($delta>60 ? ' temu ' : '').'('.date('Y-m-d, H:i',$result['lastonline']).')';
 			else
 				$result['lastonlinedate'] .= 'aktualnie w³±czony';
 			$result['moddateh'] = date('Y-m-d, H:i',$result['moddate']);
