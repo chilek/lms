@@ -43,22 +43,21 @@ function lms_parse_ini_file($filename, $process_sections = false) {
 	if($line == "" || $line[0] == ";" || $line[0] == "#") 
 	    continue;
     
-
-	if($line[0] == "[" && $line[strlen($line) - 1] == "]") 
-	    $sec_name = trim($line,"[ ]");
+	if( sscanf($line, "[%[^]]", &$sec_name)==1 ) 
+	    $sec_name = trim($sec_name);
 	else {
 	    if ( sscanf($line, "%[^=] = '%[^']'", &$property, &$value) != 2 ) 
 		if ( sscanf($line, "%[^=] = \"%[^\"]\"", &$property, &$value) != 2 ) 
-		    if( sscanf($line, "%[^=] = %[^;#]",    &$property, &$value) != 2) 
+		    if( sscanf($line, "%[^=] = %[^;#]",    &$property, &$value) != 2 ) 
 			continue;
 		    
 	    $property = trim($property);
-    	
+    	    $value = trim($value);
+	    
 	    if($process_sections) 
     		$ini_array[$sec_name][$property] = $value;
     	    else 
     		$ini_array[$property] = $value;
-    	    
 	}
     }
     return $ini_array;
@@ -231,6 +230,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.116  2003/11/18 20:32:17  alec
+ * 100of c & php iniparsers compatibility
+ *
  * Revision 1.115  2003/11/14 18:41:52  alec
  * nowa funkcja parsuj±ca konfig
  *
