@@ -288,6 +288,7 @@ CREATE TABLE rttickets (
   owner int(11) NOT NULL default '0',
   userid int(11) NOT NULL default '0',
   createtime int(11) NOT NULL default '0',
+  resolvetime int(11) NOT NULL default '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
@@ -317,8 +318,8 @@ DROP TABLE IF EXISTS stats;
 CREATE TABLE stats (
   nodeid int(11) NOT NULL default '0',
   dt int(11) NOT NULL default '0',
-  upload int(11) default '0',
-  download int(11) default '0',
+  upload BIGINT default '0',
+  download BIGINT default '0',
   UNIQUE KEY nodeid (nodeid,dt)
 ) TYPE=MyISAM;
 
@@ -382,6 +383,7 @@ CREATE TABLE users (
   nip varchar(16) NOT NULL default '',
   pesel varchar(11) NOT NULL default '',
   info text NOT NULL,
+  serviceaddr text NOT NULL default '',
   creationdate int(11) NOT NULL default '0',
   moddate int(11) NOT NULL default '0',
   creatorid int(11) NOT NULL default '0',
@@ -415,4 +417,4 @@ CREATE TABLE userassignments (
   UNIQUE KEY userassignment (usergroupid, userid)
 ) TYPE=MyISAM;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004071200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004072700');

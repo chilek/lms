@@ -217,6 +217,7 @@ CREATE TABLE users (
 	nip varchar(16) 	DEFAULT '' NOT NULL,
 	pesel varchar(11) 	DEFAULT '' NOT NULL,
 	info text		DEFAULT '' NOT NULL,
+	serviceaddr text	DEFAULT '' NOT NULL,
 	creationdate integer 	DEFAULT 0 NOT NULL,
 	moddate integer 	DEFAULT 0 NOT NULL,
 	creatorid integer 	DEFAULT 0 NOT NULL,
@@ -262,8 +263,8 @@ DROP TABLE stats;
 CREATE TABLE stats (
 	nodeid integer 		DEFAULT 0 NOT NULL,
 	dt integer 		DEFAULT 0 NOT NULL,
-	upload integer 		DEFAULT 0,
-	download integer 	DEFAULT 0,
+	upload bigint 		DEFAULT 0,
+	download bigint 	DEFAULT 0,
 	PRIMARY KEY (nodeid, dt)
 );
 /* Ma³y dopalacz niektórych zapytañ */
@@ -358,6 +359,7 @@ CREATE TABLE rttickets (
   owner integer 	DEFAULT 0 NOT NULL,
   userid integer 	DEFAULT 0 NOT NULL,
   createtime integer 	DEFAULT 0 NOT NULL,
+  resolvetime integer 	DEFAULT 0 NOT NULL,
   PRIMARY KEY (id)
 );
 
@@ -402,4 +404,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004071200');    
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004072700');    
