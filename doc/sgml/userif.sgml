@@ -154,21 +154,26 @@
  <sect1 id="user-networks">
 	<title>Sieci IP</title>
 	<para>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
-	zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i dostêpnych adresów.
-	Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ na podsieci,
-	albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</para>
-	<para>Modyfikowanie w³a¶ciwo¶ci sieci nastêpuje w module dostêpnym po wybraniu
-	sieci z listy lub bezpo¶rednio po klikniêciu ikony 'Edytuj'. Menu udostêpnia dwie opcje:
-	<itemizedlist>
-	    <listitem>
-	    <para>Lista - Wy¶wietlenie listy sieci. tej która pokazuje siê po
-	    wej¶ciu do panelu 'Sieci IP'.</para>
-	    </listitem>
-	    <listitem>
-	    <para>Nowa sieæ  - Dodawanie sieci.</para>
-	    </listitem>
-	</itemizedlist>
-	</para>
+	zakres DHCP. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ 
+	na podsieci, albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</para>
+	<sect2 id="menu-networks-list">
+	    <title>Lista</title>
+	    <para>Lista sieci oprócz podstawowych danych o sieciach zawiera podsumowanie ilo¶ci
+	    adresów wolnych i przypisanych. Modyfikowanie w³a¶ciwo¶ci sieci nastêpuje w module 
+	    dostêpnym po wybraniu sieci z listy lub bezpo¶rednio po klikniêciu ikony [Edytuj].</para>
+	    <para>Podczas edycji danych sieci mo¿esz przegl±daæ listê komputerów z tej sieci, gdzie w 
+	    miejscu adresu IP pojawia siê nazwa komputera/urz±dzenia, do którego mo¿esz przej¶æ 
+	    klikaj±c na odpowiednim polu. Klikniêcie na polu z adresem IP przeniesie Ciê do modu³u
+	    dodawania nowego komputera. Znajdziesz tu tak¿e dwa przydatne linki: <emphasis>
+	    Porz±dkuj sieæ</emphasis> s³u¿±cy do przeadresowania komputerów, tak aby wyeliminowaæ 
+	    luki w adresacji oraz <emphasis>Przeadresuj do sieci</emphasis> s³u¿±cy do przenoszenia wszystkich 
+	    komputerów/urz±dzeñ z tej sieci do innej.</para>
+	</sect2>
+	<sect2 id="menu-networks-new">
+	    <title>Nowa sieæ</title>
+	    <para>Definiuj±c now± sieæ musisz okre¶liæ jej unikaln± nazwê i klasê adresow±
+	    podaj±c adres IP sieci i maskê. Pozosta³e dane s± opcjonalne.</para>
+	</sect2>
  </sect1>
  <sect1 id="menu-finances">
 	<title>Taryfy i Finanse</title>
