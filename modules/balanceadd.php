@@ -68,7 +68,7 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 			{
 				foreach($unpaid as $cashid)
 				{
-					if($addbalance['value'] <= 0)
+					if($addbalance['value'] == 0)
 						break;
 				
 					$row = $LMS->DB->GetRow('SELECT invoiceid, itemid, comment, taxvalue FROM cash WHERE id = ?', array($cashid));
@@ -95,7 +95,7 @@ if($addbalance['type']=='3' || $addbalance['type']=='4')
 				unset($_SESSION['unpaid'][$addbalance['userid']]);
 			}
 			
-			if($addbalance['value']>0)
+			if($addbalance['value'] != 0)
 				$LMS->AddBalance($addbalance);
 		}
 	}
