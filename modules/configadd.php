@@ -34,6 +34,9 @@ $layout['pagetitle'] = 'Dodanie opcji konfiguracyjnej';
 
 if($config = $_POST['config'])
 {
+	foreach($config as $key => $val)
+	    $config[$key] = trim($val);
+	
 	if(!($config['name'] || $config['value'] || $config['description']))
 	{
 		header('Location: ?m=configlist');
@@ -56,6 +59,23 @@ if($config = $_POST['config'])
 	    $error['value'] = 'Opcja musi mieæ okre¶lon± warto¶æ!';
 	
 	if($config['disabled']!='1') $config['disabled'] = 0;
+
+	// sprawdzenie warto¶ci niektórych opcji (z config_defaults.ini)
+	switch($config['name'])
+	{
+	    case 'accountlist_pagelimit':
+	    case 'ticketlist_pagelimit':
+	    case 'balancelist_pagelimit':
+	    case 'invoicelist_pagelimit':
+	    case 'timeout':
+		    if($config['value']<=0)
+			    $error['value'] = 'Warto¶æ opcji \''.$config['name'].'\' musi byæ liczb± wiêksz± od zera!';
+		break;
+	    case 'reload_type':
+		    if($config['value']!='sql' && $config['value']!='exec')
+			    $error['value'] = 'Z³y typ reloadu. Obs³ugiwane typy: sql, exec!';
+		break;
+	}
 
 	if(!$error)
 	{
