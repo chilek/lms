@@ -37,7 +37,7 @@ if(isset($netadd))
 			$netadd['name']=="" &&
 			$netadd['address']=="" &&
 			$netadd['dns']=="" &&
-			$netadd[dns2]=="" &&
+			$netadd['dns2']=="" &&
 			$netadd['domain']=="" &&
 			$netadd['gateway']=="" &&
 			$netadd['wins']=="" &&
@@ -78,8 +78,8 @@ if(isset($netadd))
 	if($netadd['dns']!="" && !check_ip($netadd['dns']))
 		$error['dns'] = "Podany adres IP serwera DNS jest nieprawid這wy!";
 	
-	if($netadd[dns2]!="" && !check_ip($netadd[dns2]))
-		$error[dns2] = "Podany adres IP serwera DNS jest nieprawid這wy!";
+	if($netadd['dns2']!="" && !check_ip($netadd['dns2']))
+		$error['dns2'] = "Podany adres IP serwera DNS jest nieprawid這wy!";
 	
 	if($netadd['wins']!="" && !check_ip($netadd['wins']))
 		$error['wins'] = "Podany adres IP serwera WINS jest nieprawid這wy!";
