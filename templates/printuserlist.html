@@ -11,24 +11,24 @@
 		</TD>
 	</TR>
 </TABLE>
-<TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN=CENTER>
+<TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
-		<TD ALIGN=CENTER CLASS=head>
+		<TD ALIGN="CENTER" CLASS="HEAD">
 			LP:
 		</TD>
-		<TD CLASS=head ALIGN=CENTER>
+		<TD CLASS="HEAD" ALIGN="CENTER">
 			ID:
 		</TD>
-		<TD CLASS=head>
-			<B>Nazwisko/nazwa i imiê:</B><BR>
+		<TD CLASS="HEAD">
+			<B>Nazwisko i imiê:</B><BR>
 			Adres:<BR>
 			Telefon:
 		</TD>
-		<TD CLASS=head>
+		<TD CLASS="HEAD" VALIGN="TOP">
 			Email:<BR>
 			Taryfa:
 		</TD>
-		<TD CLASS=head>
+		<TD CLASS="HEAD">
 			Saldo:
 		</TD>
 		
@@ -36,11 +36,12 @@
 	</TR>
 	{cycle values="#FFFFFF,#EEEEEE" print=false}
 	{section name=userlist loop=$userlist}{if $userlist[userlist].id}
+
 	<TR BGCOLOR="{cycle}">
-		<TD ALIGN=CENTER>
+		<TD ALIGN="CENTER">
 		{counter}
 		</TD>
-		<TD ALIGN=CENTER>
+		<TD ALIGN="CENTER">
 			{$userlist[userlist].id|string_format:"%04d"}
 		</TD>
 		<TD>
@@ -48,7 +49,7 @@
 			{$userlist[userlist].address}{if $userlist[userlist].city neq ""},{/if} {$userlist[userlist].zip} {$userlist[userlist].city}<BR>
 			{$userlist[userlist].phone1}
 		</TD>
-		<TD HEIGHT=40 VALIGN="ABSMIDDLE">
+		<TD VALIGN="ABSMIDDLE">
 			{$userlist[userlist].email}<BR>
 			{$userlist[userlist].tariffvalue|string_format:"%01.2f"} z³ / mc
 		</TD>

@@ -63,6 +63,11 @@ switch($_GET[type])
 		$SMARTY->assign("nodelist",$LMS->GetNodeList($_SESSION['nlo']));
 		$SMARTY->display("printnodelist.html");
 	break;
+	
+	case "userlistminus":
+		$SMARTY->assign("userlist",$LMS->GetUserList($_SESSION['ulo'],$_SESSION['uls']));
+		$SMARTY->display("printuserlistminus.html");
+	break;
 
 	default:
 		$SMARTY->display("printindex.html");
