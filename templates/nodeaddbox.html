@@ -45,8 +45,8 @@
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[access]">
-				<OPTION VALUE="Y"{if $nodedata.access eq "Y"} SELECTED{/if}>pod³±czony</OPTION>
-				<OPTION VALUE="N"{if $nodedata.access eq "N"} SELECTED{/if}>od³±czony</OPTION>
+				<OPTION VALUE="Y"{if $nodedata.access eq "Y"} SELECTED{/if}>{$lang.connected}</OPTION>
+				<OPTION VALUE="N"{if $nodedata.access eq "N"} SELECTED{/if}>{$lang.disconnected}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
