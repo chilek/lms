@@ -1176,6 +1176,12 @@ class LMS
 		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, period, at, invoice) VALUES (?, ?, ?, ?, ?)",array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at'], $assignmentdata['invoice']));
 	}
 
+	function GetInvoicesList()
+	{
+		$result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, finished, sum(value), count(invoiceid) FROM invoices LEFT JOIN invoicecontents ON invoiceid = id GROUP BY id, number, cdate, customerid, name, finished ORDER BY cdate ASC');
+		return $result;
+	}
+
 	function GetInvoiceContent($invoiceid)
 	{
 		$result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, nip, cdate, paytime, finished FROM invoices WHERE id=?',array($invoiceid));
@@ -1197,6 +1203,8 @@ class LMS
 		}
 		$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
 		$result['totalg'] = floor(($result['total'] - floor($result['total'])) * 100);
+		$result['year'] = date('Y',$result['cdate']);
+		$result['month'] = date('m',$result['cdate']);
 		return $result;
 	}
 
@@ -2265,6 +2273,10 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.298  2003/12/02 01:48:21  lukasz
+ * - poprawiony bug z numerem faktury
+ * - dodane number_template do opcji faktur
+ *
  * Revision 1.297  2003/12/01 20:27:39  alec
  * poprawiony b³±d GetCashByID() - czy to komu¶ potrzebne, czy nie
  *

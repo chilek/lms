@@ -3,7 +3,7 @@
 <TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
 		<TD WIDTH="98%" CLASS="hdf" COLSPAN="2" VALIGN="TOP">
-			<B>Faktura VAT nr. {$invoice.id}/LMS/{$invoice.cdate|date_format:"%Y"}</B><BR>
+			<B>Faktura VAT nr {$_config.invoices.number_template|default:"%N/LMS/%Y"|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}</B><BR>
 			<B>{$type}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" VALIGN="TOP">
