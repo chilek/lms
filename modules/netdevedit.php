@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+$edit = TRUE;
+
 if($_GET[action]=="disconnect")
 {
 	$LMS->NetDevUnLink($_GET[id],$_GET[devid]);
@@ -41,7 +43,10 @@ if($_GET[action]=="disconnectnode")
 if($_GET[action]=="connect")
 {
 	if(! $LMS->NetDevLink($_GET[netdev], $_GET[id]) )
+	{
+		$edit = FALSE;
 		$error[link] = "Brak wolnych portów w urz±dzeniu";
+	}
 	else
 		header("Location: ?m=netdevinfo&id=".$_GET[id]);
 }
@@ -49,7 +54,10 @@ if($_GET[action]=="connect")
 if($_GET[action]=="connectnode") 
 {
 	if(! $LMS->NetDevLinkComputer($_GET[nodeid], $_GET[id]) )
+	{
 		$error[linknode] = "Brak wolnych portów w urz±dzeniu";
+		$edit = FALSE;
+	}
 	else
 		header("Location: ?m=netdevinfo&id=".$_GET[id]);
 }
@@ -70,7 +78,6 @@ if(isset($netdevdata))
 		die;
 	}
 
-	$edit = TRUE;
 }
 else
 	$netdevdata = $LMS->GetNetDev($_GET[id]);
@@ -110,6 +117,9 @@ else
 
 /*
  * $Log$
+ * Revision 1.12  2003/10/06 12:18:02  lukasz
+ * - wilk syty i owca ca³a
+ *
  * Revision 1.11  2003/10/06 12:06:11  lukasz
  * - a zastanowi³e¶ siê co chcia³em przez to osi±gn±æ?
  *
