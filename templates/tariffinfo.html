@@ -13,57 +13,69 @@
 <H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD CLASS="fall" COLSPAN="2">
+		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/money.gif" ALT="" ALIGN="ABSMIDDLE">
+		</TD>
+		<TD WIDTH="99%" CLASS="frightu" COLSPAN="2" NOWRAP>
 			<B>{$tariff.name} ({$tariff.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<B>Warto¶æ:</B>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/value.gif" BORDER="0" ALIGN="absmiddle">
 		</TD>
-		<TD CLASS="fright">
+		<TD WIDTH="1%"><B>Warto¶æ:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
 			{$tariff.value|string_format:"%01.2f"} z³
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="fleft">
-			<B>Uprate:</B>
+			<IMG SRC="img/uprate.gif" BORDER="0" ALIGN="absmiddle">
 		</TD>
-		<TD CLASS="fright">
+		<TD WIDTH="1%"><B>Uprate:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
 			{if $tariff.uprate}{$tariff.uprate}kb/s{else}brak limitu{/if}
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
-			<B>Downrate:</B>
+			<IMG SRC="img/downrate.gif" BORDER="0">
 		</TD>
-		<TD CLASS="fright">
+		<TD WIDTH="1%"><B>Downrate:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
 			{if $tariff.downrate}{$tariff.downrate}kb/s{else}brak limitu{/if}
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
-			<B>Ilo¶æ&nbsp;u¿ytkowników:</B>
+			<IMG SRC="img/users.gif" BORDER="0">
 		</TD>
-		<TD CLASS="fright">
+		<TD WIDTH="1%" NOWRAP><B>Ilo¶æ u¿ytkowników:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
 			{$tariff.userscount} {if $tariff.count neq $tariff.userscount}({$tariff.count}){/if}
 		</TD>
 	</TR>
 	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft">
-			<B>Zysk&nbsp;miesiêczny:</B>
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/values.gif" BORDER="0">
 		</TD>
-		<TD CLASS="fright">
+		<TD WIDTH="1%" NOWRAP><B>Zysk miesiêczny:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
 			{$tariff.totalval|string_format:"%01.2f"} z³
 		</TD>
 	</TR>
 	{if $tariff.description}
 	<TR CLASS="light">	
 		<TD WIDTH="1%" CLASS="fleft">
-			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0">
+			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
-		<TD CLASS="fright">
+		<TD WIDTH="98%" CLASS="fright" COLSPAN="2">
 			<TABLE WIDTH="100%" CELLPADDING="5"> 
 			    <TR><TD CLASS="fall" BGCOLOR="#F4F0EC">
 				    {$tariff.description|replace:"\n":"<BR>"}
@@ -73,17 +85,17 @@
 	</TR>
 	{/if}
 	<TR CLASS="light">
-	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="2">
+	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="3">
 			    <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="fall" COLSPAN="2">
+		<TD WIDTH="100%" CLASS="fall" COLSPAN="3">
 			<B>U¿ytkownicy w tej taryfie:</B>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="2">
+		<TD WIDTH="100%" CLASS="FALL" COLSPAN="3">
 			<TABLE WIDTH="100%" CELLPADDING="2">
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{section name=l1 loop=$tariff.users max=$tariff.rows}
@@ -106,8 +118,8 @@
 			</TABLE>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="2">
+	<TR CLASS="DARK">
+		<TD WIDTH="100%" CLASS="FALL" COLSPAN="3">
 			<P>
 			<FORM NAME="tmove" METHOD="GET" ACTION="?m=tariffmove">
 				<INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
