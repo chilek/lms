@@ -1252,7 +1252,7 @@ class LMS
 					
 				}
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
-			$result['totalg'] = floor(($result['total'] - floor($result['total'])) * 100);
+			$result['totalg'] = ($result['total'] - floor($result['total'])) * 100;
 			$result['year'] = date('Y',$result['cdate']);
 			$result['month'] = date('m',$result['cdate']);
 			return $result;
