@@ -192,10 +192,10 @@ foreach($LMS->CONFIG['invoices'] as $key => $val)
          $desc = trans('Invoice template file. Default: "invoice.html". Should be placed in templates directory.');
          break;
      case 'content_type':
-         $desc = trans('Content-type for invoice. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html; charset=UTF-8".');
+         $desc = trans('Content-type for invoice. If you enter "application/octet-stream", browser will send file to save on disk, instead of displaying it. It\'s useful if you use your own template which generate e.g. rtf or xls file. Default: "text/html".');
          break;
      case 'attachment_name':
-         $desc = trans('File name for saving finished invoice printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print invoice, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP).');
+         $desc = trans('File name for saving finished invoice printout. WARNING: Setting attachment_name with default content_type will (in case of MSIE) print invoice, and prompt for save on disk + bonus browser crash (6.0SP1 on WinXP). Default: empty.');
          break;
      case 'monthly_numbering':
          $desc = trans('Enabling this option will reset numbering of invoices on start of every month.');
