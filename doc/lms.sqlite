@@ -377,8 +377,8 @@ CREATE TABLE domains (
 DROP TABLE uiconfig;
 CREATE TABLE uiconfig (
     id integer PRIMARY KEY,
-    section varchar(255) 	DEFAULT '' NOT NULL,
-    var varchar(255) 		DEFAULT '' NOT NULL,
+    section varchar(64) 	DEFAULT '' NOT NULL,
+    var varchar(64) 		DEFAULT '' NOT NULL,
     value text 			DEFAULT '' NOT NULL,
     description text 		DEFAULT '' NOT NULL,
     disabled smallint 		DEFAULT 0 NOT NULL,
@@ -396,4 +396,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004120600');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004121000');
