@@ -247,7 +247,7 @@ CREATE TABLE rtattachments (
 
 DROP TABLE rtqueues;
 CREATE TABLE rtqueues (
-  id integer 		PRIMARY KEY,,
+  id integer 		PRIMARY KEY,
   name varchar(255) 	DEFAULT '' NOT NULL,
   email varchar(255) 	DEFAULT '' NOT NULL,
   UNIQUE (name),
