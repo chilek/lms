@@ -99,7 +99,7 @@
 			<NOBR><B>{$balancelist[balancelist].type}</B></NOBR>
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top">
-			<NOBR>{$balancelist[balancelist].value|string_format:"%01.2f"} z³</NOBR>
+			<NOBR>{$balancelist[balancelist].value|money_format}</NOBR>
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top">
 			<NOBR>
@@ -112,7 +112,7 @@
 			&raquo;
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top"> 
-			<NOBR>{$balancelist[balancelist].after|string_format:"%01.2f"} z³</NOBR>
+			<NOBR>{$balancelist[balancelist].after|money_format}</NOBR>
 		</TD>
 		<TD width="1%" nowrap valign="top">
 			{if $balancelist[balancelist].userid}<NOBR><A HREF="?m=userbalance&id={$balancelist[balancelist].userid}">{$balancelist[balancelist].username|truncate:20:"..."}</A></NOBR>{else} - {/if}
@@ -178,11 +178,11 @@
 		</TD>
 		<TD width="1%" nowrap class="fbt" align="right">
 			<NOBR>
-			{$listdata.uinvoice|string_format:"%01.2f"} z³<HR>
-			{$listdata.incomeu|string_format:"%01.2f"} z³<BR>
-			{$listdata.income|string_format:"%01.2f"} z³<BR>
-			{$listdata.expense|string_format:"%01.2f"} z³<HR>
-			{$listdata.total|string_format:"%01.2f"} z³</NOBR>
+			{$listdata.uinvoice|money_format}<HR>
+			{$listdata.incomeu|money_format}<BR>
+			{$listdata.income|money_format}<BR>
+			{$listdata.expense|money_format}<HR>
+			{$listdata.total|money_format}</NOBR>
 		</TD>
 		<TD width="95%" colspan="6" class="frightu">
 			&nbsp;

@@ -6,7 +6,7 @@
 	function getText(index)
 	{literal}{{/literal}
 		{section name=lt loop=$tariffs}
-		if(index=={$tariffs[lt].id}) return '{$tariffs[lt].name} ({$tariffs[lt].value} z³)';
+		if(index=={$tariffs[lt].id}) return '{$tariffs[lt].name} ({$tariffs[lt].value|money_format})';
 		{/section}
 	{literal}}{/literal}
 	//-->
@@ -33,7 +33,7 @@
 				</TD>
 				<TD WIDTH="1%"><B>Warto¶æ:</B></TD>
 				<TD WIDTH="98%">
-				    {$tariff.value|string_format:"%01.2f"} z³
+				    {$tariff.value|money_format} 
 				</TD>
 			    </TR>
 			    <TR class="LIGHT">
@@ -71,7 +71,7 @@
 				</TD>
 				<TD WIDTH="1%" NOWRAP><B>¦r. zysk miesiêczny:</B></TD>
 				<TD WIDTH="98%">
-				    {$tariff.totalval|string_format:"%01.2f"} z³
+				    {$tariff.totalval|money_format} 
 				</TD>
 			    </TR>
 			</TABLE>
@@ -193,7 +193,7 @@
 				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'Jeste¶ pewien ¿e chcesz przenie¶æ u¿ytkowników do taryfy '+getText(document.tmove.to.value)+'?','1');">Przenie¶ tych u¿ytkowników do taryfy:</A> </B>
 				<SELECT SIZE="1" NAME="to">
 					{section name=lt loop=$tariffs}
-					{if $tariffs[lt].id neq $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value} z³)</OPTION>{/if}
+					{if $tariffs[lt].id neq $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value|money_format} )</OPTION>{/if}
 					{/section}
 				</SELECT>
 			</FORM>

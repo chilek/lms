@@ -50,11 +50,11 @@
 		</TD>
 		<TD VALIGN="ABSMIDDLE">
 			{$userlist[userlist].email}<BR>
-			{$userlist[userlist].tariffvalue|string_format:"%01.2f"} z³ / mc<BR>
+			{$userlist[userlist].tariffvalue|money_format} / mc<BR>
 			{if $userlist[userlist].nip}{$userlist[userlist].nip}{else}{$userlist[userlist].pesel}{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$userlist[userlist].balance|string_format:"%01.2f"} z³
+			{$userlist[userlist].balance|money_format} 
 		</TD>
 	</TR>
 	{/if}{/section}

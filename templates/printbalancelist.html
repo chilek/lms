@@ -52,7 +52,7 @@
 			{$balancelist[balancelist].type}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$balancelist[balancelist].value|string_format:"%01.2f"} z³
+			{$balancelist[balancelist].value|money_format} 
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{if $balancelist[balancelist].taxvalue}
@@ -60,7 +60,7 @@
 			{else}zw.{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$balancelist[balancelist].after|string_format:"%01.2f"} z³
+			{$balancelist[balancelist].after|money_format} 
 		</TD>
 		<TD ALIGN="LEFT" NOWRAP>
 			{$balancelist[balancelist].username|truncate:20:"..."}
@@ -86,10 +86,10 @@
 			<B>Razem:</B>
 		</TD>
 		<TD ALIGN="RIGHT" BGCOLOR="#EEEEEE">
-			{$listdata.incomeu|string_format:"%01.2f"} z³<BR>
-			{$listdata.income|string_format:"%01.2f"} z³<BR>
-			{$listdata.expense|string_format:"%01.2f"} z³<BR>
-			<NOBR><B>{$listdata.total|string_format:"%01.2f"} z³</B><NOBR>
+			{$listdata.incomeu|money_format}<BR>
+			{$listdata.income|money_format}<BR>
+			{$listdata.expense|money_format}<BR>
+			<NOBR><B>{$listdata.total|money_format}</B><NOBR>
 		</TD>
 		<TD COLSPAN="2" BGCOLOR="#EEEEEE">
 		</TD>

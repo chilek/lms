@@ -18,7 +18,7 @@
 			<SELECT size="1" name="assignmentedit[tariffid]" {tip text="Wybierz taryfê" trigger="edittariffid"}>
 			{section name=t loop=$tariffs}
 				<OPTION value="{$tariffs[t].id}" {if $tariffs[t].id==$assignmentedit.tariffid}SELECTED{/if}>
-				{$tariffs[t].name} ({$tariffs[t].value|string_format:"%01.2f"} z³{if $tariffs[t].downrate || $tariffs[t].downceil}, {$tariffs[t].downrate}-{$tariffs[t].downceil} down{/if}{if $tariffs[t].uprate || $tariffs[t].upceil}, {$tariffs[t].uprate}-{$tariffs[t].upceil} up{/if})
+				{$tariffs[t].name} ({$tariffs[t].value|money_format}{if $tariffs[t].downrate || $tariffs[t].downceil}, {$tariffs[t].downrate}-{$tariffs[t].downceil} down{/if}{if $tariffs[t].uprate || $tariffs[t].upceil}, {$tariffs[t].uprate}-{$tariffs[t].upceil} up{/if})
 				</OPTION>
 			{/section}
 			</SELECT>

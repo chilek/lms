@@ -118,7 +118,7 @@
 			{$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$invoice.value|string_format:"%0.2f"} z³
+			{$invoice.value|money_format} 
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$invoice.count}
