@@ -235,18 +235,12 @@ while (my $row = $dbq->fetchrow_hashref())
 				my $month = strftime ( "%m", localtime()) ; 
 				$line =~ s/\%date-m/$month/;
 				}
-
 				
 				{
 				my $month_name = strftime ( "%B", localtime()) ; 
 				$line =~ s/\%date_month_name/$month_name/;
 				}
 				
-				{
-				my $desc = $row->{'description'}; 
-				$line =~ s/\%desc/$desc/;
-				}
-
 				if ($line =~ /\%saldo/) {
 					$line =~ s/\%saldo/$row->{'balance'}/;
 				}
