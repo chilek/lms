@@ -1,5 +1,15 @@
 $Id$
 
+wersja 1.0pre2 (25/12/2002):
+
+  - parsowanie configa nie zapisuje odrazu zmiennych odczytanych
+    z ini jako globalnych, a do tablicy $_CONFIG (nie mo¿na napisaæ 
+    niczego poprzez plik ini)
+  - dodane sprawdzanie czy istniej± katalogi backups i templates_c 
+    oraz czy mo¿na do nich zapisywaæ
+  - naprawiony modu³ od dodawania taryf
+  - posprz±tane w niektórych plikach    
+
 wersja 1.0pre1 (24/12/2002):
 
    - przepisane obiektowo
