@@ -225,7 +225,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 	    który nale¿y umie¶ciæ w katalogu <filename>/etc/lms</filename> lub w katalogu
 	    g³ównym LMS'a. Zawiera on zmienne konfiguracyjne <emphasis>LMS-UI</emphasis> 
 	    oraz wszystkich skryptów wykonywalnych z wyj±tkiem <emphasis>LMS-MGC</emphasis>.
-	    </para>
+	    <note><para>Pamiêtaj o usuniêciu ¶redników na pocz±tku linii z ustawianym 
+	    parametrem konfiguracyjnym.</para></note></para>
 	    <sect2>
 	    <title>Sekcja [database] - ustawienia bazy danych</title>
 	    <para>
