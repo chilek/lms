@@ -200,8 +200,8 @@
 		<title>Konfiguracja LMS (lms.ini)</title>
 			<para>Dla systemu LMS domy¶lnym serwerem baz danych jest MySQL, dlatego w sekcji
 			[database] pliku /etc/lms/lms.ini nale¿y ustawiæ nastêpuj±ce opcje:
-   			<screen> 
-    	type 	 = postgres
+   			<screen>
+	type 	 = postgres
     	user	 = lms
     	password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 		    </para>
