@@ -75,7 +75,7 @@ if(isset($nodedata))
 		$error['user'] = "Proszê wybraæ u¿ytkownika!";
 
 	if($LMS->GetUserStatus($nodedata['ownerid']) != 3 || $LMS->UserExists($nodedata['ownerid']) != TRUE)
-		$error['user'] = "Wybrany u¿ytkownik $nodedata['ownerid'] jest b³êdny!";
+		$error['user'] = "Wybrany u¿ytkownik ".$nodedata['ownerid']." jest b³êdny!";
 
 	if(!$error)
 	{
