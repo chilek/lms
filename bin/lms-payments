@@ -100,7 +100,6 @@ my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 my $deadline = $ini->val('payments', 'deadline') || '14';
 my $paytype = $ini->val('payments', 'paytype') || 'PRZELEW';
-my $payday = sprintf("%d",strftime("%e",localtime()));
 
 my $dbase;
 my $utsfmt;
