@@ -35,6 +35,8 @@ CREATE TABLE assignments (
   userid int(11) NOT NULL default '0',
   period int(11) NOT NULL default '0',
   at int(11) NOT NULL default '0',
+  datefrom int(11) NOT NULL default '0',
+  dateto int(11) NOT NULL default '0',
   invoice tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
@@ -366,4 +368,4 @@ CREATE TABLE users (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004031401');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004031402');
