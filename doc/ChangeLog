@@ -35,6 +35,9 @@ wersja 1.1.7 (??/??/????):
   
   - przeliczanie adresów IP int<->char przerzucone z PHP na
     bazê danych (alec)
+  - poprawione contrib/customer do nowej konstrukcji LMS() oraz 'initLMS.php'
+    w contrib - przyk³adowy plik który pokazuje jak siê inicjuje klasê LMS'a
+    ¿eby wszystko ³adnie chodzi³o (lukasz)
 
 wersja 1.1.6 Seth (08/12/2003):
 
