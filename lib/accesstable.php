@@ -38,7 +38,7 @@ $access[table][2][name]		= "w³±czanie i od³±czanie komputerów";
 $access[table][2][allow_reg]	= "^nodeset$";
 
 $access[table][3][name]		= "manipulacja finansami";
-$access[table][3][allow_reg]	= "^(balancenew|balanceadd|userbalanceok)$";
+$access[table][3][allow_reg]	= "^(balancenew|balanceadd|userbalanceok|faktura)$";
 
 $access[table][4][name]         = "prze³adowywanie konfiguracji";
 $access[table][4][allow_reg]    = "^reload$";
@@ -57,6 +57,9 @@ $access[table][255][deny_reg]	= "^.*$";
 
 /*
  * $Log$
+ * Revision 1.13  2003/09/10 13:38:34  lexx
+ * - faktury
+ *
  * Revision 1.12  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
