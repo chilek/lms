@@ -33,12 +33,13 @@ if ($id = $_GET['id'])
 	}
 }
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
-$layout['pagetitle'] = trans('Group Information: $0',$usergroup['name']);
-
 $usergroup = $LMS->UsergroupGet($_GET['id']);
 $users = $LMS->GetUserWithoutGroupNames($_GET['id']);
 $userscount = sizeof($users);
+
+$layout['pagetitle'] = trans('Group Information: $0',$usergroup['name']);
+
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
 $SMARTY->assign('usergroup',$usergroup);
 $SMARTY->assign('users', $users);
