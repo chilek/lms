@@ -32,12 +32,6 @@
  *    ftp = 8	(0000000000001000)
  */
 
-function GetAccountIdByLogin($login) 
-{
-	global $LMS;
-	return $LMS->DB->GetOne('SELECT id FROM passwd WHERE login = ?', array($login));
-}
-
 $layout['pagetitle'] = 'Utworzenie nowego konta';
 
 if($account = $_POST['account'])
@@ -48,31 +42,30 @@ if($account = $_POST['account'])
 		die;
 	}
 	
+	$account['type'] = array_sum($account['type']);
+
 	if(!eregi("^[a-z0-9._-]+$", $account['login']))
-    	    $error['login'] = 'Login zawiera niepoprawne znaki!';
-	    
-	if(GetAccountIdByLogin($account['login']))
-	    $error['login'] = 'Konto o podanej nazwie ju¿ istnieje!'; 
+    		$error['login'] = 'Login zawiera niepoprawne znaki!';
+	elseif($LMS->GetAccountIdByLogin($account['login']))
+		$error['login'] = 'Konto o podanej nazwie ju¿ istnieje!';
 	
 	if($account['passwd1'] != $account['passwd2'])
-	    $error['passwd'] = 'Has³a nie mog± siê ró¿niæ!';
+		$error['passwd'] = 'Has³a nie mog± siê ró¿niæ!';
 	    
 	if($account['passwd1'] == '')
-	    $error['passwd'] = 'Has³a nie mog± byæ puste';
+		$error['passwd'] = 'Has³a nie mog± byæ puste';
 	
 	if($account['expdate'] == '')
 		$account['expdate'] = 0;
 	else
 	{
-	    $date = explode('/',$account['expdate']);
-	    if(!checkdate($date[1],$date[2],$date[0]))
-		$error['expdate'] = 'Zastosuj prawid³owy format daty - RRRR/MM/DD!';
-	    elseif(!$error)
-		$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
+		$date = explode('/',$account['expdate']);
+		if(!checkdate($date[1],$date[2],$date[0]))
+			$error['expdate'] = 'Zastosuj prawid³owy format daty - RRRR/MM/DD!';
+		elseif(!$error)
+			$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
 	}
 
-	$account['type'] = array_sum($account['type']);
-	
 	if(!$account['domainid'] && (($account['type'] & 2) == 2))
 		$error['domainid'] = 'Konto mailowe musi posiadaæ domenê!';
 	

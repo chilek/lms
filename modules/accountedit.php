@@ -24,12 +24,6 @@
  *  $Id$
  */
 
-function GetAccountIdByLogin($login) 
-{
-	global $LMS;
-	return $LMS->DB->GetOne('SELECT id FROM passwd WHERE login = ?', array($login));
-}
-
 function AccountExists($id) 
 {
 	global $LMS;
@@ -92,7 +86,7 @@ switch ($option)
     			$error['login'] = 'Login zawiera niepoprawne znaki!';
 	    
 		if($account['login'] != $oldlogin)
-			if(GetAccountIdByLogin($account['login']))
+			if($LMS->GetAccountIdByLogin($account['login']))
 				$error['login'] = 'Konto o podanej nazwie ju¿ istnieje!'; 
 	
 		if($account['expdate'] == '')
