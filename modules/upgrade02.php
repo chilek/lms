@@ -60,6 +60,9 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 	case 'domainlist_pagelimit':
 	    $desc = 'Limit wy¶wietlanych pozycji na stronie w li¶cie domen. Domy¶lnie: 100';
 	    break;
+	case 'aliaslist_pagelimit':
+	    $desc = 'Limit wy¶wietlanych pozycji na stronie w li¶cie aliasów. Domy¶lnie: 100';
+	    break;
 	case 'networkhosts_pagelimit':
 	    $desc = 'Limit wy¶wietlanych komputerów na stronie w informacjach o sieci. Wpisanie zera spowoduje pomijanie tych informacji (i przyspieszenie wy¶wietlenia strony). Domy¶lnie: 256';
 	    break;

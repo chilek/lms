@@ -24,25 +24,19 @@
  *  $Id$
  */
 
-$id = $_GET['id'];
-
-if($id && $_GET['is_sure']=='1')
-{
-	if($LMS->DB->Execute('DELETE FROM domains WHERE id = ?', array($id)))
-	{
-		$LMS->SetTS('domains');
-		if($accounts = $LMS->DB->GetCol('SELECT id FROM passwd WHERE domainid = ?', array($id)))
-		{
-			foreach($accounts as $aid)
-				$LMS->DB->Execute('DELETE FROM aliases WHERE accountid = ?', array($aid));
-		
-			$LMS->DB->Execute('DELETE FROM passwd WHERE domainid = ?', array($id)))
-			$LMS->SetTS('passwd');
-			$LMS->SetTS('aliases');
-		}
-	}
-}
-
-header('Location: ?m=domainlist');
+$DB->BeginTrans();
+$DB->Execute("
+    CREATE SEQUENCE aliases_id_seq;
+    CREATE TABLE aliases (
+	id integer DEFAULT nextval('aliases_id_seq'::text) NOT NULL,
+	login varchar(255) DEFAULT '' NOT NULL,
+	accountid integer DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (login)
+    );
+    
+    UPDATE dbinfo SET keyvalue = '2004120400' WHERE keytype = 'dbversion'
+");
+$DB->CommitTrans();
 
 ?>

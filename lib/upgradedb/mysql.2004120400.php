@@ -24,25 +24,17 @@
  *  $Id$
  */
 
-$id = $_GET['id'];
-
-if($id && $_GET['is_sure']=='1')
-{
-	if($LMS->DB->Execute('DELETE FROM domains WHERE id = ?', array($id)))
-	{
-		$LMS->SetTS('domains');
-		if($accounts = $LMS->DB->GetCol('SELECT id FROM passwd WHERE domainid = ?', array($id)))
-		{
-			foreach($accounts as $aid)
-				$LMS->DB->Execute('DELETE FROM aliases WHERE accountid = ?', array($aid));
-		
-			$LMS->DB->Execute('DELETE FROM passwd WHERE domainid = ?', array($id)))
-			$LMS->SetTS('passwd');
-			$LMS->SetTS('aliases');
-		}
-	}
-}
-
-header('Location: ?m=domainlist');
+$DB->BeginTrans();
+$DB->Execute("
+    CREATE TABLE aliases (
+	id int(11) NOT NULL auto_increment,
+	login varchar(255) NOT NULL DEFAULT '',
+	accountid int(11) NOT NULL DEFAULT '0',
+	PRIMARY KEY (id),
+	UNIQUE KEY (login)
+    ) TYPE=MyISAM
+");
+$DB->Execute("UPDATE dbinfo SET keyvalue = '2004120400' WHERE keytype = 'dbversion'");
+$DB->CommitTrans();
 
 ?>

@@ -53,7 +53,7 @@
 					<B>Domena:</B>
 				    </TD>
 				    <TD width="98%">
-					<select name="account[domainid]" {tip text="Wprowad¼ nazwê domenow± (opcjonalnie)" trigger="domain"}>
+					<select name="account[domainid]" {tip text="Wybierz nazwê domenow± (opcjonalnie)" trigger="domainid"}>
 					    <option value="0" {if !$account.domainid}SELECTED{/if}>- wybierz domenê -</option>
 					    {section name=domainlist loop=$domainlist}
 					    <option value="{$domainlist[domainlist].id}" {if $domainlist[domainlist].id eq $account.domainid}SELECTED{/if}>{$domainlist[domainlist].name}</option>
