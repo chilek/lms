@@ -2438,9 +2438,8 @@ class LMS
 		if($result = $this->DB->GetAll('SELECT id, name, email FROM rtqueues'))
 		{
 			foreach($result as $idx => $row)
-			{
-				$result[$idx]['stats'] = $this->GetQueueStats($row['id']);
-			}
+				foreach($this->GetQueueStats($row['id']) as $sidx => $row)
+					$result[$idx][$sidx] = $row;
 		}
 		return $result;
 	}
