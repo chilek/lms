@@ -44,6 +44,7 @@ wersja 1.3.2 Kinsey (??/04/2004):
   - dodany contrib/sqlpanel (alec)
   - BTS#0000131: poprawki w 'Rejestrze sprzeda¿y' (alec)
   - SQLite Support (alec)
+  - poprawki w lms-notify zapobiegaj±ce b³êdom na postgresie (alec)
   
 wersja 1.3.1 Maybourne (04/03/2004):
 
