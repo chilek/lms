@@ -56,6 +56,7 @@
 		</TR>
 		<TR CLASS="LIGHT">
 		    <TD WIDTH="100%" CLASS="flr" ALIGN="CENTER">
+			{if $users.count}
 			<SELECT SIZE="20" NAME="userassignments[muserid][]" multiple>
 				{section name=user loop=$users}
 					<OPTION VALUE="{$users[user].id}">
@@ -63,6 +64,13 @@
 					</OPTION>
 				{/section}
 			</SELECT>
+			{else}
+			<BR>
+			<BR>
+			<B>Wszyscy u¿ytkownicy nale¿± do tej grupy</B><BR>
+			<BR>
+			<BR>
+			{/if}
 		    </TD>
 		</TR>
 		<TR CLASS="LIGHT">
