@@ -9,6 +9,8 @@ wersja 1.4.1 (??/??/2004):
   - dokumentacja: dodany opis lms-makedhcpconf (alec)
   - poprawka w funkcji szybkiego wyszukiwania komputerów spowodowana odmiennym
     dzia³aniem ip2long() w PHP5 (alec)
+  - BTS#0000229: contrib/customer - uwzglêdniona sytuacja, gdy ³±czymy siê z
+    adresu IP bez w³a¶ciciela, czyli z urz±dzenia sieciowego (alec)
 
 wersja 1.4.0 Evalla (15/10/2004):
 
