@@ -153,7 +153,6 @@ info = "Opcjonalny opis modu³u"
 				<entry>Wywo³ywanie poleceñ pow³oki</entry>
 				</row>
 				<row>
-				<row>
 				<entry>dhcp</entry>
 				<entry>Konfiguracja serwera dhcpd</entry>
 				</row>
