@@ -1,0 +1,11 @@
+$Id$
+
+wersja 0.3 (2004/11/17):
+
+    - uzupe³niony plik README
+    - patch dodany do contrib/multiip_patch
+
+wersja 0.2 (2004/11/16):
+
+    - doda³em ChangeLog
+    - zmieni³em wpisy tak aby patch dzia³a³ równie¿ z innymi wersjami

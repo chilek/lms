@@ -1,0 +1,40 @@
+diff -Naur lms/lib/LMS.class.php lms-new/lib/LMS.class.php
+--- lms/lib/LMS.class.php	2004-10-18 01:50:44.000000000 +0200
++++ lms-new/lib/LMS.class.php	2004-10-18 01:51:10.000000000 +0200
+@@ -2062,9 +2062,10 @@
+ 		return ($this->DB->GetOne('SELECT * FROM networks WHERE id=?', array($id)) ? TRUE : FALSE);
+ 	}
+ 
+-	function IsIPFree($ip)
++	function IsIPFree($ip,$ownerid=false)
+ 	{
+-		return !($this->DB->GetOne('SELECT * FROM nodes WHERE ipaddr=inet_aton(?)', array($ip)) ? TRUE : FALSE);
++        	return !($this->DB->GetOne('SELECT * FROM nodes WHERE ipaddr=inet_aton(?)' . ( is_numeric( $ownerid ) ? 'AND
++		ownerid!=?' : ''), array($ip,( is_numeric( $ownerid ) ? $ownerid : FALSE))) ? TRUE : FALSE);
+ 	}
+ 
+ 	function GetPrefixList()
+diff -Naur lms/modules/nodeadd.php lms-new/modules/nodeadd.php
+--- lms/modules/nodeadd.php	2004-10-15 14:47:15.000000000 +0200
++++ lms-new/modules/nodeadd.php	2004-10-18 01:51:26.000000000 +0200
+@@ -61,7 +61,7 @@
+ 		$error['ipaddr'] = 'Podany adres IP jest niepoprawny!';
+ 	elseif(!$LMS->IsIPValid($nodedata['ipaddr']))
+ 		$error['ipaddr'] = 'Podany adres IP nie nale¿y do ¿adnej sieci!';
+-	elseif(!$LMS->IsIPFree($nodedata['ipaddr']))
++	elseif(!$LMS->IsIPFree($nodedata['ipaddr'], $nodedata['ownerid']))
+ 		$error['ipaddr'] = 'Podany adres IP jest zajêty!';
+ 
+ 	if(!$nodedata['mac'])
+diff -Naur lms/modules/nodeedit.php lms-new/modules/nodeedit.php
+--- lms/modules/nodeedit.php	2004-10-15 14:47:15.000000000 +0200
++++ lms-new/modules/nodeedit.php	2004-10-18 01:51:40.000000000 +0200
+@@ -80,7 +80,7 @@
+ 	{
+ 		if($LMS->IsIPValid($nodeedit['ipaddr'])) 
+ 		{
+-			if(!$LMS->IsIPFree($nodeedit['ipaddr']) && $LMS->GetNodeIPByID($nodeedit['id'])!=$nodeedit['ipaddr'])
++			if(!$LMS->IsIPFree($nodeedit['ipaddr'], $nodeedit['ownerid'])&&$LMS->GetNodeIPByID($nodeedit['id'])!=$nodeedit['ipaddr'])
+ 				$error['ipaddr'] = 'Podany adres IP jest zajêty!';
+ 		}
+ 		else
