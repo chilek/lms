@@ -20,9 +20,6 @@ CREATE TABLE dbinfo (
 INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004030400');		  
 
 /* Chyba o niczym nie zapomnia³em? */
-ALTER TABLE users ADD message TEXT';
-ALTER TABLE nodes ADD warning BOOL DEFAULT '0' NOT NULL;
-
 COMMIT;
 
 /*
