@@ -225,8 +225,8 @@ switch($_GET['type'])
 
 	case 'incomereport': /********************************************/
 	
-		$from = $_POST['incomereportfrom'];
-		$to = $_POST['incomereportto'];
+		$from = $_POST['from'];
+		$to = $_POST['to'];
 
 		// date format 'yyyy/mm/dd'	
 		list($year, $month, $day) = split('/',$from);
@@ -247,6 +247,20 @@ switch($_GET['type'])
 		$SMARTY->assign('incomelist', $incomelist);
 		$SMARTY->assign('totalincomelist', $totalincomelist);
 		$SMARTY->display('printincomereport.html');
+	break;
+
+	case 'liabilityreport': /********************************************/
+	
+		if($_POST['day']) {
+			list($year, $month, $day) = split('/',$_POST['day']);
+			$reportday = mktime(0,0,0,$month,$day,$year);
+		} else 
+			$reportday = time();
+		
+		$layout['pagetitle'] = 'Raport wierzytelno¶ci na dzieñ '.date('%Y/%m/%d', $reportday);
+
+		$SMARTY->assign('reportlist', $LMS->LiabilityReport($reportday, $_POST['user']));
+		$SMARTY->display('printliabilityreport.html');
 	break;
 		
 	default: /*******************************************************/

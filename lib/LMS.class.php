@@ -2413,10 +2413,10 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function LiabilityReport($date, $userid=NULL)
 	{
-		$yearday = date('%z', $date);
-		$month = date('%n', $date);
-		$monthday = date('%j', $date);
-		$weekday = date('%w', $date)+1;
+		$yearday = date('z', $date);
+		$month = date('n', $date);
+		$monthday = date('j', $date);
+		$weekday = date('w', $date)+1;
 		switch($month) 
 		{
 		    case 1:
@@ -2429,18 +2429,19 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		    case 11: $quarterday = $monthday + 100; break;
 		    default: $quarterday = $monthday + 200; break;
 		}
-	
-		$query =   'SELECT '.$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').',  
+		
+		return $this->DB->GetAll('SELECT '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').',  
 			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS tax22,  
 			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS tax7, 
 			    SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS tax0, 
 			    SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS taxfree 
 			    FROM assignments, tariffs, users  
 			    WHERE userid = users.id AND tariffid = tariffs.id 
-			    AND deleted=0 AND (datefrom <= '.$date.') AND ((dateto >= '.$date.') OR dateto=0) 
-			    AND ((period=0 AND at='.$weekday.') OR (period=1 AND at='.$monthday.') OR (period=2 AND at='.$quarterday.') OR (period=3 AND at='.$yearday.')) 
-			    GROUP BY userid, lastname, users.name';
-	
+			    AND deleted=0 AND (datefrom<=?) AND ((dateto>=?) OR dateto=0) 
+			    AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?)) '
+			    .($userid ? "AND userid=$userid" : ''). 
+			    'GROUP BY userid, lastname, users.name',
+			    array($date, $date, $weekday, $monthday, $quarterday, $yearday));
 	}
 
 	/*
