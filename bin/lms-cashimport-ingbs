@@ -1,0 +1,262 @@
+#!/usr/bin/perl -Tw
+#
+# LMS version 1.5-cvs
+#
+#  (C) 2001-2005 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use HTTP::Cookies;
+use HTTP::Request::Common qw(POST);
+use Crypt::SSLeay;
+use LWP::UserAgent;
+use POSIX qw(strftime);
+use HTML::TokeParser;
+use Time::Local;
+use vars qw($configfile $quiet $help $version);
+use Digest::MD5;
+use Text::Iconv;
+
+# Tutaj wpisz swoje dane, login do ING Bsk Online, haslo dostepu i nr. konta
+
+my $login = 'twoj_login';
+my $passwd = 'twoje_haslo_do_systemu';
+my $konto = 'numer_twojego_konta';
+
+# Poni¿ej nic nie zmieniaj je¶li nie wiesz co robisz
+
+my $_version = '1.5-cvs';
+
+my %options = (
+	"--config-file|C=s"	=>	\$configfile,
+	"--quiet|q"		=>	\$quiet,
+	"--help|h"		=>	\$help,
+	"--version|v"		=>	\$version,
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-cashimport-ingbs, version $_version
+(C) 2001-2005 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
+-h, --help			print this help and exit;
+-v, --version			print version info and exit;
+-q, --quiet			suppress any output, except errors;
+
+EOF
+	exit 0;
+}
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-cashimport-ingbs, version $_version
+(C) 2001-2005 LMS Developers
+
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms/lms.ini";
+}
+
+if(!$quiet)
+{
+	print STDOUT "lms-cashimport-ingbs, version $_version\n";
+	print STDOUT "(C) 2001-2005 LMS Developers\n";
+	print STDOUT "Using file $configfile as config.\n";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
+
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+my $dbase;
+
+if($dbtype eq "mysql")
+{
+    $dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+elsif($dbtype eq "postgres")
+{
+    $dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+elsif($dbtype eq "sqlite")
+{
+    $dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+else
+{
+    print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+    exit 1;
+}
+
+my $cookie_jar = HTTP::Cookies->new;
+my $ua = new LWP::UserAgent;
+
+$passwd = $passwd."                                                          ";
+$ua->timeout(30);
+$ua->agent("Mozilla/5.0 Galeon/1.2.7 (X11; Linux i686; U;) Gecko/20021216");
+$ua->env_proxy();
+$ua->cookie_jar($cookie_jar);
+
+# Wchodzimy na stronê
+
+my $get = new HTTP::Request(GET => 'https://ssl.bsk.com.pl/');
+my $res = $ua->request($get);
+
+if ($res->content =~ /Przepraszamy/ ) {
+    print "ERROR: System chwilowo niedostêpny", "\n";
+    exit 1;
+}		
+
+# Postujemy login i has³o
+
+my $post = POST 'https://ssl.bsk.com.pl/bskonl/j_security_check', [
+    acttype	=> 'goBack',
+    j_username 	=> $login,
+    passwd0	=> substr($passwd,0,1),
+    passwd1	=> substr($passwd,1,1),
+    passwd2	=> substr($passwd,2,1),
+    passwd3	=> substr($passwd,3,1),
+    passwd4	=> substr($passwd,4,1),
+    passwd5	=> substr($passwd,5,1),
+    passwd6	=> substr($passwd,6,1),
+    passwd7	=> substr($passwd,7,1),
+    passwd8	=> substr($passwd,8,1),
+    passwd9	=> substr($passwd,9,1),
+    passwd10	=> substr($passwd,10,1),
+    passwd11	=> substr($passwd,11,1),
+    passwd12	=> substr($passwd,12,1),
+    passwd13	=> substr($passwd,13,1),
+    passwd14	=> substr($passwd,14,1),
+    passwd15	=> substr($passwd,15,1),
+    passwd16	=> substr($passwd,16,1),
+    passwd17	=> substr($passwd,17,1),
+    passwd18	=> substr($passwd,18,1),
+    passwd19	=> substr($passwd,19,1),
+    passwd20	=> substr($passwd,20,1),
+    passwd21	=> substr($passwd,21,1),
+    passwd22	=> substr($passwd,22,1),
+    passwd23	=> substr($passwd,23,1),
+    passwd24	=> substr($passwd,24,1),
+    passwd25	=> substr($passwd,25,1),
+    passwd26	=> substr($passwd,26,1),
+    passwd27	=> substr($passwd,27,1),
+    passwd28	=> substr($passwd,28,1),
+    passwd29	=> substr($passwd,29,1),
+    passwd30	=> substr($passwd,30,1),
+    passwd31	=> substr($passwd,31,1),
+];
+
+$res = $ua->request($post);
+
+# Ustawiamy daty
+
+my $today = strftime "%Y-%m-%d", localtime(time);
+
+# Jeden dzien do tylu 
+my $yesterday = strftime "%Y-%m-%d", localtime(time-86400);
+
+# Wchodzimy
+
+my $addr = 'https://ssl.bsk.com.pl/bskonl/rachunki.do?opcja=historia&applet=0&histType=null&accountType=&accountSys=C&fromDate='.$yesterday.'&toDate='.$today.'&number='.$konto;
+
+$get = new HTTP::Request(GET => $addr);
+$res = $ua->request($get);
+
+# Analiza
+
+if ($res->content =~ /Brak transakcji/ ) {
+    print "Brak transakcji", "\n";
+    exit 0;
+}		
+
+if ($res->content =~ /Podaj identyfikator/ ) {
+    print "ERROR: B³±d logowania", "\n";
+    exit 1;
+}		
+
+if ($res->content =~ /Opis transakcji/ ) {
+
+    my $parser = HTML::TokeParser->new(\$res->content);
+
+    $parser->get_tag("/th");
+
+    while (my $token = $parser->get_tag("tr")) {
+	$token = $parser->get_tag("td");
+        my $tekst = $parser->get_trimmed_text("/td","/nobr");
+	if ($tekst =~ '\d\d\d\d-\d\d-\d\d') {
+	    my @lista = split("-", $tekst);
+	    my $date = timelocal(0,0,0,$lista[2],$lista[1]-1,$lista[0]);
+	    $token = $parser->get_tag("td");
+	    my $customer = $parser->get_trimmed_text("/td");
+	    $token = $parser->get_tag("td");
+	    my $description = $parser->get_trimmed_text("/td");
+	    $token = $parser->get_tag("td");
+	    my $value = $parser->get_trimmed_text("/td");
+	    # Usuñ zbedne znaki
+	    $value =~ s/[^0-9-+.,]//g;
+	    # Zamien , na .
+	    $value =~ s/,/./;
+	    my $customerid = 0;
+	    my $dx = new Digest::MD5;
+	    my $hash = $dx->md5_hex($date.$value.$customer.$description);
+	    my $sdbq = $dbase->prepare("SELECT id FROM cashimport WHERE hash = '$hash'");
+	    $sdbq->execute();
+	    my $row = $sdbq->fetchrow_hashref();
+	    if ($row->{'id'}) {
+	        print "ERROR: Hash exists, ignoring $customer $description", "\n";
+	    } else {
+		my $converter = Text::Iconv->new("ISO-8859-2", "UTF-8");
+		$customer = $converter->convert($customer);
+		$description = $converter->convert($description);
+		my $sdbq = $dbase->prepare("INSERT INTO cashimport ( Date , Value , Customer , Description , CustomerId , Hash ) VALUES ('$date', '$value', '$customer', '$description', '$customerid', '$hash');");
+		$sdbq->execute();
+	    }
+	}
+	$parser->get_tag("/tr");
+    }
+    exit 0;
+}		
+
+print "ERROR: Nieznany b³±d";
+exit 1;
+
