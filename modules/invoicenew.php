@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Nowa faktura';
+$layout['pagetitle'] = trans('New Invoice');
 $users = $LMS->GetUserNames();
 $tariffs = $LMS->GetTariffs();
 $contents = $_SESSION['invoicecontents'];
@@ -50,7 +50,7 @@ switch($_GET['action'])
 			if ($taxvalue == '')
 				$taxvalue = 0;
 			if($taxvalue < 0 || $taxvalue > 100)
-				$error['taxvalue'] = 'Niepoprawna wysoko¶æ podatku!';
+				$error['taxvalue'] = trans('Incorrect tax value!');
 			if($itemdata['valuenetto'] != 0)
 				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($taxvalue / 100 + 1),2);
 			elseif($itemdata['valuebrutto'] != 0)
@@ -96,7 +96,7 @@ switch($_GET['action'])
 			if(checkdate($month, $day, $year))
 				$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
 			else
-				$error['cdate'] = 'Nieprawid³owa data!';
+				$error['cdate'] = trans('Incorrect date format!');
 		}
 
 		if($invoice['cdate'] && !$invoice['cdatewarning'] && !$error)
@@ -104,7 +104,7 @@ switch($_GET['action'])
 			$maxdate = $LMS->DB->GetOne('SELECT MAX(cdate) FROM invoices');
 			if($invoice['cdate'] < $maxdate)
 			{
-				$error['cdate'] = "Ostatnia data wyst. faktury to '".date('Y/m/d H:i', $maxdate)."'. Je¶li jeste¶ pewien, ¿e chcesz zapisaæ fakturê z dat± '".date('Y/m/d H:i', $invoice['cdate'])."' kliknij ponownie 'Wybierz/zmieñ u¿ytkownika'.";
+				$error['cdate'] = sprintf(trans('Last date of invoice settlement is %s. If you are shure, you want to write invoice with date %s, click "Select/Change Customer" again.'),date('Y/m/d H:i', $maxdate), date('Y/m/d H:i', $invoice['cdate']));
 				$invoice['cdatewarning'] = 1;
 			}
 		}
@@ -131,7 +131,7 @@ switch($_GET['action'])
 }
 
 if($invoice['paytype'] == '')
-	$invoice['paytype'] = 'GOTÓWKA';
+	$invoice['paytype'] = trans('CASH');
 
 $_SESSION['invoice'] = $invoice;
 $_SESSION['invoicecontents'] = $contents;

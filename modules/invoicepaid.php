@@ -78,6 +78,6 @@ elseif (!$LMS->IsInvoicePaid($invoiceid) && $invoicecontent = $LMS->GetInvoiceCo
 	}
 }
 
-header("Location: ?".$_SESSION['backto']);
+header('Location: ?'.$_SESSION['backto']);
 
 ?>

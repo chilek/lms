@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Lista faktur';
+$layout['pagetitle'] = trans('Invoices List');
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
 $marks = $_POST['marks'];
