@@ -31,14 +31,13 @@
 			<B>Sprzedawca:</B><BR>
 			<BR>
 			{$_config.invoices.header|replace:"\\n":"<BR>"}
-			<BR>
+			<BR><BR>
 			<B>Nabywca:</B><BR>
 			<BR>
 			{$invoice.name}<BR>
 			{$invoice.address}<BR>
 			{$invoice.zip} {$invoice.city}<BR>
 			Polska<BR>
-			<BR>
 			{if $invoice.phone neq ""}Tel: {$invoice.phone}<BR>{/if}
 			{if $invoice.nip neq ""}NIP: {$invoice.nip}<BR>{elseif $invoice.pesel neq ""}PESEL: {$invoice.pesel}<BR>{/if}
 			<BR>
