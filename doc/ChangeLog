@@ -66,6 +66,8 @@ wersja 1.1.8 (??/??/????):
   - w opcji 'networks' dla skryptów perlowych nazwy sieci mo¿na podawaæ
     ma³ymi literami - istotne dla bazy PostgreSQL, która ma zapytania
     case-sensitive (alec)
+  - poprawiony interfejs 'mailingu', dodane sprawdzanie poprawno¶ci e-maila
+    oraz nieuwzglêdnianie u¿ytkowników usuniêtych (alec)
     
 wersja 1.1.7 Hathor (14/12/2003):
 
