@@ -40,19 +40,6 @@
 			<B>{if $nodeipdata.access}pod³±czony{else}od³±czony{/if}</B>
 		</TD>
 	</TR>
-	{if $nodeipdata.info}
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/info.gif" BORDER="0" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>Opis:</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<TEXTAREA ROWS="5" COLS="40">{$nodeipdata.info}</TEXTAREA>
-		</TD>
-	</TR>
-	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/time.gif" BORDER="0" ALT="">
@@ -77,6 +64,19 @@
 			{if $nodeipdata.moddate}{$nodeipdata.modifiedby}, {$nodeipdata.moddateh}{else}-{/if}
 		</TD>
 	</TR>
+	{if $nodeipdata.info}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/info.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>Opis:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			{$nodeipdata.info}
+		</TD>
+	</TR>
+	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">Wszystkie adresy <IMG SRC="img/cancel.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
