@@ -1,0 +1,21 @@
+$Id$
+
+wersja 1.0:
+
+   - przepisane obiektowo
+   - napisane z wykorzystaniem engine'u template'owego Smarty
+   - dodana opcja mailingu
+   - bardzo fajne sortowanie (tm) :-)
+
+wersja 0.4:
+
+   - napisana od nowa, ca³kowicie z wykorzystaniem sesji, oraz
+     paru u³atwieñ je¿eli chodzi o SQL'a
+   - dodana mo¿liwo¶æ definicji podsieci, nie ma ju¿
+     konieczno¶ci d³ubania w ¼ród³ach aby zmieniæ ustawienia
+     podsieci
+   - serwer jest konfigurowany poprzez demona w perlu, s³uchaj±cego
+     na sockecie TCP/IP
+   - rozbudowane sortowanie
+   - dane administratorów s± trzymane w bazie danych i nie trzeba
+     rêcznie ustawiaæ hase³ w pliku .htpasswd
