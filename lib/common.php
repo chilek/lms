@@ -36,7 +36,7 @@ function bsd_grab_key ($key)
 {
 	return execute_program('sysctl', "-n $key");
 }
-		
+
 
 function find_program ($program)
 {
@@ -56,18 +56,18 @@ function execute_program ($program, $args = '')
 {
 	$buffer = '';
 	$program = find_program($program);
-	
-	
+
+
 	if (!$program) { return; }
-	
+
 	// see if we've gotten a |, if we have we need to do patch checking on the cmd
-	
+
 	if ($args)
 	{
 		$args_list = split(' ', $args);
 		for ($i = 0; $i < count($args_list); $i++)
 		{
-			if ($args_list[$i] == '|') 
+			if ($args_list[$i] == '|')
 			{
 				$cmd = $args_list[$i + 1];
 				$new_cmd = find_program($cmd);
@@ -75,9 +75,9 @@ function execute_program ($program, $args = '')
 			}
 		}
 	}
-	
+
 	// we've finally got a good cmd line.. execute it
-	
+
 	if ($fp = popen("$program $args", 'r'))
 	{
 		while (!feof($fp))
@@ -94,7 +94,7 @@ function uptime()
 	// Uptime function.
 	// Taken afair from PHPSysinfo
 	// Untested on *BSD. Can anyone chek this out on *BSD machine? Thanx.
-	
+
 	switch (PHP_OS)
 	{
 
@@ -124,12 +124,12 @@ function uptime()
 			$days  = floor($hours / 24);
 			$hours = floor($hours - ($days * 24));
 			$min   = floor($min - ($days * 60 * 24) - ($hours * 60));
-			
-			if ( $days != 0 ) 
+
+			if ( $days != 0 )
 			{
 				$result = "$days dni ";
 			}
-			
+
 			if ( $hours != 0 )
 			{
 				$result .= "$hours godzin ";
@@ -144,12 +144,12 @@ function uptime()
 			$days  = floor($hours / 24);
 			$hours = floor($hours - ($days * 24));
 			$min   = floor($min - ($days * 60 * 24) - ($hours * 60));
-			
-			if ( $days != 0 ) 
+
+			if ( $days != 0 )
 			{
 				$result = "$days dni ";
 			}
-			
+
 			if ( $hours != 0 )
 			{
 				$result .= "$hours godzin ";
@@ -164,12 +164,12 @@ function uptime()
 			$days  = floor($hours / 24);
 			$hours = floor($hours - ($days * 24));
 			$min   = floor($min - ($days * 60 * 24) - ($hours * 60));
-			
-			if ( $days != 0 ) 
+
+			if ( $days != 0 )
 			{
 				$result = "$days dni ";
 			}
-			
+
 			if ( $hours != 0 )
 			{
 				$result .= "$hours godzin ";
@@ -202,7 +202,7 @@ function uptime()
 		break;
 
 	}
-	
+
 	return $result;
 
 }
@@ -259,7 +259,7 @@ function check_ip($ip)
 	else
 		return false;
 }
-	
+
 function getbraddr($ip,$mask){
 	if(check_ip($ip)&&check_mask($mask)){
 		$ipa=ip2long($ip);
@@ -287,7 +287,7 @@ function getbraddr($ip,$mask){
 }
 
 function getnetaddr($ip,$mask)
-{           
+{
 	if(check_ip($ip)){
 		$ipa=ip2long($ip);
 		$maska=ip2long($mask);
@@ -299,7 +299,7 @@ function getnetaddr($ip,$mask)
 			$maskb = "0".$maskb;
 		$out = "00000000000000000000000000000000";
 		for ($i=0; $i<32; $i++)
-			if ($maskb[$i] == "1") 
+			if ($maskb[$i] == "1")
 				$out[$i]=$ipb[$i];
 		return long2ip(bindec($out));
 	}
@@ -367,25 +367,25 @@ function textwrap($text, $wrap=76, $break="\n")
 	// This function is takem from newsportal
 
 	$len = strlen($text);
-	if ($len > $wrap) 
+	if ($len > $wrap)
 	{
 		$h = '';        // massaged text
 		$lastWhite = 0; // position of last whitespace char
 		$lastChar = 0;  // position of last char
 		$lastBreak = 0; // position of last break
 		// while there is text to process
-		while ($lastChar < $len) 
+		while ($lastChar < $len)
 		{
 			$char = substr($text, $lastChar, 1); // get the next character
 			// if we are beyond the wrap boundry and there is a place to break
-			if (($lastChar - $lastBreak > $wrap) && ($lastWhite > $lastBreak)) 
+			if (($lastChar - $lastBreak > $wrap) && ($lastWhite > $lastBreak))
 			{
 				$h .= substr($text, $lastBreak, ($lastWhite - $lastBreak)) . $break;
 				$lastChar = $lastWhite + 1;
 				$lastBreak = $lastChar;
 			}
 			// You may wish to include other characters as valid whitespace...
-			if ($char == ' ' || $char == chr(13) || $char == chr(10)) 
+			if ($char == ' ' || $char == chr(13) || $char == chr(10))
 			{
 				$lastWhite = $lastChar; // note the position of the last whitespace
 			}
@@ -401,8 +401,8 @@ function textwrap($text, $wrap=76, $break="\n")
 function isipin($ip,$net,$mask)
 {
 	if(ip_long($ip)>ip_long(getnetaddr($net,$mask))&&ip_long($ip)<ip_long(getbraddr($net,$mask)))
-		return true; 
-	else 
+		return true;
+	else
 		return false;
 }
 
@@ -419,27 +419,27 @@ function getmicrotime(){
 	// This function has been taken from PHP manual
 
 	list($usec, $sec) = explode(" ",microtime());
-	return ((float)$usec + (float)$sec); 
-} 
+	return ((float)$usec + (float)$sec);
+}
 
 function writesyslog($message,$type)
 {
 
 	// Untested on *BSD. Can anyone chek this out on *BSD machine? Thanx.
-	
+
 	switch(PHP_OS)
 	{
 		case "Linux":
 			define_syslog_variables();
 			// Taken from PHP manual. On my WinXP box with Easy PHP it's fuck's up
 			// system
-		
+
 			// open syslog, include the process ID and also send
 			// the log to standard error, and use a user defined
 			// logging mechanism
 
 			openlog("lms-php", LOG_PID | LOG_NDELAY, LOG_AUTH);
-	
+
 		    	$access = date("Y/m/d H:i:s");
 
 			syslog($type,"$message (at $access from ".$_SERVER[REMOTE_ADDR]." (".$_SERVER[HTTP_USER_AGENT]."))");
@@ -512,7 +512,7 @@ function striphtml($text)
 	"'&(pound|#163);'i",
 	"'&(copy|#169);'i",
 	"'&#(\d+);'e");                    // evaluate as php
-	
+
 	$replace = array ("",
 	"",
 	"\\1",
@@ -526,7 +526,7 @@ function striphtml($text)
 	chr(163),
 	chr(169),
 	"chr(\\1)");
-	
+
 	return preg_replace ($search, $replace, $text);
 }
 
@@ -542,7 +542,7 @@ function pldate()
 {
 
 	$wysw = array(
-			"miesiac"  => array( 
+			"miesiac"  => array(
 				"01"  => "styczeñ",
 				"02"  => "luty",
 				"03"  => "marzec",
@@ -556,15 +556,15 @@ function pldate()
 				"11"  => "listopad",
 				"12"  => "grudzieñ" ),
 			"dt"  => array(
-				"Mon"  => "Poniedzia³ek", 
+				"Mon"  => "Poniedzia³ek",
 				"Tue"  => "Wtorek",
 				"Wed"  => "¦roda",
-				"Thu"  => "Czwartek", 
+				"Thu"  => "Czwartek",
 				"Fri"  => "Pi±tek",
-				"Sat"  => "Sobota", 
-				"Sun"  => "Niedziela" ) 
+				"Sat"  => "Sobota",
+				"Sun"  => "Niedziela" )
 			);
-			
+
 	$dzien = trim(date("j"));
 	$dt = trim(date("D"));
 	$mies = trim(date("m"));
@@ -626,7 +626,7 @@ function check_pesel($pesel)
 {
  // AFAIR This doesn't cover people born after Y2k, they have month+20
  // Be warned.
- 
+
 		if (strlen($pesel) != 11 || !is_numeric($pesel))
 				return 0;
 
@@ -645,7 +645,7 @@ function check_pesel($pesel)
 		if ($sum_c == $pesel[10])
 				return 1;
 		return 0;
-} 
+}
 
 function get_producer($mac)
 {
@@ -660,9 +660,273 @@ function get_producer($mac)
 	fclose($macfile);
 	return $producer;
 }
-	
+
+function to_words($num, $power = 0, $powsuffix = '')
+{
+
+	// Extracted from lang.pl.php by Piotr Klaban <makler at man dot torun dot pl>
+	// from PEAR package Number_Words-0.3.1
+
+	$ret = '';
+	$_sep = ' ';
+	$_minus = 'minus';
+	$_digits = array(0 => 'zero', 'jeden', 'dwa', 'trzy', 'cztery', 'piêæ', 'sze¶æ', 'siedem', 'osiem', 'dziewiêæ');		    
+	$_exponent = array(
+			0 => array('','',''),
+			3 => array('tysi±c','tysi±ce','tysiêcy'),
+			6 => array('milion','miliony','milionów'),
+			9 => array('miliard','miliardy','miliardów'),
+			12 => array('bilion','biliony','bilionów'),
+			15 => array('biliard','biliardy','biliardów'),
+			18 => array('trylion','tryliony','trylionów'),
+			21 => array('tryliard','tryliardy','tryliardów'),
+			24 => array('kwadrylion','kwadryliony','kwadrylionów'),
+			27 => array('kwadryliard','kwadryliardy','kwadryliardów'),
+			30 => array('kwintylion','kwintyliony','kwintylionów'),
+			33 => array('kwintyliiard','kwintyliardy','kwintyliardów'),
+			36 => array('sekstylion','sekstyliony','sekstylionów'),
+			39 => array('sekstyliard','sekstyliardy','sekstyliardów'),
+			42 => array('septylion','septyliony','septylionów'),
+			45 => array('septyliard','septyliardy','septyliardów'),
+			48 => array('oktylion','oktyliony','oktylionów'),
+			51 => array('oktyliard','oktyliardy','oktyliardów'),
+			54 => array('nonylion','nonyliony','nonylionów'),
+			57 => array('nonyliard','nonyliardy','nonyliardów'),
+			60 => array('decylion','decyliony','decylionów'),
+			63 => array('decyliard','decyliardy','decyliardów'),
+			100 => array('centylion','centyliony','centylionów'),
+			103 => array('centyliard','centyliardy','centyliardów'),
+			120 => array('wicylion','wicylion','wicylion'),
+			123 => array('wicyliard','wicyliardy','wicyliardów'),
+			180 => array('trycylion','trycylion','trycylion'),
+			183 => array('trycyliard','trycyliardy','trycyliardów'),
+			240 => array('kwadragilion','kwadragilion','kwadragilion'),
+			243 => array('kwadragiliard','kwadragiliardy','kwadragiliardów'),
+			300 => array('kwinkwagilion','kwinkwagilion','kwinkwagilion'),
+			303 => array('kwinkwagiliard','kwinkwagiliardy','kwinkwagiliardów'),
+			360 => array('seskwilion','seskwilion','seskwilion'),
+			363 => array('seskwiliard','seskwiliardy','seskwiliardów'),
+			420 => array('septagilion','septagilion','septagilion'),
+			423 => array('septagiliard','septagiliardy','septagiliardów'),
+			480 => array('oktogilion','oktogilion','oktogilion'),
+			483 => array('oktogiliard','oktogiliardy','oktogiliardów'),
+			540 => array('nonagilion','nonagilion','nonagilion'),
+			543 => array('nonagiliard','nonagiliardy','nonagiliardów'),
+			600 => array('centylion','centyliony','centylionów'),
+			603 => array('centyliard','centyliardy','centyliardów'),
+			6000018 => array('milinilitrylion','milinilitryliony','milinilitrylionów')
+	);
+
+	if (substr($num, 0, 1) == '-')
+	{
+		$ret = $_sep . $_minus;
+		$num = substr($num, 1);
+	}
+
+	// strip excessive zero signs and spaces
+	$num = trim($num);
+	$num = preg_replace('/^0+/','',$num);
+
+	if (strlen($num) > 3)
+	{
+		$maxp = strlen($num)-1;
+		$curp = $maxp;
+		for ($p = $maxp; $p > 0; --$p)
+		{ // power
+
+			// check for highest power
+			if (isset($_exponent[$p]))
+			{ // send substr from $curp to $p
+				$snum = substr($num, $maxp - $curp, $curp - $p + 1);
+				$snum = preg_replace('/^0+/','',$snum);
+				if ($snum !== '')
+				{
+					$cursuffix = $_exponent[$power][count($_exponent[$power])-1];
+					if ($powsuffix != '')
+						$cursuffix .= $_sep . $powsuffix;
+					$ret .= to_words($snum, $p, $cursuffix);
+				}
+				$curp = $p - 1;
+				continue;
+			}
+		}
+		$num = substr($num, $maxp - $curp, $curp - $p + 1);
+		if ($num == 0)
+		{
+			return $ret;
+		}
+	}
+	elseif ($num == 0 || $num == '')
+	{
+		return $_sep . $_digits[0];
+	}
+
+	$h = $t = $d = 0;
+
+	switch(strlen($num))
+	{
+		case 3:
+			$h = (int)substr($num,-3,1);
+
+		case 2:
+			$t = (int)substr($num,-2,1);
+
+		case 1:
+			$d = (int)substr($num,-1,1);
+			break;
+		case 0:
+			return;
+			break;
+	}
+
+	switch ($h)
+	{
+		case 9:
+			$ret .= $_sep . 'dziewiêæset';
+			break;
+
+		case 8:
+			$ret .= $_sep . 'osiemset';
+			break;
+
+		case 7:
+			$ret .= $_sep . 'siedemset';
+			break;
+
+		case 6:
+			$ret .= $_sep . 'sze¶æset';
+			break;
+
+		case 5:
+			$ret .= $_sep . 'piêæset';
+			break;
+
+		case 4:
+			$ret .= $_sep . 'czterysta';
+			break;
+
+		case 3:
+			$ret .= $_sep . 'trzysta';
+			break;
+
+		case 2:
+			$ret .= $_sep . 'dwie¶cie';
+			break;
+
+		case 1:
+			$ret .= $_sep . 'sto';
+			break;
+	}
+
+	switch ($t)
+	{
+		case 9:
+		case 8:
+		case 7:
+		case 6:
+		case 5:
+			$ret .= $_sep . $_digits[$t] . 'dziesi±t';
+			break;
+
+		case 4:
+			$ret .= $_sep . 'czterdzie¶ci';
+			break;
+
+		case 3:
+			$ret .= $_sep . 'trzydzie¶ci';
+			break;
+
+		case 2:
+			$ret .= $_sep . 'dwadzie¶cia';
+			break;
+
+		case 1:
+			switch ($d)
+			{
+				case 0:
+					$ret .= $_sep . 'dziesiêæ';
+					break;
+
+				case 1:
+					$ret .= $_sep . 'jedena¶cie';
+					break;
+
+				case 2:
+				case 3:
+				case 7:
+				case 8:
+					$ret .= $_sep . $_digits[$d] . 'na¶cie';
+					break;
+
+				case 4:
+					$ret .= $_sep . 'czterna¶cie';
+					break;
+
+				case 5:
+					$ret .= $_sep . 'piêtna¶cie';
+					break;
+
+				case 6:
+					$ret .= $_sep . 'szesna¶cie';
+					break;
+
+				case 9:
+					$ret .= $_sep . 'dziewiêtna¶cie';
+					break;
+			}
+			break;
+	}
+
+	if ($t != 1 && $d > 0)
+		$ret .= $_sep . $_digits[$d];
+
+	if ($t == 1)
+		$d = 0;
+
+	if (( $h + $t ) > 0 && $d == 1)
+		$d = 0;
+
+	if ($power > 0)
+	{
+		if (isset($_exponent[$power]))
+			$lev = $_exponent[$power];
+
+		if (!isset($lev) || !is_array($lev))
+			return null;
+
+		switch ($d)
+		{
+			case 1:
+				$suf = $lev[0];
+				break;
+			case 2:
+			case 3:
+			case 4:
+				$suf = $lev[1];
+				break;
+			case 0:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+				$suf = $lev[2];
+				break;
+		}
+		$ret .= $_sep . $suf;
+	}
+
+	if ($powsuffix != '')
+		$ret .= $_sep . $powsuffix;
+
+	return $ret;
+}
+
 /*
  * $Log$
+ * Revision 1.45  2003/09/09 23:40:03  lukasz
+ * - added to_words
+ *
  * Revision 1.44  2003/09/05 02:02:50  lukasz
  * - format fix
  *
