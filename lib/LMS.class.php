@@ -2881,6 +2881,11 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return ($this->DB->GetOne('SELECT * FROM rtqueues WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
+	function GetQueueIdByName($queue)
+	{
+		return $this->DB->GetOne('SELECT id FROM rtqueues WHERE name=?', array($queue));
+	}
+
 	function QueueAdd($queue)
 	{
 		if($this->DB->Execute('INSERT INTO rtqueues (name, email, description) VALUES (?, ?, ?)', array($queue['name'], $queue['email'], $queue['description'])))
