@@ -101,7 +101,7 @@ int db_abort();
 unsigned char * db_get_data(QUERY_HANDLE *, int, const char *);
 
 /* Internal: copy data and result defs to QUERY_HANDLE */
-static QUERY_HANDLE * get_query_result(RESULT_HANDLE *);
+QUERY_HANDLE * get_query_result(RESULT_HANDLE *);
 
 /* Internal: Parse query statement */
 //static unsigned char * parse_query_stmt(unsigned char *);

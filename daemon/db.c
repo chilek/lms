@@ -367,7 +367,7 @@ int db_pexec(unsigned char *q, ... )
 }
 
 /* Internal function for SELECT query result fetching */
-static QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
+QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
 {
     QUERY_HANDLE *query;
     COLUMN *my_col, *col;

@@ -162,7 +162,7 @@ echo -n "Create Makefile for main program..."
 echo "
 LIBS = $LIBS
 LDFLAGS = $LDFLAGS
-CFLAGS = $CFLAGS $FLAGS
+CFLAGS = $CFLAGS $FLAGS -Wall -O2
 INSTALLDIR = $INSTALLDIR
 " > Makefile \
 && cat Makefile.in >> Makefile
@@ -180,7 +180,7 @@ do
 	    echo -n "Create Makefile for mod_${x}..."
 	    echo "
 LIBS = $LIBS 
-CFLAGS = $CFLAGS $FLAGS -I../..
+CFLAGS = $CFLAGS $FLAGS -I../.. -Wall -O2
 LDFLAGS = $LDFLAGS
 INSTALLDIR = $INSTALLDIR
 " > ./${x}/Makefile && cat ./${x}/Makefile.in >> ./${x}/Makefile
