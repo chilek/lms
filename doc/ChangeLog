@@ -7,6 +7,7 @@ wersja 1.4.0rc3 Evalla (28/09/2004):
   - usuniêty b³±d przy odtwarzaniu backupu na postgresie powodowany próbami
     aktualizacji nieistniej±cych sekwencji (alec)
   - w netdevinfo dodana informacja o statusie online adresów urz±dzenia (alec)
+  - poprawiony b³±d w zapytaniu sql w lms-notify (alec)
 
 wersja 1.4.0rc2 Evalla (24/09/2004):
 
