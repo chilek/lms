@@ -29,6 +29,7 @@
 						<H1>Informacje o u¿ytkowniku</H1>
 					</TD>
 				</TR>
+				{if $userinfo}
 				<TR>
 					<TD WIDTH="1%" NOWRAP>
 						<B>Numer identyfikacyjny:</B>
@@ -36,12 +37,9 @@
 					<TD WIDTH="54%">
 						{$userinfo.id|string_format:"%04d"}
 					</TD>
-					<TD ROWSPAN="5" WIDTH="45%">
-<CENTER>
-<FONT SIZE=+2>						SALDO KOÑCOWE:<BR>
-{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} z³</B></FONT>
-{else}{$userinfo.balance|default:"0"} z³{/if}<BR>
-</CENTER></FONT>
+					<TD ROWSPAN="5" WIDTH="45%" ALIGN="CENTER">
+						<H1>SALDO KOÑCOWE:</H1>
+						{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} z³</B>{else}{$userinfo.balance|default:"0"} z³{/if}
 					</TD>
 				</TR>
 				<TR>
@@ -77,6 +75,13 @@
 						{$userinfo.tariffsvalue|string_format:"%01.2f"} z³/mc
 					</TD>
 				</TR>
+				{else}
+				<TR>
+					<TD COLSPAN="3" WIDTH="100%" ALIGN="CENTER">
+						<B><FONT COLOR="RED">Pañstwa adres IP nie zosta³ rozpoznany przez system. Proszê siê upewniæ i¿ korzystaj± Pañstwo z komputera pod³±czonego do naszej sieci, oraz i¿ nie korzystaj± Pañstwo z serwerów proxy. Informacje o Pañstwa saldzie dostêpne s± jedynie z Pañstwa domowego komputera.</FONT></B>
+					</TD>
+				</TR>
+				{/if}
 				<TR>
 					<TD COLSPAN="3" ALIGN="CENTER">
 						<B>Bilans finansowy:</B>
@@ -128,7 +133,7 @@
 							</TR>
 							{sectionelse}
 							<TR>
-								<TD COLSPAN="6" ALIGN="CENTER"
+								<TD COLSPAN="6" ALIGN="CENTER">
 									<BR>
 									<BR>
 									<B>Brak danych!</B><BR>
