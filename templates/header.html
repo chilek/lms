@@ -17,9 +17,9 @@
 </td>
 <td width="50%">
 <p align="right">
-<a href="doc/html/">Dokumentacja</a> / <a href="http://lms.rulez.pl">Strona domowa</a>
+<a href="doc/html/">{t}Documentation{/t}</a> / <a href="http://lms.rulez.pl">{t}LMS Project Homepage{/t}</a>
 </p>
-<p align="right"><B>Zalogowany jako: {$layout.logname}</FONT>
+<p align="right"><B>{t}Logged in as:{/t} {$layout.logname}</FONT>
 </B>
 </P>
 </td>
@@ -42,7 +42,7 @@
 				<TD width="100%" class="fbt" onClick="return self.location.href='?m=chpasswd';" nowrap>
 					<P CLASS="separated">
 						<IMG SRC="img/pass.gif" BORDER="0" ALT="" align="absmiddle">
-						<a href="?m=chpasswd" accesskey="p" {tip text="<B>Zmiana Twojego has³a dostêpu</B>"}><B>Zmieñ has³o</B></A>
+						<a href="?m=chpasswd" accesskey="p" {tip text="<B>Allows you to change your password</B>"}><B>{t}Password{/t}</B></A>
 					</P>
 				</TD>
 			</TR>
@@ -50,13 +50,13 @@
 				<TD width="100%" class="fbt" nowrap>
 					<P CLASS="separated">
 						<IMG SRC="img/logout.gif" BORDER="0" ALT="" ALIGN="absmiddle">
-						<a href="?m=logout" onClick="return confirmLink(this,'Na pewno chcesz siê wylogowaæ?');" accesskey="q" {tip text="<B>Zakoñczenie pracy</B>"}><B>Wyloguj siê</B></A>
+						<a href="?m=logout" onClick="return confirmLink(this,'{t}Are you sure that you want to logout?{/t}');" accesskey="q" {tip text="<B>Allows you to logout</B>"}><B>{t}Logout{/t}</B></A>
 					</P>
 				</TD>
 			</TR>
 			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
 				<FORM METHOD="GET" ACTION="?m=quicksearch">
-					<TD width="100%" class="fbt" nowrap {tip text="<B>Wpisz ID, nazwisko/nazwê, fragment adresu, telefon b±d¼ adres e-mail u¿ytkownika i wci¶nij Enter</B>"}>
+					<TD width="100%" class="fbt" nowrap {tip text="<B>Enter customer ID, forename/surename, part of email address, telephone or customer email address and press Enter</B>"}>
 						<P CLASS="separated">
 						<IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
 						<INPUT TYPE="text" NAME="what" VALUE="" SIZE="10">
@@ -68,7 +68,7 @@
 			</TR>
 			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
 				<FORM METHOD="GET" ACTION="?m=quicksearch">
-					<TD width="100%" class="fbt" nowrap {tip text="<B>Wpisz ID, nazwê, adres IP lub adres MAC komputera i wci¶nij Enter</B>"}>
+					<TD width="100%" class="fbt" nowrap {tip text="<B>Enter node ID, name, IP address or MAC address and press Enter</B>"}>
 						<P CLASS="separated">
 						<IMG SRC="img/node.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
 						<INPUT TYPE="text" NAME="what" VALUE="" SIZE="10">
@@ -80,7 +80,7 @@
 			</TR>
 			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
 				<FORM METHOD="GET" ACTION="?m=quicksearch">
-					<TD width="100%" class="fbt" nowrap {tip text="<B>Wpisz ID zg³oszenia RT lub nazwisko u¿ytkownika i wci¶nij Enter</B>"}>
+					<TD width="100%" class="fbt" nowrap {tip text="<B>Enter request tracker ID or customer name and press Enter</B>"}>
 						<P CLASS="separated">
 						<IMG SRC="img/ticket.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
 						<INPUT TYPE="text" NAME="what" VALUE="" SIZE="10">
