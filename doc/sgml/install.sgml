@@ -253,8 +253,6 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 			znaczny wzrost wydajno¶ci. Poni¿ej przedstawiono krótki opis instalacji.
 			¬ród³a mo¿na pobraæ z <ulink url="http://www.sqlite.org">
 			www.sqlite.org</ulink>.</para>
-			<para>Na obecn± chwilê z SQLite nie wspó³pracuje demon <emphasis>almsd.
-			</emphasis></para>
 		</sect3>
 		<sect3 id="install-sqlite-server">
 		<title>Instalacja SQLite</title>
