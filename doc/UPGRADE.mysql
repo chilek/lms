@@ -1,15 +1,15 @@
 #
 # **********************************************************
-# ****** Upgrade bazy danych LMS z wersji 1.0 do 1.2 *******
+# ******   LMS database upgrade from 1.0 to 1.2      *******
 # **********************************************************
-# Zaleca siê wcze¶niejszy backup bazy:
+# Do database backup:
 # 	$ mysqldump -u lms lms > db.out
-# Sposób u¿ycia:
+# Usage:
 #	$ mysql -u lms
 #	mysql> use lms;
 #	mysql> source doc/UPGRADE.mysql;
-# Po tej operacji wystartuj LMS i uruchom modu³ ?m=upgrade01
-# Na samym koñcu mo¿esz wyrzuciæ niepotrzebne rzeczy:
+# After that start LMS and run module ?m=upgrade01
+# Then you can remove unused staff:
 #	mysql> ALTER TABLE users DROP tariff, DROP payday;
 # **********************************************************
 

@@ -2,9 +2,8 @@
                     LAN Management System 1.2-cvs
 ----------------------------------------------------------------------
 
-Kompletn± instrukcjê instalacji znajdziesz w rodziale 2 pliku 'README'
-który powinien znajdowaæ siê w tym katalogu. Je¿eli dysponujesz w tym
-momencie przegl±dark± HTML mo¿esz skorzystaæ z dokumentacji w formacie
-HTML zamieszczonej w katalogu doc/html/.
+Complete instalation instructions you can find in Chapter 2 'README' file,
+which should be in this directory. If you have HTML browser for now, you
+can use HTML documentation placed in doc/html/ directory.
 
 $Id$

@@ -1,7 +1,7 @@
 /* $Id$ */ 
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "admins" 
+  Structure of table "admins" 
 -------------------------------------------------------- */
 DROP SEQUENCE "admins_id_seq";
 CREATE SEQUENCE "admins_id_seq";
@@ -21,7 +21,7 @@ CREATE TABLE admins (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "cash" 
+  Structure of table "cash" 
 -------------------------------------------------------- */
 DROP SEQUENCE "cash_id_seq";
 CREATE SEQUENCE "cash_id_seq";
@@ -39,7 +39,7 @@ CREATE TABLE cash (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "networks" 
+  Structure of table "networks" 
 -------------------------------------------------------- */
 DROP SEQUENCE "networks_id_seq";
 CREATE SEQUENCE "networks_id_seq";
@@ -61,7 +61,7 @@ CREATE TABLE networks (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "nodes" 
+  Structure of table "nodes" 
 -------------------------------------------------------- */
 DROP SEQUENCE "nodes_id_seq";
 CREATE SEQUENCE "nodes_id_seq";
@@ -82,7 +82,7 @@ CREATE TABLE nodes (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "tariffs" 
+  Structure of table "tariffs" 
 -------------------------------------------------------- */
 DROP SEQUENCE "tariffs_id_seq";
 CREATE SEQUENCE "tariffs_id_seq"; 
@@ -100,7 +100,7 @@ CREATE TABLE tariffs (
 );
 
 /* ---------------------------------------------------------
-  Struktura tabeli "payments"
+  Structure of table "payments"
 --------------------------------------------------------- */
 DROP SEQUENCE "payments_id_seq";
 CREATE SEQUENCE "payments_id_seq";
@@ -117,7 +117,7 @@ CREATE TABLE payments (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "invoices" 
+  Structure of table "invoices" 
 -------------------------------------------------------- */
 DROP SEQUENCE "invoices_id_seq";
 CREATE SEQUENCE "invoices_id_seq";
@@ -141,7 +141,7 @@ CREATE TABLE invoices (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "invoicecontents" 
+  Structure of table "invoicecontents" 
 -------------------------------------------------------- */
 CREATE TABLE invoicecontents (
 	invoiceid integer NOT NULL,
@@ -155,7 +155,7 @@ CREATE TABLE invoicecontents (
 );	 
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "timestamps" 
+  Structure of table "timestamps" 
 -------------------------------------------------------- */
 DROP TABLE timestamps;
 CREATE TABLE timestamps (
@@ -164,7 +164,7 @@ CREATE TABLE timestamps (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "users" 
+  Structure of table "users" 
 -------------------------------------------------------- */
 DROP SEQUENCE "users_id_seq";
 CREATE SEQUENCE "users_id_seq";
@@ -194,7 +194,7 @@ CREATE TABLE users (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "stats" 
+  Structure of table "stats" 
 -------------------------------------------------------- */
 DROP TABLE stats;
 CREATE TABLE stats (
@@ -208,7 +208,7 @@ CREATE TABLE stats (
 CREATE INDEX stats_nodeid_idx ON stats(nodeid);
 
 /* ----------------------------------------------------
-	 Struktura tabeli assignments
+	 Structure of table assignments
 ---------------------------------------------------*/
 DROP SEQUENCE "assignments_id_seq";
 CREATE SEQUENCE "assignments_id_seq";
@@ -224,7 +224,7 @@ CREATE TABLE assignments (
 );
 
 /* ---------------------------------------------------
-	Struktura tabeli netdevices
+    Structure of table netdevices
 ----------------------------------------------------*/
 DROP SEQUENCE "netdevices_id_seq";
 CREATE SEQUENCE "netdevices_id_seq";
@@ -242,7 +242,7 @@ CREATE TABLE netdevices (
 );
 
 /* ---------------------------------------------------
-	Struktura tabeli netlinks
+    Structure of table netlinks
 ----------------------------------------------------*/
 DROP SEQUENCE "netlinks_id_seq";
 CREATE SEQUENCE "netlinks_id_seq";

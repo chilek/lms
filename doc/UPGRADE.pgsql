@@ -1,13 +1,13 @@
 /*
 *************************************************************
-******* Upgrade bazy danych LMS z wersji 1.0 do 1.2 *********
+*******    LMS database upgrade from 1.0 to 1.2     *********
 *************************************************************
-Zaleca siê wcze¶niejszy backup bazy:
+Before upgrade do database backup:
 	$ pg_dump lms > db.out
-Sposób u¿ycia:
+Usage:
 	$ psql -U lms -d lms -f UPGRADE.pgsql
-Po tej operacji uruchom LMS i wystartuj modu³ '?m=upgrade01'
-Dopiero na koñcu mo¿na usun±æ niepotrzebne rzeczy:
+After that run LMS and start module '?m=upgrade01'
+Then you can delete unused staff:
 	$ psql -U lms -d lms -c ALTER TABLE users DROP tariff; 
 	$ psql -U lms -d lms -c ALTER TABLE users DROP payday;
 *************************************************************
