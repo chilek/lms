@@ -33,7 +33,7 @@ class LMS {
 	var $db;
 	var $session;
 	var $_BACKUP_DIR;
-	var $_version = '1.0.49';
+	var $_version = '1.0.61';
 
 	function LMS($db,$session)
 	{
@@ -460,6 +460,7 @@ class LMS {
 				$_SESSION[timestamps][getnetwork][$id][networks] != $this->GetTS("networks")
 				||
 				$_SESSION[timestamps][getnetwork][$id][nodes] != $this->GetTS("nodes")
+				|| TRUE
 		  )
 		{
 			$db->row = "";
@@ -472,9 +473,9 @@ class LMS {
 			{
 				$return[addresslong][] = $i;
 				$return[address][] = long2ip($i);
-				$return[nodeid][$i] = 0;
-				$return[nodename][$i] = "";
-				$return[ownerid][$i] = 0;
+				$return[nodeid][] = 0;
+				$return[nodename][] = "";
+				$return[ownerid][] = 0;
 			}
 			
 			if(sizeof($return[address]))
@@ -484,7 +485,7 @@ class LMS {
 					foreach($nodes[id] as $key => $value)
 						if(isipin($nodes[ipaddr][$key],$address,$mask))
 						{
-							$pos = ip_long($nodes[ipaddr][$key])-ip_long($address)+1;
+							$pos = ip_long($nodes[ipaddr][$key])-ip_long($address)-1;
 							$return[nodeid][$pos] = $value;
 							$return[nodename][$pos] = $nodes[name][$key];
 							$return[ownerid][$pos] = $nodes[ownerid][$key];
