@@ -25,5 +25,8 @@ MOD_ARGS * parse_module_argstring(unsigned char *);
 /* Parsing args line. Needed for parse_module_argstring() */
 unsigned char *ini_parse(unsigned char *,int *,unsigned char );
 
+/* Concatenates strings */
+unsigned char * str_concat(const unsigned char *, const unsigned char *);
+
 #endif
 						   				 
