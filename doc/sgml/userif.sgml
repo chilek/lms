@@ -36,41 +36,73 @@
  </sect1>
  <sect1 id="menu-users">
 	<title>U¿ytkownicy</title>
-	<para>Po wej¶ciu do panelu 'U¿ytkownicy' uka¿e siê lista u¿ytkowników,
-	któr± mo¿esz filtrowaæ wed³ug wybranych kryteriów lub sortowaæ klikaj±c
-	na nazwie kolumny.</para>
-	<para>Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu
-	z informacjami szczegó³owymi o nim i przypisanych mu komputerach, taryfach oraz
-	operacjach finansowych. Tam te¿ mo¿esz modyfikowaæ dane u¿ytkownika, definiowaæ
-	op³aty abonamentowe i zaksiêgowaæ wp³atê lub obci±¿enie jego rachunku.</para>
-	<para>W menu znajduj±cym siê u góry okna masz do wyboru opcje:
-	<itemizedlist>
-	    <listitem>
-	    <para>Lista - Wy¶wietlenie listy u¿ytkowników, tej która pokazuje siê po
-	    wej¶ciu do panelu 'U¿ytkownicy'.</para>
-	    </listitem>
-	    <listitem>
-	    <para>Od³±czeni - Wy¶wietlenie listy u¿ytkowników od³±czonych.</para>
-	    </listitem>
-	    <listitem>
-	    <para>Zad³u¿eni - Wy¶wietlenie listy u¿ytkowników zad³u¿onych.</para>
-	    </listitem>
-	    <listitem>
-	    <para>Nowy - Dodawanie nowego u¿ytkownika.</para>
-	    </listitem>
-	    <listitem>
-	    <para>Szukaj - Wyszukiwanie u¿ytkowników wg zadanych kryteriów.</para>
-	    </listitem>
-	    <listitem>
-	    <para>Wydruki - Listy oraz bilansy u¿ytkowników, w formacie przyjaznym dla
-	    drukarki z mo¿liwo¶ci± definiowania filtrów i sortowania</para>
-	    </listitem>
-	</itemizedlist>
-	</para>
-	<para>Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony) wszystkich komputerów 
-	przypisanych danemu u¿ytkownikowi.</para>
-	<para><note><para>Do automatycznego od³±czania komputerów u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
+	<para>Tutaj zarz±dzasz danymi u¿ytkowników twojej sieci i ich finansami, ale tak¿e 
+	ich komputerami. Mo¿esz na przyk³ad jednym klikniêciem od³±czyæ wszystkie 
+	komputery u¿ytkownika.
+	<note><para>Do automatycznego od³±czania komputerów u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
 	s³u¿y skrypt lms-cutoff.</para></note></para>
+	<sect2 id="menu-users-list">
+	    <title>Lista</title>
+	    <para>Po wej¶ciu do panelu 'U¿ytkownicy' uka¿e siê lista u¿ytkowników,
+	    któr± mo¿esz filtrowaæ wed³ug wybranych kryteriów (statusu, grupy lub sieci)
+	    lub sortowaæ klikaj±c na nazwie kolumny. Na li¶cie ikona ¿arówki informuje
+	    o statusie pod³±czenia komputerów u¿ytkownika, a ikona znaku drogowego
+	    o statusie ostrze¿eñ. Klikniêcie na nich zmienia status na przeciwny w
+	    stosunku do wszystkich komputerów danego u¿ytkownika. Gdy u¿ytkownik nie
+	    posiada przypisanych ¿adnych komputerów ikony te zostan± zamienione znakiem
+	    wykrzyknika.</para>
+	    <para>U u¿ytkowników z saldem ujemnym pojawia siê link "Rozlicz", pozwalaj±cy na
+	    zaksiêgowanie jednym klikniêciem wp³aty równowa¿±cej ujemne saldo.</para>
+	    <para>Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu
+	    z informacjami szczegó³owymi o nim i przypisanych mu komputerach, taryfach oraz
+	    operacjach finansowych. Tam te¿ mo¿esz modyfikowaæ dane u¿ytkownika, definiowaæ
+	    op³aty abonamentowe i zaksiêgowaæ wp³atê lub obci±¿enie jego rachunku.</para>
+	</sect2>
+	<sect2 id="menu-users-new">
+	    <title>Nowy</title>
+	    <para>Dodaj±c nowego u¿ytkownika podajesz jego nazwisko/nazwê i dane teleadresowe
+	    oraz status (pod³±czony/oczekuj±cy/zainteresowany).
+	    <note><para>Czêsto zg³aszane jest blêdne kapitalizowanie narodowych znaków diakrytycznych.
+	    Odpowiedzialny za to jest serwer bazy danych i rozwi±zania nale¿y szukaæ w jego konfiguracji.</para></note>
+	    </para>
+	</sect2>
+	<sect2 id="menu-users-search">
+	    <title>Szukaj</title>
+	    <para>Mo¿liwe jest wyszukiwanie u¿ytkowników (tak¿e usuniêtych) wg zadanych kryteriów. Modu³ ten,
+	    od pola szybkiego wyszukiwania z menu po lewej stronie, oprócz tego, ¿e jest bardziej rozbudowany 
+	    i pozwala wyszukiwaæ wg wielu kryteriów, ró¿ni siê tak¿e tym, ¿e zwraca listê u¿ytkowników
+	    spe³niaj±cych podane kryteria.</para>
+	</sect2>
+	<sect2 id="menu-users-groups">
+	    <title>Grupy</title>
+	    <para>Tutaj zarz±dzasz grupami u¿ytkowników. Po klikniêciu menu 'Grupy'
+	    uka¿e ci siê lista grup z podstawowymi informacjami o grupach. Klikaj±c 
+	    na wybranej grupie przejdziesz do modu³u, w którym mo¿esz zmieniæ dane
+	    tej sieci, przegl±daæ oraz przypisywaæ u¿ytkowników do grup.</para>
+	</sect2>
+	<sect2 id="menu-users-newgropup">
+	    <title>Nowa grupa</title>
+	    <para>Grupa powinna posiadaæ unikaln± nazwê, sk³adaj±c± siê z liter, cyfr, znaku
+	    my¶lnika lub podkre¶lenia. Poniewa¿ grupy wykorzystywane s± w skryptach w nazwie
+	    nie mo¿e byæ znaku spacji.</para>
+	</sect2>
+	<sect2 id="menu-users-prints">
+	    <title>Wydruki</title>
+	    <para>Zestaw modu³ów wy¶wietlaj±cych listy w formie przyjaznej dla drukarki
+	    zawiera:
+	    <itemizedlist>
+		<listitem>
+		    <para><emphasis>Lista u¿ytkowników</emphasis> z wieloma filtrami i dowolnym sortowaniem,</para>
+		</listitem>
+		<listitem>
+		    <para><emphasis>Raport wierzytelno¶ci</emphasis> u¿ytkownika(ów) na dany dzieñ,</para>
+		</listitem>
+		<listitem>
+		    <para><emphasis>Bilans u¿ytkownika</emphasis> za wybrany okres</para>
+		</listitem>
+	    </itemizedlist>
+	    </para>
+	</sect2>
  </sect1>
  <sect1 id="menu-nodes">
 	<title>Komputery</title>
