@@ -170,3 +170,18 @@ CREATE TABLE stats (
   download int(11) default '0',        
   PRIMARY KEY (nodeid, dt)
 ) TYPE=MyISAM;
+
+#
+# Struktura tabeli 'assignments'
+
+DROP TABLE IF EXISTS assignments;
+CREATE TABLE assignments (
+  id int(11) NOT NULL auto_increment,
+  tariffid int(11) NOT NULL default '0',
+  userid int(11) NOT NULL default '0',
+  peroid int(11) NOT NULL default '0',
+  at int(11) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id),
+  KEY id_2 (id)
+) TYPE=MyISAM

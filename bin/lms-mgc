@@ -391,9 +391,22 @@ sub instance($)
 			print OUTFILE $tnb."\n";
 		}
 		
+		my %uprates;
+		my %downrates;
+		
+		$dbq = $dbase->prepare("SELECT userid, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments, users, tariffs WHERE users.id = userid AND deleted = 0 AND tariffid = tariffs.id GROUP BY userid");
+
+		$dbq->execute();
+
+		while(my $row = $dbq->fetchrow_hashref())
+		{
+			$uprates{$row->{'userid'}} = $row->{'uprate'};
+			$downrates{$row->{'userid'}} = $row->{'downrate'};
+		}
+		
 		# BUILD NODELIST
 		
-		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name, uprate, downrate, tariffs.id AS tariffid, tariffs.value AS tariffvalue FROM nodes, users, tariffs WHERE tariffs.id=users.tariff AND users.id=nodes.ownerid");
+		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name FROM nodes, users WHERE users.id=nodes.ownerid");
 		
 		$dbq->execute();
 		my %maclist;
@@ -402,8 +415,6 @@ sub instance($)
 		my %namelist;
 		my %ucnamelist;
 		my %ownerlist;
-		my %upratelist;
-		my %downratelist;
 		my %tariffsidlist;
 		my %tariffsvallist;
 		
@@ -416,13 +427,11 @@ sub instance($)
 			$namelist{$row->{'ipaddr'}} = lc($row->{'name'});
 			$ucnamelist{$row->{'ipaddr'}} = uc($row->{'name'});
 			$ownerlist{$row->{'ipaddr'}} = $row->{'ownerid'};
-			$upratelist{$row->{'ipaddr'}} = $row->{'uprate'};
-			$downratelist{$row->{'ipaddr'}} = $row->{'downrate'};
 			$tariffsidlist{$row->{'ipaddr'}} = $row->{'tariffid'};
 			$tariffsvallist{$row->{'ipaddr'}} = $row->{'tariffvalue'};
 		}
+
 				
-		
 		my $dhcpend = dotquad2u32($row->{'dhcpend'}) || '0';
 		my $dhcpstart = dotquad2u32($row->{'dhcpstart'}) || '0';
 		my $longip = dotquad2u32($row->{'address'});
@@ -528,13 +537,13 @@ sub instance($)
 			my $NAME = $ucnamelist{$ipaddr} || '';
 			my $name = $namelist{$ipaddr} || '';
 			my $mac = $maclist{$ipaddr} || '';
-			my $uprate = $upratelist{$ipaddr} || '';
-			my $downrate = $downratelist{$ipaddr} || '';
+			my $owner = $ownerlist{$ipaddr} || '';
+			my $uprate = $uprates{$owner} || '';
+			my $downrate = $downrates{$owner} || '';
 			my $tid = $tariffsidlist{$ipaddr} || '';
 			my $tval = $tariffsvallist{$ipaddr} || '0';
 			my $macs = lc($mac);
 			$macs =~ s/://g;
-			my $owner = $ownerlist{$ipaddr} || '';
 			my ($q1,$q2,$q3,$q4) = split('\.',$ipaddr,4);
 			
 			$rule =~ s/\%NID/$row->{'id'}/g;

@@ -39,7 +39,7 @@ if(isset($tariffadd))
 
 	$tariffadd[value] = str_replace(",",".",$tariffadd[value]);
 
-	if(!(ereg("^[0-9.,]+$",$tariffadd[value])))
+	if(!(ereg("^[-]?[0-9.,]+$",$tariffadd[value])))
 		$error[value] = "Podana warto¶æ taryfy jest niepoprawna!";
 
 	if(!(ereg("^[0-9]+$", $tariffadd[uprate])) && $tariffadd[uprate] != "")
@@ -78,6 +78,12 @@ $SMARTY->display("tariffadd.html");
 
 /*
  * $Log$
+ * Revision 1.25  2003/09/09 01:22:28  lukasz
+ * - nowe finanse
+ * - kosmetyka
+ * - bugfixy
+ * - i inne rzeczy o których aktualnie nie pamiêtam
+ *
  * Revision 1.24  2003/09/06 07:41:17  alec
  * dodana mo¿liwo¶æ tworzenia taryfy bez uprate i downrate, kosmetyka
  *

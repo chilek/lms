@@ -365,14 +365,14 @@ class LMS
 
 	function GetUsersWithTariff($id)
 	{
-		return $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE tariff=? AND status=3 AND deleted=0",array($id));
+		return $this->DB->GetOne('SELECT COUNT(userid) FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ?',array($id));
 	}
 
 	function UserAdd($useradd)
 	{
 		$this->SetTS("users");
 		
-		if($this->DB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, tariff, creationdate, creatorid, info, payday) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['status'], $useradd['tariff'], $this->SESSION->id, $useradd['info'], $useradd['payday'])))
+		if($this->DB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['status'], $this->SESSION->id, $useradd['info'])))
 			return $this->DB->GetOne("SELECT MAX(id) FROM users");
 		else
 			return FALSE;
@@ -390,7 +390,7 @@ class LMS
 	function UserUpdate($userdata)
 	{
 		$this->SetTS("users");
-		return $this->DB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, tariff=?, moddate=?NOW?, modid=?, info=?, lastname=?, name=?, payday=?, deleted=0 WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['tariff'], $this->SESSION->id, $userdata['info'], strtoupper($userdata['lastname']), $userdata['name'], $userdata['payday'], $userdata['id'] ) );
+		return $this->DB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, moddate=?NOW?, modid=?, info=?, lastname=?, name=?, deleted=0 WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $this->SESSION->id, $userdata['info'], strtoupper($userdata['lastname']), $userdata['name'], $userdata['id'] ) );
 	}
 
 	function GetUserNodesNo($id)
@@ -415,14 +415,12 @@ class LMS
 
 	function GetUser($id)
 	{
-		if($result = $this->DB->GetRow("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid, payday, deleted FROM users WHERE id=?",array($id)))
+		if($result = $this->DB->GetRow("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, info, creationdate, moddate, creatorid, modid, deleted FROM users WHERE id=?",array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
 			$result['creationdateh'] = date("Y-m-d, H:i",$result['creationdate']);
 			$result['moddateh'] = date("Y-m-d, H:i",$result['moddate']);
-			$result['tariffvalue'] = $this->GetTariffValue($result['tariff']);
-			$result['tariffname'] = $this->GetTariffName($result['tariff']);
 			$result['balance'] = $this->GetUserBalance($result['id']);
 			return $result;
 		}else
@@ -517,7 +515,7 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, tariff, nip, zip, city, gguin, deleted FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
+		if($userlist = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, nip, zip, city, gguin, deleted FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
 		{
 			if($blst = $this->DB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
 				foreach($blst as $row)
@@ -527,10 +525,6 @@ class LMS
 				foreach($blst as $row)
 					$balance[$row['id']] = $balance[$row['id']] - $row['value'];
 
-
-			foreach($this->DB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
-				$tlist[$row['id']] = $row['value'];
-			
 			foreach($userlist as $key => $value)
 			{
 				$userlist[$key]['balance'] = $balance[$value['id']];
@@ -539,7 +533,6 @@ class LMS
 				if($balance[$value['id']] > 0)
 					$over = $over + $balance[$value['id']];
 				
-				$userlist[$key]['tariffvalue'] = $tlist[$value['tariff']];
 				$userlist[$key]['nodeac'] = $this->GetUserNodesAC($value['id']);
 			}
 			
@@ -619,7 +612,7 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, gguin, nip, zip, city, info, tariff FROM users WHERE deleted = 0 ".($state !=0 ? " AND status = '".$state."'":"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
+		if($userlist = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, gguin, nip, zip, city, info FROM users WHERE deleted = 0 ".($state !=0 ? " AND status = '".$state."'":"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
 		{
 			if($blst = $this->DB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
 				foreach($blst as $row)
@@ -628,10 +621,8 @@ class LMS
 			if($blst = $this->DB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
 					foreach($blst as $row)
 							$balance[$row['id']] = $balance[$row['id']] - $row['value'];
-
-
-			foreach($this->DB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
-				$tlist[$row['id']] = $row['value'];
+			
+			$tariffstlist = $this->DB->GetAllByKey("SELECT users.id AS id, sum(value) AS value FROM users, tariffs, assignments WHERE userid = users.id AND tariffid = tariffs.id GROUP BY id", "id");
 
 			foreach($userlist as $key => $value)
 			{
@@ -641,8 +632,8 @@ class LMS
 				if($balance[$value['id']] > 0)
 					$over = $over + $balance[$value['id']];
 				
-				$userlist[$key]['tariffvalue'] = $tlist[$value['tariff']];
 				$userlist[$key]['nodeac'] = $this->GetUserNodesAC($value['id']);
+				$userlist[$key]['tariffvalue'] = $tariffstlist[$value['id']]['value'];
 			}
 			
 			if($order == "balance")
@@ -1063,23 +1054,81 @@ class LMS
 	/*
 	 *  Obs³uga taryf
 	 */
+
+	function GetUserAssignments($id)
+	{
+		if($assignments = $this->DB->GetAll("SELECT assignments.id AS id, tariffid, userid, peroid, at, value, uprate, downrate, name FROM assignments, tariffs WHERE userid=? AND tariffs.id = tariffid",array($id)))
+		{
+			foreach($assignments as $idx => $row)
+			{
+				switch($row['peroid'])
+				{
+					case 0:
+						$row['peroid'] = 'co miesi±c';
+					break;
+
+					case 1:
+						$row['peroid'] = 'co tydzieñ';
+						$dni = array('poniedzia³ek', 'wtorek', '¶roda', 'czwartek', 'pi±tek', 'sobota', 'niedziela');
+						$row['at'] = $dni[$row['at'] - 1];
+					break;
+
+					case 2:
+						$row['peroid'] = 'co rok';
+						$miesiace = array('styczeñ','luty', 'marzec', 'kwiecieñ', 'maj', 'czerwiec', 'lipiec', 'sierpieñ', 'wrzesieñ', 'pa¼dziernik', 'listopad', 'grudzieñ');
+						$row['at'] --;
+						$ttime = $row['at'] * 86400 + mktime(12, 0, 0, 1, 1, 1990);
+						$row['at'] = date('j ',$ttime);
+						$row['at'] .= $miesiace[date('n',$ttime) - 1];
+					break;
+				}
+
+				$assignments[$idx] = $row;
+
+			}
+		}
+
+		return $assignments;
+	}
+
+	function DeleteAssignment($id,$balance = FALSE)
+	{
+		return $this->DB->Execute('DELETE FROM assignments WHERE id=?',array($id));
+	}
+
+	function AddAssignment($assignmentdata)
+	{
+		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, peroid, at) VALUES (?, ?, ?, ?)",array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['peroid'], $assignmentdata['at']));
+	}
 	
 	function GetTariffList()
 	{
 		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
+		{
+			$total = sizeof($tarifflist);
 			foreach($tarifflist as $idx => $row)
 			{
 				$tarifflist[$idx]['users'] = $this->GetUsersWithTariff($row['id']);
+				$tarifflist[$idx]['userscount'] = sizeof($this->DB->GetCol("SELECT userid FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY userid",array($row['id'])));
+				echo mysql_error();
 				$tarifflist[$idx]['income'] = $tarifflist[$idx]['users'] * $row['value'];
 				$tarifflist['totalincome'] += $tarifflist[$idx]['income'];
 				$tarifflist['totalusers'] += $tarifflist[$idx]['users'];
+				$tarifflist['totalcount'] += $tarifflist[$idx]['userscount'];
 			}
+		}
+		$tarifflist['total'] = $total;
 
-		$tarifflist['total'] = sizeof($ttlist);
 		return $tarifflist;
 				
 	}
 
+	function TariffMove($from, $to)
+	{
+		$ids = $this->DB->GetCol("SELECT assignments.id AS id FROM assignments, users WHERE userid = users.id AND deleted = 0 AND tariffid = ?",array($from));
+		foreach($ids as $id)
+			$this->DB->Execute("UPDATE assignments SET tariffid=? WHERE id=? AND tariffid=?",array($to, $id, $from));
+	}
 
 	function GetTariffIDByName($name)
 	{
@@ -1131,22 +1180,17 @@ class LMS
 	function GetTariff($id)
 	{
 		$result = $this->DB->GetRow("SELECT id, name, value, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
-		$result['count'] = $this->GetUsersWithTariff($id);
 		$result['totalval'] = $result['value'] * $result['count'];
-		$result['users'] = $this->DB->GetAll("SELECT id, ".$this->DB->Concat('upper(lastname)',"' '",'name')." AS username FROM users WHERE tariff=? AND status=3 ORDER BY username",array($id));
+		$result['users'] = $this->DB->GetAll("SELECT users.id AS id, COUNT(users.id) AS cnt, ".$this->DB->Concat('upper(lastname)',"' '",'name')." AS username FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY id",array($id));
+		$result['userscount'] = sizeof($result['users']);
+		$result['count'] = $this->GetUsersWithTariff($id);
 		$result['rows'] = ceil(sizeof($result['users'])/2);
 		return $result;
 	}
 
 	function GetTariffs()
 	{
-		if($ttlist = $this->DB->GetAll("SELECT id, name, value, uprate, downrate FROM tariffs ORDER BY value DESC"))
-			foreach($ttlist as $row)
-				foreach($row as $column => $value)
-					$tarifflist[$column][] = $value;
-		$tarifflist['common'] = $this->DB->GetOne("SELECT tariff, COUNT(tariff) AS common FROM users WHERE tariff=tariff GROUP BY tariff ORDER BY common DESC");
-		$tarifflist['commonpayday'] = $this->DB->GetOne("SELECT payday, COUNT(payday) AS common FROM users WHERE payday=payday GROUP BY payday ORDER BY common DESC");
-		return $tarifflist;
+		return $this->DB->GetAll("SELECT id, name, value, uprate, downrate FROM tariffs ORDER BY value DESC");
 	}
 
 	function TariffExists($id)
@@ -1612,6 +1656,12 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.213  2003/09/09 01:22:28  lukasz
+ * - nowe finanse
+ * - kosmetyka
+ * - bugfixy
+ * - i inne rzeczy o których aktualnie nie pamiêtam
+ *
  * Revision 1.212  2003/09/05 02:07:04  lukasz
  * - massive attack: s/this->ADB->/this->DB->/g
  *

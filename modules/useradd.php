@@ -38,21 +38,11 @@ if($useradd[name]=="" && $useradd[lastname]=="" && $useradd[phone1]=="" && $user
 elseif(isset($useradd))
 {
 
-	$useradd[payday] = sprintf('%d',$useradd[payday]);
-	
-	if($useradd[payday] < 1)
-		$useradd[payday] = 1;
-	elseif($useradd[payday] > 28)
-		$useradd[payday] = 28;
-							
 	if($useradd[lastname]=="")
 		$error[username]="Pola 'nazwisko/nazwa' oraz 'imiê' nie mog± byæ puste!";
 	
 	if($useradd[address]=="")
 		$error[address]="Proszê podaæ adres!";
-	
-	if(!$LMS->TariffExists($useradd[tariff]))
-		$error[tariff]="Proszê wybraæ taryfê!";
 	
 	if($useradd[nip] !="" && !eregi("^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$",$useradd[nip]) && !eregi("^[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}$",$useradd[nip]))
 		$error[nip] = "Podany NIP jest b³êdny!";
@@ -75,7 +65,6 @@ elseif(isset($useradd))
 			die;
 		}
 		$reuse[status] = $useradd[status];
-		$reuse[tariff] = $useradd[tariff];
 		unset($useradd);
 		$useradd = $reuse;
 		$useradd[reuse] = "1";
@@ -88,24 +77,19 @@ elseif(isset($useradd))
 
 $layout[pagetitle]="Nowy u¿ytkownik";
 $tariffs = $LMS->GetTariffs();
-if(!isset($useradd[tariff]))
-	$useradd[tariff] = $tariffs[common];
-if(!isset($useradd[payday]))
-	if(chkconfig($_CONFIG[phpui][use_current_payday]))
-		$useradd[payday] = (date('j',time()) > 28 ? 28 : date('j',time()));
-	else
-		$useradd[payday] = $tariffs[commonpayday];
-for($i=1;$i<29;$i++)
-        $paydays[] = $i;
-$SMARTY->assign("paydays",$paydays);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("useradd",$useradd);
 $SMARTY->assign("error",$error);
-$SMARTY->assign("tariffs",$tariffs);
 $SMARTY->display("useradd.html");
 
 /*
  * $Log$
+ * Revision 1.37  2003/09/09 01:22:28  lukasz
+ * - nowe finanse
+ * - kosmetyka
+ * - bugfixy
+ * - i inne rzeczy o których aktualnie nie pamiêtam
+ *
  * Revision 1.36  2003/09/05 13:11:24  lukasz
  * - nowy sposób wy¶wietlania informacji o b³êdach
  *

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-if($LMS->TariffExists($_GET[from])&&$LMS->TariffExists($_GET[to])&&$_GET[is_sure] = 1)
+if($LMS->TariffExists($_GET[from]) && $LMS->TariffExists($_GET[to]) && $_GET[is_sure] = 1)
 {
-	$ADB->Execute("UPDATE users SET tariff=? WHERE tariff=? AND status=3",array($_GET[to],$_GET[from]));
+	$LMS->TariffMove($_GET[from],$_GET[to]);
 	header("Location: ?m=tariffinfo&id=".$_GET[to]);
 	die;
 }
@@ -34,6 +34,12 @@ else
 	header("Location: ?".$_SESSION[backto]);
 /*
  * $Log$
+ * Revision 1.12  2003/09/09 01:22:28  lukasz
+ * - nowe finanse
+ * - kosmetyka
+ * - bugfixy
+ * - i inne rzeczy o których aktualnie nie pamiêtam
+ *
  * Revision 1.11  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

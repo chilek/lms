@@ -30,7 +30,7 @@ if(!$LMS->UserExists($_GET[id]))
 $username=$LMS->GetUserName($_GET[id]);
 $id = $_GET[id];
 
-$layout[pagetitle]="Rachunek u¿ytkownika ".$username;
+$layout[pagetitle]='Rachunek u¿ytkownika <A HREF="?m=userinfo&id='.$_GET[id].'">'.$username.'</A>';
 
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($_GET[id]));
 $SMARTY->assign("layout",$layout);
@@ -40,6 +40,12 @@ $SMARTY->display("userbalance.html");
 
 /*
  * $Log$
+ * Revision 1.17  2003/09/09 01:22:28  lukasz
+ * - nowe finanse
+ * - kosmetyka
+ * - bugfixy
+ * - i inne rzeczy o których aktualnie nie pamiêtam
+ *
  * Revision 1.16  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

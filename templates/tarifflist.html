@@ -26,9 +26,9 @@
 			<B>Dochód m-c:</B>
 			</NOBR>
 		</TD>
-		<TD WIDTH="1%" CLASS="frightu">
+		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
 			<NOBR>
-			<B>Razem: {$tarifflist.total}</B>
+			<B>Razem: {$listdata.total}</B>
 			</NOBR>
 		</TD>
 	</TR>
@@ -54,7 +54,7 @@
 			({$tarifflist[tariffs].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			{$tarifflist[tariffs].users}
+			{$tarifflist[tariffs].users} {if $tarifflist[tariffs].userscount neq $tarifflist[tariffs].users}({$tarifflist[tariffs].userscount}){/if}
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			{$tarifflist[tariffs].income|string_format:"%01.2f"} z³
@@ -79,11 +79,17 @@
 	</TR>
 	{/section}
 	<TR CLASS="light">
-		<TD CLASS="fleftu" COLSPAN="5" WIDTH="98%" ALIGN="right">
+		<TD CLASS="fleftu" COLSPAN="4" WIDTH="98%" ALIGN="right">
 			<B>Razem:</B>
 		</TD>
-		<TD CLASS="frightu" COLSPAN="2" WIDTH="2%">
+		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
+			<B>{$listdata.totalusers} {if $listdata.totalcount neq $listdata.totalusers}({$listdata.totalcount}){/if}</B>
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
 			<B>{$listdata.totalincome|string_format:"%01.2f"} z³</B>
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%">
+			&nbsp;
 		</TD>
 	</TR>
 </TABLE>

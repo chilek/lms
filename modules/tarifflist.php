@@ -31,8 +31,9 @@ $tarifflist = $LMS->GetTariffList();
 $listdata[total] = $tarifflist[total];
 $listdata[totalincome] = $tarifflist[totalincome];
 $listdata[totalusers] = $tarifflist[totalusers];
+$listdata[totalcount] = $tarifflist[totalcount];
 
-unset($tarifflist[total],$tarifflist[totalincome],$tarifflist[totalusers]);
+unset($tarifflist[total],$tarifflist[totalincome],$tarifflist[totalusers],$tarifflist[totalcount]);
 
 $SMARTY->assign("tarifflist",$tarifflist);
 $SMARTY->assign("listdata",$listdata);
@@ -40,6 +41,12 @@ $SMARTY->assign("layout",$layout);
 $SMARTY->display("tarifflist.html");
 /*
  * $Log$
+ * Revision 1.18  2003/09/09 01:22:28  lukasz
+ * - nowe finanse
+ * - kosmetyka
+ * - bugfixy
+ * - i inne rzeczy o których aktualnie nie pamiêtam
+ *
  * Revision 1.17  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

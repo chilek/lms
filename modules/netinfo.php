@@ -37,8 +37,6 @@ $_SESSION[ntlp][$_GET[id]] = $_GET[page];
 
 $network = $LMS->GetNetworkRecord($_GET[id],$_GET[page],1024);
 
-//echo '<PRE>'; print_r($network);
-
 $layout[pagetitle]="Informacja o sieci";
 
 $SMARTY->assign("layout",$layout);
@@ -46,6 +44,12 @@ $SMARTY->assign("network",$network);
 $SMARTY->display("netinfo.html");
 /*
  * $Log$
+ * Revision 1.21  2003/09/09 01:22:28  lukasz
+ * - nowe finanse
+ * - kosmetyka
+ * - bugfixy
+ * - i inne rzeczy o których aktualnie nie pamiêtam
+ *
  * Revision 1.20  2003/08/27 19:25:47  lukasz
  * - changed format of ipaddr storage in database
  *

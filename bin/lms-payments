@@ -28,6 +28,7 @@ use Config::IniFiles;
 use Getopt::Long;
 use vars qw($configfile $quiet $help $version);
 use POSIX qw(strftime);
+use POSIX qw(mktime);
 
 my $_version = '1.1-cvs';
 
@@ -113,15 +114,38 @@ else
 	exit 1;
 }
 
-my $dbq = $dbase->prepare("SELECT users.id AS id, tariffs.value AS value FROM users,tariffs WHERE users.tariff = tariffs.id AND status = 3 AND deleted = 0 AND payday = $payday");
+my $month = sprintf("%d",strftime("%m",localtime()));
+my $day = strftime("%e",localtime());
+my $year = strftime("%Y",localtime());
+my $weekday = strftime("%u",localtime());
+my $yearday = strftime("%j",localtime());
+
+my $monthtxt = "za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month, $year - 1900);
+my $weektxt = "za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day + 7, $month - 1, $year - 1900);
+my $yeartxt = "za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month - 1, $year - 1900 + 1);
+
+my $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, peroid, at, value, uprate, downrate, name FROM assignments, tariffs WHERE tariffs.id = tariffid AND peroid=0 AND at=$day");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
-	if(!$quiet)
-	{
-		print "User ID: $row->{'id'}\tValue: $row->{'value'}\n";
-	}
-	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'id'}', 'Op³ata za ".strftime("%Y/%m",localtime())."')");
+	print "User ID: $row->{'userid'}\tValue: $row->{'value'}\n" if (!$quiet);
+	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata miesiêczna za \\'".$row->{'name'}."\\' ($monthtxt)')");
+	$sdbq->execute();
+}
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, peroid, at, value, uprate, downrate, name FROM assignments, tariffs WHERE tariffs.id = tariffid AND peroid=1 AND at=$weekday");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref())
+{
+	print "User ID: $row->{'userid'}\tValue: $row->{'value'}\n" if (!$quiet);
+	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata tygodniowa za \\'".$row->{'name'}."\\' ($weektxt)')");
+	$sdbq->execute();
+}
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, peroid, at, value, uprate, downrate, name FROM assignments, tariffs WHERE tariffs.id = tariffid AND peroid=2 AND at=$yearday");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref())
+{
+	print "User ID: $row->{'userid'}\tValue: $row->{'value'}\n" if (!$quiet);
+	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata roczna za \\'".$row->{'name'}."\\' ($yeartxt)')");
 	$sdbq->execute();
 }
 $dbq = $dbase->prepare("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
