@@ -1,7 +1,7 @@
 {include file="header.html"}
 {include file="balanceheader.html"}
 <!--// $Id$ //-->
-{*<SCRIPT LANGUAGE="JavaScript" SRC="img/calendar.js"></SCRIPT>*}
+<SCRIPT LANGUAGE="JavaScript" SRC="img/calendar.js"></SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <P><FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
 <TABLE width="100%" cellpadding="3">
@@ -54,7 +54,7 @@
 						<B>Kwota:</B>
 					</TD>
 					<TD WIDTH="98%" CLASS="FRIGHT">
-						<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}" SIZE="10" {tip text="Podaj kwotê operacji"}>&nbsp;z³<BR>
+						<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}" SIZE="15" {tip text="Podaj kwotê operacji"}>&nbsp;z³<BR>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -65,7 +65,7 @@
 						<B>Data:</B>
 					</TD>
 					<TD WIDTH="98%" class="fright">
-						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{$time}" SIZE="10" {tip text="Wpisz datê operacji w formacie dd-mm-rrrr (pole puste oznacza datê dzisiejsz±)"}>{*<A HREF="javascript:cal1.popup();">&nbsp;&raquo;&raquo;&raquo</A>*}
+						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{$time}" SIZE="15" MAXSIZE="15" {tip text="Wpisz lub wybierz czas operacji w formacie 'rrrr/mm/dd gg:mm' (pole puste oznacza datê dzisiejsz±)"}><A HREF="javascript:cal1.popup();">&nbsp;&raquo;&raquo;&raquo</A>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -90,12 +90,12 @@
 	</TR>
 </TABLE>
 </FORM>
-{*
+
 <SCRIPT>
 <!--
 var cal1 = new calendar(document.forms['addbalance'].elements['addbalance[time]']);
 //-->
 </SCRIPT>
-*}
+
 </P>
 {include file="footer.html"}

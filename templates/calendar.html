@@ -5,6 +5,7 @@
 <meta http-equiv="Content-Language" content="pl">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
 <title>::: LMS : Wybierz datę :::</title>
+<link href="../img/style.css" rel="stylesheet" type="text/css">
 <!--
 Title: Tigra Calendar
 URL: http://www.softcomplex.com/products/tigra_calendar/
@@ -128,7 +129,7 @@ while (dt_current_day.getMonth() == dt_current.getMonth() ||
 		if (dt_current_day.getDate() == dt_current.getDate() &&
 			dt_current_day.getMonth() == dt_current.getMonth())
 			// print current date
-			document.write('<td bgcolor="#EBE4D6" align="center" width="14%">');
+			document.write('<td bgcolor="#ffffcc" align="center" width="14%">');
 		else if (dt_current_day.getDay() == 0 || dt_current_day.getDay() == 6)
 			// weekend days
 			document.write('<td bgcolor="#DFD5BD" align="center" width="14%">');
@@ -152,7 +153,7 @@ while (dt_current_day.getMonth() == dt_current.getMonth() ||
 	document.write('</tr>');
 }
 if (obj_caller && obj_caller.time_comp)
-	document.write('<form onsubmit="javascript:set_datetime('+dt_current.valueOf()+', true)" name="cal"><tr><td colspan="7" bgcolor="#87CEFA"><font color="White" face="tahoma, verdana" size="2">Time: <input type="text" name="time" value="'+obj_caller.gen_time(this.dt_current)+'" size="8" maxlength="8"></font></td></tr></form>');
+	document.write('<form onsubmit="javascript:set_datetime('+dt_current.valueOf()+', true)" name="cal"><tr><td colspan="7" bgcolor="#CEBD9B">Godzina: <INPUT type="text" name="time" value="'+obj_caller.gen_time(this.dt_current)+'" size="5" maxlength="5"></td></tr></form>');
 </script>
 </table></tr></td>
 </table>
