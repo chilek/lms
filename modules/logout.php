@@ -25,6 +25,6 @@
  */
 
 $SESSION->LogOut();
-header("Location: ".$HTTP_REFERER);
+header("Location: ?m=welcome");
 
 ?>
