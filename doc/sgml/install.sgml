@@ -358,228 +358,227 @@ database = /usr/local/lms/lms.db</screen>
      <title>Section [directories] - Directories Settings</title>
       <para>        
      <itemizedlist>
-          <listitem>
+	<listitem>
         <para>sys_dir</para>
         <para>System directory. It is a place where is entire content of LMS's UI, that means index.php, graphics, 
         templates and the rest. By default index.php seek in filesystem 
         using getcwd(), but better is to say him where hi is:</para>
         <para>Example:     <prompt>sys_dir = /var/www/htdocs/lms/</prompt></para>
-       </listitem>
-          <listitem>
+        </listitem>
+        <listitem>
         <para>modules_dir</para>
         <para>Directory with "modules" of LMS. That is content of /modules directory. By default 
         it is subdirectory <filename>modules</filename> in sys_dir.</para>
         <para>Example:     <prompt>modules_dir = /usr/share/lms/modules/</prompt></para>
-       </listitem>
-          <listitem>
+        </listitem>
+        <listitem>
         <para>lib_dir</para>
         <para>Directory with "libraries" of LMS. That is content of /lib directory. By default 
         it is subdirectory <filename>lib</filename> in sys_dir.</para>
         <para>Example:     <prompt>lib_dir = /usr/share/lms/lib/</prompt></para>
-       </listitem>
-          <listitem>
+        </listitem>
+        <listitem>
         <para>backup_dir</para>
         <para>Directory for database backup files - place where LMS write database snapshots. 
         By default it is subdirectory <filename>backups</filename> in sys_dir.</para>
         <para>Example:     <prompt>backup_dir = /var/backup/lms/</prompt></para>
         <para><warning><para>If directory with backups will be accessible from WWW level, 
         then anybody will can to access them without authorization.</para></warning></para>
-       </listitem>
-          <listitem>
+        </listitem>
+        <listitem>
         <para>smarty_dir</para>
         <para>Directory with Smarty library - By default, subdirectory <filename>Smarty</filename> in lib_dir.</para>
         <para>Example:     <prompt>smarty_dir = /usr/lib/php/Smarty</prompt></para>
-       </listitem>
-          <listitem>
+        </listitem>
+        <listitem>
         <para>smarty_compile_dir</para>
         <para>Smarty's compilation directory. Place where Smarty compile templates. By default  
         it is subdirectory <filename>templates_c</filename> in sys_dir.</para>
         <para>Example:      <prompt>smarty_compile_dir = /var/smarty/compile/lms</prompt></para>
-       </listitem>
-          <listitem>
+        </listitem>
+        <listitem>
         <para>smarty_templates_dir</para>
         <para>Directory with Smarty's templates. By default it is subdirectory <filename>templates</filename>
         in sys_dir.</para>
         <para>Example:     <prompt>smarty_templates_dir = /usr/share/lms/templates</prompt></para>
-       </listitem>
-         </itemizedlist>
+        </listitem>
+        </itemizedlist>
      </para>
      </sect2>
      <sect2 id="install-config-ui">
-     <title>Section [phpui] - Interface Setting</title>
-         <itemizedlist>
+        <title>Section [phpui] - Interface Setting</title>
+        <itemizedlist>
         <listitem>
-         <para>allow_from  (optional)</para>
-         <para>Lis of networks and IP addresses, which have access to LMS. If empty, every IP address has 
-     access to LMS. When you write here list of addresses or address classes,
-     LMS dismiss every unwanted user with HTTP 403 error.</para>
-         <para>Example:          <prompt>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</prompt></para>
-   </listitem>
-   <listitem>
-    <para>lang</para>
-    <para>User interface language symbol. When is not set, language will be based on
-    html browser settings. Default: en.</para>
-    <para>Example:     <prompt>lang = pl</prompt></para>
-   </listitem>
-   <listitem>
-    <para>timeout</para>
-    <para>Timeout of www session. After that time (in seconds) user will be log out if 
-    not take some action. Default: 600.</para>
-    <para>Example:     <prompt>timeout = 900</prompt></para>
-    <para><warning><para>There is not possible to set no timeout. If you set this value
-    on zero, you'll can't use LMS!</para></warning></para>
-   </listitem>
-   <listitem>
-    <para>userlist_pagelimit</para>
-    <para>Limit of displayed positions on one page on users list. Default: no limit.</para>
-    <para>Example:     <prompt>userlist_pagelimit = 10</prompt></para>
-   </listitem>
-   <listitem>
-    <para>nodelist_pagelimit</para>
-    <para>Limit of displayed records on page on nodes list. Default: no limit.</para>
-    <para>Example:     <prompt>nodelist_pagelimit = 10</prompt></para>
-   </listitem>
-   <listitem>
-    <para>balancelist_pagelimit</para>
-    <para>Limit of displayed records on page on user's balance. Default: 100.</para>
-    <para>Example:     <prompt>balancelist_pagelimit = 50</prompt></para>
-   </listitem>
-   <listitem>
-    <para>invoicelist_pagelimit</para>
-    <para>Limit of displayed records on page on invoices list. Default: 100</para>
-    <para>Example:     <prompt>invoicelist_pagelimit = 50</prompt></para>
-   </listitem>
-   <listitem>
-    <para>ticketlist_pagelimit</para>
-    <para>Limit of displayed records on page on tickets (requests) list. Default: 100</para>
-    <para>Example:     <prompt>ticketlist_pagelimit = 50</prompt></para>
-   </listitem>
-   <listitem>
-    <para>networkhosts_pagelimit</para>
-    <para>Limit of displayed nodes on one page in Network Information. Default: 256</para>
-    <para>Example:     <prompt>networkhosts_pagelimit = 1024</prompt></para>
-   </listitem>
-   <listitem>
-    <para>accountlist_pagelimit</para>
-    <para>Limit of displayed records on page on accounts list. Default: 100</para>
-    <para>Example:     <prompt>accountlist_pagelimit = 50</prompt></para>
-   </listitem>
-   <listitem>
-    <para>domainlist_pagelimit</para>
-    <para>Limit of displayed records on page on domains list. Default: 100</para>
-    <para>Example:     <prompt>domainlist_pagelimit = 50</prompt></para>
-   </listitem>
-   <listitem>
-    <para>aliaslist_pagelimit</para>
-    <para>Limit of displayed records on page on aliases list. Default: 100</para>
-    <para>Example:     <prompt>aliaslist_pagelimit = 50</prompt></para>
-   </listitem>
-   <listitem>
-    <para>reload_type</para>
-    <para>Reload type. Allowed values:</para>
-    <para>exec - calling of some command (most often with sudo, some script or something
-    else, configurable below)</para>
-    <para>sql  - doing SQL writes (also can be set concrete query)</para>
-    <para>Domy¶lna warto¶æ to 'sql'.</para>
-    <para>Example:     <prompt>reload_type = exec</prompt></para>
-   </listitem>
-   <listitem>
-    <para>reload_execcmd</para>
-    <para>Command to run during reload, if reload_type is set to 'exec'. By default
-    <filename>/bin/true</filename>. That string is send to command system(), so I propose consideration 
-    what you do and how :) Altogether, semicolons should be parsed by bash, but
-    LMS splits that string and execute commands singly.</para>
-    <para>Example:     <prompt>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</prompt></para>
-   </listitem>
-   <listitem>
-    <para>reload_sqlquery</para>
-    <para>SQL query executed while reload, if <prompt>reload_type = sql</prompt>.  
-    By default, query inserts into table 'timestamps' value '_force'. In query can be used
-    '%TIME%' as replacement to current unix timestamp. WARNING! Semicolon is handled by
-    a queries separator, that means you can enter couple of SQL queries separate them by
-    semicolon sign.</para>
-    <para>Example:     <prompt>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</prompt></para>
-   </listitem>
-   <listitem>
-    <para>force_ssl</para>
-    <para>SSL Enforcing. Setting this option to 1 will make that LMS will enforce SSL connection 
-    doing redirect to 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every access
-    without SSL. Default: 0 (off).</para>
-    <para>Example:     <prompt>force_ssl = 1</prompt></para>
-   </listitem>
-   <listitem>
-    <para>allow_mac_sharing</para>
-    <para>Permission for addition of nodes with duplicated MAC address (not checking
-    that some computer have that MAC yet). Default: 0 (off)</para>
-    <para>Example:     <prompt>allow_mac_sharing = 1</prompt></para>
-   </listitem>
-   <listitem>
-    <para>smarty_debug</para>
-    <para>Enable Smarty's debug console. Usefull for tracking values passed from PHP 
-    to Smarty. Default: 0 (off).</para>
-    <para>Example:     <prompt>smarty_debug = 1</prompt></para>
-   </listitem>
-   <listitem>
-    <para>lang_debug</para>
-    <para>Enable LMS language console. Usefull for tracking missing translation strings.
-    Default: 0 (off).</para>
-    <para>Example:     <prompt>lang_debug = 1</prompt></para>
-   </listitem>
-   <listitem>
-    <para>debug_email</para>
-    <para>E-mail address for debugging - at this address will goes messages sended from madule 'Mailing', 
-    instead of proper users.</para>
-    <para>Example:     <prompt>debug_email = root@localhost</prompt></para>
-   </listitem>
-   <listitem>
-    <para>default_zip, default_city, default_address</para>
-    <para>Default zip code, city, street, used while inserting of new user.
-    Useful when we have many users on the same street.</para>
-    <para>Example:     <prompt>default_zip = 39-300</prompt></para>
-   </listitem>
-   <listitem>
-    <para>use_current_payday</para>
-    <para>Qualify to use current day of month for payment day
-    instead of most often used day. Default: 0 (off).</para>
-    <para>Example:     <prompt>use_current_payday = 1</prompt></para>
-   </listitem>
-   <listitem>
-    <para>lastonline_limit</para>
-    <para>Specify time (in seconds), after which node will be treated
-    as inactive. It should match with frequency of running script inspecting
-    nodes activity (i.e. lms-fping). Default: 600.</para>
-    <para>Example:     <prompt>lastonline_limit = 300</prompt></para>
-   </listitem>
-   <listitem>
-    <para>arpd_servers</para>
-    <para>List of arpd servers for reading of MAC addresses from remote networks.
-    That list should include items IP[:port] separated with spaces.
-    Default: empty.</para>
-    <para>Example:     <prompt>arpd_servers = 192.168.1.1 192.168.2.1</prompt></para>
-   </listitem>
-   <listitem>
-    <para>helpdesk_backend_mode</para>
-    <para>When enabled, all messages in helpdesk system (except sended to requestor)
-    will be send to mail server at address of right queue.
-    On server should be running script lms-rtparser, which will write
-    messages to database. Default: disabled.</para>
-    <para>Example:     <prompt>helpdesk_backend_mode = On</prompt></para>
-   </listitem>
-   <listitem>
-    <para>contract_template</para>
-    <para>Specific customer contract template. Default template can be adapted.
-    Default: contract.html.</para>
-    <para>Example:     <prompt>contract_template = "../my_templates/contract.html"</prompt></para>
-   </listitem>
-   <listitem>
-    <para>to_words_short_format</para>
-    <para>Specify format of verbal amounts representation (on invoices). For value "1"
-    verbal expand of 123,15 will be "one two thr 15/100". Default: 0.</para>
-    <para>Example:     <prompt>to_words_short_format = 1</prompt></para>
-   </listitem>
-  </itemizedlist>
+    	    <para>allow_from  (optional)</para>
+    	    <para>Lis of networks and IP addresses, which have access to LMS. If empty, every IP address has 
+    	    access to LMS. When you write here list of addresses or address classes,
+    	    LMS dismiss every unwanted user with HTTP 403 error.</para>
+    	    <para>Example:          <prompt>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>lang</para>
+	    <para>User interface language symbol. When is not set, language will be based on
+	    html browser settings. Default: en.</para>
+	    <para>Example:     <prompt>lang = pl</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>timeout</para>
+	    <para>Timeout of www session. After that time (in seconds) user will be log out if 
+	    not take some action. Default: 600.</para>
+	    <para>Example:     <prompt>timeout = 900</prompt></para>
+	    <para><warning><para>There is not possible to set no timeout. If you set this value
+	    on zero, you'll can't use LMS!</para></warning></para>
+	</listitem>
+	<listitem>
+	    <para>userlist_pagelimit</para>
+	    <para>Limit of displayed positions on one page on users list. Default: no limit.</para>
+	    <para>Example:     <prompt>userlist_pagelimit = 10</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>nodelist_pagelimit</para>
+	    <para>Limit of displayed records on page on nodes list. Default: no limit.</para>
+	    <para>Example:     <prompt>nodelist_pagelimit = 10</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>balancelist_pagelimit</para>
+	    <para>Limit of displayed records on page on user's balance. Default: 100.</para>
+	    <para>Example:     <prompt>balancelist_pagelimit = 50</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>invoicelist_pagelimit</para>
+	    <para>Limit of displayed records on page on invoices list. Default: 100</para>
+	    <para>Example:     <prompt>invoicelist_pagelimit = 50</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>ticketlist_pagelimit</para>
+	    <para>Limit of displayed records on page on tickets (requests) list. Default: 100</para>
+	    <para>Example:     <prompt>ticketlist_pagelimit = 50</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>networkhosts_pagelimit</para>
+	    <para>Limit of displayed nodes on one page in Network Information. Default: 256</para>
+	    <para>Example:     <prompt>networkhosts_pagelimit = 1024</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>accountlist_pagelimit</para>
+	    <para>Limit of displayed records on page on accounts list. Default: 100</para>
+	    <para>Example:     <prompt>accountlist_pagelimit = 50</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>domainlist_pagelimit</para>
+	    <para>Limit of displayed records on page on domains list. Default: 100</para>
+	    <para>Example:     <prompt>domainlist_pagelimit = 50</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>aliaslist_pagelimit</para>
+	    <para>Limit of displayed records on page on aliases list. Default: 100</para>
+	    <para>Example:     <prompt>aliaslist_pagelimit = 50</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>reload_type</para>
+	    <para>Reload type. Allowed values:</para>
+	    <para>exec - calling of some command (most often with sudo, some script or something
+	    else, configurable below)</para>
+	    <para>sql  - doing SQL writes (also can be set concrete query)</para>
+	    <para>Default: sql.</para>
+	    <para>Example:     <prompt>reload_type = exec</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>reload_execcmd</para>
+	    <para>Command to run during reload, if reload_type is set to 'exec'. By default
+	    <filename>/bin/true</filename>. That string is send to command system(), so I propose consideration 
+	    what you do and how :) Altogether, semicolons should be parsed by bash, but
+	    LMS splits that string and execute commands singly.</para>
+	    <para>Example:     <prompt>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>reload_sqlquery</para>
+	    <para>SQL query executed while reload, if <prompt>reload_type = sql</prompt>.  
+	    By default, query inserts into table 'timestamps' value '_force'. In query can be used
+	    '%TIME%' as replacement to current unix timestamp. WARNING! Semicolon is handled by
+	    a queries separator, that means you can enter couple of SQL queries separate them by
+	    semicolon sign.</para>
+	    <para>Example:     <prompt>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>force_ssl</para>
+	    <para>SSL Enforcing. Setting this option to 1 will make that LMS will enforce SSL connection 
+	    doing redirect to 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] at every access
+	    without SSL. Default: 0 (off).</para>
+	    <para>Example:     <prompt>force_ssl = 1</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>allow_mac_sharing</para>
+	    <para>Permission for addition of nodes with duplicated MAC address (not checking
+	    that some computer have that MAC yet). Default: 0 (off)</para>
+	    <para>Example:     <prompt>allow_mac_sharing = 1</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>smarty_debug</para>
+	    <para>Enable Smarty's debug console. Usefull for tracking values passed from PHP 
+	    to Smarty. Default: 0 (off).</para>
+	    <para>Example:     <prompt>smarty_debug = 1</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>lang_debug</para>
+	    <para>Enable LMS language console. Usefull for tracking missing translation strings.
+	    Default: 0 (off).</para>
+	    <para>Example:     <prompt>lang_debug = 1</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>debug_email</para>
+    	    <para>E-mail address for debugging - at this address will goes messages sended from madule 'Mailing', 
+	    instead of proper users.</para>
+	    <para>Example:     <prompt>debug_email = root@localhost</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>default_zip, default_city, default_address</para>
+	    <para>Default zip code, city, street, used while inserting of new user.
+	    Useful when we have many users on the same street.</para>
+	    <para>Example:     <prompt>default_zip = 39-300</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>use_current_payday</para>
+	    <para>Qualify to use current day of month for payment day
+	    instead of most often used day. Default: 0 (off).</para>
+	    <para>Example:     <prompt>use_current_payday = 1</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>lastonline_limit</para>
+	    <para>Specify time (in seconds), after which node will be treated
+	    as inactive. It should match with frequency of running script inspecting
+	    nodes activity (i.e. lms-fping). Default: 600.</para>
+	    <para>Example:     <prompt>lastonline_limit = 300</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>arpd_servers</para>
+	    <para>List of arpd servers for reading of MAC addresses from remote networks.
+	    That list should include items IP[:port] separated with spaces.
+	    Default: empty.</para>
+	    <para>Example:     <prompt>arpd_servers = 192.168.1.1 192.168.2.1</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>helpdesk_backend_mode</para>
+	    <para>When enabled, all messages in helpdesk system (except sended to requestor)
+	    will be send to mail server at address of right queue.
+	    On server should be running script lms-rtparser, which will write
+	    messages to database. Default: disabled.</para>
+	    <para>Example:     <prompt>helpdesk_backend_mode = On</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>contract_template</para>
+	    <para>Specific customer contract template. Default template can be adapted.
+	    Default: contract.html.</para>
+	    <para>Example:     <prompt>contract_template = "../my_templates/contract.html"</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>to_words_short_format</para>
+	    <para>Specify format of verbal amounts representation (on invoices). For value "1"
+	    verbal expand of 123,15 will be "one two thr 15/100". Default: 0.</para>
+	    <para>Example:     <prompt>to_words_short_format = 1</prompt></para>
+	</listitem>
+	</itemizedlist>
       </sect2> 
-<!--
     </sect1>
     <sect1 id="install-rights">
       <title>Prawa dostêpu</title>
@@ -639,6 +638,5 @@ database = /usr/local/lms/lms.db</screen>
       opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.</para>
       <para><note><para>W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
       mo¿na skasowaæ odpowiedni katalog</para></note></para>
--->
     </sect1>
   </chapter>
