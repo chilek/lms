@@ -38,11 +38,13 @@ if(isset($adminadd))
 		die;
 	}
 	
-	if($LMS->GetAdminIDByLogin($adminadd['login']))
-		$error['login'] = trans('Account with specified login exists!');
-	elseif(!eregi("^[a-z0-9.-_]+$",$adminadd['login']))
+	if($adminadd['login']=='')
+		$error['login'] = trans('Login can\'t be empty!');
+	elseif(!eregi('^[a-z0-9.-_]+$', $adminadd['login']))
 		$error['login'] = trans('Login contains forbidden characters!');
-
+	elseif($LMS->GetAdminIDByLogin($adminadd['login']))
+		$error['login'] = trans('User with specified login exists or that login was used in the past!');
+	
 	if($adminadd['email']!='' && !check_email($adminadd['email']))
 		$error['email'] = trans('E-mail isn\'t correct!');
 
