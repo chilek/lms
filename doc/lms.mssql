@@ -195,6 +195,7 @@ CREATE TABLE nodes (
   access tinyint NOT NULL DEFAULT '1',
   warning tinyint NOT NULL DEFAULT 0,
   lastonline int NOT NULL DEFAULT 0,
+  info text NOT NULL DEFAULT '',
   PRIMARY KEY (id),
   UNIQUE (name),
   UNIQUE (ipaddr)
@@ -213,7 +214,7 @@ CREATE TABLE payments (
   creditor varchar(255) NOT NULL DEFAULT '',
   period int NOT NULL DEFAULT 0,
   at int NOT NULL DEFAULT 0,
-  description text NOT NULL,
+  description text NOT NULL DEFAULT '',
   PRIMARY KEY (id)
 );
 
@@ -332,7 +333,7 @@ CREATE TABLE tariffs (
   downceil int NOT NULL DEFAULT 0,
   climit int NOT NULL DEFAULT 0,
   plimit int NOT NULL DEFAULT 0,
-  description text NOT NULL,
+  description text NOT NULL DEFAULT '',
   PRIMARY KEY (id),
   UNIQUE (name)
 );
@@ -391,7 +392,7 @@ IF EXISTS (SELECT name FROM sysobjects WHERE name='usergroups' AND type='U')
 CREATE TABLE usergroups (
   id int NOT NULL IDENTITY(1,1), 
   name varchar(255) NOT NULL DEFAULT '', 
-  description text NOT NULL, 
+  description text NOT NULL DEFAULT '', 
   PRIMARY KEY (id), 
   UNIQUE (name)
 );
@@ -408,6 +409,27 @@ CREATE TABLE userassignments (
   userid int NOT NULL DEFAULT 0, 
   PRIMARY KEY (id),
   UNIQUE (usergroupid, userid)
+);
+
+---------------------------------------------------------------
+-- Struktura tabeli dla passwd (accounts)
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='passwd' AND type='U') 
+    DROP TABLE passwd;
+CREATE TABLE passwd (
+    id int NOT NULL IDENTITY(1,1),
+    ownerid int NOT NULL DEFAULT 0,
+    login varchar(200) NOT NULL DEFAULT '',
+    password varchar(200) NOT NULL DEFAULT '',
+    lastlogin int NOT NULL DEFAULT 0,
+    uid int NOT NULL DEFAULT 0,
+    home varchar(255) NOT NULL DEFAULT '',
+    type smallint NOT NULL DEFAULT 0,
+    expdate int NOT NULL DEFAULT 0,
+    domain varchar(255)	NOT NULL DEFAULT '',
+    PRIMARY KEY (id)
+    UNIQUE (login)
 );
 
 IF EXISTS (SELECT name FROM sysobjects WHERE name='inet_ntoa' AND type='FN')
@@ -472,4 +494,4 @@ BEGIN
 END
 GO
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004101800');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004112400');

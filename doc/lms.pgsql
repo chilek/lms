@@ -106,6 +106,7 @@ CREATE TABLE nodes (
 	access smallint 	DEFAULT 1 NOT NULL,
 	warning smallint 	DEFAULT 0 NOT NULL,
 	lastonline integer	DEFAULT 0 NOT NULL,
+	info text		DEFAULT '' NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	UNIQUE (ipaddr)
@@ -401,6 +402,28 @@ CREATE TABLE rtrights (
 );
 
 /* ---------------------------------------------------
+    Accounts table
+------------------------------------------------------*/
+
+DROP SEQUENCE passwd_id_seq;
+CREATE SEQUENCE passwd_id_seq;
+DROP TABLE passwd;
+CREATE TABLE passwd (
+        id integer DEFAULT nextval('passwd_id_seq'::text) NOT NULL,
+	ownerid integer 	DEFAULT 0 NOT NULL,
+	login varchar(200) 	DEFAULT '' NOT NULL,
+	password varchar(200) 	DEFAULT '' NOT NULL,
+	lastlogin integer 	DEFAULT 0 NOT NULL,
+	uid integer 		DEFAULT 0 NOT NULL,
+	home varchar(255) 	DEFAULT '' NOT NULL,
+	type smallint 		DEFAULT 0 NOT NULL,
+	expdate	integer		DEFAULT 0 NOT NULL,
+	domain varchar(255)	DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (login)
+);
+
+/* ---------------------------------------------------
     Database info table
 ------------------------------------------------------*/
 
@@ -410,4 +433,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004101800');    
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004112100');    
