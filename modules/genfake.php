@@ -1531,7 +1531,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 	$LMS->NetworkAdd($netdata);
 
 	echo '<B>Generuje u¿ytkowników...</B><BR>';	
-	$startip = ip_long('192.168.0.0');
+	$startip = ip_long('192.168.0.0')+1;
 	$cnt = 0;
 	$lnsize = sizeof($lastnames);
 	$nsize = sizeof($names);
