@@ -21,7 +21,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="1%" class="fleft">
-			<nobr><IMG SRC="img/ip.gif" border="0" align="absmiddle" alt=""> <B>Adres / prefix:</B></nobr>
+			<nobr><IMG SRC="img/ip.gif" border="0" align="absmiddle" alt=""> <B>{$lang.address_prefix}:</B></nobr>
 		</TD>
 		<TD width="48%">
 			<NOBR>{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[address]" VALUE="{$network.address}"{if $error.address} class="alert"{/if}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $network.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{if $error.address}<BR><FONT COLOR="RED"><B>{$error.address}</B></FONT>{/if}{else}{$network.address}/{$network.prefix}{/if}</NOBR>

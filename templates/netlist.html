@@ -5,7 +5,7 @@
 <table cellpadding="3" width="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD class="fleftu" width="96%">
-			<NOBR><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>{$lang.name}:</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> Adres/prefix:</NOBR>
+			<NOBR><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>{$lang.name}:</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> {$lang.address_prefix}:</NOBR>
 		</TD>
 		<TD class="fbt" valign="top" align="right" width="1%">
 			{$lang.id}:
@@ -25,7 +25,7 @@
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{section name=netlist loop=$netlist.id}
-	<TR bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD class="fleft" width="96%" onClick="return self.location.href='?m=netinfo&id={$netlist.id[netlist]}';">
 			<nobr><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>{$netlist.name[netlist]}</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> {$netlist.address[netlist]} / {$netlist.prefix[netlist]}</nobr>
 		</TD>
@@ -64,7 +64,7 @@
 	<TR bgcolor="#DFD5BD">
 		<TD width="99%" colspan="2" class="fleftu" align="right"> 
 			<B>{$lang.total}:<BR>
-			Adresów:<BR>
+			{$lang.addresses}:<BR>
 			Przypisanych:</B>
 		</TD>
 		<TD width="1%" colspan="4" class="frightu">
