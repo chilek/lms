@@ -2430,17 +2430,18 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		    default: $quarterday = $monthday + 200; break;
 		}
 		
-		return $this->DB->GetAll('SELECT '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').',  
-			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS tax22,  
-			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS tax7, 
-			    SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS tax0, 
-			    SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS taxfree 
+		return $this->DB->GetAll('SELECT '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, '
+			    .$this->DB->Concat('city',"' '",'address').' AS address, nip, 
+			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS val22,  
+			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS val7, 
+			    SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS val0, 
+			    SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS valfree 
 			    FROM assignments, tariffs, users  
 			    WHERE userid = users.id AND tariffid = tariffs.id 
 			    AND deleted=0 AND (datefrom<=?) AND ((dateto>=?) OR dateto=0) 
 			    AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?)) '
 			    .($userid ? "AND userid=$userid" : ''). 
-			    'GROUP BY userid, lastname, users.name',
+			    'GROUP BY userid, lastname, users.name, city, address, nip',
 			    array($date, $date, $weekday, $monthday, $quarterday, $yearday));
 	}
 
