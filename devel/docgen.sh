@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# rypt s³u¿y do tworzenia dokumentacji w ró¿nych formatach
-# (html, txt) na podstawie ¼ród³owych plików sgml
-# Przed u¿yciem nale¿y zainstalowaæ w systemie sgml-tools
-# z openjade (lynx'a pewnie ka¿dy ma)
+# Script generate documentation in differenf formats
+# (html, txt) from source sgml files
+# Required is instalation of sgml-tools with openjade
+# (lynx probably have anybody)
 #
 
 cd ../doc/sgml
@@ -52,7 +52,7 @@ case "$1" in
     ;;
         
     *)
-	echo -e "$0: Brak parametru.\nSposób u¿ycia: docgen.sh html|txt"
+	echo -e "$0: Lost option.\nUsage: docgen.sh html|txt"
     ;;
 esac
 
