@@ -13,7 +13,7 @@
 <TABLE width="600" cellpadding="3" border="1" align="CENTER">
 	<TR>
 		<TD class="HEAD" colspan="2">
-			<H1>{t}Ticket no{/t} {$ticket.ticketid|string_format:"%06d"}</H1>
+			<H1>{t}Ticket No{/t} {$ticket.ticketid|string_format:"%06d"}</H1>
 		</TD>
 	</TR>
 	<TR>
@@ -41,7 +41,7 @@
 	</TR>
 	<TR>
 		<TD width="1%" NOWRAP>
-			<B>{t}Ticket date:{/t}</B>
+			<B>{t}Create time:{/t}</B>
 		</TD>
 		<TD width="99%">
 			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
@@ -50,7 +50,7 @@
 	{if $ticket.ownername}
 	<TR>
 		<TD width="1%">
-			<B>{t}Owner{/t}</B>
+			<B>{t}Owner:{/t}</B>
 		</TD>
 		<TD width="99%" NOWRAP>
 			{$ticket.ownername}
