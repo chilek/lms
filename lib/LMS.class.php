@@ -341,7 +341,23 @@ class LMS
 
 	function UserExists($id)
 	{
-		return ($this->ADB->GetOne("SELECT * FROM users WHERE id=?",array($id))?TRUE:FALSE);
+		switch(strtoupper($this->ADB->GetOne("SELECT deleted FROM users WHERE id=?",array($id))))
+		{
+			case 'N':
+				return TRUE;
+				break;
+			case 'Y':
+				return -1;
+				break;
+			default:
+				return FALSE;
+				break;
+		}
+	}
+
+	function RecoverUser($id)
+	{
+		return $this->ADB->Execute("UPDATE deleted='N' WHERE id=?",array($id));
 	}
 
 	function GetUsersWithTariff($id)
@@ -364,14 +380,14 @@ class LMS
 		$this->SetTS("users");
 		$this->SetTS("nodes");
 		$res1=$this->ADB->Execute("DELETE FROM nodes WHERE ownerid=?",array($id));
-		$res2=$this->ADB->Execute("DELETE FROM users WHERE id=?",array($id));
+		$res2=$this->ADB->Execute("UPDATE users SET deleted='Y' WHERE id=?",array($id));
 		return $res1 || $res2;
 	}
 
 	function UserUpdate($userdata)
 	{
 		$this->SetTS("users");
-		return $this->ADB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, tariff=?, moddate=?NOW?, modid=?, info=?, lastname=?, name=?, payday=? WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['tariff'], $this->SESSION->id, $userdata['info'], strtoupper($userdata['lastname']), $userdata['name'], $userdata['payday'], $userdata['id'] ) );
+		return $this->ADB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, tariff=?, moddate=?NOW?, modid=?, info=?, lastname=?, name=?, payday=?, deleted='N' WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['tariff'], $this->SESSION->id, $userdata['info'], strtoupper($userdata['lastname']), $userdata['name'], $userdata['payday'], $userdata['id'] ) );
 	}
 
 	function GetUserNodesNo($id)
@@ -396,7 +412,7 @@ class LMS
 
 	function GetUser($id)
 	{
-		if($result = $this->ADB->GetRow("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid, payday FROM users WHERE id=?",array($id)))
+		if($result = $this->ADB->GetRow("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid, payday, deleted FROM users WHERE id=?",array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
@@ -405,6 +421,7 @@ class LMS
 			$result['tariffvalue'] = $this->GetTariffValue($result['tariff']);
 			$result['tariffname'] = $this->GetTariffName($result['tariff']);
 			$result['balance'] = $this->GetUserBalance($result['id']);
+			$result['deleted'] = ($result['deleted'] == 'Y' ? TRUE : FALSE);
 			return $result;
 		}else
 			return FALSE;
@@ -412,7 +429,7 @@ class LMS
 
 	function GetUserNames()
 	{
-		return $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users WHERE status=3 ORDER BY username");
+		return $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users WHERE status=3 AND deleted = 'N' ORDER BY username");
 	}
 
 	function GetUserNodesAC($id)
@@ -444,19 +461,19 @@ class LMS
 		switch($order){
 			
 			case "phone":
-				$sqlord = "ORDER BY phone1";
+				$sqlord = "ORDER BY deleted DESC, phone1";
 			break;
 			
 			case "id":
-				$sqlord = "ORDER BY id";
+				$sqlord = "ORDER BY deleted DESC, id";
 			break;
 			
 			case "address":
-				$sqlord = "ORDER BY address";
+				$sqlord = "ORDER BY deleted DESC, address";
 			break;
 			
 			case "email":
-				$sqlord = "ORDER BY email";
+				$sqlord = "ORDER BY deleted DESC, email";
 			break;
 			
 			case "balance":
@@ -464,33 +481,33 @@ class LMS
 			break;
 			
 			case "gg":
-				$sqlord = "ORDER BY gguin";
+				$sqlord = "ORDER BY deleted DESC, gguin";
 			break;
 			
 			case "nip":
-				$sqlord = "ORDER BY nip";
+				$sqlord = "ORDER BY deleted DESC, nip";
 			break;
 			
 			default:
-				$sqlord = "ORDER BY ".$this->ADB->Concat("UPPER(lastname)","' '","name");
+				$sqlord = "ORDER BY deleted DESC, ".$this->ADB->Concat("UPPER(lastname)","' '","name");
 			break;																			
 		}
 
 		if(sizeof($search))
-		foreach($search as $key => $value)
-		{
-			$value = str_replace(" ","%",trim($value));
-			if($value!="")
+			foreach($search as $key => $value)
 			{
-				$value = "'%".$value."%'";
-				if($key=="phone")
-					$searchargs[] = "(phone1 ?LIKE? $value OR phone2 ?LIKE? $value OR phone3 ?LIKE? $value)";
-				elseif($key=="username")
-					$searchargs[] = $this->ADB->Concat("UPPER(lastname)","' '","name")." ?LIKE? ".$value;
-				elseif($key!="s")
-					$searchargs[] = $key." ?LIKE? ".$value;
+				$value = str_replace(" ","%",trim($value));
+				if($value!="")
+				{
+					$value = "'%".$value."%'";
+					if($key=="phone")
+						$searchargs[] = "(phone1 ?LIKE? $value OR phone2 ?LIKE? $value OR phone3 ?LIKE? $value)";
+					elseif($key=="username")
+						$searchargs[] = $this->ADB->Concat("UPPER(lastname)","' '","name")." ?LIKE? ".$value;
+					elseif($key!="s")
+						$searchargs[] = $key." ?LIKE? ".$value;
+				}
 			}
-		}
 		
 		if($searchargs)
 			$sqlsarg = implode(" AND ",$searchargs);
@@ -498,7 +515,7 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, tariff, nip, zip, city, gguin FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
+		if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, tariff, nip, zip, city, gguin, deleted FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
 		{
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
 				foreach($blst as $row)
@@ -600,7 +617,7 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, gguin, nip, zip, city, info, tariff FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
+		if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, gguin, nip, zip, city, info, tariff FROM users WHERE deleted = 'N' ".($state !=0 ? " AND status = '".$state."'":"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
 		{
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
 				foreach($blst as $row)
@@ -1592,6 +1609,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.199  2003/08/25 02:14:05  lukasz
+ * - zmieniona obs³uga usuwania userów
+ *
  * Revision 1.198  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

@@ -26,8 +26,16 @@
 
 $userdata=$_POST[userdata];
 
-if(!$LMS->UserExists($_GET[id]))
+if($LMS->UserExists($_GET[id]) < 0 && $_GET[recover] == "")
+{
+	header('Location: ?m=userinfo&id='.$_GET[id]);
+	die;
+}
+elseif(! $LMS->UserExists($_GET[id]))
+{
 	header("Location: ?m=userlist");
+	die;
+}
 
 if(isset($userdata))
 {
@@ -102,12 +110,16 @@ $SMARTY->assign("tariffs",$LMS->GetTariffs());
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("paydays",$paydays);
+$SMARTY->assign("recover",$_GET[recover]);
 $SMARTY->display("useredit.html");
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 /*
  * $Log$
+ * Revision 1.40  2003/08/25 02:12:24  lukasz
+ * - zmieniona obs³uga usuwania userów
+ *
  * Revision 1.39  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
