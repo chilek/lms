@@ -2,194 +2,196 @@
 <chapter id="daemon">
 	<title>A.L.E.C's LMS Daemon</title>
 	<sect1 id="daemon-intro">
-	<title>Informacje podstawowe</title>
-	<para>Napisany w jêzyku C program ma u³atwiaæ zarz±dzanie us³ugami. Sam demon odpowiada
-    	za uruchamianie odpowiednich modu³ów na ¿±danie u¿ytkownika. Modu³y
-    	natomiast, s³u¿± do tworzenia plików konfiguracyjnych na podstawie 
-    	danych z bazy LMS'a oraz restartowania odpowiednich us³ug na serwerze.
+	<title>Basics</title>
+	<para>Written in C program facilitate management of services. Daemon is
+    	responsible for starting of appropriate modules on user demand only. Modules
+    	are making configuration files based on data from LMS's database and
+    	restarting selected services on a server.
     	</para>
+	<!--
 	<para>Dlaczego taka nazwa? Wiêkszo¶æ kodu demona napisa³ jeden z developerów - Aleksander 
 	'A.L.E.C' Machniak, niemniej nale¿y tak¿e podkre¶liæ udzia³ Marcina 'Lexx' Króla. Program zawiera
 	fragmenty kodu autorstwa Mateusza 'mteg' Golicza oraz korzysta z biblioteki
 	iniparser Nicolasa Devillarda. Je¶li Ty masz ochotê napisaæ jaki¶ modu³ lub poprawiæ 
 	funkcjonalno¶æ demona jak najbardziej do tego zachêcam.
 	</para>
+	-->
 		<sect2 id="daemon-requirements">
-		<title>Wymagania</title>
-			<para><emphasis>A.L.E.C's LMS Daemon</emphasis> potrzebuje:
+		<title>Requirements</title>
+			<para><emphasis>A.L.E.C's LMS Daemon</emphasis> require:
       			<itemizedlist>
 			<listitem>
-				<para>instalacji interfejsu u¿ytkownika <emphasis>LMS-UI</emphasis></para>
+				<para>LMS user interface installation</para>
 			</listitem>
 			<listitem>
-				<para><filename>libmysqlclient</filename> (tj. pe³nej instalacji MySQL'a lub odpowiedniego 
-				pakietu) lub <filename>libpq</filename> w przypadku bazy PostgreSQL</para>
+				<para><filename>libmysqlclient</filename> (full MySQL installation or respective packet) 
+				or <filename>libpq</filename> in case of PostgreSQL database</para>
       			</listitem>
 			<listitem>
-				<para><filename>libdl</filename> (to w ka¿dej dzisiejszej dystrybucji jest)</para>
+				<para><filename>libdl</filename> (that is in every present-day distribution)</para>
 			</listitem>
 			<listitem>
-				<para>kompilatora jêzyka C </para>
+				<para>C compiler</para>
 			</listitem>
 			</itemizedlist>
       			</para>
 		</sect2>
 		<sect2 id="daemon-install">
-		<title>Instalacja</title>
-			<para>Przed kompilacj± nale¿y przy pomocy skryptu <filename>./configure</filename>
-			ustaliæ opcje przedstawione na poni¿szym listingu (w nawiasach podano
-			warto¶ci domy¶lne opcji):
+		<title>Installation</title>
+			<para>Prior to compilation you must set options described on following listing
+			with help of <filename>./configure</filename> script (in brackets are shown
+			default values):
 <screen>
-  --help                pomoc
-  --enable-debug0       logowanie zapytañ SQL (wy³±czone)
-  --enable-debug1       logowanie zdarzeñ (wy³±czone)
-  --with-pgsql          gdy korzystamy z bazy PostgreSQL (wy³±czone)
-  --with-mysql          gdy korzystamy z bazy MySQL (w³±czone)
-  --prefix=DIR          katalog instalacyjny demona (/usr/local/bin)
-  --libdir=DIR          lokalizacja bibliotek bazy danych (/usr/lib)
-  --incdir=DIR          lokalizacja plików nag³ówkowych bazy danych (/usr/include)
+  --help                help
+  --enable-debug0       SQL queries logging (disabled)
+  --enable-debug1       events logging (disabled)
+  --with-pgsql          enables using of PostgreSQL database (disabled)
+  --with-mysql          enables using of MySQL database (enabled)
+  --prefix=DIR          program install directory (/usr/local/bin)
+  --libdir=DIR          location of database libraries (/usr/lib)
+  --incdir=DIR          location of database header files (/usr/include)
 </screen>
-			Zatem wymagane jest okre¶lenie bazy z jakiej bêdziemy korzystaæ (-with-mysql 
-			lub -with-pgsql) oraz po³o¿enia bibliotek dostarczanych wraz z baz± (--incdir, --libdir).
+			Then, required is to set database which you will use (-with-mysql 
+			or -with-pgsql) and location of libraries supplied with database (--incdir, --libdir).
 <screen>
 # ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include
 </screen>
-    			Nastêpnie kompilacja i instalacja (umieszczenie demona w katalogu
-			okre¶lonym zmienn± --prefix):
+    			After that you can compile and install (put daemon in directory
+			given with --prefix option):
 <screen>
 # make && make install
 </screen>
-			Na koniec skompilowane modu³y (pliki z rozszerzeniem <filename>.so</filename>),
-			znajduj±ce siê w katalogu <filename>modules/nazwa_modu³u</filename> przenie¶ 
-			do dowolnego katalogu. Ich lokalizacjê bêdziesz okre¶la³ w pliku konfiguracyjnym.
+			Finally, compiled modules (files with <filename>.so</filename> extension),
+			found in directory <filename>modules/module_name</filename> move to any 
+			directory. Their location you will set in configuration file.
 			</para>
 		</sect2>
 		<sect2 id="daemon-config">
-		<title>Konfiguracja</title>
-			<para>Przyk³adowy konfig demona i modu³ów zawarto w pliku <filename>lms.ini.sample</filename>.
-			Poni¿szy listing przedstawia podstawowe opcje dla demona (konfiguracjê modu³ów omówiono w 
-			osobnych rozdzia³ach ich dotycz±cych):
+		<title>Configuration</title>
+			<para>Example daemon configuration you can find in file <filename>lms.ini.sample</filename>.
+			Following listing describe basic options for daemon (modules configuration is described 
+			in separate chapters concerning modules):
 <screen>
 [database]
-host            = localhost     # nazwa lub ip hosta, domy¶lnie: localhost
-user            = lms           # nazwa u¿ytkownika, domy¶lnie: lms
-password        = mypasswd      # has³o do bazy, domy¶lnie: puste
-database        = lms           # nazwa bazy, domy¶lnie: lms
-port            = 0             # numer portu, domy¶lnie: 0
+host            = localhost     # host name or IP, default: localhost
+user            = lms           # user name, default: lms
+password        = mypasswd      # database password, default: empty
+database        = lms           # database name, default: lms
+port            = 0             # port number, default: 0
 
 [lmsd]
-sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma
-                                # byæ sprawdzane ¿±danie reloadu, domy¶lnie: 30
-instances       = hosts oident firewall       # lista instancji modu³ów
+sleeptime       = 30            # time interval (in seconds) how often to
+                                # check for reload order, default: 30
+instances       = hosts oident firewall       # module instances list
 </screen>
-			<note><para>Lista instancji sk³ada siê z nazw instancji oddzielonych 
-			spacj±. Instancja to nazwa sekcji w pliku konfiguracyjnym.</para></note>
+			<note><para>List of instances contains instances names detached with 
+			spaces. Instance is a name of section in configuration file.</para></note>
 			</para>
-			<para>W sekcji dotycz±cej instancji, oprócz parametrów konfiguracji
-			modu³ów, umieszcza siê opcje podstawowe, jak na poni¿szym listingu:
+			<para>In instance section, beside config modules params, you must specify
+			primary options, as on following listing:
 <screen>
-[nazwa_instancji]
-module = /¶cie¿ka/nazwa_modu³u.so
-info = "Opcjonalny opis modu³u"
+[instance_name]
+module = /path/to/module.so
+info = "Additional description of module"
 </screen>		
 			</para>
 		</sect2>
 		<sect2 id="daemon-run">
-		<title>Uruchomienie</title>
-			<para>Program mo¿esz uruchamiaæ jako demona pracuj±cego w tle (opcja '-b'). Wtedy 
-			prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie, przy u¿yciu menu 
-			'Prze³adowanie' w <emphasis>LMS-UI</emphasis>. Opcja 'sleeptime' (-s) okre¶la okres miêdzy
-			odczytami bazy. Gdy demon wykryje ¿±danie wykonania reloadu, wywo³a 
-			modu³y okre¶lone opcj± 'instances' z <filename>lms.ini</filename>.
-			Na przyk³ad:
+		<title>Starting</title>
+			<para>You can run program as a daemon working in background (option '-b'). Then
+			configuration and services reload is done on demand with use of 
+			'Reload' menu in <emphasis>LMS-UI</emphasis>. Option 'sleeptime' (-s) specify interval
+			between database reads. When daemon detects reload order, he runs
+			modules defined by 'instances' option in <filename>lms.ini</filename>.
+			For example:
 <screen>
 # almsd -b
 </screen>			
 			</para>
-			<para>Innym sposobem uruchomienia jest jednorazowy reload w wykorzystaniem
-			crona. Z tego sposobu nale¿y korzystaæ uruchamiaj±c modu³y takie jak 'payments'
-			'notify' 'traffic'. W tym wypadku musisz stworzyæ osobny plik konfiguracyjny 
-			dla ka¿dego modu³u (zawieraj±cy równie¿ opcje dla demona) i podaæ go demonowi
-			przy pomocy opcji '-c'. Przyk³adowy wpis do crontab'a wygl±da nastêpuj±co:
+			<para>Other way to run is disposable reload with usage of cron. 
+			You must to use this manner of reload for runing modules like 'payments'
+			'notify' or 'traffic'. In that case you must create separate config 
+			file for each module (including basic daemon options also) and give them to
+			daemon with use of '-c' option. Example crontab's entry:
 <screen>
   1 0 * * *    /usr/local/bin/almsd -q -c /etc/lms/payments.lms.ini
 </screen>
 			</para>
-			<para>Poni¿szy listing przedstawia dostêpne opcje linii poleceñ programu:
+			<para>Following listing describe program command line options:
 <screen>
-  -c	¶cie¿ka do pliku konfiguracyjnego (domy¶lnie: /etc/lms/lms.ini)
-  -b	uruchomienie w tle
-  -s	czas w sek. miêdzy odczytami tabeli 'reload' (domy¶lnie: 30)
-  -q 	wykonaj reload i zakoñcz
-  -h 	wy¶wietla opcje linii poleceñ
+  -c	path to config (default: /etc/lms/lms.ini)
+  -b	run in background (daemon mode)
+  -s	'reload' table reading interval in sec. (default: 30)
+  -q 	reload and quit
+  -h 	prints command line options
 </screen>
 			</para>
 		</sect2>
 	</sect1>
 	<sect1 id="daemon-modules">
-	<title>Modu³y</title>
-	<para>Sam demon potrafi tylko uruchamiaæ modu³y i to one odwalaj± ca³± robotê. 
-	Wiêkszo¶æ modu³ów jest przeznaczona do okre¶lonego zastosowania, jedynie 'hostfile' 
-	mo¿na u¿ywaæ do ró¿nych konfigów (us³ug), np. ró¿nych typów firewalli. Przyk³ady 
-	konfiguracji demona i modu³ów zawiera plik <filename>daemon/lms.ini.sample</filename>.
-	Parametry konfiguracyjne modu³ów umieszcza siê w sekcjach instancji je wywo³uj±cych.</para>
+	<title>Modules</title>
+	<para>Daemon can only run modules and they are doing all job. 
+	Most of modules are designed to specific application, only 'hostfile' 
+	can be used to many different configs (services), i.e. various firewall types. 
+	Daemon and modules configuration examples contains file <filename>daemon/lms.ini.sample</filename>.
+	Modules configuration parameters must be placed in appropriate instances sections.</para>
 		<sect2 id="daemon-moduleslist">
-		<title>Lista dostêpnych modu³ów</title>
+		<title>Modules list</title>
 			<table>
-			<title>Lista modu³ów demona almsd</title>
+			<title>List of almsd daemon modules</title>
 			<tgroup cols="2">
 			<colspec ALIGN="center" COLWIDTH="200">
 			<colspec ALIGN="center" COLWIDTH="300">
 				<thead>
 				<row>
-				<entry>Nazwa</entry>
-				<entry>Opis</entry>
+				<entry>Name</entry>
+				<entry>Description</entry>
 				</row>
 				</thead>
 				<tbody>
 				<row>
 				<entry>dhcp</entry>
-				<entry>Konfiguracja serwera dhcpd</entry>
+				<entry>Configuration of DHCP server</entry>
 				</row>
 				<row>
 				<entry>cutoff</entry>
-				<entry>Od³±czanie u¿ytkowników z zaleg³o¶ciami w op³atach</entry>
+				<entry>Disconnection of indebted users</entry>
 				</row>
 				<row>
 				<entry>dns</entry>
-				<entry>Konfiguracja serwera dns</entry>
+				<entry>Configuration of DNS server</entry>
 				</row>
 				<row>
 				<entry>ethers</entry>
-				<entry>Tworzenie pliku /etc/ethers</entry>
+				<entry>Making of /etc/ethers file</entry>
 				</row>
 				<row>
 				<entry>hostfile</entry>
-				<entry>Modu³ uniwersalny (np. tworzenie regu³ iptables)</entry>
+				<entry>Universal module (i.e. making iptables rules)</entry>
 				</row>
 				<row>
 				<entry>notify</entry>
-				<entry>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach poczt± elektroniczn±</entry>
+				<entry>E-mail notifying users about payments</entry>
 				</row>
 				<row>
 				<entry>ggnotify</entry>
-				<entry>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach przez gadu-gadu</entry>
+				<entry>Gadu-Gadu notifying users about payments</entry>
 				</row>
 				<row>
 				<entry>payments</entry>
-				<entry>Naliczanie op³at abonamentowych</entry>
+				<entry>Payments accounting</entry>
 				</row>
 				<row>
 				<entry>oident</entry>
-				<entry>Konfiguracja oident</entry>
+				<entry>Configuration of oident daemon</entry>
 				</row>
 				<row>
 				<entry>tc</entry>
-				<entry>Tworzenie regu³ HTB</entry>
+				<entry>Making HTB rules</entry>
 				</row>
 				<row>
 				<entry>traffic</entry>
-				<entry>Statystyki wykorzystania ³±cza</entry>
+				<entry>Link statistics</entry>
 				</row>
 				</tbody>
 			</tgroup>
@@ -198,7 +200,7 @@ info = "Opcjonalny opis modu³u"
 		<sect2 id="daemon-payments">
 		<title>Payments</title>
 		    <sect3 id="payments-desc">
-		    <title>Opis</title>
+		    <title>Description</title>
 		    <para>Modu³ nalicza op³aty abonamentowe u¿ytkowników oraz op³aty sta³e. Nale¿y go uruchamiaæ 
 		    codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
 		    taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn± 'comment'.
@@ -206,30 +208,30 @@ info = "Opcjonalny opis modu³u"
 		    sk³adaj±cy siê z jej nazwy oraz wierzyciela.</para>
 		    </sect3>
 		    <sect3 id="payments-config">
-		    <title>Konfiguracja</title>
+		    <title>Configuration</title>
 		    <para>Dla tego modu³u s± dostêpne nastêpuj±ce zmienne kofiguracyjne:</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>comment</para>
 			    <para>Komentarz do operacji. '%period' zostanie zamienione na daty od-do 
 			    nale¿nego abonamentu, np. '10.10.2003 - 09.11.2003', a '%tariff' na nazwê
-			    odpowiedniej taryfy. Domy¶lnie: 'Abonament wg taryfy: '%tariff' za okres: %period'.</para>
+			    odpowiedniej taryfy. default: 'Abonament wg taryfy: '%tariff' za okres: %period'.</para>
 			    <para>Przyk³ad: <prompt>comment = 'Abonament miesiêczny za okres %period' </prompt></para>
 			</listitem>
 			<listitem>
 			    <para>up_payments</para>
 			    <para>"Naliczanie z góry", czyli czy okres w komentarzu ma byæ liczony do 
-			    przodu, czy do ty³u w stosunku do daty naliczenia op³aty. Domy¶lnie: yes.</para>
+			    przodu, czy do ty³u w stosunku do daty naliczenia op³aty. default: yes.</para>
 			    <para>Przyk³ad: <prompt>up_payments = no</prompt></para>
 			</listitem>
         		<listitem>
 			    <para>deadline (opcjonalny)</para>
-			    <para>Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14</para>
+			    <para>Pozwala na ustalenie terminu p³atno¶ci w dniach. default: 14</para>
 			    <para>Przyk³ad:	<prompt>deadline = 7</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>paytype (opcjonalny)</para>
-			    <para>Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'</para>
+			    <para>Okre¶la rodzaj p³atno¶ci. default: 'PRZELEW'</para>
 			    <para>Przyk³ad:	<prompt>paytype = 'GOTÓWKA'</prompt></para>
 			</listitem>
 		    </itemizedlist>
@@ -238,7 +240,7 @@ info = "Opcjonalny opis modu³u"
 		<sect2 id="daemon-notify">
 		<title>Notify</title>
 		    <sect3 id="notify-desc">
-		    <title>Opis</title>
+		    <title>Description</title>
 		    <para>Modu³ 'notify' s³u¿y do informowania u¿ytkowników o zaleg³o¶ciach
 		    w op³atach za pomoc± poczty elektronicznej. Aktualne saldo u¿ytkownika
 		    porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze - wiadomo¶æ
@@ -260,35 +262,35 @@ info = "Opcjonalny opis modu³u"
 		    </itemizedlist></para>
 		    </sect3>
 		    <sect3 id="notify-config">
-		    <title>Konfiguracja</title>
+		    <title>Configuration</title>
 		    <para>Poni¿ej przedstawiono dostêpne opcje konfiguracyjne modu³u 'notify':</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>mailtemplate</para>
-			    <para>Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty</para>
+			    <para>Lokalizacja pliku z szablonem wiadomo¶ci. default: pusty</para>
 			    <para>Przyk³ad: <prompt>mailtemplate = modules/notify/sample/mailtemplate</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>file</para>
-			    <para>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/mail</para>
+			    <para>Lokalizacja pliku tymczasowego. default: /tmp/mail</para>
 			    <para>Przyk³ad: <prompt>file = /tmp/mail.txt</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>command</para>
 			    <para>Polecenie pow³oki wysy³aj±ce e-maila. '%address' zostanie zast±pione
-			    adresem e-mail u¿ytkownika. Domy¶lnie: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</para>
+			    adresem e-mail u¿ytkownika. default: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</para>
 			    <para>Przyk³ad: <prompt>command = 'mail %address -s "musisz zap³aciæ, bo jak nie..." &lt; /tmp/mail.txt'</prompt></para>
 			</listitem>		
 			<listitem>
 			    <para>limit</para>
 			    <para>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
-			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</para>
+			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. default: 0</para>
 			    <para>Przyk³ad: <prompt>limit = -20</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>debug_mail</para>
 			    <para>Okre¶la adres na który zostan± wys³ane wszystkie wiadomo¶ci, przydatne
-			    podczas testów. Domy¶lnie: puste.</para>
+			    podczas testów. default: puste.</para>
 			    <para>Przyk³ad: <prompt>debug_mail = localhost@moja.net</prompt></para>
 			</listitem>
 		    </itemizedlist>
@@ -297,7 +299,7 @@ info = "Opcjonalny opis modu³u"
 		<sect2 id="daemon-ggnotify">
 		<title>Ggnotify</title>
 		    <sect3 id="ggnotify-desc">
-		    <title>Opis</title>
+		    <title>Description</title>
 		    <para>Odpowiednik modu³u 'notify' s³u¿±cy do wysy³ania wiadomo¶ci gadu-gadu.
 		    Aktualne saldo u¿ytkownika porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze 
 		    - wiadomo¶æ zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego szablonu, 
@@ -308,35 +310,35 @@ info = "Opcjonalny opis modu³u"
 		    w <filename>modules/ggnotify/Makefile</filename> przed kompilacj± modu³u.</para>
 		    </sect3>
 		    <sect3 id="ggnotify-config">
-		    <title>Konfiguracja</title>
+		    <title>Configuration</title>
 		    <para>Podobnie jak w 'notify' masz do dyspozycji nastêpuj±ce zmienne:</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>ggtemplate</para>
-			    <para>Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty.</para>
+			    <para>Lokalizacja pliku z szablonem wiadomo¶ci. default: pusty.</para>
 			    <para>Przyk³ad: <prompt>ggtemplate = modules/ggnotify/sample/mailtemplate</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>uin</para>
 			    <para>Identyfikator gadu-gadu u¿ytkownika wysy³aj±cego wiadomo¶ci. 
-			    Domy¶lnie: pusty.</para>
+			    default: pusty.</para>
 			    <para>Przyk³ad: <prompt>uin = 1234567</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>password</para>
-			    <para>Has³o dla konta okre¶lonego zmienn± 'uin'. Domy¶lnie: puste.</para>
+			    <para>Has³o dla konta okre¶lonego zmienn± 'uin'. default: puste.</para>
 			    <para>Przyk³ad: <prompt>password = "moje_trudne__has³o"</prompt></para>
 			</listitem>		
 			<listitem>
 			    <para>limit</para>
 			    <para>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
-			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</para>
+			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. default: 0</para>
 			    <para>Przyk³ad: <prompt>limit = -20</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>debug_uin</para>
 			    <para>Je¶li ustawione, na to konto zostan± wys³ane wszystkie wiadomo¶ci.
-			    Domy¶lnie: puste.</para>
+			    default: puste.</para>
 			    <para>Przyk³ad: <prompt>debug_uin = 7654321</prompt></para>
 			</listitem>
 		    </itemizedlist>
@@ -345,7 +347,7 @@ info = "Opcjonalny opis modu³u"
 		<sect2 id="daemon-cutoff">
 		<title>Cutoff</title>
 		    <sect3 id="cutoff-desc">
-		    <title>Opis</title>
+		    <title>Description</title>
 		    <para>Cutoff zmienia na 'od³±czony' status komputerów u¿ytkownikom, którzy
 		    maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ nie zajmuje
 		    siê fizycznym blokowaniem dostêpu do sieci. Nale¿y pamiêtaæ aby uruchamiaæ
@@ -353,13 +355,13 @@ info = "Opcjonalny opis modu³u"
 		    na li¶cie w zmiennej 'instances'. Modu³ 'cutoff' najlepiej uruchamiaæ codziennie.</para>
 		    </sect3>
 		    <sect3 id="cutoff-config">
-		    <title>Konfiguracja</title>
+		    <title>Configuration</title>
 		    <para>Modu³ 'cutoff' posiada tylko jeden parametr:</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>limit</para>
 			    <para>Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej
-			    kwoty okre¶lonej t± zmienn±. Domy¶lnie: 0.</para>
+			    kwoty okre¶lonej t± zmienn±. default: 0.</para>
 			    <para>Przyk³ad: <prompt>limit = -20</prompt></para>
 			</listitem>
 		    </itemizedlist>
@@ -368,13 +370,13 @@ info = "Opcjonalny opis modu³u"
 		<sect2 id="daemon-dhcp">
 		<title>Dhcp</title>
 		    <sect3 id="dhcp-desc">
-		    <title>Opis</title>
+		    <title>Description</title>
 		    <para>Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
 		    restartuje us³ugê. Zmienna 'command' umo¿liwia równie¿ wykonywanie innych 
 		    czynno¶ci (programów).</para>
 		    </sect3>
 		    <sect3 id="dhcp-config">
-		    <title>Konfiguracja</title>
+		    <title>Configuration</title>
 		    <para>Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom 
 		    pliku konfiguracyjnego dhcpd, które w typowych zastosowaniach
 		    nie wymagaj± zmiany:</para>
@@ -382,64 +384,64 @@ info = "Opcjonalny opis modu³u"
 			<listitem>
 			    <para>file</para>
 			    <para>Okre¶la lokalizacjê pliku konfiguracyjnego serwera dhcp. 
-			    Domy¶lnie: /tmp/dhcpd.conf.</para>
+			    default: /tmp/dhcpd.conf.</para>
 			    <para>Przyk³ad: <prompt>file = /etc/dhcpd.conf</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>command</para>
 			    <para>Polecenie wykonywane po utworzeniu pliku konfiguracyjnego. 
-			    Domy¶lnie: pusta.</para>
+			    default: pusta.</para>
 			    <para>Przyk³ad: <prompt>command = 'killall -HUP dhcpd'</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>begin</para>
-			    <para>Nag³ówek pliku. Domy¶lnie: "shared-network LMS {".</para>
+			    <para>Nag³ówek pliku. default: "shared-network LMS {".</para>
 			    <para>Przyk³ad: <prompt>begin = "shared-network LMS {"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>end</para>
-			    <para>Stopka pliku. Domy¶lnie: "}".</para>
+			    <para>Stopka pliku. default: "}".</para>
 			    <para>Przyk³ad: <prompt>end = "\n}"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>subnet_start</para>
-			    <para>Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Domy¶lnie: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</para>
+			    <para>Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. default: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</para>
 			    <para>Przyk³ad: <prompt>subnet_start = "subnet %a netmask %m {default-lease-time 3600;"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>subnet_end</para>
-			    <para>Stopka podsieci. Domy¶lnie: "}".</para>
+			    <para>Stopka podsieci. default: "}".</para>
 			    <para>Przyk³ad: <prompt>subnet_end = '\t}'</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>subnet_gateway</para>
-			    <para>Brama podsieci. '%i' zostanie zamienione na adres ip. Domy¶lnie: 'option routers %i;'.</para>
+			    <para>Brama podsieci. '%i' zostanie zamienione na adres ip. default: 'option routers %i;'.</para>
 			    <para>Przyk³ad: <prompt>subnet_gateway = "option routers %i"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>subnet_dns</para>
-			    <para>DNS'y podsieci. '%i - adresy dns'ów. Domy¶lnie: "option domain-name-servers %i;".</para>
+			    <para>DNS'y podsieci. '%i - adresy dns'ów. default: "option domain-name-servers %i;".</para>
 			    <para>Przyk³ad: <prompt>subnet_dns = "option domain-name-servers 192.168.0.1"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>subnet_domain</para>
-			    <para>Nazwa domenowa podsieci. '%n' - nazwa. Domy¶lnie: "option domain-name %n;".</para>
+			    <para>Nazwa domenowa podsieci. '%n' - nazwa. default: "option domain-name %n;".</para>
 			    <para>Przyk³ad: <prompt>subnet_domain = "option domain-name test.%n;"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>subnet_wins</para>
-			    <para>Serwery wins. '%i' - adres ip serwera. Domy¶lnie: "option netbios-name-servers %i;".</para>
+			    <para>Serwery wins. '%i' - adres ip serwera. default: "option netbios-name-servers %i;".</para>
 			    <para>Przyk³ad: <prompt>subnet_wins = ""</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>subnet_range</para>
-			    <para>Zakres adresów podsieci. '%s' - adres pocz±tkowy, '%e' - koniec zakresu. Domy¶lnie: "range %s %e;".</para>
+			    <para>Zakres adresów podsieci. '%s' - adres pocz±tkowy, '%e' - koniec zakresu. default: "range %s %e;".</para>
 			    <para>Przyk³ad: <prompt>subnet_range = "range %s %e;"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>host</para>
 			    <para>Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' - adres ip. 
-			    Domy¶lnie: "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}".</para>
+			    default: "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}".</para>
 			    <para>Przyk³ad: <prompt>host = "host %n {hardware ethernet %m; fixed-address %i;}"</prompt></para>
 			</listitem>
 		    </itemizedlist>
@@ -448,7 +450,7 @@ info = "Opcjonalny opis modu³u"
 		<sect2 id="daemon-hostfile">
 		<title>Hostfile</title>
 		    <sect3 id="hostfile-desc">
-		    <title>Opis</title>
+		    <title>Description</title>
 		    <para>Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
 		    wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
 		    status (od³±czony/pod³±czony), dlatego mo¿liwe jest tworzenie np. regu³
@@ -456,7 +458,7 @@ info = "Opcjonalny opis modu³u"
 		    i nastêpnie wykonuje okre¶lone polecenie pow³oki.</para>
 		    </sect3>
 		    <sect3 id="hostfile-config">
-		    <title>Konfiguracja</title>
+		    <title>Configuration</title>
 		    <para>W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
 		    które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
 		    adresem, '%n' - nazw± komputera, '%domain' - domen±, '%net' - nazw± sieci. 
@@ -464,42 +466,42 @@ info = "Opcjonalny opis modu³u"
 		    <itemizedlist>
 			<listitem>
 			    <para>file</para>
-			    <para>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/hostfile</para>
+			    <para>Lokalizacja pliku tymczasowego. default: /tmp/hostfile</para>
 			    <para>Przyk³ad: <prompt>file = /etc/rc.d/rc.firewall</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>command</para>
-			    <para>Polecenie pow³oki wyk. po utworzeniu pliku 'file'. Domy¶lnie: puste</para>
+			    <para>Polecenie pow³oki wyk. po utworzeniu pliku 'file'. default: puste</para>
 			    <para>Przyk³ad: <prompt>command = '/bin/sh /etc/rc.d/rc.firewall'</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>begin</para>
-			    <para>Nag³ówek pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -F FORWARD\n"</para>
+			    <para>Nag³ówek pliku tymczasowego. default: "/usr/sbin/iptables -F FORWARD\n"</para>
 			    <para>Przyk³ad: <prompt>begin = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>end</para>
-			    <para>Stopka pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</para>
+			    <para>Stopka pliku tymczasowego. default: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</para>
 			    <para>Przyk³ad: <prompt>end = "$IPT -A FORWARD -J REJECT\n"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>grantedhost</para>
-			    <para>Tekst dla hosta pod³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</para>
+			    <para>Tekst dla hosta pod³±czonego. default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</para>
 			    <para>Przyk³ad: <prompt>grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>deniedhost</para>
-			    <para>Tekst dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
+			    <para>Tekst dla hosta od³±czonego. default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
 			    <para>Przyk³ad: <prompt>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>networks</para>
-			    <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Domy¶lnie: pusta (wszystkie sieci).</para>
+			    <para>Lista nazw sieci, które maj± byæ brane pod uwagê. default: pusta (wszystkie sieci).</para>
 			    <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>skip_dev_ips</para>
-			    <para>Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy urz±dzeñ sieciowych. Domy¶lnie: tak</para>
+			    <para>Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy urz±dzeñ sieciowych. default: tak</para>
 			    <para>Przyk³ad: <prompt>skip_dev_ips = no</prompt></para>
 			</listitem>
 		    </itemizedlist>
@@ -508,19 +510,19 @@ info = "Opcjonalny opis modu³u"
 		<sect2 id="daemon-traffic">
 		<title>Traffic</title>
 		    <sect3 id="traffic-desc">
-		    <title>Opis</title>
+		    <title>Description</title>
 		    <para>'Traffic' to odpowiednik perlowego lms-traffic, zapisuj±cy do bazy statystyki
 		    wykorzystania ³±cza z pliku utworzonego przez u¿ytkownika. Plik taki powinien mieæ 
 		    format: ip_hosta upload download . Wiêcej informacji (w tym jak utworzyæ taki plik)
 		    mo¿na znale¼æ w rozdziale dotycz±cym lms-traffic.</para>
 		    </sect3>
 		    <sect3 id="traffic-config">
-		    <title>Konfiguracja</title>
+		    <title>Configuration</title>
 		    <para>Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>file</para>
-			    <para>Lokalizacja pliku ze statystykami firewalla. Domy¶lnie: /var/log/traffic.log</para>
+			    <para>Lokalizacja pliku ze statystykami firewalla. default: /var/log/traffic.log</para>
 			    <para>Przyk³ad: <prompt>file = /tmp/log</prompt></para>
 			</listitem>
 		    </itemizedlist>
@@ -529,7 +531,7 @@ info = "Opcjonalny opis modu³u"
 		<sect2 id="daemon-tc">
 		<title>Tc (HTB)</title>
 		    <sect3 id="tc-desc">
-		    <title>Opis</title>
+		    <title>Description</title>
 		    <para>Do pliku okre¶lonego opcj± 'file' zapisywane s± dane dotycz±ce uploadu
 		    i downloadu dla komputerów okre¶lonego w taryfach, w formacie: upload, download, 
 		    numer_ip_hosta_lub_ich_lista.</para>
@@ -539,17 +541,17 @@ info = "Opcjonalny opis modu³u"
 		    uruchomienie takiego skryptu.</para>
 		    </sect3>
 		    <sect3 id="tc-config">
-		    <title>Konfiguracja</title>
+		    <title>Configuration</title>
 		    <para>Ten modu³ zawiera standardowe parametry:</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>file</para>
-			    <para>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/tc.dat.</para>
+			    <para>Lokalizacja pliku tymczasowego. default: /tmp/tc.dat.</para>
 			    <para>Przyk³ad: <prompt>file = /tmp/htb.data</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>command</para>
-			    <para>Polecenie pow³oki wykonywane po utworzeniu pliku. Domy¶lnie: "/bin/sh sample/htb.sh < /tmp/tc.dat".</para>
+			    <para>Polecenie pow³oki wykonywane po utworzeniu pliku. default: "/bin/sh sample/htb.sh < /tmp/tc.dat".</para>
 			    <para>Przyk³ad: <prompt>command = "/bin/bash modules/tc/sample/htb.sh < /tmp/tc.dat"</prompt></para>
 			</listitem>
 		    </itemizedlist>
@@ -558,91 +560,91 @@ info = "Opcjonalny opis modu³u"
 		<sect2 id="daemon-dns">
 		<title>Dns</title>
 		    <sect3 id="dns-desc">
-		    <title>Opis</title>
+		    <title>Description</title>
 		    <para>Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej skomplikowanych.
 		    Tworzy dla ka¿dej sieci pliki stref oraz odpowiednie wpisy w named.conf w oparciu
 		    o szablony tych plików. Przyk³adowe szablony znajduj± siê w katalogu
 		    <filename>/modules/dns/sample</filename>.</para>
 		    </sect3>
 		    <sect3 id="dns-config">
-		    <title>Konfiguracja</title>
+		    <title>Configuration</title>
 		    <para></para>
 		    <itemizedlist>
 			<listitem>
 			    <para>forward-patterns</para>
-			    <para>Katalog z szablonami stref. Domy¶lnie: forward.</para>
+			    <para>Katalog z szablonami stref. default: forward.</para>
 			    <para>Przyk³ad: <prompt>forward-patterns = /dns/patterns/forward</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>reverse-patterns</para>
-			    <para>Katalog z szablonami stref odwrotnych. Domy¶lnie: reverse.</para>
+			    <para>Katalog z szablonami stref odwrotnych. default: reverse.</para>
 			    <para>Przyk³ad: <prompt>reverse-patterns = /dns/patterns/revers</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>generic-forward</para>
 			    <para>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
 			    'forward-patterns' nie bêdzie pliku odpowiadaj±cego nazwie domenowej sieci.
-			    Domy¶lnie: modules/dns/sample/forward/generic.</para>
+			    default: modules/dns/sample/forward/generic.</para>
 			    <para>Przyk³ad: <prompt>generic-forward = /dns/patterns/forward</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>generic-reverse</para>
 			    <para>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
 			    'reverse-patterns' nie bêdzie pliku odpowiadaj±cego numerowi IP sieci.
-			    Domy¶lnie: modules/dns/sample/reverse/generic.</para>
+			    default: modules/dns/sample/reverse/generic.</para>
 			    <para>Przyk³ad: <prompt>generic-reverse = /dns/patterns/forward</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>forward-zones</para>
 			    <para>Katalog na pliki wynikowe stref.
-			    Domy¶lnie: modules/dns/sample/out/forward.</para>
+			    default: modules/dns/sample/out/forward.</para>
 			    <para>Przyk³ad: <prompt>forward-zones = /dns/forward</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>reverse-zones</para>
 			    <para>Katalog na pliki wynikowe stref odwrotnych.
-			    Domy¶lnie: modules/dns/sample/out/reverse.</para>
+			    default: modules/dns/sample/out/reverse.</para>
 			    <para>Przyk³ad: <prompt>reverse-zones = /dns/reverse</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>host-reverse</para>
 			    <para>Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
-			    Domy¶lnie: "%n IN A %i\n".</para>
+			    default: "%n IN A %i\n".</para>
 			    <para>Przyk³ad: <prompt>host-reverse = "\t %n IN A %i\n"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>host-forward</para>
 			    <para>Linia w pliku strefy odpowiadaj±ca ka¿demu komputerowi w danej sieci.
-			    Domy¶lnie: "%c IN PTR %n.%d.\n".</para>
+			    default: "%c IN PTR %n.%d.\n".</para>
 			    <para>Przyk³ad: <prompt>host-forward = "\t %c IN PTR %n.%d.\n"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>conf-pattern</para>
 			    <para>Lokalizacja szablonu g³ównego pliku konfiguracyjnego serwera.
-			    Domy¶lnie: modules/dns/sample/named.conf.</para>
+			    default: modules/dns/sample/named.conf.</para>
 			    <para>Przyk³ad: <prompt>conf-pattern = /dns/patterns/named.conf</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>conf-output</para>
 			    <para>Lokalizacja g³ównego pliku konfiguracyjnego serwera.
-			    Domy¶lnie: /tmp/named.conf.</para>
+			    default: /tmp/named.conf.</para>
 			    <para>Przyk³ad: <prompt>conf-output = /etc/named.conf</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>conf-forward-entry</para>
 			    <para>Wpis dla ka¿dej strefy w g³ównym pliku konfiguracyjnym.
-			    Domy¶lnie: 'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n}; \n'.</para>
+			    default: 'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n}; \n'.</para>
 			    <para>Przyk³ad: <prompt>conf-forward-entry = 'zone "%n" { \n\ttype master; \n\tfile "forward/%n"; \n\tnotify yes; \n}; \n'</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>conf-reverse-entry</para>
 			    <para>Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
-			    Domy¶lnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</para>
+			    default: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</para>
 			    <para>Przyk³ad: <prompt>conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>command</para>
-			    <para>Polecenie wykonywane po utworzeniu plików konf. Domy¶lnie: puste.</para>
+			    <para>Polecenie wykonywane po utworzeniu plików konf. default: puste.</para>
 			    <para>Przyk³ad: <prompt>command = ""</prompt></para>
 			</listitem>
 		    </itemizedlist>
@@ -651,29 +653,29 @@ info = "Opcjonalny opis modu³u"
 		<sect2 id="daemon-ethers">
 		<title>Ethers</title>
 		    <sect3 id="ethers-desc">
-		    <title>Opis</title>
+		    <title>Description</title>
 		    <para>Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Ustawiaj±c opcjê
 		    'dummy_macs' mo¿na sprawiæ, aby komputerom od³±czonym zosta³ przypisany 
 		    mac-adres 00:00:00:00:00:00.</para>
 		    </sect3>
 		    <sect3 id="ethers-config">
-		    <title>Konfiguracja</title>
+		    <title>Configuration</title>
 		    <para>Tutaj s± tylko standardowe opcje:</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>file</para>
-			    <para>Lokalizacja pliku wynikowego. Domy¶lnie: /tmp/ethers.</para>
+			    <para>Lokalizacja pliku wynikowego. default: /tmp/ethers.</para>
 			    <para>Przyk³ad: <prompt>file = /etc/ethers</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>command</para>
-			    <para>Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Domy¶lnie: puste.</para>
+			    <para>Polecenie pow³oki wykonywane po wygenerowaniu konfiga. default: puste.</para>
 			    <para>Przyk³ad: <prompt>command = "arp -f /etc/ethers"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>dummy_macs</para>
 			    <para>Je¶li ustawimy na 'yes', to komputerom od³±czonym zostanie
-			    przypisany mac-adres '00:00:00:00:00:00'. Domy¶lnie: "no".</para>
+			    przypisany mac-adres '00:00:00:00:00:00'. default: "no".</para>
 			    <para>Przyk³ad: <prompt>dummy_macs = yes</prompt></para>
 			</listitem>
 		    </itemizedlist>
@@ -682,42 +684,42 @@ info = "Opcjonalny opis modu³u"
 		<sect2 id="daemon-oident">
 		<title>Oident</title>
 		    <sect3 id="oident-desc">
-		    <title>Opis</title>
+		    <title>Description</title>
 		    <para>Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
 		    'hostfile', ale tutaj masz ju¿ gotowe ustawienia domy¶lne.</para>
 		    </sect3>
 		    <sect3 id="oident-config">
-		    <title>Konfiguracja</title>
+		    <title>Configuration</title>
 		    <para>A oto parametry modu³u 'oident'</para>
 		    <itemizedlist>
 			<listitem>
 			    <para>begin</para>
-			    <para>Tekst wstawiany na pocz±tku pliku. Domy¶lnie: puste.</para>
+			    <para>Tekst wstawiany na pocz±tku pliku. default: puste.</para>
 			    <para>Przyk³ad: <prompt>begin = "#Generowany automatycznie\n"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>end</para>
-			    <para>Tekst wstawiany na koñcu pliku. Domy¶lnie: puste.</para>
+			    <para>Tekst wstawiany na koñcu pliku. default: puste.</para>
 			    <para>Przyk³ad: <prompt>end = ""</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>host</para>
-			    <para>Linia tekstu dla ka¿dego komputera. Domy¶lnie: "%i\t%n\tUNIX".</para>
+			    <para>Linia tekstu dla ka¿dego komputera. default: "%i\t%n\tUNIX".</para>
 			    <para>Przyk³ad: <prompt>host = "%i %n WINDOWS"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>file</para>
-			    <para>Tekst wstawiany na pocz±tku pliku. Domy¶lnie: /tmp/oidentd.conf.</para>
+			    <para>Tekst wstawiany na pocz±tku pliku. default: /tmp/oidentd.conf.</para>
 			    <para>Przyk³ad: <prompt>file = /etc/identd.conf</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>networks</para>
-			    <para>Lista nazw sieci do uwzglêdnienia. Domy¶lnie: pusta (wszystkie sieci).</para>
+			    <para>Lista nazw sieci do uwzglêdnienia. default: pusta (wszystkie sieci).</para>
 			    <para>Przyk³ad: <prompt>networks = 'lan1 lan2'</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>command</para>
-			    <para>Polecenie do wykonania po utworzeniu pliku. Domy¶lnie: puste.</para>
+			    <para>Polecenie do wykonania po utworzeniu pliku. default: puste.</para>
 			    <para>Przyk³ad: <prompt>command = "killall -HUP midentd"</prompt></para>
 			</listitem>
 		    </itemizedlist>
