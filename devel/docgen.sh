@@ -6,7 +6,7 @@
 # z openjade oraz elinks (tylko dla formatu txt)
 #
 
-cd doc/sgml
+cd ../doc/sgml
 
 case "$1" in
 
