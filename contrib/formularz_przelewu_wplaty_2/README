@@ -12,7 +12,6 @@ le¿y w samples.
 
 1. Instalacja.
 
-Katalog ezpdf kopiujemy do katalogu lib lmsa.
 Plik druki_przelewu.php kopiujemy do katalogu modules lmsa.
 
 Nastêpnie edytujemy lms.ini i ustawiamy:
