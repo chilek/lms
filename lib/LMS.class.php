@@ -181,10 +181,8 @@ class LMS {
 				$networks[size][total] = $networks[size][total] + $networks[size][$key];
 				if(sizeof($nodes[ipaddr]))
 					foreach($nodes[ipaddr] as $ip)
-						if(isipin($value,$networks[address],$networks[mask]))
-						{
+						if(isipin($ip,$networks[address][$key],$networks[mask][$key]))
 							$networks[assigned][$key] ++;
-						}
 				$networks[assigned][total] = $networks[assigned][total] + $networks[assigned][$key];
 			}
 		}
