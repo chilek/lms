@@ -1,3 +1,8 @@
+# dla libgadu i ekg --------------
+LDFLAGS += -L/usr/lib
+CFLAGS += -I/usr/src/ekg
+LIBS = += /usr/lib/libgadu.so
+# --------------------------------
 
 SOURCES = ggnotify.c
 OBJECTS = ${SOURCES:.c=.o}
