@@ -37,26 +37,26 @@
 			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD CLASS="FBT" WIDTH="1%" NOWRAP>
-			<B>Grupa odbiorców:</B>
+			<B>{t}Recipients:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHTU" WIDTH="98%">
-			U¿ytkownicy:
-			<SELECT NAME="mailing[group]" {tip trigger="group" text="Wybierz grupê adresatów"}>
-				<option value="3"{if $mailing.group == "3"} SELECTED{/if}>pod³±czeni</option>
-				<option value="2"{if $mailing.group == "2"} SELECTED{/if}>oczekuj±cy</option>
-				<option value="1"{if $mailing.group == "1"} SELECTED{/if}>zainteresowani</option>
-				<option value="0"{if !$mailing.group} SELECTED{/if}>wszyscy</option>
+			{t}Customers:{/t}
+			<SELECT NAME="mailing[group]" {tip trigger="group" text="Select recipients group"}>
+				<option value="3"{if $mailing.group == "3"} SELECTED{/if}>{t}connected{/t}</option>
+				<option value="2"{if $mailing.group == "2"} SELECTED{/if}>{t}waiting{/t}</option>
+				<option value="1"{if $mailing.group == "1"} SELECTED{/if}>{t}interested{/t}</option>
+				<option value="0"{if !$mailing.group} SELECTED{/if}>{t}all customers{/t}</option>
 			</SELECT>&nbsp;
-			Sieæ:
-			<SELECT NAME="mailing[network]" {tip trigger="network" text="Wybierz sieæ"}>
-				<option value="0">- wszystkie -</option>
+			{t}Network:{/t}
+			<SELECT NAME="mailing[network]" {tip trigger="network" text="Select IP network"}>
+				<option value="0">{t}- all -{/t}</option>
 				{section name="networks" loop=$networks}
 				<option value="{$networks[networks].id}"{if $mailing.network == $networks[networks].id} SELECTED{/if}>{$networks[networks].name}</option>
 				{/section}
 			</SELECT>&nbsp;
-			Grupa:
-			<SELECT NAME="mailing[usergroup]" {tip trigger="usergroup" text="Wybierz grupê u¿ytkowników"}>
-				<option value="0">- wszystkie -</option>
+			{t}Group:{/t}
+			<SELECT NAME="mailing[usergroup]" {tip trigger="usergroup" text="Select customers group"}>
+				<option value="0">{t}- all -{/t}</option>
 				{section name="usergroups" loop=$usergroups}
 				<option value="{$usergroups[usergroups].id}"{if $mailing.usergroup == $usergroups[usergroups].id} SELECTED{/if}>{$usergroups[usergroups].name}</option>
 				{/section}
@@ -68,10 +68,10 @@
 			<IMG SRC="img/email.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>E-mail nadawcy:</B>
+			<B>{t}Sender Email:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<INPUT type="text" NAME="mailing[sender]" SIZE="40" value="{if $mailing.sender}{$mailing.sender}{elseif $admininfo.email}{$admininfo.email}{/if}" {tip trigger="sender" text="Podaj adres e-mail nadawcy listu"}>
+			<INPUT type="text" NAME="mailing[sender]" SIZE="40" value="{if $mailing.sender}{$mailing.sender}{elseif $admininfo.email}{$admininfo.email}{/if}" {tip trigger="sender" text="Enter sender's email address"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -79,10 +79,10 @@
 			<IMG SRC="img/admins.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD WIDTH="1%">
-			<B>Nadawca:</B>
+			<B>{t}Sender:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<INPUT type="text" NAME="mailing[from]" SIZE="40"  VALUE="{if $mailing.from}{$mailing.from}{elseif $admininfo.name}{$admininfo.name}{/if}" {tip trigger="from" text="Wpisz nadawcê listu"}>
+			<INPUT type="text" NAME="mailing[from]" SIZE="40"  VALUE="{if $mailing.from}{$mailing.from}{elseif $admininfo.name}{$admininfo.name}{/if}" {tip trigger="from" text="Enter sender name"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -90,10 +90,10 @@
 			<IMG SRC="img/mail.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD WIDTH="1%">
-			<B>Temat:</B>
+			<B>{t}Subject:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<INPUT type="text" NAME="mailing[subject]" SIZE="80" VALUE="{$mailing.subject}" {tip trigger="subject" text="Podaj temat listu"}>
+			<INPUT type="text" NAME="mailing[subject]" SIZE="80" VALUE="{$mailing.subject}" {tip trigger="subject" text="Enter message subject"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -101,15 +101,15 @@
 			<IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Tre¶æ wiadomo¶ci:</B>
+			<B>{t}Message body:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<TEXTAREA NAME="mailing[body]" COLS="80" ROWS="20" {tip text="U¿ywaj klawisza Enter po to tylko by zamkn±æ akapit. LMS sam sformatuje wiadomo¶æ i po³amie linijki." trigger="body"}>{$mailing.body}</TEXTAREA><BR>
+			<TEXTAREA NAME="mailing[body]" COLS="80" ROWS="20" {tip text="Use Enter key only for indentation close. LMS will format message and break lines" trigger="body"}>{$mailing.body}</TEXTAREA><BR>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			 <A HREF="javascript:Send();">Wy¶lij wiadomo¶æ <IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			 <A HREF="javascript:Send();" accesskey="s">{t}Send message{/t} <IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
 		</TD>
 	</TR>
 </TABLE>
