@@ -1,0 +1,64 @@
+{include file="header.html"}
+{include file="userheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<DIV ALIGN="CENTER"><CENTER><FORM method="POST" action="?m=accounts&op=new" name="addaccount">
+<TABLE width="1%" cellpadding="3" border="0">
+	<TR class="dark">
+		<TD class="fall" nowrap colspan="2" nowrap>
+			<NOBR><img src="img/user.gif" border="0" align="absmiddle" ALT=""> <B>Dodaj nowe konto:</B></NOBR>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fleft" align="right" nowrap>
+			<NOBR><B>Login:</B></NOBR>
+		</TD>
+		<TD class="fright" nowrap>
+			<input name="login">
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fleft" align="right" nowrap>
+			<NOBR><B>W³a¶ciciel:</B></NOBR>
+		</TD>
+		<TD class="fright" nowrap>
+			<SELECT SIZE="1" NAME="ownerid">
+			    {section name=users loop=$users}
+			    <OPTION VALUE="{$users[users].id}"{if $nodedata.ownerid eq $users[users].id} SELECTED{/if}>{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+			    {/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fleft" align="right" nowrap>
+			<NOBR><B>Has³o:</B></NOBR>
+		</TD>
+		<TD class="fright" nowrap>
+			<input type="password" name="passwd[passwd]">
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fleft" align="right" nowrap>
+			<NOBR><B>Powtórz has³o:</B></NOBR>
+		</TD>
+		<TD class="fright" nowrap>
+			<input type="password" name="passwd[confirm]">
+		</TD>
+		
+	</TR>
+	<TR class="light">
+		<TD colspan="2" align="center" class="flr">
+			{if $layout.error}
+				<font color="red"><B>B³±d:</B> {$layout.error}</font><br>
+			{/if}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="2">
+			<A href="javascript:document.addaccount.submit();">Dodaj konto <img src="img/user.gif" border="0" align="absmiddle" ALT=""></A>
+		</TD>
+	</TR>
+		
+</TABLE>
+</CENTER></DIV>
+{include file="footer.html"}
