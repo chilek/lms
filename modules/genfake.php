@@ -1597,7 +1597,8 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 			'producer' => $producer[$prod],
 			'model' => "10/100 Mbps Switch",
 			'serialnumber' => ($i*1000000+$i*200000)."-".($i*11111)."-".($i*33),
-			'ports' => "16"));
+			'ports' => "16",
+			'info' => ""));
 		$ports = mt_rand(4,14);
 		for($j = 0; $j < $ports; $j++)
 		{
@@ -1611,6 +1612,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$ip['name'] = "SWITCH_".$i;
 		$ip['access'] = 1;
 		$ip['warning'] = 0;
+		$ip['info'] = '';
 		$LMS->NetDevLinkNode($LMS->NodeAdd($ip),$i);		
 		$startip++;
 		if($i>1)
