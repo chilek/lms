@@ -21,7 +21,7 @@
 			{$ticket.createtime|date_format:"%Y/%m/%d, %H:%M:%S"}
 		</TD>
 		<TD>
-			<FONT CLASS="h3"><B>{$ticket.subject|escape}</B></FONT><BR>
+			<FONT CLASS="h3"><B>{$ticket.subject|escape|truncate:"70":"..."}</B></FONT><BR>
 			{$ticket.requestor|escape} &lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;<BR>
 		</TD>
 	</TR>

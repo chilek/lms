@@ -4,10 +4,10 @@
 <H1><B>{$layout.pagetitle}</B></H1>
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR CLASS="dark">
-		<TD CLASS="fleftu" WIDTH="1%" NOWRAP>
+		<TD CLASS="fleftu" WIDTH="95%">
 			<B>Kolejka:</B>
 		</TD>
-		<TD CLASS="fbt" WIDTH="99%">
+		<TD CLASS="fbt" WIDTH="1%">
 			<B>E-mail:</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%">
@@ -16,6 +16,9 @@
 		<TD CLASS="fbt" WIDTH="1%">
 			Otwartych:
 		</TD>
+		<TD CLASS="fbt" WIDTH="1%" ALIGN="CENTER">
+			Ostatni:
+		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;
 		</TD>
@@ -23,17 +26,20 @@
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{foreach from=$queues item=queue}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-		<TD CLASS="fleft">
+		<TD CLASS="fleft" onClick="return self.location.href='?m=rtviewqueue&id={$queue.id}';">
 			<FONT CLASS="h2"><B>{$queue.name}</B></FONT>
 		</TD>
 		<TD>
 			<A HREF="mailto:{$queue.email}">{$queue.email}</A>
 		</TD>
-		<TD ALIGN="CENTER">
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtviewqueue&id={$queue.id}';">
 			{$queue.stats.new|default:0}
 		</TD>
-		<TD ALIGN="CENTER">
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtviewqueue&id={$queue.id}';">
 			{$queue.stats.open|default:0}
+		</TD>
+		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtviewqueue&id={$queue.id}';" NOWRAP>
+			{if $queue.stats.lastticket}{$queue.stats.lastticket|date_format:"%Y/%m/%d, %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD CLASS="fright" NOWRAP>
 			<A HREF="?m=rtdeletequeue&id={$queue.id}"><IMG SRC="img/delete.gif" ALIGN="absmiddle" BORDER="0"></A>

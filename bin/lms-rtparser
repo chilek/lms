@@ -159,6 +159,11 @@ $mh_replyto =~ s/\'/\\\'/g;
 $mh_references =~ s/\\/\\\\/g;
 $mh_references =~ s/\'/\\\'/g;
 
+if($mh_subject eq '')
+{
+	$mh_subject = '(brak tematu)';
+}
+
 #print "From: $mh_from\n";
 #print "Subject: $mh_subject\n";
 #print "Message-ID: $mh_msgid\n";
