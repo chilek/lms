@@ -405,6 +405,7 @@ sub instance($)
 		
 		while (my $row = $dbq->fetchrow_hashref())
 		{
+			$row->{'ipaddr'} = u32todotquad($row->{'ipaddr'}); 
 			$maclist{$row->{'ipaddr'}} = $row->{'mac'};
 			$accesslist{$row->{'ipaddr'}} = $row->{'access'};
 			$idlist{$row->{'ipaddr'}} = $row->{'id'};

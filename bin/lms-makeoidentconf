@@ -41,6 +41,12 @@ my %options = (
 Getopt::Long::config("no_ignore_case");
 GetOptions(%options);
 
+sub u32todotquad($)
+{
+	my $p = shift @_;
+	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
+}
+
 if($help)
 {
 	print STDERR <<EOF;
@@ -124,6 +130,7 @@ my $dbq = $dbase->prepare("SELECT id, name, ipaddr, ownerid FROM nodes");
 $dbq->execute();
 
 while (my $row = $dbq->fetchrow_hashref()) {
+	$row->{'ipaddr'} = u32todotquad($row->{'ipaddr'});
 	print OIDENTDCONF "$row->{'ipaddr'}\t";
 	my $ident = $itempl;
 	$ident =~ s/\%N/$row->{'name'}/;

@@ -31,8 +31,13 @@ if(!$LMS->NetworkExists($_GET[id]))
 }
 
 
+if (isset($_SESSION[ntlp][$_GET[id]]) && !isset($_GET[page]))
+	$_GET[page] = $_SESSION[ntlp][$_GET[id]];
+	
+$_SESSION[ntlp][$_GET[id]] = $_GET[page];
+
 $networkdata = $_POST[networkdata];
-$network = $LMS->GetNetworkRecord($_GET[id]);
+$network = $LMS->GetNetworkRecord($_GET[id],$_GET[page],1024);
 
 
 if(isset($networkdata))
@@ -162,6 +167,9 @@ $SMARTY->assign("error",$error);
 $SMARTY->display("netinfo.html");
 /*
  * $Log$
+ * Revision 1.22  2003/08/27 19:25:42  lukasz
+ * - changed format of ipaddr storage in database
+ *
  * Revision 1.21  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

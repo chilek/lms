@@ -25,16 +25,25 @@
  */
 
 $layout[pagetitle]="Sieci IP";
+
 $netlist = $LMS->GetNetworkList();
-$prefixlist = $LMS->GetPrefixList();
-$netadd[prefix] = 32;
+
+$listdata[total] = sizeof($netlist);
+$listdata[size] = $netlist[size];
+$listdata[assigned] = $netlist[assigned];
+
+unset($netlist[assigned], $netlist[size]);
+
+$SMARTY->assign("listdata",$listdata);
 $SMARTY->assign("netadd",$netadd);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("netlist",$netlist);
-$SMARTY->assign("prefixlist",$prefixlist);
 $SMARTY->display("netlist.html");
 /*
  * $Log$
+ * Revision 1.19  2003/08/27 19:25:56  lukasz
+ * - changed format of ipaddr storage in database
+ *
  * Revision 1.18  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

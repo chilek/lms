@@ -63,6 +63,13 @@ sub dotquad2u32($)
 	return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
 }
 
+sub u32todotquad($)
+{
+	my $p = shift @_;
+	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
+}
+
+
 sub isprivate($)
 {
 	my ($ip) = @_;
@@ -228,6 +235,7 @@ foreach my $key (@networks)
 		$sdbq->execute();
 		while(my $srow = $sdbq->fetchrow_hashref())
 		{
+			$srow->{'ipaddr'} = u32todotquad($srow->{'ipaddr'});
 			if(matchip($srow->{'ipaddr'},$row->{'address'},$row->{'mask'}))
 			{
 				if(isprivate($srow->{'ipaddr'}))

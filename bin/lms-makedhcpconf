@@ -63,6 +63,13 @@ sub dotquad2u32($)
 	return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
 }
 
+sub u32todotquad($)
+{
+	my $p = shift @_;
+	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
+}
+
+
 my $_version = '1.1-cvs';
 
 my %options = (
@@ -220,6 +227,7 @@ foreach my $key (@networks)
 		$dbq2->execute();
 		while (my $row2 = $dbq2->fetchrow_hashref())
 		{
+			$row2->{'ipaddr'} = u32todotquad($row2->{'ipaddr'});
 			if(matchip($row2->{'ipaddr'},$row->{'address'},$row->{'mask'}))
 			{
 				my $ipaddr = $row2->{'ipaddr'};
