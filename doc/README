@@ -1,5 +1,5 @@
 
-LMS - LAN Management System 1.2
+LMS - LAN Management System 1.3-cvs
 
    [logo-small.png]
 
@@ -276,9 +276,9 @@ Rozdzia³ 2. Instalacja i konfiguracja
 2.2.2. Interpreter PHP
 
    Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a
-   te¿ poprawnie na 4.1.x (ale poniewa¿ devepolerzy pracuj± na 4.2.3, nie
+   te¿ poprawnie na 4.1.x (ale poniewa¿ developerzy pracuj± na 4.2.3, nie
    mo¿na zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿na
-   sci±gn±æ ze strony www.php.net.
+   ¶ci±gn±æ ze strony www.php.net.
      _________________________________________________________________
 
 2.2.3. Serwer baz danych
@@ -298,7 +298,7 @@ Rozdzia³ 2. Instalacja i konfiguracja
 2.2.5. Perl
 
    O ile dla LMS-UI wystarczy to co powy¿ej, to ¿eby mieæ dzia³aj±cy
-   LMS-MGC i resztê skryptów potrzebujemy tak¿e perla i modu³y do niego
+   LMS-MGC i resztê skryptów potrzebujemy tak¿e Perla i modu³y do niego
    czyli:
      * perl w³a¶ciwy i jego podstawowe modu³y (POSIX, GetOpt::Long);
      * Net::SMTP;
@@ -470,7 +470,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
    bazie danych nie ma ¿adnego konta administratora, jedyn± rzecz± jak±
    zobaczysz bêdzie formularz dodania administratora. Je¿eli podasz
    prawid³owe dane administratora, LMS przeniesie Ciê na stronê logowania
-   gdzie od razu bêdzisz móg³ u¿yæ nowo utworzonego konta.
+   gdzie od razu bêdziesz móg³ u¿yæ nowo utworzonego konta.
      _________________________________________________________________
 
 2.5. Konfiguracja podstawowa
@@ -490,8 +490,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
 
      * type
        Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale
-       jak narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie:
-       mysql
+       jak na razie nie widaæ wiêkszych problemów z 'postgres'.
+       Domy¶lnie: mysql
        Przyk³ad: type = mysql
      * host
        Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost,
@@ -562,7 +562,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
        Przyk³ad: allow_from = 192.168.0.0/16, 213.25.209.224/27,
        213.241.77.29
      * timeout
-       Timeout sesji www. Po tym czasie (w sekudnach) u¿ytkownik zostanie
+       Timeout sesji www. Po tym czasie (w sekundach) u¿ytkownik zostanie
        wylogowany je¿eli nie podejmie ¿adnej akcji. Domy¶lnie 600 sekund.
        Przyk³ad: timeout = 900
 
@@ -597,10 +597,10 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
      * reload_execcmd
        Komenda do wykonania podczas reloadu je¿eli reload_type jest
        ustawione na 'exec'. Domy¶lnie /bin/true. String ten puszczany do
-       komendy system() wiêc pronuje rozwagê i pomy¶lenie co siê robi i
+       komendy system() wiêc proponujê rozwagê i pomy¶lenie co siê robi i
        jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale
-       z paru zglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników
-       i wykonuje komendy pojedyñczo.
+       z paru wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem
+       ¶redników i wykonuje komendy pojedynczo.
        Przyk³ad: reload_execcmd = "sudo /usr/bin/reload_lms.sh"
      * reload_sqlquery
        Zapytanie SQL wykonywane podczas reloadu, je¶li reload_type = sql.
@@ -612,7 +612,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
        Przyk³ad: reload_sqlquery = "INSERT INTO reload VALUES
        ('1','%TIME%')"
      * force_ssl
-       Wymuszanie SSL'a. Ustawinie tej zmiennej na 1 spowoduje ¿e LMS
+       Wymuszanie SSL'a. Ustawienie tej zmiennej na 1 spowoduje ¿e LMS
        bêdzie wymusza³ po³±czenie SSL powoduj±c redirect do
        'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej
        próbie dostêpu bez SSL. Domy¶lnie wy³±czone.
@@ -627,8 +627,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
        warto¶ci przekazywanych z PHP do Smartyego. Domy¶lnie wy³±czone.
        Przyk³ad: smarty_debug = 1
      * debug_email
-       Adres e-mail do debugowania - pod ten email bêd± sz³y maile
-       wysy³ane z sekcji 'mailing' LMS'a, zamiast do w³a¶ciwych
+       Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci
+       wysy³ane z sekcji 'Mailing' LMS'a, zamiast do w³a¶ciwych
        u¿ytkowników.
        Przyk³ad: debug_email = root@localhost
      * default_zip, default_city, default_address
@@ -667,7 +667,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
    Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania. Modu³y
    do których administrator ma zawsze dostêp to: welcome, copyrights,
    logout, chpasswd (przy czym chpasswd umo¿liwia tylko zmianê w³asnego
-   has³a), dostep do reszty jest zdefiniowany regu³ami.
+   has³a), dostêp do reszty jest zdefiniowany regu³ami.
    Notatka
 
    Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS
@@ -696,20 +696,20 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
 
 2.7. Upgrade
 
-   Uaktualnienie LMS'a z wersji 1.0.X do bie¿±cej przebiega w dwóch
-   etapach. Najpierw skopiuj pliki nowej wersji do katalogu, gdzie
-   trzyma³e¶ star± wersjê lub w inne miejsce, nastêpnie trzeba dokonaæ
-   zmian w bazie.
+   Uaktualnienie LMS'a przebiega w dwóch etapach. Najpierw utwórz katalog
+   z plikami nowej wersji (nie zaleca siê nadpisywania starych plików
+   nowymi), nastêpnie trzeba dokonaæ zmian w bazie.
 
-   Dla u³atwienia migracji danych przygotowano pliki UPGRADE.mysql i
-   UPGRADE.pgsql, które umieszczono w katalogu z dokumentacj±. W nich
-   znajdziesz krótki opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od
-   stosowanej bazy danych.
+   Dla u³atwienia migracji danych w katalogu /doc przygotowano pliki
+   UPGRADE-1.0-1.3.mysql i UPGRADE-1.0-1.3.pgsql dla przej¶cia od wersji
+   1.0 do wersji 1.3 oraz UPGRADE-1.2-1.3.mysql i UPGRADE-1.2-1.3.pgsql
+   przy migracji od wersji 1.2 do bie¿±cej. W nich znajdziesz krótki opis
+   jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
 
    Notatka
 
    W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana, mo¿na
-   skasowaæ odpowiedni katalog
+   skasowaæ odpowiedni katalog z katalogu /lib
      _________________________________________________________________
 
 Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
@@ -838,7 +838,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
 
    Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y,
    bramê, zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i
-   dostepnych adresów. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma
+   dostêpnych adresów. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma
    sieciami lub dzielisz jedn± sieæ na podsieci, albo korzystasz z
    ró¿nych klas adresowych tutaj jest to mo¿liwe.
 
@@ -882,7 +882,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    skrypt lms-payments lub demona almsd, które potrafi± równocze¶nie
    wystawiaæ faktury.
      * Lista faktur - lista wystawionych faktur z mo¿liwo¶ci± wydruku
-       wybranych.
+       wybranych faktur oraz rejestru sprzeda¿y za dany okres.
      * Nowa faktura - Rêczne wystawianie faktur dla wybranego
        u¿ytkownika.
      _________________________________________________________________
@@ -1040,7 +1040,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
 
    Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez
    ikonkê drukarki na wykazie bilansu finansowego (ogólnego b±d¼
-   pojedyñczego u¿ytkownika), albo poprzez 'Lista faktur' z menu 'Taryfy
+   pojedynczego u¿ytkownika), albo poprzez 'Lista faktur' z menu 'Taryfy
    i finanse'. W przypadku listy faktur, mo¿liwe jest tak¿e filtrowanie
    faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y i kopie,
    które s± oddzielone znacznikami podzia³u strony poprzez CSS. Tak wiêc
@@ -1100,7 +1100,7 @@ Rozdzia³ 4. Skrypty
    Tabela 4-1. Lista skryptów wykonywalnych
    Nazwa Opis
    lms-notify Korespondencja seryjna do u¿ytkowników sieci
-   lms-notify-sms Powiadamianie o zalego¶ciach sms'em
+   lms-notify-sms Powiadamianie o zaleg³o¶ciach sms'em
    lms-cutoff Od³±czanie u¿ytkowników zad³u¿onych
    lms-etherdesc Generowanie pliku dla iptraf zawieraj±cego pary MAC
    adres - nazwa hosta
@@ -1159,7 +1159,7 @@ Uprzejmie informujemy i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za
 internet w wysoko¶ci %B z³.
 
 Je¿eli porozumieli siê ju¿ Pañstwo z administratorami w kwestii op³aty za
-bierz±cy miesi±c czyli %date-m %date-y roku, prosimy o
+bie¿±cy miesi±c czyli %date-m %date-y roku, prosimy o
 zignorowanie tej wiadomo¶ci.
 
 W wypadku gdy uwa¿aj± Pañstwo i¿ zaleg³o¶æ ta jest nieporozumieniem prosimy o
@@ -1174,11 +1174,11 @@ Dzia³ Rozliczeñ ASK NaszaSiec
 
 Gerwazy Regu³a
 telefon: 0-509031337
-email: gerwazy@staff.naszasiec.pl
+e-mail: gerwazy@staff.naszasiec.pl
 
 Gwidon Mniejwa¿ny
 telefon: 0-606666666
-email: gwidonm@naszasiec.pl
+e-mail: gwidonm@naszasiec.pl
 
 ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
 system bilingowy na Pañstwa koncie:
@@ -1198,18 +1198,19 @@ http://www.naszasiec.pl/
    [notify]. Mo¿esz tam ustawiæ nastêpuj±ce parametry:
      * limit (opcjonalny)
        Pozwala na ustalenie limitu bilansu, poni¿ej którego do
-       u¿ytkownika zostanie wys³any email z upomnieniem. Domy¶lnie limit
+       u¿ytkownika zostanie wys³any e-mail z upomnieniem. Domy¶lnie limit
        = 0
        Przyk³ad: limit = -20
      * mailsubject (wymagany)
        Pozwala na ustalenie tematu e-maila wysy³anego do u¿ytkownika.
        Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y,
-       %date-m, %last_10_in_a_table). Domy¶lnie nieustawione.
+       %date-m, %last_10_in_a_table). Domy¶lnie: nie ustawione.
        Przyk³ad: mailsubject = Informacje o zaleg³o¶ciach w op³atach za
        internet
      * mailtemplate (wymagany)
        Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana
-       do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie nieustawione
+       do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie: nie
+       ustawione.
        Przyk³ad: mailtemplate = /etc/lms/notifytemplate.txt
      * mailfrom
        Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ,
@@ -1224,10 +1225,10 @@ http://www.naszasiec.pl/
        127.0.0.1
        Przyk³ad: smtp_server = smtp.mydomain.pl
      * debug_email (opcjonalny)
-       Adres email do debugowania. Gdy ustawiony, ca³a poczta zostaje
+       Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje
        wys³ana na dany email zamiast do u¿ytkowników. Przydatne do
-       debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie
-       nieustawiony.
+       debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie
+       ustawiony.
        Przyk³ad: debug_email = lexx@domain.pl
      _________________________________________________________________
 
@@ -1242,10 +1243,10 @@ http://www.naszasiec.pl/
    [notify-sms], a masz do dyspozycji nastêpuj±ce opcje:
      * limit (opcjonalny)
        Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika
-       zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0
+       zostanie wys³any sms z upomnieniem. Domy¶lnie: 0
        Przyk³ad: limit = -20
      * smstemplate (wymagany)
-       Szablon wiadomo¶ci. Domy¶lnie nieustawione.
+       Szablon wiadomo¶ci. Domy¶lnie: nie ustawione.
        Przyk³ad: smstemplate = /etc/lms/smstemplate.txt
      _________________________________________________________________
 
@@ -1260,7 +1261,7 @@ http://www.naszasiec.pl/
    [cutoff]. Mo¿emy tam ustawiæ nastêpuj±ce parametry:
      * limit (opcjonalny)
        Pozwala na ustalenie limitu bilansu poni¿ej którego do bazy danych
-       zostanie zapisany stan od³±czony. Domy¶lnie limit = 0
+       zostanie zapisany stan od³±czony. Domy¶lnie: 0
        Przyk³ad: limit = -20
      _________________________________________________________________
 
@@ -1320,7 +1321,7 @@ http://www.naszasiec.pl/
 
    Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i
    wys³anych przez ka¿dy komputer z sieci lokalnej, na podstawie
-   liczników iptables. Dane zczytuje z firewalla, tworz±c jednocze¶nie
+   liczników iptables. Dane sczytuje z firewalla, tworz±c jednocze¶nie
    odpowiednie regu³y. Zatem, nie jest konieczne rêczne tworzenie regu³
    iptables. Dane zapisywane s± do pliku o formacie wymaganym przez
    lms-traffic.
@@ -1406,12 +1407,12 @@ http://www.naszasiec.pl/
        Adres SNAT. Je¶li nie ustawiono, dla hostów z adresami publicznymi
        bêdzie u¿yte "-j MASQUERADE". Je¶li ustawiono zostanie u¿yte "-j
        SNAT --to xxx.xxx.xxx.xxx". Dotyczy lms-makeiptables. Domy¶lnie:
-       nieustawiony.
+       nie ustawiony.
        Przyk³ad: snat_address = 123.123.123.123
      * tcp_redirect_ports (udp_redirect_ports)
        Konfiguracja przekierowañ w formie port_¼ród³owy:port_docelowy dla
        przekierowañ na lokaln± maszynê dla po³±czeñ wychodz±cych. Dotyczy
-       lms-makeipchains. Domy¶lnie: nieustawione.
+       lms-makeipchains. Domy¶lnie: nie ustawione.
        Przyk³ad: tcp_redirect_ports = 80:3128 25:25
      _________________________________________________________________
 
@@ -1474,7 +1475,7 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
 -h, --help                          wy¶wietla pomoc;
 -v, --version                       wy¶wietla numer wersji;
 -q, --quiet                         tylko komunikaty o b³êdach;
--d, --debug                         informacje szczegó³owe dla kadego IP;
+-d, --debug                         informacje szczegó³owe dla ka¿dego IP;
      _________________________________________________________________
 
 5.2. Konfiguracja
@@ -1526,7 +1527,7 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
 
 5.2.3. Sekcja [mgc:xxx] - konfiguracja instancji
 
-   Ka¿da instancja ma swoj± nazwê i jej konfigruacjê tworzy siê
+   Ka¿da instancja ma swoj± nazwê i jej konfiguracjê tworzy siê
    umieszczaj±c sekcjê o nazwie [mgc:nazwa], czyli przyk³adowo:
    [mgc:mydaemon]
 
@@ -1539,9 +1540,9 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
        wszystkie pozosta³e zmienne tej sekcji zostan± zignorowane.
        Przyk³ad: instances = dns1 dns2 dns3
      * outfile
-       Definiuje plik do którego ma byæ zapisany wynik dzia³ania
-       bierz±cej instancji (je¿eli ta zmienna zmienna bêdzie nie
-       ustawiona, instancja siê zakoñczy)
+       Definiuje plik do którego ma byæ zapisany wynik dzia³ania bie¿±cej
+       instancji (je¿eli ta zmienna bêdzie nie ustawiona, instancja siê
+       zakoñczy)
        Przyk³ad: outfile = /etc/somefile
      * append
        Pozwala ustawiæ aby wynik dzia³ania instancji nie nadpisywa³ pliku
@@ -1566,7 +1567,7 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
 
    Grupa musi byæ podana numerycznie!
      * header_file
-       Pozwala na umieszczenie w pliku wynikowym zawaro¶ci innego pliku
+       Pozwala na umieszczenie w pliku wynikowym zawarto¶ci innego pliku
        jako nag³ówek (domy¶lnie nie ustawione)
        Przyk³ad: header_file = /etc/lms/myservice_header
      * header
@@ -1576,7 +1577,7 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
 
        Notatka
 
-   Znak \n zosta³ tu u¿yty jako seperator linii. Koñcowe \n nie jest
+   Znak \n zosta³ tu u¿yty jako separator linii. Koñcowe \n nie jest
    wymagane.
      * networks
        Pozwala ustaliæ które z naszych sieci bêd± uwzglêdniane w pliku
@@ -1672,7 +1673,7 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
        Pozwala na ustawienie stopki dla w³a¶nie przetwarzanej sieci
        Przyk³ad: network_footer = ??
      * footer_file
-       Pozwala na umieszczenie w pliku wynikowym zawaro¶ci innego pliku
+       Pozwala na umieszczenie w pliku wynikowym zawarto¶ci innego pliku
        jako stopka (domy¶lnie nie ustawione)
        Przyk³ad: footer_file = /etc/lms/myservice_footer
      * footer
@@ -1977,7 +1978,7 @@ info = "Opcjonalny opis modu³u"
        spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0
        Przyk³ad: limit = -20
      * debug_uin
-       Je¶li ustawione, na to konto zostan± wys³ane wszyskie wiadomo¶ci.
+       Je¶li ustawione, na to konto zostan± wys³ane wszystkie wiadomo¶ci.
        Domy¶lnie: puste.
        Przyk³ad: debug_uin = 7654321
      _________________________________________________________________
@@ -2083,8 +2084,9 @@ info = "Opcjonalny opis modu³u"
 
    W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne
    zmienne, które podczas zapisu do pliku zostan± zast±pione '%i' -
-   adresem ip, '%m' - mac adresem, '%n' - nazw± komputera. Poni¿ej opcje
-   udostêpniane przez ten modu³
+   adresem ip, '%m' - mac adresem, '%n' - nazw± komputera, '%domain' -
+   domen±, '%net' - nazw± sieci. Poni¿ej opcje udostêpniane przez ten
+   modu³
      * file
        Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/hostfile
        Przyk³ad: file = /etc/rc.d/rc.firewall
@@ -2110,6 +2112,14 @@ info = "Opcjonalny opis modu³u"
        FORWARD -s %i -m mac --mac-source %m -j REJECT\n"
        Przyk³ad: deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source
        %m -j REJECT\n"
+     * networks
+       Lista nazw sieci, które maj± byæ brane pod uwagê. Domy¶lnie: pusta
+       (wszystkie sieci).
+       Przyk³ad: networks = "lan1 lan2"
+     * skip_dev_ips
+       Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy
+       urz±dzeñ sieciowych. Domy¶lnie: tak
+       Przyk³ad: skip_dev_ips = no
      _________________________________________________________________
 
 6.2.8. Traffic
@@ -2179,7 +2189,7 @@ info = "Opcjonalny opis modu³u"
        Przyk³ad: reverse-patterns = /dns/patterns/revers
      * generic-forward
        Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu
-       okreslonym 'forward-patterns' nie bêdzie pliku odpowiadaj±cego
+       okre¶lonym 'forward-patterns' nie bêdzie pliku odpowiadaj±cego
        nazwie domenowej sieci. Domy¶lnie:
        modules/dns/sample/forward/generic.
        Przyk³ad: generic-forward = /dns/patterns/forward
@@ -2258,9 +2268,8 @@ info = "Opcjonalny opis modu³u"
 
 6.2.12.1. Opis
 
-   Modu³ do konfiguracji oidend. W zasadzie mo¿na to zrobiæ modu³em
-   'hostfile', ale w 'oident' masz mo¿liwo¶æ okre¶lenia dla których sieci
-   ma byæ tworzony konfig.
+   Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
+   'hostfile', ale tutaj masz ju¿ gotowe ustawienia domy¶lne.
      _________________________________________________________________
 
 6.2.12.2. Konfiguracja
@@ -2268,7 +2277,7 @@ info = "Opcjonalny opis modu³u"
    A oto parametry modu³u 'oident'
      * begin
        Tekst wstawiany na pocz±tku pliku. Domy¶lnie: puste.
-       Przyk³ad: begin = "#Generowany utomatycznie\n"
+       Przyk³ad: begin = "#Generowany automatycznie\n"
      * end
        Tekst wstawiany na koñcu pliku. Domy¶lnie: puste.
        Przyk³ad: end = ""
@@ -2279,11 +2288,11 @@ info = "Opcjonalny opis modu³u"
        Tekst wstawiany na pocz±tku pliku. Domy¶lnie: /tmp/oidentd.conf.
        Przyk³ad: file = /etc/identd.conf
      * networks
-       Lista sieci do uwzglêdnienia. Domy¶lnie: "192.168.0.0/16
-       10.0.0.0/8".
-       Przyk³ad: networks = 192.168.1.0/24
+       Lista nazw sieci do uwzglêdnienia. Domy¶lnie: pusta (wszystkie
+       sieci).
+       Przyk³ad: networks = 'lan1 lan2'
      * command
-       Polecenie do wykonania po utworzeniu pliku. Domyslnie: puste.
+       Polecenie do wykonania po utworzeniu pliku. Domy¶lnie: puste.
        Przyk³ad: command = "killall -HUP midentd"
      _________________________________________________________________
 
@@ -2299,7 +2308,7 @@ Rozdzia³ 7. Dla dociekliwych
      daemon               A.L.E.C's LMS Daemon
       devel        Skrypty przydatne dla developerów
        doc                    Dokumentacja
-       img          Obrazki do Interfejsu U¿ytkownka
+       img         Obrazki do Interfejsu U¿ytkownika
        lib      LMS'owy zbiór bibliotek PHP oraz Smarty
      modules         Modu³y Interfejsu U¿ytkownika
      sample        Przyk³adowe skrypty i inne dodatki
@@ -2311,7 +2320,7 @@ Rozdzia³ 7. Dla dociekliwych
 
    Poni¿ej przedstawiono ogóln± strukturê bazy danych LMS. Bardziej
    szczegó³owe informacje o typach danych, ograniczeniach nak³adanych na
-   pola oraz warto¶ci domyslne zawarte s± w plikach lms.mysql oraz
+   pola oraz warto¶ci domy¶lne zawarte s± w plikach lms.mysql oraz
    lms.pgsql w katalogu /doc.
      _________________________________________________________________
 
@@ -2382,7 +2391,7 @@ Rozdzia³ 7. Dla dociekliwych
    modid - identyfikator administratora
    netdev - identyfikator urz±dzenia sieciowego do którego jest
    pod³±czony komputer
-   access - pod³±czony/od³aczony
+   access - pod³±czony/od³±czony
      _________________________________________________________________
 
 7.2.5. Sprzêt sieciowy ('netdevices')
@@ -2409,7 +2418,7 @@ Rozdzia³ 7. Dla dociekliwych
    id - identyfikator
    time - znacznik czasu zaksiêgowania operacji
    adminid - identyfikator administratora dokonuj±cego operacji
-   type - typ operacji (przychów, rozchód, wp³ata, obci±¿enie)
+   type - typ operacji (przychód, rozchód, wp³ata, obci±¿enie)
    value - warto¶æ w z³otych
    userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy)
    invoiceid - identyfikator faktury obejmuj±cej dan± operacjê
@@ -2570,8 +2579,8 @@ key = "A.L.E.C's LMS Daemon is the best"
    Oryginalnie poziomy dostêpu mia³y byæ definiowane poprzez ró¿ne
    litery. By³o to za³o¿enie z czasów LMS-0.4, lecz nigdy nie
    wykorzystane. Z racji tego, ¿e wesz³o to do 1.0, d³ugo siê g³owi³em
-   jak wykorzystaæ 64-znakowego stringa. Otó¿ w kolumnie rights jest
-   poprostu 64-znakowa (256-bitowa) liczba hexadecymalna. Ka¿dy jej znak
+   jak wykorzystaæ 64-znakowego stringa. Otó¿ w kolumnie rights jest po
+   prostu 64-znakowa (256-bitowa) liczba heksadecymalna. Ka¿dy jej znak
    mo¿e opisaæ maksymalnie cztery bity kombinacji (4*64 = 256 - st±d
    ilo¶æ mo¿liwych poziomów). Tak wiêc w³±czenie jakiego¶ poziomu dostêpu
    powoduje ustawienie w tej liczbie odpowiedniego bitu. I tak je¿eli
@@ -2584,7 +2593,7 @@ key = "A.L.E.C's LMS Daemon is the best"
 
 7.6. Ograniczenia
 
-   Ka¿dy system ma ograniczenia. Pewne wynikaja z u¿ytego silnika SQL
+   Ka¿dy system ma ograniczenia. Pewne wynikaj± z u¿ytego silnika SQL
    (DBMS) inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez
    developerów. Nasz system takowe posiada:
      _________________________________________________________________
@@ -2616,13 +2625,13 @@ mysql> show table status;
 ...|             44 |       24136 |      4294967295 |        19456 |
             Zauwa¿ymy ¿e miejsca wystarczy na oko³o 175 000 razy tyle ile
             mamy aktualnie wpisów w tabelce. (czyt.: mo¿esz spaæ
-            spkojnie, chyba ¿e planujesz posiadanie ponad 100000
+            spokojnie, chyba ¿e planujesz posiadanie ponad 100000
             u¿ytkowników :-)
      * PostgreSQL
           + Rozmiar bazy danych:
             PostgreSQL zapisuje dane w porcjach po 8 kB. Liczba tych
             bloków jest ograniczona do 32-bitowej liczby ca³kowitej ze
-            znakiem, daj±c maksymaln± wielko¶c tabeli wynosz±c± 16
+            znakiem, daj±c maksymaln± wielko¶æ tabeli wynosz±c± 16
             terabajtów. Z uwagi na ograniczenia systemów operacyjnych
             dane przechowywane s± w wielu plikach o wielko¶ci 1 GB ka¿dy.
           + Ilo¶æ rekordów:
