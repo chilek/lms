@@ -444,7 +444,7 @@ class LMS
 
 	function UserAdd($useradd)
 	{
-		if($this->DB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?)",array(ucwords($useradd['name']), $useradd['lastname'], $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->SESSION->id, $useradd['info']))) {
+		if($this->DB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info, message) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?)",array(ucwords($useradd['name']), $useradd['lastname'], $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->SESSION->id, $useradd['info'], $useradd['message']))) {
 			$this->SetTS("users");
 			return $this->DB->GetOne("SELECT MAX(id) FROM users");
 		} else
@@ -463,7 +463,7 @@ class LMS
 	function UserUpdate($userdata)
 	{
 		$this->SetTS("users");
-		return $this->DB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, lastname=UPPER(?), name=?, deleted=0 WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['pesel'], $this->SESSION->id, $userdata['info'], $userdata['lastname'], ucwords($userdata['name']), $userdata['id'] ) );
+		return $this->DB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, lastname=UPPER(?), name=?, deleted=0, message=? WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['pesel'], $this->SESSION->id, $userdata['info'], $userdata['lastname'], ucwords($userdata['name']), $userdata['message'], $userdata['id'] ) );
 	}
 
 	function GetUserNodesNo($id)
@@ -488,7 +488,7 @@ class LMS
 
 	function GetUser($id)
 	{
-		if($result = $this->DB->GetRow("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, pesel, city, info, creationdate, moddate, creatorid, modid, deleted FROM users WHERE id=?",array($id)))
+		if($result = $this->DB->GetRow("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, pesel, city, info, creationdate, moddate, creatorid, modid, deleted, message FROM users WHERE id=?",array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
@@ -592,6 +592,7 @@ class LMS
 		{
 			$tariffvalues = $this->DB->GetAllByKey("SELECT users.id AS id, SUM(value) AS value FROM users, assignments, tariffs WHERE users.id = assignments.userid AND tariffs.id = tariffid GROUP by users.id",'id');
 			$access = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid",'id');
+			$warning = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid",'id');
 
 			foreach($userlist as $idx => $row)
 			{
@@ -602,6 +603,12 @@ class LMS
 					$userlist[$idx]['nodeac'] = 0;
 				else
 					$userlist[$idx]['nodeac'] = 2;
+				if($warning[$row['id']]['warncount'] == $warning[$row['id']]['warnsum'])
+					$userlist[$idx]['nodewarn'] = 1;
+				elseif($warning[$row['id']]['warnsum'] == 0)
+					$userlist[$idx]['nodewarn'] = 0;
+				else
+					$userlist[$idx]['nodewarn'] = 2;
 				if($userlist[$idx]['balance'] > 0)
 					$over += $userlist[$idx]['balance'];
 				elseif($userlist[$idx]['balance'] < 0)
@@ -666,17 +673,25 @@ class LMS
 			$tariffvalues = $this->DB->GetAllByKey("SELECT users.id AS id, SUM(value) AS value FROM users, assignments, tariffs WHERE users.id = assignments.userid AND tariffs.id = tariffid GROUP by users.id",'id');
 
 			$access = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid",'id');
+			$warning = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid",'id');
 			foreach($userlist as $idx => $row)
 			{
 				$userlist[$idx]['tariffvalue'] = $tariffvalues[$row['id']]['value'];
 				$userlist[$idx]['account'] = $access[$row['id']]['account'];
-				
+				$userlist[$idx]['warncount'] = $warning[$row['id']]['warncount'];
+
 				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'])
 					$userlist[$idx]['nodeac'] = 1;
 				elseif($access[$row['id']]['acsum'] == 0)
 					$userlist[$idx]['nodeac'] = 0;
 				else
 					$userlist[$idx]['nodeac'] = 2;
+				if($warning[$row['id']]['warncount'] == $warning[$row['id']]['warnsum'])
+					$userlist[$idx]['nodewarn'] = 1;
+				elseif($warning[$row['id']]['warnsum'] == 0)
+					$userlist[$idx]['nodewarn'] = 0;
+				else
+					$userlist[$idx]['nodewarn'] = 2;
 					
 				if($userlist[$idx]['balance'] > 0)
 					$over += $userlist[$idx]['balance'];
@@ -715,7 +730,7 @@ class LMS
 
 	function GetUserNodes($id)
 	{
-		if($result = $this->DB->GetAll("SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, access FROM nodes WHERE ownerid=? ORDER BY name ASC",array($id))){
+		if($result = $this->DB->GetAll("SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, access, warning FROM nodes WHERE ownerid=? ORDER BY name ASC",array($id))){
 			$result['total'] = sizeof($result);
 			$result['ownerid'] = $id;
 		}
@@ -825,7 +840,7 @@ class LMS
 	function NodeUpdate($nodedata)
 	{
 		$this->SetTS("nodes");
-		return $this->DB->Execute("UPDATE nodes SET name=?, ipaddr=inet_aton(?), mac=?, netdev=?, moddate=?NOW?, modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), $nodedata['ipaddr'], strtoupper($nodedata['mac']), $nodedata['netdev'], $this->SESSION->id, $nodedata['access'], $nodedata['ownerid'], $nodedata['id']));
+		return $this->DB->Execute("UPDATE nodes SET name=?, ipaddr=inet_aton(?), mac=?, netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), $nodedata['ipaddr'], strtoupper($nodedata['mac']), $nodedata['netdev'], $this->SESSION->id, $nodedata['access'], $nodedata['warning'], $nodedata['ownerid'], $nodedata['id']));
 	}
 
 	function DeleteNode($id)
@@ -876,7 +891,7 @@ class LMS
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow("SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access, creationdate, moddate, creatorid, modid, netdev FROM nodes WHERE id=?",array($id)))
+		if($result = $this->DB->GetRow("SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access, warning, creationdate, moddate, creatorid, modid, netdev FROM nodes WHERE id=?",array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
@@ -924,7 +939,7 @@ class LMS
 			foreach($username as $idx => $row)
 				$usernames[$row['id']] = $row['username'];
 
-		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr,inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access, netdev FROM nodes WHERE ownerid > 0".($sqlord != "" ? $sqlord." ".$direction : "")))
+		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr,inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access, warning, netdev FROM nodes WHERE ownerid > 0".($sqlord != "" ? $sqlord." ".$direction : "")))
 		{
 			foreach($nodelist as $idx => $row)
 			{
@@ -1063,6 +1078,42 @@ class LMS
 			return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?",array(0,$this->SESSION->id,$id));
 	}		
 
+	function NodeSetWarn($id)
+	{
+		$this->SetTS("nodes");
+		if($this->DB->GetOne("SELECT warning FROM nodes WHERE id=?",array($id)) == 1 )
+			return $this->DB->Execute("UPDATE nodes SET warning=0, modid=? WHERE id=?",array($this->SESSION->id,$id));
+		else
+			return $this->DB->Execute("UPDATE nodes SET warning=1, modid=? WHERE id=?",array($this->SESSION->id,$id));
+	}
+
+	function NodeSetWarnU($id,$warning=FALSE)
+	{
+		$this->SetTS("nodes");
+		if($warning)
+			return $this->DB->Execute("UPDATE nodes SET warning=?, modid=? WHERE ownerid=?",array(1,$this->SESSION->id,$id));
+		else
+			return $this->DB->Execute("UPDATE nodes SET warning=?, modid=? WHERE ownerid=?",array(0,$this->SESSION->id,$id));
+	}		
+
+	function NodeSetWarn($id)
+	{
+		$this->SetTS("nodes");
+		if($this->DB->GetOne("SELECT warning FROM nodes WHERE id=?",array($id)) == 1 )
+			return $this->DB->Execute("UPDATE nodes SET warning=0, modid=? WHERE id=?",array($this->SESSION->id,$id));
+		else
+			return $this->DB->Execute("UPDATE nodes SET warning=1, modid=? WHERE id=?",array($this->SESSION->id,$id));
+	}
+
+	function NodeSetWarnU($id,$warning=FALSE)
+	{
+		$this->SetTS("nodes");
+		if($warning)
+			return $this->DB->Execute("UPDATE nodes SET warning=?, modid=? WHERE ownerid=?",array(1,$this->SESSION->id,$id));
+		else
+			return $this->DB->Execute("UPDATE nodes SET warning=?, modid=? WHERE ownerid=?",array(0,$this->SESSION->id,$id));
+	}		
+
 	function IPSetU($netdev, $access=FALSE)
 	{
 		$this->SetTS("nodes");
@@ -1075,7 +1126,7 @@ class LMS
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS("nodes");
-		if($this->DB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate, access) VALUES (?, ?, inet_aton(?), ?, ?, ?NOW?, ?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id, $nodedata['access'])))
+		if($this->DB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate, access, warning) VALUES (?, ?, inet_aton(?), ?, ?, ?NOW?, ?, ?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id, $nodedata['access'], $nodedata['warning'])))
 			return $this->DB->GetOne("SELECT MAX(id) FROM nodes");
 		else
 			return FALSE;
@@ -2219,6 +2270,23 @@ class LMS
 
 		}
 		array_multisort($result['longip'],$result['mac'],$result['ip'],$result['nodename']);
+		return $result;
+	}
+	
+	
+	function GetNodeByMAC($ip)
+	{
+		exec("arp -an | grep -v incompl | grep $ip" ,$result);
+		foreach ($result as $arpline)
+		{
+		    list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(" ",$arpline);
+		    $ip = str_replace("(","",str_replace(")","",$ip));
+
+		    $result['mac'] = $mac;
+		    $result['ip'] = $ip;
+		    $result['longip'] = ip_long($ip);
+		    $result['nodename'] = $this->GetNodeNameByMAC($mac);
+		}		
 		return $result;
 	}
 

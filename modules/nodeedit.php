@@ -110,7 +110,9 @@ if(isset($nodeedit))
 
 	if($nodeedit['access']!=1)
 		$nodeedit['access'] = 0;
-	
+        if($nodeedit[warning]!=1)
+                $nodeedit[warning] = 0;	
+
 	if($nodeinfo['netdev'] != $nodeedit['netdev'] && $nodeedit['netdev'] != 0)
 	{
 		$netdev = $LMS->GetNetDev($nodeedit['netdev']); 
