@@ -10,7 +10,7 @@ struct net
 struct group
 {
 	unsigned char *name;
-	int id;
+	 int id;
 };
 
 struct hostfile_module
