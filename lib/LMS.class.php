@@ -1103,8 +1103,9 @@ class LMS
 		if($netid != 0)
 		{
 			$netdev = $this->GetNetDev($netid);
-			if( $netdev['takenports'] >= $netdev['ports'])
-				return FALSE;
+			if( $netdev['ownerid'] )
+				if( $netdev['takenports'] >= $netdev['ports'])
+					return FALSE;
 		}
 		
 		$this->DB->Execute("UPDATE nodes SET netdev=".$netid." WHERE id=".$id);
