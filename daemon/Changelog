@@ -1,3 +1,9 @@
+* 26.11.2003
+  - dodany modu³ 'ggnotify' (lexx/alec)
+  - poprawiona obs³uga warto¶ci NULL w mysql (alec)
+  - 'ethers' zapisuje mac-adresy 00:00:00:00:00:00 dla hostów
+    z access=0 (alec)
+
 * 20.11.2003
   - dodany modu³ 'tc', czyli htb (alec)
   - dodany modu³ 'notify' (alec)
