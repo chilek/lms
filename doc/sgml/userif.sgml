@@ -1,431 +1,466 @@
 <!-- $Id$ -->
 <chapter id="user">
- <title>Interfejs U¿ytkownika (LMS-UI)</title>
- <para>LMS'owy Interfejs U¿ytkownika to panel administracyjny do tworzenia
-  i zarz±dzania baz± u¿ytkowników i komputerów dostêpny za pomoc± przegl±darki
-  internetowej. Umo¿liwia wprowadzanie danych komputerów,
-  przypisanie ich do u¿ytkowników i sieci. Definiowanie op³at i zarz±dzanie finansami sieci,
-  Szybkie wyszukiwanie danych o u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji
-  seryjnej do u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich hase³.
-  Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania ³±cza, a tak¿e
-  tworzenia kopii bazy danych oraz zarz±dzania konfiguracj± us³ug na serwerze. 
-  <emphasis>LMS-UI</emphasis> posiada tak¿e wiele innych mo¿liwo¶ci, które w tym
-  rozdziale zostan± opisane.</para>
+ <title>User Interface (LMS-UI)</title>
+ <para>LMS User Interface is basically administration panel available via Web
+ interface that can be used to create and manage customer and computers (nodes)
+ data and containing numerous features such as: You're able to bind computer data to your customers and assign it to given
+ network. You're also able to define users liabilities and manage your network
+ finances. You can search in user and computer data quickly, send mass mailing
+ to specific user groups, define access to this UI for selected users and with
+ fine grained access rights. Additionally you can track your bandwidth usability
+ statistics, create backups of your database online and configuration and
+ management of your services. Those are only selected features of
+ <emphasis>LMS-UI</emphasis>, so read on to find description of all features.
+ </para>
   <sect1 id="user-login">
-	<title>Logowanie</title>
-	<para>Po wpisaniu w przegl±darce adresu do strony z lms'em, powita ciê
-	ekran logowania. Musisz podaæ w³a¶ciwy login oraz has³o. Has³a w bazie
-	danych przechowywane s± w formie zaszyfrowanej.</para>
-	<para>Je¿eli jest to twoje pierwsze logowanie i nie masz jeszcze
-	za³o¿onego konta, zostaniesz przekierowany do modu³u tworzenia kont
-	administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
-	jednego modu³u.</para>
+	<title>Login</title>
+        <para>After you enter LMS installation URL in your Web browser, you'll
+        be prompted with login screen, where you need to enter correct username
+        and password. All passwords in database are stored in encrypted form.
+        </para>
+        <para>If it's your first session with LMS, and you don't have any
+        account created yet, you'll be redirected to new user account screen.
+        At this moment you have only access to this one module, so that you can
+        create your initial account.</para>
   </sect1>
   <sect1 id="menu-administration">
-	<title>Administracja</title>
-	<para>Po zalogowaniu do LMS'a znajdziesz siê w module (menu) administracji
-	systemem LMS. Tutaj znajdziesz niezbêdne informacje o systemie. Bêdziesz
-	móg³ zarz±dzaæ administratorami i tworzyæ/odtwarzaæ kopie bazy danych.</para>
-	<para>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
-	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze.
-	W polach szybkiego wyszukiwania, oprócz id u¿ytkownika lub komputera, mo¿esz 
-	podawaæ nazwisko, nazwê, fragment adresu, telefon, email, adres IP lub MAC. 
-	W przypadku gdy w bazie znajduje siê wiêcej u¿ytkowników pasuj±cych do szukanych
-	danych zostan± wy¶wietlone informacje tylko o jednym u¿ytkowniku lub komputerze.</para>
+	<title>Administration</title>
+        <para>After successful login to the system you'll have administration
+        menu presented on the left side, while content of selected module will be
+        displayed on the right side. Initially, you can read some useful information
+        about system here. In administration menu, you're able to manage other users
+        accounts and create or restore database backups.</para>
+        <para>You can select any module to work with on the left panel. There
+        are also buttons allowing you to change your password, logout or do a quick
+        search for customers/computers/helpdesk. You can search by name or id, but also
+        additionally by computer name, surname, fragment of address, phone, email, IP or
+        MAC. If there are more than one matching record for your search you'll get only
+        first result.</para>
 	<sect2 id="administration-info">
 	    <title>Info</title>
-	    <para>To panel na którym znajduj± siê podstawowe informacje na temat naszego 
-	    systemu: wersja LMS i jego sk³adników, informacje o prawach autorskich, 
-	    wersja j±dra i uptime serwera, dane statystyczne o u¿ytkownikach i komputerach,
-	    bie¿±ce informacje o aktywno¶ci komputerów i stanie finansów sieci. 
-	    Ponadto znajdziesz tu przydatne lms'owe linki.</para>
+            <para>This is where all basic information about system that is
+            running LMS are displayed. It lists the following information:
+            LMS core and components versions, copyright notice, uptime and
+            kernel version of your server, customers and nodes totals, computer
+            activity totals and financial balance. Additionally all LMS links
+            are gathered here.</para>
 	</sect2>
 	<sect2 id="administration-admins">
-	    <title>Administratorzy</title>
-	    <para>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, czyli osób
-	    korzystaj±cych z LMS'a, zak³adania i przegl±dania ich kont, zmiany hase³ i definiowania 
-	    praw dostêpu.</para>
-	    <para> Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale <xref linkend="install-rights">.</para> 
-	    <para>Po wybraniu menu 'Administratorzy' zobaczysz listê wszystkich administratorów
-	    z informacj± o ostatnim logowaniu. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie 
-	    informacji szczegó³owych o danym koncie, w tym o zdefiniowanych prawach dostêpu. 
-	    W ka¿dej chwili mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'. 
-	    Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu 'Nowy administrator'.</para>
+	    <title>Users</title>
+	    <para>'Users' panel is designed for LMS users (ie. network
+            administrators) management. You can create or modify any account here, change
+            assigned passwords and access rights.</para>
+	    <para>For more information on access rights, see <xref linkend="install-rights">.</para> 
+	    <para>Initially after selecting 'Users', you'll get list of all
+            users with last login time and host information. When you click on the account,
+            you're able to see it's details, including defined access rights. You can modify
+            data any time by clicking 'Edit' link. To create new user use left panel and
+            click 'New user'.</para>
 	</sect2>
 	<sect2 id="administration-newadmin">
-	<title>Nowy administrator</title>
-	    <para>Aby dodaæ nowe konto administratora nale¿y podaæ login oraz has³o, 
-	    które nie mo¿e byæ puste. Podanie imienia, nazwiska i adresu poczty elektronicznej
-	    nie jest wymagane. Poni¿ej mo¿na zaznaczyæ uprawnienia dostêpu do
-	    systemu. Je¿eli wszystkie pola pozostawisz puste, administratorowi 
-	    przypisany zostanie 'Pe³en dostêp'.</para>
+	<title>New user</title>
+	    <para>In order to create new user, you need to provide at least
+            login name and non empty password. Name and email fields are optional. Below you
+            can mark specific system access rights. If you leave all those fields unchecked
+            (default), user will be granted with 'full access'.</para>
 	</sect2>
 	<sect2 id="administration-db">
-	    <title>Kopie zapasowe</title>
-	    <para>Z panelu 'Kopie zapasowe' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy LMSa.
-	    Kopia bazy to plik tekstowy zawieraj±cy zapytania SQL i dane z wszystkich tabel w bazie, zapisywany w
-	    katalogu zdefiniowanym w sekcji <emphasis>[directories]</emphasis> <filename>lms.ini</filename>
-	    zmienn± <prompt>backup_dir</prompt>.</para>
-	    <para><note><para>Domy¶lnie kopie zapisywane s± w katalogu <filename>lms/backups</filename>
-	    dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</para></note></para>
-	    <para>Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
-	    Klikniêcie na ikonkê Odtwórz spowoduje wyczyszczenie bie¿±cej bazy danych i za³adowanie
-	    do niej danych z wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
-	    aktualnej bazy danych.</para>
+	    <title>Backups</title>
+	    <para>You can manage your database backup copies here. Database copy
+            is plain text file with SQL statements needed to reconstruct all tables and it's
+            data, which is saved in directory defined with <prompt>backup_dir</prompt>
+            variable in <emphasis>[directories]</emphasis>
+            section of <filename>lms.ini</filename>.</para>
+	    <para><note><para>By default your backups will be placed in
+            <filename>lms/backups</filename> directory, which could be accessed with your
+            browser, without any authentication, so it's wise to move it above your Web
+            Server DocumentRoot.</para></note></para>
+	    <para>All copies can be viewed, removed or downloaded to your
+            computer at any time. By clicking on 'recover' icon your current database will
+            be deleted and replaced by the one in backup copy. For your safety, before such
+            operation current database backup is performed automatically.</para>
 	</sect2>
 	<sect2 id="administration-uiconfig">
-	    <title>Konfiguracja</title>
-	    <para>Pocz±wszy od wersji 1.5.3 mo¿liwa jest konfiguracja interfejsu
-	    u¿ytkownika tak¿e poprzez <emphasis>LMS-UI</emphasis>. Opcje przechowywane 
-	    s± w bazie danych i nale¿y je przenie¶æ z pliku <filename>lms.ini</filename>.
-	    Do tego celu s³u¿y modu³ <filename>upgrade02</filename>, który jest
-	    automatycznie wykonywany po klikniêciu linku znajduj±cego siê na pustej
-	    li¶cie opcji konfiguracyjnych.</para>
-	    <para><note><para>Opcje konfigurowane w <emphasis>LMS-UI</emphasis> maj±
-	    wiêkszy priorytet od tych zapisanych w <filename>lms.ini</filename>, co
-	    oznacza, ¿e plik konfiguracyjny jest tak¿e odczytywany, ale warto¶ci 
-	    zmiennych z tego pliku nadpisywane s± warto¶ciami zapisanymi
-	    w bazie danych.</para></note></para>
-	    <para>Aby dodaæ now± opcjê kliknij link 'Dodaj opcjê' na dole listy.
-	    Aby wyedytowaæ parametry opcji kliknij na jej rekord. Zostaniesz przeniesiony 
-	    do formularza edycyjnego, gdzie mo¿esz równie¿ usun±æ opcjê. Zmiana statusu
-	    opcji onacza w³±czenie/wy³±czenie jej dzia³ania, co polega na przypisaniu
-	    jej warto¶ci domy¶lnej (je¿eli tak± posiada).</para>
+	    <title>UI Config</title>
+	    <para>Since LMS 1.5.3 you're able to configure all UI-related
+            options directly via <emphasis>LMS-UI</emphasis>, instead of editing
+            <filename>lms.ini</filename>. Those options are stored in database and you first
+            need to import them from your config file (even if you haven't edited anything
+            yet, default values will be imported). This can be done with help of
+            <filename>upgrade02</filename> UI module, which will be executed after you click
+            on the link presented on empty list.</para>
+	    <para><note><para>Options setup with <emphasis>LMS-UI</emphasis>
+            have higher priority than those in configuration file. With options setup in UI,
+            the configuration will be still imported from file but values will be then
+            overwritten by those found in DB.</para></note></para>
+	    <para>In order to manually add new option click 'Add option' on the
+            bottom of the list. To edit option value, click on its record. You'll be given
+            with edit form, where you are also able to remove this option. Changing option
+            status allows you to turn it on and off instantly. When an option is off,
+            default value will be used (if it posses any).</para>
 	</sect2>
  </sect1>
  <sect1 id="menu-users">
-	<title>U¿ytkownicy</title>
-	<para>Tutaj zarz±dzasz danymi u¿ytkowników twojej sieci i ich finansami, ale tak¿e 
-	ich komputerami. Mo¿esz na przyk³ad jednym klikniêciem od³±czyæ wszystkie 
-	komputery u¿ytkownika.
-	<note><para>Do automatycznego od³±czania komputerów u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
-	s³u¿y skrypt lms-cutoff.</para></note></para>
+	<title>Customers</title>
+	<para>This is your customers control center, where you can store and
+        manage their data, their finances and also their computers. You can even cut all
+        customer computers off with single mouse click.
+	<note><para>Automatic cutoff of computers which owners are in debt is
+        performed by lms-cutoff Perl script.</para></note></para>
 	<sect2 id="menu-users-list">
-	    <title>Lista</title>
-	    <para>Po wej¶ciu do panelu 'U¿ytkownicy' uka¿e siê lista u¿ytkowników,
-	    któr± mo¿esz filtrowaæ wed³ug wybranych kryteriów (statusu, grupy lub sieci)
-	    lub sortowaæ klikaj±c na nazwie kolumny. Na li¶cie ikona ¿arówki informuje
-	    o statusie pod³±czenia komputerów u¿ytkownika, a ikona znaku drogowego
-	    o statusie ostrze¿eñ. Klikniêcie na nich zmienia status na przeciwny w
-	    stosunku do wszystkich komputerów danego u¿ytkownika. Gdy u¿ytkownik nie
-	    posiada przypisanych ¿adnych komputerów ikony te zostan± zamienione znakiem
-	    wykrzyknika.</para>
-	    <para>U u¿ytkowników z saldem ujemnym pojawia siê link "Rozlicz", pozwalaj±cy na
-	    zaksiêgowanie jednym klikniêciem wp³aty równowa¿±cej ujemne saldo.</para>
-	    <para>Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu
-	    z informacjami szczegó³owymi o nim i przypisanych mu komputerach, taryfach oraz
-	    operacjach finansowych. Tam te¿ mo¿esz modyfikowaæ dane u¿ytkownika, definiowaæ
-	    op³aty abonamentowe i zaksiêgowaæ wp³atê lub obci±¿enie jego rachunku.</para>
+	    <title>List</title>
+	    <para>After you select 'List' you'll see list of your users, that
+            can be filtered based on selected criteria (user status, group or network) or
+            sort by any highlighted column. Warning triangle on the right side of the record
+            shows if any warnings are active for the user. Computer icon next to triangle
+            informs you about computers status (connected of cutoff). Clicking of any of 
+            those two symbols toggles status for all computers of the given user. </para>
+            <para>Records of users with negative balance will have 'payback' icon
+            (stack of coins), which allows you to account instant payment for the user,
+            which value will reset his debt.</para>
+	    <para>When you click on selected user you'll get screen with details
+            for the user, divided in several panels: user details, computer details,
+            liabilities details and customer account details. You can also select to edit
+            any of the panels on this screen, define user liabilities, payoff or charge the
+            customer.</para>
 	</sect2>
 	<sect2 id="menu-users-new">
-	    <title>Nowy</title>
-	    <para>Dodaj±c nowego u¿ytkownika podajesz jego nazwisko/nazwê i dane teleadresowe
-	    oraz status (pod³±czony/oczekuj±cy/zainteresowany).
-	    <note><para>Czêsto zg³aszane jest blêdne kapitalizowanie narodowych znaków diakrytycznych.
-	    Odpowiedzialny za to jest serwer bazy danych i rozwi±zania nale¿y szukaæ w jego konfiguracji.</para></note>
+	    <title>New Customer</title>
+	    <para>This option will let you enter data for new customer record.
+            You can enter his last and first name here, or if your customer is
+also legal company, enter company name in "Name" and company representative in
+"Forename" field. You should also fill users phone (up to 3) and address (you
+can enter additional address for correspondence) and his status (connected,
+waiting in queue, prospect).
+	    <note><para>Wrong capitalization (uppercase) of user's last name is
+one of most frequent bug reports. Uppercase is implemented via SQL functions and
+thus you should seek for solution in your DB engine configuration.</para></note>
 	    </para>
 	</sect2>
 	<sect2 id="menu-users-search">
-	    <title>Szukaj</title>
-	    <para>Mo¿liwe jest wyszukiwanie u¿ytkowników (tak¿e usuniêtych) wg zadanych kryteriów. Modu³ ten,
-	    od pola szybkiego wyszukiwania z menu po lewej stronie, oprócz tego, ¿e jest bardziej rozbudowany 
-	    i pozwala wyszukiwaæ wg wielu kryteriów, ró¿ni siê tak¿e tym, ¿e zwraca listê u¿ytkowników
-	    spe³niaj±cych podane kryteria.</para>
+	    <title>Search</title>
+	    <para>You're able to search users (including deleted users), using
+various criteria. This module is more powerful than appropriate quick search
+box in left panel, as you can specify exact field names to search and if many
+users are found, the list of records will be returned, not only the first one.
+</para>
 	</sect2>
 	<sect2 id="menu-users-groups">
-	    <title>Grupy</title>
-	    <para>Tutaj zarz±dzasz grupami u¿ytkowników. Po klikniêciu menu 'Grupy'
-	    uka¿e ci siê lista grup z podstawowymi informacjami o grupach. Klikaj±c 
-	    na wybranej grupie przejdziesz do modu³u, w którym mo¿esz zmieniæ dane
-	    tej sieci, przegl±daæ oraz przypisywaæ u¿ytkowników do grup.</para>
+	    <title>Groups</title>
+	    <para>This is a place where it's possible to divide your users into
+groups. After you click 'Groups' you'll see list of all defined groups with some
+basic information. Clicking on selected group will give you details view, where
+you are able to edit this group properties, and view/add/remove group members.
+</para>
 	</sect2>
 	<sect2 id="menu-users-newgropup">
-	    <title>Nowa grupa</title>
-	    <para>Grupa powinna posiadaæ unikaln± nazwê, sk³adaj±c± siê z liter, cyfr, znaku
-	    my¶lnika lub podkre¶lenia. Poniewa¿ grupy wykorzystywane s± w skryptach w nazwie
-	    nie mo¿e byæ znaku spacji.</para>
+	    <title>New Group</title>
+	    <para>You can define new group here, providing its name is unique,
+and it only contains letters, digits and underscore and minus signs. Groups are
+being used in scripts configuration, and for this reason group names cannot
+contain spaces.</para>
 	</sect2>
 	<sect2 id="menu-users-warnings">
-	    <title>Ostrze¿enia</title>
-	    <para>Tutaj mo¿na "hurtowo" przypisaæ tre¶æ wiadomo¶ci administracyjnej
-	    u¿ytkownikom, których wybiera siê z listy w lewym oknie. Mo¿liwe jest
-	    tak¿e w³±czenie lub wy³±czenie ostrze¿eñ wszystkim komputerom nale¿±cym
-	    do wybranych u¿ytkowników.</para>
+	    <title>Messages</title>
+            <para>In this module, you're able to write administrative message which
+            will appear on customers Web browser screen and assign it massively to all
+            or majority of your users (just pick them using selection box on the left).
+            It's also possible here to deselect administrative messages massively here.
+            </para>
 	</sect2>
 	<sect2 id="menu-users-prints">
-	    <title>Wydruki</title>
-	    <para>Zestaw modu³ów wy¶wietlaj±cych listy w formie przyjaznej dla drukarki
-	    zawiera:
+	    <title>Printing</title>
+	    <para>Set of modules to provide printer-friendly version of your
+            records:
 	    <itemizedlist>
 		<listitem>
-		    <para><emphasis>Lista u¿ytkowników</emphasis> z wieloma filtrami i dowolnym sortowaniem,</para>
+		    <para><emphasis>User list</emphasis> with filter and sort abilities, </para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Raport wierzytelno¶ci</emphasis> u¿ytkownika(ów) na dany dzieñ,</para>
+		    <para><emphasis>Liability report</emphasis> for any range of user(s), for specified date,</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Bilans u¿ytkownika</emphasis> za wybrany okres</para>
+		    <para><emphasis>User balance</emphasis> for selected period</para>
 		</listitem>
 	    </itemizedlist>
 	    </para>
 	</sect2>
  </sect1>
  <sect1 id="menu-nodes">
-	<title>Komputery</title>
-	<para>Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie listy komputerów,
-	wyszukiwanie, dodawanie nowych lub usuwanie ju¿	wpisanych do bazy komputerów, a tak¿e podgl±d 
-	i zmianê informacji o nich.</para>
+	<title>Nodes</title>
+	<para>This panel is designed to manage your computer records, namely:
+view computer list (with sorting), search, add new or delete existing computers
+from database and editing capabilities.</para>
 	<sect2 id="menu-nodes-list">
-	    <title>Lista</title>
-	    <para>Lista komputerów, ta która pokazuje siê po wej¶ciu do panelu 'Komputery'. 
-	    obejmuje wszystkie komputery w bazie. Mo¿na j± sortowaæ klikaj±c na nazwie dowolnej 
-	    kolumny. W ka¿dym wierszu, po prawej stronie znajduj± siê ikony s³u¿±ce kolejno do:
-	    zmiany statusu komputera [Pod³±cz/Od³±cz], zmiany statusu ostrze¿enia [Ostrzegaj/Nie ostrzegaj],
-	    usuniêcia z bazy [Usuñ], wywo³ania panelu edycyjnego [Edytuj] oraz wy¶wietlenia
-	    informacji szczegó³owych na temat danego komputera [Info]. Do panelu informacyjnego,
-	    który jest zintegrowany z panelem informacji o w³a¶cicielu komputera mo¿na tak¿e
-	    przej¶æ klikaj±c na pod¶wietlonym wierszu.</para>
+	    <title>List</title>
+	    <para>List of computers will appear after you select 'List' link.
+You can sort it by clicking on any highlighted column name. You have several icons on
+each computer record: light bulb for connecting and cutting off selected
+computer, warning triangle for warning screen toggle, eraser for computer
+removal, pencil for editing details and file icon for viewing it. The last
+module (computer/owner view) might be also accessed simply by clicking on
+selected record.</para>
 	</sect2>
 	<sect2 id="menu-nodes-new">
-	<title>Nowy</title>
-	    <para>Tutaj dodaje siê nowe komputery do bazy danych. W tym celu definiujemy nazwê
-	    komputera (sk³adaj±c± siê z liter, cyfr, znaku podkre¶lenia lub my¶lnika), jego w³a¶ciciela,
-	    adres IP, adres MAC oraz status. Przy polach na adresy IP i MAC znajduj± siê linki
-	    do paneli, w których mo¿na wybraæ dostêpny adres IP oraz znaleziony w sieci MAC.
-	    Po wpisaniu danych naci¶nij "Zapisz". Przy wprowadzaniu danych dla wielu komputerów
-	    wygodnie jest zaznaczyæ pole "Wywo³aj ponownie..."
-	    <note><para>Aby wyszukaæ komputery w swojej sieci
-	    mo¿esz skorzystaæ z programu nbtscan. Je¶li jest on zainstalowany w systemie, po
-	    naci¶niêciu 'Skanuj' zobaczysz listê znalezionych komputerów.</para></note>
-	    <note><para>Aby dodaæ komputer musisz mieæ sieæ i u¿ytkownika,
-	    którym go przypiszesz.</para></note></para>
+	<title>New Node</title>
+	    <para>You can add new computer here. First select good name for it
+(it may contain letters, digits, underscore or minus sign), then it's owner. IP
+and MAC addresses may be entered manually, or - by clicking arrow signs on the
+right - you may select them from pool which is read from database and ARP daemon. After
+you finish - click 'Save'. If you need to enter more computers it's
+helpful to activate 'Display this form again' checkbox.
+	    <note><para>To search computer addresses in your network you can use
+nbtscan program. If it's available in system, you can click 'Scan' to get all
+data about computers that are online.</para></note>
+	    <note><para>You need to create user and network first, so you can
+assign new computer to it.</para></note></para>
 	</sect2>
 	<sect2 id="menu-nodes-search">
-	    <title>Szukaj</title>
-	    <para>Wyszukiwanie komputerów wed³ug zadanych kryteriów. Mo¿esz podaæ 
-	    ca³± lub fragment nazwy komputera oraz jego adresów IP i MAC.</para>
+	    <title>Search</title>
+	    <para>You can search for computers here by any given criteria. You
+can enter whole IP, MAC or computer name, or just its fragment and search will
+guess for you.</para>
 	</sect2>
 	<sect2 id="menu-nodes-warnings">
-	    <title>Ostrze¿enia</title>
-		<para>Tutaj definiuje siê tre¶æ wiadomo¶ci administracyjnych dla u¿ytkowników oraz
-		w³±cza lub wy³±cza komputerom ostrze¿enia. Po lewej stronie znajduje siê lista, na
-		której komputery z w³±czonym ostrze¿eniem zaznaczone s± kolorem czerwonym. Jesli chcesz
-		tylko zmieniæ/przypisaæ u¿ytkownikom tre¶æ wiadomo¶ci administracyjnej, zaznacz odpowiednie
-		komputery na li¶cie i pozostaw puste pola 'W³±cz ostrze¿enia' oraz 'Wy³±cz ostrze¿enia'.  </para>
+	    <title>Messages</title>
+		<para>You can write administration message here and it will
+appear on user's Web browser screen. In this module you can select majority or
+all computers and assign them common message. Just choose computers using
+selectbox on the left (computers with message already on will be displayed in
+red). If you only want to assign a message to user, but don't want to turn it
+on, just write a message and don't select any of 'Enable/Disable message' boxes.
+</para>
 	</sect2>	
 	<sect2 id="menu-nodes-print">
-	    <title>Wydruki</title>
-		<para>Wy¶wietlenie list komputerów, w formacie przyjaznym dla drukarki 
-		z mo¿liwo¶ci± definiowania filtrów i sortowania podobnie jak na Li¶cie.</para>
+	    <title>Printing</title>
+		<para>You can get printer friendly list of your computers here.
+It's possible to use same filter and sorting capabilities as on 'List'.</para>
 	</sect2>
  </sect1>
  <sect1 id="menu-netdevices">
-	<title>Osprzêt sieciowy</title>
-	<para>W panelu przeznaczonym do ewidencji sprzêtu zarz±dzamy struktur± 
-	sieci, urz±dzeniami typu swich, hub, router, serwer i po³±czeniami miêdzy
-	nimi, a tak¿e przy³±czonymi do nich komputerami. Ka¿demu urzêdzeniu mo¿na przypisaæ 
-	co najmniej jeden adres sieciowy.</para>
+	<title>Net Devices</title>
+	<para>In this panel you're able to keep all your network inventory and
+define connections between your equipment and customer nodes. Each device
+(switch, hub, router, server) might have also IP address(es) assigned.</para>
 	    <sect2 id="menu-netdevices-list">
-	    <title>Lista</title>
-		<para>Lista urz±dzeñ zawiera ich nazwy i symbole, po³o¿enie i opis, a ponadto 
-		ilo¶æ dostêpnych portów. Lista mo¿e byæ sortowana wg dowolnego parametru/kolumny.
-		Klikniêcie na wybranym urz±dzeniu spowoduje wy¶wietlenie informacji szczegó³owych 
-		o nim, gdzie mo¿liwe jest definiowanie po³±czeñ urz±dzeñ i komputerów, adresów IP
-		urz±dzenia oraz zamiana dwóch urz±dzeñ.</para>
+	    <title>List</title>
+		<para>List of devices might include its names, symbols, physical
+and logical location, description and number of available connection ports. You
+might sort its output by any highlighted column. To see device details or define
+all options and manage connected devices just click on selected record. It's
+also possible to interchange two connections between devices on this
+screen.</para>
 	    </sect2>
 	    <sect2 id="menu-netdevices-new">
-	    <title>Nowe</title>
-		<para>Urz±dzenie sieciowe powinno posiadaæ unikaln± nazwê. Pozosta³e
-		parametry tj. producent, model, nr seryjny, ilo¶æ portów, lokalizacja
-		i opis s± opcjonalne.</para>
+	    <title>New device</title>
+		<para>Network device should have unique name, all other
+parameters (manufacturer, model, serial number, ports, location and description)
+are optional.</para>
 	    </sect2>
 	    <sect2 id="menu-netdevices-map">
-	    <title>Mapa</title>
-		<para>Generowanie graficznej mapy ca³ej sieci, na podstawie
-		danych z bazy lms'a nastêpuje po wybraniu opcji menu 'Mapa'. Mo¿esz 
-		zdefiniowaæ, które urz±dzenie jest nadrzêdne w stosunku do pozosta³ych.
-		<note><para>Do wygenerowania mapy potrzebna jest wbudowana w PHP obs³uga 
-		biblioteki graficznej GD.</para></note>
+	    <title>Map</title>
+		<para>Selection of 'Map' option draws graphical map of entire
+network. You can define root device, which will appear on top of the map and all
+other devices will be drawn relative to it.
+		<note><para>You need GD library compiled in PHP (and gd module
+enabled) to be able to use graphical map.</para></note>
 		</para>
-		<para>Na mapie hosty wy³±czone oznaczone s± kolorem czarnym. Ikona z pytajnikiem
-		oznacza, ¿e dany komputer nie by³ jeszcze skanowany/w³±czony. Aby skorzystaæ z 
-		tej funkcjonalno¶ci nale¿y, korzystaj±c z crona, uruchamiaæ skrypt skanuj±cy.
-		Na mapie komputer traktowany jest za w³±czony je¶li czas ostatniego pozytywnego
-		skanowania nie jest starszy od zadanej warto¶ci (domy¶lnie 600 sekund).
-		Parametr ten okre¶la siê przy pomocy opcji
-		<filename>lastonline_limit</filename> w sekcji [phpui] pliku konfiguracyjnego.
-		Powy¿sze odnosi siê równie¿ do urz±dzeñ z tym, ¿e status urz±dzenia okre¶la
-		siê na podstawie statusu wszystkich jego adresów.
-		Status komputerów jest tak¿e widoczny na li¶cie komputerów.
-		<note><para>Do badania aktywno¶ci hostów mo¿na wykorzystaæ skrypt lms-fping lub demona almsd.</para></note>
+		<para>Device status is shown on the map - computers in black are
+offline. Question mark on device icon means that its status is unknown (device 
+has not been scanned yet). To use this functionality you need to setup scanning
+script in crontab. Computer is marked as online if computer was online on last
+successful scan and period since last scan is lesser than defined in
+configuration (Default: 600 seconds). This parameter can be set with
+<filename>lastonline_limit</filename> in [phpui] section of configuration file.
+Above feature applies both to computers and devices, but in case of devices all
+its ports (IPs) must be up for device to appear online. Computers status is also
+available on nodes list in 'Nodes' panel. 
+		<note><para>You can use lms-fping Perl script or almsd daemon to
+probe hosts availability.</para></note>
 		</para>
 	    </sect2>
  </sect1>
  <sect1 id="menu-networks">
-	<title>Sieci IP</title>
-	<para>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
-	zakres DHCP. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ 
-	na podsieci, albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</para>
+	<title>IP Networks</title>
+	<para>You can define all your networks here. Network is IP address class
+with parameters such as domain, DNSes, default gateway and DHCP pool. If you use
+LMS to manage numerous networks or you use numerous address classes, it's
+possible to define them here.</para>
 	<sect2 id="menu-networks-list">
-	    <title>Lista</title>
-	    <para>Lista sieci oprócz podstawowych danych o sieciach zawiera podsumowanie ilo¶ci
-	    adresów wolnych i przypisanych. Modyfikowanie w³a¶ciwo¶ci sieci nastêpuje w module 
-	    dostêpnym po wybraniu sieci z listy lub bezpo¶rednio po klikniêciu ikony [Edytuj].</para>
-	    <para>Podczas edycji danych sieci mo¿esz przegl±daæ listê komputerów z tej sieci, gdzie w 
-	    miejscu adresu IP pojawia siê nazwa komputera/urz±dzenia, do którego mo¿esz przej¶æ 
-	    klikaj±c na odpowiednim polu. Klikniêcie na polu z adresem IP przeniesie Ciê do modu³u
-	    dodawania nowego komputera. Znajdziesz tu tak¿e dwa przydatne linki: <emphasis>
-	    Porz±dkuj sieæ</emphasis> s³u¿±cy do przeadresowania komputerów, tak aby wyeliminowaæ 
-	    luki w adresacji oraz <emphasis>Przeadresuj do sieci</emphasis> s³u¿±cy do przenoszenia wszystkich 
-	    komputerów/urz±dzeñ z tej sieci do innej.</para>
+	    <title>List</title>
+	    <para>Among basic data about network, each record contains
+information about address space conservation - you can see summary of assigned
+and free addresses. You're able to modify network properties after you click on
+selected network or by clicking 'Edit' icon.</para>
+	    <para>During edit you are able to browse list of nodes connected to
+this network, node name will appear instead of IP number if that number is
+occupied. If you click on free IP address, without any computer assigned to it,
+new computer form will appear. There are also other features available for your
+convenience: <emphasis>Put in order</emphasis> will readdress computers so that
+there's no gap in the list and <emphasis>Reassign the network</emphasis> to move
+all nodes from one network to another.</para>
 	</sect2>
 	<sect2 id="menu-networks-new">
-	    <title>Nowa sieæ</title>
-	    <para>Definiuj±c now± sieæ musisz okre¶liæ jej unikaln± nazwê i klasê adresow±
-	    podaj±c adres IP sieci i maskê. Pozosta³e dane s± opcjonalne.</para>
+	    <title>New Network</title>
+	    <para>Defines a new network. Network needs to have unique name and
+address class, defined by its IP address and netmask. All other data is
+optional.</para>
 	</sect2>
  </sect1>
  <sect1 id="menu-finances">
-	<title>Taryfy i Finanse</title>
-	<para>Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami sieci.
-	Masz mo¿liwo¶æ definiowania taryf abonamentowych, op³at (zleceñ) sta³ych, ksiêgowania 
-	operacji finansowych, przegl±dania bilansu i historii rachunku oraz sporz±dzania faktur
-	i zestawieñ finansowych.</para> 
+	<title>Finances</title>
+	<para>This is actually the whole collection of modules, that gives you
+possibility to efficiently manage finances of your network. You can define
+periodical liabilities here (subscriptions), solid liabilities (orders),
+perform accounting operations, check each account history and draw invoices
+and balance sheets.</para>
 	<sect2 id="menu-tariffs-list">
-	    <title>Lista taryf</title>
-	    <para>Po wej¶ciu do panelu 'Taryfy i finanse' zobaczysz listê taryf zawieraj±c±
-	    podstawowe informacje o nich. Klikaj±c wybran± taryfê na li¶cie zostaniesz
-	    przeniesiony do modu³u 'Informacje o taryfie', gdzie mo¿esz edytowaæ jej parametry
-	    lub zamieniaæ u¿ytkownikom taryfy. W polu 'ilo¶æ u¿ytkowników' podana jest liczba
-	    u¿ytkowników, którym dana taryfa zosta³a przypisana oraz kolejno od lewej (w nawiasie) ca³kowita 
-	    liczba przypisañ taryfy i liczba aktywnych przypisañ taryfy, uwzglêdniaj±ca okresy obowi±zywania.</para>
+	    <title>Tariffs List</title>
+	    <para>When you enter 'Tariffs List' panel you'll be able to see list of
+liabilities (Tariffs) that might be assigned to your customers, with basic
+informations about it. When you select and click on liability you'll move to
+'Tariff' module where you're able to edit its parameters and exchange users
+between available liabilities. In 'Number of customers'  field you can read
+number of users who are assigned to it and two numbers in parenthesis: total
+number of assignments and number of active assignments, considered by its
+activity periods.</para>
 	</sect2>
 	<sect2 id="menu-tariffs-new">
-	    <title>Nowa taryfa</title>
-	    <para>Definiuj±c now± taryfê musisz podaæ unikaln± nazwê, kwotê i stawkê podatku.
-	    Przy czym "zw." w polu stawka podatku oznacza "zwolnienie z podatku".</para>
+	    <title>New Tariff</title>
+	    <para>When defining new tariff you need to enter unique name, amount
+and tax rate.</para>
 	</sect2>
 	<sect2 id="menu-payments-list">
-	    <title>Lista op³at</title>
-    	    <para>Lista op³at sta³ych ¶wiadczonych na rzecz innych podmiotów, oprócz elementów standardowych
-	    zawiera ikonê [Nalicz], przy pomocy której mo¿na obci±¿yæ rachunek sieci. Automatycznym naliczaniem
-	    op³at zajmuje siê skrypt 'lms-payments' lub odpowiedni modu³ demona almsd. Klikaj±c wybran± 
-	    op³atê na li¶cie zostaniesz przeniesiony do modu³u 'Informacje o op³acie', gdzie mo¿esz 
-	    edytowaæ jej parametry lub zaksiêgowaæ dan± op³atê w bazie operacji finansowych.</para>
+	    <title>Payments list</title>
+    	    <para>This is a list of your company payments. Among standard fields
+you'll find 'Account this payment' icon (which for some mysterious reasons looks
+like 'Save' option), where you're able to charge your account. Periodical charges
+might be done with 'lms-payments' Perl script, or appropriate module of almsd
+daemon. Select and click on chosen payment to view 'Payment Info' module, where
+you're able to edit its parameters or account given payment to financial
+database.</para>
 	</sect2>
 	<sect2 id="menu-payments-new">
-	    <title>Nowa op³ata</title>
-	    <para>Nowej op³acie sta³ej przypisujesz unikaln± nazwê, wierzyciela oraz kwotê i dzieñ
-	    naliczenia.</para>
+	    <title>New payment</title>
+	    <para>You have to assign unique name, amount and pay date for each
+new payment you setup.</para>
 	</sect2>
 	<sect2 id="menu-balance">
-	    <title>Bilans finansowy</title>
-	    <para>Historia operacji finansowych z podsumowaniem przychodu, rozchodu,
-	    wp³at i zobowi±zañ u¿ytkowników. Ikona drukarki umo¿liwia wydruk faktury odpowiadaj±cej
-	    danej pozycji z listy.</para>
+	    <title>Balance sheet</title>
+	    <para>This is history of your financial operations with total
+incomes, expenditures, payments and customers liabilities. Printer icon allows
+you to print invoice for corresponding record.</para>
 	</sect2>
 	<sect2 id="menu-newbalance">
-	    <title>Nowa operacja</title>
-	    <para>Wprowadzanie nowych operacji finansowych. Mo¿liwe jest
-	    zaksiêgowanie tej samej wp³aty lub obci±¿enia wielu u¿ytkownikom równocze¶nie.</para>
-	    <para><note><para>Do naliczania sta³ych op³at abonamentowych najlepiej wykorzystywaæ
-	    skrypt lms-payments lub demona <emphasis>almsd</emphasis>, które potrafi± ponadto
-	    wystawiaæ faktury.</para></note></para>
+	    <title>New Balance</title>
+	    <para>You can add new financial operation with this module. It's
+possible to account the same operation for multiple customers at the same
+time.</para>
+	    <para><note><para>It's best to use lms-payments Perl script or
+<emphasis>almsd</emphasis> daemon to automate periodical operations, such as
+subscription fees. Those modules are also able to write out appropriate
+invoices.</para></note></para>
 	</sect2>
 	<sect2 id="menu-invoices-list">
-	    <title>Lista faktur</title>
-	    <para>Lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych faktur (ikona [Drukuj]) oraz rozliczenia
-	    danej pozycji, czyli zaksiêgowania wp³aty (ikona [Rozlicz]).</para>
+	    <title>Invoices list</title>
+	    <para>List of invoices that has been already written out. You're
+able to print (by selecting 'Print' icon) and account ('Account' icon) selected
+invoices.</para>
 	</sect2>
 	<sect2 id="menu-invoices-new">
-	    <title>Nowa faktura</title>
-		<para>Rêczne wystawianie faktur dla wybranego u¿ytkownika.</para>
+	    <title>New Invoice</title>
+		<para>Allows you to issue an invoice for selected user
+manually.</para>
 	</sect2>
 	<sect2 id="menu-finances-print">
-	    <title>Wydruki</title>
-	    <para>Wydruki zestawieñ finansowych obejmuj±:
+	    <title>Printing</title>
+	    <para>There are several options for balance sheet printouts:
 	    <itemizedlist>
 		<listitem>
-		    <para><emphasis>Bilans finansowy sieci</emphasis> obejmuj±cy operacje finansowe 
-		    za dany okres z mo¿liwo¶ci± wybrania administratora.</para>
+		    <para><emphasis>Balance sheet for your network</emphasis>
+including financial operations for given period, signed by selected LMS
+user.</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>£±czny przychód bezrachunkowy sieci</emphasis> w danym okresie.</para>
+		    <para><emphasis>Total invoiceless income</emphasis> for
+given period.</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Raport wierzytelno¶ci</emphasis> na dany dzieñ, dla wszystkich lub 
-		    wybranego u¿ytkownika.</para>
+		    <para><emphasis>Liability report</emphasis> for given day,
+for all or selected user.</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Rejestr sprzeda¿y</emphasis>, czyli zestawienie faktur na dany okres.</para>
+		    <para><emphasis>Sale Registry</emphasis>, which consists of
+invoices for given period.</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Bilans u¿ytkownika</emphasis> na dany okres.</para>
+		    <para><emphasis>Customer balance sheet</emphasis> for given
+period.</para>
 		</listitem>
 	    </itemizedlist>
 	    </para>
 	</sect2>
  </sect1>
  <sect1 id="menu-accounts">
-	<title>Konta</title>
-	<para>Zarz±dzanie kontami ró¿nych us³ug na serwerze jest teraz
-	mo¿liwe. Funkcjonalno¶æ ta jest przeznaczona dla zaawansowanych 
-	administratorów. Wymaga znajomo¶ci tych us³ug i ich konfiguracji
-	w celu korzystania z bazy danych.</para>
-	<para>W LMSie mo¿na utworzyæ cztery rodzaje kont: shell (1), poczta (2),
-	www (4), ftp (8). W nawiasach podano numeryczne wewnêtrzne oznaczenie
-	typu konta w bazie. Konta mog± byæ wielotypowe. Przyk³adowo, je¶li 
-	zdefiniujesz konto shell+poczta+ftp w bazie zostanie zapisana cyfra 11.
-	Oznacza to, ¿e do rozpoznawania typu konta w warunkach WHERE zapytañ
-	SQL nale¿y stosowaæ sumowanie binarne (jak na przyk³adach w dalszej
-	czê¶ci rozdzia³u).</para>
-	<para>Masz tak¿e mo¿liwo¶æ definiowania domen i aliasów.</para>
+	<title>Accounts</title>
+	<para>It's now possible to manage accounts from your services using LMS.
+This functionality is provided for advanced system administrators, because it
+requires in-depth knowledge of services running on server in order to configure
+them to use LMS database.</para>
+	<para>You can create four types of accounts now: shell (1), email (2),
+www (4) and ftp (8). Decimal values for internal representation of those accounts
+are given in parenthesis. This approach enables to provide multi-type accounts,
+eg. if you define shell+email+ftp account it will be given number 11 in
+database. This means that for recognition of account type you should use binary
+sums in WHERE clauses of your SQL queries (few examples are written
+below).</para>
+	<para>You have also possibility to define domains and aliases.</para>
 	<sect2 id="accounts-accounts">
-	    <title>Konta</title>
-	    <para>Na li¶cie przedstawione s± podstawowe informacje o kontach.
-	    Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
-	    kolumny oraz filtrowanie wg zadanych kryteriów. Przej¶cie do edycji 
-	    danych konta nastêpuje po wybraniu ikony [Edytuj]. Administrator ma 
-	    tak¿e prawo do zmiany has³a.</para>
+	    <title>Accounts</title>
+	    <para>Account list contains basic information about your user
+accounts. It's possible to sort it by any highlighted column title and to filter
+it for given criteria. You can edit any account clicking 'Edit' icon.
+Administrator (LMS user) is also able to change account passwords.</para>
 	</sect2>
 	<sect2 id="accounts-new">
-	    <title>Nowe konto</title>
-	    <para>Definiuj±c dane konto musisz podaæ login, has³o i
-	    wybraæ typ konta oraz przypisaæ u¿ytkownika (lub utworzyæ tzw. konto
-	    systemowe). Nazwa domeny jest wymagana tylko dla kont mailowych. Data 
-	    wa¿no¶ci konta jest opcjonalna. Pozostawienie pustego pola z dat± 
-	    oznacza, ¿e konto nigdy nie wygasa.</para>
+	    <title>New Account</title>
+	    <para>To create new account you have to provide its login, password,
+choose at least one account type and assign customer to it. Domain name is
+optional and you'll need it only if you want to support email accounts.
+Expiration date is also optional, leave it empty to make new account valid
+forever.</para>
 	</sect2>
 	<sect2 id="accounts-aliases">
-	    <title>Aliasy</title>
-	    <para>Konta (g³ównie mailowe) mog± posiadaæ dowoln± ilo¶æ aliasów.
-	    Administrator serwera pocztowego mo¿e przekierowaæ (lokalnie) pocztê
-	    z wszystkich aliasów do jednego kota. Na li¶cie aliasów przedstawione 
-	    s± podstawowe informacje o nich i o kontach na które aliasy te wskazuj±.
-	    Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
-	    kolumny oraz filtrowanie wg zadanych kryteriów. Nie ma mo¿liwo¶ci
-	    edycji aliasu, nale¿y go usun±æ i utworzyæ nowy. Dodawanie nowego
-	    aliasu nastêpuje poprzez formularz na dole listy.</para>
+	    <title>Aliases</title>
+	    <para>Every account (email type mainly) might have any number of
+aliases that is needed. Mail server administrator might redirect mail locally
+from all those aliases to one physical existing account. Basic information about
+alias and accompanying account is provided on the list. It's possible to sort
+this list by any highlighted column name and to filter list for given criteria.
+It's not possible to edit an alias - if it's not desirable anymore you have to
+erase (remove) it and create new if needed. Add new aliases at the bottom of the
+list.</para>
 	</sect2>
 	<sect2 id="accounts-domains">
-	    <title>Domeny</title>
-	    <para>Na li¶cie przedstawione s± podstawowe informacje o zdefiniowanych
-	    domenach. Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
-	    kolumny. Mo¿liwa jest edycja danych domeny po wybraniu ikony [Edytuj].
-	    Do utworzenia nowej domeny s³u¿y formularz na dole listy.</para>
+	    <title>Domains</title>
+	    <para>You're able to see basic informations about domains on the
+list. It's possible to sort
+this list by any highlighted column name and to filter list for given criteria.
+You can edit domain data by clicking 'Edit' icon. Add new domain at the bottom
+of the list.</para>
 	</sect2>
 	<sect2 id="accounts-examples">
-	    <title>Przyk³ady</title>
-	    <para>Poni¿szy listing zawiera istotne fragmenty pliku konfiguracyjnego
-	    demona proftpd (w wersji 1.2.10) umo¿liwiaj±cy przechowywanie danych
-	    o kontach ftp w bazie LMSa. Przyk³ad zawiera konfiguracjê dla bazy
-	    danych PostgreSQL, w komentarzach podano rozwi±zania dla MySQLa:
+	    <title>Examples</title>
+	    <para>The following section contains fragments of proftpd daemon
+configuration (version 1.2.10) relevant to process of authentication with using
+data available in LMS database. This example contains Postgres configuration and
+optional MySQL configuration in comments, followed by pound (hash) sign.
 	    <example id="accounts-e1">
-		<title>Konta. Konfiguracja proftpd.</title>
+		<title>Accounts. Proftpd configuration.</title>
 <screen>
   ServerName	"LMS FTP Server"
   
-  #nazwa_bazy@host:port u¿ytkownik has³o
+  #dbname@host:port dbuser dbpass
   SQLConnectInfo lms@localhost:5432 lms mypassword
   
   SQLAuthTypes Crypt Plaintext
@@ -433,10 +468,10 @@
   RequireValidShell off
   SQLAuthenticate users
   
-  # utworzenie katalogu domowego gdy nie istnieje
+  # create user home directory if it doesn't exists yet
   SQLHomedirOnDemand on
   
-  # komunikat przy logowaniu
+  # login message
   SQLShowInfo PASS "230" "Last login: %{getlastlogin}"
   SQLLog PASS setlastlogin
   
@@ -445,29 +480,29 @@
   SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE lastlogin::abstime::timestamp::text END FROM passwd WHERE login='%u'"
   SQLNamedQuery setlastlogin UPDATE "lastlogin=EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) WHERE login='%u'" passwd
   
-  # Sprawdzamy datê wa¿no¶ci konta oraz ograniczamy szukanie do kont ftp
+  # We limit access to valid (not expired) accounts with ftp type
   # SQLUserWhereClause "type & 8 = 8 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())"
   SQLUserWhereClause "type & 8 = 8 AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))"
 </screen>
 	    </example></para>
-	    <para>W kolejnym przyk³adzie przedstawimy jak skonfigurowaæ serwer
-	    Postfix 2.1.1 oraz Cyrus-SASL 2.1.19, Courier-IMAP/POP3 3.0.4, aby korzysta³y
-	    z bazy danych LMSa. LMS'owe konta bêd± kontami wirtualnymi, a poczta
-	    przechowywana bêdzie w formacie Maildir.</para>
-	    <para>Poniewa¿ has³a w LMS'ie s± szyfrowane, wymagane jest zainstalowanie
-	    SASL'a z ³at± pozwalaj±c± na to. W komentarzach podano warto¶ci opcji
-	    charakterystycznych dla bazy MySQL. Listing zawiera tylko opcje bezpo¶rednio
-	    zwi±zane z baz± danych:
+	    <para>Next example will show us how to configure Postfix 2.1.1 mail
+server with Cyrus-SASL 2.1.19 and Courier-IMAP/POP3 3.0.4, so that they use LMS
+database. LMS accounts will be virtual, which means that they will be all
+maintained by one uid on server with mail stored in Maildir format.</para>
+	    <para>You'll need to patch your SASL for encrypted passwords,
+because LMS database contains them only in this form. In comments we have
+provided MySQL specific options. Only fragments relevant to database setup are
+shown below:
 	    <example id="accounts-e2">
-		<title>Konta. Konfiguracja serwera pocztowego (postfix+sasl+courier).</title>
+		<title>Accounts. Mail server configuration (postfix+sasl+courier).</title>
 <screen>
-# Plik smtpd.conf (Cyrus-SASL):
+# smtpd.conf file (Cyrus-SASL):
 
 pwcheck_method: auxprop
 #sql_engine: mysql
 sql_engine: pgsql
 sql_user: lms
-sql_passwd: has³o
+sql_passwd: dbpass
 sql_hostnames: localhost
 sql_database: lms
 #sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
@@ -479,14 +514,14 @@ sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
 password_format: crypt
 mech_list: login plain
 
-# authpgsqlrc (lub authmysqlrc) (Courier):
+# authpgsqlrc (or authmysqlrc) (Courier):
 
 #MYSQL_PORT		3306
 PGSQL_PORT		5432
 #MYSQL_USERNAME		lms
 PGSQL_USERNAME		lms
-#MYSQL_PASSWORD		has³o
-PGSQL_PASSWORD		has³o
+#MYSQL_PASSWORD		dbpass
+PGSQL_PASSWORD		dbpass
 #MYSQL_DATABASE		lms
 PGSQL_DATABASE		lms
 #MYSQL_SELECT_CLAUSE SELECT login, \
@@ -513,10 +548,10 @@ virtual_alias_maps = pgsql:/etc/postfix/pgsql_virtual_alias_maps.cf
 # pgsql_virtual_domains_maps.cf (Postfix):
 
 user = lms
-password = has³o
+password = dbpass
 hosts = localhost
 dbname = lms
-#MySQL nie obs³uguje opcji query, dlatego budujemy zapytanie w inny sposób
+#MySQL plugin doesn't support query option, thus we build query differently
 #select_field = name
 #table = domains
 #where_field = name
@@ -525,7 +560,7 @@ query = SELECT name FROM domains WHERE name = '%s'
 # pgsql_virtual_mailbox_maps.cf (Postfix):
 
 user = lms
-password = has³o
+password = dbpass
 hosts = localhost
 dbname = lms
 #table = passwd, domains
@@ -541,7 +576,7 @@ query = SELECT login || '/' FROM passwd, domains WHERE domainid = domains.id
 # pgsql_virtual_alias_maps.cf (Postfix):
 
 user = lms
-password = has³o
+password = dbpass
 hosts = localhost
 dbname = lms
 #table = passwd, domains, aliases
@@ -557,111 +592,110 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
  </sect1>
  <sect1 id="menu-mailing">
 	<title>Mailing</title>
-	<para>Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
-	u¿ytkowników twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
-	odbiorców, do której zostanie wys³any e-mail. Grupê adresatów mo¿na okre¶liæ
-	wg statusu oraz sieci lub grup u¿ytkowników do których nale¿±.</para>
-	<para><note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji mail().</para></note>
-	<note><para>Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami mo¿na
-	wykorzystaæ skrypt lms-notify lub modu³y notify i ggnotify demona <emphasis>almsd</emphasis>.</para></note></para>
+	<para>Mailing is component where you can spam groups of your customers
+if you have to communicate something to them. Obviously you need to specify
+sender name and address, write your message in text box and select appropriate
+group of recipients. Your attendance can be grouped by status, network or user
+groups.</para>
+	<para><note><para>Your server has to support mail() function for this to
+work.</para></note>
+	<note><para>It's best to use lms-notify Perl script or notify and
+ggnotify modules of <emphasis>almsd</emphasis> daemon to send emails
+automatically whenever customer is in debt.</para></note></para>
  </sect1>
  <sect1 id="menu-reload">
-	<title>Prze³adowanie</title>
-	<para>Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji i us³ug zdefiniowanych
-	dla generatora plików konfiguracyjnych <emphasis>LMS-MGC</emphasis> lub demona <emphasis>almsd</emphasis>. 
-	Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <emphasis>LMS-MGC</emphasis> oraz demona.</para>
+	<title>Reload</title>
+	<para>Click on 'Reload' and reload request or command should execute.
+What services and how they're updated is configured in
+<emphasis>LMS-MGC</emphasis> or <emphasis>almsd</emphasis> daemon. You'll find
+needed information about configuration in appropriate chapters of this
+documentation.</para>
  </sect1>
  <sect1 id="menu-stats">
-	<title>Statystyki</title>
-	<para>Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
-	dostêpny w menu 'Statystyki'. Dane statystyk zawieraj± lo¶æ danych wysy³anych i pobieranych 
-	z Internetu (na danym interfejsie) dla ka¿dego komputera. Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej 
-	godziny, ostatniego dnia, ostatnich 30 dni lub ostatniego roku.</para>
-	<para> 
-	    <note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, albo demon <emphasis>almsd</emphasis>.</para></note>
+	<title>Stats</title>
+	<para>This is interface to view bandwidth consumption per host
+statistics enclosed in bar graphs. Statistics contains data about sent and
+received bytes for given interface for each node. Using drop down menu you can
+quickly generate statistics for given time periods: last hour, day, 30 days or
+year.
+	    <note><para>You need working lms-traffic Perl script or
+<emphasis>almsd</emphasis> daemon running to collect statistics.</para></note>
 	</para>
 	<sect2 id="menu-stats-filter">
-	<title>Filtr</title>
-	    <para>Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
-	    okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz 
-	    ich wiêcej), ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad 
-	    wed³ug downloadu).</para>
+	<title>Filter</title>
+	    <para>Before you can see graphs you can define parameters to limit
+period or network (if you have many), top number of computers considered and
+sort output as you like (ie. by top download).</para>
 	</sect2>
 	<sect2 id="menu-stats-compact">
-	<title>Kompaktowanie</title>
-	    <para>W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci zapisu, mo¿e
-	    nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
-	    oczekiwania na rysowanie wykresów. Z tego powodu w menu 'Kompaktowanie'
-	    udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy statystyk bez
-	    utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
-	    w nastêpuj±cy sposób:
+	<title>Compacting</title>
+	    <para>Depending on chosen update frequency amount of database data
+used for statistics might grow fast, which will lead to extension of time needed
+to generate statistics. For that reason in 'Compacting' menu you're able to
+shrink your database size without data loss. This module will compact data using
+following logic:
 		<itemizedlist>
-		    <listitem><para><emphasis>Poziom Niski</emphasis>: dane z poprzedniego dnia i starsze, zostan± u¶rednione
-			do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
-			to 6*24 wpisów zostanie zast±pione jednym.</para></listitem>
-		    <listitem><para><emphasis>Poziom ¦redni</emphasis>: dane starsze ni¿ miesi±c zostan± u¶rednione do
-			jednego dnia.</para></listitem>
-		    <listitem><para><emphasis>Poziom Wysoki</emphasis>: dane starsze ni¿ miesi±c zostan± u¶rednione do
-			jednej godziny.</para></listitem>
+		    <listitem><para><emphasis>Low precision</emphasis>: data
+from previous date and older will be approximated to one day. If you save data
+each 10 minutes 6*24 records will be compacted to one.</para></listitem>
+		    <listitem><para><emphasis>Medium precision</emphasis>: data
+older than month will be approximated to one day.</para></listitem>
+		    <listitem><para><emphasis>High precision</emphasis>: data
+older than month will be approximated to one hour.</para></listitem>
 		</itemizedlist>
-	    <warning><para>Kompaktowanie bazy danych jest procesem nieodwracalnym.</para></warning>
+	    <warning><para>Data approximation is irreversible.</para></warning>
 	    </para>
 	</sect2>
  </sect1>
   <sect1 id="menu-helpdesk">
 	<title>Helpdesk</title>
-	    <para>Helpdesk (inaczej Request Tracker) to system obs³ugi zg³oszeñ.
-	    W systemie mo¿na prowadziæ bazê wszystkich zg³oszeñ i zapytañ u¿ytkowników
-	    sieci, ale tak¿e osób które nie s± wpisane do bazy LMS'a. Zg³oszenia mo¿na
-	    pogrupowaæ w kategorie (kolejki) i wyszukiwaæ wg zadanych kryteriów.
-	    Do ka¿dej kolejki mo¿na zdefiniowaæ uprawnienia dla administratorów.
-	    </para>
-	    <para>W menu po lewej stronie znajduje siê pole szybkiego wyszukiwania
-	    zg³oszenia, w którym mo¿na podawaæ jego ID lub nazwisko zg³aszaj±cego je
-	    u¿ytkownika. W drugim przypadku zostanie wy¶wietlona lista wszystkich zg³oszeñ
-	    danego u¿ytkownika.</para>
-	    <para>Ka¿de zg³oszenie posiada historiê, na któr± sk³adaj± siê wiadomo¶ci
-	    od administratorów i u¿ytkowników. Administrator mo¿e wys³aæ swoj± wiadomo¶æ do 
-	    u¿ytkownika, klikaj±c 'Wy¶lij' podczas dodawania wiadomo¶ci. (Nale¿y podaæ
-	    e-mail odbiorcy. Adresem nadawcy bêdzie adres kolejki, a je¶li jest pusty, adres 
-	    administratora). Wszystkie wiadomo¶ci tak¿e te wys³ane, zostaj± zapisane 
-	    w historii zg³oszenia. Zg³oszenie mo¿e mieæ cztery stany: nowy, otwarty, rozwi±zany 
-	    i martwy.</para>
-	    <para>Skrypt <xref linkend="lms-rtparser"> zosta³ stworzony aby umo¿liwiæ
-	    obs³ugê systemu i przesy³anie zg³oszeñ poczt± elektroniczn±.</para>
+	    <para>Helpdesk (or Request Tracker) is user request management
+system. It's possible to keep history of all requests and questions here, both reported by
+customers and users not registered in LMS database. Reports can be grouped in
+queues (categories) and you're able to search them for a given criteria. It's possible to
+define access rights for LMS users to each queue.</para>
+	    <para>You have quick search box in left (menu) panel, which may be
+used to jump to appropriate ticket giving ticket id or reporter name. Searching
+by reporter name will give a list of all tickets available for this user.</para>
+	    <para>Each ticket includes history built on messages sent by
+administrators (LMS users) and customers. Administrator may send his message to
+customer specifying recipient name and clicking 'Submit/Send', email will be
+sent with queue address as sender, or - if it's empty - LMS user address. All
+messages, including those sent, are recorder in ticket history. Each ticket may
+be in one of the states: new, opened, resolved or dead.</para>
+	    <para>Please look at <xref linkend="lms-rtparser"> script which has been developed to
+support incoming requests and outgoing comments by your mail server.</para>
 	<sect2 id="menu-helpdesk-list">
-	<title>Lista kolejek</title>
-	    <para>Na li¶cie kolejek znajduj± siê podstawowe informacje i statystyki zg³oszeñ.
-	    Klikniêcie na wybranej kolejce powoduje wy¶wietlenie listy zg³oszeñ. St±d mo¿na
-	    tak¿e przej¶æ do informacji szczegó³owych (w tym tak¿e uprawnieniach) o kolejce lub
-	    usun±æ wybran± kolejkê. Usuniêcie kolejki spowoduje tak¿e usuniêcie zg³oszeñ z bazy
-	    danych przypisanych do niej.
-	    </para>
+	<title>Queues List</title>
+	    <para>Basic informations and request statistics are available on
+queues list. Select and click on chosen queue to display all tickets belonging
+to it. You can also go to detailed view (including permissions) about queue or
+remove given queue. Removing queue will also remove all belonging tickets from
+database.</para>
 	</sect2>
 	<sect2 id="menu-helpdesk-newqueue">
-	<title>Nowa kolejka</title>
-	    <para>Kolejka (kategoria) posiada nazwê, opcjonalny opis oraz opcjonalny adres
-	    poczty elektronicznej, który u¿ywany jest do korespondencji. W tabeli 'Uprawnienia'
-	    definiuje siê prawa do danej kolejki, które maj± moc wiêksz± od ogólnych 
-	    uprawnieñ administratorów tzn. je¶li admin nie ma praw do danej kolejki, to nawet
-	    je¶li ma 'pe³ny dostêp' zg³oszeñ w tej kolejce nie zobaczy. Prawo zapisu (dodawanie/edytowanie
-	    zg³oszeñ i wiadomo¶ci) oznacza automatyczne prawo do odczytu. 
-	    </para>
+	<title>New queue</title>
+	    <para>Queue (category) contains a name, optional description and
+optional email address, used in correspondence. 'Permissions' table defines LMS
+users access to this queue, which overrides those set in 'Administration', which
+means, that the user who has 'full access' permissions won't be able to see
+queue and tickets placed in it until he's given access to that queue.
+Enabling 'write' (tickets and comments edit ability) to user automatically gives
+him 'read' access.</para>
 	</sect2>
 	<sect2 id="menu-helpdesk-search">
-	<title>Wyszukaj</title>
-	    <para>Wyszukiwanie zg³oszeñ polega na wybraniu z bazy zg³oszeñ spe³niaj±cych 
-	    wszystkie podane kryteria (warunek AND, nie OR). Mo¿esz podaæ temat, w³a¶ciciela, 
-	    kolejkê, status i zg³aszaj±cego. Klientów sieci wybieraj z listy, dla pozosta³ych
-	    nale¿y podaæ Nazwisko/Imiê i/lub e-mail.
-	    </para>
+	<title>Searching</title>
+	    <para>Tickets are searchable by all given criteria (AND not OR). You
+can provide subject, owner, queue, status and reporter for your search.
+Customers may be selected from drop-down list, unregistered users may be
+searched by name or email address.</para>
 	</sect2>
 	<sect2 id="menu-helpdesk-newticket">
-	<title>Nowe zg³oszenie</title>
-	    <para>Dodaj±c nowe zg³oszenie nale¿y okre¶liæ dla niego temat, tre¶æ, wybraæ kolejkê
-	    oraz zg³aszaj±cego u¿ytkownika. Osoby spoza sieci wpisujemy w polach Nazwisko i Imiê.
-	    Opcjonalnie, je¶li wiadomo¶æ zosta³a zg³oszona poczt± elektroniczn± podajemy adres 
-	    e-mail (tak¿e dla u¿ytkownika zapisanego w bazie).</para>
+	<title>New ticket</title>
+	    <para>For each new ticket you need to provide subject, content,
+queue and reporter. Unregistered users (not in customers database) should be
+recorded using 'Submitter' fields. You can provide email address (in both
+registered/unregistered cases) if ticket will be running via email.</para>
 	</sect2>
  </sect1>
 </chapter>

@@ -1,122 +1,69 @@
 <!-- $Id$ -->
 <chapter id="contrib">
-<title>Dodatki</title>
-	<para>W niniejszym rozdziale zostan± opisane dodatkowe modu³y i rozwi±zania
-	zwiêkszaj±ce funkcjonalno¶æ LMS'a znajduj±ce siê w katalogu 
-	<filename>contrib</filename>. Czê¶æ z nich nale¿y dostosowaæ do w³asnych 
-	potrzeb, a niektóre integruj± siê z interfejsem <emphasis>LMS-UI</emphasis>.</para>
+<title>Extensions</title>
+	<para>This chapter describes additional modules and implementations which extend LMS functionality. Some of them need to be adjusted for user's own need, some of them integrate with <emphasis>LMS-UI</emphasis> interface. All extensions are located in <filename>contrib</filename> subdirectory.</para>
 	<sect1 id="contrib-customer">
-    	<title>Moje konto</title>
+    	<title>Customer account</title>
 		<sect2 id="customer-intro">
-		<title>Wstêp</title>
-		<para>W katalogu <filename>contrib/customer</filename> znajduje siê
-		przyk³ad rozwi±zania, dziêki któremu ka¿dy klient twojej sieci
-		mo¿e sprawdziæ w³asny bilans finansowy.</para>
-		<para>Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
-		bilans i informacje o kliencie, który jest w³a¶cicielem komputera
-		o tym adresie.</para>
-		<para>Dla osób korzystaj±cych z proxy, nie korzystaj±cych
-		z sieci tylko w domu, albo którzy nie chc± aby dzieci/ma³¿onkowie/pracownicy 
-		mieli wgl±d w dane finansowe dotycz±ce ich dostêpu do sieci/innych 
-		us³ug przeznaczone jest "Moje konto 2".</para>
+		<title>Intro</title>
+		<para>In <filename>contrib/customer</filename> directory you can find example solution, which displays financial balance and contact information for a given user, which makes possible for your customers to view this data themselves.</para>
+		<para>Script checks IP address for request and displays data which is relevant to computer's owner.</para>
+		<para>For proxy users, people not checking from home or to those who don't intend that they children/spouse/workers are able to see their financial data there's "Customer account 2" module.</para>
 		</sect2>
 		<sect2 id="customer-install">
-		<title>Instalacja</title>
-		<para>Pliki nale¿y skopiowaæ w dowolne miejsce i wystawiæ
-		pod adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie
-		ustawiæ poprawn± ¶cie¿kê do <filename>lms.ini</filename> w pliku 
-		<filename>index.php</filename>.</para>	
+		<title>Installation</title>
+		<para>You should copy those files to any path and make it accessible to your Web Server, or set appropriate alias (eg. Alias /myAccount/ /var/www/lms/contrib/customer) and put correct path to <filename>lms.ini</filename> in <filename>index.php</filename>.</para>
 		</sect2>
 	</sect1>
 	<sect1 id="contrib-customer2">
-    	<title>Moje konto 2</title>
+    	<title>Customer account 2</title>
 		<sect2 id="customer2-intro">
-		<title>Wstêp</title>
-		<para>W katalogu <filename>contrib/customer_otherip</filename> znajduje siê
-		odpowiednik <filename>contrib/customer</filename>, który nie rozpoznaje
-		klienta po adresie IP, ale wymaga logowania. Uwierzytelnianie odbywa siê na 
-		podstawie numeru PIN oraz telefonu klienta, ale mo¿liwe jest tak¿e
-		wykorzystanie ID lub numeru umowy (dodatkowe pole w bazie) - patrz 
-		pliki balanceview.php i authentication.inc).</para>
-		<para>Skrypt wy¶wietla bilans i informacje o kliencie, a tak¿e w po³±czeniu
-		z <filename>contrib/formularz_przelewu_wplaty</filename> umo¿liwia klientowi
-		wydrukowanie druku wp³aty na kwotê zaleg³o¶ci.</para>
+		<title>Intro</title>
+		<para>In <filename>contrib/customer_otherip</filename> directory you can find equivalent of "Customer account" module, which does not authorize user basing on his IP address, but requires login. Authentication can be performed basing on user's PIN number and phone - or alternatively ID or contact number - as username, see balanceview.php and authentication.inc files).</para>
+		<para>Script shows user his balance and contact information, and, with help of <filename>contrib/formularz_przelewu_wplaty</filename> gives user a possibility to print money order for his debts.</para>
 		</sect2>
 		<sect2 id="customer2-install">
-		<title>Instalacja</title>
-		<para>Instalacja sprowadza siê do ustawienia opcji <filename>sys_dir</filename>
-		w sekcji <emphasis>[directories]</emphasis> pliku lms.ini oraz zlinkowania 
-		katalogu <filename>img</filename> z lms'owymi ikonkami.</para>	
+		<title>Installation</title>
+		<para>All installation is limited to setup of <filename>sys_dir</filename> option in <emphasis>[directories]</emphasis> section of lms.ini file and linking <filename>img/</filename> with UI icons.</para>
 		</sect2>
 	</sect1>
 	<sect1 id="contrib-sqlpanel">
-    	<title>Panel SQL</title>
+    	<title>SQL Panel</title>
 		<sect2 id="sqlpanel-intro">
-		<title>Wstêp</title>
-		<para>W katalogu <filename>contrib/sqlpanel</filename> znajdziesz
-		modu³, dziêki któremu bêdziesz mia³ mo¿liwo¶æ bezpo¶redniego dostêpu 
-		do bazy danych poprzez zadawanie zapytañ SQL. Wyniki wy¶wietlane s±
-		w formie tabeli. Ponadto podawany jest czas wykonania zapytania. 
-		Mo¿liwe jest tak¿e drukowanie wyników zapytania.</para>
-		<para>Ilo¶æ wy¶wietlanych wierszy na jednej stronie ograniczana jest
-		domy¶lnie do 50. Mo¿na to zmieniæ przy pomocy zmiennej '<prompt>sqlpanel_pagelimit</prompt>'
-		w sekcji <emphasis>[phpui]</emphasis> pliku konfiguracyjnego <filename>lms.ini</filename>.</para>
+		<title>Intro</title>
+		<para>In <filename>contrib/sqlpanel</filename> directory you can find module which enables you direct access to LMS database, based on direct queries. Results are being shown as table, along with execution time. It's also possible to print query results.</para>
+		<para>Number of instantly displayed records is 50 by default. You can change this limit in <prompt>sqlpanel_pagelimit</prompt> variable in <emphasis>[phpui]</emphasis> section of <filename>lms.ini</filename> file.</para>
 		</sect2>
 		<sect2 id="sqlpanel-install">
-		<title>Instalacja</title>
-		<para>Instalacja polega na skopiowaniu plików w odpowiednie miejsca
-		w drzewie katalogów lms'a. Plik <filename>sql.php</filename> skopiuj
-		do katalogu <filename>modules</filename>, a pliki <filename>sql.html, sqlprint.html, 
-		adminheader.html</filename> do katalogu <filename>templates</filename>.
-		Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu 
-		<emphasis>Administracja->SQL.</emphasis></para>
+		<title>Installation</title>
+		<para>Installation is limited to copying needed files into LMS tree: <filename>sql.php</filename> should be placed into <filename>modules</filename> directory, and <filename>sql.html, sqlprint.html,
+                adminheader.html</filename> into <filename>templates</filename>. After those steps are done, you're able to access this module via <emphasis>Administration -> SQL</emphasis> menu.</para>
 		</sect2>
 	</sect1>
 	<sect1 id="contrib-squid">
-    	<title>Ostrze¿enia + squid</title>
+    	<title>Squid warnings</title>
 		<sect2 id="squid-redirector-intro">
-		<title>Wstêp</title>
-		<para>Ten ma³y zestaw narzêdzi pozwala za pomoc± squida w dosyæ elegancki sposób 
-		wy¶wietlaæ wiadomo¶ci administracyjne oraz w razie potrzeby blokowaæ dostêp
-		do w3cache. Oczywi¶cie aby to dzia³a³o w 100%, wszyscy klienci musz± 
-		korzystaæ ze squida.</para>
-		<para>Kluczowym elementem jest redirector. Odpowiada on za to, 
-		aby w momencie ustawienia dla danego komputera flagi warn, 
-		przekierowywa³ wszystkie ¿±dania wysy³ane do serwera proxy na nasz, 
-		ustalony wcze¶niej adres. Przekierowaniu nie ulegaj± adresy zawieraj±ce 
-		adres naszej winetki, tak aby umo¿liwiæ za³adowanie siê obrazków.
-		Je¶li komputer ma ustawion± flagê warn, to po przekierowaniu u¿ytkownik ma 
-		mo¿liwo¶æ oznaczenia wiadomo¶ci jako przeczytanej, po czym skrypt automatycznie 
-		kieruje przegl±darkê na pierwotnie wywo³ywany URL. W przypadku oznaczeniu danego 
-		komputera jako wy³±czony, u¿ytkownik bêdzie zawsze przekierowywany na adres 
-		winetki, bez mo¿liwo¶ci oznaczenia wiadomo¶ci jako przeczytanej.
-		Wiêcej informacji znajdziesz w pliku
-		<filename>README</filename>.</para>
+		<title>Intro</title>
+		<para>This tiny set of tools allows you to display users their warning messages (and cut access to entire Web off, it needed) in very elegant way, namely using squid Proxy Server. Obviously to make this work, all users should be forced to use proxy (or transparent proxy should be setup).</para>
+		<para>Key component is redirector. It's responsible for user redirection to programmed message, when warn flag is set in database for his computers. URL to programmed message is not subject of redirection, which enables user's browser to download images. If computer has warn flag set, it's redirected to message, where he has a choice to mark this message as read. After that user is taken back to original (requested) URL. If given computer is disconnected (cutoff) it always redirects him to the message, without any possibility to "quit" to Web. For more information, please see <filename>README</filename> file.</para>
 		</sect2>
 		<sect2 id="squid-redirector-install">
-		<title>Instalacja</title>
-		<para>Zaczynamy od konfiguracji squida (<filename>squid.conf</filename>):
+		<title>Installation</title>
+		<para>Let's start from configuring squid (<filename>squid.conf</filename>):
 <screen>
 redirector_bypass on
-redirect_program /sciezka/do/lms-squid
+redirect_program /path/to/lms-squid
 </screen>
-		które informuj± squida aby dla ka¿dego adresu u¿ywa³ naszego 
-		redirectora. Nastêpnie nale¿y skonfigurowaæ redirectora. Otwieramy 
-		w naszym ulubionym edytorze plik lms-squid i praktycznie
-		wszystko co mo¿na w nim ustawiæ to:
+		That informs squid that it should use our redirector for each URL. Next step is to configure our redirector. Open lms-squid file in your favorite editor and change this line:
 <screen>
 my $configfile = '/etc/lms/lms.ini';
 </screen>
-		Czyli po³o¿enie pliku konfiguracyjnego. Reszta konfiguracji 
-		ustawiana jest w <filename>lms.ini</filename>, gdzie dopisujemy sekcjê 
-		<filename>[squid-redirector]</filename> i definiujemy adres winetki:
+		...to reflect location of your lms.ini file. The rest of configuration is being set in actual <filename>lms.ini</filename> file, where we should add <filename>[squid-redirector]</filename> section and define URL of our programmed message:
 <screen>
 [squid-redirector]
-redirect        = http://nasz.serwer.pl/winetka/
+redirect        = http://www.ourserver.com/adminMsg/
 </screen>
-		Do katalogu gdzie ma byæ widoczna winetka kopiujemy pliki
-		<filename>index.php, message.html</filename> i zawarto¶æ katalogu 
-		<filename>img</filename>.</para>
+		At last, we copy files <filename>index.php, message.html</filename> to the directory that should serve a message to users and linking to lms images directory (<filename>img</filename>).</para>
 		</sect2>
 	</sect1>
 </chapter>
