@@ -81,17 +81,17 @@ class LMS
 
 		// to siê rozejdzie po modu³ach:
 
-		$this->AddMenu('Administracja', 'settings.gif', '?', 'Informacje i zarz±dzanie systemem', 'i', 0);
-		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 5);
-		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 10);
-		$this->AddMenu('Osprzêt sieciowy', 'netdev.gif', '?m=netdevlist', 'Ewidencja sprzêtu sieciowego', 'o', 15);
-		$this->AddMenu('Sieci IP', 'network.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 't', 20);
-		$this->AddMenu('Taryfy i finanse', 'money.gif', '?m=tarifflist', 'Zarz±dzanie taryfami oraz finansami sieci', 'f', 25);
-		$this->AddMenu('Konta', 'account.gif', '?m=accountlist', 'Konta', 'a', 30);
-		$this->AddMenu('Mailing', 'mail.gif', '?m=mailing', 'Korespondencja seryjna', 'm', 35);
-		$this->AddMenu('Prze³adowanie', 'reload.gif', '?m=reload', '', 'r', 40);
-		$this->AddMenu('Statystyki', 'traffic.gif', '?m=traffic', 'Statystyki wykorzystania ³±cza', 'x', 45);
-		$this->AddMenu('Helpdesk', 'ticket.gif', '?m=rtqueuelist', 'Obs³uga zg³oszeñ (RT)', 'h', 50);
+		$this->AddMenu(trans('Administration'), 'settings.gif', '?', trans('System informations and management'), 'i', 0);
+		$this->AddMenu(trans('Clients'), 'user.gif', '?m=userlist', trans('Clients: list, searching, adding, groups'), 'u', 5);
+		$this->AddMenu(trans('Nodes'), 'node.gif', '?m=nodelist', trans('Nodes: list, searching, adding'), 'k', 10);
+		$this->AddMenu(trans('Net Devices'), 'netdev.gif', '?m=netdevlist', trans('Record of Network Devices'), 'o', 15);
+		$this->AddMenu(trans('IP Networks'), 'network.gif', '?m=netlist', trans('IP Address Classes Management'), 't', 20);
+		$this->AddMenu(trans('Finances'), 'money.gif', '?m=tarifflist', trans('Tariffs and Network Finances Management'), 'f', 25);
+		$this->AddMenu(trans('Accounts'), 'account.gif', '?m=accountlist', trans('Accounts, Domains, Aliases Management'), 'a', 30);
+		$this->AddMenu(trans('Mailing'), 'mail.gif', '?m=mailing', trans('Serial Mail'), 'm', 35);
+		$this->AddMenu(trans('Reload'), 'reload.gif', '?m=reload', '', 'r', 40);
+		$this->AddMenu(trans('Stats'), 'traffic.gif', '?m=traffic', trans('Statistics of Internet Link Usage'), 'x', 45);
+		$this->AddMenu(trans('Helpdesk'), 'ticket.gif', '?m=rtqueuelist', trans('Requests Tracking'), 'h', 50);
 	}
 
 	function _postinit()

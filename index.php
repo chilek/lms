@@ -118,11 +118,8 @@ require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/checkip.php');
 require_once($_LIB_DIR.'/checkdirs.php');
 require_once($_LIB_DIR.'/unstrip.php');
-require_once($_SMARTY_DIR.'/Smarty.class.php');
-require_once($_LIB_DIR.'/LMSDB.php');
-require_once($_LIB_DIR.'/LMS.class.php');
-require_once($_LIB_DIR.'/Session.class.php');
 require_once($_LIB_DIR.'/accesstable.php');
+require_once($_LIB_DIR.'/LMSDB.php');
 
 // Init database 
 
@@ -151,10 +148,16 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 
 // Initialize session and template classes
 
+require_once($_SMARTY_DIR.'/Smarty.class.php');
+require_once($_LIB_DIR.'/language.php');
+require_once($_LIB_DIR.'/LMS.class.php');
+require_once($_LIB_DIR.'/Session.class.php');
+
 $SESSION = new Session($DB, $_TIMEOUT);
 
 $LMS = new LMS($DB, $SESSION, $_CONFIG);
 $LMS->CONFIG = $_CONFIG;
+$LMS->lang = $language;
 
 $SMARTY = new Smarty;
 $SMARTY->assign('_config',$_CONFIG);
@@ -169,8 +172,9 @@ $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 $SMARTY->debugging = chkconfig($_CONFIG['phpui']['smarty_debug']);
 require_once($_LIB_DIR.'/smarty_addons.php');
 
-// set locales
-require_once($_LIB_DIR.'/language.php');
+$SMARTY->assign_by_ref('_LANG', $_LANG);
+$SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
+$SMARTY->assign_by_ref('_language', $LMS->lang);
 
 $layout['logname'] = $SESSION->logname;
 $layout['logid'] = $SESSION->id;
