@@ -26,6 +26,6 @@
 
 $LMS->DatabaseCreate();
 
-header("Location: ?m=".$_SESSION['lastmodule']);
+header('Location: ?m='.$_SESSION['lastmodule']);
 
 ?>

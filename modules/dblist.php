@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Kopie zapasowe bazy danych";
+$layout['pagetitle'] = trans('Database Backups');
 
 $dblist = $LMS->DatabaseList();
 

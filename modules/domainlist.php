@@ -72,9 +72,9 @@ if($domainadd = $_POST['domainadd'])
 	}
 	
 	if($domainadd['name'] == '')
-		$error['name'] = 'Nie poda³e¶ nazwy domeny!';
+		$error['name'] = trans('Domain name is required!');
 	elseif(GetDomainIdByName($domainadd['name']))
-		$error['name'] = 'Domena o podanej nazwie ju¿ istnieje!';
+		$error['name'] = trans('Domain with specified name exists!');
 	
 	if(!$error)
 	{
@@ -104,7 +104,7 @@ $start = ($page - 1) * $pagelimit;
 
 $_SESSION['dlp'] = $page;
 
-$layout['pagetitle'] = 'Zarz±dzanie domenami';
+$layout['pagetitle'] = trans('Domains Management');
 
 $domainlist = GetDomainList($o);
 $listdata['total'] = $domainlist['total'];
