@@ -4,7 +4,8 @@
   - dwa poziomy debugowania:
 	debug0 - logowanie zapytañ SQL
 	debug1 - logowanie zdarzeñ (alec)
- 
+  - zmiana 'tempfile' na 'tmpfile' w konfiguracji modu³ów (alec)
+
 * 29.10.2003
   - dodane parsowanie sekwencji specjalnych w zmiennych konfiguracyjnych (alec)
 
