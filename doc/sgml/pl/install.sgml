@@ -655,6 +655,13 @@ database = /usr/local/lms/lms.db</screen>
 	    Maksymalnie 32. Domy¶lnie: 16.</para>
 	    <para>Przyk³ad:	<prompt>nodepassword_length = 8</prompt></para>
 	</listitem>
+	<listitem>
+	    <para>smtp_host, smtp_port, smtp_username, smtp_password</para>
+	    <para>Parametry po³±czenia smtp. LMS umo¿liwia korzystanie ze
+	    zdalnego serwera pocztowego z autoryzacj±, wykorzystuj±c do tego modu³
+	    PEAR::Mail. Domy¶lnie: 127.0.0.1:25.</para>
+	    <para>Przyk³ad:	<prompt>smtp_host = poczta.domena.pl</prompt></para>
+	</listitem>
 	</itemizedlist>
  	</sect2> 
     </sect1>
