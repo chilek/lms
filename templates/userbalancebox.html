@@ -19,7 +19,8 @@
 					<TD width="1%" class="fbt" align="right">Warto¶æ:</TD>
 					<TD width="1%" class="fbt" align="center">&raquo;</TD>
 					<TD width="1%" class="fbt" align="right">Po:</TD>
-					<TD width="93%" class="frightu">Opis:</TD>
+					<TD width="93%" class="fbt">Opis:</TD>
+					<TD width="1%" class="frightu">&nbsp;</TD>
 				</tr>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{section name=balancelist loop=$balancelist.id start=$limit}
@@ -31,6 +32,7 @@
 					<TD width="1%" align="center">&raquo;</TD>
 					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|string_format:"%01.2f"} z³{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
 					<TD width="93%">{$balancelist.comment[balancelist]}</TD>
+					<TD width="1%" align="right"><nobr>{if $balancelist.type[balancelist] == 4}<a href="?m=faktura&id={$balancelist.id[balancelist]}"><FONT color="brown">Wystaw fakturê</FONT></a>{/if}</nobr></TD>
 				</TR>
 				{sectionelse}
 				<TR>
@@ -58,7 +60,7 @@
 						<TD colspan="2" class="ftop" nowrap>
 							<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s"> z³
 						</TD>
-						<TD colspan="2" align="right" class="ftop">
+						<TD colspan="3" align="right" class="ftop">
 							<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]"> <A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
 						</TD>
 					</FORM>
