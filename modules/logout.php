@@ -24,11 +24,18 @@
  *  $Id$
  */
 
-$SESSION->LogOut();
-header("Location: ?m=welcome");
+if($_GET[is_sure]=="1") 
+{
+	$SESSION->LogOut();
+	header("Location: ?m=welcome");
+} else
+	header("Location: ?m=".$_SESSION[lastmodule]);    
 
 /*
  * $Log$
+ * Revision 1.16  2003/11/25 16:56:02  alec
+ * poprawiony BTS_0000082
+ *
  * Revision 1.15  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
