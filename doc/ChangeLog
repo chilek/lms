@@ -21,6 +21,7 @@ wersja 1.1.8 (??/??/????):
   - urz±dzeniom sieciowym mo¿na przypisywaæ adresy IP oraz MAC (lexx/alec)
   - w genfake.php poprawione czyszczenie bazy oraz dodane generowanie
     danych osprzêtu i po³±czeñ sieciowych (alec)
+  - poprawka w GetMACs() zgodnie z BTS#0000092 (alec)    
   - mo¿liwo¶æ podania terminu i rodzaju p³atno¶ci przy pisaniu faktury z palca
     (lukasz):
     MySQL:
