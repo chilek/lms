@@ -76,7 +76,7 @@
 		<ulink url="../lms.sqlite"><filename>lms.sqlite</filename></ulink> w katalogu
 		<filename>/doc</filename>.</para>
 		<sect2 id="admins">
-			<title>Administratorzy ('admins')</title>
+			<title>U¿ytkownicy ('admins')</title>
 			<simplelist>
 				<member>id - identyfikator</member>
 				<member>login - login</member>
@@ -92,12 +92,12 @@
 			</simplelist>
 		</sect2>
 		<sect2 id="users">
-			<title>U¿ytkownicy ('users')</title>
+			<title>Klienci ('users')</title>
 			<simplelist>
 				<member>id - identyfikator</member>
 				<member>lastname - nazwa/nazwisko</member>
 				<member>name - imiê</member>
-				<member>status - status u¿ytkownika (3-pod³±czony, 2-oczekuj±cy, 1-zainteresowany)</member>
+				<member>status - status (3-pod³±czony, 2-oczekuj±cy, 1-zainteresowany)</member>
 				<member>email - adres poczty internetowej</member>
 				<member>phone1 - telefon</member>
 				<member>phone2 - telefon</member>
@@ -113,14 +113,14 @@
 				<member>serviceaddr - adres do dorêczeñ (np. na faktury)</member>
 				<member>creationdate - czas utworzenia wpisu</member>
 				<member>moddate - czas modyfikacji</member>
-				<member>creatorid - identyfikator administratora tworz±cego wpis</member>
-				<member>modid - identyfikator administratora dokonuj±cego zmian danych</member>
+				<member>creatorid - identyfikator u¿ytkownika tworz±cego wpis</member>
+				<member>modid - identyfikator u¿ytkownika dokonuj±cego zmian danych</member>
 				<member>deleted - usuniêty z bazy (0/1)</member>
 				<member>message - komunikat do wy¶wietlenia przy w³aczonych ostrze¿eniach</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="usergroups">
-			<title>Grupy u¿ytkowników ('usergroups')</title>
+			<title>Grupy klientów ('usergroups')</title>
 			<simplelist>
 				<member>id - identyfikator</member>
 				<member>name - nazwa</member>
@@ -128,11 +128,11 @@
 			</simplelist>
 		</sect2>
 		<sect2 id="userassignments">
-			<title>Grupy u¿ytkowników - c.d. ('userassignments')</title>
+			<title>Grupy klientów - c.d. ('userassignments')</title>
 			<simplelist>
 				<member>id - identyfikator</member>
 				<member>usergroupid - identyfikator grupy</member>
-				<member>userid - identyfikator u¿ytkownika</member>
+				<member>userid - identyfikator klienta</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="networks">
@@ -162,8 +162,8 @@
 				<member>ownerid - identyfikator w³a¶ciciela ('0' - dla adresu urz±dzenia)</member>
 				<member>creationdate - znacznik czasu utworzenia wpisu</member>
 				<member>moddate - znacznik czasu ostatniej modyfikacji</member>
-				<member>creatorid - identyfikator administratora tworz±cego wpis</member>
-				<member>modid - identyfikator administratora </member>
+				<member>creatorid - identyfikator u¿ytkownika tworz±cego wpis</member>
+				<member>modid - identyfikator u¿ytkownika ostatnio modyfikuj±cego wpis</member>
 				<member>netdev - identyfikator urz±dzenia sieciowego do którego jest pod³±czony komputer</member>
 				<member>linktype - typ po³±czenia sieciowego (0-kabel, 1-radio)</member>
 				<member>access - pod³±czony/od³±czony (1/0)</member>
@@ -199,12 +199,13 @@
 			<simplelist>
 				<member>id - identyfikator</member>
 				<member>time - znacznik czasu zaksiêgowania operacji</member>
-				<member>adminid - identyfikator administratora dokonuj±cego operacji</member>
+				<member>adminid - identyfikator u¿ytkownika dokonuj±cego operacji</member>
 				<member>type - typ operacji (przychód, rozchód, wp³ata, obci±¿enie)</member>
 				<member>value - warto¶æ w z³otych</member>
 				<member>taxvalue - procent podatku</member>
-				<member>userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy)</member>
+				<member>userid - identyfikator klienta ('0' - je¶li nie dotyczy)</member>
 				<member>invoiceid - identyfikator faktury obejmuj±cej dan± operacjê</member>
+				<member>itemid - nr pozycji na fakturze</member>
 				<member>comment - opis operacji</member>
 			</simplelist>
 		</sect2>
@@ -242,7 +243,7 @@
    			<simplelist>
 				<member>id - identyfikator</member>
 				<member>tariffid - identyfikator taryfy</member>
-				<member>userid - identyfikator u¿ytkownika</member>
+				<member>userid - identyfikator klienta</member>
 				<member>period - typ okresu </member>
 				<member>at - dzieñ naliczania</member>
 				<member>datefrom - data obowi±zywania zobowi±zania</member>
@@ -259,7 +260,7 @@
 				<member>cdate - data wystawienia</member>
 				<member>paytime - termin p³atno¶ci (ilo¶æ dni)</member>
 				<member>paytype - rodzaj p³atno¶ci (przelew/gotówka/etc.)</member>
-				<member>customerid - identyfikator u¿ytkownika-nabywcy</member>
+				<member>customerid - identyfikator klienta-nabywcy</member>
 				<member>name - nazwa (nazwisko i imiê) nabywcy</member>
 				<member>address - adres nabywcy</member>
 				<member>nip - nip nabywcy</member>
@@ -274,6 +275,7 @@
 			<title>Faktury - cd. ('invoicecontents')</title>
    			<simplelist>
 				<member>invoiceid - identyfikator faktury</member>
+				<member>itemid - nr pozycji</member>
 				<member>value - kwota pozycji</member>
 				<member>taxvalue - wysoko¶æ podatku w procentach</member>
 				<member>pkwiu - numer PKWiU</member>
@@ -287,7 +289,7 @@
 			<title>Konta ('passwd')</title>
 			<simplelist>
 				<member>id - identyfikator rekordu</member>
-				<member>ownerid - identyfikator u¿ytkownika (0 - konto "systemowe")</member>
+				<member>ownerid - identyfikator klienta (0 - konto "systemowe")</member>
 				<member>login - nazwa konta</member>
 				<member>password - has³o zaszyfrowane funkcj± crypt()</member>
 				<member>lastlogin - data ostatniego logowania</member>
@@ -344,11 +346,11 @@
 			<simplelist>
 				<member>id - identyfikator</member>
 				<member>queueid - identyfikator kolejki</member>
-				<member>requestor - dane zg³aszaj±cego (w tym e-mail)</member>
-				<member>userid - identyfikator u¿ytkownika</member>
+				<member>requestor - dane zg³aszaj±cego-klienta (w tym e-mail)</member>
+				<member>userid - identyfikator klienta</member>
 				<member>subject - temat zg³oszenia</member>
 				<member>state - status (0-nowy, 1-otwarty, 2-rozwi±zany, 3-martwy)</member>
-				<member>owner - identyfikator w³a¶ciciela-administratora</member>
+				<member>owner - identyfikator w³a¶ciciela-u¿ytkownika</member>
 				<member>createtime - data zg³oszenia</member>
 			</simplelist>
 		</sect2>
@@ -357,8 +359,8 @@
 			<simplelist>
 				<member>id - identyfikator</member>
 				<member>ticketid - identyfikator zg³oszenia</member>
-				<member>adminid - identyfikator administratora nadawcy</member>
-				<member>userid - identyfikator u¿ytkownika nadawcy</member>
+				<member>adminid - identyfikator u¿ytkownika-nadawcy</member>
+				<member>userid - identyfikator klienta-nadawcy</member>
 				<member>mailfrom - e-mail nadawcy</member>
 				<member>subject - temat wiadomo¶ci</member>
 				<member>messageid - pocztowy identyfikator wiadomo¶ci</member>
@@ -382,7 +384,7 @@
 			<simplelist>
 				<member>id - identyfikator</member>
 				<member>queueid - identyfikator kolejki</member>
-				<member>adminid - identyfikator administratora</member>
+				<member>adminid - identyfikator u¿ytkownika</member>
 				<member>rights - (1-odczyt, 2-zapis)</member>
 			</simplelist>
 		</sect2>
@@ -395,6 +397,29 @@
 				<member>value - warto¶æ</member>
 				<member>description - opis/komentarz</member>
 				<member>disabled - wy³±czenie opcji (0-w³., 1-wy³.)</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="events">
+			<title>Terminarz - zdarzenia ('events')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>title - tytu³</member>
+				<member>description - opis</member>
+				<member>note - notatka</member>
+				<member>date - data zdarzenia</member>
+				<member>begintime - pocz±tek zdarzenia</member>
+				<member>endtime - koniec zdarzenia</member>
+				<member>adminid - identyfikator u¿ytkownika tworz±cego wpis w terminarzu</member>
+				<member>userid - identyfikator klienta</member>
+				<member>private - prywatny/publiczny</member>
+				<member>closed - status zamkniêcia</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="eventassignments">
+			<title>Terminarz - powi±zania ('eventassignments')</title>
+			<simplelist>
+				<member>eventid - identyfikator zdarzenia</member>
+				<member>adminid - identyfikator u¿ytkownika</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="dbinfo">
@@ -464,7 +489,7 @@ key = "A.L.E.C's LMS Daemon is the best"
 		bazy danych, spowodowane ograniczeniami unikalno¶ci niektórych danych, mo¿na zignorowaæ.
 		<note><para>Dla prawid³owego wygenerowania zale¿no¶ci, modu³ 'genfake'
 		nale¿y uruchamiaæ na pustej, nowoutworzonej bazie.</para></note>
-		<warning><para>Wszystkie dane (oprócz danych administratorów) zostan±
+		<warning><para>Wszystkie dane (oprócz danych u¿ytkowników) zostan±
 		usuniête z bazy.</para></warning>
 		</para>
 	</sect1>
