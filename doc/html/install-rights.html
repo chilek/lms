@@ -25,11 +25,8 @@ HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-2"></HEAD
 ><BODY
 CLASS="SECT1"
-BGCOLOR="#FFFFFF"
+BGCOLOR="#EBE4D6"
 TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -78,12 +75,127 @@ CLASS="SECT1"
 NAME="INSTALL-RIGHTS"
 >2.6. Prawa dostêpu</A
 ></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN383"
+>2.6.1. Idea</A
+></H2
 ><P
->LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu administratorowi mo¿na przydzieliæ dowoln± kombinacjê regu³ dostêpu.</P
+>LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e
+      zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu administratorowi mo¿na
+      przydzieliæ dowoln± kombinacjê regu³ dostêpu.</P
 ><P
->Domy¶lnie zdefiniowanych  jest  osiem regu³ dostêpu. Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania.</P
+>Domy¶lnie zdefiniowanych jest osiem regu³ dostêpu. 
+       <UL
+><LI
 ><P
->Modu³y do których administrator ma zawsze dostêp to: welcome,  copyrights,  logout, chpasswd (przy czym chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostep do reszty jest zdefiniowany regu³ami. Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie przydzieli mu regu³kê 0 czyli pe³en dostêp.</P
+>pe³en dostêp</P
+></LI
+><LI
+><P
+>odczyt wszystkich danych</P
+></LI
+><LI
+><P
+>pod³±czanie i od³±czanie komputerów</P
+></LI
+><LI
+><P
+>manipulowanie finansami</P
+></LI
+><LI
+><P
+>prze³adowywanie konfiguracji</P
+></LI
+><LI
+><P
+>manipulowanie danymi u¿ytkowników</P
+></LI
+><LI
+><P
+>manipulowanie danymi komputerów</P
+></LI
+><LI
+><P
+>brak dostêpu do modyfikacji i zak³adania kont administratorów</P
+></LI
+><LI
+><P
+>brak dostêpu</P
+></LI
+></UL
+>
+      Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania. Modu³y do których 
+      administrator ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
+      chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostep do reszty jest zdefiniowany regu³ami.</P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie
+      przydzieli mu regu³kê 0, czyli pe³en dostêp.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN408"
+>2.6.2. Jak to dzia³a?</A
+></H2
+><P
+>Decyzja  czy  u¿ytkownik  ma prawo dostêpu do modu³u czy nie przebiega nastêpuj±co:
+		<TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>-  najpierw  sprawdzana  jest  lista  modu³ów, do których zawsze ma siê
+		dostêp,</TD
+></TR
+><TR
+><TD
+>-  potem  nastêpuje sprawdzenie czy modu³ pasuje do regu³ w poszczególnych
+		poziomach, do których administrator ma dostêp,</TD
+></TR
+><TR
+><TD
+>-  na  koñcu podejmowana jest decyzja czy u¿ytkownik ma uprawnienia by
+		do  modu³u siê dobraæ. Je¿eli modu³ siê za³apa³ na którykolwiek poziom, który zabrania dostêpu,
+		dostêp  zostanie  zabroniony  nawet  je¿eli administrator ma ustawiony poziom, który pozwala
+		na dostêp do modu³u (np.  kto¶  ma  pe³ny  dostêp oraz brak dostêpu do modu³u dodawania
+		komputerów,  nie  bêdzie  on  móg³ siê odwo³aæ do tego modu³u). Je¿eli modu³ pasuje do
+		poziomu, który pozwala na dostêp do danego modu³u LMS zezwala na dalsz± pracê.
+		Je¿eli natomiast modu³ siê nie "za³apa³" na ¿aden poziom równie¿ zostanie mu wy¶wietlony
+		komunikat o braku dostêpu.</TD
+></TR
+></TBODY
+></TABLE
+>
+		</P
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
