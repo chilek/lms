@@ -30,7 +30,7 @@ $access['allow'] = '^(welcome|copyrights|logout|chpasswd|quicksearch)$';
 $access['table'][0]['name']		= trans('full access');
 $access['table'][0]['allow_reg']	= '^.*$';
 
-$access['table'][1]['name']		= trans('all data reading');
+$access['table'][1]['name']		= trans('read only (exclude helpdesk)');
 $access['table'][1]['allow_reg']	= '^((admin|balance|db|net|node|netdev|tariff|payment|user|usergroup)(list|info|view|search|balance)|netdevmap|print)$';
 
 $access['table'][2]['name']		= trans('nodes connection/disconnection');
@@ -57,7 +57,7 @@ $access['table'][8]['allow_reg']    	= '^(mailing)$';
 $access['table'][9]['name']         	= trans('Helpdesk (RT) administration');
 $access['table'][9]['allow_reg']    	= '^(rtsearch|(rtqueue|rtticket|rtmessage)(add|del|edit|info|view|list|print))$';
 
-$access['table'][10]['name']        	= trans('Helpdesk (RT) management');
+$access['table'][10]['name']        	= trans('Helpdesk (RT) operation');
 $access['table'][10]['allow_reg']   	= '^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage)(add|edit|info|view|print))$';
 
 $access['table'][11]['name']        	= trans('accounts management');
@@ -66,7 +66,7 @@ $access['table'][11]['allow_reg']   	= '^(account(list|edit|add|del)|domain|alia
 $access['table'][12]['name']        	= trans('UI configuration');
 $access['table'][12]['allow_reg']   	= '^(config(list|edit|add|del))$';
 
-$access['table'][253]['name']		= trans('users edition and creation forbidden');
+$access['table'][253]['name']		= trans('customers edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(admin(add|del|edit|passwd))$';
 
 $access['table'][255]['name']		= trans('no access');
