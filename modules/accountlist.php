@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetAccountList($order='username,asc', $user=NULL, $type=NULL)
+function GetAccountList($order='username,asc', $user=NULL, $type=NULL, $kind=NULL)
 {
 	global $LMS;
 
@@ -60,12 +60,15 @@ function GetAccountList($order='username,asc', $user=NULL, $type=NULL)
 		' AS username FROM passwd LEFT JOIN users ON users.id = ownerid WHERE 1=1'
 		.($user != '' ? ' AND ownerid = '.$user : '')
 		.($type ? ' AND type & '.$type.' = '.$type : '')
+		.($kind == 1 ? ' AND expdate!= 0 AND expdate < ?NOW?' : '')
+		.($kind == 2 ? ' AND (expdate=0 OR expdate > ?NOW?)' : '')
 		.($sqlord != '' ? $sqlord : '')
 		);
 	
 	$list['total'] = sizeof($list);
 	$list['order'] = $order;
 	$list['type'] = $type;
+	$list['kind'] = $kind;
 	$list['user'] = $user;
 	$list['direction'] = $direction;
 
@@ -90,6 +93,12 @@ else
 	$t = $_GET['t'];
 $_SESSION['alt'] = $t;
 
+if(!isset($_GET['k']))
+	$k = $_SESSION['alk'];
+else
+	$k = $_GET['k'];
+$_SESSION['alk'] = $k;
+
 if (isset($_SESSION['alp']) && !isset($_GET['page']))
 	$_GET['page'] = $_SESSION['alp'];
 	    
@@ -101,15 +110,17 @@ $_SESSION['ulp'] = $page;
 
 $layout['pagetitle'] = 'Zarz±dzanie kontami';
 
-$accountlist = GetAccountList($o, $u, $t);
+$accountlist = GetAccountList($o, $u, $t, $k);
 $listdata['total'] = $accountlist['total'];
 $listdata['order'] = $accountlist['order'];
 $listdata['direction'] = $accountlist['direction'];
 $listdata['type'] = $accountlist['type'];
+$listdata['kind'] = $accountlist['kind'];
 $listdata['user'] = $accountlist['user'];
 unset($accountlist['total']);
 unset($accountlist['order']);
 unset($accountlist['type']);
+unset($accountlist['kind']);
 unset($accountlist['user']);
 unset($accountlist['direction']);
 
