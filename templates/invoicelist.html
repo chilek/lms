@@ -40,9 +40,9 @@
 		document.page.submit();
 	}
 	
-	function page_change()
+	function page_change(page)
 	{
-		document.page.action="?m=invoicelist";
+		document.page.action="?m=invoicelist&page="+page;
 		document.page.target="";
 		document.page.submit();
 	}
@@ -84,7 +84,7 @@
 	{if $listdata.totalpos != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
-			<B>Strona: {if $page > 1}<INPUT TYPE="hidden" NAME="page" VALUE="{math equation="x - 1" x=$page}"><A HREF="javascript:page_change();">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <INPUT TYPE="hidden" NAME="page" VALUE="{$smarty.section.pcnt.rownum}"><A HREF="javascript:page_change();">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<INPUT TYPE="hidden" NAME="page" VALUE="{math equation="x + 1" x=$page}"><A HREF="javascript:page_change();">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+			<B>Strona: {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
 		</TD>
 	</TR>
 	{/if}
@@ -131,7 +131,7 @@
 	{if $listdata.totalpos != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
-			<B>Strona: {if $page > 1}<INPUT TYPE="hidden" NAME="page" VALUE="{math equation="x - 1" x=$page}"><A HREF="javascript:page_change();">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <INPUT TYPE="hidden" NAME="page" VALUE="{$smarty.section.pcnt.rownum}"><A HREF="javascript:page_change();">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<INPUT TYPE="hidden" NAME="page" VALUE="{math equation="x + 1" x=$page}"><A HREF="javascript:page_change();">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+			<B>Strona: {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
 		</TD>
 	</TR>
 	{/if}
