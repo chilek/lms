@@ -1096,24 +1096,6 @@ class LMS
 			return $this->DB->Execute("UPDATE nodes SET warning=?, modid=? WHERE ownerid=?",array(0,$this->SESSION->id,$id));
 	}		
 
-	function NodeSetWarn($id)
-	{
-		$this->SetTS("nodes");
-		if($this->DB->GetOne("SELECT warning FROM nodes WHERE id=?",array($id)) == 1 )
-			return $this->DB->Execute("UPDATE nodes SET warning=0, modid=? WHERE id=?",array($this->SESSION->id,$id));
-		else
-			return $this->DB->Execute("UPDATE nodes SET warning=1, modid=? WHERE id=?",array($this->SESSION->id,$id));
-	}
-
-	function NodeSetWarnU($id,$warning=FALSE)
-	{
-		$this->SetTS("nodes");
-		if($warning)
-			return $this->DB->Execute("UPDATE nodes SET warning=?, modid=? WHERE ownerid=?",array(1,$this->SESSION->id,$id));
-		else
-			return $this->DB->Execute("UPDATE nodes SET warning=?, modid=? WHERE ownerid=?",array(0,$this->SESSION->id,$id));
-	}		
-
 	function IPSetU($netdev, $access=FALSE)
 	{
 		$this->SetTS("nodes");
