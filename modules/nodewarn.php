@@ -80,7 +80,7 @@ unset($nodelist['direction']);
 unset($nodelist['totalon']);
 unset($nodelist['totaloff']);
 
-$SMARTY->assign('warnmessage', $SESSION->('warnmessage'));
+$SMARTY->assign('warnmessage', $SESSION->get('warnmessage'));
 $SMARTY->assign('warnon', $SESSION->('warnon'));
 $SMARTY->assign('warnoff', $SESSION->('warnoff'));
 $SMARTY->assign('nodelist',$nodelist);
