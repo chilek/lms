@@ -106,7 +106,7 @@ then
 	echo " PostgreSQL"
 elif test "${with_sqlite+set}" = set
 then
-	LIBS="-lsqlite -ldl"
+	LIBS="-lsqlite -ldl -lm"
 	FLAGS="-DUSE_SQLITE"
 	echo " SQLite"
 else

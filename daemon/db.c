@@ -9,6 +9,7 @@
 #include <syslog.h>
 #include <stdarg.h>
 #include <unistd.h>
+#include <math.h>
 #include "db.h"
 #include "util.h"
 
@@ -23,6 +24,33 @@ RESULT_HANDLE *res=NULL;
 #ifdef USE_SQLITE
 CONN_HANDLE *conn=NULL;
 RESULT_HANDLE res=0;
+/*************************** SQLite UDF functions *************************/
+// this would be in other file, maybe later ...
+static void inet_ntoa_f(sqlite_func *context, int argc, const char **argv)
+{
+    static char s[16];
+    unsigned long z = strtoll(argv[0], (char **)NULL, 10);
+    sprintf(s, "%ld.%ld.%ld.%ld", (z>>24)&0xff, (z>>16)&0xff, (z>>8)&0xff, z&0xff);
+    sqlite_set_result_string(context, s, -1);
+}
+
+static void inet_aton_f(sqlite_func *context, int argc, const char **argv)
+{
+    static char s1[4], s2[4], s3[4], s4[4], s[12];
+    unsigned long z;
+    sscanf(argv[0], "%[0-9].%[0-9].%[0-9].%[0-9]", s1, s2, s3, s4);
+    z = atoi(s1)*256*256*256+atoi(s2)*256*256+atoi(s3)*256+atoi(s4);
+    sprintf(s, "%u", z);
+    sqlite_set_result_string(context, s, -1);
+}
+
+static void floor_f(sqlite_func *context, int argc, const char **argv)
+{
+    static char s[12];
+    double z = strtod(argv[0], (char **)NULL);
+    sprintf(s,"%.0f", z);
+    sqlite_set_result_string(context, s, -1);
+}
 #endif
 
 /************************* CONNECTION FUNCTIONS *************************/
@@ -67,7 +95,13 @@ int db_connect(const unsigned char *db, const unsigned char *user, const unsigne
     	syslog(LOG_CRIT,"[db_connect] Unable to connect to database. Error: %s", error);
 	sqlite_freemem(error);
         return ERROR;
-    }	   
+    }
+    /* add udf functions on every connect */	   
+    sqlite_create_function(conn, "inet_ntoa", 1, inet_ntoa_f, NULL);
+    sqlite_create_function(conn, "inet_aton", 1, inet_aton_f, NULL);
+    sqlite_create_function(conn, "floor", 1, floor_f, NULL);
+//    sqlite_create_function(conn, "upper", 1, upper_f, NULL);
+//    sqlite_create_function(conn, "lower", 1, lower_f, NULL);
 #endif
 #ifdef DEBUG0
 	syslog(LOG_INFO, "DEBUG: [lmsd] Connected with params: db='%s' host='%s' user='%s' port='%d' passwd='*'",db, host, user, port);
@@ -259,7 +293,7 @@ int db_exec(unsigned char *q)
 #endif
 #ifdef USE_SQLITE
     res = sqlite_exec(conn, stmt, NULL, NULL, &error);
-    if( res!=SQLITE_OK ) {
+    if( error ) {
     	syslog(LOG_CRIT,"[db_exec] Query failed. %s",error);
 	sqlite_freemem(error);
 	free(stmt);
