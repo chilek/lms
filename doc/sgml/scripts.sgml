@@ -39,6 +39,10 @@
 			<entry>Korespondencja seryjna do u¿ytkowników sieci</entry>
 			</row>
 			<row>
+			<entry>lms-notify-sms</entry>
+			<entry>Powiadamianie o zalego¶ciach sms'em</entry>
+			</row>
+			<row>
 			<entry>lms-cutoff</entry>
 			<entry>Od³±czanie u¿ytkowników zad³u¿onych</entry>
 			</row>
@@ -168,9 +172,6 @@ http://www.naszasiec.pl/</screen></example>
           </sect2>
 	  <sect2>
 	  <title>Konfiguracja</title>
-           <!--
-           Na podstawie lms.ini
-           -->
            <para>Konfiguracjê dla lms-notify mo¿na ustaliæ w pliku <filename>lms.ini</filename> w sekcji <emphasis>[notify]</emphasis>. 
 	   Mo¿esz tam ustawiæ nastêpuj±ce parametry:</para>
 	   <itemizedlist>
@@ -212,6 +213,28 @@ http://www.naszasiec.pl/</screen></example>
           </itemizedlist>
           </sect2>
 	</sect1>
+	<sect1 id="scripts-notify-sms">
+	<title>lms-notify-sms</title>
+	  <para>lms-notify-sms to odpowiednik lms-notify, s³u¿±cy do wysy³ania
+	  smsów. Do wysy³ania wiadomo¶ci potrzebna jest komórka Nokii oraz oprogramowanie,
+	  które nale¿y pobraæ z (<ulink url="http://www.gnokii.org">www.gnokii.org</ulink>)
+	  i zainstalowaæ w systemie.</para>
+	  <para>Konfiguracjê dla lms-notify-sms mo¿na ustaliæ w pliku <filename>lms.ini</filename> 
+	  w sekcji <emphasis>[notify-sms]</emphasis>, a masz do dyspozycji nastêpuj±ce opcje:</para>
+	  <itemizedlist>
+            <listitem>
+	     <para>limit (opcjonalny)</para>
+	     <para>Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika 
+	     zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0</para>
+	     <para>Przyk³ad:	<prompt>limit = -20</prompt></para>
+	    </listitem>
+            <listitem>
+	     <para>smstemplate (wymagany)</para>
+	     <para>Szablon wiadomo¶ci. Domy¶lnie nieustawione.</para>
+	     <para>Przyk³ad:	<prompt>smstemplate = /etc/lms/smstemplate.txt</prompt></para>
+	    </listitem>
+	  </itemizedlist>
+	</sect1> 
 	<sect1 id="scripts-cutoff">
 	 <title>lms-cutoff</title>
 	 <para>Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.</para>
