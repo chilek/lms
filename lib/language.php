@@ -28,7 +28,7 @@ function trans()
 {
 	global $_LANG, $SMARTY;
 
-	$content = trim(func_get_arg(0));
+	$content = func_get_arg(0);
 
 	if(isset($_LANG[$content]))
 		$content = trim($_LANG[$content]);
