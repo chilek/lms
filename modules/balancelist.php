@@ -37,13 +37,11 @@ unset($balancelist['uinvoice']);
 unset($balancelist['expense']);
 unset($balancelist['total']);
 $listdata['totalpos'] = sizeof($balancelist);
-if (isset($_SESSION['blp']) && !isset($_GET['page']))
-        $_GET['page'] = $_SESSION['blp'];
-	
+
 $pagelimit = $LMS->CONFIG['phpui']['balancelist_pagelimit'];
 $page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']); 
 $start = ($page - 1) * $pagelimit;
-$_SESSION['blp'] = $page;
+
 $layout['pagetitle'] = "Bilans finansowy";
 $SMARTY->assign("layout",$layout);
 
@@ -59,6 +57,9 @@ $SMARTY->display("balancelist.html");
 
 /*
  * $Log$
+ * Revision 1.25  2003/12/15 21:01:43  alec
+ * - poprawiony BTS#00090 i trochê kosmetyki
+ *
  * Revision 1.24  2003/12/04 04:39:14  lukasz
  * - porz±dki
  * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
