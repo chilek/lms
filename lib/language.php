@@ -87,5 +87,6 @@ $_LANG = array();
 setlocale(LC_COLLATE, $LANGDEFS[$_language]['locale']);
 setlocale(LC_CTYPE, $LANGDEFS[$_language]['locale']);
 setlocale(LC_TIME, $LANGDEFS[$_language]['locale']);
+setlocale(LC_NUMERIC, $LANGDEFS[$_language]['locale']);
 
 ?>
