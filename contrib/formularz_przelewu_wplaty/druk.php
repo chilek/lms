@@ -81,9 +81,9 @@ for ( $i=0; $i<12; $i++ ) {
 ?>
 
 
-<?php require("slownie.inc"); ?>
+<?php require_once("../../lib/common.php"); ?>
 
-<span style="position: absolute; top: 203px; left: 72px; font-family: Courier, Arial, Helvetica; font-size: 8pt; font-weight: bold;"><?php echo(slownie($KWOTA));?></span>
+<span style="position: absolute; top: 203px; left: 72px; font-family: Courier, Arial, Helvetica; font-size: 8pt; font-weight: bold;"><?php echo(to_words($KWOTA));?></span>
 
 <span style="position: absolute; top: 235px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 10pt; font-weight: bold;"><?php echo($USER_OD); ?></span>
 <span style="position: absolute; top: 265px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 10pt; font-weight: bold;">A</span>
