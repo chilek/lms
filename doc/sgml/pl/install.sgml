@@ -189,9 +189,9 @@ password = has³o_z_pkt.3</screen>
 		    </para>
 			<para>Po  takim  zabiegu,  o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
 			danych,  mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
-			bazie  danych  nie ma ¿adnego konta administratora, jedyn± rzecz± jak±
-			zobaczysz bêdzie  formularz  dodania  administratora.  Je¿eli
-			podasz  prawid³owe  dane  administratora, LMS przeniesie Ciê na stronê
+			bazie  danych  nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
+			zobaczysz bêdzie  formularz  dodania  u¿ytkownika.  Je¿eli
+			podasz  prawid³owe  dane  u¿ytkownika, LMS przeniesie Ciê na stronê
 			logowania gdzie od razu bêdziesz móg³ u¿yæ nowo utworzonego konta.
 			</para>
 			<para>Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
@@ -262,8 +262,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
        			Domy¶lnie has³o nie jest wymagane.</para></note></para>
 			<para>Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy danych,
 			mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
-			nie ma ¿adnego konta administratora, jedyn± rzecz± jak± zobaczysz
-			bêdzie formularz dodania administratora.</para>
+			nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak± zobaczysz
+			bêdzie formularz dodania u¿ytkownika.</para>
 		</sect3>
 		</sect2>
 		<sect2 id="install-sqlite">
@@ -317,8 +317,8 @@ type     = sqlite
 database = /usr/local/lms/lms.db</screen>
 		    </para>
 			<para>Po  takim  zabiegu, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
-			bazie danych nie ma ¿adnego konta administratora, jedyn± rzecz± jak±
-			zobaczysz bêdzie formularz dodania administratora.  
+			bazie danych nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
+			zobaczysz bêdzie formularz dodania u¿ytkownika.  
 			</para>
 		</sect3>
 		</sect2>
@@ -461,7 +461,7 @@ database = /usr/local/lms/lms.db</screen>
 	</listitem>
 	<listitem>
 	    <para>balancelist_pagelimit</para>
-	    <para>Limit wy¶wietlanych pozycji na stronie na rachunku u¿ytkownika. Domy¶lnie: 100.</para>
+	    <para>Limit wy¶wietlanych pozycji na stronie na rachunku klienta. Domy¶lnie: 100.</para>
 	    <para>Przyk³ad:	<prompt>balancelist_pagelimit = 50</prompt></para>
         </listitem>
 	<listitem>
@@ -553,19 +553,19 @@ database = /usr/local/lms/lms.db</screen>
 	<listitem>
 	    <para>debug_email</para>
 	    <para>Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Mailing' LMS'a, 
-	    zamiast do w³a¶ciwych u¿ytkowników.</para>
+	    zamiast do w³a¶ciwych klientów.</para>
 	    <para>Przyk³ad:	<prompt>debug_email = root@localhost</prompt></para>
 	</listitem>
 	<listitem>
 	    <para>default_zip, default_city, default_address</para>
 	    <para>Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
-	    u¿ytkownika. Przydatne gdy mamy do wpisania wielu u¿ytkowników z tej samej ulicy.</para>
+	    klienta. Przydatne gdy mamy do wpisania wielu klientów z tej samej ulicy.</para>
 	    <para>Przyk³ad:	<prompt>default_zip = 39-300</prompt></para>
 	</listitem>
 	<listitem>
 	    <para>use_current_payday</para>
 	    <para>Okre¶la, czy ma byæ u¿yta aktualna data jako dzieñ zap³aty podczas
-	    przypisywania zobowi±zañ u¿ytkownikom. Domy¶lnie wy³±czone.</para>
+	    przypisywania zobowi±zañ klientom. Domy¶lnie wy³±czone.</para>
 	    <para>Przyk³ad:	<prompt>use_current_payday = 1</prompt></para>
 	</listitem>
 	<listitem>
@@ -599,7 +599,7 @@ database = /usr/local/lms/lms.db</screen>
 	</listitem>
 	<listitem>
 	    <para>contract_template</para>
-	    <para>W³asny szablon umowy z u¿ytkownikiem. Mo¿e zawieraæ listê umów oddzielonych 
+	    <para>W³asny szablon umowy z klientem. Mo¿e zawieraæ listê umów oddzielonych 
 	    przecinkami. Domy¶lnie: contract.html.</para>
 	    <para>Przyk³ad:	<prompt>contract_template = "../my_templates/contract.html"</prompt></para>
 	    <para>Przyk³ad:	<prompt>contract_template = "contract.html:Umowa Podstawowa, umowa.html:Umowa Rozbudowana"</prompt></para>
@@ -618,7 +618,7 @@ database = /usr/local/lms/lms.db</screen>
       <sect2 id="install-rights-idea">
       		<title>Idea</title>
       <para>LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e
-      zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu administratorowi mo¿na
+      zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu u¿ytkownikowi mo¿na
       przydzieliæ dowoln± kombinacjê regu³ dostêpu.</para>
       <para>Domy¶lnie zdefiniowana jest nastêpuj±ca lista regu³ dostêpu:
        <itemizedlist>
@@ -627,7 +627,7 @@ database = /usr/local/lms/lms.db</screen>
         <listitem><para>pod³±czanie i od³±czanie komputerów</para></listitem>
         <listitem><para>manipulowanie finansami</para></listitem>
         <listitem><para>prze³adowywanie konfiguracji</para></listitem>
-        <listitem><para>manipulowanie danymi u¿ytkowników</para></listitem>
+        <listitem><para>manipulowanie danymi klientów</para></listitem>
         <listitem><para>manipulowanie danymi komputerów</para></listitem>
         <listitem><para>dostêp do statystyk</para></listitem>
         <listitem><para>dostêp do korespondencji seryjnej</para></listitem>
@@ -637,13 +637,13 @@ database = /usr/local/lms/lms.db</screen>
         <listitem><para>konfiguracja UI</para></listitem>
         <listitem><para>zarz±dzanie sieciami i urz±dzeniami sieciowymi</para></listitem>
 	<listitem><para>dostêp do terminarza</para></listitem>
-        <listitem><para>brak dostêpu do modyfikacji i zak³adania kont administratorów</para></listitem>
+        <listitem><para>brak dostêpu do modyfikacji i zak³adania kont u¿ytkowników</para></listitem>
         <listitem><para>brak dostêpu</para></listitem>
        </itemizedlist>
       Niektóre z nich zezwalaj± na dostêp do modu³ów oraz dwie zabraniaj±. Modu³y do których 
-      administrator ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
+      u¿ytkownik ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
       chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostêp do reszty jest zdefiniowany regu³ami.</para>
-      <note><para>Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie
+      <note><para>Je¶li nie ustawimy u¿ytkownikowi ¿adnej regu³y dostêpu, to LMS domy¶lnie
       przydzieli mu regu³kê 0, czyli pe³en dostêp.</para></note>
       </sect2>
       <sect2 id="install-rights-how">
@@ -653,10 +653,10 @@ database = /usr/local/lms/lms.db</screen>
 		<member>-  najpierw  sprawdzana  jest  lista  modu³ów, do których zawsze ma siê
 		dostêp,</member>
 		<member>-  potem  nastêpuje sprawdzenie czy modu³ pasuje do regu³ w poszczególnych
-		poziomach, do których administrator ma dostêp,</member>
+		poziomach, do których u¿ytkownik ma dostêp,</member>
 		<member>-  na  koñcu podejmowana jest decyzja czy u¿ytkownik ma uprawnienia by
 		do  modu³u siê dobraæ. Je¿eli modu³ siê za³apa³ na którykolwiek poziom, który zabrania dostêpu,
-		dostêp  zostanie  zabroniony  nawet  je¿eli administrator ma ustawiony poziom, który pozwala
+		dostêp  zostanie  zabroniony  nawet  je¿eli u¿ytkownik ma ustawiony poziom, który pozwala
 		na dostêp do modu³u (np.  kto¶  ma  pe³ny  dostêp oraz brak dostêpu do modu³u dodawania
 		komputerów,  nie  bêdzie  on  móg³ siê odwo³aæ do tego modu³u). Je¿eli modu³ pasuje do
 		poziomu, który pozwala na dostêp do danego modu³u LMS zezwala na dalsz± pracê.
