@@ -37,7 +37,7 @@ if($from) {
 }
 if($to) {
 	list($year, $month, $day) = split('/',$to);
-	$unixto = mktime(0,0,0,$month,$day,$year);
+	$unixto = mktime(23,59,59,$month,$day,$year);
 } else { 
 	$to = date("Y/m/d",time());
 	$unixto = mktime(23,59,59); //koniec dnia dzisiejszego
