@@ -59,7 +59,8 @@ $_DBNAME = (! $_CONFIG[database]['database'] ? "lms" : $_CONFIG[database]['datab
 
 require_once($_SMARTY_DIR.'/Smarty.class.php');
 require_once($_ADODB_DIR.'/adodb.inc.php');
-require_once($_LIB_DIR."/LMS.class.php");
+require_once($_LIB_DIR.'/common.php');
+require_once($_LIB_DIR.'/LMS.class.php');
 
 // Initialize ADODB object
 
