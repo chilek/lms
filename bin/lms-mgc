@@ -414,8 +414,6 @@ sub instance($)
 		my %namelist;
 		my %ucnamelist;
 		my %ownerlist;
-		my %tariffsidlist;
-		my %tariffsvallist;
 		
 		while (my $row = $dbq->fetchrow_hashref())
 		{
@@ -426,8 +424,6 @@ sub instance($)
 			$namelist{$row->{'ipaddr'}} = lc($row->{'name'});
 			$ucnamelist{$row->{'ipaddr'}} = uc($row->{'name'});
 			$ownerlist{$row->{'ipaddr'}} = $row->{'ownerid'};
-			$tariffsidlist{$row->{'ipaddr'}} = $row->{'tariffid'};
-			$tariffsvallist{$row->{'ipaddr'}} = $row->{'tariffvalue'};
 		}
 
 				
@@ -539,8 +535,6 @@ sub instance($)
 			my $owner = $ownerlist{$ipaddr} || '';
 			my $uprate = $uprates{$owner} || '';
 			my $downrate = $downrates{$owner} || '';
-			my $tid = $tariffsidlist{$ipaddr} || '';
-			my $tval = $tariffsvallist{$ipaddr} || '0';
 			my $macs = lc($mac);
 			$macs =~ s/://g;
 			my ($q1,$q2,$q3,$q4) = split('\.',$ipaddr,4);
@@ -572,8 +566,6 @@ sub instance($)
 			$rule =~ s/\%TIME/$time/g;
 			$rule =~ s/\%UTIME/$utime/g;
 			$rule =~ s/\%DATE/$date/g;
-			$rule =~ s/\%TID/$tid/g;
-			$rule =~ s/\%TVAL/$tval/g;
 			$rule =~ s/\%1/$q1/g;
 			$rule =~ s/\%2/$q2/g;
 			$rule =~ s/\%3/$q3/g;
