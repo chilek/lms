@@ -26,14 +26,14 @@
 				<INPUT type="HIDDEN" name="m" value="rtqueueview">
 				<INPUT type="HIDDEN" name="id" value="{$queuedata.id}">
 				<INPUT type="HIDDEN" name="page" value="1">
-				<B>{t}Filter:{/t} </B> {t}Status:{/t}
+				<B>{t}Filter:{/t} </B> {t}State:{/t}
 				<SELECT size="1" class="bold" name="s" OnChange="document.filter.submit();">
 					<OPTION value=""{if $queuedata.state eq ""} SELECTED{/if}>- {t}all{/t} -</OPTION>
 					<OPTION value="0"{if $queuedata.state eq "0"} SELECTED{/if}>{t}new{/t}</OPTION>
-					<OPTION value="1"{if $queuedata.state eq "1"} SELECTED{/if}>{t}opened{/t}</OPTION>
+					<OPTION value="1"{if $queuedata.state eq "1"} SELECTED{/if}>{t}open{/t}</OPTION>
 					<OPTION value="2"{if $queuedata.state eq "2"} SELECTED{/if}>{t}resolved{/t}</OPTION>
 					<OPTION value="3"{if $queuedata.state eq "3"} SELECTED{/if}>{t}dead{/t}</OPTION>
-					<OPTION value="-1"{if $queuedata.state eq "-1"} SELECTED{/if}>{t}unsolved{/t}</OPTION>
+					<OPTION value="-1"{if $queuedata.state eq "-1"} SELECTED{/if}>{t}not resolved{/t}</OPTION>
 				</SELECT>
 			</FORM></P>
 		</TD>
@@ -41,14 +41,18 @@
 	{if $queuedata.total != 0}
 	<TR class="DARK">
 		<TD colspan="5" class="FALL">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$queue step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
-			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $queuedata.total}{$queuedata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$queuedata.total})
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $queuedata.total}
+				{assign var=endx value=$queuedata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$queuedata.total}records $0 - $1 of $2{/t})
 		</TD>
 	</TR>
 	{/if}
@@ -104,9 +108,9 @@
 			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
 		</TD>
 		<TD class="fright" align="right" NOWRAP>
-			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ Info ]" border="0" align="absmiddle"></A>
-			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ Edytuj ]" border="0" align="absmiddle"></A>
-			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ Drukuj ]" border="0" align="absmiddle"></A>
+			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ {t}Info{/t} ]" border="0" align="absmiddle"></A>
+			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ {t}Edit{/t} ]" border="0" align="absmiddle"></A>
+			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ {t}Print{/t} ]" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -114,7 +118,7 @@
 		<TD COLSPAN="5" class="flr" ALIGN="center">
 			<BR>
 			<BR>
-			<B>{t}This queue is empty{/t}.</B><BR>
+			<B>{t}This queue is empty.{/t}</B><BR>
 			<BR>
 			<BR>
 		</TD>
@@ -123,20 +127,24 @@
 	{if $queuedata.total != 0}
 	<TR class="DARK">
 		<TD colspan="5" class="FALL">
-			<B>Strona:
+			<B>{t{Page:{/t}
 				{if $page > 1}<A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$queue step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
-			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $queuedata.total}{$queuedata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$queuedata.total})
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $queuedata.total}
+				{assign var=endx value=$queuedata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$queuedata.total}records $0 - $1 of $2{/t})
 		</TD>
 	</TR>
 	{/if}
 	<TR class="light">
 		<TD COLSPAN="5" class="fall" ALIGN="right">
-			<A HREF="?m=rtticketadd&id={$queuedata.id}">{t}New request {/t}<IMG src="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
+			<A HREF="?m=rtticketadd&id={$queuedata.id}">{t}New Ticket {/t}<IMG src="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>
