@@ -29,7 +29,7 @@
 		<TD onClick="return self.location.href='?m=daemoninstancelist&id={$host.id}';">
 			({$host.id|string_format:"%04d"})
 		</TD>
-		<TD onClick="return self.location.href='?m=daemoninstancelist&hostid={$host.id}';" nowrap>
+		<TD onClick="return self.location.href='?m=daemoninstancelist&id={$host.id}';" nowrap>
 			{if $host.lastreload}{$host.lastreload|date_format:"%Y/%m/%d %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD onClick="return self.location.href='?m=daemoninstancelist&id={$host.id}';">
