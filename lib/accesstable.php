@@ -55,6 +55,9 @@ $access[table][7][allow_reg]    = "^traffic$";
 $access[table][8][name]         = "dostêp do korespondencji seryjnej";
 $access[table][8][allow_reg]    = "^(mailing|mailingsend)$";
 
+$access[table][9][name]         = "dostêp do Helpdesku (RT)";
+$access[table][9][allow_reg]    = "^((rtqueue|rtticket)(add|del|edit|info|view|list))$";
+
 $access[table][253][name]	= "brak dostêpu do modyfikacji i zak³adania nowych kont administratorów";
 $access[table][253][deny_reg]	= "^(admin(add|del|edit|passwd))$";
 
