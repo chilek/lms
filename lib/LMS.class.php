@@ -1391,7 +1391,7 @@ class LMS
 	function AdminAdd($adminadd)
 	{
 		$this->SetTS("admins");
-		if($this->ADB->Execute("INSERT INTO admins (login, name, passwd) VALUES (?, ?, ?)",array($adminadd[login], $adminadd[name], crypt($adminadd[password]))))
+		if($this->ADB->Execute("INSERT INTO admins (login, name, email, passwd) VALUES (?, ?, ?, ?)",array($adminadd[login], $adminadd[name], $adminadd[email], crypt($adminadd[password]))))
 			return $this->ADB->GetOne("SELECT id FROM admins WHERE login=?",array($adminadd[login]));
 		else
 			return FALSE;
