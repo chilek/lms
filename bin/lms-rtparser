@@ -97,7 +97,7 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 my $sendmail = $ini->val('rt', 'sendmail_binary') || '/usr/sbin/sendmail';
 my $save_path = $ini->val('rt', 'mail_dir') || '';
 my $queue = $queue || $ini->val('rt', 'default_queue');
-my $autoreply_from = $ini->val('rt', 'autoreply_from') || "LMS RT System <rt\@$hostname>";
+my $autoreply_from = $ini->val('rt', 'autoreply_from') || '';
 
 # very ugly code, but we really need tempdir..
 my $tmpdir = (defined $ini->val('rt', 'tmp_dir') && ! ($ini->val('rt', 'tmp_dir') eq '')) || (defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '') ? $ENV{'TMP'} : '/tmp');
@@ -257,15 +257,6 @@ $toemail =~ s/^.*<(.+\@.+)>$/\1/g;
 if(! $prev_tid) # generate new ticket if previous not found
 {
 	# find queue ID if not specified
-	if(!$queue)
-	{
-		$dbq = $dbase->prepare("SELECT id FROM rtqueues WHERE email = '$toemail'");
-		$dbq->execute();
-		if(my $row = $dbq->fetchrow_hashref())
-		{
-			$queue = $row->{'id'};
-		}
-	}
 	
 	if(!$queue)
 	{
@@ -298,6 +289,16 @@ if(! $prev_tid) # generate new ticket if previous not found
 	$dbq->execute();
 	$row = $dbq->fetchrow_hashref();
 	$rt_msgid = $row->{'id'};	
+
+	if(!$autoreply_from)
+	{
+		$dbq = $dbase->prepare("SELECT email FROM rtqueues WHERE id = '$queue'");
+		$dbq->execute();
+		if(my $row = $dbq->fetchrow_hashref())
+		{
+			$autoreply_from = $row->{'id'};
+		}
+	}
 
         my $replymail = MIME::Entity->build(
 		'Type' => "text/plain",
