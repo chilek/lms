@@ -29,8 +29,6 @@ int db_connect(const unsigned char *db, const unsigned char *user, const unsigne
 	syslog(LOG_CRIT,"[db_connect] Unable to initialize database");
 	return ERROR;
     }
-    if( !port ) 
-	port = 3306;
     if( !mysql_real_connect(&conn,host,user,password,db,port,NULL,0) ) {
 	syslog(LOG_CRIT,"[db_connect] Unable to connect to database. Error: %s",mysql_error(&conn));
         mysql_close(&conn);
@@ -41,7 +39,7 @@ int db_connect(const unsigned char *db, const unsigned char *user, const unsigne
     char connect_string[BUFFER_LENGTH];
     if( !port ) 
 	port = 5432;
-    snprintf(connect_string,sizeof(connect_string)-1,"host='%s' port=%d dbname='%s' user='%s' password='%s'",host,port,db,user,password);
+    snprintf(connect_string,sizeof(connect_string)-1,"host='%s' dbname='%s' user='%s' port='%d' password='%s'",host,db,user,port,password);
     connect_string[sizeof(connect_string)-1]='\x0';
     conn = PQconnectdb(connect_string);
     if(PQstatus(conn) == CONNECTION_BAD) {
@@ -50,8 +48,8 @@ int db_connect(const unsigned char *db, const unsigned char *user, const unsigne
         return ERROR;
     }
 #endif
-#ifdef DEBUG
-    syslog(LOG_INFO, "DEBUG: Connected with params: db='%s' host='%s' user='%s' port='%d' passwd='*'",db, host, user, port);
+#ifdef DEBUG1
+	syslog(LOG_INFO, "DEBUG: [lmsd] Connected with params: db='%s' host='%s' user='%s' port='%d' passwd='*'",db, host, user, port);
 #endif
     return OK;
 }
@@ -66,8 +64,8 @@ int db_disconnect(void)
      if( PQstatus(conn) != CONNECTION_BAD )
           PQfinish(conn);
 #endif
-#ifdef DEBUG
-    syslog(LOG_INFO, "DEBUG: Disconnected");
+#ifdef DEBUG1
+    syslog(LOG_INFO, "DEBUG: [lmsd] Disconnected");
 #endif
      return OK;
 }
@@ -78,8 +76,8 @@ QUERY_HANDLE * db_query(unsigned char *stmt)
 {
     QUERY_HANDLE *query;
     stmt = parse_query_stmt(stmt);
-#ifdef DEBUG
-    syslog(LOG_INFO,"DEBUG: %s", stmt);
+#ifdef DEBUG0
+    syslog(LOG_INFO,"DEBUG: [SQL] %s", stmt);
 #endif
 #ifdef USE_MYSQL
     if( mysql_query(&conn,stmt) < 0 ) {
@@ -94,7 +92,7 @@ QUERY_HANDLE * db_query(unsigned char *stmt)
 #ifdef USE_PGSQL
     res = PQexec(conn,stmt);
     if( res==NULL || PQresultStatus(res)!=PGRES_TUPLES_OK ) {
-	syslog(LOG_CRIT,"[db_select] Query failed. Error: %s",PQerrorMessage(conn));
+	syslog(LOG_CRIT,"[db_select] Query failed. %s",PQerrorMessage(conn));
 	PQclear(res);
         return NULL;
     }
@@ -114,8 +112,8 @@ int db_exec(unsigned char *stmt)
 {
     int result;
     stmt = parse_query_stmt(stmt);
-#ifdef DEBUG
-    syslog(LOG_INFO,"DEBUG: %s", stmt);
+#ifdef DEBUG0
+    syslog(LOG_INFO,"DEBUG: [SQL] %s", stmt);
 #endif
 #ifdef USE_MYSQL
     if( mysql_query(&conn,stmt) != 0 ) {
@@ -127,7 +125,7 @@ int db_exec(unsigned char *stmt)
 #ifdef USE_PGSQL
     res = PQexec(conn,stmt);
     if( res==NULL || PQresultStatus(res)!=PGRES_COMMAND_OK ) {
-	syslog(LOG_CRIT,"[db_exec] Query failed. Error: %s",PQerrorMessage(conn));
+	syslog(LOG_CRIT,"[db_exec] Query failed. %s",PQerrorMessage(conn));
 	PQclear(res);
         return ERROR;
     }
@@ -309,8 +307,8 @@ int db_begin()
 {
 #ifdef USE_PGSQL
     res = PQexec(conn,"BEGIN WORK");
-#ifdef DEBUG
-    syslog(LOG_INFO,"DEBUG: BEGIN WORK");
+#ifdef DEBUG0
+    syslog(LOG_INFO,"DEBUG: [SQL] BEGIN WORK");
 #endif
     if( res==NULL || PQresultStatus(res)!=PGRES_COMMAND_OK ) {
 	syslog(LOG_CRIT,"[db_begin] Query failed. Error: %s",PQerrorMessage(conn));
@@ -327,8 +325,8 @@ int db_commit()
 {
 #ifdef USE_PGSQL
     res = PQexec(conn,"COMMIT WORK");
-#ifdef DEBUG
-    syslog(LOG_INFO,"DEBUG: COMMIT WORK");
+#ifdef DEBUG0
+    syslog(LOG_INFO,"DEBUG: [SQL] COMMIT WORK");
 #endif
     if( res==NULL || PQresultStatus(res)!=PGRES_COMMAND_OK ) {
 	syslog(LOG_CRIT,"[db_commit] Query failed. Error: %s",PQerrorMessage(conn));
@@ -345,8 +343,8 @@ int db_abort()
 {
 #ifdef USE_PGSQL
     res = PQexec(conn,"ROLLBACK WORK");
-#ifdef DEBUG
-    syslog(LOG_INFO,"DEBUG: ROLLBACK WORK");
+#ifdef DEBUG0
+    syslog(LOG_INFO,"DEBUG: [SQL] ROLLBACK WORK");
 #endif    
     if( res==NULL || PQresultStatus(res)!=PGRES_COMMAND_OK ) {
 	syslog(LOG_CRIT,"[db_abort] Query failed. Error: %s",PQerrorMessage(conn));
