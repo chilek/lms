@@ -34,41 +34,40 @@ ini_set('session.name','LMSSESSIONID');
 
 // Parse configuration file
 function lms_parse_ini_file($filename, $process_sections = false) {
-  $ini_array = array();
-  $sec_name = "";
-  $lines = file($filename);
-  foreach($lines as $line) {
-    $line = trim($line);
+    $ini_array = array();
+    $sec_name = "";
+    $lines = file($filename);
+    foreach($lines as $line) {
+	$line = trim($line);
 
-    if($line == "" || $line[0] == ";" || $line[0] == "#") {
-      continue;
+	if($line == "" || $line[0] == ";" || $line[0] == "#") 
+	    continue;
+    
+
+	if($line[0] == "[" && $line[strlen($line) - 1] == "]") 
+	    $sec_name = trim($line,"[ ]");
+	else {
+	    if ( sscanf($line, "%[^=] = '%[^']'", &$property, &$value) != 2 ) 
+		if ( sscanf($line, "%[^=] = \"%[^\"]\"", &$property, &$value) != 2 ) 
+		    if( sscanf($line, "%[^=] = %[^;#]",    &$property, &$value) != 2) 
+			continue;
+		    
+	    $property = trim($property);
+    	
+	    if($process_sections) 
+    		$ini_array[$sec_name][$property] = $value;
+    	    else 
+    		$ini_array[$property] = $value;
+    	    
+	}
     }
-
-    if($line[0] == "[" && $line[strlen($line) - 1] == "]") {
-      $sec_name = trim(substr($line, 1, strlen($line) - 2));
-    }
-    else {
-      $pos = strpos($line, "=");
-      $property = trim(substr($line, 0, $pos));
-      $value = trim(substr($line, $pos + 1)," \"'");
-
-      if($process_sections) {
-        $ini_array[$sec_name][$property] = $value;
-      }
-      else {
-        $ini_array[$property] = $value;
-      }
-    }
-  }
-
-  return $ini_array;
+    return $ini_array;
 }
 
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
 	$_CONFIG[$key] = $val;
 
 // config value tester
-
 function chkconfig($value, $default = FALSE)
 {
 	if(eregi('^(1|y|on|yes|true|tak|t)$', $value))
@@ -232,6 +231,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.115  2003/11/14 18:41:52  alec
+ * nowa funkcja parsuj±ca konfig
+ *
  * Revision 1.114  2003/11/11 20:44:53  alec
  * function for ini file parsing, compatible with almsd ini value strings
  *
