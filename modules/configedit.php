@@ -48,12 +48,13 @@ if($cfg = $_POST['config'])
 	foreach($cfg as $key => $val) 
 		$cfg[$key] = trim($val);
 	
-	if(!eregi("^[a-z0-9_-]+$", $cfg['var']))
-    		$error['var'] = 'Nazwa opcji zawiera niepoprawne znaki!';
-
 	if($cfg['var']=='')
 		$error['var'] = 'Musisz podaæ nazwê opcji!';
-	    
+	elseif(strlen($cfg['var'])>64)
+		$error['var'] = 'Za d³uga nazwa opcji (max.64 znaki) !';
+	elseif(!eregi("^[a-z0-9_-]+$", $cfg['var']))
+    		$error['var'] = 'Nazwa opcji zawiera niepoprawne znaki!';
+
 	if(($cfg['var']!=$config['var'] || $cfg['section']!=$config['section'])
 		&& $LMS->GetConfigOptionId($cfg['var'], $cfg['section'])
 	)
