@@ -741,7 +741,7 @@ class LMS
      function NodeUpdate($nodedata)
      {
           $this->SetTS("nodes");
-          return $this->DB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, moddate=?NOW?, modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), ip_long($nodedata['ipaddr']), strtoupper($nodedata['mac']), $this->SESSION->id, $nodedata['access'], $nodedata['ownerid'], $nodedata['id']));
+          return $this->DB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, netdev=?, moddate=?NOW?, modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), ip_long($nodedata['ipaddr']), strtoupper($nodedata['mac']), $nodedata['netdev'], $this->SESSION->id, $nodedata['access'], $nodedata['ownerid'], $nodedata['id']));
      }
 
      function DeleteNode($id)
@@ -1893,6 +1893,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.252  2003/10/01 16:09:27  alec
+ * now we can change netdevice assigned to node (function NodeUpdate()
+ *
  * Revision 1.251  2003/09/30 18:33:54  alec
  * rest of ADO removed
  *
