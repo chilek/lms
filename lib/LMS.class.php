@@ -1329,6 +1329,7 @@ class LMS
 			foreach($ttlist as $row)
 				foreach($row as $column => $value)
 					$tarifflist[$column][] = $value;
+		$tarifflist[common] = $this->ADB->GetOne("SELECT tariff, COUNT(tariff) AS common FROM users WHERE tariff=tariff GROUP BY tariff ORDER BY common DESC");
 		return $tarifflist;
 	}
 
