@@ -28,6 +28,8 @@ po  zrobieniu kilku ma³ych przeróbek LMS pracowa³by tak¿e z PHP-4.1.x,
 ale  wybaczcie,  ja  wystarczaj±co du¿o czasu po¶wiêci³em na to by LMS
 wogóle powsta³. Reszta nale¿y do was :)
 
+A! I w php.ini zmienna 'session.use_cookies' musi byæ ustawiona na 1
+
 Po trzecie: serwer baz danych MySQL lub PostgreSQL
 
 Ca³o¶æ  projektu  by³a  pisana  z  wykorzystaniem  MySQL od 3.23.53 do
