@@ -152,7 +152,7 @@ function invoice_buyer($x,$y)
 	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('TEN:')).' '.$invoice['nip']);
     else if ($invoice['pesel']) 
 	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('SSN:')).' '.$invoice['pesel']);
-    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Customer No.: $0 ',sprintf('%04d',$invoice['customerid']))).'</b>');
+    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Customer No.: $0',sprintf('%04d',$invoice['customerid']))).'</b>');
     return $y;
 }
 
@@ -178,7 +178,7 @@ function invoice_title($x,$y)
     $tmp = str_replace("%N",$invoice['number'],$tmp);
     $tmp = str_replace("%Y",$invoice['year'],$tmp);
     $tmp = str_replace("%M",$invoice['month'],$tmp);
-    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0 ',$tmp)).'</b>');
+    $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0',$tmp)).'</b>');
     $y=$y-text_align_left($x,$y,$font_size,$type);
     return $y;
 }
@@ -332,7 +332,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
 function invoice_to_pay($x,$y) 
 {
     global $pdf, $invoice;
-    $y = $y - text_align_left($x,$y,14,iconv("UTF-8","ISO-8859-2",trans('To pay: ')).iconv("UTF-8","ISO-8859-2",moneyf($invoice['total'])));
+    $y = $y - text_align_left($x,$y,14,iconv("UTF-8","ISO-8859-2",trans('To pay:')).' '.iconv("UTF-8","ISO-8859-2",moneyf($invoice['total'])));
     $y = $y - text_align_left($x,$y,10,iconv("UTF-8","ISO-8859-2",trans('In words:')).' '.iconv("UTF-8","ISO-8859-2",trans('$0 dollars $1 cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))));
     return $y;
 }

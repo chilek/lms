@@ -116,7 +116,7 @@
 		</TD>
 		<TD width="98%" class="fright" nowrap>
 			<SELECT name="event[admin]" {tip text="Select user (optional)"}>
-				<OPTION value=""{if !$event.admin} SELECTED{/if}>{t}- select user - {/t}</OPTION>
+				<OPTION value=""{if !$event.admin} SELECTED{/if}>{t}- select user -{/t}</OPTION>
 				{section name=adminlist loop=$adminlist}	
 				<OPTION value="{$adminlist[adminlist].id}"{if $event.admin == $adminlist[adminlist].id} SELECTED{/if}>{$adminlist[adminlist].name}</OPTION>
 				{/section}
