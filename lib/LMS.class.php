@@ -71,7 +71,7 @@ class LMS
 
 	function DatabaseList() // zwraca listê kopii baz danych w katalogu z backupami
 	{
-		if ($handle = opendir($this->CONFIG['backup_dir']))
+		if ($handle = opendir($this->CONFIG['directories']['backup_dir']))
 		{
 			while (false !== ($file = readdir($handle)))
 			{
@@ -83,7 +83,7 @@ class LMS
 						if(substr($path['basename'],0,4)=="lms-")
 						{
 							$dblist['time'][] = substr(basename("$file",".sql"),4);
-							$dblist['size'][] = filesize($this->CONFIG['backup_dir']."/".$file);
+							$dblist['size'][] = filesize($this->CONFIG['directories']['backup_dir']."/".$file);
 						}
 					}
 				}
@@ -98,9 +98,9 @@ class LMS
 
 	function DatabaseRecover($dbtime) // wczytuje backup bazy danych o podanym timestampie
 	{
-		if(file_exists($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql'))
+		if(file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql'))
 		{
-			return $this->DBLoad($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql');
+			return $this->DBLoad($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
 		}
 		else
 			return FALSE;
@@ -140,7 +140,7 @@ class LMS
 
 	function DBDump($filename=NULL) // zrzuca bazê danych do pliku
 	{
-		if(!$filename)
+		if(! $filename)
 			return FALSE;
 		if($dumpfile = fopen($filename,"w"))
 		{
@@ -172,14 +172,14 @@ class LMS
 
 	function DatabaseCreate() // wykonuje zrzut kopii bazy danych
 	{
-		return $this->DBDump($this->CONFIG['backup_dir'].'/lms-'.time().'.sql');
+		return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/lms-'.time().'.sql');
 	}
 
 	function DatabaseDelete($dbtime) // usuwa plik ze zrzutem
 	{
-		if(@file_exists($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql'))
+		if(@file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql'))
 		{
-			return @unlink($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql');
+			return @unlink($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
 		}
 		else
 			return FALSE;
@@ -187,12 +187,12 @@ class LMS
 
 	function DatabaseFetchContent($dbtime) // zwraca zawarto¶æ tekstow± kopii bazy danych
 	{
-		if(file_exists($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql'))
+		if(file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql'))
 		{
-			$content = file($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql');
+			$content = file($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
 			foreach($content as $value)
 				$database['content'] .= $value;
-			$database['size'] = filesize($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql');
+			$database['size'] = filesize($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
 			$database['time'] = $dbtime;
 			return $database;
 		}
@@ -1956,13 +1956,14 @@ class LMS
 
 		if($emails = $this->GetEmails($mailing['group']))
 		{
-			if($this->CONFIG['debug_email'])
-				echo "<B>Uwaga! Tryb debug (u¿ywam adresu ".$this->CONFIG['debug_email']."</B><BR>";
+		
+			if($this->CONFIG['phpui']['debug_email'])
+				echo "<B>Uwaga! Tryb debug (u¿ywam adresu ".$this->CONFIG['phpui']['debug_email']."</B><BR>";
 
 			foreach($emails as $key => $row)
 			{
-				if($this->CONFIG['debug_email'])
-					$row['email'] = $this->CONFIG['debug_email'];
+				if($this->CONFIG['phpui']['debug_email'])
+					$row['email'] = $this->CONFIG['phpui']['debug_email'];
 
 				mail (
 					$row['username']." <".$row['email'].">",
@@ -2096,6 +2097,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.277  2003/10/22 12:20:33  lukasz
+ * - small changes in $_CONFIG handling
+ *
  * Revision 1.276  2003/10/11 10:17:03  lexx
  * - computer -> node i inne drobne poprawki
  *

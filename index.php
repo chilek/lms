@@ -54,20 +54,35 @@ function chkconfig($value, $default = FALSE)
 
 // Check for configuration vars and set default values
 
-$_SYSTEM_DIR = (! $_CONFIG['directories']['sys_dir'] ? getcwd() : $_CONFIG['directories']['sys_dir']);
-$_BACKUP_DIR = (! $_CONFIG['directories']['backup_dir'] ? $_SYSTEM_DIR.'/backups' : $_CONFIG['directories']['backup_dir']);
-$_LIB_DIR = (! $_CONFIG['directories']['lib_dir'] ? $_SYSTEM_DIR.'/lib' : $_CONFIG['directories']['lib_dir']);
-$_MODULES_DIR = (! $_CONFIG['directories']['modules_dir'] ? $_SYSTEM_DIR.'/modules' : $_CONFIG['directories']['modules_dir']);
-$_SMARTY_DIR = (! $_CONFIG['directories']['smarty_dir'] ? $_LIB_DIR.'/Smarty' : $_CONFIG['directories']['smarty_dir']);
-$_SMARTY_COMPILE_DIR = (! $_CONFIG['directories']['smarty_compile_dir'] ? $_SYSTEM_DIR.'/templates_c' : $_CONFIG['directories']['smarty_compile_dir']);
-$_SMARTY_TEMPLATES_DIR = (! $_CONFIG['directories']['smarty_templates_dir'] ? $_SYSTEM_DIR.'/templates' : $_CONFIG['directories']['smarty_templates_dir']);
-$_TIMEOUT = (! $_CONFIG['phpui']['timeout'] ? 600 : $_CONFIG['phpui']['timeout']);
-$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
-$_DBTYPE = (! $_CONFIG['database']['type'] ? 'mysql' : $_CONFIG['database']['type']);
-$_DBHOST = (! isset($_CONFIG['database']['host']) ? 'localhost' : $_CONFIG['database']['host']);
-$_DBUSER = (! isset($_CONFIG['database']['user']) ? 'root' : $_CONFIG['database']['user']);
-$_DBPASS = (! isset($_CONFIG['database']['password']) ? '' : $_CONFIG['database']['password']);
-$_DBNAME = (! isset($_CONFIG['database']['database']) ? 'lms' : $_CONFIG['database']['database']);
+$_CONFIG['directories']['sys_dir'] = (! $_CONFIG['directories']['sys_dir'] ? getcwd() : $_CONFIG['directories']['sys_dir']);
+$_CONFIG['directories']['backup_dir'] = (! $_CONFIG['directories']['backup_dir'] ? $_CONFIG['directories']['sys_dir'].'/backups' : $_CONFIG['directories']['backup_dir']);
+$_CONFIG['directories']['lib_dir'] = (! $_CONFIG['directories']['lib_dir'] ? $_CONFIG['directories']['sys_dir'].'/lib' : $_CONFIG['directories']['lib_dir']);
+$_CONFIG['directories']['modules_dir'] = (! $_CONFIG['directories']['modules_dir'] ? $_CONFIG['directories']['sys_dir'].'/modules' : $_CONFIG['directories']['modules_dir']);
+$_CONFIG['directories']['smarty_dir'] = (! $_CONFIG['directories']['smarty_dir'] ? $_CONFIG['directories']['lib_dir'].'/Smarty' : $_CONFIG['directories']['smarty_dir']);
+$_CONFIG['directories']['smarty_compile_dir'] = (! $_CONFIG['directories']['smarty_compile_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates_c' : $_CONFIG['directories']['smarty_compile_dir']);
+$_CONFIG['directories']['smarty_templates_dir'] = (! $_CONFIG['directories']['smarty_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates' : $_CONFIG['directories']['smarty_templates_dir']);
+$_CONFIG['phpui']['timeout'] = (! $_CONFIG['phpui']['timeout'] ? 600 : $_CONFIG['phpui']['timeout']);
+$_CONFIG['phpui']['force_ssl'] = chkconfig($_CONFIG['phpui']['force_ssl']);
+$_CONFIG['database']['type'] = (! $_CONFIG['database']['type'] ? 'mysql' : $_CONFIG['database']['type']);
+$_CONFIG['database']['host'] = (! isset($_CONFIG['database']['host']) ? 'localhost' : $_CONFIG['database']['host']);
+$_CONFIG['database']['user'] = (! isset($_CONFIG['database']['user']) ? 'root' : $_CONFIG['database']['user']);
+$_CONFIG['database']['password'] = (! isset($_CONFIG['database']['password']) ? '' : $_CONFIG['database']['password']);
+$_CONFIG['database']['database'] = (! isset($_CONFIG['database']['database']) ? 'lms' : $_CONFIG['database']['database']);
+
+$_SYSTEM_DIR = $_CONFIG['directories']['sys_dir'];
+$_BACKUP_DIR = $_CONFIG['directories']['backup_dir'];
+$_LIB_DIR = $_CONFIG['directories']['lib_dir'];
+$_MODULES_DIR = $_CONFIG['directories']['modules_dir'];
+$_SMARTY_DIR = $_CONFIG['directories']['smarty_dir'];
+$_SMARTY_COMPILE_DIR = $_CONFIG['directories']['smarty_compile_dir'];
+$_SMARTY_TEMPLATES_DIR = $_CONFIG['directories']['smarty_templates_dir'];
+$_TIMEOUT = $_CONFIG['phpui']['timeout'];
+$_FORCE_SSL = $_CONFIG['phpui']['force_ssl'];
+$_DBTYPE = $_CONFIG['database']['type'];
+$_DBHOST = $_CONFIG['database']['host'];
+$_DBUSER = $_CONFIG['database']['user'];
+$_DBPASS = $_CONFIG['database']['password'];
+$_DBNAME = $_CONFIG['database']['database'];
 
 // Redirect to SSL
 
@@ -102,8 +117,7 @@ $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 $SESSION = new Session($DB, $_TIMEOUT);
 
 $LMS = new LMS($DB, $SESSION);
-$LMS->CONFIG['backup_dir'] = $_BACKUP_DIR;
-$LMS->CONFIG['debug_email'] = $_CONFIG['phpui']['debug_email'];
+$LMS->CONFIG = $_CONFIG;
 
 $SMARTY = new Smarty;
 
@@ -185,6 +199,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.111  2003/10/22 12:20:33  lukasz
+ * - small changes in $_CONFIG handling
+ *
  * Revision 1.110  2003/10/11 20:01:14  alec
  * kto¶ zapomnia³ o wykrzyknikach
  *
