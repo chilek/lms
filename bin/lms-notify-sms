@@ -163,17 +163,25 @@ while (my $row = $dbq->fetchrow_hashref())
 		}
 		# is it ok? what should be sms regexp?
 		my $sms_phone_number;
-		if($row->{'phone1'} =~ "[50|60|69][0-9]{7}")
-			$sms_phone_number=$row->{'phone1'};
-		else if ($row->{'phone2'} =~ "[50|60|69][0-9]{7}")
-			$sms_phone_number=$row->{'phone2'};
-		else if ($row->{'phone3'} =~ "[50|60|69][0-9]{7}")
+		# someone should learn how to write regexp!
+		# This one match:
+		# numbers: 888xxxxxx 880xxxxxx (heyah), 6(0,9)xxxxxxx (plus and era), 50xxxxxxx (idea)
+		# it will also treat as valid numbers begining with: +48, 0, 0-, 0 (space)...
+		my $pnum_regex = '^(\+48|0|)(88[08]|50[0-9]|6[09][0-9])[0-9]{6}$';
+		$row->{'phone1'} =~ s/[ -]//g;
+		$row->{'phone2'} =~ s/[ -]//g;
+		$row->{'phone3'} =~ s/[ -]//g;
+		if($row->{'phone1'} =~ /$pnum_regex/)
+			$sms_phone_number = $row->{'phone1'};
+		elsif ($row->{'phone2'} =~ /$pnum_regex/)
+			$sms_phone_number = $row->{'phone2'};
+		elsif ($row->{'phone3'} =~ /$pnum_regex/)
 			$sms_phone_number=$row->{'phone3'};
 		if ($sms_phone_number)
 		{
 			if(!$quiet)
 			{
-				print STDOUT "Sending sms to $row->{'email'}\n";
+				print STDOUT "Sending sms to $sms_phone_number\n";
 			}
 			my @desttempl = @mtempl;
 			my $subject = $mailsubject;
