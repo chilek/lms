@@ -20,7 +20,7 @@
 00-00-13:CAMEX
 00-00-14:NETRONIX
 00-00-15:DATAPOINT CORPORATION
-00-00-16:DU PONT PIXEL SYSTEMS
+00-00-16:DU PONT PIXEL SYSTEMS     .
 00-00-17:TEKELEC
 00-00-18:WEBSTER COMPUTER CORPORATION
 00-00-19:APPLIED DYNAMICS INTERNATIONAL
@@ -322,13 +322,13 @@
 00-01-41:CABLE PRINT
 00-01-42:Cisco Systems, Inc.
 00-01-43:Cisco Systems, Inc.
-00-01-44:Cereva Networks, Inc.
+00-01-44:EMC Corporation
 00-01-45:WINSYSTEMS, INC.
 00-01-46:Tesco Controls, Inc.
 00-01-47:Zhone Technologies
 00-01-48:X-traWeb Inc.
 00-01-49:T.D.T. Transfer Data Test GmbH
-00-01-4A:SONY COMPUTER SCIENCE LABS., I
+00-01-4A:Sony Corporation
 00-01-4B:Ennovate Networks, Inc.
 00-01-4C:Berkeley Process Control
 00-01-4D:Shin Kin Enterprises Co., Ltd
@@ -458,7 +458,7 @@
 00-01-C8:CONRAD CORP.
 00-01-C9:Cisco Systems, Inc.
 00-01-CA:Geocast Network Systems, Inc.
-00-01-CB:NetGame, Ltd.
+00-01-CB:EVR
 00-01-CC:Japan Total Design Communication Co., Ltd.
 00-01-CD:ARtem
 00-01-CE:Custom Micro Products, Ltd.
@@ -745,7 +745,7 @@
 00-02-E7:CAB GmbH & Co KG
 00-02-E8:E.D.&A.
 00-02-E9:CS Systemes De Securite - C3S
-00-02-EA:Videonics, Inc.
+00-02-EA:Focus Enhancements
 00-02-EB:Pico Communications
 00-02-EC:Maschoff Design Engineering
 00-02-ED:DXO Telecom Co., Ltd.
@@ -912,7 +912,7 @@
 00-03-8E:Atoga Systems, Inc.
 00-03-8F:Weinschel Corporation
 00-03-90:Digital Video Communications, Inc.
-00-03-91:PRIVATE
+00-03-91:Advanced Digital Broadcast, Ltd.
 00-03-92:Hyundai Teletek Co., Ltd.
 00-03-93:Apple Computer, Inc.
 00-03-94:Connect One
@@ -933,7 +933,7 @@
 00-03-A3:MAVIX, Ltd.
 00-03-A4:Data Storage and Information Management
 00-03-A5:Medea Corporation
-00-03-A6:PRIVATE
+00-03-A6:Traxit Technology, Inc.
 00-03-A7:Unixtar Technology, Inc.
 00-03-A8:IDOT Computers, Inc.
 00-03-A9:AXCENT Media AG
@@ -1022,7 +1022,7 @@
 00-03-FC:Intertex Data AB
 00-03-FD:Cisco Systems, Inc.
 00-03-FE:Cisco Systems, Inc.
-00-03-FF:Connectix
+00-03-FF:Microsoft Corporation
 00-04-00:LEXMARK INTERNATIONAL, INC.
 00-04-01:Osaki Electric Co., Ltd.
 00-04-02:Nexsan Technologies, Ltd.
@@ -1932,7 +1932,7 @@
 00-07-90:Tri-M Technologies (s) Limited
 00-07-91:International Data Communications, Inc.
 00-07-92:Suetron Electronic GmbH
-00-07-93:PRIVATE
+00-07-93:Shin Satellite Public Company Limited
 00-07-94:Simple Devices, Inc.
 00-07-95:Elitegroup Computer System Co. (ECS)
 00-07-96:LSI Systems, Inc.
@@ -2631,7 +2631,7 @@
 00-0A-6C:Walchem Corporation
 00-0A-6D:EKS Elektronikservice GmbH
 00-0A-6E:Broadcast Technology Limited
-00-0A-6F:ZyTera Technologies Inc.
+00-0A-6F:ZyFLEX Technologies Inc
 00-0A-70:MPLS Forum
 00-0A-71:Avrio Technologies, Inc
 00-0A-72:SimpleTech, Inc.
@@ -2769,7 +2769,7 @@
 00-0A-F6:Computer Process Controls
 00-0A-F7:Broadcom Corp.
 00-0A-F8:American Telecare Inc.
-00-0A-F9:PRIVATE
+00-0A-F9:HiConnect, Inc.
 00-0A-FA:Traverse Technologies Australia
 00-0A-FB:Ambri Limited
 00-0A-FC:Core Tec Communications, LLC
@@ -2794,7 +2794,7 @@
 00-0B-0F:Nyquist Industrial Control BV
 00-0B-10:11wave Technonlogy Co.,Ltd
 00-0B-11:HIMEJI ABC TRADING CO.,LTD.
-00-0B-12:PRIVATE
+00-0B-12:NURI Telecom Co., Ltd.
 00-0B-13:ZETRON INC
 00-0B-14:ViewSonic Corporation
 00-0B-15:Platypus Technology
@@ -2875,7 +2875,7 @@
 00-0B-60:Cisco Systems
 00-0B-61:Friedrich Lütze GmbH &Co.
 00-0B-62:Ingenieurbüro Ingo Mohnen
-00-0B-63:PRIVATE
+00-0B-63:Kaleidescape
 00-0B-64:Kieback & Peter GmbH & Co KG
 00-0B-65:Sy.A.C. srl
 00-0B-66:Teralink Communications
@@ -2898,7 +2898,7 @@
 00-0B-77:Cogent Systems, Inc.
 00-0B-78:TAIFATECH INC.
 00-0B-79:X-COM, Inc.
-00-0B-7A:PRIVATE
+00-0B-7A:Wave Science Inc.
 00-0B-7B:Test-Um Inc.
 00-0B-7C:Telex Communications
 00-0B-7D:SOLOMON EXTREME INTERNATIONAL LTD.
@@ -2945,7 +2945,7 @@
 00-0B-A6:Miyakawa Electric Works Ltd.
 00-0B-A7:Maranti Networks
 00-0B-A8:HANBACK ELECTRONICS CO., LTD.
-00-0B-A9:PRIVATE
+00-0B-A9:CloudShield Technologies, Inc.
 00-0B-AA:Aiphone co.,Ltd
 00-0B-AB:Advantech Technology (CHINA) Co., Ltd.
 00-0B-AC:3Com Europe Ltd.
@@ -3197,7 +3197,7 @@
 00-0C-A2:Scopus Network Technologies Ltd
 00-0C-A3:Rancho Technology, Inc.
 00-0C-A4:Prompttec Product Management GmbH
-00-0C-A5:PRIVATE
+00-0C-A5:Naman NZ LTd
 00-0C-A6:Mintera Corporation
 00-0C-A7:Metro (Suzhou) Technologies Co., Ltd.
 00-0C-A8:Garuda Networks Corporation
@@ -3437,7 +3437,7 @@
 00-0D-92:Arima Communication Corporation
 00-0D-93:Apple Computer
 00-0D-94:AFAR Communications,Inc
-00-0D-95:PRIVATE
+00-0D-95:Opti-cell, Inc.
 00-0D-96:Vtera Technology Inc.
 00-0D-97:Tropos Networks, Inc.
 00-0D-98:S.W.A.C. Schmitt-Walter Automation Consult GmbH
@@ -3502,7 +3502,7 @@
 00-0D-D3:SAMWOO Telecommunication Co.,Ltd.
 00-0D-D4:Revivio Inc.
 00-0D-D5:O'RITE TECHNOLOGY CO.,LTD
-00-0D-D6:PRIVATE
+00-0D-D6:ITI    LTD
 00-0D-D7:Bright
 00-0D-D8:BBN
 00-0D-D9:Anton Paar GmbH
@@ -3570,7 +3570,7 @@
 00-0E-17:PRIVATE
 00-0E-18:MyA Technology
 00-0E-19:LogicaCMG Pty Ltd
-00-0E-1A:PRIVATE
+00-0E-1A:JPS Communications
 00-0E-1B:IAV GmbH
 00-0E-1C:Hach Company
 00-0E-1D:PRIVATE
@@ -3832,7 +3832,7 @@
 00-0F-1D:Cosmo Techs Co., Ltd.
 00-0F-1E:Chengdu KT Electric Co.of High & New Technology
 00-0F-1F:WW PCBA Test
-00-0F-20:WW Ops
+00-0F-20:Hewlett Packard
 00-0F-21:Scientific Atlanta, Inc
 00-0F-22:Helius, Inc.
 00-0F-23:Cisco Systems
@@ -3925,6 +3925,137 @@
 00-0F-7A:BeiJing NuQX Technology CO.,LTD
 00-0F-7B:Arce Sistemas, S.A.
 00-0F-7C:ACTi Corporation
+00-0F-7D:Xirrus
+00-0F-7E:UIS Abler Electronics Co.,Ltd.
+00-0F-7F:UBSTORAGE Co.,Ltd.
+00-0F-80:Trinity Security Systems,Inc.
+00-0F-81:Secure Info Imaging
+00-0F-82:Mortara Instrument, Inc.
+00-0F-83:Brainium Technologies Inc.
+00-0F-84:Astute Networks, Inc.
+00-0F-85:ADDO-Japan Corporation
+00-0F-86:PRIVATE
+00-0F-87:Maxcess International
+00-0F-88:AMETEK, Inc.
+00-0F-89:Winnertec System Co., Ltd.
+00-0F-8A:WideView
+00-0F-8B:Orion MultiSystems Inc
+00-0F-8C:Gigawavetech Pte Ltd
+00-0F-8D:FAST TV-Server AG
+00-0F-8E:DONGYANG TELECOM CO.,LTD.
+00-0F-8F:Cisco Systems
+00-0F-90:Cisco Systems
+00-0F-91:Aerotelecom Co.,Ltd.
+00-0F-92:Microhard Systems Inc.
+00-0F-93:Landis+Gyr Ltd.
+00-0F-94:Genexis
+00-0F-95:ELECOM Co.,LTD Laneed Division
+00-0F-96:Critical Telecom Corp.
+00-0F-97:Avanex Corporation
+00-0F-98:Avamax Co. Ltd.
+00-0F-99:APAC opto Electronics Inc.
+00-0F-9A:Synchrony, Inc.
+00-0F-9B:Ross Video Limited
+00-0F-9C:Panduit Corp
+00-0F-9D:Newnham Research Ltd
+00-0F-9E:Murrelektronik GmbH
+00-0F-9F:Motorola BCS
+00-0F-A0:Lotte Canon Co., Ltd.
+00-0F-A1:Gigabit Systems Inc.
+00-0F-A2:Digital Path Networks
+00-0F-A3:Alpha Networks Inc.
+00-0F-A4:Sprecher Automation GmbH
+00-0F-A5:SMP / BWA Technology GmbH
+00-0F-A6:S2 Security Corporation
+00-0F-A7:Raptor Networks Technology
+00-0F-A8:Photometrics, Inc.
+00-0F-A9:PC Fabrik
+00-0F-AA:Nexus Technologies
+00-0F-AB:Kyushu Electronics Systems Inc.
+00-0F-AC:IEEE 802.11
+00-0F-AD:FMN communications GmbH
+00-0F-AE:E2O Communications
+00-0F-AF:Dialog Inc.
+00-0F-B0:Compal Electronics,INC.
+00-0F-B1:Cognio Inc.
+00-0F-B2:Broadband Pacenet (India) Pvt. Ltd.
+00-0F-B3:Actiontec Electronics, Inc
+00-0F-B4:Timespace Technology
+00-0F-B5:NETGEAR Inc
+00-0F-B6:Europlex Technologies
+00-0F-B7:Cavium Networks
+00-0F-B8:CallURL Inc.
+00-0F-B9:Adaptive Instruments
+00-0F-BA:Tevebox AB
+00-0F-BB:Siemens AG, ICN M&L TDC EP
+00-0F-BC:Onkey Technologies, Inc.
+00-0F-BD:MRV Communications (Networks) LTD
+00-0F-BE:e-w/you Inc.
+00-0F-BF:DGT Sp. z o.o.
+00-0F-C0:DELCOMp
+00-0F-C1:WAVE Corporation
+00-0F-C2:Uniwell Corporation
+00-0F-C3:PalmPalm Technology, Inc.
+00-0F-C4:NST co.,LTD.
+00-0F-C5:KeyMed Ltd
+00-0F-C6:Eurocom Industries A/S
+00-0F-C7:Dionica R&D Ltd.
+00-0F-C8:Chantry Networks
+00-0F-C9:Allnet GmbH
+00-0F-CA:A-JIN TECHLINE CO, LTD
+00-0F-CB:3COM EUROPE LTD
+00-0F-CC:Netopia, Inc.
+00-0F-CD:Nortel Networks
+00-0F-CE:Kikusui Electronics Corp.
+00-0F-CF:Datawind Research
+00-0F-D0:ASTRI
+00-0F-D1:Applied Wireless Identifications Group, Inc.
+00-0F-D2:EWA Technologies, Inc.
+00-0F-D3:Digium
+00-0F-D4:Soundcraft
+00-0F-D5:Schwechat - RISE
+00-0F-D6:Sarotech Co., Ltd
+00-0F-D7:Harman Music Group
+00-0F-D8:Force, Inc.
+00-0F-D9:FlexDSL Telecommunications AG
+00-0F-DA:YAZAKI CORPORATION
+00-0F-DB:Westell Technologies
+00-0F-DC:Ueda Japan  Radio Co., Ltd.
+00-0F-DD:SORDIN AB
+00-0F-DE:Sony Ericsson Mobile Communications AB
+00-0F-DF:SOLOMON Technology Corp.
+00-0F-E0:NComputing Co.,Ltd.
+00-0F-E1:ID DIGITAL CORPORATION
+00-0F-E2:Hangzhou Huawei-3Com Tech. Co., Ltd.
+00-0F-E3:Damm Cellular Systems A/S
+00-0F-E4:Pantech Co.,Ltd
+00-0F-E5:MERCURY SECURITY CORPORATION
+00-0F-E6:MBTech Systems, Inc.
+00-0F-E7:Lutron Electronics Co., Inc.
+00-0F-E8:Lobos, Inc.
+00-0F-E9:GW TECHNOLOGIES CO.,LTD.
+00-0F-EA:Giga-Byte Technology Co.,LTD.
+00-0F-EB:Cylon Controls
+00-0F-EC:Arkus Inc.
+00-0F-ED:Anam Electronics Co., Ltd
+00-0F-EE:XTec, Incorporated
+00-0F-EF:Thales e-Transactions GmbH
+00-0F-F0:Sunray Enterprise
+00-0F-F1:nex-G Systems Pte.Ltd
+00-0F-F2:Loud Technologies Inc.
+00-0F-F3:Jung Myoung Communications&Technology
+00-0F-F4:Guntermann & Drunck GmbH
+00-0F-F5:GN&S company
+00-0F-F6:Darfon Electronics Corp.
+00-0F-F7:Cisco Systems
+00-0F-F8:Cisco  Systems
+00-0F-F9:Valcretec, Inc.
+00-0F-FA:Optinel Systems, Inc.
+00-0F-FB:Nippon Denso Industry Co., Ltd.
+00-0F-FC:Merit Li-Lin Ent.
+00-0F-FD:Glorytek Network Inc.
+00-0F-FE:G-PRO COMPUTER
+00-0F-FF:Control4
 00-10-00:CABLE TELEVISION LABORATORIES, INC.
 00-10-01:MCK COMMUNICATIONS
 00-10-02:ACTIA
@@ -3944,7 +4075,7 @@
 00-10-10:INITIO CORPORATION
 00-10-11:CISCO SYSTEMS, INC.
 00-10-12:PROCESSOR SYSTEMS (I) PVT LTD
-00-10-13:INDUSTRIAL COMPUTER SOURCE
+00-10-13:Kontron
 00-10-14:CISCO SYSTEMS, INC.
 00-10-15:OOmon Inc.
 00-10-16:T.SQWARE
@@ -4074,7 +4205,7 @@
 00-10-92:NETCORE INC.
 00-10-93:CMS COMPUTERS, LTD.
 00-10-94:Performance Analysis Broadband, Spirent plc
-00-10-95:Thomson Multimedia, Inc.
+00-10-95:Thompson Inc.
 00-10-96:TRACEWELL SYSTEMS, INC.
 00-10-97:WinNet Metropolitan Communications Systems, Inc.
 00-10-98:STARNET TECHNOLOGIES, INC.
@@ -4180,6 +4311,370 @@
 00-10-FD:COCOM A/S
 00-10-FE:DIGITAL EQUIPMENT CORPORATION
 00-10-FF:CISCO SYSTEMS, INC.
+00-11-00:RAM Industries, LLC
+00-11-01:CET Technologies Pte Ltd
+00-11-02:Aurora Multimedia Corp.
+00-11-03:kawamura electric inc.
+00-11-04:TELEXY
+00-11-05:Sunplus Technology Co., Ltd.
+00-11-06:Siemens NV (Belgium)
+00-11-07:RGB Networks Inc.
+00-11-08:Orbital Data Corporation
+00-11-09:Micro-Star International
+00-11-0A:Hewlett Packard
+00-11-0B:Franklin Technology Systems
+00-11-0C:Atmark Techno, Inc.
+00-11-0D:SANBlaze Technology, Inc.
+00-11-0E:Tsurusaki Sealand Transportation Co. Ltd.
+00-11-0F:netplat,Inc.
+00-11-10:Maxanna Technology Co., Ltd.
+00-11-11:Intel Corporation
+00-11-12:Honeywell CMSS
+00-11-13:Fraunhofer FOKUS
+00-11-14:EverFocus Electronics Corp.
+00-11-15:EPIN Technologies, Inc.
+00-11-16:COTEAU VERT CO., LTD.
+00-11-17:CESNET
+00-11-18:BLX IC Design Corp., Ltd.
+00-11-19:Solteras, Inc.
+00-11-1A:Motorola BCS
+00-11-1B:Targa Systems Div L-3 Communications Canada
+00-11-1C:Pleora Technologies Inc.
+00-11-1D:Hectrix Limited
+00-11-1E:EPSG (Ethernet Powerlink Standardization Group)
+00-11-1F:Doremi Labs, Inc.
+00-11-20:Cisco Systems
+00-11-21:Cisco Systems
+00-11-22:CIMSYS Inc
+00-11-23:Appointech, Inc.
+00-11-24:Apple Computer
+00-11-25:IBM Corporation
+00-11-26:Venstar Inc.
+00-11-27:TASI, Inc
+00-11-28:Streamit
+00-11-29:Paradise Datacom Ltd.
+00-11-2A:Niko NV
+00-11-2B:NetModule
+00-11-2C:IZT GmbH
+00-11-2D:Guys Without Ties
+00-11-2E:CEICOM
+00-11-2F:ASUSTek Computer Inc.
+00-11-30:Allied Telesis (Hong Kong) Ltd.
+00-11-31:UNATECH. CO.,LTD
+00-11-32:Synology Incorporated
+00-11-33:Siemens Austria SIMEA
+00-11-34:MediaCell, Inc.
+00-11-35:Grandeye Ltd
+00-11-36:Goodrich Sensor Systems
+00-11-37:AICHI ELECTRIC CO., LTD.
+00-11-38:TAISHIN CO., LTD.
+00-11-39:STOEBER ANTRIEBSTECHNIK GmbH + Co. KG.
+00-11-3A:SHINBORAM
+00-11-3B:Micronet Communications Inc.
+00-11-3C:Micronas GmbH
+00-11-3D:KN SOLTEC CO.,LTD.
+00-11-3E:JL Corporation
+00-11-3F:Alcatel DI
+00-11-40:Nanometrics Inc.
+00-11-41:GoodMan Corporation
+00-11-42:e-SMARTCOM  INC.
+00-11-43:DELL INC.   (WW PCBA Test)
+00-11-44:Assurance Technology Corp
+00-11-45:ValuePoint Networks
+00-11-46:PRIVATE
+00-11-47:Secom-Industry co.LTD.
+00-11-48:Prolon Control Systems
+00-11-49:Proliphix LLC
+00-11-4A:KAYABA INDUSTRY Co,.Ltd.
+00-11-4B:Francotyp-Postalia AG & Co. KG
+00-11-4C:caffeina applied research ltd.
+00-11-4D:Atsumi Electric Co.,LTD.
+00-11-4E:690885 Ontario Inc.
+00-11-4F:US Digital Television, Inc
+00-11-50:Belkin Corporation
+00-11-51:Mykotronx
+00-11-52:Eidsvoll Electronics AS
+00-11-53:Trident Tek, Inc.
+00-11-54:Webpro Technologies Inc.
+00-11-55:Sevis Systems
+00-11-56:Pharos Systems NZ
+00-11-57:OF Networks Co., Ltd.
+00-11-58:Nortel Networks
+00-11-59:MATISSE NETWORKS INC
+00-11-5A:Ivoclar Vivadent AG
+00-11-5B:Elitegroup Computer System Co. (ECS)
+00-11-5C:Cisco
+00-11-5D:Cisco
+00-11-5E:ProMinent Dosiertechnik GmbH
+00-11-5F:Intellix Co., Ltd.
+00-11-60:ARTDIO Company Co., LTD
+00-11-61:NetStreams, LLC
+00-11-62:STAR MICRONICS CO.,LTD.
+00-11-63:SYSTEM SPA DEPT. ELECTRONICS
+00-11-64:ACARD Technology Corp.
+00-11-65:Znyx Networks
+00-11-66:Taelim Electronics Co., Ltd.
+00-11-67:Integrated System Solution Corp.
+00-11-68:HomeLogic LLC
+00-11-69:EMS Satcom
+00-11-6A:Domo Ltd
+00-11-6B:Digital Data Communications Asia Co.,Ltd
+00-11-6C:Nanwang Multimedia Inc.,Ltd
+00-11-6D:American Time and Signal
+00-11-6E:PePLink Ltd.
+00-11-6F:Netforyou Co., LTD.
+00-11-70:GSC SRL
+00-11-71:DEXTER Communications, Inc.
+00-11-72:COTRON CORPORATION
+00-11-73:Adtron Corporation
+00-11-74:Wibhu Technologies, Inc.
+00-11-75:PathScale, Inc.
+00-11-76:Intellambda Systems, Inc.
+00-11-77:COAXIAL NETWORKS, INC.
+00-11-78:Chiron Technology Ltd
+00-11-79:Singular Technology Co. Ltd.
+00-11-7A:Singim International Corp.
+00-11-7B:Büchi Labortechnik AG
+00-11-7C:e-zy.net
+00-11-7D:ZMD America, Inc.
+00-11-7E:Progeny Inc.
+00-11-7F:Neotune Information Technology Corporation,.LTD
+00-11-80:Motorola BCS
+00-11-81:InterEnergy Co.Ltd,
+00-11-82:IMI Norgren Ltd
+00-11-83:PSC Scanning, Inc
+00-11-84:Humo Laboratory,Ltd.
+00-11-85:Hewlett Packard
+00-11-86:Prime Systems, Inc.
+00-11-87:Category Solutions, Inc
+00-11-88:Enterasys
+00-11-89:Aerotech Inc
+00-11-8A:Viewtran Technology Limited
+00-11-8B:NetDevices Inc.
+00-11-8C:Missouri Department of Transportation
+00-11-8D:Hanchang System Corp.
+00-11-8E:Halytech Mace
+00-11-8F:EUTECH INSTRUMENTS PTE. LTD.
+00-11-90:Digital Design Corporation
+00-11-91:CTS-Clima Temperatur Systeme GmbH
+00-11-92:Cisco Systems
+00-11-93:Cisco Systems
+00-11-94:Chi Mei Communication Systems, Inc.
+00-11-95:Alpha Networks Inc.
+00-11-96:Actuality Systems, Inc.
+00-11-97:Monitoring Technologies Limited
+00-11-98:Prism Media Products Limited
+00-11-99:2wcom GmbH
+00-11-9A:Alkeria srl
+00-11-9B:Telesynergy Research Inc.
+00-11-9C:EP&T Energy
+00-11-9D:Diginfo Technology Corporation
+00-11-9E:Solectron Brazil
+00-11-9F:Nokia Danmark A/S
+00-11-A0:Vtech Engineering Canada Ltd
+00-11-A1:VISION NETWARE CO.,LTD
+00-11-A2:Manufacturing Technology Inc
+00-11-A3:LanReady Technologies Inc.
+00-11-A4:JStream Technologies Inc.
+00-11-A5:Fortuna Electronic Corp.
+00-11-A6:Sypixx Networks
+00-11-A7:Infilco Degremont Inc.
+00-11-A8:Quest Technologies
+00-11-A9:MOIMSTONE Co., LTD
+00-11-AA:Uniclass Technology, Co., LTD
+00-11-AB:TRUSTABLE TECHNOLOGY CO.,LTD.
+00-11-AC:Simtec Electronics
+00-11-AD:Shanghai Ruijie Technology
+00-11-AE:Motorola BCS
+00-11-AF:Medialink-i,Inc
+00-11-B0:Fortelink Inc.
+00-11-B1:BlueExpert Technology Corp.
+00-11-B2:2001 Technology Inc.
+00-11-B3:YOSHIMIYA CO.,LTD.
+00-11-B4:Westermo Teleindustri AB
+00-11-B5:Shenzhen Powercom Co.,Ltd
+00-11-B6:Open Systems International
+00-11-B7:Melexis Nederland B.V.
+00-11-B8:Liebherr - Elektronik GmbH
+00-11-B9:Inner Range Pty. Ltd.
+00-11-BA:Elexol Pty Ltd
+00-11-BB:Cisco Systems
+00-11-BC:Cisco Systems
+00-11-BD:Bombardier Transportation
+00-11-BE:AGP Telecom Co. Ltd
+00-11-BF:AESYS S.p.A.
+00-11-C0:Aday Technology Inc
+00-11-C1:4P MOBILE DATA PROCESSING
+00-11-C2:United Fiber Optic Communication
+00-11-C3:Transceiving System Technology Corporation
+00-11-C4:Terminales de Telecomunicacion Terrestre, S.L.
+00-11-C5:TEN Technology
+00-11-C6:Seagate Technology LLC
+00-11-C7:RAYMARINE Group Ltd.
+00-11-C8:Powercom Co., Ltd.
+00-11-C9:MTT Corporation
+00-11-CA:Long Range Systems, Inc.
+00-11-CB:Jacobsons RKH AB
+00-11-CC:Guangzhou Jinpeng Group Co.,Ltd.
+00-11-CD:Axsun Technologies
+00-11-CE:Ubisense Limited
+00-11-CF:Thrane & Thrane A/S
+00-11-D0:Tandberg Data ASA
+00-11-D1:Soft Imaging System GmbH
+00-11-D2:Perception Digital Ltd
+00-11-D3:NextGenTel Holding ASA
+00-11-D4:NetEnrich, Inc
+00-11-D5:Hangzhou Sunyard System Engineering Co.,Ltd.
+00-11-D6:HandEra, Inc.
+00-11-D7:eWerks Inc
+00-11-D8:ASUSTek Computer Inc.
+00-11-D9:TiVo
+00-11-DA:Vivaas Technology Inc.
+00-11-DB:Land-Cellular Corporation
+00-11-DC:Glunz & Jensen
+00-11-DD:FROMUS TEC. Co., Ltd.
+00-11-DE:EURILOGIC
+00-11-DF:Arecont Systems
+00-11-E0:U-MEDIA Communications, Inc.
+00-11-E1:BEKO Electronics Co.
+00-11-E2:Hua Jung Components Co., Ltd.
+00-11-E3:Broadband Access Products
+00-11-E4:Danelec Electronics A/S
+00-11-E5:KCodes Corporation
+00-11-E6:Scientific Atlanta
+00-11-E7:WORLDSAT - Texas de France
+00-11-E8:Tixi.Com
+00-11-E9:STARNEX CO., LTD.
+00-11-EA:IWICS Inc.
+00-11-EB:Innovative Integration
+00-11-EC:AVIX INC.
+00-11-ED:802 Global
+00-11-EE:Estari, Inc.
+00-11-EF:Conitec Datensysteme GmbH
+00-11-F0:Wideful Limited
+00-11-F1:QinetiQ Ltd
+00-11-F2:Institute of Network Technologies
+00-11-F3:Gavitec AG- mobile digit
+00-11-F4:woori-net
+00-11-F5:ASKEY COMPUTER CORP.
+00-11-F6:Asia Pacific Microsystems , Inc.
+00-11-F7:Shenzhen Forward Industry Co., Ltd
+00-11-F8:AIRAYA Corp
+00-11-F9:Nortel Networks
+00-11-FA:Rane Corporation
+00-11-FB:Heidelberg Engineering GmbH
+00-11-FC:HARTING Electric Gmbh & Co.KG
+00-11-FD:KORG INC.
+00-11-FE:Keiyo System Research, Inc.
+00-11-FF:Digitro Tecnologia Ltda
+00-12-00:Cisco
+00-12-01:Cisco
+00-12-02:Audio International Inc.
+00-12-03:Activ Networks
+00-12-04:u10 Networks, Inc.
+00-12-05:Terrasat Communications, Inc.
+00-12-06:iQuest (NZ) Ltd
+00-12-07:Head Strong International Limited
+00-12-08:Gantner Electronic GmbH
+00-12-09:Fastrax Ltd
+00-12-0A:Emerson Electric GmbH & Co. OHG
+00-12-0B:Chinasys Technologies Limited
+00-12-0C:CE-Infosys Pte Ltd
+00-12-0D:Advanced Telecommunication Technologies, Inc.
+00-12-0E:AboCom
+00-12-0F:IEEE 802.3
+00-12-10:WideRay Corp
+00-12-11:Protechna Herbst GmbH & Co. KG
+00-12-12:PLUS Vision Corporation
+00-12-13:Metrohm AG
+00-12-14:Koenig & Bauer AG
+00-12-15:iStor Networks, Inc.
+00-12-16:ICP Internet Communication Payment AG
+00-12-17:Cisco-Linksys, LLC
+00-12-18:ARUZE Corporation
+00-12-19:Ahead Communication Systems Inc
+00-12-1A:Techno Soft Systemnics Inc.
+00-12-1B:Sound Devices, LLC
+00-12-1C:PARROT S.A.
+00-12-1D:Netfabric Corporation
+00-12-1E:Juniper Networks, Inc.
+00-12-1F:Harding Intruments
+00-12-20:Cadco Systems
+00-12-21:B.Braun Melsungen AG
+00-12-22:Skardin (UK) Ltd
+00-12-23:Pixim
+00-12-24:NexQL Corporation
+00-12-25:Motorola BCS
+00-12-26:Japan Direx Corporation
+00-12-27:Franklin Electric Co., Inc.
+00-12-28:Data Ltd.
+00-12-29:BroadEasy Technologies Co.,Ltd
+00-12-2A:VTech Telecommunications Ltd.
+00-12-2B:Virbiage Pty Ltd
+00-12-2C:Soenen Controls N.V.
+00-12-2D:SiNett Corporation
+00-12-2E:Signal Technology - AISD
+00-12-2F:Sanei Electric Inc.
+00-12-30:Picaso Infocommunication CO., LTD.
+00-12-31:Motion Control Systems, Inc.
+00-12-32:LeWiz Communications Inc.
+00-12-33:JRC TOKKI Co.,Ltd.
+00-12-34:Camille Bauer
+00-12-35:Andrew Corporation
+00-12-36:Tidal Networks
+00-12-37:Texas Instruments
+00-12-38:SetaBox Technology Co., Ltd.
+00-12-39:S Net Systems Inc.
+00-12-3A:Posystech Inc., Co.
+00-12-3B:KeRo Systems ApS
+00-12-3C:IP3 Networks, Inc.
+00-12-3D:GES
+00-12-3E:ERUNE technology Co., Ltd.
+00-12-3F:Dell Inc
+00-12-40:AMOI ELECTRONICS CO.,LTD
+00-12-41:a2i marketing center
+00-12-42:Millennial Net
+00-12-43:Cisco
+00-12-44:Cisco
+00-12-45:Zellweger Analytics, Inc.
+00-12-46:T.O.M TECHNOLOGY INC..
+00-12-47:Samsung Electronics Co., Ltd.
+00-12-48:Kashya Inc.
+00-12-49:Delta Elettronica S.p.A.
+00-12-4A:Dedicated Devices, Inc.
+00-12-4B:Chipcon AS
+00-12-4C:BBWM Corporation
+00-12-4D:Inducon BV
+00-12-4E:XAC AUTOMATION CORP.
+00-12-4F:Tyco Thermal Controls LLC.
+00-12-50:Tokyo Aircaft Instrument Co., Ltd.
+00-12-51:SILINK
+00-12-52:Citronix, LLC
+00-12-53:AudioDev AB
+00-12-54:Spectra Technologies Holdings Company Ltd
+00-12-55:NetEffect Incorporated
+00-12-56:LG INFORMATION & COMM.
+00-12-57:LeapComm Communication Technologies Inc.
+00-12-58:Activis Polska
+00-12-59:THERMO ELECTRON KARLSRUHE
+00-12-5A:Microsoft Corporation
+00-12-5B:KAIMEI ELECTRONI
+00-12-5C:Green Hills Software, Inc.
+00-12-5D:CyberNet Inc.
+00-12-5E:CAEN
+00-12-5F:AWIND Inc.
+00-12-60:Stanton Magnetics,inc.
+00-12-61:Adaptix, Inc
+00-12-62:Nokia Danmark A/S
+00-12-63:Data Voice Technologies GmbH
+00-12-64:daum electronic gmbh
+00-12-65:Enerdyne Technologies, Inc.
+00-12-66:PRIVATE
+00-12-67:Matsushita Electronic Components Co., Ltd.
+00-12-68:IPS d.o.o.
+00-12-69:Value Electronics
+00-12-6A:OPTOELECTRONICS Co., Ltd.
+00-12-6B:Ascalade Communications Limited
 00-1C-7C:PERQ SYSTEMS CORPORATION
 00-20-00:LEXMARK INTERNATIONAL, INC.
 00-20-01:DSP SOLUTIONS, INC.
@@ -4207,7 +4702,7 @@
 00-20-17:ORBOTECH
 00-20-18:CIS TECHNOLOGY INC.
 00-20-19:OHLER GmbH
-00-20-1A:N-BASE SWITCH COMMUNICATIONS
+00-20-1A:MRV Communications, Inc.
 00-20-1B:NORTHERN TELECOM/NETWORK
 00-20-1C:EXCEL, INC.
 00-20-1D:KATANA PRODUCTS
@@ -4369,7 +4864,7 @@
 00-20-B9:METRICOM, INC.
 00-20-BA:CENTER FOR HIGH PERFORMANCE
 00-20-BB:ZAX CORPORATION
-00-20-BC:JTEC PTY LTD.
+00-20-BC:Long Reach Networks Pty Ltd
 00-20-BD:NIOBRARA R & D CORPORATION
 00-20-BE:LAN ACCESS CORP.
 00-20-BF:AEHR TEST SYSTEMS
@@ -4437,6 +4932,7 @@
 00-20-FD:ITV TECHNOLOGIES, INC.
 00-20-FE:TOPWARE INC. / GRAND COMPUTER
 00-20-FF:SYMMETRICAL TECHNOLOGIES
+00-26-54:3Com Corporation
 00-30-00:ALLWELL TECHNOLOGY CORP.
 00-30-01:SMP
 00-30-02:Expand Networks
@@ -4645,7 +5141,7 @@
 00-30-CD:CONEXANT SYSTEMS, INC.
 00-30-CE:Zaffire
 00-30-CF:TWO TECHNOLOGIES, INC.
-00-30-D0:PRIVATE
+00-30-D0:Tellabs
 00-30-D1:INOVA CORPORATION
 00-30-D2:WIN TECHNOLOGIES, CO., LTD.
 00-30-D3:Agilent Technologies
@@ -4716,7 +5212,7 @@
 00-40-14:COMSOFT GMBH
 00-40-15:ASCOM INFRASYS AG
 00-40-16:HADAX ELECTRONICS, INC.
-00-40-17:XCD INC.
+00-40-17:TROY Group, Inc.
 00-40-18:ADOBE SYSTEMS, INC.
 00-40-19:AEON SYSTEMS, INC.
 00-40-1A:FUJI ELECTRIC CO., LTD.
@@ -4972,7 +5468,7 @@
 00-50-15:BRIGHT STAR ENGINEERING
 00-50-16:SST/WOODHEAD INDUSTRIES
 00-50-17:RSR S.R.L.
-00-50-18:ADVANCED MULTIMEDIA INTERNET TECHNOLOGY INC.
+00-50-18:AMIT, Inc.
 00-50-19:SPRING TIDE NETWORKS, INC.
 00-50-1A:UISIQN
 00-50-1B:ABL CANADA, INC.
@@ -5031,7 +5527,7 @@
 00-50-55:DOMS A/S
 00-50-56:VMWare, Inc.
 00-50-57:BROADBAND ACCESS SYSTEMS
-00-50-58:VEGASTREAM LIMITED
+00-50-58:VegaStream Limted
 00-50-59:SUITE TECHNOLOGY SYSTEMS NETWORK
 00-50-5A:NETWORK ALCHEMY, INC.
 00-50-5B:KAWASAKI LSI U.S.A., INC.
@@ -5147,7 +5643,7 @@
 00-50-CF:VANLINK COMMUNICATION TECHNOLOGY RESEARCH INSTITUTE
 00-50-D0:MINERVA SYSTEMS
 00-50-D1:CISCO SYSTEMS, INC.
-00-50-D2:BAE Systems Canada, Inc.
+00-50-D2:CMC Electronics Inc
 00-50-D3:DIGITAL AUDIO PROCESSING PTY. LTD.
 00-50-D4:JOOHONG INFORMATION &
 00-50-D5:AD SYSTEMS CORP.
@@ -5265,7 +5761,7 @@
 00-60-49:VINA TECHNOLOGIES
 00-60-4A:SAIC IDEAS GROUP
 00-60-4B:BIODATA GmbH
-00-60-4C:SAT
+00-60-4C:SAGEM SA
 00-60-4D:MMC NETWORKS, INC.
 00-60-4E:CYCLE COMPUTER CORPORATION, INC.
 00-60-4F:SUZUKI MFG. CO., LTD.
@@ -5342,7 +5838,7 @@
 00-60-96:T.S. MICROTECH INC.
 00-60-97:3COM CORPORATION
 00-60-98:HT COMMUNICATIONS
-00-60-99:LAN MEDIA CORPORATION
+00-60-99:SBE, Inc.
 00-60-9A:NJK TECHNO CO.
 00-60-9B:ASTRO-MED, INC.
 00-60-9C:Perkin-Elmer Incorporated
@@ -5860,7 +6356,7 @@
 00-90-9A:ONE WORLD SYSTEMS, INC.
 00-90-9B:MARKPOINT AB
 00-90-9C:Terayon Communications Systems
-00-90-9D:GSE SYSTEMS, INC.
+00-90-9D:NovaTech Process Solutions, LLC
 00-90-9E:Critical IO, LLC
 00-90-9F:DIGI-DATA CORPORATION
 00-90-A0:8X8 INC.
@@ -5962,7 +6458,7 @@
 00-91-D6:Crystal Group, Inc.
 00-9D-8E:CARDIAC RECORDERS, INC.
 00-A0-00:CENTILLION NETWORKS, INC.
-00-A0-01:WATKINS-JOHNSON COMPANY
+00-A0-01:DRS Signal Solutions
 00-A0-02:LEEDS & NORTHRUP AUSTRALIA PTY LTD
 00-A0-03:STAEFA CONTROL SYSTEM
 00-A0-04:NETPOWER, INC.
@@ -6026,7 +6522,7 @@
 00-A0-3E:ATM FORUM
 00-A0-3F:COMPUTER SOCIETY MICROPROCESSOR & MICROPROCESSOR STANDARDS C
 00-A0-40:APPLE COMPUTER
-00-A0-41:LEYBOLD-INFICON
+00-A0-41:INFICON
 00-A0-42:SPUR PRODUCTS CORP.
 00-A0-43:AMERICAN TECHNOLOGY LABS, INC.
 00-A0-44:NTT IT CO., LTD.
@@ -6062,7 +6558,7 @@
 00-A0-62:AES PRODATA
 00-A0-63:JRL SYSTEMS, INC.
 00-A0-64:KVB/ANALECT
-00-A0-65:NEXLAND, INC.
+00-A0-65:Symantec Corporation
 00-A0-66:ISA CO., LTD.
 00-A0-67:NETWORK SERVICES GROUP
 00-A0-68:BHP LIMITED
@@ -6089,7 +6585,7 @@
 00-A0-7D:SEEQ TECHNOLOGY, INC.
 00-A0-7E:AVID TECHNOLOGY, INC.
 00-A0-7F:GSM-SYNTEL, LTD.
-00-A0-80:ANTARES MICROSYSTEMS
+00-A0-80:SBE, Inc.
 00-A0-81:ALCATEL DATA NETWORKS
 00-A0-82:NKT ELEKTRONIK A/S
 00-A0-83:ASIMMPHONY TURKEY
@@ -6700,7 +7196,7 @@
 00-D0-B5:IPricot formerly DotCom
 00-D0-B6:CRESCENT NETWORKS, INC.
 00-D0-B7:INTEL CORPORATION
-00-D0-B8:IOMEGA CORP.
+00-D0-B8:Iomega Corporation
 00-D0-B9:MICROTEK INTERNATIONAL, INC.
 00-D0-BA:CISCO SYSTEMS, INC.
 00-D0-BB:CISCO SYSTEMS, INC.
@@ -6822,7 +7318,7 @@
 00-E0-1F:AVIDIA Systems, Inc.
 00-E0-20:TECNOMEN OY
 00-E0-21:FREEGATE CORP.
-00-E0-22:MediaLight, Inc.
+00-E0-22:Analog Devices Inc.
 00-E0-23:TELRAD
 00-E0-24:GADZOOX NETWORKS
 00-E0-25:dit CO., LTD.
