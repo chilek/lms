@@ -1,7 +1,7 @@
 {include file="header.html"}
 {include file="userheader.html"}
 <!--// $Id$ //-->
-<H1>Nowy u¿ytkownik</H1>
+<H1>{$layout.pagetitle}</H1>
 <P>
 <FORM name="useradd" method="POST" action="?m=useradd">		
 <TABLE cellpadding="4" cellspacing="0" width="100%">
@@ -49,8 +49,8 @@
 					<TD width="99%">
 						<SELECT size="1" name="useradd[status]"{if $error.status} CLASS="alert"{/if}>
 							<OPTION VALUE="3"{if $useradd.status eq "3"} SELECTED{/if}><B>{$lang.connected}</B></OPTION>
-							<OPTION VALUE="2"{if $useradd.status eq "2"} SELECTED{/if}><B>oczekuj±cy</B></option>
-							<OPTION VALUE="1"{if $useradd.status eq "1"} SELECTED{/if}><B>zainteresowany</B></OPTION>
+							<OPTION VALUE="2"{if $useradd.status eq "2"} SELECTED{/if}><B>{$lang.awaiting}</B></option>
+							<OPTION VALUE="1"{if $useradd.status eq "1"} SELECTED{/if}><B>{$lang.interested}</B></OPTION>
 						</SELECT>
 					</TD>
 				</tr>
@@ -108,7 +108,7 @@
 						<TABLE>
 							<TR>
 								<TD>
-									<B>Taryfa:</B>
+									<B>{$lang.tariff}:</B>
 								</TD>
 								<TD>
 									&nbsp;
@@ -120,7 +120,7 @@
 										{/section}
 									</SELECT>
 									{if $error.tariff}
-									<FONT COLOR="Red"><B>Proszê wybraæ taryfê!</B></FONT>
+									<FONT COLOR="Red"><B>{$lang.choose_tariff}</B></FONT>
 									{/if}
 								</TD>
 							</TR>

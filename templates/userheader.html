@@ -3,13 +3,13 @@
 	<tr>
 		<TD width="100%" class="fall"><B>
 			<img src="img/user.gif" alt="" align="absmiddle" border="0">
-			U¿ytkownicy :
-			<A href="?m=userlist" {popup text="Lista u¿ytkowników"}>Lista</A> /
-			<A href="?m=userlistdisc" {popup text="Lista od³±czonych u¿ytkowników"}>Od³±czeni</A> /
-			<A href="?m=userlistdebt" {popup text="Lista zad³u¿onych u¿ytkowników"}>Zad³u¿eni</A> /
-			<A href="?m=useradd" {popup text="Dodanie nowego u¿ytkownika"}>Nowy</A> /
-			<A href="?m=usersearch" {popup text="Wyszukiwanie u¿ytkownika"}>Szukaj</A> /
-			<A href="?m=print&type=userlist" target="_BLANK" {popup text="Lista u¿ytkowników przyjazna dla drukarki ;-)"}>Wersja do druku</A>
+			{$lang.users} : 
+			<A href="?m=userlist" {popup text="`$lang.tip_userlist`"}>{$lang.listing}</A> /
+			<A href="?m=userlistdisc" {popup text="`$lang.tip_userlistdisc`"}>{$lang.disconnected_m}</A> /
+			<A href="?m=userlistdebt" {popup text="`$lang.tip_userlistdebt`"}>{$lang.in_debt2}</A> /
+			<A href="?m=useradd" {popup text="`$lang.tip_useradd`"}>{$lang.new}</A> /
+			<A href="?m=usersearch" {popup text="`$lang.tip_usersearch`"}>{$lang.search}</A> /
+			<A href="?m=print&type=userlist" target="_BLANK" {popup text="`$lang.tip_printuserlist`"}>{$lang.printable_version}</A>
 		</B></TD>
 	</TR>
 </table>													

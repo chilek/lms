@@ -1,7 +1,7 @@
 {include file="header.html"}
 {include file="userheader.html"}
 <!--// $Id$ //-->
-<H1>{$lang.pagetitle_userlist|replace:"#":"`$layout.ultitle`"}</H1>
+<H1>{$layout.pagetitle}</H1>
 <P>
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B" {popup text="`$lang.click_to_change_sort_order`"}>
@@ -39,7 +39,7 @@
 				<SELECT SIZE="1" CLASS="bold" NAME="s" ONCHANGE="document.choosefilter.submit();">
 					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>{$lang.connected}</OPTION>
 					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>{$lang.awaiting}</OPTION>
-					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{$lang.zainteresowany}</OPTION>
+					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{$lang.interested}</OPTION>
 					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{$lang.all}</OPTION>
 				</SELECT>
 			</FORM></P>
