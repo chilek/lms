@@ -52,7 +52,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 			return FALSE;
 	}
 
-	function _dirver_disconnect()
+	function _driver_disconnect()
 	{
 		return pg_close($this->_dblink);
 	}
@@ -120,6 +120,9 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.10  2003/09/10 20:17:17  alec
+ * fatal error in postgres disconnect()
+ *
  * Revision 1.9  2003/09/10 00:16:19  lukasz
  * - LMSDB::Destroy();
  *
