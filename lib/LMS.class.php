@@ -120,31 +120,16 @@ class LMS
 	function UserUpdate($userdata)
 	{
 		$this->SetTS("users");
-		return $this->ADB->Execute("UPDATE users SET phone1=?, phone2=?, phone3=?, address=?, email=?, tariff=?, info=?, modid=".$this->sqlTSfmt().", status=?, moddate=? WHERE id=?",array($userdata[phone1],$userdata[phone2],$userdata[phone3],$userdata[address],$userdata[email],$userdata[tariff],$userdata[uwagi],$this->SESSION->id,$userdata[status],$userdata[id]));	
+		return $this->ADB->Execute(
+		"UPDATE users SET 
+		phone1=?, phone2=?, phone3=?, address=?, email=?, tariff=?, info=?, modid=?, status=?, moddate=".$this->sqlTSfmt()." WHERE id=?",
+		array(
+		$userdata[phone1],$userdata[phone2],$userdata[phone3],$userdata[address],$userdata[email],$userdata[tariff],$userdata[uwagi],$this->SESSION->id,$userdata[status],$userdata[id]));	
 	}
 
 	function GetUserNodesNo($id)
 	{
 		return $this->ADB->GetOne("SELECT COUNT(*) FROM nodes WHERE ownerid=?",array($id));
-	}
-
-	function GetNetworksOld()
-	{
-		$netlist = $this->ADB->GetAll("SELECT id, name, address, mask FROM networks");
-
-		foreach($netlist as $row)
-			foreach($row as $field => $value)
-				$return[$field][] = $value;
-	
-		$return[total] = sizeof($return[id]);
-		if($return[total])
-			foreach($return[id] as $i => $v)
-			{
-				$return[addresslong][$i] = ip_long($return[address][$i]);
-				$return[prefix][$i] = mask2prefix($return[mask][$i]);
-			}
-		
-		return $return;
 	}
 
 	function GetNetworks()
@@ -456,8 +441,8 @@ class LMS
 	{
 		if($row = $this->ADB->GetRow("SELECT address, mask, name FROM networks WHERE id=?",array($id)))
 			foreach($row as $field => $value)
-				$$filed = $value;
-		
+				$$field = $value;
+	
 		for($i=ip_long($address)+1;$i<ip_long(getbraddr($address,$mask));$i++)
 		{
 			$return[addresslong][] = $i;
@@ -486,7 +471,7 @@ class LMS
 						$return[ownerid][$pos] = $nodes[ownerid][$key];
 					}
 		}
-		
+
 		return $return;
 	}
 			
