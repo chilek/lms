@@ -344,8 +344,8 @@ function prefix2mask($prefix)
 function get_ip_range_from_ip_part($part_ip)
 {
 	//funkcja np. dla "192.168.2" zwraca "192.168.2.0","192.168.2.255"
-					     "192.168.20.0","192.168.29.255"
-					     "192.168.200.0","192.168.255.255"
+	//				     "192.168.20.0","192.168.29.255"
+	//				     "192.168.200.0","192.168.255.255"
 	
 	$part_trim = trim($part_ip,'.');
 	
@@ -1019,6 +1019,9 @@ function setunits($data)  // for traffic data
 
 /*
  * $Log$
+ * Revision 1.50  2003/10/06 22:19:16  alec
+ * popraweczka - dodany komentarz
+ *
  * Revision 1.49  2003/10/06 22:18:23  alec
  * nowa rozbudowana funkcja SearchNodeList() - na adresach IP dzia³a prawie jak LIKE
  *
