@@ -1,0 +1,180 @@
+{include file="header.html"}
+{include file="trafficheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+{if $dane}
+{*
+ {if !($upload_sum.dane == 0 && $download_sum.dane == 0)}
+*}
+<TABLE WIDTH=610 ALIGN="center">
+    <TR>
+	<TD VALIGN="top">
+	    <TABLE WIDTH=300>
+		<TR class="DARK">
+		    <TD class="FALL" align="center">
+		    <P><B>Download</B></P>
+		    </TD>	
+		</TR>
+		<TR>
+		    <TD class="flr">
+		    {section name=download loop=$download.name}
+		    <TABLE>
+		    <TR>
+			<TD ALIGN="right" WIDTH=75>{$download.name[download]|truncate:10:"..."}</TD>
+    		    	<TD WIDTH={$download.bar[download]} BGCOLOR="#FFBD9B"></TD>
+    			<TD>{$download.dane[download]|string_format:"%.2f "}{$download.jedn[download]}</TD>
+		    <TR>
+		    </TABLE>
+		    {/section}
+		    </TD>
+		</TR>
+		<TR class="LIGHT">
+		    <TD ALIGN="center" class="FALL">
+		    <P><B>Razem: {$download_sum.dane|string_format:"%.2f "}{$download_sum.jedn}</B></P>
+		    </TD>
+		</TR>
+	    </TABLE>
+	</TD>
+	<TD VALIGN="top"> 
+	    <TABLE WIDTH=300>
+		<TR class="DARK">
+		    <TD class="FALL" align="center">
+		    <P><B>Upload</B></P>
+		    </TD>	
+		</TR>
+		<TR>
+		    <TD class="flr">
+		    {section name=upload loop=$upload.name}
+		    <TABLE>
+		    <TR>
+			<TD ALIGN="right" WIDTH=75>{$upload.name[upload]|truncate:10:"..."}</TD>
+			<TD WIDTH={$upload.bar[upload]} BGCOLOR="#CEBD9B"></TD>
+			<TD>{$upload.dane[upload]|string_format:"%.2f "}{$upload.jedn[upload]}</TD>
+		    <TR>
+		    </TABLE>
+		    {/section}
+		    </TD>
+		</TR>
+		<TR class="LIGHT">
+		    <TD ALIGN="center"class="FALL">
+		    <P><B>Razem: {$upload_sum.dane|string_format:"%.2f "}{$upload_sum.jedn}</B></P>
+		    </TD>
+		</TR>
+	    </TABLE>
+    	</TD>
+    </TR>
+</TABLE>
+{else}
+<FORM NAME="traffic" METHOD="POST" ACTION="?m=traffic&bar=user">
+<TABLE ALIGN="center" WIDTH=600>
+    <TR CLASS="dark">
+	<TD COLSPAN=2 ALIGN="center" CLASS="ftopu">
+	<B>Wprowad¼ parametry przeszukiwania</B>
+	</TD>
+    </TR>    
+    <TR CLASS="light">
+	<TD WIDTH=300 ALIGN="right" CLASS="fleft">
+	<B>Od: (rrrr/mm/dd gg:mm)</B>&nbsp;
+	</TD>
+	<TD CLASS="fright">&nbsp;
+	<SELECT SIZE=1 NAME="from[year]">
+	{section name="year" loop=$data.year}
+	<OPTION VALUE="{$data.year[year]}">{$data.year[year]}</OPTION>
+	{/section}
+	</SELECT>&nbsp;/
+	<SELECT SIZE=1 NAME="from[month]">
+	{section name="month" loop=$data.month}
+	<OPTION VALUE="{$data.month[month]}">{$data.month[month]|string_format:"%02d"}</OPTION>
+	{/section}
+	</SELECT>&nbsp;/
+	<SELECT SIZE=1 NAME="from[day]">
+	{section name="day" loop=$data.day}
+	<OPTION VALUE="{$data.day[day]}">{$data.day[day]|string_format:"%02d"}</OPTION>
+	{/section}
+	</SELECT>&nbsp;&nbsp;
+	<SELECT SIZE=1 NAME="from[hour]">
+	{section name="hour" loop=$data.hour}
+	<OPTION VALUE="{$data.hour[hour]}">{$data.hour[hour]|string_format:"%02d"}</OPTION>
+	{/section}
+	</SELECT>&nbsp;:
+	<SELECT SIZE=1 NAME="from[minute]">
+	{section name="minute" loop=$data.minute}
+	<OPTION VALUE="{$data.minute[minute]}">{$data.minute[minute]|string_format:"%02d"}</OPTION>
+	{/section}
+	</SELECT>
+	</TD>
+    </TR>
+    <TR CLASS="light">
+	<TD WIDTH=300 ALIGN="right" CLASS="fleft">
+	<B>Od: (rrrr/mm/dd gg:mm)</B>&nbsp;
+	</TD>
+	<TD CLASS="fright">&nbsp;
+	<SELECT SIZE=1 NAME="to[year]">
+	{section name="year" loop=$data.year}
+	<OPTION VALUE="{$data.year[year]}" {if $data.year[year]==$now.rok} SELECTED{/if}>{$data.year[year]}</OPTION>
+	{/section}
+	</SELECT>&nbsp;/
+	<SELECT SIZE=1 NAME="to[month]">
+	{section name="month" loop=$data.month}
+	<OPTION VALUE="{$data.month[month]}"{if $data.month[month]==$now.mies} SELECTED{/if}>{$data.month[month]|string_format:"%02d"}</OPTION>
+	{/section}
+	</SELECT>&nbsp;/
+	<SELECT SIZE=1 NAME="to[day]">
+	{section name="day" loop=$data.day}
+	<OPTION VALUE="{$data.day[day]}"{if $data.day[day]==$now.dzien} SELECTED{/if}>{$data.day[day]|string_format:"%02d"}</OPTION>
+	{/section}
+	</SELECT>&nbsp;&nbsp
+	<SELECT SIZE=1 NAME="to[hour]">
+	{section name="hour" loop=$data.hour}
+	<OPTION VALUE="{$data.hour[hour]}"{if $data.hour[hour]==$now.godz} SELECTED{/if}>{$data.hour[hour]|string_format:"%02d"}</OPTION>
+	{/section}
+	</SELECT>&nbsp;:
+	<SELECT SIZE=1 NAME="to[minute]">
+	{section name="minute" loop=$data.minute}
+	<OPTION VALUE="{$data.minute[minute]}"{if $data.minute[minute]==$now.min} SELECTED{/if}>{$data.minute[minute]|string_format:"%02d"}</OPTION>
+	{/section}
+	</SELECT>
+	</TD
+    </TR>
+    <TR CLASS="light">
+	<TD WIDTH=300 ALIGN="right" CLASS="fleft">
+	<B>Sieæ:</B>&nbsp;
+	</TD>
+	<TD CLASS="fright">&nbsp;
+	<SELECT SIZE=1 NAME="net">
+	<OPTION VALUE="allnets">Wszystkie</OPTION>
+	{section name="netlist" loop=$netlist}
+	<OPTION VALUE="{$netlist[netlist].id}">{$netlist[netlist].name|truncate:20:" ..."}</OPTION>
+	{/section}
+	</SELECT>
+	</TD>
+    </TR>
+    <TR CLASS="light">
+	<TD WIDTH=300 ALIGN="right" CLASS="fleft">
+	<B>Sortowanie:</B>&nbsp;
+	</TD>
+	<TD CLASS="fright">&nbsp;
+	<SELECT SIZE=1 NAME="order">
+	<OPTION VALUE="nodeid" SELECTED>Numer hosta</OPTION>
+	<OPTION VALUE="download">Download</OPTION>
+	<OPTION VALUE="upload">Upload</OPTION>
+	</SELECT>
+	</TD>
+    </TR>
+    <TR CLASS="light">
+	<TD WIDTH=300 ALIGN="right" CLASS="fleft">
+	<B>Ograniczenie wyników do:</B>&nbsp;
+	</TD>
+	<TD CLASS="fright">&nbsp;
+	<INPUT NAME="limit" SIZE=3></INPUT><B>&nbsp;komputerów</B>
+	</TD>
+    </TR>
+    <TR CLASS="light">
+	<TD COLSPAN=2 ALIGN="right" CLASS="fbottomu">
+	<A HREF="javascript:document.traffic.submit();" ACCESSKEY="D">Dalej <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT="">&nbsp;</A>
+	</TD>
+    </TR>
+</TABLE>
+</FORM>
+{/if}
+{include file="footer.html"}
