@@ -115,7 +115,7 @@ if(isset($nodeedit))
 	{
 		$netdev = $LMS->GetNetDev($nodeedit['netdev']); 
 		if($netdev['ports'] <= $netdev['takenports'])
-		    $error['netdev'] = _("Not enough ports in chosen device!";
+		    $error['netdev'] = _("Not enough ports in chosen device!");
 		$nodeinfo['netdev'] = $nodeedit['netdev'];
 	}
 	
