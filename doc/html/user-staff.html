@@ -7,7 +7,7 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
-TITLE="LMS - LAN Management System 1.1-cvs"
+TITLE="LMS - LAN Management System 1.2"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Interfejs U¿ytkownika (LMS-UI)"
@@ -39,7 +39,7 @@ CELLSPACING="0"
 ><TH
 COLSPAN="3"
 ALIGN="center"
->LMS - LAN Management System 1.1-cvs</TH
+>LMS - LAN Management System 1.2</TH
 ></TR
 ><TR
 ><TD
@@ -153,6 +153,62 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >default_author = "specjalista d/s fakturowania"</SAMP
+></P
+></LI
+></UL
+>
+		Ponadto dostêpne s± zmienne:
+		<UL
+><LI
+><P
+>cplace</P
+><P
+>Miejsce wystawienia faktury. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>cplace = Warszawa</SAMP
+></P
+></LI
+><LI
+><P
+>template_file</P
+><P
+>Szablon faktury, który powinien znajdowaæ siê w
+			katalogu <TT
+CLASS="FILENAME"
+>templates</TT
+>. Domy¶lnie: invoice.html.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>template_file = invoice-mynet.html</SAMP
+></P
+></LI
+><LI
+><P
+>content_type</P
+><P
+>Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
+			to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
+			Przydatne je¶li u¿ywasz w³asnego templejta, który wygeneruje np.rtf'a lub xls'a.
+			Domy¶lnie: 'text/html; charset=iso-8859-2'</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>content_type = application/octet-stream</SAMP
+></P
+></LI
+><LI
+><P
+>attachment_name</P
+><P
+>Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
+			wydruk. Domy¶lnie: pusta.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>attachment_name = faktura.xls</SAMP
 ></P
 ></LI
 ></UL

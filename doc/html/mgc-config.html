@@ -7,7 +7,7 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
-TITLE="LMS - LAN Management System 1.1-cvs"
+TITLE="LMS - LAN Management System 1.2"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Generator plików konfiguracyjnych (lms-mgc)"
@@ -39,7 +39,7 @@ CELLSPACING="0"
 ><TH
 COLSPAN="3"
 ALIGN="center"
->LMS - LAN Management System 1.1-cvs</TH
+>LMS - LAN Management System 1.2</TH
 ></TR
 ><TR
 ><TD
@@ -172,8 +172,8 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >[mgc]</I
 ></SPAN
-> mo¿emy u¿yæ nastêpuj±cego parametru:</P
-><UL
+> mo¿emy u¿yæ nastêpuj±cego parametru:
+   <UL
 ><LI
 ><P
 >instances</P
@@ -186,6 +186,37 @@ CLASS="PROMPT"
 ></P
 ></LI
 ></UL
+>
+   <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Zmienn± <TT
+CLASS="FILENAME"
+>instances</TT
+> mo¿na tak¿e umie¶ciæ w
+   sekcji dowolnej instancji. Patrz ni¿ej.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+   </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -193,7 +224,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MGC-CONFIG-INSTANCES"
->5.2.3. Sekjca [mgc:xxx] - konfiguracja instancji</A
+>5.2.3. Sekcja [mgc:xxx] - konfiguracja instancji</A
 ></H2
 ><P
 >Ka¿da instancja ma swoj± nazwê i jej konfigruacjê tworzy siê umieszczaj±c 
@@ -214,6 +245,26 @@ CLASS="EMPHASIS"
 ><P
 >W samych instancjach mo¿emy u¿ywaæ nastêpuj±cych opcji konfiguracyjnych:</P
 ><UL
+><LI
+><P
+>instances</P
+><P
+>Zmienna, w której mo¿esz podaæ listê innych instancji, aby nastêpnie
+     wywo³ywaæ mgc poleceniem '<SAMP
+CLASS="PROMPT"
+>lms-mgc -i sekcja</SAMP
+>' zamiast
+     '<SAMP
+CLASS="PROMPT"
+>lms-mgc -i "sekcja1 sekcja2 sekcja3"</SAMP
+>'. Je¶li zostanie 
+     u¿yta, wszystkie pozosta³e zmienne tej sekcji zostan± zignorowane.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>instances = dns1 dns2 dns3</SAMP
+></P
+></LI
 ><LI
 ><P
 >outfile</P
