@@ -1,13 +1,13 @@
 # $Revision$, $Date$
-#
 Summary:	LAN Managment System
 Summary(pl):	System Zarz±dzania Siec± Lokaln±
 Name:		lms
-Version:	1.0pre10
+Version:	1.0.0
 Release:	0.1
 License:	GPL
 Vendor:		LMS Developers
 Group:		Networking/Utilities
+# Source0-md5:	f5fd004f7288287fb0158265b2654b3d
 Source0:	http://lms.rulez.pl/download/%{name}-%{version}.tar.gz
 Patch0:		%{name}-PLD.patch
 URL:		http://lms.rulez.pl/
@@ -65,9 +65,10 @@ Najbardziej podstawowe cechy LMS to:
 - generowanie regu³ firewalla (ipchains/iptables);
 - generowanie identów dla demona oidentd;
 - ró¿ne poziomy dostêpu do funkcji LMS dla administratorów;
-- integracja z pakietem LinuxStat;
 - generowanie wpisów ARP (blokada adresów IP po ARP);
 - generowanie wpisów do DNS.
+- generowanie praktycznie ka¿dego pliku konfiguracyjnego na podstawie
+  danych w bazie.
 
 %package scripts
 Summary:	LAN Managment System - scripts
@@ -137,27 +138,33 @@ rm -rf $RPM_BUILD_ROOT
 
 %define date	%(echo `LC_ALL="C" date +"%a %b %d %Y"`)
 %changelog
-* %{date} PLD Team <feedback@pld.org.pl>
-All persons listed below can be reached at <cvs_login>@pld.org.pl
+* %{date} PLD Team <feedback@pld-linux.org>
+All persons listed below can be reached at <cvs_login>@pld-linux.org
 
 $Log$
-Revision 1.10  2003/05/21 16:43:38  djrzulf
-- test rw
+Revision 1.11  2003/06/13 05:30:24  lukasz
+- sync with PLD version of specfile
 
-Revision 1.9  2003/05/21 12:10:42  lukasz
-- s/1.0.0/1.1-cvs/g
+Revision 1.26  2003/06/12 22:39:06  baseciq
+- sync up to 1.0.0 (latest stable version)
 
-Revision 1.8  2003/05/18 21:07:18  lukasz
-- 1.1-cvs
+Revision 1.25  2003/05/28 12:59:37  malekith
+- massive attack: source-md5
 
-Revision 1.7  2003/05/04 20:11:42  djrzulf
-- synchronized with spec at cvs.pld...
+Revision 1.24  2003/05/25 05:50:15  misi3k
+- massive attack s/pld.org.pl/pld-linux.org/
 
-Revision 1.6  2003/04/28 12:30:38  lukasz
+Revision 1.23  2003/05/04 18:01:55  djrzulf
+- %doc updated
+
+Revision 1.22  2003/04/28 12:29:51  baseciq
 - added missing br: php-pcre (tnx byko)
 
-Revision 1.5  2003/04/15 04:17:22  lukasz
-- sync with PLD CVS
+Revision 1.21  2003/04/15 08:25:47  qboosh
+- missing defattr for scripts, cosmetics in scripts description
+
+Revision 1.20  2003/04/15 07:37:23  djrzulf
+- added sugestion
 
 Revision 1.19  2003/04/15 04:16:47  baseciq
 - moved perl scripts into separated package
