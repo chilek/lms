@@ -53,7 +53,7 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 	fclose(fh);
 	system(fm->command);
 #ifdef DEBUG
-	syslog(LOG_INFO, "DEBUG: mod_ethers reload complited");
+	syslog(LOG_INFO, "DEBUG: mod_ethers reload finished");
 #endif
     }
     else
@@ -73,8 +73,8 @@ struct ethers_module * init(GLOBAL *g, MODULE *m)
 	fm->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 
 	ini = g->iniparser_load(g->inifile);
-	fm->tmpfile = g->iniparser_getstring(ini, "ethers:tempfile", "/tmp/mod_ethers");
-	fm->command = g->iniparser_getstring(ini, "ethers:command", "");
+	fm->tmpfile = strdup(g->iniparser_getstring(ini, "ethers:tempfile", "/tmp/mod_ethers"));
+	fm->command = strdup(g->iniparser_getstring(ini, "ethers:command", ""));
 	g->iniparser_freedict(ini);
 #ifdef DEBUG
 	syslog(LOG_INFO,"DEBUG: mod_ethers initialized");
