@@ -4,59 +4,59 @@
 <H1>{$layout.pagetitle}</H1>
 <P>
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR bgcolor="#CEBD9B" {tip text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
+	<TR bgcolor="#CEBD9B" {tip text="Click on column's name for sorting order change"}>
 		<TD width="95%" class="fleftu">
 			<B>
-			<img src="img/user.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">Nazwisko/nazwa i imiê:</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/phone.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">Telefon:</A></B> {if $listdata.order eq "phone"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/home.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">Adres:</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<img src="img/user.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}Name/surname and forename:{/t}</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/phone.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">{t}Phone:{/t}</A></B> {if $listdata.order eq "phone"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/home.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{t}Address:{/t}</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD align="right" width="1%" class="fbt" VALIGN="top" NOWRAP>
-			<a href="?m={$layout.module}&s={$listdata.state}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A></B> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<a href="?m={$layout.module}&s={$listdata.state}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A></B> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			&nbsp;
 		</TD>
 		<TD width="1%" class="fbt" VALIGN="TOP" NOWRAP>
-			<img src="img/mail.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=email{if $listdata.direction eq "asc" && $listdata.order eq "email"},desc{/if}">E-mail:</A> {if $listdata.order eq "email"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/gg.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=gg{if $listdata.direction eq "asc" && $listdata.order eq "gg"},desc{/if}">GG:</A> {if $listdata.order eq "gg"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<a href="?m={$layout.module}&s={$listdata.state}&o=nip{if $listdata.direction eq "asc" && $listdata.order eq "nip"},desc{/if}">NIP/PESEL:</A> {if $listdata.order eq "nip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/mail.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=email{if $listdata.direction eq "asc" && $listdata.order eq "email"},desc{/if}">{t}E-mail:{/t}</A> {if $listdata.order eq "email"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/gg.gif" ALT="" align="absmiddle">&nbsp;<a href="?m={$layout.module}&s={$listdata.state}&o=gg{if $listdata.direction eq "asc" && $listdata.order eq "gg"},desc{/if}">{t}GG:{/t}</A> {if $listdata.order eq "gg"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<a href="?m={$layout.module}&s={$listdata.state}&o=nip{if $listdata.direction eq "asc" && $listdata.order eq "nip"},desc{/if}">{t}NIP/PESEL:{/t}</A> {if $listdata.order eq "nip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 		</TD>
 		<TD width="1%" class="fbt">
 			<img src="img/money.gif" ALT="" align="absmiddle">
 		</TD>
 		<TD width="1%" class="fbt" ALIGN="right" VALIGN="TOP" NOWRAP>
-			<a href="?m={$layout.module}&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">Saldo:</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<a href="?m={$layout.module}&s={$listdata.state}&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">Abonament:</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<a href="?m={$layout.module}&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{t}Balance:{/t}</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<a href="?m={$layout.module}&s={$listdata.state}&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{t}Subscription:{/t}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD width="1%" class="frightu">
-			<NOBR><B>Razem: {$listdata.total}</B></NOBR>
+			<NOBR><B>{t}Total:{/t} {$listdata.total}</B></NOBR>
 		</TD>
 	</TR>
 	<TR CLASS="DARK">
 		<TD CLASS="fall" colspan="6">
 			<P><FORM METHOD="GET" ACTION="?m={$layout.module}" NAME="choosefilter">
-				<B>Filtruj:</B> U¿ytkownicy:
+				<B>{t}View:{/t}</B> {t}Customers:{/t}
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="userlist">
 				<INPUT TYPE="HIDDEN" NAME="page" VALUE="1">
 				<SELECT SIZE="1" CLASS="bold" NAME="s" ONCHANGE="document.choosefilter.submit();">
-					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>pod³±czeni</OPTION>
-					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>oczekuj±cy</OPTION>
-					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>zainteresowani</OPTION>
-					<OPTION VALUE="4"{if $listdata.state eq 4} SELECTED{/if}>usuniêci</OPTION>
-					<OPTION VALUE="5"{if $listdata.state eq 5} SELECTED{/if}>od³±czeni</OPTION>
-					<OPTION VALUE="6"{if $listdata.state eq 6} SELECTED{/if}>zad³u¿eni</OPTION>
-					<OPTION VALUE="7"{if $listdata.state eq 7} SELECTED{/if}>on-line</OPTION>
-					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>wszyscy</OPTION>
+					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>{t}connected{/t}</OPTION>
+					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>{t}awaiting{/t}</OPTION>
+					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{t}intrested{/t}</OPTION>
+					<OPTION VALUE="4"{if $listdata.state eq 4} SELECTED{/if}>{t}deleted{/t}</OPTION>
+					<OPTION VALUE="5"{if $listdata.state eq 5} SELECTED{/if}>{t}disconnected{/t}</OPTION>
+					<OPTION VALUE="6"{if $listdata.state eq 6} SELECTED{/if}>{t}in debt{/t}</OPTION>
+					<OPTION VALUE="7"{if $listdata.state eq 7} SELECTED{/if}>{t}online{/t}</OPTION>
+					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{t}- all -{/t}</OPTION>
 				</SELECT>&nbsp;
-				Sieæ:
+				{t}Network:{/t}
 				<SELECT SIZE="1" CLASS="bold" NAME="n" ONCHANGE="document.choosefilter.submit();">
-					<OPTION value="0" {if !$listdata.network} SELECTED {/if}>- wszystkie -</OPTION>
+					<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all -{/t}</OPTION>
 					{section name=networks loop=$networks}
 					<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"..."}</OPTION>
 					{/section}
 				</SELECT>&nbsp;
-				Grupa:
+				{t}Group:{/t}
 				<SELECT SIZE="1" CLASS="bold" NAME="g" ONCHANGE="document.choosefilter.submit();">
-					<OPTION value="" {if !$listdata.usergroup} SELECTED {/if}>- wszystkie -</OPTION>
+					<OPTION value="" {if !$listdata.usergroup} SELECTED {/if}>{t}- all -{/t}</OPTION>
 					{section name=usergroups loop=$usergroups}
 					<OPTION value="{$usergroups[usergroups].id}" {if $listdata.usergroup eq $usergroups[usergroups].id} SELECTED {/if}>{$usergroups[usergroups].name|truncate:50:"..."}</OPTION>
 					{/section}
@@ -67,14 +67,14 @@
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="6" CLASS="FALL">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m={$layout.module}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$userlist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
-			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+			({t}records{/t} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {t}from{/t} {$listdata.total})
 		</TD>
 	</TR>
 	{/if}
@@ -145,7 +145,7 @@
 		<TD colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Nie znaleziono ¿adnych u¿ytkowników o podanych kryteriach lub lista jest pusta.</B></p>
+			<p><B>{t}No such users matching filter conditions or list is empty.{/t}</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -154,24 +154,24 @@
 	{if $listdata.total != 0}
 	<TR CLASS="DARK">
 		<TD COLSPAN="6" CLASS="FALL">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m={$layout.module}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$userlist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
-			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+			({t}records{/t} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {t}from{/t} {$listdata.total})
 		</TD>
 	</TR>
 	{/if}
 	<TR bgColor="#DFD5BD">
 		<TD colspan="2" class="fleftu" align="right" valign="top">
-			<IMG SRC="img/info2.gif" border="0" ALT="" align="absmiddle"> <B>Razem: {$listdata.total}</B>	
+			<IMG SRC="img/info2.gif" border="0" ALT="" align="absmiddle"> <B>{t}Total:{/t} {$listdata.total}</B>	
 		</TD>
 		<TD class="fbt" align="right">
-			<B>Zaleg³o¶ci:<BR>
-			Nadp³aty:</B>
+			<B>{t}Outstandings:{/t}<BR>
+			{t}Overcharges:{/t}</B>
 		</TD>
 		<TD class="fbt" align="right" COLSPAN="2"> 
 			<B>{$listdata.below|string_format:"%01.2f"} z³<BR>
