@@ -72,6 +72,9 @@ elseif(isset($userdata))
 	if($userdata['gguin'] == '')
 		$userdata['gguin'] = 0;
 
+	if($userdata['pin'] == '')
+		$userdata['pin'] = 0;
+
 	if($userdata['gguin']!=0 && !eregi('^[0-9]{4,}$',$userdata['gguin']))
 		$error['gguin'] = 'Podany numer GG jest niepoprawny!';
 
