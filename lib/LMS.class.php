@@ -61,6 +61,20 @@ class LMS
 		}
 	}
 
+	function sqlLIKE()
+	{
+		switch($this->ADB->databaseType)
+		{
+			case "postgres":
+				return "ILIKE";
+				break;
+
+			default:
+				return "LIKE";
+				break;
+		}
+	}
+
 	function SetTS($table)
 	{
 		$this->ADB->Replace("timestamps",array("tablename" => "'_global'","time" => $this->sqlTSfmt() ),"tablename");
@@ -95,11 +109,6 @@ class LMS
 	function GetAdminName($id)
 	{
 		return $this->ADB->GetOne("SELECT name FROM admins WHERE id=?",array($id));
-	}
-
-	function AdminExists($id)
-	{
-		return ($this->ADB->GetOne("SELECT * FROM admins WHERE id=?",array($id))?TRUE:FALSE);
 	}
 
 	function GetNetworkName($id)
@@ -276,7 +285,7 @@ class LMS
 						$return[mac][] = $mac;
 						$return[ip][] = $ip;
 						$return[longip][] = ip_long($ip);
-						$return[nodename][] = $this->GetNodeNameByIP($ip);
+						$return[nodename][] = $this->GetNodeNameByMAC($mac);
 					}
 				}
 				break;
@@ -290,7 +299,7 @@ class LMS
 					$return[mac][] = $mac;
 					$return[ip][] = $ip;
 					$return[longip][] = ip_long($ip);
-					$return[nodename][] = $this->GetNodeNameByIP($ip);
+					$return[nodename][] = $this->GetNodeNameByMAC($mac);
 				}
 				break;
 
@@ -298,6 +307,11 @@ class LMS
 		array_multisort($return[longip],$return[mac],$return[ip],$return[nodename]);
 		return $return;
 	}
+
+	function GetNodeNameByMAC($mac)
+	{
+		return $this->ADB->GetOne("SELECT name FROM nodes WHERE mac=?",array($mac));
+	}		
 
 	function GetNodeIDByIP($ipaddr)
 	{
@@ -635,7 +649,9 @@ class LMS
 				$sqlord = "ORDER BY lastname, name";
 			break;
 		}
-	
+
+		$like = $this->sqlLIKE();
+
 		if(sizeof($search))
 		foreach($search as $key => $value)
 		{
@@ -644,15 +660,16 @@ class LMS
 			{
 				$value = "'%".$value."%'";
 				if($key=="phone")
-					$searchargs[] = "(phone1 LIKE '$value' OR phone2 LIKE '$value' OR phone3 LIKE $value)";
+					$searchargs[] = "(phone1 $like '$value' OR phone2 $like '$value' OR phone3 $like $value)";
 				elseif($key=="username")
-					$searchargs[] = $this->ADB->Concat("UPPER(lastname)","' '","name")." LIKE ".$value;
+					$searchargs[] = $this->ADB->Concat("UPPER(lastname)","' '","name")." $like ".$value;
 				elseif($key!="s")
-					$searchargs[] = $key." LIKE ".$value;
+					$searchargs[] = $key." $like ".$value;
 			}
 		}
-				
-		$sqlsarg = implode(" AND ",$searchargs);
+		
+		if($searchargs)
+			$sqlsarg = implode(" AND ",$searchargs);
 
 		if(!isset($state))
 			$state = 3;
@@ -1293,7 +1310,7 @@ class LMS
 	{
 		$this->SetTS("admins");
 		if($this->ADB->Execute("INSERT INTO admins (login, name, passwd) VALUES (?, ?, ?)",array($adminadd[login], $adminadd[name], crypt($adminadd[password]))))
-			return $this->ADB->Execute("SELECT id FROM admins WHERE login=?",array($adminadd[login]));
+			return $this->ADB->GetOne("SELECT id FROM admins WHERE login=?",array($adminadd[login]));
 		else
 			return FALSE;
 	}
