@@ -4,7 +4,7 @@
 <SCRIPT LANGUAGE="JavaScript" SRC="img/calendar.js"></SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <P align="CENTER">
-<FORM method="POST" action="?m=accountadd" name="account">
+<FORM method="POST" action="?m=accountedit&id={$account.id}" name="account">
 <TABLE width="100%" cellpadding="3" border="0">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
@@ -23,28 +23,6 @@
 		    <TR class="LIGHT">
 			<TD width="50%" valign="top">
 			    <TABLE width="100%" cellpadding="3">
-				<TR>
-				    <TD width="1%">
-					<img src="img/pass.gif" border="0" align="absmiddle" ALT="">		
-				    </TD>
-				    <TD width="1%">
-					<B>Has³o:</B>
-				    </TD>
-				    <TD width="98%">
-					<input type="password" name="account[passwd1]" value="{$account.passwd1}" {tip text="Wprowad¼ has³o" trigger="passwd"}>
-				    </TD>
-				</TR>
-				<TR>
-				    <TD width="1%">
-		    			<img src="img/pass.gif" border="0" align="absmiddle" ALT="">		
-				    </TD>
-				    <TD width="1%" nowrap>
-					<B>Powtórz has³o:</B>
-				    </TD>
-				    <TD width="98%">
-		    			<input type="password" name="account[passwd2]" value="{$account.passwd2}" {tip text="Wprowad¼ has³o ponownie" trigger="passwd"}>
-				    </TD>
-				</TR>
 				<TR>
 				    <TD width="1%">
 					<img src="img/network.gif" border="0" align="absmiddle" ALT="">
@@ -111,9 +89,8 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="3">
-			<A href="javascript:document.account.submit();">Dodaj konto <img src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="javascript:document.account.submit();">Zapisz <img src="img/save.gif" border="0" align="absmiddle" ALT=""></A>
 			<A href="?m=accountlist">Anuluj <img src="img/cancel.gif" border="0" align="absmiddle" ALT=""></A><BR>
-			<INPUT type="checkbox" name="account[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $account.reuse}checked{/if}> Wywo³aj ponownie ten formularz po dodaniu konta
 		</TD>
 	</TR>
 </TABLE>
@@ -122,7 +99,6 @@
 <!--
 var cal1 = new calendar(document.forms['account'].elements['account[expdate]']);
 cal1.time_comp = false;
-document.forms['account'].elements['account[login]'].focus();
 //-->
 </SCRIPT>
 {include file="footer.html"}
