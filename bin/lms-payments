@@ -191,19 +191,19 @@ my $cdbq;
 my $suspended = 0;
 my $itemid;
 
-# dobra, query wybiera *WSZYSTKIE* mo¿liwe assigmenty na dany dzieñ.
+# let's go, query fetch *ALL* assignments in given day
 
 $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0) ORDER BY userid, invoice, value DESC");
 $dbq->execute();
 
-print "UID:\tKwota:\tZa:\n" if not $quiet;
+print "UID:\tValue:\tFor:\n" if not $quiet;
 
 while(my $assign = $dbq->fetchrow_hashref())
 {
 	
 	my $uid = $assign->{'userid'};
 	
-	# sprawdzamy, czy wszystkie p³atno¶ci usera nie s± zawieszone
+	# check, if all customer liabilities are suspended
 	if($suspended != $uid)
 	{
 		my $xdbq = $dbase->prepare("SELECT 1 FROM assignments, users WHERE userid = users.id AND tariffid = 0 AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0) AND userid = $uid");
@@ -241,10 +241,15 @@ while(my $assign = $dbq->fetchrow_hashref())
 			
 			my $icdbq = $dbase->prepare("SELECT * FROM invoicecontents WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid} AND description='$txt'");
 			$icdbq->execute();
+			
 			if(my $icrow = $icdbq->fetchrow_hashref())
 			{
-				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid} AND description='$txt'");
 				$itemid = $icrow->{'itemid'};
+				
+				$icdbq = $dbase->prepare("UPDATE invoicecontents SET count=count+1 WHERE tariffid=$assign->{'tariffid'} AND invoiceid=$gotinv{$uid} AND description='$txt'");
+				$icdbq->execute();
+
+				$cdbq = $dbase->prepare("UPDATE cash SET value = value+$assign->{'value'} WHERE invoiceid = $gotinv{$uid} AND itemid = $itemid AND type = 4");
 			}
 			else
 			{
@@ -258,18 +263,18 @@ while(my $assign = $dbq->fetchrow_hashref())
 				{
 					$icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid, itemid) VALUES ($gotinv{$uid}, $assign->{'value'}, NULL, '$assign->{'pkwiu'}', 'szt', 1, '$txt', $assign->{'tariffid'}, $itemid)");
 				}
+				$icdbq->execute();
+				
+				if ($assign->{'taxvalue'})
+				{
+					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$txt', $gotinv{$uid}, $itemid)");
+				}
+				else
+				{
+					$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, '$txt', $gotinv{$uid}, $itemid)");
+				}
 			}
 			
-			$icdbq->execute();
-			
-			if ($assign->{'taxvalue'})
-			{
-				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, $assign->{'taxvalue'}, $uid, '$txt', $gotinv{$uid}, $itemid)");
-			}
-			else
-			{
-				$cdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES ($currtime, 0, 4, $assign->{'value'}, NULL, $uid, '$txt', $gotinv{$uid}, $itemid)");
-			}
 		}
 		else
 		{
@@ -288,7 +293,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 	}
 }	
 
-# op³aty sta³e
+# solid payments
 $dbq = $dbase->prepare("SELECT * FROM payments WHERE value <> 0 AND ((period = 0 AND at=$weekday) OR (period = 1 AND at=$day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday))");
 $dbq->execute();
 
