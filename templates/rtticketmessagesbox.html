@@ -12,27 +12,27 @@
     </TR>
     <TR class="light">
 	<TD class="fall" colspan="2" width="100%">
-	    <TABLE CELLPADDING="3">
+	    <TABLE width="100%" cellpadding="3">
 		{foreach from=$ticket.messages item=message}
-		    <TR CLASS="DARK">
-			<TD WIDTH="1%" NOWRAP CLASS="FALL" ALIGN="RIGHT">
+		    <TR class="DARK">
+			<TD width="1%" class="FALL" ALIGN="RIGHT">
 			    <B>{$message.createtime|date_format:"%Y/%m/%d<BR>%H:%M.%S"}</B>
 			</TD>
-			<TD WIDTH="1%" CLASS="fbt" ALIGN="RIGHT">
+			<TD width="1%" class="fbt" ALIGN="RIGHT">
 			    <B>Od:<BR>Temat:</B>
 			</TD>
-			<TD WIDTH="98%" CLASS="frightu">
+			<TD width="98%" class="frightu">
 			    {$message.mailfrom|escape}<BR>
 			    {$message.subject|escape}
 			</TD>
 		    </TR>
-		    <TR CLASS="LIGHT">
-			<TD WIDTH="1%" CLASS="fall" VALIGN="TOP" ALIGN="RIGHT" NOWRAP>
+		    <TR class="LIGHT">
+			<TD width="1%" class="fall" VALIGN="TOP" ALIGN="RIGHT">
 			    <A HREF="#">Odpowiedz</A><BR>
 			    <A HREF="#">Rozwi±¿</A><BR>
 			    <A HREF="#">Skomentuj</A><BR>
 			</TD>
-			<TD COLSPAN="2" WIDTH="99%" CLASS="fall" BGCOLOR="#F4F0EC" VALIGN="TOP">
+			<TD COLSPAN="2" width="99%" class="fall" BGCOLOR="#F4F0EC" VALIGN="TOP">
 			    <PRE>{$message.body|escape}</PRE>
 			</TD>
 		    </TR>
