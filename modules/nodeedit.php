@@ -35,7 +35,7 @@ if($_GET['action']=="link")
 	$netdev = $LMS->GetNetDev($_GET['devid']); 
 	if($netdev['ports'] <= $netdev['takenports'])
 	        $error['netdev'] = "Brak wolnych portów w wybranym urz±dzeniu!";
-	$errorlinkdev = $_GET['devid'];
+	$errorlinkdev = $netdev;
 
 	if(!$error) 
 	{
@@ -150,7 +150,7 @@ $balancelist = $LMS->GetUserBalanceList($owner);
 $usergroups = $LMS->UsergroupGetForUser($ownerid);
 $otherusergroups = $LMS->GetGroupNamesWithoutUser($ownerid);
 
-$nodeinfo['netdev'] = $errorlinkdev ? $errorlinkdev : $LMS->GetNetDev($nodeinfo['netdev']);
+$nodeinfo['netdev'] = $errorlinkdev ? $netdev : $LMS->GetNetDev($nodeinfo['netdev']);
 $netdevices = $LMS->GetNetDevList();
 unset($netdevices['total']);
 unset($netdevices['direction']);
