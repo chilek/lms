@@ -3,7 +3,7 @@
 <!--// $Id$ //-->
 <H1>{$lang.nodelist}</H1>
 <table cellpadding="3" width="100%">
-	<TR class="dark" {popup text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
+	<TR class="dark" {popup text="`$lang.click_to_change_sort_order`"}>
 		<TD class="fleftu" width="97%">
 			<img src="img/node.gif" border="0" alt="" align="absmiddle"> <A href="?m=nodelist&o=name{if $listdata.direction eq "ASC" && $listdata.order eq "name"},desc{/if}"><B>{$lang.name}:</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "DESC"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			<img src="img/user.gif" border="0" alt="" align="absmiddle"> <A href="?m=nodelist&o=owner{if $listdata.direction eq "ASC" && $listdata.order eq "owner"},desc{/if}">{$lang.owner}:</A> {if $listdata.order eq "owner"}<IMG SRC="img/{if $listdata.direction eq "DESC"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
