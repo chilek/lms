@@ -1,5 +1,5 @@
 
-LMS - LAN Management System 1.1-cvs
+LMS - LAN Management System 1.2
 
    [logo-small.png]
 
@@ -1018,6 +1018,26 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
        Domy¶lna osoba wystawiaj±ca fakturê. Domy¶lnie: puste
        Przyk³ad: default_author = "specjalista d/s fakturowania"
 
+   Ponadto dostêpne s± zmienne:
+     * cplace
+       Miejsce wystawienia faktury. Domy¶lnie: puste.
+       Przyk³ad: cplace = Warszawa
+     * template_file
+       Szablon faktury, który powinien znajdowaæ siê w katalogu
+       templates. Domy¶lnie: invoice.html.
+       Przyk³ad: template_file = invoice-mynet.html
+     * content_type
+       Content-type dla faktury. Je¿eli wpiszesz tutaj
+       'application/octet-stream' to przegl±darka zechce wys³aæ plik do
+       zapisania na dysku, zamiast go wy¶wietliæ. Przydatne je¶li u¿ywasz
+       w³asnego templejta, który wygeneruje np.rtf'a lub xls'a.
+       Domy¶lnie: 'text/html; charset=iso-8859-2'
+       Przyk³ad: content_type = application/octet-stream
+     * attachment_name
+       Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
+       wydruk. Domy¶lnie: pusta.
+       Przyk³ad: attachment_name = faktura.xls
+
    Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez
    ikonkê drukarki na wykazie bilansu finansowego (ogólnego b±d¼
    pojedyñczego u¿ytkownika), albo poprzez 'Lista faktur' z menu 'Taryfy
@@ -1497,9 +1517,14 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
      * instances
        Lista "instancji" oddzielona spacjami.
        Przyk³ad: instaces = dhcp firewall squid
+
+   Notatka
+
+   Zmienn± instances mo¿na tak¿e umie¶ciæ w sekcji dowolnej instancji.
+   Patrz ni¿ej.
      _________________________________________________________________
 
-5.2.3. Sekjca [mgc:xxx] - konfiguracja instancji
+5.2.3. Sekcja [mgc:xxx] - konfiguracja instancji
 
    Ka¿da instancja ma swoj± nazwê i jej konfigruacjê tworzy siê
    umieszczaj±c sekcjê o nazwie [mgc:nazwa], czyli przyk³adowo:
@@ -1507,6 +1532,12 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
 
    W samych instancjach mo¿emy u¿ywaæ nastêpuj±cych opcji
    konfiguracyjnych:
+     * instances
+       Zmienna, w której mo¿esz podaæ listê innych instancji, aby
+       nastêpnie wywo³ywaæ mgc poleceniem 'lms-mgc -i sekcja' zamiast
+       'lms-mgc -i "sekcja1 sekcja2 sekcja3"'. Je¶li zostanie u¿yta,
+       wszystkie pozosta³e zmienne tej sekcji zostan± zignorowane.
+       Przyk³ad: instances = dns1 dns2 dns3
      * outfile
        Definiuje plik do którego ma byæ zapisany wynik dzia³ania
        bierz±cej instancji (je¿eli ta zmienna zmienna bêdzie nie
