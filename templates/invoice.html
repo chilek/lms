@@ -1,15 +1,102 @@
-{include file="header.html"}
 <!-- $Id$ -->
-<H1>{$layout.pagetitle}</H1>
-<B>Nabywca:</B><BR>
-{$invoice.userdata.username}<BR>
-{$invoice.userdata.address}<BR>
-{$invoice.userdata.zip} {$invoice.userdata.city}<BR>
-POLSKA
-{if $invoice.userdata.nip}NIP {$invoice.userdata.nip}{/if}
-<BR>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR>
-	</TR>
+{include file="clearheader.html"}
+<TABLE WIDTH="600" ALIGN="center" CELLSPACING="3">
+    <TR>
+	<TD COLSPAN="2" ALIGN="center">{$invoice.provider.footer}<HR></TD>
+    </TR>
+    <TR>
+	<TD COLSPAN="2" ALIGN="center">
+	    <TABLE><TR>
+		<TD ALIGN="center">
+		    <H1>Faktura VAT nr {$invoice.content.invoiceid}/LMS/{$invoice.year}</H1>
+		    <H5>ORYGINA£ / KOPIA</H5>
+		</TD>
+	    </TR></TABLE>
+	</TD>
+    </TR>
+    <TR>
+	<TD WIDTH="50%">
+	</TD>
+	<TD WIDTH="50%" ALIGN="right">
+	    Data wystawienia: {$invoice.content.time|date_format:"%d.%m.%Y"}<BR>
+	    Data sprzeda¿y:  {$invoice.content.time|date_format:"%d.%m.%Y"}<BR>
+	</TD>
+    </TR>
+    <TR>
+	<TD WIDTH="50%" VALIGN="top">
+    	    Sprzedawca:<BR>
+            {$invoice.provider.name}<BR>
+            {$invoice.provider.address}<BR>
+            {$invoice.provider.zip}&nbsp;{$invoice.provider.city} <BR>
+	    Bank:&nbsp;{$invoice.provider.bank}<BR>
+	    Konto:&nbsp;{$invoice.provider.account}
+        </TD>
+        <TD WIDTH="50%" VALIGN="top">
+            Nabywca:<BR>
+            {$invoice.userdata.username}<BR>
+    	    {$invoice.userdata.address}<BR>
+    	    {$invoice.userdata.zip}&nbsp;{$invoice.userdata.city}<BR>
+    	    NIP: {$invoice.userdata.nip}
+        </TD>
+    </TR>
+    <TR>
+	<TD COLSPAN="2" ALIGN="center">
+	    <BR>
+	    <TABLE BORDER="1">
+		<TR>
+		    <TD CLASS="head" ALIGN="center">Lp.</TD>
+		    <TD CLASS="head" ALIGN="center" WIDTH="50%">Nazwa us³ugi</TD>
+		    <TD CLASS="head" ALIGN="center">Ilo¶æ</TD>
+		    <TD CLASS="head" ALIGN="center">Cena jedn.</TD>
+		    <TD CLASS="head" ALIGN="center">Warto¶æ netto</TD>
+		    <TD CLASS="head" ALIGN="center">VAT</TD>
+		    <TD CLASS="head" ALIGN="center">Warto¶æ VAT</TD>
+		    <TD CLASS="head" ALIGN="center">Warto¶æ brutto</TD>
+		</TR>
+		<TR>
+		    <TD ALIGN="right" NOWRAP>1</TD>
+		    <TD ALIGN="left">{$invoice.content.comment}</TD>
+		    <TD ALIGN="right" NOWRAP>1</TD>
+		    <TD ALIGN="right" NOWRAP>{$invoice.content.value|string_format:"%0.2f z³"}</TD>
+		    <TD ALIGN="right" NOWRAP>{$invoice.content.value|string_format:"%0.2f z³"}</TD>
+		    <TD ALIGN="right" NOWRAP>7%</TD>
+		    <TD ALIGN="right" NOWRAP>{$invoice.content.vat|string_format:"%0.2f z³"}</TD>
+		    <TD ALIGN="right" NOWRAP>{$invoice.content.brutto|string_format:"%0.2f z³"}</TD>
+		</TR>
+		<TR>
+		    <TD COLSPAN="4" ALIGN="right">Razem:</TD>
+		    <TD ALIGN="right" NOWRAP>{$invoice.content.value|string_format:"%0.2f z³"}</TD>
+		    <TD ALIGN="right">-</TD>
+		    <TD ALIGN="right" NOWRAP>{$invoice.content.vat|string_format:"%0.2f z³"}</TD>
+		    <TD ALIGN="right" NOWRAP>{$invoice.content.brutto|string_format:"%0.2f z³"}</TD>
+		</TR>
+	    </TABLE>
+	    <BR>
+	</TD>
+    </TR>
+    <TR>
+	<TD COLSPAN="2">
+Do zap³aty: {$invoice.content.brutto} z³ (s³ownie: {$invoice.content.text} z³otych)<BR>
+Termin p³atno¶ci: {$invoice.deadline}&nbsp;dni <BR>
+Sposób p³atno¶ci: przelew <BR>
+Wystawi³: {$layout.logname} <BR>
+	</TD>
+    </TR>
+    <TR>
+	<TD COLSPAN="2" ALIGN="center">
+	    <BR><BR>
+	    <TABLE><TR>
+		<TD WIDTH="35%" ALIGN="center">
+		    ..............................................<BR>
+		    Podpis osoby upowa¿nionej<BR>do otrzymania faktury VAT
+		</TD>
+		<TD WIDTH="30">
+		</TD>
+		<TD WIDTH="35%" ALIGN="center">
+		    ..............................................<BR>
+		    Podpis osoby upowa¿nionej<BR> do wystawienia faktury VAT
+		</TD>
+	    </TR></TABLE>
+	</TD>
+    </TR>
 </TABLE>
-{include file="footer.html"}
