@@ -589,7 +589,7 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->DB->GetAll("SELECT users.id AS id, ".$this->DB->Concat("UPPER(lastname)","' '","users.name")." AS username, deleted, status, email, phone1, address, gguin, nip, pesel, zip, city, info, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." GROUP BY users.id, deleted, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info ".($sqlord !="" ? $sqlord." ".$direction:"")))
+		if($userlist = $this->DB->GetAll("SELECT users.id AS id, ".$this->DB->Concat("UPPER(lastname)","' '","users.name")." AS username, deleted, status, email, phone1, address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." GROUP BY users.id, deleted, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info ".($sqlord !="" ? $sqlord." ".$direction:"")))
 		{
 			$tariffvalues = $this->DB->GetAllByKey("SELECT users.id AS id, SUM(value) AS value FROM users, assignments, tariffs WHERE users.id = assignments.userid AND tariffs.id = tariffid AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id",'id');
 			$access = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid",'id');
@@ -669,7 +669,7 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, email, phone1, address, gguin, nip, pesel, zip, city, info, SUM((type * -2 + 7) * value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (type = 3 OR type = 4) WHERE deleted = 0 '.($state !=0 ? ' AND status = '.$state :'').' GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info '.($sqlord !='' ? $sqlord.' '.$direction:'')))
+		if($userlist = $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, email, phone1, address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (type = 3 OR type = 4) WHERE deleted = 0 '.($state !=0 ? ' AND status = '.$state :'').' GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info '.($sqlord !='' ? $sqlord.' '.$direction:'')))
 		{
 			$tariffvalues = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value) AS value FROM users, assignments, tariffs WHERE users.id = assignments.userid AND tariffs.id = tariffid AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP by users.id','id');
 
