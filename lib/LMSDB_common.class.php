@@ -94,7 +94,7 @@ Class LMSDB_common
 
 		while($row = $this->_driver_fetchrow_num())
 			$result[] = $row[0];
-
+		
 		return $result;
 	}
 
@@ -116,6 +116,11 @@ Class LMSDB_common
 	function Now()
 	{
 		return $this->_driver_now();
+	}
+
+	function ListTables()
+	{
+		return $this->_driver_listtables();
 	}
 
 	function _query_parser($query, $inputarray = NULL)
@@ -170,6 +175,9 @@ Class LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.11  2003/08/22 13:15:17  lukasz
+ * - ListTables()
+ *
  * Revision 1.10  2003/08/19 01:01:57  lukasz
  * - added Now() and Concat(), fixed Connect() (doesn't invoke _driver_selectdb(), because pgsql doesn't have _driver_selectdb())
  *

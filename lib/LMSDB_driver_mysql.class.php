@@ -100,11 +100,21 @@ class LMSDB_driver_mysql extends LMSDB_common
 		$return = implode(', ',$input);
 		return 'CONCAT('.$return.')';
 	}
+
+	function _driver_listtables()
+	{
+		echo 'ulalala';
+		$this->_result = mysql_list_tables($this->_dbname,$this->_dblink);
+		return $this->GetCol();
+	}
 		
 }
 
 /* 
  * $Log$
+ * Revision 1.10  2003/08/22 13:15:27  lukasz
+ * - ListTables()
+ *
  * Revision 1.9  2003/08/19 00:58:43  lukasz
  * - fixed usage of mysql_error();
  *
