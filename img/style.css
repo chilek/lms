@@ -45,6 +45,7 @@ INPUT.red	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; bor
 INPUT.alert	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; font-color: #800000;}
 INPUT.alertb	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; font-weight: bold; color: #800000; } 
 INPUT.box   	{ border-style : none; background: #DFD5BD; }
+OPTION.red	{ color: #FF0000; }
 TEXTAREA	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; }
 TEXTAREA.pre	{ font-size:  8pt; font-family: Courier, Courier New; }
 TEXTAREA.alert  { font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; font-color: #800000;}
