@@ -1570,8 +1570,10 @@ class LMS
 	
 	function CountNetDevLinks($id)
 	{
-		// To powinno byc sumowane przez sql'a
-		return $this->DB->GetOne("SELECT COUNT(Id) FROM netlinks WHERE src = ".$id." OR dst = ".$id) + $this->DB->GetOne("SELECT COUNT(Id) FROM nodes WHERE netdev = ".$id);
+		return array_merge(
+			$this->DB->GetOne("SELECT COUNT(id) FROM netlinks WHERE src = ? OR dst = ?",array($id,$id)),
+			$this->DB->GetOne("SELECT COUNT(Id) FROM nodes WHERE netdev = ?",array($id));
+			)
 	}
 	
 	function GetNetDevConnected($id)
@@ -1861,6 +1863,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.236  2003/09/22 23:56:47  lukasz
+ * *** empty log message ***
+ *
  * Revision 1.235  2003/09/22 20:54:09  alec
  * LIKE -> ?LIKE? in SearchNodeList
  *
