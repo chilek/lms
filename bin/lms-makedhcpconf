@@ -221,7 +221,7 @@ while (my $row = $dbq->fetchrow_hashref())
 			}
 			$i++;
 		}
-		if($i != scalar(@networks))
+		if($i == scalar(@networks))
 		{
 			next;
 		}
