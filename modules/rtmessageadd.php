@@ -88,7 +88,7 @@ if(isset($message))
 			else 
 			{
 				$message['messageid'] = '';
-				if($message['userid'])
+				if($message['userid'] || $message['adminid'])
 					$message['mailfrom'] = '';
 				$message['headers'] = '';
 			    	$message['replyto'] = ''; 
