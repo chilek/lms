@@ -82,14 +82,14 @@ DROP TABLE "nodes";
 CREATE TABLE "nodes" (
    "id" int4 DEFAULT nextval('"nodes_id_seq"'::text) NOT NULL,
    "name" varchar(16) NOT NULL,
-   "mac" varchar(20),
-   "ipaddr" varchar(16),
-   "ownerid" int4,
+   "mac" varchar(20) NOT NULL,
+   "ipaddr" bigint NOT NULL,
+   "ownerid" int4 DEFAULT '0' NOT NULL,
    "creationdate" int4 NOT NULL,
    "moddate" int4 DEFAULT '0' NOT NULL,
    "creatorid" int4 NOT NULL,
    "modid" int4 DEFAULT '0' NOT NULL,
-   "access" char(1) DEFAULT 'Y' NOT NULL
+   "access" int2 DEFAULT '1' NOT NULL
 );
 CREATE UNIQUE INDEX "nodes_id_key" ON "nodes" ("id");
 
