@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     int quit = 0;			//
     unsigned char *ini_file="/etc/lms/lms.ini";
     unsigned char *db, *user, *passwd, *host; //db connection params
-    int port = 0;			//
+    int port;				//
     int reload, query, test, i, j;	//staff
     dictionary *ini;			//config
     
@@ -79,7 +79,9 @@ int main(int argc, char *argv[])
     g->iniparser_freedict = &iniparser_freedict;
     
     g->str_replace = &str_replace;
-    
+    g->save_string = &save_string;
+    g->str_concat = &str_concat;
+ 
     // daemonize
     if ( background ) {
 	int fval = fork();
@@ -87,7 +89,7 @@ int main(int argc, char *argv[])
     	    syslog(LOG_CRIT,"Fork error");;
             exit(1); /* fork error */
         } else if ( fval > 0 ) {
-#ifdef DEBUG
+#ifdef DEBUG1
 	    syslog(LOG_INFO, "Daemonize. Forked child %d", fval);
 #endif
             exit(0); /* parent exits */
@@ -110,6 +112,7 @@ int main(int argc, char *argv[])
     host = strdup(iniparser_getstring(ini,"database:host","localhost"));
     user = strdup(iniparser_getstring(ini,"database:user","lms"));
     passwd = strdup(iniparser_getstring(ini,"database:password",""));
+    port = iniparser_getint(ini,"database:port",0);
     
     // set sleeptime
     if( !sleeptime )
@@ -138,16 +141,15 @@ int main(int argc, char *argv[])
 	mod = (MODULE*) malloc(sizeof(MODULE));
 	
 	mod->filename = strdup(modfile);
-	
 	// parse module args
 	mod->args = parse_module_argstring(args);
-	
+
 	mod->dlh = dlopen(mod->filename, RTLD_NOW);
 	if(!mod->dlh) {
-		syslog(LOG_CRIT, "Unable to load module '%s': %s", modfile, dlerror());
+		syslog(LOG_CRIT, "Unable to load module '%s': %s", mod->filename, dlerror());
 		exit(1);
 	}
-
+	
 	init = dlsym(mod->dlh, "init");
 	if(!init) {
 		syslog(LOG_CRIT, "Unable to find initialization function in module '%s'. Is that file really a lmsd module?", modfile);
@@ -204,6 +206,9 @@ int main(int argc, char *argv[])
 	    
 	    // empty reload table 
 	    db_exec("DELETE FROM reload"); 
+#ifdef DEBUG1
+	    syslog(LOG_INFO,"DEBUG: [lmsd] table reload flushed");
+#endif
 	}
 	db_disconnect();	  
         if (quit) termination_handler(0);
