@@ -127,6 +127,7 @@ CREATE TABLE invoices (
         number integer NOT NULL,
         cdate integer NOT NULL,
         paytime smallint NOT NULL,
+	paytype varchar(255) DEFAULT '' NOT NULL,
         customerid integer NOT NULL,
         name varchar(255) NOT NULL,
         address varchar(255) NOT NULL,

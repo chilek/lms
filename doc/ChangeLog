@@ -24,8 +24,12 @@ wersja 1.1.8 (??/??/????):
   - mo¿liwo¶æ podania terminu i rodzaju p³atno¶ci przy pisaniu faktury z palca
     (lukasz):
     MySQL:
-    	ALTER TABLE `invoices` ADD `paytype` VARCHAR( 255 ) NOT NULL AFTER
-    `paytime` ;
+    	ALTER TABLE `invoices` ADD `paytype` VARCHAR(255) DEFAULT '' NOT NULL AFTER `paytime`;
+    PostgreSQL:
+	ALTER TABLE invoices ADD paytype VARCHAR(255);
+	UPDATE invoices SET paytype='';
+	ALTER TABLE invoices ALTER COLUMN paytype ADD NOT NULL; 
+	ALTER TABLE invoices ALTER COLUMN paytype SET DEFAULT '';
   - 'op³aty sta³e' (alec)
     MySQL:
     CREATE TABLE payments (
