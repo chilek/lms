@@ -2411,7 +2411,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		}
 	}
 
-	function LiabilityReport($date, $userid=NULL)
+	function LiabilityReport($date, $order='brutto,asc', $userid=NULL)
 	{
 		$yearday = date('z', $date);
 		$month = date('n', $date);
@@ -2430,18 +2430,34 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		    default: $quarterday = $monthday + 200; break;
 		}
 		
+		list($order,$direction)=explode(',', $order);
+
+		($direction != 'desc') ? $direction = 'ASC' : $direction = 'DESC';
+
+		switch($order){
+
+			case 'username':
+				$sqlord = 'ORDER BY username';
+			break;
+			default:
+				$sqlord = 'ORDER BY brutto';
+			break;
+		}
+		
 		return $this->DB->GetAll('SELECT '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, '
 			    .$this->DB->Concat('city',"' '",'address').' AS address, nip, 
 			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS val22,  
 			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS val7, 
 			    SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS val0, 
-			    SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS valfree 
+			    SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS valfree,
+			    SUM(value) AS brutto  
 			    FROM assignments, tariffs, users  
 			    WHERE userid = users.id AND tariffid = tariffs.id 
 			    AND deleted=0 AND (datefrom<=?) AND ((dateto>=?) OR dateto=0) 
 			    AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?)) '
 			    .($userid ? "AND userid=$userid" : ''). 
-			    'GROUP BY userid, lastname, users.name, city, address, nip',
+			    'GROUP BY userid, lastname, users.name, city, address, nip '
+			    .($sqlord != '' ? $sqlord.' '.$direction : ''),
 			    array($date, $date, $weekday, $monthday, $quarterday, $yearday));
 	}
 
