@@ -2,6 +2,24 @@
 {include file="balanceheader.html"}
 <!--// $Id$ //-->
 <SCRIPT LANGUAGE="JavaScript" SRC="img/calendar.js"></SCRIPT>
+{literal}
+<SCRIPT LANGUAGE=JavaScript" TYPE="text/javascript">
+<!--
+	function AddBalance()
+	{
+		var group = document.forms['addbalance'].elements['addbalance[type]'];
+	
+		for(var i=0; i<group.length; i++)
+			if(group[i].checked) break;
+		
+		if(i!=group.length)
+			document.forms['addbalance'].submit();
+		else
+			alert('Musisz wybraæ typ operacji!');
+	}
+//-->
+</SCRIPT>
+{/literal}
 <H1>{$layout.pagetitle}</H1>
 <P><FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
 <TABLE width="100%" cellpadding="3">
@@ -82,7 +100,7 @@
 
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbottomu" ALIGN="right" COLSPAN="3">
-						<A HREF="javascript:document.addbalance.submit();">Wykonaj <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
+						<A HREF="javascript:AddBalance();">Wykonaj <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
 					</TD>
 				</TR>
 			</TABLE>
