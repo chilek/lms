@@ -1167,6 +1167,20 @@ class LMS
 			str_replace(".",",",$bou3),2);
 	}
 
+
+	function SetBalanceZero($user_id)
+	{   
+		// make balace = 0 
+		$this->SetTS("cash");
+		$stan=$this->GetUserBalance($user_id);
+		//$stan=str_replace(".",",",$stan);
+		$stan=-$stan;
+		$stan=str_replace(",",".",$stan);
+
+	    return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?)",array($this->SESSION->id, 3 , "$stan" , $user_id));
+
+	}
+
 	function GetUserBalanceList($id)
 	{
 
