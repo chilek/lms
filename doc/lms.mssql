@@ -244,9 +244,9 @@ CREATE TABLE rtmessages (
   subject varchar(255) NOT NULL DEFAULT '',
   messageid varchar(255) NOT NULL DEFAULT '',
   inreplyto int NOT NULL DEFAULT 0,
-  replyto text NOT NULL,
-  headers text NOT NULL,
-  body text NOT NULL,
+  replyto text NOT NULL DEFAULT '',
+  headers text NOT NULL DEFAULT '',
+  body text NOT NULL DEFAULT '',
   createtime int NOT NULL DEFAULT 0,
   PRIMARY KEY (id)
 );
