@@ -30,8 +30,10 @@
 						<B>
 						{if $layout.dbtype == "mysql"}
 						<A HREF="http://www.mysql.com" target="_BLANK"> Wersja MySQL:</A>
-						{else}
+						{elseif $layout.dbtype == "postgres"}
 						<A HREF="http://www.postgresql.org" target="_BLANK">Wersja PostgreSQL:</A>
+						{else}
+						<A HREF="http://www.sqlite.org" target="_BLANK">Wersja SQLite:</A>
 						{/if}
 						</B>
 					</TD>
