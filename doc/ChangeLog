@@ -5,6 +5,7 @@ wersja 1.5.3 (??/??/????):
   - w polu email przy dodawaniu/edycji u¿ytkownika mo¿na wpisaæ tylko jeden 
     adres (alec)
   - poprawiona walidacja PINu przy dodawaniu u¿ytkownika (alec)
+  - poprawione sprawdzanie poprawno¶ci loginu i domeny konta (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 
