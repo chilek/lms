@@ -11,6 +11,7 @@ wersja 1.5.2 (??/??/????):
     stron) dodano sprawdzenie sta³ych $_ENV['HOSTNAME'] i $_SERVER[SERVER_NAME']
     je¶li nie powiedzie siê próba odczytania nazwy poprzez `hostname` (alec)
   - do danych komputera dodano pole 'info' (alec)
+  - lms-mgc: dodana zmienna %INFO zawieraj±ca opis komputera j.w. (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 
