@@ -25,6 +25,8 @@ wersja 1.0pre5 (??/??/2003):
   		-D, --template-file=/etc/lms/another.template.txt
 	uruchamia ona alternatywny plik template, przydatne przy wysy³aniu 
 	upomnienia, etc.
+  - Teraz %b we wzorcu wiadomo¶ci rozwija siê do - (saldo) (czyli jest to
+	kwota do zap³aty, ksiêgowi nie znaj± liczb ujemnych :)
   
 	  
 wersja 1.0pre4 (21/01/2003):
