@@ -116,7 +116,7 @@ wersja 1.1.4 (??/??/2003):
         model varchar(32) default NULL,
         serialnumber varchar(32) default NULL,
         ports integer default NULL,
-        PRIMARY KEY (id),
+        PRIMARY KEY (id)
     );
 
 wersja 1.1.3 (29/08/2003):
