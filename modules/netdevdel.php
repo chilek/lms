@@ -36,7 +36,7 @@ $SMARTY->assign('netdevid',$_GET['id']);
 if($LMS->CountNetDevLinks($_GET['id'])>0)
 {
 	$body = "<H1>".$layout['pagetitle']."</H1>";
-	$body .= "<P>Nie mo¿na usun±æ urz±dzenia które jest pod³±czone do innych urz±dzeñ.</P>";
+	$body .= "<P>Nie mo¿na usun±æ urz±dzenia które jest pod³±czone do innych urz±dzeñ lub komputerów.</P>";
 }else{
     if($_GET['is_sure']!=1)
     {
