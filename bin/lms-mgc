@@ -441,7 +441,7 @@ sub instance($)
 		
 		# BUILD NODELIST
 		
-		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info FROM nodes, users WHERE users.id=nodes.ownerid");
+		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info, pin AS info FROM nodes, users WHERE users.id=nodes.ownerid");
 		$dbq->execute();
 
 		my %maclist;
@@ -452,6 +452,7 @@ sub instance($)
 		my %ucnamelist;
 		my %ownerlist;
 		my %infolist;
+		my %pinlist;
 		
 		while (my $row = $dbq->fetchrow_hashref())
 		{
@@ -464,9 +465,9 @@ sub instance($)
 			$ucnamelist{$row->{'ipaddr'}} = uc($row->{'name'});
 			$ownerlist{$row->{'ipaddr'}} = $row->{'ownerid'};
 			$infolist{$row->{'ipaddr'}} = $row->{'info'};
+			$pinlist{$row->{'ipaddr'}} = $row->{'pin'};
 		}
 
-				
 		my $dhcpend = dotquad2u32($row->{'dhcpend'}) || '0';
 		my $dhcpstart = dotquad2u32($row->{'dhcpstart'}) || '0';
 		my $longip = dotquad2u32($row->{'address'});
@@ -603,6 +604,7 @@ sub instance($)
 			my $climit = $climits{$owner} || '';
 			my $plimit = $plimits{$owner} || '';
 			my $info = $infolist{$ipaddr} || '';
+			my $pin = $pinlist{$ipaddr} || '';
 			my $macs = lc($mac);
 			$macs =~ s/://g;
 			my ($q1,$q2,$q3,$q4) = split('\.',$ipaddr,4);
@@ -638,6 +640,7 @@ sub instance($)
 			$rule =~ s/\%TIME/$time/g;
 			$rule =~ s/\%UTIME/$utime/g;
 			$rule =~ s/\%DATE/$date/g;
+			$rule =~ s/\%PIN/$pin/g;
 			$rule =~ s/\%1/$q1/g;
 			$rule =~ s/\%2/$q2/g;
 			$rule =~ s/\%3/$q3/g;
