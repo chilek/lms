@@ -13,7 +13,8 @@ version 1.5.5 (??/??/????):
     modules i.e. Mailing(), Traffic() (alec)
   - added basic (without group checking) body of check_ssn() function for 
     'en' locale (alec)
-  - contrib/formularz_przelewu_wplaty: fixed encoding (alec)
+  - contrib/formularz_przelewu_wplaty(_2): fixed encoding and bug with empty
+    page (alec)
   - lms-payments print accounting messages on STDERR (lukasz/alec)
   - helpdesk: fixed encoding in message contents to UTF-8, added option
     phpui/helpdesk_sender_name for name of message sender (alec)
