@@ -242,9 +242,9 @@ Chapter 1. Intro
    Newest version of LMS can be downloaded from CVS repository utilizing
    WWW interface at cvs.rulez.pl, or with CVS tools (anonymous access,
    empty password):
-CVS -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
-CVS -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
-CVS -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout
      _________________________________________________________________
 
 1.4.4. Changelog
@@ -496,6 +496,10 @@ password = password_entered_with_lms_user_creation
    and some personal data. When you enter correct admin personal details
    LMS will move you to login page, where you can use newly created
    account.
+
+   Let's stop here and add some stuff to cron, for peace of mind:
+12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean --create --column-inserts  \
+            --format=p lms -- file backups/lms-auto-"$(date +%s)".sql
      _________________________________________________________________
 
 2.4.3. SQLite
@@ -801,6 +805,10 @@ database = /usr/local/lms/lms.db
      * nodepassword_length
        Length of (auto-generated) node password. Max.32. Default: 16.
        Example: nodepassword_length = 8
+     * smtp_host, smtp_port, smtp_username, smtp_password
+       Parameters of smtp authorization in mailing. Default:
+       127.0.0.1:25.
+       Example: smtp_host = mail.domain.pl
      _________________________________________________________________
 
 2.6. Access rights
@@ -1606,16 +1614,17 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    you have to communicate something to them. Obviously you need to
    specify sender name and address, write your message in text box and
    select appropriate group of recipients. Your attendance can be grouped
-   by status, network or user groups.
+   by status, network or user groups. If you use mail server on remote
+   host, you will need to set options smtp_host, smtp_port,
+   smtp_username, smtp_password in [phpui] section.
 
    Note
 
-   Your server has to support mail() function for this to work.
+   Your server has to support PEAR::Mail for this to work.
    Note
 
-   It's best to use lms-notify Perl script or notify and ggnotify modules
-   of almsd daemon to send emails automatically whenever customer is in
-   debt.
+   It's best to use lms-notify Perl script or notify module of almsd
+   daemon to send emails automatically whenever customer is in debt.
      _________________________________________________________________
 
 3.10. Reload

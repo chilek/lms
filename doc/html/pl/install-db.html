@@ -398,6 +398,14 @@ CLASS="FILENAME"
 			mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
 			nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak± zobaczysz
 			bêdzie formularz dodania u¿ytkownika.</P
+><P
+>Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
+			<PRE
+CLASS="SCREEN"
+>12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean --create --column-inserts  \
+		    --format=p lms -- file backups/lms-auto-"$(date +%s)".sql</PRE
+>
+			</P
 ></DIV
 ></DIV
 ><DIV
@@ -502,6 +510,13 @@ database = /usr/local/lms/lms.db</PRE
 >Po  takim  zabiegu, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
 			bazie danych nie ma ¿adnego konta u¿ytkownika, jedyn± rzecz± jak±
 			zobaczysz bêdzie formularz dodania u¿ytkownika.  
+			</P
+><P
+>Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
+			<PRE
+CLASS="SCREEN"
+>12 4 3,10,17,21,28 * * /bin/cp /usr/local/lms/lms.db  backups/lms-auto-"$(date +%s)"-sqllite.db</PRE
+>
 			</P
 ></DIV
 ></DIV
