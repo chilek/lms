@@ -25,6 +25,10 @@
  */
 
 $SMARTY->display('header.html');
+$SMARTY->display('adminheader.html');
+
+$LMS->DB->BeginTrans();
+
 echo '<PRE>';
 echo '<B>Przenoszenie opcji konfiguracyjnych sekcji [phpui]:</B><BR>';
 echo '<TABLE>';
@@ -202,5 +206,8 @@ foreach($LMS->CONFIG['invoices'] as $key => $val)
 }
 echo '</TABLE>';
 echo '</PRE>';
+
+$LMS->DB->CommitTrans();
+
 $SMARTY->display('footer.html');
 ?>
