@@ -13,6 +13,8 @@ wersja 1.1.8 (??/??/????):
   - porz±dki w dokumentacji - wyrzucone obrazki oraz usuniête commit logi,
     wiêc niech nie dziwi mniejsza objêto¶æ tarballa w porównaniu z
     1.1.7 (alec)
+  - dodane sprawdzenie czy wpisano liczbê w polu szybkiego wyszukiwania
+    komputera i u¿ytkownika, co zapobiega b³êdowi w zapytaniu do bazy (alec)
   
 wersja 1.1.7 Hathor (14/12/2003):
 
