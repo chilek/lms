@@ -33,14 +33,14 @@ if(! $LMS->UserExists($_GET['id']))
 if($_GET['action'] == 'delete')
 {
 	$LMS->DeleteAssignment($_GET['aid'],$_GET['balance']);
-	header('Location: ?m=userinfo&id='.$_GET['id']);
+	header('Location: ?'.$_SESSION['backto']);
 	die;
 }
 
 if($_GET['action'] == 'suspend')
 {
 	$LMS->SuspendAssignment($_GET['aid'], $_GET['suspend']);
-	header('Location: ?m=userinfo&id='.$_GET['id']);
+	header('Location: ?'.$_SESSION['backto']);
 	die;
 }
 
@@ -146,7 +146,7 @@ if($_GET['action'] == 'add' && isset($a))
 		if(checkdate($m, $d, $y))
 			$from = mktime(0, 0, 0, $m, $d, $y);
 		else
-			$error['datefrom'] = 'Koniec okresu naliczania jest niepoprawny!';
+			$error['datefrom'] = 'Pocz±tek okresu naliczania jest niepoprawny!';
 	}
 	else
 		$error['datefrom'] = 'Pocz±tek okresu naliczania jest niepoprawny!';
@@ -176,7 +176,7 @@ if($_GET['action'] == 'add' && isset($a))
 	if(!$error) 
 	{
 		$LMS->AddAssignment(array('tariffid' => $a['tariffid'], 'userid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$a['invoice']), 'datefrom' => $from, 'dateto' => $to ));
-		header('Location: ?m=userinfo&id='.$_GET['id']);
+		header('Location: ?'.$_SESSION['backto']);
 		die;
 	}
 }
