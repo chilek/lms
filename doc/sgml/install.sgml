@@ -440,6 +440,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 	<listitem><para>prze³adowywanie konfiguracji</para></listitem>
 	<listitem><para>manipulowanie danymi u¿ytkowników</para></listitem>
 	<listitem><para>manipulowanie danymi komputerów</para></listitem>
+	<listitem><para>dostêp do statystyk</para></listitem>
+	<listitem><para>dostêp do korespondencji seryjnej</para></listitem>
 	<listitem><para>brak dostêpu do modyfikacji i zak³adania kont administratorów</para></listitem>
 	<listitem><para>brak dostêpu</para></listitem>
 	</itemizedlist>
@@ -469,5 +471,17 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 		</simplelist>
 		</para>
 	</sect2>
+    </sect1>
+    <sect1 id="install-upgrade">
+      <title>Upgrade</title>
+      <para>Uaktualnienie LMS'a z wersji 1.0.X do bie¿±cej przebiega w dwóch etapach. Najpierw
+      skopiuj pliki nowej wersji do katalogu, gdzie trzyma³e¶ star± wersjê
+      lub w inne miejsce, nastêpnie trzeba dokonaæ zmian w bazie.</para>
+      <para>Dla u³atwienia migracji danych przygotowano pliki
+      <filename>UPGRADE.mysql</filename> i <filename>UPGRADE.pgsql</filename>,
+      które umieszczono w katalogu z dokumentacj±. W nich znajdziesz krótki
+      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.</para>
+      <para><note><para>W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
+      mo¿na skasowaæ odpowiedni katalog</para></note></para>
     </sect1>
   </chapter>
