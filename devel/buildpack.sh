@@ -6,7 +6,7 @@
 #
 
 WORKDIR=`pwd`
-NOTDISTRIB="devel lib/lang lib/locale" 
+NOTDISTRIB="devel lib/lang lib/locale lib/upgradedb" 
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
