@@ -116,6 +116,9 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
      case 'lang_debug':
          $desc = trans('Enable LMS language console. Usefull for tracking missing translation strings. Default: 0 (off).');
          break;
+     case 'timetable_days_forward':
+         $desc = trans('Number of days (including current day) on timetable. Default: 7.');
+         break;
      default:
          $desc = trans('Unknown option. No description.');
          break;

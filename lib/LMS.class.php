@@ -3439,6 +3439,7 @@ class LMS
 			case 'aliaslist_pagelimit':
 			case 'domainlist_pagelimit':
 			case 'timeout':
+			case 'timetable_days_forward':
 				if($value<=0)
 					return trans('Value of option "$0" must be a number grater than zero!' ,$var);
 			break;
