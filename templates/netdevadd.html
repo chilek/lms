@@ -12,7 +12,7 @@
 		<TD WIDTH="1%" CLASS="FBT">
 			<B>Nazwa:</B>
 		<TD WIDTH="98%" CLASS="FRIGHTU" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[name]" VALUE="{$netdev.name}" CLASS="{if $error.name}ALERTB{else}BOLD{/if}">
+			<INPUT TYPE="TEXT" NAME="netdev[name]" VALUE="{$netdev.name}" {tip trigger="name" bold=1}> 
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -56,7 +56,7 @@
 			<B>Ilo¶æ portów:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdev.ports}" CLASS="{if $error.ports}ALERTB{else}BOLD{/if}">
+			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdev.ports}" {tip trigger="ports"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

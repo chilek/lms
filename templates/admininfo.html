@@ -7,7 +7,7 @@
 	<TR CLASS="DARK">
 		<TD CLASS="fall">
 			<IMG SRC="img/admins.gif" ALT="" ALIGN="ABSMIDDLE"> <B>
-				{if $unlockedit}<INPUT TYPE="TEXT" NAME="admininfo[name]" VALUE="{$admininfo.name|capitalize}" SIZE="30"{if $error.name} CLASS="alertb"{else} CLASS="bold"{/if}>
+				{if $unlockedit}<INPUT TYPE="TEXT" NAME="admininfo[name]" VALUE="{$admininfo.name|capitalize}" SIZE="30" {tip trigger="name" bold=1}>
 				{else}{$admininfo.name|capitalize}{/if} ({$admininfo.id|string_format:"%04d"})
 			</B>
 		</TD>
@@ -21,7 +21,7 @@
 					</TD>
 					<TD>
 						{if $unlockedit}
-						<INPUT TYPE="TEXT" NAME="admininfo[login]" VALUE="{$admininfo.login}"{if $error.login} CLASS="alert"{/if}>
+						<INPUT TYPE="TEXT" NAME="admininfo[login]" VALUE="{$admininfo.login}" {tip trigger="login"}>
 						{else}
 						{$admininfo.login}
 						{/if}

@@ -8,7 +8,7 @@
 		<TD WIDTH="1%" CLASS="FBT">
 			<B>Nazwa:</B>
 		<TD WIDTH="98%" CLASS="FRIGHTU" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name|upper}" {if $error.name}CLASS="alertb"{else}CLASS="bold"{/if}>
+			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name|upper}" {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -19,7 +19,7 @@
 			<B>Adres IP:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}"{if $error.ipaddr} CLASS="alert"{/if}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr);" title="Wybierz adres IP z listy">&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}" {tip trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr);" {tip text="Wybierz adres IP z listy"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -30,7 +30,7 @@
 			<B>Adres MAC:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodedatamac" VALUE="{$nodedata.mac}"{if $error.mac} CLASS="alertb"{/if}> <a href="javascript: void(0);" onClick="return macchoosewin(document.nodeadd.nodedatamac);" title="Wybierz adres MAC z listy">&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="nodedatamac" VALUE="{$nodedata.mac}" {tip trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.nodeadd.nodedatamac);" {tip text="Wybierz adres MAC z listy"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -55,7 +55,7 @@
 			<B>W³a¶ciciel:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodedata[ownerid]"{if $error.user} CLASS="alert"{/if}>
+			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip trigger="user"}>
 				{section name=users loop=$users}
 				<OPTION VALUE="{$users[users].id}"{if $nodedata.ownerid eq $users[users].id} SELECTED{/if}>{$users[users].username} ({$users[users].id|string_format:"%04d"})</OPTION>
 				{/section}

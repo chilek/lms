@@ -22,7 +22,7 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname|escape:"html"}" {if $error.username} CLASS="ALERTB"{else} CLASS="BOLD"{/if}>
+						<INPUT TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname|escape:"html"}" {tip trigger="username" bold=1}>
 					</TD>
 				</TR>
 				<TR>
@@ -31,7 +31,7 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name|escape:"html"}" {if $error.username} CLASS="ALERTB"{else} CLASS="BOLD"{/if}>
+						<INPUT TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name|escape:"html"}" {tip trigger="username" bold=1}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -66,14 +66,14 @@
 			<IMG SRC="img/home.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" SIZE="30"{if $error.address} CLASS="alert"{/if}>
+			<INPUT TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" SIZE="30" {tip trigger="address"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>Kod:</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="5"{if $error.zip} CLASS="ALERT"{/if}><BR>
+			<B>Kod:</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="5" {tip trigger="zip"}><BR>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -96,7 +96,7 @@
 			<IMG SRC="img/gg.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[gguin]" VALUE="{$userinfo.gguin}" SIZE="30"{if $error.gguin} CLASS="ALERT"{/if}>
+			<INPUT TYPE="TEXT" NAME="userdata[gguin]" VALUE="{$userinfo.gguin}" SIZE="30" {tip trigger="gguin"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -104,7 +104,7 @@
 		<B>NIP</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[nip]" VALUE="{$userinfo.nip}" SIZE="30"{if $error.nip} CLASS="ALERT"{/if}>
+			<INPUT TYPE="TEXT" NAME="userdata[nip]" VALUE="{$userinfo.nip}" SIZE="30" {tip trigger="nip"}>
 		</TD>
 	</TR>
 

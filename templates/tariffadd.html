@@ -13,7 +13,7 @@
 		<TD WIDTH="1%" CLASS="fleft">
 			<B>Nazwa:</B></TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT TYPE="TEXT" NAME="tariffadd[name]" VALUE="{$tariffadd.name}"{if $error.name} CLASS="alertb"{else} CLASS="RED"{/if}>
+			<INPUT TYPE="TEXT" NAME="tariffadd[name]" VALUE="{$tariffadd.name}" {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -29,7 +29,7 @@
 			<B>Upstream (kb/s):</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT TYPE="TEXT" NAME="tariffadd[uprate]" SIZE="5" VALUE="{$tariffadd.uprate|default:" "}"{if $error.uprate} CLASS="alertb"{else} CLASS="red"{/if}>
+			<INPUT TYPE="TEXT" NAME="tariffadd[uprate]" SIZE="5" VALUE="{$tariffadd.uprate|default:" "}" {tip trigger="uprate"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">			
@@ -37,7 +37,7 @@
 			<B>Downstream (kb/s):</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT TYPE="TEXT" NAME="tariffadd[downrate]" SIZE="5" VALUE="{$tariffadd.downrate|default:" "}"{if $error.downrate} CLASS="alertb"{else} CLASS="red"{/if}>
+			<INPUT TYPE="TEXT" NAME="tariffadd[downrate]" SIZE="5" VALUE="{$tariffadd.downrate|default:" "}" {tip trigger="downrate"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -45,7 +45,7 @@
 			<B>Warto¶æ (z³):</B> 
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<INPUT TYPE="TEXT" SIZE="5" NAME="tariffadd[value]" VALUE="{$tariffadd.value}"{if $error.value} CLASS="ALERTB"{/if}>
+			<INPUT TYPE="TEXT" SIZE="5" NAME="tariffadd[value]" VALUE="{$tariffadd.value}" {tip trigger="value"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

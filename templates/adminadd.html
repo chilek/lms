@@ -9,7 +9,7 @@
 			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Login:</B>
 		</TD>
 		<TD CLASS="FRIGHTU" WIDTH="99%">
-			<INPUT TYPE="TEXT" NAME="adminadd[login]" VALUE="{$adminadd.login}"{if $error.login} CLASS="ALERT"{/if}>
+			<INPUT TYPE="TEXT" NAME="adminadd[login]" VALUE="{$adminadd.login}" {tip trigger="login"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -25,7 +25,7 @@
 			<IMG SRC="img/mail.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Email:</B>
 		</TD>
 		<TD CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="adminadd[email]" VALUE="{$adminadd.email}"{if $error.email} CLASS="ALERT"{/if}>
+			<INPUT TYPE="TEXT" NAME="adminadd[email]" VALUE="{$adminadd.email}" {tip trigger="email"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -33,7 +33,7 @@
 			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Has³o:</B>
 		</TD>
 		<TD CLASS="FRIGHT">
-			<INPUT TYPE="PASSWORD" NAME="adminadd[password]"{if $error.password} CLASS="ALERT"{/if}>
+			<INPUT TYPE="PASSWORD" NAME="adminadd[password]" {tip trigger="password"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -41,7 +41,7 @@
 			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Powtórz:</B>
 		</TR>
 		<TD CLASS="FRIGHT">
-			<INPUT TYPE="PASSWORD" NAME="adminadd[confirm]"{if $error.password} CLASS="ALERT"{/if}>
+			<INPUT TYPE="PASSWORD" NAME="adminadd[confirm]" {tip trigger="password"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

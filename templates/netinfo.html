@@ -16,7 +16,7 @@
 	{if $unlockedit}<FORM METHOD="POST" ACTION="?m=netedit&id={$network.id}" NAME="netedit">{/if}
 	<TR class="dark">
 		<TD width="100%" class="fall" colspan="4">
-			<IMG SRC="img/network.gif" border="0" align="absmiddle" alt=""> {if $unlockedit}<INPUT TYPE="text" NAME="networkdata[name]" VALUE="{$network.name|upper}" {if $error.name}class="alertb"{else}class="bold"{/if}>{else}<B>{$network.name|upper}</B>{/if} <B>({$network.id|string_format:"%04d"})</B>
+			<IMG SRC="img/network.gif" border="0" align="absmiddle" alt=""> {if $unlockedit}<INPUT TYPE="text" NAME="networkdata[name]" VALUE="{$network.name|upper}" {tip trigger="name" bold=1}>{else}<B>{$network.name|upper}</B>{/if} <B>({$network.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
 	<TR class="light">
@@ -24,14 +24,14 @@
 			<nobr><IMG SRC="img/ip.gif" border="0" align="absmiddle" alt=""> <B>Adres / prefix:</B></nobr>
 		</TD>
 		<TD width="48%">
-			<NOBR>{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[address]" VALUE="{$network.address}"{if $error.address} class="alert"{/if}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $network.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{else}{$network.address}/{$network.prefix}{/if}</NOBR>
+			<NOBR>{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[address]" VALUE="{$network.address}" {tip trigger="address"}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $network.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{else}{$network.address}/{$network.prefix}{/if}</NOBR>
 		</TD>
 		<TD width="2%" rowspan="2">
 			<NOBR><IMG src="img/dhcp.gif" border="0" align="absmiddle" alt=""> <B>Zakres DHCP:</B></NOBR>	
 		</TD>
 		<TD width="48%" class="fright" rowspan="2">
-			{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[dhcpstart]" VALUE="{$network.dhcpstart}"{if $error.dhcpstart} class="alert"{/if}><BR>
-			<INPUT TYPE="text" NAME="networkdata[dhcpend]" VALUE="{$network.dhcpend}"{if $error.dhcpend} class="alert"{/if}>{else}
+			{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[dhcpstart]" VALUE="{$network.dhcpstart}" {tip trigger="dhcpstart"}><BR>
+			<INPUT TYPE="text" NAME="networkdata[dhcpend]" VALUE="{$network.dhcpend}" {tip trigger="dhcpend"}>{else}
 			{$network.dhcpstart}<BR>
 			{$network.dhcpend}
 			{/if}
@@ -51,7 +51,7 @@
 		</TD>
 		<TD COLSPAN="3" CLASS="FRIGHT" WIDTH="99%">
 			{if $unlockedit}
-			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}"{if $error.interface} CLASS="ALERT"{/if}>
+			<INPUT TYPE="text" NAME="networkdata[interface]" VALUE="{$network.interface}" {tip trigger="interface"}>
 			{else}
 			{$network.interface}
 			{/if}
@@ -63,7 +63,7 @@
 		</TD>		
 		<TD width="48%">
 			{if $unlockedit}
-			<INPUT TYPE="text" NAME="networkdata[gateway]" VALUE="{$network.gateway}"{if $error.gateway} class="alert"{/if}>
+			<INPUT TYPE="text" NAME="networkdata[gateway]" VALUE="{$network.gateway}" {tip trigger="gateway"}> 
 			{else}
 			{$network.gateway}
 			{/if}
@@ -73,8 +73,8 @@
 		</TD>
 		<TD width="48%" class="fright">
 			{if $unlockedit}
-			<INPUT TYPE="text" NAME="networkdata[dns]" VALUE="{$network.dns}"{if $error.dns} class="alert"{/if}><BR>
-			<INPUT TYPE="text" NAME="networkdata[dns2]" VALUE="{$network.dns2}"{if $error.dns2} class="alert"{/if}>
+			<INPUT TYPE="text" NAME="networkdata[dns]" VALUE="{$network.dns}" {tip trigger="dns"}><BR>
+			<INPUT TYPE="text" NAME="networkdata[dns2]" VALUE="{$network.dns2}" {tip trigger="dns2"}>
 			{else}
 			{$network.dns}<BR>
 			{$network.dns2}
@@ -87,7 +87,7 @@
 		</TD>
 		<TD width="48%">
 			{if $unlockedit}
-			<INPUT TYPE="text" NAME="networkdata[wins]" VALUE="{$network.wins}"{if $error.wins} class="alert"{/if}>
+			<INPUT TYPE="text" NAME="networkdata[wins]" VALUE="{$network.wins}" {tip trigger="wins"}>
 			{else}
 			{$network.wins}
 			{/if}
@@ -97,7 +97,7 @@
 		</TD>
 		<TD width="48%" class="fright">
 			{if $unlockedit}
-			<INPUT TYPE="text" NAME="networkdata[domain]" VALUE="{$network.domain}"{if $error.domain} class="alert"{/if}>
+			<INPUT TYPE="text" NAME="networkdata[domain]" VALUE="{$network.domain}" {tip trigger="domain"}>
 			{else}
 			{$network.domain}
 			{/if}
