@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Script generate documentation in differenf formats
+# Script generate documentation in different formats
 # (html, txt) from source sgml files
 # Required is instalation of sgml-tools with openjade
 # (lynx probably have anybody)
