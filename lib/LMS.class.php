@@ -1167,11 +1167,18 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access, warning, creationdate, moddate, creatorid, modid, netdev FROM nodes WHERE id=?', array($id)))
+		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access, warning, creationdate, moddate, creatorid, modid, netdev, lastonline FROM nodes WHERE id=?', array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
 			$result['creationdateh'] = date('Y-m-d, H:i',$result['creationdate']);
+			if((time()-$result['lastonline'])>600)
+			{
+				$result['lastonlinedate'] = date('Y-m-d, H:i',$result['lastonline'])."<br>";
+				$result['lastonlinedate'] .= date('(i \m\i\n\u\t, G \g\o\d\z\i\n, ',time()-$result['lastonline']);
+				$result['lastonlinedate'] .= round((time()-$result['lastonline'])/86400)." dni temu)";			
+			} else
+				$result['lastonlinedate'] .= "aktualnie w³±czony";
 			$result['moddateh'] = date('Y-m-d, H:i',$result['moddate']);
 			$result['owner'] = $this->GetUsername($result['ownerid']);
 			$result['netid'] = $this->GetNetIDByIP($result['ip']);
@@ -1214,7 +1221,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			break;
 		}
 
-		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, ownerid, access, warning, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner FROM nodes, users WHERE ownerid = users.id AND ownerid > 0'.($sqlord != '' ? $sqlord.' '.$direction : '')))
+		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, ownerid, access, warning, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, lastonline FROM nodes, users WHERE ownerid = users.id AND ownerid > 0'.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
 			foreach($nodelist as $idx => $row)
 			{
