@@ -14,6 +14,8 @@ wersja 1.0pre11 (??/??/2003):
   - dodane 'skanuj' przy dodawaniu komputera - wyszukuje hosty przy u¿yciu
     programu nbtscan (kennyGRV/lukasz)
   - dodana informacja o producencie karty sieciowej w nodeinfobox (lukasz)
+  - poprawione byki z wy¶wietlaniem ostatnich 10 operacji finansowych
+    u¿ytkownika (lukasz)
   
 wersja 1.0pre10 (15/04/2003):
 
