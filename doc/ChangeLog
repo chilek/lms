@@ -6,7 +6,8 @@ wersja 1.1.8 (??/??/????):
     niektórych systemach) (Lexx)
   - poprawione zliczanie rekordów na pustych listach, BTS#90 (alec)
   - dodane sortowanie listy userów wg wysoko¶ci abonamentu (alec)
-        
+  - poprawione sortowanie listy komputerów wg w³a¶ciciela (alec)
+  
 wersja 1.1.7 Hathor (14/12/2003):
 
   - adresy sieci w bazie trzymamy teraz jako bigint, do przeliczeñ

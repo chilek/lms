@@ -937,7 +937,23 @@ class LMS
 			}
 		}
 
-	
+		switch($order)
+		{
+			case "owner":
+				foreach($nodelist as $idx => $row)
+				{
+					$ownertable['idx'][] = $idx;
+					$ownertable['owner'][] = $row['owner'];
+				}
+				if(is_array($ownertable))
+				{
+					array_multisort($ownertable['owner'],($direction == "desc" ? SORT_DESC : SORT_ASC),$ownertable['idx']);
+					foreach($ownertable['idx'] as $idx)
+						$nnodelist[] = $nodelist[$idx];
+				}
+				$nodelist = $nnodelist;
+			break;
+		}
 
 		$nodelist['total'] = sizeof($nodelist);
 		$nodelist['order'] = $order;
@@ -2226,6 +2242,10 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.317  2003/12/15 22:23:58  alec
+ * - niejako przez pomy³kê wpad³em na b³±d w sortowaniu listy kompów
+ *   wg w³a¶ciciela, poprawione
+ *
  * Revision 1.316  2003/12/15 22:15:35  alec
  * - dodane sortowanie listy userów wg abonamentu
  *
