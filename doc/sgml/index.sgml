@@ -19,10 +19,10 @@
 	    <imagedata fileref="images/logo-small.png" format="png">
 	</imageobject>
     </mediaobject>
-    <corpauthor> Aleksander 'A.L.E.C' Machniak, Karol 'Lexx' Krol</corpauthor>
+    <corpauthor> Aleksander 'A.L.E.C' Machniak, Marcin 'Lexx' Krol</corpauthor>
     <copyright>
         <year>2003-2004</year>
-        <holder> Aleksander 'A.L.E.C' Machniak, Karol 'Lexx' Krol</holder>
+        <holder> Aleksander 'A.L.E.C' Machniak, Marcin 'Lexx' Krol</holder>
     </copyright>
   </bookinfo>
 <toc></toc>
