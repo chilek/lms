@@ -122,6 +122,7 @@ if(! -r $configfile)
 }
 
 my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
 
 my $outfile = $ini->val('traffic-htbiptlimits','outfile') || '/etc/rc.d/rc.limits';
 my $iptables_binary = $ini->val('traffic-htbiptlimits','iptables_binary') || '/usr/sbin/iptables';

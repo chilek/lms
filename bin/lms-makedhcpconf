@@ -125,6 +125,7 @@ if(! -r $configfile)
 }
 
 my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('dhcp', 'networks') || '';
 my $usergroups_list = $ini->val('dhcp', 'usergroups') || '';

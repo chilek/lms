@@ -131,6 +131,7 @@ if(! -r $configfile)
 }
 
 my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('ipchains', 'networks') || '';
 my $forward_to_list = $ini->val('ipchains', 'forward_to') || '';

@@ -124,6 +124,7 @@ if(! -r $configfile)
 }
 
 my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
 
 my $cfile = $ini->val('oidentd', 'config_file') || '/etc/oidentd_masq.conf';
 my $cuid = $ini->val('oidentd','config_owneruid') || 0;

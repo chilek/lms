@@ -85,6 +85,8 @@ if(! -r $configfile)
 }
 
 my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
+
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';

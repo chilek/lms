@@ -83,6 +83,7 @@ if(! -r $configfile)
 }
 
 my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('ether', 'networks') || '';
 my $cfile = $ini->val('ether', 'etherdesc_file') || '/var/lib/iptraf/ethernet.desc';

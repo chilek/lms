@@ -112,6 +112,7 @@ if(! -r $configfile)
 }
 
 my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('fping','networks') || '';
 my $fping = $ini->val('fping','fping_binary') || '/usr/sbin/fping';
