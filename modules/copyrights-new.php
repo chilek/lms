@@ -28,11 +28,24 @@ $layout['pagetitle'] = "Informacje o prawach autorskich";
 
 $authors = array(
 		array(
+			'nick' => 'alec',
+			'realname' => 'Aleksander Machniak',
+			'www' => 'www.alec.pl',
+			'info' => 'kod PHP, C, Perl, HTML, JavaScript, grafika, dokumentacja, PostgreSQL, SQLite'
+		     ),
+
+		array(
 			'nick' => 'Baseciq',
 			'realname' => '£ukasz Jaros³aw Mozer',
 			'www' => 'www.baseciq.org',
-			'info' => 'pomys³odawca i maintaner, kod PHP, Perl, design, HTML, JavaScript, CSS, grafika, dokumentacja, projekt strony WWW projektu'
+			'info' => 'pomys³odawca i maintainer, kod PHP, Perl, design, HTML, JavaScript, CSS, grafika, dokumentacja, projekt strony WWW projektu'
 		     ),
+
+		array(
+			'nick' => 'chilek',
+			'info' => 'kod PHP, Perl',
+			'realname' => 'Tomasz Chilinski',
+			),
 
 		array(
 			'nick' => 'Lexx',
@@ -40,13 +53,7 @@ $authors = array(
 			'www' => 'www.lexx.w.pl',
 			'realname' => 'Marcin Król',
 		     ),
-
-		array(
-			'nick' => 'chilek',
-			'info' => 'kod PHP',
-			'realname' => 'Tomasz Chilinski',
-			),
-		
+	
 		);
 
 $SMARTY->assign('authors', $authors);
