@@ -43,7 +43,7 @@ if($to) {
 	$unixto = mktime(23,59,59); //koniec dnia dzisiejszego
 }
 
-$layout['pagetitle'] = 'Raport sprzeda¿y za okres '.$from.' - '.$to;
+$layout['pagetitle'] = 'Rejestr sprzeda¿y za okres '.$from.' - '.$to;
 
 $invoicelist = $LMS->InvoicesReport($unixfrom, $unixto);
 

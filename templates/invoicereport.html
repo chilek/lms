@@ -1,13 +1,8 @@
 {include file="clearheader.html"}
 <TABLE WIDTH="100%">
 	<TR>
-		<TD WIDTH="1%" VALIGN="TOP" NOWRAP>
+		<TD WIDTH="100%" ALIGN="CENTER" NOWRAP>
 			<H1>{$layout.pagetitle}</H1>
-		</TD>
-		<TD ALIGN="RIGHT">
-			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %e %B, %Y"|capitalize}<BR>
-			Sporz±dzone przez: {$layout.logname}
 		</TD>
 	</TR>
 </TABLE>
@@ -95,6 +90,15 @@
 		</TD>	
 		<TD ALIGN="RIGHT" VALIGN="TOP">
 			<B>{$listdata.tax0|string_format:"%01.2f"}</B>
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="100%" CELLPADDING="1">
+	<TR>
+		<TD WIDTH="100%" ALIGN="LEFT">
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
+			Sporz±dzone przez: {$layout.logname}
 		</TD>
 	</TR>
 </TABLE>
