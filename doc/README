@@ -311,7 +311,7 @@ Rozdzia³ 2. Instalacja i konfiguracja
    Po pobraniu ze strony www.lms.rulez.pl rozpakuj archiwum:
 $ tar zxvf lms-x.x.x.tar.gz
 
-   a nastêpnie przenie¶ pliki z LMS-UIdo katalogu osi±galnego z poziomu
+   a nastêpnie przenie¶ pliki z LMS-UI do katalogu osi±galnego z poziomu
    serwera www (np. /var/www/lms).
 
    Pliki z konfiguracj± (sample/lms.ini i sample/lms-mgc.ini) umie¶æ w
@@ -355,8 +355,7 @@ mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
 Enter password:[podaj has³o]
 mysql> create database lms;
 mysql> grant usage on lms.* to lms@localhost;
-mysql> grant select,insert,update,delete,create on lms.* to lms@localhost ident
-ified by 'haslo';
+mysql> grant select,insert,update,delete,create on lms.* to lms@localhost identified by 'haslo';
 mysql> flush privileges;
 mysql> use lms;
 mysql> source doc/lms.mysql;
@@ -378,10 +377,8 @@ password = has³o_z_pkt.3
    gdzie od razu bêdziesz móg³ u¿yæ nowo utworzonego konta.
 
    Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
-12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-h
-as³o \
-                    --add-drop-table --add-locks lms > backups/lms-auto-"$(date
- +%s)".sql
+12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o \
+                    --add-drop-table --add-locks lms > backups/lms-auto-"$(date +%s)".sql
 
    Spowoduje to wykonywanie o 4:12 rano, ka¿dego 3, 10, 17, 21 i 28 dnia
    miesi±ca automagicznie zrzutu danych z mysqla.
@@ -1000,8 +997,7 @@ Rozdzia³ 4. Skrypty
    Po wiêcej informacji mo¿esz siêgn±æ do man crontab
 
    Wiêkszo¶æ lms'owych skryptów posiada dodatkowe opcje uruchomieniowe:
--C=/plik    po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/
-lms.ini
+-C=/plik    po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/lms.ini
 -q          wykonanie skryptu bez wy¶wietlania komunikatów
 -h          pomoc (a w zasadzie to tylko listing opcji)
 -v          informacja o wersji skryptu
@@ -1192,8 +1188,7 @@ http://www.naszasiec.pl/
    Nastêpnie instalujemy skrypt dopisuj±c do crontaba. Oprócz
    standardowych opcji wiersza poleceñ mo¿liwe jest zdefiniowanie
    lokalizacji pliku z logiem
--f=/plik        po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traf
-fic.log
+-f=/plik        po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traffic.log
 
    Ostrze¿enie
 
@@ -1230,10 +1225,8 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
    Lms-mgc posiada nastêpuj±ce opcje uruchomienia:
 -C, --config-file=/path/lms-mgc.ini alternatywny plik konfiguracyjny
                                     (default: /etc/lms/lms-mgc.ini);
--i, --instances=name                nazwa (lub numer) instancji do uruchomienia
-, bez czytania
-                                    konfiguracji z lms-mgc.ini, np. -i "name1 n
-ame2"
+-i, --instances=name                nazwa (lub numer) instancji do uruchomienia, bez czytania
+                                    konfiguracji z lms-mgc.ini, np. -i "name1 name2"
 -h, --help                          wy¶wietla pomoc;
 -v, --version                       wy¶wietla numer wersji;
 -q, --quiet                         tylko komunikaty o b³êdach;
@@ -1474,8 +1467,7 @@ ame2"
 [mgc:ipchains]
 outfile           = /etc/rc.d/rc.masq
 outfile_perm      = 700
-header            = #!/bin/sh\n/sbin/ipchains -F\n/sbin/ipchains -X\n/sbin/ipch
-ains -P forward DENY
+header            = #!/bin/sh\n/sbin/ipchains -F\n/sbin/ipchains -X\n/sbin/ipchains -P forward DENY
 grantednode_priv  = /sbin/ipchains -A forward -s %IP -j MASQ
 post_exec         = /etc/rc.d/rc.masq
 
