@@ -115,7 +115,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('arping','networks') || '';
-my $arping = $ini->val('arping','arping_binary') || '/usr/sbin/arping';
+my $arping = $ini->val('arping','arping_binary') || '/lms/sbin/arping';
 
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
@@ -152,11 +152,12 @@ else
 
 if(!$networks_list)
 {
-     my $dbq = $dbase->prepare("SELECT name FROM networks");
-     $dbq->execute();
-     while (my $row = $dbq->fetchrow_hashref()) {
-          $networks_list = "$networks_list $row->{'name'}";
-     }
+    my $dbq = $dbase->prepare("SELECT name FROM networks");
+    $dbq->execute();
+    while (my $row = $dbq->fetchrow_hashref()) 
+    {
+	$networks_list = "$networks_list $row->{'name'}";
+    }
 }
 
 my @networks = split ' ', $networks_list;
@@ -166,31 +167,30 @@ my @lines;
 
 foreach my $network (@networks)
 {
-     my $dbq = $dbase->prepare("SELECT name, INET_NTOA(address) AS address, mask FROM networks WHERE UPPER(name) = UPPER('$network')");
-     $dbq->execute();
+    my $dbq = $dbase->prepare("SELECT name, INET_NTOA(address) AS address, mask FROM networks WHERE UPPER(name) = UPPER('$network')");
+    $dbq->execute();
      
-     if(my $row = $dbq->fetchrow_hashref())
-     {
-          my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
+    if(my $row = $dbq->fetchrow_hashref())
+    {
+	my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
 
-          my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr FROM nodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
-          $ndbq->execute();
+        my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr FROM nodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
+        $ndbq->execute();
           
-          while(my $nodrow = $ndbq->fetchrow_hashref())
-          {
-               push(@ips, "$nodrow->{'ipaddr'}");
-          }
-     }
+	while(my $nodrow = $ndbq->fetchrow_hashref())
+        {
+	    push(@ips, "$nodrow->{'ipaddr'}");
+        }
+    }
 }
 
 foreach my $ip (@ips) 
 {
-     system("$arping -i eth1 $ip -c1 -q -d");
-     if ( "$?" == "0" ) 
-     { 
-          push(@lines, "$ip");
-     }
-
+    system("$arping -c1 -q $ip");
+    if ( "$?" == "0" ) 
+    { 
+	push(@lines, "$ip");
+    }
 }
 
 foreach my $line (@lines)
