@@ -222,6 +222,32 @@ switch($_GET['type'])
 		$SMARTY->assign('balancelist', $bbalancelist);
 		$SMARTY->display('printbalancelist.html');
 	break;
+
+	case 'incomereport': /********************************************/
+	
+		$from = $_POST['incomereportfrom'];
+		$to = $_POST['incomereportto'];
+
+		// date format 'yyyy/mm/dd'	
+		list($year, $month, $day) = split('/',$from);
+		$date['from'] = mktime(0,0,0,$month,$day,$year);
+		
+		if($to) {
+			list($year, $month, $day) = split('/',$to);
+			$date['to'] = mktime(0,0,0,$month,$day,$year);
+		} else {
+			$to = date("Y/m/d",time());
+			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+		}
+		
+		$layout['pagetitle'] = '£±czny przychód bezrachunkowy za okres '.($from ? ' od '.$from.' ' : '').'do '.$to;
+
+		$incomelist = $LMS->GetIncomeList($date);
+		$totalincomelist = $LMS->GetTotalIncomeList($date);
+		$SMARTY->assign('incomelist', $incomelist);
+		$SMARTY->assign('totalincomelist', $totalincomelist);
+		$SMARTY->display('printincomereport.html');
+	break;
 		
 	default: /*******************************************************/
 		$layout['pagetitle'] = 'Wydruki';

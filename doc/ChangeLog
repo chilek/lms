@@ -15,6 +15,7 @@ wersja 1.3.3 (??/??/2004):
   - w wydrukach bilansów uzwglêdnianie s± stawki VAT (chilek)
   - w contrib/sqlpanel dodane stronicowanie wyników oraz opcjê wydruku (alec)
   - wybór stawki VAT przy nowej operacji w comboboksie (chilek)
+  - wydruk raportu ³±cznych przychodów bezrachunkowych (chilek)
 
 wersja 1.3.2 Kinsey (03/04/2004):
   
