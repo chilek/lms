@@ -12,6 +12,7 @@ README.html	- Podrêcznik u¿ytkownika - wersja w jednym pliku HTML
 TODO		- Do-Zrobienia.
 lms.mysql	- Polecenia zak³adaj±ce tabelki w mysqlu
 lms.pgsql	- Polecenia zak³adaj±ce tabelki w postgresqlu
+lms.sqlite	- Polecenia zak³±daj±ce tabelki w sqlite
 UPGRADE-*.mysql	- jak uaktualniæ lms'a do wersji bie¿±cej
 UPGRADE-*.pgsql	- jak uaktualniæ lms'a do wersji bie¿±cej
 
