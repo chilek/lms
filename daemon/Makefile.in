@@ -1,9 +1,3 @@
-LIBS = -lpq -ldl
-LDFLAGS = -L/usr/local/pgsql/lib
-CFLAGS = -I/usr/local/pgsql/include -DUSE_PGSQL -DDEBUG0 -Wall -O2 -DDEBUG1
-DBDRIVER = pgsql
-INSTALLDIR = /usr/local/bin
-
 SOURCES = dbdrivers/$(DBDRIVER)/db.c util.c cron/cronparse.c cron/cron.c \
 	config/dictionary.c config/config.c lmsd.c
 OBJECTS = ${SOURCES:.c=.o}
