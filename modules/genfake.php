@@ -1486,9 +1486,9 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 	$DB->Execute('DELETE FROM assignments');
 	$DB->Execute('DELETE FROM networks');
 	$DB->Execute('DELETE FROM tariffs');
+	$DB->Execute('DELETE FROM payments');	
 	$DB->Execute('DELETE FROM netdevices');
 	$DB->Execute('DELETE FROM netlinks');
-	
 	
 	if($LMS->CONFIG['database']['type']=="postgres")
 	{
@@ -1509,6 +1509,14 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 	$LMS->TariffAdd($tariffdata);
 	$tariffdata = array( name => 'Gold', description => 'Taryfa Gold', value => '120', taxvalue => '7', uprate => '256', downrate => '512');
 	$LMS->TariffAdd($tariffdata);
+
+	echo '<B>Generuje op³aty sta³e...</B><BR>';
+	$paymentdata = array( name => 'DSL-512', description => 'Abonament za ³±cze', value => '200', creditor => 'Internet Super Provider S.A.', period => '0', at => '10');
+	$LMS->PaymentAdd($paymentdata);
+	$paymentdata = array( name => 'Serwerownia', description => 'Wynajem lokalu', value => '300', creditor => 'Spó³dzielnia Mieszkaniowa "WIDOK"', period => '0', at => '20');
+	$LMS->PaymentAdd($paymentdata);
+	$paymentdata = array( name => 'Domena', description => 'Op³ata za domenê "nasza.net"', value => '150', creditor => 'NASK', period => '2', at => '31');
+	$LMS->PaymentAdd($paymentdata);
 	
 	echo '<B>Generuje sieæ...</B><BR>';
 	$netdata = array( name => 'LAN1', address => '192.168.0.0', prefix => '22', gateway => '192.168.0.1', dns => '192.168.0.1', dns2 => '192.168.3.254', domain => 'ultralan.net.pl', wins => '192.168.0.2', dhcpstart => '192.168.3.230', dhcpend => '192.168.3.253');
@@ -1537,6 +1545,7 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 		$useradd['status'] = 3;
 		$useradd['tariff'] = mt_rand(1,3);
 		$useradd['payday'] = mt_rand(1,28);
+		$useradd['gguin'] = 0;
 		$id = $LMS->UserAdd($useradd);
 		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'period' => 0, 'at' => $useradd['payday'], 'invoice' => 0));
 		$nodes = mt_rand(1,3);
