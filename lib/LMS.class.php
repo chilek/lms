@@ -680,8 +680,19 @@ class LMS
 				$sqlord = 'ORDER BY username';
 			break;
 		}
-
-		if(!isset($state))
+		
+		if($state == 4) {
+			$deleted = 1;
+			// is non-sens to filter by usergroup and network 
+			// when user is deleted because we drop group assignments and nodes
+			// in DeleteUser()
+			$network=NULL;
+			$usergroup=NULL;
+		}
+		else
+			$deleted = 0;
+		
+		if(!isset($state) || $state>3)
 			$state = 3;
 
 		if($network) 
@@ -691,7 +702,8 @@ class LMS
 				'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, email, phone1, users.address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON (users.id=cash.userid AND (type = 3 OR type = 4)) '
 				.($network ? 'LEFT JOIN nodes ON (users.id=ownerid) ' : '')
 				.($usergroup ? 'LEFT JOIN userassignments ON (users.id=userassignments.userid) ':'')
-				.'WHERE deleted = 0 '.($state !=0 ? ' AND status = '.$state :'') 
+				.'WHERE deleted = '.$deleted
+				.($state !=0 ? ' AND status = '.$state :'') 
 				.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
 				.($usergroup ? ' AND usergroupid='.$usergroup : '') 
 				.' GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, users.address, gguin, nip, pesel, zip, city, info '
@@ -748,7 +760,8 @@ class LMS
 				$userlist = $nuserelist;
 			break;
 		}
-		
+		if($deleted) 
+			$state = 4;
 		$userlist['total']=sizeof($userlist);
 		$userlist['state']=$state;
 		$userlist['network']=$network;
