@@ -124,7 +124,7 @@ class LMS
 
 	function GetTariffValue($id)
 	{
-		return str_replace(".",",",$this->ADB->GetOne("SELECT value FROM tariffs WHERE id=?",array($id)));
+		return $this->ADB->GetOne("SELECT value FROM tariffs WHERE id=?",array($id));
 	}
 
 	function GetTariffName($id)
@@ -136,7 +136,6 @@ class LMS
 	{
 		$return = $this->ADB->GetRow("SELECT id, name, value, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
 		$return[count] = $this->GetUsersWithTariff($id);
-		$return[value] = str_replace(".",",",$return[value]);
 		$return[totalval] = $return[value] * $return[count];
 		$return[users] = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat('upper(lastname)',"' '",'name')." AS username FROM users WHERE tariff=? AND status=3 ORDER BY username",array($id));
 		$return[rows] = ceil(sizeof($return[users])/2);
@@ -617,7 +616,7 @@ class LMS
 				foreach($balancelist as $idx => $row)
 				{
 					$balancelist[$idx][admin] = $adminlist[$row[adminid]];
-					$balancelist[$idx][value] = str_replace(".",",",$row[value]);
+					$balancelist[$idx][value] = $row[value];
 					$balancelist[$idx][username] = $userslist[$row[userid]];
 					if($idx)
 						$balancelist[$idx][before] = $balancelist[$idx-1][after];
@@ -736,11 +735,11 @@ class LMS
 		{
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
 				foreach($blst as $row)
-					$balance[$row[id]] = str_replace(".",",",$row[value]);
+					$balance[$row[id]] = $row[value];
 
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
 				foreach($blst as $row)
-					$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
+					$balance[$row[id]] = $balance[$row[id]] - $row[value];
 
 
 			foreach($this->ADB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
@@ -754,7 +753,7 @@ class LMS
 				if($balance[$value[id]] > 0)
 					$over = $over + $balance[$value[id]];
 				
-				$userlist[$key][tariffvalue] = str_replace(".",",",$tlist[$value[tariff]]);
+				$userlist[$key][tariffvalue] = $tlist[$value[tariff]];
 				$userlist[$key][nodeac] = $this->GetUserNodesAC($value[id]);
 			}
 			
@@ -841,11 +840,11 @@ class LMS
 		{
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
 				foreach($blst as $row)
-					$balance[$row[id]] = str_replace(".",",",$row[value]);
+					$balance[$row[id]] = $row[value];
 
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
 					foreach($blst as $row)
-							$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
+							$balance[$row[id]] = $balance[$row[id]] - $row[value];
 
 
 			foreach($this->ADB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
@@ -859,7 +858,7 @@ class LMS
 				if($balance[$value[id]] > 0)
 					$over = $over + $balance[$value[id]];
 				
-				$userlist[$key][tariffvalue] = str_replace(".",",",$tlist[$value[tariff]]);
+				$userlist[$key][tariffvalue] = $tlist[$value[tariff]];
 				$userlist[$key][nodeac] = $this->GetUserNodesAC($value[id]);
 			}
 			
@@ -1145,21 +1144,16 @@ class LMS
 	{
 		$bin = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='3'",array($id));
 		$bou = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='4'",array($id));
-		return round(str_replace(".",",",$bin) - str_replace(".",",",$bou),2);
+		return round($bin-$bou,2);
 	}
 
 
 	function SetBalanceZero($user_id)
-	{   
-		// make balace = 0 
+	{
 		$this->SetTS("cash");
 		$stan=$this->GetUserBalance($user_id);
-		//$stan=str_replace(".",",",$stan);
 		$stan=-$stan;
-		$stan=str_replace(",",".",$stan);
-
-	    return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?)",array($this->SESSION->id, 3 , round("$stan",2) , $user_id));
-
+		return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?)",array($this->SESSION->id, 3 , round("$stan",2) , $user_id));
 	}
 
 	function GetUserBalanceList($id)
@@ -1191,10 +1185,6 @@ class LMS
 					else $saldolist[before][$i] = 0;
 				
 					$saldolist[adminname][$i] = $adminslist[$saldolist[adminid][$i]];
-					// zachcia³o mi siê kurwa pierdolonych locales :S
-					// zak³adam siê ¿e w trakcie pisania wyjdzie jeszcze kwiatek
-					// z zapisem do mysql'a :S
-					$saldolist[value][$i]=str_replace(".",",",$saldolist[value][$i]);
 					$saldolist[value][$i]=round($saldolist[value][$i],3);	
 
 					if (strlen($saldolist[comment][$i])<3)
@@ -1236,13 +1226,12 @@ class LMS
 			if($saldolist[total])
 			{
 				foreach($saldolist[value] as $key => $value)
-					$saldolist[value][$key] = str_replace(".",",",$value);
+					$saldolist[value][$key] = $value;
 				foreach($saldolist[after] as $key => $value)
-					$saldolist[after][$key] = str_replace(".",",",$value);
+					$saldolist[after][$key] = $value;
 				foreach($saldolist[before] as $key => $value)
-					$saldolist[before][$key] = str_replace(".",",",$value);
+					$saldolist[before][$key] = $value;
 			}
-			$saldolist[balance] = str_replace(".",",",$saldolist[balance]);
 			$_SESSION[timestamps][getuserbalancelist][$id][cash] = $this->GetTS("cash");
 			$_SESSION[timestamps][getuserbalancelist][$id][admins] = $this->GetTS("admins");
 			$_SESSION[cache][getuserbalancelist][$id] = $saldolist;
@@ -1468,7 +1457,6 @@ class LMS
 			foreach($tarifflist[id] as $idx => $id)
 			{
 				$tarifflist[users][$idx] = $this->GetUsersWithTariff($id);
-				$tarifflist[value][$idx] = str_replace(".",",",$tarifflist[value][$idx]);
 				$tarifflist[totalusers] = $tarifflist[totalusers] + $tarifflist[users][$idx];
 				$tarifflist[income][$idx] = $tarifflist[users][$idx] * $tarifflist[value][$idx];
 				$tarifflist[totalincome] = $tarifflist[totalincome] + $tarifflist[income][$idx];
