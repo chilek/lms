@@ -30,20 +30,16 @@ foreach ($langs as $val) {
     switch (substr($val, 0, 2)) {
 	case 'pl':
             $language = 'pl';
+	    setlocale(LC_ALL, 'pl_PL');
             break 2;
         case 'en':
 	    $language = 'en';
+	    setlocale(LC_ALL, 'en_US');
 	    break 2;
     }
 }
 
-switch ($language) {
-    case 'pl':
-	require_once($_LIB_DIR.'/lang/polish.php');
-	break;
-    case 'en':
-	require_once($_LIB_DIR.'/lang/english.php');
-        break;
-}
+bindtextdomain("lms", "$_LIB_DIR/locale");
+textdomain("lms");
 
 ?>
