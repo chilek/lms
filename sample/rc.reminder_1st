@@ -3,16 +3,18 @@
 # $Id$
 # simle reminder, send 1st info, i.e. today payings are accounded.
 
-PLATNOSC_HOME=/home/hunter/platnosci
+LMS_HOME=/home/services/lan-managment-system/
 
-cd $PLATNOSC_HOME
+cd $LMS_HOME
 
-echo "$(date) Platnosci przypominaja o nale¿nosci" >> log/rc-scripts
+echo "$(date) LMS przypomina o nale¿nosciach" >> log/rc-scripts
 
 LANG=pl
 LC_ALL=pl
 
 export LANG LC_ALL
 
-lms/bin/lms-notify -D $PLATNOSC_HOME/conf/tekst_1.txt --config-file \
-$PLATNOSC_HOME/conf/lms.ini | mail platnosci@nitronet.pl
+lms/bin/lms-notify							\
+	-D $LMS_HOME/conf/tekst_1.txt			\
+	--config-file	$LMS_HOME/conf/lms.ini	\
+	| mail ksiegowosc-lms-rc1@isp.superwazny.tfuj.host.com.pl
