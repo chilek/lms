@@ -39,7 +39,7 @@
 		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';" valign="top" align="right">
 			({$userlist.id[userlist]|string_format:"%04d"})
 		</TD>
-		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';">
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';" valign="top">
 			<IMG src="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.address[userlist]|replace:" ":"&nbsp;"}{if $userlist.email[userlist] neq ""}<BR>
 			<IMG src="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.email[userlist]}</A>{/if}
 		</TD>
@@ -53,16 +53,29 @@
 	<TR bgColor="#DFD5BD" title="Dodaj nowego u¿ytkownika">
 		<FORM METHOD="post" NAME="useradd" ACTION="?m=useradd#useradd">
 		<TD colspan="2" class="fleftu">
-			<A NAME="useradd"><IMG SRC="img/user.gif" border="0" alt="" align="absmiddle"> <INPUT TYPE="text" NAME="useradd[lastname]" title="Nazwisko" class="{if $error.username}alertb{else}bold{/if}" size="12" value="{$useradd.lastname}"> <INPUT TYPE="text" NAME="useradd[name]" title="Imiê" class="{if $error.username}alertb{else}bold{/if}" size="10" value="{$useradd.name}">{if $error.username}<BR><FONT COLOR="red"><B>¯adne z tych pól nie mo¿e byæ puste!</B></FONT>{/if}<BR></A>
-			<IMG src="img/phone.gif" alt="" align="absmiddle" border="0"> <INPUT TYPE="text" NAME="useradd[phone1]" title="Telefon" size="15" value="{$useradd.phone1}">
+			<NOBR><A NAME="useradd"><IMG SRC="img/user.gif" border="0" alt="" align="absmiddle"> <INPUT TYPE="text" NAME="useradd[lastname]" title="Nazwisko" class="{if $error.username}alertb{else}bold{/if}" size="12" value="{$useradd.lastname}"> <INPUT TYPE="text" NAME="useradd[name]" title="Imiê" class="{if $error.username}alertb{else}bold{/if}" size="10" value="{$useradd.name}">{if $error.username}<BR><FONT COLOR="red"><B>¯adne z tych pól nie mo¿e byæ puste!</B></FONT>{/if}</A><BR>
+			<IMG src="img/phone.gif" alt="" align="absmiddle" border="0"> <INPUT TYPE="text" NAME="useradd[phone1]" title="Telefon" size="15" value="{$useradd.phone1}"><BR>
+			<IMG src="img/unk.gif" alt="" align="absmiddle" border="0">&nbsp;<SELECT size="1" name="useradd[status]">
+				<OPTION VALUE="3" {if $useradd.status eq 3 || $userlist.state eq 3} SELECTED{/if}><B>pod³±czony</B></OPTION>
+				<OPTION VALUE="2" {if $useradd.status eq 2 || $userlist.state eq 2} SELECTED{/if}><B>oczekuj±cy</B></option>
+				<OPTION VALUE="1" {if $useradd.status eq 1 || $userlist.state eq 1} SELECTED{/if}><B>zainteresowany</B></OPTION>
+			</SELECT>
 		</TD>
 		<TD class="fbt">
 			<IMG SRC="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;<INPUT TYPE="text" NAME="useradd[address]" title="Adres" value="{$useradd.address}"{if $error.address} class="alert"{/if}><BR>
 			{if $error.address}<FONT COLOR="red"><B>To pole nie mo¿e byæ puste!</B></FONT><BR>{/if}
-			<IMG SRC="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;<INPUT TYPE="text" NAME="useradd[email]" title="E-mail" value="{$useradd.email}">
+			<IMG SRC="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;<INPUT TYPE="text" NAME="useradd[email]" title="E-mail" value="{$useradd.email}"><BR>
+			<img src="img/money.gif" alt="" align="absmiddle" border="0">&nbsp;<SELECT size="1" name="useradd[tariff]">
+				{section name=tariffs loop=$tariffs.id}
+				<OPTION VALUE="{$tariffs.id[tariffs]}"{if $tariffs.id[tariffs] eq $useradd.tariff} SELECTED{/if}> {$tariffs.name[tariffs]} ({$tariffs.value[tariffs]} z³)</OPTION>
+				{/section}
+			</SELECT>
+			{if $error.tariff}
+			<BR><FONT COLOR="red"><B>Proszê wybraæ taryfê!</B></FONT>
+			{/if}
 		</TD>
 		<TD colspan="2" class="frightu" align="right">
-			<A HREF="javascript:document.useradd.submit();">Dodaj u¿ytkownika <IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
+			<A HREF="javascript:document.useradd.submit();">Dodaj&nbsp;u¿ytkownika&nbsp;<IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
 		</TD>
 		</FORM>
 	</TR>
