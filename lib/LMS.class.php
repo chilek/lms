@@ -742,13 +742,6 @@ class LMS
 				foreach($blst as $row)
 					$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
 
-			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='5' GROUP BY userid"))
-					foreach($blst as $row)
-							$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
-
-			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='6' GROUP BY userid"))
-					foreach($blst as $row)
-							$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
 
 			foreach($this->ADB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
 				$tlist[$value[id]] = $row[value];
@@ -853,13 +846,6 @@ class LMS
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
 					foreach($blst as $row)
 							$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
-			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='5' GROUP BY userid"))
-					foreach($blst as $row)
-							$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
-			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='6' GROUP BY userid"))
-					foreach($blst as $row)
-							$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
-
 
 
 			foreach($this->ADB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
@@ -1158,11 +1144,8 @@ class LMS
 	function GetUserBalance($id)
 	{
 		$bin = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='3'",array($id));
-		$bou1 = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='4'",array($id));
-		$bou2 = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='5'",array($id));
-		$bou3 = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='6'",array($id));
-		return round(str_replace(".",",",$bin) - str_replace(".",",",$bou1) - str_replace(".",",",$bou2) -
-			str_replace(".",",",$bou3),2);
+		$bou = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='4'",array($id));
+		return round(str_replace(".",",",$bin) - str_replace(".",",",$bou),2);
 	}
 
 
@@ -1229,19 +1212,10 @@ class LMS
 						break;
 						
 						case "4":
-								$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
-								$saldolist[name][$i] = "Abonament";
+							$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
+							$saldolist[name][$i] = "Obci±¿enie";
 						break;
 						
-						case "5":
-								$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
-								$saldolist[name][$i] = "Instalacja";
-						break;
-
-						case "6":
-								$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
-								$saldolist[name][$i] = "Inne";
-						break;
 					}
 					
 					$saldolist[date][$i]=date("Y/m/d H:i",$saldolist[time][$i]);
