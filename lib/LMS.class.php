@@ -535,7 +535,7 @@ class LMS
                          $over += $userlist[$idx]['balance'];
                     elseif($userlist[$idx]['balance'] < 0)
                          $below += $userlist[$idx]['balance'];
-               }                                                                                                                                                      
+               }
                $userlist['total']=sizeof($userlist);
                $userlist['state']=$state;
                $userlist['order']=$order;
@@ -882,7 +882,7 @@ class LMS
 
      function SearchNodeList($args, $order="name,asc")
      {
-          if($order=="")     
+          if($order=="")
                $order="name,asc";
 
           list($order,$direction) = explode(",",$order);
@@ -914,18 +914,18 @@ class LMS
                {
                     switch($idx)
                     {
-                        case "ipaddr" : 
+                        case "ipaddr" :
 			    if (ip_long($value))
                             {
 			           $searchargs[] = "ipaddr = ".ip_long($value);
-                    	    } else 
+                    	    } else
 			    {
 				list($net,$broadcast) = get_ip_range_from_ip_part($value);
 				if(check_ip($net) && check_ip($broadcast)) //na wszelki wypadek
 				    $searchargs[] = "ipaddr > ".ip_long($net)." AND ipaddr < ".ip_long($broadcast);
 			    }
 			break;
-                        default : 
+                        default :
                              $searchargs[] = $idx." ?LIKE? '%".$value."%'";
                         break;
                     }
@@ -1563,16 +1563,16 @@ class LMS
                     }
           return $result;
      }
-     
+
      /*
       * Ewidencja sprzêtu sieciowego
       */
-     
+
      function GetNetDevName($id)
      {
           return $this->DB->GetRow("SELECT name, model, location FROM netdevices WHERE id=?",array($id));
      }
-     
+
      function CountNetDevLinks($id)
      {
           return array_merge(
@@ -1580,12 +1580,12 @@ class LMS
                $this->DB->GetOne("SELECT COUNT(Id) FROM nodes WHERE netdev = ?",array($id))
                );
      }
-     
+
      function GetNetDevConnected($id)
      {
           return $this->DB->GetAll("SELECT (CASE src WHEN ".$id." THEN src ELSE dst END) AS src, (CASE src WHEN ".$id." THEN dst ELSE src END) AS dst FROM netlinks WHERE src = ".$id." OR dst = ".$id);
      }
-     
+
      function GetNetDevConnectedNames($id)
      {
           // To powinno byæ lepiej zrobione...
@@ -1599,7 +1599,7 @@ class LMS
           }
           return $names;
      }
-     
+
      function GetNetDevList($order="name,asc")
      {
 
@@ -1650,7 +1650,7 @@ class LMS
           $netdevlist['direction'] = $direction;
           return $netdevlist;
      }
-      
+
      function GetNetDev($id)
      {
           $result = $this->DB->GetRow("SELECT name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?",array($id));
@@ -1689,7 +1689,7 @@ class LMS
                {
                     while ($input = socket_read ($socket, 2048))
                          $inputbuf .= $input;
-                    socket_close ($socket);                    
+                    socket_close ($socket);
                }
           foreach(split("\n",$inputbuf) as $line)
           {
@@ -1778,96 +1778,127 @@ class LMS
                }
           }
      }
-     
+
      /*
       *     Statystyki
       */
-     
+
      function Traffic($from = 0, $to = "?NOW?", $net = 0, $order = "", $limit = 0)
      {
-         // period
-         if (is_array($from))
-          $fromdate = mktime($from[hour],$from[minute],$from[second],$from[month],$from[day],$from[year]);
-         else $fromdate = $from;
-         if (is_array($to))
-          $todate = mktime($to[hour],$to[minute],$to[second],$to[month],$to[day],$to[year]);
-         else $todate = $to;
-         $dt = "( dt >= $fromdate AND dt <= $todate )";
-         
-         // nets
-         if ($net != "allnets")
-          {
-              $params = $this->GetNetworkParams($net);
-              $ipfrom = $params['address']+1;
-              $ipto = $params['broadcast']-1;
-          $net = " AND ( ipaddr > $ipfrom AND ipaddr < $ipto )";
-          } else $net = "";
-         
-         // order
-         switch ($order)
-          {
-          case "nodeid"        : $order = " ORDER BY nodeid";                 break;
-              case "download"      : $order = " ORDER BY download DESC";      break;
-              case "upload"        : $order = " ORDER BY upload DESC";      break;
-              case "name"          : $order = " ORDER BY name";                 break;
-              case "ip"                : $order = " ORDER BY ipaddr";                 break;
-          }
-         
-         // limits
-         if( $limit > 0 ) $limit = " LIMIT ".$limit; else $limit = "";
-         
-         // join query from parts
-         $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE $dt $net GROUP BY nodeid, name, ipaddr $order $limit";
+	     // period
+	     if (is_array($from))
+		     $fromdate = mktime($from[hour],$from[minute],$from[second],$from[month],$from[day],$from[year]);
+	     else
+		     $fromdate = $from;
+	     if (is_array($to))
+		     $todate = mktime($to[hour],$to[minute],$to[second],$to[month],$to[day],$to[year]);
+	     else
+		     $todate = $to;
 
-         // get results
-         if ($traffic = $this->DB->GetAll($query))
-          {
-           foreach ($traffic as $idx => $row)
-                   {
-                  $traffic[upload][data]          [] = $row[upload];
-                   $traffic[download][data]     [] = $row[download];
-                   $traffic[upload][name]          [] = $row[name];
-                   $traffic[download][name]     [] = $row[name];
-                   $traffic[upload][ipaddr]     [] = long2ip($row[ipaddr]);
-                   $traffic[download][ipaddr]     [] = long2ip($row[ipaddr]);
-                   $traffic[download][sum][data]      += $row[download];
-                   $traffic[upload][sum][data]      += $row[upload];
-                   }
-          
-          // get maximum data from array
-          $maximum = max($traffic[download][data]);
-           if ($maximum < max($traffic[upload][data]))
-               $maximum = max($traffic[upload][data]);
-           if($maximum == 0)          // do not need divide by zero
-               $maximum = 1;
-           
-          // make data for bars drawing
-          $x = 0;
-          foreach ($traffic[download][data] as $data)
-                   {
-                   $traffic[download][bar]     [] = round($data * 150 / $maximum);
-                   list($traffic[download][data][$x], $traffic[download][unit][$x]) = setunits($data);
-                   $x++;
-                   }
-          $x = 0;
-           foreach ($traffic[upload][data] as $data)
-                   {
-                   $traffic[upload][bar]     [] = round($data * 150 / $maximum);
-                   list($traffic[upload][data][$x], $traffic[upload][unit][$x]) = setunits($data);
-                   $x++;
-                   }
-          
-          //set units for data
-          list($traffic[download][sum][data], $traffic[download][sum][unit]) = setunits($traffic[download][sum][data]);
-           list($traffic[upload][sum][data], $traffic[upload][sum][unit]) = setunits($traffic[upload][sum][data]);
-          }
-          
-         return $traffic;
+	     $dt = "( dt >= $fromdate AND dt <= $todate )";
+
+	     // nets
+	     if ($net != "allnets")
+	     {
+		     $params = $this->GetNetworkParams($net);
+		     $ipfrom = $params['address']+1;
+		     $ipto = $params['broadcast']-1;
+		     $net = " AND ( ipaddr > $ipfrom AND ipaddr < $ipto )";
+	     }
+	     else
+		     $net = "";
+
+	     // order
+
+	     switch ($order)
+	     {
+		     case "nodeid":
+			     $order = " ORDER BY nodeid";
+		     break;
+
+		     case "download":
+			     $order = " ORDER BY download DESC";
+		     break;
+
+		     case "upload":
+			     $order = " ORDER BY upload DESC";
+		     break;
+
+		     case "name":
+			     $order = " ORDER BY name";
+		     break;
+
+		     case "ip":
+			     $order = " ORDER BY ipaddr";
+		     break;
+	     }
+
+	     // limits
+	     if($limit > 0)
+		     $limit = " LIMIT ".$limit;
+	     else
+		     $limit = "";
+
+	     // join query from parts
+	     $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE ".$dt." ".$net."GROUP BY nodeid, name, ipaddr ".$order." ".$limit;
+
+	     // get results
+	     if ($traffic = $this->DB->GetAll($query))
+	     {
+		     foreach ($traffic as $idx => $row)
+		     {
+			     $traffic[upload][data][] = $row[upload];
+			     $traffic[download][data][] = $row[download];
+			     $traffic[upload][name][] = $row[name];
+			     $traffic[download][name][] = $row[name];
+			     $traffic[upload][ipaddr][] = long2ip($row[ipaddr]);
+
+			     $traffic[download][ipaddr][] = long2ip($row[ipaddr]);
+			     $traffic[download][sum][data] += $row[download];
+			     $traffic[upload][sum][data] += $row[upload];
+		     }
+
+		     // get maximum data from array
+
+		     $maximum = max($traffic[download][data]);
+		     if($maximum < max($traffic[upload][data]))
+			     $maximum = max($traffic[upload][data]);
+
+		     if($maximum == 0)          // do not need divide by zero
+			     $maximum = 1;
+
+		     // make data for bars drawing
+		     $x = 0;
+
+		     foreach ($traffic[download][data] as $data)
+		     {
+			     $traffic[download][bar][] = round($data * 150 / $maximum);
+			     list($traffic[download][data][$x], $traffic[download][unit][$x]) = setunits($data);
+			     $x++;
+		     }
+		     $x = 0;
+
+		     foreach ($traffic[upload][data] as $data)
+		     {
+			     $traffic[upload][bar][] = round($data * 150 / $maximum);
+			     list($traffic[upload][data][$x], $traffic[upload][unit][$x]) = setunits($data);
+			     $x++;
+		     }
+
+		     //set units for data
+		     list($traffic[download][sum][data], $traffic[download][sum][unit]) = setunits($traffic[download][sum][data]);
+		     list($traffic[upload][sum][data], $traffic[upload][sum][unit]) = setunits($traffic[upload][sum][data]);
+	     }
+
+	     return $traffic;
      }
 }
 
 /*
  * $Log$
+ * Revision 1.241  2003/09/25 15:45:04  lukasz
+ * - cleanups
+ *
  * Revision 1.240  2003/09/25 11:18:19  lukasz
  * - little fix
  *
