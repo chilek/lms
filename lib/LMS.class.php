@@ -1616,9 +1616,9 @@ class LMS
 			break;
 		}
 
-		$netdevlist = $this->DB->GetAll("SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices ".($sqlord != "" ? $sqlord." ".$direction : ""));
-		
-		foreach($netdevlist as $idx => $row) $netdevlist[$idx]['takenports'] = $this -> CountNetDevLinks($row['id']);
+		if($netdevlist = $this->DB->GetAll("SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices ".($sqlord != "" ? $sqlord." ".$direction : "")))
+			foreach($netdevlist as $idx => $row)
+				$netdevlist[$idx]['takenports'] = $this -> CountNetDevLinks($row['id']);
 
 		$netdevlist['total'] = sizeof($netdevlist);
 		$netdevlist['order'] = $order;
@@ -1843,6 +1843,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.233  2003/09/22 01:13:54  lukasz
+ * - foreach() error
+ *
  * Revision 1.232  2003/09/21 18:06:12  lexx
  * - yyy... dalej netdev
  *
