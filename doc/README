@@ -3396,6 +3396,7 @@ Rozdzia³ 7. Dla dociekliwych
    modid - identyfikator administratora
    netdev - identyfikator urz±dzenia sieciowego do którego jest
    pod³±czony komputer
+   linktype - typ po³±czenia sieciowego (0-kabel, 1-radio)
    access - pod³±czony/od³±czony (1/0)
    warning - ostrzegaj/nie ostrzegaj (1/0)
    lastonline - znacznik czasu ostatniej obecno¶ci w sieci
@@ -3418,6 +3419,7 @@ Rozdzia³ 7. Dla dociekliwych
    id - identyfikator
    src - jeden koniec
    dst- drugi koniec
+   type - typ po³±czenia (0-kabel, 1-radio)
      _________________________________________________________________
 
 7.2.9. Operacje finansowe ('cash')
