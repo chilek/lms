@@ -36,7 +36,7 @@ if($id && $_GET['is_sure']=='1')
 			foreach($accounts as $aid)
 				$LMS->DB->Execute('DELETE FROM aliases WHERE accountid = ?', array($aid));
 		
-			$LMS->DB->Execute('DELETE FROM passwd WHERE domainid = ?', array($id)))
+			$LMS->DB->Execute('DELETE FROM passwd WHERE domainid = ?', array($id));
 			$LMS->SetTS('passwd');
 			$LMS->SetTS('aliases');
 		}
