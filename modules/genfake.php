@@ -1558,6 +1558,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$useradd['phone3'] = '';
 		$useradd['nip'] = '';
 		$useradd['pesel'] = '';
+		$useradd['serviceaddr'] = '';
 		$useradd['info'] = '';
 		$useradd['message'] = '';
 		$id = $LMS->UserAdd($useradd);
