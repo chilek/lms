@@ -112,4 +112,10 @@ $SMARTY->assign("layout",$layout);
 
 $SMARTY->display("nodeadd.html");
 
+/*
+ * $Log$
+ * Revision 1.30  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

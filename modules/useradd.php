@@ -104,4 +104,10 @@ $SMARTY->assign("error",$error);
 $SMARTY->assign("tariffs",$tariffs);
 $SMARTY->display("useradd.html");
 
+/*
+ * $Log$
+ * Revision 1.34  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

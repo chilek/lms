@@ -160,4 +160,10 @@ $SMARTY->assign("networkdata",$networkdata);
 $SMARTY->assign("prefixlist",$prefixlist);
 $SMARTY->assign("error",$error);
 $SMARTY->display("netinfo.html");
+/*
+ * $Log$
+ * Revision 1.20  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

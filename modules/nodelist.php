@@ -64,4 +64,10 @@ $SMARTY->assign("nodelist",$nodelist);
 $SMARTY->assign("listdata",$listdata);
 $SMARTY->display("nodelist.html");
 
+/*
+ * $Log$
+ * Revision 1.24  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

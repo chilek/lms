@@ -39,4 +39,10 @@ if($_GET[is_sure])
 	echo "<a href=\"?m=dbrecover&db=".$_GET[db]."&is_sure=1\">Tak, jestem pewien</A>";
 	$SMARTY->display("footer.html");
 }
+/*
+ * $Log$
+ * Revision 1.16  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

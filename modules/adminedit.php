@@ -98,4 +98,10 @@ $SMARTY->assign("unlockedit",TRUE);
 $SMARTY->assign("error",$error);
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("admininfo.html");
+/*
+ * $Log$
+ * Revision 1.18  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

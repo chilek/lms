@@ -78,4 +78,10 @@ else
 {
 	$SMARTY->display("nodesearch.html");
 }
+/*
+ * $Log$
+ * Revision 1.14  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

@@ -33,4 +33,10 @@ $SMARTY->assign("layout",$layout);
 $SMARTY->assign("netlist",$netlist);
 $SMARTY->assign("prefixlist",$prefixlist);
 $SMARTY->display("netlist.html");
+/*
+ * $Log$
+ * Revision 1.17  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

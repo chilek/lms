@@ -44,4 +44,10 @@ if(!$database[rawmode])
 $SMARTY->display("dbview.html");
 if(!$database[rawmode])
 	$SMARTY->display("footer.html");
+/*
+ * $Log$
+ * Revision 1.13  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>
