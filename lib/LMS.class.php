@@ -1025,9 +1025,12 @@ class LMS
 
      function NetDevLinkComputer($id,$netid)
      {
-        $netdev = $this->GetNetDev($netid);
-	if( $netdev[takenports] >= $netdev[ports])
-	    return FALSE;
+        if($netid != 0)
+	{
+    	    $netdev = $this->GetNetDev($netid);
+	    if( $netdev[takenports] >= $netdev[ports])
+		return FALSE;
+	}
         $this->DB->Execute("UPDATE nodes SET netdev=".$netid." WHERE id=".$id);
 	$this->SetTS("nodes");
 	return TRUE;
@@ -1928,6 +1931,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.260  2003/10/04 20:15:02  alec
+ * netdev id can be 0 in NetDevLinkComputer()
+ *
  * Revision 1.259  2003/10/04 19:57:41  alec
  * free ports checking in NetDevLinkComputer() added
  *
