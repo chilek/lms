@@ -152,6 +152,7 @@ class LMS
 
 		// Okej, zróbmy parê bzdurek db depend :S 
 		// Postgres sux ! (warden)
+		// Tak, a ³y¿ka na to 'niemo¿liwe' i polecia³a za wann± potr±caj±c bannanem musztardê (lukasz)
 
 		switch($this->ADB->databaseType)
 		{
