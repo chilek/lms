@@ -1,9 +1,9 @@
 {include file="header.html"}
 {include file="eventheader.html"}
 <!--// $Id$ //-->
-<SCRIPT LANGUAGE="JavaScript" SRC="img/calendar.js"></SCRIPT>
-{literal}
+{include file="calendar_js.html"}
 <SCRIPT LANGUAGE="JavaScript">
+{literal}
 	function SetEndtime()
 	{
 		box = document.forms['event'].elements['event[begintime]'];
@@ -20,8 +20,8 @@
 			end.value = start.options[start.selectedIndex].value;
 		}
 	}
-</SCRIPT>
 {/literal}
+</SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <P align="CENTER">
 {*<TABLE width="100%" cellpadding="0" border="0">

@@ -26,16 +26,23 @@
 
 if($_GET['ownerid'] && $LMS->UserExists($_GET['ownerid']))
 {
-	$userinfo = $LMS->GetUser($_GET['ownerid']);
+	$contractlist = $LMS->GetContractList();
+
+	$SMARTY->assign('assignments', $LMS->GetUserAssignments($_GET['ownerid']));
+	$SMARTY->assign('usergroups', $LMS->UsergroupGetForUser($_GET['ownerid']));
+	$SMARTY->assign('otherusergroups', $LMS->GetGroupNamesWithoutUser($_GET['ownerid']));
+	$SMARTY->assign('tariffs', $LMS->GetTariffs());
+	$SMARTY->assign('userinfo', $LMS->GetUser($_GET['ownerid']));
+	$SMARTY->assign('balancelist', $LMS->GetUserBalanceList($_GET['ownerid']));
+	$SMARTY->assign('contractlist',$contractlist);
+	$SMARTY->assign('contractcount',sizeof($contractlist));
 }
 
 $layout['pagetitle'] = trans('Nodes Scanning');
 
-$SMARTY->assign('balancelist',$LMS->GetUserBalanceList($_GET['ownerid']));
-$SMARTY->assign('users',$users);
-$SMARTY->assign('nodes',$LMS->ScanNodes());
-$SMARTY->assign('userinfo',$userinfo);
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
+$SMARTY->assign('nodes',$LMS->ScanNodes());
 $SMARTY->display('nodescan.html');
 
 ?>
