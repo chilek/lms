@@ -135,7 +135,7 @@ jak  to  zgraæ  z  serwerem. Oki. Niezbêdne skrypty perlowe s± w katalogu bin
 tarbala z LMS. Kolejno te skrypty to:
 
 lms-cutoff	- skrypcik, który zmienia status komputerów 
-lsm-eachmonth	- skrypcik, który obci±¿a ka¿dego u¿ytkownika okre¶lon±
+lms-eachmonth	- skrypcik, który obci±¿a ka¿dego u¿ytkownika okre¶lon±
 		  wed³ug taryfy sum±.
 lms-mgc		- magiczny generator czegokolwiek - czyli co¶, co potrafi
 		  nam skonfigurowaæ cokolwiek co chcemy.
