@@ -554,7 +554,8 @@ class LMS {
 			$emails = $db->FetchArray("SELECT `id`, `email` FROM `users`");
 		else
 			$emails = $db->FetchArray("SELECT `id`, `email` FROM `users` WHERE `status` = '".$group."'");
-		if(sizeof($emails[id]))
+		$emails[total]=sizeof($emails[id]);
+		if($emails[total])
 			foreach($emails[id] as $key => $value)
 				$emails[username][$key] = ucwords(strtolower($this->GetUserName($value)));
 			
@@ -583,7 +584,8 @@ class LMS {
 						"X-Mailer: LMS-".$this->version."/PHP-".phpversion()."\r\n".
 						"X-Remote-IP: ".$_SERVER['REMOTE_ADDR']."\r\n".
 						"X-HTTP-User-Agent: ".$_SERVER['HTTP_USER_AGENT']."\r\n");
-						$return[] = $emails[username][$key]." &lt;".$emails[email][$key]."&gt;";
+						echo "<img src=\"img/mail.gif\" border=\"0\" align=\"absmiddle\" alt=\"\"> ".($key+1)." z ".$emails[total]." (".sprintf("%02.2f",round((100/$emails[total])*($key+1),2))."%): ".$emails[username][$key]." &lt;".$emails[email][$key]."&gt;<BR>\n";
+						flush();
 				}
 				
 			}
