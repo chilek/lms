@@ -1075,7 +1075,7 @@ class LMS
 
 	function IPSetU($netdev, $access=FALSE)
 	{
-		$this->SetTS("nodes");
+		$this->SetTS('nodes');
 		if($access)
 			return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE netdev=? AND ownerid=0",array(1,$this->SESSION->id,$netdev));
 		else
@@ -1084,7 +1084,7 @@ class LMS
 	
 	function NodeAdd($nodedata)
 	{
-		$this->SetTS("nodes");
+		$this->SetTS('nodes');
 		if($this->DB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate, access) VALUES (?, ?, inet_aton(?), ?, ?, ?NOW?, ?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id, $nodedata['access'])))
 			return $this->DB->GetOne("SELECT MAX(id) FROM nodes");
 		else
@@ -1162,14 +1162,6 @@ class LMS
 					break;
 					
 					case 3:
-					/*	
-						$row['period'] = 'co rok';
-						$miesiace = array('styczeñ','luty', 'marzec', 'kwiecieñ', 'maj', 'czerwiec', 'lipiec', 'sierpieñ', 'wrzesieñ', 'pa¼dziernik', 'listopad', 'grudzieñ');
-						$row['at'] --;
-						$ttime = $row['at'] * 86400 + mktime(12, 0, 0, 1, 1, 1990);
-						$row['at'] = date('j ',$ttime);
-						$row['at'] .= $miesiace[date('n',$ttime) - 1];
-					*/
 						$row['period'] = 'co rok';
 						$row['at'] = date('d/m',($row['at']-1)*86400);
 					break;
@@ -1308,12 +1300,11 @@ class LMS
 					$result['content'][$idx]['total'] = $row['value'] * $row['count'];
 					$result['totalbase'] += $result['content'][$idx]['totalbase'];
 					$result['totaltax'] += $result['content'][$idx]['totaltax'];
-					$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['basevalue'];
+					$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['totalbase'];
 					$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
 					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
 					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
 					$result['total'] += $result['content'][$idx]['total'];
-					
 				}
 			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
 			$result['totalg'] = ($result['total'] - floor($result['total'])) * 100;

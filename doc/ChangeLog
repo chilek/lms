@@ -8,6 +8,9 @@ wersja 1.2.2 (??/??/2004):
     podczas pod³±czania komputera w nodeinfobox.html (alec)
   - BTS#00151: przy obliczaniu ¶redniego zysku miesiêcznego nie bierzemy
     pod uwagê u¿ytkowników oczekuj±cych i zainteresowanych (alec)
+  - poprawiony b³±d na fakturze: BTS#0000154 (alec)
+  - poprawki w formularzu dodawania faktury: mo¿na podawaæ kwoty z przecinkiem
+    i usuniêto wiod±ce zero dla kwot mniejszych od 10 (alec)
 
 wersja 1.2.1 Sarah (07/05/2004):
 
