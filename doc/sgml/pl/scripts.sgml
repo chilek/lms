@@ -302,22 +302,22 @@ http://www.naszasiec.pl/</screen></example>
 	 klientom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
 	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</para>
 	 <para>Skrypt ten udostêpnia trzy opcje do fakturowania, które mo¿na ustawiæ
-	 w sekcji <emphasis>[payments]</emphasis> pliku <filename>lms.ini</filename>:</para>
+	 w sekcji <emphasis>[payments]</emphasis> pliku <filename>lms.ini</filename>:
 	  <itemizedlist>
           <listitem>
 	   <para>deadline (opcjonalny)</para>
 	   <para>Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14</para>
 	   <para>Przyk³ad:	<prompt>deadline = 7</prompt></para>
-         <listitem>
-          <para>comment (opcjonalny)>/<para>
+         </listitem>
+	 <listitem>
+          <para>comment (opcjonalny)</para>
           <para>Opis pozycji na fakturze za naliczane zobowi±zanie</para>
           <para>Domy¶lnie: 'Abonament wg taryfy %tariff za okres %period'</para>
-          <para>Niektóre ze s³ów kluczowych s± zastêpowane:<para>
+          <para>Niektóre ze s³ów kluczowych s± zastêpowane:</para>
           <para>%tariff Nazwa taryfy</para>
           <para>%period Okres (liczony od dzi¶ do ostatniego dnia cyklu rozliczeniowego, w formacie YYYY/MM/DD)</para>
           <para>%%current_month Okres od pierwszego dnia bie¿±cego miesi±ca do jego koñca</para>
           <para>Przyk³ad:       <prompt>paytype = 'Abonament za %current_month w/g taryfy %tariff '</prompt></para>
-	   
 	  </listitem>
 	  <listitem>
 	   <para>paytype (opcjonalny)</para>
@@ -344,6 +344,7 @@ http://www.naszasiec.pl/</screen></example>
 	   <para>Przyk³ad:	<prompt>suspension_description = (zawieszenie)</prompt></para>
 	  </listitem>
 	 </itemizedlist>
+	 </para>
 	 <para>Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ
 	 <prompt>--fakedate</prompt> (<prompt>-f</prompt>). Przy jego u¿yciu mo¿na 
 	 sprawiæ, aby skrypt dzia³a³ z podmienion± dat± systemow± (w formacie YYYY/MM/DD),
