@@ -173,6 +173,7 @@ CREATE TABLE stats (
 
 #
 # Struktura tabeli 'assignments'
+#
 
 DROP TABLE IF EXISTS assignments;
 CREATE TABLE assignments (
@@ -185,3 +186,21 @@ CREATE TABLE assignments (
   UNIQUE KEY id (id),
   KEY id_2 (id)
 ) TYPE=MyISAM
+
+#
+# Struktura tabeli 'netdevices'
+#
+
+DROP TABLE IF EXISTS netdevices;
+CREATE TABLE netdevices (
+  id int(11) NOT NULL auto_increment,
+  name varchar(32) default NULL,
+  description varchar(255) default NULL,
+  producer varchar(64) default NULL,
+  model varchar(32) default NULL,
+  serialnumber varchar(32) default NULL,
+  ports int(10) default NULL,
+  PRIMARY KEY  (id),
+  KEY name (name)
+) TYPE=MyISAM;
+
