@@ -130,7 +130,9 @@ $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
 // Initialize database and template classes
 
-$LMS = new LMS($DB,NULL);
+$SESSION = NULL;
+
+$LMS = new LMS($DB,$SESSION,$CONFIG);
 
 $SMARTY = new Smarty;
 
