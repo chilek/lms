@@ -73,19 +73,29 @@ function _smarty_function_confirm($args, &$SMARTY)
 
 function _smarty_function_tip($args, &$SMARTY)
 {
+	$text = $args['text'];
+        if($SMARTY->_tpl_vars['_LANG'][$text])
+	        $text = trim($SMARTY->_tpl_vars['_LANG'][$text]);
+	else
+		if(!in_array($content, $SMARTY->_tpl_vars['missing_strings']) && $text !='')
+			$SMARTY->_tpl_vars['missing_strings'][] = $text;	    
+	if(is_array($args))
+	    foreach($args as $argid => $argval)
+		    $text = str_replace('$'.$argid, $argval, $text);
+
 	$error = str_replace("'",'\\\'',$SMARTY->_tpl_vars['error'][$args['trigger']]);
 	$error = str_replace('"','&quot;',$error);
 	$error = str_replace("\r",'',$error);
 	$error = str_replace("\n",'<BR>',$error);
 	
-	$text = str_replace('\'','\\\'',$args['text']);
+	$text = str_replace('\'','\\\'',$text);
 	$text = str_replace('"','&quot;',$text);
 	$text = str_replace("\r",'',$text);
 	$text = str_replace("\n",'<BR>',$text);
 	
 	if($SMARTY->_tpl_vars['error'][$args['trigger']])
 		$result = ' onMouseOver="return overlib(\'<B><FONT COLOR=RED>'.$error.'</FONT></B>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onMouseOut="nd();" ';
-	elseif($args['text'] != "")
+	elseif($args['text'] != '')
 		$result = 'onMouseOver="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onMouseOut="nd();"';
 	$result .= ($SMARTY->_tpl_vars['error'][$args['trigger']] ? ($args['bold'] ? ' CLASS="ALERTB" ' : ' CLASS="ALERT" ') : ($args['bold'] ? ' CLASS="BOLD" ' : ''));
 	return $result;
