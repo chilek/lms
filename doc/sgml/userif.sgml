@@ -10,15 +10,16 @@
   tworzenie kopii bazy danych oraz zarz±dzanie skryptami wykonywalnymi.</para>
  <sect1 id="user-login">
 	<title>Logowanie</title>
-	<para>co¶ o pierwszym logowaniu</para>
+	<para>co¶ o pierwszym logowaniu
 	<figure>
 	<title>LMS-UI: Logowanie</title>
-	<mediaobject>
+	<ulink url="images/login.png">
+	<inlinemediaobject>
   		<imageobject>
-  		<imagedata fileref="images/logo-small.png" format="png">
+  		<imagedata fileref="images/login-small.png" format="png">
   		</imageobject>
-  	</mediaobject>
-	</figure>
+  	</inlinemediaobject></ulink>
+	</figure></para>
  </sect1>
  <sect1 id="user-all">
 	<title>Praca z LMS-UI</title>
@@ -31,11 +32,12 @@
 	podaj±c ich numery.</para>
 	<figure>
 	<title>LMS-UI: Panel g³ówny</title>
-	<mediaobject>
+	<ulink url="images/welcome.png">
+	<inlinemediaobject>
   		<imageobject>
-  		<imagedata fileref="images/logo-small.png" format="png">
+  		<imagedata fileref="images/welcome-small.png" format="png">
   		</imageobject>
-  	</mediaobject>
+  	</inlinemediaobject></ulink>
 	</figure>
  <sect2 id="menu-users">
 	<title>U¿ytkownicy</title>
@@ -51,11 +53,12 @@
 	wydruku listy.</para>
 	<figure>
 	<title>LMS-UI: U¿ytkownicy</title>
-	<mediaobject>
+	<ulink url="images/users.png">
+	<inlinemediaobject>
   		<imageobject>
-  		<imagedata fileref="images/logo-small.png" format="png">
+  		<imagedata fileref="images/users-small.png" format="png">
   		</imageobject>
-  	</mediaobject>
+  	</inlinemediaobject></ulink>
 	</figure>
  </sect2>
  <sect2 id="menu-nodes">
@@ -63,11 +66,12 @@
 	<para>babla</para>
 	<figure>
 	<title>LMS-UI: Komputery</title>
-	<mediaobject>
+	<ulink url="images/nodes.png">
+	<inlinemediaobject>
   		<imageobject>
-  		<imagedata fileref="images/logo-small.png" format="png">
+  		<imagedata fileref="images/nodes-small.png" format="png">
   		</imageobject>
-  	</mediaobject>
+  	</inlinemediaobject></ulink>
 	</figure>
  </sect2>
  <sect2 id="user-networks">
@@ -75,11 +79,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Sieci IP</title>
-	<mediaobject>
+	<inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</mediaobject>
+  	</inlinemediaobject>
 	</figure>
  </sect2>
  <sect2 id="menu-tariffs">
@@ -87,11 +91,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Taryfy i finanse</title>
-	<mediaobject>
+	<inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</mediaobject>
+  	</inlinemediaobject>
 	</figure>
  </sect2>
  <sect2 id="menu-mailing">
@@ -99,11 +103,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Mailing</title>
-	<mediaobject>
+	<inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</mediaobject>
+  	</inlinemediaobject>
 	</figure>
  </sect2>
  <sect2 id="menu-reload">
@@ -111,11 +115,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Prze³adowanie</title>
-	<mediaobject>
+	<inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</mediaobject>
+  	</inlinemediaobject>
 	</figure>
  </sect2>
  <sect2 id="menu-databases">
@@ -123,11 +127,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Bazy danych</title>
-	<mediaobject>
+	<inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</mediaobject>
+  	</inlinemediaobject>
 	</figure>
  </sect2>
  <sect2 id="menu-admins">
@@ -135,11 +139,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Administratorzy</title>
-	<mediaobject>
+	<inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</mediaobject>
+  	</inlinemediaobject>
 	</figure>
  </sect2>
  <sect2 id="menu-stats">
@@ -147,11 +151,11 @@
 	<para>blabla</para>
 	<figure>
 	<title>LMS-UI: Statystyki</title>
-	<mediaobject>
+	<inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/logo-small.png" format="png">
   		</imageobject>
-  	</mediaobject>
+  	</inlinemediaobject>
 	</figure>
  </sect2>
  <sect2 id="menu-staff">
