@@ -280,7 +280,7 @@ $ adduser postgres
 $ mkdir /usr/local/pgsql/data
 $ chown postgres /usr/local/pgsql/data
 $ su - postgres
-$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
+$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data --locale=pl_PL.UTF-8
 $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data &#62;logfile 2&#62;&#38;1 &#38;</PRE
 >
 			</P

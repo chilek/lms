@@ -87,9 +87,9 @@ NAME="LMS-NOTIFY"
 >4.3.1. lms-notify</A
 ></H2
 ><P
->lms-notify is perfect tool to remind your users that they are actually the ones who
-cover all your network and WAN links costs. It makes you possible to create numerous text templates
-for various occasions and use them for mailing your users.</P
+>lms-notify is perfect tool to remind your customers that they are actually the ones who
+	    cover all your network and WAN links costs. It makes you possible to create numerous text templates
+	    for various occasions and use them for mailing your customers.</P
 ><DIV
 CLASS="SECT3"
 ><H3
@@ -115,31 +115,31 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ></LI
 ><LI
 ><P
->%saldo - will be substituted with current user balance, eg. 535</P
+>%saldo - will be substituted with current customer balance, eg. 535</P
 ></LI
 ><LI
 ><P
->%abonament - will be substituted with user's subscription fee, eg. 107</P
+>%abonament - will be substituted with customer's subscription fee, eg. 107</P
 ></LI
 ><LI
 ><P
->%b - user balance with opposite sign, eg. 107</P
+>%b - customer balance with opposite sign, eg. 107</P
 ></LI
 ><LI
 ><P
->%B - user balance with real sign, eg. -107</P
+>%B - customer balance with real sign, eg. -107</P
 ></LI
 ><LI
 ><P
->%pin - PIN code of the user</P
+>%pin - PIN code of the customer</P
 ></LI
 ><LI
 ><P
->%phone1 - user's 1st phone number</P
+>%phone1 - customer's 1st phone number</P
 ></LI
 ><LI
 ><P
->%last_10_in_a_table - list of last 10 operations on user's account, eg.</P
+>%last_10_in_a_table - list of last 10 operations on customer's account, eg.</P
 ></LI
 ></UL
 ><DIV
@@ -149,7 +149,7 @@ NAME="NOTIFY-EXAMPLE"
 ></A
 ><P
 ><B
->Example 4-1. Lms-notify: example of last 10 user's operations</B
+>Example 4-1. Lms-notify: example of last 10 customer's operations</B
 ></P
 ><PRE
 CLASS="SCREEN"
@@ -235,7 +235,7 @@ Following parameters are valid:</P
 ><P
 >limit (optional)</P
 ><P
->Lets you setup limit of user debt. Email will be sent below that value. Default: limit = 0</P
+>Lets you setup limit of customer debt. Email will be sent below that value. Default: limit = 0</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -301,7 +301,7 @@ CLASS="PROMPT"
 ><P
 >debug_email (optional)</P
 ><P
->Email address for debugging. All email will be sent to this address instead of sending to real users. Default: not set.</P
+>Email address for debugging. All email will be sent to this address instead of sending to real customers. Default: not set.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -345,7 +345,7 @@ Following parameters are valid:</P
 ><P
 >limit (optional)</P
 ><P
->Lets you setup limit of user debt. SMS will be sent below that value. Default: 0</P
+>Lets you setup limit of customer debt. SMS will be sent below that value. Default: 0</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -375,11 +375,11 @@ NAME="LMS-CUTOFF"
 ></H2
 ><P
 >This script allows to cutoff (actually mark as cutoff in
-database and cutting off should be performed by one of firewall rules creation
-script) users whose debt is below some defined value.</P
+	database and cutting off should be performed by one of firewall rules creation
+	script) customers whose debt is below some defined value.</P
 ><P
 >Configuration of lms-cutoff should be set in
-<TT
+	<TT
 CLASS="FILENAME"
 >lms.ini</TT
 > file, <SPAN
@@ -389,13 +389,13 @@ CLASS="EMPHASIS"
 >[cutoff]</I
 ></SPAN
 > section.
-Following parameters are valid:</P
+	Following parameters are valid:</P
 ><UL
 ><LI
 ><P
 >limit (optional)</P
 ><P
->Lets you setup limit of user debt. User will be marked as disconnected below that value. Default: 0</P
+>Lets you setup limit of customer debt. Customer will be marked as disconnected below that value. Default: 0</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -451,6 +451,49 @@ CLASS="PROMPT"
 >Example:	<SAMP
 CLASS="PROMPT"
 >paytype = 'CASH'</SAMP
+></P
+></LI
+><LI
+><P
+>suspension_percentage (optional)</P
+><P
+>Percentage for suspended liabilities. Default: '0'</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>suspension_percentage = '50'</SAMP
+></P
+></LI
+><LI
+><P
+>suspension_description (optional)</P
+><P
+>Suspension description for suspended liabilities. Default: ''</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>paytype = '(suspension)'</SAMP
+></P
+></LI
+><LI
+><P
+>comment (optional)</P
+><P
+>Description on invoice attached to every periodical assigment</P
+><P
+>Default: 'Abonament wg taryfy %tariff za okres %period'</P
+><P
+>Some keywords are substitiuted:</P
+><P
+>%tariff tariff name</P
+><P
+>%period period (counted from current day to the last in cycle, in form YYYY/MM/DD)</P
+><P
+>%%current_month period form 1st of current month to the end of it</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>paytype = 'Abonament za %current_month w/g taryfy %tariff '</SAMP
 ></P
 ></LI
 ></UL
@@ -737,9 +780,9 @@ CLASS="PROMPT"
 ><P
 >usergroups</P
 ><P
->List of (space separated) user groups, that should be
+>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
-include all user groups.</P
+include all customer groups.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -1251,7 +1294,7 @@ traffic based on MAC address of the sender. For each computer one rule for
 configured chain is created, which makes test on sender IP and MAC addresses. If
 it returns success, it returns to parent chain with RETURN target. On the end of
 tests two rules are appended, which redirects all http and webcache traffic to
-given host and port. This is intended to inform user about his debt, by running
+given host and port. This is intended to inform customer about his debt, by running
 specialized server on this host:port which returns administration message to
 each request. At last, the rule which blocks all traffic is added.
 	    </P
@@ -1286,7 +1329,7 @@ CLASS="PROMPT"
 ><P
 >usergroups </P
 ><P
->List of (space separated) user groups0, that should be
+>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</P
 ><P
@@ -1431,7 +1474,7 @@ CLASS="PROMPT"
 ><P
 >usergroups </P
 ><P
->List of (space separated) user groups, that should be
+>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</P
 ><P
@@ -1507,7 +1550,7 @@ NAME="LMS-MAKEWARNINGS"
 ></H2
 ><P
 >This script may be used to create file including netfiler
-rules redirecting http and webcache traffic to configured IP and port, for users
+rules redirecting http and webcache traffic to configured IP and port, for customers
 in debt. It uses nat table, tests source IPs and makes use of DNAT target.
 	    </P
 ><P
@@ -1541,7 +1584,7 @@ CLASS="PROMPT"
 ><P
 >usergroups </P
 ><P
->List of (space separated) user groups, that should be
+>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</P
 ><P
@@ -1634,7 +1677,7 @@ CLASS="PROMPT"
 ><P
 >limit</P
 ><P
->Rules are being triggered if user balance is below
+>Rules are being triggered if customer balance is below
 this limit. Default: 0 </P
 ><P
 >Example:	<SAMP
@@ -1654,7 +1697,7 @@ NAME="LMS-MAKEMESSAGES"
 ></H2
 ><P
 >This script is being used to create file with netfilter rules
-to redirect all http and webcache traffic for users, who has administration
+to redirect all http and webcache traffic for customers, who has administration
 messages enabled (aka warnings) to configured IP address and port. It uses nat
 table, tests source IPs and makes use of DNAT target.
 	    </P
@@ -1689,7 +1732,7 @@ CLASS="PROMPT"
 ><P
 >usergroups </P
 ><P
->List of (space separated) user groups, that should be
+>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</P
 ><P

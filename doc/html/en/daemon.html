@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->A.L.E.C's LMS Daemon</TITLE
+>LMS Daemon</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -73,7 +73,7 @@ CLASS="CHAPTER"
 ><A
 NAME="DAEMON"
 ></A
->Chapter 6. A.L.E.C's LMS Daemon</H1
+>Chapter 6. LMS Daemon</H1
 ><DIV
 CLASS="TOC"
 ><DL
@@ -201,15 +201,11 @@ NAME="DAEMON-INTRO"
 ></H1
 ><P
 >This C daemon was developed to aid management of your services. It's responsible for
-     starting appropriate modules, each performing specific task. You have to select modules that
-     you intend to use before starting the daemon. Each module makes configuration files based on
-     its template and data from LMS database and manages (restarting) selected services on a server.
+     starting appropriate modules, each performing specific task. Each module makes configuration 
+     files based on its template and data from LMS database and manages (restarting) selected services 
+     on a server. Modules can also collect statistics, check hosts activity, account payments or
+     notify debtors about their charges.
      </P
-><P
->Why such name? The majority of daemon code has been written by one of developers -
-     Aleksander 'A.L.E.C' Machniak. Nevertheless we must emphasize contributions done by Marcin 'Lexx'
-     Krol. It also includes fragments of code of Mateusz 'mteg' Golicz old daemon and use Nicolas
-     Devillard iniparser library. </P
 ><DIV
 CLASS="SECT2"
 ><H2
@@ -223,7 +219,7 @@ NAME="DAEMON-REQUIREMENTS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->A.L.E.C's LMS Daemon</I
+>LMS Daemon</I
 ></SPAN
 > requires:
                      <UL
@@ -312,7 +308,7 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >modules/module_name</TT
 > should be moved to some directory.
-               Their location will be set in configuration file.
+               Their location will be set in configuration.
                </P
 ></DIV
 ><DIV
@@ -324,28 +320,32 @@ NAME="DAEMON-CONFIG"
 >6.1.3. Configuration</A
 ></H2
 ><P
->You can find example daemon configuration in
-               <TT
-CLASS="FILENAME"
->lms.ini.sample</TT
-> file. The following listing describes basic
-               options for the daemon (modules configuration is described later, in separate
-               chapters concerning each module):
+>For daemon and modules configuration is destined menu Reload -&#62; Configuration
+	       in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>. Modules configuration is described later, in separate
+               chapters concerning each module. Basic daemon parameters and data for connection to
+	       database should be specified as command line options, according to following listing:
 <PRE
 CLASS="SCREEN"
->[database]
-host            = localhost     # host name or IP, default: localhost
-user            = lms           # user name, default: lms
-password        = mypasswd      # database password, default: empty
-database        = lms           # database name, default: lms
-port            = 0             # port number, default: 0
-
-[lmsd]
-sleeptime       = 30            # time interval (in seconds) how often to
-                                # check for reload order, default: 30
-instances       = hosts oident firewall       # selected (active) modules list
-command         = 'echo Connecting...'        # shell command that run before each database connection </PRE
+>-h host           host where is instaled database (default: localhost)
+-d db_name        database name (default: lms)
+-u user           database user name (default: lms)
+-p password       database password (default: empty)
+-H hostname       name of host where daemon runs. By default is assumed name returned by
+                  hostname command, but it can be overwrited. That name must according
+                  with name specified in hosts configuration
+- c command       shell command to run before every database connection (default: empty)
+-q                do reload and exit
+-v                prints version and copyright info
+-i "instance[ ...]" list of instances for reload. Other instances will be ignored</PRE
 >
+		Database connection options are readed also from shell variables:
+		LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
                <DIV
 CLASS="NOTE"
 ><TABLE
@@ -365,26 +365,60 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->List of instances contains modules names separated with spaces. Instance
-               is a name of section below in this configuration file.</P
+>List of instances contains instances names separated with spaces.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
-> </P
+> 
+	       </P
 ><P
->Instance section, beside config modules params, must contain primary options,
-               as on following listing:
-<PRE
-CLASS="SCREEN"
->[instance_name]
-module = /path/to/module.so
-info = "Additional description of module"</PRE
->          
+>Daemon configuration is composed of hosts (that makes possible to configure
+	       and reload of daemons installed on different hosts/routers) and configuration sections
+	       called as instances.</P
+><P
+>Instance, beside config modules params, must contain primary options as:
+	       <UL
+><LI
+><P
+>Name</P
+><P
+>Instance name unique within each host.</P
+><P
+>Example: system</P
+></LI
+><LI
+><P
+>Priority</P
+><P
+>Priority number, that define instances reload sequence.</P
+><P
+>Example: 10</P
+></LI
+><LI
+><P
+>Module</P
+><P
+>Module name with path. After daemon installation modules are placed in daemon/modules/ directory.</P
+><P
+>Example: /usr/lib/system.so</P
+></LI
+><LI
+><P
+>Crontab</P
+><P
+>Module execution time specified in crontab style. All data must be numeric.
+			Following example cause instance execution at 5 minutes interval between 8 and 18 
+			hour every day. If crontab is empty instance will be reloaded only while reload. 
+			Default: empty.</P
+><P
+>Example: */5 8-18 * * *</P
+></LI
+></UL
+>
                </P
 ><P
->Change of 'instances' or any option in instance sections do not require daemon
-               restart. For other global options restart is required.</P
+>Any configuration change do not require daemon restart.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -395,47 +429,22 @@ NAME="DAEMON-RUN"
 >6.1.4. Starting</A
 ></H2
 ><P
->You can run this program as a daemon, detached to background with option '-b'.
-               While running configuration and services reload is performed on demand using 'Reload'
+>By default program runs in daemon mode. In that mode
+               configuration and services reload is performed on demand using 'Reload'
                menu in <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->. Sleep time runtime option (-s) specify interval
-               between database checks. When daemon detects reload order, it runs modules defined by
-               'instances' option in <TT
-CLASS="FILENAME"
->lms.ini</TT
->.
-               For example:
-<PRE
-CLASS="SCREEN"
-># almsd -b</PRE
->               
-               </P
+>. Reload order checking and configuration
+	       reading (especially instances list and configuration of them) is done on each minute. 
+	       When daemon detects reload order, it runs all enabled instances. Instances with 
+	       specified crontab will be executed it's matching with current time.</P
 ><P
->Other way to run is periodical execution with cron. You have to use this mode
-               for running modules like 'payments' 'notify' or 'traffic'. In those cases you can
-               specify instances to reload with use of option '-i'. Example crontab entry:
-<PRE
-CLASS="SCREEN"
->  1 0 * * *    /usr/local/bin/almsd -qi "payments notify"</PRE
->
-               </P
-><P
->Following listing describes all program command line options:
-<PRE
-CLASS="SCREEN"
->  -c     path to config (default: /etc/lms/lms.ini)
-  -i     list of instances (separated by spaces) to reload
-  -b     run in background (daemon mode)
-  -s     database checks interval in sec. (default: 30)
-  -q     reload and quit
-  -h     prints command line options</PRE
->
-               </P
+>Other way to run daemon is disposable reload with use of '-q' option.
+	       This way is useful for tests, and in conjunction with '-i' option allows to
+	       run selected instances regardless of crontab of the rest of instances.</P
 ></DIV
 ></DIV
 ></DIV

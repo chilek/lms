@@ -970,6 +970,26 @@ BORDER="0"
 ><TD
 >domainid - identyfikator domeny z tabeli 'domains'</TD
 ></TR
+><TR
+><TD
+>createtime - data utworzenia konta</TD
+></TR
+><TR
+><TD
+>quota_sh - limit</TD
+></TR
+><TR
+><TD
+>quota_mail - limit</TD
+></TR
+><TR
+><TD
+>quota_www - limit</TD
+></TR
+><TR
+><TD
+>quota_ftp - limit</TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -1394,8 +1414,126 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="DAEMONHOSTS"
+>7.2.29. Konfiguracja demona - hosty ('daemonhosts')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>name - nazwa hosta</TD
+></TR
+><TR
+><TD
+>description - opis</TD
+></TR
+><TR
+><TD
+>lastreload - data ostatniego prze³adowania</TD
+></TR
+><TR
+><TD
+>reload - ¿±danie prze³adowania</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMONINSTANCES"
+>7.2.30. Konfiguracja demona - instancje ('daemoninstances')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>name - nazwa instancji</TD
+></TR
+><TR
+><TD
+>hostid - identyfikator hosta</TD
+></TR
+><TR
+><TD
+>module - nazwa i ¶cie¿ka do modu³u</TD
+></TR
+><TR
+><TD
+>crontab - czas wykonania</TD
+></TR
+><TR
+><TD
+>priority - priorytet prze³adowania</TD
+></TR
+><TR
+><TD
+>description - opis</TD
+></TR
+><TR
+><TD
+>disabled - status (w³±czona/wy³±czona)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMONCONFIG"
+>7.2.31. Konfiguracja demona - opcje ('daemonconfig')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>instanceid - identyfikator instancji</TD
+></TR
+><TR
+><TD
+>var - nazwa opcji</TD
+></TR
+><TR
+><TD
+>value - warto¶æ opcji</TD
+></TR
+><TR
+><TD
+>description - opis</TD
+></TR
+><TR
+><TD
+>disabled - status (w³±czona/wy³±czona)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="SESSIONS"
->7.2.29. Sesje ('sessions')</A
+>7.2.32. Sesje ('sessions')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1433,7 +1571,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.30. Informacje o bazie danych ('dbinfo')</A
+>7.2.33. Informacje o bazie danych ('dbinfo')</A
 ></H2
 ><TABLE
 BORDER="0"

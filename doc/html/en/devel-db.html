@@ -411,6 +411,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>passwd - password</TD
+></TR
+><TR
+><TD
 >ownerid - serial number of the owner ('0' if network device)</TD
 ></TR
 ><TR
@@ -577,6 +581,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>itemid - invoice item identifier</TD
+></TR
+><TR
+><TD
 >comment - description of operation</TD
 ></TR
 ></TBODY
@@ -587,8 +595,58 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="CASHIMPORT"
+>7.2.10. Import of financial operations ('cashimport')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>date - timestamp of operation</TD
+></TR
+><TR
+><TD
+>customer - customer data</TD
+></TR
+><TR
+><TD
+>value - amount</TD
+></TR
+><TR
+><TD
+>taxvalue - tax rate in percent</TD
+></TR
+><TR
+><TD
+>customerid - customer's serial number</TD
+></TR
+><TR
+><TD
+>description - operation description</TD
+></TR
+><TR
+><TD
+>hash - unique operation identifier</TD
+></TR
+><TR
+><TD
+>closed - yes (1), if operation was moved to cash table</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="TARIFFS"
->7.2.10. Subscription fees ('tariffs')</A
+>7.2.11. Subscription fees ('tariffs')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -650,7 +708,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PAYMENTS"
->7.2.11. Solid payments ('payments')</A
+>7.2.12. Solid payments ('payments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -692,7 +750,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ASSIGNMENTS"
->7.2.12. Financial assignments ('assignments')</A
+>7.2.13. Financial assignments ('assignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -731,6 +789,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>discount - discount percentage</TD
+></TR
+><TR
+><TD
 >suspended - is this payment suspended? (1 - yes, 0 - no)</TD
 ></TR
 ></TBODY
@@ -742,7 +804,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICES"
->7.2.13. Invoices ('invoices')</A
+>7.2.14. Invoices ('invoices')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -812,7 +874,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.14. Invoices - continued... ('invoicecontents')</A
+>7.2.15. Invoices - continued... ('invoicecontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -820,6 +882,10 @@ BORDER="0"
 ><TR
 ><TD
 >invoiceid - invoice serial number</TD
+></TR
+><TR
+><TD
+>itemid - invoice item identifier</TD
 ></TR
 ><TR
 ><TD
@@ -858,7 +924,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PASSWD"
->7.2.15. Accounts ('passwd')</A
+>7.2.16. Accounts ('passwd')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -903,6 +969,26 @@ BORDER="0"
 ><TD
 >domainid - domain serial number</TD
 ></TR
+><TR
+><TD
+>createtime - account creation date</TD
+></TR
+><TR
+><TD
+>quota_sh - limits</TD
+></TR
+><TR
+><TD
+>quota_mail - limits</TD
+></TR
+><TR
+><TD
+>quota_www - limits</TD
+></TR
+><TR
+><TD
+>quota_ftp - limits</TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -912,7 +998,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOMAINS"
->7.2.16. Domains ('domains')</A
+>7.2.17. Domains ('domains')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -938,7 +1024,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASES"
->7.2.17. Aliases ('aliases')</A
+>7.2.18. Aliases ('aliases')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -964,7 +1050,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.18. History ('timestamps')</A
+>7.2.19. History ('timestamps')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -986,7 +1072,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.19. Bandwidth consumption statistics ('stats')</A
+>7.2.20. Bandwidth consumption statistics ('stats')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1016,7 +1102,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTQUEUES"
->7.2.20. Helpdesk - Request Tracking ('rtqueues')</A
+>7.2.21. Helpdesk - Request Tracking ('rtqueues')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1046,7 +1132,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTTICKETS"
->7.2.21. Helpdesk - Request Tracking - continued... ('rttickets')</A
+>7.2.22. Helpdesk - Request Tracking - continued... ('rttickets')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1092,7 +1178,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTMESSAGES"
->7.2.22. Helpdesk - Request Tracking - continued... ('rtmessages')</A
+>7.2.23. Helpdesk - Request Tracking - continued... ('rtmessages')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1154,7 +1240,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTATTACHMENTS"
->7.2.23. Helpdesk - Request Tracking - continued... ('rtattachments')</A
+>7.2.24. Helpdesk - Request Tracking - continued... ('rtattachments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1180,7 +1266,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.24. Helpdesk - Request Tracking - continued... ('rtrights')</A
+>7.2.25. Helpdesk - Request Tracking - continued... ('rtrights')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1210,7 +1296,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="UICONFIG"
->7.2.25. LMS-UI Online Configuration ('uiconfig')</A
+>7.2.26. LMS-UI Online Configuration ('uiconfig')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -1247,8 +1333,244 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="EVENTS"
+>7.2.27. Timetable - events ('events')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identifier</TD
+></TR
+><TR
+><TD
+>title - title</TD
+></TR
+><TR
+><TD
+>description - info</TD
+></TR
+><TR
+><TD
+>note - note</TD
+></TR
+><TR
+><TD
+>date - event date</TD
+></TR
+><TR
+><TD
+>begintime - beginning of event</TD
+></TR
+><TR
+><TD
+>endtime - ending of event</TD
+></TR
+><TR
+><TD
+>adminid - event creator ID</TD
+></TR
+><TR
+><TD
+>userid - customer ID</TD
+></TR
+><TR
+><TD
+>private - status (private/public)</TD
+></TR
+><TR
+><TD
+>closed - is event closed? (1-yes/0-no)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="EVENTASSIGNMENTS"
+>7.2.28. Timetable - assignments ('eventassignments')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>eventid - event identifier</TD
+></TR
+><TR
+><TD
+>adminid - user identifier</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SESSIONS"
+>7.2.29. Sessions ('sessions')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - session identifier</TD
+></TR
+><TR
+><TD
+>ctime - create time</TD
+></TR
+><TR
+><TD
+>mtime - last modification time</TD
+></TR
+><TR
+><TD
+>atime - last access time</TD
+></TR
+><TR
+><TD
+>vdata - verification data</TD
+></TR
+><TR
+><TD
+>content - data</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMONHOSTS"
+>7.2.30. Daemon configuration - hosts ('daemonhosts')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identifier</TD
+></TR
+><TR
+><TD
+>name - host name</TD
+></TR
+><TR
+><TD
+>description - additional informations</TD
+></TR
+><TR
+><TD
+>lastreload - last reload date</TD
+></TR
+><TR
+><TD
+>reload - reload order</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMONINSTANCES"
+>7.2.31. Daemon configuration - instances ('daemoninstances')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identifier</TD
+></TR
+><TR
+><TD
+>name - instance name</TD
+></TR
+><TR
+><TD
+>hostid - host identifier</TD
+></TR
+><TR
+><TD
+>module - module file path and name</TD
+></TR
+><TR
+><TD
+>crontab - time of reload</TD
+></TR
+><TR
+><TD
+>priority - reload priority</TD
+></TR
+><TR
+><TD
+>description - additional informations</TD
+></TR
+><TR
+><TD
+>disabled - status (enabled/disabled)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMONCONFIG"
+>7.2.32. Daemon configuration - options ('daemonconfig')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identifier</TD
+></TR
+><TR
+><TD
+>instanceid - instance identifier</TD
+></TR
+><TR
+><TD
+>var - option name</TD
+></TR
+><TR
+><TD
+>value - option value</TD
+></TR
+><TR
+><TD
+>description - additional informations</TD
+></TR
+><TR
+><TD
+>disabled - status (enabled/disabled)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="DBINFO"
->7.2.26. Database information ('dbinfo')</A
+>7.2.33. Database information ('dbinfo')</A
 ></H2
 ><TABLE
 BORDER="0"

@@ -101,26 +101,31 @@ HREF="#INSTALL-INSTALL"
 ></DT
 ><DT
 >2.4. <A
+HREF="#INSTALL-LOCALE"
+>Localization</A
+></DT
+><DT
+>2.5. <A
 HREF="#INSTALL-DB"
 >Database Server Installation</A
 ></DT
 ><DT
->2.5. <A
+>2.6. <A
 HREF="#INSTALL-CONFIG"
 >Basic Configuration</A
 ></DT
 ><DT
->2.6. <A
+>2.7. <A
 HREF="#INSTALL-RIGHTS"
 >Access rights</A
 ></DT
 ><DT
->2.7. <A
+>2.8. <A
 HREF="#INSTALL-UPGRADE"
 >Upgrade</A
 ></DT
 ><DT
->2.8. <A
+>2.9. <A
 HREF="#INSTALL-INVOICES"
 >Invoices</A
 ></DT
@@ -145,7 +150,7 @@ HREF="#MENU-ADMINISTRATION"
 ></DT
 ><DT
 >3.3. <A
-HREF="#MENU-USERS"
+HREF="#MENU-CUSTOMERS"
 >Customers</A
 ></DT
 ><DT
@@ -246,7 +251,7 @@ HREF="#MGC-EXAMPLE"
 ><DT
 >6. <A
 HREF="#DAEMON"
->A.L.E.C's LMS Daemon</A
+>LMS Daemon</A
 ></DT
 ><DD
 ><DL
@@ -352,8 +357,8 @@ HREF="#SCRIPTS-TABLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN2232"
->List of all almsd modules</A
+HREF="#AEN2268"
+>List of all lmsd modules</A
 ></DT
 ><DT
 >7-1. <A
@@ -383,7 +388,7 @@ HREF="#ACCOUNTS-E2"
 ><DT
 >4-1. <A
 HREF="#NOTIFY-EXAMPLE"
->Lms-notify: example of last 10 user's operations</A
+>Lms-notify: example of last 10 customer's operations</A
 ></DT
 ><DT
 >4-2. <A
@@ -1425,8 +1430,28 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
+NAME="INSTALL-LOCALE"
+>2.4. Localization</A
+></H2
+><P
+>Default language of user interface is English, and national characters
+	are encoded in UTF-8. For proper displaying of national chars in other languages
+	you must have appropriate locales. E.g. for polish language it'll be
+	following command:
+<PRE
+CLASS="SCREEN"
+># localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8</PRE
+>
+	Instructions about database encoding settings in follow-up of this chapter.
+	</P
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
 NAME="INSTALL-DB"
->2.4. Database Server Installation</A
+>2.5. Database Server Installation</A
 ></H2
 ><DIV
 CLASS="SECT2"
@@ -1434,7 +1459,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-MYSQL"
->2.4.1. MySQL</A
+>2.5.1. MySQL</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -1442,7 +1467,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-MYSQL-INTRO"
->2.4.1.1. Intro</A
+>2.5.1.1. Intro</A
 ></H4
 ><P
 >That very popular database server is available with majority of Linux
@@ -1459,7 +1484,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-MYSQL-SERVER"
->2.4.1.2. MySQL Server Installation</A
+>2.5.1.2. MySQL Server Installation</A
 ></H4
 ><P
 >After extracting, go to directory with MySQL and type this sequence
@@ -1482,7 +1507,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-MYSQL-DBCREATE"
->2.4.1.3. Create Database</A
+>2.5.1.3. Create Database</A
 ></H4
 ><P
 >You have to create database if you run LMS for the first time. If you are
@@ -1508,7 +1533,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-MYSQL-LMS"
->2.4.1.4. LMS Configuration (lms.ini)</A
+>2.5.1.4. LMS Configuration (lms.ini)</A
 ></H4
 ><P
 >Because MySQL is default database for LMS, configuration is limited to
@@ -1545,7 +1570,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-PGSQL"
->2.4.2. PostgreSQL</A
+>2.5.2. PostgreSQL</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -1553,7 +1578,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-PGSQL-INTRO"
->2.4.2.1. Intro</A
+>2.5.2.1. Intro</A
 ></H4
 ><P
 >LMS is tested on PostgreSQL 7.3.4 and higher, but because none of special
@@ -1571,7 +1596,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-PGSQL-SERVER"
->2.4.2.2. Installation</A
+>2.5.2.2. Installation</A
 ></H4
 ><P
 >That is a short version of installation procedure, more info can be found in
@@ -1587,7 +1612,7 @@ $ adduser postgres
 $ mkdir /usr/local/pgsql/data
 $ chown postgres /usr/local/pgsql/data
 $ su - postgres
-$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
+$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data --locale=pl_PL.UTF-8
 $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data &#62;logfile 2&#62;&#38;1 &#38;</PRE
 >
                </P
@@ -1598,7 +1623,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-PGSQL-DBCREATE"
->2.4.2.3. Database Creation</A
+>2.5.2.3. Database Creation</A
 ></H4
 ><P
 >While server is running you can start with adding database and its owner, both
@@ -1617,7 +1642,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-PGSQL-LMS"
->2.4.2.4. LMS Configuration (lms.ini)</A
+>2.5.2.4. LMS Configuration (lms.ini)</A
 ></H4
 ><P
 >For LMS default database server is MySQL so you have to set following options
@@ -1687,7 +1712,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-SQLITE"
->2.4.3. SQLite</A
+>2.5.3. SQLite</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -1695,7 +1720,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-SQLITE-INTRO"
->2.4.3.1. Intro</A
+>2.5.3.1. Intro</A
 ></H4
 ><P
 >This one-file database is superior for its speed. Quoting its authors it
@@ -1713,7 +1738,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-SQLITE-SERVER"
->2.4.3.2. Installation</A
+>2.5.3.2. Installation</A
 ></H4
 ><P
 >Here You can see how to install the SQLite libraries and add extension to your
@@ -1745,7 +1770,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-SQLITE-DBCREATE"
->2.4.3.3. Database Creation</A
+>2.5.3.3. Database Creation</A
 ></H4
 ><P
 >You will need to create your database and fill it with initial schema before
@@ -1764,7 +1789,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="INSTALL-SQLITE-LMS"
->2.4.3.4. LMS Configuration (lms.ini)</A
+>2.5.3.4. LMS Configuration (lms.ini)</A
 ></H4
 ><P
 >One of the SQLite limitations is that it doesn't authenticate users, so the
@@ -1798,7 +1823,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-CONFIG"
->2.5. Basic Configuration</A
+>2.6. Basic Configuration</A
 ></H2
 ><P
 >Main configuration file of LMS is <TT
@@ -1859,7 +1884,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-CONFIG-DB"
->2.5.1. Section [database] - Database Settings</A
+>2.6.1. Section [database] - Database Settings</A
 ></H3
 ><P
 >         <UL
@@ -1946,7 +1971,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-CONFIG-DIR"
->2.5.2. Section [directories] - Directories Settings</A
+>2.6.2. Section [directories] - Directories Settings</A
 ></H3
 ><P
 >        
@@ -2091,7 +2116,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-CONFIG-UI"
->2.5.3. Section [phpui] - Interface Setting</A
+>2.6.3. Section [phpui] - Interface Setting</A
 ></H3
 ><UL
 ><LI
@@ -2545,7 +2570,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-RIGHTS"
->2.6. Access rights</A
+>2.7. Access rights</A
 ></H2
 ><DIV
 CLASS="SECT2"
@@ -2553,7 +2578,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-RIGHTS-IDEA"
->2.6.1. Idea</A
+>2.7.1. Idea</A
 ></H3
 ><P
 >In LMS you may define up to 256 rules to access the system. 
@@ -2624,6 +2649,10 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></LI
 ><LI
 ><P
+>daemon management and configuration</P
+></LI
+><LI
+><P
 >users edition and addition forbidden</P
 ></LI
 ><LI
@@ -2667,7 +2696,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-RIGHTS-HOW"
->2.6.2. How does it work?</A
+>2.7.2. How does it work?</A
 ></H3
 ><P
 > Algorithm that decides whether user has access to given module or not is as following:
@@ -2703,7 +2732,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-UPGRADE"
->2.7. Upgrade</A
+>2.8. Upgrade</A
 ></H2
 ><P
 >Since version 1.5.4 LMS was released in polish language only. If you are upgrading
@@ -2722,7 +2751,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="INSTALL-INVOICES"
->2.8. Invoices</A
+>2.9. Invoices</A
 ></H2
 ><P
 >It's possible to issue invoices in either automatic or manual way. Manual
@@ -2833,7 +2862,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-INVOICES-HTML"
->2.8.1. HTML</A
+>2.9.1. HTML</A
 ></H3
 ><P
 >Invoices are printed in html format by default
@@ -2931,7 +2960,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-INVOICES-PDF"
->2.8.2. PDF</A
+>2.9.2. PDF</A
 ></H3
 ><P
 >It's possible to create invoices as PDF files. Setting option <TT
@@ -3099,7 +3128,7 @@ NAME="ADMINISTRATION-ADMINS"
 ><P
 >For more information on access rights, see <A
 HREF="#INSTALL-RIGHTS"
->Section 2.6</A
+>Section 2.7</A
 >.</P
 ><P
 >Initially after selecting 'Users', you'll get list of all
@@ -3262,7 +3291,7 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
-NAME="MENU-USERS"
+NAME="MENU-CUSTOMERS"
 >3.3. Customers</A
 ></H2
 ><P
@@ -3300,25 +3329,25 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-USERS-LIST"
+NAME="MENU-CUSTOMERS-LIST"
 >3.3.1. List</A
 ></H3
 ><P
 >After you select 'List' you'll see list of your users, that
-            can be filtered based on selected criteria (user status, group or network) or
+            can be filtered based on selected criteria (customer status, group or network) or
             sort by any highlighted column. Warning triangle on the right side of the record
-            shows if any warnings are active for the user. Computer icon next to triangle
+            shows if any warnings are active for the customer. Computer icon next to triangle
             informs you about computers status (connected of cutoff). Clicking of any of 
-            those two symbols toggles status for all computers of the given user. </P
+            those two symbols toggles status for all computers of the given customer. </P
 ><P
->Records of users with negative balance will have 'payback' icon
-            (stack of coins), which allows you to account instant payment for the user,
+>Records of customers with negative balance will have 'payback' icon
+            (stack of coins), which allows you to account instant payment for the customer,
             which value will reset his debt.</P
 ><P
->When you click on selected user you'll get screen with details
-            for the user, divided in several panels: user details, computer details,
+>When you click on selected customer you'll get screen with details
+            for the customer, divided in several panels: customer details, computer details,
             liabilities details and customer account details. You can also select to edit
-            any of the panels on this screen, define user liabilities, payoff or charge the
+            any of the panels on this screen, define customer liabilities, payoff or charge the
             customer.</P
 ></DIV
 ><DIV
@@ -3326,14 +3355,14 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-USERS-NEW"
+NAME="MENU-CUSTOMERS-NEW"
 >3.3.2. New Customer</A
 ></H3
 ><P
 >This option will let you enter data for new customer record.
             You can enter his last and first name here, or if your customer is
 also legal company, enter company name in "Name" and company representative in
-"Forename" field. You should also fill users phone (up to 3) and address (you
+"Forename" field. You should also fill customers phone (up to 3) and address (you
 can enter additional address for correspondence) and his status (connected,
 waiting in queue, prospect).
 	    <DIV
@@ -3355,7 +3384,7 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Wrong capitalization (uppercase) of user's last name is
+>Wrong capitalization (uppercase) of customer's last name is
 one of most frequent bug reports. Uppercase is implemented via SQL functions and
 thus you should seek for solution in your DB engine configuration.</P
 ></TD
@@ -3370,25 +3399,25 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-USERS-SEARCH"
+NAME="MENU-CUSTOMERS-SEARCH"
 >3.3.3. Search</A
 ></H3
 ><P
->You're able to search users (including deleted users), using
+>You're able to search customers (including deleted customers), using
 various criteria. This module is more powerful than appropriate quick search
 box in left panel, as you can specify exact field names to search and if many
-users are found, the list of records will be returned, not only the first one.</P
+customers are found, the list of records will be returned, not only the first one.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-USERS-GROUPS"
+NAME="MENU-CUSTOMERS-GROUPS"
 >3.3.4. Groups</A
 ></H3
 ><P
->This is a place where it's possible to divide your users into
+>This is a place where it's possible to divide your customers into
 groups. After you click 'Groups' you'll see list of all defined groups with some
 basic information. Clicking on selected group will give you details view, where
 you are able to edit this group properties, and view/add/remove group members.</P
@@ -3398,7 +3427,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-USERS-NEWGROPUP"
+NAME="MENU-CUSTOMERS-NEWGROPUP"
 >3.3.5. New Group</A
 ></H3
 ><P
@@ -3412,13 +3441,13 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-USERS-WARNINGS"
+NAME="MENU-CUSTOMERS-WARNINGS"
 >3.3.6. Messages</A
 ></H3
 ><P
 >In this module, you're able to write administrative message which
             will appear on customers Web browser screen and assign it massively to all
-            or majority of your users (just pick them using selection box on the left).
+            or majority of your customers (just pick them using selection box on the left).
             It's also possible here to deselect administrative messages massively here.
             </P
 ></DIV
@@ -3427,7 +3456,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-USERS-PRINTS"
+NAME="MENU-CUSTOMERS-PRINTS"
 >3.3.7. Printing</A
 ></H3
 ><P
@@ -3440,7 +3469,7 @@ NAME="MENU-USERS-PRINTS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->User list</I
+>Customer list</I
 ></SPAN
 > with filter and sort abilities, </P
 ></LI
@@ -3452,7 +3481,7 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >Liability report</I
 ></SPAN
-> for any range of user(s), for specified date,</P
+> for any range of customer(s), for specified date,</P
 ></LI
 ><LI
 ><P
@@ -3460,7 +3489,7 @@ CLASS="EMPHASIS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->User balance</I
+>Customer balance</I
 ></SPAN
 > for selected period</P
 ></LI
@@ -3559,7 +3588,7 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->You need to create user and network first, so you can
+>You need to create customer and network first, so you can
 assign new computer to it.</P
 ></TD
 ></TR
@@ -3590,10 +3619,10 @@ NAME="MENU-NODES-WARNINGS"
 ></H3
 ><P
 >You can write administration message here and it will
-appear on user's Web browser screen. In this module you can select majority or
+appear on customer's Web browser screen. In this module you can select majority or
 all computers and assign them common message. Just choose computers using
 selectbox on the left (computers with message already on will be displayed in
-red). If you only want to assign a message to user, but don't want to turn it
+red). If you only want to assign a message to customer, but don't want to turn it
 on, just write a message and don't select any of 'Enable/Disable message' boxes.</P
 ></DIV
 ><DIV
@@ -3819,9 +3848,9 @@ NAME="MENU-TARIFFS-LIST"
 >When you enter 'Tariffs List' panel you'll be able to see list of
 liabilities (Tariffs) that might be assigned to your customers, with basic
 informations about it. When you select and click on liability you'll move to
-'Tariff' module where you're able to edit its parameters and exchange users
+'Tariff' module where you're able to edit its parameters and exchange customers
 between available liabilities. In 'Number of customers'  field you can read
-number of users who are assigned to it and two numbers in parenthesis: total
+number of customers who are assigned to it and two numbers in parenthesis: total
 number of assignments and number of active assignments, considered by its
 activity periods.</P
 ></DIV
@@ -3949,8 +3978,7 @@ NAME="MENU-INVOICES-NEW"
 >3.7.8. New Invoice</A
 ></H3
 ><P
->Allows you to issue an invoice for selected user
-manually.</P
+>Allows you to issue an invoice for selected customer manually.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -4056,7 +4084,7 @@ NAME="ACCOUNTS-ACCOUNTS"
 >3.8.1. Accounts</A
 ></H3
 ><P
->Account list contains basic information about your user
+>Account list contains basic information about your customer
 accounts. It's possible to sort it by any highlighted column title and to filter
 it for given criteria. You can edit any account clicking 'Edit' icon.
 Administrator (LMS user) is also able to change account passwords.</P
@@ -4287,7 +4315,7 @@ NAME="MENU-MAILING"
 >Mailing is component where you can spam groups of your customers
 if you have to communicate something to them. Obviously you need to specify
 sender name and address, write your message in text box and select appropriate
-group of recipients. Your attendance can be grouped by status, network or user
+group of recipients. Your attendance can be grouped by status, network or customer
 groups. If you use mail server on remote host, you will need to set options
 smtp_host, smtp_port, smtp_username, smtp_password in [phpui] section.</P
 ><P
@@ -4526,7 +4554,7 @@ NAME="MENU-HELPDESK"
 >3.12. Helpdesk</A
 ></H2
 ><P
->Helpdesk (or Request Tracker) is user request management
+>Helpdesk (or Request Tracker) is customer request management
 system. It's possible to keep history of all requests and questions here, both reported by
 customers and users not registered in LMS database. Reports can be grouped in
 queues (categories) and you're able to search them for a given criteria. It's possible to
@@ -4711,7 +4739,7 @@ HREF="#LMS-NOTIFY-SMS"
 >lms-notify-sms</A
 ></TD
 ><TD
->Notifies user about his debt with SMS</TD
+>Notifies customer about his debt with SMS</TD
 ></TR
 ><TR
 ><TD
@@ -4807,7 +4835,7 @@ HREF="#LMS-SENDINVOICES"
 >lms-sendinvoices</A
 ></TD
 ><TD
->Distribution of invoices to users</TD
+>Distribution of invoices to customers</TD
 ></TR
 ><TR
 ><TD
@@ -4834,7 +4862,7 @@ HREF="#LMS-MAKEWARNINGS"
 >lms-makewarnings</A
 ></TD
 ><TD
->Redirect rules for users in debt</TD
+>Redirect rules for customers in debt</TD
 ></TR
 ><TR
 ><TD
@@ -4843,7 +4871,7 @@ HREF="#LMS-MAKEMESSAGES"
 >lms-makemessages</A
 ></TD
 ><TD
->Redirect rules for users in debt with warning message</TD
+>Redirect rules for customers in debt with warning message</TD
 ></TR
 ><TR
 ><TD
@@ -4884,9 +4912,9 @@ NAME="LMS-NOTIFY"
 >4.3.1. lms-notify</A
 ></H3
 ><P
->lms-notify is perfect tool to remind your users that they are actually the ones who
-cover all your network and WAN links costs. It makes you possible to create numerous text templates
-for various occasions and use them for mailing your users.</P
+>lms-notify is perfect tool to remind your customers that they are actually the ones who
+	    cover all your network and WAN links costs. It makes you possible to create numerous text templates
+	    for various occasions and use them for mailing your customers.</P
 ><DIV
 CLASS="SECT3"
 ><HR><H4
@@ -4912,31 +4940,31 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ></LI
 ><LI
 ><P
->%saldo - will be substituted with current user balance, eg. 535</P
+>%saldo - will be substituted with current customer balance, eg. 535</P
 ></LI
 ><LI
 ><P
->%abonament - will be substituted with user's subscription fee, eg. 107</P
+>%abonament - will be substituted with customer's subscription fee, eg. 107</P
 ></LI
 ><LI
 ><P
->%b - user balance with opposite sign, eg. 107</P
+>%b - customer balance with opposite sign, eg. 107</P
 ></LI
 ><LI
 ><P
->%B - user balance with real sign, eg. -107</P
+>%B - customer balance with real sign, eg. -107</P
 ></LI
 ><LI
 ><P
->%pin - PIN code of the user</P
+>%pin - PIN code of the customer</P
 ></LI
 ><LI
 ><P
->%phone1 - user's 1st phone number</P
+>%phone1 - customer's 1st phone number</P
 ></LI
 ><LI
 ><P
->%last_10_in_a_table - list of last 10 operations on user's account, eg.</P
+>%last_10_in_a_table - list of last 10 operations on customer's account, eg.</P
 ></LI
 ></UL
 ><DIV
@@ -4946,7 +4974,7 @@ NAME="NOTIFY-EXAMPLE"
 ></A
 ><P
 ><B
->Example 4-1. Lms-notify: example of last 10 user's operations</B
+>Example 4-1. Lms-notify: example of last 10 customer's operations</B
 ></P
 ><PRE
 CLASS="SCREEN"
@@ -5032,7 +5060,7 @@ Following parameters are valid:</P
 ><P
 >limit (optional)</P
 ><P
->Lets you setup limit of user debt. Email will be sent below that value. Default: limit = 0</P
+>Lets you setup limit of customer debt. Email will be sent below that value. Default: limit = 0</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -5098,7 +5126,7 @@ CLASS="PROMPT"
 ><P
 >debug_email (optional)</P
 ><P
->Email address for debugging. All email will be sent to this address instead of sending to real users. Default: not set.</P
+>Email address for debugging. All email will be sent to this address instead of sending to real customers. Default: not set.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -5142,7 +5170,7 @@ Following parameters are valid:</P
 ><P
 >limit (optional)</P
 ><P
->Lets you setup limit of user debt. SMS will be sent below that value. Default: 0</P
+>Lets you setup limit of customer debt. SMS will be sent below that value. Default: 0</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -5172,11 +5200,11 @@ NAME="LMS-CUTOFF"
 ></H3
 ><P
 >This script allows to cutoff (actually mark as cutoff in
-database and cutting off should be performed by one of firewall rules creation
-script) users whose debt is below some defined value.</P
+	database and cutting off should be performed by one of firewall rules creation
+	script) customers whose debt is below some defined value.</P
 ><P
 >Configuration of lms-cutoff should be set in
-<TT
+	<TT
 CLASS="FILENAME"
 >lms.ini</TT
 > file, <SPAN
@@ -5186,13 +5214,13 @@ CLASS="EMPHASIS"
 >[cutoff]</I
 ></SPAN
 > section.
-Following parameters are valid:</P
+	Following parameters are valid:</P
 ><UL
 ><LI
 ><P
 >limit (optional)</P
 ><P
->Lets you setup limit of user debt. User will be marked as disconnected below that value. Default: 0</P
+>Lets you setup limit of customer debt. Customer will be marked as disconnected below that value. Default: 0</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -5248,6 +5276,49 @@ CLASS="PROMPT"
 >Example:	<SAMP
 CLASS="PROMPT"
 >paytype = 'CASH'</SAMP
+></P
+></LI
+><LI
+><P
+>suspension_percentage (optional)</P
+><P
+>Percentage for suspended liabilities. Default: '0'</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>suspension_percentage = '50'</SAMP
+></P
+></LI
+><LI
+><P
+>suspension_description (optional)</P
+><P
+>Suspension description for suspended liabilities. Default: ''</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>paytype = '(suspension)'</SAMP
+></P
+></LI
+><LI
+><P
+>comment (optional)</P
+><P
+>Description on invoice attached to every periodical assigment</P
+><P
+>Default: 'Abonament wg taryfy %tariff za okres %period'</P
+><P
+>Some keywords are substitiuted:</P
+><P
+>%tariff tariff name</P
+><P
+>%period period (counted from current day to the last in cycle, in form YYYY/MM/DD)</P
+><P
+>%%current_month period form 1st of current month to the end of it</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>paytype = 'Abonament za %current_month w/g taryfy %tariff '</SAMP
 ></P
 ></LI
 ></UL
@@ -5534,9 +5605,9 @@ CLASS="PROMPT"
 ><P
 >usergroups</P
 ><P
->List of (space separated) user groups, that should be
+>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
-include all user groups.</P
+include all customer groups.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -6048,7 +6119,7 @@ traffic based on MAC address of the sender. For each computer one rule for
 configured chain is created, which makes test on sender IP and MAC addresses. If
 it returns success, it returns to parent chain with RETURN target. On the end of
 tests two rules are appended, which redirects all http and webcache traffic to
-given host and port. This is intended to inform user about his debt, by running
+given host and port. This is intended to inform customer about his debt, by running
 specialized server on this host:port which returns administration message to
 each request. At last, the rule which blocks all traffic is added.
 	    </P
@@ -6083,7 +6154,7 @@ CLASS="PROMPT"
 ><P
 >usergroups </P
 ><P
->List of (space separated) user groups0, that should be
+>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</P
 ><P
@@ -6228,7 +6299,7 @@ CLASS="PROMPT"
 ><P
 >usergroups </P
 ><P
->List of (space separated) user groups, that should be
+>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</P
 ><P
@@ -6304,7 +6375,7 @@ NAME="LMS-MAKEWARNINGS"
 ></H3
 ><P
 >This script may be used to create file including netfiler
-rules redirecting http and webcache traffic to configured IP and port, for users
+rules redirecting http and webcache traffic to configured IP and port, for customers
 in debt. It uses nat table, tests source IPs and makes use of DNAT target.
 	    </P
 ><P
@@ -6338,7 +6409,7 @@ CLASS="PROMPT"
 ><P
 >usergroups </P
 ><P
->List of (space separated) user groups, that should be
+>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</P
 ><P
@@ -6431,7 +6502,7 @@ CLASS="PROMPT"
 ><P
 >limit</P
 ><P
->Rules are being triggered if user balance is below
+>Rules are being triggered if customer balance is below
 this limit. Default: 0 </P
 ><P
 >Example:	<SAMP
@@ -6451,7 +6522,7 @@ NAME="LMS-MAKEMESSAGES"
 ></H3
 ><P
 >This script is being used to create file with netfilter rules
-to redirect all http and webcache traffic for users, who has administration
+to redirect all http and webcache traffic for customers, who has administration
 messages enabled (aka warnings) to configured IP address and port. It uses nat
 table, tests source IPs and makes use of DNAT target.
 	    </P
@@ -6486,7 +6557,7 @@ CLASS="PROMPT"
 ><P
 >usergroups </P
 ><P
->List of (space separated) user groups, that should be
+>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</P
 ><P
@@ -7914,7 +7985,7 @@ CLASS="CHAPTER"
 ><A
 NAME="DAEMON"
 ></A
->Chapter 6. A.L.E.C's LMS Daemon</H1
+>Chapter 6. LMS Daemon</H1
 ><DIV
 CLASS="SECT1"
 ><H2
@@ -7925,15 +7996,11 @@ NAME="DAEMON-INTRO"
 ></H2
 ><P
 >This C daemon was developed to aid management of your services. It's responsible for
-     starting appropriate modules, each performing specific task. You have to select modules that
-     you intend to use before starting the daemon. Each module makes configuration files based on
-     its template and data from LMS database and manages (restarting) selected services on a server.
+     starting appropriate modules, each performing specific task. Each module makes configuration 
+     files based on its template and data from LMS database and manages (restarting) selected services 
+     on a server. Modules can also collect statistics, check hosts activity, account payments or
+     notify debtors about their charges.
      </P
-><P
->Why such name? The majority of daemon code has been written by one of developers -
-     Aleksander 'A.L.E.C' Machniak. Nevertheless we must emphasize contributions done by Marcin 'Lexx'
-     Krol. It also includes fragments of code of Mateusz 'mteg' Golicz old daemon and use Nicolas
-     Devillard iniparser library. </P
 ><DIV
 CLASS="SECT2"
 ><HR><H3
@@ -7947,7 +8014,7 @@ NAME="DAEMON-REQUIREMENTS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->A.L.E.C's LMS Daemon</I
+>LMS Daemon</I
 ></SPAN
 > requires:
                      <UL
@@ -8036,7 +8103,7 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >modules/module_name</TT
 > should be moved to some directory.
-               Their location will be set in configuration file.
+               Their location will be set in configuration.
                </P
 ></DIV
 ><DIV
@@ -8048,28 +8115,32 @@ NAME="DAEMON-CONFIG"
 >6.1.3. Configuration</A
 ></H3
 ><P
->You can find example daemon configuration in
-               <TT
-CLASS="FILENAME"
->lms.ini.sample</TT
-> file. The following listing describes basic
-               options for the daemon (modules configuration is described later, in separate
-               chapters concerning each module):
+>For daemon and modules configuration is destined menu Reload -&#62; Configuration
+	       in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>. Modules configuration is described later, in separate
+               chapters concerning each module. Basic daemon parameters and data for connection to
+	       database should be specified as command line options, according to following listing:
 <PRE
 CLASS="SCREEN"
->[database]
-host            = localhost     # host name or IP, default: localhost
-user            = lms           # user name, default: lms
-password        = mypasswd      # database password, default: empty
-database        = lms           # database name, default: lms
-port            = 0             # port number, default: 0
-
-[lmsd]
-sleeptime       = 30            # time interval (in seconds) how often to
-                                # check for reload order, default: 30
-instances       = hosts oident firewall       # selected (active) modules list
-command         = 'echo Connecting...'        # shell command that run before each database connection </PRE
+>-h host           host where is instaled database (default: localhost)
+-d db_name        database name (default: lms)
+-u user           database user name (default: lms)
+-p password       database password (default: empty)
+-H hostname       name of host where daemon runs. By default is assumed name returned by
+                  hostname command, but it can be overwrited. That name must according
+                  with name specified in hosts configuration
+- c command       shell command to run before every database connection (default: empty)
+-q                do reload and exit
+-v                prints version and copyright info
+-i "instance[ ...]" list of instances for reload. Other instances will be ignored</PRE
 >
+		Database connection options are readed also from shell variables:
+		LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
                <DIV
 CLASS="NOTE"
 ><TABLE
@@ -8089,26 +8160,60 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->List of instances contains modules names separated with spaces. Instance
-               is a name of section below in this configuration file.</P
+>List of instances contains instances names separated with spaces.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
-> </P
+> 
+	       </P
 ><P
->Instance section, beside config modules params, must contain primary options,
-               as on following listing:
-<PRE
-CLASS="SCREEN"
->[instance_name]
-module = /path/to/module.so
-info = "Additional description of module"</PRE
->          
+>Daemon configuration is composed of hosts (that makes possible to configure
+	       and reload of daemons installed on different hosts/routers) and configuration sections
+	       called as instances.</P
+><P
+>Instance, beside config modules params, must contain primary options as:
+	       <UL
+><LI
+><P
+>Name</P
+><P
+>Instance name unique within each host.</P
+><P
+>Example: system</P
+></LI
+><LI
+><P
+>Priority</P
+><P
+>Priority number, that define instances reload sequence.</P
+><P
+>Example: 10</P
+></LI
+><LI
+><P
+>Module</P
+><P
+>Module name with path. After daemon installation modules are placed in daemon/modules/ directory.</P
+><P
+>Example: /usr/lib/system.so</P
+></LI
+><LI
+><P
+>Crontab</P
+><P
+>Module execution time specified in crontab style. All data must be numeric.
+			Following example cause instance execution at 5 minutes interval between 8 and 18 
+			hour every day. If crontab is empty instance will be reloaded only while reload. 
+			Default: empty.</P
+><P
+>Example: */5 8-18 * * *</P
+></LI
+></UL
+>
                </P
 ><P
->Change of 'instances' or any option in instance sections do not require daemon
-               restart. For other global options restart is required.</P
+>Any configuration change do not require daemon restart.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -8119,47 +8224,22 @@ NAME="DAEMON-RUN"
 >6.1.4. Starting</A
 ></H3
 ><P
->You can run this program as a daemon, detached to background with option '-b'.
-               While running configuration and services reload is performed on demand using 'Reload'
+>By default program runs in daemon mode. In that mode
+               configuration and services reload is performed on demand using 'Reload'
                menu in <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->. Sleep time runtime option (-s) specify interval
-               between database checks. When daemon detects reload order, it runs modules defined by
-               'instances' option in <TT
-CLASS="FILENAME"
->lms.ini</TT
->.
-               For example:
-<PRE
-CLASS="SCREEN"
-># almsd -b</PRE
->               
-               </P
+>. Reload order checking and configuration
+	       reading (especially instances list and configuration of them) is done on each minute. 
+	       When daemon detects reload order, it runs all enabled instances. Instances with 
+	       specified crontab will be executed it's matching with current time.</P
 ><P
->Other way to run is periodical execution with cron. You have to use this mode
-               for running modules like 'payments' 'notify' or 'traffic'. In those cases you can
-               specify instances to reload with use of option '-i'. Example crontab entry:
-<PRE
-CLASS="SCREEN"
->  1 0 * * *    /usr/local/bin/almsd -qi "payments notify"</PRE
->
-               </P
-><P
->Following listing describes all program command line options:
-<PRE
-CLASS="SCREEN"
->  -c     path to config (default: /etc/lms/lms.ini)
-  -i     list of instances (separated by spaces) to reload
-  -b     run in background (daemon mode)
-  -s     database checks interval in sec. (default: 30)
-  -q     reload and quit
-  -h     prints command line options</PRE
->
-               </P
+>Other way to run daemon is disposable reload with use of '-q' option.
+	       This way is useful for tests, and in conjunction with '-i' option allows to
+	       run selected instances regardless of crontab of the rest of instances.</P
 ></DIV
 ></DIV
 ><DIV
@@ -8174,10 +8254,6 @@ NAME="DAEMON-MODULES"
 >As we stated before daemon can only run modules and they are doing all the job. 
      Most modules are designed to specific application, only 'hostfile' 
      can be used to create many different configs (and manage numerous services), ie. various firewall types. 
-     Daemon and modules configuration examples are contained in the <TT
-CLASS="FILENAME"
->daemon/lms.ini.sample</TT
-> file.
      Module configuration parameters MUST be placed in appropriate instance section.</P
 ><DIV
 CLASS="SECT2"
@@ -8190,11 +8266,11 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2232"
+NAME="AEN2268"
 ></A
 ><P
 ><B
->Table 6-1. List of all almsd modules</B
+>Table 6-1. List of all lmsd modules</B
 ></P
 ><TABLE
 BORDER="1"
@@ -8753,7 +8829,7 @@ CLASS="PROMPT"
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->command = 'almsd -qi firewall'</SAMP
+>command = 'lmsd -qi firewall'</SAMP
 ></P
 ></LI
 ><LI
@@ -9222,45 +9298,6 @@ NAME="TC-CONFIG"
 >There are basic options like groups of customers, file, command, networks and
               extra options which are define tc and firewall rules available to use. Default config is
               designed for 512/128 kbit limits and 100mbit links.</P
-><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Note"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Configuration options values in <TT
-CLASS="FILENAME"
->lms.ini</TT
-> file
-              have to be defined in one line, in case of that module it can be not very handy, so
-              you can create file containing whole header (option <TT
-CLASS="FILENAME"
-> begin</TT
->),
-              and then use option <TT
-CLASS="FILENAME"
->command</TT
-> to join them with the rest of file
-              generated by this module.</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
 ><UL
 ><LI
 ><P
@@ -10464,6 +10501,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>passwd - password</TD
+></TR
+><TR
+><TD
 >ownerid - serial number of the owner ('0' if network device)</TD
 ></TR
 ><TR
@@ -10630,6 +10671,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>itemid - invoice item identifier</TD
+></TR
+><TR
+><TD
 >comment - description of operation</TD
 ></TR
 ></TBODY
@@ -10640,8 +10685,58 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="CASHIMPORT"
+>7.2.10. Import of financial operations ('cashimport')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>date - timestamp of operation</TD
+></TR
+><TR
+><TD
+>customer - customer data</TD
+></TR
+><TR
+><TD
+>value - amount</TD
+></TR
+><TR
+><TD
+>taxvalue - tax rate in percent</TD
+></TR
+><TR
+><TD
+>customerid - customer's serial number</TD
+></TR
+><TR
+><TD
+>description - operation description</TD
+></TR
+><TR
+><TD
+>hash - unique operation identifier</TD
+></TR
+><TR
+><TD
+>closed - yes (1), if operation was moved to cash table</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="TARIFFS"
->7.2.10. Subscription fees ('tariffs')</A
+>7.2.11. Subscription fees ('tariffs')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -10703,7 +10798,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PAYMENTS"
->7.2.11. Solid payments ('payments')</A
+>7.2.12. Solid payments ('payments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -10745,7 +10840,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ASSIGNMENTS"
->7.2.12. Financial assignments ('assignments')</A
+>7.2.13. Financial assignments ('assignments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -10784,6 +10879,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>discount - discount percentage</TD
+></TR
+><TR
+><TD
 >suspended - is this payment suspended? (1 - yes, 0 - no)</TD
 ></TR
 ></TBODY
@@ -10795,7 +10894,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICES"
->7.2.13. Invoices ('invoices')</A
+>7.2.14. Invoices ('invoices')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -10865,7 +10964,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.14. Invoices - continued... ('invoicecontents')</A
+>7.2.15. Invoices - continued... ('invoicecontents')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -10873,6 +10972,10 @@ BORDER="0"
 ><TR
 ><TD
 >invoiceid - invoice serial number</TD
+></TR
+><TR
+><TD
+>itemid - invoice item identifier</TD
 ></TR
 ><TR
 ><TD
@@ -10911,7 +11014,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PASSWD"
->7.2.15. Accounts ('passwd')</A
+>7.2.16. Accounts ('passwd')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -10956,6 +11059,26 @@ BORDER="0"
 ><TD
 >domainid - domain serial number</TD
 ></TR
+><TR
+><TD
+>createtime - account creation date</TD
+></TR
+><TR
+><TD
+>quota_sh - limits</TD
+></TR
+><TR
+><TD
+>quota_mail - limits</TD
+></TR
+><TR
+><TD
+>quota_www - limits</TD
+></TR
+><TR
+><TD
+>quota_ftp - limits</TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -10965,7 +11088,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DOMAINS"
->7.2.16. Domains ('domains')</A
+>7.2.17. Domains ('domains')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -10991,7 +11114,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ALIASES"
->7.2.17. Aliases ('aliases')</A
+>7.2.18. Aliases ('aliases')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11017,7 +11140,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.18. History ('timestamps')</A
+>7.2.19. History ('timestamps')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11039,7 +11162,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.19. Bandwidth consumption statistics ('stats')</A
+>7.2.20. Bandwidth consumption statistics ('stats')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11069,7 +11192,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTQUEUES"
->7.2.20. Helpdesk - Request Tracking ('rtqueues')</A
+>7.2.21. Helpdesk - Request Tracking ('rtqueues')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11099,7 +11222,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTTICKETS"
->7.2.21. Helpdesk - Request Tracking - continued... ('rttickets')</A
+>7.2.22. Helpdesk - Request Tracking - continued... ('rttickets')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11145,7 +11268,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTMESSAGES"
->7.2.22. Helpdesk - Request Tracking - continued... ('rtmessages')</A
+>7.2.23. Helpdesk - Request Tracking - continued... ('rtmessages')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11207,7 +11330,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTATTACHMENTS"
->7.2.23. Helpdesk - Request Tracking - continued... ('rtattachments')</A
+>7.2.24. Helpdesk - Request Tracking - continued... ('rtattachments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11233,7 +11356,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="RTRIGHTS"
->7.2.24. Helpdesk - Request Tracking - continued... ('rtrights')</A
+>7.2.25. Helpdesk - Request Tracking - continued... ('rtrights')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11263,7 +11386,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="UICONFIG"
->7.2.25. LMS-UI Online Configuration ('uiconfig')</A
+>7.2.26. LMS-UI Online Configuration ('uiconfig')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -11300,8 +11423,244 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="EVENTS"
+>7.2.27. Timetable - events ('events')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identifier</TD
+></TR
+><TR
+><TD
+>title - title</TD
+></TR
+><TR
+><TD
+>description - info</TD
+></TR
+><TR
+><TD
+>note - note</TD
+></TR
+><TR
+><TD
+>date - event date</TD
+></TR
+><TR
+><TD
+>begintime - beginning of event</TD
+></TR
+><TR
+><TD
+>endtime - ending of event</TD
+></TR
+><TR
+><TD
+>adminid - event creator ID</TD
+></TR
+><TR
+><TD
+>userid - customer ID</TD
+></TR
+><TR
+><TD
+>private - status (private/public)</TD
+></TR
+><TR
+><TD
+>closed - is event closed? (1-yes/0-no)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="EVENTASSIGNMENTS"
+>7.2.28. Timetable - assignments ('eventassignments')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>eventid - event identifier</TD
+></TR
+><TR
+><TD
+>adminid - user identifier</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="SESSIONS"
+>7.2.29. Sessions ('sessions')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - session identifier</TD
+></TR
+><TR
+><TD
+>ctime - create time</TD
+></TR
+><TR
+><TD
+>mtime - last modification time</TD
+></TR
+><TR
+><TD
+>atime - last access time</TD
+></TR
+><TR
+><TD
+>vdata - verification data</TD
+></TR
+><TR
+><TD
+>content - data</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMONHOSTS"
+>7.2.30. Daemon configuration - hosts ('daemonhosts')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identifier</TD
+></TR
+><TR
+><TD
+>name - host name</TD
+></TR
+><TR
+><TD
+>description - additional informations</TD
+></TR
+><TR
+><TD
+>lastreload - last reload date</TD
+></TR
+><TR
+><TD
+>reload - reload order</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMONINSTANCES"
+>7.2.31. Daemon configuration - instances ('daemoninstances')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identifier</TD
+></TR
+><TR
+><TD
+>name - instance name</TD
+></TR
+><TR
+><TD
+>hostid - host identifier</TD
+></TR
+><TR
+><TD
+>module - module file path and name</TD
+></TR
+><TR
+><TD
+>crontab - time of reload</TD
+></TR
+><TR
+><TD
+>priority - reload priority</TD
+></TR
+><TR
+><TD
+>description - additional informations</TD
+></TR
+><TR
+><TD
+>disabled - status (enabled/disabled)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMONCONFIG"
+>7.2.32. Daemon configuration - options ('daemonconfig')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identifier</TD
+></TR
+><TR
+><TD
+>instanceid - instance identifier</TD
+></TR
+><TR
+><TD
+>var - option name</TD
+></TR
+><TR
+><TD
+>value - option value</TD
+></TR
+><TR
+><TD
+>description - additional informations</TD
+></TR
+><TR
+><TD
+>disabled - status (enabled/disabled)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="DBINFO"
->7.2.26. Database information ('dbinfo')</A
+>7.2.33. Database information ('dbinfo')</A
 ></H3
 ><TABLE
 BORDER="0"

@@ -20,11 +20,12 @@ LMS Developers
         2.1. Intro
         2.2. Requirements
         2.3. LMS Installation
-        2.4. Database Server Installation
-        2.5. Basic Configuration
-        2.6. Access rights
-        2.7. Upgrade
-        2.8. Invoices
+        2.4. Localization
+        2.5. Database Server Installation
+        2.6. Basic Configuration
+        2.7. Access rights
+        2.8. Upgrade
+        2.9. Invoices
 
    3. User Interface (LMS-UI)
 
@@ -53,7 +54,7 @@ LMS Developers
         5.2. Configuration
         5.3. Examples of use
 
-   6. A.L.E.C's LMS Daemon
+   6. LMS Daemon
 
         6.1. Basics
         6.2. Modules
@@ -78,13 +79,13 @@ LMS Developers
 
    List of Tables
    4-1. Executable scripts list
-   6-1. List of all almsd modules
+   6-1. List of all lmsd modules
    7-1. LMS directory tree
 
    List of Examples
    3-1. Accounts. Proftpd configuration.
    3-2. Accounts. Mail server configuration (postfix+sasl+courier).
-   4-1. Lms-notify: example of last 10 user's operations
+   4-1. Lms-notify: example of last 10 customer's operations
    4-2. Lms-notify: example of mailing template
    5-1. Lms-mgc: Example instance
    7-1. Format of configuration options
@@ -374,18 +375,30 @@ $ mv Smarty-2.6.0/libs Smarty
    as database password!).
      _________________________________________________________________
 
-2.4. Database Server Installation
+2.4. Localization
 
-2.4.1. MySQL
+   Default language of user interface is English, and national characters
+   are encoded in UTF-8. For proper displaying of national chars in other
+   languages you must have appropriate locales. E.g. for polish language
+   it'll be following command:
+# localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8
 
-2.4.1.1. Intro
+   Instructions about database encoding settings in follow-up of this
+   chapter.
+     _________________________________________________________________
+
+2.5. Database Server Installation
+
+2.5.1. MySQL
+
+2.5.1.1. Intro
 
    That very popular database server is available with majority of Linux
    distributions. If, however, you have to install it yourself, start
    with downloading its sources from www.mysql.com.
      _________________________________________________________________
 
-2.4.1.2. MySQL Server Installation
+2.5.1.2. MySQL Server Installation
 
    After extracting, go to directory with MySQL and type this sequence of
    commands:
@@ -398,7 +411,7 @@ $ /usr/local/mysql/bin/safe_mysqld &
 $ /usr/local/mysql/bin/mysqladmin -u root password new_password
      _________________________________________________________________
 
-2.4.1.3. Create Database
+2.5.1.3. Create Database
 
    You have to create database if you run LMS for the first time. If you
    are upgrading from older version, look into Changelog for appropriate
@@ -414,7 +427,7 @@ mysql> use lms;
 mysql> source doc/lms.mysql;
      _________________________________________________________________
 
-2.4.1.4. LMS Configuration (lms.ini)
+2.5.1.4. LMS Configuration (lms.ini)
 
    Because MySQL is default database for LMS, configuration is limited to
    [database] section setup. Thus you need to edit /etc/lms/lms.ini and
@@ -437,9 +450,9 @@ password = your_password
    21 and 28 day of month at 4:12 at night.
      _________________________________________________________________
 
-2.4.2. PostgreSQL
+2.5.2. PostgreSQL
 
-2.4.2.1. Intro
+2.5.2.1. Intro
 
    LMS is tested on PostgreSQL 7.3.4 and higher, but because none of
    special features of the engine are ever used, there should be no
@@ -448,7 +461,7 @@ password = your_password
    on www.postgresql.org.
      _________________________________________________________________
 
-2.4.2.2. Installation
+2.5.2.2. Installation
 
    That is a short version of installation procedure, more info can be
    found in Postgres documentation. After you download and extract
@@ -461,11 +474,11 @@ $ adduser postgres
 $ mkdir /usr/local/pgsql/data
 $ chown postgres /usr/local/pgsql/data
 $ su - postgres
-$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
+$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data --locale=pl_PL.UTF-8
 $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &
      _________________________________________________________________
 
-2.4.2.3. Database Creation
+2.5.2.3. Database Creation
 
    While server is running you can start with adding database and its
    owner, both named 'lms' and loading database schema:
@@ -474,7 +487,7 @@ $ /usr/local/pgsql/bin/createdb -E UNICODE -U lms lms
 $ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql
      _________________________________________________________________
 
-2.4.2.4. LMS Configuration (lms.ini)
+2.5.2.4. LMS Configuration (lms.ini)
 
    For LMS default database server is MySQL so you have to set following
    options in [database] section of /etc/lms/lms.ini file:
@@ -502,9 +515,9 @@ password = password_entered_with_lms_user_creation
             --format=p lms -- file backups/lms-auto-"$(date +%s)".sql
      _________________________________________________________________
 
-2.4.3. SQLite
+2.5.3. SQLite
 
-2.4.3.1. Intro
+2.5.3.1. Intro
 
    This one-file database is superior for its speed. Quoting its authors
    it might be 2-3 times faster than MySQL, and with proper configuration
@@ -513,7 +526,7 @@ password = password_entered_with_lms_user_creation
    Sources can be downloaded from: www.sqlite.org.
      _________________________________________________________________
 
-2.4.3.2. Installation
+2.5.3.2. Installation
 
    Here You can see how to install the SQLite libraries and add extension
    to your PHP installation (PHP 5.0 has SQLite built in). After you
@@ -532,7 +545,7 @@ extension=sqlite.so
    There is an option to compile-in SQLite PHP extension: --with-sqlite.
      _________________________________________________________________
 
-2.4.3.3. Database Creation
+2.5.3.3. Database Creation
 
    You will need to create your database and fill it with initial schema
    before using LMS for the first time. Go to your LMS directory and run
@@ -542,7 +555,7 @@ sqlite> .exit
 $ chown 99.98 /usr/local/lms/lms.db
      _________________________________________________________________
 
-2.4.3.4. LMS Configuration (lms.ini)
+2.5.3.4. LMS Configuration (lms.ini)
 
    One of the SQLite limitations is that it doesn't authenticate users,
    so the only configuration options you have to setup are type and path
@@ -559,7 +572,7 @@ database = /usr/local/lms/lms.db
    account.
      _________________________________________________________________
 
-2.5. Basic Configuration
+2.6. Basic Configuration
 
    Main configuration file of LMS is lms.ini, which must be placed in
    directory /etc/lms or in LMS root directory (not recommended, see
@@ -572,7 +585,7 @@ database = /usr/local/lms/lms.db
    with parameter that you set.
      _________________________________________________________________
 
-2.5.1. Section [database] - Database Settings
+2.6.1. Section [database] - Database Settings
 
      * type
        Database type. Currently only 'mysql' is 100% supported, but for
@@ -603,7 +616,7 @@ database = /usr/local/lms/lms.db
        Example: server_encoding = latin2
      _________________________________________________________________
 
-2.5.2. Section [directories] - Directories Settings
+2.6.2. Section [directories] - Directories Settings
 
      * sys_dir
        System directory. It is a place where the entire content of LMS UI
@@ -644,7 +657,7 @@ database = /usr/local/lms/lms.db
        Example: smarty_templates_dir = /usr/share/lms/templates
      _________________________________________________________________
 
-2.5.3. Section [phpui] - Interface Setting
+2.6.3. Section [phpui] - Interface Setting
 
      * allow_from (optional)
        List of networks or IP addresses, which have access to LMS. If
@@ -811,9 +824,9 @@ database = /usr/local/lms/lms.db
        Example: smtp_host = mail.domain.pl
      _________________________________________________________________
 
-2.6. Access rights
+2.7. Access rights
 
-2.6.1. Idea
+2.7.1. Idea
 
    In LMS you may define up to 256 rules to access the system. Each can
    permit or deny access to defined modules. Each user can have any
@@ -835,6 +848,7 @@ database = /usr/local/lms/lms.db
      * UI configuration
      * networks and devices management
      * timetable management
+     * daemon management and configuration
      * users edition and addition forbidden
      * no access
 
@@ -848,7 +862,7 @@ database = /usr/local/lms/lms.db
    for him, which mean: full access.
      _________________________________________________________________
 
-2.6.2. How does it work?
+2.7.2. How does it work?
 
    Algorithm that decides whether user has access to given module or not
    is as following:
@@ -865,7 +879,7 @@ database = /usr/local/lms/lms.db
    printed.
      _________________________________________________________________
 
-2.7. Upgrade
+2.8. Upgrade
 
    Since version 1.5.4 LMS was released in polish language only. If you
    are upgrading read polish documentation for upgrade description. In
@@ -876,7 +890,7 @@ database = /usr/local/lms/lms.db
    process acting upon first login to the UI.
      _________________________________________________________________
 
-2.8. Invoices
+2.9. Invoices
 
    It's possible to issue invoices in either automatic or manual way.
    Manual invoices creation is possible in 'New Invoice' module from
@@ -917,7 +931,7 @@ database = /usr/local/lms/lms.db
    for printing.
      _________________________________________________________________
 
-2.8.1. HTML
+2.9.1. HTML
 
    Invoices are printed in html format by default using provided
    template. In [invoices] section you can also configure:
@@ -950,7 +964,7 @@ database = /usr/local/lms/lms.db
    functions like header and footer or URL printing can be disabled.
      _________________________________________________________________
 
-2.8.2. PDF
+2.9.2. PDF
 
    It's possible to create invoices as PDF files. Setting option type in
    [invoices] section to 'pdf' will force invoice being created in PDF
@@ -1031,7 +1045,7 @@ Chapter 3. User Interface (LMS-UI)
    management. You can create or modify any account here, change assigned
    passwords and access rights.
 
-   For more information on access rights, see Section 2.6.
+   For more information on access rights, see Section 2.7.
 
    Initially after selecting 'Users', you'll get list of all users with
    last login time and host information. When you click on the account,
@@ -1105,22 +1119,22 @@ Chapter 3. User Interface (LMS-UI)
 3.3.1. List
 
    After you select 'List' you'll see list of your users, that can be
-   filtered based on selected criteria (user status, group or network) or
-   sort by any highlighted column. Warning triangle on the right side of
-   the record shows if any warnings are active for the user. Computer
-   icon next to triangle informs you about computers status (connected of
-   cutoff). Clicking of any of those two symbols toggles status for all
-   computers of the given user.
+   filtered based on selected criteria (customer status, group or
+   network) or sort by any highlighted column. Warning triangle on the
+   right side of the record shows if any warnings are active for the
+   customer. Computer icon next to triangle informs you about computers
+   status (connected of cutoff). Clicking of any of those two symbols
+   toggles status for all computers of the given customer.
 
-   Records of users with negative balance will have 'payback' icon (stack
-   of coins), which allows you to account instant payment for the user,
-   which value will reset his debt.
+   Records of customers with negative balance will have 'payback' icon
+   (stack of coins), which allows you to account instant payment for the
+   customer, which value will reset his debt.
 
-   When you click on selected user you'll get screen with details for the
-   user, divided in several panels: user details, computer details,
-   liabilities details and customer account details. You can also select
-   to edit any of the panels on this screen, define user liabilities,
-   payoff or charge the customer.
+   When you click on selected customer you'll get screen with details for
+   the customer, divided in several panels: customer details, computer
+   details, liabilities details and customer account details. You can
+   also select to edit any of the panels on this screen, define customer
+   liabilities, payoff or charge the customer.
      _________________________________________________________________
 
 3.3.2. New Customer
@@ -1128,30 +1142,30 @@ Chapter 3. User Interface (LMS-UI)
    This option will let you enter data for new customer record. You can
    enter his last and first name here, or if your customer is also legal
    company, enter company name in "Name" and company representative in
-   "Forename" field. You should also fill users phone (up to 3) and
+   "Forename" field. You should also fill customers phone (up to 3) and
    address (you can enter additional address for correspondence) and his
    status (connected, waiting in queue, prospect).
    Note
 
-   Wrong capitalization (uppercase) of user's last name is one of most
-   frequent bug reports. Uppercase is implemented via SQL functions and
-   thus you should seek for solution in your DB engine configuration.
+   Wrong capitalization (uppercase) of customer's last name is one of
+   most frequent bug reports. Uppercase is implemented via SQL functions
+   and thus you should seek for solution in your DB engine configuration.
      _________________________________________________________________
 
 3.3.3. Search
 
-   You're able to search users (including deleted users), using various
-   criteria. This module is more powerful than appropriate quick search
-   box in left panel, as you can specify exact field names to search and
-   if many users are found, the list of records will be returned, not
-   only the first one.
+   You're able to search customers (including deleted customers), using
+   various criteria. This module is more powerful than appropriate quick
+   search box in left panel, as you can specify exact field names to
+   search and if many customers are found, the list of records will be
+   returned, not only the first one.
      _________________________________________________________________
 
 3.3.4. Groups
 
-   This is a place where it's possible to divide your users into groups.
-   After you click 'Groups' you'll see list of all defined groups with
-   some basic information. Clicking on selected group will give you
+   This is a place where it's possible to divide your customers into
+   groups. After you click 'Groups' you'll see list of all defined groups
+   with some basic information. Clicking on selected group will give you
    details view, where you are able to edit this group properties, and
    view/add/remove group members.
      _________________________________________________________________
@@ -1168,17 +1182,17 @@ Chapter 3. User Interface (LMS-UI)
 
    In this module, you're able to write administrative message which will
    appear on customers Web browser screen and assign it massively to all
-   or majority of your users (just pick them using selection box on the
-   left). It's also possible here to deselect administrative messages
+   or majority of your customers (just pick them using selection box on
+   the left). It's also possible here to deselect administrative messages
    massively here.
      _________________________________________________________________
 
 3.3.7. Printing
 
    Set of modules to provide printer-friendly version of your records:
-     * User list with filter and sort abilities,
-     * Liability report for any range of user(s), for specified date,
-     * User balance for selected period
+     * Customer list with filter and sort abilities,
+     * Liability report for any range of customer(s), for specified date,
+     * Customer balance for selected period
      _________________________________________________________________
 
 3.4. Nodes
@@ -1215,7 +1229,7 @@ Chapter 3. User Interface (LMS-UI)
    data about computers that are online.
    Note
 
-   You need to create user and network first, so you can assign new
+   You need to create customer and network first, so you can assign new
    computer to it.
      _________________________________________________________________
 
@@ -1228,13 +1242,13 @@ Chapter 3. User Interface (LMS-UI)
 
 3.4.4. Messages
 
-   You can write administration message here and it will appear on user's
-   Web browser screen. In this module you can select majority or all
-   computers and assign them common message. Just choose computers using
-   selectbox on the left (computers with message already on will be
-   displayed in red). If you only want to assign a message to user, but
-   don't want to turn it on, just write a message and don't select any of
-   'Enable/Disable message' boxes.
+   You can write administration message here and it will appear on
+   customer's Web browser screen. In this module you can select majority
+   or all computers and assign them common message. Just choose computers
+   using selectbox on the left (computers with message already on will be
+   displayed in red). If you only want to assign a message to customer,
+   but don't want to turn it on, just write a message and don't select
+   any of 'Enable/Disable message' boxes.
      _________________________________________________________________
 
 3.4.5. Printing
@@ -1341,8 +1355,8 @@ Chapter 3. User Interface (LMS-UI)
    liabilities (Tariffs) that might be assigned to your customers, with
    basic informations about it. When you select and click on liability
    you'll move to 'Tariff' module where you're able to edit its
-   parameters and exchange users between available liabilities. In
-   'Number of customers' field you can read number of users who are
+   parameters and exchange customers between available liabilities. In
+   'Number of customers' field you can read number of customers who are
    assigned to it and two numbers in parenthesis: total number of
    assignments and number of active assignments, considered by its
    activity periods.
@@ -1399,7 +1413,7 @@ Chapter 3. User Interface (LMS-UI)
 
 3.7.8. New Invoice
 
-   Allows you to issue an invoice for selected user manually.
+   Allows you to issue an invoice for selected customer manually.
      _________________________________________________________________
 
 3.7.9. Printing
@@ -1433,9 +1447,9 @@ Chapter 3. User Interface (LMS-UI)
 
 3.8.1. Accounts
 
-   Account list contains basic information about your user accounts. It's
-   possible to sort it by any highlighted column title and to filter it
-   for given criteria. You can edit any account clicking 'Edit' icon.
+   Account list contains basic information about your customer accounts.
+   It's possible to sort it by any highlighted column title and to filter
+   it for given criteria. You can edit any account clicking 'Edit' icon.
    Administrator (LMS user) is also able to change account passwords.
      _________________________________________________________________
 
@@ -1614,8 +1628,8 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
    you have to communicate something to them. Obviously you need to
    specify sender name and address, write your message in text box and
    select appropriate group of recipients. Your attendance can be grouped
-   by status, network or user groups. If you use mail server on remote
-   host, you will need to set options smtp_host, smtp_port,
+   by status, network or customer groups. If you use mail server on
+   remote host, you will need to set options smtp_host, smtp_port,
    smtp_username, smtp_password in [phpui] section.
 
    Note
@@ -1677,8 +1691,8 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 
 3.12. Helpdesk
 
-   Helpdesk (or Request Tracker) is user request management system. It's
-   possible to keep history of all requests and questions here, both
+   Helpdesk (or Request Tracker) is customer request management system.
+   It's possible to keep history of all requests and questions here, both
    reported by customers and users not registered in LMS database.
    Reports can be grouped in queues (categories) and you're able to
    search them for a given criteria. It's possible to define access
@@ -1770,7 +1784,7 @@ Chapter 4. Scripts
    Table 4-1. Executable scripts list
    Name Description
    lms-notify Massive mailing for customer notification
-   lms-notify-sms Notifies user about his debt with SMS
+   lms-notify-sms Notifies customer about his debt with SMS
    lms-cutoff Cutoff of customers who are in debt
    lms-etherdesc MAC address - hostname pair file creation for iptraf
    lms-payments Accounting subscription fees (periodical) with invoice
@@ -1783,11 +1797,12 @@ Chapter 4. Scripts
    lms-makeipchains Configuration of ipchains firewall rules
    lms-makeopenbsdpf Configuration of OpenBSD packet filter rules
    lms-makeoidentconf Configuration of oident
-   lms-sendinvoices Distribution of invoices to users
+   lms-sendinvoices Distribution of invoices to customers
    lms-makemacs Firewalling with use of source MAC addresses
    lms-makehosts /etc/hosts file creation
-   lms-makewarnings Redirect rules for users in debt
-   lms-makemessages Redirect rules for users in debt with warning message
+   lms-makewarnings Redirect rules for customers in debt
+   lms-makemessages Redirect rules for customers in debt with warning
+   message
    lms-fping Online nodes scan
    lms-rtparser Helpdesk backend for MUA
      _________________________________________________________________
@@ -1796,10 +1811,10 @@ Chapter 4. Scripts
 
 4.3.1. lms-notify
 
-   lms-notify is perfect tool to remind your users that they are actually
-   the ones who cover all your network and WAN links costs. It makes you
-   possible to create numerous text templates for various occasions and
-   use them for mailing your users.
+   lms-notify is perfect tool to remind your customers that they are
+   actually the ones who cover all your network and WAN links costs. It
+   makes you possible to create numerous text templates for various
+   occasions and use them for mailing your customers.
      _________________________________________________________________
 
 4.3.1.1. Templates
@@ -1810,17 +1825,18 @@ Chapter 4. Scripts
      * %date-y - will be substituted with current year, eg. 2003
      * %date_month_name - will be substituted with current month name,
        eg. March
-     * %saldo - will be substituted with current user balance, eg. 535
-     * %abonament - will be substituted with user's subscription fee, eg.
-       107
-     * %b - user balance with opposite sign, eg. 107
-     * %B - user balance with real sign, eg. -107
-     * %pin - PIN code of the user
-     * %phone1 - user's 1st phone number
-     * %last_10_in_a_table - list of last 10 operations on user's
+     * %saldo - will be substituted with current customer balance, eg.
+       535
+     * %abonament - will be substituted with customer's subscription fee,
+       eg. 107
+     * %b - customer balance with opposite sign, eg. 107
+     * %B - customer balance with real sign, eg. -107
+     * %pin - PIN code of the customer
+     * %phone1 - customer's 1st phone number
+     * %last_10_in_a_table - list of last 10 operations on customer's
        account, eg.
 
-   Example 4-1. Lms-notify: example of last 10 user's operations
+   Example 4-1. Lms-notify: example of last 10 customer's operations
 Date       | Description                                          | Amount
 -----------+------------------------------------------------------+---------
 2003-02-02 | Subscription for month 2003/02                       |  107.00
@@ -1872,8 +1888,8 @@ http://www.bigpro.com/
    Configuration of lms-notify should be set in lms.ini file, [notify]
    section. Following parameters are valid:
      * limit (optional)
-       Lets you setup limit of user debt. Email will be sent below that
-       value. Default: limit = 0
+       Lets you setup limit of customer debt. Email will be sent below
+       that value. Default: limit = 0
        Example: limit = -20
      * mailsubject (mandatory)
        Lets you setup subject of email sent. You can use following
@@ -1894,7 +1910,7 @@ http://www.bigpro.com/
        Example: smtp_server = smtp.bigpro.com
      * debug_email (optional)
        Email address for debugging. All email will be sent to this
-       address instead of sending to real users. Default: not set.
+       address instead of sending to real customers. Default: not set.
        Example: debug_email = lexx@domain.pl
      _________________________________________________________________
 
@@ -1907,7 +1923,7 @@ http://www.bigpro.com/
    Configuration of lms-notify-sms should be set in lms.ini file,
    [notify-sms] section. Following parameters are valid:
      * limit (optional)
-       Lets you setup limit of user debt. SMS will be sent below that
+       Lets you setup limit of customer debt. SMS will be sent below that
        value. Default: 0
        Example: limit = -20
      * smstemplate (mandatory)
@@ -1919,12 +1935,12 @@ http://www.bigpro.com/
 
    This script allows to cutoff (actually mark as cutoff in database and
    cutting off should be performed by one of firewall rules creation
-   script) users whose debt is below some defined value.
+   script) customers whose debt is below some defined value.
 
    Configuration of lms-cutoff should be set in lms.ini file, [cutoff]
    section. Following parameters are valid:
      * limit (optional)
-       Lets you setup limit of user debt. User will be marked as
+       Lets you setup limit of customer debt. Customer will be marked as
        disconnected below that value. Default: 0
        Example: limit = -20
      _________________________________________________________________
@@ -1944,6 +1960,22 @@ http://www.bigpro.com/
      * paytype (optional)
        Type of payment. Default: 'TRANSFER'
        Example: paytype = 'CASH'
+     * suspension_percentage (optional)
+       Percentage for suspended liabilities. Default: '0'
+       Example: suspension_percentage = '50'
+     * suspension_description (optional)
+       Suspension description for suspended liabilities. Default: ''
+       Example: paytype = '(suspension)'
+     * comment (optional)
+       Description on invoice attached to every periodical assigment
+       Default: 'Abonament wg taryfy %tariff za okres %period'
+       Some keywords are substitiuted:
+       %tariff tariff name
+       %period period (counted from current day to the last in cycle, in
+       form YYYY/MM/DD)
+       %%current_month period form 1st of current month to the end of it
+       Example: paytype = 'Abonament za %current_month w/g taryfy %tariff
+       '
 
    Script has also one useful command line parameter: --fakedate (-f).
    With this option you can make that script will execute with system
@@ -2042,9 +2074,9 @@ http://www.bigpro.com/
        include all networks.
        Example: networks = public-custa public-custb
      * usergroups
-       List of (space separated) user groups, that should be considered
-       while creating configuration file. If unset, configuration will
-       include all user groups.
+       List of (space separated) customer groups, that should be
+       considered while creating configuration file. If unset,
+       configuration will include all customer groups.
        Example: usergroups = group1 group2
      * default_lease_time
        Default lease time. Default: 86400.
@@ -2218,7 +2250,7 @@ wins    = 213.25.209.10
    addresses. If it returns success, it returns to parent chain with
    RETURN target. On the end of tests two rules are appended, which
    redirects all http and webcache traffic to given host and port. This
-   is intended to inform user about his debt, by running specialized
+   is intended to inform customer about his debt, by running specialized
    server on this host:port which returns administration message to each
    request. At last, the rule which blocks all traffic is added.
 
@@ -2230,9 +2262,9 @@ wins    = 213.25.209.10
        include all networks.
        Example: networks = public-custa public-custb
      * usergroups
-       List of (space separated) user groups0, that should be considered
-       while creating configuration file. If unset, configuration will
-       include all groups.
+       List of (space separated) customer groups, that should be
+       considered while creating configuration file. If unset,
+       configuration will include all groups.
        Example: usergroups = settlement1 settlement2
      * iptables_binary
        Location of iptables binary. Default: /sbin/iptables
@@ -2276,9 +2308,9 @@ wins    = 213.25.209.10
        include all networks.
        Example: networks = public-custa public-custb
      * usergroups
-       List of (space separated) user groups, that should be considered
-       while creating configuration file. If unset, configuration will
-       include all groups.
+       List of (space separated) customer groups, that should be
+       considered while creating configuration file. If unset,
+       configuration will include all groups.
        Example: usergroups = settlement1 settlement2
      * config_owneruid
        UID of file owner. Default: 0 (root).
@@ -2303,8 +2335,8 @@ wins    = 213.25.209.10
 
    This script may be used to create file including netfiler rules
    redirecting http and webcache traffic to configured IP and port, for
-   users in debt. It uses nat table, tests source IPs and makes use of
-   DNAT target.
+   customers in debt. It uses nat table, tests source IPs and makes use
+   of DNAT target.
 
    Configuration of lms-makewarnings should be set in lms.ini file,
    [warnings] section. Following parameters are valid:
@@ -2314,9 +2346,9 @@ wins    = 213.25.209.10
        include all networks.
        Example: networks = public-custa public-custb
      * usergroups
-       List of (space separated) user groups, that should be considered
-       while creating configuration file. If unset, configuration will
-       include all groups.
+       List of (space separated) customer groups, that should be
+       considered while creating configuration file. If unset,
+       configuration will include all groups.
        Example: usergroups = settlement1 settlement2
      * iptables_binary
        Location of iptables binary. Default: /sbin/iptables
@@ -2342,7 +2374,7 @@ wins    = 213.25.209.10
        Default: 127.0.0.1:80.
        Example: redirect_address = 192.168.1.1:3001
      * limit
-       Rules are being triggered if user balance is below this limit.
+       Rules are being triggered if customer balance is below this limit.
        Default: 0
        Example: limit = -85
      _________________________________________________________________
@@ -2350,7 +2382,7 @@ wins    = 213.25.209.10
 4.3.14. lms-makemessages
 
    This script is being used to create file with netfilter rules to
-   redirect all http and webcache traffic for users, who has
+   redirect all http and webcache traffic for customers, who has
    administration messages enabled (aka warnings) to configured IP
    address and port. It uses nat table, tests source IPs and makes use of
    DNAT target.
@@ -2363,9 +2395,9 @@ wins    = 213.25.209.10
        include all networks.
        Example: networks = public-custa public-custb
      * usergroups
-       List of (space separated) user groups, that should be considered
-       while creating configuration file. If unset, configuration will
-       include all groups.
+       List of (space separated) customer groups, that should be
+       considered while creating configuration file. If unset,
+       configuration will include all groups.
        Example: usergroups = settlement1 settlement2
      * iptables_binary
        Location of iptables binary. Default: /sbin/iptables
@@ -2860,27 +2892,21 @@ instances         = ipchains
    script /etc/rc.d/rc.masq generated and already executed.
      _________________________________________________________________
 
-Chapter 6. A.L.E.C's LMS Daemon
+Chapter 6. LMS Daemon
 
 6.1. Basics
 
    This C daemon was developed to aid management of your services. It's
    responsible for starting appropriate modules, each performing specific
-   task. You have to select modules that you intend to use before
-   starting the daemon. Each module makes configuration files based on
-   its template and data from LMS database and manages (restarting)
-   selected services on a server.
-
-   Why such name? The majority of daemon code has been written by one of
-   developers - Aleksander 'A.L.E.C' Machniak. Nevertheless we must
-   emphasize contributions done by Marcin 'Lexx' Krol. It also includes
-   fragments of code of Mateusz 'mteg' Golicz old daemon and use Nicolas
-   Devillard iniparser library.
+   task. Each module makes configuration files based on its template and
+   data from LMS database and manages (restarting) selected services on a
+   server. Modules can also collect statistics, check hosts activity,
+   account payments or notify debtors about their charges.
      _________________________________________________________________
 
 6.1.1. Requirements
 
-   A.L.E.C's LMS Daemon requires:
+   LMS Daemon requires:
      * LMS user interface installation
      * libmysqlclient shared library (included in full MySQL installation
        or respective "devel" package) or libpq shared library in case of
@@ -2916,66 +2942,73 @@ Chapter 6. A.L.E.C's LMS Daemon
 
    Finally, compiled modules (files with .so extension), found in
    directory modules/module_name should be moved to some directory. Their
-   location will be set in configuration file.
+   location will be set in configuration.
      _________________________________________________________________
 
 6.1.3. Configuration
 
-   You can find example daemon configuration in lms.ini.sample file. The
-   following listing describes basic options for the daemon (modules
-   configuration is described later, in separate chapters concerning each
-   module):
-[database]
-host            = localhost     # host name or IP, default: localhost
-user            = lms           # user name, default: lms
-password        = mypasswd      # database password, default: empty
-database        = lms           # database name, default: lms
-port            = 0             # port number, default: 0
+   For daemon and modules configuration is destined menu Reload ->
+   Configuration in LMS-UI. Modules configuration is described later, in
+   separate chapters concerning each module. Basic daemon parameters and
+   data for connection to database should be specified as command line
+   options, according to following listing:
+-h host           host where is instaled database (default: localhost)
+-d db_name        database name (default: lms)
+-u user           database user name (default: lms)
+-p password       database password (default: empty)
+-H hostname       name of host where daemon runs. By default is assumed name returned by
+                  hostname command, but it can be overwrited. That name must according
+                  with name specified in hosts configuration
+- c command       shell command to run before every database connection (default: empty)
+-q                do reload and exit
+-v                prints version and copyright info
+-i "instance[ ...]" list of instances for reload. Other instances will be ignored
 
-[lmsd]
-sleeptime       = 30            # time interval (in seconds) how often to
-                                # check for reload order, default: 30
-instances       = hosts oident firewall       # selected (active) modules list
-command         = 'echo Connecting...'        # shell command that run before each database connection
-
+   Database connection options are readed also from shell variables:
+   LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
    Note
 
-   List of instances contains modules names separated with spaces.
-   Instance is a name of section below in this configuration file.
+   List of instances contains instances names separated with spaces.
 
-   Instance section, beside config modules params, must contain primary
-   options, as on following listing:
-[instance_name]
-module = /path/to/module.so
-info = "Additional description of module"
+   Daemon configuration is composed of hosts (that makes possible to
+   configure and reload of daemons installed on different hosts/routers)
+   and configuration sections called as instances.
 
-   Change of 'instances' or any option in instance sections do not
-   require daemon restart. For other global options restart is required.
+   Instance, beside config modules params, must contain primary options
+   as:
+     * Name
+       Instance name unique within each host.
+       Example: system
+     * Priority
+       Priority number, that define instances reload sequence.
+       Example: 10
+     * Module
+       Module name with path. After daemon installation modules are
+       placed in daemon/modules/ directory.
+       Example: /usr/lib/system.so
+     * Crontab
+       Module execution time specified in crontab style. All data must be
+       numeric. Following example cause instance execution at 5 minutes
+       interval between 8 and 18 hour every day. If crontab is empty
+       instance will be reloaded only while reload. Default: empty.
+       Example: */5 8-18 * * *
+
+   Any configuration change do not require daemon restart.
      _________________________________________________________________
 
 6.1.4. Starting
 
-   You can run this program as a daemon, detached to background with
-   option '-b'. While running configuration and services reload is
-   performed on demand using 'Reload' menu in LMS-UI. Sleep time runtime
-   option (-s) specify interval between database checks. When daemon
-   detects reload order, it runs modules defined by 'instances' option in
-   lms.ini. For example:
-# almsd -b
+   By default program runs in daemon mode. In that mode configuration and
+   services reload is performed on demand using 'Reload' menu in LMS-UI.
+   Reload order checking and configuration reading (especially instances
+   list and configuration of them) is done on each minute. When daemon
+   detects reload order, it runs all enabled instances. Instances with
+   specified crontab will be executed it's matching with current time.
 
-   Other way to run is periodical execution with cron. You have to use
-   this mode for running modules like 'payments' 'notify' or 'traffic'.
-   In those cases you can specify instances to reload with use of option
-   '-i'. Example crontab entry:
-  1 0 * * *    /usr/local/bin/almsd -qi "payments notify"
-
-   Following listing describes all program command line options:
-  -c     path to config (default: /etc/lms/lms.ini)
-  -i     list of instances (separated by spaces) to reload
-  -b     run in background (daemon mode)
-  -s     database checks interval in sec. (default: 30)
-  -q     reload and quit
-  -h     prints command line options
+   Other way to run daemon is disposable reload with use of '-q' option.
+   This way is useful for tests, and in conjunction with '-i' option
+   allows to run selected instances regardless of crontab of the rest of
+   instances.
      _________________________________________________________________
 
 6.2. Modules
@@ -2983,15 +3016,13 @@ info = "Additional description of module"
    As we stated before daemon can only run modules and they are doing all
    the job. Most modules are designed to specific application, only
    'hostfile' can be used to create many different configs (and manage
-   numerous services), ie. various firewall types. Daemon and modules
-   configuration examples are contained in the daemon/lms.ini.sample
-   file. Module configuration parameters MUST be placed in appropriate
-   instance section.
+   numerous services), ie. various firewall types. Module configuration
+   parameters MUST be placed in appropriate instance section.
      _________________________________________________________________
 
 6.2.1. Modules list
 
-   Table 6-1. List of all almsd modules
+   Table 6-1. List of all lmsd modules
      Name                           Description
     system                   Shell commands execution
      dhcp                  Configuration of DHCP server
@@ -3160,7 +3191,7 @@ info = "Additional description of module"
        Specifies system command, that is executed if at least one
        customer should be disconnected or warning should be enabled.
        Default: empty.
-       Example: command = 'almsd -qi firewall'
+       Example: command = 'lmsd -qi firewall'
      * warning
        Enable warning for disconnected customer and write him WWW browser
        message specified in this option. If empty, warning will be not
@@ -3356,14 +3387,6 @@ info = "Additional description of module"
    networks and extra options which are define tc and firewall rules
    available to use. Default config is designed for 512/128 kbit limits
    and 100mbit links.
-
-   Note
-
-   Configuration options values in lms.ini file have to be defined in one
-   line, in case of that module it can be not very handy, so you can
-   create file containing whole header (option begin), and then use
-   option command to join them with the rest of file generated by this
-   module.
      * file
        Location of file. Default: /etc/rc.d/rc.htb.
        Example: file = /tmp/rc.htb
@@ -3781,6 +3804,7 @@ Chapter 7. For curious
    name - device name
    mac - MAC address
    ipaddr - IP address
+   passwd - password
    ownerid - serial number of the owner ('0' if network device)
    creationdate - creation timestamp
    moddate - last modification timestamp
@@ -3824,10 +3848,24 @@ Chapter 7. For curious
    taxvalue - tax rate in percent
    userid - customer's serial number ('0' - does not apply)
    invoiceid - serial number for invoice related to this operation
+   itemid - invoice item identifier
    comment - description of operation
      _________________________________________________________________
 
-7.2.10. Subscription fees ('tariffs')
+7.2.10. Import of financial operations ('cashimport')
+
+   id - serial number
+   date - timestamp of operation
+   customer - customer data
+   value - amount
+   taxvalue - tax rate in percent
+   customerid - customer's serial number
+   description - operation description
+   hash - unique operation identifier
+   closed - yes (1), if operation was moved to cash table
+     _________________________________________________________________
+
+7.2.11. Subscription fees ('tariffs')
 
    id - serial number
    name - subscription name
@@ -3843,7 +3881,7 @@ Chapter 7. For curious
    description - description for subscription
      _________________________________________________________________
 
-7.2.11. Solid payments ('payments')
+7.2.12. Solid payments ('payments')
 
    id - serial number
    name - name
@@ -3855,7 +3893,7 @@ Chapter 7. For curious
    description - description for payment
      _________________________________________________________________
 
-7.2.12. Financial assignments ('assignments')
+7.2.13. Financial assignments ('assignments')
 
    id - serial number
    tariffid - subscription serial number
@@ -3866,10 +3904,11 @@ Chapter 7. For curious
    datefrom - start date for assignment
    dateto - end date for assignment
    invoice - invoice writeout? (1 - yes, 0 - no)
+   discount - discount percentage
    suspended - is this payment suspended? (1 - yes, 0 - no)
      _________________________________________________________________
 
-7.2.13. Invoices ('invoices')
+7.2.14. Invoices ('invoices')
 
    id - serial number
    number - number in year
@@ -3887,9 +3926,10 @@ Chapter 7. For curious
    finished - is this invoice complete? (0/1)
      _________________________________________________________________
 
-7.2.14. Invoices - continued... ('invoicecontents')
+7.2.15. Invoices - continued... ('invoicecontents')
 
    invoiceid - invoice serial number
+   itemid - invoice item identifier
    value - amount
    taxvalue - tax rate in percent
    pkwiu - product/service classification number
@@ -3899,7 +3939,7 @@ Chapter 7. For curious
    tariffid - subscription serial number
      _________________________________________________________________
 
-7.2.15. Accounts ('passwd')
+7.2.16. Accounts ('passwd')
 
    id - serial number
    ownerid - customer serial number (0 - "system" account)
@@ -3911,29 +3951,34 @@ Chapter 7. For curious
    type - account type (binary sum: 1-shell, 2-email, 4-www, 8-ftp)
    expdate - account expire date
    domainid - domain serial number
+   createtime - account creation date
+   quota_sh - limits
+   quota_mail - limits
+   quota_www - limits
+   quota_ftp - limits
      _________________________________________________________________
 
-7.2.16. Domains ('domains')
+7.2.17. Domains ('domains')
 
    id - serial number
    name - domain name
    description - comments
      _________________________________________________________________
 
-7.2.17. Aliases ('aliases')
+7.2.18. Aliases ('aliases')
 
    id - serial number
    login - account name (without domain)
    accountid - account serial number
      _________________________________________________________________
 
-7.2.18. History ('timestamps')
+7.2.19. History ('timestamps')
 
    time - last modified timestamp
    tablename - name of modified table
      _________________________________________________________________
 
-7.2.19. Bandwidth consumption statistics ('stats')
+7.2.20. Bandwidth consumption statistics ('stats')
 
    nodeid - node serial number
    dt - timestamp
@@ -3941,7 +3986,7 @@ Chapter 7. For curious
    download - number of bytes received
      _________________________________________________________________
 
-7.2.20. Helpdesk - Request Tracking ('rtqueues')
+7.2.21. Helpdesk - Request Tracking ('rtqueues')
 
    id - serial number
    name - queue name
@@ -3949,7 +3994,7 @@ Chapter 7. For curious
    description - main description for the queue
      _________________________________________________________________
 
-7.2.21. Helpdesk - Request Tracking - continued... ('rttickets')
+7.2.22. Helpdesk - Request Tracking - continued... ('rttickets')
 
    id - serial number
    queueid - queue serial number
@@ -3961,7 +4006,7 @@ Chapter 7. For curious
    createtime - timestamp of report
      _________________________________________________________________
 
-7.2.22. Helpdesk - Request Tracking - continued... ('rtmessages')
+7.2.23. Helpdesk - Request Tracking - continued... ('rtmessages')
 
    id - serial number
    ticketid - ticket serial number
@@ -3977,14 +4022,14 @@ Chapter 7. For curious
    createtime - date of creation/send/delivery
      _________________________________________________________________
 
-7.2.23. Helpdesk - Request Tracking - continued... ('rtattachments')
+7.2.24. Helpdesk - Request Tracking - continued... ('rtattachments')
 
    messageid - message serial number
    filename - name of file attachment
    contenttype - type of file
      _________________________________________________________________
 
-7.2.24. Helpdesk - Request Tracking - continued... ('rtrights')
+7.2.25. Helpdesk - Request Tracking - continued... ('rtrights')
 
    id - serial number
    queueid - queue serial number
@@ -3992,7 +4037,7 @@ Chapter 7. For curious
    rights - permissions (1-read, 2-write)
      _________________________________________________________________
 
-7.2.25. LMS-UI Online Configuration ('uiconfig')
+7.2.26. LMS-UI Online Configuration ('uiconfig')
 
    id - serial number
    section - config section name
@@ -4002,7 +4047,69 @@ Chapter 7. For curious
    disabled - is option disabled? (0-active, 1-disabled/default)
      _________________________________________________________________
 
-7.2.26. Database information ('dbinfo')
+7.2.27. Timetable - events ('events')
+
+   id - identifier
+   title - title
+   description - info
+   note - note
+   date - event date
+   begintime - beginning of event
+   endtime - ending of event
+   adminid - event creator ID
+   userid - customer ID
+   private - status (private/public)
+   closed - is event closed? (1-yes/0-no)
+     _________________________________________________________________
+
+7.2.28. Timetable - assignments ('eventassignments')
+
+   eventid - event identifier
+   adminid - user identifier
+     _________________________________________________________________
+
+7.2.29. Sessions ('sessions')
+
+   id - session identifier
+   ctime - create time
+   mtime - last modification time
+   atime - last access time
+   vdata - verification data
+   content - data
+     _________________________________________________________________
+
+7.2.30. Daemon configuration - hosts ('daemonhosts')
+
+   id - identifier
+   name - host name
+   description - additional informations
+   lastreload - last reload date
+   reload - reload order
+     _________________________________________________________________
+
+7.2.31. Daemon configuration - instances ('daemoninstances')
+
+   id - identifier
+   name - instance name
+   hostid - host identifier
+   module - module file path and name
+   crontab - time of reload
+   priority - reload priority
+   description - additional informations
+   disabled - status (enabled/disabled)
+     _________________________________________________________________
+
+7.2.32. Daemon configuration - options ('daemonconfig')
+
+   id - identifier
+   instanceid - instance identifier
+   var - option name
+   value - option value
+   description - additional informations
+   disabled - status (enabled/disabled)
+     _________________________________________________________________
+
+7.2.33. Database information ('dbinfo')
 
    keytype - type
    keyvalue - value
