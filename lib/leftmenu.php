@@ -82,15 +82,21 @@ $menu[link]     [] = "?m=adminlist";
 $menu[accesskey][] = "d";
 $menu[tip]	[] = "Konta administratorów systemu";
 
-$menu[name]	[] = "Statystyki";
-$menu[img]	[] = "traffic.gif";
-$menu[link]     [] = "?m=traffic";
-$menu[accesskey][] = "x";
-$menu[tip]	[] = "Statystyki wykorzystania ³±cza";
+global $_SHOW_STATS;
 
+if ($_SHOW_STATS == 1) {
+    $menu[name]		[] = "Statystyki";
+    $menu[img]		[] = "traffic.gif";
+    $menu[link]     	[] = "?m=traffic";
+    $menu[accesskey]	[] = "x";
+    $menu[tip]		[] = "Statystyki wykorzystania ³±cza";
+}
 
 /*
  * $Log$
+ * Revision 1.51  2003/09/05 19:49:46  lexx
+ * - enable_stats
+ *
  * Revision 1.50  2003/09/04 20:50:45  alec
  * new module from contrib added to menu
  *

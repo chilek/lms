@@ -67,6 +67,7 @@ $_DBHOST = (! $_CONFIG['database']['host'] && $_CONFIG['database']['type'] != "p
 $_DBUSER = (! $_CONFIG['database']['user'] ? 'root' : $_CONFIG['database']['user']);
 $_DBPASS = (! $_CONFIG['database']['password'] ? '' : $_CONFIG['database']['password']);
 $_DBNAME = (! $_CONFIG['database']['database'] ? 'lms' : $_CONFIG['database']['database']);
+$_SHOW_STATS = (! $_CONFIG['phpui']['enable_stats'] ? '0' : $_CONFIG['phpui']['enable_stats']);
 
 // Redirect to SSL
 
@@ -91,6 +92,7 @@ require_once($_LIB_DIR.'/LMSDB.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
 require_once($_LIB_DIR.'/leftmenu.php');
+require_once($_LIB_DIR.'/TipOfTheDay.php');
 require_once($_LIB_DIR.'/accesstable.php');
 
 $DB = DBInit($_DBTYPE,$_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME);
@@ -181,6 +183,9 @@ else
 
 /*
  * $Log$
+ * Revision 1.98  2003/09/05 19:48:59  lexx
+ * - enable_stats
+ *
  * Revision 1.97  2003/09/05 02:07:04  lukasz
  * - massive attack: s/this->ADB->/this->DB->/g
  *
