@@ -846,6 +846,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 					$list['after'][] = $saldolist['after'][$i];
 					$list['before'][] = $saldolist['before'][$i];
 					$list['value'][] = $saldolist['value'][$i];
+					$list['taxvalue'][] = $saldolist['taxvalue'][$i];
 					$list['name'][] = $saldolist['name'][$i];
 					switch($saldolist['name'][$i])
 					{ 
