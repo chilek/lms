@@ -204,7 +204,7 @@ while (my $row = $dbq->fetchrow_hashref())
 
 foreach my $key (@networks)
 {
-	my $dbq = $dbase->prepare("SELECT address, mask, dhcpstart, dhcpend FROM networks WHERE name = '$key'");
+	my $dbq = $dbase->prepare("SELECT address, mask, dhcpstart, dhcpend FROM networks WHERE name = UPPER('$key')");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) 
 	{
