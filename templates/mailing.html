@@ -1,7 +1,8 @@
 {include file="header.html"}
+{include file="mailingheader.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<FORM NAME="mailing" method="post" action="?m=mailingsend" TARGET="_blank">
+<FORM NAME="mailing" method="post" action="?m=mailing" TARGET="_blank">
 {literal}
 <SCRIPT LANGUAGE="JavaScript">
 	<!--
@@ -11,6 +12,7 @@
 		if( document.mailing["mailing[sender]"].value=="" ||
 		    document.mailing["mailing[from]"].value=="" ||
 		    document.mailing["mailing[subject]"].value=="" ||
+		    document.mailing["mailing[body]"].value=="" ||
 		    !checkaddr(document.mailing["mailing[sender]"].value)
 		    )
 			document.mailing.target="";
@@ -40,23 +42,23 @@
 		<TD CLASS="FRIGHTU" WIDTH="98%">
 			U¿ytkownicy:
 			<SELECT NAME="mailing[group]" {tip trigger="group" text="Wybierz grupê adresatów"}>
-				<option value="3">pod³±czeni</option>
-				<option value="2">oczekuj±cy</option>
-				<option value="1">zainteresowani</option>
-				<option value="0">wszyscy</option>
+				<option value="3"{if $mailing.group == "3"} SELECTED{/if}>pod³±czeni</option>
+				<option value="2"{if $mailing.group == "2"} SELECTED{/if}>oczekuj±cy</option>
+				<option value="1"{if $mailing.group == "1"} SELECTED{/if}>zainteresowani</option>
+				<option value="0"{if !$mailing.group} SELECTED{/if}>wszyscy</option>
 			</SELECT>&nbsp;
 			Sieæ:
 			<SELECT NAME="mailing[network]" {tip trigger="network" text="Wybierz sieæ"}>
 				<option value="0">- wszystkie -</option>
 				{section name="networks" loop=$networks}
-				<option value="{$networks[networks].id}">{$networks[networks].name}</option>
+				<option value="{$networks[networks].id}"{if $mailing.network == $networks[networks].id} SELECTED{/if}>{$networks[networks].name}</option>
 				{/section}
 			</SELECT>&nbsp;
 			Grupa:
 			<SELECT NAME="mailing[usergroup]" {tip trigger="usergroup" text="Wybierz grupê u¿ytkowników"}>
 				<option value="0">- wszystkie -</option>
 				{section name="usergroups" loop=$usergroups}
-				<option value="{$usergroups[usergroups].id}">{$usergroups[usergroups].name}</option>
+				<option value="{$usergroups[usergroups].id}"{if $mailing.usergroup == $usergroups[usergroups].id} SELECTED{/if}>{$usergroups[usergroups].name}</option>
 				{/section}
 			</SELECT>
 		</TD>
@@ -102,7 +104,7 @@
 			<B>Tre¶æ wiadomo¶ci:</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<TEXTAREA NAME="mailing[body]" COLS="80" ROWS="20" {tip text="			 U¿ywaj klawisza Enter po to tylko by zamkn±æ akapit. LMS sam sformatuje wiadomo¶æ i po³amie linijki."}>{$mailing.body}</TEXTAREA><BR>
+			<TEXTAREA NAME="mailing[body]" COLS="80" ROWS="20" {tip text="U¿ywaj klawisza Enter po to tylko by zamkn±æ akapit. LMS sam sformatuje wiadomo¶æ i po³amie linijki." trigger="body"}>{$mailing.body}</TEXTAREA><BR>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -118,8 +120,3 @@ document.forms['mailing'].elements['mailing[sender]'].focus();
 //-->
 </SCRIPT>
 {include file="footer.html"}
-<SCRIPT>
-<!--
-document.forms['account'].elements['account[login]'].focus();
-//-->
-</SCRIPT>
