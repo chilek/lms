@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetAccountList($order='username,asc', $owner=NULL)
+function GetAccountList($order='username,asc', $user=NULL, $type=NULL)
 {
 	global $LMS;
 
@@ -51,13 +51,15 @@ function GetAccountList($order='username,asc', $owner=NULL)
 	$list = $LMS->DB->GetAll(
 	        'SELECT passwd.id AS id, ownerid, login, lastlogin, '
 		.$LMS->DB->Concat('users.lastname', "' '",'users.name').
-		' AS username FROM passwd, users WHERE users.id = ownerid'
-		.($owner ? ' AND ownerid = '.$owner : '')
+		' AS username FROM passwd LEFT JOIN users ON users.id = ownerid WHERE 1=1'
+		.($user != '' ? ' AND ownerid = '.$user : '')
 		.($sqlord != '' ? $sqlord : '')
 		);
 	
 	$list['total'] = sizeof($list);
 	$list['order'] = $order;
+	$list['type'] = $type;
+	$list['user'] = $user;
 	$list['direction'] = $direction;
 
 	return $list;
@@ -75,6 +77,12 @@ else
 	$u = $_GET['u'];
 $_SESSION['alu'] = $u;
 
+if(!isset($_GET['t']))
+	$t = $_SESSION['alt'];
+else
+	$t = $_GET['t'];
+$_SESSION['alt'] = $t;
+
 if (isset($_SESSION['alp']) && !isset($_GET['page']))
 	$_GET['page'] = $_SESSION['alp'];
 	    
@@ -86,12 +94,16 @@ $_SESSION['ulp'] = $page;
 
 $layout['pagetitle'] = 'Zarz±dzanie kontami';
 
-$accountlist = GetAccountList($o, $u);
+$accountlist = GetAccountList($o, $u, $t);
 $listdata['total'] = $accountlist['total'];
 $listdata['order'] = $accountlist['order'];
 $listdata['direction'] = $accountlist['direction'];
+$listdata['type'] = $accountlist['type'];
+$listdata['user'] = $accountlist['user'];
 unset($accountlist['total']);
 unset($accountlist['order']);
+unset($accountlist['type']);
+unset($accountlist['user']);
 unset($accountlist['direction']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
@@ -101,6 +113,7 @@ $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('accountlist',$accountlist);
 $SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('userlist',$LMS->GetUserNames());
 $SMARTY->assign('layout',$layout);
 $SMARTY->display('accountlist.html');
 

@@ -46,7 +46,8 @@
 			<B>W³a¶ciciel:</B>
 		</TD>
 		<TD width="98%" class="fright">
-			<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Wybierz w³a¶ciciela tego konta"}>
+			<SELECT SIZE="1" NAME="account[ownerid]" {tip text="Wybierz w³a¶ciciela tego konta lub \"KONTO SYSTEMOWE\" je¶li nie chcesz przypisywaæ tego konta ¿adnemu u¿ytkownikowi"}>
+			    <OPTION VALUE="0"{if !$account.ownerid} SELECTED{/if}>KONTO SYSTEMOWE</OPTION>
 			    {section name=users loop=$users}
 			    <OPTION VALUE="{$users[users].id}"{if $account.ownerid == $users[users].id} SELECTED{/if}>{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 			    {/section}
