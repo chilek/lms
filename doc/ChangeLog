@@ -14,6 +14,7 @@ wersja 1.4.2 (??/??/????):
   - usuniêty b³±d w dniu zap³aty przy dodawaniu zobowi±zañ rocznych (alec)
   - usuniêty b³±d modu³u payments demona almsd, powoduj±cy wystawianie faktur
     bez zawarto¶ci podczas pracy z baz± MySQL (alec)
+  - BTS#0000262,263: lms-squid-warnings obs³uguje bazy postgres i sqlite (alec)
 
 wersja 1.4.1 Teyla (15/11/2004):
 

@@ -29,6 +29,13 @@ my $configfile = '/etc/lms/lms.ini';
 
 $|=1;
 
+sub dotquad2u32($)
+{
+     my $dq = shift||'0.0.0.0';
+     my @dq = split('\.',$dq,4);
+     return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
+}
+
 my $ini = new Config::IniFiles -file => $configfile;
 
 my $dbtype = $ini->val('database', 'type') || 'mysql';
@@ -39,15 +46,34 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 my $redirect = $ini->val('squid-warnings', 'redirect') || 'http://lms.rulez.pl/';
 
 while ($adres = <STDIN>) {
-    if ((!defined($dbase))||($dbase->state)) {
-	$dbase = DBI->connect_cached("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+    if ((!defined($dbase))||($dbase->state)) 
+    {
+	if($dbtype eq "mysql")
+	{
+    	    $dbase = DBI->connect_cached("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	}
+	elsif($dbtype eq "postgres")
+	{
+    	    $dbase = DBI->connect_cached("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	}
+	elsif($dbtype eq "sqlite")
+	{
+    	    $dbase = DBI->connect_cached("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+    	    $dbase->func('inet_aton',1,'dotquad2u32','create_function');     
+	}
+	else
+	{
+    	    print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+    	    exit 1;
+	}
+
 	$dbq = $dbase->prepare_cached("SELECT warning FROM nodes WHERE ipaddr=INET_ATON(?)");
     }
     @lista = split(' ', $adres);
     @ip = split('/', $lista[1]);
     $dbq->execute($ip[0]);
     my $row = $dbq->fetchrow_hashref();
-    if ($row->{'warning'}) {
+    if ($row->{'warning'}=='1') {
 	if (!($lista[0] =~ m/$redirect/)) {
 	    $lista[0] = $redirect."?oldurl=".$lista[0];
 	    $adres = join(' ',@lista)."\n";
