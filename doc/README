@@ -664,6 +664,10 @@ database = /usr/local/lms/lms.db
        Limit wy¶wietlanych pozycji na stronie w li¶cie zg³oszeñ.
        Domy¶lnie: 100
        Przyk³ad: ticketlist_pagelimit = 50
+     * networkhosts_pagelimit
+       Limit ilo¶ci komputerów wy¶wietlanych na stronie w informacjach o
+       sieci. Domy¶lnie: 256.
+       Przyk³ad: networkhosts_pagelimit = 1024
      * reload_type
        Typ reloadu. Dozwolone warto¶ci:
        exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo,
@@ -1500,7 +1504,9 @@ Rozdzia³ 4. Skrypty
    W szablonach mo¿na u¿ywaæ nastêpuj±cych zmiennych:
      * %date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1
        poprzedzone 0, np. 02
-     * %date-y - zostanie zast±pione aktualnym rokiem, np 2003
+     * %date-y - zostanie zast±pione aktualnym rokiem, np. 2003
+     * %date_month_name - zostanie zast±pione nazw± bie¿±cego miesi±ca,
+       np. marzec
      * %saldo - zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535
      * %abonament - zostanie zast±pione kwot± abonamentu jaka jest do
        danego u¿ytkownika przypisana, np. 107
@@ -1509,6 +1515,7 @@ Rozdzia³ 4. Skrypty
      * %last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na
        koncie u¿ytkownika, np:
      * %pin - numer PIN u¿ytkownika.
+     * %phone1 - numer pierwszego telefonu u¿ytkownika.
 
    Przyk³ad 4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji
    kasowych
