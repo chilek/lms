@@ -19,7 +19,7 @@
 			<B>Producent:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdevinfo.producer}">
+			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdevinfo.producer}" {tip text="Wpisz producenta urz±dzenia (opcjonalnie)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -30,7 +30,7 @@
 			<B>Model:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdevinfo.model}">
+			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdevinfo.model}" {tip text="Wpisz nazwê modelu (opcjonalnie)" }>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -41,7 +41,7 @@
 			<B>Numer seryjny:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[serialnumber]" VALUE="{$netdevinfo.serialnumber}">
+			<INPUT TYPE="TEXT" NAME="netdev[serialnumber]" VALUE="{$netdevinfo.serialnumber}" {tip text="Podaj numer seryjny (opcjonalnie)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -52,7 +52,7 @@
 			<B>Ilo¶æ portów:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdevinfo.ports}" {tip trigger="ports"}>
+			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdevinfo.ports}" {tip trigger="ports" text="Wpisz liczbê portów (opcjonalnie)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -63,7 +63,7 @@
 			<B>Lokalizacja:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[location]" VALUE="{$netdevinfo.location}">
+			<INPUT TYPE="TEXT" NAME="netdev[location]" VALUE="{$netdevinfo.location}" {tip text="Podaj lokalizacjê (opcjonalnie)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -77,7 +77,7 @@
 			<TABLE WIDTH="1%" CELLPADDING="5">
 				<TR>
 					<TD CLASS="FALL" BGCOLOR="#F4F0EC">
-						<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5">{$netdevinfo.description}</TEXTAREA>
+						<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5" {tip text="Informacje dodatkowe (opcjonalnie)"}>{$netdevinfo.description}</TEXTAREA>
 					</TD>
 				</TR>
 			</TABLE>
@@ -100,7 +100,7 @@
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
 			<A HREF="javascript:document.replace.submit(); "><B>Wymieñ urz±dzenie:</B></A>
-			<SELECT NAME="netdev" {tip trigger="replace"}>
+			<SELECT NAME="netdev" {tip trigger="replace" text="Wybierz z listy urz±dzenie do zamiany"}>
 				{section name=replacelist loop=$replacelist}
 				<OPTION VALUE="{$replacelist[replacelist].id}">{$replacelist[replacelist].name} {if $replacelist[replacelist].producer}/ {$replacelist[replacelist].producer}{/if} {if $replacelist[replacelist].location}({$replacelist[replacelist].location}){/if}</OPTION>
 				{/section}
