@@ -14,7 +14,7 @@
     <para>timeout</para>
     <para>Timeout sesji www. Po tym czasie (w sekudnach) u¿ytkownik zostanie wylogowany je¿eli nie podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</para>
     <example><title>Przyk³ad:</title><para>timeout = 900</para></example>
-    <note><para>Uwaga! Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie bêdziesz móg³ korzystaæ z LMS!</para></note>
+    <warning><para>Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie bêdziesz móg³ korzystaæ z LMS!</para></warning>
    </listitem>
    <listitem>
     <para>userlist_pagelimit</para>
