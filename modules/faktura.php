@@ -26,60 +26,6 @@
 
 setlocale (LC_TIME, "pl_PL");
 
-
-function slownie($liczba) {
-// Funkcja nie akceptuje liczb wiêkszych ni¿ 999... No có¿ ;) Jak komu¶ to 
-// potrzebne to niech se wklepie
- $z['0'] = "zero";
- $z['1'] = "jeden";
- $z['2'] = "dwa";
- $z['3'] = "trzy";
- $z['4'] = "cztery";
- $z['5'] = "piêæ";
- $z['6'] = "sze¶æ";
- $z['7'] = "siedem";
- $z['8'] = "osiem";
- $z['9'] = "dziewiêæ";
- $z['10'] = "dziesiêæ";
- $z['11'] = "jedena¶cie";
- $z['12'] = "dwana¶cie";
- $z['13'] = "trzyna¶cie";
- $z['14'] = "czterna¶cie";
- $z['15'] = "piêtna¶cie";
- $z['16'] = "szesna¶cie";
- $z['17'] = "siedemna¶cie";
- $z['18'] = "osiemna¶cie";
- $z['19'] = "dziewiêtna¶cie";
- $z['20'] = "dwadzie¶cia";
- $z['30'] = "trzydzie¶ci";
- $z['40'] = "czterdzie¶ci";
- $z['50'] = "pieædziesi±t";
- $z['60'] = "sze¶ædziesi±t";
- $z['70'] = "siedemdziesi±t";
- $z['80'] = "osiemdziesi±t";
- $z['90'] = "dziewieædziesi±t";
- $z['100'] = "sto";
- $z['200'] = "dwie¶cie";
- $z['300'] = "trzysta";
- $z['400'] = "czterysta";
- $z['500'] = "piêæset";
- $z['600'] = "sze¶æset";
- $z['700'] = "siedemset";
- $z['800'] = "osiemset";
- $z['900'] = "dziewiêæset";
- $slow='';
- if ($liczba>100) {
-    $slow .=$z[round($liczba / 100)*100]." ";
-    $liczba = $liczba % 100;
- }
- if ($liczba>20) {
-    $slow .=$z[round($liczba / 10)*10]." ";
-    $liczba =  $liczba % 10;
- }
- if (($liczba>0) or (strlen($slow)<1)) {$slow .=$z[$liczba];}
- return $slow;
-}
-
 $cash=$LMS->GetCashByID($_GET[id]);
 $userinfo=$LMS->GetUser($cash['userid']);
 
@@ -111,9 +57,9 @@ $szablon = str_replace('%brutto',strtr(sprintf("%1.2f",$cash['value']*1.07),$tra
 $szablon = str_replace('%vat',strtr(sprintf("%1.2f",$cash['value']*0.07),$trans),$szablon);
 $kesz=explode(".",sprintf("%1.2f",$cash['value']*1.07));
 if ($kesz[1]>0) {
-    $szablon = str_replace('%slownie',strtr(slownie($kesz[0])." z³ ".$kesz[1]." gr",$trans),$szablon);
+    $szablon = str_replace('%slownie',strtr($LMS->NumberSpell($kesz[0])." z³ ".$kesz[1]." gr",$trans),$szablon);
 } else {
-    $szablon = str_replace('%slownie',strtr(slownie($kesz[0])." z³",$trans),$szablon);
+    $szablon = str_replace('%slownie',strtr($LMS->NumberSpell($kesz[0])." z³",$trans),$szablon);
 }			    
 $szablon = str_replace('%konto',strtr($_CONFIG[finances]['bank']." ".$_CONFIG[finances]['account'],$trans),$szablon);
 $szablon = str_replace('%wystawil',strtr($layout['logname'],$trans),$szablon);
@@ -125,6 +71,9 @@ while (list ($line_num, $line) = each ($szablon)) {
 
 /*
  * $Log$
+ * Revision 1.9  2003/10/10 21:40:21  lexx
+ * - NumberSpell
+ *
  * Revision 1.8  2003/10/06 18:44:18  lexx
  * - stare i dzialajace
  *
