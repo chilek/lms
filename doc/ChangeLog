@@ -15,6 +15,8 @@ wersja 1.1.2 (??/0?/2003):
     'FF:FF:FF:FF:FF:FF' (lukasz)
   - nowa zabawka w contrib/ - bandlogger+htblimiter - w oparciu o HTB oraz
     iptables (lukasz)
+  - i stalo siê - LMS nie wymaga ju¿ ADOdb - ma w³asne biblioteki do obs³ugi
+    mysql'a i postgresa (lukasz)
 
 wersja 1.1.1 (09/08/2003):
 

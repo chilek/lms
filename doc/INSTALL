@@ -101,14 +101,6 @@ wget http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz
 tar -xzf Smarty-2.5.0.tar.gz
 mv Smarty-2.5.0/libs Smarty
 
-Do tego jeszcze ADOdb:
-
-wget http://phplens.com/lens/dl/adodb340.tgz
-tar -xzf adodb340.tgz
-
-W Debianie unstable wystarczy:
-apt-get install libphp-adodb
-
 Pozostaje  nam  stworzyæ  w  katalogu  z LMS podkatalogi templates_c i
 backups  (o  ile  go  nie  ma, bo bardzo niewykluczone ¿e pewien pacan
 pakuj±cy  LMS'a  zapomni  go  dodaæ)  oraz zmieniæ jego w³a¶ciciela na
