@@ -70,6 +70,7 @@ version 1.5.5 Anubis (??/??/????):
   - BTS#0000311: fixed cash operation time setting after invoice edition (alec)
   - mail() -> SendMail(). We use Pear::Mail (chilek)
   - notifications about new tickets (chilek)
+  - proper char encoding in mail notifications (chilek)
 
 version 1.5.4 Ramius (16/02/2005):
 
