@@ -28,6 +28,20 @@ $layout['pagetitle'] = 'Wyszukiwanie zg³oszeñ';
 
 $search = $_POST['search'];
 
+if(isset($_GET['state']))
+{
+	$search = array(
+		'state' => $_GET['state'],
+		'subject' => '',
+		'userid' => '0',
+		'name' => '',
+		'email' => '',
+		'owner' => '0',
+		'queue' => '0',
+		'uptime' => ''
+		);
+}
+
 if(!isset($_GET['o']))
 	$o = $_SESSION['rto'];
 else

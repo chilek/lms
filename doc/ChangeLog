@@ -27,6 +27,7 @@ wersja 1.5.1 (??/??/????):
   - przebudowany i poprawiony lms-notify-sms (alec)
   - lms-notify: uzupe³niona dokumentacja (%phone1, %date_month_name), poprawione 
     sortowanie %last_10_in_a_table i znak przy kwotach (alec)
+  - mo¿liwo¶æ szybkiego wyszukania zg³oszeñ o okre¶lonych stanach z welcome.html (chilek)
   
 wersja 1.5.0 Marduk (18/09/2004):
 
