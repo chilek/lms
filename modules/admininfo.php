@@ -29,8 +29,8 @@ if(!$LMS->AdminExists($_GET['id']))
 	$SESSION->redirect('?m=adminlist');
 }
 
-$layout['pagetitle'] = trans('User Info: $0', $LMS->GetAdminName($_GET['id']));
 $admininfo = $LMS->GetAdminInfo($_GET['id']);
+$layout['pagetitle'] = trans('User Info: $0', $admininfo['login']);
 
 $rights = $LMS->GetAdminRights($_GET['id']);
 foreach($rights as $right)
