@@ -21,9 +21,13 @@ struct tc_module
 	unsigned char *command;
 	unsigned char *begin;
 	unsigned char *end;
-	unsigned char *host;
+	unsigned char *host_mark_up;
+	unsigned char *host_mark_down;
+	unsigned char *host_htb_up;
+	unsigned char *host_htb_down;
 	unsigned char *host_plimit;
 	unsigned char *host_climit;
 	unsigned char *networks;
 	unsigned char *usergroups;
+	int one_class_per_host;
 };

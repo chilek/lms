@@ -104,12 +104,12 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		// we need user ID and average data values for nodes
 		if( (ures = g->db_query("\
 			SELECT userid AS id, \
-				ROUND(SUM(uprate)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS uprate, \
-				ROUND(SUM(downrate)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS downrate, \
-				ROUND(SUM(upceil)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS upceil, \
-				ROUND(SUM(downceil)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS downceil, \
-				ROUND(SUM(climit)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS climit, \
-				ROUND(SUM(plimit)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS plimit \
+				SUM(uprate)/COUNT(DISTINCT nodes.id) AS uprate, \
+				SUM(downrate)/COUNT(DISTINCT nodes.id) AS downrate, \
+				SUM(upceil)/COUNT(DISTINCT nodes.id) AS upceil, \
+				SUM(downceil)/COUNT(DISTINCT nodes.id) AS downceil, \
+				SUM(climit)/COUNT(DISTINCT nodes.id) AS climit, \
+				SUM(plimit)/COUNT(DISTINCT nodes.id) AS plimit \
 			FROM assignments \
 				LEFT JOIN tariffs ON (tariffid = tariffs.id) \
 				LEFT JOIN nodes ON (userid = ownerid) \
@@ -156,51 +156,77 @@ void reload(GLOBAL *g, struct tc_module *tc)
 						WHERE ownerid = ? AND access = 1 \
 						ORDER BY ipaddr", g->db_get_data(ures,i,"id")))!=NULL ) 
 					{
-			
 						for(j=0; j<nres->nrows; j++) 
 						{	
 							char *ipaddr = g->db_get_data(nres,j,"ip");
 							char *mac = g->db_get_data(nres,j,"mac");
 							unsigned char *name = g->db_get_data(nres,j,"name");
-							unsigned char *s = strdup(tc->host);
+							unsigned char *mark_up = strdup(tc->host_mark_up);
+							unsigned char *mark_down = strdup(tc->host_mark_down);
+							unsigned char *htb_up = strdup(tc->host_htb_up);
+							unsigned char *htb_down = strdup(tc->host_htb_down);
 							unsigned char *cl = strdup(tc->host_climit);
 							unsigned char *pl = strdup(tc->host_plimit);
+							int h_uprate = (int) n_uprate/nres->nrows;
+							int h_upceil = (int) n_upceil/nres->nrows;
+							int h_downrate = (int) n_downrate/nres->nrows;
+							int h_downceil = (int) n_downceil/nres->nrows;  
+							int h_plimit = (int) n_plimit/nres->nrows;
+							int h_climit = (int) n_climit/nres->nrows;  
 							
 							// test node's membership in networks
 							if(nc)
 								for(v=0; v<nc; v++)
 									if(nets[v].address == (inet_addr(ipaddr) & nets[v].mask)) 
 										break;
-						
+																		
 							if(!nc || v!=nc)
 							{
-								if(n_uprate && n_downrate)
+								if(h_uprate && h_downrate)
 								{
-									g->str_replace(&s, "%n", name);
-									g->str_replace(&s, "%i", ipaddr);
-									g->str_replace(&s, "%m", mac);
-									g->str_replace(&s, "%x", itoa(x));
-									g->str_replace(&s, "%climit", climit);
-									g->str_replace(&s, "%plimit", plimit);
-									g->str_replace(&s, "%uprate", uprate);
-									g->str_replace(&s, "%downrate", downrate);
-									if(!n_upceil)
-										g->str_replace(&s, "%upceil", uprate);
-									else
-										g->str_replace(&s, "%upceil", upceil);
+									g->str_replace(&mark_up, "%n", name);
+									g->str_replace(&mark_up, "%i", ipaddr);
+									g->str_replace(&mark_up, "%m", mac);
+									g->str_replace(&mark_up, "%x", itoa(x));
+									fprintf(fh, "%s", mark_up);
 									
-									if(!n_downceil)
-										g->str_replace(&s, "%downceil", downrate);
-									else						
-										g->str_replace(&s, "%downceil", downceil);
+									g->str_replace(&mark_down, "%n", name);
+									g->str_replace(&mark_down, "%i", ipaddr);
+									g->str_replace(&mark_down, "%m", mac);
+									g->str_replace(&mark_down, "%x", itoa(x));
+									fprintf(fh, "%s", mark_down);
+						
+									if(tc->one_class_per_host)
+									{
+										g->str_replace(&htb_up, "%n", name);
+										g->str_replace(&htb_up, "%i", ipaddr);
+										g->str_replace(&htb_up, "%m", mac);
+										g->str_replace(&htb_up, "%x", itoa(x));
+										g->str_replace(&htb_up, "%uprate", itoa(h_uprate));
+										if(!h_upceil)
+											g->str_replace(&htb_up, "%upceil", itoa(h_uprate));
+										else
+											g->str_replace(&htb_up, "%upceil", itoa(h_upceil));
+									
+										g->str_replace(&htb_down, "%n", name);
+										g->str_replace(&htb_down, "%i", ipaddr);
+										g->str_replace(&htb_down, "%m", mac);
+										g->str_replace(&htb_down, "%x", itoa(x));
+										g->str_replace(&htb_down, "%downrate", itoa(h_downrate));
+										if(!h_downceil)
+											g->str_replace(&htb_down, "%downceil", itoa(h_downrate));
+										else						
+											g->str_replace(&htb_down, "%downceil", itoa(h_downceil));
 							
-									// write to file
-									fprintf(fh, "%s", s);
+										// write to file
+										fprintf(fh, "%s", htb_up);
+										fprintf(fh, "%s", htb_down);
+									}
 								}
 								
-								if(n_climit)
+								if(h_climit)
 								{
-									g->str_replace(&cl, "%climit", climit);
+									g->str_replace(&cl, "%climit", itoa(h_climit));
 									g->str_replace(&cl, "%n", name);
 	    								g->str_replace(&cl, "%i", ipaddr);
 									g->str_replace(&cl, "%m", mac);
@@ -208,9 +234,9 @@ void reload(GLOBAL *g, struct tc_module *tc)
 									fprintf(fh, "%s", cl);
 								}
 								
-								if(n_plimit)
+								if(h_plimit)
 								{
-									g->str_replace(&pl, "%plimit", plimit);
+									g->str_replace(&pl, "%plimit", itoa(h_plimit));
 									g->str_replace(&pl, "%n", name);
 									g->str_replace(&pl, "%i", ipaddr);
 									g->str_replace(&pl, "%m", mac);
@@ -218,9 +244,37 @@ void reload(GLOBAL *g, struct tc_module *tc)
 									fprintf(fh, "%s", pl);
 								}	
 							
-								free(cl); free(pl); free(s);
+							
+								if(tc->one_class_per_host) x++;
+							}
+							
+							if(!tc->one_class_per_host && j==nres->nrows-1 && n_downrate && n_uprate)
+							{
+								g->str_replace(&htb_up, "%n", name);
+								g->str_replace(&htb_up, "%x", itoa(x));
+								g->str_replace(&htb_up, "%uprate", uprate);
+								if(!n_upceil)
+									g->str_replace(&htb_up, "%upceil", uprate);
+								else
+									g->str_replace(&htb_up, "%upceil", upceil);
+								g->str_replace(&htb_down, "%n", name);
+								g->str_replace(&htb_down, "%x", itoa(x));
+								g->str_replace(&htb_down, "%downrate", downrate);
+								if(!n_downceil)
+									g->str_replace(&htb_down, "%downceil", downrate);
+								else						
+									g->str_replace(&htb_down, "%downceil", downceil);
+							
+								// write to file
+								fprintf(fh, "%s", htb_up);
+								fprintf(fh, "%s", htb_down);
+								
 								x++;
 							}
+							
+							free(cl); free(pl); 
+							free(mark_up); free(mark_down);
+							free(htb_up); free(htb_down);
 						}
 						g->db_free(nres);
 					}
@@ -258,7 +312,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	free(tc->command);	
 	free(tc->begin);
 	free(tc->end);	
-	free(tc->host);
+	free(tc->host_htb_up);
+	free(tc->host_htb_down);
+	free(tc->host_mark_up);
+	free(tc->host_mark_down);
 	free(tc->host_climit);
 	free(tc->host_plimit);
 	free(tc->networks);
@@ -284,30 +341,38 @@ struct tc_module * init(GLOBAL *g, MODULE *m)
 	ini = g->iniparser_load(g->inifile);
 	
 	s = g->str_concat(instance, ":file");
-	tc->file = strdup(g->iniparser_getstring(ini, s, "/etc/rc.d/rc.htb"));
+	//tc->file = strdup(g->iniparser_getstring(ini, s, "/etc/rc.d/rc.htb"));
+	tc->file = strdup(g->iniparser_getstring(ini, s, "/etc/rc.d/rc.htb-new"));
 	free(s); s = g->str_concat(instance, ":command");
-	tc->command = strdup(g->iniparser_getstring(ini, s, "sh /etc/rc.d/rc.htb start"));
+	//tc->command = strdup(g->iniparser_getstring(ini, s, "sh /etc/rc.d/rc.htb start"));
+	tc->command = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":begin");
-	tc->begin = strdup(g->iniparser_getstring(ini, s, "\n\
+	tc->begin = strdup(g->iniparser_getstring(ini, s, "\
 #!/bin/sh\n\
 IPT=/usr/sbin/iptables\n\
 TC=/sbin/tc\n\
 LAN=eth0\n\
 WAN=eth1\n\
-BURST=\"burst 15k\"\n\
-\
+BURST=\"burst 30k\"\n\
+\n\
 stop ()\n\
 {\n\
-$IPT -t mangle -F POSTROUTING\n\
+$IPT -t mangle -D FORWARD -i $WAN -j LIMITS >/dev/null 2>&1\n\
+$IPT -t mangle -D FORWARD -o $WAN -j LIMITS >/dev/null 2>&1\n\
+$IPT -t mangle -F LIMITS >/dev/null 2>&1\n\
+$IPT -t mangle -X LIMITS >/dev/null 2>&1\n\
 $IPT -t mangle -F OUTPUT\n\
 $IPT -t filter -F FORWARD\n\
 $TC qdisc del dev $LAN root 2> /dev/null\n\
 $TC qdisc del dev $WAN root 2> /dev/null\n\
 }\n\
-\
+\n\
 start ()\n\
 {\n\
 stop\n\
+$IPT -t mangle -N LIMITS\n\
+$IPT -t mangle -I FORWARD -i $WAN -j LIMITS\n\
+$IPT -t mangle -I FORWARD -o $WAN -j LIMITS\n\
 # incomming traffic\n\
 $IPT -t mangle -A OUTPUT -j MARK --set-mark 1\n\
 $TC qdisc add dev $LAN root handle 1:0 htb default 3 r2q 1\n\
@@ -341,7 +406,7 @@ $TC class add dev $WAN parent 2:1 classid 2:11 htb rate 30kbit ceil 120kbit prio
 $TC qdisc add dev $WAN parent 2:11 esfq perturb 10 hash dst\n\
 $TC filter add dev $WAN parent 2:0 protocol ip prio 3 handle 1 fw flowid 2:11\n\
 $TC filter add dev $WAN parent 2:0 protocol ip prio 9 u32 match ip dst 0/0 flowid 2:11\n\
-"));
+\n"));
 	free(s); s = g->str_concat(instance, ":end");
 	tc->end = strdup(g->iniparser_getstring(ini, s, "\n\
 }\n\
@@ -368,28 +433,42 @@ case \"$1\" in\n\
     ;;\n\
 esac\n\
 "));
-	free(s); s = g->str_concat(instance, ":host");
-	tc->host = strdup(g->iniparser_getstring(ini, s, 
+	free(s); s = g->str_concat(instance, ":host_mark_up");
+	tc->host_mark_up = strdup(g->iniparser_getstring(ini, s, 
 "# %n\n\
-$IPT -t mangle -A POSTROUTING -s %i -j MARK --set-mark %x\n\
-$TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500\n\
-$TC qdisc add dev $LAN parent 1:%x esfq perturb 10 hash dst\n\
-$TC filter add dev $LAN parent 1:0 protocol ip prio 5 u32 match ip dst %i flowid 1:%x\n\
-$TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500\n\
+$IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x\n"));
+
+	free(s); s = g->str_concat(instance, ":host_mark_down");
+	tc->host_mark_down = strdup(g->iniparser_getstring(ini, s, 
+"$IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x\n"));
+
+	free(s); s = g->str_concat(instance, ":host_htb_up");
+	tc->host_htb_up = strdup(g->iniparser_getstring(ini, s, 
+"$TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500\n\
 $TC qdisc add dev $WAN parent 2:%x esfq perturb 10 hash dst\n\
-$TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x\n\
-"));
+$TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x\n"));
+	
+	free(s); s = g->str_concat(instance, ":host_htb_down");
+	tc->host_htb_down = strdup(g->iniparser_getstring(ini, s, 
+"$TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500\n\
+$TC qdisc add dev $LAN parent 1:%x esfq perturb 10 hash dst\n\
+$TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%x\n"));
+	
 	free(s); s = g->str_concat(instance, ":host_climit");
-	tc->host_climit = strdup(g->iniparser_getstring(ini, s, "\n\
-$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT\n"));
+	tc->host_climit = strdup(g->iniparser_getstring(ini, s, 
+"$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT\n"));
+	
 	free(s); s = g->str_concat(instance, ":host_plimit");
-	tc->host_plimit = strdup(g->iniparser_getstring(ini, s, "\n\
-$IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT\n\
+	tc->host_plimit = strdup(g->iniparser_getstring(ini, s, 
+"$IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT\n\
 $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT\n"));
+	
 	free(s); s = g->str_concat(instance, ":networks");
 	tc->networks = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":usergroups");
 	tc->usergroups = strdup(g->iniparser_getstring(ini, s, ""));
+	free(s); s = g->str_concat(instance, ":one_class_per_host");
+	tc->one_class_per_host = g->iniparser_getboolean(ini, s, 0);
 	
 	g->iniparser_freedict(ini);
 	free(instance);
