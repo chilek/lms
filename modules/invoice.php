@@ -26,13 +26,13 @@
 header('Content-Type: '.$LMS->CONFIG['invoices']['content_type']);
 if($LMS->CONFIG['invoices']['attachment_name'] != '')
 	header('Content-Disposition: attachment; filename='.$LMS->CONFIG['invoices']['attachment_name']);
-				
-if($_GET['print'] == 'cached' && sizeof($_POST['mark']))
+
+if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
 	$layout['pagetitle'] = 'Faktury VAT';
 	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('clearheader.html');
-	foreach($_POST['mark'] as $markid => $junk)
+	foreach($_POST['marks'] as $markid => $junk)
 		if($junk)
 			$ids[] = $markid;
 	sort($ids);

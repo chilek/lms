@@ -23,21 +23,13 @@
  *
  *  $Id$
  */
-
 $layout['pagetitle'] = 'Lista faktur';
-/*
-if($_GET['action'] == 'updatemarks')
-{
-	if(sizeof($_POST['mark']))
-		foreach($_POST['mark'] as $markid => $mark)
-			if($_SESSION['ilp_marks'][$markid])
-				unset($_SESSION['ilp_marks'][$markid]);
-			else
-				$_SESSION['ilp_marks'][$markid] = TRUE;
-}
-elseif($_GET['action'] == 'clearmarks')
-	unset($_SESSION['ilp_marks']);
-*/
+
+$marks = $_POST['marks'];
+unset($marked);
+if( sizeof($marks) )
+	foreach($marks as $marksid => $mark)
+		$marked[] = $mark;
 
 $invoicelist = $LMS->GetInvoicesList();
 
@@ -50,15 +42,13 @@ unset($invoicelist['startdate'], $invoicelist['enddate']);
 
 $listdata['totalpos'] = sizeof($invoicelist);
 
-if (isset($_SESSION['blp']) && !isset($_GET['page']))
+if (isset($_SESSION['ilp']) && !isset($_GET['page']))
 	$_GET['page'] = $_SESSION['ilp'];
 
 $pagelimit = $LMS->CONFIG['phpui']['invoicelist_pagelimit'];
-$page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']);
+$page = (! $_POST['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_POST['page']);
 $start = ($page - 1) * $pagelimit;
 $_SESSION['ilp'] = $page;
-
-$marks = $_SESSION['ilp_marks'];
 
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);
@@ -66,6 +56,7 @@ $SMARTY->assign('start',$start);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('marks',$marks);
+$SMARTY->assign('marked',$marked);
 $SMARTY->assign('invoicelist',$invoicelist);
 $SMARTY->display('invoicelist.html');
 

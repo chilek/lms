@@ -2,19 +2,32 @@
 {include file="header.html"}
 {include file="balanceheader.html"}
 <H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="marks" ACTION="?m=invoice&print=cached">
+<FORM METHOD="POST" NAME="page">
+{section name=marked loop=$marked}
+    <INPUT TYPE="hidden" NAME="marks[{$marked[marked]}]" VALUE="{$marked[marked]}">
+{/section}
 {literal}
 <SCRIPT language=JavaScript>
 <!--
-function CheckAll()
-  {
-  for (var i=0; i<document.marks.elements.length; i++)
+    function CheckAll()
     {
-    var e = document.marks.elements[i];
-    if (e.name != 'allbox')
-      e.checked = document.marks.allbox.checked;
+	for (var i=0; i<document.page.elements.length; i++)
+	{
+	    var e = document.page.elements[i];
+	    if (e.name != 'allbox')
+    		e.checked = document.page.allbox.checked;
+	}
     }
-  }
+    function prints()
+    {
+	document.page.action="?m=invoice&print=cached";
+	document.page.submit();
+    }
+    function page_change()
+    {
+	document.page.action="?m=invoicelist";
+	document.page.submit();
+    }
 //-->
 </SCRIPT>
 {/literal}
@@ -44,7 +57,7 @@ function CheckAll()
 	</TR>
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
-			<B>Strona: {if $page > 1}<A HREF="?m=invoicelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=invoicelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="?m=invoicelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+			<B>Strona: {if $page > 1}<INPUT TYPE="hidden" NAME="page" VALUE="{math equation="x - 1" x=$page}"><A HREF="javascript:page_change();">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <INPUT TYPE="hidden" NAME="page" VALUE="{$smarty.section.pcnt.rownum}"><A HREF="javascript:page_change();">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<INPUT TYPE="hidden" NAME="page" VALUE="{math equation="x + 1" x=$page}"><A HREF="javascript:page_change();">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
@@ -72,15 +85,15 @@ function CheckAll()
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			{cycle print=false}
-			{if $marks.$invoiceid}<IMG ALIGN="absmiddle" SRC="img/mark.gif">{/if}
-			<INPUT STYLE="border-style: none; background-color: {cycle};"  TYPE="checkbox" NAME="mark[{$invoice.id}]" VALUE="{$invoice.id}">
+			
+			<INPUT STYLE="border-style: none; background-color: {cycle};"  TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
 			<A HREF="?m=invoice&id={$invoice.id}"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0" TARGET="_BLANK"></A>
 		</TD>
 	</TR>
 	{/section}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
-			<B>Strona: {if $page > 1}<A HREF="?m=invoicelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=invoicelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="?m=invoicelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+			<B>Strona: {if $page > 1}<INPUT TYPE="hidden" NAME="page" VALUE="{math equation="x - 1" x=$page}"><A HREF="javascript:page_change();">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <INPUT TYPE="hidden" NAME="page" VALUE="{$smarty.section.pcnt.rownum}"><A HREF="javascript:page_change();">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<INPUT TYPE="hidden" NAME="page" VALUE="{math equation="x + 1" x=$page}"><A HREF="javascript:page_change();">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
 		</TD>
 	</TR>
 	<TR CLASS="dark">
@@ -119,14 +132,8 @@ function CheckAll()
 						</TABLE>*}
 					</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="right">
-					{*
-						<A HREF="javascript:document.marks.submit();">Uaktualnij zaznaczenia <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
-						<A HREF="?m=invoicelist&action=clearmarks">Wyczy¶æ zaznaczone <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
-					*}
-						Zaznacz wszystkie
-						<INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"><BR>
-
-						<A HREF="javascript:document.marks.submit();">Drukuj <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
+						Zaznacz wszystkie<INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"><BR>
+						<A HREF="javascript:prints();">Drukuj <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
 					</TD>
 				</TR>
 			</TABLE>
