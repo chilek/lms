@@ -123,7 +123,8 @@ require_once($_LIB_DIR.'/LMSDB.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
 require_once($_LIB_DIR.'/accesstable.php');
-require_once($_LIB_DIR.'/language.php');
+
+// Init database 
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
@@ -148,7 +149,7 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 	exit(0);
 }
 
-// Initialize database and template classes
+// Initialize session and template classes
 
 $SESSION = new Session($DB, $_TIMEOUT);
 
@@ -157,7 +158,6 @@ $LMS->CONFIG = $_CONFIG;
 
 $SMARTY = new Smarty;
 $SMARTY->assign('_config',$_CONFIG);
-$SMARTY->assign('lang',$lang);
 
 // test for proper version of Smarty
 
@@ -168,6 +168,9 @@ $SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 $SMARTY->debugging = chkconfig($_CONFIG['phpui']['smarty_debug']);
 require_once($_LIB_DIR.'/smarty_addons.php');
+
+// set locales
+require_once($_LIB_DIR.'/language.php');
 
 $layout['logname'] = $SESSION->logname;
 $layout['logid'] = $SESSION->id;

@@ -117,9 +117,14 @@ function _smarty_modifier_striphtml($args)
 function _smarty_block_translate($args, $content, &$SMARTY)
 {
     $content = trim($content);
+    
+    if($SMARTY->_tpl_vars['_LANG'][$content])
+	    $content = trim($SMARTY->_tpl_vars['_LANG'][$content]);
+    
     if(is_array($args))
-	foreach($args as $argid => $argval)
-    $content = str_replace('$'.$argid, $argval, $content);
+	    foreach($args as $argid => $argval)
+		    $content = str_replace('$'.$argid, $argval, $content);
+
     return trim($content);
 }
 
@@ -133,4 +138,5 @@ $SMARTY->register_block('t', '_smarty_block_translate');
 $SMARTY->assign('now', time());
 $SMARTY->assign('tomorrow', time()+86400);
 $SMARTY->assign('yesterday', time()-86400);
+
 ?>
