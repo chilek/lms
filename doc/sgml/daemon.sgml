@@ -460,7 +460,8 @@ info = "Opcjonalny opis modu³u"
 		    <title>Opis</title>
 		    <para>Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
 		    wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
-		    status (od³±czony/pod³±czony), dlatego mo¿liwe jest tworzenie np. regu³
+		    status (od³±czony/pod³±czony), sieæ do której s± pod³aczone oraz
+		    grupy do których nale¿± ich w³a¶ciciele, dlatego mo¿liwe jest tworzenie np. regu³
 		    dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku 
 		    i nastêpnie wykonuje okre¶lone polecenie pow³oki.</para>
 		    </sect3>
@@ -503,8 +504,15 @@ info = "Opcjonalny opis modu³u"
 			</listitem>
 			<listitem>
 			    <para>networks</para>
-			    <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Domy¶lnie: pusta (wszystkie sieci).</para>
+			    <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+			    Domy¶lnie: pusta (wszystkie sieci).</para>
 			    <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>usergroups</para>
+			    <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    Domy¶lnie: pusta (wszystkie sieci).</para>
+			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>skip_dev_ips</para>
