@@ -74,8 +74,8 @@ switch($_GET['action'])
 	break;
 
 	case 'setcustomer':
-		if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['userid'])))
-			$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['userid']));
+		if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user'])))
+			$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user']));
 		$invoice['paytime'] = sprintf('%d', $_POST['invoice']['paytime']);
 		$invoice['paytype'] = trim($_POST['invoice']['paytype']);
 	break;
@@ -93,7 +93,7 @@ switch($_GET['action'])
 	break;
 }
 
-if($invoice['paytime'] < 1)
+if($invoice['paytime'] < 0)
 	$invoice['paytime'] = 14;
 if($invoice['paytype'] == '')
 	$invoice['paytype'] = 'GOTÓWKA';
