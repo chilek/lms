@@ -1146,13 +1146,27 @@ class LMS
 		return round(str_replace(".",",",$bin) - str_replace(".",",",$bab),2);
 	}
 
+	function BalanceOK($user_id)
+	{   
+	// make balace = 0 
+			$this->SetTS("cash");
+			$stan=$this->GetUserBalance($user_id);
+			//$stan=str_replace(".",",",$stan);
+			$stan=-$stan;
+			$stan=str_replace(",",".",$stan);
+
+			return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?)",array($this->SESSION->id, 3 , "$stan" , $user_id));
+	}
+
+
+
 	function GetUserBalanceList($id)
 	{
 
-	
-		if($_SESSION[timestamps][getuserbalancelist][$id][cash] != $this->GetTS("cash") || 
-		$_SESSION[timestamps][getuserbalancelist][$id][admins] != $this->GetTS("admins")) 
-		{
+
+			if($_SESSION[timestamps][getuserbalancelist][$id][cash] != $this->GetTS("cash") || 
+							$_SESSION[timestamps][getuserbalancelist][$id][admins] != $this->GetTS("admins")) 
+			{
 
 			// wrapper do starego formatu
 		
