@@ -1,4 +1,4 @@
-LMS - LAN Management System 1.3-cvs
+LMS - LAN Management System 1.4-cvs
 
    [logo-small.png]
 
@@ -798,8 +798,8 @@ database = /usr/local/lms/lms.db
    nowymi), nastêpnie trzeba dokonaæ zmian w bazie.
 
    Dla u³atwienia migracji danych w katalogu /doc przygotowano pliki
-   UPGRADE-1.0-1.3.mysql i UPGRADE-1.0-1.3.pgsql dla przej¶cia od wersji
-   1.0 do wersji 1.3 oraz UPGRADE-1.2-1.3.mysql i UPGRADE-1.2-1.3.pgsql
+   UPGRADE-1.0-1.4.mysql i UPGRADE-1.0-1.4.pgsql dla przej¶cia od wersji
+   1.0 do wersji 1.4 oraz UPGRADE-1.2-1.4.mysql i UPGRADE-1.2-1.4.pgsql
    przy migracji od wersji 1.2 do bie¿±cej. W nich znajdziesz krótki opis
    jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
 

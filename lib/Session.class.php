@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.3-cvs
+ * LMS version 1.4-cvs
  *
  *  (C) Copyright 2001-2004 LMS Developers
  *
@@ -34,7 +34,7 @@ class Session {
 	var $last;
 	var $lastip;
 	var $error;
-	var $_version = '1.3-cvs';
+	var $_version = '1.4-cvs';
 	var $_revision = '$Revision$';
 
 	function Session(&$DB,$timeout = 600)
