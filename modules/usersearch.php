@@ -53,8 +53,15 @@ $layout['pagetitle'] = trans('Customer Search');
 if($_GET['search']==1 || isset($_GET['search']))
 {
 	$userlist = $LMS->SearchUserList($o,$s,$search);
-	$SMARTY->assign('userlist',$userlist);
-	$SMARTY->display('usersearchresults.html');
+	if ($userlist['total'] == 1)
+	{
+		$SESSION->redirect('?m=userinfo&id='.$userlist[0]['id']);
+	}
+	else
+	{
+		$SMARTY->assign('userlist',$userlist);
+		$SMARTY->display('usersearchresults.html');
+	}
 }
 else
 	$SMARTY->display('usersearch.html');

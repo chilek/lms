@@ -55,6 +55,7 @@ version 1.5.5 Anubis (??/??/????):
   - added Finances -> Print -> Covenants Realization Report (alec)  
   - new layout for menu (lukasz)
   - ip address selection divided to pages (chilek)
+  - if we find only one user we will redirect immediately to his info (chilek)
 
 version 1.5.4 Ramius (16/02/2005):
 
