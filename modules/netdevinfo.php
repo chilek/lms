@@ -28,7 +28,13 @@ $netdevinfo = $LMS->GetNetDev($_GET[id]);
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET[id]);
 $netcomplist = $LMS->GetNetdevLinkedNodes($_GET[id]);
 $netdevlist = $LMS->GetNotConnectedDevices($_GET[id]);
+
 $nodelist = $LMS->GetNodeList();
+unset($nodelist[total]);
+unset($nodelist[order]);
+unset($nodelist[totalon]);
+unset($nodelist[totaloff]);
+unset($nodelist[direction]);
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
@@ -46,6 +52,9 @@ $SMARTY->display("netdevinfo.html");
 
 /*
  * $Log$
+ * Revision 1.6  2003/10/07 19:37:35  alec
+ * unset nieporzebnych elem.
+ *
  * Revision 1.5  2003/10/06 04:46:49  lukasz
  * - temp save
  *
