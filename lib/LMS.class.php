@@ -438,7 +438,7 @@ class LMS
 		if($acl = $this->ADB->GetALL("SELECT access FROM nodes WHERE ownerid=?",array($id)))
 		{
 			foreach($acl as $value)
-				if(strtoupper($value['access']) == "Y")
+				if($value['access'])
 					$y++;
 				else
 					$n++;
@@ -899,7 +899,7 @@ class LMS
 			{
 				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
-				($row['access']=="Y") ? $totalon++ : $totaloff++;
+				($row['access']) ? $totalon++ : $totaloff++;
 			}			
 		}
 
@@ -978,7 +978,7 @@ class LMS
 			{
 				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
-				($row['access']=="Y") ? $totalon++ : $totaloff++;
+				($row['access']) ? $totalon++ : $totaloff++;
 			}			
 		}
 
@@ -1021,19 +1021,19 @@ class LMS
 	function NodeSet($id)
 	{
 		$this->SetTS("nodes");
-		if($this->ADB->GetOne("SELECT access FROM nodes WHERE id=?",array($id))=="Y")
-			return $this->ADB->Execute("UPDATE nodes SET access='N' WHERE id=?",array($id));
+		if($this->ADB->GetOne("SELECT access FROM nodes WHERE id=?",array($id)) == 1 )
+			return $this->ADB->Execute("UPDATE nodes SET access=0 WHERE id=?",array($id));
 		else
-			return $this->ADB->Execute("UPDATE nodes SET access='Y' WHERE id=?",array($id));
+			return $this->ADB->Execute("UPDATE nodes SET access=1 WHERE id=?",array($id));
 	}
 
 	function NodeSetU($id,$access=FALSE)
 	{
 		$this->SetTS("nodes");
 		if($access)
-			return $this->ADB->Execute("UPDATE nodes SET access=? WHERE ownerid=?",array("Y",$id));
+			return $this->ADB->Execute("UPDATE nodes SET access=? WHERE ownerid=?",array(1,$id));
 		else
-			return $this->ADB->Execute("UPDATE nodes SET access=? WHERE ownerid=?",array("N",$id));
+			return $this->ADB->Execute("UPDATE nodes SET access=? WHERE ownerid=?",array(0,$id));
 	}
 
 	function NodeAdd($nodedata)
@@ -1053,8 +1053,8 @@ class LMS
 	
 	function NodeStats()
 	{
-		$result['connected'] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access='Y'");
-		$result['disconnected'] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access='N'");
+		$result['connected'] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=1");
+		$result['disconnected'] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=0");
 		$result['total'] = $result['connected'] + $result['disconnected'];
 		return $result;
 	}
@@ -1601,6 +1601,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.201  2003/08/27 20:18:42  lukasz
+ * - changed nodes.access from ENUM to BOOL;
+ *
  * Revision 1.200  2003/08/27 19:25:00  lukasz
  * - changed format of ipaddr storage in database
  * - propably improved performance

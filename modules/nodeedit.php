@@ -100,8 +100,8 @@ if(isset($nodeedit))
 	elseif(!eregi("^[_a-z0-9-]+$",$nodeedit[name]))
 		$error[name] = "Podana nazwa zawiera niepoprawne znaki!";
 
-	if($nodeedit[access]!="Y")
-		$nodeedit[access] = "N";
+	if($nodeedit[access]!=1)
+		$nodeedit[access] = 0;
 	
 	$nodeinfo[name] = $nodeedit[name];
 	$nodeinfo[mac] = $nodeedit[mac];
@@ -129,6 +129,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.25  2003/08/27 20:18:42  lukasz
+ * - changed nodes.access from ENUM to BOOL;
+ *
  * Revision 1.24  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

@@ -222,7 +222,7 @@ foreach my $key (@networks)
 			my $ipaddr = u32todotquad($i);
 			if($maclist{$ipaddr})
 			{
-				if($lock_na && !($accesslist{$ipaddr} eq "Y"))
+				if($lock_na && !($accesslist{$ipaddr} eq 1))
 				{
 					print ETHERSFILE "00:00:00:00:00:00\t".$ipaddr."\n";
 				}else{

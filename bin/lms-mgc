@@ -490,12 +490,12 @@ sub instance($)
 				print "using default rule for ALL nodes that exists.\n" if $debug;
 				$rule = $allexistnodes;
 			}
-			elsif($idlist{$ipaddr} && ($accesslist{$ipaddr} eq "Y") && $grantednode)
+			elsif($idlist{$ipaddr} && ($accesslist{$ipaddr} eq 1) && $grantednode)
 			{
 				print "exists in db (access eq \"Y\") and rule for grantednode exists, applying.\n" if $debug;
 				$rule = $grantednode;
 			}
-			elsif($idlist{$ipaddr} && !($accesslist{$ipaddr} eq "Y") && $deniednode)
+			elsif($idlist{$ipaddr} && !($accesslist{$ipaddr} eq 1) && $deniednode)
 			{
 				print "exists in db (access neq \"Y\") and rule for deniednode exists, applying.\n" if $debug;
 				$rule = $deniednode;
