@@ -84,7 +84,7 @@ if($query = $_POST['query'])
 				$result .= '<TR CLASS="LIGHT"><TD CLASS="BLEND">'.$i.'</TD>';
 				foreach($colnames as $column)	
 				{
-					$result .= '<TD>'.$row[$column].'</TD>';
+					$result .= '<TD>'.nl2br(htmlspecialchars($row[$column])).'</TD>';
 				}
 				$result .= '</TR>';
 			}
