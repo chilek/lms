@@ -24,10 +24,7 @@
  *  $Id$
  */
 
-include($_LIB_DIR.'/multipart_mime_email.php');
-
 $ticket = $_POST['ticket'];
-
 $queue = $_GET['id'];
 
 if(isset($ticket))
@@ -64,29 +61,47 @@ if(isset($ticket))
 	if(!$error)
 	{
 		$id = $LMS->TicketAdd($ticket);
-		$admin = $LMS->GetAdminInfo($AUTH->id);
+		
+		if($LMS->CONFIG['phpui']['newticket_notify'])
+		{
+			$admin = $LMS->GetAdminInfo($AUTH->id);
 
-		$ticket['admin'] = $LMS->DB->GetOne('SELECT email FROM rtqueues WHERE id='.$queue);
-		$message['destination'] = $ticket['admin'];
-		if($LMS->CONFIG['phpui']['debug_email'])
-			$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
-		$recipients = $message['destination'];
-		if ($admin['email'])
-			$message['mailfrom'] = $admin['email'];
-		else
-			$message['mailfrom'] = $ticket['mailfrom'] ? $ticket['mailfrom'] : $ticket['admin'];
-		$headers['Date'] = date('D, d F Y H:i:s T');
-	        $headers['From'] = '<'.$message['mailfrom'].'>';
-		$headers['To'] = '<'.$message['destination'].'>';
-		$headers['Content-Type'] = 'text/plain; charset=UTF-8';
-		$headers['Subject'] = $ticket['subject'];
-		$headers['Reply-To'] = $headers['From'];
+			if($mailfname = $LMS->CONFIG['phpui']['helpdesk_sender_name'])
+			{
+				if($mailfname == 'queue') $mailfname = $LMS->GetQueueName($queue);
+				if($mailfname == 'user') $mailfname = $admin['name'];
+				$mailfname = '"'.$mailfname.'"';
+			}
 
-		$body = $ticket['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
-			.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
-			.'?m=rtticketview&id='.$id;
-		$LMS->SendMail($recipients, $headers, $body);
+			if ($admin['email'])
+				$mailfrom = $admin['email'];
+			elseif ($qemail = $LMS->GetQueueEmail($queue))
+				$mailfrom = $qemail;
+			else
+				$mailfrom =  $ticket['mailfrom'];
+				
+			$headers['Date'] = date('D, d F Y H:i:s T');
+		        $headers['From'] = $mailfname.' <'.$mailfrom.'>';
+			$headers['Subject'] = sprintf("[RT#%06d] %s", $id, $ticket['subject']);
+			$headers['Reply-To'] = $headers['From'];
 
+			$body = $ticket['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+				.'?m=rtticketview&id='.$id;
+
+			if($recipients = $LMS->DB->GetCol('SELECT email FROM admins, rtrights WHERE admins.id=adminid AND email!=\'\' AND queueid=?',array($queue)))
+				foreach($recipients as $email)
+				{
+					if($LMS->CONFIG['phpui']['debug_email'])
+						$recip = $LMS->CONFIG['phpui']['debug_email'];
+					else
+						$recip = $email;
+					$headers['To'] = '<'.$recip.'>';
+		        
+					$LMS->SendMail($recip, $headers, $body);
+				}
+		}
+		
 		$SESSION->redirect('?m=rtticketview&id='.$id);
 	}
 }
