@@ -1511,11 +1511,11 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 	$LMS->TariffAdd($tariffdata);
 
 	echo '<B>Generuje op³aty sta³e...</B><BR>';
-	$paymentdata = array( name => 'DSL-512', description => 'Abonament za ³±cze', value => '200', creditor => 'Internet Super Provider S.A.', period => '0', at => '10');
+	$paymentdata = array( name => 'DSL-512', description => 'Abonament za ³±cze', value => '200', creditor => 'Internet Super Provider S.A.', period => '1', at => '10');
 	$LMS->PaymentAdd($paymentdata);
-	$paymentdata = array( name => 'Serwerownia', description => 'Wynajem lokalu', value => '300', creditor => 'Spó³dzielnia Mieszkaniowa "WIDOK"', period => '0', at => '20');
+	$paymentdata = array( name => 'Serwerownia', description => 'Wynajem lokalu', value => '300', creditor => 'Spó³dzielnia Mieszkaniowa "WIDOK"', period => '1', at => '20');
 	$LMS->PaymentAdd($paymentdata);
-	$paymentdata = array( name => 'Domena', description => 'Op³ata za domenê "nasza.net"', value => '150', creditor => 'NASK', period => '2', at => '31');
+	$paymentdata = array( name => 'Domena', description => 'Op³ata za domenê "nasza.net"', value => '150', creditor => 'NASK', period => '3', at => '31');
 	$LMS->PaymentAdd($paymentdata);
 	
 	echo '<B>Generuje sieæ...</B><BR>';
@@ -1547,7 +1547,7 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 		$useradd['payday'] = mt_rand(1,28);
 		$useradd['gguin'] = 0;
 		$id = $LMS->UserAdd($useradd);
-		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'period' => 0, 'at' => $useradd['payday'], 'invoice' => 0));
+		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'period' => 1, 'at' => $useradd['payday'], 'invoice' => 0));
 		$nodes = mt_rand(1,3);
 		for($j = 0; $j < $nodes; $j++)
 		{
