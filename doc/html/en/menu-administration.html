@@ -1,0 +1,347 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Administration</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="User Interface (LMS-UI)"
+HREF="user.html"><LINK
+REL="PREVIOUS"
+TITLE="User Interface (LMS-UI)"
+HREF="user.html"><LINK
+REL="NEXT"
+TITLE="Customers"
+HREF="menu-users.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="user.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. User Interface (LMS-UI)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="menu-users.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MENU-ADMINISTRATION"
+>3.2. Administration</A
+></H1
+><P
+>After successful login to the system you'll have administration
+        menu presented on the left side, while content of selected module will be
+        displayed on the right side. Initially, you can read some useful information
+        about system here. In administration menu, you're able to manage other users
+        accounts and create or restore database backups.</P
+><P
+>You can select any module to work with on the left panel. There
+        are also buttons allowing you to change your password, logout or do a quick
+        search for customers/computers/helpdesk. You can search by name or id, but also
+        additionally by computer name, surname, fragment of address, phone, email, IP or
+        MAC. If there are more than one matching record for your search you'll get only
+        first result.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-INFO"
+>3.2.1. Info</A
+></H2
+><P
+>This is where all basic information about system that is
+            running LMS are displayed. It lists the following information:
+            LMS core and components versions, copyright notice, uptime and
+            kernel version of your server, customers and nodes totals, computer
+            activity totals and financial balance. Additionally all LMS links
+            are gathered here.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-ADMINS"
+>3.2.2. Users</A
+></H2
+><P
+>'Users' panel is designed for LMS users (ie. network
+            administrators) management. You can create or modify any account here, change
+            assigned passwords and access rights.</P
+><P
+>For more information on access rights, see <A
+HREF="install-rights.html"
+>Section 2.6</A
+>.</P
+><P
+>Initially after selecting 'Users', you'll get list of all
+            users with last login time and host information. When you click on the account,
+            you're able to see it's details, including defined access rights. You can modify
+            data any time by clicking 'Edit' link. To create new user use left panel and
+            click 'New user'.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-NEWADMIN"
+>3.2.3. New user</A
+></H2
+><P
+>In order to create new user, you need to provide at least
+            login name and non empty password. Name and email fields are optional. Below you
+            can mark specific system access rights. If you leave all those fields unchecked
+            (default), user will be granted with 'full access'.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-DB"
+>3.2.4. Backups</A
+></H2
+><P
+>You can manage your database backup copies here. Database copy
+            is plain text file with SQL statements needed to reconstruct all tables and it's
+            data, which is saved in directory defined with <SAMP
+CLASS="PROMPT"
+>backup_dir</SAMP
+>
+            variable in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[directories]</I
+></SPAN
+>
+            section of <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>By default your backups will be placed in
+            <TT
+CLASS="FILENAME"
+>lms/backups</TT
+> directory, which could be accessed with your
+            browser, without any authentication, so it's wise to move it above your Web
+            Server DocumentRoot.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>All copies can be viewed, removed or downloaded to your
+            computer at any time. By clicking on 'recover' icon your current database will
+            be deleted and replaced by the one in backup copy. For your safety, before such
+            operation current database backup is performed automatically.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-UICONFIG"
+>3.2.5. UI Config</A
+></H2
+><P
+>Since LMS 1.5.3 you're able to configure all UI-related
+            options directly via <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>, instead of editing
+            <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>. Those options are stored in database and you first
+            need to import them from your config file (even if you haven't edited anything
+            yet, default values will be imported). This can be done with help of
+            <TT
+CLASS="FILENAME"
+>upgrade02</TT
+> UI module, which will be executed after you click
+            on the link presented on empty list.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Options setup with <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>
+            have higher priority than those in configuration file. With options setup in UI,
+            the configuration will be still imported from file but values will be then
+            overwritten by those found in DB.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>In order to manually add new option click 'Add option' on the
+            bottom of the list. To edit option value, click on its record. You'll be given
+            with edit form, where you are also able to remove this option. Changing option
+            status allows you to turn it on and off instantly. When an option is off,
+            default value will be used (if it posses any).</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="menu-users.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>User Interface (LMS-UI)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Customers</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

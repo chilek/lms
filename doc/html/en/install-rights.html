@@ -87,9 +87,9 @@ NAME="INSTALL-RIGHTS-IDEA"
 >2.6.1. Idea</A
 ></H2
 ><P
->LMS may define up to 256 rules of access to the system. 
-      Each can forbid or permit access to definite modules. 
-      To each user we can freely assign combination of access rules.</P
+>In LMS you may define up to 256 rules to access the system. 
+      Each can permit or deny access to defined modules. 
+      Each user can have any combination of access rules assigned to his account.</P
 ><P
 >By default following access rules list is defined:
        <UL
@@ -135,7 +135,7 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></LI
 ><LI
 ><P
->Helpdesku (RT) operation</P
+>Helpdesk (RT) operation</P
 ></LI
 ><LI
 ><P
@@ -163,9 +163,9 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></LI
 ></UL
 >
-      Some of them permit access to modules and two forbid. Modules that user
-      has always access is: welcome, copyrights,  logout, chpasswd 
-      (chpasswd can change only own password), access to others is defined by rules.</P
+      Most of them grant access to modules and two denies. Modules that user
+      has always access are: welcome, copyrights, logout, chpasswd 
+      (chpasswd can change only own password), access to all others is defined by rules.</P
 ><DIV
 CLASS="NOTE"
 ><TABLE
@@ -185,8 +185,8 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->If we do not define to user any access rule, then LMS implicitly define 
-      rule 0 for him - full access.</P
+>If you don't define any access rule for user, then LMS defines
+      0 rule for him, which mean: full access.</P
 ></TD
 ></TR
 ></TABLE
@@ -201,27 +201,26 @@ NAME="INSTALL-RIGHTS-HOW"
 >2.6.2. How does it work?</A
 ></H2
 ><P
-> Decision if user have right to access to module or not, looks like this:          
+> Algorithm that decides whether user has access to given module or not is as following:
           <TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
->-  First of all: checking list of modules that user always have access.</TD
+>-  First of all: checking list of modules that user always has access.</TD
 ></TR
 ><TR
 ><TD
->-  Next:  checking if module mach to rules in each levels that user
-          have access.</TD
+>-  Next: checking if module match rules in each levels user has access to.</TD
 ></TR
 ><TR
 ><TD
->-  Finally: Decision if user have authorizations to access to modules. If module 
-          mach to any level that forbid access then access will be forbiden even if user have 
-          level that permit access to module. (for example. Someone have full access and no access 
-          to adding computer module then he would not be able to appeal to this module). 
-          If module  maches to level that permit access to module. Then LMS permit farther work. 
-          But if module does not match on any level then also will be printed no-access-msg.</TD
+>-  Finally: Decision if user is permitted to access modules. If module 
+          match to any level that denies access then access will be forbidden even if user has
+          level that permits access to module. For example, if someone has full access and no access 
+          to "add computer" module, then he won't able to access module.
+          If module  matches level that permits access to module, then LMS will grant access to module, 
+          but if module does not match at any level then no-access-message also will be printed.</TD
 ></TR
 ></TBODY
 ></TABLE

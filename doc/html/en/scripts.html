@@ -1,0 +1,290 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Scripts</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Helpdesk"
+HREF="menu-helpdesk.html"><LINK
+REL="NEXT"
+TITLE="List of available scripts"
+HREF="scripts-list.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="menu-helpdesk.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="scripts-list.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="SCRIPTS"
+></A
+>Chapter 4. Scripts</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>4.1. <A
+HREF="scripts.html#SCRIPTS-INSTALL"
+>Installation</A
+></DT
+><DT
+>4.2. <A
+HREF="scripts-list.html"
+>List of available scripts</A
+></DT
+><DT
+>4.3. <A
+HREF="scripts-config.html"
+>Description and configuration</A
+></DT
+><DD
+><DL
+><DT
+>4.3.1. <A
+HREF="scripts-config.html#LMS-NOTIFY"
+>lms-notify</A
+></DT
+><DT
+>4.3.2. <A
+HREF="scripts-config.html#LMS-NOTIFY-SMS"
+>lms-notify-sms</A
+></DT
+><DT
+>4.3.3. <A
+HREF="scripts-config.html#LMS-CUTOFF"
+>lms-cutoff</A
+></DT
+><DT
+>4.3.4. <A
+HREF="scripts-config.html#LMS-PAYMENTS"
+>lms-payments</A
+></DT
+><DT
+>4.3.5. <A
+HREF="scripts-config.html#LMS-TRAFFIC"
+>lms-traffic</A
+></DT
+><DT
+>4.3.6. <A
+HREF="scripts-config.html#LMS-TRAFFIC-LOGIPTABLES"
+>lms-traffic-logiptables</A
+></DT
+><DT
+>4.3.7. <A
+HREF="scripts-config.html#LMS-MAKEDHCPCONF"
+>lms-makedhcpconf</A
+></DT
+><DT
+>4.3.8. <A
+HREF="scripts-config.html#LMS-MAKEIPTABLES"
+>lms-makeiptables, lms-makeipchains</A
+></DT
+><DT
+>4.3.9. <A
+HREF="scripts-config.html#LMS-ETHERDESC"
+>lms-etherdesc</A
+></DT
+><DT
+>4.3.10. <A
+HREF="scripts-config.html#LMS-SENDINVOICES"
+>lms-sendinvoices</A
+></DT
+><DT
+>4.3.11. <A
+HREF="scripts-config.html#LMS-MAKEMACS"
+>lms-makemacs</A
+></DT
+><DT
+>4.3.12. <A
+HREF="scripts-config.html#LMS-MAKEHOSTS"
+>lms-makehosts</A
+></DT
+><DT
+>4.3.13. <A
+HREF="scripts-config.html#LMS-MAKEWARNINGS"
+>lms-makewarnings</A
+></DT
+><DT
+>4.3.14. <A
+HREF="scripts-config.html#LMS-MAKEMESSAGES"
+>lms-makemessages</A
+></DT
+><DT
+>4.3.15. <A
+HREF="scripts-config.html#LMS-FPING"
+>lms-fping</A
+></DT
+><DT
+>4.3.16. <A
+HREF="scripts-config.html#LMS-RTPARSER"
+>lms-rtparser</A
+></DT
+></DL
+></DD
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SCRIPTS-INSTALL"
+>4.1. Installation</A
+></H1
+><P
+>Configuration of each Perl script should be enclosed in appropriate section of
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file. Scripts should be taken from <TT
+CLASS="FILENAME"
+>lms/bin/</TT
+>
+directory and placed in <TT
+CLASS="FILENAME"
+>/usr/sbin</TT
+>. After the move, you have to include them in
+your crontab, so that they will be executed automatically, which is probably what you want to
+do.</P
+><P
+>For example crontab entry which will execute lms-payments script each day one minute
+after midnight should take a form of:</P
+><PRE
+CLASS="SCREEN"
+>1 0 * * *       /usr/sbin/lms-payments 1 &gt; /dev/null</PRE
+><P
+>You should read <B
+CLASS="COMMAND"
+>man crontab</B
+> to learn how to exactly schedule your
+scripts.</P
+><P
+>Most LMS scripts have following command line options: </P
+><PRE
+CLASS="SCREEN"
+>-C file     location and name of alternative configuration, default: /etc/lms/lms.ini
+-q          run script without any output
+-h          help (usually list of valid command line options)
+-v          information about script version</PRE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="menu-helpdesk.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="scripts-list.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Helpdesk</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>List of available scripts</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

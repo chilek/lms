@@ -1,0 +1,1036 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Configuration</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration file generator (lms-mgc)"
+HREF="mgc.html"><LINK
+REL="PREVIOUS"
+TITLE="Configuration file generator (lms-mgc)"
+HREF="mgc.html"><LINK
+REL="NEXT"
+TITLE="Examples of use"
+HREF="mgc-example.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="mgc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Configuration file generator (lms-mgc)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="mgc-example.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MGC-CONFIG"
+>5.2. Configuration</A
+></H1
+><P
+>Configuration of LMS-MGC is held in <TT
+CLASS="FILENAME"
+>lms-mgc.ini</TT
+> file.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MGC-CONFIG-DB"
+>5.2.1. Section [database] - database setup</A
+></H2
+><UL
+><LI
+><P
+>type</P
+><P
+>Database type. Currently only 'mysql' is 100% supported, however there seems to be no significant problems with 'postgres'. Default: mysql</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>type = mysql</SAMP
+></P
+></LI
+><LI
+><P
+>host</P
+><P
+>Database host. Usually localhost, but you can set it to anything (IP, domain, path to socket in 'localhost:/path/to/socket' format). Default: localhost</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>host = localhost</SAMP
+></P
+></LI
+><LI
+><P
+>user</P
+><P
+>Database user. In most cases (if you followed this documentation) it should be 'lms'. If you want to use privileged account, you should enter 'root' (MySQL on *nices), 'mysql' (on PLD) or 'postgres' (PostgreSQL). Default: root</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>user = mysql</SAMP
+></P
+></LI
+><LI
+><P
+>password</P
+><P
+>Database password. Default: empty.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>password = secret_password</SAMP
+></P
+></LI
+><LI
+><P
+>database</P
+><P
+>Database name. Default: lms.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>database = lms</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MGC-CONFIG-LMS"
+>5.2.2. Section [mgc] - list of instances</A
+></H2
+><P
+>W³a¶ciwa konfiguracja dotycz±ca generatorów poszczególnych plików konfiguracyjnych 
+	jest umieszczana w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[mgc]</I
+></SPAN
+> i pochodnych. W samej sekcji 
+	<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[mgc]</I
+></SPAN
+> mo¿emy u¿yæ nastêpuj±cego parametru:
+   <UL
+><LI
+><P
+>instances</P
+><P
+>Lista "instancji" oddzielona spacjami.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>instaces = dhcp firewall squid</SAMP
+></P
+></LI
+></UL
+>
+   <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Zmienn± <TT
+CLASS="FILENAME"
+>instances</TT
+> mo¿na tak¿e umie¶ciæ w
+   sekcji dowolnej instancji. Patrz ni¿ej.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+   </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MGC-CONFIG-INSTANCES"
+>5.2.3. Section [mgc:xxx] - instance configuration</A
+></H2
+><P
+>Ka¿da instancja ma swoj± nazwê i jej konfiguracjê tworzy siê umieszczaj±c 
+	sekcjê o nazwie <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[mgc:nazwa]</I
+></SPAN
+>, czyli przyk³adowo: 
+	<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[mgc:mydaemon]</I
+></SPAN
+></P
+><P
+>W samych instancjach mo¿emy u¿ywaæ nastêpuj±cych opcji konfiguracyjnych:</P
+><UL
+><LI
+><P
+>instances</P
+><P
+>Zmienna, w której mo¿esz podaæ listê innych instancji, aby nastêpnie
+     wywo³ywaæ mgc poleceniem '<SAMP
+CLASS="PROMPT"
+>lms-mgc -i sekcja</SAMP
+>' zamiast
+     '<SAMP
+CLASS="PROMPT"
+>lms-mgc -i "sekcja1 sekcja2 sekcja3"</SAMP
+>'. Je¶li zostanie 
+     u¿yta, wszystkie pozosta³e zmienne tej sekcji zostan± zignorowane.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>instances = dns1 dns2 dns3</SAMP
+></P
+></LI
+><LI
+><P
+>outfile</P
+><P
+>Definiuje plik do którego ma byæ zapisany wynik dzia³ania bie¿±cej instancji (je¿eli ta zmienna bêdzie nie ustawiona, instancja siê zakoñczy)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>outfile = /etc/somefile</SAMP
+></P
+></LI
+><LI
+><P
+>append</P
+><P
+>Pozwala ustawiæ aby wynik dzia³ania instancji nie nadpisywa³ pliku wynikowego, lecz zosta³ dopisany na jego koñcu</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>append = 1</SAMP
+></P
+></LI
+><LI
+><P
+>outfile_perm</P
+><P
+>Pozwala na ustawienie praw dostêpu do pliku wyj¶ciowego (domy¶lnie 600)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>outfile_perm = 700</SAMP
+></P
+></LI
+><LI
+><P
+>outfile_owner</P
+><P
+>Pozwala na ustawienie w³a¶ciciela pliku wyj¶ciowego (domy¶lnie 0)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>outfile_owner = 0</SAMP
+></P
+><P
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/warning.gif"
+HSPACE="5"
+ALT="Warning"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>W³a¶ciciel musi byæ podany numerycznie!</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></LI
+><LI
+><P
+>outfile_group</P
+><P
+>Pozwala na ustawienie grupy pliku wyj¶ciowego (domy¶lnie 0)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>outfile_group = 0</SAMP
+></P
+><P
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/warning.gif"
+HSPACE="5"
+ALT="Warning"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Grupa musi byæ podana numerycznie!</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></LI
+><LI
+><P
+>header_file</P
+><P
+>Pozwala na umieszczenie w pliku wynikowym zawarto¶ci innego 
+     pliku jako nag³ówek (domy¶lnie nie ustawione)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>header_file = /etc/lms/myservice_header</SAMP
+></P
+></LI
+><LI
+><P
+>header</P
+><P
+>Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako 
+     nag³ówka (domy¶lnie puste)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>header = option1 = bla\noption2 = blabla</SAMP
+></P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Znak \n zosta³ tu u¿yty jako separator linii. Koñcowe \n nie jest 
+     wymagane.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></LI
+><LI
+><P
+>networks</P
+><P
+>Pozwala ustaliæ które z naszych sieci bêd± uwzglêdniane w pliku konfiguracyjnym (domy¶lnie wszystkie)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>networks = cust1-publ cust2-publ cust3-priv</SAMP
+></P
+></LI
+></UL
+><P
+>Teraz mgc pobiera kolejne sieci i wykonuje w kó³ko nastêpuj±ce czynno¶ci:</P
+><UL
+><LI
+><P
+>network_header</P
+><P
+>Generuje nag³ówek dla ka¿dej sieci (domy¶lnie puste):</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>network_header = network %ADDR/%MASK { # Config section for %NAME</SAMP
+></P
+></LI
+><LI
+><P
+>dst_networks</P
+><P
+>Pozwala ustawiæ sieci docelowe, czyli takie dla których bêdzie przetwarzany parametr: dst_network_header (domy¶lnie wszystkie):</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>dst_networks = main coalloc</SAMP
+></P
+></LI
+><LI
+><P
+>dst_network_header</P
+><P
+>Pozwala ustawiæ nag³ówek dla sieci docelowych</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>dst_network_header = \tallow to %DADDR/%DMASK;</SAMP
+></P
+></LI
+><LI
+><P
+>network_body</P
+><P
+>Parametr jest przetwarzany po wys³aniu nag³ówków dla sieci, a przed rozpoczêciem analizy adresów IP</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>network_body = \tnodes {</SAMP
+></P
+></LI
+></UL
+><P
+>Teraz MGC rozpocznie przetwarzanie regu³ek dla kolejnych adresów IP. Robi to w dosyæ specyficzny sposób. 
+   Tzn. oblicza kolejny adres IP i sprawdza czy zdefiniowano regu³ê dla hosta i wykonuje pierwsz±.
+   Sprawdzanie jest wykonywane w nastepuj±cej kolejno¶ci:</P
+><UL
+><LI
+><P
+>ignore</P
+><P
+>Pozwala na ustawienie listy adresów w postaci adres/prefix lub adres/maska oddzielanej spacjami dla której ma byæ ignorowane generowanie</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>ignore = 192.168.0.100/32</SAMP
+></P
+></LI
+><LI
+><P
+>node(IP)</P
+><P
+>Przy pomocy tej opcji mo¿na zdefiniowaæ regu³ê dla wybranego komputera. W nawiasie podaje siê jego adres IP. 
+     Ka¿da sekcja instancji mo¿e zawieraæ dowoln± ilo¶æ takich opcji.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>node(192.168.0.20) = ??</SAMP
+></P
+></LI
+><LI
+><P
+>allnodes</P
+><P
+>Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>allnodes = ??</SAMP
+></P
+></LI
+><LI
+><P
+>allexistnodes</P
+><P
+>Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP który jest u¿ywany.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>allexistnodes = ??</SAMP
+></P
+></LI
+><LI
+><P
+>grantednode_priv</P
+><P
+>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</SAMP
+></P
+></LI
+><LI
+><P
+>grantednode_publ</P
+><P
+>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów publicznych)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;</SAMP
+></P
+></LI
+><LI
+><P
+>deniednode_priv</P
+><P
+>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;</SAMP
+></P
+></LI
+><LI
+><P
+>deniednode_publ</P
+><P
+>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów publicznych)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;</SAMP
+></P
+></LI
+><LI
+><P
+>dhcpnode_priv</P
+><P
+>Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>dhcpnode_priv = node unknown (%IP) reject;</SAMP
+></P
+></LI
+><LI
+><P
+>dhcpnode_publ</P
+><P
+>Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów publicznych)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>dhcpnode_publ = node unknown (%IP) reject;</SAMP
+></P
+></LI
+><LI
+><P
+>freeip_priv</P
+><P
+>Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów prywatnych)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>freeip_priv = node unknown (%IP) lock_as_unused;</SAMP
+></P
+></LI
+><LI
+><P
+>freeip_publ</P
+><P
+>Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów publicznych)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>freeip_publ = node unknown (%IP) lock_as_unused;</SAMP
+></P
+></LI
+><LI
+><P
+>default_priv</P
+><P
+>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>default_priv = node unknown (%IP) lock_as_intruder;</SAMP
+></P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></LI
+><LI
+><P
+>default_publ</P
+><P
+>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów publicznych)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>default_publ = node unknown (%IP) lock_as_intruder;</SAMP
+></P
+></LI
+></UL
+><P
+>W koñcu nastêpuje wygenerowanie koñcowej czê¶ci pliku i wykonanie
+    polecenia systemowego.</P
+><UL
+><LI
+><P
+>network_footer</P
+><P
+>Pozwala na ustawienie stopki dla w³a¶nie przetwarzanej sieci</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>network_footer = ??</SAMP
+></P
+></LI
+><LI
+><P
+>footer_file</P
+><P
+>Pozwala na umieszczenie w pliku wynikowym zawarto¶ci innego pliku jako stopka (domy¶lnie nie ustawione)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>footer_file = /etc/lms/myservice_footer</SAMP
+></P
+></LI
+><LI
+><P
+>footer</P
+><P
+>Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako stopki (domy¶lnie puste)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>footer = # End.</SAMP
+></P
+></LI
+><LI
+><P
+>post_exec</P
+><P
+>Komenda do wywo³ania po wygenerowaniu pliku konfiguracyjnego</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>post_exec = killall -HUP mydaemon</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MGC-CONFIG-VARS"
+>5.2.4. Configuration variables</A
+></H2
+><P
+>W opcjach konfiguracyjnych mo¿na u¿ywaæ nastêpuj±cych zmiennych, 
+    które zostan± podmienione na odpowiednie dane z bazy:</P
+><P
+>Zmienne dla komputerów:
+   <UL
+><LI
+><P
+>%IP - adres IP komputera</P
+></LI
+><LI
+><P
+>%PIN - PIN of customer who owns node</P
+></LI
+><LI
+><P
+>%ID - ID komputera w bazie</P
+></LI
+><LI
+><P
+>%MAC - adres MAC karty sieciowej</P
+></LI
+><LI
+><P
+>%SMAC - adres MAC pisany ma³ymi literami z usuniêtymi dwukropkami</P
+></LI
+><LI
+><P
+>%OWNER - w³a¶ciciel komputera</P
+></LI
+><LI
+><P
+>%NAME - nazwa komputera du¿ymi znakami</P
+></LI
+><LI
+><P
+>%name - nazwa komputera ma³ymi znakami</P
+></LI
+><LI
+><P
+>%INFO - opis komputera</P
+></LI
+><LI
+><P
+>%PASSWD - node password</P
+></LI
+><LI
+><P
+>%UPRATE - gwarantowany transfer dla danych wychodz±cych</P
+></LI
+><LI
+><P
+>%DOWNRATE - gwarantowany transfer dla danych przychodz±cych</P
+></LI
+><LI
+><P
+>%UPCEIL - maksymalny transfer dla danych wychodz±cych</P
+></LI
+><LI
+><P
+>%DOWNCEIL - maksymalny transfer dla danych przychodz±cych</P
+></LI
+><LI
+><P
+>%CLIMIT - limit równoczesnych po³±czeñ</P
+></LI
+><LI
+><P
+>%PLIMIT - limit pakietów</P
+></LI
+><LI
+><P
+>%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP</P
+></LI
+><LI
+><P
+>%NID - ID sieci, do której nale¿y komputer</P
+></LI
+><LI
+><P
+>%NNAME - nazwa sieci du¿ymi znakami</P
+></LI
+><LI
+><P
+>%nname - nazwa sieci ma³ymi znakami</P
+></LI
+><LI
+><P
+>%NADDR - adres sieci</P
+></LI
+><LI
+><P
+>%NIFACE - interfejs sieci</P
+></LI
+><LI
+><P
+>%NMASK - maska sieci</P
+></LI
+><LI
+><P
+>%NGATE - adres bramy</P
+></LI
+><LI
+><P
+>%NDNS - adres serwera DNS</P
+></LI
+><LI
+><P
+>%NDNS2 - adres drugiego serwera DNS</P
+></LI
+><LI
+><P
+>%NDOMAIN - domena sieci</P
+></LI
+><LI
+><P
+>%NWINS - adres serwera WINS dla tej sieci</P
+></LI
+><LI
+><P
+>%NDHCPS - pierwszy adres DHCP sieci</P
+></LI
+><LI
+><P
+>%NDHCPE - ostatni adres DHCP sieci</P
+></LI
+></UL
+>
+    </P
+><P
+>Zmienne dla sieci (w opcjach dotycz±cych tylko sieci):
+   <UL
+><LI
+><P
+>%ID - ID sieci w bazie</P
+></LI
+><LI
+><P
+>%NAME - nazwa sieci du¿ymi znakami</P
+></LI
+><LI
+><P
+>%name - nazwa sieci ma³ymi znakami</P
+></LI
+><LI
+><P
+>%ADDR - adres sieci</P
+></LI
+><LI
+><P
+>%IFACE - interfejs</P
+></LI
+><LI
+><P
+>%MASK - maska</P
+></LI
+><LI
+><P
+>%GATE - brama sieci</P
+></LI
+><LI
+><P
+>%DNS - serwer DNS tej sieci</P
+></LI
+><LI
+><P
+>%DNS2 - drugi serwer DNS tej sieci</P
+></LI
+><LI
+><P
+>%DOMAIN - domena tej sieci</P
+></LI
+><LI
+><P
+>%WINS - adres serwera WINS dla tej sieci</P
+></LI
+><LI
+><P
+>%DHCPS - pierwszy adres DHCP tej sieci</P
+></LI
+><LI
+><P
+>%DHCPE - ostatni adres DHCP tej sieci</P
+></LI
+></UL
+>
+    <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>W opcji konfiguracyjnej <SAMP
+CLASS="PROMPT"
+>dst_network_header</SAMP
+> mo¿na
+    ponadto u¿yæ powy¿szych zmiennych ale poprzedzonych liter± D (np. %DADDR, %dname)
+    jako parametry sieci docelowych.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+   </P
+><P
+>Zmienne które mo¿na stosowaæ we wszystkich opcjach:
+   <UL
+><LI
+><P
+>%DATE - data w formacie YYYYMMDD;</P
+></LI
+><LI
+><P
+>%TIME - czas w formacie HHMM;</P
+></LI
+><LI
+><P
+>%TIMES - czas w formacie HHMMSS;</P
+></LI
+><LI
+><P
+>%UTIME - czas w formacie unix timestamp;</P
+></LI
+></UL
+>
+   </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="mgc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="mgc-example.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Configuration file generator (lms-mgc)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="mgc.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Examples of use</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="Upgrade"
 HREF="install-upgrade.html"><LINK
 REL="NEXT"
-TITLE="A.L.E.C's LMS Daemon"
-HREF="daemon.html"><LINK
+TITLE="User Interface (LMS-UI)"
+HREF="user.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -61,7 +61,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="daemon.html"
+HREF="user.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -79,29 +79,29 @@ NAME="INSTALL-INVOICES"
 >2.8. Invoices</A
 ></H1
 ><P
->In LMS is possible automatic and manual invoices settlement. Manual invoices
-		creation is is possible in 'New Invoice' module from 'Finances' menu. Automatic settlement 
-		need to enable that option while liabilities ascribing to customers. In that case
-		invoices are created while accounting by <TT
+>It's possible to issue invoices in either automatic or manual way. Manual
+                invoices creation is possible in 'New Invoice' module from 'Finances' menu.
+                Automatic issue might be helpful while you have legal contracts with your users.
+                In this case invoices are created by <TT
 CLASS="FILENAME"
 >lms-payments</TT
-> script or 
-		daemon <SPAN
+> script or
+                <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >almsd</I
 ></SPAN
->.</P
+> daemon.</P
 ><P
->For proper working and printouts you will need to set custom options 
-		in section <SPAN
+>For proper work of printouts you need to setup custom options in
+                <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
-> of <TT
+> section of <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >:
@@ -110,8 +110,8 @@ CLASS="FILENAME"
 ><P
 >number_template</P
 ><P
->Invoice number pattern. Accessible variables: '%N' - successive number in year/month,
-			'%M' - settlement month number, '%Y' - settlement year number (four digits). Default: %N/LMS/%Y</P
+>Invoice numbering pattern. Available variables: '%N' - successive number in year/month
+                 format, '%M' - month number, '%Y' - year number (four digits). Default: %N/LMS/%Y</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -145,7 +145,9 @@ CLASS="PROMPT"
 ><P
 >footer</P
 ><P
->Invoice footer - e.g. seller description. Footer will be placed at bottom of a invoice, small font. Like in header option use "\n" to separate lines. Default: empty</P
+>Invoice footer - e.g. contact information about seller. Footer will be placed at bottom
+                        of an invoice, using small font. Like in header option use "\n" to separate lines. Default:
+                        empty</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -156,7 +158,7 @@ CLASS="PROMPT"
 ><P
 >default_author</P
 ><P
->Invoice settler. Default: empty</P
+>Invoice issuer name. Default: empty</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -167,7 +169,7 @@ CLASS="PROMPT"
 ><P
 >cplace</P
 ><P
->Invoice settlement place (city). Default: empty.</P
+>Invoice issue location (city). Default: empty.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
@@ -176,8 +178,8 @@ CLASS="PROMPT"
 ></LI
 ></UL
 >
-		Generated invoices can be viewed in double ways: by printer icon on balance sheet 
-		or by 'Invoices List' in 'Finances' menu. In second case, is also possible to 
+		Generated invoices can be viewed in two ways: by clicking on printer icon, in balance sheet page
+		or by clicking 'Invoices List' in 'Finances' menu. In second case, is also possible to 
 		filter invoices for printing.</P
 ><DIV
 CLASS="SECT2"
@@ -188,15 +190,15 @@ NAME="INSTALL-INVOICES-HTML"
 >2.8.1. HTML</A
 ></H2
 ><P
->With default settings invoices are printed in html format
-		with use of default template. In <SPAN
+>Invoices are printed in html format by default
+		using provided template. In <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
 > section
-		are also options:
+		you can also configure:
 		<UL
 ><LI
 ><P
@@ -218,8 +220,8 @@ CLASS="PROMPT"
 >content_type</P
 ><P
 >Invoice content-type. If you enter here 'application/octet-stream'
-			then browser will send file to save on disk, instead of displaying it.
-			It's useful if you use your own template which generate e.g. rtf or xls file.
+			then browser will ask to save file on disk, instead of displaying it.
+			It's useful if you use your own template which generate eg. rtf or xls file.
 			Default: 'text/html'</P
 ><P
 >Example: <SAMP
@@ -243,9 +245,9 @@ CLASS="PROMPT"
 ></LI
 ></UL
 >
-		Generated HTML invoice consist originals and copies, which are separated
-		by CSS page-break markups. So every modern browser that support CSS 
-		should print many-page invoices shallow. This function was tested on
+		Generated invoice in HTML format consist of originals and copies, which are separated
+		by CSS page-break markups, so every modern browser that supports CSS 
+		should print many-page invoices correctly. This behavior was tested on
 		Microsoft Internet Explorer 6.0, Opera 7.02 and Mozilla 1.3.</P
 ><P
 >			<DIV
@@ -286,33 +288,31 @@ NAME="INSTALL-INVOICES-PDF"
 >2.8.2. PDF</A
 ></H2
 ><P
->It's possible to create invoices as pdf files. Setting
-		option <TT
+>It's possible to create invoices as PDF files. Setting option <TT
 CLASS="FILENAME"
 >type</TT
-> from <SPAN
+> in
+                 <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
-> section
-		to 'pdf' will make, that invoice will be created in pdf instead of html.
-		Option <TT
+> section to 'pdf' will force invoice being created in PDF instead
+                 of html. Option <TT
 CLASS="FILENAME"
 >template_file</TT
-> performs similiar part like in html invoices,
-		with one difference, it has predefined values: 'standard' - basic invoice 
-		(invoice.html equivalent) and 'FT-0100' - invoice adjusted for printing on
-		FT-0100 print including payment form. You can set <TT
+> has the same meaning, with one difference,
+                 that it might take predefined values: 'standard' - basic invoice (invoice.html equivalent) and
+                 'FT-0100' - invoice adjusted for printing on FT-0100 paper including payment form. You can set
+                 <TT
 CLASS="FILENAME"
 >template_file</TT
->
-		option for php file name, but this feature is assigned for advanced users.
-		because it require creation of more complicated php file than in html invoices 
-		simple Smarty template.</P
+> option for php file name, but this feature is meant for
+                 advanced users as it requires you to create more complicated php file than the one used with html
+                 invoices Smarty template.</P
 ><P
->Data for printout of payment form are stored in <SPAN
+>Data for payment form printouts is stored in <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -390,7 +390,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="daemon.html"
+HREF="user.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -414,7 +414,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->A.L.E.C's LMS Daemon</TD
+>User Interface (LMS-UI)</TD
 ></TR
 ></TABLE
 ></DIV

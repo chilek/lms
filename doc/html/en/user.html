@@ -1,0 +1,490 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>User Interface (LMS-UI)</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Invoices"
+HREF="install-invoices.html"><LINK
+REL="NEXT"
+TITLE="Administration"
+HREF="menu-administration.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="install-invoices.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="menu-administration.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="USER"
+></A
+>Chapter 3. User Interface (LMS-UI)</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>3.1. <A
+HREF="user.html#USER-LOGIN"
+>Login</A
+></DT
+><DT
+>3.2. <A
+HREF="menu-administration.html"
+>Administration</A
+></DT
+><DD
+><DL
+><DT
+>3.2.1. <A
+HREF="menu-administration.html#ADMINISTRATION-INFO"
+>Info</A
+></DT
+><DT
+>3.2.2. <A
+HREF="menu-administration.html#ADMINISTRATION-ADMINS"
+>Users</A
+></DT
+><DT
+>3.2.3. <A
+HREF="menu-administration.html#ADMINISTRATION-NEWADMIN"
+>New user</A
+></DT
+><DT
+>3.2.4. <A
+HREF="menu-administration.html#ADMINISTRATION-DB"
+>Backups</A
+></DT
+><DT
+>3.2.5. <A
+HREF="menu-administration.html#ADMINISTRATION-UICONFIG"
+>UI Config</A
+></DT
+></DL
+></DD
+><DT
+>3.3. <A
+HREF="menu-users.html"
+>Customers</A
+></DT
+><DD
+><DL
+><DT
+>3.3.1. <A
+HREF="menu-users.html#MENU-USERS-LIST"
+>List</A
+></DT
+><DT
+>3.3.2. <A
+HREF="menu-users.html#MENU-USERS-NEW"
+>New Customer</A
+></DT
+><DT
+>3.3.3. <A
+HREF="menu-users.html#MENU-USERS-SEARCH"
+>Search</A
+></DT
+><DT
+>3.3.4. <A
+HREF="menu-users.html#MENU-USERS-GROUPS"
+>Groups</A
+></DT
+><DT
+>3.3.5. <A
+HREF="menu-users.html#MENU-USERS-NEWGROPUP"
+>New Group</A
+></DT
+><DT
+>3.3.6. <A
+HREF="menu-users.html#MENU-USERS-WARNINGS"
+>Messages</A
+></DT
+><DT
+>3.3.7. <A
+HREF="menu-users.html#MENU-USERS-PRINTS"
+>Printing</A
+></DT
+></DL
+></DD
+><DT
+>3.4. <A
+HREF="menu-nodes.html"
+>Nodes</A
+></DT
+><DD
+><DL
+><DT
+>3.4.1. <A
+HREF="menu-nodes.html#MENU-NODES-LIST"
+>List</A
+></DT
+><DT
+>3.4.2. <A
+HREF="menu-nodes.html#MENU-NODES-NEW"
+>New Node</A
+></DT
+><DT
+>3.4.3. <A
+HREF="menu-nodes.html#MENU-NODES-SEARCH"
+>Search</A
+></DT
+><DT
+>3.4.4. <A
+HREF="menu-nodes.html#MENU-NODES-WARNINGS"
+>Messages</A
+></DT
+><DT
+>3.4.5. <A
+HREF="menu-nodes.html#MENU-NODES-PRINT"
+>Printing</A
+></DT
+></DL
+></DD
+><DT
+>3.5. <A
+HREF="menu-netdevices.html"
+>Net Devices</A
+></DT
+><DD
+><DL
+><DT
+>3.5.1. <A
+HREF="menu-netdevices.html#MENU-NETDEVICES-LIST"
+>List</A
+></DT
+><DT
+>3.5.2. <A
+HREF="menu-netdevices.html#MENU-NETDEVICES-NEW"
+>New device</A
+></DT
+><DT
+>3.5.3. <A
+HREF="menu-netdevices.html#MENU-NETDEVICES-MAP"
+>Map</A
+></DT
+></DL
+></DD
+><DT
+>3.6. <A
+HREF="menu-networks.html"
+>IP Networks</A
+></DT
+><DD
+><DL
+><DT
+>3.6.1. <A
+HREF="menu-networks.html#MENU-NETWORKS-LIST"
+>List</A
+></DT
+><DT
+>3.6.2. <A
+HREF="menu-networks.html#MENU-NETWORKS-NEW"
+>New Network</A
+></DT
+></DL
+></DD
+><DT
+>3.7. <A
+HREF="menu-finances.html"
+>Finances</A
+></DT
+><DD
+><DL
+><DT
+>3.7.1. <A
+HREF="menu-finances.html#MENU-TARIFFS-LIST"
+>Tariffs List</A
+></DT
+><DT
+>3.7.2. <A
+HREF="menu-finances.html#MENU-TARIFFS-NEW"
+>New Tariff</A
+></DT
+><DT
+>3.7.3. <A
+HREF="menu-finances.html#MENU-PAYMENTS-LIST"
+>Payments list</A
+></DT
+><DT
+>3.7.4. <A
+HREF="menu-finances.html#MENU-PAYMENTS-NEW"
+>New payment</A
+></DT
+><DT
+>3.7.5. <A
+HREF="menu-finances.html#MENU-BALANCE"
+>Balance sheet</A
+></DT
+><DT
+>3.7.6. <A
+HREF="menu-finances.html#MENU-NEWBALANCE"
+>New Balance</A
+></DT
+><DT
+>3.7.7. <A
+HREF="menu-finances.html#MENU-INVOICES-LIST"
+>Invoices list</A
+></DT
+><DT
+>3.7.8. <A
+HREF="menu-finances.html#MENU-INVOICES-NEW"
+>New Invoice</A
+></DT
+><DT
+>3.7.9. <A
+HREF="menu-finances.html#MENU-FINANCES-PRINT"
+>Printing</A
+></DT
+></DL
+></DD
+><DT
+>3.8. <A
+HREF="menu-accounts.html"
+>Accounts</A
+></DT
+><DD
+><DL
+><DT
+>3.8.1. <A
+HREF="menu-accounts.html#ACCOUNTS-ACCOUNTS"
+>Accounts</A
+></DT
+><DT
+>3.8.2. <A
+HREF="menu-accounts.html#ACCOUNTS-NEW"
+>New Account</A
+></DT
+><DT
+>3.8.3. <A
+HREF="menu-accounts.html#ACCOUNTS-ALIASES"
+>Aliases</A
+></DT
+><DT
+>3.8.4. <A
+HREF="menu-accounts.html#ACCOUNTS-DOMAINS"
+>Domains</A
+></DT
+><DT
+>3.8.5. <A
+HREF="menu-accounts.html#ACCOUNTS-EXAMPLES"
+>Examples</A
+></DT
+></DL
+></DD
+><DT
+>3.9. <A
+HREF="menu-mailing.html"
+>Mailing</A
+></DT
+><DT
+>3.10. <A
+HREF="menu-reload.html"
+>Reload</A
+></DT
+><DT
+>3.11. <A
+HREF="menu-stats.html"
+>Stats</A
+></DT
+><DD
+><DL
+><DT
+>3.11.1. <A
+HREF="menu-stats.html#MENU-STATS-FILTER"
+>Filter</A
+></DT
+><DT
+>3.11.2. <A
+HREF="menu-stats.html#MENU-STATS-COMPACT"
+>Compacting</A
+></DT
+></DL
+></DD
+><DT
+>3.12. <A
+HREF="menu-helpdesk.html"
+>Helpdesk</A
+></DT
+><DD
+><DL
+><DT
+>3.12.1. <A
+HREF="menu-helpdesk.html#MENU-HELPDESK-LIST"
+>Queues List</A
+></DT
+><DT
+>3.12.2. <A
+HREF="menu-helpdesk.html#MENU-HELPDESK-NEWQUEUE"
+>New queue</A
+></DT
+><DT
+>3.12.3. <A
+HREF="menu-helpdesk.html#MENU-HELPDESK-SEARCH"
+>Searching</A
+></DT
+><DT
+>3.12.4. <A
+HREF="menu-helpdesk.html#MENU-HELPDESK-NEWTICKET"
+>New ticket</A
+></DT
+></DL
+></DD
+></DL
+></DIV
+><P
+>LMS User Interface is basically administration panel available via Web
+ interface that can be used to create and manage customer and computers (nodes)
+ data and containing numerous features such as: You're able to bind computer data to your customers and assign it to given
+ network. You're also able to define users liabilities and manage your network
+ finances. You can search in user and computer data quickly, send mass mailing
+ to specific user groups, define access to this UI for selected users and with
+ fine grained access rights. Additionally you can track your bandwidth usability
+ statistics, create backups of your database online and configuration and
+ management of your services. Those are only selected features of
+ <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>, so read on to find description of all features.
+ </P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="USER-LOGIN"
+>3.1. Login</A
+></H1
+><P
+>After you enter LMS installation URL in your Web browser, you'll
+        be prompted with login screen, where you need to enter correct username
+        and password. All passwords in database are stored in encrypted form.
+        </P
+><P
+>If it's your first session with LMS, and you don't have any
+        account created yet, you'll be redirected to new user account screen.
+        At this moment you have only access to this one module, so that you can
+        create your initial account.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="install-invoices.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="menu-administration.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Invoices</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Administration</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

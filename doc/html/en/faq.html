@@ -1,0 +1,506 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>FAQ</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Squid warnings"
+HREF="contrib-squid.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="contrib-squid.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+>&nbsp;</TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="FAQ"
+></A
+>Chapter 9. FAQ</H1
+><DIV
+CLASS="QANDASET"
+><DL
+><DT
+>9.1. <A
+HREF="faq.html#Q1"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>My network device map does not show up. What to do?</B
+></SPAN
+></A
+></DT
+><DT
+>9.2. <A
+HREF="faq.html#Q2"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>How to add two computers with the same IP?</B
+></SPAN
+></A
+></DT
+><DT
+>9.3. <A
+HREF="faq.html#Q3"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>How to add two computers with the same MAC?</B
+></SPAN
+></A
+></DT
+><DT
+>9.4. <A
+HREF="faq.html#Q4"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>I see following error: <SAMP
+CLASS="PROMPT"
+>Can't locate Config/IniFiles.pm in @INC ...</SAMP
+>What should I do?</B
+></SPAN
+></A
+></DT
+><DT
+>9.5. <A
+HREF="faq.html#Q5"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>I make few corrections. Do you accept any patches?</B
+></SPAN
+></A
+></DT
+><DT
+>9.6. <A
+HREF="faq.html#Q6"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>What is current version of LMS?</B
+></SPAN
+></A
+></DT
+><DT
+>9.7. <A
+HREF="faq.html#Q7"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>How to unsubscribe from the mailing list?</B
+></SPAN
+></A
+></DT
+><DT
+>9.8. <A
+HREF="faq.html#Q8"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>What is a limit of network devices on the map?</B
+></SPAN
+></A
+></DT
+><DT
+>9.9. <A
+HREF="faq.html#Q9"
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Insecure $ENV{BASH_ENV} while running -T switch...</B
+></SPAN
+></A
+></DT
+></DL
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q1"
+></A
+><B
+>9.1. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>My network device map does not show up. What to do?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>First you should check your Web Server logs. Usually it's helpful to increase amount of memory PHP may use in <SAMP
+CLASS="PROMPT"
+>memory_limit</SAMP
+> option of <TT
+CLASS="FILENAME"
+>php.ini</TT
+> file.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q2"
+></A
+><B
+>9.2. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>How to add two computers with the same IP?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>There is no such possibility. Additionally, authors have no plans for such a functionality in near future. However you might try to use unofficial patch <SAMP
+CLASS="PROMPT"
+>multiip</SAMP
+> which could be found in <SAMP
+CLASS="PROMPT"
+>contrib</SAMP
+> directory.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q3"
+></A
+><B
+>9.3. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>How to add two computers with the same MAC?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Check documentation. You probably look for <SAMP
+CLASS="PROMPT"
+>allow_mac_sharing = 1</SAMP
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q4"
+></A
+><B
+>9.4. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>I see following error: <SAMP
+CLASS="PROMPT"
+>Can't locate Config/IniFiles.pm in @INC ...</SAMP
+>What should I do?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>It's likely that you don't have required Perl modules installed. In this case it's <TT
+CLASS="FILENAME"
+>Config::IniFiles</TT
+> that is missing. The easiest way to install Perl modules is to use CPAN extension, eg.
+		<SAMP
+CLASS="PROMPT"
+>perl -MCPAN -e 'install Config::IniFiles'</SAMP
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q5"
+></A
+><B
+>9.5. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>I make few corrections. Do you accept any patches?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>You should post it to our mailing list. Attach your patches (preferably to current cvs version, use unified diff format) along with short description on what your code does. Eg.
+<PRE
+CLASS="SCREEN"
+>$ cd lms
+$ cvs -z7 diff -u &#62; /tmp/my_patch.patch</PRE
+>
+		If you're interested into joining LMS developers team, please apply on the mailing list. You should however first make a good impression and stay on the list for a while, that may prove your skills, before asking us for cvs account.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q6"
+></A
+><B
+>9.6. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>What is current version of LMS?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>LMS adopts versioning from Linux kernel. Thus, in LMS-x.y.z we have: x - major version number, y - stable if number is even, unstable if odd, z - minor version number. Therefore, if stable version appears, eg. 1.4.0 you shouldn't expect any new functionality in this branch, 1.5.x is created instead, where new features are being put, and which might not function well, or might be unstable.</P
+><P
+>Archive of all LMS versions can be found here:
+		<A
+HREF="http://lms.rulez.pl/download/"
+TARGET="_top"
+>lms.rulez.pl/download</A
+></P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q7"
+></A
+><B
+>9.7. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>How to unsubscribe from the mailing list?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Information about it is enclosed in all messages headers. You should send "unsubscribe" entitled message to lms-en-request@lists.rulez.pl.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q8"
+></A
+><B
+>9.8. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>What is a limit of network devices on the map?</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Map creation algorithm isn't perfect. You can connect maximum of 24 computers to one network device (this number at max will appear on map, you can connect more devices of course). Similarly, each network device might be connected to the other 24 devices, but usually this number is subject of change (it might be smaller), depending on how devices are placed on the map. When this number is exceeded you may observe bogus connections going beyond the map, or less likely, problems with generating map at all.</P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="Q9"
+></A
+><B
+>9.9. </B
+><SPAN
+CLASS="bold"
+><B
+CLASS="EMPHASIS"
+>Insecure $ENV{BASH_ENV} while running -T switch...</B
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>Quoted error appears while you run Perl scripts that needs to use external programs on some systems. Problem description and possible solutions are described in Perl manual (man perlsec) in "Cleaning Up Your Path" chapter. Simplest solution is to remove -T switch, which is responsible for the error, from the first line of the script.</P
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="contrib-squid.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Squid warnings</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

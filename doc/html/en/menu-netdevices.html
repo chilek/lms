@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Net Devices</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="User Interface (LMS-UI)"
+HREF="user.html"><LINK
+REL="PREVIOUS"
+TITLE="Nodes"
+HREF="menu-nodes.html"><LINK
+REL="NEXT"
+TITLE="IP Networks"
+HREF="menu-networks.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="menu-nodes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. User Interface (LMS-UI)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="menu-networks.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MENU-NETDEVICES"
+>3.5. Net Devices</A
+></H1
+><P
+>In this panel you're able to keep all your network inventory and
+define connections between your equipment and customer nodes. Each device
+(switch, hub, router, server) might have also IP address(es) assigned.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-NETDEVICES-LIST"
+>3.5.1. List</A
+></H2
+><P
+>List of devices might include its names, symbols, physical
+and logical location, description and number of available connection ports. You
+might sort its output by any highlighted column. To see device details or define
+all options and manage connected devices just click on selected record. It's
+also possible to interchange two connections between devices on this
+screen.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-NETDEVICES-NEW"
+>3.5.2. New device</A
+></H2
+><P
+>Network device should have unique name, all other
+parameters (manufacturer, model, serial number, ports, location and description)
+are optional.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-NETDEVICES-MAP"
+>3.5.3. Map</A
+></H2
+><P
+>Selection of 'Map' option draws graphical map of entire
+network. You can define root device, which will appear on top of the map and all
+other devices will be drawn relative to it.
+		<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>You need GD library compiled in PHP (and gd module
+enabled) to be able to use graphical map.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+		</P
+><P
+>Device status is shown on the map - computers in black are
+offline. Question mark on device icon means that its status is unknown (device 
+has not been scanned yet). To use this functionality you need to setup scanning
+script in crontab. Computer is marked as online if computer was online on last
+successful scan and period since last scan is lesser than defined in
+configuration (Default: 600 seconds). This parameter can be set with
+<TT
+CLASS="FILENAME"
+>lastonline_limit</TT
+> in [phpui] section of configuration file.
+Above feature applies both to computers and devices, but in case of devices all
+its ports (IPs) must be up for device to appear online. Computers status is also
+available on nodes list in 'Nodes' panel. 
+		<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>You can use lms-fping Perl script or almsd daemon to
+probe hosts availability.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+		</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="menu-nodes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="menu-networks.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Nodes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>IP Networks</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

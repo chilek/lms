@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Configuration file generator (lms-mgc)</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Description and configuration"
+HREF="scripts-config.html"><LINK
+REL="NEXT"
+TITLE="Configuration"
+HREF="mgc-config.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="scripts-config.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="mgc-config.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="MGC"
+></A
+>Chapter 5. Configuration file generator (lms-mgc)</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>5.1. <A
+HREF="mgc.html#MGC-INSTALL"
+>Installation</A
+></DT
+><DT
+>5.2. <A
+HREF="mgc-config.html"
+>Configuration</A
+></DT
+><DD
+><DL
+><DT
+>5.2.1. <A
+HREF="mgc-config.html#MGC-CONFIG-DB"
+>Section [database] - database setup</A
+></DT
+><DT
+>5.2.2. <A
+HREF="mgc-config.html#MGC-CONFIG-LMS"
+>Section [mgc] - list of instances</A
+></DT
+><DT
+>5.2.3. <A
+HREF="mgc-config.html#MGC-CONFIG-INSTANCES"
+>Section [mgc:xxx] - instance configuration</A
+></DT
+><DT
+>5.2.4. <A
+HREF="mgc-config.html#MGC-CONFIG-VARS"
+>Configuration variables</A
+></DT
+></DL
+></DD
+><DT
+>5.3. <A
+HREF="mgc-example.html"
+>Examples of use</A
+></DT
+></DL
+></DIV
+><P
+>LMS-MGC is "magicall" configuration file generator. With some efforts, you can create virtually any configuration file using it (ie. zone definition file for BIND)</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MGC-INSTALL"
+>5.1. Installation</A
+></H1
+><P
+>LMS-MGC has its own configuration file: <TT
+CLASS="FILENAME"
+>lms-mgc.ini</TT
+>. You should install it by moving it to <TT
+CLASS="FILENAME"
+>/usr/sbin</TT
+> directory. LMS-MGC should be used in two either ways: scheduled from cron (eg. hourly)</P
+><PRE
+CLASS="SCREEN"
+>0 * * * *       /usr/sbin/lms-mgc 1 &gt; /dev/null</PRE
+><P
+>or called from LMS 'Reload' menu. Second setup requires <TT
+CLASS="FILENAME"
+>sudo</TT
+> to use. Unfortunately this method requires you to add user to sudo, and set in  [phpui] section of <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>:</P
+><P
+><SAMP
+CLASS="PROMPT"
+>reload_type 	= exec</SAMP
+></P
+><P
+><SAMP
+CLASS="PROMPT"
+>reload_execcmd 	= sudo /usr/sbin/lms-mgc</SAMP
+></P
+><P
+>LMS-MGC has following command line options:
+	<PRE
+CLASS="SCREEN"
+>-C, --config-file=/path/lms-mgc.ini alternative configuration file
+                                    (default: /etc/lms/lms-mgc.ini);
+-i, --instances=name                instance name (number) to launch, without reading
+                                    lms-mgc.ini configuration, ie. -i "name1 name2"
+-h, --help                          shows help;
+-v, --version                       shows version number;
+-q, --quiet                         shows only errors during execution;
+-d, --debug                         verbose information for each IP;</PRE
+>
+	</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="scripts-config.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="mgc-config.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Description and configuration</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Configuration</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

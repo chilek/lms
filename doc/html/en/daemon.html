@@ -10,8 +10,8 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.5-cvs"
 HREF="index.html"><LINK
 REL="PREVIOUS"
-TITLE="Invoices"
-HREF="install-invoices.html"><LINK
+TITLE="Examples of use"
+HREF="mgc-example.html"><LINK
 REL="NEXT"
 TITLE="Modules"
 HREF="daemon-modules.html"><LINK
@@ -44,7 +44,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="install-invoices.html"
+HREF="mgc-example.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -73,7 +73,7 @@ CLASS="CHAPTER"
 ><A
 NAME="DAEMON"
 ></A
->Chapter 3. A.L.E.C's LMS Daemon</H1
+>Chapter 6. A.L.E.C's LMS Daemon</H1
 ><DIV
 CLASS="TOC"
 ><DL
@@ -82,108 +82,108 @@ CLASS="TOC"
 >Table of Contents</B
 ></DT
 ><DT
->3.1. <A
+>6.1. <A
 HREF="daemon.html#DAEMON-INTRO"
 >Basics</A
 ></DT
 ><DD
 ><DL
 ><DT
->3.1.1. <A
+>6.1.1. <A
 HREF="daemon.html#DAEMON-REQUIREMENTS"
 >Requirements</A
 ></DT
 ><DT
->3.1.2. <A
+>6.1.2. <A
 HREF="daemon.html#DAEMON-INSTALL"
 >Installation</A
 ></DT
 ><DT
->3.1.3. <A
+>6.1.3. <A
 HREF="daemon.html#DAEMON-CONFIG"
 >Configuration</A
 ></DT
 ><DT
->3.1.4. <A
+>6.1.4. <A
 HREF="daemon.html#DAEMON-RUN"
 >Starting</A
 ></DT
 ></DL
 ></DD
 ><DT
->3.2. <A
+>6.2. <A
 HREF="daemon-modules.html"
 >Modules</A
 ></DT
 ><DD
 ><DL
 ><DT
->3.2.1. <A
+>6.2.1. <A
 HREF="daemon-modules.html#DAEMON-MODULESLIST"
 >Modules list</A
 ></DT
 ><DT
->3.2.2. <A
+>6.2.2. <A
 HREF="daemon-modules.html#DAEMON-SYSTEM"
 >System</A
 ></DT
 ><DT
->3.2.3. <A
+>6.2.3. <A
 HREF="daemon-modules.html#DAEMON-PAYMENTS"
 >Payments</A
 ></DT
 ><DT
->3.2.4. <A
+>6.2.4. <A
 HREF="daemon-modules.html#DAEMON-NOTIFY"
 >Notify</A
 ></DT
 ><DT
->3.2.5. <A
+>6.2.5. <A
 HREF="daemon-modules.html#DAEMON-GGNOTIFY"
 >Ggnotify</A
 ></DT
 ><DT
->3.2.6. <A
+>6.2.6. <A
 HREF="daemon-modules.html#DAEMON-CUTOFF"
 >Cutoff</A
 ></DT
 ><DT
->3.2.7. <A
+>6.2.7. <A
 HREF="daemon-modules.html#DAEMON-DHCP"
->Dhcp</A
+>DHCP</A
 ></DT
 ><DT
->3.2.8. <A
+>6.2.8. <A
 HREF="daemon-modules.html#DAEMON-HOSTFILE"
 >Hostfile</A
 ></DT
 ><DT
->3.2.9. <A
+>6.2.9. <A
 HREF="daemon-modules.html#DAEMON-TRAFFIC"
 >Traffic</A
 ></DT
 ><DT
->3.2.10. <A
+>6.2.10. <A
 HREF="daemon-modules.html#DAEMON-TC"
 >Tc (HTB)</A
 ></DT
 ><DT
->3.2.11. <A
+>6.2.11. <A
 HREF="daemon-modules.html#DAEMON-DNS"
 >Dns</A
 ></DT
 ><DT
->3.2.12. <A
+>6.2.12. <A
 HREF="daemon-modules.html#DAEMON-ETHERS"
 >Ethers</A
 ></DT
 ><DT
->3.2.13. <A
+>6.2.13. <A
 HREF="daemon-modules.html#DAEMON-OIDENT"
 >Oident</A
 ></DT
 ><DT
->3.2.14. <A
+>6.2.14. <A
 HREF="daemon-modules.html#DAEMON-PINGER"
 >Pinger</A
 ></DT
@@ -197,27 +197,26 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="DAEMON-INTRO"
->3.1. Basics</A
+>6.1. Basics</A
 ></H1
 ><P
->Written in C program facilitate management of services. Daemon is
-         responsible for starting of appropriate modules on user demand only. Modules
-         are making configuration files based on data from LMS's database and
-         restarting selected services on a server.
-         </P
-><P
->Why such name? The better part of daemon code was written by one of developers - Aleksander 
-     'A.L.E.C' Machniak, nevertheless must underline a contribution of Marcina 'Lexx' Krol. Program
-     include fragments of code of Mateusza 'mteg' Golicz's old daemon and use Nicolas Devillard's iniparser
-     library.
+>This C daemon was developed to aid management of your services. It's responsible for
+     starting appropriate modules, each performing specific task. You have to select modules that
+     you intend to use before starting the daemon. Each module makes configuration files based on
+     its template and data from LMS database and manages (restarting) selected services on a server.
      </P
+><P
+>Why such name? The majority of daemon code has been written by one of developers -
+     Aleksander 'A.L.E.C' Machniak. Nevertheless we must emphasize contributions done by Marcin 'Lexx'
+     Krol. It also includes fragments of code of Mateusz 'mteg' Golicz old daemon and use Nicolas
+     Devillard iniparser library. </P
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
 NAME="DAEMON-REQUIREMENTS"
->3.1.1. Requirements</A
+>6.1.1. Requirements</A
 ></H2
 ><P
 ><SPAN
@@ -226,7 +225,7 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >A.L.E.C's LMS Daemon</I
 ></SPAN
-> require:
+> requires:
                      <UL
 ><LI
 ><P
@@ -237,25 +236,28 @@ CLASS="EMPHASIS"
 ><TT
 CLASS="FILENAME"
 >libmysqlclient</TT
-> (full MySQL installation or respective packet) 
-                    or <TT
+> shared library (included in full MySQL
+                    installation or respective "devel" package) or <TT
 CLASS="FILENAME"
 >libpq</TT
-> in case of PostgreSQL database or <TT
+> shared
+                    library in case of PostgreSQL database use or <TT
 CLASS="FILENAME"
 >sqlite</TT
-></P
+> shared
+                    library</P
 ></LI
 ><LI
 ><P
 ><TT
 CLASS="FILENAME"
 >libdl</TT
-> (that is in every present-day distribution)</P
+> shared library (present in every modern
+                    distribution)</P
 ></LI
 ><LI
 ><P
->C compiler</P
+>C compiler (gcc)</P
 ></LI
 ></UL
 >
@@ -267,15 +269,15 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-INSTALL"
->3.1.2. Installation</A
+>6.1.2. Installation</A
 ></H2
 ><P
->Prior to compilation you must set options described on following listing
-               with help of <TT
+>You have to setup some configure options prior to compilation, that can be
+               listed with --help flag of <TT
 CLASS="FILENAME"
 >./configure</TT
-> script (in brackets are shown
-               default values):
+> script (default values
+               shown in brackets):
 <PRE
 CLASS="SCREEN"
 >  --help                help
@@ -288,9 +290,10 @@ CLASS="SCREEN"
   --libdir=DIR          location of database libraries (/usr/lib)
   --incdir=DIR          location of database header files (/usr/include)</PRE
 >
-               Then, required is to set database which you will use (--with-mysql 
-               or --with-pgsql) and location of libraries supplied with database (--incdir, --libdir).
-               You can use only one database. If you will change database, you must to recompile daemon.
+               It's required to choose one database which you will use (--with-mysql or --with-pgsql
+               or --with-sqlite) and location of libraries supplied with database (--incdir,
+               --libdir). You can use only one database. If you will change database, you have to
+               recompile your daemon.
 <PRE
 CLASS="SCREEN"
 ># ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include</PRE
@@ -304,12 +307,12 @@ CLASS="SCREEN"
                Finally, compiled modules (files with <TT
 CLASS="FILENAME"
 >.so</TT
-> extension),
-               found in directory <TT
+> extension), found in
+               directory <TT
 CLASS="FILENAME"
 >modules/module_name</TT
-> move to any 
-               directory. Their location you will set in configuration file.
+> should be moved to some directory.
+               Their location will be set in configuration file.
                </P
 ></DIV
 ><DIV
@@ -318,15 +321,16 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-CONFIG"
->3.1.3. Configuration</A
+>6.1.3. Configuration</A
 ></H2
 ><P
->Example daemon configuration you can find in file <TT
+>You can find example daemon configuration in
+               <TT
 CLASS="FILENAME"
 >lms.ini.sample</TT
->.
-               Following listing describe basic options for daemon (modules configuration is described 
-               in separate chapters concerning modules):
+> file. The following listing describes basic
+               options for the daemon (modules configuration is described later, in separate
+               chapters concerning each module):
 <PRE
 CLASS="SCREEN"
 >[database]
@@ -339,8 +343,8 @@ port            = 0             # port number, default: 0
 [lmsd]
 sleeptime       = 30            # time interval (in seconds) how often to
                                 # check for reload order, default: 30
-instances       = hosts oident firewall       # module instances list
-command         = 'echo Connecting...'        # shell command to run before every database connection </PRE
+instances       = hosts oident firewall       # selected (active) modules list
+command         = 'echo Connecting...'        # shell command that run before each database connection </PRE
 >
                <DIV
 CLASS="NOTE"
@@ -361,17 +365,16 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->List of instances contains instances names detached with 
-               spaces. Instance is a name of section in configuration file.</P
+>List of instances contains modules names separated with spaces. Instance
+               is a name of section below in this configuration file.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
->
-               </P
+> </P
 ><P
->In instance section, beside config modules params, you must specify
-               primary options, as on following listing:
+>Instance section, beside config modules params, must contain primary options,
+               as on following listing:
 <PRE
 CLASS="SCREEN"
 >[instance_name]
@@ -380,8 +383,8 @@ info = "Additional description of module"</PRE
 >          
                </P
 ><P
->Change of 'instances' and any option i instances sections do not
-               require daemon restart. For other global options restart is required.</P
+>Change of 'instances' or any option in instance sections do not require daemon
+               restart. For other global options restart is required.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -389,20 +392,20 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DAEMON-RUN"
->3.1.4. Starting</A
+>6.1.4. Starting</A
 ></H2
 ><P
->You can run program as a daemon working in background (option '-b'). Then
-               configuration and services reload is done on demand with use of 
-               'Reload' menu in <SPAN
+>You can run this program as a daemon, detached to background with option '-b'.
+               While running configuration and services reload is performed on demand using 'Reload'
+               menu in <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->. Option 'sleeptime' (-s) specify interval
-               between database reads. When daemon detects reload order, he runs
-               modules defined by 'instances' option in <TT
+>. Sleep time runtime option (-s) specify interval
+               between database checks. When daemon detects reload order, it runs modules defined by
+               'instances' option in <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >.
@@ -413,25 +416,24 @@ CLASS="SCREEN"
 >               
                </P
 ><P
->Other way to run is disposable reload with usage of cron. 
-               You must to use this manner of reload for runing modules like 'payments'
-               'notify' or 'traffic'. In that case you can specify instances to reload
-               with use of option '-i'. Example crontab's entry:
+>Other way to run is periodical execution with cron. You have to use this mode
+               for running modules like 'payments' 'notify' or 'traffic'. In those cases you can
+               specify instances to reload with use of option '-i'. Example crontab entry:
 <PRE
 CLASS="SCREEN"
 >  1 0 * * *    /usr/local/bin/almsd -qi "payments notify"</PRE
 >
                </P
 ><P
->Following listing describe program command line options:
+>Following listing describes all program command line options:
 <PRE
 CLASS="SCREEN"
 >  -c     path to config (default: /etc/lms/lms.ini)
-  -i     list of instances (separated by space) to reload
+  -i     list of instances (separated by spaces) to reload
   -b     run in background (daemon mode)
-  -s     'reload' table reading interval in sec. (default: 30)
-  -q      reload and quit
-  -h      prints command line options</PRE
+  -s     database checks interval in sec. (default: 30)
+  -q     reload and quit
+  -h     prints command line options</PRE
 >
                </P
 ></DIV
@@ -453,7 +455,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="install-invoices.html"
+HREF="mgc-example.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -481,7 +483,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Invoices</TD
+>Examples of use</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

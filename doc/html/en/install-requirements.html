@@ -84,7 +84,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INSTALL-REQ-WWW"
->2.2.1. WWW Server</A
+>2.2.1. Web Server</A
 ></H2
 ><P
 >Because <SPAN
@@ -93,8 +93,8 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
-> is written in PHP, necessary is WWW server with interpreter of 
-            that language. Perefered server is Apache (<A
+> is written in PHP,
+            it needs Web server to work. Apache is preferred (<A
 HREF="http://www.apache.org"
 TARGET="_top"
 >www.apache.org</A
@@ -109,14 +109,17 @@ NAME="INSTALL-REQ-PHP"
 >2.2.2. PHP Interpreter</A
 ></H2
 ><P
->Interpreter should be in version 4.2.x or higher, but on 4.1.x also
-           works fine (but because developers uses 4.2.3 or higher, can't guarante correct work
-           with older versions. PHP can be downloaded from page
-          <A
+>Interpreter version should be 4.2.x or higher, but it also works fine with 4.1.x
+           (but due that developers use 4.2.3 or higher, we can't guarantee correct work with older
+           versions. PHP can be downloaded from <A
 HREF="http://www.php.net"
 TARGET="_top"
 >www.php.net</A
->.</P
+>.
+           At least following PHP modules needs to be installed (look for "extension" in
+           php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
+           compressed backups), gd or ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
+           support). For mailing is used PEAR::Mail.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -127,12 +130,12 @@ NAME="INSTALL-REQ-DB"
 >2.2.3. Database Server</A
 ></H2
 ><P
->LMS will not work correctly with MySQL versions older than 3.23.xx 
-           </P
+>MySQL server in version 3.23.xx and higher is supported. LMS won't work correctly
+           with older versions.</P
 ><P
->LMS also works with PostgreSQL in version 7.3.x or higher.</P
+>PostgreSQL in version 7.3.x or higher is supported.</P
 ><P
->Cooperation with SQLite database is possible too, but we are tested only version 2.8.11.</P
+>SQLite database is also usable, but we only tested version 2.8.11.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -149,12 +152,17 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
-> require Smarty library(<A
+> requires Smarty library (<A
 HREF="http://smarty.php.net"
 TARGET="_top"
 >http://smarty.php.net</A
->)
-           in version 2.5.0 or higher (don't use 2.6.4 version).</P
+>) in version 2.5.0
+            or higher (don't use 2.6.4 version). Newer versions of Smarty requires that
+            you have not enabled "magic_quotes_runtime" (set to Off) option in <A
+HREF="http://www.php.net/manual/en/configuration.php"
+TARGET="_top"
+>PHP configuration</A
+>.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -165,25 +173,18 @@ NAME="INSTALL-REQ-PERL"
 >2.2.5. Perl</A
 ></H2
 ><P
->If for <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS-UI</I
-></SPAN
-> will suffice above stuff, for working 
-          <SPAN
+><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-MGC</I
 ></SPAN
-> and the rest of scripts you will need 
-          also Perl and modules for him:
+> and the rest of Perl scripts requires 
+          also Perl interpreter and some modules:
        <UL
 ><LI
 ><P
->perl and his basic modules (POSIX, GetOpt::Long);</P
+>Perl and its basic modules (POSIX, GetOpt::Long);</P
 ></LI
 ><LI
 ><P
@@ -199,15 +200,15 @@ CLASS="EMPHASIS"
 ></LI
 ><LI
 ><P
->DBD-mysql (if you will use mysql);</P
+>DBD-mysql (if you use MySQL);</P
 ></LI
 ><LI
 ><P
->DBD-pg (if you will use postgres);</P
+>DBD-Pg (if you use Postgres);</P
 ></LI
 ><LI
 ><P
->DBD-SQLite (if you will use SQLite);</P
+>DBD-SQLite (if you use SQLite);</P
 ></LI
 ></UL
 ></P
@@ -221,14 +222,14 @@ NAME="INSTALL-REQ-C"
 >2.2.6. C Compiler</A
 ></H2
 ><P
->If you'll run<SPAN
+>If you intend to run <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >A.L.E.C's LMS Daemon</I
 ></SPAN
-> is needed
-       working C compiler, because daemon is providing only in the form of source code.</P
+> you will need
+       working C compiler, because daemon will be provided in source code form only.</P
 ></DIV
 ></DIV
 ><DIV

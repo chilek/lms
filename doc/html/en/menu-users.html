@@ -1,0 +1,349 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Customers</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="User Interface (LMS-UI)"
+HREF="user.html"><LINK
+REL="PREVIOUS"
+TITLE="Administration"
+HREF="menu-administration.html"><LINK
+REL="NEXT"
+TITLE="Nodes"
+HREF="menu-nodes.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="menu-administration.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. User Interface (LMS-UI)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="menu-nodes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MENU-USERS"
+>3.3. Customers</A
+></H1
+><P
+>This is your customers control center, where you can store and
+        manage their data, their finances and also their computers. You can even cut all
+        customer computers off with single mouse click.
+	<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Automatic cutoff of computers which owners are in debt is
+        performed by lms-cutoff Perl script.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-USERS-LIST"
+>3.3.1. List</A
+></H2
+><P
+>After you select 'List' you'll see list of your users, that
+            can be filtered based on selected criteria (user status, group or network) or
+            sort by any highlighted column. Warning triangle on the right side of the record
+            shows if any warnings are active for the user. Computer icon next to triangle
+            informs you about computers status (connected of cutoff). Clicking of any of 
+            those two symbols toggles status for all computers of the given user. </P
+><P
+>Records of users with negative balance will have 'payback' icon
+            (stack of coins), which allows you to account instant payment for the user,
+            which value will reset his debt.</P
+><P
+>When you click on selected user you'll get screen with details
+            for the user, divided in several panels: user details, computer details,
+            liabilities details and customer account details. You can also select to edit
+            any of the panels on this screen, define user liabilities, payoff or charge the
+            customer.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-USERS-NEW"
+>3.3.2. New Customer</A
+></H2
+><P
+>This option will let you enter data for new customer record.
+            You can enter his last and first name here, or if your customer is
+also legal company, enter company name in "Name" and company representative in
+"Forename" field. You should also fill users phone (up to 3) and address (you
+can enter additional address for correspondence) and his status (connected,
+waiting in queue, prospect).
+	    <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Wrong capitalization (uppercase) of user's last name is
+one of most frequent bug reports. Uppercase is implemented via SQL functions and
+thus you should seek for solution in your DB engine configuration.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-USERS-SEARCH"
+>3.3.3. Search</A
+></H2
+><P
+>You're able to search users (including deleted users), using
+various criteria. This module is more powerful than appropriate quick search
+box in left panel, as you can specify exact field names to search and if many
+users are found, the list of records will be returned, not only the first one.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-USERS-GROUPS"
+>3.3.4. Groups</A
+></H2
+><P
+>This is a place where it's possible to divide your users into
+groups. After you click 'Groups' you'll see list of all defined groups with some
+basic information. Clicking on selected group will give you details view, where
+you are able to edit this group properties, and view/add/remove group members.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-USERS-NEWGROPUP"
+>3.3.5. New Group</A
+></H2
+><P
+>You can define new group here, providing its name is unique,
+and it only contains letters, digits and underscore and minus signs. Groups are
+being used in scripts configuration, and for this reason group names cannot
+contain spaces.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-USERS-WARNINGS"
+>3.3.6. Messages</A
+></H2
+><P
+>In this module, you're able to write administrative message which
+            will appear on customers Web browser screen and assign it massively to all
+            or majority of your users (just pick them using selection box on the left).
+            It's also possible here to deselect administrative messages massively here.
+            </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-USERS-PRINTS"
+>3.3.7. Printing</A
+></H2
+><P
+>Set of modules to provide printer-friendly version of your
+            records:
+	    <UL
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>User list</I
+></SPAN
+> with filter and sort abilities, </P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Liability report</I
+></SPAN
+> for any range of user(s), for specified date,</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>User balance</I
+></SPAN
+> for selected period</P
+></LI
+></UL
+>
+	    </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="menu-administration.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="menu-nodes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Administration</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Nodes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
