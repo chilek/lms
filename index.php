@@ -97,8 +97,6 @@ require_once($_LIB_DIR.'/accesstable.php');
 
 // Initialize ADODB object
 
-$dstart = getmicrotime();
-
 $ADB = ADONewConnection($_DBTYPE);
 $ADB->debug = chkconfig($_CONFIG['phpui']['adodb_debug']);
 if($_CONFIG['phpui']['adodb_debug_log'] && is_writeable($_CONFIG['phpui']['adodb_debug_log']))
@@ -194,6 +192,9 @@ else
 
 /*
  * $Log$
+ * Revision 1.90  2003/08/19 01:18:53  lukasz
+ * - cleanups
+ *
  * Revision 1.89  2003/08/18 17:16:25  lukasz
  * - temporary save
  *
@@ -201,7 +202,4 @@ else
  * - more cvs tags :>
  *
  */
-
-echo 'exec: '.(getmicrotime()-$dstart);
-print_r($ADB);
 ?>
