@@ -5,20 +5,20 @@
 <TABLE width="100%" cellpadding="3">
 <TR CLASS="dark">
 	<TD class="fleftu" width="98%">
-		<IMG src="img/time.gif" align="absmiddle" ALT="" border="0"> <B>{t}Time of creation:{/t}</B>
+		<IMG src="img/time.gif" align="absmiddle" ALT="" border="0"> <B>{t}Creation time:{/t}</B>
 	</TD>
 	<TD class="fbt" width="1%" nowrap>
 		<IMG src="img/size.gif" align="absmiddle" ALT="" border="0"> {t}Size:{/t}
 	</TD>
 	<TD class="frightu" width="1%" align="right" nowrap>
-		<IMG src="img/empty.gif" align="absmiddle" ALT="" border="0" height="16" width="1"><B> {t}Total:{/t} {$dblist.total}</B>&nbsp;
+		<IMG src="img/empty.gif" align="absmiddle" ALT="" border="0" height="16" width="1"><B> {t 0=$dblist.total}Total: $0{/t}</B>&nbsp;
 	</TD>
 </TR>
 {cycle values="#DFD5BD,#EBE4D6" print=false}
 {section name=dblist loop=$dblist.time}
 <TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 	<TD class="fleft" width="98%" onClick="return self.location.href='?m=dbview&db={$dblist.time[dblist]}';">
-		<IMG src="img/time.gif" align="absmiddle" ALT="" border="0"> {$dblist.time[dblist]|date_format:"%e %B %Y, %H:%M.%S (%A)"|capitalize}
+		<IMG src="img/time.gif" align="absmiddle" ALT="" border="0"> {$dblist.time[dblist]|date_format:"%x %X (%A)"}
 	</TD>
 	<TD width="1%" align="right" onClick="return self.location.href='?m=dbview&db={$dblist.time[dblist]}';" nowrap>
 		<IMG src="img/size.gif" align="absmiddle" ALT="" border="0"> {$dblist.size[dblist]} {t}bytes{/t}

@@ -63,6 +63,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 		}
 		else
 			$this->_error = TRUE;
+
 		return $this->_dblink;
 	}
 

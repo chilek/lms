@@ -6,8 +6,8 @@
 <TABLE width="100%" cellpadding="3">
 	<TR>
 		<TD width="100%">
-			<img src="img/time.gif" align="absmiddle" ALT="" border="0"> <B>Data utworzenia:</B> {$database.time|date_format:"%e %B %Y, %H:%M.%S (%A)"|capitalize}<BR>
-			<img src="img/size.gif" align="absmiddle" ALT="" border="0"> <B>Rozmiar:</B> {$database.size} bajtów<BR>
+			<img src="img/time.gif" align="absmiddle" ALT="" border="0"> <B>{t}Creation time:{/t}</B> {$database.time|date_format:"%x %X (%A)"}<BR>
+			<img src="img/size.gif" align="absmiddle" ALT="" border="0"> <B>{t}Size:{/t}</B> {$database.size} {t}bytes{/t}<BR>
 		</TD>
 	</TR>
 	<TR>
@@ -22,18 +22,18 @@
 			</SCRIPT>
 			<FORM NAME="dbcontent">
 <TEXTAREA COLS="80" ROWS="30" class="pre" NAME="dbcontent">{$database.content}</TEXTAREA><BR>
-			<A HREF="javascript:highlightcontent();">Zaznacz</A>
+			<A HREF="javascript:highlightcontent();">{t}Highlight{/t}</A>
 			</FORM>
 		</TD>
 	</TR>
 	<TR>
 		<TD width="100%">
-			<A href="?m=dbview&db={$database.time}&rawmode=true&file=/lms-{$database.time|date_format:"%Y%m%d-%H%M%S"}.sql"><img src="img/view.gif" border="0" ALT="" align="absmiddle"> Podgl±d bez nag³ówków</A>
+			<A href="?m=dbview&db={$database.time}&rawmode=true&file=/lms-{$database.time|date_format:"%Y%m%d-%H%M%S"}.sql"><img src="img/view.gif" border="0" ALT="" align="absmiddle"> {t}View without headers{/t}</A>
 		</TD>
 	</TR>
 	<TR>
 		<TD widht="100%">
-			<A href="?m=dbview&db={$database.time}&rawmode=true&save=true&file=/lms-{$database.time|date_format:"%Y%m%d-%H%M%S"}.sql"><img src="img/save.gif" border="0" ALT="" align="absmiddle"> Zapisz na dysk lokalny</A><BR>
+			<A href="?m=dbview&db={$database.time}&rawmode=true&save=true&file=/lms-{$database.time|date_format:"%Y%m%d-%H%M%S"}.sql"><img src="img/save.gif" border="0" ALT="" align="absmiddle"> {t}Save on local disk{/t}</A><BR>
 		</TR>
 	</TR>
 </TABLE>

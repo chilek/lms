@@ -1,24 +1,15 @@
 {include file="header.html"}
 {include file="adminheader.html"}
 <!--// $Id$ //-->
-<H1 align="center">LMS wersja {$layout.lmsv}</H1>
+<H1 align="center">{t}LMS version {/t} {$layout.lmsv}</H1>
 <P align="center"><B>&copy; Copyright 2001-2005 LMS Developers</B></P>
-<table width="100%" cellpadding="5">
-	<tr>
-		<td width="50%" valign="top">
-			<p class="txt">Niniejszy program jest oprogramowaniem wolnodostêpnym; mo¿esz go rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej Licencji Publicznej GNU, wydanej przez Fundacjê Wolnodostêpnego Oprogramowania - wed³ug wersji 2-giej tej Licencji lub której¶ z pó¼niejszych wersji.</p>
-			<p class="txt">Niniejszy program rozpowszechniany jest z nadziej±, i¿ bêdzie on u¿yteczny - jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domy¶lnej gwarancji PRZYDATNO¦CI HANDLOWEJ albo PRZYDATNO¦CI DO OKRE¦LONYCH ZASTOSOWAÑ. W celu uzyskania bli¿szych informacji - Powszechna Licencja Publiczna GNU.</P>
-			<p class="txt">Z pewno¶ci± wraz z niniejszym programem otrzyma³e¶ te¿ egzemplarz Powszechnej Licencji Publicznej GNU; je¶li nie - napisz do Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.</P>
-		</TD>
-		<td width="50%" valign="top">
-			<P class="txt">This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License Version 2 as published by the Free Software Foundation.</P>
-			<P class="txt">This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.</p>
-			<p class="txt">You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.</p>
-		</TD>
-	</tr>
-</table>
+
+<P class="txt">{t}This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License Version 2 as published by the Free Software Foundation.{/t}</P>
+<P class="txt">{t}This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.{/t}</p>
+<P class="txt">{t}You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.{/t}</p>
+
 <P align="center"><a href="http://www.opensource.org/docs/definition.php"><img src="img/opensource-110x95.gif" border="0" width="110" height="95"></a></p>
-<p align="center"><B>LMS zawiera fragmenty nastêpuj±cego oprogramowania:</B></P>
+<p align="center"><B>{t}LMS include elements of other software:{/t}</B></P>
 <p align="center"><A href="http://phpwizard.net/projects/phpMyAdmin/">phpMyAdmin</A><BR>
 <a href="http://phpsysinfo.sourceforge.net/">phpsysinfo</a><BR>
 <a href="http://florian-amrhein.de/newsportal/index-english.php3">NewsPortal</A><BR>
@@ -26,9 +17,8 @@
 <a href="http://www.nirvani.net/software/">Multipart Mime Email Generator Library</A><BR>
 <a href="http://www.ros.co.nz/pdf/">ezpdf</A><BR>
 <a href="http://www.softcomplex.com/products/tigra_calendar/">Tigra Calendar</A><BR>
-procedury konwersji liczb na postaæ s³own± autorstwa Piotra Klabana<BR>
-oraz przyk³ady kodu zawarte w <a href="http://www.php.net/manual/pl/">Podrêczniku PHP</A></P>
-<p align="center"><B>W rolach g³ównych (w kolejno¶ci alfabetycznej):</B></P>
+{t}Piotr Kleban's polish procedures of number-to-words conversion<BR>and code examples from <a href="http://www.php.net/manual">PHP Manual</A>{/t}</P>
+<p align="center"><B>{t}LMS developers (in alphabetical order):{/t}</B></P>
 <TABLE WIDTH="100%" CELLPADDING="5">
 	{foreach from=$authors item=author name=authors key=nick}
 	{if $smarty.foreach.authors.iteration is odd}<TR>{/if}
@@ -51,7 +41,7 @@ oraz przyk³ady kodu zawarte w <a href="http://www.php.net/manual/pl/">Podrêcznik
 	{/foreach}
 	{if $smarty.foreach.authors.iteration is odd}</TR>{/if}
 </TABLE>
-<P align="center"><B>W pozosta³ych rolach:</B></P>
+<P align="center"><B>{t}The rest of group:{/t}</B></P>
 <CENTER>
 {foreach from=$others item=other name=others key=nick}
 	{if $other.www}<A href="http://{$other.www}" target="_BLANK">{/if}
@@ -60,6 +50,6 @@ oraz przyk³ady kodu zawarte w <a href="http://www.php.net/manual/pl/">Podrêcznik
 	- {$other.info}<BR>
 {/foreach}
 </CENTER>
-<P align="center"><a href="http://smarty.php.net/"><B>LMS korzysta z silnika template'owego Smarty - http://smarty.php.net</B></A></P>
-<P align="center"><a href="http://smarty.php.net/"><img src="img/smarty_icon.gif" border="0" ALT="* smarty"></A></p>
+<P align="center"><a href="http://smarty.php.net/"><B>{t}LMS uses Smarty Template Engine - http://smarty.php.net{/t}</B></A></P>
+<P align="center"><a href="http://smarty.php.net/"><img src="img/smarty_icon.gif" border="0" ALT="Smarty"></A></p>
 {include file="footer.html"}

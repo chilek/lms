@@ -18,13 +18,13 @@
 		
 		if(i==group.length) 
 		{
-			alert('Nie wybra³e¶ typu operacji!');
+			alert('{/literal}{t}You must select type of operation!{/t}{literal}');
 			return;
 		}
 
 		if((type==3 || type==4) && document.forms['addbalance'].elements['selectededit'].value==0)
 		{
-			alert('Nie zaznaczy³e¶ u¿ytkowników!');
+			alert('{/literal}{t}You must select customer(s)!{/t}{literal}');
 			return;
 		}
 		
@@ -56,18 +56,18 @@
 			<TABLE width="100%" cellpadding="3">
 				<TR CLASS="DARK">
 					<TD CLASS="FALL">
-						<IMG SRC="img/user.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>U¿ytkownicy:</B>
+						<IMG SRC="img/user.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>{t}Customers:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL">
-						Wybierz u¿ytkowników których dotyczyæ ma ta operacja finansowa. Je¿eli typ operacji nie jest obci±¿eniem b±d¼ wp³at± u¿ytkownika, system zignoruje listê u¿ytkowników.<BR><BR>
+						{t}Select customers which has to concern new operation. If operation isn't customer payment or covenant, system will ignore list of customers.{/t}<BR><BR>
 						<SELECT size="20" name="addbalance[muserid][]" onChange="javascript:CountSelectedUsers();" multiple>
 							{section name=users loop=$users}
 							<OPTION value="{$users[users].id}">{$users[users].username|truncate:25:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
-						Zaznaczonych: <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" STYLE="border:0; background-color: #DFD5BD;" readonly></INPUT>
+						{t}Selected:{/t} <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" STYLE="border:0; background-color: #DFD5BD;" readonly></INPUT>
 					</TD>
 				</TR>
 			</TABLE>
@@ -76,21 +76,21 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD CLASS="FALL" COLSPAN="3">
-						<IMG SRC="img/money.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>Typ operacji:</B>
+						<IMG SRC="img/money.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>{t}Operation type:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL" COLSPAN="3">
-						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="1" STYLE="border-width: 0pt; background-color: #DFD5BD;" {if $operation == 1}checked{/if}> <B><A href="javascript:CheckCharge(0);">przychód</A></B><BR>pieni±dze zarobione przez sieæ, np. w wyniku sprzeda¿y osprzêtu sieciowego u¿ytkownikowi</P>
-						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="2" STYLE="border-width: 0pt; background-color: #DFD5BD;" {if $operation == 2}checked{/if}> <B><A href="javascript:CheckCharge(1);">rozchód</A></B><BR>pieni±dze wydane przez sieæ, np. na zakup osprzêtu sieciowego, op³aty abonamentowe dla ISP, etc.</P>
-						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="3" STYLE="border-width: 0pt; background-color: #DFD5BD;" {if $operation == 3}checked{/if}> <B><A href="javascript:CheckCharge(2);">wp³ata u¿ytkownika</A></B><BR>pieni±dze które wp³aci³ u¿ytkownik na poczet abonamentu</P>
-						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="4" STYLE="border-width: 0pt; background-color: #DFD5BD;" {if $operation == 4}checked{/if}> <B><A href="javascript:CheckCharge(3);">obci±¿enie u¿ytkownika</A></B><BR>obci±¿enie konta u¿ytkownika, np. dodatkow± kwot± abonamentow±</P>
+						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="1" STYLE="border-width: 0pt; background-color: #DFD5BD;" {if $operation == 1}checked{/if}> <B><A href="javascript:CheckCharge(0);">{t}income{/t}</A></B><BR>{t}money earned by network, e.g. in result of sale network devices to customers{/t}</P>
+						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="2" STYLE="border-width: 0pt; background-color: #DFD5BD;" {if $operation == 2}checked{/if}> <B><A href="javascript:CheckCharge(1);">{t}expense{/t}</A></B><BR>{t}money spent by network, e.g. to acquire physical assets, ISP payments, etc.{/t}</P>
+						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="3" STYLE="border-width: 0pt; background-color: #DFD5BD;" {if $operation == 3}checked{/if}> <B><A href="javascript:CheckCharge(2);">{t}customer payment{/t}</A></B><BR>{t}money that payed customer for subscription{/t}</P>
+						<P><INPUT TYPE="radio" NAME="addbalance[type]" VALUE="4" STYLE="border-width: 0pt; background-color: #DFD5BD;" {if $operation == 4}checked{/if}> <B><A href="javascript:CheckCharge(3);">{t}customer covenant{/t}</A></B><BR>{t}customer account covenants, e.g. extra service charge{/t}</P>
 					</TD>
 				</TR>
 				<TR><TD>&nbsp;</TD></TR>
 				<TR CLASS="DARK">
 					<TD CLASS="FALL" COLSPAN="3">
-						<IMG SRC="img/money.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>Kwota i opis:</B>
+						<IMG SRC="img/money.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>{t}Value and description:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -98,10 +98,10 @@
 						<IMG SRC="img/value.gif" ALT="" ALIGN="absmiddle" BORDER="0">
 					</TD>
 					<TD WIDTH="1%">
-						<B>Kwota:</B>
+						<B>{t}Value:{/t}</B>
 					</TD>
 					<TD WIDTH="98%" CLASS="FRIGHT">
-						<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}" SIZE="15" {tip text="Podaj kwotê operacji"}>&nbsp;z³<BR>
+						<INPUT TYPE="TEXT" NAME="addbalance[value]" VALUE="{$value}" SIZE="15" {tip text="Enter value of operation"}><BR>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -109,14 +109,14 @@
 						<IMG SRC="img/tax.gif" ALT="" ALIGN="absmiddle" BORDER="0">
 					</TD>
 					<TD WIDTH="1%">
-						<B>VAT:</B>
+						<B>{t}VAT:{/t}</B>
 					</TD>
 					<TD WIDTH="98%" CLASS="FRIGHT">
-						<SELECT size="1" name="addbalance[taxvalue]" value="{$taxvalue}" {tip text="Podaj stawkê VAT operacji"}>
+						<SELECT size="1" name="addbalance[taxvalue]" value="{$taxvalue}" {tip text="Select VAT rate"}>
 							<OPTION value="22" {if $taxvalue == 22}selected{/if}>22%</OPTION>
 							<OPTION value="7" {if $taxvalue == 7}selected{/if}>7%</OPTION>
 							<OPTION value="0" {if $taxvalue == 0}selected{/if}>0%</OPTION>
-							<OPTION value="zw." {if !$taxvalue}selected{/if}>zw.</OPTION>
+							<OPTION value="{t}tax-free{/t}" {if !$taxvalue}selected{/if}>{t}tax-free{/t}</OPTION>
 						</SELECT>
 					</TD>
 				</TR>
@@ -125,10 +125,10 @@
 						<IMG SRC="img/calendar.gif" ALT="" ALIGN="absmiddle" BORDER="0">
 					</TD>
 					<TD WIDTH="1%">
-						<B>Data:</B>
+						<B>{t}Date:{/t}</B>
 					</TD>
 					<TD WIDTH="98%" class="fright">
-						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{$time}" SIZE="15" MAXSIZE="15" OnClick="javascript:cal1.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd gg:mm' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>
+						<INPUT TYPE="TEXT" NAME="addbalance[time]" VALUE="{$time}" SIZE="15" MAXSIZE="15" OnClick="javascript:cal1.popup();" {tip text="Enter date in format 'yyyy/mm/dd hh:mm' (empty field means current date) or click to choose date from calendar"}>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -136,16 +136,16 @@
 						<IMG SRC="img/usercomment.gif" ALT="" ALIGN="absmiddle" BORDER="0">
 					</TD>
 					<TD WIDTH="1%">
-						<B>Opis:</B>
+						<B>{t}Description:{/t}</B>
 					</TD>
 					<TD WIDTH="98%" class="fright">
-						<INPUT TYPE="TEXT" NAME="addbalance[comment]" VALUE="{$comment}" SIZE="50" {tip text="Wpisz komentarz"}>
+						<INPUT TYPE="TEXT" NAME="addbalance[comment]" VALUE="{$comment}" SIZE="50" {tip text="Enter comment"}>
 					</TD>
 				</TR>
 
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbottomu" ALIGN="right" COLSPAN="3">
-						<A ACCESSKEY="W" HREF="javascript:AddBalance();">Wykonaj <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
+						<A HREF="javascript:AddBalance();" ACCESSKEY="s" >{t}Save{/t} <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
 					</TD>
 				</TR>
 			</TABLE>
@@ -153,12 +153,10 @@
 	</TR>
 </TABLE>
 </FORM>
-
+</P>
 <SCRIPT>
 <!--
 var cal1 = new calendar(document.forms['addbalance'].elements['addbalance[time]']);
 //-->
 </SCRIPT>
-
-</P>
 {include file="footer.html"}
