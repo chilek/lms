@@ -441,7 +441,7 @@ sub instance($)
 		
 		# BUILD NODELIST
 		
-		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info, pin AS info FROM nodes, users WHERE users.id=nodes.ownerid");
+		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info, pin FROM nodes, users WHERE users.id=nodes.ownerid");
 		$dbq->execute();
 
 		my %maclist;
