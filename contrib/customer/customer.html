@@ -21,9 +21,11 @@
 <body marginheight="0" marginwidth="0" bgcolor="#FFFFFF" link="#800000" vlink="#800000" alink="#336600">
 	<DIV ALIGN="CENTER">
 		<CENTER>
+
 			<TABLE WIDTH="750" CELLPADDING="5">
+
 				<TR>
-					<TD COLSPAN="2" CLASS="FBOTTOM">
+					<TD COLSPAN="3" CLASS="FBOTTOM">
 						<H1>Informacje o u¿ytkowniku</H1>
 					</TD>
 				</TR>
@@ -31,15 +33,22 @@
 					<TD WIDTH="1%" NOWRAP>
 						<B>Numer identyfikacyjny:</B>
 					</TD>
-					<TD WIDTH="99%">
+					<TD WIDTH="54%">
 						{$userinfo.id|string_format:"%04d"}
+					</TD>
+					<TD ROWSPAN="5" WIDTH="45%">
+<CENTER>
+<FONT SIZE=+2>						SALDO KOÑCOWE:<BR>
+{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} z³</B></FONT>
+{else}{$userinfo.balance|default:"0"} z³{/if}<BR>
+</CENTER></FONT>
 					</TD>
 				</TR>
 				<TR>
 					<TD WIDTH="1%" NOWRAP>
 						<B>Nazwa klienta:</B>
 					</TD>
-					<TD WIDTH="99%">
+					<TD WIDTH="54%">
 						{$userinfo.username}
 					</TD>
 				</TR>
@@ -47,7 +56,7 @@
 					<TD WIDTH="1%" NOWRAP>
 						<B>Adres:</B>
 					</TD>
-					<TD WIDTH="99%">
+					<TD WIDTH="54%">
 						{$userinfo.address}
 						{if $userinfo.zip || $userinfo.city}<BR>{$userinfo.zip} {$userinfo.city}{/if}
 					</TD>
@@ -56,7 +65,7 @@
 					<TD WIDTH="1%" NOWRAP>
 						<B>Telefon:</B>
 					</TD>
-					<TD WIDTH="99%">
+					<TD WIDTH="54%">
 						{$userinfo.phone1}
 					</TD>
 				</TR>
@@ -64,17 +73,17 @@
 					<TD WIDTH="1%" NOWRAP>
 						<B>Taryfa:</B>
 					</TD>
-					<TD WIDTH="99%">
+					<TD WIDTH="54%">
 						{$userinfo.tariffname} ({$userinfo.tariffvalue|string_format:"%01.2f"} z³/mc)
 					</TD>
 				</TR>
 				<TR>
-					<TD COLSPAN="2" ALIGN="CENTER">
+					<TD COLSPAN="3" ALIGN="CENTER">
 						<B>Bilans finansowy:</B>
 					</TD>
 				</TR>
 				<TR>
-					<TD COLSPAN="2" ALIGN="CENTER">
+					<TD COLSPAN="3" ALIGN="CENTER">
 						<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1">
 							<TR BGCOLOR="#000000">
 								<TD>
@@ -132,12 +141,12 @@
 					</TD>
 				</TR>
 				<TR>
-					<TD COLSPAN="2">
+					<TD COLSPAN="3">
 						&nbsp;
 					</TD>
 				</TR>
 				<TR>
-					<TD COLSPAN="2" CLASS="FBOTTOM">
+					<TD COLSPAN="3" CLASS="FBOTTOM">
 						&nbsp;
 					</TD>
 				</TR>
@@ -145,7 +154,7 @@
 					<TD>
 						<IMG SRC="lms-powered.png" ALT="Powered by LMS!">
 					</TD>
-					<TD WIDTH="99%" ALIGN="RIGHT">
+					<TD COLSPAN="2" WIDTH="99%" ALIGN="RIGHT">
 						<FONT CLASS="BLEND">Wygenerowano przy u¿yciu LMS {$layout.lmsv}<BR>
 							&copy; 2001-2003 LMS Developers - <A HREF="http://lms.rulez.pl">http://lms.rulez.pl</A>
 						</FONT>
