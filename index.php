@@ -80,10 +80,6 @@ $_DBUSER = (! $_CONFIG[database]['user'] ? 'root' : $_CONFIG[database]['user']);
 $_DBPASS = (! $_CONFIG[database]['password'] ? '' : $_CONFIG[database]['password']);
 $_DBNAME = (! $_CONFIG[database]['database'] ? 'lms' : $_CONFIG[database]['database']);
 
-// Set our sweet polish locales :>
-
-//setlocale (LC_ALL, 'pl_PL');
-
 // include required files
 
 require_once($_LIB_DIR.'/common.php');
@@ -97,6 +93,11 @@ require_once($_LIB_DIR.'/Session.class.php');
 require_once($_LIB_DIR.'/leftmenu.php');
 require_once($_LIB_DIR.'/TipOfTheDay.php');
 require_once($_LIB_DIR.'/accesstable.php');
+
+// include language file (temporary, hardcoded pl.php, after making full language support
+// this will be changed.
+
+require_once($_LIB_DIR.'/lang/pl.php');
 
 // Initialize ADODB object
 
