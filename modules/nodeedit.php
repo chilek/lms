@@ -122,7 +122,7 @@ if(isset($nodeedit))
 	
 	$nodeinfo['name'] = $nodeedit['name'];
 	$nodeinfo['mac'] = $nodeedit['mac'];
-	$nodeinfo['ipaddr'] = $nodeedit['ipaddr'];
+	$nodeinfo['ip'] = $nodeedit['ipaddr'];
 	$nodeinfo['access'] = $nodeedit['access'];
 	$nodeinfo['ownerid'] = $nodeedit['ownerid'];
 
