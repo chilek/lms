@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Podgl±d bazy danych";
+$layout['pagetitle'] = 'Podgl±d bazy danych';
 
 $database = $LMS->DatabaseFetchContent($_GET['db']);
 
@@ -33,11 +33,12 @@ if($_GET['rawmode']=="true")
 	$database['rawmode'] = TRUE;
 	if($_GET['save']=="true")
 	{
-		header("Content-Type: application/octetstream");
-		header("Content-Disposition: attachment; filename=lms-backup-".date("Ymd-His",$_GET['db']).".sql");
+		header('Content-Type: application/octetstream');
+		header('Content-Disposition: attachment; filename=lms-backup-'.date("Ymd-His",$_GET['db']).'.sql');
+		header('Pragma: public');
 	}
 	else
-		header("Content-Type: text/plain; charset=ISO-8859-2");
+		header('Content-Type: text/plain; charset=ISO-8859-2');
 }
 
 $SMARTY->assign('database',$database);
