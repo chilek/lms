@@ -1,6 +1,7 @@
 <!--// $Id$ //-->
 {include file="header.html"}
 {include file="balanceheader.html"}
+<SCRIPT LANGUAGE="JavaScript" SRC="img/calendar.js"></SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="page">
 {section name=marked loop=$marked}
@@ -19,6 +20,13 @@
 		}
 	}
 	
+	function raport()
+	{
+		document.page.action="?m=invoicereport";
+		document.page.target="_blank";
+		document.page.submit();
+	}
+
 	function prints()
 	{
 		document.page.action="?m=invoice&print=cached";
@@ -139,8 +147,15 @@
 		<TD COLSPAN="7" class="fall" COLSPAN="7">
 			<TABLE WIDTH="100%">
 				<TR>
-					<TD WIDTH="99%">
-						{*<TABLE WIDTH="100%">
+					<TD WIDTH="99%" VALIGN="bottom">
+						<A HREF="javascript:raport();"><IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2">Raport sprzeda¿y: </A>
+						Od&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>
+						Do&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>	
+					
+					
+					
+{*					
+					<TABLE WIDTH="100%">
 							<TR>
 								<TD WIDTH="1%" ROWSPAN="2">
 									<INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="action" VALUE="markrange">
@@ -168,7 +183,12 @@
 									<B>Dzisiejszy dzieñ</B>
 								</TD>
 							</TR>								
-						</TABLE>*}
+						</TABLE>
+						
+						
+						
+						
+*}						
 					</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="right">
 						Zaznacz wszystkie<INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"><BR>
@@ -183,3 +203,11 @@
 </TABLE>
 </FORM>
 {include file="footer.html"}
+<SCRIPT>
+<!--
+var cal1 = new calendar(document.forms['page'].elements['from']);
+cal1.time_comp = false;
+var cal2 = new calendar(document.forms['page'].elements['to']);
+cal2.time_comp = false;
+//-->
+</SCRIPT>
