@@ -25,11 +25,8 @@
  */
 
 /*
- To jest eksperymentalny pseudo-driver LMSDB, dla bazy danych 'sqlite'.
- Z tego co zauwa¿y³em wystêpuj± b³êdy przy odtwarzaniu backupu (jeszcze 
- nie wiem dlaczego) oraz przy korzystaniu z pól szybkiego wyszukiwania 
- (nieobs³ugiwana sk³adnia SQL). Tak¿e nie dzia³a kapitalizowanie pliterek.
-  */
+ To jest eksperymentalny pseudo-driver LMSDB dla bazy danych 'sqlite'.
+ */
 
 class LMSDB_driver_sqlite extends LMSDB_common
 {
