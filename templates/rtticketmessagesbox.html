@@ -24,23 +24,21 @@
 			<TD width="1%" class="fbt" NOWRAP>
 			    {if $message.userid}
 				    <A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
+			    {elseif $message.adminid}
+				    <A href="?m=admininfo&id={$message.adminid}">{$message.adminname}</A>
 			    {else}
-			    {$message.mailfrom|escape}{/if}
+				    <A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
+			    {/if}
 			    <BR>
 			    {$message.subject|escape}
 			</TD>
 			<TD width="97%" class="frightu" align="right">
+			    {if $ticket.state != 2}
 			    <A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">Odpowiedz <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
+			    {/if}
 			</TD>
 		    </TR>
 		    <TR class="LIGHT">
-		    {*
-			<TD width="1%" class="fall" VALIGN="TOP" ALIGN="RIGHT">
-			    <A HREF="#">Odpowiedz</A><BR>
-			    <A HREF="#">Rozwi±¿</A><BR>
-			    <A HREF="#">Skomentuj</A><BR>
-			</TD>
-		*}
 			<TD COLSPAN="4" class="fall" BGCOLOR="#F4F0EC">
 			    <PRE>{$message.body|escape}</PRE>
 			</TD>
