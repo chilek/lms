@@ -52,16 +52,16 @@ $message = $_POST['message'];
 if(isset($message))
 {
 	if($message['subject'] == '')
-		$error['subject'] = "Wiadomo¶æ musi mieæ tytu³!";
+		$error['subject'] = trans('Message title not specified!');
 	
 	if($message['body'] == '')
-		$error['body'] = "Nie poda³e¶ tre¶ci wiadomo¶ci!";
+		$error['body'] = trans('Message body not specified!');
 
 	if($message['destination']!='' && !check_email($message['destination']))
-		$error['destination'] = 'Podany email nie wydaje siê byæ poprawny!';
+		$error['destination'] = trans('Incorrect email!');
 
 	if($message['destination']!='' && $message['sender']=='user')
-		$error['destination'] = 'U¿ytkownik nie mo¿e wysy³aæ wiadomo¶ci!';
+		$error['destination'] = trans('User cannot send message!');
 
 	if($filename = $_FILES['file']['name'])
 	{
@@ -80,10 +80,10 @@ if(isset($message))
 			switch($_FILES['file']['error'])
 			{
 				case 1: 			
-				case 2: $error['file'] = 'Plik jest za du¿y.'; break;
-				case 3: $error['file'] = 'Plik zosta³ pobrany czê¶ciowo.'; break;
-				case 4: $error['file'] = 'Nie podano ¶cie¿ki do pliku.'; break;
-				default: $error['file'] = 'Wyst±pi³y problemy z pobraniem pliku.'; break;
+				case 2: $error['file'] = trans('File is too large.'); break;
+				case 3: $error['file'] = trans('File has been uploaded partly.'); break;
+				case 4: $error['file'] = trans('Path to file was not specified.'); break;
+				default: $error['file'] = trans('Problem during file upload.'); break;
 			}
 	}	
 
@@ -161,7 +161,7 @@ if(isset($message))
 				
 			MessageAdd($message, $_FILES['file']);
 		}
-		else //wysy³amy do backendu
+		else //sending to backend
 		{
 			($message['destination']!='' ? $addmsg = 1 : $addmsg = 0);
 			
@@ -209,12 +209,12 @@ if(isset($message))
 				$message['headers'].($out[1] ? "\n".$out[1] : ''));
 			flush();
 			
-			// wiadomo¶æ do u¿ytkownika zapisujemy w bazie
+			// message to user is written to database
 			if($message['adminid'] && $addmsg) 
 				MessageAdd($message, $_FILES['file']);
 		}
 		
-		// ustawiamy status i w³a¶ciciela ticketu
+		// setting status and ticket owner
 		if(!$LMS->GetTicketOwner($message['ticketid']))
 			$LMS->SetTicketOwner($message['ticketid']);
 		if(!$LMS->GetTicketState($message['ticketid']))
@@ -255,7 +255,7 @@ else
 		$message['subject'] .= sprintf(" [RT#%06d]",$message['ticketid']); 
 }
 
-$layout['pagetitle'] = 'Nowa wiadomo¶æ';
+$layout['pagetitle'] = trans('New message');
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
