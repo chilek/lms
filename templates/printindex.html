@@ -38,17 +38,31 @@
 					<TD width="1%">	
 			    			<B>Sortowanie:</B>
 					</TD>
-					<TD width="95%" {tip text="Wybierz rodzaj i kierunek sortowania"}>
+					<TD width="1%" {tip text="Wybierz rodzaj i kierunek sortowania"}>
 						<SELECT SIZE="1" name="order">
 							<OPTION value="username" SELECTED>Nazwa/nazwisko i imiê</OPTION>
 							<OPTION value="id">Identyfikator</OPTION> 
 							<OPTION value="balance">Saldo</OPTION> 
 							<OPTION value="tariff">Abonament</OPTION> 
 							<OPTION value="address">Adres</OPTION> 
-						</SELECT>&nbsp;
+						</SELECT><BR><BR>
 						<SELECT SIZE="1" name="direction">
 							<OPTION value="asc" SELECTED>rosn±co</OPTION>
 							<OPTION value="desc">malej±co</OPTION> 
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/network.gif" alt="" BORDER="0" align="absmiddle">
+					</TD>
+					<TD width="1%">	
+			    			<B>Sieæ:</B>
+					</TD>
+					<TD width="92%" {tip text="Wybierz sieæ"}>
+						<SELECT size="1" name="network">
+							<OPTION value="0" SELECTED>- wszystkie -</OPTION>
+							{section name="networks" loop=$networks}
+							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:50:" ..."}</OPTION>
+							{/section}
 						</SELECT>
 					</TD>
 				</TR>
@@ -157,7 +171,7 @@ cal2.time_comp = false;
 							<OPTION value="ownerid">Identyfikator w³a¶ciciela</OPTION> 
 							<OPTION value="ip">Adres IP</OPTION> 
 							<OPTION value="mac">Adres MAC</OPTION>
-						</SELECT>&nbsp;
+						</SELECT><BR><BR>
 						<SELECT SIZE="1" name="direction">
 							<OPTION value="asc" SELECTED>rosn±co</OPTION>
 							<OPTION value="desc">malej±co</OPTION> 
