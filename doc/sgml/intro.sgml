@@ -162,21 +162,20 @@
 	</sect1>
 	<sect1 id="legalnotice">
 		<title>Legal Notice</title>
-	   <para>Niniejszy  program (z wy³±czeniem dokumentacji) jest  oprogramowaniem  wolnodostêpnym;  
-		mo¿esz  go rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej 
-		Licencji Publicznej  GNU, wydanej przez Fundacjê Wolnodostêpnego Oprogramowania 
-		- wed³ug wersji 2-giej tej Licencji lub której¶ z pó¼niejszych wersji.</para>
-    	   <para>Niniejszy program rozpowszechniany jest z nadziej±, i¿ bêdzie on u¿yteczny 
-		- jednak  BEZ JAKIEJKOLWIEK GWARANCJI, nawet domy¶lnej gwarancji  
-		PRZYDATNO¦CI HANDLOWEJ albo PRZYDATNO¦CI DO OKRE¦LONYCH ZASTOSOWAÑ.   
-		W celu uzyskania bli¿szych informacji - Powszechna Licencja Publiczna GNU.</para>
-    	   <para>Z  pewno¶ci±  wraz  z  niniejszym  programem otrzyma³e¶ te¿ egzemplarz 
-		Powszechnej Licencji Publicznej GNU; je¶li nie - napisz do Free Software 
-		Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. </para>
-	   <para>Angielski tekst tej licencji znajduje siê <ulink url="../COPYING">
-		tutaj</ulink>.</para>
-	    <para>Autorzy niniejszej dokumentacji wyra¿aj± zgodê na jej kopiowanie i niekomercyjne
-		rozprowadzanie wraz z systemem LMS.</para>
+	    <para>This program is free software; you can redistribute it and/or modify it 
+	    under the terms of the GNU General Public License as published by the 
+	    Free Software Foundation; either version 2 of the License, or (at you option) 
+	    any later version.</para>
+	    <para>This program is distributed in the hope that it will be useful, but 
+	    WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+	    or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+	    for more details.</para>
+	    <para>You should have received a copy of the GNU General Public License along 
+	    with this program; if not, write to the Free Software Foundation, Inc., 
+	    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.</para>
+	    <para>Text of License is <ulink url="../COPYING">here</ulink>.</para>
+	    <para>Authors of LMS documentation allows to copy and distribiting
+		documentation only in non-commercial usage.</para>
 	</sect1>
 	<sect1 id="moreinfo">
 		<title>Other Information</title>
