@@ -182,9 +182,20 @@ while(my $assign = $dbq->fetchrow_hashref())
 		}
 		my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES ($time, 0, 4, $assign->{'value'}, $uid, '$txt', $gotinv{$uid})");
 		$sdbq->execute();
-		print "UID: $uid\t$assign->{'value'}\t$txt\n";
+		print "$uid\t$assign->{'value'}\t$txt\n";
 	}
 }	
+
+# op³aty sta³e
+$dbq = $dbase->prepare("SELECT * FROM payments WHERE value <> 0 AND ((period = 0 AND at=$day) OR (period = 1 AND at=$weekday) OR (period = 2 AND at = $yearday))");
+$dbq->execute();
+
+while(my $assign = $dbq->fetchrow_hashref())
+{
+	my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES ($time, 0, 2, $assign->{'value'}, 0, '$assign->{'name'}/$assign->{'creditor'}', 0)");
+	$sdbq->execute();
+	print "0\t$assign->{'value'}\t$assign->{'name'}/$assign->{'creditor'}\n";
+}
 
 $dbq = $dbase->prepare("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
 $dbq->execute();
