@@ -15,6 +15,8 @@ wersja 1.3.7 (??/??/2004):
     je¶li nie by³y wcze¶niej ustawione (alec)
   - nazwa sieci mo¿e zawieraæ znak '_' (alec)
   - nazwa grupy mo¿e zawieraæ znak '.' (alec)
+  - dodana obs³uga opcji konfig. 'networks' i 'usergroups' w module 'ethers'
+    demona (alec)
 
 wersja 1.3.6 Osiris (01/09/2004);
 
