@@ -3081,8 +3081,11 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function SetTicketState($ticket, $state)
 	{
+		if($this->DB->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticket))) 
+			$this->DB->Execute('UPDATE rttickets SET state=? WHERE id=?', array($state, $ticket));
+		else
+			$this->DB->Execute('UPDATE rttickets SET state=?, owner=? WHERE id=?', array($state, $this->SESSION->id, $ticket));
 		$this->SetTS('rttickets');
-		return $this->DB->Execute('UPDATE rttickets SET state=? WHERE id=?', array($state, $ticket));
 	}
 
 	function GetMessage($id)
