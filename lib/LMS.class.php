@@ -98,7 +98,7 @@ class LMS {
 	function GetAdminName($id)
 	{
 		$db=$this->db;
-		$db->FetchRow("SELECT `name` FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
+		$db->FetchRow("SELECT `name` FROM `admins` WHERE `id` = '".$id."' LIMIT 1") or $db->row[name] = "-";
 		return $db->row[name];
 	}
 
@@ -1104,12 +1104,43 @@ class LMS {
 				else
 				{
 					$admins[lastloginhost][$key] = "-";
-					$admins[lastloginip][$key] = "0.0.0.0";
+					$admins[lastloginip][$key] = "-";
 				}
 					
 			}
 		return $admins;
 	}
+
+	function GetAdminIDByLogin($login)
+	{
+		$db=$this->db;
+		$db->FetchRow("SELECT `id` FROM `admins` WHERE `login` = '".$login."' LIMIT 1");
+//		if($db->row[id]=="")
+//			return 0;
+//		else
+			return $db->row[id];
+	}
+
+	function AdminAdd($adminadd)
+	{
+		$db=$this->db;
+		$db->ExecSQL("INSERT INTO `admins` (`login`, `name`, `passwd`) VALUES ('".$adminadd[login]."', '".$adminadd[name]."', '".crypt($adminadd[password])."')");
+		$db->FetchRow("SELECT max(id) FROM `admins`");
+		return $db->row["max(id)"];
+	}
+
+	function AdminDelete($id)
+	{
+		$db=$this->db;
+		return $db->ExecSQL("DELETE FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
+	}
+	
+	function AdminExists($id)
+	{
+		$db=$this->db;
+		return $db->CountRows("SELECT * FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
+	}
+								
 }
 
 ?>
