@@ -92,7 +92,7 @@
 			<A HREF="?m=nodescan{if $userinfo.id}&ownerid={$userinfo.id}{/if}">{t}Scan{/t} <IMG SRC="img/search.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 			<A HREF="?m={if $userinfo.id}userinfo&id={$userinfo.id}{else}nodelist{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A><BR>
-			<INPUT type="checkbox" name="nodedata[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $nodedata.reuse}checked{/if}> {t}Display this form after node addition again{/t}
+			<INPUT type="checkbox" name="nodedata[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $nodedata.reuse}checked{/if}> {t}Display this form after addition of node again{/t}
 		</TD>
 	</TR>	
 </TABLE></FORM></P>

@@ -3,7 +3,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE CELLPADDING="3" width="100%">
-	<TR CLASS="dark" {tip text="Click on column's name for sorting order change"}>
+	<TR CLASS="dark" {tip text="Click on column's name to change sorting order"}>
 		<TD CLASS="fleftu" width="97%">
 			<img src="img/netdev.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			<img src="img/producer.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=producer{if $listdata.direction eq "asc" && $listdata.order eq "producer"},desc{/if}">{t}Manufacturer:{/t}</A> {if $listdata.order eq "producer"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if} / <A href="?m=netdevlist&o=model{if $listdata.direction eq "asc" && $listdata.order eq "model"},desc{/if}">{t}model:{/t}</A> {if $listdata.order eq "model"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>

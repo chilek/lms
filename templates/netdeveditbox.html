@@ -6,7 +6,7 @@
 			<IMG SRC="img/netdev.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="FBT">
-			<B>Nazwa:</B>
+			<B>{t}Name:{/t}</B>
 		<TD WIDTH="98%" CLASS="FRIGHTU" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="netdev[name]" VALUE="{$netdevinfo.name}" MAXLENGTH="32" {tip trigger="name" bold=1}>
 		</TD>
@@ -16,10 +16,10 @@
 			<IMG SRC="img/producer.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Producent:</B>
+			<B>{t}Producer:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdevinfo.producer}" {tip text="Wpisz producenta urz±dzenia (opcjonalnie)"}>
+			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdevinfo.producer}" {tip text="Enter device's producer (optional)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -27,10 +27,10 @@
 			<IMG SRC="img/netdev_model.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Model:</B>
+			<B>{t}Model:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdevinfo.model}" {tip text="Wpisz nazwê modelu (opcjonalnie)" }>
+			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdevinfo.model}" {tip text="Enter model's name (optional)" }>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -38,10 +38,10 @@
 			<IMG SRC="img/serialnumber.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Numer seryjny:</B>
+			<B>{t}Serial Number:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[serialnumber]" VALUE="{$netdevinfo.serialnumber}" {tip text="Podaj numer seryjny (opcjonalnie)"}>
+			<INPUT TYPE="TEXT" NAME="netdev[serialnumber]" VALUE="{$netdevinfo.serialnumber}" {tip text="Enter serial number (optional)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -49,10 +49,10 @@
 			<IMG SRC="img/port.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Ilo¶æ portów:</B>
+			<B>{t}Ports number:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdevinfo.ports}" {tip trigger="ports" text="Wpisz liczbê portów (opcjonalnie)"}>
+			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdevinfo.ports}" {tip trigger="ports" text="Enter ports number (optional)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -60,10 +60,10 @@
 			<IMG SRC="img/home.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Lokalizacja:</B>
+			<B>{t}Location:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[location]" VALUE="{$netdevinfo.location}" {tip text="Podaj lokalizacjê (opcjonalnie)"}>
+			<INPUT TYPE="TEXT" NAME="netdev[location]" VALUE="{$netdevinfo.location}" {tip text="Enter device's location (optional)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -71,13 +71,13 @@
 			<IMG SRC="img/netdev_description.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Opis:</B>
+			<B>{t}Description:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
 			<TABLE WIDTH="1%" CELLPADDING="5">
 				<TR>
 					<TD CLASS="FALL" BGCOLOR="#F4F0EC">
-						<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5" {tip text="Informacje dodatkowe (opcjonalnie)"}>{$netdevinfo.description}</TEXTAREA>
+						<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5" {tip text="Enter additional informations (optional)"}>{$netdevinfo.description}</TEXTAREA>
 					</TD>
 				</TR>
 			</TABLE>
@@ -87,8 +87,8 @@
 
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="4" ALIGN="RIGHT">
-			<A HREF="javascript:document.netdevedit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
-			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="javascript:document.netdevedit.submit();" ACCESSKEY="S">{t}Save{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
 	</TR>	
 	</FORM>
@@ -100,8 +100,8 @@
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
-			<A HREF="javascript:document.replace.submit(); "><B>Wymieñ urz±dzenie:</B></A>
-			<SELECT NAME="netdev" {tip trigger="replace" text="Wybierz z listy urz±dzenie do zamiany"}>
+			<A HREF="javascript:document.replace.submit(); "><B>{t}Replace device:{/t}</B></A>
+			<SELECT NAME="netdev" {tip trigger="replace" text="Select from list device for replacement"}>
 				{section name=replacelist loop=$replacelist}
 				{if $replacelist[replacelist].id != $netdevinfo.id}
 				<OPTION VALUE="{$replacelist[replacelist].id}">{$replacelist[replacelist].name} {if $replacelist[replacelist].producer}/ {$replacelist[replacelist].producer}{/if} {if $replacelist[replacelist].location}({$replacelist[replacelist].location}){/if}</OPTION>
@@ -110,7 +110,7 @@
 			</SELECT>
 			</FORM></P>
 			{else}
-			<B>Nie ma urz±dzeñ do wymiany</B>
+			<B>{t}There are no devices to replacement.{/t}</B>
 			{/if}
 		</TD>
 	</TR>

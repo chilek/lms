@@ -4,7 +4,7 @@
 <H1>{$layout.pagetitle}</H1>
 <P>
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR bgcolor="#CEBD9B" {tip text="Click on column's name for sorting order change"}>
+	<TR bgcolor="#CEBD9B" {tip text="Click on column's name to change sorting order"}>
 		<TD width="95%" class="fleftu">
 			<B>
 			<img src="img/user.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=username{if $userlist.direction eq "asc" && $userlist.order eq "username"},desc{/if}">{t}Name/Surname and Forename:{/t}</A></B> {if $userlist.order eq "username"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
