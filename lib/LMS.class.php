@@ -757,7 +757,7 @@ class LMS
 		return $userlist;
 	}
 
-	function GetUserList($order='username,asc', $state=NULL, $network=NULL, $usergroup=NULL)
+	function GetUserList($order='username,asc', $state=NULL, $network=NULL, $usergroup=NULL, $time=NULL)
 	{
 		list($order,$direction)=explode(',',$order);
 
@@ -821,7 +821,8 @@ class LMS
 				.'WHERE deleted = '.$deleted
 				.($state !=0 ? ' AND status = '.$state :'') 
 				.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
-				.($usergroup ? ' AND usergroupid='.$usergroup : '') 
+				.($usergroup ? ' AND usergroupid='.$usergroup : '')
+				.($time ? ' AND time < '.$time : '')
 				.' GROUP BY users.id, lastname, users.name, status, email, phone1, users.address, gguin, nip, pesel, zip, city, users.info '
 		// ten fragment nie chcial dzialac na mysqlu		
 		//		.($indebted ? ' HAVING SUM((type * -2 + 7) * value) < 0 ' : '')

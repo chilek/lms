@@ -36,12 +36,32 @@
 						<NOBR><INPUT class="box" type="radio" name="filter" value="0">{t}all{/t}</NOBR>
 					</TD>
 					<TD width="1%">
+						<NOBR><IMG src="img/network.gif" alt="" BORDER="0" align="absmiddle"> <B>{t}Network:{/t}</B></NOBR><BR><BR>
+						<NOBR><IMG src="img/group.gif" alt="" BORDER="0" align="absmiddle"> <B>{t}Group:{/t}</B></NOBR><BR><BR>
+						<NOBR><IMG src="img/calendar.gif" alt="" BORDER="0" align="absmiddle"> <B>{t}Date:{/t}</B></NOBR>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="network" {tip text="Select network"}>
+							<OPTION value="0" SELECTED>{t}- all -{/t}</OPTION>
+							{section name="networks" loop=$networks}
+							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:50:" ..."}</OPTION>
+							{/section}
+						</SELECT><BR><BR>
+						<SELECT size="1" name="usergroup" {tip text="Select group"}>
+							<OPTION value="0" SELECTED>{t}- all -{/t}</OPTION>
+							{section name="usergroups" loop=$usergroups}
+							<OPTION value="{$usergroups[usergroups].id}">{$usergroups[usergroups].name|truncate:50:" ..."}</OPTION>
+							{/section}
+						</SELECT><BR><BR>
+						<INPUT TYPE="text" NAME="day" SIZE="10" MAXSIZE="10" OnClick="javascript:cal12.popup();" {tip text="Enter date in format 'yyyy/mm/dd' or click to choose it from calendar"}>
+					</TD>
+					<TD width="1%">
 						<IMG src="img/view.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%">	
 			    			<B>{t}Sorting:{/t}</B>
 					</TD>
-					<TD width="1%" {tip text="Select sorting direction and conditions"}>
+					<TD width="93%" {tip text="Select sorting direction and conditions"}>
 						<SELECT SIZE="1" name="order">
 							<OPTION value="username" SELECTED>{t}Name/surname and forename{/t}</OPTION>
 							<OPTION value="id">{t}Id{/t}</OPTION> 
@@ -52,34 +72,6 @@
 						<SELECT SIZE="1" name="direction">
 							<OPTION value="asc" SELECTED>{t}ascending{/t}</OPTION>
 							<OPTION value="desc">{t}descending{/t}</OPTION> 
-						</SELECT>
-					</TD>
-					<TD width="1%">
-						<IMG src="img/network.gif" alt="" BORDER="0" align="absmiddle">
-					</TD>
-					<TD width="1%">	
-			    			<B>{t}Network:{/t}</B>
-					</TD>
-					<TD width="1%" {tip text="Select network"}>
-						<SELECT size="1" name="network">
-							<OPTION value="0" SELECTED>{t}- all -{/t}</OPTION>
-							{section name="networks" loop=$networks}
-							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:50:" ..."}</OPTION>
-							{/section}
-						</SELECT>
-					</TD>
-					<TD width="1%">
-						<IMG src="img/group.gif" alt="" BORDER="0" align="absmiddle">
-					</TD>
-					<TD width="1%">	
-			    			<B>{t}Group:{/t}</B>
-					</TD>
-					<TD width="89%" {tip text="Select customers group"}>
-						<SELECT size="1" name="usergroup">
-							<OPTION value="0" SELECTED>{t}- all -{/t}</OPTION>
-							{section name="usergroups" loop=$usergroups}
-							<OPTION value="{$usergroups[usergroups].id}">{$usergroups[usergroups].name|truncate:50:" ..."}</OPTION>
-							{/section}
 						</SELECT>
 					</TD>
 				</TR>
@@ -93,6 +85,12 @@
 	</TR>
 </TABLE>
 </FORM>
+<SCRIPT>
+<!--
+var cal12 = new calendar(document.printuserlist.elements['day']);
+cal12.time_comp = false;
+//-->
+</SCRIPT>
 {/if}
 {if $printmenu=="finances" || !$printmenu}
 <P><FORM method="post" name="printbalancelist" id="printbalancelist" action="?m=print&type=balancelist" target="_blank">
