@@ -30,7 +30,7 @@
 				<INPUT type="HIDDEN" name="m" value="accountlist">
 				<INPUT type="HIDDEN" name="page" value="1">
 				<SELECT size="1" class="bold" name="u" OnChange="document.filter.submit();">
-					<OPTION value=""{if $listdata.user eq ""} SELECTED{/if}>wszyscy</OPTION>
+					<OPTION value=""{if $listdata.user eq ""} SELECTED{/if}>- wszyscy -</OPTION>
 					<OPTION value="0"{if $listdata.user eq "0"} SELECTED{/if}>KONTA SYSTEMOWE</OPTION>
 					{section name=userlist loop=$userlist}
 					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.user} SELECTED{/if}>{$userlist[userlist].username|truncate:50:"..."}</OPTION>
