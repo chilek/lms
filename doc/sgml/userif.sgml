@@ -477,7 +477,7 @@
   
   # SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE FROM_UNIXTIME(lastlogin) END FROM passwd WHERE login='%u'"
   # SQLNamedQuery setlastlogin UPDATE "lastlogin=UNIX_TIMESTAMP() WHERE login='%u'" passwd 
-  SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE lastlogin::abstime END FROM passwd WHERE login='%u'"
+  SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE '1970-01-01'::timestamp + (lastlogin || ' seconds')::interval  END FROM passwd WHERE login='%u'"
   SQLNamedQuery setlastlogin UPDATE "lastlogin=EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) WHERE login='%u'" passwd
   
   # Sprawdzamy datê wa¿no¶ci konta oraz ograniczamy szukanie do kont ftp
