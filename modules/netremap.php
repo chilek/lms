@@ -26,7 +26,7 @@
 
 if(!$LMS->NetworkExists($_GET['id'])||!$LMS->NetworkExists($_GET['mapto']))
 {
-	header("Location: ?m=netlist");
+	header('Location: ?m=netlist');
 	die;
 }
 
@@ -40,17 +40,16 @@ if(!$error)
 {
 	if($_GET['is_sure'])
 	{
-
 		$LMS->NetworkRemap($network['source']['id'],$network['dest']['id']);
-		header("Location: ?m=netinfo&id=".$network['dest']['id']);
+		header('Location: ?m=netinfo&id='.$network['dest']['id']);
 		die;
 
 	}else{
-		$layout['pagetitle'] = "Readresowanie sieci ".strtoupper($network['source']['name']);
+		$layout['pagetitle'] = trans('Readdressing Network $0',strtoupper($network['source']['name']));
 		$SMARTY->display('header.html');
-		echo "<H1>Readresowanie sieci ".strtoupper($network['source']['name'])."</H1>";
-		echo "<p>Jeste¶ pewien ¿e chcesz przeadresowaæ sieæ ".strtoupper($network['source']['name'])." (".$network['source']['address']."/".$network['source']['prefix'].") do sieci ".strtoupper($network['dest']['name'])." (".$network['dest']['address']."/".$network['dest']['prefix'].") ?</p>";
-		echo "<a href=\"?m=netremap&id=".$_GET['id']."&mapto=".$_GET['mapto']."&is_sure=1\">Tak, jestem pewien</A>";
+		echo '<H1>'.$layout['pagetitle'].'</H1>';
+		echo '<P>'.trans('Are you sure, you want to readdress network $0 to network $1 ?',strtoupper($network['source']['name']).' ('.$network['source']['address'].'/'.$network['source']['prefix'].')', strtoupper($network['dest']['name']).' ('.$network['dest']['address'].'/'.$network['dest']['prefix'].')').'</P>';
+		echo '<A href="?m=netremap&id='.$_GET['id'].'&mapto='.$_GET['mapto'].'&is_sure=1">'.trans('Yes, I am sure').'</A>';
 		$SMARTY->display('footer.html');
 	}
 }else{
