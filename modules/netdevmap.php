@@ -101,22 +101,6 @@ else
 {
 	$start = sprintf('%d',$_GET[start]);
 	makemap($DB,$map,$seen,$start);
-/*	echo "<TABLE BORDER=1>";
-	for($y=48; $y < 60; $y++)
-	{
-		echo '<TR>';
-		for($x=48;$x < 60; $x++)
-			if($map[$x][$y])
-				echo '<TD>'.$map[$x][$y].'</TD>';
-			else
-				echo '<TD>&nbsp;</TD>';
-		echo '</TR>';
-	}
-	echo "</TABLE>";
-	echo "<PRE>";
-	print_r($map);
-	echo "</PRE>";*/
-	
 	foreach($map as $idx => $x)
 	{
 		if($minx == NULL)
@@ -138,26 +122,25 @@ else
 		}
 	}
 
-	header('Content-type: image/gif');
-	
-//	echo "minx;$minx;maxx;$maxx;";
-//	echo "miny;$miny;maxy;$maxy;";
+	header('Content-type: image/png');
 	$widthx = $maxx - $minx;
 	$widthy = $maxy - $miny;
 	$cellw = 200;
-	$cellh = 50;
-	$celltmargin = 20;
-	$celllmargin = 20;
-	$imgwx = ($cellw + 1) * ($widthx + 1);
-	$imgwy = ($cellh + 1) * ($widthy + 1);
+	$cellh = 100;
+	$celltmargin = 10;
+	$celllmargin = 10;
+	$imgwx = $cellw * ($widthx + 1);
+	$imgwy = $cellh * ($widthy + 1);
 
-	$im = imagecreate($imgwx, $imgwy);
+	$im = imagecreatetruecolor($imgwx, $imgwy);
 
-	$withe = imagecolorallocate($im, 255,255,255);
 	$black = imagecolorallocate($im, 0,0,0);
+	$white = imagecolorallocate($im, 255,255,255);
 	$red = imagecolorallocate($im, 255,0,0);
 	$green = imagecolorallocate($im, 0,255,0);
 	$blue = imagecolorallocate($im, 0,0,255);
+
+	imagefill($im,0,0,$white);
 
 	foreach($map as $idx => $x)
 	{
@@ -166,13 +149,13 @@ else
 		//	echo "$idx/$idy/$device<BR>";
 			$celx = $idx - $minx;
 			$cely = $idy - $miny;
-			$px = (($celx * ($cellw + 1)) + $celllmargin);
-			$py = (($cely * ($cellh + 1)) + $celltmargin);
+		//	$px = (($celx * ($cellw + 1)) + $celllmargin);
+		//	$py = (($cely * ($cellh + 1)) + $celltmargin);
 			$devicemap[$device][x] = $celx;
 			$devicemap[$device][y] = $cely;
-			imagesetpixel($im, $px, $py, $red);
-			imagestring($im, 3, $px + 5, $py - 5, $device, $blue);
-			imagestring($im, 3, $px + 5, $py - 15, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($device)), $black);
+		//	imagesetpixel($im, $px, $py, $red);
+		//	imagestring($im, 3, $px + 5, $py - 5, $device, $blue);
+		//	imagestring($im, 3, $px + 5, $py - 15, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($device)), $black);
 		}
 	}
 
@@ -183,14 +166,28 @@ else
 		$src_cely = $devicemap[$link[src]][y];
 		$dst_celx = $devicemap[$link[dst]][x];
 		$dst_cely = $devicemap[$link[dst]][y];
-		$src_px = (($src_celx * ($cellw + 1)) + $celllmargin);
-		$src_py = (($src_cely * ($cellh + 1)) + $celltmargin);
-		$dst_px = (($dst_celx * ($cellw + 1)) + $celllmargin);
-		$dst_py = (($dst_cely * ($cellh + 1)) + $celltmargin);
-		imageline($im, $src_px+1, $src_py+1, $dst_px+1, $dst_py+1, $green);
+		$src_px = (($src_celx * $cellw) + $celllmargin);
+		$src_py = (($src_cely * $cellh) + $celltmargin);
+		$dst_px = (($dst_celx * $cellw) + $celllmargin);
+		$dst_py = (($dst_cely * $cellh) + $celltmargin);
+		imageline($im, $src_px+8, $src_py+8, $dst_px+8, $dst_py+8, $green);
 	}
+
+	$im_nd = imagecreatefromgif('img/netdev.gif');
+
+	foreach($devicemap as $deviceid => $device)
+	{
+		$celx = $device[x];
+		$cely = $device[y];
+		$px = (($celx * ($cellw)) + $celllmargin);
+		$py = (($cely * ($cellh)) + $celltmargin);
+		imagecopy($im,$im_nd,$px,$py,0,0,16,16);
+		imagestring($im, 3, $px + 20, $py - 8, $deviceid, $blue);
+		imagestring($im, 3, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), $black);
+	}
+	
+	
 		
-		
-	imagegif($im);
+	imagepng($im);
 }
 ?>
