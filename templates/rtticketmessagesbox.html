@@ -29,7 +29,10 @@
 			    {elseif $message.mailfrom}
 				    <A href="mailto:{$message.mailfrom|escape}">{$message.mailfrom|escape}</A>
 			    {else}
-				    {$ticket.requestor}
+				    {$ticket.requestor|escape}
+				    {if $ticket.requestoremail}
+					    &lt;<A href="mailto:{$ticket.requestoremail|escape}">{$ticket.requestoremail|escape}</A>&gt;
+				    {/if}
 			    {/if}
 			    <BR>
 			    {$message.subject|escape}

@@ -3168,8 +3168,8 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function MessageAdd($msg)
 	{
 		$this->SetTS('rtmessages');
-		return $this->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, userid, mailfrom, inreplyto)
-				    VALUES (?, ?NOW?, ?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $msg['subject'], $msg['body'], $msg['adminid'], $msg['userid'], $msg['mailfrom'], $msg['inreplyto']));
+		return $this->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, userid, mailfrom, inreplyto, messageid, replyto, headers)
+				    VALUES (?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $msg['subject'], $msg['body'], $msg['adminid'], $msg['userid'], $msg['mailfrom'], $msg['inreplyto'], $msg['messageid'], $msg['replyto'], $msg['headers']));
 	}
 
 	function RTSearch($search, $order='createtime,desc')
@@ -3243,25 +3243,6 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		
 		return $result;
 	}
-
-	function MessageSend($msg)
-	{
-		if($this->CONFIG['phpui']['debug_email'])
-			$msg['from'] = $this->CONFIG['phpui']['debug_email'];
-	
-		mail (	$msg['username'].' <'.$msg['destination'].'>',
-			$msg['subject'],
-			$msg['body'],
-			'From: '.$msg['sender'].' <'.$msg['from'].">\n"
-			.($msg['references'] ? 'References: '.$msg['references']."\n" : '')
-			."Content-Type: text/plain; charset=ISO-8859-2;\n"
-			.'X-Mailer: LMS-'.$this->_version.'/PHP-'.phpversion()."\n"
-			.'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
-			.'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']."\n"
-			);
-		flush();
-	}
-
 
 	/*
 	 * Templejty plików konfiguracyjnych

@@ -62,6 +62,11 @@ if(sizeof($message['attachments']))
 		$message['attachments'][$key]['size'] = $size;
 		$message['attachments'][$key]['unit'] = $unit;
 	}
+if($message['inreplyto'])
+{
+	$reply = $LMS->GetMessage($message['inreplyto']);
+	$message['inreplytoid'] = $reply['subject'];
+}
 
 $layout['pagetitle'] = 'Podgl±d wiadomo¶ci';
 

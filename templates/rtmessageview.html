@@ -93,11 +93,11 @@
 		<TD width="1%" class="fleft">
 			<IMG src="img/mail.gif" alt="" border="0" align="absmiddle">
 		</TD>
-		<TD width="1%">
+		<TD width="1%" NOWRAP>
 			<B>In-Reply-To:</B>
 		</TD>
 		<TD width="98%" class="fright">
-			{$message.inreplyto|escape}
+			<A href="?m=rtmessageview&id={$message.inreplyto}">{$message.inreplytoid|escape}</A>
 		</TD>
 	</TR>
 	{/if}
