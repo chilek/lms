@@ -4,6 +4,7 @@ wersja 1.4.4 (??/??/????):
 
   - BTS#0000281: poprawione wy¶wietlanie listy zad³u¿onych, która na MySQLu
     uwzglêdnia³a tak¿e u¿ytkowników z bilansem równym zero (alec)
+  - BTS#0000299: poprawka w funkcji sprawdzaj±cej poprawno¶æ MAC'a (lukas)
 
 wersja 1.4.3 Velis (13/01/2005):
 
