@@ -387,9 +387,9 @@ sub instance($)
 		}
 		
 		# BUILD NODELIST
-		#
-		#
-		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, id, ownerid, name FROM nodes");
+		
+		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, nodes.id as id, ownerid, nodes.name as name, uprate, downrate FROM nodes, users, tariffs WHERE tariffs.id=users.tariff AND users.id=nodes.ownerid");
+		
 		$dbq->execute();
 		my %maclist;
 		my %accesslist;
@@ -397,6 +397,8 @@ sub instance($)
 		my %namelist;
 		my %ucnamelist;
 		my %ownerlist;
+		my %upratelist;
+		my %downratelist;
 		
 		while (my $row = $dbq->fetchrow_hashref())
 		{
@@ -406,6 +408,8 @@ sub instance($)
 			$namelist{$row->{'ipaddr'}} = lc($row->{'name'});
 			$ucnamelist{$row->{'ipaddr'}} = uc($row->{'name'});
 			$ownerlist{$row->{'ipaddr'}} = $row->{'ownerid'};
+			$upratelist{$row->{'ipaddr'}} = $row->{'uprate'};
+			$downratelist{$row->{'ipaddr'}} = $row->{'downrate'};
 		}
 				
 		
@@ -514,6 +518,8 @@ sub instance($)
 			my $NAME = $ucnamelist{$ipaddr} || '';
 			my $name = $namelist{$ipaddr} || '';
 			my $mac = $maclist{$ipaddr} || '';
+			my $uprate = $upratelist{$ipaddr} || 0;
+			my $downrate = $downratelist{$ipaddr} || 0;
 			my $macs = lc($mac);
 			$macs =~ s/://g;
 			my $owner = $ownerlist{$ipaddr} || '';
@@ -530,6 +536,8 @@ sub instance($)
 			$rule =~ s/\%NWINS/$row->{'wins'}/g;
 			$rule =~ s/\%NDHCPS/$row->{'dhcpstart'}/g;
 			$rule =~ s/\%NDHCPE/$row->{'dhcpend'}/g;
+			$rule =~ s/\%UPRATE/$uprate/g;
+			$rule =~ s/\%DOWNRATE/$downrate/g;
 			$rule =~ s/\%ID/$id/g;
 			$rule =~ s/\%IP/$ipaddr/g;
 			$rule =~ s/\%ADDR/$ipaddr/g;
