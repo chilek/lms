@@ -147,7 +147,7 @@ function invoice_buyer($x,$y)
     $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$invoice['name']));
     $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$invoice['address']));
     $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$invoice['zip']." ".$invoice['city']));
-    if ($invoice['phone']) $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('Phone:')).' '.$invoice['phone']);
+    if ($invoice['phone']) $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('Phone:').' '.$invoice['phone']));
     if ($invoice['nip']) 
 	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('TEN:')).' '.$invoice['nip']);
     else if ($invoice['pesel']) 
@@ -158,7 +158,7 @@ function invoice_buyer($x,$y)
 
 function invoice_seller($x,$y) 
 {
-    global $invoice,$pdf,$_CONFIG;
+    global $pdf,$_CONFIG;
     $font_size=10;
     $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Seller:')).'</b>');
     $tmp = iconv("UTF-8","ISO-8859-2",$_CONFIG['invoices']['header']);
@@ -173,8 +173,7 @@ function invoice_title($x,$y)
 {
     global $invoice,$pdf,$_CONFIG,$type;
     $font_size=16;
-    $tmp = $_CONFIG['invoices'];
-    $tmp = iconv("UTF-8","ISO-8859-2",$tmp['number_template']);
+    $tmp = $_CONFIG['invoices']['number_template'];
     $tmp = str_replace("%N",$invoice['number'],$tmp);
     $tmp = str_replace("%Y",$invoice['year'],$tmp);
     $tmp = str_replace("%M",$invoice['month'],$tmp);
@@ -262,7 +261,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     for ($i = 1; $i <= 10; $i++) $t_width[$i]=$pdf->getTextWidth($font_size,$t_data[$i])+2*$margin+1;
     // tutaj jeszcze trzeba bêdzie sprawdziæ jak± szeroko¶æ maj± pola w tabelce pu¼niej
     if ($invoice['content']) foreach ($invoice['content'] as $item) {
-	$tt_width[2] = $pdf->getTextWidth($font_size,$item['description']);
+	$tt_width[2] = $pdf->getTextWidth($font_size,iconv("UTF-8","ISO-8859-2",$item['description']));
 	$tt_width[3] = $pdf->getTextWidth($font_size,$item['pkwiu']);
 	$tt_width[4] = $pdf->getTextWidth($font_size,$item['content']);
 	$tt_width[5] = $pdf->getTextWidth($font_size,$item['count']);
@@ -280,7 +279,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     $lp = 1;
     if ($invoice['content']) foreach ($invoice['content'] as $item) {
 	$t_data[1] = $lp;
-	$t_data[2] = $item['description'];
+	$t_data[2] = iconv("UTF-8","ISO-8859-2",$item['description']);
 	$t_data[3] = $item['pkwiu'];
 	$t_data[4] = $item['content'];
 	$t_data[5] = $item['count'];

@@ -125,6 +125,16 @@ $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
 require_once($_LIB_DIR.'/upgradedb.php');
 
+// Initialize templates engine (must be before locale settings)
+
+require_once($_SMARTY_DIR.'/Smarty.class.php');
+
+$SMARTY = new Smarty;
+
+// localization (must be before reading of confuguration from database)
+
+require_once($_LIB_DIR.'/language.php');
+
 // Read configuration of LMS-UI from database
 
 if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
@@ -143,12 +153,6 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 
 $_TIMEOUT = $_CONFIG['phpui']['timeout'];
 
-// Initialize templates engine
-
-require_once($_SMARTY_DIR.'/Smarty.class.php');
-
-$SMARTY = new Smarty;
-
 // test for proper version of Smarty
 
 if(version_compare('2.5.0', $SMARTY->_version) > 0)
@@ -157,7 +161,6 @@ if(version_compare('2.5.0', $SMARTY->_version) > 0)
 // Include required files (including sequence is important)
 
 require_once($_LIB_DIR.'/unstrip.php');
-require_once($_LIB_DIR.'/language.php');
 require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/checkip.php');
 require_once($_LIB_DIR.'/LMS.class.php');
