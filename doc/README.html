@@ -135,48 +135,48 @@ HREF="#USER-LOGIN"
 ></DT
 ><DT
 >3.2. <A
+HREF="#MENU-ADMINISTRATION"
+>Administracja</A
+></DT
+><DT
+>3.3. <A
 HREF="#MENU-USERS"
 >U¿ytkownicy</A
 ></DT
 ><DT
->3.3. <A
+>3.4. <A
 HREF="#MENU-NODES"
 >Komputery</A
 ></DT
 ><DT
->3.4. <A
+>3.5. <A
 HREF="#MENU-NETDEVICES"
 >Osprzêt sieciowy</A
 ></DT
 ><DT
->3.5. <A
+>3.6. <A
 HREF="#MENU-NETWORKS"
 >Sieci IP</A
 ></DT
 ><DT
->3.6. <A
+>3.7. <A
 HREF="#MENU-FINANCES"
 >Taryfy i Finanse</A
 ></DT
 ><DT
->3.7. <A
+>3.8. <A
+HREF="#MENU-ACCOUNTS"
+>Konta</A
+></DT
+><DT
+>3.9. <A
 HREF="#MENU-MAILING"
 >Mailing</A
 ></DT
 ><DT
->3.8. <A
+>3.10. <A
 HREF="#MENU-RELOAD"
 >Prze³adowanie</A
-></DT
-><DT
->3.9. <A
-HREF="#MENU-DATABASES"
->Bazy danych</A
-></DT
-><DT
->3.10. <A
-HREF="#MENU-ADMINS"
->Administratorzy</A
 ></DT
 ><DT
 >3.11. <A
@@ -364,6 +364,11 @@ CLASS="LOT"
 ><DT
 ><B
 >Spis przyk&#322;adów</B
+></DT
+><DT
+>3-1. <A
+HREF="#ACCOUNTS-E1"
+>Konta. Konfiguracja proftpd.</A
 ></DT
 ><DT
 >4-1. <A
@@ -2168,6 +2173,17 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>accountlist_pagelimit</P
+><P
+>Limit wy¶wietlanych pozycji na stronie w li¶cie kont. Domy¶lnie: 100.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>accountlist_pagelimit = 25</SAMP
+></P
+></LI
+><LI
+><P
 >reload_type</P
 ><P
 >Typ reloadu. Dozwolone warto¶ci:</P
@@ -2602,26 +2618,140 @@ NAME="USER-LOGIN"
 	za³o¿onego konta, zostaniesz przekierowany do modu³u tworzenia kont
 	administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
 	jednego modu³u.</P
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="MENU-ADMINISTRATION"
+>3.2. Administracja</A
+></H2
+><P
+>Po zalogowaniu do LMS'a znajdziesz siê w module (menu) administracji
+	systemem LMS. Tutaj znajdziesz niezbêdne informacje o systemie. Bêdziesz
+	móg³ zarz±dzaæ administratorami i tworzyæ/odtwarzaæ kopie bazy danych.</P
+><P
+>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
+	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze.
+	W polach szybkiego wyszukiwania, oprócz id u¿ytkownika lub komputera, mo¿esz 
+	podawaæ nazwisko, nazwê, fragment adresu, telefon, email, adres IP lub MAC. 
+	W przypadku gdy w bazie znajduje siê wiêcej u¿ytkowników pasuj±cych do szukanych
+	danych zostan± wy¶wietlone informacje tylko o jednym u¿ytkowniku lub komputerze.</P
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="USER-WELCOME"
->3.1.1. Praca z LMS-UI</A
+NAME="ADMINISTRATION-INFO"
+>3.2.1. Info</A
 ></H3
 ><P
->Po zalogowaniu do LMS'a zobaczysz panel powitalny, na którym znajduj± siê
-	    podstawowe informacje na temat naszego systemu: wersjê LMS i jego sk³adników,
-	    wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i komputerów w bazie oraz ich
-	    stan (pod³±czony/od³±czony), liczbê zad³u¿onych i kwota oraz przydatne lms'owe linki.</P
+>To panel na którym znajduj± siê podstawowe informacje na temat naszego 
+	    systemu: wersja LMS i jego sk³adników, informacje o prawach autorskich, 
+	    wersja j±dra i uptime serwera, dane statystyczne o u¿ytkownikach i komputerach,
+	    bie¿±ce informacje o aktywno¶ci komputerów i stanie finansów sieci. 
+	    Ponadto znajdziesz tu przydatne lms'owe linki.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-ADMINS"
+>3.2.2. Administratorzy</A
+></H3
 ><P
->Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
-	    dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze.
-	    W polach szybkiego wyszukiwania, oprócz id u¿ytkownika lub komputera, mo¿esz 
-	    podawaæ nazwisko, nazwê, fragment adresu, telefon, email, adres IP lub MAC. 
-	    W przypadku gdy w bazie znajduje siê wiêcej u¿ytkowników pasuj±cych do szukanych
-	    danych zostan± wy¶wietlone informacje tylko o jednym u¿ytkowniku lub komputerze.</P
+>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, czyli osób
+	    korzystaj±cych z LMS'a, zak³adania i przegl±dania ich kont, zmiany hase³ i definiowania 
+	    praw dostêpu.</P
+><P
+> Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale <A
+HREF="#INSTALL-RIGHTS"
+>Prawa dostêpu</A
+>.</P
+><P
+>Po wybraniu menu 'Administratorzy' zobaczysz listê wszystkich administratorów
+	    z informacj± o ostatnim logowaniu. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie 
+	    informacji szczegó³owych o danym koncie, w tym o zdefiniowanych prawach dostêpu. 
+	    W ka¿dej chwili mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'. 
+	    Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu 'Nowy administrator'.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-NEWADMIN"
+>3.2.3. Nowy administrator</A
+></H3
+><P
+>Aby dodaæ nowe konto administratora nale¿y podaæ login oraz has³o, 
+	    które nie mo¿e byæ puste. Podanie imienia, nazwiska i adresu poczty elektronicznej
+	    nie jest wymagane. Poni¿ej mo¿na zaznaczyæ uprawnienia dostêpu do
+	    systemu. Je¿eli wszystkie pola pozostawisz puste, administratorowi 
+	    przypisany zostanie 'Pe³en dostêp'.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="ADMINISTRATION-DB"
+>3.2.4. Kopie zapasowe</A
+></H3
+><P
+>Z panelu 'Kopie zapasowe' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy LMSa.
+	    Kopia bazy to plik tekstowy zawieraj±cy zapytania SQL i dane z wszystkich tabel w bazie, zapisywany w
+	    katalogu zdefiniowanym w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[directories]</I
+></SPAN
+> <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>
+	    zmienn± <SAMP
+CLASS="PROMPT"
+>backup_dir</SAMP
+>.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Domy¶lnie kopie zapisywane s± w katalogu <TT
+CLASS="FILENAME"
+>lms/backups</TT
+>
+	    dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
+	    Klikniêcie na ikonkê Odtwórz spowoduje wyczyszczenie bie¿±cej bazy danych i za³adowanie
+	    do niej danych z wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
+	    aktualnej bazy danych.</P
 ></DIV
 ></DIV
 ><DIV
@@ -2630,7 +2760,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-USERS"
->3.2. U¿ytkownicy</A
+>3.3. U¿ytkownicy</A
 ></H2
 ><P
 >Tutaj zarz±dzasz danymi u¿ytkowników twojej sieci i ich finansami, ale tak¿e 
@@ -2668,7 +2798,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-USERS-LIST"
->3.2.1. Lista</A
+>3.3.1. Lista</A
 ></H3
 ><P
 >Po wej¶ciu do panelu 'U¿ytkownicy' uka¿e siê lista u¿ytkowników,
@@ -2694,7 +2824,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-USERS-NEW"
->3.2.2. Nowy</A
+>3.3.2. Nowy</A
 ></H3
 ><P
 >Dodaj±c nowego u¿ytkownika podajesz jego nazwisko/nazwê i dane teleadresowe
@@ -2733,7 +2863,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-USERS-SEARCH"
->3.2.3. Szukaj</A
+>3.3.3. Szukaj</A
 ></H3
 ><P
 >Mo¿liwe jest wyszukiwanie u¿ytkowników (tak¿e usuniêtych) wg zadanych kryteriów. Modu³ ten,
@@ -2747,7 +2877,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-USERS-GROUPS"
->3.2.4. Grupy</A
+>3.3.4. Grupy</A
 ></H3
 ><P
 >Tutaj zarz±dzasz grupami u¿ytkowników. Po klikniêciu menu 'Grupy'
@@ -2761,7 +2891,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-USERS-NEWGROPUP"
->3.2.5. Nowa grupa</A
+>3.3.5. Nowa grupa</A
 ></H3
 ><P
 >Grupa powinna posiadaæ unikaln± nazwê, sk³adaj±c± siê z liter, cyfr, znaku
@@ -2774,7 +2904,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-USERS-WARNINGS"
->3.2.6. Ostrze¿enia</A
+>3.3.6. Ostrze¿enia</A
 ></H3
 ><P
 >Tutaj mo¿na "hurtowo" przypisaæ tre¶æ wiadomo¶ci administracyjnej
@@ -2788,7 +2918,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-USERS-PRINTS"
->3.2.7. Wydruki</A
+>3.3.7. Wydruki</A
 ></H3
 ><P
 >Zestaw modu³ów wy¶wietlaj±cych listy w formie przyjaznej dla drukarki
@@ -2835,7 +2965,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-NODES"
->3.3. Komputery</A
+>3.4. Komputery</A
 ></H2
 ><P
 >Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie listy komputerów,
@@ -2847,7 +2977,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-NODES-LIST"
->3.3.1. Lista</A
+>3.4.1. Lista</A
 ></H3
 ><P
 >Lista komputerów, ta która pokazuje siê po wej¶ciu do panelu 'Komputery'. 
@@ -2865,7 +2995,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-NODES-NEW"
->3.3.2. Nowy</A
+>3.4.2. Nowy</A
 ></H3
 ><P
 >Tutaj dodaje siê nowe komputery do bazy danych. W tym celu definiujemy nazwê
@@ -2934,7 +3064,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-NODES-SEARCH"
->3.3.3. Szukaj</A
+>3.4.3. Szukaj</A
 ></H3
 ><P
 >Wyszukiwanie komputerów wed³ug zadanych kryteriów. Mo¿esz podaæ 
@@ -2946,7 +3076,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-NODES-WARNINGS"
->3.3.4. Ostrze¿enia</A
+>3.4.4. Ostrze¿enia</A
 ></H3
 ><P
 >Tutaj definiuje siê tre¶æ wiadomo¶ci administracyjnych dla u¿ytkowników oraz
@@ -2961,7 +3091,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-NODES-PRINT"
->3.3.5. Wydruki</A
+>3.4.5. Wydruki</A
 ></H3
 ><P
 >Wy¶wietlenie list komputerów, w formacie przyjaznym dla drukarki 
@@ -2974,7 +3104,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-NETDEVICES"
->3.4. Osprzêt sieciowy</A
+>3.5. Osprzêt sieciowy</A
 ></H2
 ><P
 >W panelu przeznaczonym do ewidencji sprzêtu zarz±dzamy struktur± 
@@ -2987,7 +3117,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-NETDEVICES-LIST"
->3.4.1. Lista</A
+>3.5.1. Lista</A
 ></H3
 ><P
 >Lista urz±dzeñ zawiera ich nazwy i symbole, po³o¿enie i opis, a ponadto 
@@ -3002,7 +3132,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-NETDEVICES-NEW"
->3.4.2. Nowe</A
+>3.5.2. Nowe</A
 ></H3
 ><P
 >Urz±dzenie sieciowe powinno posiadaæ unikaln± nazwê. Pozosta³e
@@ -3015,7 +3145,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-NETDEVICES-MAP"
->3.4.3. Mapa</A
+>3.5.3. Mapa</A
 ></H3
 ><P
 >Generowanie graficznej mapy ca³ej sieci, na podstawie
@@ -3096,7 +3226,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-NETWORKS"
->3.5. Sieci IP</A
+>3.6. Sieci IP</A
 ></H2
 ><P
 >Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
@@ -3108,7 +3238,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-NETWORKS-LIST"
->3.5.1. Lista</A
+>3.6.1. Lista</A
 ></H3
 ><P
 >Lista sieci oprócz podstawowych danych o sieciach zawiera podsumowanie ilo¶ci
@@ -3140,7 +3270,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-NETWORKS-NEW"
->3.5.2. Nowa sieæ</A
+>3.6.2. Nowa sieæ</A
 ></H3
 ><P
 >Definiuj±c now± sieæ musisz okre¶liæ jej unikaln± nazwê i klasê adresow±
@@ -3153,7 +3283,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-FINANCES"
->3.6. Taryfy i Finanse</A
+>3.7. Taryfy i Finanse</A
 ></H2
 ><P
 >Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami sieci.
@@ -3166,7 +3296,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-TARIFFS-LIST"
->3.6.1. Lista taryf</A
+>3.7.1. Lista taryf</A
 ></H3
 ><P
 >Po wej¶ciu do panelu 'Taryfy i finanse' zobaczysz listê taryf zawieraj±c±
@@ -3182,7 +3312,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-TARIFFS-NEW"
->3.6.2. Nowa taryfa</A
+>3.7.2. Nowa taryfa</A
 ></H3
 ><P
 >Definiuj±c now± taryfê musisz podaæ unikaln± nazwê, kwotê i stawkê podatku.
@@ -3194,7 +3324,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-PAYMENTS-LIST"
->3.6.3. Lista op³at</A
+>3.7.3. Lista op³at</A
 ></H3
 ><P
 >Lista op³at sta³ych ¶wiadczonych na rzecz innych podmiotów, oprócz elementów standardowych
@@ -3209,7 +3339,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-PAYMENTS-NEW"
->3.6.4. Nowa op³ata</A
+>3.7.4. Nowa op³ata</A
 ></H3
 ><P
 >Nowej op³acie sta³ej przypisujesz unikaln± nazwê, wierzyciela oraz kwotê i dzieñ
@@ -3221,7 +3351,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-BALANCE"
->3.6.5. Bilans finansowy</A
+>3.7.5. Bilans finansowy</A
 ></H3
 ><P
 >Historia operacji finansowych z podsumowaniem przychodu, rozchodu,
@@ -3234,7 +3364,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-NEWBALANCE"
->3.6.6. Nowa operacja</A
+>3.7.6. Nowa operacja</A
 ></H3
 ><P
 >Wprowadzanie nowych operacji finansowych. Mo¿liwe jest
@@ -3280,7 +3410,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-INVOICES-LIST"
->3.6.7. Lista faktur</A
+>3.7.7. Lista faktur</A
 ></H3
 ><P
 >Lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych faktur (ikona [Drukuj]) oraz rozliczenia
@@ -3292,7 +3422,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-INVOICES-NEW"
->3.6.8. Nowa faktura</A
+>3.7.8. Nowa faktura</A
 ></H3
 ><P
 >Rêczne wystawianie faktur dla wybranego u¿ytkownika.</P
@@ -3494,7 +3624,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-FINANCES-PRINT"
->3.6.9. Wydruki</A
+>3.7.9. Wydruki</A
 ></H3
 ><P
 >Wydruki zestawieñ finansowych obejmuj±:
@@ -3561,8 +3691,114 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
+NAME="MENU-ACCOUNTS"
+>3.8. Konta</A
+></H2
+><P
+>Zarz±dzanie kontami ró¿nych us³ug na serwerze jest teraz
+	mo¿liwe. Funkcjonalno¶æ ta jest przeznaczona dla zaawansowanych 
+	administratorów. Wymaga znajomo¶ci tych us³ug i ich konfiguracji
+	w celu korzystania z bazy danych.</P
+><P
+>W LMSie mo¿na utworzyæ cztery rodzaje kont: shell (1), poczta (2),
+	www (4), ftp (8). W nawiasach podano numeryczne wewnêtrzne oznaczenie
+	typu konta w bazie. Konta mog± byæ wielotypowe. Przyk³adowo, je¶li 
+	zdefiniujesz konto shell+poczta+ftp w bazie zostanie zapisana cyfra 11.
+	Oznacza to, ¿e do rozpoznawania typu konta w warunkach WHERE zapytañ
+	SQL nale¿y stosowaæ sumowanie binarne (jak na przyk³adach w dalszej
+	czê¶ci rozdzia³u).</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="ACCOUNTS-LIST"
+>3.8.1. Lista</A
+></H3
+><P
+>Na li¶cie przedstawione s± podstawowe informacje o kontach.
+	    Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
+	    kolumny oraz filtrowanie wg zadanych kryteriów. Przej¶cie do edycji 
+	    danych konta nastêpuje po wybraniu ikony [Edytuj]. Administrator ma 
+	    tak¿e prawo do zmiany has³a.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="ACCOUNTS-NEW"
+>3.8.2. Nowe konto</A
+></H3
+><P
+>Definiuj±c dane konto musisz podaæ unikalny login, has³o,
+	    wybraæ typ konta oraz przypisaæ u¿ytkownika (lub utworzyæ tzw. konto
+	    systemowe). Nazwa domeny oraz data wa¿no¶ci konta s± opcjonalne.
+	    Pozostawienie pustego pola z dat± oznacza, ¿e konto nigdy nie
+	    wygasa.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="ACCOUNTS-EXAMPLES"
+>3.8.3. Przyk³ady</A
+></H3
+><P
+></P
+><P
+>Poni¿szy listing zawiera istotne fragmenty pliku konfiguracyjnego
+	    demona proftpd (w wersji 1.2.10) umo¿liwiaj±cy przechowywanie danych
+	    o kontach ftp w bazie LMSa. Przyk³ad zawiera konfiguracjê dla bazy
+	    danych PostgreSQL, w komentarzach podano rozwi±zania dla MySQLa:
+	    <DIV
+CLASS="EXAMPLE"
+><A
+NAME="ACCOUNTS-E1"
+></A
+><P
+><B
+>Przyk&#322;ad 3-1. Konta. Konfiguracja proftpd.</B
+></P
+><PRE
+CLASS="SCREEN"
+>  ServerName	"LMS FTP Server"
+  
+  #nazwa_bazy@host:port u¿ytkownik has³o
+  SQLConnectInfo lms@localhost:5432 lms mypassword
+  
+  SQLAuthTypes Crypt Plaintext
+  SQLUserInfo passwd login password uid NULL home NULL
+  RequireValidShell off
+  SQLAuthenticate users
+  
+  # utworzenie katalogu domowego gdy nie istnieje
+  SQLHomedirOnDemand on
+  
+  # komunikat przy logowaniu
+  SQLShowInfo PASS "230" "Last login: %{getlastlogin}"
+  SQLLog PASS setlastlogin
+  
+  # SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE FROM_UNIXTIME(lastlogin) END FROM passwd WHERE login='%u'"
+  # SQLNamedQuery setlastlogin UPDATE "lastlogin=UNIX_TIMESTAMP() WHERE login='%u'" passwd 
+  SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE '1970-01-01'::timestamp + (lastlogin || ' seconds')::interval END FROM passwd WHERE login='%u'"
+  SQLNamedQuery setlastlogin UPDATE "lastlogin=EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) WHERE login='%u'" passwd
+  
+  # Sprawdzamy datê wa¿no¶ci konta oraz ograniczamy szukanie do kont ftp
+  # SQLUserWhereClause "type &#38; 8 = 8 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())"
+  SQLUserWhereClause "type &#38; 8 = 8 AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))"</PRE
+></DIV
+></P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
 NAME="MENU-MAILING"
->3.7. Mailing</A
+>3.9. Mailing</A
 ></H2
 ><P
 >Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
@@ -3634,7 +3870,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-RELOAD"
->3.8. Prze³adowanie</A
+>3.10. Prze³adowanie</A
 ></H2
 ><P
 >Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji i us³ug zdefiniowanych
@@ -3658,115 +3894,6 @@ CLASS="EMPHASIS"
 >LMS-MGC</I
 ></SPAN
 > oraz demona.</P
-></DIV
-><DIV
-CLASS="SECT1"
-><HR><H2
-CLASS="SECT1"
-><A
-NAME="MENU-DATABASES"
->3.9. Bazy danych</A
-></H2
-><P
->Z panelu 'Bazy danych' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy lms'a.
-	Kopia bazy to plik tekstowy zawieraj±cy zapytania SQL i dane z wszystkich tabel w bazie, zapisywany w
-	katalogu zdefiniowanym w sekcji <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->[directories]</I
-></SPAN
-> <TT
-CLASS="FILENAME"
->lms.ini</TT
->
-	zmienn± <SAMP
-CLASS="PROMPT"
->backup_dir</SAMP
->.</P
-><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Domy¶lnie kopie zapisywane s± w katalogu <TT
-CLASS="FILENAME"
->lms/backups</TT
->
-	dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
-><P
->Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
-	Klikniêcie na ikonkê Odtwórz spowoduje wyczyszczenie bie¿±cej bazy danych i za³adowanie
-	do niej danych z wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
-	aktualnej bazy danych.</P
-></DIV
-><DIV
-CLASS="SECT1"
-><HR><H2
-CLASS="SECT1"
-><A
-NAME="MENU-ADMINS"
->3.10. Administratorzy</A
-></H2
-><P
->Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, czyli osób
-	    korzystaj±cych z LMS'a, zak³adania i przegl±dania ich kont, zmiany hase³ i definiowania 
-	    praw dostêpu.</P
-><P
-> Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale <A
-HREF="#INSTALL-RIGHTS"
->Prawa dostêpu</A
->.</P
-><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
-><A
-NAME="MENU-ADMINS-LIST"
->3.10.1. Lista</A
-></H3
-><P
->Po wej¶ciu do panelu 'Administratorzy' zobaczysz listê wszystkich administratorów
-	    z informacj± o ostatnim logowaniu. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie 
-	    informacji szczegó³owych o danym koncie, w tym o zdefiniowanych prawach dostêpu. 
-	    W ka¿dej chwili mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'. 
-	    Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu 'Nowy'.</P
-></DIV
-><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
-><A
-NAME="MENU-ADMINS-NEW"
->3.10.2. Nowy</A
-></H3
-><P
->Aby dodaæ nowe konto administratora nale¿y podaæ login oraz has³o, 
-	    które nie mo¿e byæ puste. Podanie imienia, nazwiska i adresu poczty elektronicznej
-	    nie jest wymagane. Poni¿ej mo¿na zaznaczyæ uprawnienia dostêpu do
-	    systemu. Je¿eli wszystkie pola pozostawisz puste, administratorowi 
-	    przypisany zostanie 'Pe³en dostêp'.</P
-></DIV
 ></DIV
 ><DIV
 CLASS="SECT1"

@@ -20,18 +20,58 @@
 	za³o¿onego konta, zostaniesz przekierowany do modu³u tworzenia kont
 	administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
 	jednego modu³u.</para>
-	<sect2 id="user-welcome">
-	<title>Praca z LMS-UI</title>
-	    <para>Po zalogowaniu do LMS'a zobaczysz panel powitalny, na którym znajduj± siê
-	    podstawowe informacje na temat naszego systemu: wersjê LMS i jego sk³adników,
-	    wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i komputerów w bazie oraz ich
-	    stan (pod³±czony/od³±czony), liczbê zad³u¿onych i kwota oraz przydatne lms'owe linki.</para>
-	    <para>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
-	    dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze.
-	    W polach szybkiego wyszukiwania, oprócz id u¿ytkownika lub komputera, mo¿esz 
-	    podawaæ nazwisko, nazwê, fragment adresu, telefon, email, adres IP lub MAC. 
-	    W przypadku gdy w bazie znajduje siê wiêcej u¿ytkowników pasuj±cych do szukanych
-	    danych zostan± wy¶wietlone informacje tylko o jednym u¿ytkowniku lub komputerze.</para>
+  </sect1>
+  <sect1 id="menu-administration">
+	<title>Administracja</title>
+	<para>Po zalogowaniu do LMS'a znajdziesz siê w module (menu) administracji
+	systemem LMS. Tutaj znajdziesz niezbêdne informacje o systemie. Bêdziesz
+	móg³ zarz±dzaæ administratorami i tworzyæ/odtwarzaæ kopie bazy danych.</para>
+	<para>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
+	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze.
+	W polach szybkiego wyszukiwania, oprócz id u¿ytkownika lub komputera, mo¿esz 
+	podawaæ nazwisko, nazwê, fragment adresu, telefon, email, adres IP lub MAC. 
+	W przypadku gdy w bazie znajduje siê wiêcej u¿ytkowników pasuj±cych do szukanych
+	danych zostan± wy¶wietlone informacje tylko o jednym u¿ytkowniku lub komputerze.</para>
+	<sect2 id="administration-info">
+	    <title>Info</title>
+	    <para>To panel na którym znajduj± siê podstawowe informacje na temat naszego 
+	    systemu: wersja LMS i jego sk³adników, informacje o prawach autorskich, 
+	    wersja j±dra i uptime serwera, dane statystyczne o u¿ytkownikach i komputerach,
+	    bie¿±ce informacje o aktywno¶ci komputerów i stanie finansów sieci. 
+	    Ponadto znajdziesz tu przydatne lms'owe linki.</para>
+	</sect2>
+	<sect2 id="administration-admins">
+	<title>Administratorzy</title>
+	    <para>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, czyli osób
+	    korzystaj±cych z LMS'a, zak³adania i przegl±dania ich kont, zmiany hase³ i definiowania 
+	    praw dostêpu.</para>
+	    <para> Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale <xref linkend="install-rights">.</para> 
+	    <para>Po wybraniu menu 'Administratorzy' zobaczysz listê wszystkich administratorów
+	    z informacj± o ostatnim logowaniu. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie 
+	    informacji szczegó³owych o danym koncie, w tym o zdefiniowanych prawach dostêpu. 
+	    W ka¿dej chwili mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'. 
+	    Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu 'Nowy administrator'.</para>
+	</sect2>
+	<sect2 id="administration-newadmin">
+	<title>Nowy administrator</title>
+	    <para>Aby dodaæ nowe konto administratora nale¿y podaæ login oraz has³o, 
+	    które nie mo¿e byæ puste. Podanie imienia, nazwiska i adresu poczty elektronicznej
+	    nie jest wymagane. Poni¿ej mo¿na zaznaczyæ uprawnienia dostêpu do
+	    systemu. Je¿eli wszystkie pola pozostawisz puste, administratorowi 
+	    przypisany zostanie 'Pe³en dostêp'.</para>
+	</sect2>
+	<sect2 id="administration-db">
+	    <title>Kopie zapasowe</title>
+	    <para>Z panelu 'Kopie zapasowe' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy LMSa.
+	    Kopia bazy to plik tekstowy zawieraj±cy zapytania SQL i dane z wszystkich tabel w bazie, zapisywany w
+	    katalogu zdefiniowanym w sekcji <emphasis>[directories]</emphasis> <filename>lms.ini</filename>
+	    zmienn± <prompt>backup_dir</prompt>.</para>
+	    <para><note><para>Domy¶lnie kopie zapisywane s± w katalogu <filename>lms/backups</filename>
+	    dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</para></note></para>
+	    <para>Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
+	    Klikniêcie na ikonkê Odtwórz spowoduje wyczyszczenie bie¿±cej bazy danych i za³adowanie
+	    do niej danych z wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
+	    aktualnej bazy danych.</para>
 	</sect2>
  </sect1>
  <sect1 id="menu-users">
@@ -379,6 +419,74 @@
 	    </para>
 	</sect2>
  </sect1>
+ <sect1 id="menu-accounts">
+	<title>Konta</title>
+	<para>Zarz±dzanie kontami ró¿nych us³ug na serwerze jest teraz
+	mo¿liwe. Funkcjonalno¶æ ta jest przeznaczona dla zaawansowanych 
+	administratorów. Wymaga znajomo¶ci tych us³ug i ich konfiguracji
+	w celu korzystania z bazy danych.</para>
+	<para>W LMSie mo¿na utworzyæ cztery rodzaje kont: shell (1), poczta (2),
+	www (4), ftp (8). W nawiasach podano numeryczne wewnêtrzne oznaczenie
+	typu konta w bazie. Konta mog± byæ wielotypowe. Przyk³adowo, je¶li 
+	zdefiniujesz konto shell+poczta+ftp w bazie zostanie zapisana cyfra 11.
+	Oznacza to, ¿e do rozpoznawania typu konta w warunkach WHERE zapytañ
+	SQL nale¿y stosowaæ sumowanie binarne (jak na przyk³adach w dalszej
+	czê¶ci rozdzia³u).</para>
+	<sect2 id="accounts-list">
+	    <title>Lista</title>
+	    <para>Na li¶cie przedstawione s± podstawowe informacje o kontach.
+	    Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
+	    kolumny oraz filtrowanie wg zadanych kryteriów. Przej¶cie do edycji 
+	    danych konta nastêpuje po wybraniu ikony [Edytuj]. Administrator ma 
+	    tak¿e prawo do zmiany has³a.</para>
+	</sect2>
+	<sect2 id="accounts-new">
+	    <title>Nowe konto</title>
+	    <para>Definiuj±c dane konto musisz podaæ unikalny login, has³o,
+	    wybraæ typ konta oraz przypisaæ u¿ytkownika (lub utworzyæ tzw. konto
+	    systemowe). Nazwa domeny oraz data wa¿no¶ci konta s± opcjonalne.
+	    Pozostawienie pustego pola z dat± oznacza, ¿e konto nigdy nie
+	    wygasa.</para>
+	</sect2>
+	<sect2 id="accounts-examples">
+	    <title>Przyk³ady</title>
+	    <para></para>
+	    <para>Poni¿szy listing zawiera istotne fragmenty pliku konfiguracyjnego
+	    demona proftpd (w wersji 1.2.10) umo¿liwiaj±cy przechowywanie danych
+	    o kontach ftp w bazie LMSa. Przyk³ad zawiera konfiguracjê dla bazy
+	    danych PostgreSQL, w komentarzach podano rozwi±zania dla MySQLa:
+	    <example id="accounts-e1">
+		<title>Konta. Konfiguracja proftpd.</title>
+<screen>
+  ServerName	"LMS FTP Server"
+  
+  #nazwa_bazy@host:port u¿ytkownik has³o
+  SQLConnectInfo lms@localhost:5432 lms mypassword
+  
+  SQLAuthTypes Crypt Plaintext
+  SQLUserInfo passwd login password uid NULL home NULL
+  RequireValidShell off
+  SQLAuthenticate users
+  
+  # utworzenie katalogu domowego gdy nie istnieje
+  SQLHomedirOnDemand on
+  
+  # komunikat przy logowaniu
+  SQLShowInfo PASS "230" "Last login: %{getlastlogin}"
+  SQLLog PASS setlastlogin
+  
+  # SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE FROM_UNIXTIME(lastlogin) END FROM passwd WHERE login='%u'"
+  # SQLNamedQuery setlastlogin UPDATE "lastlogin=UNIX_TIMESTAMP() WHERE login='%u'" passwd 
+  SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE '1970-01-01'::timestamp + (lastlogin || ' seconds')::interval END FROM passwd WHERE login='%u'"
+  SQLNamedQuery setlastlogin UPDATE "lastlogin=EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) WHERE login='%u'" passwd
+  
+  # Sprawdzamy datê wa¿no¶ci konta oraz ograniczamy szukanie do kont ftp
+  # SQLUserWhereClause "type & 8 = 8 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())"
+  SQLUserWhereClause "type & 8 = 8 AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))"
+</screen>
+	    </example></para>  
+	</sect2>
+ </sect1>
  <sect1 id="menu-mailing">
 	<title>Mailing</title>
 	<para>Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
@@ -394,42 +502,6 @@
 	<para>Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji i us³ug zdefiniowanych
 	dla generatora plików konfiguracyjnych <emphasis>LMS-MGC</emphasis> lub demona <emphasis>almsd</emphasis>. 
 	Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <emphasis>LMS-MGC</emphasis> oraz demona.</para>
- </sect1>
- <sect1 id="menu-databases">
-	<title>Bazy danych</title>
-	<para>Z panelu 'Bazy danych' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy lms'a.
-	Kopia bazy to plik tekstowy zawieraj±cy zapytania SQL i dane z wszystkich tabel w bazie, zapisywany w
-	katalogu zdefiniowanym w sekcji <emphasis>[directories]</emphasis> <filename>lms.ini</filename>
-	zmienn± <prompt>backup_dir</prompt>.</para>
-	<para><note><para>Domy¶lnie kopie zapisywane s± w katalogu <filename>lms/backups</filename>
-	dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</para></note></para>
-	<para>Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
-	Klikniêcie na ikonkê Odtwórz spowoduje wyczyszczenie bie¿±cej bazy danych i za³adowanie
-	do niej danych z wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
-	aktualnej bazy danych.</para>
- </sect1>
- <sect1 id="menu-admins">
-	<title>Administratorzy</title>
-	    <para>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, czyli osób
-	    korzystaj±cych z LMS'a, zak³adania i przegl±dania ich kont, zmiany hase³ i definiowania 
-	    praw dostêpu.</para>
-	    <para> Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale <xref linkend="install-rights">.</para> 
-	<sect2 id="menu-admins-list">
-	<title>Lista</title>
-	    <para>Po wej¶ciu do panelu 'Administratorzy' zobaczysz listê wszystkich administratorów
-	    z informacj± o ostatnim logowaniu. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie 
-	    informacji szczegó³owych o danym koncie, w tym o zdefiniowanych prawach dostêpu. 
-	    W ka¿dej chwili mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'. 
-	    Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu 'Nowy'.</para>
-	</sect2>
-	<sect2 id="menu-admins-new">
-	<title>Nowy</title>
-	    <para>Aby dodaæ nowe konto administratora nale¿y podaæ login oraz has³o, 
-	    które nie mo¿e byæ puste. Podanie imienia, nazwiska i adresu poczty elektronicznej
-	    nie jest wymagane. Poni¿ej mo¿na zaznaczyæ uprawnienia dostêpu do
-	    systemu. Je¿eli wszystkie pola pozostawisz puste, administratorowi 
-	    przypisany zostanie 'Pe³en dostêp'.</para>
-	</sect2>
  </sect1>
  <sect1 id="menu-stats">
 	<title>Statystyki</title>
