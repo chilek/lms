@@ -63,26 +63,24 @@ switch($_RELOAD_TYPE)
 				$LMS->DB->Execute($query);
 			}
 			echo '</TD></TR></TABLE>';
-		}else{
-			if(isset($_GET['cancel']))
+		}
+		else
+		{
+			$hosts = $LMS->DB->GetAll('SELECT id, name, lastreload, reload, description FROM daemonhosts ORDER BY name');
+			
+			if(isset($_GET['setreloads']))
 			{
-				echo trans('Reload order deleted.');
-				$LMS->DeleteTS('_force');
-			}else
-				if($reloadtimestamp = $LMS->GetTS('_force'))
-				{
-					if(!isset($_GET['refresh'])) 
-					{					
-						echo trans('Discovered reload order from date $0.', date('Y/m/d H:i',$reloadtimestamp)).'<BR>';
-						echo trans('You can $0cancel$1 or $2refresh$3 them.','<A HREF="?m=reload&cancel">','</A>','<A HREF="?m=reload&refresh">','</A>');
-					} else {
-						echo trans('Reload order saved.');
-						$LMS->SetTS('_force');
-					}
-				} else {
-					echo trans('Reload order saved.');
-					$LMS->SetTS('_force');
-				}
+				foreach($hosts as $host)
+					if(in_array($host['id'], (array) $_POST['hosts']))
+						$LMS->DB->Execute('UPDATE daemonhosts SET reload=1 WHERE id=?', array($host['id']));
+					else
+						$LMS->DB->Execute('UPDATE daemonhosts SET reload=0 WHERE id=?', array($host['id']));
+				
+				$LMS->SetTS('daemonhosts');
+			}
+			
+			$SMARTY->assign('hosts', $hosts);
+			$SMARTY->display('reload.html');
 		}
 	break;
 

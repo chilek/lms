@@ -1,0 +1,79 @@
+<?php
+
+/*
+ * LMS version 1.5-cvs
+ *
+ *  (C) Copyright 2001-2005 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+if($config = $_POST['config']) 
+{
+	foreach($config as $idx => $key)
+		$config[$idx] = trim($key);
+	
+	$config['instanceid'] = $_GET['id'];
+	
+	if($config['var']=='' && $config['description']=='' && $config['value']=='')
+	{
+		$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
+	}
+	
+	if($config['var'] == '')
+		$error['var'] = trans('Option name is required!');
+	elseif($LMS->DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($config['var'], $config['instanceid'])))
+		$error['var'] = trans('Option with specified name exists in that instance!');
+	
+	if($config['value'] == '')
+		$error['value'] = trans('Option value is required!');
+		
+	if(!$error)
+	{
+		$LMS->DB->Execute('INSERT INTO daemonconfig (var, instanceid, description, value) VALUES (?,?,?,?)',
+				    array($config['var'], 
+					    $config['instanceid'], 
+					    $config['description'],
+					    $config['value']));
+		$LMS->SetTS('daemonconfig');
+		
+		if(!$config['reuse'])
+		{
+			$SESSION->redirect('?m=daemoninstanceview&id='.$config['instanceid']);
+		}
+		
+		unset($config['var']);
+		unset($config['value']);
+		unset($config['description']);
+	}
+}	
+
+$instance = $LMS->DB->GetRow('SELECT daemoninstances.name AS name, daemonhosts.name AS hostname FROM daemoninstances, daemonhosts WHERE daemonhosts.id=hostid AND daemoninstances.id=?', array($_GET['id']));
+
+$layout['pagetitle'] = trans('New Option for Instance: $0/$1', $instance['name'], $instance['hostname']);
+
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
+
+$SMARTY->assign('error', $error);
+$SMARTY->assign('instanceid', $_GET['id']);
+$SMARTY->assign('layout', $layout);
+$SMARTY->assign('config', $config);
+$SMARTY->display('daemonconfigadd.html');
+
+?>

@@ -325,13 +325,18 @@ $menu = array(
 			'tip' => trans(''),
 			'accesskey' =>'r',
 			'prio' =>'40',
-/*			'submenu' => array(
+			'submenu' => array(
 				array(
 					'name' => trans('Reload'),
 					'link' => '?m=reload',
-					'tip' => trans(''),
+					'tip' => trans('Configuration Reload')
 				),
-			),*/
+				array(
+					'name' => trans('Configuration'),
+					'link' => '?m=daemonhostlist',
+					'tip' => trans('Daemon(s) Configuration')
+				)
+			),
 		),
 
 		array(

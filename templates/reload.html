@@ -1,0 +1,74 @@
+<!--// $Id$ //-->
+{literal}
+<SCRIPT language=JavaScript>
+	<!--
+
+	function CheckAll()
+	{
+		for (var i=0; i<document.reload.elements.length; i++)
+		{
+			var e = document.reload.elements[i];
+			if (e.name != 'allbox')
+				e.checked = document.reload.allbox.checked;
+		}
+	}
+
+	function CheckAll2()
+	{
+		document.reload.allbox.checked = !document.reload.allbox.checked;
+		CheckAll();
+	}
+
+	//-->
+</SCRIPT>
+{/literal}
+<P><FORM name="reload" method="POST" action="?m=reload&setreloads">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD class="fall">
+			<B>{t}Select hosts for configuration reload:{/t}</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="100%" class="fall">
+			<TABLE cellpadding="5" cellspacing="0" width="100%">
+				<TR class="dark">
+					<TD width="1%" class="fleftu" nowrap><IMG src="img/host.gif" border="0" ALT="" align="absmiddle"> <B>{t}Name:{/t}</B></TD>
+					<TD width="97%" class="fbt" nowrap>{t}Description:{/t}</TD>
+					<TD width="1%" class="fbt" align="right" nowrap>{t}Last Reload:{/t}</TD>
+					<TD width="1%" class="frightu"></TD>
+				</TR>
+				{cycle values="#DFD5BD,#EBE4D6" print=false}
+				{section name=hosts loop=$hosts}
+				<TR bgcolor="{cycle}" {cycle print=false}>
+					<TD nowrap><IMG src="img/host.gif" border="0" ALT="" align="absmiddle"><B>{$hosts[hosts].name}</B></TD>
+					<TD>{$hosts[hosts].description}</TD>
+					<TD align="right" nowrap>{if $hosts[hosts].lastreload}{$hosts[hosts].lastreload|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}</TD>
+					<TD>
+						<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="hosts[]" VALUE="{$hosts[hosts].id}"{if $hosts[hosts].reload} CHECKED{/if}>
+					</TD>
+				</TR>
+				{sectionelse}
+				<TR class="light">
+					<TD colspan="4">
+						<P>&nbsp;</P>
+						<P><B>{t}No such hosts in database.{/t}</B></P>
+						<P>&nbsp;</P>
+					</TD>
+				</TR>
+				{/section}
+				<TR bgcolor="#DFD5BD">
+					<TD CLASS="ftop" colspan="2"nowrap>
+						<INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes">
+						<A HREF="javascript:CheckAll2();">{t}Check All{/t}</A>
+					</TD>
+					<TD CLASS="ftop" ALIGN="right" colspan="2" nowrap>
+						<A href="javascript:document.reload.submit();">{t}Submit{/t} <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+</P>
