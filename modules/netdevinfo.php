@@ -24,11 +24,18 @@
  *  $Id$
  */
 
+if(! $LMS->NetDevExists($_GET[id]))
+{
+	header('Location: ?m=netdevlist');
+	die;
+}
+
 $netdevinfo = $LMS->GetNetDev($_GET[id]);
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET[id]);
 $netcomplist = $LMS->GetNetdevLinkedNodes($_GET[id]);
 $netdevlist = $LMS->GetNotConnectedDevices($_GET[id]);
 $nodelist = $LMS->GetUnlinkedNodes();
+$netdevips = $LMS->GetNetDevIPs($_GET[id]);
 
 unset($nodelist[total]);
 unset($nodelist[order]);
@@ -46,12 +53,16 @@ $SMARTY->assign("netdevinfo",$netdevinfo);
 $SMARTY->assign("netdevlist",$netdevconnected);
 $SMARTY->assign("netcomplist",$netcomplist);
 $SMARTY->assign("restnetdevlist",$netdevlist);
+$SMARTY->assign("netdevips",$netdevips);
 $SMARTY->assign("nodelist",$nodelist);
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("netdevinfo.html");
 
 /*
  * $Log$
+ * Revision 1.8  2003/10/08 04:39:38  lukasz
+ * - temporary save
+ *
  * Revision 1.7  2003/10/08 04:01:29  lukasz
  * - html fixes in netdevices
  * - added new smarty function called {confirm text="confirm message"}

@@ -74,7 +74,7 @@ Class LMSDB_common
 	function Execute($query, $inputarray = NULL)
 	{
 		// wykonuje query sql'owe, jednocze¶nie je parsuj±c
-//		echo $this->_query_parser($query,$inputarray)."<BR>";
+ // 		echo $this->_query_parser($query,$inputarray)."<BR>";
 		$this->_driver_execute($this->_query_parser($query,$inputarray));
 		// i zwraca ilo¶æ zmodyfikowanych wierszy
 		return $this->_driver_affected_rows();
@@ -219,6 +219,9 @@ Class LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.19  2003/10/08 04:39:38  lukasz
+ * - temporary save
+ *
  * Revision 1.18  2003/10/06 05:33:04  lukasz
  * - temporary save / lot of fixes
  *

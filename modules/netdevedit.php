@@ -24,6 +24,12 @@
  *  $Id$
  */
 
+if(! $LMS->NetDevExists($_GET[id]))
+{
+	header('Location: ?m=netdevlist');
+	die;
+}		
+
 $edit = TRUE;
 
 if($_GET[action]=="disconnect")
@@ -117,6 +123,9 @@ else
 
 /*
  * $Log$
+ * Revision 1.14  2003/10/08 04:39:38  lukasz
+ * - temporary save
+ *
  * Revision 1.13  2003/10/08 04:01:29  lukasz
  * - html fixes in netdevices
  * - added new smarty function called {confirm text="confirm message"}
