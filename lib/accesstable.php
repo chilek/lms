@@ -24,21 +24,24 @@
  *  $Id$
  */
 
-if(!$LMS->AdminExists($_GET[id]))
-{
-	header("Location: ?m=adminlist");
-	exit(0);
-}
+$access[allow] = "^(welcome|copyrights|logout|chpasswd)$";
 
-$layout[pagetitle]="Informacje o administratorze ".$LMS->GetAdminName($_GET[id]);
-$admininfo=$LMS->GetAdminInfo($_GET[id]);
+$access[table][0][name]		= "pe³en dostêp";
+$access[table][0][allow_reg]	= "^.*$";
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("admininfo",$admininfo);
-$rights = $LMS->GetAdminRights($_GET[id]);
-foreach($rights as $right)
-	if($access[table][$right][name])
-		$accesslist[] = $access[table][$right][name];
-$SMARTY->assign("accesslist",$accesslist);
-$SMARTY->display("admininfo.html");
+$access[table][1][name]		= "odczyt wszystkich danych";
+$access[table][1][allow_reg]	= "^((admin|balance|db|net|node|tariff|user)(list|list(debt|disc)|info|view|debt|search|balance)|print)$";
+
+$access[table][2][name]		= "w³±czanie i od³±czanie komputerów";
+$access[table][2][allow_reg]	= "^nodeset$";
+
+$access[table][3][name]		= "manipulacja finansami";
+$access[table][3][allow_reg]	= "^(balancenew|balanceadd)$";
+
+$access[table][4][name]         = "prze³adowywanie konfiguracji";
+$access[table][4][allow_reg]    = "^reload$";
+
+$access[table][255][name]	= "brak dostêpu";
+$access[table][255][deny_reg]	= "^.*$";
+
 ?>

@@ -25,6 +25,7 @@
  */
 
 $adminadd = $_POST[adminadd];
+$acl = $_POST[acl];
 
 if(isset($adminadd))
 {
@@ -49,18 +50,40 @@ if(isset($adminadd))
 		$error[password] = "Has³o nie mo¿e byæ puste!";
 	elseif($adminadd[password]!=$adminadd[confirm])
 		$error[password] = "Has³a nie s± takie same!";
-	
+
+	// zróbmy maskê ACL...
+
+	for($i=0;$i<256;$i++)
+		$mask .= "0";
+
+	foreach($access[table] as $idx => $row)
+		if($acl[$idx]=="1")
+			$mask[255-$idx] = "1";
+
+	for($i=0;$i<256;$i += 4)
+		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
+
+	$adminadd[rights] = ereg_replace('^[0]*(.*)$','\1',$outmask);
+
 	if(!$error)
 	{
-		header("Location: ?m=adminedit&id=".$LMS->AdminAdd($adminadd));
+		header("Location: ?m=admininfo&id=".$LMS->AdminAdd($adminadd));
 		exit(0);
 	}
+}
+foreach($access[table] as $idx => $row)
+{
+	$row[id] = $idx;
+	if($acl[$idx] == "1")
+		$row[enabled] = TRUE;
+	$accesslist[] = $row;
 }
 
 $layout[pagetitle]="Dodaj nowego administratora";
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("adminadd",$adminadd);
 $SMARTY->assign("error",$error);
+$SMARTY->assign("accesslist",$accesslist);
 $SMARTY->display("adminadd.html");
 
 ?>

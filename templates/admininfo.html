@@ -68,5 +68,24 @@
 			</TABLE>
 		</TD>
 	</TR>
+	<TR CLASS="DARK">
+		<TD CLASS="FALL">
+			<B>Uprawnienia:</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FALL">
+			{if $unlockedit}
+			{section name=acl loop=$accesslist}
+			<input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" class="clean"{if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
+			{/section}
+			{else}
+			{section name=acl loop=$accesslist}
+			<li type="square">{$accesslist[acl]}</li>
+			{/section}
+			{/if}
+		</TD>
+	</TR>
 </TABLE>
+{if $unlockedit}</FORM>{/if}
 {include file="footer.html"}

@@ -52,6 +52,18 @@
 			<A HREF="javascript:document.adminadd.submit(); ">Dodaj <IMG SRC="img/save.gif" ALIGN="ABSMIDDLE" ALT="" BORDER="0"></A>
 		</TD>
 	</TR>
+	<TR CLASS="DARK">
+		<TD CLASS="FALL" COLSPAN="2">
+			<B>Uprawnienia:</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FALL" COLSPAN="2">
+			{section name=acl loop=$accesslist}
+			<input type="checkbox" name="acl[{$accesslist[acl].id}]" value="1" class="clean"{if $accesslist[acl].enabled} checked{/if}> {$accesslist[acl].name}<BR>
+			{/section}
+		</TD>
+	</TR>
 </TABLE>
 </FORM>
 {include file="footer.html"}

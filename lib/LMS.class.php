@@ -271,7 +271,7 @@ class LMS
 	function AdminAdd($adminadd) // dodaje admina. wymaga tablicy zawieraj±cej dane admina
 	{
 		$this->SetTS("admins");
-		if($this->ADB->Execute("INSERT INTO admins (login, name, email, passwd) VALUES (?, ?, ?, ?)",array($adminadd[login], $adminadd[name], $adminadd[email], crypt($adminadd[password]))))
+		if($this->ADB->Execute("INSERT INTO admins (login, name, email, passwd, rights) VALUES (?, ?, ?, ?, ?)",array($adminadd[login], $adminadd[name], $adminadd[email], crypt($adminadd[password]),$adminadd[rights])))
 			return $this->ADB->GetOne("SELECT id FROM admins WHERE login=?",array($adminadd[login]));
 		else
 			return FALSE;
@@ -325,7 +325,21 @@ class LMS
 	function AdminUpdate($admininfo) // uaktualnia rekord admina.
 	{
 		$this->SetTS("admins");
-		return $this->ADB->Execute("UPDATE admins SET login=?, name=?, email=? WHERE id=?",array($admininfo[login],$admininfo[name],$admininfo[email],$admininfo[id]));
+		return $this->ADB->Execute("UPDATE admins SET login=?, name=?, email=?, rights=? WHERE id=?",array($admininfo[login],$admininfo[name],$admininfo[email],$admininfo[rights],$admininfo[id]));
+	}
+
+	function GetAdminRights($id)
+	{
+		$mask = $this->ADB->GetOne("SELECT rights FROM admins WHERE id=?",array($id));
+		if($mask == "")
+			$mask = "1";
+		$len = strlen($mask);
+		for($cnt=$len; $cnt > 0; $cnt --)
+			$bin = sprintf("%04b",hexdec($mask[$cnt-1])).$bin;
+		for($cnt=strlen($bin)-1; $cnt >= 0; $cnt --)
+			if($bin[$cnt] == "1")
+				$return[] = strlen($bin) - $cnt -1;
+		return $return;
 	}
 
 	/*
