@@ -1,0 +1,262 @@
+<HTML
+><HEAD
+><TITLE
+>Instalacja i konfiguracja</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.1.4"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Licencja"
+HREF="legalnotice.html"><LINK
+REL="NEXT"
+TITLE="Wymagania"
+HREF="install-requirements.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.1.4</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="legalnotice.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="install-requirements.html"
+>Nastêpny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="INSTALL"
+>Rozdzia³ 2. Instalacja i konfiguracja</A
+></H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Spis tre¶ci</B
+></DT
+><DT
+>2.1. <A
+HREF="install.html#INSTALL-INTRO"
+>Wstêp</A
+></DT
+><DT
+>2.2. <A
+HREF="install-requirements.html"
+>Wymagania</A
+></DT
+><DD
+><DL
+><DT
+>2.2.1. <A
+HREF="install-requirements.html#AEN131"
+>Serwer WWW</A
+></DT
+><DT
+>2.2.2. <A
+HREF="install-requirements.html#AEN135"
+>Interpreter PHP</A
+></DT
+><DT
+>2.2.3. <A
+HREF="install-requirements.html#AEN139"
+>Serwer baz danych</A
+></DT
+><DT
+>2.2.4. <A
+HREF="install-requirements.html#AEN143"
+>Biblioteka Smarty</A
+></DT
+><DT
+>2.2.5. <A
+HREF="install-requirements.html#AEN147"
+>Perl</A
+></DT
+></DL
+></DD
+><DT
+>2.3. <A
+HREF="install-install.html"
+>Instalacja LMS</A
+></DT
+><DT
+>2.4. <A
+HREF="install-db.html"
+>Instalacja serwera baz danych</A
+></DT
+><DD
+><DL
+><DT
+>2.4.1. <A
+HREF="install-db.html#MYSQL"
+>MySQL</A
+></DT
+><DT
+>2.4.2. <A
+HREF="install-db.html#PGSQL"
+>PostgreSQL</A
+></DT
+></DL
+></DD
+><DT
+>2.5. <A
+HREF="install-config.html"
+>Konfiguracja</A
+></DT
+><DD
+><DL
+><DT
+>2.5.1. <A
+HREF="install-config.html#AEN223"
+>Sekcja [database] - ustawienia bazy danych</A
+></DT
+><DT
+>2.5.2. <A
+HREF="install-config.html#AEN252"
+>Sekcja [directories] - ustawienia katalogów</A
+></DT
+><DT
+>2.5.3. <A
+HREF="install-config.html#AEN293"
+>Sekcja [phpui] - ustawienia interfejsu</A
+></DT
+></DL
+></DD
+><DT
+>2.6. <A
+HREF="install-rights.html"
+>Prawa dostêpu</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INSTALL-INTRO"
+>2.1. Wstêp</A
+></H1
+><P
+>LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <I
+CLASS="EMPHASIS"
+>LMS-UI</I
+> 
+	(interfejs u¿ytkownika). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy danych 
+	(w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w LMS-UI wykonujemy wszystkie 
+	czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMS.</P
+><P
+>LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty wymagaj± 
+	aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, 
+	musisz mieæ PERLa. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych 
+	b±d¼ wysy³anie upomnieñ. Jest jeszcze <I
+CLASS="EMPHASIS"
+>LMS-MGC</I
+>, który te¿ jest skryptem ale na tyle 
+	uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i zrestartowaæ 
+	us³ugê na twoim serwerze.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="legalnotice.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Spis tre¶ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="install-requirements.html"
+>Nastêpny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Licencja</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Wymagania</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

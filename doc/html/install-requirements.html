@@ -1,0 +1,246 @@
+<HTML
+><HEAD
+><TITLE
+>Wymagania</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.1.4"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Instalacja i konfiguracja"
+HREF="install.html"><LINK
+REL="PREVIOUS"
+TITLE="Instalacja i konfiguracja"
+HREF="install.html"><LINK
+REL="NEXT"
+TITLE="Instalacja LMS"
+HREF="install-install.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.1.4</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="install.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia³ 2. Instalacja i konfiguracja</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="install-install.html"
+>Nastêpny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INSTALL-REQUIREMENTS"
+>2.2. Wymagania</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN131"
+>2.2.1. Serwer WWW</A
+></H2
+><P
+>Poniewa¿ LMS-UI jest napisane w PHP, niezbêdny jest serwer WWW z interpreterem 
+		tego jêzyka. Preferowanym serwerem jest Apache 
+		(<A
+HREF="http://www.apache.org"
+TARGET="_top"
+>www.apache.org</A
+>).</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN135"
+>2.2.2. Interpreter PHP</A
+></H2
+><P
+>Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a te¿ 
+		poprawnie na 4.1.x (ale poniewa¿ devepolerzy pracuj± na 4.2.3, nie mo¿na 
+		zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿na sci±gn±æ ze 
+		strony <A
+HREF="http://www.php.net"
+TARGET="_top"
+>www.php.net</A
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN139"
+>2.2.3. Serwer baz danych</A
+></H2
+><P
+>Preferowany to MySQL. 3.23.53 i nowszy. Starszy mo¿e te¿ dzia³aæ, je¶li nie to 
+		daj nam o tym znaæ.</P
+><P
+>LMS wspó³pracuje tak¿e z PostgreSQL. Zaleca siê instalacjê wersji 7.3 lub nowszych,
+		aczkolwiek nie powinno byæ problemów z wersjami od 7.2.3 pocz±wszy.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN143"
+>2.2.4. Biblioteka Smarty</A
+></H2
+><P
+>LMS-UI do pracy wymaga jeszcze biblioteki Smarty (<A
+HREF="http://smarty.php.net"
+TARGET="_top"
+>http://smarty.php.net</A
+>)
+		 w wersji 2.5.0 lub wy¿szej.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN147"
+>2.2.5. Perl</A
+></H2
+><P
+>O ile dla LMS-UI wystarczy to co powy¿ej, to ¿eby mieæ dzia³aj±cy LMS-MGC 
+		i resztê skryptów potrzebujemy tak¿e perla i modu³y do niego czyli:
+	  <UL
+><LI
+><P
+>perl w³a¶ciwy i jego podstawowe modu³y (POSIX, GetOpt::Long);</P
+></LI
+><LI
+><P
+>Net::SMTP;</P
+></LI
+><LI
+><P
+>Config::IniFiles;</P
+></LI
+><LI
+><P
+>DBI;</P
+></LI
+><LI
+><P
+>DBD-mysql (Je¶li masz zamiar u¿ywaæ mysql'a);</P
+></LI
+><LI
+><P
+>DBD-pg (Je¶li masz zamiar u¿ywaæ postgres'a);</P
+></LI
+></UL
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="install.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Spis tre¶ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="install-install.html"
+>Nastêpny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Instalacja i konfiguracja</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="install.html"
+>Pocz±tek rozdzia³u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Instalacja LMS</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

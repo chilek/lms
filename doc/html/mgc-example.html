@@ -1,0 +1,164 @@
+<HTML
+><HEAD
+><TITLE
+>Przyk³ad zastosowania lms-mgc</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.1.4"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Generator plików konfiguracyjnych (lms-mgc)"
+HREF="mgc.html"><LINK
+REL="PREVIOUS"
+TITLE="Konfiguracja"
+HREF="mgc-config.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.1.4</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="mgc-config.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+>&nbsp;</TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MGC-EXAMPLE"
+>5.3. Przyk³ad zastosowania lms-mgc</A
+></H1
+><P
+>Konfiguracja i zasada dzia³ania lms-mgc mo¿e siê wydawaæ do¶æ zawi³a, dlatego
+	pos³u¿ymy siê przyk³adem. Poni¿ej przedstawiono sposób generowania i uruchamiania firewalla
+	ipchains (bardzo prostego).</P
+><P
+>Zacznij od utworzenia nowej sekcjê mgc w <TT
+CLASS="FILENAME"
+>lms-mgc.ini</TT
+>, 
+	nazywaj±c j± 'ipchains' i stwórz w tej sekcji prost± maskaradê per adres IP z lanu:
+	<PRE
+CLASS="SCREEN"
+>[mgc:ipchains]
+outfile           = /etc/rc.d/rc.masq
+outfile_perm      = 700
+header            = #!/bin/sh\n/sbin/ipchains -F\n/sbin/ipchains -X\n/sbin/ipchains -P forward DENY
+grantednode_priv  = /sbin/ipchains -A forward -s %IP -j MASQ
+post_exec         = /etc/rc.d/rc.masq</PRE
+>
+	Dopiszmy tak¿e do sekcji g³ównej mgc informacjê ¿eby mgc uruchamia³ t± sekcjê:
+	<PRE
+CLASS="SCREEN"
+>[mgc]
+instances         = ipchains</PRE
+>
+	</P
+><P
+>Teraz próba odpalenia lms-mgc powinna zaowocowaæ wygenerowaniem
+	<TT
+CLASS="FILENAME"
+>/etc/rc.d/rc.masq</TT
+>, oraz jego odpaleniem.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="mgc-config.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Spis tre¶ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Konfiguracja</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="mgc.html"
+>Pocz±tek rozdzia³u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,188 @@
+<HTML
+><HEAD
+><TITLE
+>lms-traffic</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.1.4"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Skrypty"
+HREF="scripts.html"><LINK
+REL="PREVIOUS"
+TITLE="lms-payments"
+HREF="scripts-payments.html"><LINK
+REL="NEXT"
+TITLE="Generator plików konfiguracyjnych (lms-mgc)"
+HREF="mgc.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.1.4</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="scripts-payments.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia³ 4. Skrypty</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="mgc.html"
+>Nastêpny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SCRIPTS-TRAFFIC"
+>4.6. lms-traffic</A
+></H1
+><P
+>Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
+	przez ka¿dy komputer w sieci lokalnej. W bazie danych zapisywana jest ilo¶æ
+	danych w bajtach, numer komputera z bazy lms i znacznik czasu. 
+	Od u¿ytkownika zale¿y w jakich odstêpach dane bêd± odczytywane.
+	Poniewa¿ dane odczytywane s± z pliku utworzonego przez u¿ytkownika, nie ma
+	znaczenia z jakiego ¼ród³a pochodz±, mo¿e to byæ iptables, ipchains lub
+	program zewnêtrzny np. ipfm.
+    </P
+><P
+>Przegl±danie wykresów wykorzystania ³±cza oraz definiowanie filtrów
+	dostêpne jest z g³ównego menu 'Statystyki'.
+    </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN603"
+>4.6.1. Instalacja</A
+></H2
+><P
+>Przed uruchomieniem lms-traffic u¿ytkownik powinien zadbaæ o utworzenie
+	    pliku z danymi. Zawarto¶æ pliku powinna mieæ nastêpuj±cy format:</P
+><PRE
+CLASS="SCREEN"
+>	    	&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
+		&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
+		...</PRE
+><P
+>Skrypt tworz±cy statystyki nale¿y uruchamiaæ z tak± sam± czêstotliwo¶ci± 
+	    co lms-traffic. Przyk³ad takiego skryptu dla iptables znajduje siê w pliku /sample/traffic_ipt.sh.
+	    </P
+><P
+>Nastêpnie instalujemy skrypt dopisuj±c do crontaba.
+	    Oprócz standardowych opcji wiersza poleceñ mo¿liwe jest
+	    zdefiniowanie lokalizacji pliku z logiem</P
+><PRE
+CLASS="SCREEN"
+>	    -f=/plik 	po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traffic.log</PRE
+><P
+>	    Czêstotliwo¶æ zapisywania danych do bazy ustala u¿ytkownik. Ustawienie
+	    jej poni¿ej 10 minut, mo¿e spowodowaæ szybki przyrost ilo¶ci rekordów w 
+	    bazie danych, a co za tym idzie zwiêkszyæ czas oczekiwania na wy¶wietlenie
+	    wyników.
+	    </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="scripts-payments.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Spis tre¶ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="mgc.html"
+>Nastêpny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>lms-payments</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="scripts.html"
+>Pocz±tek rozdzia³u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Generator plików konfiguracyjnych (lms-mgc)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,231 @@
+<HTML
+><HEAD
+><TITLE
+>Skrypty</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.1.4"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Praca z LMS-UI"
+HREF="user-all.html"><LINK
+REL="NEXT"
+TITLE="Lista dostêpnych skryptów"
+HREF="scripts-list.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.1.4</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="user-all.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="scripts-list.html"
+>Nastêpny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="SCRIPTS"
+>Rozdzia³ 4. Skrypty</A
+></H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Spis tre¶ci</B
+></DT
+><DT
+>4.1. <A
+HREF="scripts.html#SCRIPTS-INSTALL"
+>Instalacja</A
+></DT
+><DT
+>4.2. <A
+HREF="scripts-list.html"
+>Lista dostêpnych skryptów</A
+></DT
+><DT
+>4.3. <A
+HREF="scripts-notify.html"
+>lms-notify</A
+></DT
+><DD
+><DL
+><DT
+>4.3.1. <A
+HREF="scripts-notify.html#AEN517"
+>Szablony</A
+></DT
+><DT
+>4.3.2. <A
+HREF="scripts-notify.html#AEN542"
+>Konfiguracja</A
+></DT
+></DL
+></DD
+><DT
+>4.4. <A
+HREF="scripts-cutoff.html"
+>lms-cutoff</A
+></DT
+><DT
+>4.5. <A
+HREF="scripts-payments.html"
+>lms-payments</A
+></DT
+><DT
+>4.6. <A
+HREF="scripts-traffic.html"
+>lms-traffic</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SCRIPTS-INSTALL"
+>4.1. Instalacja</A
+></H1
+><P
+>Je¶li chcemy ustawiæ konfiguracjê którego¶ ze skryptów, robimy to 
+	w odpowiedniej sekcji <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>. Same skrypty 
+	przenosimy z katalogi <TT
+CLASS="FILENAME"
+>/lms/bin/</TT
+> do katalogu <TT
+CLASS="FILENAME"
+>/usr/sbin</TT
+>. Po przeniesieniu 
+	musimy je jeszcze dopisaæ do crontaba tak, aby by³y uruchamiane 
+	automatycznie w³a¶nie wtedy kiedy tego chcemy.</P
+><P
+>Przyk³adowo, wpis w crontabie dla skryptu lms-payments (wykonywanego
+	codziennie o godzinie 00:01) powinien wygl±daæ nastêpuj±co:</P
+><PRE
+CLASS="SCREEN"
+>	1 0 * * *       /usr/sbin/lms-payments 1 &gt; /dev/null</PRE
+><P
+>Po wiêcej informacji mo¿esz siêgn±æ do <B
+CLASS="COMMAND"
+>man crontab</B
+></P
+><P
+>Wiêkszo¶æ lms'owych skryptów posiada dodatkowe opcje 
+	uruchomieniowe:</P
+><PRE
+CLASS="SCREEN"
+>	    -C=/plik    po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/lms.ini
+            -q          wykonanie skryptu bez wy¶wietlania komunikatów               
+            -h          pomoc (a w zasadzie to tylko listingu opcji)
+            -v          informacja o wersji skryptu</PRE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="user-all.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Spis tre¶ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="scripts-list.html"
+>Nastêpny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Praca z LMS-UI</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Lista dostêpnych skryptów</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
