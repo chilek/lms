@@ -47,7 +47,8 @@ if(isset($userassignments))
 		foreach($userassignments['muserid'] as $value)
 		{
 			$assignment['userid'] = $value;
-			$LMS->UserassignmentAdd($assignment);
+			if(! $LMS->UserassignmentExist($assignment['usergroupid'],$value))
+				$LMS->UserassignmentAdd($assignment);
 		}
 		header('Location: ?'.$_SESSION['backto']);
 		die;
@@ -90,7 +91,7 @@ $layout['pagetitle'] = 'Edycja grupy: '.$usergroup['name'];
 
 $SMARTY->assign('usergroup',$usergroup);
 $SMARTY->assign('error',$error);
-$SMARTY->assign('users', $LMS->GetUserNames());
+$SMARTY->assign('users', $LMS->GetUserWithoutGroupNames($_GET['id']));
 $SMARTY->display('usergroupedit.html');
 
 ?>
