@@ -101,13 +101,30 @@ class LMS {
 	{
 		$db=$this->db;
 		$return = $db->FetchArray("SELECT `id`, `name`, `address`, `mask` FROM `networks` ORDER BY `address` ASC");
-		foreach($return[id] as $i => $v)
-		{
-			$return[addresslong][$i] = ip_long($return[address][$i]);
-			$return[prefix][$i] = mask2prefix($return[mask][$i]);
-		}
+		if(sizeof($return[id]))
+			foreach($return[id] as $i => $v)
+			{
+				$return[addresslong][$i] = ip_long($return[address][$i]);
+				$return[prefix][$i] = mask2prefix($return[mask][$i]);
+			}
 		
 		return $return;
+	}
+
+	function GetNetworkList()
+	{
+		$db=$this->db;
+		$networks = $db->FetchArray("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks`");
+		if(sizeof($networks[id]))
+		{
+			foreach($networks[id] as $key => $value)
+			{
+				$networks[addresslong][$key] = ip_long($networks[address][$key]);
+				$networks[prefix][$key] = mask2prefix($networks[mask][$key]);
+			}
+			array_multisort($networks[name],$networks[id],$networks[address],$networks[mask],$networks[gateway],$networks[wins],$networks[domain],$networks[dns],$networks[dhcpstart],$networks[dhcpend],$networks[prefix],$networks[addresslong]);
+		}
+		return $networks;
 	}
 
 	function IsIPValid($ip)
@@ -201,14 +218,17 @@ class LMS {
 				
 			}
 		}
-		foreach($return[address] as $i => $v)
+		if(sizeof($return[address]))
 		{
-			$db->ExecSQL("SELECT `name`, `id` FROM `nodes` WHERE `ipaddr` = '".$return[address][$i]."' LIMIT 1");
-			$db->FetchRow();
-			$return[nodeid][$i]= $db->row[id];
-			$return[nodename][$i] = $db->row[name];
+			foreach($return[address] as $i => $v)
+			{
+				$db->ExecSQL("SELECT `name`, `id` FROM `nodes` WHERE `ipaddr` = '".$return[address][$i]."' LIMIT 1");
+				$db->FetchRow();
+				$return[nodeid][$i]= $db->row[id];
+				$return[nodename][$i] = $db->row[name];
+			}
+			array_multisort($return[addresslong],$return[address],$return[nodeid],$return[nodename],$return[mark]);
 		}
-		array_multisort($return[addresslong],$return[address],$return[nodeid],$return[nodename],$return[mark]);
 		return $return;
 	}
 			
@@ -235,11 +255,12 @@ class LMS {
 
 		$usernames = $db->FetchArray("SELECT `id`, `name`, `lastname` FROM `users` WHERE `status` = '3'");
 
-		foreach ($usernames[id] as $key => $value)
-			$usernames[username][$key] = strtoupper($usernames[lastname][$key])." ".ucwords($usernames[name][$key]);
-		
-		array_multisort($usernames[username],4,$usernames[id],$usernames[name],$usernames[lastname]);
-
+		if(sizeof($usernames[id]))
+		{
+			foreach ($usernames[id] as $key => $value)
+				$usernames[username][$key] = strtoupper($usernames[lastname][$key])." ".ucwords($usernames[name][$key]);		
+			array_multisort($usernames[username],4,$usernames[id],$usernames[name],$usernames[lastname]);
+		}
 		return $usernames;
 
 	}
@@ -276,13 +297,13 @@ class LMS {
 		$userlist[crdate] = $userlist[creationdate];
 		$userlist[crid] = $userlist[creatorid];
 
-		foreach($userlist[id] as $i => $v)
-		{
-
-			$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
-			$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
-		}
-		
+		if(sizeof($userlist[id]))
+			foreach($userlist[id] as $i => $v)
+			{
+				$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
+				$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
+			}
+			
 		list($order,$direction)=explode(",",$order);
 		
 		if($direction != "desc") $direction = 4;
@@ -337,10 +358,11 @@ class LMS {
 	{
 		$db=$this->db;
 		$nodelist = $db->FetchArray("SELECT `id`, `ipaddr`, `mac`, `name`, `ownerid`, `access` FROM `nodes`");
-		foreach($nodelist[id] as $key => $value){ 
-			$nodelist[iplong][$key] = ip_long($nodelist[ipaddr][$key]);
-			$nodelist[owner][$key] = $this->GetUserName($nodelist[ownerid][$key]);
-		}
+		if(sizeof($nodelist[id]))
+			foreach($nodelist[id] as $key => $value){ 
+				$nodelist[iplong][$key] = ip_long($nodelist[ipaddr][$key]);
+				$nodelist[owner][$key] = $this->GetUserName($nodelist[ownerid][$key]);
+			}
 
 		if(!isset($order)) $order="name,asc";
 
@@ -478,8 +500,6 @@ class LMS {
 		$session=$this->session;
 		if(!isset($useradd[status]))
 			$useradd[status] = 1;
-		if(!isset($useradd[tariff]))
-			$useradd[tariff] = 1;
 		$db->ExecSQL("INSERT INTO `users` (`name`, `lastname`, `phone1`, `phone2`, `phone3`, `address`, `email`, `status`, `tariff`, `creationdate`, `moddate`, `creatorid`, `modid` ) VALUES ('".ucwords($useradd[name])."', '".strtoupper($useradd[lastname])."', '".$useradd[phone1]."', '".$useradd[phone2]."', '".$useradd[phone3]."', '".$useradd[address]."', '".$useradd[email]."', '".$useradd[status]."', '".$useradd[tariff]."', '".time()."', '".time()."', '".$session->id."', '".$session->id."')");
 		$db->FetchRow("SELECT max(id) FROM `users`");
 		return $db->row["max(id)"];
@@ -497,6 +517,13 @@ class LMS {
 		$db=$this->db;
 		return $db->CountRows("SELECT * FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 	}
+
+	function TariffExists($id)
+	{
+		$db=$this->db;
+		return $db->CountRows("SELECT * FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
+	}
+
 
 	function IsIPFree($ip)
 	{
