@@ -1,22 +1,17 @@
 <!-- $Id$ -->
 <chapter id="daemon">
-	<title>A.L.E.C's LMS Daemon</title>
+	<title>LMS Daemon</title>
 	<sect1 id="daemon-intro">
 	<title>Informacje podstawowe</title>
 	<para>Napisany w jêzyku C program ma u³atwiaæ zarz±dzanie us³ugami. Sam demon odpowiada
     	za uruchamianie odpowiednich modu³ów na ¿±danie u¿ytkownika. Modu³y
     	natomiast, s³u¿± do tworzenia plików konfiguracyjnych na podstawie 
     	danych z bazy LMS'a oraz restartowania odpowiednich us³ug na serwerze.
-    	</para>
-	<para>Dlaczego taka nazwa? Wiêkszo¶æ kodu demona napisa³ jeden z developerów - Aleksander 
-	'A.L.E.C' Machniak, niemniej nale¿y tak¿e podkre¶liæ udzia³ Marcina 'Lexx' Króla. Program zawiera
-	fragmenty kodu autorstwa Mateusza 'mteg' Golicza oraz korzysta z biblioteki
-	iniparser Nicolasa Devillarda. Je¶li Ty masz ochotê napisaæ jaki¶ modu³ lub poprawiæ 
-	funkcjonalno¶æ demona jak najbardziej do tego zachêcam.
-	</para>
+	Spe³niaj± tak¿e inne funkcje np. zbieranie statystyk, badanie aktywno¶ci
+	hostów, naliczanie op³at, powiadamianie o zaleg³o¶ciach.</para>
 		<sect2 id="daemon-requirements">
 		<title>Wymagania</title>
-			<para><emphasis>A.L.E.C's LMS Daemon</emphasis> potrzebuje:
+			<para><emphasis>LMS Daemon</emphasis> potrzebuje:
       			<itemizedlist>
 			<listitem>
 				<para>instalacji interfejsu u¿ytkownika <emphasis>LMS-UI</emphasis></para>
@@ -43,7 +38,7 @@
   --help                pomoc
   --enable-debug0       logowanie zapytañ SQL (wy³±czone)
   --enable-debug1       logowanie zdarzeñ (wy³±czone)
-  --with-sqlite		gdy korzystasz z bazy SQLite (wy³±czone)
+  --with-sqlite         gdy korzystasz z bazy SQLite (wy³±czone)
   --with-pgsql          gdy korzystasz z bazy PostgreSQL (wy³±czone)
   --with-mysql          gdy korzystasz z bazy MySQL (w³±czone)
   --prefix=DIR          katalog instalacyjny demona (/usr/local/bin)
@@ -62,87 +57,95 @@
 </screen>
 			Na koniec skompilowane modu³y (pliki z rozszerzeniem <filename>.so</filename>),
 			znajduj±ce siê w katalogu <filename>modules/nazwa_modu³u</filename> przenie¶ 
-			do dowolnego katalogu. Ich lokalizacjê bêdziesz okre¶la³ w pliku konfiguracyjnym.
+			do dowolnego katalogu. Ich lokalizacjê bêdziesz okre¶la³ podczas konfiguracji.
 			</para>
 		</sect2>
 		<sect2 id="daemon-config">
 		<title>Konfiguracja</title>
-			<para>Przyk³adowy konfig demona i modu³ów zawarto w pliku <filename>lms.ini.sample</filename>.
-			Poni¿szy listing przedstawia podstawowe opcje dla demona (konfiguracjê modu³ów omówiono w 
-			osobnych rozdzia³ach ich dotycz±cych):
+			<para>Ca³± konfiguracjê demona i modu³ów przeprowadza siê przy pomocy
+			<emphasis>LMS-UI</emphasis> w menu Prze³adowanie -> Konfiguracja.
+			Konfiguracjê modu³ów omówiono w osobnych rozdzia³ach ich dotycz±cych.
+			Podstawowe parametry pracy demona i dane do po³±czenia z baz± danych
+			podaje siê jako opcje linii komend, zgodnie z poni¿szym listingiem:
 <screen>
-[database]
-host            = localhost     # nazwa lub ip hosta, domy¶lnie: localhost
-user            = lms           # nazwa u¿ytkownika, domy¶lnie: lms
-password        = mypasswd      # has³o do bazy, domy¶lnie: puste
-database        = lms           # nazwa bazy, domy¶lnie: lms
-port            = 0             # numer portu, domy¶lnie: 0
-
-[lmsd]
-sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma
-                                # byæ sprawdzane ¿±danie reloadu, domy¶lnie: 30
-instances       = hosts oident firewall       # lista instancji modu³ów
-command         = 'echo "³±czê siê z baz±"'   # polecenie wykonywane przed ka¿dym po³±czeniem z baz±	
+-h host[:port]    host na którym zainstalowana jest baza danych (domy¶lnie: 'localhost')
+-d nazwa_bazy     nazwa bazy danych (domy¶lnie: 'lms')
+-u u¿ytkownik     nazwa u¿ytkownika bazy danych (domy¶lnie: 'lms')
+-p has³o          has³o do bazy danych (domy¶lnie: puste)
+-H nazwa_hosta    host, na którym dzia³a demon. Domy¶lnie przyjmowana jest nazwa
+                  zwracana przez komendê hostname, ale mo¿na j± nadpisaæ. Nazwa
+                  ta musi zgadzaæ siê z nazw± hosta podan± w konfiguracji hostów
+-c polecenie      polecenie pow³oki do wykonania przed ka¿dym po³±czeniem z baz± 
+                  tzn. co minutê (domy¶lnie: puste)
+-q                wykonuje prze³adowanie i koñczy pracê
+-v                wy¶wietla wersjê i prawa licencyjne
+-i "instancja[ ...]" lista instancji (modu³ów) do prze³adowania. Wszystkie pozosta³e 
+                  zostan± pominiête
 </screen>
+			Opcje dostêpu do bazy s± tak¿e odczytywane ze zmiennych pow³oki:
+			LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
 			<note><para>Lista instancji sk³ada siê z nazw instancji oddzielonych 
-			spacj±. Instancja to nazwa sekcji w pliku konfiguracyjnym.</para></note>
+			spacj±.</para></note>
 			</para>
-			<para>W sekcji dotycz±cej instancji, oprócz parametrów konfiguracji
-			modu³ów, umieszcza siê opcje podstawowe, jak na poni¿szym listingu:
-<screen>
-[nazwa_instancji]
-module = /¶cie¿ka/nazwa_modu³u.so
-info = "Opcjonalny opis modu³u"
-</screen>		
+			<para>Konfiguracja demona jest podzielona na hosty (umo¿liwiaj±c
+			osobne konfigurowanie i prze³adowywanie demonów zainstalowanych
+			na ró¿nych komputerach/routerach) oraz sekcje konfiguracyjne 
+			nazwane instancjami.</para>
+			<para>Instancja oprócz parametrów konfiguracyjnych wybranego modu³u
+			zawiera opcje podstawowe, takie jak:
+			<itemizedlist>
+			    <listitem>
+				<para>Nazwa</para>
+				<para>Nazwa instancji unikalna w obrêbie jednego hosta.</para>
+				<para>Przyk³ad: system</para>
+			    </listitem>
+			    <listitem>
+				<para>Priorytet</para>
+				<para>Liczba okre¶laj±ca priorytet, czyli kolejno¶æ wykonania instancji. Instancja o najni¿szym numerze zostanie wykonana jako pierwsza.</para>
+				<para>Przyk³ad: 10</para>
+			    </listitem>
+			    <listitem>
+				<para>Modu³</para>
+				<para>Nazwa i ¶cie¿ka do pliku modu³u. Modu³y po instalacji demona znajduj± siê w katalogu daemon/modules/.</para>
+				<para>Przyk³ad: /usr/lib/system.so</para>
+			    </listitem>
+			    <listitem>
+				<para>Crontab</para>
+				<para>Czas wykonania modu³u okre¶lany w sposób podobny do u¿ywanego w programie crontab. Wszystkie dane musz± byæ numeryczne.
+				Podany przyk³ad spowoduje wykonywanie wybranej instancji co 5 minut, w godzinach od 8 do 18. Gdy opcja ta jest pusta instancja 
+				zostanie wykonana wy³±cznie podczas prze³adowania. Domy¶lnie: pusta.</para>
+				<para>Przyk³ad: */5 8-18 * * *</para>
+			    </listitem>
+			</itemizedlist>
 			</para>
-			<para>Zmiana opcji 'instances' oraz dowolnej opcji w sekcjach
-			instancji, w odró¿nieniu od pozosta³ych opcji globalnych,
-			nie wymaga restartu demona.</para> 
+			<para>Jakakolwiek zmiana w konfiguracji nie wymaga restartu demona.</para> 
 		</sect2>
 		<sect2 id="daemon-run">
 		<title>Uruchomienie</title>
-			<para>Program mo¿esz uruchamiaæ jako demona pracuj±cego w tle (opcja '-b'). Wtedy 
+			<para>Program domy¶lnie dzia³a w trybie demona. Wtedy 
 			prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie, przy u¿yciu menu 
-			'Prze³adowanie' w <emphasis>LMS-UI</emphasis>. Opcja 'sleeptime' (-s) okre¶la okres miêdzy
-			odczytami bazy. Gdy demon wykryje ¿±danie wykonania reloadu, wywo³a 
-			modu³y okre¶lone opcj± 'instances' z <filename>lms.ini</filename>.
-			Na przyk³ad:
-<screen>
-# almsd -b
-</screen>			
-			</para>
-			<para>Innym sposobem uruchomienia jest jednorazowy reload w wykorzystaniem
-			crona. Z tego sposobu nale¿y korzystaæ uruchamiaj±c modu³y takie jak 'payments'
-			'notify', 'traffic', czy 'pinger'. W tym wypadku mo¿esz okre¶liæ listê 
-			instancji do wykonania za pomoc± opcji '-i'.
-			Przyk³adowy wpis do crontab'a wygl±da nastêpuj±co:
-<screen>
-  1 0 * * *    /usr/local/bin/almsd -qi "payments notify"
-</screen>
-			</para>
-			<para>Poni¿szy listing przedstawia dostêpne opcje linii poleceñ programu:
-<screen>
-  -c	¶cie¿ka do pliku konfiguracyjnego (domy¶lnie: /etc/lms/lms.ini)
-  -i	lista instancji (oddzielonych spacj±) do prze³adowania
-  -b	uruchomienie w tle
-  -s	czas w sek. miêdzy odczytami tabeli 'reload' (domy¶lnie: 30)
-  -q 	wykonaj reload i zakoñcz
-  -h 	wy¶wietla opcje linii poleceñ
-</screen>
-			</para>
+			'Prze³adowanie' w <emphasis>LMS-UI</emphasis>. Sprawdzenie ¿±dania prze³adowania
+			oraz odczyt konfiguracji (w szczególno¶ci listy instancji i ich konfiguracji)
+			nastêpuje co minutê. Gdy demon wykryje ¿±danie wykonania reloadu, wywo³a 
+			wszystkie w³±czone instancje. Instancje z podan± opcj± 'crontab' zostan±
+			wykonane o okre¶lonym t± opcj± czasie.</para>
+			<para>Innym sposobem uruchomienia jest jednorazowy reload z wykorzystaniem
+			opcji -q. Ten sposób najczê¶ciej u¿ywany jest w celach testowych, a w po³±czeniu
+			z opcj± -i pozwala na wykonanie dowolnych instancji z pominiêciem pozosta³ych
+			zapisanych w bazie oraz bez wzglêdu na warto¶æ opcji 'crontab' tych 
+			instancji.</para>
 		</sect2>
 	</sect1>
 	<sect1 id="daemon-modules">
 	<title>Modu³y</title>
 	<para>Sam demon potrafi tylko uruchamiaæ modu³y i to one odwalaj± ca³± robotê. 
 	Wiêkszo¶æ modu³ów jest przeznaczona do okre¶lonego zastosowania, jedynie 'hostfile' 
-	mo¿na u¿ywaæ do ró¿nych konfigów (us³ug), np. ró¿nych typów firewalli. Przyk³ady 
-	konfiguracji demona i modu³ów zawiera plik <filename>daemon/lms.ini.sample</filename>.
+	mo¿na u¿ywaæ do ró¿nych konfigów (us³ug), np. ró¿nych typów firewalli.
 	Parametry konfiguracyjne modu³ów umieszcza siê w sekcjach instancji je wywo³uj±cych.</para>
 		<sect2 id="daemon-moduleslist">
 		<title>Lista dostêpnych modu³ów</title>
 			<table id="modules-list">
-			<title>Lista modu³ów demona almsd</title>
+			<title>Lista modu³ów demona lmsd</title>
 			<tgroup cols="2">
 			<colspec ALIGN="center" COLWIDTH="200">
 			<colspec ALIGN="center" COLWIDTH="300">
@@ -409,7 +412,7 @@ info = "Opcjonalny opis modu³u"
 			    <para>Okre¶la komendê systemow±, która zostanie wywo³ana je¿eli co najmniej
 			    jeden klient zostanie od³±czony lub zostanie w³±czone ostrze¿enie. 
 			    Domy¶lnie: nieustawiona.</para>
-			    <para>Przyk³ad: <prompt>command = 'almsd -qi firewall'</prompt></para>
+			    <para>Przyk³ad: <prompt>command = 'lmsd -qi firewall'</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>warning</para>
