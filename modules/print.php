@@ -24,51 +24,73 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Wydruki";
-
-$su = $DB->GetOne("SELECT min(time) FROM cash");
-$eu = $DB->GetOne("SELECT max(time) FROM cash");
-$sm = date("m",$su);
-$sy = date("Y",$su);
-$em = date("m",$eu);
-$ey = date("Y",$eu);
-
-for($d=$sy;$d<$ey+1;$d++)
-{
-//	echo "<B>$d</B><BR>";
-	if($d==$sy)
-		$smm = $sm;
-	else
-		$smm = 1;
-	if($d==$ey)
-		$emm = $em;
-	else
-		$emm = 12;
-//	echo "<B>$smm-$emm</B><BR>";
-	for($m=$smm;$m<$emm+1;$m++)
-		$monthlist[] = "$d/$m";
-}
-
-$SMARTY->assign('monthlist',$monthlist);
+$layout['pagetitle'] = 'Wydruki';
 
 switch($_GET['type'])
 {
-	case "userlist":
-		$SMARTY->assign('userlist',$LMS->GetUserList($_SESSION['ulo'],$_SESSION['uls']));
+	case 'userlist':
+		switch($_POST['filter'])
+		{
+			case 0:
+				$layout['pagetitle'] = 'Lista u¿ytkowników';
+				$SMARTY->assign('userlist',$LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
+			break;
+			case 1:
+				$layout['pagetitle'] = 'Lista u¿ytkowników zainteresowanych ';
+				$SMARTY->assign('userlist',$LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
+			break;
+			case 2:
+				$layout['pagetitle'] = 'Lista u¿ytkowników oczekuj±cych';
+				$SMARTY->assign('userlist',$LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
+			break;
+			case 3:
+				$layout['pagetitle'] = 'Lista u¿ytkowników pod³±czonych';
+				$SMARTY->assign('userlist',$LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
+			break;
+			case 4: 
+				$layout['pagetitle'] = 'Lista u¿ytkowników od³±czonych';
+				$userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction']);
+				unset($userlist['total']);
+				unset($userlist['state']);
+				unset($userlist['order']);
+				unset($userlist['below']);
+				unset($userlist['over']);
+				unset($userlist['direction']);
+
+				foreach($userlist as $idx => $row)
+					if(!$row['nodeac'])
+						$nuserlist[] = $userlist[$idx];
+						
+				$SMARTY->assign('userlist', $nuserlist);
+			break;
+			case 5: 
+				$layout['pagetitle'] = 'Lista u¿ytkowników zad³u¿onych';
+				$userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction']);
+				unset($userlist['total']);
+				unset($userlist['state']);
+				unset($userlist['order']);
+				unset($userlist['below']);
+				unset($userlist['over']);
+				unset($userlist['direction']);
+
+				foreach($userlist as $idx => $row)
+					if($row['balance'] < 0)
+						$nuserlist[] = $userlist[$idx];
+				
+				$SMARTY->assign('userlist', $nuserlist);
+			break;
+		}		
 		$SMARTY->display('printuserlist.html');
 	break;
-
-	case "nodelist":
+	
+	case 'nodelist':
+		$layout['pagetitle'] = 'Lista komputerów';
 		$SMARTY->assign('nodelist',$LMS->GetNodeList($_SESSION['nlo']));
 		$SMARTY->display('printnodelist.html');
 	break;
 	
-	case "userlistminus":
-		$SMARTY->assign('userlist',$LMS->GetUserList($_SESSION['ulo'],$_SESSION['uls']));
-		$SMARTY->display('printuserlistminus.html');
-	break;
-
 	default:
+		$SMARTY->assign('printmenu',$_GET['menu']);
 		$SMARTY->display('printindex.html');
 	break;
 }

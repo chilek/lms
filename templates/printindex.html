@@ -1,13 +1,146 @@
 {include file="header.html"}
+{if $printmenu=="users"}{include file="userheader.html"}{/if}
+{if $printmenu=="nodes"}{include file="nodeheader.html"}{/if}
 <H1>{$layout.pagetitle}</H1>
-<TABLE WIDTH="100%" CELLPADDING="5">
-	<TR>
-		<TD WIDTH="50%" VALIGN="TOP">
-			<B>Pe³ne listy:</B><BR>
-			- <a href="?m=print&type=userlist" target="_blank">u¿ytkowników</a><BR>
-			- <a href="?m=print&type=userlistminus" target="_blank">u¿ytkowników zad³u¿onych</a><BR>
-			- <a href="?m=print&type=nodelist" target="_blank">komputerów</a>
+{if $printmenu=="users"}
+<SCRIPT type="text/javascript" src="img/calendar.js"></SCRIPT>
+<FORM method="POST" name="printuserlist" action="?m=print&type=userlist" target="_blank">	
+<TABLE width="100%" cellpadding="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>Lista u¿ytkowników</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/group.gif" alt="" BORDER="0" align="absmiddle">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>Grupa u¿ytkowników:</B>
+					</TD>
+					<TD width="1%">
+						<INPUT class="box" type="radio" name="filter" value="3" CHECKED>pod³±czeni<BR>
+						<INPUT class="box" type="radio" name="filter" value="4">od³±czeni<BR>
+						<INPUT class="box" type="radio" name="filter" value="5">zad³u¿eni<BR>
+						<INPUT class="box" type="radio" name="filter" value="2">oczekuj±cy<BR>
+						<INPUT class="box" type="radio" name="filter" value="1">zainteresowani<BR>
+						<INPUT class="box" type="radio" name="filter" value="0">wszyscy
+					</TD>
+					<TD width="1%">
+						<IMG src="img/view.gif" alt="" BORDER="0" align="absmiddle">
+					</TD>
+					<TD width="1%">	
+			    			<B>Sortowanie:</B>
+					</TD>
+					<TD width="95%">
+						<SELECT SIZE="1" name="order">
+							<OPTION value="username" SELECTED>Nazwa/nazwisko i imiê</OPTION>
+							<OPTION value="id">Identyfikator</OPTION> 
+							<OPTION value="balance">Saldo</OPTION> 
+							<OPTION value="tariff">Abonament</OPTION> 
+							<OPTION value="address">Adres</OPTION> 
+						</SELECT>&nbsp;
+						<SELECT SIZE="1" name="direction">
+							<OPTION value="asc" SELECTED>rosn±co</OPTION>
+							<OPTION value="desc">malej±co</OPTION> 
+						</SELECT>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.getElementById('printuserlist').submit();">Drukuj <IMG src="img/print.gif" alt="" border="0" align="absmiddle" hspace="2"></A>
 		</TD>
 	</TR>
 </TABLE>
+</FORM>
+<FORM method="post" name="printuserbalance" action="?m=print&type=userbalance" target="_blank">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/money.gif" alt="" BORDER="0" align="absmiddle">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>Bilans u¿ytkownika</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>U¿ytkownik:</B>
+					</TD>
+					<TD width="1%">
+					
+					</TD>
+					<TD width="1%">
+						<IMG src="img/calendar.gif" alt="" BORDER="0" align="absmiddle">
+					</TD>
+					<TD width="96%">
+						<B>Okres:</B>&nbsp;
+						Od&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>
+						Do&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>	
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.getElementById('printuserbalance').submit();">Drukuj<IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+var cal1 = new calendar(document.getElementById('printuserbalance').elements['from']);
+cal1.time_comp = false;
+var cal2 = new calendar(document.getElementById('printuserbalance').elements['to']);
+cal2.time_comp = false;
+//-->
+</SCRIPT>
+{/if}
+{if $printmenu=="nodes"}
+<FORM method="post" name="printnodelist" action="?m=print&type=nodelist" target="_blank">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/node.gif" alt="" BORDER="0" align="absmiddle">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>Lista komputerów</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.getElementById('printnodelist').submit();">Drukuj <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{/if}
 {include file="footer.html"}
+
