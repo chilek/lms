@@ -100,7 +100,7 @@ DROP TABLE IF EXISTS networks;
 CREATE TABLE networks (
   id int(11) NOT NULL auto_increment,
   name varchar(255) NOT NULL default '',
-  address varchar(255) NOT NULL default '',
+  address int(16) unsigned NOT NULL,
   mask varchar(16) NOT NULL default '',
   interface varchar(8) default NULL,
   gateway varchar(16) default NULL,

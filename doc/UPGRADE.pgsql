@@ -35,19 +35,38 @@ ALTER TABLE users ALTER COLUMN pesel SET DEFAULT NULL;
 ALTER TABLE networks ADD dns2 VARCHAR(16);
 ALTER TABLE networks ADD interface VARCHAR(8);
 
-/*
-Zmiana typu adresu z varchar na bigint
-UWAGA: Poni¿sze zapytanie dzia³a na postgresie >= 7.3.x
-*/
-UPDATE nodes SET ipaddr=(split_part(ipaddr,'.',1)::int4*(256^3)+
-				split_part(ipaddr,'.',2)::int4*(256^2)+
-				split_part(ipaddr,'.',3)::int4*256+
-				split_part(ipaddr,'.',4)::int4);
+/* Konwersja adresów internetowych int <-> text */
+CREATE OR REPLACE FUNCTION inet_ntoa(bigint) RETURNS text AS '
+SELECT 
+     ($1/(256*256*256))::text
+     ||''.''||
+     ($1/(256*256) - $1/(256*256*256)*256)::text
+     ||''.''||
+     ($1/256 - $1/(256*256)*256)::text
+     ||''.''||
+     ($1 - $1/256*256)::text;
+' LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION inet_aton(text) RETURNS bigint AS '
+SELECT
+     split_part($1,''.'',1)::int8*(256*256*256)+
+     split_part($1,''.'',2)::int8*(256*256)+
+     split_part($1,''.'',3)::int8*256+
+     split_part($1,''.'',4)::int8;
+' LANGUAGE SQL;
+
+ALTER TABLE networks ADD ipaddr bigint;
+UPDATE networks SET ipaddr = inet_aton(address); 
+ALTER TABLE networks DROP COLUMN address;
+ALTER TABLE networks RENAME COLUMN ipaddr to address;
+ALTER TABLE networks ALTER COLUMN address set NOT NULL;
 ALTER TABLE nodes ADD ipaddr2 BIGINT;
-UPDATE nodes SET ipaddr2 = ipaddr::text::int8;
+UPDATE nodes SET ipaddr=inet_aton(ipaddr);
+UPDATE nodes SET ipaddr2 = ipaddr;
 ALTER TABLE nodes DROP COLUMN ipaddr;
 ALTER TABLE nodes RENAME COLUMN ipaddr2 to ipaddr;
 ALTER TABLE nodes ALTER COLUMN ipaddr set NOT NULL;
+
 /* Zmiana formatu zapisu czy komputer jest dostêpny */
 UPDATE nodes SET access= CASE access WHEN 'Y' THEN '1' ELSE '0' END;
 ALTER TABLE nodes ADD access2 int2;
@@ -157,30 +176,9 @@ CREATE TABLE assignments (
    PRIMARY KEY (id)
 );
 
-/* Konwersja adresów internetowych int <-> text */
-CREATE OR REPLACE FUNCTION inet_ntoa(bigint) RETURNS text AS '
-SELECT 
-     ($1/(256*256*256))::text
-     ||''.''||
-     ($1/(256*256) - $1/(256*256*256)*256)::text
-     ||''.''||
-     ($1/256 - $1/(256*256)*256)::text
-     ||''.''||
-     ($1 - $1/256*256)::text;
-' LANGUAGE SQL;
-
-CREATE OR REPLACE FUNCTION inet_aton(text) RETURNS bigint AS '
-SELECT
-     split_part($1,''.'',1)::int8*(256*256*256)+
-     split_part($1,''.'',2)::int8*(256*256)+
-     split_part($1,''.'',3)::int8*256+
-     split_part($1,''.'',4)::int8;
-' LANGUAGE SQL;
-
 /* Chyba o niczym nie zapomnia³em? */
 COMMIT;
 
 /*
 $Id$
 */
-

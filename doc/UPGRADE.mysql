@@ -28,15 +28,20 @@ ALTER TABLE networks ADD dns2 VARCHAR(16) AFTER dns;
 ALTER TABLE networks ADD interface VARCHAR(8) AFTER mask;
 
 /* Zmiana typu adresu */
+UPDATE networks SET address=INET_ATON(address);
+ALTER TABLE networks CHANGE address address INT(16) UNSIGNED NOT NULL;
 UPDATE nodes SET ipaddr=INET_ATON(ipaddr);
 ALTER TABLE nodes CHANGE ipaddr ipaddr INT(16) UNSIGNED NOT NULL;
+
 /* Zmiana formatu zapisu czy komputer jest dostêpny */
 UPDATE nodes SET access='1' WHERE access='Y';
 UPDATE nodes SET access='0' WHERE access='N';
 ALTER TABLE nodes CHANGE access access BOOL NOT NULL DEFAULT '1';
+
 /* Dodatkowe poprawki w bazie */
 ALTER TABLE nodes CHANGE ownerid ownerid INT(11) DEFAULT '0' NOT NULL;
 ALTER TABLE nodes CHANGE mac mac VARCHAR(20) NOT NULL;
+
 /* Linki do urz±dzeñ */
 ALTER TABLE nodes ADD netdev INT(11) NOT NULL DEFAULT '0' AFTER modid;
 
