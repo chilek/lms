@@ -68,6 +68,12 @@ ALTER TABLE tariffs ALTER uprate DROP DEFAULT;
 ALTER TABLE tariffs ALTER downrate DROP NOT NULL;
 ALTER TABLE tariffs ALTER downrate DROP DEFAULT; 
 
+/* Faktury inaczej */
+ALTER TABLE cash ADD COLUMN invoiceid integer;
+ALTER TABLE cash ALTER COLUMN invoiceid SET default 0;
+UPDATE cash SET invoice = 0;
+ALTER TABLE cash ALTER COLUMN invoiceid SET NOT NULL; 
+
 /* Nowa tabela dla statystyk 
 CREATE TABLE stats (
     nodeid integer DEFAULT 0 NOT NULL,
@@ -108,6 +114,7 @@ CREATE TABLE assignments (
    userid integer default 0 NOT NULL,
    period integer default 0 NOT NULL,
    at integer default 0 NOT NULL,
+   invoice smallint default 0 NOT NULL,
    PRIMARY KEY (id)
 );
 
