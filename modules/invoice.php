@@ -36,19 +36,17 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 		if($junk)
 			$ids[] = $markid;
 	sort($ids);
+	$which = ($_GET[which] != '' ? $_GET[which] : 'ORYGINA£+KOPIA');
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
-		$SMARTY->assign('type','ORYGINA£');
-		$SMARTY->assign('invoice',$invoice);
-		$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
-		$SMARTY->assign('type','KOPIA');
-		if(! $ids[$idx+1])
+		foreach(split('\+', $which) as $type)
 		{
-			$invoice['last'] = TRUE;
+			$SMARTY->assign('type',$type);
+
 			$SMARTY->assign('invoice',$invoice);
+			$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
 		}
-		$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
 	}
 	$SMARTY->display('clearfooter.html');
 }
