@@ -298,6 +298,20 @@ class LMS {
 		return $db->row[id];
 	}
 
+	function GetNodeIPByID($id)
+	{
+		$db=$this->db;
+		$db->FetchRow("SELECT `ipaddr` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		return $db->row[ipaddr];
+	}
+
+	function GetNodeMACByID($id)
+	{
+		$db=$this->db;
+		$db->FetchRow("SELECT `mac` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		return $db->row[mac];
+	}
+
 	function GetNodeName($id)
 	{
 		$db=$this->db;
@@ -1139,6 +1153,25 @@ class LMS {
 	{
 		$db=$this->db;
 		return $db->CountRows("SELECT * FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
+	}
+
+	function GetNodeOwner($id)
+	{
+		$db=$this->db;
+		$db->FetchRow("SELECT `ownerid` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		return $db->row[ownerid];
+	}
+
+	function NodeUpdate($nodedata)
+	{
+		$db=$this->db;
+		$session=$this->session;
+		return $db->ExecSQL("UPDATE `nodes` SET `name` = '".strtoupper($nodedata[name])."',
+		`ipaddr` = '".$nodedata[ipaddr]."',
+		`mac` = '".$nodedata[mac]."',
+		`moddate` = '".time()."',
+		`modid` = '".$session->id."'
+		WHERE `id` = '".$nodedata[id]."' LIMIT 1");
 	}
 								
 }
