@@ -3257,7 +3257,7 @@ class LMS
 		if(!$order)
 			$order = 'createtime,desc';
 	
-		list($order,$direction)=explode(',',$order);
+		list($order,$direction) = explode(',',$order);
 
 		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
@@ -3288,7 +3288,7 @@ class LMS
 		$where .= ($search['userid']    ? 'AND rttickets.userid='.$search['userid'].' '   : '');
 		$where .= ($search['subject']   ? 'AND rttickets.subject=\''.$search['subject'].'\' '       : '');
 		$where .= ($search['state']!='' ? 'AND state='.$search['state'].' '            : '');
-		$where .= ($search['name']!=''  ? 'AND requestor LIKE \''.$search['name']/'\' '  : '');
+		$where .= ($search['name']!=''  ? 'AND requestor LIKE \''.$search['name'].'\' '  : '');
 		$where .= ($search['email']!='' ? 'AND requestor LIKE \''.$search['email'].'\' ' : '');
 		$where .= ($search['uptime']!='' ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
 		
