@@ -130,7 +130,7 @@ unset($userlist['over']);
 unset($userlist['direction']);
 
 $i=0;
-foreach ($userlist as $user) 
+if($total) foreach ($userlist as $user) 
 {
     $i++;
     $userinfo = $LMS->GetUser($user['id']);
