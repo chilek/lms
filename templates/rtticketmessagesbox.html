@@ -1,26 +1,43 @@
 <!-- $Id$ -->
-<TABLE WIDTH="100%" CELLPADDING="3">
-	{foreach from=$ticket.messages item=message}
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" NOWRAP CLASS="FALL" ALIGN="RIGHT">
-			<B>{$message.createtime|date_format:"%Y/%m/%d<BR>%H:%M.%S"}</B>
-		</TD>
-		<TD WIDTH="1%" CLASS="fbt" ALIGN="RIGHT">
-			<B>Od:<BR>
-				Temat:</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="frightu">
-			{$message.mailfrom|escape}<BR>
-			{$message.subject|escape}
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fall" VALIGN="TOP" ALIGN="RIGHT" NOWRAP>
-			<A HREF="#">Odpowiedz</A><BR>
-			<A HREF="#">Rozwi±¿</A><BR>
-			<A HREF="#">Skomentuj</A><BR>
-		</TD>
-		<TD COLSPAN="2" WIDTH="98%" CLASS="fall" BGCOLOR="#F4F0EC" VALIGN="TOP"><PRE>{$message.body|escape}</PRE></TD>
-	</TR>
-	{/foreach}
+<TABLE width="100%" cellpadding="3">
+    <TR class="dark">
+	<TD class="fleftu" width="1%" NOWRAP>
+	    <IMG src="img/open.gif" alt="" border="0" align="absmiddle"> Historia zg³oszenia
+	</TD>
+	<TD class="frightu" width="99%" align="right" NOWRAP>
+	    {if $ticket.state != 2}
+	    <A href="?m=rtmessageadd&ticketid={$ticket.ticketid}">Nowa wiadomo¶æ <IMG src="img/mail.gif" alt="" border="0" align="absmiddle"></A>
+	    {/if}
+	</TD>
+    </TR>
+    <TR class="light">
+	<TD class="fall" colspan="2" width="100%">
+	    <TABLE CELLPADDING="3">
+		{foreach from=$ticket.messages item=message}
+		    <TR CLASS="DARK">
+			<TD WIDTH="1%" NOWRAP CLASS="FALL" ALIGN="RIGHT">
+			    <B>{$message.createtime|date_format:"%Y/%m/%d<BR>%H:%M.%S"}</B>
+			</TD>
+			<TD WIDTH="1%" CLASS="fbt" ALIGN="RIGHT">
+			    <B>Od:<BR>Temat:</B>
+			</TD>
+			<TD WIDTH="98%" CLASS="frightu">
+			    {$message.mailfrom|escape}<BR>
+			    {$message.subject|escape}
+			</TD>
+		    </TR>
+		    <TR CLASS="LIGHT">
+			<TD WIDTH="1%" CLASS="fall" VALIGN="TOP" ALIGN="RIGHT" NOWRAP>
+			    <A HREF="#">Odpowiedz</A><BR>
+			    <A HREF="#">Rozwi±¿</A><BR>
+			    <A HREF="#">Skomentuj</A><BR>
+			</TD>
+			<TD COLSPAN="2" WIDTH="99%" CLASS="fall" BGCOLOR="#F4F0EC" VALIGN="TOP">
+			    <PRE>{$message.body|escape}</PRE>
+			</TD>
+		    </TR>
+		{/foreach}
+	    </TABLE>
+	</TD>
+    </TR>
 </TABLE>

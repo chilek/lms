@@ -41,10 +41,12 @@ if(! $LMS->GetAdminRightsRT($SESSION->id, $queuedata['id']))
 $queuedata['name'] = $LMS->GetQueueName($queuedata['id']);
 
 $layout['pagetitle'] = 'Podgl±d kolejki: '.$queuedata['name'];
-$queue = $LMS->GetQueueContent($_GET['id']);
+$queue = $LMS->GetQueueContents($_GET['id']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
+$SMARTY->assign('queuetotal', $queue['total']);
+unset($queue['total']);
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuedata', $queuedata);
 $SMARTY->display('rtqueueview.html');

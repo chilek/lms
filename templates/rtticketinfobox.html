@@ -1,48 +1,86 @@
 <!-- $Id$ -->
-<TABLE WIDTH="100%" CELLPADDING="3">
+<P><TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
-		<TD CLASS="fall" COLSPAN="2">
-			<B>Informacje o bilecie #{$ticket.ticketid|string_format:"%06d"}</B>
+		<TD width="100%" CLASS="fall">
+			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
+			<B>Zg³oszenie Nr {$ticket.ticketid|string_format:"%06d"}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+		<TD width="100%" class="flr">
+<TABLE width="100%" cellpadding="0">
+    <TR>
+	<TD width="50%">
+	    <TABLE>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
 			<B>Temat:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			{$ticket.subject|escape}
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+		    </TD>
+		    <TD WIDTH="99%" NOWRAP>
+		        {$ticket.subject|escape|truncate:50:"..."}
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/user.gif" alt="" border="0" align="absmiddle">
 			<B>Zg³aszaj±cy:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+		    </TD>
+		    <TD WIDTH="99%">
 			{$ticket.requestor|escape} &lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
-			<B>Data utworzenia:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			{$ticket.createtime|date_format:"%Y/%m/%d, %H:%M:%S"}
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP ALIGN="RIGHT">
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%"NOWRAP>
+		    	<IMG src="img/calendar.gif" alt="" border="0" align="absmiddle">
+			<B>Data zg³oszenia:</B>
+		    </TD>
+		    <TD WIDTH="99%">
+			{$ticket.createtime|date_format:"%Y/%m/%d %H:%M:%S"}
+		    </TD>
+		</TR>
+	    </TABLE>
+	</TD>
+	<TD width="50%">	
+	    <TABLE>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+			<IMG src="img/admins.gif" alt="" border="0" align="absmiddle">
+			<B>W³a¶ciciel:</B>
+		    </TD>
+		    <TD WIDTH="99%">
+			{$ticket.ownername}
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/queue.gif" alt="" border="0" align="absmiddle">
 			<B>Kolejka:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+		    </TD>
+		    <TD WIDTH="99%">
 			<A HREF="?m=rtqueueview&id={$ticket.queueid}">{$ticket.queuename}</A>
+		    </TD>
+		</TR>
+		<TR>
+		    <TD WIDTH="1%" NOWRAP>
+		    	<IMG src="img/dead.gif" alt="" border="0" align="absmiddle">
+			<B>Status:</B>
+		    </TD>
+		    <TD WIDTH="99%">
+			{$ticket.status}
+		    </TD>
+		</TR>
+	    </TABLE>
+	</TD>
+    </TR>
+</TABLE>
 		</TD>
 	</TR>
 	<TR CLASS="light">
-		<TD WIDTH="1%" CLASS="fbl" NOWRAP ALIGN="RIGHT">
-			<B>Status:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fbr">
-			{$ticket.status}
+		<TD CLASS="fbottomu" ALIGN="RIGHT">
+			<A href="?m=rtticketedit&id={$ticket.ticketid}">Edytuj <IMG src="img/edit.gif" alt="" border="0" align="absmiddle"></A>
+			<A href="?m=rtqueueview&id={$ticket.queueid}">Anuluj <IMG src="img/cancel.gif" alt="" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>
+</P>

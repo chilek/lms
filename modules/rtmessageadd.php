@@ -24,17 +24,39 @@
  *  $Id$
  */
 
-if(! $LMS->TicketExists($_GET['id']))
+$msg = $_POST['message'];
+
+if(isset($msg))
 {
-	header('Location: ?m=rtqueuelist');
-	die;
+	$msg['ticketid'] = $_GET['ticketid'];
+	
+	if($msg['subject'] == '')
+		$error['subject'] = "Wiadomo¶æ musi mieæ tytu³!";
+
+	if($msg['body'] == '')
+		$error['body'] = "Nie poda³e¶ tre¶ci wiadomo¶ci!";
+
+/*
+	if($queue['email']!='' && !check_email($queue['email']))
+		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+
+*/
+	if(!$error)
+	{
+		$LMS->MessageAdd($msg);
+		header("Location: ?m=rtticketinfo&id=".$msg['ticketid']);
+		die;
+	}
 }
 
-$ticket = $LMS->GetTicketContents($_GET['id']);
-$layout['pagetitle'] = 'Zg³oszenie Nr '.$ticket['ticketid'].': '.$ticket['subject'];
+$msg['ticketid'] = $_GET['ticketid'];
+
+$layout['pagetitle'] = 'Nowa wiadomo¶æ';
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$SMARTY->assign('ticket', $ticket);
-$SMARTY->display('rtticketview.html');
+$SMARTY->assign('message', $msg);
+$SMARTY->assign('error', $error);
+$SMARTY->display('rtmessageadd.html');
+
 ?>
