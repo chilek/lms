@@ -1554,11 +1554,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function UsergroupAdd($usergroupdata)
 	{
 		$this->SetTS('usergroups');
-		$result = $this->DB->Execute('INSERT INTO usergroups (name, description)
-			VALUES (?, ?)',	array($usergroupdata['name'], $usergroupdata['description']));
+		$result = $this->DB->Execute('INSERT INTO usergroups (name, description) VALUES (?, ?)', array($usergroupdata['name'], $usergroupdata['description']));
 		if ($result)
-			return $this->DB->GetOne('SELECT id FROM usergroups WHERE name=?',
-				array($usergroupdata['name']));
+			return $this->DB->GetOne('SELECT id FROM usergroups WHERE name=?', array($usergroupdata['name']));
 		else
 			return FALSE;
 	}
@@ -1566,8 +1564,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function UsergroupUpdate($usergroupdata)
 	{
 		$this->SetTS('usergroups');
-		return $this->DB->Execute('UPDATE usergroups SET name=?, description=?, WHERE id=?',
-			array($usergroupdata['name'], $usergroupdata['description'], $usergroupdata['id']));
+		return $this->DB->Execute('UPDATE usergroups SET name=?, description=? WHERE id=?', array($usergroupdata['name'], $usergroupdata['description'], $usergroupdata['id']));
 	}
 
 	function UsergroupDelete($id)
