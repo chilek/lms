@@ -32,7 +32,7 @@ class LMS {
 
 	var $db;
 	var $session;
-	var $version = '1.0.24';
+	var $version = '1.0.27';
 
 	function LMS($db,$session)
 	{
@@ -122,6 +122,9 @@ class LMS {
 			{
 				$networks[addresslong][$key] = ip_long($networks[address][$key]);
 				$networks[prefix][$key] = mask2prefix($networks[mask][$key]);
+				$networks[broadcast][$key] = getbraddr($networks[address][$key],$networks[mask][$key]);
+				$networks[boradcastlong][$key] = ip_long($networks[broadcast][$key]);
+				$networks[size][$key] = pow(2,(32-$networks[prefix][$key]));
 			}
 			array_multisort($networks[name],$networks[id],$networks[address],$networks[mask],$networks[gateway],$networks[wins],$networks[domain],$networks[dns],$networks[dhcpstart],$networks[dhcpend],$networks[prefix],$networks[addresslong]);
 		}
