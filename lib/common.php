@@ -565,7 +565,7 @@ function pldate()
 				"Sun"  => "Niedziela" ) 
 			);
 			
-	$dzien = trim(date("d"));
+	$dzien = trim(date("j"));
 	$dt = trim(date("D"));
 	$mies = trim(date("m"));
 	$rok = trim(date("Y"));
@@ -663,6 +663,9 @@ function get_producer($mac)
 	
 /*
  * $Log$
+ * Revision 1.44  2003/09/05 02:02:50  lukasz
+ * - format fix
+ *
  * Revision 1.43  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
