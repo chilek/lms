@@ -222,6 +222,16 @@ info = "Opcjonalny opis modu³u"
 			    przodu, czy do ty³u w stosunku do daty naliczenia op³aty. Domy¶lnie: yes.</para>
 			    <para>Przyk³ad: <prompt>up_payments = no</prompt></para>
 			</listitem>
+        		<listitem>
+			    <para>deadline (opcjonalny)</para>
+			    <para>Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14</para>
+			    <para>Przyk³ad:	<prompt>deadline = 7</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>paytype (opcjonalny)</para>
+			    <para>Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'</para>
+			    <para>Przyk³ad:	<prompt>paytype = 'GOTÓWKA'</prompt></para>
+			</listitem>
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
@@ -715,3 +725,4 @@ info = "Opcjonalny opis modu³u"
 		</sect2>
 	</sect1>
 </chapter>
+    

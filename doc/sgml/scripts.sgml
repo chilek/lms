@@ -258,9 +258,22 @@ http://www.naszasiec.pl/</screen></example>
 	<sect2 id="lms-payments">
 	 <title>lms-payments</title>
 	 <para>Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
-	 u¿ytkownikom oraz op³at sta³ych.
+	 u¿ytkownikom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
 	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</para>
-	 <para>Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.</para>
+	 <para>Skrypt ten udostêpnia dwie opcje do fakturowania, które mo¿na ustawiæ
+	 w sekcji <emphasis>[payments]</emphasis> pliku <filename>lms.ini</filename>:</para>
+	  <itemizedlist>
+          <listitem>
+	   <para>deadline (opcjonalny)</para>
+	   <para>Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14</para>
+	   <para>Przyk³ad:	<prompt>deadline = 7</prompt></para>
+	  </listitem>
+	  <listitem>
+	   <para>paytype (opcjonalny)</para>
+	   <para>Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'</para>
+	   <para>Przyk³ad:	<prompt>paytype = 'GOTÓWKA'</prompt></para>
+	  </listitem>
+	 </itemizedlist>
         </sect2>
     <sect2 id="lms-traffic">
     <title>lms-traffic</title>
