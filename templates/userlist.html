@@ -74,9 +74,9 @@
 			{if $userlist[userlist].status eq 3}{if $userlist[userlist].nodeac eq 1}<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}"><IMG SRC="img/access.gif" align="absmiddle" alt="" border="0"></A>{else}{if $userlist[userlist].nodeac eq 2}<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}"><IMG SRC="img/mixaccess.gif" align="absmiddle" alt="" border="0"></A>{else}<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}&access=1"><IMG SRC="img/noaccess.gif" align="absmiddle" alt="" border="0"></A>{/if}{/if}{/if}
 		</TD>
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" valign="top">
-			<IMG src="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].email|default:"&nbsp;"}</A><BR>
-			<IMG src="img/gg.gif" alt="" align="absmiddle" border="0">&nbsp;{if $userlist[userlist].gguin}{$userlist[userlist].gguin}{else}&nbsp;{/if}<BR>
-			<IMG SRC="img/empty.gif" alt="" align="absmiddle" height="16" width="1"><B>NIP:</B>&nbsp;<NOBR>{$userlist[userlist].nip}</NOBR>
+			{if $userlist[userlist].email}<IMG src="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].email|default:"&nbsp;"}</A><BR>{/if}
+			{if $userlist[userlist].gguin}<IMG src="img/gg.gif" alt="" align="absmiddle" border="0">&nbsp;{if $userlist[userlist].gguin}{$userlist[userlist].gguin}{else}&nbsp;{/if}<BR>{/if}
+			{if $userlist[userlist].nip}<IMG SRC="img/empty.gif" alt="" align="absmiddle" height="16" width="1"><B>NIP:</B>&nbsp;<NOBR>{$userlist[userlist].nip}{/if}</NOBR>
 		
 		</TD>
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" valign="middle">
