@@ -481,6 +481,16 @@ info = "Opcjonalny opis modu³u"
 			    <para>Tekst dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
 			    <para>Przyk³ad: <prompt>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</prompt></para>
 			</listitem>
+			<listitem>
+			    <para>networks</para>
+			    <para>Lista sieci, które maj± byæ brane pod uwagê. Domy¶lnie: "192.168.0.0/16 10.0.0.0/8"</para>
+			    <para>Przyk³ad: <prompt>networks = "192.168.0.0/24 192.168.1.0/24"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>skip_dev_ips</para>
+			    <para>Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy urz±dzeñ sieciowych. Domy¶lnie: tak</para>
+			    <para>Przyk³ad: <prompt>skip_dev_ips = no</prompt></para>
+			</listitem>
 		    </itemizedlist>
 		    </sect3>
 		</sect2>	    
