@@ -32,16 +32,15 @@ class LMS
 {
 
 	var $ADB;
-	var $DB;
 	var $SESSION;
-	var $_BACKUP_DIR;
+	var $CONFIG;
 	var $_version = '1.0.65';
 
-	function LMS($DB,$SESSION,$ADB)
+	function LMS($ADB,$SESSION,$CONFIG)
 	{
-		$this->DB=$DB;
 		$this->SESSION=$SESSION;
 		$this->ADB=$ADB;
+		$this->CONFIG=$CONFIG;
 	}
 
 	function sqlTSfmt()
