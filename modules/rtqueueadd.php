@@ -41,7 +41,7 @@ if(isset($queue))
 		$error['name'] = trans('Queue with specified name already exists!');
 
 	if($queue['email']!='' && !check_email($queue['email']))
-		$error['email'] = trans('Specified mail is not proper!');
+		$error['email'] = trans('Incorrect email!');
 
 	if(isset($queue['admins']))
 		foreach($queue['admins'] as $key => $value)
