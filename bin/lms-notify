@@ -268,7 +268,7 @@ while (my $row = $dbq->fetchrow_hashref())
 						my @typy = ('a', 'b', 'Abonament', 'Wp³ata', 'Instalacja', 'Inne');
 						my $op_type=@typy[$row_s->{'type'}] || "$row_s->{'type'}";
 						my $for_what = sprintf("%-52s",$row_s->{'comment'} || $op_type);
-						my $op_time=strftime( "%Y-%m-%d", localtime()($row_s->{'time'}) );
+						my $op_time=strftime( "%Y-%m-%d", gmtime($row_s->{'time'}) );
 
 						$smtp->datasend("$op_time | $for_what | $op_amount \n");
 						}
