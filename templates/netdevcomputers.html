@@ -47,13 +47,15 @@
 			{$netcomplist[netcomplist].ip}
 		</TD>
 		<TD CLASS="frightu" WIDTH="4%">
+		{if $netdev.id}
 			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="unlinknode{$netcomplist[netcomplist].id}">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="nodeid" VALUE="{$netcomplist[netcomplist].id}">
-			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
+			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdev.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="disconnectnode">
 			<A HREF="javascript:document.unlinknode{$netcomplist[netcomplist].id}.submit(); "><IMG SRC="img/delete.gif" ALIGN="absmiddle" ALT="[ Od³±cz ]" BORDER="0"></A>
 			</FORM></P>
+		{/if}
 		</TD>
 	</TR>
 	{if $netcomplist[netcomplist.index_next].ownerid eq $netcomplist.ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
