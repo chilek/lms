@@ -38,6 +38,8 @@ if($LMS->UserExists($_GET['id']) == 0)
 
 $userinfo = $LMS->GetUser($_GET['id']);
 $assigments = $LMS->GetUserAssignments($_GET['id']);
+$usergroups = $LMS->UsergroupGetForUser($_GET['id']);
+$otherusergroups = $LMS->GetGroupNamesWithoutUser($_GET['id']);
 $balancelist = $LMS->GetUserBalanceList($_GET['id']);
 $usernodes = $LMS->GetUserNodes($_GET['id']);
 $tariffs = $LMS->GetTariffs();
@@ -52,6 +54,8 @@ $SMARTY->assign(
 			'usernodes' => $usernodes,
 			'balancelist' => $balancelist,
 			'assignments' => $assigments,
+			'usergroups' => $usergroups,
+			'otherusergroups' => $otherusergroups,
 			'error' => $error,
 			'userinfo' => $userinfo,
 			'tariffs' => $tariffs
