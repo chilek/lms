@@ -200,7 +200,7 @@ char * strstrip(char * s)
 * -----------------------------------------------------------*/
 unsigned char * parse(unsigned char *string)
 {
-    unsigned char *out;
+    static unsigned char *out;
     unsigned char c,d,e;
     int i, k, n;
 
