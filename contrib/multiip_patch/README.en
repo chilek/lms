@@ -1,0 +1,27 @@
+1. Preface.
+
+This PATCH allows to assign many PC's with one IP but differing in MACs 
+to one person. Changes are only in database and user interface.
+
+2. Installation.
+
+Copy patch to LMS's dir and type:
+
+$ patch -p1 <multiip-patch.diff
+
+Next you should delete unique key in database: 
+
+$ mysql -u lms -D lms -e "ALTER TABLE nodes DROP INDEX ipaddr"
+$ psql -U lms -d lms -c "ALTER TABLE nodes DROP CONSTRAINT nodes_ipaddr_key"
+
+For speed up some DB-related work you could add index on IP address:
+
+$ mysql -u lms -D lms -e "ALTER TABLE nodes ADD INDEX ipaddr(ipaddr)"
+$ psql -U lms -d lms -c "CREATE INDEX nodes_ipaddr_idx ON nodes(ipaddr)"
+
+3. Authors:
+
+£ukasz Wojciechowski
+Marek Adamski
+
+$Id$
