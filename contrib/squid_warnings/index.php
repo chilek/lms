@@ -26,7 +26,7 @@
 
 // REPLACE THIS WITH PATH TO YOU CONFIG FILE
 
-$CONFIG_FILE = "/etc/lms/lms.ini";
+$CONFIG_FILE = '/etc/lms/lms.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
@@ -99,10 +99,6 @@ $_DBUSER = $_CONFIG['database']['user'];
 $_DBPASS = $_CONFIG['database']['password'];
 $_DBNAME = $_CONFIG['database']['database'];
 
-// Set our sweet polish locales :>
-
-//setlocale (LC_ALL, 'pl_PL');
-
 // include required files
 
 require_once($_SMARTY_DIR.'/Smarty.class.php');
@@ -122,42 +118,48 @@ $LMS = new LMS($DB,$SESSION,$_CONFIG);
 
 $SMARTY = new Smarty;
 
-// test for proper version of Smarty
-
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 
-$layout[lmsv]='1.5-cvs';
+$layout[lmsv] = '1.5-cvs';
 
-$SMARTY->assign("menu",$menu);
-$SMARTY->assign("layout",$layout);
+$SMARTY->assign('menu', $menu);
+$SMARTY->assign('layout', $layout);
 
 header('X-Powered-By: LMS/'.$layout[lmsv]);
 
-if (isset($_SERVER[HTTP_X_FORWARDED_FOR])) {
-    $forwarded_ip = explode(",",$_SERVER[HTTP_X_FORWARDED_FOR]);
+if (isset($_SERVER[HTTP_X_FORWARDED_FOR])) 
+{
+    $forwarded_ip = explode(',', $_SERVER[HTTP_X_FORWARDED_FOR]);
     $nodeid = $LMS->GetNodeIDByIP($forwarded_ip['0']);    
-} else {
-    $nodeid = $LMS->GetNodeIDByIP(str_replace("::ffff:","",$_SERVER[REMOTE_ADDR]));    
-}
-$userid = $LMS->GetNodeOwner($nodeid);    
+} 
+else 
+    $nodeid = $LMS->GetNodeIDByIP(str_replace('::ffff:','',$_SERVER[REMOTE_ADDR]));    
 
-if (isset($_GET['readed'])) {
+
+if (isset($_GET['readed']))
+{
     $LMS->DB->Execute('UPDATE nodes SET warning = 0 WHERE id = ?',array($nodeid));
-    if ($_GET['oldurl']) {
+
+    if ($_GET['oldurl']) 
+    {
 	header('Location: '.$_GET['oldurl']);
-    } else {
-	$layout['message'] = "Wiadomo¶æ administracyjna oznaczona jako przeczytana.";
-	$SMARTY->assign("layout",$layout);
-	$SMARTY->display("message.html");
+	die;
+    } 
+    else 
+    {
+	$layout['message'] = 'Wiadomo¶æ administracyjna oznaczona jako przeczytana.';
     }
-} else {
-    $userinfo = $LMS->GetUser($userid);
-    $layout['oldurl']=$_GET['oldurl'];
-    $layout['messageurl']=$_CONFIG['squid-warnings']['redirect'];
-    $SMARTY->assign("userinfo",$userinfo);
-    $SMARTY->assign("layout",$layout);
-    $SMARTY->display("message.html");
+} 
+else 
+{
+    $userinfo = $LMS->GetUser($LMS->GetNodeOwner($nodeid));
+    $layout['oldurl'] = $_GET['oldurl'];
+    $layout['messageurl'] = $_CONFIG['squid-warnings']['redirect'];
+    $SMARTY->assign('userinfo', $userinfo);
 }
+
+$SMARTY->assign('layout', $layout);
+$SMARTY->display('message.html');
 
 ?>
