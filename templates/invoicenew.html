@@ -35,17 +35,17 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
-			<B>Dane u¿ytkownika:</B>
+			<B>{t}Customer data:{/t}</B>
 		</TD>
 	</TR>
 	{if $customer}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>Imiê i nazwisko / nazwa:<BR>
-			Adres:<BR>
+			<B>{t}Name/surname and forename:{/t}<BR>
+			{t}Address:{/t}<BR>
 			<BR>
-			{if $customer.nip}NIP:<BR>{elseif $customer.pesel}PESEL:<BR>{/if}
-			{if $customer.phone1}Telefon:{/if}</B>
+			{if $customer.nip}{t}FID:{/t}<BR>{elseif $customer.pesel}{t}SSN:{/t}<BR>{/if}
+			{if $customer.phone1}{t}Phone:{/t}{/if}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			{$customer.username}<BR>
@@ -58,10 +58,10 @@
 	{/if}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>Data wystawienia:</B>
+			<B>{t}Settlement date:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Wpisz datê wystawienia w formacie RRRR/MM/DD lub kliknij by wybraæ z kalendarza. Pole puste oznacza datê dzisiejsz±." trigger="cdate"} OnClick="javascript:cal1.popup();" >
+			<INPUT TYPE="TEXT" NAME="invoice[cdate]" VALUE="{$invoice.cdate|date_format:"%Y/%m/%d"}" SIZE="10" {tip text="Enter date of settlement in format YYYY/MM/DD or click to select it from calendar. Empty field means current date" trigger="cdate"} OnClick="javascript:cal1.popup();" >
 			{if $invoice.cdatewarning}
 			<INPUT TYPE="HIDDEN" NAME="invoice[cdatewarning]" VALUE="1">
 			{/if}
@@ -69,36 +69,36 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>Termin p³atno¶ci:</B>
+			<B>{t}Deadline:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}" SIZE="10" {tip text="Podaj termin p³atno¶ci w dniach (opcjonalnie)"}>
+			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}" SIZE="10" {tip text="Enter deadline in days (optional)"}>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>Typ p³atno¶ci (gotówka/przelew/etc.):</B>
+			<B>{t}Payment type (cash/transfer/etc.):{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="invoice[paytype]" VALUE="{$invoice.paytype}" SIZE="10" {tip text="Wpisz typ p³atno¶ci"}>
+			<INPUT TYPE="TEXT" NAME="invoice[paytype]" VALUE="{$invoice.paytype}" SIZE="10" {tip text="Enter payment type"}>
 		</TD>
 	</TR>			
 	<TR CLASS="light">
 		<TD CLASS="flr" WIDTH="100%" COLSPAN="2">
-			Wybierz u¿ytkownika:
+			{t}Customer:{/t}
 			<SELECT SIZE="1" NAME="user" onChange="document.setcustomer.userid.value=document.setcustomer.user.value">
-				<OPTION VALUE="0">... wybierz u¿ytkownika ...</OPTION>
+				<OPTION VALUE="0">{t}... select customer ...{/t}</OPTION>
 				{foreach from=$users item=user}
 				<OPTION VALUE="{$user.id}"{if $customer.id eq $user.id || $invoice.userid eq $user.id} SELECTED{/if}>{$user.username} ({$user.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
-			lub wpisz jego ID:
+			{t}or Customer ID:{/t}
 			<INPUT TYPE="TEXT" NAME="userid" VALUE="{if $customer.id}{$customer.id}{else}{$invoice.userid}{/if}" SIZE="5" onChange="document.setcustomer.user.value=document.setcustomer.userid.value">
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
-			<A HREF="javascript:document.setcustomer.submit();">Wybierz / zmieñ u¿ytkownika <IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			<A HREF="javascript:document.setcustomer.submit();">{t}Select/Change Customer{/t} <IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -107,28 +107,28 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">
-			<B>Lp.</B>
+			<B>{t}Ord.{/t}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="93%">
-			Nazwa wyrobu, towaru lub us³ugi:
+			{t}Name of product, commodity or service:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%">
-			PKWiU:
+			{t}PKWiU:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
-			Ilo¶æ:<BR>
-			JM:
+			{t}Amount:{/t}<BR>
+			{t}UM:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			Cena netto:<BR>
-			Warto¶æ netto:
+			{t}Net Price:{/t}<BR>
+			{t}Net Value:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
-			PTU:
+			{t}VAT:{/t}
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			Cena brutto:<BR>
-			Warto¶æ brutto:
+			{t}Gross Price:{/t}<BR>
+			{t}Gross Value:{/t}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;
@@ -158,14 +158,14 @@
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{if $item.taxvalue}
 				{$item.taxvalue|string_format:"%01.2f"}%
-			{else}zw.{/if}
+			{else}{t}tax-free{/t}{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$item.valuebrutto|money_format}<BR>
 			{$item.s_valuebrutto|money_format}
 		</TD>
 		<TD WIDTH="1%" NOWRAP CLASS="fright">
-			<A HREF="?m=invoicenew&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Skasuj t± pozycjê z listy"} BORDER="0"></A>
+			<A HREF="?m=invoicenew&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"} BORDER="0"></A>
 		</TD>			
 	</TR>
 	{foreachelse}
@@ -173,7 +173,7 @@
 		<TD COLSPAN="8" ALIGN="CENTER" CLASS="flr">
 			<BR>
 			<BR>
-			<B>Nie ma jeszcze pozycji na fakturze. U¿yj formularza poni¿ej aby dodaæ pozycjê.</B><BR>
+			<B>{t}Invoice have no items. Use following form for items addition.{/t}</B><BR>
 			<BR>
 			<BR>
 		</TD>
@@ -182,7 +182,7 @@
 	{if $contents}
 	<TR CLASS="light">
 		<TD COLSPAN="4" WIDTH="96%" ALIGN="RIGHT" CLASS="fleftu">
-			<B>Razem:</B>
+			<B>{t}Total:{/t}</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
 			{sum array=$contents column=s_valuenetto string_format="%01.2f"}
@@ -210,37 +210,37 @@
 				{foreach from=$tariffs item=tariff}
 				<OPTION VALUE="{$tariff.id}">{$tariff.name} ({$tariff.value|money_format})</OPTION>
 				{/foreach}
-			</SELECT><A HREF="javascript:setItem(document.additem.ttariffid.value)">Wybierz</A>
+			</SELECT><A HREF="javascript:setItem(document.additem.ttariffid.value)">{t}Select{/t}</A>
 		</TD>
 		<TD CLASS="ftop">
 			<INPUT TYPE="text" NAME="pkwiu" SIZE="6">
 		</TD>
 		<TD CLASS="ftop">
 			<INPUT TYPE="text" NAME="count" SIZE="1" VALUE="1">
-			<INPUT TYPE="text" NAME="jm" SIZE="1" VALUE="szt">
+			<INPUT TYPE="text" NAME="jm" SIZE="1" VALUE="{t}item no.{/t}">
 		</TD>
 		<TD CLASS="ftop" NOWRAP>
-			<INPUT TYPE="text" NAME="valuenetto" SIZE="6"> z³
+			<INPUT TYPE="text" NAME="valuenetto" SIZE="6">
 		</TD>
 		<TD CLASS="ftop" NOWRAP>
-			<SELECT size="1" name="taxvalue" value="22" {tip text="Wybierz stawkê VAT"}>
+			<SELECT size="1" name="taxvalue" value="22" {tip text="Select VAT rate"}>
 				<OPTION value="22">22%</OPTION>
 				<OPTION value="7">7%</OPTION>
 				<OPTION value="0">0%</OPTION>
-				<OPTION value="">zw.</OPTION>
+				<OPTION value="">{t}tax-free{/t}</OPTION>
 			</SELECT>
 		</TD>
 		<TD CLASS="ftop" NOWRAP>
-			<INPUT TYPE="text" NAME="valuebrutto" SIZE="6"> z³
+			<INPUT TYPE="text" NAME="valuebrutto" SIZE="6">
 		</TD>
 		<TD CLASS="ftr">
-			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" BORDER="0" {tip text="Dodaj pozycjê"}></A>
+			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" BORDER="0" {tip text="Add item"}></A>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="8" CLASS="fbottomu" ALIGN="RIGHT">
-			<A HREF="?m=invoicenew&action=clear">Wyczy¶æ zawarto¶æ <IMG ALIGN="ABSMIDDLE" SRC="img/delete.gif" BORDER="0"></A> 
-			<A HREF="?m=invoicenew&action=save" TARGET="_BLANK">Zapisz i zakoñcz <IMG ALIGN="ABSMIDDLE" SRC="img/save.gif" ALT="Dodaj" BORDER="0"></A>
+			<A HREF="?m=invoicenew&action=clear">{t}Clear Contents{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/delete.gif" BORDER="0"></A> 
+			<A HREF="?m=invoicenew&action=save" TARGET="_BLANK">{t}Save & End{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/save.gif" ALT="Dodaj" BORDER="0"></A>
 		</TD>
 	</TR>
 	</FORM>
