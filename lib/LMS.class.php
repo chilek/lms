@@ -876,10 +876,10 @@ class LMS
 					$list['value'][] = $saldolist['value'][$i];
 					$list['taxvalue'][] = $saldolist['taxvalue'][$i];
 					$list['name'][] = $saldolist['name'][$i];
-					switch($saldolist['name'][$i])
+					switch($saldolist['type'][$i])
 					{ 
-						case 'wp³ata':	$list['summary'] += $saldolist['value'][$i]; break;
-						case 'obci±¿enie': $list['summary'] -= $saldolist['value'][$i]; break;
+						case '3': $list['summary'] += $saldolist['value'][$i]; break;
+						case '4': $list['summary'] -= $saldolist['value'][$i]; break;
 					}	
 					$list['date'][] = date('Y/m/d H:i',$saldolist['time'][$i]);
 					$list['adminname'][] = $saldolist['adminname'][$i];
