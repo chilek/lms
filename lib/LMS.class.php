@@ -2433,6 +2433,8 @@ class LMS
 	 *
 	 */
 
+	var $rtstates = array( 0 => 'nowy', 1 => 'otwarty', 2 => 'rozwi±zany', 3 => 'martwy' );
+
 	function GetQueueList()
 	{
 		if($result = $this->DB->GetAll('SELECT id, name, email FROM rtqueues'))
@@ -2479,6 +2481,21 @@ class LMS
 		}
 		$stats['lastticket'] = $this->DB->GetOne('SELECT createtime FROM rttickets WHERE queueid = ? ORDER BY createtime DESC', array($id));
 		return $stats;
+	}
+
+	function TicketExists($id)
+	{
+		return $this->DB->GetOne('SELECT * FROM rttickets WHERE id = ?', array($id));
+	}
+
+	function GetTicketContents($id)
+	{
+		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, admins.name AS ownername, createtime, subject FROM rttickets LEFT JOIN rtqueues ON queueid = rtqueues.id LEFT JOIN admins ON owner = admins.id WHERE rttickets.id = ?', array($id));
+		$ticket['messages'] = $this->DB->GetAll('SELECT id, sender, mailfrom, subject, body, createtime FROM rtmessages WHERE ticketid = ? ORDER BY createtime ASC', array($id));
+		$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
+		$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
+		$ticket['status'] = $this->rtstates[$ticket['state']];
+		return $ticket;
 	}
 
 	/*

@@ -24,20 +24,15 @@
  *  $Id$
  */
 
-require_once($_LIB_DIR."/Sysinfo.class.php");
-require_once($_LIB_DIR."/fortunes.php");
+if(! $LMS->TicketExists($_GET['id']))
+{
+	header('Location: ?m=rtqueuelist');
+	die;
+}
 
-$SI = new Sysinfo;
-
-$layout['pagetitle'] = "LAN Management System";
-
-$layout['dbversion'] = $LMS->DB->GetDBVersion();
-$layout['dbtype'] = $LMS->CONFIG['database']['type'];
-
-$SMARTY->assign('sysinfo',$SI->get_sysinfo());
-$SMARTY->assign('userstats',$LMS->UserStats());
-$SMARTY->assign('nodestats',$LMS->NodeStats());
-$DB->Execute('DUPA');
-$SMARTY->display('welcome.html');
-
-?>
+$ticket = $LMS->GetTicketContents($_GET['id']);
+$layout['pagetitle'] = 'Bilet #'.$ticket['ticketid'].' - '.$ticket['subject'];
+$SMARTY->assign('ticket', $ticket);
+$SMARTY->display('rtticketview.html');
+?><PRE><? print_r($ticket);
+//layout['pagetitle']
