@@ -5,7 +5,7 @@
       <title>Wstêp</title>
 	<para>LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <emphasis>LMS-UI</emphasis> 
 	(interfejs u¿ytkownika). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy danych 
-	(w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w LMS-UI wykonujemy wszystkie 
+	(w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w <emphasis>LMS-UI</emphasis> wykonujemy wszystkie 
 	czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMS.</para>
 	<para>LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty wymagaj± 
 	aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, 
@@ -16,7 +16,7 @@
 	<!--  Czyszczenie dokumentacji przed wydaniem stabilnym
         <para>Jest jeszcze LMSd (LMS Daemon), napisany w jêzyku C. Jest on przeznaczony 
 	(a w³a¶ciwie jego wtyczki) do generowania plików konfiguracyjnych i restartowania us³ug. 
-	Odpowiada on za to, aby to co zosta³o zmienione w LMS-UI zosta³o zmienione tak¿e 
+	Odpowiada on za to, aby to co zosta³o zmienione w <emphasis>LMS-UI</emphasis> zosta³o zmienione tak¿e 
 	w rzeczywisto¶ci.</para>
         -->
     </sect1>
@@ -24,7 +24,7 @@
      	  <title>Wymagania</title>
 	    <sect2>
 	      <title>Serwer WWW</title>
-	      <para>Poniewa¿ LMS-UI jest napisane w PHP, niezbêdny jest serwer WWW z interpreterem 
+	      <para>Poniewa¿ <emphasis>LMS-UI</emphasis> jest napisane w PHP, niezbêdny jest serwer WWW z interpreterem 
 		tego jêzyka. Preferowanym serwerem jest Apache 
 		(<ulink url="http://www.apache.org">www.apache.org</ulink>).</para>
 	    </sect2>
@@ -44,13 +44,14 @@
 	    </sect2>
 	    <sect2>
              <title>Biblioteka Smarty</title>
-             <para>LMS-UI do pracy wymaga jeszcze biblioteki Smarty (<ulink url="http://smarty.php.net">http://smarty.php.net</ulink>)
+             <para><emphasis>LMS-UI</emphasis> do pracy wymaga jeszcze biblioteki Smarty (<ulink url="http://smarty.php.net">http://smarty.php.net</ulink>)
 		 w wersji 2.5.0 lub wy¿szej.</para>
             </sect2>
             <sect2>
             <title>Perl</title>
-	  <para>O ile dla LMS-UI wystarczy to co powy¿ej, to ¿eby mieæ dzia³aj±cy LMS-MGC 
-		i resztê skryptów potrzebujemy tak¿e perla i modu³y do niego czyli:
+	  <para>O ile dla <emphasis>LMS-UI</emphasis> wystarczy to co powy¿ej, to ¿eby mieæ dzia³aj±cy 
+		<emphasis>LMS-MGC</emphasis> i resztê skryptów potrzebujemy 
+		tak¿e perla i modu³y do niego czyli:
 	  <itemizedlist>
 	    <listitem>
 	       <para>perl w³a¶ciwy i jego podstawowe modu³y (POSIX, GetOpt::Long);</para>
@@ -82,7 +83,7 @@
 	  	<para>Po pobraniu ze strony <ulink url="http://www.lms.rulez.pl">www.lms.rulez.pl</ulink>
 		 rozpakowujemy archiwum:
 		 <screen>$ tar zxvf lms-x.x.x.tar.gz</screen>
-		 a nastêpnie przenosimy pliki z lms-ui do katalogu osi±galnego 
+		 a nastêpnie przenosimy pliki z <emphasis>LMS-UI</emphasis>do katalogu osi±galnego 
 		 z poziomu serwera www (np. <filename>/var/www/lms</filename>).</para> 
 		 <para>Pliki z konfiguracj± (<filename>sample/lms.ini</filename> i <filename>
 		 sample/lms-mgc.ini</filename>) umieszczamy w katalogu <filename>/etc/lms</filename>.
@@ -206,9 +207,9 @@ type     = postgres
 user     = lms
 password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 		    </para>
-			<para>Uwaga: Has³o jest wymagane w zale¿no¶ci od konfiguracji autentykacji
-       			u¿ytkowników postgresa w /usr/local/pgsql/data/pg_hba.conf. 
-       			Domy¶lnie has³o nie jest wymagane.</para>
+			<para><note><para>Has³o jest wymagane w zale¿no¶ci od konfiguracji autentykacji
+       			u¿ytkowników postgresa w <filename>/usr/local/pgsql/data/pg_hba.conf</filename>. 
+       			Domy¶lnie has³o nie jest wymagane.</para></note></para>
 			<para>Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy danych,
 			mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
 			nie ma ¿adnego konta administratora, jedyn± rzecz± jak± bêdziemy widzieæ
@@ -219,15 +220,18 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 		</sect2>
 	</sect1>  	
  	<sect1 id="install-config">
-      	    <title>Konfiguracja</title>
- 		<para>Parametry konfiguracyjne LMS-UI ustawia siê w pliku lms.ini,
-		 który nale¿y umie¶ciæ w katalogu /etc/lms/</para>
-		<sect2>
-		<title>Sekcja [database] - ustawienia bazy danych</title>
-		<para>
-		<itemizedlist>
-          	<listitem>
-	   	<para>type</para>
+      	    <title>Konfiguracja podstawowa</title>
+ 	    <para>G³ównym plikiem konfiguracyjnym LMS jest <filename>lms.ini</filename>,
+	    który nale¿y umie¶ciæ w katalogu <filename>/etc/lms</filename> lub w katalogu
+	    g³ównym LMS'a. Zawiera on zmienne konfiguracyjne <emphasis>LMS-UI</emphasis> 
+	    oraz wszystkich skryptów wykonywalnych z wyj±tkiem <emphasis>LMS-MGC</emphasis>.
+	    </para>
+	    <sect2>
+	    <title>Sekcja [database] - ustawienia bazy danych</title>
+	    <para>
+	    <itemizedlist>
+            <listitem>
+	    <para>type</para>
 	   <para>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie 
 	   widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</para>
 	   <para>Przyk³ad: <prompt>type = mysql</prompt></para>
@@ -388,10 +392,22 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
     zamiast do w³a¶ciwych u¿ytkowników.</para>
     <para>Przyk³ad:	<prompt>debug_mail = root@localhost</prompt></para>
    </listitem>
-    <listitem>
+   <listitem>
     <para>enable_stats</para>
     <para>W³±czenie/wy³±czenie dostêpno¶ci w menu modu³u 'traffic'. Domy¶lnie wy³±czone.</para>
     <para>Przyk³ad:	<prompt>enable_stats = 1</prompt></para>
+   </listitem>
+   <listitem>
+    <para>default_zip, default_city, default_address</para>
+    <para>Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
+    u¿ytkownika. Przydatne gdy mamy do wpisania wielu u¿ytkowników z tej samej ulicy.</para>
+    <para>Przyk³ad:	<prompt>default_zip = 39-300</prompt></para>
+   </listitem>
+   <listitem>
+    <para>use_current_payday</para>
+    <para>Okre¶la, czy ma byæ u¿yty aktualny dzieñ miesi±ca jako dzieñ zap³aty
+    zamiast najczê¶ciej u¿ywanego. Domy¶lnie wy³±czone.</para>
+    <para>Przyk³ad:	<prompt>use_current_payday = 1</prompt></para>
    </listitem>
   </itemizedlist>
  	</sect2> 
