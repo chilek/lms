@@ -29,10 +29,11 @@ po  zrobieniu kilku ma³ych przeróbek LMS pracowa³by tak¿e z PHP-4.1.x,
 ale  wybaczcie,  ja  wystarczaj±co du¿o czasu po¶wiêci³em na to by LMS
 wogóle powsta³. Reszta nale¿y do was :)
 
-Po trzecie: serwer MySQL.
+Po trzecie: serwer baz danych MySQL lub PostgreSQL 
 
 Aua. Tutaj to ja ju¿ wogóle zielony jestem. Pisa³em ca³o¶æ korzystaj±c
 z MySQL 3.23.53 i nie mam pojêcia która wersja jest wymagana.
+Je¶li chodzi o PostgreSQL to nie polecam wersji wcze¶niejszych od 7.2.3.
 
 Po czwarte: perl i modu³y do niego.
 
@@ -123,30 +124,11 @@ gdzie serwer WWW nie ma dostêpu!!!
 
 ****UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA*****
 
-Voila.  Teraz  przygotujmy  serwer  MySQL.  Konieczne  to  jest je¿eli
-uruchamiamy  LMS po raz PIERWSZY. Je¿eli uaktualniamy LMS, odpowiednie
-adnotacje  co  nale¿y  zrobiæ  z baz± danych s± w pliku ChangeLog. Tak
-wiêc wejd¼ do katalogu w którym masz LMS'a i uruchom shell mysql'a:
+Voila. Nastêpnie przygotowujemy serwer baz danych. Szczegó³owe informacje 
+znajdziesz w plikach INSTALL.mysql i INSTALL.pgsql - wybierz w³a¶ciwy dla 
+siebie.
 
-mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
-Enter password:[podaj has³o]
-mysql> create database lms;
-mysql> grant usage on lms.* to lms@localhost;
-mysql> grant select,insert,update,delete,create on lms.* to lms@localhost
-       identified by 'haslo';
-mysql> flush privileges;
-mysql> use lms;
-mysql> source doc/lms.mysql;
-
-Po takim zabiegu mo¿na dostaæ siê do LMS bez loginu i has³a. Oczywi¶cie
-jest to niedopuszczalne, wiêc wchodzimy do sekcji 'Administratorzy'
-(z menu po lewej stronie) i dodajemy sobie konto. Po dodaniu admina
-zostaniemy prawdopodobnie wylogowani i bêdziemy mogli skorzystaæ 
-z przed chwil± utworzonego konta.
-
-I to (narazie) na tyle.
-
-3. Post instalacja.
+3. Postinstalacja.
 
 Za³ó¿my  ¿e  chcemy  prost±  sieæ, prywatn±, na kernelu 2.2, na jednym
 serwerze  gdzie jest wszystko i tak± w miarê bez komplikacji. Mamy ju¿
