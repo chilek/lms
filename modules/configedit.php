@@ -24,13 +24,7 @@
  *  $Id$
  */
 
-function ConfigOptionExists($var, $section) 
-{
-	global $LMS;
-	return ($LMS->DB->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?', array($section, $var)) ? TRUE : FALSE);
-}
-
-function ConfigOptionExistsById($id) 
+function ConfigOptionExists($id) 
 {
 	global $LMS;
 	return ($LMS->DB->GetOne('SELECT id FROM uiconfig WHERE id = ?', array($id)) ? TRUE : FALSE);
@@ -38,7 +32,7 @@ function ConfigOptionExistsById($id)
 
 $id = $_GET['id'];
 
-if($id && !ConfigOptionExistsById($id))
+if($id && !ConfigOptionExists($id))
 {
 	header('Location: ?m=configlist');
 	die;
@@ -52,43 +46,28 @@ if($cfg = $_POST['config'])
 	$cfg['id'] = $id;
 	
 	foreach($cfg as $key => $val) 
-	    $cfg[$key] = trim($val);
+		$cfg[$key] = trim($val);
 	
 	if(!eregi("^[a-z0-9_-]+$", $cfg['var']))
-    	    $error['var'] = 'Nazwa opcji zawiera niepoprawne znaki!';
+    		$error['var'] = 'Nazwa opcji zawiera niepoprawne znaki!';
 
 	if($cfg['var']=='')
-	    $error['var'] = 'Musisz podaæ nazwê opcji!';
+		$error['var'] = 'Musisz podaæ nazwê opcji!';
 	    
 	if(($cfg['var']!=$config['var'] || $cfg['section']!=$config['section'])
-		&& ConfigOptionExists($cfg['var'], $cfg['section'])
+		&& $LMS->GetConfigOptionId($cfg['var'], $cfg['section'])
 	)
-	    $error['var'] = 'Opcja ju¿ jest w bazie!';
+		$error['var'] = 'Opcja ju¿ jest w bazie!';
 
 	if(!eregi("^[a-z0-9_-]+$", $cfg['section']) && $cfg['section']!='')
-    	    $error['section'] = 'Nazwa sekcji zawiera niepoprawne znaki!';
+    		$error['section'] = 'Nazwa sekcji zawiera niepoprawne znaki!';
 	    
 	if($cfg['value']=='')
-	    $error['value'] = 'Opcja musi mieæ okre¶lon± warto¶æ!';
+		$error['value'] = 'Opcja musi mieæ okre¶lon± warto¶æ!';
+	elseif($msg = $LMS->CheckOption($cfg['var'], $cfg['value']))
+		$error['value'] = $msg;
 	
 	if($cfg['disabled']!='1') $cfg['disabled'] = 0;
-
-	// sprawdzenie warto¶ci niektórych opcji (z config_defaults.ini)
-	switch($cfg['var'])
-	{
-	    case 'accountlist_pagelimit':
-	    case 'ticketlist_pagelimit':
-	    case 'balancelist_pagelimit':
-	    case 'invoicelist_pagelimit':
-	    case 'timeout':
-		    if($cfg['value']<=0)
-			    $error['value'] = 'Warto¶æ opcji \''.$cfg['var'].'\' musi byæ liczb± wiêksz± od zera!';
-		break;
-	    case 'reload_type':
-		    if($cfg['value']!='sql' && $cfg['value']!='exec')
-			    $error['value'] = 'Z³y typ reloadu. Obs³ugiwane typy: sql, exec!';
-		break;
-	}
 
 	if(!$error)
 	{

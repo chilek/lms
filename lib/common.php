@@ -531,7 +531,6 @@ function check_email( $email )
 	}
 
 	return TRUE;
-
 }
 
 function check_nip($nip)
@@ -928,4 +927,26 @@ function sql_random()
 {
 	return ( rand()/getrandmax() );
 }
+
+// config value testers
+function isboolean($value)
+{
+	if(eregi('^(1|y|on|yes|true|tak|t|0|n|no|off|false|nie)$', $value))
+		return TRUE;
+	else
+		return FALSE;
+}
+
+function chkconfig($value, $default = FALSE)
+{
+	if(eregi('^(1|y|on|yes|true|tak|t)$', $value))
+		return TRUE;
+	elseif(eregi('^(0|n|no|off|false|nie)$', $value))
+		return FALSE;
+	elseif(!isset($value) || $value == '')
+		return $default;
+	else
+		trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
+}
+
 ?>

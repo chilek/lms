@@ -24,12 +24,6 @@
  *  $Id$
  */
 
-function ConfigOptionExists($var, $section) 
-{
-	global $LMS;
-	return ($LMS->DB->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?', array($section, $var)) ? TRUE : FALSE);
-}
-
 $layout['pagetitle'] = 'Dodanie opcji konfiguracyjnej';
 
 if($config = $_POST['config'])
@@ -44,38 +38,23 @@ if($config = $_POST['config'])
 	}
 	
 	if(!eregi("^[a-z0-9_-]+$", $config['name']))
-    	    $error['name'] = 'Nazwa opcji zawiera niepoprawne znaki!';
+    		$error['name'] = 'Nazwa opcji zawiera niepoprawne znaki!';
 
 	if($config['name']=='')
-	    $error['name'] = 'Musisz podaæ nazwê opcji!';
+		$error['name'] = 'Musisz podaæ nazwê opcji!';
 	    
-	if(ConfigOptionExists($config['name'], $config['section']))
-	    $error['name'] = 'Opcja ju¿ jest w bazie!'; 
+	if($LMS->GetConfigOptionId($config['name'], $config['section']))
+		$error['name'] = 'Opcja ju¿ jest w bazie!'; 
 
 	if(!eregi("^[a-z0-9_-]+$", $config['section']) && $config['section']!='')
-    	    $error['section'] = 'Nazwa sekcji zawiera niepoprawne znaki!';
+    		$error['section'] = 'Nazwa sekcji zawiera niepoprawne znaki!';
 	    
 	if($config['value']=='')
-	    $error['value'] = 'Opcja musi mieæ okre¶lon± warto¶æ!';
+		$error['value'] = 'Opcja musi mieæ okre¶lon± warto¶æ!';
+	elseif($msg = $LMS->CheckOption($config['name'], $config['value']))
+	        $error['value'] = $msg;
 	
 	if($config['disabled']!='1') $config['disabled'] = 0;
-
-	// sprawdzenie warto¶ci niektórych opcji (z config_defaults.ini)
-	switch($config['name'])
-	{
-	    case 'accountlist_pagelimit':
-	    case 'ticketlist_pagelimit':
-	    case 'balancelist_pagelimit':
-	    case 'invoicelist_pagelimit':
-	    case 'timeout':
-		    if($config['value']<=0)
-			    $error['value'] = 'Warto¶æ opcji \''.$config['name'].'\' musi byæ liczb± wiêksz± od zera!';
-		break;
-	    case 'reload_type':
-		    if($config['value']!='sql' && $config['value']!='exec')
-			    $error['value'] = 'Z³y typ reloadu. Obs³ugiwane typy: sql, exec!';
-		break;
-	}
 
 	if(!$error)
 	{

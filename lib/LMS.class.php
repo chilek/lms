@@ -3335,8 +3335,52 @@ class LMS
 	}
 
 	/*
+	 * Konfiguracja LMS-UI
+	 */
+
+	function GetConfigOptionId($var, $section) 
+	{
+		return $this->DB->GetOne('SELECT id FROM uiconfig WHERE section = ? AND var = ?', array($section, $var));
+	}
+	
+	function CheckOption($var, $value)
+	{
+		switch($var)
+		{
+			case 'accountlist_pagelimit':
+			case 'ticketlist_pagelimit':
+			case 'balancelist_pagelimit':
+			case 'invoicelist_pagelimit':
+			case 'aliaslist_pagelimit':
+			case 'domainlist_pagelimit':
+			case 'timeout':
+				if($value<=0)
+					return 'Warto¶æ opcji \''.$var.'\' musi byæ liczb± wiêksz± od zera!';
+			break;
+		        case 'reload_type':
+				if($value != 'sql' && $value != 'exec')
+					return 'Z³y typ reloadu. Obs³ugiwane typy: sql, exec!';
+			break;
+			case 'force_ssl':
+			case 'allow_mac_sharing':
+			case 'smarty_debug':
+			case 'use_current_payday':
+			case 'helpdesk_backend_mode':
+			case 'to_words_short_format':
+			case 'disable_devel_warning':
+				if(!isboolean($value))
+					return 'B³êdna warto¶æ! Dozwolone warto¶ci: 1|t|true|y|yes|on|tak oraz 0|n|no|off|false|nie'; 
+			break;
+			case 'debug_email':
+				if(!check_email($value))
+					return 'Podany email wydaje siê nie byæ poprawny!';
+			break;
+		}
+		return NULL;
+	}
+
+	/*
 	 * Templejty plików konfiguracyjnych
-	 *
 	 */
 
 	function GetTemplatesList()
