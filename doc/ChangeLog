@@ -3,6 +3,8 @@ $Id$
 wersja 1.2.0rc2 Janet (??/02/2004):
 
   - poprawki kosmetyczne iface (lukasz)
+  - cleanup kodu (lukasz)
+  - poprawiony BTS#0000112 (alec)
 
 wersja 1.2.0rc1 Janet (18/02/2004):
 
