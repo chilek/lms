@@ -76,11 +76,8 @@ if(isset($search) || $_GET['search'])
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$adminlist = $LMS->GetAdminList();
-unset($adminlist['total']);
-
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
-$SMARTY->assign('adminlist', $adminlist);
+$SMARTY->assign('adminlist', $LMS->GetAdminNames());
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('search', $_SESSION['rtsearch']);
 $SMARTY->assign('error', $error);

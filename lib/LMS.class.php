@@ -293,7 +293,7 @@ class LMS
 		return $this->DB->GetOne('SELECT name FROM admins WHERE id=?', array($id));
 	}
 
-	function GetAdminNameList() // zwraca skrócon± listê adminów
+	function GetAdminNames() // zwraca skrócon± listê adminów
 	{
 		return $this->DB->GetAll('SELECT id, name FROM admins WHERE deleted=0 ORDER BY login ASC');
 	}
