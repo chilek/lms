@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
 
     	// main loop ****************************************************
     	for (;;) {
-		int time;
+		int time = 0;
 		reload = 0;
 		
 		// don't reload while daemon starting in background mode
@@ -179,9 +179,12 @@ int main(int argc, char *argv[])
         	if( quit )
    	    		reload = 1;
 		else 
-	    		if( (res =  db_query("SELECT time FROM timestamps WHERE tablename = '_force'"))!=NULL ) {
-				time = atoi(db_get_data(res,0,"time"));
-				if( time>0 && time!=reload_t ) {
+	    		if( (res = db_query("SELECT time FROM timestamps WHERE tablename = '_force'"))!=NULL ) 
+			{
+				if(res->nrows)
+					time = atoi(db_get_data(res,0,"time"));
+				if( time>0 && time!=reload_t ) 
+				{
 					reload = 1;
 					reload_t = time;
 				}
