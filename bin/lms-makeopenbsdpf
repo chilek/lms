@@ -191,12 +191,12 @@ print PFFILE "block out all\n";
 
 foreach my $key (@networks)
 {
-	my $dbq = $dbase->prepare("SELECT address, mask FROM networks WHERE name = '$key'");
+	my $dbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = '$key'");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
 		foreach my $skey (@fw_networks)
 		{
-			my $sdbq = $dbase->prepare("SELECT address, mask FROM networks WHERE name = '$skey'");
+			my $sdbq = $dbase->prepare("SELECT inet_address(address) AS address, mask FROM networks WHERE name = '$skey'");
 			$sdbq->execute();
 			while(my $srow = $sdbq->fetchrow_hashref())
 			{
@@ -209,7 +209,7 @@ foreach my $key (@networks)
 
 foreach my $key (@networks)
 {
-	my $dbq = $dbase->prepare("SELECT address, mask FROM networks WHERE name = '$key'");
+	my $dbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = '$key'");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
 		my $sdbq = $dbase->prepare("SELECT ipaddr FROM nodes WHERE access = 1");

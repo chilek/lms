@@ -285,7 +285,7 @@ sub instance($)
 	{
 		$srcnetwork = uc($srcnetwork);
 		print "debug: starting network $srcnetwork\n" if $debug;
-		my $dbq = $dbase->prepare("SELECT id, name, address, mask, interface, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$srcnetwork'");
+		my $dbq = $dbase->prepare("SELECT id, name, inet_ntoa(address) AS address, mask, interface, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$srcnetwork'");
 		$dbq->execute();
 		my $row = $dbq->fetchrow_hashref();
 		if(!$row)
@@ -327,7 +327,7 @@ sub instance($)
 			foreach my $dstnetwork (@dst_networks)
 			{
 				$dstnetwork = uc($dstnetwork);
-				my $sdbq = $dbase->prepare("SELECT id, name, address, mask, interface, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$dstnetwork'");
+				my $sdbq = $dbase->prepare("SELECT id, name, inet_ntoa(address) AS address, mask, interface, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$dstnetwork'");
 				$sdbq->execute();
 				my $srow = $sdbq->fetchrow_hashref();
 				my $dtnh = $dst_network_header;

@@ -180,7 +180,7 @@ my @networks = split ' ',$networks_list;
 
 foreach my $key (@networks)
 {
-	my $dbq = $dbase->prepare("SELECT id, address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$key'");
+	my $dbq = $dbase->prepare("SELECT id, inet_ntoa(address) AS address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$key'");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
 		$key = lc($key);

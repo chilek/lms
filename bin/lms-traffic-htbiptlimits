@@ -209,7 +209,7 @@ my $dbq = $dbase->prepare("SELECT address, mask, interface FROM networks");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
-	my $netstart = dotquad2u32($row->{'address'});
+	my $netstart = $row->{'address'};
 	my $prefix = mask2prefix($row->{'mask'});
 	my $netsize = 2**(32 - $prefix);
 	my $netend = $netstart + $netsize - 1;
