@@ -194,7 +194,13 @@ my $itemid;
 
 # let's go, query fetch *ALL* assignments in given day
 
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, description, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0) ORDER BY userid, invoice, value DESC");
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, description, invoice,
+			ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value
+			FROM assignments, tariffs, users 
+			WHERE tariffs.id = tariffid AND userid = users.id 
+			AND status = 3 AND deleted = 0 AND suspended = 0 
+			AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0) 
+			ORDER BY userid, invoice, value DESC");
 $dbq->execute();
 
 while(my $assign = $dbq->fetchrow_hashref())
