@@ -21,10 +21,10 @@
 			<TABLE width="100%">
 				<TR>
 					<TD width="1%">
-						<IMG src="img/group.gif" alt="" BORDER="0" align="absmiddle">
+						<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>Grupa:</B>
+						<B>Status:</B>
 					</TD>
 					<TD width="1%" {tip text="Wybierz grupê u¿ytkowników"}>
 						<INPUT class="box" type="radio" name="filter" value="3" CHECKED>pod³±czeni<BR>
@@ -60,11 +60,25 @@
 					<TD width="1%">	
 			    			<B>Sieæ:</B>
 					</TD>
-					<TD width="92%" {tip text="Wybierz sieæ"}>
+					<TD width="1%" {tip text="Wybierz sieæ"}>
 						<SELECT size="1" name="network">
 							<OPTION value="0" SELECTED>- wszystkie -</OPTION>
 							{section name="networks" loop=$networks}
 							<OPTION value="{$networks[networks].id}">{$networks[networks].name|truncate:50:" ..."}</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/group.gif" alt="" BORDER="0" align="absmiddle">
+					</TD>
+					<TD width="1%">	
+			    			<B>Grupa:</B>
+					</TD>
+					<TD width="89%" {tip text="Wybierz grupê u¿ytkowników"}>
+						<SELECT size="1" name="usergroup">
+							<OPTION value="0" SELECTED>- wszystkie -</OPTION>
+							{section name="usergroups" loop=$usergroups}
+							<OPTION value="{$usergroups[usergroups].id}">{$usergroups[usergroups].name|truncate:50:" ..."}</OPTION>
 							{/section}
 						</SELECT>
 					</TD>

@@ -30,8 +30,8 @@ switch($_GET['type'])
 		switch($_POST['filter'])
 		{
 			case 0:
-				$layout['pagetitle'] = 'Lista u¿ytkowników'.($_POST['network'] ? ' sieci '.$LMS->GetNetworkName($_POST['network']) : '');
-				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network']));
+				$layout['pagetitle'] = 'Lista u¿ytkowników'.($_POST['network'] ? ' sieci '.$LMS->GetNetworkName($_POST['network']) : '').($_POST['usergroup'] ? ' w grupie '.$LMS->UsergroupGetName($_POST['usergroup']) : '');
+				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['usergroup']));
 			break;
 			case 1:
 				$layout['pagetitle'] = 'Lista u¿ytkowników zainteresowanych ';
@@ -42,12 +42,12 @@ switch($_GET['type'])
 				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter']));
 			break;
 			case 3:
-				$layout['pagetitle'] = 'Lista u¿ytkowników pod³±czonych'.($_POST['network'] ? ' do sieci '.$LMS->GetNetworkName($_POST['network']) : '');
-				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network']));
+				$layout['pagetitle'] = 'Lista u¿ytkowników pod³±czonych'.($_POST['network'] ? ' do sieci '.$LMS->GetNetworkName($_POST['network']) : '').($_POST['usergroup'] ? ' w grupie '.$LMS->UsergroupGetName($_POST['usergroup']) : '');
+				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'], $_POST['filter'], $_POST['network'], $_POST['usergroup']));
 			break;
 			case 4: 
-				$layout['pagetitle'] = 'Lista u¿ytkowników od³±czonych'.($_POST['network'] ? ' od sieci '.$LMS->GetNetworkName($_POST['network']) : '');
-				if($userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network']))
+				$layout['pagetitle'] = 'Lista u¿ytkowników od³±czonych'.($_POST['network'] ? ' od sieci '.$LMS->GetNetworkName($_POST['network']) : '').($_POST['usergroup'] ? ' w grupie '.$LMS->UsergroupGetName($_POST['usergroup']) : '');
+				if($userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network'], $_POST['usergroup']))
 				{
 				unset($userlist['total']);
 				unset($userlist['state']);
@@ -63,8 +63,8 @@ switch($_GET['type'])
 				$SMARTY->assign('userlist', $nuserlist);
 			break;
 			case 5: 
-				$layout['pagetitle'] = 'Lista u¿ytkowników zad³u¿onych'.($_POST['network'] ? ' w sieci '.$LMS->GetNetworkName($_POST['network']) : '');
-				if($userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network']))
+				$layout['pagetitle'] = 'Lista u¿ytkowników zad³u¿onych'.($_POST['network'] ? ' w sieci '.$LMS->GetNetworkName($_POST['network']) : '').($_POST['usergroup'] ? ' w grupie '.$LMS->UsergroupGetName($_POST['usergroup']) : '');
+				if($userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, $_POST['network'], $_POST['usergroup']))
 				{
 				unset($userlist['total']);
 				unset($userlist['state']);
@@ -80,8 +80,8 @@ switch($_GET['type'])
 				$SMARTY->assign('userlist', $nuserlist);
 			break;
 			case 6: 
-				$layout['pagetitle'] = 'Lista u¿ytkowników bez komputerów';
-				if($userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction']))
+				$layout['pagetitle'] = 'Lista u¿ytkowników bez komputerów'.($_POST['usergroup'] ? ' w grupie '.$LMS->UsergroupGetName($_POST['usergroup']) : '');
+				if($userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction'], NULL, NULL, $_POST['usergroup']))
 				{
 				unset($userlist['total']);
 				unset($userlist['state']);
@@ -271,6 +271,7 @@ switch($_GET['type'])
 		$SMARTY->assign('users', $LMS->GetUserNames());
 		$SMARTY->assign('admins', $admins);
 		$SMARTY->assign('networks', $LMS->GetNetworks());
+		$SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
 		$SMARTY->assign('printmenu', $_GET['menu']);
 		$SMARTY->display('printindex.html');
 	break;
