@@ -122,6 +122,7 @@ $users = $LMS->GetUserNames();
 
 
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($owner));
+$SMARTY->assign("assignments",$LMS->GetUserAssignments($ownerid));
 $SMARTY->assign("error",$error);
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("layout",$layout);
@@ -130,6 +131,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.28  2003/09/09 01:44:07  lukasz
+ * - poprawki node{edit,info,add}
+ *
  * Revision 1.27  2003/09/07 18:53:53  lukasz
  * *** empty log message ***
  *

@@ -43,11 +43,15 @@ if(!isset($_GET[ownerid]))
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($ownerid));
 $SMARTY->assign("userinfo",$LMS->GetUser($ownerid));
 $SMARTY->assign("nodeinfo",$LMS->GetNode($nodeid));
+$SMARTY->assign("assignments",$LMS->GetUserAssignments($ownerid));
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("nodeinfo.html");
 
 /*
  * $Log$
+ * Revision 1.16  2003/09/09 01:44:07  lukasz
+ * - poprawki node{edit,info,add}
+ *
  * Revision 1.15  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
