@@ -1575,10 +1575,7 @@ class LMS
 
      function CountNetDevLinks($id)
      {
-          return array_merge(
-               $this->DB->GetOne("SELECT COUNT(id) FROM netlinks WHERE src = ? OR dst = ?",array($id,$id)),
-               $this->DB->GetOne("SELECT COUNT(Id) FROM nodes WHERE netdev = ?",array($id))
-               );
+          return $this->DB->GetOne("SELECT COUNT(id) FROM netlinks WHERE src = ? OR dst = ?",array($id,$id)) + $this->DB->GetOne("SELECT COUNT(Id) FROM nodes WHERE netdev = ?",array($id));
      }
 
      function GetNetDevConnected($id)
@@ -1897,6 +1894,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.243  2003/09/25 18:42:51  lexx
+ * - Baset psuja
+ *
  * Revision 1.242  2003/09/25 15:54:14  lukasz
  * - cosmetics
  *
