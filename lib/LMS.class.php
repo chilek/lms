@@ -202,7 +202,7 @@ class LMS
 		// Postgres sux ! (warden)
 		// Tak, a ³y¿ka na to 'niemo¿liwe' i polecia³a za wann± potr±caj±c bannanem musztardê (lukasz)
 
-		switch($this->DB->databaseType)
+		switch($this->CONFIG['database']['type'])
 		{
 			case "postgres":
 				// uaktualnijmy sequencery postgresa
@@ -228,7 +228,10 @@ class LMS
 						foreach($row as $field => $value)
 						{
 							$fields[] = $field;
-							$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
+							if(isset($value))
+								$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
+							else
+								$values[] = 'NULL';
 						}
 						fputs($dumpfile,implode(", ",$fields));
 						fputs($dumpfile,") VALUES (");
@@ -2138,8 +2141,9 @@ class LMS
 
 	function DeleteNetDev($id)
 	{
-		$this->DB->Execute("DELETE FROM netlinks WHERE src=? OR dst=?",array($id));
-		$this->DB->Execute("UPDATE nodes SET netdev=0 WHERE netdev=?",array($id));
+		$this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?',array($id));
+		$this->DB->Execute('DELETE FROM nodes WHERE ownerid=0 AND netdev=?',array($id));
+		$this->DB->Execute('UPDATE nodes SET netdev=0 WHERE netdev=?',array($id));
 		$this->SetTS('nodes');
 		$this->SetTS('netlinks');
 		$this->SetTS('netdevices');
@@ -2289,7 +2293,7 @@ class LMS
 					$row['username']." <".$row['email'].">",
 					$mailing['subject'],
 					$mailing['body'],
-					"From: ".$mailing['sender']." <".$mailing['from'].">\n"."Content-Type: text/plain; charset=ISO-8859-2;\n"."X-Mailer: LMS-".$this->_version."/PHP-".phpversion()."\n"."X-Remote-IP: ".$_SERVER['REMOTE_ADDR']."\n"."X-HTTP-User-Agent: ".$_SERVER['HTTP_USER_AGENT']."\n"
+					"From: ".$mailing['from']." <".$mailing['sender'].">\n"."Content-Type: text/plain; charset=ISO-8859-2;\n"."X-Mailer: LMS-".$this->_version."/PHP-".phpversion()."\n"."X-Remote-IP: ".$_SERVER['REMOTE_ADDR']."\n"."X-HTTP-User-Agent: ".$_SERVER['HTTP_USER_AGENT']."\n"
 				);
 				
 				echo "<img src=\"img/mail.gif\" border=\"0\" align=\"absmiddle\" alt=\"\"> ".($key+1)._(" from ").sizeof($emails)." (".sprintf("%02.2f",round((100/sizeof($emails))*($key+1),2))."%): ".$row['username']." &lt;".$row['email']."&gt;<BR>\n";

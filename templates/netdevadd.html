@@ -2,7 +2,6 @@
 {include file="netdevheader.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-
 <P><FORM NAME="netdevadd" METHOD="POST" ACTION="?m=netdevadd">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -20,7 +19,7 @@
 			<IMG SRC="img/producer.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Producer{/t}:</B>
+			<B>{t}Make{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdev.producer}" {tip text="Enter name of producer (optionally)"}>
@@ -53,7 +52,7 @@
 			<IMG SRC="img/port.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}Ports number{/t}:</B>
+			<B>{t}Number of Ports{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdev.ports}" {tip trigger="ports" text="Enter number of ports (optionally)"}>
