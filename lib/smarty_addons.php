@@ -120,5 +120,7 @@ $SMARTY->register_function('tip','_smarty_function_tip');
 $SMARTY->register_function('confirm','_smarty_function_confirm');
 $SMARTY->register_modifier('to_words','to_words');
 $SMARTY->register_modifier('striphtml','_smarty_modifier_striphtml');
-
+$SMARTY->assign('now', time());
+$SMARTY->assign('tomorrow', time()+86400);
+$SMARTY->assign('yesterday', time()-86400);
 ?>
