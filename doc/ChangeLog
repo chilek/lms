@@ -1,5 +1,12 @@
 $Id$
 
+wersja 1.4.5 (??/??/????):
+
+  - BTS#0000308: dodana lista przynale¿no¶ci do grup podczas dodawania nowego
+    komputera u¿ytkownikowi (alec/WiktorRB)
+  - BTS#0000309: poprawiony format kwoty salda w oknie Edycji 
+    U¿ytkownika (alec/WiktorRB)
+
 wersja 1.4.4 Skaara (02/03/2005):
 
   - BTS#0000281: poprawione wy¶wietlanie listy zad³u¿onych, która na MySQLu

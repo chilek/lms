@@ -123,10 +123,14 @@ $layout['pagetitle'] = 'Nowy komputer';
 $tariffs = $LMS->GetTariffs();
 $balancelist = $LMS->GetUserBalanceList($nodedata['ownerid']);
 $assignments = $LMS->GetUserAssignments($nodedata['ownerid']);
+$usergroups = $LMS->UsergroupGetForUser($_GET['ownerid']);
+$otherusergroups = $LMS->GetGroupNamesWithoutUser($_GET['ownerid']);
 $users = $LMS->GetUserNames();
 
 $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('assignments',$assignments);
+$SMARTY->assign('usergroups',$usergroups);
+$SMARTY->assign('otherusergroups',$otherusergroups);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('users',$users);
 $SMARTY->assign('error',$error);

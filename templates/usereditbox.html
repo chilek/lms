@@ -135,7 +135,7 @@
 			<B>Saldo:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			{if $userinfo.balance < 0}<FONT CLASS="ALERT">{$userinfo.balance|default:"0"} z³</FONT>{else}{$userinfo.balance|default:"0"} z³{/if}
+			{if $userinfo.balance < 0}<FONT CLASS="ALERT">{$userinfo.balance|string_format:"%01.2f"} z³</FONT>{else}{$userinfo.balance|default:"0"|string_format:"%01.2f"} z³{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
