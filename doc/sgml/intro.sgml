@@ -6,7 +6,7 @@
 		<para>"LMS" jest skrótem od "LAN Management System". Jest to zestaw aplikacji 
 		w PHP, C i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi
 		(popularnie zwanymi Amatorskimi Sieciami Komputerowymi), korzystaj±cych z bazy danych 
-		MySQL lub PostgreSQL. G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi 
+		MySQL, PostgreSQL lub SQLite. G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi 
 		u¿ytkowników na poziomie providera z prawdziwego zdarzenia. Najbardziej podstawowe 
 		cechy LMS to:</para>
 		<itemizedlist>
@@ -20,10 +20,16 @@
 	   	    	<para>baza danych sprzêtu sieciowego (nazwa, ilo¶æ portów),</para>
 	  	</listitem>
 		<listitem>
+	   	    	<para>generowanie mapy sieci,</para>
+	  	</listitem>
+		<listitem>
 	   	   	 <para>prowadzenie prostego rachunku operacji finansowych oraz stanu funduszów sieci,</para>
 	  	</listitem>
+		<listitem>
+	   	   	 <para>zestawienia finansowe, fakturowanie,</para>
+	  	</listitem>
 	  	<listitem>
-	     		<para>ró¿ne taryfy abonamentowe,</para>
+	     		<para>ró¿ne op³aty i taryfy abonamentowe,</para>
 	  	</listitem>
 	  	<listitem>
 	   		<para>wysy³anie poczt± elektroniczn± upomnieñ do u¿ytkowników,</para>
@@ -60,13 +66,13 @@
 			<member><ulink url="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</ulink></member>
 			<member>Krzysztof 'hunter' Drewicz</member>
 			<member><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Król</ulink></member>
+			<member><ulink url="http://www.alec.k27.prv.pl">Aleksander A.L.E.C Machniak</ulink></member>
 			</simplelist>
 			</para>
 		</listitem>
 		<listitem>
 			<para>Kod C:
 			<simplelist>
-			<member>Mateusz 'mteg' Golicz</member>
 			<member><ulink url="http://k27.prv.pl/alec">Aleksander 'A.L.E.C' Machniak</ulink></member>
 			<member><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Król</ulink></member>
 			</simplelist>
@@ -118,16 +124,16 @@
 			</para>
 		</listitem>
 		<listitem>
-			<para>Support PostgreSQL:
+			<para>Support Postgresql i SQLite:
 			<simplelist>
-			<member><ulink url="http://k27.prv.pl/alec">Aleksander 'A.L.E.C' Machniak</ulink></member>
+			<member><ulink url="http://alec.k27.prv.pl">Aleksander 'A.L.E.C' Machniak</ulink></member>
 			</simplelist>
 			</para>
 		</listitem>
 		<listitem>
 			<para>Dokumentacja i strona WWW:
 			<simplelist>
-			<member><ulink url="http://k27.prv.pl/alec">Aleksander 'A.L.E.C' Machniak</ulink></member>
+			<member><ulink url="http://alec.k27.prv.pl">Aleksander 'A.L.E.C' Machniak</ulink></member>
 			<member><ulink url="http://s.atn.pl">Kuba 'shasta' Jankowski</ulink></member>
 			<member><ulink url="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziêgielewski</ulink></member>
 			<member><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></member>
