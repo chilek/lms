@@ -1167,7 +1167,7 @@ class LMS
 
 	function GetTariffList()
 	{
-		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
+		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, taxvalue, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
 		{
 			$total = sizeof($tarifflist);
 			foreach($tarifflist as $idx => $row)
@@ -1220,7 +1220,7 @@ class LMS
 	function TariffUpdate($tariff)
 	{
 		$this->SetTS("tariffs");
-		return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, uprate=?, downrate=? WHERE id=?",array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
+		return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, uprate=?, downrate=? WHERE id=?",array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
 	}
 
 	function TariffDelete($id)
@@ -1245,7 +1245,7 @@ class LMS
 
 	function GetTariff($id)
 	{
-		$result = $this->DB->GetRow("SELECT id, name, value, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
+		$result = $this->DB->GetRow("SELECT id, name, value, taxvalue, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
 		$result['users'] = $this->DB->GetAll("SELECT users.id AS id, COUNT(users.id) AS cnt, ".$this->DB->Concat('upper(lastname)',"' '",'name')." AS username FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY users.id, username",array($id));
 		$result['userscount'] = sizeof($result['users']);
 		$result['count'] = $this->GetUsersWithTariff($id);
@@ -2228,6 +2228,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.288  2003/12/01 02:12:48  lukasz
+ * - tsave - do nowych faktur... jak siê wy¶piê to dokoñczê
+ *
  * Revision 1.287  2003/12/01 00:58:10  lukasz
  * - jak kogo¶ wezmê zaraz i mietnê po ³bie...
  *

@@ -28,12 +28,14 @@ $layout[pagetitle] = 'Faktura VAT nr '.$_GET[id].'/LMS/'.$_GET[year];
 
 $invoice = $LMS->GetInvoiceContent($_GET[id],$_GET[year]);
 
-$invoice[content][vat] = $invoice[content][value] * 0.07;
-$invoice[content][brutto] = $invoice[content][vat] + $invoice[content][value];
+//$invoice[content][vat] = $invoice[content][value] * 0.07;
+//$invoice[content][brutto] = $invoice[content][vat] + $invoice[content][value];
 
-$kesz = explode(".",sprintf("%1.2f",$invoice[content][brutto]));
-$invoice[content][text] = $LMS->NumberSpell($kesz[0])." ".$kesz[1]."/100 z³otych";
+// WTF is this?
+// $kesz = explode(".",sprintf("%1.2f",$invoice[content][brutto]));
+// $invoice[content][text] = $LMS->NumberSpell($kesz[0])." ".$kesz[1]."/100 z³otych";
 
+$invoice[totalvalue] = 
 $invoice[provider][name] 	= $_CONFIG[finances][name];
 $invoice[provider][address] 	= $_CONFIG[financesces][address];
 $invoice[provider][zip] 	= $_CONFIG[finances][zip];
