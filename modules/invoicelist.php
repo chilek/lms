@@ -44,7 +44,7 @@ unset($invoicelist['startdate'], $invoicelist['enddate']);
 $listdata['totalpos'] = sizeof($invoicelist);
 
 $pagelimit = $LMS->CONFIG['phpui']['invoicelist_pagelimit'];
-$page = (! $_POST['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_POST['page']);
+$page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']);
 $start = ($page - 1) * $pagelimit;
 
 $SMARTY->assign('listdata',$listdata);

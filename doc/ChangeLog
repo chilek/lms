@@ -25,7 +25,8 @@ wersja ????? (??/??/????):
 	UPDATE payments SET period = 3 WHERE period = 2;
   - lista sieci domy¶lnie sortowana jest po nazwie (alec)
   - lista urz±dzeñ do pod³±czenia jest sortowana po nazwie (alec)
-      
+  - naprawiona nawigacja na li¶cie faktur - BTS#0000104 (alec)
+        
 wersja 1.1.8 Cronos (01/02/2004):
 
   - netdevmap korzysta z obrazków w formacie PNG (brak obs³ugi GIF na 
