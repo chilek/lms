@@ -143,28 +143,66 @@ class LMS {
 		return $networks;
 	}
 
-	function IsIPValid($ip,$checkbroadcast=FALSE)
+	function IsIPValid($ip,$checkbroadcast=FALSE,$ignoreid=0)
 	{
 		$networks = $this->GetNetworks();
 		foreach($networks[id] as $i => $v)
 		{
-			if($checkbroadcast)
-			{
-				if((ip_long($ip) > $networks[addresslong][$i] - 1)&&(ip_long($ip) < ip_long(getbraddr($networks[address][$i],$networks[mask][$i])) + 1))
+			if($v != $ignoreid)
+				if($checkbroadcast)
 				{
-					return TRUE;
+					if((ip_long($ip) > $networks[addresslong][$i] - 1)&&(ip_long($ip) < ip_long(getbraddr($networks[address][$i],$networks[mask][$i])) + 1))
+					{
+						return TRUE;
+					}
 				}
-			}
-			else
-			{
-				if((ip_long($ip) > $networks[addresslong][$i])&&(ip_long($ip) < ip_long(getbraddr($networks[address][$i],$networks[mask][$i]))))
+				else
 				{
-					return TRUE;
+					if((ip_long($ip) > $networks[addresslong][$i])&&(ip_long($ip) < ip_long(getbraddr($networks[address][$i],$networks[mask][$i]))))
+					{
+						return TRUE;
+					}
 				}
+		}
+		return FALSE;
+	}
+
+	function NetworkOverlaps($network,$mask,$ignorenet=0)
+	{
+		$networks = $this->GetNetworks();
+		$cnetaddr = ip_long($network);
+		$cbroadcast = ip_long(getbraddr($network,$mask));
+		foreach($networks[id] as $i => $v)
+		{
+			$broadcast = ip_long(getbraddr($networks[address][$i],$networks[mask][$i]));
+			$netaddr = $networks[addresslong][$i];					
+			if($v != $ignorenet)
+			{
+				if(
+						($cbroadcast == $broadcast)
+						||
+						($cnetaddr == $netaddr)
+						||
+						(
+						 ($cnetaddr < $netaddr)
+						 &&
+						 ($cbroadcast > $broadcast)
+						)
+						||
+						(
+						 ($cnetaddr > $netaddr)
+						 &&
+						 ($cbroadcast < $broadcast)
+						)
+				  )
+					return TRUE;
+					
 			}
 		}
 		return FALSE;
 	}
+			
+			
 
 	function GetMACs()
 	{
@@ -231,11 +269,28 @@ class LMS {
 		return $db->row[status];
 	}
 
-	function NetworkCompress($id)
+	function NetworkShift($network="0.0.0.0",$mask="0.0.0.0",$shift=0)
+	{
+		$db=$this->db;
+		$nodes = $db->FetchArray("SELECT `ipaddr`, `id` FROM `nodes`");
+		if(sizeof($nodes[ipaddr]))
+			foreach($nodes[ipaddr] as $key => $value)
+				if(isipin($value,$network,$mask))
+					$db->ExecSQL("UPDATE `nodes` SET `ipaddr` = '".long2ip(ip_long($value) + $shift)."' WHERE `id` = '".$nodes[id][$key]."' LIMIT 1");
+	}
+
+	function NetworkUpdate($networkdata)
+	{
+		$db=$this->db;
+		return $db->ExecSQL("UPDATE `networks` SET `name` = '".strtoupper($networkdata[name])."', `address` = '".$networkdata[address]."', `mask` = '".$networkdata[mask]."', `gateway` = '".$networkdata[gateway]."', `dns` = '".$networkdata[dns]."', `domain` = '".$networkdata[domain]."', `wins` = '".$networkdata[wins]."', `dhcpstart` = '".$networkdata[dhcpstart]."', `dhcpend` = '".$networkdata[dhcpend]."' WHERE `id` = '".$networkdata[id]."' LIMIT 1");
+	}
+				
+	
+	function NetworkCompress($id,$shift=0)
 	{
 		$db=$this->db;
 		$network=$this->GetNetworkRecord($id);
-		$address = $network[addresslong];
+		$address = $network[addresslong]+$shift;
 		foreach($network[nodes][id] as $key => $value)
 		{
 			if($value)
@@ -726,7 +781,6 @@ class LMS {
 				
 				if($emails[email][$key] != "")
 				{
-//					$emails[email][$key] = "lukasz@netx.waw.pl";
 					mail(
 						$emails[username][$key]." <".$emails[email][$key].">",
 						$mailing[subject],
@@ -764,7 +818,7 @@ class LMS {
 		
 		$db->ExecSQL("
 		INSERT INTO `networks` (`name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend`)
-		VALUES ( '".$netadd[name]."','".$netadd[address]."','".$netadd[mask]."','".$netadd[gateway]."',
+		VALUES ( '".strtoupper($netadd[name])."','".$netadd[address]."','".$netadd[mask]."','".$netadd[gateway]."',
 		'".$netadd[dns]."',
 		'".$netadd[domain]."',
 		'".$netadd[wins]."',
