@@ -32,9 +32,8 @@ $listdata['total'] = $tarifflist['total'];
 $listdata['totalincome'] = $tarifflist['totalincome'];
 $listdata['totalusers'] = $tarifflist['totalusers'];
 $listdata['totalcount'] = $tarifflist['totalcount'];
-$listdata['totalassignmentcount'] = $tarifflist['totalassignmentcount'];
 
-unset($tarifflist['total'],$tarifflist['totalincome'],$tarifflist['totalusers'],$tarifflist['totalcount'],$tarifflist['totalassignmentcount']);
+unset($tarifflist['total'],$tarifflist['totalincome'],$tarifflist['totalusers'],$tarifflist['totalcount']);
 
 $SMARTY->assign('tarifflist',$tarifflist);
 $SMARTY->assign('listdata',$listdata);

@@ -54,7 +54,7 @@
 			({$tarifflist[tariffs].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			{$tarifflist[tariffs].userscount} ({$tarifflist[tariffs].users},{$tarifflist[tariffs].assignmentcount})
+			{$tarifflist[tariffs].userscount} ({$tarifflist[tariffs].users})
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			{$tarifflist[tariffs].income|string_format:"%01.2f"} z³
@@ -83,7 +83,7 @@
 			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Razem:</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
-			<B>{$listdata.totalcount}({$listdata.totalusers},{$listdata.totalassignmentcount})</B>
+			<B>{$listdata.totalcount}({$listdata.totalusers})</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
 			<B>{$listdata.totalincome|string_format:"%01.2f"} z³</B>
