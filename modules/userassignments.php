@@ -169,7 +169,8 @@ if($_GET['action'] == 'add' && isset($a))
 	if($a['tariffid']=='')
 		$error['tariffid'] = 'Nie wybra³e¶ taryfy!';
 
-	if($a['tariffid']=='0' || (!$error && $LMS->TariffExists($a['tariffid']))) 
+
+	if(!$error) 
 	{
 		$LMS->AddAssignment(array('tariffid' => $a['tariffid'], 'userid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$a['invoice']), 'datefrom' => $from, 'dateto' => $to ));
 		header('Location: ?m=userinfo&id='.$_GET['id']);
