@@ -31,10 +31,11 @@ if($_GET['is_sure'])
 	die;
 } else
 {
-	$layout['pagetitle'] = "Usuniêcie bazy danych";
+	$layout['pagetitle'] = "Usuniêcie kopii zapasowej";
 	$SMARTY->display('header.html');
+	$SMARTY->display('adminheader.html');
 	echo "<H1>Usuniêcie bazy danych</H1>";
-	echo "<p>Czy jeste¶ pewien ¿e chcesz usun±æ bazê danych utworzon± ".date("Y/m/d H:i.s",$_GET['db'])."?</p>";
+	echo "<p>Czy jeste¶ pewien ¿e chcesz usun±æ kopiê bazy utworzon± ".date("Y/m/d H:i.s",$_GET['db'])."?</p>";
 	echo "<a href=\"?m=dbdel&db=".$_GET['db']."&is_sure=1\">Tak, jestem pewien</A>";
 	$SMARTY->display('footer.html');
 }

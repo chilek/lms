@@ -81,19 +81,17 @@ class LMS
 
 		// to siê rozejdzie po modu³ach:
 
-		$this->AddMenu('Helpdesk', 'ticket.gif', '?m=rtqueuelist', 'Obs³uga zg³oszeñ (RT)', 'r', 60);
-		$this->AddMenu('Witamy !', 'l.gif', '?', '', '', 0);
-		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 10);
-		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 15);
-		$this->AddMenu('Osprzêt sieciowy', 'netdev.gif', '?m=netdevlist', 'Ewidencja sprzêtu sieciowego', 'o', 20);
-		$this->AddMenu('Sieci IP', 'network.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 's', 25);
-		$this->AddMenu('Taryfy i finanse', 'money.gif', '?m=tarifflist', 'Zarz±dzanie taryfami oraz finansami sieci', 't', 30);
-		$this->AddMenu('Konta', 'account.gif', '?m=accountlist', 'Konta', 'a', 35);
-		$this->AddMenu('Mailing', 'mail.gif', '?m=mailing', 'Korespondencja seryjna', 'm', 40);
-		$this->AddMenu('Prze³adowanie', 'reload.gif', '?m=reload', '', 'r', 45);
-		$this->AddMenu('Bazy danych', 'db.gif', '?m=dblist', 'Zarz±dzanie kopiami zapasowymi bazy danych', 'b', 50);
-		$this->AddMenu('Administratorzy', 'admins.gif', '?m=adminlist', 'Konta administratorów systemu', 'd', 55);
-		$this->AddMenu('Statystyki', 'traffic.gif', '?m=traffic', 'Statystyki wykorzystania ³±cza', 'x', 60);
+		$this->AddMenu('Administracja', 'l.gif', '?', '', '', 0);
+		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 5);
+		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 10);
+		$this->AddMenu('Osprzêt sieciowy', 'netdev.gif', '?m=netdevlist', 'Ewidencja sprzêtu sieciowego', 'o', 15);
+		$this->AddMenu('Sieci IP', 'network.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 's', 20);
+		$this->AddMenu('Taryfy i finanse', 'money.gif', '?m=tarifflist', 'Zarz±dzanie taryfami oraz finansami sieci', 't', 25);
+		$this->AddMenu('Konta', 'account.gif', '?m=accountlist', 'Konta', 'a', 30);
+		$this->AddMenu('Mailing', 'mail.gif', '?m=mailing', 'Korespondencja seryjna', 'm', 35);
+		$this->AddMenu('Prze³adowanie', 'reload.gif', '?m=reload', '', 'r', 40);
+		$this->AddMenu('Statystyki', 'traffic.gif', '?m=traffic', 'Statystyki wykorzystania ³±cza', 'x', 45);
+		$this->AddMenu('Helpdesk', 'ticket.gif', '?m=rtqueuelist', 'Obs³uga zg³oszeñ (RT)', 'r', 50);
 	}
 
 	function _postinit()
