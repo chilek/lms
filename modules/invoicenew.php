@@ -39,8 +39,8 @@ switch($_GET['action'])
 {
 	case 'additem':
 		$itemdata = r_trim($_POST);
-		foreach(array('count', 'valuenetto', 'valuebrutto') as $key)			
-			$itemdata[$key] = sprintf('%01.2f',$itemdata[$key]);
+		foreach(array('count', 'valuenetto', 'valuebrutto') as $key)
+			$itemdata[$key] = sprintf('%01.2f', str_replace(',','.',$itemdata[$key]));
 		if ($itemdata['taxvalue'] != '')
 			$itemdata['taxvalue'] = sprintf('%01.2f',$itemdata['taxvalue']);
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
