@@ -804,7 +804,7 @@ class LMS
 			$result['netid'] = $this->GetNetIDByIP($result['ip']);
 			$result['netname'] = $this->GetNetworkName($result['netid']);
 			$result['producer'] = get_producer($result['mac']);
-			$result['devicename'] = $this->GetNetDev($result['netdevid']);
+			$result['devicename'] = $this->GetNetDevName($result['netdevid']);
 			return $result;
 		}else
 			return FALSE;
@@ -1546,9 +1546,9 @@ class LMS
 	 * Ewidencja sprzêtu sieciowego
 	 */
 	
-	function GetNetDev($id)
+	function GetNetDevName($id)
 	{
-		return $this->DB->GetAll("SELECT * FROM netdevices WHERE id=?",array($id));
+		return $this->DB->GetOne("SELECT name FROM netdevices WHERE id=?",array($id));
 	}
 	
 	function GetNetDevList($order="name,asc")
@@ -1602,8 +1602,7 @@ class LMS
 	 
 	function GetNetDev($id)
 	{
-		$result = $this->DB->GetRow("SELECT name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?",array($id));
-		return $result;
+		return $this->DB->GetRow("SELECT name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?",array($id));
 	}
 
 	function DeleteNetDev($id)
@@ -1815,6 +1814,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.231  2003/09/18 14:15:53  alec
+ * usuniety fatal error powodowany przez podwojona funkcje GetNetDev(), dodana funkcja GetNetDevName i w zwiazku z tym zmiana w GetNode()
+ *
  * Revision 1.230  2003/09/17 03:10:39  lukasz
  * - very experimental support for lms-arpd
  *
