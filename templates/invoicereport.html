@@ -10,38 +10,38 @@
 <TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			Lp.
+			{t}No.{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP" NOWRAP>
-			Nr faktury<BR>
-			Data wyst.
+			{t}Invoice No.{/t}<BR>
+			{t}Draw-up date{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			Kontrahent
+			{t}Contractor{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			Kwota brutto
+			{t}Gross value{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			Kwota netto<BR>22%
+			{t}Net value{/t}<BR>22%
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			Kwota VAT<BR>22%
+			{t}VAT value{/t}<BR>22%
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			Kwota netto<BR>7%
+			{t}Net value{/t}<BR>7%
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			Kwota VAT<BR>7%
+			{t}VAT value{/t}<BR>7%
 		</TD>	
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			Kwota netto<BR>0%
+			{t}Net value{/t}<BR>0%
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			Zw.<BR>
+			{t}Tax-free{/t}<BR>
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
-			Suma VAT
+			{t}Total VAT{/t}
 		</TD>
 	</TR>
 	{cycle values="#FFFFFF,#EEEEEE" print=false}
@@ -87,7 +87,7 @@
 	{/foreach}
 	<TR>
 		<TD COLSPAN="3" ALIGN="RIGHT" VALIGN="TOP">
-			<B>Razem:</B>
+			<B>{t}Total:{/t}</B>
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="TOP">
 			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
@@ -119,8 +119,8 @@
 	<TR>
 		<TD WIDTH="100%" ALIGN="LEFT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
-			Sporz±dzone przez: {$layout.logname}
+			{$smarty.now|date_format:"%A, %x"|capitalize}<BR>
+			{t 0=$layout.logname}Created by: $0{/t}
 		</TD>
 	</TR>
 </TABLE>
