@@ -60,8 +60,7 @@ Class LMSDB_common
 	
 	function Connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
-		$this->_driver_connect($dbhost,$dbuser,$dbpasswd);
-		$this->_driver_selectdb($dbname);
+		$this->_driver_connect($dbhost,$dbuser,$dbpasswd,$dbname);
 	}
 
 	function Execute($query, $inputarray = NULL)
@@ -109,6 +108,16 @@ Class LMSDB_common
 		return $result;
 	}
 
+	function Concat()
+	{
+		return $this->_driver_concat(func_get_args());
+	}
+
+	function Now()
+	{
+		return $this->_driver_now();
+	}
+
 	function _query_parser($query, $inputarray = NULL)
 	{
 		// najpierw sparsujmy wszystkie specjalne meta ¶mieci.
@@ -139,7 +148,6 @@ Class LMSDB_common
 		if($input === NULL)
 			return 'NULL';
 		elseif(gettype($input) == 'string')
-//			return '\''.str_replace(array('\\',"\0","'"),array('\\\\',"\\\0","\\'"),$input).'\'';
 			return '\''.addcslashes($input,"'\\\0").'\'';
 		else
 			return $input;
@@ -162,6 +170,9 @@ Class LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.10  2003/08/19 01:01:57  lukasz
+ * - added Now() and Concat(), fixed Connect() (doesn't invoke _driver_selectdb(), because pgsql doesn't have _driver_selectdb())
+ *
  * Revision 1.9  2003/08/18 16:47:37  lukasz
  * - once again fixed CVS tags
  *
