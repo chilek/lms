@@ -23,7 +23,7 @@
 <FORM NAME="sql" method="post" action="?m=sql">
 {if $page}
 	{if $executetime}
-	<P><TABLE WIDTH="100%" CELLPADDING="3">
+	<P><TABLE width="100%" cellpadding="3">
 		<TR class="dark">
 			<TD width="1%" class="fleftu"><IMG src="img/producer.gif" ALT="" align="absmiddle"></TD>
 			<TD width="1%" class="fbt"><B>Zapytanie:</B></TD>
@@ -50,19 +50,19 @@
 	</TABLE></P>
 	{/if}
 	{if $result}
-	<TABLE WIDTH="100%" CELLPADDING="0" BORDER="1">
+	<TABLE width="100%" cellpadding="0" border="1">
 	<TR><TD>
-		<TABLE WIDTH="100%" CELLPADDING="3">
+		<TABLE width="100%" cellpadding="3">
 			<TR class="dark">
-				<TD><B>lp.</B></TD>
+				<TD class="blend"><B>lp.</B></TD>
 				{foreach from=$colnames item=col}
 				<TD><B>{$col}</B></TD>
 				{/foreach}
 			</TR>
 				{$result}
 			{if $nrows > $pagelimit}
-			<TR CLASS="dark">
-				<TD WIDTH="100%" COLSPAN="{math equation="x+1" x=$ncols}">
+			<TR class="dark">
+				<TD width="100%" colspan="{math equation="x+1" x=$ncols}">
 					<B>Strona: 
 					{if $page > 1} 
 						<A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;
