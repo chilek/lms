@@ -238,5 +238,7 @@ else
 	$SMARTY->display('login.html');
 	
 }
+
 $DB->Destroy();
+
 ?>

@@ -99,9 +99,35 @@ elseif($_GET['action'] == 'addassignment')
 		break;
 	}
 
-	if($LMS->TariffExists($_POST['tariffid']) && !$error)
-		$LMS->AddAssignment(array('tariffid' => $_POST['tariffid'], 'userid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$_POST['invoice'])));
+	if(trim($_POST['datefrom'] == ''))
+		$from = 0;
+	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',trim($_POST['datefrom'])))
+	{
+		list($y, $m, $d) = split('/', trim($_POST['datefrom']));
+		if(checkdate($m, $d, $y))
+			$from = mktime(0, 0, 0, $m, $d, $y);
+		else
+			$error[] = 'Koniec okresu naliczania jest niepoprawny!';
+	}
+	else
+		$error[] = 'Pocz±tek okresu naliczania jest niepoprawny!';
+
+	if(trim($_POST['dateto'] == ''))
+		$to = 0;
+	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',trim($_POST['dateto'])))
+	{
+		list($y, $m, $d) = split('/', trim($_POST['dateto']));
+		if(checkdate($m, $d, $y))
+			$to = mktime(0, 0, 0, $m, $d, $y);
+		else
+			$error[] = 'Koniec okresu naliczania jest niepoprawny!';
+	}
+	else
+		$error[] = 'Koniec okresu naliczania jest niepoprawny!';
 		
+
+	if($LMS->TariffExists($_POST['tariffid']) && !$error)
+		$LMS->AddAssignment(array('tariffid' => $_POST['tariffid'], 'userid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$_POST['invoice']), 'datefrom' => $from, 'dateto' => $to ));
 	header('Location: ?m=userinfo&id='.$_GET['id']);
 	die;
 			

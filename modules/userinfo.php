@@ -47,12 +47,16 @@ $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 $layout['pagetitle'] = 'Informacje o u¿ytkowniku: '.$userinfo['username'];
 
 $usernodes['ownerid'] = $_GET['id'];
-$SMARTY->assign('usernodes',$usernodes);
-$SMARTY->assign('balancelist',$balancelist);
-$SMARTY->assign('assignments',$assigments);
-$SMARTY->assign('error',$error);
-$SMARTY->assign('userinfo',$userinfo);
-$SMARTY->assign('tariffs',$tariffs);
+$SMARTY->assign(
+		array(
+			'usernodes' => $usernodes,
+			'balancelist' => $balancelist,
+			'assignments' => $assigments,
+			'error' => $error,
+			'userinfo' => $userinfo,
+			'tariffs' => $tariffs
+		     )
+		);
 $SMARTY->display('userinfo.html');
 
 ?>

@@ -53,10 +53,8 @@
 				</TR>
 				<FORM METHOD="POST" NAME="addassignment" ACTION="?m=useredit&action=addassignment&id={$balancelist.userid}">
 				<TR bgcolor="#DFD5BD">
-					<TD NOWRAP ALIGN="RIGHT">
+					<TD COLSPAN="7">
 						<B>Dodaj:</B>
-					</TD>
-					<TD COLSPAN="6">
 						<SELECT SIZE="1" NAME="tariffid" {tip text="Wybierz taryfê która ma byæ przypisana do u¿ytkownika"}>
 							<OPTION VALUE="0">... wybierz taryfê ...</OPTION>
 							{section name=t loop=$tariffs}<OPTION VALUE="{$tariffs[t].id}">{$tariffs[t].name} ({$tariffs[t].value|string_format:"%01.2f"} z³{if $tariffs[t].downrate}, {$tariffs[t].downrate} down{/if}{if $tariffs[t].uprate}, {$tariffs[t].uprate} up{/if})</OPTION>{/section}
@@ -72,8 +70,13 @@
 						<INPUT CLASS="box" TYPE="checkbox" NAME="invoice" VALUE="1"> wystawiaj fakturê
 						</NOBR>
 					</TD>
-					<TD ALIGN="RIGHT" NOWRAP>
+					<TD ALIGN="RIGHT" ROWSPAN="2" NOWRAP>
 						<A HREF="javascript:document.addassignment.submit()" {tip text="Przypisz t± taryfê do u¿ytkownika"}>Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+					</TD>
+				</TR>
+				<TR bgcolor="#DFD5BD">
+					<TD COLSPAN="7">
+						<B>Od:</B> <INPUT TYPE="TEXT" NAME="datefrom" {tip text="Podaj datê w formacie RRRR/MM/DD od kiedy ma obowi±zywaæ dane naliczenie. Pozostaw domy¶ln± warto¶æ aby naliczenie obowi±zywa³o od jutra, lub puste pole aby naliczenie obowi±zywa³o od teraz."} VALUE="{$tomorrow|date_format:"%Y/%m/%d"}" SIZE="10"> <B>Do:</B> <INPUT TYPE="TEXT" NAME="dateto" {tip text="Podaj datê w formacie RRRR/MM/DD do kiedy ma obowi±zywaæ dane naliczenie. Pozostaw puste pole je¿eli naliczenie ma obowi±zywaæ do momentu jego usuniêcia."} SIZE="10">
 					</TD>
 				</TR>
 				</FORM>

@@ -1255,7 +1255,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function AddAssignment($assignmentdata)
 	{
 		$this->SetTS('assignments');
-		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, period, at, invoice) VALUES (?, ?, ?, ?, ?)", array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at'], $assignmentdata['invoice']));
+		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, period, at, invoice, datefrom, dateto) VALUES (?, ?, ?, ?, ?, ?, ?)", array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at'], $assignmentdata['invoice'], $assignmentdata['datefrom'], $assignmentdata['dateto']));
 	}
 
 	function AddInvoice($invoice)
