@@ -73,6 +73,11 @@ wget http://smarty.php.net/distributions/Smarty-2.3.1.tar.gz
 tar -xzf Smarty-2.3.1.tar.gz
 mv Smarty-2.3.1 Smarty
 
+Do tego jeszcze ADOdb:
+
+wget http://phplens.com/lens/dl/adodb290.tgz
+tar -xzf adodb290.tgz
+
 Pozostaje  nam stworzyæ w katalogu z LMS podkatalog templates_c (o ile go nie 
 ma, bo bardzo niewykluczone ¿e pewien pacan pakuj±cy LMS'a zapomni go dodaæ)
 oraz zmieniæ jego w³a¶ciciela na u¿ytkownika z którego uruchominy jest serwer
