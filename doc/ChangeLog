@@ -53,6 +53,7 @@ version 1.5.5 Anubis (??/??/????):
   - added support for dynamic tooltips (lexx)
   - netdevmap in flash (requires ming) (lexx)
   - added Finances -> Print -> Covenants Realization Report (alec)  
+  - new layout for menu (lukasz)
 
 version 1.5.4 Ramius (16/02/2005):
 
