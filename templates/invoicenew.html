@@ -1,6 +1,23 @@
 {include file="header.html"}
 <!-- $Id$ -->
 {include file="balanceheader.html"}
+<script language="javascript">
+	<!--
+	function setItem(index)
+	{literal}{{/literal}
+		{foreach from=$tariffs item=tariff}
+		if(index=={$tariff.id})
+		{literal}{{/literal}
+			document.additem.name.value = '{$tariff.name}';
+			document.additem.taxvalue.value = '{$tariff.taxvalue}';
+			document.additem.valuebrutto.value = '{$tariff.value}';
+			document.additem.pkwiu.value = '{$tariff.pkwiu}';
+			document.additem.tariffid.value = '{$tariff.id}';
+		{literal}}{/literal}
+		{/foreach}
+	{literal}}{/literal}
+	//-->
+</script>		
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="setcustomer" METHOD="POST" ACTION="?m=invoicenew&action=setcustomer">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -140,12 +157,18 @@
 	</TR>
 	{/if}
 	<FORM METHOD="POST" ACTION="?m=invoicenew&action=additem" NAME="additem">
+	<INPUT TYPE="HIDDEN" NAME="tariffid" VALUE="0">
 	<TR CLASS="light">
 		<TD CLASS="ftl" WIDTH="1%" NOWRAP>
 			<B>{counter}.</B>
 		</TD>
 		<TD CLASS="ftop" WIDTH="94%">
-			<INPUT TYPE="text" NAME="name" SIZE="48">
+			<INPUT TYPE="text" NAME="name" SIZE="48"><BR>
+			<SELECT SIZE="1" NAME="ttariffid">
+				{foreach from=$tariffs item=tariff}
+				<OPTION VALUE="{$tariff.id}">{$tariff.name} ({$tariff.value|string_format:"%0.2f"} z³)</OPTION>
+				{/foreach}
+			</SELECT><A HREF="javascript:setItem(document.additem.ttariffid.value)">Wybierz</A>
 		</TD>
 		<TD CLASS="ftop">
 			<INPUT TYPE="text" NAME="pkwiu" SIZE="6">
