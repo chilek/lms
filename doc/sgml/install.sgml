@@ -15,7 +15,7 @@
 	service on your server.</para>
         <para>At the end it is also <emphasis>A.L.E.C's LMS Daemon</emphasis>, written in C language, which is assigned 
 	(in fact his plugins) for configuration files generation and services restarting. 
-	It can be use as replacement or addition of perl's scripts.
+	It can be used as replacement or addition of perl's scripts.
 	It responds for what has been changed in <emphasis>LMS-UI</emphasis> was made also 
 	in real.</para>
     </sect1>

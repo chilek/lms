@@ -1,6 +1,6 @@
 <!-- $Id$ -->
 <chapter id="intro">
-    <title>Wstêp</title>
+    <title>Intro</title>
 	<sect1 id="about-lms">
 		<title>About LMS</title>
 		<para>"LMS" (LAN Management System) is a package of applications in PHP, Perl and C
@@ -31,18 +31,18 @@
 	  	<listitem>
 	   		<para>generating of (almost) any kind of config file (i.e.
 			ipchains/iptables based firewall script, dhcp daemon configuration,
-			zone file for bind, static arp entries, oident, htb and more...)
+			zone file for bind, static arp entries, oident, htb and more...)</para>
 	  	</listitem>
 		<listitem>
 			<para>visualization of users stats.</para>
 		</listitem>
 		</itemizedlist>
-		<para>Ca³o¶æ zosta³a wymy¶lona w ramach administracji <ulink url="http://www.netx.waw.pl/">ASK NetX</ulink> 
-		i tam jest nieustannie rozwijana i poddawana testom.</para>
-		<para>LMS nie zast±pi Ci umiejêtno¶ci jakie powinien mieæ administrator. 
-		Je¶li nie potrafisz wykonaæ tak prostych czynno¶æ jak instalacja czy konfiguracja, 
-		prawdopodobnie nie bêdziesz umia³ dostroiæ LMS do swojego systemu. Tak wiêc bez 
-		znajomo¶ci systemów U*IX siê nie obejdzie.</para>
+		<para>All stuff was invented for administration of <ulink url="http://www.netx.waw.pl/">ASK NetX</ulink> 
+		and there is still developed and tested.</para>
+		<para>LMS will not replace your administrator abilities. If you can't make
+		so simple activity like installation or configuration, probably you'll cannot
+		adjust LMS for your system. So, you must have knowledge about administration of 
+		UNIX systems.</para>
    	</sect1>
 	<sect1 id="authors">
 	    <title>Authors</title>
@@ -174,46 +174,48 @@
 	    with this program; if not, write to the Free Software Foundation, Inc., 
 	    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.</para>
 	    <para>Text of License is <ulink url="../COPYING">here</ulink>.</para>
-	    <para>Authors of LMS documentation allows to copy and distribiting
+	    <para>Authors of LMS documentation allows to copy and distributing
 		documentation only in non-commercial usage.</para>
 	</sect1>
 	<sect1 id="moreinfo">
 		<title>Other Information</title>
 		<sect2 id="contact">
 			<title>Contact</title>
-			<para>Najlepiej poprzez listê mailingow±, na któr± mo¿na siê zapisaæ wysy³aj±c
-			pustego maila o temacie "subscribe lms" na adres <ulink url="mailto: ecartis@lists.rulez.pl">ecartis@lists.rulez.pl</ulink>,
-			a maile wysy³a siê na adres lms@lists.rulez.pl.
+			<para>Preferably via a mailing list, which you can subscribe sending
+			empty e-mail with subject "subscribe lms" on address <ulink url="mailto: ecartis@lists.rulez.pl">ecartis@lists.rulez.pl</ulink>,
+			e-mails are sent on address lms@lists.rulez.pl.
 			</para>
 		</sect2>
 		<sect2 id="bugs">
-			<title>Bugs and ideas zg³aszanie</title>
-			<para>Aby efektywnie zg³osiæ b³±d lub nowy pomys³, najlepiej jest zapisaæ siê na listê mailingow±
-			gdzie kto¶ z autorów b±d¼ u¿ytkowników bêdzie mia³ szansê odpowiedzieæ
-			na pytania Ciê nurtuj±ce. Dostêpny jest tak¿e dla testów BTS, gdzie mo¿na
-			zg³aszaæ b³êdy po uprzedniej rejestracji. Raporty z BTS id± tak¿e na listê
-			mailingow±, wiêc najlepiej siê zapisaæ, zg³osiæ b³±d poprzez BTS, wys³aæ
-			linka na listê i czekaæ na rozwój wydarzeñ. Adres BTS to <ulink url="http://bts.rulez.pl">
+			<title>Ideas and Bugs Advertising</title>
+			<para>In order to effectively report bugs or new ideas, best is to subscribe mailing list
+			where somebody from authors or users will have a chance to answer
+			on questions that are worrying you. Also, available is BTS, where can be
+			bugs advertised (needed registration). Reports from BTS going also to mailing list
+			so best to subscribe, report bug on BTS, send link on list
+			and wait for events evolution. Address of BTS is <ulink url="http://bts.rulez.pl">
 			http://bts.rulez.pl</ulink>.
 			</para>
 		</sect2>
 		<sect2 id="latest">
-			<title>Najnowsza wersja</title>
-			<para>Zawsze aktualn± werjsê LMS mo¿na pobraæ z repozytorium CVS za pomoc±
-			interfejsu www <ULINK URL="http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">tutaj</ulink>,
-			lub klasycznie (dostêp anonimowy, puste has³o):</para>
+			<title>Newest version</title>
+			<para>Allways, newest version of LMS can be downloaded from CVS repository
+			CVS with help of www interface <ULINK URL="http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">here</ulink>,
+			or classic (anonymous access, empty password):</para>
+			<screen>
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co -r LMS_0102_international lms
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
+			<para>and for polish version (most newest) only:</para>
 			<screen>
 cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
 cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
 cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
-			<para>Repozytorium CVS mo¿na tak¿e przegl±daæ przy pomocy interfejsu WWW pod
-			adresem <ulink url="http://cvs.rulez.pl">http://cvs.rulez.pl</ulink>.
-			</para>
 		</sect2>
 		<sect2 id="history">
 			<title>Changelog</title>
-			<para>Informacje o zmianach jakie zasz³y w kolejnych 
-			wersjach LMS zawarte s± w pliku <ulink url="../ChangeLog">
+			<para>Informations about changes, which was made in all
+			versions of LMS are included in file <ulink url="../ChangeLog">
 			ChangeLog</ulink>.</para>
 		</sect2>
 	</sect1>

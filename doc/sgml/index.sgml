@@ -11,7 +11,7 @@
 <!ENTITY rozdzial7 SYSTEM "advanced.sgml">
 ]>
 
-<book lang=pl>
+<book lang=en>
   <bookinfo>
     <title>LMS - LAN Management System &version;</title>
     <mediaobject>
@@ -19,10 +19,10 @@
 	    <imagedata fileref="images/logo-small.png" format="png">
 	</imageobject>
     </mediaobject>
-    <corpauthor> Aleksander 'A.L.E.C' Machniak, Karol 'Lexx' Król</corpauthor>
+    <corpauthor> Aleksander 'A.L.E.C' Machniak, Karol 'Lexx' Krol</corpauthor>
     <copyright>
         <year>2003-2004</year>
-        <holder> Aleksander 'A.L.E.C' Machniak, Karol 'Lexx' Król</holder>
+        <holder> Aleksander 'A.L.E.C' Machniak, Karol 'Lexx' Krol</holder>
     </copyright>
   </bookinfo>
 <toc></toc>
