@@ -32,12 +32,18 @@ class LMS {
 
 	var $db;
 	var $session;
-	var $version = '1.0.28';
+	var $version = '1.0.36';
 
 	function LMS($db,$session)
 	{
 		$this->db=$db;
 		$this->session=$session;
+	}
+
+	function SetAdminPassword($id,$passwd)
+	{
+		$db=$this->db;
+		return $db->ExecSQL("UPDATE `admins` SET `passwd` = '".crypt($passwd)."' WHERE `id` = '".$id."' LIMIT 1");
 	}
 
 	function DeleteUser($id)
@@ -435,24 +441,61 @@ class LMS {
 		$db=$this->db;
 		$acl = $db->FetchArray("SELECT `access` FROM `nodes` WHERE `ownerid` = '".$id."'");
 		if(sizeof($acl))
-//		{
 			foreach($acl[access] as $value)
-//			{
 				if(strtoupper($value) == "Y")
-//				{
 					$y ++;
-//				}
 				else
-//				{
 					$n ++;
-//				}
-//			}
-//		}
 		if($y && !$n) return TRUE;
 		if($n && !$y) return FALSE;
 		return 2;
 	}
 		
+	function GetBalanceList()
+	{
+		$db=$this->db;
+
+		$balancelist = $db->FetchArray("SELECT * FROM `cash` WHERE `type` != 4 ORDER BY `time` ASC");
+
+		$balancelist[total] = sizeof($balancelist[id]);
+
+		if($balancelist[total])
+			foreach($balancelist[id] as $key => $value)
+			{
+				$balancelist[admin][$key] = $this->GetAdminName($balancelist[adminid][$key]);
+				$balancelist[username][$key] = $this->GetUserName($balancelist[userid][$key]);
+				if($key)
+					$balancelist[before][$key] = $balancelist[after][$key-1];
+				else
+					$balancelist[before][$key] = 0;
+
+				switch($balancelist[type][$key])
+				{
+					case "1":
+						$balancelist[type][$key] = "przychód";
+						$balancelist[after][$key] = $balancelist[before][$key] + $balancelist[value][$key];
+						$balancelist[income] = $balancelist[income] + $balancelist[value][$key];
+					break;
+					case "2":
+						$balancelist[type][$key] = "rozchód";
+						$balancelist[after][$key] = $balancelist[before][$key] - $balancelist[value][$key];
+						$balancelist[expense] = $balancelist[expense] + $balancelist[value][$key];
+					break;
+					case "3":
+						$balancelist[type][$key] = "wp³ata";
+						$balancelist[after][$key] = $balancelist[before][$key] + $balancelist[value][$key];
+						$balancelist[incomeu] = $balancelist[incomeu] + $balancelist[value][$key];
+					break;
+					default:
+						$balancelist[type][$key] = '<FONT COLOR="RED">???</FONT>';
+						$balancelist[after][$key] = $balancelist[before][$key];
+					break;
+				}
+
+			}
+		$balancelist[total] = $balancelist[after][$key];
+		return $balancelist;
+	}
 
 	function GetUserList($order=NULL,$state=NULL)
 	{
