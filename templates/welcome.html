@@ -7,12 +7,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD ALIGN="CENTER" COLSPAN="2" CLASS="FALL">
-						<IMG SRC="img/logo-ico.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>Informacje o LMS:</B>
+						<IMG SRC="img/logo-ico.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>{t}LMS info:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://lms.rulez.pl" target="_BLANK">Wersja LMS:</A></B>
+						<B><A HREF="http://lms.rulez.pl" target="_BLANK">{t}LMS version:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$layout.lmsv}
@@ -20,7 +20,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://lms.rulez.pl" target="_BLANK">Wersja LMSDB:</A></B>
+						<B><A HREF="http://lms.rulez.pl" target="_BLANK">{t}LMSDB version:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$layout.lmsdbv}
@@ -29,9 +29,9 @@
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
 						<B>
 						{if $layout.dbtype == "mysql"}
-						<A HREF="http://www.mysql.com" target="_BLANK"> Wersja MySQL:</A>
+						<A HREF="http://www.mysql.com" target="_BLANK"> {t}MySQL version:{/t}</A>
 						{else}
-						<A HREF="http://www.postgresql.org" target="_BLANK">Wersja PostgreSQL:</A>
+						<A HREF="http://www.postgresql.org" target="_BLANK">{t}PostgreSQL version:{/t}</A>
 						{/if}
 						</B>
 					</TD>
@@ -41,7 +41,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="http://www.php.net/" target="_BLANK">Wersja PHP:</A></B>
+						<B><A HREF="http://www.php.net/" target="_BLANK">{t}PHP version:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.phpversion}
@@ -49,7 +49,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
-						<B><A HREF="http://smarty.php.net" target="_BLANK">Wersja Smarty:</A></B>
+						<B><A HREF="http://smarty.php.net" target="_BLANK">{t}Smarty version:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FBR">
 						{$layout.smarty_version}
@@ -61,12 +61,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD HEIGHT="24" ALIGN="CENTER" COLSPAN="2" CLASS="FALL" NOWRAP>
-						<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>Informacje o systemie:</B>
+						<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>{t}System info:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Nazwa hosta:</B>
+						<B>{t}Hostname:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.hostname}
@@ -74,7 +74,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Wersja systemu:</B>
+						<B>{t}System version:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.kernel}
@@ -82,7 +82,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Uptime:</B>
+						<B>{t}Uptime:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.uptime}
@@ -90,7 +90,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Zalogowanych u¿ytkowników:</B>
+						<B>{t}Logged users:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.users}
@@ -98,7 +98,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
-						<B>Obci±¿enie:</B>
+						<B>{t}Load avg:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FBR">
 						{$sysinfo.loadavg.0} {$sysinfo.loadavg.1} {$sysinfo.loadavg.2}
@@ -112,12 +112,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/user.gif" ALIGN="ABSMIDDLE"> <B>U¿ytkownicy:</B>
+						<IMG SRC="img/user.gif" ALIGN="ABSMIDDLE"> <B>{t}Users:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=3">Pod³±czeni:</A></B>
+						<B><A HREF="?m=userlist&s=3">{t}Connected:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$userstats.connected}
@@ -125,7 +125,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=2">Oczekuj±cy na pod³±czenie:</A></B>
+						<B><A HREF="?m=userlist&s=2">{t}Waiting:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$userstats.awaiting}
@@ -133,7 +133,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=1">Zainteresowani pod³±czeniem:</A></B>
+						<B><A HREF="?m=userlist&s=1">{t}Interested:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$userstats.interested}
@@ -141,12 +141,12 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="?m=userlist&s=0">Razem:</A><BR>
-						<A HREF="?m=userlistdebt">W tym zad³u¿onych:</A></B>
+						<B><A HREF="?m=userlist&s=0">{t}Total:{/t}</A><BR>
+						<A HREF="?m=userlistdebt">{t}In debt:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$userstats.total}<BR>
-						{$userstats.debt} (na kwotê {$userstats.debtvalue|string_format:"%01.2f"} z³)
+						{$userstats.debt} {t}{$userstats.debtvalue|string_format:"(on amount %01.2f USD)"}{/t}
 					</TD>
 				</TR>
 			</TABLE>
@@ -160,7 +160,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Pod³±czone:</B>
+						<B>{t}Connected:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$nodestats.connected}
@@ -168,7 +168,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Od³±czone:</B>
+						<B>{t}Disconnected:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$nodestats.disconnected}
@@ -176,7 +176,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="?m=nodelist">Razem:</A></B>
+						<B><A HREF="?m=nodelist">{t}Total:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$nodestats.total}
@@ -190,17 +190,17 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/tip.gif" ALIGN="ABSMIDDLE"> <B>Przydatne linki</B>
+						<IMG SRC="img/tip.gif" ALIGN="ABSMIDDLE"> <B>{t}Useful links{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL" ALIGN="CENTER">
-						<B><A HREF="http://lms.rulez.pl" TARGET="_BLANK">Strona domowa LMS</A><BR>
-							<A HREF="doc/html/" TARGET="_BLANK">Dokumentacja on-line</A><BR>
-							<A HREF="doc/ChangeLog" TARGET="_BLANK">ChangeLog</A><BR>
-							<A HREF="http://lists.rulez.pl/lms/" TARGET="_BLANK">Archiwum listy mailingowej</A><BR>
-							<A HREF="http://cvs.rulez.pl" TARGET="_BLANK">Repozytorium CVS</A><BR>
-							<A HREF="http://bts.rulez.pl" TARGET="_BLANK">Bug Tracking System</A>
+						<B><A HREF="http://lms.rulez.pl" TARGET="_BLANK">{t}LMS Homepage{/t}</A><BR>
+							<A HREF="doc/html/" TARGET="_BLANK">{t}On-line Documentation{/t}</A><BR>
+							<A HREF="doc/ChangeLog" TARGET="_BLANK">{t}ChangeLog{/t}</A><BR>
+							<A HREF="http://lists.rulez.pl/lms/" TARGET="_BLANK">{t}Mailing List Archive{/t}</A><BR>
+							<A HREF="http://cvs.rulez.pl" TARGET="_BLANK">{t}CVS Repository{/t}</A><BR>
+							<A HREF="http://bts.rulez.pl" TARGET="_BLANK">{t}Bug Tracking System{/t}</A>
 						</B>
 					</TD>
 				</TR>
