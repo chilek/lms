@@ -876,16 +876,12 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$result['interested'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=1 AND deleted=0");
 		$result['debt'] = 0;
 		$result['debtvalue'] = 0;
-		if($users = $this->DB->GetAll("SELECT id FROM users WHERE deleted=0"))
-			foreach($users as $idx => $row)
-			{
-				$row['balance'] = $this->GetUserBalance($row['id']);
-				if($row['balance'] < 0)
-				{
-					$result['debt'] ++;
-					$result['debtvalue'] -= $row['balance'];
-				}
-			}
+		if($balances = $this->DB->GetCol("SELECT SUM((type * -2 + 7)*value) FROM cash LEFT JOIN users ON userid = users.id WHERE deleted = 0 GROUP BY userid HAVING SUM((type * -2 + 7)*value) < 0"))
+		{
+			foreach($balances as $idx)
+				$result['debtvalue'] -= $idx;
+			$result['debt'] = sizeof($balances);
+		}	
 		return $result;
 	}
 
