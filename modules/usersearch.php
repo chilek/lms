@@ -29,7 +29,6 @@ $search = $_POST['search'];
 if(isset($search['s']))
 	$_GET['s'] = $search['s'];
 
-$layout['pagetitle'] = 'Wyszukiwanie u¿ytkowników';
 if(!isset($search))
 	$search = $_SESSION['usersearch'];
 else
@@ -49,19 +48,16 @@ else
 	
 $_SESSION['usls'] = $s;
 				
-$layout['pagetitle'] = "Wyszukiwanie u¿ytkownika";
-$SMARTY->display('header.html');
-$SMARTY->display('userheader.html');
+$layout['pagetitle'] = 'Wyszukiwanie u¿ytkowników';
 
 if($_GET['search']==1 || isset($_GET['search']))
 {
-	$userlist = $LMS->SearchUserList($o,$s,$search);
-	$SMARTY->assign('userlist',$userlist);
+	$SMARTY->assign('userlist',$LMS->SearchUserList($o,$s,$search));
 	$SMARTY->display('usersearchresults.html');
 }
 else
+{
 	$SMARTY->display('usersearch.html');
-
-$SMARTY->display('footer.html');
+}
 
 ?>
