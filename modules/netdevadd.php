@@ -42,8 +42,7 @@ if(isset($netdevdata)) {
 }
 		
 
-$layout[pagetitle]="Dodanie nowego urz±dzenia";
-
+$layout[pagetitle]="Nowe urz±dzenie";
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("error",$error);
@@ -52,6 +51,9 @@ $SMARTY->display("netdevadd.html");
 
 /*
  * $Log$
+ * Revision 1.2  2003/10/05 21:18:49  alec
+ * ujenolicenie naglowkow
+ *
  * Revision 1.1  2003/09/12 20:57:05  lexx
  * - netdev
  *
