@@ -24,19 +24,19 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Panel u¿ytkownika';
-
 include_once('class.php');
 include_once('authentication.inc');
+
+$layout['pagetitle'] = trans('Customer Logon');
 
 $loginform = $_POST['loginform'];
 $login = ($loginform['login'] ? $loginform['login'] : 0);
 $pin = ($loginform['pwd'] ? $loginform['pwd'] : 0);
 
-//sposoby autoryzacji u¿ytkownika
-$id = GetUserIDByPhone1AndPIN($login, $pin);
+// customer authorization ways
+//$id = GetUserIDByPhone1AndPIN($login, $pin);
 //$id = GetUserIDByContractAndPIN($login, $pin);
-//$id = GetUserIDByIDAndPIN($login, $pin);
+$id = GetUserIDByIDAndPIN($login, $pin);
 
 if($id)
 {

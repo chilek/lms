@@ -1,14 +1,8 @@
 <!-- $Id$ -->
 <P><TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="FLEFTU">
-<!--			<IMG SRC="img/user.gif" BORDER="0" ALT=""> -->
-		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU">
-<!--			<B>{$userinfo.username}</B> -->
-		<B>Zmiana danych oraz rozliczanie p³atno¶ci</B>
-<!-- ({$userinfo.id|string_format:"%04d"})</B>-->
-		</TD>
+		<TD WIDTH="1%" CLASS="FLEFTU"></TD>
+		<TD WIDTH="99%" CLASS="FRIGHTU"><B>{t}Payments:{/t}</B></TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
@@ -25,35 +19,32 @@
 			<IMG SRC="img/money.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-		{if $userinfo.balance < 0}<FONT COLOR="RED"><H2>Prosimy o terminow± wp³atê w wysoko¶ci: <B>{$userinfo.balance*-1|default:"0"} z³</B> tytu³em: {$userinfo.phone1}</FONT></H2>{elseif $userinfo.balance > 0}Masz wobec nas nadp³aty w wysoko¶ci: { $userinfo.balance} z³, zostan± one automatycznie przeniesione jako wp³aty za kolejne abonamenty lub us³ugi.{else}Nie masz wobec nas zaleg³o¶ci.{/if}
+			{if $userinfo.balance < 0}<FONT COLOR="RED"><H2>{t 0=$userinfo.balance*-1|money_format 1=$userinfo.phone1}We are please for punctual payment in value: <B>$0</B> with comment: $1{/t}</FONT></H2>{elseif $userinfo.balance > 0}{t 0=$userinfo.balance|money_format}You have overpayments on value: $0, they will be moved as payments for future subscriptions or services.{/t}{else}{t}You have no outstandings towards as.{/t}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-		</TD>
+		<TD WIDTH="1%" CLASS="FLEFT"></TD>
 		<TD WIDTH=99% CLASS="fright">
-		Wszystkie nale¿no¶ci prosimy wp³acaæ na konto: 
+			{t}All payments send on account:{/t} 
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT" valign="top">
-		Bank:<BR>
-		Konto:
+			{t}Bank:{/t}<BR>
+			{t}Account:{/t}
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-<H2>Suzuki Bank<BR>
-00 1234578 1234 5678 9012 3456 7890 </H2>
+			<H2>Suzuki Bank<BR>
+			00 1234578 1234 5678 9012 3456 7890 </H2>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-		Wydruk<BR>
-		Formularza<BR>
-		Wp³aty<BR>
+		{t}Print<BR>Payment<BR>Form{/t}<BR>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<A HREF="../formularz_przelewu_wplaty/druk.php?ILE={if $userinfo.balance<0}{$userinfo.balance*-1}{else}{$userinfo.balance}{/if}&UID={$userinfo.id}&OD={$userinfo.name} {$userinfo.lastname} {$userinfo.Kod} {$userinfo.city} {$userinfo.address}" target="_BLANK">
-			<IMG SRC="img/ico_przelew.png" ALT="Wydruk Formularza">
+			<A HREF="../formularz_przelewu_wplaty/druk.php?ILE={if $userinfo.balance<0}{$userinfo.balance*-1}{else}{$userinfo.balance}{/if}&UID={$userinfo.id}&OD={$userinfo.name} {$userinfo.lastname} {$userinfo.zip} {$userinfo.city} {$userinfo.address}" target="_BLANK">
+			<IMG SRC="img/ico_przelew.png" ALT="{t}Form Printout{/t}">
 			</A>
 		</TD>
 	<TR CLASS="LIGHT">
