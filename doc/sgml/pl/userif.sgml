@@ -603,6 +603,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	wykorzystaæ skrypt lms-notify lub modu³ notify demona <emphasis>almsd</emphasis>.</para></note></para>
  </sect1>
  <sect1 id="menu-reload">
+	<title>Prze³adowanie</title>
 	<para>Menu 'Prze³adowanie' s³u¿y do zarz±dzania us³ugami na serwerach/routerach
 	poprzez "w³±czanie" ¿±dania prze³adowania dla <emphasis>LMS-MGC</emphasis>
 	lub demona <emphasis>lmsd</emphasis>. Tutaj tak¿e znajduje siê panel
@@ -615,13 +616,13 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	    W przypadku demona <emphasis>almsd</emphasis> mo¿esz wybraæ z listy
 	    zdefiniowane hosty na których chcesz dokonaæ prze³adowania. Zachowanie
 	    menu 'Prze³adowanie' jest zale¿ne od ustawienia opcji 'reload_type'. Je¶li
-	    zdefiniowa³e¶ zapytanie SQL w opcji 'reload_sqlquery' zostanie ono wykonane.
-	    <para>Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <emphasis>LMS-MGC</emphasis> 
+	    zdefiniowa³e¶ zapytanie SQL w opcji 'reload_sqlquery' zostanie ono wykonane.</para>
+	    <para>Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <emphasis>LMS-MGC</emphasis>
 	    oraz demona.</para>
 	</sect2>
 	<sect2 id="menu-reload-config">
 	<title>Konfiguracja</title>
-	    <para>W tym miejscu konfigurujemy demona <amphasis>lmsd</emphasis>.
+	    <para>W tym miejscu konfigurujemy demona <emphasis>lmsd</emphasis>.
 	    Konfiguracjê zaczyna siê od zdefiniowania hostów, na których dzia³a
 	    demon. Musisz zdefiniowaæ co najmniej jeden host, nawet je¶li jest to
 	    localhost (na którym dzia³a <emphasis>LMS-UI</emphasis>). Nastêpnie
