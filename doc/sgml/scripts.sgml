@@ -300,6 +300,59 @@ http://www.naszasiec.pl/</screen></example>
 	    </para>
 	</sect3>
     </sect2>
+    <sect2 id="lms-traffic-logiptables">
+	<title>lms-traffic-logiptables</title>
+	<para>Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
+	przez ka¿dy komputer z sieci lokalnej, na podstawie liczników iptables. Dane 
+	zczytuje z firewalla, tworz±c jednocze¶nie odpowiednie regu³y. Zatem, nie jest 
+	konieczne rêczne tworzenie regu³ iptables. Dane zapisywane s± do pliku o 
+	formacie wymaganym przez <filename>lms-traffic</filename>.
+	</para>
+	<para>Konfiguracjê nale¿y umie¶ciæ w sekcji <emphasis>[traffic-logiptables]</emphasis>:
+	    <itemizedlist>
+        	<listitem>
+		    <para>logfile</para>
+		    <para>Lokalizacja pliku na dane. Domy¶lnie: niezdefiniowana.</para>
+		    <para>Przyk³ad:	<prompt>logfile = /var/log/traffic.log</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>outfile</para>
+		    <para>Lokalizacja skryptu z regu³ami iptables. Domy¶lnie: /etc/rc.d/rc.stat</para>
+		    <para>Przyk³ad:	<prompt>outfile = /etc/rc.d/rc.stat</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>iptables_binary</para>
+		    <para>Lokalizacja programu iptables. Domy¶lnie: /usr/sbin/iptables</para>
+		    <para>Przyk³ad:	<prompt>iptables_binary = /usr/local/sbin/iptables</prompt></para>
+		</listitem>		
+           	<listitem>
+		    <para>wan_interfaces</para>
+		    <para>Nazwy interfejsów, na których dane maj± byæ zliczane. Domy¶lnie: niezdefiniowane.</para>
+		    <para>Przyk³ad:	<prompt>wan_interfaces = eth0</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>local_ports</para>
+		    <para>Lista portów (¼ród³owych i docelowych) dla zliczanych pakietów. Domy¶lnie: niezdefiniowane.</para>
+		    <para>Przyk³ad:	<prompt>local_ports = 80</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>script_owneruid</para>
+		    <para>UID w³a¶ciciela skryptu okre¶lonego w 'outfile'. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>script_owneruid = 0</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>script_ownergid</para>
+		    <para>GID w³a¶ciciela skryptu okre¶lonego w 'outfile'. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>script_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>script_permission</para>
+		    <para>Uprawnienia skryptu okre¶lonego w 'outfile'. Domy¶lnie: 700 (rwx------).</para>
+		    <para>Przyk³ad:	<prompt>script_permission = 700</prompt></para>
+		</listitem>
+	    </itemizedlist>
+	</para>
+    </sect2>
     <sect2 id="lms-makeiptables">
 	<title>lms-makeiptables, lms-makeipchains</title>
 	    <para>Para skryptów s³u¿±cych do generowania plików zawieraj±cych
@@ -414,3 +467,4 @@ http://www.naszasiec.pl/</screen></example>
     </sect2>
     </sect1>
 </chapter>
+    

@@ -522,8 +522,127 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="LMS-TRAFFIC-LOGIPTABLES"
+>4.3.6. lms-traffic-logiptables</A
+></H2
+><P
+>Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
+	przez ka¿dy komputer z sieci lokalnej, na podstawie liczników iptables. Dane 
+	zczytuje z firewalla, tworz±c jednocze¶nie odpowiednie regu³y. Zatem, nie jest 
+	konieczne rêczne tworzenie regu³ iptables. Dane zapisywane s± do pliku o 
+	formacie wymaganym przez <TT
+CLASS="FILENAME"
+>lms-traffic</TT
+>.
+	</P
+><P
+>Konfiguracjê nale¿y umie¶ciæ w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[traffic-logiptables]</I
+></SPAN
+>:
+	    <UL
+><LI
+><P
+>logfile</P
+><P
+>Lokalizacja pliku na dane. Domy¶lnie: niezdefiniowana.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>logfile = /var/log/traffic.log</SAMP
+></P
+></LI
+><LI
+><P
+>outfile</P
+><P
+>Lokalizacja skryptu z regu³ami iptables. Domy¶lnie: /etc/rc.d/rc.stat</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>outfile = /etc/rc.d/rc.stat</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary</P
+><P
+>Lokalizacja programu iptables. Domy¶lnie: /usr/sbin/iptables</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>wan_interfaces</P
+><P
+>Nazwy interfejsów, na których dane maj± byæ zliczane. Domy¶lnie: niezdefiniowane.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>wan_interfaces = eth0</SAMP
+></P
+></LI
+><LI
+><P
+>local_ports</P
+><P
+>Lista portów (¼ród³owych i docelowych) dla zliczanych pakietów. Domy¶lnie: niezdefiniowane.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>local_ports = 80</SAMP
+></P
+></LI
+><LI
+><P
+>script_owneruid</P
+><P
+>UID w³a¶ciciela skryptu okre¶lonego w 'outfile'. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_ownergid</P
+><P
+>GID w³a¶ciciela skryptu okre¶lonego w 'outfile'. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_permission</P
+><P
+>Uprawnienia skryptu okre¶lonego w 'outfile'. Domy¶lnie: 700 (rwx------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_permission = 700</SAMP
+></P
+></LI
+></UL
+>
+	</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="LMS-MAKEIPTABLES"
->4.3.6. lms-makeiptables, lms-makeipchains</A
+>4.3.7. lms-makeiptables, lms-makeipchains</A
 ></H2
 ><P
 >Para skryptów s³u¿±cych do generowania plików zawieraj±cych
@@ -687,7 +806,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="LMS-ETHERDESC"
->4.3.7. lms-etherdesc</A
+>4.3.8. lms-etherdesc</A
 ></H2
 ><P
 >Skrypt s³u¿±cy do generowania pliku zawieraj±cego MAC adresy oraz
