@@ -18,22 +18,17 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, 
  *  USA.
  *
  *  $Id$
  */
 
-/*
- * To jest przyk³adowy plik do inicjacji klasy LMS'a do wykorzystania we
- * w³asnych projektach PHP korzystaj±cych z LMS'a.
- */
-
-// ¦cie¿ka do pliku konfiguracyjnego
+// REPLACE THIS WITH PATH TO YOU CONFIG FILE
 
 $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 
-// Funkcja parsuj±ca plik konfiguracyjny
+// Parse configuration file
 
 function lms_parse_ini_file($filename, $process_sections = false) 
 {
@@ -80,30 +75,17 @@ function lms_parse_ini_file($filename, $process_sections = false)
 	return $ini_array;
 }
 
-// Odczytanie pliku konfiguracyjnego
-
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
 	$_CONFIG[$key] = $val;
 
-// Domy¶lne warto¶ci zmiennych których nie da siê gdzie indziej zdefiniowaæ.
-
+// Check for configuration vars and set default values
 $_CONFIG['directories']['sys_dir'] = (! $_CONFIG['directories']['sys_dir'] ? getcwd() : $_CONFIG['directories']['sys_dir']);
-$_CONFIG['directories']['backup_dir'] = (! $_CONFIG['directories']['backup_dir'] ? $_CONFIG['directories']['sys_dir'].'/backups' : $_CONFIG['directories']['backup_dir']);
 $_CONFIG['directories']['lib_dir'] = (! $_CONFIG['directories']['lib_dir'] ? $_CONFIG['directories']['sys_dir'].'/lib' : $_CONFIG['directories']['lib_dir']);
-$_CONFIG['directories']['modules_dir'] = (! $_CONFIG['directories']['modules_dir'] ? $_CONFIG['directories']['sys_dir'].'/modules' : $_CONFIG['directories']['modules_dir']);
-$_CONFIG['directories']['config_templates_dir'] = (! $_CONFIG['directories']['config_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/config_templates' : $_CONFIG['directories']['config_templates_dir']);
-$_CONFIG['directories']['smarty_dir'] = (! $_CONFIG['directories']['smarty_dir'] ? (is_readable('/usr/share/php/smarty/libs/Smarty.class.php') ? '/usr/share/php/smarty/libs' : $_CONFIG['directories']['lib_dir'].'/Smarty') : $_CONFIG['directories']['smarty_dir']);
-$_CONFIG['directories']['smarty_compile_dir'] = (! $_CONFIG['directories']['smarty_compile_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates_c' : $_CONFIG['directories']['smarty_compile_dir']);
-$_CONFIG['directories']['smarty_templates_dir'] = (! $_CONFIG['directories']['smarty_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates' : $_CONFIG['directories']['smarty_templates_dir']);
-
-// Do³adowanie reszty domy¶lnych warto¶ci
 
 foreach(lms_parse_ini_file($_CONFIG['directories']['lib_dir'].'/config_defaults.ini', TRUE) as $section => $values)
 	foreach($values as $key => $val)
 		if(! isset($_CONFIG[$section][$key]))
 			$_CONFIG[$section][$key] = $val;
-
-// Przepisanie warto¶ci zmiennych parametrów bazy danych
 
 $_DBTYPE = $_CONFIG['database']['type'];
 $_DBHOST = $_CONFIG['database']['host'];
@@ -111,29 +93,25 @@ $_DBUSER = $_CONFIG['database']['user'];
 $_DBPASS = $_CONFIG['database']['password'];
 $_DBNAME = $_CONFIG['database']['database'];
 
-// Wczytanie niezbêdnych libów.
+// Init database 
 
-require_once($_CONFIG['directories']['lib_dir'].'/common.php');
 require_once($_CONFIG['directories']['lib_dir'].'/LMSDB.php');
-require_once($_CONFIG['directories']['lib_dir'].'/LMS.class.php');
-require_once($_CONFIG['directories']['lib_dir'].'/language.php');
-
-// Zainicjowanie bazy danych.
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
-// Nie u¿ywamy raczej sesji. ;)
-
-$SESSION = NULL;
-
-// Odczytanie konfiguracji LMS-UI z bazy danych
+// Read configuration of LMS-UI from database
 
 if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
 	foreach($cfg as $row)
 		$_CONFIG[$row['section']][$row['var']] = $row['value'];
 
-// Inicjacja obiektu LMS'a.
+// Include required files (including sequence is important)
 
-$LMS = new LMS($DB, $SESSION, $_CONFIG);
+require_once($_CONFIG['directories']['lib_dir'].'/language.php');
+require_once($_CONFIG['directories']['lib_dir'].'/common.php');
+require_once($_CONFIG['directories']['lib_dir'].'/LMS.class.php');
+
+$LMS = new LMS($DB, NULL, $_CONFIG);
+$LMS->lang = $_language;
 
 ?>
