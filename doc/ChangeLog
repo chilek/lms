@@ -11,7 +11,9 @@ wersja 1.0pre5 (??/??/2003):
   - utworzony katalog ze skryptami perlowymi - bin - znadjduj± siê
     tam niektóre skrypty z modu³u lms-scripts
   - oddzielny formularz do dodawania nowych operacji finansowych
-  - informacje o taryfie i mo¿liwo¶æ jej edycji wreszcie...
+  - informacje o taryfie i mo¿liwo¶æ jej edycji wreszcie.
+  - poprawione parsowanie wprowadzanych danych w niektórych miejscach
+    poprzez u¿ycie regexpów (dziêki mteg za podsuniêcie pomys³u)
 
 wersja 1.0pre4 (21/01/2003):
 
