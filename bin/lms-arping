@@ -142,7 +142,6 @@ elsif($dbtype eq "sqlite")
      $utsfmt = "strftime('%s','now')";
      $dbase->func('inet_ntoa',1,'u32todotquad','create_function');
      $dbase->func('inet_aton',1,'dotquad2u32','create_function');     
-
 }
 else
 {
@@ -162,34 +161,30 @@ if(!$networks_list)
 
 my @networks = split ' ', $networks_list;
 
-my @ips;
 my @lines;
 
 foreach my $network (@networks)
 {
-    my $dbq = $dbase->prepare("SELECT name, INET_NTOA(address) AS address, mask FROM networks WHERE UPPER(name) = UPPER('$network')");
+    my $dbq = $dbase->prepare("SELECT name, interface, INET_NTOA(address) AS address, mask FROM networks WHERE UPPER(name) = UPPER('$network')");
     $dbq->execute();
      
     if(my $row = $dbq->fetchrow_hashref())
     {
 	my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
 
-        my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr FROM nodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
+	my $iface = $row->{'interface'} ? "-I $row->{'interface'}" : "";
+        
+	my $ndbq = $dbase->prepare("SELECT INET_NTOA(ipaddr) AS ipaddr FROM nodes WHERE ipaddr>INET_ATON('$row->{'address'}') AND ipaddr<INET_ATON('$row->{'address'}')+$netsize");
         $ndbq->execute();
-          
+        
 	while(my $nodrow = $ndbq->fetchrow_hashref())
         {
-	    push(@ips, "$nodrow->{'ipaddr'}");
+	    system("$arping -c1 -q $iface $nodrow->{'ipaddr'}");
+	    if ( "$?" == "0" ) 
+	    { 
+		push(@lines, "$nodrow->{'ipaddr'}");
+	    }
         }
-    }
-}
-
-foreach my $ip (@ips) 
-{
-    system("$arping -c1 -q $ip");
-    if ( "$?" == "0" ) 
-    { 
-	push(@lines, "$ip");
     }
 }
 
