@@ -315,5 +315,17 @@
 			<warning><para>W bazie danych zapisywane s± kwoty brutto. </para></warning>
 		</para>
  </sect2>
+ <sect2 id="user-staff-customer">
+    	<title>"Moje konto"</title>
+		<para>W katalogu <filename>contrib/customer</filename> znajduje siê
+		przyk³ad rozwi±zania, dziêki któremu ka¿dy u¿ytkownik twojej sieci
+		mo¿e sprawdziæ w³asny bilans finansowy.</para>
+		<para>Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
+		bilans i informacje o u¿ytkowniku, który jest w³a¶cicielem komputera
+		o tym adresie. Pliki nale¿y skopiowaæ w dowolne miejsce i wystawiæ
+		pod adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie
+		ustawiæ poprawn± ¶cie¿kê do <filename>lms.ini</filename> w pliku 
+		<filename>index.php</filename>.</para>	
+ </sect2>
  </sect1>
 </chapter>
