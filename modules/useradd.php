@@ -30,7 +30,7 @@ if(sizeof($useradd))
 	foreach($useradd as $key=>$value)
 		$useradd[$key] = trim($value);
 
-if($useradd['name']=='' && $useradd['lastname']=='' && $useradd[phone1]=='' && $useradd['address']=='' && $useradd['email']=='' && isset($useradd))
+if($useradd['name'] == '' && $useradd['lastname'] == '' && $useradd[phone1] == '' && $useradd['address'] == '' && $useradd['email'] == '' && isset($useradd))
 {
 	header('Location: ?m=useradd');
 	die;
@@ -38,20 +38,20 @@ if($useradd['name']=='' && $useradd['lastname']=='' && $useradd[phone1]=='' && $
 elseif(isset($useradd))
 {
 
-	if($useradd['lastname']=='')
-		$error['username']='Pola \'nazwisko/nazwa\' oraz \'imiê\' nie mog± byæ puste!';
+	if($useradd['lastname'] == '')
+		$error['username'] = trans('\'Surname/Name\' and \'First Name\' fields cannot be empty!');
 	
-	if($useradd['address']=='')
-		$error['address']='Proszê podaæ adres!';
+	if($useradd['address'] == '')
+		$error['address'] = trans('Address required!');
 	
 	if($useradd['nip'] !='' && !check_nip($useradd['nip']))
-		$error['nip'] = 'Podany NIP jest b³êdny!';
+		$error['nip'] = trans('Incorrect Vat Reg No!');
 
 	if($useradd['pesel'] != '' && !check_pesel($useradd['pesel']))
-		$error['pesel'] = 'Podany PESEL jest b³êdny!';
+		$error['pesel'] = trans('Incorrect Personal Id!');
 		
 	if($useradd['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$useradd['zip']))
-		$error['zip'] = 'Podany kod pocztowy jest b³êdny!';
+		$error['zip'] = trans('Incorrect ZIP code!');
 
 	if($useradd['gguin'] == '')
 		$useradd['gguin'] = 0;
@@ -60,13 +60,13 @@ elseif(isset($useradd))
 		$useradd['pin'] = 0;
 
 	if($useradd['gguin'] !=0 && !eregi('^[0-9]{4,}$',$useradd['gguin']))
-		$error['gguin'] = 'Podany numer GG jest niepoprawny!';
+		$error['gguin'] = trans('Incorrect IM uin!');
 
         if($useradd['pin']!=0 && !eregi('^[0-9]{4,6}$',$useradd['pin']))
-	        $error['pin'] = 'Podany numer PIN jest niepoprawny!';
+	        $error['pin'] = trans('Incorrect PIN!');
 
 	if($useradd['email']!='' && !check_email($useradd['email']))
-		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+		$error['email'] = trans('Incorrect email!');
 
 	if(!$error)
 	{
@@ -90,7 +90,7 @@ if(!isset($useradd['city']))
 if(!isset($useradd['address']))	
 	$useradd['address'] = $LMS->CONFIG['phpui']['default_address'];
 
-$layout['pagetitle'] = 'Nowy u¿ytkownik';
+$layout['pagetitle'] = trans('New User');
 
 $SMARTY->assign('useradd',$useradd);
 $SMARTY->assign('error',$error);
