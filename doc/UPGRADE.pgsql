@@ -16,7 +16,7 @@ Dopiero na koñcu mo¿na usun±æ niepotrzebne rzeczy:
 BEGIN;
 
 /* Tej tabeli ju¿ nie u¿ywamy */
---DROP TABLE options;
+DROP TABLE options;
 
 /* Teraz u¿ytkownicy nie s± usuwani z bazy */
 ALTER TABLE users ADD deleted int2;
@@ -24,12 +24,12 @@ UPDATE users SET deleted=0;
 ALTER TABLE users ALTER COLUMN deleted SET DEFAULT 0;
 ALTER TABLE users ALTER COLUMN deleted SET NOT NULL;
 /* Dzieñ zap³aty */
---ALTER TABLE users ADD payday integer;
+ALTER TABLE users ADD payday integer;
 ALTER TABLE users ALTER COLUMN payday SET DEFAULT 1;
 ALTER TABLE users ALTER COLUMN payday SET NOT NULL;
 
 /* Nowe kolumny w tabeli */
---ALTER TABLE networks ADD dns2 VARCHAR(16);
+ALTER TABLE networks ADD dns2 VARCHAR(16);
 ALTER TABLE networks ADD interface VARCHAR(8);
 
 /*
