@@ -25,11 +25,8 @@ HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-2"></HEAD
 ><BODY
 CLASS="SECT1"
-BGCOLOR="#FFFFFF"
+BGCOLOR="#EBE4D6"
 TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -86,17 +83,17 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN223"
+NAME="AEN239"
 >2.5.1. Sekcja [database] - ustawienia bazy danych</A
 ></H2
 ><P
->        
-		<UL
+>		<UL
 ><LI
 ><P
 >type</P
 ><P
->Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</P
+>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie 
+	   widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</P
 ><P
 >Przyk³ad: <TT
 CLASS="PROMPT"
@@ -107,7 +104,9 @@ CLASS="PROMPT"
 ><P
 >host</P
 ><P
->Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost</P
+>Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj 
+	   wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie 'localhost:/path/to/socket'). 
+	   Domy¶lnie: localhost</P
 ><P
 >Przyk³ad:	<TT
 CLASS="PROMPT"
@@ -118,7 +117,10 @@ CLASS="PROMPT"
 ><P
 >user</P
 ><P
->U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 'postgres' (PostgreSQL). Domy¶lnie: root</P
+>U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze 
+	   wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, 
+	   prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 
+	   'postgres' (PostgreSQL). Domy¶lnie: root</P
 ><P
 >Przyk³ad:	<TT
 CLASS="PROMPT"
@@ -156,7 +158,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN252"
+NAME="AEN268"
 >2.5.2. Sekcja [directories] - ustawienia katalogów</A
 ></H2
 ><P
@@ -166,7 +168,9 @@ NAME="AEN252"
 ><P
 >sys_dir</P
 ><P
->Katalog systemowy. Jest to miejsce gdzie jest ca³a zawarto¶æ UI LMS'a, czyli index.php, grafiki, templejty i reszta. Domy¶lnie, index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale lepiej by by³o gdyby mu powiedzieæ gdzie jest:</P
+>Katalog systemowy. Jest to miejsce gdzie jest ca³a zawarto¶æ UI LMS'a, czyli index.php, grafiki, 
+	   templejty i reszta. Domy¶lnie, index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale 
+	   lepiej by by³o gdyby mu powiedzieæ gdzie jest:</P
 ><P
 >Przyk³ad:	<TT
 CLASS="PROMPT"
@@ -177,7 +181,8 @@ CLASS="PROMPT"
 ><P
 >modules_dir</P
 ><P
->Katalog z "modu³ami" LMS'a. Czyli zawarto¶æ katalogu modules. Domy¶lnie jest to podkatalog modules w sys_dir.</P
+>Katalog z "modu³ami" LMS'a. Czyli zawarto¶æ katalogu modules. Domy¶lnie jest to podkatalog 
+	   modules w sys_dir.</P
 ><P
 >Przyk³ad:	<TT
 CLASS="PROMPT"
@@ -199,36 +204,40 @@ CLASS="PROMPT"
 ><P
 >backup_dir</P
 ><P
->Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje zrzuty z bazy. Domy¶lnie jest to podkatalog 'backups'.</P
+>Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje zrzuty z bazy. 
+	   Domy¶lnie jest to podkatalog 'backups'.</P
 ><P
 >Przyk³ad:	<TT
 CLASS="PROMPT"
 >backup_dir = /var/backup/lms/</TT
->
-	   <DIV
+></P
+><P
+><DIV
 CLASS="WARNING"
 ><TABLE
 CLASS="WARNING"
-BORDER="1"
 WIDTH="90%"
+BORDER="0"
 ><TR
 ><TD
+WIDTH="25"
 ALIGN="CENTER"
-><B
->Ostrze¿enie</B
-></TD
-></TR
-><TR
+VALIGN="TOP"
+><IMG
+SRC="images/warning.gif"
+HSPACE="5"
+ALT="Ostrze¿enie"></TD
 ><TD
 ALIGN="LEFT"
+VALIGN="TOP"
 ><P
->Je¶li katalog z kopiami zapasowymi bêdzie osi±galny z poziomu WWW, to ka¿dy bez autoryzacji bêdzie mia³ do nich dostêp.</P
+>Je¶li katalog z kopiami zapasowymi bêdzie osi±galny z poziomu WWW, to ka¿dy 
+	   bez autoryzacji bêdzie mia³ do nich dostêp.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
->
-	   </P
+></P
 ></LI
 ><LI
 ><P
@@ -245,7 +254,11 @@ CLASS="PROMPT"
 ><P
 >smarty_compile_dir</P
 ><P
->Katalog kompilacji Smartyego. Miejsce gdzie Smarty kompiluje szablony. Domy¶lnie to templates_c w katalogu sysdir.</P
+>Katalog kompilacji Smartyego. Miejsce gdzie Smarty kompiluje szablony. Domy¶lnie to 
+	   <TT
+CLASS="FILENAME"
+>templates_c</TT
+> w katalogu sysdir.</P
 ><P
 >Przyk³ad: 	<TT
 CLASS="PROMPT"
@@ -272,7 +285,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN293"
+NAME="AEN311"
 >2.5.3. Sekcja [phpui] - ustawienia interfejsu</A
 ></H2
 ><UL
@@ -280,7 +293,9 @@ NAME="AEN293"
 ><P
 >allow_from  (opcjonalny)</P
 ><P
->Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste, ka¿dy adres IP ma dostêp do LMS'a, je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego niechcianego u¿ytkownika.</P
+>Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste, ka¿dy adres IP ma dostêp do LMS'a, 
+	je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego 
+	niechcianego u¿ytkownika.</P
 ><P
 >Przyk³ad:		<TT
 CLASS="PROMPT"
@@ -291,36 +306,40 @@ CLASS="PROMPT"
 ><P
 >timeout</P
 ><P
->Timeout sesji www. Po tym czasie (w sekudnach) u¿ytkownik zostanie wylogowany je¿eli nie podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</P
+>Timeout sesji www. Po tym czasie (w sekudnach) u¿ytkownik zostanie wylogowany je¿eli nie 
+    podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</P
 ><P
 >Przyk³ad:	<TT
 CLASS="PROMPT"
 >timeout = 900</TT
->
-    <DIV
+></P
+><P
+><DIV
 CLASS="WARNING"
 ><TABLE
 CLASS="WARNING"
-BORDER="1"
 WIDTH="90%"
+BORDER="0"
 ><TR
 ><TD
+WIDTH="25"
 ALIGN="CENTER"
-><B
->Ostrze¿enie</B
-></TD
-></TR
-><TR
+VALIGN="TOP"
+><IMG
+SRC="images/warning.gif"
+HSPACE="5"
+ALT="Ostrze¿enie"></TD
 ><TD
 ALIGN="LEFT"
+VALIGN="TOP"
 ><P
->Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie bêdziesz móg³ korzystaæ z LMS!</P
+>Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie 
+    bêdziesz móg³ korzystaæ z LMS!</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
->
-    </P
+></P
 ></LI
 ><LI
 ><P
@@ -350,7 +369,8 @@ CLASS="PROMPT"
 ><P
 >Typ reloadu. Dozwolone warto¶ci:</P
 ><P
->exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶ skrypt lub co¶, konfigurowalny poni¿ej)</P
+>exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶ skrypt lub co¶, konfigurowalny
+     poni¿ej)</P
 ><P
 >sql  - zrobienie wpisów w SQL'u (te¿ mo¿na ustawiæ konkretne query SQL'a)</P
 ><P
@@ -365,7 +385,13 @@ CLASS="PROMPT"
 ><P
 >reload_execcmd</P
 ><P
->Komenda do wykonania podczas reloadu je¿eli reload_type jest ustawione na 'exec'. Domy¶lnie /bin/true. String ten puszczany do komendy system() wiêc pronuje rozwagê i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedyñczo.</P
+>Komenda do wykonania podczas reloadu je¿eli reload_type jest ustawione na 'exec'. Domy¶lnie
+    <TT
+CLASS="FILENAME"
+>/bin/true</TT
+>. String ten puszczany do komendy system() wiêc pronuje rozwagê 
+    i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru 
+    zglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedyñczo.</P
 ><P
 >Przyk³ad:	<TT
 CLASS="PROMPT"
@@ -376,7 +402,11 @@ CLASS="PROMPT"
 ><P
 >reload_sqlquery</P
 ><P
->Query SQL'a. Generalnie, LMS przy nie ustawionym swoim w³asnym QUERY robi dziwne rzeczy które ja ju¿ wymy¶li³em. Chwilowo pewnie wogóle nie kompatybilne z mteg'owym demonikiem, ale pracujemy nad uzgodnieniem formatu. Jak kto¶ bardzo chce, to mo¿na u¿yæ '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika (czyli ;) jest traktowany jako separator kwerend. Tj. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka komend MySQL'a.</P
+>Query SQL'a. Generalnie, LMS przy nie ustawionym swoim w³asnym QUERY robi dziwne rzeczy, 
+    które ja ju¿ wymy¶li³em. Chwilowo pewnie wogóle nie kompatybilne z mteg'owym demonikiem, 
+    ale pracujemy nad uzgodnieniem formatu. Jak kto¶ bardzo chce, to mo¿na u¿yæ '%TIME%' jako podstawki 
+    pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest traktowany jako separator kwerend.
+    Tj. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka komend MySQL'a.</P
 ><P
 >Przyk³ad:	<TT
 CLASS="PROMPT"
@@ -387,7 +417,9 @@ CLASS="PROMPT"
 ><P
 >force_ssl</P
 ><P
->Wymuszanie SSL'a. Ustawinie tej zmiennej na 1 spowoduje ¿e LMS bêdzie wymusza³ po³±czenie SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</P
+>Wymuszanie SSL'a. Ustawinie tej zmiennej na 1 spowoduje ¿e LMS bêdzie wymusza³ po³±czenie 
+    SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej 
+    próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</P
 ><P
 >Przyk³ad:	<TT
 CLASS="PROMPT"
@@ -398,7 +430,8 @@ CLASS="PROMPT"
 ><P
 >allow_mac_sharing</P
 ><P
->Przyzwolenie na dodawanie rekordów komputerów z adresami MAC ju¿ istniej±cymi (nie sprawdza czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone</P
+>Przyzwolenie na dodawanie rekordów komputerów z adresami MAC ju¿ istniej±cymi (nie sprawdza 
+    czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone</P
 ><P
 >Przyk³ad:	<TT
 CLASS="PROMPT"
@@ -409,7 +442,8 @@ CLASS="PROMPT"
 ><P
 >smarty_debug</P
 ><P
->W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP do Smartyego. Domy¶lnie wy³±czone.</P
+>W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP 
+    do Smartyego. Domy¶lnie wy³±czone.</P
 ><P
 >Przyk³ad:	<TT
 CLASS="PROMPT"
@@ -420,7 +454,8 @@ CLASS="PROMPT"
 ><P
 >debug_mail</P
 ><P
->Adres e-mail do debugowania - pod ten email bêd± sz³y maile wysy³ane z sekcji 'mailing' LMS'a, zamiast do w³a¶ciwych u¿ytkowników.</P
+>Adres e-mail do debugowania - pod ten email bêd± sz³y maile wysy³ane z sekcji 'mailing' LMS'a, 
+    zamiast do w³a¶ciwych u¿ytkowników.</P
 ><P
 >Przyk³ad:	<TT
 CLASS="PROMPT"
