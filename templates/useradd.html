@@ -16,14 +16,6 @@
 					<TD>
 						<INPUT TYPE="TEXT" NAME="useradd[lastname]" VALUE="{$useradd.lastname}" CLASS="{if $error.username}ALERTB{else}BOLD{/if}">
 					</TD>
-					{if $error.username}
-					<TD ROWSPAN="2">
-						&nbsp;
-					</TD>
-					<TD ROWSPAN="2">
-						<B><FONT COLOR="RED">Te pola nie mog± byæ puste!</FONT></B>
-					</TD>
-					{/if}						
 				</TR>
 				<TR>
 					<TD>
@@ -69,10 +61,8 @@
 						<IMG src="img/home.gif" alt="" align="absmiddle" border="0" width="16" height="16">
 					</td>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.address}" name="useradd[address]" {if $error.address}CLASS="ALERT"{/if}>{if $error.address}<BR><FONT CLASS="ALERT">{$error.address}</FONT>{/if}<BR>
+						<INPUT TYPE="text" size="40" value="{$useradd.address}" name="useradd[address]" {if $error.address}CLASS="ALERT"{/if}><BR>
 						<B>Kod:</B> <INPUT TYPE="text" SIZE="5" VALUE="{$useradd.zip}" NAME="useradd[zip]"{if $error.zip} CLASS="ALERT"{/if}> <B>Miasto:</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$useradd.city}" NAME="useradd[city]"{if $error.city} CLASS="ALERT"{/if}>
-						{if $error.zip}<BR><FONT COLOR="RED"><B>{$error.zip}</B></FONT>{/if}
-						{if $error.city}<BR><FONT COLOR="RED"><B>{$error.city}</B></FONT>{/if}
 					</td>
 				</TR>
 				<TR>
@@ -80,7 +70,7 @@
 						<IMG src="img/mail.gif" alt="" align="absmiddle" border="0" width="16" height="16">
 					</td>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.email}" name="useradd[email]" {if $error.email}CLASS="alert"{/if}>{if $error.email}<BR><FONT CLASS="ALERT">{$error.email}</FONT>{/if}
+						<INPUT TYPE="text" size="40" value="{$useradd.email}" name="useradd[email]"{if $error.email} CLASS="alert"{/if}>
 					</td>
 				</TR>
 				<TR>
@@ -88,7 +78,7 @@
 						<IMG src="img/gg.gif" alt="" align="absmiddle" border="0" width="16" height="16">
 					</td>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.gguin}" name="useradd[gguin]" {if $error.gguin}CLASS="ALERT"><BR><FONT CLASS="ALERT">{$error.gguin}</FONT{/if}>
+						<INPUT TYPE="text" size="40" value="{$useradd.gguin}" name="useradd[gguin]" {if $error.gguin}CLASS="ALERT"{/if}>
 					</td>
 				</TR>
 				<TR>
@@ -96,7 +86,7 @@
 						<B>NIP</B>
 					</td>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {if $error.nip}CLASS="alert"{/if}>{if $error.nip}<BR><FONT CLASS="ALERT">{$error.nip}</FONT>{/if}					
+						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {if $error.nip}CLASS="alert"{/if}>
 					</td>
 				</TR>
 
@@ -120,9 +110,6 @@
 										<OPTION VALUE="{$tariffs.id[tariffs]}"{if $tariffs.id[tariffs] eq $useradd.tariff} SELECTED{/if}> {$tariffs.name[tariffs]} ({$tariffs.value[tariffs]} z³)</OPTION>
 										{/section}
 									</SELECT>
-									{if $error.tariff}
-									<FONT COLOR="Red"><B>Proszê wybraæ taryfê!</B></FONT>
-									{/if}<BR>
 									<SELECT size="1" name="useradd[payday]">
 										{section name=t loop=$paydays}
 										<OPTION VALUE="{$paydays[t]}"{if $paydays[t] eq $useradd.payday} SELECTED{/if}>{$paydays[t]}</OPTION>

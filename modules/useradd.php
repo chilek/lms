@@ -46,13 +46,13 @@ elseif(isset($useradd))
 		$useradd[payday] = 28;
 							
 	if($useradd[lastname]=="")
-		$error[username]=TRUE;
+		$error[username]="Pola 'nazwisko/nazwa' oraz 'imiê' nie mog± byæ puste!";
 	
 	if($useradd[address]=="")
 		$error[address]="Proszê podaæ adres!";
 	
 	if(!$LMS->TariffExists($useradd[tariff]))
-		$error[tariff]=TRUE;
+		$error[tariff]="Proszê wybraæ taryfê!";
 	
 	if($useradd[nip] !="" && !eregi("^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$",$useradd[nip]) && !eregi("^[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}$",$useradd[nip]))
 		$error[nip] = "Podany NIP jest b³êdny!";
@@ -106,6 +106,9 @@ $SMARTY->display("useradd.html");
 
 /*
  * $Log$
+ * Revision 1.36  2003/09/05 13:11:24  lukasz
+ * - nowy sposób wy¶wietlania informacji o b³êdach
+ *
  * Revision 1.35  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

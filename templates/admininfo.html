@@ -9,7 +9,6 @@
 			<IMG SRC="img/admins.gif" ALT="" ALIGN="ABSMIDDLE"> <B>
 				{if $unlockedit}<INPUT TYPE="TEXT" NAME="admininfo[name]" VALUE="{$admininfo.name|capitalize}" SIZE="30"{if $error.name} CLASS="alertb"{else} CLASS="bold"{/if}>
 				{else}{$admininfo.name|capitalize}{/if} ({$admininfo.id|string_format:"%04d"})
-				{if $error.name}<FONT COLOR="red">{$error.name}</FONT>{/if}
 			</B>
 		</TD>
 	</TR>
@@ -22,7 +21,7 @@
 					</TD>
 					<TD>
 						{if $unlockedit}
-						<INPUT TYPE="TEXT" NAME="admininfo[login]" VALUE="{$admininfo.login}"{if $error.login} CLASS="alert"> <FONT COLOR="RED"><B>{$error.login}</B></FONT{/if}>
+						<INPUT TYPE="TEXT" NAME="admininfo[login]" VALUE="{$admininfo.login}"{if $error.login} CLASS="alert"{/if}>
 						{else}
 						{$admininfo.login}
 						{/if}

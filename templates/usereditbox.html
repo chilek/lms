@@ -15,11 +15,6 @@
 					<TD>
 						<B>({$userinfo.id|string_format:"%04d"})</B>
 					</TD>
-					{if $error.username}
-					<TD ROWSPAN="3">
-						<B><FONT COLOR="RED">{$error.username}</FONT></B>
-					</TD>
-					{/if}
 				</TR>
 				<TR>
 					<TD>
@@ -27,7 +22,7 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname}" CLASS="BOLD">
+						<INPUT TYPE="TEXT" NAME="userdata[lastname]" VALUE="{$userinfo.lastname}"{if $error.username} CLASS="ALERTB"{else} CLASS="BOLD"{/if}>
 					</TD>
 				</TR>
 				<TR>
@@ -36,7 +31,7 @@
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
-						<INPUT TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name}" CLASS="BOLD">
+						<INPUT TYPE="TEXT" NAME="userdata[name]" VALUE="{$userinfo.name}"{if $error.username} CLASS="ALERTB"{else} CLASS="BOLD"{/if}>
 					</TD>
 				</TR>
 			</TABLE>
@@ -53,7 +48,7 @@
 				<OPTION VALUE="3"{if $userinfo.status eq "3"} SELECTED{/if}>pod³±czony</OPTION>
 				<OPTION VALUE="2"{if $userinfo.status eq "2"} SELECTED{/if}>oczekuj±cy</OPTION>
 				<OPTION VALUE="1"{if $userinfo.status eq "1"} SELECTED{/if}>zainteresowany</OPTION>
-				</SELECT>{if $error.status}<BR><FONT CLASS="ALERT">{$error.status}</B>{/if}
+				</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -71,16 +66,14 @@
 			<IMG SRC="img/home.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" SIZE="30">
-			{if $error.address}<FONT CLASS="ALERT">{$error.address}</FONT>{/if}
+			<INPUT TYPE="TEXT" NAME="userdata[address]" VALUE="{$userinfo.address}" SIZE="30"{if $error.address} CLASS="alert"{/if}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>Kod:</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="5"{if $error.zip} CLASS="ALERT"><BR>
-			<FONT CLASS="ALERT">{$error.zip}</FONT{/if}>
+			<B>Kod:</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="5"{if $error.zip} CLASS="ALERT"{/if}><BR>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -103,7 +96,7 @@
 			<IMG SRC="img/gg.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[gguin]" VALUE="{$userinfo.gguin}" SIZE="30"{if $error.gguin} CLASS="ALERT"><BR><FONT CLASS="ALERT">{$error.gguin}</FONT{/if}>
+			<INPUT TYPE="TEXT" NAME="userdata[gguin]" VALUE="{$userinfo.gguin}" SIZE="30"{if $error.gguin} CLASS="ALERT"{/if}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -111,7 +104,7 @@
 		<B>NIP</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="userdata[nip]" VALUE="{$userinfo.nip}" SIZE="30"{if $error.nip} CLASS="ALERT"><BR><FONT CLASS="ALERT">{$error.nip}</FONT{/if}>
+			<INPUT TYPE="TEXT" NAME="userdata[nip]" VALUE="{$userinfo.nip}" SIZE="30"{if $error.nip} CLASS="ALERT"{/if}>
 		</TD>
 	</TR>
 
@@ -131,7 +124,7 @@
 				<OPTION VALUE="{$tariffs.id[t]}"{if $tariffs.id[t] eq $userinfo.tariff} SELECTED{/if}>{$tariffs.name[t]} ({$tariffs.value[t]} z³/mc)</OPTION>
 				{/section}
 			</SELECT>
-			{if $error.tariff}<BR><FONT CLASS="ALERT">{$error.tariff}</FONT>{/if}<BR>
+			<BR>
 			<SELECT SIZE="1" NAME="userdata[payday]">
 				{section name=t loop=$paydays}
 				<OPTION VALUE="{$paydays[t]}"{if $paydays[t] eq $userinfo.payday} SELECTED{/if}>{$paydays[t]}</OPTION>

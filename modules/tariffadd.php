@@ -39,32 +39,26 @@ if(isset($tariffadd))
 
 	$tariffadd[value] = str_replace(",",".",$tariffadd[value]);
 
-	if($tariffadd[uprate] == "")
-		$tariffadd[uprate] = 0;
-	
-	if($tariffadd[downrate] == "")
-		$tariffadd[downrate] = 0;
-
 	if(!(ereg("^[0-9.,]+$",$tariffadd[value])))
-		$error[value] = "Podana warto¶æ jest niepoprawna!";
+		$error[value] = "Podana warto¶æ taryfy jest niepoprawna!";
 
-	if(!(ereg("^[0-9]+$", $tariffadd[uprate])))
-		$error[uprate] = "To pole musi zawieraæ liczbê ca³kowit±";
+	if(!(ereg("^[0-9]+$", $tariffadd[uprate])) && $tariffadd[uprate] != "")
+		$error[uprate] = "Pole upstream musi zawieraæ liczbê ca³kowit±";
 		
-	if(!ereg("^[0-9]+$", $tariffadd[downrate]))
-		$error[downrate] = "To pole musi zawieraæ liczbê ca³kowit±";
+	if(!ereg("^[0-9]+$", $tariffadd[downrate]) && $tariffadd[downrate] != "")
+		$error[downrate] = "Pole downstream zawieraæ liczbê ca³kowit±";
 	
-	if(($tariffadd[uprate] < 8 || $tariffadd[uprate] > 4096) && $tariffadd[uprate] != 0)
-		$error[uprate] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
+	if(($tariffadd[uprate] < 8 || $tariffadd[uprate] > 4096) && $tariffadd[uprate] != "")
+		$error[uprate] = "Pole upstream musi zawieraæ liczbê z przedzia³u 8 - 4096";
 
-	if(($tariffadd[downrate] < 8 || $tariffadd[downrate] > 4096) && $tariffadd[downrate] != 0)
-		$error[downrate] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
+	if(($tariffadd[downrate] < 8 || $tariffadd[downrate] > 4096) && $tariffadd[downrate] != "")
+		$error[downrate] = "Pole downstream musi zawieraæ liczbê z przedzia³u 8 - 4096";
 	
 	if($tariffadd[name] == "")
-		$error[name] = "To pole nie mo¿e byæ puste!";
+		$error[name] = "Musisz podaæ nazwê sieci!";
 	else
 		if($LMS->GetTariffIDByName($tariffadd[name]))
-			$error[name] = "Istnieje ju¿ taryfa o takiej nazwie!";
+			$error[name] = "Istnieje ju¿ taryfa o nazwie '".$tariffadd[name]."'!";
 
 	if(!$error){
 		header("Location: ?m=tarifflist&id=".$LMS->TariffAdd($tariffadd));
@@ -82,6 +76,9 @@ $SMARTY->display("tariffadd.html");
 
 /*
  * $Log$
+ * Revision 1.23  2003/09/05 13:11:24  lukasz
+ * - nowy sposób wy¶wietlania informacji o b³êdach
+ *
  * Revision 1.22  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
