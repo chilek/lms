@@ -53,6 +53,9 @@ elseif(isset($useradd))
 	if($useradd['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$useradd['zip']))
 		$error['zip'] = 'Podany kod pocztowy jest b³êdny!';
 
+	if($useradd['email']!='' && !check_email($useradd['email']))
+		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+
 	if($useradd['gguin'] == '')
 		$useradd['gguin'] = 0;
 	
@@ -62,7 +65,7 @@ elseif(isset($useradd))
 	if($useradd['gguin'] !=0 && !eregi('^[0-9]{4,}$',$useradd['gguin']))
 		$error['gguin'] = 'Podany numer GG jest niepoprawny!';
 
-        if($userdata['pin']!=0 && !eregi('^[0-9]{4,6}$',$useradd['pin']))
+        if($useradd['pin']!=0 && !eregi('^[0-9]{4,6}$',$useradd['pin']))
 	        $error['pin'] = 'Podany numer PIN jest niepoprawny!';
 	
 	if(!$error)

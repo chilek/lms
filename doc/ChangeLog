@@ -6,6 +6,9 @@ wersja 1.4.2 (??/??/????):
   - BTS#0000248: zmiana statusu/ostrze¿enia komputera nie powoduje zmiany
     administratora "ostatniej modyfikacji" (alec)
   - w lms-makemacs: poprawiona domy¶lna warto¶æ opcji config_file (alec)
+  - w polu email przy edycji/dodawaniu u¿ytkownika mo¿na wpisaæ tylko jeden 
+    adres (alec)
+  - poprawiona walidacja PINu przy dodawaniu u¿ytkownika (alec)
 
 wersja 1.4.1 Teyla (15/11/2004):
 

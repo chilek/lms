@@ -69,6 +69,9 @@ elseif(isset($userdata))
 	if($userdata['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$userdata['zip']))
 		$error['zip'] = 'Podany kod pocztowy jest b³êdny!';
 
+	if($userdata['email']!='' && !check_email($userdata['email']))
+		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+
 	if($userdata['gguin'] == '')
 		$userdata['gguin'] = 0;
 
