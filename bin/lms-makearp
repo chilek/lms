@@ -142,7 +142,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 my $networks_list = $ini->val('arp', 'networks') || '';
 my $cfile = $ini->val('arp', 'ethers_file') || '/etc/ethers';
 my $cuid = $ini->val('arp', 'ethers_owneruid') || '0';
-my $cgid = $ini->val('arp', 'ethers_ownergif') || '0';
+my $cgid = $ini->val('arp', 'ethers_ownergid') || '0';
 my $cperm = $ini->val('arp', 'ethers_permission') || '600';
 my $lock_na = $ini->val('arp', 'lock_noaccess') || '0';
 my $lock_fip = $ini->val('arp', 'lock_free_ip') || '0';
