@@ -323,15 +323,15 @@ invoices in <emphasis>[payments]</emphasis> section of
 	   <para>Example:	<prompt>paytype = '(suspension)'</prompt></para>
 	  </listitem>
 	  <listitem>
-	   <para>comment (optional)>/<para>
+	   <para>comment (optional)</para>
 	   <para>Description on invoice attached to every periodical assigment</para>
 	   <para>Default: 'Abonament wg taryfy %tariff za okres %period'</para>
-	   <para>Some keywords are substitiuted:<para>
+	   <para>Some keywords are substitiuted:</para>
 	   <para>%tariff tariff name</para>
-	   <para>%period period (counted from current day to the last in cycle, in form YYYY/MM/DD)</para>     
-	   <para>%%current_month period form 1st of current month to the end of it
+	   <para>%period period (counted from current day to the last in cycle, in form YYYY/MM/DD)</para>
+	   <para>%%current_month period form 1st of current month to the end of it</para>
 	   <para>Example:	<prompt>paytype = 'Abonament za %current_month w/g taryfy %tariff '</prompt></para>
-	  
+	  </listitem>
 	 </itemizedlist>
          <para>Script has also one useful command line parameter: <prompt>--fakedate</prompt>
          (<prompt>-f</prompt>). With this option you can make that script will execute
