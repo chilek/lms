@@ -104,6 +104,8 @@ if(isset($nodeedit))
 		$error['name'] = 'Ta nazwa jest zajêta!';
 	elseif(!eregi("^[_a-z0-9-]+$",$nodeedit['name']))
 		$error['name'] = 'Podana nazwa zawiera niepoprawne znaki!';
+	elseif(strlen($nodeedit['name'])>16)
+		$error['name'] = 'Podana nazwa jest za d³uga!';
 
 	if($nodeedit['access']!=1)
 		$nodeedit['access'] = 0;
