@@ -97,19 +97,15 @@ switch($_GET['type'])
 		$SMARTY->display('printuserlist.html');
 	break;
 
-	case 'userbalance':
+	case 'userbalance': /********************************************/
 	
 		$from = $_POST['from'];
 		$to = $_POST['to'];
 
 		// date format 'yyyy/mm/dd'	
-		if($from) {
-			list($year, $month, $day) = split('/',$from);
-			$date['from'] = mktime(0,0,0,$month,$day,$year);
-		} else { 
-			$from = date("Y/m/d",time());
-			$date['from'] = mktime(0,0,0); //pocz±tek dnia dzisiejszego
-		}
+		list($year, $month, $day) = split('/',$from);
+		$date['from'] = mktime(0,0,0,$month,$day,$year);
+
 		if($to) {
 			list($year, $month, $day) = split('/',$to);
 			$date['to'] = mktime(0,0,0,$month,$day,$year);
@@ -118,13 +114,13 @@ switch($_GET['type'])
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 
-		$layout['pagetitle'] = 'Bilans u¿ytkownika '.$LMS->GetUserName($_POST['user']).' za okres '.$from.'-'.$to;	
+		$layout['pagetitle'] = 'Bilans u¿ytkownika '.$LMS->GetUserName($_POST['user']).' za okres '.($from ? 'od '.$from.' ' : '').'do '.$to;	
 		$balancelist = $LMS->GetUserBalanceListByDate($_POST['user'],$date);
 		$SMARTY->assign('balancelist', $balancelist);
 		$SMARTY->display('printuserbalance.html');
 	break;	
 	
-	case 'nodelist':
+	case 'nodelist': /***********************************************/
 		switch($_POST['filter'])
 		{
 			case 0:
@@ -164,10 +160,70 @@ switch($_GET['type'])
 		}	
 		$SMARTY->display('printnodelist.html');
 	break;
+
+	case 'balancelist': /********************************************/
 	
-	default:
+		$from = $_POST['balancefrom'];
+		$to = $_POST['balanceto'];
+
+		// date format 'yyyy/mm/dd'	
+		list($year, $month, $day) = split('/',$from);
+		$date['from'] = mktime(0,0,0,$month,$day,$year);
+		
+		if($to) {
+			list($year, $month, $day) = split('/',$to);
+			$date['to'] = mktime(0,0,0,$month,$day,$year);
+		} else {
+			$to = date("Y/m/d",time());
+			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
+		}
+		
+		$admin = $_POST['admin'];
+		
+		$layout['pagetitle'] = 'Bilans finansowy '.($admin ? 'dla administratora '.$admin.' ' : '').'za okres '.($from ? ' od '.$from.' ' : '').'do '.$to;
+
+		$balancelist = $LMS->GetBalanceList();
+		unset($balancelist['incomeu']);
+		unset($balancelist['income']);
+		unset($balancelist['uinvoice']);
+		unset($balancelist['expense']);
+		unset($balancelist['total']);
+
+		// wiem, ¿e to cholernie nieefektywny sposób, ale...		
+		foreach($balancelist as $idx => $row)
+			if($row['time']>=$date['from'] && $row['time']<=$date['to']) {
+				if($admin)
+					if($row['admin']!=$admin)
+						continue;
+				$bbalancelist[] = $balancelist[$idx];
+				switch($balancelist[$idx]['type'])
+				{
+					case 'przychód':
+						$listdata['income'] += $balancelist[$idx]['value'];
+					break;
+					case 'rozchód':
+						$listdata['expense'] += $balancelist[$idx]['value'];
+					break;
+					case 'wp³ata u¿':
+						$listdata['incomeu'] += $balancelist[$idx]['value'];
+					break;
+				}
+			}
+		
+		$listdata['total'] = $listdata['income'] + $listdata['incomeu'] - $listdata['expense'];
+			
+		$SMARTY->assign('listdata', $listdata);
+		$SMARTY->assign('balancelist', $bbalancelist);
+		$SMARTY->display('printbalancelist.html');
+	break;
+		
+	default: /*******************************************************/
 		$layout['pagetitle'] = 'Wydruki';
+		$admins = $LMS->GetAdminList();
+		unset($admins['total']);
+		
 		$SMARTY->assign('users', $LMS->GetUserNames());
+		$SMARTY->assign('admins', $admins);
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('printmenu', $_GET['menu']);
 		$SMARTY->display('printindex.html');
