@@ -13,8 +13,8 @@
 			<img src="img/empty.gif" align="absmiddle" alt="" border="0" width="1" height="16">{$lang.owner_id}:
 		</TD>
 		<TD CLASS="fbt" width="1%">
-			<img src="img/ip.gif" border="0" alt="" align="absmiddle">&nbsp;<A href="?m=nodesearch&search&o=ip{if $listdata.direction eq "ASC" && $listdata.order eq "ip"},desc{/if}">Adres&nbsp;IP:</A> {if $listdata.order eq "ip"}<IMG SRC="img/{if $listdata.direction eq "DESC"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<img src="img/mac.gif" border="0" alt="" align="absmiddle">&nbsp;<A href="?m=nodesearch&search&o=mac{if $listdata.direction eq "ASC" && $listdata.order eq "mac"},desc{/if}">Adres&nbsp;MAC:</A> {if $listdata.order eq "mac"}<IMG SRC="img/{if $listdata.direction eq "DESC"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<img src="img/ip.gif" border="0" alt="" align="absmiddle">&nbsp;<A href="?m=nodesearch&search&o=ip{if $listdata.direction eq "ASC" && $listdata.order eq "ip"},desc{/if}">{$lang.ip_address}:</A> {if $listdata.order eq "ip"}<IMG SRC="img/{if $listdata.direction eq "DESC"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/mac.gif" border="0" alt="" align="absmiddle">&nbsp;<A href="?m=nodesearch&search&o=mac{if $listdata.direction eq "ASC" && $listdata.order eq "mac"},desc{/if}">{$lang.mac_address}:</A> {if $listdata.order eq "mac"}<IMG SRC="img/{if $listdata.direction eq "DESC"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right">
 			<NOBR><B>Razem: {$listdata.total}</B></NOBR>
