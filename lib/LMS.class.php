@@ -951,7 +951,7 @@ class LMS
 				$this->ADB->Execute($line);
 			}
 		}
-		$this->ADB->BeginTrans();		
+		$this->ADB->CommitTrans();		
 		fclose($file);
 
 		// Okej, zróbmy parê bzdurek db depend :S
