@@ -1,3 +1,8 @@
+struct net
+{
+	unsigned long address;
+	unsigned long mask;
+};	
 
 struct oident_module
 {
@@ -5,17 +10,10 @@ struct oident_module
 
 	unsigned char *prefix;
 	unsigned char *append;
-	
 	unsigned char *host;
-
 	unsigned char *file;
 	unsigned char *command;
-	
-	struct oident_net
-	{
-		unsigned long network;
-		unsigned long netmask;
-	} *networks;
+	unsigned char *networks;
 	
 	int netcount;
 };

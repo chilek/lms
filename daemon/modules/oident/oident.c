@@ -1,5 +1,5 @@
 /*
- * LMS version 1.2-cvs
+ * LMS version 1.3-cvs
  *
  *  (C) Copyright 2001-2004 LMS Developers
  *
@@ -30,14 +30,43 @@
 #include "oident.h"
 
 unsigned long inet_addr(char *);
-unsigned long htonl(unsigned long);
 char * inet_ntoa(unsigned long);
 
 void reload(GLOBAL *g, struct oident_module *o)
 {
 	FILE * fh;
 	QUERY_HANDLE *res;
-	int i;
+	unsigned char *netname;
+	int i, nc=0;
+
+	struct net *nets = (struct net *) malloc(sizeof(struct net));
+
+	for( netname=strtok(o->networks," "); netname!=NULL; netname=strtok(NULL," ") ) { 
+
+		if( (res = g->db_pquery("SELECT address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')",netname))!=NULL ) {
+
+			if(res->nrows) {
+			
+			    	nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
+				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
+				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
+			}
+			g->db_free(res);
+			nc++;		
+		}
+	}
+
+	if(!nc)
+		if( (res = g->db_query("SELECT address, INET_ATON(mask) AS mask FROM networks"))!=NULL ) {
+
+			for(nc=0; nc<res->nrows; nc++) {
+				
+				nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
+				nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
+				nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
+			}
+			g->db_free(res);
+		}
 		
 	fh = fopen(o->file, "w");
 	if(fh) {
@@ -49,18 +78,20 @@ void reload(GLOBAL *g, struct oident_module *o)
 				unsigned char *name, *mac, *ipaddr;
 				unsigned char *s;
 			
-				name = g->db_get_data(res,i,"name");
-				mac = g->db_get_data(res,i,"mac");
-				ipaddr = g->db_get_data(res,i,"ipaddr");
+				name 	= g->db_get_data(res,i,"name");
+				mac 	= g->db_get_data(res,i,"mac");
+				ipaddr 	= g->db_get_data(res,i,"ipaddr");
 				
 				if( name && mac && ipaddr ) {
 					unsigned long inet = inet_addr(ipaddr);
 					int j;
-					for(j=0; j<o->netcount; j++)
-						if(o->networks[j].network == (inet & o->networks[j].netmask)) 
+
+			    		for(j=0; j<nc; j++)
+						if(nets[j].address == (inet & nets[j].mask)) 
 							break;
 					
-					if( j != o->netcount ) {
+					if( j != nc ) {
+
 						unsigned char my_mac[13];
 						if( strlen(mac) >= 17 )
 							snprintf(my_mac, 13, "%c%c%c%c%c%c%c%c%c%c%c%c", mac[0], mac[1], mac[3], mac[4], mac[6], mac[7], mac[9], mac[10], mac[12], mac[13], mac[15], mac[16]);
@@ -82,11 +113,13 @@ void reload(GLOBAL *g, struct oident_module *o)
 		fclose(fh);
 		system(o->command);
 #ifdef DEBUG1
-		syslog(LOG_INFO,"DEBUG: [%s/oident] Reload finished", o->base.instance);
+		syslog(LOG_INFO,"DEBUG: [%s/oident] reloaded", o->base.instance);
 #endif
 	}
 	else
 		syslog(LOG_ERR, "[%s/oident] Unable to write a temporary file '%s'", o->base.instance, o->file);
+
+	free(nets);
 	
 	free(o->file);
 	free(o->command);
@@ -99,10 +132,8 @@ void reload(GLOBAL *g, struct oident_module *o)
 struct oident_module * init(GLOBAL *g, MODULE *m)
 {
 	struct oident_module *o;
-	unsigned char *networks, *net;
 	unsigned char *instance, *s;
 	dictionary *ini;
-	int nc = 0;
 	
 	if(g->api_version != APIVERSION) 
 		return (NULL);
@@ -127,63 +158,12 @@ struct oident_module * init(GLOBAL *g, MODULE *m)
 	free(s); s = g->str_concat(instance, ":command");
 	o->command = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":networks");
-	networks = strdup(g->iniparser_getstring(ini, s, "192.168.0.0/16 10.0.0.0/8"));
-	o->networks = NULL;
+	o->networks = strdup(g->iniparser_getstring(ini, s, ""));
 
 	g->iniparser_freedict(ini);
 	free(instance);
 	free(s);
 	
-	for( net=strtok(networks," "); net!=NULL; net=strtok(NULL," ") ) { 
-		unsigned char *prefixlen;
-		unsigned long network;
-		unsigned long netmask;
-		unsigned char netmask_valid;
-		prefixlen = index(net, '/');
-
-		netmask_valid = 0;
-
-		if( prefixlen ) {
-			*prefixlen = 0;
-			prefixlen ++;
-			if(index(prefixlen, '.')) {
-				netmask = inet_addr(prefixlen);
-				netmask_valid = 1;
-			}
-			else {
-				int len = atoi(prefixlen);
-				if( len >= 0 && len <= 32 ) {
-					netmask = 0xffffffff;
-					len = 32 - len;
-					while( len ) {
-						netmask = netmask << 1;
-						len--;
-					}
-					netmask = htonl(netmask);
-					netmask_valid = 1;
-				}
-			}
-		}
-	
-		network = inet_addr(net);
-		if( !netmask_valid ) { // network mask autosense 
-		
-			if(! (network & 0x000000ff)) netmask = 0xffffff00;
-			if(! (network & 0x0000ffff)) netmask = 0xffff0000;
-			if(! (network & 0x00ffffff)) netmask = 0xff000000;
-		}
-		
-		o->networks = realloc(o->networks, (sizeof(struct oident_net) * (nc+1)));
-		o->networks[nc].network = network;
-		o->networks[nc].netmask = netmask;
-		nc++;
-	}
-	free(networks);
-
-	if( !(o->netcount = nc) ) {
-		syslog(LOG_ERR, "[%s/oident] No networks for oidentd. Set 'networks' in lms.ini section [%s]", o->base.instance, o->base.instance);
-		return(NULL);
-	}
 #ifdef DEBUG1
 	syslog(LOG_INFO, "[%s/oident] Initialized",o->base.instance);
 #endif
