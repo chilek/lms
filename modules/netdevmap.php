@@ -89,8 +89,8 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 	
 	if($device == 0)
 	{
-		$device = $DB->GetOne('SELECT id FROM netdevices ORDER BY id ASC');
-		makemap($DB, $map, $seen, $device, $x, $y);
+		if($device = $DB->GetOne('SELECT id FROM netdevices ORDER BY id ASC'))
+			makemap($DB, $map, $seen, $device, $x, $y);
 	}
 	else
 	{
@@ -152,6 +152,9 @@ $start = sprintf('%d',$_GET['start']);
 if($_GET['graph'] == "")
 {
 	makemap($DB,$map,$seen,$start);
+	
+	if($map)
+	{
 	foreach($map as $idx => $x)
 	{
 		if($minx == NULL)
@@ -206,10 +209,13 @@ if($_GET['graph'] == "")
 	}
 	if(sizeof($nodemap)) sort($nodemap);
 	sort($devicemap);
-
+	}
+	
+	$deviceslist = $DB->GetAll('SELECT id, name FROM netdevices ORDER BY name ASC');
 	$SMARTY->assign('devicemap',$devicemap);
 	$SMARTY->assign('nodemap',$nodemap);
-	$SMARTY->assign('deviceslist',$DB->GetAll('SELECT id, name FROM netdevices ORDER BY name ASC'));
+	$SMARTY->assign('deviceslist',$deviceslist);
+	$SMARTY->assign('emptydb', sizeof($deviceslist) ? FALSE : TRUE);
 	$SMARTY->assign('gderror', ! function_exists('imagepng'));
 	$SMARTY->assign('start',$_GET['start']);
 	$SMARTY->display('netdevmap.html');
