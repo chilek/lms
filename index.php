@@ -100,7 +100,7 @@ $ADB = ADONewConnection($_DBTYPE);
 $ADB->debug = chkconfig($_CONFIG['phpui']['adodb_debug']);
 if($_CONFIG[phpui][adodb_debug_log] && is_writeable($_CONFIG[phpui][adodb_debug_log]))
 	define(ADODB_OUTP,'writelog');
-if (!@$ADB->Connect($_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME)) die('<h4><FONT COLOR=#ff0000>Nie mogê po³±czyæ siê z baz±! Sprawd¼ nazwê u¿ytkownika i has³o w lms.ini.</FONT></h4>');
+if (!@$ADB->Connect($_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME)) die('<h4><FONT COLOR="#FF0000">Nie mogê po³±czyæ siê z baz±! Sprawd¼ nazwê u¿ytkownika i has³o w lms.ini.</FONT></h4>');
 
 $ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 
