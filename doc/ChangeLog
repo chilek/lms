@@ -14,6 +14,8 @@ wersja 1.5.4 (??/??/????):
   - BTS#0000278: dodane uprawnienie 'zarz±dzanie sieciami i urz±dzeniami' oraz
     wy³±czono z uprawnienia 'zarz±dzanie komputerami' od³±czanie/w³±czanie
     komputerów (rejmer/alec)
+  - w dokumentacji dodana informacja jak pod³±czyæ lms-rtparser do postixa
+    przy u¿yciu procmaila (D.Rejmer)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 

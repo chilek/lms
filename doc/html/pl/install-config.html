@@ -341,11 +341,23 @@ NAME="INSTALL-CONFIG-UI"
 ><UL
 ><LI
 ><P
->allow_from  (opcjonalny)</P
+>lang</P
+><P
+>Ustawia jêzyk interfejsu u¿ytkownika. Je¶li nie podano, jêzyk
+	    zostanie ustawiony na podstawie ustawieñ przegl±darki. Domylnie: en.</P
+><P
+>Przyk³ad:		<SAMP
+CLASS="PROMPT"
+>lang = pl</SAMP
+></P
+></LI
+><LI
+><P
+>allow_from</P
 ><P
 >Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste, ka¿dy adres IP ma dostêp do LMS'a, 
-	je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego 
-	niechcianego u¿ytkownika.</P
+	    je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego 
+	    niechcianego u¿ytkownika.</P
 ><P
 >Przyk³ad:		<SAMP
 CLASS="PROMPT"
@@ -357,7 +369,7 @@ CLASS="PROMPT"
 >timeout</P
 ><P
 >Timeout sesji www. Po tym czasie (w sekundach) u¿ytkownik zostanie wylogowany je¿eli nie 
-    podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</P
+	    podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -384,7 +396,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie 
-    bêdziesz móg³ korzystaæ z LMS!</P
+	    bêdziesz móg³ korzystaæ z LMS!</P
 ></TD
 ></TR
 ></TABLE
@@ -451,7 +463,7 @@ CLASS="PROMPT"
 >networkhosts_pagelimit</P
 ><P
 >Ilo¶æ komputerów wy¶wietlanych na jednej stronie w informacjach 
-    o sieci. Domy¶lnie: 256.</P
+	    o sieci. Domy¶lnie: 256.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -498,7 +510,7 @@ CLASS="PROMPT"
 >Typ reloadu. Dozwolone warto¶ci:</P
 ><P
 >exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶ skrypt lub co¶, konfigurowalny
-     poni¿ej)</P
+	     poni¿ej)</P
 ><P
 >sql  - zrobienie wpisów w SQL'u (te¿ mo¿na ustawiæ konkretne query SQL'a)</P
 ><P
@@ -514,12 +526,12 @@ CLASS="PROMPT"
 >reload_execcmd</P
 ><P
 >Komenda do wykonania podczas reloadu je¿eli reload_type jest ustawione na 'exec'. Domy¶lnie
-    <TT
+	    <TT
 CLASS="FILENAME"
 >/bin/true</TT
 >. String ten puszczany do komendy system() wiêc proponujê rozwagê 
-    i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru 
-    wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedynczo.</P
+	    i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru 
+	    wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedynczo.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -534,9 +546,9 @@ CLASS="PROMPT"
 CLASS="PROMPT"
 >reload_type = sql</SAMP
 >.  
-    Domy¶lnie zapytanie wrzuca do tabeli timestamps warto¶æ '_force'. W zapytaniu mo¿na u¿yæ 
-    '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest 
-    traktowany jako separator kwerend, tzn. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka zapytañ SQL.</P
+	    Domy¶lnie zapytanie wrzuca do tabeli timestamps warto¶æ '_force'. W zapytaniu mo¿na u¿yæ 
+	    '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest 
+	    traktowany jako separator kwerend, tzn. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka zapytañ SQL.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -548,8 +560,8 @@ CLASS="PROMPT"
 >force_ssl</P
 ><P
 >Wymuszanie SSL'a. Ustawienie tej zmiennej na 1 spowoduje ¿e LMS bêdzie wymusza³ po³±czenie 
-    SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej 
-    próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</P
+	    SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej 
+	    próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -561,7 +573,7 @@ CLASS="PROMPT"
 >allow_mac_sharing</P
 ><P
 >Przyzwolenie na dodawanie rekordów komputerów z adresami MAC ju¿ istniej±cymi (nie sprawdza 
-    czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone</P
+	    czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -573,7 +585,7 @@ CLASS="PROMPT"
 >smarty_debug</P
 ><P
 >W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP 
-    do Smartyego. Domy¶lnie wy³±czone.</P
+	    do Smartyego. Domy¶lnie wy³±czone.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -582,10 +594,22 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>lang_debug</P
+><P
+>W³±czenie translatorskiej konsoli debugowej LMS, przydatne do ¶ledzenia brakuj±cych t³umaczeñ.
+	    Domy¶lnie wy³±czone.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>lang_debug = 1</SAMP
+></P
+></LI
+><LI
+><P
 >debug_email</P
 ><P
 >Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Mailing' LMS'a, 
-    zamiast do w³a¶ciwych u¿ytkowników.</P
+	    zamiast do w³a¶ciwych u¿ytkowników.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -597,7 +621,7 @@ CLASS="PROMPT"
 >default_zip, default_city, default_address</P
 ><P
 >Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
-    u¿ytkownika. Przydatne gdy mamy do wpisania wielu u¿ytkowników z tej samej ulicy.</P
+	    u¿ytkownika. Przydatne gdy mamy do wpisania wielu u¿ytkowników z tej samej ulicy.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -609,7 +633,7 @@ CLASS="PROMPT"
 >use_current_payday</P
 ><P
 >Okre¶la, czy ma byæ u¿yta aktualna data jako dzieñ zap³aty podczas
-    przypisywania zobowi±zañ u¿ytkownikom. Domy¶lnie wy³±czone.</P
+	    przypisywania zobowi±zañ u¿ytkownikom. Domy¶lnie wy³±czone.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -621,8 +645,8 @@ CLASS="PROMPT"
 >lastonline_limit</P
 ><P
 >Okre¶la czas (w sekundach), po którym komputer zostaje uznany za
-    nieaktywny. Powinien odpowiadaæ czêstotliwo¶ci uruchamiania skryptu
-    badaj±cego aktywno¶æ komputerów (np.lms-fping). Domy¶lnie: 600.</P
+	    nieaktywny. Powinien odpowiadaæ czêstotliwo¶ci uruchamiania skryptu
+	    badaj±cego aktywno¶æ komputerów (np.lms-fping). Domy¶lnie: 600.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -634,8 +658,8 @@ CLASS="PROMPT"
 >arpd_servers</P
 ><P
 >Lista serwerów arpd do zczytywania MAC'adresów z odleg³ych sieci.
-    Lista ta powinna zawieraæ wpisy w postaci adresIP[:port] oddzielone
-    spacjami. Domy¶lnie pusta.</P
+	    Lista ta powinna zawieraæ wpisy w postaci adresIP[:port] oddzielone
+	    spacjami. Domy¶lnie pusta.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -647,10 +671,10 @@ CLASS="PROMPT"
 >helpdesk_backend_mode</P
 ><P
 >W³±czenie tej opcji spowoduje, ¿e wszystkie wiadomo¶ci w systemie 
-    helpdesk (oprócz tych skierowanych do zg³aszaj±cego) 
-    bêd± wysy³ane do serwera pocztowego na adres odpowiedniej kolejki.
-    Na serwerze tym powinien byæ uruchomiony skrypt lms-rtparser, który zajmie
-    siê zapisem wiadomo¶ci do bazy danych. Domy¶lnie: wy³±czona.</P
+	    helpdesk (oprócz tych skierowanych do zg³aszaj±cego) 
+	    bêd± wysy³ane do serwera pocztowego na adres odpowiedniej kolejki.
+	    Na serwerze tym powinien byæ uruchomiony skrypt lms-rtparser, który zajmie
+	    siê zapisem wiadomo¶ci do bazy danych. Domy¶lnie: wy³±czona.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -662,7 +686,7 @@ CLASS="PROMPT"
 >contract_template</P
 ><P
 >W³asny szablon umowy z u¿ytkownikiem. Mo¿na tak¿e dostosowaæ domy¶lny
-    szablon. Domy¶lnie: contract.html.</P
+	    szablon. Domy¶lnie: contract.html.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -674,7 +698,7 @@ CLASS="PROMPT"
 >to_words_short_format</P
 ><P
 >Okre¶la format reprezentacji s³ownej kwot (na fakturach). Dla warto¶ci "1"
-    rozwiniêciem kwoty 123,15 bêdzie "jed dwa trz 15/100". Domy¶lnie: 0.</P
+	    rozwiniêciem kwoty 123,15 bêdzie "jed dwa trz 15/100". Domy¶lnie: 0.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
