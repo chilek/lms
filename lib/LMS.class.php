@@ -1693,6 +1693,9 @@ class LMS
 			$result['year'] = date('Y',$result['cdate']);
 			$result['month'] = date('m',$result['cdate']);
 			$result['paid'] = $this->IsInvoicePaid($invoiceid);
+			$user_info=$this->GetUser($result['customerid']);
+			$result['userpin'] = $user_info['pin'];
+			$result['userbalancelist'] = $this->GetUserBalanceList($result['customerid']);
 			return $result;
 		}
 		else
