@@ -57,7 +57,9 @@ unsigned char * str_save(unsigned char *str, const unsigned char *val)
 /* termination signals handling */
 void termination_handler(int signum)
 {
+#ifdef DEBUG1
      syslog(LOG_INFO, "A.L.E.C's LMS Daemon exited.");
+#endif
      exit(0);
 }
 

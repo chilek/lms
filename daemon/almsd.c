@@ -76,7 +76,9 @@ int main(int argc, char *argv[])
     	}
     
     	// start logging 
+#ifdef DEBUG1
     	syslog(LOG_INFO, "A.L.E.C's LMS Daemon started.");
+#endif
     
     	// initialize global structure 
     	g = (GLOBAL *) realloc(NULL,sizeof(GLOBAL));
@@ -172,7 +174,9 @@ int main(int argc, char *argv[])
 		}
 
 		if( reload ) { // **********************************************
+#ifdef DEBUG1
 	    		syslog(LOG_INFO, "Reload signal detected, calling modules...");
+#endif
 	    
 	    		// read configuration from lms.ini
 	    		ini = iniparser_load(ini_file);
