@@ -1630,7 +1630,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function UserassignmentGetForUser($id)
 	{
-		return $this->DB->GetAll('SELECT userassignments.id AS id, usergroupid, userid FROM userassignments, usergroups WHERE userid=? AND usergroups.id = usergroupid ORDER BY usergroupid ASC', array($id)))
+		return $this->DB->GetAll('SELECT userassignments.id AS id, usergroupid, userid FROM userassignments, usergroups WHERE userid=? AND usergroups.id = usergroupid ORDER BY usergroupid ASC', array($id));
 	}
 
 	function UserassignmentDelete($id)
