@@ -99,6 +99,18 @@
 		</TD>
 	</TR>
 {/if}
+{if $usergroups}
+	<TR>
+		<TD WIDTH="1%">
+			<IMG SRC="img/group.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="99%" COLSPAN="2">
+			{foreach from=$usergroups item=usergroup name=usergroup}
+				{$usergroup.name}{if !$smarty.foreach.usergroup.last},{/if} 
+			{/foreach}
+		</TD>
+	</TR>
+{/if}
 	<TR>
 		<TD WIDTH="1%">
 			<IMG SRC="img/money.gif" BORDER="0" ALT="">
@@ -118,3 +130,4 @@ auto_iframe(0);
 </SCRIPT>
 </BODY>
 </HTML>
+
