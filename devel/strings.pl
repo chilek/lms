@@ -15,18 +15,26 @@ sub parse_html()
 {
     my $plik = shift;
     my $list = shift;
+    my $force = shift;
     open (FILE, "../templates/$plik") or print "Error reading file ../templates/$plik: $!\n";
     my @file = <FILE>;
     close (FILE);
     foreach my $l (@file)
     {
+
 	if ($l =~ /{include file="([a-z]+.html)"}/)
 	{
-	    $list = &parse_html ("$1", $list);
+	    #we dont analize global files header.html and footer.html unless we want to
+	    if ((($1 ne 'header.html') and ($1 ne 'footer.html')) or ($force==1)) 	
+		{$list = &parse_html ("$1", $list, $force);}
 	}
-	if ($l =~ /\{t[^}]*\}([^{]*)\{\/t}/)
+	if (($l =~ /\{t[^}]*\}([^{]*)\{\/t}/) or ($l =~ /text="(.*?[^\\])"/))
 	{
-	    push (@$list, $1);
+	    my $f = $1;
+	    $f =~ s/\\\$/\$/g;		# $ -> \$
+	    $f =~ s/\\/\\\\/g;		# \ -> \\
+    	    $f =~ s/\x27/\\\x27/g;	# ' -> \'
+	    push (@$list, $f);
 	}
     }    
     return $list;
@@ -41,25 +49,23 @@ sub parse_html()
 
 sub parse_module()
 {
+    my $path = shift;
     my $module = shift;
     my $list = shift;
-    open (MODULE, "../modules/$module");
+    open (MODULE, "$path/$module");
     foreach my $l (<MODULE>)
     {
         if ($l =~ /\$SMARTY->display\('(.+\.html)'\);/)
         {
-	    my $list = &parse_html ($1, $list);
-#	    print "$1\n";
-#	    die;
+	    my $list = &parse_html ($1, $list, 0);
 	}
-	if ($l =~ /trans\('(.+)'\);/)
+	if ($l =~ /trans\(\x27(.*?[^\\])\x27/)
 	{
 	    push (@$list, $1);
 	}
 	if ($l =~ /\$LMS *-> *([a-zA-Z]+)/)
 	{
 	    $list = &parse_LMS_class ($1, $list);
-#	    print "Funkcja: $1\n";
 	}
     }
     close (MODULE);
@@ -138,14 +144,23 @@ sub save_list()
 }
 
 
-my @list;
 opendir (HANDLE, "../modules/") || die "Cannot opendir: $!";
-
+my @list;
 foreach my $module (sort readdir(HANDLE))
 {
     if ( $module =~ /(.+\.php$)/)
     {
         print "Analizing: $1\n";
-        &parse_module ($1, @list);
+        &parse_module ('../modules', $1, @list);
     }
 }
+
+# okay lets analize global strings
+
+print "Analizing globals\n";
+
+my $global_list;
+$global_list = &parse_html ('header.html', $global_list, 1);
+$global_list = &parse_html ('footer.html', $global_list, 1);
+$global_list = &parse_module ('..', 'index.php', $global_list);
+
