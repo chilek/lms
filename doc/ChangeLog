@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.0pre7 (??/??/2003):
+wersja 1.0pre7 (24/03/2003):
 
   - poprawiony powa¿ny bug w lms-mgc powoduj±cy traktowanie jako
     prywatnej sieci tylko 192.168.1.0/24 a nie 192.168.0.0/16
