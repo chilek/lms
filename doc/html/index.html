@@ -4,26 +4,11 @@
 ><LINK
 href="style.css"
 rel="stylesheet"
-type="text/css"><TITLE
->LMS - LAN Management System</TITLE
-></HEAD
-><BODY
+type="text/css"><BODY
 bgcolor="#EBE4D6"
-><FONT
-color="brown"
->LMS - LAN Management System</FONT
 ><CENTER
->    <FONT
-color="brown"
->2003-04-07</FONT
->
-    <FONT
-color="brown"
->LMS - LAN Management System</FONT
->
-    <FONT
-color="brown"
->$Id$</FONT
+>    <H1
+>LMS - LAN Management System</H1
 >
     <P>              <B
 >Marcin</B
@@ -56,31 +41,24 @@ color="brown"
 >
       <br>
     
-    <FONT
-color="brown"
->     <FONT
-color="brown"
->2003</FONT
+    <P><B
+>&copy;</B
+>     <B
+>2003</B
 >
-     <FONT
-color="brown"
->LMS Developers</FONT
+     <B
+>LMS Developers</B
 >
-    </FONT
->
-    <FONT
-color="brown"
-><P
+    
+    <P><P
 align="justify">Niniejszy  program  jest  oprogramowaniem  wolnodostêpnym;  mo¿esz  go rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej Licencji Publicznej  GNU, wydanej przez Fundacjê Wolnodostêpnego Oprogramowania - wed³ug wersji 2-giej tej Licencji lub której¶ z pó¼niejszych wersji.
     <P
 align="justify">Niniejszy  program  rozpowszechniany  jest  z  nadziej±,  i¿ bêdzie on u¿yteczny  -  jednak  BEZ  JAKIEJKOLWIEK  GWARANCJI,  nawet  domy¶lnej gwarancji  PRZYDATNO¦CI  HANDLOWEJ  albo  PRZYDATNO¦CI  DO OKRE¦LONYCH ZASTOSOWAÑ.   W  celu  uzyskania  bli¿szych  informacji  -  Powszechna Licencja Publiczna GNU.
     <P
-align="justify">Z  pewno¶ci±  wraz  z  niniejszym  programem otrzyma³e¶ te¿ egzemplarz Powszechnej  Licencji  Publicznej  GNU;  je¶li  nie  -  napisz do Free Software  Foundation,  Inc.,  59  Temple Place - Suite 330, Boston, MA 02111-1307, USA. </FONT
->
+align="justify">Z  pewno¶ci±  wraz  z  niniejszym  programem otrzyma³e¶ te¿ egzemplarz Powszechnej  Licencji  Publicznej  GNU;  je¶li  nie  -  napisz do Free Software  Foundation,  Inc.,  59  Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
   </CENTER
-><HR
-size="5"><H2
->Contents</H2
+><H2
+>Zawarto¶æ</H2
 ><ul
 >  
   
@@ -88,7 +66,7 @@ size="5"><H2
 
 
     <LI>Rozdzia³ 1 - Na pocz±tek<UL
-><LI>Czym jest LMS<LI>Co LMS mo¿e a czego nie<LI>Co wchodzi w sk³ad LMSa<LI>Instalacja<LI>Konfiguracja<LI>Bezpieczeñstwo</UL
+><LI>Czym jest LMS<LI>Co LMS mo¿e a czego nie<LI>Co wchodzi w sk³ad LMSa<LI>Instalacja<LI>Konfiguracja<LI>Prawa dostêpu<LI>Bezpieczeñstwo</UL
 >
 
   <LI>Rozdzia³ 2 - LMS UI (User Interface)<UL
@@ -99,55 +77,42 @@ size="5"><H2
 ></UL
 >
 
-    <LI>Rozdzia³ 4 - LMSd<UL
-></UL
->
-
-    <LI>Rozdzia³ 5 - Skrypty<UL
+  
+    <LI>Rozdzia³ 4 - Skrypty<UL
 ><LI>Instalacja<LI>lms-notify<LI>lms-cutoff<LI>lms-eachmonth</UL
 >
 
-    <LI>Rozdzia³ 6 - FAQ<UL
-></UL
->
-<LI><A
-href="DOCPART-INDEX.html#INDEXTOP"
->Index</A
-></ul
+  </ul
 ></BODY
-></HTML
-><!-- End of DOCPART.html --><!-- Start of DOCPART-.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+></HEAD
+><!-- End of DOCPART.html --></HTML
+><!-- Start of DOCPART-.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML
 ><HEAD
 ><LINK
 href="style.css"
 rel="stylesheet"
-type="text/css"><TITLE
->Przedmowa</TITLE
-></HEAD
-><BODY
+type="text/css"><BODY
 bgcolor="#EBE4D6"
 ><H1
->Preface A. Przedmowa</H1
+>Przedmowa</H1
 >
 <P
 align="justify">Wersja parsowana z DocBook'a do htmla przy pomocy jade i pierwszego lepszego arkusza stylów, wiêc nie narzekaæ na brzydkeigo HTMLa. Polskie krzaczki s± w ISO. £adnego HTMLa mo¿na siê spodziewaæ jak wyjdzie wersja 1.0 LMSa (czyli w raczej dalszej nieokre¶lonej przysz³o¶ci ;-) )
 <P
 align="justify">Sugestie s³aæ na lexx maupa polarnet kropka org.</BODY
-></HTML
-><!-- End of DOCPART-.html --><!-- Start of DOCPART-1.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+></HEAD
+><!-- End of DOCPART-.html --></HTML
+><!-- Start of DOCPART-1.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML
 ><HEAD
 ><LINK
 href="style.css"
 rel="stylesheet"
-type="text/css"><TITLE
->Na pocz±tek</TITLE
-></HEAD
-><BODY
+type="text/css"><BODY
 bgcolor="#EBE4D6"
 >    <H1
->Chapter 1. Na pocz±tek</H1
+>Rozdzia³ 1. Na pocz±tek</H1
 >
           <H2
 >Czym jest LMS</H2
@@ -178,19 +143,13 @@ align="justify">generowanie praktycznie jakiegkolwiek konfiga na podstawie danyc
 	  <P>
 	</UL
 >
-	<P
-align="justify">Aktualne prace zmierzaj± tak¿e w kierunku rozbudowy LMS'a o prostego CMS'a (Content Managment System) a tak¿e inne funkcje.
-	<P
-align="justify"><I
->UWAGA!</I
-> Jako ¿e developerzy LMS'a s± band± niezdecydowanych i wiecznie marudz±cych person, prawdopodobnie prêdzej siê doczekacie koñca recesji ni¿ wersji stabilnej LMS'a. Do tego czasu macie dwie mo¿liwo¶ci: albo u¿ywaæ wersji 1.0pre5 która chodzi dobrze, albo mêczyæ siê z wersj± CVS i marudziæ na li¶cie mailingowej.
-	<P
-align="justify">Rozbudowa o dodatkowe funkcje bêdzie zale¿eæ od potrzeb i sugestii u¿ytkowników. Projekt jest w powijakach i nie wiadomo do koñca, w któr± stronê bêdzie ewoluowa³. Ca³o¶æ zosta³a wymy¶lona w ramach administracji <A
+	
+        <P
+align="justify">Ca³o¶æ zosta³a wymy¶lona w ramach administracji <A
 href="http://www.netx.waw.pl/"
 >ASK NetX</A
 > i tam jest nieustannie rozwijana i poddawana testom ;)
-	<P
-align="justify">Ca³o¶æ kodu publikowana jest na licencji GNU GPL v2.
+	
     
           <H2
 >Co LMS mo¿e a czego nie</H2
@@ -207,8 +166,7 @@ align="justify">LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <I
 > (User Interface). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy danych (w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w LMS-UI wykonujemy wszystkie czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMSa.
 	<P
 align="justify">LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty wymagaj± aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, musisz mieæ PERLa. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych b±d¼ wysy³anie upomnieñ. Jest jeszcze LMS-MGC, który te¿ jest skryptem ale na tyle uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny, i zrestartowaæ us³ugê.
-	<P
-align="justify">Jest jeszcze LMSd (LMS Daemon), napisany w jêzyku C. Jest on przeznaczony (a w³a¶ciwie jego wtyczki) do generowania plików konfiguracyjnych i restartowania us³ug. Odpowiada on za to, aby to co zosta³o zmienione w LMS-UI zosta³o zmienione tak¿e w rzeczywisto¶ci.
+	
     
           <H2
 >Instalacja</H2
@@ -283,8 +241,7 @@ align="justify">DBD-pg (Je¶li masz zamiar u¿ywaæ postgres'a);
 	  </UL
 >
 	  
-	  <P
-align="justify">A je¶li chcesz uruchomiæ LMSd potrzebujesz dzia³aj±cy kompilator jêzyka C.
+	
 	
 		  <H3
 >Sci±gamy LMSa</H3
@@ -300,7 +257,7 @@ href="http://lms.rulez.pl"
 >), lub bezpo¶rednio z CVS:
 	  <P><TABLE
 border="1"
-bgcolor="#CEBD9B"
+bgcolor="#F4F0EC"
 width="100%"
 ><TR
 ><TD
@@ -317,7 +274,7 @@ align="justify">je¶li chcemy sci±gn±æ przez interfejs webowy lub je¶li mamy CVS 
 	  
 	  <P><TABLE
 border="1"
-bgcolor="#CEBD9B"
+bgcolor="#F4F0EC"
 width="100%"
 ><TR
 ><TD
@@ -347,7 +304,7 @@ align="justify">Je¶li ¶ci±gneli¶my archwiwum to je teraz rozpakowujemy, a nastêp
 align="justify">Je¶li jeste¶my w katalogu z LMSem, to musimy ¶ci±gn±c biblioteki. Najpierw ¶ci±gamy Smarty:
 	  <P><TABLE
 border="1"
-bgcolor="#CEBD9B"
+bgcolor="#F4F0EC"
 width="100%"
 ><TR
 ><TD
@@ -375,7 +332,7 @@ width="100%"
 align="justify">Teraz ADOdb:
 	  <P><TABLE
 border="1"
-bgcolor="#CEBD9B"
+bgcolor="#F4F0EC"
 width="100%"
 ><TR
 ><TD
@@ -405,7 +362,7 @@ align="justify">Po ¶ci±gniêciu i zainstalowaniu LMSa musimy jeszcze ustawiæ dwie
 >
 	  <P><TABLE
 border="1"
-bgcolor="#CEBD9B"
+bgcolor="#F4F0EC"
 width="100%"
 ><TR
 ><TD
@@ -599,6 +556,16 @@ align="justify">adodb_dir = /usr/lib/php/adodb</P
 >
     
           <H2
+>Prawa dostêpu</H2
+>
+      <P
+align="justify">LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu adminowi mo¿na przydzieliæ dowoln± kombinacjê regu³ dostêpu.
+      <P
+align="justify">Domy¶lnie zdefiniowanych  jest  osiem regu³ dostêpu. Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania.
+      <P
+align="justify">Modu³y do których administrator ma zawsze dostêp to: welcome,  copyrights,  logout, chpasswd (przy czym chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostep do reszty jest zdefiniowany regu³ami. Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie przydzieli mu regu³kê 0 czyli pe³en dostêp.
+    
+          <H2
 >Bezpieczeñstwo</H2
 >
         <P
@@ -612,20 +579,18 @@ color="brown"
 >), bo inaczej do plików z kopiami zapasowymi bazy bêdzie siê mo¿na dostaæ z poziomu www bez autoryzacji.
     
   </BODY
-></HTML
-><!-- End of DOCPART-1.html --><!-- Start of DOCPART-2.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+></HEAD
+><!-- End of DOCPART-1.html --></HTML
+><!-- Start of DOCPART-2.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML
 ><HEAD
 ><LINK
 href="style.css"
 rel="stylesheet"
-type="text/css"><TITLE
->LMS UI (User Interface)</TITLE
-></HEAD
-><BODY
+type="text/css"><BODY
 bgcolor="#EBE4D6"
 > <H1
->Chapter 2. LMS UI (User Interface)</H1
+>Rozdzia³ 2. LMS UI (User Interface)</H1
 >
  <P
 align="justify">Tutaj bêdzie opis LMS-UI
@@ -800,20 +765,18 @@ align="justify">debug_mail = root@localhost</P
   </UL
 >
  </BODY
-></HTML
-><!-- End of DOCPART-2.html --><!-- Start of DOCPART-3.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+></HEAD
+><!-- End of DOCPART-2.html --></HTML
+><!-- Start of DOCPART-3.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML
 ><HEAD
 ><LINK
 href="style.css"
 rel="stylesheet"
-type="text/css"><TITLE
->LMS-MGC</TITLE
-></HEAD
-><BODY
+type="text/css"><BODY
 bgcolor="#EBE4D6"
 > <H1
->Chapter 3. LMS-MGC</H1
+>Rozdzia³ 3. LMS-MGC</H1
 >
   
   <P
@@ -1286,58 +1249,52 @@ align="justify">Oprócz tego w czê¶ci opcji konfiguracyjnych mo¿emy u¿ywaæ nastêp
 align="justify">%IP - zostanie rozwiniête do adresu IP
     <P>
     <LI>     <P
-align="justify">%ID
+align="justify">%ID - ID sieci w bazie
     <P>
     <LI>     <P
-align="justify">%MAC
+align="justify">%MAC - zostanie rozwiniête do adresu MAC karty sieciowej
     <P>
     <LI>     <P
-align="justify">%OWNER
+align="justify">%OWNER - w³a¶ciciel komputera
     <P>
     <LI>     <P
-align="justify">%NAME
+align="justify">%NAME - nazwa sieci du¿ymi znakami
     <P>
     <LI>     <P
-align="justify">%name
+align="justify">%name - nazwa sieci ma³ymi znakami
     <P>
     <LI>     <P
-align="justify">%UPRATE
+align="justify">%UPRATE - limit transferu dla danych wychodz±cych
     <P>
     <LI>     <P
-align="justify">%DOWNRATE
+align="justify">%DOWNRATE - limit transferu dla danych przychodz±cych
     <P>
     <LI>     <P
-align="justify">%1 %2 %3 %4
+align="justify">%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP 
     <P>
     <LI>     <P
-align="justify">%ADDR
+align="justify">%ADDR - adres sieci
     <P>
     <LI>     <P
-align="justify">%GATE
+align="justify">%GATE - brama sieci
     <P>
     <LI>     <P
-align="justify">%DNS
+align="justify">%DNS - serwer DNS tej sieci
     <P>
     <LI>     <P
-align="justify">%DOMAIN
+align="justify">%DOMAIN - domena tej sieci
     <P>
     <LI>     <P
-align="justify">%WINS
+align="justify">%WINS - adres serwera WINS dla tej sieci
     <P>
     <LI>     <P
-align="justify">%DHCPS
+align="justify">%DHCPS - pierwszy adres DHCP tej sieci
     <P>
     <LI>     <P
-align="justify">%DHCPE
+align="justify">%DHCPE - ostatni adres DHCP tej sieci
     <P>
     <LI>     <P
-align="justify">%DNAME
-    <P>
-    <LI>     <P
-align="justify">%DADDR
-    <P>
-    <LI>     <P
-align="justify">%DATE	- data w formacie YYYYMMDD;
+align="justify">%DATE - data w formacie YYYYMMDD;
     <P>
     <LI>     <P
 align="justify">%TIME - czas w formacie HHMM;
@@ -1351,38 +1308,18 @@ align="justify">%UTIME - czas w formacie unix timestamp;
    </UL
 >
   </BODY
-></HTML
-><!-- End of DOCPART-3.html --><!-- Start of DOCPART-4.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+></HEAD
+><!-- End of DOCPART-3.html --></HTML
+><!-- Start of DOCPART-4.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML
 ><HEAD
 ><LINK
 href="style.css"
 rel="stylesheet"
-type="text/css"><TITLE
->LMSd</TITLE
-></HEAD
-><BODY
+type="text/css"><BODY
 bgcolor="#EBE4D6"
 >    <H1
->Chapter 4. LMSd</H1
->
-	<P
-align="justify">Chwilowo bez opiekuna. Mo¿e ty chcesz siê zaopiekowaæ? :-)
-  </BODY
-></HTML
-><!-- End of DOCPART-4.html --><!-- Start of DOCPART-5.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML
-><HEAD
-><LINK
-href="style.css"
-rel="stylesheet"
-type="text/css"><TITLE
->Skrypty</TITLE
-></HEAD
-><BODY
-bgcolor="#EBE4D6"
->    <H1
->Chapter 5. Skrypty</H1
+>Rozdzia³ 4. Skrypty</H1
 >
                <H2
 >Instalacja</H2
@@ -1401,7 +1338,7 @@ align="justify">Przyk³adowo, je¶li chcieliby¶my aby op³ata abonamentowa by³a nal
 > powinien wygl±daæ tak:
         <P><TABLE
 border="1"
-bgcolor="#CEBD9B"
+bgcolor="#F4F0EC"
 width="100%"
 ><TR
 ><TD
@@ -1427,68 +1364,38 @@ color="brown"
 	  <P
 align="justify">lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych [w iso-8859-2] i traktowania ich jako szablonów do mailingu.
 	  <P
-align="justify">W plikach mo¿na u¿ywaæ nastêpuj±cych s³ów:
+align="justify">W plikach mo¿na u¿ywaæ nastêpuj±cych zmiennych:
 	  <P><UL
 >	    <LI>	       <P
-align="justify">%date-m
+align="justify">%date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1 poprzedzone 0, np. 02
 	    <P>
 	    <LI>	       <P
-align="justify">%date-y
+align="justify">%date-y - zostanie zast±pione aktualnym rokiem, np 2003
 	    <P>
 	    <LI>	       <P
-align="justify">%saldo
+align="justify">%saldo - zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535
 	    <P>
 	    <LI>	       <P
-align="justify">%abonament
+align="justify">%abonament - zostanie zast±pione kwot± abonamentu jaka jest do danego u¿ytkownika przypisana, np. 107
 	    <P>
 	    <LI>	       <P
-align="justify">%b
+align="justify">%b - saldo z zanegowanym znakiem, np. 107
 	    <P>
 	    <LI>	       <P
-align="justify">%B
+align="justify">%B - saldo z prawdziwym znakiem, np. -107
 	    <P>
 	    <LI>	       <P
-align="justify">%last_10_in_a_table
+align="justify">%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:
 	    <P>
 	  </UL
 >
-	  <P
-align="justify">które rozwijane s± do nastêpuj±cych danych:
-	  <P
-align="justify"><I
->%date-m</I
-> zostanie zast±pione aktualnym miesi±cem, licz±c od 1 poprzedzone 0, np. 02
-	  <P
-align="justify"><I
->%date-y</I
-> zostanie zast±pione aktualnym rokiem, np 2003
-	  <P
-align="justify"><I
->%saldo</I
-> zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535
-	  <P
-align="justify"><I
->%abonament</I
-> zostanie zast±pione kwot± abonamentu jaka jest do danego u¿ytkownika przypisana, np. 107
-	  <P
-align="justify"><I
->%b</I
-> saldo z zanegowanym znakiem, np. 107
-	  <P
-align="justify"><I
->%B</I
-> saldo z prawdziwym znakiem, np. -107
-	  <P
-align="justify"><I
->%last_10_in_a_table</I
-> wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:
 	  <P
 >	   <B
 >Przyk³adowy wyci±g 10 ostatnich operacji kasowych</B
 >
 <P><TABLE
 border="1"
-bgcolor="#CEBD9B"
+bgcolor="#F4F0EC"
 width="100%"
 ><TR
 ><TD
@@ -1514,7 +1421,7 @@ width="100%"
 >
 <P><TABLE
 border="1"
-bgcolor="#CEBD9B"
+bgcolor="#F4F0EC"
 width="100%"
 ><TR
 ><TD
@@ -1658,7 +1565,7 @@ align="justify">lexx@domain.pl</P
 >lms-cutoff</H2
 >
 	 <P
-align="justify">Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez LMSd lub LMS-MGC.
+align="justify">Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.
          <P
 align="justify">Konfiguracjê dla lms-cutoff mo¿emy ustaliæ w pliku <TT
 >lms.ini</TT
@@ -1687,43 +1594,6 @@ align="justify">limit = -20</P
 align="justify">Skrypt po uruchomieniu nalicza u¿ytkownikom op³atê abonamentow±. Aby dzia³a³ poprawnie powinien byæ uruchamiany tylko raz w miesi±cu (o ile u¿ytkownicy wnosz± op³aty co miesi±c). Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.
         
   </BODY
-></HTML
-><!-- End of DOCPART-5.html --><!-- Start of DOCPART-6.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML
-><HEAD
-><LINK
-href="style.css"
-rel="stylesheet"
-type="text/css"><TITLE
->FAQ</TITLE
 ></HEAD
-><BODY
-bgcolor="#EBE4D6"
->    <H1
->Chapter 6. FAQ</H1
+><!-- End of DOCPART-4.html --></HTML
 >
-      <P
-align="justify">Jest jakie¶ FAQ?
-  </BODY
-></HTML
-><!-- End of DOCPART-6.html --><!-- Start of DOCPART-INDEX.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML
-><HEAD
-><LINK
-href="style.css"
-rel="stylesheet"
-type="text/css"><TITLE
->LMS - LAN Management System</TITLE
-></HEAD
-><BODY
-bgcolor="#EBE4D6"
-><A
-name="INDEXTOP"
-></A
-><H1
->Index</H1
-><UL
-></UL
-></BODY
-></HTML
-><!-- End of DOCPART-INDEX.html -->
