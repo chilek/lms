@@ -1,0 +1,3 @@
+#!/bin/sh
+
+msgfmt lms.po -o lms.mo
