@@ -1398,7 +1398,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetTariffList()
 	{
-		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate FROM tariffs ORDER BY name ASC"))
+		if($tarifflist = $this->DB->GetAll('SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate FROM tariffs ORDER BY name ASC'))
 		{
 			$week = $this->DB->GetAllByKey('SELECT COUNT(userid) AS count, tariffid, SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY tariffid', 'tariffid');
 			$month = $this->DB->GetAllByKey('SELECT COUNT(userid) AS count, tariffid, SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY tariffid', 'tariffid');
@@ -1577,24 +1577,22 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 				switch($row['type'])
 				{
-					case "1":
+					case 1:
 						$balancelist[$idx]['type'] = 'przychód';
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $balancelist[$idx]['value'];
 						$balancelist['income'] = $balancelist['income'] + $balancelist[$idx]['value'];
 					break;
-
-					case "2":
+					case 2:
 						$balancelist[$idx]['type'] = 'rozchód';
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] - $balancelist[$idx]['value'];
 						$balancelist['expense'] = $balancelist['expense'] + $balancelist[$idx]['value'];
 					break;
-
-					case "3":
+					case 3:
 						$balancelist[$idx]['type'] = 'wp³ata u¿';
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $balancelist[$idx]['value'];
 						$balancelist['incomeu'] = $balancelist['incomeu'] + $balancelist[$idx]['value'];
 					break;
-					case "4":
+					case 4:
 						$balancelist[$idx]['type'] = 'obci±¿enie u¿';
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
 						$balancelist['uinvoice'] = $balancelist['uinvoice'] + $balancelist[$idx]['value'];
@@ -1803,7 +1801,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function IsIPFree($ip)
 	{
-		return !($this->DB->GetOne("SELECT * FROM nodes WHERE ipaddr=inet_aton(?)", array($ip)) ? TRUE : FALSE);
+		return !($this->DB->GetOne('SELECT * FROM nodes WHERE ipaddr=inet_aton(?)', array($ip)) ? TRUE : FALSE);
 	}
 
 	function GetPrefixList()
@@ -1819,30 +1817,29 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function NetworkAdd($netadd)
 	{
-		if($netadd['prefix'] != "")
+		if($netadd['prefix'] != '')
 			$netadd['mask'] = prefix2mask($netadd['prefix']);
-		$this->SetTS("networks");
-		if($this->DB->Execute("INSERT INTO networks (name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend) VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?)", array(strtoupper($netadd['name']),$netadd['address'],$netadd['mask'],strtolower($netadd['interface']),$netadd['gateway'],$netadd['dns'],$netadd['dns2'],$netadd['domain'],$netadd['wins'],$netadd['dhcpstart'],$netadd['dhcpend'])))
-			return $this->DB->GetOne("SELECT id FROM networks WHERE address=inet_aton(?)", array($netadd['address']));
+		$this->SetTS('networks');
+		if($this->DB->Execute('INSERT INTO networks (name, address, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend) VALUES (?, inet_aton(?), ?, ?, ?, ?, ?, ?, ?, ?, ?)', array(strtoupper($netadd['name']),$netadd['address'],$netadd['mask'],strtolower($netadd['interface']),$netadd['gateway'],$netadd['dns'],$netadd['dns2'],$netadd['domain'],$netadd['wins'],$netadd['dhcpstart'],$netadd['dhcpend'])))
+			return $this->DB->GetOne('SELECT id FROM networks WHERE address=inet_aton(?)', array($netadd['address']));
 		else
 			return FALSE;
 	}
 
 	function NetworkDelete($id)
 	{
-		$this->SetTS("networks");
-		return $this->DB->Execute("DELETE FROM networks WHERE id=?", array($id));
+		$this->SetTS('networks');
+		return $this->DB->Execute('DELETE FROM networks WHERE id=?', array($id));
 	}
 
 	function GetNetworkName($id)
 	{
-		return $this->DB->GetOne("SELECT name FROM networks WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT name FROM networks WHERE id=?', array($id));
 	}
-
 
 	function GetNetIDByIP($ipaddr)
 	{
-		if($networks = $this->DB->GetAll("SELECT id, inet_ntoa(address) AS address, mask FROM networks"))
+		if($networks = $this->DB->GetAll('SELECT id, inet_ntoa(address) AS address, mask FROM networks'))
 			foreach($networks as $idx => $row)
 				if(isipin($ipaddr,$row['address'],$row['mask']))
 					return $row['id'];
@@ -1851,7 +1848,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetNetworks()
 	{
-		if($netlist = $this->DB->GetAll("SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask FROM networks"))
+		if($netlist = $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask FROM networks'))
 			foreach($netlist as $idx => $row)
 				$netlist[$idx]['prefix'] = mask2prefix($row['mask']);
 
@@ -1860,22 +1857,21 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetNetworkParams($id)
 	{
-		if($params = $this->DB->GetRow("SELECT *, inet_ntoa(address) AS netip FROM networks WHERE id=?", array($id)))
+		if($params = $this->DB->GetRow('SELECT *, inet_ntoa(address) AS netip FROM networks WHERE id=?', array($id)))
 			$params['broadcast'] = ip_long(getbraddr($params['netip'],$params['mask']));
 		return $params;
 	}
 
 	function GetNetworkList()
 	{
-
-		if($networks = $this->DB->GetAll("SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks ORDER BY name"))
+		if($networks = $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks ORDER BY name'))
 			foreach($networks as $idx => $row)
 			{
 				$row['prefix'] = mask2prefix($row['mask']);
 				$row['size'] = pow(2,(32 - $row['prefix']));
 				$row['broadcast'] = getbraddr($row['address'],$row['mask']);
 				$row['broadcastlong'] = ip_long($row['broadcast']);
-				$row['assigned'] = $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?", array($row['addresslong'], $row['broadcastlong']));
+				$row['assigned'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?', array($row['addresslong'], $row['broadcastlong']));
 				$networks[$idx] = $row;
 				$networks['size'] += $row['size'];
 				$networks['assigned'] += $row['assigned'];
@@ -1947,23 +1943,23 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return FALSE;
 	}
 
-	function NetworkShift($network="0.0.0.0",$mask="0.0.0.0",$shift=0)
+	function NetworkShift($network='0.0.0.0',$mask='0.0.0.0',$shift=0)
 	{
-		$this->SetTS("nodes");
-		$this->SetTS("networks");
-		return $this->DB->Execute("UPDATE nodes SET ipaddr = ipaddr + ? WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)", array($shift, $network, getbraddr($network,$mask)));
+		$this->SetTS('nodes');
+		$this->SetTS('networks');
+		return $this->DB->Execute('UPDATE nodes SET ipaddr = ipaddr + ? WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($shift, $network, getbraddr($network,$mask)));
 	}
 
 	function NetworkUpdate($networkdata)
 	{
-		$this->SetTS("networks");
-		return $this->DB->Execute("UPDATE networks SET name=?, address=inet_aton(?), mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?", array(strtoupper($networkdata['name']),$networkdata['address'],$networkdata['mask'],strtolower($networkdata['interface']),$networkdata['gateway'],$networkdata['dns'],$networkdata['dns2'],$networkdata['domain'],$networkdata['wins'],$networkdata['dhcpstart'],$networkdata['dhcpend'],$networkdata['id']));
+		$this->SetTS('networks');
+		return $this->DB->Execute('UPDATE networks SET name=?, address=inet_aton(?), mask=?, interface=?, gateway=?, dns=?, dns2=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?', array(strtoupper($networkdata['name']),$networkdata['address'],$networkdata['mask'],strtolower($networkdata['interface']),$networkdata['gateway'],$networkdata['dns'],$networkdata['dns2'],$networkdata['domain'],$networkdata['wins'],$networkdata['dhcpstart'],$networkdata['dhcpend'],$networkdata['id']));
 	}
 
 	function NetworkCompress($id,$shift=0)
 	{
-		$this->SetTS("nodes");
-		$this->SetTS("networks");
+		$this->SetTS('nodes');
+		$this->SetTS('networks');
 		$network=$this->GetNetworkRecord($id);
 		$address = $network['addresslong']+$shift;
 		foreach($network['nodes']['id'] as $key => $value)
@@ -1971,15 +1967,15 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			if($value)
 			{
 				$address ++;
-				$this->DB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?", array($address,$value));
+				$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE id=?', array($address,$value));
 			}
 		}
 	}
 
 	function NetworkRemap($src,$dst)
 	{
-		$this->SetTS("nodes");
-		$this->SetTS("networks");
+		$this->SetTS('nodes');
+		$this->SetTS('networks');
 		$network['source'] = $this->GetNetworkRecord($src);
 		$network['dest'] = $this->GetNetworkRecord($dst);
 		foreach($network['source']['nodes']['id'] as $key => $value)
@@ -1991,7 +1987,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			{
 				while($this->NodeExists($network['dest']['nodes']['id'][$counter]))
 					$counter++;
-				$this->DB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?", array($network['dest']['nodes']['addresslong'][$counter],$value));
+				$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE id=?', array($network['dest']['nodes']['addresslong'][$counter],$value));
 				$counter++;
 			}
 		return $counter;
@@ -1999,7 +1995,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetNetworkRecord($id,$page = 0, $plimit = 4294967296)
 	{
-		$network = $this->DB->GetRow("SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?", array($id));
+		$network = $this->DB->GetRow('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?', array($id));
 		$network['prefix'] = mask2prefix($network['mask']);
 		$network['size'] = pow(2,32-$network['prefix']);
 		$network['assigned'] = 0;
@@ -2015,7 +2011,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$start = $page * $plimit;
 		$end = ($network['size'] > $plimit ? $start + $plimit : $network['size']);
 
-		$nodes = $this->DB->GetAllByKey("SELECT id, name, ipaddr, ownerid, netdev FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?",'ipaddr', array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
+		$nodes = $this->DB->GetAllByKey('SELECT id, name, ipaddr, ownerid, netdev FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?','ipaddr', array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
 
 	
 		for($i = 0; $i < ($end - $start) ; $i ++)
@@ -2058,7 +2054,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetNetwork($id)
 	{
-		if($row = $this->DB->GetRow("SELECT inet_ntoa(address) AS address, address AS addresslong, mask, name FROM networks WHERE id=?", array($id)))
+		if($row = $this->DB->GetRow('SELECT inet_ntoa(address) AS address, address AS addresslong, mask, name FROM networks WHERE id=?', array($id)))
 			foreach($row as $field => $value)
 				$$field = $value;
 
@@ -2067,12 +2063,12 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			$result['addresslong'][] = $i;
 			$result['address'][] = long2ip($i);
 			$result['nodeid'][] = 0;
-			$result['nodename'][] = "";
+			$result['nodename'][] = '';
 			$result['ownerid'][] = 0;
 		}
 
 		if(sizeof($result['address']))
-			if($nodes = $this->DB->GetAll("SELECT name, id, ownerid, ipaddr FROM nodes WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)", array($address, getbraddr($address,$mask))))
+			if($nodes = $this->DB->GetAll('SELECT name, id, ownerid, ipaddr FROM nodes WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($address, getbraddr($address,$mask))))
 				foreach($nodes as $node)
 				{
 					$pos = ($node['ipaddr'] - $addresslong - 1);
