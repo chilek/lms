@@ -156,3 +156,15 @@ unsigned char * ini_parse(unsigned char *string, int *length, unsigned char term
     if(length) *length=i;
     return(out);
 }
+
+/* Concatenate strings */
+unsigned char * str_concat(const unsigned char *s1, const unsigned char *s2)
+{
+	int l = strlen(s1) + strlen(s2) + 1;
+	unsigned char *ret = malloc(l);
+	
+	snprintf(ret, l, "%s%s", s1, s2);
+	//free(s1);
+	//free(s2);
+	return(ret);
+}
