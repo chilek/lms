@@ -75,7 +75,7 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="CONTRIB-SQUID-WARN"
+NAME="CONTRIB-SQUID"
 >8.4. Ostrze¿enia + squid</A
 ></H1
 ><DIV
@@ -83,13 +83,13 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="SQUID-WARN-INTRO"
+NAME="SQUID-REDIRECTOR-INTRO"
 >8.4.1. Wstêp</A
 ></H2
 ><P
->Ten ma³y zestaw narzêdzi pozwala za pomoc± squida 
-		w dosyæ elegancki sposób wy¶wietlaæ wiadomo¶ci administracyjne.
-		Oczywi¶cie aby to dzia³a³o w 100%, wszyscy u¿ytkownicy musz± 
+>Ten ma³y zestaw narzêdzi pozwala za pomoc± squida w dosyæ elegancki sposób 
+		wy¶wietlaæ wiadomo¶ci administracyjne oraz w razie potrzeby blokowaæ dostêp
+		do w3cache. Oczywi¶cie aby to dzia³a³o w 100%, wszyscy klienci musz± 
 		korzystaæ ze squida.</P
 ><P
 >Kluczowym elementem jest redirector. Odpowiada on za to, 
@@ -97,9 +97,12 @@ NAME="SQUID-WARN-INTRO"
 		przekierowywa³ wszystkie ¿±dania wysy³ane do serwera proxy na nasz, 
 		ustalony wcze¶niej adres. Przekierowaniu nie ulegaj± adresy zawieraj±ce 
 		adres naszej winetki, tak aby umo¿liwiæ za³adowanie siê obrazków.
-		Po przekierowaniu klient ma mo¿liwo¶æ oznaczenia wiadomo¶ci jako 
-		przeczytanej, po czym skrypt automatycznie kieruje przegl±darkê na 
-		pierwotnie wywo³ywany URL. Wiêcej informacji znajdziesz w pliku
+		Je¶li komputer ma ustawion± flagê warn, to po przekierowaniu u¿ytkownik ma 
+		mo¿liwo¶æ oznaczenia wiadomo¶ci jako przeczytanej, po czym skrypt automatycznie 
+		kieruje przegl±darkê na pierwotnie wywo³ywany URL. W przypadku oznaczeniu danego 
+		komputera jako wy³±czony, u¿ytkownik bêdzie zawsze przekierowywany na adres 
+		winetki, bez mo¿liwo¶ci oznaczenia wiadomo¶ci jako przeczytanej.
+		Wiêcej informacji znajdziesz w pliku
 		<TT
 CLASS="FILENAME"
 >README</TT
@@ -110,7 +113,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="SQUID-WARN-INSTALL"
+NAME="SQUID-REDIRECTOR-INSTALL"
 >8.4.2. Instalacja</A
 ></H2
 ><P
@@ -121,11 +124,11 @@ CLASS="FILENAME"
 <PRE
 CLASS="SCREEN"
 >redirector_bypass on
-redirect_program /sciezka/do/lms-squid-warnings</PRE
+redirect_program /sciezka/do/lms-squid</PRE
 >
 		które informuj± squida aby dla ka¿dego adresu u¿ywa³ naszego 
 		redirectora. Nastêpnie nale¿y skonfigurowaæ redirectora. Otwieramy 
-		w naszym ulubionym edytorze plik lms-squid-warnings i praktycznie
+		w naszym ulubionym edytorze plik lms-squid i praktycznie
 		wszystko co mo¿na w nim ustawiæ to:
 <PRE
 CLASS="SCREEN"
@@ -138,11 +141,11 @@ CLASS="FILENAME"
 >, gdzie dopisujemy sekcjê 
 		<TT
 CLASS="FILENAME"
->[squid-warnings]</TT
+>[squid-redirector]</TT
 > i definiujemy adres winetki:
 <PRE
 CLASS="SCREEN"
->[squid-warnings]
+>[squid-redirector]
 redirect        = http://nasz.serwer.pl/winetka/</PRE
 >
 		Do katalogu gdzie ma byæ widoczna winetka kopiujemy pliki
