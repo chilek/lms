@@ -49,6 +49,10 @@ if(isset($admininfo))
 	if($admininfo[name] == "")
 		$error[name] = "To pole nie mo¿e byæ puste!";
 
+	if($admininfo[email]!="" && !check_email($admininfo[email]))
+		$error[email] = "Podany email nie wydaje siê byæ poprawny!";
+				
+
 	// zróbmy maskê ACL...
 
 	for($i=0;$i<256;$i++)
