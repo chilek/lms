@@ -16,8 +16,8 @@
 			<a href="?m=usersearch&search&s={$userlist.state}&o=balance{if $userlist.direction eq "asc" && $userlist.order eq "balance"},desc{/if}">{t}Balance:{/t}</A>&nbsp;{if $userlist.order eq "balance"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			<a href="?m=usersearch&search&s={$userlist.state}&o=tariff{if $userlist.direction eq "asc" && $userlist.order eq "tariff"},desc{/if}">{t}Subscription:{/t}</A>&nbsp;{if $userlist.order eq "tariff"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
-		<TD width="1%" class="frightu" align="right">
-			<NOBR><B>{t 0=$userlist.total}Total: $0{/t}</B></NOBR>
+		<TD width="1%" class="frightu" align="right" nowrap>
+			<NOBR><B>{t 0=$userlist.total|default:"0"}Total: $0{/t}</B></NOBR>
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=userlist loop=$userlist}{assign var="userlistshown" value="yes"}
@@ -87,8 +87,8 @@
 			<B>{$userlist.below|money_format}<BR>
 			{$userlist.over|money_format}</B>
 		</TD>
-		<TD class="frightu" align="right" valign="top">
-			<B>{t}Total:{/t} {$userlist.total}</B>	
+		<TD class="frightu" align="right" valign="top" nowrap>
+			<B>{t}Total:{/t} {$userlist.total|default:"0"}</B>	
 		</TD>
 	</TR>
 </TABLE>
