@@ -89,7 +89,7 @@
 			<B>Sieæ:</B>
 		</TD>
 		<TD CLASS="fright">
-			<SELECT SIZE=1 NAME="net">
+			<SELECT SIZE="1" NAME="net">
 				<OPTION VALUE="allnets">Wszystkie</OPTION>
 				{section name="netlist" loop=$netlist}
 				<OPTION VALUE="{$netlist[netlist].id}">{$netlist[netlist].name|truncate:20:" ..."}</OPTION>
@@ -102,7 +102,7 @@
 			<B>Sortowanie:</B>
 		</TD>
 		<TD CLASS="fright">
-			<SELECT SIZE=1 NAME="order">
+			<SELECT SIZE="1" NAME="order">
 				<OPTION VALUE="name">Nazwa hosta</OPTION>
 				<OPTION VALUE="ip">Adres IP hosta</OPTION>
 				<OPTION VALUE="nodeid">Numer hosta</OPTION>
@@ -116,7 +116,7 @@
 			<B>Ograniczenie wyników do:</B>
 		</TD>
 		<TD CLASS="fright">
-			<INPUT NAME="limit" SIZE=3></INPUT> <B>komputerów</B>
+			<INPUT NAME="limit" SIZE="3"></INPUT> <B>komputerów</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
