@@ -11,6 +11,8 @@ version 1.5.5 (??/??/????):
     of conflict with templates/login.html in Smarty cache (alec)
   - size reduction of LMS main class, some one-time functions moved to 
     modules i.e. Mailing(), Traffic() (alec)
+  - added basic (without group checking) body of check_ssn() function for 
+    'en' locale (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
