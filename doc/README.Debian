@@ -1,0 +1,2 @@
+* Pakiet wymaga zainstalowania bibliotek adodb i Smarty.
+    apt-get install libphp-adodb smarty
