@@ -6,6 +6,7 @@ wersja 1.2.0 Janet (??/04/2004):
     w dokumentacji (alec)
   - w taryfach poprawki b³êdów powsta³ych po zmianach w rc5 (alec)
   - poprawka w lms-makeiptables: zamiana DENY na DROP (alec)
+  - dodane wykrywanie biblioteki GD przy generowaniu mapy sieci (alec)
 
 wersja 1.2.0rc5 Janet (18/04/2004):
 

@@ -138,6 +138,7 @@ $SMARTY->assign('layout',$layout);
 if($_GET['graph'] == "")
 {
 	$SMARTY->assign('deviceslist',$DB->GetAll('SELECT id, name FROM netdevices ORDER BY name ASC'));
+	$SMARTY->assign('gderror', ! function_exists('imagepng'));
 	$SMARTY->assign('start',$_GET['start']);
 	$SMARTY->display('netdevmap.html');
 }

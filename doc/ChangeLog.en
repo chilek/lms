@@ -5,6 +5,7 @@ version 1.2.0 Janet (??/04/2004):
   - fixed confusing config variables names of lms-mgc in doc (alec)
   - fixed errorous behavior of null taxvalue in tariffs (alec)
   - bugfix in lms-makeiptables: changed DENY to DROP (alec)
+  - added graphic library detection before generation of network map (alec)
 
 version 1.2.0rc5 Janet (18/04/2004):
 
