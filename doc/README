@@ -295,12 +295,10 @@ Rozdzia³ 2. Instalacja i konfiguracja
 
 2.2.3. Serwer baz danych
 
-   Preferowany to MySQL. 3.23.53 i nowszy. Starszy mo¿e te¿ dzia³aæ,
-   je¶li nie to daj nam o tym znaæ.
+   LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od
+   3.23.xx
 
-   LMS wspó³pracuje tak¿e z PostgreSQL. Zaleca siê instalacjê wersji 7.3
-   lub nowszych, aczkolwiek nie powinno byæ problemów z wersjami od 7.2.3
-   pocz±wszy.
+   LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.
      _________________________________________________________________
 
 2.2.4. Biblioteka Smarty
@@ -1623,14 +1621,14 @@ info = "Opcjonalny opis modu³u"
    cutoff Od³±czanie u¿ytkowników z zaleg³o¶ciami w op³atach
    dns Konfiguracja serwera dns
    ethers Tworzenie pliku /etc/ethers
-   hostfile Modu³ uniwersalny (np. tworzenie regó³ iptables)
+   hostfile Modu³ uniwersalny (np. tworzenie regu³ iptables)
    notify Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach poczt±
    elektroniczn±
    ggnotify Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach przez
    gadu-gadu
    payments Naliczanie op³at abonamentowych
    oident Konfiguracja oident
-   tc Tworzenie regó³ HTB
+   tc Tworzenie regu³ HTB
    traffic Statystyki wykorzystania ³±cza
      _________________________________________________________________
 
@@ -1831,7 +1829,7 @@ info = "Opcjonalny opis modu³u"
 
    Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ wykonuje
    pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich status
-   (od³±czony/pod³±czony), dlatego mo¿liwe jest tworzenie np. regó³
+   (od³±czony/pod³±czony), dlatego mo¿liwe jest tworzenie np. regu³
    dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku
    i nastêpnie wykonuje okre¶lone polecenie pow³oki.
      _________________________________________________________________
