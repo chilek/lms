@@ -24,44 +24,11 @@
  *  $Id$
  */
 
-$usergroupinfo = $_POST['usergroupinfo'];
-$oper = $_POST['oper'];
-
-if (sizeof($usergroupinfo['gmuserid']) && $oper=='0')
-{
-	$userassignment['usergroupid'] = $usergroupinfo['backid'];
-	foreach($usergroupinfo['gmuserid'] as $value)
-	{
-		$userassignment['userid'] = $value;
-		$LMS->UserassignmentDelete($userassignment);
-	}
-	header("Location: ?".$_SESSION['backto']);
-	die;
-}
-
-if (sizeof($usergroupinfo['muserid']) && $oper=='1')
-{
-	$userassignment['usergroupid'] = $usergroupinfo['backid'];
-	foreach($usergroupinfo['muserid'] as $value)
-	{
-		$userassignment['userid'] = $value;
-		$LMS->UserassignmentAdd($userassignment);
-	}
-	header("Location: ?".$_SESSION['backto']);
-	die;
-}
-
-if (!isset($_GET['id']))
-{
-	header("Location: ?".$_SESSION['backto']);
-	die;
-}
-
 if ($id = $_GET['id'])
 {
 	if (!$LMS->UsergroupExists($id))
 	{
-		header("Location: ?m=usergrouplist");
+		header('Location: ?m=usergrouplist');
 		die;
 	}
 }
@@ -69,7 +36,7 @@ if ($id = $_GET['id'])
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
 $usergroup = $LMS->UsergroupGet($_GET['id']);
-$layout['pagetitle'] = "Informacja o grupie: ".$usergroup['name'];
+$layout['pagetitle'] = 'Informacja o grupie: '.$usergroup['name'];
 
 $SMARTY->assign('usergroup',$usergroup);
 $SMARTY->assign('users',$LMS->GetUserNames());

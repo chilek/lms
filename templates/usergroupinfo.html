@@ -1,19 +1,7 @@
 {include file="header.html"}
 {include file="userheader.html"}
-{literal}
-<script language="javascript">
-	<!--
-	function removeUsers() {
-		document.usergroupinfo.oper.value="0";
-		document.usergroupinfo.submit();
-	}
-	//-->
-{/literal}																</script>
 <H1>{$layout.pagetitle}</H1>
-<FORM NAME="usergroupinfo" METHOD="POST" ACTION="?m=usergroupinfo">
-<INPUT TYPE="hidden" NAME="usergroupinfo[backid]" VALUE="{$usergroup.id}">
-<INPUT TYPE="hidden" NAME="oper" VALUE="1">
-<TABLE WIDTH="100%" CELLPADDING="3">
+<P><TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/group.gif" ALT="" ALIGN="ABSMIDDLE">
@@ -51,54 +39,6 @@
 			    <A HREF="?m=usergroupedit&id={$usergroup.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $usergroup.count eq 0} <A HREF="?m=usergroupdelete&id={$usergroup.id}">Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
 		</TD>
 	</TR>
-</TABLE>
-<TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK">
-		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/user.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<B>U¿ytkownicy nale¿±cy do grupy:</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="frightu" COLSPAN="2">
-			<IMG SRC="img/user.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<B>U¿ytkownicy nienale¿±cy do grupy:</B>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		{if $usergroup.userscount}
-		<TD WIDTH="1%" CLASS="fleft">
-			<SELECT SIZE="20" NAME="usergroupinfo[gmuserid][]" multiple>
-				{section name=user loop=$usergroup.users}
-					<OPTION VALUE="{$usergroup.users[user].id}">
-					{$usergroup.users[user].username|truncate:50:" ..."} ({$usergroup.users[user].id|string_format:"%04d"})
-					</OPTION>
-				{/section}
-			</SELECT>
-		</TD>
-		{else}
-		<TD WIDTH="1%" CLASS="fleft" ALIGN="CENTER">
-			<BR>
-			<BR>
-			<B>¯aden z klientów nie nale¿y do grupy</B><BR>
-			<BR>
-			<BR>
-		</TD>
-		{/if}
-		<TD WIDTH="99%" CLASS="fright" COLSPAN="2">
-			<SELECT SIZE="20" NAME="usergroupinfo[muserid][]" multiple>
-				{section name=user loop=$users}
-					<OPTION VALUE="{$users[user].id}">
-					{$users[user].username|truncate:50:" ..."} ({$users[user].id|string_format:"%04d"})
-					</OPTION>
-				{/section}
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fbl">
-			<A HREF="javascript:removeUsers();">Usuñ tych u¿ytkowników z grupy <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
-		</TD>
-		<TD WIDTH="99%" CLASS="fbr" COLSPAN="2" ALIGN="RIGHT">
-			<A HREF="javascript:document.usergroupinfo.submit();">Dodaj tych u¿ytkowników do grupy <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
-		</TD>
-	</TR>
-</TABLE>
-</FORM>
+</TABLE></P>
+{include file="usergroupassignments.html"}
 {include file="footer.html"}
