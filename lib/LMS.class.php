@@ -842,7 +842,7 @@ class LMS
                foreach($username as $idx => $row)
                     $usernames[$row['id']] = $row['username'];
 
-          if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".($sqlord != "" ? $sqlord." ".$direction : "")))
+          if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access, netdev FROM nodes ".($sqlord != "" ? $sqlord." ".$direction : "")))
           {
                foreach($nodelist as $idx => $row)
                {
@@ -1924,6 +1924,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.258  2003/10/04 19:45:22  alec
+ * get 'netdev' in GetNodeList()
+ *
  * Revision 1.257  2003/10/04 19:22:34  alec
  * some changes in NetDevLink()
  *
