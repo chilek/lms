@@ -47,6 +47,9 @@ class Session {
 		$this->DB =& $DB;
 		$this->CONFIG =& $CONFIG;
 		
+		if(isset($this->CONFIG['phpui']['timeout']))
+			$this->timeout =& $this->CONFIG['phpui']['timeout'];
+		
 		if(! isset($_COOKIE['SID']))
 			$this->_createSession();
 		else
@@ -54,9 +57,6 @@ class Session {
 
 		if(rand(1,100) <= $this->GCprob)
 			$this->_garbageCollector();
-
-		if(isset($this->CONFIG['phpui']['timeout']))
-			$this->timeout =& $this->CONFIG['phpui']['timeout'];
 	}
 
 	function close()
