@@ -1,9 +1,12 @@
-1. Wstêp.
+1. Co my tu mamy?.
 
 Katalog zawiera dodatkowe modu³y dla demona almsd:
 
 cbq-init:	generowanie plików dla znanego skryptu do zarz±dzania
     		pasmem (http://sourceforge.net/projects/cbqinit)
+
+cutoff2:	cutoff z dodatkow± funkcjonalno¶ci±, ale dzia³a tylko 
+		z zobowi±zaniami miesiêcznymi
       
 2. Instalacja.
 
