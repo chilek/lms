@@ -17,7 +17,7 @@
 						Wybierz u¿ytkowników których dotyczyæ ma ta operacja finansowa. Je¿eli typ operacji nie jest obci±¿eniem b±d¼ wp³at± u¿ytkownika, system zignoruje listê u¿ytkowników.<BR><BR>
 						<SELECT size="20" name="addbalance[muserid][]" multiple>
 							{section name=users loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].username} ({$users[users].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
