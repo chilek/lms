@@ -84,7 +84,7 @@
 	  	<para>Po pobraniu ze strony <ulink url="http://www.lms.rulez.pl">www.lms.rulez.pl</ulink>
 		 rozpakuj archiwum:
 		 <screen>$ tar zxvf lms-x.x.x.tar.gz</screen>
-		 a nastêpnie przenie¶ pliki z <emphasis>LMS-UI</emphasis>do katalogu osi±galnego 
+		 a nastêpnie przenie¶ pliki z <emphasis>LMS-UI</emphasis> do katalogu osi±galnego 
 		 z poziomu serwera www (np. <filename>/var/www/lms</filename>).</para> 
 		 <para>Pliki z konfiguracj± (<filename>sample/lms.ini</filename> i <filename>
 		 sample/lms-mgc.ini</filename>) umie¶æ w katalogu <filename>/etc/lms</filename>.
