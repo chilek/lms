@@ -36,7 +36,7 @@
 			<IMG SRC="img/ip.gif" ALT="" ALIGN="ABSMIDDLE"> {$netcomplist[netcomplist].ip}
 		</TD>
 		<TD CLASS="fright" WIDTH="1%">
-			<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}" {confirm text="Are you sure, you want to delete that connection?"}><IMG SRC="img/delete.gif" ALIGN="absmiddle" ALT="" BORDER="0" {tip text="Delete connection"}></A>
+			<A HREF="?m=netdevedit&action=disconnectnode&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}" OnClick="return confirmLink(this, '{t}Are you sure, you want to delete that connection?{/t}');"><IMG SRC="img/delete.gif" ALIGN="absmiddle" ALT="" BORDER="0" {tip text="Delete connection"}></A>
 		</TD>
 	</TR>
 	{sectionelse}
