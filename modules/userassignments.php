@@ -37,6 +37,13 @@ if($_GET['action'] == 'delete')
 	die;
 }
 
+if($_GET['action'] == 'suspend')
+{
+	$LMS->SuspendAssignment($_GET['aid'], $_GET['suspend']);
+	header('Location: ?m=userinfo&id='.$_GET['id']);
+	die;
+}
+
 $a = $_POST['assignment'];
 
 if($_GET['action'] == 'add' && isset($a))
@@ -159,10 +166,10 @@ if($_GET['action'] == 'add' && isset($a))
 	if($to < $from && $to != 0 && $from != 0)
 		$error['dateto'] = 'Zakres dat jest niepoprawny!';
 
-	if(!$a['tariffid'])
+	if($a['tariffid']=='')
 		$error['tariffid'] = 'Nie wybra³e¶ taryfy!';
 
-	if($LMS->TariffExists($a['tariffid']) && !$error) 
+	if($a['tariffid']=='0' || (!$error && $LMS->TariffExists($a['tariffid']))) 
 	{
 		$LMS->AddAssignment(array('tariffid' => $a['tariffid'], 'userid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$a['invoice']), 'datefrom' => $from, 'dateto' => $to ));
 		header('Location: ?m=userinfo&id='.$_GET['id']);
