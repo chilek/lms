@@ -13,6 +13,7 @@
     <TR class="light">
 	<TD class="fall" colspan="2" width="100%">
 	    <TABLE width="100%" cellpadding="3">
+	    	{counter start=0 skip=1 print=false assign=msgidx}
 		{foreach from=$ticket.messages item=message}
 		    <TR class="DARK">
 			<TD width="1%" class="fbt" ALIGN="RIGHT">
@@ -42,6 +43,9 @@
 			    {if $ticket.state != 2}
 			    <A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">Odpowiedz <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
 			    {/if}
+			    {if $msgidx > 0}
+			    <A href="?m=rtticketview&id={$ticket.ticketid}&delmsgid={$message.id}">Usuñ <IMG src="img/delete.gif" alt="" border="0" align="absmiddle"></A>
+			    {/if}
 			</TD>
 		    </TR>
 		    <TR class="LIGHT">
@@ -49,6 +53,7 @@
 			    {$message.body|escape|replace:"\n":"<BR>"}
 			</TD>
 		    </TR>
+		{counter print=false}
 		{/foreach}
 	    </TABLE>
 	</TD>
