@@ -35,15 +35,14 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 	if(DBVERSION > $dbversion)
 	{
 		$upgradelist = getdir($_LIB_DIR.'/upgradedb/', '^'.$_DBTYPE.'.[0-9]{10}.php$');
-		$dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',array('dbversion'));
 		if(sizeof($upgradelist))
 			foreach($upgradelist as $upgrade)
 			{
 				$upgradeversion = ereg_replace('^'.$_DBTYPE.'.([0-9]{10}).php$','\1',$upgrade);
+				
 				if($upgradeversion > $dbversion)
 					$pendingupgrades[] = $upgradeversion;
 			}
-
 			
 		if(sizeof($pendingupgrades))
 		{
