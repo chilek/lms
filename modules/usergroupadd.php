@@ -42,7 +42,7 @@ if(isset($usergroupadd))
 	elseif(strlen($usergroupadd['name']) > 16)
 		$error['name'] = 'Podana nazwa jest za d³uga!';
 	elseif($LMS->UsergroupGetId($usergroupadd['name']))
-		$error['name'] = 'Istnieje ju¿ grupa o nazwie'.$usergroupadd['name'];
+		$error['name'] = 'Istnieje ju¿ grupa o nazwie '.$usergroupadd['name'];
 	elseif(!eregi("^[._a-z0-9-]+$",$usergroupadd['name']))
 		$error['name'] = 'Podana nazwa zawiera niepoprawne znaki!';
 
