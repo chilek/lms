@@ -13,6 +13,8 @@ wersja 1.4.3 (??/??/????):
     wg nazwiska zg³aszaj±cego (rejmer)
   - BTS#0000278: uprawnienie 'manipulacja danymi komputerów' nie zezwala na
     od³±czanie/w³±czanie, które jest objête osobnym uprawnieniem (rejmer)
+  - BTS#0000279: poprawiono zamienione miejscami pola z nazw± i emailem 
+    nadawcy na szablonie wysy³ania wiadomo¶ci (alec)
 
 wersja 1.4.2 Lya (14/12/2004):
 
