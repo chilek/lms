@@ -1,0 +1,244 @@
+<!-- $Id$ -->
+<chapter id="daemon">
+	<title>A.L.E.C's LMS Daemon</title>
+	<sect1 id="daemon-intro">
+	<title>Informacje podstawowe</title>
+	<para>Napisany w jêzyku C program ma u³atwiaæ zarz±dzanie us³ugami. Sam demon odpowiada
+    	za uruchamianie odpowiednich modu³ów na ¿±danie u¿ytkownika. Modu³y
+    	natomiast, s³u¿± do tworzenia plików konfiguracyjnych na podstawie 
+    	danych z bazy LMS'a oraz restartowania odpowiednich us³ug na serwerze.
+    	</para>
+	<para>Dlaczego taka nazwa? Wiêkszo¶æ kodu demona napisa³ jeden z developerów - Aleksander 
+	'A.L.E.C' Machniak, niemniej nale¿y tak¿e podkre¶liæ udzia³ Marcina 'Lexx' Króla. Je¶li Ty
+	masz ochotê napisaæ jaki¶ modu³ lub poprawiæ funkcjonalno¶æ demona jak najbardziej
+	do tego zachêcam.
+	</para>
+		<sect2 id="daemon-requirements">
+		<title>Wymagania</title>
+			<para><emphasis>A.L.E.C's LMS Daemon</emphasis> potrzebuje:
+      			<itemizedlist>
+			<listitem>
+				<para>instalacja interfejsu u¿ytkownika <emphasis>LMS-UI</emphasis></para>
+			</listitem>
+			<listitem>
+				<para><filename>libmysqlclient</filename> (tj. pe³nej instalacji MySQL'a lub odpowiedniego 
+				pakietu) lub <filename>libpq</filename> w przypadku bazy PostgreSQL</para>
+      			</listitem>
+			<listitem>
+				<para><filename>libdl</filename> (to w ka¿dej dzisiejszej dystrybucji jest)</para>
+			</listitem>
+			<listitem>
+				<para>kompilator jêzyka C</para>
+			</listitem>
+			</itemizedlist>
+      			</para>
+		</sect2>
+		<sect2 id="daemon-install">
+		<title>Instalacja</title>
+			<para>Przed kompilacj± nale¿y przy pomocy skryptu <filename>./configure</filename>
+			ustaliæ opcje przedstawione na poni¿szym listingu (w nawiasach podano
+			warto¶ci domy¶lne opcji):
+<screen>
+  --help                pomoc
+  --enable-debug0       logowanie zapytañ SQL (wy³±czone)
+  --enable-debug1       logowanie zdarzeñ (wy³±czone)
+  --with-pgsql          gdy korzystamy z bazy PostgreSQL (wy³±czone)
+  --with-mysql          gdy korzystamy z bazy MySQL (w³±czone)
+  --prefix=DIR          katalog instalacyjny demona (/usr/local/bin)
+  --libdir=DIR          lokalizacja bibliotek bazy danych (/usr/lib)
+  --incdir=DIR          lokalizacja plików nag³ówkowych bazy danych (/usr/include)
+</screen>
+			Zatem wymagane jest okre¶lenie bazy z jakiej bêdziemy korzystaæ (-with-mysql 
+			lub -with-pgsql) oraz po³o¿enia bibliotek dostarczanych wraz z baz± (--incdir, --libdir).
+<screen>
+# ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include
+</screen>
+    			Nastêpnie kompilacja i instalacja (umieszczenie demona w katalogu
+			okre¶lonym zmienn± --prefix):
+<screen>
+# make && make install
+</screen>
+			Na koniec skompilowane modu³y (pliki z rozszerzeniem <filename>.so</filename>),
+			znajduj±ce siê w katalogu <filename>modules/nazwa_modu³u</filename> przenie¶ 
+			do dowolnego katalogu. Ich lokalizacjê bêdziesz okre¶la³ w pliku konfiguracyjnym.
+			</para>
+		</sect2>
+		<sect2 id="daemon-config">
+		<title>Konfiguracja</title>
+			<para>Na pocz±tku nale¿y w pliku konfiguracyjnym <emphasis>LMS-UI</emphasis>
+			(standardowo <filename>/etc/lms/lms.ini</filename>) ustawiæ typ reloadu 
+			obs³ugiwany przez demona:
+<screen>
+reload_type	= sql
+reload_sqlquery	= "INSERT INTO reload VALUES('reload')"
+</screen>
+			<note><para>Struktura tabeli 'reload' jest dowolna, zatem musisz zadbaæ 
+			o odpowiedni insert.</para></note>
+			</para>
+			<para>Przyk³adowy konfig demona i modu³ów zawarto w pliku <filename>lms.ini.sample</filename>.
+			Poni¿szy listing przedstawia podstawowe opcje dla demona (konfiguracjê modu³ów omówiono w 
+			osobnych rozdzia³ach ich dotycz±cych):
+<screen>
+[database]
+host            = localhost     # nazwa lub ip hosta, domy¶lnie: localhost
+user            = lms           # nazwa u¿ytkownika, domy¶lnie: lms
+password        = mypasswd      # has³o do bazy, domy¶lnie: puste
+database        = lms           # nazwa bazy, domy¶lnie: lms
+port            = 0             # numer portu, domy¶lnie: 0
+
+[lmsd]
+sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma 
+                                # ma byæ sprawdzana tabela 'reload', domy¶lnie: 30
+instances       = hosts oident firewall       # lista instancji modu³ów
+</screen>
+			<note><para>Lista instancji sk³ada siê z nazw instancji oddzielonych 
+			spacj±. Instancja to nazwa sekcji w pliku konfiguracyjnym.</para></note>
+			</para>
+		</sect2>
+		<sect2 id="daemon-run">
+		<title>Uruchomienie</title>
+			<para>Program mo¿esz uruchamiaæ jako demona pracuj±cego w tle (opcja '-b'). Wtedy 
+			prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie, przez wpis do tabeli 
+			'reload'. Opcja 'sleeptime' (-s) okre¶la okres miêdzy
+			odczytami tej tabeli. Gdy do tabeli 'reload' zostan± zapisane dowolne dane 
+			(przy pomocy menu 'Prze³adowanie' w <emphasis>LMS-UI</emphasis>)
+			demon wykona modu³y okre¶lone opcj± 'instances' z <filename>lms.ini</filename>.
+			Na przyk³ad:
+<screen>
+# almsd -b
+</screen>			
+			</para>
+			<para>Innym sposobem uruchomienia jest jednorazowy reload w wykorzystaniem
+			crona. Z tego sposobu nale¿y korzystaæ uruchamiaj±c modu³y takie jak 'payments'
+			'notify' 'traffic'. W tym wypadku musisz stworzyæ osobny plik konfiguracyjny 
+			dla ka¿dego modu³u (zawieraj±cy równie¿ opcje dla demona) i podaæ go demonowi
+			przy pomocy opcji '-c'. Przyk³adowy wpis do crontab'a wygl±da nastêpuj±co:
+<screen>
+  1 0 * * *    /usr/local/bin/almsd -q -c /etc/lms/payments.lms.ini
+</screen>
+			</para>
+			<para>Poni¿szy listing przedstawia dostêpne opcje linii poleceñ programu:
+<screen>
+  -c	¶cie¿ka do pliku konfiguracyjnego (domy¶lnie: /etc/lms/lms.ini)
+  -b	uruchomienie w tle
+  -s	czas w sek. miêdzy odczytami tabeli 'reload' (domy¶lnie: 30)
+  -q 	wykonaj reload i zakoñcz
+  -h 	wy¶wietla opcje linii poleceñ
+</screen>
+			</para>
+		</sect2>
+	</sect1>
+	<sect1 id="daemon-modules">
+	<title>Modu³y</title>
+	<para></para>
+		<sect2 id="daemon-moduleslist">
+		<title>Lista dostêpnych modu³ów</title>
+			<table>
+			<title>Lista modu³ów demona almsd</title>
+			<tgroup cols="2">
+			<colspec ALIGN="center" COLWIDTH="200">
+			<colspec ALIGN="center" COLWIDTH="300">
+				<thead>
+				<row>
+				<entry>Nazwa</entry>
+				<entry>Opis</entry>
+				</row>
+				</thead>
+				<tbody>
+				<row>
+				<entry>dhcp</entry>
+				<entry>Konfiguracja serwera dhcpd</entry>
+				</row>
+				<row>
+				<entry>cutoff</entry>
+				<entry>Od³±czanie u¿ytkowników z zaleg³o¶ciami w op³atach</entry>
+				</row>
+				<row>
+				<entry>dns</entry>
+				<entry>Konfiguracja serwera dns</entry>
+				</row>
+				<row>
+				<entry>ethers</entry>
+				<entry>Tworzenie pliku /etc/ethers</entry>
+				</row>
+				<row>
+				<entry>hostfile</entry>
+				<entry>Modu³ uniwersalny (np. tworzenie regó³ iptables)</entry>
+				</row>
+				<row>
+				<entry>notify</entry>
+				<entry>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach</entry>
+				</row>
+				<row>
+				<entry>payments</entry>
+				<entry>Naliczanie op³at abonamentowych</entry>
+				</row>
+				<row>
+				<entry>oident</entry>
+				<entry>Konfiguracja oident</entry>
+				</row>
+				<row>
+				<entry>tc</entry>
+				<entry>Tworzenie regó³ HTB</entry>
+				</row>
+				<row>
+				<entry>traffic</entry>
+				<entry>Statystyki wykorzystania ³±cza</entry>
+				</row>
+				</tbody>
+			</tgroup>
+			</table>
+		</sect2>
+		<sect2 id="daemon-payments">
+		<title>Payments</title>
+		    <sect3 id="payments-desc">
+		    <title>Opis</title>
+		    <para>Modu³ nalicza u¿ytkownikom op³aty abonamentowe. Nale¿y go uruchamiaæ 
+		    codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
+		    taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn± 'comment'.</para>
+		    </sect3>
+		    <sect3 id="payments-config">
+		    <title>Konfiguracja</title>
+		    <para>
+		    <itemizedlist>
+			<listitem>
+			    <para>comment</para>
+			    <para>Komentarz do operacji. '%period' zostanie zamienione na daty od-do 
+			    nale¿nego abonamentu, np. '10.10.2003 - 9.11.2003. Domy¶lnie: 'Abonament za okres %period'.</para>
+			    <para>Przyk³ad: <prompt>comment = 'Abonament miesiêczny za okres %period' </prompt></para>
+			</listitem>
+		    </itemizedlist>
+		    </para>
+		    </sect3>
+		</sect2>
+		<sect2 id="daemon-notify">
+		<title>Notify</title>
+		    <sect3 id="notify-desc">
+		    <title>Opis</title>
+		    <para>Modu³ 'notify' s³u¿y do informowania u¿ytkowników o zaleg³o¶ciach
+		    w op³atach za pomoc± poczty elektronicznej. Aktualne saldo u¿ytkownika
+		    porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze - wiadomo¶æ
+		    zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego szablonu, 
+		    w którym mo¿na stosowaæ nastêpuj±ce zmienne:
+		    <itemizedlist>
+			<listitem>
+			    <para>%saldo - aktualne saldo u¿ytkownika</para>
+			</listitem>
+			<listitem>
+			    <para>%name - imiê u¿ytkownika</para>
+			</listitem>
+			<listitem>
+			    <para>%lastname - nazwisko/nazwa u¿ytkownika</para>
+			</listitem>
+			<listitem>
+			    <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji na kocie u¿ytkownika</para>
+			</listitem>
+		    </itemizedlist></para>
+		    </sect3>
+		    <sect3 id="notify-config">
+		    <title>Konfiguracja</title>
+		    <para></para>
+		    </sect3>
+		</sect2>
+	</sect1>
+</chapter>

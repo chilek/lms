@@ -7,7 +7,8 @@
 <!ENTITY rozdzial3 SYSTEM "userif.sgml">
 <!ENTITY rozdzial4 SYSTEM "scripts.sgml">
 <!ENTITY rozdzial5 SYSTEM "mgc.sgml">
-<!ENTITY rozdzial6 SYSTEM "advanced.sgml">
+<!ENTITY rozdzial6 SYSTEM "daemon.sgml">
+<!ENTITY rozdzial7 SYSTEM "advanced.sgml">
 ]>
 
 <book lang=pl>
@@ -32,5 +33,6 @@
 &rozdzial4;
 &rozdzial5;
 &rozdzial6;
+&rozdzial7;
 
 </book>
