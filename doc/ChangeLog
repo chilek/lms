@@ -6,6 +6,8 @@ wersja 1.2.0 (??/03/2004):
   - poprawione b³êdy w modu³ach hostfile i oident demona, powoduj±ce
     niewykonywanie instancji wyst. po tych modu³ach (alec)
   - naprawione obliczanie ¶redniego zysku miesiêcznego dla taryf (alec)
+  - na li¶cie u¿ytkowników w polu Abonament podawane jest ¶rednie miesiêczne
+    obci±¿enie u¿ytkownika (alec)
 
 wersja 1.2.0rc3 Janet (12/03/2004):
 

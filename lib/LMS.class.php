@@ -662,12 +662,16 @@ class LMS
 
 		if($userlist = $this->DB->GetAll("SELECT users.id AS id, ".$this->DB->Concat("UPPER(lastname)","' '","users.name")." AS username, status, email, phone1, address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (type = 3 OR type = 4) WHERE deleted = 0 ".($state !=0 ? " AND status = '".$state."'":"")." GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info ".($sqlord !="" ? $sqlord." ".$direction:"")))
 		{
-			$tariffvalues = $this->DB->GetAllByKey("SELECT users.id AS id, SUM(value) AS value FROM users, assignments, tariffs WHERE users.id = assignments.userid AND tariffs.id = tariffid GROUP by users.id",'id');
+			// average monthly tariff values by period 
+			$week = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 GROUP BY users.id', 'id');
+			$month = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 GROUP BY users.id', 'id');
+			$quarter = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)/3 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 GROUP BY users.id', 'id');
+			$year = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 GROUP BY users.id', 'id');
 
 			$access = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid",'id');
 			foreach($userlist as $idx => $row)
 			{
-				$userlist[$idx]['tariffvalue'] = $tariffvalues[$row['id']]['value'];
+				$userlist[$idx]['tariffvalue'] = $week[$row['id']]['value']+$month[$row['id']]['value']+$quarter[$row['id']]['value']+$year[$row['id']]['value'];
 				$userlist[$idx]['account'] = $access[$row['id']]['account'];
 				
 				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'])
@@ -1306,7 +1310,7 @@ class LMS
 		{
 			$week = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 GROUP BY tariffid', 'tariffid');
 			$month = $this->DB->GetAllByKey('SELECT tariffid, SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 GROUP BY tariffid', 'tariffid');
-			$quarter = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)/4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 GROUP BY tariffid', 'tariffid');
+			$quarter = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)/3 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 GROUP BY tariffid', 'tariffid');
 			$year = $this->DB->GetAllByKey('SELECT tariffid, SUM(value)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 GROUP BY tariffid', 'tariffid');
 
 			foreach($tarifflist as $idx => $row)
@@ -1394,7 +1398,7 @@ class LMS
 		
 		$week = $this->DB->GetRow('SELECT SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND tariffid = ?', array($id));
 		$month = $this->DB->GetRow('SELECT SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 AND tariffid = ?', array($id));
-		$quarter = $this->DB->GetRow('SELECT SUM(value)/4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 AND tariffid = ?', array($id));
+		$quarter = $this->DB->GetRow('SELECT SUM(value)/3 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 AND tariffid = ?', array($id));
 		$year = $this->DB->GetRow('SELECT SUM(value)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 AND tariffid = ?', array($id));
 		
 		$result['userscount'] = sizeof($result['users']);
