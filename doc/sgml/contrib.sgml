@@ -36,8 +36,8 @@
 		</sect2>
 		<sect2 id="sqlpanel-install">
 		<title>Installation</title>
-		<para>Installation is limited to copying needed files into LMS tree: <filename>sql.php</filename> should be placed into <filename>modules</filename> directory, and <filename>sql.html, sqlprint.html,
-                adminheader.html</filename> into <filename>templates</filename>. After those steps are done, you're able to access this module via <emphasis>Administration -> SQL</emphasis> menu.</para>
+		<para>Installation is limited to copying needed files into LMS tree: <filename>sql.php</filename> should be placed into <filename>modules</filename> directory, and <filename>sql.html, sqlprint.html</filename> 
+		into <filename>templates</filename>. After those steps are done, you're able to access this module via http://lms.domain.pl/?m=sql.</para>
 		</sect2>
 	</sect1>
 	<sect1 id="contrib-squid">

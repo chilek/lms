@@ -1068,6 +1068,20 @@ endif
 		    zg³oszenie to zostanie otwarte. Domy¶lnie: wy³±czone.</para>
 		    <para>Przyk³ad:	<prompt>auto_open = 1</prompt></para>
 		</listitem>
+		<listitem>
+		    <para>newticket_notify</para>
+		    <para>W³±czenie tej opcji spowoduje wysy³anie powiadomieñ o
+		    nowych zg³oszeniach do u¿ytkowników którzy maj± prawa do
+		    konkretnej kolejki. Domy¶lnie: wy³±czone.</para>
+		    <para>Przyk³ad:	<prompt>newticket_notify = 1</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>lms_url</para>
+		    <para>Do powiadomienia o nowym zg³oszeniu zostaje za³±czony link 
+		    do tego zg³oszenia w LMS-UI, aby u¿ytkownik móg³ szybko przej¶æ do
+		    tego zg³oszenia. Domy¶lnie: http://localhost/lms/.</para>
+		    <para>Przyk³ad:	<prompt>lms_url = https://lms.domena.pl/</prompt></para>
+		</listitem>
 	    </itemizedlist>
     </sect2>
     </sect1>
