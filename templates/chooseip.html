@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="pl">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
+<title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
+<link href="lib/style.css" rel="stylesheet" type="text/css">
+<script language="JavaScript" type="text/JavaScript" src="lib/common.js"> </script>
+{if $js}<script language="JavaScript">
+<!--
+	{$js}
+//-->
+</script>{/if}
+</head>
+{if ! $part}
+<frameset frameborder="0" framespacing="0" ROWS="55,*">
+	<frame scrolling="no" frameborder="0" marginheight="0" marginwidth="0" name="cal" noresize src="?m=chooseip&p=top">
+	<frame scrolling="always" frameborder="0" marginheight="0" marginwidth="0" name="m" noresize src="?m=chooseip&p=main">
+</frameset>
+{/if}
+{if $part eq "main"}
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+	<table width="100%" cellpadding="1">
+	{section name=iplist loop=$network.address}
+	{if $network.mark[iplist] neq ""}<TR><TD COLSPAN="2" CLASS="fbt" align="center" bgcolor="#DFD5BD">{$network.mark[iplist]}</TD></TR>{/if}
+	{if $smarty.section.iplist.index is even}<TR>{/if}
+		<TD width="50%" align="center">
+			{if $network.nodename[iplist] neq ""}
+				<FONT COLOR="#666666">{$network.nodename[iplist]}</FONT>
+			{else}
+			<A href="javascript: void(0);" onClick="sendvalue(targetfield,'{$network.address[iplist]}');">{$network.address[iplist]}</A>
+			{/if}
+		</TD>
+	{if $smarty.section.iplist.index is not even}</TR>{/if}
+	{/section}
+</body>
+{/if}
+{if $part eq "top"}
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<table cellpadding="5" width="100%">
+	<tr>
+		<td bgcolor="#CEBD9B" class="fall" align="center">
+			<B>Wybierz adres IP:</B>
+		</td>
+	</tr>
+	<form target="m" name="selectnet" method="post" action="?m=chooseip&p=main">
+	<tr>
+		<td bgcolor="#DFD5BD" class="fall" align="center">
+			<SELECT SIZE="1" onchange="document.selectnet.submit();" NAME="netid">
+				{section name=networks loop=$networks.id}
+				<OPTION VALUE="{$networks.id[networks]}">{$networks.name[networks]}: {$networks.address[networks]}/{$networks.prefix[networks]}</OPTION>
+				{/section}
+				<OPTION VALUE="ALL">Pokaż wszystkie...</OPTION>
+			</SELECT>
+		</TD>
+	</tr>
+	</form>
+</table>
+{/if}
+</html>	

@@ -140,19 +140,28 @@ class LMS {
 	function GetNetwork($id)
 	{
 		$db=$this->db;
-		$db->ExecSQL("SELECT `address`, `mask` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
-		list($addr,$mask) = $db->FetchRow();
-		for($i=ip_long($addr)+1;$i<ip_long(getbraddr($addr,$mask));$i++)
-		{
-			$return[addresslong][] = $i;
-			$return[address][] = long2ip($i);
-			$db->ExecSQL("SELECT `name`, `id` FROM `nodes` WHERE `ipaddr` = '".long2ip($i)."' LIMIT 1");
-			$db->FetchRow();
-			$return[nodeid][] = $db->row[1];
-			$return[nodename][] = $db->row[0];
+		if($id=="ALL") $db->ExecSQL("SELECT `address`, `mask`, `name` FROM `networks`");
+		else $db->ExecSQL("SELECT `address`, `mask`, `name` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
+		while($db->FetchRow()){
+			list($addr,$mask,$name) = $db->row;
+			$c=0;
+			for($i=ip_long($addr)+1;$i<ip_long(getbraddr($addr,$mask));$i++)
+			{
+				$return[addresslong][] = $i;
+				$return[address][] = long2ip($i);
+				if($c == "0") $return[mark][] = $name;
+				else $return[mark][] = "";
+				$c++;
+				
+			}
 		}
-//		$return[nodename][0] = "/NETWORK ADDR/";
-//		$return[nodename][sizeof($return[nodename])-1] = "/BROADCAST/";
+		for($i=0;$i<sizeof($return[address]);$i++){
+			$db->ExecSQL("SELECT `name`, `id` FROM `nodes` WHERE `ipaddr` = '".$return[address][$i]."' LIMIT 1");
+			$db->FetchRow();
+			$return[nodeid][$i]= $db->row[1];
+			$return[nodename][$i] = $db->row[0];
+		}
+		array_multisort($return[addresslong],$return[address],$return[nodeid],$return[nodename],$return[mark]);
 		return $return;
 	}
 			
@@ -195,11 +204,11 @@ class LMS {
 				$sql .= " WHERE status = 1 ";
 			break;
 		}
-		
+	
 		$db->ExecSQL($sql);
 
-		while($db->FetchRow())
-
+		while($db->FetchRow()){
+			
 			list(
 				$userlist[id][],
 				$userlist[lastname][],
@@ -210,6 +219,8 @@ class LMS {
 				$userlist[address][],
 				$userlist[info][]
 			) = $db->row;
+
+		}
 
 		for($i=0;$i<sizeof($userlist[id]);$i++){
 
@@ -222,7 +233,7 @@ class LMS {
 		if($direction != "desc") $direction = 4;
 		else $direction = 3;
 
-		switch($order){
+		if(sizeof($userlist[id])) switch($order){
 			case "username":
 				array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
 				break;
