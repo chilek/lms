@@ -206,6 +206,9 @@ if(isset($netdevdata))
 
 	if($netdevdata['name'] == "")
 		$error['name'] = "Pole nazwa nie mo¿e byæ puste!";
+	elseif(strlen($netdevdata['name']) > 32)
+		$error['name'] = "Podana nazwa jest za d³uga!";
+
 
 	if($netdevdata['ports'] < $LMS->CountNetDevLinks($_GET['id']))
 		$error['ports'] = "Liczba pod³±czonych urz±dzeñ przekracza liczbê portów!";

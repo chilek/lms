@@ -32,6 +32,8 @@ if(isset($netdevdata)) {
         //        $error['ports'] = "Podana ilo¶æ portów jest b³êdna!";
 	if($netdevdata['name'] == "")
 		$error['name'] = "Pole nazwa nie mo¿e byæ puste!";
+	elseif(strlen($netdevdata['name']) > 32)
+		$error['name'] = "Podana nazwa jest za d³uga!";
 
         if(!$error)
         {
