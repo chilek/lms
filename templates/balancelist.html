@@ -41,7 +41,7 @@
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=balancelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 
-			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+			</B> ({$lang.rekordy} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {$lang.of} {$listdata.totalpos})
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
@@ -85,7 +85,7 @@
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=balancelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 
-			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+			</B> ({$lang.rekordy} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {$lang.of} {$listdata.totalpos})
 		</TD>
 	</TR>
 	<TR class="light">

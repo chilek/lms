@@ -30,7 +30,7 @@
 			<nobr><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>{$netlist.name[netlist]}</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> {$netlist.address[netlist]} / {$netlist.prefix[netlist]}</nobr>
 		</TD>
 		<TD valign="top" align="right" onClick="return self.location.href='?m=netinfo&id={$netlist.id[netlist]}';" width="1%">
-			<nobr><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">({$netlist.id[netlist]|string_format:"%04d"})<BR><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">rozmiar: {$netlist.size[netlist]} (zaj: {$netlist.assigned[netlist]|string_format:"%01d"})</nobr>
+			<nobr><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">({$netlist.id[netlist]|string_format:"%04d"})<BR><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">{$lang.size}: {$netlist.size[netlist]} (zaj: {$netlist.assigned[netlist]|string_format:"%01d"})</nobr>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist.id[netlist]}';">
 			<nobr>{if $netlist.dns[netlist] neq ""}<IMG src="img/dns.gif" border="0" alt="" align="absmiddle"> {$netlist.dns[netlist]}{/if}<BR>
@@ -47,7 +47,7 @@
 			<nobr>
 			<a href="?m=netdel&id={$netlist.id[netlist]}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ sieæ \'{$netlist.name[netlist]|upper}\'?')"><IMG src="img/delete.gif" border="0" alt="[ {$lang.delete} ]"></A>
 			<a href="?m=netedit&id={$netlist.id[netlist]}"><IMG src="img/edit.gif" border="0" alt="[ {$lang.edit} ]"></A>
-			<a href="?m=netinfo&id={$netlist.id[netlist]}"><IMG src="img/info.gif" border="0" alt="[ Info ]"></A></nobr>
+			<a href="?m=netinfo&id={$netlist.id[netlist]}"><IMG src="img/info.gif" border="0" alt="[ {$lang.info} ]"></A></nobr>
 		</TD>
 	</TR>
 	{sectionelse}

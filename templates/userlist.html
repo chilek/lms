@@ -7,7 +7,7 @@
 	<TR bgcolor="#CEBD9B" {popup text="`$lang.click_to_change_sort_order`"}>
 		<TD width="95%" class="fleftu">
 			<B>
-			<img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">Nazwisko i imiê:</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{$lang.lastname_and_name}:</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			<img src="img/phone.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">{$lang.phone}:</A></B> {if $listdata.order eq "phone"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{$lang.address}:</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
@@ -17,7 +17,7 @@
 		</TD>
 		<TD width="1%" class="fbt" VALIGN="TOP">
 			<img src="img/mail.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=email{if $listdata.direction eq "asc" && $listdata.order eq "email"},desc{/if}">{$lang.email}:</A> {if $listdata.order eq "email"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<img src="img/gg.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=gg{if $listdata.direction eq "asc" && $listdata.order eq "gg"},desc{/if}">GG:</A> {if $listdata.order eq "gg"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/gg.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=gg{if $listdata.direction eq "asc" && $listdata.order eq "gg"},desc{/if}">{$lang.im_name}:</A> {if $listdata.order eq "gg"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			<a href="?m=userlist&s={$listdata.state}&o=nip{if $listdata.direction eq "asc" && $listdata.order eq "nip"},desc{/if}">{$lang.taxid}:</A> {if $listdata.order eq "nip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 		</TD>
 		<TD width="1%" class="fbt">
@@ -79,11 +79,11 @@
 		</TD>
 		<TD align="right" valign="top" NOWRAP>
 			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|string_format:"%01.2f"} {$lang.currency}{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|string_format:"%01.2f"} {$lang.currency}</FONT>{if $userlist[userlist].balance < 0}<BR>
-			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz rozliczyæ WSZYSTKIE nale¿no¶ci u¿ytkownika: {$userlist[userlist].username|upper} z bazy danych?\n\n')">Rozlicz &raquo;</A>{/if}
+			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz rozliczyæ WSZYSTKIE nale¿no¶ci u¿ytkownika: {$userlist[userlist].username|upper} z bazy danych?\n\n')">{$lang.square_up}&raquo;</A>{/if}
 			</NOBR>
 		</TD>
 		<TD class="fright">
-			<NOBR><A href="?m=userdel&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist[userlist].username|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ {$lang.delete} ]"></A> <A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ {$lang.edit} ]"></A> <A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A></NOBR>
+			<NOBR><A href="?m=userdel&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist[userlist].username|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ {$lang.delete} ]"></A> <A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ {$lang.edit} ]"></A> <A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ {$lang.info} ]"></A></NOBR>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -105,7 +105,7 @@
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+			</B> ({$lang.rekordy} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {$lang.of} {$listdata.total})
 		</TD>
 	</TR>
 	<TR bgColor="#DFD5BD">
