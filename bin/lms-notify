@@ -255,8 +255,8 @@ while (my $row = $dbq->fetchrow_hashref())
 				}
 
 				if ($line =~ /\%last_10_in_a_table/ ) {
-					my $last10_dbq = $dbase->prepare("SELECT comment,value,type,time FROM cash WHERE 
-							userid='$row->{'id'}' AND (type>='3' ) ORDER BY time DESC LIMIT 0,10") ;
+					my $last10_dbq = $dbase->prepare("SELECT comment, value, type, time FROM cash WHERE 
+							userid='$row->{'id'}' AND (type>='3' ) ORDER BY time DESC LIMIT 10") ;
 				# ok, now we are going to rise up system's load
 					$last10_dbq->execute();
  					$smtp->datasend("Data       | Opis                                                 | Warto¶æ\n");
