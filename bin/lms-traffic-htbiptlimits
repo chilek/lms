@@ -128,6 +128,8 @@ my $iptables_binary = $ini->val('traffic-htbiptlimits','iptables_binary') || '/u
 my $tc_binary = $ini->val('traffic-htbiptlimits','tc_binary') || '/sbin/tc';
 my $wan_interfaces = $ini->val('traffic-htbiptlimits','wan_interfaces') || '';
 my $local_ports = $ini->val('traffic-htbiptlimits','local_ports') || '';
+my $local_ips = $ini->val('traffic-htbiptlimits','local_ips') || '';
+my $local_dests = $ini->val('traffic-htbiptlimits','local_dests') || '';
 my $cuid = $ini->val('traffic-htbiptlimits', 'script_owneruid') || '0';
 my $cgid = $ini->val('traffic-htbiptlimits', 'script_ownergid') || '0';
 my $cperm = $ini->val('traffic-htbiptlimits', 'script_permission') || '700';
@@ -166,6 +168,8 @@ open(OUTFILE, ">$outfile") or die("Fatal error: Unable to write $outfile, exitin
 
 my @local_ports_list = split(' ',$local_ports);
 my @wan_interfaces_list = split(' ',$wan_interfaces);
+my @local_ips_list = split(' ',$local_ips);
+my @local_dests_list = split(' ',$local_dests);
 
 print OUTFILE "#!/bin/bash\n";
 
@@ -184,7 +188,20 @@ foreach my $port (@local_ports_list)
 	print OUTFILE "$iptables_binary -t mangle -D INPUT -p tcp --dport $port -j LIMITS >/dev/null 2>&1\n";
 	print OUTFILE "$iptables_binary -t mangle -D OUTPUT -p tcp --sport $port -j LIMITS >/dev/null 2>&1\n";
 }
-		
+
+foreach my $local_ip (@local_ips_list)
+{
+	print OUTFILE "$iptables_binary -t mangle -D FORWARD -s $local_ip -j LIMITS >/dev/null 2>&1\n";
+	print OUTFILE "$iptables_binary -t mangle -D FORWRRD -d $local_ip -j LIMITS >/dev/null 2>&1\n";
+}
+
+foreach my $local_dest (@local_dests_list)
+{
+	my ($ip,$port) = split(':',$local_dest);
+	print OUTFILE "$iptables_binary -t mangle -D FORWARD -s $ip -p tcp --sport $port -j LIMITS >/dev/null 2>&1\n";
+	print OUTFILE "$iptables_binary -t mangle -D FORWARD -d $ip -p tcp --dport $port -j LIMITS >/dev/null 2>&1\n";
+}
+
 print OUTFILE "$iptables_binary -t mangle -F LIMITS
 $iptables_binary -t mangle -X LIMITS
 $iptables_binary -t mangle -N LIMITS
@@ -202,6 +219,19 @@ foreach my $port (@local_ports_list)
 {
 	print OUTFILE "$iptables_binary -t mangle -I INPUT -p tcp --dport $port -j LIMITS\n";
 	print OUTFILE "$iptables_binary -t mangle -I OUTPUT -p tcp --sport $port -j LIMITS\n";
+}
+
+foreach my $local_ip (@local_ips_list)
+{
+	print OUTFILE "$iptables_binary -t mangle -A FORWARD -s $local_ip -j LIMITS >/dev/null 2>&1\n";
+	print OUTFILE "$iptables_binary -t mangle -A FORWARD -d $local_ip -j LIMITS >/dev/null 2>&1\n";
+}
+
+foreach my $local_dest (@local_dests_list)
+{
+	my ($ip,$port) = split(':',$local_dest);
+	print OUTFILE "$iptables_binary -t mangle -A FORWARD -s $ip -p tcp --sport $port -j LIMITS >/dev/null 2>&1\n";
+	print OUTFILE "$iptables_binary -t mangle -A FORWARD -d $ip -p tcp --dport $port -j LIMITS >/dev/null 2>&1\n";
 }
 
 my %nodetable;
@@ -228,7 +258,7 @@ foreach my $key (keys %iftable)
 {
 	print OUTFILE "$tc_binary qdisc del root dev $key\n";
 	print OUTFILE "$tc_binary qdisc add dev $key root handle 1: htb\n";
-	print OUTFILE "$tc_binary class add dev $key parent 1: classid 1:19998 htb rate 100mbit burst 10mbit\n";
+	print OUTFILE "$tc_binary class add dev $key parent 1: classid 1:19998 htb rate 10mbit burst 1mbit\n";
 	print OUTFILE "$tc_binary class add dev $key parent 1:19998 classid 1:19999 htb rate ".$iftable{$key}."kbit burst ".($iftable{$key} / 10)."kbit\n";
 	
 }
@@ -255,7 +285,7 @@ while (my $row = $dbq->fetchrow_hashref())
 		{
 			$htbid{$key} = 0 if not defined $htbid{$key};
 			$htbid{$key} ++;
-			print OUTFILE "$tc_binary class add dev $key parent 1:19999 classid 1:".$htbid{$key}." htb rate ".$row->{'downrate'}."kbit burst ".($row->{'downrate'} / 10)."kbit\n";
+			print OUTFILE "$tc_binary class add dev $key parent 1:19999 classid 1:".$htbid{$key}." htb rate ".$row->{'downrate'}."kbit burst ".($row->{'downrate'} / 8)."kbit\n";
 			print OUTFILE "$tc_binary filter add dev $key protocol ip parent 1: handle $iptid fw classid 1:".$htbid{$key}."\n";
 		}
 	}
@@ -272,16 +302,13 @@ while (my $row = $dbq->fetchrow_hashref())
 			my ($if,$spd) = split(':', $wan_interface);
 			$htbid{$if} = 0 if not defined $htbid{$if};
 			$htbid{$if} ++;
-			print OUTFILE "$tc_binary class add dev $if parent 1:19999 classid 1:".$htbid{$if}." htb rate ".$row->{'uprate'}."kbit burst ".($row->{'uprate'} / 10). "kbit\n";
+			print OUTFILE "$tc_binary class add dev $if parent 1:19999 classid 1:".$htbid{$if}." htb rate ".$row->{'uprate'}."kbit burst ".($row->{'uprate'} / 8). "kbit\n";
 			print OUTFILE "$tc_binary filter add dev $if protocol ip parent 1: handle $iptid fw classid 1:".$htbid{$if}."\n";
 		}
 	}		
 }
-
 close(OUTFILE);
 chown $cuid, $cgid, $outfile or print "Warning! Unable to set owner of $outfile to $cuid.$cgid.\n";
 chmod oct($cperm), $outfile or print "Warning! Unable to set permission $cperm to $outfile.\n";
 system("$outfile 1>/dev/null 2>&1");
 $dbase->disconnect();
-
-
