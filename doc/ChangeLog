@@ -15,6 +15,8 @@ wersja 1.4.2 (??/??/????):
   - usuniêty b³±d modu³u payments demona almsd, powoduj±cy wystawianie faktur
     bez zawarto¶ci podczas pracy z baz± MySQL (alec)
   - BTS#0000262,263: lms-squid-warnings obs³uguje bazy postgres i sqlite (alec)
+  - lms-rtparser: przy nieustawionej opcji 'mail_from' poprawnie odczytywany
+    jest adres kolejki do pola 'From:' potwierdzenia (alec)
 
 wersja 1.4.1 Teyla (15/11/2004):
 
