@@ -14,6 +14,9 @@
 #ifdef USE_PGSQL
 #include "pgsql.h"
 #endif
+#ifdef USE_SQLITE
+#include "sqlite_.h"
+#endif
 
 #define ERROR	0
 #define OK	1
