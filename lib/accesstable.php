@@ -36,10 +36,16 @@ $access[table][2][name]		= "w³±czanie i od³±czanie komputerów";
 $access[table][2][allow_reg]	= "^nodeset$";
 
 $access[table][3][name]		= "manipulacja finansami";
-$access[table][3][allow_reg]	= "^(balancenew|balanceadd)$";
+$access[table][3][allow_reg]	= "^(balancenew|balanceadd|userbalanceok)$";
 
 $access[table][4][name]         = "prze³adowywanie konfiguracji";
 $access[table][4][allow_reg]    = "^reload$";
+
+$access[table][5][name]		= "manipulacja kontami u¿ytkowników";
+$access[table][5][allow_reg]	= "^user(add|edit|del)$";
+
+$access[table][6][name]		= "manipulacja danymi komputerów";
+$access[table][6][allow_reg]	= "^node(add|del|edit|set)$";
 
 $access[table][255][name]	= "brak dostêpu";
 $access[table][255][deny_reg]	= "^.*$";
