@@ -2463,6 +2463,30 @@ class LMS
 		return $result;
 	}
 
+	function QueueExists($id)
+	{
+		return ($this->DB->GetOne("SELECT * FROM rtqueues WHERE id=?", array($id)) ? TRUE : FALSE);
+	}
+
+	function GetQueueName($id)
+	{
+		return $this->DB->GetOne('SELECT name FROM rtqueues WHERE id=?', array($id));
+	}
+
+	function GetQueueContent($id)
+	{
+		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, requestor, subject, state, owner, name AS ownername, createtime FROM rttickets LEFT JOIN admins ON owner = admins.id WHERE queueid = ? AND state < 2 ORDER BY createtime DESC', array($id)))
+		{
+			foreach($result as $idx => $ticket)
+			{
+				$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
+				$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
+				$result[$idx] = $ticket;
+			}
+		}
+		return $result;
+	}
+
 	function GetQueueStats($id)
 	{
 		if($result = $this->DB->GetAll('SELECT state, COUNT(state) AS scount FROM rttickets WHERE queueid = ? GROUP BY state ORDER BY state ASC',array($id)))
