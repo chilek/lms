@@ -88,14 +88,15 @@ NAME="USER-STAFF-FAKTURY"
 ></H2
 ><P
 >LMS umo¿liwia wystawianie faktur. W³±czenia tej opcji dokonuje siê podczas
-		przypisywania taryf u¿ytkownikom. Do poprawnego dzia³ania i tworzenia wydruków
+		przypisywania taryf u¿ytkownikom. Aktualnie w LMS nie ma mo¿liwo¶ci rêcznego wystawiania faktur. 
+		Do poprawnego dzia³ania i tworzenia wydruków
 		wymagane jest ustawienie podstawowych opcji w sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
-> 
+>
 		<TT
 CLASS="FILENAME"
 >lms.ini</TT
@@ -110,14 +111,14 @@ CLASS="FILENAME"
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->number_template = %N/%Y"</SAMP
+>number_template = %N/%Y</SAMP
 ></P
 ></LI
 ><LI
 ><P
->seller</P
+>header</P
 ><P
->Dane sprzedawcy. Domy¶lnie: pusty</P
+>Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -128,7 +129,7 @@ CLASS="PROMPT"
 ><P
 >footer</P
 ><P
->Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta</P
+>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka zostanie umieszczona na dole faktury, ma³± czcionk±. Podobnie jak i w przypadku opcji header, mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -150,9 +151,35 @@ CLASS="PROMPT"
 >
 		</P
 ><P
->Wystawianie faktur jest dostêpne w oknie 'Rachunek u¿ytkownika', do
-		którego trafisz wybieraj±c ¿±danego u¿ytkownika z listy u¿ytkownków.
-		<DIV
+>Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki na wykazie bilansu finansowego (ogólnego b±d¼ pojedyñczego u¿ytkownika), albo poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest tak¿e filtrowanie faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darka Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.
+		</P
+><P
+>			<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie stopki i nag³ówka, czy te¿ adresu na wydruku.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+			<DIV
 CLASS="WARNING"
 ><TABLE
 CLASS="WARNING"
@@ -277,7 +304,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN664"
+NAME="AEN667"
 ></A
 ><P
 ><B
@@ -298,7 +325,7 @@ SRC="images/stats-small.png"></SPAN
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN671"
+NAME="AEN674"
 ></A
 ><P
 ><B
