@@ -7,6 +7,8 @@ wersja 1.0pre7 (??/??/2003):
   - zrobiona lista u¿ytkowników od³±czonych i zad³u¿onych
   - poprawione dodawanie userów (nie dodawali siê lub imiê nie zostawa³o
     zapisywane (BTS: 0000019)
+  - w przypadku odrzucenia danych do dodania u¿ytkownika gubi³o siê miasto w
+    fromularzu
 
 wersja 1.0pre6 (17/03/2003):
 
