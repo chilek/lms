@@ -213,7 +213,7 @@ switch($_GET['action'])
 			$SESSION->remove('invoicecustomer');
 			$SESSION->remove('invoice');
 			$SESSION->remove('invoicenewerror');
-			$SESSION->redirect('?m=invoice&id='.iid);
+			$SESSION->redirect('?m=invoice&id='.$iid);
 		}
 	break;
 }
