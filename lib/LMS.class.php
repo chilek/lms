@@ -32,7 +32,7 @@ class LMS {
 
 	var $db;
 	var $session;
-	var $version = '1.0.27';
+	var $version = '1.0.28';
 
 	function LMS($db,$session)
 	{
@@ -116,8 +116,10 @@ class LMS {
 	{
 		$db=$this->db;
 		$networks = $db->FetchArray("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks`");
-		if(sizeof($networks[id]))
+		$networks[total] = sizeof($networks[id]);
+		if($networks[total])
 		{
+			array_multisort($networks[name],$networks[id],$networks[address],$networks[mask],$networks[gateway],$networks[wins],$networks[domain],$networks[dns],$networks[dhcpstart],$networks[dhcpend]);
 			foreach($networks[id] as $key => $value)
 			{
 				$networks[addresslong][$key] = ip_long($networks[address][$key]);
@@ -125,18 +127,26 @@ class LMS {
 				$networks[broadcast][$key] = getbraddr($networks[address][$key],$networks[mask][$key]);
 				$networks[boradcastlong][$key] = ip_long($networks[broadcast][$key]);
 				$networks[size][$key] = pow(2,(32-$networks[prefix][$key]));
+				$networks[table][$key] = $this->GetNetwork($value);
+				$networks[assigned][$key] = $networks[table][$key][totalnodes];
+				$networks[assigned][total] = $networks[assigned][total] + $networks[assigned][$key];
+				$networks[size][total] = $networks[size][total] + $networks[size][$key];
 			}
-			array_multisort($networks[name],$networks[id],$networks[address],$networks[mask],$networks[gateway],$networks[wins],$networks[domain],$networks[dns],$networks[dhcpstart],$networks[dhcpend],$networks[prefix],$networks[addresslong]);
 		}
 		return $networks;
 	}
 
-	function IsIPValid($ip)
+	function IsIPValid($ip,$checkbroadcast=FALSE)
 	{
 		$networks = $this->GetNetworks();
 		foreach($networks[id] as $i => $v)
-			if((ip_long($ip) > $networks[addresslong][$i])&&(ip_long($ip) < ip_long(getbraddr($networks[address][$i],$networks[mask][$i])))	)
-				return TRUE;
+			if($checkbroadcast)
+				if((ip_long($ip) > $networks[addresslong][$i] - 1)&&(ip_long($ip) < ip_long(getbraddr($networks[address][$i],$networks[mask][$i])) + 1))
+					return TRUE;
+
+			else
+				if((ip_long($ip) > $networks[addresslong][$i])&&(ip_long($ip) < ip_long(getbraddr($networks[address][$i],$networks[mask][$i])))	)
+					return TRUE;
 		return FALSE;
 	}
 
@@ -202,6 +212,14 @@ class LMS {
 		return $db->row[status];
 	}
 
+	function GetNetworkRecord($id)
+	{
+		$db=$this->db;
+		$network = $db->FetchRow("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks` WHERE `id` = '".$id."'");
+		$network[prefix] = mask2prefix($network[mask]);
+		return $network;
+	}
+
 	function GetNetwork($id)
 	{
 		$db=$this->db;
@@ -210,7 +228,7 @@ class LMS {
 		while($db->FetchRow()){
 			foreach($db->row as $key => $value)
 				$$key = $value;
-
+			
 			$c=0;
 			for($i=ip_long($address)+1;$i<ip_long(getbraddr($address,$mask));$i++)
 			{
@@ -226,8 +244,8 @@ class LMS {
 		{
 			foreach($return[address] as $i => $v)
 			{
-				$db->ExecSQL("SELECT `name`, `id` FROM `nodes` WHERE `ipaddr` = '".$return[address][$i]."' LIMIT 1");
-				$db->FetchRow();
+				if($db->FetchRow("SELECT `name`, `id` FROM `nodes` WHERE `ipaddr` = '".$return[address][$i]."' LIMIT 1"))
+					$return[totalnodes]++;
 				$return[nodeid][$i]= $db->row[id];
 				$return[nodename][$i] = $db->row[name];
 			}
@@ -293,11 +311,6 @@ class LMS {
 	
 		$userlist = $db->FetchArray($sql);
 
-//		while($db->FetchRow())
-//
-//			foreach($db->row as $key => $value)
-//				$userlist[$key][] = $value;
-		
 		$userlist[crdate] = $userlist[creationdate];
 		$userlist[crid] = $userlist[creatorid];
 
@@ -526,6 +539,12 @@ class LMS {
 		return $db->CountRows("SELECT * FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 	}
 
+	function NetworkExists($id)
+	{
+		$db=$this->db;
+		return $db->CountRows("SELECT * FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
+	}	
+
 	function TariffExists($id)
 	{
 		$db=$this->db;
@@ -598,6 +617,42 @@ class LMS {
 				
 			}
 		return $return;
+	}
+
+	function GetPrefixList()
+	{
+		for($i=32;$i>-1;$i--)
+		{
+			$prefixlist[id][] = $i;
+			$prefixlist[value][] = $i;
+		}
+		
+		return $prefixlist;
+	}
+
+	function NetworkAdd($netadd)
+	{
+		$db=$this->db;
+
+		if($netadd[prefix] != "")
+			$netadd[mask] = prefix2mask($netadd[prefix]);
+		
+		$db->ExecSQL("
+		INSERT INTO `networks` (`name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend`)
+		VALUES ( '".$netadd[name]."','".$netadd[address]."','".$netadd[mask]."','".$netadd[gateway]."',
+		'".$netadd[dns]."',
+		'".$netadd[domain]."',
+		'".$netadd[wins]."',
+		'".$netadd[dhcpstart]."',
+		'".$netadd[dhcpend]."' )");
+		$db->FetchRow("SELECT id FROM `networks` WHERE `address` = '".$netadd[address]."'");
+		return $db->row[id];
+	}
+
+	function NetworkDelete($id)
+	{
+		$db=$this->db;
+		return $db->ExecSQL("DELETE FROM `networks` WHERE `id` = '".$id."'");
 	}
 }
 
