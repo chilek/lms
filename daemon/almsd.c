@@ -43,12 +43,12 @@ int main(int argc, char *argv[])
     int sleeptime = 0;			//
     int quit = 0;			//
     unsigned char *ini_file="/etc/lms/lms.ini";
-    unsigned char *db, *user, *passwd, *host; //db connection params
-    unsigned char *command;
-    int port;				//
-    dictionary *ini;			//config
-    int reload = 0, counter = 0, reload_t = 0;    
+    unsigned char *db, *user, *passwd, *host; 	//db connection params
+    int port;					//
+    dictionary *ini;				//config
+    int reload = 0, counter = 0, reload_t = 0;	    
     unsigned char *instance, *instances, *iopt;
+    unsigned char *command;
 
     	// read command line args
     	while ( (opt = getopt(argc, argv, "hc:bs:qi:")) != -1 ) {
