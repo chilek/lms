@@ -29,6 +29,7 @@ wersja 1.5.3 (??/??/????):
   - w dokumentacji dodany opis pod³±czenia lms-rtparser do Exima (P.Górski)
   - Konta/Aliasy/Domeny 
 	!!! UWAGA: Domeny nie s± ju¿ trzymane w passwd !!! (alec)
+  - dodany filtr 'on-line' do listy u¿ytkowników (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 

@@ -739,6 +739,7 @@ class LMS
 			
 		$disabled = ($state == 5) ? 1 : 0;
 		$indebted = ($state == 6) ? 1 : 0;
+		$online = ($state == 7) ? 1 : 0;
 		
 		if($state>3)
 			$state = 0;
@@ -768,6 +769,8 @@ class LMS
 
 			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid','id');
 			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid','id');
+			if($online)
+				$onlines = $this->DB->GetAllByKey('SELECT MAX(lastonline) AS online, ownerid AS id FROM nodes GROUP BY ownerid','id');
 			$userlist2 = NULL;
 			foreach($userlist as $idx => $row)
 			{
@@ -795,8 +798,12 @@ class LMS
 						$below += $userlist[$idx]['balance'];
 				if ($disabled && $userlist[$idx]['nodeac'] != 1)
 					$userlist2[] = $userlist[$idx];
+					
+				if($online)
+					if($onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
+						$userlist2[] = $userlist[$idx];
 			}
-			if ($disabled)
+			if ($disabled || $online)
 				$userlist = $userlist2;
 		}
 
