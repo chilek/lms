@@ -40,8 +40,8 @@ if(isset($queue))
 
 	if(!$error)
 	{
-		$LMS->QueueAdd($queue);
-		header("Location: ?m=rtqueueinfo&id=".$queue['id']);
+		$id = $LMS->QueueAdd($queue);
+		header("Location: ?m=rtqueueinfo&id=".$id);
 		die;
 	}
 }
