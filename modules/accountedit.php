@@ -47,7 +47,7 @@ if($id && !AccountExists($id))
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$account = $LMS->DB->GetRow('SELECT passwd.id AS id, ownerid, login, lastlogin, '.$LMS->DB->Concat('users.lastname', "' '", 'users.name').' AS username FROM passwd, users WHERE users.id = ownerid AND passwd.id = ?', array($id));
+$account = $LMS->DB->GetRow('SELECT passwd.id AS id, ownerid, login, lastlogin, domain, expdate, type, '.$LMS->DB->Concat('users.lastname', "' '", 'users.name').' AS username FROM passwd, users WHERE users.id = ownerid AND passwd.id = ?', array($id));
 
 switch ($option) 
 {
@@ -81,14 +81,58 @@ switch ($option)
     
     default:
     
-	header('Location: ?m=accountlist');
-	die;
-}
+	if($_POST['account'])
+	{
+		$oldlogin = $account['login'];
+		$account = $_POST['account'];
+		$account['id'] = $id;
+		
+		if(!eregi("^[a-z0-9.-_]+$", $account['login']))
+    			$error['login'] = 'Login zawiera niepoprawne znaki!';
+	    
+		if($account['login'] != $oldlogin)
+			if(GetAccountIdByLogin($account['login']))
+				$error['login'] = 'Konto o podanej nazwie ju¿ istnieje!'; 
+	
+		if(!eregi("^[a-z0-9.-_]+$", $account['domain']) && $account['domain']!='')
+    			$error['domain'] = 'Domena zawiera niepoprawne znaki!';
+	    
+		if($account['expdate'] == '')
+			$account['expdate'] = 0;
+		else
+		{
+			$date = explode('/',$account['expdate']);
+			if(!checkdate($date[1],$date[2],$date[0]))
+				$error['expdate'] = 'Zastosuj prawid³owy format daty - RRRR/MM/DD!';
+			elseif(!$error)
+				$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
+		}
 
+		$account['type'] = array_sum($account['type']);	
+			
+		if(!$error)
+		{
+			$LMS->DB->Execute('UPDATE passwd SET ownerid = ?, login = ?, home = ?, expdate = ?, domain = ?, type = ? WHERE id = ?', 
+				array(	$account['ownerid'], 
+					$account['login'], 
+					'/home/'.$account['login'],
+					$account['expdate'],
+					$account['domain'],
+					$account['type'],
+					$account['id']
+					));
+			header('Location: ?m=accountlist');
+			die;
+		}
+	}
+	
+	$template = 'accountedit.html';
+}
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('account', $account);
 $SMARTY->assign('layout', $layout);
+$SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->display($template);
 
 ?>
