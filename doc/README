@@ -4026,7 +4026,7 @@ Rozdzia³ 8. Dodatki
    drzewie katalogów lms'a. Plik sql.php skopiuj do katalogu modules, a
    pliki sql.html, sqlprint.html, adminheader.html do katalogu templates.
    Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu
-   Administratorzy->SQL.
+   Administracja->SQL.
      _________________________________________________________________
 
 8.4. Ostrze¿enia + squid
@@ -4078,6 +4078,7 @@ Rozdzia³ 9. FAQ
    9.4. Co oznacza b³±d Can't locate Config/IniFiles.pm in @INC ...?
    9.5. Zrobiem parê poprawek. Jak mogê dodaæ je do LMSa?
    9.6. Która wersja LMSa jest najnowsza?
+   9.7. Jak wypisaæ siê z listy mailingowej?
 
    9.1. Co zrobiæ gdy nie generuje siê mapa sieci?
 
@@ -4128,3 +4129,9 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 
    Archiwum wszystkich wersji LMS znajduje siê pod adresem
    lms.rulez.pl/download
+
+   9.7. Jak wypisaæ siê z listy mailingowej?
+
+   Informacja ta jest zawarta w nag³ówkach wszystkich wiadomo¶ci z listy
+   mailingowej. Nale¿y wys³aæ wiadomo¶æ z tematem "unsubscribe" na adres
+   lms-request@lists.rulez.pl.
