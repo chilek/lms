@@ -52,7 +52,7 @@
 			<A HREF="?m=rtqueueinfo&id={$queue.id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
 			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
 			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" ALT="[ {t}Browse{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=rtqueuedel&id={$queue.id}" {confirm text="Are you sure, you want to remove queue `$queue.name` from database?"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtqueuedel&id={$queue.id}" {confirm text="Are you sure, you want to remove queue '\$0' from database?" 0=$queue.name}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" ALIGN="absmiddle" BORDER="0"></A>
 		</TD>
 	</TR>
 	{foreachelse}
