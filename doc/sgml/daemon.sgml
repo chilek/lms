@@ -149,6 +149,11 @@ info = "Opcjonalny opis modu³u"
 				</thead>
 				<tbody>
 				<row>
+				<entry>system</entry>
+				<entry>Wywo³ywanie poleceñ pow³oki</entry>
+				</row>
+				<row>
+				<row>
 				<entry>dhcp</entry>
 				<entry>Konfiguracja serwera dhcpd</entry>
 				</row>
@@ -195,6 +200,28 @@ info = "Opcjonalny opis modu³u"
 				</tbody>
 			</tgroup>
 			</table>
+		</sect2>
+		<sect2 id="daemon-system">
+		<title>System</title>
+		    <sect3 id="system-desc">
+		    <title>Opis</title>
+		    <para>Jedyne co robi ten modu³ to wykonanie zadanego polecenia (listy poleceñ)
+		    pow³oki. Mo¿e siê przydaæ gdy chcesz podczas prze³adowania konfiguracji 
+		    wykonaæ jak±¶ komendê lub uruchomiæ zewnêtrzny skrypt, na przyk³ad jeden 
+		    z tych, które mo¿esz znale¼æ w katalogu <filename>/bin</filename>.</para>
+		    </sect3>
+		    <sect3 id="system-config">
+		    <title>Konfiguracja</title>
+		    <para>W zwi±zku z powy¿szym mo¿esz zdefiniowaæ jedynie tre¶æ polecenia.
+		    Pow³oka powinna sobie tak¿e poradziæ z list± poleceñ oddzielonych ¶rednikami:</para>
+		    <itemizedlist>
+			<listitem>
+			    <para>command</para>
+			    <para>Polecenie pow³oki. Domy¶lnie: puste.</para>
+			    <para>Przyk³ad: <prompt>command = 'echo "tu modu³ system"'</prompt></para>
+			</listitem>
+		    </itemizedlist>
+		    </sect3>
 		</sect2>
 		<sect2 id="daemon-payments">
 		<title>Payments</title>
