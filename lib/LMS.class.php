@@ -1628,6 +1628,25 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $usergrouplist;
 	}
 
+	function UserassignmentGetForUser($id)
+	{
+		return $this->DB->GetAll('SELECT userassignments.id AS id, usergroupid, userid FROM userassignments, usergroups WHERE userid=? AND usergroups.id = usergroupid ORDER BY usergroupid ASC', array($id)))
+	}
+
+	function UserassignmentDelete($id)
+	{
+		$this->SetTS('userassignments');
+		return $this->DB->Execute('DELETE FROM userassignments WHERE id=?', array($id));
+	}
+
+	function UserassignmentAdd($userassignmentdata)
+	{
+		$this->SetTS('userassignments');
+		return $this->DB->Execute('INSERT INTO userassignments (usergroupid, userid) VALUES (?, ?)',
+			array($userassignmentdata['usergroupid'], $userassignmentdata['userid']));
+	}
+
+
 	function SetBalanceZero($user_id)
 	{
 		$this->SetTS('cash');
