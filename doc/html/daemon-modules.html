@@ -999,7 +999,7 @@ NAME="TC-DESC"
 		    komputerów mo¿na dowolnie zdefiniowaæ i wykorzystaæ nie tylko do "traffic 
 		    control". Zasada dzia³ania skryptu przedstawia siê nastêpuj±co: Najpierw z bazy
 		    pobierane s± dane dla wszystkich u¿ytkowników. Obliczane s± warto¶ci ¶rednie
-		    (uprate, downrate, upceil, downceil, limity po³aczeñ) dla ka¿dego pod³±czonego
+		    (uprate, downrate, upceil, downceil, limity po³±czeñ) dla ka¿dego pod³±czonego
 		    komputera na podstawie sumy z taryf jego w³a¶ciciela z zaokr±gleniem ca³kowitym.
 		    Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy u¿ytkowników
 		    i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s± ró¿ne od zera nastêpuje
@@ -1102,7 +1102,7 @@ IPT=/usr/sbin/iptables
 TC=/sbin/tc
 LAN=eth0
 WAN=eth1
-BURST=\"burst 5k\"
+BURST="burst 5k"
 
 stop ()
 {
@@ -1166,7 +1166,7 @@ CLASS="PROMPT"
 CLASS="SCREEN"
 >}
 
-case \"$1\" in
+case "$1" in
     'start')
 	start
     ;;
@@ -1174,17 +1174,17 @@ case \"$1\" in
 	stop
     ;;
     'status')
-	echo \"WAN Interface\"
-	echo \"=============\"
+	echo "WAN Interface"
+	echo "============="
 	$TC class show dev $WAN | grep root
-	$TC class show dev $WAN \ grep -v root | sort | nl
-	echo \"LAN Interface\"
-	echo \"=============\"
+	$TC class show dev $WAN | grep -v root | sort | nl
+	echo "LAN Interface"
+	echo "============="
 	$TC class show dev $LAN | grep root
-	$TC class show dev $LAN \ grep -v root | sort | nl
+	$TC class show dev $LAN | grep -v root | sort | nl
     ;;
     *)
-	echo -e \"\\nUsage: rc.htb start|stop|status\"
+	echo -e "\nUsage: rc.htb start|stop|status"
     ;;
 esac</PRE
 >

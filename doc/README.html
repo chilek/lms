@@ -185,6 +185,11 @@ HREF="#MENU-STATS"
 ></DT
 ><DT
 >3.12. <A
+HREF="#MENU-HELPDESK"
+>Helpdesk</A
+></DT
+><DT
+>3.13. <A
 HREF="#USER-STAFF"
 >Dodatki</A
 ></DT
@@ -420,7 +425,11 @@ NAME="ABOUT-LMS"
 ></LI
 ><LI
 ><P
->wizualizacja statystyk wykorzystania ³±cza.</P
+>wizualizacja statystyk wykorzystania ³±cza,</P
+></LI
+><LI
+><P
+>system obs³ugi zg³oszeñ (Helpdesk).</P
 ></LI
 ></UL
 ><P
@@ -1799,7 +1808,7 @@ CLASS="PROMPT"
 >host</P
 ><P
 >Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj 
-	   wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie 'localhost:/path/to/socket'). 
+	   wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie '/path/to/socket'). 
 	   Domy¶lnie: localhost</P
 ><P
 >Przyk³ad:	<SAMP
@@ -2077,6 +2086,17 @@ CLASS="PROMPT"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >invoicelist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>ticketlist_pagelimit</P
+><P
+>Limit wy¶wietlanych pozycji na stronie w li¶cie zg³oszeñ. Domy¶lnie: 100</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>ticketlist_pagelimit = 50</SAMP
 ></P
 ></LI
 ><LI
@@ -3710,8 +3730,91 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
+NAME="MENU-HELPDESK"
+>3.12. Helpdesk</A
+></H2
+><P
+>Helpdesk (inaczej Request Tracker) to system obs³ugi zg³oszeñ.
+	    W systemie mo¿na prowadziæ bazê wszystkich zg³oszeñ i zapytañ u¿ytkowników
+	    sieci, ale tak¿e osób które nie s± wpisane do bazy LMS'a. Zg³oszenia mo¿na
+	    pogrupowaæ w kategorie (kolejki) i wyszukiwaæ wg zadanych kryteriów.
+	    Do ka¿dej kolejki mo¿na zdefiniowaæ uprawnienia dla administratorów.
+	    </P
+><P
+>W menu po lewej stronie znajduje siê pole szybkiego wyszukiwania
+	    zg³oszenia, w którym mo¿na podawaæ jego ID lub nazwisko zg³aszaj±cego je
+	    u¿ytkownika. W drugim przypadku zostanie wy¶wietlona lista wszystkich zg³oszeñ
+	    danego u¿ytkownika.</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-HELPDESK-LIST"
+>3.12.1. Lista kolejek</A
+></H3
+><P
+>Na li¶cie kolejek znajduj± siê podstawowe informacje i statystyki zg³oszeñ.
+	    Klikniêcie na wybranej kolejce powoduje wy¶wietlenie listy zg³oszeñ. St±d mo¿na
+	    tak¿e przej¶æ do informacji szczegó³owych (w tym tak¿e uprawnieniach) o kolejce lub
+	    usun±æ wybran± kolejkê. Usuniêcie kolejki spowoduje tak¿e usuniêcie zg³oszeñ z bazy
+	    danych przypisanych do niej.
+	    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-HELPDESK-NEWQUEUE"
+>3.12.2. Nowa kolejka</A
+></H3
+><P
+>Kolejka (kategoria) posiada nazwê, opcjonalny opis oraz opcjonalny adres
+	    poczty elektronicznej, który u¿ywany jest do korespondencji. W tabeli 'Uprawnienia'
+	    definiuje siê prawa do danej kolejki, które maj± moc wiêksz± od ogólnych 
+	    uprawnieñ administratorów tzn. je¶li admin nie ma praw do danej kolejki, to nawet
+	    je¶li ma 'pe³ny dostêp' zg³oszeñ w tej kolejce nie zobaczy. Prawo zapisu (dodawanie/edytowanie
+	    zg³oszeñ i wiadomo¶ci) oznacza automatyczne prawo do odczytu. 
+	    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-HELPDESK-SEARCH"
+>3.12.3. Wyszukaj</A
+></H3
+><P
+>Wyszukiwanie zg³oszeñ polega na wybraniu z bazy zg³oszeñ spe³niaj±cych 
+	    wszystkie podane kryteria (warunek AND, nie OR). Mo¿esz podaæ temat, w³a¶ciciela, 
+	    kolejkê, status i zg³aszaj±cego. Klientów sieci wybieraj z listy, dla pozosta³ych
+	    nale¿y podaæ Nazwisko/Imiê i/lub e-mail.
+	    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-HELPDESK-NEWTICKET"
+>3.12.4. Nowe zg³oszenie</A
+></H3
+><P
+>Dodaj±c nowe zg³oszenie nale¿y okre¶liæ dla niego temat, tre¶æ, wybraæ kolejkê
+	    oraz zg³aszaj±cego u¿ytkownika. Osoby spoza sieci wpisujemy w polach Nazwisko i Imiê.
+	    Opcjonalnie, je¶li wiadomo¶æ zosta³a zg³oszona poczt± elektroniczn± podajemy adres 
+	    e-mail (tak¿e dla u¿ytkownika zapisanego w bazie).</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
 NAME="USER-STAFF"
->3.12. Dodatki</A
+>3.13. Dodatki</A
 ></H2
 ><DIV
 CLASS="SECT2"
@@ -3719,7 +3822,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USER-STAFF-CUSTOMER"
->3.12.1. "Moje konto"</A
+>3.13.1. "Moje konto"</A
 ></H3
 ><P
 >W katalogu <TT
@@ -3748,7 +3851,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USER-STAFF-SQLPANEL"
->3.12.2. Panel SQL</A
+>3.13.2. Panel SQL</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -3756,7 +3859,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="SQLPANEL-INTRO"
->3.12.2.1. Wstêp</A
+>3.13.2.1. Wstêp</A
 ></H4
 ><P
 >W katalogu <TT
@@ -3790,7 +3893,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="SQLPANEL-INSTALL"
->3.12.2.2. Instalacja</A
+>3.13.2.2. Instalacja</A
 ></H4
 ><P
 >Instalacja polega na skopiowaniu plików w odpowiednie miejsca
@@ -6225,11 +6328,27 @@ NAME="MGC-CONFIG-VARS"
 ></LI
 ><LI
 ><P
->%UPRATE - limit transferu dla danych wychodz±cych</P
+>%UPRATE - gwarantowany transfer dla danych wychodz±cych</P
 ></LI
 ><LI
 ><P
->%DOWNRATE - limit transferu dla danych przychodz±cych</P
+>%DOWNRATE - gwarantowany transfer dla danych przychodz±cych</P
+></LI
+><LI
+><P
+>%UPCEIL - maksymalny transfer dla danych wychodz±cych</P
+></LI
+><LI
+><P
+>%DOWNCEIL - maksymalny transfer dla danych przychodz±cych</P
+></LI
+><LI
+><P
+>%CLIMIT - limit równoczesnych po³±czeñ</P
+></LI
+><LI
+><P
+>%PLIMIT - limit pakietów</P
 ></LI
 ><LI
 ><P
@@ -7514,7 +7633,7 @@ NAME="TC-DESC"
 		    komputerów mo¿na dowolnie zdefiniowaæ i wykorzystaæ nie tylko do "traffic 
 		    control". Zasada dzia³ania skryptu przedstawia siê nastêpuj±co: Najpierw z bazy
 		    pobierane s± dane dla wszystkich u¿ytkowników. Obliczane s± warto¶ci ¶rednie
-		    (uprate, downrate, upceil, downceil, limity po³aczeñ) dla ka¿dego pod³±czonego
+		    (uprate, downrate, upceil, downceil, limity po³±czeñ) dla ka¿dego pod³±czonego
 		    komputera na podstawie sumy z taryf jego w³a¶ciciela z zaokr±gleniem ca³kowitym.
 		    Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy u¿ytkowników
 		    i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s± ró¿ne od zera nastêpuje
@@ -7617,7 +7736,7 @@ IPT=/usr/sbin/iptables
 TC=/sbin/tc
 LAN=eth0
 WAN=eth1
-BURST=\"burst 5k\"
+BURST="burst 5k"
 
 stop ()
 {
@@ -7681,7 +7800,7 @@ CLASS="PROMPT"
 CLASS="SCREEN"
 >}
 
-case \"$1\" in
+case "$1" in
     'start')
 	start
     ;;
@@ -7689,17 +7808,17 @@ case \"$1\" in
 	stop
     ;;
     'status')
-	echo \"WAN Interface\"
-	echo \"=============\"
+	echo "WAN Interface"
+	echo "============="
 	$TC class show dev $WAN | grep root
-	$TC class show dev $WAN \ grep -v root | sort | nl
-	echo \"LAN Interface\"
-	echo \"=============\"
+	$TC class show dev $WAN | grep -v root | sort | nl
+	echo "LAN Interface"
+	echo "============="
 	$TC class show dev $LAN | grep root
-	$TC class show dev $LAN \ grep -v root | sort | nl
+	$TC class show dev $LAN | grep -v root | sort | nl
     ;;
     *)
-	echo -e \"\\nUsage: rc.htb start|stop|status\"
+	echo -e "\nUsage: rc.htb start|stop|status"
     ;;
 esac</PRE
 >
@@ -8795,11 +8914,27 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->uprate - ograniczenie szybko¶ci transferu danych wychodz±cych</TD
+>uprate - gwarantowany upload</TD
 ></TR
 ><TR
 ><TD
->downrate - ograniczenie szybko¶ci transferu danych przychodz±cych</TD
+>upceil - maksymalny upload</TD
+></TR
+><TR
+><TD
+>downrate - gwarantowany download</TD
+></TR
+><TR
+><TD
+>downceil - maksymalny download</TD
+></TR
+><TR
+><TD
+>climit - limit po³±czeñ</TD
+></TR
+><TR
+><TD
+>plimit - limit pakietów</TD
 ></TR
 ><TR
 ><TD
