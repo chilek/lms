@@ -5,31 +5,36 @@
 
 	function CheckAll()
 	{
-		for (var i=0; i<document.delbalance.elements.length; i++)
+		for (var i=0; i<document.addbalance.elements.length; i++)
 		{
-			var e = document.delbalance.elements[i];
+			var e = document.addbalance.elements[i];
 			if (e.name != 'allbox')
-				e.checked = document.delbalance.allbox.checked;
+				e.checked = document.addbalance.allbox.checked;
 		}
 	}
 
 	function CheckAll2()
 	{
-		document.delbalance.allbox.checked = !document.delbalance.allbox.checked;
+		document.addbalance.allbox.checked = !document.addbalance.allbox.checked;
 		CheckAll();
 	}
 
 	function DeleteMarked()
 	{
-		document.page.action="?m=balancedel";
-		document.page.target="";
-		document.page.submit();
+		document.addbalance.action="?m=balancedel";
+		document.addbalance.target="";
+		document.addbalance.submit();
+	}
+
+	function AddBalance()
+	{
+		document.addbalance.submit();
 	}
 
 	//-->
 </SCRIPT>
 {/literal}
-<FORM name="delbalance" method="POST">
+<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.userid}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fleftu">
@@ -104,37 +109,35 @@
 					</TD>
 				</TR>
 				<TR bgcolor="#DFD5BD" title="Nowa operacja kasowa">
-					<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.userid}">
-						<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
-						<TD class="ftop">
-							<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Wpisz czas operacji w formacie 'rrrr/mm/dd gg:mm' (pole puste oznacza datê dzisiejsz±). Kliknij na to pole by wybraæ datê z kalendarza."} onClick="cal3.popup();">
-							{*<nobr>{$smarty.now|date_format:"%Y/%m/%d %H:%M"}</nobr>*}
-						</TD>
-						<TD class="ftop">
-							{$layout.logname|truncate:20:"..."|replace:" ":"&nbsp;"}
-						</TD>
-						<TD class="ftop">
-							<SELECT SIZE="1" name="addbalance[type]" {tip text="Wybierz rodzaj operacji finansowej"}>
-								<OPTION value="3">wp³ata</OPTION>
-								<OPTION value="4">obci±¿enie</OPTION>
-							</SELECT>
-						</TD>
-						<TD colspan="2" class="ftop" nowrap>
-							<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s" {tip text="Wpisz warto¶æ operacji"}> z³
-						</TD>
-						<TD colspan="2" class="ftop" nowrap>
-							<SELECT SIZE="1" name="addbalance[taxvalue]" {tip text="Wpisz stawkê VAT"}>
-								<OPTION value="22">22%</OPTION>
-								<OPTION value="7">7%</OPTION>
-								<OPTION value="0">0%</OPTION>
-								<OPTION value="zw.">zw.</OPTION>
-							</SELECT>
-						</TD>
-						<TD colspan="3" align="right" class="ftop">
-							<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Podaj opis dla tej operacji finansowej"}> 
-							<NOBR><A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A></NOBR>
-						</TD>
-					</FORM>
+					<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
+					<TD class="ftop">
+						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Wpisz czas operacji w formacie 'rrrr/mm/dd gg:mm' (pole puste oznacza datê dzisiejsz±). Kliknij na to pole by wybraæ datê z kalendarza."} onClick="cal3.popup();">
+						{*<nobr>{$smarty.now|date_format:"%Y/%m/%d %H:%M"}</nobr>*}
+					</TD>
+					<TD class="ftop">
+						{$layout.logname|truncate:20:"..."|replace:" ":"&nbsp;"}
+					</TD>
+					<TD class="ftop">
+						<SELECT SIZE="1" name="addbalance[type]" {tip text="Wybierz rodzaj operacji finansowej"}>
+							<OPTION value="3">wp³ata</OPTION>
+							<OPTION value="4">obci±¿enie</OPTION>
+						</SELECT>
+					</TD>
+					<TD colspan="2" class="ftop" nowrap>
+						<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s" {tip text="Wpisz warto¶æ operacji"}> z³
+					</TD>
+					<TD colspan="2" class="ftop" nowrap>
+						<SELECT SIZE="1" name="addbalance[taxvalue]" {tip text="Wpisz stawkê VAT"}>
+							<OPTION value="22">22%</OPTION>
+							<OPTION value="7">7%</OPTION>
+							<OPTION value="0">0%</OPTION>
+							<OPTION value="zw.">zw.</OPTION>
+						</SELECT>
+					</TD>
+					<TD colspan="3" align="right" class="ftop">
+						<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Podaj opis dla tej operacji finansowej"}> 
+						<NOBR><A href="javascript:AddBalance();">Dodaj <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A></NOBR>
+					</TD>
 				</TR>
 			</table>
 		</TD>
