@@ -1339,54 +1339,54 @@ class LMS
 	{
 		$this->SetTS('nodes');
 		if($this->DB->GetOne('SELECT access FROM nodes WHERE id=?', array($id)) == 1 )
-			return $this->DB->Execute('UPDATE nodes SET access=0, modid=? WHERE id=?', array($this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE id=?', array($id));
 		else
-			return $this->DB->Execute('UPDATE nodes SET access=1, modid=? WHERE id=?', array($this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET access=1 WHERE id=?', array($id));
 	}
 
 	function NodeSetU($id,$access=FALSE)
 	{
 		$this->SetTS('nodes');
 		if($access)
-			return $this->DB->Execute('UPDATE nodes SET access=1, modid=? WHERE ownerid=?', array($this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET access=1 WHERE ownerid=?', array($id));
 		else
-			return $this->DB->Execute('UPDATE nodes SET access=0, modid=? WHERE ownerid=?', array($this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE ownerid=?', array($id));
 	}		
 
 	function NodeSetWarn($id,$warning=FALSE)
 	{
 		$this->SetTS('nodes');
 		if($warning)
-			return $this->DB->Execute('UPDATE nodes SET warning=1, modid=? WHERE id=?', array($this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET warning=1 WHERE id=?', array($id));
 		else
-			return $this->DB->Execute('UPDATE nodes SET warning=0, modid=? WHERE id=?', array($this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET warning=0 WHERE id=?', array($id));
 	}
 
 	function NodeSwitchWarn($id)
 	{
 		$this->SetTS('nodes');
 		if($this->DB->GetOne('SELECT warning FROM nodes WHERE id=?', array($id)) == 1 )
-			return $this->DB->Execute('UPDATE nodes SET warning=0, modid=? WHERE id=?', array($this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET warning=0 WHERE id=?', array($id));
 		else
-			return $this->DB->Execute('UPDATE nodes SET warning=1, modid=? WHERE id=?', array($this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET warning=1 WHERE id=?', array($id));
 	}
 
 	function NodeSetWarnU($id,$warning=FALSE)
 	{
 		$this->SetTS('nodes');
 		if($warning)
-			return $this->DB->Execute('UPDATE nodes SET warning=?, modid=? WHERE ownerid=?', array(1,$this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET warning=1 WHERE ownerid=?', array($id));
 		else
-			return $this->DB->Execute('UPDATE nodes SET warning=?, modid=? WHERE ownerid=?', array(0,$this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET warning=0 WHERE ownerid=?', array($id));
 	}		
 
 	function IPSetU($netdev, $access=FALSE)
 	{
 		$this->SetTS('nodes');
 		if($access)
-			return $this->DB->Execute('UPDATE nodes SET access=?, modid=? WHERE netdev=? AND ownerid=0', array(1,$this->SESSION->id,$netdev));
+			return $this->DB->Execute('UPDATE nodes SET access=1 WHERE netdev=? AND ownerid=0', array($netdev));
 		else
-			return $this->DB->Execute('UPDATE nodes SET access=?, modid=? WHERE netdev=? AND ownerid=0', array(0,$this->SESSION->id,$netdev));
+			return $this->DB->Execute('UPDATE nodes SET access=0 WHERE netdev=? AND ownerid=0', array($netdev));
 	}
 	
 	function NodeAdd($nodedata)
