@@ -3275,7 +3275,7 @@ class LMS
 			// ie. 'Password' incorrect if we protect each installation with password (but then
 			// we should use https)
 			
-			sleep(2);
+			sleep(5);
 			$this->CheckUpdates(TRUE);
 			return TRUE;
 		}
