@@ -172,7 +172,7 @@ else
 
 open(ETHERSFILE, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.\n");
 
-my $allnetworks;
+my $allnetworks = "";
 
 my $dbq = $dbase->prepare("SELECT name FROM networks");
 $dbq->execute();
