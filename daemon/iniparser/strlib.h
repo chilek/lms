@@ -45,7 +45,7 @@
   allocated, it will be modified at each function call (not re-entrant).
  */
 /*--------------------------------------------------------------------------*/
-char * strlwc(char * s);
+unsigned char * strlwc(const unsigned char * s);
 
 /*-------------------------------------------------------------------------*/
 /**

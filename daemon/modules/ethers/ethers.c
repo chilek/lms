@@ -37,7 +37,7 @@ void reload(GLOBAL *g, struct ethers_module *fm)
     QUERY_HANDLE *res;
     int i;
     
-    fh = fopen(fm->tmpfile, "w");
+    fh = fopen(fm->file, "w");
     if(fh) {
 	
 	if( (res = g->db_query("SELECT mac, ipaddr FROM nodes ORDER BY ipaddr"))!= NULL) {
@@ -53,31 +53,44 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 	fclose(fh);
 	system(fm->command);
 #ifdef DEBUG1
-	syslog(LOG_INFO, "DEBUG: [mod_ethers] reloaded");
+	syslog(LOG_INFO, "DEBUG: [%s/ethers] reloaded", fm->base.instance);
 #endif
     }
     else
-	syslog(LOG_ERR, "mod_ethers: Unable to write a temporary file '%s'", fm->tmpfile);
+	syslog(LOG_ERR, "mod_ethers: Unable to write a temporary file '%s'", fm->file);
+    
+    free(fm->file);
+    free(fm->command);
 }
 
 struct ethers_module * init(GLOBAL *g, MODULE *m)
 {
 	struct ethers_module *fm;
+	unsigned char *instance, *s;
 	dictionary *ini;
 	
 	if(g->api_version != APIVERSION) 
 	    return(NULL);
 	
+	instance = strdup(m->instance);
+	
 	fm = (struct ethers_module *) realloc(m, sizeof(struct ethers_module));
 	
 	fm->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
+	fm->base.instance = strdup(instance);
 
 	ini = g->iniparser_load(g->inifile);
-	fm->tmpfile = strdup(g->iniparser_getstring(ini, "ethers:tmpfile", "/tmp/mod_ethers"));
-	fm->command = strdup(g->iniparser_getstring(ini, "ethers:command", ""));
+
+	s = g->str_concat(instance, ":file");
+	fm->file = strdup(g->iniparser_getstring(ini, s, "/tmp/ethers"));
+	free(s); s = g->str_concat(instance, ":command");
+	fm->command = strdup(g->iniparser_getstring(ini, s, ""));
+	
 	g->iniparser_freedict(ini);
+	free(instance);
+	free(s);
 #ifdef DEBUG1
-	syslog(LOG_INFO,"DEBUG: [mod_ethers] initialized");
+	syslog(LOG_INFO,"DEBUG: [%s/ethers] initialized", fm->base.instance);
 #endif	
 	return(fm);
 }

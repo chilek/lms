@@ -9,7 +9,8 @@
 #define _ALMSD_H_
 
 #include "db.h"
-#include "./iniparser/iniparser.h"
+#include "iniparser/iniparser.h"
+#include "iniparser/strlib.h"
 
 #define APIVERSION 4
 
@@ -17,7 +18,6 @@ struct global
 {
 	int api_version;
 	char *inifile;
-	struct module *modules;
 	
 	//db functions
 	QUERY_HANDLE * (*db_query)(unsigned char *);
@@ -38,22 +38,16 @@ struct global
 	
 	//util functions
 	unsigned char * (*str_replace)(unsigned char *, const unsigned char *, const unsigned char *);
-	unsigned char * (*save_string)(unsigned char *, const unsigned char *);
+	unsigned char * (*str_save)(unsigned char *, const unsigned char *);
 	unsigned char * (*str_concat)(const unsigned char *, const unsigned char *);
+	unsigned char * (*str_lwc)(const unsigned char *);
 };
-
-typedef struct 
-{
-	unsigned char *key;
-	unsigned char *val;
-}
-MOD_ARGS;
 
 struct module
 {
-	struct module *next;
+//	struct module *next;
 	unsigned char *filename;
-	MOD_ARGS *args;
+	unsigned char *instance;
 	void *dlh;
 	void (*reload)(struct global *, struct module *); 
 };

@@ -1,7 +1,8 @@
 
 LIBS = -lpq -ldl
 LDFLAGS = -L/usr/local/pgsql/lib
-CFLAGS = -I/usr/local/pgsql/include  -DUSE_PGSQL
+CFLAGS = -I/usr/local/pgsql/include -DUSE_PGSQL -DDEBUG0 -DDEBUG1
+INSTALLDIR = /usr/local/bin
 
 
 SOURCES = almsd.c db.c util.c

@@ -1,5 +1,5 @@
 
-MODULES = ethers firewall hostfile dhcp
+MODULES = ethers hostfile dhcp oident
 
 all:
 	for i in `echo $(MODULES)`; do make -C $$i ; done

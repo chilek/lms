@@ -1,3 +1,18 @@
+* 03.11.2003
+  - zmiana w obs³udzie instancji w lms.ini nie ma ju¿ load0, load1, args0 itd.
+    teraz w sekcji [lmsd] mamy 'instances = lista instancji', a argumenty 
+    i modu³y w osobnych sekcjach. Zobacz lms.ini.sample (alec)
+  - inicjalizacja modu³ów podczas reloadu, a nie jak by³o dot±d podczas
+    startu daemona (alec)
+  - dodany modu³ 'oident' (alec)
+  - wyrzucony modu³ 'firewall', którego zastêpuje 'hostfile' (alec)
+  - ujednolicone zmienne (tmpfile -> file) (alec)
+  - du¿o zmian kosmetycznych, na przyk³ad zmiana funkcji save_string na 
+    str_save (alec)
+  - dodatkowa zmienna 'info' w instancjach, przygotowana m.in. pod przysz³e
+    zmiany w sposobie reloadu (alec) 
+  - dodane zwalnianie zasobów w modu³ach (alec)
+    
 * 01.11.2003
   - mo¿na korzystaæ z instancji (alec)
 

@@ -51,7 +51,7 @@
  */
 /*--------------------------------------------------------------------------*/
 
-char * strlwc(char * s)
+unsigned char * strlwc(const unsigned char * s)
 {
     static char l[ASCIILINESZ+1];
     int i ;

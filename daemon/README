@@ -1,18 +1,18 @@
 $Id$
 ************************************************************************
-
-		   A.L.E.C's LMS Daemon - alfa version
-			
+		   A.L.E.C's LMS Daemon - beta version
 ************************************************************************
- U W A G A: To jest wersja alfa, przeznaczona tylko dla developerów
- W A R N I N G: This is an alfa, for development, under construction
+ U W A G A: To jest wersja beta, przeznaczona tylko dla developerów
+ W A R N I N G: This is an beta, for development, under construction
 ************************************************************************
 
-- INFORMACJE
- 
-    *** Wersja nie stabilna *** 
-    *** Unstable version ***
+- O PROGRAMIE
     
+    Program ma u³atwiaæ zarz±dzanie us³ugami. Sam daemon odpowiada
+    za uruchamianie odpowiednich modu³ów na ¿±danie u¿ytkownika. Modu³y
+    natomiast, s³u¿± do tworzenia plików konfiguracyjnych na podstawie 
+    danych z bazy LMS'a oraz restartowania odpowiednich us³ug na serwerze.
+	    
 - WYMAGANIA
 
     Program potrzebuje:
@@ -23,15 +23,25 @@ $Id$
       
 - KOMPILACJA
 
-    * ustaw CFLAGS i LDFLAGS w ./configure tak aby wskazywa³y na biblioteki 
-      i includes MySQL'a w Twoim systemie
-    * ./configure (dostêpne opcje ./configure --help)
+    * ./configure (wymagane opcje --with-mysql lub --with-pgsql, --incdir=, --libdir=, 
+    		   pozosta³e opcje ./configure --help)
     * make
     
 - URUCHOMIENIE
 
     * przygotuj odpowiednie wpisy do lms.ini (przyk³adowy ini: lms.ini.sample)
     * ./almsd -b (dostêpne opcje ./almsd -h)
-    * NIE RÓB TEGO Z ROOTA. póki co.
-       
-   
+    Program mo¿na zatrzymaæ poleceniem `killall almsd`
+          
+- INFORMACJE
+ 
+    * program wymaga dodatkowej tabeli 'reload' w bazie lms'a - jakikolwiek
+      wpis do tej tabeli (jakiekolwiek kolumny) powoduje 'prze³adowanie' ustawieñ.
+      w przysz³o¶ci pewnie sposób wykrywania zmian bêdzie bardziej sprytny ...
+    * istnieje mo¿liwo¶æ jednorazowego uruchamiania programu z reloadem (opcja -q)
+    * do¶æ du¿o mo¿na skonfigurowaæ plikiem ini z LMS'a ... zobacz lms.ini.sample
+    * w zale¿no¶ci od systemu logi programu mo¿na znale¼æ w /var/log/messages
+      i/lub /var/log/syslog
+    * jest mo¿liwo¶æ skompilowania programu, aby logowa³ zapytania SQL oraz
+      zdarzenia programu i modu³ów
+    * ka¿da funkcjonalno¶æ UI lms'a potrzebuje modu³u - modu³y s± w .so 

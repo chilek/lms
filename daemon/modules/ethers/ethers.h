@@ -2,6 +2,6 @@
 struct ethers_module
 {
 	MODULE base;
-	unsigned char *tmpfile;
+	unsigned char *file;
 	unsigned char *command;
 };
