@@ -50,6 +50,33 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	}
 	$SMARTY->display('clearfooter.html');
 }
+elseif($_GET['fetchallinvoices'])
+{
+	$layout['pagetitle'] = 'Faktury VAT';
+	$SMARTY->display('clearheader.html');
+	$which = ($_GET['which'] != '' ? $_GET['which'] : 'ORYGINA£+KOPIA');
+	
+	$ids = $LMS->DB->GetCol('SELECT id FROM invoices 
+				WHERE cdate > ? AND cdate < ?'
+				.($_GET['userid'] ? ' AND customerid = '.$_GET['userid'] : '')
+				.' ORDER BY cdate',
+				array($_GET['from'], $_GET['to']));
+	if(!$ids) die;
+
+	foreach($ids as $idx => $invoiceid)
+	{
+		echo '<PRE>';
+		$invoice = $LMS->GetInvoiceContent($invoiceid);
+		$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
+		foreach(split('\+', $which) as $type)
+		{
+			$SMARTY->assign('type',$type);
+			$SMARTY->assign('invoice',$invoice);
+			$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
+		}
+	}
+	$SMARTY->display('clearfooter.html');
+}
 elseif($_GET['fetchsingle'])
 {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
