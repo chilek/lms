@@ -1,9 +1,9 @@
 {include file="header.html"}
 {include file="balanceheader.html"}
 <!--// $Id$ //-->
-<SCRIPT LANGUAGE="JavaScript" SRC="img/calendar.js"></SCRIPT>
+{include file="calendar_js.html"}
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
 {literal}
-<SCRIPT LANGUAGE=JavaScript" TYPE="text/javascript">
 <!--
 	function AddBalance()
 	{
@@ -46,8 +46,8 @@
 		document.forms['addbalance'].selectededit.value = j;
 	}
 //-->
-</SCRIPT>
 {/literal}
+</SCRIPT>
 <H1>{$layout.pagetitle}</H1>
 <P><FORM NAME="addbalance" METHOD="POST" ACTION="?m=balanceadd">
 <TABLE width="100%" cellpadding="3">

@@ -3,6 +3,7 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {if $userinfo}
+{include file="calendar_js.html"}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD VALIGN="TOP" WIDTH="50%">
@@ -10,6 +11,16 @@
 		</TD>
 		<TD VALIGN="TOP" WIDTH="50%">
 			{include file="nodescanbox.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			{include file="usergroups.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			{include file="userassignments.html"}
 		</TD>
 	</TR>
 	<TR>

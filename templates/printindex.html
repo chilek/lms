@@ -3,7 +3,7 @@
 {if $printmenu=="nodes"}{include file="nodeheader.html"}{/if}
 {if $printmenu=="finances"}{include file="balanceheader.html"}{/if}
 <!--// $Id$ //-->
-<SCRIPT type="text/javascript" src="img/calendar.js"></SCRIPT>
+{include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
 {if $printmenu=="users" || !$printmenu}
 <P><FORM method="POST" name="printuserlist" id="printuserlist" action="?m=print&type=userlist" target="_blank">	
