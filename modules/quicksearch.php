@@ -29,14 +29,14 @@ $search = trim($_GET['what']);
 switch($_GET['mode'])
 {
 	case 'user':
-		if($userid = $DB->GetOne('SELECT id FROM users WHERE lastname ?LIKE? ? OR address ?LIKE? ? OR ? IN (phone1, phone2, phone3, email, id)', array('%'.$search.'%', '%'.$search.'%', $search)))
+		if($userid = $DB->GetOne('SELECT id FROM users WHERE id = ? OR lastname ?LIKE? ? OR address ?LIKE? ? OR ? IN (phone1, phone2, phone3, email)', array(intval($search), '%'.$search.'%', '%'.$search.'%', $search)))
 			$target = '?m=userinfo&id='.$userid;
 		else
 			$target = '?m=userlist';
 	break;
 
 	case 'node':
-		if($nodeid = $DB->GetOne('SELECT id FROM nodes WHERE ? IN (id, name, mac) OR ? = ipaddr', array($search, ip_long($search))))
+		if($nodeid = $DB->GetOne('SELECT id FROM nodes WHERE id = ? OR ipaddr = ? OR UPPER(?) IN (name, mac)', array(intval($search), ip_long($search), $search)))
 			$target = '?m=nodeinfo&id='.$nodeid;
 		else
 			$target = '?m=nodelist';
