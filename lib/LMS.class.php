@@ -793,7 +793,7 @@ class LMS
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid FROM nodes WHERE id=?",array($id)))
+		if($result = $this->DB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid, netdevid FROM nodes WHERE id=?",array($id)))
 		{
 			$result['ip'] = long2ip($result['ipaddr']);
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
@@ -804,10 +804,12 @@ class LMS
 			$result['netid'] = $this->GetNetIDByIP($result['ip']);
 			$result['netname'] = $this->GetNetworkName($result['netid']);
 			$result['producer'] = get_producer($result['mac']);
+			$result['devicename'] = $this->GetNetDev($result['netdevid']);
 			return $result;
 		}else
 			return FALSE;
 	}
+
 	function GetNodeList($order="name,asc")
 	{
 
@@ -1543,7 +1545,12 @@ class LMS
 	/*
 	 * Ewidencja sprzêtu sieciowego
 	 */
-	 
+	
+	function GetNetDev($id)
+	{
+		return $this->DB->GetAll("SELECT * FROM netdevices WHERE id=?",array($id));
+	}
+	
 	function GetNetDevList($order="name,asc")
 	{
 
@@ -1590,7 +1597,6 @@ class LMS
 		$netdevlist['total'] = sizeof($netdevlist);
 		$netdevlist['order'] = $order;
 		$netdevlist['direction'] = $direction;
-
 		return $netdevlist;
 	}
 	 
@@ -1635,11 +1641,11 @@ class LMS
 				while(!feof($file))
 				{
 					$line=fgets($file,4096);
-					$mac=trim(substr($line,35,25));
-					$ip=trim(substr($line,0,15));
-					if(check_mac($mac) && $mac != '00:00:00:00:00:00')
+					$line=eregi_replace("[\t ]+"," ",$line);
+					list($ip, $hwtype, $flags, $hwaddr, $mask, $device) = split(' ',$line);
+					if($flags == "0x2")
 					{
-						$result['mac'][] = $mac;
+						$result['mac'][] = $hwaddr;
 						$result['ip'][] = $ip;
 						$result['longip'][] = ip_long($ip);
 						$result['nodename'][] = $this->GetNodeNameByMAC($mac);
@@ -1783,6 +1789,11 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.228  2003/09/17 02:10:40  lukasz
+ * - zmiana zachowania procedury zczytuj±cej mac adresy - na Linuksie szuka
+ *   ona wpisów 0x2 (podczas gdy pernamentne s± oznaczone 0x6)
+ * - pozosta³e zmiany - zignorowaæ ;)
+ *
  * Revision 1.227  2003/09/16 18:35:50  alec
  * Traffic() modified
  *
