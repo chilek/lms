@@ -26,10 +26,11 @@ use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
-use vars qw($configfile $help $version $quiet);
+use vars qw($configfile $help $version $quiet $fakedate);
 use POSIX qw(strftime);
 use LWP::UserAgent;
 use MIME::Entity;
+use Time::Local;
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
@@ -40,6 +41,7 @@ my %options = (
 	"--quiet|q"     	=>      \$quiet,
 	"--help|h"              =>      \$help,
 	"--version|v"           =>      \$version,
+	"--fakedate|f=s"	=>	\$fakedate,
 );
 
 Getopt::Long::config("no_ignore_case");
@@ -51,11 +53,12 @@ if($help)
 lms-sendinvoices, version $_version
 (C) 2001-2005 LMS Developers
 
--C, --config-file=/etc/lms/lms.ini
-		alternate config file (default: /etc/lms/lms.ini);
--q, --quiet	suppress any output, except errors;
--h, --help	print this help and exit;
--v, --version	print version info and exit;
+-C, --config-file=/etc/lms/lms.ini    alternate config file 
+			    (default: /etc/lms/lms.ini);
+-q, --quiet		    suppress any output, except errors;
+-h, --help		    print this help and exit;
+-v, --version		    print version info and exit;
+-f, --fakedate=YYYY/MM/DD   override system date;
 
 EOF
 	exit 0;
@@ -142,19 +145,6 @@ else
 	exit 1;
 }
 
-my $dbq = $dbase->prepare("SELECT $utsfmt AS timestamp");
-$dbq->execute();
-my $timestamp = 0;
-if(my $row = $dbq->fetchrow_hashref())
-{
-	$timestamp = $row->{'timestamp'}
-}
-else
-{
-	print STDERR "Database error, exiting!\n";
-	exit 1;
-}
-
 my $fencoding = 'quoted-printable';
 my $ftype = 'text/html';
 my $fext = 'html';
@@ -166,13 +156,26 @@ if($filetype eq 'pdf')
 	$fext = 'pdf';
 }
 
-my $month = sprintf("%d",strftime("%m",localtime()));
-my $day = strftime("%e",localtime());
-my $year = strftime("%Y",localtime());
+sub localtime2()
+{
+	if($fakedate)
+	{
+		my @fakedate = split(/\//, $fakedate);
+		return localtime(timelocal(0,0,0,$fakedate[2],$fakedate[1]-1,$fakedate[0]));
+	}
+	else
+	{
+		return localtime();
+	}
+}
+
+my $month = sprintf("%d",strftime("%m",localtime2()));
+my $day = strftime("%e",localtime2());
+my $year = strftime("%Y",localtime2());
 my $daystart = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
 my $dayend = strftime("%s", 59, 59, 23, $day, $month - 1, $year - 1900);
 
-$dbq = $dbase->prepare('SELECT invoices.id AS id, number, cdate, email, invoices.name AS name, customerid FROM invoices LEFT JOIN users ON users.id = customerid WHERE deleted = 0 AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
+my $dbq = $dbase->prepare('SELECT invoices.id AS id, number, cdate, email, invoices.name AS name, customerid FROM invoices LEFT JOIN users ON users.id = customerid WHERE deleted = 0 AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
 {
