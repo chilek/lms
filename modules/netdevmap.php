@@ -133,14 +133,71 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 }
 
 $layout['pagetitle'] = "Mapa po³±czeñ sieciowych";
-
+	
 if($_GET['graph'] == "")
 {
+	makemap($DB,$map,$seen,$start);
+	foreach($map as $idx => $x)
+	{
+		if($minx == NULL)
+			$minx = $idx;
+		elseif($idx < $minx)
+			$minx = $idx;
+		
+		if($idx > $maxx)
+			$maxx = $idx;
+		foreach($x as $idy => $y)
+		{
+			if($miny == NULL)
+				$miny = $idy;
+			elseif($idy < $miny)
+				$miny = $idy;
+
+			if($idy > $maxy)
+				$maxy = $idy;
+		}
+	}
+
+	$widthx = $maxx - $minx;
+	$widthy = $maxy - $miny;
+	$cellw = 70;
+	$cellh = 30;
+	$celltmargin = 10;
+	$celllmargin = 10;
+	$imgwx = $cellw * ($widthx + 2);
+	$imgwy = $cellh * ($widthy + 2);
+
+	foreach($map as $idx => $x)
+	{
+		foreach($x as $idy => $device)
+		{
+			$celx = $idx - $minx;
+			$cely = $idy - $miny;
+			if(eregi('^n',$device))
+			{
+				$device = str_replace('n','',$device);
+				list($nodeid,$device) = explode('.',$device);
+				$nodemap[$nodeid]['x'] = (($celx * ($cellw)) + $celllmargin) +4;
+				$nodemap[$nodeid]['y'] = (($cely * ($cellh)) + $celltmargin) +4;
+				$nodemap[$nodeid]['id'] = $nodeid;
+			}
+			else
+			{
+				$devicemap[$device]['x'] = (($celx * ($cellw)) + $celllmargin) +4;
+				$devicemap[$device]['y'] = (($cely * ($cellh)) + $celltmargin) +4;
+				$devicemap[$device]['id'] = $device;
+			}
+		}
+	}
+	sort($nodemap);
+	sort($devicemap);
+	$SMARTY->assign('devicemap',$devicemap);
+	$SMARTY->assign('nodemap',$nodemap);
 	$SMARTY->assign('deviceslist',$DB->GetAll('SELECT id, name FROM netdevices ORDER BY name ASC'));
 	$SMARTY->assign('gderror', ! function_exists('imagepng'));
 	$SMARTY->assign('start',$_GET['start']);
 	$SMARTY->display('netdevmap.html');
-}
+} 
 else
 {	
 	$start = sprintf('%d',$_GET['start']);
