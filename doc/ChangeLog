@@ -51,6 +51,7 @@ version 1.5.5 Anubis (??/??/????):
   - BTS#0000308: added lost customer's groups table while adding new node for 
     a customer (alec)
   - added support for dynamic tooltips (lexx)
+  - netdevmap in flash (requires ming) (lexx)
 
 version 1.5.4 Ramius (16/02/2005):
 
