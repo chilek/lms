@@ -14,6 +14,7 @@ wersja 1.3.3 (??/??/2004):
     pole taxvalue (chilek)
   - w wydrukach bilansów uzwglêdnianie s± stawki VAT (chilek)
   - w contrib/sqlpanel dodane stronicowanie wyników oraz opcjê wydruku (alec)
+  - wybór stawki VAT przy nowej operacji w comboboksie (chilek)
 
 wersja 1.3.2 Kinsey (03/04/2004):
   

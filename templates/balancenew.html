@@ -83,7 +83,12 @@
 						<B>VAT:</B>
 					</TD>
 					<TD WIDTH="98%" CLASS="FRIGHT">
-						<INPUT TYPE="TEXT" NAME="addbalance[taxvalue]" VALUE="{$taxvalue}" SIZE="15" {tip text="Podaj stawkê VAT operacji"}>&nbsp;%<BR>
+						<SELECT size="1" name="addbalance[taxvalue]" value="{$taxvalue}" {tip text="Podaj stawkê VAT operacji"}>
+							<OPTION value="22">22%</OPTION>
+							<OPTION value="7">7%</OPTION>
+							<OPTION value="0">0%</OPTION>
+							<OPTION value="zw.">zw.</OPTION>
+						</SELECT>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
