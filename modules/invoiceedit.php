@@ -127,7 +127,11 @@ switch($_GET['action'])
 		{
 			list($year, $month, $day) = split('/',$invoice['cdate']);
 			if(checkdate($month, $day, $year))
+			{
 				$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
+				$invoice['month'] = date('m', $invoice['cdate']);
+				$invoice['year'] = date('Y', $invoice['cdate']);
+			}
 			else
 				$error['cdate'] = trans('Incorrect date format!');
 		}
