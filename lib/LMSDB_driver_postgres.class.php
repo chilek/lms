@@ -99,13 +99,16 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 	function _driver_listtables()
 	{
-		return $this->GetCol('SELECT relname AS name FROM pg_class WHERE relkind = \'r\' and relname !~ \'^pg_\'');
+		return $this->GetCol('SELECT relname AS name FROM pg_class WHERE relkind = \'r\' and relname !~ \'^pg_\' and relname !~ \'^sql_\'');
 	}		
 		
 }
 
 /* 
  * $Log$
+ * Revision 1.7  2003/08/25 15:59:12  alec
+ * Poprawka na nowsze wersje postgresa
+ *
  * Revision 1.6  2003/08/24 14:06:35  lukasz
  * - fixed bug #0000061 - added missing param for pg_fetch_array (but it's
  *   propably only workarround)
