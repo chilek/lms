@@ -2,8 +2,8 @@
 <!--// $Id$ //-->
 <html><head>
 <meta name="GENERATOR" content="LMS {$layout.lmsv}">
-<meta http-equiv="Content-Language" content="pl">
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.html}">
 <title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
 <link href="img/style.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" type="text/JavaScript" src="img/common.js"> </script>
@@ -47,11 +47,11 @@
 	{sectionelse}
 	</table>
 	<table width="100%" height="100%">
-		<TR title="Kliknij aby zamknąć" onclick="parent.window.close();">
+		<TR title="{t}Click to close window{/t}" onclick="parent.window.close();">
 			<TD align="center">
-				<B><FONT COLOR="RED">Ten serwer nie widzi żadnych MAC adresów!</FONT></B>
+				<B><FONT COLOR="RED">{t}That server haven't see any MAC addresses!{/t}</FONT></B>
 				<BR><BR>
-				Lub, co bardziej prawdopodobne, nie mogę się dobrać do tablicy adresów MAC na tej maszynie.
+				{t}Or, most likely, can't get table of MAC addresses on that host.{/t}
 			</TD>
 		</TR>
 	{/section}
@@ -63,7 +63,7 @@
 <table cellpadding="5" width="100%">
 	<tr>
 		<td bgcolor="#CEBD9B" class="fall" align="center">
-			<B>Wybierz adres MAC:</B>
+			<B>{t}Select MAC address:{/t}</B>
 		</td>
 	</tr>
 </table>

@@ -24,7 +24,7 @@
 				{/section}
 				<TR class="LIGHT">
 					<TD ALIGN="center" class="FALL" COLSPAN="2">
-						<P><B>{t}Total{/t}: {$download.sum.data|string_format:"%.2f "}{$download.sum.unit} ({$download.avgsum|string_format:"%.2f"}&nbsp;KB/s)</B></P>
+						<P><B>{t}Total:{/t} {$download.sum.data|string_format:"%.2f "}{$download.sum.unit} ({$download.avgsum|string_format:"%.2f"}&nbsp;KB/s)</B></P>
 					</TD>
 				</TR>
 			</TABLE>
@@ -48,7 +48,7 @@
 				{/section}
 				<TR class="LIGHT">
 					<TD ALIGN="center" CLASS="FALL" COLSPAN="2">
-						<P><B>{t}Total{/t}: {$upload.sum.data|string_format:"%.2f "}{$upload.sum.unit} ({$upload.avgsum|string_format:"%.2f"}&nbsp;KB/s)</B></P>
+						<P><B>{t}Total:{/t} {$upload.sum.data|string_format:"%.2f "}{$upload.sum.unit} ({$upload.avgsum|string_format:"%.2f"}&nbsp;KB/s)</B></P>
 					</TD>
 				</TR>
 			</TABLE>
@@ -65,7 +65,7 @@
 	</TR>
 	<TR CLASS="light" {tip text="Limit results for selected period"}>
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
-			<B>{t}From (day/month/year hh:mm){/t}:</B>
+			<B>{t}From (day/month/year hh:mm):{/t}</B>
 		</TD>
 		<TD CLASS="fright">
 			{html_select_date field_array="from" prefix="" time=$starttime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
@@ -75,7 +75,7 @@
 	</TR>
 	<TR CLASS="light" {tip text="Limit results for selected period"}>
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
-			<B>{t}To (day/month/year hh:mm){/t}:</B>
+			<B>{t}To (day/month/year hh:mm):{/t}</B>
 		</TD>
 		<TD CLASS="fright">
 			{html_select_date field_array="to" prefix="" time=$endtime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
@@ -85,7 +85,7 @@
 	</TR>
 	<TR CLASS="light" {tip text="Limit result for selected network"}>
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
-			<B>{t}Net{/t}:</B>
+			<B>{t}Network:{/t}</B>
 		</TD>
 		<TD CLASS="fright">
 			<SELECT SIZE="1" NAME="net">
@@ -98,7 +98,7 @@
 	</TR>
 	<TR CLASS="light" {tip text="Select results sorting order"}>
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
-			<B>{t}Sorting{/t}:</B>
+			<B>{t}Sorting:{/t}</B>
 		</TD>
 		<TD CLASS="fright">
 			<SELECT SIZE="1" NAME="order">
@@ -112,7 +112,7 @@
 	</TR>
 	<TR CLASS="light" {tip text="Limit results for n computers"}>
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
-			<B>{t}Limit result for{/t}:</B>
+			<B>{t}Limit result for:{/t}</B>
 		</TD>
 		<TD CLASS="fright">
 			<INPUT NAME="limit" SIZE="3"></INPUT> <B>{t}nodes{/t}</B>
@@ -126,7 +126,7 @@
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="2" ALIGN="right" CLASS="fbottomu">
-			<A HREF="javascript:document.traffic.submit();" ACCESSKEY="s">{t}Go{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="javascript:document.traffic.submit();" ACCESSKEY="s">{t}Save{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
