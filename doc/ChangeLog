@@ -20,6 +20,7 @@ wersja 1.5.2 (??/??/????):
     dzia³ania ip2long() w PHP5 (alec)
   - BTS#0000229: contrib/customer - uwzglêdniona sytuacja, gdy ³±czymy siê z
     urz±dzenia sieciowego (alec)
+  - lms-arping (T.Ciaszczyk/alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 
