@@ -60,7 +60,7 @@ elseif(isset($userdata))
 	if($userdata['address']=='')
 		$error['address'] = 'Proszê podaæ adres!';
 
-	if($userdata['nip'] !='' && !eregi('^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$',$userdata['nip']) && !eregi('^[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}$',$userdata['nip']) && !check_nip($userdata['nip']))
+	if($userdata['nip'] !='' && !check_nip($userdata['nip']))
 		$error['nip'] = 'Podany NIP jest b³êdny!';
 
 	if(!check_pesel($userdata['pesel']) && $userdata['pesel'] != '')
