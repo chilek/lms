@@ -3,8 +3,16 @@
 {include file="netdevheader.html"}
 <H1>{$layout.pagetitle}</H1>
 {if ! $gderror}
+<MAP NAME="devices">
+{section name=devicemap loop=$devicemap}
+    <AREA SHAPE="CIRCLE" COORDS="{$devicemap[devicemap].x},{$devicemap[devicemap].y},10"  HREF="?m=netdevinfo&id={$devicemap[devicemap].id}">
+{/section}
+{section name=nodemap loop=$nodemap}
+    <AREA SHAPE="CIRCLE" COORDS="{$nodemap[nodemap].x},{$nodemap[nodemap].y},10"  HREF="?m=nodeinfo&id={$nodemap[nodemap].id}">
+{/section}
+</MAP>
 <P ALIGN="CENTER">
-<IMG SRC="?m=netdevmap&graph=true&start={$start}" ALT="">
+<IMG SRC="?m=netdevmap&graph=true&start={$start}" ALT="" USEMAP="devices" BORDER="0">
 </P>
 <FORM METHOD="GET" ACTION="?m=netdevmap" NAME="x">
 	<P ALIGN="CENTER">Zacznij mapê od:
