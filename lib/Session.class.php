@@ -96,6 +96,22 @@ class Session {
 			return NULL;
 	}
 
+	function get($variable)
+	{
+		if(isset($this->_content[$variable]))
+			return $this->_content[$variable];
+		else
+			return NULL;
+	}
+
+	function remove($variable)
+	{
+		if(isset($this->_content[$variable]))
+			return unset($this->_contenet[$variable])
+		else
+			return FALSE;
+	}
+
 	function _createSession()
 	{
 		$this->SID = $this->makeSID();
