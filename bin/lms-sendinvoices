@@ -184,11 +184,7 @@ while(my $row = $dbq->fetchrow_hashref())
 	$invoice_number =~ s/\%N/$row->{'number'}/g;
 	$invoice_number =~ s/\%Y/$year/g;
 	$invoice_number =~ s/\%M/$month/g;
-	if(!$quiet)
-	{
-		print "VAT Invoice No. $invoice_number for ";
-	}
-	
+
 	if($row->{'email'})
 	{
 		my $ua = LWP::UserAgent->new;
@@ -197,11 +193,17 @@ while(my $row = $dbq->fetchrow_hashref())
 		if ($response->is_success)
 		{
 			my $custemail = $row->{'email'};
-			print $row->{'name'}.' <'.$custemail.'>'."\n";
+			
 			if($debug_email)
 			{
 				$custemail = $debug_email;
 			}
+			
+			if(!$quiet)
+			{
+				print "VAT Invoice No. $invoice_number for $row->{'name'} <$custemail>\n";
+			}
+			
 			my $mail = build MIME::Entity Type=>"multipart/mixed";
 			$mail->head->add('To',$row->{'name'}.' <'.$custemail.'>');
 			$mail->head->add('From', $sender_name.' <'.$sender_email.'>');
