@@ -5,52 +5,63 @@
 <FORM METHOD="POST" NAME="tariffadd" ACTION="?m=tariffadd">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="2">
-			<B>Dodaj now± taryfê:</B>
+		<TD WIDTH="1%" CLASS="fleftu">
+			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft">
-			<B>Nazwa:</B></TD>
-		<TD WIDTH="99%" CLASS="fright">
+		<TD WIDTH="1%" CLASS="fbt">
+			<B>Nazwa:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="frightu">
 			<INPUT TYPE="TEXT" NAME="tariffadd[name]" VALUE="{$tariffadd.name}" {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/value.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Warto¶æ (z³):</B> 
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			<INPUT TYPE="TEXT" SIZE="8" NAME="tariffadd[value]" VALUE="{$tariffadd.value}" {tip trigger="value"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/uprate.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Uprate (kb/s):</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			<INPUT TYPE="TEXT" NAME="tariffadd[uprate]" SIZE="8" VALUE="{$tariffadd.uprate|default:" "}" {tip trigger="uprate"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">			
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/downrate.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Dowrate (kb/s):</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright">
+			<INPUT TYPE="TEXT" NAME="tariffadd[downrate]" SIZE="8" VALUE="{$tariffadd.downrate|default:" "}" {tip trigger="downrate"}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+		</TD>
+		<TD WIDTH="1%">
 			<B>Opis:</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="fright">
+		<TD WIDTH="98%" CLASS="fright">
 			<TEXTAREA NAME="tariffadd[description]" COLS="50" ROWS="5">{$tariffadd.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<B>Upstream (kb/s):</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<INPUT TYPE="TEXT" NAME="tariffadd[uprate]" SIZE="5" VALUE="{$tariffadd.uprate|default:" "}" {tip trigger="uprate"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">			
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<B>Downstream (kb/s):</B>
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<INPUT TYPE="TEXT" NAME="tariffadd[downrate]" SIZE="5" VALUE="{$tariffadd.downrate|default:" "}" {tip trigger="downrate"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
-			<B>Warto¶æ (z³):</B> 
-		</TD>
-		<TD WIDTH="99%" CLASS="fright">
-			<INPUT TYPE="TEXT" SIZE="5" NAME="tariffadd[value]" VALUE="{$tariffadd.value}" {tip trigger="value"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="100%" COLSPAN="2" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.tariffadd.submit();">Dodaj <IMG SRC="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
+			<A HREF="javascript:document.tariffadd.submit();">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE></FORM></P>
