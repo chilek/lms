@@ -24,7 +24,7 @@
 			<TABLE>
 				<TR>
 					<TD>
-						<B>{t}Name/surname{/t}:</B>
+						<B>{t}Name/surname:{/t}</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -33,7 +33,7 @@
 				</TR>
 				<TR>
 					<TD>
-						<B>{t}Forename{/t}:</B>
+						<B>{t}Forename:{/t}</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -53,7 +53,7 @@
 						{if $useradd.status eq "1"}<IMG SRC="img/unk.gif" ALT="" border="0">{/if}
 					</tD>
 					<TD width="99%">
-						<SELECT size="1" name="useradd[status]" {tip text="Select customer status" trigger="status"}>
+						<SELECT size="1" name="useradd[status]" {tip text="Select customer state" trigger="status"}>
 							<OPTION VALUE="3"{if $useradd.status eq "3"} SELECTED{/if}><B>{t}connected{/t}</B></OPTION>
 							<OPTION VALUE="2"{if $useradd.status eq "2"} SELECTED{/if}><B>{t}waiting{/t}</B></option>
 							<OPTION VALUE="1"{if $useradd.status eq "1"} SELECTED{/if}><B>{t}interested{/t}</B></OPTION>
@@ -74,43 +74,43 @@
 				<TR>
 					<TD width="1%">
 						<IMG src="img/home.gif" ALT="" align="absmiddle" border="0" width="16" height="16">
-					</td>
+					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="40" value="{$useradd.address}" name="useradd[address]" {tip text="Enter customer address" trigger="address"}><BR>
 						<B>{t}Zip:{/t}</B> <INPUT TYPE="text" SIZE="5" VALUE="{$useradd.zip}" NAME="useradd[zip]" {tip text="Enter address code" trigger="zip"}> <B>{t}City:{/t}</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$useradd.city}" NAME="useradd[city]" {tip text="Enter customer city" trigger="city"}>
-					</td>
+					</TD>
 				</TR>
 				<TR>
 					<TD width="1%">
 						<IMG src="img/mail.gif" ALT="" align="absmiddle" border="0" width="16" height="16">
-					</td>
+					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="40" value="{$useradd.email}" name="useradd[email]" {tip text="Enter customer e-mail address (optional)" trigger="email"}>
-					</td>
+					</TD>
 				</TR>
 				<TR>
 					<TD width="1%">
 						<IMG src="img/gg.gif" ALT="" align="absmiddle" border="0" width="16" height="16">
-					</td>
+					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="40" value="{if $useradd.gguin}{$useradd.gguin}{/if}" name="useradd[gguin]" {tip text="Enter customer Internet Messenger UIN (optional)" trigger="gguin"}>
-					</td>
+					</TD>
 				</TR>
 				<TR>
 					<TD width="1%">
-						<B>{t}NIP{/t}</B>
+						<B>{t}FID{/t}</B>
 					</TD>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {tip text="Enter customer NIP (optional)" trigger="nip"}>
-					</td>
+						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {tip text="Enter customer Firm ID (optional)" trigger="nip"}>
+					</TD>
 				</TR>
 				<TR>
 					<TD width="1%">
-						<B>{t}PID{/t}</B>
+						<B>{t}SSN{/t}</B>
 					</TD>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.pesel}" name="useradd[pesel]" {tip text="Enter customer personal ID (optional)" trigger="pesel"}>
-					</td>
+						<INPUT TYPE="text" size="40" value="{$useradd.pesel}" name="useradd[pesel]" {tip text="Enter customer Social Security Number (optional)" trigger="pesel"}>
+					</TD>
 				</TR>
 				<TR>
 					<TD width="1%">
@@ -118,10 +118,10 @@
 					</TD>
 					<TD width="99%">
 						<INPUT TYPE="text" size="6" value="{if $useradd.pin}{$useradd.pin}{/if}" name="useradd[pin]" {tip text="Enter 4 to 6 digths pin number (optional)" trigger="pin"}>&nbsp;<A href="javascript: randomize()" {tip text="Generate random PIN"}>&raquo;&raquo;&raquo;</A>
-					</td>
+					</TD>
 				</TR>
 			</TABLE>
-		</td>
+		</TD>
 		<TD width="50%" bgcolor="#DFD5BD" class="fright" ALIGN="LEFT">
 			<P><NOBR><IMG src="img/post.gif" ALT="" align="absmiddle" border="0">
 			    <TEXTAREA rows="4" cols="60" name="useradd[serviceaddr]" {tip text="Enter delivery address (optional)"}>
@@ -142,7 +142,7 @@
 			<A href="javascript:document.useradd.submit();" ACCESSKEY="S">{t}Save{/t} <img src="img/save.gif" ALT="" align="absmiddle" border="0"></A>
 			<A href="?m=userlist">{t}Cancel{/t} <img src="img/cancel.gif" ALT="" align="absmiddle" border="0"></A><BR>
 			<INPUT type="checkbox" name="useradd[reuse]" value="ON" style="border-style: none; background-color: #DFD5BD;" {if $useradd.reuse}checked{/if}> {t}Display this form after addition of user again{/t}
-		</td>
+		</TD>
 	</TR>
 </TABLE>
 </FORM>
