@@ -240,7 +240,7 @@ while (my $row = $dbq->fetchrow_hashref())
 			$usergroupscount++;
 		}
 	}
-	if($usergroupscount)
+	if($usergroupscount || !$usergroups_list)
 	{
 		my $balance = 0;
 		my $sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type='3'");
