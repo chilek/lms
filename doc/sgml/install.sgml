@@ -125,7 +125,7 @@ $ mv Smarty-2.6.0/libs Smarty
           <title>Intro</title>
                <para>That very popular database is available with majority of Linux distributions. 
                If however you must install it independently, begin from sources downloading 
-               from <ulink url="http://www.mysql.org">www.mysql.org</ulink>.</para>
+               from <ulink url="http://www.mysql.com">www.mysql.com</ulink>.</para>
           </sect3>
           <sect3 id="install-mysql-server">
           <title>MySQL Server Installation</title>
