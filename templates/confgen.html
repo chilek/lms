@@ -3,10 +3,10 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="99%" CLASS="FLEFTU">
-			<B>Nazwa pliku:</B>
+			<B>{t}File name:{/t}</B>
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHTU" NOWRAP>
-			<B>Razem: {size of=$templateslist}</B>
+			<B>{t}Summary:{/t} {size of=$templateslist}</B>
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
@@ -16,7 +16,7 @@
 			{$templateslist[file]}
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHT" ALIGN="RIGHT" NOWRAP>
-			<A HREF="?m=confgen&tpl={$templateslist[file]}&action=view"><IMG SRC="img/view.gif" BORDER="0" ALT="" {tip text="Podgl±d ¼ród³a szablonu"}></A>
+			<A HREF="?m=confgen&tpl={$templateslist[file]}&action=view"><IMG SRC="img/view.gif" BORDER="0" ALT="" {tip text="Wiev template source"}></A>
 			<A HREF="?m=confgen&tpl={$templateslist[file]}&action=generate" TARGET="_BLANK"><IMG SRC="img/save.gif" BORDER="0" ALT="" {tip text="Wygeneruj szablon"}></A>
 		</TD>
 	</TR>
