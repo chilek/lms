@@ -50,7 +50,7 @@
 		<TD COLSPAN="6" CLASS="FALL">
 			<B>Strona: 
 				{section name=pcnt loop=$userlist step=$pagelimit}
-				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y - 1" x=$start y=$pagelimit}{/if} z {$listdata.total})
 		</TD>
