@@ -5,16 +5,16 @@
 <table width="100%" cellpadding="3">
 	<TR class="dark">
 		<TD class="fleftu" width="1%">
-			<NOBR><IMG SRC="img/admins.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>Login:</B></NOBR>
+			<NOBR><IMG SRC="img/admins.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>{t}Login:{/t}</B></NOBR>
 		</TD>
 		<TD class="fbt" width="96%">
-			<NOBR><IMG SRC="img/info2.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>Imiê i nazwisko:</B></NOBR>
+			<NOBR><IMG SRC="img/info2.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>{t}Name and surname:{/t}</B></NOBR>
 		</TD>
 		<TD class="fbt" width="2%" NOWRAP>
-			<IMG SRC="img/time.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>Ostatnio zalogowany:</B>
+			<IMG SRC="img/time.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>{t}Last login:{/t}</B>
 		</TD>
 		<TD class="frightu" width="1%">
-			<NOBR><B>Razem: {$adminslist.total}</B></NOBR>
+			<NOBR><B>{t}Total:{/t} {$adminslist.total}</B></NOBR>
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
@@ -32,10 +32,10 @@
 		</TD>
 		<TD width="1%" class="fright">
 			<nobr>
-			<a href="?m=adminpasswd&id={$adminslist[adminslist].id}"><img src="img/keys.gif" border="0" align="absmiddle" ALT="[ Zmieñ has³o ]"></A>
-			{if $adminslist[adminslist].id neq $layout.logid}<a href="?m=admindel&id={$adminslist[adminslist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien i ¶wiadom ¿e chcesz usun±æ tego administratora? Konto to zostanie bezpowrotnie usuniête z systemu!');">{/if}<img src="img/delete.gif" border="0" align="absmiddle" ALT="[ Usuñ ]"></A>
-			<a href="?m=adminedit&id={$adminslist[adminslist].id}"><img src="img/edit.gif" border="0" align="absmiddle" ALT="[ Edytuj ]"></A>
-			<a href="?m=admininfo&id={$adminslist[adminslist].id}"><img src="img/info.gif" border="0" align="absmiddle" ALT="[ Info ]"></A>
+			<a href="?m=adminpasswd&id={$adminslist[adminslist].id}"><img src="img/keys.gif" border="0" align="absmiddle" ALT="[ {t}Change password{/t} ]"></A>
+			{if $adminslist[adminslist].id neq $layout.logid}<a href="?m=admindel&id={$adminslist[adminslist].id}" onClick="return confirmLink(this, '{t}Are you sure? This administrator account will be irreversible deleted from system!{/t}');">{/if}<img src="img/delete.gif" border="0" align="absmiddle" ALT="[ {t}Delete{/t} ]"></A>
+			<a href="?m=adminedit&id={$adminslist[adminslist].id}"><img src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A>
+			<a href="?m=admininfo&id={$adminslist[adminslist].id}"><img src="img/info.gif" border="0" align="absmiddle" ALT="[ {t}Info{/t} ]"></A>
 		</TD>
 	</TR>
 	{/if}{/section}
