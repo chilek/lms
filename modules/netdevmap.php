@@ -345,11 +345,11 @@ else
 		$lastonline = $DB->GetOne('SELECT MAX(lastonline) FROM nodes WHERE ownerid=0 AND netdev=?', array($deviceid));
 		if ($lastonline) {	
 			if ((time()-$lastonline)>$LMS->CONFIG['phpui']['lastonline_limit'])
-				imagecopy($im,$im_d_off,$px,$py,0,0,15,16);
+				imagecopy($im,$im_d_off,$px,$py,0,0,16,16);
 			else 
-				imagecopy($im,$im_d_on,$px,$py,0,0,15,16);
+				imagecopy($im,$im_d_on,$px,$py,0,0,16,16);
 		} else 
-			imagecopy($im,$im_d_unk,$px,$py,0,0,15,16);
+			imagecopy($im,$im_d_unk,$px,$py,0,0,16,16);
 		
 		$devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM nodes WHERE ownerid=0 AND netdev=? ORDER BY ipaddr LIMIT 4', array($deviceid));
 		if($devip[0]) drawtext($im, 1, $px + 20, $py - ($devip[1]?17:8), $devip[0], $blue, $lightbrown);
