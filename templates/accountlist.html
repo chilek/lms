@@ -1,0 +1,67 @@
+{include file="header.html"}
+{include file="userheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P>
+<TABLE cellpadding="3" WIDTH="100%">
+	<TR bgcolor="#CEBD9B">
+		<TD width="20%" class="fleftu">
+			<B><img src="img/user.gif" ALT="" align="absmiddle"> Login:</B>
+		</TD>
+		<TD width="77%" class="fbt">
+			<B>W³a¶ciciel:</B>
+		</TD>
+		<TD align="right" width="1%" class="fbt" VALIGN="top" NOWRAP>
+			<B>ID:</B>
+		</TD>
+		<TD width="1%" class="fbt" VALIGN="TOP" NOWRAP>
+			<B>Ostatnie logowanie:</B>
+		</TD>
+		<TD width="1%" class="frightu">
+			&nbsp;
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{section name=accountlist loop=$accountlist}
+	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if $userlist[userlist].nodeac eq 0} class="blend"{/if}>
+		<TD class="fleft" valign="top">
+			<nobr><IMG src="img/user.gif" ALT="" align="absmiddle" border="0"><B> {$accountlist[accountlist].user}</B></nobr>
+		</TD>
+		<TD valign="top">
+			<nobr><B>{$accountlist[accountlist].name} {$accountlist[accountlist].lastname} ({$accountlist[accountlist].ownerid|string_format:"%04d"})</B></nobr>
+		</TD>
+		<TD valign="top" align="right">
+			<B>{$accountlist[accountlist].id|string_format:"%04d"}</B>
+		</TD>
+		<TD valign="top" align="right">
+			<B><nobr>{$accountlist[accountlist].lastlogin}</nobr></B>
+		</TD>
+		<TD class="fright">
+			<NOBR>
+			<A href="?m=accounts&op=delete&id={$accountlist[accountlist].id}" {confirm text="Jeste¶ pewien ¿e chcesz usun±æ konto: `$accountlist[accountlist].user` z bazy danych?"}><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ Usuñ ]"></A> 
+			<A href="?m=accounts&op=chpasswddlg&id={$accountlist[accountlist].id}"><IMG src="img/pass.gif" border="0" align="absmiddle" ALT="[ Edytuj ]"></A> 
+			</NOBR>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="6" align="center" class="flr">
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><B>Nie znaleziono ¿adnych u¿ytkowników o podanych kryteriach lub lista jest pusta.</B></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	<TR bgColor="#DFD5BD">
+		<TD colspan="4" class="fleftu" align="right" valign="top">
+			<IMG SRC="img/info2.gif" border="0" ALT="" align="absmiddle"> <B>Razem: {$listdata.total}</B>	
+		</TD>
+		<TD class="frightu">
+			&nbsp;
+		</TD>
+	</TR>
+</TABLE>
+</P>
+{include file="footer.html"}

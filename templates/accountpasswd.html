@@ -1,0 +1,45 @@
+{include file="header.html"}
+{include file="userheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<DIV ALIGN="CENTER"><CENTER><FORM method="POST" action="?m=accounts&op=chpasswd&id={$account.id}" name="password">
+<TABLE width="1%" cellpadding="3" border="0">
+	<TR class="dark">
+		<TD class="fall" nowrap colspan="2" nowrap>
+			<NOBR><img src="img/pass.gif" border="0" align="absmiddle" ALT=""> <B>Podaj nowe has³o:</B></NOBR>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fleft" align="right" nowrap>
+			<NOBR><B>Nowe has³o:</B></NOBR>
+		</TD>
+		<TD class="fright" nowrap>
+			<input type="password" name="passwd[passwd]">
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fleft" align="right" nowrap>
+			<NOBR><B>Powtórz:</B></NOBR>
+		</TD>
+		<TD class="fright" nowrap>
+			<input type="password" name="passwd[confirm]">
+		</TD>
+		
+	</TR>
+	<TR class="light">
+		<TD colspan="2" align="center" class="flr">
+			{if $layout.error}
+				<font color="red"><B>B³±d:</B> {$layout.error}</font><br>
+			{/if}
+			Zmieniasz has³o do konta: {$account.user}. W³a¶cicielem konta jest: {$account.name} {$account.lastname}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="2">
+			<A href="javascript:document.password.submit();">Zmieñ has³o <img src="img/pass.gif" border="0" align="absmiddle" ALT=""></A>
+		</TD>
+	</TR>
+		
+</TABLE>
+</CENTER></DIV>
+{include file="footer.html"}
