@@ -27,8 +27,7 @@
 if($_SERVER['REQUEST_METHOD'] == 'POST')
 {
 	$LMS->UpdateRegisterData($_POST['name'], $_POST['url'], ($_POST['hidden'] == 1 ? TRUE : FALSE));
-	header('Location: ?m=register');
-	die;
+	$SESSION->redirect('?m=welcome');
 }
 
 
