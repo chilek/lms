@@ -42,4 +42,6 @@ w katalogu contrib/customer_otherip, oraz "Options +followlinks w apachu".
 
 4) pos³owie
 
+panel wymaga ustawienia opcji sys_dir w lms.ini (sekcja [directories]).
+
 SOA#1

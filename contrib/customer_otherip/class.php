@@ -124,8 +124,6 @@ require_once($_LIB_DIR.'/LMSDB.php');
 require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 
-require_once("authentication.inc");
-
 // Initialize LMSDB object
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
