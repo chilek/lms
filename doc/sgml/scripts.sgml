@@ -68,7 +68,7 @@
 			</row>
 			<row>
 			<entry>lms-makedhcpconf</entry>
-			<entry>Konfiguracja serwera DHCP(/etc/dhcpd.conf)</entry>
+			<entry>Konfiguracja serwera DHCP (/etc/dhcpd.conf)</entry>
 			</row>
 			<row>
 			<entry>lms-makeiptables</entry>
@@ -79,7 +79,7 @@
 			<entry>Konfiguracja firewalla ipchains</entry>
 			</row>
 			<row>
-			<entry>lms-makeiodenconf</entry>
+			<entry>lms-makeoidentconf</entry>
 			<entry>Konfiguracja oident</entry>
 			</row>
 			<row>
