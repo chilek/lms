@@ -21,7 +21,7 @@ version 1.2.4 (??/??/2004):
         ALTER TABLE stats DROP download;
         ALTER TABLE stats RENAME up TO upload;
 	ALTER TABLE stats RENAME down TO download;
-  - fixed 'use_current_day' option behaviour (alec)
+  - fixed 'use_current_payday' option behaviour (alec)
   - error-triggers in user assignments window are working now (alec)
   - added missing </FORM> tag in nodeeditbox.html (alec)
 

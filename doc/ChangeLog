@@ -23,7 +23,7 @@ wersja 1.2.4 (??/??/2004):
         ALTER TABLE stats DROP download;
         ALTER TABLE stats RENAME up TO upload;
 	ALTER TABLE stats RENAME down TO download;
-  - naprawione dzia³anie zmiennej 'use_current_day' (alec)
+  - naprawione dzia³anie zmiennej 'use_current_payday' (alec)
   - dzia³aj± error-triggery przy dodawaniu zobowi±zañ (alec)
   - dodany brakuj±cy znacznik </FORM> w nodeeditbox.html (alec)
 
