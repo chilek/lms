@@ -1,0 +1,98 @@
+#!/usr/bin/perl -Tw
+#
+package lms_arpd;
+
+use strict;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw(@ISA $help $version);
+use Net::Server::PreFork; # any personality will do  
+use Data::Dumper;
+my $_version = '1.1-cvs';
+
+@ISA = qw(Net::Server::PreFork);  
+lms_arpd->run();
+exit;  ### over-ridden subs below  
+sub process_request 
+{
+	my $self = shift;
+	if(open(ARP, "</proc/net/arp"))
+	{
+		my(@arps) = <ARP>;
+		foreach my $arp (@arps)
+		{
+			chomp $arp;
+			$arp =~ s/[\t ]+/ /g;
+			if($arp =~ /^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/ )
+			{
+				my ($ip,$hwtype,$flags,$hwaddr,$mask,$device) = split(' ',$arp);
+				print STDOUT "$ip $hwaddr\n" if($flags eq "0x2");
+			}
+		}
+		close(ARP);
+	}
+}  
+
+sub configure_hook
+{
+	my $self = shift;
+	
+	my $bind = "*";
+	my $port = 1029;
+	my $user = "nobody";
+	my $group = "nobody";
+	my $pidfile = "/var/run/lms-arpd.pid";
+	my $debug;
+	
+	my %options = (
+		"--help|h"              =>      \$help,
+		"--version|v"           =>      \$version,
+		"--host|H=s"		=>	\$bind,
+		"--port|p=i"		=>	\$port,
+		"--user|u=s"		=>	\$user,
+		"--group|g=s"		=>	\$group,
+		"--debug|d"		=>	\$debug,
+		"--pidfile|i=s"		=>	\$pidfile
+	);
+
+	Getopt::Long::config("no_ignore_case");
+	GetOptions(%options);
+
+	if($help)
+	{
+		print STDERR <<EOF;
+lms-arpd, version $_version
+(C) 2001-2003 LMS Developers
+
+-h, --help		print this help and exit;
+-v, --version		print version info and exit;
+-H, --host		set listen IP (default: ANY);
+-p, --port		set listen port (default: 1029);
+-u, --user		set user (default: nobody);
+-g, --group		set group (default: nobody);
+-d, --debug		don't fork and write some useless shit on stderr;
+-i, --pidfile		pid filename (default: /var/run/lms-arpd.pid);
+
+EOF
+		exit 0;
+	}
+	
+	if($debug)
+	{
+		print "debug enabled...\n";
+		$self->{server}->{log_level} = 4;
+	}else{
+		$self->{server}->{log_level} = 0;
+		$self->{server}->{setsid} = 1;
+	}
+	
+	$self->{server}->{port} = [$bind.':'.$port];
+	$self->{server}->{user} = $user;
+	$self->{server}->{group} = $group;
+	$self->{server}->{pid_file} = $pidfile;
+}
+
+
+
+1;
+#--------------- file test.pl ---------------
