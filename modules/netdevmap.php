@@ -43,6 +43,14 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 	$fields[] = array( 'x' => -5, 'y' => -5 );
 	$fields[] = array( 'x' => -5, 'y' => 0 );
 	$fields[] = array( 'x' => -5, 'y' => 5 );
+	$fields[] = array( 'x' => 0, 'y' => 10 );
+	$fields[] = array( 'x' => 10, 'y' => 10 );     
+	$fields[] = array( 'x' => 10, 'y' => 0 );
+	$fields[] = array( 'x' => 10, 'y' => -10 );
+	$fields[] = array( 'x' => 0, 'y' => -10 );
+	$fields[] = array( 'x' => -10, 'y' => -10 );
+	$fields[] = array( 'x' => -10, 'y' => 0 );
+	$fields[] = array( 'x' => -10, 'y' => 10 );
 
 	unset($nodefields);
 
@@ -297,7 +305,7 @@ else
 	$im_n_unk = imagecreatefrompng('img/node_unk.png');
 	$im_n_off = imagecreatefrompng('img/node_off.png');
 	$im_n_on = imagecreatefrompng('img/node_on.png');
-	
+
 	foreach($nodemap as $nodeid => $node)
 	{
 		$celx = $node['x'];
@@ -306,7 +314,7 @@ else
 		$py = (($cely * ($cellh)) + $celltmargin);
 		$nodedata = $DB->GetRow('SELECT name, INET_NTOA(ipaddr) AS ip, lastonline FROM nodes WHERE id=?',array($nodeid));
 		if ($nodedata['lastonline']) {	
-			if ((time()-$nodedata['lastonline'])>600)
+			if ((time()-$nodedata['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit'])
 				imagecopy($im,$im_n_off,$px,$py,0,0,15,16);
 			else 
 				imagecopy($im,$im_n_on,$px,$py,0,0,15,16);
