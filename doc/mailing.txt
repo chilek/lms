@@ -8,7 +8,7 @@ do mailingu.
 W plikach mo¿na u¿ywaæ nastêpuj±cych s³ów:
 %date-m
 %date-y
-%month-name
+%date_month_name
 %saldo
 %abonament
 %b
@@ -18,7 +18,7 @@ W plikach mo¿na u¿ywaæ nastêpuj±cych s³ów:
 które rozwijane s± do nastêpuj±cych danych:
 
 date-m		aktualny miesi±c, licz±c od 1 poprzedzone 0 np 02
-month-name	aktualny miesiac, reprezentacja s³owna z locales.
+date_month_name	aktualny miesiac, reprezentacja s³owna z locales.
 date-y 		aktualny rok, np 2003
 saldo 		aktualne saldo u¿ytkownika np 535
 abonament 	kwota abonamentu jaka jest doñ przypisana np 107
