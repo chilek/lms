@@ -227,6 +227,7 @@ CREATE TABLE users (
 	modid integer 		DEFAULT 0 NOT NULL,
 	deleted smallint 	DEFAULT 0 NOT NULL,
 	message text		DEFAULT '' NOT NULL,
+	pin varchar(6)		DEFAULT '' NOT NULL,
 	PRIMARY KEY (id)	
 );
 
