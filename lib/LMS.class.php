@@ -1151,7 +1151,8 @@ class LMS
 		}else{
 			$saldolist = $_SESSION[cache][getuserbalancelist][$id];
 		}
-		
+
+		$saldolist[userid] = $id;
 		return $saldolist;
 
 	}
