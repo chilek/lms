@@ -30,6 +30,9 @@ version 1.5.5 (??/??/????):
     of warning message (alec)
   - added 'in debt', 'deleted' and 'disconnected' filters for mailing (alec) 
   - contrib/customer_otherip: invoices printing (alec)
+  - fixed floats formatting in AddBalance() for non-english locale (.PaKuD)
+  - fixed month and year in invoice number in 'setcustomer' action of file
+    invoiceedit.php (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
