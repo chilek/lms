@@ -280,7 +280,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 		g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('_global', %NOW%)");
 	}
 	// remove old assignments
-	g->db_exec("DELETE FROM assignments WHERE dateto < %NOW% - 86400*30 AND dateto != 0 ");
+	if(p->expiry_days<0) p->expiry_days *= -1; // number of expiry days can't be negative
+	g->db_pexec("DELETE FROM assignments WHERE dateto < %NOW% - 86400 * ? AND dateto != 0 ", itoa(p->expiry_days));
 
 	// clean up
 	free(p->comment);
@@ -308,6 +309,8 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->comment = strdup(g->iniparser_getstring(ini, s, "Abonament wg taryfy: %tariff za okres: %period"));
 	free(s); s = g->str_concat(instance, ":up_payments");
 	p->up_payments = g->iniparser_getboolean(ini, s, 1);
+	free(s); s = g->str_concat(instance, ":expiry_days");
+	p->expiry_days = g->iniparser_getint(ini, s, 30);
 	
 	g->iniparser_freedict(ini);
 	free(s);
