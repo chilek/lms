@@ -48,6 +48,10 @@ class Session {
 			$this->passwd = $loginform[pwd];
 			$_SESSION[session_timestamp] = time();
 			writesyslog("Login attempt by ".$this->login,LOG_INFO);
+		}elseif($this->ADB->GetOne('SELECT COUNT(*) FROM admins') == 0){
+			$this->islogged = TRUE;
+			$_GET[m] = 'adminadd';
+			return TRUE;
 		}else{
 			$this->login = $_SESSION[session_login];
 			$this->passwd = $_SESSION[session_passwd];
@@ -112,7 +116,7 @@ class Session {
 	{
 		$dbpasswd = $this->ADB->GetOne("SELECT passwd FROM admins WHERE login=?",array($this->login));
 		$dblogin = $this->ADB->GetOne("SELECT login FROM admins WHERE login=?",array($this->login));
-		if (crypt($this->passwd,$dbpasswd)==$dbpasswd || ($dblogin != "" && $dbpasswd == "" && $this->passwd == ""))
+		if (crypt($this->passwd,$dbpasswd)==$dbpasswd)
 			return TRUE;
 		else 
 		{
@@ -127,6 +131,11 @@ class Session {
 
 /*
  * $Log$
+ * Revision 1.34  2003/08/19 09:43:29  lukasz
+ * - force adminadd module if there is no records in admins table
+ * - removed weird things with empty passwords or sth
+ * - Warden, you should think about merging this into lms-stable
+ *
  * Revision 1.33  2003/08/18 16:57:00  lukasz
  * - more cvs tags :>
  *
