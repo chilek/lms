@@ -47,7 +47,7 @@
 			{if $userinfo.email}<A HREF="mailto:{$userinfo.email}">{$userinfo.email}</A>{else}brak{/if}
 		</TD>
 	</TR>
-{if $userinfo.gguin neq ""}
+{if $userinfo.gguin neq "" && $userinfo.gguin neq 0}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$userinfo.gguin}&styl=1" BORDER="0" ALT="">
@@ -73,11 +73,13 @@
 		</TD>
 		<TD WIDTH="1%">
 			<B>Saldo:<BR>
-			Taryfa:</B>
+			Taryfa:<BR>
+			Dzieñ zap³aty:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} z³</B></FONT>{else}{$userinfo.balance|default:"0"} z³{/if}<BR>
-			<A HREF="?m=tariffinfo&id={$userinfo.tariff}">{$userinfo.tariffname}</A> ({$userinfo.tariffvalue} z³/mc)
+			<A HREF="?m=tariffinfo&id={$userinfo.tariff}">{$userinfo.tariffname}</A> ({$userinfo.tariffvalue} z³/mc)<BR>
+			{$userinfo.payday}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

@@ -155,8 +155,9 @@ kwestia  jak  to zgraæ z serwerem. Oki. Niezbêdne skrypty perlowe s± w
 katalogu bin tarbala z LMS. Kolejno te skrypty to:
 
 lms-cutoff      - skrypcik, który zmienia status komputerów 
-lms-eachmonth   - skrypcik, który obci±¿a ka¿dego u¿ytkownika
-                  okre¶lon± wed³ug taryfy sum±.
+lms-payments    - skrypcik, który obci±¿a ka¿dego u¿ytkownika
+                  okre¶lon± wed³ug taryfy sum± w okre¶lonym w bazie
+		  dniu.
 lms-mgc         - magiczny generator czegokolwiek - czyli co¶, co
                   potrafi nam skonfigurowaæ cokolwiek co chcemy.
 lms-notify      - skrypt wysy³aj±cy upomnienia do u¿yszkodników, ¿e
@@ -170,34 +171,13 @@ Skopiujmy  te skrypty do /usr/sbin aby by³y ³atwo dostêpne i zacznijmy
 je instalowaæ.
 
 Aby co miesi±c z u¿ytkowników by³a zdzierana jaka¶ kasa, nale¿y dodaæ
-lms-eachmonth do crona. Przyk³adowa linijka wygl±da tak:
+lms-payments do crona. Przyk³adowa linijka wygl±da tak:
 
-0 0 6 * *       /usr/sbin/lms-eachmonth
+0 0 * * *       /usr/sbin/lms-payments
 
-lub
-
-@monthly        /usr/sbin/lms-eachmonth
-
-(nie dzia³a z ka¿dym cronem, sprawd¼ w dokumentacji swojego crona czy
-obs³uguje tê opcjê)
-
-Pierwszy zapis spowoduje ¿e ka¿dego szóstego dnia miesi±ca, o godzinie
-0:00,  ze  ka¿dy  u¿ytkownik  zostanie obci±¿ony op³at± abonamentow± w
-wysoko¶ci  przewidzianej przez taryfê w jakiej siê znajduje, natomiast
-drugi  zrobi  to samo lecz 1szego ka¿dego miesi±ca. Oczywi¶cie zamiast
-szóstego  mo¿e  byæ inny dzieñ, jednak¿e radzê pamiêtaæ, ¿e 31 ka¿dego
-miesi±ca wystêpuje 8 razy do roku, a 29 luty wystêpuje co cztery lata,
-wiêc  najpó¼niej  op³aty  mo¿na  pobieraæ  dwudziestego ósmego ka¿dego
-miesi±ca,  odwa¿ni  mog±  to  zrobiæ  w  skrypcie  /etc/cron.d/monthly
-obs³ugiwanym  przez  wiêkszo¶æ  wspó³czesnych dystrybucji, wykonywanym
-dok³adnie  raz  na  miesi±c, czy wrêcz w postaci wpisów w atd (demonie
-uruchamiaj±cym polecenia nie 'wcze¶niej ni¿'). To dla tych którzy maj±
-np 'kalendarz naliczania' ostatniego dnia miesi±ca.
-
-$ at -f /usr/sbin/lms-eachmonth 6:00 01/31/01
-$ at -f /usr/sbin/lms-eachmonth 6:00 02/28/01
-$ at -f /usr/sbin/lms-eachmonth 6:00 03/31/01
-(etc...)
+Pierwszy zapis spowoduje ¿e codziennie o pó³nocy lms sprawdzi którzy
+u¿ytkownicy maj± danego dnia zap³aciæ i ich obci±¿y op³at± abonamentow± 
+w wysoko¶ci  przewidzianej przez taryfê w jakiej siê znajduje.
 
 Kolejny  etap  integracji  LMS'a  z  Dzia³em  Nêkania  U¿ytkowników to
 wysy³anie powiadomieñ, czyli lms-notify:

@@ -7,6 +7,14 @@ wersja 1.1.1 (??/??/2003):
   - poprawione problemy ze zmian± kolejno¶ci sortowania na li¶cie osób
     od³±czonych b±d¼ zad³u¿onych (lukasz)
   - naprawiony bug z oper± (zamiana exit(0) na die) (lukasz)
+  - wprowadzono mo¿liwo¶æ ustawienia dnia zap³aty, konieczne zmiany w SQL to:
+    ALTER TABLE `users` ADD `payday` INT DEFAULT '5' NOT NULL;
+    gdzie zamiast '5', mo¿emy podaæ domy¶lny dzieñ zap³aty, tj. je¿eli teraz
+    op³aty w Twojej sieci s± naliczane ka¿dego pi±tego dnia miesi±ca, to
+    wtedy spowoduje to przypisanie ka¿demu u¿ytkownikowi takiego dnia
+    p³atno¶ci (lukasz)
+  - w zwi±zku z powy¿sz± innowacj±, nie istnieje lms-eachmonth, a
+    lms-payments, który powinien byæ odpalany z crona codziennie! (lukasz)
   - cleanup kodu (wywalenie g³ównie ¶mieci i trochê poprawnego kodowania...)
     (lukasz)
 

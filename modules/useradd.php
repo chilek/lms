@@ -37,6 +37,14 @@ if($useradd[name]=="" && $useradd[lastname]=="" && $useradd[phone1]=="" && $user
 }
 elseif(isset($useradd))
 {
+
+	$useradd[payday] = sprintf('%d',$useradd[payday]);
+	
+	if($useradd[payday] < 1)
+		$useradd[payday] = 1;
+	elseif($useradd[payday] > 28)
+		$useradd[payday] = 28;
+							
 	if($useradd[lastname]=="")
 		$error[username]=TRUE;
 	
@@ -81,7 +89,15 @@ elseif(isset($useradd))
 $layout[pagetitle]="Nowy u¿ytkownik";
 $tariffs = $LMS->GetTariffs();
 if(!isset($useradd[tariff]))
-	$useradd[tariff] = $tariffs[common];	
+	$useradd[tariff] = $tariffs[common];
+if(!isset($useradd[payday]))
+	if(chkconfig($_CONFIG[phpui][use_current_payday]))
+		$useradd[payday] = (date('j',time()) > 28 ? 28 : date('j',time()));
+	else
+		$useradd[payday] = $tariffs[commonpayday];
+for($i=1;$i<29;$i++)
+        $paydays[] = $i;
+$SMARTY->assign("paydays",$paydays);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("useradd",$useradd);
 $SMARTY->assign("error",$error);
