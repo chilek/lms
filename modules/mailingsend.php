@@ -31,8 +31,10 @@ $mailing = $_POST[mailing];
 if($mailing[group] < 0 || $mailing[group] > 3)
 	$error[group] = "Wybra³e¶ b³êdn± grupê u¿ytkowników";
 
-if($mailing[sender]=="")
+if($mailing[sender]==""){
 	$error[sender] = "Proszê podaæ e-mail nadawcy!";
+}elseif(!check_email($mailing[sender]))
+	$error[sender] = "Podany e-mail nie wydaje siê poprawny!";
 
 if($mailing[from]=="")
 	$error[from] = "Proszê podaæ nadawcê!";
@@ -45,10 +47,10 @@ if($error)
 	$SMARTY->assign("layout",$layout);
 	$SMARTY->assign("error",$error);
 	$SMARTY->assign("mailing",$mailing);
-	$SMARTY->display("header.html");
 	$SMARTY->display("mailing.html");
-	$SMARTY->display("footer.html");
-}else{
+}
+else
+{
 	$layout[nomenu] = TRUE;
 	$mailing[body] = textwrap($mailing[body]);
 	$SMARTY->assign("mailing",$mailing);

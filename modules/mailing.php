@@ -27,8 +27,6 @@
 $layout[pagetitle]="Mailing";
 
 $SMARTY->assign("layout",$layout);
-$SMARTY->display("header.html");
 $SMARTY->display("mailing.html");
-$SMARTY->display("footer.html");
 
 ?>
