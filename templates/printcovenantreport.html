@@ -43,20 +43,19 @@
 			{$list.$month.diff|money_format}
 		</TD>
 	</TR>
-	{math equation="x+y" x=$totalcovenant|default:"0" y=$list.$month.covenant|default:"0" assign=totalcovenant}
 	{/foreach}
 	<TR>
 		<TD ALIGN="RIGHT">
 			<B>{t}Total:{/t}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			<B>{$totalcovenant|money_format}</B>
+			<B>{$list.totalcovenant|money_format}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			<B>{$totalpayment|money_format}</B>
+			<B>{$list.totalpayment|money_format}</B>
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			<B>{$totaldiff|money_format}</B>
+			<B>{$list.totaldiff|money_format}</B>
 		</TD>
 	</TR>
 </TABLE>
