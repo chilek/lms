@@ -300,8 +300,8 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     $x = $x + 12*$margin + $t_width[1] + $t_width[2] + $t_width[3] + $t_width[4] + $t_width[5] + $t_width[6];
 
     $fy=$y-$margin-$pdf->GetFontHeight($font_size);    
-    text_align_right($x-$margin,$fy,$font_size,"<b>Razem:</b>");
-
+    text_align_right($x-$margin,$fy,$font_size,'<b>'.trans('Total:').'</b>');
+    
     $t_data[7] = iconv("UTF-8","ISO-8859-2",moneyf($invoice['totalbase']));
     $t_data[8] = "<b>x</b>";
     $t_data[9] = iconv("UTF-8","ISO-8859-2",moneyf($invoice['totaltax']));
