@@ -97,7 +97,7 @@
 				<member>id - identyfikator</member>
 				<member>lastname - nazwa/nazwisko</member>
 				<member>name - imiê</member>
-				<member>status - pod³±czony/od³±czony</member>
+				<member>status - status u¿ytkownika (3-pod³±czony, 2-oczekuj±cy, 1-zainteresowany)</member>
 				<member>email - adres poczty internetowej</member>
 				<member>phone1 - telefon</member>
 				<member>phone2 - telefon</member>
