@@ -83,12 +83,12 @@
 		<TD align="right" valign="top" NOWRAP>
 			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|money_format}{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|money_format}</FONT>
 			{if $userlist[userlist].balance < 0}<BR>
-			<A href="?m=userbalanceok&id={$userlist[userlist].id}" {confirm 0=$userlist[userlist].username text="Are you sure, you want to account ALL debts of customer: \$0?\n\n"}>{t}Clear Account{/t} &raquo;</A>
+			<A href="?m=userbalanceok&id={$userlist[userlist].id}" OnCLick="return confirmLink(this, '{t 0=$userlist[userlist].username}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} &raquo;</A>
 			{/if}
 			</NOBR>
 		</TD>
 		<TD class="fright">
-			<NOBR><A href="?m=userdel&id={$userlist[userlist].id}" {confirm 0=$userlist[userlist].username text="Are you sure, you want to remove customer: \$0 from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!"}><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ {t}Delete{/t} ]"></A> {if $userlist[userlist].deleted}<A HREF="?m=useredit&id={$userlist[userlist].id}&action=recover"><IMG src="img/recover.gif" border="0" ALIGN="ABSMIDDLE" ALT="[ {t}Restore{/t} ]"></A>{else}<A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A>{/if} <A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" ALT="[ {t}Info{/t} ]"></A></NOBR>
+			<NOBR><A href="?m=userdel&id={$userlist[userlist].id}" OnClick="return confirmLink(this, '{t 0=$userlist[userlist].username}Are you sure, you want to remove customer \'$0\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ {t}Delete{/t} ]"></A> {if $userlist[userlist].deleted}<A HREF="?m=useredit&id={$userlist[userlist].id}&action=recover"><IMG src="img/recover.gif" border="0" ALIGN="ABSMIDDLE" ALT="[ {t}Restore{/t} ]"></A>{else}<A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A>{/if} <A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" ALT="[ {t}Info{/t} ]"></A></NOBR>
 		</TD>
 	</TR>
 	{/if}

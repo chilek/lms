@@ -44,33 +44,6 @@ function _smarty_function_sizeof($args, &$SMARTY)
 	return sizeof($array);
 }
 
-function _smarty_function_confirm($args, &$SMARTY)
-{
-	$text = $args['text'];
-        if($SMARTY->_tpl_vars['_LANG'][$text])
-	        $text = trim($SMARTY->_tpl_vars['_LANG'][$text]);
-	else
-		if(!in_array($text, (array) $SMARTY->_tpl_vars['missing_strings']) && $text !='')
-			$SMARTY->_tpl_vars['missing_strings'][] = $text;	    
-	if(is_array($args))
-		foreach($args as $argid => $argval)
-			$text = str_replace('$'.$argid, $argval, $text);
-
-	$text = str_replace('\'','\\\'',$text);
-	$text = str_replace('"','&quot;',$text);
-	$text = str_replace("\r",'',$text);
-	$text = str_replace("\n",'\n',$text);
-
-	if($text != '')
-		$ret = ' onClick="return confirmLink(this, \''.$text.'\')" ';
-	if($args['href'] != '')
-		$ret .= ' href="'.$args['href'].'" ';
-//		$ret .= ' href="?m=confirm&text='.urlencode($text).'&link='.urlencode($args['href']).'" ';
-		
-	$ret = eregi_replace('[ ]+', ' ', $ret);
-	return $ret;
-}
-
 function _smarty_function_tip($args, &$SMARTY)
 {
 	$text = $args['text'];
@@ -154,7 +127,6 @@ function _smarty_block_translate($args, $content, &$SMARTY)
 $SMARTY->register_function('sum','_smarty_function_sum');
 $SMARTY->register_function('size','_smarty_function_sizeof');
 $SMARTY->register_function('tip','_smarty_function_tip');
-$SMARTY->register_function('confirm','_smarty_function_confirm');
 $SMARTY->register_modifier('to_words','to_words');
 $SMARTY->register_modifier('money_format','moneyf');
 $SMARTY->register_modifier('striphtml','_smarty_modifier_striphtml');

@@ -100,7 +100,7 @@
         {/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A> <A href="?m=netdevdel&id={$netdevinfo.id}" {confirm text="Are you sure, you want to remove device `$netdevinfo.name` from database?"}>{t}Delete{/t} <img border="0" align="absmiddle" src="img/delete.gif" ALT=""></A>
+			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A> <A href="?m=netdevdel&id={$netdevinfo.id}" OnClick="return confirmLink(this, '{t 0=$netdevinfo.name}Are you sure, you want to remove device \'$0\' from database?{/t}');">{t}Delete{/t} <img border="0" align="absmiddle" src="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>
 	{if $netdevinfo.id}
