@@ -41,7 +41,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 	function _driver_connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
-		if($this->_dblink = mysql_connect($dbaddr,$dbuser,$dbpasswd))
+		if($this->_dblink = mysql_connect($dbhost,$dbuser,$dbpasswd))
 		{
 			$this->_dbhost = $dbhost;
 			$this->_dbuser = $dbuser;
@@ -121,6 +121,10 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.14  2003/08/31 03:34:20  lukasz
+ * - ma³a literówka powoduj±ca to i¿ driver od MySQL'a nie dostawa³ informacji
+ *   o ho¶cie z lms.ini, a co za tym idzie zawsze ³±czy³ siê z localhostem.
+ *
  * Revision 1.13  2003/08/28 21:07:26  lukasz
  * - added support for transactions
  *
