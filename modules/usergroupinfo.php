@@ -39,7 +39,7 @@ $usergroup = $LMS->UsergroupGet($_GET['id']);
 $layout['pagetitle'] = 'Informacja o grupie: '.$usergroup['name'];
 
 $SMARTY->assign('usergroup',$usergroup);
-$SMARTY->assign('users',$LMS->GetUserNames());
+$SMARTY->assign('users',$LMS->GetUserWithoutGroupNames($_GET['id']));
 $SMARTY->display('usergroupinfo.html');
 
 ?>
