@@ -3239,9 +3239,14 @@ class LMS
 
 		$params['host'] = $this->CONFIG['phpui']['smtp_host'];
 		$params['port'] = $this->CONFIG['phpui']['smtp_port'];
-		$params['auth'] = $this->CONFIG['phpui']['smtp_auth'];
-		$params['username'] = $this->CONFIG['phpui']['smtp_username'];
-		$params['password'] = $this->CONFIG['phpui']['smtp_password'];
+		if ($this->CONFIG['phpui']['username'])
+		{
+			$params['auth'] = true;
+			$params['username'] = $this->CONFIG['phpui']['smtp_username'];
+			$params['password'] = $this->CONFIG['phpui']['smtp_password'];
+		}
+		else
+			$params['auth'] = false;
 
 		$mail_object =& Mail::factory('smtp', $params);
 		$mail_object->send($recipients, $headers, $body);
