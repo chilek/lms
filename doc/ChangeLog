@@ -20,6 +20,7 @@ wersja 1.3.3 (??/??/2004):
   - dodana mo¿liwo¶æ op³acania faktur - jeszcze nie w pe³ni funkcjonalna (chilek)
   - na fakturze termin p³atno¶ci mo¿e wynosiæ 0 (alec)
   - mo¿na podaæ datê op³acenia faktury (chilek)
+  - mo¿na rozliczyæ wiele faktur (chilek)
 
 wersja 1.3.2 Kinsey (03/04/2004):
   

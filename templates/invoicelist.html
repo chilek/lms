@@ -34,6 +34,13 @@
 		document.page.submit();
 	}
 
+	function pays()
+	{
+		document.page.action="?m=invoicepaid&id=multi";
+		document.page.target="";
+		document.page.submit();
+	}
+
 	function prints()
 	{
 		document.page.action="?m=invoice&print=cached";
