@@ -1,0 +1,29 @@
+#
+# **********************************************************
+# ****** Upgrade bazy danych LMS z wersji 1.2 do 1.3 *******
+# **********************************************************
+# Zaleca siê wcze¶niejszy backup bazy:
+# 	$ mysqldump -u lms lms > db.out
+# Sposób u¿ycia:
+#	$ mysql -u lms
+#	mysql> use lms;
+#	mysql> source doc/UPGRADE.mysql;
+# Po tej operacji wystartuj LMS i uruchom modu³ ?m=upgrade01
+# Na samym koñcu mo¿esz wyrzuciæ niepotrzebne rzeczy:
+#	mysql> ALTER TABLE users DROP tariff, DROP payday;
+# **********************************************************
+
+# Informacje o bazie
+CREATE TABLE dbinfo (
+    keytype VARCHAR(255) NOT NULL default '',
+    keyvalue VARCHAR(255) NOT NULL default '',
+    PRIMARY KEY (keytype),
+    UNIQUE KEY keytype (keytype),
+    KEY keytype_2 (keytype)
+) TYPE=MyISAM;
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004030400');		  
+
+# Chyba o niczym nie zapomnia³em?
+
+# $Id$
+
