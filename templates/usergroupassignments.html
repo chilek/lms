@@ -56,7 +56,7 @@
 		</TR>
 		<TR CLASS="LIGHT">
 		    <TD WIDTH="100%" CLASS="flr" ALIGN="CENTER">
-			{if $users.count}
+			{if $userscount}
 			<SELECT SIZE="20" NAME="userassignments[muserid][]" multiple>
 				{section name=user loop=$users}
 					<OPTION VALUE="{$users[user].id}">

@@ -84,14 +84,17 @@ if(isset($usergroup))
 
 }
 
-$usergroup = $LMS->UsergroupGet($_GET['id']);
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
 $layout['pagetitle'] = 'Edycja grupy: '.$usergroup['name'];	
 
+$usergroup = $LMS->UsergroupGet($_GET['id']);
+$users = $LMS->GetUserWithoutGroupNames($_GET['id']);
+
 $SMARTY->assign('usergroup',$usergroup);
 $SMARTY->assign('error',$error);
-$SMARTY->assign('users', $LMS->GetUserWithoutGroupNames($_GET['id']));
+$SMARTY->assign('users', $users);
+$SMARTY->assign('userscount', sizeof($users));
 $SMARTY->display('usergroupedit.html');
 
 ?>
