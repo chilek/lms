@@ -1177,7 +1177,7 @@ class LMS {
 	function GetUsersWithTariff($id)
 	{
 		$db=$this->db;
-		return $db->CountRows("SELECT * FROM `users` WHERE `tariff` = '".$id."'");
+		return $db->CountRows("SELECT * FROM `users` WHERE `tariff` = '".$id."' AND `status` = '3'");
 	}
 	
 	function GetTariffList()
@@ -1189,6 +1189,7 @@ class LMS {
 			foreach($tarifflist[id] as $key => $value)
 			{
 				$tarifflist[users][$key] = $this->GetUsersWithTariff($value);
+				$tarifflist[totalusers] = $tarifflist[totalusers] + $tarifflist[users][$key];
 				$tarifflist[income][$key] = $tarifflist[users][$key] * $tarifflist[value][$key];
 				$tarifflist[totalincome] = $tarifflist[totalincome] + $tarifflist[income][$key];
 			}
