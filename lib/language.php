@@ -90,9 +90,7 @@ setlocale(LC_CTYPE, $LANGDEFS[$_language]['locale']);
 setlocale(LC_TIME, $LANGDEFS[$_language]['locale']);
 setlocale(LC_NUMERIC, $LANGDEFS[$_language]['locale']);
 
-
-/*
-if(strtolower($_CONFIG['database']['encoding']) != 'unicode')
+if(strtolower($_CONFIG['database']['server_encoding']) != 'unicode')
 {
 	switch($_CONFIG['database']['type'])
 	{
@@ -101,5 +99,5 @@ if(strtolower($_CONFIG['database']['encoding']) != 'unicode')
 		break;
 	}
 }
-*/
+
 ?>
