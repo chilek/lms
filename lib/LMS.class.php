@@ -2294,6 +2294,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 		$network['rows'] = ceil(sizeof($network['nodes']['address']) / 4);
 		$network['free'] = $network['size'] - $network['assigned'] - 2;
+		if ($network['dhcpstart']) { $network['free']=$network['free'] - (ip_long($network['dhcpend']) - ip_long($network['dhcpstart']) + 1); }
 		$network['pages'] = ceil($network['size'] / $plimit);
 		$network['page'] = $page + 1;
 
