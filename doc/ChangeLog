@@ -2,7 +2,13 @@ $Id$
 
 wersja 1.5.4 (??/??/????):
 
-  - rozpoczêto prace nad zmian± domy¶lnego jêzyka na angielski
+  - domy¶lnym jêzykiem interfejsu u¿ytkownika jest angielski (en), wykonano
+    t³umaczenie na jêzyk polski, zmieniono nazewnictwo: u¿ytkownicy -> klienci,
+    administratorzy -> u¿ytkownicy, jêzyk jest odczytywany z ustawieñ
+    przegl±darki, a mo¿e byæ tak¿e ustawiony poprzez opcjê 'lang', zmieniono
+    kodowanie danych i interfejsu na UTF-8 (WYMAGANA KONWERSJA DANYCH)
+    trwaj± prace nad t³umaczeniem dokumentacji (alec/lexx/maniac/chilek i inni)
+  - zmiana opcji 'userlist_pagelimit' na 'customerlist_pagelimit' (alec) 
   - poprawiony b³±d przy usuwaniu op³aty sta³ej powoduj±cy usuniêcie op³aty
     bez potwierdzenia (alec)
   - dodana opcja konfiguracyjna (phpui -> lang_debug) która pozwala na 
