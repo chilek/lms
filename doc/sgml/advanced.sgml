@@ -115,6 +115,7 @@
 				<member>creatorid - identyfikator administratora tworz±cego wpis</member>
 				<member>modid - identyfikator administratora dokonuj±cego zmian danych</member>
 				<member>deleted - usuniêty z bazy (0/1)</member>
+				<member>message - komunikat do wy¶wietlenia przy w³aczonych ostrze¿eniach</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="usergroups">
@@ -164,6 +165,7 @@
 				<member>modid - identyfikator administratora </member>
 				<member>netdev - identyfikator urz±dzenia sieciowego do którego jest pod³±czony komputer</member>
 				<member>access - pod³±czony/od³±czony (1/0)</member>
+				<member>warning - ostrzegaj/nie ostrzegaj (1/0)</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="netdevices">
