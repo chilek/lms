@@ -195,6 +195,8 @@ foreach my $line (@info)
 	}
 }
 
+system("$outfile 1>/dev/null 2>&1");
+
 if(open(LOGFILE, "<$logfile"))
 {
 	my(@lines) = <LOGFILE>;
@@ -227,4 +229,4 @@ else
 	exit 1;
 }
 
-system("$outfile 1>/dev/null 2>&1");
+$dbase->disconnect();
