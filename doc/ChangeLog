@@ -22,10 +22,6 @@ wersja 1.5.4 (??/??/????):
     nazwê i email nadawcy (alec)
   - BTS#0000280: poprawione b³êdne zaokr±glanie oraz sumowanie ogólnej kwoty
     podatku na rejestrze sprzeda¿y (.PaKud/alec)
-  - force_ssl z [phpui] nie by³o parsowane przez chkconfig, wiêc sprawdzanie
-    czy trzeba wymusiæ SSL zosta³o przeniesione kawa³ek dalej, po wszystkich
-    includach (i tak do d..y bo po co pó³ tony bibliotek i innych pierdó³ skoro
-    i tak zaraz bêdzie redirect) (lukasz)
   - obs³uga gzipowanych kopii zapasowych (kuba)
   - BTS#0000276: lms-rtparser: je¶li nie zdefiniowano 'mail_from_name' w polu
     'From:' potwierdzenia wstawiamy nazwê kolejki (rejmer/alec)
