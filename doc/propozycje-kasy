@@ -41,5 +41,48 @@ komentzy proszê dopisywaæ tutaj.
 Powodem bycia odzielnej tabeli na rozliczanie bills jest np chêæ wpisania
 sobie 5 przelewów po 5 pln zamiast jednego 25. Albo brania 'na raty' aby wiedzieæ u którego admina forsa wsi±k³a.
 
-$Id$
+-----------------------------------------------------------
+ekhm.
+nie bardzo czajê jak to mia³obywygl±daæ ;> ja spróbujê sam:
 
+--- tarrifs (aka assigment templates):
+
+id (int, pri, auto increment i takie tam)
+name (string)
+value (int)
+description (text)
+uprate (int)
+downrate (int)
+extrabandwidth (0 - no, 1 - yes, je¿eli 0 to jest to podstawowy bandwidth, je¿eli 1 to bandwidth doliczany)
+peroid (daily - dangerous ;>, weekly, monthly)
+itp.
+
+--- assigments
+id (nie wiadomo czy bêdzie, ale unikalny id zobowi±zania)
+userid (id u¿ytkownika, je¿eli 0, oznacza to obci±¿enie sieci, np. comiesiêczna op³ata za internet)
+assignmentid (id z tabeli tariffs)
+name, value, description, uprate, downrate, extrabandwidth, peroid - takie same jak w tariffs
+validfrom validuntil - unixowe znaczniki od kiedy do kiedy dane zobowi±zanie jest aktywne. Je¿eli validuntil bêdzie 0 to wtedy bezterminowo
+payday - dzieñ miesi±ca/tygodnia/whatever
+faktura - czy wystawiaæ fakturê (to na sam koniec pójdzie)
+
+*** przemy¶leæ: czy nie dodaæ pola disconnect albo czego¶ takiego - zastosowanie takie, ¿e np. kto¶ mo¿e terminowo siê od³±czyæ i wtedy p³aci po³owê stawki - tak robi np. astercity, wiêc dodajemy na miesi±c co¶ co obni¿a stawkê i jednocze¶nie pernamentnie odcina pacjenta. ale to idiotyzm tak w sumie.
+
+Teraz tak, je¿eli assigmentid bêdzie 0, oznacza to i¿ jest to unikalne zobowi±zanie które nie wystêpuje w tabeli tariffs.
+Je¿eli bêdzie ró¿ne od zera, pozosta³e pola bêd± ignorowane a bêd± brane pod uwagê dane z tariffs.
+
+wyliczanie bandwidtha:
+
+najpierw szukamy z extrabandwidth = 0 oraz uprate/downrate != 0. oczywi¶cie ka¿dy user mo¿e mieæ tylko jeden taki assignment. Pó¼niej wyszukujemy extrabandwidth=1 i dodajemy/odejmujemy. Np. kto¶ ma podstawowe pasmo 128kbps i dodatkow± dop³atê za kolejne 128kbps. Wiêc co za tym idzie, pacjent mo¿e mieæ tylko jedno pole z extrabandwidth = 0 i uprate/downrate != 0, musi mieæ takie pole by mo¿na by mu by³o dodaæ co¶ z extrabandwidth = 1. Ewentualnie extrabandwidth = -1 mo¿na wprowadziæ, dla assigmentów nie definiuj±cych pasma, czyli np. dop³at za adres IP.
+
+--- faktury
+id (unikalny id pola)
+id faktury
+data wystawienia
+userid
+id pola
+warto¶æ pola
+
+Uf. Jak co¶ wymy¶lê wiêcej to dopiszê.
+
+$Id$
