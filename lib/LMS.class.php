@@ -459,9 +459,11 @@ class LMS
 	{
 		$this->SetTS('users');
 		$this->SetTS('nodes');
+		$this->SetTS('userassignments');
 		$res1=$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
-		$res2=$this->DB->Execute('UPDATE users SET deleted=1 WHERE id=?', array($id));
-		return $res1 || $res2;
+		$res2=$this->DB->Execute('DELETE FROM userassignments WHERE userid=?', array($id));
+		$res3=$this->DB->Execute('UPDATE users SET deleted=1 WHERE id=?', array($id));
+		return $res1 || $res2 || res3;
 	}
 
 	function UserUpdate($userdata)
@@ -897,6 +899,129 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			$result['debt'] = sizeof($balances);
 		}	
 		return $result;
+	}
+
+	/*
+	 * Obs³uga grup u¿ytkowników
+	*/
+	 
+	function UsergroupWithUserGet($id)
+	{
+		return $this->DB->GetOne('SELECT COUNT(userid) FROM userassignments, users WHERE users.id = userid AND usergroupid = ?', array($id));
+	}
+
+	function UsergroupAdd($usergroupdata)
+	{
+		$this->SetTS('usergroups');
+		if($this->DB->Execute('INSERT INTO usergroups (name, description) VALUES (?, ?)', array($usergroupdata['name'], $usergroupdata['description'])))
+			return $this->DB->GetOne('SELECT id FROM usergroups WHERE name=?', array($usergroupdata['name']));
+		else
+			return FALSE;
+	}
+
+	function UsergroupUpdate($usergroupdata)
+	{
+		$this->SetTS('usergroups');
+		return $this->DB->Execute('UPDATE usergroups SET name=?, description=? WHERE id=?', array($usergroupdata['name'], $usergroupdata['description'], $usergroupdata['id']));
+	}
+
+	function UsergroupDelete($id)
+	{
+		 if (!$this->UsergroupWithUserGet($id))
+		 {
+			$this->SetTS('usergroups');
+			return $this->DB->Execute('DELETE FROM usergroups WHERE id=?', array($id));
+		 } else
+			return FALSE;
+	}
+
+	function UsergroupExists($id)
+	{
+		return ($this->DB->GetOne('SELECT id FROM usergroups WHERE id=?', array($id)) ? TRUE : FALSE);
+	}
+
+	function UsergroupMove($from, $to)
+	{
+		if ($ids = $this->DB->GetCol('SELECT userassignments.id AS id FROM userassignments, users WHERE userid = users.id AND usergroupid = ?', array($from))) 
+		{	
+			$this->SetTS('userassignments');
+			foreach($ids as $id)
+				$this->DB->Execute('UPDATE userassignments SET usergroupid=? WHERE id=? AND usergroupid=?', array($to, $id, $from));
+		}
+	}
+
+	function UsergroupGetId($name)
+	{
+		return $this->DB->GetOne('SELECT id FROM usergroups WHERE name=?', array($name));
+	}
+
+	function UsergroupGetName($id)
+	{
+		return $this->DB->GetOne('SELECT name FROM usergroups WHERE id=?', array($id));
+	}
+
+	function UsergroupGetAll()
+	{
+		return $this->DB->GetAll('SELECT id, name, description FROM usergroups ORDER BY name ASC');
+	}
+
+	function UsergroupGet($id)
+	{
+		$result = $this->DB->GetRow('SELECT id, name, description FROM usergroups WHERE id=?', array($id));
+		$result['users'] = $this->DB->GetAll('SELECT users.id AS id, COUNT(users.id) AS cnt, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM userassignments, users WHERE users.id = userid AND usergroupid = ? GROUP BY users.id, username ORDER BY username', array($id));
+		$result['userscount'] = sizeof($result['users']);
+		$result['count'] = $this->UsergroupWithUserGet($id);
+		return $result;
+	}
+
+	function UsergroupGetList()
+	{
+		if($usergrouplist = $this->DB->GetAll('SELECT id, name, description FROM usergroups ORDER BY name ASC'))
+		{
+			foreach($usergrouplist as $idx => $row)
+			{
+				$usergrouplist[$idx]['users'] = $this->UsergroupWithUserGet($row['id']);
+				$usergrouplist[$idx]['userscount'] = sizeof($this->DB->GetCol('SELECT userid FROM userassignments, users WHERE users.id = userid AND usergroupid = ? GROUP BY userid', array($row['id'])));
+				$totalusers += $usergrouplist[$idx]['users'];
+				$totalcount += $usergrouplist[$idx]['userscount'];
+			}
+		}
+		$usergrouplist['total'] = sizeof($usergrouplist);
+		$usergrouplist['totalusers'] = $totalusers;
+		$usergrouplist['totalcount'] = $totalcount;
+		
+		return $usergrouplist;
+	}
+
+	function UserassignmentGetForUser($id)
+	{
+		return $this->DB->GetAll('SELECT userassignments.id AS id, usergroupid, userid FROM userassignments, usergroups WHERE userid=? AND usergroups.id = usergroupid ORDER BY usergroupid ASC', array($id));
+	}
+
+	function UserassignmentDelete($userassignmentdata)
+	{
+		$this->SetTS('userassignments');
+		return $this->DB->Execute('DELETE FROM userassignments WHERE usergroupid=? AND userid=?', array($userassignmentdata['usergroupid'], $userassignmentdata['userid']));
+	}
+
+	function UserassignmentAdd($userassignmentdata)
+	{
+		$this->SetTS('userassignments');
+		return $this->DB->Execute('INSERT INTO userassignments (usergroupid, userid) VALUES (?, ?)',
+			array($userassignmentdata['usergroupid'], $userassignmentdata['userid']));
+	}
+
+	function UserassignmentExist($groupid, $userid)
+	{
+		return $this->DB->GetOne('SELECT 1 FROM userassignments WHERE usergroupid=? AND userid=?', array($groupid, $userid)); 
+	}
+
+	function GetUserWithoutGroupNames($groupid)
+	{
+		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username 
+			FROM users LEFT JOIN userassignments ON (users.id = userid) WHERE deleted = 0 
+			GROUP BY userid, lastname, name 
+			HAVING userid IS NULL ORDER BY username');
 	}
 
 	/*
@@ -1544,115 +1669,6 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function TariffExists($id)
 	{
 		return ($this->DB->GetOne('SELECT id FROM tariffs WHERE id=?', array($id))?TRUE:FALSE);
-	}
-
-	function UsergroupWithUserGet($id)
-	{
-		return $this->DB->GetOne('SELECT COUNT(userid) FROM userassignments, users WHERE users.id = userid AND usergroupid = ?', array($id));
-	}
-
-	function UsergroupAdd($usergroupdata)
-	{
-		$this->SetTS('usergroups');
-		$result = $this->DB->Execute('INSERT INTO usergroups (name, description) VALUES (?, ?)', array($usergroupdata['name'], $usergroupdata['description']));
-		if ($result)
-			return $this->DB->GetOne('SELECT id FROM usergroups WHERE name=?', array($usergroupdata['name']));
-		else
-			return FALSE;
-	}
-
-	function UsergroupUpdate($usergroupdata)
-	{
-		$this->SetTS('usergroups');
-		return $this->DB->Execute('UPDATE usergroups SET name=?, description=? WHERE id=?', array($usergroupdata['name'], $usergroupdata['description'], $usergroupdata['id']));
-	}
-
-	function UsergroupDelete($id)
-	{
-		 if (!$this->UsergroupWithUserGet($id))
-		 {
-			$this->SetTS('usergroups');
-			return $this->DB->Execute('DELETE FROM usergroups WHERE id=?', array($id));
-		 } else
-			return FALSE;
-	}
-
-	function UsergroupExists($id)
-	{
-		return ($this->DB->GetOne('SELECT id FROM usergroups WHERE id=?', array($id)) ? TRUE : FALSE);
-	}
-
-	function UsergroupMove($from, $to)
-	{
-
-		if ($ids = $this->DB->GetCol('SELECT userassignments.id AS id FROM userassignments, users WHERE userid = users.id AND usergroupid = ?', array($from))) 
-		{	
-			$this->SetTS('userassignments');
-			foreach($ids as $id)
-				$this->DB->Execute('UPDATE userassignments SET usergroupid=? WHERE id=? AND usergroupid=?', array($to, $id, $from));
-		}
-	}
-
-	function UsergroupGetId($name)
-	{
-		return $this->DB->GetOne('SELECT id FROM usergroups WHERE name=?', array($name));
-	}
-
-	function UsergroupGetName($id)
-	{
-		return $this->DB->GetOne('SELECT name FROM usergroups WHERE id=?', array($id));
-	}
-
-	function UsergroupGetAll()
-	{
-		return $this->DB->GetAll('SELECT id, name, description FROM usergroups ORDER BY name ASC');
-	}
-
-	function UsergroupGet($id)
-	{
-		$result = $this->DB->GetRow('SELECT id, name, description FROM usergroups WHERE id=?', array($id));
-		$result['users'] = $this->DB->GetAll('SELECT users.id AS id, COUNT(users.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS username FROM userassignments, users WHERE users.id = userid AND usergroupid = ? GROUP BY users.id, username', array($id));
-		$result['userscount'] = sizeof($result['users']);
-		$result['count'] = $this->UsergroupWithUserGet($id);
-		$result['rows'] = ceil(sizeof($result['users'])/2);
-		return $result;
-	}
-
-	function UsergroupGetList()
-	{
-		if($usergrouplist = $this->DB->GetAll('SELECT id, name, description FROM usergroups ORDER BY name ASC'))
-		{
-			foreach($usergrouplist as $idx => $row)
-			{
-				$usergrouplist[$idx]['users'] = $this->UsergroupWithUserGet($row['id']);
-				$usergrouplist[$idx]['userscount'] = sizeof($this->DB->GetCol("SELECT userid FROM userassignments, users WHERE users.id = userid AND usergroupid = ? GROUP BY userid", array($row['id'])));
-				$totalusers += $usergrouplist[$idx]['users'];
-				$totalcount += $usergrouplist[$idx]['userscount'];
-			}
-		}
-		$usergrouplist['total'] = sizeof($usergrouplist);
-		$usergrouplist['totalusers'] = $totalusers;
-		$usergrouplist['totalcount'] = $totalcount;
-		
-		return $usergrouplist;
-	}
-
-	function UserassignmentGetForUser($id)
-	{
-		return $this->DB->GetAll('SELECT userassignments.id AS id, usergroupid, userid FROM userassignments, usergroups WHERE userid=? AND usergroups.id = usergroupid ORDER BY usergroupid ASC', array($id));
-	}
-
-	function UserassignmentDelete($userassignmentdata)
-	{
-		$this->SetTS('userassignments');
-		return $this->DB->Execute('DELETE FROM userassignments WHERE usergroupid=? AND userid=?', array($userassignmentdata['usergroupid'], $userassignmentdata['userid']));
-	}
-
-	function UserassignmentAdd($userassignmentdata)
-	{
-		$this->SetTS('userassignments');
-		return $this->DB->Execute('INSERT INTO userassignments (usergroupid, userid) VALUES (?, ?)',
-			array($userassignmentdata['usergroupid'], $userassignmentdata['userid']));
 	}
 
 
