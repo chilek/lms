@@ -107,10 +107,10 @@ $fortunes[] = "Ilu potrzeba developerów LMSa do wkrêcenia ¿arówki?
 ¯adnego. Developerzy LMSa zrobi± odrazu now± lampê.";
 
 $fortunes[] = "Prima Aprilis 2004 - lms@lists.rulez.pl:
-<Baseciq>     LMS-Linux 2.0 - dostêpny na ftp...
-<Woyteck>     Dlaczego ISO ma 33 bajty?
-<Detekt>      Poniewa¿ baset wynalaz³ nowy algorytm optymalizacji.
-<T.Chiliñski> A ja my¶lê, ¿e to wersja demo, pozbawiona pe³nej funkcjonalno¶ci.";
+<@Baseciq>     LMS-Linux 2.0 - dostêpny na ftp...
+<@Woyteck>     Dlaczego ISO ma 33 bajty?
+<@Detekt>      Poniewa¿ baset wynalaz³ nowy algorytm optymalizacji.
+<@T.Chiliñski> A ja my¶lê, ¿e to wersja demo, pozbawiona pe³nej funkcjonalno¶ci.";
 
 
 mt_srand ((double) microtime()* 100000000);
