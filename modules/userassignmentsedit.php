@@ -163,7 +163,7 @@ if($a = $_POST['assignmentedit'])
 
 	if($a['discount'] == '')
 		$a['discount'] = 0;
-	elseif($a['discount']<0 || $a['discount']>100 || !is_numeric($a['discount']))
+	elseif($a['discount']<0 || $a['discount']>99 || !is_numeric($a['discount']))
 		$error['editdiscount'] = trans('Wrong discount value!');
 
 	if(!$error) 
