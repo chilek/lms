@@ -14,6 +14,8 @@ wersja 1.3.5 (??/??/????):
     zmienne %UPCEIL, %DOWNCEIL, %CLIMIT, %PLIMIT (alec)
   - zmiana typu kolumn statystyk na BIGINT zapobiegaj±ca b³êdom przy
     kompaktowaniu je¶li u¿ytkownicy ¶ci±gaj± ponad 2 GB danych dziennie (alec)
+  - BTS#0000168: poprawione dzia³anie zmiennej 'use_current_payday', przy 
+    okazji wreszcie dzia³aj± error-triggery dla zobowi±zañ (alec)
 
 wersja 1.3.4 Terok (06/07/2004):
 
