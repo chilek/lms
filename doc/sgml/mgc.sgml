@@ -316,7 +316,7 @@
 	ipchains (bardzo prostego).</para>
 	<example>
 	<title>Lms-mgc: Przyk³ad instancji</title>
-	<para>Zacznij od utworzenia nowej sekcjê mgc w <filename>lms-mgc.ini</filename>, 
+	<para>Zacznij od utworzenia nowej sekcji mgc w <filename>lms-mgc.ini</filename>, 
 	nazywaj±c j± 'ipchains' i stwórz w tej sekcji prost± maskaradê per adres IP z lanu:
 	<screen>
 [mgc:ipchains]
