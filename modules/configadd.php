@@ -70,7 +70,10 @@ if($config = $_POST['config'])
 		{
 			$SESSION->redirect('?m=configlist');
 		}
-		unset($config);
+		unset($config['name']);
+		unset($config['value']);
+		unset($config['description']);
+		unset($config['disabled']);
 	}
 }
 
