@@ -1,7 +1,7 @@
 <?
 
 /*
- * LMS version 1.1-cvs
+ * LMS version 1.1.1
  *
  *  (C) Copyright 2001-2003 LMS Developers
  *
@@ -408,6 +408,15 @@ class LMS
 	function GetUserIDByIP($ipaddr)
 	{
 		return $this->ADB->GetOne("SELECT ownerid FROM nodes WHERE ipaddr=?",array($ipaddr));
+	}
+
+	function GetCashByID($id)
+	{
+		if($result = $this->ADB->GetRow("SELECT time, adminid, type, value, userid, comment FROM `cash` WHERE id=?",array($id)))
+		{
+			return $result;
+		} else
+			return FALSE;
 	}
 
 	function GetUserStatus($id)
