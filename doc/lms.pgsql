@@ -33,6 +33,8 @@ CREATE TABLE assignments (
 	userid integer 		DEFAULT 0 NOT NULL,
 	period integer 		DEFAULT 0 NOT NULL,
 	at integer 		DEFAULT 0 NOT NULL,
+	datefrom		DEFAULT 0 NOT NULL,
+	dateto			DEFAULT 0 NOT NULL,
 	invoice smallint 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
@@ -353,4 +355,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004031401');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004031402');
