@@ -17,6 +17,8 @@ wersja 1.4.3 (??/??/????):
     nadawcy na szablonie wysy³ania wiadomo¶ci (alec)
   - BTS#0000280: poprawione b³êdne zaokr±glanie i wyliczenie ogólnej kwoty 
     podatku na rejestrze sprzeda¿y (.PaKud/alec)
+  - w zobowi±zaniach u¿ytkownika zamieniono myl±ce 'Dzieñ zap³aty' na
+    'Dzieñ naliczenia' (alec)
 
 wersja 1.4.2 Lya (14/12/2004):
 
