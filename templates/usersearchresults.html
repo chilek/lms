@@ -5,7 +5,7 @@
 	<TR bgcolor="#CEBD9B" {popup text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
 		<TD width="95%" class="fleftu">
 			<B>
-			<img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=username{if $userlist.direction eq "asc" && $userlist.order eq "username"},desc{/if}">Nazwisko i imiê:</A></B> {if $userlist.order eq "username"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=username{if $userlist.direction eq "asc" && $userlist.order eq "username"},desc{/if}">Nazwisko/nazwa i imiê:</A></B> {if $userlist.order eq "username"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			<img src="img/phone.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=phone{if $userlist.direction eq "asc" && $userlist.order eq "phone"},desc{/if}">Telefon:</A></B> {if $userlist.order eq "phone"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=address{if $userlist.direction eq "asc" && $userlist.order eq "address"},desc{/if}">Adres:</A> {if $userlist.order eq "address"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
