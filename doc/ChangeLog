@@ -29,6 +29,7 @@ wersja 1.3.5 (??/??/????):
   - w module 'tc' demona mo¿na okre¶liæ politykê generowania klas htb poprzez
     zmienn± 'one_class_per_host', rozbite regu³y na kilka opcji konfiguracyjnych
     osobno dla markowania i htb w obie strony (alec)
+  - w lms-traffic-htbiptlimits dodana obs³uga upceil i downceil (alec)
 
 wersja 1.3.4 Terok (06/07/2004):
 
