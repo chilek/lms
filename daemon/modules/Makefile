@@ -1,6 +1,6 @@
 
 MODULES = ethers hostfile dhcp oident dns cutoff payments traffic notify tc \
-	    system ggnotify
+	    system ggnotify pinger
 
 all:
 	for i in `echo $(MODULES)`; do make -C $$i ; done
