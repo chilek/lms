@@ -202,7 +202,7 @@ class LMS
 		// Postgres sux ! (warden)
 		// Tak, a ³y¿ka na to 'niemo¿liwe' i polecia³a za wann± potr±caj±c bannanem musztardê (lukasz)
 
-		switch($this->DB->databaseType)
+		switch($this->CONFIG['database']['type'])
 		{
 			case "postgres":
 				// uaktualnijmy sequencery postgresa

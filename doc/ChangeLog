@@ -5,6 +5,8 @@ wersja 1.2.3 (??/??/2004):
   - poprawiona zawarto¶æ pól from i sender w nag³ówku wiadomo¶ci e-mail 
     wysy³anej z lms-ui (alec)
   - podczas usuwania urz±dzenia sieciowego usuwane s± tak¿e jego adresy (alec)
+  - naprawione uaktualnianie sekwencji postgresa podczas odtwarzania kopii
+    bazy danych (alec)
 
 wersja 1.2.2 Gairwyn (08/06/2004):
 
