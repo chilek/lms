@@ -26,7 +26,7 @@
 
 if(! $LMS->QueueExists($_GET['id']))
 {
-	header('Location: ?m=rtshowqlist');
+	header('Location: ?m=rtqueuelist');
 	die;
 }
 

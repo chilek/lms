@@ -30,6 +30,6 @@ $queues = $LMS->GetQueueList();
 
 $SMARTY->assign('queues', $queues);
 $SMARTY->assign('layout', $layout);
-$SMARTY->display('rtshowqlist.html');
+$SMARTY->display('rtqueuelist.html');
 
 ?>
