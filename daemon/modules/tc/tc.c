@@ -194,7 +194,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 								// write to file
 								fprintf(fh, "%s", s);
 								
-								if(!n_climit)
+								if(n_climit)
 								{
 									g->str_replace(&cl, "%climit", climit);
 									g->str_replace(&cl, "%n", name);
@@ -204,7 +204,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 									fprintf(fh, "%s", cl);
 								}
 								
-								if(!n_plimit)
+								if(n_plimit)
 								{
 									g->str_replace(&pl, "%plimit", plimit);
 									g->str_replace(&pl, "%n", name);
@@ -290,10 +290,10 @@ IPT=/usr/sbin/iptables
 TC=/sbin/tc
 LAN=eth1
 WAN=eth0
-BURST=\"burst 15k\"
+BURST=\"burst 5k\"
 
-$TC del dev $LAN root 2> /dev/null
-$TC del dev $WAN root 2> /dev/null
+$TC qdisc del dev $LAN root 2> /dev/null
+$TC qdisc del dev $WAN root 2> /dev/null
 # incomming traffic
 $TC qdisc add dev $LAN root handle 1:0 htb default 3 r2q 1
 $TC class add dev $LAN parent 1:0 classid 1:1 htb rate 99mbit ceil 99mbit
