@@ -39,17 +39,17 @@ if(isset($adminadd))
 	}
 	
 	if($LMS->GetAdminIDByLogin($adminadd[login]))
-		$error[login] = $lang[error_login_already_exists];
+		$error[login] = "Podany login istnieje!";
 	elseif(!eregi("^[a-z0-9.-_]+$",$adminadd[login]))
-		$error[login] = $lang[error_login_contains_incorrect_characters];
+		$error[login] = "Login zawiera niepoprawne znaki!";
 
 	if($adminadd[email]!="" && !check_email($adminadd[email]))
-		$error[email] = $lang[error_email_incorrect];
+		$error[email] = "Podany email nie wydaje siê byæ poprawny!";
 
 	if($adminadd[password]=="")
-		$error[password] = $lang[error_passwd_mismatch];
+		$error[password] = "Has³o nie mo¿e byæ puste!";
 	elseif($adminadd[password]!=$adminadd[confirm])
-		$error[password] = $lang[error_passwd_mismatch];
+		$error[password] = "Has³a nie s± takie same!";
 
 	// zróbmy maskê ACL...
 
@@ -79,7 +79,7 @@ foreach($access[table] as $idx => $row)
 	$accesslist[] = $row;
 }
 
-$layout[pagetitle] = $lang[pagetitle_adminadd];
+$layout[pagetitle]="Dodaj nowego administratora";
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("adminadd",$adminadd);
 $SMARTY->assign("error",$error);

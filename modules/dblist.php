@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout[pagetitle] = $lang[pagetitle_dblist];
+$layout[pagetitle]="Bazy danych";
 
 $dblist = $LMS->DatabaseList();
 $SMARTY->assign("layout",$layout);

@@ -1,59 +1,64 @@
 {include file="header.html"}
 {include file="userheader.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<H1>Lista u¿ytkowników{$layout.ultitle}</H1>
 <P>
 <TABLE cellpadding="3" WIDTH="100%">
-	<TR bgcolor="#CEBD9B" {popup text="`$lang.click_to_change_sort_order`"}>
+	<TR bgcolor="#CEBD9B" {popup text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
 		<TD width="95%" class="fleftu">
 			<B>
-			<img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{$lang.lastname_and_name}:</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<img src="img/phone.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">{$lang.phone}:</A></B> {if $listdata.order eq "phone"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{$lang.address}:</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">Nazwisko i imiê:</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/phone.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=phone{if $listdata.direction eq "asc" && $listdata.order eq "phone"},desc{/if}">Telefon:</A></B> {if $listdata.order eq "phone"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">Adres:</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD align="right" width="1%" class="fbt" VALIGN="top">
-			<a href="?m=userlist&s={$listdata.state}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{$lang.id}:</A></B> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<a href="?m=userlist&s={$listdata.state}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A></B> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			&nbsp;
 		</TD>
 		<TD width="1%" class="fbt" VALIGN="TOP">
-			<img src="img/mail.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=email{if $listdata.direction eq "asc" && $listdata.order eq "email"},desc{/if}">{$lang.email}:</A> {if $listdata.order eq "email"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<img src="img/gg.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=gg{if $listdata.direction eq "asc" && $listdata.order eq "gg"},desc{/if}">{$lang.im_name}:</A> {if $listdata.order eq "gg"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<a href="?m=userlist&s={$listdata.state}&o=nip{if $listdata.direction eq "asc" && $listdata.order eq "nip"},desc{/if}">{$lang.taxid}:</A> {if $listdata.order eq "nip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/mail.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=email{if $listdata.direction eq "asc" && $listdata.order eq "email"},desc{/if}">E-mail:</A> {if $listdata.order eq "email"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/gg.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=gg{if $listdata.direction eq "asc" && $listdata.order eq "gg"},desc{/if}">GG:</A> {if $listdata.order eq "gg"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<a href="?m=userlist&s={$listdata.state}&o=nip{if $listdata.direction eq "asc" && $listdata.order eq "nip"},desc{/if}">NIP:</A> {if $listdata.order eq "nip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 		</TD>
 		<TD width="1%" class="fbt">
 			<img src="img/money.gif" alt="" align="absmiddle">
 		</TD>
 		<TD width="1%" class="fbt" ALIGN="right" VALIGN="TOP">
-			<a href="?m=userlist&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{$lang.balance}:</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			{$lang.fee}:
+			<a href="?m=userlist&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">Saldo:</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			Abonament:
 		</TD>
 		<TD width="1%" class="frightu">
-			<NOBR><B>{$lang.total}: {$listdata.total}</B></NOBR>
+			<NOBR><B>Razem: {$listdata.total}</B></NOBR>
 		</TD>
 	</TR>
+{*	<TR bgColor="CEBD9B">
+		<TD colspan="6" class="fall">
+			<B>Filtruj: <img src="img/user.gif" align="absmiddle" border="0" alt=""> {if $listdata.state neq 3}<a href="?m=userlist&s=3">{else}<U>{/if}pod³±czeni{if $listdata.state neq 3}</a>{else}</U>{/if} <img src="img/wait.gif" align="absmiddle" border="0" alt=""> {if $listdata.state neq 2}<a href="?m=userlist&s=2">{else}<U>{/if}oczekuj±cy{if $listdata.state neq 2}</a>{else}</U>{/if} <img src="img/unk.gif" align="absmiddle" border="0" alt=""> {if $listdata.state neq 1}<a href="?m=userlist&s=1">{else}<U>{/if}zainteresowani{if $listdata.state neq 1}</a>{else}</U>{/if}</a> <img src="img/user.gif" align="absmiddle" border="0" alt=""> {if $listdata.state neq 0}<a href="?m=userlist&s=0">{else}<U>{/if}wszyscy{if $listdata.state neq 0}</a>{else}</U>{/if}</B>	
+		</TD>
+	</TR>*}
 	<TR CLASS="DARK">
 		<TD CLASS="fall" colspan="6">
 			<P><FORM METHOD="GET" ACTION="?m=userlist" NAME="choosefilter">
-				<B>{$lang.show_only}:</B>
+				<B>Filtruj:</B>
 				<INPUT TYPE="HIDDEN" NAME="m" VALUE="userlist">
 				<SELECT SIZE="1" CLASS="bold" NAME="s" ONCHANGE="document.choosefilter.submit();">
-					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>{$lang.connected}</OPTION>
-					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>{$lang.awaiting}</OPTION>
-					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>{$lang.interested}</OPTION>
-					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>{$lang.all}</OPTION>
+					<OPTION VALUE="3"{if $listdata.state eq 3} SELECTED{/if}>pod³±czeni</OPTION>
+					<OPTION VALUE="2"{if $listdata.state eq 2} SELECTED{/if}>oczekuj±cy</OPTION>
+					<OPTION VALUE="1"{if $listdata.state eq 1} SELECTED{/if}>zainteresowani</OPTION>
+					<OPTION VALUE="0"{if $listdata.state eq 0} SELECTED{/if}>wszyscy</OPTION>
 				</SELECT>
 			</FORM></P>
 		</TD>
 	</TR>		
 	<TR CLASS="DARK">
 		<TD COLSPAN="6" CLASS="FALL">
-			<B>{$lang.page}:
+			<B>Strona:
 				{if $page > 1}<A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$userlist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> ({$lang.records} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {$lang.of} {$listdata.total})
+			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
@@ -71,19 +76,19 @@
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" valign="top">
 			<IMG src="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].email|default:"&nbsp;"}</A><BR>
 			<IMG src="img/gg.gif" alt="" align="absmiddle" border="0">&nbsp;{if $userlist[userlist].gguin}{$userlist[userlist].gguin}{else}&nbsp;{/if}<BR>
-			<IMG SRC="img/empty.gif" alt="" align="absmiddle" height="16" width="1"><B>{$lang.taxid}:</B>&nbsp;<NOBR>{$userlist[userlist].nip}</NOBR>
+			<IMG SRC="img/empty.gif" alt="" align="absmiddle" height="16" width="1"><B>NIP:</B>&nbsp;<NOBR>{$userlist[userlist].nip}</NOBR>
 		
 		</TD>
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" valign="middle">
 			<IMG src="img/money.gif" align="left" border="0" alt="">
 		</TD>
 		<TD align="right" valign="top" NOWRAP>
-			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|string_format:"`$lang.currency_format`"} {$lang.currency}{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|string_format:"`$lang.currency_format`"} {$lang.currency}</FONT>{if $userlist[userlist].balance < 0}<BR>
-			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" onClick="return confirmLink(this, '{$lang.confirm_pay|replace:"#":"`$userlist[userlist].username`"}')">{$lang.square_up} &raquo;</A>{/if}
+			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|string_format:"%01.2f"} z³{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|string_format:"%01.2f"} z³</FONT>{if $userlist[userlist].balance < 0}<BR>
+			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz rozliczyæ WSZYSTKIE nale¿no¶ci u¿ytkownika: {$userlist[userlist].username|upper} z bazy danych?\n\n')">Rozlicz &raquo;</A>{/if}
 			</NOBR>
 		</TD>
 		<TD class="fright">
-			<NOBR><A href="?m=userdel&id={$userlist[userlist].id}" onClick="return confirmLink(this, '{$lang.confirm_userdel|replace:"#":"`$userlist[userlist].username`"}')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ {$lang.delete} ]"></A> <A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ {$lang.edit} ]"></A> <A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ {$lang.info} ]"></A></NOBR>
+			<NOBR><A href="?m=userdel&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist[userlist].username|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A> <A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A></NOBR>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -91,7 +96,7 @@
 		<TD colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>{$lang.no_users}</B></p>
+			<p><B>Nie znaleziono ¿adnych u¿ytkowników o podanych kryteriach lub lista jest pusta.</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -99,26 +104,26 @@
 	{/section}
 	<TR CLASS="DARK">
 		<TD COLSPAN="6" CLASS="FALL">
-			<B>{$lang.page}:
+			<B>Strona:
 				{if $page > 1}<A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$userlist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> ({$lang.rekordy} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {$lang.of} {$listdata.total})
+			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
 		</TD>
 	</TR>
 	<TR bgColor="#DFD5BD">
 		<TD colspan="2" class="fleftu" align="right" valign="top">
-			<IMG SRC="img/info2.gif" border="0" alt="" align="absmiddle"> <B>{$lang.total}: {$listdata.total}</B>	
+			<IMG SRC="img/info2.gif" border="0" alt="" align="absmiddle"> <B>Razem: {$listdata.total}</B>	
 		</TD>
 		<TD class="fbt" align="right">
-			<B>{$lang.mortgage}:<BR>
-				{$lang.excess_payment}:</B>
+			<B>Zaleg³o¶ci:<BR>
+			Nadp³aty:</B>
 		</TD>
 		<TD class="fbt" align="right" COLSPAN="2"> 
-			<B>{$listdata.below|string_format:"`$lang.currency_format`"} {$lang.currency}<BR>
-			{$listdata.over|string_format:"`$lang.currency_format`"} {$lang.currency}</B>
+			<B>{$listdata.below|string_format:"%01.2f"} z³<BR>
+			{$listdata.over|string_format:"%01.2f"} z³</B>
 		</TD>
 		<TD class="frightu">
 			&nbsp;

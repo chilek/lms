@@ -46,25 +46,25 @@ if(isset($tariffadd))
 		$tariffadd[downrate] = 0;
 
 	if(!(ereg("^[0-9.,]+$",$tariffadd[value])))
-		$error[value] = $lang[error_value];
+		$error[value] = "Podana warto¶æ jest niepoprawna!";
 
 	if(!(ereg("^[0-9]+$", $tariffadd[uprate])))
-		$error[uprate] = $lang[error_value2];
+		$error[uprate] = "To pole musi zawieraæ liczbê ca³kowit±";
 		
 	if(!ereg("^[0-9]+$", $tariffadd[downrate]))
-		$error[downrate] = $lang[error_value2];
+		$error[downrate] = "To pole musi zawieraæ liczbê ca³kowit±";
 	
 	if(($tariffadd[uprate] < 8 || $tariffadd[uprate] > 4096) && $tariffadd[uprate] != 0)
-		$error[uprate] = $lang[error_uprate];
+		$error[uprate] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
 
 	if(($tariffadd[downrate] < 8 || $tariffadd[downrate] > 4096) && $tariffadd[downrate] != 0)
-		$error[downrate] = $lang[error_downrate];
+		$error[downrate] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
 	
 	if($tariffadd[name] == "")
-		$error[name] = $lang[error_no_empty_field];
+		$error[name] = "To pole nie mo¿e byæ puste!";
 	else
 		if($LMS->GetTariffIDByName($tariffadd[name]))
-			$error[name] = $lang[error_field_already_exists];
+			$error[name] = "Istnieje ju¿ taryfa o takiej nazwie!";
 
 	if(!$error){
 		header("Location: ?m=tarifflist&id=".$LMS->TariffAdd($tariffadd));
@@ -73,7 +73,7 @@ if(isset($tariffadd))
 	
 }
 
-$layout[pagetitle] = $lang[pagetitle_tariffad];
+$layout[pagetitle]="Dodaj taryfê";
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("error",$error);

@@ -23,7 +23,7 @@
  *
  *  $Id$
  */
-$layout[pagetitle] = $lang[pagetitle_tariffedit];
+$layout[pagetitle]="Edycja taryfy";
 if(!$LMS->TariffExists($_GET[id]))
 {
 	header("Location: ?m=tarifflist");
@@ -48,24 +48,24 @@ if(isset($tariff))
 	if($tariff[name] == "")
 		$error[name] = "Proszê podaæ nazwê taryfy!";
 	elseif($LMS->GetTariffIDByName($tariff[name]) && $tariff[name] != $LMS->GetTariffName($_GET[id]))
-		$error[name] = $lang[error_field_already_exists];
+		$error[name] = "Istnieje ju¿ taryfa o takiej nazwie!";	
 
 	if($tariff[value] == "")
-		$error[value] = $lang[error_no_empty_field];
+		$error[value] = "Proszê podaæ warto¶æ!";
 	elseif(!(ereg("^[0-9.,]+$", $tariff[value])))
-		$error[value] = $lang[error_value];
+		$error[value] = "Podana warto¶æ jest niepoprawna!";
 
 	if(!(ereg("^[0-9]+$", $tariff[uprate])))
-		$error[uprate] = $lang[error_value2];
+		$error[uprate] = "To pole musi zawieraæ liczbê ca³kowit±";
 	
 	if(!ereg("^[0-9]+$", $tariff[downrate]))
-		$error[downrate] = $lang[error_value2];
+		$error[downrate] = "To pole musi zawieraæ liczbê ca³kowit±";
 	
 	if(($tariff[uprate] < 8 || $tariff[uprate] > 4096) && $tariff[uprate] != 0)
-		$error[uprate] = $lang[error_uprate];
+		$error[uprate] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
 	
 	if(($tariff[downrate] < 8 || $tariff[downrate] > 4096) && $tariff[downrate] != 0)
-		$error[downrate] = $lang[erorr_downrate];
+		$error[downrate] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
 
 	$tariff[id] = $_GET[id];
 	$tariff[count] = $LMS->GetUsersWithTariff($_GET[id]);	

@@ -1,12 +1,12 @@
 {include file="header.html"}
 {include file="adminheader.html"}
 <!-- $Id$ -->
-<H1>{$layout.pagetitle}</H1>
+<H1>Nowy administrator</H1>
 <FORM NAME="adminadd" METHOD="POST" ACTION="?m=adminadd">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="FLEFTU" WIDTH="1%">
-			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>{$lang.login}:</B>
+			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Login:</B>
 		</TD>
 		<TD CLASS="FRIGHTU" WIDTH="99%">
 			<INPUT TYPE="TEXT" NAME="adminadd[login]" VALUE="{$adminadd.login}"{if $error.login} CLASS="ALERT"><BR>
@@ -15,7 +15,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT" NOWRAP>
-			<IMG SRC="img/admins.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>{$lang.name_and_lastname}:</B>
+			<IMG SRC="img/admins.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Imiê i nazwisko:</B>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" NAME="adminadd[name]" VALUE="{$adminadd.name}">
@@ -32,7 +32,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT">
-			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>{$lang.password}:</B>
+			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Has³o:</B>
 		</TD>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="PASSWORD" NAME="adminadd[password]"{if $error.password} CLASS="ALERT"{/if}>
@@ -40,7 +40,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FLEFT" VALIGN="TOP">
-			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>{$lang.retry}:</B>
+			<IMG SRC="img/pass.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> <B>Powtórz:</B>
 		</TR>
 		<TD CLASS="FRIGHT">
 			<INPUT TYPE="PASSWORD" NAME="adminadd[confirm]"{if $error.password} CLASS="ALERT"><BR>
@@ -49,12 +49,12 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FBOTTOMU" COLSPAN="2" ALIGN="RIGHT">
-			<A HREF="javascript:document.adminadd.submit(); ">{$lang.add} <IMG SRC="img/save.gif" ALIGN="ABSMIDDLE" ALT="" BORDER="0"></A>
+			<A HREF="javascript:document.adminadd.submit(); ">Dodaj <IMG SRC="img/save.gif" ALIGN="ABSMIDDLE" ALT="" BORDER="0"></A>
 		</TD>
 	</TR>
 	<TR CLASS="DARK">
 		<TD CLASS="FALL" COLSPAN="2">
-			<B>{$lang.permissions}:</B>
+			<B>Uprawnienia:</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

@@ -2,13 +2,7 @@ $Id$
 
 wersja 1.1.0 (??/??/2003):
 
-  - teraz zamiast pustego has³a i u¿ytkownika admin mo¿emy wej¶æ do systemu
-    na jakiegokolwiek u¿ytkownika i has³o pod warunkiem ¿e tablica 'admins'
-    jest pusta
-  - obs³uga wielu jêzyków (aktualnie polski i angielski). Wymaga zmiana w
-    bazie danych:
-
-    ALTER TABLE `admins` ADD `lang` VARCHAR( 8 );
+  - wyjeba³em zmiany z jêzykiem. najpierw rozbudujmy LMS'a, pó¼niej go psujmy
 
 wersja 1.0.0 (18/05/2003):
 

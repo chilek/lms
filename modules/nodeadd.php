@@ -48,33 +48,33 @@ if(isset($nodedata))
 		}
 	
 	if($nodedata[name]=="")
-		$error[name] = $lang[error_no_empty_field];
+		$error[name] = "Proszê podaæ nazwê komputera!";
 	elseif(strlen($nodedata[name]) > 16)
-		$error[name] = $lang[error_field_too_long];
+		$error[name] = "Podana nazwa jest za d³uga!";
 	elseif($LMS->GetNodeIDByName($nodedata[name]))
-		$error[name] = $lang[error_field_already_exists];
+		$error[name] = "Podana nazwa jest u¿ywana!";
 	elseif(!eregi("^[_a-z0-9-]+$",$nodedata[name]))
-		$error[name] = $lang[error_field_contains_incorrect_characters];
-		
+		$error[name] = "Podana nazwa zawiera niepoprawne znaki";		
+
 	if(!$nodedata[ipaddr])
-		$error[ipaddr] = $lang[error_no_empty_field];
+		$error[ipaddr] = "Proszê podac adres IP!";
 	elseif(!check_ip($nodedata[ipaddr]))
-		$error[ipaddr] = $lang[error_ip_address_invalid];
+		$error[ipaddr] = "Podany adres IP jest niepoprawny!";
 	elseif(!$LMS->IsIPValid($nodedata[ipaddr]))
-		$error[ipaddr] = $lang[error_ip_address_is_not_in_any_net];
+		$error[ipaddr] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
 	elseif(!$LMS->IsIPFree($nodedata[ipaddr]))
-		$error[ipaddr] = $lang[error_ip_address_is_already_in_use];
+		$error[ipaddr] = "Podany adres IP jest zajêty!";
 
 	if($LMS->GetNodeIDByMAC($nodedata[mac]) && $_CONFIG[phpui][allow_mac_sharing] == FALSE)
-		$error[mac] = $lang[error_mac_already_exists];
+		$error[mac] = "Podany MAC jest ju¿ w bazie!";
 	elseif(!check_mac($nodedata[mac]))
-		$error[mac] = $lang[error_mac_address_invalid];
+		$error[mac] = "Podany adres MAC jest nieprawid³owy!";
 
 	if(!$LMS->UserExists($nodedata[ownerid]))
-		$error[user] = $lang[error_choose_user];
+		$error[user] = "Proszê wybraæ u¿ytkownika!";
 
 	if($LMS->GetUserStatus($nodedata[ownerid]) != 3)
-		$error[user] = $lang[error_user_invalid];
+		$error[user] = "Wybrany u¿ytkownik jest b³êdny!";
 
 	if(!$error)
 	{
@@ -101,7 +101,7 @@ if(isset($_GET[prename])&&$nodedata[name]=="")
 	$nodedata[name] = $_GET[prename];
 		
 
-$layout[pagetitle] = $lang[pagetitle_nodeadd];
+$layout[pagetitle]="Dodanie nowego komputera";
 
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($nodedata[ownerid]));
 $SMARTY->assign("users",$users);

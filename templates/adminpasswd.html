@@ -1,16 +1,16 @@
 {include file="header.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<H1>Zmiana has³a dla {$passwd.realname}</H1>
 <DIV ALIGN="CENTER"><CENTER><FORM method="POST" action="{if $target}{$target}{else}?m=adminpasswd&id={$passwd.id}{/if}" name="password">
 <TABLE width="1%" cellpadding="3" border="0">
 	<TR class="dark">
 		<TD class="fall" nowrap colspan="2" nowrap>
-			<NOBR><img src="img/pass.gif" border="0" align="absmiddle" alt=""> <B>{$lang.enter_new_passwd}:</B></NOBR>
+			<NOBR><img src="img/pass.gif" border="0" align="absmiddle" alt=""> <B>Podaj nowe has³o:</B></NOBR>
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD class="fleft" align="right" nowrap>
-			<NOBR><B>{$lang.new_passwd}:</B></NOBR>
+			<NOBR><B>Nowe has³o:</B></NOBR>
 		</TD>
 		<TD class="fright" nowrap>
 			<input type="password" name="passwd[passwd]">
@@ -18,7 +18,7 @@
 	</TR>
 	<TR class="light">
 		<TD class="fleft" align="right" nowrap>
-			<NOBR><B>{$lang.retry}:</B></NOBR>
+			<NOBR><B>Powtórz:</B></NOBR>
 		</TD>
 		<TD class="fright" nowrap>
 			<input type="password" name="passwd[confirm]">
@@ -27,7 +27,7 @@
 	</TR>
 	<TR class="light">
 		<TD colspan="2" align="center" class="flr">
-			{$lang.own_passwd_notice}
+			Je¿eli zmieniasz swoje has³o, zostaniesz automatycznie wylogowany i poproszony o ponowne zalogowanie.
 		</TD>
 	</TR>
 	{if $error.password}
@@ -39,7 +39,7 @@
 	{/if}
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="2">
-			<A href="javascript:document.password.submit();">{$lang.change_passwd} <img src="img/pass.gif" border="0" align="absmiddle" alt=""></A>
+			<A href="javascript:document.password.submit();">Zmieñ has³o <img src="img/pass.gif" border="0" align="absmiddle" alt=""></A>
 		</TD>
 	</TR>
 		

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$layout[pagetitle] = $lang[pagetitle_nodelist];
+$layout[pagetitle]="Lista komputerów";
 
-$_SESSION[backto] = $_SERVER[QUERY_STRING];
+$_SESSION[backto]=$_SERVER[QUERY_STRING];
 
 $SMARTY->assign("layout",$layout);
 

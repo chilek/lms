@@ -1,4 +1,4 @@
-<H1>{$layout.pagetitle}</H1>
+<H1>Wyszukiwanie</H1>
 <P>
 <FORM METHOD="POST" ACTION="?m=usersearch&search=1" NAME="usersearch">
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -9,7 +9,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{$lang.name_and_lastname}:</B></NOBR>
+			<NOBR><B>Imiê i nazwisko:</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[username]" VALUE="{$search.username}">
@@ -17,7 +17,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{$lang.address}:</B></NOBR>
+			<NOBR><B>Adres:</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[address]" VALUE="{$search.address}">
@@ -25,7 +25,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{$lang.phone}:</B></NOBR>
+			<NOBR><B>Telefon:</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[phone]" VALUE="{$search.phone}">
@@ -33,7 +33,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{$lang.email}:</B></NOBR>
+			<NOBR><B>E-mail:</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[email]" VALUE="{$search.email}">
@@ -41,7 +41,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{$lang.city}:</B></NOBR>
+			<NOBR><B>Miasto:</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[city]" VALUE="{$search.city}">
@@ -57,7 +57,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{$lang.taxid}:</B></NOBR>
+			<NOBR><B>NIP:</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[nip]" VALUE="{$search.nip}">
@@ -65,7 +65,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{$lang.im_name}:</B></NOBR>
+			<NOBR><B>GG:</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[gguin]" VALUE="{$search.gguin}">
@@ -79,7 +79,7 @@
 			<SELECT SIZE="1" NAME="search[s]">
 				<OPTION VALUE="0">wszyscy</OPTION>
 				<OPTION VALUE="3">pod³±czeni</OPTION>
-				<OPTION VALUE="2">{$lang.awaiting}</OPTION>
+				<OPTION VALUE="2">oczekuj±cy</OPTION>
 				<OPTION VALUE="1">zainteresowani</OPTION>
 			</SELECT>
 		</TD>

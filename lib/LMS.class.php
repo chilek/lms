@@ -50,17 +50,17 @@ class LMS
 	{
 		switch($this->ADB->databaseType)
 		{
-			case 'mysql':
-				return 'UNIX_TIMESTAMP()';
+			case "mysql":
+				return "UNIX_TIMESTAMP()";
 				break;
-			case 'postgres':
-				return 'EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))';
+			case "postgres":
+				return "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
 				break;
 			default:
 				// fall back to local timestamp instead of remote.
 				// it's dangerous if we use remote database where
 				// time can (and propably will) differ from local.
-				return '\''.time().'\'';
+				return "'".time()."'";
 				break;
 		}
 	}
@@ -69,20 +69,20 @@ class LMS
 	{
 		switch($this->ADB->databaseType)
 		{
-			case 'postgres':
-				return 'ILIKE';
+			case "postgres":
+				return "ILIKE";
 				break;
 
 			default:
-				return 'LIKE';
+				return "LIKE";
 				break;
 		}
 	}
 
 	function SetTS($table) // ustawia timestamp tabeli w tabeli 'timestamps'
 	{
-		$this->ADB->Replace('timestamps',array("tablename" => "'_global'","time" => $this->sqlTSfmt() ),"tablename");
-		return $this->ADB->Replace('timestamps',array("tablename" => "'".$table."'","time" => $this->sqlTSfmt() ),"tablename");
+		$this->ADB->Replace("timestamps",array("tablename" => "'_global'","time" => $this->sqlTSfmt() ),"tablename");
+		return $this->ADB->Replace("timestamps",array("tablename" => "'".$table."'","time" => $this->sqlTSfmt() ),"tablename");
 	}
 
 	function GetTS($table) // zwraca timestamp tabeli zapisany w tabeli 'timestamps'
@@ -97,36 +97,36 @@ class LMS
 	
 	function DatabaseList() // zwraca listê kopii baz danych w katalogu z backupami
 	{
-		if ($handle = opendir($this->CONFIG['backup_dir']))
+		if ($handle = opendir($this->CONFIG[backup_dir]))
 		{
 			while (false !== ($file = readdir($handle)))
 			{
-				if ($file != '.' && $file != '..')
+				if ($file != "." && $file != "..")
 				{
 					$path = pathinfo($file);
-					if($path['extension'] = 'sql')
+					if($path[extension] = "sql")
 					{
-						if(substr($path['basename'],0,4)=='lms-')
+						if(substr($path[basename],0,4)=="lms-")
 						{
-							$dblist['time'][] = substr(basename($file,'.sql'),4);
-							$dblist['size'][] = filesize($this->CONFIG['backup_dir'].'/'.$file);
+							$dblist[time][] = substr(basename("$file",".sql"),4);
+							$dblist[size][] = filesize($this->CONFIG[backup_dir]."/".$file);
 						}
 					}
 				}
 			}
 			closedir($handle);
 		}
-		if(sizeof($dblist['time']))
-			array_multisort($dblist['time'],$dblist['size']);
-		$dblist['total'] = sizeof($dblist['time']);
+		if(sizeof($dblist[time]))
+			array_multisort($dblist[time],$dblist[size]);
+		$dblist[total] = sizeof($dblist[time]);
 		return $dblist;
 	}		
 
 	function DatabaseRecover($dbtime) // wczytuje backup bazy danych o podanym timestampie
 	{
-		if(file_exists($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql'))
+		if(file_exists($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql'))
 		{
-			return $this->DBLoad($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql');
+			return $this->DBLoad($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
 		}
 		else
 			return FALSE;
@@ -136,14 +136,14 @@ class LMS
 	{
 		if(!$filename)
 			return FALSE;
-		$file = fopen($filename,'r');
+		$file = fopen($filename,"r");
 		$this->ADB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
 		while(!feof($file))
 		{
 			$line = fgets($file,4096);
-			if($line!='')
+			if($line!="")
 			{
-				$line=str_replace(";\n",'',$line);
+				$line=str_replace(";\n","",$line);
 				$this->ADB->Execute($line);
 			}
 		}
@@ -156,7 +156,7 @@ class LMS
 
 		switch($this->ADB->databaseType)
 		{
-			case 'postgres':
+			case "postgres":
 				// uaktualnijmy sequencery postgresa
 				foreach($this->ADB->MetaTables() as $tablename)
 					$this->ADB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
@@ -168,23 +168,23 @@ class LMS
 	{
 		if(!$filename)
 			return FALSE;
-		if($dumpfile = fopen($filename,'w'))
+		if($dumpfile = fopen($filename,"w"))
 		{
 			foreach($this->ADB->MetaTables() as $tablename)
 			{
-				fputs($dumpfile,'DELETE FROM '.$tablename.';'."\n");
-				foreach($this->ADB->GetAll('SELECT * FROM '.$tablename) as $row)
+				fputs($dumpfile,"DELETE FROM $tablename;\n");
+				foreach($this->ADB->GetAll("SELECT * FROM ".$tablename) as $row)
 				{
-					fputs($dumpfile,'INSERT INTO '.$tablename.' (');
+					fputs($dumpfile,"INSERT INTO $tablename (");
 					foreach($row as $field => $value)
 					{
 						$fields[] = $field;
 						$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
 					}
-					fputs($dumpfile,implode(', ',$fields));
-					fputs($dumpfile,') VALUES (');
-					fputs($dumpfile,implode(', ',$values));
-					fputs($dumpfile,');'."\n");
+					fputs($dumpfile,implode(", ",$fields));
+					fputs($dumpfile,") VALUES (");
+					fputs($dumpfile,implode(", ",$values));
+					fputs($dumpfile,");\n");
 					unset($fields);
 					unset($values);
 				}
@@ -197,14 +197,14 @@ class LMS
 			
 	function DatabaseCreate() // wykonuje zrzut kopii bazy danych
 	{
-		return $this->DBDump($this->CONFIG['backup_dir'].'/lms-'.time().'.sql');
+		return $this->DBDump($this->CONFIG[backup_dir].'/lms-'.time().'.sql');
 	}
 
 	function DatabaseDelete($dbtime) // usuwa plik ze zrzutem
 	{
-		if(@file_exists($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql'))
+		if(@file_exists($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql'))
 		{
-			return @unlink($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql');
+			return @unlink($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
 		}
 		else
 			return FALSE;
@@ -212,13 +212,13 @@ class LMS
 
 	function DatabaseFetchContent($dbtime) // zwraca zawarto¶æ tekstow± kopii bazy danych
 	{
-		if(file_exists($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql'))
+		if(file_exists($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql'))
 		{
-			$content = file($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql');
+			$content = file($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
 			foreach($content as $value)
-				$database['content'] .= $value;
-			$database['size'] = filesize($this->CONFIG['backup_dir'].'/lms-'.$dbtime.'.sql');
-			$database['time'] = $dbtime;
+				$database[content] .= $value;
+			$database[size] = filesize($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
+			$database[time] = $dbtime;
 			return $database;
 		}
 		else
@@ -235,12 +235,6 @@ class LMS
 		$this->ADB->Execute("UPDATE admins SET passwd=? WHERE id=?",array(crypt($passwd),$id));
 	}
 
-	function SetAdminLang($id,$lang)
-	{
-		$this->SetTS("admins");
-		$this->ADB->Execute("UPDATE admins SET lang=? WHERE id=?",array($lang,$id));
-	}
-
 	function GetAdminName($id) // zwraca imiê admina
 	{
 		return $this->ADB->GetOne("SELECT name FROM admins WHERE id=?",array($id));
@@ -254,22 +248,22 @@ class LMS
 		{
 			foreach($adminslist as $idx => $row)
 			{
-				if($row['lastlogindate'])
-					$adminslist[$idx]['lastlogin'] = date("Y/m/d H:i",$row['lastlogindate']);
+				if($row[lastlogindate])
+					$adminslist[$idx][lastlogin] = date("Y/m/d H:i",$row[lastlogindate]);
 				else
-					$adminslist[$idx]['lastlogin'] = "-";
+					$adminslist[$idx][lastlogin] = "-";
 
-				if(check_ip($row['lastloginip']))
-					$adminslist[$idx]['lastloginhost'] = gethostbyaddr($row['lastloginip']);
+				if(check_ip($row[lastloginip]))
+					$adminslist[$idx][lastloginhost] = gethostbyaddr($row[lastloginip]);
 				else
 				{
-					$adminslist[$idx]['lastloginhost'] = "-";
-					$adminslist[$idx]['lastloginip'] = "-";
+					$adminslist[$idx][lastloginhost] = "-";
+					$adminslist[$idx][lastloginip] = "-";
 				}
 			}
 		}
 		
-		$adminslist['total'] = sizeof($adminslist);		
+		$adminslist[total] = sizeof($adminslist);		
 		return $adminslist;
 	}
 
@@ -281,8 +275,8 @@ class LMS
 	function AdminAdd($adminadd) // dodaje admina. wymaga tablicy zawieraj±cej dane admina
 	{
 		$this->SetTS("admins");
-		if($this->ADB->Execute("INSERT INTO admins (login, name, email, passwd, rights) VALUES (?, ?, ?, ?, ?)",array($adminadd['login'], $adminadd['name'], $adminadd['email'], crypt($adminadd['password']),$adminadd['rights'])))
-			return $this->ADB->GetOne("SELECT id FROM admins WHERE login=?",array($adminadd['login']));
+		if($this->ADB->Execute("INSERT INTO admins (login, name, email, passwd, rights) VALUES (?, ?, ?, ?, ?)",array($adminadd[login], $adminadd[name], $adminadd[email], crypt($adminadd[password]),$adminadd[rights])))
+			return $this->ADB->GetOne("SELECT id FROM admins WHERE login=?",array($adminadd[login]));
 		else
 			return FALSE;
 	}
@@ -302,31 +296,31 @@ class LMS
 	{
 		if($admininfo = $this->ADB->GetRow("SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip FROM admins WHERE id=?",array($id)))
 		{
-			if($admininfo['lastlogindate'])
-				$admininfo['lastlogin'] = date("Y/m/d H:i",$admininfo['lastlogindate']);
+			if($admininfo[lastlogindate])
+				$admininfo[lastlogin] = date("Y/m/d H:i",$admininfo[lastlogindate]);
 			else
-				$admininfo['lastlogin'] = "-";
+				$admininfo[lastlogin] = "-";
 
-			if($admininfo['failedlogindate'])
-				$admininfo['faillogin'] = date("Y/m/d H:i",$admininfo['failedlogindate']);
+			if($admininfo[failedlogindate])
+				$admininfo[faillogin] = date("Y/m/d H:i",$admininfo[failedlogindate]);
 			else
-				$admininfo['faillogin'] = "-";
+				$admininfo[faillogin] = "-";
 
 
-			if(check_ip($admininfo['lastloginip']))
-				$admininfo['lastloginhost'] = gethostbyaddr($admininfo['lastloginip']);
+			if(check_ip($admininfo[lastloginip]))
+				$admininfo[lastloginhost] = gethostbyaddr($admininfo[lastloginip]);
 			else
 			{
-				$admininfo['lastloginhost'] = "-";
-				$admininfo['lastloginip'] = "-";
+				$admininfo[lastloginhost] = "-";
+				$admininfo[lastloginip] = "-";
 			}
 
-			if(check_ip($admininfo['failedloginip']))
-				$admininfo['failloginhost'] = gethostbyaddr($admininfo['failedloginip']);
+			if(check_ip($admininfo[failedloginip]))
+				$admininfo[failloginhost] = gethostbyaddr($admininfo[failedloginip]);
 			else
 			{
-				$admininfo['failloginhost'] = "-";
-				$admininfo['failloginip'] = "-";
+				$admininfo[failloginhost] = "-";
+				$admininfo[failloginip] = "-";
 			}
 		}
 		return $admininfo;
@@ -335,7 +329,7 @@ class LMS
 	function AdminUpdate($admininfo) // uaktualnia rekord admina.
 	{
 		$this->SetTS("admins");
-		return $this->ADB->Execute("UPDATE admins SET login=?, name=?, email=?, rights=? WHERE id=?",array($admininfo['login'],$admininfo['name'],$admininfo['email'],$admininfo['rights'],$admininfo['id']));
+		return $this->ADB->Execute("UPDATE admins SET login=?, name=?, email=?, rights=? WHERE id=?",array($admininfo[login],$admininfo[name],$admininfo[email],$admininfo[rights],$admininfo[id]));
 	}
 
 	function GetAdminRights($id)
@@ -385,7 +379,7 @@ class LMS
 	{
 		$this->SetTS("users");
 		
-		if($this->ADB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, tariff, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ".$this->sqlTSfmt().", ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['status'], $useradd['tariff'], $this->SESSION->id, $useradd['info'])))
+		if($this->ADB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, tariff, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ".$this->sqlTSfmt().", ?, ?)",array(ucwords($useradd[name]), strtoupper($useradd[lastname]), $useradd[phone1], $useradd[phone2], $useradd[phone3], $useradd[gguin], $useradd[address], $useradd[zip], $useradd[city], $useradd[email], $useradd[nip], $useradd[status], $useradd[tariff], $this->SESSION->id, $useradd[info])))
 			return $this->ADB->GetOne("SELECT MAX(id) FROM users");
 		else
 			return FALSE;
@@ -403,7 +397,7 @@ class LMS
 	function UserUpdate($userdata)
 	{
 		$this->SetTS("users");
-		return $this->ADB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, tariff=?, moddate=".$this->sqlTSfmt().", modid=?, info=?, lastname=?, name=? WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['tariff'], $this->SESSION->id, $userdata['info'], strtoupper($userdata['lastname']), $userdata['name'], $userdata['id'] ) );
+		return $this->ADB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, tariff=?, moddate=".$this->sqlTSfmt().", modid=?, info=?, lastname=?, name=? WHERE id=?", array( $userdata[status], $userdata[phone1], $userdata[phone2], $userdata[phone3], $userdata[address], $userdata[zip], $userdata[city], $userdata[email], $userdata[gguin], $userdata[nip], $userdata[tariff], $this->SESSION->id, $userdata[info], strtoupper($userdata[lastname]), $userdata[name], $userdata[id] ) );
 	}
 
 	function GetUserNodesNo($id)
@@ -425,13 +419,13 @@ class LMS
 	{
 		if($result = $this->ADB->GetRow("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid FROM users WHERE id=?",array($id)))
 		{
-			$result['createdby'] = $this->GetAdminName($result['creatorid']);
-			$result['modifiedby'] = $this->GetAdminName($result['modid']);
-			$result['creationdateh'] = date("Y-m-d, H:i",$result['creationdate']);
-			$result['moddateh'] = date("Y-m-d, H:i",$result['moddate']);
-			$result['tariffvalue'] = $this->GetTariffValue($result['tariff']);
-			$result['tariffname'] = $this->GetTariffName($result['tariff']);
-			$result['balance'] = $this->GetUserBalance($result['id']);
+			$result[createdby] = $this->GetAdminName($result[creatorid]);
+			$result[modifiedby] = $this->GetAdminName($result[modid]);
+			$result[creationdateh] = date("Y-m-d, H:i",$result[creationdate]);
+			$result[moddateh] = date("Y-m-d, H:i",$result[moddate]);
+			$result[tariffvalue] = $this->GetTariffValue($result[tariff]);
+			$result[tariffname] = $this->GetTariffName($result[tariff]);
+			$result[balance] = $this->GetUserBalance($result[id]);
 			return $result;
 		}else
 			return FALSE;
@@ -447,7 +441,7 @@ class LMS
 		if($acl = $this->ADB->GetALL("SELECT access FROM nodes WHERE ownerid=?",array($id)))
 		{
 			foreach($acl as $value)
-				if(strtoupper($value['access']) == "Y")
+				if(strtoupper($value[access]) == "Y")
 					$y++;
 				else
 					$n++;
@@ -531,42 +525,42 @@ class LMS
 		{
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
 				foreach($blst as $row)
-					$balance[$row['id']] = $row['value'];
+					$balance[$row[id]] = $row[value];
 
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
 				foreach($blst as $row)
-					$balance[$row['id']] = $balance[$row['id']] - $row['value'];
+					$balance[$row[id]] = $balance[$row[id]] - $row[value];
 
 
 			foreach($this->ADB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
-				$tlist[$row['id']] = $row['value'];
+				$tlist[$row[id]] = $row[value];
 			
 			foreach($userlist as $key => $value)
 			{
-				$userlist[$key]['balance'] = $balance[$value['id']];
-				if($balance[$value['id']] < 0)
-					$below = $below + $balance[$value['id']];
-				if($balance[$value['id']] > 0)
-					$over = $over + $balance[$value['id']];
+				$userlist[$key][balance] = $balance[$value[id]];
+				if($balance[$value[id]] < 0)
+					$below = $below + $balance[$value[id]];
+				if($balance[$value[id]] > 0)
+					$over = $over + $balance[$value[id]];
 				
-				$userlist[$key]['tariffvalue'] = $tlist[$value['tariff']];
-				$userlist[$key]['nodeac'] = $this->GetUserNodesAC($value['id']);
+				$userlist[$key][tariffvalue] = $tlist[$value[tariff]];
+				$userlist[$key][nodeac] = $this->GetUserNodesAC($value[id]);
 			}
 			
 			if($order == "balance")
 			{
 				foreach($userlist as $key => $value)
 				{
-					$blst['key'][] = $key;
-					$blst['value'][] = $value['balance'];
+					$blst[key][] = $key;
+					$blst[value][] = $value[balance];
 				}
 				
 				if($direction=="desc")
-					array_multisort($blst['value'],SORT_NUMERIC,SORT_DESC,$blst['key']);
+					array_multisort($blst[value],SORT_NUMERIC,SORT_DESC,$blst[key]);
 				else
-					array_multisort($blst['value'],SORT_NUMERIC,SORT_ASC,$blst['key']);
+					array_multisort($blst[value],SORT_NUMERIC,SORT_ASC,$blst[key]);
 
-				foreach($blst['key'] as $value)
+				foreach($blst[key] as $value)
 				{
 					$nuserlist[] = $userlist[$value];
 				}
@@ -574,12 +568,12 @@ class LMS
 				$userlist = $nuserlist;
 			}
 			
-			$userlist['total']=sizeof($userlist);
-			$userlist['state']=$state;
-			$userlist['order']=$order;
-			$userlist['below']=$below;
-			$userlist['over']=$over;
-			$userlist['direction']=$direction;
+			$userlist[total]=sizeof($userlist);
+			$userlist[state]=$state;
+			$userlist[order]=$order;
+			$userlist[below]=$below;
+			$userlist[over]=$over;
+			$userlist[direction]=$direction;
 		}
 		return $userlist;
 	}
@@ -633,39 +627,39 @@ class LMS
 		{
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
 				foreach($blst as $row)
-					$balance[$row['id']] = $row['value'];
+					$balance[$row[id]] = $row[value];
 
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
 					foreach($blst as $row)
-							$balance[$row['id']] = $balance[$row['id']] - $row['value'];
+							$balance[$row[id]] = $balance[$row[id]] - $row[value];
 
 
 			foreach($this->ADB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
-				$tlist[$row['id']] = $row['value'];
+				$tlist[$row[id]] = $row[value];
 
 			foreach($userlist as $key => $value)
 			{
-				$userlist[$key]['balance'] = $balance[$value['id']];
-				if($balance[$value['id']] < 0)
-					$below = $below + $balance[$value['id']];
-				if($balance[$value['id']] > 0)
-					$over = $over + $balance[$value['id']];
+				$userlist[$key][balance] = $balance[$value[id]];
+				if($balance[$value[id]] < 0)
+					$below = $below + $balance[$value[id]];
+				if($balance[$value[id]] > 0)
+					$over = $over + $balance[$value[id]];
 				
-				$userlist[$key]['tariffvalue'] = $tlist[$value['tariff']];
-				$userlist[$key]['nodeac'] = $this->GetUserNodesAC($value['id']);
+				$userlist[$key][tariffvalue] = $tlist[$value[tariff]];
+				$userlist[$key][nodeac] = $this->GetUserNodesAC($value[id]);
 			}
 			
 			if($order == "balance")
 			{
 				foreach($userlist as $key => $value)
 				{
-					$blst['key'][] = $key;
-					$blst['value'][] = $value['balance'];
+					$blst[key][] = $key;
+					$blst[value][] = $value[balance];
 				}
 				
-				($direction=="desc") ? array_multisort($blst['value'],SORT_NUMERIC,SORT_DESC,$blst['key']) : array_multisort($blst['value'],SORT_NUMERIC,SORT_ASC,$blst['key']);
+				($direction=="desc") ? array_multisort($blst[value],SORT_NUMERIC,SORT_DESC,$blst[key]) : array_multisort($blst[value],SORT_NUMERIC,SORT_ASC,$blst[key]);
 
-				foreach($blst['key'] as $value)
+				foreach($blst[key] as $value)
 				{
 					$nuserlist[] = $userlist[$value];
 				}
@@ -675,12 +669,12 @@ class LMS
 			
 		}
 		
-		$userlist['total']=sizeof($userlist);
-		$userlist['state']=$state;
-		$userlist['order']=$order;
-		$userlist['below']=$below;
-		$userlist['over']=$over;
-		$userlist['direction']=$direction;
+		$userlist[total]=sizeof($userlist);
+		$userlist[state]=$state;
+		$userlist[order]=$order;
+		$userlist[below]=$below;
+		$userlist[over]=$over;
+		$userlist[direction]=$direction;
 				
 		return $userlist;
 	}
@@ -688,8 +682,8 @@ class LMS
 	function GetUserNodes($id)
 	{
 		if($result = $this->ADB->GetAll("SELECT id, name, mac, ipaddr, access FROM nodes WHERE ownerid=? ORDER BY name ASC",array($id))){
-			$result['total'] = sizeof($result);
-			$result['ownerid'] = $id;
+			$result[total] = sizeof($result);
+			$result[ownerid] = $id;
 		}
 		return $result;
 	}
@@ -708,7 +702,7 @@ class LMS
 	
 		if($talist = $this->ADB->GetAll("SELECT id, name FROM admins"))
 			foreach($talist as $idx => $row)
-				$adminslist[$row['id']] = $row['name'];
+				$adminslist[$row[id]] = $row[name];
 
 		// wrapper do starego formatu
 
@@ -718,74 +712,74 @@ class LMS
 					$saldolist[$column][] = $value;
 					
 				
-		if(sizeof($saldolist['id']) > 0){
-			foreach($saldolist['id'] as $i => $v)
+		if(sizeof($saldolist[id]) > 0){
+			foreach($saldolist[id] as $i => $v)
 			{
-				($i>0) ? $saldolist['before'][$i] = $saldolist['after'][$i-1] : $saldolist['before'][$i] = 0;
+				($i>0) ? $saldolist[before][$i] = $saldolist[after][$i-1] : $saldolist[before][$i] = 0;
 			
-				$saldolist['adminname'][$i] = $adminslist[$saldolist['adminid'][$i]];
-				$saldolist['value'][$i] = round($saldolist['value'][$i],3);	
+				$saldolist[adminname][$i] = $adminslist[$saldolist[adminid][$i]];
+				$saldolist[value][$i] = round($saldolist[value][$i],3);	
 
-				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] =  $saldolist['comment'][$i];
+				(strlen($saldolist[comment][$i])<3) ? $saldolist[comment][$i] = $saldolist[name][$i] : $saldolist[comment][$i] =  $saldolist[comment][$i];
 	
-				switch ($saldolist['type'][$i]){
+				switch ($saldolist[type][$i]){
 
 					case "3":
-						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = "Wp³ata";
-//						$saldolist['comment'][$i] = "Abonament za".date("Y/m",$saldolist['time'][$i]) || $saldolist['comment'][$i];
+						$saldolist[after][$i] = round(($saldolist[before][$i] + $saldolist[value][$i]),4);
+						$saldolist[name][$i] = "Wp³ata";
+//						$saldolist[comment][$i] = "Abonament za".date("Y/m",$saldolist[time][$i]) || $saldolist[comment][$i];
 					break;
 						
 					case "4":
-						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = "Obci±¿enie";
+						$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
+						$saldolist[name][$i] = "Obci±¿enie";
 					break;
 						
 				}
 					
-				$saldolist['date'][$i]=date("Y/m/d H:i",$saldolist['time'][$i]);
+				$saldolist[date][$i]=date("Y/m/d H:i",$saldolist[time][$i]);
 				// nie chce mi sie czytac, ale czy to nie jest pare linii wy¿ej ?
-				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] =  $saldolist['comment'][$i];
+				(strlen($saldolist[comment][$i])<3) ? $saldolist[comment][$i] = $saldolist[name][$i] : $saldolist[comment][$i] =  $saldolist[comment][$i];
 			}
 				
-			$saldolist['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
-			$saldolist['total'] = sizeof($saldolist['id']);
+			$saldolist[balance] = $saldolist[after][sizeof($saldolist[id])-1];
+			$saldolist[total] = sizeof($saldolist[id]);
 			
 		}else{
-			$saldolist['balance'] = 0;
+			$saldolist[balance] = 0;
 		}
 
-		if($saldolist['total'])
+		if($saldolist[total])
 		{
-			foreach($saldolist['value'] as $key => $value)
-				$saldolist['value'][$key] = $value;
-			foreach($saldolist['after'] as $key => $value)
-				$saldolist['after'][$key] = $value;
-			foreach($saldolist['before'] as $key => $value)
-				$saldolist['before'][$key] = $value;
+			foreach($saldolist[value] as $key => $value)
+				$saldolist[value][$key] = $value;
+			foreach($saldolist[after] as $key => $value)
+				$saldolist[after][$key] = $value;
+			foreach($saldolist[before] as $key => $value)
+				$saldolist[before][$key] = $value;
 		}
 
-		$saldolist['userid'] = $id;
+		$saldolist[userid] = $id;
 		return $saldolist;
 
 	}
 
 	function UserStats()
 	{
-		$result['total'] = $this->ADB->GetOne("SELECT COUNT(id) FROM users");
-		$result['connected'] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=3");
-		$result['awaiting'] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=2");
-		$result['interested'] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=1");
-		$result['debt'] = 0;
-		$result['debtvalue'] = 0;
+		$result[total] = $this->ADB->GetOne("SELECT COUNT(id) FROM users");
+		$result[connected] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=3");
+		$result[awaiting] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=2");
+		$result[interested] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=1");
+		$result[debt] = 0;
+		$result[debtvalue] = 0;
 		if($users = $this->ADB->GetAll("SELECT id FROM users"))
 			foreach($users as $idx => $row)
 			{
-				$row['balance'] = $this->GetUserBalance($row['id']);
-				if($row['balance'] < 0)
+				$row[balance] = $this->GetUserBalance($row[id]);
+				if($row[balance] < 0)
 				{
-					$result['debt'] ++;
-					$result['debtvalue'] -= $row['balance'];
+					$result[debt] ++;
+					$result[debtvalue] -= $row[balance];
 				}
 			}
 		return $result;
@@ -803,7 +797,7 @@ class LMS
 	function NodeUpdate($nodedata)
 	{
 		$this->SetTS("nodes");
-		return $this->ADB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, moddate=".$this->sqlTSfmt().", modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), $nodedata['ipaddr'], strtoupper($nodedata['mac']), $this->SESSION->id, $nodedata['access'], $nodedata['ownerid'], $nodedata['id']));
+		return $this->ADB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, moddate=".$this->sqlTSfmt().", modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata[name]), $nodedata[ipaddr], strtoupper($nodedata[mac]), $this->SESSION->id, $nodedata[access], $nodedata[ownerid], $nodedata[id]));
 	}
 
 	function DeleteNode($id)
@@ -855,14 +849,14 @@ class LMS
 	{
 		if($result = $this->ADB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid FROM nodes WHERE id=?",array($id)))
 		{
-			$result['createdby'] = $this->GetAdminName($result['creatorid']);
-			$result['modifiedby'] = $this->GetAdminName($result['modid']);
-			$result['creationdateh'] = date("Y-m-d, H:i",$result['creationdate']);
-			$result['moddateh'] = date("Y-m-d, H:i",$result['moddate']);
-			$result['owner'] = $this->GetUsername($result['ownerid']);
-			$result['netid'] = $this->GetNetIDByIP($result['ipaddr']);
-			$result['netname'] = $this->GetNetworkName($result['netid']);
-			$result['producer'] = get_producer($result['mac']);
+			$result[createdby] = $this->GetAdminName($result[creatorid]);
+			$result[modifiedby] = $this->GetAdminName($result[modid]);
+			$result[creationdateh] = date("Y-m-d, H:i",$result[creationdate]);
+			$result[moddateh] = date("Y-m-d, H:i",$result[moddate]);
+			$result[owner] = $this->GetUsername($result[ownerid]);
+			$result[netid] = $this->GetNetIDByIP($result[ipaddr]);
+			$result[netname] = $this->GetNetworkName($result[netid]);
+			$result[producer] = get_producer($result[mac]);
 			return $result;
 		}else
 			return FALSE;
@@ -894,15 +888,15 @@ class LMS
 
 		if($username = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
 			foreach($username as $idx => $row)
-				$usernames[$row['id']] = $row['username'];
+				$usernames[$row[id]] = $row[username];
 
 		if($nodelist = $this->ADB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".($sqlord != "" ? $sqlord." ".$direction : "")))
 		{
 			foreach($nodelist as $idx => $row)
 			{
-				$nodelist[$idx]['iplong'] = ip_long($row['ipaddr']);
-				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
-				($row['access']=="Y") ? $totalon++ : $totaloff++;
+				$nodelist[$idx][iplong] = ip_long($row[ipaddr]);
+				$nodelist[$idx][owner] = $usernames[$row[ownerid]];
+				($row[access]=="Y") ? $totalon++ : $totaloff++;
 			}			
 		}
 
@@ -911,13 +905,13 @@ class LMS
 			case "ip":
 				foreach($nodelist as $idx => $row)
 				{
-					$iptable['idx'][] = $idx;
-					$iptable['iplong'][] = $row['iplong'];
+					$iptable[idx][] = $idx;
+					$iptable[iplong][] = $row[iplong];
 				}
 				if(is_array($iptable))
 				{
-					array_multisort($iptable['iplong'],($direction == "DESC" ? SORT_DESC : SORT_ASC),SORT_NUMERIC,$iptable['idx']);
-					foreach($iptable['idx'] as $idx)
+					array_multisort($iptable[iplong],($direction == "DESC" ? SORT_DESC : SORT_ASC),SORT_NUMERIC,$iptable[idx]);
+					foreach($iptable[idx] as $idx)
 						$nnodelist[] = $nodelist[$idx];
 				}
 				$nodelist = $nnodelist;
@@ -926,24 +920,24 @@ class LMS
 			case "owner":
 				foreach($nodelist as $idx => $row)
 				{
-					$ownertable['idx'][] = $idx;
-					$ownertable['owner'][] = $row['owner'];
+					$ownertable[idx][] = $idx;
+					$ownertable[owner][] = $row[owner];
 				}
 				if(is_array($ownertable))
 				{
-					array_multisort($ownertable['owner'],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable['idx']);
-					foreach($ownertable['idx'] as $idx)
+					array_multisort($ownertable[owner],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable[idx]);
+					foreach($ownertable[idx] as $idx)
 						$nnodelist[] = $nodelist[$idx];
 				}
 				$nodelist = $nnodelist;
 			break;
 		}
 
-		$nodelist['total'] = sizeof($nodelist);
-		$nodelist['order'] = $order;
-		$nodelist['direction'] = $direction;
-		$nodelist['totalon'] = $totalon;
-		$nodelist['totaloff'] = $totaloff;
+		$nodelist[total] = sizeof($nodelist);
+		$nodelist[order] = $order;
+		$nodelist[direction] = $direction;
+		$nodelist[totalon] = $totalon;
+		$nodelist[totaloff] = $totaloff;
 
 		return $nodelist;
 	}
@@ -984,15 +978,15 @@ class LMS
 
 		if($username = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
 			foreach($username as $idx => $row)
-				$usernames[$row['id']] = $row['username'];
+				$usernames[$row[id]] = $row[username];
 
 		if($nodelist = $this->ADB->GetAll("SELECT id, ipaddr, mac, name, ownerid, access FROM nodes ".$searchargs." ".($sqlord != "" ? $sqlord." ".$direction : "")))
 		{
 			foreach($nodelist as $idx => $row)
 			{
-				$nodelist[$idx]['iplong'] = ip_long($row['ipaddr']);
-				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
-				($row['access']=="Y") ? $totalon++ : $totaloff++;
+				$nodelist[$idx][iplong] = ip_long($row[ipaddr]);
+				$nodelist[$idx][owner] = $usernames[$row[ownerid]];
+				($row[access]=="Y") ? $totalon++ : $totaloff++;
 			}			
 		}
 
@@ -1001,11 +995,11 @@ class LMS
 			case "ip":
 				foreach($nodelist as $idx => $row)
 				{
-					$iptable['idx'][] = $idx;
-					$iptable['iplong'][] = $row['iplong'];
+					$iptable[idx][] = $idx;
+					$iptable[iplong][] = $row[iplong];
 				}
-				array_multisort($iptable['iplong'],($direction == "DESC" ? SORT_DESC : SORT_ASC),SORT_NUMERIC,$iptable['idx']);
-				foreach($iptable['idx'] as $idx)
+				array_multisort($iptable[iplong],($direction == "DESC" ? SORT_DESC : SORT_ASC),SORT_NUMERIC,$iptable[idx]);
+				foreach($iptable[idx] as $idx)
 					$nnodelist[] = $nodelist[$idx];
 				$nodelist = $nnodelist;
 			break;
@@ -1013,21 +1007,21 @@ class LMS
 			case "owner":
 				foreach($nodelist as $idx => $row)
 				{
-					$ownertable['idx'][] = $idx;
-					$ownertable['owner'][] = $row['owner'];
+					$ownertable[idx][] = $idx;
+					$ownertable[owner][] = $row[owner];
 				}
-				array_multisort($ownertable['owner'],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable['idx']);
-				foreach($ownertable['idx'] as $idx)
+				array_multisort($ownertable[owner],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable[idx]);
+				foreach($ownertable[idx] as $idx)
 					$nnodelist[] = $nodelist[$idx];
 				$nodelist = $nnodelist;
 			break;
 		}
 
-		$nodelist['total'] = sizeof($nodelist);
-		$nodelist['order'] = $order;
-		$nodelist['direction'] = $direction;
-		$nodelist['totalon'] = $totalon;
-		$nodelist['totaloff'] = $totaloff;
+		$nodelist[total] = sizeof($nodelist);
+		$nodelist[order] = $order;
+		$nodelist[direction] = $direction;
+		$nodelist[totalon] = $totalon;
+		$nodelist[totaloff] = $totaloff;
 
 		return $nodelist;
 	}
@@ -1054,7 +1048,7 @@ class LMS
 	{
 		$this->SetTS("nodes");
 
-		if($this->ADB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate) VALUES (?, ?, ?, ?, ?, ".$this->sqlTSfmt().")",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id)))
+		if($this->ADB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate) VALUES (?, ?, ?, ?, ?, ".$this->sqlTSfmt().")",array(strtoupper($nodedata[name]),strtoupper($nodedata[mac]),$nodedata[ipaddr],$nodedata[ownerid],$this->SESSION->id)))
 			return $this->ADB->GetOne("SELECT MAX(id) FROM nodes");
 		else
 			return FALSE;
@@ -1067,9 +1061,9 @@ class LMS
 	
 	function NodeStats()
 	{
-		$result['connected'] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access='Y'");
-		$result['disconnected'] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access='N'");
-		$result['total'] = $result['connected'] + $result['disconnected'];
+		$result[connected] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access='Y'");
+		$result[disconnected] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access='N'");
+		$result[total] = $result[connected] + $result[disconnected];
 		return $result;
 	}
 
@@ -1082,13 +1076,13 @@ class LMS
 		if($tarifflist = $this->ADB->GetAll("SELECT id, name, value, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
 			foreach($tarifflist as $idx => $row)
 			{
-				$tarifflist[$idx]['users'] = $this->GetUsersWithTariff($row['id']);
-				$tarifflist[$idx]['income'] = $tarifflist[$idx]['users'] * $row['value'];
-				$tarifflist['totalincome'] += $tarifflist[$idx]['income'];
-				$tarifflist['totalusers'] += $tarifflist[$idx]['users'];
+				$tarifflist[$idx][users] = $this->GetUsersWithTariff($row[id]);
+				$tarifflist[$idx][income] = $tarifflist[$idx][users] * $row[value];
+				$tarifflist[totalincome] += $tarifflist[$idx][income];
+				$tarifflist[totalusers] += $tarifflist[$idx][users];
 			}
 
-		$tarifflist['total'] = sizeof($ttlist);
+		$tarifflist[total] = sizeof($ttlist);
 		return $tarifflist;
 				
 	}
@@ -1105,14 +1099,14 @@ class LMS
 		if($this->ADB->Execute("INSERT INTO tariffs (name, description, value, uprate, downrate)
 			VALUES (?, ?, ?, ?, ?)",
 			array(
-				$tariffdata['name'],
-				$tariffdata['description'],
-				$tariffdata['value'],
-				$tariffdata['uprate'],
-				$tariffdata['downrate']
+				$tariffdata[name],
+				$tariffdata[description],
+				$tariffdata[value],
+				$tariffdata[uprate],
+				$tariffdata[downrate]
 			)
 		))
-			return $this->ADB->GetOne("SELECT id FROM tariffs WHERE name=?",array($tariffdata['name']));
+			return $this->ADB->GetOne("SELECT id FROM tariffs WHERE name=?",array($tariffdata[name]));
 		else
 			return FALSE;
 	}
@@ -1120,7 +1114,7 @@ class LMS
 	function TariffUpdate($tariff)
 	{
 		$this->SetTS("tariffs");
-		return $this->ADB->Execute("UPDATE tariffs SET name=?, description=?, value=?, uprate=?, downrate=? WHERE id=?",array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
+		return $this->ADB->Execute("UPDATE tariffs SET name=?, description=?, value=?, uprate=?, downrate=? WHERE id=?",array($tariff[name], $tariff[description], $tariff[value], $tariff[uprate], $tariff[downrate], $tariff[id]));
 	}
 	
 	function TariffDelete($id)
@@ -1144,10 +1138,10 @@ class LMS
 	function GetTariff($id)
 	{
 		$result = $this->ADB->GetRow("SELECT id, name, value, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
-		$result['count'] = $this->GetUsersWithTariff($id);
-		$result['totalval'] = $result['value'] * $result['count'];
-		$result['users'] = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat('upper(lastname)',"' '",'name')." AS username FROM users WHERE tariff=? AND status=3 ORDER BY username",array($id));
-		$result['rows'] = ceil(sizeof($result['users'])/2);
+		$result[count] = $this->GetUsersWithTariff($id);
+		$result[totalval] = $result[value] * $result[count];
+		$result[users] = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat('upper(lastname)',"' '",'name')." AS username FROM users WHERE tariff=? AND status=3 ORDER BY username",array($id));
+		$result[rows] = ceil(sizeof($result[users])/2);
 		return $result;
 	}
 
@@ -1157,7 +1151,7 @@ class LMS
 			foreach($ttlist as $row)
 				foreach($row as $column => $value)
 					$tarifflist[$column][] = $value;
-		$tarifflist['common'] = $this->ADB->GetOne("SELECT tariff, COUNT(tariff) AS common FROM users WHERE tariff=tariff GROUP BY tariff ORDER BY common DESC");
+		$tarifflist[common] = $this->ADB->GetOne("SELECT tariff, COUNT(tariff) AS common FROM users WHERE tariff=tariff GROUP BY tariff ORDER BY common DESC");
 		return $tarifflist;
 	}
 
@@ -1176,20 +1170,20 @@ class LMS
 	function AddBalance($addbalance)
 	{
 		$this->SetTS("cash");
-		return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment']));	
+		return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance[type], round($addbalance[value],2) , $addbalance[userid], $addbalance[comment]));	
 	}
 	function GetBalanceList()
 	{
 		if($rs = $this->ADB->Execute("SELECT id, name FROM admins"))
 			while(!$rs->EOF)
 			{
-				$adminlist[$rs->fields['id']] = $rs->fields['name'];
+				$adminlist[$rs->fields[id]] = $rs->fields[name];
 				$rs->MoveNext();
 			}
 		if($rs = $this->ADB->Execute("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
 			while(!$rs->EOF)
 			{
-				$userslist[$rs->fields['id']] = $rs->fields['username'];
+				$userslist[$rs->fields[id]] = $rs->fields[username];
 				$rs->MoveNext();
 			}
 		
@@ -1197,47 +1191,47 @@ class LMS
 		{
 			foreach($balancelist as $idx => $row)
 			{
-				$balancelist[$idx]['admin'] = $adminlist[$row['adminid']];
-				$balancelist[$idx]['value'] = $row['value'];
-				$balancelist[$idx]['username'] = $userslist[$row['userid']];
+				$balancelist[$idx][admin] = $adminlist[$row[adminid]];
+				$balancelist[$idx][value] = $row[value];
+				$balancelist[$idx][username] = $userslist[$row[userid]];
 				if($idx)
-					$balancelist[$idx]['before'] = $balancelist[$idx-1]['after'];
+					$balancelist[$idx][before] = $balancelist[$idx-1][after];
 				else
-					$balancelist[$idx]['before'] = 0;
+					$balancelist[$idx][before] = 0;
 					
-				switch($row['type'])
+				switch($row[type])
 				{
 					case "1":
-						$balancelist[$idx]['type'] = "przychód";
-						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $balancelist[$idx]['value'];
-						$balancelist['income'] = $balancelist['income'] + $balancelist[$idx]['value'];
+						$balancelist[$idx][type] = "przychód";
+						$balancelist[$idx][after] = $balancelist[$idx][before] + $balancelist[$idx][value];
+						$balancelist[income] = $balancelist[income] + $balancelist[$idx][value];
 					break;
 
 					case "2":
-						$balancelist[$idx]['type'] = "rozchód";
-						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] - $balancelist[$idx]['value'];
-						$balancelist['expense'] = $balancelist['expense'] + $balancelist[$idx]['value'];
+						$balancelist[$idx][type] = "rozchód";
+						$balancelist[$idx][after] = $balancelist[$idx][before] - $balancelist[$idx][value];
+						$balancelist[expense] = $balancelist[expense] + $balancelist[$idx][value];
 					break;
 
 					case "3":
-						$balancelist[$idx]['type'] = "wp³ata u¿";
-						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $balancelist[$idx]['value'];
-						$balancelist['incomeu'] = $balancelist['incomeu'] + $balancelist[$idx]['value'];
+						$balancelist[$idx][type] = "wp³ata u¿";
+						$balancelist[$idx][after] = $balancelist[$idx][before] + $balancelist[$idx][value];
+						$balancelist[incomeu] = $balancelist[incomeu] + $balancelist[$idx][value];
 					break;
 					case "4":
-						$balancelist[$idx]['type'] = "obci±¿enie u¿";
-						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
-						$balancelist['uinvoice'] = $balancelist['uinvoice'] + $balancelist[$idx]['value'];
+						$balancelist[$idx][type] = "obci±¿enie u¿";
+						$balancelist[$idx][after] = $balancelist[$idx][before];
+						$balancelist[uinvoice] = $balancelist[uinvoice] + $balancelist[$idx][value];
 					break;
 					default:
-						$balancelist[$idx]['type'] = '<FONT COLOR="RED">???</FONT>';
-						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
+						$balancelist[$idx][type] = '<FONT COLOR="RED">???</FONT>';
+						$balancelist[$idx][after] = $balancelist[$idx][before];
 					break;
 				}
 				
 			}
 			
-			$balancelist['total'] = $balancelist[$idx]['after'];
+			$balancelist[total] = $balancelist[$idx][after];
 
 		}	
 
@@ -1250,14 +1244,14 @@ class LMS
 		if($networks)
 			foreach($networks as $idx => $network)
 			{
-				$out = split("\n",execute_program("nbtscan","-q -s: ".$network['address']."/".$network['prefix']));
+				$out = split("\n",execute_program("nbtscan","-q -s: ".$network[address]."/".$network[prefix]));
 				foreach($out as $line)
 				{
 					list($ipaddr,$name,$null,$login,$mac)=split(":",$line);
-					$row['ipaddr'] = trim($ipaddr);
-					$row['name'] = trim($name);
-					$row['mac'] = str_replace("-",":",trim($mac));
-					if(!$this->GetNodeIDByIP($row['ipaddr']) && $row['ipaddr'])
+					$row[ipaddr] = trim($ipaddr);
+					$row[name] = trim($name);
+					$row[mac] = str_replace("-",":",trim($mac));
+					if(!$this->GetNodeIDByIP($row[ipaddr]) && $row[ipaddr])
 						$result[] = $row;
 				}	
 			}
@@ -1282,8 +1276,8 @@ class LMS
 	{
 		for($i=30;$i>15;$i--)
 		{
-			$prefixlist['id'][] = $i;
-			$prefixlist['value'][] = $i." (".pow(2,32-$i)." adresów)";
+			$prefixlist[id][] = $i;
+			$prefixlist[value][] = $i." (".pow(2,32-$i)." adresów)";
 		}
 		
 		return $prefixlist;
@@ -1291,11 +1285,11 @@ class LMS
 
 	function NetworkAdd($netadd)
 	{
-		if($netadd['prefix'] != "")
-			$netadd['mask'] = prefix2mask($netadd['prefix']);
+		if($netadd[prefix] != "")
+			$netadd[mask] = prefix2mask($netadd[prefix]);
 		$this->SetTS("networks");
-		if($this->ADB->Execute("INSERT INTO networks (name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",array(strtoupper($netadd['name']),$netadd['address'],$netadd['mask'],$netadd['gateway'],$netadd['dns'],$netadd['domain'],$netadd['wins'],$netadd['dhcpstart'],$netadd['dhcpend'])))
-			return $this->ADB->GetOne("SELECT id FROM networks WHERE address=?",array($netadd['address']));
+		if($this->ADB->Execute("INSERT INTO networks (name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",array(strtoupper($netadd[name]),$netadd[address],$netadd[mask],$netadd[gateway],$netadd[dns],$netadd[domain],$netadd[wins],$netadd[dhcpstart],$netadd[dhcpend])))
+			return $this->ADB->GetOne("SELECT id FROM networks WHERE address=?",array($netadd[address]));
 		else
 			return FALSE;
 	}
@@ -1316,8 +1310,8 @@ class LMS
 	{
 		if($networks = $this->ADB->GetAll("SELECT id, address, mask FROM networks"))
 			foreach($networks as $idx => $row)
-				if(isipin($ipaddr,$row['address'],$row['mask']))
-					return $row['id'];
+				if(isipin($ipaddr,$row[address],$row[mask]))
+					return $row[id];
 		return FALSE;
 	}
 
@@ -1326,8 +1320,8 @@ class LMS
 		if($netlist = $this->ADB->GetAll("SELECT id, name, address, mask FROM networks"))
 			foreach($netlist as $idx => $row)
 			{
-				$netlist[$idx]['addresslong'] = ip_long($row['address']);
-				$netlist[$idx]['prefix'] = mask2prefix($row['mask']);
+				$netlist[$idx][addresslong] = ip_long($row[address]);
+				$netlist[$idx][prefix] = mask2prefix($row[mask]);
 			}
 		
 		return $netlist;
@@ -1341,23 +1335,23 @@ class LMS
 			$networks[$field][] = $value;
 		
 		$nodes = $this->ADB->GetAll("SELECT ipaddr FROM nodes");
-		$networks['total'] = sizeof($networks['id']);
-		if($networks['total'])
+		$networks[total] = sizeof($networks[id]);
+		if($networks[total])
 		{
-			array_multisort($networks['name'],$networks['id'],$networks['address'],$networks['mask'],$networks['gateway'],$networks['wins'],$networks['domain'],$networks['dns'],$networks['dhcpstart'],$networks['dhcpend']);
-			foreach($networks['id'] as $key => $value)
+			array_multisort($networks[name],$networks[id],$networks[address],$networks[mask],$networks[gateway],$networks[wins],$networks[domain],$networks[dns],$networks[dhcpstart],$networks[dhcpend]);
+			foreach($networks[id] as $key => $value)
 			{
-				$networks['addresslong'][$key] = ip_long($networks['address'][$key]);
-				$networks['prefix'][$key] = mask2prefix($networks['mask'][$key]);
-				$networks['broadcast'][$key] = getbraddr($networks['address'][$key],$networks['mask'][$key]);
-				$networks['boradcastlong'][$key] = ip_long($networks['broadcast'][$key]);
-				$networks['size'][$key] = pow(2,(32-$networks['prefix'][$key]));
-				$networks['size']['total'] = $networks['size']['total'] + $networks['size'][$key];
+				$networks[addresslong][$key] = ip_long($networks[address][$key]);
+				$networks[prefix][$key] = mask2prefix($networks[mask][$key]);
+				$networks[broadcast][$key] = getbraddr($networks[address][$key],$networks[mask][$key]);
+				$networks[boradcastlong][$key] = ip_long($networks[broadcast][$key]);
+				$networks[size][$key] = pow(2,(32-$networks[prefix][$key]));
+				$networks[size][total] = $networks[size][total] + $networks[size][$key];
 				if(sizeof($nodes))
 					foreach($nodes as $row)
-						if(isipin($row['ipaddr'],$networks['address'][$key],$networks['mask'][$key]))
-							$networks['assigned'][$key] ++;
-				$networks['assigned']['total'] = $networks['assigned']['total'] + $networks['assigned'][$key];
+						if(isipin($row[ipaddr],$networks[address][$key],$networks[mask][$key]))
+							$networks[assigned][$key] ++;
+				$networks[assigned][total] = $networks[assigned][total] + $networks[assigned][$key];
 			}
 		}
 		
@@ -1371,17 +1365,17 @@ class LMS
 		{
 			foreach($networks as $idx => $row)
 			{
-				if($row['id'] != $ignoreid)
+				if($row[id] != $ignoreid)
 					if($checkbroadcast)
 					{
-						if((ip_long($ip) > $row['addresslong'] - 1)&&(ip_long($ip) < ip_long(getbraddr($row['address'],$row['mask'])) + 1))
+						if((ip_long($ip) > $row[addresslong] - 1)&&(ip_long($ip) < ip_long(getbraddr($row[address],$row[mask])) + 1))
 						{
 							return TRUE;
 						}
 					}
 					else
 					{
-						if((ip_long($ip) > $row['addresslong'])&&(ip_long($ip) < ip_long(getbraddr($row['address'],$row['mask']))))
+						if((ip_long($ip) > $row[addresslong])&&(ip_long($ip) < ip_long(getbraddr($row[address],$row[mask]))))
 						{
 							return TRUE;
 						}
@@ -1401,9 +1395,9 @@ class LMS
 		if($networks = $this->GetNetworks())
 			foreach($networks as $idx => $row)
 			{
-				$broadcast = ip_long(getbraddr($row['address'],$row['mask']));
-				$netaddr = $row['addresslong'];					
-				if($row['id'] != $ignorenet)
+				$broadcast = ip_long(getbraddr($row[address],$row[mask]));
+				$netaddr = $row[addresslong];					
+				if($row[id] != $ignorenet)
 				{
 					if(
 							($cbroadcast == $broadcast)
@@ -1435,14 +1429,14 @@ class LMS
 		$this->SetTS("networks");
 		if($nodes = $this->ADB->GetAll("SELECT ipaddr, id FROM nodes"))
 			foreach($nodes as $value)
-				if(isipin($value['ipaddr'],$network,$mask))
-					$this->ADB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array(long2ip(ip_long($value['ipaddr']) + $shift),$value['id']));
+				if(isipin($value[ipaddr],$network,$mask))
+					$this->ADB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array(long2ip(ip_long($value[ipaddr]) + $shift),$value[id]));
 	}
 
 	function NetworkUpdate($networkdata)
 	{
 		$this->SetTS("networks");
-		return $this->ADB->Execute("UPDATE networks SET name=?, address=?, mask=?, gateway=?, dns=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?",array(strtoupper($networkdata['name']),$networkdata['address'],$networkdata['mask'],$networkdata['gateway'],$networkdata['dns'],$networkdata['domain'],$networkdata['wins'],$networkdata['dhcpstart'],$networkdata['dhcpend'],$networkdata['id']));
+		return $this->ADB->Execute("UPDATE networks SET name=?, address=?, mask=?, gateway=?, dns=?, domain=?, wins=?, dhcpstart=?, dhcpend=? WHERE id=?",array(strtoupper($networkdata[name]),$networkdata[address],$networkdata[mask],$networkdata[gateway],$networkdata[dns],$networkdata[domain],$networkdata[wins],$networkdata[dhcpstart],$networkdata[dhcpend],$networkdata[id]));
 	}
 				
 	
@@ -1451,8 +1445,8 @@ class LMS
 		$this->SetTS("nodes");
 		$this->SetTS("networks");
 		$network=$this->GetNetworkRecord($id);
-		$address = $network['addresslong']+$shift;
-		foreach($network['nodes']['id'] as $key => $value)
+		$address = $network[addresslong]+$shift;
+		foreach($network[nodes][id] as $key => $value)
 		{
 			if($value)
 			{
@@ -1466,18 +1460,18 @@ class LMS
 	{
 		$this->SetTS("nodes");
 		$this->SetTS("networks");
-		$network['source'] = $this->GetNetworkRecord($src);
-		$network['dest'] = $this->GetNetworkRecord($dst);
-		foreach($network['source']['nodes']['id'] as $key => $value)
+		$network[source] = $this->GetNetworkRecord($src);
+		$network[dest] = $this->GetNetworkRecord($dst);
+		foreach($network[source][nodes][id] as $key => $value)
 			if($this->NodeExists($value))
 				$nodelist[] = $value;
 		$counter = 0;
 		if(sizeof($nodelist))
 			foreach($nodelist as $value)
 			{
-				while($this->NodeExists($network['dest']['nodes']['id'][$counter]))
+				while($this->NodeExists($network[dest][nodes][id][$counter]))
 					$counter++;
-				$this->ADB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array($network['dest']['nodes']['address'][$counter],$value));
+				$this->ADB->Execute("UPDATE nodes SET ipaddr=? WHERE id=?",array($network[dest][nodes][address][$counter],$value));
 				$counter++;
 			}
 		return $counter;
@@ -1486,31 +1480,31 @@ class LMS
 	function GetNetworkRecord($id,$strip=TRUE)
 	{
 		$network = $this->ADB->GetRow("SELECT id, name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?",array($id));
-		$network['prefix'] = mask2prefix($network['mask']);
-		$network['addresslong'] = ip_long($network['address']);
-		$network['size'] = pow(2,32-$network['prefix']);
-		$network['rows'] = ceil($network['size']/4);
-		$network['assigned'] = 0;
-		$network['broadcast'] = getbraddr($network['address'],$network['mask']);
+		$network[prefix] = mask2prefix($network[mask]);
+		$network[addresslong] = ip_long($network[address]);
+		$network[size] = pow(2,32-$network[prefix]);
+		$network[rows] = ceil($network[size]/4);
+		$network[assigned] = 0;
+		$network[broadcast] = getbraddr($network[address],$network[mask]);
 
 		$tnodes = $this->ADB->GetAll("SELECT id, name, ipaddr, ownerid FROM nodes");
 		foreach($tnodes as $idx => $row)
-			$nodes[ip_long($row['ipaddr'])] = $row;
+			$nodes[ip_long($row[ipaddr])] = $row;
 
-		for($i=0;$i<$network['size']-($strip ? 2 : 0);$i++)
+		for($i=0;$i<$network[size]-($strip ? 2 : 0);$i++)
 		{
-			$longip = $network['addresslong'] + $i + ($strip ? 1 : 0);
+			$longip = $network[addresslong] + $i + ($strip ? 1 : 0);
 			$node = $nodes["".$longip.""];
-			$network['nodes']['addresslong'][$i] = $longip;
-			$network['nodes']['address'][$i] = long2ip($longip);;
-			$network['nodes']['id'][$i] = $node['id'];
-			$network['nodes']['name'][$i] = $node['name'];
-			$network['nodes']['ownerid'][$i] = $node['ownerid'];
+			$network[nodes][addresslong][$i] = $longip;
+			$network[nodes][address][$i] = long2ip($longip);;
+			$network[nodes][id][$i] = $node[id];
+			$network[nodes][name][$i] = $node[name];
+			$network[nodes][ownerid][$i] = $node[ownerid];
 			if(isset($node))
-				$network['assigned'] ++;
+				$network[assigned] ++;
 		}
 
-		$network['free'] = $network['size'] - $network['assigned'] - 2;
+		$network[free] = $network[size] - $network[assigned] - 2;
 		return $network;
 	}
 
@@ -1522,14 +1516,14 @@ class LMS
 	
 		for($i=ip_long($address)+1;$i<ip_long(getbraddr($address,$mask));$i++)
 		{
-			$result['addresslong'][] = $i;
-			$result['address'][] = long2ip($i);
-			$result['nodeid'][] = 0;
-			$result['nodename'][] = "";
-			$result['ownerid'][] = 0;
+			$result[addresslong][] = $i;
+			$result[address][] = long2ip($i);
+			$result[nodeid][] = 0;
+			$result[nodename][] = "";
+			$result[ownerid][] = 0;
 		}
 		
-		if(sizeof($result['address']))
+		if(sizeof($result[address]))
 		{
 			// wrapper do starego formatu
 			
@@ -1538,14 +1532,14 @@ class LMS
 					foreach($row as $column => $value)
 						$nodes[$column][] = $value;
 			
-			if(sizeof($nodes['id']))
-				foreach($nodes['id'] as $key => $value)
-					if(isipin($nodes['ipaddr'][$key],$address,$mask))
+			if(sizeof($nodes[id]))
+				foreach($nodes[id] as $key => $value)
+					if(isipin($nodes[ipaddr][$key],$address,$mask))
 					{
-						$pos = ip_long($nodes['ipaddr'][$key])-ip_long($address)-1;
-						$result['nodeid'][$pos] = $value;
-						$result['nodename'][$pos] = $nodes['name'][$key];
-						$result['ownerid'][$pos] = $nodes['ownerid'][$key];
+						$pos = ip_long($nodes[ipaddr][$key])-ip_long($address)-1;
+						$result[nodeid][$pos] = $value;
+						$result[nodename][$pos] = $nodes[name][$key];
+						$result[ownerid][$pos] = $nodes[ownerid][$key];
 					}
 		}
 
@@ -1572,10 +1566,10 @@ class LMS
 					$ip=trim(substr($line,0,15));
 					if(check_mac($mac))
 					{
-						$result['mac'][] = $mac;
-						$result['ip'][] = $ip;
-						$result['longip'][] = ip_long($ip);
-						$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+						$result[mac][] = $mac;
+						$result[ip][] = $ip;
+						$result[longip][] = ip_long($ip);
+						$result[nodename][] = $this->GetNodeNameByMAC($mac);
 					}
 				}
 				break;
@@ -1586,41 +1580,41 @@ class LMS
 				{
 					list($empty,$ip,$empty,$mac) = explode(" ",$arpline);
 					$ip = str_replace("(","",str_replace(")","",$ip));
-					$result['mac'][] = $mac;
-					$result['ip'][] = $ip;
-					$result['longip'][] = ip_long($ip);
-					$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+					$result[mac][] = $mac;
+					$result[ip][] = $ip;
+					$result[longip][] = ip_long($ip);
+					$result[nodename][] = $this->GetNodeNameByMAC($mac);
 				}
 				break;
 
 		}
-		array_multisort($result['longip'],$result['mac'],$result['ip'],$result['nodename']);
+		array_multisort($result[longip],$result[mac],$result[ip],$result[nodename]);
 		return $result;
 	}
 
 	function Mailing($mailing)
 	{
 		$SESSION=$this->SESSION;
-		$emails = $this->GetEmails($mailing['group']);
+		$emails = $this->GetEmails($mailing[group]);
 
-		if($emails = $this->GetEmails($mailing['group']))
+		if($emails = $this->GetEmails($mailing[group]))
 		{
-			if($this->CONFIG['debug_email'])
-				echo "<B>Uwaga! Tryb debug (u¿ywam adresu ".$this->CONFIG['debug_email']."</B><BR>";
+			if($this->CONFIG[debug_email])
+				echo "<B>Uwaga! Tryb debug (u¿ywam adresu ".$this->CONFIG[debug_email]."</B><BR>";
 				
 			foreach($emails as $key => $row)
 			{
-				if($this->CONFIG['debug_email'])
-					$row['email'] = $this->CONFIG['debug_email'];
+				if($this->CONFIG[debug_email])
+					$row[email] = $this->CONFIG[debug_email];
 
 				mail (
-					$row['username']." <".$row['email'].">",
-					$mailing['subject'],
-					$mailing['body'],
-					"From: ".$mailing['sender']." <".$mailing['from'].">\r\n"."Content-type: text/plain; charset=\"iso-8858-2\"\r\n"."X-Mailer: LMS-".$this->_version."/PHP-".phpversion()."\r\n"."X-Remote-IP: ".$_SERVER['REMOTE_ADDR']."\r\n"."X-HTTP-User-Agent: ".$_SERVER['HTTP_USER_AGENT']."\r\n"
+					$row[username]." <".$row[email].">",
+					$mailing[subject],
+					$mailing[body],
+					"From: ".$mailing[sender]." <".$mailing[from].">\r\n"."Content-type: text/plain; charset=\"iso-8858-2\"\r\n"."X-Mailer: LMS-".$this->_version."/PHP-".phpversion()."\r\n"."X-Remote-IP: ".$_SERVER['REMOTE_ADDR']."\r\n"."X-HTTP-User-Agent: ".$_SERVER['HTTP_USER_AGENT']."\r\n"
 				);
 
-				echo "<img src=\"img/mail.gif\" border=\"0\" align=\"absmiddle\" alt=\"\"> ".($key+1)." z ".sizeof($emails)." (".sprintf("%02.2f",round((100/sizeof($emails))*($key+1),2))."%): ".$row['username']." &lt;".$row['email']."&gt;<BR>\n";
+				echo "<img src=\"img/mail.gif\" border=\"0\" align=\"absmiddle\" alt=\"\"> ".($key+1)." z ".sizeof($emails)." (".sprintf("%02.2f",round((100/sizeof($emails))*($key+1),2))."%): ".$row[username]." &lt;".$row[email]."&gt;<BR>\n";
 				flush();
 
 			}

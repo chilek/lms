@@ -1,40 +1,40 @@
 {include file="header.html"}
 {include file="balanceheader.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<H1>Lista taryf</H1>
 <TABLE WIDTH="100%" CELLPADDING="5">
 	<TR class="dark">
 		<TD WIDTH="94%" CLASS="fleftu">
-			<B>{$lang.name}:<BR>
-			{$lang.description}:</B>
-		</TD>
-		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right" NOWRAP>
-			<B>{$lang.downstream}:<BR>
-			{$lang.upstream}:</B>
-		</TD>	
-		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			<B>{$lang.amount}:</B>
-		</TD>	
-		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			<B>{$lang.id}:</B>
+			<B>Nazwa:<BR>
+			Opis:</B>
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			<B>{$lang.msg001}:</B>
+			<B>Downstream:<BR>
+			Upstream:</B>
+		</TD>	
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+			<B>Warto¶æ:</B>
+		</TD>	
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+			<B>ID:</B>
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+			<B>Korzysta:</B>
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
 			<NOBR>
-			<B>{$lang.monthly_income}:</B>
+			<B>Dochód m-c:</B>
 			</NOBR>
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu">
 			<NOBR>
-			<B>{$lang.total}: {$tarifflist.total}</B>
+			<B>Razem: {$tarifflist.total}</B>
 			</NOBR>
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{section name=tariffs loop=$tarifflist}
-	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR BGCOLOR="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD WIDTH="95%" CLASS="fleft" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';" class="fleft">
 			<B>{$tarifflist[tariffs].name}</B><BR>
 			{$tarifflist[tariffs].description}
@@ -47,7 +47,7 @@
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
-			{$tarifflist[tariffs].value|string_format:"`$lang.currency_format`"} {$lang.currency}
+			{$tarifflist[tariffs].value|string_format:"%01.2f"} z³
 			</NOBR>
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
@@ -57,13 +57,13 @@
 			{$tarifflist[tariffs].users}
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			{$tarifflist[tariffs].income|string_format:"`$lang.currency_format`"} {$lang.currency}
+			{$tarifflist[tariffs].income|string_format:"%01.2f"} z³
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
-			{if $tarifflist[tariffs].users}<A HREF="javascript:alert('{$lang.alert_cannot_delete_tariff}');">{else}<A HREF="?m=tariffdelete&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'{$lang.confirm_tariffdel}');">{/if}<IMG SRC="img/delete.gif" ALT="[ {$lang.delete} ]" BORDER="0"></A>
-				<A HREF="?m=tariffedit&id={$tarifflist[tariffs].id}"><IMG SRC="img/edit.gif" ALT="[ {$lang.edit} ]" BORDER="0"></A>
-				<A HREF="?m=tariffinfo&id={$tarifflist[tariffs].id}"><IMG SRC="img/info.gif" ALT="[ {$lang.info} ]" BORDER="0"></A>
+			{if $tarifflist[tariffs].users}<A HREF="javascript:alert('Nie mo¿na usun±æ taryfy z której korzystaj± jacy¶ u¿ytkownicy!');">{else}<A HREF="?m=tariffdelete&id={$tarifflist[tariffs].id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ t± taryfê?');">{/if}<IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0"></A>
+				<A HREF="?m=tariffedit&id={$tarifflist[tariffs].id}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" BORDER="0"></A>
+				<A HREF="?m=tariffinfo&id={$tarifflist[tariffs].id}"><IMG SRC="img/info.gif" ALT="[ Info ]" BORDER="0"></A>
 			</NOBR>
 		</TD>
 	</TR>
@@ -72,7 +72,7 @@
 		<TD COLSPAN="7" ALIGN="center" CLASS="fall">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>{$lang.no_tariffs_in_database}</B></p>
+			<p><B>Nie ma wprowadzonych ¿adnych taryf do bazy danych!</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -80,10 +80,10 @@
 	{/section}
 	<TR CLASS="light">
 		<TD CLASS="fleftu" COLSPAN="5" WIDTH="98%" ALIGN="right">
-			<B>{$lang.total}:</B>
+			<B>Razem:</B>
 		</TD>
 		<TD CLASS="frightu" COLSPAN="2" WIDTH="2%">
-			<B>{$listdata.totalincome|string_format:"`$lang.currency_format`"} {$lang.currency}</B>
+			<B>{$listdata.totalincome|string_format:"%01.2f"} z³</B>
 		</TD>
 	</TR>
 </TABLE>

@@ -8,7 +8,7 @@ if(!isset($p))
 if($p == "main")
 	$js = "var targetfield = parent.targetfield;";
 
-$layout[pagetitle] = $lang[pagetitle_choosemac];
+$layout[pagetitle] = "Wybierz adres MAC";
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("part",$p);

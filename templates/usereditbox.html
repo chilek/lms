@@ -9,7 +9,7 @@
 			<TABLE>
 				<TR>
 					<TD>
-						<B>{$lang.id}:</B>
+						<B>ID:</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -23,7 +23,7 @@
 				</TR>
 				<TR>
 					<TD>
-						<B>{$lang.lastname}:</B>
+						<B>Nazwisko:</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -32,7 +32,7 @@
 				</TR>
 				<TR>
 					<TD>
-						<B>{$lang.username}:</B>
+						<B>Imiê:</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -50,9 +50,9 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" NAME="userdata[status]">
-				<OPTION VALUE="3"{if $userinfo.status eq "3"} SELECTED{/if}>{$lang.connected}</OPTION>
-				<OPTION VALUE="2"{if $userinfo.status eq "2"} SELECTED{/if}>{$lang.awaiting}</OPTION>
-				<OPTION VALUE="1"{if $userinfo.status eq "1"} SELECTED{/if}>{$lang.interested}</OPTION>
+				<OPTION VALUE="3"{if $userinfo.status eq "3"} SELECTED{/if}>pod³±czony</OPTION>
+				<OPTION VALUE="2"{if $userinfo.status eq "2"} SELECTED{/if}>oczekuj±cy</OPTION>
+				<OPTION VALUE="1"{if $userinfo.status eq "1"} SELECTED{/if}>zainteresowany</OPTION>
 				</SELECT>{if $error.status}<BR><FONT CLASS="ALERT">{$error.status}</B>{/if}
 		</TD>
 	</TR>
@@ -79,7 +79,7 @@
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>{$lang.zip}:</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="5"{if $error.zip} CLASS="ALERT"><BR>
+			<B>Kod:</B><BR><INPUT TYPE="TEXT" NAME="userdata[zip]" VALUE="{$userinfo.zip}" SIZE="5"{if $error.zip} CLASS="ALERT"><BR>
 			<FONT CLASS="ALERT">{$error.zip}</FONT{/if}>
 		</TD>
 	</TR>
@@ -87,7 +87,7 @@
 		<TD WIDTH="1%" CLASS="FLEFT">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>{$lang.city}:</B><BR><INPUT TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" SIZE="30">
+			<B>Miasto:</B><BR><INPUT TYPE="TEXT" NAME="userdata[city]" VALUE="{$userinfo.city}" SIZE="30">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -108,7 +108,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-		<B>{$lang.taxid}</B>
+		<B>NIP</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="userdata[nip]" VALUE="{$userinfo.nip}" SIZE="30"{if $error.nip} CLASS="ALERT"><BR><FONT CLASS="ALERT">{$error.nip}</FONT{/if}>
@@ -120,14 +120,14 @@
 			<IMG SRC="img/money.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{$lang.balance}:<BR>
-				{$lang.tariff}:</B>
+			<B>Saldo:<BR>
+			Taryfa:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			{if $userinfo.balance < 0}<FONT CLASS="ALERT">{$userinfo.balance|default:"0"} {$lang.currency}</FONT>{else}{$userinfo.balance|default:"0"} {$lang.currency}{/if}<BR>
+			{if $userinfo.balance < 0}<FONT CLASS="ALERT">{$userinfo.balance|default:"0"} z³</FONT>{else}{$userinfo.balance|default:"0"} z³{/if}<BR>
 			<SELECT SIZE="1" NAME="userdata[tariff]">
 				{section name=t loop=$tariffs.id}
-				<OPTION VALUE="{$tariffs.id[t]}"{if $tariffs.id[t] eq $userinfo.tariff} SELECTED{/if}>{$tariffs.name[t]} ({$tariffs.value[t]} {$lang.currency}/mc)</OPTION>
+				<OPTION VALUE="{$tariffs.id[t]}"{if $tariffs.id[t] eq $userinfo.tariff} SELECTED{/if}>{$tariffs.name[t]} ({$tariffs.value[t]} z³/mc)</OPTION>
 				{/section}
 			</SELECT>
 			{if $error.tariff}<BR><FONT CLASS="ALERT">{$error.tariff}</FONT>{/if}
@@ -138,8 +138,8 @@
 			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{$lang.created}:<BR>
-			{$lang.modified}:</B>
+			<B>Utworzony:<BR>
+			Zmodyfikowany:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{$userinfo.createdby}, {$userinfo.creationdateh}<BR>
@@ -161,8 +161,8 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">{$lang.save} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=userinfo&id={$userinfo.id}">{$lang.cancel} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			<A HREF="javascript:document.useredit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=userinfo&id={$userinfo.id}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE"></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -39,7 +39,7 @@ if(!isset($_GET[ownerid]))
 							
 $owner = $ownerid;
 $userinfo=$LMS->GetUser($owner);
-$layout[pagetitle] = "Informacje o u¿ytkowniku ".$userinfo[username]." - edycja komputera ".$LMS->GetNodeName($_GET[id]);
+$layout[pagetitle]="Informacje o u¿ytkowniku ".$userinfo[username]." - edycja komputera ".$LMS->GetNodeName($_GET[id]);
 
 $nodeedit = $_POST[nodeedit];
 $usernodes = $LMS->GetUserNodes($owner);
@@ -64,17 +64,17 @@ if(isset($nodeedit))
 		{
 			if(!$LMS->IsIPFree($nodeedit[ipaddr])&&$LMS->GetNodeIPByID($nodeedit[id])!=$nodeedit[ipaddr])
 			{
-				$error[ipaddr] = $lang[error_ip_address_is_already_in_use];
+				$error[ipaddr] = "Podany adres IP jest zajêty!";
 			}
 		}
 		else
 		{
-			$error[ipaddr] = $lang[error_ip_address_invalid];
+			$error[ipaddr] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
 		}
 	}
 	else
 	{
-		$error[ipaddr] = $lang[error_ip_address_invalid];
+		$error[ipaddr] = "Podany adres IP jest niepoprawny!";
 	}
 
 	if(check_mac($nodeedit[mac]))
@@ -85,20 +85,20 @@ if(isset($nodeedit))
 				$_CONFIG[phpui][allow_mac_sharing] == FALSE
 		)
 		{
-			$error[mac] = $lang[error_mac_already_exists];
+			$error[mac] = "Podany adres MAC jest ju¿ przypisany do innego komputera!";
 		}
 	}
 	else
 	{
-		$error[mac] = $lang[error_mac_address_invalid];
+		$error[mac] = "Podany adres MAC jest b³êdny!";
 	}
 
 	if($nodeedit[name]=="")
-		$error[name] = $lang[error_no_empty_field];
+		$error[name] = "Podaj nazwê!";
 	elseif($LMS->GetNodeIDByName($nodeedit[name]) && $LMS->GetNodeIDByNAME($nodeedit[name]) != $nodeedit[id])
-		$error[name] = $lang[error_field_already_exists];
+		$error[name] = "Ta nazwa jest zajêta!";
 	elseif(!eregi("^[_a-z0-9-]+$",$nodeedit[name]))
-		$error[name] = $lang[error_field_contains_incorrect_characters];
+		$error[name] = "Podana nazwa zawiera niepoprawne znaki!";
 
 	if($nodeedit[access]!="Y")
 		$nodeedit[access] = "N";

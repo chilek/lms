@@ -1,6 +1,6 @@
 {include file="header.html"}
 {include file="balanceheader.html"}
-<H1>{$layout.pagetitle}</H1>
+<H1>Edycja taryfy {$tariff.name}</H1>
 <FORM METHOD="POST" NAME="tedit" ACTION="?m=tariffedit&id={$tariff.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -10,7 +10,7 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>{$lang.description}:</B>
+			<B>Opis:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" VALUE="{$tariff.description}" NAME="tariff[description]" SIZE="40">
@@ -18,34 +18,34 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>{$lang.amount}:</B>
+			<B>Warto¶æ:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]"> {$lang.currency}
+			<INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]"> z³
 			{if $error.value}<BR><FONT COLOR="RED"><B>{$error.value}</B></FONT>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>{$lang.upstream}:</B>
+			<B>Uprate:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.upstream}" SIZE="8" NAME="tariff[uprate]"> kb/s
+			<INPUT TYPE="TEXT" VALUE="{$tariff.uprate}" SIZE="8" NAME="tariff[uprate]"> kb/s
 			{if $error.uprate}<BR><FONT COLOR="RED"><B>{$error.uprate}</B></FONT>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>{$lang.downstream}:</B>
+			<B>Downrate:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.downstream}" SIZE="8" NAME="tariff[downrate]"> kb/s
+			<INPUT TYPE="TEXT" VALUE="{$tariff.downrate}" SIZE="8" NAME="tariff[downrate]"> kb/s
 			{if $error.downrate}<BR><FONT COLOR="RED"><B>{$error.downrate}</B></FONT>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>{$lang.amount_of_users}:</B>
+			<B>Ilo¶æ&nbsp;u¿ytkowników:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
 			{$tariff.count}
@@ -53,7 +53,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>{$lang.monthly_income}:</B>
+			<B>Zysk&nbsp;miesiêczny:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
 			{$tariff.totalval}
@@ -61,7 +61,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="2" ALIGN="RIGHT" CLASS="FBOTTOMU">
-			<A HREF="?m=tariffinfo&id={$tariff.id}">{$lang.cancel} <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> <A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">{$lang.save} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">{$lang.delete} <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{/if}
+			<A HREF="?m=tariffinfo&id={$tariff.id}">Anuluj <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> <A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">Usuñ <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{/if}
 		</TD>
 	</TR>
 </TABLE>

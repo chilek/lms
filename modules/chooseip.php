@@ -47,7 +47,7 @@ $_SESSION[netid] = $netid;
 if($p == "main")
 	$network = $LMS->GetNetwork($netid);
 
-$layout[pagetitle] = $lang[pagetitle_chooseip];
+$layout[pagetitle] = "Wybierz adres IP";
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("part",$p);
