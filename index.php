@@ -121,8 +121,10 @@ require_once($_LIB_DIR.'/LMSDB.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
+// Enable/disable data encoding conversion
 // Call any of upgrade process before anything else
 
+require_once($_LIB_DIR.'/dbencoding.php');
 require_once($_LIB_DIR.'/upgradedb.php');
 
 // Initialize templates engine (must be before locale settings)
@@ -130,10 +132,6 @@ require_once($_LIB_DIR.'/upgradedb.php');
 require_once($_SMARTY_DIR.'/Smarty.class.php');
 
 $SMARTY = new Smarty;
-
-// localization (must be before reading of confuguration from database)
-
-require_once($_LIB_DIR.'/language.php');
 
 // Read configuration of LMS-UI from database
 
@@ -160,6 +158,7 @@ if(version_compare('2.5.0', $SMARTY->_version) > 0)
 
 // Include required files (including sequence is important)
 
+require_once($_LIB_DIR.'/language.php');
 require_once($_LIB_DIR.'/unstrip.php');
 require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/checkip.php');

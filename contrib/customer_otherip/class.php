@@ -116,6 +116,10 @@ require_once($_LIB_DIR.'/LMSDB.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
+// Enable data encoding conversion if needed 
+
+require_once($_LIB_DIR.'/dbencoding.php');
+
 // Read configuration of LMS-UI from database
 
 if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
