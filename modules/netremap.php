@@ -30,7 +30,7 @@ if(!$LMS->NetworkExists($_GET[id])||!$LMS->NetworkExists($_GET[mapto]))
 	die;
 }
 
-$network[source] = $LMS->GetNetworkRecord($_GET[id]);
+$network[source] = $LMS->GetNetworkRecord($_GET[id],$_SESSION[ntlp][$_GET[id]],1024);
 $network[dest] = $LMS->GetNetworkRecord($_GET[mapto]);
 
 if($network[source][assigned] > $network[dest][free])
@@ -65,6 +65,9 @@ if(!$error)
 	
 /*
  * $Log$
+ * Revision 1.17  2003/08/27 19:26:04  lukasz
+ * - changed format of ipaddr storage in database
+ *
  * Revision 1.16  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

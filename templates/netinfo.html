@@ -119,9 +119,12 @@
 			{/if}
 	</TR>
 	<TR class="dark">
-		<TD width="100%" class="fall" colspan="4">
+		<TD width="50%" class="fleftu" colspan="2">
 			<img src="img/ip.gif" align="absmiddle" alt="" border="0"> <B>Wykorzystanie adresów IP:</B>
 		</TD>
+		<TD WIDTH="50%" CLASS="frightu" COLSPAN="2" ALIGN="RIGHT">
+			<B>{if $network.page > 1}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x - 1" x=$network.page}">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;&laquo;&laquo;</FONT>{/if} Strona {$network.page} z {$network.pages} {if $network.page < $network.pages}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x + 1" x=$network.page}">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;&raquo;&raquo;</FONT>{/if}</B>
+		</TD>		
 	</TR>
 	<TR>
 		<TD width="100%" class="fall" colspan="4">
@@ -130,9 +133,9 @@
 				{section name=network loop=$network.nodes.id max=$network.rows}
 				<TR>
 					{section name=subnetwork loop=$network.nodes.address start=$smarty.section.network.index step=$network.rows}
-					<TD bgcolor="{cycle}" {cycle print=false}align="center" width="25%" onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '{cycle}')" {cycle print=false}valign="middle"{if $network.nodes.id[networkip]} class="blend"{/if}{if $network.nodes.id[subnetwork]} onclick="return self.location.href='?m=userinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}'"{else} onclick="return self.location.href='?m=nodeadd&preip={$network.nodes.address[subnetwork]}'"{/if}>
+					<TD bgcolor="{cycle}" {cycle print=false}align="center" width="25%" onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '{cycle}')" {cycle print=false}valign="middle"{if $network.nodes.id[networkip]} class="blend"{/if}{if $network.nodes.id[subnetwork]} onclick="return self.location.href='?m=userinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}'"{else}{if !$network.nodes.name[subnetwork]} onclick="return self.location.href='?m=nodeadd&preip={$network.nodes.address[subnetwork]}'"{/if}{/if}>
 					<img src="img/node.gif" align="left" alt="" border="0">
-					{if $network.nodes.id[subnetwork]}<a href="?m=userinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}"><font class="blend">{$network.nodes.name[subnetwork]}</font></A>{else}<a href="?m=nodeadd&preip={$network.nodes.address[subnetwork]}">{$network.nodes.address[subnetwork]}</A>{/if}
+					{if $network.nodes.id[subnetwork]}<a href="?m=userinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}"><font class="blend">{$network.nodes.name[subnetwork]}</font></A>{else}{if $network.nodes.name[subnetwork]}<FONT CLASS="blend">{$network.nodes.name[subnetwork]}</FONT>{else}<a href="?m=nodeadd&preip={$network.nodes.address[subnetwork]}">{$network.nodes.address[subnetwork]}</A>{/if}{/if}
 					
 				</TD>
 				{/section}
@@ -140,8 +143,11 @@
 				</TR>
 				{/section}
 				<TR class="light">
-					<TD colspan="4" align="right" class="ftop">
-						<B>Razem: {$network.assigned} (dostêpne: {$network.free})</B>
+					<TD CLASS="fleftu" COLSPAN="2">
+						<B>{if $network.page > 1}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x - 1" x=$network.page}">&laquo;&laquo;&laquo;</A>{else}<FONT CLASS="BLEND">&laquo;&laquo;&laquo;</FONT>{/if} Strona {$network.page} z {$network.pages} {if $network.page < $network.pages}<A HREF="?m=net{if $unlockedit}edit{else}info{/if}&id={$network.id}&page={math equation="x + 1" x=$network.page}">&raquo;&raquo;&raquo;</A>{else}<FONT CLASS="BLEND">&raquo;&raquo;&raquo;</FONT>{/if}</B>
+					</TD>
+					<TD ALIGN="RIGHT" CLASS="frightu" COLSPAN="2">
+						<B>Razem: {$network.assigned} (na tej stronie: {$network.pageassigned|default:"0"}, dostêpne: {$network.free})</B>
 					</TD>
 				</TR>
 			</table>

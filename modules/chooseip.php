@@ -59,6 +59,9 @@ $SMARTY->display("chooseip.html");
 
 /*
  * $Log$
+ * Revision 1.19  2003/08/27 19:25:32  lukasz
+ * - changed format of ipaddr storage in database
+ *
  * Revision 1.18  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

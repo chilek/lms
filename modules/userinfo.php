@@ -34,6 +34,7 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 $layout[pagetitle]="Informacje o u¿ytkowniku ".$userinfo[username];
 
 $usernodes = $LMS->GetUserNodes($_GET[id]);
+
 $usernodes[ownerid] = $_GET[id];
 $SMARTY->assign("usernodes",$usernodes);
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($_GET[id]));
@@ -44,6 +45,9 @@ $SMARTY->display("userinfo.html");
 
 /*
  * $Log$
+ * Revision 1.24  2003/08/27 19:26:22  lukasz
+ * - changed format of ipaddr storage in database
+ *
  * Revision 1.23  2003/08/25 02:12:37  lukasz
  * - zmieniona obs³uga usuwania userów
  *

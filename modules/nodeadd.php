@@ -79,8 +79,8 @@ if(isset($nodedata))
 	if(! $LMS->UserExists($nodedata[ownerid]))
 		$error[user] = "Proszê wybraæ u¿ytkownika!";
 
-	if($LMS->GetUserStatus($nodedata[ownerid]) != 3 || $LMS->UserExists($nodedata[ownerid]) == -1)
-		$error[user] = "Wybrany u¿ytkownik jest b³êdny!";
+	if($LMS->GetUserStatus($nodedata[ownerid]) != 3 || $LMS->UserExists($nodedata[ownerid]) != TRUE)
+		$error[user] = "Wybrany u¿ytkownik $nodedata[ownerid] jest b³êdny!";
 
 	if(!$error)
 	{
@@ -120,6 +120,9 @@ $SMARTY->display("nodeadd.html");
 
 /*
  * $Log$
+ * Revision 1.33  2003/08/27 19:26:15  lukasz
+ * - changed format of ipaddr storage in database
+ *
  * Revision 1.32  2003/08/25 02:12:13  lukasz
  * - zmieniona obs³uga usuwania userów
  *
