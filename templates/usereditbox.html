@@ -13,7 +13,7 @@
 //-->
 </SCRIPT>
 {/literal}
-<P><FORM NAME="useredit" METHOD="POST" ACTION="?m=useredit&id={$userinfo.id}{if $recover}&action=recover{/if}"><INPUT TYPE="HIDDEN" NAME="userdata[id]" VALUE="{$userinfo.id}">
+<FORM NAME="useredit" METHOD="POST" ACTION="?m=useredit&id={$userinfo.id}{if $recover}&action=recover{/if}"><INPUT TYPE="HIDDEN" NAME="userdata[id]" VALUE="{$userinfo.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
@@ -215,7 +215,7 @@
 		</TD>
 	</TR>
 </TABLE>
-</FORM></P>
+</FORM>
 <SCRIPT language="javaScript">
 <!--
 document.forms['useredit'].elements['userdata[lastname]'].focus();
