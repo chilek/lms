@@ -85,7 +85,7 @@ elseif(isset($userdata))
 		$error['pin'] = trans('Incorrect PIN code!');
 
 	if($userdata['status']!=3&&$LMS->GetUserNodesNo($userdata['id'])) 
-		$error['status'] = trans('Only connected user can own computers!');
+		$error['status'] = trans('Only customer with status \'connected\' can own computers!');
 		
 	if (!isset($error)){
 		$LMS->UserUpdate($userdata);
@@ -111,7 +111,7 @@ elseif(isset($userdata))
 		$userinfo['shownodes'] = TRUE;
 }
 
-$layout['pagetitle'] = trans('User Data Edit: $0',$userinfo['username']);
+$layout['pagetitle'] = trans('Customer Data Edit: $0',$userinfo['username']);
 
 $SMARTY->assign('usernodes',$LMS->GetUserNodes($userinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($userinfo['id']));

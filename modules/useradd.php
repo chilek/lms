@@ -63,7 +63,7 @@ elseif(isset($useradd))
 		$error['gguin'] = trans('Incorrect IM uin!');
 
         if($useradd['pin']!=0 && !eregi('^[0-9]{4,6}$',$useradd['pin']))
-	        $error['pin'] = trans('Incorrect PIN!');
+	        $error['pin'] = trans('Incorrect PIN code!');
 
 	if($useradd['email']!='' && !check_email($useradd['email']))
 		$error['email'] = trans('Incorrect email!');
@@ -90,7 +90,7 @@ if(!isset($useradd['city']))
 if(!isset($useradd['address']))	
 	$useradd['address'] = $LMS->CONFIG['phpui']['default_address'];
 
-$layout['pagetitle'] = trans('New User');
+$layout['pagetitle'] = trans('New Customer');
 
 $SMARTY->assign('useradd',$useradd);
 $SMARTY->assign('error',$error);
