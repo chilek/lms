@@ -60,7 +60,7 @@
 			</row>
 			<row>
 			<entry>lms-traffic-logiptables</entry>
-			<entry>Wspó³praca lms-traffic z iptables</entry>
+			<entry>Statystyki ³±cza dla iptables</entry>
 			</row>
 			<row>
 			<entry>lms-makearp</entry>
@@ -338,16 +338,11 @@ http://www.naszasiec.pl/</screen></example>
 	<para>Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
 	przez ka¿dy komputer z sieci lokalnej, na podstawie liczników iptables. Dane 
 	sczytuje z firewalla, tworz±c jednocze¶nie odpowiednie regu³y. Zatem, nie jest 
-	konieczne rêczne tworzenie regu³ iptables. Dane zapisywane s± do pliku o 
-	formacie wymaganym przez <filename>lms-traffic</filename>.
+	konieczne rêczne tworzenie regu³ iptables, ani wywo³ywanie skryptu  
+	<filename>lms-traffic</filename>.
 	</para>
 	<para>Konfiguracjê nale¿y umie¶ciæ w sekcji <emphasis>[traffic-logiptables]</emphasis>:
 	    <itemizedlist>
-        	<listitem>
-		    <para>logfile</para>
-		    <para>Lokalizacja pliku na dane. Domy¶lnie: niezdefiniowana.</para>
-		    <para>Przyk³ad:	<prompt>logfile = /var/log/traffic.log</prompt></para>
-		</listitem>
            	<listitem>
 		    <para>outfile</para>
 		    <para>Lokalizacja skryptu z regu³ami iptables. Domy¶lnie: /etc/rc.d/rc.stat</para>
