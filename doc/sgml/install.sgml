@@ -412,11 +412,6 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
     <para>Przyk³ad:	<prompt>debug_email = root@localhost</prompt></para>
    </listitem>
    <listitem>
-    <para>enable_stats</para>
-    <para>W³±czenie/wy³±czenie dostêpno¶ci w menu modu³u 'traffic'. Domy¶lnie wy³±czone.</para>
-    <para>Przyk³ad:	<prompt>enable_stats = 1</prompt></para>
-   </listitem>
-   <listitem>
     <para>default_zip, default_city, default_address</para>
     <para>Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
     u¿ytkownika. Przydatne gdy mamy do wpisania wielu u¿ytkowników z tej samej ulicy.</para>
