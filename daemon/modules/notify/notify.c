@@ -23,6 +23,8 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <syslog.h>
 #include <string.h>
 #include <sys/types.h>
@@ -30,7 +32,7 @@
 #include <fcntl.h>
 #include <time.h>
 
-#include "almsd.h"
+#include "lmsd.h"
 #include "notify.h"
 
 #define BUFFERSIZE 1024
@@ -45,7 +47,7 @@ unsigned char * load_file(unsigned char *name)
 	if(fd == -1) 
 		return (NULL);
 
-//warning this could be done in a better way.
+	//warning this could be done in a better way.
 	while( (n = read(fd, buffer, BUFFERSIZE)) > 0 ) {
 		unsigned char *ret0 =  (unsigned char *) realloc(ret, (n + l + 1));
 		if(!ret0) { 
@@ -72,7 +74,7 @@ int write_file(unsigned char *name, unsigned char *text)
 	if(fd == -1) 
 		return (-1);
 
-//warning this could be done in a better way.
+	//warning this could be done in a better way.
 	while( (n = write(fd, text, l)) > 0 ) {
 		l -= n;
 		text += n;
@@ -90,63 +92,62 @@ unsigned char *utoc(unsigned long unixdate)
 	time_t datevalue = (time_t) unixdate;
 	unsigned char *text = (unsigned char *) malloc(11);
 
-	strftime(text, 11, "%d.%m.%Y", localtime(&datevalue)); 
+	strftime(text, 11, "%Y/%m/%d", localtime(&datevalue)); 
 	return text;
 }
 
 void reload(GLOBAL *g, struct notify_module *n)
 {
-	QUERY_HANDLE *res, *result;
+	QueryHandle *res, *result;
 	unsigned char *mailfile = 0;
 	unsigned char *command;
 	int i, j, balance;
 
-	if ( (res = g->db_query("SELECT users.id AS id, email, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 AND email!='' GROUP BY users.id, name, lastname, email"))!=NULL ) {
+	res = g->db_query(g->conn, "SELECT users.id AS id, email, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 AND email!='' GROUP BY users.id, name, lastname, email");
 	
-		for(i=0; i<res->nrows; i++) 
+	if( g->db_nrows(res) )
+	{
+		for(i=0; i<g->db_nrows(res); i++) 
 		{
 			balance = atoi(g->db_get_data(res,i,"balance"));
 			
 			if( balance < n->limit ) 
 			{
-			
 				command = strdup(n->command);
 				mailfile = load_file(n->mailtemplate);
 			
 				if( mailfile ) 
 				{
-					if( strstr(mailfile, "%last_10_in_a_table") ) {
-						
-						unsigned char *select, *date, *value, *comment, *temp, *temp2;
+					if( strstr(mailfile, "%last_10_in_a_table") )
+					{
+						unsigned char *date, *value, *comment, *temp, *temp2;
 						unsigned char *last_ten = strdup("");
 							
-						select = strdup("SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value FROM cash WHERE userid = %id ORDER BY time DESC LIMIT 10");
-						g->str_replace(&select, "%id", g->db_get_data(res,i,"id"));
+						result = g->db_pquery(g->conn, "SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value FROM cash WHERE userid = ? ORDER BY time DESC LIMIT 10", g->db_get_data(res,i,"id"));
 						
-						if( (result = g->db_query(select))!=NULL ) 
+						for(j=0; j<g->db_nrows(result); j++) 
 						{
-							for(j=0; j<result->nrows; j++) 
-							{
-								date = utoc(atof(g->db_get_data(result,j,"time")));
-								value = g->db_get_data(result,j,"value");
-								comment = g->db_get_data(result,j,"comment");
-							
-								temp = (unsigned char *) malloc(strlen(date)+strlen(value)+strlen(comment)+12);	
-								sprintf(temp, "%s\t | %s\t\t | %s\n", date, value, comment);
-							
-								temp2 = g->str_concat(last_ten, temp);
-								free(last_ten);
-								last_ten = strdup(temp2);
-								free(temp2);
-								free(temp);
-								free(date);
-							}
-															g->db_free(result);
+							date = utoc(atof(g->db_get_data(result,j,"time")));
+							value = g->db_get_data(result,j,"value");
+							comment = g->db_get_data(result,j,"comment");
+						
+							temp = (unsigned char *) malloc(strlen(date)+strlen(value)+strlen(comment)+12);	
+							sprintf(temp, "%s\t | %s\t\t | %s\n", date, value, comment);
+						
+							temp2 = g->str_concat(last_ten, temp);
+							free(last_ten);
+							last_ten = strdup(temp2);
+							free(temp2);
+							free(temp);
+							free(date);
 						}
+															
 						g->str_replace(&mailfile, "%last_10_in_a_table", last_ten);
+						
+						g->db_free(&result);
 						free(last_ten);
-						free(select);
 					}
+					
 					g->str_replace(&mailfile, "%saldo", g->db_get_data(res,i,"balance"));
 					g->str_replace(&mailfile, "%name", g->db_get_data(res,i,"name"));
 					g->str_replace(&mailfile, "%lastname", g->db_get_data(res,i,"lastname"));
@@ -164,7 +165,6 @@ void reload(GLOBAL *g, struct notify_module *n)
 				free(command);
 			}
 		}
-		g->db_free(res);
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/notify] reloaded",n->base.instance);
 #endif
@@ -172,6 +172,7 @@ void reload(GLOBAL *g, struct notify_module *n)
 	else
 		syslog(LOG_ERR, "[%s/notify] Unable to read database", n->base.instance);
 
+	g->db_free(&res);
 	free(n->command);
 	free(n->file);
 	free(n->mailtemplate);
@@ -181,35 +182,22 @@ void reload(GLOBAL *g, struct notify_module *n)
 struct notify_module * init(GLOBAL *g, MODULE *m)
 {
 	struct notify_module *n;
-	unsigned char *instance, *s;
-	dictionary *ini;
 
-	if(g->api_version != APIVERSION) 
+	if(g->api_version != APIVERSION)
+	{
 		return (NULL);
-	
-	instance = m->instance;
+	}
 	
 	n = (struct notify_module*) realloc(m, sizeof(struct notify_module));
 	
 	n->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
-	n->base.instance = strdup(instance);
-	
-	ini = g->iniparser_load(g->inifile);
 
-	s = g->str_concat(instance, ":template");
-	n->mailtemplate = strdup(g->iniparser_getstring(ini, s, ""));
-	free(s); s = g->str_concat(instance, ":file");
-	n->file = strdup(g->iniparser_getstring(ini, s, "/tmp/mail"));
-	free(s); s = g->str_concat(instance, ":command");
-	n->command = strdup(g->iniparser_getstring(ini, s, "mail -s \"Liabilities information\" %address < /tmp/mail"));
-	free(s); s = g->str_concat(instance, ":limit");
-	n->limit = g->iniparser_getint(ini, s, 0);
-	free(s); s = g->str_concat(instance, ":debug_mail");
-	n->debugmail = strdup(g->iniparser_getstring(ini, s, ""));
+	n->mailtemplate = strdup(g->config_getstring(n->base.ini, n->base.instance, "template", ""));
+	n->file = strdup(g->config_getstring(n->base.ini, n->base.instance, "file", "/tmp/mail"));
+	n->command = strdup(g->config_getstring(n->base.ini, n->base.instance, "command", "mail -s \"Liabilities information\" %address < /tmp/mail"));
+	n->limit = g->config_getint(n->base.ini, n->base.instance, "limit", 0);
+	n->debugmail = strdup(g->config_getstring(n->base.ini, n->base.instance, "debug_mail", ""));
 
-	g->iniparser_freedict(ini);
-	free(instance);
-	free(s);
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/notify] initialized",n->base.instance);		
 #endif	
