@@ -7,12 +7,12 @@
 <TABLE width="1%" cellpadding="3" border="0">
 	<TR class="dark">
 		<TD class="fall" nowrap colspan="2" nowrap>
-			<NOBR><img src="img/pass.gif" border="0" align="absmiddle" ALT=""> <B>Podaj nowe has³o:</B></NOBR>
+			<NOBR><img src="img/pass.gif" border="0" align="absmiddle" ALT=""> <B>{t}Enter new password:{/t}</B></NOBR>
 		</TD>
 	</TR>
 	<TR class="light">
 		<TD class="fleft" align="right" nowrap>
-			<NOBR><B>Nowe has³o:</B></NOBR>
+			<NOBR><B>{t}New password:{/t}</B></NOBR>
 		</TD>
 		<TD class="fright" nowrap>
 			<input type="password" name="passwd[passwd]" value="{$account.passwd1}" {tip trigger="passwd"}>
@@ -20,7 +20,7 @@
 	</TR>
 	<TR class="light">
 		<TD class="fleft" align="right" nowrap>
-			<NOBR><B>Powtórz:</B></NOBR>
+			<NOBR><B>{t}Repeat:{/t}</B></NOBR>
 		</TD>
 		<TD class="fright" nowrap>
 			<input type="password" name="passwd[confirm]" value="{$account.passwd2}" {tip trigger="passwd"}>
@@ -29,7 +29,7 @@
 	</TR>
 	<TR class="light">
 		<TD class="fbottomu" align="right" colspan="2">
-			<A href="javascript:document.password.submit();" accesskey="s">Zmieñ has³o <img src="img/pass.gif" border="0" align="absmiddle" ALT=""></A>
+			<A href="javascript:document.password.submit();" accesskey="s">{t}Save{/t} <img src="img/pass.gif" border="0" align="absmiddle" ALT=""></A>
 		</TD>
 	</TR>
 		

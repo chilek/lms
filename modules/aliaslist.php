@@ -79,68 +79,6 @@ function GetAliasList($order='login,asc', $user=NULL, $kind=NULL, $domain='')
 	return $list;
 }
 
-function AliasExists($login, $account)
-{
-	global $LMS;
-	return ($LMS->DB->GetOne('SELECT id FROM aliases WHERE login = ? AND accountid = ?', array($login, $account)) ? TRUE : FALSE);
-}
-
-function AccountExistsInDomain($login, $domain)
-{
-	global $LMS;
-	return ($LMS->DB->GetOne('SELECT id FROM passwd WHERE login = ? AND domainid = ?', array($login, $domain)) ? TRUE : FALSE);
-}
-
-function AliasExistsInDomain($login, $domain)
-{
-	global $LMS;
-	return ($LMS->DB->GetOne('SELECT 1 FROM aliases, passwd WHERE accountid = passwd.id AND aliases.login = ? AND domainid = ?', array($login, $domain)) ? TRUE : FALSE);
-}
-
-if($aliasadd = $_POST['aliasadd']) 
-{
-	$aliasadd['login'] = trim($aliasadd['login']);
-
-	if($aliasadd['login']=='' && $aliasadd['accountid']==0)
-	{
-		header('Location: ?m=aliaslist');
-		die;
-	}
-	
-	if($aliasadd['login'] == '')
-		$error['login'] = trans('You must specify alias name!');
-	elseif(!eregi("^[a-z0-9._-]+$", $aliasadd['login']))
-    	    $error['login'] = trans('Login contains forbidden characters!');
-	elseif($aliasadd['accountid'])
-	{
-		if(AliasExists($aliasadd['login'], $aliasadd['accountid']))
-			$error['login'] = trans('This account have alias with specified name!');
-		else
-		{
-			$domain = $LMS->DB->GetOne('SELECT domainid FROM passwd WHERE id = ?', array($aliasadd['accountid']));
-			
-			if($aliasadd['accountid'] && AliasExistsInDomain($aliasadd['login'], $domain))
-				$error['login'] = trans('In that domain exists alias with specified login!');
-			elseif($aliasadd['accountid'] && AccountExistsInDomain($aliasadd['login'], $domain))
-				$error['login'] = trans('In that domain exists account with specified login!');
-		}
-	}
-		
-	if(!$aliasadd['accountid'])
-		$error['accountid'] = trans('You must select account for alias!');
-	
-	if(!$error)
-	{
-		$LMS->DB->Execute('INSERT INTO aliases (login, accountid) VALUES (?,?)',
-				    array($aliasadd['login'], $aliasadd['accountid']));
-		$LMS->SetTS('aliases');
-		unset($aliasadd['login']);
-	}
-}	
-
-if($accountid = $_GET['accountid'])
-	$aliasadd['accountid'] = $accountid;
-
 if(!isset($_GET['o']))
 	$o = $_SESSION['alo'];
 else
@@ -174,7 +112,7 @@ $start = ($page - 1) * $pagelimit;
 
 $_SESSION['allp'] = $page;
 
-$layout['pagetitle'] = trans('Aliases Management');
+$layout['pagetitle'] = trans('Aliases List');
 
 $aliaslist = GetAliasList($o, $u, $k, $d);
 $listdata['total'] = $aliaslist['total'];
@@ -196,7 +134,6 @@ $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('aliaslist', $aliaslist);
-$SMARTY->assign('aliasadd', $aliasadd);
 $SMARTY->assign('error', $error);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
