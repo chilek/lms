@@ -6,6 +6,16 @@ version 1.2.0 Janet (??/04/2004):
   - postgres specific query bugfixes in lms-notify (alec)
   - fixed removing positions from invoices (alec)
   - in payments modules added options 'deadline' and 'paytype' (alec)
+  - null taxvalue for tariffs and invoices, database upgrade needed (alec)
+    MySQL:
+	ALTER TABLE tariffs CHANGE taxvalue taxvalue decimal(9,2) NULL DEFAULT '0.00'; 
+	ALTER TABLE invoicecontents ALTER taxvalue taxvalue decimal(9,2) NULL DEFAULT '0.00';
+    PostgreSQL:
+	ALTER TABLE tariffs ALTER taxvalue DROP NOT NULL; 
+	ALTER TABLE tariffs ALTER taxvalue SET DEFAULT 0; 
+	ALTER TABLE invoicecontents ALTER taxvalue DROP NOT NULL;
+	ALTER TABLE invoicecontents ALTER taxvalue SET DEFAULT 0; 
+
 
 version 1.2.0rc4 Janet (29/03/2004):
 

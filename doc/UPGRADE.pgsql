@@ -126,7 +126,6 @@ ALTER TABLE cash ALTER COLUMN invoiceid SET NOT NULL;
 ALTER TABLE tariffs ADD taxvalue decimal(9,2);
 UPDATE tariffs SET taxvalue = 0;
 ALTER TABLE tariffs ALTER COLUMN taxvalue SET DEFAULT 0;
-ALTER TABLE tariffs ALTER COLUMN taxvalue SET NOT NULL;
 ALTER TABLE tariffs ADD	pkwiu varchar(255);
 ALTER TABLE tariffs ALTER COLUMN pkwiu SET DEFAULT NULL;
 
@@ -152,7 +151,7 @@ CREATE TABLE invoices (
 CREATE TABLE invoicecontents (
 	invoiceid integer NOT NULL,
 	value numeric(9,2) NOT NULL,
-	taxvalue numeric(9,2) NOT NULL,
+	taxvalue numeric(9,2) DEFAULT '0',
 	pkwiu varchar(255) DEFAULT NULL,
 	content varchar(16) NOT NULL,
 	count numeric(9,2) NOT NULL,

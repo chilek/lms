@@ -91,7 +91,7 @@ CREATE TABLE tariffs (
 	id integer DEFAULT nextval('tariffs_id_seq'::text) NOT NULL,
 	name varchar(255) NOT NULL,
 	value numeric(9,2) DEFAULT 0 NOT NULL,
-	taxvalue numeric(9,2) DEFAULT 0 NOT NULL,
+	taxvalue numeric(9,2) DEFAULT 0,
 	pkwiu varchar(255) DEFAULT NULL,
 	uprate integer,
 	downrate integer,
@@ -146,7 +146,7 @@ CREATE TABLE invoices (
 CREATE TABLE invoicecontents (
 	invoiceid integer NOT NULL,
 	value numeric(9,2) NOT NULL,
-	taxvalue numeric(9,2) NOT NULL,
+	taxvalue numeric(9,2) DEFAULT 0,
 	pkwiu varchar(255) DEFAULT NULL,
 	content varchar(16) NOT NULL,
 	count numeric(9,2) NOT NULL,
