@@ -290,7 +290,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 	$row = $dbq->fetchrow_hashref();
 	$ticket_id = $row->{'id'};
 
-	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, userid, subject, messageid, headers, body, createtime) VALUES ($ticket_id, '$mh_from', $reqcustid, '$mh_subject', '$mh_msgid', '$mailheaders', '$mailbody', $timestamp)");	
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, replyto, userid, subject, messageid, headers, body, createtime) VALUES ($ticket_id, '$mh_from', '$mh_replyto', $reqcustid, '$mh_subject', '$mh_msgid', '$mailheaders', '$mailbody', $timestamp)");	
 	$dbq->execute();
 
 	# i think that this expr should be enought to fetch id of previously inserted message
