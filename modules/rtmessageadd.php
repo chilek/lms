@@ -130,7 +130,7 @@ if(isset($message))
 				if($LMS->CONFIG['phpui']['debug_email'])
 					$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
 				$recipients = $message['destination'];
-				$message['mailfrom'] = $queue['email'] ? $queue['email'] : $admin['email'];
+				$message['mailfrom'] = $admin['email'] ? $admin['email'] : $queue['email'];
 
 				$headers['Date'] = date('D, d F Y H:i:s T');
 				$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
@@ -144,9 +144,11 @@ if(isset($message))
 				$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
 				$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
 
-				$body = $message['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
-					.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
-					.'?m=rtticketview&id='.$message['ticketid'];
+				$body = $message['body'];
+				if ($message['destination'] == $queue['email'] || $message['destination'] == $admin['email'])
+					$body .= "\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+						.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+						.'?m=rtticketview&id='.$message['ticketid'];
 				$files = NULL;
 				if ($file)
 				{
@@ -197,9 +199,11 @@ if(isset($message))
 			$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
 			$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
 			
-			$body = $message['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
-				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
-				.'?m=rtticketview&id='.$message['ticketid'];
+			$body = $message['body'];
+			if ($message['destination'] == $queue['email'] || $message['destination'] == $admin['email'])
+				$body .= "\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
+					.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
+					.'?m=rtticketview&id='.$message['ticketid'];
 			$files = NULL;
 			if ($file)
 			{
