@@ -85,9 +85,10 @@
 			{$queue[ticket].lastmodified|date_format:"%Y/%m/%d %H:%M:%S"|default:"-"}
 			{if $queue[ticket].state == 0 || $queue[ticket].state == 3}</FONT>{/if}
 		</TD>
-		<TD class="fright" align="right">
+		<TD class="fright" align="right" NOWRAP>
 			<A href="?m=rtticketview&id={$queue[ticket].id}"><IMG src="img/info.gif" alt="[ Info ]" border="0" align="absmiddle"></A>
 			<A href="?m=rtticketedit&id={$queue[ticket].id}"><IMG src="img/edit.gif" alt="[ Edytuj ]" border="0" align="absmiddle"></A>
+			<A href="?m=rtticketprint&id={$queue[ticket].id}" target="_BLANK"><IMG src="img/print.gif" alt="[ Drukuj ]" border="0" align="absmiddle"></A>
 		</TD>
 	</TR>
 	{sectionelse}
