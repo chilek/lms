@@ -156,6 +156,16 @@ CREATE TABLE assignments (
    KEY id_2 (id)
 ) TYPE=MyISAM;
 
+# Informacje o bazie
+CREATE TABLE dbinfo (
+    keytype VARCHAR(255) NOT NULL default '',
+    keyvalue VARCHAR(255) NOT NULL default '',
+    PRIMARY KEY (keytype),
+    UNIQUE KEY keytype (keytype),
+    KEY keytype_2 (keytype)
+) TYPE=MyISAM;
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004030400');		  
+
 # Chyba o niczym nie zapomnia³em?
 
 # $Id$
