@@ -56,10 +56,10 @@ $access[table][8][name]         = "dostêp do korespondencji seryjnej";
 $access[table][8][allow_reg]    = "^(mailing|mailingsend)$";
 
 $access[table][9][name]         = "zarz±dzanie Helpdeskiem (RT)";
-$access[table][9][allow_reg]    = "^((rtqueue|rtticket|rtmessage)(add|del|edit|info|view|list))$";
+$access[table][9][allow_reg]    = "^(rtsearch|(rtqueue|rtticket|rtmessage)(add|del|edit|info|view|list))$";
 
 $access[table][10][name]        = "obs³uga Helpdesku (RT)";
-$access[table][10][allow_reg]   = "^(rtqueue(list|info|view)|(rtticket|rtmessage)(add|del|edit|info|view))$";
+$access[table][10][allow_reg]   = "^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage)(add|edit|info|view))$";
 
 $access[table][253][name]	= "brak dostêpu do modyfikacji i zak³adania nowych kont administratorów";
 $access[table][253][deny_reg]	= "^(admin(add|del|edit|passwd))$";
