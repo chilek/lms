@@ -32,33 +32,33 @@ if(isset($adminadd))
 	foreach($adminadd as $key => $value)
 		$adminadd[$key] = trim($value);
 	
-	if($adminadd['login']==""&&$adminadd['name']==""&&$adminadd['password']==""&&$adminadd['confirm']=="")
+	if($adminadd['login']=='' && $adminadd['name']=='' && $adminadd['password']=='' && $adminadd['confirm']=='')
 	{
-		header("Location: ?m=adminadd");
+		header('Location: ?m=adminadd');
 		die;
 	}
 	
 	if($LMS->GetAdminIDByLogin($adminadd['login']))
-		$error['login'] = "Podany login istnieje!";
+		$error['login'] = 'Podany login istnieje!';
 	elseif(!eregi("^[a-z0-9.-_]+$",$adminadd['login']))
-		$error['login'] = "Login zawiera niepoprawne znaki!";
+		$error['login'] = 'Login zawiera niepoprawne znaki!';
 
-	if($adminadd['email']!="" && !check_email($adminadd['email']))
-		$error['email'] = "Podany email nie wydaje siê byæ poprawny!";
+	if($adminadd['email']!='' && !check_email($adminadd['email']))
+		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
 
-	if($adminadd['password']=="")
-		$error['password'] = "Has³o nie mo¿e byæ puste!";
+	if($adminadd['password']=='')
+		$error['password'] = 'Has³o nie mo¿e byæ puste!';
 	elseif($adminadd['password']!=$adminadd['confirm'])
-		$error['password'] = "Has³a nie s± takie same!";
+		$error['password'] = 'Has³a nie s± takie same!';
 
 	// zróbmy maskê ACL...
 
 	for($i=0;$i<256;$i++)
-		$mask .= "0";
+		$mask .= '0';
 
 	foreach($access['table'] as $idx => $row)
-		if($acl[$idx]=="1")
-			$mask[255-$idx] = "1";
+		if($acl[$idx]=='1')
+			$mask[255-$idx] = '1';
 
 	for($i=0;$i<256;$i += 4)
 		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
@@ -67,22 +67,22 @@ if(isset($adminadd))
 
 	if(!$error)
 	{
-		header("Location: ?m=admininfo&id=".$LMS->AdminAdd($adminadd));
+		header('Location: ?m=admininfo&id='.$LMS->AdminAdd($adminadd));
 		die;
 	}
 }
 foreach($access['table'] as $idx => $row)
 {
 	$row['id'] = $idx;
-	if($acl[$idx] == "1")
+	if($acl[$idx] == '1')
 		$row['enabled'] = TRUE;
 	$accesslist[] = $row;
 }
 
-$layout['pagetitle'] = "Nowy administrator";
-$SMARTY->assign('adminadd',$adminadd);
-$SMARTY->assign('error',$error);
-$SMARTY->assign('accesslist',$accesslist);
+$layout['pagetitle'] = 'Nowy administrator';
+$SMARTY->assign('adminadd', $adminadd);
+$SMARTY->assign('error', $error);
+$SMARTY->assign('accesslist', $accesslist);
 $SMARTY->display('adminadd.html');
 
 ?>

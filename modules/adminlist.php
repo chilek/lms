@@ -24,7 +24,9 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Administratorzy";
+$layout['pagetitle'] = 'Administratorzy';
+
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
 $SMARTY->assign('adminslist',$LMS->GetAdminList());
 $SMARTY->display('adminlist.html');
