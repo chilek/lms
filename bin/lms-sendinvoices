@@ -106,10 +106,6 @@ my $sender_name = $ini->val('sendinvoices', 'sender_name') || '';
 my $sender_email = $ini->val('sendinvoices', 'sender_email') || '';
 my $filetype = $ini->val('invoices', 'type') || '';
 
-# very ugly code, but we really need tempdir..
-# 
-my $tmpdir = (defined $ini->val('sendinvoices', 'tmp_dir') && ! ($ini->val('sendinvoices', 'tmp_dir') eq '')) || (defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '') ? $ENV{'TMP'} : '/tmp');
-
 if(!$sender_name)
 {
 	print STDERR "Fatal error: sender_name unset! Can't continue, exiting.\n";
