@@ -49,7 +49,8 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 		    if( atoi(g->db_get_data(res,i,"access")) )
 			    fprintf(fh, "%s\t%s\n", inet_ntoa(inet_addr(g->db_get_data(res,i,"ipaddr"))), g->db_get_data(res,i,"mac"));
 		    else
-			    fprintf(fh, "%s\t00:00:00:00:00:00\n", inet_ntoa(inet_addr(g->db_get_data(res,i,"ipaddr"))));	
+			    if( fm->dummy_macs )
+				    fprintf(fh, "%s\t00:00:00:00:00:00\n", inet_ntoa(inet_addr(g->db_get_data(res,i,"ipaddr"))));	
 		
     	    g->db_free(res);
 	}	
@@ -89,6 +90,8 @@ struct ethers_module * init(GLOBAL *g, MODULE *m)
 	fm->file = strdup(g->iniparser_getstring(ini, s, "/tmp/ethers"));
 	free(s); s = g->str_concat(instance, ":command");
 	fm->command = strdup(g->iniparser_getstring(ini, s, ""));
+	free(s); s = g->str_concat(instance, ":dummy_macs");	
+	fm->dummy_macs = g->iniparser_getboolean(ini,s,0);
 	
 	g->iniparser_freedict(ini);
 	free(instance);
