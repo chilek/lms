@@ -171,7 +171,9 @@ class LMS
 		tariff=?,
 		moddate=".$this->sqlTSfmt().",
 		modid=?,
-		info=? WHERE id=?",
+		info=?,
+		lastname=?,
+		name=? WHERE id=?",
 		array(
 			$userdata[status],
 			$userdata[phone1],
@@ -186,6 +188,8 @@ class LMS
 			$userdata[tariff],
 			$this->SESSION->id,
 			$userdata[uwagi],
+			strtoupper($userdata[lastname]),
+			$userdata[name],
 			$userdata[id]
 		     )
 			);
@@ -818,6 +822,10 @@ class LMS
 
 			case "gg":
 				$sqlord = "ORDER BY gguin, lastname, name, id";
+			break;
+
+			case "nip":
+				$sqlord = "ORDER BY nip, lastname, name, id";
 			break;
 			
 			default:
