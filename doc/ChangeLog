@@ -50,6 +50,8 @@ wersja 1.5.3 (??/??/????):
     przepisy prawne (alec)
   - poprawiona walidacja NIPu przy edycji i dodawaniu u¿ytkownika (alec)
   - contrib/formularz_przelewu_wplaty_2 (lexx)
+  - lms-mgc ignoruje wpis node(x.x.x.x) je¿eli host x.x.x.x nie istnieje
+    (dzwonus/lukasz)
 
 wersja 1.5.2 Isis (25/11/2004):
 
