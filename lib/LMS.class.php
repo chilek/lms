@@ -1778,18 +1778,30 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function SetBalanceZero($user_id)
 	{
 		$this->SetTS('cash');
-		foreach(array('22.0', '7.0', '0.0', 'zw.') as $key)
+		
+		$stan = array(
+				'22.0' => $this->GetUserBalance($user_id, '22.0'),
+				'7.0' => $this->GetUserBalance($user_id, '7.0'),
+				'0.0' => $this->GetUserBalance($user_id, '0.0'),
+				'zw.' => $this->GetUserBalance($user_id, 'zw.')
+		);
+		asort($stan);
+		
+		foreach($stan as $key => $val)
 		{
-			$stan=$this->GetUserBalance($user_id, $key);
-			if ($stan < 0)
-			{
-				$stan=-$stan;
-				if ($key == 'zw.')
-					$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?)', array($this->SESSION->id, 3 , round("$stan",2) , $user_id, 'Rozliczono'));
-				else
-					$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)', array($this->SESSION->id, 3 , round("$stan",2) , $key, $user_id, 'Rozliczono'));
-				}
-			}
+			if(($balance = $this->GetUserBalance($user_id)) >= 0)
+				break;
+		
+			if($balance > $val)
+				$val = -($balance);
+			else		
+				$val = -$val;
+	
+			if ($key == 'zw.')
+				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?)', array($this->SESSION->id, 3 , round($val,2) , $user_id, 'Rozliczono'));
+			else
+				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)', array($this->SESSION->id, 3 , round($val,2) , $key, $user_id, 'Rozliczono'));
+		}
 		return $ret;
 	}
 
