@@ -111,18 +111,20 @@
 	{/if}
 	<TR class="light">
 		<TD colspan="4" width="4%" align="right" class="fleftu" NOWRAP>
-			<B>Przychód:</B><BR>
-			<B>Zobowi±zania u¿ytkowników:</B><BR>
+			<B>Zobowi±zania u¿ytkowników:</B><HR>
 			<B>Wp³aty u¿ytkowników:</B><BR>
+			<B>Przychód:</B><BR>
 			<B>Rozchód:</B><HR>
 			<B>Razem:</B>
 		</TD>
 		<TD width="1%" nowrap class="fbt" align="right">
-			<NOBR>{$listdata.income|string_format:"%01.2f"} z³<BR>
-			{$listdata.uinvoice|string_format:"%01.2f"} z³<BR>
+			<NOBR>
+			{$listdata.uinvoice|string_format:"%01.2f"} z³<HR>
 			{$listdata.incomeu|string_format:"%01.2f"} z³<BR>
+			{$listdata.income|string_format:"%01.2f"} z³<BR>
 			{$listdata.expense|string_format:"%01.2f"} z³<HR>
-			{$listdata.total|string_format:"%01.2f"} z³</NOBR>
+			{$listdata.total|string_format:"%01.2f"} z³
+			</NOBR>
 		</TD>
 		<TD width="95%" colspan="5" class="frightu">
 			&nbsp;
