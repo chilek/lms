@@ -150,7 +150,8 @@ class LMS
 		$this->ADB->CommitTrans();		
 		fclose($file);
 
-		// Okej, zróbmy parê bzdurek db depend :S
+		// Okej, zróbmy parê bzdurek db depend :S 
+		// Postgres sux ! (warden)
 
 		switch($this->ADB->databaseType)
 		{
@@ -200,9 +201,9 @@ class LMS
 
 	function DatabaseDelete($dbtime) // usuwa plik ze zrzutem
 	{
-		if(file_exists($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql'))
+		if(@file_exists($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql'))
 		{
-			return unlink($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
+			return @unlink($this->CONFIG[backup_dir].'/lms-'.$dbtime.'.sql');
 		}
 		else
 			return FALSE;
@@ -240,7 +241,9 @@ class LMS
 
 	function GetAdminList() // zwraca listê administratorów
 	{
-		if($adminslist = $this->ADB->GetAll("SELECT id, login, name, lastlogindate, lastloginip FROM admins ORDER BY login ASC"))
+	    
+	    $query = "SELECT id, login, name, lastlogindate, lastloginip FROM admins ORDER BY login ASC";
+	    if($adminslist = $this->ADB->GetAll($query))
 		{
 			foreach($adminslist as $idx => $row)
 			{
@@ -415,14 +418,14 @@ class LMS
 	{
 		if($return = $this->ADB->GetRow("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid FROM users WHERE id=?",array($id)))
 		{
-			$return[createdby] = $this->GetAdminName($return[creatorid]);
-			$return[modifiedby] = $this->GetAdminName($return[modid]);
-			$return[creationdateh] = date("Y-m-d, H:i",$return[creationdate]);
-			$return[moddateh] = date("Y-m-d, H:i",$return[moddate]);
-			$return[tariffvalue] = $this->GetTariffValue($return[tariff]);
-			$return[tariffname] = $this->GetTariffName($return[tariff]);
-			$return[balance] = $this->GetUserBalance($return[id]);
-			return $return;
+			$result[createdby] = $this->GetAdminName($result[creatorid]);
+			$result[modifiedby] = $this->GetAdminName($result[modid]);
+			$result[creationdateh] = date("Y-m-d, H:i",$result[creationdate]);
+			$result[moddateh] = date("Y-m-d, H:i",$result[moddate]);
+			$result[tariffvalue] = $this->GetTariffValue($result[tariff]);
+			$result[tariffname] = $this->GetTariffName($result[tariff]);
+			$result[balance] = $this->GetUserBalance($result[id]);
+			return $result;
 		}else
 			return FALSE;
 	}
@@ -456,10 +459,7 @@ class LMS
 	
 		list($order,$direction)=explode(",",$order);
 
-		if($direction != "desc")
-			$direction = "asc";
-		else
-			$direction = "desc";
+		($direction != "desc") ? $direction = "asc" : $direction = "desc";
 		
 		switch($order){
 			
@@ -582,10 +582,7 @@ class LMS
 	
 		list($order,$direction)=explode(",",$order);
 
-		if($direction != "desc")
-			$direction = "asc";
-		else
-			$direction = "desc";
+		($direction != "desc")  ? $direction = "asc" : $direction = "desc";
 		
 		switch($order){
 			
@@ -659,10 +656,7 @@ class LMS
 					$blst[value][] = $value[balance];
 				}
 				
-				if($direction=="desc")
-					array_multisort($blst[value],SORT_NUMERIC,SORT_DESC,$blst[key]);
-				else
-					array_multisort($blst[value],SORT_NUMERIC,SORT_ASC,$blst[key]);
+				($direction=="desc") ? array_multisort($blst[value],SORT_NUMERIC,SORT_DESC,$blst[key]) : array_multisort($blst[value],SORT_NUMERIC,SORT_ASC,$blst[key]);
 
 				foreach($blst[key] as $value)
 				{
@@ -720,18 +714,13 @@ class LMS
 		if(sizeof($saldolist[id]) > 0){
 			foreach($saldolist[id] as $i => $v)
 			{
-				if($i>0) $saldolist[before][$i] = $saldolist[after][$i-1];
-				else $saldolist[before][$i] = 0;
+				($i>0) ? $saldolist[before][$i] = $saldolist[after][$i-1] : $saldolist[before][$i] = 0;
 			
 				$saldolist[adminname][$i] = $adminslist[$saldolist[adminid][$i]];
-				$saldolist[value][$i]=round($saldolist[value][$i],3);	
+				$saldolist[value][$i] = round($saldolist[value][$i],3);	
 
-				if (strlen($saldolist[comment][$i])<3)
-					$saldolist[comment][$i] = $saldolist[name][$i];
-				else
-					$saldolist[comment][$i] =  $saldolist[comment][$i];
-
-					
+				(strlen($saldolist[comment][$i])<3) ? $saldolist[comment][$i] = $saldolist[name][$i] : $saldolist[comment][$i] =  $saldolist[comment][$i];
+	
 				switch ($saldolist[type][$i]){
 
 					case "3":
@@ -748,10 +737,8 @@ class LMS
 				}
 					
 				$saldolist[date][$i]=date("Y/m/d H:i",$saldolist[time][$i]);
-				if (strlen($saldolist[comment][$i])<3)
-					$saldolist[comment][$i] = $saldolist[name][$i];
-				else
-					$saldolist[comment][$i] =  $saldolist[comment][$i];
+				// nie chce mi sie czytac, ale czy to nie jest pare linii wy¿ej ?
+				(strlen($saldolist[comment][$i])<3) ? $saldolist[comment][$i] = $saldolist[name][$i] : $saldolist[comment][$i] =  $saldolist[comment][$i];
 			}
 				
 			$saldolist[balance] = $saldolist[after][sizeof($saldolist[id])-1];
@@ -881,10 +868,7 @@ class LMS
 
 		list($order,$direction) = explode(",",$order);
 
-		if($direction=="desc")
-			$direction = "DESC";
-		else
-			$direction = "ASC";
+		($direction=="desc") ? $direction = "DESC" : $direction = "ASC";
 
 		switch($order)
 		{
@@ -911,10 +895,7 @@ class LMS
 			{
 				$nodelist[$idx][iplong] = ip_long($row[ipaddr]);
 				$nodelist[$idx][owner] = $usernames[$row[ownerid]];
-				if($row[access]=="Y")
-					$totalon++;
-				else
-					$totaloff++;
+				($row[access]=="Y") ? $totalon++ : $totaloff++;
 			}			
 		}
 
@@ -968,10 +949,7 @@ class LMS
 
 		list($order,$direction) = explode(",",$order);
 
-		if($direction=="desc")
-			$direction = "DESC";
-		else
-			$direction = "ASC";
+		($direction=="desc") ? $direction = "DESC" : $direction = "ASC";
 
 		switch($order)
 		{
@@ -1007,10 +985,7 @@ class LMS
 			{
 				$nodelist[$idx][iplong] = ip_long($row[ipaddr]);
 				$nodelist[$idx][owner] = $usernames[$row[ownerid]];
-				if($row[access]=="Y")
-					$totalon++;
-				else
-					$totaloff++;
+				($row[access]=="Y") ? $totalon++ : $totaloff++;
 			}			
 		}
 
@@ -1143,10 +1118,10 @@ class LMS
 	
 	function TariffDelete($id)
 	{
-		if(!$this->GetUsersWithTariff($id))
-			return $this->ADB->Execute("DELETE FROM tariffs WHERE id=?",array($id));
-		else
-			return FALSE;
+		 if (!$this->GetUsersWithTariff($id)) 
+		 return $this->ADB->Execute("DELETE FROM tariffs WHERE id=?",array($id));
+		 else
+		 return FALSE;
 	}
 
 	function GetTariffValue($id)
