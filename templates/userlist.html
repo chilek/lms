@@ -21,7 +21,6 @@
 			<a href="?m=userlist&s={$listdata.state}&o=nip{if $listdata.direction eq "asc" && $listdata.order eq "nip"},desc{/if}">NIP:</A> {if $listdata.order eq "nip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 		</TD>
 		<TD width="1%" class="fbt" ALIGN="right" VALIGN="TOP">
-			<img src="img/money.gif" alt="" align="absmiddle">
 			<a href="?m=userlist&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">Saldo:</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			Abonament:
 		</TD>
