@@ -37,12 +37,11 @@ if($LMS->UserExists($_GET['id']) == 0)
 }
 
 $userinfo = $LMS->GetUser($_GET['id']);
-$userinfo['username'] = ucwords(strtolower($userinfo['username']));
 $assigments = $LMS->GetUserAssignments($_GET['id']);
 $usernodes = $LMS->GetUserNodes($_GET['id']);
 $tariffs = $LMS->GetTariffs();
-
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$userinfo['username'] = ucwords(strtolower($userinfo['username']));
 
 $usernodes['ownerid'] = $_GET['id'];
 $SMARTY->assign(

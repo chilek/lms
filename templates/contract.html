@@ -1,0 +1,172 @@
+<html>
+<head>
+<title>Umowa</title>
+{literal}
+<STYLE type="text/css"><!--
+BODY		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+H1		{ font-size: 14pt; text-align: center; }
+H2		{ font-size: 12pt; text-align: center; color: red;}
+TD		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+TABLE		{ border-collapse: collapse; }
+P		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align: center; }
+//-->
+</STYLE>
+{/literal}
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
+</head>
+<body>
+<h1>UMOWA NA ŚWIADCZENIE USŁUGI DOSTĘPU DO SIECI INTERNET</h1>
+<h2>Uwaga! To jest przykładowy szablon umowy. Aby zastąpić go swoim, wyedytuj 
+plik contract.html znajdujący się w katalogu templates</h2>
+<p>Zawarta w dniu {$smarty.now|date_format:"%d-%m-%Y"} w <s>Miasto</s> pomiędzy 
+<s>Naszą firmą</s> z siedzibą w <s>Siedziba</s> wpisanym do rejestru KRS pod 
+numerem <s>Numer</s>, NIP <s>Nip</s> zwanym dalej Usługodawcą reprezentowanym 
+przez: {$layout.logname} a: </p>
+<TABLE BORDER="0">
+    <TR>
+	<TD>Nazwisko, imię:</TD>
+	<TD>{$userinfo.username}</TD>
+    </TR>
+    <TR>
+	<TD VALIGN="TOP">Adres:</TD> 
+	<TD>{$userinfo.address}<br>{$userinfo.zip} {$userinfo.city}</TD>
+    </TR>
+    <TR>
+	<TD>PESEL:</TD>
+	<TD>{$userinfo.pesel}</TD>
+    </TR>
+</TABLE>
+
+<p>Zwanym dalej Usługobiorcą o następującej treści:</p>
+
+<TABLE BORDER="0" WIDTH="100%">
+    <TR>
+	<TD VALIGN="top">&sect;1.</TD>
+	<TD VALIGN="top">Na mocy niniejszej umowy Usługodawca zobowiązuje się do świadczenia 
+	    usług zgodnych ze specyfikacją &sect;8 w następującej lokalizacji:
+	    {$userinfo.address} {$userinfo.zip} {$userinfo.city}
+	</TD>
+    </TR>
+    <TR>
+	<TD VALIGN="top">&sect;2.</TD>
+	<TD VALIGN="top">Usługobiorca zobowiązuje się do opłacania abonamentu ustalonego 
+	    przez strony w &sect;8 umowy.
+	</TD>
+    </TR>
+    <TR>
+	<TD VALIGN="top">&sect;3.</TD>
+	<TD VALIGN="top">Umowa została zawarta na czas nieokreślony.
+	</TD>
+    </TR>
+    <TR>
+	<TD VALIGN="top">&sect;4.</TD>
+	<TD VALIGN="top">W sprawach nie uregulowanych niniejszą umową 
+	    zastosowanie mają przepisy Kodeksu Cywilnego.
+	</TD>
+    </TR>
+    <TR>
+	<TD VALIGN="top">&sect;5.</TD>
+	<TD VALIGN="top">Wszelkie zmiany warunków umowy wymagają dla swej 
+	    ważności formy pisemnej.
+	</TD>
+    </TR>
+    <TR>
+	<TD VALIGN="top">&sect;6.</TD>
+	<TD VALIGN="top">Umowę sporządzono w dwóch jednobrzmiących egzemplarzach,
+	    po jednym dla każdej ze stron.
+	</TD>
+    </TR>
+    <TR>
+	<TD VALIGN="top">&sect;7.</TD>
+	<TD VALIGN="top">Usługobiorca oświadcza, że wszystkie podane dane osobowe są zgodne z prawdą i wyraża zgodę na ich przetwarzanie dla celów 
+	    realizacji niniejszej umowy. Usługodawca gwarantuje zachowanie poufności danych osobowych zawartych w niniejszej 
+	    umowie z wyjątkiem sytuacji przewidzianych przepisami prawa zgodnie z ustawą z dnia 29 sierpnia 1997 roku o ochronie 
+	    danych osobowych (Dz. U. Nr 133, poz. 883).
+	</TD>
+    </TR>
+    <TR>
+	<TD VALIGN="top">&sect;8.</TD>
+	<TD VALIGN="top">
+SPECYFIKACJA USŁUGI <br>
+Strony uzgodniły obowiązujące opłaty za następujące usługi: 
+
+<TABLE cellpadding="3" cellspacing="0" border="1">
+    <TR>
+	<TD NOWRAP>Usługa:</TD>
+	<TD NOWRAP ALIGN="RIGHT">Wartość:</TD>
+	<TD NOWRAP>Płatność:</TD>
+	<TD NOWRAP>Okres:</TD>
+    </TR>
+    {foreach from=$assignments item=a}
+    <TR>
+	<TD NOWRAP>{$a.name}</TD>
+	<TD NOWRAP ALIGN="RIGHT">{$a.value|string_format:"%01.2f"} zł</TD>
+	<TD NOWRAP>{$a.period}</TD>
+	<TD>
+	od: {if $a.datefrom}{$a.datefrom|date_format:"%Y/%m/%d"}{else}-{/if}
+	do: {if $a.dateto}{$a.dateto|date_format:"%Y/%m/%d"}{else}-{/if}
+	</TD>
+    </TR>
+    {/foreach}
+    <TR>
+	<TD ALIGN="RIGHT">Razem:</TD>
+	<TD NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format="%01.2f"} zł</TD>
+	<TD>&nbsp;</TD>
+	<TD>&nbsp;</TD>
+    </TR>
+</TABLE>
+
+	
+	</TD>
+    </TR>
+    <TR>
+	<TD VALIGN="top">&sect;9.</TD>
+	<TD VALIGN="top">PODŁĄCZONE URZĄDZENIA<br>
+	    Usługodawca zobowiązuje się do zapewnienia dostępu do sieci 
+	    internet następującym komputerom/urządzeniom końcowym przy użyciu
+	    następujących adresów:
+<TABLE cellpadding="3" cellspacing="0" border="1">
+    <TR>
+	<TD>Nazwa:</TD>
+	<TD>Adres IP:</TD>
+	<TD>Adres MAC:</TD>
+    </TR>
+    {section name=usernodes loop=$usernodes}
+    {if $usernodes[usernodes].name}
+    <TR>
+	<TD>{$usernodes[usernodes].name}</TD>
+	<TD>{$usernodes[usernodes].ip}</TD>
+	<TD>{$usernodes[usernodes].mac}</TD>
+    </TR>
+    {/if}
+    {/section}
+</TABLE>
+
+	</TD>
+    </TR>
+    <TR>
+	<TD VALIGN="top">&sect;10.</TD>
+	<TD VALIGN="top">W kontaktach z Biurem Obsługi Klienta Usługobiorca 
+	    zobowiązany jest do podawania Identyfikatora Użytkownika: {$userinfo.id|string_format:"%04d"}
+	    oraz numeru PIN: {$userinfo.pin}
+	</TD>
+    </TR>
+	
+    
+</TABLE>
+
+<BR><BR>
+
+<TABLE WIDTH="100%">
+    <TR>
+	<TD WIDTH="50%" ALIGN="CENTER">.............................................</TD>
+	<TD WIDTH="50%" ALIGN="CENTER">.............................................</TD>
+    </TR>
+    <TR>
+	<TD ALIGN="CENTER">USŁUGOBIORCA</TD>
+	<TD ALIGN="CENTER">USŁUGODAWCA</TD>
+    </TR>
+</TABLE>
+</body>
+</html>
+
