@@ -44,6 +44,8 @@ wersja 1.5.1 (??/??/????):
   - naprawione sumowanie w kolumnie 0% w rejestrze sprzeda¿y (alec)
   - poprawione b³êdy w pinger.h uniemo¿liwiaj±ce kompilacjê na niektórych
     wersjach glibca (alec)
+  - BTS#0000221: dodany monit o potwierdzenie rozliczenia faktury (alec)
+  - usuniête przekierowanie do listy faktur po dodaniu faktury (alec)
   
 wersja 1.5.0 Marduk (18/09/2004):
 

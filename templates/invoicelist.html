@@ -35,6 +35,8 @@
 
 	function pays()
 	{
+		if(! confirm('Czy na pewno chcesz rozliczyæ WSZYSTKIE wybrane faktury?'))
+			return;
 		document.page.action="?m=invoicepaid&id=multi";
 		document.page.target="";
 		document.page.submit();
@@ -67,14 +69,14 @@
 		document.page.target="";
 		document.page.submit();
 	}
-
+/*
 	if({/literal}'{$openonload}'{literal} != '')
 	{
 		document.page.action="?m=invoice&id={/literal}{$openonload}{literal}";
 		document.page.target="_blank";
 		document.page.submit();
 	}
-	
+*/	
 	//-->
 </SCRIPT>
 {/literal}
