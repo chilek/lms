@@ -3,33 +3,38 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <table cellpadding="3" width="100%">
-	<TR class="dark" {tip text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
+	<TR class="dark" {tip text="Click on column's name to change sorting order"}>
 		<TD class="fleftu" width="97%">
-			<img src="img/node.gif" border="0" ALT="" align="absmiddle"> <A href="?m=nodesearch&search&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>Nazwa:</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/user.gif" border="0" ALT="" align="absmiddle"> <A href="?m=nodesearch&search&o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">W³a¶ciciel:</A> {if $listdata.order eq "owner"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<img src="img/node.gif" border="0" ALT="" align="absmiddle"> <A href="?m=nodesearch&search&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/user.gif" border="0" ALT="" align="absmiddle"> <A href="?m=nodesearch&search&o=owner{if $listdata.direction eq "asc" && $listdata.order eq "owner"},desc{/if}">{t}Owner:{/t}</A> {if $listdata.order eq "owner"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD Class="fbt" align="right" valign="top" width="1%" nowrap>
-			<img src="img/empty.gif" align="absmiddle" ALT="" border="0" width="1" height="16"><A href="?m=nodesearch&search&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/empty.gif" align="absmiddle" ALT="" border="0" width="1" height="16"><A href="?m=nodesearch&search&o=ownerid{if $listdata.direction eq "asc" && $listdata.order eq "ownerid"},desc{/if}">ID w³a¶ciciela:</A> {if $listdata.order eq "ownerid"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<img src="img/empty.gif" align="absmiddle" ALT="" border="0" width="1" height="16"><A href="?m=nodesearch&search&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/empty.gif" align="absmiddle" ALT="" border="0" width="1" height="16"><A href="?m=nodesearch&search&o=ownerid{if $listdata.direction eq "asc" && $listdata.order eq "ownerid"},desc{/if}">{t}Owner ID:{/t}</A> {if $listdata.order eq "ownerid"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD CLASS="fbt" width="1%">
-			<img src="img/ip.gif" border="0" ALT="" align="absmiddle">&nbsp;<A href="?m=nodesearch&search&o=ip{if $listdata.direction eq "asc" && $listdata.order eq "ip"},desc{/if}">Adres&nbsp;IP:</A> {if $listdata.order eq "ip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/mac.gif" border="0" ALT="" align="absmiddle">&nbsp;<A href="?m=nodesearch&search&o=mac{if $listdata.direction eq "asc" && $listdata.order eq "mac"},desc{/if}">Adres&nbsp;MAC:</A> {if $listdata.order eq "mac"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<img src="img/ip.gif" border="0" ALT="" align="absmiddle">&nbsp;<A href="?m=nodesearch&search&o=ip{if $listdata.direction eq "asc" && $listdata.order eq "ip"},desc{/if}">{t}IP address:{/t}</A> {if $listdata.order eq "ip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/mac.gif" border="0" ALT="" align="absmiddle">&nbsp;<A href="?m=nodesearch&search&o=mac{if $listdata.direction eq "asc" && $listdata.order eq "mac"},desc{/if}">{t}MAC address:{/t}</A> {if $listdata.order eq "mac"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right">
-			<NOBR><B>Razem: {$listdata.total}</B></NOBR>
+			<NOBR><B>{t 0=$listdata.total}Total: $0{/t}</B></NOBR>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
 		<TD CLASS="fall" colspan="4">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m=nodesearch&search&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$nodelist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=nodesearch&search&o={$listdata.order},{$listdata.direction|lower}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=nodesearch&search&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+			</B> 
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
 		</TD>
 	</TR>
 	{/if}
@@ -52,42 +57,47 @@
 		</TD>
 		<TD class="fright" width="1%">
 			<nobr>
-			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" border="0" ALT="{if ! $nodelist[nodelist].access}[ Od³±cz ]{else}[ Pod³±cz ]{/if}"></A>
-			<a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" border="0" ALT="{if ! $nodelist[nodelist].warning}[ Ostrzegaj ]{else}[ Nie ostrzegaj ]{/if}"></A>
-			<a href="?m=nodedel&id={$nodelist[nodelist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ komputer \'{$nodelist[nodelist].name|upper}\' z bazy danych?')"><img src="img/delete.gif" border="0" ALT="[ Usuñ ]"></A>
-			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" border="0" ALT="[ Edytuj ]"></A>
-			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" border="0" ALT="[ Info ]"></A>
+			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if ! $nodelist[nodelist].access}no{/if}access.gif" border="0" ALT="{if ! $nodelist[nodelist].access}[ {t}Disconnect{/t} ]{else}[ {t}Connect{/t} ]{/if}"></A>
+			<a href="?m=nodewarn&id={$nodelist[nodelist].id}"><img src="img/warning{if ! $nodelist[nodelist].warning}off{else}on{/if}.gif" border="0" ALT="{if ! $nodelist[nodelist].warning}[ {t}Enable warnings{/t} ]{else}[ {t}Disable warnings{/t} ]{/if}"></A>
+			<a href="?m=nodedel&id={$nodelist[nodelist].id}" onClick="return confirmLink(this, '{t 0=$nodelist[nodelist].name|upper}Are you sure, you want to delete node \'$0\' from database?{/t}')"><img src="img/delete.gif" border="0" ALT="[ {t}Delete{/t} ]"></A>
+			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" border="0" ALT="[ {t}Edit{/t} ]"></A>
+			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" border="0" ALT="[ {t}Info{/t} ]"></A>
 			</nobr>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD colspan="4" class="fall" align="center">
-			<p>&nbsp;</p>
-			<p><B>Nie znaleziono ¿adnych komputerów spe³niaj±cych podane kryteria.</b></p>
-			<p>&nbsp;</p>
+			<P>&nbsp;</P>
+			<P><B>{t}No such nodes complying searching conditions.{/t}</B></P>
+			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/section}
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
 		<TD CLASS="fall" colspan="4">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m=nodesearch&search&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$nodelist step=$pagelimit}  
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=nodesearch&search&o={$listdata.order},{$listdata.direction|lower}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=nodesearch&search&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
-			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+			</B>
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.total}
+				{assign var=endx value=$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.total}records $0 - $1 of $2{/t})
 		</TD>
 	</TR>
 	{/if}
 	<TR CLASS="light">
 		<TD WIDTH="98%" COLSPAN="2" CLASS="fleftu" ALIGN="right">
 			<B>
-				Razem:<BR>
-				Pod³±czonych:<BR>
-				Od³±czonych:
+				{t}Total:{/t}<BR>
+				{t}Connected:{/t}<BR>
+				{t}Disconnected:{/t}
 			</B>
 		</TD>
 		<TD WIDTH="2%" COLSPAN="2" CLASS="frightu" VALIGN="TOP">

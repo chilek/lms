@@ -8,10 +8,10 @@
 		<TD WIDTH="1%" CLASS="fleftu">
 			<IMG SRC="img/payment.gif" ALT="" ALIGN="ABSMIDDLE">
 		</TD>
-		<TD WIDTH="1%" CLASS="fbt"><B>Nazwa:</B>
+		<TD WIDTH="1%" CLASS="fbt"><B>{t}Name:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="frightu" COLSPAN="2" NOWRAP>
-			<INPUT TYPE="text" NAME="payment[name]" VALUE="{$payment.name|escape}" {tip text="Wpisz nazwê" trigger="name" bold=1}>
+			<INPUT TYPE="text" NAME="payment[name]" VALUE="{$payment.name|escape}" {tip text="Enter standing payment name" trigger="name" bold=1}>
 			<B>&nbsp;({$payment.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
@@ -20,20 +20,20 @@
 			<IMG SRC="img/creditor.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Wierzyciel:</B>
+			<B>{t}Creditor:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<INPUT TYPE="TEXT" SIZE="50" NAME="payment[creditor]" VALUE="{$payment.creditor}" {tip text="Wpisz nazwê wierzyciela" trigger="creditor"}>
+			<INPUT TYPE="TEXT" SIZE="50" NAME="payment[creditor]" VALUE="{$payment.creditor}" {tip text="Enter creditor name" trigger="creditor"}>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/value.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
-		<TD WIDTH="1%"><B>Warto¶æ (z³):</B>
+		<TD WIDTH="1%"><B>{t}Value:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<INPUT TYPE="text" NAME="payment[value]" VALUE="{$payment.value|string_format:"%01.2f"}" SIZE="8" {tip text="Wpisz kwotê" trigger="value"}>
+			<INPUT TYPE="text" NAME="payment[value]" VALUE="{$payment.value|string_format:"%01.2f"}" SIZE="8" {tip text="Enter value" trigger="value"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -41,16 +41,16 @@
 			<IMG SRC="img/calendar.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Dzieñ naliczenia:</B>
+			<B>{t}Accounting day:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">								
-			<SELECT SIZE="1" NAME="payment[period]" {tip text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
-				<OPTION VALUE="0" {if $payment.period eq 0}SELECTED{/if}>co tydzieñ</OPTION>
-				<OPTION VALUE="1" {if $payment.period eq 1}SELECTED{/if}>co miesi±c</OPTION>
-				<OPTION VALUE="2" {if $payment.period eq 2}SELECTED{/if}>co kwarta³</OPTION>
-				<OPTION VALUE="3" {if $payment.period eq 3}SELECTED{/if}>co rok</OPTION>
+			<SELECT SIZE="1" NAME="payment[period]" {tip text="Select accounting frequency"}>
+				<OPTION VALUE="0" {if $payment.period eq 0}SELECTED{/if}>{t}weekly{/t}</OPTION>
+				<OPTION VALUE="1" {if $payment.period eq 1}SELECTED{/if}>{t}monthly{/t}</OPTION>
+				<OPTION VALUE="2" {if $payment.period eq 2}SELECTED{/if}>{t}quarterly{/t}</OPTION>
+				<OPTION VALUE="3" {if $payment.period eq 3}SELECTED{/if}>{t}yearly{/t}</OPTION>
 			</SELECT>&nbsp;
-    			<INPUT TYPE="TEXT" NAME="payment[at]" VALUE="{$payment.at}"{tip text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28), dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia), a dla kwartalnej DD/MM (MM <= 3)." trigger="at"} SIZE="5">
+    			<INPUT TYPE="TEXT" NAME="payment[at]" VALUE="{$payment.at}"{tip text="Enter when to account payment. For weekly payment enter day of week (Monday = 1), for monthly payment enter day of month (from 1 to 28), for yearly payment enter month and day in format DD/MM (15/09 means 15 September), and quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="5">
 		</TD>
 	</TR>	
 	<TR CLASS="light">	
@@ -58,17 +58,17 @@
 			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Opis:</B>
+			<B>{t}Description:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			<TEXTAREA NAME="payment[description]" COLS="50" ROWS="5" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>{$payment.description}</TEXTAREA>
+			<TEXTAREA NAME="payment[description]" COLS="50" ROWS="5" {tip text="Enter additional informations (optional)"}>{$payment.description}</TEXTAREA>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="3">
-			<A HREF="javascript:document.paymentedit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=paymentdel&id={$payment.id}">Usuñ <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=paymentlist">Anuluj <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> 
+			<A HREF="javascript:document.paymentedit.submit();" ACCESSKEY="S">{t}Save{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=paymentdel&id={$payment.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=paymentlist">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> 
 		</TD>
 	</TR>
 </TABLE>
