@@ -38,15 +38,42 @@ nowy.
 function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 {
 //	$fields[] = array( 'x' => -1, 'y' => 1 );
-	$fields[] = array( 'x' => 0, 'y' => 1 );
-	$fields[] = array( 'x' => 1, 'y' => 1 );     
-	$fields[] = array( 'x' => 1, 'y' => 0 );
-	$fields[] = array( 'x' => 1, 'y' => -1 );
-	$fields[] = array( 'x' => 0, 'y' => -1 );
-	$fields[] = array( 'x' => -1, 'y' => -1 );
-	$fields[] = array( 'x' => -1, 'y' => 0 );
-	$fields[] = array( 'x' => -1, 'y' => 1 );
+	$fields[] = array( 'x' => 0, 'y' => 5 );
+	$fields[] = array( 'x' => 5, 'y' => 5 );     
+	$fields[] = array( 'x' => 5, 'y' => 0 );
+	$fields[] = array( 'x' => 5, 'y' => -5 );
+	$fields[] = array( 'x' => 0, 'y' => -5 );
+	$fields[] = array( 'x' => -5, 'y' => -5 );
+	$fields[] = array( 'x' => -5, 'y' => 0 );
+	$fields[] = array( 'x' => -5, 'y' => 5 );
 
+	unset($nodefields);
+
+	$nodefields[] = array( 'x' => -2, 'y' => 2 );
+	$nodefields[] = array( 'x' => -1, 'y' => 2 );
+	$nodefields[] = array( 'x' => 0, 'y' => 2 );
+	$nodefields[] = array( 'x' => 1, 'y' => 2 );
+	$nodefields[] = array( 'x' => 2, 'y' => 2 );
+	$nodefields[] = array( 'x' => 2, 'y' => 1 );
+	$nodefields[] = array( 'x' => 2, 'y' => 0 );
+	$nodefields[] = array( 'x' => 2, 'y' => -1 );
+	$nodefields[] = array( 'x' => 2, 'y' => -2 );
+	$nodefields[] = array( 'x' => 1, 'y' => -2 );
+	$nodefields[] = array( 'x' => 0, 'y' => -2 );
+	$nodefields[] = array( 'x' => -1, 'y' => -2 );
+	$nodefields[] = array( 'x' => -2, 'y' => -2 );
+	$nodefields[] = array( 'x' => -2, 'y' => -1 );
+	$nodefields[] = array( 'x' => -2, 'y' => 0 );
+	$nodefields[] = array( 'x' => -2, 'y' => 1 );
+	$nodefields[] = array( 'x' => -1, 'y' => 1 );
+	$nodefields[] = array( 'x' => 0, 'y' => 1 );
+	$nodefields[] = array( 'x' => 1, 'y' => 1 );
+	$nodefields[] = array( 'x' => 1, 'y' => 0 );
+	$nodefields[] = array( 'x' => 1, 'y' => -1 );
+	$nodefields[] = array( 'x' => 0, 'y' => -1 );
+	$nodefields[] = array( 'x' => -1, 'y' => -1 );
+	$nodefields[] = array( 'x' => -1, 'y' => 0 );
+	
 	if($device == 0)
 	{
 		$device = $DB->GetOne('SELECT id FROM netdevices ORDER BY id ASC');
@@ -85,6 +112,23 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 					makemap($DB, $map, $seen, $deviceid, $tx, $ty);
 			}				
 		}
+
+		if($nodes = $DB->GetCol("SELECT id FROM nodes WHERE netdev=? ORDER BY name ASC",array($device)))
+		{
+			foreach($nodes as $nodeid)
+			{
+				$ntx = NULL;
+				$nty = NULL;
+				for($i=0;$i < sizeof($nodefields);$i++)
+					if($ntx == NULL && $nty == NULL && $map[$x + $nodefields[$i][x]][$y + $nodefields[$i][y]] == NULL)
+					{
+						$ntx = $x + $nodefields[$i][x];
+						$nty = $y + $nodefields[$i][y];
+					}
+				if($ntx != NULL && $nty != NULL)
+					$map[$ntx][$nty] = 'n'.$nodeid.'.'.$device;
+			}
+		}
 	}
 }
 
@@ -98,7 +142,7 @@ if($_GET[graph] == "")
 	$SMARTY->display('netdevmap.html');
 }
 else
-{
+{	
 	$start = sprintf('%d',$_GET[start]);
 	makemap($DB,$map,$seen,$start);
 	foreach($map as $idx => $x)
@@ -125,12 +169,12 @@ else
 	header('Content-type: image/png');
 	$widthx = $maxx - $minx;
 	$widthy = $maxy - $miny;
-	$cellw = 200;
-	$cellh = 80;
+	$cellw = 70;
+	$cellh = 30;
 	$celltmargin = 10;
 	$celllmargin = 10;
-	$imgwx = $cellw * ($widthx + 1);
-	$imgwy = $cellh * ($widthy + 1);
+	$imgwx = $cellw * ($widthx + 2);
+	$imgwy = $cellh * ($widthy + 2);
 
 	$im = imagecreatetruecolor($imgwx, $imgwy);
 	$lightbrown = imagecolorallocate($im, 234,228,214);
@@ -139,6 +183,7 @@ else
 	$red = imagecolorallocate($im, 255,0,0);
 	$green = imagecolorallocate($im, 0,128,0);
 	$blue = imagecolorallocate($im, 0,0,255);
+	$darkred = imagecolorallocate($im, 128,0,0);
 
 	imagefill($im,0,0,$lightbrown);
 
@@ -146,16 +191,22 @@ else
 	{
 		foreach($x as $idy => $device)
 		{
-		//	echo "$idx/$idy/$device<BR>";
 			$celx = $idx - $minx;
 			$cely = $idy - $miny;
-		//	$px = (($celx * ($cellw + 1)) + $celllmargin);
-		//	$py = (($cely * ($cellh + 1)) + $celltmargin);
-			$devicemap[$device][x] = $celx;
-			$devicemap[$device][y] = $cely;
-		//	imagesetpixel($im, $px, $py, $red);
-		//	imagestring($im, 3, $px + 5, $py - 5, $device, $blue);
-		//	imagestring($im, 3, $px + 5, $py - 15, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($device)), $black);
+			if(eregi('^n',$device))
+			{
+				
+				$device = str_replace('n','',$device);
+				list($nodeid,$device) = explode('.',$device);
+				$nodemap[$nodeid][x] = $celx;
+				$nodemap[$nodeid][y] = $cely;
+				$nodemap[$nodeid][device] = $device;
+			}
+			else
+			{
+				$devicemap[$device][x] = $celx;
+				$devicemap[$device][y] = $cely;
+			}
 		}
 	}
 
@@ -171,9 +222,39 @@ else
 		$dst_px = (($dst_celx * $cellw) + $celllmargin);
 		$dst_py = (($dst_cely * $cellh) + $celltmargin);
 		imageline($im, $src_px+8, $src_py+8, $dst_px+8, $dst_py+8, $green);
+		imageline($im, $src_px+9, $src_py+9, $dst_px+9, $dst_py+9, $green);
+	}
+
+	foreach($nodemap as $node)
+	{
+		$src_celx = $node[x];
+		$src_cely = $node[y];
+		$dst_celx = $devicemap[$node[device]][x];
+		$dst_cely = $devicemap[$node[device]][y];
+		$src_px = (($src_celx * $cellw) + $celllmargin);
+		$src_py = (($src_cely * $cellh) + $celltmargin);
+		$dst_px = (($dst_celx * $cellw) + $celllmargin);
+		$dst_py = (($dst_cely * $cellh) + $celltmargin);
+		imageline($im, $src_px+4, $src_py+4, $dst_px+4, $dst_py+4, $red);
 	}
 
 	$im_nd = imagecreatefromgif('img/netdev.gif');
+	$im_n = imagecreatefromgif('img/node.gif');
+
+//	print_r($nodemap);
+	
+	foreach($nodemap as $nodeid => $node)
+	{
+		$celx = $node[x];
+		$cely = $node[y];
+		$px = (($celx * ($cellw)) + $celllmargin);
+		$py = (($cely * ($cellh)) + $celltmargin);
+		imagecopy($im,$im_n,$px,$py,0,0,15,16);
+//		imagestring($im, 1, $px + 20, $py - 8, $nodeid.' ('.$celx.','.$cely.')', $blue);
+		imagestring($im, 1, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM nodes WHERE id=?',array($nodeid)), $black);
+	}
+				
+		
 
 	foreach($devicemap as $deviceid => $device)
 	{
@@ -182,8 +263,8 @@ else
 		$px = (($celx * ($cellw)) + $celllmargin);
 		$py = (($cely * ($cellh)) + $celltmargin);
 		imagecopy($im,$im_nd,$px,$py,0,0,16,16);
-		imagestring($im, 3, $px + 20, $py - 8, $deviceid, $blue);
-		imagestring($im, 3, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), $black);
+//		imagestring($im, 1, $px + 20, $py - 8, $deviceid.' ('.$celx.','.$cely.')', $blue);
+		imagestring($im, 3, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), $darkred);
 	}
 	
 	
