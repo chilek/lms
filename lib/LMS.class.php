@@ -306,6 +306,14 @@ class LMS
 		{
 			foreach($adminslist as $idx => $row)
 			{
+				if($row['id']==$this->SESSION->id)
+				{
+					$row['lastlogindate'] = $this->SESSION->last;
+					$adminslist[$idx]['lastlogindate'] = $this->SESSION->last;
+					$row['lastloginip'] = $this->SESSION->lastip;
+					$adminslist[$idx]['lastloginip'] = $this->SESSION->lastip;
+				}
+				
 				if($row['lastlogindate'])
 					$adminslist[$idx]['lastlogin'] = date('Y/m/d H:i',$row['lastlogindate']);
 				else
@@ -366,6 +374,12 @@ class LMS
 	{
 		if($admininfo = $this->DB->GetRow('SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted FROM admins WHERE id=?', array($id)))
 		{
+			if($admininfo['id']==$this->SESSION->id)
+			{
+				$admininfo['lastlogindate'] = $this->SESSION->last;
+				$admininfo['lastloginip'] = $this->SESSION->lastip;
+			}
+
 			if($admininfo['lastlogindate'])
 				$admininfo['lastlogin'] = date('Y/m/d H:i',$admininfo['lastlogindate']);
 			else
@@ -375,7 +389,6 @@ class LMS
 				$admininfo['faillogin'] = date('Y/m/d H:i',$admininfo['failedlogindate']);
 			else
 				$admininfo['faillogin'] = '-';
-
 
 			if(check_ip($admininfo['lastloginip']))
 				$admininfo['lastloginhost'] = gethostbyaddr($admininfo['lastloginip']);
