@@ -240,8 +240,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 		// set timestamps
 		if( exec) {
 			g->db_exec("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
-			g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('cash', ?NOW?)");
-			g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('_global', ?NOW?)");
+			g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('cash', %NOW%)");
+			g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('_global', %NOW%)");
 		}
 		free(y_period);
 		free(m_period);

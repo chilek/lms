@@ -86,7 +86,7 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 					
 					if( atoi(download) || atoi(upload) ) { // write not null data
 					
-						insert = strdup("INSERT INTO stats (nodeid, dt, download, upload) VALUES (%nodeid, ?NOW?, %download, %upload)"); 
+						insert = strdup("INSERT INTO stats (nodeid, dt, download, upload) VALUES (%nodeid, %NOW%, %download, %upload)"); 
 						g->str_replace(&insert, "%nodeid", itoa(k));
 						g->str_replace(&insert, "%download", download);
 						g->str_replace(&insert, "%upload", upload);
