@@ -37,18 +37,18 @@ class LMS
 {
 
 	var $DB;			// database object
-	var $SESSION;			// object from Session.class.php (session management)
+	var $AUTH;			// object from Session.class.php (session management)
 	var $CONFIG;			// table including lms.ini options
 	var $_version = '1.5-cvs';	// class version
 	var $_revision = '$Revision$';
 	var $MENU = array();
 
-	function LMS(&$DB, &$SESSION, &$CONFIG) // ustawia zmienne klasy
+	function LMS(&$DB, &$AUTH, &$CONFIG) // ustawia zmienne klasy
 	{
-		if($SESSION !== NULL)
+		if($AUTH !== NULL)
 		{
-			$this->SESSION = &$SESSION;
-			$this->modules[] = 'SESSION';
+			$this->AUTH = &$AUTH;
+			$this->modules[] = 'AUTH';
 		}
 		$this->DB = &$DB;
 		$this->CONFIG = &$CONFIG;
@@ -136,7 +136,7 @@ class LMS
 		if( $loglevel <= $this->CONFIG['phpui']['loglevel'] && $message )
 		{
 			$this->DB->Execute('INSERT INTO syslog (time, adminid, level, message)
-					    VALUES (?NOW?, ?, ?, ?)', array($this->SESSION->id, $loglevel, $message));
+					    VALUES (?NOW?, ?, ?, ?)', array($this->AUTH->id, $loglevel, $message));
 			//I think, we can ommit SetTS('syslog')
 		}
 	}
@@ -245,12 +245,12 @@ class LMS
 		{
 			foreach($adminslist as $idx => $row)
 			{
-				if($row['id']==$this->SESSION->id)
+				if($row['id']==$this->AUTH->id)
 				{
-					$row['lastlogindate'] = $this->SESSION->last;
-					$adminslist[$idx]['lastlogindate'] = $this->SESSION->last;
-					$row['lastloginip'] = $this->SESSION->lastip;
-					$adminslist[$idx]['lastloginip'] = $this->SESSION->lastip;
+					$row['lastlogindate'] = $this->AUTH->last;
+					$adminslist[$idx]['lastlogindate'] = $this->AUTH->last;
+					$row['lastloginip'] = $this->AUTH->lastip;
+					$adminslist[$idx]['lastloginip'] = $this->AUTH->lastip;
 				}
 				
 				if($row['lastlogindate'])
@@ -313,10 +313,10 @@ class LMS
 	{
 		if($admininfo = $this->DB->GetRow('SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted FROM admins WHERE id=?', array($id)))
 		{
-			if($admininfo['id']==$this->SESSION->id)
+			if($admininfo['id']==$this->AUTH->id)
 			{
-				$admininfo['lastlogindate'] = $this->SESSION->last;
-				$admininfo['lastloginip'] = $this->SESSION->lastip;
+				$admininfo['lastlogindate'] = $this->AUTH->last;
+				$admininfo['lastloginip'] = $this->AUTH->lastip;
 			}
 
 			if($admininfo['lastlogindate'])
@@ -418,7 +418,7 @@ class LMS
 
 	function UserAdd($useradd)
 	{
-		if($this->DB->Execute('INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info, serviceaddr, message, pin) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)', array(ucwords($useradd['name']),  $useradd['lastname'], $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->SESSION->id, $useradd['info'], $useradd['serviceaddr'], $useradd['message'], $useradd['pin']))) {
+		if($this->DB->Execute('INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info, serviceaddr, message, pin) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?, ?, ?)', array(ucwords($useradd['name']),  $useradd['lastname'], $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->AUTH->id, $useradd['info'], $useradd['serviceaddr'], $useradd['message'], $useradd['pin']))) {
 			$this->SetTS('users');
 			return $this->DB->GetOne('SELECT MAX(id) FROM users');
 		} else
@@ -439,7 +439,7 @@ class LMS
 	function UserUpdate($userdata)
 	{
 		$this->SetTS('users');
-		return $this->DB->Execute('UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, pin=? WHERE id=?', array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['pesel'], $this->SESSION->id, $userdata['info'], $userdata['serviceaddr'], $userdata['lastname'], ucwords($userdata['name']), $userdata['message'], $userdata['pin'], $userdata['id'] ) );
+		return $this->DB->Execute('UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, serviceaddr=?, lastname=UPPER(?), name=?, deleted=0, message=?, pin=? WHERE id=?', array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['pesel'], $this->AUTH->id, $userdata['info'], $userdata['serviceaddr'], $userdata['lastname'], ucwords($userdata['name']), $userdata['message'], $userdata['pin'], $userdata['id'] ) );
 	}
 
 	function GetUserNodesNo($id)
@@ -1071,7 +1071,7 @@ class LMS
 	function NodeUpdate($nodedata)
 	{
 		$this->SetTS('nodes');
-		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr=inet_aton(?), mac=UPPER(?), passwd=?, netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=?, info=? WHERE id=?', array($nodedata['name'], $nodedata['ipaddr'], $nodedata['mac'], $nodedata['passwd'], $nodedata['netdev'], $this->SESSION->id, $nodedata['access'], $nodedata['warning'], $nodedata['ownerid'], $nodedata['info'], $nodedata['id']));
+		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr=inet_aton(?), mac=UPPER(?), passwd=?, netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=?, info=? WHERE id=?', array($nodedata['name'], $nodedata['ipaddr'], $nodedata['mac'], $nodedata['passwd'], $nodedata['netdev'], $this->AUTH->id, $nodedata['access'], $nodedata['warning'], $nodedata['ownerid'], $nodedata['info'], $nodedata['id']));
 	}
 
 	function DeleteNode($id)
@@ -1338,7 +1338,7 @@ class LMS
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS('nodes');
-		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ownerid, passwd, creatorid, creationdate, access, warning, info) VALUES (?, ?, inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?)', array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$nodedata['passwd'],$this->SESSION->id, $nodedata['access'], $nodedata['warning'], $nodedata['info'])))
+		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ownerid, passwd, creatorid, creationdate, access, warning, info) VALUES (?, ?, inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?)', array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$nodedata['passwd'],$this->AUTH->id, $nodedata['access'], $nodedata['warning'], $nodedata['info'])))
 			return $this->DB->GetOne('SELECT MAX(id) FROM nodes');
 		else
 			return FALSE;
@@ -1966,9 +1966,9 @@ class LMS
 				$val = -$val;
 	
 			if ($key == trans('tax-free'))
-				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?)', array($this->SESSION->id, 3 , round($val,2) , $user_id, trans('Accounted')));
+				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?)', array($this->AUTH->id, 3 , round($val,2) , $user_id, trans('Accounted')));
 			else
-				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)', array($this->SESSION->id, 3 , round($val,2) , $key, $user_id, trans('Accounted')));
+				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)', array($this->AUTH->id, 3 , round($val,2) , $key, $user_id, trans('Accounted')));
 		}
 		return $ret;
 	}
@@ -1980,14 +1980,14 @@ class LMS
 		$addbalance['taxvalue'] = $addbalance['taxvalue']!='' ? str_replace(',','.',round($addbalance['taxvalue'],2)) : '';
 		if($addbalance['time'])
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['adminid'] ? $addbalance['adminid'] : $this->SESSION->id), $addbalance['type'], $addbalance['value'], $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['adminid'] ? $addbalance['adminid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['adminid'] ? $addbalance['adminid'] : $this->SESSION->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'], ($addbalance['adminid'] ? $addbalance['adminid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 		else
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?)', array( ($addbalance['adminid'] ? $addbalance['adminid'] : $this->SESSION->id), $addbalance['type'], $addbalance['value'], $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?)', array( ($addbalance['adminid'] ? $addbalance['adminid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', array( ($addbalance['adminid'] ? $addbalance['adminid'] : $this->SESSION->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0)  ));
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', array( ($addbalance['adminid'] ? $addbalance['adminid'] : $this->AUTH->id), $addbalance['type'], $addbalance['value'], $addbalance['taxvalue'], $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0)  ));
 	}
 
 	function DelBalance($id)
@@ -3063,7 +3063,7 @@ class LMS
 
 	function SetTicketOwner($ticket, $admin=NULL)
 	{
-		if(!$admin) $admin = $this->SESSION->id;
+		if(!$admin) $admin = $this->AUTH->id;
 		$this->SetTS('rttickets');
 		return $this->DB->Execute('UPDATE rttickets SET owner=? WHERE id = ?', array($admin, $ticket));
 	}
@@ -3075,7 +3075,7 @@ class LMS
 		if($this->DB->GetOne('SELECT owner FROM rttickets WHERE id=?', array($ticket))) 
 			$this->DB->Execute('UPDATE rttickets SET state=?, resolvetime=? WHERE id=?', array($state, $resolvetime, $ticket));
 		else
-			$this->DB->Execute('UPDATE rttickets SET state=?, owner=?, resolvetime=? WHERE id=?', array($state, $this->SESSION->id, $resolvetime, $ticket));
+			$this->DB->Execute('UPDATE rttickets SET state=?, owner=?, resolvetime=? WHERE id=?', array($state, $this->AUTH->id, $resolvetime, $ticket));
 		$this->SetTS('rttickets');
 	}
 
