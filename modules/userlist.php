@@ -25,7 +25,6 @@
  */
 
 $layout[pagetitle]="Lista u¿ytkowników";
-$SMARTY->display("header.html");
 
 $order=$_GET['o'];
 
@@ -62,12 +61,15 @@ while($DB->FetchRow()){
 	list($userlist[id][],$userlist[lastname][],$userlist[name][],$userlist[status][],$userlist[email][],$userlist[phone1][],$userlist[address][],$userlist[info][]) = $DB->row;
 }
 
+for($i=0;$i<sizeof($userlist[id]);$i++)
+	$userlist[balance][$i] = $LMS->GetUserBalance($userlist[id][$i]);
+
 $_SESSION[from] = $QUERY_STRING;
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("userlist",$userlist);
 
+$SMARTY->display("header.html");
 $SMARTY->display("userlist.html");
-
 $SMARTY->display("footer.html");
 ?>
