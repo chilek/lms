@@ -79,7 +79,7 @@ $SMARTY = new Smarty;
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 
-$layout[lmsv]='1.0-cvs ('.$LMS->_version.'/'.$SESSION->_version.')';
+$layout[lmsv]='1.0-cvs';
 
 $SMARTY->assign("menu",$menu);
 $SMARTY->assign("layout",$layout);
