@@ -729,19 +729,26 @@ NAME="MGC-CONFIG-VARS"
 >5.2.4. Zmienne konfiguracyjne</A
 ></H2
 ><P
->W opcjach konfiguracyjnych mo¿na u¿ywaæ nastêpuj±cych zmiennych:</P
-><UL
+>W opcjach konfiguracyjnych mo¿na u¿ywaæ nastêpuj±cych zmiennych, 
+    które zostan± podmienione na odpowiednie dane z bazy:</P
+><P
+>Zmienne dla komputerów:
+   <UL
 ><LI
 ><P
->%IP - zostanie rozwiniête do adresu IP</P
+>%IP - adres IP komputera</P
 ></LI
 ><LI
 ><P
->%ID - ID sieci w bazie</P
+>%ID - ID komputera w bazie</P
 ></LI
 ><LI
 ><P
->%MAC - zostanie rozwiniête do adresu MAC karty sieciowej</P
+>%MAC - adres MAC karty sieciowej</P
+></LI
+><LI
+><P
+>%SMAC - adres MAC pisany ma³ymi literami z usuniêtymi dwukropkami</P
 ></LI
 ><LI
 ><P
@@ -749,11 +756,15 @@ NAME="MGC-CONFIG-VARS"
 ></LI
 ><LI
 ><P
->%NAME - nazwa sieci du¿ymi znakami</P
+>%NAME - nazwa komputera du¿ymi znakami</P
 ></LI
 ><LI
 ><P
->%name - nazwa sieci ma³ymi znakami</P
+>%name - nazwa komputera ma³ymi znakami</P
+></LI
+><LI
+><P
+>%INFO - opis komputera</P
 ></LI
 ><LI
 ><P
@@ -781,11 +792,89 @@ NAME="MGC-CONFIG-VARS"
 ></LI
 ><LI
 ><P
->%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP </P
+>%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP</P
+></LI
+><LI
+><P
+>%NID - ID sieci, do której nale¿y komputer</P
+></LI
+><LI
+><P
+>%NNAME - nazwa sieci du¿ymi znakami</P
+></LI
+><LI
+><P
+>%nname - nazwa sieci ma³ymi znakami</P
+></LI
+><LI
+><P
+>%NADDR - adres sieci</P
+></LI
+><LI
+><P
+>%NIFACE - interfejs sieci</P
+></LI
+><LI
+><P
+>%NMASK - maska sieci</P
+></LI
+><LI
+><P
+>%NGATE - adres bramy</P
+></LI
+><LI
+><P
+>%NDNS - adres serwera DNS</P
+></LI
+><LI
+><P
+>%NDNS2 - adres drugiego serwera DNS</P
+></LI
+><LI
+><P
+>%NDOMAIN - domena sieci</P
+></LI
+><LI
+><P
+>%NWINS - adres serwera WINS dla tej sieci</P
+></LI
+><LI
+><P
+>%NDHCPS - pierwszy adres DHCP sieci</P
+></LI
+><LI
+><P
+>%NDHCPE - ostatni adres DHCP sieci</P
+></LI
+></UL
+>
+    </P
+><P
+>Zmienne dla sieci (w opcjach dotycz±cych tylko sieci):
+   <UL
+><LI
+><P
+>%ID - ID sieci w bazie</P
+></LI
+><LI
+><P
+>%NAME - nazwa sieci du¿ymi znakami</P
+></LI
+><LI
+><P
+>%name - nazwa sieci ma³ymi znakami</P
 ></LI
 ><LI
 ><P
 >%ADDR - adres sieci</P
+></LI
+><LI
+><P
+>%IFACE - interfejs</P
+></LI
+><LI
+><P
+>%MASK - maska</P
 ></LI
 ><LI
 ><P
@@ -794,6 +883,10 @@ NAME="MGC-CONFIG-VARS"
 ><LI
 ><P
 >%DNS - serwer DNS tej sieci</P
+></LI
+><LI
+><P
+>%DNS2 - drugi serwer DNS tej sieci</P
 ></LI
 ><LI
 ><P
@@ -811,6 +904,42 @@ NAME="MGC-CONFIG-VARS"
 ><P
 >%DHCPE - ostatni adres DHCP tej sieci</P
 ></LI
+></UL
+>
+    <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>W opcji konfiguracyjnej <SAMP
+CLASS="PROMPT"
+>dst_network_header</SAMP
+> mo¿na
+    ponadto u¿yæ powy¿szych zmiennych ale poprzedzonych liter± D (np. %DADDR, %dname)
+    jako parametry sieci docelowych.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+   </P
+><P
+>Zmienne które mo¿na stosowaæ we wszystkich opcjach:
+   <UL
 ><LI
 ><P
 >%DATE - data w formacie YYYYMMDD;</P
@@ -828,6 +957,8 @@ NAME="MGC-CONFIG-VARS"
 >%UTIME - czas w formacie unix timestamp;</P
 ></LI
 ></UL
+>
+   </P
 ></DIV
 ></DIV
 ><DIV
