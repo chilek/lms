@@ -297,7 +297,7 @@ CREATE TABLE rttickets (
 # Struktura tabeli dla  rtrights
 #
 
-CREATE TABLE IF EXISTS rtrights;
+DROP TABLE IF EXISTS rtrights;
 CREATE TABLE rtrights (
     id INT(11) NOT NULL auto_increment, 
     adminid INT(11) DEFAULT 0 NOT NULL,
