@@ -40,6 +40,40 @@ my %options = (
 Getopt::Long::config("no_ignore_case");
 GetOptions(%options);
 
+sub mask2prefix($)
+{
+        my $mask = shift @_;
+        my @tmp = split('\.',$mask,4);
+        my $q = sprintf("%b%b%b%b",$tmp[0],$tmp[1],$tmp[2],$tmp[3]);
+        $q =~ s/0*$//;
+        if ($q =~ /0/) {
+                print " You idiot. error in mask\n";
+        }
+        my $len = length($q) ;
+        return $len;
+}
+
+sub matchip($$$)
+{
+        my ($ip,$net,$mask) = @_;
+        my $prefix = mask2prefix($mask);
+        my $bmask = 2**32 <<(32-$prefix);
+        my @net = split('\.',$net,4);
+        my $bnet = dotquad2u32($net);
+        if(($bnet & $bmask)!= $bnet) {
+                print "EEediot net &mask != net\n"; return 1==0
+        }
+        my $bip = dotquad2u32($ip);
+        return (($bip&$bmask) == $bnet);
+}
+
+sub dotquad2u32($)
+{
+        my $dq = shift||'0.0.0.0';
+        my @dq = split('\.',$dq,4);
+        return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
+}
+
 sub u32todotquad($)
 {
 	my $p = shift @_;
@@ -95,7 +129,9 @@ my $cfile = $ini->val('oidentd', 'config_file') || '/etc/oidentd_masq.conf';
 my $cuid = $ini->val('oidentd','config_owneruid') || 0;
 my $cgid = $ini->val('oidentd','config_ownergid') || 0;
 my $cperm = $ini->val('oidentd','config_permission') || '0600';
-my $itempl = $ini->val('oidentd','ident_template') || 'm-%N';
+my $itempl = $ini->val('oidentd','identd_template') || 'm-%N';
+my $networks_list = $ini->val('oidentd','networks') || '';
+my $usergroups_list = $ini->val('oidentd','usergroups') || '';
 
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
@@ -125,18 +161,87 @@ else
 
 open(OIDENTDCONF, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.\n");
 
-my $dbq = $dbase->prepare("SELECT id, name, ipaddr, ownerid FROM nodes");
+if(!$networks_list)
+{
+	my $dbq = $dbase->prepare("SELECT name FROM networks");
+	$dbq->execute();
+	while (my $row = $dbq->fetchrow_hashref()) {
+		$networks_list = "$networks_list $row->{'name'}";
+	}
+}
 
+my @networks = split ' ', $networks_list;
+
+if(!$usergroups_list)
+{
+	my $dbq = $dbase->prepare("SELECT name FROM usergroups");
+	$dbq->execute();
+	while (my $row = $dbq->fetchrow_hashref()) {
+		$usergroups_list = "$usergroups_list $row->{'name'}";
+	}
+}
+
+my %usergrouplist;
+my $dbq = $dbase->prepare("SELECT id, name FROM usergroups");
 $dbq->execute();
-
 while (my $row = $dbq->fetchrow_hashref()) {
-	$row->{'ipaddr'} = u32todotquad($row->{'ipaddr'});
-	print OIDENTDCONF "$row->{'ipaddr'}\t";
-	my $ident = $itempl;
-	$ident =~ s/\%N/$row->{'name'}/;
-	$ident =~ s/\%I/$row->{'id'}/;
-	$ident =~ s/\%O/$row->{'ownerid'}/;
-	print OIDENTDCONF "$ident\tUNIX\n";
+	$usergrouplist{$row->{'name'}} = $row->{'id'};
+}
+
+my @usergroups = split ' ',$usergroups_list;
+
+$dbq = $dbase->prepare("SELECT id, name, ipaddr, ownerid FROM nodes");
+$dbq->execute();
+my %namelist;
+my %idlist;
+my %ownerlist;
+
+while (my $row = $dbq->fetchrow_hashref())
+{
+        $namelist{u32todotquad($row->{'ipaddr'})} = $row->{'name'};
+        $idlist{u32todotquad($row->{'ipaddr'})} = $row->{'id'};
+        $ownerlist{u32todotquad($row->{'ipaddr'})} = $row->{'ownerid'};
+}
+
+foreach my $key (@networks)
+{
+        my $dbq = $dbase->prepare("SELECT address, mask FROM networks WHERE name = UPPER('$key')");
+        $dbq->execute();
+        while (my $row = $dbq->fetchrow_hashref())
+        {
+                my $longip = $row->{'address'};
+                my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
+                for(my $i = $longip; $i < $longip + $netsize; $i++)
+                {
+                        my $ipaddr = u32todotquad($i);
+                        if ($namelist{$ipaddr})
+                        {
+                                my $usergroupscount = 0;
+                                foreach my $key2 (@usergroups)
+                                {
+                                        my $sdbq = $dbase->prepare("SELECT count(userid) AS total FROM userassignments WHERE userid=".$ownerlist{$ipaddr}." AND usergroupid=".$usergrouplist{$key2});
+                                        $sdbq->execute();
+                                        my $srow = $sdbq->fetchrow_hashref();
+                                        if ($srow->{'total'} eq 1)
+                                        {
+                                                $usergroupscount++;
+                                        }
+
+                                }
+                                if($usergroupscount)
+                                {
+					print OIDENTDCONF "$ipaddr\t";
+					my $ident = $itempl;
+					my $temp = lc($namelist{$ipaddr});
+					$ident =~ s/\%N/$namelist{$ipaddr}/;
+					$ident =~ s/\%n/$temp/;
+					$ident =~ s/\%I/$idlist{$ipaddr}/;
+					$ident =~ s/\%O/$ownerlist{$ipaddr}/;
+					print OIDENTDCONF "$ident\tUNIX\n";
+				}
+			}
+		}
+	}
 }
 
 $dbase->disconnect();
