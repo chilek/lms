@@ -263,17 +263,17 @@ CLASS="LOT"
 ></DT
 ><DT
 >4-1. <A
-HREF="#AEN729"
+HREF="#AEN730"
 >Lista skryptów wykonywalnych</A
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN1385"
+HREF="#AEN1386"
 >Lista modu³ów demona almsd</A
 ></DT
 ><DT
 >7-1. <A
-HREF="#AEN1828"
+HREF="#AEN1829"
 >Drzewo katalogów LMS</A
 ></DT
 ></DL
@@ -288,22 +288,22 @@ CLASS="LOT"
 ></DT
 ><DT
 >4-1. <A
-HREF="#AEN802"
+HREF="#AEN803"
 >Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</A
 ></DT
 ><DT
 >4-2. <A
-HREF="#AEN805"
+HREF="#AEN806"
 >Lms-notify: Przyk³ad szablonu</A
 ></DT
 ><DT
 >5-1. <A
-HREF="#AEN1320"
+HREF="#AEN1321"
 >Lms-mgc: Przyk³ad instancji</A
 ></DT
 ><DT
 >7-1. <A
-HREF="#AEN2059"
+HREF="#AEN2060"
 >Format opcji konfiguracyjnych</A
 ></DT
 ></DL
@@ -990,7 +990,7 @@ CLASS="SECT2"
 ><H3
 CLASS="SECT2"
 ><A
-NAME="AEN184"
+NAME="INSTALL-REQ-WWW"
 >2.2.1. Serwer WWW</A
 ></H3
 ><P
@@ -1013,7 +1013,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN189"
+NAME="INSTALL-REQ-PHP"
 >2.2.2. Interpreter PHP</A
 ></H3
 ><P
@@ -1031,7 +1031,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN193"
+NAME="INSTALL-REQ-DB"
 >2.2.3. Serwer baz danych</A
 ></H3
 ><P
@@ -1045,7 +1045,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN197"
+NAME="INSTALL-REQ-SMARTY"
 >2.2.4. Biblioteka Smarty</A
 ></H3
 ><P
@@ -1067,7 +1067,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN202"
+NAME="INSTALL-REQ-PERL"
 >2.2.5. Perl</A
 ></H3
 ><P
@@ -1119,7 +1119,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN220"
+NAME="INSTALL-REQ-C"
 >2.2.6. Kompilator jêzyka C</A
 ></H3
 ><P
@@ -1143,33 +1143,43 @@ NAME="INSTALL-INSTALL"
 >2.3. Instalacja LMS</A
 ></H2
 ><P
->Po pobraniu ze strony <A
+>LMS w postaci archiwum tar.gz mo¿na pobraæ ze strony 
+		domowej projektu (<A
 HREF="http://www.lms.rulez.pl"
 TARGET="_top"
 >www.lms.rulez.pl</A
->
-		 rozpakuj archiwum:
-		 <PRE
-CLASS="SCREEN"
->$ tar zxvf lms-x.x.x.tar.gz</PRE
->
-		 a nastêpnie przenie¶ pliki z <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS-UI</I
-></SPAN
-> do katalogu osi±galnego 
-		 z poziomu serwera www (np. <TT
+>),
+		a nastêpnie rozpakowaæ i umie¶ciæ w wybranym katalogu (np. <TT
 CLASS="FILENAME"
->/var/www/lms</TT
->).</P
+>/var/www/lms
+		</TT
+>) dostêpnym dla serwera www:
+<PRE
+CLASS="SCREEN"
+>$ cd /var/www
+$ wget http://lms.rulez.pl/download/lms-x.x.x.tar.gz
+$ tar zxf lms-x.x.x.tar.gz</PRE
+>
+		</P
 ><P
->Je¿eli nie skorzysta³e¶ z wersji zawieraj±cej bibliotekê Smarty,
-		 pobierz j± i umie¶æ w katalogu <TT
+>Dostêpne s± dwa rodzaje paczek z LMS - zawieraj±ce bibliotekê
+		Smarty (<TT
+CLASS="FILENAME"
+>lms-x.x.x+libs.tar.gz</TT
+>) i bez niej. 
+		Je¿eli nie skorzysta³e¶ z wersji archiwum zawieraj±cej biblioteki,	
+		pobierz j± i umie¶æ w katalogu <TT
 CLASS="FILENAME"
 >lib</TT
->.</P
+>.
+<PRE
+CLASS="SCREEN"
+>$ cd /var/www/lms/lib
+$ wget http://smarty.php.net/distributions/Smarty-2.6.0.tar.gz
+$ tar zxf Smarty-2.6.0.tar.gz
+$ mv Smarty-2.6.0/libs Smarty</PRE
+>
+		</P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -1191,7 +1201,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >Po³o¿enie wszystkich katalogów mo¿esz zmieniæ w sekcji
-		 <SPAN
+		<SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -1212,22 +1222,22 @@ CLASS="FILENAME"
 >sample/lms.ini</TT
 > i <TT
 CLASS="FILENAME"
->		 sample/lms-mgc.ini</TT
+>		sample/lms-mgc.ini</TT
 >) umie¶æ w katalogu <TT
 CLASS="FILENAME"
 >/etc/lms</TT
 >.
-		 </P
+		</P
 ><P
 >Skrypty wykonywalne z katalogu <TT
 CLASS="FILENAME"
 >bin</TT
 > 
-		 najlepiej przenie¶æ do katalogu <TT
+		najlepiej przenie¶æ do katalogu <TT
 CLASS="FILENAME"
 >/usr/sbin</TT
 >.
-		 </P
+		</P
 ><P
 ><DIV
 CLASS="WARNING"
@@ -1252,12 +1262,12 @@ VALIGN="TOP"
 CLASS="FILENAME"
 >lms.ini</TT
 >
-		 oraz prawa odczytu i zapisu do katalogu <TT
+		oraz prawa odczytu i zapisu do katalogu <TT
 CLASS="FILENAME"
 >backup</TT
 >. 
-		 Stanowi to potencjalne obni¿enie poziomu bezpieczeñstwa systemu.
-		 </P
+		Stanowi to potencjalne obni¿enie poziomu bezpieczeñstwa systemu.
+		</P
 ></TD
 ></TR
 ></TABLE
@@ -1277,7 +1287,7 @@ CLASS="SECT2"
 ><H3
 CLASS="SECT2"
 ><A
-NAME="MYSQL"
+NAME="INSTALL-MYSQL"
 >2.4.1. MySQL</A
 ></H3
 ><DIV
@@ -1285,7 +1295,7 @@ CLASS="SECT3"
 ><H4
 CLASS="SECT3"
 ><A
-NAME="AEN254"
+NAME="AEN255"
 >2.4.1.1. Wstêp</A
 ></H4
 ><P
@@ -1302,7 +1312,7 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="AEN258"
+NAME="AEN259"
 >2.4.1.2. Instalacja serwera MySQL</A
 ></H4
 ><P
@@ -1325,7 +1335,7 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="AEN262"
+NAME="AEN263"
 >2.4.1.3. Utworzenie bazy danych</A
 ></H4
 ><P
@@ -1351,7 +1361,7 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="AEN266"
+NAME="AEN267"
 >2.4.1.4. Konfiguracja LMS (lms.ini)</A
 ></H4
 ><P
@@ -1389,7 +1399,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="PGSQL"
+NAME="INSTALL-PGSQL"
 >2.4.2. PostgreSQL</A
 ></H3
 ><DIV
@@ -1397,7 +1407,7 @@ CLASS="SECT3"
 ><H4
 CLASS="SECT3"
 ><A
-NAME="AEN276"
+NAME="AEN277"
 >2.4.2.1. Wstêp</A
 ></H4
 ><P
@@ -1416,7 +1426,7 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="AEN280"
+NAME="AEN281"
 >2.4.2.2. Instalacja</A
 ></H4
 ><P
@@ -1443,7 +1453,7 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="AEN284"
+NAME="AEN285"
 >2.4.2.3. Utworzenie bazy danych</A
 ></H4
 ><P
@@ -1462,7 +1472,7 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="AEN288"
+NAME="AEN289"
 >2.4.2.4. Konfiguracja LMS (lms.ini)</A
 ></H4
 ><P
@@ -1579,7 +1589,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN307"
+NAME="INSTALL-CONFIG-DB"
 >2.5.1. Sekcja [database] - ustawienia bazy danych</A
 ></H3
 ><P
@@ -1654,7 +1664,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN336"
+NAME="INSTALL-CONFIG-DIR"
 >2.5.2. Sekcja [directories] - ustawienia katalogów</A
 ></H3
 ><P
@@ -1781,7 +1791,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN379"
+NAME="INSTALL-CONFIG-UI"
 >2.5.3. Sekcja [phpui] - ustawienia interfejsu</A
 ></H3
 ><UL
@@ -2022,7 +2032,7 @@ CLASS="SECT2"
 ><H3
 CLASS="SECT2"
 ><A
-NAME="AEN467"
+NAME="INSTALL-RIGHTS-IDEA"
 >2.6.1. Idea</A
 ></H3
 ><P
@@ -2112,7 +2122,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN496"
+NAME="INSTALL-RIGHTS-HOW"
 >2.6.2. Jak to dzia³a?</A
 ></H3
 ><P
@@ -3145,7 +3155,7 @@ NAME="SCRIPTS-LIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN729"
+NAME="AEN730"
 ></A
 ><P
 ><B
@@ -3314,7 +3324,7 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN802"
+NAME="AEN803"
 ></A
 ><P
 ><B
@@ -3336,7 +3346,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN805"
+NAME="AEN806"
 ></A
 ><P
 ><B
@@ -4828,7 +4838,7 @@ NAME="MGC-EXAMPLE"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN1320"
+NAME="AEN1321"
 ></A
 ><P
 ><B
@@ -5143,7 +5153,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1385"
+NAME="AEN1386"
 ></A
 ><P
 ><B
@@ -6344,7 +6354,7 @@ NAME="DEVEL-CATALOGS"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1828"
+NAME="AEN1829"
 ></A
 ><P
 ><B
@@ -7222,7 +7232,7 @@ NAME="PARAMS"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN2059"
+NAME="AEN2060"
 ></A
 ><P
 ><B
@@ -7377,7 +7387,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN2081"
+NAME="AEN2082"
 >7.6.1. Wynikaj±ce z naszego projektu</A
 ></H3
 ><P
@@ -7390,7 +7400,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN2084"
+NAME="AEN2085"
 >7.6.2. Wynikaj±ce z u¿ywanego DMBS</A
 ></H3
 ><UL
