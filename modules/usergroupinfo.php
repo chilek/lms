@@ -34,7 +34,7 @@ if ($id = $_GET['id'])
 }
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
-$layout['pagetitle'] = 'Informacja o grupie: '.$usergroup['name'];
+$layout['pagetitle'] = trans('Group Information: $0',$usergroup['name']);
 
 $usergroup = $LMS->UsergroupGet($_GET['id']);
 $users = $LMS->GetUserWithoutGroupNames($_GET['id']);

@@ -52,7 +52,7 @@ if(sizeof($setwarnings['muserid']))
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$layout['pagetitle'] = 'Ostrze¿enia';
+$layout['pagetitle'] = trans('Warnings');
 
 $userlist = $LMS->DB->GetAll(
 		    'SELECT users.id AS id, MAX(warning) AS warning, '.

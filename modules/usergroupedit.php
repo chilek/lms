@@ -64,7 +64,7 @@ if(!$LMS->UsergroupExists($_GET['id']))
 $usergroup = $LMS->UsergroupGet($_GET['id']);
 $users = $LMS->GetUserWithoutGroupNames($usergroup['id']);
 
-$layout['pagetitle'] = 'Edycja grupy: '.$usergroup['name'];	
+$layout['pagetitle'] = trans('Group Edit: $0',$usergroup['name']);
 
 $usergroupedit = $_POST['usergroup'];
 
@@ -76,13 +76,13 @@ if(isset($usergroupedit))
 	$usergroupedit['id'] = $_GET['id'];
 	
 	if($usergroupedit['name'] == '')
-		$error['name'] = 'Musisz podaæ nazwê grupy!';
+		$error['name'] = trans('Group name required!');
 	elseif(strlen($usergroupedit['name']) > 16)
-		$error['name'] = 'Podana nazwa jest za d³uga!';
+		$error['name'] = trans('Group name is too long!');
 	elseif( ($id = $LMS->UsergroupGetId($usergroupedit['name'])) && $id != $usergroupedit['id'])
-		$error['name'] = 'Istnieje ju¿ grupa o nazwie '.$usergroupedit['name'];
+		$error['name'] = trans('Group with name $0 already exists!',$usergroupedit['name']);
 	elseif(!eregi("^[._a-z0-9-]+$",$usergroupedit['name']))
-		$error['name'] = 'Podana nazwa zawiera niepoprawne znaki!';
+		$error['name'] = trans('Invalid chars in group name!');
 
 	if(!$error)
 	{
