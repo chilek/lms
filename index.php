@@ -112,11 +112,22 @@ $_DBUSER = $_CONFIG['database']['user'];
 $_DBPASS = $_CONFIG['database']['password'];
 $_DBNAME = $_CONFIG['database']['database'];
 
-// include required files
+require_once($_LIB_DIR.'/checkdirs.php');
+require_once($_LIB_DIR.'/checkconfig.php');
 
-require_once($_LIB_DIR.'/LMSDB.php');
+$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
+
+// Redirect to SSL
+
+if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
+{
+	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+	exit(0);
+}
 
 // Init database 
+
+require_once($_LIB_DIR.'/LMSDB.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
@@ -135,6 +146,7 @@ $_TIMEOUT = $_CONFIG['phpui']['timeout'];
 // Initialize templates engine
 
 require_once($_SMARTY_DIR.'/Smarty.class.php');
+
 $SMARTY = new Smarty;
 
 // test for proper version of Smarty
@@ -148,23 +160,9 @@ require_once($_LIB_DIR.'/unstrip.php');
 require_once($_LIB_DIR.'/language.php');
 require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/checkip.php');
-require_once($_LIB_DIR.'/checkdirs.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
 require_once($_LIB_DIR.'/accesstable.php');
-
-$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
-
-// Redirect to SSL
-
-if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
-{
-	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-	exit(0);
-}
-
-
-//print_r($SMARTY->_tpl_vars['missing_strings']);
 
 // Initialize Session and LMS classes
 

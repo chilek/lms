@@ -536,18 +536,6 @@ function isboolean($value)
 		return FALSE;
 }
 
-function chkconfig($value, $default = FALSE)
-{
-	if(eregi('^(1|y|on|yes|true|tak|t)$', $value))
-		return TRUE;
-	elseif(eregi('^(0|n|no|off|false|nie)$', $value))
-		return FALSE;
-	elseif(!isset($value) || $value == '')
-		return $default;
-	else
-		trigger_error(trans('Incorrect option value: $0',$value));
-}
-
 function moneyf($value)
 {
 	global $LANGDEFS, $_language;

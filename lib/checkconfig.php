@@ -24,16 +24,16 @@
  *  $Id$
  */
 
-if(!is_dir($_SMARTY_COMPILE_DIR))
-	die('Missing directory <B>'.$_SMARTY_COMPILE_DIR.'</B>. Can enybody make them?');
-
-if(!is_writable($_SMARTY_COMPILE_DIR))
-	die('Can\'t write to directory <B>'.$_SMARTY_COMPILE_DIR.'</B>. Can you run: <BR><PRE>chown '.posix_geteuid().'.'.posix_getegid().' '.$_SMARTY_COMPILE_DIR."\nchmod 755 ".$_SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
-
-if(!is_dir($_BACKUP_DIR))
-	die('Missing directory <B>'.$_BACKUP_DIR.'</B>. Can enybody make them?');
-	
-if(!is_writable($_BACKUP_DIR))
-	die('Can\'t write to directory <B>'.$_BACKUP_DIR.'</B>. Can you run: <BR><PRE>chown '.posix_geteuid().'.'.posix_getegid().' '.$_BACKUP_DIR."\nchmod 755 ".$_BACKUP_DIR.'</PRE>This helps me to work. Thanks.');
+function chkconfig($value, $default = FALSE)
+{
+	if(eregi('^(1|y|on|yes|true|tak|t)$', $value))
+		return TRUE;
+	elseif(eregi('^(0|n|no|off|false|nie)$', $value))
+		return FALSE;
+	elseif(!isset($value) || $value == '')
+		return $default;
+	else
+		trigger_error('Incorrect option value: '.$value);
+}
 
 ?>
