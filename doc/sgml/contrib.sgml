@@ -15,6 +15,10 @@
 		<para>Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
 		bilans i informacje o u¿ytkowniku, który jest w³a¶cicielem komputera
 		o tym adresie.</para>
+		<para>Dla u¿ytkowników korzystaj±cych z proxy, nie korzystaj±cych
+		z sieci tylko w domu, albo którzy nie chc± aby dzieci/ma³¿onkowie/pracownicy 
+		mieli wgl±d w dane fiansowe dotycz±ce ich dostêpu do sieci/innych 
+		us³ug przeznaczone jest "Moje konto 2".</para>
 		</sect2>
 		<sect2 id="customer-install">
 		<title>Instalacja</title>
@@ -113,20 +117,3 @@ redirect        = http://nasz.serwer.pl/winetka/
 		</sect2>
 	</sect1>
 </chapter>
-Jest to mini panel dla u¿ytkowników którzy:
-
-a) korzystaj± z proxy
-b) nie korzystaj± z sieci tylko w domu
-c) nie chc± aby dzieci/ma³¿onkowie/pracownicy mieli wgl±d w dane fiansowe 
-dotycz±ce ich dostêpu do sieci/innych us³ug sprzedawanych przez LMS.
-	
-Ikonki aby dzia³a³y dobrze jest daæ np:
-
-$ ln -s ../../img img
-
-w katalogu contrib/customer_otherip, oraz "Options +followlinks w apachu".
-
-4) pos³owie
-
-panel wymaga ustawienia opcji sys_dir w lms.ini (sekcja [directories]).
-
