@@ -30,7 +30,7 @@ $userid = $_GET['id'];
 
 if(isset($_POST['marks']))
 {
-	$_SESSION['unpaid'][$userid] = $_POST['marks'];
+	$SESSION->save('unpaid.'.$userid, $_POST['marks']);
 	die;
 }
 
@@ -54,14 +54,14 @@ if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cda
 		$record['invoice'] = str_replace('%Y', date('Y', $row['cdate']), $record['invoice']);
 		$record['invoice'] = str_replace('%N', $record['number'], $record['invoice']);
 
-		if(in_array($record['id'], (array) $_SESSION['unpaid'][$userid]))
+		if(in_array($record['id'], (array) $SESSION->get('unpaid.'.$userid)))
 			$record['selected'] = TRUE;
 		
 		$covenantlist[$idx] = array_merge($record, $covenantlist[$idx]);
 	}
 }
 
-unset($_SESSION['unpaid'][$userid]);
+$SESSION->remove('unpaid.'.$userid);
 
 $SMARTY->assign('covenantlist',$covenantlist);
 $SMARTY->assign('userid', $userid);

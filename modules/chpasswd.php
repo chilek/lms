@@ -41,7 +41,7 @@ if($LMS->AdminExists($id))
 		if(!$error)
 		{
 			$LMS->SetAdminPassword($id,$passwd['passwd']);
-			header('Location: ?'.$_SESSION['backto']);
+			header('Location: ?'.$SESSION->get('backto'));
 		}
 	}
 

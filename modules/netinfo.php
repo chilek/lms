@@ -30,10 +30,10 @@ if(!$LMS->NetworkExists($_GET['id']))
 	die;
 }
 
-if (isset($_SESSION['ntlp'][$_GET['id']]) && !isset($_GET['page']))
-	$_GET['page'] = $_SESSION['ntlp'][$_GET['id']];
+if($SESSION->is_set('ntlp.'.$_GET['id']) && !isset($_GET['page']))
+	$SESSION->restore('ntlp.'.$_GET['id'], $_GET['page'])
 
-$_SESSION['ntlp'][$_GET['id']] = $_GET['page'];
+$SESSION->save('ntlp.'.$_GET['id'], $_GET['page']);
 
 $network = $LMS->GetNetworkRecord($_GET['id'],$_GET['page'], $LMS->CONFIG['phpui']['networkhosts_pagelimit']);
 

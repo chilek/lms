@@ -115,32 +115,33 @@ if(isset($_GET['state']))
 }
 
 if(!isset($_GET['o']))
-	$o = $_SESSION['rto'];
+	$SESSION->restore('rto', $o);
 else
 	$o = $_GET['o'];
-$_SESSION['rto'] = $o;
 
-if (isset($_SESSION['rtp']) && !isset($_GET['page']) && !isset($search))
-	$_GET['page'] = $_SESSION['rtp'];
+$SESSION->save('rto', $o);
+
+if ($SESSION->is_set('rtp') && !isset($_GET['page']) && !isset($search))
+	$SESSION->restore('rtp', $_GET['page']);
 
 $page = (! $_GET['page'] ? 1 : $_GET['page']); 
 $pagelimit = (! $LMS->CONFIG['phpui']['ticketlist_pagelimit'] ? $queuedata['total'] : $LMS->CONFIG['phpui']['ticketlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$_SESSION['rtp'] = $page;
+$SESSION->save('rtp', $page);
 
 if(isset($search) || $_GET['search'])
 {
 	if($search['queue'] && !$LMS->GetAdminRightsRT($AUTH->id, $search['queue']))
 		$error['queue'] = trans('You have no privilleges to review this queue!');
 	
-	$search = $search ? $search : $_SESSION['rtsearch'];
+	$search = $search ? $search : $SESSION->get('rtsearch');
 	
 	if(!$error)
 	{
 		$queue = RTSearch($search, $o);
 		
-		$_SESSION['rtsearch'] = $search;
+		$SESSION->save('rtsearch', $search);
 		
 		$queuedata['total'] = $queue['total'];
 		$queuedata['order'] = $queue['order'];		
@@ -165,7 +166,7 @@ $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('adminlist', $LMS->GetAdminNames());
 $SMARTY->assign('userlist', $LMS->GetUserNames());
-$SMARTY->assign('search', $_SESSION['rtsearch']);
+$SMARTY->assign('search', $SESSION->get('rtsearch'));
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtsearch.html');
 

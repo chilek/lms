@@ -79,43 +79,43 @@ function GetAccountList($order='login,asc', $user=NULL, $type=NULL, $kind=NULL, 
 }
 
 if(!isset($_GET['o']))
-	$o = $_SESSION['alo'];
+	$SESSION->restore('alo', $o);
 else
 	$o = $_GET['o'];
-$_SESSION['alo'] = $o;
+$SESSION->save('alo', $o);
 
 if(!isset($_GET['u']))
-	$u = $_SESSION['alu'];
+	$SESSION->restore('alu', $u);
 else
 	$u = $_GET['u'];
-$_SESSION['alu'] = $u;
+$SESSION->save('alu', $u);
 
 if(!isset($_GET['t']))
-	$t = $_SESSION['alt'];
+	$SESSION->restore('alt', $t);
 else
 	$t = $_GET['t'];
-$_SESSION['alt'] = $t;
+$SESSION->save('alt', $t)
 
 if(!isset($_GET['k']))
-	$k = $_SESSION['alk'];
+	$SESSION->restore('alk', $k);
 else
 	$k = $_GET['k'];
-$_SESSION['alk'] = $k;
+$SESSION->save('alk', $k);
 
 if(!isset($_GET['d']))
-	$d = $_SESSION['ald'];
+	$SESSION->restore('ald', $d);
 else
 	$d = $_GET['d'];
-$_SESSION['ald'] = $d;
+$SESSION->save('ald', $d);
 
-if (isset($_SESSION['alp']) && !isset($_GET['page']))
-	$_GET['page'] = $_SESSION['alp'];
+if ($SESSION->is_set('alp') && !isset($_GET['page']))
+	$SESSION->restore('alp', $_GET['page']);
 	    
 $page = (! $_GET['page'] ? 1 : $_GET['page']); 
 $pagelimit = (! $LMS->CONFIG['phpui']['accountlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['accountlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$_SESSION['alp'] = $page;
+$SESSION->save('alp', $page);
 
 $layout['pagetitle'] = trans('Accounts List');
 
