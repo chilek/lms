@@ -125,8 +125,73 @@ switch($_GET['type'])
 		}
 
 		$layout['pagetitle'] = trans('Customer $0 Balance Sheet ($1 to $2)',$LMS->GetUserName($_POST['user']), ($from ? $from : ''), $to);
-		$balancelist = $LMS->GetUserBalanceListByDate($_POST['user'],$date);
-		$SMARTY->assign('balancelist', $balancelist);
+		
+		$id = $_POST['user'];
+
+		if($tslist = $LMS->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, userid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE userid=? ORDER BY time', array($id)))
+			foreach($tslist as $row)
+				foreach($row as $column => $value)
+					$saldolist[$column][] = $value;
+
+		if(sizeof($saldolist['id']) > 0)
+		{
+			foreach($saldolist['id'] as $i => $v)
+			{
+				($i>0) ? $saldolist['before'][$i] = $saldolist['after'][$i-1] : $saldolist['before'][$i] = 0;
+
+				$saldolist['value'][$i] = round($saldolist['value'][$i],3);
+
+				switch ($saldolist['type'][$i]){
+
+					case '3':
+						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
+						$saldolist['name'][$i] = trans('payment');
+					break;
+
+					case '4':
+						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
+						$saldolist['name'][$i] = trans('covenant');
+					break;
+				}
+
+				if($saldolist['time'][$i]>=$date['from'] && $saldolist['time'][$i]<=$date['to'])
+				{
+					$list['id'][] = $saldolist['id'][$i];
+					$list['after'][] = $saldolist['after'][$i];
+					$list['before'][] = $saldolist['before'][$i];
+					$list['value'][] = $saldolist['value'][$i];
+					$list['taxvalue'][] = $saldolist['taxvalue'][$i];
+					$list['name'][] = $saldolist['name'][$i];
+					switch($saldolist['type'][$i])
+					{ 
+						case '3': $list['summary'] += $saldolist['value'][$i]; break;
+						case '4': $list['summary'] -= $saldolist['value'][$i]; break;
+					}	
+					$list['date'][] = date('Y/m/d H:i',$saldolist['time'][$i]);
+					$list['adminname'][] = $saldolist['adminname'][$i];
+					(strlen($saldolist['comment'][$i])<3) ? $list['comment'][] = $saldolist['name'][$i] : $list['comment'][] = $saldolist['comment'][$i];
+				}
+			}
+
+			$list['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
+			$list['total'] = sizeof($list['id']);
+
+		} else
+			$list['balance'] = 0;
+
+		if($list['total'])
+		{
+			foreach($list['value'] as $key => $value)
+				$list['value'][$key] = $value;
+			foreach($list['after'] as $key => $value)
+				$list['after'][$key] = $value;
+			foreach($list['before'] as $key => $value)
+				$list['before'][$key] = $value;
+		}
+
+		$list['userid'] = $id;
+		
+		$SMARTY->assign('balancelist', $list);
 		$SMARTY->display('printuserbalance.html');
 	break;	
 	
@@ -371,7 +436,58 @@ switch($_GET['type'])
 		
 		$layout['pagetitle'] = trans('Liability Report on $0',date('Y/m/d', $reportday));
 
-		$SMARTY->assign('reportlist', $LMS->LiabilityReport($reportday, $_POST['order'].','.$_POST['direction'], $_POST['user']));
+		$order = ($_POST['order'] ? $_POST['order'] : 'brutto').','.($_POST['direction'] ? $_POST['direction'] : 'asc');
+		$userid = $_POST['user'];
+
+		$yearday = date('z', $reportday);
+		$month = date('n', $reportday);
+		$monthday = date('j', $reportday);
+		$weekday = date('w', $reportday);
+		
+		switch($month) 
+		{
+		    case 1:
+		    case 4:
+		    case 7:
+		    case 10: $quarterday = $monthday; break;
+		    case 2:
+		    case 5:
+		    case 8:
+		    case 11: $quarterday = $monthday + 100; break;
+		    default: $quarterday = $monthday + 200; break;
+		}
+		
+		list($order,$direction)=explode(',', $order);
+
+		($direction != 'desc') ? $direction = 'ASC' : $direction = 'DESC';
+
+		switch($order)
+		{
+			case 'username':
+				$sqlord = 'ORDER BY username';
+			break;
+			default:
+				$sqlord = 'ORDER BY brutto';
+			break;
+		}
+		
+		$reportlist =  $LMS->DB->GetAll('SELECT '.$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, '
+			    .$LMS->DB->Concat('city',"' '",'address').' AS address, nip, 
+			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS val22,  
+			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS val7, 
+			    SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS val0, 
+			    SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS valfree,
+			    SUM(value) AS brutto  
+			    FROM assignments, tariffs, users  
+			    WHERE userid = users.id AND tariffid = tariffs.id 
+			    AND deleted=0 AND (datefrom<=?) AND ((dateto>=?) OR dateto=0) 
+			    AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?)) '
+			    .($userid ? 'AND userid='.$userid : ''). 
+			    ' GROUP BY userid, lastname, users.name, city, address, nip '
+			    .($sqlord != '' ? $sqlord.' '.$direction : ''),
+			    array($reportday, $reportday, $weekday, $monthday, $quarterday, $yearday));
+
+		$SMARTY->assign('reportlist', $reportlist);
 		$SMARTY->display('printliabilityreport.html');
 	break;
 
