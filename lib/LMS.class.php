@@ -3133,7 +3133,7 @@ class LMS
 	{
 		if(!$admin) $admin = $this->SESSION->id;
 		$this->SetTS('rttickets');
-		return $this->DB->GetOne('UPDATE rttickets SET owner=? WHERE id = ?', array($admin, $ticket));
+		return $this->DB->Execute('UPDATE rttickets SET owner=? WHERE id = ?', array($admin, $ticket));
 	}
 
 	function SetTicketState($ticket, $state)

@@ -11,6 +11,9 @@ wersja 1.5.1 (??/??/????):
   - BTS#0000203: nie mo¿na siê logowaæ na usuniête konto admina (alec)
   - usuniêty b³±d uniemo¿liwiaj±cy otwarcie za³±cznika do wiadomo¶ci rt (alec)
   - BTS#0000206: poprawione pobieranie baz przy po³±czeniu https (alec/lexx)
+  - Helpdesk: dodane wpisy do sample/lms.ini, poprawiony b³±d perzy zmianie
+    w³a¶ciciela zg³oszenia, w dokumentacji dodana informacja o wymaganych
+    przez rtparser modu³ach Perla (alec)
 
 wersja 1.5.0 Marduk (18/09/2004):
 
