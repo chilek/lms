@@ -648,16 +648,6 @@ class LMS
 							$balancelist[$idx][after] = $balancelist[$idx][before];
 							$balancelist[uinvoice] = $balancelist[uinvoice] + $balancelist[$idx][value];
 						break;
-						case "5":
-							$balancelist[$idx][type] = "obci±¿enie u¿-Abonament";
-							$balancelist[$idx][after] = $balancelist[$idx][before];
-							$balancelist[uinvoice] = $balancelist[uinvoice] + $balancelist[$idx][value];
-						break;
-						case "6":
-							$balancelist[$idx][type] = "obci±¿enie u¿-Inne";
-							$balancelist[$idx][after] = $balancelist[$idx][before];
-							$balancelist[uinvoice] = $balancelist[uinvoice] + $balancelist[$idx][value];
-						break;
 						default:
 							$balancelist[$idx][type] = '<FONT COLOR="RED">???</FONT>';
 							$balancelist[$idx][after] = $balancelist[$idx][before];
