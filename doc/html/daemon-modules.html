@@ -95,7 +95,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1263"
+NAME="AEN1266"
 ></A
 ><P
 ><B
@@ -189,7 +189,19 @@ VALIGN="TOP"
 WIDTH="300"
 ALIGN="CENTER"
 VALIGN="TOP"
->Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach</TD
+>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach poczt± elektroniczn±</TD
+></TR
+><TR
+><TD
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>ggnotify</TD
+><TD
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach przez gadu-gadu</TD
 ></TR
 ><TR
 ><TD
@@ -409,8 +421,49 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="DAEMON-GGNOTIFY"
+>6.2.4. Ggnotify</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="GGNOTIFY-DESC"
+>6.2.4.1. Opis</A
+></H3
+><P
+></P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="GGNOTIFY-CONFIG"
+>6.2.4.2. Konfiguracja</A
+></H3
+><P
+></P
+><UL
+><LI
+><P
+></P
+><P
+></P
+><P
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="DAEMON-CUTOFF"
->6.2.4. Cutoff</A
+>6.2.5. Cutoff</A
 ></H2
 ><DIV
 CLASS="SECT3"
@@ -418,7 +471,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="CUTOFF-DESC"
->6.2.4.1. Opis</A
+>6.2.5.1. Opis</A
 ></H3
 ><P
 >Cutoff zmienia na 'od³±czony' status komputerów u¿ytkownikom, którzy
@@ -433,7 +486,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="CUTOFF-CONFIG"
->6.2.4.2. Konfiguracja</A
+>6.2.5.2. Konfiguracja</A
 ></H3
 ><P
 >Modu³ 'cutoff' posiada tylko jeden parametr:</P
@@ -458,16 +511,16 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="DAEMON-DNS"
->6.2.5. DNS</A
+NAME="DAEMON-DHCP"
+>6.2.6. Dhcp</A
 ></H2
 ><DIV
 CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="DNS-DESC"
->6.2.5.1. Opis</A
+NAME="DHCP-DESC"
+>6.2.6.1. Opis</A
 ></H3
 ><P
 >Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
@@ -479,8 +532,8 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="DNS-CONFIG"
->6.2.5.2. Konfiguracja</A
+NAME="DHCP-CONFIG"
+>6.2.6.2. Konfiguracja</A
 ></H3
 ><P
 >Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom 
@@ -620,6 +673,517 @@ CLASS="PROMPT"
 >Przyk³ad: <TT
 CLASS="PROMPT"
 >host = "host %n {hardware ethernet %m; fixed-address %i;}"</TT
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-HOSTFILE"
+>6.2.7. Hostfile</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="HOSTFILE-DESC"
+>6.2.7.1. Opis</A
+></H3
+><P
+>Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
+		    wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
+		    status (od³±czony/pod³±czony), dlatego mo¿liwe jest tworzenie np. regó³
+		    dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku 
+		    i nastêpnie wykonuje okre¶lone polecenie pow³oki.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="HOSTFILE-CONFIG"
+>6.2.7.2. Konfiguracja</A
+></H3
+><P
+>W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
+		    które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
+		    adresem, '%n' - nazw± komputera. Poni¿ej opcje udostêpniane przez ten modu³</P
+><UL
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/hostfile</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>file = /etc/rc.d/rc.firewall</TT
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie pow³oki wyk. po utworzeniu pliku 'file'. Domy¶lnie: puste</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>command = '/bin/sh /etc/rc.d/rc.firewall'</TT
+></P
+></LI
+><LI
+><P
+>prefix</P
+><P
+>Nag³ówek pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -F FORWARD\n"</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>prefix = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"</TT
+></P
+></LI
+><LI
+><P
+>append</P
+><P
+>Stopka pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>append = "$IPT -A FORWARD -J REJECT\n"</TT
+></P
+></LI
+><LI
+><P
+>grantedhost</P
+><P
+>Tekst dla hosta pod³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</TT
+></P
+></LI
+><LI
+><P
+>deniedhost</P
+><P
+>Tekst dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</TT
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-TRAFFIC"
+>6.2.8. Traffic</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="TRAFFIC-DESC"
+>6.2.8.1. Opis</A
+></H3
+><P
+>'Traffic' to odpowiednik perlowego lms-traffic, zapisuj±cy do bazy statystyki
+		    wykorzystania ³±cza z pliku utworzonego przez u¿ytkownika. Plik taki powinien mieæ 
+		    format: ip_hosta upload download . Wiêcej informacji (w tym jak utworzyæ taki plik)
+		    mo¿na znale¼æ w rozdziale dotycz±cym lms-traffic.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="TRAFFIC-CONFIG"
+>6.2.8.2. Konfiguracja</A
+></H3
+><P
+>Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:</P
+><UL
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku ze statystykami firewalla. Domy¶lnie: /var/log/traffic.log</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>file = /tmp/log</TT
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-TC"
+>6.2.9. Tc (HTB)</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="TC-DESC"
+>6.2.9.1. Opis</A
+></H3
+><P
+>Do pliku okre¶lonego opcj± 'file' zapisywane s± dane dotycz±ce uploadu
+		    i downloadu dla komputerów okre¶lonego w taryfach, w formacie: upload, download, 
+		    numer_ip_hosta_lub_ich_lista.</P
+><P
+>Tak przygotowany plik mo¿na wykorzystaæ w skrypcie tworz±cym regu³y htb.
+		    Przyk³adowy skrypt <TT
+CLASS="FILENAME"
+>htb.sh</TT
+> zamieszczono w katalogu 
+		    <TT
+CLASS="FILENAME"
+>modules/tc/sample</TT
+>. Opcja 'command' jest odpowiedzialna za
+		    uruchomienie takiego skryptu.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="TC-CONFIG"
+>6.2.9.2. Konfiguracja</A
+></H3
+><P
+>Ten modu³ zawiera standardowe parametry:</P
+><UL
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/tc.dat.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>file = /tmp/htb.data</TT
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie pow³oki wykonywane po utworzeniu pliku. Domy¶lnie: "/bin/sh sample/htb.sh &#60; /tmp/tc.dat".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>command = "/bin/bash modules/tc/sample/htb.sh &#60; /tmp/tc.dat"</TT
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-DNS"
+>6.2.10. Dns</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="DNS-DESC"
+>6.2.10.1. Opis</A
+></H3
+><P
+>Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej skomplikowanych.
+		    Tworzy dla ka¿dej sieci pliki stref oraz odpowiednie wpisy w named.conf w oparciu
+		    o szablony tych plików. Przyk³adowe szablony znajduj± siê w katalogu
+		    <TT
+CLASS="FILENAME"
+>/modules/dns/sample</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="DNS-CONFIG"
+>6.2.10.2. Konfiguracja</A
+></H3
+><P
+></P
+><UL
+><LI
+><P
+>forward-patterns</P
+><P
+>Katalog z szablonami stref. Domy¶lnie: forward.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>forward-patterns = /dns/patterns/forward</TT
+></P
+></LI
+><LI
+><P
+>reverse-patterns</P
+><P
+>Katalog z szablonami stref odwrotnych. Domy¶lnie: reverse.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>reverse-patterns = /dns/patterns/revers</TT
+></P
+></LI
+><LI
+><P
+>generic-forward</P
+><P
+>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okreslonym
+			    'forward-patterns' nie bêdzie pliku odpowiadaj±cego nazwie domenowej sieci.
+			    Domy¶lnie: modules/dns/sample/forward/generic.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>generic-forward = /dns/patterns/forward</TT
+></P
+></LI
+><LI
+><P
+>generic-reverse</P
+><P
+>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
+			    'reverse-patterns' nie bêdzie pliku odpowiadaj±cego numerowi IP sieci.
+			    Domy¶lnie: modules/dns/sample/reverse/generic.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>generic-reverse = /dns/patterns/forward</TT
+></P
+></LI
+><LI
+><P
+>forward-zones</P
+><P
+>Katalog na pliki wynikowe stref.
+			    Domy¶lnie: modules/dns/sample/out/forward.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>forward-zones = /dns/forward</TT
+></P
+></LI
+><LI
+><P
+>reverse-zones</P
+><P
+>Katalog na pliki wynikowe stref odwrotnych.
+			    Domy¶lnie: modules/dns/sample/out/reverse.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>reverse-zones = /dns/reverse</TT
+></P
+></LI
+><LI
+><P
+>host-reverse</P
+><P
+>Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
+			    Domy¶lnie: "%n IN A %i\n".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>host-reverse = "\t %n IN A %i\n"</TT
+></P
+></LI
+><LI
+><P
+>host-forward</P
+><P
+>Linia w pliku strefy odpowiadaj±ca ka¿demu komputerowi w danej sieci.
+			    Domy¶lnie: "%c IN PTR %n.%d.\n".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>host-forward = "\t %c IN PTR %n.%d.\n"</TT
+></P
+></LI
+><LI
+><P
+>conf-pattern</P
+><P
+>Lokalizacja szablonu g³ównego pliku konfiguracyjnego serwera.
+			    Domy¶lnie: modules/dns/sample/named.conf.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>conf-pattern = /dns/patterns/named.conf</TT
+></P
+></LI
+><LI
+><P
+>conf-output</P
+><P
+>Lokalizacja g³ównego pliku konfiguracyjnego serwera.
+			    Domy¶lnie: /tmp/named.conf.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>conf-output = /etc/named.conf</TT
+></P
+></LI
+><LI
+><P
+>conf-forward-entry</P
+><P
+>Wpis dla ka¿dej strefy w g³ównym pliku konfiguracyjnym.
+			    Domy¶lnie: 'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n}; \n'.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>conf-forward-entry = 'zone "%n" { \n\ttype master; \n\tfile "forward/%n"; \n\tnotify yes; \n}; \n'</TT
+></P
+></LI
+><LI
+><P
+>conf-reverse-entry</P
+><P
+>Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
+			    Domy¶lnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'</TT
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie wykonywane po utworzeniu plików konf. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>command = ""</TT
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-ETHERS"
+>6.2.11. Ethers</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="ETHERS-DESC"
+>6.2.11.1. Opis</A
+></H3
+><P
+>Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Komputerom
+		    od³±czonym zostaje przypisany mac-adres 00:00:00:00:00:00.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="ETHERS-CONFIG"
+>6.2.11.2. Konfiguracja</A
+></H3
+><P
+></P
+><UL
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku wynikowego. Domy¶lnie: /tmp/ethers.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>file = /etc/ethers</TT
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>command = "arp -f /etc/ethers"</TT
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-OIDENT"
+>6.2.12. Oident</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="OIDENT-DESC"
+>6.2.12.1. Opis</A
+></H3
+><P
+></P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="OIDENT-CONFIG"
+>6.2.12.2. Konfiguracja</A
+></H3
+><P
+></P
+><UL
+><LI
+><P
+></P
+><P
+></P
+><P
 ></P
 ></LI
 ></UL

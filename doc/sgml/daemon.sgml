@@ -180,7 +180,11 @@ info = "Opcjonalny opis modu³u"
 				</row>
 				<row>
 				<entry>notify</entry>
-				<entry>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach</entry>
+				<entry>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach poczt± elektroniczn±</entry>
+				</row>
+				<row>
+				<entry>ggnotify</entry>
+				<entry>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach przez gadu-gadu</entry>
 				</row>
 				<row>
 				<entry>payments</entry>
@@ -282,6 +286,24 @@ info = "Opcjonalny opis modu³u"
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
+		<sect2 id="daemon-ggnotify">
+		<title>Ggnotify</title>
+		    <sect3 id="ggnotify-desc">
+		    <title>Opis</title>
+		    <para></para>
+		    </sect3>
+		    <sect3 id="ggnotify-config">
+		    <title>Konfiguracja</title>
+		    <para></para>
+		    <itemizedlist>
+			<listitem>
+			    <para></para>
+			    <para></para>
+			    <para></para>
+			</listitem>
+		    </itemizedlist>
+		    </sect3>
+		</sect2>
 		<sect2 id="daemon-cutoff">
 		<title>Cutoff</title>
 		    <sect3 id="cutoff-desc">
@@ -305,15 +327,15 @@ info = "Opcjonalny opis modu³u"
 		    </itemizedlist>
 		    </sect3>
 		</sect2>
-		<sect2 id="daemon-dns">
-		<title>DNS</title>
-		    <sect3 id="dns-desc">
+		<sect2 id="daemon-dhcp">
+		<title>Dhcp</title>
+		    <sect3 id="dhcp-desc">
 		    <title>Opis</title>
 		    <para>Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
 		    restartuje us³ugê. Zmienna 'command' umo¿liwia równie¿ wykonywanie innych 
 		    czynno¶ci (programów).</para>
 		    </sect3>
-		    <sect3 id="dns-config">
+		    <sect3 id="dhcp-config">
 		    <title>Konfiguracja</title>
 		    <para>Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom 
 		    pliku konfiguracyjnego dhcpd, które w typowych zastosowaniach
@@ -384,6 +406,240 @@ info = "Opcjonalny opis modu³u"
 			</listitem>
 		    </itemizedlist>
 		    </sect3>
+		</sect2>
+		<sect2 id="daemon-hostfile">
+		<title>Hostfile</title>
+		    <sect3 id="hostfile-desc">
+		    <title>Opis</title>
+		    <para>Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
+		    wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
+		    status (od³±czony/pod³±czony), dlatego mo¿liwe jest tworzenie np. regó³
+		    dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku 
+		    i nastêpnie wykonuje okre¶lone polecenie pow³oki.</para>
+		    </sect3>
+		    <sect3 id="hostfile-config">
+		    <title>Konfiguracja</title>
+		    <para>W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
+		    które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
+		    adresem, '%n' - nazw± komputera. Poni¿ej opcje udostêpniane przez ten modu³</para>
+		    <itemizedlist>
+			<listitem>
+			    <para>file</para>
+			    <para>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/hostfile</para>
+			    <para>Przyk³ad: <prompt>file = /etc/rc.d/rc.firewall</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>command</para>
+			    <para>Polecenie pow³oki wyk. po utworzeniu pliku 'file'. Domy¶lnie: puste</para>
+			    <para>Przyk³ad: <prompt>command = '/bin/sh /etc/rc.d/rc.firewall'</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>prefix</para>
+			    <para>Nag³ówek pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -F FORWARD\n"</para>
+			    <para>Przyk³ad: <prompt>prefix = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>append</para>
+			    <para>Stopka pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</para>
+			    <para>Przyk³ad: <prompt>append = "$IPT -A FORWARD -J REJECT\n"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>grantedhost</para>
+			    <para>Tekst dla hosta pod³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</para>
+			    <para>Przyk³ad: <prompt>grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>deniedhost</para>
+			    <para>Tekst dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
+			    <para>Przyk³ad: <prompt>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</prompt></para>
+			</listitem>
+		    </itemizedlist>
+		    </sect3>
 		</sect2>	    
+		<sect2 id="daemon-traffic">
+		<title>Traffic</title>
+		    <sect3 id="traffic-desc">
+		    <title>Opis</title>
+		    <para>'Traffic' to odpowiednik perlowego lms-traffic, zapisuj±cy do bazy statystyki
+		    wykorzystania ³±cza z pliku utworzonego przez u¿ytkownika. Plik taki powinien mieæ 
+		    format: ip_hosta upload download . Wiêcej informacji (w tym jak utworzyæ taki plik)
+		    mo¿na znale¼æ w rozdziale dotycz±cym lms-traffic.</para>
+		    </sect3>
+		    <sect3 id="traffic-config">
+		    <title>Konfiguracja</title>
+		    <para>Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:</para>
+		    <itemizedlist>
+			<listitem>
+			    <para>file</para>
+			    <para>Lokalizacja pliku ze statystykami firewalla. Domy¶lnie: /var/log/traffic.log</para>
+			    <para>Przyk³ad: <prompt>file = /tmp/log</prompt></para>
+			</listitem>
+		    </itemizedlist>
+		    </sect3>
+		</sect2>
+		<sect2 id="daemon-tc">
+		<title>Tc (HTB)</title>
+		    <sect3 id="tc-desc">
+		    <title>Opis</title>
+		    <para>Do pliku okre¶lonego opcj± 'file' zapisywane s± dane dotycz±ce uploadu
+		    i downloadu dla komputerów okre¶lonego w taryfach, w formacie: upload, download, 
+		    numer_ip_hosta_lub_ich_lista.</para>
+		    <para>Tak przygotowany plik mo¿na wykorzystaæ w skrypcie tworz±cym regu³y htb.
+		    Przyk³adowy skrypt <filename>htb.sh</filename> zamieszczono w katalogu 
+		    <filename>modules/tc/sample</filename>. Opcja 'command' jest odpowiedzialna za
+		    uruchomienie takiego skryptu.</para>
+		    </sect3>
+		    <sect3 id="tc-config">
+		    <title>Konfiguracja</title>
+		    <para>Ten modu³ zawiera standardowe parametry:</para>
+		    <itemizedlist>
+			<listitem>
+			    <para>file</para>
+			    <para>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/tc.dat.</para>
+			    <para>Przyk³ad: <prompt>file = /tmp/htb.data</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>command</para>
+			    <para>Polecenie pow³oki wykonywane po utworzeniu pliku. Domy¶lnie: "/bin/sh sample/htb.sh < /tmp/tc.dat".</para>
+			    <para>Przyk³ad: <prompt>command = "/bin/bash modules/tc/sample/htb.sh < /tmp/tc.dat"</prompt></para>
+			</listitem>
+		    </itemizedlist>
+		    </sect3>
+		</sect2>
+		<sect2 id="daemon-dns">
+		<title>Dns</title>
+		    <sect3 id="dns-desc">
+		    <title>Opis</title>
+		    <para>Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej skomplikowanych.
+		    Tworzy dla ka¿dej sieci pliki stref oraz odpowiednie wpisy w named.conf w oparciu
+		    o szablony tych plików. Przyk³adowe szablony znajduj± siê w katalogu
+		    <filename>/modules/dns/sample</filename>.</para>
+		    </sect3>
+		    <sect3 id="dns-config">
+		    <title>Konfiguracja</title>
+		    <para></para>
+		    <itemizedlist>
+			<listitem>
+			    <para>forward-patterns</para>
+			    <para>Katalog z szablonami stref. Domy¶lnie: forward.</para>
+			    <para>Przyk³ad: <prompt>forward-patterns = /dns/patterns/forward</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>reverse-patterns</para>
+			    <para>Katalog z szablonami stref odwrotnych. Domy¶lnie: reverse.</para>
+			    <para>Przyk³ad: <prompt>reverse-patterns = /dns/patterns/revers</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>generic-forward</para>
+			    <para>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okreslonym
+			    'forward-patterns' nie bêdzie pliku odpowiadaj±cego nazwie domenowej sieci.
+			    Domy¶lnie: modules/dns/sample/forward/generic.</para>
+			    <para>Przyk³ad: <prompt>generic-forward = /dns/patterns/forward</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>generic-reverse</para>
+			    <para>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
+			    'reverse-patterns' nie bêdzie pliku odpowiadaj±cego numerowi IP sieci.
+			    Domy¶lnie: modules/dns/sample/reverse/generic.</para>
+			    <para>Przyk³ad: <prompt>generic-reverse = /dns/patterns/forward</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>forward-zones</para>
+			    <para>Katalog na pliki wynikowe stref.
+			    Domy¶lnie: modules/dns/sample/out/forward.</para>
+			    <para>Przyk³ad: <prompt>forward-zones = /dns/forward</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>reverse-zones</para>
+			    <para>Katalog na pliki wynikowe stref odwrotnych.
+			    Domy¶lnie: modules/dns/sample/out/reverse.</para>
+			    <para>Przyk³ad: <prompt>reverse-zones = /dns/reverse</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>host-reverse</para>
+			    <para>Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
+			    Domy¶lnie: "%n IN A %i\n".</para>
+			    <para>Przyk³ad: <prompt>host-reverse = "\t %n IN A %i\n"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>host-forward</para>
+			    <para>Linia w pliku strefy odpowiadaj±ca ka¿demu komputerowi w danej sieci.
+			    Domy¶lnie: "%c IN PTR %n.%d.\n".</para>
+			    <para>Przyk³ad: <prompt>host-forward = "\t %c IN PTR %n.%d.\n"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>conf-pattern</para>
+			    <para>Lokalizacja szablonu g³ównego pliku konfiguracyjnego serwera.
+			    Domy¶lnie: modules/dns/sample/named.conf.</para>
+			    <para>Przyk³ad: <prompt>conf-pattern = /dns/patterns/named.conf</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>conf-output</para>
+			    <para>Lokalizacja g³ównego pliku konfiguracyjnego serwera.
+			    Domy¶lnie: /tmp/named.conf.</para>
+			    <para>Przyk³ad: <prompt>conf-output = /etc/named.conf</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>conf-forward-entry</para>
+			    <para>Wpis dla ka¿dej strefy w g³ównym pliku konfiguracyjnym.
+			    Domy¶lnie: 'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n}; \n'.</para>
+			    <para>Przyk³ad: <prompt>conf-forward-entry = 'zone "%n" { \n\ttype master; \n\tfile "forward/%n"; \n\tnotify yes; \n}; \n'</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>conf-reverse-entry</para>
+			    <para>Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
+			    Domy¶lnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</para>
+			    <para>Przyk³ad: <prompt>conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>command</para>
+			    <para>Polecenie wykonywane po utworzeniu plików konf. Domy¶lnie: puste.</para>
+			    <para>Przyk³ad: <prompt>command = ""</prompt></para>
+			</listitem>
+		    </itemizedlist>
+		    </sect3>
+		</sect2>
+		<sect2 id="daemon-ethers">
+		<title>Ethers</title>
+		    <sect3 id="ethers-desc">
+		    <title>Opis</title>
+		    <para>Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Komputerom
+		    od³±czonym zostaje przypisany mac-adres 00:00:00:00:00:00.</para>
+		    </sect3>
+		    <sect3 id="ethers-config">
+		    <title>Konfiguracja</title>
+		    <para></para>
+		    <itemizedlist>
+			<listitem>
+			    <para>file</para>
+			    <para>Lokalizacja pliku wynikowego. Domy¶lnie: /tmp/ethers.</para>
+			    <para>Przyk³ad: <prompt>file = /etc/ethers</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>command</para>
+			    <para>Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Domy¶lnie: puste.</para>
+			    <para>Przyk³ad: <prompt>command = "arp -f /etc/ethers"</prompt></para>
+			</listitem>
+		    </itemizedlist>
+		    </sect3>
+		</sect2>
+		<sect2 id="daemon-oident">
+		<title>Oident</title>
+		    <sect3 id="oident-desc">
+		    <title>Opis</title>
+		    <para></para>
+		    </sect3>
+		    <sect3 id="oident-config">
+		    <title>Konfiguracja</title>
+		    <para></para>
+		    <itemizedlist>
+			<listitem>
+			    <para></para>
+			    <para></para>
+			    <para></para>
+			</listitem>
+		    </itemizedlist>
+		    </sect3>
+		</sect2>
 	</sect1>
 </chapter>
