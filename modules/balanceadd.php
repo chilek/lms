@@ -29,6 +29,8 @@ $addbalance = $_POST['addbalance'];
 $_SESSION['addbc'] = $addbalance['comment'];
 $_SESSION['addbt'] = $addbalance['time'];
 $_SESSION['addbv'] = $addbalance['value'];
+if ($addbalance['taxvalue'] == 'zw.')
+	$addbalance['taxvalue'] = '';
 $_SESSION['addbtax'] = $addbalance['taxvalue'];
 
 $addbalance['value'] = str_replace(",",".",$addbalance['value']);

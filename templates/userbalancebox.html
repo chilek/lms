@@ -79,7 +79,12 @@
 							<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s" {tip text="Wpisz warto¶æ operacji"}> z³
 						</TD>
 						<TD colspan="2" class="ftop" nowrap>
-							<INPUT TYPE="text" size="12" name="addbalance[taxvalue]" accesskey="s" {tip text="Wpisz stawkê VAT"}> %
+							<SELECT SIZE="1" name="addbalance[taxvalue]" {tip text="Wpisz stawkê VAT"}>
+								<OPTION value="22">22%</OPTION>
+								<OPTION value="7">7%</OPTION>
+								<OPTION value="7">0%</OPTION>
+								<OPTION value="7">zw.</OPTION>
+							</SELECT>
 						</TD>
 						<TD colspan="3" align="right" class="ftop">
 							<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Podaj opis dla tej operacji finansowej"}> <A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A>
