@@ -15,7 +15,7 @@
 	    <TABLE width="100%" cellpadding="3">
 		{foreach from=$ticket.messages item=message}
 		    <TR class="DARK">
-			<TD width="1%" class="FALL" ALIGN="RIGHT">
+			<TD width="1%" class="fbt" ALIGN="RIGHT">
 			    <B>{$message.createtime|date_format:"%Y/%m/%d<BR>%H:%M.%S"}</B>
 			</TD>
 			<TD width="1%" class="fbt" ALIGN="RIGHT">
@@ -34,14 +34,14 @@
 			    <BR>
 			    {$message.subject|escape}
 			</TD>
-			<TD width="97%" class="frightu" align="right">
+			<TD width="97%" class="fbt" align="right">
 			    {if $ticket.state != 2}
 			    <A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">Odpowiedz <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
 			    {/if}
 			</TD>
 		    </TR>
 		    <TR class="LIGHT">
-			<TD COLSPAN="4" class="fall" BGCOLOR="#F4F0EC">
+			<TD COLSPAN="4" class="fbt" BGCOLOR="#F4F0EC">
 			    <PRE>{$message.body|escape}</PRE>
 			</TD>
 		    </TR>
