@@ -16,6 +16,8 @@ wersja 1.5.2 (??/??/????):
   - dokumentacja: uzupe³niony opis zmiennych lms-mgc (alec)
   - w statystykach dodany ¶redni transfer w KB/s (alec)
   - generowanie PINu podczas edycji/dodawania u¿ytkownika (alec)
+  - poprawka w funkcji szybkiego wyszukiwania komputera uwzglêdniaj±ca zmianê
+    dzia³ania ip2long() w PHP5 (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 
