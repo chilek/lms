@@ -84,7 +84,9 @@ int main(int argc, char *argv[])
     	g->inifile = ini_file;
     
    	g->db_query = &db_query;
+	g->db_pquery = &db_pquery;
     	g->db_exec = &db_exec;
+	g->db_pexec = &db_pexec;
 	g->db_free = &db_free;
     	g->db_begin = &db_begin;
     	g->db_commit = &db_commit;
