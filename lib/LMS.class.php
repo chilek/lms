@@ -32,7 +32,7 @@ class LMS {
 
 	var $db;
 	var $session;
-	var $_version = '1.0.47';
+	var $_version = '1.0.49';
 
 	function LMS($db,$session)
 	{
@@ -554,7 +554,9 @@ class LMS {
 				{
 					$balancelist[admin][$key] = $this->GetAdminName($balancelist[adminid][$key]);
 					$balancelist[username][$key] = $this->GetUserName($balancelist[userid][$key]);
-					$balancelist[value][$key]=round(str_replace(".",",",$balancelist[value][$key]),4);
+					$balancelist[value][$key]=str_replace(".",",",
+						round( str_replace (".",",",$balancelist[value][$key]) , 4 )
+					);
 					if($key)
 						$balancelist[before][$key] = $balancelist[after][$key-1];
 					else
