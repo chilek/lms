@@ -28,7 +28,7 @@ use Config::IniFiles;
 use Getopt::Long;
 use vars qw($configfile $help $version $queue $debug);
 use POSIX qw(strftime);
-#use File::Copy;
+use File::Copy;
 use MIME::Parser;
 #use Data::Dumper;
 use Sys::Hostname;
@@ -94,7 +94,7 @@ my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
-my $save_path = $ini->val('rt', 'files_dir') || '';
+my $save_path = $ini->val('rt', 'mail_dir') || '';
 my $queue = $queue || $ini->val('rt', 'default_queue');
 my $autoreply_from = $ini->val('rt', 'autoreply_from') || "LMS RT System <rt\@$hostname>";
 
@@ -292,7 +292,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 		'References' => $mh_references.' '.$mh_msgid,
 		'Data' => [
 			"Uprzejmie informujemy ¿e Pañstwa zg³oszenie zosta³o zarejestrowane w naszym\n",
-			"systemie. Zg³oszeniu zosta³ przydzielony numer: #".sprintf("%06d",$ticket_id)."\n",
+			"systemie. Zg³oszeniu zosta³ przydzielony numer: RT#".sprintf("%06d",$ticket_id)."\n",
 			"\n",
 			"W przypadku jakiejkolwiek korespondencji zwi±zanej z Pañstwa zg³oszeniem, prosimy\n",
 			"umie¶ciæ w polu tematu wiadomo¶ci nastêpuj±cy ci±g znaków: [RT#".sprintf("%06d",$ticket_id)."]\n",
