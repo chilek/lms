@@ -51,6 +51,9 @@ if(isset($tariffadd))
 	if($tariffadd[downrate] == "")
 		$tariffadd[downrate] = 0;
 
+	if(!(ereg("^[0-9.,]+$",$tariffadd[value])))
+		$error[value] = "Podana warto¶æ jest niepoprawna!";
+
 	if(!(ereg("^[0-9]+$", $tariffadd[uprate])))
 		$error[uprate] = "To pole musi zawieraæ liczbê ca³kowit±";
 		
