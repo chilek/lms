@@ -1,0 +1,157 @@
+#!/usr/bin/perl -Tw
+
+#  $Id$
+#
+# Skrypt odczytuje dane z traffic.log i wrzuca do bazy danych.
+# Nale¿y go wrzuciæ do crona tu¿ po utworzeniu traffic.log
+#
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($logfile $configfile $quiet $help $version);
+use POSIX qw(strftime);
+
+my $_version = '1.0beta';
+
+my %options = (
+	"--traffic-log-file|f=s"=>	\$logfile,
+	"--config-file|C=s"	=>	\$configfile,
+	"--quiet|q"		=>	\$quiet,
+	"--help|h"		=>	\$help,
+	"--version|v"		=>	\$version,
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-eachmonth, version $_version
+(C) 2001-2003 LMS Developers
+
+-f, --traffic-log-file=/var/log/traffic.log	traffic log file (default: /var/log/traffic.log);
+-C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
+-h, --help			print this help and exit;
+-v, --version			print version info and exit;
+-q, --quiet			suppress any output, except errors;
+
+EOF
+	exit 0;
+}
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-traffic, version $_version
+(C) 2001-2003 LMS Developers
+
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms/lms.ini";
+}
+
+if(!$quiet)
+{
+	print STDOUT "lms-traffic, version $_version\n";
+	print STDOUT "(C) Copyright 2003 Rulez.PL Development Team\n";
+#	print STDOUT "(C) Copyright 2001-2002 NetX ACN\n";
+	print STDOUT "Using file $configfile as config.\n";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+if(!$logfile)
+{
+	$logfile = "/var/log/traffic.log";
+}
+
+if(! -r $logfile)
+{
+	print STDERR "Fatal error: Unable to read log file $logfile, exiting.\n";
+	exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+my $dbase;
+my $utsfmt;
+
+if($dbtype eq "mysql")
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "UNIX_TIMESTAMP()";
+}
+elsif($dbtype eq "postgres")
+{
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+sub u32todotquad($)
+{
+    my $p = shift @_;
+    return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff,($p>>8)&0xff,$p&0xff;
+}
+####################################################################
+# get node-id table
+my $dbq = $dbase->prepare("SELECT id, ipaddr FROM nodes");
+$dbq->execute();
+my %table;      
+while (my $row = $dbq->fetchrow_hashref())
+{    
+    # poprawka: dla wersji LMS'a przed 1.1.3 zamieniæ poni¿sze linie
+    $table{u32todotquad($row->{'ipaddr'})} = $row->{'id'};
+    # $table{$row->{'ipaddr'}} = $row->{'id'};    
+}
+
+# read log file
+open(LOGFILE, $logfile); 	
+my(@lines) = <LOGFILE>;   
+close(LOGFILE);
+
+# insert data to lms database 
+foreach my $line (@lines)           
+{
+    my ($ip,$upload,$download) = split(/ +/,$line);                 
+    if($table{$ip})   # if IP is in our database then we can insert
+    {
+ 	if($upload || $download) # don't need zeroes 
+	{   
+	$dbq = $dbase->prepare("INSERT INTO stats (nodeid, dt, download, upload) VALUES($table{$ip} , $utsfmt, $download, $upload)");
+    	$dbq->execute();
+	}
+    	if(!$quiet)
+    	{
+    	print "IP: $ip\tSend: $upload\t Recv: $download\n"
+    	}
+    } 
+    else 
+    {
+	if(!$quiet)
+    	{
+    	print "IP: $ip\tSkipped\n"
+    	}
+    }
+}
+# finally 
+$dbase->disconnect();
