@@ -52,8 +52,7 @@ if(isset($tariffadd))
 			$error[name] = "Istnieje ju¿ taryfa o takiej nazwie!";
 
 	if(!$error){
-//		header("Location: ?m=tariffinfo&id=".$LMS->TariffAdd($tariffadd));
-		header("Location: ?m=tarifflist");
+		header("Location: ?m=tariffinfo&id=".$LMS->TariffAdd($tariffadd));
 		exit(0);
 	}
 	
