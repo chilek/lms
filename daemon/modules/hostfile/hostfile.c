@@ -29,21 +29,59 @@
 #include "almsd.h"
 #include "hostfile.h"
 
-unsigned long htonl(unsigned long);
 unsigned long inet_addr(char *);
 
 void reload(GLOBAL *g, struct hostfile_module *hm)
 {
 	FILE *fh;
 	QUERY_HANDLE *res;
-	int i;
+	unsigned char *query, *netname;
+	int i, nc=0;
+
+	struct net *nets = (struct net *) malloc(sizeof(struct net));
+
+	for( netname=strtok(hm->networks," "); netname!=NULL; netname=strtok(NULL," ") ) { 
+
+		if( (res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')",netname))!=NULL ) {
+
+			if(res->nrows) {
+			
+			    	nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
+				nets[nc].name = strdup(g->db_get_data(res,0,"name"));
+				nets[nc].domain = strdup(g->db_get_data(res,0,"domain"));
+				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
+				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
+			}
+			g->db_free(res);
+			nc++;		
+		}
+	}
+
+	if(!nc)
+		if( (res = g->db_query("SELECT name, domain, address, INET_ATON(mask) AS mask FROM networks"))!=NULL ) {
+
+			for(nc=0; nc<res->nrows; nc++) {
+				
+				nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
+				nets[nc].name = strdup(g->db_get_data(res,nc,"name"));
+				nets[nc].domain = strdup(g->db_get_data(res,nc,"domain"));
+				nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
+				nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
+			}
+			g->db_free(res);
+		}
 	
 	fh = fopen(hm->file, "w");
 	if(fh)
 	{
 		fprintf(fh, "%s", hm->prefix);
 		
-		if( (res = g->db_pquery("SELECT name, mac, INET_NTOA(ipaddr) AS ip, access FROM nodes ? ORDER BY ipaddr",(hm->skip_dev_ips ? "WHERE ownerid<>0" : "")))!=NULL) {
+		if(hm->skip_dev_ips)
+			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, access FROM nodes WHERE ownerid<>0 ORDER BY ipaddr");
+		else
+			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, access FROM nodes ORDER BY ipaddr");
+			
+		if( (res = g->db_query(query))!=NULL ) {
 		
 			for(i=0; i<res->nrows; i++) {
 				unsigned char *mac, *ip, *access, *name;
@@ -51,31 +89,33 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 				mac 	= g->db_get_data(res,i,"mac");
 				ip  	= g->db_get_data(res,i,"ip");
 				access 	= g->db_get_data(res,i,"access");
-				name 	= (unsigned char *) g->str_lwc(g->db_get_data(res,i,"name"));
+				name 	= g->db_get_data(res,i,"name");
 
 				if(ip && mac && access) {
 					
 					unsigned long inet = inet_addr(ip);
 					int j;
 					
-					for(j=0; j<hm->netcount; j++)
-						if(hm->networks[j].network == (inet & hm->networks[j].netmask)) 
+					for(j=0; j<nc; j++)
+						if(nets[j].address == (inet & nets[j].mask)) 
 							break;
 					
-					if( j != hm->netcount ) {
+					if( j != nc ) {
 
 						unsigned char *pattern, *s;
-				
+
 						if(*access == '1')
 							pattern = hm->grant;
 						else
 							pattern = hm->deny;
 				
 						s = strdup(pattern);
+						g->str_replace(&s, "%domain", nets[j].domain);
+						g->str_replace(&s, "%net", nets[j].name);
 						g->str_replace(&s, "%i", ip);
 						g->str_replace(&s, "%m", mac);
 						g->str_replace(&s, "%n", name);
-				
+						
 						fprintf(fh, "%s", s);
 						free(s);
 					}
@@ -83,6 +123,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			}
 		g->db_free(res);
 		}		
+		free(query);
 		fprintf(fh, "%s", hm->append);
 		fclose(fh);
 		system(hm->command);
@@ -93,6 +134,12 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	else
 		syslog(LOG_ERR, "[%s/hostfile] Unable to write a temporary file '%s'", hm->base.instance, hm->file);
 	
+	for(i=0;i<nc;i++) {
+		free(nets[i].name);
+		free(nets[i].domain);	
+	}
+	free(nets);
+
 	free(hm->prefix);
 	free(hm->append);
 	free(hm->grant);	
@@ -106,9 +153,7 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 {
 	struct hostfile_module *hm;
 	unsigned char *instance, *s;
-	unsigned char *networks, *net;
 	dictionary *ini;
-	int nc = 0;
 	
 	if(g->api_version != APIVERSION) 
 		return(NULL);
@@ -137,63 +182,11 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	free(s); s = g->str_concat(instance,":command");
 	hm->command = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":networks");
-	networks = strdup(g->iniparser_getstring(ini, s, "192.168.0.0/16 10.0.0.0/8"));
-	hm->networks = NULL;
-
+	hm->networks = strdup(g->iniparser_getstring(ini, s, ""));
+	
 	g->iniparser_freedict(ini);
 	free(instance);
 	free(s);
-
-	for( net=strtok(networks," "); net!=NULL; net=strtok(NULL," ") ) { 
-		unsigned char *prefixlen;
-		unsigned long network;
-		unsigned long netmask;
-		unsigned char netmask_valid;
-		prefixlen = index(net, '/');
-
-		netmask_valid = 0;
-
-		if( prefixlen ) {
-			*prefixlen = 0;
-			prefixlen ++;
-			if(index(prefixlen, '.')) {
-				netmask = inet_addr(prefixlen);
-				netmask_valid = 1;
-			}
-			else {
-				int len = atoi(prefixlen);
-				if( len >= 0 && len <= 32 ) {
-					netmask = 0xffffffff;
-					len = 32 - len;
-					while( len ) {
-						netmask = netmask << 1;
-						len--;
-					}
-					netmask = htonl(netmask);
-					netmask_valid = 1;
-				}
-			}
-		}
-	
-		network = inet_addr(net);
-		if( !netmask_valid ) { // network mask autosense 
-		
-			if(! (network & 0x000000ff)) netmask = 0xffffff00;
-			if(! (network & 0x0000ffff)) netmask = 0xffff0000;
-			if(! (network & 0x00ffffff)) netmask = 0xff000000;
-		}
-		
-		hm->networks = realloc(hm->networks, (sizeof(struct hosts_net) * (nc+1)));
-		hm->networks[nc].network = network;
-		hm->networks[nc].netmask = netmask;
-		nc++;
-	}
-	free(networks);
-
-	if( !(hm->netcount = nc) ) {
-		syslog(LOG_ERR, "[%s/hostfile] No networks specified. Set 'networks' in lms.ini section [%s]", hm->base.instance, hm->base.instance);
-		return(NULL);
-	}
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/hostfile] initialized", hm->base.instance);
 #endif
