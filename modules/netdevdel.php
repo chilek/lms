@@ -24,6 +24,12 @@
  *  $Id$
  */
 
+if(! $LMS->NetDevExists($_GET[id]))
+{
+	header('Location: ?m=netdevlist');
+	die;
+}		
+
 $layout[pagetitle]="Usuniêcie urz±dzenia ID: ".sprintf("%04d",$_GET[id]);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("netdevid",$_GET[id]);
@@ -54,6 +60,9 @@ $SMARTY->display("footer.html");
 
 /*
  * $Log$
+ * Revision 1.3  2003/10/08 04:39:38  lukasz
+ * - temporary save
+ *
  * Revision 1.2  2003/09/21 18:07:47  lexx
  * - netdev
  *

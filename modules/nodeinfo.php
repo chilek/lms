@@ -26,9 +26,20 @@
 
 if(!$LMS->NodeExists($_GET[id]))
 	if(isset($_GET[ownerid]))
+	{
 		header("Location: ?m=userinfo&id=".$_GET[ownerid]);
+		die;
+	}
 	else
+	{
 		header("Location: ?m=nodelist");
+		die;
+	}
+elseif($LMS->GetNodeOwner($_GET[id]) == 0)
+{
+	header("Location: ?m=netdevinfo&id=".$LMS->GetNetDevIDByNode($_GET[id]));
+	die;
+}
 
 $nodeid = $_GET[id];
 $ownerid = $LMS->GetNodeOwner($nodeid);
@@ -66,6 +77,9 @@ $SMARTY->display("nodeinfo.html");
 
 /*
  * $Log$
+ * Revision 1.25  2003/10/08 04:39:38  lukasz
+ * - temporary save
+ *
  * Revision 1.24  2003/10/01 16:06:37  alec
  * removed bad array members
  *

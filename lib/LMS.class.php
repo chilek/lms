@@ -1586,9 +1586,19 @@ class LMS
 	 * Ewidencja sprzêtu sieciowego
 	 */
 
+	function NetDevExists($id)
+	{
+		return ($this->DB->GetOne("SELECT * FROM netdevices WHERE id=?",array($id)) ? TRUE : FALSE);
+	}
+
 	function GetNetDevName($id)
 	{
 		return $this->DB->GetRow("SELECT name, model, location FROM netdevices WHERE id=?",array($id));
+	}
+
+	function GetNetDevIDByNode($id)
+	{
+		return $this->DB->GetOne("SELECT netdev FROM nodes WHERE id=?",array($id));
 	}
 
 	function CountNetDevLinks($id)
@@ -1604,13 +1614,13 @@ class LMS
 	function GetNetDevConnectedNames($id)
 	{
 		// To powinno byæ lepiej zrobione...
-		$list = $this -> GetNetDevConnected($id);
+		$list = $this->GetNetDevConnected($id);
 		$id = 0;
 		if ($list) 
 		{
 			foreach($list as $row)
 			{
-				$names[$id]= $this -> GetNetDev($row[dst]);
+				$names[$id]= $this->GetNetDev($row[dst]);
 				$id++;
 			}
 		}
@@ -1668,7 +1678,7 @@ class LMS
 	function GetNotConnectedDevices($id)
 	{
 		$query = "SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id!=".$id;
-		if ($lista = $this -> GetNetDevConnected($id))
+		if ($lista = $this->GetNetDevConnected($id))
 			foreach($lista as $row)
 				$query = $query." and id!=".$row[dst];
 		return $this->DB->GetAll($query);
@@ -1739,6 +1749,14 @@ class LMS
 	function GetUnlinkedNodes()
 	{
 		return $this->DB->GetAll("SELECT * FROM nodes WHERE netdev=0 ORDER BY name ASC");
+	}
+
+	function GetNetDevIPs($id)
+	{
+		if($result = $this->DB->GetAll("SELECT id, name, ipaddr, mac, access FROM nodes WHERE ownerid=0 AND netdev=?",array($id)))
+			foreach($result as $idx => $row)
+				$result[$idx]['ip'] = long2ip($row['ipaddr']);
+		return $result;
 	}
 	
 	/*
@@ -1843,7 +1861,7 @@ class LMS
 	}
 
 	/*
-	 *	Statystyki
+	 *  Statystyki
 	 */
 
 	function Traffic($from = 0, $to = "?NOW?", $net = 0, $order = "", $limit = 0)
@@ -1960,6 +1978,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.271  2003/10/08 04:39:38  lukasz
+ * - temporary save
+ *
  * Revision 1.270  2003/10/08 04:01:29  lukasz
  * - html fixes in netdevices
  * - added new smarty function called {confirm text="confirm message"}
