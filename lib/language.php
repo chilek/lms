@@ -24,6 +24,22 @@
  *  $Id$
  */
 
+function trans()
+{
+	global $_LANG, $SMARTY;
+
+	@list($content, $args) = func_get_args();
+	$content = trim($content);
+	if(isset($_LANG[$content]))
+		$content = trim($_LANG[$content]);
+	else
+		$SMARTY->_tpl_vars['missing_strings'][] = $content;
+	if(is_array($args))
+		foreach($args as $argid => $argval)
+			$content = str_replace('$'.$argid, $argval, $content);
+	return $content;
+}
+
 $LANGDEFS = array(
 		'pl' => array(
 			'name' => 'Polish',
@@ -41,7 +57,7 @@ $LANGDEFS = array(
 			),
 		);
 
-$LMS->lang = 'en'; // default language
+$language = 'en'; // default language
 
 $langs = explode(',', ($_CONFIG['phpui']['lang'] ? $_CONFIG['phpui']['lang'] : $_SERVER['HTTP_ACCEPT_LANGUAGE']));
 foreach ($langs as $val) 
@@ -49,40 +65,22 @@ foreach ($langs as $val)
 	switch (substr($val, 0, 2))
 	{
 		case 'pl':
-			$LMS->lang = 'pl';
+			$language = 'pl';
     			break 2;
 		case 'en':
-			$LMS->lang = 'en';
+			$language = 'en';
 			break 2;
 	}
 }
 
-setlocale(LC_COLLATE, $LANGDEFS[$LMS->lang]['locale']);
-setlocale(LC_CTYPE, $LANGDEFS[$LMS->lang]['locale']);
-setlocale(LC_TIME, $LANGDEFS[$LMS->lang]['locale']);
-	
+
+
 $_LANG = array();
 
-@include($_LIB_DIR.'/locale/'.$LMS->lang.'.php');
+@include($_LIB_DIR.'/locale/'.$language.'.php');
 
-$SMARTY->assign_by_ref('_LANG', $_LANG);
-$SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
-$SMARTY->assign_by_ref('_language', $LMS->lang);
-
-function trans()
-{
-	global $_LANG, $SMARTY;
-
-	@list($content, $args) = func_get_args();
-	$content = trim($content);
-	if(isset($_LANG[$content]))
-		$content = trim($_LANG[$content]);
-	else
-		$SMARTY->_tpl_vars['missing_strings'][] = $content;
-	if(is_array($args))
-		foreach($args as $argid => $argval)
-			$content = str_replace('$'.$argid, $argval, $content);
-	return $content;
-}
-
+setlocale(LC_COLLATE, $LANGDEFS[$language]['locale']);
+setlocale(LC_CTYPE, $LANGDEFS[$language]['locale']);
+setlocale(LC_TIME, $LANGDEFS[$language]['locale']);
+	
 ?>
