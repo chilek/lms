@@ -42,7 +42,8 @@
 			<B><A name="balance">Rachunek u¿ytkownika:</A></B> {if $limit}(ostatnie {math equation="x * -1" x=$limit} operacji){/if}
 		</TD>
 		<TD class="frightu" align="right">
-			{if $limit}<A href="?m=userbalance&id={$balancelist.userid}">Zobacz wszystkie operacje &raquo;</A>{else}&nbsp;{/if}
+			<A href="?m=invoicenew&userid={$balancelist.userid}">Wystaw fakturê &raquo;</A>&nbsp;    
+			{if $limit}<A href="?m=userbalance&id={$balancelist.userid}">Zobacz wszystkie operacje &raquo;</A>{/if}
 		</TD>
 	</TR>
 	<TR>

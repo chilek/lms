@@ -17,6 +17,7 @@ wersja 1.5.3 (??/??/????):
     -f, --fakedate=YYYY/MM/DD (alec/RIP)
   - usuniêty b³±d powoduj±cy brak mo¿liwo¶ci edycji konta systemowego (alec)
   - mo¿na okre¶liæ datê wystawienia nowej faktury (alec)
+  - w oknie bilansu u¿ytkownika dodany link 'Wystaw fakturê' (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 
