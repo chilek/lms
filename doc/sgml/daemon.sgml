@@ -96,7 +96,7 @@ info = "Additional description of module"
 </screen>          
                </para>
                <para>Change of 'instances' and any option i instances sections do not
-               require daemon restart. For other global options restart is required.</para>>
+               require daemon restart. For other global options restart is required.</para>
           </sect2>
           <sect2 id="daemon-run">
           <title>Starting</title>

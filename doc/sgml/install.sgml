@@ -145,7 +145,7 @@ $ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</screen>
                upgrading LMS from older version, appropriate notes what to do with database
                stands in ChangeLog file. So, go to directory, in which you've got LMS and
                run mysql's shell:
-               <screen>
+<screen>
 mysql -u[here enter user with full access rights to database] -p
 Enter password:[just enter password:)]
 mysql> create database lms;
@@ -627,8 +627,8 @@ database = /usr/local/lms/lms.db</screen>
           level that permit access to module. (for example. Someone have full access and no access 
           to adding computer module then he would not be able to appeal to this module). 
           If module  maches to level that permit access to module. Then LMS permit farther work. 
-          But if module does not match” on any level then also will be printed no-access-msg.</member>
-          </simplelist>
+          But if module does not match on any level then also will be printed no-access-msg.</member>
+	  </simplelist>
           </para>
      </sect2>
     </sect1>
