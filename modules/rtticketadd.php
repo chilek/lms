@@ -53,21 +53,10 @@ if(isset($ticket))
 	if($ticket['surname']=='' && $ticket['userid']==0)
 		$error['surname'] = 'Musisz podaæ nazwê/nazwisko zg³aszaj±cego!';
 
-	if(($user = $ticket['userid'])==0 && !$error)
-	{
-		$requestor  = ($ticket['surname'] ? $ticket['surname'].' ' : '');
-		$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');	    
-		$requestor .= ($ticket['email'] ? '<'.$ticket['email'].'>' : '');
-		$ticket['requestor'] = trim($requestor);
-	}
-	elseif($user && !$error)
-	{
-		$ticket['requestor'] = '';
-		if($ticket['email']=='') 
-			$ticket['email'] = $LMS->GetUserEmail($user);
-		$ticket['requestor'] = $LMS->GetUserName($user);
-		$ticket['requestor'] .= ($ticket['email'] ? ' <'.$ticket['email'].'>' : '');
-	}
+	$requestor  = ($ticket['surname'] ? $ticket['surname'].' ' : '');
+	$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');	    
+	$requestor .= ($ticket['email'] ? '<'.$ticket['email'].'>' : '');
+	$ticket['requestor'] = trim($requestor);
 	
 	$ticket['mailfrom'] = $ticket['email'] ? $ticket['email'] : '';
 

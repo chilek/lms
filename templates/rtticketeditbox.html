@@ -28,8 +28,12 @@
 			<B>Zg³aszaj±cy:</B>
 		    </TD>
 		    <TD WIDTH="99%" NOWRAP>
-			{$ticket.requestor|escape} 
-			{if $ticket.requestoremail}
+			{if $ticket.userid}
+				<A href="?m=userinfo&id={$ticket.userid}">{$ticket.username|escape}</A>
+			{else}
+				{$ticket.requestor|escape} 
+			{/if}
+			{if $ticket.requestoremail && !$ticket.userid}
 				&lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
 			{/if}
 		    </TD>

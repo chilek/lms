@@ -3053,9 +3053,23 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetTicketContents($id)
 	{
-		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, userid, admins.name AS ownername, createtime, subject FROM rttickets LEFT JOIN rtqueues ON (queueid = rtqueues.id) LEFT JOIN admins ON (owner = admins.id) WHERE rttickets.id = ?', array($id));
-		$ticket['messages'] = $this->DB->GetAll('SELECT id, mailfrom, subject, body, createtime, userid, adminid FROM rtmessages WHERE ticketid = ? ORDER BY createtime ASC', array($id));
-		sscanf($ticket['requestor'], "%[^<]<%[^>]", &$ticket['requestor'], &$ticket['requestoremail']);
+		$ticket = $this->DB->GetRow('
+			SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, userid, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, admins.name AS ownername, createtime, subject 
+			FROM rttickets 
+			LEFT JOIN rtqueues ON (queueid = rtqueues.id) 
+			LEFT JOIN admins ON (owner = admins.id)
+			LEFT JOIN users ON (users.id = userid)
+			WHERE rttickets.id = ?', array($id));
+		$ticket['messages'] = $this->DB->GetAll('
+			SELECT rtmessages.id AS id, mailfrom, subject, body, createtime, userid, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, adminid, admins.name AS adminname
+			FROM rtmessages 
+			LEFT JOIN users ON (users.id = userid)
+			LEFT JOIN admins ON (admins.id = adminid)
+			WHERE ticketid = ? ORDER BY createtime ASC', array($id));
+		if(!$ticket['userid'])
+			sscanf($ticket['requestor'], "%[^<]<%[^>]", &$ticket['requestor'], &$ticket['requestoremail']);
+		else
+			sscanf($ticket['requestor'], "<%[^>]", &$ticket['requestoremail']);
 //		$ticket['requestoremail'] = ereg_replace('^.* <(.+@.+)>$','\1',$ticket['requestor']);
 //		$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 		$ticket['status'] = $this->rtstates[$ticket['state']];

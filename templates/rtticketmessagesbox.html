@@ -22,7 +22,11 @@
 			    <B>Od:<BR>Temat:</B>
 			</TD>
 			<TD width="1%" class="fbt" NOWRAP>
-			    {$message.mailfrom|escape}<BR>
+			    {if $message.userid}
+				    <A href="?m=userinfo&id={$message.userid}">{$message.username}</A>
+			    {else}
+			    {$message.mailfrom|escape}{/if}
+			    <BR>
 			    {$message.subject|escape}
 			</TD>
 			<TD width="97%" class="frightu" align="right">
