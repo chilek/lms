@@ -49,20 +49,16 @@ class LMS
 		$this->modules[] = "CORE";
 		$this->CORE = &$this;
 
-		/* Generalnie chcemy zamkn±æ 1.1.x. Wiêc modu³y i inne duperelki zostawiamy
-		   do 1.3.x, gdzie siê skupimy g³ównie na przebudowie LMS'a a nie na zmianie
-		   jego funkcjonalno¶ci.
-
 		// za³aduj ekstra klasy:
 
-		if($dirhandle = opendir($this->CONFIG['directories']['lib_dir'].'/modules/'))
+		if($dirhandle = @opendir($this->CONFIG['directories']['lib_dir'].'/modules/'))
 		{
 			while(FALSE !== ($file = readdir($dirhandle)))
 			{
 				if(ereg('^[0-9a-z]+\.class.php$',$file))
 				{
 					$classname = ereg_replace('\.class.php$','',$file);
-					require_once($this->CONFIG['directories']['lib_dir'].'/modules/'.$classname.'.class.php');
+					@require_once($this->CONFIG['directories']['lib_dir'].'/modules/'.$classname.'.class.php');
 					$this->$classname = new $classname($this);
 					$this->modules[] = $classname;
 				}
@@ -82,8 +78,6 @@ class LMS
 		foreach($this->modules as $module)
 			if(! ($this->$module != NULL ? $this->$module->_postinit() : TRUE))
 				trigger_error('Wyst±pi³y problemy z inicjalizacj± modu³u '.$module.'.');
-
-		*/
 
 		// to siê rozejdzie po modu³ach:
 
@@ -2213,6 +2207,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.314  2003/12/14 13:31:55  lukasz
+ * - e, ja to zmieniam czêsto zdanie
+ *
  * Revision 1.313  2003/12/14 03:53:05  lukasz
  * - okej, narazie dajmy spokój z modu³ami.
  *
