@@ -54,7 +54,7 @@ if($_GET['rawmode']=='true')
 		}
 	}
 	else
-		header('Content-Type: text/plain; kubacharset='.$LANGDEFS[$LMS->lang]['charset']);
+		header('Content-Type: text/plain; charset='.$LANGDEFS[$LMS->lang]['charset']);
 }
 
 $SMARTY->assign('database',$database);
