@@ -82,11 +82,11 @@ wersja 1.1.7 Hathor (14/12/2003):
 	UPDATE invoicecontents SET val=value;
 	UPDATE invoicecontents SET taxv=taxvalue;
 	UPDATE invoicecontents SET cnt=count;
-	ALTER TABLE invoicecontents ALTER val SET NOT NULL
+	ALTER TABLE invoicecontents ALTER val SET NOT NULL;
 	ALTER TABLE invoicecontents ALTER val SET DEFAULT 0;
-	ALTER TABLE invoicecontents ALTER taxv SET NOT NULL
+	ALTER TABLE invoicecontents ALTER taxv SET NOT NULL;
 	ALTER TABLE invoicecontents ALTER taxv SET DEFAULT 0;
-	ALTER TABLE invoicecontents ALTER cnt SET NOT NULL
+	ALTER TABLE invoicecontents ALTER cnt SET NOT NULL;
 	ALTER TABLE invoicecontents ALTER cnt SET DEFAULT 0;
 	ALTER TABLE invoicecontents DROP COLUMN value;
 	ALTER TABLE invoicecontents RENAME val TO value;
