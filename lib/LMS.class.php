@@ -38,7 +38,7 @@ class LMS
 
 	function LMS($ADB,$SESSION)
 	{
-		$this->_version = eregi_replace('^\$Revision$Revision$');
+		$this->_version = eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$');
 		$this->SESSION=$SESSION;
 		$this->ADB=$ADB;
 	}
