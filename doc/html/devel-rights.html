@@ -1,0 +1,156 @@
+<HTML
+><HEAD
+><TITLE
+>Poziomy dostêpu</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.1-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Dla dociekliwych"
+HREF="devel.html"><LINK
+REL="PREVIOUS"
+TITLE="Struktura bazy danych"
+HREF="devel-db.html"><LINK
+REL="NEXT"
+TITLE="Ograniczenia"
+HREF="devel-limits.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-2"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.1-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="devel-db.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Rozdzia³ 6. Dla dociekliwych</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="devel-limits.html"
+>Nastêpny</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DEVEL-RIGHTS"
+>6.3. Poziomy dostêpu</A
+></H1
+><P
+>W  sumie  tutaj  to  wyt³umaczê  bardziej  dla developerów, gdy¿ osoby
+		korzystaj±ce z LMS raczej nie bêd± zainteresowane.</P
+><P
+>Oryginalnie poziomy dostêpu mia³y byæ definiowane poprzez ró¿ne litery.
+		By³o to  za³o¿enie  z  czasów LMS-0.4, lecz nigdy nie wykorzystane. Z
+		racji  tego,  ¿e  wesz³o  to  do 1.0, d³ugo siê g³owi³em jak wykorzystaæ
+		64-znakowego  stringa. Otó¿ w kolumnie rights jest poprostu 64-znakowa
+		(256-bitowa)  liczba  hexadecymalna.  Ka¿dy jej znak mo¿e opisaæ
+		maksymalnie  cztery bity kombinacji (4*64 = 256 - st±d ilo¶æ mo¿liwych
+		poziomów).  Tak  wiêc  w³±czenie  jakiego¶  poziomu  dostêpu  powoduje
+		ustawienie  w  tej  liczbie  odpowiedniego  bitu.  I tak je¿eli "pe³en
+		dostêp"  ma pozycjê 0 w lib/accesstable.php, zostanie ustawiony bit 0,
+		czyli  bêdzie  to liczba 1. Wiêc poziomy mog± mieæ numery od 0 do 255.
+		Nie jest to finalne ograniczenie. Stosuj±c wiêcej liter i znaków mo¿na
+		rozszerzyæ ilo¶æ mo¿liwych kombinacji do przynajmniej 6 bitów na znak,
+		co da nam 384 kombinacje.
+		</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="devel-db.html"
+>Poprzedni</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Spis tre¶ci</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="devel-limits.html"
+>Nastêpny</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Struktura bazy danych</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="devel.html"
+>Pocz±tek rozdzia³u</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Ograniczenia</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

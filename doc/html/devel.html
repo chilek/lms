@@ -1,7 +1,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Lista dostêpnych skryptów</TITLE
+>Dla dociekliwych</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.64
@@ -9,22 +9,19 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.64
 REL="HOME"
 TITLE="LMS - LAN Management System 1.1-cvs"
 HREF="index.html"><LINK
-REL="UP"
-TITLE="Skrypty"
-HREF="scripts.html"><LINK
 REL="PREVIOUS"
-TITLE="Skrypty"
-HREF="scripts.html"><LINK
+TITLE="Przyk³ad zastosowania lms-mgc"
+HREF="mgc-example.html"><LINK
 REL="NEXT"
-TITLE="lms-notify"
-HREF="scripts-notify.html"><LINK
+TITLE="Struktura bazy danych"
+HREF="devel-db.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="style.css"><META
 HTTP-EQUIV="Content-Type"
 CONTENT="text/html; charset=ISO-8859-2"></HEAD
 ><BODY
-CLASS="SECT1"
+CLASS="CHAPTER"
 BGCOLOR="#EBE4D6"
 TEXT="#000000"
 ><DIV
@@ -46,20 +43,20 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="scripts.html"
+HREF="mgc-example.html"
 >Poprzedni</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia³ 4. Skrypty</TD
+></TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="scripts-notify.html"
+HREF="devel-db.html"
 >Nastêpny</A
 ></TD
 ></TR
@@ -68,21 +65,71 @@ HREF="scripts-notify.html"
 ALIGN="LEFT"
 WIDTH="100%"></DIV
 ><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="DEVEL"
+>Rozdzia³ 6. Dla dociekliwych</A
+></H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Spis tre¶ci</B
+></DT
+><DT
+>6.1. <A
+HREF="devel.html#DEVEL-CATALOGS"
+>Drzewo katalogów</A
+></DT
+><DT
+>6.2. <A
+HREF="devel-db.html"
+>Struktura bazy danych</A
+></DT
+><DT
+>6.3. <A
+HREF="devel-rights.html"
+>Poziomy dostêpu</A
+></DT
+><DT
+>6.4. <A
+HREF="devel-limits.html"
+>Ograniczenia</A
+></DT
+><DD
+><DL
+><DT
+>6.4.1. <A
+HREF="devel-limits.html#AEN1051"
+>Wynikaj±ce z naszego projektu</A
+></DT
+><DT
+>6.4.2. <A
+HREF="devel-limits.html#AEN1054"
+>Wynikaj±ce z u¿ywanego DMBS</A
+></DT
+></DL
+></DD
+></DL
+></DIV
+><DIV
 CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SCRIPTS-LIST"
->4.2. Lista dostêpnych skryptów</A
+NAME="DEVEL-CATALOGS"
+>6.1. Drzewo katalogów</A
 ></H1
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN567"
+NAME="AEN998"
 ></A
 ><P
 ><B
->Tabela 4-1. Lista skryptów wykonywalnych</B
+>Tabela 6-1. Drzewo katalogów LMS</B
 ></P
 ><TABLE
 BORDER="1"
@@ -107,126 +154,137 @@ VALIGN="TOP"
 WIDTH="200"
 ALIGN="CENTER"
 VALIGN="TOP"
->lms-notify</TD
+>backups</TD
 ><TD
 WIDTH="300"
 ALIGN="CENTER"
 VALIGN="TOP"
->Korespondencja seryjna do u¿ytkowników sieci</TD
+>Kopie zapasowe bazy danych</TD
 ></TR
 ><TR
 ><TD
 WIDTH="200"
 ALIGN="CENTER"
 VALIGN="TOP"
->lms-cutoff</TD
+>bin</TD
 ><TD
 WIDTH="300"
 ALIGN="CENTER"
 VALIGN="TOP"
->Od³±czanie u¿ytkowników zad³u¿onych</TD
+>Skrypty wykonywalne lms-...</TD
 ></TR
 ><TR
 ><TD
 WIDTH="200"
 ALIGN="CENTER"
 VALIGN="TOP"
->lms-payments</TD
+>contrib</TD
 ><TD
 WIDTH="300"
 ALIGN="CENTER"
 VALIGN="TOP"
->Naliczanie op³at okresowych (abonamentowych)</TD
+>Dodatki stworzone przez u¿ytkowników LMS</TD
 ></TR
 ><TR
 ><TD
 WIDTH="200"
 ALIGN="CENTER"
 VALIGN="TOP"
->lms-traffic</TD
+>devel</TD
 ><TD
 WIDTH="300"
 ALIGN="CENTER"
 VALIGN="TOP"
->Zapis statystyk wykorzystania ³±cza</TD
+>Skrypty przydatne dla developerów</TD
 ></TR
 ><TR
 ><TD
 WIDTH="200"
 ALIGN="CENTER"
 VALIGN="TOP"
->lms-makearp</TD
+>doc</TD
 ><TD
 WIDTH="300"
 ALIGN="CENTER"
 VALIGN="TOP"
->Tworzenie tablicy ARP (/etc/ethers)</TD
+>Dokumentacja</TD
 ></TR
 ><TR
 ><TD
 WIDTH="200"
 ALIGN="CENTER"
 VALIGN="TOP"
->lms-makedhcpconf</TD
+>img</TD
 ><TD
 WIDTH="300"
 ALIGN="CENTER"
 VALIGN="TOP"
->Konfiguracja serwera DHCP(/etc/ethers)</TD
+>Obrazki do Interfejsu U¿ytkownka</TD
 ></TR
 ><TR
 ><TD
 WIDTH="200"
 ALIGN="CENTER"
 VALIGN="TOP"
->lms-makeiptables</TD
+>lib</TD
 ><TD
 WIDTH="300"
 ALIGN="CENTER"
 VALIGN="TOP"
->Konfiguracja firewalla iptables</TD
+>LMS'owy zbiór bibliotek PHP oraz Smarty</TD
 ></TR
 ><TR
 ><TD
 WIDTH="200"
 ALIGN="CENTER"
 VALIGN="TOP"
->lms-makeipchains</TD
+>modules</TD
 ><TD
 WIDTH="300"
 ALIGN="CENTER"
 VALIGN="TOP"
->Konfiguracja firewalla ipchains</TD
+>Modu³y Interfejsu U¿ytkownika</TD
 ></TR
 ><TR
 ><TD
 WIDTH="200"
 ALIGN="CENTER"
 VALIGN="TOP"
->lms-makeiodenconf</TD
+>sample</TD
 ><TD
 WIDTH="300"
 ALIGN="CENTER"
 VALIGN="TOP"
->Konfiguracja oident</TD
+>Przyk³adowe skrypty i inne dodatki</TD
 ></TR
 ><TR
 ><TD
 WIDTH="200"
 ALIGN="CENTER"
 VALIGN="TOP"
->lms-makeopenbsdpf</TD
+>templates</TD
 ><TD
 WIDTH="300"
 ALIGN="CENTER"
 VALIGN="TOP"
->Konfiguracja firewalla dla systemu OpenBSD</TD
+>Temlejty Smarty dla Interfejsu U¿ytkownika</TD
+></TR
+><TR
+><TD
+WIDTH="200"
+ALIGN="CENTER"
+VALIGN="TOP"
+>templates_c</TD
+><TD
+WIDTH="300"
+ALIGN="CENTER"
+VALIGN="TOP"
+>Pliki tymczasowe</TD
 ></TR
 ></TBODY
 ></TABLE
 ></DIV
-><P
-> </P
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -243,7 +301,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="scripts.html"
+HREF="mgc-example.html"
 >Poprzedni</A
 ></TD
 ><TD
@@ -259,7 +317,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="scripts-notify.html"
+HREF="devel-db.html"
 >Nastêpny</A
 ></TD
 ></TR
@@ -268,20 +326,17 @@ HREF="scripts-notify.html"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Skrypty</TD
+>Przyk³ad zastosowania lms-mgc</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
-><A
-HREF="scripts.html"
->Pocz±tek rozdzia³u</A
-></TD
+>&nbsp;</TD
 ><TD
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->lms-notify</TD
+>Struktura bazy danych</TD
 ></TR
 ></TABLE
 ></DIV
