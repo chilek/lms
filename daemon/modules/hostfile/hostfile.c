@@ -86,27 +86,37 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 {
 	struct hostfile_module *hm;
 	unsigned char *instance = "hostfile";
+	unsigned char *s;
 	dictionary *ini;
 	int i;
 	
 	if(g->api_version != APIVERSION) 
 		return(NULL);
 	
-//	for(i=0; m->args[i].k; i++)
-//		if(strcmp(m->args[i].k, "instance") == 0) instance = m->args[i].v;
+	for(i=0; m->args[i].key; i++)
+		if(strcmp(m->args[i].key, "instance") == 0) instance = m->args[i].val;
 	
 	hm = (struct hostfile_module *) realloc(m, sizeof(struct hostfile_module));
 	
 	hm->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 	
 	ini = g->iniparser_load(g->inifile);
-	hm->prefix = strdup(g->iniparser_getstring(ini, "hostfile:prefix", "/usr/sbin/iptables -F FORWARD\n"));
-	hm->append = strdup(g->iniparser_getstring(ini, "hostfile:append", "/usr/sbin/iptables -A FORWARD -j REJECT\n"));
-	hm->grant = strdup(g->iniparser_getstring(ini, "hostfile:grantedhost", "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"));
-	hm->deny = strdup(g->iniparser_getstring(ini, "hostfile:deniedhost", "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"));
-	hm->tmpfile = strdup(g->iniparser_getstring(ini, "hostfile:tmpfile", "/tmp/mod_hostfile"));
-	hm->command = strdup(g->iniparser_getstring(ini, "hostfile:command", ""));
+	
+	s = g->str_concat(instance,":prefix");
+	hm->prefix = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -F FORWARD\n"));
+	s = g->str_concat(instance,":append");
+	hm->append = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -A FORWARD -j REJECT\n"));
+	s = g->str_concat(instance,":grantedhost");	
+	hm->grant = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"));
+	s = g->str_concat(instance,":deniedhost");
+	hm->deny = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"));
+	s = g->str_concat(instance,":tmpfile");
+	hm->tmpfile = strdup(g->iniparser_getstring(ini, s, "/tmp/mod_hostfile"));
+	s = g->str_concat(instance,":command");
+	hm->command = strdup(g->iniparser_getstring(ini, s, ""));
+
 	g->iniparser_freedict(ini);
+	free(s);
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [mod_hostfile] initialized");
 #endif
