@@ -35,17 +35,18 @@ ini_set('session.name','LMSSESSIONID');
 
 // Parse configuration file
 
-foreach(parse_ini_file($CONFIG_FILE, true) as $key=>$val) $_CONFIG[$key] = $val;
+foreach(parse_ini_file($CONFIG_FILE, true) as $key => $val)
+	$_CONFIG[$key] = $val;
 
 // config value tester
 
-function chkconfig($value,$default=FALSE)
+function chkconfig($value, $default = FALSE)
 {
-	if(eregi('^(1|y|on|yes|true|tak|t)$',$value))
+	if(eregi('^(1|y|on|yes|true|tak|t)$', $value))
 		return TRUE;
-	elseif(eregi('^(0|n|no|off|false|nie)$',$value))
+	elseif(eregi('^(0|n|no|off|false|nie)$', $value))
 		return FALSE;
-	elseif(!isset($value)||$value=='')
+	elseif(!isset($value) || $value == '')
 		return $default;
 	else
 		trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
@@ -70,9 +71,9 @@ $_DBNAME = (! $_CONFIG['database']['database'] ? 'lms' : $_CONFIG['database']['d
 
 // Redirect to SSL
 
-if($_FORCE_SSL && $_SERVER[HTTPS] != 'on')
+if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 {
-	header('Location: https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI]);
+	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 	exit(0);
 }
 
@@ -94,13 +95,13 @@ require_once($_LIB_DIR.'/leftmenu.php');
 require_once($_LIB_DIR.'/accesstable.php');
 require_once($_LIB_DIR.'/language.php');
 
-$DB = DBInit($_DBTYPE,$_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME);
+$DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
 // Initialize database and template classes
 
-$SESSION = new Session($DB,$_TIMEOUT);
+$SESSION = new Session($DB, $_TIMEOUT);
 
-$LMS = new LMS($DB,$SESSION);
+$LMS = new LMS($DB, $SESSION);
 $LMS->CONFIG['backup_dir'] = $_BACKUP_DIR;
 $LMS->CONFIG['debug_email'] = $_CONFIG['phpui']['debug_email'];
 
@@ -108,7 +109,7 @@ $SMARTY = new Smarty;
 
 // test for proper version of Smarty
 
-if(version_compare('2.5.0',$SMARTY->_version) > 0)
+if(version_compare('2.5.0', $SMARTY->_version) > 0)
 	die('<B>Niepoprawna wersja engine Smarty! Proszê sci±gn±æ nowszê wersjê spod adresu <A HREF="http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz">http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz</A>!</B>');
 
 $SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
@@ -116,18 +117,18 @@ $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 $SMARTY->debugging = chkconfig($_CONFIG['phpui']['smarty_debug']);
 require_once($_LIB_DIR.'/smarty_addons.php');
 
-$layout['logname']=$SESSION->logname;
-$layout['logid']=$SESSION->id;
-$layout['lmsv']='1.1-cvs ('.$LMS->_version.'/'.$SESSION->_version.')';
-$layout['lmsdbv']=$DB->_version;
+$layout['logname'] = $SESSION->logname;
+$layout['logid'] = $SESSION->id;
+$layout['lmsv'] = '1.1-cvs ('.$LMS->_version.'/'.$SESSION->_version.')';
+$layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
-$layout['uptime']=uptime();
-$layout['hostname']=hostname();
-$layout['date']=pldate();
-$layout['faktury']=(! $_CONFIG['finances']['enable_faktury'] ? '0' : $_CONFIG['finances']['enable_faktury']);
+$layout['uptime'] = uptime();
+$layout['hostname'] = hostname();
+$layout['date'] = pldate();
+$layout['faktury'] = (! $_CONFIG['finances']['enable_faktury'] ? '0' : $_CONFIG['finances']['enable_faktury']);
 
-$SMARTY->assign('menu',$menu);
-$SMARTY->assign('layout',$layout);
+$SMARTY->assign('menu', $menu);
+$SMARTY->assign('layout', $layout);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 if($SESSION->islogged)
@@ -136,47 +137,47 @@ if($SESSION->islogged)
 	if($SESSION->passwd == '')
 		$SMARTY->assign('emptypasswd',TRUE);
 
-	$module=$_GET['m'];
+	$module = $_GET['m'];
 	
 	if (file_exists($_MODULES_DIR.'/'.$module.'.php'))
 	{
-		if(eregi($access['allow'],$module))
+		if(eregi($access['allow'], $module))
 			$allow = TRUE;
 		else{
 			$rights = $LMS->GetAdminRights($SESSION->id);
 			if($rights)
 				foreach($rights as $level)
-					if(isset($access['table'][$level]['deny_reg']) && eregi($access['table'][$level]['deny_reg'],$module))
+					if(isset($access['table'][$level]['deny_reg']) && eregi($access['table'][$level]['deny_reg'], $module))
 						$deny = TRUE;
-					elseif(isset($access['table'][$level]['allow_reg']) && eregi($access['table'][$level]['allow_reg'],$module))
+					elseif(isset($access['table'][$level]['allow_reg']) && eregi($access['table'][$level]['allow_reg'], $module))
 						$allow = TRUE;
 		}
 
 		if($allow && ! $deny)
 		{
-			$layout['module']=$module;
+			$layout['module'] = $module;
 			include($_MODULES_DIR.'/'.$module.'.php');
 		}else
 			$SMARTY->display('noaccess.html');
-	}elseif($module==''){
-		$layout['module']='welcome';
+	}elseif($module == ''){
+		$layout['module'] = 'welcome';
 		$SMARTY->assign('warning',!chkconfig($_CONFIG['phpui']['disable_devel_warning']));
 		include($_MODULES_DIR.'/welcome.php');
 	}else{
-		$layout['module']='notfound';
-		$layout['pagetitle']="B³±d!";
-		$SMARTY->assign("layout",$layout);
-		$SMARTY->assign("server",$_SERVER);
-		$SMARTY->display("notfound.html");
+		$layout['module'] = 'notfound';
+		$layout['pagetitle'] = 'B³±d!';
+		$SMARTY->assign('layout', $layout);
+		$SMARTY->assign('server', $_SERVER);
+		$SMARTY->display('notfound.html');
 	}
 	
-	if($_SESSION['lastmodule']!=$module)
-		$_SESSION['lastmodule']=$module;
+	if($_SESSION['lastmodule'] != $module)
+		$_SESSION['lastmodule'] = $module;
 }
 else
 {
-	$SMARTY->assign('error',$SESSION->error);
-	$SMARTY->assign('target','?'.$_SERVER[QUERY_STRING]);
+	$SMARTY->assign('error', $SESSION->error);
+	$SMARTY->assign('target','?'.$_SERVER['QUERY_STRING']);
 	$SMARTY->display('login.html');
 	
 }
@@ -185,6 +186,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.107  2003/10/02 10:00:32  lukasz
+ * - code cleanups
+ *
  * Revision 1.106  2003/10/01 21:12:29  lukasz
  * - added language.php
  *
