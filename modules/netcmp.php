@@ -27,7 +27,7 @@
 if(!$LMS->NetworkExists($_GET[id]))
 {
 	header("Location: ?m=netlist");
-	exit(0);
+	die;
 }
 
 $network[name] = $LMS->GetNetworkName($_GET[id]);
@@ -36,7 +36,7 @@ if($_GET[is_sure])
 {
 	$LMS->NetworkCompress($_GET[id]);
 	header("Location: ?m=".$_SESSION[lastmodule]."&id=".$_GET[id]);
-	exit(0);
+	die;
 }else{
 	$layout[pagetitle]="Porz±dkowanie sieci ".strtoupper($network[name]);
 	$SMARTY->assign("layout",$layout);

@@ -27,7 +27,7 @@
 if(!$LMS->NetworkExists($_GET[id]))
 {
 	header("Location: ?m=netlist");
-	exit(0);
+	die;
 }
 
 $network = $LMS->GetNetworkRecord($_GET[id]);

@@ -27,7 +27,7 @@ $layout[pagetitle]="Edycja taryfy";
 if(!$LMS->TariffExists($_GET[id]))
 {
 	header("Location: ?m=tarifflist");
-	exit(0);
+	die;
 }
 
 $tariff = $_POST[tariff];
@@ -74,7 +74,7 @@ if(isset($tariff))
 	{
 		$LMS->TariffUpdate($tariff);
 		header("Location: ?m=tariffinfo&id=".$tariff[id]);
-		exit(0);
+		die;
 	}
 
 }else

@@ -55,7 +55,7 @@ if(isset($nodeedit))
 	if($nodeedit[ipaddr]==""&&$nodeedit[mac]==""&&$nodeedit[name]=="")
 	{
 		header("Location: ?m=nodeinfo&id=".$nodeedit[id]);
-		exit(0);
+		die;
 	}
 
 	if(check_ip($nodeedit[ipaddr]))

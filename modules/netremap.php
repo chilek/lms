@@ -27,7 +27,7 @@
 if(!$LMS->NetworkExists($_GET[id])||!$LMS->NetworkExists($_GET[mapto]))
 {
 	header("Location: ?m=netlist");
-	exit(0);
+	die;
 }
 
 $network[source] = $LMS->GetNetworkRecord($_GET[id]);
@@ -43,7 +43,7 @@ if(!$error)
 
 		$LMS->NetworkRemap($network[source][id],$network[dest][id]);
 		header("Location: ?m=netinfo&id=".$network[dest][id]);
-		exit(0);
+		die;
 
 	}else{
 		$layout[pagetitle]="Readresowanie sieci ".strtoupper($network[source][name]);

@@ -35,7 +35,7 @@ if(isset($adminadd))
 	if($adminadd[login]==""&&$adminadd[name]==""&&$adminadd[password]==""&&$adminadd[confirm]=="")
 	{
 		header("Location: ?m=adminadd");
-		exit(0);
+		die;
 	}
 	
 	if($LMS->GetAdminIDByLogin($adminadd[login]))
@@ -68,7 +68,7 @@ if(isset($adminadd))
 	if(!$error)
 	{
 		header("Location: ?m=admininfo&id=".$LMS->AdminAdd($adminadd));
-		exit(0);
+		die;
 	}
 }
 foreach($access[table] as $idx => $row)

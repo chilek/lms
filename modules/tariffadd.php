@@ -34,7 +34,7 @@ if(isset($tariffadd))
 	if($tariffadd[name]=="" && $tariffadd[comment]=="" && $tariffadd[value]=="")
 	{
 		header("Location: ?m=tarifflist");
-		exit(0);
+		die;
 	}
 
 	$tariffadd[value] = str_replace(",",".",$tariffadd[value]);
@@ -68,7 +68,7 @@ if(isset($tariffadd))
 
 	if(!$error){
 		header("Location: ?m=tarifflist&id=".$LMS->TariffAdd($tariffadd));
-		exit(0);
+		die;
 	}
 	
 }

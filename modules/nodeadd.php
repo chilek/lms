@@ -41,10 +41,10 @@ if(isset($nodedata))
 		if($_GET[ownerid])
 		{
 			header("Location: ?m=userinfo&id=".$_GET[ownerid]);
-			exit(0);
+			die;
 		}else{
 			header("Location: ?m=nodelist");
-			exit(0);
+			die;
 		}
 	
 	if($nodedata[name]=="")
@@ -80,7 +80,7 @@ if(isset($nodedata))
 	{
 		$nodeid=$LMS->NodeAdd($nodedata);
 		header("Location: ?m=nodeinfo&id=".$nodeid);
-		exit(0);
+		die;
 	}
 		
 }

@@ -28,7 +28,7 @@ if($_GET[is_sure])
 {
 	$LMS->DatabaseDelete($_GET[db]);
 	header("Location: ?m=".$_SESSION[lastmodule]);
-	exit(0);
+	die;
 }else{
 	$layout[pagetitle]="Usuniêcie bazy danych";
 	$SMARTY->assign("layout",$layout);

@@ -26,7 +26,7 @@
 if(!$LMS->TariffExists($_GET[id]))
 {
 	header("Location: ?m=tarifflist");
-	exit(0);
+	die;
 }
 $layout[pagetitle]="Informacja o taryfie";
 $_SESSION[backto] = $_SERVER[QUERY_STRING];

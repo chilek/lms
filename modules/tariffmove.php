@@ -28,7 +28,7 @@ if($LMS->TariffExists($_GET[from])&&$LMS->TariffExists($_GET[to])&&$_GET[is_sure
 {
 	$ADB->Execute("UPDATE users SET tariff=? WHERE tariff=? AND status=3",array($_GET[to],$_GET[from]));
 	header("Location: ?m=tariffinfo&id=".$_GET[to]);
-	exit(0);
+	die;
 }
 else
 	header("Location: ?".$_SESSION[backto]);

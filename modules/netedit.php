@@ -27,7 +27,7 @@
 if(!$LMS->NetworkExists($_GET[id]))
 {
 	header("Location: ?m=netlist");
-	exit(0);
+	die;
 }
 
 
@@ -133,7 +133,7 @@ if(isset($networkdata))
 			$LMS->NetworkShift($network[address],$network[mask],($networkdata[addresslong] - $network[addresslong]));
 		$LMS->NetworkUpdate($networkdata);
 		header("Location: ?m=netinfo&id=".$networkdata[id]);
-		exit(0);
+		die;
 	}	
 	
 	$network[prefix] = $networkdata[prefix];
