@@ -3207,12 +3207,14 @@ class LMS
 		return $uiid;
 	}
 	
-	function CheckUpdates()
+	function CheckUpdates($force = FALSE)
 	{
 		$uiid = $this->GetUniqueInstallationID();
 		$time = $this->DB->GetOne('SELECT ?NOW?');
 		$content = FALSE;
-		if(!($lastcheck = $this->DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype=?', array('last_check_for_updates_timestamp'))))
+		if($force == TRUE)
+			$lastcheck = 0;
+		elseif(!($lastcheck = $this->DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype=?', array('last_check_for_updates_timestamp'))))
 			$lastcheck = 0;
 		if($lastcheck + $this->CONFIG['phpui']['check_for_updates_period'] < $time)
 		{
@@ -3257,8 +3259,27 @@ class LMS
 		return NULL;
 	}
 
-	function UpdateRegisterData()
+	function UpdateRegisterData($name, $url, $hidden)
 	{
+		$name = rawurlencode($name);
+		$url = rawurlencode($url);
+		$uiid = $this->GetUniqueInstallationID();
+		$url = 'http://lms.rulez.pl/register.php?uiid='.$uiid.'&name='.$name.'&url='.$url.($hidden == TRUE ? '&hidden=1' : '');
+		ini_set('default_socket_timeout', 5);
+		if($regfile = @fopen($url, 'r'))
+		{
+			fclose($regfile);
+			ini_restore('default_socket_timeout');
+			// ok, update done, so, let we fall asleep for at least 2 seconds, let's viper put our
+			// registration data into database. in future we should read info from register.php,
+			// ie. 'Password' incorrect if we protect each installation with password (but then
+			// we should use https)
+			
+			sleep(2);
+			$this->CheckUpdates(TRUE);
+			return TRUE;
+		}
+		ini_restore('default_socket_timeout');
 		return FALSE;
 	}
 
