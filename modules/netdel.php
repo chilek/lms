@@ -26,12 +26,11 @@
 
 if(!$LMS->NetworkExists($_GET['id']))
 {
-	header("Location: ?m=netlist");
+	header('Location: ?m=netlist');
 	die;
 }
 
 $network = $LMS->GetNetworkRecord($_GET['id']);
-$networks = $LMS->GetNetworks();
 
 if($network['assigned'])
 	$error['delete'] = TRUE;
@@ -41,20 +40,24 @@ if(!$error)
 	if($_GET['is_sure'])
 	{
 		$LMS->NetworkDelete($network['id']);
-		header("Location: ?m=".$_SESSION['lastmodule']."&id=".$_GET['id']);
+		header('Location: ?m='.$_SESSION['lastmodule'].'&id='.$_GET['id']);
 		die;
-	}else{
-		$layout['pagetitle'] = "Usuniêcie sieci ".strtoupper($network['name']);
+	}
+	else
+	{
+		$layout['pagetitle'] = sprintf(trans('Removing network %s'),strtoupper($network['name']));
 		$SMARTY->display('header.html');
-		echo "<H1>Usuniêcie sieci ".strtoupper($network['name'])."</H1>";
-		echo "<p>Czy jeste¶ pewien ¿e chcesz usun±æ t± sieæ?</p>";
-		echo "<a href=\"?m=netdel&id=".$network['id']."&is_sure=1\">Tak, jestem pewien</A>";
+		echo '<H1>'.sprintf(trans('Removing network %s'),strtoupper($network['name'])).'</H1>';
+		echo '<P>'.trans('Are you shure, you want to delete that network?').'</P>';
+		echo '<A href="?m=netdel&id='.$network['id'].'&is_sure=1">'.trans('Yes, I am shure').'</A>';
 		$SMARTY->display('footer.html');
 	}
-}else{
-	$layout['pagetitle'] = "Informacja o sieci";
+}
+else
+{
+	$layout['pagetitle'] = sprintf(trans('Info Network: %s'),$network['name']);
 	$SMARTY->assign('network',$network);
-	$SMARTY->assign('networks',$networks);
+	$SMARTY->assign('networks', $LMS->GetNetworks());
 	$SMARTY->assign('error',$error);
 	$SMARTY->display('netinfo.html');
 }

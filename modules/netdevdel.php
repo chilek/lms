@@ -30,23 +30,23 @@ if(! $LMS->NetDevExists($_GET['id']))
 	die;
 }		
 
-$layout['pagetitle'] = "Usuniêcie urz±dzenia ID: ".sprintf("%04d",$_GET['id']);
+$layout['pagetitle'] = sprintf(trans('Deletion of Device with ID: %s'),sprintf('%04d',$_GET['id']));
 $SMARTY->assign('netdevid',$_GET['id']);
 
 if($LMS->CountNetDevLinks($_GET['id'])>0)
 {
-	$body = "<H1>".$layout['pagetitle']."</H1>";
-	$body .= "<P>Nie mo¿na usun±æ urz±dzenia które jest pod³±czone do innych urz±dzeñ lub komputerów.</P>";
+	$body = '<H1>'.$layout['pagetitle'].'</H1>';
+	$body .= '<P>'.trans('Device connected with other device or node can\'t be deleted.').'</P>';
 }else{
     if($_GET['is_sure']!=1)
     {
-	    $body = "<H1>".$layout['pagetitle']."</H1>";
-	    $body .= "<P>Czy jeste¶ pewien ¿e chcesz usun±æ urz±dzenie?</P>"; 
-	    $body .= "<P><A HREF=\"?m=userdel&id=".$_GET['id']."&is_sure=1\">Tak, jestem pewien.</A></P>";
+	    $body = '<H1>'.$layout['pagetitle'].'</H1>';
+	    $body .= '<P>'.trans('Are you shure, you want to delete that device?').'</P>'; 
+	    $body .= '<P><A HREF="?m=userdel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I am shure').'</A></P>';
     }else{
-	    header("Location: ?m=netdevlist");
-	    $body = "<H1>".$layout['pagetitle']."</H1>";
-	    $body .= "<P>Urz±dzenie zosta³o usuniête.</P>";
+	    header('Location: ?m=netdevlist');
+	    $body = '<H1>'.$layout['pagetitle'].'</H1>';
+	    $body .= '<P>'.trans('Device was deleted.').'</P>';
 	    $LMS->DeleteNetDev($_GET['id']);
     }
 }
