@@ -123,4 +123,10 @@ while (list ($line_num, $line) = each ($szablon)) {
     echo $line;
 }
 
+/*
+ * $Log$
+ * Revision 1.6  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

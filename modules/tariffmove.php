@@ -32,4 +32,10 @@ if($LMS->TariffExists($_GET[from])&&$LMS->TariffExists($_GET[to])&&$_GET[is_sure
 }
 else
 	header("Location: ?".$_SESSION[backto]);
+/*
+ * $Log$
+ * Revision 1.10  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

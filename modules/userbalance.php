@@ -38,4 +38,10 @@ $SMARTY->assign("username",$username);
 $SMARTY->assign("id",$id);
 $SMARTY->display("userbalance.html");
 
+/*
+ * $Log$
+ * Revision 1.15  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

@@ -85,5 +85,10 @@ imagepstext ($obraz, $userinfo['zip']." ".$userinfo['city'], $font, 20, $czarny,
 imagepsfreefont ($font);
 imagepng($obraz);
 imagedestroy($obraz);
-?>
-							    
+/*
+ * $Log$
+ * Revision 1.5  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
+?>							    

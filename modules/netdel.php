@@ -60,4 +60,10 @@ if(!$error)
 	$SMARTY->assign("error",$error);
 	$SMARTY->display("netinfo.html");
 }
+/*
+ * $Log$
+ * Revision 1.16  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

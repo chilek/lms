@@ -34,4 +34,10 @@ $SMARTY->assign("layout",$layout);
 $SMARTY->assign("tariff",$LMS->GetTariff($_GET[id]));
 $SMARTY->assign("tariffs",$LMS->GetTariffs());
 $SMARTY->display("tariffinfo.html");
+/*
+ * $Log$
+ * Revision 1.12  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>

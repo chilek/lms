@@ -52,4 +52,10 @@ $SMARTY->assign("body",$body);
 $SMARTY->display("dialog.html");
 $SMARTY->display("footer.html");
 
+/*
+ * $Log$
+ * Revision 1.11  2003/08/18 16:52:19  lukasz
+ * - added CVS Log tags
+ *
+ */
 ?>
