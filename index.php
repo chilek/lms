@@ -119,27 +119,11 @@ $_MODULES_DIR = $_CONFIG['directories']['modules_dir'];
 $_SMARTY_DIR = $_CONFIG['directories']['smarty_dir'];
 $_SMARTY_COMPILE_DIR = $_CONFIG['directories']['smarty_compile_dir'];
 $_SMARTY_TEMPLATES_DIR = $_CONFIG['directories']['smarty_templates_dir'];
-$_TIMEOUT = $_CONFIG['phpui']['timeout'];
-$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
 $_DBTYPE = $_CONFIG['database']['type'];
 $_DBHOST = $_CONFIG['database']['host'];
 $_DBUSER = $_CONFIG['database']['user'];
 $_DBPASS = $_CONFIG['database']['password'];
 $_DBNAME = $_CONFIG['database']['database'];
-
-
-
-// Redirect to SSL
-
-if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
-{
-	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-	exit(0);
-}
-
-// Set our sweet polish locales :>
-
-//setlocale (LC_ALL, 'pl_PL');
 
 // include required files
 
@@ -156,9 +140,26 @@ require_once($_LIB_DIR.'/language.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
-// Call any of upgrade process before anything else.
+// Call any of upgrade process before anything else
 
 require_once($_LIB_DIR.'/upgradedb.php');
+
+// Read configuration of LMS-UI from database
+
+if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
+	foreach($cfg as $row)
+		$_CONFIG[$row['section']][$row['var']] = $row['value'];
+
+$_TIMEOUT = $_CONFIG['phpui']['timeout'];
+$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
+
+// Redirect to SSL
+
+if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
+{
+	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+	exit(0);
+}
 
 // Initialize database and template classes
 

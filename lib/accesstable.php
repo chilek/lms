@@ -63,6 +63,9 @@ $access['table'][10]['allow_reg']   	= '^(rtsearch|rtqueue(list|info|view)|(rtti
 $access['table'][11]['name']        	= 'manipulacja kontami';
 $access['table'][11]['allow_reg']   	= '^(account(list|edit|add|del))$';
 
+$access['table'][12]['name']        	= 'konfiguracja interfejsu u¿ytkownika';
+$access['table'][12]['allow_reg']   	= '^(config(edit))$';
+
 $access['table'][253]['name']		= 'brak dostêpu do modyfikacji i zak³adania nowych kont administratorów';
 $access['table'][253]['deny_reg']	= '^(admin(add|del|edit|passwd))$';
 
