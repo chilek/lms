@@ -547,20 +547,74 @@ http://www.naszasiec.pl/</screen></example>
 	    </itemizedlist>
 	</para>
     </sect2>
-    <sect2 id="lms-updatewarnings">
-	 <title>lms-updatewarnings</title>
-	 <para>Skrypt automatycznie w³±cza ostrze¿enia (czyli ustawia odpiwedni± flagê w bazie
-	 danych) wszystkim komputerom u¿ytkownika z saldem mniejszym ni¿ kwota okre¶lona parametrem 'limit'.
-	 Regu³y firewalla przekierowuj±ce na stronê z ostrze¿eniem nale¿y wygenerowaæ innym skryptem.</para>
-         <para>Konfiguracjê dla lms-updatewarnings mo¿emy ustaliæ w pliku <filename>lms.ini</filename> 
-	 w sekcji <emphasis>[warnings]</emphasis>. Mo¿emy tam ustawiæ:</para>
-	 <itemizedlist>
-          <listitem>
-	   <para>limit (opcjonalny)</para>
-	   <para>Pozwala na ustalenie limitu bilansu. Domy¶lnie: 0</para>
-	   <para>Przyk³ad:	<prompt>limit = -20</prompt></para>
-	  </listitem>
-	 </itemizedlist>
+    <sect2 id="lms-makemacs">
+	<title>lms-makemacs</title>
+	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra filtruj±ce ruch
+	    u¿ytkowników na bazie testu adresu ¼ród³owego MAC. Dla ka¿dego komputera generowana jest
+	    jedna regu³a dla tablicy nat, zadanego ³añcucha, testuj±ca adres ¼ród³owy IP pakietu oraz adres
+	    ¼ród³owy MAC ramki. Je¶li testy zakoñcz± siê pozytywnie nastêpuje powrót do ³añcucha nadrzêdnego
+	    za pomoc± decyzji RETURN. Na koñcu listy regu³ dodawane s± 2 regu³y przekierowuj±ce ruch http
+	    oraz webcache na podany w konfiguracji adres IP oraz port (z wykorzystaniem decyzji DNAT).
+	    Przekierowanie mo¿e odbywaæ siê na wirtualny host www z zawiadomieniem u¿ytkownika
+	    o zaleg³o¶ciach finansowych bez mo¿liwo¶ci wy³±czenia zawiadomienia. Na koñcu dodawana jest 
+	    regu³a blokuj±ca jakikolwiek inny ruch.
+	    </para>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[macs]</emphasis>
+	    w pliku <filename>lms.ini</filename>: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>usergroups </para>
+		    <para>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</para>
+		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>iptables_binary</para>
+		    <para>Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</para>
+		    <para>Przyk³ad:	<prompt>iptables_binary = /usr/local/sbin/iptables</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_owneruid</para>
+		    <para>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_owneruid = 0</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_file</para>
+		    <para>Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.macs.</para>
+		    <para>Przyk³ad:	<prompt>config_file = /etc/conf.d/rc.macs</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>config_ownergid</para>
+		    <para>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>config_permission</para>
+		    <para>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</para>
+		    <para>Przyk³ad:	<prompt>config_permission = 700</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>chain</para>
+		    <para>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MACS.</para>
+		    <para>Przyk³ad:	<prompt>chain = TESTY_MACOW</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>redirect_address</para>
+		    <para>Adres IP + port na który bêdzie przekierowywany niesklasyfikowany ruch http i webcache. Domy¶lnie: 127.0.0.1:80.</para>
+		    <para>Przyk³ad:	<prompt>redirect_address = 192.168.1.1:3000</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>lock_noaccess</para>
+		    <para>Czy generowaæ regu³ki testuj±ce z decyzj± RETURN dla komputerów, które s± od³±czone. Domy¶lnie: 0 (regu³y s± generowane)</para>
+		    <para>Przyk³ad:	<prompt>lock_noaccess = 1</prompt></para>
+		</listitem>
+	    </itemizedlist>
     </sect2>
     </sect1>
 </chapter>
