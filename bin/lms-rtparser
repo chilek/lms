@@ -22,7 +22,6 @@
 #
 #  $Id$
 
-#TODO - detect replies to tickets
 #TODO - reply to a sender on a new ticket
 
 use strict;
@@ -204,7 +203,7 @@ if( $mh_subject =~ /\[RT#[0-9]{6,}\]/ )
 	$prev_tid = $mh_subject;
 	$prev_tid =~ s/.*\[RT#([0-9]{6,})\].*/\1/;
 	$prev_tid = sprintf('%d',$prev_tid);
-	$dbq = $dbase->prepare("SELECT * FROM tickets WHERE id = $prev_tid AND queueid = $queue");
+	$dbq = $dbase->prepare("SELECT * FROM rttickets WHERE id = $prev_tid AND queueid = $queue");
 	$dbq->execute();
 	if(!($row = $dbq->fetchrow_hashref()))
 	{
@@ -227,12 +226,12 @@ my $ticket_id;
 
 if(! $prev_tid) # generate new ticket if previous not found
 {
-	$dbq = $dbase->prepare("INSERT INTO tickets (queueid, requestor, subject, createtime) VALUES ($queue, '$mh_from', '$mh_subject', '$timestamp')");
+	$dbq = $dbase->prepare("INSERT INTO rttickets (queueid, requestor, subject, createtime) VALUES ($queue, '$mh_from', '$mh_subject', '$timestamp')");
 	$dbq->execute();
 	
 	# fetch assigned ID
 	
-	$dbq = $dbase->prepare("SELECT id FROM tickets WHERE queueid = '$queue' AND requestor = '$mh_from' AND subject = '$mh_subject' AND createtime = '$timestamp'");
+	$dbq = $dbase->prepare("SELECT id FROM rttickets WHERE queueid = '$queue' AND requestor = '$mh_from' AND subject = '$mh_subject' AND createtime = '$timestamp'");
 	
 	$dbq->execute();
 	$row = $dbq->fetchrow_hashref();
