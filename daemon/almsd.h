@@ -37,7 +37,7 @@ struct global
 	void (*iniparser_freedict)(dictionary *);
 	
 	//util functions
-	unsigned char * (*str_replace)(unsigned char *, const unsigned char *, const unsigned char *);
+	int (*str_replace)(unsigned char **, const unsigned char *, const unsigned char *);
 	unsigned char * (*str_save)(unsigned char *, const unsigned char *);
 	unsigned char * (*str_concat)(const unsigned char *, const unsigned char *);
 	unsigned char * (*str_lwc)(const unsigned char *);
@@ -45,7 +45,6 @@ struct global
 
 struct module
 {
-//	struct module *next;
 	unsigned char *filename;
 	unsigned char *instance;
 	void *dlh;

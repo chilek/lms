@@ -63,9 +63,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 						pattern = hm->deny;
 				
 					s = strdup(pattern);
-					s = g->str_replace(s, "%i", literal_ip);
-					s = g->str_replace(s, "%m", literal_mac);
-					s = g->str_replace(s, "%n", name);
+					g->str_replace(&s, "%i", literal_ip);
+					g->str_replace(&s, "%m", literal_mac);
+					g->str_replace(&s, "%n", name);
 				
 					fprintf(fh, "%s", s);
 					free(s);

@@ -68,9 +68,9 @@ void reload(GLOBAL *g, struct oident_module *o)
 							snprintf(my_mac, 13, "unknownmac");
 						
 						s = strdup(o->host);
-						s = g->str_replace(s, "%n", name);
-						s = g->str_replace(s, "%m", my_mac);
-						s = g->str_replace(s, "%i", inet_ntoa(inet));
+						g->str_replace(&s, "%n", name);
+						g->str_replace(&s, "%m", my_mac);
+						g->str_replace(&s, "%i", inet_ntoa(inet));
 						fprintf(fh, "%s\n", s);
 						free(s);
 					}

@@ -93,6 +93,6 @@ unsigned char * db_get_data(QUERY_HANDLE *, int, const char *);
 static QUERY_HANDLE * get_query_result(RESULT_HANDLE *);
 
 /* Internal: Parse query statement */
-static unsigned char * parse_query_stmt(unsigned char *);
-
+//static unsigned char * parse_query_stmt(unsigned char *);
+void parse_query_stmt(unsigned char **);
 #endif

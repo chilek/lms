@@ -10,8 +10,10 @@
 
 #include "almsd.h"
 
-/* Replaces all instances of string in some string with new string */
-unsigned char *str_replace(unsigned char*, const unsigned char*, const unsigned char*);
+/* Replaces all instances of string in some string with new string 
+   Returns number of replaces 	
+*/
+int str_replace(unsigned char**, const unsigned char*, const unsigned char*);
 
 /* Saves string with realloc */
 unsigned char * str_save(unsigned char *, const unsigned char*);

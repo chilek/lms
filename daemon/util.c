@@ -10,39 +10,41 @@
 #include "util.h"
 
 /* Replaces each instance of string 'old' on the string 'string' with string 'new' */
-unsigned char * str_replace(unsigned char *string, const unsigned char *old, const unsigned char *new)
+int str_replace(unsigned char **string, const unsigned char *old, const unsigned char *new)
 {
-    size_t subLen = strlen(string);
-    size_t oldLen = strlen(old);
     size_t newLen = strlen(new);
-    
-    size_t lots = subLen + subLen * newLen + 1;
-    unsigned char *buffer = (unsigned char *)malloc(lots);
-    unsigned char *scan = buffer;
-    
-    if( buffer == 0 ) 
+    size_t oldLen = strlen(old);
+    unsigned char *buffer = (unsigned char*)malloc(strlen(*string) + strlen(*string)*newLen +1); 
+    unsigned char *temp, *scan = buffer;
+    int i=0;
+
+    temp = *string;  // remember old string
+   
+    if( buffer == NULL ) 
 	return 0;
-    
+
     *scan = 0;
-    
+
     while(1)
     {
-	unsigned char *there = strstr(string, old);
-	if( there == 0 )
-	{
-	    strcat(scan,string);
+	unsigned char *there = strstr(temp, old);
+	if( there == 0 ) {
+	    strcat(scan,temp);
 	    break;
 	} else {
-	    size_t skip = there - string;
-	    memcpy(scan, string, skip);
+	    size_t skip = there - temp;
+	    memcpy(scan, temp, skip);
 	    memcpy(scan + skip, new, newLen);
-	    string = there + oldLen;
+	    temp = there + oldLen;
 	    scan = scan + skip + newLen;
 	    *scan = 0;
+	    i++;
 	}
     }
-    
-    return (unsigned char *) realloc(buffer, strlen(buffer)+1); 
+    buffer = (unsigned char *) realloc(buffer, strlen(buffer)+1);
+    free(*string);  // warning string must be allocated
+    *string = buffer;  //return new string
+    return i; 
 }
 
 /* Save value to string (needed i.e. for database routines)*/

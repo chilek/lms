@@ -199,12 +199,12 @@ void reload(GLOBAL *g, struct dns_module *dns)
 								forwardhost = strdup(dns->forward);
 								reversehost = strdup(dns->reverse);
 					
-								forwardhost = g->str_replace(forwardhost, "%n", hosts[j].name);
-								reversehost = g->str_replace(reversehost, "%n", hosts[j].name);
-								forwardhost = g->str_replace(forwardhost, "%i", inet_ntoa(hosts[j].ipaddr));
-								reversehost = g->str_replace(reversehost, "%i", inet_ntoa(hosts[j].ipaddr));
-								forwardhost = g->str_replace(forwardhost, "%d", name);
-								reversehost = g->str_replace(reversehost, "%d", name);
+								g->str_replace(&forwardhost, "%n", hosts[j].name);
+								g->str_replace(&reversehost, "%n", hosts[j].name);
+								g->str_replace(&forwardhost, "%i", inet_ntoa(hosts[j].ipaddr));
+								g->str_replace(&reversehost, "%i", inet_ntoa(hosts[j].ipaddr));
+								g->str_replace(&forwardhost, "%d", name);
+								g->str_replace(&reversehost, "%d", name);
 					
 								ip = ntohl(hosts[j].ipaddr);
 					
@@ -221,25 +221,25 @@ void reload(GLOBAL *g, struct dns_module *dns)
 									break;
 								}
 						
-								forwardhost = g->str_replace(forwardhost, "%c", hostpart);
-								reversehost = g->str_replace(reversehost, "%c", hostpart);
+								g->str_replace(&forwardhost, "%c", hostpart);
+								g->str_replace(&reversehost, "%c", hostpart);
 							
 								forwardhosts = g->str_concat(forwardhosts, forwardhost);
 								reversehosts = g->str_concat(reversehosts, reversehost);
 							}
 						}
 			
-						forwardzone = g->str_replace(forwardzone, "%h", forwardhosts);
-						reversezone = g->str_replace(reversezone, "%h", reversehosts);
+						g->str_replace(&forwardzone, "%h", forwardhosts);
+						g->str_replace(&reversezone, "%h", reversehosts);
 						free(forwardhosts);
 						free(reversehosts);
-						forwardzone = g->str_replace(forwardzone, "%d", name);
-						reversezone = g->str_replace(reversezone, "%d", name);
+						g->str_replace(&forwardzone, "%d", name);
+						g->str_replace(&reversezone, "%d", name);
 					
 						snprintf(serial, 12, "%d", time(NULL));
 						
-						forwardzone = g->str_replace(forwardzone, "%s", serial);
-						reversezone = g->str_replace(reversezone, "%s", serial);
+						g->str_replace(&forwardzone, "%s", serial);
+						g->str_replace(&reversezone, "%s", serial);
 
 						ip = ntohl(network);
 	
@@ -256,11 +256,11 @@ void reload(GLOBAL *g, struct dns_module *dns)
 							break;
 						}
 
-						forwardzone = g->str_replace(forwardzone, "%c", netpart);
-						reversezone = g->str_replace(reversezone, "%c", netpart);
+						g->str_replace(&forwardzone, "%c", netpart);
+						g->str_replace(&reversezone, "%c", netpart);
 					
-						forwardzone = g->str_replace(forwardzone, "%v", dnsserv ? (dnsserv) : ((unsigned char*) "127.0.0.1"));
-						reversezone = g->str_replace(reversezone, "%v", dnsserv ? (dnsserv) : ((unsigned char*) "127.0.0.1"));
+						g->str_replace(&forwardzone, "%v", dnsserv ? (dnsserv) : ((unsigned char*) "127.0.0.1"));
+						g->str_replace(&reversezone, "%v", dnsserv ? (dnsserv) : ((unsigned char*) "127.0.0.1"));
 				
 						finfile = strdup(dns->fzones);
 						rinfile = strdup(dns->rzones);
@@ -279,9 +279,9 @@ void reload(GLOBAL *g, struct dns_module *dns)
 						else {
 							unsigned char *zone;
 							zone = strdup(dns->confforward);
-							zone = g->str_replace(zone, "%n", name);
-							zone = g->str_replace(zone, "%c", netpart);
-							zone = g->str_replace(zone, "%i", inet_ntoa(network));
+							g->str_replace(&zone, "%n", name);
+							g->str_replace(&zone, "%c", netpart);
+							g->str_replace(&zone, "%i", inet_ntoa(network));
 							configentries = g->str_concat(configentries, zone);
 							free(zone);
 						}
@@ -291,9 +291,9 @@ void reload(GLOBAL *g, struct dns_module *dns)
 						else {
 							unsigned char *zone;
 							zone = strdup(dns->confreverse);
-							zone = g->str_replace(zone, "%n", name);
-							zone = g->str_replace(zone, "%c", netpart);
-							zone = g->str_replace(zone, "%i", inet_ntoa(network));
+							g->str_replace(&zone, "%n", name);
+							g->str_replace(&zone, "%c", netpart);
+							g->str_replace(&zone, "%i", inet_ntoa(network));
 							configentries = g->str_concat(configentries, zone);
 							free(zone);
 						}	
@@ -319,7 +319,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	free(hosts);
 	
 	if(configfile) {
-		configfile = g->str_replace(configfile, "%z", configentries);
+		g->str_replace(&configfile, "%z", configentries);
 		if(write_file(dns->confout, configfile) < 0)
 			syslog(LOG_ERR, "[%s/dns] Unable to write DNS configuration file '%s'", dns->base.instance, dns->confout);
 		free(configfile);
