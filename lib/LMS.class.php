@@ -1801,9 +1801,9 @@ class LMS
 	     if ($net != "allnets")
 	     {
 		     $params = $this->GetNetworkParams($net);
-		     $ipfrom = $params['address']+1;
-		     $ipto = $params['broadcast']-1;
-		     $net = " AND ( ipaddr > $ipfrom AND ipaddr < $ipto )";
+		     $params['address']++;
+		     $params['broadcast']--;
+		     $net = " AND ( ipaddr > ".$params['address']." AND ipaddr < ".$params['broadcast']." )";
 	     }
 	     else
 		     $net = "";
@@ -1852,7 +1852,8 @@ class LMS
 			     $traffic[upload][name][] = $row[name];
 			     $traffic[download][name][] = $row[name];
 			     $traffic[upload][ipaddr][] = long2ip($row[ipaddr]);
-
+			     $traffic[download][nodeid][] = $row[nodeid];
+			     $traffic[upload][nodeid][] = $row[nodeid];
 			     $traffic[download][ipaddr][] = long2ip($row[ipaddr]);
 			     $traffic[download][sum][data] += $row[download];
 			     $traffic[upload][sum][data] += $row[upload];
@@ -1896,6 +1897,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.242  2003/09/25 15:54:14  lukasz
+ * - cosmetics
+ *
  * Revision 1.241  2003/09/25 15:45:04  lukasz
  * - cleanups
  *
