@@ -994,6 +994,18 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $usergrouplist;
 	}
 
+	function UsergroupGetForUser($id)
+	{
+		return $this->DB->GetAll('SELECT usergroups.id AS id, name, description FROM usergroups, userassignments WHERE usergroups.id=userassignments.usergroupid AND userassignments.userid=? ORDER BY name ASC', array($id));
+	}
+
+	function GetGroupNamesWithoutUser($userid)
+	{
+		return $this->DB->GetAll('SELECT usergroups.id AS id, name, userid
+			FROM usergroups LEFT JOIN userassignments ON (usergroups.id=userassignments.usergroupid AND userassignments.userid = ?) 
+			GROUP BY id, name HAVING userid IS NULL ORDER BY name', array($userid));
+	}
+
 	function UserassignmentGetForUser($id)
 	{
 		return $this->DB->GetAll('SELECT userassignments.id AS id, usergroupid, userid FROM userassignments, usergroups WHERE userid=? AND usergroups.id = usergroupid ORDER BY usergroupid ASC', array($id));
@@ -1020,9 +1032,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function GetUserWithoutGroupNames($groupid)
 	{
 		return $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username, userid
-			FROM users LEFT JOIN userassignments ON (users.id = userid) WHERE deleted = 0 
+			FROM users LEFT JOIN userassignments ON (users.id = userid AND userassignments.usergroupid = ?) WHERE deleted = 0 
 			GROUP BY users.id, userid, lastname, name 
-			HAVING userid IS NULL ORDER BY username');
+			HAVING userid IS NULL ORDER BY username', array($groupid));
 	}
 
 	/*

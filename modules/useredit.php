@@ -134,6 +134,19 @@ elseif($_GET['action'] == 'addassignment')
 	die;
 			
 }
+elseif($_GET['action'] == 'usergroupdelete')
+{
+	$LMS->UserassignmentDelete(array('userid' => $_GET['id'], 'usergroupid' => $_GET['usergroupid']));
+	header('Location: ?m=userinfo&id='.$_GET['id']);
+	die;
+}
+elseif($_GET['action'] == 'usergroupadd')
+{
+	if ($LMS->UsergroupExists($_POST['usergroupid']))
+		$LMS->UserassignmentAdd(array('userid' => $_GET['id'], 'usergroupid' => $_POST['usergroupid']));
+	header('Location: ?m=userinfo&id='.$_GET['id']);
+	die;
+}
 elseif(isset($userdata))
 {
 
@@ -193,6 +206,8 @@ $SMARTY->assign('usernodes',$LMS->GetUserNodes($userinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($userinfo['id']));
 $SMARTY->assign('tariffs',$LMS->GetTariffs());
 $SMARTY->assign('assignments',$LMS->GetUserAssignments($_GET['id']));
+$SMARTY->assign('usergroups',$LMS->UsergroupGetForUser($_GET['id']));
+$SMARTY->assign('otherusergroups',$LMS->GetGroupNamesWithoutUser($_GET['id']));
 $SMARTY->assign('userinfo',$userinfo);
 $SMARTY->assign('recover',($_GET['action'] == 'recover' ? 1 : 0));
 $SMARTY->display('useredit.html');
