@@ -133,7 +133,7 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN833"
+NAME="AEN881"
 ></A
 ><P
 ><B
@@ -155,7 +155,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN836"
+NAME="AEN884"
 ></A
 ><P
 ><B
@@ -886,6 +886,44 @@ CLASS="PROMPT"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >etherdesc_permission = 600</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-UPDATEWARNINGS"
+>4.3.9. lms-updatewarnings</A
+></H2
+><P
+>Skrypt automatycznie w³±cza ostrze¿enia (czyli ustawia odpiwedni± flagê w bazie
+	 danych) wszystkim komputerom u¿ytkownika z saldem mniejszym ni¿ kwota okre¶lona parametrem 'limit'.
+	 Regu³y firewalla przekierowuj±ce na stronê z ostrze¿eniem nale¿y wygenerowaæ innym skryptem.</P
+><P
+>Konfiguracjê dla lms-updatewarnings mo¿emy ustaliæ w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> 
+	 w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[warnings]</I
+></SPAN
+>. Mo¿emy tam ustawiæ:</P
+><UL
+><LI
+><P
+>limit (opcjonalny)</P
+><P
+>Pozwala na ustalenie limitu bilansu. Domy¶lnie: 0</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>limit = -20</SAMP
 ></P
 ></LI
 ></UL
