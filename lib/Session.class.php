@@ -95,6 +95,11 @@ class Session {
 		}
 	}
 
+	function _postinit()
+	{
+		return TRUE;
+	}
+
 	function LogOut()
 	{
 		if ($this->islogged)
@@ -138,6 +143,9 @@ class Session {
 
 /*
  * $Log$
+ * Revision 1.41  2003/12/01 04:18:37  lukasz
+ * - tsave
+ *
  * Revision 1.40  2003/12/01 04:10:46  lukasz
  * - typo
  *

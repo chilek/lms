@@ -65,9 +65,13 @@ class LMS
 		// poustawiajmy ->version
 
 		foreach($this->modules as $module)
-		{
-			$this->$module->version = $this->$module->_version.".".eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->$module->_revision);
-		}
+			$this->$module->version = $this->$module->_version." (".eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->$module->_revision).")";
+
+		// a teraz postinit
+
+		foreach($this->modules as $module)
+			$this->$module->_postinit();
+	
 
 		// to siê rozejdzie po modu³ach:
 
@@ -2239,6 +2243,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.290  2003/12/01 04:15:44  lukasz
+ * - tsave
+ *
  * Revision 1.289  2003/12/01 04:09:31  lukasz
  * - tsave
  *
