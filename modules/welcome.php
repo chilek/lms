@@ -24,6 +24,7 @@
  *  $Id$
  */
 require_once($_LIB_DIR."/Sysinfo.class.php");
+require_once($_LIB_DIR."/TipOfTheDay.php");
 
 $SI = new Sysinfo;
 
@@ -35,6 +36,9 @@ $SMARTY->assign("layout",$layout);
 $SMARTY->display("welcome.html");
 /*
  * $Log$
+ * Revision 1.26  2003/08/28 11:36:47  lukasz
+ * - http://bts.rulez.pl/bug_view_page.php?bug_id=0000057
+ *
  * Revision 1.25  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
