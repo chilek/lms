@@ -3,29 +3,29 @@
 	<TR CLASS="DARK">
 		<TD class="fall">
 			<IMG src="img/money.gif" border="0" ALT="" align="absmiddle">
-			<B><A name="balance">Zobowi±zania u¿ytkownika:</A></B>
+			<B><A name="balance">{t}Customer Liabilities:{/t}</A></B>
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%" class="fall">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu"><B>Taryfa:</B></TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Warto¶æ:</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">Dzieñ zap³aty:</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Downrate:</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Downceil:</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Uprate:</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">Upceil:</TD>
-					<TD WIDTH="1%" NOWRAP class="fbt">Faktura:</TD>
-					<TD WIDTH="91%" NOWRAP class="fbt">Okres:</TD>
+					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{t}Tariff:{/t}</B></TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Value:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{t}Payment day:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Downrate:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Downceil:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Uprate:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" ALIGN="RIGHT">{t}Upceil:{/t}</TD>
+					<TD WIDTH="1%" NOWRAP class="fbt">{t}Invoice:{/t}</TD>
+					<TD WIDTH="91%" NOWRAP class="fbt">{t}Period:{/t}</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
 				</TR>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{foreach from=$assignments item=a}
 				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')" {if ($a.dateto < $smarty.now && $a.dateto) || ($a.datefrom > $smarty.now && $a.datefrom) || $a.suspended}CLASS="blend"{/if}>
 					{if !$a.tariffid}
-					<TD WIDTH="8%" COLSPAN="8"><B>Zawieszenie naliczania wszystkich p³atno¶ci</B></TD>
+					<TD WIDTH="8%" COLSPAN="8"><B>{t}Suspending of all liabilities{/t}</B></TD>
 					{else}
 					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'"><B><A HREF="?m=tariffinfo&id={$a.tariffid}">{$a.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.value|money_format}</TD>
@@ -34,7 +34,7 @@
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.downceil|default:"-"} kbps</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.uprate|default:"-"} kbps</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.upceil|default:"-"} kbps</TD>
-					<TD WIDTH="1%" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{if $a.invoice}tak{else}&nbsp;{/if}</TD>
+					<TD WIDTH="1%" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{if $a.invoice}{t}yes{/t}{else}&nbsp;{/if}</TD>
 					{/if}
 					<TD WIDTH="1%" {if $a.tariffid}OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'"{/if}>
 						{if $a.datefrom}od {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
@@ -42,22 +42,23 @@
 					</TD>
 					<TD WIDTH="91%" ALIGN="RIGHT" NOWRAP>
 						{if $a.tariffid}
-						<A href="?m=userassignments&action=suspend&id={$balancelist.userid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="W³±cza/Wy³±cza naliczanie wybranego zobowi±zania"}><IMG SRC="img/wait.gif" ALT="[ {if $a.suspended}Przywróæ{else}Zawie¶{/if} ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
+						<A href="?m=userassignments&action=suspend&id={$balancelist.userid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="Enable/disable accounting of selected liability"}><IMG SRC="img/wait.gif" ALT="[ {if $a.suspended}{t}Restore{/t}{else}{t}Suspend{/t}{/if} ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
 						{/if}
-						<A HREF="?m=userassignmentsedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
-						<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi to zobowi±zanie?')" HREF="?m=userassignments&action=delete&aid={$a.id}&id={$balancelist.userid}" {tip text="Usuwa zobowi±zanie z rekordu u¿ytkownika"}><IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
+						<A HREF="?m=userassignmentsedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
+						<A onClick="return confirmLink(this, '{t}Are you sure, you want to delete this liability?{/t}')" HREF="?m=userassignments&action=delete&aid={$a.id}&id={$balancelist.userid}" {tip text="Delete customer's liability"}><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
 					</TD>
 				</TR>
 				{foreachelse}
 				<TR>
-					<TD align="center" WIDTH="100%" colspan="10"><p>&nbsp;</p>
-						<p><B>Ten u¿ytkownik nie ma przypisanych ¿adnych taryf.</B></p>
-						<p>&nbsp;</p>
+					<TD align="center" WIDTH="100%" colspan="10">
+						<P>&nbsp;</P>
+						<P><B>{t}That customer haven't got any attributed tariffs.{/t}</B></P>
+						<P>&nbsp;</P>
 					</TD>
 				</TR>
 				{/foreach}
 				<TR bgcolor="#DFD5BD">
-					<TD CLASS="ftop" ALIGN="RIGHT"><B>Razem:</B></TD>
+					<TD CLASS="ftop" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format="%01.2f"}</TD>
 					<TD CLASS="ftop">&nbsp;</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="downrate" default="-"} kbps</TD>
@@ -73,40 +74,40 @@
 						<TABLE>
 							<TR>
 								<TD>
-						<B>Dodaj:</B>
+								    <B>{t}Add:{/t}</B>
 								</TD>
 								<TD>
-								    <SELECT size="1" name="assignment[tariffid]" {tip text="Wybierz taryfê która ma byæ przypisana do u¿ytkownika lub zawie¶ naliczanie wszystkich p³atno¶ci na dany okres" trigger="tariffid"}>
-									<OPTION value="" SELECTED>... wybierz taryfê ...</OPTION>
-									<OPTION value="0">- zawieszenie wszystkich p³atno¶ci -</OPTION>
+								    <SELECT size="1" name="assignment[tariffid]" {tip text="Select tariff to attribute to customer or suspend accounting of all liabilities in choosen time" trigger="tariffid"}>
+									<OPTION value="" SELECTED>{t}... select tariff ...{/t}</OPTION>
+									<OPTION value="0">{t}- all liabilities suspending -{/t}</OPTION>
 									{section name=t loop=$tariffs}
 									    <OPTION VALUE="{$tariffs[t].id}" {if $tariffs[t].id==$assignment.tariffid}SELECTED{/if}>
 									    {$tariffs[t].name} ({$tariffs[t].value|money_format}{if $tariffs[t].downrate || $tariffs[t].downceil}, {$tariffs[t].downrate}-{$tariffs[t].downceil} down{/if}{if $tariffs[t].uprate || $tariffs[t].upceil}, {$tariffs[t].uprate}-{$tariffs[t].upceil} up{/if})
 									    </OPTION>
 									{/section}
 								    </SELECT>
-								    <INPUT CLASS="box" TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice}CHECKED{/if}> wystawiaj fakturê
+								    <INPUT CLASS="box" TYPE="checkbox" NAME="assignment[invoice]" VALUE="1" {if $assignment.invoice}CHECKED{/if}> {t}with invoice{/t}
 								</TD>
 							</TR>
 							<TR>
 								<TD></TD>
 								<TD>
-								    <B>Okres:</B>
-								    <SELECT size="1" NAME="assignment[period]" {tip text="Wybierz co jaki okres czasu ma byæ naliczane to zobowi±zanie."}>
-									<OPTION VALUE="0" {if $assignment.period==0}SELECTED{/if}>co tydzieñ</OPTION>
-									<OPTION VALUE="1" {if $assignment.period==1 || $assignment.period==''}SELECTED{/if}>co miesi±c</OPTION>
-				    					<OPTION VALUE="2" {if $assignment.period==2}SELECTED{/if}>co kwarta³</OPTION>
-									<OPTION VALUE="3" {if $assignment.period==3}SELECTED{/if}>co rok</OPTION>
+								    <B>{t}Period:{/t}</B>
+								    <SELECT size="1" NAME="assignment[period]" {tip text="Select time period to account liability"}>
+									<OPTION VALUE="0" {if $assignment.period==0}SELECTED{/if}>{t}weekly{/t}</OPTION>
+									<OPTION VALUE="1" {if $assignment.period==1 || $assignment.period==''}SELECTED{/if}>{t}monthly{/t}</OPTION>
+				    					<OPTION VALUE="2" {if $assignment.period==2}SELECTED{/if}>{t}quarterly{/t}</OPTION>
+									<OPTION VALUE="3" {if $assignment.period==3}SELECTED{/if}>{t}yearly{/t}</OPTION>
 								    </SELECT>
-								    <B>kiedy:</B> <INPUT TYPE="TEXT" NAME="assignment[at]" VALUE="{$assignment.at}" {tip text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28), dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia), a dla kwartalnej DD/MM (MM <= 3)." trigger="at"} SIZE="5">
-								    <B>od:</B> <INPUT TYPE="TEXT" NAME="assignment[datefrom]" VALUE="{if $assignment.datefrom}{$assignment.datefrom}{/if}" OnClick="cal1.popup();" {tip text="Podaj datê w formacie RRRR/MM/DD od kiedy ma obowi±zywaæ dane zobowi±zanie. Je¶li nie chcesz okre¶laæ daty 'Od' pozostaw pole puste." trigger="datefrom"} SIZE="10"> 
-								    <B>do:</B> <INPUT TYPE="TEXT" NAME="assignment[dateto]" VALUE="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal2.popup();" {tip text="Podaj datê w formacie RRRR/MM/DD do kiedy ma obowi±zywaæ dane zobowi±zanie. Pozostaw puste pole je¿eli naliczenie ma obowi±zywaæ do momentu jego usuniêcia." trigger="dateto"} SIZE="10">
+								    <B>{t}When:{/t}</B> <INPUT type="TEXT" name="assignment[at]" value="{$assignment.at}" {tip text="Enter accounting time. For weekly accounting enter day of week (Monday = 1), for monthly accounting enter day of month (1 to 28), for yearly accounting enter month and day in format DD/MM (15/09 means 15 September), and for quarterly DD/MM (MM <= 3)" trigger="at"} SIZE="5">
+								    <B>{t}from:{/t}</B> <INPUT type="TEXT" name="assignment[datefrom]" value="{if $assignment.datefrom}{$assignment.datefrom}{/if}" OnClick="cal1.popup();" {tip text="Enter date in format YYYY/MM/DD when to start accounting. If you don't want to define 'From' date leave this field empty" trigger="datefrom"} SIZE="10"> 
+								    <B>{t}to:{/t}</B> <INPUT type="TEXT" name="assignment[dateto]" value="{if $assignment.dateto}{$assignment.dateto}{/if}" OnClick="cal2.popup();" {tip text="Enter date in format YYYY/MM/DD when to stop accounting. Leave this field empty if you don't want to set expiry date" trigger="dateto"} SIZE="10">
 								</TD>
 							</TR>
 						</TABLE>
 					</TD>
 					<TD ALIGN="RIGHT" VALIGN="bottom" NOWRAP>
-						<A HREF="javascript:document.assignment.submit()" {tip text="Przypisz t± taryfê do u¿ytkownika"}>Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+						<A HREF="javascript:document.assignment.submit()" {tip text="Attribute tariff  to customer"}>{t}Add{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
 					</TD>
 				</TR>
 				</FORM>
