@@ -69,6 +69,8 @@ if(isset($netdevdata))
 		header("Location: ?m=netdevinfo&id=".$_GET[id]);
 		die;
 	}
+
+	$edit = TRUE;
 }
 else
 	$netdevdata = $LMS->GetNetDev($_GET[id]);
@@ -100,10 +102,17 @@ $SMARTY->assign("netdevlist",$netdevconnected);
 $SMARTY->assign("netcomplist",$netcomplist);
 $SMARTY->assign("nodelist",$nodelist);
 $SMARTY->assign("restnetdevlist",$netdevlist);
-$SMARTY->display("netdevedit.html");
+
+if($edit)
+	$SMARTY->display('netdevedit.html');
+else
+	$SMARTY->display('netdevinfo.html');
 
 /*
  * $Log$
+ * Revision 1.11  2003/10/06 12:06:11  lukasz
+ * - a zastanowi³e¶ siê co chcia³em przez to osi±gn±æ?
+ *
  * Revision 1.10  2003/10/06 08:14:55  lexx
  * - nie zawsze rozpoczynamy edycje przez post
  *
