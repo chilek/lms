@@ -44,7 +44,7 @@ if(!isset($_GET[ownerid]))
 							
 $owner = $ownerid;
 $userinfo=$LMS->GetUser($owner);
-$layout[pagetitle]="Informacje o u¿ytkowniku: ".$userinfo[username]."<BR>- edycja komputera: ".$LMS->GetNodeName($_GET[id]);
+$layout[pagetitle]="Informacje o u¿ytkowniku: ".$userinfo[username]." - edycja komputera: ".$LMS->GetNodeName($_GET[id]);
 
 $nodeedit = $_POST[nodeedit];
 $usernodes = $LMS->GetUserNodes($owner);
@@ -147,6 +147,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.34  2003/10/01 20:21:13  lukasz
+ * - i po co tutaj ten <BR>?
+ *
  * Revision 1.33  2003/10/01 16:07:19  alec
  * now we can change netdevice assigned to node
  *
