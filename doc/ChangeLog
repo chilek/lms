@@ -4,6 +4,8 @@ wersja 1.1.1 (??/??/2003):
 
   - mo¿liwo¶æ wydruku osób które s± zad³u¿one (MichalZ)
   - dodane %TID (id taryfy) i %TVAL (warto¶æ taryfy) do lms-mgc (lukasz)
+  - poprawione problemy ze zmian± kolejno¶ci sortowania na li¶cie osób
+    od³±czonych b±d¼ zad³u¿onych (lukasz)
 
 wersja 1.1.0 (23/06/2003):
 
