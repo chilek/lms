@@ -518,8 +518,8 @@ sub instance($)
 			my $NAME = $ucnamelist{$ipaddr} || '';
 			my $name = $namelist{$ipaddr} || '';
 			my $mac = $maclist{$ipaddr} || '';
-			my $uprate = $upratelist{$ipaddr} || 0;
-			my $downrate = $downratelist{$ipaddr} || 0;
+			my $uprate = $upratelist{$ipaddr} || '';
+			my $downrate = $downratelist{$ipaddr} || '';
 			my $macs = lc($mac);
 			$macs =~ s/://g;
 			my $owner = $ownerlist{$ipaddr} || '';
