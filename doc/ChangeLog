@@ -9,6 +9,8 @@ wersja 1.4.3 (??/??/????):
   - poprawiony b³±d przy usuwaniu op³aty sta³ej powoduj±cy usuniêcie op³aty
     bez potwierdzenia (alec)
   - poprawiony tytu³ strony z informacjami o grupie (alec)
+  - BTS#0000275: poprawiony b³±d w zapytaniu sql podczas wyszukiwania zg³oszeñ
+    wg nazwiska zg³aszaj±cego (rejmer)
 
 wersja 1.4.2 Lya (14/12/2004):
 
