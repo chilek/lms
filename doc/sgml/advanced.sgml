@@ -153,7 +153,7 @@
 			</simplelist>
 		</sect2>
 		<sect2 id="tariffs">
-			<title>Taryfy</title>
+			<title>Taryfy ('tariffs')</title>
 			<simplelist>
 				<member>id - identyfikator</member>
 				<member>name - nazwa</member>
