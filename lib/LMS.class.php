@@ -131,6 +131,18 @@ class LMS
 		return $this->ADB->GetOne("SELECT name FROM tariffs WHERE id=?",array($id));
 	}
 
+	function GetTariff($id)
+	{
+		$return = $this->ADB->GetRow("SELECT id, name, value, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
+		$return[count] = $this->GetUsersWithTariff($id);
+		$return[value] = str_replace(".",",",$return[value]);
+		$return[totalval] = $return[value] * $return[count];
+		$return[users] = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat('upper(lastname)',"' '",'name')." AS username FROM users WHERE tariff=? AND status=3 ORDER BY username",array($id));
+		$return[rows] = ceil(sizeof($return[users])/2);
+		return $return;
+	}
+
+
 	function GetNetIDByIP($ipaddr)
 	{
 		if($networks = $this->ADB->GetAll("SELECT id, address, mask FROM networks"))
