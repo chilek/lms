@@ -1229,11 +1229,17 @@ class LMS
 	{
 		$SESSION=$this->SESSION;
 		$emails = $this->GetEmails($mailing[group]);
-	
+
 		if($emails = $this->GetEmails($mailing[group]))
 		{
+			if($this->CONFIG[debug_email])
+				echo "<B>Uwaga! Tryb debug (u¿ywam adresu ".$this->CONFIG[debug_email]."</B><BR>";
+				
 			foreach($emails as $key => $row)
 			{
+				if($this->CONFIG[debug_email])
+					$row[email] = $this->CONFIG[debug_email];
+
 				mail (
 					$row[username]." <".$row[email].">",
 					$mailing[subject],
