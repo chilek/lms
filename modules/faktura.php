@@ -70,24 +70,26 @@ function slownie($liczba) {
  $z['900'] = "dziewiêæset";
  $slow='';
  if ($liczba>100) {
-    $slow .=$z[bcdiv($liczba,100)*100]." ";
-    $liczba =  bcmod($liczba,100);
+    $slow .=$z[round($liczba / 100)*100]." ";
+    $liczba = $liczba % 100;
  }
  if ($liczba>20) {
-    $slow .=$z[bcdiv($liczba,10)*10]." ";
-    $liczba =  bcmod($liczba,10);
+    $slow .=$z[round($liczba / 10)*10]." ";
+    $liczba =  $liczba % 10;
  }
  if (($liczba>0) or (strlen($slow)<1)) {$slow .=$z[$liczba];}
  return $slow;
 }
 
-$userinfo=$LMS->GetUser($_GET[id]);
+$cash=$LMS->GetCashByID($_GET[id]);
+$userinfo=$LMS->GetUser($cash['userid']);
 
-if (! $szablon = @file($_CONFIG[finances]['template'])) { echo "Nie umiem odczytac szablonu, ustawiles wszystko w lms.ini?"; exit(0); }; 
+if (! $szablon = @file($_CONFIG[finances]['template'])) { echo "Nie umiem odczytac szablonu, ustawiles wszystko w lms.ini?"; die; }; 
 
 header('Content-type: text/rtf');
-header('Content-Disposition: attachment; filename=faktura.rtf');
+header('Content-Disposition: attachment; filename=faktura_'.$userinfo['lastname']."_".$_GET[id]."_".date("Y",$cash['time']).'.rtf');
 
+//vardump('$userinfo');
 
 $szablon = str_replace('%nabywca',strtr($userinfo['username'],$trans),$szablon);
 $szablon = str_replace('%nab_adres_cd',strtr($userinfo['zip']." ".$userinfo['city'],$trans),$szablon);
@@ -97,21 +99,21 @@ $szablon = str_replace('%nr_klienta',strtr($_GET[id],$trans),$szablon);
 $szablon = str_replace('%sprzedawca',strtr($_CONFIG[finances]['name'],$trans),$szablon);
 $szablon = str_replace('%sprzed_adres_cd',strtr($_CONFIG[finances]['zip']." ".$_CONFIG[finances]['city'],$trans),$szablon);
 $szablon = str_replace('%sprzed_adres',strtr($_CONFIG[finances]['address'],$trans),$szablon);
-$szablon = str_replace('%numer',strtr(time(),$trans),$szablon);
+$szablon = str_replace('%numer',strtr($_GET[id]."/".date("Y",$cash['time']),$trans),$szablon);
 $szablon = str_replace('%data',strtr(date("d.m.Y"),$trans),$szablon);
 $szablon = str_replace('%termin',strtr(date("d.m.Y",mktime(0,0,0,date("m"),date("d")+$_CONFIG[finances]['deadline'],date("Y"))),$trans),$szablon);
 $szablon = str_replace('%dni',strtr($_CONFIG[finances]['deadline'],$trans),$szablon);
-$szablon = str_replace('%usluga',strtr($_CONFIG[finances]['service'],$trans),$szablon);
-$szablon = str_replace('%od',strtr(strftime("01-%b-%Y"),$trans),$szablon);
-$szablon = str_replace('%do',strtr(strftime("%d-%b-%Y",mktime(0,0,0,date("m")+1,0,date("Y"))),$trans),$szablon);
-$szablon = str_replace('%netto',strtr(sprintf("%1.2f",-$userinfo['balance']),$trans),$szablon);
-$szablon = str_replace('%brutto',strtr(sprintf("%1.2f",-$userinfo['balance']*1.07),$trans),$szablon);
-$szablon = str_replace('%vat',strtr(sprintf("%1.2f",-$userinfo['balance']*0.07),$trans),$szablon);
-$kesz=explode(".",sprintf("%1.2f",-$userinfo['balance']*1.07));
+$szablon = str_replace('%usluga',strtr($cash['comment'],$trans),$szablon);
+$szablon = str_replace('%od',strtr(strftime("01-%b-%Y",$cash['time']),$trans),$szablon);
+$szablon = str_replace('%do',strtr(strftime("%d-%b-%Y",mktime(0,0,0,date("m",$cash['time'])+1,0,date("Y",$cash['time']))),$trans),$szablon);
+$szablon = str_replace('%netto',strtr(sprintf("%1.2f",$cash['value']),$trans),$szablon);
+$szablon = str_replace('%brutto',strtr(sprintf("%1.2f",$cash['value']*1.07),$trans),$szablon);
+$szablon = str_replace('%vat',strtr(sprintf("%1.2f",$cash['value']*0.07),$trans),$szablon);
+$kesz=explode(".",sprintf("%1.2f",$cash['value']*1.07));
 if ($kesz[1]>0) {
     $szablon = str_replace('%slownie',strtr(slownie($kesz[0])." z³ ".$kesz[1]." gr",$trans),$szablon);
 } else {
-    $szablon = str_replace('%slownie',strtr(slownie($kesz[0])." z³",$trans,$szablon));
+    $szablon = str_replace('%slownie',strtr(slownie($kesz[0])." z³",$trans),$szablon);
 }			    
 $szablon = str_replace('%konto',strtr($_CONFIG[finances]['bank']." ".$_CONFIG[finances]['account'],$trans),$szablon);
 $szablon = str_replace('%wystawil',strtr($layout['logname'],$trans),$szablon);
