@@ -1,5 +1,9 @@
 $Id$
 
+wersja 1.2.2 (??/??/2004):
+
+  - dodane error-triggery w adminpasswd.html (alec)
+
 wersja 1.2.1 Sarah (07/05/2004):
 
   - poprawiony b³±d w almsd powoduj±cy wysypkê na MySQL'u w sytuacji, gdy
