@@ -88,17 +88,82 @@ class LMS {
 		return $result;
 	}
 
+	function GetUserNodesNo($id)
+	{
+		$db=$this->db;
+		return $db->CountRows("SELECT * FROM `nodes` WHERE `ownerid` = '".$id."'");		
+	}
+
+	function GetNetworks()
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT `id`, `name`, `address`, `mask` FROM `networks` ORDER BY `address` ASC");
+		while($db->FetchRow())
+			list(
+				$return[id][],
+				$return[name][],
+				$return[address][],
+				$return[mask][]
+			) = $db->row;
+		for($i=0;$i<sizeof($return[id]);$i++)
+		{
+			$return[addresslong][$i] = ip_long($return[address][$i]);
+			$return[prefix][$i] = mask2prefix($return[mask][$i]);
+		}
+		return $return;
+	}
+
+	function GetNodeIDByIP($ipaddr)
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT `id` FROM `nodes` WHERE `ipaddr` = '".$ipaddr."' LIMIT 1");
+		$db->FetchRow();
+		return $db->row[0];
+	}
+
+	function GetNodeName($id)
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT `name` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+		$db->FetchRow();
+		return $db->row[0];
+	}
+
+	function GetNodeNameByIP($ipaddr)
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT `name` FROM `nodes` WHERE `ipaddr` = '".$ipaddr."' LIMIT 1");
+		$db->FetchRow();
+		return $db->row[0];
+	}
+
+	function GetNetwork($id)
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT `address`, `mask` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
+		list($addr,$mask) = $db->FetchRow();
+		for($i=ip_long($addr)+1;$i<ip_long(getbraddr($addr,$mask));$i++)
+		{
+			$return[addresslong][] = $i;
+			$return[address][] = long2ip($i);
+			$db->ExecSQL("SELECT `name`, `id` FROM `nodes` WHERE `ipaddr` = '".long2ip($i)."' LIMIT 1");
+			$db->FetchRow();
+			$return[nodeid][] = $db->row[1];
+			$return[nodename][] = $db->row[0];
+		}
+//		$return[nodename][0] = "/NETWORK ADDR/";
+//		$return[nodename][sizeof($return[nodename])-1] = "/BROADCAST/";
+		return $return;
+	}
+			
+
 	function GetUserRecord($id)
 	{
 		$db=$this->db;
 		$db->ExecSQL("SELECT * FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 		$db->FetchRow();
-		list($return[id],$return[username],$return[status],$return[email],$return[phone1],$return[phone2],$return[phone3],$return[address],$return[tariff],$return[info],$return[creationdate],$return[moddate],$return[creatorid],$return[modid])=$db->row;
-		$username = explode(" ",$return[username]);
-		$rusername = strtoupper($username[0]);
-		for($i=1;$i<sizeof($username);$i++)
-			$rusername .= " " . $username[$i];
-		$return[username] = $rusername;
+		list($return[id],$return[lastname],$return[name],$return[status],$return[email],$return[phone1],$return[phone2],$return[phone3],$return[address],$return[tariff],$return[info],$return[creationdate],$return[moddate],$return[creatorid],$return[modid])=$db->row;
+		$return[username] = strtoupper($return[lastname])." ".$return[name];
 		$return[createdby] = $this->GetAdminName($return[creatorid]);
 		$return[modifiedby] = $this->GetAdminName($return[modid]);
 		$return[creationdateh] = date("Y-m-d, H:i",$return[creationdate]);
@@ -114,7 +179,7 @@ class LMS {
 
 		$db=$this->db;
 
-		$sql="SELECT id, username, status, email, phone1, address, info FROM users ";
+		$sql="SELECT id, lastname, name, status, email, phone1, address, info FROM users ";
 
 		if(!isset($state)) $state="3";
 		if(!isset($order)) $order="username,asc";
@@ -137,7 +202,8 @@ class LMS {
 
 			list(
 				$userlist[id][],
-				$userlist[username][],
+				$userlist[lastname][],
+				$userlist[name][],
 				$userlist[status][],
 				$userlist[email][],
 				$userlist[phone1][],
@@ -147,10 +213,7 @@ class LMS {
 
 		for($i=0;$i<sizeof($userlist[id]);$i++){
 
-			$ruserlist = explode(" ",$userlist[username][$i]);
-			$userlist[username][$i] = strtoupper($ruserlist[0]);
-			for ($j=1;$j<sizeof($ruserlist);$j++)
-				$userlist[username][$i] .= " ".$ruserlist[$j];
+			$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
 			$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
 		}
 		
@@ -200,7 +263,7 @@ class LMS {
 				$return[id][],
 				$return[name][],
 				$return[mac][],
-				$return[iplong][],
+				$return[ipaddr][],
 				$return[ownerid][],
 				$return[creationdate][],
 				$return[moddate][],
@@ -208,7 +271,7 @@ class LMS {
 				$return[modid][],
 				$return[access][]
 			) = $db->row;
-			$return[ipaddr][] = long2ip($db->row[3]);
+			$return[iplong][] = ip_long($db->row[3]);
 		}
 		$return[total] = sizeof($return[id]);
 		return $return;
