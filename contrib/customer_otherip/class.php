@@ -151,6 +151,8 @@ $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 
 require_once($_LIB_DIR.'/smarty_addons.php');
 
+@include('locale/'.$LMS->lang.'/strings.php');
+
 $layout['lmsv'] = '1.5-cvs';
 
 $SMARTY->assign_by_ref('layout', $layout);

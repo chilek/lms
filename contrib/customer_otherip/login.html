@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<meta name="GENERATOR" content="LMS">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
+<title>::: {t}Welcome to LMS{/t}  :::</title>
+<STYLE type="text/css">
+{literal}
+<!--
+BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+TABLE		{ border-collapse: collapse; }
+A		{ text-decoration: none; }
+A:hover		{ text-decoration: underline; color: #336600; }
+P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align: center; }
+INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; font-weight: bold; background-color: #EBE4D6; }
+//-->
+{/literal}
+</STYLE>
+</HEAD>
+<BODY topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<TABLE WIDTH="100%" HEIGHT="100%">
+	<TR>
+		<TD>
+			<P>
+                        <IMG SRC="http://lms.rulez.pl/img/logo.png" BORDER="0" ALT="[ {t}Welcome to LMS{/t} ]">
+                        </P>
+                        <P>
+                        <B>
+                                &copy; 2001-2005 LMS Developers - <a href="http://lms.rulez.pl/" target="_blank">http://lms.rulez.pl</A><BR>
+                                &copy; 2001-2003 ASK NetX - <a href="http://www.netx.waw.pl/" target="_blank">http://www.netx.waw.pl</A><BR>
+			</B>
+			</P>
+			<P><DIV ALIGN="CENTER"><CENTER>
+			<H2>{t}Please to fill following form with customer ID and PIN which was sent to your email.{/t}</H2>
+			{if $error}
+				<FONT COLOR="red"><B>{t}Errornous data was entered!{/t}</B></FONT><BR>';
+			{/if}
+			<P><FORM METHOD="POST" NAME="loginform" ACTION="balanceview.php">
+				<B>{t}ID:{/t}</B><BR>
+				<INPUT TYPE="TEXT" NAME="loginform[login]" SIZE="20" ACCESSKEY="l"><BR>
+				<B>{t}PIN:{/t}</B><BR>
+				<INPUT TYPE="PASSWORD" NAME="loginform[pwd]" SIZE="20"><BR><BR>
+                    		<INPUT TYPE="SUBMIT" NAME="loginform[submit]" VALUE="{t}Login{/t}">
+			</FORM></P>
+			</CENTER></DIV></P>
+			<P>
+			<BR>
+			<BR>
+			<BR>
+			<A HREF="http://lms.rulez.pl"><FONT COLOR="#666666">{t}home page{/t}</FONT></A>
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+</BODY></HTML>
