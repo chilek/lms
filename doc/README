@@ -76,17 +76,19 @@ Rozdzia³ 1. Wstêp
    "LMS" jest skrótem od "LAN Management System". Jest to zestaw
    aplikacji w PHP, C i Perlu, u³atwiaj±cych zarz±dzanie sieciami
    osiedlowymi (popularnie zwanymi Amatorskimi Sieciami Komputerowymi),
-   korzystaj±cych z bazy danych MySQL lub PostgreSQL. G³ówne za³o¿enia to
-   uzyskanie jako¶ci us³ug oraz obs³ugi u¿ytkowników na poziomie
-   providera z prawdziwego zdarzenia. Najbardziej podstawowe cechy LMS
-   to:
+   korzystaj±cych z bazy danych MySQL, PostgreSQL lub SQLite. G³ówne
+   za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi u¿ytkowników na
+   poziomie providera z prawdziwego zdarzenia. Najbardziej podstawowe
+   cechy LMS to:
      * baza danych u¿ytkowników (imiê, nazwisko, adres, numer telefonu,
        uwagi i inne),
      * baza danych komputerów (adres IP, adres MAC),
      * baza danych sprzêtu sieciowego (nazwa, ilo¶æ portów),
+     * generowanie mapy sieci,
      * prowadzenie prostego rachunku operacji finansowych oraz stanu
        funduszów sieci,
-     * ró¿ne taryfy abonamentowe,
+     * zestawienia finansowe, fakturowanie,
+     * ró¿ne op³aty i taryfy abonamentowe,
      * wysy³anie poczt± elektroniczn± upomnieñ do u¿ytkowników,
      * automatyczne naliczanie op³at miesiêcznych,
      * generowanie praktycznie jakiegokolwiek konfiga na podstawie danych
@@ -116,9 +118,9 @@ Rozdzia³ 1. Wstêp
        Rados³aw 'Warden' Antoniuk
        Krzysztof 'hunter' Drewicz
        Marcin 'Lexx' Król
+       Aleksander A.L.E.C Machniak
      * Kod C:
 
-       Mateusz 'mteg' Golicz
        Aleksander 'A.L.E.C' Machniak
        Marcin 'Lexx' Król
      * Kod Perl:
@@ -146,7 +148,7 @@ Rozdzia³ 1. Wstêp
        Kuba 'shasta' Jankowski
        Rados³aw 'Warden' Antoniuk
        Przemys³aw Babiñski
-     * Support PostgreSQL:
+     * Support Postgresql i SQLite:
 
        Aleksander 'A.L.E.C' Machniak
      * Dokumentacja i strona WWW:
@@ -251,8 +253,8 @@ Rozdzia³ 2. Instalacja i konfiguracja
    wymagaj± aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³
    u¿ywaæ tych skryptów, musisz mieæ PERLa. Skrypty pozwalaj± m.in. na
    comiesiêczne naliczanie op³at abonamentowych b±d¼ wysy³anie upomnieñ.
-   Jest jeszcze LMS-MGC, który te¿ jest skryptem ale na tyle uniwersalnym
-   ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i
+   Najwiêkszy z nich - LMS-MGC jest skryptem, ale na tyle uniwersalnym ¿e
+   potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i
    zrestartowaæ us³ugê na twoim serwerze.
 
    Jest jeszcze A.L.E.C's LMS Daemon, napisany w jêzyku C. Jest on
@@ -286,6 +288,9 @@ Rozdzia³ 2. Instalacja i konfiguracja
    3.23.xx
 
    LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.
+
+   Wykorzystanie bazy SQLite dla LMS'a jest w fazie testów. Jedyn±
+   przetestowan± wersj± jest wersja 2.8.11.
      _________________________________________________________________
 
 2.2.4. Biblioteka Smarty
@@ -304,7 +309,8 @@ Rozdzia³ 2. Instalacja i konfiguracja
      * Config::IniFiles;
      * DBI;
      * DBD-mysql (Je¶li masz zamiar u¿ywaæ mysql'a);
-     * DBD-pg (Je¶li masz zamiar u¿ywaæ postgres'a);
+     * DBD-Pg (Je¶li masz zamiar u¿ywaæ postgres'a);
+     * DBD-SQLite (Je¶li masz zamiar u¿ywaæ bazê SQLite);
      _________________________________________________________________
 
 2.2.6. Kompilator jêzyka C
@@ -320,7 +326,7 @@ Rozdzia³ 2. Instalacja i konfiguracja
    (www.lms.rulez.pl), a nastêpnie rozpakowaæ i umie¶ciæ w wybranym
    katalogu (np. /var/www/lms ) dostêpnym dla serwera www:
 $ cd /var/www
-$ wget http://lms.rulez.pl/download/lms-x.x.x.tar.gz
+$ wget http://lms.rulez.pl/download/stable/lms-x.x.x.tar.gz
 $ tar zxf lms-x.x.x.tar.gz
 
    Dostêpne s± dwa rodzaje paczek z LMS - zawieraj±ce bibliotekê Smarty
@@ -467,9 +473,62 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
    Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
    danych, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
    bazie danych nie ma ¿adnego konta administratora, jedyn± rzecz± jak±
-   zobaczysz bêdzie formularz dodania administratora. Je¿eli podasz
-   prawid³owe dane administratora, LMS przeniesie Ciê na stronê logowania
-   gdzie od razu bêdziesz móg³ u¿yæ nowo utworzonego konta.
+   zobaczysz bêdzie formularz dodania administratora.
+     _________________________________________________________________
+
+2.4.3. SQLite
+
+2.4.3.1. Wstêp
+
+   Ta jednoplikowa baza jest chwalona za swoj± szybko¶æ, wg autorów
+   okre¶lan± na 2-3 krotnie szybsz± od MySQL. Poza tym przy odpowiedniej
+   konfiguracji umo¿liwia wczytanie ca³ej bazy do pamiêci RAM przez co
+   osi±gany jest znaczny wzrost wydajno¶ci. Poni¿ej przedstawiono krótki
+   opis instalacji. ¬ród³a mo¿na pobraæ z www.sqlite.org.
+
+   Na obecn± chwilê z SQLite nie wspó³pracuje demon almsd.
+     _________________________________________________________________
+
+2.4.3.2. Instalacja SQLite
+
+   Opisano tutaj sposób instalacji bibliotek SQLite oraz dodanie obs³ugi
+   tej bazy do PHP (PHP w wersji 5.0 ma wbudowan± obs³ugê SQLite). Po
+   rozpakowaniu ¼róde³, wejd¼ do katalogu z SQLite i wydaj kolejno
+   polecenia (¶cie¿ki przyk³adowe):
+$ ./configure
+$ make
+$ make install
+$ ldconfig
+$ pear download http://pecl.php.net/get/SQLite-1.0.2.tgz
+$ pear install SQLite-1.0.2.tgz
+
+   Nastêpnie w pliku php.ini ustaw:
+extension=sqlite.so
+
+   Istnieje równie¿ mo¿liwo¶æ wkompilowania obs³ugi SQLite w PHP przy
+   pomocy opcji --with-sqlite.
+     _________________________________________________________________
+
+2.4.3.3. Utworzenie bazy danych
+
+   Konieczne to jest je¿eli uruchamiasz LMS po raz PIERWSZY. Tak wiêc,
+   wejd¼ do katalogu w którym masz LMS'a i uruchom shell sqlite'a:
+$ sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
+sqlite> .exit
+$ chown 99.98 /usr/local/lms/lms
+     _________________________________________________________________
+
+2.4.3.4. Konfiguracja LMS (lms.ini)
+
+   Jednym z ograniczeñ SQLite jest brak autentykacji u¿ytkowników,
+   dlatego konfiguracja ogranicza siê do podania typu oraz ¶cie¿ki do
+   pliku bazy. W sekcji [database] pliku /etc/lms/lms.ini podajemy:
+type     = sqlite
+database = /usr/local/lms/lms.db
+
+   Po takim zabiegu, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli
+   jednak w bazie danych nie ma ¿adnego konta administratora, jedyn±
+   rzecz± jak± zobaczysz bêdzie formularz dodania administratora.
      _________________________________________________________________
 
 2.5. Konfiguracja podstawowa
@@ -489,8 +548,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
 
      * type
        Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale
-       jak na razie nie widaæ wiêkszych problemów z 'postgres'.
-       Domy¶lnie: mysql
+       jak na razie nie widaæ wiêkszych problemów z 'postgres' i
+       'sqlite'. Domy¶lnie: mysql
        Przyk³ad: type = mysql
      * host
        Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost,
@@ -508,7 +567,8 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
        Has³o do bazy danych. Domy¶lnie puste.
        Przyk³ad: password = password
      * database
-       Nazwa bazy danych, domy¶lnie lms.
+       Nazwa bazy danych (a w przypadku SQLite ¶cie¿ka do pliku bazy),
+       domy¶lnie lms.
        Przyk³ad: database = lms
      _________________________________________________________________
 
@@ -1070,6 +1130,24 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    poprawn± ¶cie¿kê do lms.ini w pliku index.php.
      _________________________________________________________________
 
+3.3.3. Panel SQL
+
+3.3.3.1. Wstêp
+
+   W katalogu contrib/sqlpanel znajdziesz modu³, dziêki któremu bêdziesz
+   mia³ mo¿liwo¶æ bezpo¶redniego dostêpu do bazy danych poprzez zadawanie
+   zapytañ SQL. Wyniki wy¶wietlane s± w formie tabeli. Ponadto podawany
+   jest czas wykonania zapytania.
+     _________________________________________________________________
+
+3.3.3.2. Instalacja
+
+   Instalacja polega na skopiowaniu plików w odpowiednie miejsca w
+   drzewie katalogów lms'a. Plik sql.php skopiuj do katalogu modules, a
+   pliki sql.html i adminheader.html do katalogu templates. Po tej
+   czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu Administratorzy->SQL.
+     _________________________________________________________________
+
 Rozdzia³ 4. Skrypty
 
 4.1. Instalacja
@@ -1111,6 +1189,7 @@ Rozdzia³ 4. Skrypty
    lms-makeipchains Konfiguracja firewalla ipchains
    lms-makeiodenconf Konfiguracja oident
    lms-makeopenbsdpf Konfiguracja firewalla dla systemu OpenBSD
+   lms-updatewarnings Ostrze¿enia dla u¿ytkowników zad³u¿onych
      _________________________________________________________________
 
 4.3. Opis i konfiguracja
@@ -1439,6 +1518,21 @@ http://www.naszasiec.pl/
      * etherdesc_permission
        Uprawnienia pliku skryptu. Domy¶lnie: 600 (rw-------).
        Przyk³ad: etherdesc_permission = 600
+     _________________________________________________________________
+
+4.3.9. lms-updatewarnings
+
+   Skrypt automatycznie w³±cza ostrze¿enia (czyli ustawia odpiwedni±
+   flagê w bazie danych) wszystkim komputerom u¿ytkownika z saldem
+   mniejszym ni¿ kwota okre¶lona parametrem 'limit'. Regu³y firewalla
+   przekierowuj±ce na stronê z ostrze¿eniem nale¿y wygenerowaæ innym
+   skryptem.
+
+   Konfiguracjê dla lms-updatewarnings mo¿emy ustaliæ w pliku lms.ini w
+   sekcji [warnings]. Mo¿emy tam ustawiæ:
+     * limit (opcjonalny)
+       Pozwala na ustalenie limitu bilansu. Domy¶lnie: 0
+       Przyk³ad: limit = -20
      _________________________________________________________________
 
 Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)

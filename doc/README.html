@@ -263,17 +263,17 @@ CLASS="LOT"
 ></DT
 ><DT
 >4-1. <A
-HREF="#AEN760"
+HREF="#AEN805"
 >Lista skryptów wykonywalnych</A
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN1426"
+HREF="#AEN1486"
 >Lista modu³ów demona almsd</A
 ></DT
 ><DT
 >7-1. <A
-HREF="#AEN1884"
+HREF="#AEN1944"
 >Drzewo katalogów LMS</A
 ></DT
 ></DL
@@ -288,22 +288,22 @@ CLASS="LOT"
 ></DT
 ><DT
 >4-1. <A
-HREF="#AEN833"
+HREF="#AEN881"
 >Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</A
 ></DT
 ><DT
 >4-2. <A
-HREF="#AEN836"
+HREF="#AEN884"
 >Lms-notify: Przyk³ad szablonu</A
 ></DT
 ><DT
 >5-1. <A
-HREF="#AEN1361"
+HREF="#AEN1421"
 >Lms-mgc: Przyk³ad instancji</A
 ></DT
 ><DT
 >7-1. <A
-HREF="#AEN2122"
+HREF="#AEN2182"
 >Format opcji konfiguracyjnych</A
 ></DT
 ></DL
@@ -327,7 +327,7 @@ NAME="ABOUT-LMS"
 >"LMS" jest skrótem od "LAN Management System". Jest to zestaw aplikacji 
 		w PHP, C i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi
 		(popularnie zwanymi Amatorskimi Sieciami Komputerowymi), korzystaj±cych z bazy danych 
-		MySQL lub PostgreSQL. G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi 
+		MySQL, PostgreSQL lub SQLite. G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi 
 		u¿ytkowników na poziomie providera z prawdziwego zdarzenia. Najbardziej podstawowe 
 		cechy LMS to:</P
 ><UL
@@ -345,11 +345,19 @@ NAME="ABOUT-LMS"
 ></LI
 ><LI
 ><P
+>generowanie mapy sieci,</P
+></LI
+><LI
+><P
 >prowadzenie prostego rachunku operacji finansowych oraz stanu funduszów sieci,</P
 ></LI
 ><LI
 ><P
->ró¿ne taryfy abonamentowe,</P
+>zestawienia finansowe, fakturowanie,</P
+></LI
+><LI
+><P
+>ró¿ne op³aty i taryfy abonamentowe,</P
 ></LI
 ><LI
 ><P
@@ -438,6 +446,14 @@ TARGET="_top"
 >Marcin 'Lexx' Król</A
 ></TD
 ></TR
+><TR
+><TD
+><A
+HREF="http://www.alec.k27.prv.pl"
+TARGET="_top"
+>Aleksander A.L.E.C Machniak</A
+></TD
+></TR
 ></TBODY
 ></TABLE
 >
@@ -449,10 +465,6 @@ TARGET="_top"
 			<TABLE
 BORDER="0"
 ><TBODY
-><TR
-><TD
->Mateusz 'mteg' Golicz</TD
-></TR
 ><TR
 ><TD
 ><A
@@ -635,14 +647,14 @@ TARGET="_top"
 ></LI
 ><LI
 ><P
->Support PostgreSQL:
+>Support Postgresql i SQLite:
 			<TABLE
 BORDER="0"
 ><TBODY
 ><TR
 ><TD
 ><A
-HREF="http://k27.prv.pl/alec"
+HREF="http://alec.k27.prv.pl"
 TARGET="_top"
 >Aleksander 'A.L.E.C' Machniak</A
 ></TD
@@ -661,7 +673,7 @@ BORDER="0"
 ><TR
 ><TD
 ><A
-HREF="http://k27.prv.pl/alec"
+HREF="http://alec.k27.prv.pl"
 TARGET="_top"
 >Aleksander 'A.L.E.C' Machniak</A
 ></TD
@@ -965,13 +977,13 @@ CLASS="EMPHASIS"
 >LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty wymagaj± 
 	aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, 
 	musisz mieæ PERLa. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych 
-	b±d¼ wysy³anie upomnieñ. Jest jeszcze <SPAN
+	b±d¼ wysy³anie upomnieñ. Najwiêkszy z nich - <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-MGC</I
 ></SPAN
->, który te¿ jest skryptem ale na tyle 
+> jest skryptem, ale na tyle 
 	uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i zrestartowaæ 
 	us³ugê na twoim serwerze.</P
 ><P
@@ -1055,6 +1067,9 @@ NAME="INSTALL-REQ-DB"
 	      </P
 ><P
 >LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</P
+><P
+>Wykorzystanie bazy SQLite dla LMS'a jest w fazie testów. Jedyn± przetestowan± wersj± 
+	      jest wersja 2.8.11.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -1125,7 +1140,11 @@ CLASS="EMPHASIS"
 ></LI
 ><LI
 ><P
->DBD-pg (Je¶li masz zamiar u¿ywaæ postgres'a);</P
+>DBD-Pg (Je¶li masz zamiar u¿ywaæ postgres'a);</P
+></LI
+><LI
+><P
+>DBD-SQLite (Je¶li masz zamiar u¿ywaæ bazê SQLite);</P
 ></LI
 ></UL
 ></P
@@ -1173,7 +1192,7 @@ CLASS="FILENAME"
 <PRE
 CLASS="SCREEN"
 >$ cd /var/www
-$ wget http://lms.rulez.pl/download/lms-x.x.x.tar.gz
+$ wget http://lms.rulez.pl/download/stable/lms-x.x.x.tar.gz
 $ tar zxf lms-x.x.x.tar.gz</PRE
 >
 		</P
@@ -1536,9 +1555,121 @@ CLASS="FILENAME"
 >Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy danych,
 			mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
 			nie ma ¿adnego konta administratora, jedyn± rzecz± jak± zobaczysz
-			bêdzie formularz dodania administratora. Je¿eli podasz prawid³owe dane
-			administratora, LMS przeniesie Ciê na stronê logowania gdzie od razu bêdziesz
-			móg³ u¿yæ nowo utworzonego konta.</P
+			bêdzie formularz dodania administratora.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="INSTALL-SQLITE"
+>2.4.3. SQLite</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="INSTALL-SQLITE-INTRO"
+>2.4.3.1. Wstêp</A
+></H4
+><P
+>Ta jednoplikowa baza jest chwalona za swoj± szybko¶æ, wg autorów
+			okre¶lan± na 2-3 krotnie szybsz± od MySQL. Poza tym przy odpowiedniej 
+			konfiguracji umo¿liwia wczytanie ca³ej bazy do pamiêci RAM przez co osi±gany jest
+			znaczny wzrost wydajno¶ci. Poni¿ej przedstawiono krótki opis instalacji.
+			¬ród³a mo¿na pobraæ z <A
+HREF="http://www.sqlite.org"
+TARGET="_top"
+>			www.sqlite.org</A
+>.</P
+><P
+>Na obecn± chwilê z SQLite nie wspó³pracuje demon <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd.
+			</I
+></SPAN
+></P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="INSTALL-SQLITE-SERVER"
+>2.4.3.2. Instalacja SQLite</A
+></H4
+><P
+>Opisano tutaj sposób instalacji bibliotek SQLite oraz 
+			dodanie obs³ugi tej bazy do PHP (PHP w wersji 5.0 ma wbudowan±
+			obs³ugê SQLite). Po rozpakowaniu ¼róde³, wejd¼ do katalogu z SQLite 
+			i wydaj kolejno polecenia (¶cie¿ki przyk³adowe):
+			<PRE
+CLASS="SCREEN"
+>$ ./configure
+$ make
+$ make install
+$ ldconfig
+$ pear download http://pecl.php.net/get/SQLite-1.0.2.tgz
+$ pear install SQLite-1.0.2.tgz</PRE
+>
+			Nastêpnie w pliku php.ini ustaw:
+			<PRE
+CLASS="SCREEN"
+>extension=sqlite.so</PRE
+>
+			Istnieje równie¿ mo¿liwo¶æ wkompilowania obs³ugi SQLite
+			w PHP przy pomocy opcji <SAMP
+CLASS="PROMPT"
+>--with-sqlite</SAMP
+>.
+			</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="INSTALL-SQLITE-DBCREATE"
+>2.4.3.3. Utworzenie bazy danych</A
+></H4
+><P
+>Konieczne  to  jest  je¿eli  uruchamiasz  LMS  po raz PIERWSZY. 
+			Tak wiêc, wejd¼ do katalogu w którym masz LMS'a	i uruchom shell sqlite'a:
+			<PRE
+CLASS="SCREEN"
+>$ sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
+sqlite&#62; .exit
+$ chown 99.98 /usr/local/lms/lms</PRE
+>
+			</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="INSTALL-SQLITE-LMS"
+>2.4.3.4. Konfiguracja LMS (lms.ini)</A
+></H4
+><P
+>Jednym z ograniczeñ SQLite jest brak autentykacji u¿ytkowników, dlatego
+			konfiguracja ogranicza siê do podania typu oraz ¶cie¿ki do pliku bazy. W sekcji
+			[database] pliku /etc/lms/lms.ini podajemy:
+			<PRE
+CLASS="SCREEN"
+>type     = sqlite
+database = /usr/local/lms/lms.db</PRE
+>
+		    </P
+><P
+>Po  takim  zabiegu, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
+			bazie danych nie ma ¿adnego konta administratora, jedyn± rzecz± jak±
+			zobaczysz bêdzie formularz dodania administratora.  
+			</P
 ></DIV
 ></DIV
 ></DIV
@@ -1615,7 +1746,7 @@ NAME="INSTALL-CONFIG-DB"
 >type</P
 ><P
 >Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak na razie nie 
-	   widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</P
+	   widaæ wiêkszych problemów z 'postgres' i 'sqlite'. Domy¶lnie: mysql</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
@@ -1664,7 +1795,7 @@ CLASS="PROMPT"
 ><P
 >database</P
 ><P
->Nazwa bazy danych, domy¶lnie lms.</P
+>Nazwa bazy danych (a w przypadku SQLite ¶cie¿ka do pliku bazy), domy¶lnie lms.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -3178,6 +3309,63 @@ CLASS="FILENAME"
 >index.php</TT
 >.</P
 ></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="USER-STAFF-SQLPANEL"
+>3.3.3. Panel SQL</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="SQLPANEL-INTRO"
+>3.3.3.1. Wstêp</A
+></H4
+><P
+>W katalogu <TT
+CLASS="FILENAME"
+>contrib/sqlpanel</TT
+> znajdziesz
+		modu³, dziêki któremu bêdziesz mia³ mo¿liwo¶æ bezpo¶redniego dostêpu 
+		do bazy danych poprzez zadawanie zapytañ SQL. Wyniki wy¶wietlane s±
+		w formie tabeli. Ponadto podawany jest czas wykonania zapytania.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="SQLPANEL-INSTALL"
+>3.3.3.2. Instalacja</A
+></H4
+><P
+>Instalacja polega na skopiowaniu plików w odpowiednie miejsca
+		w drzewie katalogów lms'a. Plik <TT
+CLASS="FILENAME"
+>sql.php</TT
+> skopiuj
+		do katalogu <TT
+CLASS="FILENAME"
+>modules</TT
+>, a pliki <TT
+CLASS="FILENAME"
+>sql.html</TT
+>
+		i <TT
+CLASS="FILENAME"
+>adminheader.html</TT
+> do katalogu <TT
+CLASS="FILENAME"
+>templates</TT
+>.
+		Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu 
+		Administratorzy-&#62;SQL.</P
+></DIV
+></DIV
 ></DIV
 ></DIV
 ><DIV
@@ -3241,7 +3429,7 @@ NAME="SCRIPTS-LIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN760"
+NAME="AEN805"
 ></A
 ><P
 ><B
@@ -3341,6 +3529,12 @@ ALIGN="CENTER"><THEAD
 ><TD
 >Konfiguracja firewalla dla systemu OpenBSD</TD
 ></TR
+><TR
+><TD
+>lms-updatewarnings</TD
+><TD
+>Ostrze¿enia dla u¿ytkowników zad³u¿onych</TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -3410,7 +3604,7 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN833"
+NAME="AEN881"
 ></A
 ><P
 ><B
@@ -3432,7 +3626,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN836"
+NAME="AEN884"
 ></A
 ><P
 ><B
@@ -4163,6 +4357,44 @@ CLASS="PROMPT"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >etherdesc_permission = 600</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="LMS-UPDATEWARNINGS"
+>4.3.9. lms-updatewarnings</A
+></H3
+><P
+>Skrypt automatycznie w³±cza ostrze¿enia (czyli ustawia odpiwedni± flagê w bazie
+	 danych) wszystkim komputerom u¿ytkownika z saldem mniejszym ni¿ kwota okre¶lona parametrem 'limit'.
+	 Regu³y firewalla przekierowuj±ce na stronê z ostrze¿eniem nale¿y wygenerowaæ innym skryptem.</P
+><P
+>Konfiguracjê dla lms-updatewarnings mo¿emy ustaliæ w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> 
+	 w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[warnings]</I
+></SPAN
+>. Mo¿emy tam ustawiæ:</P
+><UL
+><LI
+><P
+>limit (opcjonalny)</P
+><P
+>Pozwala na ustalenie limitu bilansu. Domy¶lnie: 0</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>limit = -20</SAMP
 ></P
 ></LI
 ></UL
@@ -4975,7 +5207,7 @@ NAME="MGC-EXAMPLE"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN1361"
+NAME="AEN1421"
 ></A
 ><P
 ><B
@@ -5290,7 +5522,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1426"
+NAME="AEN1486"
 ></A
 ><P
 ><B
@@ -6527,7 +6759,7 @@ NAME="DEVEL-CATALOGS"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1884"
+NAME="AEN1944"
 ></A
 ><P
 ><B
@@ -7435,7 +7667,7 @@ NAME="PARAMS"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN2122"
+NAME="AEN2182"
 ></A
 ><P
 ><B
