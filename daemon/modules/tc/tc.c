@@ -58,7 +58,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 
 		if( strlen(netname) ) 
-			if( res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname)) 
+			if( (res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname)) ) 
 			{
 				if(res->nrows) 
 				{
@@ -81,7 +81,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
 
 		if( strlen(groupname) )
-			if( res = g->db_pquery("SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname)) 
+			if( (res = g->db_pquery("SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname)) ) 
 			{
 				if(res->nrows) 
 				{
@@ -124,7 +124,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 			{	
 				// test user's membership in usergroups
 				if(gc)
-					if( res = g->db_pquery("SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(ures,i,"id"))) {
+					if( (res = g->db_pquery("SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(ures,i,"id"))) ) {
 						for(k=0; k<res->nrows; k++) {
 							int groupid = atoi(g->db_get_data(res, k, "usergroupid"));
 							for(m=0; m<gc; m++) 
