@@ -1528,5 +1528,15 @@ class LMS
 		else
 			return FALSE;
 	}
+
+	function NodesGrow($year=FALSE)
+	{
+		if(!$year)
+			$year = date("Y",time());
+		$creationtable = $this->ADB->GetAll("SELECT creationdate FROM nodes");
+		foreach($creationtable as $row)
+			$return[date("Y",$row[creationdate])][date("m",$row[creationdate])*1]++;
+		return $return[$year];
+	}
 }
 ?>
