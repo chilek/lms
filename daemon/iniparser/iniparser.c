@@ -451,7 +451,6 @@ dictionary * iniparser_load(char * ininame)
     char        key[ASCIILINESZ+1];
     char        val[ASCIILINESZ+1];
     char    *   where ;
-    char    *   value;
     FILE    *   ini ;
     int         lineno ;
 
@@ -489,9 +488,7 @@ dictionary * iniparser_load(char * ininame)
                 } else {
                     strcpy(val, strcrop(val));
                 }
-		value = parse(val);
-                iniparser_add_entry(d, sec, key, value);
-		free(value);
+                iniparser_add_entry(d, sec, key, parse(val));
             }
         }
     }

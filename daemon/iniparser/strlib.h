@@ -105,6 +105,14 @@ char * strcrop(char * s);
 /*--------------------------------------------------------------------------*/
 char * strstrip(char * s) ;
 
-unsigned char * parse(unsigned char *);//, unsigned char);
+/*--------------------------------------------------------------------------*/
+/**
+  Author: Aleksander Machniak ( A.L.E.C ) 
+  LMS Developer - www.lms.rulez.pl
+  This function parses value and changes special string (i.e. "\n") with
+  special char i.e.'\n'
+*/
+/*--------------------------------------------------------------------------*/
+unsigned char * parse(unsigned char *);
 
 #endif
