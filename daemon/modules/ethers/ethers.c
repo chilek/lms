@@ -57,7 +57,7 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 #endif
     }
     else
-	syslog(LOG_ERR, "mod_ethers: Unable to write a temporary file '%s'", fm->file);
+	syslog(LOG_ERR, "[%s/ethers] Unable to write a temporary file '%s'", fm->base.instance, fm->file);
     
     free(fm->file);
     free(fm->command);
