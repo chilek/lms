@@ -141,4 +141,71 @@ podstawie danych zawartych w bazie.
 
 I to (narazie) na tyle.
 
+3. Post instalacja.
+
+Za³ó¿my  ¿e  chcemy  prost±  sieæ, prywatn±, na kernelu 2.2, na jednym
+serwerze  gdzie jest wszystko i tak± w miarê bez komplikacji. Mamy ju¿
+uruchomiony interface, wszystko chodzi i wogóle cacy ale teraz kwestia
+jak  to  zgraæ  z  serwerem. Oki. Na pocz±tek, trzeba ¶ci±gn±æ z CVS'a
+lms-scripts:
+
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
+[wciskamy enter, bo has³o jest puste]
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms-scripts
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout
+
+Teraz skopiujmy jeden skrypt - lms-mgc w jakie¶ ciekawe miejsce:
+
+cd lms-scripts
+cp lms-mgc /usr/sbin
+
+Teraz, dodajmy now± sekcjê mgc do lms.ini, nazywaj±c j± 'ipchains', 
+oraz stwórzmy w tej sekcji prost± maskaradê per adres IP z lanu:
+
+[mgc:ipchains]
+
+outfile			= /etc/rc.d/rc.masq
+outfile_perm		= 700
+header			= #!/bin/sh\n/sbin/ipchains -F\n/sbin/ipchains -X\n/sbin/ipchains -P forward DENY
+grantednode_priv	= /sbin/ipchains -A forward -s %IP -j MASQ
+post_exec		= /etc/rc.d/rc.masq
+
+Dopiszmy tak¿e do sekcji g³ównej mgc informacjê ¿eby mgc uruchamia³ t±
+sekcjê:
+
+[mgc]
+
+instances		= ipchains
+
+Teraz próba odpalenia lmg-mgc powinna zaowocowaæ wygenerowaniem
+/etc/rc.d/rc.masq, oraz jego odpaleniem.
+
+Mamy  dwie  mo¿liwo¶ci  wprowadzenia  w  ¿ycie tego generatorka - albo
+przez  cron,  albo  z  poziomu lms'a (tak! s³ynny nigdy nie dzia³aj±cy
+reload  (tm)).  Pierwsze,  powinno  byæ ³atwe i napewno tego tutaj nie
+opiszê.  Druga metoda wymaga paru kombinacji. Niestety, jedyne wyj¶cie
+by  umo¿liwiæ  odpalenie  lms-mgc  to dopisanie u¿ytkownika do sudo, a
+nastêpnie wpisy w sekcji [phpui] lms.ini:
+
+reload_type		= exec
+reload_execcmd		= "sudo /usr/bin/lms-mgc"
+
+4. Op³aty miesiêczne.
+
+Z lms-scripts nale¿y wyci±gn±æ lms-eachmonth, skopiowaæ go w jaki¶ 
+miejsce i do crontaba dopisaæ aby skrypt ten by³ odpalany co miesi±c:
+
+0 0 6 * *	/usr/sbin/lms-eachmont
+
+I w taki sposób szóstego ka¿dego miesi±ca ka¿dy dostanie w bonusie 
+obci±¿enie abonamentu.
+
+5. Od³±czanie.
+
+Podobnie jak w rozdziale wy¿ej, ale do tego s³u¿y skrypt lms-cutoff.
+
+6. Comiesiêczne wysy³anie maili.
+
+Hm, vide wy¿ej, skrypt siê zowie lms-notify.
+
 $Id$
