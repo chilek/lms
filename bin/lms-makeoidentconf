@@ -172,6 +172,8 @@ if(!$networks_list)
 
 my @networks = split ' ', $networks_list;
 
+my $iniusergroups = $usergroups_list;
+
 if(!$usergroups_list)
 {
 	my $dbq = $dbase->prepare("SELECT name FROM usergroups");
@@ -228,7 +230,7 @@ foreach my $key (@networks)
                                         }
 
                                 }
-                                if($usergroupscount || !$usergroups_list)
+                                if($usergroupscount || !$iniusergroups)
                                 {
 					print OIDENTDCONF "$ipaddr\t";
 					my $ident = $itempl;

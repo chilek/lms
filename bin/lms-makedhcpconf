@@ -114,8 +114,7 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-makedhcpconf, version $_version\n";
-	print STDOUT "(C) Copyright 2002 Rulez.PL Development Team\n";
-	print STDOUT "(C) Copyright 2001-2002 NetX ACN\n";
+	print STDOUT "(C) Copyright 2001-2004 LMS Developers\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 
@@ -191,6 +190,8 @@ if(!$networks_list)
 
 my @networks = split ' ',$networks_list;
 
+my $iniusergroups = $usergroups_list;
+
 if(!$usergroups_list)
 {
 	my $dbq = $dbase->prepare("SELECT name FROM usergroups");
@@ -198,6 +199,7 @@ if(!$usergroups_list)
 	while (my $row = $dbq->fetchrow_hashref()) {
 		$usergroups_list = "$usergroups_list $row->{'name'}";
 	}
+	
 }
 
 my @usergroups = split ' ',$usergroups_list;
@@ -272,7 +274,7 @@ foreach my $key (@networks)
 						$usergroupscount++;
 					}
 				}
-				if ($usergroupscount || !$usergroups_list)
+				if ($usergroupscount || !$iniusergroups)
 				{
 					my $ipaddr = $row2->{'ipaddr'};
 					my $ndomain = $ini->val("dhcp:$ipaddr",'domain') || '';
