@@ -45,3 +45,9 @@ $Id$
     * jest mo¿liwo¶æ skompilowania programu, aby logowa³ zapytania SQL oraz
       zdarzenia programu i modu³ów
     * ka¿da funkcjonalno¶æ UI lms'a potrzebuje modu³u - modu³y s± w .so 
+
+- B£ÊDY
+    
+    * na niektórych systemach wystêpuje b³±d w module dhcp, powoduj±cy
+      po reloadzie tego modu³u wysypanie ca³ego programu, przyczyna nieznana
+
