@@ -6,6 +6,8 @@ wersja 1.0pre6 (??/??/2003):
   - sporo kosmetyki, poprawek w sortowaniu i nie tylko
   - SetBalanceZERO w LMS.class.php zeruje saldo
   - %abonament zmienia siê w kwotê abo zapisan± w tariffs.value
+  - usuniête polskie locales, sprawia³o to wiêcej problemów
+    ni¿ po¿ytku
 
 wersja 1.0pre5 (26/01/2003):
  
