@@ -182,6 +182,16 @@ class LMS
 						{
 							$dblist['time'][] = substr(basename("$file",'.sql'),4);
 							$dblist['size'][] = filesize($this->CONFIG['directories']['backup_dir'].'/'.$file);
+							$dblist['type'][] = 'plain';
+						}
+					}
+					if ($this->CONFIG['phpui']['support_gzip']=='1')
+					{
+						if((($path['extension'] == 'gz')&&(strstr($file, "sql.gz")))&& (substr($path['basename'],0,4) == 'lms-'))
+						{
+							$dblist['time'][] = substr(basename("$file",'.sql.gz'),4);
+							$dblist['size'][] = filesize($this->CONFIG['directories']['backup_dir'].'/'.$file);
+							$dblist['type'][] = 'gz';
 						}
 					}
 				}
@@ -189,7 +199,7 @@ class LMS
 			closedir($handle);
 		}
 		if(sizeof($dblist['time']))
-			array_multisort($dblist['time'],$dblist['size']);
+			array_multisort($dblist['time'],$dblist['size'],$dblist['type']);
 		$dblist['total'] = sizeof($dblist['time']);
 		return $dblist;
 	}
@@ -200,6 +210,10 @@ class LMS
 		{
 			return $this->DBLoad($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
 		}
+		else if (($this->CONFIG['phpui']['support_gzip']=='1')&&(file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz')))
+		{
+			return $this->DBLoad($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
+		}
 		else
 			return FALSE;
 	}
@@ -208,7 +222,14 @@ class LMS
 	{
 		if(!$filename)
 			return FALSE;
-		$file = fopen($filename,'r');
+		$finfo = pathinfo($filename);
+		$ext = $finfo['extension'];
+
+		if (($this->CONFIG['phpui']['support_gzip'=='1'])&&($ext=="gz"))
+			$file = gzopen($filename,'r'); //jezeli chcemy gz to plik najpierw trzeba rozpakowac
+		else
+			$file = fopen($filename,'r');
+
 		$this->DB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
 		while(!feof($file))
 		{
@@ -220,7 +241,10 @@ class LMS
 			}
 		}
 		$this->DB->CommitTrans();
-		fclose($file);
+		if (($this->CONFIG['phpui']['support_gzip'=='1'])&&($ext=="gz"))
+			gzclose($file);
+		else
+			fclose($file);
 
 		// Okej, zróbmy parê bzdurek db depend :S
 		// Postgres sux ! (warden)
@@ -242,7 +266,12 @@ class LMS
 	{
 		if(! $filename)
 			return FALSE;
-		if($dumpfile = fopen($filename,'w'))
+		if (($this->CONFIG['phpui']['gzip_backups']=='1')&&($this->CONFIG['phpui']['support_gzip']=='1'))
+			$dumpfile = gzopen($filename,'w');
+		else
+			$dumpfile = fopen($filename,'w');
+
+		if($dumpfile)
 		{
 			foreach($this->DB->ListTables() as $tablename)
 			{
@@ -267,7 +296,10 @@ class LMS
 					unset($values);
 				}
 			}
-			fclose($dumpfile);
+			if(($this->CONFIG['phpui']['gzip_backups']=='1')&&($this->CONFIG['phpui']['support_gzip']=='1'))
+				gzclose($dumpfile);
+			else
+				fclose($dumpfile);
 		}
 		else
 			return FALSE;
@@ -275,7 +307,10 @@ class LMS
 
 	function DatabaseCreate() // wykonuje zrzut kopii bazy danych
 	{
-		return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/lms-'.time().'.sql');
+		if (($this->CONFIG['phpui']['gzip_backups']=='1')&&($this->CONFIG['phpui']['support_gzip']=='1'))
+			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/lms-'.time().'.sql.gz');
+		else
+			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/lms-'.time().'.sql');
 	}
 
 	function DatabaseDelete($dbtime) // usuwa plik ze zrzutem
@@ -284,11 +319,15 @@ class LMS
 		{
 			return @unlink($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
 		}
+		else if (($this->CONFIG['phpui']['support_gzip']=='1')&&((@file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz'))))
+		{
+			return @unlink($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
+		}
 		else
 			return FALSE;
 	}
 
-	function DatabaseFetchContent($dbtime) // zwraca zawarto¶æ tekstow± kopii bazy danych
+	function DatabaseFetchContent($dbtime,$save=FALSE) // zwraca zawarto¶æ tekstow± kopii bazy danych
 	{
 		if(file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql'))
 		{
@@ -298,6 +337,25 @@ class LMS
 			$database['size'] = filesize($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
 			$database['time'] = $dbtime;
 			return $database;
+		}
+		else if (($this->CONFIG['phpui']['support_gzip']=='1')&&(file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz')))
+		{
+			if($save==TRUE)
+			{
+				$file=fopen($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz',"r"); //tutaj przepisuje plik binarny 
+				while($part = fread($file,8192))
+                                	$database .= $part; 
+
+			}
+			else
+			{
+			$content = gzfile($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
+                        foreach($content as $value)
+                                $database['content'] .= $value;
+                        $database['size'] = filesize($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
+                        $database['time'] = $dbtime;
+			}
+                        return $database;
 		}
 		else
 			return FALSE;
