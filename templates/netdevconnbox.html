@@ -23,7 +23,7 @@
 		</TD>
 		<TD CLASS="FRIGHTU" width="49%">
 			ID:<BR>
-			Ilo¶æ portów:
+			Ilo¶æ portów (zajêtych):
 		</TD>
 	</TR>
 
@@ -43,7 +43,7 @@
 		</TD>
 		<TD width="49%" CLASS="fright" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
 			({$netdevlist[netdevlist].id|string_format:"%04d"})<br>
-			{$netdevlist[netdevlist].ports}
+			{$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
 		</TD>
 	</TR>
 	{if $netdevlist[netdevlist.index_next].ownerid eq $netdevlist[netdevlist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
