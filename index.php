@@ -178,8 +178,8 @@ $layout['uptime'] = uptime();
 $layout['hostname'] = hostname();
 $layout['lmsvs'] = '1.3-cvs';
 
-$SMARTY->assign('menu', $LMS->MENU);
-$SMARTY->assign('layout', $layout);
+$SMARTY->assign_by_ref('menu', $LMS->MENU);
+$SMARTY->assign_by_ref('layout', $layout);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 if($SESSION->islogged)
