@@ -4,16 +4,60 @@
 		<TD WIDTH="1%" CLASS="FLEFTU">
 			<IMG SRC="img/mac.gif" BORDER="0" ALT="">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN=3>
 			<B>Urz±dzenia pod³±czone:</B>
 		</TD>
 	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFTU">
-			<IMG SRC="img/mac.gif" BORDER="0" ALT="">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" width="1%">
+			<img src="img/netdev.gif" alt="" align="absmiddle"><BR>
+			<img src="img/home.gif" alt="" align="absmiddle">
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
-			<br><br><br>Mo¿e tutaj co¶ kiedy¶ bêdzie ;P<br><br><br>
+		<TD CLASS="fbt" width="49%">
+			Nazwa / Producent:</B><BR>
+			Lokalizacja:
+		</TD>
+		<TD CLASS="fbt" width="1%">
+			<BR>
+			<img src="img/port.gif" alt="" align="absmiddle">
+		</TD>
+		<TD CLASS="FRIGHTU" width="49%">
+			ID:<BR>
+			Ilo¶æ portów:
 		</TD>
 	</TR>
+
+	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=netdevlist loop=$netdevlist start=$start}
+	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD width="1%" CLASS="fleft" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
+			<IMG SRC="img/netdev.gif" ALT="" ALIGN="ABSMIDDLE"><BR>
+			<img src="img/home.gif" alt="" align="absmiddle">
+		</TD>
+		<TD width="49%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
+			<a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name} / {$netdevlist[netdevlist].producer}</B></A><BR>
+			{$netdevlist[netdevlist].location}
+		</TD>
+		<TD width="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
+			<br>
+			<IMG SRC="img/port.gif" ALT="" ALIGN="ABSMIDDLE">
+		</TD>
+		<TD width="49%" CLASS="fright" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
+			({$netdevlist[netdevlist].id|string_format:"%04d"})<br>
+			{$netdevlist[netdevlist].ports}
+		</TD>
+	</TR>
+	{if $netdevlist[netdevlist.index_next].ownerid eq $netdevlist[netdevlist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
+	{sectionelse}
+	<TR>
+		<TD colspan="4" CLASS="fall" align="center">
+			<p>&nbsp;</p>
+			<p><B>Nie posiadasz ¿adnych pod³±czonych urz±dzeñ.</b></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+        <TR CLASS="light">
+                <TD WIDTH="100%" COLSPAN="4" CLASS="ftop">
+                </TD>
+        </TR>
 </TABLE>

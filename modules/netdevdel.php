@@ -28,16 +28,22 @@ $layout[pagetitle]="Usuniêcie urz±dzenia ID: ".sprintf("%04d",$_GET[id]);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("netdevid",$_GET[id]);
 
-if($_GET[is_sure]!=1)
+if($LMS->CountNetDevLinks($_GET[id])>0)
 {
 	$body = "<H1>".$layout[pagetitle]."</H1>";
-	$body .= "<P>Czy jeste¶ pewien ¿e chcesz usun±æ urz±dzenie?</P>"; 
-	$body .= "<P><A HREF=\"?m=userdel&id=".$_GET[id]."&is_sure=1\">Tak, jestem pewien.</A></P>";
+	$body .= "<P>Nie mo¿na usun±æ urz±dzenia które jest pod³±czone do innych urz±dzeñ.</P>";
 }else{
-	header("Location: ?m=netdevlist");
-	$body = "<H1>".$layout[pagetitle]."</H1>";
-	$body .= "<P>Urz±dzenie zosta³o usuniête.</P>";
-	$LMS->DeleteNetDev($_GET[id]);
+    if($_GET[is_sure]!=1)
+    {
+	    $body = "<H1>".$layout[pagetitle]."</H1>";
+	    $body .= "<P>Czy jeste¶ pewien ¿e chcesz usun±æ urz±dzenie?</P>"; 
+	    $body .= "<P><A HREF=\"?m=userdel&id=".$_GET[id]."&is_sure=1\">Tak, jestem pewien.</A></P>";
+    }else{
+	    header("Location: ?m=netdevlist");
+	    $body = "<H1>".$layout[pagetitle]."</H1>";
+	    $body .= "<P>Urz±dzenie zosta³o usuniête.</P>";
+	    $LMS->DeleteNetDev($_GET[id]);
+    }
 }
 	
 
@@ -48,6 +54,9 @@ $SMARTY->display("footer.html");
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/21 18:07:47  lexx
+ * - netdev
+ *
  * Revision 1.1  2003/09/12 20:57:05  lexx
  * - netdev
  *
