@@ -26,11 +26,7 @@
 				{section name=balancelist loop=$balancelist.id start=$limit}
 				<tr bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
-					{if strlen($balancelist.adminname[balancelist]) <= strlen($layout.logname)}
-					<TD width="1%">{$balancelist.adminname[balancelist]|replace:" ":"&nbsp;"}</TD>
-					{else}
-					<TD width="1%">{$balancelist.adminname[balancelist]|truncate:16:" ..."|replace:" ":"&nbsp;"}</TD>
-					{/if}
+					<TD width="1%">{$balancelist.adminname[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
 					<TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
 					<TD width="1%" align="right"><nobr>{$balancelist.value[balancelist]|string_format:"%01.2f"} z³</nobr></TD>
 					<TD width="1%" align="center">&raquo;</TD>
@@ -53,7 +49,7 @@
 							<nobr>{$smarty.now|date_format:"%Y/%m/%d %H:%M"}</nobr>
 						</TD>
 						<TD class="ftop">
-							{$layout.logname|replace:" ":"&nbsp;"}
+							{$layout.logname|truncate:20:"..."|replace:" ":"&nbsp;"}
 						</TD>
 						<TD class="ftop">
 							<SELECT SIZE="1" name="addbalance[type]">
