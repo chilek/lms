@@ -140,7 +140,7 @@ CREATE TABLE tariffs (
   id INT(11) NOT NULL auto_increment,
   name VARCHAR(255) NOT NULL default '',
   value DECIMAL(9,2) NOT NULL default '0',
-  taxvalue DECIMAL(9,2) default '0',
+  taxvalue DECIMAL(9,2) default '0.00',
   pkwiu VARCHAR(255) default '',
   uprate INT(11) NOT NULL default '0',
   downrate INT(11) NOT NULL default '0',
