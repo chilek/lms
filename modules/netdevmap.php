@@ -93,7 +93,7 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 		
 		$devices = $DB->GetCol("SELECT (CASE src WHEN ? THEN dst ELSE src END) AS dst, (CASE src WHEN ? THEN src ELSE dst END) AS src FROM netlinks WHERE src = ? OR dst = ?",array($device, $device, $device, $device));
 
-		foreach($devices as $deviceid)
+		if($devices) foreach($devices as $deviceid)
 		{
 			if(! $seen[$deviceid])
 			{
@@ -211,7 +211,7 @@ else
 	}
 
 	$links = $DB->GetAll('SELECT src, dst FROM netlinks');
-	foreach($links as $link)
+	if($links) foreach($links as $link)
 	{
 		$src_celx = $devicemap[$link[src]][x];
 		$src_cely = $devicemap[$link[src]][y];
