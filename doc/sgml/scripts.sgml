@@ -616,6 +616,174 @@ http://www.naszasiec.pl/</screen></example>
 		</listitem>
 	    </itemizedlist>
     </sect2>
+    <sect2 id="lms-makehosts">
+	<title>lms-makehosts</title>
+	    <para>Skrypt s³u¿±cy do generowania pliku /etc/hosts zawieraj±cego odwzorowania nazw komputerów
+	    na adresy IP.
+	    </para>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[hosts]</emphasis>
+	    w pliku <filename>lms.ini</filename>: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>usergroups </para>
+		    <para>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</para>
+		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_owneruid</para>
+		    <para>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_owneruid = 0</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_file</para>
+		    <para>Lokalizacja pliku. Domy¶lnie: /etc/hosts.</para>
+		    <para>Przyk³ad:	<prompt>config_file = /etc/hosts</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>config_ownergid</para>
+		    <para>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>config_permission</para>
+		    <para>Uprawnienia pliku skryptu. Domy¶lnie: 644 (rw-r--r--).</para>
+		    <para>Przyk³ad:	<prompt>config_permission = 600</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>config_header</para>
+		    <para>Pierwsza linia w pliku /etc/hosts. Domy¶lnie: 127.0.0.1 localhost localhost.localdomain.</para>
+		    <para>Przyk³ad:	<prompt>config_header = 192.168.1.1 serwer serwer.nasza-siec</prompt></para>
+		</listitem>
+	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-makewarnings">
+	<title>lms-makewarnings</title>
+	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
+	    u¿ytkowników o saldzie mniejszym lub równym od zadanego na zadany adres IP i port (wykorzystywana
+	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
+	    </para>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[warnings]</emphasis>
+	    w pliku <filename>lms.ini</filename>: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>usergroups </para>
+		    <para>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</para>
+		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>iptables_binary</para>
+		    <para>Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</para>
+		    <para>Przyk³ad:	<prompt>iptables_binary = /usr/local/sbin/iptables</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_owneruid</para>
+		    <para>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_owneruid = 0</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_file</para>
+		    <para>Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.warnings.</para>
+		    <para>Przyk³ad:	<prompt>config_file = /etc/conf.d/rc.warnings</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>config_ownergid</para>
+		    <para>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>config_permission</para>
+		    <para>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</para>
+		    <para>Przyk³ad:	<prompt>config_permission = 700</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>chain</para>
+		    <para>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: WARNINGS.</para>
+		    <para>Przyk³ad:	<prompt>chain = OSTRZEZENIA</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>redirect_address</para>
+		    <para>Adres IP + port na który bêdzie przekierowywany ruch http i webcache pochodz±cy z hostów dla których ma byæ w³±czone ostrze¿enie o zaleg³o¶ciach finansowych. Domy¶lnie: 127.0.0.1:80.</para>
+		    <para>Przyk³ad:	<prompt>redirect_address = 192.168.1.1:3001</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>limit</para>
+		    <para>Saldo u¿ytkownika przy którym dla wszystkich komputerów u¿ytkownika generowane s± regu³ki przekierowuj±ce ruch. Domy¶lnie: 0 </para>
+		    <para>Przyk³ad:	<prompt>limit = -85</prompt></para>
+		</listitem>
+	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-makemessages">
+	<title>lms-makemessages</title>
+	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
+	    u¿ytkowników dla których zosta³o w³±czone przekazywanie wiadomo¶ci administracyjnej (ostrze¿enia) na zadany adres IP i port (wykorzystywana
+	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
+	    </para>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[messages]</emphasis>
+	    w pliku <filename>lms.ini</filename>: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>usergroups </para>
+		    <para>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</para>
+		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>iptables_binary</para>
+		    <para>Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</para>
+		    <para>Przyk³ad:	<prompt>iptables_binary = /usr/local/sbin/iptables</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_owneruid</para>
+		    <para>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_owneruid = 0</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_file</para>
+		    <para>Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.messages.</para>
+		    <para>Przyk³ad:	<prompt>config_file = /etc/conf.d/rc.messages</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>config_ownergid</para>
+		    <para>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>config_permission</para>
+		    <para>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</para>
+		    <para>Przyk³ad:	<prompt>config_permission = 700</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>chain</para>
+		    <para>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MESSAGES.</para>
+		    <para>Przyk³ad:	<prompt>chain = WIADOMOSCI</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>redirect_address</para>
+		    <para>Adres IP + port na który bêdzie przekierowywany ruch http i webcache pochodz±cy z hostów dla których ma byæ w³±czona wiadomo¶æ administracyjna. Domy¶lnie: 127.0.0.1:80.</para>
+		    <para>Przyk³ad:	<prompt>redirect_address = 192.168.1.1:3002</prompt></para>
+		</listitem>
+	    </itemizedlist>
+    </sect2>
     </sect1>
 </chapter>
     
