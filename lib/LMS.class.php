@@ -24,16 +24,22 @@
  *  $Id$
  */
 
+// we need this defines, and we need to place them here, see below why
+define('RT_NEW', trans('new'));
+define('RT_OPEN', trans('open'));
+define('RT_RESOLVED', trans('resolved'));
+define('RT_DEAD', trans('dead'));
+
 // LMS Class - contains internal LMS database functions used
 // to fetch data like usernames, searching for mac's by ID, etc..
 
 class LMS
 {
 
-	var $DB;			// obiekt bazy danych
-	var $SESSION;			// obiekt z Session.class.php (zarz±dzanie sesj±)
-	var $CONFIG;			// tablica zawieraj±ca zmienne z lms.ini
-	var $_version = '1.5-cvs';	// wersja klasy
+	var $DB;			// database object
+	var $SESSION;			// object from Session.class.php (session management)
+	var $CONFIG;			// table including lms.ini options
+	var $_version = '1.5-cvs';	// class version
 	var $_revision = '$Revision$';
 	var $MENU = array();
 
@@ -100,7 +106,7 @@ class LMS
 	}
 
 	/*
-	 *  Funkcje podstawowe (ró¿ne)
+	 *  Basic functions (various)
 	 */
 
 	function AddMenu($name = '', $img = '', $link = '', $tip = '', $accesskey = '', $prio = 99)
@@ -116,12 +122,12 @@ class LMS
 	}
 
 	/*
-	 *  Logowanie
-	 *	0 - wy³±czone
-	 *	1 - logowanie do systemu i wywo³ania modu³ów bez uprawnieñ 
-	 *	2 - j.w. oraz dodawanie i usuwanie
-	 *	3 - j.w. oraz zmiany
-	 *	4 - paranoid, czyli wszystkie powy¿sze i wywo³ania wszystkich modu³ów
+	 *  Logging
+	 *	0 - disabled
+	 *	1 - system log in and modules calls without access privileges 
+	 *	2 - as above, addition and deletion
+	 *	3 - as above, and changes
+	 *	4 - paranoid, id est all above and all modules calls
 	 */
 
 	function Log($loglevel=0, $message=NULL)
@@ -130,12 +136,12 @@ class LMS
 		{
 			$this->DB->Execute('INSERT INTO syslog (time, adminid, level, message)
 					    VALUES (?NOW?, ?, ?, ?)', array($this->SESSION->id, $loglevel, $message));
-			//my¶lê, ¿e SetTS('syslog') mo¿emy sobie odpu¶ciæ
+			//I think, we can ommit SetTS('syslog')
 		}
 	}
 	
 	/*
-	 *  Funkcje bazodanowe (backupy, timestampy)
+	 *  Database functions (backups, timestamps)
 	 */
 
 	function SetTS($table) // ustawia timestamp tabeli w tabeli 'timestamps'
@@ -447,7 +453,7 @@ class LMS
 	}
 
 	/*
-	 *  Funkcje do obs³ugi rekordów u¿ytkowników
+	 *  Customers (formerly Users) functions
 	 */
 
 	function GetUserName($id)
@@ -560,8 +566,8 @@ class LMS
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
-			$result['creationdateh'] = date("Y-m-d, H:i",$result['creationdate']);
-			$result['moddateh'] = date('Y-m-d, H:i',$result['moddate']);
+			$result['creationdateh'] = date('Y/m/d, H:i',$result['creationdate']);
+			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
 			$result['balance'] = $this->GetUserBalance($result['id']);
 			$result['tariffsvalue'] = $this->GetUserTariffsValue($result['id']);
 			return $result;
@@ -854,7 +860,7 @@ class LMS
 			$bou = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE userid=? AND type=4', array($id));
 		}
 		else
-			if ($taxvalue == 'zw.')
+			if ($taxvalue == trans('tax-free'))
 			{
 				$bin = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE userid=? AND taxvalue IS NULL AND type=3', array($id, $taxvalue));
 				$bou = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE userid=? AND taxvalue IS NULL AND type=4', array($id, $taxvalue));
@@ -888,16 +894,16 @@ class LMS
 
 					case '3':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = 'Wp³ata';
+						$saldolist['name'][$i] = trans('payment');
 					break;
 
 					case '4':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = 'Obci±¿enie';
+						$saldolist['name'][$i] = trans('covenant');
 					break;
 				}
 
-				$saldolist['date'][$i]=date('Y/m/d H:i',$saldolist['time'][$i]);
+				$saldolist['date'][$i] = date('Y/m/d H:i',$saldolist['time'][$i]);
 
 				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] = $saldolist['comment'][$i];
 			}
@@ -941,12 +947,12 @@ class LMS
 
 					case '3':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = 'wp³ata';
+						$saldolist['name'][$i] = trans('payment');
 					break;
 
 					case '4':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = 'obci±¿enie';
+						$saldolist['name'][$i] = trans('covenant');
 					break;
 				}
 
@@ -1008,7 +1014,7 @@ class LMS
 	}
 
 	/*
-	 * Obs³uga grup u¿ytkowników
+	 * Customer groups
 	*/
 	 
 	function UsergroupWithUserGet($id)
@@ -1143,7 +1149,7 @@ class LMS
 	}
 
 	/*
-	 *  Funkcje do obs³ugi rekordów z komputerami
+	 *  Nodes functions
 	 */
 
 	function GetNodeOwner($id)
@@ -1212,10 +1218,10 @@ class LMS
 			$result['creationdateh'] = date('Y-m-d, H:i',$result['creationdate']);
 			$delta = time()-$result['lastonline'];
 			if($delta>$this->CONFIG['phpui']['lastonline_limit'])
-				$result['lastonlinedate'] .= uptimef($delta).($delta>60 ? ' temu ' : '').'('.date('Y-m-d, H:i',$result['lastonline']).')';
+				$result['lastonlinedate'] .= uptimef($delta).($delta>60 ? ' temu ' : '').'('.date('Y/m/d, H:i',$result['lastonline']).')';
 			else
-				$result['lastonlinedate'] .= 'aktualnie w³±czony';
-			$result['moddateh'] = date('Y-m-d, H:i',$result['moddate']);
+				$result['lastonlinedate'] .= trans('off-line');
+			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
 			$result['owner'] = $this->GetUsername($result['ownerid']);
 			$result['netid'] = $this->GetNetIDByIP($result['ip']);
 			$result['netname'] = $this->GetNetworkName($result['netid']);
@@ -1340,7 +1346,7 @@ class LMS
 						$ownertable['idx'][] = $idx;
 						$ownertable['owner'][] = $row['owner'];
 					}
-					array_multisort($ownertable['owner'],($direction == "desc" ? SORT_DESC : SORT_ASC),$ownertable['idx']);
+					array_multisort($ownertable['owner'],($direction == 'desc' ? SORT_DESC : SORT_ASC),$ownertable['idx']);
 					foreach($ownertable['idx'] as $idx)
 						$nnodelist[] = $nodelist[$idx];
 					$nodelist = $nnodelist;
@@ -1471,7 +1477,7 @@ class LMS
 	}
 	
 	/*
-	 *  Obs³uga taryf i finansów
+	 *  Tarrifs and finances
 	 */
 
 	function GetUserTariffsValue($id)
@@ -1488,22 +1494,22 @@ class LMS
 				switch($row['period'])
 				{
 					case 0:
-						$row['period'] = 'co tydzieñ';
-						$dni = array('poniedzia³ek', 'wtorek', '¶roda', 'czwartek', 'pi±tek', 'sobota', 'niedziela');
+						$row['period'] = trans('weekly');
+						$dni = array(trans('Mon'), trans('Tue'), trans('Wed'), trans('Thu'), trans('Fri'), trans('Sun'), trans('Sat'));
 						$row['at'] = $dni[$row['at'] - 1];
 					break;
 					
 					case 1:
-						$row['period'] = 'co miesi±c';
+						$row['period'] = trans('monthly');
 					break;
 					
 					case 2:
-						$row['period'] = 'co kwarta³';
-						$row['at'] = sprintf("%02d/%02d", $row['at']%100, $row['at']/100+1);
+						$row['period'] = trans('quarterly');
+						$row['at'] = sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1);
 					break;
 					
 					case 3:
-						$row['period'] = 'co rok';
+						$row['period'] = trans('yearly');
 						$row['at'] = date('d/m',($row['at']-1)*86400);
 					break;
 				}
@@ -1549,7 +1555,7 @@ class LMS
 		{
 			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
 			$item['count'] = str_replace(',','.',$item['count']);
-			if ($item['taxvalue'] == 'zw.')
+			if ($item['taxvalue'] == trans('tax-free'))
 				$item['taxvalue'] = '';
 			else
 				$item['taxvalue'] = str_replace(',','.',$item['taxvalue']);
@@ -1571,8 +1577,8 @@ class LMS
 			{
 				$id = $row['id'];
 				$list[$id]['custname'] = $row['name'];
-				$list[$id]['custaddress'] = $row['zip']." ".$row['city'].', '.$row['address'];
-				$list[$id]['nip'] = ($row['nip'] ? 'NIP '.$row['nip'] : ($row['pesel'] ? 'PESEL '.$row['pesel'] : ''));
+				$list[$id]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
+				$list[$id]['nip'] = ($row['nip'] ? trans('NIP').' '.$row['nip'] : ($row['pesel'] ? trans('PID').' '.$row['pesel'] : ''));
 				$list[$id]['number'] = $row['number'];
 				$list[$id]['cdate'] = $row['cdate'];
 				$list[$id]['year'] = date('Y',$row['cdate']);
@@ -1834,7 +1840,7 @@ class LMS
 				'22.0' => $this->GetUserBalance($user_id, '22.0'),
 				'7.0' => $this->GetUserBalance($user_id, '7.0'),
 				'0.0' => $this->GetUserBalance($user_id, '0.0'),
-				'zw.' => $this->GetUserBalance($user_id, 'zw.')
+				trans('tax-free') => $this->GetUserBalance($user_id, trans('tax-free'))
 		);
 		asort($stan);
 		
@@ -1848,7 +1854,7 @@ class LMS
 			else		
 				$val = -$val;
 	
-			if ($key == 'zw.')
+			if ($key == trans('tax-free'))
 				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?)', array($this->SESSION->id, 3 , round($val,2) , $user_id, 'Rozliczono'));
 			else
 				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)', array($this->SESSION->id, 3 , round($val,2) , $key, $user_id, 'Rozliczono'));
@@ -1894,22 +1900,22 @@ class LMS
 				switch($row['type'])
 				{
 					case 1:
-						$balancelist[$idx]['type'] = 'przychód';
+						$balancelist[$idx]['type'] = trans('income');
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $balancelist[$idx]['value'];
 						$balancelist['income'] = $balancelist['income'] + $balancelist[$idx]['value'];
 					break;
 					case 2:
-						$balancelist[$idx]['type'] = 'rozchód';
+						$balancelist[$idx]['type'] = trans('expense');
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] - $balancelist[$idx]['value'];
 						$balancelist['expense'] = $balancelist['expense'] + $balancelist[$idx]['value'];
 					break;
 					case 3:
-						$balancelist[$idx]['type'] = 'wp³ata u¿';
+						$balancelist[$idx]['type'] = trans('cust. payment');
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] + $balancelist[$idx]['value'];
 						$balancelist['incomeu'] = $balancelist['incomeu'] + $balancelist[$idx]['value'];
 					break;
 					case 4:
-						$balancelist[$idx]['type'] = 'obci±¿enie u¿';
+						$balancelist[$idx]['type'] = trans('cust. covenant');
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
 						$balancelist['uinvoice'] = $balancelist['uinvoice'] + $balancelist[$idx]['value'];
 					break;
@@ -1949,7 +1955,7 @@ class LMS
 	}
 
 	/*
-	*	Obs³uga op³at sta³ych
+	*   Payments
 	*/
 
 	function GetPaymentList()
@@ -1960,28 +1966,20 @@ class LMS
 				switch($row['period'])
 				{
 					case 0:
-				    		switch($row['at'])
-						{
-							case 1: $row['payday'] = 'co tydzieñ (pon)'; break;
-							case 2: $row['payday'] = 'co tydzieñ (wt)'; break;
-							case 3: $row['payday'] = 'co tydzieñ (¶r)'; break;
-							case 4: $row['payday'] = 'co tydzieñ (czw)'; break;
-							case 5: $row['payday'] = 'co tydzieñ (pt)'; break;
-							case 6: $row['payday'] = 'co tydzieñ (sob)'; break;
-							case 7: $row['payday'] = 'co tydzieñ (nie)'; break;
-							default : $row['payday'] = "brak"; break;
-					        }
+						$days = array(trans('Mon'), trans('Tue'), trans('Wed'), trans('Thu'), trans('Fri'), trans('Sun'), trans('Sat'));
+						$row['payday'] = trans('weekly ($0)',$days[$row['at'] - 1]);
 					break;
+					
 					case 1:
-					        $row['payday'] = 'co miesi±c ('.$row['at'].')'; 
+						$row['payday'] = trans('monthly $0',$row['at']);
 					break;
+					
 					case 2:
-						$at = sprintf('%02d/%02d', $row['at']%100,$row['at']/100+1);
-						$row['payday'] = 'co kwarta³ ('.$at.')';
+						$row['payday'] = trans('quarterly ($0)', sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1));
 					break;
+					
 					case 3:
-						$at = date('d/m',($row['at']-1)*86400);
-						$row['payday'] = 'co rok ('.$at.')';
+						$row['payday'] = trans('yearly ($0)', date('d/m',($row['at']-1)*86400));
 					break;
 				}
 				
@@ -1999,30 +1997,22 @@ class LMS
 
 		switch($payment['period'])
 		{
-		    case 0:
-			    switch($payment['at'])
-			    {
-				case 1: $payment['payday'] = 'co tydzieñ (pon)'; break;
-				case 2: $payment['payday'] = 'co tydzieñ (wt)'; break;
-				case 3: $payment['payday'] = 'co tydzieñ (¶r)'; break;
-				case 4: $payment['payday'] = 'co tydzieñ (czw)'; break;
-				case 5: $payment['payday'] = 'co tydzieñ (pt)'; break;
-				case 6: $payment['payday'] = 'co tydzieñ (sob)'; break;
-				case 7: $payment['payday'] = 'co tydzieñ (nie)'; break;
-				default : $payment['payday'] = 'brak'; break;
-			    }
-		    break;
-		    case 1:
-			    $payment['payday'] = 'co miesi±c ('.$payment['at'].')'; 
-		    break;
-		    case 2:
-			    $at = sprintf('%02d/%02d', $payment['at']%100,$payment['at']/100+1);
-			    $payment['payday'] = 'co kwarta³ ('.$at.')';
-		    break;
-		    case 3:
-			    $at = date('d/m',($payment['at']-1)*86400);
-			    $payment['payday'] = 'co rok ('.$at.')';
-		    break;
+			case 0:
+				$days = array(trans('Mon'), trans('Tue'), trans('Wed'), trans('Thu'), trans('Fri'), trans('Sun'), trans('Sat'));
+				$row['payday'] = trans('weekly ($0)',$days[$row['at'] - 1]);
+			break;
+				
+			case 1:
+				$row['payday'] = trans('monthly $0',$row['at']);
+			break;
+				
+			case 2:
+				$row['payday'] = trans('quarterly ($0)', sprintf('%02d/%02d', $row['at']%100, $row['at']/100+1));
+			break;
+			
+			case 3:
+				$row['payday'] = trans('yearly ($0)', date('d/m',($row['at']-1)*86400));
+			break;
 		}
 		return $payment;
 	}
@@ -2107,7 +2097,7 @@ class LMS
 	}
 
 	/*
-	 *  Obs³uga rekordów z sieciami
+	 *  IP Networks
 	 */
 
 	function NetworkExists($id)
@@ -2125,7 +2115,7 @@ class LMS
 		for($i=30;$i>15;$i--)
 		{
 			$prefixlist['id'][] = $i;
-			$prefixlist['value'][] = $i." (".pow(2,32-$i)." adresów)";
+			$prefixlist['value'][] = trans('$0 ($1 addresses)', $i, pow(2,32-$i));
 		}
 
 		return $prefixlist;
@@ -2399,13 +2389,13 @@ class LMS
 				}
 		
 		for($pos=(ip_long($dhcpstart) - $addresslong - 1);$pos<=(ip_long($dhcpend) - $addresslong - 1);$pos++)
-			$result['nodename'][$pos] = "DHCP";
+			$result['nodename'][$pos] = 'DHCP';
 		
 		return $result;
 	}
 
 	/*
-	 * Ewidencja sprzêtu sieciowego
+	 *   Network Devices
 	 */
 
 	function NetDevExists($id)
@@ -2725,7 +2715,7 @@ class LMS
 		if($emails = $this->GetEmails($mailing['group'], $mailing['network'], $mailing['usergroup']))
 		{
 			if($this->CONFIG['phpui']['debug_email'])
-				echo '<B>Uwaga! Tryb debug (u¿ywam adresu '.$this->CONFIG['phpui']['debug_email'].')</B><BR>';
+				echo '<B>'.trans('Warning! Debug mode (using address $0).',$this->CONFIG['phpui']['debug_email']).'</B><BR>';
 
 			foreach($emails as $key => $row)
 			{
@@ -2736,10 +2726,10 @@ class LMS
 					$row['username'].' <'.$row['email'].'>',
 					$mailing['subject'],
 					$mailing['body'],
-					'From: '.$mailing['from'].' <'.$mailing['sender'].">\n"."Content-Type: text/plain; charset=ISO-8859-2;\n".'X-Mailer: LMS-'.$this->_version.'/PHP-'.phpversion()."\n".'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n".'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']."\n"
+					'From: '.$mailing['from'].' <'.$mailing['sender'].">\n".'Content-Type: text/plain; charset='.$LANGDEFS[$_language]['charset'].";\n".'X-Mailer: LMS-'.$this->_version.'/PHP-'.phpversion()."\n".'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n".'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']."\n"
 				);
 				
-				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.($key+1).' z '.sizeof($emails).' ('.sprintf('%02.2f',round((100/sizeof($emails))*($key+1),2))."%): ".$row['username'].' &lt;'.$row['email']."&gt;<BR>\n";
+				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$0 of $1 ($2): $3 &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.2f',round((100/sizeof($emails))*($key+1),2)), $row['username'], $row['email'])."<BR>\n";
 				flush();
 			}
 		}
@@ -2796,7 +2786,7 @@ class LMS
 	}
 
 	/*
-	 *  Statystyki
+	 *  Stats
 	 */
 
 	function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
@@ -2922,18 +2912,18 @@ class LMS
 	}
 
 	/*
-	 * Obs³uga RT
+	 * Helpdesk
 	 *
-         * Statusy ticketów:
+         * Ticket States:
 	 *
 	 * 0 - new
 	 * 1 - open
 	 * 2 - resolved
-	 * 3 - dead (podobny do resolved, ale nie rozwi±zany)
+	 * 3 - dead (similiar to resolved, but not resolved)
 	 *
 	 */
-
-	var $rtstates = array( 0 => 'nowy', 1 => 'otwarty', 2 => 'rozwi±zany', 3 => 'martwy' );
+	 
+	var $rtstates = array(0 => RT_NEW, 1 => RT_OPEN, 2 => RT_RESOLVED, 3 => RT_DEAD);
 
 	function GetQueue($id)
 	{
@@ -3054,7 +3044,7 @@ class LMS
 		if(!$order)
 			$order = 'createtime,desc';
 	
-		list($order,$direction)=explode(',',$order);
+		list($order,$direction) = explode(',',$order);
 
 		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
@@ -3355,11 +3345,11 @@ class LMS
 			case 'domainlist_pagelimit':
 			case 'timeout':
 				if($value<=0)
-					return 'Warto¶æ opcji \''.$var.'\' musi byæ liczb± wiêksz± od zera!';
+					return trans('Value of option "$0" must be a number grater than zero!' ,$var);
 			break;
 		        case 'reload_type':
 				if($value != 'sql' && $value != 'exec')
-					return 'Z³y typ reloadu. Obs³ugiwane typy: sql, exec!';
+					return trans('Incorrect reload type. Valid types are: sql, exec!');
 			break;
 			case 'force_ssl':
 			case 'allow_mac_sharing':
@@ -3369,18 +3359,18 @@ class LMS
 			case 'to_words_short_format':
 			case 'disable_devel_warning':
 				if(!isboolean($value))
-					return 'B³êdna warto¶æ! Dozwolone warto¶ci: 1|t|true|y|yes|on|tak oraz 0|n|no|off|false|nie'; 
+					return trans('Incorrect value! Valid values are: 1|t|true|y|yes|on and 0|n|no|off|false'); 
 			break;
 			case 'debug_email':
 				if(!check_email($value))
-					return 'Podany email wydaje siê nie byæ poprawny!';
+					return trans('Incorrect email address!');
 			break;
 		}
 		return NULL;
 	}
 
 	/*
-	 * Konta, Aliasy, Domeny
+	 *   Hosting: Accounts, Aliases, Domains
 	 */
 
 	function GetAccountIdByLogin($login) 
@@ -3389,7 +3379,7 @@ class LMS
 	}
 
 	/*
-	 * Templejty plików konfiguracyjnych
+	 * Templates (not used)
 	 */
 
 	function GetTemplatesList()
