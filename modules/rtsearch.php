@@ -46,11 +46,11 @@ $_SESSION['rtp'] = $page;
 if(isset($search) || $_GET['search'])
 {
 	if($search['queue'] && !$LMS->GetAdminRightsRT($SESSION->id, $search['queue']))
-		$errors['queue'] = 'Nie posiadasz uprawnieñ do przegl±dania tej kolejki!';
+		$error['queue'] = 'Nie posiadasz uprawnieñ do przegl±dania tej kolejki!';
 	
 	$search = $search ? $search : $_SESSION['rtsearch'];
 	
-	if(!$errors)
+	if(!$error)
 	{
 		$queue = $LMS->RTSearch($search, $o);
 		
@@ -83,7 +83,7 @@ $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('adminlist', $adminlist);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('search', $_SESSION['rtsearch']);
-$SMARTY->assign('errors', $errors);
+$SMARTY->assign('error', $error);
 $SMARTY->display('rtsearch.html');
 
 ?>
