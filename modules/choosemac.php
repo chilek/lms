@@ -24,17 +24,17 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Wybierz adres MAC";
+$layout['pagetitle'] = trans('Select MAC address');
 
 $p = $_GET['p'];
 $netid = $_POST['netid'];
 
 if(!isset($p))
-	$js = "var targetfield = window.opener.targetfield;";
-if($p == "main")
-	$js = "var targetfield = parent.targetfield;";
+	$js = 'var targetfield = window.opener.targetfield;';
+if($p == 'main')
+	$js = 'var targetfield = parent.targetfield;';
 
-if($p == "main")
+if($p == 'main')
 {
 	$maclist = $LMS->GetMACs();
 	if($LMS->CONFIG['phpui']['arpd_servers'])
@@ -43,7 +43,7 @@ if($p == "main")
 		foreach($servers as $server)
 		{
 			list($addr,$port) = split(':',$server);
-			if($port == "")
+			if($port == '')
 				$port = 1029;
 			$maclist = array_merge($maclist,$LMS->GetRemoteMACs($addr,$port));
 		}

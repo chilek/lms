@@ -26,7 +26,7 @@
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$layout['pagetitle'] = "Nowa operacja finansowa";
+$layout['pagetitle'] = trans('New balance');
 $SMARTY->assign('operation',$_SESSION['addtype']);
 $SMARTY->assign('comment',$_SESSION['addbc']);
 $SMARTY->assign('taxvalue', $_SESSION['addbtax']);

@@ -24,14 +24,14 @@
  *  $Id$
  */
 
+$layout['pagetitle'] = trans('Select IP address');
+
 $p = $_GET['p'];
 
 if(!isset($p))
-	$js = "var targetfield = window.opener.targetfield;";
-if($p == "main")
-	$js = "var targetfield = parent.targetfield;";
-
-$networks = $LMS->GetNetworks();
+	$js = 'var targetfield = window.opener.targetfield;';
+if($p == 'main')
+	$js = 'var targetfield = parent.targetfield;';
 
 if (isset($_POST['netid']))
     $netid= $_POST['netid'];
@@ -44,10 +44,10 @@ else
 
 $_SESSION['netid'] = $netid;
 
-if($p == "main")
+if($p == 'main')
 	$network = $LMS->GetNetwork($netid);
 
-$layout['pagetitle'] = "Wybierz adres IP";
+$networks = $LMS->GetNetworks();
 
 $SMARTY->assign('part',$p);
 $SMARTY->assign('js',$js);

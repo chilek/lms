@@ -108,26 +108,26 @@ if($aliasadd = $_POST['aliasadd'])
 	}
 	
 	if($aliasadd['login'] == '')
-		$error['login'] = 'Nie poda³e¶ nazwy aliasu!';
+		$error['login'] = trans('You must specify alias name!');
 	elseif(!eregi("^[a-z0-9._-]+$", $aliasadd['login']))
-    	    $error['login'] = 'Login zawiera niepoprawne znaki!';
+    	    $error['login'] = trans('Login contains forbidden characters!');
 	elseif($aliasadd['accountid'])
 	{
 		if(AliasExists($aliasadd['login'], $aliasadd['accountid']))
-			$error['login'] = 'To konto ma ju¿ alias o podanej nazwie!';
+			$error['login'] = trans('This account have alias with specified name!');
 		else
 		{
 			$domain = $LMS->DB->GetOne('SELECT domainid FROM passwd WHERE id = ?', array($aliasadd['accountid']));
 			
 			if($aliasadd['accountid'] && AliasExistsInDomain($aliasadd['login'], $domain))
-				$error['login'] = 'W tej domenie jest ju¿ alias o podanej nazwie!';
+				$error['login'] = trans('In that domain exists alias with specified login!');
 			elseif($aliasadd['accountid'] && AccountExistsInDomain($aliasadd['login'], $domain))
-				$error['login'] = 'W tej domenie istnieje konto o podanej nazwie!';
+				$error['login'] = trans('In that domain exists account with specified login!');
 		}
 	}
 		
 	if(!$aliasadd['accountid'])
-		$error['accountid'] = 'Musisz wybraæ konto na które ma wskazywaæ alias!';
+		$error['accountid'] = trans('You must select account for alias!');
 	
 	if(!$error)
 	{
@@ -174,7 +174,7 @@ $start = ($page - 1) * $pagelimit;
 
 $_SESSION['allp'] = $page;
 
-$layout['pagetitle'] = 'Zarz±dzanie aliasami';
+$layout['pagetitle'] = trans('Aliases Management');
 
 $aliaslist = GetAliasList($o, $u, $k, $d);
 $listdata['total'] = $aliaslist['total'];

@@ -44,7 +44,7 @@ $pagelimit = $LMS->CONFIG['phpui']['balancelist_pagelimit'];
 $page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']); 
 $start = ($page - 1) * $pagelimit;
 
-$layout['pagetitle'] = "Bilans finansowy";
+$layout['pagetitle'] = trans('Balance Sheet');
 
 $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('listdata',$listdata);

@@ -24,20 +24,20 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Informacje o prawach autorskich";
+$layout['pagetitle'] = trans('Copyrights');
 
 $authors = array(
 		
 		'alec' => array(
 			'realname' => 'Aleksander Machniak',
 			'www' => 'www.alec.pl',
-			'info' => 'kod PHP, C, Perl, HTML, JavaScript, grafika, dokumentacja, PostgreSQL, SQLite'
+			'info' => 'code PHP, C, Perl, HTML, JavaScript, images, doc, PostgreSQL, SQLite'
 		     ),
 
 		'Baseciq' => array(
 			'realname' => '£ukasz Jaros³aw Mozer',
 			'www' => 'www.baseciq.org',
-			'info' => 'pomys³odawca i maintainer, kod PHP, Perl, design, HTML, JavaScript, CSS, grafika, dokumentacja, projekt strony WWW projektu'
+			'info' => 'inventor & maintainer, code PHP, Perl, design, HTML, JavaScript, CSS, images, doc, project\'s WWW'
 			),
 
 		'chilek' => array(
@@ -51,7 +51,7 @@ $authors = array(
 			),
 
 		'Lexx' => array(
-			'info' => 'kod PHP, C, dokumentacja, projekt strony WWW projektu',
+			'info' => 'code PHP, C, doc, project\'s  WWW',
 			'www' => 'www.lexx.w.pl',
 			'realname' => 'Marcin Król',
 		     ),
@@ -61,52 +61,52 @@ $authors = array(
 $others = array(
 
 		'agaran' => array(
-			'info' => 'Kod i support Perl',
+			'info' => 'Perl',
 			'realname' => 'Maciej Pijanka',
 			),
 		
 		'kflis' => array(
-			'info' => 'Betatesting, grafika',
+			'info' => 'Betatesting, images',
 			'www' => 'www.kflis.net',
 			'realname' => 'Kuba Flis',
 			),
 
 		'dzwonus' => array(
-			'info' => 'Betatesting, wspó³autor pomys³u',
+			'info' => 'Betatesting, idea co-author',
 			'realname' => 'Tomasz Dzwonkowski',
 			),
 
 		'victus' => array(
-			'info' => 'Betatesting, wspó³autor pomys³u',
+			'info' => 'Betatesting, idea co-author',
 			'realname' => 'Sebastian Frasunkiewicz',
 			),
 
 		'shasta' => array(
-			'info' => 'Support MySQL, strona WWW',
+			'info' => 'MySQL, WWW site',
 			'realname' => 'Kuba Jankowski',
 			'www' => 's.atn.pl',
 			),
 
 		'Bob_R' => array(
-			'info' => 'Support CSS, HTML, JavaScript',
+			'info' => 'CSS, HTML, JavaScript',
 			'realname' => 'Pawe³ Czerski',
 			'www' => 'plug.atn.pl/~bober/',
 			),
 
 		'sickone' => array(
 			'realname' => 'Pawe³ Kisiela',
-			'info' => 'Support CSS, HTML, JavaScript',
+			'info' => 'CSS, HTML, JavaScript',
 			'www' => 'gamechannel.int.pl',
 			),
 
 		'DziQs' => array(
 			'realname' => 'Micha³ Zapalski',
-			'info' => 'Kod PHP i Perl',
+			'info' => 'PHP i Perl',
 			),
 
 		'Pierzak' => array(
 			'realname' => 'Piotr M.',
-			'info' => 'Projekt logo',
+			'info' => 'Logo project',
 			),
 		);
 				
