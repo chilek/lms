@@ -41,7 +41,7 @@ scripts.</para>
 			</row>
 			<row>
 			<entry><xref linkend="lms-notify-sms"></entry>
-			<entry>Notifies user about his debt with SMS</entry>
+			<entry>Notifies customer about his debt with SMS</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-cutoff"></entry>
@@ -89,7 +89,7 @@ scripts.</para>
 			</row>
 			<row>
 			<entry><xref linkend="lms-sendinvoices"></entry>
-			<entry>Distribution of invoices to users</entry>
+			<entry>Distribution of invoices to customers</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-makemacs"></entry>
@@ -101,11 +101,11 @@ scripts.</para>
 			</row>
 			<row>
 			<entry><xref linkend="lms-makewarnings"></entry>
-			<entry>Redirect rules for users in debt</entry>
+			<entry>Redirect rules for customers in debt</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-makemessages"></entry>
-			<entry>Redirect rules for users in debt with warning message</entry>
+			<entry>Redirect rules for customers in debt with warning message</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-fping"></entry>
@@ -123,9 +123,9 @@ scripts.</para>
     	    <title>Description and configuration</title>
        <sect2 id="lms-notify" xreflabel="lms-notify">
 	<title>lms-notify</title>
-	  <para>lms-notify is perfect tool to remind your users that they are actually the ones who
-cover all your network and WAN links costs. It makes you possible to create numerous text templates
-for various occasions and use them for mailing your users.</para>
+	  <para>lms-notify is perfect tool to remind your customers that they are actually the ones who
+	    cover all your network and WAN links costs. It makes you possible to create numerous text templates
+	    for various occasions and use them for mailing your customers.</para>
 	 <sect3 id="lms-notify-templates">
 	  <title>Templates</title>
 	  <para>You can use following variables in your templates:</para>
@@ -140,29 +140,29 @@ for various occasions and use them for mailing your users.</para>
 	       <para>%date_month_name - will be substituted with current month name, eg. March</para>
 	    </listitem>
 	    <listitem>
-	       <para>%saldo - will be substituted with current user balance, eg. 535</para>
+	       <para>%saldo - will be substituted with current customer balance, eg. 535</para>
 	    </listitem>
 	    <listitem>
-	       <para>%abonament - will be substituted with user's subscription fee, eg. 107</para>
+	       <para>%abonament - will be substituted with customer's subscription fee, eg. 107</para>
 	    </listitem>
 	    <listitem>
-	       <para>%b - user balance with opposite sign, eg. 107</para>
+	       <para>%b - customer balance with opposite sign, eg. 107</para>
 	    </listitem>
 	    <listitem>
-	       <para>%B - user balance with real sign, eg. -107</para>
+	       <para>%B - customer balance with real sign, eg. -107</para>
 	    </listitem>
 	    <listitem>
-	       <para>%pin - PIN code of the user</para>
+	       <para>%pin - PIN code of the customer</para>
 	    </listitem>
 	    <listitem>
-	       <para>%phone1 - user's 1st phone number</para>
+	       <para>%phone1 - customer's 1st phone number</para>
 	    </listitem>
 	    <listitem>
-	       <para>%last_10_in_a_table - list of last 10 operations on user's account, eg.</para>
+	       <para>%last_10_in_a_table - list of last 10 operations on customer's account, eg.</para>
 	    </listitem>
 	  </itemizedlist>
 	  <example id="notify-example">
-	   <title>Lms-notify: example of last 10 user's operations</title>
+	   <title>Lms-notify: example of last 10 customer's operations</title>
 <screen>
 Date       | Description                                          | Amount
 -----------+------------------------------------------------------+---------
@@ -218,7 +218,7 @@ Following parameters are valid:</para>
 	   <itemizedlist>
             <listitem>
 	     <para>limit (optional)</para>
-	     <para>Lets you setup limit of user debt. Email will be sent below that value. Default: limit = 0</para>
+	     <para>Lets you setup limit of customer debt. Email will be sent below that value. Default: limit = 0</para>
 	     <para>Example:	<prompt>limit = -20</prompt></para>
 	    </listitem>
             <listitem>
@@ -248,7 +248,7 @@ Following parameters are valid:</para>
             </listitem>
             <listitem>
              <para>debug_email (optional)</para>
-             <para>Email address for debugging. All email will be sent to this address instead of sending to real users. Default: not set.</para>
+             <para>Email address for debugging. All email will be sent to this address instead of sending to real customers. Default: not set.</para>
              <para>Example:	<prompt>debug_email = lexx@domain.pl</prompt></para>
             </listitem>
           </itemizedlist>
@@ -266,7 +266,7 @@ Following parameters are valid:</para>
 	  <itemizedlist>
             <listitem>
 	     <para>limit (optional)</para>
-	     <para>Lets you setup limit of user debt. SMS will be sent below that value. Default: 0</para>
+	     <para>Lets you setup limit of customer debt. SMS will be sent below that value. Default: 0</para>
 	     <para>Example:	<prompt>limit = -20</prompt></para>
 	    </listitem>
             <listitem>
@@ -279,15 +279,15 @@ Following parameters are valid:</para>
 	<sect2 id="lms-cutoff" xreflabel="lms-cutoff">
 	 <title>lms-cutoff</title>
 	 <para>This script allows to cutoff (actually mark as cutoff in
-database and cutting off should be performed by one of firewall rules creation
-script) users whose debt is below some defined value.</para>
+	database and cutting off should be performed by one of firewall rules creation
+	script) customers whose debt is below some defined value.</para>
          <para>Configuration of lms-cutoff should be set in
-<filename>lms.ini</filename> file, <emphasis>[cutoff]</emphasis> section.
-Following parameters are valid:</para>
+	<filename>lms.ini</filename> file, <emphasis>[cutoff]</emphasis> section.
+	Following parameters are valid:</para>
 	 <itemizedlist>
           <listitem>
 	   <para>limit (optional)</para>
-	   <para>Lets you setup limit of user debt. User will be marked as disconnected below that value. Default: 0</para>
+	   <para>Lets you setup limit of customer debt. Customer will be marked as disconnected below that value. Default: 0</para>
 	   <para>Example:	<prompt>limit = -20</prompt></para>
 	  </listitem>
 	 </itemizedlist>
@@ -442,9 +442,9 @@ include all networks.</para>
 		</listitem>
     		<listitem>
 		    <para>usergroups</para>
-		    <para>List of (space separated) user groups, that should be
+		    <para>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
-include all user groups.</para>
+include all customer groups.</para>
 		    <para>Example:	<prompt>usergroups = group1 group2</prompt></para>
 		</listitem>
     		<listitem>
@@ -680,7 +680,7 @@ traffic based on MAC address of the sender. For each computer one rule for
 configured chain is created, which makes test on sender IP and MAC addresses. If
 it returns success, it returns to parent chain with RETURN target. On the end of
 tests two rules are appended, which redirects all http and webcache traffic to
-given host and port. This is intended to inform user about his debt, by running
+given host and port. This is intended to inform customer about his debt, by running
 specialized server on this host:port which returns administration message to
 each request. At last, the rule which blocks all traffic is added.
 	    </para>
@@ -697,7 +697,7 @@ include all networks.</para>
 		</listitem>
         	<listitem>
 		    <para>usergroups </para>
-		    <para>List of (space separated) user groups0, that should be
+		    <para>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</para>
 		    <para>Example:	<prompt>usergroups = settlement1 settlement2</prompt></para>
@@ -765,7 +765,7 @@ include all networks.</para>
 		</listitem>
         	<listitem>
 		    <para>usergroups </para>
-		    <para>List of (space separated) user groups, that should be
+		    <para>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</para>
 		    <para>Example:	<prompt>usergroups = settlement1 settlement2</prompt></para>
@@ -800,7 +800,7 @@ include all groups.</para>
     <sect2 id="lms-makewarnings" xreflabel="lms-makewarnings">
 	<title>lms-makewarnings</title>
 	    <para>This script may be used to create file including netfiler
-rules redirecting http and webcache traffic to configured IP and port, for users
+rules redirecting http and webcache traffic to configured IP and port, for customers
 in debt. It uses nat table, tests source IPs and makes use of DNAT target.
 	    </para>
             <para>Configuration of lms-makewarnings should be set in
@@ -816,7 +816,7 @@ include all networks.</para>
 		</listitem>
         	<listitem>
 		    <para>usergroups </para>
-		    <para>List of (space separated) user groups, that should be
+		    <para>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</para>
 		    <para>Example:	<prompt>usergroups = settlement1 settlement2</prompt></para>
@@ -861,7 +861,7 @@ Default: 127.0.0.1:80.</para>
 		</listitem>
 	    	<listitem>
 		    <para>limit</para>
-		    <para>Rules are being triggered if user balance is below
+		    <para>Rules are being triggered if customer balance is below
 this limit. Default: 0 </para>
 		    <para>Example:	<prompt>limit = -85</prompt></para>
 		</listitem>
@@ -870,7 +870,7 @@ this limit. Default: 0 </para>
     <sect2 id="lms-makemessages" xreflabel="lms-makemessages">
 	<title>lms-makemessages</title>
 	    <para>This script is being used to create file with netfilter rules
-to redirect all http and webcache traffic for users, who has administration
+to redirect all http and webcache traffic for customers, who has administration
 messages enabled (aka warnings) to configured IP address and port. It uses nat
 table, tests source IPs and makes use of DNAT target.
 	    </para>
@@ -887,7 +887,7 @@ include all networks.</para>
 		</listitem>
         	<listitem>
 		    <para>usergroups </para>
-		    <para>List of (space separated) user groups, that should be
+		    <para>List of (space separated) customer groups, that should be
 considered while creating configuration file. If unset, configuration will
 include all groups.</para>
 		    <para>Example:	<prompt>usergroups = settlement1 settlement2</prompt></para>
