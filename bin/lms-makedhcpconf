@@ -178,19 +178,6 @@ if($logfacility)
 	print DHCPDCONF "log-facility ".$logfacility.";\n";
 }
 
-print DHCPDCONF "shared-network LMS {\n";
-
-if(!$networks_list)
-{
-	my $dbq = $dbase->prepare("SELECT name FROM networks");
-	$dbq->execute();
-	while (my $row = $dbq->fetchrow_hashref()) {
-		$networks_list = "$networks_list $row->{'name'}";
-	}
-}
-
-my @networks = split ' ',$networks_list;
-
 my $iniusergroups = $usergroups_list;
 
 if(!$usergroups_list)
@@ -200,7 +187,6 @@ if(!$usergroups_list)
 	while (my $row = $dbq->fetchrow_hashref()) {
 		$usergroups_list = "$usergroups_list $row->{'name'}";
 	}
-	
 }
 
 my @usergroups = split ' ',$usergroups_list;
@@ -215,101 +201,147 @@ while (my $row = $dbq->fetchrow_hashref())
 	$usergrouplist{$row->{'name'}} = $row->{'id'};
 }
 
-foreach my $key (@networks)
+my @used_ifaces;
+my $last_iface = '';
+my @networks = split ' ',$networks_list;
+
+$dbq = $dbase->prepare("SELECT id, LOWER(name) AS name, interface, inet_ntoa(address) AS address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks ORDER BY interface");
+$dbq->execute();
+
+while (my $row = $dbq->fetchrow_hashref()) 
 {
-	my $dbq = $dbase->prepare("SELECT id, inet_ntoa(address) AS address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = UPPER('$key')");
-	$dbq->execute();
-	while (my $row = $dbq->fetchrow_hashref()) {
-		$key = lc($key);
-		my $ndeflease = $ini->val("dhcp:$key",'default_lease_time') || $deflease;
-		my $nmaxlease = $ini->val("dhcp:$key",'max_lease_time') || $maxlease;
-		print DHCPDCONF "\tsubnet $row->{'address'} netmask $row->{'mask'} { # Network: $key (ID:$row->{'id'})\n";
-		print DHCPDCONF "\t\tdefault-lease-time $ndeflease;\n";
-		print DHCPDCONF "\t\tmax-lease-time $nmaxlease;\n";
-		if($row->{'dhcpstart'} && $row->{'dhcpend'})
+	if($networks_list)
+	{
+		my $i = 0;
+		foreach my $net (@networks)
 		{
-			print DHCPDCONF "\t\trange $row->{'dhcpstart'} $row->{'dhcpend'};\n";
-		}
-		if($row->{'mask'})
-		{
-			print DHCPDCONF "\t\toption subnet-mask $row->{'mask'};\n";
-		}
-		if($row->{'gateway'})
-		{
-			print DHCPDCONF "\t\toption routers $row->{'gateway'};\n";
-		}
-		if($row->{'dns'} && $row->{'dns2'})
-		{
-			print DHCPDCONF "\t\toption domain-name-servers $row->{'dns'}, $row->{'dns2'};\n";
-		}elsif($row->{'dns'})
-		{
-			print DHCPDCONF "\t\toption domain-name-servers $row->{'dns'};\n";
-		}elsif($row->{'dns2'})
-		{
-			print DHCPDCONF "\t\toption domain-name-servers $row->{'dns2'};\n";
-		}
-		if($row->{'domain'})
-		{
-			print DHCPDCONF "\t\toption domain-name \"$row->{'domain'}\";\n";
-		}
-		if($row->{'wins'})
-		{
-			print DHCPDCONF "\t\toption netbios-name-servers $row->{'wins'};\n";
-		}
-		print DHCPDCONF "\n";
-		my $dbq2 = $dbase->prepare("SELECT id, name, ipaddr, mac, ownerid FROM nodes ORDER BY ipaddr");
-		$dbq2->execute();
-		while (my $row2 = $dbq2->fetchrow_hashref())
-		{
-			$row2->{'ipaddr'} = u32todotquad($row2->{'ipaddr'});
-			if(matchip($row2->{'ipaddr'},$row->{'address'},$row->{'mask'}))
+			if(lc($net) eq $row->{'name'})
 			{
-				my $usergroupscount;
-				foreach my $key2 (@usergroups)
-				{
-					my $dbq3 = $dbase->prepare("SELECT count(userid) as total FROM userassignments WHERE userid=$row2->{'ownerid'} AND usergroupid=".$usergrouplist{$key2});
-					$dbq3->execute();
-					my $srow = $dbq3->fetchrow_hashref();
-					if ($srow->{'total'} eq 1)
-					{
-						$usergroupscount++;
-					}
-				}
-				if ($usergroupscount || !$iniusergroups)
-				{
-					my $ipaddr = $row2->{'ipaddr'};
-					my $ndomain = $ini->val("dhcp:$ipaddr",'domain') || '';
-					my $ngateway = $ini->val("dhcp:$ipaddr",'gateway') || '';
-					my $ndns = $ini->val("dhcp:$ipaddr",'dns') || '';
-					my $nwins = $ini->val("dhcp:$ipaddr",'wins') || '';
-					print DHCPDCONF "\t\thost $row2->{'name'} { # ID: $row2->{'id'}\n";
-					print DHCPDCONF "\t\t\thardware ethernet $row2->{'mac'};\n";
-					print DHCPDCONF "\t\t\tfixed-address $row2->{'ipaddr'};\n";
-					if($ndomain)
-					{
-						print DHCPDCONF "\t\t\toption domain-name \"$ndomain\";\n";
-					}
-					if($ngateway)
-					{
-						print DHCPDCONF "\t\t\toption routers $ngateway;\n";
-					}
-					if($ndns)
-					{
-						print DHCPDCONF "\t\t\toption domain-name-servers $ndns;\n";
-					}
-					if($nwins)
-					{
-						print DHCPDCONF "\t\t\toption netbios-name-servers $nwins;\n";
-					}
-					print DHCPDCONF "\t\t}\n\n";
-					}
-				}
+				last;
+			}
+			$i++;
 		}
-		print DHCPDCONF "\t}\n\n";
+		if($i != scalar(@networks))
+		{
+			next;
+		}
 	}
+	
+	my $key = $row->{'name'};
+	my $ndeflease = $ini->val("dhcp:$key",'default_lease_time') || $deflease;
+	my $nmaxlease = $ini->val("dhcp:$key",'max_lease_time') || $maxlease;
+
+	$row->{'interface'} = $row->{'interface'} || '';
+		
+        if (!($last_iface eq $row->{'interface'}) && !($last_iface eq '') && !length($row->{'interface'})==0)
+        {
+        	print DHCPDCONF "}\n\n";
+        }
+		
+        if (!length($row->{'interface'})==0)
+        {
+    		if (!($row->{'interface'} eq $last_iface))
+                {
+            		print DHCPDCONF "shared-network LMS-$row->{'interface'} {\n"; 
+			$last_iface = $row->{'interface'};
+                }
+	}
+
+	print DHCPDCONF "\tsubnet $row->{'address'} netmask $row->{'mask'} { # Network: $key (ID:$row->{'id'})\n";
+	print DHCPDCONF "\t\tdefault-lease-time $ndeflease;\n";
+	print DHCPDCONF "\t\tmax-lease-time $nmaxlease;\n";
+
+	if($row->{'dhcpstart'} && $row->{'dhcpend'})
+	{
+		print DHCPDCONF "\t\trange $row->{'dhcpstart'} $row->{'dhcpend'};\n";
+	}
+	if($row->{'mask'})
+	{
+		print DHCPDCONF "\t\toption subnet-mask $row->{'mask'};\n";
+	}
+	if($row->{'gateway'})
+	{
+		print DHCPDCONF "\t\toption routers $row->{'gateway'};\n";
+	}
+	if($row->{'dns'} && $row->{'dns2'})
+	{
+		print DHCPDCONF "\t\toption domain-name-servers $row->{'dns'}, $row->{'dns2'};\n";
+	}
+	elsif($row->{'dns'})
+	{
+		print DHCPDCONF "\t\toption domain-name-servers $row->{'dns'};\n";
+	}
+	elsif($row->{'dns2'})
+	{
+		print DHCPDCONF "\t\toption domain-name-servers $row->{'dns2'};\n";
+	}
+	if($row->{'domain'})
+	{
+		print DHCPDCONF "\t\toption domain-name \"$row->{'domain'}\";\n";
+	}
+	if($row->{'wins'})
+	{
+		print DHCPDCONF "\t\toption netbios-name-servers $row->{'wins'};\n";
+	}
+
+	print DHCPDCONF "\n";
+
+	my $dbq2 = $dbase->prepare("SELECT id, name, ipaddr, mac, ownerid FROM nodes ORDER BY ipaddr");
+	$dbq2->execute();
+	while (my $row2 = $dbq2->fetchrow_hashref())
+	{
+		$row2->{'ipaddr'} = u32todotquad($row2->{'ipaddr'});
+		if(matchip($row2->{'ipaddr'},$row->{'address'},$row->{'mask'}))
+		{
+			my $usergroupscount;
+			foreach my $key2 (@usergroups)
+			{
+				my $dbq3 = $dbase->prepare("SELECT count(userid) as total FROM userassignments WHERE userid=$row2->{'ownerid'} AND usergroupid=".$usergrouplist{$key2});
+				$dbq3->execute();
+				my $srow = $dbq3->fetchrow_hashref();
+				if ($srow->{'total'} eq 1)
+				{
+					$usergroupscount++;
+				}
+			}
+			if ($usergroupscount || !$iniusergroups)
+			{
+				my $ipaddr = $row2->{'ipaddr'};
+				my $ndomain = $ini->val("dhcp:$ipaddr",'domain') || '';
+				my $ngateway = $ini->val("dhcp:$ipaddr",'gateway') || '';
+				my $ndns = $ini->val("dhcp:$ipaddr",'dns') || '';
+				my $nwins = $ini->val("dhcp:$ipaddr",'wins') || '';
+				print DHCPDCONF "\t\thost $row2->{'name'} { # ID: $row2->{'id'}\n";
+				print DHCPDCONF "\t\t\thardware ethernet $row2->{'mac'};\n";
+				print DHCPDCONF "\t\t\tfixed-address $row2->{'ipaddr'};\n";
+				if($ndomain)
+				{
+					print DHCPDCONF "\t\t\toption domain-name \"$ndomain\";\n";
+				}
+				if($ngateway)
+				{
+					print DHCPDCONF "\t\t\toption routers $ngateway;\n";
+				}
+				if($ndns)
+				{
+					print DHCPDCONF "\t\t\toption domain-name-servers $ndns;\n";
+				}
+				if($nwins)
+				{
+					print DHCPDCONF "\t\t\toption netbios-name-servers $nwins;\n";
+				}
+				print DHCPDCONF "\t\t}\n";
+			}
+		}
+	}
+	print DHCPDCONF "\t}\n";
 }
-$dbase->disconnect();
-print DHCPDCONF "}\n";
+if ($last_iface)
+{
+	print DHCPDCONF "}\n";
+}
+
 close(DHCPDCONF);
+$dbase->disconnect();
 chown $cuid, $cgid, $cfile or print "Warning! Unable to set owner of $cfile to $cuid.$cgid.\n";
 chmod oct($cperm), $cfile or print "Warning! Unable to set permission $cperm to $cfile.\n";
