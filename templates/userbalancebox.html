@@ -52,16 +52,16 @@
 							{$layout.logname|truncate:20:"..."|replace:" ":"&nbsp;"}
 						</TD>
 						<TD class="ftop">
-							<SELECT SIZE="1" name="addbalance[type]" {popup text="Wybierz rodzaj operacji finansowej"}>
+							<SELECT SIZE="1" name="addbalance[type]" {tip text="Wybierz rodzaj operacji finansowej"}>
 								<OPTION value="3">wp³ata</OPTION>
 								<OPTION value="4">obci±¿enie</OPTION>
 							</SELECT>
 						</TD>
 						<TD colspan="2" class="ftop" nowrap>
-							<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s" {popup text="Wpisz warto¶æ operacji"}> z³
+							<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s" {tip text="Wpisz warto¶æ operacji"}> z³
 						</TD>
 						<TD colspan="3" align="right" class="ftop">
-							<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {popup text="Podaj opis dla tej operacji finansowej"}> <A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
+							<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Podaj opis dla tej operacji finansowej"}> <A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" alt="" align="absmiddle"></A>
 						</TD>
 					</FORM>
 				</TR>
