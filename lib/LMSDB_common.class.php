@@ -80,4 +80,33 @@ Class LMSDB_common
 		return $result;
 	}
 
+	function GetRow($query = NULL)
+	{
+		if($query)
+			$this->Execute($query);
+
+		return $this->_driver_fetchrow_assoc();
+	}
+
+	function GetCol($query = NULL)
+	{
+		if($query)
+			$this->Execute($query);
+
+		while($row = $this->_driver_fetchrow_num())
+			$result[] = $row[0];
+
+		return $result;
+	}
+
+	function GetOne($query = NULL)
+	{
+		if($query)
+			$this->Execute($query);
+
+		list($result) = $this->_driver_fetchrow_num();
+
+		return $result;
+	}
+
 }
