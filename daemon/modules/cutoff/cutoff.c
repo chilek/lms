@@ -31,13 +31,13 @@
 
 void reload(GLOBAL *g, struct cutoff_module *c)
 {
-	QUERY_HANDLE *res, *result;
-	unsigned char *query, *update;
-	int i, balance, value, exec = 0;
+	QUERY_HANDLE *res;
+	unsigned char *update;
+	int i, balance, exec = 0;
 	char time_fmt[20];
 	size_t tmax=20;
 	char fmt[]="(%d.%m.%Y)";
-	struct tm *tp, *wsk;
+	struct tm *wsk;
 	time_t t;
 	
 	t=time(&t);
