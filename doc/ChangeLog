@@ -36,6 +36,7 @@ wersja 1.5.3 (??/??/????):
     resultsecie nie zwracamy teraz NULL'a, tzn. tak jak dla innych baz,
     czyli po wywo³aniu tej funkcji nale¿y pamiêtaæ o sprawdzeniu pola 
     'nrows' wyniku (alec)
+  - usuniêta redefinicja funkcji chkconfig() z customer (chilek)
 
 wersja 1.5.2 Isis (25/11/2004):
 
