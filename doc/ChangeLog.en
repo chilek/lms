@@ -7,6 +7,7 @@ version 1.2.0 (??/03/2004):
   - fixed accounting of monthly average tariffs income (alec)
   - on userlist Tariff column takes average monthly value from all
     user assignments (alec)
+  - fixed logout problem on Opera browser - BTS#0000128 (alec)
 
 version 1.2.0rc3 Janet (??/??/2004):
 

@@ -8,6 +8,7 @@ wersja 1.2.0 (??/03/2004):
   - naprawione obliczanie ¶redniego zysku miesiêcznego dla taryf (alec)
   - na li¶cie u¿ytkowników w polu Abonament podawane jest ¶rednie miesiêczne
     obci±¿enie u¿ytkownika (alec)
+  - poprawiony problem z wylogowaniem na Operze - BTS#0000128 (alec)
 
 wersja 1.2.0rc3 Janet (12/03/2004):
 
