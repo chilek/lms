@@ -1784,11 +1784,11 @@ class LMS
      {
 	     // period
 	     if (is_array($from))
-		     $fromdate = mktime($from[hour],$from[minute],$from[second],$from[month],$from[day],$from[year]);
+		     $fromdate = mktime($from[Hour],$from[Minute],0,$from[Month],$from[Day],$from[Year]);
 	     else
 		     $fromdate = $from;
 	     if (is_array($to))
-		     $todate = mktime($to[hour],$to[minute],$to[second],$to[month],$to[day],$to[year]);
+		     $todate = mktime($to[Hour],$to[Minute],59,$to[Month],$to[Day],$to[Year]);
 	     else
 		     $todate = $to;
 
@@ -1894,6 +1894,11 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.244  2003/09/26 01:16:24  lukasz
+ * - zmienione nazwy kluczy na kompatybilne z tym co zwraca smarty
+ * - zmienione pole sekund w mktime() bo przecie¿ i tak nie jest ono
+ *   przekazywane z templejta
+ *
  * Revision 1.243  2003/09/25 18:42:51  lexx
  * - Baset psuja
  *
