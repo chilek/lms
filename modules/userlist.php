@@ -41,6 +41,10 @@ else
 	$s = $_GET[s];
 $_SESSION[uls] = $s;
 
+if (isset($_SESSION[ulp]) && !isset($_GET[page]))
+	$_GET[page] = $_SESSION[ulp];
+	    
+
 $userlist=$LMS->GetUserList($o,$s);
 $listdata[total] = $userlist[total];
 $listdata[state] = $userlist[state];
@@ -52,6 +56,7 @@ $listdata[direction] = $userlist[direction];
 $page = (! $_GET[page] ? 1 : $_GET[page]); 
 $pagelimit = (! $_CONFIG[phpui][userlist_pagelimit] ? $listdata[total] : $_CONFIG[phpui][userlist_pagelimit]);
 $start = ($page - 1) * $pagelimit;
+$_SESSION[ulp] = $page;
 
 unset($userlist[total]);
 unset($userlist[state]);
