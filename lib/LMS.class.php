@@ -1601,7 +1601,7 @@ class LMS
 
 	function AddInvoice($invoice)
 	{
-		$cdate = $invoice['cdate'] ? $invoice['cdate'] : time();
+		$cdate = $invoice['invoice']['cdate'] ? $invoice['invoice']['cdate'] : time();
 		$this->SetTS('invoices');
 		$this->SetTS('invoicecontents');
 		$number = $this->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate <= ?', array(mktime(0, 0, 0, 1, 1, date('Y',$cdate)), mktime(23, 59, 59, 12, 31, date('Y',$cdate))));

@@ -38,6 +38,8 @@ wersja 1.5.4 (??/??/????):
   - poprawiony b³±d w skrypcie lms-notify oraz modu³ach almsd notify i ggnotify
     powoduj±cy pobieranie do %last_10_in_a_table dziesiêciu pierwszych a nie
     ostatnich operacji (alec)
+  - poprawiony b³±d w ustawianiu daty wystawienia nowej faktury (alec)
+  - dodano zabezpieczenie przed wystawieniem faktury bez zawarto¶ci (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
