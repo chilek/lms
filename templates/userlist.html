@@ -50,7 +50,12 @@
 		<TD class="fright">
 			<NOBR><A href="?m=userdel&id={$userlist.id[userlist]}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.username[userlist]|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A> <A href="?m=useredit&id={$userlist.id[userlist]}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=userinfo&id={$userlist.id[userlist]}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A></NOBR>
 		</TD>
-	</TR>{/section}
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="5" align="center" class="flr">
+			<B>Nie posiadasz ¿adnych u¿ytkowników o podanym statusie. U¿yj formularza poni¿ej aby dodaæ nowego u¿ytkownika.</B>
+	{/section}
 	<TR bgColor="#DFD5BD">
 		<TD colspan="2" class="fleftu" align="right" valign="top">
 			<IMG SRC="img/info2.gif" border="0" alt="" align="absmiddle"> <B>Razem: {$userlist.total}</B>	
