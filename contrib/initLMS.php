@@ -80,20 +80,6 @@ function lms_parse_ini_file($filename, $process_sections = false)
 	return $ini_array;
 }
 
-// Funkcja do sprawdzania warto¶ci logicznych z configa.
-
-function chkconfig($value, $default = FALSE)
-{
-        if(eregi('^(1|y|on|yes|true|tak|t)$', $value))
-                return TRUE;
-        elseif(eregi('^(0|n|no|off|false|nie)$', $value))
-                return FALSE;
-        elseif(!isset($value) || $value == '')
-                return $default;
-        else
-                trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
-}
-
 // Odczytanie pliku konfiguracyjnego
 
 foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
@@ -139,6 +125,12 @@ $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 // Nie u¿ywamy raczej sesji. ;)
 
 $SESSION = NULL;
+
+// Odczytanie konfiguracji LMS-UI z bazy danych
+
+if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0'))
+	foreach($cfg as $row)
+		$_CONFIG[$row['section']][$row['var']] = $row['value'];
 
 // Inicjacja obiektu LMS'a.
 
