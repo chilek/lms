@@ -26,6 +26,12 @@
 
 $layout['pagetitle'] = trans('View Database Backup');
 
+if (($LMS->CONFIG['phpui']['support_gzip'])&&(strstr($_GET['file'],"sql.gz")))
+{
+	$filecontent = $LMS->DatabaseFetchContent($_GET['db'],true); //doalem parametr bool na koncu ktory mowi czy gzipowac czy nie
+	$database = $LMS->DatabaseFetchContent($_GET['db']);
+}
+else
 $database = $LMS->DatabaseFetchContent($_GET['db']);
 
 if($_GET['rawmode']=='true')
@@ -34,11 +40,21 @@ if($_GET['rawmode']=='true')
 	if($_GET['save']=='true')
 	{
 		header('Content-Type: application/octetstream');
-		header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql');
-		Header('Pragma: public');
+		if (($LMS->CONFIG['phpui']['support_gzip'])&&($_GET['rawmode']=='true')&&($_GET['save']=='true')&&(strstr($_GET['file'],"sql.gz")))
+		{
+			header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql.gz');
+			header('Pragma: public');
+				print $filecontent;
+			return TRUE;
+		}
+		else
+		{
+			header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql');
+			Header('Pragma: public');
+		}
 	}
 	else
-		header('Content-Type: text/plain; charset='.$LANGDEFS[$LMS->lang]['charset']);
+		header('Content-Type: text/plain; kubacharset='.$LANGDEFS[$LMS->lang]['charset']);
 }
 
 $SMARTY->assign('database',$database);
@@ -47,7 +63,11 @@ if(!$database['rawmode'])
 	$SMARTY->display('header.html');
 	$SMARTY->display('adminheader.html');
 }
+if (strstr($_GET['file'],"sql.gz"))
+$SMARTY->assign('use_gzip','true');
+
 $SMARTY->display('dbview.html');
 if(!$database['rawmode'])
 	$SMARTY->display('footer.html');
 ?>
+

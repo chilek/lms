@@ -36,8 +36,8 @@ else
 	$SMARTY->display('header.html');
 	$SMARTY->display('adminheader.html');
 	echo '<H1>'.trans('Deletion of Database Backup').'</H1>';
-	echo '<P>'.trans('Are you shure, you want to delete database backup created at $0 ?',date('Y/m/d H:i.s',$_GET['db'])).'</P>';
-	echo '<a href="?m=dbdel&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am shure').'</A>';
+	echo '<P>'.trans('Are you sure, you want to delete database backup created at $0 ?',date('Y/m/d H:i.s',$_GET['db'])).'</P>';
+	echo '<a href="?m=dbdel&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am sure').'</A>';
 	$SMARTY->display('footer.html');
 }
 

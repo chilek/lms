@@ -127,7 +127,7 @@
 	{if $queuedata.total != 0}
 	<TR class="DARK">
 		<TD colspan="5" class="FALL">
-			<B>{t{Page:{/t}
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$queue step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&id={$queuedata.id}&s={$queuedata.state}&o={$queuedata.order},{$queuedata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
