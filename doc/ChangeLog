@@ -20,6 +20,10 @@ wersja 1.5.3 (??/??/????):
   - w oknie bilansu u¿ytkownika dodany link 'Wystaw fakturê' (alec)
   - BTS#0000254: funkcja writesyslog() dzia³a równie¿ na OpenBSD (kubatyszko)
   - edycja zobowi±zañ u¿ytkownika (alec)
+  - dodana opcja 'to_words_short_version' w sekcji [phpui] okre¶laj±ca format
+    reprezentacji s³ownej kwot (alec/kubatyszko)
+  - w formularzu przelewu/wp³aty mo¿na zdefiniowaæ format reprezentacji s³ownej 
+    kwoty (alec/kubatyszko)
 
 wersja 1.5.2 Isis (25/11/2004):
 

@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 
-<meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-2">
+<META http-equiv="Content-Type" content="text/html;charset=ISO-8859-2">
 </HEAD>
 <BODY>
 
@@ -14,23 +14,35 @@ require_once("../../lib/common.php");
 
 //  NRB 26 cyfr, 2 kontrolne, 8 nr banku, 16 nr konta 
 
-$KONTO_DO="0000000000000000000000000";
+$KONTO_DO = '0000000000000000000000000';
 
-$ISP1_DO="xxxxxxxxxxxxxxxxxxxxxxx";
-$ISP2_DO="xxxxxxxxxxxxxxxxxxxxxxx";
+$ISP1_DO = 'xxxxxxxxxxxxxxxxxxxxxxx';
+$ISP2_DO = 'xxxxxxxxxxxxxxxxxxxxxxx';
 
 $KWOTA = $_GET['ILE'];
 $USER_OD = $_GET['OD'];
-$USER_TY = "Abonament - ID:".$_GET['UID'];
+$USER_TY = 'Abonament - ID:'.sprintf('%04d',$_GET['UID']);
+$CURR = 'PLN';
+$SHORT_TO_WORDS = 0;	// 1 - krótki format kwoty słownej 'jed dwa trz 15/100'
+			// 0 - długi format kwoty słownej 'sto dwadzieścia trzy 15/100 zł'
+
+/************** Koniec konfiguracji ****************/
 
 $KWOTA_NR = str_replace(',','.',$KWOTA);  // na wszelki wypadek
-$KWOTA_ZL = to_words(floor($KWOTA_NR));
-$KWOTA_GR = round(($KWOTA_NR - floor($KWOTA_NR))*100); 
-$CURR="PLN";
+$KWOTA_GR = sprintf('%02d',round(($KWOTA_NR - floor($KWOTA_NR))*100));
 
+if($SHORT_TO_WORDS)
+{
+	$KWOTA_ZL = to_words(floor($KWOTA_NR), 0, '', 1);
+	$KWOTA_X = $KWOTA_ZL .' '. $KWOTA_GR. '/100';
+}
+else
+{
+	$KWOTA_ZL = to_words(floor($KWOTA_NR));
+	$KWOTA_X = $KWOTA_ZL .' '. $KWOTA_GR. '/100 złotych';
+}
 
 $SHIFT=394; // drugi druczek przesunięcie o 394
-
 
 for ( $j=0; $j<2; $j++ ) // pętla główna
 {
@@ -111,7 +123,7 @@ for ( $j=0; $j<2; $j++ ) // pętla główna
 // kwota słownie:
 
      $posx=205+$j*$SHIFT;
-     echo('<span style="position: absolute; top: '. $posx .'px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 8pt; font-weight: bold; ";>' . $KWOTA_ZL .' '. $KWOTA_GR.'/100 złotych</span>');
+     echo('<span style="position: absolute; top: '. $posx .'px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 8pt; font-weight: bold; ";>'.$KWOTA_X.'</span>');
 
 // dane płatnika:
 
