@@ -28,7 +28,16 @@ use DBI;
 use POSIX;
 
 my $dbase = DBI->connect("DBI:mysql:database=lms;host=localhost","mysql","mysecret", { RaiseError => 1 });
-my $iptbin = "/usr/sbin/iptables";
+my $iptbin = "/usr/sbin/iptables"; # ¶cie¿ka do iptables
+my $tcbin = "/sbin/tc"; # ¶cie¿ka do tc
+my $laniface = "eth0"; # interfejs od lanu
+my $waniface = "eth1"; # interfejs od wanu (internetu)
+my $lanspeed = "100"; # przepustowo¶æ karty od lanu w megabitach
+my $wanspeed = 100; # przepustowo¶æ karty od internetu w megabitach
+my $speed = 2300; # prêdko¶æ ³±cza w kilobitach
+my $shiftid = 1000; # o ile powiêkszyæ ID do uzyskania kopii ID... hm. Powinno byæ wiêksze ni¿ maksymalne ID komputera w bazie
+                    # czyli warto¶æ 1000 pozwala nam na poprawne dzia³anie o ile ID w bazie nie przekracza '1000';
+
 my $year = strftime("%Y",localtime());
 my $day = strftime("%d",localtime());
 my $month = strftime("%m",localtime());
@@ -39,14 +48,25 @@ print OUTFILE "#!/bin/bash\n";
 print OUTFILE "$iptbin -t mangle -F\n";
 print OUTFILE "$iptbin -t mangle -X\n";
 
-my $dbq = $dbase->prepare("SELECT ipaddr, id FROM nodes");
+print OUTFILE "$tcbin qdisc del root dev $laniface\n";
+print OUTFILE "$tcbin qdisc del root dev $waniface\n";
+print OUTFILE "$tcbin qdisc add dev $laniface root handle 1: htb\n";
+print OUTFILE "$tcbin qdisc add dev $waniface root handle 2: htb\n";
+print OUTFILE "$tcbin class add dev $laniface parent 1: classid 1:3001 htb rate ".$lanspeed."mbit burst ".($lanspeed / 10)."mbit\n";
+print OUTFILE "$tcbin class add dev $waniface parent 2: classid 2:3001 htb rate ".$wanspeed."mbit burst ".($wanspeed / 10)."mbit\n";
+print OUTFILE "$tcbin class add dev $laniface parent 1:3001 classid 1:3002 htb rate ".$speed."kbit burst ".($speed / 10)."kbit\n";
+print OUTFILE "$tcbin class add dev $waniface parent 2:3001 classid 2:3002 htb rate ".$speed."kbit burst ".($speed / 10)."kbit\n";
+  
+
+
+my $dbq = $dbase->prepare("SELECT ipaddr, nodes.id AS id, uprate, downrate FROM nodes, tariffs, users WHERE tariffs.id = users.tariff AND users.id = ownerid");
 
 $dbq->execute();
 
 while (my $row = $dbq->fetchrow_hashref())
 {
 	my $id = $row->{'id'};
-	$id += 1000;
+	$id += $shiftid;
 	print OUTFILE "$iptbin -t mangle -A FORWARD -i eth1 -o eth0 -d $row->{'ipaddr'} -j MARK --set-mark $row->{'id'}\n";
 	print OUTFILE "$iptbin -t mangle -A OUTPUT -p tcp --sport 1080 -d $row->{'ipaddr'} -j MARK --set-mark $row->{'id'}\n";
 	print OUTFILE "$iptbin -t mangle -A OUTPUT -p tcp --sport 8080 -d $row->{'ipaddr'} -j MARK --set-mark $row->{'id'}\n";
@@ -55,12 +75,25 @@ while (my $row = $dbq->fetchrow_hashref())
 	print OUTFILE "$iptbin -t mangle -A INPUT -p tcp --dport 1080 -s $row->{'ipaddr'} -j MARK --set-mark $id\n";
 	print OUTFILE "$iptbin -t mangle -A INPUT -p tcp --dport 8080 -s $row->{'ipaddr'} -j MARK --set-mark $id\n";
 	print OUTFILE "$iptbin -t mangle -A INPUT -p tcp --dport 3128 -s $row->{'ipaddr'} -j MARK --set-mark $id\n";
+	if($row->{'downrate'} > 0)
+	{
+		print OUTFILE "$tcbin class add dev $laniface parent 1:3002 classid 1:$row->{'id'} htb rate $row->{'downrate'}kbit burst ".($row->{'downrate'} / 10)."kbit\n";
+		print OUTFILE "$tcbin filter add dev $laniface protocol ip parent 1: handle $row->{'id'} fw classid 1:$row->{'id'}\n";
+	}
+
+	if($row->{'uprate'} > 0)
+	{
+		print OUTFILE "$tcbin class add dev $waniface parent 2:3002 classid 2:$id htb rate $row->{'uprate'}kbit burst ".($row->{'uprate'} / 10)."kbit\n";
+		print OUTFILE "$tcbin filter add dev $waniface protocol ip parent 2: handle $id fw classid 2:$id\n";
+	}
 }
 
 close OUTFILE;
 
-my @info = `/usr/sbin/iptables -t mangle -L -v -n -x|grep MARK`;
+my @info = `/usr/sbin/iptables -t mangle -L -v -n -x|grep MARK`; # Zahashuj t± linijkê je¿eli nie potrzebujesz logowaæ transferów
 system("/etc/rc.d/rc.stats");
+
+# die; # Odhashuj t± linijkê je¿eli nie potrzebujesz logowaæ transferów
 
 foreach my $line (@info)
 {
