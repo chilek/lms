@@ -1,0 +1,40 @@
+$Id$
+************************************************************************
+
+		   A.L.E.C's LMS Daemon - alfa version
+			
+************************************************************************
+ U W A G A: To jest wersja alfa, przeznaczona tylko dla developerów
+ W A R N I N G: This is an alfa, for development, under construction
+************************************************************************
+
+- INFORMACJE
+ 
+    *** Wersja nie stabilna *** 
+    *** Unstable version ***
+    
+- WYMAGANIA
+
+    Program potrzebuje:
+      - instalacji interfejsu u¿ytkownika lms'a
+      - libmysqlclient (tj. pe³nej instalacji MySQL'a lub odpowiedniego pakietu)
+        lub libpq w przypadku bazy PostgreSQL
+      - libdl (to w ka¿dej dzisiejszej dystrybucji jest)
+      
+- KOMPILACJA
+
+    * ustaw CFLAGS i LDFLAGS w ./configure tak aby wskazywa³y na biblioteki 
+      i includes MySQL'a w Twoim systemie
+    * ./configure
+	Dostêpne opcje: --with-pgsql 	(nie trzeba t³umaczyæ)
+			--debug 	(logowanie zapytañ)
+			--with-mysql 	(opcja domy¶lna, mo¿na pomin±æ)
+    * make
+    
+- URUCHOMIENIE
+
+    * przygotuj odpowiednie wpisy do lms.ini (przyk³adowy ini: lms.ini.sample)
+    * ./almsd -b (dostêpne opcje ./almsd -h)
+    * NIE RÓB TEGO Z ROOTA. póki co.
+       
+   

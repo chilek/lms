@@ -1,0 +1,48 @@
+#defaults
+LIBS="-lmysqlclient -ldl"
+LDFLAGS="-L/usr/lib/mysql"
+CFLAGS="-I/usr/include/mysql -DUSE_MYSQL"
+
+for x in $*
+do
+    case $x in
+    
+	*--with-pgsql*) #PostgreSQL
+	LIBS="-lpq -ldl"
+	LDFLAGS=-L/usr/local/pgsql/lib
+	CFLAGS=-I/usr/local/pgsql/include
+	FLAGS="$FLAGS -DUSE_PGSQL"
+	;;
+	*--debug*) #Query logging
+	FLAGS="$FLAGS -DDEBUG"
+	;;
+	*) #MySQL
+	LIBS="-lmysqlclient -ldl"
+	LDFLAGS="-L/usr/lib/mysql"
+	CFLAGS="-I/usr/include/mysql"
+	FLAGS="$FLAGS -DUSE_MYSQL"
+    esac
+
+done
+
+echo "
+LIBS = $LIBS
+LDFLAGS = $LDFLAGS
+CFLAGS = $CFLAGS $FLAGS
+" > Makefile
+
+cat Makefile.in >> Makefile
+    
+# Make modules Makefile's
+cd ./modules
+
+for x in `ls -F | grep /`
+do
+echo "
+LIBS = $LIBS 
+CFLAGS = $CFLAGS $FLAGS -I../..
+LDFLAGS = $LDFLAGS
+" > ./${x}Makefile    
+cat ./${x}Makefile.in >> ./${x}Makefile
+
+done 
