@@ -104,6 +104,7 @@ $parser->output_to_core(1);
 my $entity = $parser->parse(\*STDIN);
 my $headers = $entity->head;
 my $mh_from = $headers->get('From');
+my $mh_to = $headers->get('To');
 my $mh_msgid = $headers->get('Message-ID');
 my $mh_subject = $headers->get('Subject');
 my $body;
@@ -129,25 +130,67 @@ else
 	$mailbody = $body->as_string;
 }
 
-print "From: $mh_from";
+chomp $mh_from;
+chomp $mh_subject;
+chomp $mh_msgid;
+chomp $mailbody;
 
-#my $dbase;
-#
-#if($dbtype eq "mysql")
-#{
-#	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-#}
-#elsif($dbtype eq "postgres")
-#{
-#	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
-#}
-#else
-#{
-#	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
-#	exit 1;
-#}
-#
-#$dbase->disconnect();
+$mailbody =~ s/\\/\\\\/g;
+$mailbody =~ s/\'/\\\'/g;
+$mh_from =~ s/\\/\\\\/g;
+$mh_from =~ s/\'/\\\'/g;
+$mh_msgid =~ s/\\/\\\\/g;
+$mh_msgid =~ s/\'/\\\'/g;
+$mh_subject =~ s/\\/\\\\/g;
+$mh_subject =~ s/\'/\\\'/g;
 
-print Data::Dumper::Dumper $body;	# debug
+#print "From: $mh_from\n";
+#print "Subject: $mh_subject\n";
+#print "Message-ID: $mh_msgid\n";
+#print $mailbody;
+
+
+my $dbase;
+my $utsfmt;
+
+if($dbtype eq "mysql")
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "UNIX_TIMESTAMP()";
+}
+elsif($dbtype eq "postgres")
+{
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+
+# for security, fetch timestamp from database.
+my $dbq = $dbase->prepare("SELECT $utsfmt AS timestamp");
+$dbq->execute();
+my $row = $dbq->fetchrow_hashref();
+my $timestamp = $row->{'timestamp'};
+
+# create new ticket.
+#CREATE TABLE `tickets` (
+#`id` INT NOT NULL AUTO_INCREMENT ,
+#`queueid` INT DEFAULT '0' NOT NULL ,
+#`requestor` VARCHAR( 255 ) NOT NULL ,
+#`subject` VARCHAR( 255 ) NOT NULL ,
+#`state` TINYINT( 4 ) DEFAULT '0' NOT NULL ,
+#`owner` INT DEFAULT '0' NOT NULL ,
+#`createtime` INT DEFAULT '0' NOT NULL ,
+#PRIMARY KEY ( `id` ) 
+#);
+
+$dbq = $dbase->prepare("INSERT INTO tickets (queueid, requestor, subject, createtime) VALUES ($queue, '$mh_from', '$mh_subject', '$timestamp')");
+$dbq->execute();
+
+#print Data::Dumper::Dumper $entity;	# debug
 $parser->filer->purge;			# cleanup
+$dbq->finish();
+$dbase->disconnect();
