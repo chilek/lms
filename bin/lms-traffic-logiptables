@@ -96,7 +96,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 my $logfile = $ini->val('traffic-logiptables','logfile') || '';
 my $outfile = $ini->val('traffic-logiptables','outfile') || '/etc/rc.d/rc.stat';
 my $iptables_binary = $ini->val('traffic-logiptables','iptables_binary') || '/usr/sbin/iptables';
-my $wan_interface = $ini->val('traffic-logiptables','wan_interface') || '';
+my $wan_interfaces = $ini->val('traffic-logiptables','wan_interfaces') || '';
 my $local_ports = $ini->val('traffic-logiptables','local_ports') || '';
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
@@ -106,9 +106,9 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $dbase;
 
-if(! $wan_interface)
+if(! $wan_interfaces)
 {
-	print STDERR "Fatal error: 'wan_interface' not defined, exiting.\n";
+	print STDERR "Fatal error: 'wan_interfaces' not defined, exiting.\n";
 	exit 1;
 }
 
@@ -135,14 +135,18 @@ else
 open(OUTFILE, ">$outfile") or die("Fatal error: Unable to write $outfile, exiting.\n");
 
 my @local_ports_list = split(' ',$local_ports);
+my @wan_interfaces_list = split(' ',$wan_interfaces);
 
 # 1) Stwórzmy ³añcuch STAT
 # 2) Wyczy¶æmy go, bo on móg³ ju¿ istnieæ
 
-print OUTFILE "#!/bin/bash
-$iptables_binary -t mangle -D FORWARD -i $wan_interface -j STAT
-$iptables_binary -t mangle -D FORWARD -o $wan_interface -j STAT
-";
+print OUTFILE "#!/bin/bash\n";
+
+foreach my $wan_interface (@wan_interfaces_list)
+{
+	print OUTFILE "$iptables_binary -t mangle -D FORWARD -i $wan_interface -j STAT\n";
+	print OUTFILE "$iptables_binary -t mangle -D FORWARD -o $wan_interface -j STAT\n";
+}
 
 foreach my $port (@local_ports_list)
 {
@@ -150,12 +154,17 @@ foreach my $port (@local_ports_list)
 	print OUTFILE "$iptables_binary -t mangle -D OUTPUT -p tcp --sport $port -j STAT\n";
 }
 		
-print OUTFILE "$iptables_binary -t mangle -X STAT
+print OUTFILE "$iptables_binary -t mangle -F STAT
+$iptables_binary -t mangle -X STAT
 $iptables_binary -t mangle -N STAT
 $iptables_binary -t mangle -F STAT
-$iptables_binary -t mangle -I FORWARD -i $wan_interface -j STAT
-$iptables_binary -t mangle -I FORWARD -o $wan_interface -j STAT
 ";
+
+foreach my $wan_interface (@wan_interfaces_list)
+{
+	print OUTFILE "$iptables_binary -t mangle -I FORWARD -i $wan_interface -j STAT\n";
+	print OUTFILE "$iptables_binary -t mangle -I FORWARD -o $wan_interface -j STAT\n";
+}
 
 foreach my $port (@local_ports_list)
 {
