@@ -1,0 +1,57 @@
+$Id$
+
+Contents:
+
+1) what's it ?
+2) lms-notify
+3) icons
+4) afterword
+
+1) what is it ?
+
+It's a simple panel for users which:
+
+a) use some kind of a proxy
+b) don't use The Internet only from home/LAN
+c) don't want to show their finance data to co-workers,employees,family etc. 
+	
+2) lms-notify
+
+It's good to tell your customer about customer-other-ip
+You could put info like the following:
+
+"
+We are pleased to say that you could yor account for yourself, any time 
+you want:
+
+http://www.TwójUrl.pl/lms/contrib/clients/
+
+Pleas use your client (telephone, contract) number and PIN CODE, it's: %pin
+"
+
+3) icons
+
+Simply do the following:
+
+$ ln -s ../../img img
+
+in 'contrib/customer_otherip' directory and add "Options +followlinks" into 
+httpd config.
+
+4) aferword
+
+panel requires to set sys_dir in lms.ini file (sectoin [directories]).
+
+
+5) In balanceview.php one could find:
+
+#v+
+customer authorization ways
+//$id = GetUserIDByPhone1AndPIN($login, $pin);
+//$id = GetUserIDByContractAndPIN($login, $pin);
+$id = GetUserIDByIDAndPIN($login, $pin);
+#v-
+
+It meand you could use any one of following: Phone, Contrac, ID.
+
+BTW: SOA#1
