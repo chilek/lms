@@ -1411,12 +1411,12 @@ class LMS
 		return $result;
 	}
 
-	function GetNetdevLinkedNodes($id)
+	function GetNetDevLinkedNodes($id)
 	{
-		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, ipaddr, inet_ntoa(ipaddr) AS ip, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner FROM nodes, users WHERE ownerid = users.id AND netdev=? AND ownerid > 0 ORDER BY nodes.name ASC', array($id));
+		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, ipaddr, inet_ntoa(ipaddr) AS ip, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner FROM nodes, users WHERE ownerid = users.id AND netdev=? AND ownerid > 0 ORDER BY nodes.name ASC', array($id));
 	}
 
-	function NetDevLinkNode($id,$netid)
+	function NetDevLinkNode($id, $netid, $type=0)
 	{
 		if($netid != 0)
 		{
@@ -1426,11 +1426,23 @@ class LMS
 					return FALSE;
 		}
 		
-		$this->DB->Execute('UPDATE nodes SET netdev='.$netid.' WHERE id='.$id);
+		$this->DB->Execute('UPDATE nodes SET netdev=?, linktype=? WHERE id=?', array($netid,$type,$id));
 		$this->SetTS('nodes');
 		return TRUE;
 	}
 
+	function SetNetDevLinkType($dev1, $dev2, $type=0)
+	{
+		$this->SetTS('netlinks');
+		return $this->DB->Execute('UPDATE netlinks SET type=? WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($type, $dev1, $dev2, $dev1, $dev2));
+	}
+
+	function SetNodeLinkType($node, $type=0)
+	{
+		$this->SetTS('nodes');
+		return $this->DB->Execute('UPDATE nodes SET linktype=? WHERE id=?', array($type, $node));
+	}
+	
 	/*
 	 *  Obs³uga taryf i finansów
 	 */
@@ -2386,7 +2398,7 @@ class LMS
 
 	function CountNetDevLinks($id)
 	{
-		return $this->DB->GetOne('SELECT COUNT(*) FROM netlinks WHERE src = ? OR dst = ?', array($id,$id)) + $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE netdev = ? AND ownerid > 0", array($id));
+		return $this->DB->GetOne('SELECT COUNT(*) FROM netlinks WHERE src = ? OR dst = ?', array($id,$id)) + $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE netdev = ? AND ownerid > 0', array($id));
 	}
 
 	function GetNetDevConnected($id)
@@ -2394,17 +2406,23 @@ class LMS
 		return $this->DB->GetAll('SELECT (CASE src WHEN '.$id.' THEN src ELSE dst END) AS src, (CASE src WHEN '.$id.' THEN dst ELSE src END) AS dst FROM netlinks WHERE src = '.$id.' OR dst = '.$id);
 	}
 
+	function GetNetDevLinkType($dev1,$dev2)
+	{
+		return $this->DB->GetOne('SELECT type FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1,$dev2,$dev1,$dev2));
+	}
+
 	function GetNetDevConnectedNames($id)
 	{
 		// To powinno byæ lepiej zrobione...
 		$list = $this->GetNetDevConnected($id);
-		$id = 0;
+		$i = 0;
 		if ($list) 
 		{
 			foreach($list as $row)
 			{
-				$names[$id]= $this->GetNetDev($row['dst']);
-				$id++;
+				$names[$i] = $this->GetNetDev($row['dst']);
+				$names[$i]['linktype'] = $this->GetNetDevLinkType($row['dst'],$id);
+				$i++;
 			}
 		}
 		return $names;
@@ -2471,7 +2489,7 @@ class LMS
 		$query = 'SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id!='.$id;
 		if ($lista = $this->GetNetDevConnected($id))
 			foreach($lista as $row)
-				$query = $query.' and id!='.$row['dst'];
+				$query = $query.' AND id!='.$row['dst'];
 		return $this->DB->GetAll($query.' ORDER BY name');
 	}
 
@@ -2500,8 +2518,8 @@ class LMS
 		$dev2['location'] = $location;
 		$links1 = $this -> GetNetDevConnected($sid);
 		$links2 = $this -> GetNetDevConnected($did);
-		$nodes1 = $this -> GetNetdevLinkedNodes($sid);
-		$nodes2 = $this -> GetNetdevLinkedNodes($did);
+		$nodes1 = $this -> GetNetDevLinkedNodes($sid);
+		$nodes2 = $this -> GetNetDevLinkedNodes($did);
 		$this -> NetDevDelLinks($sid);
 		$this -> NetDevDelLinks($did);
 		if ($links1) foreach($links1 as $row) {
@@ -2551,7 +2569,7 @@ class LMS
 		return $this->DB->GetOne('SELECT COUNT(id) FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	} 
 
-	function NetDevLink($dev1, $dev2)
+	function NetDevLink($dev1, $dev2, $type=0)
 	{
 		if($dev1 != $dev2)
 		{
@@ -2564,7 +2582,7 @@ class LMS
 			if( $netdev1['takenports'] >= $netdev1['ports'] || $netdev2['takenports'] >= $netdev2['ports'])
 				return FALSE;
 			
-			$this->DB->Execute('INSERT INTO netlinks (src, dst) VALUES (?, ?)', array($dev1, $dev2)); 
+			$this->DB->Execute('INSERT INTO netlinks (src, dst, type) VALUES (?, ?, ?)', array($dev1, $dev2, $type)); 
 			$this->SetTS('netlinks');
 		}
 		return TRUE;

@@ -1,7 +1,7 @@
 
-LIBS = -lpq -ldl
-LDFLAGS = -L/usr/local/pgsql/lib
-CFLAGS = -I/usr/local/pgsql/include -DUSE_PGSQL
+LIBS = -lmysqlclient -ldl
+LDFLAGS = -L/usr/lib
+CFLAGS = -I/usr/include -DUSE_MYSQL -Wall -O2
 INSTALLDIR = /usr/local/bin
 
 SOURCES = almsd.c db.c util.c

@@ -126,9 +126,9 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 			}				
 		}
 
-		if($nodes = $DB->GetCol("SELECT id FROM nodes WHERE netdev=? AND ownerid>0 ORDER BY name ASC",array($device)))
+		if($nodes = $DB->GetAll("SELECT id, linktype FROM nodes WHERE netdev=? AND ownerid>0 ORDER BY name ASC",array($device)))
 		{
-			foreach($nodes as $nodeid)
+			foreach($nodes as $node)
 			{
 				$ntx = NULL;
 				$nty = NULL;
@@ -139,7 +139,7 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 						$nty = $y + $nodefields[$i]['y'];
 					}
 				if($ntx != NULL && $nty != NULL)
-					$map[$ntx][$nty] = 'n'.$nodeid.'.'.$device;
+					$map[$ntx][$nty] = 'n'.$node['id'].'.'.$device.'.'.$node['linktype'];
 			}
 		}
 	}
@@ -191,10 +191,11 @@ if($_GET['graph'] == "")
 			if(eregi('^n',$device))
 			{
 				$device = str_replace('n','',$device);
-				list($nodeid,$device) = explode('.',$device);
+				list($nodeid,$device,$linktype) = explode('.',$device);
 				$nodemap[$nodeid]['x'] = (($celx * ($cellw)) + $celllmargin) +4;
 				$nodemap[$nodeid]['y'] = (($cely * ($cellh)) + $celltmargin) +4;
 				$nodemap[$nodeid]['id'] = $nodeid;
+				$nodemap[$nodeid]['linktype'] = $linktype;
 			}
 			else
 			{
@@ -255,6 +256,7 @@ else
 	$red = imagecolorallocate($im, 255,0,0);
 	$green = imagecolorallocate($im, 0,128,0);
 	$blue = imagecolorallocate($im, 0,0,255);
+	$lightblue = imagecolorallocate($im, 0,200,255);
 	$darkred = imagecolorallocate($im, 128,0,0);
 
 	imagefill($im,0,0,$lightbrown);
@@ -268,10 +270,11 @@ else
 			if(eregi('^n',$device))
 			{
 				$device = str_replace('n','',$device);
-				list($nodeid,$device) = explode('.',$device);
+				list($nodeid,$device,$linktype) = explode('.',$device);
 				$nodemap[$nodeid]['x'] = $celx;
 				$nodemap[$nodeid]['y'] = $cely;
 				$nodemap[$nodeid]['device'] = $device;
+				$nodemap[$nodeid]['linktype'] = $linktype;
 			}
 			else
 			{
@@ -281,7 +284,7 @@ else
 		}
 	}
 
-	$links = $DB->GetAll('SELECT src, dst FROM netlinks');
+	$links = $DB->GetAll('SELECT src, dst, type FROM netlinks');
 	if($links) foreach($links as $link)
 	{
 		$src_celx = $devicemap[$link['src']]['x'];
@@ -292,8 +295,16 @@ else
 		$src_py = (($src_cely * $cellh) + $celltmargin);
 		$dst_px = (($dst_celx * $cellw) + $celllmargin);
 		$dst_py = (($dst_cely * $cellh) + $celltmargin);
-		imageline($im, $src_px+8, $src_py+8, $dst_px+8, $dst_py+8, $green);
-		imageline($im, $src_px+9, $src_py+9, $dst_px+9, $dst_py+9, $green);
+		if(! $link['type'])
+		{
+			imageline($im, $src_px+8, $src_py+8, $dst_px+8, $dst_py+8, $green);
+			imageline($im, $src_px+9, $src_py+9, $dst_px+9, $dst_py+9, $green);
+		} 
+		else 
+		{
+			imageline($im, $src_px+8, $src_py+8, $dst_px+8, $dst_py+8, $lightblue);
+			imageline($im, $src_px+9, $src_py+9, $dst_px+9, $dst_py+9, $lightblue);
+		}
 	}
 
 	if($nodemap) foreach($nodemap as $node)
@@ -306,7 +317,10 @@ else
 		$src_py = (($src_cely * $cellh) + $celltmargin);
 		$dst_px = (($dst_celx * $cellw) + $celllmargin);
 		$dst_py = (($dst_cely * $cellh) + $celltmargin);
-		imageline($im, $src_px+4, $src_py+4, $dst_px+4, $dst_py+4, $red);
+		if($node['linktype']=="0")
+			imageline($im, $src_px+4, $src_py+4, $dst_px+4, $dst_py+4, $red);
+		else
+			imageline($im, $src_px+4, $src_py+4, $dst_px+4, $dst_py+4, $lightblue);
 	}
 
 	$im_n_unk = imagecreatefrompng('img/node_unk.png');

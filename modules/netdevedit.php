@@ -61,7 +61,9 @@ case 'disconnectnode':
 	die;
 
 case 'connect':
-	if(! $LMS->NetDevLink($_GET['netdev'], $_GET['id']) )
+	$linktype = $_GET['linktype'] ? $_GET['linktype'] : "0";
+	$_SESSION['devlinktype'] = $linktype;
+	if(! $LMS->NetDevLink($_GET['netdev'], $_GET['id'], $linktype) )
 	{
 		$edit = FALSE;
 		$error['link'] = 'Brak wolnych portów w urz±dzeniu!';
@@ -70,7 +72,9 @@ case 'connect':
 	break;
     
 case 'connectnode':
-	if(! $LMS->NetDevLinkNode($_GET['nodeid'], $_GET['id']) )
+	$linktype = $_GET['linktype'] ? $_GET['linktype'] : "0";
+	$_SESSION['nodelinktype'] = $linktype;
+	if(! $LMS->NetDevLinkNode($_GET['nodeid'], $_GET['id'], $linktype) )
 	{
 		$error['linknode'] = 'Brak wolnych portów w urz±dzeniu';
 		$edit = FALSE;
@@ -87,6 +91,16 @@ case 'editip':
 	$nodeipdata['ipaddr'] = $nodeipdata['ip'];
 	$SMARTY->assign('nodeipdata',$nodeipdata);
 	$edit = 'ip';
+	break;
+
+case 'switchlinktype':
+	$LMS->SetNetDevLinkType($_GET['devid'], $_GET['id'], $_GET['linktype']);
+	header('Location: ?m=netdevinfo&id='.$_GET['id']);
+	break;
+
+case 'switchnodelinktype':
+	$LMS->SetNodeLinkType($_GET['nodeid'], $_GET['linktype']);
+	header('Location: ?m=netdevinfo&id='.$_GET['id']);
 	break;
 
 case 'formaddip':
@@ -227,7 +241,7 @@ else
 $netdevdata['id'] = $_GET['id'];
 
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET['id']);
-$netcomplist = $LMS->GetNetdevLinkedNodes($_GET['id']);
+$netcomplist = $LMS->GetNetDevLinkedNodes($_GET['id']);
 $netdevlist = $LMS->GetNotConnectedDevices($_GET['id']);
 
 unset($netdevlist['total']);
@@ -260,6 +274,8 @@ $SMARTY->assign('netdevips',$netdevips);
 $SMARTY->assign('restnetdevlist',$netdevlist);
 $SMARTY->assign('replacelist',$replacelist);
 $SMARTY->assign('replacelisttotal',$replacelisttotal);
+$SMARTY->assign('devlinktype',$_SESSION['devlinktype']);
+$SMARTY->assign('nodelinktype',$_SESSION['nodelinktype']);
 
 switch($edit)
 {

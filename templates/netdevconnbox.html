@@ -19,15 +19,20 @@
 			&nbsp;
 		</TD>
 	</TR>
-
-	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=netdevlist loop=$netdevlist start=$start}
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{section name=netdevlist loop=$netdevlist start=$start}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD width="97%" CLASS="fleft" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" VALIGN="TOP" NOWRAP>
 			<IMG SRC="img/netdev.gif" ALT="" ALIGN="ABSMIDDLE"> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name} {if $netdevlist[netdevlist].producer}/ {$netdevlist[netdevlist].producer}{/if}</B></A><BR>
 			<img src="img/home.gif" ALT="" align="absmiddle"> {$netdevlist[netdevlist].location}
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" NOWRAP>
-			<IMG SRC="img/empty.gif" HEIGHT="16" WIDTH="16" ALT="" ALIGN="ABSMIDDLE"> ({$netdevlist[netdevlist].id|string_format:"%04d"})<br>
+			{if $netdevlist[netdevlist].linktype}
+				<A href="?m=netdevedit&action=switchlinktype&linktype=0&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/wireless.gif" ALT="[ Zmieñ typ po³±czenia ]" ALIGN="ABSMIDDLE" BORDER="0"></A> 
+			{else}
+				<A href="?m=netdevedit&action=switchlinktype&linktype=1&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}"><IMG SRC="img/netdev_takenports.gif" ALT="[ Zmieñ typ po³±czenia ]" ALIGN="ABSMIDDLE" BORDER="0"></A> 
+			{/if}
+			({$netdevlist[netdevlist].id|string_format:"%04d"})<br>
 			<IMG SRC="img/port.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
 		</TD>
 		<TD WIDTH="1%" CLASS="fright">
@@ -59,7 +64,8 @@
 				{section name=restnetdevlist loop=$restnetdevlist}
 				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}">{$restnetdevlist[restnetdevlist].name} {if $restnetdevlist[restnetdevlist].producer}/ {$restnetdevlist[restnetdevlist].producer}{/if} {if $restnetdevlist[restnetdevlist].location}({$restnetdevlist[restnetdevlist].location}){/if}</OPTION>
 				{/section}
-			</SELECT></FORM></P>
+			</SELECT><INPUT style="border:0; background-color=#CEBD9B;" type="checkbox" name="linktype" value="1" {if $devlinktype}CHECKED{/if}>&nbsp;wireless 
+			</FORM></P>
 			{/if}
 		</TD>
 	</TR>

@@ -27,7 +27,12 @@
 			<img src="img/user.gif" ALT="" ALIGN="absmiddle"> {$netcomplist[netcomplist].owner}
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
-			<img src="img/empty.gif" WIDTH="16" HEIGHT="16" align="absmiddle"> ({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>
+			{if $netcomplist[netcomplist].linktype}
+			<A href="?m=netdevedit&action=switchnodelinktype&linktype=0&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/wireless.gif" alt="[ Zmieñ typ po³±czenia ]" align="absmiddle" border="0"></A> 
+			{else}
+			<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ Zmieñ typ po³±czenia ]" align="absmiddle" border="0"></A> 
+			{/if}
+			({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>
 			<IMG SRC="img/ip.gif" ALT="" ALIGN="ABSMIDDLE"> {$netcomplist[netcomplist].ip}
 		</TD>
 		<TD CLASS="fright" WIDTH="1%">
@@ -59,7 +64,9 @@
 				{section name=nodelist loop=$nodelist}
 				<OPTION VALUE="{$nodelist[nodelist].id}">{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
 				{/section}
-			</SELECT></FORM></P>
+			</SELECT>
+			<INPUT style="border:0; background-color=#CEBD9B;" type="checkbox" name="linktype" value="1" {if $nodelinktype}CHECKED{/if}>&nbsp;wireless
+			</FORM></P>
 			{/if}
 		</TD>
 	</TR>
