@@ -14,7 +14,7 @@
 	{if $usernodes[usernodes].id}
 	<tr bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if $usernodes[usernodes].access neq "Y"} class="blend"{/if}>
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<a href="?m=nodeset&id={$usernodes[usernodes].id}"><IMG src="img/{if $usernodes[usernodes].access neq "Y"}no{/if}access.gif" alt="[ {if $usernodes[usernodes].access neq "Y"}Pod³±cz{else}Od³±cz{/if} ]" border="0" align="absmiddle"></A>
+			<a href="?m=nodeset&id={$usernodes[usernodes].id}"><IMG src="img/{if $usernodes[usernodes].access neq "Y"}no{/if}access.gif" alt="[ {if $usernodes[usernodes].access neq "Y"}{$lang.do_connect}{else}{$lang.do_disconnect}{/if} ]" border="0" align="absmiddle"></A>
 		</TD>
 		<TD WIDTH="97%" onClick="return self.location.href='?m=nodeinfo&id={$usernodes[usernodes].id}';">
 			<B>{$usernodes[usernodes].name}</B><BR>
@@ -24,8 +24,8 @@
 			({$usernodes[usernodes].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHT" NOWRAP>
-			<A HREF="?m=nodedel&id={$usernodes[usernodes].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ komputer \'{$usernodes[usernodes].name|upper}\' z bazy danych?')"><IMG SRC="img/delete.gif" BORDER="0" ALT="[ Usuñ ]" ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=nodeedit&id={$usernodes[usernodes].id}"><IMG SRC="img/edit.gif" BORDER="0" ALT="[ Edytuj ]" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=nodedel&id={$usernodes[usernodes].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ komputer \'{$usernodes[usernodes].name|upper}\' z bazy danych?')"><IMG SRC="img/delete.gif" BORDER="0" ALT="[ {$lang.delete} ]" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=nodeedit&id={$usernodes[usernodes].id}"><IMG SRC="img/edit.gif" BORDER="0" ALT="[ {$lang.edit} ]" ALIGN="ABSMIDDLE"></A>
 			<A HREF="?m=nodeinfo&id={$usernodes[usernodes].id}"><IMG SRC="img/info.gif" BORDER="0" ALT="[ Info ]" ALIGN="ABSMIDDLE"></A>
 		</TD>
 	</TR>
