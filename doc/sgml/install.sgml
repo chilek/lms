@@ -617,6 +617,11 @@ database = /usr/local/lms/lms.db</screen>
          <para>Length of (auto-generated) node password. Max.32. Default: 16.</para>
          <para>Example:     <prompt>nodepassword_length = 8</prompt></para>
      </listitem>
+     <listitem>
+         <para>smtp_host, smtp_port, smtp_username, smtp_password</para>
+         <para>Parameters of smtp authorization in mailing. Default: 127.0.0.1:25.</para>
+         <para>Example:     <prompt>smtp_host = mail.domain.pl</prompt></para>
+     </listitem>
      </itemizedlist>
       </sect2> 
     </sect1>

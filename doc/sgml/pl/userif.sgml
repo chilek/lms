@@ -595,10 +595,12 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	<para>Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
 	klientów twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
 	odbiorców, do której zostanie wys³any e-mail. Grupê adresatów mo¿na okre¶liæ
-	wg statusu oraz sieci lub grup klientów do których nale¿±.</para>
-	<para><note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji mail().</para></note>
+	wg statusu oraz sieci lub grup klientów do których nale¿±. Je¿eli korzystasz z serwera
+	pocztowego na zdalnym ho¶cie bêdziesz musia³ ustawiæ opcje smtp_host, smtp_port,
+	smtp_username, smtp_password w sekcji [phpui].</para>
+	<para><note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia PEAR::Mail.</para></note>
 	<note><para>Do automatycznego wysy³ania upomnieñ do klientów zalegaj±cych z op³atami mo¿na
-	wykorzystaæ skrypt lms-notify lub modu³y notify i ggnotify demona <emphasis>almsd</emphasis>.</para></note></para>
+	wykorzystaæ skrypt lms-notify lub modu³ notify demona <emphasis>almsd</emphasis>.</para></note></para>
  </sect1>
  <sect1 id="menu-reload">
 	<title>Prze³adowanie</title>
