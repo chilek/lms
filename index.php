@@ -68,7 +68,6 @@ $_DBUSER = (! $_CONFIG['database']['user'] ? 'root' : $_CONFIG['database']['user
 $_DBPASS = (! $_CONFIG['database']['password'] ? '' : $_CONFIG['database']['password']);
 $_DBNAME = (! $_CONFIG['database']['database'] ? 'lms' : $_CONFIG['database']['database']);
 $_SHOW_STATS = (! $_CONFIG['phpui']['enable_stats'] ? '0' : $_CONFIG['phpui']['enable_stats']);
-$_SHOW_NETDEV = (! $_CONFIG['phpui']['enable_netdev'] ? '0' : $_CONFIG['phpui']['enable_netdev']);
 
 // Redirect to SSL
 
@@ -187,6 +186,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.103  2003/09/12 21:58:43  lexx
+ * - blak
+ *
  * Revision 1.102  2003/09/12 21:10:40  lexx
  * - netdev
  *
