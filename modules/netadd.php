@@ -61,7 +61,7 @@ if(isset($netadd))
 	{
 		if(getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])) != $netadd['address'])
 		{
-			$error['address'] = trans('That address isn\'t network address, setting to $0',getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])));
+			$error['address'] = trans('Specified address is not a network address, setting $0',getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])));
 			$netadd['address'] = getnetaddr($netadd['address'], prefix2mask($netadd['prefix']));
 		}
 		else
@@ -104,7 +104,7 @@ if(isset($netadd))
 	if(!$error['dhcpstart'] && !$error['dhcpend'])
 	{
 		if(($netadd['dhcpstart'] != '' && $netadd['dhcpend'] == '') || ($netadd['dhcpstart'] == '' && $netadd['dhcpend'] != ''))
-			$error['dhcp'] = trans('Both IP address for DHCP range are required!');
+			$error['dhcp'] = trans('Both IP addresses for DHCP range are required!');
 		if($netadd['dhcpstart'] != '' && $netadd['dhcpend'] != '' && !(ip_long($netadd['dhcpend']) > ip_long($netadd['dhcpstart'])))
 			$error['dhcp'] = trans('End of DHCP range must be greater than start!');
 	}

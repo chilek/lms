@@ -24,16 +24,17 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Sieci IP";
+$layout['pagetitle'] = trans('IP Networks');
 
 $netlist = $LMS->GetNetworkList();
 
 $listdata['size'] = $netlist['size'];
 $listdata['assigned'] = $netlist['assigned'];
+$listdata['total'] = $netlist['total'];
 
-unset($netlist['assigned'], $netlist['size'], $netlist['total']);
-
-$listdata['total'] = sizeof($netlist);
+unset($netlist['assigned']);
+unset($netlist['size']);
+unset($netlist['total']);
 
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('netadd',$netadd);
