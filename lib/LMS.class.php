@@ -752,7 +752,7 @@ class LMS
 
 	function GetUserNodes($id)
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, access, warning, info FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
+		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, passwd, access, warning, info FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
 		{
 			$result['total'] = sizeof($result);
 			$result['ownerid'] = $id;
@@ -1068,7 +1068,7 @@ class LMS
 	function NodeUpdate($nodedata)
 	{
 		$this->SetTS('nodes');
-		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr=inet_aton(?), mac=UPPER(?), netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=?, info=? WHERE id=?', array($nodedata['name'], $nodedata['ipaddr'], $nodedata['mac'], $nodedata['netdev'], $this->SESSION->id, $nodedata['access'], $nodedata['warning'], $nodedata['ownerid'], $nodedata['info'], $nodedata['id']));
+		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr=inet_aton(?), mac=UPPER(?), passwd=?, netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=?, info=? WHERE id=?', array($nodedata['name'], $nodedata['ipaddr'], $nodedata['mac'], $nodedata['passwd'], $nodedata['netdev'], $this->SESSION->id, $nodedata['access'], $nodedata['warning'], $nodedata['ownerid'], $nodedata['info'], $nodedata['id']));
 	}
 
 	function DeleteNode($id)
@@ -1119,7 +1119,7 @@ class LMS
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access, warning, creationdate, moddate, creatorid, modid, netdev, lastonline, info FROM nodes WHERE id=?', array($id)))
+		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, mac, passwd, access, warning, creationdate, moddate, creatorid, modid, netdev, lastonline, info FROM nodes WHERE id=?', array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
@@ -1335,7 +1335,7 @@ class LMS
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS('nodes');
-		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate, access, warning, info) VALUES (?, ?, inet_aton(?), ?, ?, ?NOW?, ?, ?, ?)', array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id, $nodedata['access'], $nodedata['warning'], $nodedata['info'])))
+		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ownerid, passwd, creatorid, creationdate, access, warning, info) VALUES (?, ?, inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?)', array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$nodedata['passwd'],$this->SESSION->id, $nodedata['access'], $nodedata['warning'], $nodedata['info'])))
 			return $this->DB->GetOne('SELECT MAX(id) FROM nodes');
 		else
 			return FALSE;

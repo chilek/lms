@@ -626,6 +626,12 @@ database = /usr/local/lms/lms.db</screen>
 	    rozwiniêciem kwoty 123,15 bêdzie "jed dwa trz 15/100". Domy¶lnie: 0.</para>
 	    <para>Przyk³ad:	<prompt>to_words_short_format = 1</prompt></para>
 	</listitem>
+	<listitem>
+	    <para>nodepassword_length</para>
+	    <para>Domy¶lna d³ugo¶æ has³a (generowanego automatycznie) dla komputera. 
+	    Maksymalnie 32. Domy¶lnie: 16.</para>
+	    <para>Przyk³ad:	<prompt>nodepassword_length = 8</prompt></para>
+	</listitem>
 	</itemizedlist>
  	</sect2> 
     </sect1>

@@ -110,7 +110,7 @@ case 'switchnodelinktype':
 
 case 'formaddip':
 	$nodeipdata = $_POST['ipadd'];
-	$nodeipdata['ownerid']=0;
+	$nodeipdata['ownerid'] = 0;
 	
 	$nodeipdata['mac'] = str_replace('-',':',$nodeipdata['mac']);
 	foreach($nodeipdata as $key => $value)
@@ -151,6 +151,7 @@ case 'formaddip':
 	if(!$error)
 	{
 		$nodeipdata['warning'] = 0;
+		$nodeipdata['passwd'] = '';
 		$LMS->NetDevLinkNode($LMS->NodeAdd($nodeipdata),$_GET['id']);
 		header('Location: ?m=netdevinfo&id='.$_GET['id']);
 		die;
@@ -207,6 +208,7 @@ case 'formeditip':
 			$error['mac'] = trans('MAC address is in use!');
 	
 	$nodeipdata['warning'] = 0;
+	$nodeipdata['passwd'] = '';
 
 	if(!$error)
 	{
