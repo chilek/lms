@@ -173,7 +173,7 @@ switch($_GET['type'])
 
 		// date format 'yyyy/mm/dd'	
 		list($year, $month, $day) = split('/',$from);
-		$date['from'] = mktime(0,0,1,$month,$day,$year);
+		$date['from'] = mktime(0,0,0,$month,$day,$year);
 		
 		if($to) {
 			list($year, $month, $day) = split('/',$to);
