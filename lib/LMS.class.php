@@ -292,7 +292,7 @@ class LMS
 
 	function GetAdminList() // zwraca listê administratorów
 	{
-		if($adminslist = $this->DB->GetAll('SELECT id, login, name, lastlogindate, lastloginip FROM admins ORDER BY login ASC'))
+		if($adminslist = $this->DB->GetAll('SELECT id, login, name, lastlogindate, lastloginip FROM admins WHERE deleted=0 ORDER BY login ASC'))
 		{
 			foreach($adminslist as $idx => $row)
 			{
@@ -332,17 +332,29 @@ class LMS
 	function AdminDelete($id) // usuwa admina o podanym id
 	{
 		$this->SetTS('admins');
-		return $this->DB->Execute('DELETE FROM admins WHERE id=?', array($id));
+		return $this->DB->Execute('UPDATE admins SET deleted=1 WHERE id=?', array($id));
 	}
 
 	function AdminExists($id) // zwraca TRUE/FALSE zale¿nie od tego czy admin istnieje czy nie
 	{
-		return ($this->DB->GetOne('SELECT * FROM admins WHERE id=?', array($id))?TRUE:FALSE);
+		switch($this->DB->GetOne('SELECT deleted FROM admins WHERE id=?', array($id)))
+		{
+			case '0':
+				return TRUE;
+				break;
+			case '1':
+				return -1;
+				break;
+			case '':
+			default:
+				return FALSE;
+				break;
+		}
 	}
 
 	function GetAdminInfo($id) // zwraca pe³ne info o podanym adminie
 	{
-		if($admininfo = $this->DB->GetRow('SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip FROM admins WHERE id=?', array($id)))
+		if($admininfo = $this->DB->GetRow('SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted FROM admins WHERE id=?', array($id)))
 		{
 			if($admininfo['lastlogindate'])
 				$admininfo['lastlogin'] = date('Y/m/d H:i',$admininfo['lastlogindate']);
