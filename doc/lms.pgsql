@@ -117,7 +117,8 @@ CREATE TABLE invoices (
         zip varchar(6) NOT NULL,
         city varchar(32) NOT NULL,
         phone varchar(255) NOT NULL,
-        finished smallint DEFAULT 0 NOT NULL
+        finished smallint DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
 );
 
 /* -------------------------------------------------------- 
