@@ -1577,7 +1577,7 @@ class LMS
 					$line=fgets($file,4096);
 					$mac=trim(substr($line,35,25));
 					$ip=trim(substr($line,0,15));
-					if(check_mac($mac))
+					if(check_mac($mac) && $mac != '00:00:00:00:00:00')
 					{
 						$result['mac'][] = $mac;
 						$result['ip'][] = $ip;
@@ -1637,6 +1637,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.192  2003/08/20 01:46:12  lukasz
+ * - do not display MAC's '00:00:00:00:00:00'
+ *
  * Revision 1.191  2003/08/18 16:57:00  lukasz
  * - more cvs tags :>
  *
