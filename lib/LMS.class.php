@@ -2909,14 +2909,14 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	{
 		if($this->DB->Execute('DELETE FROM rtqueues WHERE id=?', array($queue)))
 			$this->SetTS('rtqueues');
-		if($this->DB->GetOne('DELETE FROM rtrights WHERE queueid=?', array($queue)))
+		if($this->DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue)))
 			$this->SetTS('rtrights');
 		if($tickets = $this->DB->GetCol('SELECT id FROM rttickets WHERE queueid=?', array($queue)))
 		{
 			foreach($tickets as $id)
-				$this->DB->GetOne('DELETE FROM rtmessages WHERE ticketid=?', array($id));
+				$this->DB->Execute('DELETE FROM rtmessages WHERE ticketid=?', array($id));
 			$this->SetTS('rtmessages');
-			$this->DB->GetOne('DELETE FROM rttickets WHERE queueid=?', array($queue));
+			$this->DB->Execute('DELETE FROM rttickets WHERE queueid=?', array($queue));
 			$this->SetTS('rttickets');
 		}
 	}

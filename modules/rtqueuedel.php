@@ -24,22 +24,23 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Usuniêcie kolejki ID: ".sprintf("%04d",$_GET['id']);
+$layout['pagetitle'] = 'Usuniêcie kolejki ID: '.sprintf("%04d",$_GET['id']);
 
 if (!$LMS->QueueExists($_GET['id']))
 {
-	$body = "<H1>".$layout['pagetitle']."</H1><P>Podany przez Ciebie ID jest b³êdny b±d¼ nie istnieje w bazie danych.</P>";
+	$body = '<H1>'.$layout['pagetitle'].'</H1><P>Podany przez Ciebie ID jest b³êdny b±d¼ nie istnieje w bazie danych.</P>';
 }else{
 
 	if($_GET['is_sure']!=1)
 	{
-		$body = "<H1>".$layout['pagetitle']."</H1>";
-		$body .= "<P>Czy jeste¶ pewien ¿e chcesz usun±æ kolejkê ".$LMS->GetQueueName($_GET['id'])."?</P>"; 
-		$body .= "<P>Wszystkie dane kolejki zostan± utracone, a tak¿e wszystkie przypisane do niej zg³oszenia i wiadomo¶ci zostan± usuniête.</P>";
-		$body .= "<P><A HREF=\"?m=rtqueuedel&id=".$_GET['id']."&is_sure=1\">Tak, jestem pewien.</A>&nbsp;";
-		$body .= "<A HREF=\"?".$_SESSION['backto']."\">Nie, rozmy¶li³em siê.</A></P>";
-	}else{
-	
+		$body = '<H1>'.$layout['pagetitle'].'</H1>';
+		$body .= '<P>Czy jeste¶ pewien ¿e chcesz usun±æ kolejkê '.$LMS->GetQueueName($_GET['id']).'?</P>'; 
+		$body .= '<P>Wszystkie dane kolejki zostan± utracone, a tak¿e wszystkie przypisane do niej zg³oszenia i wiadomo¶ci zostan± usuniête.</P>';
+		$body .= '<P><A HREF="?m=rtqueuedel&id='.$_GET['id'].'&is_sure=1">Tak, jestem pewien.</A>&nbsp;';
+		$body .= '<A HREF="?'.$_SESSION['backto'].'">Nie, rozmy¶li³em siê.</A></P>';
+	}
+	else
+	{
 		//$body = "<H1>".$layout['pagetitle']."</H1>";
 		//$body .= "<P>Kolejka ".$LMS->GetQueueName($_GET['id'])." zosta³a usuniêta.</P>";
 		$LMS->QueueDelete($_GET['id']);
