@@ -1,7 +1,8 @@
 $Id$
 
 wersja 1.1.7 (??/??/????):
-  - adresy sieci w bazie trzymamy teraz jako longint, do przeliczeñ
+
+  - adresy sieci w bazie trzymamy teraz jako bigint, do przeliczeñ
     u¿ywamy funkcji INET_NTOA() i INET_ATON(), zwi±zane z tym
     podniesienie wymagañ odno¶nie wersji bazy danych (Mysql 3.23.xx,
     PostgreSQL 7.3.x) i nastêpuj±ce zmiany w bazie (alec):
@@ -31,6 +32,9 @@ wersja 1.1.7 (??/??/????):
         ALTER TABLE networks DROP COLUMN address;
         ALTER TABLE networks RENAME COLUMN ipaddr to address;
         ALTER TABLE networks ALTER COLUMN address set NOT NULL;
+  
+  - przeliczanie adresów IP int<->char przerzucone z PHP na
+    bazê danych (alec)
 
 wersja 1.1.6 Seth (08/12/2003):
 
