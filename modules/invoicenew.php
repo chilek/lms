@@ -51,7 +51,7 @@ switch($_GET['action'])
 				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($itemdata['taxvalue'] + 100) * 100, 2);
 			$itemdata['s_valuenetto'] = $itemdata['valuenetto'] * $itemdata['count'];
 			$itemdata['s_valuebrutto'] = $itemdata['valuebrutto'] * $itemdata['count'];
-			$itemdata['posuid'] = getmicrotime();
+			$itemdata['posuid'] = (string) getmicrotime();
 			$contents[] = $itemdata;
 		}
 	break;
@@ -64,7 +64,7 @@ switch($_GET['action'])
 	case 'deletepos':
 		if(sizeof($contents))
 			foreach($contents as $idx => $row)
-				if($row['posuid'] == $_GET['posuid'])
+				if($row['posuid'] == $_GET['posuid']) 
 					unset($contents[$idx]);
 	break;
 
