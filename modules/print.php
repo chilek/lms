@@ -195,22 +195,19 @@ switch($_GET['type'])
 					break;
 				}
 
-				if($nodelist = $LMS->DB->GetAll('SELECT nodes.id AS id, inet_ntoa(ipaddr) AS ip, mac, 
-					    nodes.name AS name, nodes.info AS info, '
+				$nodelist = $LMS->DB->GetAll('SELECT nodes.id AS id, inet_ntoa(ipaddr) AS ip, mac, 
+					    nodes.name AS name, nodes.info AS info, 
+					    COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance, '
 					    .$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner
 					    FROM nodes LEFT JOIN users ON (ownerid = users.id)
 					    LEFT JOIN cash ON (cash.userid = users.id)
 					    GROUP BY nodes.id, ipaddr, mac, nodes.name, nodes.info, users.lastname, users.name
 					    HAVING SUM((type * -2 + 7) * value) < 0'
-					    .($sqlord != '' ? $sqlord.' '.$direction : '')))
-				{
-					foreach($nodelist as $idx => $row)
-					{
-						($row['access']) ? $totalon++ : $totaloff++;
-					}
-				}
+					    .($sqlord != '' ? $sqlord.' '.$direction : ''));
 				
 				$SMARTY->assign('nodelist', $nodelist);
+				$SMARTY->display('printindebtnodelist.html');
+				die;
 			break;
 		}	
 		$SMARTY->display('printnodelist.html');
