@@ -426,7 +426,7 @@ CREATE TABLE domains (
 
 # --------------------------------------------------------
 #
-# Structure of table passwd
+# Structure of table aliases
 #
 DROP TABLE IF EXISTS aliases;
 CREATE TABLE aliases (
