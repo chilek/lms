@@ -3,6 +3,8 @@ $Id$
 wersja 1.5.4 (??/??/????):
 
   - rozpoczêto prace nad zmian± domy¶lnego jêzyka na angielski
+  - poprawiony b³±d przy usuwaniu op³aty sta³ej powoduj±cy usuniêcie op³aty
+    bez potwierdzenia (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 

@@ -26,13 +26,13 @@
 
 if(!$LMS->PaymentExists($_GET['id']))
 {
-	header("Location: ?m=paymentlist");
+	header('Location: ?m=paymentlist');
 	die;
 }
 
 $payment = $LMS->GetPayment($_GET['id']);
 
-$layout['pagetitle'] = "Informacja o op³acie sta³ej: ".$payment['name'];
+$layout['pagetitle'] = trans('Info Payment: $0',$payment['name']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

@@ -31,25 +31,24 @@ if(isset($payment))
 	foreach($payment as $key => $value)
 		$payment[$key] = trim($value);
 
-	if($payment['creditor']=="" && $payment['name']=="" && $payment['value']=="")
+	if($payment['creditor']=='' && $payment['name']=='' && $payment['value']=='')
 	{
-		header("Location: ?m=paymentlist");
+		header('Location: ?m=paymentlist');
 		die;
 	}
 
-	$payment['value'] = str_replace(",",".",$payment['value']);
+	$payment['value'] = str_replace(',','.',$payment['value']);
 
-	if(!(ereg("^[-]?[0-9.,]+$",$payment['value'])))
-		$error['value'] = "Podana warto¶æ nie jest poprawna!";
+	if(!(ereg('^[-]?[0-9.,]+$',$payment['value'])))
+		$error['value'] = trans('Incorrect value!');
 
-	if($payment['creditor'] == "")
-		$error['creditor'] = "Musisz podaæ nazwê wierzyciela!";
+	if($payment['creditor'] == '')
+		$error['creditor'] = trans('Creditor name is required!');
 
-	if($payment['name'] == "")
-		$error['name'] = "Musisz podaæ nazwê op³aty sta³ej!";
-	else
-		if($LMS->GetPaymentIDByName($payment['name']))
-			$error['name'] = "Istnieje ju¿ op³ata o nazwie '".$payment['name']."'!";
+	if($payment['name'] == '')
+		$error['name'] = trans('Payment name is required!');
+	elseif($LMS->GetPaymentIDByName($payment['name']))
+		$error['name'] = trans('Specified name is in use!');
 
 	$period = sprintf('%d',$payment['period']);
 	
@@ -61,7 +60,7 @@ if(isset($payment))
 		case 0:
 			$at = sprintf('%d',$payment['at']);
 			if($at < 1 || $at > 7)
-				$error['at'] = 'Niepoprawny dzieñ tygodnia';
+				$error['at'] = trans('Incorrect day of week!');
 		break;
 		case 1:
 			$at = sprintf('%d',$payment['at']);
@@ -72,29 +71,28 @@ if(isset($payment))
 					$at = 1;
 			}
 			if($at < 1 || $at > 28)
-		    		$error['at'] = 'Niepoprawny dzieñ miesi±ca';
+		    		$error['at'] = trans('Incorrect day of month!');
 		break;
 		case 2:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
-				$error['at'] = 'Niepoprawny format daty';
+				$error['at'] = trans('Incorrect date format!');
 			else {
 				list($d,$m) = split('/',trim($payment['at']));
 				if($d>30 || $d<1)
-					$error['at'] = 'Niepoprawna liczba dni w miesi±cu';
+					$error['at'] = trans('Incorrect day of month number!');
 				if($m>3 || $m<1)
-					$error['at'] = 'Niepoprawny numer miesi±ca (max.3)';
+					$error['at'] = trans('Incorrect month number (max.3)!');
 				
 				$at = ($m-1) * 100 + $d;
 			};
 		break;
 		case 3:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($payment['at'])))
-				$error['at'] = 'Niepoprawny format daty';
+				$error['at'] = trans('Incorrect date format!');
 			else
 				list($d,$m) = split('/',trim($payment['at']));
 			$ttime = mktime(12, 0, 0, $m, $d, 1990);
 			$at = date('z',$ttime) + 1;
-			
 		break;	
 	}
 	
@@ -105,7 +103,7 @@ if(isset($payment))
 		$payment['at'] = $at;
 		if($payment['reuse'] =='')
 		{
-			header("Location: ?m=paymentlist&id=".$LMS->PaymentAdd($payment));
+			header('Location: ?m=paymentlist&id='.$LMS->PaymentAdd($payment));
 			die;
 		} else
 			$LMS->PaymentAdd($payment);
@@ -115,7 +113,7 @@ if(isset($payment))
 	}
 }
 
-$layout['pagetitle'] = "Nowa op³ata sta³a";
+$layout['pagetitle'] = trans('New Payment');
 
 $SMARTY->assign('error',$error);
 $SMARTY->assign('payment',$payment);
