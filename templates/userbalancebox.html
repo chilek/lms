@@ -32,7 +32,7 @@
 					<TD width="1%" align="center">&raquo;</TD>
 					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|string_format:"%01.2f"} z³{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
 					<TD width="93%">{$balancelist.comment[balancelist]}</TD>
-					<TD width="1%" align="right"><nobr>{if $balancelist.invoiceid[balancelist]}<A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}&year={$balancelist.time[balancelist]|date_format:"%Y"}"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>{/if}</nobr></TD>
+					<TD width="1%" align="right"><nobr>{if $balancelist.invoiceid[balancelist]}<A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>{/if}</nobr></TD>
 				</TR>
 				{sectionelse}
 				<TR>
