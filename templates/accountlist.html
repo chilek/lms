@@ -5,7 +5,7 @@
 <P>
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B">
-		<TD width="20%" class="fleftu">
+		<TD width="20%" class="fleftu" NOWRAP>
 			<B><img src="img/user.gif" ALT="" align="absmiddle"> Login:</B>
 		</TD>
 		<TD width="77%" class="fbt">
@@ -23,12 +23,14 @@
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{section name=accountlist loop=$accountlist}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if $userlist[userlist].nodeac eq 0} class="blend"{/if}>
+	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD class="fleft" valign="top">
-			<nobr><IMG src="img/user.gif" ALT="" align="absmiddle" border="0"><B> {$accountlist[accountlist].user}</B></nobr>
+			<nobr><IMG src="img/user.gif" ALT="" align="absmiddle" border="0"><B> {$accountlist[accountlist].login}</B></nobr>
 		</TD>
-		<TD valign="top">
-			<nobr><B>{$accountlist[accountlist].name} {$accountlist[accountlist].lastname} ({$accountlist[accountlist].ownerid|string_format:"%04d"})</B></nobr>
+		<TD valign="top" NOWRAP>
+			<A href="?m=userinfo&id={$accountlist[accountlist].ownerid}">
+			{$accountlist[accountlist].name} {$accountlist[accountlist].lastname} ({$accountlist[accountlist].ownerid|string_format:"%04d"})
+			</A>
 		</TD>
 		<TD valign="top" align="right">
 			<B>{$accountlist[accountlist].id|string_format:"%04d"}</B>
@@ -48,7 +50,7 @@
 		<TD colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Nie znaleziono ¿adnych u¿ytkowników o podanych kryteriach lub lista jest pusta.</B></p>
+			<p><B>Nie znaleziono ¿adnych kont o podanych kryteriach lub lista jest pusta.</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
