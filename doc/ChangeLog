@@ -7,6 +7,8 @@ wersja 1.5.4 (??/??/????):
     bez potwierdzenia (alec)
   - dodana opcja konfiguracyjna (phpui -> lang_debug) która pozwala na 
     wy¶wietlanie w popupie brakuj±cych ci±gów w t³umaczeniach (lexx)
+  - poprawiony b³±d na li¶cie u¿ytkowników wyszukanych powoduj±cy ignorowanie
+    braku potwierdzenia przy rozliczaniu u¿ytkownika (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
