@@ -1,5 +1,6 @@
 <!-- // $Id$ // -->
 <STYLE type="text/css"><!--
+HR		{ width: 0; }
 BOOK		{ background: #CEBD9B; }
 DIV.NAVHEADER	{ background: #CEBD9B; }
 DIV.NAVFOOTER	{ background: #CEBD9B; }
@@ -10,15 +11,12 @@ TD		{ font-size: 9pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 TH		{ font-width: bold; font-size: 10pt; } 
 TD.WARNING	{ border-width: 0pt; background: #FFFFFF; }
 PRE.SCREEN	{ background: #CEBD9B; }
-
+IMG		{ border-width: 0pt; }
 FONT.blend	{ color: #888888; }
 FONT.alert	{ color: #FF0000; font-weight: bold; }
 A		{ text-decoration: none; }
 A:hover		{ text-decoration: underline; color: #336600; }
 P		{ font-size:  9pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-P.nor		{ font-size:  9pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
-P.txt		{ font-size:  9pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align: justify }
-P.separated	{ font-size:  9pt; font-family: Tahoma, Verdana, Arial, Helvetica; margin-top: 5; margin-bottom: 5 }
 LI		{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
 H2		{ font-size: 12pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
