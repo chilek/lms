@@ -79,8 +79,11 @@ if(isset($nodeedit))
 	{
 		if($LMS->IsIPValid($nodeedit['ipaddr'])) 
 		{
-			if(!$LMS->IsIPFree($nodeedit['ipaddr']) && $LMS->GetNodeIPByID($nodeedit['id'])!=$nodeedit['ipaddr'])
-				$error['ipaddr'] = trans('Specified address is in use!');
+			$ip = $LMS->GetNodeIPByID($nodeedit['id']);
+			if(!$LMS->IsIPFree($nodeedit['ipaddr']) && $ip!=$nodeedit['ipaddr'])
+				$error['ipaddr'] = trans('Specified IP address is in use!');
+			if($LMS->IsIPGateway($nodeedit['ipaddr']) && $ip!=$nodeedit['ipaddr'])
+				$error['ipaddr'] = trans('Specified IP address is network gateway!');
 		}
 		else
 			$error['ipaddr'] = trans('Specified IP address not overlaps with any network!');
