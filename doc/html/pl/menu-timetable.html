@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Sieci IP</TITLE
+>Terminarz</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Interfejs U¿ytkownika (LMS-UI)"
 HREF="user.html"><LINK
 REL="PREVIOUS"
-TITLE="Osprzêt sieciowy"
-HREF="menu-netdevices.html"><LINK
+TITLE="Helpdesk"
+HREF="menu-helpdesk.html"><LINK
 REL="NEXT"
-TITLE="Finanse"
-HREF="menu-finances.html"><LINK
+TITLE="Skrypty"
+HREF="scripts.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -47,7 +47,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="menu-netdevices.html"
+HREF="menu-helpdesk.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -61,7 +61,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="menu-finances.html"
+HREF="scripts.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -75,56 +75,65 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="MENU-NETWORKS"
->3.6. Sieci IP</A
+NAME="MENU-TIMETABLE"
+>3.13. Terminarz</A
 ></H1
 ><P
->Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
-	zakres DHCP. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ 
-	na podsieci, albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</P
+>Terminarz, to tzw. organizer czasu, czyli miejsce gdzie ka¿dy klient
+	mo¿e prowadziæ w³asny kalendarz. Wprowadzone zadania (zdarzenia) mog± byæ
+	równie¿ dostêpne dla wszystkich i mieæ przypisanych dowolnych klientów, co
+	pozwala np. na zarz±dzanie ekipami serwisowymi.</P
+><P
+>Dodatkiem do Terminarza jest skrypt <TT
+CLASS="FILENAME"
+>lms-reminder</TT
+>,
+	s³u¿±cy do przypominania klientom o zaplanowanych na dany dzieñ zadaniach.</P
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="MENU-NETWORKS-LIST"
->3.6.1. Lista</A
+NAME="TIMETABLE-LIST"
+>3.13.1. Terminarz (Lista zadañ)</A
 ></H2
 ><P
->Lista sieci oprócz podstawowych danych o sieciach zawiera podsumowanie ilo¶ci
-	    adresów wolnych i przypisanych. Modyfikowanie w³a¶ciwo¶ci sieci nastêpuje w module 
-	    dostêpnym po wybraniu sieci z listy lub bezpo¶rednio po klikniêciu ikony [Edytuj].</P
-><P
->Podczas edycji danych sieci mo¿esz przegl±daæ listê komputerów z tej sieci, gdzie w 
-	    miejscu adresu IP pojawia siê nazwa komputera/urz±dzenia, do którego mo¿esz przej¶æ 
-	    klikaj±c na odpowiednim polu. Klikniêcie na polu z adresem IP przeniesie Ciê do modu³u
-	    dodawania nowego komputera. Znajdziesz tu tak¿e dwa przydatne linki: <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->	    Porz±dkuj sieæ</I
-></SPAN
-> s³u¿±cy do przeadresowania komputerów, tak aby wyeliminowaæ 
-	    luki w adresacji oraz <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Przeadresuj do sieci</I
-></SPAN
-> s³u¿±cy do przenoszenia wszystkich 
-	    komputerów/urz±dzeñ z tej sieci do innej.</P
+>Terminarz przedstawia listê dni od dnia wybranego z podrêcznego
+	    kalendarzyka. Ilo¶æ dni na li¶cie okre¶la opcja <TT
+CLASS="FILENAME"
+>timetable_days_forward</TT
+>
+	    domy¶lnie ustawiona na 7 dni. Z poziomu listy mo¿na wydrukowaæ plan dnia
+	    lub przej¶æ do edycji zdarzenia.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="MENU-NETWORKS-NEW"
->3.6.2. Nowa sieæ</A
+NAME="TIMETABLE-NEW"
+>3.13.2. Nowe zdarzenie</A
 ></H2
 ><P
->Definiuj±c now± sieæ musisz okre¶liæ jej unikaln± nazwê i klasê adresow±
-	    podaj±c adres IP sieci i maskê. Pozosta³e dane s± opcjonalne.</P
+>Dodaj±c do Terminarza nowe zadania musisz okre¶liæ krótki tytu³
+	    oraz dzieñ i godzinê (zakres godzin). Pozosta³e pola s± opcjonalne. 
+	    Zaznaczenie opcji 'prywatne' spowoduje ukrycie zadania przed wszystkimi
+	    klientami oprócz tego, który je doda³ do Terminarza. W³a¶ciwo¶æ ta
+	    pozwala na prowadzenie przez ka¿dego klienta w³asnego, prywatnego kalendarza.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="TIMETABLE-SEARCH"
+>3.13.3. Szukaj</A
+></H2
+><P
+>Wyszukuj±c w Terminarzu zadania mo¿emy okre¶liæ zakres dat,
+	    poszukiwanego klienta, klienta lub fragment tekstu, znajduj±cego
+	    siê w tytule, opisie lub notatce do zadania. Na li¶cie zadañ
+	    zostan± wy¶wietlone zadania spe³niaj±ce wszystkie podane kryteria.</P
 ></DIV
 ></DIV
 ><DIV
@@ -143,7 +152,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="menu-netdevices.html"
+HREF="menu-helpdesk.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -161,7 +170,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="menu-finances.html"
+HREF="scripts.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -171,7 +180,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Osprzêt sieciowy</TD
+>Helpdesk</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -185,7 +194,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Finanse</TD
+>Skrypty</TD
 ></TR
 ></TABLE
 ></DIV

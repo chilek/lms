@@ -88,10 +88,10 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></H2
 ><P
 >LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e
-      zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu administratorowi mo¿na
+      zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu u¿ytkownikowi mo¿na
       przydzieliæ dowoln± kombinacjê regu³ dostêpu.</P
 ><P
->Domy¶lnie zdefiniowanych jest osiem regu³ dostêpu. 
+>Domy¶lnie zdefiniowana jest nastêpuj±ca lista regu³ dostêpu:
        <UL
 ><LI
 ><P
@@ -115,7 +115,7 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></LI
 ><LI
 ><P
->manipulowanie danymi u¿ytkowników</P
+>manipulowanie danymi klientów</P
 ></LI
 ><LI
 ><P
@@ -151,11 +151,11 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></LI
 ><LI
 ><P
->zarz±dzanie terminarzem</P
+>dostêp do terminarza</P
 ></LI
 ><LI
 ><P
->brak dostêpu do modyfikacji i zak³adania kont administratorów</P
+>brak dostêpu do modyfikacji i zak³adania kont u¿ytkowników</P
 ></LI
 ><LI
 ><P
@@ -164,7 +164,7 @@ NAME="INSTALL-RIGHTS-IDEA"
 ></UL
 >
       Niektóre z nich zezwalaj± na dostêp do modu³ów oraz dwie zabraniaj±. Modu³y do których 
-      administrator ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
+      u¿ytkownik ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
       chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostêp do reszty jest zdefiniowany regu³ami.</P
 ><DIV
 CLASS="NOTE"
@@ -185,7 +185,7 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie
+>Je¶li nie ustawimy u¿ytkownikowi ¿adnej regu³y dostêpu, to LMS domy¶lnie
       przydzieli mu regu³kê 0, czyli pe³en dostêp.</P
 ></TD
 ></TR
@@ -213,13 +213,13 @@ BORDER="0"
 ><TR
 ><TD
 >-  potem  nastêpuje sprawdzenie czy modu³ pasuje do regu³ w poszczególnych
-		poziomach, do których administrator ma dostêp,</TD
+		poziomach, do których u¿ytkownik ma dostêp,</TD
 ></TR
 ><TR
 ><TD
 >-  na  koñcu podejmowana jest decyzja czy u¿ytkownik ma uprawnienia by
 		do  modu³u siê dobraæ. Je¿eli modu³ siê za³apa³ na którykolwiek poziom, który zabrania dostêpu,
-		dostêp  zostanie  zabroniony  nawet  je¿eli administrator ma ustawiony poziom, który pozwala
+		dostêp  zostanie  zabroniony  nawet  je¿eli u¿ytkownik ma ustawiony poziom, który pozwala
 		na dostêp do modu³u (np.  kto¶  ma  pe³ny  dostêp oraz brak dostêpu do modu³u dodawania
 		komputerów,  nie  bêdzie  on  móg³ siê odwo³aæ do tego modu³u). Je¿eli modu³ pasuje do
 		poziomu, który pozwala na dostêp do danego modu³u LMS zezwala na dalsz± pracê.

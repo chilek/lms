@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="Statystyki"
 HREF="menu-stats.html"><LINK
 REL="NEXT"
-TITLE="Skrypty"
-HREF="scripts.html"><LINK
+TITLE="Terminarz"
+HREF="menu-timetable.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -61,7 +61,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="scripts.html"
+HREF="menu-timetable.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -80,22 +80,22 @@ NAME="MENU-HELPDESK"
 ></H1
 ><P
 >Helpdesk (inaczej Request Tracker) to system obs³ugi zg³oszeñ.
-	    W systemie mo¿na prowadziæ bazê wszystkich zg³oszeñ i zapytañ u¿ytkowników
+	    W systemie mo¿na prowadziæ bazê wszystkich zg³oszeñ i zapytañ klientów
 	    sieci, ale tak¿e osób które nie s± wpisane do bazy LMS'a. Zg³oszenia mo¿na
 	    pogrupowaæ w kategorie (kolejki) i wyszukiwaæ wg zadanych kryteriów.
-	    Do ka¿dej kolejki mo¿na zdefiniowaæ uprawnienia dla administratorów.
+	    Do ka¿dej kolejki mo¿na zdefiniowaæ uprawnienia dla u¿ytkowników.
 	    </P
 ><P
 >W menu po lewej stronie znajduje siê pole szybkiego wyszukiwania
 	    zg³oszenia, w którym mo¿na podawaæ jego ID lub nazwisko zg³aszaj±cego je
-	    u¿ytkownika. W drugim przypadku zostanie wy¶wietlona lista wszystkich zg³oszeñ
-	    danego u¿ytkownika.</P
+	    klienta. W drugim przypadku zostanie wy¶wietlona lista wszystkich zg³oszeñ
+	    danego klienta.</P
 ><P
 >Ka¿de zg³oszenie posiada historiê, na któr± sk³adaj± siê wiadomo¶ci
-	    od administratorów i u¿ytkowników. Administrator mo¿e wys³aæ swoj± wiadomo¶æ do 
-	    u¿ytkownika, klikaj±c 'Wy¶lij' podczas dodawania wiadomo¶ci. (Nale¿y podaæ
+	    od u¿ytkowników i klientów. Administrator mo¿e wys³aæ swoj± wiadomo¶æ do 
+	    klienta, klikaj±c 'Wy¶lij' podczas dodawania wiadomo¶ci. (Nale¿y podaæ
 	    e-mail odbiorcy. Adresem nadawcy bêdzie adres kolejki, a je¶li jest pusty, adres 
-	    administratora). Wszystkie wiadomo¶ci tak¿e te wys³ane, zostaj± zapisane 
+	    u¿ytkownika). Wszystkie wiadomo¶ci tak¿e te wys³ane, zostaj± zapisane 
 	    w historii zg³oszenia. Zg³oszenie mo¿e mieæ cztery stany: nowy, otwarty, rozwi±zany 
 	    i martwy.</P
 ><P
@@ -132,7 +132,7 @@ NAME="MENU-HELPDESK-NEWQUEUE"
 >Kolejka (kategoria) posiada nazwê, opcjonalny opis oraz opcjonalny adres
 	    poczty elektronicznej, który u¿ywany jest do korespondencji. W tabeli 'Uprawnienia'
 	    definiuje siê prawa do danej kolejki, które maj± moc wiêksz± od ogólnych 
-	    uprawnieñ administratorów tzn. je¶li admin nie ma praw do danej kolejki, to nawet
+	    uprawnieñ u¿ytkowników tzn. je¶li user nie ma praw do danej kolejki, to nawet
 	    je¶li ma 'pe³ny dostêp' zg³oszeñ w tej kolejce nie zobaczy. Prawo zapisu (dodawanie/edytowanie
 	    zg³oszeñ i wiadomo¶ci) oznacza automatyczne prawo do odczytu. 
 	    </P
@@ -143,7 +143,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-HELPDESK-SEARCH"
->3.12.3. Wyszukaj</A
+>3.12.3. Wyszukiwanie</A
 ></H2
 ><P
 >Wyszukiwanie zg³oszeñ polega na wybraniu z bazy zg³oszeñ spe³niaj±cych 
@@ -162,9 +162,9 @@ NAME="MENU-HELPDESK-NEWTICKET"
 ></H2
 ><P
 >Dodaj±c nowe zg³oszenie nale¿y okre¶liæ dla niego temat, tre¶æ, wybraæ kolejkê
-	    oraz zg³aszaj±cego u¿ytkownika. Osoby spoza sieci wpisujemy w polach Nazwisko i Imiê.
+	    oraz zg³aszaj±cego klienta. Osoby spoza sieci wpisujemy w polach Nazwisko i Imiê.
 	    Opcjonalnie, je¶li wiadomo¶æ zosta³a zg³oszona poczt± elektroniczn± podajemy adres 
-	    e-mail (tak¿e dla u¿ytkownika zapisanego w bazie).</P
+	    e-mail (tak¿e dla klienta zapisanego w bazie).</P
 ></DIV
 ></DIV
 ><DIV
@@ -201,7 +201,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="scripts.html"
+HREF="menu-timetable.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -225,7 +225,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Skrypty</TD
+>Terminarz</TD
 ></TR
 ></TABLE
 ></DIV

@@ -13,7 +13,7 @@ REL="UP"
 TITLE="Interfejs U¿ytkownika (LMS-UI)"
 HREF="user.html"><LINK
 REL="PREVIOUS"
-TITLE="Taryfy i Finanse"
+TITLE="Finanse"
 HREF="menu-finances.html"><LINK
 REL="NEXT"
 TITLE="Mailing"
@@ -81,7 +81,7 @@ NAME="MENU-ACCOUNTS"
 ><P
 >Zarz±dzanie kontami ró¿nych us³ug na serwerze jest teraz
 	mo¿liwe. Funkcjonalno¶æ ta jest przeznaczona dla zaawansowanych 
-	administratorów. Wymaga znajomo¶ci tych us³ug i ich konfiguracji
+	u¿ytkowników. Wymaga znajomo¶ci tych us³ug i ich konfiguracji
 	w celu korzystania z bazy danych.</P
 ><P
 >W LMSie mo¿na utworzyæ cztery rodzaje kont: shell (1), poczta (2),
@@ -105,7 +105,7 @@ NAME="ACCOUNTS-ACCOUNTS"
 >Na li¶cie przedstawione s± podstawowe informacje o kontach.
 	    Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
 	    kolumny oraz filtrowanie wg zadanych kryteriów. Przej¶cie do edycji 
-	    danych konta nastêpuje po wybraniu ikony [Edytuj]. Administrator ma 
+	    danych konta nastêpuje po wybraniu ikony [Edytuj]. U¿ytkownik ma 
 	    tak¿e prawo do zmiany has³a.</P
 ></DIV
 ><DIV
@@ -118,7 +118,7 @@ NAME="ACCOUNTS-NEW"
 ></H2
 ><P
 >Definiuj±c dane konto musisz podaæ login, has³o i
-	    wybraæ typ konta oraz przypisaæ u¿ytkownika (lub utworzyæ tzw. konto
+	    wybraæ typ konta oraz przypisaæ klienta (lub utworzyæ tzw. konto
 	    systemowe). Nazwa domeny jest wymagana tylko dla kont mailowych. Data 
 	    wa¿no¶ci konta jest opcjonalna. Pozostawienie pustego pola z dat± 
 	    oznacza, ¿e konto nigdy nie wygasa.</P
@@ -138,8 +138,7 @@ NAME="ACCOUNTS-ALIASES"
 	    s± podstawowe informacje o nich i o kontach na które aliasy te wskazuj±.
 	    Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
 	    kolumny oraz filtrowanie wg zadanych kryteriów. Nie ma mo¿liwo¶ci
-	    edycji aliasu, nale¿y go usun±æ i utworzyæ nowy. Dodawanie nowego
-	    aliasu nastêpuje poprzez formularz na dole listy.</P
+	    edycji aliasu, nale¿y go usun±æ i utworzyæ nowy.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -152,8 +151,7 @@ NAME="ACCOUNTS-DOMAINS"
 ><P
 >Na li¶cie przedstawione s± podstawowe informacje o zdefiniowanych
 	    domenach. Mo¿liwe jest dowolne sortowanie listy poprzez klikniêcie nazwy
-	    kolumny. Mo¿liwa jest edycja danych domeny po wybraniu ikony [Edytuj].
-	    Do utworzenia nowej domeny s³u¿y formularz na dole listy.</P
+	    kolumny. Mo¿liwa jest edycja danych domeny po wybraniu ikony [Edytuj].</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -181,7 +179,7 @@ NAME="ACCOUNTS-E1"
 CLASS="SCREEN"
 >  ServerName	"LMS FTP Server"
   
-  #nazwa_bazy@host:port u¿ytkownik has³o
+  #nazwa_bazy@host:port klient has³o
   SQLConnectInfo lms@localhost:5432 lms mypassword
   
   SQLAuthTypes Crypt Plaintext
@@ -365,7 +363,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Taryfy i Finanse</TD
+>Finanse</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

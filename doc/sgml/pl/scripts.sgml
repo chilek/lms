@@ -36,7 +36,7 @@
 		    <tbody>
 			<row>
 			<entry><xref linkend="lms-notify"></entry>
-			<entry>Korespondencja seryjna do u¿ytkowników sieci</entry>
+			<entry>Korespondencja seryjna do klientów sieci</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-notify-sms"></entry>
@@ -44,7 +44,7 @@
 			</row>
 			<row>
 			<entry><xref linkend="lms-cutoff"></entry>
-			<entry>Od³±czanie u¿ytkowników zad³u¿onych</entry>
+			<entry>Od³±czanie klientów zad³u¿onych</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-etherdesc"></entry>
@@ -88,7 +88,7 @@
 			</row>
 			<row>
 			<entry><xref linkend="lms-sendinvoices"></entry>
-			<entry>Wysy³anie faktur do u¿ytkowników</entry>
+			<entry>Wysy³anie faktur do klientów</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-makemacs"></entry>
@@ -100,11 +100,11 @@
 			</row>
 			<row>
 			<entry><xref linkend="lms-makewarnings"></entry>
-			<entry>Generuje regu³ki przekierowuj±ce ruch u¿ytkowników zad³u¿onych</entry>
+			<entry>Generuje regu³ki przekierowuj±ce ruch klientów zad³u¿onych</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-makemessages"></entry>
-			<entry>Generuje regu³ki przekierowuj±ce ruch u¿ytkowników, którym ustawiono wiadomo¶æ administracyjn±</entry>
+			<entry>Generuje regu³ki przekierowuj±ce ruch klientów, którym ustawiono wiadomo¶æ administracyjn±</entry>
 			</row>
 			<row>
 			<entry><xref linkend="lms-fping"></entry>
@@ -144,10 +144,10 @@
 	       <para>%date_month_name - zostanie zast±pione nazw± bie¿±cego miesi±ca, np. marzec</para>
 	    </listitem>
 	    <listitem>
-	       <para>%saldo - zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535</para>
+	       <para>%saldo - zostanie zast±pione aktualnym saldem klienta, np. 535</para>
 	    </listitem>
 	    <listitem>
-	       <para>%abonament - zostanie zast±pione kwot± abonamentu jaka jest do danego u¿ytkownika przypisana, np. 107</para>
+	       <para>%abonament - zostanie zast±pione kwot± abonamentu jaka jest do danego klienta przypisana, np. 107</para>
 	    </listitem>
 	    <listitem>
 	       <para>%b - saldo z zanegowanym znakiem, np. 107</para>
@@ -156,13 +156,13 @@
 	       <para>%B - saldo z prawdziwym znakiem, np. -107</para>
 	    </listitem>
 	    <listitem>
-	       <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:</para>
+	       <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie klienta, np:</para>
 	    </listitem>
 	    <listitem>
-	       <para>%pin - numer PIN u¿ytkownika.</para>
+	       <para>%pin - numer PIN klienta.</para>
 	    </listitem>
 	    <listitem>
-	       <para>%phone1 - pierwszy numer telefonu u¿ytkownika.</para>
+	       <para>%phone1 - pierwszy numer telefonu klienta.</para>
 	    </listitem>
 	  </itemizedlist>
 	  <example id="notify-example">
@@ -226,17 +226,17 @@ http://www.naszasiec.pl/</screen></example>
 	   <itemizedlist>
             <listitem>
 	     <para>limit (opcjonalny)</para>
-	     <para>Pozwala na ustalenie limitu bilansu, poni¿ej którego do u¿ytkownika zostanie wys³any e-mail z upomnieniem. Domy¶lnie limit = 0</para>
+	     <para>Pozwala na ustalenie limitu bilansu, poni¿ej którego do klienta zostanie wys³any e-mail z upomnieniem. Domy¶lnie limit = 0</para>
 	     <para>Przyk³ad:	<prompt>limit = -20</prompt></para>
 	    </listitem>
             <listitem>
 	     <para>mailsubject (wymagany)</para>
-	     <para>Pozwala na ustalenie tematu e-maila wysy³anego do u¿ytkownika. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie: nie ustawione.</para>
+	     <para>Pozwala na ustalenie tematu e-maila wysy³anego do klienta. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie: nie ustawione.</para>
 	     <para>Przyk³ad:	<prompt>mailsubject = Informacje o zaleg³o¶ciach w op³atach za internet</prompt></para>
 	    </listitem>
 	    <listitem>
 	     <para>mailtemplate (wymagany)</para>
-	     <para>Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie: nie ustawione.</para>
+	     <para>Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do klienta. Wiêcej o szablonach tutaj. Domy¶lnie: nie ustawione.</para>
 	     <para>Przyk³ad:	<prompt>mailtemplate = /etc/lms/notifytemplate.txt</prompt></para>
             </listitem>
             <listitem>
@@ -256,7 +256,7 @@ http://www.naszasiec.pl/</screen></example>
             </listitem>
             <listitem>
              <para>debug_email (opcjonalny)</para>
-             <para>Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do u¿ytkowników. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</para>
+             <para>Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do klientów. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</para>
              <para>Przyk³ad:	<prompt>debug_email = lexx@domain.pl</prompt></para>
             </listitem>
           </itemizedlist>
@@ -273,7 +273,7 @@ http://www.naszasiec.pl/</screen></example>
 	  <itemizedlist>
             <listitem>
 	     <para>limit (opcjonalny)</para>
-	     <para>Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika 
+	     <para>Pozwala na ustalenie limitu bilansu poni¿ej którego do klienta 
 	     zostanie wys³any sms z upomnieniem. Domy¶lnie: 0</para>
 	     <para>Przyk³ad:	<prompt>limit = -20</prompt></para>
 	    </listitem>
@@ -286,7 +286,7 @@ http://www.naszasiec.pl/</screen></example>
 	</sect2> 
 	<sect2 id="lms-cutoff" xreflabel="lms-cutoff">
 	 <title>lms-cutoff</title>
-	 <para>Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.</para>
+	 <para>Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) klientów których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.</para>
          <para>Konfiguracjê dla lms-cutoff mo¿emy ustaliæ w pliku <filename>lms.ini</filename> w sekcji <emphasis>[cutoff]</emphasis>. Mo¿emy tam ustawiæ nastêpuj±ce parametry:</para>
 	 <itemizedlist>
           <listitem>
@@ -299,7 +299,7 @@ http://www.naszasiec.pl/</screen></example>
 	<sect2 id="lms-payments" xreflabel="lms-payments">
 	 <title>lms-payments</title>
 	 <para>Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
-	 u¿ytkownikom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
+	 klientom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
 	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</para>
 	 <para>Skrypt ten udostêpnia dwie opcje do fakturowania, które mo¿na ustawiæ
 	 w sekcji <emphasis>[payments]</emphasis> pliku <filename>lms.ini</filename>:</para>
@@ -326,8 +326,8 @@ http://www.naszasiec.pl/</screen></example>
     <para>Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
 	przez ka¿dy komputer w sieci lokalnej. W bazie danych zapisywana jest ilo¶æ
 	danych w bajtach, numer komputera z bazy lms i znacznik czasu. 
-	Od u¿ytkownika zale¿y w jakich odstêpach dane bêd± odczytywane.
-	Poniewa¿ dane odczytywane s± z pliku utworzonego przez u¿ytkownika, nie ma
+	Od klienta zale¿y w jakich odstêpach dane bêd± odczytywane.
+	Poniewa¿ dane odczytywane s± z pliku utworzonego przez klienta, nie ma
 	znaczenia z jakiego ¼ród³a pochodz±, mo¿e to byæ iptables, ipchains lub
 	program zewnêtrzny np. ipfm.
     </para>
@@ -352,7 +352,7 @@ http://www.naszasiec.pl/</screen></example>
 	    <screen>
 -f=/plik 	po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traffic.log</screen>
 	    <para>
-	    <warning><para>Czêstotliwo¶æ zapisywania danych do bazy ustala u¿ytkownik. Ustawienie
+	    <warning><para>Czêstotliwo¶æ zapisywania danych do bazy ustala klient. Ustawienie
 	    jej poni¿ej 10 minut, mo¿e spowodowaæ szybki przyrost ilo¶ci rekordów w 
 	    bazie danych, a co za tym idzie zwiêkszyæ czas oczekiwania na wy¶wietlenie
 	    wyników.</para></warning>
@@ -600,7 +600,7 @@ wins    = 213.25.209.10</screen>
 	<title>lms-sendinvoices</title>
 	<para>Skrypt s³u¿y do wysy³ania poczt± elektroniczn± faktur, jako za³±czników
 	do wiadomo¶ci. Faktury generowane s± na podstawie szablonu dostêpnego w lms-ui,
-	dlatego wymagane jest podanie u¿ytkownika i has³a do interfejsu www lms-ui.</para>
+	dlatego wymagane jest podanie klienta i has³a do interfejsu www lms-ui.</para>
 	<para>W odró¿nieniu od pozosta³ych skrytpów ten wymaga dodatkowych modu³ów perla:
 	LWP::UserAgent, MIME::Entity.</para>
 	<para>Konfiguracjê nale¿y umie¶ciæ w sekcji <emphasis>[sendinvoices]</emphasis>:
@@ -612,7 +612,7 @@ wins    = 213.25.209.10</screen>
 		</listitem>
            	<listitem>
 		    <para>lms_user</para>
-		    <para>Login administratora. Domy¶lnie: pusty</para>
+		    <para>Login u¿ytkownika. Domy¶lnie: pusty</para>
 		    <para>Przyk³ad:	<prompt>lms_user = admin</prompt></para>
 		</listitem>
            	<listitem>
@@ -645,12 +645,12 @@ wins    = 213.25.209.10</screen>
     <sect2 id="lms-makemacs" xreflabel="lms-makemacs">
 	<title>lms-makemacs</title>
 	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra filtruj±ce ruch
-	    u¿ytkowników na bazie testu adresu ¼ród³owego MAC. Dla ka¿dego komputera generowana jest
+	    klientów na bazie testu adresu ¼ród³owego MAC. Dla ka¿dego komputera generowana jest
 	    jedna regu³a dla tablicy nat, zadanego ³añcucha, testuj±ca adres ¼ród³owy IP pakietu oraz adres
 	    ¼ród³owy MAC ramki. Je¶li testy zakoñcz± siê pozytywnie nastêpuje powrót do ³añcucha nadrzêdnego
 	    za pomoc± decyzji RETURN. Na koñcu listy regu³ dodawane s± 2 regu³y przekierowuj±ce ruch http
 	    oraz webcache na podany w konfiguracji adres IP oraz port (z wykorzystaniem decyzji DNAT).
-	    Przekierowanie mo¿e odbywaæ siê na wirtualny host www z zawiadomieniem u¿ytkownika
+	    Przekierowanie mo¿e odbywaæ siê na wirtualny host www z zawiadomieniem klienta
 	    o zaleg³o¶ciach finansowych bez mo¿liwo¶ci wy³±czenia zawiadomienia. Na koñcu dodawana jest 
 	    regu³a blokuj±ca jakikolwiek inny ruch.
 	    </para>
@@ -665,8 +665,8 @@ wins    = 213.25.209.10</screen>
 		</listitem>
         	<listitem>
 		    <para>usergroups </para>
-		    <para>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</para>
+		    <para>Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</para>
 		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
 		</listitem>
            	<listitem>
@@ -727,8 +727,8 @@ wins    = 213.25.209.10</screen>
 		</listitem>
         	<listitem>
 		    <para>usergroups </para>
-		    <para>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</para>
+		    <para>Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</para>
 		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
 		</listitem>
 		<listitem>
@@ -761,7 +761,7 @@ wins    = 213.25.209.10</screen>
     <sect2 id="lms-makewarnings" xreflabel="lms-makewarnings">
 	<title>lms-makewarnings</title>
 	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
-	    u¿ytkowników o saldzie mniejszym lub równym od zadanego na zadany adres IP i port (wykorzystywana
+	    klientów o saldzie mniejszym lub równym od zadanego na zadany adres IP i port (wykorzystywana
 	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
 	    </para>
 	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[warnings]</emphasis>
@@ -775,8 +775,8 @@ wins    = 213.25.209.10</screen>
 		</listitem>
         	<listitem>
 		    <para>usergroups </para>
-		    <para>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</para>
+		    <para>Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</para>
 		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
 		</listitem>
            	<listitem>
@@ -816,7 +816,7 @@ wins    = 213.25.209.10</screen>
 		</listitem>
 	    	<listitem>
 		    <para>limit</para>
-		    <para>Saldo u¿ytkownika przy którym dla wszystkich komputerów u¿ytkownika generowane s± regu³ki przekierowuj±ce ruch. Domy¶lnie: 0 </para>
+		    <para>Saldo klienta przy którym dla wszystkich komputerów klienta generowane s± regu³ki przekierowuj±ce ruch. Domy¶lnie: 0 </para>
 		    <para>Przyk³ad:	<prompt>limit = -85</prompt></para>
 		</listitem>
 	    </itemizedlist>
@@ -824,7 +824,7 @@ wins    = 213.25.209.10</screen>
     <sect2 id="lms-makemessages" xreflabel="lms-makemessages">
 	<title>lms-makemessages</title>
 	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
-	    u¿ytkowników dla których zosta³o w³±czone przekazywanie wiadomo¶ci administracyjnej (ostrze¿enia) na zadany adres IP i port (wykorzystywana
+	    klientów dla których zosta³o w³±czone przekazywanie wiadomo¶ci administracyjnej (ostrze¿enia) na zadany adres IP i port (wykorzystywana
 	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
 	    </para>
 	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[messages]</emphasis>
@@ -838,8 +838,8 @@ wins    = 213.25.209.10</screen>
 		</listitem>
         	<listitem>
 		    <para>usergroups </para>
-		    <para>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
-		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</para>
+		    <para>Lista nazw grup klientów (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup klientów.</para>
 		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
 		</listitem>
            	<listitem>
@@ -910,15 +910,15 @@ wins    = 213.25.209.10</screen>
     </sect2>
     <sect2 id="lms-reminder" xreflabel="lms-reminder">
 	<title>lms-notify</title>
-	  <para>Skrypt s³u¿y do przypominania u¿ytkownikom o zaplanowanych na dany dzieñ 
-	  zadaniach. Lista zdarzeñ przypisanych w Terminarzu danemu u¿ytkownikowi w bie¿±cym
+	  <para>Skrypt s³u¿y do przypominania klientom o zaplanowanych na dany dzieñ 
+	  zadaniach. Lista zdarzeñ przypisanych w Terminarzu danemu klientowi w bie¿±cym
 	  dniu zostaje wys³ana na jego adres e-mail.</para>
           <para>Konfiguracjê dla lms-reminder umieszcza siê w pliku <filename>lms.ini</filename> 
 	  w sekcji <emphasis>[reminder]</emphasis>. Mo¿esz tam ustawiæ nastêpuj±ce parametry:</para>
 	   <itemizedlist>
             <listitem>
 	     <para>mailsubject (wymagany)</para>
-	     <para>Pozwala na ustalenie tematu e-maila wysy³anego do u¿ytkownika. Domy¶lnie: nie ustawione.</para>
+	     <para>Pozwala na ustalenie tematu e-maila wysy³anego do klienta. Domy¶lnie: nie ustawione.</para>
 	     <para>Przyk³ad:	<prompt>mailsubject = 'Terminarz z LMSa'</prompt></para>
 	    </listitem>
             <listitem>
@@ -941,7 +941,7 @@ wins    = 213.25.209.10</screen>
             <listitem>
              <para>debug_email (opcjonalny)</para>
              <para>Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje 
-	     wys³ana na dany email zamiast do u¿ytkowników. Przydatne do debugowania 
+	     wys³ana na dany email zamiast do klientów. Przydatne do debugowania 
 	     i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</para>
              <para>Przyk³ad:	<prompt>debug_email = alec@domain.pl</prompt></para>
             </listitem>
@@ -984,7 +984,7 @@ filter unix - n n - 10 pipe
 # plik main.cf
 mailbox_command = /usr/bin/procmail
 
-# w katalogu domowym u¿ytkownika, którego maile maj± byæ obs³ugiwane przez HelpDesk:
+# w katalogu domowym klienta, którego maile maj± byæ obs³ugiwane przez HelpDesk:
 # plik .forward
 "|IFS=' ' && exec /usr/bin/procmail -f - || exit 75 #YOUR_USERNAME"
 
@@ -1044,7 +1044,7 @@ endif
 		<listitem>
 		    <para>mail_dir</para>
 		    <para>Katalog w którym zostan± zapisane za³±czniki. Katalog ten powinien byæ
-		    dostêpny dla apache'a i u¿ytkownika uruchamiaj±cego lms-rtparser. Gdy nie ustawiono, 
+		    dostêpny dla apache'a i klienta uruchamiaj±cego lms-rtparser. Gdy nie ustawiono, 
 		    za³±czniki zostan± utracone. Domy¶lnie: niezdefiniowany.</para>
 		    <para>Przyk³ad:	<prompt>mail_dir = /usr/local/lms/mail</prompt></para>
 		</listitem>

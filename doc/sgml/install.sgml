@@ -341,6 +341,14 @@ database = /usr/local/lms/lms.db</screen>
         <para>Name of database (for SQLite path to database file). Default: lms.</para>
         <para>Example:     <prompt>database = lms</prompt></para>
        </listitem>
+          <listitem>
+        <para>server_encoding</para>
+        <para>Database encoding. Use if your database encoding is not unicode.
+	Postgres is taking up conversion by himself, but in case of
+	mysql for conversion is used php/iconv in LMS db-drivers.
+	Default: unicode.</para>
+        <para>Example:     <prompt>server_encoding = latin2</prompt></para>
+       </listitem>
          </itemizedlist>
      </para>
      </sect2>

@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Taryfy i Finanse</TITLE
+>Finanse</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -76,7 +76,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENU-FINANCES"
->3.7. Taryfy i Finanse</A
+>3.7. Finanse</A
 ></H1
 ><P
 >Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami sieci.
@@ -92,11 +92,11 @@ NAME="MENU-TARIFFS-LIST"
 >3.7.1. Lista taryf</A
 ></H2
 ><P
->Po wej¶ciu do panelu 'Taryfy i finanse' zobaczysz listê taryf zawieraj±c±
+>Po wej¶ciu do panelu 'Finanse' zobaczysz listê taryf zawieraj±c±
 	    podstawowe informacje o nich. Klikaj±c wybran± taryfê na li¶cie zostaniesz
 	    przeniesiony do modu³u 'Informacje o taryfie', gdzie mo¿esz edytowaæ jej parametry
-	    lub zamieniaæ u¿ytkownikom taryfy. W polu 'ilo¶æ u¿ytkowników' podana jest liczba
-	    u¿ytkowników, którym dana taryfa zosta³a przypisana oraz kolejno od lewej (w nawiasie) ca³kowita 
+	    lub zamieniaæ klientom taryfy. W polu 'ilo¶æ klientów' podana jest liczba
+	    klientów, którym dana taryfa zosta³a przypisana oraz kolejno od lewej (w nawiasie) ca³kowita 
 	    liczba przypisañ taryfy i liczba aktywnych przypisañ taryfy, uwzglêdniaj±ca okresy obowi±zywania.</P
 ></DIV
 ><DIV
@@ -117,7 +117,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-PAYMENTS-LIST"
->3.7.3. Lista op³at</A
+>3.7.3. Lista p³atno¶ci</A
 ></H2
 ><P
 >Lista op³at sta³ych ¶wiadczonych na rzecz innych podmiotów, oprócz elementów standardowych
@@ -132,7 +132,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENU-PAYMENTS-NEW"
->3.7.4. Nowa op³ata</A
+>3.7.4. Nowa p³atno¶æ</A
 ></H2
 ><P
 >Nowej op³acie sta³ej przypisujesz unikaln± nazwê, wierzyciela oraz kwotê i dzieñ
@@ -148,7 +148,7 @@ NAME="MENU-BALANCE"
 ></H2
 ><P
 >Historia operacji finansowych z podsumowaniem przychodu, rozchodu,
-	    wp³at i zobowi±zañ u¿ytkowników. Ikona drukarki umo¿liwia wydruk faktury odpowiadaj±cej
+	    wp³at i zobowi±zañ klientów. Ikona drukarki umo¿liwia wydruk faktury odpowiadaj±cej
 	    danej pozycji z listy.</P
 ></DIV
 ><DIV
@@ -161,7 +161,7 @@ NAME="MENU-NEWBALANCE"
 ></H2
 ><P
 >Wprowadzanie nowych operacji finansowych. Mo¿liwe jest
-	    zaksiêgowanie tej samej wp³aty lub obci±¿enia wielu u¿ytkownikom równocze¶nie.</P
+	    zaksiêgowanie tej samej wp³aty lub obci±¿enia wielu klientom równocze¶nie.</P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -207,7 +207,8 @@ NAME="MENU-INVOICES-LIST"
 ></H2
 ><P
 >Lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych faktur (ikona [Drukuj]) oraz rozliczenia
-	    danej pozycji, czyli zaksiêgowania wp³aty (ikona [Rozlicz]).</P
+	    danej pozycji, czyli zaksiêgowania wp³aty (ikona [Rozlicz]). Faktury mo¿na filtrowaæ
+	    wg zadanych kryteriów przy u¿yciu dostêpnego na li¶cie filtra.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -218,210 +219,12 @@ NAME="MENU-INVOICES-NEW"
 >3.7.8. Nowa faktura</A
 ></H2
 ><P
->Rêczne wystawianie faktur dla wybranego u¿ytkownika.</P
-><P
->LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie dowolnej
-		faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Taryfy i finanse'. Automatyczne wystawianie faktur 
-		wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
-		zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->almsd</I
-></SPAN
-></P
-><P
->Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
-		opcji w sekcji <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->[invoices]</I
-></SPAN
-> <TT
-CLASS="FILENAME"
->lms.ini</TT
->:
-		<UL
-><LI
-><P
->number_template</P
-><P
->Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
-			'%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->number_template = %N/%Y</SAMP
-></P
-></LI
-><LI
-><P
->monthly_numbering</P
-><P
->W³±czenie tej opcji spowoduje zerowanie numeracji faktur na pocz±tku ka¿dego miesi±ca.
-			Domy¶lnie: wy³±czona</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->monthly_numbering = 1</SAMP
-></P
-></LI
-><LI
-><P
->header</P
-><P
->Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->header = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</SAMP
-></P
-></LI
-><LI
-><P
->footer</P
-><P
->Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka zostanie umieszczona na dole faktury, ma³± czcionk±. Podobnie jak i w przypadku opcji header, mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</SAMP
-></P
-></LI
-><LI
-><P
->default_author</P
-><P
->Domy¶lna osoba wystawiaj±ca fakturê. Domy¶lnie: puste</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->default_author = "specjalista d/s fakturowania"</SAMP
-></P
-></LI
-></UL
->
-		Ponadto dostêpne s± zmienne:
-		<UL
-><LI
-><P
->cplace</P
-><P
->Miejsce wystawienia faktury. Domy¶lnie: puste.</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->cplace = Warszawa</SAMP
-></P
-></LI
-><LI
-><P
->template_file</P
-><P
->Szablon faktury, który powinien znajdowaæ siê w
-			katalogu <TT
-CLASS="FILENAME"
->templates</TT
->. Domy¶lnie: invoice.html.</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->template_file = invoice-mynet.html</SAMP
-></P
-></LI
-><LI
-><P
->content_type</P
-><P
->Content-type dla faktury. Je¿eli wpiszesz tutaj 'application/octet-stream'
-			to przegl±darka zechce wys³aæ plik do zapisania na dysku, zamiast go wy¶wietliæ.
-			Przydatne je¶li u¿ywasz w³asnego templejta, który wygeneruje np.rtf'a lub xls'a.
-			Domy¶lnie: 'text/html'</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->content_type = application/octet-stream</SAMP
-></P
-></LI
-><LI
-><P
->attachment_name</P
-><P
->Mo¿na podaæ nazwê pliku, jako który ma zostaæ zapisany gotowy
-			wydruk. Domy¶lnie: pusta.</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->attachment_name = faktura.xls</SAMP
-></P
-></LI
-></UL
->
-		</P
-><P
->Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
-		na wykazie bilansu finansowego (ogólnego b±d¼ pojedynczego u¿ytkownika), albo 
-		poprzez 'Lista faktur' z menu 'Taryfy i finanse'. W przypadku listy faktur, mo¿liwe jest 
-		tak¿e filtrowanie faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y 
-		i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. 
-		Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ 
-		faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darkach 
-		Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.</P
-><P
->			<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ 
-			konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie 
-			stopki i nag³ówka, czy te¿ adresu na wydruku.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-			<DIV
-CLASS="WARNING"
-><TABLE
-CLASS="WARNING"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="../images/warning.gif"
-HSPACE="5"
-ALT="Ostrze&#380;enie"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->W bazie danych zapisywane s± kwoty brutto. </P
-></TD
-></TR
-></TABLE
-></DIV
->
-		</P
+>Rêczne wystawianie faktury dla wybranego klienta. W pierwszej kolejno¶ci
+		wybieramy klienta z listy, ustawiamy typ p³atno¶ci i pozosta³e dane takie jak
+		termin p³atno¶ci, data wystawienia, a nawet numer faktury i klikamy 
+		'Wybierz/Zmieñ klienta'. Nastêpnie mo¿emy dodawaæ pozycje do faktury. 
+		'Zapisz i drukuj' koñczy edycjê nowej faktury, zapisuje j± w systemie
+		i wy¶wietla wydruk faktury w nowym oknie.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -443,7 +246,7 @@ CLASS="EMPHASIS"
 >Bilans finansowy sieci</I
 ></SPAN
 > obejmuj±cy operacje finansowe 
-		    za dany okres z mo¿liwo¶ci± wybrania administratora.</P
+		    za dany okres z mo¿liwo¶ci± wybrania u¿ytkownika.</P
 ></LI
 ><LI
 ><P
@@ -464,7 +267,7 @@ CLASS="EMPHASIS"
 >Raport wierzytelno¶ci</I
 ></SPAN
 > na dany dzieñ, dla wszystkich lub 
-		    wybranego u¿ytkownika.</P
+		    wybranego klienta.</P
 ></LI
 ><LI
 ><P
@@ -482,9 +285,19 @@ CLASS="EMPHASIS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->Bilans u¿ytkownika</I
+>Bilans klienta</I
 ></SPAN
 > na dany okres.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Faktury</I
+></SPAN
+> - wydruk wszystkich lub wybranego klienta za dany okres (z wyborem orygina³/kopia).</P
 ></LI
 ></UL
 >
