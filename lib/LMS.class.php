@@ -613,12 +613,11 @@ class LMS {
 			$_SESSION[timestamps][getuserlist][cash]  != $this->GetTS("cash")
 		  )
 		{
-			$sql="SELECT id, lastname, name, status, email, phone1, address, info, creationdate, moddate, creatorid, modid FROM users ";
 			
 			if(!isset($state)) $state="3";
 			if(!isset($order)) $order="username,asc";
 			
-			switch ($state){
+/*			switch ($state){
 				case "3":
 					$sql .= " WHERE status = 3 ";
 				break;
@@ -628,9 +627,9 @@ class LMS {
 				case "1":
 					$sql .= " WHERE status = 1 ";
 				break;
-			}
+			}*/
 			
-			$userlist = $db->FetchArray($sql);
+			$userlist = $db->FetchArray("SELECT id, lastname, name, status, email, phone1, address, info, creationdate, moddate, creatorid, modid FROM users");
 			
 			$userlist[crdate] = $userlist[creationdate];
 			$userlist[crid] = $userlist[creatorid];
