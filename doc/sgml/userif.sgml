@@ -27,8 +27,11 @@
 	    wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i komputerów w bazie oraz ich
 	    stan (pod³±czony/od³±czony), liczbê zad³u¿onych i kwota oraz przydatne lms'owe linki.</para>
 	    <para>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
-	    dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze
-	    podaj±c ich numery.</para>
+	    dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze.
+	    W polach szybkiego wyszukiwania, oprócz id u¿ytkownika lub komputera, mo¿esz 
+	    podawaæ nazwisko, nazwê, fragment adresu, telefon, email, adres IP lub MAC. 
+	    W przypadku gdy w bazie znajduje siê wiêcej u¿ytkowników pasuj±cych do szukanych
+	    danych zostan± wy¶wietlone informacje tylko o jednym u¿ytkowniku lub komputerze.</para>
 	</sect2>
  </sect1>
  <sect1 id="menu-users">
@@ -194,7 +197,8 @@
 	<title>Mailing</title>
 	<para>Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
 	u¿ytkowników twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
-	do której zostanie wys³any e-mail.</para>
+	odbiorców, do której zostanie wys³any e-mail. Grupê adresatów mo¿na okre¶liæ
+	wg statusu oraz sieci lub grup u¿ytkowników do których nale¿±.</para>
 	<para><note><para>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji mail().</para></note>
 	<note><para>Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami mo¿na
 	wykorzystaæ skrypt lms-notify lub modu³y notify i ggnotify demona <emphasis>almsd</emphasis>.</para></note></para>
@@ -208,13 +212,15 @@
  <sect1 id="menu-databases">
 	<title>Bazy danych</title>
 	<para>Z panelu 'Bazy danych' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy lms'a.
-	Kopia bazy to plik tekstowy z zawarto¶ci± wszystkich tabel w bazie, zapisywany w
+	Kopia bazy to plik tekstowy zawieraj±cy zapytania SQL i dane z wszystkich tabel w bazie, zapisywany w
 	katalogu zdefiniowanym w sekcji <emphasis>[directories]</emphasis> <filename>lms.ini</filename>
 	zmienn± <prompt>backup_dir</prompt>.</para>
 	<para><note><para>Domy¶lnie kopie zapisywane s± w katalogu <filename>lms/backups</filename>
 	dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</para></note></para>
 	<para>Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
-	</para>
+	Klikniêcie na ikonkê Odtwórz spowoduje wyczyszczenie bie¿±cej bazy danych i za³adowanie
+	do niej danych z wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
+	aktualnej bazy danych.</para>
  </sect1>
  <sect1 id="menu-admins">
 	<title>Administratorzy</title>
