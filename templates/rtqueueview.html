@@ -33,6 +33,21 @@
 			{$ticket.lastmodfied|date_format:"%Y/%m/%d, %H:%M:%S"|default:"-"}
 		</TD>
 	</TR>
+	{foreachelse}
+	<TR>
+		<TD COLSPAN="3" CLASS="flr">
+			<BR>
+			<BR>
+			<B>Ta kolejka jest pusta.</B><BR>
+			<BR>
+			<BR>
+		</TD>
+	</TR>
 	{/foreach}
+	<TR CLASS="light">
+		<TD COLSPAN="3" CLASS="fall" ALIGN="right">
+			<A HREF="?m=rtticketadd&id={$queue.id}">Nowy ticket w kolejce {$queue.name}</A>
+		</TD>
+	</TR>
 </TABLE>
 {include file="footer.html"}
