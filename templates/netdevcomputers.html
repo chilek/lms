@@ -72,4 +72,24 @@
                 <TD WIDTH="100%" COLSPAN="5" CLASS="ftop">
                 </TD>
         </TR>
+	{if $netdev.id}
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="fbl"></TD>
+		<TD WIDTH="99%" CLASS="fbr" COLSPAN=4>
+			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connectnode">
+			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
+			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdev.id}">
+			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connectnode">
+			<A HREF="javascript:document.connectnode.submit(); "><B>Pod³±cz komputer:</B></A>
+			<SELECT NAME="nodeid" {tip trigger="linknode"}>
+				{section name=nodelist loop=$nodelist }
+				{if $nodelist[nodelist].netdev == 0}
+				<OPTION VALUE="{$nodelist[nodelist].id}">{$nodelist[nodelist].name} ({$nodelist[nodelist].ip})</OPTION>
+				{/if}
+				{/section}
+			</SELECT>
+			</FORM></P>
+		</TD>
+	</TR>
+	{/if}
 </TABLE>
