@@ -1,0 +1,60 @@
+#!/usr/bin/perl
+#
+# LMS version 1.3-cvs
+#
+#  (C) 2001-2004 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+
+use DBI;
+use Config::IniFiles;
+
+my $configfile = '/etc/lms/lms.ini';
+
+$|=1;
+
+my $ini = new Config::IniFiles -file => $configfile;
+
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+my $redirect = $ini->val('squid-redirector', 'redirect') || 'http://lms.rulez.pl/';
+
+while ($adres = <STDIN>) {
+    if ((!defined($dbase))||($dbase->state)) {
+        $dbase = DBI->connect_cached("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+        $dbq = $dbase->prepare_cached("SELECT access,warning FROM nodes WHERE ipaddr=INET_ATON(?)");
+    }
+    @lista = split(' ', $adres);
+    @ip = split('/', $lista[1]);
+    $dbq->execute($ip[0]);
+    my $row = $dbq->fetchrow_hashref();
+    if ($row->{'warning'}==1 || $row->{'access'}==0) {
+        if (!($lista[0] =~ m/$redirect/)) {
+            $lista[0] = $redirect."?oldurl=".$lista[0];
+            $adres = '302:'.join(' ',@lista)."\n";
+        }
+    }
+    print $adres;
+}
+$dbq->finish;
+$dbase->disconnect();
+
