@@ -91,6 +91,18 @@ $fortunes[] = "19:16.31| <@Baseciq> SELECT users.id, lastname, SUM((type * -2 + 
 $fortunes[] = "Lexx (0:16)
 GPL nie przewiduje zdaje sie braku odpowiedzialnosci za smierc przez kod ;]";
 
+$fortunes[] = "Subject: [lms] Re: Sieci
+
+Witam.
+[hunter napisa³:]
+> e, to nie Ty mia³e¶ z arpami co¶ nie tak jako¶ tak ze 3 krzynki i pó³
+> winiacza temu?
+
+Tak, ustawia³em arp 00:00:00:00:00:00 dla adresów broadcastowych i
+pada³ mi wins ;-)
+--
+£ukasz Jaros³aw Mozer ;]";
+
 mt_srand ((double) microtime()* 100000000);
 $layout[fortune] = $fortunes[mt_rand(0,sizeof($fortunes)-1)];
 
