@@ -3118,6 +3118,18 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $this->DB->GetOne('SELECT state FROM rttickets WHERE id = ?', array($id));
 	}
 
+	function GetTicketOwner($id)
+	{
+		return $this->DB->GetOne('SELECT owner FROM rttickets WHERE id = ?', array($id));
+	}
+
+	function SetTicketOwner($ticket, $admin=NULL)
+	{
+		if(!$admin) $admin = $this->SESSION->id;
+		$this->SetTS('rttickets');
+		return $this->DB->GetOne('UPDATE rttickets SET owner=? WHERE id = ?', array($admin, $ticket));
+	}
+
 	function SetTicketState($ticket, $state)
 	{
 		($state==2 ? $resolvetime = time() : $resolvetime = 0);
@@ -3136,9 +3148,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function MessageAdd($msg)
 	{
-		$this->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, userid, mailfrom, inreplyto)
-				    VALUES (?, ?NOW?, ?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $msg['subject'], $msg['body'], $msg['adminid'], $msg['userid'], $msg['mailfrom'], $msg['inreplyto']));
 		$this->SetTS('rtmessages');
+		return $this->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, userid, mailfrom, inreplyto)
+				    VALUES (?, ?NOW?, ?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $msg['subject'], $msg['body'], $msg['adminid'], $msg['userid'], $msg['mailfrom'], $msg['inreplyto']));
 	}
 
 	function RTSearch($search, $order='createtime,desc')
