@@ -3,30 +3,30 @@
 	<TR CLASS="DARK">
 		<TD class="fall">
 			<IMG src="img/group.gif" border="0" ALT="" align="absmiddle">
-			<B><A name="groups">Przynale¿no¶æ do grup:</A></B>
+			<B><A name="groups">{t}Groups Membership:{/t}</A></B>
 		</TD>
 	</TR>
 	<TR>
 		<TD WIDTH="100%" class="fall">
-			<table cellpadding="5" cellspacing="0" WIDTH="100%">
-				<tr class="dark">
-					<TD WIDTH="1%" NOWRAP class="fleftu"><B>Nazwa:</B></TD>
-					<TD WIDTH="1%" NOWRAP class="fbt" COLSPAN="2">Opis:</TD>
-					<TD WIDTH="97%" NOWRAP class="fbt">ID:</TD>
+			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
+				<TR class="dark">
+					<TD WIDTH="1%" NOWRAP class="fleftu"><B>{t}Name:{/t}</B></TD>
+					<TD WIDTH="1%" NOWRAP class="fbt" COLSPAN="2">{t}Description:{/t}</TD>
+					<TD WIDTH="97%" NOWRAP class="fbt">{t}ID:{/t}</TD>
 					<TD WIDTH="1%" class="frightu">&nbsp;</TD>
-				</tr>
+				</TR>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{foreach from=$usergroups item=usergroup}
-				<tr bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=usergroupinfo&id={$usergroup.id}">{$usergroup.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP COLSPAN="2">{$usergroup.description}</TD>
 					<TD WIDTH="97%" NOWRAP>({$usergroup.id|string_format:"%04d"})</TD>
-					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, 'Jeste¶ pewien, ¿e chcesz usun±æ u¿ytkownika z grupy?')" HREF="?m=useredit&action=usergroupdelete&usergroupid={$usergroup.id}&id={$userinfo.id}" {tip text="Usuwa u¿ytkownika z grupy"}>Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
+					<TD WIDTH="1%" ALIGN="RIGHT" NOWRAP><A onClick="return confirmLink(this, '{t}Are you shure, you want to remove customer from group?{/t}')" HREF="?m=useredit&action=usergroupdelete&usergroupid={$usergroup.id}&id={$userinfo.id}" {tip text="{t}Remove customer from group"}>{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
 				</TR>
 				{foreachelse}
 				<TR>
 					<TD align="center" WIDTH="100%" colspan="5"><p>&nbsp;</p>
-						<p><B>Ten u¿ytkownik nie nale¿y do ¿adnych grup.</B></p>
+						<p><B>{t}That customer is not a member of any group.{/t}</B></p>
 						<p>&nbsp;</p>
 					</TD>
 				</TR>
@@ -34,9 +34,9 @@
 				<FORM METHOD="POST" NAME="usergroupassignment" ACTION="?m=useredit&action=usergroupadd&id={$userinfo.id}">
 				<TR bgcolor="#DFD5BD">
 					<TD COLSPAN="4" CLASS="ftop">
-						<B>Dodaj:</B>
-						<SELECT SIZE="1" NAME="usergroupid" {tip text="Wybierz grupê do której ma byæ przypisany u¿ytkownik"}>
-							<OPTION VALUE="0">... wybierz grupê ...</OPTION>
+						<B>{t}Add:{/t}</B>
+						<SELECT SIZE="1" NAME="usergroupid" {tip text="Select group to attribute to customer"}>
+							<OPTION VALUE="0">{t}... select group ...{/t}</OPTION>
 							{section name=t loop=$otherusergroups}
 							<OPTION VALUE="{$otherusergroups[t].id}">{$otherusergroups[t].name} ({$otherusergroups[t].id|string_format:"%04d"})</OPTION>
 							{/section}
@@ -44,11 +44,11 @@
 						<NOBR>
 					</TD>
 					<TD ALIGN="RIGHT" CLASS="ftop" ROWSPAN="2" NOWRAP>
-						<A HREF="javascript:document.usergroupassignment.submit()" {tip text="Dodaj u¿ytkownika do grupy"}>Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
+						<A HREF="javascript:document.usergroupassignment.submit()" {tip text="Add customer to group"}>{t}Add{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
 					</TD>
 				</TR>
 				</FORM>
-			</table>
+			</TABLE>
 		</TD>
 	</TR>
 </TABLE>

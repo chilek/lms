@@ -5,18 +5,18 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR class="dark">
 		<TD WIDTH="97%" CLASS="fleftu">
-			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Nazwa:</B><BR>
-			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;Opis:
+			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{t}Name:{/t}</B><BR>
+			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{t}Description:{/t}
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			ID:
+		<TD WIDTH="1%" CLASS="fbt" align="right">
+			{t}ID:{/t}
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			U¿ytkowników:
+		<TD WIDTH="1%" CLASS="fbt" align="right">
+			{t}Members:{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
 			<NOBR>
-			<B>Razem: {$listdata.total}</B>
+			<B>{t 0=$listdata.total}Total: $0{/t}</B>
 			</NOBR>
 		</TD>
 	</TR>
@@ -27,17 +27,17 @@
 			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{$usergrouplist[usergroups].name}</B><BR>
 			{if $usergrouplist[usergroups].description}<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{$usergrouplist[usergroups].description}{/if}
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=usergroupinfo&id={$usergrouplist[usergroups].id}';">
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=usergroupinfo&id={$usergrouplist[usergroups].id}';">
 			({$usergrouplist[usergroups].id|string_format:"%04d"})
 		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=usergroupinfo&id={$usergrouplist[usergroups].id}';">
+		<TD WIDTH="1%" align="right" onClick="return self.location.href='?m=usergroupinfo&id={$usergrouplist[usergroups].id}';">
 			{$usergrouplist[usergroups].userscount} 
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
-			{if $usergrouplist[usergroups].users}<A HREF="javascript:alert('Nie mo¿na usun±æ grupy do której nale¿± jacy¶ u¿ytkownicy!');">{else}<A HREF="?m=usergroupdelete&id={$usergrouplist[usergroups].id}" onClick="return confirmLink(this,'Jeste¶ pewien, ¿e chcesz usun±æ t± grupê?');">{/if}<IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0"></A>
-				<A HREF="?m=usergroupedit&id={$usergrouplist[usergroups].id}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" BORDER="0"></A>
-				<A HREF="?m=usergroupinfo&id={$usergrouplist[usergroups].id}"><IMG SRC="img/info.gif" ALT="[ Info ]" BORDER="0"></A>
+			{if $usergrouplist[usergroups].users}<A HREF="javascript:alert('{t}Group with members cannot be deleted!{/t}');">{else}<A HREF="?m=usergroupdelete&id={$usergrouplist[usergroups].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to remove this group?{/t}');">{/if}<IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" BORDER="0"></A>
+				<A HREF="?m=usergroupedit&id={$usergrouplist[usergroups].id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" BORDER="0"></A>
+				<A HREF="?m=usergroupinfo&id={$usergrouplist[usergroups].id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]" BORDER="0"></A>
 			</NOBR>
 		</TD>
 	</TR>
@@ -46,7 +46,7 @@
 		<TD COLSPAN="4" ALIGN="center" CLASS="fall">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Nie ma wprowadzonych ¿adnych grup do bazy danych!</B></p>
+			<p><B>{t}There is no such groups!{/t}</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -54,7 +54,7 @@
 	{/section}
 	<TR CLASS="light">
 		<TD CLASS="fleftu" COLSPAN="2" WIDTH="98%" ALIGN="right">
-			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Razem:</B>
+			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{t}Total:{/t}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
 			<B>{$listdata.totalcount} </B>
