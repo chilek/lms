@@ -3,7 +3,7 @@
 /*
  * LMS version 1.4-cvs
  *
- *  (C) Copyright 2001-2003 LMS Developers
+ *  (C) Copyright 2001-2004 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -25,6 +25,7 @@
  */
 
 include_once('class.php');
+$error = $_GET['error'];
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html><head>
@@ -48,50 +49,27 @@ INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border
 		<TR>
 			<TD>
    <P>
-                                        <IMG SRC="http://lms.rulez.pl/img/logo.png" BORDER="0" ALT="[ Witamy w LMS 1.3 ;-) ]">
+                                        <IMG SRC="http://lms.rulez.pl/img/logo.png" BORDER="0" ALT="[ Witamy w LMS 1.5 ]">
                                 </P>
                                 <P>
                                 <B>
-                                        &copy; 2002 Rulez Development Team - <a href="http://www.rulez.pl/" target="_blank">http://www.rulez.pl</A><BR>
+                                        &copy; 2001-2004 LMS Developers - <a href="http://lms.rulez.pl/" target="_blank">http://lms.rulez.pl</A><BR>
                                         &copy; 2001-2003 ASK NetX - <a href="http://www.netx.waw.pl/" target="_blank">http://www.netx.waw.pl</A><BR>
 				</B>
 				</P>
 				<P><DIV ALIGN="CENTER"><CENTER>
-<H2>
-W celu sprawdzenia stanu konta, prosimy wype³niæ poni¿szy formularz podaj±c numer umowy oraz PIN, który przes³any zosta³ na Pañstwa skrzynkê e-mail.
-<!--						{if $error}<FONT COLOR="red"><B>{$error}</B></FONT><BR>{/if} -->
-							<TABLE>
-						<FORM METHOD="POST" NAME="loginform" ACTION="balanceview.php">
-								<TR>
-									<TD align="right">
-										<B>Nr Umowy:&nbsp;</B>
-									</TD>
-									<TD>
-										<INPUT TYPE="TEXT" NAME="loginform[login]" SIZE="20" ACCESSKEY="l"><BR>
-									</TD>
-								</TR>
-								<TR>
-									<TD align="right">
-										<B>PIN:&nbsp;</B>
-									</TD>
-									<TD>
-										<INPUT TYPE="PASSWORD" NAME="loginform[pwd]" SIZE="20"><BR>
-									</TD>
-								</TR>
-								<TR>
-									<TD COLSPAN="2">
-										&nbsp;
-									</TD>
-								</TR>
-                                                                        <TD COLSPAN="2" align="CENTER">
-                                                                                <INPUT TYPE="SUBMIT" NAME="loginform[submit]" VALUE="Moje Konto -- Logowanie">
-                                                                        </TD>
-								</TR>
-
-
-
-							</TABLE>
-
+		    <H2>W celu sprawdzenia stanu konta, prosimy wype³niæ poni¿szy formularz podaj±c numer umowy oraz PIN, który przes³any zosta³ na Pañstwa skrzynkê e-mail.</H2>
+<?php 
+if($error)
+echo '<FONT COLOR="red"><B>Wprowadzono b³êdne dane!</B></FONT><BR>';
+?>
+						<P><FORM METHOD="POST" NAME="loginform" ACTION="balanceview.php">
+							<B>Nr Umowy:</B><BR>
+							<INPUT TYPE="TEXT" NAME="loginform[login]" SIZE="20" ACCESSKEY="l"><BR>
+							<B>PIN:</B><BR>
+							<INPUT TYPE="PASSWORD" NAME="loginform[pwd]" SIZE="20"><BR><BR>
+                                                        <INPUT TYPE="SUBMIT" NAME="loginform[submit]" VALUE="Logowanie">
+						</FORM></P>
 				</CENTER></DIV></P>
 				<P>
 					<BR>

@@ -3,7 +3,7 @@
 /*
  * LMS version 1.4-cvs
  *
- *  (C) Copyright 2001-2003 LMS Developers
+ *  (C) Copyright 2001-2004 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -123,8 +123,6 @@ require_once($_SMARTY_DIR.'/Smarty.class.php');
 require_once($_LIB_DIR.'/LMSDB.php');
 require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/LMS.class.php');
-
-require_once("authentication.inc");
 
 // Initialize LMSDB object
 

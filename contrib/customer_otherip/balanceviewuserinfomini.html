@@ -62,7 +62,7 @@
 			{if $userinfo.email}<A HREF="mailto:{$userinfo.email}">{$userinfo.email}</A>{else}brak{/if}
 		</TD>
 	</TR>
-{if $userinfo.gguin neq ""}
+	{if $userinfo.gguin neq "" && $userinfo.gguin !=0}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="http://www.gadu-gadu.pl/users/status.asp?id={$userinfo.gguin}&styl=1" BORDER="0" ALT="">
@@ -71,8 +71,8 @@
 			<A HREF="gg:{$userinfo.gguin}">{$userinfo.gguin}</A>
 		</TD>
 	</TR>
-{/if}
-{if $userinfo.nip neq ""}
+	{/if}
+	{if $userinfo.nip neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT" ALIGN=CENTER>
 		<B>NIP</B>
@@ -81,33 +81,19 @@
 			<B>{$userinfo.nip}</B>
 		</TD>
 	</TR>
-{/if}
+	{/if}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%" CLASS="FLEFT" valign="top">
 			<IMG SRC="img/money.gif" BORDER="0" ALT="">
 		</TD>
-		<TD WIDTH="1%">
+		<TD WIDTH="1%" valign="top">
 			<B>Saldo:<B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-		<H2>	{if $userinfo.balance > 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} z³</B></FONT>{else}{$userinfo.balance|default:"0"} z³{/if}</H2>
+		<H2>	{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} z³</B></FONT>{else}{$userinfo.balance|default:"0"} z³{/if}</H2>
 		</TD>
 	</TR>
-{*	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/money.gif" BORDER="0" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>Taryfa:</B>
-		</TD>
-
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<!--<A HREF="?m=tariffinfo&id={$userinfo.tariff}">{$userinfo.tariffname}</A> ({$userinfo.tariffvalue} z³/mc)-->
-		{$userinfo.tariffname}
-		{$userinfo.tariffvalue} z³/mc
-		</TD>
-	</TR>
-*}	<TR CLASS="LIGHT">
+	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
 		</TD>
@@ -142,11 +128,3 @@
 	</TR>
 </TABLE>
 
-{*
-<TR CLASS="LIGHT">
-<TD WIDTH="1%" CLASS="FLEFT">
-</TD>
-<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-</TD>
-</TR>
-*}

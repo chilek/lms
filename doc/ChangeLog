@@ -5,6 +5,8 @@ wersja 1.4.0rc2 Evalla (??/??/2004):
   - usuniête stare pliki UPGRADE* (alec)
   - w userinfo pokazujemy PIN tylko gdy jest ró¿ny od zera (alec)
   - poprawiony b³±d BTS#0000200 (alec)
+  - uzupe³niona dokumentacjia (alec)
+  - poprawki w contrib/customer_otherip (alec)
 
 wersja 1.4.0rc1 Evalla (18/09/2004):
 

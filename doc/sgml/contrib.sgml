@@ -15,6 +15,10 @@
 		<para>Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
 		bilans i informacje o u¿ytkowniku, który jest w³a¶cicielem komputera
 		o tym adresie.</para>
+		<para>Dla u¿ytkowników którzy korzystaj± z proxy, nie korzystaj± 
+		z sieci tylko w domu lub nie chc± aby dzieci/ma³¿onkowie/pracownicy 
+		mieli wgl±d w dane fiansowe dotycz±ce ich dostêpu do sieci/innych 
+		us³ug przeznaczone jest "Moje konto 2".</para>
 		</sect2>
 		<sect2 id="customer-install">
 		<title>Instalacja</title>
@@ -22,6 +26,27 @@
 		pod adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie
 		ustawiæ poprawn± ¶cie¿kê do <filename>lms.ini</filename> w pliku 
 		<filename>index.php</filename>.</para>	
+		</sect2>
+	</sect1>
+	<sect1 id="contrib-customer2">
+    	<title>Moje konto 2</title>
+		<sect2 id="customer2-intro">
+		<title>Wstêp</title>
+		<para>W katalogu <filename>contrib/customer_otherip</filename> znajduje siê
+		odpowiednik <filename>contrib/customer</filename>, który nie rozpoznaje
+		u¿ytkownika po adresie IP, ale wymaga logowania. Uwierzytelnianie odbywa siê na 
+		podstawie numeru PIN oraz telefonu u¿ytkownika, ale mo¿liwe jest tak¿e
+		wykorzystanie ID lub numeru umowy (dodatkowe pole w bazie) - patrz 
+		pliki balanceview.php i authentication.inc).</para>
+		<para>Skrypt wy¶wietla bilans i informacje o u¿ytkowniku, a tak¿e w po³±czeniu
+		z <filename>contrib/formularz_przelewu_wplaty</filename> umo¿liwia u¿ytkownikowi
+		wydrukowanie druku wp³aty na kwotê zaleg³o¶ci.</para>
+		</sect2>
+		<sect2 id="customer2-install">
+		<title>Instalacja</title>
+		<para>Instalacja sprowadza siê do ustawienia opcji <filename>sys_dir</filename>
+		w sekcji <emphasis>[directories]</emphasis> pliku lms.ini oraz zlinkowania 
+		katalogu <filename>img</filename> z lms'owymi ikonkami.</para>	
 		</sect2>
 	</sect1>
 	<sect1 id="contrib-sqlpanel">
