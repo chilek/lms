@@ -172,6 +172,7 @@
 				<member>type - typ operacji (przychów, rozchód, wp³ata, obci±¿enie)</member>
 				<member>value - warto¶æ w z³otych</member>
 				<member>userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy)</member>
+				<member>invoiceid - identyfikator faktury obejmuj±cej dan± operacjê</member>
 				<member>comment - opis operacji</member>
 			</simplelist>
 		</sect2>
@@ -181,6 +182,8 @@
 				<member>id - identyfikator</member>
 				<member>name - nazwa</member>
 				<member>value - warto¶æ netto w z³otych</member>
+				<member>taxvalue - wysoko¶æ podatku w procentach</member>
+				<member>sww - numer PKWiU</member>
 				<member>uprate - ograniczenie szybko¶ci transferu danych wychodz±cych</member>
 				<member>downrate - ograniczenie szybko¶ci transferu danych przychodz±cych</member>
 				<member>description - opis</member>
@@ -194,6 +197,37 @@
 				<member>userid - identyfikator u¿ytkownika</member>
 				<member>period - okres (ilo¶æ dni)</member>
 				<member>at - dzieñ naliczania</member>
+				<member>invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="invoices">
+			<title>Faktury ('invoices')</title>
+   			<simplelist>
+				<member>id - identyfikator</member>
+				<member>number - numer w roku</member>
+				<member>cdate - data wystawienia</member>
+				<member>paytime - czas zap³aty (ilo¶æ dni)</member>
+				<member>customerid - identyfikator u¿ytkownika-nabywcy</member>
+				<member>name - nazwa (nazwisko i imiê) nabywcy</member>
+				<member>address - adres nabywcy</member>
+				<member>nip - nip nabywcy</member>
+				<member>zip - kod pocztowy nabywcy</member>
+				<member>phone - telefon nabywcy</member>
+				<member>city - miasto nabywcy</member>
+				<member>finished - pole okre¶laj±ce zamkniêcie faktury</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="invoicecontents">
+			<title>Faktury - cd. ('invoicecontents')</title>
+   			<simplelist>
+				<member>invoiceid - identyfikator faktury</member>
+				<member>value - kwota pozycji</member>
+				<member>taxvalue - wysoko¶æ podatku w procentach</member>
+				<member>sww - numer PKWiU</member>
+				<member>content - u¿yta jednostka (najczê¶ciej 'szt.')</member>
+				<member>count - ilo¶æ</member>
+				<member>description - opis</member>
+				<member>tariffid - identyfikator taryfy</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="timestamps">
@@ -217,11 +251,11 @@
 		<title>Format pliku konfiguracyjnego</title>
 		<para>W pliku konfiguracyjnym LMS'a (standardowo <filename>/etc/lms/lms.ini</filename>)
 		mo¿na ustawiaæ parametry <emphasis>LMS-UI</emphasis>, daemona <emphasis>almsd</emphasis>
-		oraz skryptów perlowych (<emphasis>LMS_MGC</emphasis>). Przy czym format 
+		oraz skryptów perlowych (<emphasis>LMS_MGC</emphasis>). Przy czym format
 		warto¶ci parametrów dla skryptów perlowych podlega wiêkszym restrykcjom.</para>
 		<sect2 id="comments">
 			<title>Komentarze</title>
-			<para>Programy parsuj±ce plik konfiguracyjny pomijaj± wszystkie linie 
+			<para>Programy parsuj±ce plik konfiguracyjny pomijaj± wszystkie linie
 			zaczynaj±ce siê znakiem '#' lub ';'. Komentarze poprzedzone jednym z tych
 			znaków mo¿na tak¿e wstawiaæ w tej samej linii co sekcje i opcje.</para>
 		</sect2>
@@ -232,8 +266,8 @@
 			powinny byæ unikalne.</para>
 			<para>Sekcje i parametry umieszcza siê w osobnych liniach. Parametry
 			sk³adaj± siê z klucza i warto¶ci. Klucz to nazwa parametru konfiguracyjnego
-			sk³adaj±ca siê z liter i/lub cyfr. W tej samej linii co klucz, po znaku 
-			równo¶ci, umieszcza siê warto¶æ parametru. Je¶li warto¶æ zawiera znaki specjalne 
+			sk³adaj±ca siê z liter i/lub cyfr. W tej samej linii co klucz, po znaku
+			równo¶ci, umieszcza siê warto¶æ parametru. Je¶li warto¶æ zawiera znaki specjalne
 			nale¿y j± obj±æ w apostrofy lub cudzys³ów.</para>
 			<example>
 				<title>Format opcji konfiguracyjnych</title>
