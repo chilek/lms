@@ -70,6 +70,8 @@ wersja 1.1.5 (??/??/2003):
     byæ i to dostêpne. Faktury s± wystawiane przez lms-payments, o ile podczas
     dodawania 'assignmentu' do usera zaznaczy³o siê pole 'faktura'. Docelowo
     bêdzie mo¿na tworzyæ pojedyñcze faktury, ale to najwcze¶niej jutro.
+  - zracji zmienionego kawa³ek czasu temu systemu finansów lms-mgc nie ma ju¿
+    %TID i %TVAL
   
 wersja 1.1.4 Tanith (03/10/2003):
   

@@ -1179,11 +1179,15 @@ class LMS
 	function GetInvoicesList()
 	{
 		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value) AS value, COUNT(invoiceid) AS count FROM invoices LEFT JOIN invoicecontents ON invoiceid = id GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
+		{
 			foreach($result as $idx => $row)
 			{
 				$result[$idx]['year'] = date('Y',$row['cdate']);
 				$result[$idx]['month'] = date('m',$row['cdate']);
 			}
+			$result['startdate'] = $this->DB->GetOne('SELECT MIN(cdate) FROM invoices');
+			$result['enddate'] = $this->DB->GetOne('SELECT MAX(cdate) FROM invoices');
+		}
 		return $result;
 	}
 
@@ -2282,6 +2286,12 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.300  2003/12/03 00:48:52  lukasz
+ * - z racji zmienionego systemu finansów nie maj± racji bytu ju¿ %TID i %TVAL
+ *   w lms-mgc.
+ * - tsave
+ * - ALEC, Ciebie to nie razi ¿e formatujesz inaczej commitlogi ni¿ reszta?
+ *
  * Revision 1.299  2003/12/02 03:57:13  lukasz
  * - poprawka genfake'a
  * - prawie skoñczone drukowanie masowe

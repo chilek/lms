@@ -1,5 +1,6 @@
 {include file="header.html"}
 <H1>{$layout.pagetitle}</H1>
+<FORM METHOD="POST" NAME="marks" ACTION="?m=invoicelist{if $page ne ""}&page={$page}{/if}&action=updatemarks">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%" CLASS="fbt">
@@ -29,7 +30,6 @@
 			<B>Strona: {if $page > 1}<A HREF="?m=invoicelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=invoicelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="?m=invoicelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
 		</TD>
 	</TR>
-	<FORM METHOD="POST" NAME="marks" ACTION="?m=invoicelist{if $page ne ""}&page={$page}{/if}&action=updatemarks">
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
 	{assign var=invoice value=$invoicelist[invoicelist]}
@@ -57,53 +57,64 @@
 			{cycle print=false}
 			{if $marks.$invoiceid}<IMG ALIGN="absmiddle" SRC="img/mark.gif">{/if}
 			<INPUT STYLE="border-style: none; background-color: {cycle};"  TYPE="checkbox" NAME="mark[{$invoiceid}]" VALUE="1">
-			<A HREF="?m=invoice&id={$invoice.id}"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0"></A>
+			<A HREF="?m=invoice&id={$invoice.id}"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0" TARGET="_BLANK"></A>
 		</TD>
 	</TR>
 	{/section}
-	</FORM>
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
 			<B>Strona: {if $page > 1}<A HREF="?m=invoicelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=invoicelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="?m=invoicelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
 		</TD>
 	</TR>
 	<TR CLASS="dark">
-		<TD WIDTH="100%" ALIGN="right" CLASS="fall" COLSPAN="7">
-			<A HREF="javascript:document.marks.submit(); ">Uaktualnij zaznaczenia <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
-			<A HREF="?m=invoicelist&action=clearmarks">Wyczy¶æ zaznaczenia <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
-			<A HREF="?m=invoice&print=cached" TARGET="_BLANK">Drukuj zaznaczone <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
-		</TD>
-	</TR>
-</TABLE>
-<BR>
-<TABLE WIDTH="1%" CELLPADDING="3" ALIGN="CENTER">
-	<TR CLASS="dark">
-		<TD COLSPAN="3" CLASS="fall" ALIGN="CENTER">
+		<TD COLSPAN="7" class="fall" COLSPAN="7">
 			<B>Zaznacz:</B>
 		</TD>
 	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" NOWRAP ALIGN="CENTER" ROWSPAN="2" CLASS="fleft">
-			<INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="action" VALUE="markrange" CHECKED>
-		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>Od:</B>
-		</TD>
-		<TD WIDTH="98%" NOWRAP CLASS="fright">
-			{html_select_date field_array="from" prefix="" time=$starttime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
-			&nbsp;
-			{html_select_time field_array="from" prefix="" time=$starttime display_seconds=0}
-		</TD>
-	</TR>
-	<TR CLASS="light">
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>Do:</B>
-		</TD>
-		<TD WIDTH="98%" NOWRAP CLASS="fright">
-			{html_select_date field_array="to" prefix="" time=$endtime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
-			&nbsp;
-			{html_select_time field_array="to" prefix="" time=$endtime display_seconds=0}
+	<TR CLASS="dark">
+		<TD COLSPAN="7" class="fall" COLSPAN="7">
+			<TABLE WIDTH="100%">
+				<TR>
+					<TD WIDTH="99%">
+						<TABLE WIDTH="100%">
+							<TR>
+								<TD WIDTH="1%" ROWSPAN="2">
+									<INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="action" VALUE="markrange">
+								</TD>
+								<TD WIDTH="1%">
+									<B>Od:</B>
+								</TD>
+								<TD WIDTH="98%">
+									{html_select_date field_array="from" prefix="" time=$listdata.startdate field_order="DMY" field_separator=" / " start_year=$listdata.startyear end_year=$listdata.endyear}&nbsp;{html_select_time field_array="from" prefix="" time=$listdata.startdate display_seconds=0}
+								</TD>
+							</TR>
+							<TR>
+								<TD WIDTH="1%">
+									<B>Do:</B>
+								</TD>
+								<TD WIDTH="98%">
+									{html_select_date field_array="to" prefix="" time=$listdata.enddate field_order="DMY" field_separator=" / " start_year=$listdata.startyear end_year=$listdata.endyear}&nbsp;{html_select_time field_array="to" prefix="" time=$listdata.enddate display_seconds=0}
+								</TD>
+							</TR>
+							<TR>
+								<TD WIDTH="1%">
+									<INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="action" VALUE="marktoday">
+								</TD>
+								<TD WIDTH="98%" COLSPAN="2">
+									<B>Dzisiejszy dzieñ</B>
+								</TD>
+							</TR>								
+						</TABLE>
+					</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="right">
+						<A HREF="javascript:document.marks.submit(); ">Uaktualnij zaznaczenia <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
+						<A HREF="?m=invoicelist&action=clearmarks">Wyczy¶æ zaznaczenia <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
+						<A HREF="?m=invoice&print=cached" TARGET="_BLANK">Drukuj zaznaczone <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
+					</TD>
+				</TR>
+			</TABLE>
 		</TD>
 	</TR>
 </TABLE>
+</FORM>
 {include file="footer.html"}
