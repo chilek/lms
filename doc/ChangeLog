@@ -21,6 +21,11 @@ wersja 1.0pre5 (??/??/2003):
     ALTER TABLE `users` ADD `gguin` INT AFTER `phone3`;
     ALTER TABLE `users` ADD `zip` VARCHAR(6) AFTER `address` ,
     ADD `city` VARCHAR(32) AFTER `zip` ADD `nip` varchar(16) AFTER `city`;
+  - dodano opcjê do lms-notify: 
+  		-D, --template-file=/etc/lms/another.template.txt
+	uruchamia ona alternatywny plik template, przydatne przy wysy³aniu 
+	upomnienia, etc.
+  
 	  
 wersja 1.0pre4 (21/01/2003):
 
