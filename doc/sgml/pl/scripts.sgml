@@ -111,6 +111,10 @@
 			<entry>Badanie aktywno¶ci komputerów.</entry>
 			</row>
 			<row>
+			<entry><xref linkend="lms-reminder"></entry>
+			<entry>Przypominanie o zaplanowanych zadaniach z Terminarza</entry>
+			</row>
+			<row>
 			<entry><xref linkend="lms-rtparser"></entry>
 			<entry>Backend do Helpdesk'a.</entry>
 			</row>
@@ -899,6 +903,45 @@ wins    = 213.25.209.10</screen>
 		    <para>Przyk³ad:	<prompt>temp_file = /tmp/hosts</prompt></para>
 		</listitem>
 	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-reminder" xreflabel="lms-reminder">
+	<title>lms-notify</title>
+	  <para>Skrypt s³u¿y do przypominania u¿ytkownikom o zaplanowanych na dany dzieñ 
+	  zadaniach. Lista zdarzeñ przypisanych w Terminarzu danemu u¿ytkownikowi w bie¿±cym
+	  dniu zostaje wys³ana na jego adres e-mail.</para>
+          <para>Konfiguracjê dla lms-reminder umieszcza siê w pliku <filename>lms.ini</filename> 
+	  w sekcji <emphasis>[reminder]</emphasis>. Mo¿esz tam ustawiæ nastêpuj±ce parametry:</para>
+	   <itemizedlist>
+            <listitem>
+	     <para>mailsubject (wymagany)</para>
+	     <para>Pozwala na ustalenie tematu e-maila wysy³anego do u¿ytkownika. Domy¶lnie: nie ustawione.</para>
+	     <para>Przyk³ad:	<prompt>mailsubject = 'Terminarz z LMSa'</prompt></para>
+	    </listitem>
+            <listitem>
+             <para>mailfrom</para>
+             <para>Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na 
+	     niektórych MTA (np. exim) konto to musi istnieæ w systemie. 
+	     Domy¶lnie nieustawione.</para>
+             <para>Przyk³ad:	<prompt>mailfrom = staff@domain.pl</prompt></para>
+            </listitem>
+            <listitem>
+             <para>mailfname</para>
+             <para>Nazwa nadawcy maila.</para>
+             <para>Przyk³ad:	<prompt>mailfname = LMS</prompt></para>
+            </listitem>
+            <listitem>
+             <para>smtp_server</para>
+             <para>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1.</para>
+             <para>Przyk³ad:	<prompt>smtp_server = smtp.mydomain.pl</prompt></para>
+            </listitem>
+            <listitem>
+             <para>debug_email (opcjonalny)</para>
+             <para>Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje 
+	     wys³ana na dany email zamiast do u¿ytkowników. Przydatne do debugowania 
+	     i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</para>
+             <para>Przyk³ad:	<prompt>debug_email = alec@domain.pl</prompt></para>
+            </listitem>
+          </itemizedlist>
     </sect2>
     <sect2 id="lms-rtparser" xreflabel="lms-rtparser">
 	<title>lms-rtparser</title>
