@@ -1,106 +1,184 @@
 <!-- $Id$ -->
 {include file="clearheader.html"}
-<TABLE WIDTH="600" ALIGN="center" CELLSPACING="3">
+</PRE>
+<DIV STYLE="page-break-after: always">
+	{$invoice.test|string_format:"%d"}
+</DIV>
+<DIV STYLE="page-break-after: always">
+<TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
-		<TD COLSPAN="2" ALIGN="center">{$invoice.provider.footer}<HR></TD>
-	</TR>
-	<TR>
-		<TD COLSPAN="2" ALIGN="center">
-			<TABLE>
-				<TR>
-					<TD ALIGN="center">
-						<H1>Faktura VAT nr {$invoice.content.invoiceid}/LMS/{$invoice.year}</H1>
-						<H5>ORYGINA£ / KOPIA</H5>
-					</TD>
-				</TR>
-			</TABLE>
+		<TD WIDTH="98%" CLASS="hdf" COLSPAN="2" VALIGN="TOP">
+			<B>Faktura VAT nr. {$invoice.id}/LMS/{$invoice.cdate|date_format:"%Y"}</B><BR>
+			<B>{$type}</B>
 		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="50%">
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" VALIGN="TOP">
+			Data wystawienia:<BR>
+			Data sprzeda¿y:<BR>
+			Termin zap³aty:<BR>
+			Sposób zap³aty:
 		</TD>
-		<TD WIDTH="50%" ALIGN="right">
-			Data wystawienia: {$invoice.content.time|date_format:"%d.%m.%Y"}<BR>
-			Data sprzeda¿y:  {$invoice.content.time|date_format:"%d.%m.%Y"}<BR>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH="50%" VALIGN="top">
-			Sprzedawca:<BR>
-			{$invoice.provider.name}<BR>
-			{$invoice.provider.address}<BR>
-			{$invoice.provider.zip}&nbsp;{$invoice.provider.city} <BR>
-			Bank:&nbsp;{$invoice.provider.bank}<BR>
-			Konto:&nbsp;{$invoice.provider.account}
-		</TD>
-		<TD WIDTH="50%" VALIGN="top">
-			Nabywca:<BR>
-			{$invoice.userdata.username}<BR>
-			{$invoice.userdata.address}<BR>
-			{$invoice.userdata.zip}&nbsp;{$invoice.userdata.city}<BR>
-			{if $invoice.userdata.nip}NIP: {$invoice.userdata.nip}{/if}
+		<TD WIDTH="1%" NOWRAP ALIGN="LEFT" VALIGN="TOP">
+			{$invoice.cdate|date_format:"%d.%m.%Y"}<BR>
+			{$invoice.cdate|date_format:"%d.%m.%Y"}<BR>
+			{$invoice.pdate|date_format:"%d.%m.%Y"}<BR>
+			przelew
 		</TD>
 	</TR>
 	<TR>
-		<TD COLSPAN="2" ALIGN="center">
-			<BR>
-			<TABLE BORDER="1">
-				<TR>
-					<TD CLASS="head" ALIGN="center">Lp.</TD>
-					<TD CLASS="head" ALIGN="center" WIDTH="50%">Nazwa us³ugi</TD>
-					<TD CLASS="head" ALIGN="center">Ilo¶æ</TD>
-					<TD CLASS="head" ALIGN="center">Cena jedn.</TD>
-					<TD CLASS="head" ALIGN="center">Warto¶æ netto</TD>
-					<TD CLASS="head" ALIGN="center">VAT</TD>
-					<TD CLASS="head" ALIGN="center">Warto¶æ VAT</TD>
-					<TD CLASS="head" ALIGN="center">Warto¶æ brutto</TD>
-				</TR>
-				{foreach from=$invoice.content item=invpos}
-				<TR>
-					<TD ALIGN="right" NOWRAP>1</TD>
-					<TD ALIGN="left">{$invoice.content.comment}</TD>
-					<TD ALIGN="right" NOWRAP>1</TD>
-					<TD ALIGN="right" NOWRAP>{$invoice.content.value|string_format:"%0.2f z³"}</TD>
-					<TD ALIGN="right" NOWRAP>{$invoice.content.value|string_format:"%0.2f z³"}</TD>
-					<TD ALIGN="right" NOWRAP>7%</TD>
-					<TD ALIGN="right" NOWRAP>{$invoice.content.vat|string_format:"%0.2f z³"}</TD>
-					<TD ALIGN="right" NOWRAP>{$invoice.content.brutto|string_format:"%0.2f z³"}</TD>
-				</TR>
-				{/foreach}
-		<TR>
-		    <TD COLSPAN="4" ALIGN="right">Razem:</TD>
-		    <TD ALIGN="right" NOWRAP>{$invoice.content.value|string_format:"%0.2f z³"}</TD>
-		    <TD ALIGN="right">-</TD>
-		    <TD ALIGN="right" NOWRAP>{$invoice.content.vat|string_format:"%0.2f z³"}</TD>
-		    <TD ALIGN="right" NOWRAP>{$invoice.content.brutto|string_format:"%0.2f z³"}</TD>
-		</TR>
-	    </TABLE>
-	    <BR>
-	</TD>
-    </TR>
-    <TR>
-	<TD COLSPAN="2">
-		Do zap³aty: {$invoice.content.brutto} z³ (s³ownie: {$invoice.content.brutto|to_words})<BR>
-Termin p³atno¶ci: {$invoice.deadline}&nbsp;dni <BR>
-Sposób p³atno¶ci: przelew <BR>
-Wystawi³: {$layout.logname} <BR>
-	</TD>
-    </TR>
-    <TR>
-	<TD COLSPAN="2" ALIGN="center">
-	    <BR><BR>
-	    <TABLE><TR>
-		<TD WIDTH="35%" ALIGN="center">
-		    ..............................................<BR>
-		    Podpis osoby upowa¿nionej<BR>do otrzymania faktury VAT
+		<TD COLSPAN="3" ALIGN="CENTER" WIDTH="100%">
+			<B>*** DOKUMENT PROFORMA ***</B>
 		</TD>
-		<TD WIDTH="30">
-		</TD>
-		<TD WIDTH="35%" ALIGN="center">
-		    ..............................................<BR>
-		    Podpis osoby upowa¿nionej<BR> do wystawienia faktury VAT
-		</TD>
-	    </TR></TABLE>
-	</TD>
-    </TR>
+	</TR>
 </TABLE>
+<TABLE WIDTH="100%" CELLSPACING="3">
+	<TR>
+		<TD WIDTH="10%" VALIGN="TOP" ALIGN="RIGHT">
+			<B>Sprzedaj±cy:</B>
+		</TD>
+		<TD WIDTH="40%" VALIGN="TOP">
+			{$_config.invoices.header|replace:"\\n":"<BR>"}
+		</TD>
+		<TD WIDTH="10%" VALIGN="TOP" ALIGN="RIGHT">
+			<B>Kupuj±cy:</B><BR>
+			<BR>
+			<BR>
+			<BR>
+			<BR>
+			<BR>
+			<BR>
+			<B>Nr. klienta:</B>
+			
+		</TD>
+		<TD WIDTH="40%" VALIGN="TOP">
+			{$invoice.name}<BR>
+			{$invoice.address}<BR>
+			{$invoice.zip} {$invoice.city}<BR>
+			<BR>
+			<BR>
+			{if $invoice.nip neq ""}NIP: {$invoice.nip}{/if}<BR>
+			{if $invoice.phone neq ""}Tel: {$invoice.phone}{/if}<BR>
+			{$invoice.customerid|string_format:"%04d"}
+			
+			
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="4">
+			&nbsp;<BR>
+			&nbsp;
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="100%" CELLPADDING="3">
+<TR CLASS="FALL">
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>Lp.</B>
+	</TD>
+	<TD WIDTH="91%" CLASS="head" ALIGN="CENTER">
+		<B>Nazwa wyrobu, towaru lub us³ugi:</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>SWW:</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>JM:</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>Ilo¶æ:</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>Cena jedn. netto:</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>Warto¶æ netto:</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>St. PTU:</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>Kwota PTU:</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
+		<B>Warto¶æ brutto:</B>
+	</TD>
+</TR>
+{cycle values="#FFFFFF,#EEEEEE" print=false}
+{foreach from=$invoice.content item=item}
+<TR BGCOLOR="{cycle}">
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT">{counter}.</TD>
+	<TD WIDTH="91%" CLASS="FLR">
+		{$item.description}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR">
+		{$item.sww}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
+		{$item.content}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
+		{$item.count}
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.basevalue|string_format:"%.2f"} z³
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.totalbase|string_format:"%.2f"} z³
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT">
+		{$item.taxvalue}%
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.totaltax|string_format:"%.2f"} z³
+	</TD>
+	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
+		{$item.total|string_format:"%.2f"} z³
+	</TD>
+</TR>
+{/foreach}
+<TR>
+	<TD COLSPAN="6" WIDTH="96&" ALIGN="RIGHT" CLASS="ftop">
+		<B>Razem:</B>
+	</TD>
+	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+		{$invoice.totalbase|string_format:"%.2f"} z³
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+		<B>x</B>
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$invoice.totaltax|string_format:"%.2f"} z³
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$invoice.total|string_format:"%.2f"} z³
+	</TD>
+</TR>
+<TR>
+	<TD COLSPAN="6" WIDTH="96&" ALIGN="RIGHT">
+		&nbsp;
+	</TD>
+	<TD COLSPAN="4" WIDTH="4%" ALIGN="CENTER">
+		<B>w tym:</B>
+	</TD>
+</TR>
+{foreach from=$invoice.taxest item=item}
+<TR>
+	<TD COLSPAN="6" WIDTH="96&" ALIGN="RIGHT">
+		&nbsp;
+	</TD>
+	<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fall" NOWRAP>
+		{$item.base|string_format:"%.2f"} z³
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
+		{$item.taxvalue}%
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$item.tax|string_format:"%.2f"} z³
+	</TD>
+	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
+		{$item.total|string_format:"%.2f"} z³
+	</TD>
+</TR>
+{/foreach}
+</TABLE>
+		
+</DIV>

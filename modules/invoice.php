@@ -24,10 +24,11 @@
  *  $Id$
  */
 
-$layout[pagetitle] = 'Faktura VAT nr '.$_GET[id].'/LMS/'.$_GET[year];
-
-$invoice = $LMS->GetInvoiceContent($_GET[id],$_GET[year]);
-
+$invoice = $LMS->GetInvoiceContent($_GET[id]);
+$layout[pagetitle] = 'Faktura VAT nr '.$invoice[number].'/LMS/'.date('Y',$invoice[cdate]);
+echo '<PRE>';
+print_r($invoice);
+$invoice[test] = 128.34;
 //$invoice[content][vat] = $invoice[content][value] * 0.07;
 //$invoice[content][brutto] = $invoice[content][vat] + $invoice[content][value];
 
@@ -45,7 +46,7 @@ $invoice[provider][bank] 	= $_CONFIG[finances][bank];
 $invoice[provider][account] 	= $_CONFIG[finances][account];
 $invoice[deadline] 		= $_CONFIG[finances][deadline];
 
-setlocale(LC_ALL, "pl_PL");
+//setlocale(LC_ALL, "pl_PL");
 
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('invoice',$invoice);

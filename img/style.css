@@ -43,5 +43,6 @@ TEXTAREA.pre	{ font-size:  8pt; font-family: Courier, Courier New; }
 SELECT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; }
 SELECT.alert	{ background-color: #FF9B9B; }
 BUTTON		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 0pt; background-color: #DFD5BD; }
+.hdf		{ font-size: 12pt; }
 //-->
 </STYLE>
