@@ -1047,7 +1047,7 @@ class LMS
 						$ownertable['idx'][] = $idx;
 						$ownertable['owner'][] = $row['owner'];
 					}
-					array_multisort($ownertable['owner'],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable['idx']);
+					array_multisort($ownertable['owner'],($direction == "desc" ? SORT_DESC : SORT_ASC),$ownertable['idx']);
 					foreach($ownertable['idx'] as $idx)
 						$nnodelist[] = $nodelist[$idx];
 					$nodelist = $nnodelist;
@@ -1831,6 +1831,21 @@ class LMS
 			foreach($netdevlist as $idx => $row)
 				$netdevlist[$idx]['takenports'] = $this->CountNetDevLinks($row['id']);
 
+		switch($order)
+		{
+			case "takenports":
+				foreach($netdevlist as $idx => $row)					
+				{
+					$tptable['idx'][] = $idx;
+					$tptable['takenports'][] = $row['takenports'];
+				}
+				array_multisort($tptable['takenports'],($direction == "desc" ? SORT_DESC : SORT_ASC),$tptable['idx']);
+				foreach($tptable['idx'] as $idx)
+					$nnetdevlist[] = $netdevlist[$idx];
+				$netdevlist = $nnetdevlist;
+			break;
+		}
+		
 		$netdevlist['total'] = sizeof($netdevlist);
 		$netdevlist['order'] = $order;
 		$netdevlist['direction'] = $direction;
@@ -2242,6 +2257,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.318  2003/12/15 22:39:37  alec
+ * - dodane sortowanie wg liczby portów zajêtych
+ *
  * Revision 1.317  2003/12/15 22:23:58  alec
  * - niejako przez pomy³kê wpad³em na b³±d w sortowaniu listy kompów
  *   wg w³a¶ciciela, poprawione

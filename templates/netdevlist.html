@@ -14,7 +14,7 @@
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
 			<img src="img/port.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=ports{if $listdata.direction eq "asc" && $listdata.order eq "ports"},desc{/if}">Ilo¶æ portów:</A> {if $listdata.order eq "ports"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<IMG SRC="img/netdev_takenports.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;Zajête porty:<BR>
+			<IMG SRC="img/netdev_takenports.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<A href="?m=netdevlist&o=takenports{if $listdata.direction eq "asc" && $listdata.order eq "takenports"},desc{/if}">Zajête porty:</A> {if $listdata.order eq "takenports"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			<img src="img/serialnumber.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=serialnumber{if $listdata.direction eq "asc" && $listdata.order eq "serialnumber"},desc{/if}">Numer Seryjny:</A> {if $listdata.order eq "serialnumber"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right">
