@@ -735,7 +735,7 @@ class LMS
 
 	function GetUserNodes($id)
 	{
-		if($result = $this->DB->GetAll("SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, access, warning FROM nodes WHERE ownerid=? ORDER BY name ASC", array($id))){
+		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, access, warning FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id))){
 			$result['total'] = sizeof($result);
 			$result['ownerid'] = $id;
 		}
@@ -744,8 +744,8 @@ class LMS
 
 	function GetUserBalance($id)
 	{
-		$bin = $this->DB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='3'", array($id));
-		$bou = $this->DB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='4'", array($id));
+		$bin = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE userid=? AND type=3', array($id));
+		$bou = $this->DB->GetOne('SELECT SUM(value) FROM cash WHERE userid=? AND type=4', array($id));
 		return round($bin-$bou,2);
 	}
 
@@ -775,18 +775,18 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 				switch ($saldolist['type'][$i]){
 
-					case "3":
+					case '3':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = "Wp³ata";
+						$saldolist['name'][$i] = 'Wp³ata';
 					break;
 
-					case "4":
+					case '4':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = "Obci±¿enie";
+						$saldolist['name'][$i] = 'Obci±¿enie';
 					break;
 				}
 
-				$saldolist['date'][$i]=date("Y/m/d H:i",$saldolist['time'][$i]);
+				$saldolist['date'][$i]=date('Y/m/d H:i',$saldolist['time'][$i]);
 
 				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] = $saldolist['comment'][$i];
 			}
@@ -813,7 +813,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetUserBalanceListByDate($id, $date=NULL)
 	{
-		if($tslist = $this->DB->GetAll("SELECT cash.id AS id, time, type, value, userid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE userid=? ORDER BY time", array($id)))
+		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, userid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE userid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -828,14 +828,14 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 				switch ($saldolist['type'][$i]){
 
-					case "3":
+					case '3':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = "wp³ata";
+						$saldolist['name'][$i] = 'wp³ata';
 					break;
 
-					case "4":
+					case '4':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
-						$saldolist['name'][$i] = "obci±¿enie";
+						$saldolist['name'][$i] = 'obci±¿enie';
 					break;
 				}
 
@@ -852,7 +852,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 						case 'wp³ata':	$list['summary'] += $saldolist['value'][$i]; break;
 						case 'obci±¿enie': $list['summary'] -= $saldolist['value'][$i]; break;
 					}	
-					$list['date'][] = date("Y/m/d H:i",$saldolist['time'][$i]);
+					$list['date'][] = date('Y/m/d H:i',$saldolist['time'][$i]);
 					$list['adminname'][] = $saldolist['adminname'][$i];
 					(strlen($saldolist['comment'][$i])<3) ? $list['comment'][] = $saldolist['name'][$i] : $list['comment'][] = $saldolist['comment'][$i];
 				}
@@ -880,13 +880,13 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	
 	function UserStats()
 	{
-		$result['total'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE deleted=0");
-		$result['connected'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=3 AND deleted=0");
-		$result['awaiting'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=2 AND deleted=0");
-		$result['interested'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=1 AND deleted=0");
+		$result['total'] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE deleted=0');
+		$result['connected'] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE status=3 AND deleted=0');
+		$result['awaiting'] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE status=2 AND deleted=0');
+		$result['interested'] = $this->DB->GetOne('SELECT COUNT(id) FROM users WHERE status=1 AND deleted=0');
 		$result['debt'] = 0;
 		$result['debtvalue'] = 0;
-		if($balances = $this->DB->GetCol("SELECT SUM((type * -2 + 7)*value) FROM cash LEFT JOIN users ON userid = users.id WHERE deleted = 0 GROUP BY userid HAVING SUM((type * -2 + 7)*value) < 0"))
+		if($balances = $this->DB->GetCol('SELECT SUM((type * -2 + 7)*value) FROM cash LEFT JOIN users ON userid = users.id WHERE deleted = 0 GROUP BY userid HAVING SUM((type * -2 + 7)*value) < 0'))
 		{
 			foreach($balances as $idx)
 				$result['debtvalue'] -= $idx;
@@ -901,69 +901,69 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetNodeOwner($id)
 	{
-		return $this->DB->GetOne("SELECT ownerid FROM nodes WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT ownerid FROM nodes WHERE id=?', array($id));
 	}
 
 	function NodeUpdate($nodedata)
 	{
-		$this->SetTS("nodes");
-		return $this->DB->Execute("UPDATE nodes SET name=?, ipaddr=inet_aton(?), mac=?, netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=? WHERE id=?", array(strtoupper($nodedata['name']), $nodedata['ipaddr'], strtoupper($nodedata['mac']), $nodedata['netdev'], $this->SESSION->id, $nodedata['access'], $nodedata['warning'], $nodedata['ownerid'], $nodedata['id']));
+		$this->SetTS('nodes');
+		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr=inet_aton(?), mac=UPPER(?), netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=? WHERE id=?', array($nodedata['name'], $nodedata['ipaddr'], $nodedata['mac'], $nodedata['netdev'], $this->SESSION->id, $nodedata['access'], $nodedata['warning'], $nodedata['ownerid'], $nodedata['id']));
 	}
 
 	function DeleteNode($id)
 	{
-		$this->SetTS("nodes");
-		return $this->DB->Execute("DELETE FROM nodes WHERE id=?", array($id));
+		$this->SetTS('nodes');
+		return $this->DB->Execute('DELETE FROM nodes WHERE id=?', array($id));
 	}
 
 	function GetNodeNameByMAC($mac)
 	{
-		return $this->DB->GetOne("SELECT name FROM nodes WHERE mac=?", array($mac));
+		return $this->DB->GetOne('SELECT name FROM nodes WHERE mac=?', array($mac));
 	}
 
 	function GetNodeIDByIP($ipaddr)
 	{
-		return $this->DB->GetOne("SELECT id FROM nodes WHERE ipaddr=inet_aton(?)", array($ipaddr));
+		return $this->DB->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?)', array($ipaddr));
 	}
 
 	function GetNodeIDByMAC($mac)
 	{
-		return $this->DB->GetOne("SELECT id FROM nodes WHERE mac=?", array($mac));
+		return $this->DB->GetOne('SELECT id FROM nodes WHERE mac=?', array($mac));
 	}
 
 	function GetNodeIDByName($name)
 	{
-		return $this->DB->GetOne("SELECT id FROM nodes WHERE name=?", array($name));
+		return $this->DB->GetOne('SELECT id FROM nodes WHERE name=?', array($name));
 	}
 
 	function GetNodeIPByID($id)
 	{
-		return $this->DB->GetOne("SELECT inet_ntoa(ipaddr) FROM nodes WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT inet_ntoa(ipaddr) FROM nodes WHERE id=?', array($id));
 	}
 
 	function GetNodeMACByID($id)
 	{
-		return $this->DB->GetOne("SELECT mac FROM nodes WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT mac FROM nodes WHERE id=?', array($id));
 	}
 
 	function GetNodeName($id)
 	{
-		return $this->DB->GetOne("SELECT name FROM nodes WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT name FROM nodes WHERE id=?', array($id));
 	}
 
 	function GetNodeNameByIP($ipaddr)
 	{
-		return $this->DB->GetOne("SELECT name FROM nodes WHERE ipaddr=inet_aton(?)", array($ipaddr));
+		return $this->DB->GetOne('SELECT name FROM nodes WHERE ipaddr=inet_aton(?)', array($ipaddr));
 	}
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow("SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access, warning, creationdate, moddate, creatorid, modid, netdev FROM nodes WHERE id=?", array($id)))
+		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access, warning, creationdate, moddate, creatorid, modid, netdev FROM nodes WHERE id=?', array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
-			$result['creationdateh'] = date("Y-m-d, H:i",$result['creationdate']);
-			$result['moddateh'] = date("Y-m-d, H:i",$result['moddate']);
+			$result['creationdateh'] = date('Y-m-d, H:i',$result['creationdate']);
+			$result['moddateh'] = date('Y-m-d, H:i',$result['moddate']);
 			$result['owner'] = $this->GetUsername($result['ownerid']);
 			$result['netid'] = $this->GetNetIDByIP($result['ip']);
 			$result['netname'] = $this->GetNetworkName($result['netid']);
@@ -1022,41 +1022,41 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $nodelist;
 	}
 
-	function SearchNodeList($args, $order="name,asc")
+	function SearchNodeList($args, $order='name,asc')
 	{
-		if($order=="")
-			$order="name,asc";
+		if($order=='')
+			$order='name,asc';
 		
-		list($order,$direction) = explode(",",$order);
+		list($order,$direction) = explode(',',$order);
 		
-		($direction=="desc") ? $direction = "desc" : $direction = "asc";
+		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 		
 		switch($order)
 		{
-			case "name":
-				$sqlord = " ORDER BY name";
+			case 'name':
+				$sqlord = ' ORDER BY name';
 			break;
-			case "id":
-				$sqlord = " ORDER BY id";
+			case 'id':
+				$sqlord = ' ORDER BY id';
 			break;
-			case "mac":
-				$sqlord = " ORDER BY mac";
+			case 'mac':
+				$sqlord = ' ORDER BY mac';
 			break;
-			case "ip":				
-				$sqlord = " ORDER BY ipaddr";
+			case 'ip':		
+				$sqlord = ' ORDER BY ipaddr';
 			break;
-			case "ownerid":
-				$sqlord = " ORDER BY ownerid";
+			case 'ownerid':
+				$sqlord = ' ORDER BY ownerid';
 			break;
 		}
 		
 		foreach($args as $idx => $value)
 		{
-			if($value!="")	
+			if($value!='')	
 			{
 				switch($idx)
 				{
-					case "ipaddr" :
+					case 'ipaddr' :
 						$searchargs[] = "inet_ntoa(ipaddr) ?LIKE? '%".trim($value)."%'";
 					break;
 					default :
@@ -1066,13 +1066,13 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		}
 		
 		if($searchargs)
-			$searchargs = " WHERE ownerid > 0 AND ".implode(" AND ",$searchargs);
+			$searchargs = ' WHERE ownerid > 0 AND '.implode(' AND ',$searchargs);
 		
-		if($username = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users"))
+		if($username = $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users'))
 			foreach($username as $idx => $row)
 				$usernames[$row['id']] = $row['username'];
 		
-		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access FROM nodes ".$searchargs." ".($sqlord != "" ? $sqlord." ".$direction : "")))
+		if($nodelist = $this->DB->GetAll('SELECT id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access FROM nodes '.$searchargs.' '.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
 			foreach($nodelist as $idx => $row)
 			{
@@ -1082,7 +1082,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 			switch($order)
 			{
-				case "owner":
+				case 'owner':
 					foreach($nodelist as $idx => $row)					
 					{
 						$ownertable['idx'][] = $idx;
@@ -1109,11 +1109,11 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function NodeSet($id)
 	{
-		$this->SetTS("nodes");
-		if($this->DB->GetOne("SELECT access FROM nodes WHERE id=?", array($id)) == 1 )
-			return $this->DB->Execute("UPDATE nodes SET access=0, modid=? WHERE id=?", array($this->SESSION->id,$id));
+		$this->SetTS('nodes');
+		if($this->DB->GetOne('SELECT access FROM nodes WHERE id=?', array($id)) == 1 )
+			return $this->DB->Execute('UPDATE nodes SET access=0, modid=? WHERE id=?', array($this->SESSION->id,$id));
 		else
-			return $this->DB->Execute("UPDATE nodes SET access=1, modid=? WHERE id=?", array($this->SESSION->id,$id));
+			return $this->DB->Execute('UPDATE nodes SET access=1, modid=? WHERE id=?', array($this->SESSION->id,$id));
 	}
 
 	function NodeSetU($id,$access=FALSE)
