@@ -67,6 +67,7 @@ $LANGDEFS = array(
 $_language = 'en'; // default language
 
 $langs = explode(',', ($_CONFIG['phpui']['lang'] ? $_CONFIG['phpui']['lang'] : $_SERVER['HTTP_ACCEPT_LANGUAGE']));
+
 foreach ($langs as $val) 
 {
 	switch (substr($val, 0, 2))
@@ -89,23 +90,5 @@ setlocale(LC_COLLATE, $LANGDEFS[$_language]['locale']);
 setlocale(LC_CTYPE, $LANGDEFS[$_language]['locale']);
 setlocale(LC_TIME, $LANGDEFS[$_language]['locale']);
 setlocale(LC_NUMERIC, $LANGDEFS[$_language]['locale']);
-
-if(strtolower($_CONFIG['database']['server_encoding']) != 'unicode')
-{
-	switch($_CONFIG['database']['type'])
-	{
-		case 'postgres':
-			$DB->Execute("SET CLIENT_ENCODING TO 'UNICODE'");
-		break;
-		
-		case 'mysql':
-			$DB->iconv = $_CONFIG['database']['server_encoding'];
-			if(!function_exists('iconv'))
-				die(trans('Iconv support is required by \'server_encoding\' option!'));
-			if(!iconv($DB->iconv, $DB->iconv, 'test'))
-				die(trans('Wrong \'server_encoding\' value or encoding not supported by iconv!'));
-		break;
-	}
-}
 
 ?>
