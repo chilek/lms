@@ -73,7 +73,7 @@ if(isset($ticketedit))
 	$ticket['owner'] = $ticketedit['owner'];
 }
 
-$layout['pagetitle'] = trans('Ticket Edit No $0',sprintf("%06d",$ticket['ticketid']));
+$layout['pagetitle'] = trans('Ticket Edit: No. $0',sprintf("%06d",$ticket['ticketid']));
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

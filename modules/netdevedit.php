@@ -267,7 +267,7 @@ unset($replacelist['direction']);
 
 $netdevips = $LMS->GetNetDevIPs($_GET['id']);
 
-$layout['pagetitle'] = trans('Edit Device: $0 ($1)', $netdevdata['name'], $netdevdata['producer']);
+$layout['pagetitle'] = trans('Device Edit: $0 ($1)', $netdevdata['name'], $netdevdata['producer']);
 
 $SMARTY->assign('error',$error);
 $SMARTY->assign('netdevinfo',$netdevdata);

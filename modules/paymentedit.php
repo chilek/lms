@@ -121,7 +121,7 @@ if(isset($payment))
 		$payment['at'] = sprintf('%02d/%02d',($payment['at']%100),$payment['at']/100+1);
 }
 	
-$layout['pagetitle'] = trans('Edit Payment: $0',$payment['name']);
+$layout['pagetitle'] = trans('Payment Edit: $0',$payment['name']);
 
 $SMARTY->assign('payment',$payment);
 $SMARTY->assign('error',$error);

@@ -78,7 +78,7 @@ unset($netdevices['total']);
 unset($netdevices['order']);
 unset($netdevices['direction']);
 
-$layout['pagetitle'] = trans('Info Node: $0',$nodeinfo['name']);
+$layout['pagetitle'] = trans('Node Info: $0',$nodeinfo['name']);
 
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);

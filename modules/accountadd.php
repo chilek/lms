@@ -32,7 +32,7 @@
  *    ftp = 8	(0000000000001000)
  */
 
-$layout['pagetitle'] = trans('New account addition');
+$layout['pagetitle'] = trans('New Account');
 
 if($account = $_POST['account'])
 {

@@ -111,7 +111,7 @@ elseif(isset($userdata))
 		$userinfo['shownodes'] = TRUE;
 }
 
-$layout['pagetitle'] = trans('Customer Data Edit: $0',$userinfo['username']);
+$layout['pagetitle'] = trans('Customer Edit: $0',$userinfo['username']);
 
 $SMARTY->assign('usernodes',$LMS->GetUserNodes($userinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($userinfo['id']));

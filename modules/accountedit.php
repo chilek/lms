@@ -76,6 +76,8 @@ switch ($option)
     
     default:
     
+	$layout['pagetitle'] = trans('Account Edit: $0', $account['login']);
+    
 	if($_POST['account'])
 	{
 		$oldlogin = $account['login'];
