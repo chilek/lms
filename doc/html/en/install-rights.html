@@ -1,0 +1,296 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Access rights</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Installation and configuration"
+HREF="install.html"><LINK
+REL="PREVIOUS"
+TITLE="Basic Configuration"
+HREF="install-config.html"><LINK
+REL="NEXT"
+TITLE="Upgrade"
+HREF="install-upgrade.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="install-config.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Installation and configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="install-upgrade.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INSTALL-RIGHTS"
+>2.6. Access rights</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-RIGHTS-IDEA"
+>2.6.1. Idea</A
+></H2
+><P
+>LMS may define up to 256 rules of access to the system. 
+      Each can forbid or permit access to definite modules. 
+      To each user we can freely assign combination of access rules.</P
+><P
+>By default following access rules list is defined:
+       <UL
+><LI
+><P
+>full access</P
+></LI
+><LI
+><P
+>read only (excluding Helpdesk)</P
+></LI
+><LI
+><P
+>nodes connection/disconnection</P
+></LI
+><LI
+><P
+>finances management</P
+></LI
+><LI
+><P
+>configuration reload</P
+></LI
+><LI
+><P
+>customers management</P
+></LI
+><LI
+><P
+>nodes management</P
+></LI
+><LI
+><P
+>stats access</P
+></LI
+><LI
+><P
+>mailing access</P
+></LI
+><LI
+><P
+>Helpdesk (RT) administration</P
+></LI
+><LI
+><P
+>Helpdesku (RT) operation</P
+></LI
+><LI
+><P
+>accounts management</P
+></LI
+><LI
+><P
+>UI configuration</P
+></LI
+><LI
+><P
+>networks and devices management</P
+></LI
+><LI
+><P
+>timetable management</P
+></LI
+><LI
+><P
+>users edition and addition forbidden</P
+></LI
+><LI
+><P
+>no access</P
+></LI
+></UL
+>
+      Some of them permit access to modules and two forbid. Modules that user
+      has always access is: welcome, copyrights,  logout, chpasswd 
+      (chpasswd can change only own password), access to others is defined by rules.</P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>If we do not define to user any access rule, then LMS implicitly define 
+      rule 0 for him - full access.</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-RIGHTS-HOW"
+>2.6.2. How does it work?</A
+></H2
+><P
+> Decision if user have right to access to module or not, looks like this:          
+          <TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>-  First of all: checking list of modules that user always have access.</TD
+></TR
+><TR
+><TD
+>-  Next:  checking if module mach to rules in each levels that user
+          have access.</TD
+></TR
+><TR
+><TD
+>-  Finally: Decision if user have authorizations to access to modules. If module 
+          mach to any level that forbid access then access will be forbiden even if user have 
+          level that permit access to module. (for example. Someone have full access and no access 
+          to adding computer module then he would not be able to appeal to this module). 
+          If module  maches to level that permit access to module. Then LMS permit farther work. 
+          But if module does not match on any level then also will be printed no-access-msg.</TD
+></TR
+></TBODY
+></TABLE
+>
+          </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="install-config.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="install-upgrade.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Basic Configuration</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="install.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Upgrade</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

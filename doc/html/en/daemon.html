@@ -1,0 +1,372 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>A.L.E.C's LMS Daemon</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Upgrade"
+HREF="install-upgrade.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="install-upgrade.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+>&nbsp;</TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="DAEMON"
+></A
+>Chapter 3. A.L.E.C's LMS Daemon</H1
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DAEMON-INTRO"
+>3.1. Basics</A
+></H1
+><P
+>Written in C program facilitate management of services. Daemon is
+         responsible for starting of appropriate modules on user demand only. Modules
+         are making configuration files based on data from LMS's database and
+         restarting selected services on a server.
+         </P
+><P
+>Why such name? The better part of daemon code was written by one of developers - Aleksander 
+     'A.L.E.C' Machniak, nevertheless must underline a contribution of Marcina 'Lexx' Krol. Program
+     include fragments of code of Mateusza 'mteg' Golicz's old daemon and use Nicolas Devillard's iniparser
+     library.
+     </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-REQUIREMENTS"
+>3.1.1. Requirements</A
+></H2
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>A.L.E.C's LMS Daemon</I
+></SPAN
+> require:
+                     <UL
+><LI
+><P
+>LMS user interface installation</P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+>libmysqlclient</TT
+> (full MySQL installation or respective packet) 
+                    or <TT
+CLASS="FILENAME"
+>libpq</TT
+> in case of PostgreSQL database or <TT
+CLASS="FILENAME"
+>sqlite</TT
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+>libdl</TT
+> (that is in every present-day distribution)</P
+></LI
+><LI
+><P
+>C compiler</P
+></LI
+></UL
+>
+                     </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-INSTALL"
+>3.1.2. Installation</A
+></H2
+><P
+>Prior to compilation you must set options described on following listing
+               with help of <TT
+CLASS="FILENAME"
+>./configure</TT
+> script (in brackets are shown
+               default values):
+<PRE
+CLASS="SCREEN"
+>  --help                help
+  --enable-debug0       SQL queries logging (disabled)
+  --enable-debug1       events logging (disabled)
+  --with-pgsql          enables using of PostgreSQL database (disabled)
+  --with-mysql          enables using of MySQL database (enabled)
+  --with-sqlite         enables using of SQLite database (disabled)
+  --prefix=DIR          program install directory (/usr/local/bin)
+  --libdir=DIR          location of database libraries (/usr/lib)
+  --incdir=DIR          location of database header files (/usr/include)</PRE
+>
+               Then, required is to set database which you will use (--with-mysql 
+               or --with-pgsql) and location of libraries supplied with database (--incdir, --libdir).
+               You can use only one database. If you will change database, you must to recompile daemon.
+<PRE
+CLASS="SCREEN"
+># ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include</PRE
+>
+               After that you can compile and install (put daemon in directory
+               given with --prefix option):
+<PRE
+CLASS="SCREEN"
+># make &#38;&#38; make install</PRE
+>
+               Finally, compiled modules (files with <TT
+CLASS="FILENAME"
+>.so</TT
+> extension),
+               found in directory <TT
+CLASS="FILENAME"
+>modules/module_name</TT
+> move to any 
+               directory. Their location you will set in configuration file.
+               </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-CONFIG"
+>3.1.3. Configuration</A
+></H2
+><P
+>Example daemon configuration you can find in file <TT
+CLASS="FILENAME"
+>lms.ini.sample</TT
+>.
+               Following listing describe basic options for daemon (modules configuration is described 
+               in separate chapters concerning modules):
+<PRE
+CLASS="SCREEN"
+>[database]
+host            = localhost     # host name or IP, default: localhost
+user            = lms           # user name, default: lms
+password        = mypasswd      # database password, default: empty
+database        = lms           # database name, default: lms
+port            = 0             # port number, default: 0
+
+[lmsd]
+sleeptime       = 30            # time interval (in seconds) how often to
+                                # check for reload order, default: 30
+instances       = hosts oident firewall       # module instances list
+command         = 'echo Connecting...'        # shell command to run before every database connection </PRE
+>
+               <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>List of instances contains instances names detached with 
+               spaces. Instance is a name of section in configuration file.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+               </P
+><P
+>In instance section, beside config modules params, you must specify
+               primary options, as on following listing:
+<PRE
+CLASS="SCREEN"
+>[instance_name]
+module = /path/to/module.so
+info = "Additional description of module"</PRE
+>          
+               </P
+><P
+>Change of 'instances' and any option i instances sections do not
+               require daemon restart. For other global options restart is required.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-RUN"
+>3.1.4. Starting</A
+></H2
+><P
+>You can run program as a daemon working in background (option '-b'). Then
+               configuration and services reload is done on demand with use of 
+               'Reload' menu in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>. Option 'sleeptime' (-s) specify interval
+               between database reads. When daemon detects reload order, he runs
+               modules defined by 'instances' option in <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>.
+               For example:
+<PRE
+CLASS="SCREEN"
+># almsd -b</PRE
+>               
+               </P
+><P
+>Other way to run is disposable reload with usage of cron. 
+               You must to use this manner of reload for runing modules like 'payments'
+               'notify' or 'traffic'. In that case you can specify instances to reload
+               with use of option '-i'. Example crontab's entry:
+<PRE
+CLASS="SCREEN"
+>  1 0 * * *    /usr/local/bin/almsd -qi "payments notify"</PRE
+>
+               </P
+><P
+>Following listing describe program command line options:
+<PRE
+CLASS="SCREEN"
+>  -c     path to config (default: /etc/lms/lms.ini)
+  -i     list of instances (separated by space) to reload
+  -b     run in background (daemon mode)
+  -s     'reload' table reading interval in sec. (default: 30)
+  -q     reload and quit
+  -h     prints command line options</PRE
+>
+               </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="install-upgrade.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Upgrade</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

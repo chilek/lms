@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Requirements</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Installation and configuration"
+HREF="install.html"><LINK
+REL="PREVIOUS"
+TITLE="Installation and configuration"
+HREF="install.html"><LINK
+REL="NEXT"
+TITLE="LMS Installation"
+HREF="install-install.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="install.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Installation and configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="install-install.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INSTALL-REQUIREMENTS"
+>2.2. Requirements</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-REQ-WWW"
+>2.2.1. WWW Server</A
+></H2
+><P
+>Because <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> is written in PHP, necessary is WWW server with interpreter of 
+            that language. Perefered server is Apache (<A
+HREF="http://www.apache.org"
+TARGET="_top"
+>www.apache.org</A
+>).</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-REQ-PHP"
+>2.2.2. PHP Interpreter</A
+></H2
+><P
+>Interpreter should be in version 4.2.x or higher, but on 4.1.x also
+           works fine (but because developers uses 4.2.3 or higher, can't guarante correct work
+           with older versions. PHP can be downloaded from page
+          <A
+HREF="http://www.php.net"
+TARGET="_top"
+>www.php.net</A
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-REQ-DB"
+>2.2.3. Database Server</A
+></H2
+><P
+>LMS will not work correctly with MySQL versions older than 3.23.xx 
+           </P
+><P
+>LMS also works with PostgreSQL in version 7.3.x or higher.</P
+><P
+>Cooperation with SQLite database is possible too, but we are tested only version 2.8.11.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-REQ-SMARTY"
+>2.2.4. Smarty Library</A
+></H2
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> require Smarty library(<A
+HREF="http://smarty.php.net"
+TARGET="_top"
+>http://smarty.php.net</A
+>)
+           in version 2.5.0 or higher (don't use 2.6.4 version).</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-REQ-PERL"
+>2.2.5. Perl</A
+></H2
+><P
+>If for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> will suffice above stuff, for working 
+          <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-MGC</I
+></SPAN
+> and the rest of scripts you will need 
+          also Perl and modules for him:
+       <UL
+><LI
+><P
+>perl and his basic modules (POSIX, GetOpt::Long);</P
+></LI
+><LI
+><P
+>Net::SMTP;</P
+></LI
+><LI
+><P
+>Config::IniFiles;</P
+></LI
+><LI
+><P
+>DBI;</P
+></LI
+><LI
+><P
+>DBD-mysql (if you will use mysql);</P
+></LI
+><LI
+><P
+>DBD-pg (if you will use postgres);</P
+></LI
+><LI
+><P
+>DBD-SQLite (if you will use SQLite);</P
+></LI
+></UL
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-REQ-C"
+>2.2.6. C Compiler</A
+></H2
+><P
+>If you'll run<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>A.L.E.C's LMS Daemon</I
+></SPAN
+> is needed
+       working C compiler, because daemon is providing only in the form of source code.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="install.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="install-install.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Installation and configuration</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="install.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>LMS Installation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

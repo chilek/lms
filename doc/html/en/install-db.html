@@ -1,0 +1,502 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Database Server Installation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Installation and configuration"
+HREF="install.html"><LINK
+REL="PREVIOUS"
+TITLE="LMS Installation"
+HREF="install-install.html"><LINK
+REL="NEXT"
+TITLE="Basic Configuration"
+HREF="install-config.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="install-install.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Installation and configuration</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="install-config.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INSTALL-DB"
+>2.4. Database Server Installation</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-MYSQL"
+>2.4.1. MySQL</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-MYSQL-INTRO"
+>2.4.1.1. Intro</A
+></H3
+><P
+>That very popular database is available with majority of Linux distributions. 
+               If however you must install it independently, begin from sources downloading 
+               from <A
+HREF="http://www.mysql.com"
+TARGET="_top"
+>www.mysql.com</A
+>.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-MYSQL-SERVER"
+>2.4.1.2. MySQL Server Installation</A
+></H3
+><P
+>After extracting, go to directory with MySQL and type sequence
+               of commands:
+               <PRE
+CLASS="SCREEN"
+>$ ./configure --prefix=/usr/local/mysql
+$ make
+$ make install
+$ /usr/local/mysql/bin/mysql_install_db
+$ chown mysql -R /usr/local/mysql/var
+$ /usr/local/mysql/bin/safe_mysqld &#38;
+$ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</PRE
+>
+          </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-MYSQL-DBCREATE"
+>2.4.1.3. Create Database</A
+></H3
+><P
+>It is necesserily if you run LMS at the FIRST time. If you are
+               upgrading LMS from older version, appropriate notes what to do with database
+               stands in ChangeLog file. So, go to directory, in which you've got LMS and
+               run mysql's shell:
+<PRE
+CLASS="SCREEN"
+>mysql -u[here enter user with full access rights to database] -p
+Enter password:[just enter password:)]
+mysql&#62; create database lms;
+mysql&#62; grant usage on lms.* to lms@localhost;
+mysql&#62; grant select,insert,update,delete,create,alter on lms.* to lms@localhost identified by 'haslo';
+mysql&#62; flush privileges;
+mysql&#62; use lms;
+mysql&#62; source doc/lms.mysql;</PRE
+>
+          </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-MYSQL-LMS"
+>2.4.1.4. LMS Configuration (lms.ini)</A
+></H3
+><P
+>Because MySQL is default database for LMS, configuration is limited for
+               setting in section [database] of file /etc/lms/lms.ini password and user's name:
+               <PRE
+CLASS="SCREEN"
+>user     = lms
+password = your_password</PRE
+>
+              </P
+><P
+>After that, if LMS can establish connection to database server,
+               it is possible get to the system without problems. If in database is no 
+               such administrator account, only thing what you'll see
+               be form of administrator addition. When you enter correct admin personal
+               details, LMS will move you to login page, where at once you can
+               use newly created account.
+               </P
+><P
+>Let's stop here, add some stuff to cron, for peace of mind:
+               <PRE
+CLASS="SCREEN"
+>12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=your-super-secret-password \
+              --add-drop-table --add-locks lms &#62; backups/lms-auto-"$(date +%s)".sql</PRE
+>
+               </P
+><P
+>That will create at 4:12 morning, every 3, 10, 17, 21 and 28 day
+               of month automagic mysql database backup.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-PGSQL"
+>2.4.2. PostgreSQL</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-PGSQL-INTRO"
+>2.4.2.1. Intro</A
+></H3
+><P
+>LMS is tested on PostgreSQL 7.3.4 and higher, but because
+               special properties of that base are not used, there will be
+               no problem with later versions. If you have not instaled PostgreSQL
+               server, best solution will be selfhand compilation from
+               sources available on <A
+HREF="http://www.postgresql.org"
+TARGET="_top"
+>               www.postgresql.org</A
+>.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-PGSQL-SERVER"
+>2.4.2.2. Instalacja</A
+></H3
+><P
+>That is a short version of installation procedure, more info
+               can be find in postgres documentation. After download and extraction
+               go to main directory and run following commands:
+               <PRE
+CLASS="SCREEN"
+>$ ./configure --enable-locale
+$ gmake
+$ su
+$ gmake install
+$ adduser postgres
+$ mkdir /usr/local/pgsql/data
+$ chown postgres /usr/local/pgsql/data
+$ su - postgres
+$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
+$ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data &#62;logfile 2&#62;&#38;1 &#38;</PRE
+>
+               </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-PGSQL-DBCREATE"
+>2.4.2.3. Database Creation</A
+></H3
+><P
+>While server is running you can enter finto creation
+               of database with name 'lms', which owner will be user with
+               login 'lms'.
+               <PRE
+CLASS="SCREEN"
+>$ /usr/local/pgsql/bin/createuser -d -A -P lms
+$ /usr/local/pgsql/bin/createdb -E LATIN2 -U lms lms
+$ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</PRE
+>
+          </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-PGSQL-LMS"
+>2.4.2.4. LMS Configuration (lms.ini)</A
+></H3
+><P
+>For LMS default database server is MySQL, so in section
+               [database] of file /etc/lms/lms.ini you must set following options:
+                  <PRE
+CLASS="SCREEN"
+>type     = postgres
+user     = lms
+password = password_entered_while_user_lms_account_creation</PRE
+>
+              </P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Password's demand depends on configuration of postgres users autentication
+                      in <TT
+CLASS="FILENAME"
+>/usr/local/pgsql/data/pg_hba.conf</TT
+>. 
+                      By default password is not required.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>After that, if LMS connects to database, you
+               can without problems enter to the system. If in database will be not
+               administrator's account, only thing what you'll see will be
+               form of administrator's account  addition. When you enter correct data
+               LMS will move you to login page, when you can use
+               newly created account.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-SQLITE"
+>2.4.3. SQLite</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-SQLITE-INTRO"
+>2.4.3.1. Intro</A
+></H3
+><P
+>This one-file database is commend for speed. Authors define
+               that it is 2-3 times faster than MySQL. Furthermore, with properly 
+               configuration it's possible to load whole database in to the RAM 
+               menory, during this the efficiency highly increases.
+               Below is short description of installation.
+               Sources can be downloaded from: <A
+HREF="http://www.sqlite.org"
+TARGET="_top"
+>               www.sqlite.org</A
+>.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-SQLITE-SERVER"
+>2.4.3.2. Instalacja SQLite</A
+></H3
+><P
+>Here You can see how to install the SQLite libraries and
+               adding this service to PHP database (in PHP 5.0 ver. have SQLite
+               built in).
+               After unpacking sources go to SQLite directory and type in
+               Commands step by step (for example):
+               <PRE
+CLASS="SCREEN"
+>$ ./configure
+$ make
+$ make install
+$ ldconfig
+$ pear download http://pecl.php.net/get/SQLite-1.0.2.tgz
+$ pear install SQLite-1.0.2.tgz</PRE
+>
+               Next in php.ini set:
+               <PRE
+CLASS="SCREEN"
+>extension=sqlite.so</PRE
+>
+               There is option to compile-in SQLite into PHP : <SAMP
+CLASS="PROMPT"
+>--with-sqlite</SAMP
+>.
+               </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-SQLITE-DBCREATE"
+>2.4.3.3. Database Creation</A
+></H3
+><P
+>It's necessarily when You running LMS FIRST TIME!
+               Go to Yours LMS directory and run SQlite shell:
+               <PRE
+CLASS="SCREEN"
+>$ sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
+sqlite&#62; .exit
+$ chown 99.98 /usr/local/lms/lms</PRE
+>
+               </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="INSTALL-SQLITE-LMS"
+>2.4.3.4. LMS Configuration (lms.ini)</A
+></H3
+><P
+>One of the SQLite limits is no authenticity of users, 
+               that's why configuration request only setting type and path to
+               the database file. In section <TT
+CLASS="FILENAME"
+>[database]</TT
+>
+               pliku <TT
+CLASS="FILENAME"
+>/etc/lms/lms.ini</TT
+> set:
+               <PRE
+CLASS="SCREEN"
+>type     = sqlite
+database = /usr/local/lms/lms.db</PRE
+>
+              </P
+><P
+>Now we can get in to the system. But if in Database is no 
+               user account, we will see add user account form.
+               </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="install-install.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="install-config.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>LMS Installation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="install.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Basic Configuration</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
