@@ -66,9 +66,9 @@
 			<B>{t}Owner:{/t}</B>
 		    </TD>
 		    <TD WIDTH="99%">
-			<SELECT size="1" name="ticket[owner]" {tip text="Select administrator" trigger="owner"}>
+			<SELECT size="1" name="ticket[owner]" {tip text="Select user" trigger="owner"}>
 			{if $ticket.owner==0}
-				<OPTION value="0" SELECTED>- select administrator -</OPTION>
+				<OPTION value="0" SELECTED>- {t}select user{/t} -</OPTION>
 			{/if}
 			{foreach from=$adminlist item=adminlist}
 				<OPTION value="{$adminlist.id}" {if $adminlist.id == $ticket.owner}SELECTED{/if}>{$adminlist.name}</OPTION>
