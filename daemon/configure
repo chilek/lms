@@ -1,48 +1,184 @@
-#defaults
-LIBS="-lmysqlclient -ldl"
-LDFLAGS="-L/usr/lib/mysql"
-CFLAGS="-I/usr/include/mysql -DUSE_MYSQL"
+#! /bin/sh
 
-for x in $*
+# Initialize some variables set by options.
+prefix="/usr/local/bin"
+incdir="/usr/include"
+libdir="/usr/lib"
+
+# Parse options *****************************************************************
+ac_prev=
+for ac_option
 do
-    case $x in
-    
-	*--with-pgsql*) #PostgreSQL
-	LIBS="-lpq -ldl"
-	LDFLAGS=-L/usr/local/pgsql/lib
-	CFLAGS=-I/usr/local/pgsql/include
-	FLAGS="$FLAGS -DUSE_PGSQL"
-	;;
-	*--debug*) #Query logging
-	FLAGS="$FLAGS -DDEBUG"
-	;;
-	*) #MySQL
-	LIBS="-lmysqlclient -ldl"
-	LDFLAGS="-L/usr/lib/mysql"
-	CFLAGS="-I/usr/include/mysql"
-	FLAGS="$FLAGS -DUSE_MYSQL"
-    esac
 
+  case "$ac_option" in
+    	-*=*)
+		ac_optarg=`echo "$ac_option" | sed 's/[-_a-zA-Z0-9]*=//'`
+    	;;
+    	*) 
+		ac_optarg=
+    	;;
+  esac
+
+  case "$ac_option" in
+	
+	-disable-* | --disable-*)
+		ac_feature=`echo $ac_option|sed -e 's/-*disable-//'`
+		# Reject names that are not valid shell variable names.
+		if test -n "`echo $ac_feature| sed 's/[-a-zA-Z0-9_]//g'`"; then
+			{ echo "configure: error: $ac_feature: invalid feature name" 1>&2; exit 1; }
+		fi
+		ac_feature=`echo $ac_feature| sed 's/-/_/g'`
+		eval "enable_${ac_feature}=no"
+	;;
+	-enable-* | --enable-*)
+		ac_feature=`echo $ac_option|sed -e 's/-*enable-//' -e 's/=.*//'`
+		# Reject names that are not valid shell variable names.
+		if test -n "`echo $ac_feature| sed 's/[-_a-zA-Z0-9]//g'`"; then
+			{ echo "configure: error: $ac_feature: invalid feature name" 1>&2; exit 1; }
+		fi
+		ac_feature=`echo $ac_feature| sed 's/-/_/g'`
+		case "$ac_option" in
+			*=*) ;;
+			*) ac_optarg=yes ;;
+		esac
+		eval "enable_${ac_feature}='$ac_optarg'"
+	;;
+	-prefix=* | --prefix=* )
+		prefix="$ac_optarg"
+	;;
+	-with-* | --with-*)
+		ac_package=`echo $ac_option|sed -e 's/-*with-//' -e 's/=.*//'`
+		# Reject names that are not valid shell variable names.
+		if test -n "`echo $ac_package| sed 's/[-_a-zA-Z0-9]//g'`"; then
+			{ echo "configure: error: $ac_package: invalid package name" 1>&2; exit 1; }
+		fi
+		ac_package=`echo $ac_package| sed 's/-/_/g'`
+		case "$ac_option" in
+			*=*) ;;
+			*) ac_optarg=yes ;;
+		esac
+		eval "with_${ac_package}='$ac_optarg'"
+	;;
+	-lib=* | --lib=* | -libdir=* | --libdir=* )
+		libdir="$ac_optarg"
+	;;
+	-inc=* | --inc=* | -incdir=* | --incdir=* )
+		incdir="$ac_optarg"
+	;;
+	-help | --help )
+    		# Omit some internal or obsolete options to make the list less imposing.
+    		# This message is too long to be a string in the A/UX 3.1 sh.
+    		cat << EOF
+Usage: ./configure [options]
+Options: [defaults in brackets after descriptions]
+  --help		print this message
+  --enable-debug0	SQL query logging (disabled)
+  --enable-debug1	events logging (disabled)
+  --with-pgsql		enables use of PostgreSQL database (disabled)
+  --with-mysql		enables use of MySQL database (enabled)
+  --prefix=DIR		sets program and modules install location 
+			(/usr/local/bin)
+  --libdir=DIR		sets location of database library (/usr/lib)
+  --incdir=DIR		sets location of database include files (/usr/include)
+EOF
+    		exit 0
+	;;
+	*)
+		{ echo "configure error: '$ac_option' invalid option; use --help to show usage" 1>&2; exit 1; }
+    	;;
+  esac
 done
+#***************************************************************************************************
 
+LIBS=
+LDFLAGS=
+CFLAGS=
+FLAGS=
+
+# Set up database
+echo -n "Database type..." 
+if test "${with_pgsql+set}" = set
+then
+	LIBS="-lpq -ldl"
+	FLAGS="-DUSE_PGSQL"
+	echo " PostgreSQL"
+else
+	LIBS="-lmysqlclient -ldl"
+	FLAGS="-DUSE_MYSQL"
+	echo " MySQL"
+fi
+
+# Set up lib/includes location
+echo -n "Library location..."
+LDFLAGS="-L$libdir"
+echo " $libdir"
+
+echo -n "Includes location..."
+CFLAGS="-I$incdir"
+echo " $incdir"
+
+# Set up debug level
+echo -n "SQL queries debugging..."
+if test "${enable_debug0+set}" = set
+then
+	FLAGS="$FLAGS -DDEBUG0"
+	echo " yes"
+else 
+	echo " no"
+fi
+
+echo -n "Events debugging..."
+if test "${enable_debug1+set}" = set
+then
+	FLAGS="$FLAGS -DDEBUG1"
+	echo " yes"
+else
+	echo " no"
+fi
+
+# Set install directory
+echo -n "Install directory..."
+start=`pwd`
+cd $prefix
+if [ $? -eq 1 ] # exit if directory not exists 
+then 
+    exit 0 
+fi
+prefix=`pwd`
+cd $start
+INSTALLDIR="$prefix"
+echo " $prefix"
+
+# Create makefiles
+echo -n "Create Makefile for main program..."
 echo "
 LIBS = $LIBS
 LDFLAGS = $LDFLAGS
 CFLAGS = $CFLAGS $FLAGS
-" > Makefile
+INSTALLDIR = $INSTALLDIR
+" > Makefile \
+&& cat Makefile.in >> Makefile
+echo " done"
 
-cat Makefile.in >> Makefile
-    
 # Make modules Makefile's
-cd ./modules
 
-for x in `ls -F | grep -v CVS | grep /`
+cd ./modules
+for x in `ls | grep -v CVS`
 do
-echo "
+    if [ -d ./${x} ]
+    then
+	if [ -e ./${x}/Makefile.in ]
+	then
+	    echo -n "Create Makefile for mod_${x}..."
+	    echo "
 LIBS = $LIBS 
 CFLAGS = $CFLAGS $FLAGS -I../..
 LDFLAGS = $LDFLAGS
-" > ./${x}Makefile    
-cat ./${x}Makefile.in >> ./${x}Makefile
-
+INSTALLDIR = $INSTALLDIR
+" > ./${x}/Makefile && cat ./${x}/Makefile.in >> ./${x}/Makefile
+	    echo " done"
+	fi
+    fi
 done 
+echo "***************************************************************"
+echo "Configuration finished. Now You can type 'make && make install'"
