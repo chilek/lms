@@ -167,7 +167,7 @@ $SMARTY->assign('_config',$_CONFIG);
 // test for proper version of Smarty
 
 if(version_compare('2.5.0', $SMARTY->_version) > 0)
-	die('<B>Niepoprawna wersja engine Smarty! Proszê sci±gn±æ nowszê wersjê spod adresu <A HREF="http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz">http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz</A>!</B>');
+	die('<B>'.sprintf(trans('Old version of Smarty engine! You must get newest from %s.'),'<A HREF="http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz">http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz</A>').'</B>');
 
 // set some template and layout variables
 
@@ -233,7 +233,7 @@ if($SESSION->islogged)
 	else
 	{
 		$layout['module'] = 'notfound';
-		$layout['pagetitle'] = 'B³±d!';
+		$layout['pagetitle'] = trans('Error!');
 		$SMARTY->assign('layout', $layout);
 		$SMARTY->assign('server', $_SERVER);
 		$SMARTY->display('notfound.html');
