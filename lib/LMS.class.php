@@ -1128,7 +1128,7 @@ class LMS
 		$result['userdata'] = $this->GetUser($result['userid']);
 		$result['invoiceid'] = $invoiceid;
 		$result['year'] = $year;
-		$result['content'] = $this->DB->GetAll('SELECT * FROM cash WHERE invoiceid = ? AND time >= ? AND time <= ?', array($invoiceid, $ystart, $yend));
+		$result['content'] = $this->DB->GetRow('SELECT * FROM cash WHERE invoiceid = ? AND time >= ? AND time <= ?', array($invoiceid, $ystart, $yend));
 		return $result;
 	}
 
@@ -2189,6 +2189,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.284  2003/11/26 21:07:00  alec
+ * GetAll -> GetRow w GetInvoiceContent()
+ *
  * Revision 1.283  2003/11/26 16:33:02  lukasz
  * - takie testy z pe³n± modu³owo¶ci±.
  *
