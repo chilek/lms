@@ -164,8 +164,8 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 		fprintf(fh, "%s", dhcp->append);
 		fclose(fh);
 		system(dhcp->command);
-#ifdef DEBUG
-		syslog(LOG_INFO,"DEBUG: mod_dhcp reload finished");
+#ifdef DEBUG1
+		syslog(LOG_INFO,"DEBUG: [mod_dhcp] reloaded");
 #endif
 	}
 	else
@@ -199,8 +199,8 @@ struct dhcp_module * init(GLOBAL *g, MODULE *m)
 	dhcp->tmpfile = strdup(g->iniparser_getstring(ini, "dhcp:tmpfile", "/tmp/lms_dhcpd.conf"));
 	dhcp->command = strdup(g->iniparser_getstring(ini, "dhcp:command", ""));
 	g->iniparser_freedict(ini);
-#ifdef DEBUG
-	syslog(LOG_INFO,"DEBUG: mod_dhcp initialized");
+#ifdef DEBUG1
+	syslog(LOG_INFO,"DEBUG: [mod_dhcp] initialized");
 #endif	
 	return(dhcp);
 }

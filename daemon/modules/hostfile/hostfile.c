@@ -74,8 +74,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		fprintf(fh, "%s", hm->append);
 		fclose(fh);
 		system(hm->command);
-#ifdef DEBUG
-		syslog(LOG_INFO,"DEBUG: mod_hostfile reload finished");
+#ifdef DEBUG1
+		syslog(LOG_INFO,"DEBUG: [mod_hostfile] reloaded");
 #endif
 	}
 	else
@@ -104,11 +104,11 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	hm->append = strdup(g->iniparser_getstring(ini, "hostfile:append", "/usr/sbin/iptables -A FORWARD -j REJECT\n"));
 	hm->grant = strdup(g->iniparser_getstring(ini, "hostfile:grantedhost", "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"));
 	hm->deny = strdup(g->iniparser_getstring(ini, "hostfile:deniedhost", "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"));
-	hm->tmpfile = strdup(g->iniparser_getstring(ini, "hostfile:tempfile", "/tmp/mod_hostfile"));
+	hm->tmpfile = strdup(g->iniparser_getstring(ini, "hostfile:tmpfile", "/tmp/mod_hostfile"));
 	hm->command = strdup(g->iniparser_getstring(ini, "hostfile:command", ""));
 	g->iniparser_freedict(ini);
-#ifdef DEBUG
-	syslog(LOG_INFO,"DEBUG: mod_hostfile initialized");
+#ifdef DEBUG1
+	syslog(LOG_INFO,"DEBUG: [mod_hostfile] initialized");
 #endif
 	return(hm);
 }
