@@ -48,12 +48,15 @@ if(!isset($_GET[ownerid]))
 $SMARTY->assign("balancelist",$balancelist);
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("nodeinfo",$nodeinfo);
-$SMARTY->assign("assignments",$assignments));
+$SMARTY->assign("assignments",$assignments);
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("nodeinfo.html");
 
 /*
  * $Log$
+ * Revision 1.18  2003/09/12 02:48:13  lukasz
+ * - parse error @ 51;
+ *
  * Revision 1.17  2003/09/12 02:47:37  lukasz
  * - cosmetics
  *
