@@ -17,6 +17,8 @@ wersja 1.1.2 (??/0?/2003):
     iptables (lukasz)
   - i stalo siê - LMS nie wymaga ju¿ ADOdb - ma w³asne biblioteki do obs³ugi
     mysql'a i postgresa (lukasz)
+  - zamienione wszystkie '<?' (krótkie tagi PHP) na '<?php' - w sumie tak
+    powinno byæ od pocz±tku, ale kto by na to wpad³, co nie? (lukasz)
 
 wersja 1.1.1 (09/08/2003):
 
