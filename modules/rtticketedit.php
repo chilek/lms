@@ -73,16 +73,13 @@ if(isset($ticketedit))
 	$ticket['owner'] = $ticketedit['owner'];
 }
 
-$adminlist = $LMS->GetAdminList();
-unset($adminlist['total']);	
-
 $layout['pagetitle'] = 'Edycja zg³oszenia Nr '.sprintf("%06d",$ticket['ticketid']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
-$SMARTY->assign('adminlist', $adminlist);
+$SMARTY->assign('adminlist', $LMS->GetAdminNames());
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtticketedit.html');
 

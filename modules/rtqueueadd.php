@@ -55,8 +55,7 @@ if(isset($queue))
 	}
 }
 
-$admins = $LMS->GetAdminList();
-unset($admins['total']);
+$admins = $LMS->GetAdminNames();
 
 foreach($admins as $admin) 
 {
