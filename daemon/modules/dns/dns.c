@@ -23,14 +23,15 @@
  */
 
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
 #include <syslog.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <time.h>
 
-#include "almsd.h"
+#include "lmsd.h"
 #include "dns.h"
 
 #define BUFFERSIZE 1024
@@ -49,7 +50,7 @@ unsigned char *load_file(unsigned char *name)
 	if(fd == -1) 
 		return(NULL);
 
-//warning this could be done in a better way.
+	//warning this could be done in a better way.
 	while( (n = read(fd, buffer, BUFFERSIZE)) > 0 ) {
 		unsigned char *ret0 =  (unsigned char *) realloc(ret, (n + l + 1));
 		if(!ret0) { 
@@ -76,7 +77,7 @@ int write_file(unsigned char *name, unsigned char *text)
 	if(fd == -1) 
 		return (-1);
 
-//warning this could be done in a better way.
+	//warning this could be done in a better way.
 	while( (n = write(fd, text, l)) > 0 ) {
 		l -= n;
 		text += n;
@@ -93,7 +94,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 {
 	unsigned char *configfile = 0;
 	unsigned char *configentries = strdup("");
-	QUERY_HANDLE *res, *res1;
+	QueryHandle *res, *res1;
 	int i, j, m, k=2, gc=0, nc=0, nh=0, n=2;
 	struct hostcache
 	{
@@ -110,91 +111,93 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	char *groupnames = strdup(dns->usergroups);	
 	char *groupname = strdup(groupnames);
 
-	while( n>1 ) {
-		
+	while( n>1 )
+	{
     		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 
 		if( strlen(netname) )
-
-		        if( (res = g->db_pquery("SELECT name, address, INET_ATON(mask) AS mask  FROM networks WHERE UPPER(name)=UPPER('?')",netname))!=NULL) {
-
-				if(res->nrows) {
-					nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-					nets[nc].name = strdup(g->db_get_data(res,0,"name"));
-					nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
-					nc++;
-				}
-	    			g->db_free(res);
-			}				
+		{
+		        res = g->db_pquery(g->conn, "SELECT name, address, INET_ATON(mask) AS mask  FROM networks WHERE UPPER(name)=UPPER('?')",netname);
+			if( g->db_nrows(res) )
+			{
+				nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
+				nets[nc].name = strdup(g->db_get_data(res,0,"name"));
+				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
+				nc++;
+			}
+	    		g->db_free(&res);
+		}				
 	}
 	free(netname); free(netnames);
 
-	while( k>1 ) {
-		
+	while( k>1 )
+	{
 		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
 
-		if( strlen(groupname) ) {
+		if( strlen(groupname) )
+		{
+			res = g->db_pquery(g->conn, "SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname);
 
-			if( (res = g->db_pquery("SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname))!=NULL) {
-
-				if(res->nrows) {
-
-			    		ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
-					ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
-					ugps[gc].id = atoi(g->db_get_data(res,0,"id"));
-					gc++;
-				}
-	    			g->db_free(res);
-			}		
+			if( g->db_nrows(res) )
+			{
+		    		ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
+				ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
+				ugps[gc].id = atoi(g->db_get_data(res,0,"id"));
+				gc++;
+			}
+    			g->db_free(&res);
 		}		
 	}
 	free(groupname); free(groupnames);
 
-	if( (res = g->db_query("SELECT name, mac, ipaddr, ownerid FROM nodes ORDER BY ipaddr"))!=NULL ) {
+	res = g->db_query(g->conn, "SELECT name, mac, ipaddr, ownerid FROM nodes ORDER BY ipaddr");
 
-		for(i=0; i<res->nrows; i++) {
-				
-			int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
-			unsigned char *name = g->db_get_data(res,i,"name");
-			char *mac = g->db_get_data(res,i,"mac");
-			char *ipaddr = g->db_get_data(res,i,"ipaddr");
+	for(i=0; i<g->db_nrows(res); i++)
+	{
+		int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
+		unsigned char *name = g->db_get_data(res,i,"name");
+		char *mac = g->db_get_data(res,i,"mac");
+		char *ipaddr = g->db_get_data(res,i,"ipaddr");
 		
-			if(name && mac && ipaddr) {
-
-				// groups test
-				if(gc) {
-					if(ownerid==0)
-						continue;
-					m = gc;
-					if( (res1 = g->db_pquery("SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"))) ) {
-						for(k=0; k<res1->nrows; k++) {
-							int groupid = atoi(g->db_get_data(res1, k, "usergroupid"));
-							for(m=0; m<gc; m++) 
-								if(ugps[m].id==groupid) 
-									break;
-							if(m!=gc) break;
-						}
-						g->db_free(res1);
-					}
-					if(m==gc)
-						continue;
+		if(name && mac && ipaddr)
+		{
+			// groups test
+			if(gc)
+			{
+				if( ownerid==0 )
+					continue;
+				m = gc;
+				res1 = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"));
+				for(k=0; k<g->db_nrows(res1); k++)
+				{
+					int groupid = atoi(g->db_get_data(res1, k, "usergroupid"));
+					for(m=0; m<gc; m++) 
+						if(ugps[m].id==groupid) 
+							break;
+					if(m!=gc) break;
 				}
-			
-				hosts = (struct hostcache*) realloc(hosts, sizeof(struct hostcache) * (nh + 1));
-				hosts[nh].name = strdup(name);
-				hosts[nh].mac = strdup(mac);
-				hosts[nh].ipaddr = inet_addr(ipaddr);
-				nh++;
+				g->db_free(&res1);
+				if( m==gc )
+					continue;
 			}
+		
+			hosts = (struct hostcache*) realloc(hosts, sizeof(struct hostcache) * (nh + 1));
+			hosts[nh].name = strdup(name);
+			hosts[nh].mac = strdup(mac);
+			hosts[nh].ipaddr = inet_addr(ipaddr);
+			nh++;
 		}
-		g->db_free(res);
 	}
+	g->db_free(&res);
 	
-	if ( (res = g->db_query("SELECT inet_ntoa(address) AS address, mask, domain, dns FROM networks"))!=NULL) {
+	res = g->db_query(g->conn, "SELECT inet_ntoa(address) AS address, mask, domain, dns FROM networks");
 
+	if( g->db_nrows(res) )
+	{
 		configfile = load_file(dns->confpattern);
 	
-		for (i=0; i<res->nrows; i++) {
+		for (i=0; i<g->db_nrows(res); i++)
+		{
 			unsigned char *d, *e, *name, *dnsserv;
 			unsigned long netmask, network;
 		
@@ -215,7 +218,8 @@ void reload(GLOBAL *g, struct dns_module *dns)
 					continue;
 			}
 
-			if ( d && e && name ) {
+			if ( d && e && name )
+			{
 				int prefixlen; // in bytes! 
 				unsigned char *finfile, *ftmpfile;
 				unsigned char *rinfile, *rtmpfile;
@@ -223,7 +227,8 @@ void reload(GLOBAL *g, struct dns_module *dns)
 				unsigned char *forwardzone;
 				unsigned char *reversezone;
 			
-				if( strlen(d) && strlen(e) && strlen(name) ) {
+				if( strlen(d) && strlen(e) && strlen(name) )
+				{
 					unsigned long host_netmask;
 					unsigned char *forwardhosts = strdup("");
 					unsigned char *reversehosts = strdup("");
@@ -236,14 +241,14 @@ void reload(GLOBAL *g, struct dns_module *dns)
 					finfile = dns->fpatterns;//strdup
 					rinfile = dns->rpatterns;//strdup
 
-					if(finfile[strlen(finfile) - 1] != '/') {
+					if(finfile[strlen(finfile) - 1] != '/')
 						ftmpfile = g->str_concat(finfile, "/");
-					} else
+					else
 						ftmpfile = strdup(finfile);
 					
-					if(rinfile[strlen(rinfile) - 1] != '/') {
+					if(rinfile[strlen(rinfile) - 1] != '/')
 						rtmpfile = g->str_concat(rinfile, "/");
-					} else 
+					else 
 						rtmpfile = rinfile;
 				
 					finfile = g->str_concat(ftmpfile, name);
@@ -260,18 +265,21 @@ void reload(GLOBAL *g, struct dns_module *dns)
 					if(!forwardzone) forwardzone = load_file(dns->fgeneric);
 					if(!reversezone) reversezone = load_file(dns->rgeneric);
 				
-					if(forwardzone && reversezone) {
+					if(forwardzone && reversezone)
+					{
 						unsigned char serial[12];
 						unsigned char netpart[30];
 						unsigned long ip;
 												
-						for(j = 0; j<nh; j++) {
+						for(j = 0; j<nh; j++)
+						{
 							unsigned char *forwardhost;
 							unsigned char *reversehost;
 							unsigned char hostpart[30];
 							unsigned char *tmphosts;
 						
-							if( (hosts[j].ipaddr & netmask) == network) {
+							if( (hosts[j].ipaddr & netmask) == network)
+							{
 								forwardhost = strdup(dns->forward);
 								reversehost = strdup(dns->reverse);
 					
@@ -284,15 +292,16 @@ void reload(GLOBAL *g, struct dns_module *dns)
 					
 								ip = ntohl(hosts[j].ipaddr);
 					
-								switch(prefixlen) {
-								case 1:
+								switch(prefixlen)
+								{
+									case 1:
 									snprintf(hostpart, 30, "%d.%d.%d", (int)(ip & 0xff),(int)((ip >> 8) & 0xff),(int)((ip >> 24) & 0xff));
 									break;
-								case 2:
+									case 2:
 									snprintf(hostpart, 30, "%d.%d", (int)(ip & 0xff),(int)((ip >> 8) & 0xff));
 									break;					
-								case 3:
-								default:
+									case 3:
+									default:
 									snprintf(hostpart, 30, "%d", (int)(ip & 0xff));
 									break;
 								}
@@ -327,15 +336,16 @@ void reload(GLOBAL *g, struct dns_module *dns)
 
 						ip = ntohl(network);
 	
-						switch(prefixlen) {
-						case 1:
+						switch(prefixlen)
+						{
+							case 1:
 							snprintf(netpart, 30, "%d", (int)((ip >> 24) & 0xff));
 							break;
-						case 2:
+							case 2:
 							snprintf(netpart, 30, "%d.%d", (int)((ip >> 16) & 0xff),(int)((ip >> 24) & 0xff));
 							break;
-						case 3:
-						default:
+							case 3:
+							default:
 							snprintf(netpart, 30, "%d.%d.%d", (int)((ip >> 8) & 0xff),(int)((ip >> 16) & 0xff),(int)((ip >> 24) & 0xff));
 							break;
 						}
@@ -404,8 +414,23 @@ void reload(GLOBAL *g, struct dns_module *dns)
 				}
 			}	
 		}
-		g->db_free(res);
+	
+		if(configfile) 
+		{
+			g->str_replace(&configfile, "%z", configentries);
+			if(write_file(dns->confout, configfile) < 0)
+				syslog(LOG_ERR, "[%s/dns] Unable to write DNS configuration file '%s'", dns->base.instance, dns->confout);
+			free(configfile);
+			system(dns->command);
+		}
+#ifdef DEBUG1
+		syslog(LOG_INFO, "DEBUG: [%s/dns] reloaded",dns->base.instance);
+#endif
 	}
+	else
+		syslog(LOG_ERR, "[%s/dns] Unable to open DNS pattern file '%s'", dns->base.instance, dns->confpattern);
+
+	g->db_free(&res);
 
 	//cleanup	
 	for(i = 0; i<nh; i++) {
@@ -421,19 +446,6 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	for(i=0;i<gc;i++)
 		free(ugps[i].name);
 	free(ugps);
-	
-	if(configfile) {
-		g->str_replace(&configfile, "%z", configentries);
-		if(write_file(dns->confout, configfile) < 0)
-			syslog(LOG_ERR, "[%s/dns] Unable to write DNS configuration file '%s'", dns->base.instance, dns->confout);
-		free(configfile);
-		system(dns->command);
-#ifdef DEBUG1
-		syslog(LOG_INFO, "DEBUG: [%s/dns] reloaded",dns->base.instance);
-#endif
-	}
-	else
-		syslog(LOG_ERR, "[%s/dns] Unable to open DNS pattern file '%s'", dns->base.instance, dns->confpattern);
 
 	free(configentries);
 	free(dns->fpatterns);
@@ -451,62 +463,37 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	free(dns->confreverse);
 	free(dns->networks);
 	free(dns->usergroups);
-
 }
 
 struct dns_module * init(GLOBAL *g, MODULE *m)
 {
 	struct dns_module *dns;
-	unsigned char *instance, *s;
-	dictionary *ini;
 
-	if(g->api_version != APIVERSION) 
+	if(g->api_version != APIVERSION)
+	{
 		return (NULL);
-	
-	instance = m->instance;
+	}
 	
 	dns = (struct dns_module*) realloc(m, sizeof(struct dns_module));
 	
 	dns->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
-	dns->base.instance = strdup(instance);
-	
-	ini = g->iniparser_load(g->inifile);
 
-	s = g->str_concat(instance, ":forward-patterns");
-	dns->fpatterns = strdup(g->iniparser_getstring(ini, s, "forward"));
-	free(s); s = g->str_concat(instance, ":reverse-patterns");
-	dns->rpatterns = strdup(g->iniparser_getstring(ini, s, "reverse"));
-	free(s); s = g->str_concat(instance, ":generic-forward");
-	dns->fgeneric = strdup(g->iniparser_getstring(ini, s, "modules/dns/sample/forward/generic"));
-	free(s); s = g->str_concat(instance, ":generic-reverse");	
-	dns->rgeneric = strdup(g->iniparser_getstring(ini, s, "modules/dns/sample/reverse/generic"));
-	free(s); s = g->str_concat(instance, ":forward-zones");
-	dns->fzones = strdup(g->iniparser_getstring(ini, s, "modules/dns/sample/out/forward"));
-	free(s); s = g->str_concat(instance, ":reverse-zones");
-	dns->rzones = strdup(g->iniparser_getstring(ini, s, "modules/dns/sample/out/reverse"));
-	free(s); s = g->str_concat(instance, ":host-forward");
-	dns->forward = strdup(g->iniparser_getstring(ini, s, "%n IN A %i\n"));
-	free(s); s = g->str_concat(instance, ":host-reverse");
-	dns->reverse= strdup(g->iniparser_getstring(ini, s, "%c IN PTR %n.%d.\n"));
-	free(s); s = g->str_concat(instance, ":command");
-	dns->command = strdup(g->iniparser_getstring(ini, s, ""));
-	free(s); s = g->str_concat(instance, ":conf-pattern");
-	dns->confpattern = strdup(g->iniparser_getstring(ini, s, "modules/dns/sample/named.conf"));
-	free(s); s = g->str_concat(instance, ":conf-output");
-	dns->confout = strdup(g->iniparser_getstring(ini, s, "/tmp/named.conf"));
-	free(s); s = g->str_concat(instance, ":conf-forward-entry");
-	dns->confforward = strdup(g->iniparser_getstring(ini, s, "zone \"%n\" {\ntype master;\nfile \"forward/%n\";\nnotify yes;\n};\n"));
-	free(s); s = g->str_concat(instance, ":conf-reverse-entry");
-	dns->confreverse = strdup(g->iniparser_getstring(ini, s, "zone \"%c.in-addr.arpa\" {\ntype master;\nfile \"reverse/%i\";\nnotify yes;\n};\n"));
-	free(s); s = g->str_concat(instance, ":networks");
-	dns->networks = strdup(g->iniparser_getstring(ini, s, ""));
-	free(s); s = g->str_concat(instance, ":usergroups");
-	dns->usergroups = strdup(g->iniparser_getstring(ini, s, ""));
+	dns->fpatterns = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "forward-patterns", "forward"));
+	dns->rpatterns = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "reverse-patterns", "reverse"));
+	dns->fgeneric = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "generic-forward", "modules/dns/sample/forward/generic"));
+	dns->rgeneric = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "generic-reverse", "modules/dns/sample/reverse/generic"));
+	dns->fzones = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "forward-zones", "modules/dns/sample/out/forward"));
+	dns->rzones = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "reverse-zones", "modules/dns/sample/out/reverse"));
+	dns->forward = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "host-forward", "%n IN A %i\n"));
+	dns->reverse= strdup(g->config_getstring(dns->base.ini, dns->base.instance, "host-reverse", "%c IN PTR %n.%d.\n"));
+	dns->command = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "command", ""));
+	dns->confpattern = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "conf-pattern", "modules/dns/sample/named.conf"));
+	dns->confout = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "conf-output", "/tmp/named.conf"));
+	dns->confforward = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "conf-forward-entry", "zone \"%n\" {\ntype master;\nfile \"forward/%n\";\nnotify yes;\n};\n"));
+	dns->confreverse = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "conf-reverse-entry", "zone \"%c.in-addr.arpa\" {\ntype master;\nfile \"reverse/%i\";\nnotify yes;\n};\n"));
+	dns->networks = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "networks", ""));
+	dns->usergroups = strdup(g->config_getstring(dns->base.ini, dns->base.instance, "usergroups", ""));
 
-
-	g->iniparser_freedict(ini);
-	free(instance);
-	free(s);
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/dns] Initialized",dns->base.instance);		
 #endif	
