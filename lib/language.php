@@ -33,7 +33,7 @@ function trans()
 	if(isset($_LANG[$content]))
 		$content = trim($_LANG[$content]);
 	else
-		if(!in_array($content, $SMARTY->_tpl_vars['missing_strings']) && $content !='')
+		if(!in_array($content, (array) $SMARTY->_tpl_vars['missing_strings']) && $content !='')
 			$SMARTY->_tpl_vars['missing_strings'][] = $content;
 
 	$argc = func_num_args();
