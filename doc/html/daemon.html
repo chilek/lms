@@ -313,51 +313,6 @@ NAME="DAEMON-CONFIG"
 >6.1.3. Konfiguracja</A
 ></H2
 ><P
->Na pocz±tku nale¿y w pliku konfiguracyjnym <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS-UI</I
-></SPAN
->
-			(standardowo <TT
-CLASS="FILENAME"
->/etc/lms/lms.ini</TT
->) ustawiæ typ reloadu 
-			obs³ugiwany przez demona:
-<PRE
-CLASS="SCREEN"
->reload_type	= sql
-reload_sqlquery	= "INSERT INTO reload VALUES('reload')"</PRE
->
-			<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Struktura tabeli 'reload' jest dowolna, zatem musisz zadbaæ 
-			o odpowiedni insert.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-			</P
-><P
 >Przyk³adowy konfig demona i modu³ów zawarto w pliku <TT
 CLASS="FILENAME"
 >lms.ini.sample</TT
@@ -374,8 +329,8 @@ database        = lms           # nazwa bazy, domy¶lnie: lms
 port            = 0             # numer portu, domy¶lnie: 0
 
 [lmsd]
-sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma 
-                                # ma byæ sprawdzana tabela 'reload', domy¶lnie: 30
+sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma
+                                # byæ sprawdzane ¿±danie reloadu, domy¶lnie: 30
 instances       = hosts oident firewall       # lista instancji modu³ów</PRE
 >
 			<DIV
@@ -426,17 +381,16 @@ NAME="DAEMON-RUN"
 ></H2
 ><P
 >Program mo¿esz uruchamiaæ jako demona pracuj±cego w tle (opcja '-b'). Wtedy 
-			prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie, przez wpis do tabeli 
-			'reload'. Opcja 'sleeptime' (-s) okre¶la okres miêdzy
-			odczytami tej tabeli. Gdy do tabeli 'reload' zostan± zapisane dowolne dane 
-			(przy pomocy menu 'Prze³adowanie' w <SPAN
+			prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie, przy u¿yciu menu 
+			'Prze³adowanie' w <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >LMS-UI</I
 ></SPAN
->)
-			demon wykona modu³y okre¶lone opcj± 'instances' z <TT
+>. Opcja 'sleeptime' (-s) okre¶la okres miêdzy
+			odczytami bazy. Gdy demon wykryje ¿±danie wykonania reloadu, wywo³a 
+			modu³y okre¶lone opcj± 'instances' z <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >.

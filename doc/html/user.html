@@ -10,8 +10,8 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.1-cvs"
 HREF="index.html"><LINK
 REL="PREVIOUS"
-TITLE="Prawa dostêpu"
-HREF="install-rights.html"><LINK
+TITLE="Upgrade"
+HREF="install-upgrade.html"><LINK
 REL="NEXT"
 TITLE="Praca z LMS-UI"
 HREF="user-all.html"><LINK
@@ -44,7 +44,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="install-rights.html"
+HREF="install-upgrade.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -138,6 +138,11 @@ HREF="user-all.html#MENU-DATABASES"
 HREF="user-all.html#MENU-ADMINS"
 >Administratorzy</A
 ></DT
+><DT
+>3.2.10. <A
+HREF="user-all.html#MENU-STATS"
+>Statystyki</A
+></DT
 ></DL
 ></DD
 ><DT
@@ -154,8 +159,8 @@ HREF="user-staff.html#USER-STAFF-FAKTURY"
 ></DT
 ><DT
 >3.3.2. <A
-HREF="user-staff.html#USER-STAFF-STATS"
->Statystyki</A
+HREF="user-staff.html#USER-STAFF-CUSTOMER"
+>"Moje konto"</A
 ></DT
 ></DL
 ></DD
@@ -169,7 +174,15 @@ HREF="user-staff.html#USER-STAFF-STATS"
   Szybkie wyszukiwanie danych o u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji
   seryjnej do u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich hase³.
   Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania ³±cza, a tak¿e
-  tworzenie kopii bazy danych oraz zarz±dzanie skryptami wykonywalnymi.</P
+  tworzenia kopii bazy danych oraz zarz±dzania konfiguracj± us³ug na serwerze . 
+  <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> posiada tak¿e wiele innych mo¿liwo¶ci, które w tym
+  rozdziale zostan± opisane.</P
 ><DIV
 CLASS="SECT1"
 ><H1
@@ -187,25 +200,6 @@ NAME="USER-LOGIN"
 	za³o¿onego konta, zostaniesz przekierowany do modu³u tworzenia kont
 	administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
 	jednego modu³u.</P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN505"
-></A
-><P
-><B
->Rysunek 3-1. LMS-UI: Logowanie</B
-></P
-><A
-HREF="images/login.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/login-small.png"></SPAN
->
-			</A
-></DIV
 ></DIV
 ></DIV
 ><DIV
@@ -224,7 +218,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="install-rights.html"
+HREF="install-upgrade.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -252,7 +246,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Prawa dostêpu</TD
+>Upgrade</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

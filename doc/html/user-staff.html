@@ -87,17 +87,25 @@ NAME="USER-STAFF-FAKTURY"
 >3.3.1. Faktury</A
 ></H2
 ><P
->LMS umo¿liwia wystawianie faktur. W³±czenia tej opcji dokonuje siê podczas
-		przypisywania taryf u¿ytkownikom. Aktualnie w LMS nie ma mo¿liwo¶ci rêcznego wystawiania faktur. 
-		Do poprawnego dzia³ania i tworzenia wydruków
-		wymagane jest ustawienie podstawowych opcji w sekcji <SPAN
+>LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie dowolnej
+		faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Taryfy i finanse'. Automatyczne wystawianie faktur 
+		wymaga w³±czenia tej opcji podczas przypisywania taryf u¿ytkownikom. W takim wypadku
+		zapisem faktur do bazy zajmuje siê skrypt lms-payments lub demon <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+></P
+><P
+>Do poprawnego dzia³ania i tworzenia wydruków wymagane jest ustawienie podstawowych 
+		opcji w sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[invoices]</I
 ></SPAN
->
-		<TT
+> <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >:
@@ -151,8 +159,14 @@ CLASS="PROMPT"
 >
 		</P
 ><P
->Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki na wykazie bilansu finansowego (ogólnego b±d¼ pojedyñczego u¿ytkownika), albo poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest tak¿e filtrowanie faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darka Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.
-		</P
+>Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki 
+		na wykazie bilansu finansowego (ogólnego b±d¼ pojedyñczego u¿ytkownika), albo 
+		poprzez 'Lista faktur' z menu 'Taryfy i finanse'. W przypadku listy faktur, mo¿liwe jest 
+		tak¿e filtrowanie faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y 
+		i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. 
+		Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ 
+		faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darkach 
+		Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.</P
 ><P
 >			<DIV
 CLASS="NOTE"
@@ -173,7 +187,9 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie stopki i nag³ówka, czy te¿ adresu na wydruku.</P
+>Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ 
+			konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie 
+			stopki i nag³ówka, czy te¿ adresu na wydruku.</P
 ></TD
 ></TR
 ></TABLE
@@ -211,136 +227,29 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="USER-STAFF-STATS"
->3.3.2. Statystyki</A
+NAME="USER-STAFF-CUSTOMER"
+>3.3.2. "Moje konto"</A
 ></H2
 ><P
->Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
-	dostêpny w menu 'Statystyki'. Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
-	okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz ich wiêcej),
-	ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug downloadu).
-	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
-	ostatnich 30 dni lub ostatniego roku.</P
+>W katalogu <TT
+CLASS="FILENAME"
+>contrib/customer</TT
+> znajduje siê
+		przyk³ad rozwi±zania, dziêki któremu ka¿dy u¿ytkownik twojej sieci
+		mo¿e sprawdziæ w³asny bilans finansowy.</P
 ><P
->	<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y go zainstalowaæ
-	aby mieæ w bazie dane do wykresów.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-	</P
-><P
->W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci, mo¿e
-	nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
-	oczekiwania na rysowanie wykresów. Z tego powodu w oknie 'Kompaktowanie
-	bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy bez
-	utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
-	w nastêpuj±cy sposób:
-	<UL
-><LI
-><P
->Poziom Niski: dane z poprzedniego dnia i starsze, zostan± u¶rednione
-	do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
-	to 6*24 wpisów zostanie zast±pione jednym.</P
-></LI
-><LI
-><P
->Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
-	jednego dnia.</P
-></LI
-><LI
-><P
->Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
-	jednej godziny.</P
-></LI
-></UL
->
-	<DIV
-CLASS="WARNING"
-><TABLE
-CLASS="WARNING"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/warning.gif"
-HSPACE="5"
-ALT="Ostrze&#380;enie"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Kompaktowanie bazy danych jest procesem nieodwracalnym.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-	</P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN667"
-></A
-><P
-><B
->Rysunek 3-10. Statystyki wykorzystania ³±cza- filtr</B
-></P
-><A
-HREF="images/stats.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/stats-small.png"></SPAN
->
-			</A
-></DIV
-><P
-></P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN674"
-></A
-><P
-><B
->Rysunek 3-11. Statystyki wykorzystania ³±cza - wykres</B
-></P
-><A
-HREF="images/statbars.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/statbars-small.png"></SPAN
->
-			</A
-></DIV
+>Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
+		bilans i informacje o u¿ytkowniku, który jest w³a¶cicielem komputera
+		o tym adresie. Pliki nale¿y skopiowaæ w dowolne miejsce i wystawiæ
+		pod adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie
+		ustawiæ poprawn± ¶cie¿kê do <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> w pliku 
+		<TT
+CLASS="FILENAME"
+>index.php</TT
+>.</P
 ></DIV
 ></DIV
 ><DIV

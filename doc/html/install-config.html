@@ -170,7 +170,7 @@ CLASS="PROMPT"
 >U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze 
 	   wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, 
 	   prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 
-	   'postgres' (PostgreSQL). Domy¶lnie: root</P
+	   'postgres' (PostgreSQL). Domy¶lnie: mysql</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -474,11 +474,13 @@ CLASS="PROMPT"
 ><P
 >reload_sqlquery</P
 ><P
->Query SQL'a. Generalnie, LMS przy nie ustawionym swoim w³asnym QUERY robi dziwne rzeczy, 
-    które ja ju¿ wymy¶li³em. Chwilowo pewnie wogóle nie kompatybilne z mteg'owym demonikiem, 
-    ale pracujemy nad uzgodnieniem formatu. Jak kto¶ bardzo chce, to mo¿na u¿yæ '%TIME%' jako podstawki 
-    pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest traktowany jako separator kwerend.
-    Tj. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka komend MySQL'a.</P
+>Zapytanie SQL wykonywane podczas reloadu, je¶li <SAMP
+CLASS="PROMPT"
+>reload_type = sql</SAMP
+>.  
+    Domy¶lnie zapytanie wrzuca do tabeli timestamps warto¶æ '_force'. W zapytaniu mo¿na u¿yæ 
+    '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest 
+    traktowany jako separator kwerend, tzn. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka zapytañ SQL.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"

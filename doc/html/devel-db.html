@@ -220,6 +220,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>pesel - numer PESEL</TD
+></TR
+><TR
+><TD
 >info - dodatkowe informacje</TD
 ></TR
 ><TR
@@ -313,7 +317,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NODES"
->7.2.4. Komputery ('nodes')</A
+>7.2.4. Komputery i adresy IP urz±dzeñ sieciowych ('nodes')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -336,7 +340,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->ownerid - identyfikator w³a¶ciciela (u¿ytkownika)</TD
+>ownerid - identyfikator w³a¶ciciela ('0' - dla adresu urz±dzenia)</TD
 ></TR
 ><TR
 ><TD
@@ -504,7 +508,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->value - warto¶æ netto w z³otych</TD
+>value - kwota</TD
 ></TR
 ><TR
 ><TD
@@ -534,8 +538,50 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="PAYMENTS"
+>7.2.9. Op³aty sta³e ('payments')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>name - nazwa</TD
+></TR
+><TR
+><TD
+>value - kwota</TD
+></TR
+><TR
+><TD
+>creditor - nazwa wierzyciela</TD
+></TR
+><TR
+><TD
+>period - typ okresu naliczania (co miesi±c/co tydzieñ/co rok)</TD
+></TR
+><TR
+><TD
+>at - dzieñ naliczenia</TD
+></TR
+><TR
+><TD
+>description - opis</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="ASSIGNMENTS"
->7.2.9. Powi±zania ('assignments')</A
+>7.2.10. Powi±zania ('assignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -554,7 +600,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->period - okres (ilo¶æ dni)</TD
+>period - typ okresu </TD
 ></TR
 ><TR
 ><TD
@@ -573,7 +619,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICES"
->7.2.10. Faktury ('invoices')</A
+>7.2.11. Faktury ('invoices')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -592,7 +638,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->paytime - czas zap³aty (ilo¶æ dni)</TD
+>paytime - termin p³atno¶ci (ilo¶æ dni)</TD
+></TR
+><TR
+><TD
+>paytype - rodzaj p³atno¶ci (przelew/gotówka/etc.)</TD
 ></TR
 ><TR
 ><TD
@@ -609,6 +659,10 @@ BORDER="0"
 ><TR
 ><TD
 >nip - nip nabywcy</TD
+></TR
+><TR
+><TD
+>pesel - PESEL nabywcy</TD
 ></TR
 ><TR
 ><TD
@@ -635,7 +689,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.11. Faktury - cd. ('invoicecontents')</A
+>7.2.12. Faktury - cd. ('invoicecontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -681,7 +735,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.12. Znaczniki czasu ('timestamps')</A
+>7.2.13. Znaczniki czasu ('timestamps')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -703,7 +757,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.13. Statystyki wykorzystania ³±cza ('stats')</A
+>7.2.14. Statystyki wykorzystania ³±cza ('stats')</A
 ></H2
 ><TABLE
 BORDER="0"
