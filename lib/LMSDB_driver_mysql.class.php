@@ -52,7 +52,16 @@ class LMSDB_driver_mysql extends LMSDB_common
 			$this->_dbuser = $dbuser;
 			$this->_driver_selectdb($dbname);
 		}
+		else
+		{
+			$this->_error = TRUE;
+		}
 		return $this->_dblink;
+	}
+
+	function _driver_geterror()
+	{
+		return mysql_error($this->_dblink);
 	}
 
 	function _driver_disconnect()
@@ -69,13 +78,11 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 	function _driver_execute($query)
 	{
+		$this->_query = $query;
 		if($this->_result = mysql_query($query,$this->_dblink))
-		{
-			$this->_query = $query;
 			$this->_error = FALSE;
-		}else
-			$this->_error = mysql_error($this->_dblink);
-
+		else
+			$this->_error = TRUE;
 		return $this->_result;
 	}
 
