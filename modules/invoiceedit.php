@@ -145,11 +145,6 @@ switch($_GET['action'])
 		{
 			$invoice['id'] = $_SESSION['invoiceid'];
 			$LMS->InvoiceUpdate(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
-		
-			unset($_SESSION['invoicecontents']);
-			unset($_SESSION['invoicecustomer']);
-			unset($_SESSION['invoice']);
-			unset($_SESSION['invoiceediterror']);
 			header('Location: ?m=invoice&id='.$invoice['id']);
 			die;
 		}
