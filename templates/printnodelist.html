@@ -14,45 +14,51 @@
 </TABLE>
 <TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN=CENTER>
 	<TR>
-		<TD  ALIGN=CENTER CLASS=head>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
 			Lp
 		</TD>
-		<TD  ALIGN=CENTER WIDTH=30 CLASS=head>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
 			Id
 		</TD>
-		<TD  ALIGN=RIGHT CLASS=head>
+		<TD WIDTH="1%" ALIGN=RIGHT CLASS=head>
 			<B>Nazwa komputera
 		</TD>
-		<TD  ALIGN=CENTER CLASS=head>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
 			Adres IP
 		</TD>
-		<TD  ALIGN=CENTER CLASS=head>
+		<TD WIDTH="1%" ALIGN=CENTER CLASS=head>
 			Adres MAC
 		</TD>
-		<TD  ALIGN=LEFT CLASS=head>
+		<TD WIDTH="1%" ALIGN=LEFT CLASS=head>
 			W³a¶ciciel
+		</TD>
+		<TD WIDTH="94%" ALIGN=LEFT CLASS=head>
+			Opis
 		</TD>
 	</TR>
 	{cycle values="#FFFFFF,#EEEEEE" print=false}
 	{section name=nodelist loop=$nodelist}{if $nodelist[nodelist].id}
 	<TR BGCOLOR="{cycle}">
-		<TD ALIGN=CENTER>
+		<TD WIDTH="1%" ALIGN=CENTER>
 			{counter}
 		</TD>
-		<TD ALIGN=CENTER>
+		<TD WIDTH="1%" ALIGN=CENTER>
 			{$nodelist[nodelist].id|string_format:"%04d"}
 		</TD>
-		<TD ALIGN=RIGHT>
+		<TD WIDTH="1%" ALIGN=RIGHT>
 			<B>{$nodelist[nodelist].name}</B>
 		</TD>
-		<TD ALIGN=CENTER>
+		<TD WIDTH="1%" ALIGN=CENTER>
 			{$nodelist[nodelist].ip}
 		</TD>
-		<TD ALIGN=CENTER>
+		<TD WIDTH="1%" ALIGN=CENTER>
 			{$nodelist[nodelist].mac}
 		</TD>
-		<TD ALIGN=LEFT>
+		<TD WIDTH="1%" ALIGN=LEFT>
 			{$nodelist[nodelist].owner}
+		</TD>
+		<TD WIDTH="94%" ALIGN=LEFT>
+			{$nodelist[nodelist].info}
 		</TD>
 	</TR>
 	{/if}{/section}
