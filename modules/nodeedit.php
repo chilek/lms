@@ -30,10 +30,12 @@ if(!$LMS->NodeExists($_GET[id]))
 	else
 		header("Location: ?m=nodelist");
 
-if ($_GET[action]==link) {
+if($_GET[action]=="link")
+{
 	$LMS->NetDevLinkComputer($_GET[id],$_GET[devid]);
 	header("Location: ?m=nodeinfo&id=".$_GET[id]);
-    }
+	die;
+}
 
 $nodeid = $_GET[id];
 $ownerid = $LMS->GetNodeOwner($nodeid);
@@ -155,6 +157,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.39  2003/10/06 04:46:49  lukasz
+ * - temp save
+ *
  * Revision 1.38  2003/10/04 12:41:28  lexx
  * - co za duzo to nie zdrowo
  *

@@ -24,54 +24,65 @@
  *  $Id$
  */
 
-if($_GET[action]=="disconnect") {
+if($_GET[action]=="disconnect")
+{
 	$LMS->NetDevUnLink($_GET[id],$_GET[devid]);
-	header("Location: ?m=netdevedit&id=".$_GET[id]);
-    }
+	header("Location: ?m=netdevinfo&id=".$_GET[id]);
+	die;
+}
 
-if($_GET[action]=="disconnectnode") {
+if($_GET[action]=="disconnectnode")
+{
 	$LMS->NetDevLinkComputer($_GET[nodeid],0);
-	header("Location: ?m=netdevedit&id=".$_GET[id]);
-    }
+	header("Location: ?m=netdevinfo&id=".$_GET[id]);
+	die;
+}
 
-if($_GET[action]=="connect") {
+if($_GET[action]=="connect")
+{
 	if(! $LMS->NetDevLink($_GET[netdev], $_GET[id]) )
 		$error[link] = "Brak wolnych portów w urz±dzeniu";
-    }
+	else
+		header("Location: ?m=netdevinfo&id=".$_GET[id]);
+}
     
-if($_GET[action]=="connectnode") {
+if($_GET[action]=="connectnode") 
+{
 	if(! $LMS->NetDevLinkComputer($_GET[nodeid], $_GET[id]) )
 		$error[linknode] = "Brak wolnych portów w urz±dzeniu";
-    }
+	else
+		header("Location: ?m=netdevinfo&id=".$_GET[id]);
+}
 
 $netdevdata = $_POST[netdev];
 
-if(isset($netdevdata)) {
-        //if($netdevdata[ports] !="" && !eregi("^[0-9]{,4}$",$netdevdata[ports]))
-        //        $error[ports] = "Podana ilo¶æ portów jest b³êdna!";
+if(isset($netdevdata))
+{
 	if($netdevdata[name] == "")
 		$error[name] = "Pole nazwa nie mo¿e byæ puste!";
-
-        if(!$error)
-        {
-	    $netdevdata[id]=$_GET[id];		
-	    $LMS->NetDevUpdate($netdevdata);
-	    header("Location: ?m=netdevinfo&id=".$_GET[id]);
-	    die;
-        }
-} else {
-	$netdevdata = $LMS->GetNetDev($_GET[id]);
-	$netdevdata[id]=$_GET[id];		
+	
+	if(!$error)
+	{
+		$LMS->NetDevUpdate($netdevdata);
+		header("Location: ?m=netdevinfo&id=".$_GET[id]);
+		die;
+	}
 }
+else
+	$netdevdata = $LMS->GetNetDev($_GET[id]);
+
+$netdevdata[id] = $_GET[id];
 
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET[id]);
-$netcomplist = $LMS->GetNetDevNode($_GET[id]);
+$netcomplist = $LMS->GetNetdevLinkedNodes($_GET[id]);
 $netdevlist = $LMS->GetNotConnectedDevices($_GET[id]);
+
 unset($netdevlist[total]);
 unset($netdevlist[order]);
 unset($netdevlist[direction]);
 
 $nodelist = $LMS->GetNodeList();
+
 unset($nodelist[totaloff]);
 unset($nodelist[totalon]);
 unset($nodelist[total]);
@@ -82,7 +93,7 @@ $layout[pagetitle]="Edycja urz±dzenia: ".$netdevdata[name]." ".$netdevdata[produ
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("error",$error);
-$SMARTY->assign("netdev",$netdevdata);
+$SMARTY->assign("netdevinfo",$netdevdata);
 $SMARTY->assign("netdevlist",$netdevconnected);
 $SMARTY->assign("netcomplist",$netcomplist);
 $SMARTY->assign("nodelist",$nodelist);
@@ -91,6 +102,9 @@ $SMARTY->display("netdevedit.html");
 
 /*
  * $Log$
+ * Revision 1.8  2003/10/06 04:46:49  lukasz
+ * - temp save
+ *
  * Revision 1.7  2003/10/05 20:45:33  lexx
  * - Lista urzadzen do podlaczenia wyswietla tylko urzadzenia jeszcze nie
  *   podlaczone

@@ -69,6 +69,25 @@ function openSelectWindow(theURL,winName,myWidth, myHeight, isCenter, formfield)
 	return false;
 }
 
+function openWindow(theURL,winName,myWidth,myHeight,isCenter)
+{
+	if(window.screen)
+		if(isCenter)
+			var myLeft = 5;
+	var myTop = 5;
+	if(isCenter == "true")
+	{
+		myLeft = (screen.width-myWidth)/2;
+		myTop = (screen.height-myHeight)/2;
+	}
+
+	targetfield = formfield;
+
+	okno = window.open(theUrl, winName, 'location=0,directories=0,scrollbars=no,toolbar=0,menubar=0,resizable=0,status=0,width='+myWidth+',height='+myHeight+',left=' + myLeft+ ',top=' + myTop);
+
+	return false;
+}
+
 function ipchoosewin(formfield){
 	
 	okno = openSelectWindow('?m=chooseip','chooseip',250,300,'true',formfield)

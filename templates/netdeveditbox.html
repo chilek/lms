@@ -1,4 +1,4 @@
-<P><FORM NAME="netdevedit" METHOD="POST" ACTION="?m=netdevedit&id={$netdev.id}">
+<P><FORM NAME="netdevedit" METHOD="POST" ACTION="?m=netdevedit&id={$netdevinfo.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
@@ -7,7 +7,7 @@
 		<TD WIDTH="1%" CLASS="FBT">
 			<B>Nazwa:</B>
 		<TD WIDTH="98%" CLASS="FRIGHTU" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[name]" VALUE="{$netdev.name}" {tip trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" NAME="netdev[name]" VALUE="{$netdevinfo.name}" {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -18,7 +18,7 @@
 			<B>Producent:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdev.producer}">
+			<INPUT TYPE="TEXT" NAME="netdev[producer]" VALUE="{$netdevinfo.producer}">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -29,7 +29,7 @@
 			<B>Model:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdev.model}">
+			<INPUT TYPE="TEXT" NAME="netdev[model]" VALUE="{$netdevinfo.model}">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -40,7 +40,7 @@
 			<B>Numer seryjny:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[serialnumber]" VALUE="{$netdev.serialnumber}">
+			<INPUT TYPE="TEXT" NAME="netdev[serialnumber]" VALUE="{$netdevinfo.serialnumber}">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -51,7 +51,7 @@
 			<B>Ilo¶æ portów:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdev.ports}" {tip trigger="ports"}>
+			<INPUT TYPE="TEXT" NAME="netdev[ports]" VALUE="{$netdevinfo.ports}" {tip trigger="ports"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -62,7 +62,7 @@
 			<B>Lokalizacja:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="netdev[location]" VALUE="{$netdev.location}">
+			<INPUT TYPE="TEXT" NAME="netdev[location]" VALUE="{$netdevinfo.location}">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -76,7 +76,7 @@
 			<TABLE WIDTH="1%" CELLPADDING="5">
 				<TR>
 					<TD CLASS="FALL" BGCOLOR="#F4F0EC">
-						<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5">{$netdev.description}</TEXTAREA>
+						<TEXTAREA NAME="netdev[description]" COLS="40" ROWS="5" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5">{$netdevinfo.description}</TEXTAREA>
 					</TD>
 				</TR>
 			</TABLE>
@@ -87,7 +87,7 @@
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="4" ALIGN="RIGHT">
 			<A HREF="javascript:document.netdevedit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
-			<A HREF="?m=netdevinfo&id={$netdev.id}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
 	</TR>	
 </TABLE></FORM></P>
