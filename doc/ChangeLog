@@ -38,6 +38,8 @@ wersja 1.1.7 (??/??/????):
   - poprawione contrib/customer do nowej konstrukcji LMS() oraz 'initLMS.php'
     w contrib - przyk³adowy plik który pokazuje jak siê inicjuje klasê LMS'a
     ¿eby wszystko ³adnie chodzi³o (lukasz)
+  - poprawiony byk w lms-payments, polegaj±cy na zwa³ce przy generowaniu
+    faktur je¿eli pole pesel'a by³o puste (MaReK/lukasz)
   - dodane sortowanie po ownerid na li¶cie komputerów (alec)
   - naprawione kapitalizowanie polskich znaków diakrytycznych w
     useredit - dok³adniej, przerzucone z PHP na bazê danych (alec)
