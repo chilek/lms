@@ -21,6 +21,9 @@ wersja 1.3.6 Osiris (??/??/2004);
     na dany okres (alec)
   - dodany panel 'U¿ytkownicy'->'Ostrze¿enia' (alec)
   - dodany skrypt lms-fping (alec)
+  - BTS#0000052: od³±czenie u¿ytkownika poprzez cutoff powoduje automatyczne 
+    owinetkowanie komputerów u¿ytkownika, oraz ustawienie wiadomo¶ci 
+    administracyjnej (lexx)
     
 wersja 1.3.5 Ju (30/07/2004):
 
