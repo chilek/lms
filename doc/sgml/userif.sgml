@@ -520,42 +520,4 @@
 	    e-mail (tak¿e dla u¿ytkownika zapisanego w bazie).</para>
 	</sect2>
  </sect1>
- <sect1 id="user-staff">
- 	<title>Dodatki</title>
-	<sect2 id="user-staff-customer">
-    	<title>"Moje konto"</title>
-		<para>W katalogu <filename>contrib/customer</filename> znajduje siê
-		przyk³ad rozwi±zania, dziêki któremu ka¿dy u¿ytkownik twojej sieci
-		mo¿e sprawdziæ w³asny bilans finansowy.</para>
-		<para>Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
-		bilans i informacje o u¿ytkowniku, który jest w³a¶cicielem komputera
-		o tym adresie. Pliki nale¿y skopiowaæ w dowolne miejsce i wystawiæ
-		pod adresem dostêpnym dla ka¿dego u¿ytkownika, a nastêpnie
-		ustawiæ poprawn± ¶cie¿kê do <filename>lms.ini</filename> w pliku 
-		<filename>index.php</filename>.</para>	
-	</sect2>
-	<sect2 id="user-staff-sqlpanel">
-    	<title>Panel SQL</title>
-	    <sect3 id="sqlpanel-intro">
-		<title>Wstêp</title>
-		<para>W katalogu <filename>contrib/sqlpanel</filename> znajdziesz
-		modu³, dziêki któremu bêdziesz mia³ mo¿liwo¶æ bezpo¶redniego dostêpu 
-		do bazy danych poprzez zadawanie zapytañ SQL. Wyniki wy¶wietlane s±
-		w formie tabeli. Ponadto podawany jest czas wykonania zapytania. 
-		Mo¿liwe jest tak¿e drukowanie wyników zapytania.</para>
-		<para>Ilo¶æ wy¶wietlanych wierszy na jednej stronie ograniczana jest
-		domy¶lnie do 50. Mo¿na to zmieniæ przy pomocy zmiennej '<prompt>sqlpanel_pagelimit</prompt>'
-		w sekcji <emphasis>[phpui]</emphasis> pliku konfiguracyjnego <filename>lms.ini</filename>.</para>
-	    </sect3>
-	    <sect3 id="sqlpanel-install">
-		<title>Instalacja</title>
-		<para>Instalacja polega na skopiowaniu plików w odpowiednie miejsca
-		w drzewie katalogów lms'a. Plik <filename>sql.php</filename> skopiuj
-		do katalogu <filename>modules</filename>, a pliki <filename>sql.html, sqlprint.html, 
-		adminheader.html</filename> do katalogu <filename>templates</filename>.
-		Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu 
-		<emphasis>Administratorzy->SQL.</emphasis></para>
-	    </sect3>
-	</sect2>
- </sect1>
 </chapter>
