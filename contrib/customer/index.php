@@ -132,7 +132,7 @@ $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
 $SESSION = NULL;
 
-$LMS = new LMS($DB,$SESSION,$CONFIG);
+$LMS = new LMS($DB,$SESSION,$_CONFIG);
 
 $SMARTY = new Smarty;
 
