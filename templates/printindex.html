@@ -102,7 +102,7 @@
 						<B>Administrator:</B>
 					</TD>
 					<TD width="1%">
-						<SELECT size="1" name="admin" {tip text="Wybierz u¿ytkownika"}>
+						<SELECT size="1" name="admin" {tip text="Dla ograniczenia wyników mo¿esz wybraæ administratora"}>
 							<OPTION value="">- wszyscy -</OPTION>
 							{section name="admins" loop=$admins}
 							<OPTION value="{$admins[admins].name}">{$admins[admins].name|truncate:50:" ..."}</OPTION>
