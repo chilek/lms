@@ -1574,8 +1574,8 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 			$nodedata['ownerid'] = $id;
 			$nodedata['access'] = 1;
 			$nodedata['warning'] = 0;
-			$nodeid = $LMS->NodeAdd($nodedata);
-			$DB->Execute("UPDATE nodes SET lastonline = '".mt_rand(time()-2592000,time()+2592000)."' WHERE id = '".$nodeid."' ");
+			if($nodeid = $LMS->NodeAdd($nodedata))
+				$DB->Execute('UPDATE nodes SET lastonline=? WHERE id=? ', array(mt_rand(time()-2592000,time()+2592000),$nodeid));
 		}
 		$startip ++;
 	}
