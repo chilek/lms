@@ -1161,7 +1161,7 @@ class LMS
 		$result['userdata'] = $this->GetUser($result['userid']);
 		$result['invoiceid'] = $invoiceid;
 		$result['year'] = $year;
-		$result['content'] = $this->DB->GetRow('SELECT * FROM cash WHERE invoiceid = ? AND time >= ? AND time <= ?', array($invoiceid, $ystart, $yend));
+		$result['content'] = $this->DB->GetAll('SELECT * FROM cash WHERE invoiceid = ? AND time >= ? AND time <= ?', array($invoiceid, $ystart, $yend));
 		return $result;
 	}
 
@@ -2228,6 +2228,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.287  2003/12/01 00:58:10  lukasz
+ * - jak kogo¶ wezmê zaraz i mietnê po ³bie...
+ *
  * Revision 1.286  2003/11/28 11:15:21  lexx
  * - lms teraz powinien poprawnie dzialac jesli mamy node z ownerid = 0
  *   (potrzebne do netdevipbox)
