@@ -374,7 +374,7 @@ password = your_password
    www.postgresql.org.
      _________________________________________________________________
 
-2.4.2.2. Instalation
+2.4.2.2. Installation
 
    That is a short version of installation procedure, more info can be
    find in postgres documentation. After download and extraction go to
@@ -432,7 +432,7 @@ password = password_entered_while_user_lms_account_creation
    installation. Sources can be downloaded from: www.sqlite.org.
      _________________________________________________________________
 
-2.4.3.2. Instalacja SQLite
+2.4.3.2. Installation
 
    Here You can see how to install the SQLite libraries and adding this
    service to PHP database (in PHP 5.0 ver. have SQLite built in). After
