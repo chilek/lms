@@ -1809,6 +1809,81 @@ class LMS
 	 * Pozosta³e funkcje...
 	 */
 
+	function NumberSpell($liczba) {
+	    // Liczby wiêksze od 999999 nie s± rozwi±zywane poprawnie
+	    $z['0'] = "zero";
+	    $z['1'] = "jeden";
+	    $z['2'] = "dwa";
+	    $z['3'] = "trzy";
+	    $z['4'] = "cztery";
+	    $z['5'] = "piêæ";
+	    $z['6'] = "sze¶æ";
+	    $z['7'] = "siedem";
+	    $z['8'] = "osiem";
+	    $z['9'] = "dziewiêæ";
+	    $z['10'] = "dziesiêæ";
+	    $z['11'] = "jedena¶cie";
+	    $z['12'] = "dwana¶cie";
+	    $z['13'] = "trzyna¶cie";
+	    $z['14'] = "czterna¶cie";
+	    $z['15'] = "piêtna¶cie";
+	    $z['16'] = "szesna¶cie";
+	    $z['17'] = "siedemna¶cie";
+	    $z['18'] = "osiemna¶cie";
+	    $z['19'] = "dziewiêtna¶cie";
+	    $z['20'] = "dwadzie¶cia";
+	    $z['30'] = "trzydzie¶ci";
+	    $z['40'] = "czterdzie¶ci";
+	    $z['50'] = "pieædziesi±t";
+	    $z['60'] = "sze¶ædziesi±t";
+	    $z['70'] = "siedemdziesi±t";
+	    $z['80'] = "osiemdziesi±t";
+	    $z['90'] = "dziewieædziesi±t";
+	    $z['100'] = "sto";
+	    $z['200'] = "dwie¶cie";
+	    $z['300'] = "trzysta";
+	    $z['400'] = "czterysta";
+	    $z['500'] = "piêæset";
+	    $z['600'] = "sze¶æset";
+	    $z['700'] = "siedemset";
+	    $z['800'] = "osiemset";
+	    $z['900'] = "dziewiêæset";
+	    $z['1000'] = "jeden tysi±c";
+	    $z['2000'] = "dwa tysi±ce";
+	    $z['3000'] = "trzy tysi±ce";
+	    $z['4000'] = "cztery tysi±ce";
+	    $z['5000'] = "piêæ tysiêcy";
+	    $z['6000'] = "sze¶æ tysiêcy";
+	    $z['7000'] = "siedem tysiêcy";
+	    $z['8000'] = "osiem tysiêcy";
+	    $z['9000'] = "dziewiêæ tysiêcy";
+	    $z['10000'] = "dziesiêæ tysiêcy";
+	    $slow='';
+	    if ($liczba>10000) {
+	        $slow .=slownie(floor($liczba / 1000));
+	        if ((($liczba / 1000 %10)>1) and (($liczba / 1000 %10)<5) and ($liczba/10000%10!=1)) {
+	    	    $slow .=" tysi±ce ";	
+	        } else {
+	    	    $slow .=" tysiêcy ";
+	        }
+	        $liczba = $liczba % 1000;
+	    }
+	    if ($liczba>1000) {
+	        $slow .=$z[floor($liczba / 1000)*1000]." ";
+	        $liczba = $liczba % 1000;
+	    }
+	    if ($liczba>100) {
+	        $slow .=$z[floor($liczba / 100)*100]." ";
+	        $liczba = $liczba % 100;
+	    }
+	    if ($liczba>20) {
+	        $slow .=$z[floor($liczba / 10)*10]." ";
+	        $liczba =  $liczba % 10;
+	    }
+	    if (($liczba>0) or (strlen($slow)<1)) {$slow .=$z[$liczba];}
+	    return $slow;
+	}
+
 	function GetRemoteMACs($host = "127.0.0.1", $port = 1029)
 	{
 		if($socket = socket_create (AF_INET, SOCK_STREAM, 0))
@@ -2024,6 +2099,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.275  2003/10/10 21:40:21  lexx
+ * - NumberSpell
+ *
  * Revision 1.274  2003/10/10 12:25:58  lexx
  * - Dodana mo¿liwo¶æ zamiany urz±dzeñ miejscami
  *
