@@ -98,6 +98,9 @@ my $outfile = $ini->val('traffic-logiptables','outfile') || '/etc/rc.d/rc.stat';
 my $iptables_binary = $ini->val('traffic-logiptables','iptables_binary') || '/usr/sbin/iptables';
 my $wan_interfaces = $ini->val('traffic-logiptables','wan_interfaces') || '';
 my $local_ports = $ini->val('traffic-logiptables','local_ports') || '';
+my $cuid = $ini->val('traffic-logiptables', 'script_owneruid') || '0';
+my $cgid = $ini->val('traffic-logiptables', 'script_ownergif') || '0';
+my $cperm = $ini->val('traffic-logiptables', 'script_permission') || '700';
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
@@ -180,7 +183,10 @@ while (my $row = $dbq->fetchrow_hashref())
 	print OUTFILE "$iptables_binary -t mangle -A STAT -s $row->{'ipaddr'}\n";
 	print OUTFILE "$iptables_binary -t mangle -A STAT -d $row->{'ipaddr'}\n";
 }
+
 close(OUTFILE);
+chown $cuid, $cgid, $outfile or print "Warning! Unable to set owner of $outfile to $cuid.$cgid.\n";
+chmod oct($cperm), $cfile or print "Warning! Unable to set permission $cperm to $outfile.\n";
 
 my @info = `$iptables_binary -t mangle -L STAT -v -n -x`;
 my %uploads;

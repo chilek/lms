@@ -128,6 +128,9 @@ my $iptables_binary = $ini->val('traffic-htbiptlimits','iptables_binary') || '/u
 my $tc_binary = $ini->val('traffic-htbiptlimits','tc_binary') || '/sbin/tc';
 my $wan_interfaces = $ini->val('traffic-htbiptlimits','wan_interfaces') || '';
 my $local_ports = $ini->val('traffic-htbiptlimits','local_ports') || '';
+my $cuid = $ini->val('traffic-htbiptlimits', 'script_owneruid') || '0';
+my $cgid = $ini->val('traffic-htbiptlimits', 'script_ownergif') || '0';
+my $cperm = $ini->val('traffic-htbiptlimits', 'script_permission') || '700';
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
@@ -276,5 +279,7 @@ while (my $row = $dbq->fetchrow_hashref())
 }
 
 close(OUTFILE);
+chown $cuid, $cgid, $outfile or print "Warning! Unable to set owner of $outfile to $cuid.$cgid.\n";
+chmod oct($cperm), $cfile or print "Warning! Unable to set permission $cperm to $outfile.\n";
 system("$outfile 1>/dev/null 2>&1");
 $dbase->disconnect();
