@@ -27,16 +27,16 @@
 					{if !$a.tariffid}
 					<TD WIDTH="8%" COLSPAN="8"><B>Zawieszenie naliczania wszystkich p³atno¶ci</B></TD>
 					{else}
-					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=tariffinfo&id={$a.tariffid}">{$a.name}</A></B></TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$a.value|string_format:"%01.2f"} z³</TD>
-					<TD WIDTH="1%" NOWRAP>{$a.period} ({$a.at})</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$a.downrate|default:"-"} kbps</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$a.downceil|default:"-"} kbps</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$a.uprate|default:"-"} kbps</TD>
-					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$a.upceil|default:"-"} kbps</TD>
-					<TD WIDTH="1%">{if $a.invoice}tak{else}&nbsp;{/if}</TD>
+					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'"><B><A HREF="?m=tariffinfo&id={$a.tariffid}">{$a.name}</A></B></TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.value|string_format:"%01.2f"} z³</TD>
+					<TD WIDTH="1%" NOWRAP OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.period} ({$a.at})</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.downrate|default:"-"} kbps</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.downceil|default:"-"} kbps</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.uprate|default:"-"} kbps</TD>
+					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{$a.upceil|default:"-"} kbps</TD>
+					<TD WIDTH="1%" OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'">{if $a.invoice}tak{else}&nbsp;{/if}</TD>
 					{/if}
-					<TD WIDTH="1%">
+					<TD WIDTH="1%" {if $a.tariffid}OnClick="return self.location.href='?m=userassignmentsedit&id={$a.id}'"{/if}>
 						{if $a.datefrom}od {$a.datefrom|date_format:"%Y/%m/%d"}{/if}
 						{if $a.dateto}do {$a.dateto|date_format:"%Y/%m/%d"}{/if}
 					</TD>
