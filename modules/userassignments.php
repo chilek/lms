@@ -68,6 +68,8 @@ if($_GET['action'] == 'add' && isset($a))
 			if($_CONFIG['phpui']['use_current_payday'] && $at==0)
 				$at = date('j', time());
 
+			$a['at'] = $at;
+			
 			if($at > 28 || $at < 1)
 				$error['at'] = 'Nieprawid³owy dzieñ miesi±ca (1-28)!';
 		break;
