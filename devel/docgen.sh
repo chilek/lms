@@ -24,13 +24,12 @@ case "$1" in
 	if [ $? -ne 0 ]
 	    then exit 1
 	fi
-	elinks -dump ../README.html > ../README
-        if [$? -ne 0 ]
+#	elinks -dump ../README.html > ../README
+	lynx -dump ../README.html -display_charset=ISO-8859-2 -raw -nolist > ../README
+        if [ $? -ne 0 ]
 	    then
-	    rm index.html
 	    exit 2
 	fi
-	rm index.html
 	exit 0
     ;;
     

@@ -1,382 +1,315 @@
 
-                      LMS - LAN Management System 1.1-cvs
+LMS - LAN Management System 1.1-cvs
 
-  The LMS Developers
+   [logo-small.png]
+
+The LMS Developers
 
    Copyright (c) 2003 The LMS Developers
-
-     ----------------------------------------------------------------------
+     _________________________________________________________________
 
    Spis tre¶ci
-
    1. Wstêp
 
-                1.1. Czym jest LMS
-
-                1.2. Autorzy
-
-                1.3. Licencja
-
-                1.4. Informacje dodatkowe
+        1.1. Czym jest LMS
+        1.2. Autorzy
+        1.3. Licencja
+        1.4. Informacje dodatkowe
 
    2. Instalacja i konfiguracja
 
-                2.1. Wstêp
-
-                2.2. Wymagania
-
-                2.3. Instalacja LMS
-
-                2.4. Instalacja serwera baz danych
-
-                2.5. Konfiguracja podstawowa
-
-                2.6. Prawa dostêpu
+        2.1. Wstêp
+        2.2. Wymagania
+        2.3. Instalacja LMS
+        2.4. Instalacja serwera baz danych
+        2.5. Konfiguracja podstawowa
+        2.6. Prawa dostêpu
 
    3. Interfejs U¿ytkownika (LMS-UI)
 
-                3.1. Logowanie
-
-                3.2. Praca z LMS-UI
+        3.1. Logowanie
+        3.2. Praca z LMS-UI
+        3.3. Dodatki
 
    4. Skrypty
 
-                4.1. Instalacja
-
-                4.2. Lista dostêpnych skryptów
-
-                4.3. lms-notify
-
-                4.4. lms-cutoff
-
-                4.5. lms-payments
-
-                4.6. lms-traffic
+        4.1. Instalacja
+        4.2. Lista dostêpnych skryptów
+        4.3. lms-notify
+        4.4. lms-cutoff
+        4.5. lms-payments
+        4.6. lms-traffic
 
    5. Generator plików konfiguracyjnych (lms-mgc)
 
-                5.1. Instalacja
-
-                5.2. Konfiguracja
-
-                5.3. Przyk³ad zastosowania lms-mgc
+        5.1. Instalacja
+        5.2. Konfiguracja
+        5.3. Przyk³ad zastosowania lms-mgc
 
    6. Dla dociekliwych
 
-                6.1. Drzewo katalogów
-
-                6.2. Struktura bazy danych
-
-                6.3. Poziomy dostêpu
-
-                6.4. Ograniczenia
+        6.1. Drzewo katalogów
+        6.2. Struktura bazy danych
+        6.3. Poziomy dostêpu
+        6.4. Ograniczenia
 
    Spis tabel
-
    4-1. Lista skryptów wykonywalnych
-
    6-1. Drzewo katalogów LMS
 
    Spis rysunków
-
    3-1. LMS-UI: Logowanie
-
    3-2. LMS-UI: Panel g³ówny
-
    3-3. LMS-UI: U¿ytkownicy
-
    3-4. LMS-UI: Komputery
-
    3-5. LMS-UI: Osprzêt sieciowy
-
    3-6. LMS-UI: Sieci IP
-
    3-7. LMS-UI: Taryfy i finanse
-
    3-8. LMS-UI: Bazy danych
-
    3-9. LMS-UI: Administratorzy
-
-   3-10. LMS-UI: Statystyki - filtr
-
-   3-11. LMS-UI: Statystyki - wykres
+   3-10. Statystyki wykorzystania ³±cza- filtr
+   3-11. Statystyki wykorzystania ³±cza - wykres
 
    Spis przyk³adów
-
    4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych
-
    4-2. Lms-notify: Przyk³ad szablonu
-
    5-1. Lms-mgc: Przyk³ad instancji
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
+Rozdzia³ 1. Wstêp
 
-                               Rozdzia³ 1. Wstêp
+1.1. Czym jest LMS
 
-                               1.1. Czym jest LMS
-
-   "LMS" jest skrótem od "LAN Management System". Jest to zestaw aplikacji w
-   PHP i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi (popularnie
-   zwanymi Amatorskimi Sieciami Komputerowymi), opartych o bazê danych MySQL
-   lub PostgreSQL. G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi
-   u¿ytkowników na poziomie providera z prawdziwego zdarzenia. Najbardziej
-   podstawowe cechy LMS to:
-
-     * baza danych u¿ytkowników (imiê, nazwisko, adres, numer telefonu, uwagi
-       i inne),
-
+   "LMS" jest skrótem od "LAN Management System". Jest to zestaw
+   aplikacji w PHP i Perlu, u³atwiaj±cych zarz±dzanie sieciami
+   osiedlowymi (popularnie zwanymi Amatorskimi Sieciami Komputerowymi),
+   opartych o bazê danych MySQL lub PostgreSQL. G³ówne za³o¿enia to
+   uzyskanie jako¶ci us³ug oraz obs³ugi u¿ytkowników na poziomie
+   providera z prawdziwego zdarzenia. Najbardziej podstawowe cechy LMS
+   to:
+     * baza danych u¿ytkowników (imiê, nazwisko, adres, numer telefonu,
+       uwagi i inne),
      * baza danych komputerów (adres IP, adres MAC),
-
      * baza danych sprzêtu sieciowego (nazwa, ilo¶æ portów),
-
      * prowadzenie prostego rachunku operacji finansowych oraz stanu
        funduszów sieci,
-
      * ró¿ne taryfy abonamentowe,
-
      * wysy³anie poczt± elektroniczn± upomnieñ do u¿ytkowników,
-
      * automatyczne naliczanie op³at miesiêcznych,
-
-     * generowanie praktycznie jakiegokolwiek konfiga na podstawie danych o
-       komputerach w bazie (przyk³adowe konfigi obejmuj± rc.masq na iptables,
-       dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i odwrotny),
-
+     * generowanie praktycznie jakiegokolwiek konfiga na podstawie danych
+       o komputerach w bazie (przyk³adowe konfigi obejmuj± rc.masq na
+       iptables, dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i
+       odwrotny),
      * wizualizacja statystyk wykorzystania ³±cza.
 
    Ca³o¶æ zosta³a wymy¶lona w ramach administracji ASK NetX i tam jest
    nieustannie rozwijana i poddawana testom.
 
-   LMS nie zast±pi Ci umiejêtno¶ci jakie powinien mieæ administrator. Je¶li
-   nie potrafisz wykonaæ tak prostych czynno¶æ jak instalacja czy
-   konfiguracja, prawdopodobnie nie bêdziesz umia³ dostroiæ LMS do swojego
-   systemu. Tak wiêc bez znajomo¶ci systemów U*IX siê nie obejdzie.
+   LMS nie zast±pi Ci umiejêtno¶ci jakie powinien mieæ administrator.
+   Je¶li nie potrafisz wykonaæ tak prostych czynno¶æ jak instalacja czy
+   konfiguracja, prawdopodobnie nie bêdziesz umia³ dostroiæ LMS do
+   swojego systemu. Tak wiêc bez znajomo¶ci systemów U*IX siê nie
+   obejdzie.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-                                  1.2. Autorzy
+1.2. Autorzy
 
 1.2.1. LMS Developers
 
      * Kod PHP:
 
-       £ukasz 'Baseciq' Mozer     
-       Micha³ 'DziQs' Zapalski    
-       Rados³aw 'Warden' Antoniuk 
-       Krzysztof 'hunter' Drewicz 
-
+       £ukasz 'Baseciq' Mozer
+       Micha³ 'DziQs' Zapalski
+       Rados³aw 'Warden' Antoniuk
+       Krzysztof 'hunter' Drewicz
      * Kod C:
 
-       Mateusz 'mteg' Golicz 
-
+       Mateusz 'mteg' Golicz
      * Kod Perl:
 
-       £ukasz 'Baseciq' Mozer     
-       Micha³ 'DziQs' Zapalski    
-       Maciej 'agaran' Pijanka    
-       Krzysztof 'hunter' Drewicz 
-
+       £ukasz 'Baseciq' Mozer
+       Micha³ 'DziQs' Zapalski
+       Maciej 'agaran' Pijanka
+       Krzysztof 'hunter' Drewicz
      * Design:
 
-       £ukasz 'Baseciq' Mozer 
-
+       £ukasz 'Baseciq' Mozer
      * HTML, JavaScript, CSS:
 
-       £ukasz 'Baseciq' Mozer  
-       Pawe³ 'Bob_R' Czerski   
-       Pawe³ 'sickone' Kisiela 
-
+       £ukasz 'Baseciq' Mozer
+       Pawe³ 'Bob_R' Czerski
+       Pawe³ 'sickone' Kisiela
      * Grafika:
 
-       Piotr 'Pierzak' M.        
-       Grzegorz 'byko' Cichowski 
-       Kuba 'kflis' Flis         
-       £ukasz 'Baseciq' Mozer    
-
+       Piotr 'Pierzak' M.
+       Grzegorz 'byko' Cichowski
+       Kuba 'kflis' Flis
+       £ukasz 'Baseciq' Mozer
      * Support MySQL:
 
-       Kuba 'shasta' Jankowski    
-       Rados³aw 'Warden' Antoniuk 
-       Przemys³aw Babiñski        
-
+       Kuba 'shasta' Jankowski
+       Rados³aw 'Warden' Antoniuk
+       Przemys³aw Babiñski
      * Support PostgreSQL:
 
-       Aleksander 'A.L.E.C' Machniak 
-
+       Aleksander 'A.L.E.C' Machniak
      * Dokumentacja i strona WWW:
 
-       Aleksander 'A.L.E.C' Machniak   
-       Kuba 'shasta' Jankowski         
-       Grzegorz 'JaBBaS' Dziêgielewski 
-       £ukasz 'Baseciq' Mozer          
-       Marcin 'Lexx' Król              
-
+       Aleksander 'A.L.E.C' Machniak
+       Kuba 'shasta' Jankowski
+       Grzegorz 'JaBBaS' Dziêgielewski
+       £ukasz 'Baseciq' Mozer
+       Marcin 'Lexx' Król
      * Betatesterzy:
 
-       Grzegorz 'byko' Cichowski        
-       Rados³aw 'Warden' Antoniuk       
-       Tomasz 'dzwonek' Dzwonkowski     
-       Sebastian 'Victus' Frasunkiewicz 
-       Kuba 'kflis' Flis                
-       Krystian 'UFOczek' Kochanowski   
-       Grzegorz 'JaBBaS' Dziêgielewski  
-       Andrzej 'chsh' Gr±dziel          
-       Marcin 'Lexx' Król               
-
-     ----------------------------------------------------------------------
+       Grzegorz 'byko' Cichowski
+       Rados³aw 'Warden' Antoniuk
+       Tomasz 'dzwonek' Dzwonkowski
+       Sebastian 'Victus' Frasunkiewicz
+       Kuba 'kflis' Flis
+       Krystian 'UFOczek' Kochanowski
+       Grzegorz 'JaBBaS' Dziêgielewski
+       Andrzej 'chsh' Gr±dziel
+       Marcin 'Lexx' Król
+     _________________________________________________________________
 
 1.2.2. Inni
 
    LMS zawiera fragmenty nastêpuj±cego oprogramowania: phpMyAdmin,
    phpsysinfo, NewsPortal, procedury konwersji liczb na postaæ s³own±
-   autorstwa Piotra Klebana oraz przyk³ady kodu zawarte w Podrêczniku PHP.
+   autorstwa Piotra Klebana oraz przyk³ady kodu zawarte w Podrêczniku
+   PHP.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-                                 1.3. Licencja
+1.3. Licencja
 
    Niniejszy program jest oprogramowaniem wolnodostêpnym; mo¿esz go
    rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej Licencji
-   Publicznej GNU, wydanej przez Fundacjê Wolnodostêpnego Oprogramowania -
-   wed³ug wersji 2-giej tej Licencji lub której¶ z pó¼niejszych wersji.
+   Publicznej GNU, wydanej przez Fundacjê Wolnodostêpnego Oprogramowania
+   - wed³ug wersji 2-giej tej Licencji lub której¶ z pó¼niejszych wersji.
 
-   Niniejszy program rozpowszechniany jest z nadziej±, i¿ bêdzie on u¿yteczny
-   - jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domy¶lnej gwarancji
-   PRZYDATNO¦CI HANDLOWEJ albo PRZYDATNO¦CI DO OKRE¦LONYCH ZASTOSOWAÑ. W celu
-   uzyskania bli¿szych informacji - Powszechna Licencja Publiczna GNU.
+   Niniejszy program rozpowszechniany jest z nadziej±, i¿ bêdzie on
+   u¿yteczny - jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domy¶lnej
+   gwarancji PRZYDATNO¦CI HANDLOWEJ albo PRZYDATNO¦CI DO OKRE¦LONYCH
+   ZASTOSOWAÑ. W celu uzyskania bli¿szych informacji - Powszechna
+   Licencja Publiczna GNU.
 
    Z pewno¶ci± wraz z niniejszym programem otrzyma³e¶ te¿ egzemplarz
-   Powszechnej Licencji Publicznej GNU; je¶li nie - napisz do Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+   Powszechnej Licencji Publicznej GNU; je¶li nie - napisz do Free
+   Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+   02111-1307, USA.
 
    Angielski tekst tej licencji znajduje siê tutaj.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-                           1.4. Informacje dodatkowe
+1.4. Informacje dodatkowe
 
 1.4.1. Kontakt z autorami
 
-   Najlepiej poprzez listê mailingow±, na któr± mo¿na siê zapisaæ wysy³aj±c
-   pustego maila o temacie "subscribe lms" na adres ecartis@lists.rulez.pl, a
-   maile wysy³a siê na adres lms@lists.rulez.pl.
-
-     ----------------------------------------------------------------------
+   Najlepiej poprzez listê mailingow±, na któr± mo¿na siê zapisaæ
+   wysy³aj±c pustego maila o temacie "subscribe lms" na adres
+   ecartis@lists.rulez.pl, a maile wysy³a siê na adres
+   lms@lists.rulez.pl.
+     _________________________________________________________________
 
 1.4.2. Zg³aszanie b³êdów i pomys³ów
 
-   Aby efektywnie zg³osiæ b³±d lub nowy pomys³, najlepiej jest zapisaæ siê na
-   listê mailingow± gdzie kto¶ z autorów b±d¼ u¿ytkowników bêdzie mia³ szansê
-   odpowiedzieæ na pytania Ciê nurtuj±ce. Dostêpny jest tak¿e dla testów BTS,
-   gdzie mo¿na zg³aszaæ b³êdy po uprzedniej rejestracji. Raporty z BTS id±
-   tak¿e na listê mailingow±, wiêc najlepiej siê zapisaæ, zg³osiæ b³±d
-   poprzez BTS, wys³aæ linka na listê i czekaæ na rozwój wydarzeñ. Adres BTS
-   to http://bts.rulez.pl.
-
-     ----------------------------------------------------------------------
+   Aby efektywnie zg³osiæ b³±d lub nowy pomys³, najlepiej jest zapisaæ
+   siê na listê mailingow± gdzie kto¶ z autorów b±d¼ u¿ytkowników bêdzie
+   mia³ szansê odpowiedzieæ na pytania Ciê nurtuj±ce. Dostêpny jest tak¿e
+   dla testów BTS, gdzie mo¿na zg³aszaæ b³êdy po uprzedniej rejestracji.
+   Raporty z BTS id± tak¿e na listê mailingow±, wiêc najlepiej siê
+   zapisaæ, zg³osiæ b³±d poprzez BTS, wys³aæ linka na listê i czekaæ na
+   rozwój wydarzeñ. Adres BTS to http://bts.rulez.pl.
+     _________________________________________________________________
 
 1.4.3. Najnowsza wersja
 
    Zawsze aktualn± werjsê LMS mo¿na pobraæ z repozytorium CVS za pomoc±
    interfejsu www tutaj, lub klasycznie (dostêp anonimowy, puste has³o):
-
- cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
- cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
- cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout
 
    Repozytorium CVS mo¿na tak¿e przegl±daæ przy pomocy interfejsu WWW pod
    adresem http://cvs.rulez.pl.
-
-     ----------------------------------------------------------------------
+     _________________________________________________________________
 
 1.4.4. Historia zmian
 
-   Informacje o zmianach jakie zasz³y w kolejnych wersjach LMS zawarte s± w
-   pliku ChangeLog.
+   Informacje o zmianach jakie zasz³y w kolejnych wersjach LMS zawarte s±
+   w pliku ChangeLog.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
+Rozdzia³ 2. Instalacja i konfiguracja
 
-                     Rozdzia³ 2. Instalacja i konfiguracja
+2.1. Wstêp
 
-                                   2.1. Wstêp
-
-   LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest LMS-UI (interfejs
-   u¿ytkownika). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy
-   danych (w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w LMS-UI
-   wykonujemy wszystkie czynno¶ci, reszta modu³ów ma tylko za zadanie
-   zautomatyzowaæ pracê LMS.
+   LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest LMS-UI
+   (interfejs u¿ytkownika). Jest on w ca³o¶ci napisany w PHP i do pracy
+   wymaga bazy danych (w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To
+   w³a¶nie w LMS-UI wykonujemy wszystkie czynno¶ci, reszta modu³ów ma
+   tylko za zadanie zautomatyzowaæ pracê LMS.
 
    LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty
    wymagaj± aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³
    u¿ywaæ tych skryptów, musisz mieæ PERLa. Skrypty pozwalaj± m.in. na
-   comiesiêczne naliczanie op³at abonamentowych b±d¼ wysy³anie upomnieñ. Jest
-   jeszcze LMS-MGC, który te¿ jest skryptem ale na tyle uniwersalnym ¿e
-   potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i zrestartowaæ
-   us³ugê na twoim serwerze.
+   comiesiêczne naliczanie op³at abonamentowych b±d¼ wysy³anie upomnieñ.
+   Jest jeszcze LMS-MGC, który te¿ jest skryptem ale na tyle uniwersalnym
+   ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i
+   zrestartowaæ us³ugê na twoim serwerze.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-                                 2.2. Wymagania
+2.2. Wymagania
 
 2.2.1. Serwer WWW
 
    Poniewa¿ LMS-UI jest napisane w PHP, niezbêdny jest serwer WWW z
    interpreterem tego jêzyka. Preferowanym serwerem jest Apache
    (www.apache.org).
-
-     ----------------------------------------------------------------------
+     _________________________________________________________________
 
 2.2.2. Interpreter PHP
 
-   Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a te¿
-   poprawnie na 4.1.x (ale poniewa¿ devepolerzy pracuj± na 4.2.3, nie mo¿na
-   zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿na sci±gn±æ ze
-   strony www.php.net.
-
-     ----------------------------------------------------------------------
+   Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a
+   te¿ poprawnie na 4.1.x (ale poniewa¿ devepolerzy pracuj± na 4.2.3, nie
+   mo¿na zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿na
+   sci±gn±æ ze strony www.php.net.
+     _________________________________________________________________
 
 2.2.3. Serwer baz danych
 
-   Preferowany to MySQL. 3.23.53 i nowszy. Starszy mo¿e te¿ dzia³aæ, je¶li
-   nie to daj nam o tym znaæ.
+   Preferowany to MySQL. 3.23.53 i nowszy. Starszy mo¿e te¿ dzia³aæ,
+   je¶li nie to daj nam o tym znaæ.
 
-   LMS wspó³pracuje tak¿e z PostgreSQL. Zaleca siê instalacjê wersji 7.3 lub
-   nowszych, aczkolwiek nie powinno byæ problemów z wersjami od 7.2.3
+   LMS wspó³pracuje tak¿e z PostgreSQL. Zaleca siê instalacjê wersji 7.3
+   lub nowszych, aczkolwiek nie powinno byæ problemów z wersjami od 7.2.3
    pocz±wszy.
-
-     ----------------------------------------------------------------------
+     _________________________________________________________________
 
 2.2.4. Biblioteka Smarty
 
-   LMS-UI do pracy wymaga jeszcze biblioteki Smarty (http://smarty.php.net) w
-   wersji 2.5.0 lub wy¿szej.
-
-     ----------------------------------------------------------------------
+   LMS-UI do pracy wymaga jeszcze biblioteki Smarty
+   (http://smarty.php.net) w wersji 2.5.0 lub wy¿szej.
+     _________________________________________________________________
 
 2.2.5. Perl
 
-   O ile dla LMS-UI wystarczy to co powy¿ej, to ¿eby mieæ dzia³aj±cy LMS-MGC
-   i resztê skryptów potrzebujemy tak¿e perla i modu³y do niego czyli:
-
+   O ile dla LMS-UI wystarczy to co powy¿ej, to ¿eby mieæ dzia³aj±cy
+   LMS-MGC i resztê skryptów potrzebujemy tak¿e perla i modu³y do niego
+   czyli:
      * perl w³a¶ciwy i jego podstawowe modu³y (POSIX, GetOpt::Long);
-
      * Net::SMTP;
-
      * Config::IniFiles;
-
      * DBI;
-
      * DBD-mysql (Je¶li masz zamiar u¿ywaæ mysql'a);
-
      * DBD-pg (Je¶li masz zamiar u¿ywaæ postgres'a);
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-                              2.3. Instalacja LMS
+2.3. Instalacja LMS
 
    Po pobraniu ze strony www.lms.rulez.pl rozpakuj archiwum:
-
- $ tar zxvf lms-x.x.x.tar.gz
+$ tar zxvf lms-x.x.x.tar.gz
 
    a nastêpnie przenie¶ pliki z LMS-UIdo katalogu osi±galnego z poziomu
    serwera www (np. /var/www/lms).
@@ -386,61 +319,56 @@
 
    Skrypty wykonywalne z katalogu bin najlepiej przenie¶æ do katalogu
    /usr/sbin.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-                       2.4. Instalacja serwera baz danych
+2.4. Instalacja serwera baz danych
 
 2.4.1. MySQL
 
-  2.4.1.1. Wstêp
+2.4.1.1. Wstêp
 
-   Ta bardzo popularna baza jest dostêpna z wiêkszo¶ci± dystrybucji Linuksa.
-   Je¿eli jednak bêdziesz musia³ j± zainstalowaæ samodzielnie, zacznij od
-   ¶ci±gniêcia ¼róde³ z www.mysql.org.
+   Ta bardzo popularna baza jest dostêpna z wiêkszo¶ci± dystrybucji
+   Linuksa. Je¿eli jednak bêdziesz musia³ j± zainstalowaæ samodzielnie,
+   zacznij od ¶ci±gniêcia ¼róde³ z www.mysql.org.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-  2.4.1.2. Instalacja serwera MySQL
+2.4.1.2. Instalacja serwera MySQL
 
    Po rozpakowaniu, wejd¼ do katalogu z naszym MySQL i wydaj kolejno
    polecenia:
+$ ./configure --prefix=/usr/local/mysql
+$ make
+$ make install
+$ /usr/local/mysql/bin/mysql_install_db
+$ chown mysql -R /usr/local/mysql/var
+$ /usr/local/mysql/bin/safe_mysqld &
+$ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o
+     _________________________________________________________________
 
- $ ./configure --prefix=/usr/local/mysql
- $ make
- $ make install
- $ /usr/local/mysql/bin/mysql_install_db
- $ chown mysql -R /usr/local/mysql/var
- $ /usr/local/mysql/bin/safe_mysqld &
- $ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o
-
-     ----------------------------------------------------------------------
-
-  2.4.1.3. Utworzenie bazy danych
+2.4.1.3. Utworzenie bazy danych
 
    Konieczne to jest je¿eli uruchamiasz LMS po raz PIERWSZY. Je¿eli
    uaktualniasz LMS z poprzedniej wersji, odpowiednie adnotacje co nale¿y
-   zrobiæ z baz± danych s± w pliku ChangeLog. Tak wiêc, wejd¼ do katalogu w
-   którym masz LMS'a i uruchom shell mysql'a:
+   zrobiæ z baz± danych s± w pliku ChangeLog. Tak wiêc, wejd¼ do katalogu
+   w którym masz LMS'a i uruchom shell mysql'a:
+mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
+Enter password:[podaj has³o]
+mysql> create database lms;
+mysql> grant usage on lms.* to lms@localhost;
+mysql> grant select,insert,update,delete,create on lms.* to lms@localhost ident
+ified by 'haslo';
+mysql> flush privileges;
+mysql> use lms;
+mysql> source doc/lms.mysql;
+     _________________________________________________________________
 
- mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
- Enter password:[podaj has³o]
- mysql> create database lms;
- mysql> grant usage on lms.* to lms@localhost;
- mysql> grant select,insert,update,delete,create on lms.* to lms@localhost identified by 'haslo';
- mysql> flush privileges;
- mysql> use lms;
- mysql> source doc/lms.mysql;
+2.4.1.4. Konfiguracja LMS (lms.ini)
 
-     ----------------------------------------------------------------------
-
-  2.4.1.4. Konfiguracja LMS (lms.ini)
-
-   Poniewa¿ MySQL jest domy¶ln± baz± dla LMS'u, konfiguracja ogranicza siê do
-   podania w sekcji [database] pliku /etc/lms/lms.ini has³a i u¿ytkownika:
-
- user     = lms
- password = has³o_z_pkt.3
+   Poniewa¿ MySQL jest domy¶ln± baz± dla LMS'u, konfiguracja ogranicza
+   siê do podania w sekcji [database] pliku /etc/lms/lms.ini has³a i
+   u¿ytkownika:
+user     = lms
+password = has³o_z_pkt.3
 
    Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
    danych, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
@@ -450,69 +378,66 @@
    gdzie od razu bêdziesz móg³ u¿yæ nowo utworzonego konta.
 
    Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
-
- 12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o \
-                     --add-drop-table --add-locks lms > backups/lms-auto-"$(date +%s)".sql
+12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-h
+as³o \
+                    --add-drop-table --add-locks lms > backups/lms-auto-"$(date
+ +%s)".sql
 
    Spowoduje to wykonywanie o 4:12 rano, ka¿dego 3, 10, 17, 21 i 28 dnia
    miesi±ca automagicznie zrzutu danych z mysqla.
-
-     ----------------------------------------------------------------------
+     _________________________________________________________________
 
 2.4.2. PostgreSQL
 
-  2.4.2.1. Wstêp
+2.4.2.1. Wstêp
 
    LMS jest testowany na PostgreSQL 7.3.4 i nowszych, ale poniewa¿ ¿adne
-   skomplikowane w³a¶ciwo¶ci tej bazy nie s± wykorzystywane, nie powinno byæ
-   problemów z innymi wersjami. Je¿eli nie masz zainstalowanego serwera
-   PostgreSQL, najlepszym rozwi±zaniem bêdzie w³asnorêczna kompilacja ze
-   ¼róde³ dostêpnych na stronie www.postgresql.org.
+   skomplikowane w³a¶ciwo¶ci tej bazy nie s± wykorzystywane, nie powinno
+   byæ problemów z innymi wersjami. Je¿eli nie masz zainstalowanego
+   serwera PostgreSQL, najlepszym rozwi±zaniem bêdzie w³asnorêczna
+   kompilacja ze ¼róde³ dostêpnych na stronie www.postgresql.org.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-  2.4.2.2. Instalacja
+2.4.2.2. Instalacja
 
    Jest to wersja skrócona instalacji, wiêcej informacji znajdziesz w
-   dokumentacji postgresa. Po ¶ci±gniêciu i rozpakowaniu wejd¼ do katalogu
-   g³ównego i wpisz kolejno poni¿sze polecenia.
+   dokumentacji postgresa. Po ¶ci±gniêciu i rozpakowaniu wejd¼ do
+   katalogu g³ównego i wpisz kolejno poni¿sze polecenia.
+$ ./configure --enable-locale
+$ gmake
+$ su
+$ gmake install
+$ adduser postgres
+$ mkdir /usr/local/pgsql/data
+$ chown postgres /usr/local/pgsql/data
+$ su - postgres
+$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
+$ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &
+     _________________________________________________________________
 
- $ ./configure --enable-locale
- $ gmake
- $ su
- $ gmake install
- $ adduser postgres
- $ mkdir /usr/local/pgsql/data
- $ chown postgres /usr/local/pgsql/data
- $ su - postgres
- $ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
- $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &
-
-     ----------------------------------------------------------------------
-
-  2.4.2.3. Utworzenie bazy danych
+2.4.2.3. Utworzenie bazy danych
 
    Maj±c uruchomiony serwer mo¿esz przyst±piæ do tworzenia bazy o nazwie
    'lms', której w³a¶cicielem bêdzie u¿ytkownik z loginem 'lms'.
+$ /usr/local/pgsql/bin/createuser -d -A -P lms
+$ /usr/local/pgsql/bin/createdb -E LATIN2 -U lms lms
+$ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql
+     _________________________________________________________________
 
- $ /usr/local/pgsql/bin/createuser -d -A -P lms
- $ /usr/local/pgsql/bin/createdb -E LATIN2 -U lms lms
- $ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql
+2.4.2.4. Konfiguracja LMS (lms.ini)
 
-     ----------------------------------------------------------------------
+   Dla systemu LMS domy¶lnym serwerem baz danych jest MySQL, dlatego w
+   sekcji [database] pliku /etc/lms/lms.ini nale¿y ustawiæ nastêpuj±ce
+   opcje:
+type     = postgres
+user     = lms
+password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
 
-  2.4.2.4. Konfiguracja LMS (lms.ini)
+   Notatka
 
-   Dla systemu LMS domy¶lnym serwerem baz danych jest MySQL, dlatego w sekcji
-   [database] pliku /etc/lms/lms.ini nale¿y ustawiæ nastêpuj±ce opcje:
-
- type     = postgres
- user     = lms
- password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
-
-   Notatka Has³o jest wymagane w zale¿no¶ci od konfiguracji autentykacji      
-           u¿ytkowników postgresa w /usr/local/pgsql/data/pg_hba.conf.        
-           Domy¶lnie has³o nie jest wymagane.                                 
+   Has³o jest wymagane w zale¿no¶ci od konfiguracji autentykacji
+   u¿ytkowników postgresa w /usr/local/pgsql/data/pg_hba.conf. Domy¶lnie
+   has³o nie jest wymagane.
 
    Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
    danych, mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
@@ -520,352 +445,267 @@
    zobaczysz bêdzie formularz dodania administratora. Je¿eli podasz
    prawid³owe dane administratora, LMS przeniesie Ciê na stronê logowania
    gdzie od razu bêdzisz móg³ u¿yæ nowo utworzonego konta.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
+2.5. Konfiguracja podstawowa
 
-                          2.5. Konfiguracja podstawowa
+   G³ównym plikiem konfiguracyjnym LMS jest lms.ini, który nale¿y
+   umie¶ciæ w katalogu /etc/lms lub w katalogu g³ównym LMS'a. Zawiera on
+   zmienne konfiguracyjne LMS-UI oraz wszystkich skryptów wykonywalnych z
+   wyj±tkiem LMS-MGC.
+   Notatka
 
-   G³ównym plikiem konfiguracyjnym LMS jest lms.ini, który nale¿y umie¶ciæ w
-   katalogu /etc/lms lub w katalogu g³ównym LMS'a. Zawiera on zmienne
-   konfiguracyjne LMS-UI oraz wszystkich skryptów wykonywalnych z wyj±tkiem
-   LMS-MGC.
-
-     ----------------------------------------------------------------------
+   Pamiêtaj o usuniêciu ¶redników na pocz±tku linii z ustawianym
+   parametrem konfiguracyjnym.
+     _________________________________________________________________
 
 2.5.1. Sekcja [database] - ustawienia bazy danych
 
      * type
-
-       Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak
-       narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql
-
+       Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale
+       jak narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie:
+       mysql
        Przyk³ad: type = mysql
-
      * host
-
-       Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale
-       mo¿na tutaj wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w
-       formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost
-
+       Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost,
+       ale mo¿na tutaj wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda
+       w formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost
        Przyk³ad: host = localhost
-
      * user
-
        U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶
-       zgodnie ze wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz
-       u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz 'root' (MySQL
-       na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 'postgres' (PostgreSQL).
-       Domy¶lnie: root
-
+       zgodnie ze wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli
+       chcesz u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz
+       'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼
+       'postgres' (PostgreSQL). Domy¶lnie: root
        Przyk³ad: user = lms
-
      * password
-
        Has³o do bazy danych. Domy¶lnie puste.
-
        Przyk³ad: password = password
-
      * database
-
        Nazwa bazy danych, domy¶lnie lms.
-
        Przyk³ad: database = lms
-
-     ----------------------------------------------------------------------
+     _________________________________________________________________
 
 2.5.2. Sekcja [directories] - ustawienia katalogów
 
      * sys_dir
-
-       Katalog systemowy. Jest to miejsce gdzie jest ca³a zawarto¶æ UI LMS'a,
-       czyli index.php, grafiki, templejty i reszta. Domy¶lnie, index.php
-       stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale lepiej by
-       by³o gdyby mu powiedzieæ gdzie jest:
-
+       Katalog systemowy. Jest to miejsce gdzie jest ca³a zawarto¶æ UI
+       LMS'a, czyli index.php, grafiki, templejty i reszta. Domy¶lnie,
+       index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(),
+       ale lepiej by by³o gdyby mu powiedzieæ gdzie jest:
        Przyk³ad: sys_dir = /var/www/htdocs/lms/
-
      * modules_dir
-
        Katalog z "modu³ami" LMS'a. Czyli zawarto¶æ katalogu modules.
        Domy¶lnie jest to podkatalog modules w sys_dir.
-
        Przyk³ad: modules_dir = /usr/share/lms/modules/
-
      * lib_dir
-
        Katalog z "bibliotekami" LMS'a. Czyli zawarto¶æ katalogu lib.
        Domy¶lnie to podkatalog lib w sys_dir.
-
        Przyk³ad: lib_dir = /usr/share/lms/lib/
-
      * backup_dir
-
-       Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje
-       zrzuty z bazy. Domy¶lnie jest to podkatalog 'backups'.
-
+       Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS
+       zapisuje zrzuty z bazy. Domy¶lnie jest to podkatalog 'backups'.
        Przyk³ad: backup_dir = /var/backup/lms/
 
-       Ostrze¿enie Je¶li katalog z kopiami zapasowymi bêdzie osi±galny 
-                   z poziomu WWW, to ka¿dy bez autoryzacji bêdzie mia³ 
-                   do nich dostêp.                                     
+       Ostrze¿enie
 
+   Je¶li katalog z kopiami zapasowymi bêdzie osi±galny z poziomu WWW, to
+   ka¿dy bez autoryzacji bêdzie mia³ do nich dostêp.
      * smarty_dir
-
-       Katalog z bibliotek± Smarty - domy¶lnie podkatalog Smarty w lib_dir.
-
+       Katalog z bibliotek± Smarty - domy¶lnie podkatalog Smarty w
+       lib_dir.
        Przyk³ad: smarty_dir = /usr/lib/php/Smarty
-
      * smarty_compile_dir
-
-       Katalog kompilacji Smartyego. Miejsce gdzie Smarty kompiluje szablony.
-       Domy¶lnie to templates_c w katalogu sysdir.
-
+       Katalog kompilacji Smartyego. Miejsce gdzie Smarty kompiluje
+       szablony. Domy¶lnie to templates_c w katalogu sysdir.
        Przyk³ad: smarty_compile_dir = /var/smarty/compile/lms
-
      * smarty_templates_dir
-
        Katalog z szablonami którymi Smartiego. Domy¶lnie to podkatalog
        templates z sys_dir'a.
-
        Przyk³ad: smarty_templates_dir = /usr/share/lms/templates
-
-     ----------------------------------------------------------------------
+     _________________________________________________________________
 
 2.5.3. Sekcja [phpui] - ustawienia interfejsu
 
      * allow_from (opcjonalny)
-
-       Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste, ka¿dy
-       adres IP ma dostêp do LMS'a, je¿eli wpiszemy tutaj listê adresów b±d¼
-       klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego niechcianego
-       u¿ytkownika.
-
+       Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste,
+       ka¿dy adres IP ma dostêp do LMS'a, je¿eli wpiszemy tutaj listê
+       adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego
+       niechcianego u¿ytkownika.
        Przyk³ad: allow_from = 192.168.0.0/16, 213.25.209.224/27,
        213.241.77.29
-
      * timeout
-
        Timeout sesji www. Po tym czasie (w sekudnach) u¿ytkownik zostanie
        wylogowany je¿eli nie podejmie ¿adnej akcji. Domy¶lnie 600 sekund.
-
        Przyk³ad: timeout = 900
 
-       Ostrze¿enie Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli 
-                   ustawisz t± warto¶æ na zero, nie bêdziesz móg³      
-                   korzystaæ z LMS!                                    
+       Ostrze¿enie
 
+   Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t±
+   warto¶æ na zero, nie bêdziesz móg³ korzystaæ z LMS!
      * userlist_pagelimit
-
        Limit wy¶wietlanych pozycji na stronie w li¶cie u¿ytkowników.
        Domy¶lnie brak limitu.
-
        Przyk³ad: userlist_pagelimit = 10
-
      * nodelist_pagelimit
-
-       Limit wy¶wietlanych pozycji na stronie w li¶cie komputerów. Domy¶lnie
-       brak limitu.
-
+       Limit wy¶wietlanych pozycji na stronie w li¶cie komputerów.
+       Domy¶lnie brak limitu.
        Przyk³ad: nodelist_pagelimit = 10
-
      * reload_type
-
        Typ reloadu. Dozwolone warto¶ci:
-
-       exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶
-       skrypt lub co¶, konfigurowalny poni¿ej)
-
+       exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo,
+       jaki¶ skrypt lub co¶, konfigurowalny poni¿ej)
        sql - zrobienie wpisów w SQL'u (te¿ mo¿na ustawiæ konkretne query
        SQL'a)
-
        Domy¶lna warto¶æ to 'sql'.
-
        Przyk³ad: reload_type = exec
-
      * reload_execcmd
-
-       Komenda do wykonania podczas reloadu je¿eli reload_type jest ustawione
-       na 'exec'. Domy¶lnie /bin/true. String ten puszczany do komendy
-       system() wiêc pronuje rozwagê i pomy¶lenie co siê robi i jak :)
-       Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru
-       zglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje
-       komendy pojedyñczo.
-
+       Komenda do wykonania podczas reloadu je¿eli reload_type jest
+       ustawione na 'exec'. Domy¶lnie /bin/true. String ten puszczany do
+       komendy system() wiêc pronuje rozwagê i pomy¶lenie co siê robi i
+       jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale
+       z paru zglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników
+       i wykonuje komendy pojedyñczo.
        Przyk³ad: reload_execcmd = "sudo /usr/bin/reload_lms.sh"
-
      * reload_sqlquery
-
-       Query SQL'a. Generalnie, LMS przy nie ustawionym swoim w³asnym QUERY
-       robi dziwne rzeczy, które ja ju¿ wymy¶li³em. Chwilowo pewnie wogóle
-       nie kompatybilne z mteg'owym demonikiem, ale pracujemy nad
+       Query SQL'a. Generalnie, LMS przy nie ustawionym swoim w³asnym
+       QUERY robi dziwne rzeczy, które ja ju¿ wymy¶li³em. Chwilowo pewnie
+       wogóle nie kompatybilne z mteg'owym demonikiem, ale pracujemy nad
        uzgodnieniem formatu. Jak kto¶ bardzo chce, to mo¿na u¿yæ '%TIME%'
-       jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika
-       jest traktowany jako separator kwerend. Tj. oddzielaj±c znakiem
-       ¶rednika mo¿esz wpisaæ kilka komend MySQL'a.
-
-       Przyk³ad: reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"
-
+       jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak
+       ¶rednika jest traktowany jako separator kwerend. Tj. oddzielaj±c
+       znakiem ¶rednika mo¿esz wpisaæ kilka komend MySQL'a.
+       Przyk³ad: reload_sqlquery = "INSERT INTO reload VALUES
+       ('1','%TIME%')"
      * force_ssl
-
-       Wymuszanie SSL'a. Ustawinie tej zmiennej na 1 spowoduje ¿e LMS bêdzie
-       wymusza³ po³±czenie SSL powoduj±c redirect do
+       Wymuszanie SSL'a. Ustawinie tej zmiennej na 1 spowoduje ¿e LMS
+       bêdzie wymusza³ po³±czenie SSL powoduj±c redirect do
        'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej
        próbie dostêpu bez SSL. Domy¶lnie wy³±czone.
-
        Przyk³ad: force_ssl = 0
-
      * allow_mac_sharing
-
        Przyzwolenie na dodawanie rekordów komputerów z adresami MAC ju¿
-       istniej±cymi (nie sprawdza czy jaki¶ inny komputer posiada taki adres
-       MAC). Domy¶lnie wy³±czone
-
+       istniej±cymi (nie sprawdza czy jaki¶ inny komputer posiada taki
+       adres MAC). Domy¶lnie wy³±czone
        Przyk³ad: allow_mac_sharing = 1
-
      * smarty_debug
-
-       W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia warto¶ci
-       przekazywanych z PHP do Smartyego. Domy¶lnie wy³±czone.
-
+       W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia
+       warto¶ci przekazywanych z PHP do Smartyego. Domy¶lnie wy³±czone.
        Przyk³ad: smarty_debug = 1
-
-     * debug_mail
-
-       Adres e-mail do debugowania - pod ten email bêd± sz³y maile wysy³ane z
-       sekcji 'mailing' LMS'a, zamiast do w³a¶ciwych u¿ytkowników.
-
-       Przyk³ad: debug_mail = root@localhost
-
+     * debug_email
+       Adres e-mail do debugowania - pod ten email bêd± sz³y maile
+       wysy³ane z sekcji 'mailing' LMS'a, zamiast do w³a¶ciwych
+       u¿ytkowników.
+       Przyk³ad: debug_email = root@localhost
      * enable_stats
-
-       W³±czenie/wy³±czenie dostêpno¶ci w menu modu³u 'traffic'. Domy¶lnie
-       wy³±czone.
-
+       W³±czenie/wy³±czenie dostêpno¶ci w menu modu³u 'traffic'.
+       Domy¶lnie wy³±czone.
        Przyk³ad: enable_stats = 1
-
      * default_zip, default_city, default_address
-
        Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania
-       nowego u¿ytkownika. Przydatne gdy mamy do wpisania wielu u¿ytkowników
-       z tej samej ulicy.
-
+       nowego u¿ytkownika. Przydatne gdy mamy do wpisania wielu
+       u¿ytkowników z tej samej ulicy.
        Przyk³ad: default_zip = 39-300
-
      * use_current_payday
-
-       Okre¶la, czy ma byæ u¿yty aktualny dzieñ miesi±ca jako dzieñ zap³aty
-       zamiast najczê¶ciej u¿ywanego. Domy¶lnie wy³±czone.
-
+       Okre¶la, czy ma byæ u¿yty aktualny dzieñ miesi±ca jako dzieñ
+       zap³aty zamiast najczê¶ciej u¿ywanego. Domy¶lnie wy³±czone.
        Przyk³ad: use_current_payday = 1
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-                               2.6. Prawa dostêpu
+2.6. Prawa dostêpu
 
 2.6.1. Idea
 
-   LMS ma mo¿liwo¶æ zdefiniowania do 256 regu³ dostêpu do systemu. Ka¿da z
-   nich mo¿e zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów.
+   LMS ma mo¿liwo¶æ zdefiniowania do 256 regu³ dostêpu do systemu. Ka¿da
+   z nich mo¿e zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów.
    Ka¿demu administratorowi mo¿na przydzieliæ dowoln± kombinacjê regu³
    dostêpu.
 
    Domy¶lnie zdefiniowanych jest osiem regu³ dostêpu.
-
      * pe³en dostêp
-
      * odczyt wszystkich danych
-
      * pod³±czanie i od³±czanie komputerów
-
      * manipulowanie finansami
-
      * prze³adowywanie konfiguracji
-
      * manipulowanie danymi u¿ytkowników
-
      * manipulowanie danymi komputerów
-
      * brak dostêpu do modyfikacji i zak³adania kont administratorów
-
      * brak dostêpu
 
-   Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania. Modu³y do
-   których administrator ma zawsze dostêp to: welcome, copyrights, logout,
-   chpasswd (przy czym chpasswd umo¿liwia tylko zmianê w³asnego has³a),
-   dostep do reszty jest zdefiniowany regu³ami.
+   Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania. Modu³y
+   do których administrator ma zawsze dostêp to: welcome, copyrights,
+   logout, chpasswd (przy czym chpasswd umo¿liwia tylko zmianê w³asnego
+   has³a), dostep do reszty jest zdefiniowany regu³ami.
+   Notatka
 
-   Notatka Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS  
-           domy¶lnie przydzieli mu regu³kê 0, czyli pe³en dostêp.             
-
-     ----------------------------------------------------------------------
+   Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS
+   domy¶lnie przydzieli mu regu³kê 0, czyli pe³en dostêp.
+     _________________________________________________________________
 
 2.6.2. Jak to dzia³a?
 
    Decyzja czy u¿ytkownik ma prawo dostêpu do modu³u czy nie przebiega
    nastêpuj±co:
+   - najpierw sprawdzana jest lista modu³ów, do których zawsze ma siê
+   dostêp,
+   - potem nastêpuje sprawdzenie czy modu³ pasuje do regu³ w
+   poszczególnych poziomach, do których administrator ma dostêp,
+   - na koñcu podejmowana jest decyzja czy u¿ytkownik ma uprawnienia by
+   do modu³u siê dobraæ. Je¿eli modu³ siê za³apa³ na którykolwiek poziom,
+   który zabrania dostêpu, dostêp zostanie zabroniony nawet je¿eli
+   administrator ma ustawiony poziom, który pozwala na dostêp do modu³u
+   (np. kto¶ ma pe³ny dostêp oraz brak dostêpu do modu³u dodawania
+   komputerów, nie bêdzie on móg³ siê odwo³aæ do tego modu³u). Je¿eli
+   modu³ pasuje do poziomu, który pozwala na dostêp do danego modu³u LMS
+   zezwala na dalsz± pracê. Je¿eli natomiast modu³ siê nie "za³apa³" na
+   ¿aden poziom równie¿ zostanie mu wy¶wietlony komunikat o braku
+   dostêpu.
+     _________________________________________________________________
 
-   - najpierw sprawdzana jest lista modu³ów, do których zawsze ma siê dostêp, 
-   - potem nastêpuje sprawdzenie czy modu³ pasuje do regu³ w poszczególnych   
-   poziomach, do których administrator ma dostêp,                             
-   - na koñcu podejmowana jest decyzja czy u¿ytkownik ma uprawnienia by do    
-   modu³u siê dobraæ. Je¿eli modu³ siê za³apa³ na którykolwiek poziom, który  
-   zabrania dostêpu, dostêp zostanie zabroniony nawet je¿eli administrator ma 
-   ustawiony poziom, który pozwala na dostêp do modu³u (np. kto¶ ma pe³ny     
-   dostêp oraz brak dostêpu do modu³u dodawania komputerów, nie bêdzie on     
-   móg³ siê odwo³aæ do tego modu³u). Je¿eli modu³ pasuje do poziomu, który    
-   pozwala na dostêp do danego modu³u LMS zezwala na dalsz± pracê. Je¿eli     
-   natomiast modu³ siê nie "za³apa³" na ¿aden poziom równie¿ zostanie mu      
-   wy¶wietlony komunikat o braku dostêpu.                                     
-
-     ----------------------------------------------------------------------
-
-                   Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
+Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
 
    LMS'owy Interfejs U¿ytkownika to panel administracyjny do tworzenia i
-   zarz±dzania baz± u¿ytkowników i komputerów dostêpny za pomoc± przegl±darki
-   internetowej. Umo¿liwia wprowadzanie danych komputerów, przypisanie ich do
-   u¿ytkowników i sieci. Definiowanie op³at i zarz±dzanie finansami sieci,
-   Szybkie wyszukiwanie danych o u¿ytkownikach i ich sprzêcie. Sporz±dzanie
-   korespondencji seryjnej do u¿ytkowników, definiowanie praw dostêpu dla
-   administratorów i ich hase³. Ponadto daje mo¿liwo¶æ przegl±dania statystyk
-   wykorzystania ³±cza, a tak¿e tworzenie kopii bazy danych oraz zarz±dzanie
-   skryptami wykonywalnymi.
+   zarz±dzania baz± u¿ytkowników i komputerów dostêpny za pomoc±
+   przegl±darki internetowej. Umo¿liwia wprowadzanie danych komputerów,
+   przypisanie ich do u¿ytkowników i sieci. Definiowanie op³at i
+   zarz±dzanie finansami sieci, Szybkie wyszukiwanie danych o
+   u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji seryjnej do
+   u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich
+   hase³. Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania
+   ³±cza, a tak¿e tworzenie kopii bazy danych oraz zarz±dzanie skryptami
+   wykonywalnymi.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-                                 3.1. Logowanie
+3.1. Logowanie
 
    Po wpisaniu w przegl±darce adresu do strony z lms'em, powita ciê ekran
-   logowania. Musisz podaæ w³a¶ciwy login oraz has³o. Has³a w bazie danych
-   przechowywane s± w formie zaszyfrowanej.
+   logowania. Musisz podaæ w³a¶ciwy login oraz has³o. Has³a w bazie
+   danych przechowywane s± w formie zaszyfrowanej.
 
    Je¿eli jest to twoje pierwsze logowanie i nie masz jeszcze za³o¿onego
-   konta, zostaniesz przekierowany do modu³u tworzenia kont administratorów.
-   W tym momencie bêdziesz mia³ tylko dostêp do tego jednego modu³u.
+   konta, zostaniesz przekierowany do modu³u tworzenia kont
+   administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
+   jednego modu³u.
 
    Rysunek 3-1. LMS-UI: Logowanie
+   [login-small.png] 
+     _________________________________________________________________
 
-   [IMG]
+3.2. Praca z LMS-UI
 
-     ----------------------------------------------------------------------
+   Po zalogowaniu do LMS'a zobaczysz panel powitalny, na którym znajduj±
+   siê podstawowe informacje na temat naszego systemu: wersjê LMS i jego
+   sk³adników, wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i
+   komputerów w bazie oraz ich stan (pod³±czony/od³±czony), liczbê
+   zad³u¿onych i kwota oraz przydatne lms'owe linki.
 
-                              3.2. Praca z LMS-UI
-
-   Po zalogowaniu do LMS'a zobaczysz panel powitalny, na którym znajduj± siê
-   podstawowe informacje na temat naszego systemu: wersjê LMS i jego
-   sk³adników, wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i komputerów
-   w bazie oraz ich stan (pod³±czony/od³±czony), liczbê zad³u¿onych i kwota
-   oraz przydatne lms'owe linki.
-
-   Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
-   dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o
-   u¿ytkowniku i komputerze podaj±c ich numery.
+   Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz
+   równie¿ dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do
+   informacji o u¿ytkowniku i komputerze podaj±c ich numery.
 
    Rysunek 3-2. LMS-UI: Panel g³ówny
-
-   [IMG]
-
-     ----------------------------------------------------------------------
+   [welcome-small.png] 
+     _________________________________________________________________
 
 3.2.1. U¿ytkownicy
 
@@ -875,68 +715,66 @@
 
    Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu z
    informacjami szczegó³owymi o nim i przypisanych mu komputerach oraz
-   operacjach finansowych. Tam te¿ mo¿esz zaksiêgowaæ wp³atê lub obci±¿enie
-   jego rachunku.
+   operacjach finansowych. Tam te¿ mo¿esz zaksiêgowaæ wp³atê lub
+   obci±¿enie jego rachunku.
 
    W menu znajduj±cym siê u góry okna masz do wyboru opcje: filtrowania
    listy, dodawania nowych u¿ytkowników, wyszukiwania w bazie wg zadanych
    kryteriów oraz wydruku listy.
 
-   Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony) u¿ytkowników.
+   Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony)
+   u¿ytkowników.
 
-   Notatka Do automatycznego od³±czania u¿ytkowników, których bilans jest     
-           poni¿ej zadanej warto¶ci s³u¿y skrypt lms-cutoff.                  
+   Notatka
+
+   Do automatycznego od³±czania u¿ytkowników, których bilans jest poni¿ej
+   zadanej warto¶ci s³u¿y skrypt lms-cutoff.
 
    Rysunek 3-3. LMS-UI: U¿ytkownicy
-
-   [IMG]
-
-     ----------------------------------------------------------------------
+   [users-small.png] 
+     _________________________________________________________________
 
 3.2.2. Komputery
 
-   Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie listy
-   komputerów, wyszukiwania komputerów o danej nazwie, IP lub MAC'u,
-   dodawanie nowych lub usuwanie ju¿ wpisanych do bazy komputerów, a tak¿e
-   podgl±d i zmianê informacji o nich. W górnym menu dostêpna jest opcja
-   wydruku listy. Zmiany statusu komputera 'w³±czony/wy³±czony' dokonuje siê
-   klikniêciem na ikonê ¿arówki w odpowiedniej linii.
+   Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie
+   listy komputerów, wyszukiwania komputerów o danej nazwie, IP lub
+   MAC'u, dodawanie nowych lub usuwanie ju¿ wpisanych do bazy komputerów,
+   a tak¿e podgl±d i zmianê informacji o nich. W górnym menu dostêpna
+   jest opcja wydruku listy. Zmiany statusu komputera
+   'w³±czony/wy³±czony' dokonuje siê klikniêciem na ikonê ¿arówki w
+   odpowiedniej linii.
 
-   Notatka Aby dodaæ nowy komputer musisz wcze¶niej utworzyæ u¿ytkownika oraz 
-           sieæ, którym go przypiszesz.                                       
+   Notatka
+
+   Aby dodaæ nowy komputer musisz wcze¶niej utworzyæ u¿ytkownika oraz
+   sieæ, którym go przypiszesz.
 
    Rysunek 3-4. LMS-UI: Komputery
-
-   [IMG]
-
-     ----------------------------------------------------------------------
+   [nodes-small.png] 
+     _________________________________________________________________
 
 3.2.3. Osprzêt sieciowy
 
    W panelu przeznaczonym do ewidencji sprzêtu mo¿na przegl±daæ listê
-   urz±dzeñ sieciowych, zawieraj±c± ich nazwy i symbole, po³o¿enie i opis, a
-   ponadto ilo¶æ dostêpnych portów. Klikniêcie na wybranym urz±dzeniu
-   spowoduje wy¶wietlenie informacji szczegó³owych o nim.
+   urz±dzeñ sieciowych, zawieraj±c± ich nazwy i symbole, po³o¿enie i
+   opis, a ponadto ilo¶æ dostêpnych portów. Klikniêcie na wybranym
+   urz±dzeniu spowoduje wy¶wietlenie informacji szczegó³owych o nim.
 
    Rysunek 3-5. LMS-UI: Osprzêt sieciowy
-
-   [IMG]
-
-     ----------------------------------------------------------------------
+   [netdev-small.png] 
+     _________________________________________________________________
 
 3.2.4. Sieci IP
 
    Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y,
    Gateway, zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i
-   dostepnych adresów. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami
-   lub dzielisz jedn± sieæ na podsieci, albo korzystasz z ró¿nych klas
-   adresowych tutaj jest to mo¿liwe.
+   dostepnych adresów. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma
+   sieciami lub dzielisz jedn± sieæ na podsieci, albo korzystasz z
+   ró¿nych klas adresowych tutaj jest to mo¿liwe.
 
    Rysunek 3-6. LMS-UI: Sieci IP
-
-   [IMG]
-
-     ----------------------------------------------------------------------
+   [networks-small.png] 
+     _________________________________________________________________
 
 3.2.5. Taryfy i Finanse
 
@@ -944,8 +782,8 @@
    sieci.
 
    Masz mo¿liwo¶æ definiowania taryf abonamentowych i okre¶lenia kwoty
-   abonamentu oraz ograniczeñ upstream, downstream wykorzystywanych pó¼niej
-   podczas generowania plików konfiguracyjnych.
+   abonamentu oraz ograniczeñ upstream, downstream wykorzystywanych
+   pó¼niej podczas generowania plików konfiguracyjnych.
 
    Dostêpny z górnego menu 'Bilans Finansowy' to historia rachunku z
    podsumowaniem przychodu i rozchodu. 'Nowa Operacja' umo¿liwia
@@ -953,1040 +791,922 @@
    przychodów sieci.
 
    Rysunek 3-7. LMS-UI: Taryfy i finanse
-
-   [IMG]
-
-     ----------------------------------------------------------------------
+   [tariffs-small.png] 
+     _________________________________________________________________
 
 3.2.6. Mailing
 
-   Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do
-   grupy u¿ytkowników twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci
-   oraz wybierasz grupê do której zostanie wys³any e-mail.
+   Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci
+   do grupy u¿ytkowników twojej sieci. Podajesz dane nadawcy, tre¶æ
+   wiadomo¶ci oraz wybierasz grupê do której zostanie wys³any e-mail.
 
-   Notatka Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji       
-           mail().                                                            
+   Notatka
 
-   Notatka Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych  
-           z op³atami polecam. skrypt lms-notify.                             
+   Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji mail().
+   Notatka
 
-     ----------------------------------------------------------------------
+   Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z
+   op³atami polecam. skrypt lms-notify.
+     _________________________________________________________________
 
 3.2.7. Prze³adowanie
 
-   Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji
-   zdefiniowanej dla generatora plików konfiguracyjnych lms-mgc. Wiêcej
-   informacji znajdziesz w rozdziale dotycz±cym lms-mgc.
-
-     ----------------------------------------------------------------------
+   Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie
+   konfiguracji zdefiniowanej dla generatora plików konfiguracyjnych
+   lms-mgc. Wiêcej informacji znajdziesz w rozdziale dotycz±cym lms-mgc.
+     _________________________________________________________________
 
 3.2.8. Bazy danych
 
-   Z panelu 'Bazy danych' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy
-   lms'a. Kopia bazy to plik tekstowy z zawarto¶ci± wszystkich tabel w bazie,
-   zapisywany w katalogu zdefiniowanym w sekcji [directories] lms.ini zmienn±
-   backup_dir.
+   Z panelu 'Bazy danych' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z
+   bazy lms'a. Kopia bazy to plik tekstowy z zawarto¶ci± wszystkich tabel
+   w bazie, zapisywany w katalogu zdefiniowanym w sekcji [directories]
+   lms.ini zmienn± backup_dir.
 
-   Notatka Domy¶lnie kopie zapisywane s± w katalogu lms/backups dostêpnym     
-           przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne     
-           miejsce.                                                           
+   Notatka
 
-   Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ
-   na lokalnym dysku.
+   Domy¶lnie kopie zapisywane s± w katalogu lms/backups dostêpnym przez
+   przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.
+
+   Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub
+   zapisywaæ na lokalnym dysku.
 
    Rysunek 3-8. LMS-UI: Bazy danych
-
-   [IMG]
-
-     ----------------------------------------------------------------------
+   [db-small.png] 
+     _________________________________________________________________
 
 3.2.9. Administratorzy
 
    Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów,
    zmiany hase³ oraz definiowania praw dostêpu. Na pierwszym widoku jest
-   lista administratorów z datami ostatniego logowania. Klikniêcie na pozycji
-   z listy spowoduje wy¶wietlenie informacji szczegó³owych o danym koncie, w
-   tym o zdefiniowanych prawach dostêpu. W ka¿dej chwili mo¿liwa jest zmiana
-   danych i uprawnieñ za pomoc± przycisku 'Edytuj'. Aby za³o¿yæ nowe konto
-   administratora skorzystaj z górnego menu 'Nowy'.
+   lista administratorów z datami ostatniego logowania. Klikniêcie na
+   pozycji z listy spowoduje wy¶wietlenie informacji szczegó³owych o
+   danym koncie, w tym o zdefiniowanych prawach dostêpu. W ka¿dej chwili
+   mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'.
+   Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu
+   'Nowy'.
 
    Rysunek 3-9. LMS-UI: Administratorzy
+   [admins-small.png] 
+     _________________________________________________________________
 
-   [IMG]
+3.3. Dodatki
 
-     ----------------------------------------------------------------------
+3.3.1. Faktury
 
-3.2.10. Statystyki
+   LMS umo¿liwia wystawianie faktur. Opcja ta jest standardowo wy³±czona,
+   dlatego na wstêpie musisz w sekcji [finances] lms.ini ustawiæ
+   nastêpuj±ce parametry:
+     * enable_faktury
+       W³±czenie modu³u wystawiania faktur
+       Przyk³ad: enable_faktury = 1
+     * name
+       Nazwa sieci/organizacji na fakturze
+       Przyk³ad: name = "Blokowa Sieæ Komputerowa K-27"
+     * address
+       Adres sieci
+       Przyk³ad: address = "Wiosenna 52"
+     * zip
+       Kod pocztowy
+       Przyk³ad: zip = "39-300"
+     * city
+       Nazwa miasta
+       Przyk³ad: city = "Mielec"
+     * deadline
+       Termin zaplaty w dniach
+       Przyk³ad: deadline = 5
+     * bank
+       Nazwa banku
+       Przyk³ad: bank = "Bank S.A. O/Mielec"
+     * account
+       Numer konta bankowego
+       Przyk³ad: account = "123-456789-01"
+     * footer
+       Stopka widoczna na fakturze
+       Przyk³ad: footer = "BSK K-27 w Mielcu, tel.5839455, fax.1234567"
+     * template
+       Szablon faktury do u¿ycia
+       Przyk³ad: template = /etc/lms/faktura.rtf
 
-   W menu 'Statystyki' dostêpny jest interfejs do przegl±dania statystyk
-   wykorzystania ³±cza w postaci prostych wykresów. Przed wygenerowaniem
-   wykresu mo¿esz zdefiniowaæ parametry okre¶laj±ce okres jaki ma byæ brany
-   pod uwagê, ograniczyæ do jednej sieci (je¶li masz ich wiêcej), ilo¶ci
-   komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug
-   downloadu). Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ
-   statystyki z ostatniej godziny, ostatniego dnia, ostatnich 30 dni lub
-   ostatniego roku.
+   Szablon jest niczym innym jak dokumentem tekstowym w formacie RTF
+   (tekstowym) lub html który mo¿na stworzyæ pod dowolnym programem
+   obs³uguj±cym RTF. Plik ten powinien wygl±daæ jak gotowa faktura, a
+   pozycje które maj± byæ rozwijane przez LMS nale¿y zast±piæ
+   nastêpuj±cymi s³owami kluczowymi:
+     * %nabywca - jest rozwijany do imienia i nazwiska nabywcy
+     * %nab_adres - jest rozwijany do adresu nabywcy (ulica)
+     * %nab_adres_cd - jest rozwijany do adresu nabywcy (kod pocztowy i
+       miasto)
+     * %nip - nip nabywcy
+     * %nr_klienta - numer klienta (ID) z bazy u¿ytkowników
+     * %sprzedawca - nazwa sprzedawcy
+     * %sprzed_adres - adres sprzedawcy
+     * %sprzed_adres_cd - ci±g dalszy adreu sprzedawcy
+     * %numer - numer kolejny faktury w postaci id_operacji_kasowej/rok
+     * %data - data wystawienia faktury
+     * %termin - termin zap³aty (ilo¶æ dni ustawia siê w lms.ini)
+     * %dni - ilo¶æ dni do zap³aty, mo¿na ustawiæ j/w
+     * %usluga - nazwa us³ugi, jak nazwa jest pobierany opis operacji
+       kasowej
+     * %od - pierwszy dzieñ okresu ¶wiadczenia us³ugi (pierwszy dzieñ
+       miesi±ca, w ktorym by³o wpisane obci±¿enie do bazy)
+     * %do - ostatni dzieñ okresu ¶wiadczenia us³ugi (ostatni dzieñ
+       miesi±ca, w ktorym by³o wpisane obci±¿enie do bazy)
+     * %netto - warto¶æ us³ugi netto, bezpo¶rednio przepisana z bazy
+     * %brutto - netto + 7% VAT
+     * %vat - warto¶æ VAT (netto * 7%)
+     * %slownie - kwota do zap³aty s³ownie
+     * %konto - jest rozwijane do numeru konta bankowego
+     * %wystawil - jest rozwijane do danych administratora zalogowanego
+       aktualnie w LMS
+     * %stopka - pozwala na wpisanie danych do stopki
 
-   Notatka Menu 'Statystyki' jest standardowo niedostêpne. Aby je w³±czyæ,    
-           nale¿y w sekcji [phpui] pliku lms.ini ustawiæ zmienn±:             
-           enable_stats = 1.                                                  
+   Notatka
 
-   Notatka Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego     
-           nale¿y go zainstalowaæ aby mieæ w bazie dane do wykresów.          
+   Przyk³adowy szablon znajduje siê w katalogu sample (faktura.rtf) i by³
+   testowany pod OpenOffice i M$ Office.
 
-   W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci, mo¿e nast±piæ
-   szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu oczekiwania
-   na rysowanie wykresów. Z tego powodu w oknie 'Kompaktowanie bazy danych'
-   udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy bez utraty danych.
-   Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione w
-   nastêpuj±cy sposób:
+   Wystawianie faktur jest dostêpne w oknie 'Rachunek u¿ytkownika', do
+   którego trafisz wybieraj±c ¿±danego u¿ytkownika z listy u¿ytkownków.
+   Ostrze¿enie
 
-     * Poziom Niski: dane z poprzedniego dnia i starsze, zostan± u¶rednione
-       do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci±
-       10 minut, to 6*24 wpisów zostanie zast±pione jednym.
+   W bazie danych zapisywane s± kwoty netto. Jak na razie, nie ma
+   mo¿liwo¶ci ustawienia kilku stawek podatku VAT.
+   Ostrze¿enie
 
-     * Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do jednego
-       dnia.
+   Do postaci s³ownej rozwi±zywane s± liczby mniejsze od 999.
+     _________________________________________________________________
 
-     * Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do jednej
-       godziny.
+3.3.2. Statystyki
 
-   Ostrze¿enie Kompaktowanie bazy danych jest procesem nieodwracalnym.        
+   Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci
+   prostych wykresów jest dostêpny w menu 'Statystyki'. Przed
+   wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry okre¶laj±ce okres
+   jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz
+   ich wiêcej), ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na
+   przyk³ad wed³ug downloadu). Korzystaj±c z górnego menu mo¿esz szybko
+   wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia, ostatnich
+   30 dni lub ostatniego roku.
 
-   Rysunek 3-10. LMS-UI: Statystyki - filtr
+   Notatka
 
-   [IMG]
+   Menu 'Statystyki' jest standardowo niedostêpne. Aby je w³±czyæ, nale¿y
+   w sekcji [phpui] pliku lms.ini ustawiæ zmienn±: enable_stats = 1.
+   Notatka
 
-   Rysunek 3-11. LMS-UI: Statystyki - wykres
+   Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y
+   go zainstalowaæ aby mieæ w bazie dane do wykresów.
 
-   [IMG]
+   W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci, mo¿e
+   nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie
+   czasu oczekiwania na rysowanie wykresów. Z tego powodu w oknie
+   'Kompaktowanie bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia
+   rozmiarów bazy bez utraty danych. Wybieraj±c poziom dok³adno¶ci
+   danych, dane zostan± u¶rednione w nastêpuj±cy sposób:
+     * Poziom Niski: dane z poprzedniego dnia i starsze, zostan±
+       u¶rednione do jednego dnia, czyli je¶li do bazy zapisywane by³y z
+       czêstotliwo¶ci± 10 minut, to 6*24 wpisów zostanie zast±pione
+       jednym.
+     * Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
+       jednego dnia.
+     * Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
+       jednej godziny.
 
-     ----------------------------------------------------------------------
+   Ostrze¿enie
 
-                              Rozdzia³ 4. Skrypty
+   Kompaktowanie bazy danych jest procesem nieodwracalnym.
 
-                                4.1. Instalacja
+   Rysunek 3-10. Statystyki wykorzystania ³±cza- filtr
+   [stats-small.png] 
+
+   Rysunek 3-11. Statystyki wykorzystania ³±cza - wykres
+   [statbars-small.png] 
+     _________________________________________________________________
+
+Rozdzia³ 4. Skrypty
+
+4.1. Instalacja
 
    Je¶li chcesz ustawiæ konfiguracjê którego¶ ze skryptów, robi siê to w
-   odpowiedniej sekcji lms.ini. Same skrypty przenie¶ z katalogu /lms/bin/ do
-   katalogu /usr/sbin. Po przeniesieniu musisz je jeszcze dopisaæ do crontaba
-   tak, aby by³y uruchamiane automatycznie, w³a¶nie wtedy kiedy tego chcesz.
+   odpowiedniej sekcji lms.ini. Same skrypty przenie¶ z katalogu
+   /lms/bin/ do katalogu /usr/sbin. Po przeniesieniu musisz je jeszcze
+   dopisaæ do crontaba tak, aby by³y uruchamiane automatycznie, w³a¶nie
+   wtedy kiedy tego chcesz.
 
    Przyk³adowo, wpis w crontabie dla skryptu lms-payments (wykonywanego
    codziennie o godzinie 00:01) powinien wygl±daæ nastêpuj±co:
-
- 1 0 * * *       /usr/sbin/lms-payments 1 > /dev/null
+1 0 * * *       /usr/sbin/lms-payments 1 > /dev/null
 
    Po wiêcej informacji mo¿esz siêgn±æ do man crontab
 
    Wiêkszo¶æ lms'owych skryptów posiada dodatkowe opcje uruchomieniowe:
+-C=/plik    po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/
+lms.ini
+-q          wykonanie skryptu bez wy¶wietlania komunikatów
+-h          pomoc (a w zasadzie to tylko listing opcji)
+-v          informacja o wersji skryptu
+     _________________________________________________________________
 
- -C=/plik    po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/lms.ini
- -q          wykonanie skryptu bez wy¶wietlania komunikatów              
- -h          pomoc (a w zasadzie to tylko listing opcji)
- -v          informacja o wersji skryptu
-
-     ----------------------------------------------------------------------
-
-                         4.2. Lista dostêpnych skryptów
+4.2. Lista dostêpnych skryptów
 
    Tabela 4-1. Lista skryptów wykonywalnych
+            Nazwa                              Opis
+         lms-notify        Korespondencja seryjna do u¿ytkowników sieci
+         lms-cutoff            Od³±czanie u¿ytkowników zad³u¿onych
+        lms-payments       Naliczanie op³at okresowych (abonamentowych)
+         lms-traffic           Zapis statystyk wykorzystania ³±cza
+   lms-traffic-logiptables      Wspó³praca lms-traffic z iptables
+         lms-makearp           Tworzenie tablicy ARP (/etc/ethers)
+      lms-makedhcpconf        Konfiguracja serwera DHCP(/etc/ethers)
+      lms-makeiptables           Konfiguracja firewalla iptables
+      lms-makeipchains           Konfiguracja firewalla ipchains
+      lms-makeiodenconf                Konfiguracja oident
+      lms-makeopenbsdpf     Konfiguracja firewalla dla systemu OpenBSD
+     _________________________________________________________________
 
-   +------------------------------------------------------------------------+
-   |          Nazwa          |                     Opis                     |
-   |-------------------------+----------------------------------------------|
-   |       lms-notify        | Korespondencja seryjna do u¿ytkowników sieci |
-   |-------------------------+----------------------------------------------|
-   |       lms-cutoff        |     Od³±czanie u¿ytkowników zad³u¿onych      |
-   |-------------------------+----------------------------------------------|
-   |      lms-payments       | Naliczanie op³at okresowych (abonamentowych) |
-   |-------------------------+----------------------------------------------|
-   |       lms-traffic       |     Zapis statystyk wykorzystania ³±cza      |
-   |-------------------------+----------------------------------------------|
-   | lms-traffic-logiptables |      Wspó³praca lms-traffic z iptables       |
-   |-------------------------+----------------------------------------------|
-   |       lms-makearp       |     Tworzenie tablicy ARP (/etc/ethers)      |
-   |-------------------------+----------------------------------------------|
-   |    lms-makedhcpconf     |    Konfiguracja serwera DHCP(/etc/ethers)    |
-   |-------------------------+----------------------------------------------|
-   |    lms-makeiptables     |       Konfiguracja firewalla iptables        |
-   |-------------------------+----------------------------------------------|
-   |    lms-makeipchains     |       Konfiguracja firewalla ipchains        |
-   |-------------------------+----------------------------------------------|
-   |    lms-makeiodenconf    |             Konfiguracja oident              |
-   |-------------------------+----------------------------------------------|
-   |    lms-makeopenbsdpf    |  Konfiguracja firewalla dla systemu OpenBSD  |
-   +------------------------------------------------------------------------+
-
-     ----------------------------------------------------------------------
-
-                                4.3. lms-notify
+4.3. lms-notify
 
 4.3.1. Szablony
 
-   lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy
-   sieci i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie
+   lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do
+   pracy sieci i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie
    kilku[-nastu] plików tekstowych [w iso-8859-2] i traktowania ich jako
    szablonów do mailingu.
 
    W plikach mo¿na u¿ywaæ nastêpuj±cych zmiennych:
-
      * %date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1
        poprzedzone 0, np. 02
-
      * %date-y - zostanie zast±pione aktualnym rokiem, np 2003
-
      * %saldo - zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535
-
-     * %abonament - zostanie zast±pione kwot± abonamentu jaka jest do danego
-       u¿ytkownika przypisana, np. 107
-
+     * %abonament - zostanie zast±pione kwot± abonamentu jaka jest do
+       danego u¿ytkownika przypisana, np. 107
      * %b - saldo z zanegowanym znakiem, np. 107
-
      * %B - saldo z prawdziwym znakiem, np. -107
-
-     * %last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie
-       u¿ytkownika, np:
+     * %last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na
+       koncie u¿ytkownika, np:
 
    Przyk³ad 4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji
    kasowych
-
- Data       | Opis                                                 | Warto¶æ
- -----------+------------------------------------------------------+---------
- 2003-02-02 | Abonament za miesi±c 2003/02                         |  107.00
- 2003-02-01 | Wp³ata                                               | -107.00
- 2003-02-01 | Abonament za miesi±c 2003/02                         |  107.00
- 2003-02-01 | Wp³ata                                               | -321.00
- 2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
- 2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
- 2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
- -----------+------------------------------------------------------+---------
+Data       | Opis                                                 | Warto¶æ
+-----------+------------------------------------------------------+---------
+2003-02-02 | Abonament za miesi±c 2003/02                         |  107.00
+2003-02-01 | Wp³ata                                               | -107.00
+2003-02-01 | Abonament za miesi±c 2003/02                         |  107.00
+2003-02-01 | Wp³ata                                               | -321.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+-----------+------------------------------------------------------+---------
 
    Przyk³ad 4-2. Lms-notify: Przyk³ad szablonu
+UWAGA! Ta wiadomo¶æ zosta³a wygenerowana automatycznie.
 
- UWAGA! Ta wiadomo¶æ zosta³a wygenerowana automatycznie.
+Uprzejmie informujemy i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za
+internet w wysoko¶ci %B z³.
 
- Uprzejmie informujemy i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za
- internet w wysoko¶ci %B z³.
+Je¿eli porozumieli siê ju¿ Pañstwo z administratorami w kwestii op³aty za
+bierz±cy miesi±c czyli %date-m %date-y roku, prosimy o
+zignorowanie tej wiadomo¶ci.
 
- Je¿eli porozumieli siê ju¿ Pañstwo z administratorami w kwestii op³aty za
- bierz±cy miesi±c czyli %date-m %date-y roku, prosimy o
- zignorowanie tej wiadomo¶ci.
+W wypadku gdy uwa¿aj± Pañstwo i¿ zaleg³o¶æ ta jest nieporozumieniem prosimy o
+jak najszybszy kontakt.
 
- W wypadku gdy uwa¿aj± Pañstwo i¿ zaleg³o¶æ ta jest nieporozumieniem prosimy o
- jak najszybszy kontakt.
+Wszelkie informacje na temat Pañstwa rozliczeñ mog± Pañstwo znale¼æ pod
+adresem http://www.naszasiec.pl/mojekonto/
 
- Wszelkie informacje na temat Pañstwa rozliczeñ mog± Pañstwo znale¼æ pod
- adresem http://www.naszasiec.pl/mojekonto/
+Je¿eli chcieliby Pañstwo uregulowaæ zaleg³o¶ci prosimy o kontakt:
 
- Je¿eli chcieliby Pañstwo uregulowaæ zaleg³o¶ci prosimy o kontakt:
+Dzia³ Rozliczeñ ASK NaszaSiec
 
- Dzia³ Rozliczeñ ASK NaszaSiec
+Gerwazy Regu³a
+telefon: 0-509031337
+email: gerwazy@staff.naszasiec.pl
 
- Gerwazy Regu³a
- telefon: 0-509031337
- email: gerwazy@staff.naszasiec.pl
+Gwidon Mniejwa¿ny
+telefon: 0-606666666
+email: gwidonm@naszasiec.pl
 
- Gwidon Mniejwa¿ny
- telefon: 0-606666666
- email: gwidonm@naszasiec.pl
+ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
+system bilingowy na Pañstwa koncie:
 
- ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
- system bilingowy na Pañstwa koncie:
+kwota operacji | typ operacji | data
 
- kwota operacji | typ operacji | data
+%last_10_in_a_table
 
- %last_10_in_a_table
-
- --
- Amatorska Sieæ Komputerowa NaszaSiec
- http://www.naszasiec.pl/
-
-     ----------------------------------------------------------------------
+--
+Amatorska Sieæ Komputerowa NaszaSiec
+http://www.naszasiec.pl/
+     _________________________________________________________________
 
 4.3.2. Konfiguracja
 
    Konfiguracjê dla lms-notify mo¿na ustaliæ w pliku lms.ini w sekcji
    [notify]. Mo¿esz tam ustawiæ nastêpuj±ce parametry:
-
      * limit (opcjonalny)
-
        Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika
        zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0
-
        Przyk³ad: limit = -20
-
      * mailsubject (wymagany)
-
-       Pozwala na ustalenie tematu emaila wysy³anego do u¿ytkownika. Mo¿na
-       u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m,
-       %last_10_in_a_table). Domy¶lnie nieustawione.
-
+       Pozwala na ustalenie tematu emaila wysy³anego do u¿ytkownika.
+       Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y,
+       %date-m, %last_10_in_a_table). Domy¶lnie nieustawione.
        Przyk³ad: mailsubject = Informacje o zaleg³o¶ciach w op³atach za
        internet
-
      * mailtemplate (wymagany)
-
        Pozwala na wskazanie szablonu wiadomo¶ci która zostanie wys³ana do
        u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie nieustawione
-
        Przyk³ad: mailtemplate = /etc/lms/notifytemplate.txt
-
      * mailfrom
-
-       Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na
-       niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie
-       nieustawione
-
+       Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ,
+       ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie.
+       Domy¶lnie nieustawione
        Przyk³ad: mailfrom = staff@domain.pl
-
      * mailfname
-
        Nazwa nadawcy maila
-
        Przyk³ad: mailfname = Administratorzy
-
      * smtp_server
-
        Serwer SMTP przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie:
        127.0.0.1
-
        Przyk³ad: smtp_server = smtp.mydomain.pl
-
      * debug_email (opcjonalny)
-
-       Adres email do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana
-       na dany email zamiast do u¿ytkowników. Przydatne do debugowania i
-       sprawdzania czy wszystko dzia³a OK. Domy¶lnie nieustawiony.
-
+       Adres email do debugowania. Gdy ustawiony, ca³a poczta zostaje
+       wys³ana na dany email zamiast do u¿ytkowników. Przydatne do
+       debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie
+       nieustawiony.
        Przyk³ad: debug_email = lexx@domain.pl
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-                                4.4. lms-cutoff
+4.4. lms-cutoff
 
    Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu
-   komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej
-   warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator
-   plików konfiguracyjnych.
+   komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej
+   zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez
+   generator plików konfiguracyjnych.
 
    Konfiguracjê dla lms-cutoff mo¿emy ustaliæ w pliku lms.ini w sekcji
    [cutoff]. Mo¿emy tam ustawiæ nastêpuj±ce parametry:
-
      * limit (opcjonalny)
-
        Pozwala na ustalenie limitu bilansu poni¿ej którego do bazy danych
        zostanie zapisany stan od³±czony. Domy¶lnie limit = 0
-
        Przyk³ad: limit = -20
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-                               4.5. lms-payments
+4.5. lms-payments
 
    Skrypt po uruchomieniu nalicza u¿ytkownikom op³atê abonamentow±. Aby
    dzia³a³ poprawnie powinien byæ uruchamiany codziennie.
 
    Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
+4.6. lms-traffic
 
-                                4.6. lms-traffic
-
-   Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
-   przez ka¿dy komputer w sieci lokalnej. W bazie danych zapisywana jest
-   ilo¶æ danych w bajtach, numer komputera z bazy lms i znacznik czasu. Od
-   u¿ytkownika zale¿y w jakich odstêpach dane bêd± odczytywane. Poniewa¿ dane
-   odczytywane s± z pliku utworzonego przez u¿ytkownika, nie ma znaczenia z
-   jakiego ¼ród³a pochodz±, mo¿e to byæ iptables, ipchains lub program
-   zewnêtrzny np. ipfm.
+   Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i
+   wys³anych przez ka¿dy komputer w sieci lokalnej. W bazie danych
+   zapisywana jest ilo¶æ danych w bajtach, numer komputera z bazy lms i
+   znacznik czasu. Od u¿ytkownika zale¿y w jakich odstêpach dane bêd±
+   odczytywane. Poniewa¿ dane odczytywane s± z pliku utworzonego przez
+   u¿ytkownika, nie ma znaczenia z jakiego ¼ród³a pochodz±, mo¿e to byæ
+   iptables, ipchains lub program zewnêtrzny np. ipfm.
 
    Przegl±danie wykresów wykorzystania ³±cza oraz definiowanie filtrów
    dostêpne jest z g³ównego menu 'Statystyki'.
-
-     ----------------------------------------------------------------------
+     _________________________________________________________________
 
 4.6.1. Instalacja
 
-   Przed uruchomieniem lms-traffic nale¿y zadbaæ o utworzenie pliku z danymi.
-   Zawarto¶æ pliku powinna mieæ nastêpuj±cy format:
+   Przed uruchomieniem lms-traffic nale¿y zadbaæ o utworzenie pliku z
+   danymi. Zawarto¶æ pliku powinna mieæ nastêpuj±cy format:
+<adres IP> <n_spacji> <upload> <n_spacji> <download>
+<adres IP> <n_spacji> <upload> <n_spacji> <download>
+...
 
- <adres IP> <n_spacji> <upload> <n_spacji> <download>
- <adres IP> <n_spacji> <upload> <n_spacji> <download>
- ...
+   Skrypt tworz±cy statystyki nale¿y uruchamiaæ z tak± sam±
+   czêstotliwo¶ci± co lms-traffic.
 
-   Skrypt tworz±cy statystyki nale¿y uruchamiaæ z tak± sam± czêstotliwo¶ci±
-   co lms-traffic.
+   Notatka
 
-   Notatka Przyk³ad takiego skryptu dla iptables znajduje siê w pliku         
-           /sample/traffic_ipt.sh.                                            
+   Przyk³ad takiego skryptu dla iptables znajduje siê w pliku
+   /sample/traffic_ipt.sh.
 
-   Nastêpnie instalujemy skrypt dopisuj±c do crontaba. Oprócz standardowych
-   opcji wiersza poleceñ mo¿liwe jest zdefiniowanie lokalizacji pliku z
-   logiem
+   Nastêpnie instalujemy skrypt dopisuj±c do crontaba. Oprócz
+   standardowych opcji wiersza poleceñ mo¿liwe jest zdefiniowanie
+   lokalizacji pliku z logiem
+-f=/plik        po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traf
+fic.log
 
- -f=/plik        po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traffic.log
+   Ostrze¿enie
 
-   Ostrze¿enie Czêstotliwo¶æ zapisywania danych do bazy ustala u¿ytkownik.    
-               Ustawienie jej poni¿ej 10 minut, mo¿e spowodowaæ szybki        
-               przyrost ilo¶ci rekordów w bazie danych, a co za tym idzie     
-               zwiêkszyæ czas oczekiwania na wy¶wietlenie wyników.            
+   Czêstotliwo¶æ zapisywania danych do bazy ustala u¿ytkownik. Ustawienie
+   jej poni¿ej 10 minut, mo¿e spowodowaæ szybki przyrost ilo¶ci rekordów
+   w bazie danych, a co za tym idzie zwiêkszyæ czas oczekiwania na
+   wy¶wietlenie wyników.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
+Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
 
-            Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
+   LMS-MGC to "magiczny" generator plików konfiguracyjnych. Przy
+   odrobinie wysi³ku mo¿na stworzyæ przy jego pomocy dowolnego rodzaju
+   plik konfiguracyjny (np. generuj±cy odpowiednie strefy dla DNS)
+     _________________________________________________________________
 
-   LMS-MGC to "magiczny" generator plików konfiguracyjnych. Przy odrobinie
-   wysi³ku mo¿na stworzyæ przy jego pomocy dowolnego rodzaju plik
-   konfiguracyjny (np. generuj±cy odpowiednie strefy dla DNS)
+5.1. Instalacja
 
-     ----------------------------------------------------------------------
+   Lms-mgc posiada w³asny plik konfiguracyjny: lms-mgc.ini. Jego
+   instalacja polega na przeniesieniu do katalogu /usr/sbin. Uruchomienie
+   generatora mo¿na wykonaæ na dwa sposoby: wpisaæ do crona (np. co
+   godzinê)
+0 * * * *       /usr/sbin/lms-mgc 1 > /dev/null
 
-                                5.1. Instalacja
-
-   Lms-mgc posiada w³asny plik konfiguracyjny: lms-mgc.ini. Jego instalacja
-   polega na przeniesieniu do katalogu /usr/sbin. Uruchomienie generatora
-   mo¿na wykonaæ na dwa sposoby: wpisaæ do crona (np. co godzinê)
-
- 0 * * * *       /usr/sbin/lms-mgc 1 > /dev/null
-
-   albo z poziomu LMS skorzystaæ z menu "Prze³adowanie". Druga metoda wymaga
-   u¿ycia sudo. Niestety, jedyne wyj¶cie by umo¿liwiæ uruchomienie lms-mgc,
-   to dopisanie u¿ytkownika do sudo, a nastêpnie ustawienie w sekcji [phpui]
-   lms.ini:
+   albo z poziomu LMS skorzystaæ z menu "Prze³adowanie". Druga metoda
+   wymaga u¿ycia sudo. Niestety, jedyne wyj¶cie by umo¿liwiæ uruchomienie
+   lms-mgc, to dopisanie u¿ytkownika do sudo, a nastêpnie ustawienie w
+   sekcji [phpui] lms.ini:
 
    reload_type = exec
 
    reload_execcmd = sudo /usr/sbin/lms-mgc
 
    Lms-mgc posiada nastêpuj±ce opcje uruchomienia:
+-C, --config-file=/path/lms-mgc.ini alternatywny plik konfiguracyjny
+                                    (default: /etc/lms/lms-mgc.ini);
+-i, --instances=name                nazwa (lub numer) instancji do uruchomienia
+, bez czytania
+                                    konfiguracji z lms-mgc.ini, np. -i "name1 n
+ame2"
+-h, --help                          wy¶wietla pomoc;
+-v, --version                       wy¶wietla numer wersji;
+-q, --quiet                         tylko komunikaty o b³êdach;
+-d, --debug                         informacje szczegó³owe dla kadego IP;
+     _________________________________________________________________
 
- -C, --config-file=/path/lms-mgc.ini alternatywny plik konfiguracyjny
-                                     (default: /etc/lms/lms-mgc.ini);
- -i, --instances=name                nazwa (lub numer) instancji do uruchomienia, bez czytania
-                                     konfiguracji z lms-mgc.ini, np. -i "name1 name2"
- -h, --help                          wy¶wietla pomoc;
- -v, --version                       wy¶wietla numer wersji;
- -q, --quiet                         tylko komunikaty o b³êdach;
- -d, --debug                         informacje szczegó³owe dla kadego IP;
-
-     ----------------------------------------------------------------------
-
-                               5.2. Konfiguracja
+5.2. Konfiguracja
 
    Konfiguracjê dla LMS-MGC przeprowadza siê w pliku lms-mgc.ini
-
-     ----------------------------------------------------------------------
+     _________________________________________________________________
 
 5.2.1. Sekcja [database] - ustawienia bazy danych
 
      * type
-
-       Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak
-       narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql
-
+       Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale
+       jak narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie:
+       mysql
        Przyk³ad: type = mysql
-
      * host
-
-       Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale
-       mo¿na tutaj wstawiæ cokolwiek (ipek, domena, path to socketa w
+       Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost,
+       ale mo¿na tutaj wstawiæ cokolwiek (ipek, domena, path to socketa w
        formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost
-
        Przyk³ad: host = localhost
-
      * user
-
        U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶
-       zgodnie ze wskazówkami w doc/INSTALL) bêdzie to 'lms'. Je¿eli chcesz
-       u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz 'root' (MySQL
-       na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 'postgres' (PostgreSQL).
-       Domy¶lnie: root
-
+       zgodnie ze wskazówkami w doc/INSTALL) bêdzie to 'lms'. Je¿eli
+       chcesz u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz
+       'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼
+       'postgres' (PostgreSQL). Domy¶lnie: root
        Przyk³ad: user = mysql
-
      * password
-
        Has³o do bazy danych. Domy¶lnie puste.
-
        Przyk³ad: password = tajne_haslo
-
      * database
-
        Nazwa bazy danych, domy¶lnie lms.
-
        Przyk³ad: database = lms
-
-     ----------------------------------------------------------------------
+     _________________________________________________________________
 
 5.2.2. Sekcja [mgc] - lista instancji
 
    W³a¶ciwa konfiguracja dotycz±ca generatorów poszczególnych plików
    konfiguracyjnych jest umieszczana w sekcji [mgc] i pochodnych. W samej
    sekcji [mgc] mo¿emy u¿yæ nastêpuj±cego parametru:
-
      * instances
-
        Lista "instancji" oddzielona spacjami.
-
        Przyk³ad: instaces = dhcp firewall squid
-
-     ----------------------------------------------------------------------
+     _________________________________________________________________
 
 5.2.3. Sekjca [mgc:xxx] - konfiguracja instancji
 
-   Ka¿da instancja ma swoj± nazwê i jej konfigruacjê tworzy siê umieszczaj±c
-   sekcjê o nazwie [mgc:nazwa], czyli przyk³adowo: [mgc:mydaemon]
+   Ka¿da instancja ma swoj± nazwê i jej konfigruacjê tworzy siê
+   umieszczaj±c sekcjê o nazwie [mgc:nazwa], czyli przyk³adowo:
+   [mgc:mydaemon]
 
-   W samych instancjach mo¿emy u¿ywaæ nastêpuj±cych opcji konfiguracyjnych:
-
+   W samych instancjach mo¿emy u¿ywaæ nastêpuj±cych opcji
+   konfiguracyjnych:
      * outfile
-
-       Definiuje plik do którego ma byæ zapisany wynik dzia³ania bierz±cej
-       instancji (je¿eli ta zmienna zmienna bêdzie nie ustawiona, instancja
-       siê zakoñczy)
-
+       Definiuje plik do którego ma byæ zapisany wynik dzia³ania
+       bierz±cej instancji (je¿eli ta zmienna zmienna bêdzie nie
+       ustawiona, instancja siê zakoñczy)
        Przyk³ad: outfile = /etc/somefile
-
      * append
-
        Pozwala ustawiæ aby wynik dzia³ania instancji nie nadpisywa³ pliku
        wynikowego, lecz zosta³ dopisany na jego koñcu
-
        Przyk³ad: append = 1
-
      * outfile_perm
-
        Pozwala na ustawienie praw dostêpu do pliku wyj¶ciowego (domy¶lnie
        600)
-
        Przyk³ad: outfile_perm = 700
-
      * outfile_owner
-
        Pozwala na ustawienie w³a¶ciciela pliku wyj¶ciowego (domy¶lnie 0)
-
        Przyk³ad: outfile_owner = 0
 
-       Ostrze¿enie W³a¶ciciel musi byæ podany numerycznie!             
+       Ostrze¿enie
 
+   W³a¶ciciel musi byæ podany numerycznie!
      * outfile_group
-
        Pozwala na ustawienie grupy pliku wyj¶ciowego (domy¶lnie 0)
-
        Przyk³ad: outfile_group = 0
 
-       Ostrze¿enie Grupa musi byæ podana numerycznie!                  
+       Ostrze¿enie
 
+   Grupa musi byæ podana numerycznie!
      * header_file
-
-       Pozwala na umieszczenie w pliku wynikowym zawaro¶ci innego pliku jako
-       nag³ówek (domy¶lnie nie ustawione)
-
+       Pozwala na umieszczenie w pliku wynikowym zawaro¶ci innego pliku
+       jako nag³ówek (domy¶lnie nie ustawione)
        Przyk³ad: header_file = /etc/lms/myservice_header
-
      * header
-
        Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako
        nag³ówka (domy¶lnie puste)
-
        Przyk³ad: header = option1 = bla\noption2 = blabla
 
-       Notatka Znak \n zosta³ tu u¿yty jako seperator linii. Koñcowe   
-               \n nie jest wymagane.                                   
+       Notatka
 
+   Znak \n zosta³ tu u¿yty jako seperator linii. Koñcowe \n nie jest
+   wymagane.
      * networks
-
        Pozwala ustaliæ które z naszych sieci bêd± uwzglêdniane w pliku
        konfiguracyjnym (domy¶lnie wszystkie)
-
        Przyk³ad: networks = cust1-publ cust2-publ cust3-priv
 
-   Teraz mgc pobiera kolejne sieci i wykonuje w kó³ko nastêpuj±ce czynno¶ci:
-
+   Teraz mgc pobiera kolejne sieci i wykonuje w kó³ko nastêpuj±ce
+   czynno¶ci:
      * network_header
-
        Generuje nag³ówek dla ka¿dej sieci (domy¶lnie puste):
-
-       Przyk³ad: network_header = network %ADDR/%MASK { # Config section for
-       %NAME
-
+       Przyk³ad: network_header = network %ADDR/%MASK { # Config section
+       for %NAME
      * dst_networks
-
        Pozwala ustawiæ sieci docelowe, czyli takie dla których bêdzie
        przetwarzany parametr: dst_network_header (domy¶lnie wszystkie):
-
        Przyk³ad: dst_networks = main coalloc
-
      * dst_network_header
-
        Pozwala ustawiæ nag³ówek dla sieci docelowych
-
        Przyk³ad: dst_network_header = \tallow to %DADDR/%DMASK;
-
      * network_body
-
-       Parametr jest przetwarzany po wys³aniu nag³ówków dla sieci, a przed
-       rozpoczêciem analizy adresów IP
-
+       Parametr jest przetwarzany po wys³aniu nag³ówków dla sieci, a
+       przed rozpoczêciem analizy adresów IP
        Przyk³ad: network_body = \tnodes {
 
-   Teraz MGC rozpocznie przetwarzanie kolejnych adresów IP. Robi to w dosyæ
-   specyficzny sposób. Tzn. oblicza kolejny adres IP i kolejno sprawdza:
-
+   Teraz MGC rozpocznie przetwarzanie kolejnych adresów IP. Robi to w
+   dosyæ specyficzny sposób. Tzn. oblicza kolejny adres IP i kolejno
+   sprawdza:
      * allnodes
-
        Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego
        adresu IP.
-
        Przyk³ad: allnodes = ??
-
      * allexistnodes
-
        Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego
        adresu IP który jest u¿ywany.
-
        Przyk³ad: allexistnodes = ??
-
      * ignore
-
        Pozwala na ustawienie listy adresów w postaci adres/prefix lub
        adres/maska oddzielanej spacjami dla której ma byæ ignorowane
        generowanie
-
        Przyk³ad: ignore = ??
-
      * grantednode_publ
-
-       Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje,
-       ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów
-       publicznych)
-
-       Przyk³ad: grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;
-
-     * grantednode_prv
-
-       Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje,
-       ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów
-       prywatnych)
-
-       Przyk³ad: grantednode_prv = \t\tnode %NAME (%IP/%MAC) unique %ID;
-
-     * deniednode_publ
-
-       Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje,
-       ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów
-       publicznych)
-
-       Przyk³ad: deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;
-
-     * deniednode_prv
-
-       Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje,
-       ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów
-       prywatnych)
-
-       Przyk³ad: deniednode_prv = node %NAME (%IP/%MAC) unique %ID deny;
-
-     * dhcpnode_publ
-
-       Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka
+       Jest przetwarzana gdy dany adres komputer z danym adresem IP
+       istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka
        przetwarzana dla adresów publicznych)
-
-       Przyk³ad: dhcpnode_publ = node unknown (%IP) reject;
-
-     * dhcpnode_prv
-
-       Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka
+       Przyk³ad: grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;
+     * grantednode_prv
+       Jest przetwarzana gdy dany adres komputer z danym adresem IP
+       istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka
        przetwarzana dla adresów prywatnych)
-
+       Przyk³ad: grantednode_prv = \t\tnode %NAME (%IP/%MAC) unique %ID;
+     * deniednode_publ
+       Jest przetwarzana gdy dany adres komputer z danym adresem IP
+       istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana
+       dla adresów publicznych)
+       Przyk³ad: deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;
+     * deniednode_prv
+       Jest przetwarzana gdy dany adres komputer z danym adresem IP
+       istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana
+       dla adresów prywatnych)
+       Przyk³ad: deniednode_prv = node %NAME (%IP/%MAC) unique %ID deny;
+     * dhcpnode_publ
+       Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP
+       (regu³ka przetwarzana dla adresów publicznych)
+       Przyk³ad: dhcpnode_publ = node unknown (%IP) reject;
+     * dhcpnode_prv
+       Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP
+       (regu³ka przetwarzana dla adresów prywatnych)
        Przyk³ad: dhcpnode_prv = node unknown (%IP) reject;
-
      * freeip_publ
-
        Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego
        komputera (regu³ka przetwarzana dla adresów publicznych)
-
        Przyk³ad: freeip_publ = node unknown (%IP) lock_as_unused;
-
      * freeip_prv
-
        Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego
        komputera (regu³ka przetwarzana dla adresów prywatnych)
-
        Przyk³ad: freeip_prv = node unknown (%IP) lock_as_unused;
-
      * default_publ
-
        Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie
-       przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka
-       przetwarzana dla adresów publicznych)
-
+       przetworzony przez ¿adn± regu³kê grantednode lub deniednode
+       (regu³ka przetwarzana dla adresów publicznych)
        Przyk³ad: default_publ = node unknown (%IP) lock_as_intruder;
-
      * default_prv
-
        Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie
-       przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka
-       przetwarzana dla adresów prywatnych)
-
+       przetworzony przez ¿adn± regu³kê grantednode lub deniednode
+       (regu³ka przetwarzana dla adresów prywatnych)
        Przyk³ad: default_publ = node unknown (%IP) lock_as_intruder;
 
-       Notatka lms-mgc sam rozpoznaje który adres nale¿y do klasy      
-               publicznej, a który do prywatnej.                       
+       Notatka
 
+   lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który
+   do prywatnej.
      * network_footer
-
        Pozwala na ustawienie stopki dla w³a¶nie przetwarzanej sieci
-
        Przyk³ad: network_footer = ??
-
      * footer_file
-
-       Pozwala na umieszczenie w pliku wynikowym zawaro¶ci innego pliku jako
-       stopka (domy¶lnie nie ustawione)
-
+       Pozwala na umieszczenie w pliku wynikowym zawaro¶ci innego pliku
+       jako stopka (domy¶lnie nie ustawione)
        Przyk³ad: footer_file = /etc/lms/myservice_footer
-
      * footer
-
        Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako
        stopki (domy¶lnie puste)
-
        Przyk³ad: footer = # End.
-
      * post_exec
-
        Komenda do wywo³ania po wygenerowaniu pliku konfiguracyjnego
-
        Przyk³ad: post_exec = killall -HUP mydaemon
-
-     ----------------------------------------------------------------------
+     _________________________________________________________________
 
 5.2.4. Zmienne konfiguracyjne
 
    W opcjach konfiguracyjnych mo¿na u¿ywaæ nastêpuj±cych zmiennych:
-
      * %IP - zostanie rozwiniête do adresu IP
-
      * %ID - ID sieci w bazie
-
      * %MAC - zostanie rozwiniête do adresu MAC karty sieciowej
-
      * %OWNER - w³a¶ciciel komputera
-
      * %NAME - nazwa sieci du¿ymi znakami
-
      * %name - nazwa sieci ma³ymi znakami
-
      * %UPRATE - limit transferu dla danych wychodz±cych
-
      * %DOWNRATE - limit transferu dla danych przychodz±cych
-
      * %1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP
-
      * %ADDR - adres sieci
-
      * %GATE - brama sieci
-
      * %DNS - serwer DNS tej sieci
-
      * %DOMAIN - domena tej sieci
-
      * %WINS - adres serwera WINS dla tej sieci
-
      * %DHCPS - pierwszy adres DHCP tej sieci
-
      * %DHCPE - ostatni adres DHCP tej sieci
-
      * %DATE - data w formacie YYYYMMDD;
-
      * %TIME - czas w formacie HHMM;
-
      * %TIMES - czas w formacie HHMMSS;
-
      * %UTIME - czas w formacie unix timestamp;
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
-
-                       5.3. Przyk³ad zastosowania lms-mgc
+5.3. Przyk³ad zastosowania lms-mgc
 
    Konfiguracja i zasada dzia³ania lms-mgc mo¿e siê wydawaæ do¶æ zawi³a,
-   dlatego pos³u¿ymy siê przyk³adem. Poni¿ej przedstawiono sposób generowania
-   i uruchamiania firewalla ipchains (bardzo prostego).
+   dlatego pos³u¿ymy siê przyk³adem. Poni¿ej przedstawiono sposób
+   generowania i uruchamiania firewalla ipchains (bardzo prostego).
 
    Przyk³ad 5-1. Lms-mgc: Przyk³ad instancji
 
    Zacznij od utworzenia nowej sekcji mgc w lms-mgc.ini, nazywaj±c j±
    'ipchains' i stwórz w tej sekcji prost± maskaradê per adres IP z lanu:
-
- [mgc:ipchains]
- outfile           = /etc/rc.d/rc.masq
- outfile_perm      = 700
- header            = #!/bin/sh\n/sbin/ipchains -F\n/sbin/ipchains -X\n/sbin/ipchains -P forward DENY
- grantednode_priv  = /sbin/ipchains -A forward -s %IP -j MASQ
- post_exec         = /etc/rc.d/rc.masq
+[mgc:ipchains]
+outfile           = /etc/rc.d/rc.masq
+outfile_perm      = 700
+header            = #!/bin/sh\n/sbin/ipchains -F\n/sbin/ipchains -X\n/sbin/ipch
+ains -P forward DENY
+grantednode_priv  = /sbin/ipchains -A forward -s %IP -j MASQ
+post_exec         = /etc/rc.d/rc.masq
 
    Dopiszmy tak¿e do sekcji g³ównej mgc informacjê ¿eby mgc uruchamia³ t±
    sekcjê:
-
- [mgc]
- instances         = ipchains
+[mgc]
+instances         = ipchains
 
    Teraz próba odpalenia lms-mgc powinna zaowocowaæ wygenerowaniem
    /etc/rc.d/rc.masq, oraz jego odpaleniem.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
+Rozdzia³ 6. Dla dociekliwych
 
-                          Rozdzia³ 6. Dla dociekliwych
-
-                             6.1. Drzewo katalogów
+6.1. Drzewo katalogów
 
    Tabela 6-1. Drzewo katalogów LMS
+      Nazwa                       Opis
+     backups           Kopie zapasowe bazy danych
+       bin            Skrypty wykonywalne lms-...
+     contrib    Dodatki stworzone przez u¿ytkowników LMS
+      devel        Skrypty przydatne dla developerów
+       doc                    Dokumentacja
+       img          Obrazki do Interfejsu U¿ytkownka
+       lib      LMS'owy zbiór bibliotek PHP oraz Smarty
+     modules         Modu³y Interfejsu U¿ytkownika
+     sample        Przyk³adowe skrypty i inne dodatki
+    templates  Temlejty Smarty dla Interfejsu U¿ytkownika
+   templates_c              Pliki tymczasowe
+     _________________________________________________________________
 
-   +------------------------------------------------------------------------+
-   |           Nazwa           |                    Opis                    |
-   |---------------------------+--------------------------------------------|
-   |          backups          |         Kopie zapasowe bazy danych         |
-   |---------------------------+--------------------------------------------|
-   |            bin            |        Skrypty wykonywalne lms-...         |
-   |---------------------------+--------------------------------------------|
-   |          contrib          |  Dodatki stworzone przez u¿ytkowników LMS  |
-   |---------------------------+--------------------------------------------|
-   |           devel           |     Skrypty przydatne dla developerów      |
-   |---------------------------+--------------------------------------------|
-   |            doc            |                Dokumentacja                |
-   |---------------------------+--------------------------------------------|
-   |            img            |      Obrazki do Interfejsu U¿ytkownka      |
-   |---------------------------+--------------------------------------------|
-   |            lib            |  LMS'owy zbiór bibliotek PHP oraz Smarty   |
-   |---------------------------+--------------------------------------------|
-   |          modules          |       Modu³y Interfejsu U¿ytkownika        |
-   |---------------------------+--------------------------------------------|
-   |          sample           |     Przyk³adowe skrypty i inne dodatki     |
-   |---------------------------+--------------------------------------------|
-   |         templates         | Temlejty Smarty dla Interfejsu U¿ytkownika |
-   |---------------------------+--------------------------------------------|
-   |        templates_c        |              Pliki tymczasowe              |
-   +------------------------------------------------------------------------+
-
-     ----------------------------------------------------------------------
-
-                           6.2. Struktura bazy danych
+6.2. Struktura bazy danych
 
    Poni¿ej przedstawiono ogóln± strukturê bazy danych LMS. Bardziej
-   szczegó³owe informacje o typach danych, ograniczeniach nak³adanych na pola
-   oraz warto¶ci domyslne zawarte s± w plikach lms.mysql oraz lms.pgsql w
-   katalogu /doc.
-
-     ----------------------------------------------------------------------
+   szczegó³owe informacje o typach danych, ograniczeniach nak³adanych na
+   pola oraz warto¶ci domyslne zawarte s± w plikach lms.mysql oraz
+   lms.pgsql w katalogu /doc.
+     _________________________________________________________________
 
 6.2.1. Administratorzy ('admins')
 
-   id - identyfikator                                             
-   login - login                                                  
-   name - nazwa (nazwisko i imiê)                                 
-   email - adres admina                                           
-   rights - prawa dostêpu                                         
-   passwd - has³o logowania                                       
-   lastlogindate - data ostatniego logowania                      
-   lastloginip - adres IP, z którego nast±pi³o ostatnie logowanie 
-   failedlogindate - data ostatniej nieudanej próby logowania     
-   failedloginip - adres IP, z którego próbowano siê zalogowaæ    
-
-     ----------------------------------------------------------------------
+   id - identyfikator
+   login - login
+   name - nazwa (nazwisko i imiê)
+   email - adres admina
+   rights - prawa dostêpu
+   passwd - has³o logowania
+   lastlogindate - data ostatniego logowania
+   lastloginip - adres IP, z którego nast±pi³o ostatnie logowanie
+   failedlogindate - data ostatniej nieudanej próby logowania
+   failedloginip - adres IP, z którego próbowano siê zalogowaæ
+     _________________________________________________________________
 
 6.2.2. U¿ytkownicy ('users')
 
-   id - identyfikator                                             
-   lastname - nazwa/nazwisko                                      
-   name - imiê                                                    
-   status - pod³±czony/od³±czony                                  
-   email - adres poczty internetowej                              
-   phone1 - telefon                                               
-   phone2 - telefon                                               
-   phone3 - telefon                                               
-   gguin - identyfikator gadu-gadu                                
-   address - adres (ulica, nr domu, nr lokalu)                    
-   zip - kod pocztowy                                             
-   city - nazwa miasta                                            
-   nip - numer identyfikacji podatkowej NIP                       
-   info - dodatkowe informacje                                    
-   creationdate - czas utworzenia wpisu                           
-   moddate - czas modyfikacji                                     
-   creatorid - identyfikator administratora tworz±cego wpis       
-   modid - identyfikator administratora dokonuj±cego zmian danych 
-   deleted - usuniêty z bazy                                      
-
-     ----------------------------------------------------------------------
+   id - identyfikator
+   lastname - nazwa/nazwisko
+   name - imiê
+   status - pod³±czony/od³±czony
+   email - adres poczty internetowej
+   phone1 - telefon
+   phone2 - telefon
+   phone3 - telefon
+   gguin - identyfikator gadu-gadu
+   address - adres (ulica, nr domu, nr lokalu)
+   zip - kod pocztowy
+   city - nazwa miasta
+   nip - numer identyfikacji podatkowej NIP
+   info - dodatkowe informacje
+   creationdate - czas utworzenia wpisu
+   moddate - czas modyfikacji
+   creatorid - identyfikator administratora tworz±cego wpis
+   modid - identyfikator administratora dokonuj±cego zmian danych
+   deleted - usuniêty z bazy
+     _________________________________________________________________
 
 6.2.3. Sieci ('networks')
 
-   id - identyfikator                      
-   name - nazwa sieci                      
-   address - adres IP                      
-   mask - maska                            
-   interface - interfejs (np. eth1)        
-   gateway - adres IP bramy                
-   dns - adres IP serwera nazw             
-   dns2 - adres IP zapasowego serwera nazw 
-   domain - domena                         
-   wins - adres serwera WINS               
-   dhcpstart - pocz±tek zakresu DHCP       
-   dhcpend - koniec zakresu DHCP           
-
-     ----------------------------------------------------------------------
+   id - identyfikator
+   name - nazwa sieci
+   address - adres IP
+   mask - maska
+   interface - interfejs (np. eth1)
+   gateway - adres IP bramy
+   dns - adres IP serwera nazw
+   dns2 - adres IP zapasowego serwera nazw
+   domain - domena
+   wins - adres serwera WINS
+   dhcpstart - pocz±tek zakresu DHCP
+   dhcpend - koniec zakresu DHCP
+     _________________________________________________________________
 
 6.2.4. Komputery ('nodes')
 
-   id - identyfikator                                       
-   name - nazwa                                             
-   mac - adres MAC                                          
-   ipaddr - adres IP                                        
-   ownerid - identyfikator w³a¶ciciela (u¿ytkownika)        
-   creationdate - znacznik czasu utworzenia wpisu           
-   moddate - znacznik czasu ostatniej modyfikacji           
-   creatorid - identyfikator administratora tworz±cego wpis 
-   modid - identyfikator administratora                     
-   access - pod³±czony/od³aczony                            
-
-     ----------------------------------------------------------------------
+   id - identyfikator
+   name - nazwa
+   mac - adres MAC
+   ipaddr - adres IP
+   ownerid - identyfikator w³a¶ciciela (u¿ytkownika)
+   creationdate - znacznik czasu utworzenia wpisu
+   moddate - znacznik czasu ostatniej modyfikacji
+   creatorid - identyfikator administratora tworz±cego wpis
+   modid - identyfikator administratora
+   netdev - identyfikator urz±dzenia sieciowego do którego jest
+   pod³±czony komputer
+   access - pod³±czony/od³aczony
+     _________________________________________________________________
 
 6.2.5. Sprzêt sieciowy ('netdevices')
 
-   id - identyfikator           
-   name - nazwa                 
-   location - lokalizacja       
-   description - opis           
-   producer - producent         
-   model - model                
-   serialnumber - numer seryjny 
-   ports - ilo¶æ portów         
+   id - identyfikator
+   name - nazwa
+   location - lokalizacja
+   description - opis
+   producer - producent
+   model - model
+   serialnumber - numer seryjny
+   ports - ilo¶æ portów
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
+6.2.6. Po³±czenia sieciowe ('netlinks')
 
-6.2.6. Operacje finansowe ('cash')
+   id - identyfikator
+   src - jeden koniec
+   dst- drugi koniec
+     _________________________________________________________________
 
-   id - identyfikator                                           
-   time - znacznik czasu zaksiêgowania operacji                 
-   adminid - identyfikator administratora dokonuj±cego operacji 
-   type - typ operacji (przychów, rozchód, wp³ata, obci±¿enie)  
-   value - warto¶æ w z³otych                                    
-   userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy) 
-   comment - opis operacji                                      
+6.2.7. Operacje finansowe ('cash')
 
-     ----------------------------------------------------------------------
+   id - identyfikator
+   time - znacznik czasu zaksiêgowania operacji
+   adminid - identyfikator administratora dokonuj±cego operacji
+   type - typ operacji (przychów, rozchód, wp³ata, obci±¿enie)
+   value - warto¶æ w z³otych
+   userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy)
+   comment - opis operacji
+     _________________________________________________________________
 
-6.2.7. Taryfy ('tariffs')
+6.2.8. Taryfy ('tariffs')
 
-   id - identyfikator                                                
-   name - nazwa                                                      
-   value - warto¶æ netto w z³otych                                   
-   uprate - ograniczenie szybko¶ci transferu danych wychodz±cych     
-   downrate - ograniczenie szybko¶ci transferu danych przychodz±cych 
-   description - opis                                                
+   id - identyfikator
+   name - nazwa
+   value - warto¶æ netto w z³otych
+   uprate - ograniczenie szybko¶ci transferu danych wychodz±cych
+   downrate - ograniczenie szybko¶ci transferu danych przychodz±cych
+   description - opis
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
+6.2.9. Powi±zania ('assignments')
 
-6.2.8. Powi±zania ('assignments')
+   id - identyfikator
+   tariffid - identyfikator taryfy
+   userid - identyfikator u¿ytkownika
+   period - okres (ilo¶æ dni)
+   at - dzieñ naliczania
+     _________________________________________________________________
 
-   id - identyfikator                 
-   tariffid - identyfikator taryfy    
-   userid - identyfikator u¿ytkownika 
-   period - okres (ilo¶æ dni)         
-   at - dzieñ naliczania              
+6.2.10. Statystyki wykorzystania ³±cza ('stats')
 
-     ----------------------------------------------------------------------
+   nodeid - numer komputera
+   dt - znacznik czasu
+   upload - ilo¶æ danych wys³anych w bajtach
+   download - ilo¶æ danych odebranych w bajtach
+     _________________________________________________________________
 
-6.2.9. Statystyki wykorzystania ³±cza ('stats')
-
-   nodeid - numer komputera                     
-   dt - znacznik czasu                          
-   upload - ilo¶æ danych wys³anych w bajtach    
-   download - ilo¶æ danych odebranych w bajtach 
-
-     ----------------------------------------------------------------------
-
-                              6.3. Poziomy dostêpu
+6.3. Poziomy dostêpu
 
    W sumie tutaj to wyt³umaczê bardziej dla developerów, gdy¿ osoby
    korzystaj±ce z LMS raczej nie bêd± zainteresowane.
 
-   Oryginalnie poziomy dostêpu mia³y byæ definiowane poprzez ró¿ne litery.
-   By³o to za³o¿enie z czasów LMS-0.4, lecz nigdy nie wykorzystane. Z racji
-   tego, ¿e wesz³o to do 1.0, d³ugo siê g³owi³em jak wykorzystaæ 64-znakowego
-   stringa. Otó¿ w kolumnie rights jest poprostu 64-znakowa (256-bitowa)
-   liczba hexadecymalna. Ka¿dy jej znak mo¿e opisaæ maksymalnie cztery bity
-   kombinacji (4*64 = 256 - st±d ilo¶æ mo¿liwych poziomów). Tak wiêc
-   w³±czenie jakiego¶ poziomu dostêpu powoduje ustawienie w tej liczbie
-   odpowiedniego bitu. I tak je¿eli "pe³en dostêp" ma pozycjê 0 w
-   lib/accesstable.php, zostanie ustawiony bit 0, czyli bêdzie to liczba 1.
-   Wiêc poziomy mog± mieæ numery od 0 do 255. Nie jest to finalne
-   ograniczenie. Stosuj±c wiêcej liter i znaków mo¿na rozszerzyæ ilo¶æ
-   mo¿liwych kombinacji do przynajmniej 6 bitów na znak, co da nam 384
-   kombinacje.
+   Oryginalnie poziomy dostêpu mia³y byæ definiowane poprzez ró¿ne
+   litery. By³o to za³o¿enie z czasów LMS-0.4, lecz nigdy nie
+   wykorzystane. Z racji tego, ¿e wesz³o to do 1.0, d³ugo siê g³owi³em
+   jak wykorzystaæ 64-znakowego stringa. Otó¿ w kolumnie rights jest
+   poprostu 64-znakowa (256-bitowa) liczba hexadecymalna. Ka¿dy jej znak
+   mo¿e opisaæ maksymalnie cztery bity kombinacji (4*64 = 256 - st±d
+   ilo¶æ mo¿liwych poziomów). Tak wiêc w³±czenie jakiego¶ poziomu dostêpu
+   powoduje ustawienie w tej liczbie odpowiedniego bitu. I tak je¿eli
+   "pe³en dostêp" ma pozycjê 0 w lib/accesstable.php, zostanie ustawiony
+   bit 0, czyli bêdzie to liczba 1. Wiêc poziomy mog± mieæ numery od 0 do
+   255. Nie jest to finalne ograniczenie. Stosuj±c wiêcej liter i znaków
+   mo¿na rozszerzyæ ilo¶æ mo¿liwych kombinacji do przynajmniej 6 bitów na
+   znak, co da nam 384 kombinacje.
+     _________________________________________________________________
 
-     ----------------------------------------------------------------------
+6.4. Ograniczenia
 
-                               6.4. Ograniczenia
-
-   Ka¿dy system ma ograniczenia. Pewne wynikaja z u¿ytego silnika SQL (DBMS)
-   inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez developerów. Nasz
-   system takowe posiada:
-
-     ----------------------------------------------------------------------
+   Ka¿dy system ma ograniczenia. Pewne wynikaja z u¿ytego silnika SQL
+   (DBMS) inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez
+   developerów. Nasz system takowe posiada:
+     _________________________________________________________________
 
 6.4.1. Wynikaj±ce z naszego projektu
 
-   Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowujemy jako
-   32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat bêdziecie nas nie
-   lubiæ posiadaj±c oko³o 5000 u¿ytkowników.
-
-     ----------------------------------------------------------------------
+   Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowujemy
+   jako 32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat bêdziecie
+   nas nie lubiæ posiadaj±c oko³o 5000 u¿ytkowników.
+     _________________________________________________________________
 
 6.4.2. Wynikaj±ce z u¿ywanego DMBS
 
      * MySQL
+          + Rozmiar bazy danych:
+            Jak mówi dokumentacja do MySQL'a (rozdzia³: Table size,
+            paragraf "How Big Can MySQL Tables Be?"), MySQL wersja 3.22
+            by³ ograniczony do 4 GB na tabelkê. W wersji za¶ 3.23 zosta³o
+            to podniesione do 8 milionów terabajtów (czyli 2^63 bajtów).
+            Jednak warto zauwa¿yæ ¿e ró¿ne systemy operacyjne maj± limity
+            nak³adane przez systemy plików, najczê¶ciej jest to 2 lub 4
+            GB.
+          + Ilo¶æ rekordów:
+            Prawdziwe informacje na temat limitów uzyskamy dopiero po
+            wydaniu polecenia: (w interpreterze poleceñ mysql)
+mysql> show table status;
 
-          * Rozmiar bazy danych:
-
-            Jak mówi dokumentacja do MySQL'a (rozdzia³: Table size, paragraf
-            "How Big Can MySQL Tables Be?"), MySQL wersja 3.22 by³
-            ograniczony do 4 GB na tabelkê. W wersji za¶ 3.23 zosta³o to
-            podniesione do 8 milionów terabajtów (czyli 2^63 bajtów). Jednak
-            warto zauwa¿yæ ¿e ró¿ne systemy operacyjne maj± limity nak³adane
-            przez systemy plików, najczê¶ciej jest to 2 lub 4 GB.
-
-          * Ilo¶æ rekordów:
-
-            Prawdziwe informacje na temat limitów uzyskamy dopiero po wydaniu
-            polecenia: (w interpreterze poleceñ mysql)
-
- mysql> show table status;
-
- ...| Avg_row_length | Data_length | Max_data_length | Index_length |
- ...|             44 |       24136 |      4294967295 |        19456 |
-
+...| Avg_row_length | Data_length | Max_data_length | Index_length |
+...|             44 |       24136 |      4294967295 |        19456 |
             Zauwa¿ymy ¿e miejsca wystarczy na oko³o 175 000 razy tyle ile
-            mamy aktualnie wpisów w tabelce. (czyt.: mo¿esz spaæ spkojnie,
-            chyba ¿e planujesz posiadanie ponad 100000 u¿ytkowników :-)
-
+            mamy aktualnie wpisów w tabelce. (czyt.: mo¿esz spaæ
+            spkojnie, chyba ¿e planujesz posiadanie ponad 100000
+            u¿ytkowników :-)
      * PostgreSQL
-
-          * Rozmiar bazy danych:
-
-            PostgreSQL zapisuje dane w porcjach po 8 kB. Liczba tych bloków
-            jest ograniczona do 32-bitowej liczby ca³kowitej ze znakiem,
-            daj±c maksymaln± wielko¶c tabeli wynosz±c± 16 terabajtów. Z uwagi
-            na ograniczenia systemów operacyjnych dane przechowywane s± w
-            wielu plikach o wielko¶ci 1 GB ka¿dy.
-
-          * Ilo¶æ rekordów:
-
-            PostgreSQL nie narzuca ograniczenia na liczbê wierszy w dowolnej
-            tabeli. Jednak funkcja COUNT zwraca 32-bitow± liczbê ca³kowit±, a
-            zatem dla tabel zawieraj±cych ponad dwa miliardy wierszy wynik
-            tej funkcji bêdzie nieprawid³owy. (Informacja dot. PostgreSQL
-            7.1)
-
-$Id$
+          + Rozmiar bazy danych:
+            PostgreSQL zapisuje dane w porcjach po 8 kB. Liczba tych
+            bloków jest ograniczona do 32-bitowej liczby ca³kowitej ze
+            znakiem, daj±c maksymaln± wielko¶c tabeli wynosz±c± 16
+            terabajtów. Z uwagi na ograniczenia systemów operacyjnych
+            dane przechowywane s± w wielu plikach o wielko¶ci 1 GB ka¿dy.
+          + Ilo¶æ rekordów:
+            PostgreSQL nie narzuca ograniczenia na liczbê wierszy w
+            dowolnej tabeli. Jednak funkcja COUNT zwraca 32-bitow± liczbê
+            ca³kowit±, a zatem dla tabel zawieraj±cych ponad dwa miliardy
+            wierszy wynik tej funkcji bêdzie nieprawid³owy. (Informacja
+            dot. PostgreSQL 7.1)
