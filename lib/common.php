@@ -385,7 +385,7 @@ function get_ip_range_from_ip_part($part_ip)
 				    $result[] = "255";
 			}
 	    }
-	    if(strlen($number) < 3)
+	    if(strlen($number) < 3 && $number != "0")
 	    {
 		$x=3;
 		foreach($result as $value)
@@ -1019,6 +1019,9 @@ function setunits($data)  // for traffic data
 
 /*
  * $Log$
+ * Revision 1.51  2003/10/06 22:21:33  alec
+ * jeszcze jeden warunek w get_ip_range...()
+ *
  * Revision 1.50  2003/10/06 22:19:16  alec
  * popraweczka - dodany komentarz
  *
