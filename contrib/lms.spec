@@ -1,5 +1,5 @@
 # $Revision$, $Date$
-Summary:	LAN Managment System
+Summary:	LAN Management System
 Summary(pl):	System Zarz±dzania Siec± Lokaln±
 Name:		lms
 Version:	1.0.0
@@ -71,8 +71,8 @@ Najbardziej podstawowe cechy LMS to:
   danych w bazie.
 
 %package scripts
-Summary:	LAN Managment System - scripts
-Summary(pl):	LAN Managment System - skrypty
+Summary:	LAN Management System - scripts
+Summary(pl):	LAN Management System - skrypty
 Requires:	perl-Net-SMTP-Server
 Requires:	perl-Config-IniFiles
 Requires:	perl-DBI
@@ -142,6 +142,9 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld-linux.org
 
 $Log$
+Revision 1.13  2003/09/19 11:04:05  lukasz
+- typo
+
 Revision 1.12  2003/06/23 13:42:28  lukasz
 - force commit for LMS-1.1.0
 
