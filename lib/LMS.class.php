@@ -793,7 +793,7 @@ class LMS
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid, netdevid FROM nodes WHERE id=?",array($id)))
+		if($result = $this->DB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid FROM nodes WHERE id=?",array($id)))
 		{
 			$result['ip'] = long2ip($result['ipaddr']);
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
@@ -1551,6 +1551,30 @@ class LMS
 		return $this->DB->GetOne("SELECT name FROM netdevices WHERE id=?",array($id));
 	}
 	
+	function CountNetDevLinks($id)
+	{
+		return $this->DB->GetOne("SELECT COUNT(Id) FROM netlinks WHERE src = ".$id." OR dst = ".$id);
+	}
+	
+	function GetNetDevConnected($id)
+	{
+		return $this->DB->GetAll("SELECT (CASE src WHEN ".$id." THEN src ELSE dst END) AS src, (CASE src WHEN ".$id." THEN dst ELSE src END) AS dst FROM netlinks WHERE src = ".$id." OR dst = ".$id);
+	}
+	
+	function GetNetDevConnectedNames($id)
+	{
+		// To powinno byæ lepiej zrobione...
+		$list =  $this -> GetNetDevConnected($id);
+		$id=0;
+		if ($list) {
+		    foreach($list as $row) {
+			$names[$id]= $this -> GetNetDev($row[dst]);
+			$id++;
+		    }
+		}
+		return $names;
+	}
+	
 	function GetNetDevList($order="name,asc")
 	{
 
@@ -1593,6 +1617,8 @@ class LMS
 		}
 
 		$netdevlist = $this->DB->GetAll("SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices ".($sqlord != "" ? $sqlord." ".$direction : ""));
+		
+		foreach($netdevlist as $idx => $row) $netdevlist[$idx]['takenports'] = $this -> CountNetDevLinks($row['id']);
 
 		$netdevlist['total'] = sizeof($netdevlist);
 		$netdevlist['order'] = $order;
@@ -1602,7 +1628,10 @@ class LMS
 	 
 	function GetNetDev($id)
 	{
-		return $this->DB->GetRow("SELECT name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?",array($id));
+		$result = $this->DB->GetRow("SELECT name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?",array($id));
+		$result['takenports'] = $this->CountNetDevLinks($id);
+		$result['id'] = $id;
+		return $result;
 	}
 
 	function DeleteNetDev($id)
@@ -1814,6 +1843,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.232  2003/09/21 18:06:12  lexx
+ * - yyy... dalej netdev
+ *
  * Revision 1.231  2003/09/18 14:15:53  alec
  * usuniety fatal error powodowany przez podwojona funkcje GetNetDev(), dodana funkcja GetNetDevName i w zwiazku z tym zmiana w GetNode()
  *
