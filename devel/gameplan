@@ -15,17 +15,17 @@ $Id$
   (o ile w ogóle jaki¶ istnieje) [x]
 * silnik modu³ów
 * KP i KR (wolê tutaj, bo ja siê skupiê na silniczku do modu³ów, natomiast
-  reszta ludzi mog³a by siê zaj±æ innymi, niezbyt rozbudowanymi rzeczami - lukasz)
+  reszta ludzi mog³aby siê zaj±æ innymi, niezbyt rozbudowanymi rzeczami - lukasz)
 
 
-1.9 (deadline dla 1.7 to powiedzmy koniec czerwca - do negocjacji w przypadku
-     gdyby co¶ wiêcej tam do zrobienia wesz³o) [xx]
+1.9 (deadline dla 1.7 to powiedzmy koniec czerwca - do negocjacji w przypadku,
+     gdyby co¶ wiêcej tam do zrobienia by³o) [xx]
 
 ! j.w. ale dla wersji 1.2 i 1.3
 * nowy daemon
 * rewolucje w bazie [=] (np. users -> customers, admins -> users or sth)
 * przerobienie na nowe modu³y
-* zrobienie 'LMSAPI' - czyli, zintegrowanej z LMS biblioteki serwuj±cej
+* zrobienie 'LMSAPI' - czyli zintegrowanej z LMS biblioteki serwuj±cej
   podstawowe funkcje LMSa (takie read only) - ka¿dy modu³ móg³by dodawaæ
   jakie¶ dodatki do API... Oczywi¶cie to pseudo-api i nie wiem czy tak
   bêdzie mo¿na to nazwaæ
@@ -34,11 +34,11 @@ $Id$
 
 x] -- istnieje: 
 	na stronie mamy wersjê 1.0 
-	przyjmujemy bugfixy i w razie potwierdzenia b³êdu umieszczamy na stronie 
+	przyjmujemy bugfix-y i w razie potwierdzenia b³êdu umieszczamy na stronie 
 	info oraz umo¿liwiamy zassanie wersji naprawionej.
 
-xx] general rule: utrzymywanie nie wiêcej ni¿ 3 ostatnich stabilnych releasów
-	i ich ogólne wspieranie ( praca nad 1.9 to szlifowanie i bugfixowanie 
+xx] general rule: utrzymywanie nie wiêcej ni¿ 3 ostatnich stabilnych release-ów
+	i ich ogólne wspieranie (praca nad 1.9 to szlifowanie i bugfixowanie 
 	1.8.xxx oraz bugfixy dla 1.4, 1.6. Oficjalny komunikat o end-of-life wersji 
 	1.2.x wraz z wyciapaniem z dzia³u download wszystkiego do 1.3.99999 w³±cznie).
 
@@ -53,4 +53,4 @@ ale to jest "the way".
 =] móg³by¶ co¶ wiêcej? 
 ja widzê konieczny porz±dek z tax i jego stawkami (co¶ bardziej w kierunku 
 rachunkowo¶ci czyli liczymy te 22.00% dok³adnie raz, potem dodajemy a nie 
-trzymamy 22.000% ).
+trzymamy 22.000%).
