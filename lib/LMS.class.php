@@ -549,6 +549,18 @@ class LMS
 			return FALSE;
 	}
 
+	function BalanceOK($user_id)
+	{
+			$this->SetTS("cash");
+			$stan=$this->GetUserBalance($user_id);
+			//$stan=str_replace(".",",",$stan);
+			$stan=-$stan;
+			$stan=str_replace(",",".",$stan);
+
+			return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?)",array($this->SESSION->id, 3 , "$stan" , $user_id));
+	}
+
+
 	function GetNode($id)
 	{
 		if($return = $this->ADB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid FROM nodes WHERE id=?",array($id)))
@@ -648,6 +660,16 @@ class LMS
 							$balancelist[$idx][after] = $balancelist[$idx][before];
 							$balancelist[uinvoice] = $balancelist[uinvoice] + $balancelist[$idx][value];
 						break;
+						case "5":
+							$balancelist[$idx][type] = "obci±¿enie u¿-Abonament";
+							$balancelist[$idx][after] = $balancelist[$idx][before];
+							$balancelist[uinvoice] = $balancelist[uinvoice] + $balancelist[$idx][value];
+						break;
+						case "6":
+							$balancelist[$idx][type] = "obci±¿enie u¿-Inne";
+							$balancelist[$idx][after] = $balancelist[$idx][before];
+							$balancelist[uinvoice] = $balancelist[uinvoice] + $balancelist[$idx][value];
+						break;
 						default:
 							$balancelist[$idx][type] = '<FONT COLOR="RED">???</FONT>';
 							$balancelist[$idx][after] = $balancelist[$idx][before];
@@ -741,7 +763,15 @@ class LMS
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
 				foreach($blst as $row)
 					$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
-			
+
+			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='5' GROUP BY userid"))
+					foreach($blst as $row)
+							$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
+
+			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='6' GROUP BY userid"))
+					foreach($blst as $row)
+							$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
+
 			foreach($this->ADB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
 				$tlist[$value[id]] = $row[value];
 			
@@ -809,45 +839,45 @@ class LMS
 			break;
 			
 			case "address":
-				$sqlord = "ORDER BY address, lastname, name, id";
+				$sqlord = "ORDER BY address";
 			break;
 			
 			case "email":
-				$sqlord = "ORDER BY email, lastname, name, id";
+				$sqlord = "ORDER BY email";
 			break;
 			
 			case "balance":
 				$sqlord = "";
 			break;
-
-			case "gg":
-				$sqlord = "ORDER BY gguin, lastname, name, id";
-			break;
-
-			case "nip":
-				$sqlord = "ORDER BY nip, lastname, name, id";
-			break;
 			
 			default:
-				$sqlord = "ORDER BY lastname, name, id";
+				$sqlord = "ORDER BY lastname, name";
 			break;
 		}
 		
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, tariff, zip, city, gguin FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
+		if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, tariff FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
 		{
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
 				foreach($blst as $row)
 					$balance[$row[id]] = str_replace(".",",",$row[value]);
 
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
-				foreach($blst as $row)
-					$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
-			
+					foreach($blst as $row)
+							$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
+			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='5' GROUP BY userid"))
+					foreach($blst as $row)
+							$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
+			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='6' GROUP BY userid"))
+					foreach($blst as $row)
+							$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
+
+
+
 			foreach($this->ADB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
-				$tlist[$row[id]] = $row[value];
+				$tlist[$value[id]] = $row[value];
 			
 			foreach($userlist as $key => $value)
 			{
@@ -1142,8 +1172,11 @@ class LMS
 	function GetUserBalance($id)
 	{
 		$bin = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='3'",array($id));
-		$bab = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='4'",array($id));
-		return round(str_replace(".",",",$bin) - str_replace(".",",",$bab),2);
+		$bou1 = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='4'",array($id));
+		$bou2 = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='5'",array($id));
+		$bou3 = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='6'",array($id));
+		return round(str_replace(".",",",$bin) - str_replace(".",",",$bou1) - str_replace(".",",",$bou2) -
+			str_replace(".",",",$bou3),2);
 	}
 
 	function GetUserBalanceList($id)
@@ -1180,19 +1213,45 @@ class LMS
 					// z zapisem do mysql'a :S
 					$saldolist[value][$i]=str_replace(".",",",$saldolist[value][$i]);
 					$saldolist[value][$i]=round($saldolist[value][$i],3);	
+
+					if (strlen($saldolist[comment][$i])<3)
+							$saldolist[comment][$i] = $saldolist[name][$i];
+					else
+							$saldolist[comment][$i] =  $saldolist[comment][$i];
+
+					
 					switch ($saldolist[type][$i]){
+
 						case "3":
 							$saldolist[after][$i] = round(($saldolist[before][$i] + $saldolist[value][$i]),4);
-							$saldolist[name][$i] = "wp³ata";
+							$saldolist[name][$i] = "Wp³ata";
+//							$saldolist[comment][$i] = "Abonament za".date("Y/m",$saldolist[time][$i]) || $saldolist[comment][$i];
 						break;
 						
 						case "4":
-							$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
-							$saldolist[name][$i] = "op³ata ab";
+								$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
+								$saldolist[name][$i] = "Abonament";
+						break;
+						
+						case "5":
+								$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
+								$saldolist[name][$i] = "Instalacja";
+						break;
+
+						case "6":
+								$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
+								$saldolist[name][$i] = "Inne";
 						break;
 					}
 					
 					$saldolist[date][$i]=date("Y/m/d H:i",$saldolist[time][$i]);
+					if (strlen($saldolist[comment][$i])<3)
+							$saldolist[comment][$i] = $saldolist[name][$i];
+					else
+							$saldolist[comment][$i] =  $saldolist[comment][$i];
+
+
+
 					
 				}
 				
