@@ -186,11 +186,23 @@
 			<simplelist>
 				<member>id - identyfikator</member>
 				<member>name - nazwa</member>
-				<member>value - warto¶æ netto w z³otych</member>
+				<member>value - kwota</member>
 				<member>taxvalue - wysoko¶æ podatku w procentach</member>
 				<member>pkwiu - numer PKWiU</member>
 				<member>uprate - ograniczenie szybko¶ci transferu danych wychodz±cych</member>
 				<member>downrate - ograniczenie szybko¶ci transferu danych przychodz±cych</member>
+				<member>description - opis</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="payments">
+			<title>Op³aty sta³e ('payments')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>name - nazwa</member>
+				<member>value - kwota</member>
+				<member>creditor - nazwa wierzyciela</member>
+				<member>period - typ okresu naliczania (co miesi±c/co tydzieñ/co rok)</member>
+				<member>at - dzieñ naliczenia</member>
 				<member>description - opis</member>
 			</simplelist>
 		</sect2>
@@ -200,7 +212,7 @@
 				<member>id - identyfikator</member>
 				<member>tariffid - identyfikator taryfy</member>
 				<member>userid - identyfikator u¿ytkownika</member>
-				<member>period - okres (ilo¶æ dni)</member>
+				<member>period - typ okresu </member>
 				<member>at - dzieñ naliczania</member>
 				<member>invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)</member>
 			</simplelist>
@@ -211,7 +223,8 @@
 				<member>id - identyfikator</member>
 				<member>number - numer w roku</member>
 				<member>cdate - data wystawienia</member>
-				<member>paytime - czas zap³aty (ilo¶æ dni)</member>
+				<member>paytime - termin p³atno¶ci (ilo¶æ dni)</member>
+				<member>paytype - rodzaj p³atno¶ci (przelew/gotówka/etc.)</member>
 				<member>customerid - identyfikator u¿ytkownika-nabywcy</member>
 				<member>name - nazwa (nazwisko i imiê) nabywcy</member>
 				<member>address - adres nabywcy</member>
