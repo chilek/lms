@@ -102,19 +102,19 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	{
 		// get (htb) data for any user with connected nodes and active assignments
 		// we need user ID and average data values for nodes
-		if( (ures = g->db_query("
-			SELECT userid AS id, 
-				ROUND(SUM(uprate)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS uprate, 
-				ROUND(SUM(downrate)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS downrate, 
-				ROUND(SUM(upceil)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS upceil, 
-				ROUND(SUM(downceil)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS downceil, 
-				ROUND(SUM(climit)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS climit, 
-				ROUND(SUM(plimit)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS plimit
-			FROM assignments
-				LEFT JOIN tariffs ON (tariffid = tariffs.id)
-				LEFT JOIN nodes ON (userid = ownerid)
-			WHERE access = 1 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0)
-			GROUP BY userid 
+		if( (ures = g->db_query("\
+			SELECT userid AS id, \
+				ROUND(SUM(uprate)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS uprate, \
+				ROUND(SUM(downrate)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS downrate, \
+				ROUND(SUM(upceil)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS upceil, \
+				ROUND(SUM(downceil)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS downceil, \
+				ROUND(SUM(climit)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS climit, \
+				ROUND(SUM(plimit)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS plimit \
+			FROM assignments \
+				LEFT JOIN tariffs ON (tariffid = tariffs.id) \
+				LEFT JOIN nodes ON (userid = ownerid) \
+			WHERE access = 1 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) \
+			GROUP BY userid \
 			ORDER BY userid"))!=NULL ) 
 		{
 		
@@ -150,10 +150,10 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					int n_climit = atoi(climit);
 					int n_plimit = atoi(plimit);
 
-					if( (nres = g->db_pquery("
-						SELECT INET_NTOA(ipaddr) AS ip, ipaddr, mac, name					
-						FROM nodes
-						WHERE ownerid = ? AND access = 1
+					if( (nres = g->db_pquery(" \
+						SELECT INET_NTOA(ipaddr) AS ip, ipaddr, mac, name \
+						FROM nodes \
+						WHERE ownerid = ? AND access = 1 \
 						ORDER BY ipaddr", g->db_get_data(ures,i,"id")))!=NULL ) 
 					{
 			
@@ -288,106 +288,104 @@ struct tc_module * init(GLOBAL *g, MODULE *m)
 	free(s); s = g->str_concat(instance, ":command");
 	tc->command = strdup(g->iniparser_getstring(ini, s, "sh /etc/rc.d/rc.htb start"));
 	free(s); s = g->str_concat(instance, ":begin");
-	tc->begin = strdup(g->iniparser_getstring(ini, s, 
-"#!/bin/sh
-IPT=/usr/sbin/iptables
-TC=/sbin/tc
-LAN=eth0
-WAN=eth1
-BURST=\"burst 5k\"
-
-stop ()
-{
-$IPT -t mangle -F PREROUTING
-$IPT -t mangle -F OUTPUT
-$IPT -t filter -F FORWARD
-$TC qdisc del dev $LAN root 2> /dev/null
-$TC qdisc del dev $WAN root 2> /dev/null
-}
-
-start ()
-{
-stop
-# incomming traffic
-$IPT -t mangle -A OUTPUT -j MARK --set-mark 1
-$TC qdisc add dev $LAN root handle 1:0 htb default 3 r2q 1
-$TC class add dev $LAN parent 1:0 classid 1:1 htb rate 99000kbit ceil 99000kbit quantum 1500
-$TC class add dev $LAN parent 1:1 classid 1:2 htb rate   500kbit ceil   500kbit
-$TC class add dev $LAN parent 1:1 classid 1:3 htb rate 98500kbit ceil 98500kbit prio 9 quantum 1500
-$TC qdisc add dev $LAN parent 1:3 esfq perturb 10 hash dst
-# priorities for ICMP, TOS 0x10 and ports 22 and 53
-$TC class add dev $LAN parent 1:2 classid 1:20 htb rate 50kbit ceil 500kbit $BURST prio 1 quantum 1500
-$TC qdisc add dev $LAN parent 1:20 esfq perturb 10 hash dst
-$TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xffff flowid 1:20
-$TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 53 0xffff flowid 1:20
-$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 1:20
-$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 1:20
-# server -> LAN
-$TC filter add dev $LAN parent 1:0 protocol ip prio 4 handle 1 fw flowid 1:3
-
-# outgoing traffic
-$TC qdisc add dev $WAN root handle 2:0 htb default 11 r2q 1
-$TC class add dev $WAN parent 2:0 classid 2:1 htb rate 120kbit ceil 120kbit
-# priorities for ACK, ICMP, TOS 0x10, ports 22 and 53
-$TC class add dev $WAN parent 2:1 classid 2:10 htb rate 60kbit ceil 120kbit prio 1 quantum 1500
-$TC qdisc add dev $WAN parent 2:10 esfq perturb 10 hash dst
-$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip protocol 6 0xff match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 1 match u8 0x10 0xff at 33 flowid 2:10
-$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 22 0xffff flowid 2:10
-$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 53 0xffff flowid 2:10
-$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 2:10
-$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 2:10
-# server -> Internet
-$TC class add dev $WAN parent 2:1 classid 2:11 htb rate 30kbit ceil 120kbit prio 2 quantum 1500
-$TC qdisc add dev $WAN parent 2:11 esfq perturb 10 hash dst
-$TC filter add dev $WAN parent 2:0 protocol ip prio 3 handle 1 fw flowid 2:11
-$TC filter add dev $WAN parent 2:0 protocol ip prio 9 u32 match ip dst 0/0 flowid 2:11
+	tc->begin = strdup(g->iniparser_getstring(ini, s, "\n\
+#!/bin/sh\n\
+IPT=/usr/sbin/iptables\n\
+TC=/sbin/tc\n\
+LAN=eth0\n\
+WAN=eth1\n\
+BURST=\"burst 15k\"\n\
+\
+stop ()\n\
+{\n\
+$IPT -t mangle -F POSTROUTING\n\
+$IPT -t mangle -F OUTPUT\n\
+$IPT -t filter -F FORWARD\n\
+$TC qdisc del dev $LAN root 2> /dev/null\n\
+$TC qdisc del dev $WAN root 2> /dev/null\n\
+}\n\
+\
+start ()\n\
+{\n\
+stop\n\
+# incomming traffic\n\
+$IPT -t mangle -A OUTPUT -j MARK --set-mark 1\n\
+$TC qdisc add dev $LAN root handle 1:0 htb default 3 r2q 1\n\
+$TC class add dev $LAN parent 1:0 classid 1:1 htb rate 99000kbit ceil 99000kbit quantum 1500\n\
+$TC class add dev $LAN parent 1:1 classid 1:2 htb rate   500kbit ceil   500kbit\n\
+$TC class add dev $LAN parent 1:1 classid 1:3 htb rate 98500kbit ceil 98500kbit prio 9 quantum 1500\n\
+$TC qdisc add dev $LAN parent 1:3 esfq perturb 10 hash dst\n\
+# priorities for ICMP, TOS 0x10 and ports 22 and 53\n\
+$TC class add dev $LAN parent 1:2 classid 1:20 htb rate 50kbit ceil 500kbit $BURST prio 1 quantum 1500\n\
+$TC qdisc add dev $LAN parent 1:20 esfq perturb 10 hash dst\n\
+$TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 22 0xffff flowid 1:20\n\
+$TC filter add dev $LAN parent 1:0 protocol ip prio 2 u32 match ip sport 53 0xffff flowid 1:20\n\
+$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 1:20\n\
+$TC filter add dev $LAN parent 1:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 1:20\n\
+# server -> LAN\n\
+$TC filter add dev $LAN parent 1:0 protocol ip prio 4 handle 1 fw flowid 1:3\n\
+\n\
+# outgoing traffic\n\
+$TC qdisc add dev $WAN root handle 2:0 htb default 11 r2q 1\n\
+$TC class add dev $WAN parent 2:0 classid 2:1 htb rate 120kbit ceil 120kbit\n\
+# priorities for ACK, ICMP, TOS 0x10, ports 22 and 53\n\
+$TC class add dev $WAN parent 2:1 classid 2:10 htb rate 60kbit ceil 120kbit prio 1 quantum 1500\n\
+$TC qdisc add dev $WAN parent 2:10 esfq perturb 10 hash dst\n\
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip protocol 6 0xff match u8 0x05 0x0f at 0 match u16 0x0000 0xffc0 at 1 match u8 0x10 0xff at 33 flowid 2:10\n\
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 22 0xffff flowid 2:10\n\
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip dport 53 0xffff flowid 2:10\n\
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip tos 0x10 0xff flowid 2:10\n\
+$TC filter add dev $WAN parent 2:0 protocol ip prio 1 u32 match ip protocol 1 0xff flowid 2:10\n\
+# server -> Internet\n\
+$TC class add dev $WAN parent 2:1 classid 2:11 htb rate 30kbit ceil 120kbit prio 2 quantum 1500\n\
+$TC qdisc add dev $WAN parent 2:11 esfq perturb 10 hash dst\n\
+$TC filter add dev $WAN parent 2:0 protocol ip prio 3 handle 1 fw flowid 2:11\n\
+$TC filter add dev $WAN parent 2:0 protocol ip prio 9 u32 match ip dst 0/0 flowid 2:11\n\
 "));
 	free(s); s = g->str_concat(instance, ":end");
-	tc->end = strdup(g->iniparser_getstring(ini, s, "
-}
-
-case \"$1\" in
-    'start')
-	start
-    ;;
-    'stop')
-	stop
-    ;;
-    'status')
-	echo \"WAN Interface\"
-	echo \"=============\"
-	$TC class show dev $WAN | grep root
-	$TC class show dev $WAN \ grep -v root | sort | nl
-	echo \"LAN Interface\"
-	echo \"=============\"
-	$TC class show dev $LAN | grep root
-	$TC class show dev $LAN \ grep -v root | sort | nl
-    ;;
-    *)
-	echo -e \"\\nUsage: rc.htb start|stop|status\"
-    ;;
-esac
+	tc->end = strdup(g->iniparser_getstring(ini, s, "\n\
+}\n\
+\n\
+case \"$1\" in\n\
+    'start')\n\
+	start\n\
+    ;;\n\
+    'stop')\n\
+	stop\n\
+    ;;\n\
+    'status')\n\
+	echo \"WAN Interface\"\n\
+	echo \"=============\"\n\
+	$TC class show dev $WAN | grep root\n\
+	$TC class show dev $WAN | grep -v root | sort | nl\n\
+	echo \"LAN Interface\"\n\
+	echo \"=============\"\n\
+	$TC class show dev $LAN | grep root\n\
+	$TC class show dev $LAN | grep -v root | sort | nl\n\
+    ;;\n\
+    *)\n\
+	echo -e \"\\nUsage: rc.htb start|stop|status\"\n\
+    ;;\n\
+esac\n\
 "));
 	free(s); s = g->str_concat(instance, ":host");
 	tc->host = strdup(g->iniparser_getstring(ini, s, 
-"# %n
-$IPT -t mangle -A PREROUTING -s %i -j MARK --set-mark %x
-$TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
-$TC qdisc add dev $LAN parent 1:%x esfq perturb 10 hash dst
-$TC filter add dev $LAN parent 1:0 protocol ip prio 5 u32 match ip dst %i flowid 1:%x
-$TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
-$TC qdisc add dev $WAN parent 2:%x esfq perturb 10 hash dst
-$TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x
+"# %n\n\
+$IPT -t mangle -A POSTROUTING -s %i -j MARK --set-mark %x\n\
+$TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500\n\
+$TC qdisc add dev $LAN parent 1:%x esfq perturb 10 hash dst\n\
+$TC filter add dev $LAN parent 1:0 protocol ip prio 5 u32 match ip dst %i flowid 1:%x\n\
+$TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500\n\
+$TC qdisc add dev $WAN parent 2:%x esfq perturb 10 hash dst\n\
+$TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x\n\
 "));
 	free(s); s = g->str_concat(instance, ":host_climit");
-	tc->host_climit = strdup(g->iniparser_getstring(ini, s, "
-$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT
-"));
+	tc->host_climit = strdup(g->iniparser_getstring(ini, s, "\n\
+$IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT\n"));
 	free(s); s = g->str_concat(instance, ":host_plimit");
-	tc->host_plimit = strdup(g->iniparser_getstring(ini, s, "
-$IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
-$IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
-"));
+	tc->host_plimit = strdup(g->iniparser_getstring(ini, s, "\n\
+$IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT\n\
+$IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT\n"));
 	free(s); s = g->str_concat(instance, ":networks");
 	tc->networks = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":usergroups");
