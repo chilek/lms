@@ -48,12 +48,13 @@ $a = $_POST['assignment'];
 
 if($_GET['action'] == 'add' && isset($a))
 {
+	foreach($a as $key => $val)
+		$a[$key] = $val;
+	
 	$period = sprintf('%d',$a['period']);
 
 	if($period < 0 || $period > 3)
 		$period = 1;
-
-	$a['at'] = trim($a['at']);
 
 	switch($period)
 	{
@@ -94,7 +95,7 @@ if($_GET['action'] == 'add' && isset($a))
 			}
 			else
 			{
-				list($d,$m) = split('/',trim($a['at']));
+				list($d,$m) = split('/',$a['at']);
 			}
 			
 			if(!$error)
@@ -121,7 +122,7 @@ if($_GET['action'] == 'add' && isset($a))
 			}
 			else
 			{
-				list($d,$m) = split('/',trim($a['at']));
+				list($d,$m) = split('/',$a['at']);
 			}
 			
 			if(!$error)
@@ -137,11 +138,11 @@ if($_GET['action'] == 'add' && isset($a))
 		break;
 	}
 
-	if(trim($a['datefrom'] == ''))
+	if($a['datefrom'] == '')
 		$from = 0;
-	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',trim($a['datefrom'])))
+	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',$a['datefrom']))
 	{
-		list($y, $m, $d) = split('/', trim($a['datefrom']));
+		list($y, $m, $d) = split('/', $a['datefrom']);
 		if(checkdate($m, $d, $y))
 			$from = mktime(0, 0, 0, $m, $d, $y);
 		else
@@ -150,11 +151,11 @@ if($_GET['action'] == 'add' && isset($a))
 	else
 		$error['datefrom'] = 'Pocz±tek okresu naliczania jest niepoprawny!';
 
-	if(trim($a['dateto'] == ''))
+	if($a['dateto'] == '')
 		$to = 0;
-	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',trim($a['dateto'])))
+	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',$a['dateto']))
 	{
-		list($y, $m, $d) = split('/', trim($a['dateto']));
+		list($y, $m, $d) = split('/', $a['dateto']);
 		if(checkdate($m, $d, $y))
 			$to = mktime(23, 59, 59, $m, $d, $y);
 		else
