@@ -1,13 +1,13 @@
 <!-- $Id$ -->
 <chapter id="mgc">
  <title>Configuration file generator (lms-mgc)</title>
-  <para>LMS-MGC is "magicall" configuration file generator. With some efforts, you can create virtually any configuration file using it (ie. zone definition file for BIND)</para>
+  <para>LMS-MGC is "magical" configuration file generator. With some efforts, you can create virtually any configuration file using it (ie. zone definition file for BIND)</para>
   <sect1 id="mgc-install">
     <title>Installation</title>
-    <para>LMS-MGC has its own configuration file: <filename>lms-mgc.ini</filename>. You should install it by moving it to <filename>/usr/sbin</filename> directory. LMS-MGC should be used in two either ways: scheduled from cron (eg. hourly)</para>
+    <para>LMS-MGC has its own configuration file: <filename>lms-mgc.ini</filename>. You should install script by moving it to <filename>/usr/sbin</filename> directory. LMS-MGC should be used in two either ways: scheduled from cron (eg. hourly)</para>
         <screen>
 0 * * * *       /usr/sbin/lms-mgc 1 &gt; /dev/null</screen>
-	<para>or called from LMS 'Reload' menu. Second setup requires <filename>sudo</filename> to use. Unfortunately this method requires you to add user to sudo, and set in  [phpui] section of <filename>lms.ini</filename>:</para>
+	<para>or called from LMS 'Reload' menu. Second setup requires <filename>sudo</filename> to be used. Unfortunately this method requires you to add user to sudo, and set in  [phpui] section of <filename>lms.ini</filename>:</para>
 	<para><prompt>reload_type 	= exec</prompt></para>
 	<para><prompt>reload_execcmd 	= sudo /usr/sbin/lms-mgc</prompt></para>
         <para>LMS-MGC has following command line options:
@@ -57,364 +57,349 @@
 	</sect2>
 	<sect2 id="mgc-config-lms">
 	<title>Section [mgc] - list of instances</title>
-  	<para>W³a¶ciwa konfiguracja dotycz±ca generatorów poszczególnych plików konfiguracyjnych 
-	jest umieszczana w sekcji <emphasis>[mgc]</emphasis> i pochodnych. W samej sekcji 
-	<emphasis>[mgc]</emphasis> mo¿emy u¿yæ nastêpuj±cego parametru:
+  	<para>Significant parts of configuration are placed in section <emphasis>[mgc]</emphasis> and its derivative sections. In <emphasis>[mgc]</emphasis> alone you can use the following parameter:
    <itemizedlist>
     <listitem>
      <para>instances</para>
-     <para>Lista "instancji" oddzielona spacjami.</para>
+     <para>List of instances (separated by spaces).</para>
      <para>Example:	<prompt>instaces = dhcp firewall squid</prompt></para>
     </listitem>
    </itemizedlist>
-   <note><para>Zmienn± <filename>instances</filename> mo¿na tak¿e umie¶ciæ w
-   sekcji dowolnej instancji. Patrz ni¿ej.</para></note>
+   <note><para>You can also place <filename>instances</filename> variable in any derivative instance section. See below.</para></note>
    </para>
 	</sect2>
 	<sect2 id="mgc-config-instances">
 	<title>Section [mgc:xxx] - instance configuration</title>  
-	<para>Ka¿da instancja ma swoj± nazwê i jej konfiguracjê tworzy siê umieszczaj±c 
-	sekcjê o nazwie <emphasis>[mgc:nazwa]</emphasis>, czyli przyk³adowo: 
+	<para>Each instance has its name and its configuration is created by creating derivative section of name <emphasis>[mgc:name]</emphasis>, eg.
 	<emphasis>[mgc:mydaemon]</emphasis></para>
-  <para>W samych instancjach mo¿emy u¿ywaæ nastêpuj±cych opcji konfiguracyjnych:</para>
+  <para>All of those sections may include following configuration options:</para>
    <itemizedlist>
     <listitem>
      <para>instances</para>
-     <para>Zmienna, w której mo¿esz podaæ listê innych instancji, aby nastêpnie
-     wywo³ywaæ mgc poleceniem '<prompt>lms-mgc -i sekcja</prompt>' zamiast
-     '<prompt>lms-mgc -i "sekcja1 sekcja2 sekcja3"</prompt>'. Je¶li zostanie 
-     u¿yta, wszystkie pozosta³e zmienne tej sekcji zostan± zignorowane.</para>
+     <para>This variable allows you to group a list of other instances (eg. instances = ins1 ins2 ins3), and then call your mgc with '<prompt>lms-mgc -i mydaemon</prompt>'  instead of '<prompt>lms-mgc -i "ins1 ins2 ins3"</prompt>'. If you use this variable all other settings in this section will be ignored.</para>
      <para>Example:	<prompt>instances = dns1 dns2 dns3</prompt></para>
     </listitem>
     <listitem>
      <para>outfile</para>
-     <para>Definiuje plik do którego ma byæ zapisany wynik dzia³ania bie¿±cej instancji (je¿eli ta zmienna bêdzie nie ustawiona, instancja siê zakoñczy)</para>
+     <para>Output file, where instance structured dump will be saved (instance will quit instantly if this variable is not set).</para>
      <para>Example:	<prompt>outfile = /etc/somefile</prompt></para>
     </listitem>
     <listitem>
      <para>append</para>
-     <para>Pozwala ustawiæ aby wynik dzia³ania instancji nie nadpisywa³ pliku wynikowego, lecz zosta³ dopisany na jego koñcu</para>
+     <para>It allows you to define to not overwrite outfile, but append to its end instead.</para>
      <para>Example:	<prompt>append = 1</prompt></para>
     </listitem>
     <listitem>
      <para>outfile_perm</para>
-     <para>Pozwala na ustawienie praw dostêpu do pliku wyj¶ciowego (domy¶lnie 600)</para>
+     <para>Permissions for output file. Default: 600 (-rw-------)</para>
      <para>Example:	<prompt>outfile_perm = 700</prompt></para>
     </listitem>
     <listitem>
      <para>outfile_owner</para>
-     <para>Pozwala na ustawienie w³a¶ciciela pliku wyj¶ciowego (domy¶lnie 0)</para>
+     <para>UID of output file owner. Default: 0</para>
      <para>Example:	<prompt>outfile_owner = 0</prompt></para>
-     <para><warning><para>W³a¶ciciel musi byæ podany numerycznie!</para></warning></para>
+     <para><warning><para>You have to provide numerical UID, not username!</para></warning></para>
     </listitem>
     <listitem>
      <para>outfile_group</para>
-     <para>Pozwala na ustawienie grupy pliku wyj¶ciowego (domy¶lnie 0)</para>
+     <para>GID of output file owner. Default: 0</para>
      <para>Example:	<prompt>outfile_group = 0</prompt></para>
-     <para><warning><para>Grupa musi byæ podana numerycznie!</para></warning></para>
+     <para><warning><para>You have to provide numerical GID, not group name!</para></warning></para>
     </listitem>
     <listitem>
      <para>header_file</para>
-     <para>Pozwala na umieszczenie w pliku wynikowym zawarto¶ci innego 
-     pliku jako nag³ówek (domy¶lnie nie ustawione)</para>
+     <para>Filename, that should be prepended at beginning of output file. Default: unset</para>
      <para>Example:	<prompt>header_file = /etc/lms/myservice_header</prompt></para>
     </listitem>
     <listitem>
      <para>header</para>
-     <para>Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako 
-     nag³ówka (domy¶lnie puste)</para>
-     <para>Example:	<prompt>header = option1 = bla\noption2 = blabla</prompt></para>
-     <para><note><para>Znak \n zosta³ tu u¿yty jako separator linii. Koñcowe \n nie jest 
-     wymagane.</para></note></para>
+     <para>String, which should be put at beginning of output file. Default: unset</para>
+     <para>Example:	<prompt>header = option1 = blah\noption2 = blab-la</prompt></para>
+     <para><note><para>You should use \n as line separator. You may omit line separator at the end of last line.</para></note></para>
     </listitem>
     <listitem>
      <para>networks</para>
-     <para>Pozwala ustaliæ które z naszych sieci bêd± uwzglêdniane w pliku konfiguracyjnym (domy¶lnie wszystkie)</para>
+     <para>>List of (space separated) networks, that should be
+considered while creating configuration file. If unset, configuration will
+include all networks.</para>
      <para>Example:	<prompt>networks = cust1-publ cust2-publ cust3-priv</prompt></para>
     </listitem>
    </itemizedlist>    
-   <para>Teraz mgc pobiera kolejne sieci i wykonuje w kó³ko nastêpuj±ce czynno¶ci:</para>
+   <para>Mgc script now loops for each network and performs the following tasks:</para>
    <itemizedlist>
     <listitem>
      <para>network_header</para>
-     <para>Generuje nag³ówek dla ka¿dej sieci (domy¶lnie puste):</para>
+     <para>String, which should be put at beginning of network section. Default: empty</para>
      <para>Example:	<prompt>network_header = network %ADDR/%MASK { # Config section for %NAME</prompt></para>
     </listitem>
     <listitem>
      <para>dst_networks</para>
-     <para>Pozwala ustawiæ sieci docelowe, czyli takie dla których bêdzie przetwarzany parametr: dst_network_header (domy¶lnie wszystkie):</para>
+     <para>List of destination network names, for which dst_network_header variable (see below) will be used. Default: all</para>
      <para>Example:	<prompt>dst_networks = main coalloc</prompt></para>
     </listitem>
     <listitem>
      <para>dst_network_header</para>
-     <para>Pozwala ustawiæ nag³ówek dla sieci docelowych</para>
+     <para>Lets you to set destination networks header.</para>
      <para>Example:	<prompt>dst_network_header = \tallow to %DADDR/%DMASK;</prompt></para>
     </listitem>
     <listitem>
      <para>network_body</para>
-     <para>Parametr jest przetwarzany po wys³aniu nag³ówków dla sieci, a przed rozpoczêciem analizy adresów IP</para>
+     <para>This parameter is parsed after network headers and before IP addresses loop.</para>
      <para>Example:	<prompt>network_body = \tnodes {</prompt></para>
     </listitem>
    </itemizedlist>
-   <para>Teraz MGC rozpocznie przetwarzanie regu³ek dla kolejnych adresów IP. Robi to w dosyæ specyficzny sposób. 
-   Tzn. oblicza kolejny adres IP i sprawdza czy zdefiniowano regu³ê dla hosta i wykonuje pierwsz±.
-   Sprawdzanie jest wykonywane w nastepuj±cej kolejno¶ci:</para>
+   <para>Mgc script now loops into below rules for each IP address for given range. It takes each IP address and checks if a rule is defined for this address, if yes - it executes first rule that matches. Matches are being parsed in specific order, as described below:</para>
     <itemizedlist>
     <listitem>
      <para>ignore</para>
-     <para>Pozwala na ustawienie listy adresów w postaci adres/prefix lub adres/maska oddzielanej spacjami dla której ma byæ ignorowane generowanie</para>
+     <para>Lets you setup list of addresses (in address/prefix or address/netmask form, space separated) which should be skipped.</para>
      <para>Example:	<prompt>ignore = 192.168.0.100/32</prompt></para>
     </listitem>
     <listitem>
      <para>node(IP)</para>
-     <para>Przy pomocy tej opcji mo¿na zdefiniowaæ regu³ê dla wybranego komputera. W nawiasie podaje siê jego adres IP. 
-     Ka¿da sekcja instancji mo¿e zawieraæ dowoln± ilo¶æ takich opcji.</para>
+     <para>Allows you to add line for given IP address. IP address should be provided in parenthesis. Each section may have unlimited number of such options.</para>
      <para>Example:	<prompt>node(192.168.0.20) = ??</prompt></para>
     </listitem>
     <listitem>
      <para>allnodes</para>
-     <para>Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP.</para>
+     <para>Adds line for each non-ignored IP address.</para>
      <para>Example:	<prompt>allnodes = ??</prompt></para>
     </listitem>
     <listitem>
      <para>allexistnodes</para>
-     <para>Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP który jest u¿ywany.</para>
+     <para>Adds line for each IP address that is 'owner' by a computer in database.</para>
      <para>Example:	<prompt>allexistnodes = ??</prompt></para>
     </listitem>
     <listitem>
      <para>grantednode_priv</para>
-     <para>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</para>
+     <para>Adds line for each IP address with 'connected' status in database (parsed only for private address classes).</para>
      <para>Example:	<prompt>grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>
     </listitem>
     <listitem>
      <para>grantednode_publ</para>
-     <para>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów publicznych)</para>
+     <para>Adds line for each IP address with 'connected' status in database (parsed only for public address classes).</para>
      <para>Example:	<prompt>grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>
     </listitem>
     <listitem>
      <para>deniednode_priv</para>
-     <para>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)</para>
+     <para>Adds line for each IP address with 'disconnected' status in database (parsed only for private address classes).</para>
      <para>Example:	<prompt>deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;</prompt></para>
     </listitem>
     <listitem>
      <para>deniednode_publ</para>
-     <para>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów publicznych)</para>
+     <para>Adds line for each IP address with 'disconnected' status in database (parsed only for public address classes).</para>
      <para>Example:	<prompt>deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;</prompt></para>
     </listitem>
     <listitem>
      <para>dhcpnode_priv</para>
-     <para>Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</para>
+     <para>Adds line for each IP address within DHCP dynamic range (parsed only for private address classes).</para>
      <para>Example:	<prompt>dhcpnode_priv = node unknown (%IP) reject;</prompt></para>
     </listitem>
     <listitem>
      <para>dhcpnode_publ</para>
-     <para>Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów publicznych)</para>
+     <para>Adds line for each IP address within DHCP dynamic range (parsed only for public address classes).</para>
      <para>Example:	<prompt>dhcpnode_publ = node unknown (%IP) reject;</prompt></para>
     </listitem>
     <listitem>
      <para>freeip_priv</para>
-     <para>Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów prywatnych)</para>
+     <para>Adds line for each IP address that is not occupied by any computer in database (parsed only for private address classes).</para>
      <para>Example:	<prompt>freeip_priv = node unknown (%IP) lock_as_unused;</prompt></para>
     </listitem>
     <listitem>
      <para>freeip_publ</para>
-     <para>Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów publicznych)</para>
+     <para>Adds line for each IP address that is not occupied by any computer in database (parsed only for public address classes).</para>
      <para>Example:	<prompt>freeip_publ = node unknown (%IP) lock_as_unused;</prompt></para>
     </listitem>
     <listitem>
      <para>default_priv</para>
-     <para>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)</para>
+     <para>Default line, which is inserted when none of grantednode or deniednode matches for given IP address (parsed only for private address classes)</para>
      <para>Example:	<prompt>default_priv = node unknown (%IP) lock_as_intruder;</prompt></para>
-     <para><note><para>lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</para></note></para>
+     <para><note><para>Mgc automatically detects if given address belongs to private or public network.</para></note></para>
     </listitem>
     <listitem>
      <para>default_publ</para>
-     <para>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów publicznych)</para>
+     <para>Default line, which is inserted when none of grantednode or deniednode matches for given IP address (parsed only for public address classes)</para>
      <para>Example:	<prompt>default_publ = node unknown (%IP) lock_as_intruder;</prompt></para>
     </listitem>
     </itemizedlist>
-    <para>W koñcu nastêpuje wygenerowanie koñcowej czê¶ci pliku i wykonanie
-    polecenia systemowego.</para>
+    <para>Mgc now is ready to append final part of the file and execute system command.</para>
     <itemizedlist>
     <listitem>
      <para>network_footer</para>
-     <para>Pozwala na ustawienie stopki dla w³a¶nie przetwarzanej sieci</para>
+     <para>Adds line for currently processed network.</para>
      <para>Example:	<prompt>network_footer = ??</prompt></para>
     </listitem>
     <listitem>
      <para>footer_file</para>
-     <para>Pozwala na umieszczenie w pliku wynikowym zawarto¶ci innego pliku jako stopka (domy¶lnie nie ustawione)</para>
+     <para>Filename, that should be appended at the end of output file. Default: unset</para>
      <para>Example:	<prompt>footer_file = /etc/lms/myservice_footer</prompt></para>
     </listitem>
     <listitem>
      <para>footer</para>
-     <para>Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako stopki (domy¶lnie puste)</para>
+     <para>String, which should be put at the end of output file. Default: unset</para>
      <para>Example:	<prompt>footer = # End.</prompt></para>
     </listitem>
     <listitem>
      <para>post_exec</para>
-     <para>Komenda do wywo³ania po wygenerowaniu pliku konfiguracyjnego</para>
+     <para>System command that should be executed after saving output file.</para>
      <para>Example:	<prompt>post_exec = killall -HUP mydaemon</prompt></para>
     </listitem>
   </itemizedlist>
 	</sect2>
 	<sect2 id="mgc-config-vars">
 	<title>Configuration variables</title>
-    <para>W opcjach konfiguracyjnych mo¿na u¿ywaæ nastêpuj±cych zmiennych, 
-    które zostan± podmienione na odpowiednie dane z bazy:</para>
-    <para>Zmienne dla komputerów:
+    <para>You can use the following templates in your configuration variables. They all will be substituted with appropriate data from LMS database.</para>
+    <para>Computer templates:
    <itemizedlist>
     <listitem>
-     <para>%IP - adres IP komputera</para>
+     <para>%IP - IP address</para>
     </listitem>
     <listitem>
      <para>%PIN - PIN of customer who owns node</para>
     </listitem>
     <listitem>
-     <para>%ID - ID komputera w bazie</para>
+     <para>%ID - ID of computer</para>
     </listitem>
     <listitem>
-     <para>%MAC - adres MAC karty sieciowej</para>
+     <para>%MAC - MAC address</para>
     </listitem>
     <listitem>
-     <para>%SMAC - adres MAC pisany ma³ymi literami z usuniêtymi dwukropkami</para>
+     <para>%SMAC - MAC address, in lowercase and without colon separators</para>
     </listitem>
     <listitem>
-     <para>%OWNER - w³a¶ciciel komputera</para>
+     <para>%OWNER - owner's name</para>
     </listitem>
     <listitem>
-     <para>%NAME - nazwa komputera du¿ymi znakami</para>
+     <para>%NAME - computer name, in uppercase</para>
     </listitem>
     <listitem>
-     <para>%name - nazwa komputera ma³ymi znakami</para>
+     <para>%name - computer name, in lowercase</para>
     </listitem>
     <listitem>
-     <para>%INFO - opis komputera</para>
+     <para>%INFO - computer description</para>
     </listitem>
     <listitem>
      <para>%PASSWD - node password</para>
     </listitem>
     <listitem>
-     <para>%UPRATE - gwarantowany transfer dla danych wychodz±cych</para>
+     <para>%UPRATE - guaranteed upload rate</para>
     </listitem>
     <listitem>
-     <para>%DOWNRATE - gwarantowany transfer dla danych przychodz±cych</para>
+     <para>%DOWNRATE - guaranteed download rate</para>
     </listitem>
     <listitem>
-     <para>%UPCEIL - maksymalny transfer dla danych wychodz±cych</para>
+     <para>%UPCEIL - maximum upload rate</para>
     </listitem>
     <listitem>
-     <para>%DOWNCEIL - maksymalny transfer dla danych przychodz±cych</para>
+     <para>%DOWNCEIL - maximum download rate</para>
     </listitem>
     <listitem>
-     <para>%CLIMIT - limit równoczesnych po³±czeñ</para>
+     <para>%CLIMIT - limit of concurrent connections</para>
     </listitem>
     <listitem>
-     <para>%PLIMIT - limit pakietów</para>
+     <para>%PLIMIT - maximum number of packets per second</para>
     </listitem>
     <listitem>
-     <para>%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP</para>
+     <para>%1 %2 %3 %4 - consecutive (left to right) decimal octets of IP address</para>
     </listitem>
     <listitem>
-     <para>%NID - ID sieci, do której nale¿y komputer</para>
+     <para>%NID - network ID where computer belongs</para>
     </listitem>
     <listitem>
-     <para>%NNAME - nazwa sieci du¿ymi znakami</para>
+     <para>%NNAME - network name, in uppercase</para>
     </listitem>
     <listitem>
-     <para>%nname - nazwa sieci ma³ymi znakami</para>
+     <para>%nname - network name, in lowercase</para>
     </listitem>
     <listitem>
-     <para>%NADDR - adres sieci</para>
+     <para>%NADDR - network address</para>
     </listitem>
     <listitem>
-     <para>%NIFACE - interfejs sieci</para>
+     <para>%NIFACE - network interface</para>
     </listitem>
     <listitem>
-     <para>%NMASK - maska sieci</para>
+     <para>%NMASK - network mask</para>
     </listitem>
     <listitem>
-     <para>%NGATE - adres bramy</para>
+     <para>%NGATE - network gateway IP address</para>
     </listitem>
     <listitem>
-     <para>%NDNS - adres serwera DNS</para>
+     <para>%NDNS - primary DNS server IP address</para>
     </listitem>
     <listitem>
-     <para>%NDNS2 - adres drugiego serwera DNS</para>
+     <para>%NDNS2 - secondary DNS server IP address</para>
     </listitem>
     <listitem>
-     <para>%NDOMAIN - domena sieci</para>
+     <para>%NDOMAIN - domain name of the network</para>
     </listitem>
     <listitem>
-     <para>%NWINS - adres serwera WINS dla tej sieci</para>
+     <para>%NWINS - WINS server IP address</para>
     </listitem>
     <listitem>
-     <para>%NDHCPS - pierwszy adres DHCP sieci</para>
+     <para>%NDHCPS - first IP address of dynamic DHCP range</para>
     </listitem>
     <listitem>
-     <para>%NDHCPE - ostatni adres DHCP sieci</para>
+     <para>%NDHCPE - last IP address of dynamic DHCP range</para>
     </listitem>
    </itemizedlist>
     </para>
-    <para>Zmienne dla sieci (w opcjach dotycz±cych tylko sieci):
+    <para>Network templates (for sections relevant to networks only):
    <itemizedlist>
     <listitem>
-     <para>%ID - ID sieci w bazie</para>
+     <para>%ID - network ID</para>
     </listitem>
     <listitem>
-     <para>%NAME - nazwa sieci du¿ymi znakami</para>
+     <para>%NAME - network name, in uppercase</para>
     </listitem>
     <listitem>
-     <para>%name - nazwa sieci ma³ymi znakami</para>
+     <para>%name - network name, in lowercase</para>
     </listitem>
     <listitem>
-     <para>%ADDR - adres sieci</para>
+     <para>%ADDR - network IP address</para>
     </listitem>
     <listitem>
-     <para>%IFACE - interfejs</para>
+     <para>%IFACE - network interface</para>
     </listitem>
     <listitem>
-     <para>%MASK - maska</para>
+     <para>%MASK - network IP mask</para>
     </listitem>
     <listitem>
-     <para>%GATE - brama sieci</para>
+     <para>%GATE - network gateway IP address</para>
     </listitem>
     <listitem>
-     <para>%DNS - serwer DNS tej sieci</para>
+     <para>%DNS - primary DNS server IP address</para>
     </listitem>
     <listitem>
-     <para>%DNS2 - drugi serwer DNS tej sieci</para>
+     <para>%DNS2 - secondary DNS server IP address</para>
     </listitem>
     <listitem>
-     <para>%DOMAIN - domena tej sieci</para>
+     <para>%DOMAIN - domain name of the network</para>
     </listitem>
     <listitem>
-     <para>%WINS - adres serwera WINS dla tej sieci</para>
+     <para>%WINS - WINS server IP address for the network</para>
     </listitem>
     <listitem>
-     <para>%DHCPS - pierwszy adres DHCP tej sieci</para>
+     <para>%DHCPS - first IP address of dynamic DHCP range for the network</para>
     </listitem>
     <listitem>
-     <para>%DHCPE - ostatni adres DHCP tej sieci</para>
+     <para>%DHCPE - last IP address of dynamic DHCP range for the network</para>
     </listitem>
    </itemizedlist>
-    <note><para>W opcji konfiguracyjnej <prompt>dst_network_header</prompt> mo¿na
-    ponadto u¿yæ powy¿szych zmiennych ale poprzedzonych liter± D (np. %DADDR, %dname)
-    jako parametry sieci docelowych.</para></note>
+    <note><para>Additionally, <prompt>dst_network_header</prompt> variable may include above templates prepended with D (ie. %DADDR, %dname) to get data relevant to destination networks.</para></note>
    </para>
-   <para>Zmienne które mo¿na stosowaæ we wszystkich opcjach:
+   <para>Templates which can be used everywhere:
    <itemizedlist>
    <listitem>
-     <para>%DATE - data w formacie YYYYMMDD;</para>
+     <para>%DATE - date in YYYYMMDD format;</para>
     </listitem>
     <listitem>
-     <para>%TIME - czas w formacie HHMM;</para>
+     <para>%TIME - time in HHMM format;</para>
     </listitem>
     <listitem>
-     <para>%TIMES - czas w formacie HHMMSS;</para>
+     <para>%TIMES - time in HHMMSS format;</para>
     </listitem>
     <listitem>
-     <para>%UTIME - czas w formacie unix timestamp;</para>
+     <para>%UTIME - time in unix timestamp format;</para>
     </listitem>
     </itemizedlist>
    </para>
@@ -422,13 +407,10 @@
   </sect1>
   <sect1 id="mgc-example">
 	<title>Examples of use</title>
-	<para>Konfiguracja i zasada dzia³ania lms-mgc mo¿e siê wydawaæ do¶æ zawi³a, dlatego
-	pos³u¿ymy siê przyk³adem. Poni¿ej przedstawiono sposób generowania i uruchamiania firewalla
-	ipchains (bardzo prostego).</para>
+	<para>Configuration and implementation of lms-mgc might seem quite complex, so we provide small example. Below you can find rules to create and execute quite simple ipchains firewall.</para>
 	<example id="instance-example">
 	<title>Lms-mgc: Example instance</title>
-	<para>Zacznij od utworzenia nowej sekcji mgc w <filename>lms-mgc.ini</filename>, 
-	nazywaj±c j± 'ipchains' i stwórz w tej sekcji prost± maskaradê per adres IP z lanu:
+	<para>You should start with creating new mgc section in <filename>lms-mgc.ini</filename>, with relevant name ('ipchains') and put a simple masquerade rules, per IP, inside:
 	<screen>
 [mgc:ipchains]
 outfile           = /etc/rc.d/rc.masq
@@ -436,12 +418,11 @@ outfile_perm      = 700
 header            = #!/bin/sh\n/sbin/ipchains -F\n/sbin/ipchains -X\n/sbin/ipchains -P forward DENY
 grantednode_priv  = /sbin/ipchains -A forward -s %IP -j MASQ
 post_exec         = /etc/rc.d/rc.masq</screen>
-	Dopiszmy tak¿e do sekcji g³ównej mgc informacjê ¿eby mgc uruchamia³ t± sekcjê:
+	You can also add your ipchains subsection to main mgc section, so that it executes it by default:
 	<screen>
 [mgc]
 instances         = ipchains</screen>
-	</para><para>Teraz próba odpalenia lms-mgc powinna zaowocowaæ wygenerowaniem
-	<filename>/etc/rc.d/rc.masq</filename>, oraz jego odpaleniem.</para>
+	</para><para>If you run lms-mgc now, without any arguments, you should have simple script <filename>/etc/rc.d/rc.masq</filename> generated and already executed.</para>
 	</example>
   </sect1>
 </chapter>
