@@ -4,7 +4,9 @@ wersja 1.1.0 (??/??/2003):
 
   - support do drugiego serwera dns (w lms-mgc jako %DNS2)
     wymagany upgrade:
-    ALTER TABLE `networks` ADD `dns2` VARCHAR( 16 ) AFTER `dns` 
+    ALTER TABLE `networks` ADD `dns2` VARCHAR( 16 ) AFTER `dns`
+  - je¿eli w tym samym katalogu co index.php znajduje siê plik, LMS wykorzysta
+    go zamiast /etc/lms/lms.ini
 
 wersja 1.0.0 (18/05/2003):
 
