@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('Users List');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('adminslist',$LMS->GetAdminList());
 $SMARTY->display('adminlist.html');

@@ -41,7 +41,7 @@ if($LMS->AdminExists($id))
 		if(!$error)
 		{
 			$LMS->SetAdminPassword($id, $passwd['passwd']);
-			header('Location: ?'. $_SESSION['backto']);
+			header('Location: ?'. $SESSION->get('backto'));
 		}
 	}
 
@@ -55,7 +55,7 @@ if($LMS->AdminExists($id))
 }
 else
 {
-	header('Location: ?m='. $_SESSION['lastmodule']);
+	header('Location: ?m='. $SESSION->get('lastmodule'));
 	die;
 }
 
