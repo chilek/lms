@@ -183,7 +183,7 @@
 		</para>
 	    </sect2>
  </sect1>
- <sect1 id="user-networks">
+ <sect1 id="menu-networks">
 	<title>Sieci IP</title>
 	<para>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
 	zakres DHCP. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ 
