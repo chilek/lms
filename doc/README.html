@@ -306,7 +306,7 @@ HREF="#CONTRIB"
 ><DT
 >8.1. <A
 HREF="#CONTRIB-CUSTOMER"
->"Moje konto"</A
+>Moje konto</A
 ></DT
 ><DT
 >8.2. <A
@@ -1136,13 +1136,12 @@ NAME="INSTALL-REQ-DB"
 >2.2.3. Serwer baz danych</A
 ></H3
 ><P
->LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 3.23.xx 
-	      </P
+>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 3.23.xx.</P
 ><P
 >LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</P
 ><P
->Wykorzystanie bazy SQLite dla LMS'a jest w fazie testów. Jedyn± przetestowan± wersj± 
-	      jest wersja 2.8.11.</P
+>Przy wspó³pracy LMS'a z baz± danych SQLite nie stwierdzono ¿adnych
+	      problemów z tym, ¿e jedyn± przetestowan± wersj± jest wersja 2.8.11.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -2267,6 +2266,21 @@ CLASS="PROMPT"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >arpd_servers = 192.168.1.1 192.168.2.1</SAMP
+></P
+></LI
+><LI
+><P
+>helpdesk_backend_mode</P
+><P
+>W³±czenie tej opcji spowoduje, ¿e wszystkie wiadomo¶ci w systemie 
+    helpdesk (oprócz tych skierowanych do zg³aszaj±cego) 
+    bêd± wysy³ane do serwera pocztowego na adres odpowiedniej kolejki.
+    Na serwerze tym powinien byæ uruchomiony skrypt lms-rtparser, który zajmie
+    siê zapisem wiadomo¶ci do bazy danych. Domy¶lnie: wy³±czona.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>helpdesk_backend_mode = 1</SAMP
 ></P
 ></LI
 ></UL
@@ -3860,6 +3874,12 @@ NAME="MENU-HELPDESK"
 	    administratora). Wszystkie wiadomo¶ci tak¿e te wys³ane, zostaj± zapisane 
 	    w historii zg³oszenia. Zg³oszenie mo¿e mieæ cztery stany: nowy, otwarty, rozwi±zany 
 	    i martwy.</P
+><P
+>Skrypt <A
+HREF="#LMS-RTPARSER"
+>lms-rtparser</A
+> zosta³ stworzony aby umo¿liwiæ
+	    obs³ugê systemu i przesy³anie zg³oszeñ poczt± elektroniczn±.</P
 ><DIV
 CLASS="SECT2"
 ><HR><H3
@@ -4009,43 +4029,64 @@ ALIGN="CENTER"><THEAD
 ><TBODY
 ><TR
 ><TD
->lms-notify</TD
+><A
+HREF="#LMS-NOTIFY"
+>lms-notify</A
+></TD
 ><TD
 >Korespondencja seryjna do u¿ytkowników sieci</TD
 ></TR
 ><TR
 ><TD
->lms-notify-sms</TD
+><A
+HREF="#LMS-NOTIFY-SMS"
+>lms-notify-sms</A
+></TD
 ><TD
 >Powiadamianie o zaleg³o¶ciach sms'em</TD
 ></TR
 ><TR
 ><TD
->lms-cutoff</TD
+><A
+HREF="#LMS-CUTOFF"
+>lms-cutoff</A
+></TD
 ><TD
 >Od³±czanie u¿ytkowników zad³u¿onych</TD
 ></TR
 ><TR
 ><TD
->lms-etherdesc</TD
+><A
+HREF="#LMS-ETHERDESC"
+>lms-etherdesc</A
+></TD
 ><TD
 >Generowanie pliku dla iptraf zawieraj±cego pary MAC adres - nazwa hosta</TD
 ></TR
 ><TR
 ><TD
->lms-payments</TD
+><A
+HREF="#LMS-PAYMENTS"
+>lms-payments</A
+></TD
 ><TD
 >Naliczanie op³at okresowych (abonamentowych) z fakturowaniem</TD
 ></TR
 ><TR
 ><TD
->lms-traffic</TD
+><A
+HREF="#LMS-TRAFFIC"
+>lms-traffic</A
+></TD
 ><TD
 >Zapis statystyk wykorzystania ³±cza</TD
 ></TR
 ><TR
 ><TD
->lms-traffic-logiptables</TD
+><A
+HREF="#LMS-TRAFFIC-LOGIPTABLES"
+>lms-traffic-logiptables</A
+></TD
 ><TD
 >Statystyki ³±cza dla iptables</TD
 ></TR
@@ -4063,7 +4104,10 @@ ALIGN="CENTER"><THEAD
 ></TR
 ><TR
 ><TD
->lms-makeiptables</TD
+><A
+HREF="#LMS-MAKEIPTABLES"
+>lms-makeiptables</A
+></TD
 ><TD
 >Konfiguracja firewalla iptables</TD
 ></TR
@@ -4075,55 +4119,76 @@ ALIGN="CENTER"><THEAD
 ></TR
 ><TR
 ><TD
->lms-makeoidentconf</TD
-><TD
->Konfiguracja oident</TD
-></TR
-><TR
-><TD
 >lms-makeopenbsdpf</TD
 ><TD
 >Konfiguracja firewalla dla systemu OpenBSD</TD
 ></TR
 ><TR
 ><TD
->lms-sendinvoices</TD
+>lms-makeoidentconf</TD
+><TD
+>Konfiguracja oident</TD
+></TR
+><TR
+><TD
+><A
+HREF="#LMS-SENDINVOICES"
+>lms-sendinvoices</A
+></TD
 ><TD
 >Wysy³anie faktur do u¿ytkowników</TD
 ></TR
 ><TR
 ><TD
->lms-makemacs</TD
+><A
+HREF="#LMS-MAKEMACS"
+>lms-makemacs</A
+></TD
 ><TD
 >Filtrowanie ruchu na bazie adresów ¼ród³owych MAC</TD
 ></TR
 ><TR
 ><TD
->lms-makehosts</TD
+><A
+HREF="#LMS-MAKEHOSTS"
+>lms-makehosts</A
+></TD
 ><TD
 >Generuje plik /etc/hosts</TD
 ></TR
 ><TR
 ><TD
->lms-makewarnings</TD
+><A
+HREF="#LMS-MAKEWARNINGS"
+>lms-makewarnings</A
+></TD
 ><TD
 >Generuje regu³ki przekierowuj±ce ruch u¿ytkowników zad³u¿onych</TD
 ></TR
 ><TR
 ><TD
->lms-makemessages</TD
+><A
+HREF="#LMS-MAKEMESSAGES"
+>lms-makemessages</A
+></TD
 ><TD
 >Generuje regu³ki przekierowuj±ce ruch u¿ytkowników, którym ustawiono wiadomo¶æ administracyjn±</TD
 ></TR
 ><TR
 ><TD
->lms-fping</TD
+><A
+HREF="#LMS-FPING"
+>lms-fping</A
+></TD
 ><TD
 >Badanie aktywno¶ci komputerów.</TD
 ></TR
 ><TR
 ><TD
->lms-rtparser</TD
+><A
+HREF="#LMS-RTPARSER"
+>lms-rtparser</A
+></TD
 ><TD
 >Backend do Helpdesk'a.</TD
 ></TR
@@ -5678,7 +5743,7 @@ NAME="LMS-RTPARSER"
 ></H3
 ><P
 >Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który wspó³pracuj±c
-	    z serwerm pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
+	    z serwerem pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
 	    adresy Helpdesk'a. Skrypt pobiera z wej¶cia wiadomo¶æ pocztow±, parsuje zawarto¶æ
 	    i umieszcza zg³oszenie w kolejce, wysy³aj±c do zg³aszaj±cych
 	    potwierdzenie przyjêcia wiadomo¶ci. W temacie potwierdzenia znajduje siê symbol
@@ -5708,6 +5773,50 @@ filter unix - n n - 10 pipe
       -flags=Rq user=nobody argv=/path/to/lms-rtparser</PRE
 >
 	    </P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Je¿eli chcesz aby wiadomo¶ci wprowadzane poprzez <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>lms-ui</I
+></SPAN
+>
+	    by³y kierowane do parsera, zamiast bezpo¶rednio zapisywane do bazy, powiniene¶ w³±czyæ
+	    opcjê konfiguracyjn± <TT
+CLASS="FILENAME"
+>helpdesk_backend_mode</TT
+> w sekcji
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
 ><P
 >Konfiguracjê tego skryptu zawiera sekcja <SPAN
 CLASS="emphasis"
@@ -5748,14 +5857,14 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->autoreply_from</P
+>mail_from</P
 ><P
 >Nadawca potwierdzenia. Je¶li nie zdefiniowano, zostanie u¿yty adres
 		    kolejki do której zapisano zg³oszenie. Domy¶lnie: pusty.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->autoreply_from = &lt;rt@net.pl&gt;</SAMP
+>mail_from = &lt;rt@net.pl&gt;</SAMP
 ></P
 ></LI
 ><LI
@@ -6976,79 +7085,118 @@ ALIGN="CENTER"><THEAD
 ><TBODY
 ><TR
 ><TD
->system</TD
+><A
+HREF="#DAEMON-SYSTEM"
+>system</A
+></TD
 ><TD
 >Wywo³ywanie poleceñ pow³oki</TD
 ></TR
 ><TR
 ><TD
->dhcp</TD
+><A
+HREF="#DAEMON-DHCP"
+>dhcp</A
+></TD
 ><TD
 >Konfiguracja serwera dhcpd</TD
 ></TR
 ><TR
 ><TD
->cutoff</TD
+><A
+HREF="#DAEMON-CUTOFF"
+>cutoff</A
+></TD
 ><TD
 >Od³±czanie u¿ytkowników z zaleg³o¶ciami w op³atach</TD
 ></TR
 ><TR
 ><TD
->dns</TD
+><A
+HREF="#DAEMON-DNS"
+>dns</A
+></TD
 ><TD
 >Konfiguracja serwera dns</TD
 ></TR
 ><TR
 ><TD
->ethers</TD
+><A
+HREF="#DAEMON-ETHERS"
+>ethers</A
+></TD
 ><TD
 >Tworzenie pliku /etc/ethers</TD
 ></TR
 ><TR
 ><TD
->hostfile</TD
+><A
+HREF="#DAEMON-HOSTFILE"
+>hostfile</A
+></TD
 ><TD
 >Modu³ uniwersalny (np. tworzenie regu³ iptables)</TD
 ></TR
 ><TR
 ><TD
->notify</TD
+><A
+HREF="#DAEMON-NOTIFY"
+>notify</A
+></TD
 ><TD
 >Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach poczt± elektroniczn±</TD
 ></TR
 ><TR
 ><TD
->ggnotify</TD
+><A
+HREF="#DAEMON-GGNOTIFY"
+>ggnotify</A
+></TD
 ><TD
 >Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach przez gadu-gadu</TD
 ></TR
 ><TR
 ><TD
->payments</TD
+><A
+HREF="#DAEMON-PAYMENTS"
+>payments</A
+></TD
 ><TD
 >Naliczanie op³at abonamentowych</TD
 ></TR
 ><TR
 ><TD
->oident</TD
+><A
+HREF="#DAEMON-OIDENT"
+>oident</A
+></TD
 ><TD
 >Konfiguracja oident</TD
 ></TR
 ><TR
 ><TD
->tc</TD
+><A
+HREF="#DAEMON-TC"
+>tc</A
+></TD
 ><TD
 >Tworzenie regu³ HTB</TD
 ></TR
 ><TR
 ><TD
->traffic</TD
+><A
+HREF="#DAEMON-TRAFFIC"
+>traffic</A
+></TD
 ><TD
 >Statystyki wykorzystania ³±cza</TD
 ></TR
 ><TR
 ><TD
->pinger</TD
+><A
+HREF="#DAEMON-PINGER"
+>pinger</A
+></TD
 ><TD
 >Badanie aktywno¶ci u¿ytkowników</TD
 ></TR
@@ -8964,6 +9112,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>pin - numer pin (uwierzytelnianie)</TD
+></TR
+><TR
+><TD
 >address - adres (ulica, nr domu, nr lokalu)</TD
 ></TR
 ><TR
@@ -9943,8 +10095,7 @@ para_metr = 'zmienna "para_metr" w apostrofach'
 klucz = "tekst ze znakami \t i ;"	; tu te¿ mo¿na komentowaæ
 ; a to jest komentarz na ca³± liniê
 key = "A.L.E.C's LMS Daemon is the best"
-# opcja = wy³±czona
-				</PRE
+# opcja = wy³±czona</PRE
 ></DIV
 ></DIV
 ><DIV
@@ -10208,7 +10359,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="CONTRIB-CUSTOMER"
->8.1. "Moje konto"</A
+>8.1. Moje konto</A
 ></H2
 ><DIV
 CLASS="SECT2"

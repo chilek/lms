@@ -1615,7 +1615,7 @@ NAME="LMS-RTPARSER"
 ></H2
 ><P
 >Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który wspó³pracuj±c
-	    z serwerm pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
+	    z serwerem pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
 	    adresy Helpdesk'a. Skrypt pobiera z wej¶cia wiadomo¶æ pocztow±, parsuje zawarto¶æ
 	    i umieszcza zg³oszenie w kolejce, wysy³aj±c do zg³aszaj±cych
 	    potwierdzenie przyjêcia wiadomo¶ci. W temacie potwierdzenia znajduje siê symbol
@@ -1645,6 +1645,50 @@ filter unix - n n - 10 pipe
       -flags=Rq user=nobody argv=/path/to/lms-rtparser</PRE
 >
 	    </P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Je¿eli chcesz aby wiadomo¶ci wprowadzane poprzez <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>lms-ui</I
+></SPAN
+>
+	    by³y kierowane do parsera, zamiast bezpo¶rednio zapisywane do bazy, powiniene¶ w³±czyæ
+	    opcjê konfiguracyjn± <TT
+CLASS="FILENAME"
+>helpdesk_backend_mode</TT
+> w sekcji
+	    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
 ><P
 >Konfiguracjê tego skryptu zawiera sekcja <SPAN
 CLASS="emphasis"
@@ -1685,14 +1729,14 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->autoreply_from</P
+>mail_from</P
 ><P
 >Nadawca potwierdzenia. Je¶li nie zdefiniowano, zostanie u¿yty adres
 		    kolejki do której zapisano zg³oszenie. Domy¶lnie: pusty.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->autoreply_from = &lt;rt@net.pl&gt;</SAMP
+>mail_from = &lt;rt@net.pl&gt;</SAMP
 ></P
 ></LI
 ><LI
