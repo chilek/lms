@@ -602,4 +602,24 @@ function check_email( $email )
 
 }
 
+function check_nip($nip)
+
+{
+
+		$steps = array(6, 5, 7, 2, 3, 4, 5, 6, 7);
+
+		$nip = str_replace('-', '', $nip);
+		$nip = str_replace(' ', '', $nip);
+
+		if (strlen($nip) != 10) return 0;
+
+		for ($x = 0; $x < 9; $x++) $sum_nb += $steps[$x] * $nip[$x];
+
+		if ($sum_nb % 11 == $nip[9]) return 1;
+
+		return 0;
+
+}
+
+
 ?>
