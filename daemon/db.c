@@ -72,29 +72,33 @@ int db_disconnect(void)
 
 /************************* QUERY FUNCTIONS ************************/
 /* Executes SELECT query */
-QUERY_HANDLE * db_query(unsigned char *stmt) 
+QUERY_HANDLE * db_query(unsigned char *q) 
 {
     QUERY_HANDLE *query;
-    stmt = parse_query_stmt(stmt);
+    unsigned char *stmt = strdup(q);
+    parse_query_stmt(&stmt);
 #ifdef DEBUG0
     syslog(LOG_INFO,"DEBUG: [SQL] %s", stmt);
 #endif
 #ifdef USE_MYSQL
     if( mysql_query(&conn,stmt) < 0 ) {
-	syslog(LOG_CRIT,"[db_select] Query failed. Error: %s",mysql_error(&conn));
+	syslog(LOG_CRIT,"[db_query] Query failed. Error: %s",mysql_error(&conn));
+	free(stmt);
 	return NULL;
     }
     if ( (res = mysql_store_result(&conn)) == NULL ) {
-	syslog(LOG_CRIT,"[db_select] Unable to get query result. Error: %s",mysql_error(&conn));
+	syslog(LOG_CRIT,"[db_query] Unable to get query result. Error: %s",mysql_error(&conn));
+	free(stmt);
 	return NULL;
     }
 #endif
 #ifdef USE_PGSQL
     res = PQexec(conn,stmt);
     if( res==NULL || PQresultStatus(res)!=PGRES_TUPLES_OK ) {
-	syslog(LOG_CRIT,"[db_select] Query failed. %s",PQerrorMessage(conn));
+	syslog(LOG_CRIT,"[db_query] Query failed. %s",PQerrorMessage(conn));
 	PQclear(res);
-        return NULL;
+        free(stmt);
+	return NULL;
     }
 #endif
     query = get_query_result(res);
@@ -104,20 +108,23 @@ QUERY_HANDLE * db_query(unsigned char *stmt)
 #ifdef USE_PGSQL
     PQclear(res);
 #endif
+    free(stmt);
     return query;
 }
 
 /* executes a INSERT, UPDATE, DELETE queries */
-int db_exec(unsigned char *stmt)
+int db_exec(unsigned char *q)
 {
     int result;
-    stmt = parse_query_stmt(stmt);
+    unsigned char *stmt = strdup(q);
+    parse_query_stmt(&stmt);
 #ifdef DEBUG0
     syslog(LOG_INFO,"DEBUG: [SQL] %s", stmt);
 #endif
 #ifdef USE_MYSQL
     if( mysql_query(&conn,stmt) != 0 ) {
 	syslog(LOG_CRIT,"[db_exec] Query failed. Error: %s", mysql_error(&conn));
+	free(stmt);
 	return ERROR;
     }
     result = mysql_affected_rows(&conn);
@@ -127,11 +134,13 @@ int db_exec(unsigned char *stmt)
     if( res==NULL || PQresultStatus(res)!=PGRES_COMMAND_OK ) {
 	syslog(LOG_CRIT,"[db_exec] Query failed. %s",PQerrorMessage(conn));
 	PQclear(res);
+	free(stmt);
         return ERROR;
     }
     result = atoi(PQcmdTuples(res));
     PQclear(res);
 #endif
+    free(stmt);
     return result;
 }
 
@@ -287,19 +296,16 @@ static QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
 }
 
 /* Parse query statement */
-static unsigned char * parse_query_stmt(unsigned char * stmt)
+void parse_query_stmt(unsigned char **stmt)
 {
 #ifdef USE_MYSQL
-    stmt = str_replace(stmt,"?NOW?","UNIX_TIMESTAMP()");
+    str_replace(stmt,"?NOW?","UNIX_TIMESTAMP()");
 #endif
 #ifdef USE_PGSQL
-    stmt = str_replace(stmt,"?NOW?","EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))");
+    str_replace(stmt,"?NOW?","EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))");
+    str_replace(stmt,"LIKE","ILIKE");
+    str_replace(stmt,"like","ILIKE");
 #endif
-#ifdef USE_PGSQL
-    stmt = str_replace(stmt,"LIKE","ILIKE");
-    stmt = str_replace(stmt,"like","ILIKE");
-#endif
-    return stmt;
 }
 
 /* Starts transaction */
