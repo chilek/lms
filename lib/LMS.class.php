@@ -3276,6 +3276,7 @@ class LMS
 			// we should use https)
 			
 			sleep(5);
+			$this->DB->Execute('DELETE FROM dbinfo WHERE keytype = ?', array('last_check_for_updates_timestamp'));
 			$this->CheckUpdates(TRUE);
 			return TRUE;
 		}
