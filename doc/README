@@ -69,8 +69,9 @@ LMS Developers
    8. Dodatki
 
         8.1. Moje konto
-        8.2. Panel SQL
-        8.3. Ostrze¿enia + squid
+        8.2. Moje konto 2
+        8.3. Panel SQL
+        8.4. Ostrze¿enia + squid
 
    Spis tabel
    4-1. Lista skryptów wykonywalnych
@@ -800,8 +801,11 @@ database = /usr/local/lms/lms.db
    Dla u³atwienia migracji danych w katalogu /doc przygotowano pliki
    UPGRADE-1.0-1.5.mysql i UPGRADE-1.0-1.5.pgsql dla przej¶cia od wersji
    1.0 do wersji 1.5 oraz UPGRADE-1.2-1.5.mysql i UPGRADE-1.2-1.5.pgsql
-   przy migracji od wersji 1.2 do bie¿±cej. W nich znajdziesz krótki opis
-   jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
+   przy migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. W nich
+   znajdziesz krótki opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od
+   stosowanej bazy danych. W wersjach o numerze wy¿szym od 1.3.0
+   aktualizacja struktury bazy danych nastêpuje automatycznie podczas
+   pierwszego logowania.
 
    Notatka
 
@@ -1504,6 +1508,7 @@ Rozdzia³ 4. Skrypty
      * %B - saldo z prawdziwym znakiem, np. -107
      * %last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na
        koncie u¿ytkownika, np:
+     * %pin - numer PIN u¿ytkownika.
 
    Przyk³ad 4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji
    kasowych
@@ -3715,6 +3720,11 @@ Rozdzia³ 8. Dodatki
    Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla bilans i
    informacje o u¿ytkowniku, który jest w³a¶cicielem komputera o tym
    adresie.
+
+   Dla u¿ytkowników korzystaj±cych z proxy, nie korzystaj±cych z sieci
+   tylko w domu, albo którzy nie chc± aby dzieci/ma³¿onkowie/pracownicy
+   mieli wgl±d w dane fiansowe dotycz±ce ich dostêpu do sieci/innych
+   us³ug przeznaczone jest "Moje konto 2".
      _________________________________________________________________
 
 8.1.2. Instalacja
@@ -3724,9 +3734,32 @@ Rozdzia³ 8. Dodatki
    ¶cie¿kê do lms.ini w pliku index.php.
      _________________________________________________________________
 
-8.2. Panel SQL
+8.2. Moje konto 2
 
 8.2.1. Wstêp
+
+   W katalogu contrib/customer_otherip znajduje siê odpowiednik
+   contrib/customer, który nie rozpoznaje u¿ytkownika po adresie IP, ale
+   wymaga logowania. Uwierzytelnianie odbywa siê na podstawie numeru PIN
+   oraz telefonu u¿ytkownika, ale mo¿liwe jest tak¿e wykorzystanie ID lub
+   numeru umowy (dodatkowe pole w bazie) - patrz pliki balanceview.php i
+   authentication.inc).
+
+   Skrypt wy¶wietla bilans i informacje o u¿ytkowniku, a tak¿e w
+   po³±czeniu z contrib/formularz_przelewu_wplaty umo¿liwia u¿ytkownikowi
+   wydrukowanie druku wp³aty na kwotê zaleg³o¶ci.
+     _________________________________________________________________
+
+8.2.2. Instalacja
+
+   Instalacja sprowadza siê do ustawienia opcji sys_dir w sekcji
+   [directories] pliku lms.ini oraz zlinkowania katalogu img z lms'owymi
+   ikonkami.
+     _________________________________________________________________
+
+8.3. Panel SQL
+
+8.3.1. Wstêp
 
    W katalogu contrib/sqlpanel znajdziesz modu³, dziêki któremu bêdziesz
    mia³ mo¿liwo¶æ bezpo¶redniego dostêpu do bazy danych poprzez zadawanie
@@ -3739,7 +3772,7 @@ Rozdzia³ 8. Dodatki
    'sqlpanel_pagelimit' w sekcji [phpui] pliku konfiguracyjnego lms.ini.
      _________________________________________________________________
 
-8.2.2. Instalacja
+8.3.2. Instalacja
 
    Instalacja polega na skopiowaniu plików w odpowiednie miejsca w
    drzewie katalogów lms'a. Plik sql.php skopiuj do katalogu modules, a
@@ -3748,9 +3781,9 @@ Rozdzia³ 8. Dodatki
    Administratorzy->SQL.
      _________________________________________________________________
 
-8.3. Ostrze¿enia + squid
+8.4. Ostrze¿enia + squid
 
-8.3.1. Wstêp
+8.4.1. Wstêp
 
    Ten ma³y zestaw narzêdzi pozwala za pomoc± squida w dosyæ elegancki
    sposób wy¶wietlaæ wiadomo¶ci administracyjne. Oczywi¶cie aby to
@@ -3767,7 +3800,7 @@ Rozdzia³ 8. Dodatki
    README.
      _________________________________________________________________
 
-8.3.2. Instalacja
+8.4.2. Instalacja
 
    Zaczynamy od konfiguracji squida (squid.conf):
 redirector_bypass on

@@ -310,11 +310,16 @@ HREF="#CONTRIB-CUSTOMER"
 ></DT
 ><DT
 >8.2. <A
+HREF="#CONTRIB-CUSTOMER2"
+>Moje konto 2</A
+></DT
+><DT
+>8.3. <A
 HREF="#CONTRIB-SQLPANEL"
 >Panel SQL</A
 ></DT
 ><DT
->8.3. <A
+>8.4. <A
 HREF="#CONTRIB-SQUID-WARN"
 >Ostrze¿enia + squid</A
 ></DT
@@ -2464,8 +2469,10 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >UPGRADE-1.2-1.5.pgsql
       </TT
-> przy migracji od wersji 1.2 do bie¿±cej. W nich znajdziesz krótki
-      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.</P
+> przy migracji od wersji 1.2 (oraz 1.3.0) do bie¿±cej. W nich znajdziesz krótki
+      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
+      W wersjach o numerze wy¿szym od 1.3.0 aktualizacja struktury bazy danych 
+      nastêpuje automatycznie podczas pierwszego logowania.</P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -4256,6 +4263,10 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ><LI
 ><P
 >%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:</P
+></LI
+><LI
+><P
+>%pin - numer PIN u¿ytkownika.</P
 ></LI
 ></UL
 ><DIV
@@ -10380,6 +10391,11 @@ CLASS="FILENAME"
 >Skrypt sprawdza spod jakiego adresu jest ¿±danie i wy¶wietla
 		bilans i informacje o u¿ytkowniku, który jest w³a¶cicielem komputera
 		o tym adresie.</P
+><P
+>Dla u¿ytkowników korzystaj±cych z proxy, nie korzystaj±cych
+		z sieci tylko w domu, albo którzy nie chc± aby dzieci/ma³¿onkowie/pracownicy 
+		mieli wgl±d w dane fiansowe dotycz±ce ich dostêpu do sieci/innych 
+		us³ug przeznaczone jest "Moje konto 2".</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -10407,8 +10423,71 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
+NAME="CONTRIB-CUSTOMER2"
+>8.2. Moje konto 2</A
+></H2
+><DIV
+CLASS="SECT2"
+><H3
+CLASS="SECT2"
+><A
+NAME="CUSTOMER2-INTRO"
+>8.2.1. Wstêp</A
+></H3
+><P
+>W katalogu <TT
+CLASS="FILENAME"
+>contrib/customer_otherip</TT
+> znajduje siê
+		odpowiednik <TT
+CLASS="FILENAME"
+>contrib/customer</TT
+>, który nie rozpoznaje
+		u¿ytkownika po adresie IP, ale wymaga logowania. Uwierzytelnianie odbywa siê na 
+		podstawie numeru PIN oraz telefonu u¿ytkownika, ale mo¿liwe jest tak¿e
+		wykorzystanie ID lub numeru umowy (dodatkowe pole w bazie) - patrz 
+		pliki balanceview.php i authentication.inc).</P
+><P
+>Skrypt wy¶wietla bilans i informacje o u¿ytkowniku, a tak¿e w po³±czeniu
+		z <TT
+CLASS="FILENAME"
+>contrib/formularz_przelewu_wplaty</TT
+> umo¿liwia u¿ytkownikowi
+		wydrukowanie druku wp³aty na kwotê zaleg³o¶ci.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="CUSTOMER2-INSTALL"
+>8.2.2. Instalacja</A
+></H3
+><P
+>Instalacja sprowadza siê do ustawienia opcji <TT
+CLASS="FILENAME"
+>sys_dir</TT
+>
+		w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[directories]</I
+></SPAN
+> pliku lms.ini oraz zlinkowania 
+		katalogu <TT
+CLASS="FILENAME"
+>img</TT
+> z lms'owymi ikonkami.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
 NAME="CONTRIB-SQLPANEL"
->8.2. Panel SQL</A
+>8.3. Panel SQL</A
 ></H2
 ><DIV
 CLASS="SECT2"
@@ -10416,7 +10495,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SQLPANEL-INTRO"
->8.2.1. Wstêp</A
+>8.3.1. Wstêp</A
 ></H3
 ><P
 >W katalogu <TT
@@ -10450,7 +10529,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SQLPANEL-INSTALL"
->8.2.2. Instalacja</A
+>8.3.2. Instalacja</A
 ></H3
 ><P
 >Instalacja polega na skopiowaniu plików w odpowiednie miejsca
@@ -10485,7 +10564,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="CONTRIB-SQUID-WARN"
->8.3. Ostrze¿enia + squid</A
+>8.4. Ostrze¿enia + squid</A
 ></H2
 ><DIV
 CLASS="SECT2"
@@ -10493,7 +10572,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SQUID-WARN-INTRO"
->8.3.1. Wstêp</A
+>8.4.1. Wstêp</A
 ></H3
 ><P
 >Ten ma³y zestaw narzêdzi pozwala za pomoc± squida 
@@ -10520,7 +10599,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="SQUID-WARN-INSTALL"
->8.3.2. Instalacja</A
+>8.4.2. Instalacja</A
 ></H3
 ><P
 >Zaczynamy od konfiguracji squida (<TT
