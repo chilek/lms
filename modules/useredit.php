@@ -127,7 +127,6 @@ elseif($_GET['action'] == 'addassignment')
 
 	if($to < $from && $to != 0 && $from != 0)
 		$error[] = 'Zakres dat jest niepoprawny!';
-		
 
 	if($LMS->TariffExists($_POST['tariffid']) && !$error)
 		$LMS->AddAssignment(array('tariffid' => $_POST['tariffid'], 'userid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$_POST['invoice']), 'datefrom' => $from, 'dateto' => $to ));
