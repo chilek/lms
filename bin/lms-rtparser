@@ -221,12 +221,15 @@ my @reftab = split(' ', $mh_references);
 my $lastref = $reftab[scalar(@reftab)-1];
 
 #check 'References'
-$dbq = $dbase->prepare("SELECT id, ticketid FROM rtmessages WHERE messageid = '$lastref'");
-$dbq->execute();
-if($row = $dbq->fetchrow_hashref())
+if($lastref)
 {
-	$prev_tid = $row->{'ticketid'};
-	$inreplytoid = $row->{'id'};
+	$dbq = $dbase->prepare("SELECT id, ticketid FROM rtmessages WHERE messageid = '$lastref'");
+	$dbq->execute();
+	if($row = $dbq->fetchrow_hashref())
+	{
+		$prev_tid = $row->{'ticketid'};
+		$inreplytoid = $row->{'id'};
+	}
 }
 
 # check email subject
