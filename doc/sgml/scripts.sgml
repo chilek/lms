@@ -312,6 +312,16 @@ invoices in <emphasis>[payments]</emphasis> section of
 	   <para>Type of payment. Default: 'TRANSFER'</para>
 	   <para>Example:	<prompt>paytype = 'CASH'</prompt></para>
 	  </listitem>
+	  <listitem>
+	   <para>suspension_percentage (optional)</para>
+	   <para>Percentage for suspended liabilities. Default: '0'</para>
+	   <para>Example:	<prompt>suspension_percentage = '50'</prompt></para>
+	  </listitem>
+	  <listitem>
+	   <para>suspension_description (optional)</para>
+	   <para>Suspension description for suspended liabilities. Default: ''</para>
+	   <para>Example:	<prompt>paytype = '(suspension)'</prompt></para>
+	  </listitem>
 	 </itemizedlist>
          <para>Script has also one useful command line parameter: <prompt>--fakedate</prompt>
          (<prompt>-f</prompt>). With this option you can make that script will execute
