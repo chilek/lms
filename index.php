@@ -177,6 +177,7 @@ $layout['smarty_version'] = $SMARTY->_version;
 $layout['uptime'] = uptime();
 $layout['hostname'] = hostname();
 $layout['lmsvs'] = '1.3-cvs';
+$layout['dberrors'] =& $DB->errors;
 
 $SMARTY->assign_by_ref('menu', $LMS->MENU);
 $SMARTY->assign_by_ref('layout', $layout);
@@ -237,7 +238,5 @@ else
 	$SMARTY->display('login.html');
 	
 }
-
 $DB->Destroy();
-
 ?>

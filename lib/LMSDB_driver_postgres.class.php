@@ -59,27 +59,30 @@ class LMSDB_driver_postgres extends LMSDB_common
 			$this->_dbhost = $dbhost;
 			$this->_dbuser = $dbuser;
 			$this->_dbname = $dbname;
-			return $this->_dblink;
+			$this->_error = FALSE;
 		}
 		else
-			return FALSE;
+			$this->_error = TRUE;
+		return $this->_dblink;
 	}
 
 	function _driver_disconnect()
 	{
 		return pg_close($this->_dblink);
 	}
+
+	function _driver_geterror()
+	{
+		return pg_last_error($this->_dblink);
+	}
 	
 	function _driver_execute($query)
 	{
+		$this->_query = $query;
 		if($this->_result = pg_query($this->_dblink,$query))
-		{
-			$this->_query = $query;
 			$this->_error = FALSE;
-		}
 		else
-			$this->_error = pg_last_error($this->_dblink);
-
+			$this->_error = TRUE;
 		return $this->_result;
 	}
 

@@ -1,5 +1,22 @@
 <!--// $Id$ //-->
 {if $emptypasswd}<H1 align="center"><A HREF="?m=adminpasswd"><FONT COLOR="RED">Twoje konto posiada puste has³o! Natychmiast ustaw sobie has³o!</FONT></A></H1>{/if}
+<BR>
+{if $layout.dberrors}
+<TABLE WIDTH="100%" CELLPADDING="10">
+	<TR BGCOLOR="#F4F0EC">
+		<TD WIDTH="1%" CLASS="fleftu">
+			<IMG SRC="img/warning.png" ALT="[ B³±d ! ]">
+		</TD>
+		<TD WIDTH="99%" CLASS="frightu">
+			<B><FONT COLOR="RED">Wyst±pi³y b³êdy w obs³udze baz danych!</FONT></B><BR>
+			{foreach from=$layout.dberrors item=dberror}
+			<B>Podczas wykonywania zapytania:</B> {$dberror.query}<BR>
+			<B>Wyst±pi³ b³±d:</B> {$dberror.error}<BR>
+			{/foreach}
+		</TD>
+	</TR>
+</TABLE>
+{/if}
 {if !$layout.nomenu}
 			</TD>
 	</TR>

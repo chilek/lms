@@ -30,25 +30,27 @@
 
 Class LMSDB_common
 {
-	var $_version="1.3-cvs";
-	var $_revision='$Revision$';
+	var $_version = "1.3-cvs";
+	var $_revision = '$Revision$';
 	
 	// Driver powinien nadpisaæ t± zmienn± warto¶ci± TRUE, ¿eby
 	// funkcja inicjuj±ca baze danych wiedzia³a ¿e driver siê poprawnie
 	// za³adowa³
 	
-	var $_loaded=FALSE;
+	var $_loaded = FALSE;
 
 	// Wewnêtrzne zmienne bazy danych, tj, resource, link, itp.
 
-	var $_dbtype='NONE';
-	var $_dblink=NULL;
-	var $_dbhost=NULL;
-	var $_dbuser=NULL;
-	var $_dbname=NULL;
-	var $_error=NULL;
-	var $_query=NULL;
-	var $_result=NULL;
+	var $_dbtype = 'NONE';
+	var $_dblink = NULL;
+	var $_dbhost = NULL;
+	var $_dbuser = NULL;
+	var $_dbname = NULL;
+	var $_error = FALSE;
+	var $_query = NULL;
+	var $_result = NULL;
+
+	var $errors = array();
 
 	function LMSDB_common()
 	{
@@ -69,9 +71,13 @@ Class LMSDB_common
 
 	function Execute($query, $inputarray = NULL)
 	{
-		// wykonuje query sql'owe, jednocze¶nie je parsuj±c
-		$this->_driver_execute($this->_query_parser($query,$inputarray));
-		// i zwraca ilo¶æ zmodyfikowanych wierszy
+		if(! $this->_driver_execute($this->_query_parser($query,$inputarray)))
+		{
+			$this->errors[] = array(
+					'query' => $this->_query,
+					'error' => $this->_driver_geterror()
+					);
+		}
 		return $this->_driver_affected_rows();
 	}
 
