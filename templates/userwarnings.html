@@ -32,15 +32,15 @@
 			<TABLE width="100%" cellpadding="3">
 				<TR CLASS="DARK">
 					<TD CLASS="fleftu" WIDTH="1%">
-						<IMG SRC="img/user.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>U¿ytkownicy:</B>
+						<IMG SRC="img/user.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>{t}Customers{/t}:</B>
 					</TD>
 					<TD CLASS="frightu" WIDTH="99%" COLSPAN="2">
-						<IMG SRC="img/mail.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>Wiadomo¶æ administracyjna:</B>
+						<IMG SRC="img/mail.gif" ALT="" ALIGN="absmiddle" BORDER="0">&nbsp;<B>{t}Warning message{/t}:</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fleft">
-						<SELECT size="20" name="setwarnings[muserid][]" multiple {tip text="Wybierz u¿ytkowników"}>
+						<SELECT size="20" name="setwarnings[muserid][]" multiple {tip text="Select customers"}>
 							{section name=userlist loop=$userlist}
 							<OPTION value="{$userlist[userlist].id}" {if $userlist[userlist].warning}CLASS="red"{/if}>{$userlist[userlist].username|truncate:50:" ..."} ({$userlist[userlist].id|string_format:"%04d"})</OPTION>
 							{/section}
@@ -48,7 +48,7 @@
 					</TD>
 					<TD CLASS="fright" COLSPAN="2">
 						<TABLE CELLPADDING="3">
-							<TD CLASS="FALL" COLSPAN="3" BGCOLOR="#F4F0EC" {tip text="Tre¶æ wiadomo¶ci administracyjnej do u¿ytkownika"}>
+							<TD CLASS="FALL" COLSPAN="3" BGCOLOR="#F4F0EC" {tip text="Content of warning for customer"}>
 								<TEXTAREA NAME="setwarnings[message]" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" ROWS="19" COLS="75">{$warnmessage}</TEXTAREA>
 							</TD>
 						</TABLE>
@@ -56,14 +56,14 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbl" WIDTH="1%">
-						<INPUT TYPE="checkbox" NAME="users" CLASS="box" OnClick="javascript:SelectAllUsers()">Zaznacz wszystkich</INPUT>
+						<INPUT TYPE="checkbox" NAME="users" CLASS="box" OnClick="javascript:SelectAllUsers()">{t}Select All{/t}</INPUT>
 					</TD>
 					<TD CLASS="fbottom" ALIGN="left">
-						 <NOBR><INPUT TYPE="checkbox" CLASS="box" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}>W³±cz ostrze¿enia</INPUT></NOBR>
-						 <NOBR><INPUT TYPE="checkbox" CLASS="box" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}>Wy³±cz ostrze¿enia</INPUT></NOBR>
+						 <NOBR><INPUT TYPE="checkbox" CLASS="box" NAME="setwarnings[warnon]" ID="warnon" OnClick="switchbox(this);"{if $warnon}CHECKED{/if}>{t}Enable warnings{/t}</INPUT></NOBR>
+						 <NOBR><INPUT TYPE="checkbox" CLASS="box" NAME="setwarnings[warnoff]" ID="warnoff" OnClick="switchbox(this);" {if $warnoff}CHECKED{/if}>{t}Disable warnings{/t}</INPUT></NOBR>
 					</TD>
 					<TD CLASS="fbr" ALIGN="RIGHT">
-						<A HREF="javascript:document.setwarnings.submit()" accesskey="s">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
+						<A HREF="javascript:document.setwarnings.submit()" accesskey="s">{t}Save{/t} <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
 					</TD>
 				<TR>
 			</TABLE>
