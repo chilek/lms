@@ -63,6 +63,9 @@ wersja 1.1.8 (??/??/????):
     u¿ytkownik nie posiada ¿adnych komputerów (alec)
   - naprawione b³êdne przeliczanie adresów sieci w lms-makeiptables 
     i lms-makeipchains wynikaj±ce ze zmiany formatu pola w bazie (alec)
+  - w opcji 'networks' dla skryptów perlowych nazwy sieci mo¿na podawaæ
+    ma³ymi literami - istotne dla bazy PostgreSQL, która ma zapytania
+    case-sensitive (alec)
     
 wersja 1.1.7 Hathor (14/12/2003):
 
