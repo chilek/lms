@@ -130,7 +130,7 @@ if(isset($message))
 				$message['mailfrom'] = $queue['email'] ? $queue['email'] : $admin['email'];
 
 				$headers['Date'] = date('D, d F Y H:i:s T');
-				$headers['From'] = $message['mailfrom'];
+				$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
 				$headers['To'] = $message['destination'];
 				$headers['Subject'] = $message['subject'];
 
@@ -194,7 +194,7 @@ if(isset($message))
 				$message['mailfrom'] = $LMS->GetUserEmail($message['userid']);
 
 			$headers['Date'] = date('D, d F Y H:i:s T');
-			$headers['From'] = $message['mailfrom'];
+			$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
 			$headers['To'] = $message['destination'];
 			$headers['Subject'] = $message['subject'];
 
