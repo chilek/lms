@@ -41,7 +41,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 	function _driver_connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
-		if($this->_dblink = pg_connect('host='.$dbhost.' user='.$dbuser.' password='.$dbpasswd.' dbname='.$dbname))
+		if($this->_dblink = pg_connect(($host != '' ? 'host='.$dbhost : '' ).' user='.$dbuser.' password='.$dbpasswd.' dbname='.$dbname))
 		{
 			$this->_dbhost = $dbhost;
 			$this->_dbuser = $dbuser;
@@ -103,6 +103,9 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.5  2003/08/24 13:55:16  lukasz
+ * - fix with local socket connection
+ *
  * Revision 1.4  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
