@@ -26,7 +26,7 @@
 
 $layout['pagetitle'] = trans('View Database Backup');
 
-if (($LMS->CONFIG['phpui']['support_gzip'])&&(strstr($_GET['file'],"sql.gz")))
+if ((extension_loaded('zlib'))&&(strstr($_GET['file'],"sql.gz")))
 {
 	$filecontent = $LMS->DatabaseFetchContent($_GET['db'],true); //doalem parametr bool na koncu ktory mowi czy gzipowac czy nie
 	$database = $LMS->DatabaseFetchContent($_GET['db']);
@@ -40,7 +40,7 @@ if($_GET['rawmode']=='true')
 	if($_GET['save']=='true')
 	{
 		header('Content-Type: application/octetstream');
-		if (($LMS->CONFIG['phpui']['support_gzip'])&&($_GET['rawmode']=='true')&&($_GET['save']=='true')&&(strstr($_GET['file'],"sql.gz")))
+		if ((extension_loaded('zlib'))&&($_GET['rawmode']=='true')&&($_GET['save']=='true')&&(strstr($_GET['file'],"sql.gz")))
 		{
 			header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql.gz');
 			header('Pragma: public');
