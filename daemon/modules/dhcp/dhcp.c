@@ -164,6 +164,9 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 		fprintf(fh, "%s", dhcp->append);
 		fclose(fh);
 		system(dhcp->command);
+#ifdef DEBUG
+		syslog(LOG_INFO,"DEBUG: mod_dhcp reload finished");
+#endif
 	}
 	else
 		syslog(LOG_ERR, "mod_dhcp: Unable to write a temporary file '%s'", dhcp->tmpfile);
@@ -183,20 +186,22 @@ struct dhcp_module * init(GLOBAL *g, MODULE *m)
 	dhcp->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 	
 	ini = g->iniparser_load(g->inifile);
-	dhcp->prefix = g->iniparser_getstring(ini, "dhcp:start", "shared-network LMS {");
-	dhcp->append = g->iniparser_getstring(ini, "dhcp:end", "}");
-	dhcp->subnetstart = g->iniparser_getstring(ini, "dhcp:subnet_start", "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;");
-	dhcp->subnetend = g->iniparser_getstring(ini, "dhcp:subnet_end", "}");
-	dhcp->gateline = g->iniparser_getstring(ini, "dhcp:subnet_gateway", "option routers %i;");
-	dhcp->dnsline = g->iniparser_getstring(ini, "dhcp:subnet_dns", "option domain-name-servers %i;");
-	dhcp->domainline = g->iniparser_getstring(ini, "dhcp:subnet_domain", "option domain-name %n;");
-	dhcp->winsline = g->iniparser_getstring(ini, "dhcp:subnet_wins", "option netbios-name-servers %i;");
-	dhcp->rangeline = g->iniparser_getstring(ini, "dhcp:subnet_range", "range %s %e;");
-	dhcp->host = g->iniparser_getstring(ini, "dhcp:host", "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}");
-	dhcp->tmpfile = g->iniparser_getstring(ini, "dhcp:file", "/tmp/lms_dhcpd.conf");
-	dhcp->command = g->iniparser_getstring(ini, "dhcp:command", "");
+	dhcp->prefix = strdup(g->iniparser_getstring(ini, "dhcp:start", "shared-network LMS {"));
+	dhcp->append = strdup(g->iniparser_getstring(ini, "dhcp:end", "}"));
+	dhcp->subnetstart = strdup(g->iniparser_getstring(ini, "dhcp:subnet_start", "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;"));
+	dhcp->subnetend = strdup(g->iniparser_getstring(ini, "dhcp:subnet_end", "}"));
+	dhcp->gateline = strdup(g->iniparser_getstring(ini, "dhcp:subnet_gateway", "option routers %i;"));
+	dhcp->dnsline = strdup(g->iniparser_getstring(ini, "dhcp:subnet_dns", "option domain-name-servers %i;"));
+	dhcp->domainline = strdup(g->iniparser_getstring(ini, "dhcp:subnet_domain", "option domain-name %n;"));
+	dhcp->winsline = strdup(g->iniparser_getstring(ini, "dhcp:subnet_wins", "option netbios-name-servers %i;"));
+	dhcp->rangeline = strdup(g->iniparser_getstring(ini, "dhcp:subnet_range", "range %s %e;"));
+	dhcp->host = strdup(g->iniparser_getstring(ini, "dhcp:host", "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}"));
+	dhcp->tmpfile = strdup(g->iniparser_getstring(ini, "dhcp:tmpfile", "/tmp/lms_dhcpd.conf"));
+	dhcp->command = strdup(g->iniparser_getstring(ini, "dhcp:command", ""));
 	g->iniparser_freedict(ini);
-	
+#ifdef DEBUG
+	syslog(LOG_INFO,"DEBUG: mod_dhcp initialized");
+#endif	
 	return(dhcp);
 }
 
