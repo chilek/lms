@@ -183,12 +183,12 @@ function mp_new_message(&$message_array)/*{{{*/
       (
         0 => $buf,
         1 => 'MIME-Version: 1.0'."\n".
-        'Content-Type: MULTIPART/MIXED;'."\n".
+        'Content-Type: MULTIPART/MIXED; charset=UTF-8'."\n".
           '  BOUNDARY="'.$boundary.'"'."\n".
         'X-Generated-By: Lib Multipart for PHP, Version 1.0.0;'."\n".
           '  http://www.nirvani.net/software/',
         2 => array('MIME-Version: 1.0', 
-              'Content-Type: MULTIPART/MIXED;'."\n"
+              'Content-Type: MULTIPART/MIXED; charset=UTF-8'."\n"
                 .'  BOUNDARY="'.$boundary.'"',
               'X-Generated-By: Lib Multipart for PHP, Version 1.0.0;'."\n"
                 .'  http://www.nirvani.net/software/')
