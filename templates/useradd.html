@@ -10,7 +10,7 @@
 			<TABLE>
 				<TR>
 					<TD>
-						<B>Nazwisko:</B>
+						<B>{$lang.lastname}:</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -27,7 +27,7 @@
 				</TR>
 				<TR>
 					<TD>
-						<B>Imiê:</B>
+						<B>{$lang.username}:</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -70,7 +70,7 @@
 					</td>
 					<TD width="99%">
 						<INPUT TYPE="text" size="40" value="{$useradd.address}" name="useradd[address]" {if $error.address}CLASS="ALERT"{/if}>{if $error.address}<BR><FONT CLASS="ALERT">{$error.address}</FONT>{/if}<BR>
-						<B>Kod:</B> <INPUT TYPE="text" SIZE="5" VALUE="{$useradd.zip}" NAME="useradd[zip]"{if $error.zip} CLASS="ALERT"{/if}> <B>Miasto:</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$useradd.city}" NAME="useradd[city]"{if $error.city} CLASS="ALERT"{/if}>
+						<B>{$lang.zip}:</B> <INPUT TYPE="text" SIZE="5" VALUE="{$useradd.zip}" NAME="useradd[zip]"{if $error.zip} CLASS="ALERT"{/if}> <B>{$lang.city}:</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$useradd.city}" NAME="useradd[city]"{if $error.city} CLASS="ALERT"{/if}>
 						{if $error.zip}<BR><FONT COLOR="RED"><B>{$error.zip}</B></FONT>{/if}
 						{if $error.city}<BR><FONT COLOR="RED"><B>{$error.city}</B></FONT>{/if}
 					</td>
@@ -93,7 +93,7 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						<B>NIP</B>
+						<B>{$lang.taxid}</B>
 					</td>
 					<TD width="99%">
 						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {if $error.nip}CLASS="alert"{/if}>{if $error.nip}<BR><FONT CLASS="ALERT">{$error.nip}</FONT>{/if}					
@@ -131,7 +131,7 @@
 		</td>
 		<TD width="50%" bgcolor="#DFD5BD" class="fright">
 			<p>
-			<b>Uwagi: </b><BR>
+			<b>{$lang.comments}: </b><BR>
 <TEXTAREA rows="6" cols="50" name="useradd[info]">
 {$useradd.info}
 </TEXTAREA>
@@ -139,8 +139,8 @@
 	</TR>
 	<TR class="light">
 		<TD width="100%" colspan="2" class="fbottomu" align="right">
-			<img src="img/save.gif" alt="" align="absmiddle" border="0"> <a href="javascript:document.useradd.submit();" ACCESSKEY="S">Zapisz</a><BR>
-			<input type="checkbox" name="useradd[reuse]" value="ON" style="border-style: none;"{if $useradd.reuse} checked{/if}> Wywo³aj ponownie ten formularz po dodaniu u¿ytkownika
+			<img src="img/save.gif" alt="" align="absmiddle" border="0"> <a href="javascript:document.useradd.submit();" ACCESSKEY="S">{$lang.save}</a><BR>
+			<input type="checkbox" name="useradd[reuse]" value="ON" style="border-style: none;"{if $useradd.reuse} checked{/if}> {$lang.call_this_form_again}
 		</td>
 	</TR>
 </TABLE>
