@@ -1175,7 +1175,7 @@ class LMS
 		$stan=-$stan;
 		$stan=str_replace(",",".",$stan);
 
-	    return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?)",array($this->SESSION->id, 3 , "$stan" , $user_id));
+	    return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?)",array($this->SESSION->id, 3 , round("$stan",2) , $user_id));
 
 	}
 
@@ -1349,7 +1349,7 @@ class LMS
 	function AddBalance($addbalance)
 	{
 		$this->SetTS("cash");
-		return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance[type], $addbalance[value], $addbalance[userid], $addbalance[comment]));	
+		return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance[type], round($addbalance[value],2) , $addbalance[userid], $addbalance[comment]));	
 	}
 
 	function GetEmails($group)
