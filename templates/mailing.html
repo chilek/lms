@@ -51,6 +51,13 @@
 				{section name="networks" loop=$networks}
 				<option value="{$networks[networks].id}">{$networks[networks].name}</option>
 				{/section}
+			</SELECT>&nbsp;
+			Grupa:
+			<SELECT NAME="mailing[usergroup]" {tip trigger="usergroup" text="Wybierz grupê u¿ytkowników"}>
+				<option value="0">- wszystkie -</option>
+				{section name="usergroups" loop=$usergroups}
+				<option value="{$usergroups[usergroups].id}">{$usergroups[usergroups].name}</option>
+				{/section}
 			</SELECT>
 		</TD>
 	</TR>

@@ -403,13 +403,18 @@ class LMS
 		return $this->DB->GetOne('SELECT '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' FROM users WHERE id=?', array($id));
 	}
 
-	function GetEmails($group, $network=NULL)
+	function GetEmails($group, $network=NULL, $usergroup=NULL)
 	{
-		if($network) {
+		if($network) 
 			$net = $this->GetNetworkParams($network);
-			return $this->DB->GetAll('SELECT DISTINCT(email), '.$this->DB->Concat('lastname', "' '", 'users.name').' AS username FROM users, nodes WHERE users.id = ownerid AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].") AND deleted = 0 AND email != '' ".($state !=0 ? ' AND status = '.$state :''));
-		} else
-			return $this->DB->GetAll('SELECT email, '.$this->DB->Concat('lastname', "' '", 'users.name')." AS username FROM users WHERE deleted = 0 AND email != '' ".($group !=0 ? "AND status='".$group."'" : ''));
+		
+		return $this->DB->GetAll('SELECT email, '.$this->DB->Concat('lastname', "' '", 'users.name').' AS username FROM users ' 
+			.($network ? ', nodes' : '')
+			.($usergroup ? ', userassignments' : '')
+			." WHERE deleted = 0 AND email != '' ".($state ? ' AND status = '.$state : '')
+			.($network ? ' AND users.id=nodes.ownerid AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
+			.($usergroup ? ' AND users.id=userassignments.userid AND usergroupid='.$usergroup : '')
+			.' GROUP BY email, lastname, users.name ORDER BY username'); 
 	}
 
 	function GetUserEmail($id)
@@ -2546,7 +2551,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function Mailing($mailing)
 	{
-		if($emails = $this->GetEmails($mailing['group'], $mailing['network']))
+		if($emails = $this->GetEmails($mailing['group'], $mailing['network'], $mailing['usergroup']))
 		{
 			if($this->CONFIG['phpui']['debug_email'])
 				echo '<B>Uwaga! Tryb debug (u¿ywam adresu '.$this->CONFIG['phpui']['debug_email'].')</B><BR>';
