@@ -2,6 +2,36 @@
 {include file="balanceheader.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+<FORM METHOD="POST" NAME="page">
+{literal}
+<SCRIPT language=JavaScript>
+	<!--
+	function CheckAll()
+	{
+		for (var i=0; i<document.page.elements.length; i++)
+		{
+			var e = document.page.elements[i];
+			if (e.name != 'allbox')
+				e.checked = document.page.allbox.checked;
+		}
+	}
+
+	function CheckAll2()
+	{
+		document.page.elements['allbox'].checked = !document.page.elements['allbox'].checked;
+		CheckAll();
+	}
+
+	function DeleteMarked()
+	{
+		document.page.action="?m=balancelist&delete=yes";
+		document.page.targer="";
+		document.page.submit();
+	}
+
+	//-->
+</SCRIPT>
+{/literal}
 <TABLE width="100%" cellpadding="3">
 	<TR class="dark">
 		<TD width="1%" class="fleftu">
@@ -91,7 +121,11 @@
 			{$balancelist[balancelist].comment}
 		</TD>
 		<TD width="1%" class="fright">
-			{if $balancelist[balancelist].invoiceid}<A HREF="?m=invoice&id={$balancelist[balancelist].invoiceid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>{/if}
+			{if $balancelist[balancelist].invoiceid}
+			<A HREF="?m=invoice&id={$balancelist[balancelist].invoiceid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>
+			{else}
+			<INPUT STYLE="border-style: none;" TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
+			{/if}
 		</TD>
 	</TR>
 	{sectionelse}
@@ -105,6 +139,20 @@
 		</TD>
 	</TR>    
 	{/section}
+	<TR class="dark">
+		<TD WIDTH="100%" class="fall" COLSPAN="11">
+			<TABLE WIDTH="100%">
+				<TR>
+					<TD ALIGN="left">
+						<NOBR><A HREF="javascript:DeleteMarked();">Kasuj <IMG SRC="img/delete.gif" BORDER="0" ALT="Kasuj" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+					</TD>
+					<TD ALIGN="right">
+						<NOBR><A HREF="javascript:CheckAll2();">Zaznacz wszystkie</A><INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
 	{if $listdata.totalpos != 0}
 	<TR class="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="11">
@@ -140,4 +188,5 @@
 		</TD>
 	</TR>
 </TABLE>
+</FORM>
 {include file="footer.html"}

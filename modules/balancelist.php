@@ -26,6 +26,18 @@
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
+if ($_GET['delete'] == 'yes' && sizeof($_POST['marks']))
+{
+	foreach($_POST['marks'] as $markid => $junk)
+		if ($junk)
+			$ids[] = $markid;
+	sort($ids);
+	foreach($ids as $idx => $cashid)
+	{
+		$LMS->DelBalance($cashid);
+	}
+}
+
 $balancelist = $LMS->GetBalanceList();
 
 $listdata['incomeu'] = $balancelist['incomeu'];
