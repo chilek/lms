@@ -10,7 +10,7 @@
 			<B>Temat:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			{$ticket.subject}
+			{$ticket.subject|escape}
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -18,7 +18,7 @@
 			<B>Zg³aszaj±cy:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			{$ticket.requestor} &lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
+			{$ticket.requestor|escape} &lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;
 		</TD>
 	</TR>
 	<TR CLASS="light">

@@ -128,6 +128,14 @@ my $body;
 my $mailbody;
 my @attachments;
 
+#chomp $mh_from;
+
+#$mh_from =~ s/^.* (<.+\@.+>)$/\1/g;
+
+#print $mh_from;
+#print "\n";
+#die;
+
 # Taken from pl.comp.lang.perl FAQ - http://www.kt.agh.edu.pl/other/perl/faq/5.html#6
 
 if($entity->mime_type =~ m|multipart/|i) # if we deal with multipart message...
@@ -232,32 +240,37 @@ my $rt_msgid;
 
 if(! $prev_tid) # generate new ticket if previous not found
 {
+	my $fromemail = $mh_from;
+	my $reqadminid = 0;
+	my $reqcustid = 0;
+	$fromemail =~ s/^.* <(.+\@.+)>$/\1/g;
+	
+	# find adminid
+	
+	$dbq = $dbase->prepare("SELECT id FROM admins WHERE email = '$fromemail'");
+	$dbq->execute();
+	if(my $row = $dbq->fetchrow_hashref())
+	{
+		$reqadminid = $row->{'id'};
+	}
 
-	$dbq = $dbase->prepare("INSERT INTO rttickets (queueid, requestor, subject, createtime) VALUES ($queue, '$mh_from', '$mh_subject', $timestamp)");
+	$dbq = $dbase->prepare("SELECT id FROM users WHERE email = '$fromemail'");
+	$dbq->execute();
+	if(my $row = $dbq->fetchrow_hashref())
+	{
+		$reqcustid = $row->{'id'};
+	}
+	
+	$dbq = $dbase->prepare("INSERT INTO rttickets (queueid, requestor, requestorcustid, requestoradminid, subject, createtime) VALUES ($queue, '$mh_from', $reqcustid, $reqadminid,'$mh_subject', $timestamp)");
 	$dbq->execute();
 	
-	# fuck postgres :>
-	
-#	if($dbtype eq 'pgsql')
-#	{
-		# fetch assigned ID
-		
 	$dbq = $dbase->prepare("SELECT id FROM rttickets WHERE queueid = '$queue' AND requestor = '$mh_from' AND subject = '$mh_subject' AND createtime = $timestamp");
 	
 	$dbq->execute();
 	$row = $dbq->fetchrow_hashref();
 	$ticket_id = $row->{'id'};
 
-#	}
-#	elsif($dbtype eq 'mysql')
-#	{
-#		$dbq = $dbase->prepare("SELECT LAST_INSERT_ID() AS ticket_id");
-#		$dbq->execute();
-#		$row = $dbq->fetchrow_hashref();
-#		$ticket_id = $row->{'ticket_id'};
-#	}
-	
-	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, subject, messageid, replyto, headers, body, createtime) VALUES ($ticket_id, '$mh_from', '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $timestamp)");	
+	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, subject, messageid, headers, body, createtime) VALUES ($ticket_id, '$mh_from', '$mh_subject', '$mh_msgid', '$mailheaders', '$mailbody', $timestamp)");	
 	$dbq->execute();
 
 	# i think that this expr should be enought to fetch id of previously inserted message
@@ -273,7 +286,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 		'From' => "LMS RT System <parser\@netx.waw.pl>",
 		'Encoding' => "quoted-printable",
 		'Subject' => "[RT#".sprintf("%06d",$ticket_id)."] Potwierdzenie przyjêcia zg³oszenia o temacie '".$mh_subject."'",
-		'To' => $mh_from,
+		'To' => $mh_replyto,
 		'References' => $mh_references.' '.$mh_msgid,
 		'Data' => [
 			"Uprzejmie informujemy ¿e Pañstwa zg³oszenie zosta³o zarejestrowane w naszym\n",
