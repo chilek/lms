@@ -40,12 +40,12 @@ $SMARTY->display('header.html');
 $SMARTY->display('trafficheader.html');
 
 echo '<PRE><B>'.trans('Database compacting').'</B><BR>';
-echo trans('$0 records before compaction.\n',$LMS->DB->GetOne('SELECT COUNT(*) FROM stats'));
+echo trans('$0 records before compaction.<BR>',$LMS->DB->GetOne('SELECT COUNT(*) FROM stats'));
 
 if($delete)
 {
     $yeardeleted = $LMS->DB->Execute('DELETE FROM stats where dt < ?NOW? - 365*24*60*60');
-    echo trans('$0 at least one year old records have been removed.\n',$yeardeleted);
+    echo trans('$0 at least one year old records have been removed.<BR>',$yeardeleted);
 }
 
 if($removedeleted)
@@ -57,7 +57,7 @@ if($removedeleted)
 	{
 	    if(!in_array($node,$nodes))
 		if($LMS->DB->Execute('DELETE FROM stats WHERE nodeid = '.$node))
-		    echo trans('Computer $0 statistics have been removed\n',$node);
+		    echo trans('Computer $0 statistics have been removed<BR>',$node);
 	}
     }
 }
@@ -92,12 +92,13 @@ if($level)
 		$maxtime -= $step;
 	    }
 	    $LMS->DB->CommitTrans();
-	    echo trans('$0 - removed, $1 - inserted\n', ($deleted ? $deleted : 0), ($inserted ? $inserted : 0));
+	    echo trans('$0 - removed, $1 - inserted<BR>', ($deleted ? $deleted : 0), ($inserted ? $inserted : 0));
 	}
     }
 }
-echo trans('$0 records after compaction.\n',$LMS->DB->GetOne("SELECT COUNT(*) FROM stats"));
+echo trans('$0 records after compaction.<BR>',$LMS->DB->GetOne("SELECT COUNT(*) FROM stats"));
 
 $SMARTY->display('footer.html');
 
 ?>
+
