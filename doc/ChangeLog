@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.3.6 Osiris (??/??/2004);
+wersja 1.3.6 Osiris (01/09/2004);
 
   - obci±¿enia s± naliczane wed³ug ich warto¶ci, rosn±co - w wypadku jak kto¶
     ma odliczenie jakie¶, zostanie ono naliczone jako pierwsze, przez co nawet
@@ -33,7 +33,7 @@ wersja 1.3.6 Osiris (??/??/2004);
   - w demonie wszystkie komunikaty informacyjne s± w DEBUG1 (alec)
   - usuniête b³êdy przy allow_call_time_pass_reference=Off w php.ini (alec)
   - dodane contrib/squid_warnings (lexx)
-  - w dokum. dodany rozdzia³ 'Dodatki' opisuj±cy zawarto¶æ kat. contrib (alec)
+  - w dokum. dodany rozdzia³ 'Dodatki' opisuj±cy zawarto¶æ /contrib (alec)
   
 wersja 1.3.5 Ju (30/07/2004):
 
