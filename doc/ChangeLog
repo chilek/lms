@@ -13,6 +13,7 @@ wersja 1.3.1 (??/??/????):
   - poprawione b³êdy w wyra¿eniu regularnym w adminadd i adminedit (alec)
   - poprawka do upgrade'u: taryfy maj± okres miesiêczny, a nie tygodniowy,
     poprawki sk³adni sql w UPGRADE.pgsql oraz komentarze w UPGRADE.mysql (alec) 
+  - dodane local_ips i local_dests do lms-traffic-htbiptlimits (lukasz)
   
 wersja 1.3.0 Apophis (18/02/2004):
 
