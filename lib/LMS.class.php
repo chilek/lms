@@ -1642,10 +1642,10 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $this->DB->GetAll('SELECT userassignments.id AS id, usergroupid, userid FROM userassignments, usergroups WHERE userid=? AND usergroups.id = usergroupid ORDER BY usergroupid ASC', array($id));
 	}
 
-	function UserassignmentDelete($id)
+	function UserassignmentDelete($userassignmentdata)
 	{
 		$this->SetTS('userassignments');
-		return $this->DB->Execute('DELETE FROM userassignments WHERE id=?', array($id));
+		return $this->DB->Execute('DELETE FROM userassignments WHERE usergroupid=? AND userid=?', array($userassignmentdata['usergroupid'], $userassignmentdata['userid']));
 	}
 
 	function UserassignmentAdd($userassignmentdata)

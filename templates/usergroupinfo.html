@@ -1,17 +1,18 @@
 {include file="header.html"}
 {include file="userheader.html"}
+{literal}
 <script language="javascript">
 	<!--
-	function getText(index)
-	{literal}{{/literal}
-		{section name=lt loop=$usergroups}
-		if(index=={$usergroups[lt].id}) return '{$usergroups[lt].name}';
-		{/section}
-	{literal}}{/literal}
+	function removeUsers() {
+		document.usergroupinfo.oper = 0;
+		document.usergroupinfo.submit();
+	}
 	//-->
-																	</script>
+{/literal}																</script>
 <H1>{$layout.pagetitle}</H1>
 <FORM NAME="usergroupinfo" METHOD="POST" ACTION="?m=usergroupinfo">
+<INPUT TYPE="hidden" NAME="usergroupinfo[backid]" VALUE="{$usergroup.id}">
+<INPUT TYPE="hidden" NAME="usergroupinfo[oper]" VALUE="1">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="fleftu">
@@ -63,7 +64,7 @@
 	<TR CLASS="LIGHT">
 		{if $usergroup.userscount}
 		<TD WIDTH="1%" CLASS="fleft">
-			<SELECT SIZE="20" NAME="usergroupinfo[muserid][]" multiple>
+			<SELECT SIZE="20" NAME="usergroupinfo[gmuserid][]" multiple>
 				{section name=user loop=$usergroup.users}
 					<OPTION VALUE="{$users[user].id}">
 					{$usergroup.users[user].username|truncate:50:" ..."} ({$usergroup.users[user].id|string_format:"%04d"})
@@ -81,7 +82,6 @@
 		</TD>
 		{/if}
 		<TD WIDTH="99%" CLASS="fright" COLSPAN="2">
-			<INPUT TYPE="hidden" NAME="usergroupinfo[backid]" VALUE="{$usergroup.id}">
 			<SELECT SIZE="20" NAME="usergroupinfo[muserid][]" multiple>
 				{section name=user loop=$users}
 					<OPTION VALUE="{$users[user].id}">
@@ -93,17 +93,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="fbl">
-			<FORM NAME="tmove" METHOD="GET" ACTION="?m=usergroupmove">
-				<INPUT TYPE="hidden" VALUE="usergroupmove" NAME="m">
-				<INPUT TYPE="hidden" VALUE="{$usergroup.id}" NAME="from">
-				<input type="hidden" name="is_sure">
-				<A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'Jeste¶ pewien, ¿e chcesz przenie¶æ u¿ytkowników do grupy '+getText(document.tmove.to.value)+'?','1');">Przenie¶ tych u¿ytkowników do grupy:</A>
-				<SELECT SIZE="1" NAME="to">
-					{section name=lt loop=$usergroups}
-					{if $usergroups[lt].id neq $usergroup.id}<OPTION VALUE="{$usergroups[lt].id}">{$usergroups[lt].name}</OPTION>{/if}
-					{/section}
-				</SELECT>
-			</FORM>
+			<A HREF="javascript:removeUsers();">Usuñ tych u¿ytkowników z grupy <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
 		</TD>
 		<TD WIDTH="99%" CLASS="fbr" COLSPAN="2" ALIGN="RIGHT">
 			<A HREF="javascript:document.usergroupinfo.submit();">Dodaj tych u¿ytkowników do grupy <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
