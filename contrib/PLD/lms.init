@@ -1,0 +1,69 @@
+#!/bin/sh
+#
+# Startup script for LMS (almsd)
+#
+# Adam Nowotny <domelu@pld-linux.org>
+#
+# chkconfig:	2345 90 15
+# description:	almsd daemon for LMS
+# processname:	almsd
+# config:	/etc/sysconfig/lms
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Get service config
+[ -f /etc/sysconfig/lms ] && . /etc/sysconfig/lms
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
+		msg_network_down almsd
+		exit 1
+	fi
+else
+	exit 0
+fi
+
+[ -z "$ALMSD_DATABASE_TYPE" ] && ALMSD_DATABASE_TYPE="mysql"
+
+RETVAL=0
+case "$1" in
+  start)
+	if [ ! -f /var/lock/subsys/almsd ]; then
+		msg_starting almsd
+		daemon almsd-$ALMSD_DATABASE_TYPE -b
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/almsd
+	else
+		msg_already_running almsd
+	fi
+	;;
+  stop)
+	if [ -f /var/lock/subsys/almsd ]; then
+		msg_stopping almsd
+		killproc almsd-$ALMSD_DATABASE_TYPE
+		sleep 1
+		rm -f /var/lock/subsys/almsd >/dev/null 2>&1
+	else
+		msg_not_running almsd
+	fi
+	;;
+  restart)
+	$0 stop
+	$0 start
+	exit $?
+	;;
+  status)
+	status almsd-$ALMSD_DATABASE_TYPE
+	exit $?
+	;;			  
+  *)
+	msg_usage "$0 {start|stop|restart}"
+	exit 3
+esac
+
+exit $RETVAL

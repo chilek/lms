@@ -1,0 +1,65 @@
+--- lms.orig/index.php	2004-09-18 21:26:55.000000000 +0200
++++ lms/index.php	2004-10-03 04:09:36.022502648 +0200
+@@ -98,13 +98,13 @@
+ }
+ 
+ // Check for configuration vars and set default values
+-$_CONFIG['directories']['sys_dir'] = (! $_CONFIG['directories']['sys_dir'] ? getcwd() : $_CONFIG['directories']['sys_dir']);
+-$_CONFIG['directories']['backup_dir'] = (! $_CONFIG['directories']['backup_dir'] ? $_CONFIG['directories']['sys_dir'].'/backups' : $_CONFIG['directories']['backup_dir']);
++$_CONFIG['directories']['sys_dir'] = (! $_CONFIG['directories']['sys_dir'] ? '/usr/share/lms' : $_CONFIG['directories']['sys_dir']);
++$_CONFIG['directories']['backup_dir'] = (! $_CONFIG['directories']['backup_dir'] ? '/var/lib/lms/backups' : $_CONFIG['directories']['backup_dir']);
+ $_CONFIG['directories']['lib_dir'] = (! $_CONFIG['directories']['lib_dir'] ? $_CONFIG['directories']['sys_dir'].'/lib' : $_CONFIG['directories']['lib_dir']);
+ $_CONFIG['directories']['modules_dir'] = (! $_CONFIG['directories']['modules_dir'] ? $_CONFIG['directories']['sys_dir'].'/modules' : $_CONFIG['directories']['modules_dir']);
+ $_CONFIG['directories']['config_templates_dir'] = (! $_CONFIG['directories']['config_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/config_templates' : $_CONFIG['directories']['config_templates_dir']);
+-$_CONFIG['directories']['smarty_dir'] = (! $_CONFIG['directories']['smarty_dir'] ? (is_readable('/usr/share/php/smarty/libs/Smarty.class.php') ? '/usr/share/php/smarty/libs' : $_CONFIG['directories']['lib_dir'].'/Smarty') : $_CONFIG['directories']['smarty_dir']);
+-$_CONFIG['directories']['smarty_compile_dir'] = (! $_CONFIG['directories']['smarty_compile_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates_c' : $_CONFIG['directories']['smarty_compile_dir']);
++$_CONFIG['directories']['smarty_dir'] = (! $_CONFIG['directories']['smarty_dir'] ? '/usr/share/pear/Smarty' : $_CONFIG['directories']['smarty_dir']);
++$_CONFIG['directories']['smarty_compile_dir'] = (! $_CONFIG['directories']['smarty_compile_dir'] ? '/var/lib/lms/templates_c/' : $_CONFIG['directories']['smarty_compile_dir']);
+ $_CONFIG['directories']['smarty_templates_dir'] = (! $_CONFIG['directories']['smarty_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates' : $_CONFIG['directories']['smarty_templates_dir']);
+ 
+ foreach(lms_parse_ini_file($_CONFIG['directories']['lib_dir'].'/config_defaults.ini', TRUE) as $section => $values)
+--- lms.orig/sample/lms.ini	2004-08-25 14:52:18.000000000 +0200
++++ lms/sample/lms.ini	2004-10-04 02:52:16.676497680 +0200
+@@ -25,7 +25,7 @@
+ ; ze wskazówkami w doc/INSTALL) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ
+ ; konta uprzywilejowanego, prawdopodobnie wpiszesz 'root' (MySQL na
+ ; wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 'postgres' (PostgreSQL).
+-; Domy¶lnie: root
++; Domy¶lnie: mysql
+ 
+ ; user			= mysql
+ 
+@@ -170,7 +170,7 @@
+ ; stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale lepiej
+ ; by by³o gdyby mu powiedzieæ gdzie jest:
+ 
+-; sys_dir		= /var/www/htdocs/lms/
++; sys_dir		= /usr/share/lms/www/
+ 
+ ; Katalog z "modu³ami" LMS'a - kawa³kami kodu które szumnie kto¶ 
+ ; (czyli Baseciq) nazwa³ modu³ami. Domy¶lnie jest to podkatalog modules
+@@ -193,13 +193,13 @@
+ 
+ ; config_templates_dir	= /usr/share/lms/config_templates
+ 
+-; backup_dir		= /var/backup/lms/
++; backup_dir		= /var/lib/lms/backups/
+ 
+ ; Katalog z bibliotek± Smarty - domy¶lnie podkatalog Smarty w 
+ ; lib_dir.
+ ; http://smarty.php.net
+ 
+-; smarty_dir		= /usr/lib/php/Smarty
++; smarty_dir		= /usr/share/pear/Smarty
+ 
+ ; W pld jest domy¶lnie tutaj: (nie zapomnij o "poldek -i Smarty");
+ ; smarty_dir      = /usr/share/pear/Smarty
+@@ -208,7 +208,7 @@
+ ; Katalog kompilacji Smartyego. Miejsce gdzie Smarty psuje nasze
+ ; templejty. Domy¶lnie to templates_c w katalogu sysdir.
+ 
+-; smarty_compile_dir	= /var/smarty/compile/lms
++; smarty_compile_dir	= /var/lib/lms/templates_c
+ 
+ ; Katalog z templejtami którymi karmimy Smartiego. Domy¶lnie to
+ ; podkatalog templates z sys_dir'a.

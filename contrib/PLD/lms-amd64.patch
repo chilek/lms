@@ -1,0 +1,42 @@
+--- lms.orig/daemon/Makefile	2004-09-09 13:08:39.000000000 +0200
++++ lms/daemon/Makefile	2004-10-03 02:24:11.350998864 +0200
+@@ -1,6 +1,6 @@
+ 
+ LIBS = -lmysqlclient -ldl
+-LDFLAGS = -L/usr/lib
++LDFLAGS = -L/usr/lib64
+ CFLAGS = -I/usr/include -DUSE_MYSQL
+ INSTALLDIR = /usr/local/bin
+ 
+--- lms.orig/daemon/configure	2004-04-14 11:12:19.000000000 +0200
++++ lms/daemon/configure	2004-10-03 02:24:29.598224864 +0200
+@@ -3,7 +3,7 @@
+ # Initialize default variables
+ prefix="/usr/local/bin"
+ incdir="/usr/include"
+-libdir="/usr/lib"
++libdir="/usr/lib64"
+ with_mysql=yes
+ 
+ # Parse options *****************************************************************
+@@ -80,7 +80,7 @@
+   --with-sqlite		enables use of SQLite database (disabled)
+   --prefix=DIR		sets program and modules install location 
+ 			(/usr/local/bin)
+-  --libdir=DIR		sets location of database library (/usr/lib)
++  --libdir=DIR		sets location of database library (/usr/lib64)
+   --incdir=DIR		sets location of database include files (/usr/include)
+ EOF
+     		exit 0
+--- lms.orig/daemon/modules/ggnotify/Makefile.in	2004-08-25 15:37:35.000000000 +0200
++++ lms/daemon/modules/ggnotify/Makefile.in	2004-10-03 02:34:18.739661752 +0200
+@@ -1,7 +1,7 @@
+ # dla libgadu i ekg --------------
+-LDFLAGS += -L/usr/lib
++LDFLAGS += -L/usr/lib64
+ CFLAGS += -I/usr/src/ekg/lib
+-LIBS += /usr/lib/libgadu.so
++LIBS += /usr/lib64/libgadu.so
+ # --------------------------------
+ 
+ SOURCES = ggnotify.c
