@@ -90,6 +90,69 @@ class LMS {
 		return $return;
 	}
 
+	function GetUserList($order=NULL,$state=NULL)
+	{
+
+		$db=$this->db;
+
+		$sql="SELECT id, lastname, name, status, email, phone1, address, info FROM users ";
+
+		if(!isset($state)) $state="3";
+		
+		switch ($state){
+			case "3":
+				$sql .= " WHERE status = 3 ";
+			break;
+			case "2":
+				$sql .= " WHERE status = 2 ";
+			break;
+			case "1":
+				$sql .= " WHERE status = 1 ";
+			break;
+		}
+		
+		if(!isset($order)) $order="name";
+
+		switch ($order){
+			case "name":
+				$sql .= " ORDER BY lastname ASC";
+			break;
+			case "addr":
+				$sql .= " ORDER BY address ASC";
+			break;
+			case "id":
+				$sql .= " ORDER BY id ASC";
+			break;
+		}
+
+		$db->ExecSQL($sql);
+
+		while($db->FetchRow())
+
+			list(
+				$userlist[id][],
+				$userlist[lastname][],
+				$userlist[name][],
+				$userlist[status][],
+				$userlist[email][],
+				$userlist[phone1][],
+				$userlist[address][],
+				$userlist[info][]
+			) = $db->row;
+
+		for($i=0;$i<sizeof($userlist[id]);$i++)
+
+			$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
+		
+		$userlist[state]=$state;
+		$userlist[order]=$order;
+
+		return $userlist;
+
+	}
+		
+		
+
 	function GetUserNodes($id)
 	{
 		$db=$this->db;
