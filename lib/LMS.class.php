@@ -1018,7 +1018,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetUserWithoutGroupNames($groupid)
 	{
-		return $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username 
+		return $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username, userid
 			FROM users LEFT JOIN userassignments ON (users.id = userid) WHERE deleted = 0 
 			GROUP BY users.id, userid, lastname, name 
 			HAVING userid IS NULL ORDER BY username');
