@@ -124,7 +124,8 @@
 			{if $balancelist[balancelist].invoiceid}
 			<A HREF="?m=invoice&id={$balancelist[balancelist].invoiceid}" target="_BLANK"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>
 			{else}
-			<INPUT STYLE="border-style: none;" TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
+			{cycle print=false}
+			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$balancelist[balancelist].id}]" VALUE="{$balancelist[balancelist].id}">
 			{/if}
 		</TD>
 	</TR>
