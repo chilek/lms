@@ -66,7 +66,7 @@ if(isset($netdevdata)) {
 
 $netdevconnected = $LMS->GetNetDevConnectedNames($_GET[id]);
 $netcomplist = $LMS->GetNetDevNode($_GET[id]);
-$netdevlist = $LMS->GetNetDevList();
+$netdevlist = $LMS->GetNotConnectedDevices($_GET[id]);
 unset($netdevlist[total]);
 unset($netdevlist[order]);
 unset($netdevlist[direction]);
@@ -91,6 +91,10 @@ $SMARTY->display("netdevedit.html");
 
 /*
  * $Log$
+ * Revision 1.7  2003/10/05 20:45:33  lexx
+ * - Lista urzadzen do podlaczenia wyswietla tylko urzadzenia jeszcze nie
+ *   podlaczone
+ *
  * Revision 1.6  2003/10/04 20:05:36  alec
  * now we can connect nodes to netdevices
  *
