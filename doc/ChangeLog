@@ -1,9 +1,10 @@
 $Id$
 
-wersja 1.0.2 (??/??/2003):
+wersja 1.0.2 (13/08/2003):
   
   - dodana mo¿liwo¶æ wydrukowania listy zad³u¿onych u¿ytkowników (MichalZ)
   - dodane %TID (id taryfy) i %TVAL (warto¶æ taryfy) do lms-mgc (lukasz)
+  - poprawiony bug w adminpasswd (mwinkler/warden/lukasz)
 
 wersja 1.0.1 (21/06/2003):
 

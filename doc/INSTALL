@@ -100,8 +100,8 @@ mv Smarty-2.5.0/libs Smarty
 
 Do tego jeszcze ADOdb:
 
-wget http://phplens.com/lens/dl/adodb340.tgz
-tar -xzf adodb340.tgz
+wget http://phplens.com/lens/dl/adodb372.tgz
+tar -xzf adodb372.tgz
 
 W Debianie unstable wystarczy:
 apt-get install libphp-adodb
