@@ -1,0 +1,293 @@
+/* $Id$ */ 
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "admins" 
+-------------------------------------------------------- */
+DROP TABLE admins;
+CREATE TABLE admins (
+	id integer PRIMARY KEY,
+	login varchar(32) 	DEFAULT '' NOT NULL,
+	name varchar(64) 	DEFAULT '' NOT NULL,
+	email varchar(255) 	DEFAULT '' NOT NULL,
+	rights varchar(64) 	DEFAULT '' NOT NULL,
+	passwd varchar(255) 	DEFAULT '' NOT NULL,
+	lastlogindate integer 	DEFAULT 0  NOT NULL,
+	lastloginip varchar(16) DEFAULT '' NOT NULL,
+	failedlogindate integer DEFAULT 0  NOT NULL,
+	failedloginip varchar(16) DEFAULT '' NOT NULL,
+	UNIQUE (login)
+);
+
+/* ----------------------------------------------------
+	 Struktura tabeli assignments
+---------------------------------------------------*/
+DROP TABLE assignments;
+CREATE TABLE assignments (
+	id integer PRIMARY KEY,
+	tariffid integer 	DEFAULT 0 NOT NULL,
+	userid integer 		DEFAULT 0 NOT NULL,
+	period integer 		DEFAULT 0 NOT NULL,
+	at integer 		DEFAULT 0 NOT NULL,
+	datefrom		DEFAULT 0 NOT NULL,
+	dateto			DEFAULT 0 NOT NULL,
+	invoice smallint 	DEFAULT 0 NOT NULL
+);
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "cash" 
+-------------------------------------------------------- */
+DROP TABLE cash;
+CREATE TABLE cash (
+	id integer 		PRIMARY KEY,
+	time integer 		DEFAULT 0 NOT NULL,
+	adminid integer 	DEFAULT 0 NOT NULL,
+	type smallint 		DEFAULT 0 NOT NULL,
+	value numeric(9,2) 	DEFAULT 0 NOT NULL,
+	userid integer 		DEFAULT 0 NOT NULL,
+	comment varchar(255) 	DEFAULT '' NOT NULL,
+	invoiceid integer 	DEFAULT 0 NOT NULL
+);
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "networks" 
+-------------------------------------------------------- */
+DROP TABLE networks;
+CREATE TABLE networks (
+	id integer PRIMARY KEY,
+	name varchar(255) 	DEFAULT '' NOT NULL,
+	address bigint 		DEFAULT 0 NOT NULL,
+	mask varchar(16) 	DEFAULT '' NOT NULL,
+	interface varchar(8) 	DEFAULT '' NOT NULL, 
+	gateway varchar(16) 	DEFAULT '' NOT NULL,
+	dns varchar(16) 	DEFAULT '' NOT NULL,
+	dns2 varchar(16) 	DEFAULT '' NOT NULL,
+	domain varchar(64) 	DEFAULT '' NOT NULL,
+	wins varchar(16) 	DEFAULT '' NOT NULL,
+	dhcpstart varchar(16) 	DEFAULT '' NOT NULL,
+	dhcpend varchar(16) 	DEFAULT '' NOT NULL,
+	UNIQUE (name),
+	UNIQUE (address)
+);
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "nodes" 
+-------------------------------------------------------- */
+DROP TABLE nodes;
+CREATE TABLE nodes (
+	id integer PRIMARY KEY,
+	name varchar(16) 	DEFAULT '' NOT NULL,
+	mac varchar(20) 	DEFAULT '' NOT NULL,
+	ipaddr bigint 		DEFAULT 0 NOT NULL,
+	ownerid integer 	DEFAULT 0 NOT NULL,
+	netdev integer 		DEFAULT 0 NOT NULL,
+	creationdate integer 	DEFAULT 0 NOT NULL,
+	moddate integer 	DEFAULT 0 NOT NULL,
+	creatorid integer 	DEFAULT 0 NOT NULL,
+	modid integer 		DEFAULT 0 NOT NULL,
+	access smallint 	DEFAULT 1 NOT NULL,
+	warning smallint 	DEFAULT 0 NOT NULL,
+	UNIQUE (name),
+	UNIQUE (mac),
+	UNIQUE (ipaddr)
+);
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "tariffs" 
+-------------------------------------------------------- */
+DROP TABLE tariffs;
+CREATE TABLE tariffs (
+	id integer PRIMARY KEY,
+	name varchar(255) 	DEFAULT '' NOT NULL,
+	value numeric(9,2) 	DEFAULT 0 NOT NULL,
+	taxvalue numeric(9,2) 	DEFAULT 0 NOT NULL,
+	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
+	uprate integer		DEFAULT 0 NOT NULL,
+	downrate integer	DEFAULT 0 NOT NULL,
+	description text	DEFAULT '' NOT NULL,
+	UNIQUE (name)
+);
+
+/* ---------------------------------------------------------
+  Struktura tabeli "payments"
+--------------------------------------------------------- */
+DROP TABLE payments;
+CREATE TABLE payments (
+	id integer PRIMARY KEY,
+	name varchar(255) 	DEFAULT '' NOT NULL,
+	value numeric(9,2) 	DEFAULT 0 NOT NULL,
+	creditor varchar(255) 	DEFAULT '' NOT NULL,
+	period integer 		DEFAULT 0 NOT NULL,
+	at integer 		DEFAULT 0 NOT NULL,
+	description text	DEFAULT '' NOT NULL
+);
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "invoices" 
+-------------------------------------------------------- */
+DROP TABLE invoices;
+CREATE TABLE invoices (
+	id integer PRIMARY KEY,
+        number integer 		DEFAULT 0 NOT NULL,
+        cdate integer 		DEFAULT 0 NOT NULL,
+        paytime smallint 	DEFAULT 0 NOT NULL,
+	paytype varchar(255) 	DEFAULT '' NOT NULL,
+        customerid integer 	DEFAULT 0 NOT NULL,
+        name varchar(255) 	DEFAULT '' NOT NULL,
+        address varchar(255) 	DEFAULT '' NOT NULL,
+        nip varchar(16) 	DEFAULT '' NOT NULL,
+	pesel varchar(11) 	DEFAULT '' NOT NULL,
+        zip varchar(6) 		DEFAULT '' NOT NULL,
+        city varchar(32) 	DEFAULT '' NOT NULL,
+        phone varchar(255) 	DEFAULT '' NOT NULL,
+        finished smallint 	DEFAULT 0 NOT NULL
+);
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "invoicecontents" 
+-------------------------------------------------------- */
+CREATE TABLE invoicecontents (
+	invoiceid integer 	DEFAULT 0 NOT NULL,
+	value numeric(9,2) 	DEFAULT 0 NOT NULL,
+	taxvalue numeric(9,2) 	DEFAULT 0 NOT NULL,
+	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
+	content varchar(16) 	DEFAULT '' NOT NULL,
+	count numeric(9,2) 	DEFAULT 0 NOT NULL,
+	description varchar(255) DEFAULT '' NOT NULL,
+	tariffid integer 	DEFAULT 0 NOT NULL
+);	 
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "timestamps" 
+-------------------------------------------------------- */
+DROP TABLE timestamps;
+CREATE TABLE timestamps (
+	time integer 		DEFAULT 0  NOT NULL,
+	tablename varchar(255) 	DEFAULT '' NOT NULL,
+	UNIQUE (tablename)
+);
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "users" 
+-------------------------------------------------------- */
+DROP TABLE users;
+CREATE TABLE users (
+	id integer PRIMARY KEY,
+	lastname varchar(255)	DEFAULT '' NOT NULL,
+	name varchar(255)	DEFAULT '' NOT NULL,
+	status smallint 	DEFAULT 0 NOT NULL,
+	email varchar(255) 	DEFAULT '' NOT NULL,
+	phone1 varchar(255) 	DEFAULT '' NOT NULL,
+	phone2 varchar(255) 	DEFAULT '' NOT NULL,
+	phone3 varchar(255) 	DEFAULT '' NOT NULL,
+	gguin integer 		DEFAULT 0 NOT NULL,
+	address varchar(255) 	DEFAULT '' NOT NULL,
+	zip varchar(6) 		DEFAULT '' NOT NULL,
+	city varchar(32) 	DEFAULT '' NOT NULL,
+	nip varchar(16) 	DEFAULT '' NOT NULL,
+	pesel varchar(11) 	DEFAULT '' NOT NULL,
+	info text		DEFAULT '' NOT NULL,
+	creationdate integer 	DEFAULT 0 NOT NULL,
+	moddate integer 	DEFAULT 0 NOT NULL,
+	creatorid integer 	DEFAULT 0 NOT NULL,
+	modid integer 		DEFAULT 0 NOT NULL,
+	deleted smallint 	DEFAULT 0 NOT NULL,
+	message text		DEFAULT '' NOT NULL
+);
+
+/* -------------------------------------------------------- 
+  Struktura tabeli "stats" 
+-------------------------------------------------------- */
+DROP TABLE stats;
+CREATE TABLE stats (
+	nodeid integer 		DEFAULT 0 NOT NULL,
+	dt integer 		DEFAULT 0 NOT NULL,
+	upload integer 		DEFAULT 0,
+	download integer 	DEFAULT 0,
+	PRIMARY KEY (nodeid, dt)
+);
+/* Ma³y dopalacz niektórych zapytañ */
+CREATE INDEX stats_nodeid_idx ON stats(nodeid);
+
+
+/* ---------------------------------------------------
+	Struktura tabeli netdevices
+----------------------------------------------------*/
+DROP TABLE netdevices;
+CREATE TABLE netdevices (
+	id integer PRIMARY KEY,
+	name varchar(32) 	DEFAULT '' NOT NULL,
+	location varchar(255) 	DEFAULT '' NOT NULL,
+	description varchar(255) DEFAULT '' NOT NULL,
+	producer varchar(64) 	DEFAULT '' NOT NULL,
+	model varchar(32) 	DEFAULT '' NOT NULL,
+	serialnumber varchar(32) DEFAULT '' NOT NULL,
+	ports integer 		DEFAULT 0 NOT NULL
+);
+
+/* ---------------------------------------------------
+	Struktura tabeli netlinks
+----------------------------------------------------*/
+DROP TABLE netlinks;
+CREATE TABLE netlinks (
+	id integer 		PRIMARY KEY,
+	src integer 		DEFAULT 0 NOT NULL,
+	dst integer 		DEFAULT 0 NOT NULL,
+	UNIQUE (src, dst)
+);
+
+/* --------------------------------------------------
+    Tables for RT
+-----------------------------------------------------*/
+DROP TABLE rtattachments;  
+CREATE TABLE rtattachments (
+	messageid integer 	DEFAULT 0 NOT NULL, 
+	filename varchar(255) 	DEFAULT '' NOT NULL, 
+	contenttype varchar(255) DEFAULT '' NOT NULL
+);
+
+DROP TABLE rtqueues;
+CREATE TABLE rtqueues (
+  id integer 		PRIMARY KEY,,
+  name varchar(255) 	DEFAULT '' NOT NULL,
+  email varchar(255) 	DEFAULT '' NOT NULL,
+  UNIQUE (name),
+  UNIQUE (email)
+);
+
+DROP TABLE rttickets;
+CREATE TABLE rttickets (
+  id integer 		PRIMARY KEY,  
+  queueid integer 	DEFAULT 0 NOT NULL,
+  requestor varchar(255) DEFAULT '' NOT NULL,
+  subject varchar(255) 	DEFAULT '' NOT NULL,
+  state smallint 	DEFAULT 0 NOT NULL,
+  owner integer 	DEFAULT 0 NOT NULL,
+  createtime integer 	DEFAULT 0 NOT NULL
+);
+
+DROP TABLE rtmessages;
+CREATE TABLE rtmessages (
+  id integer 		PRIMARY KEY,
+  ticketid integer 	DEFAULT 0 NOT NULL,
+  sender integer 	DEFAULT 0 NOT NULL,
+  mailfrom varchar(255) DEFAULT '' NOT NULL,
+  subject varchar(255) 	DEFAULT '' NOT NULL,
+  messageid varchar(255) DEFAULT '' NOT NULL,
+  inreplyto integer 	DEFAULT 0 NOT NULL,
+  replyto text 		DEFAULT '' NOT NULL,
+  headers text 		DEFAULT '' NOT NULL,
+  body text 		DEFAULT '' NOT NULL,
+  createtime integer	DEFAULT 0 NOT NULL
+);
+
+/* --------------------------------------------------
+    Database info table
+------------------------------------------------------*/
+
+CREATE TABLE dbinfo (
+    keytype varchar(255) DEFAULT '' NOT NULL,
+    keyvalue varchar(255) DEFAULT '' NOT NULL,
+    PRIMARY KEY (keytype)
+);
+
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004040200');
