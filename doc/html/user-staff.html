@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Dodatki</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="LMS - LAN Management System 1.1-cvs"
 HREF="index.html"><LINK
@@ -30,6 +30,7 @@ TEXT="#000000"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
+SUMMARY="Header navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -47,20 +48,22 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="user-all.html"
+ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)</TD
+>Rozdzia&#322; 3. Interfejs U¿ytkownika (LMS-UI)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="scripts.html"
->Nastêpny</A
+ACCESSKEY="N"
+>Nast&#281;pny</A
 ></TD
 ></TR
 ></TABLE
@@ -84,252 +87,66 @@ NAME="USER-STAFF-FAKTURY"
 >3.3.1. Faktury</A
 ></H2
 ><P
->LMS umo¿liwia wystawianie faktur. Opcja ta jest standardowo wy³±czona, dlatego na wstêpie
-		musisz w sekcji <I
+>LMS umo¿liwia wystawianie faktur. W³±czenia tej opcji dokonuje siê podczas
+		przypisywania taryf u¿ytkownikom. Do poprawnego dzia³ania i tworzenia wydruków
+		wymagane jest ustawienie podstawowych opcji w sekcji <SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
->[finances]</I
-> <TT
+>[invoices]</I
+></SPAN
+> 
+		<TT
 CLASS="FILENAME"
 >lms.ini</TT
-> ustawiæ nastêpuj±ce 
-		parametry:
+>:
 		<UL
 ><LI
 ><P
->enable_faktury</P
+>number_template</P
 ><P
->W³±czenie modu³u wystawiania faktur</P
+>Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku,
+			'%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->enable_faktury = 1</TT
+>number_template = %N/%Y"</SAMP
 ></P
 ></LI
 ><LI
 ><P
->name</P
+>seller</P
 ><P
->Nazwa sieci/organizacji na fakturze</P
+>Dane sprzedawcy. Domy¶lnie: pusty</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->name = "Blokowa Sieæ Komputerowa K-27"</TT
-></P
-></LI
-><LI
-><P
->address</P
-><P
->Adres sieci</P
-><P
->Przyk³ad: <TT
-CLASS="PROMPT"
->address = "Wiosenna 52"</TT
-></P
-></LI
-><LI
-><P
->zip</P
-><P
->Kod pocztowy</P
-><P
->Przyk³ad: <TT
-CLASS="PROMPT"
->zip = "39-300"</TT
-></P
-></LI
-><LI
-><P
->city</P
-><P
->Nazwa miasta</P
-><P
->Przyk³ad: <TT
-CLASS="PROMPT"
->city = "Mielec"</TT
-></P
-></LI
-><LI
-><P
->deadline</P
-><P
->Termin zaplaty w dniach</P
-><P
->Przyk³ad: <TT
-CLASS="PROMPT"
->deadline = 5</TT
-></P
-></LI
-><LI
-><P
->bank</P
-><P
->Nazwa banku</P
-><P
->Przyk³ad: <TT
-CLASS="PROMPT"
->bank = "Bank S.A. O/Mielec"</TT
-></P
-></LI
-><LI
-><P
->account</P
-><P
->Numer konta bankowego</P
-><P
->Przyk³ad: <TT
-CLASS="PROMPT"
->account = "123-456789-01"</TT
+>seller = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >footer</P
 ><P
->Stopka widoczna na fakturze</P
+>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->footer = "BSK K-27 w Mielcu, tel.5839455, fax.1234567"</TT
+>footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</SAMP
 ></P
 ></LI
 ><LI
 ><P
->template</P
+>default_author</P
 ><P
->Szablon faktury do u¿ycia</P
+>Domy¶lna osoba wystawiaj±ca fakturê. Domy¶lnie: puste</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->template = /etc/lms/faktura.rtf</TT
+>default_author = "specjalista d/s fakturowania"</SAMP
 ></P
 ></LI
 ></UL
->
-		</P
-><P
->Szablon jest niczym innym jak dokumentem tekstowym w formacie RTF (tekstowym)
-		lub html który mo¿na stworzyæ pod dowolnym programem obs³uguj±cym RTF. Plik ten
-		powinien wygl±daæ jak gotowa faktura, a pozycje które maj± byæ rozwijane przez
-		LMS nale¿y zast±piæ nastêpuj±cymi s³owami kluczowymi:
-		<UL
-><LI
-><P
->%nabywca - jest rozwijany do imienia i nazwiska nabywcy</P
-></LI
-><LI
-><P
->%nab_adres - jest rozwijany do adresu nabywcy (ulica)</P
-></LI
-><LI
-><P
->%nab_adres_cd - jest rozwijany do adresu nabywcy (kod pocztowy i miasto)</P
-></LI
-><LI
-><P
->%nip - nip nabywcy</P
-></LI
-><LI
-><P
->%nr_klienta - numer klienta (ID) z bazy u¿ytkowników</P
-></LI
-><LI
-><P
->%sprzedawca - nazwa sprzedawcy</P
-></LI
-><LI
-><P
->%sprzed_adres - adres sprzedawcy</P
-></LI
-><LI
-><P
->%sprzed_adres_cd - ci±g dalszy adreu sprzedawcy</P
-></LI
-><LI
-><P
->%numer - numer kolejny faktury w postaci id_operacji_kasowej/rok</P
-></LI
-><LI
-><P
->%data - data wystawienia faktury</P
-></LI
-><LI
-><P
->%termin - termin zap³aty (ilo¶æ dni ustawia siê w lms.ini)</P
-></LI
-><LI
-><P
->%dni - ilo¶æ dni do zap³aty, mo¿na ustawiæ j/w</P
-></LI
-><LI
-><P
->%usluga - nazwa us³ugi, jak nazwa jest pobierany opis operacji kasowej</P
-></LI
-><LI
-><P
->%od - pierwszy dzieñ okresu ¶wiadczenia us³ugi (pierwszy dzieñ
-                   		miesi±ca, w ktorym by³o wpisane obci±¿enie do bazy)</P
-></LI
-><LI
-><P
->%do - ostatni dzieñ okresu ¶wiadczenia us³ugi (ostatni dzieñ
-                   		miesi±ca, w ktorym by³o wpisane obci±¿enie do bazy)</P
-></LI
-><LI
-><P
->%netto - warto¶æ us³ugi netto, bezpo¶rednio przepisana z bazy</P
-></LI
-><LI
-><P
->%brutto - netto + 7% VAT</P
-></LI
-><LI
-><P
->%vat - warto¶æ VAT (netto * 7%)</P
-></LI
-><LI
-><P
->%slownie - kwota do zap³aty s³ownie</P
-></LI
-><LI
-><P
->%konto - jest rozwijane do numeru konta bankowego</P
-></LI
-><LI
-><P
->%wystawil - jest rozwijane do danych administratora zalogowanego aktualnie w LMS</P
-></LI
-><LI
-><P
->%stopka - pozwala na wpisanie danych do stopki</P
-></LI
-></UL
->
-		<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Przyk³adowy szablon znajduje siê w katalogu sample (faktura.rtf) i by³
-				testowany pod OpenOffice i M$ Office.</P
-></TD
-></TR
-></TABLE
-></DIV
 >
 		</P
 ><P
@@ -349,38 +166,12 @@ VALIGN="TOP"
 ><IMG
 SRC="images/warning.gif"
 HSPACE="5"
-ALT="Ostrze¿enie"></TD
+ALT="Ostrze&#380;enie"></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->W bazie danych zapisywane s± kwoty netto. Jak na razie, nie ma
-				mo¿liwo¶ci ustawienia kilku stawek podatku VAT.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-		<DIV
-CLASS="WARNING"
-><TABLE
-CLASS="WARNING"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/warning.gif"
-HSPACE="5"
-ALT="Ostrze¿enie"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Do postaci s³ownej rozwi±zywane s± liczby mniejsze od 999.</P
+>W bazie danych zapisywane s± kwoty brutto. </P
 ></TD
 ></TR
 ></TABLE
@@ -404,43 +195,7 @@ NAME="USER-STAFF-STATS"
 	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
 	ostatnich 30 dni lub ostatniego roku.</P
 ><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Menu 'Statystyki' jest standardowo niedostêpne. Aby je w³±czyæ, nale¿y w sekcji
-	<I
-CLASS="EMPHASIS"
->[phpui]</I
-> pliku <TT
-CLASS="FILENAME"
->lms.ini</TT
-> ustawiæ zmienn±:
-	<TT
-CLASS="PROMPT"
->enable_stats = 1</TT
->.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-	<DIV
+>	<DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
@@ -507,7 +262,7 @@ VALIGN="TOP"
 ><IMG
 SRC="images/warning.gif"
 HSPACE="5"
-ALT="Ostrze¿enie"></TD
+ALT="Ostrze&#380;enie"></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
@@ -522,7 +277,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN744"
+NAME="AEN664"
 ></A
 ><P
 ><B
@@ -534,9 +289,7 @@ TARGET="_top"
 >				<SPAN
 CLASS="INLINEMEDIAOBJECT"
 ><IMG
-SRC="images/stats-small.png"
-></IMG
-></SPAN
+SRC="images/stats-small.png"></SPAN
 >
 			</A
 ></DIV
@@ -545,7 +298,7 @@ SRC="images/stats-small.png"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN751"
+NAME="AEN671"
 ></A
 ><P
 ><B
@@ -557,9 +310,7 @@ TARGET="_top"
 >				<SPAN
 CLASS="INLINEMEDIAOBJECT"
 ><IMG
-SRC="images/statbars-small.png"
-></IMG
-></SPAN
+SRC="images/statbars-small.png"></SPAN
 >
 			</A
 ></DIV
@@ -570,6 +321,7 @@ CLASS="NAVFOOTER"
 ><HR
 ALIGN="LEFT"
 WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -581,6 +333,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="user-all.html"
+ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
@@ -589,7 +342,8 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="index.html"
->Spis tre¶ci</A
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
 ></TD
 ><TD
 WIDTH="33%"
@@ -597,7 +351,8 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="scripts.html"
->Nastêpny</A
+ACCESSKEY="N"
+>Nast&#281;pny</A
 ></TD
 ></TR
 ><TR
@@ -612,7 +367,8 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="user.html"
->Pocz±tek rozdzia³u</A
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
 ></TD
 ><TD
 WIDTH="33%"

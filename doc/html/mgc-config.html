@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Konfiguracja</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="LMS - LAN Management System 1.1-cvs"
 HREF="index.html"><LINK
@@ -30,6 +30,7 @@ TEXT="#000000"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
+SUMMARY="Header navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -47,20 +48,22 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="mgc.html"
+ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)</TD
+>Rozdzia&#322; 5. Generator plików konfiguracyjnych (lms-mgc)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="mgc-example.html"
->Nastêpny</A
+ACCESSKEY="N"
+>Nast&#281;pny</A
 ></TD
 ></TR
 ></TABLE
@@ -95,9 +98,9 @@ NAME="MGC-CONFIG-DB"
 ><P
 >Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->type = mysql</TT
+>type = mysql</SAMP
 ></P
 ></LI
 ><LI
@@ -106,9 +109,9 @@ CLASS="PROMPT"
 ><P
 >Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj wstawiæ cokolwiek (ipek, domena, path to socketa w formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->host = localhost</TT
+>host = localhost</SAMP
 ></P
 ></LI
 ><LI
@@ -117,9 +120,9 @@ CLASS="PROMPT"
 ><P
 >U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze wskazówkami w doc/INSTALL) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 'postgres' (PostgreSQL). Domy¶lnie: root</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->user = mysql</TT
+>user = mysql</SAMP
 ></P
 ></LI
 ><LI
@@ -128,9 +131,9 @@ CLASS="PROMPT"
 ><P
 >Has³o do bazy danych. Domy¶lnie puste.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->password = tajne_haslo</TT
+>password = tajne_haslo</SAMP
 ></P
 ></LI
 ><LI
@@ -139,9 +142,9 @@ CLASS="PROMPT"
 ><P
 >Nazwa bazy danych, domy¶lnie lms.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->database = lms</TT
+>database = lms</SAMP
 ></P
 ></LI
 ></UL
@@ -156,13 +159,19 @@ NAME="MGC-CONFIG-LMS"
 ></H2
 ><P
 >W³a¶ciwa konfiguracja dotycz±ca generatorów poszczególnych plików konfiguracyjnych 
-	jest umieszczana w sekcji <I
+	jest umieszczana w sekcji <SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >[mgc]</I
+></SPAN
 > i pochodnych. W samej sekcji 
-	<I
+	<SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >[mgc]</I
+></SPAN
 > mo¿emy u¿yæ nastêpuj±cego parametru:</P
 ><UL
 ><LI
@@ -171,9 +180,9 @@ CLASS="EMPHASIS"
 ><P
 >Lista "instancji" oddzielona spacjami.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->instaces = dhcp firewall squid</TT
+>instaces = dhcp firewall squid</SAMP
 ></P
 ></LI
 ></UL
@@ -188,13 +197,19 @@ NAME="MGC-CONFIG-INSTANCES"
 ></H2
 ><P
 >Ka¿da instancja ma swoj± nazwê i jej konfigruacjê tworzy siê umieszczaj±c 
-	sekcjê o nazwie <I
+	sekcjê o nazwie <SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >[mgc:nazwa]</I
+></SPAN
 >, czyli przyk³adowo: 
-	<I
+	<SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >[mgc:mydaemon]</I
+></SPAN
 ></P
 ><P
 >W samych instancjach mo¿emy u¿ywaæ nastêpuj±cych opcji konfiguracyjnych:</P
@@ -205,9 +220,9 @@ CLASS="EMPHASIS"
 ><P
 >Definiuje plik do którego ma byæ zapisany wynik dzia³ania bierz±cej instancji (je¿eli ta zmienna zmienna bêdzie nie ustawiona, instancja siê zakoñczy)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->outfile = /etc/somefile</TT
+>outfile = /etc/somefile</SAMP
 ></P
 ></LI
 ><LI
@@ -216,9 +231,9 @@ CLASS="PROMPT"
 ><P
 >Pozwala ustawiæ aby wynik dzia³ania instancji nie nadpisywa³ pliku wynikowego, lecz zosta³ dopisany na jego koñcu</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->append = 1</TT
+>append = 1</SAMP
 ></P
 ></LI
 ><LI
@@ -227,9 +242,9 @@ CLASS="PROMPT"
 ><P
 >Pozwala na ustawienie praw dostêpu do pliku wyj¶ciowego (domy¶lnie 600)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->outfile_perm = 700</TT
+>outfile_perm = 700</SAMP
 ></P
 ></LI
 ><LI
@@ -238,9 +253,9 @@ CLASS="PROMPT"
 ><P
 >Pozwala na ustawienie w³a¶ciciela pliku wyj¶ciowego (domy¶lnie 0)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->outfile_owner = 0</TT
+>outfile_owner = 0</SAMP
 ></P
 ><P
 ><DIV
@@ -257,7 +272,7 @@ VALIGN="TOP"
 ><IMG
 SRC="images/warning.gif"
 HSPACE="5"
-ALT="Ostrze¿enie"></TD
+ALT="Ostrze&#380;enie"></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
@@ -275,9 +290,9 @@ VALIGN="TOP"
 ><P
 >Pozwala na ustawienie grupy pliku wyj¶ciowego (domy¶lnie 0)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->outfile_group = 0</TT
+>outfile_group = 0</SAMP
 ></P
 ><P
 ><DIV
@@ -294,7 +309,7 @@ VALIGN="TOP"
 ><IMG
 SRC="images/warning.gif"
 HSPACE="5"
-ALT="Ostrze¿enie"></TD
+ALT="Ostrze&#380;enie"></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
@@ -313,9 +328,9 @@ VALIGN="TOP"
 >Pozwala na umieszczenie w pliku wynikowym zawaro¶ci innego 
      pliku jako nag³ówek (domy¶lnie nie ustawione)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->header_file = /etc/lms/myservice_header</TT
+>header_file = /etc/lms/myservice_header</SAMP
 ></P
 ></LI
 ><LI
@@ -325,9 +340,9 @@ CLASS="PROMPT"
 >Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako 
      nag³ówka (domy¶lnie puste)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->header = option1 = bla\noption2 = blabla</TT
+>header = option1 = bla\noption2 = blabla</SAMP
 ></P
 ><P
 ><DIV
@@ -363,9 +378,9 @@ VALIGN="TOP"
 ><P
 >Pozwala ustaliæ które z naszych sieci bêd± uwzglêdniane w pliku konfiguracyjnym (domy¶lnie wszystkie)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->networks = cust1-publ cust2-publ cust3-priv</TT
+>networks = cust1-publ cust2-publ cust3-priv</SAMP
 ></P
 ></LI
 ></UL
@@ -378,9 +393,9 @@ CLASS="PROMPT"
 ><P
 >Generuje nag³ówek dla ka¿dej sieci (domy¶lnie puste):</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->network_header = network %ADDR/%MASK { # Config section for %NAME</TT
+>network_header = network %ADDR/%MASK { # Config section for %NAME</SAMP
 ></P
 ></LI
 ><LI
@@ -389,9 +404,9 @@ CLASS="PROMPT"
 ><P
 >Pozwala ustawiæ sieci docelowe, czyli takie dla których bêdzie przetwarzany parametr: dst_network_header (domy¶lnie wszystkie):</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->dst_networks = main coalloc</TT
+>dst_networks = main coalloc</SAMP
 ></P
 ></LI
 ><LI
@@ -400,9 +415,9 @@ CLASS="PROMPT"
 ><P
 >Pozwala ustawiæ nag³ówek dla sieci docelowych</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->dst_network_header = \tallow to %DADDR/%DMASK;</TT
+>dst_network_header = \tallow to %DADDR/%DMASK;</SAMP
 ></P
 ></LI
 ><LI
@@ -411,9 +426,9 @@ CLASS="PROMPT"
 ><P
 >Parametr jest przetwarzany po wys³aniu nag³ówków dla sieci, a przed rozpoczêciem analizy adresów IP</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->network_body = \tnodes {</TT
+>network_body = \tnodes {</SAMP
 ></P
 ></LI
 ></UL
@@ -427,9 +442,9 @@ CLASS="PROMPT"
 ><P
 >Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->allnodes = ??</TT
+>allnodes = ??</SAMP
 ></P
 ></LI
 ><LI
@@ -438,9 +453,9 @@ CLASS="PROMPT"
 ><P
 >Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP który jest u¿ywany.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->allexistnodes = ??</TT
+>allexistnodes = ??</SAMP
 ></P
 ></LI
 ><LI
@@ -449,9 +464,9 @@ CLASS="PROMPT"
 ><P
 >Pozwala na ustawienie listy adresów w postaci adres/prefix lub adres/maska oddzielanej spacjami dla której ma byæ ignorowane generowanie</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->ignore = ??</TT
+>ignore = ??</SAMP
 ></P
 ></LI
 ><LI
@@ -460,9 +475,9 @@ CLASS="PROMPT"
 ><P
 >Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów publicznych)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;</TT
+>grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;</SAMP
 ></P
 ></LI
 ><LI
@@ -471,9 +486,9 @@ CLASS="PROMPT"
 ><P
 >Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->grantednode_prv = \t\tnode %NAME (%IP/%MAC) unique %ID;</TT
+>grantednode_prv = \t\tnode %NAME (%IP/%MAC) unique %ID;</SAMP
 ></P
 ></LI
 ><LI
@@ -482,9 +497,9 @@ CLASS="PROMPT"
 ><P
 >Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów publicznych)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;</TT
+>deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;</SAMP
 ></P
 ></LI
 ><LI
@@ -493,9 +508,9 @@ CLASS="PROMPT"
 ><P
 >Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->deniednode_prv = node %NAME (%IP/%MAC) unique %ID deny;</TT
+>deniednode_prv = node %NAME (%IP/%MAC) unique %ID deny;</SAMP
 ></P
 ></LI
 ><LI
@@ -504,9 +519,9 @@ CLASS="PROMPT"
 ><P
 >Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów publicznych)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->dhcpnode_publ = node unknown (%IP) reject;</TT
+>dhcpnode_publ = node unknown (%IP) reject;</SAMP
 ></P
 ></LI
 ><LI
@@ -515,9 +530,9 @@ CLASS="PROMPT"
 ><P
 >Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->dhcpnode_prv = node unknown (%IP) reject;</TT
+>dhcpnode_prv = node unknown (%IP) reject;</SAMP
 ></P
 ></LI
 ><LI
@@ -526,9 +541,9 @@ CLASS="PROMPT"
 ><P
 >Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów publicznych)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->freeip_publ = node unknown (%IP) lock_as_unused;</TT
+>freeip_publ = node unknown (%IP) lock_as_unused;</SAMP
 ></P
 ></LI
 ><LI
@@ -537,9 +552,9 @@ CLASS="PROMPT"
 ><P
 >Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->freeip_prv = node unknown (%IP) lock_as_unused;</TT
+>freeip_prv = node unknown (%IP) lock_as_unused;</SAMP
 ></P
 ></LI
 ><LI
@@ -548,9 +563,9 @@ CLASS="PROMPT"
 ><P
 >Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów publicznych)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->default_publ = node unknown (%IP) lock_as_intruder;</TT
+>default_publ = node unknown (%IP) lock_as_intruder;</SAMP
 ></P
 ></LI
 ><LI
@@ -559,9 +574,9 @@ CLASS="PROMPT"
 ><P
 >Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->default_publ = node unknown (%IP) lock_as_intruder;</TT
+>default_publ = node unknown (%IP) lock_as_intruder;</SAMP
 ></P
 ><P
 ><DIV
@@ -596,9 +611,9 @@ VALIGN="TOP"
 ><P
 >Pozwala na ustawienie stopki dla w³a¶nie przetwarzanej sieci</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->network_footer = ??</TT
+>network_footer = ??</SAMP
 ></P
 ></LI
 ><LI
@@ -607,9 +622,9 @@ CLASS="PROMPT"
 ><P
 >Pozwala na umieszczenie w pliku wynikowym zawaro¶ci innego pliku jako stopka (domy¶lnie nie ustawione)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->footer_file = /etc/lms/myservice_footer</TT
+>footer_file = /etc/lms/myservice_footer</SAMP
 ></P
 ></LI
 ><LI
@@ -618,9 +633,9 @@ CLASS="PROMPT"
 ><P
 >Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako stopki (domy¶lnie puste)</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->footer = # End.</TT
+>footer = # End.</SAMP
 ></P
 ></LI
 ><LI
@@ -629,9 +644,9 @@ CLASS="PROMPT"
 ><P
 >Komenda do wywo³ania po wygenerowaniu pliku konfiguracyjnego</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->post_exec = killall -HUP mydaemon</TT
+>post_exec = killall -HUP mydaemon</SAMP
 ></P
 ></LI
 ></UL
@@ -735,6 +750,7 @@ CLASS="NAVFOOTER"
 ><HR
 ALIGN="LEFT"
 WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -746,6 +762,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="mgc.html"
+ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
@@ -754,7 +771,8 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="index.html"
->Spis tre¶ci</A
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
 ></TD
 ><TD
 WIDTH="33%"
@@ -762,7 +780,8 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="mgc-example.html"
->Nastêpny</A
+ACCESSKEY="N"
+>Nast&#281;pny</A
 ></TD
 ></TR
 ><TR
@@ -777,7 +796,8 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="mgc.html"
->Pocz±tek rozdzia³u</A
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
 ></TD
 ><TD
 WIDTH="33%"

@@ -205,28 +205,52 @@ HREF="#MGC-EXAMPLE"
 ></DD
 ><DT
 >6. <A
+HREF="#DAEMON"
+>A.L.E.C's LMS Daemon</A
+></DT
+><DD
+><DL
+><DT
+>6.1. <A
+HREF="#DAEMON-INTRO"
+>Informacje podstawowe</A
+></DT
+><DT
+>6.2. <A
+HREF="#DAEMON-MODULES"
+>Modu³y</A
+></DT
+></DL
+></DD
+><DT
+>7. <A
 HREF="#DEVEL"
 >Dla dociekliwych</A
 ></DT
 ><DD
 ><DL
 ><DT
->6.1. <A
+>7.1. <A
 HREF="#DEVEL-CATALOGS"
 >Drzewo katalogów</A
 ></DT
 ><DT
->6.2. <A
+>7.2. <A
 HREF="#DEVEL-DB"
 >Struktura bazy danych</A
 ></DT
 ><DT
->6.3. <A
+>7.3. <A
+HREF="#DEVEL-INI"
+>Format pliku konfiguracyjnego</A
+></DT
+><DT
+>7.4. <A
 HREF="#DEVEL-RIGHTS"
 >Poziomy dostêpu</A
 ></DT
 ><DT
->6.4. <A
+>7.5. <A
 HREF="#DEVEL-LIMITS"
 >Ograniczenia</A
 ></DT
@@ -244,12 +268,17 @@ CLASS="LOT"
 ></DT
 ><DT
 >4-1. <A
-HREF="#AEN748"
+HREF="#AEN693"
 >Lista skryptów wykonywalnych</A
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN1182"
+HREF="#AEN1186"
+>Lista modu³ów demona almsd</A
+></DT
+><DT
+>7-1. <A
+HREF="#AEN1629"
 >Drzewo katalogów LMS</A
 ></DT
 ></DL
@@ -264,57 +293,57 @@ CLASS="LOT"
 ></DT
 ><DT
 >3-1. <A
-HREF="#AEN478"
+HREF="#AEN505"
 >LMS-UI: Logowanie</A
 ></DT
 ><DT
 >3-2. <A
-HREF="#AEN488"
+HREF="#AEN515"
 >LMS-UI: Panel g³ówny</A
 ></DT
 ><DT
 >3-3. <A
-HREF="#AEN503"
+HREF="#AEN530"
 >LMS-UI: U¿ytkownicy</A
 ></DT
 ><DT
 >3-4. <A
-HREF="#AEN515"
+HREF="#AEN542"
 >LMS-UI: Komputery</A
 ></DT
 ><DT
 >3-5. <A
-HREF="#AEN524"
+HREF="#AEN551"
 >LMS-UI: Osprzêt sieciowy</A
 ></DT
 ><DT
 >3-6. <A
-HREF="#AEN533"
+HREF="#AEN560"
 >LMS-UI: Sieci IP</A
 ></DT
 ><DT
 >3-7. <A
-HREF="#AEN544"
+HREF="#AEN571"
 >LMS-UI: Taryfy i finanse</A
 ></DT
 ><DT
 >3-8. <A
-HREF="#AEN572"
+HREF="#AEN602"
 >LMS-UI: Bazy danych</A
 ></DT
 ><DT
 >3-9. <A
-HREF="#AEN581"
+HREF="#AEN611"
 >LMS-UI: Administratorzy</A
 ></DT
 ><DT
 >3-10. <A
-HREF="#AEN719"
+HREF="#AEN664"
 >Statystyki wykorzystania ³±cza- filtr</A
 ></DT
 ><DT
 >3-11. <A
-HREF="#AEN726"
+HREF="#AEN671"
 >Statystyki wykorzystania ³±cza - wykres</A
 ></DT
 ></DL
@@ -329,18 +358,23 @@ CLASS="LOT"
 ></DT
 ><DT
 >4-1. <A
-HREF="#AEN813"
+HREF="#AEN758"
 >Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</A
 ></DT
 ><DT
 >4-2. <A
-HREF="#AEN816"
+HREF="#AEN761"
 >Lms-notify: Przyk³ad szablonu</A
 ></DT
 ><DT
 >5-1. <A
-HREF="#AEN1170"
+HREF="#AEN1115"
 >Lms-mgc: Przyk³ad instancji</A
+></DT
+><DT
+>7-1. <A
+HREF="#AEN1847"
+>Format opcji konfiguracyjnych</A
 ></DT
 ></DL
 ></DIV
@@ -361,8 +395,8 @@ NAME="ABOUT-LMS"
 ></H2
 ><P
 >"LMS" jest skrótem od "LAN Management System". Jest to zestaw aplikacji 
-		w PHP i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi
-		(popularnie zwanymi Amatorskimi Sieciami Komputerowymi), opartych o bazê danych 
+		w PHP, C i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi
+		(popularnie zwanymi Amatorskimi Sieciami Komputerowymi), korzystaj±cych z bazy danych 
 		MySQL lub PostgreSQL. G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi 
 		u¿ytkowników na poziomie providera z prawdziwego zdarzenia. Najbardziej podstawowe 
 		cechy LMS to:</P
@@ -399,7 +433,7 @@ NAME="ABOUT-LMS"
 ><P
 >generowanie praktycznie jakiegokolwiek konfiga na podstawie danych 
 			o komputerach w bazie (przyk³adowe konfigi obejmuj± rc.masq na iptables, 
-			dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i odwrotny),</P
+			dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i odwrotny, htb),</P
 ></LI
 ><LI
 ><P
@@ -480,6 +514,14 @@ BORDER="0"
 ><TR
 ><TD
 >Mateusz 'mteg' Golicz</TD
+></TR
+><TR
+><TD
+><A
+HREF="http://k27.prv.pl/alec"
+TARGET="_top"
+>Aleksander 'A.L.E.C' Machniak</A
+></TD
 ></TR
 ></TBODY
 ></TABLE
@@ -859,7 +901,7 @@ CLASS="SECT2"
 ><H3
 CLASS="SECT2"
 ><A
-NAME="AEN149"
+NAME="AEN151"
 >1.4.1. Kontakt z autorami</A
 ></H3
 ><P
@@ -877,7 +919,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN153"
+NAME="AEN155"
 >1.4.2. Zg³aszanie b³êdów i pomys³ów</A
 ></H3
 ><P
@@ -898,7 +940,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN157"
+NAME="AEN159"
 >1.4.3. Najnowsza wersja</A
 ></H3
 ><P
@@ -928,7 +970,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN164"
+NAME="AEN166"
 >1.4.4. Historia zmian</A
 ></H3
 ><P
@@ -986,6 +1028,24 @@ CLASS="EMPHASIS"
 >, który te¿ jest skryptem ale na tyle 
 	uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i zrestartowaæ 
 	us³ugê na twoim serwerze.</P
+><P
+>Jest jeszcze <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>A.L.E.C's LMS Daemon</I
+></SPAN
+>, napisany w jêzyku C. Jest on przeznaczony 
+	(a w³a¶ciwie jego wtyczki) do generowania plików konfiguracyjnych i restartowania us³ug. 
+	Mo¿na go stosowaæ jako zamiennik lub uzupe³nienie skryptów perlowych.
+	Odpowiada on za to, aby to co zosta³o zmienione w <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> zosta³o zmienione tak¿e 
+	w rzeczywisto¶ci.</P
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -1000,7 +1060,7 @@ CLASS="SECT2"
 ><H3
 CLASS="SECT2"
 ><A
-NAME="AEN179"
+NAME="AEN184"
 >2.2.1. Serwer WWW</A
 ></H3
 ><P
@@ -1023,7 +1083,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN184"
+NAME="AEN189"
 >2.2.2. Interpreter PHP</A
 ></H3
 ><P
@@ -1041,7 +1101,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN188"
+NAME="AEN193"
 >2.2.3. Serwer baz danych</A
 ></H3
 ><P
@@ -1056,7 +1116,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN192"
+NAME="AEN197"
 >2.2.4. Biblioteka Smarty</A
 ></H3
 ><P
@@ -1078,7 +1138,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN197"
+NAME="AEN202"
 >2.2.5. Perl</A
 ></H3
 ><P
@@ -1125,6 +1185,25 @@ CLASS="EMPHASIS"
 ></UL
 ></P
 ></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="AEN220"
+>2.2.6. Kompilator jêzyka C</A
+></H3
+><P
+>Je¶li chcesz uruchomiæ <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>A.L.E.C's LMS Daemon</I
+></SPAN
+> bêdziesz potrzebowa³
+	  dzia³aj±cy kompilator jêzyka C, gdy¿ jest on dostarczany wy³±cznie w postaci
+	  kodu ¼ród³owego.</P
+></DIV
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -1157,6 +1236,48 @@ CLASS="FILENAME"
 >/var/www/lms</TT
 >).</P
 ><P
+>Je¿eli nie skorzysta³e¶ z wersji zawieraj±cej bibliotekê Smarty,
+		 pobierz j± i umie¶æ w katalogu <TT
+CLASS="FILENAME"
+>lib</TT
+>.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Po³o¿enie wszystkich katalogów mo¿esz zmieniæ w sekcji
+		 <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[directories]</I
+></SPAN
+> pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
 >Pliki z konfiguracj± (<TT
 CLASS="FILENAME"
 >sample/lms.ini</TT
@@ -1178,6 +1299,41 @@ CLASS="FILENAME"
 >/usr/sbin</TT
 >.
 		 </P
+><P
+><DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/warning.gif"
+HSPACE="5"
+ALT="Ostrze&#380;enie"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Serwer www musi mieæ prawo odczytu pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>
+		 oraz prawa odczytu i zapisu do katalogu <TT
+CLASS="FILENAME"
+>backup</TT
+>. 
+		 Stanowi to potencjalne obni¿enie poziomu bezpieczeñstwa systemu.
+		 </P
+></TD
+></TR
+></TABLE
+></DIV
+></P
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -1200,7 +1356,7 @@ CLASS="SECT3"
 ><H4
 CLASS="SECT3"
 ><A
-NAME="AEN233"
+NAME="AEN254"
 >2.4.1.1. Wstêp</A
 ></H4
 ><P
@@ -1217,7 +1373,7 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="AEN237"
+NAME="AEN258"
 >2.4.1.2. Instalacja serwera MySQL</A
 ></H4
 ><P
@@ -1240,7 +1396,7 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="AEN241"
+NAME="AEN262"
 >2.4.1.3. Utworzenie bazy danych</A
 ></H4
 ><P
@@ -1266,7 +1422,7 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="AEN245"
+NAME="AEN266"
 >2.4.1.4. Konfiguracja LMS (lms.ini)</A
 ></H4
 ><P
@@ -1312,7 +1468,7 @@ CLASS="SECT3"
 ><H4
 CLASS="SECT3"
 ><A
-NAME="AEN255"
+NAME="AEN276"
 >2.4.2.1. Wstêp</A
 ></H4
 ><P
@@ -1331,7 +1487,7 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="AEN259"
+NAME="AEN280"
 >2.4.2.2. Instalacja</A
 ></H4
 ><P
@@ -1358,7 +1514,7 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="AEN263"
+NAME="AEN284"
 >2.4.2.3. Utworzenie bazy danych</A
 ></H4
 ><P
@@ -1377,7 +1533,7 @@ CLASS="SECT3"
 ><HR><H4
 CLASS="SECT3"
 ><A
-NAME="AEN267"
+NAME="AEN288"
 >2.4.2.4. Konfiguracja LMS (lms.ini)</A
 ></H4
 ><P
@@ -1461,8 +1617,9 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >LMS-MGC</I
 ></SPAN
->.
-	    <DIV
+>.</P
+><P
+><DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
@@ -1493,7 +1650,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN285"
+NAME="AEN307"
 >2.5.1. Sekcja [database] - ustawienia bazy danych</A
 ></H3
 ><P
@@ -1568,7 +1725,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN314"
+NAME="AEN336"
 >2.5.2. Sekcja [directories] - ustawienia katalogów</A
 ></H3
 ><P
@@ -1695,7 +1852,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN357"
+NAME="AEN379"
 >2.5.3. Sekcja [phpui] - ustawienia interfejsu</A
 ></H3
 ><UL
@@ -1771,6 +1928,28 @@ CLASS="PROMPT"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >nodelist_pagelimit = 10</SAMP
+></P
+></LI
+><LI
+><P
+>balancelist_pagelimit</P
+><P
+>Limit wy¶wietlanych pozycji na stronie na rachunku u¿ytkownika. Domy¶lnie: 100.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>balancelist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>invoicelist_pagelimit</P
+><P
+>Limit wy¶wietlanych pozycji na stronie w li¶cie faktur. Domy¶lnie: 100</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>invoicelist_pagelimit = 50</SAMP
 ></P
 ></LI
 ><LI
@@ -1874,17 +2053,6 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->enable_stats</P
-><P
->W³±czenie/wy³±czenie dostêpno¶ci w menu modu³u 'traffic'. Domy¶lnie wy³±czone.</P
-><P
->Przyk³ad:	<SAMP
-CLASS="PROMPT"
->enable_stats = 1</SAMP
-></P
-></LI
-><LI
-><P
 >default_zip, default_city, default_address</P
 ><P
 >Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
@@ -1923,7 +2091,7 @@ CLASS="SECT2"
 ><H3
 CLASS="SECT2"
 ><A
-NAME="AEN439"
+NAME="AEN466"
 >2.6.1. Idea</A
 ></H3
 ><P
@@ -2005,7 +2173,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN464"
+NAME="AEN491"
 >2.6.2. Jak to dzia³a?</A
 ></H3
 ><P
@@ -2077,7 +2245,7 @@ NAME="USER-LOGIN"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN478"
+NAME="AEN505"
 ></A
 ><P
 ><B
@@ -2114,7 +2282,7 @@ NAME="USER-ALL"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN488"
+NAME="AEN515"
 ></A
 ><P
 ><B
@@ -2183,7 +2351,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN503"
+NAME="AEN530"
 ></A
 ><P
 ><B
@@ -2244,7 +2412,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN515"
+NAME="AEN542"
 ></A
 ><P
 ><B
@@ -2273,11 +2441,12 @@ NAME="MENU-NETDEVICES"
 >W panelu przeznaczonym do ewidencji sprzêtu mo¿na przegl±daæ listê
 	urz±dzeñ sieciowych, zawieraj±c± ich nazwy i symbole, po³o¿enie i opis, a ponadto 
 	ilo¶æ dostêpnych portów. Klikniêcie na wybranym urz±dzeniu spowoduje
-	wy¶wietlenie informacji szczegó³owych o nim.</P
+	wy¶wietlenie informacji szczegó³owych o nim. Mo¿liwe jest definiowanie po³±czeñ
+	urz±dzeñ i komputerów oraz generowanie graficznej mapy ca³ej sieci.</P
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN524"
+NAME="AEN551"
 ></A
 ><P
 ><B
@@ -2310,7 +2479,7 @@ NAME="USER-NETWORKS"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN533"
+NAME="AEN560"
 ></A
 ><P
 ><B
@@ -2348,7 +2517,7 @@ NAME="MENU-TARIFFS"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN544"
+NAME="AEN571"
 ></A
 ><P
 ><B
@@ -2439,9 +2608,27 @@ NAME="MENU-RELOAD"
 >3.2.7. Prze³adowanie</A
 ></H3
 ><P
->Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji zdefiniowanej
-	dla generatora plików konfiguracyjnych lms-mgc. Wiêcej informacji znajdziesz w rozdziale
-	dotycz±cym lms-mgc.</P
+>Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji i us³ug zdefiniowanych
+	dla generatora plików konfiguracyjnych <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-MGC</I
+></SPAN
+> lub demona <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+>. 
+	Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-MGC</I
+></SPAN
+> oraz demona.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -2504,7 +2691,7 @@ CLASS="FILENAME"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN572"
+NAME="AEN602"
 ></A
 ><P
 ><B
@@ -2539,7 +2726,7 @@ NAME="MENU-ADMINS"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN581"
+NAME="AEN611"
 ></A
 ><P
 ><B
@@ -2574,255 +2761,66 @@ NAME="USER-STAFF-FAKTURY"
 >3.3.1. Faktury</A
 ></H3
 ><P
->LMS umo¿liwia wystawianie faktur. Opcja ta jest standardowo wy³±czona, dlatego na wstêpie
-		musisz w sekcji <SPAN
+>LMS umo¿liwia wystawianie faktur. W³±czenia tej opcji dokonuje siê podczas
+		przypisywania taryf u¿ytkownikom. Do poprawnego dzia³ania i tworzenia wydruków
+		wymagane jest ustawienie podstawowych opcji w sekcji <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->[finances]</I
+>[invoices]</I
 ></SPAN
-> <TT
+> 
+		<TT
 CLASS="FILENAME"
 >lms.ini</TT
-> ustawiæ nastêpuj±ce 
-		parametry:
+>:
 		<UL
 ><LI
 ><P
->enable_faktury</P
+>number_template</P
 ><P
->W³±czenie modu³u wystawiania faktur</P
+>Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku,
+			'%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->enable_faktury = 1</SAMP
+>number_template = %N/%Y"</SAMP
 ></P
 ></LI
 ><LI
 ><P
->name</P
+>seller</P
 ><P
->Nazwa sieci/organizacji na fakturze</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->name = "Blokowa Sieæ Komputerowa K-27"</SAMP
-></P
-></LI
-><LI
-><P
->address</P
-><P
->Adres sieci</P
+>Dane sprzedawcy. Domy¶lnie: pusty</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->address = "Wiosenna 52"</SAMP
-></P
-></LI
-><LI
-><P
->zip</P
-><P
->Kod pocztowy</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->zip = "39-300"</SAMP
-></P
-></LI
-><LI
-><P
->city</P
-><P
->Nazwa miasta</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->city = "Mielec"</SAMP
-></P
-></LI
-><LI
-><P
->deadline</P
-><P
->Termin zaplaty w dniach</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->deadline = 5</SAMP
-></P
-></LI
-><LI
-><P
->bank</P
-><P
->Nazwa banku</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->bank = "Bank S.A. O/Mielec"</SAMP
-></P
-></LI
-><LI
-><P
->account</P
-><P
->Numer konta bankowego</P
-><P
->Przyk³ad: <SAMP
-CLASS="PROMPT"
->account = "123-456789-01"</SAMP
+>seller = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >footer</P
 ><P
->Stopka widoczna na fakturze</P
+>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->footer = "BSK K-27 w Mielcu, tel.5839455, fax.1234567"</SAMP
+>footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</SAMP
 ></P
 ></LI
 ><LI
 ><P
->template</P
+>default_author</P
 ><P
->Szablon faktury do u¿ycia</P
+>Domy¶lna osoba wystawiaj±ca fakturê. Domy¶lnie: puste</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->template = /etc/lms/faktura.rtf</SAMP
+>default_author = "specjalista d/s fakturowania"</SAMP
 ></P
 ></LI
 ></UL
->
-		</P
-><P
->Szablon jest niczym innym jak dokumentem tekstowym w formacie RTF (tekstowym)
-		lub html który mo¿na stworzyæ pod dowolnym programem obs³uguj±cym RTF. Plik ten
-		powinien wygl±daæ jak gotowa faktura, a pozycje które maj± byæ rozwijane przez
-		LMS nale¿y zast±piæ nastêpuj±cymi s³owami kluczowymi:
-		<UL
-><LI
-><P
->%nabywca - jest rozwijany do imienia i nazwiska nabywcy</P
-></LI
-><LI
-><P
->%nab_adres - jest rozwijany do adresu nabywcy (ulica)</P
-></LI
-><LI
-><P
->%nab_adres_cd - jest rozwijany do adresu nabywcy (kod pocztowy i miasto)</P
-></LI
-><LI
-><P
->%nip - nip nabywcy</P
-></LI
-><LI
-><P
->%nr_klienta - numer klienta (ID) z bazy u¿ytkowników</P
-></LI
-><LI
-><P
->%sprzedawca - nazwa sprzedawcy</P
-></LI
-><LI
-><P
->%sprzed_adres - adres sprzedawcy</P
-></LI
-><LI
-><P
->%sprzed_adres_cd - ci±g dalszy adreu sprzedawcy</P
-></LI
-><LI
-><P
->%numer - numer kolejny faktury w postaci id_operacji_kasowej/rok</P
-></LI
-><LI
-><P
->%data - data wystawienia faktury</P
-></LI
-><LI
-><P
->%termin - termin zap³aty (ilo¶æ dni ustawia siê w lms.ini)</P
-></LI
-><LI
-><P
->%dni - ilo¶æ dni do zap³aty, mo¿na ustawiæ j/w</P
-></LI
-><LI
-><P
->%usluga - nazwa us³ugi, jak nazwa jest pobierany opis operacji kasowej</P
-></LI
-><LI
-><P
->%od - pierwszy dzieñ okresu ¶wiadczenia us³ugi (pierwszy dzieñ
-                   		miesi±ca, w ktorym by³o wpisane obci±¿enie do bazy)</P
-></LI
-><LI
-><P
->%do - ostatni dzieñ okresu ¶wiadczenia us³ugi (ostatni dzieñ
-                   		miesi±ca, w ktorym by³o wpisane obci±¿enie do bazy)</P
-></LI
-><LI
-><P
->%netto - warto¶æ us³ugi netto, bezpo¶rednio przepisana z bazy</P
-></LI
-><LI
-><P
->%brutto - netto + 7% VAT</P
-></LI
-><LI
-><P
->%vat - warto¶æ VAT (netto * 7%)</P
-></LI
-><LI
-><P
->%slownie - kwota do zap³aty s³ownie</P
-></LI
-><LI
-><P
->%konto - jest rozwijane do numeru konta bankowego</P
-></LI
-><LI
-><P
->%wystawil - jest rozwijane do danych administratora zalogowanego aktualnie w LMS</P
-></LI
-><LI
-><P
->%stopka - pozwala na wpisanie danych do stopki</P
-></LI
-></UL
->
-		<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Przyk³adowy szablon znajduje siê w katalogu sample (faktura.rtf) i by³
-				testowany pod OpenOffice i M$ Office.</P
-></TD
-></TR
-></TABLE
-></DIV
 >
 		</P
 ><P
@@ -2847,33 +2845,7 @@ ALT="Ostrze&#380;enie"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->W bazie danych zapisywane s± kwoty netto. Jak na razie, nie ma
-				mo¿liwo¶ci ustawienia kilku stawek podatku VAT.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-		<DIV
-CLASS="WARNING"
-><TABLE
-CLASS="WARNING"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/warning.gif"
-HSPACE="5"
-ALT="Ostrze&#380;enie"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Do postaci s³ownej rozwi±zywane s± liczby mniejsze od 999.</P
+>W bazie danych zapisywane s± kwoty brutto. </P
 ></TD
 ></TR
 ></TABLE
@@ -2897,46 +2869,7 @@ NAME="USER-STAFF-STATS"
 	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
 	ostatnich 30 dni lub ostatniego roku.</P
 ><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Menu 'Statystyki' jest standardowo niedostêpne. Aby je w³±czyæ, nale¿y w sekcji
-	<SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->[phpui]</I
-></SPAN
-> pliku <TT
-CLASS="FILENAME"
->lms.ini</TT
-> ustawiæ zmienn±:
-	<SAMP
-CLASS="PROMPT"
->enable_stats = 1</SAMP
->.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-	<DIV
+>	<DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
@@ -3018,7 +2951,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN719"
+NAME="AEN664"
 ></A
 ><P
 ><B
@@ -3039,7 +2972,7 @@ SRC="images/stats-small.png"></SPAN
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN726"
+NAME="AEN671"
 ></A
 ><P
 ><B
@@ -3119,7 +3052,7 @@ NAME="SCRIPTS-LIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN748"
+NAME="AEN693"
 ></A
 ><P
 ><B
@@ -3181,7 +3114,7 @@ ALIGN="CENTER"><THEAD
 ><TD
 >lms-makedhcpconf</TD
 ><TD
->Konfiguracja serwera DHCP(/etc/ethers)</TD
+>Konfiguracja serwera DHCP(/etc/dhcpd.conf)</TD
 ></TR
 ><TR
 ><TD
@@ -3226,7 +3159,7 @@ CLASS="SECT2"
 ><H3
 CLASS="SECT2"
 ><A
-NAME="AEN794"
+NAME="AEN739"
 >4.3.1. Szablony</A
 ></H3
 ><P
@@ -3266,7 +3199,7 @@ NAME="AEN794"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN813"
+NAME="AEN758"
 ></A
 ><P
 ><B
@@ -3288,7 +3221,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN816"
+NAME="AEN761"
 ></A
 ><P
 ><B
@@ -3340,7 +3273,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN819"
+NAME="AEN764"
 >4.3.2. Konfiguracja</A
 ></H3
 ><P
@@ -3511,7 +3444,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN880"
+NAME="AEN825"
 >4.6.1. Instalacja</A
 ></H3
 ><P
@@ -4350,7 +4283,7 @@ NAME="MGC-EXAMPLE"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN1170"
+NAME="AEN1115"
 ></A
 ><P
 ><B
@@ -4391,25 +4324,1531 @@ CLASS="FILENAME"
 CLASS="CHAPTER"
 ><HR><H1
 ><A
+NAME="DAEMON"
+></A
+>Rozdzia&#322; 6. A.L.E.C's LMS Daemon</H1
+><DIV
+CLASS="SECT1"
+><H2
+CLASS="SECT1"
+><A
+NAME="DAEMON-INTRO"
+>6.1. Informacje podstawowe</A
+></H2
+><P
+>Napisany w jêzyku C program ma u³atwiaæ zarz±dzanie us³ugami. Sam demon odpowiada
+    	za uruchamianie odpowiednich modu³ów na ¿±danie u¿ytkownika. Modu³y
+    	natomiast, s³u¿± do tworzenia plików konfiguracyjnych na podstawie 
+    	danych z bazy LMS'a oraz restartowania odpowiednich us³ug na serwerze.
+    	</P
+><P
+>Dlaczego taka nazwa? Wiêkszo¶æ kodu demona napisa³ jeden z developerów - Aleksander 
+	'A.L.E.C' Machniak, niemniej nale¿y tak¿e podkre¶liæ udzia³ Marcina 'Lexx' Króla. Program zawiera
+	fragmenty kodu autorstwa Mateusza 'mteg' Golicza oraz korzysta z biblioteki
+	iniparser Nicolasa Devillarda. Je¶li Ty masz ochotê napisaæ jaki¶ modu³ lub poprawiæ 
+	funkcjonalno¶æ demona jak najbardziej do tego zachêcam.
+	</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-REQUIREMENTS"
+>6.1.1. Wymagania</A
+></H3
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>A.L.E.C's LMS Daemon</I
+></SPAN
+> potrzebuje:
+      			<UL
+><LI
+><P
+>instalacji interfejsu u¿ytkownika <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+></P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+>libmysqlclient</TT
+> (tj. pe³nej instalacji MySQL'a lub odpowiedniego 
+				pakietu) lub <TT
+CLASS="FILENAME"
+>libpq</TT
+> w przypadku bazy PostgreSQL</P
+></LI
+><LI
+><P
+><TT
+CLASS="FILENAME"
+>libdl</TT
+> (to w ka¿dej dzisiejszej dystrybucji jest)</P
+></LI
+><LI
+><P
+>kompilatora jêzyka C </P
+></LI
+></UL
+>
+      			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-INSTALL"
+>6.1.2. Instalacja</A
+></H3
+><P
+>Przed kompilacj± nale¿y przy pomocy skryptu <TT
+CLASS="FILENAME"
+>./configure</TT
+>
+			ustaliæ opcje przedstawione na poni¿szym listingu (w nawiasach podano
+			warto¶ci domy¶lne opcji):
+<PRE
+CLASS="SCREEN"
+>  --help                pomoc
+  --enable-debug0       logowanie zapytañ SQL (wy³±czone)
+  --enable-debug1       logowanie zdarzeñ (wy³±czone)
+  --with-pgsql          gdy korzystamy z bazy PostgreSQL (wy³±czone)
+  --with-mysql          gdy korzystamy z bazy MySQL (w³±czone)
+  --prefix=DIR          katalog instalacyjny demona (/usr/local/bin)
+  --libdir=DIR          lokalizacja bibliotek bazy danych (/usr/lib)
+  --incdir=DIR          lokalizacja plików nag³ówkowych bazy danych (/usr/include)</PRE
+>
+			Zatem wymagane jest okre¶lenie bazy z jakiej bêdziemy korzystaæ (-with-mysql 
+			lub -with-pgsql) oraz po³o¿enia bibliotek dostarczanych wraz z baz± (--incdir, --libdir).
+<PRE
+CLASS="SCREEN"
+># ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include</PRE
+>
+    			Nastêpnie kompilacja i instalacja (umieszczenie demona w katalogu
+			okre¶lonym zmienn± --prefix):
+<PRE
+CLASS="SCREEN"
+># make &#38;&#38; make install</PRE
+>
+			Na koniec skompilowane modu³y (pliki z rozszerzeniem <TT
+CLASS="FILENAME"
+>.so</TT
+>),
+			znajduj±ce siê w katalogu <TT
+CLASS="FILENAME"
+>modules/nazwa_modu³u</TT
+> przenie¶ 
+			do dowolnego katalogu. Ich lokalizacjê bêdziesz okre¶la³ w pliku konfiguracyjnym.
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-CONFIG"
+>6.1.3. Konfiguracja</A
+></H3
+><P
+>Na pocz±tku nale¿y w pliku konfiguracyjnym <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>
+			(standardowo <TT
+CLASS="FILENAME"
+>/etc/lms/lms.ini</TT
+>) ustawiæ typ reloadu 
+			obs³ugiwany przez demona:
+<PRE
+CLASS="SCREEN"
+>reload_type	= sql
+reload_sqlquery	= "INSERT INTO reload VALUES('reload')"</PRE
+>
+			<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Struktura tabeli 'reload' jest dowolna, zatem musisz zadbaæ 
+			o odpowiedni insert.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+			</P
+><P
+>Przyk³adowy konfig demona i modu³ów zawarto w pliku <TT
+CLASS="FILENAME"
+>lms.ini.sample</TT
+>.
+			Poni¿szy listing przedstawia podstawowe opcje dla demona (konfiguracjê modu³ów omówiono w 
+			osobnych rozdzia³ach ich dotycz±cych):
+<PRE
+CLASS="SCREEN"
+>[database]
+host            = localhost     # nazwa lub ip hosta, domy¶lnie: localhost
+user            = lms           # nazwa u¿ytkownika, domy¶lnie: lms
+password        = mypasswd      # has³o do bazy, domy¶lnie: puste
+database        = lms           # nazwa bazy, domy¶lnie: lms
+port            = 0             # numer portu, domy¶lnie: 0
+
+[lmsd]
+sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma 
+                                # ma byæ sprawdzana tabela 'reload', domy¶lnie: 30
+instances       = hosts oident firewall       # lista instancji modu³ów</PRE
+>
+			<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Lista instancji sk³ada siê z nazw instancji oddzielonych 
+			spacj±. Instancja to nazwa sekcji w pliku konfiguracyjnym.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+			</P
+><P
+>W sekcji dotycz±cej instancji, oprócz parametrów konfiguracji
+			modu³ów, umieszcza siê opcje podstawowe, jak na poni¿szym listingu:
+<PRE
+CLASS="SCREEN"
+>[nazwa_instancji]
+module = /¶cie¿ka/nazwa_modu³u.so
+info = "Opcjonalny opis modu³u"</PRE
+>		
+			</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-RUN"
+>6.1.4. Uruchomienie</A
+></H3
+><P
+>Program mo¿esz uruchamiaæ jako demona pracuj±cego w tle (opcja '-b'). Wtedy 
+			prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie, przez wpis do tabeli 
+			'reload'. Opcja 'sleeptime' (-s) okre¶la okres miêdzy
+			odczytami tej tabeli. Gdy do tabeli 'reload' zostan± zapisane dowolne dane 
+			(przy pomocy menu 'Prze³adowanie' w <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>)
+			demon wykona modu³y okre¶lone opcj± 'instances' z <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>.
+			Na przyk³ad:
+<PRE
+CLASS="SCREEN"
+># almsd -b</PRE
+>			
+			</P
+><P
+>Innym sposobem uruchomienia jest jednorazowy reload w wykorzystaniem
+			crona. Z tego sposobu nale¿y korzystaæ uruchamiaj±c modu³y takie jak 'payments'
+			'notify' 'traffic'. W tym wypadku musisz stworzyæ osobny plik konfiguracyjny 
+			dla ka¿dego modu³u (zawieraj±cy równie¿ opcje dla demona) i podaæ go demonowi
+			przy pomocy opcji '-c'. Przyk³adowy wpis do crontab'a wygl±da nastêpuj±co:
+<PRE
+CLASS="SCREEN"
+>  1 0 * * *    /usr/local/bin/almsd -q -c /etc/lms/payments.lms.ini</PRE
+>
+			</P
+><P
+>Poni¿szy listing przedstawia dostêpne opcje linii poleceñ programu:
+<PRE
+CLASS="SCREEN"
+>  -c	¶cie¿ka do pliku konfiguracyjnego (domy¶lnie: /etc/lms/lms.ini)
+  -b	uruchomienie w tle
+  -s	czas w sek. miêdzy odczytami tabeli 'reload' (domy¶lnie: 30)
+  -q 	wykonaj reload i zakoñcz
+  -h 	wy¶wietla opcje linii poleceñ</PRE
+>
+			</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="DAEMON-MODULES"
+>6.2. Modu³y</A
+></H2
+><P
+>Sam demon potrafi tylko uruchamiaæ modu³y i to one odwalaj± ca³± robotê. 
+	Wiêkszo¶æ modu³ów jest przeznaczona do okre¶lonego zastosowania, jedynie 'hostfile' 
+	mo¿na u¿ywaæ do ró¿nych konfigów (us³ug), np. ró¿nych typów firewalli. Przyk³ady 
+	konfiguracji demona i modu³ów zawiera plik <TT
+CLASS="FILENAME"
+>daemon/lms.ini.sample</TT
+>.
+	Parametry konfiguracyjne modu³ów umieszcza siê w sekcjach instancji je wywo³uj±cych.</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-MODULESLIST"
+>6.2.1. Lista dostêpnych modu³ów</A
+></H3
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN1186"
+></A
+><P
+><B
+>Tabela 6-1. Lista modu³ów demona almsd</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL
+WIDTH="200"
+ALIGN="CENTER"><COL
+WIDTH="300"
+ALIGN="CENTER"><THEAD
+><TR
+><TH
+>Nazwa</TH
+><TH
+>Opis</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>dhcp</TD
+><TD
+>Konfiguracja serwera dhcpd</TD
+></TR
+><TR
+><TD
+>cutoff</TD
+><TD
+>Od³±czanie u¿ytkowników z zaleg³o¶ciami w op³atach</TD
+></TR
+><TR
+><TD
+>dns</TD
+><TD
+>Konfiguracja serwera dns</TD
+></TR
+><TR
+><TD
+>ethers</TD
+><TD
+>Tworzenie pliku /etc/ethers</TD
+></TR
+><TR
+><TD
+>hostfile</TD
+><TD
+>Modu³ uniwersalny (np. tworzenie regó³ iptables)</TD
+></TR
+><TR
+><TD
+>notify</TD
+><TD
+>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach poczt± elektroniczn±</TD
+></TR
+><TR
+><TD
+>ggnotify</TD
+><TD
+>Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach przez gadu-gadu</TD
+></TR
+><TR
+><TD
+>payments</TD
+><TD
+>Naliczanie op³at abonamentowych</TD
+></TR
+><TR
+><TD
+>oident</TD
+><TD
+>Konfiguracja oident</TD
+></TR
+><TR
+><TD
+>tc</TD
+><TD
+>Tworzenie regó³ HTB</TD
+></TR
+><TR
+><TD
+>traffic</TD
+><TD
+>Statystyki wykorzystania ³±cza</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-PAYMENTS"
+>6.2.2. Payments</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="PAYMENTS-DESC"
+>6.2.2.1. Opis</A
+></H4
+><P
+>Modu³ nalicza u¿ytkownikom op³aty abonamentowe. Nale¿y go uruchamiaæ 
+		    codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
+		    taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn± 'comment'.
+		    Po naliczeniu op³at tworzone s± faktury.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="PAYMENTS-CONFIG"
+>6.2.2.2. Konfiguracja</A
+></H4
+><P
+>Dla tego modu³u s± dostêpne nastêpuj±ce zmienne kofiguracyjne:</P
+><UL
+><LI
+><P
+>comment</P
+><P
+>Komentarz do operacji. '%period' zostanie zamienione na daty od-do 
+			    nale¿nego abonamentu, np. '10.10.2003 - 09.11.2003', a '%tariff' na nazwê
+			    odpowiedniej taryfy. Domy¶lnie: 'Abonament wg taryfy: '%tariff' za okres: %period'.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>comment = 'Abonament miesiêczny za okres %period' </SAMP
+></P
+></LI
+><LI
+><P
+>up_payments</P
+><P
+>"Naliczanie z góry", czyli czy okres w komentarzu ma byæ liczony do 
+			    przodu, czy do ty³u w stosunku do daty naliczenia op³aty. Domy¶lnie: yes.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>up_payments = no</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-NOTIFY"
+>6.2.3. Notify</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="NOTIFY-DESC"
+>6.2.3.1. Opis</A
+></H4
+><P
+>Modu³ 'notify' s³u¿y do informowania u¿ytkowników o zaleg³o¶ciach
+		    w op³atach za pomoc± poczty elektronicznej. Aktualne saldo u¿ytkownika
+		    porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze - wiadomo¶æ
+		    zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego szablonu, 
+		    w którym mo¿na stosowaæ nastêpuj±ce zmienne:
+		    <UL
+><LI
+><P
+>%saldo - aktualne saldo u¿ytkownika</P
+></LI
+><LI
+><P
+>%name - imiê u¿ytkownika</P
+></LI
+><LI
+><P
+>%lastname - nazwisko/nazwa u¿ytkownika</P
+></LI
+><LI
+><P
+>%last_10_in_a_table - wyci±g ostatnich 10 operacji na kocie u¿ytkownika</P
+></LI
+></UL
+></P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="NOTIFY-CONFIG"
+>6.2.3.2. Konfiguracja</A
+></H4
+><P
+>Poni¿ej przedstawiono dostêpne opcje konfiguracyjne modu³u 'notify':</P
+><UL
+><LI
+><P
+>mailtemplate</P
+><P
+>Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>mailtemplate = modules/notify/sample/mailtemplate</SAMP
+></P
+></LI
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/mail</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>file = /tmp/mail.txt</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie pow³oki wysy³aj±ce e-maila. '%address' zostanie zast±pione
+			    adresem e-mail u¿ytkownika. Domy¶lnie: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = 'mail %address -s "musisz zap³aciæ, bo jak nie..." &lt; /tmp/mail.txt'</SAMP
+></P
+></LI
+><LI
+><P
+>limit</P
+><P
+>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
+			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>limit = -20</SAMP
+></P
+></LI
+><LI
+><P
+>debug_mail</P
+><P
+>Okre¶la adres na który zostan± wys³ane wszystkie wiadomo¶ci, przydatne
+			    podczas testów. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>debug_mail = localhost@moja.net</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-GGNOTIFY"
+>6.2.4. Ggnotify</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="GGNOTIFY-DESC"
+>6.2.4.1. Opis</A
+></H4
+><P
+>Odpowiednik modu³u 'notify' s³u¿±cy do wysy³ania wiadomo¶ci gadu-gadu.
+		    Aktualne saldo u¿ytkownika porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze 
+		    - wiadomo¶æ zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego szablonu, 
+		    w którym mo¿na stosowaæ zmienne takie jak dla modu³u 'notify' (mo¿e to byæ te¿ ten sam 
+		    szablon).</P
+><P
+>Modu³ wymaga zainstalowanej biblioteki <TT
+CLASS="FILENAME"
+>libgadu</TT
+> oraz ¼róde³
+		    programu <TT
+CLASS="FILENAME"
+>ekg</TT
+>. Odpowiednie ¶cie¿ki do nich nale¿y ustawiæ
+		    w <TT
+CLASS="FILENAME"
+>modules/ggnotify/Makefile</TT
+> przed kompilacj± modu³u.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="GGNOTIFY-CONFIG"
+>6.2.4.2. Konfiguracja</A
+></H4
+><P
+>Podobnie jak w 'notify' masz do dyspozycji nastêpuj±ce zmienne:</P
+><UL
+><LI
+><P
+>ggtemplate</P
+><P
+>Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>ggtemplate = modules/ggnotify/sample/mailtemplate</SAMP
+></P
+></LI
+><LI
+><P
+>uin</P
+><P
+>Identyfikator gadu-gadu u¿ytkownika wysy³aj±cego wiadomo¶ci. 
+			    Domy¶lnie: pusty.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>uin = 1234567</SAMP
+></P
+></LI
+><LI
+><P
+>password</P
+><P
+>Has³o dla konta okre¶lonego zmienn± 'uin'. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>password = "moje_trudne__has³o"</SAMP
+></P
+></LI
+><LI
+><P
+>limit</P
+><P
+>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
+			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>limit = -20</SAMP
+></P
+></LI
+><LI
+><P
+>debug_uin</P
+><P
+>Je¶li ustawione, na to konto zostan± wys³ane wszyskie wiadomo¶ci.
+			    Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>debug_uin = 7654321</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-CUTOFF"
+>6.2.5. Cutoff</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="CUTOFF-DESC"
+>6.2.5.1. Opis</A
+></H4
+><P
+>Cutoff zmienia na 'od³±czony' status komputerów u¿ytkownikom, którzy
+		    maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ nie zajmuje
+		    siê fizycznym blokowaniem dostêpu do sieci. Nale¿y pamiêtaæ aby uruchamiaæ
+		    go przed modu³ami takimi jak np. 'hostfile'. Wa¿na jest kolejno¶æ instancji
+		    na li¶cie w zmiennej 'instances'. Modu³ 'cutoff' najlepiej uruchamiaæ codziennie.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="CUTOFF-CONFIG"
+>6.2.5.2. Konfiguracja</A
+></H4
+><P
+>Modu³ 'cutoff' posiada tylko jeden parametr:</P
+><UL
+><LI
+><P
+>limit</P
+><P
+>Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej
+			    kwoty okre¶lonej t± zmienn±. Domy¶lnie: 0.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>limit = -20</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-DHCP"
+>6.2.6. Dhcp</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="DHCP-DESC"
+>6.2.6.1. Opis</A
+></H4
+><P
+>Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
+		    restartuje us³ugê. Zmienna 'command' umo¿liwia równie¿ wykonywanie innych 
+		    czynno¶ci (programów).</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="DHCP-CONFIG"
+>6.2.6.2. Konfiguracja</A
+></H4
+><P
+>Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom 
+		    pliku konfiguracyjnego dhcpd, które w typowych zastosowaniach
+		    nie wymagaj± zmiany:</P
+><UL
+><LI
+><P
+>file</P
+><P
+>Okre¶la lokalizacjê pliku konfiguracyjnego serwera dhcp. 
+			    Domy¶lnie: /tmp/dhcpd.conf.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>file = /etc/dhcpd.conf</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie wykonywane po utworzeniu pliku konfiguracyjnego. 
+			    Domy¶lnie: pusta.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = 'killall -HUP dhcpd'</SAMP
+></P
+></LI
+><LI
+><P
+>begin</P
+><P
+>Nag³ówek pliku. Domy¶lnie: "shared-network LMS {".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>begin = "shared-network LMS {"</SAMP
+></P
+></LI
+><LI
+><P
+>end</P
+><P
+>Stopka pliku. Domy¶lnie: "}".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>end = "\n}"</SAMP
+></P
+></LI
+><LI
+><P
+>subnet_start</P
+><P
+>Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Domy¶lnie: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>subnet_start = "subnet %a netmask %m {default-lease-time 3600;"</SAMP
+></P
+></LI
+><LI
+><P
+>subnet_end</P
+><P
+>Stopka podsieci. Domy¶lnie: "}".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>subnet_end = '\t}'</SAMP
+></P
+></LI
+><LI
+><P
+>subnet_gateway</P
+><P
+>Brama podsieci. '%i' zostanie zamienione na adres ip. Domy¶lnie: 'option routers %i;'.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>subnet_gateway = "option routers %i"</SAMP
+></P
+></LI
+><LI
+><P
+>subnet_dns</P
+><P
+>DNS'y podsieci. '%i - adresy dns'ów. Domy¶lnie: "option domain-name-servers %i;".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>subnet_dns = "option domain-name-servers 192.168.0.1"</SAMP
+></P
+></LI
+><LI
+><P
+>subnet_domain</P
+><P
+>Nazwa domenowa podsieci. '%n' - nazwa. Domy¶lnie: "option domain-name %n;".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>subnet_domain = "option domain-name test.%n;"</SAMP
+></P
+></LI
+><LI
+><P
+>subnet_wins</P
+><P
+>Serwery wins. '%i' - adres ip serwera. Domy¶lnie: "option netbios-name-servers %i;".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>subnet_wins = ""</SAMP
+></P
+></LI
+><LI
+><P
+>subnet_range</P
+><P
+>Zakres adresów podsieci. '%s' - adres pocz±tkowy, '%e' - koniec zakresu. Domy¶lnie: "range %s %e;".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>subnet_range = "range %s %e;"</SAMP
+></P
+></LI
+><LI
+><P
+>host</P
+><P
+>Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' - adres ip. 
+			    Domy¶lnie: "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>host = "host %n {hardware ethernet %m; fixed-address %i;}"</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-HOSTFILE"
+>6.2.7. Hostfile</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="HOSTFILE-DESC"
+>6.2.7.1. Opis</A
+></H4
+><P
+>Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
+		    wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
+		    status (od³±czony/pod³±czony), dlatego mo¿liwe jest tworzenie np. regó³
+		    dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku 
+		    i nastêpnie wykonuje okre¶lone polecenie pow³oki.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="HOSTFILE-CONFIG"
+>6.2.7.2. Konfiguracja</A
+></H4
+><P
+>W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
+		    które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
+		    adresem, '%n' - nazw± komputera. Poni¿ej opcje udostêpniane przez ten modu³</P
+><UL
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/hostfile</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>file = /etc/rc.d/rc.firewall</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie pow³oki wyk. po utworzeniu pliku 'file'. Domy¶lnie: puste</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = '/bin/sh /etc/rc.d/rc.firewall'</SAMP
+></P
+></LI
+><LI
+><P
+>begin</P
+><P
+>Nag³ówek pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -F FORWARD\n"</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>begin = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"</SAMP
+></P
+></LI
+><LI
+><P
+>end</P
+><P
+>Stopka pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>end = "$IPT -A FORWARD -J REJECT\n"</SAMP
+></P
+></LI
+><LI
+><P
+>grantedhost</P
+><P
+>Tekst dla hosta pod³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</SAMP
+></P
+></LI
+><LI
+><P
+>deniedhost</P
+><P
+>Tekst dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-TRAFFIC"
+>6.2.8. Traffic</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="TRAFFIC-DESC"
+>6.2.8.1. Opis</A
+></H4
+><P
+>'Traffic' to odpowiednik perlowego lms-traffic, zapisuj±cy do bazy statystyki
+		    wykorzystania ³±cza z pliku utworzonego przez u¿ytkownika. Plik taki powinien mieæ 
+		    format: ip_hosta upload download . Wiêcej informacji (w tym jak utworzyæ taki plik)
+		    mo¿na znale¼æ w rozdziale dotycz±cym lms-traffic.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="TRAFFIC-CONFIG"
+>6.2.8.2. Konfiguracja</A
+></H4
+><P
+>Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:</P
+><UL
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku ze statystykami firewalla. Domy¶lnie: /var/log/traffic.log</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>file = /tmp/log</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-TC"
+>6.2.9. Tc (HTB)</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="TC-DESC"
+>6.2.9.1. Opis</A
+></H4
+><P
+>Do pliku okre¶lonego opcj± 'file' zapisywane s± dane dotycz±ce uploadu
+		    i downloadu dla komputerów okre¶lonego w taryfach, w formacie: upload, download, 
+		    numer_ip_hosta_lub_ich_lista.</P
+><P
+>Tak przygotowany plik mo¿na wykorzystaæ w skrypcie tworz±cym regu³y htb.
+		    Przyk³adowy skrypt <TT
+CLASS="FILENAME"
+>htb.sh</TT
+> zamieszczono w katalogu 
+		    <TT
+CLASS="FILENAME"
+>modules/tc/sample</TT
+>. Opcja 'command' jest odpowiedzialna za
+		    uruchomienie takiego skryptu.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="TC-CONFIG"
+>6.2.9.2. Konfiguracja</A
+></H4
+><P
+>Ten modu³ zawiera standardowe parametry:</P
+><UL
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/tc.dat.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>file = /tmp/htb.data</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie pow³oki wykonywane po utworzeniu pliku. Domy¶lnie: "/bin/sh sample/htb.sh &#60; /tmp/tc.dat".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = "/bin/bash modules/tc/sample/htb.sh &#60; /tmp/tc.dat"</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-DNS"
+>6.2.10. Dns</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="DNS-DESC"
+>6.2.10.1. Opis</A
+></H4
+><P
+>Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej skomplikowanych.
+		    Tworzy dla ka¿dej sieci pliki stref oraz odpowiednie wpisy w named.conf w oparciu
+		    o szablony tych plików. Przyk³adowe szablony znajduj± siê w katalogu
+		    <TT
+CLASS="FILENAME"
+>/modules/dns/sample</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="DNS-CONFIG"
+>6.2.10.2. Konfiguracja</A
+></H4
+><P
+></P
+><UL
+><LI
+><P
+>forward-patterns</P
+><P
+>Katalog z szablonami stref. Domy¶lnie: forward.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>forward-patterns = /dns/patterns/forward</SAMP
+></P
+></LI
+><LI
+><P
+>reverse-patterns</P
+><P
+>Katalog z szablonami stref odwrotnych. Domy¶lnie: reverse.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>reverse-patterns = /dns/patterns/revers</SAMP
+></P
+></LI
+><LI
+><P
+>generic-forward</P
+><P
+>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okreslonym
+			    'forward-patterns' nie bêdzie pliku odpowiadaj±cego nazwie domenowej sieci.
+			    Domy¶lnie: modules/dns/sample/forward/generic.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>generic-forward = /dns/patterns/forward</SAMP
+></P
+></LI
+><LI
+><P
+>generic-reverse</P
+><P
+>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
+			    'reverse-patterns' nie bêdzie pliku odpowiadaj±cego numerowi IP sieci.
+			    Domy¶lnie: modules/dns/sample/reverse/generic.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>generic-reverse = /dns/patterns/forward</SAMP
+></P
+></LI
+><LI
+><P
+>forward-zones</P
+><P
+>Katalog na pliki wynikowe stref.
+			    Domy¶lnie: modules/dns/sample/out/forward.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>forward-zones = /dns/forward</SAMP
+></P
+></LI
+><LI
+><P
+>reverse-zones</P
+><P
+>Katalog na pliki wynikowe stref odwrotnych.
+			    Domy¶lnie: modules/dns/sample/out/reverse.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>reverse-zones = /dns/reverse</SAMP
+></P
+></LI
+><LI
+><P
+>host-reverse</P
+><P
+>Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
+			    Domy¶lnie: "%n IN A %i\n".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>host-reverse = "\t %n IN A %i\n"</SAMP
+></P
+></LI
+><LI
+><P
+>host-forward</P
+><P
+>Linia w pliku strefy odpowiadaj±ca ka¿demu komputerowi w danej sieci.
+			    Domy¶lnie: "%c IN PTR %n.%d.\n".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>host-forward = "\t %c IN PTR %n.%d.\n"</SAMP
+></P
+></LI
+><LI
+><P
+>conf-pattern</P
+><P
+>Lokalizacja szablonu g³ównego pliku konfiguracyjnego serwera.
+			    Domy¶lnie: modules/dns/sample/named.conf.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>conf-pattern = /dns/patterns/named.conf</SAMP
+></P
+></LI
+><LI
+><P
+>conf-output</P
+><P
+>Lokalizacja g³ównego pliku konfiguracyjnego serwera.
+			    Domy¶lnie: /tmp/named.conf.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>conf-output = /etc/named.conf</SAMP
+></P
+></LI
+><LI
+><P
+>conf-forward-entry</P
+><P
+>Wpis dla ka¿dej strefy w g³ównym pliku konfiguracyjnym.
+			    Domy¶lnie: 'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n}; \n'.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>conf-forward-entry = 'zone "%n" { \n\ttype master; \n\tfile "forward/%n"; \n\tnotify yes; \n}; \n'</SAMP
+></P
+></LI
+><LI
+><P
+>conf-reverse-entry</P
+><P
+>Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
+			    Domy¶lnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie wykonywane po utworzeniu plików konf. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = ""</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-ETHERS"
+>6.2.11. Ethers</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="ETHERS-DESC"
+>6.2.11.1. Opis</A
+></H4
+><P
+>Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Ustawiaj±c opcjê
+		    'dummy_macs' mo¿na sprawiæ, aby komputerom od³±czonym zosta³ przypisany 
+		    mac-adres 00:00:00:00:00:00.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="ETHERS-CONFIG"
+>6.2.11.2. Konfiguracja</A
+></H4
+><P
+>Tutaj s± tylko standardowe opcje:</P
+><UL
+><LI
+><P
+>file</P
+><P
+>Lokalizacja pliku wynikowego. Domy¶lnie: /tmp/ethers.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>file = /etc/ethers</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = "arp -f /etc/ethers"</SAMP
+></P
+></LI
+><LI
+><P
+>dummy_macs</P
+><P
+>Je¶li ustawimy na 'yes', to komputerom od³±czonym zostanie
+			    przypisany mac-adres '00:00:00:00:00:00'. Domy¶lnie: "no".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>dummy_macs = yes</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="DAEMON-OIDENT"
+>6.2.12. Oident</A
+></H3
+><DIV
+CLASS="SECT3"
+><H4
+CLASS="SECT3"
+><A
+NAME="OIDENT-DESC"
+>6.2.12.1. Opis</A
+></H4
+><P
+>Modu³ do konfiguracji oidend. W zasadzie mo¿na to zrobiæ modu³em
+		    'hostfile', ale w 'oident' masz mo¿liwo¶æ okre¶lenia dla których sieci
+		    ma byæ tworzony konfig.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="OIDENT-CONFIG"
+>6.2.12.2. Konfiguracja</A
+></H4
+><P
+>A oto parametry modu³u 'oident'</P
+><UL
+><LI
+><P
+>begin</P
+><P
+>Tekst wstawiany na pocz±tku pliku. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>begin = "#Generowany utomatycznie\n"</SAMP
+></P
+></LI
+><LI
+><P
+>end</P
+><P
+>Tekst wstawiany na koñcu pliku. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>end = ""</SAMP
+></P
+></LI
+><LI
+><P
+>host</P
+><P
+>Linia tekstu dla ka¿dego komputera. Domy¶lnie: "%i\t%n\tUNIX".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>host = "%i %n WINDOWS"</SAMP
+></P
+></LI
+><LI
+><P
+>file</P
+><P
+>Tekst wstawiany na pocz±tku pliku. Domy¶lnie: /tmp/oidentd.conf.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>file = /etc/identd.conf</SAMP
+></P
+></LI
+><LI
+><P
+>networks</P
+><P
+>Lista sieci do uwzglêdnienia. Domy¶lnie: "192.168.0.0/16 10.0.0.0/8".</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>networks = 192.168.1.0/24</SAMP
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie do wykonania po utworzeniu pliku. Domyslnie: puste.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>command = "killall -HUP midentd"</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="CHAPTER"
+><HR><H1
+><A
 NAME="DEVEL"
 ></A
->Rozdzia&#322; 6. Dla dociekliwych</H1
+>Rozdzia&#322; 7. Dla dociekliwych</H1
 ><DIV
 CLASS="SECT1"
 ><H2
 CLASS="SECT1"
 ><A
 NAME="DEVEL-CATALOGS"
->6.1. Drzewo katalogów</A
+>7.1. Drzewo katalogów</A
 ></H2
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1182"
+NAME="AEN1629"
 ></A
 ><P
 ><B
->Tabela 6-1. Drzewo katalogów LMS</B
+>Tabela 7-1. Drzewo katalogów LMS</B
 ></P
 ><TABLE
 BORDER="1"
@@ -4444,6 +5883,12 @@ ALIGN="CENTER"><THEAD
 >contrib</TD
 ><TD
 >Dodatki stworzone przez u¿ytkowników LMS</TD
+></TR
+><TR
+><TD
+>daemon</TD
+><TD
+>A.L.E.C's LMS Daemon</TD
 ></TR
 ><TR
 ><TD
@@ -4503,7 +5948,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="DEVEL-DB"
->6.2. Struktura bazy danych</A
+>7.2. Struktura bazy danych</A
 ></H2
 ><P
 >Poni¿ej przedstawiono ogóln± strukturê bazy danych LMS. Bardziej szczegó³owe
@@ -4534,7 +5979,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ADMINS"
->6.2.1. Administratorzy ('admins')</A
+>7.2.1. Administratorzy ('admins')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -4588,7 +6033,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USERS"
->6.2.2. U¿ytkownicy ('users')</A
+>7.2.2. U¿ytkownicy ('users')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -4678,7 +6123,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NETWORKS"
->6.2.3. Sieci ('networks')</A
+>7.2.3. Sieci ('networks')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -4740,7 +6185,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NODES"
->6.2.4. Komputery ('nodes')</A
+>7.2.4. Komputery ('nodes')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -4798,7 +6243,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NETDEVICES"
->6.2.5. Sprzêt sieciowy ('netdevices')</A
+>7.2.5. Sprzêt sieciowy ('netdevices')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -4844,7 +6289,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NETLINKS"
->6.2.6. Po³±czenia sieciowe ('netlinks')</A
+>7.2.6. Po³±czenia sieciowe ('netlinks')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -4870,7 +6315,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASH"
->6.2.7. Operacje finansowe ('cash')</A
+>7.2.7. Operacje finansowe ('cash')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -4901,6 +6346,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>invoiceid - identyfikator faktury obejmuj±cej dan± operacjê</TD
+></TR
+><TR
+><TD
 >comment - opis operacji</TD
 ></TR
 ></TBODY
@@ -4912,7 +6361,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TARIFFS"
->6.2.8. Taryfy ('tariffs')</A
+>7.2.8. Taryfy ('tariffs')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -4928,6 +6377,14 @@ BORDER="0"
 ><TR
 ><TD
 >value - warto¶æ netto w z³otych</TD
+></TR
+><TR
+><TD
+>taxvalue - wysoko¶æ podatku w procentach</TD
+></TR
+><TR
+><TD
+>sww - numer PKWiU</TD
 ></TR
 ><TR
 ><TD
@@ -4950,7 +6407,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ASSIGNMENTS"
->6.2.9. Powi±zania ('assignments')</A
+>7.2.9. Powi±zania ('assignments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -4975,6 +6432,140 @@ BORDER="0"
 ><TD
 >at - dzieñ naliczania</TD
 ></TR
+><TR
+><TD
+>invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="INVOICES"
+>7.2.10. Faktury ('invoices')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>number - numer w roku</TD
+></TR
+><TR
+><TD
+>cdate - data wystawienia</TD
+></TR
+><TR
+><TD
+>paytime - czas zap³aty (ilo¶æ dni)</TD
+></TR
+><TR
+><TD
+>customerid - identyfikator u¿ytkownika-nabywcy</TD
+></TR
+><TR
+><TD
+>name - nazwa (nazwisko i imiê) nabywcy</TD
+></TR
+><TR
+><TD
+>address - adres nabywcy</TD
+></TR
+><TR
+><TD
+>nip - nip nabywcy</TD
+></TR
+><TR
+><TD
+>zip - kod pocztowy nabywcy</TD
+></TR
+><TR
+><TD
+>phone - telefon nabywcy</TD
+></TR
+><TR
+><TD
+>city - miasto nabywcy</TD
+></TR
+><TR
+><TD
+>finished - pole okre¶laj±ce zamkniêcie faktury</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="INVOICECONTENTS"
+>7.2.11. Faktury - cd. ('invoicecontents')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>invoiceid - identyfikator faktury</TD
+></TR
+><TR
+><TD
+>value - kwota pozycji</TD
+></TR
+><TR
+><TD
+>taxvalue - wysoko¶æ podatku w procentach</TD
+></TR
+><TR
+><TD
+>sww - numer PKWiU</TD
+></TR
+><TR
+><TD
+>content - u¿yta jednostka (najczê¶ciej 'szt.')</TD
+></TR
+><TR
+><TD
+>count - ilo¶æ</TD
+></TR
+><TR
+><TD
+>description - opis</TD
+></TR
+><TR
+><TD
+>tariffid - identyfikator taryfy</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="TIMESTAMPS"
+>7.2.12. Znaczniki czasu ('timestamps')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>time - czas ostatniej modyfikacji</TD
+></TR
+><TR
+><TD
+>tablename - nazwa tabeli</TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -4984,7 +6575,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->6.2.10. Statystyki wykorzystania ³±cza ('stats')</A
+>7.2.13. Statystyki wykorzystania ³±cza ('stats')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -4999,11 +6590,11 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->upload - ilo¶æ danych wys³anych w bajtach</TD
+>upload - ilo¶æ danych wys³anych, w bajtach</TD
 ></TR
 ><TR
 ><TD
->download - ilo¶æ danych odebranych w bajtach</TD
+>download - ilo¶æ danych odebranych, w bajtach</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -5014,8 +6605,115 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
+NAME="DEVEL-INI"
+>7.3. Format pliku konfiguracyjnego</A
+></H2
+><P
+>W pliku konfiguracyjnym LMS'a (standardowo <TT
+CLASS="FILENAME"
+>/etc/lms/lms.ini</TT
+>)
+		mo¿na ustawiaæ parametry <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>, daemona <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+>
+		oraz skryptów perlowych (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS_MGC</I
+></SPAN
+>). Przy czym format
+		warto¶ci parametrów dla skryptów perlowych podlega wiêkszym restrykcjom.</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="COMMENTS"
+>7.3.1. Komentarze</A
+></H3
+><P
+>Programy parsuj±ce plik konfiguracyjny pomijaj± wszystkie linie
+			zaczynaj±ce siê znakiem '#' lub ';'. Komentarze poprzedzone jednym z tych
+			znaków mo¿na tak¿e wstawiaæ w tej samej linii co sekcje i opcje.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="PARAMS"
+>7.3.2. Sekcje, klucze, warto¶ci</A
+></H3
+><P
+>Opcje konfiguracyjne pogrupowane s± w sekcje. Nazwê sekcji, sk³adaj±c±
+			siê z liter i/lub cyfr nale¿y zamkn±æ w nawiasy kwadratowe. Ich nazwy
+			powinny byæ unikalne.</P
+><P
+>Sekcje i parametry umieszcza siê w osobnych liniach. Parametry
+			sk³adaj± siê z klucza i warto¶ci. Klucz to nazwa parametru konfiguracyjnego
+			sk³adaj±ca siê z liter i/lub cyfr. W tej samej linii co klucz, po znaku
+			równo¶ci, umieszcza siê warto¶æ parametru. Je¶li warto¶æ zawiera znaki specjalne
+			nale¿y j± obj±æ w apostrofy lub cudzys³ów.</P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="AEN1847"
+></A
+><P
+><B
+>Przyk&#322;ad 7-1. Format opcji konfiguracyjnych</B
+></P
+><PRE
+CLASS="SCREEN"
+>[sekcja]
+klucz = warto¶æ 
+zmienna1 = "jaki¶ tekst"
+para_metr = 'zmienna "para_metr" w apostrofach'
+
+[sekcja_1]				#tu mo¿na komentowaæ
+klucz = "tekst ze znakami \t i ;"	; tu te¿ mo¿na komentowaæ
+; a to jest komentarz na ca³± liniê
+key = "A.L.E.C's LMS Daemon is the best"
+# opcja = wy³±czona
+				</PRE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="PERL"
+>7.3.3. Zmienne dla skryptów perlowych</A
+></H3
+><P
+>Konfiguracja skryptów perlowych, z uwagi na zastosowanie
+			modu³u Config::IniFiles, ma pewne ograniczenia. Komentarze mog±
+			byæ wstawiane tylko i wy³±cznie w nowej linii. Warto¶ci
+			zmiennych nie obejmuje siê w apostrofy lub cudzys³ów, a s±
+			one czytane od znaku równo¶ci do koñca wiersza. Dlatego w³a¶nie 
+			nie mo¿na umieszczaæ komentarzy w jednej linii z parametrami.
+			</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
 NAME="DEVEL-RIGHTS"
->6.3. Poziomy dostêpu</A
+>7.4. Poziomy dostêpu</A
 ></H2
 ><P
 >W  sumie  tutaj  to  wyt³umaczê  bardziej  dla developerów, gdy¿ osoby
@@ -5042,7 +6740,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="DEVEL-LIMITS"
->6.4. Ograniczenia</A
+>7.5. Ograniczenia</A
 ></H2
 ><P
 >Ka¿dy system ma ograniczenia. Pewne wynikaja z u¿ytego silnika SQL (DBMS)
@@ -5053,8 +6751,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN1355"
->6.4.1. Wynikaj±ce z naszego projektu</A
+NAME="AEN1860"
+>7.5.1. Wynikaj±ce z naszego projektu</A
 ></H3
 ><P
 >Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowujemy jako
@@ -5066,8 +6764,8 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN1358"
->6.4.2. Wynikaj±ce z u¿ywanego DMBS</A
+NAME="AEN1863"
+>7.5.2. Wynikaj±ce z u¿ywanego DMBS</A
 ></H3
 ><UL
 ><LI

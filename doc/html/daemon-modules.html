@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Modu³y</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="LMS - LAN Management System 1.1-cvs"
 HREF="index.html"><LINK
@@ -30,6 +30,7 @@ TEXT="#000000"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
+SUMMARY="Header navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -47,20 +48,22 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="daemon.html"
+ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia³ 6. A.L.E.C's LMS Daemon</TD
+>Rozdzia&#322; 6. A.L.E.C's LMS Daemon</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="devel.html"
->Nastêpny</A
+ACCESSKEY="N"
+>Nast&#281;pny</A
 ></TD
 ></TR
 ></TABLE
@@ -95,7 +98,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1266"
+NAME="AEN1186"
 ></A
 ><P
 ><B
@@ -104,151 +107,83 @@ NAME="AEN1266"
 ><TABLE
 BORDER="1"
 CLASS="CALSTABLE"
-><THEAD
+><COL
+WIDTH="200"
+ALIGN="CENTER"><COL
+WIDTH="300"
+ALIGN="CENTER"><THEAD
 ><TR
 ><TH
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Nazwa</TH
 ><TH
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Opis</TH
 ></TR
 ></THEAD
 ><TBODY
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >dhcp</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Konfiguracja serwera dhcpd</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >cutoff</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Od³±czanie u¿ytkowników z zaleg³o¶ciami w op³atach</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >dns</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Konfiguracja serwera dns</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >ethers</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Tworzenie pliku /etc/ethers</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >hostfile</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Modu³ uniwersalny (np. tworzenie regó³ iptables)</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >notify</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach poczt± elektroniczn±</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >ggnotify</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach przez gadu-gadu</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >payments</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Naliczanie op³at abonamentowych</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >oident</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Konfiguracja oident</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >tc</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Tworzenie regó³ HTB</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >traffic</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Statystyki wykorzystania ³±cza</TD
 ></TR
 ></TBODY
@@ -274,7 +209,8 @@ NAME="PAYMENTS-DESC"
 ><P
 >Modu³ nalicza u¿ytkownikom op³aty abonamentowe. Nale¿y go uruchamiaæ 
 		    codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
-		    taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn± 'comment'.</P
+		    taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn± 'comment'.
+		    Po naliczeniu op³at tworzone s± faktury.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -285,18 +221,31 @@ NAME="PAYMENTS-CONFIG"
 >6.2.2.2. Konfiguracja</A
 ></H3
 ><P
->Dla tego modu³u jest dostêpna tylko jedna zmienna kofiguracyjna:</P
+>Dla tego modu³u s± dostêpne nastêpuj±ce zmienne kofiguracyjne:</P
 ><UL
 ><LI
 ><P
 >comment</P
 ><P
 >Komentarz do operacji. '%period' zostanie zamienione na daty od-do 
-			    nale¿nego abonamentu, np. '10.10.2003 - 09.11.2003'. Domy¶lnie: 'Abonament za okres %period'.</P
+			    nale¿nego abonamentu, np. '10.10.2003 - 09.11.2003', a '%tariff' na nazwê
+			    odpowiedniej taryfy. Domy¶lnie: 'Abonament wg taryfy: '%tariff' za okres: %period'.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->comment = 'Abonament miesiêczny za okres %period' </TT
+>comment = 'Abonament miesiêczny za okres %period' </SAMP
+></P
+></LI
+><LI
+><P
+>up_payments</P
+><P
+>"Naliczanie z góry", czyli czy okres w komentarzu ma byæ liczony do 
+			    przodu, czy do ty³u w stosunku do daty naliczenia op³aty. Domy¶lnie: yes.</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>up_payments = no</SAMP
 ></P
 ></LI
 ></UL
@@ -361,9 +310,9 @@ NAME="NOTIFY-CONFIG"
 ><P
 >Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->mailtemplate = modules/notify/sample/mailtemplate</TT
+>mailtemplate = modules/notify/sample/mailtemplate</SAMP
 ></P
 ></LI
 ><LI
@@ -372,9 +321,9 @@ CLASS="PROMPT"
 ><P
 >Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/mail</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->file = /tmp/mail.txt</TT
+>file = /tmp/mail.txt</SAMP
 ></P
 ></LI
 ><LI
@@ -384,9 +333,9 @@ CLASS="PROMPT"
 >Polecenie pow³oki wysy³aj±ce e-maila. '%address' zostanie zast±pione
 			    adresem e-mail u¿ytkownika. Domy¶lnie: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->command = 'mail %address -s "musisz zap³aciæ, bo jak nie..." &lt; /tmp/mail.txt'</TT
+>command = 'mail %address -s "musisz zap³aciæ, bo jak nie..." &lt; /tmp/mail.txt'</SAMP
 ></P
 ></LI
 ><LI
@@ -396,9 +345,9 @@ CLASS="PROMPT"
 >Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
 			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->limit = -20</TT
+>limit = -20</SAMP
 ></P
 ></LI
 ><LI
@@ -408,9 +357,9 @@ CLASS="PROMPT"
 >Okre¶la adres na który zostan± wys³ane wszystkie wiadomo¶ci, przydatne
 			    podczas testów. Domy¶lnie: puste.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->debug_mail = localhost@moja.net</TT
+>debug_mail = localhost@moja.net</SAMP
 ></P
 ></LI
 ></UL
@@ -469,9 +418,9 @@ NAME="GGNOTIFY-CONFIG"
 ><P
 >Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->ggtemplate = modules/ggnotify/sample/mailtemplate</TT
+>ggtemplate = modules/ggnotify/sample/mailtemplate</SAMP
 ></P
 ></LI
 ><LI
@@ -481,9 +430,9 @@ CLASS="PROMPT"
 >Identyfikator gadu-gadu u¿ytkownika wysy³aj±cego wiadomo¶ci. 
 			    Domy¶lnie: pusty.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->uin = 1234567</TT
+>uin = 1234567</SAMP
 ></P
 ></LI
 ><LI
@@ -492,9 +441,9 @@ CLASS="PROMPT"
 ><P
 >Has³o dla konta okre¶lonego zmienn± 'uin'. Domy¶lnie: puste.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->password = "moje_trudne__has³o"</TT
+>password = "moje_trudne__has³o"</SAMP
 ></P
 ></LI
 ><LI
@@ -504,9 +453,9 @@ CLASS="PROMPT"
 >Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
 			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->limit = -20</TT
+>limit = -20</SAMP
 ></P
 ></LI
 ><LI
@@ -516,9 +465,9 @@ CLASS="PROMPT"
 >Je¶li ustawione, na to konto zostan± wys³ane wszyskie wiadomo¶ci.
 			    Domy¶lnie: puste.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->debug_uin = 7654321</TT
+>debug_uin = 7654321</SAMP
 ></P
 ></LI
 ></UL
@@ -565,9 +514,9 @@ NAME="CUTOFF-CONFIG"
 >Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej
 			    kwoty okre¶lonej t± zmienn±. Domy¶lnie: 0.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->limit = -20</TT
+>limit = -20</SAMP
 ></P
 ></LI
 ></UL
@@ -614,9 +563,9 @@ NAME="DHCP-CONFIG"
 >Okre¶la lokalizacjê pliku konfiguracyjnego serwera dhcp. 
 			    Domy¶lnie: /tmp/dhcpd.conf.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->file = /etc/dhcpd.conf</TT
+>file = /etc/dhcpd.conf</SAMP
 ></P
 ></LI
 ><LI
@@ -626,9 +575,9 @@ CLASS="PROMPT"
 >Polecenie wykonywane po utworzeniu pliku konfiguracyjnego. 
 			    Domy¶lnie: pusta.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->command = 'killall -HUP dhcpd'</TT
+>command = 'killall -HUP dhcpd'</SAMP
 ></P
 ></LI
 ><LI
@@ -637,9 +586,9 @@ CLASS="PROMPT"
 ><P
 >Nag³ówek pliku. Domy¶lnie: "shared-network LMS {".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->begin = "shared-network LMS {"</TT
+>begin = "shared-network LMS {"</SAMP
 ></P
 ></LI
 ><LI
@@ -648,9 +597,9 @@ CLASS="PROMPT"
 ><P
 >Stopka pliku. Domy¶lnie: "}".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->end = "\n}"</TT
+>end = "\n}"</SAMP
 ></P
 ></LI
 ><LI
@@ -659,9 +608,9 @@ CLASS="PROMPT"
 ><P
 >Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Domy¶lnie: "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->subnet_start = "subnet %a netmask %m {default-lease-time 3600;"</TT
+>subnet_start = "subnet %a netmask %m {default-lease-time 3600;"</SAMP
 ></P
 ></LI
 ><LI
@@ -670,9 +619,9 @@ CLASS="PROMPT"
 ><P
 >Stopka podsieci. Domy¶lnie: "}".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->subnet_end = '\t}'</TT
+>subnet_end = '\t}'</SAMP
 ></P
 ></LI
 ><LI
@@ -681,9 +630,9 @@ CLASS="PROMPT"
 ><P
 >Brama podsieci. '%i' zostanie zamienione na adres ip. Domy¶lnie: 'option routers %i;'.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->subnet_gateway = "option routers %i"</TT
+>subnet_gateway = "option routers %i"</SAMP
 ></P
 ></LI
 ><LI
@@ -692,9 +641,9 @@ CLASS="PROMPT"
 ><P
 >DNS'y podsieci. '%i - adresy dns'ów. Domy¶lnie: "option domain-name-servers %i;".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->subnet_dns = "option domain-name-servers 192.168.0.1"</TT
+>subnet_dns = "option domain-name-servers 192.168.0.1"</SAMP
 ></P
 ></LI
 ><LI
@@ -703,9 +652,9 @@ CLASS="PROMPT"
 ><P
 >Nazwa domenowa podsieci. '%n' - nazwa. Domy¶lnie: "option domain-name %n;".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->subnet_domain = "option domain-name test.%n;"</TT
+>subnet_domain = "option domain-name test.%n;"</SAMP
 ></P
 ></LI
 ><LI
@@ -714,9 +663,9 @@ CLASS="PROMPT"
 ><P
 >Serwery wins. '%i' - adres ip serwera. Domy¶lnie: "option netbios-name-servers %i;".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->subnet_wins = ""</TT
+>subnet_wins = ""</SAMP
 ></P
 ></LI
 ><LI
@@ -725,9 +674,9 @@ CLASS="PROMPT"
 ><P
 >Zakres adresów podsieci. '%s' - adres pocz±tkowy, '%e' - koniec zakresu. Domy¶lnie: "range %s %e;".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->subnet_range = "range %s %e;"</TT
+>subnet_range = "range %s %e;"</SAMP
 ></P
 ></LI
 ><LI
@@ -737,9 +686,9 @@ CLASS="PROMPT"
 >Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' - adres ip. 
 			    Domy¶lnie: "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->host = "host %n {hardware ethernet %m; fixed-address %i;}"</TT
+>host = "host %n {hardware ethernet %m; fixed-address %i;}"</SAMP
 ></P
 ></LI
 ></UL
@@ -787,9 +736,9 @@ NAME="HOSTFILE-CONFIG"
 ><P
 >Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/hostfile</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->file = /etc/rc.d/rc.firewall</TT
+>file = /etc/rc.d/rc.firewall</SAMP
 ></P
 ></LI
 ><LI
@@ -798,9 +747,9 @@ CLASS="PROMPT"
 ><P
 >Polecenie pow³oki wyk. po utworzeniu pliku 'file'. Domy¶lnie: puste</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->command = '/bin/sh /etc/rc.d/rc.firewall'</TT
+>command = '/bin/sh /etc/rc.d/rc.firewall'</SAMP
 ></P
 ></LI
 ><LI
@@ -809,9 +758,9 @@ CLASS="PROMPT"
 ><P
 >Nag³ówek pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -F FORWARD\n"</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->begin = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"</TT
+>begin = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"</SAMP
 ></P
 ></LI
 ><LI
@@ -820,9 +769,9 @@ CLASS="PROMPT"
 ><P
 >Stopka pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->end = "$IPT -A FORWARD -J REJECT\n"</TT
+>end = "$IPT -A FORWARD -J REJECT\n"</SAMP
 ></P
 ></LI
 ><LI
@@ -831,9 +780,9 @@ CLASS="PROMPT"
 ><P
 >Tekst dla hosta pod³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</TT
+>grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</SAMP
 ></P
 ></LI
 ><LI
@@ -842,9 +791,9 @@ CLASS="PROMPT"
 ><P
 >Tekst dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</TT
+>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</SAMP
 ></P
 ></LI
 ></UL
@@ -889,9 +838,9 @@ NAME="TRAFFIC-CONFIG"
 ><P
 >Lokalizacja pliku ze statystykami firewalla. Domy¶lnie: /var/log/traffic.log</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->file = /tmp/log</TT
+>file = /tmp/log</SAMP
 ></P
 ></LI
 ></UL
@@ -946,9 +895,9 @@ NAME="TC-CONFIG"
 ><P
 >Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/tc.dat.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->file = /tmp/htb.data</TT
+>file = /tmp/htb.data</SAMP
 ></P
 ></LI
 ><LI
@@ -957,9 +906,9 @@ CLASS="PROMPT"
 ><P
 >Polecenie pow³oki wykonywane po utworzeniu pliku. Domy¶lnie: "/bin/sh sample/htb.sh &#60; /tmp/tc.dat".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->command = "/bin/bash modules/tc/sample/htb.sh &#60; /tmp/tc.dat"</TT
+>command = "/bin/bash modules/tc/sample/htb.sh &#60; /tmp/tc.dat"</SAMP
 ></P
 ></LI
 ></UL
@@ -1007,9 +956,9 @@ NAME="DNS-CONFIG"
 ><P
 >Katalog z szablonami stref. Domy¶lnie: forward.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->forward-patterns = /dns/patterns/forward</TT
+>forward-patterns = /dns/patterns/forward</SAMP
 ></P
 ></LI
 ><LI
@@ -1018,9 +967,9 @@ CLASS="PROMPT"
 ><P
 >Katalog z szablonami stref odwrotnych. Domy¶lnie: reverse.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->reverse-patterns = /dns/patterns/revers</TT
+>reverse-patterns = /dns/patterns/revers</SAMP
 ></P
 ></LI
 ><LI
@@ -1031,9 +980,9 @@ CLASS="PROMPT"
 			    'forward-patterns' nie bêdzie pliku odpowiadaj±cego nazwie domenowej sieci.
 			    Domy¶lnie: modules/dns/sample/forward/generic.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->generic-forward = /dns/patterns/forward</TT
+>generic-forward = /dns/patterns/forward</SAMP
 ></P
 ></LI
 ><LI
@@ -1044,9 +993,9 @@ CLASS="PROMPT"
 			    'reverse-patterns' nie bêdzie pliku odpowiadaj±cego numerowi IP sieci.
 			    Domy¶lnie: modules/dns/sample/reverse/generic.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->generic-reverse = /dns/patterns/forward</TT
+>generic-reverse = /dns/patterns/forward</SAMP
 ></P
 ></LI
 ><LI
@@ -1056,9 +1005,9 @@ CLASS="PROMPT"
 >Katalog na pliki wynikowe stref.
 			    Domy¶lnie: modules/dns/sample/out/forward.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->forward-zones = /dns/forward</TT
+>forward-zones = /dns/forward</SAMP
 ></P
 ></LI
 ><LI
@@ -1068,9 +1017,9 @@ CLASS="PROMPT"
 >Katalog na pliki wynikowe stref odwrotnych.
 			    Domy¶lnie: modules/dns/sample/out/reverse.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->reverse-zones = /dns/reverse</TT
+>reverse-zones = /dns/reverse</SAMP
 ></P
 ></LI
 ><LI
@@ -1080,9 +1029,9 @@ CLASS="PROMPT"
 >Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
 			    Domy¶lnie: "%n IN A %i\n".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->host-reverse = "\t %n IN A %i\n"</TT
+>host-reverse = "\t %n IN A %i\n"</SAMP
 ></P
 ></LI
 ><LI
@@ -1092,9 +1041,9 @@ CLASS="PROMPT"
 >Linia w pliku strefy odpowiadaj±ca ka¿demu komputerowi w danej sieci.
 			    Domy¶lnie: "%c IN PTR %n.%d.\n".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->host-forward = "\t %c IN PTR %n.%d.\n"</TT
+>host-forward = "\t %c IN PTR %n.%d.\n"</SAMP
 ></P
 ></LI
 ><LI
@@ -1104,9 +1053,9 @@ CLASS="PROMPT"
 >Lokalizacja szablonu g³ównego pliku konfiguracyjnego serwera.
 			    Domy¶lnie: modules/dns/sample/named.conf.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->conf-pattern = /dns/patterns/named.conf</TT
+>conf-pattern = /dns/patterns/named.conf</SAMP
 ></P
 ></LI
 ><LI
@@ -1116,9 +1065,9 @@ CLASS="PROMPT"
 >Lokalizacja g³ównego pliku konfiguracyjnego serwera.
 			    Domy¶lnie: /tmp/named.conf.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->conf-output = /etc/named.conf</TT
+>conf-output = /etc/named.conf</SAMP
 ></P
 ></LI
 ><LI
@@ -1128,9 +1077,9 @@ CLASS="PROMPT"
 >Wpis dla ka¿dej strefy w g³ównym pliku konfiguracyjnym.
 			    Domy¶lnie: 'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n}; \n'.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->conf-forward-entry = 'zone "%n" { \n\ttype master; \n\tfile "forward/%n"; \n\tnotify yes; \n}; \n'</TT
+>conf-forward-entry = 'zone "%n" { \n\ttype master; \n\tfile "forward/%n"; \n\tnotify yes; \n}; \n'</SAMP
 ></P
 ></LI
 ><LI
@@ -1140,9 +1089,9 @@ CLASS="PROMPT"
 >Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
 			    Domy¶lnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'</TT
+>conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'</SAMP
 ></P
 ></LI
 ><LI
@@ -1151,9 +1100,9 @@ CLASS="PROMPT"
 ><P
 >Polecenie wykonywane po utworzeniu plików konf. Domy¶lnie: puste.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->command = ""</TT
+>command = ""</SAMP
 ></P
 ></LI
 ></UL
@@ -1197,9 +1146,9 @@ NAME="ETHERS-CONFIG"
 ><P
 >Lokalizacja pliku wynikowego. Domy¶lnie: /tmp/ethers.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->file = /etc/ethers</TT
+>file = /etc/ethers</SAMP
 ></P
 ></LI
 ><LI
@@ -1208,9 +1157,9 @@ CLASS="PROMPT"
 ><P
 >Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Domy¶lnie: puste.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->command = "arp -f /etc/ethers"</TT
+>command = "arp -f /etc/ethers"</SAMP
 ></P
 ></LI
 ><LI
@@ -1220,9 +1169,9 @@ CLASS="PROMPT"
 >Je¶li ustawimy na 'yes', to komputerom od³±czonym zostanie
 			    przypisany mac-adres '00:00:00:00:00:00'. Domy¶lnie: "no".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->dummy_macs = yes</TT
+>dummy_macs = yes</SAMP
 ></P
 ></LI
 ></UL
@@ -1266,9 +1215,9 @@ NAME="OIDENT-CONFIG"
 ><P
 >Tekst wstawiany na pocz±tku pliku. Domy¶lnie: puste.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->begin = "#Generowany utomatycznie\n"</TT
+>begin = "#Generowany utomatycznie\n"</SAMP
 ></P
 ></LI
 ><LI
@@ -1277,9 +1226,9 @@ CLASS="PROMPT"
 ><P
 >Tekst wstawiany na koñcu pliku. Domy¶lnie: puste.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->end = ""</TT
+>end = ""</SAMP
 ></P
 ></LI
 ><LI
@@ -1288,9 +1237,9 @@ CLASS="PROMPT"
 ><P
 >Linia tekstu dla ka¿dego komputera. Domy¶lnie: "%i\t%n\tUNIX".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->host = "%i %n WINDOWS"</TT
+>host = "%i %n WINDOWS"</SAMP
 ></P
 ></LI
 ><LI
@@ -1299,9 +1248,9 @@ CLASS="PROMPT"
 ><P
 >Tekst wstawiany na pocz±tku pliku. Domy¶lnie: /tmp/oidentd.conf.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->file = /etc/identd.conf</TT
+>file = /etc/identd.conf</SAMP
 ></P
 ></LI
 ><LI
@@ -1310,9 +1259,9 @@ CLASS="PROMPT"
 ><P
 >Lista sieci do uwzglêdnienia. Domy¶lnie: "192.168.0.0/16 10.0.0.0/8".</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->networks = 192.168.1.0/24</TT
+>networks = 192.168.1.0/24</SAMP
 ></P
 ></LI
 ><LI
@@ -1321,9 +1270,9 @@ CLASS="PROMPT"
 ><P
 >Polecenie do wykonania po utworzeniu pliku. Domyslnie: puste.</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->command = "killall -HUP midentd"</TT
+>command = "killall -HUP midentd"</SAMP
 ></P
 ></LI
 ></UL
@@ -1335,6 +1284,7 @@ CLASS="NAVFOOTER"
 ><HR
 ALIGN="LEFT"
 WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -1346,6 +1296,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="daemon.html"
+ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
@@ -1354,7 +1305,8 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="index.html"
->Spis tre¶ci</A
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
 ></TD
 ><TD
 WIDTH="33%"
@@ -1362,7 +1314,8 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="devel.html"
->Nastêpny</A
+ACCESSKEY="N"
+>Nast&#281;pny</A
 ></TD
 ></TR
 ><TR
@@ -1377,7 +1330,8 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="daemon.html"
->Pocz±tek rozdzia³u</A
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
 ></TD
 ><TD
 WIDTH="33%"
