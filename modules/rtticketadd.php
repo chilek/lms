@@ -64,13 +64,17 @@ if(isset($ticket))
 	if(!$error)
 	{
 		$id = $LMS->TicketAdd($ticket);
+		$admin = $LMS->GetAdminInfo($AUTH->id);
 
 		$ticket['admin'] = $LMS->DB->GetOne('SELECT email FROM rtqueues WHERE id='.$queue);
 		$message['destination'] = $ticket['admin'];
 		if($LMS->CONFIG['phpui']['debug_email'])
 			$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
 		$recipients = $message['destination'];
-		$message['mailfrom'] = $ticket['mailfrom'] ? $ticket['mailfrom'] : $ticket['admin'];
+		if ($admin['email'])
+			$message['mailfrom'] = $admin['email'];
+		else
+			$message['mailfrom'] = $ticket['mailfrom'] ? $ticket['mailfrom'] : $ticket['admin'];
 		$headers['Date'] = date('D, d F Y H:i:s T');
 	        $headers['From'] = '<'.$message['mailfrom'].'>';
 		$headers['To'] = '<'.$message['destination'].'>';
