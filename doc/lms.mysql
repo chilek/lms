@@ -206,3 +206,15 @@ CREATE TABLE netdevices (
   KEY name (name)
 ) TYPE=MyISAM;
 
+#
+# Struktura tabeli 'netlinks'
+#
+
+DROP TABLE IF EXISTS netlinks;
+CREATE TABLE netlinks (
+  id int(11) NOT NULL auto_increment,
+  src int(11) NOT NULL default '0',
+  dst int(11) NOT NULL default '0',
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+	
