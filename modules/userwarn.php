@@ -42,11 +42,11 @@ if(sizeof($setwarnings['muserid']))
 		}
 	}
 
-	$_SESSION['warnmessage'] = $setwarnings['message'];
-	$_SESSION['warnon'] = $setwarnings['warnon'];
-	$_SESSION['warnoff'] = $setwarnings['warnoff'];
+	$SESSION->save('warnmessage', $setwarnings['message']);
+	$SESSION->save('warnon', $setwarnings['warnon']);
+	$SESSION->save('warnoff', $setwarnings['warnoff']);
 	
-	header('Location: ?'.$_SESSION['backto']);
+	header('Location: ?'.$SESSION->get('backto'));
 	die;
 }
 
@@ -60,9 +60,9 @@ $userlist = $LMS->DB->GetAll(
 		    FROM users LEFT JOIN nodes ON users.id = ownerid WHERE deleted = 0 
 		    GROUP BY users.id, lastname, users.name ORDER BY username ASC');
 
-$SMARTY->assign('warnmessage', $_SESSION['warnmessage']);
-$SMARTY->assign('warnon', $_SESSION['warnon']);
-$SMARTY->assign('warnoff', $_SESSION['warnoff']);
+$SMARTY->assign('warnmessage', $SESSION->get('warnmessage'));
+$SMARTY->assign('warnon', $SESSION->get('warnon'));
+$SMARTY->assign('warnoff', $SESSION->get('warnoff'));
 $SMARTY->assign('userlist',$userlist);
 $SMARTY->display('userwarnings.html');
 

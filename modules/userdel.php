@@ -39,7 +39,7 @@ if (!$LMS->UserExists($_GET['id']))
 		$body .= '<P>'.trans('All user data and computers bound to this customer will be lost!').'</P>';
 		$body .= '<P><A HREF="?m=userdel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I do.').'</A></P>';
 	}else{
-		header("Location: ?".$_SESSION['backto']);
+		header("Location: ?".$SESSION->get('backto'));
 		$body = '<H1>'.$layout['pagetitle'].'</H1>';
 		$body .= '<P>'.trans('Customer $0 has been removed.',$LMS->GetUserName($_GET['id'])).'</P>';
 		$LMS->DeleteUser($_GET['id']);
