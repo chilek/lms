@@ -70,12 +70,18 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 	function _driver_fetchrow_assoc()
 	{
-		return mysql_fetch_array($this->_result,MYSQL_ASSOC);
+		if(! $this->_error)
+			return mysql_fetch_array($this->_result,MYSQL_ASSOC);
+		else
+			return FALSE;
 	}
 
 	function _driver_fetchrow_num()
 	{
-		return mysql_fetch_array($this->_result,MYSQL_NUM);
+		if(! $this->_error)
+			return mysql_fetch_array($this->_result,MYSQL_NUM);
+		else
+			return FALSE;
 	}
 
 	function _driver_now()
@@ -88,5 +94,12 @@ class LMSDB_driver_mysql extends LMSDB_common
 		return 'LIKE';
 	}
 }
-?>
-		
+
+/* $Log$
+/* Revision 1.6  2003/08/18 16:46:50  lukasz
+/* - fixed CVS tags
+/* - beta state - need testing
+/*
+ */
+
+?>	
