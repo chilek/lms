@@ -28,7 +28,8 @@ wersja 1.1.4 (??/??/2003):
     edycji danych komputera - teraz podobnie jak podczas dodawania - zamienia
     wszystkie '-' na ':' (lukasz)
   - ma³a zmiana filozofii tablicy tariffs - 'NULL' to nie ustawiony limit, '0'
-    to brak limitu - dlaczego? dowiecie siê lada dzieñ ;-) (lukasz)
+    to brak limitu - dlaczego? dowiecie siê lada dzieñ ;-) (lukasz):
+    ALTER TABLE tariffs CHANGE uprate uprate INT(11), CHANGE downrate downrate INT(11) 
     
 wersja 1.1.3 (29/08/2003):
 
