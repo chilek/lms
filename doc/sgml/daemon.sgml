@@ -196,7 +196,7 @@ info = "Opcjonalny opis modu³u"
 				</row>
 				<row>
 				<entry>tc</entry>
-				<entry>Tworzenie regó³ HTB</entry>
+				<entry>Tworzenie regu³ HTB</entry>
 				</row>
 				<row>
 				<entry>traffic</entry>
@@ -451,7 +451,7 @@ info = "Opcjonalny opis modu³u"
 		    <title>Opis</title>
 		    <para>Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
 		    wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
-		    status (od³±czony/pod³±czony), dlatego mo¿liwe jest tworzenie np. regó³
+		    status (od³±czony/pod³±czony), dlatego mo¿liwe jest tworzenie np. regu³
 		    dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku 
 		    i nastêpnie wykonuje okre¶lone polecenie pow³oki.</para>
 		    </sect3>
