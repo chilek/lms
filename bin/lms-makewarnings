@@ -225,19 +225,6 @@ while (my $row = $dbq->fetchrow_hashref())
 	$usergrouplist{$row->{'name'}} = $row->{'id'};
 }
 
-$dbq = $dbase->prepare("SELECT ipaddr, mac, access, ownerid FROM nodes");
-$dbq->execute();
-my %maclist;
-my %accesslist;
-my %ownerlist;
-
-while (my $row = $dbq->fetchrow_hashref())
-{
-	$maclist{u32todotquad($row->{'ipaddr'})} = $row->{'mac'};
-	$accesslist{u32todotquad($row->{'ipaddr'})} = $row->{'access'};
-	$ownerlist{u32todotquad($row->{'ipaddr'})} = $row->{'ownerid'};
-}
-
 $dbq = $dbase->prepare("SELECT id, lastname, name, email, phone1 FROM users");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
