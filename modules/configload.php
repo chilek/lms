@@ -108,7 +108,7 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
          $desc = trans('When enabled, all messages in helpdesk system (except sended to requestor) will be send to mail server at address of right queue. On server should be running script lms-rtparser, which will write messages to database. Default: disabled.');
          break;
      case 'contract_template':
-         $desc = trans('Specific customer contract template. Default template can be adapted. Default: contract.html.');
+         $desc = trans('Specify customer contract template. It can include comma separated list of contract templates with their names. Default: contract.html.');
          break;
      case 'to_words_short_version':
          $desc = trans('Specify format of verbal amounts representation (on invoices). For value "1" verbal expand of 123,15 will be "one two thr 15/100". Default: 0.');
