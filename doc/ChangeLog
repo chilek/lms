@@ -3,8 +3,10 @@ $Id$
 wersja 1.0pre7 (??/??/2003):
 
   - poprawiony powa¿ny bug w lms-mgc powoduj±cy traktowanie jako
-    prywatnej sieci tylko 192.168.1.0/24 a nie 192.168.0.0/16.
+    prywatnej sieci tylko 192.168.1.0/24 a nie 192.168.0.0/16
   - zrobiona lista u¿ytkowników od³±czonych i zad³u¿onych
+  - poprawione dodawanie userów (nie dodawali siê lub imiê nie zostawa³o
+    zapisywane (BTS: 0000019)
 
 wersja 1.0pre6 (17/03/2003):
 
