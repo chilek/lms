@@ -81,11 +81,13 @@
 			&nbsp;
 		</TD>
 	</TR>
+	{if $listdata.totalpos != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
 			<B>Strona: {if $page > 1}<INPUT TYPE="hidden" NAME="page" VALUE="{math equation="x - 1" x=$page}"><A HREF="javascript:page_change();">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <INPUT TYPE="hidden" NAME="page" VALUE="{$smarty.section.pcnt.rownum}"><A HREF="javascript:page_change();">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<INPUT TYPE="hidden" NAME="page" VALUE="{math equation="x + 1" x=$page}"><A HREF="javascript:page_change();">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
 		</TD>
 	</TR>
+	{/if}
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
 	{assign var=invoice value=$invoicelist[invoicelist]}
@@ -115,12 +117,24 @@
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0" TARGET="_BLANK"></A>
 		</TD>
 	</TR>
+	{sectionelse}
+	<TR>
+		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="7">
+			<P>&nbsp;</P>
+			<P>&nbsp;</P>
+			<P><B>Nie znaleziono ¿adnych faktur w bazie danych</B></P>
+			<P>&nbsp;</P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>	
 	{/section}
+	{if $listdata.totalpos != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
 			<B>Strona: {if $page > 1}<INPUT TYPE="hidden" NAME="page" VALUE="{math equation="x - 1" x=$page}"><A HREF="javascript:page_change();">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <INPUT TYPE="hidden" NAME="page" VALUE="{$smarty.section.pcnt.rownum}"><A HREF="javascript:page_change();">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<INPUT TYPE="hidden" NAME="page" VALUE="{math equation="x + 1" x=$page}"><A HREF="javascript:page_change();">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
 		</TD>
 	</TR>
+	{/if}
 	<TR CLASS="dark">
 		<TD COLSPAN="7" class="fall" COLSPAN="7">
 			<TABLE WIDTH="100%">
