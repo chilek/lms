@@ -34,10 +34,11 @@ class LMS
 	var $ADB;
 	var $SESSION;
 	var $CONFIG;
-	var $_version = '$Revision$';
+	var $_version = NULL;
 
 	function LMS($ADB,$SESSION)
 	{
+		$this->_version = eregi_replace('^\$Revision$$','\1','$Revision$');
 		$this->SESSION=$SESSION;
 		$this->ADB=$ADB;
 	}
