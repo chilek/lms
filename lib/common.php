@@ -347,6 +347,28 @@ function prefix2mask($prefix)
           return false;
 }
 
+function get_ip_range_from_ip_part($part_ip)
+{
+    //funkcja np. dla "192.168." zwraca "192.168.0.0","192.168.255.255"
+
+    $part_ip = trim($part_ip,".");  
+    $part = explode(".",$part_ip);
+
+    for($i=0; $i<4; $i++)
+    {
+        if(isset($part[$i]))
+        {	
+    	    $min .= $part[$i].".";		
+	    $max .= $part[$i].".";
+	} else
+	{
+	    $min .= "0.";
+	    $max .= "255.";
+	}
+    } 
+    return array( trim($min,"."), trim($max,".") );
+}
+
 function mask2prefix($mask)
 {
      if(check_mask($mask)){
@@ -942,6 +964,9 @@ function setunits($data)  // for traffic data
 
 /*
  * $Log$
+ * Revision 1.47  2003/09/23 18:43:58  alec
+ * added get_ip_range_from_ip_part() for nodesearch
+ *
  * Revision 1.46  2003/09/15 20:53:23  alec
  * function setunits for Traffic() added
  *
