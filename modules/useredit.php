@@ -124,6 +124,9 @@ elseif($_GET['action'] == 'addassignment')
 	}
 	else
 		$error[] = 'Koniec okresu naliczania jest niepoprawny!';
+
+	if($to < $from && $to != 0 && $from != 0)
+		$error[] = 'Zakres dat jest niepoprawny!';
 		
 
 	if($LMS->TariffExists($_POST['tariffid']) && !$error)

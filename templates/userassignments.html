@@ -21,7 +21,7 @@
 				</tr>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{foreach from=$assignments item=assignment}
-				<tr bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')" {if $assignment.dateto < $smarty.now && $assignment.dateto}CLASS="blend"{/if}>
+				<tr bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')" {if ($assignment.dateto < $smarty.now && $assignment.dateto) || ($assignment.datefrom > $smarty.now && $assignment.datefrom)}CLASS="blend"{/if}>
 					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=tariffinfo&id={$assignment.tariffid}">{$assignment.name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignment.value|string_format:"%01.2f"} z³</TD>
 					<TD WIDTH="1%" NOWRAP>{$assignment.period} ({$assignment.at})</TD>
