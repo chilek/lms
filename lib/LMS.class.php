@@ -1066,6 +1066,15 @@ class LMS
 			return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE ownerid=?",array(0,$this->SESSION->id,$id));
 	}		
 
+	function IPSetU($netdev, $access=FALSE)
+	{
+		$this->SetTS("nodes");
+		if($access)
+			return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE netdev=? AND ownerid=0",array(1,$this->SESSION->id,$netdev));
+		else
+			return $this->DB->Execute("UPDATE nodes SET access=?, modid=? WHERE netdev=? AND ownerid=0",array(0,$this->SESSION->id,$netdev));
+	}
+	
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS("nodes");
