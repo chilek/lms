@@ -24,6 +24,8 @@
  *  $Id$
  */
 
+include($_LIB_DIR.'/multipart_mime_email.php');
+
 $ticket = $_POST['ticket'];
 
 $queue = $_GET['id'];
@@ -62,6 +64,31 @@ if(isset($ticket))
 	if(!$error)
 	{
 		$id = $LMS->TicketAdd($ticket);
+
+		$ticket['admin'] = $LMS->DB->GetOne('SELECT email FROM rtqueues WHERE id='.$queue);
+		$message['destination'] = $ticket['admin'];
+		if($LMS->CONFIG['phpui']['debug_email'])
+			$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
+		$recipients = $message['destination'];
+		$message['mailfrom'] = $ticket['mailfrom'] ? $ticket['mailfrom'] : $ticket['admin'];
+		$headers['Date'] = date('D, d F Y H:i:s T');
+	        $headers['From'] = '<'.$message['mailfrom'].'>';
+		$headers['To'] = '<'.$message['destination'].'>';
+		$headers['Subject'] = $ticket['subject'];
+		$headers['Reply-To'] = $headers['From'];
+		$headers['X-Mailer'] = 'LMS-'.$LMS->_version.'/PHP-'.phpversion();
+		$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
+		$headers['X-HTTP-User-Agent'] = $_SERVER['HTTP_USER_AGENT'];
+
+		$msg[1]['content_type'] = 'text/plain; charset=UTF-8';
+		$msg[1]['filename'] = '';
+		$msg[1]['no_base64'] = TRUE;
+		$msg[1]['data'] = $ticket['body']."\n\nhttps://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'],
+			0, strrpos($_SERVER['REQUEST_URI'], '/') + 1).'?m=rtticketview&id='.$id;
+		$out = mp_new_message($msg);
+		$body = $out[0];
+		$LMS->SendMail($recipients, $headers, $body);
+
 		$SESSION->redirect('?m=rtticketview&id='.$id);
 	}
 }

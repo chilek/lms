@@ -131,7 +131,7 @@ if(isset($message))
 
 				$headers['Date'] = date('D, d F Y H:i:s T');
 				$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
-				$headers['To'] = $message['destination'];
+				$headers['To'] = '<'.$message['destination'].'>';
 				$headers['Subject'] = $message['subject'];
 				if ($message['references'])
 					$headers['References'] = $message['references'];
@@ -201,7 +201,7 @@ if(isset($message))
 
 			$headers['Date'] = date('D, d F Y H:i:s T');
 			$headers['From'] = $mailfname.' <'.$message['mailfrom'].'>';
-			$headers['To'] = $message['destination'];
+			$headers['To'] = '<'.$message['destination'].'>';
 			$headers['Subject'] = $message['subject'];
 			if ($message['references'])
 				$headers['References'] = $message['references'];
