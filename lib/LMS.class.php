@@ -2129,7 +2129,7 @@ class LMS
 		$result['tariffs'] = $this->DB->GetAllByKey('SELECT * FROM tariffs','id');
 		$result['networks'] = $this->DB->GetAllByKey('SELECT * FROM networks','id');
 		
-		$temp['balance'] = $this->DB->GetAllByKey('SELECT users.id AS id, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY userid','id');
+		$temp['balance'] = $this->DB->GetAllByKey('SELECT users.id AS id, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id','id');
 		$temp['finances'] = $this->DB->GetAllByKey('SELECT userid, SUM(value) AS value, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments LEFT JOIN tariffs ON tariffs.id = assignments.tariffid GROUP BY userid','userid');
 
 		foreach($temp['balance'] as $balance)
@@ -2174,6 +2174,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.280  2003/10/23 19:57:23  alec
+ * poprawiona literowka w zapytaniu w GetTemplateList()
+ *
  * Revision 1.279  2003/10/22 23:07:52  lukasz
  * - temporary save
  *
