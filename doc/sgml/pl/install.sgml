@@ -620,7 +620,7 @@ database = /usr/local/lms/lms.db</screen>
       <para>LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e
       zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu administratorowi mo¿na
       przydzieliæ dowoln± kombinacjê regu³ dostêpu.</para>
-      <para>Domy¶lnie zdefiniowanych jest osiem regu³ dostêpu. 
+      <para>Domy¶lnie zdefiniowana jest nastêpuj±ca lista regu³ dostêpu:
        <itemizedlist>
 	<listitem><para>pe³en dostêp</para></listitem>
         <listitem><para>odczyt wszystkich danych (z wyj±tkiem Helpdesku)</para></listitem>
