@@ -438,9 +438,33 @@ CREATE TABLE passwd (
     home varchar(255) NOT NULL default '',
     type smallint NOT NULL default 0,
     expdate int(11) NOT NULL default 0,
-    domain varchar(255)	NOT NULL default '',
+    domainid int(11) NOT NULL default 0,
     PRIMARY KEY (id),
     UNIQUE KEY login (login)
+) TYPE=MyISAM;
+
+#
+# Struktura tabeli dla domains
+#
+DROP TABLE IF EXISTS domains;
+CREATE TABLE domains (
+    id int(11) NOT NULL auto_increment,
+    name varchar(255) NOT NULL DEFAULT '',
+    description text NOT NULL DEFAULT '',
+    PRIMARY KEY (id),
+    UNIQUE KEY (name)
+) TYPE=MyISAM;
+
+#
+# Struktura tabeli dla passwd
+#
+DROP TABLE IF EXISTS aliases;
+CREATE TABLE aliases (
+    id int(11) NOT NULL auto_increment,
+    login varchar(255) NOT NULL DEFAULT '',
+    accountid int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY (id),
+    UNIQUE KEY (login, accountid)
 ) TYPE=MyISAM;
 
 #
@@ -458,4 +482,4 @@ CREATE TABLE uiconfig (
     UNIQUE KEY var (section, var)
 ) TYPE=MyISAM;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004112700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004120600');
