@@ -367,7 +367,7 @@
     	<title>Panel SQL</title>
 	<sect3 id="sqlpanel-intro">
 		<title>Wstêp</title>
-		<para>W katalogu <filename>contrib/sqlpanel</filename> mo¿na znale¼æ
+		<para>W katalogu <filename>contrib/sqlpanel</filename> znajdziesz
 		modu³, dziêki któremu bêdziesz mia³ mo¿liwo¶æ bezpo¶redniego dostêpu 
 		do bazy danych poprzez zadawanie zapytañ SQL. Wyniki wy¶wietlane s±
 		w formie tabeli. Ponadto podawany jest czas wykonania zapytania.</para>
