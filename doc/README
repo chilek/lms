@@ -897,27 +897,46 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
 3.3.1. Faktury
 
    LMS umo¿liwia wystawianie faktur. W³±czenia tej opcji dokonuje siê
-   podczas przypisywania taryf u¿ytkownikom. Do poprawnego dzia³ania i
+   podczas przypisywania taryf u¿ytkownikom. Aktualnie w LMS nie ma
+   mo¿liwo¶ci rêcznego wystawiania faktur. Do poprawnego dzia³ania i
    tworzenia wydruków wymagane jest ustawienie podstawowych opcji w
    sekcji [invoices] lms.ini:
      * number_template
        Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer
        kolejny w roku, '%M' - miesi±c wystawienia, '%Y' - rok
        wystawienia. Domy¶lnie: %N/LMS/%Y
-       Przyk³ad: number_template = %N/%Y"
-     * seller
-       Dane sprzedawcy. Domy¶lnie: pusty
+       Przyk³ad: number_template = %N/%Y
+     * header
+       Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby
+       oddzieliæ linie od siebie.
        Przyk³ad: seller = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"
      * footer
-       Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta
+       Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka
+       zostanie umieszczona na dole faktury, ma³± czcionk±. Podobnie jak
+       i w przypadku opcji header, mo¿na u¿yæ ci±gu "\n" aby oddzieliæ
+       linie od siebie.
        Przyk³ad: footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu,
        tel.555-23-23, bla bla"
      * default_author
        Domy¶lna osoba wystawiaj±ca fakturê. Domy¶lnie: puste
        Przyk³ad: default_author = "specjalista d/s fakturowania"
 
-   Wystawianie faktur jest dostêpne w oknie 'Rachunek u¿ytkownika', do
-   którego trafisz wybieraj±c ¿±danego u¿ytkownika z listy u¿ytkownków.
+   Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez
+   ikonkê drukarki na wykazie bilansu finansowego (ogólnego b±d¼
+   pojedyñczego u¿ytkownika), albo poprzez 'Lista faktur' z menu
+   'Finanse'. W przypadku listy faktur, mo¿liwe jest tak¿e filtrowanie
+   faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y i kopie,
+   które s± oddzielone znacznikami podzia³u strony poprzez CSS. Tak wiêc
+   ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo
+   drukowaæ faktury ³adnie podzielone na strony. Funkcja ta by³a
+   testowana na przegl±darka Microsoft Internet Explorer 6.0, Opera 7.02
+   oraz Mozilla 1.3.
+
+   Notatka
+
+   Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ konfiguracji
+   wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie stopki i
+   nag³ówka, czy te¿ adresu na wydruku.
    Ostrze¿enie
 
    W bazie danych zapisywane s± kwoty brutto.

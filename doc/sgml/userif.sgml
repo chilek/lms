@@ -210,24 +210,25 @@
 	<sect2 id="user-staff-faktury">
 		<title>Faktury</title>
 		<para>LMS umo¿liwia wystawianie faktur. W³±czenia tej opcji dokonuje siê podczas
-		przypisywania taryf u¿ytkownikom. Do poprawnego dzia³ania i tworzenia wydruków
-		wymagane jest ustawienie podstawowych opcji w sekcji <emphasis>[invoices]</emphasis> 
+		przypisywania taryf u¿ytkownikom. Aktualnie w LMS nie ma mo¿liwo¶ci rêcznego wystawiania faktur. 
+		Do poprawnego dzia³ania i tworzenia wydruków
+		wymagane jest ustawienie podstawowych opcji w sekcji <emphasis>[invoices]</emphasis>
 		<filename>lms.ini</filename>:
 		<itemizedlist>
 		<listitem>
 			<para>number_template</para>
 			<para>Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku,
 			'%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</para>
-			<para>Przyk³ad: <prompt>number_template = %N/%Y"</prompt></para>
+			<para>Przyk³ad: <prompt>number_template = %N/%Y</prompt></para>
 		</listitem>
 		<listitem>
-			<para>seller</para>
-			<para>Dane sprzedawcy. Domy¶lnie: pusty</para>
+			<para>header</para>
+			<para>Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</para>
 			<para>Przyk³ad: <prompt>seller = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</prompt></para>
 		</listitem>
 		<listitem>
 			<para>footer</para>
-			<para>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta</para>
+			<para>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka zostanie umieszczona na dole faktury, ma³± czcionk±. Podobnie jak i w przypadku opcji header, mo¿na u¿yæ ci±gu "\n" aby oddzieliæ linie od siebie.</para>
 			<para>Przyk³ad: <prompt>footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</prompt></para>
 		</listitem>
 		<listitem>
@@ -237,44 +238,11 @@
 		</listitem>
 		</itemizedlist>
 		</para>
-	<!--
-		<para>Szablon jest niczym innym jak dokumentem tekstowym w formacie RTF (tekstowym)
-		lub html który mo¿na stworzyæ pod dowolnym programem obs³uguj±cym RTF. Plik ten
-		powinien wygl±daæ jak gotowa faktura, a pozycje które maj± byæ rozwijane przez
-		LMS nale¿y zast±piæ nastêpuj±cymi s³owami kluczowymi:
-		<itemizedlist>
-		<listitem><para>%nabywca - jest rozwijany do imienia i nazwiska nabywcy</para></listitem>
-		<listitem><para>%nab_adres - jest rozwijany do adresu nabywcy (ulica)</para></listitem>
-		<listitem><para>%nab_adres_cd - jest rozwijany do adresu nabywcy (kod pocztowy i miasto)</para></listitem>
-		<listitem><para>%nip - nip nabywcy</para></listitem>
-		<listitem><para>%nr_klienta - numer klienta (ID) z bazy u¿ytkowników</para></listitem>
-		<listitem><para>%sprzedawca - nazwa sprzedawcy</para></listitem>
-		<listitem><para>%sprzed_adres - adres sprzedawcy</para></listitem>
-		<listitem><para>%sprzed_adres_cd - ci±g dalszy adreu sprzedawcy</para></listitem>
-		<listitem><para>%numer - numer kolejny faktury w postaci id_operacji_kasowej/rok</para></listitem>
-		<listitem><para>%data - data wystawienia faktury</para></listitem>
-		<listitem><para>%termin - termin zap³aty (ilo¶æ dni ustawia siê w lms.ini)</para></listitem>
-		<listitem><para>%dni - ilo¶æ dni do zap³aty, mo¿na ustawiæ j/w</para></listitem>
-		<listitem><para>%usluga - nazwa us³ugi, jak nazwa jest pobierany opis operacji kasowej</para></listitem>
-		<listitem><para>%od - pierwszy dzieñ okresu ¶wiadczenia us³ugi (pierwszy dzieñ
-                   		miesi±ca, w ktorym by³o wpisane obci±¿enie do bazy)</para></listitem>
-		<listitem><para>%do - ostatni dzieñ okresu ¶wiadczenia us³ugi (ostatni dzieñ
-                   		miesi±ca, w ktorym by³o wpisane obci±¿enie do bazy)</para></listitem>
-		<listitem><para>%netto - warto¶æ us³ugi netto, bezpo¶rednio przepisana z bazy</para></listitem>
-		<listitem><para>%brutto - netto + 7% VAT</para></listitem>
-		<listitem><para>%vat - warto¶æ VAT (netto * 7%)</para></listitem>
-		<listitem><para>%slownie - kwota do zap³aty s³ownie</para></listitem>
-		<listitem><para>%konto - jest rozwijane do numeru konta bankowego</para></listitem>
-		<listitem><para>%wystawil - jest rozwijane do danych administratora zalogowanego aktualnie w LMS</para></listitem>
-		<listitem><para>%stopka - pozwala na wpisanie danych do stopki</para></listitem>
-		</itemizedlist>
-		<note><para>Przyk³adowy szablon znajduje siê w katalogu sample (faktura.rtf) i by³
-				testowany pod OpenOffice i M$ Office.</para></note>
+		<para>Wygenerowane faktury mo¿na obejrzeæ w dwojaki sposób: albo poprzez ikonkê drukarki na wykazie bilansu finansowego (ogólnego b±d¼ pojedyñczego u¿ytkownika), albo poprzez 'Lista faktur' z menu 'Finanse'. W przypadku listy faktur, mo¿liwe jest tak¿e filtrowanie faktur do wydruku. Wynikowy dokument HTML zawiera orygina³y i kopie, które s± oddzielone znacznikami podzia³u strony poprzez CSS. Tak wiêc ka¿da nowoczesna przegl±darka zgodna z CSS powinna bezproblemowo drukowaæ faktury ³adnie podzielone na strony. Funkcja ta by³a testowana na przegl±darka Microsoft Internet Explorer 6.0, Opera 7.02 oraz Mozilla 1.3.
 		</para>
-	-->
-		<para>Wystawianie faktur jest dostêpne w oknie 'Rachunek u¿ytkownika', do
-		którego trafisz wybieraj±c ¿±danego u¿ytkownika z listy u¿ytkownków.
-		<warning><para>W bazie danych zapisywane s± kwoty brutto. </para></warning>
+		<para>
+			<note><para>Praktycznie ka¿da przegl±darka internetowa ma mo¿liwo¶æ konfiguracji wydruku, gdzie mo¿na wy³±czyæ funkcje takie jak drukowanie stopki i nag³ówka, czy te¿ adresu na wydruku.</para></note>
+			<warning><para>W bazie danych zapisywane s± kwoty brutto. </para></warning>
 		</para>
  </sect2>
  <sect2 id="user-staff-stats">
