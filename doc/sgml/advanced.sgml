@@ -109,6 +109,7 @@
 				<member>nip - numer identyfikacji podatkowej NIP</member>
 				<member>pesel - numer PESEL</member>
 				<member>info - dodatkowe informacje</member>
+				<member>serviceaddr - adres do dorêczeñ (np. na faktury)</member>
 				<member>creationdate - czas utworzenia wpisu</member>
 				<member>moddate - czas modyfikacji</member>
 				<member>creatorid - identyfikator administratora tworz±cego wpis</member>
