@@ -24,7 +24,15 @@
  *  $Id$
  */
 
-function drawtext($image, $font, $x, $y, $text, $color, $bgcolor)
+function drawtext($x, $y, $text, $r, $g, $b)
+{
+	global $texts;
+        $texts->setColor($r, $g, $b);
+	$texts->moveTo($x, $y);	
+	$texts->addString($text);
+}
+
+function pngdrawtext($image, $font, $x, $y, $text, $color, $bgcolor)
 {
 	global $_CONFIG;
 	if($_CONFIG['phpui']['gd_translate_to'])
@@ -222,10 +230,218 @@ if($_GET['graph'] == '')
 	$SMARTY->assign('emptydb', sizeof($deviceslist) ? FALSE : TRUE);
 	$SMARTY->assign('gderror', ! function_exists('imagepng'));
 	$SMARTY->assign('start', $_GET['start']);
+	$SMARTY->assign('ming', function_exists('ming_useswfversion'));
 	$SMARTY->display('netdevmap.html');
 } 
-else
+elseif ($_GET['graph'] == 'flash')
 {	
+	makemap($DB,$map,$seen,$start);
+	foreach($map as $idx => $x)
+	{
+		if($minx == NULL)
+			$minx = $idx;
+		elseif($idx < $minx)
+			$minx = $idx;
+		
+		if($idx > $maxx)
+			$maxx = $idx;
+		foreach($x as $idy => $y)
+		{
+			if($miny == NULL)
+				$miny = $idy;
+			elseif($idy < $miny)
+				$miny = $idy;
+
+			if($idy > $maxy)
+				$maxy = $idy;
+		}
+	}
+
+	$widthx = $maxx - $minx;
+	$widthy = $maxy - $miny;
+	$cellw = 70;
+	$cellh = 30;
+	$celltmargin = 20;
+	$celllmargin = 10;
+	$imgwx = $cellw * ($widthx + 2);
+	$imgwy = $cellh * ($widthy + 2);
+
+	Ming_setScale(20.0);
+	ming_useswfversion(5);
+	$m = new SWFMovie();
+	$m->setRate(20.000000);
+	$m->setDimension($imgwx, $imgwy);
+	$m->setBackground(234,228,214);
+	$connections = new SWFShape();
+
+	foreach($map as $idx => $x)
+	{
+		foreach($x as $idy => $device)
+		{
+			$celx = $idx - $minx;
+			$cely = $idy - $miny;
+			if(eregi('^n',$device))
+			{
+				$device = str_replace('n','',$device);
+				list($nodeid,$device,$linktype) = explode('.',$device);
+				$nodemap[$nodeid]['x'] = $celx;
+				$nodemap[$nodeid]['y'] = $cely;
+				$nodemap[$nodeid]['device'] = $device;
+				$nodemap[$nodeid]['linktype'] = $linktype;
+			}
+			else
+			{
+				$devicemap[$device]['x'] = $celx;
+				$devicemap[$device]['y'] = $cely;
+			}
+		}
+	}
+
+	$links = $DB->GetAll('SELECT src, dst, type FROM netlinks');
+	if($links) foreach($links as $link)
+	{
+		$src_celx = $devicemap[$link['src']]['x'];
+		$src_cely = $devicemap[$link['src']]['y'];
+		$dst_celx = $devicemap[$link['dst']]['x'];
+		$dst_cely = $devicemap[$link['dst']]['y'];
+		$src_px = (($src_celx * $cellw) + $celllmargin);
+		$src_py = (($src_cely * $cellh) + $celltmargin);
+		$dst_px = (($dst_celx * $cellw) + $celllmargin);
+		$dst_py = (($dst_cely * $cellh) + $celltmargin);
+		if(! $link['type'])
+		{
+			$connections->setLine(1, 0,128,0);
+			$connections->movePenTo($src_px+8, $src_py+8);
+			$connections->drawLineTo($dst_px+8, $dst_py+8);
+		} 
+		else 
+		{
+			$connections->setLine(1, 0,200,255);
+			$connections->movePenTo($src_px+8, $src_py+8);
+			$connections->drawLineTo($dst_px+8, $dst_py+8);
+		}
+	}
+
+	if($nodemap) foreach($nodemap as $node)
+	{
+		$src_celx = $node['x'];
+		$src_cely = $node['y'];
+		$dst_celx = $devicemap[$node['device']]['x'];
+		$dst_cely = $devicemap[$node['device']]['y'];
+		$src_px = (($src_celx * $cellw) + $celllmargin);
+		$src_py = (($src_cely * $cellh) + $celltmargin);
+		$dst_px = (($dst_celx * $cellw) + $celllmargin);
+		$dst_py = (($dst_cely * $cellh) + $celltmargin);
+		if($node['linktype']=="0") {
+			$connections->setLine(1, 255,0,0);
+			$connections->movePenTo($src_px+4, $src_py+4);
+			$connections->drawLineTo($dst_px+4, $dst_py+4);
+		} else {
+			$connections->setLine(1, 0,200,255);
+			$connections->movePenTo($src_px+4, $src_py+4);
+			$connections->drawLineTo($dst_px+4, $dst_py+4);
+		}
+	}
+
+	$m->add($connections);
+
+	$im_n_unk = new SWFBitmap(fopen("img/node_unk.jpg","rb"));
+	$im_n_off = new SWFBitmap(fopen("img/node_off.jpg","rb"));
+	$im_n_on  = new SWFBitmap(fopen("img/node_on.jpg","rb"));
+	$im_d_unk = new SWFBitmap(fopen("img/netdev_unk.jpg","rb"));
+	$im_d_off = new SWFBitmap(fopen("img/netdev_off.jpg","rb"));
+	$im_d_on  = new SWFBitmap(fopen("img/netdev_on.jpg","rb"));
+	
+	$font = new SWFFont("img/Arial.fdb");
+	$texts = new SWFText();
+	$texts->setFont($font);
+	$texts->setColor(0, 0, 0);
+        $texts->setHeight(8);
+
+
+	if($nodemap) foreach($nodemap as $nodeid => $node)
+	{
+		$button = new SWFButton();
+		$squareshape=new SWFShape();
+		$celx = $node['x'];
+		$cely = $node['y'];
+		$px = (($celx * ($cellw)) + $celllmargin);
+		$py = (($cely * ($cellh)) + $celltmargin);
+		$nodedata = $DB->GetRow('SELECT name, INET_NTOA(ipaddr) AS ip, lastonline FROM nodes WHERE id=?',array($nodeid));
+		if ($nodedata['lastonline']) {	
+			if ((time()-$nodedata['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit']) {
+				$myfill = $squareshape->addFill($im_n_off,SWFFILL_TILED_BITMAP);
+			} else {
+				$myfill = $squareshape->addFill($im_n_on,SWFFILL_TILED_BITMAP);
+			}
+		} else {
+			$myfill = $squareshape->addFill($im_n_unk,SWFFILL_TILED_BITMAP);
+		}
+		$myfill->scaleto(9,9);
+		$squareshape->setRightFill($myfill);
+		$squareshape->drawLine(15,0);  
+		$squareshape->drawLine(0,15); 
+		$squareshape->drawLine(-15,0); 
+		$squareshape->drawLine(0,-15); 
+		$button->addShape($squareshape, SWFBUTTON_HIT | SWFBUTTON_UP | SWFBUTTON_DOWN | SWFBUTTON_OVER); 
+		$button->addAction(new SWFAction("this.getURL('?m=nodeinfo&id=".$nodeid."');"), SWFBUTTON_MOUSEDOWN); // press
+		$i=$m->add($button);
+		$i->moveTo($px,$py);
+		
+		drawtext($px + 15, $py - 8, $nodedata['ip'], 0, 0, 255);
+		drawtext($px + 15, $py + 2, $nodedata['name'], 0, 0, 0); 
+	}
+
+	foreach($devicemap as $deviceid => $device)
+	{
+		$button = new SWFButton();
+		$squareshape=new SWFShape(); 
+		$celx = $device['x'];
+		$cely = $device['y'];
+		$px = (($celx * ($cellw)) + $celllmargin);
+		$py = (($cely * ($cellh)) + $celltmargin);
+		
+		$lastonline = $DB->GetOne('SELECT MAX(lastonline) FROM nodes WHERE ownerid=0 AND netdev=?', array($deviceid));
+		if ($lastonline) {	
+			if ((time()-$lastonline)>$LMS->CONFIG['phpui']['lastonline_limit']) {
+				$myfill = $squareshape->addFill($im_d_off,SWFFILL_TILED_BITMAP);
+			} else {
+				$myfill = $squareshape->addFill($im_d_on,SWFFILL_TILED_BITMAP);
+			}
+		} else {
+			$myfill = $squareshape->addFill($im_d_unk,SWFFILL_TILED_BITMAP);
+		}
+		
+		$myfill->scaleto(9,9);
+		$squareshape->setRightFill($myfill);
+		$squareshape->drawLine(15,0);  
+		$squareshape->drawLine(0,15); 
+		$squareshape->drawLine(-15,0); 
+		$squareshape->drawLine(0,-15); 
+		$button->addShape($squareshape, SWFBUTTON_HIT | SWFBUTTON_UP | SWFBUTTON_DOWN | SWFBUTTON_OVER); 
+		$button->addAction(new SWFAction("this.getURL('?m=netdevinfo&id=".$deviceid."');"), SWFBUTTON_MOUSEDOWN); // press
+		$i=$m->add($button);
+		$i->moveTo($px,$py);
+
+		$devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM nodes WHERE ownerid=0 AND netdev=? ORDER BY ipaddr LIMIT 4', array($deviceid));
+		if($devip[0]) drawtext($px + 20, $py - ($devip[1]?17:8), $devip[0], 0,0,255);
+		if($devip[1]) drawtext($px + 20, $py - 8, $devip[1], 0,0,255);
+		if($devip[2]) drawtext($px + 20, $py + 17, $devip[2], 0,0,255);
+		if($devip[3]) drawtext($px + 20, $py + 26, $devip[3], 0,0,255);
+		
+		drawtext($px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), 0,0,0);
+		drawtext($px + 20, $py + 18, $DB->GetOne('SELECT location FROM netdevices WHERE id=?',array($deviceid)), 0,128,0); 
+	}
+		
+	$m->add($texts);
+	header("Content-type: application/x-shockwave-flash");
+	// Note: this line avoids a bug in InternetExplorer that won't allow
+	// downloads over https
+	header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Pragma: public");	
+	$m->output();
+} else {
 	makemap($DB,$map,$seen,$start);
 	foreach($map as $idx => $x)
 	{
@@ -354,8 +570,8 @@ else
 		} else 
 			imagecopy($im,$im_n_unk,$px,$py,0,0,15,16);
 		
-		drawtext($im, 1, $px + 15, $py - 8, $nodedata['ip'], $blue, $lightbrown);
-		drawtext($im, 1, $px + 15, $py + 2, $nodedata['name'], $black, $lightbrown);
+		pngdrawtext($im, 1, $px + 15, $py - 8, $nodedata['ip'], $blue, $lightbrown);
+		pngdrawtext($im, 1, $px + 15, $py + 2, $nodedata['name'], $black, $lightbrown);
 	}
 
 	foreach($devicemap as $deviceid => $device)
@@ -375,13 +591,13 @@ else
 			imagecopy($im,$im_d_unk,$px,$py,0,0,16,16);
 		
 		$devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM nodes WHERE ownerid=0 AND netdev=? ORDER BY ipaddr LIMIT 4', array($deviceid));
-		if($devip[0]) drawtext($im, 1, $px + 20, $py - ($devip[1]?17:8), $devip[0], $blue, $lightbrown);
-		if($devip[1]) drawtext($im, 1, $px + 20, $py - 8, $devip[1], $blue, $lightbrown);
-		if($devip[2]) drawtext($im, 1, $px + 20, $py + 17, $devip[2], $blue, $lightbrown);
-		if($devip[3]) drawtext($im, 1, $px + 20, $py + 26, $devip[3], $blue, $lightbrown);
+		if($devip[0]) pngdrawtext($im, 1, $px + 20, $py - ($devip[1]?17:8), $devip[0], $blue, $lightbrown);
+		if($devip[1]) pngdrawtext($im, 1, $px + 20, $py - 8, $devip[1], $blue, $lightbrown);
+		if($devip[2]) pngdrawtext($im, 1, $px + 20, $py + 17, $devip[2], $blue, $lightbrown);
+		if($devip[3]) pngdrawtext($im, 1, $px + 20, $py + 26, $devip[3], $blue, $lightbrown);
 		
-		drawtext($im, 3, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), $black, $lightbrown);
-		drawtext($im, 2, $px + 20, $py + 18, $DB->GetOne('SELECT location FROM netdevices WHERE id=?',array($deviceid)), $green, $lightbrown);
+		pngdrawtext($im, 3, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), $black, $lightbrown);
+		pngdrawtext($im, 2, $px + 20, $py + 18, $DB->GetOne('SELECT location FROM netdevices WHERE id=?',array($deviceid)), $green, $lightbrown);
 	}
 		
 	imagepng($im);
