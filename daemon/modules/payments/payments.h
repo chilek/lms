@@ -5,4 +5,5 @@ struct payments_module
 	
 	unsigned char *comment;
 	int up_payments;
+	int expiry_days;
 };
