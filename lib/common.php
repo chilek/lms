@@ -647,5 +647,19 @@ function check_pesel($pesel)
 		return 0;
 } 
 
+function get_producer($mac)
+{
+	global $_LIB_DIR;
+	$mac = strtoupper(str_replace(":","-",substr($mac,0,8)));
+	if($macfile = fopen($_LIB_DIR."/ethercodes.txt","r"))
+		while($mac != $prefix && ! feof($macfile))
+		{
+			$line=fgets($macfile,4096);
+			list($prefix,$producer) = split(":",trim($line));
+		}
+	fclose($macfile);
+	return $producer;
+}
+	
 
 ?>
