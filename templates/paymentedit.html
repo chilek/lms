@@ -50,7 +50,7 @@
 				<OPTION VALUE="2" {if $payment.period eq 2}SELECTED{/if}>co kwarta³</OPTION>
 				<OPTION VALUE="3" {if $payment.period eq 3}SELECTED{/if}>co rok</OPTION>
 			</SELECT>&nbsp;
-    			<INPUT TYPE="TEXT" NAME="payment[at]" VALUE="{$payment.at}"{tip text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28), dla op³aty corocznej podaj miesi±c i dzieñ w formacie DD/MM (15/09 oznacza 15 wrze¶nia), a dla kwartalnej DD/MM (MM <= 3)." trigger="at"} SIZE="5">
+    			<INPUT TYPE="TEXT" NAME="payment[at]" VALUE="{$payment.at}"{tip text="Podaj kiedy ma byæ naliczana taryfa. Dla op³aty cotygodniowej podaj dzieñ tygodnia (poniedzia³ek = 1), dla op³aty miesiêcznej podaj dzieñ miesi±ca (od 1 do 28), dla op³aty corocznej podaj dzieñ i miesi±c w formacie DD/MM (15/09 oznacza 15 wrze¶nia), a dla kwartalnej DD/MM (MM <= 3)." trigger="at"} SIZE="5">
 		</TD>
 	</TR>	
 	<TR CLASS="light">	
