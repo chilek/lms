@@ -66,7 +66,7 @@ $queue['rights'] = $queue['nrights'];
 
 $layout['pagetitle'] = trans('New Queue');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('error', $error);

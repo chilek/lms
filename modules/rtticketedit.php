@@ -75,7 +75,7 @@ if(isset($ticketedit))
 
 $layout['pagetitle'] = trans('Ticket Edit: No. $0',sprintf("%06d",$ticket['ticketid']));
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());

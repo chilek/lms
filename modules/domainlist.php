@@ -79,7 +79,7 @@ unset($domainlist['total']);
 unset($domainlist['order']);
 unset($domainlist['direction']);
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);

@@ -34,7 +34,7 @@ $tariff = $LMS->GetTariff($_GET['id']);
 
 $layout['pagetitle'] = trans('Tariff Info: $0',$tariff['name']);
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('tariff',$tariff);
 $SMARTY->assign('tariffs',$LMS->GetTariffs());

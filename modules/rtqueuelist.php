@@ -28,7 +28,7 @@ $layout['pagetitle'] = trans('Queues List');
 
 $queues = $LMS->GetQueueList();
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queues', $queues);
 $SMARTY->display('rtqueuelist.html');

@@ -200,6 +200,6 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('assignment', $a);
 $SMARTY->display('userinfo.html');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 ?>

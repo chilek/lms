@@ -70,7 +70,7 @@ if(isset($ticket))
 	
 $layout['pagetitle'] = trans('New Ticket');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->assign('queue', $queue);

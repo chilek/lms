@@ -266,7 +266,7 @@ else
 
 $layout['pagetitle'] = trans('New Message');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('message', $message);
 $SMARTY->assign('error', $error);

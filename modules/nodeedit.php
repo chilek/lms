@@ -49,7 +49,7 @@ if($_GET['action']=='link')
 
 $nodeid = $_GET['id'];
 $ownerid = $LMS->GetNodeOwner($nodeid);
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 	
 if(!isset($_GET['ownerid']))
 	$_SESSION['backto'] .= '&ownerid='.$ownerid;

@@ -44,7 +44,7 @@ $event['adminlist'] = $LMS->DB->GetAll('SELECT adminid AS id, admins.name
 
 $layout['pagetitle'] = trans('Event Info');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('event', $event);
 $SMARTY->assign('layout', $layout);

@@ -40,7 +40,7 @@ $ticket = $LMS->GetTicketContents($_GET['id']);
 
 $layout['pagetitle'] = trans('Ticket No $0',sprintf("%06d",$ticket['ticketid']));
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('ticket', $ticket);
 $SMARTY->display('rtticketprint.html');

@@ -51,7 +51,7 @@ unset($nodelist['totalon']);
 unset($nodelist['totaloff']);
 unset($nodelist['direction']);
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $layout['pagetitle'] = trans('Device Info: $0 $1 $2', $netdevinfo['name'], $netdevinfo['producer'], $netdevinfo['model']);
 

@@ -160,7 +160,7 @@ if(isset($search) || $_GET['search'])
 	}
 }
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('queuelist', $LMS->GetQueueNames());
 $SMARTY->assign('adminlist', $LMS->GetAdminNames());

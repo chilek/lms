@@ -95,7 +95,7 @@ if(isset($usergroupedit))
 	$usergroup['name'] = $usergroupedit['name'];
 }
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('usergroup',$usergroup);
 $SMARTY->assign('error', $error);

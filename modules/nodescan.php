@@ -40,7 +40,7 @@ if($_GET['ownerid'] && $LMS->UserExists($_GET['ownerid']))
 
 $layout['pagetitle'] = trans('Nodes Scanning');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('nodes',$LMS->ScanNodes());
 $SMARTY->display('nodescan.html');

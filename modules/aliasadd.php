@@ -94,7 +94,7 @@ if($accountid = $_GET['accountid'])
 
 $layout['pagetitle'] = trans('New Alias');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('aliasadd', $aliasadd);
 $SMARTY->assign('error', $error);

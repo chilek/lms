@@ -25,7 +25,7 @@
  */
 
 $layout['pagetitle'] = trans('Cash Operations Import');
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $op = $_GET['op'];
 

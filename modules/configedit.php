@@ -96,7 +96,7 @@ if($cfg = $_POST['config'])
 
 $layout['pagetitle'] = trans('Option Edit: $0',$option);
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('config', $config);

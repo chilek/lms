@@ -103,7 +103,7 @@ else // upload errors
 
 $layout['pagetitle'] = trans('Cash Operations Import');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->display('cashimport.html');

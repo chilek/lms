@@ -104,7 +104,7 @@ $event['adminlist'] = $eventadminlist;
 
 $layout['pagetitle'] = trans('Event Edit');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $adminlist = $LMS->GetAdminNames();
 

@@ -66,7 +66,7 @@ if($domainadd = $_POST['domainadd'])
 
 $layout['pagetitle'] = trans('New Domain');
 
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+$SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('domainadd', $domainadd);
