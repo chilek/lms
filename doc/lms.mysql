@@ -254,9 +254,9 @@ CREATE TABLE rtmessages (
   subject varchar(255) NOT NULL default '',
   messageid varchar(255) NOT NULL default '',
   inreplyto int(11) NOT NULL default '0',
-  replyto text NOT NULL,
-  headers text NOT NULL,
-  body mediumtext NOT NULL,
+  replyto text NOT NULL default '',
+  headers text NOT NULL default '',
+  body mediumtext NOT NULL default '',
   createtime int(11) NOT NULL default '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
