@@ -48,8 +48,8 @@ if(!$error)
 		$layout['pagetitle'] = trans('Removing network $0', strtoupper($network['name']));
 		$SMARTY->display('header.html');
 		echo '<H1>'.$layout['pagetitle'].'</H1>';
-		echo '<P>'.trans('Are you shure, you want to delete that network?').'</P>';
-		echo '<A href="?m=netdel&id='.$network['id'].'&is_sure=1">'.trans('Yes, I am shure').'</A>';
+		echo '<P>'.trans('Are you sure, you want to delete that network?').'</P>';
+		echo '<A href="?m=netdel&id='.$network['id'].'&is_sure=1">'.trans('Yes, I am sure').'</A>';
 		$SMARTY->display('footer.html');
 	}
 }
