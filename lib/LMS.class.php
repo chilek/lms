@@ -1776,22 +1776,21 @@ class LMS
 						    $list['sum']['val0'] += $value;
 					    break;
 					    case '7.0':
-					    	     $val = round($value/1.07, 2);
-						     $list[$id]['val7'] += $val;
-						     $list[$id]['tax7'] += $value-$val;
-						     $list[$id]['tax'] += $value-$val;
-						     $list['sum']['val7'] += $val;
-						     $list['sum']['tax7'] += $value-$val;
-						     $list['sum']['tax'] += $value-$val;
+						     $list[$id]['tax7'] += round($value - ($value/1.07), 2);
+						     $list[$id]['val7'] += $value - $list[$id]['tax7'];
+					    	     $list[$id]['tax']   += $list[$id]['tax7'];
+						     $list['sum']['tax7'] += $list[$id]['tax7'];
+						     $list['sum']['val7'] += $list[$id]['val7'];
+						     $list['sum']['tax']   += $list[$id]['tax'];
+
 					    break;
 					    case '22.0':
-					    	     $val = round($value/1.22, 2);
-						     $list[$id]['val22'] += $val;
-						     $list[$id]['tax22'] += $value-$val;
-						     $list[$id]['tax'] += $value-$val;
-						     $list['sum']['val22'] += $val;
-						     $list['sum']['tax22'] += $value-$val;
-						     $list['sum']['tax'] += $value-$val;
+						     $list[$id]['tax22'] += round($value - ($value/1.22), 2);
+						     $list[$id]['val22'] += $value - $list[$id]['tax22'];
+					    	     $list[$id]['tax']   += $list[$id]['tax22'];
+						     $list['sum']['tax22'] += $list[$id]['tax22'];
+						     $list['sum']['val22'] += $list[$id]['val22'];
+						     $list['sum']['tax']   += $list[$id]['tax'];
 					    break;
 					}
 			}
