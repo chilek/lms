@@ -45,6 +45,6 @@ function r_stripslashes($string)
 if(get_magic_quotes_gpc())
 	$_POST = r_stripslashes($_POST);
 
-$_SERVER[REMOTE_ADDR] = str_replace("::ffff:","",$_SERVER[REMOTE_ADDR]);
+$_SERVER['REMOTE_ADDR'] = str_replace("::ffff:","",$_SERVER['REMOTE_ADDR']);
 
 ?>

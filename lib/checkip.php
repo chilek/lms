@@ -26,47 +26,44 @@
 
 // Sprawdzenie czy po³±czenie z dozwolonego IP.
 
-if($_CONFIG[phpui][allow_from])
+if($_CONFIG['phpui']['allow_from'])
 {
 	// usuñmy prefix ipv6 jak jest
 	
-	$ipaddr = str_replace("::ffff:","",$_SERVER[REMOTE_ADDR]);
+	$ipaddr = str_replace('::ffff:','',$_SERVER['REMOTE_ADDR']);
 
-	$allowedlist = explode(",",$_CONFIG[phpui][allow_from]);
+	$allowedlist = explode(',',$_CONFIG['phpui']['allow_from']);
 
 	foreach($allowedlist as $value)
 	{
-		list($net,$mask) = split("/",$value);
+		list($net,$mask) = split('/',$value);
 		$net=trim($net);
 		$mask=trim($mask);
-		if($mask == "")
-			$mask = "32";
+		if($mask == '')
+			$mask = '32';
 		if($mask >= 0 || $mask <= 32)
 			$mask = prefix2mask($mask);
 	
 		if(isipinstrict($ipaddr,$net,$mask))
 			$isin = TRUE;
-
 	}
 
 	if(!$isin)
 	{
-		header("HTTP/1.1 403 Forbidden");
+		header('HTTP/1.1 403 Forbidden');
 		echo '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 		<HTML><HEAD>
 		<TITLE>403 Forbidden</TITLE>
 		</HEAD><BODY>
 		<H1>Forbidden</H1>
-		You don\'t have permission to access '.$_SERVER[REQUEST_URI].'
+		You don\'t have permission to access '.$_SERVER['REQUEST_URI'].'
 		on this server.<P>
 		<HR>
-		'.$_SERVER[SERVER_SIGNATURE].'
+		'.$_SERVER['SERVER_SIGNATURE'].'
 		</BODY></HTML>
 		';
 		exit(0);
 	}
-		
-
 }
 
 ?>
