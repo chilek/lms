@@ -1219,21 +1219,23 @@ class LMS
 	{
 		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
 		{
-			$total = sizeof($tarifflist);
 			foreach($tarifflist as $idx => $row)
 			{
 				$tarifflist[$idx]['users'] = $this->GetUsersWithTariff($row['id']);
 				$tarifflist[$idx]['userscount'] = sizeof($this->DB->GetCol("SELECT userid FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY userid",array($row['id'])));
 				$tarifflist[$idx]['income'] = $tarifflist[$idx]['users'] * $row['value'];
-				$tarifflist['totalincome'] += $tarifflist[$idx]['income'];
-				$tarifflist['totalusers'] += $tarifflist[$idx]['users'];
-				$tarifflist['totalcount'] += $tarifflist[$idx]['userscount'];
+				$totalincome += $tarifflist[$idx]['income'];
+				$totalusers += $tarifflist[$idx]['users'];
+				$totalcount += $tarifflist[$idx]['userscount'];
 			}
 		}
-		$tarifflist['total'] = $total;
-
+		
+		$tarifflist['total'] = sizeof($tarifflist);
+		$tarifflist['totalincome'] = $totalincome;
+		$tarifflist['totalusers'] = $totalusers;
+		$tarifflist['totalcount'] = $totalcount;
+		
 		return $tarifflist;
-
 	}
 
 	function TariffMove($from, $to)
@@ -2267,6 +2269,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.310  2003/12/12 18:16:35  alec
+ * - w GetTariffList() przy pustej liscie 'total' zwraca 0, a nie ""
+ *
  * Revision 1.309  2003/12/11 22:52:01  alec
  * - poprawione kapitalizowanie pliterek w nazwisku (BTS#0000078)
  * - Warden, mo¿e zrobisz tak w 1.0.x ?
