@@ -410,6 +410,10 @@ sub instance($)
 		
 		my %uprates;
 		my %downrates;
+		my %upceils;
+		my %downceils;
+		my %climits;
+		my %plimits;
 		
 		$dbq = $dbase->prepare("SELECT userid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil, SUM(climit) AS climit, SUM(plimit) AS plimit FROM assignments, users, tariffs WHERE users.id = userid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY userid");
 		$dbq->execute();
