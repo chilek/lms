@@ -481,6 +481,18 @@ info = "Opcjonalny opis modu³u"
 			    Domy¶lnie: "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}".</para>
 			    <para>Przyk³ad: <prompt>host = "host %n {hardware ethernet %m; fixed-address %i;}"</prompt></para>
 			</listitem>
+			<listitem>
+			    <para>networks</para>
+			    <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+			    Domy¶lnie: pusta (wszystkie sieci).</para>
+			    <para>Przyk³ad: <prompt>networks = "lan1 lan2"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>usergroups</para>
+			    <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    Domy¶lnie: pusta (wszystkie grupy).</para>
+			    <para>Przyk³ad: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+			</listitem>
 		    </itemizedlist>
 		    </sect3>
 		</sect2>

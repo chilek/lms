@@ -35,29 +35,95 @@ unsigned char * inet_ntoa(unsigned long);
 void reload(GLOBAL *g, struct dhcp_module *dhcp)
 {
 	FILE *fh;
-	QUERY_HANDLE *res;
-	int i, j;
+	QUERY_HANDLE *res, *res1;
+	int i, j, m, k=2, gc=0, nc=0, nh=0, n=2;
 	struct hostcache
 	{
 		unsigned char *name;
 		unsigned char *mac;
 		unsigned long ipaddr;
 	} *hosts = NULL;
-	int nh = 0;
-	unsigned char *name, *mac, *ipaddr;
+
+	struct net *nets = (struct net *) malloc(sizeof(struct net));
+	char *netnames = strdup(dhcp->networks);	
+	char *netname = strdup(netnames);
+    
+	struct group *ugps = (struct group *) malloc(sizeof(struct group));
+	char *groupnames = strdup(dhcp->usergroups);	
+	char *groupname = strdup(groupnames);
+
+	while( n>1 ) {
+		
+    		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
+
+		if( strlen(netname) )
+
+		        if( (res = g->db_pquery("SELECT name, address, INET_ATON(mask) AS mask  FROM networks WHERE UPPER(name)=UPPER('?')",netname))!=NULL) {
+
+				if(res->nrows) {
+					nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
+					nets[nc].name = strdup(g->db_get_data(res,0,"name"));
+					nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
+					nc++;
+				}
+	    			g->db_free(res);
+			}				
+	}
+	free(netname); free(netnames);
+
+	while( k>1 ) {
+		
+		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
+
+		if( strlen(groupname) ) {
+
+			if( (res = g->db_pquery("SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname))!=NULL) {
+
+				if(res->nrows) {
+
+			    		ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
+					ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
+					ugps[gc].id = atoi(g->db_get_data(res,0,"id"));
+					gc++;
+				}
+	    			g->db_free(res);
+			}		
+		}		
+	}
+	free(groupname); free(groupnames);
+
 
 	fh = fopen(dhcp->file, "w");
 	if(fh) {
 
-		if( (res = g->db_query("SELECT name, mac, ipaddr FROM nodes ORDER BY ipaddr"))!=NULL ) {
+		if( (res = g->db_query("SELECT name, mac, ipaddr, ownerid FROM nodes ORDER BY ipaddr"))!=NULL ) {
 
 			for(i=0; i<res->nrows; i++) {
 				
-				name = g->db_get_data(res,i,"name");
-				mac = g->db_get_data(res,i,"mac");
-				ipaddr = g->db_get_data(res,i,"ipaddr");
-				
+				int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
+				char *name = g->db_get_data(res,i,"name");
+				char *mac = g->db_get_data(res,i,"mac");
+				char *ipaddr = g->db_get_data(res,i,"ipaddr");
+		
 				if(name && mac && ipaddr) {
+
+					// groups test
+					if(gc) {
+						m = gc;
+						if( res1 = g->db_pquery("SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"))) {
+							for(k=0; k<res1->nrows; k++) {
+								int groupid = atoi(g->db_get_data(res1, k, "usergroupid"));
+								for(m=0; m<gc; m++) 
+									if(ugps[m].id==groupid) 
+										break;
+								if(m!=gc) break;
+							}
+							g->db_free(res1);
+						}
+						if(m==gc || ownerid==0)
+							continue;
+					}
+
 					hosts = (struct hostcache*) realloc(hosts, sizeof(struct hostcache) * (nh + 1));
 					hosts[nh].name = strdup(name);
 					hosts[nh].mac = strdup(mac);
@@ -75,18 +141,26 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 			
 				unsigned char *s, *d, *d2, *e;
 				unsigned long netmask, network;
-			
+				
 				e = g->db_get_data(res,i,"address");
 				d = g->db_get_data(res,i,"mask");
+				network = inet_addr(e);
+				netmask = inet_addr(d);
 				
+				// networks test
+				if(nc) {
+					for(j=0; j<nc; j++)
+						if(nets[j].address==network) 
+							break;
+					if(j==nc)
+						continue;
+				}
+								
 				s = strdup(dhcp->subnetstart);
 				g->str_replace(&s, "%m", d);
 				g->str_replace(&s, "%a", e);
 				fprintf(fh, "%s\n", s);
 				free(s); 
-
-				network = inet_addr(e);
-				netmask = inet_addr(d);
 
 				if( (d = g->db_get_data(res,i,"dhcpstart")) && ((e = g->db_get_data(res,i,"dhcpend"))) ) {
 					if( strlen(d) && strlen(e) ) {
@@ -170,6 +244,17 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 	else
 		syslog(LOG_ERR, "[%s/dhcp] Unable to write a temporary file '%s'", dhcp->base.instance, dhcp->file);
 
+	//more cleanup
+	for(i=0;i<nc;i++)
+		free(nets[i].name);
+	free(nets);
+	
+	for(i=0;i<gc;i++)
+		free(ugps[i].name);
+	free(ugps);
+	
+	free(dhcp->networks);
+	free(dhcp->usergroups);
 	free(dhcp->prefix);
 	free(dhcp->append);
 	free(dhcp->subnetstart);
@@ -226,6 +311,10 @@ struct dhcp_module * init(GLOBAL *g, MODULE *m)
 	dhcp->file = strdup(g->iniparser_getstring(ini, s, "/tmp/dhcpd.conf"));
 	free(s); s = g->str_concat(instance, ":command");
 	dhcp->command = strdup(g->iniparser_getstring(ini, s, ""));
+	free(s); s = g->str_concat(instance, ":networks");
+	dhcp->networks = strdup(g->iniparser_getstring(ini, s, ""));
+	free(s); s = g->str_concat(instance, ":usergroups");
+	dhcp->usergroups = strdup(g->iniparser_getstring(ini, s, ""));
 
 	g->iniparser_freedict(ini);
 	free(instance);
@@ -235,4 +324,5 @@ struct dhcp_module * init(GLOBAL *g, MODULE *m)
 #endif	
 	return (dhcp);
 }
+
 
