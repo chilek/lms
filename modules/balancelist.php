@@ -41,7 +41,7 @@ unset($balancelist['total']);
 $listdata['totalpos'] = sizeof($balancelist);
 
 $pagelimit = $LMS->CONFIG['phpui']['balancelist_pagelimit'];
-$page = (! $_GET['page'] ? ceil($listdata['total']/$pagelimit) : $_GET['page']); 
+$page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']); 
 $start = ($page - 1) * $pagelimit;
 
 $layout['pagetitle'] = trans('Balance Sheet');
