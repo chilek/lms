@@ -717,12 +717,18 @@ class LMS {
 				$_SESSION[timestamps][getnodelist][users] != $this->GetTS("users")
 		  )
 		{
+			$nodelist[totalon]=0;
+			$nodelist[totaloff]=0;
 			$nodelist = $db->FetchArray("SELECT `id`, `ipaddr`, `mac`, `name`, `ownerid`, `access` FROM `nodes`");
 			if(sizeof($nodelist[id]))
 				foreach($nodelist[id] as $key => $value)
 				{
 					$nodelist[iplong][$key] = ip_long($nodelist[ipaddr][$key]);
 					$nodelist[owner][$key] = $this->GetUserName($nodelist[ownerid][$key]);
+					if(strtoupper($nodelist[access][$key])=="Y")
+						$nodelist[totalon]++;
+					else
+						$nodelist[totaloff]++;						
 				}
 
 			$_SESSION[timestamps][getnodelist][nodes] = $this->GetTS("nodes");
