@@ -28,6 +28,8 @@
 	
 	function invoicepay(id)
 	{
+		if(! confirm('{/literal}{t}Are you sure, you want to account selected invoice?{/t}{literal}'))
+			return;
 		document.page.action="?m=invoicepaid&id="+id;
 		document.page.target="";
 		document.page.submit();
