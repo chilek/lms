@@ -51,7 +51,7 @@
 			{else}
 			    <img src="img/node_unk.gif" border="0" ALT="" align="absmiddle">
 			{/if}
-			&nbsp;<B>{$nodelist[nodelist].name}</B></A><BR>
+			<B>{$nodelist[nodelist].name}</B></A><BR>
 			<img src="img/user.gif" border="0" ALT="" align="absmiddle">&nbsp;<A href="?m=userinfo&id={$nodelist[nodelist].ownerid}" {tip 0=$nodelist[nodelist].ownerid dynpopup='?m=userinfoshort&id=$0'}>{if ! $nodelist[nodelist].access}<font color="#888888">{/if}{$nodelist[nodelist].owner|truncate:60:" ..."|replace:" ":"&nbsp;"}{if ! $nodelist[nodelist].access}</FONT>{/if}</A>
 			{if $nodelist[nodelist].info}
 				<BR><NOBR><IMG src="img/empty.gif" alt="" align="absmiddle" width="20" height="1">{$nodelist[nodelist].info|truncate:60:"..."}</NOBR>
