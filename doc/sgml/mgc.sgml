@@ -274,10 +274,22 @@
      <para>%name - nazwa sieci ma³ymi znakami</para>
     </listitem>
     <listitem>
-     <para>%UPRATE - limit transferu dla danych wychodz±cych</para>
+     <para>%UPRATE - gwarantowany transfer dla danych wychodz±cych</para>
     </listitem>
     <listitem>
-     <para>%DOWNRATE - limit transferu dla danych przychodz±cych</para>
+     <para>%DOWNRATE - gwarantowany transfer dla danych przychodz±cych</para>
+    </listitem>
+    <listitem>
+     <para>%UPCEIL - maksymalny transfer dla danych wychodz±cych</para>
+    </listitem>
+    <listitem>
+     <para>%DOWNCEIL - maksymalny transfer dla danych przychodz±cych</para>
+    </listitem>
+    <listitem>
+     <para>%CLIMIT - limit równoczesnych po³±czeñ</para>
+    </listitem>
+    <listitem>
+     <para>%PLIMIT - limit pakietów</para>
     </listitem>
     <listitem>
      <para>%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP </para>
