@@ -9,7 +9,8 @@ wersja 1.0pre11 (??/??/2003):
   - przymiarki do ró¿nych poziomów dostêpu
   - poprawione lms-notify
   - dodane 'u¿yteczne linki' do strony powitalnej
-
+  - poprawione wydruki: listing wed³ug aktualnego sortowania oraz filtra (warden)
+  
 wersja 1.0pre10 (15/04/2003):
 
   - poprawki zgodno¶ci ze Smarty-2.5.0 (niestety, automatycznie 2.5.0 jest
