@@ -39,10 +39,12 @@ if (!$LMS->QueueExists($_GET['id']))
 		$body .= "<P><A HREF=\"?m=rtqueuedel&id=".$_GET['id']."&is_sure=1\">Tak, jestem pewien.</A>&nbsp;";
 		$body .= "<A HREF=\"?".$_SESSION['backto']."\">Nie, rozmy¶li³em siê.</A></P>";
 	}else{
-		//header("Location: ?".$_SESSION['backto']);
-		$body = "<H1>".$layout['pagetitle']."</H1>";
-		$body .= "<P>Kolejka ".$LMS->GetQueueName($_GET['id'])." zosta³a usuniêta.</P>";
+	
+		//$body = "<H1>".$layout['pagetitle']."</H1>";
+		//$body .= "<P>Kolejka ".$LMS->GetQueueName($_GET['id'])." zosta³a usuniêta.</P>";
 		$LMS->QueueDelete($_GET['id']);
+		header('Location: ?m=rtqueuelist');
+		die;
 	}
 }
 
