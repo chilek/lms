@@ -31,7 +31,7 @@ CREATE TABLE cash (
 	time integer DEFAULT 0 NOT NULL,
 	adminid integer DEFAULT 0 NOT NULL,
 	type smallint DEFAULT 0 NOT NULL,
-	value float4 DEFAULT 0 NOT NULL,
+	value numeric(9,2) DEFAULT 0 NOT NULL,
 	userid integer DEFAULT 0 NOT NULL,
 	comment varchar(255) DEFAULT '' NOT NULL,
 	invoiceid integer DEFAULT 0 NOT NULL,
@@ -90,7 +90,7 @@ DROP TABLE tariffs;
 CREATE TABLE tariffs (
 	id integer DEFAULT nextval('tariffs_id_seq'::text) NOT NULL,
 	name varchar(255) NOT NULL,
-	value float4 DEFAULT 0 NOT NULL,
+	value numeric(9,2) DEFAULT 0 NOT NULL,
 	taxvalue integer DEFAULT 0 NOT NULL,
 	pkwiu varchar(255) DEFAULT NULL,
 	uprate integer,

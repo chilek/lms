@@ -50,11 +50,15 @@ ALTER TABLE tariffs CHANGE uprate uprate INT(11),
 		    CHANGE downrate downrate INT(11),
 		    CHANGE description description text;
 
+/* Zmiana typu kolumn na wart. pieniê¿ne */
+ALTER TABLE cash MODIFY value DECIMAL(9,2);
+ALTER TABLE tariffs MODIFY value DECIMAL(9,2);
+
 /* Faktury inaczej */
 ALTER TABLE cash ADD invoiceid INT DEFAULT '0' NOT NULL;
 ALTER TABLE tariffs ADD taxvalue INT DEFAULT '0' NOT NULL AFTER value;
 ALTER TABLE tariffs ADD pkwiu VARCHAR(255) DEFAULT NULL AFTER taxvalue;
-    
+
 CREATE TABLE invoices (
       id INT NOT NULL AUTO_INCREMENT ,
       number INT NOT NULL ,

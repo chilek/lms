@@ -43,6 +43,23 @@ wersja 1.1.7 (??/??/????):
   - dodane sortowanie po ownerid na li¶cie komputerów (alec)
   - naprawione kapitalizowanie polskich znaków diakrytycznych w
     useredit - dok³adniej, przerzucone z PHP na bazê danych (alec)
+  - zmiana typu kolumn ptrzechowuj±cych warto¶ci pieniê¿ne (hunter/alec)
+    MySQL:
+	ALTER TABLE cash MODIFY value DECIMAL(9,2);
+	ALTER TABLE tariffs MODIFY value DECIMAL(9,2);
+    PostgreSQL:    
+	ALTER TABLE cash ADD val numeric(9,2);
+	UPDATE cash SET val=value;
+	ALTER TABLE cash ALTER val SET NOT NULL;
+	ALTER TABLE cash ALTER val SET DEFAULT 0;
+	ALTER TABLE cash DROP COLUMN value;
+	ALTER TABLE cash RENAME val TO value;
+	ALTER TABLE tariffs ADD val numeric(9,2);
+	UPDATE tariffs SET val=value;
+	ALTER TABLE tariffs ALTER val SET NOT NULL;
+	ALTER TABLE tariffs ALTER val SET DEFAULT 0;
+	ALTER TABLE tariffs DROP COLUMN value;
+	ALTER TABLE tariffs RENAME val TO value;
 
 wersja 1.1.6 Seth (08/12/2003):
 
