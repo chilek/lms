@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.4.0 Evalla (??/10/2004):
+wersja 1.4.0 Evalla (15/10/2004):
 
   - kosmetyka w footer.html (alec)
   - usuniêty b³±d obcinaj±cy 1px z obrazków urz±dzeñ na mapie (alec)
@@ -15,6 +15,7 @@ wersja 1.4.0 Evalla (??/10/2004):
     wersjach glibc (alec)
   - BTS#000021: dodany monit o potwierdzenie rozliczenia faktury (alec)
   - usuniête przekierowanie na listê faktur po dodaniu nowej faktury (alec)
+  - dodane/poprawione contrib/PLD (alec)
 
 wersja 1.4.0rc4 Evalla (05/10/2004):
 
