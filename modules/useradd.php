@@ -53,10 +53,10 @@ elseif(isset($useradd))
 	if($useradd['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$useradd['zip']))
 		$error['zip'] = 'Podany kod pocztowy jest b³êdny!';
 
-	if($useradd['gguin'] == 0)
-		unset($useradd['gguin']);
+	if($useradd['gguin'] == '')
+		$useradd['gguin'] = 0;  // specjalnie dla postgresa
 
-	if($useradd['gguin'] !='' && !eregi('^[0-9]{4,}$',$useradd['gguin']))
+	if($useradd['gguin'] !=0 && !eregi('^[0-9]{4,}$',$useradd['gguin']))
 		$error['gguin'] = 'Podany numer GG jest niepoprawny!';
 	
 	if(!$error)

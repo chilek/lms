@@ -7,6 +7,8 @@ wersja 1.2.0rc3 Janet (??/??/2004):
   - w zmiennej konfiguracyjnej 'networks' dla modu³ów demona hostfile i oident 
     podajemy teraz listê nazw sieci, a nie adresów (alec)
   - dodany 'Rejestr sprzeda¿y', czyli rozliczenie faktur za dany okres (alec)
+  - poprawiony bug wystêpuj±cy na postgresie podczas dodawania usera
+    bez numeru gadu-gadu (alec)
 
 wersja 1.2.0rc2 Janet (03/03/2004):
 
