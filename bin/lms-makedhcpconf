@@ -256,7 +256,7 @@ foreach my $key (@networks)
 			print DHCPDCONF "\t\toption netbios-name-servers $row->{'wins'};\n";
 		}
 		print DHCPDCONF "\n";
-		my $dbq2 = $dbase->prepare("SELECT id, name, ipaddr, mac, ownerid FROM nodes");
+		my $dbq2 = $dbase->prepare("SELECT id, name, ipaddr, mac, ownerid FROM nodes ORDER BY ipaddr");
 		$dbq2->execute();
 		while (my $row2 = $dbq2->fetchrow_hashref())
 		{
