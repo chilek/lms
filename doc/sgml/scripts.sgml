@@ -639,7 +639,10 @@ wins    = 213.25.209.10</screen>
 		    <para>Przyk³ad:	<prompt>tmp_dir = /home/user/tmp</prompt></para>
 		</listitem>
 	    </itemizedlist>
-	</para>
+	 Script also have one useful command line parameter <prompt>--fakedate</prompt> 
+	 (<prompt>-f</prompt>). With this option you can make that script will be working 
+	 with system date (in format YYYY/MM/DD) different that current, e.g. 
+	 <prompt>--fakedate=2004/10/10</prompt>.</para>
     </sect2>
     <sect2 id="lms-makemacs" xreflabel="lms-makemacs">
 	<title>lms-makemacs</title>
