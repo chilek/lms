@@ -147,8 +147,14 @@ if(isset($message))
 				$body = $message['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 					.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 					.'?m=rtticketview&id='.$message['ticketid'];
-					
-				$LMS->SendMail($recipients, $headers, $body);
+				$files = NULL;
+				if ($file)
+				{
+					$files[0]['content_type'] = $_FILES['file']['type'];
+					$files[0]['filename'] = $filename;
+					$files[0]['data'] = $file;
+				}
+				$LMS->SendMail($recipients, $headers, $body, $files);
 			}
 			else 
 			{
@@ -194,7 +200,13 @@ if(isset($message))
 			$body = $message['body']."\n\nhttp".($_SERVER['HTTPS'] == 'on' ? 's' : '').'://'
 				.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 				.'?m=rtticketview&id='.$message['ticketid'];
-
+			$files = NULL;
+			if ($file)
+			{
+				$files[0]['content_type'] = $_FILES['file']['type'];
+				$files[0]['filename'] = $filename;
+				$files[0]['data'] = $file;
+			}
 			$LMS->SendMail($recipients, $headers, $body);
 
 			// message to user is written to database
