@@ -67,7 +67,7 @@ unsigned char * str_concat(const unsigned char *s1, const unsigned char *s2)
 void termination_handler(int signum)
 {
 #ifdef DEBUG1
-         syslog(LOG_INFO, "A.L.E.C's LMS Daemon exited.");
+         syslog(LOG_INFO, "LMS Daemon exited.");
 #endif
 	 exit(0);
 }
