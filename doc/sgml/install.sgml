@@ -550,6 +550,12 @@ database = /usr/local/lms/lms.db</screen>
     szablon. Domy¶lnie: contract.html.</para>
     <para>Przyk³ad:	<prompt>contract_template = "../my_templates/contract.html"</prompt></para>
    </listitem>
+   <listitem>
+    <para>to_words_short_format</para>
+    <para>Okre¶la format reprezentacji s³ownej kwot (na fakturach). Dla warto¶ci "1"
+    rozwiniêciem kwoty 123,15 bêdzie "jed dwa trz 15/100". Domy¶lnie: 0.</para>
+    <para>Przyk³ad:	<prompt>to_words_short_format = 1</prompt></para>
+   </listitem>
   </itemizedlist>
  	</sect2> 
     </sect1>

@@ -591,10 +591,38 @@ function get_producer($mac)
 	return $producer;
 }
 
-function to_words($num, $power = 0, $powsuffix = '')
+function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
 {
 	// Extracted from lang.pl.php by Piotr Klaban <makler at man dot torun dot pl>
 	// from PEAR package Number_Words-0.3.1
+	// 'short_version' added by alec/kubatyszko
+	
+	if($short_version)
+	{
+	        $patterns[0] = "/0/";
+    		$patterns[1] = "/1/";
+	        $patterns[2] = "/2/";
+    		$patterns[3] = "/3/";
+		$patterns[4] = "/4/";
+	        $patterns[5] = "/5/";
+    		$patterns[6] = "/6/";
+	        $patterns[7] = "/7/";
+    		$patterns[8] = "/8/";
+	        $patterns[9] = "/9/";
+
+    		$replacements[0] = "zer ";
+                $replacements[1] = "jed ";
+		$replacements[2] = "dwa ";
+	        $replacements[3] = "trz ";
+    		$replacements[4] = "czt ";
+    	        $replacements[5] = "piê ";
+	        $replacements[6] = "sze ";
+	        $replacements[7] = "sie ";
+    		$replacements[8] = "osi ";
+		$replacements[9] = "dzi ";
+
+	        return trim(preg_replace($patterns, $replacements, $num));
+	}
 
 	$ret = '';
 	$_sep = ' ';

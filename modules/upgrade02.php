@@ -101,6 +101,9 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 	case 'contract_template':
 	    $desc = 'Nazwa w³asnego szablonu umowy dla u¿ytkownika, który nale¿y umie¶ciæ w katalogu templates. Mo¿na tak¿e zmodyfikowaæ istniej±cy defaultowy plik contract.html. Domy¶lnie: "contract.html"';
 	    break;
+	case 'to_words_short_version':
+	    $desc = 'Okre¶la sposób reprezentacji s³ownej kwot (na fakturach). Dla warto¶ci "1" kwota 123,15 bêdzie mia³a rozwiniêcie s³owne "jed dwa trz 15/100". Domy¶lnie: 0';
+	    break;
 	default:
 	    $desc = 'Nieznana opcja. Brak opisu';
 	    break;
