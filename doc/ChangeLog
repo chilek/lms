@@ -2,6 +2,7 @@ $Id$
 
 wersja 1.0pre11 (??/??/2003):
 
+  - przymiarki do dokumentacji (Lexx)
   - porz±dki w LMS.class.php
   - contrib/customers - prosta strona dla ciekawych u¿ytkowników - w zwi±zku z
     czym znikn±³ obskurny button ze strony logowania z napisem 'Stan konta'
