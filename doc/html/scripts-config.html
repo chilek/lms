@@ -169,7 +169,7 @@ Uprzejmie informujemy i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za
 internet w wysoko¶ci %B z³.
 
 Je¿eli porozumieli siê ju¿ Pañstwo z administratorami w kwestii op³aty za
-bierz±cy miesi±c czyli %date-m %date-y roku, prosimy o
+bie¿±cy miesi±c czyli %date-m %date-y roku, prosimy o
 zignorowanie tej wiadomo¶ci.
 
 W wypadku gdy uwa¿aj± Pañstwo i¿ zaleg³o¶æ ta jest nieporozumieniem prosimy o
@@ -184,11 +184,11 @@ Dzia³ Rozliczeñ ASK NaszaSiec
 
 Gerwazy Regu³a
 telefon: 0-509031337
-email: gerwazy@staff.naszasiec.pl
+e-mail: gerwazy@staff.naszasiec.pl
 
 Gwidon Mniejwa¿ny
 telefon: 0-606666666
-email: gwidonm@naszasiec.pl
+e-mail: gwidonm@naszasiec.pl
 
 ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
 system bilingowy na Pañstwa koncie:
@@ -227,7 +227,7 @@ CLASS="EMPHASIS"
 ><P
 >limit (opcjonalny)</P
 ><P
->Pozwala na ustalenie limitu bilansu, poni¿ej którego do u¿ytkownika zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0</P
+>Pozwala na ustalenie limitu bilansu, poni¿ej którego do u¿ytkownika zostanie wys³any e-mail z upomnieniem. Domy¶lnie limit = 0</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -238,7 +238,7 @@ CLASS="PROMPT"
 ><P
 >mailsubject (wymagany)</P
 ><P
->Pozwala na ustalenie tematu e-maila wysy³anego do u¿ytkownika. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie nieustawione.</P
+>Pozwala na ustalenie tematu e-maila wysy³anego do u¿ytkownika. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie: nie ustawione.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -249,7 +249,7 @@ CLASS="PROMPT"
 ><P
 >mailtemplate (wymagany)</P
 ><P
->Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie nieustawione</P
+>Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie: nie ustawione.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -293,7 +293,7 @@ CLASS="PROMPT"
 ><P
 >debug_email (opcjonalny)</P
 ><P
->Adres email do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do u¿ytkowników. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie nieustawiony.</P
+>Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do u¿ytkowników. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -338,7 +338,7 @@ CLASS="EMPHASIS"
 >limit (opcjonalny)</P
 ><P
 >Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika 
-	     zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0</P
+	     zostanie wys³any sms z upomnieniem. Domy¶lnie: 0</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -349,7 +349,7 @@ CLASS="PROMPT"
 ><P
 >smstemplate (wymagany)</P
 ><P
->Szablon wiadomo¶ci. Domy¶lnie nieustawione.</P
+>Szablon wiadomo¶ci. Domy¶lnie: nie ustawione.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -384,7 +384,7 @@ CLASS="EMPHASIS"
 ><P
 >limit (opcjonalny)</P
 ><P
->Pozwala na ustalenie limitu bilansu poni¿ej którego do bazy danych zostanie zapisany stan od³±czony. Domy¶lnie limit = 0</P
+>Pozwala na ustalenie limitu bilansu poni¿ej którego do bazy danych zostanie zapisany stan od³±czony. Domy¶lnie: 0</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -528,7 +528,7 @@ NAME="LMS-TRAFFIC-LOGIPTABLES"
 ><P
 >Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
 	przez ka¿dy komputer z sieci lokalnej, na podstawie liczników iptables. Dane 
-	zczytuje z firewalla, tworz±c jednocze¶nie odpowiednie regu³y. Zatem, nie jest 
+	sczytuje z firewalla, tworz±c jednocze¶nie odpowiednie regu³y. Zatem, nie jest 
 	konieczne rêczne tworzenie regu³ iptables. Dane zapisywane s± do pliku o 
 	formacie wymaganym przez <TT
 CLASS="FILENAME"
@@ -778,7 +778,7 @@ CLASS="PROMPT"
 ><P
 >Adres SNAT. Je¶li nie ustawiono, dla hostów z adresami publicznymi bêdzie
 		    u¿yte "-j MASQUERADE". Je¶li ustawiono zostanie u¿yte "-j SNAT --to xxx.xxx.xxx.xxx".
-		    Dotyczy lms-makeiptables. Domy¶lnie: nieustawiony.</P
+		    Dotyczy lms-makeiptables. Domy¶lnie: nie ustawiony.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -791,7 +791,7 @@ CLASS="PROMPT"
 ><P
 >Konfiguracja przekierowañ w formie port_¼ród³owy:port_docelowy dla
 		    przekierowañ na lokaln± maszynê dla po³±czeñ wychodz±cych. Dotyczy lms-makeipchains.
-		    Domy¶lnie: nieustawione.</P
+		    Domy¶lnie: nie ustawione.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
