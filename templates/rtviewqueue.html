@@ -1,0 +1,30 @@
+{include file="header.html"}
+<!-- $Id$ -->
+{include file="rtheader.html"}
+<H1><B>{$layout.pagetitle}</B></H1>
+<TABLE cellpadding="3" WIDTH="100%">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" WIDTH="1%" NOWRAP>
+			<B>ID#:</B><BR>
+			Data zg³oszenia:
+		</TD>
+		<TD CLASS="fbt" WIDTH="99%">
+			<B>Temat:</B><BR>
+			Zg³aszaj±cy:
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}		
+	{foreach from=$queue item=ticket}
+	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD CLASS="fleft" NOWRAP>
+			<B><FONT CLASS="h3">{$ticket.id|string_format:"%06d"}</FONT></B><BR>
+			{$ticket.createtime|date_format:"%Y/%m/%d, %H:%M:%S"}
+		</TD>
+		<TD>
+			<FONT CLASS="h3"><B>{$ticket.subject|escape}</B></FONT><BR>
+			{$ticket.requestor|escape} &lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;<BR>
+		</TD>
+	</TR>
+	{/foreach}
+</TABLE>
+{include file="footer.html"}
