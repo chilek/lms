@@ -54,6 +54,8 @@ $userinfo = $LMS->GetUser($ownerid);
 $nodeinfo = $LMS->GetNode($nodeid);
 $balancelist = $LMS->GetUserBalanceList($ownerid);
 $assignments = $LMS->GetUserAssignments($ownerid);
+$usergroups = $LMS->UsergroupGetForUser($ownerid);
+$otherusergroups = $LMS->GetGroupNamesWithoutUser($ownerid);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
@@ -77,6 +79,8 @@ $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('userinfo',$userinfo);
 $SMARTY->assign('nodeinfo',$nodeinfo);
 $SMARTY->assign('assignments',$assignments);
+$SMARTY->assign('usergroups',$usergroups);
+$SMARTY->assign('otherusergroups',$otherusergroups);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->display('nodeinfo.html');
 
