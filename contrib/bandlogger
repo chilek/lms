@@ -1,0 +1,83 @@
+#!/usr/bin/perl
+#
+# $Id$
+# 
+# Ten skrypt s³u¿y do logowania ile który adres IP ¶ci±gn±³ dziennie. W bazie 
+# danych zapisywany jest rok, dzieñ, miesi±c, upload, download i ID hosta. 
+# Skrypt generuje regu³y iptables i zapisuje je w pliku /etc/rc.d/rc.stats 
+# (mo¿na to zmieniæ w linii 36 i 63). DSN do bazy danych definiuje siê w linii 
+# 30. Ca³o¶æ # nale¿y odpalaæ co jaki¶ czas (ale nie za czêsto, ja mam w cronie
+# odpalanie w 59 minutcie ka¿dej godziny oraz # minutê po pó³nocy. Wymaga
+# dodatkowej tabeli w bazie LMS'a. Interpretacja dowolna - ka¿dy kto choæ
+# trochê zna PHP i *SQL powinien sobie poradziæ.
+#
+# Kwerenda (MySQL) do utworzenia tabeli:
+#
+# CREATE TABLE traffic (
+#    year int(11) NOT NULL default '0',
+#    month int(11) NOT NULL default '0',
+#    day int(11) NOT NULL default '0',
+#    nodeid int(11) NOT NULL default '0',
+#    upload int(11) NOT NULL default '0',
+#    download int(11) NOT NULL default '0',
+#    PRIMARY KEY  (year,month,day,nodeid)
+# ) TYPE=MyISAM;
+# 
+
+use DBI;
+use POSIX;
+
+my $dbase = DBI->connect("DBI:mysql:database=netx;host=localhost","mysql","mysecret", { RaiseError => 1 });
+my $iptbin = "/usr/sbin/iptables";
+my $year = strftime("%Y",localtime());
+my $day = strftime("%d",localtime());
+my $month = strftime("%m",localtime());
+
+open(OUTFILE, ">/etc/rc.d/rc.stats");
+
+print OUTFILE "#!/bin/bash\n";
+print OUTFILE "$iptbin -t mangle -F\n";
+print OUTFILE "$iptbin -t mangle -X\n";
+
+my $dbq = $dbase->prepare("SELECT * FROM nodes");
+
+$dbq->execute();
+
+while (my $row = $dbq->fetchrow_hashref())
+{
+	my $id = $row->{'id'};
+	$id += 1000;
+	print OUTFILE "$iptbin -t mangle -A FORWARD -i eth1 -o eth0 -d $row->{'ipaddr'} -j MARK --set-mark $row->{'id'}\n";
+	print OUTFILE "$iptbin -t mangle -A OUTPUT -p tcp --sport 1080 -d $row->{'ipaddr'} -j MARK --set-mark $row->{'id'}\n";
+	print OUTFILE "$iptbin -t mangle -A OUTPUT -p tcp --sport 8080 -d $row->{'ipaddr'} -j MARK --set-mark $row->{'id'}\n";
+	print OUTFILE "$iptbin -t mangle -A OUTPUT -p tcp --sport 3128 -d $row->{'ipaddr'} -j MARK --set-mark $row->{'id'}\n";
+	print OUTFILE "$iptbin -t mangle -A FORWARD -i eth0 -o eth1 -s $row->{'ipaddr'} -j MARK --set-mark $id\n";
+	print OUTFILE "$iptbin -t mangle -A INPUT -p tcp --dport 1080 -s $row->{'ipaddr'} -j MARK --set-mark $id\n";
+	print OUTFILE "$iptbin -t mangle -A INPUT -p tcp --dport 8080 -s $row->{'ipaddr'} -j MARK --set-mark $id\n";
+	print OUTFILE "$iptbin -t mangle -A INPUT -p tcp --dport 3128 -s $row->{'ipaddr'} -j MARK --set-mark $id\n";
+}
+
+close OUTFILE;
+
+my @info = `/usr/sbin/iptables -t mangle -L -v -n -x|grep MARK`;
+system("/etc/rc.d/rc.stats");
+
+foreach my $line (@info)
+{
+	$line =~ s/^[ ]+([0-9]+)[ ]+([0-9]+).* MARK set 0x([0-9a-f]+)/\1 \2 \3/g;
+	my ($pkts,$bytes,$markid) = split(' ',$line);
+	$markid = hex($markid);
+	my $nid = $markid;
+	$nid -= 1000 if ($markid > 1000);
+	$dbq = $dbase->prepare("SELECT download, upload FROM traffic WHERE nodeid='$nid' AND year='$year' AND month='$month' AND day='$day'");
+	$dbq->execute();
+	my $row = $dbq->fetchrow_hashref();
+	my $download = $row->{'download'};
+	my $upload = $row->{'upload'};
+	$download += $bytes if ($markid < 1000);
+	$upload += $bytes if ($markid > 1000);
+	$dbq = $dbase->prepare("DELETE FROM traffic WHERE nodeid='$nid' AND year='$year' AND month='$month' AND day='$day'");
+	$dbq->execute();
+	$dbq = $dbase->prepare("INSERT INTO traffic (nodeid, year, month, day, download, upload) VALUES ('$nid', '$year', '$month', '$day', '$download', '$upload')");
+	$dbq->execute();
+}
