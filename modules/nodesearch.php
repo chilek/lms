@@ -27,6 +27,8 @@
 $layout[pagetitle]="Wyszukiwanie komputerów";
 $SMARTY->assign("layout",$layout);
 
+$_SESSION[backto] = $_SERVER[QUERY_STRING];
+
 $search = $_POST[search];
 
 if(!isset($search))
@@ -80,6 +82,9 @@ else
 }
 /*
  * $Log$
+ * Revision 1.16  2003/09/22 21:21:44  alec
+ * many updates
+ *
  * Revision 1.15  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
