@@ -48,7 +48,7 @@
 			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}"><IMG SRC="img/nnoaccess.gif" ALIGN="ABSMIDDLE" BORDER="0"> Od³±cz wszystkie</A><BR>
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHTU" NOWRAP VALIGN="BOTTOM" ALIGN="RIGHT">
-			<A HREF="?m=nodeadd&ownerid={$usernodes.ownerid}">Nowy <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE" BORDER="0"></A>
+			{if $userinfo.status eq "3"}<A HREF="?m=nodeadd&ownerid={$usernodes.ownerid}">Nowy <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE" BORDER="0"></A>{else}<FONT CLASS="BLEND">Nowy <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE">{/if}
 		</TD>
 	</TR>
 </TABLE>
