@@ -418,9 +418,39 @@ CREATE TABLE passwd (
 	home varchar(255) 	DEFAULT '' NOT NULL,
 	type smallint 		DEFAULT 0 NOT NULL,
 	expdate	integer		DEFAULT 0 NOT NULL,
-	domain varchar(255)	DEFAULT '' NOT NULL,
+	domainid integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (login)
+);
+
+/* ---------------------------------------------------
+    Domains table
+------------------------------------------------------*/
+
+DROP SEQUENCE domains_id_seq;
+CREATE SEQUENCE domains_id_seq;
+DROP TABLE domains;
+CREATE TABLE domains (
+	id integer DEFAULT nextval('domains_id_seq'::text) NOT NULL,
+	name varchar(255) 	DEFAULT '' NOT NULL,
+	description text 	DEFAULT '' NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (name)
+);
+
+/* ---------------------------------------------------
+    Aliases table
+------------------------------------------------------*/
+
+DROP SEQUENCE aliases_id_seq;
+CREATE SEQUENCE aliases_id_seq;
+DROP TABLE aliases;
+CREATE TABLE aliases (
+	id integer DEFAULT nextval('aliases_id_seq'::text) NOT NULL,
+	login varchar(255) DEFAULT '' NOT NULL,
+	accountid integer DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (login, accountid)
 );
 
 /* ---------------------------------------------------
@@ -451,4 +481,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004112700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004120600');

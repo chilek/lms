@@ -342,8 +342,32 @@ CREATE TABLE passwd (
     home varchar(255) 		DEFAULT '' NOT NULL,
     type smallint 		DEFAULT 0 NOT NULL,
     expdate integer		DEFAULT 0 NOT NULL,
-    domain varchar(255)		DEFAULT '' NOT NULL,
+    domainid integer		DEFAULT '' NOT NULL,
     UNIQUE (login)
+);
+
+/* --------------------------------------------------
+    Aliases table
+------------------------------------------------------*/
+
+DROP TABLE aliases;
+CREATE TABLE aliases (
+    id integer PRIMARY KEY,
+    login varchar(255) DEFAULT '' NOT NULL,
+    accountid integer DEFAULT 0 NOT NULL,
+    UNIQUE (login, accountid)
+);
+    
+/* --------------------------------------------------
+    Domains table
+------------------------------------------------------*/
+
+DROP TABLE domains;
+CREATE TABLE domains (
+    id integer PRIMARY KEY,
+    name varchar(255) DEFAULT '' NOT NULL,
+    description text DEFAULT '' NOT NULL,
+    UNIQUE (name)
 );
 
 /* --------------------------------------------------
@@ -372,4 +396,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004112700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004120600');
