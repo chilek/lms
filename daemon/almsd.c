@@ -29,8 +29,8 @@
 #include <syslog.h>
 #include <stdio.h>     
 #include <string.h>
-#include <dlfcn.h>    
-
+#include <dlfcn.h>  
+  
 #include "util.h"
 #include "almsd.h"
 
@@ -95,7 +95,8 @@ int main(int argc, char *argv[])
     	g->iniparser_getstring = &iniparser_getstring;
     	g->iniparser_getint = &iniparser_getint;
     	g->iniparser_getdouble = &iniparser_getdouble;
-    	g->iniparser_load = &iniparser_load;
+    	g->iniparser_getboolean = &iniparser_getboolean;
+	g->iniparser_load = &iniparser_load;
     	g->iniparser_freedict = &iniparser_freedict;
     
     	g->str_replace = &str_replace;

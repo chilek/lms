@@ -32,6 +32,7 @@ struct global
 	char * (*iniparser_getstr)(dictionary *, char *);
 	char * (*iniparser_getstring)(dictionary *, char *, char *);
 	int (*iniparser_getint)(dictionary *, char *, int);
+	int (*iniparser_getboolean) (dictionary *, char *, int);
 	double (*iniparser_getdouble)(dictionary *, char *, double);
 	dictionary * (*iniparser_load)(char *);
 	void (*iniparser_freedict)(dictionary *);
