@@ -169,8 +169,8 @@ print OUTFILE "#!/bin/bash\n";
 foreach my $wan_interface (@wan_interfaces_list)
 {
 	my ($if,$spd) = split(':', $wan_interface);
-	print OUTFILE "$iptables_binary -t mangle -D FORWARD -i $if -j LIMITS\n";
-	print OUTFILE "$iptables_binary -t mangle -D FORWARD -o $if -j LIMITS\n";
+	print OUTFILE "$iptables_binary -t mangle -D FORWARD -i $if -j LIMITS >/dev/null 2>&1\n";
+	print OUTFILE "$iptables_binary -t mangle -D FORWARD -o $if -j LIMITS >/dev/null 2>&1\n";
 	$iftable{$if} = $spd;
 	$totalspd = 0 if not defined $totalspd;
 	$totalspd += $spd;
@@ -178,8 +178,8 @@ foreach my $wan_interface (@wan_interfaces_list)
 
 foreach my $port (@local_ports_list)
 {
-	print OUTFILE "$iptables_binary -t mangle -D INPUT -p tcp --dport $port -j LIMITS\n";
-	print OUTFILE "$iptables_binary -t mangle -D OUTPUT -p tcp --sport $port -j LIMITS\n";
+	print OUTFILE "$iptables_binary -t mangle -D INPUT -p tcp --dport $port -j LIMITS >/dev/null 2>&1\n";
+	print OUTFILE "$iptables_binary -t mangle -D OUTPUT -p tcp --sport $port -j LIMITS >/dev/null 2>&1\n";
 }
 		
 print OUTFILE "$iptables_binary -t mangle -F LIMITS
