@@ -16,7 +16,7 @@
 		<TD width="1%" class="fbt" VALIGN="TOP">
 			<img src="img/mail.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=email{if $listdata.direction eq "asc" && $listdata.order eq "email"},desc{/if}">E-mail:</A> {if $listdata.order eq "email"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 			<img src="img/gg.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$listdata.state}&o=gg{if $listdata.direction eq "asc" && $listdata.order eq "gg"},desc{/if}">GG:</A> {if $listdata.order eq "gg"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			NIP:
+			<a href="?m=userlist&s={$listdata.state}&o=nip{if $listdata.direction eq "asc" && $listdata.order eq "nip"},desc{/if}">NIP:</A> {if $listdata.order eq "nip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
 		</TD>
 		<TD width="1%" class="fbt">
 			<img src="img/money.gif" alt="" align="absmiddle">
