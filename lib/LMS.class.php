@@ -3171,6 +3171,25 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $result;
 	}
 
+	function MessageSend($msg)
+	{
+		if($this->CONFIG['phpui']['debug_email'])
+			$msg['from'] = $this->CONFIG['phpui']['debug_email'];
+	
+		mail (	$msg['username'].' <'.$msg['destination'].'>',
+			$msg['subject'],
+			$msg['body'],
+			'From: '.$msg['sender'].' <'.$msg['from'].">\n"
+			.($msg['references'] ? 'References: '.$msg['references']."\n" : '')
+			."Content-Type: text/plain; charset=ISO-8859-2;\n"
+			.'X-Mailer: LMS-'.$this->_version.'/PHP-'.phpversion()."\n"
+			.'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
+			.'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']."\n"
+			);
+		flush();
+	}
+
+
 	/*
 	 * Templejty plików konfiguracyjnych
 	 *
