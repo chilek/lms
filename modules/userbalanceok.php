@@ -24,28 +24,18 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Rozliczono u¿ytkownika ID: ".sprintf("%04d",$_GET['id']);
+$layout['pagetitle'] = "Rozliczenie u¿ytkownika ID: ".sprintf("%04d",$_GET['id']);
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('userid',$_GET['id']);
 
 if (!$LMS->UserExists($_GET['id']))
 {
 	$body = "<H1>".$layout['pagetitle']."</H1><P>Podany przez Ciebie ID jest b³êdny b±d¼ nie istnieje w bazie danych.</P>";
-}else{
-
-	if($_GET['is_sure']!=1)
-	{
-		$body = "<H1>".$layout['pagetitle']."</H1>";
-		$body .= "<P>Czy jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika ".$LMS->GetUserName($_GET['id'])."?</P>"; 
-		$body .= "<P>Wszystkie dane u¿ytkownika zostan± utracone, a tak¿e wszystkie przypisane temu u¿ytkownikowi komputery zostan± usuniête.</P>";
-		$body .= "<P><A HREF=\"?m=userdel&id=".$_GET['id']."&is_sure=1\">Tak, jestem pewien.</A></P>";
-	}else{
-		header("Location: ?m=".$_SESSION['lastmodule']);
-		$body = "<H1>".$layout['pagetitle']."</H1>";
-		$body .= "<P>U¿ytkownik ".$LMS->GetUserName($_GET['id'])." zosta³ usuniêty.</P>";
-		$LMS->SetBalanceZero($_GET['id']);
-	}
-		
+}
+else
+{
+	$LMS->SetBalanceZero($_GET['id']);
+	header("Location: ?m=".$_SESSION['lastmodule']);
 }
 
 $SMARTY->display('header.html');
