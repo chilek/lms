@@ -49,7 +49,7 @@ $a = $_POST['assignment'];
 if($_GET['action'] == 'add' && isset($a))
 {
 	foreach($a as $key => $val)
-		$a[$key] = $val;
+		$a[$key] = trim($val);
 	
 	$period = sprintf('%d',$a['period']);
 
