@@ -108,11 +108,96 @@ function _smarty_modifier_striphtml($args)
 	
 }
 
+/**
+ * Replace arguments in a string with their values. Arguments are represented by % followed by their number.
+ *
+ * @param	string	Source string
+ * @param	mixed	Arguments, can be passed in an array or through single variables.
+ * @returns	string	Modified string
+ */
+function strarg($str)
+{
+	$tr = array();
+	$p = 0;
+
+	for ($i=1; $i < func_num_args(); $i++) {
+		$arg = func_get_arg($i);
+		
+		if (is_array($arg)) {
+			foreach ($arg as $aarg) {
+				$tr['%'.++$p] = $aarg;
+			}
+		} else {
+			$tr['%'.++$p] = $arg;
+		}
+	}
+	
+	return strtr($str, $tr);
+}
+
+/**
+ * Smarty block function, provides gettext support for smarty.
+ *
+ * The block content is the text that should be translated.
+ *
+ * Any parameter that is sent to the function will be represented as %n in the translation text, 
+ * where n is 1 for the first parameter. The following parameters are reserved:
+ *   - escape - sets escape mode:
+ *       - 'html' for HTML escaping, this is the default.
+ *       - 'js' for javascript escaping.
+ *       - 'no'/'off'/0 - turns off escaping
+ *   - plural - The plural version of the text (2nd parameter of ngettext())
+ *   - count - The item count for plural mode (3rd parameter of ngettext())
+ */
+function smarty_translate($params, $text, &$smarty)
+{
+	$text = stripslashes($text);
+	
+	// set escape mode
+	if (isset($params['escape'])) {
+		$escape = $params['escape'];
+		unset($params['escape']);
+	}
+	
+	// set plural version
+	if (isset($params['plural'])) {
+		$plural = $params['plural'];
+		unset($params['plural']);
+		
+		// set count
+		if (isset($params['count'])) {
+			$count = $params['count'];
+			unset($params['count']);
+		}
+	}
+	
+	// use plural if required parameters are set
+	if (isset($count) && isset($plural)) {
+		$text = ngettext($text, $plural, $count);
+	} else { // use normal
+		$text = gettext($text);
+	}
+
+	// run strarg if there are parameters
+	if (count($params)) {
+		$text = strarg($text, $params);
+	}
+
+	if (!isset($escape) || $escape == 'html') { // html escape, default
+	   $text = nl2br(htmlspecialchars($text));
+   } elseif (isset($escape) && ($escape == 'javascript' || $escape == 'js')) { // javascript escape
+	   $text = str_replace('\'','\\\'',stripslashes($text));
+   }
+
+	return $text;
+}
+	 
 $SMARTY->register_function('sum','_smarty_function_sum');
 $SMARTY->register_function('size','_smarty_function_sizeof');
 $SMARTY->register_function('tip','_smarty_function_tip');
 $SMARTY->register_function('confirm','_smarty_function_confirm');
 $SMARTY->register_modifier('to_words','to_words');
 $SMARTY->register_modifier('striphtml','_smarty_modifier_striphtml');
+$SMARTY->register_block('t', 'smarty_translate');
 
 ?>
