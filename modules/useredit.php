@@ -118,7 +118,7 @@ elseif($_GET['action'] == 'addassignment')
 	{
 		list($y, $m, $d) = split('/', trim($_POST['dateto']));
 		if(checkdate($m, $d, $y))
-			$to = mktime(0, 0, 0, $m, $d, $y);
+			$to = mktime(23, 59, 59, $m, $d, $y);
 		else
 			$error[] = 'Koniec okresu naliczania jest niepoprawny!';
 	}
