@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout[pagetitle] = "Mailing";
+$layout[pagetitle]="Mailing";
 
 $mailing = $_POST[mailing];
 

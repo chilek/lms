@@ -26,7 +26,8 @@
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
-$layout[pagetitle] = $lang[pagetitle_userlistdisc];
+$layout[pagetitle]="Lista u¿ytkowników od³±czonych";
+$layout[ultitle]=" od³±czonych";
 
 if(!isset($_GET[o]))
 	$o = $_SESSION[ulo];

@@ -31,7 +31,7 @@ if($_GET[is_sure])
 	header("Location: ?m=".$_SESSION[lastmodule]);
 	exit(0);
 }else{
-	$layout[pagetitle] = "Odtworzenie bazy danych danych";
+	$layout[pagetitle]="Odtworzenie bazy danych danych";
 	$SMARTY->assign("layout",$layout);
 	$SMARTY->display("header.html");
 	echo "<H1>Odtworzenie bazy danych danych</H1>";

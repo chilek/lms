@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout[pagetitle] = $lang[pagetitle_nodesearch];
+$layout[pagetitle]="Wyszukiwanie komputerów";
 $SMARTY->assign("layout",$layout);
 
 $search = $_POST[search];

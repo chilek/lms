@@ -26,7 +26,7 @@
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
-$layout[pagetitle] = $lang[pagetitle_userlist];
+$layout[pagetitle]="Lista u¿ytkowników";
 
 if(!isset($_GET[o]))
 	$o = $_SESSION[ulo];

@@ -30,7 +30,7 @@ if(!$LMS->AdminExists($_GET[id]))
 	exit(0);
 }
 
-$layout[pagetitle]=sprintf($lang[pagetitle_admininfo],$LMS->GetAdminName($_GET[id]));
+$layout[pagetitle]="Informacje o administratorze ".$LMS->GetAdminName($_GET[id]);
 $admininfo=$LMS->GetAdminInfo($_GET[id]);
 
 $rights = $LMS->GetAdminRights($_GET[id]);

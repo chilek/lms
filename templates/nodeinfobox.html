@@ -10,7 +10,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="{$lang.ip_address}:">
+			<IMG SRC="img/ip.gif" BORDER="0" ALT="Adres IP:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			{$nodeinfo.ipaddr}
@@ -18,7 +18,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" BORDER="0" ALT="{$lang.mac_address}:">
+			<IMG SRC="img/mac.gif" BORDER="0" ALT="Adres MAC:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			{$nodeinfo.mac} {if $nodeinfo.producer}({$nodeinfo.producer}){/if}
@@ -37,7 +37,7 @@
 			<A HREF="?m=nodeset&id={$nodeinfo.id}"><IMG SRC="img/{if $nodeinfo.access neq "Y"}no{/if}access.gif" BORDER="0" ALT=""></A>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<B>{if $nodeinfo.access eq "Y"}{$lang.connected}{else}{$lang.disconnected}{/if}</B>
+			<B>{if $nodeinfo.access eq "Y"}pod³±czony{else}od³±czony{/if}</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -45,8 +45,8 @@
 			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{$lang.created}:<BR>
-			{$lang.modified}:</B>
+			<B>Utworzony:<BR>
+			Zmodyfikowany:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<BR>
@@ -55,9 +55,9 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="?m=userinfo&id={$nodeinfo.ownerid}">{$lang.all_nodes} <IMG SRC="img/cancel.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
-			<A HREF="?m=nodedel&id={$nodeinfo.id}" onClick="return confirmLink(this, '{$lang.confirm_nodedel|replace:"#":"`$nodeinfo.name`"}')">{$lang.delete} <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
-			<A HREF="?m=nodeedit&id={$nodeinfo.id}" ACCESSKEY="E">{$lang.edit} <IMG SRC="img/edit.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
+			<A HREF="?m=userinfo&id={$nodeinfo.ownerid}">Wszystkie komputery <IMG SRC="img/cancel.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
+			<A HREF="?m=nodedel&id={$nodeinfo.id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ komputer \'{$nodeinfo.name|upper}\' z bazy danych?')">Usuñ <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
+			<A HREF="?m=nodeedit&id={$nodeinfo.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
 		</TD>
 	</TR>	
 </TABLE>

@@ -1,19 +1,19 @@
 {include file="header.html"}
 {include file="nodeheader.html"}
 <!-- $id -->
-<H1>{$layout.pagetitle}</H1>
+<H1>Wyszukiwanie komputerów</H1>
 <P>
 <FORM METHOD="POST" ACTION="?m=nodesearch&search" NAME="nodesearch">
 <INPUT TYPE="hidden" NAME="m" VALUE="nodesearch">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="FALL" COLSPAN="2">
-			<B>{$lang.search}:</B>
+			<B>Szukaj:</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{$lang.hostname}:</B></NOBR>
+			<NOBR><B>Nazwa komputera:</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[name]">
@@ -21,7 +21,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{$lang.mac_address}:</B></NOBR>
+			<NOBR><B>Adres MAC:</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[mac]">
@@ -29,7 +29,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{$lang.ip_address}:</B></NOBR>
+			<NOBR><B>Adres IP:</B></NOBR>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[ipaddr]">
@@ -37,7 +37,7 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
-			<A href="javascript:document.nodesearch.submit()"><IMG SRC="img/search.gif" BORDER="0" ALIGN="absmiddle" ALT="">{$lang.search}</A>
+			<A href="javascript:document.nodesearch.submit()"><IMG SRC="img/search.gif" BORDER="0" ALIGN="absmiddle" ALT="">Szukaj</A>
 		</TD>
 	</TR>
 </TABLE>

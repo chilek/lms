@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout[pagetitle] = $lang[pagetitle_dbview];
+$layout[pagetitle]="Podgl±d bazy danych";
 $database = $LMS->DatabaseFetchContent($_GET[db]);
 if($_GET[rawmode]=="true")
 {

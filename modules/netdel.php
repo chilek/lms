@@ -44,7 +44,7 @@ if(!$error)
 		header("Location: ?m=".$_SESSION[lastmodule]."&id=".$_GET[id]);
 		exit(0);
 	}else{
-		$layout[pagetitle] = "Usuniêcie sieci ".strtoupper($network[name]);
+		$layout[pagetitle]="Usuniêcie sieci ".strtoupper($network[name]);
 		$SMARTY->assign("layout",$layout);
 		$SMARTY->display("header.html");
 		echo "<H1>Usuniêcie sieci ".strtoupper($network[name])."</H1>";
@@ -53,7 +53,7 @@ if(!$error)
 		$SMARTY->display("footer.html");
 	}
 }else{
-	$layout[pagetitle] = "Informacja o sieci";
+	$layout[pagetitle]="Informacja o sieci";
 	$SMARTY->assign("layout",$layout);
 	$SMARTY->assign("network",$network);
 	$SMARTY->assign("networks",$networks);

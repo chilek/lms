@@ -28,7 +28,7 @@ if(!$LMS->TariffExists($_GET[id]))
 	header("Location: ?m=tarifflist");
 	exit(0);
 }
-$layout[pagetitle] = $lang[pagetitle_tariffinfo];
+$layout[pagetitle]="Informacja o taryfie";
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("tariff",$LMS->GetTariff($_GET[id]));

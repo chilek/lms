@@ -12,7 +12,7 @@ if($addbalance[type]=="3"||$addbalance[type]=="4")
 			foreach($addbalance[muserid] as $value)
 				if($LMS->UserExists($value))
 				{
-					$addbalance[userid] = $value;
+					$addbalance[userid]=$value;
 					$LMS->AddBalance($addbalance);
 				}
 		}

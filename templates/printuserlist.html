@@ -2,7 +2,7 @@
 <TABLE WIDTH="100%">
 	<TR>
 		<TD WIDTH="1%" VALIGN="TOP" NOWRAP>
-			<H1>{$layout.pagetitle}</H1>
+			<H1>Lista u¿ytkowników</H1>
 		</TD>
 		<TD ALIGN="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
@@ -14,22 +14,22 @@
 <TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN=CENTER>
 	<TR>
 		<TD ALIGN=CENTER CLASS=head>
-			&nbsp;
+			LP:
 		</TD>
 		<TD CLASS=head ALIGN=CENTER>
-			{$lang.id}:
+			ID:
 		</TD>
 		<TD CLASS=head>
-			<B>{$lang.lastname_and_name}:</B><BR>
-			{$lang.address}:<BR>
-			{$lang.phone}:
+			<B>Nazwisko i imiê:</B><BR>
+			Adres:<BR>
+			Telefon:
 		</TD>
 		<TD CLASS=head>
 			Email:<BR>
-			{$lang.tariff}:
+			Taryfa:
 		</TD>
 		<TD CLASS=head>
-			{$lang.balance}:
+			Saldo:
 		</TD>
 		
 
@@ -50,10 +50,10 @@
 		</TD>
 		<TD HEIGHT=40 VALIGN="ABSMIDDLE">
 			{$userlist[userlist].email}<BR>
-			{$userlist[userlist].tariffvalue|string_format:"`$lang.currency_format`"} {$lang.currency} / mc
+			{$userlist[userlist].tariffvalue|string_format:"%01.2f"} z³ / mc
 		</TD>
 		<TD>
-			{$userlist[userlist].balance|string_format:"`$lang.currency_format`"} {$lang.currency}
+			{$userlist[userlist].balance|string_format:"%01.2f"} z³
 		</TD>
 
 	</TR>

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout[pagetitle] = $lang[pagetitle_copyrights];
+$layout[pagetitle]="Informacje o prawach autorskich";
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("header.html");
 $SMARTY->display("copyrights.html");

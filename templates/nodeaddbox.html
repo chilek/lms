@@ -6,7 +6,7 @@
 			<IMG SRC="img/node.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="FBT">
-			<B>{$lang.name}:</B>
+			<B>Nazwa:</B>
 		<TD WIDTH="98%" CLASS="FRIGHTU" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name|upper}" CLASS="BOLD">
 			{if $error.name}<BR><FONT COLOR="RED"><B>{$error.name}</B></FONT>{/if}
@@ -14,10 +14,10 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="{$lang.ip_address}:">
+			<IMG SRC="img/ip.gif" BORDER="0" ALT="Adres IP:">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{$lang.ip_address}:</B>
+			<B>Adres IP:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}"> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr);" title="Wybierz adres IP z listy">&raquo;&raquo;&raquo;</A>
@@ -26,10 +26,10 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" BORDER="0" ALT="{$lang.mac_address}:">
+			<IMG SRC="img/mac.gif" BORDER="0" ALT="Adres MAC:">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{$lang.mac_address}:</B>
+			<B>Adres MAC:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodedatamac" VALUE="{$nodedata.mac}"> <a href="javascript: void(0);" onClick="return macchoosewin(document.nodeadd.nodedatamac);" title="Wybierz adres MAC z listy">&raquo;&raquo;&raquo;</A>
@@ -41,21 +41,21 @@
 			<IMG SRC="img/{if $nodedata.access neq "Y" && $nodedata.access neq ""}no{/if}access.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{$lang.status}:</B>
+			<B>Status:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[access]">
-				<OPTION VALUE="Y"{if $nodedata.access eq "Y"} SELECTED{/if}>{$lang.connected}</OPTION>
-				<OPTION VALUE="N"{if $nodedata.access eq "N"} SELECTED{/if}>{$lang.disconnected}</OPTION>
+				<OPTION VALUE="Y"{if $nodedata.access eq "Y"} SELECTED{/if}>pod³±czony</OPTION>
+				<OPTION VALUE="N"{if $nodedata.access eq "N"} SELECTED{/if}>od³±czony</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/user.gif" BORDER="0" ALT="{$lang.owner}:">
+			<IMG SRC="img/user.gif" BORDER="0" ALT="W³a¶ciciel:">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{$lang.owner}:</B>
+			<B>W³a¶ciciel:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" NAME="nodedata[ownerid]">
@@ -67,9 +67,9 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="4" ALIGN="RIGHT">
-			<A HREF="?m=nodescan{if $userinfo.id}&ownerid={$userinfo.id}{/if}">{$lang.scan} <IMG SRC="img/search.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
-			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="S">{$lang.save} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
-			<A HREF="?m={if $userinfo.id}userinfo&id={$userinfo.id}{else}nodelist{/if}">{$lang.cancel} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="?m=nodescan{if $userinfo.id}&ownerid={$userinfo.id}{/if}">Skanuj <IMG SRC="img/search.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="?m={if $userinfo.id}userinfo&id={$userinfo.id}{else}nodelist{/if}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
 	</TR>	
 </TABLE></FORM></P>

@@ -38,12 +38,9 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 if(!isset($_GET[ownerid]))
 	$_SESSION[backto] .= "&ownerid=".$ownerid;
 
-$layout[pagetitle] = $lang[pagetitle_nodeinfo];
-
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($ownerid));
 $SMARTY->assign("userinfo",$LMS->GetUser($ownerid));
 $SMARTY->assign("nodeinfo",$LMS->GetNode($nodeid));
-$SMARTY->assign("layout",$layout);
 $SMARTY->display("nodeinfo.html");
 
 ?>

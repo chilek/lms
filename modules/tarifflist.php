@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout[pagetitle] = $lang[pagetitle_tarifflist];
+$layout[pagetitle]="Lista taryf";
 
 $tarifflist = $LMS->GetTariffList();
 

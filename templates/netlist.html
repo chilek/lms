@@ -1,14 +1,14 @@
 {include file="header.html"}
 {include file="netheader.html"}
 <!--// $Id$ //-->
-<H1>{$layout.pagetitle}</H1>
+<H1>Sieci IP</H1>
 <table cellpadding="3" width="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD class="fleftu" width="96%">
-			<NOBR><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>{$lang.name}:</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> {$lang.address_prefix}:</NOBR>
+			<NOBR><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>Nazwa:</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> Adres/prefix:</NOBR>
 		</TD>
 		<TD class="fbt" valign="top" align="right" width="1%">
-			{$lang.id}:
+			ID:
 		</TD>
 		<TD class="fbt" width="1%">
 			<NOBR><IMG src="img/dns.gif" border="0" alt="" align="absmiddle"> Serwer DNS:<BR><IMG src="img/domain.gif" border="0" alt="" align="absmiddle"> Domena:</NOBR>
@@ -20,17 +20,17 @@
 			<NOBR><IMG src="img/dhcp.gif" align="absmiddle" alt="" border="0"> Zakres DHCP:</NOBR>
 		</TD>
 		<TD class="frightu" width="1%" align="right">
-			<NOBR><B>{$lang.total}: {$netlist.total}</B></NOBR>
+			<NOBR><B>Razem: {$netlist.total}</B></NOBR>
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{section name=netlist loop=$netlist.id}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD class="fleft" width="96%" onClick="return self.location.href='?m=netinfo&id={$netlist.id[netlist]}';">
 			<nobr><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>{$netlist.name[netlist]}</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> {$netlist.address[netlist]} / {$netlist.prefix[netlist]}</nobr>
 		</TD>
 		<TD valign="top" align="right" onClick="return self.location.href='?m=netinfo&id={$netlist.id[netlist]}';" width="1%">
-			<nobr><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">({$netlist.id[netlist]|string_format:"%04d"})<BR><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">{$lang.size}: {$netlist.size[netlist]} (zaj: {$netlist.assigned[netlist]|string_format:"%01d"})</nobr>
+			<nobr><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">({$netlist.id[netlist]|string_format:"%04d"})<BR><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">rozmiar: {$netlist.size[netlist]} (zaj: {$netlist.assigned[netlist]|string_format:"%01d"})</nobr>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist.id[netlist]}';">
 			<nobr>{if $netlist.dns[netlist] neq ""}<IMG src="img/dns.gif" border="0" alt="" align="absmiddle"> {$netlist.dns[netlist]}{/if}<BR>
@@ -45,9 +45,9 @@
 		</TD>
 		<TD class="fright">
 			<nobr>
-			<a href="?m=netdel&id={$netlist.id[netlist]}" onClick="return confirmLink(this,'{$lang.confirm_netdel|replace:"#":"`$netlist.name[netlist]`"}')"><IMG src="img/delete.gif" border="0" alt="[ {$lang.delete} ]"></A>
-			<a href="?m=netedit&id={$netlist.id[netlist]}"><IMG src="img/edit.gif" border="0" alt="[ {$lang.edit} ]"></A>
-			<a href="?m=netinfo&id={$netlist.id[netlist]}"><IMG src="img/info.gif" border="0" alt="[ {$lang.info} ]"></A></nobr>
+			<a href="?m=netdel&id={$netlist.id[netlist]}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ sieæ \'{$netlist.name[netlist]|upper}\'?')"><IMG src="img/delete.gif" border="0" alt="[ Usuñ ]"></A>
+			<a href="?m=netedit&id={$netlist.id[netlist]}"><IMG src="img/edit.gif" border="0" alt="[ Edytuj ]"></A>
+			<a href="?m=netinfo&id={$netlist.id[netlist]}"><IMG src="img/info.gif" border="0" alt="[ Info ]"></A></nobr>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -55,7 +55,7 @@
 		<TD colspan="6" class="flr" align="center" width="1%">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>{$lang.no_networks}</B></p>
+			<p><B>Nie posiadasz ¿adnych klas adresowych. Skorzystaj z opcji menu powy¿ej aby dodaæ nowe sieci.</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -63,9 +63,9 @@
 	{/section}
 	<TR bgcolor="#DFD5BD">
 		<TD width="99%" colspan="2" class="fleftu" align="right"> 
-			<B>{$lang.total}:<BR>
-			{$lang.addresses}:<BR>
-			{$lang.assigned}:</B>
+			<B>Razem:<BR>
+			Adresów:<BR>
+			Przypisanych:</B>
 		</TD>
 		<TD width="1%" colspan="4" class="frightu">
 			<B>{$netlist.total}<BR>

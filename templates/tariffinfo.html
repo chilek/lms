@@ -1,6 +1,16 @@
 {include file="header.html"}
 {include file="balanceheader.html"}
-<H1>{$layout.pagetitle}</H1>
+<script language="javascript">
+	<!--
+	function getText(index)
+	{literal}{{/literal}
+		{section name=tf loop=$tariffs.id}
+		if(index=={$tariffs.id[tf]}) return '{$tariffs.name[tf]} ({$tariffs.value[tf]} z³/mc)';
+		{/section}
+	{literal}}{/literal}
+	//-->
+																	</script>
+<H1>Informacja o taryfie {$tariff.name}</H1>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="100%" COLSPAN="2" CLASS="FALL">
@@ -9,7 +19,7 @@
 	</TR>
 	<TR class="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>{$lang.description}:</B>
+			<B>Opis:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
 			{$tariff.description}
@@ -17,31 +27,31 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>{$lang.amount}:</B>
+			<B>Warto¶æ:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			{$tariff.value|string_format:"`$lang.currency_format`"} {$lang.currency}
+			{$tariff.value|string_format:"%01.2f"} z³
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT" NOWRAP>
-			<B>{$lang.upstream}</B>
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<B>Uprate:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			{if $tariff.uprate}{$tariff.uprate}kb/s{else}{$lang.no_limit}{/if}
+			{if $tariff.uprate}{$tariff.uprate}kb/s{else}brak limitu{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT" NOWRAP>
-			<B>{$lang.downstream}</B>
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<B>Downrate:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			{if $tariff.downrate}{$tariff.downrate}kb/s{else}{$lang.no_limit}{/if}
+			{if $tariff.downrate}{$tariff.downrate}kb/s{else}brak limitu{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT" NOWRAP>
-			<B>{$lang.amount_of_users}:</B>
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<B>Ilo¶æ&nbsp;u¿ytkowników:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
 			{$tariff.count}
@@ -49,20 +59,20 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>{$lang.monthly_income}:</B>
+			<B>Zysk&nbsp;miesiêczny:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			{$tariff.totalval|string_format:"`$lang.currency_format`"} {$lang.currency}
+			{$tariff.totalval|string_format:"%01.2f"} z³
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FLR" ALIGN="RIGHT" COLSPAN="2">
-			<A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">{$lang.edit} <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">{$lang.delete} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
+			<A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
 		</TD>
 	</TR>			
 	<TR CLASS="DARK">
 		<TD WIDTH="100%" CLASS="FALL" COLSPAN="2">
-			<B>{$lang.users_with_this_fee}:</B>
+			<B>U¿ytkownicy w tej taryfie:</B>
 		</TD>
 	</TR>
 	<TR>
@@ -72,7 +82,7 @@
 				{section name=l1 loop=$tariff.users max=$tariff.rows}
 				<TR>
 					{section name=l2 loop=$tariff.users start=$smarty.section.l1.index step=$tariff.rows}
-					<TD WIDTH="33%" bgcolor="{cycle}" {cycle print=false} onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '{cycle}')" {cycle print=false} onclick="return self.location.href='?m=userinfo&id={$tariff.users[l2].id}'"><IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> <A HREF="?m=userinfo&id={$tariff.users[l2].id}">({$tariff.users[l2].id|string_format:"%04d"}) {$tariff.users[l2].username}</A></TD>
+					<TD WIDTH="33%" bgcolor="{cycle}" {cycle print=false}onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '{cycle}')" {cycle print=false}onclick="return self.location.href='?m=userinfo&id={$tariff.users[l2].id}'"><IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> <A HREF="?m=userinfo&id={$tariff.users[l2].id}">({$tariff.users[l2].id|string_format:"%04d"}) {$tariff.users[l2].username}</A></TD>
 					{/section}{cycle print=false}
 				</TR>
 				{sectionelse}
@@ -80,7 +90,7 @@
 					<TD WIDTH="100%" ALIGN="CENTER">
 						<BR>
 						<BR>
-						<B>{$lang.no_users_with_this_fee}</B><BR>
+						<B>¯aden z klientów nie korzysta z tej taryfy</B><BR>
 						<BR>
 						<BR>
 					</TD>
@@ -96,10 +106,10 @@
 				<INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
 				<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="from">
 				<input type="hidden" name="is_sure">
-				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'{$lang.confirm_move_users}','1');">{$lang.change_tariff_for_users}:</A> </B>
+				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'Jeste¶ pewien ¿e chcesz przenie¶æ u¿ytkowników do taryfy '+getText(document.tmove.to.value)+'?','1');">Przenie¶ tych u¿ytkowników do taryfy:</A> </B>
 				<SELECT SIZE="1" NAME="to">
 					{section name=lt loop=$tariffs.id}
-					{if $tariffs.id[lt] neq $tariff.id}<OPTION VALUE="{$tariffs.id[lt]}">{$tariffs.name[lt]} ({$tariffs.value[lt]} {$lang.currency}/mc)</OPTION>{/if}
+					{if $tariffs.id[lt] neq $tariff.id}<OPTION VALUE="{$tariffs.id[lt]}">{$tariffs.name[lt]} ({$tariffs.value[lt]} z³/mc)</OPTION>{/if}
 					{/section}
 				</SELECT>
 			</FORM>

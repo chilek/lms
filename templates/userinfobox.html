@@ -15,9 +15,9 @@
 			{if $userinfo.status eq "1"}<IMG SRC="img/unk.gif" alt="" border="0">{/if}			
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			{if $userinfo.status eq "3"}<B>{$lang.connected}</B>{/if}
-			{if $userinfo.status eq "2"}<B>{$lang.awaiting}</B>{/if}
-			{if $userinfo.status eq "1"}<B>{$lang.interested}</B>{/if}
+			{if $userinfo.status eq "3"}<B>pod³±czony</B>{/if}
+			{if $userinfo.status eq "2"}<B>oczekuj±cy</B>{/if}
+			{if $userinfo.status eq "1"}<B>zainteresowany</B>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -60,7 +60,7 @@
 {if $userinfo.nip neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT" ALIGN=CENTER>
-		<B>{$lang.taxid}</B>
+		<B>NIP</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<B>{$userinfo.nip}</B>
@@ -72,12 +72,12 @@
 			<IMG SRC="img/money.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{$lang.balance}:<BR>
-			{$lang.tariff}:</B>
+			<B>Saldo:<BR>
+			Taryfa:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} {$lang.currency}</B></FONT>{else}{$userinfo.balance|default:"0"} {$lang.currency}{/if}<BR>
-			<A HREF="?m=tariffinfo&id={$userinfo.tariff}">{$userinfo.tariffname}</A> ({$userinfo.tariffvalue} {$lang.currency}/mc)
+			{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} z³</B></FONT>{else}{$userinfo.balance|default:"0"} z³{/if}<BR>
+			<A HREF="?m=tariffinfo&id={$userinfo.tariff}">{$userinfo.tariffname}</A> ({$userinfo.tariffvalue} z³/mc)
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -85,8 +85,8 @@
 			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{$lang.created}:<BR>
-			{$lang.modified}:</B>
+			<B>Utworzony:<BR>
+			Zmodyfikowany:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{$userinfo.createdby}, {$userinfo.creationdateh}<BR>
@@ -111,7 +111,16 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{$lang.edit} <IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ {$lang.edit} ]"></A> <A href="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, '{$lang.confirm_userdel|replace:"#":"`$userinfo.username`"}')">{$lang.delete} <img border="0" align="absmiddle" src="img/delete.gif" alt=""></A>
+			<A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">Edytuj <IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userinfo.username|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')">Usuñ <img border="0" align="absmiddle" src="img/delete.gif" alt=""></A>
 		</TD>
 	</TR>
 </TABLE>
+
+{*
+<TR CLASS="LIGHT">
+<TD WIDTH="1%" CLASS="FLEFT">
+</TD>
+<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+</TD>
+</TR>
+*}

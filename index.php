@@ -60,7 +60,6 @@ $_MODULES_DIR = (! $_CONFIG[directories]['modules_dir'] ? $_SYSTEM_DIR.'/modules
 $_SMARTY_DIR = (! $_CONFIG[directories]['smarty_dir'] ? $_LIB_DIR.'/Smarty' : $_CONFIG[directories]['smarty_dir']);
 $_SMARTY_COMPILE_DIR = (! $_CONFIG[directories]['smarty_compile_dir'] ? $_SYSTEM_DIR.'/templates_c' : $_CONFIG[directories]['smarty_compile_dir']);
 $_SMARTY_TEMPLATES_DIR = (! $_CONFIG[directories]['smarty_templates_dir'] ? $_SYSTEM_DIR.'/templates' : $_CONFIG[directories]['smarty_templates_dir']);
-$_LANG = (! $_CONFIG[phpui]['language'] ? 'pl' : $_CONFIG[phpui]['language']);
 $_ADODB_DIR = (! $_CONFIG[directories]['adodb_dir'] ? $_LIB_DIR.'/adodb' : $_CONFIG[directories]['adodb_dir']);
 $_TIMEOUT = (! $_CONFIG[phpui]['timeout'] ? 600 : $_CONFIG[phpui]['timeout']);
 $_FORCE_SSL = chkconfig($_CONFIG[phpui]['force_ssl']);
@@ -81,6 +80,10 @@ $_DBUSER = (! $_CONFIG[database]['user'] ? 'root' : $_CONFIG[database]['user']);
 $_DBPASS = (! $_CONFIG[database]['password'] ? '' : $_CONFIG[database]['password']);
 $_DBNAME = (! $_CONFIG[database]['database'] ? 'lms' : $_CONFIG[database]['database']);
 
+// Set our sweet polish locales :>
+
+//setlocale (LC_ALL, 'pl_PL');
+
 // include required files
 
 require_once($_LIB_DIR.'/common.php');
@@ -91,6 +94,7 @@ require_once($_SMARTY_DIR.'/Smarty.class.php');
 require_once($_ADODB_DIR.'/adodb.inc.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
+require_once($_LIB_DIR.'/leftmenu.php');
 require_once($_LIB_DIR.'/TipOfTheDay.php');
 require_once($_LIB_DIR.'/accesstable.php');
 
@@ -114,13 +118,6 @@ $LMS->CONFIG[debug_email] = $_CONFIG[phpui][debug_email];
 
 $SMARTY = new Smarty;
 
-if(is_readable($_LIB_DIR.'/lang/'.$SESSION->lang.'.php'))
-	require_once($_LIB_DIR.'/lang/'.$SESSION->lang.'.php');
-elseif(is_readable($_LIB_DIR.'/lang/'.$_LANG.'.php'))
-	require_once($_LIB_DIR.'/lang/'.$_LANG.'.php');
-else
-	require_once($_LIB_DIR.'/lang/pl.php');
-		
 // test for proper version of Smarty
 
 if(version_compare('2.5.0',$SMARTY->_version) > 0)
@@ -130,10 +127,6 @@ $SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 $SMARTY->debugging = chkconfig($_CONFIG[phpui][smarty_debug]);
 
-// assign language variable.
-
-$SMARTY->assign('lang',$lang);
-
 $layout[logname]=$SESSION->logname;
 $layout[logid]=$SESSION->id;
 $layout[lmsv]='1.1-cvs ('.$LMS->_version.'/'.$SESSION->_version.')';
@@ -141,7 +134,7 @@ $layout[smarty_version] = $SMARTY->_version;
 $layout[adodb_version] = eregi_replace('(.*)\(c\).*','\1',$ADODB_vers);
 $layout[uptime]=uptime();
 $layout[hostname]=hostname();
-$layout[date]=gettime();
+$layout[date]=pldate();
 
 $SMARTY->assign('menu',$menu);
 $SMARTY->assign('layout',$layout);

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout[pagetitle] = "Mailing";
+$layout[pagetitle]="Mailing";
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("header.html");
 $SMARTY->display("mailing.html");

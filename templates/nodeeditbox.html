@@ -13,7 +13,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="{$lang.ip_address}:">
+			<IMG SRC="img/ip.gif" BORDER="0" ALT="Adres IP:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ipaddr}"> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr);" title="Wybierz adres IP z listy">&raquo;&raquo;&raquo;</A>
@@ -22,7 +22,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" BORDER="0" ALT="{$lang.mac_address}:">
+			<IMG SRC="img/mac.gif" BORDER="0" ALT="Adres MAC:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodeeditmac" VALUE="{$nodeinfo.mac}"> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.nodeeditmac);" title="Wybierz adres MAC z listy">&raquo;&raquo;&raquo;</A>
@@ -43,14 +43,14 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[access]">
-				<OPTION VALUE="Y"{if $nodeinfo.access eq "Y"} SELECTED{/if}>{$lang.connected}</OPTION>
-				<OPTION VALUE="N"{if $nodeinfo.access eq "N"} SELECTED{/if}>{$lang.disconnected}</OPTION>
+				<OPTION VALUE="Y"{if $nodeinfo.access eq "Y"} SELECTED{/if}>pod³±czony</OPTION>
+				<OPTION VALUE="N"{if $nodeinfo.access eq "N"} SELECTED{/if}>od³±czony</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/user.gif" BORDER="0" ALT="{$lang.owner}:">
+			<IMG SRC="img/user.gif" BORDER="0" ALT="W³a¶ciciel:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" NAME="nodeedit[ownerid]">
@@ -65,8 +65,8 @@
 			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>{$lang.created}:<BR>
-			{$lang.modified}:</B>
+			<B>Utworzony:<BR>
+			Zmodyfikowany:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<BR>
@@ -75,8 +75,8 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="javascript:document.editnode.submit();" ACCESSKEY="S">{$lang.save} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
-			<A HREF="?m=nodeinfo&id={$nodeinfo.id}">{$lang.cancel} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="javascript:document.editnode.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="?m=nodeinfo&id={$nodeinfo.id}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
 	</TR>	
 </TABLE>

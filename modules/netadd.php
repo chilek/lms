@@ -48,57 +48,59 @@ if(isset($netadd))
 
 
 	if($netadd[name]=="")
-		$error[name] = $lang[error_no_empty_field];
+		$error[name] = "Musisz podaæ nazwê sieci!";
 	elseif(!eregi("^[.a-z0-9-]+$",$netadd[name]))
-		$error[name] = $lang[error_field_contains_incorrect_characters];
+		$error[name] = "Podana nazwa zawiera niepoprawne znaki!";
 	
 	if($netadd[domain] != "" && !eregi("^[.a-z0-9-]+$",$netadd[domain]))
-		$error[domain] = $lang[error_field_contains_incorrect_characters];
+		$error[domain] = "Podana nazwa zawiera niepoprawne znaki!";
 	
 	if(!check_ip($netadd[address]))
-		$error[address] = $lang[error_ip_address_invalid];
+		$error[address] = "Podany adres IP jest nieprawid³owy!";
 	else
 	{
 		if(getnetaddr($netadd[address],prefix2mask($netadd[prefix]))!=$netadd[address])
 		{
-			$error[address] = $lang[error_ip_address_is_not_netaddr];
+			$error[address] = "Podany adres nie jest pocz±tkowym adresem sieci, ustawiam na ".getnetaddr($netadd[address],prefix2mask($netadd[prefix]));
 			$netadd[address] = getnetaddr($netadd[address],prefix2mask($netadd[prefix]));
 		}
 		else
 		{
 			if($LMS->NetworkOverlaps($netadd[address],prefix2mask($netadd[prefix])))
-				$error[address] = $lang[error_network_overlaps];
+				$error[address] = "Podana sieæ pokrywa siê z inn± sieci±!";
 		}
 	}
 	
 	if($netadd[dns]!="" && !check_ip($netadd[dns]))
-		$error[dns] = $lang[error_ip_address_invalid];
+		$error[dns] = "Podany adres IP jest nie prawid³owy!";
 	
 	if($netadd[wins]!="" && !check_ip($netadd[wins]))
-		$error[wins] = $lang[error_ip_address_invalid];
+		$error[wins] = "Podany adres IP jest nie prawid³owy!";
 	
 	if($netadd[gateway]!="")
 		if(!check_ip($netadd[gateway]))
-			$error[gateway] = $lang[error_ip_address_invalid];
+			$error[gateway] = "Podany adres IP jest nie prawid³owy!";
+	elseif(!isipin($netadd[gateway],getnetaddr($netadd[address],prefix2mask($netadd[prefix])),prefix2mask($netadd[prefix])))
+		$error[gateway] = "Podany adres gateway'a nie pasuje do adresu sieci!";
 	
 	if($netadd[dhcpstart]!="")
 		if(!check_ip($netadd[dhcpstart]))
-			$error[dhcpstart] = $lang[error_ip_address_invalid];
+			$error[dhcpstart] = "Podany adres IP jest nieprawid³owy!";
 	elseif(!isipin($netadd[dhcpstart],getnetaddr($netadd[address],prefix2mask($netadd[prefix])),prefix2mask($netadd[prefix])) && $netadd[address]!="")
-		$error[dhcpstart] = $lang[error_ip_address_is_not_in_network];
+		$error[dhcpstart] = "Podany adres IP nie nale¿y do tej sieci!";
 	
 	if($netadd[dhcpend]!="")
 		if(!check_ip($netadd[dhcpend]))
-			$error[dhcpend] = $lang[error_ip_address_invalid];
+			$error[dhcpend] = "Podany adres IP jest nieprawid³owy!";
 	elseif(!isipin($netadd[dhcpend],getnetaddr($netadd[address],prefix2mask($netadd[prefix])),prefix2mask($netadd[prefix])) && $netadd[address]!="")
-		$error[dhcpend] = $error[error_ip_address_is_not_in_network];
+		$error[dhcpend] = "Podany adres IP nie nale¿y do tej sieci!";
 	
 	if(!$error[dhcpstart] && !$error[dhcpend])
 	{
 		if(($netadd[dhcpstart]!="" && $netadd[dhcpend]=="")||($netadd[dhcpstart]=="" && $netadd[dhcpend]!=""))
-			$error[dhcp] = $lang[error_dhcp];
+			$error[dhcp] = "Musisz podaæ obydwa zakresy IP dla DHCP!";
 		if($netadd[dhcpstart]!="" && $netadd[dhcpend]!="" && !(ip_long($netadd[dhcpend]) > ip_long($netadd[dhcpstart])))
-			$error[dhcp] = $lang[error_dhcp2];
+			$error[dhcp] = "Koniec zakresu DHCP musi byæ wiêkszy ni¿ start!";
 	}
 	
 	if(!$error)
@@ -109,7 +111,7 @@ if(isset($netadd))
 
 }
 
-$layout[pagetitle] = $lang[pagetitle_netadd];
+$layout[pagetitle]="Dodaj sieæ";
 
 $prefixlist = $LMS->GetPrefixList();
 $netlist = $LMS->GetNetworkList();

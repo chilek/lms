@@ -36,28 +36,28 @@ if(isset($userdata))
 		$userdata[$key] = trim($value);
 
 	if($userdata[lastname]=="")
-		$error[username] = $lang[error_no_empty_filed];
+		$error[username] = "To pole nie mo¿e byæ puste!";
 	
 	if($userdata[address]=="")
-		$error[address] = $lang[error_no_empty_filed];
+		$error[address] = "Proszê podaæ adres!";
 
 	if($useradd[nip] !="" && !eregi("^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$",$useradd[nip]) && !eregi("^[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}$",$useradd[nip]) && !check_nip($useradd[nip]))
-		$error[nip] = $lang[error_taxid_invalid];
+		$error[nip] = "Podany NIP jest b³êdny!";
 
 	if($userdata[zip] !="" && !eregi("^[0-9]{2}-[0-9]{3}$",$userdata[zip]))
-		$error[zip] = $lang[error_zip_invalid];
+		$error[zip] = "Podany kod pocztowy jest b³êdny!";
 
 	if($userdata[gguin] == 0)
 		unset($userdata[gguin]);
 
 	if($userdata[gguin] !="" && !eregi("^[0-9]{4,}$",$userdata[gguin]))
-		$error[gguin] = $lang[error_gguin_invalid];
+		$error[gguin] = "Podany numer GG jest niepoprawny!";
 
 	if(!$LMS->TariffExists($userdata[tariff]))
-		$error[tariff] = $lang[error_choose_tariff];
+		$error[tariff] = "Proszê wybraæ taryfê!";
 		
 	if($userdata[status]!=3&&$LMS->GetUserNodesNo($userdata[id])) 
-		$error[status] = $lang[error_only_connected_users_can_have_nodes];
+		$error[status] = "Tylko pod³±czony u¿ytkownik mo¿e posiadaæ komputery!";
 		
 	if (!isset($error)){
 		$LMS->UserUpdate($userdata);
@@ -66,12 +66,12 @@ if(isset($userdata))
 	}else{
 		$olddata=$LMS->GetUser($_GET[id]);
 		$userinfo=$userdata;
-		$userinfo[createdby] = $olddata[createdby];
-		$userinfo[modifiedby] = $olddata[modifiedby];
-		$userinfo[creationdateh] = $olddata[creationdateh];
-		$userinfo[moddateh] = $olddata[moddateh];
-		$userinfo[username] = $olddata[username];
-		$userinfo[balance] = $olddata[balance];
+		$userinfo[createdby]=$olddata[createdby];
+		$userinfo[modifiedby]=$olddata[modifiedby];
+		$userinfo[creationdateh]=$olddata[creationdateh];
+		$userinfo[moddateh]=$olddata[moddateh];
+		$userinfo[username]=$olddata[username];
+		$userinfo[balance]=$olddata[balance];
 		if($olddata[status]==3)
 			$userinfo[shownodes] = TRUE;
 		$SMARTY->assign("error",$error);
@@ -83,7 +83,7 @@ if(isset($userdata))
 		$userinfo[shownodes] = TRUE;
 }
 
-$layout[pagetitle] = sprintf($lang[pagetitle_useredit],$userinfo[username]);
+$layout[pagetitle]="Edycja danych u¿ytkownika ".$userinfo[username];
 $SMARTY->assign("usernodes",$LMS->GetUserNodes($userinfo[id]));
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($userinfo[id]));
 $SMARTY->assign("tariffs",$LMS->GetTariffs());

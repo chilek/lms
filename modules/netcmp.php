@@ -38,7 +38,7 @@ if($_GET[is_sure])
 	header("Location: ?m=".$_SESSION[lastmodule]."&id=".$_GET[id]);
 	exit(0);
 }else{
-	$layout[pagetitle] = "Porz±dkowanie sieci ".strtoupper($network[name]);
+	$layout[pagetitle]="Porz±dkowanie sieci ".strtoupper($network[name]);
 	$SMARTY->assign("layout",$layout);
 	$SMARTY->display("header.html");
 	echo "<H1>Porz±dkowanie sieci ".strtoupper($network[name])."</H1>";

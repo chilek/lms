@@ -538,6 +538,40 @@ function writelog($msg,$newline)
 	fclose($file);
 }
 
+function pldate()
+{
+
+	$wysw = array(
+			"miesiac"  => array( 
+				"01"  => "styczeñ",
+				"02"  => "luty",
+				"03"  => "marzec",
+				"04"  => "kwiecieñ",
+				"05"  => "maj",
+				"06"  => "czerwiec",
+				"07"  => "lipiec",
+				"08"  => "sierpieñ",
+				"09"  => "wrzesieñ",
+				"10"  => "pa¼dziernik",
+				"11"  => "listopad",
+				"12"  => "grudzieñ" ),
+			"dt"  => array(
+				"Mon"  => "Poniedzia³ek", 
+				"Tue"  => "Wtorek",
+				"Wed"  => "¦roda",
+				"Thu"  => "Czwartek", 
+				"Fri"  => "Pi±tek",
+				"Sat"  => "Sobota", 
+				"Sun"  => "Niedziela" ) 
+			);
+			
+	$dzien = trim(date("d"));
+	$dt = trim(date("D"));
+	$mies = trim(date("m"));
+	$rok = trim(date("Y"));
+	return $wysw["dt"]["$dt"].", $dzien ".$wysw["miesiac"]["$mies"]." $rok";
+}
+
 function check_email( $email )
 {
 	$length = strlen( $email );
