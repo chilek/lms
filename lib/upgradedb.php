@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-define(DBVERSION, '2005033102'); // here should be always the newest version of database!
-// it placed here to avoid read disk every time when we call this file.
+define(DBVERSION, '2005033103'); // here should be always the newest version of database!
+				 // it placed here to avoid read disk every time when we call this file.
 
 /*
  * This file contains procedures for upgradeing automagicly database.
