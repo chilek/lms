@@ -822,7 +822,8 @@ class LMS
 				.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
 				.($usergroup ? ' AND usergroupid='.$usergroup : '') 
 				.' GROUP BY users.id, lastname, users.name, status, email, phone1, users.address, gguin, nip, pesel, zip, city, users.info '
-				.($indebted ? ' HAVING SUM((type * -2 + 7) * value) < 0 ' : '')
+		// ten fragment nie chcial dzialac na mysqlu		
+		//		.($indebted ? ' HAVING SUM((type * -2 + 7) * value) < 0 ' : '')
 				.($sqlord !='' ? $sqlord.' '.$direction:'')
 				))
 		{
@@ -866,8 +867,12 @@ class LMS
 				if($online)
 					if($onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
 						$userlist2[] = $userlist[$idx];
+				
+				if($indebted)
+					if($userlist[$idx]['balance'] < 0)
+						$userlist2[] = $userlist[$idx];
 			}
-			if ($disabled || $online)
+			if ($disabled || $online || $indebted)
 				$userlist = $userlist2;
 		}
 
