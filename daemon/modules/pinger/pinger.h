@@ -27,7 +27,6 @@ struct net
 struct host
 {
 	unsigned char *id;
-//	unsigned char mac[ETH_ALEN];
 	unsigned long ipaddr;
 	int active;
 };
@@ -72,6 +71,7 @@ struct arphdr
 	unsigned short	ar_op;			// ARP opcode (command)
 #if 0
 	 // 	 Ethernet looks like this : This bit is variable sized however...
+	 
 	unsigned char	ar_sha[ETH_ALEN];	// sender hardware address
 	unsigned char	ar_sip[4];		// sender IP address
 	unsigned char	ar_tha[ETH_ALEN];	// target hardware address

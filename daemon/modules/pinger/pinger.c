@@ -34,23 +34,6 @@ int descs_count = 0;
 
 void sig_int(int a) {  sigint = 1;  }
 
-int eth_aton(const char *src, char dst[ETH_ALEN])
-{
-	char *ep;
-	long l;
-	int i;
-	
-	for(i=0; i<ETH_ALEN; i++) {
-		l = strtol(src, &ep, 16);
-		if(ep == src || l<0 || l>0xff || (i < ETH_ALEN - 1 && *ep != ':'))
-			break;
-		dst[i] = (u_char)l;
-		src = ep+1;
-	}
-
-	return ((i == ETH_ALEN && *ep == '\0') ? 0 : -1);
-}
-
 void get_iface_desc(char if_name[IFNAMSIZ], struct if_desc *desc) 
 {
 	int sock;
@@ -328,7 +311,7 @@ void reload(GLOBAL *g, struct pinger_module *p)
 			g->db_free(res);
 		}
 
-	if( (res = g->db_pquery("SELECT id, mac, INET_NTOA(ipaddr) AS ip FROM nodes ORDER BY ipaddr"))!=NULL ) {
+	if( (res = g->db_pquery("SELECT id, INET_NTOA(ipaddr) AS ip FROM nodes ORDER BY ipaddr"))!=NULL ) {
 
 		for(i=0; i<res->nrows; i++) {
 		    
@@ -341,7 +324,6 @@ void reload(GLOBAL *g, struct pinger_module *p)
 			if(j!=nc) {
 				hosts = (struct host*) realloc(hosts, sizeof(struct host) * (nh + 1));
 				hosts[nh].id = strdup(g->db_get_data(res,i,"id"));
-			//	hosts[nh].mac = strdup(g->db_get_data(res,i,"mac"));
 				hosts[nh].ipaddr = ip;
 				hosts[nh].active = 0;
 				nh++;
@@ -374,10 +356,8 @@ void reload(GLOBAL *g, struct pinger_module *p)
 	syslog(LOG_INFO,"DEBUG: [%s/pinger] reloaded", p->base.instance);
 #endif
 	// cleanup
-	for(i=0; i<nh; i++) {
+	for(i=0; i<nh; i++) 
 		free(hosts[i].id);
-//		free(hosts[i].mac);
-	}
 	free(hosts);
 	free(nets);
 	free(p->networks);
