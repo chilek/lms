@@ -26,6 +26,8 @@
 
 $layout['pagetitle'] = trans('Select IP address');
 
+$networks = $LMS->GetNetworks();
+
 $p = $_GET['p'];
 
 if(!isset($p))
@@ -46,8 +48,6 @@ $_SESSION['netid'] = $netid;
 
 if($p == 'main')
 	$network = $LMS->GetNetwork($netid);
-
-$networks = $LMS->GetNetworks();
 
 $SMARTY->assign('part',$p);
 $SMARTY->assign('js',$js);
