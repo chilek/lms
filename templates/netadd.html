@@ -10,7 +10,7 @@
 			<B>Nazwa sieci:</B>
 		</TD>
 		<TD CLASS="frightu">
-			<INPUT accesskey="a" TYPE="TEXT" SIZE="23" NAME="netadd[name]" VALUE="{$netadd.name}" {tip trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" SIZE="23" NAME="netadd[name]" VALUE="{$netadd.name}" {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -50,10 +50,15 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD width="100%" CLASS="fbottomu" COLSPAN="2" align="right">
-			<A HREF="javascript:document.netadd.submit();">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" align="absmiddle"></A>
+			<A HREF="javascript:document.netadd.submit();" accesskey="s">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" align="absmiddle"></A>
 			<A HREF="?m=netlist">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALT="" align="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>
 </FORM></P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['netadd'].elements['netadd[name]'].focus();
+//-->
+</SCRIPT>
 {include file="footer.html"}

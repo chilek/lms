@@ -105,9 +105,14 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
-			<A href="javascript: document.search.submit();">Szukaj <IMG src="img/search.gif" border="0" alt="" align="absmiddle"></A>
+			<A href="javascript: document.search.submit();" accesskey="s">Szukaj <IMG src="img/search.gif" border="0" alt="" align="absmiddle"></A>
 		</TD>
 	</TR>
 </TABLE>
 </FORM></P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['search'].elements['search[subject]'].focus();
+//-->
+</SCRIPT>
 {include file="footer.html}

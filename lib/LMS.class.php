@@ -81,17 +81,17 @@ class LMS
 
 		// to siê rozejdzie po modu³ach:
 
-		$this->AddMenu('Administracja', 'l.gif', '?', '', '', 0);
+		$this->AddMenu('Administracja', 'l.gif', '?', 'Informacje i zarz±dzanie systemem', 'i', 0);
 		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 5);
 		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 10);
 		$this->AddMenu('Osprzêt sieciowy', 'netdev.gif', '?m=netdevlist', 'Ewidencja sprzêtu sieciowego', 'o', 15);
-		$this->AddMenu('Sieci IP', 'network.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 's', 20);
-		$this->AddMenu('Taryfy i finanse', 'money.gif', '?m=tarifflist', 'Zarz±dzanie taryfami oraz finansami sieci', 't', 25);
+		$this->AddMenu('Sieci IP', 'network.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 't', 20);
+		$this->AddMenu('Taryfy i finanse', 'money.gif', '?m=tarifflist', 'Zarz±dzanie taryfami oraz finansami sieci', 'f', 25);
 		$this->AddMenu('Konta', 'account.gif', '?m=accountlist', 'Konta', 'a', 30);
 		$this->AddMenu('Mailing', 'mail.gif', '?m=mailing', 'Korespondencja seryjna', 'm', 35);
 		$this->AddMenu('Prze³adowanie', 'reload.gif', '?m=reload', '', 'r', 40);
 		$this->AddMenu('Statystyki', 'traffic.gif', '?m=traffic', 'Statystyki wykorzystania ³±cza', 'x', 45);
-		$this->AddMenu('Helpdesk', 'ticket.gif', '?m=rtqueuelist', 'Obs³uga zg³oszeñ (RT)', 'r', 50);
+		$this->AddMenu('Helpdesk', 'ticket.gif', '?m=rtqueuelist', 'Obs³uga zg³oszeñ (RT)', 'h', 50);
 	}
 
 	function _postinit()

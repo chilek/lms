@@ -67,10 +67,16 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
-			<A HREF="javascript:document.paymentadd.submit();">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+			<A HREF="javascript:document.paymentadd.submit();" accesskey="s">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
 			<A HREF="?m=paymentlist">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A><BR>
 			<INPUT TYPE="checkbox" NAME="payment[reuse]" VALUE="ON" STYLE="border-style: none; background-color: #DFD5BD;" {if $payment.reuse} checked{/if}> Wywo³aj ponownie ten formularz po dodaniu op³aty
 		</TD>
 	</TR>
-</TABLE></FORM></P>
+</TABLE></FORM>
+</P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['paymentadd'].elements['payment[name]'].focus();
+//-->
+</SCRIPT>
 {include file="footer.html"}
