@@ -1,7 +1,6 @@
 # dla libgadu i ekg --------------
 LDFLAGS += -L/usr/lib
 CFLAGS += -I/usr/src/ekg/lib
-LIBS += /usr/lib/libgadu.so
 # --------------------------------
 
 SOURCES = ggnotify.c
