@@ -1,17 +1,10 @@
 # phpMyAdmin MySQL-Dump
-# version 2.2.3
-# http://phpwizard.net/phpMyAdmin/
-# http://phpmyadmin.sourceforge.net/ (download page)
-#
-# Host: localhost
-# Czas wygenerowania: 16 Lis 2002, 03:15
-# Wersja serwera: 3.23.53
+# version 2.3.3pl1
+# http://www.phpmyadmin.net/ (download page)
+# Czas wygenerowania: 23 Cze 2003, 15:34
+# Wersja serwera: 3.23.56
 # Wersja PHP: 4.2.3
 # Baza danych : `lms`
-# --------------------------------------------------------
-#
-# $Id$
-#
 # --------------------------------------------------------
 
 #
@@ -63,13 +56,13 @@ DROP TABLE IF EXISTS `networks`;
 CREATE TABLE `networks` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
-  `address` varchar(16) NOT NULL default '',
+  `address` varchar(255) NOT NULL default '',
   `mask` varchar(16) NOT NULL default '',
   `gateway` varchar(16) default NULL,
   `dns` varchar(16) default NULL,
+  `dns2` varchar(16) default NULL,
   `domain` varchar(64) NOT NULL default '',
   `wins` varchar(16) default NULL,
-  `ispublic` char(1) NOT NULL default '',
   `dhcpstart` varchar(16) default NULL,
   `dhcpend` varchar(16) default NULL,
   PRIMARY KEY  (`id`),
@@ -86,8 +79,9 @@ DROP TABLE IF EXISTS `nodes`;
 CREATE TABLE `nodes` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(16) NOT NULL default '',
-  `mac` varchar(20) NOT NULL default '',
-  `ipaddr` varchar(16) NOT NULL default '',
+  `mac` varchar(20) default NULL,
+  `ipaddr` varchar(16) default NULL,
+  `iplong` bigint(20) NOT NULL default '0',
   `ownerid` int(11) default NULL,
   `creationdate` int(11) NOT NULL default '0',
   `moddate` int(11) NOT NULL default '0',
@@ -101,17 +95,6 @@ CREATE TABLE `nodes` (
 # --------------------------------------------------------
 
 #
-# Struktura tabeli dla  `options`
-#
-
-DROP TABLE IF EXISTS `options`;
-CREATE TABLE `options` (
-  `option` varchar(255) default NULL,
-  `value` varchar(255) default NULL
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
 # Struktura tabeli dla  `tariffs`
 #
 
@@ -119,24 +102,25 @@ DROP TABLE IF EXISTS `tariffs`;
 CREATE TABLE `tariffs` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
-  `value` double NOT NULL default '0',
-  `uprate` int NOT NULL default '0',
-  `downrate` int NOT NULL default '0',
+  `value` float NOT NULL default '0',
+  `uprate` int(11) NOT NULL default '0',
+  `downrate` int(11) NOT NULL default '0',
   `description` text NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `id` (`id`),
-  KEY `id_2` (`id`)
+  KEY `id_2` (`id`),
+  KEY `id_3` (`id`)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
 #
-# Struktura tabeli dla  `tokens`
+# Struktura tabeli dla  `timestamps`
 #
 
-DROP TABLE IF EXISTS `tokens`;
-CREATE TABLE `tokens` (
-  `id` varchar(255) NOT NULL default '',
-  `auth` varchar(255) NOT NULL default ''
+DROP TABLE IF EXISTS `timestamps`;
+CREATE TABLE `timestamps` (
+  `time` int(14) NOT NULL default '0',
+  `tablename` varchar(255) NOT NULL default ''
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -154,10 +138,10 @@ CREATE TABLE `users` (
   `phone1` varchar(255) default NULL,
   `phone2` varchar(255) default NULL,
   `phone3` varchar(255) default NULL,
-  `gguin` INT default NULL,	    
+  `gguin` int(11) default NULL,
   `address` varchar(255) NOT NULL default '',
   `zip` varchar(6) default NULL,
-  `city` varchar(32) default NULL, 
+  `city` varchar(32) default NULL,
   `nip` varchar(16) default NULL,
   `tariff` int(11) NOT NULL default '0',
   `info` text,
@@ -170,12 +154,4 @@ CREATE TABLE `users` (
   KEY `id` (`id`)
 ) TYPE=MyISAM;
 
-#
-# Struktura tabeli dla  `timestamps`
-#
-
-DROP TABLE IF EXISTS `timestamps`;
-CREATE TABLE `timestamps` (
-  `time` int(14) NOT NULL default '0',
-  `tablename` varchar(255) NOT NULL default ''
-) TYPE=MyISAM;
+    
