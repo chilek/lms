@@ -1,6 +1,6 @@
 {include file="header.html"}
 {include file="balanceheader.html"}
-<H1>Edycja taryfy {$tariff.name}</H1>
+<H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="tedit" ACTION="?m=tariffedit&id={$tariff.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -18,7 +18,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>Warto¶æ:</B>
+			<B>{$lang.amount}:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
 			<INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]"> {$lang.currency}
@@ -27,25 +27,25 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>Uprate:</B>
+			<B>{$lang.upstream}:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.uprate}" SIZE="8" NAME="tariff[uprate]"> kb/s
+			<INPUT TYPE="TEXT" VALUE="{$tariff.upstream}" SIZE="8" NAME="tariff[uprate]"> kb/s
 			{if $error.uprate}<BR><FONT COLOR="RED"><B>{$error.uprate}</B></FONT>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>Downrate:</B>
+			<B>{$lang.downstream}:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.downrate}" SIZE="8" NAME="tariff[downrate]"> kb/s
+			<INPUT TYPE="TEXT" VALUE="{$tariff.downstream}" SIZE="8" NAME="tariff[downrate]"> kb/s
 			{if $error.downrate}<BR><FONT COLOR="RED"><B>{$error.downrate}</B></FONT>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>Ilo¶æ&nbsp;u¿ytkowników:</B>
+			<B>{$lang.amount_of_users}:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
 			{$tariff.count}
@@ -53,7 +53,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<B>Zysk&nbsp;miesiêczny:</B>
+			<B>{$lang.monthly_income}:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
 			{$tariff.totalval}
