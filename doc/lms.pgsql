@@ -91,7 +91,7 @@ CREATE TABLE tariffs (
 	id integer DEFAULT nextval('tariffs_id_seq'::text) NOT NULL,
 	name varchar(255) NOT NULL,
 	value numeric(9,2) DEFAULT 0 NOT NULL,
-	taxvalue integer DEFAULT 0 NOT NULL,
+	taxvalue numeric(9,2) DEFAULT 0 NOT NULL,
 	pkwiu varchar(255) DEFAULT NULL,
 	uprate integer,
 	downrate integer,
@@ -127,11 +127,11 @@ CREATE TABLE invoices (
 -------------------------------------------------------- */
 CREATE TABLE invoicecontents (
 	invoiceid integer NOT NULL,
-	value float4 NOT NULL,
-	taxvalue integer NOT NULL,
+	value numeric(9,2) NOT NULL,
+	taxvalue numeric(9,2) NOT NULL,
 	pkwiu varchar(255) DEFAULT NULL,
 	content varchar(16) NOT NULL,
-	count integer NOT NULL,
+	count numeric(9,2) NOT NULL,
 	description varchar(255) NOT NULL,
 	tariffid integer NOT NULL
 );	 
@@ -257,5 +257,3 @@ SELECT
      split_part($1,''.'',3)::int8*256+
      split_part($1,''.'',4)::int8;
 ' LANGUAGE SQL;
-
-
