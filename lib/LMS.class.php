@@ -1917,9 +1917,9 @@ class LMS
 				$val = -$val;
 	
 			if ($key == trans('tax-free'))
-				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?)', array($this->SESSION->id, 3 , round($val,2) , $user_id, 'Rozliczono'));
+				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?)', array($this->SESSION->id, 3 , round($val,2) , $user_id, trans('Accounted')));
 			else
-				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)', array($this->SESSION->id, 3 , round($val,2) , $key, $user_id, 'Rozliczono'));
+				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)', array($this->SESSION->id, 3 , round($val,2) , $key, $user_id, trans('Accounted')));
 		}
 		return $ret;
 	}
