@@ -5,7 +5,7 @@
 <TABLE WIDTH="100%" CELLPADDING="5">
 	<TR class="dark">
 		<TD WIDTH="70%" CLASS="fleftu">
-			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Nazwa:</B>
+			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Nazwa:</B>
 		</TD>
 		<TD WIDTH="27%" VALIGN="top" CLASS="fbt" align="right">
 			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;Opis:
@@ -26,7 +26,7 @@
 	{section name=usergroups loop=$usergrouplist}
 	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD WIDTH="70%" CLASS="fleft" onClick="return self.location.href='?m=usergroupinfo&id={$usergrouplist[usergroups].id}';" class="fleft">
-			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{$usergrouplist[usergroups].name}</B><BR>
+			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{$usergrouplist[usergroups].name}</B><BR>
 		</TD>
 		<TD WIDTH="27%" VALIGN="top" align="right" onClick="return self.location.href='?m=usergroupinfo&id={$tusergrouplist[usergroups].id}';">
 			<NOBR>
