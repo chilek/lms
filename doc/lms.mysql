@@ -44,6 +44,7 @@ CREATE TABLE cash (
   type int(11) NOT NULL default '0',
   value double NOT NULL default '0',
   userid int(11) NOT NULL default '0',
+  invoiceid int(11) NOT NULL default '0',
   comment varchar(255) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
@@ -183,6 +184,7 @@ CREATE TABLE assignments (
   userid int(11) NOT NULL default '0',
   period int(11) NOT NULL default '0',
   at int(11) NOT NULL default '0',
+  invoice tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)

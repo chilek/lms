@@ -41,6 +41,9 @@ ALTER TABLE nodes ADD netdev INT(11) NOT NULL DEFAULT '0' AFTER modid;
 /* Zmiana zapisu limitu */
 ALTER TABLE tariffs CHANGE uprate uprate INT(11), CHANGE downrate downrate INT(11);
 
+/* Faktury inaczej */
+ALTER TABLE cash ADD invoiceid INT DEFAULT '0' NOT NULL;
+
 /* Nowa tabela dla statystyk */
 DROP TABLE IF EXISTS stats;
 CREATE TABLE stats (
@@ -82,6 +85,7 @@ CREATE TABLE assignments (
    userid int(11) NOT NULL default '0',
    period int(11) NOT NULL default '0',
    at int(11) NOT NULL default '0',
+   invoice tinyint(1) NOT NULL default '0',
    PRIMARY KEY  (id),
    UNIQUE KEY id (id),
    KEY id_2 (id)

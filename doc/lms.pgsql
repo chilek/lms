@@ -34,6 +34,7 @@ CREATE TABLE cash (
 	value float4 DEFAULT 0 NOT NULL,
 	userid integer DEFAULT 0 NOT NULL,
 	comment varchar(255) DEFAULT '' NOT NULL,
+	invoiceid integer DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id);
 );
 
@@ -162,6 +163,7 @@ CREATE TABLE assignments (
 	userid integer default 0 NOT NULL,
 	period integer default 0 NOT NULL,
 	at integer default 0 NOT NULL,
+	invoice smallint default 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 
