@@ -824,15 +824,8 @@ class LMS
 
 	function GetUserBalanceList($id)
 	{
-/*		// wrapper do starego formatu
-		if($talist = $this->DB->GetAll("SELECT id, name FROM admins"))
-			foreach($talist as $idx => $row)
-				$adminslist[$row['id']] = $row['name'];
-to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
-*/
 		// wrapper do starego formatu
 		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, userid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE userid=? ORDER BY time', array($id)))
-//		if($tslist = $this->DB->GetAll("SELECT id, time, adminid, type, value, userid, comment, invoiceid FROM cash  WHERE userid=? ORDER BY time", array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -1773,7 +1766,6 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	{
 		return ($this->DB->GetOne('SELECT id FROM tariffs WHERE id=?', array($id))?TRUE:FALSE);
 	}
-
 
 	function SetBalanceZero($user_id)
 	{
@@ -3304,7 +3296,6 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 		return $result;
 	}
-			
 				
 }
 ?>
