@@ -198,7 +198,7 @@ function uptime()
 			}
 			break;
 		default:
-			$result = "nieznany (".PHP_OS.")";
+			$result = "nieznany os (".PHP_OS.")";
 		break;
 
 	}
@@ -219,13 +219,13 @@ function hostname()
 	switch(PHP_OS)
 	{
 		case "Linux":
-			exec("hostname -f",$return);
-			$hostname=$return[0];
-			break;
-		case "WINNT":
 		case "FreeBSD":
 		case "OpenBSD":
 		case "NetBSD":
+			exec("hostname -f",$return);
+			$hostname=$return[0];
+			break;
+		case "WinNT":
 			exec("hostname",$return);
 			$hostname=$return[0];
 			break;
