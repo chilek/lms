@@ -33,7 +33,7 @@
 				{/foreach}
 				<FORM METHOD="POST" NAME="usergroupassignment" ACTION="?m=useredit&action=usergroupadd&id={$userinfo.id}">
 				<TR bgcolor="#DFD5BD">
-					<TD COLSPAN="4">
+					<TD COLSPAN="4" CLASS="ftop">
 						<B>Dodaj:</B>
 						<SELECT SIZE="1" NAME="usergroupid" {tip text="Wybierz grupê do której ma byæ przypisany u¿ytkownik"}>
 							<OPTION VALUE="0">... wybierz grupê ...</OPTION>
@@ -43,7 +43,7 @@
 						</SELECT>
 						<NOBR>
 					</TD>
-					<TD ALIGN="RIGHT" ROWSPAN="2" NOWRAP>
+					<TD ALIGN="RIGHT" CLASS="ftop" ROWSPAN="2" NOWRAP>
 						<A HREF="javascript:document.usergroupassignment.submit()" {tip text="Dodaj u¿ytkownika do grupy"}>Dodaj <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>
 					</TD>
 				</TR>
