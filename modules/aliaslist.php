@@ -142,28 +142,28 @@ if($accountid = $_GET['accountid'])
 	$aliasadd['accountid'] = $accountid;
 
 if(!isset($_GET['o']))
-	$o = $_SESSION['allo'];
+	$o = $_SESSION['alo'];
 else
 	$o = $_GET['o'];
-$_SESSION['allo'] = $o;
+$_SESSION['alo'] = $o;
 
 if(!isset($_GET['u']))
-	$u = $_SESSION['allu'];
+	$u = $_SESSION['alu'];
 else
 	$u = $_GET['u'];
-$_SESSION['allu'] = $u;
+$_SESSION['alu'] = $u;
 
 if(!isset($_GET['k']))
-	$k = $_SESSION['allk'];
+	$k = $_SESSION['alk'];
 else
 	$k = $_GET['k'];
-$_SESSION['allk'] = $k;
+$_SESSION['alk'] = $k;
 
 if(!isset($_GET['d']))
-	$d = $_SESSION['alld'];
+	$d = $_SESSION['ald'];
 else
 	$d = $_GET['d'];
-$_SESSION['alld'] = $d;
+$_SESSION['ald'] = $d;
 
 if (isset($_SESSION['allp']) && !isset($_GET['page']))
 	$_GET['page'] = $_SESSION['allp'];
@@ -172,11 +172,11 @@ $page = (! $_GET['page'] ? 1 : $_GET['page']);
 $pagelimit = (! $LMS->CONFIG['phpui']['aliaslist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['aliaslist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$_SESSION['alp'] = $page;
+$_SESSION['allp'] = $page;
 
 $layout['pagetitle'] = 'Zarz±dzanie aliasami';
 
-$aliaslist = GetAliasList($o, $u, $t, $d);
+$aliaslist = GetAliasList($o, $u, $k, $d);
 $listdata['total'] = $aliaslist['total'];
 $listdata['order'] = $aliaslist['order'];
 $listdata['direction'] = $aliaslist['direction'];
