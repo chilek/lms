@@ -348,6 +348,14 @@ else
 		$reqadminid = $row->{'id'};
 	}
 
+	# find userid
+	$dbq = $dbase->prepare("SELECT id FROM users WHERE email = '$fromemail'");
+	$dbq->execute();
+	if(my $row = $dbq->fetchrow_hashref())
+	{
+		$reqcustid = $row->{'id'};
+	}
+
 	$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, userid, adminid, subject, messageid, replyto, headers, body, inreplyto, createtime) VALUES ($prev_tid, '$mh_from', $reqcustid, $reqadminid, '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody', $inreplytoid, $timestamp)");
 	$dbq->execute();
 	$dbq = $dbase->prepare("SELECT id FROM rtmessages WHERE ticketid = $prev_tid AND messageid = '$mh_msgid' AND createtime = $timestamp");
