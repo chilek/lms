@@ -6,7 +6,7 @@
 			<IMG SRC="img/node.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name|upper}" {tip trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name|upper}" {tip text="Wpisz nazwê komputera" trigger="name" bold=1}>
 			<B>({$nodeinfo.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
@@ -15,7 +15,7 @@
 			<IMG SRC="img/ip.gif" BORDER="0" ALT="Adres IP:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" {tip trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr);" {tip text="Wybierz adres IP z listy"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" {tip text="Wpisz lub wybierz z listy adres IP" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr);" {tip text="Wybierz adres IP z listy"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -23,7 +23,7 @@
 			<IMG SRC="img/mac.gif" BORDER="0" ALT="Adres MAC:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeeditmac" VALUE="{$nodeinfo.mac}" {tip trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.nodeeditmac);" {tip text="Wybierz adres MAC z listy"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="nodeeditmac" VALUE="{$nodeinfo.mac}" {tip text="Wpisz lub wybierz z listy adres MAC" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.nodeeditmac);" {tip text="Wybierz adres MAC z listy"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -52,7 +52,7 @@
 			<IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[access]">
+			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[access]" {tip text="Wybierz status komputera"}>
 				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>pod³±czony</OPTION>
 				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>od³±czony</OPTION>
 			</SELECT>
@@ -63,7 +63,7 @@
 			<IMG SRC="img/user.gif" BORDER="0" ALT="W³a¶ciciel:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[ownerid]">
+			<SELECT SIZE="1" NAME="nodeedit[ownerid]" {tip text="Przypisz komputer do u¿ytkownika"}>
 				{section name=users loop=$users}
 				<OPTION VALUE="{$users[users].id}"{if $nodeinfo.ownerid eq $users[users].id} SELECTED{/if}>{$users[users].username|truncate:30:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 				{/section}
