@@ -32,8 +32,9 @@ if(! $LMS->NetDevExists($_GET[id]))
 
 $edit = data;
 
-if($_GET[action]=="replace")
+switch($_GET[action])
 {
+case "replace":
 	$dev1 = $LMS->GetNetDev($_GET[id]);
 	$dev2 = $LMS->GetNetDev($_GET[netdev]);
 	if ($dev1[ports]<$dev2[takenports]) {
@@ -47,69 +48,55 @@ if($_GET[action]=="replace")
 	    header("Location: ?m=netdevinfo&id=".$_GET[id]);
 	    die;
 	}
-}
-
-if($_GET[action]=="disconnect")
-{
+	break;
+	
+case "disconnect":
 	$LMS->NetDevUnLink($_GET[id],$_GET[devid]);
 	header("Location: ?m=netdevinfo&id=".$_GET[id]);
 	die;
-}
 
-if($_GET[action]=="disconnectnode")
-{
+case "disconnectnode":
 	$LMS->NetDevLinkNode($_GET[nodeid],0);
 	header("Location: ?m=netdevinfo&id=".$_GET[id]);
 	die;
-}
 
-if($_GET[action]=="connect")
-{
+case "connect":
 	if(! $LMS->NetDevLink($_GET[netdev], $_GET[id]) )
 	{
 		$edit = FALSE;
 		$error[link] = "Brak wolnych portów w urz±dzeniu";
-	}
-	else
+	} else
 		header("Location: ?m=netdevinfo&id=".$_GET[id]);
-}
+	break;
     
-if($_GET[action]=="connectnode") 
-{
+case "connectnode":
 	if(! $LMS->NetDevLinkNode($_GET[nodeid], $_GET[id]) )
 	{
 		$error[linknode] = "Brak wolnych portów w urz±dzeniu";
 		$edit = FALSE;
-	}
-	else
+	} else
 		header("Location: ?m=netdevinfo&id=".$_GET[id]);
-}
+	break;
 
-// NetDevIp - Narazie tylko podstawa, pu¼niej sprawdzanie b³êdów i reszta
-
-if($_GET[action]=="addip")
-{
+// NetDevIp - Narazie tylko podstawa, pó¼niej sprawdzanie b³êdów i reszta
+case "addip":
 	$edit = 'addip';
-}
+	break;
 
-if($_GET[action]=="editip")
-{
+case "editip":
 	$nodeipdata=$LMS->GetNode($_GET[netdev]);
 	$SMARTY->assign("nodeipdata",$nodeipdata);
 	$edit = 'ip';
-}
+	break;
 
-if($_GET[action]=="formaddip")
-{
+case "formaddip":
 	$netdevipdata = $_POST['ipadd'];
 	$netdevipdata['ownerid']=0;
 	$LMS->NetDevLinkNode($LMS->NodeAdd($netdevipdata),$_GET[id]);
 	header("Location: ?m=netdevinfo&id=".$_GET[id]);
 	die;
-}
 
-if($_GET[action]=="formeditip")
-{
+case "formeditip":
 	$netdevipdata = $_POST['ipadd'];
 	$netdevipdata['ownerid']=0;
 	$netdevipdata['netdev']=$_GET[id];
@@ -151,7 +138,6 @@ unset($netdevlist[order]);
 unset($netdevlist[direction]);
 
 $nodelist = $LMS->GetUnlinkedNodes();
-
 unset($nodelist[totaloff]);
 unset($nodelist[totalon]);
 unset($nodelist[total]);
@@ -159,10 +145,11 @@ unset($nodelist[order]);
 unset($nodelist[direction]);
 
 $replacelist = $LMS->GetNetDevList();
-
 unset($replacelist[order]);
 unset($replacelist[total]);
 unset($replacelist[direction]);
+
+$netdevips = $LMS->GetNetDevIPs($_GET['id']);
 
 $layout[pagetitle]="Edycja urz±dzenia: ".$netdevdata[name]." ".$netdevdata[producer];
 
@@ -172,16 +159,23 @@ $SMARTY->assign("netdevinfo",$netdevdata);
 $SMARTY->assign("netdevlist",$netdevconnected);
 $SMARTY->assign("netcomplist",$netcomplist);
 $SMARTY->assign("nodelist",$nodelist);
+$SMARTY->assign("netdevips",$netdevips);
 $SMARTY->assign("restnetdevlist",$netdevlist);
 $SMARTY->assign("replacelist",$replacelist);
 
-if($edit == 'data')
+switch($edit)
+{
+    case 'data':
 	$SMARTY->display('netdevedit.html');
-else if($edit == 'ip')
+    break;
+    case 'ip':
 	$SMARTY->display('netdeveditip.html');
-else if($edit == 'addip')
+    break;
+    case 'addip':
 	$SMARTY->display('netdevaddip.html');
-else
+    break;
+    default:
 	$SMARTY->display('netdevinfo.html');
-
+    break;
+}
 ?>

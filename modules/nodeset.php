@@ -24,17 +24,24 @@
  *  $Id$
  */
 
-if($LMS->UserExists($_GET[ownerid]))
+if($LMS->UserExists($_GET['ownerid']))
 {
-	$LMS->NodeSetU($_GET[ownerid],$_GET[access]);
-	$backid = $_GET[ownerid];
+	$LMS->NodeSetU($_GET['ownerid'], $_GET['access']);
+	$backid = $_GET['ownerid'];
 }
 
-if($LMS->NodeExists($_GET[id]))
+if($LMS->NodeExists($_GET['id']))
 {
-	$LMS->NodeSet($_GET[id]);
-	$backid = $_GET[id];
+	$LMS->NodeSet($_GET['id']);
+	$backid = $_GET['id'];
 }
+
+if(isset($_GET['netdev']))
+	if($LMS->NetDevExists($_GET['netdev']))
+	{
+		$LMS->IPSetU($_GET['netdev'], $_GET['access']);
+		$backid = $_GET['netdev'];
+	}
 
 header("Location: ?".$_SESSION[backto]."#".$backid);
 
