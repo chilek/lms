@@ -1,6 +1,7 @@
 <?php
+
 /*
- * LMS version 1.3-cvs
+ * LMS version 1.5-cvs
  *
  *  (C) Copyright 2001-2003 LMS Developers
  *
@@ -182,12 +183,12 @@ require_once($_LIB_DIR.'/smarty_addons.php');
 
 $layout['logname'] = $SESSION->logname;
 $layout['logid'] = $SESSION->id;
-$layout['lmsv'] = '1.3-cvs ('.$LMS->_revision.'/'.$SESSION->_revision.')';
+$layout['lmsv'] = '1.5-cvs ('.$LMS->_revision.'/'.$SESSION->_revision.')';
 $layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['uptime'] = uptime();
 $layout['hostname'] = hostname();
-$layout['lmsvs'] = '1.3-cvs';
+$layout['lmsvs'] = '1.5-cvs';
 $layout['dberrors'] =& $DB->errors;
 
 $SMARTY->assign_by_ref('menu', $LMS->MENU);

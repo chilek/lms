@@ -1,11 +1,11 @@
 /*
 *************************************************************
-******* Upgrade bazy danych LMS z wersji 1.0 do 1.3 *********
+******* Upgrade bazy danych LMS z wersji 1.0 do 1.5 *********
 *************************************************************
 Zaleca siê wcze¶niejszy backup bazy:
 	$ pg_dump lms > db.out
 Sposób u¿ycia:
-	$ psql -U lms -d lms -f UPGRADE-1.0-1.3.pgsql
+	$ psql -U lms -d lms -f UPGRADE-1.0-1.5.pgsql
 Po tej operacji uruchom LMS i wystartuj modu³ '?m=upgrade01'
 Dopiero na koñcu mo¿na usun±æ niepotrzebne rzeczy:
 	$ psql -U lms -d lms -c ALTER TABLE users DROP tariff; 

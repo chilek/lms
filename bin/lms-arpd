@@ -1,6 +1,6 @@
 #!/usr/bin/perl -Tw
 #
-# LMS version 1.3-cvs
+# LMS version 1.5-cvs
 #
 #  (C) 2001-2004 LMS Developers
 #
@@ -29,7 +29,7 @@ use strict;
 use Getopt::Long;
 use vars qw(@ISA $help $version);
 use Net::Server::PreFork;
-my $_version = '1.3-cvs';
+my $_version = '1.5-cvs';
 
 @ISA = qw(Net::Server::PreFork);  
 lms_arpd->run();

@@ -1,7 +1,7 @@
  /******************************************************************
  *	              A.L.E.C's LMS Daemon
  *******************************************************************
- *  LMS version 1.3-cvs
+ *  LMS version 1.5-cvs
  *
  *  (C) Copyright 2001-2004 LMS Developers
  *
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
                 	break;
 		case 'h':
         	default:
-			printf("A.L.E.C's LMS Daemon v.1.3-cvs. Command line options:\n");
+			printf("A.L.E.C's LMS Daemon v.1.5-cvs. Command line options:\n");
 			printf(" -c \tpath to config file (default: /etc/lms/lms.ini)\n");
                 	printf(" -i \tlist of instances to reload\n");
 			printf(" -b \tfork in background\n");
