@@ -38,6 +38,11 @@ class LMSDB_driver_mysql extends LMSDB_common
 		$this->_version .= ' (core: '.eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->_revision).' / driver: '.$this->_dbtype.' '.eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$').')';
 		$this->Connect($dbhost,$dbuser,$dbpasswd,$dbname);
 	}
+	
+	function _driver_dbversion()
+	{
+		return mysql_get_server_info();
+	}
 
 	function _driver_connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
