@@ -49,23 +49,6 @@ switch($_GET['bar'])
 	break;
 
 	default: // set filter window
-		$now[rok]   = date("Y");
-		$now[mies]  = date("n");
-		$now[dzien] = date("j");
-		$now[godz]  = date("H");
-		$now[min]   = date("i");
-		for($x=1990; $x<=$now[rok]; $x++)
-			$data[year][]=$x;
-		for($x=1; $x<=12; $x++)
-			$data[month][]=$x;
-		for($x=1; $x<=31; $x++)
-			$data[day][]=$x;
-		for($x=0; $x<=23; $x++)
-			$data[hour][] = $x;
-		for($x=0; $x<=59; $x++)
-			$data[minute][] = $x;
-		$SMARTY->assign("data",$data);
-		$SMARTY->assign("now",$now);
 		$SMARTY->assign("netlist",$LMS->GetNetworks());
 		$SMARTY->assign("nodelist",$LMS->GetNodeList());
 		$bars = 0;
@@ -75,8 +58,19 @@ switch($_GET['bar'])
 $download = $traffic[download];
 $upload = $traffic[upload];
 
+// fuck this anyway... Maybe i write function in LMS:: for this, but not now
+
+$starttime = $DB->GetOne("SELECT MIN(dt) FROM stats");
+$endtime = $DB->GetOne("SELECT MAX(dt) FROM stats");
+$startyear = date('Y',$starttime);
+$endyear = date('Y',$endtime);
+
 unset($traffic);
 
+$SMARTY->assign("starttime",$starttime);
+$SMARTY->assign("startyear",$startyear);
+$SMARTY->assign("endtime",$endtime);
+$SMARTY->assign("endyear",$endyear);
 $SMARTY->assign("showips",$_POST['showips']);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("download",$download);
