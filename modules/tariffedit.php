@@ -52,7 +52,7 @@ if(isset($tariff))
 
 	if($tariff['value'] == "")
 		$error['value'] = "Proszê podaæ warto¶æ!";
-	elseif(!(ereg("^[0-9.,]+$", $tariff['value'])))
+	elseif(!(ereg("^[-]?[0-9.,]+$", $tariff['value'])))
 		$error['value'] = "Podana warto¶æ jest niepoprawna!";
 	
 	if($tariff['taxvalue'] == "")

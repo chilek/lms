@@ -42,7 +42,7 @@ if(isset($tariffadd))
 	if(!(ereg("^[-]?[0-9.,]+$",$tariffadd['value'])))
 		$error['value'] = "Podana warto¶æ taryfy jest niepoprawna!";
 
-	if(!(ereg("^[-]?[0-9.,]+$",$tariffadd['taxvalue'])) || $tariffadd['taxvalue'] < 0 || $tariffadd['taxvalue'] > 100)
+	if(!(ereg("^[0-9.,]+$",$tariffadd['taxvalue'])) || $tariffadd['taxvalue'] < 0 || $tariffadd['taxvalue'] > 100)
 		$error['taxvalue'] = "Podana stawka podatku jest niepoprawna!";
 
 	if(!(ereg("^[0-9]+$", $tariffadd['uprate'])) && $tariffadd['uprate'] != "")
