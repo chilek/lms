@@ -8,7 +8,7 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD ALIGN="CENTER" COLSPAN="2" CLASS="FALL">
-						<IMG SRC="img/logo-ico.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>Informacje o LMS:</B>
+						<IMG SRC="img/logo-ico.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>{t}About LMS:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
@@ -66,12 +66,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD HEIGHT="24" ALIGN="CENTER" COLSPAN="2" CLASS="FALL" NOWRAP>
-						<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>Informacje o systemie:</B>
+						<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle"> <B>{t}About system:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Nazwa hosta:</B>
+						<B>{t}Hostname:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.hostname}
@@ -79,7 +79,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Wersja systemu:</B>
+						<B>{t}System version:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.kernel}
@@ -87,7 +87,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Uptime:</B>
+						<B>{t}Uptime:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.uptime}
@@ -95,7 +95,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Zalogowanych u¿ytkowników:</B>
+						<B>{t}Users logged in:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$sysinfo.users}
@@ -103,7 +103,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FBL">
-						<B>Obci±¿enie:</B>
+						<B>{t}Load:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FBR">
 						{$sysinfo.loadavg.0} {$sysinfo.loadavg.1} {$sysinfo.loadavg.2}
@@ -117,12 +117,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/user.gif" ALIGN="ABSMIDDLE"> <B>U¿ytkownicy:</B>
+						<IMG SRC="img/user.gif" ALIGN="ABSMIDDLE"> <B>{t}Customers:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=3">Pod³±czeni:</A></B>
+						<B><A HREF="?m=userlist&s=3">{t}Connected:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$userstats.connected}
@@ -130,7 +130,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=2">Oczekuj±cy na pod³±czenie:</A></B>
+						<B><A HREF="?m=userlist&s=2">{t}Awaiting for connection:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$userstats.awaiting}
@@ -138,7 +138,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A HREF="?m=userlist&s=1">Zainteresowani pod³±czeniem:</A></B>
+						<B><A HREF="?m=userlist&s=1">{t}Intrested in connection:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$userstats.interested}
@@ -146,8 +146,8 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="?m=userlist&s=0">Razem:</A><BR>
-						<A HREF="?m=userlist&s=6">W tym zad³u¿onych:</A></B>
+						<B><A HREF="?m=userlist&s=0">{t}Total:{/t}</A><BR>
+						<A HREF="?m=userlist&s=6">{t}In debt:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$userstats.total}<BR>
@@ -160,12 +160,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/node.gif" ALIGN="ABSMIDDLE"> <B>Komputery</B>
+						<IMG SRC="img/node.gif" ALIGN="ABSMIDDLE"> <B>{t}Nodes:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B>On-line:</B>
+						<B>{t}Online:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$nodestats.online}
@@ -173,7 +173,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Pod³±czone:</B>
+						<B>{t}Connected:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$nodestats.connected}
@@ -181,7 +181,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B>Od³±czone:</B>
+						<B>{t}Disconnected:{/t}</B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$nodestats.disconnected}
@@ -189,7 +189,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A HREF="?m=nodelist">Razem:</A></B>
+						<B><A HREF="?m=nodelist">{t}Total{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{$nodestats.total}
@@ -203,12 +203,12 @@
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/ticket.gif" ALIGN="ABSMIDDLE"> <B>Zg³oszenia Helpdesk:</B>
+						<IMG SRC="img/ticket.gif" ALIGN="ABSMIDDLE"> <B>{t}Helpdesk:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A href="?m=rtsearch&state=0">Nowe:</A></B>
+						<B><A href="?m=rtsearch&state=0">{t}New:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$rtstats.new|default:"0"}
@@ -216,7 +216,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A href="?m=rtsearch&state=1">Otwarte:</A></B>
+						<B><A href="?m=rtsearch&state=1">{t}Open:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$rtstats.opened|default:"0"}
@@ -224,7 +224,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A href="?m=rtsearch&state=3">Martwe:</A></B>
+						<B><A href="?m=rtsearch&state=3">{t}Dead:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$rtstats.dead|default:"0"}
@@ -232,7 +232,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
-						<B><A href="?m=rtsearch&state=2">Rozwi±zane:</A></B>
+						<B><A href="?m=rtsearch&state=2">{t}Resolved:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHT">
 						{$rtstats.resolved|default:"0"}
@@ -240,7 +240,7 @@
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
-						<B><A href="?m=rtqueuelist">Razem:</A></B>
+						<B><A href="?m=rtqueuelist">{t}Total:{/t}</A></B>
 					</TD>
 					<TD WIDTH="50%" CLASS="FRIGHTU">
 						{math equation="a+b+c+d" a=$rtstats.opened b=$rtstats.new c=$rtstats.dead d=$rtstats.resolved}
@@ -252,17 +252,17 @@
 		    <TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
 					<TD ALIGN="CENTER" CLASS="FALL">
-						<IMG SRC="img/tip.gif" ALIGN="ABSMIDDLE"> <B>Przydatne linki</B>
+						<IMG SRC="img/tip.gif" ALIGN="ABSMIDDLE"> <B>{t}Useful links:{/t}</B>
 					</TD>
 				</TR>
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL" ALIGN="CENTER">
-						<B><A HREF="http://lms.rulez.pl" TARGET="_BLANK">Strona domowa LMS</A><BR>
-							<A HREF="doc/html/" TARGET="_BLANK">Dokumentacja on-line</A><BR>
-							<A HREF="doc/ChangeLog" TARGET="_BLANK">ChangeLog</A><BR>
-							<A HREF="http://lists.rulez.pl/lms/" TARGET="_BLANK">Archiwum listy mailingowej</A><BR>
-							<A HREF="http://cvs.rulez.pl" TARGET="_BLANK">Repozytorium CVS</A><BR>
-							<A HREF="http://bts.rulez.pl" TARGET="_BLANK">Bug Tracking System</A>
+						<B><A HREF="http://lms.rulez.pl" TARGET="_BLANK">{t}LMS Project Homepage{/t}</A><BR>
+							<A HREF="doc/html/" TARGET="_BLANK">{t}Online documentation{/t}</A><BR>
+							<A HREF="doc/ChangeLog" TARGET="_BLANK">{t}ChangeLog{/t}</A><BR>
+							<A HREF="http://lists.rulez.pl/lms/" TARGET="_BLANK">{t}Mailing list archive{/t}</A><BR>
+							<A HREF="http://cvs.rulez.pl" TARGET="_BLANK">{t}CVS Repository{/t}</A><BR>
+							<A HREF="http://bts.rulez.pl" TARGET="_BLANK">{t}Bug Tracking System{/t}</A>
 						</B>
 					</TD>
 				</TR>
