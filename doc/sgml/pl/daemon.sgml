@@ -320,7 +320,7 @@ info = "Opcjonalny opis modu³u"
 			<listitem>
 			    <para>command</para>
 			    <para>Polecenie pow³oki wysy³aj±ce e-maila. '%address' zostanie zast±pione
-			    adresem e-mail klienta. Domy¶lnie: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</para>
+			    adresem e-mail klienta. Domy¶lnie: 'mail -s "Liabilities Information" %address &lt; /tmp/mail'.</para>
 			    <para>Przyk³ad: <prompt>command = 'mail %address -s "musisz zap³aciæ, bo jak nie..." &lt; /tmp/mail.txt'</prompt></para>
 			</listitem>		
 			<listitem>

@@ -37,6 +37,9 @@ version 1.5.5 (??/??/????):
   - database speedup - added indexes: nodes/netdev, rttickets/queueid, cash/time,
     invoices/cdate, invoicecontents/invoiceid, cashimport/hash (alec)
   - invoicenew.php, invoiceedit.php: bypassed sessions bug in PHP-4.3.10 (alec)
+  - almsd/notify: changed contents of 'command' option and removed header with
+    column names in last_10_in_a_table (alec)
+  - almsd/tc: fixed uninitialized variable warning (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 

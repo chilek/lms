@@ -318,8 +318,8 @@ info = "Additional description of module"
                <listitem>
                    <para>command</para>
                    <para>Shell command for e-maila sending. '%address' will be replaced
-                   by customer e-mail address. Default: 'mail %address -s "Inf. o zaleg³o¶ciach w op³atach" &lt; /tmp/mail'.</para>
-                   <para>Example: <prompt>command = 'mail %address -s "You must pay or ..." &lt; /tmp/mail.txt'</prompt></para>
+                   by customer e-mail address. Default: 'mail -s "Liabilities Information" %address &lt; /tmp/mail'.</para>
+                   <para>Example: <prompt>command = 'mail -s "You must pay or ..." $address &lt; /tmp/mail.txt'</prompt></para>
                </listitem>          
                <listitem>
                    <para>limit</para>

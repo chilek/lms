@@ -101,71 +101,67 @@ void reload(GLOBAL *g, struct notify_module *n)
 	unsigned char *command;
 	int i, j, balance;
 
-	if ( (res = g->db_query("SELECT users.id AS id, email, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id, name, lastname, email"))!=NULL ) {
+	if ( (res = g->db_query("SELECT users.id AS id, email, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 AND email!='' GROUP BY users.id, name, lastname, email"))!=NULL ) {
 	
-		for(i=0; i<res->nrows; i++) {
-			if( strlen(g->db_get_data(res,i,"email")) > 0 ) {
-				balance = atoi(g->db_get_data(res,i,"balance"));
+		for(i=0; i<res->nrows; i++) 
+		{
+			balance = atoi(g->db_get_data(res,i,"balance"));
 			
-				if( balance < n->limit ) {
+			if( balance < n->limit ) 
+			{
 			
-					command = strdup(n->command);
-					mailfile = load_file(n->mailtemplate);
-				
-					if( mailfile ) {
+				command = strdup(n->command);
+				mailfile = load_file(n->mailtemplate);
+			
+				if( mailfile ) 
+				{
+					if( strstr(mailfile, "%last_10_in_a_table") ) {
 						
-						if( strstr(mailfile, "%last_10_in_a_table") ) {
-						
-							unsigned char *select, *date, *value, *comment, *last_ten, *temp, *temp2;
-					
-							select = strdup("SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value FROM cash WHERE userid = %id ORDER BY time DESC LIMIT 10");
-							g->str_replace(&select, "%id", g->db_get_data(res,i,"id"));
-						
-							if( (result = g->db_query(select))!=NULL ) {
+						unsigned char *select, *date, *value, *comment, *temp, *temp2;
+						unsigned char *last_ten = strdup("");
 							
-								if( result->nrows )
-									last_ten = strdup("Data\t\t | Warto¶æ\t | Opis\n");
-								
-								for(j=0; j<result->nrows; j++) {
-								
-									date = utoc(atof(g->db_get_data(result,j,"time")));
-									value = g->db_get_data(result,j,"value");
-									comment = g->db_get_data(result,j,"comment");
-								
-									temp = (unsigned char *) malloc(strlen(date)+strlen(value)+strlen(comment)+12);	
-									sprintf(temp, "%s\t | %s\t\t | %s\n", date, value, comment);
-								
-									temp2 = g->str_concat(last_ten, temp);
-									free(last_ten);
-									last_ten = strdup(temp2);
-									free(temp2);
-									free(temp);
-									free(date);
-								}
+						select = strdup("SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value FROM cash WHERE userid = %id ORDER BY time DESC LIMIT 10");
+						g->str_replace(&select, "%id", g->db_get_data(res,i,"id"));
+						
+						if( (result = g->db_query(select))!=NULL ) 
+						{
+							for(j=0; j<result->nrows; j++) 
+							{
+								date = utoc(atof(g->db_get_data(result,j,"time")));
+								value = g->db_get_data(result,j,"value");
+								comment = g->db_get_data(result,j,"comment");
 							
-								g->db_free(result);
+								temp = (unsigned char *) malloc(strlen(date)+strlen(value)+strlen(comment)+12);	
+								sprintf(temp, "%s\t | %s\t\t | %s\n", date, value, comment);
+							
+								temp2 = g->str_concat(last_ten, temp);
+								free(last_ten);
+								last_ten = strdup(temp2);
+								free(temp2);
+								free(temp);
+								free(date);
 							}
-							g->str_replace(&mailfile, "%last_10_in_a_table", last_ten);
-							free(last_ten);
-							free(select);
+															g->db_free(result);
 						}
-						g->str_replace(&mailfile, "%saldo", g->db_get_data(res,i,"balance"));
-						g->str_replace(&mailfile, "%name", g->db_get_data(res,i,"name"));
-						g->str_replace(&mailfile, "%lastname", g->db_get_data(res,i,"lastname"));
-					
-						if( write_file(n->file, mailfile) < 0 )
-							syslog(LOG_ERR, "[%s/notify] Unable to write temporary file '%s' for message", n->base.instance, n->file);
-						free(mailfile);
-					
-						if( strlen(n->debugmail) < 1 )
-							g->str_replace(&command, "%address", g->db_get_data(res,i,"email"));
-						else
-							g->str_replace(&command, "%address", n->debugmail);
-
-						system(command); 
+						g->str_replace(&mailfile, "%last_10_in_a_table", last_ten);
+						free(last_ten);
+						free(select);
 					}
-					free(command);
+					g->str_replace(&mailfile, "%saldo", g->db_get_data(res,i,"balance"));
+					g->str_replace(&mailfile, "%name", g->db_get_data(res,i,"name"));
+					g->str_replace(&mailfile, "%lastname", g->db_get_data(res,i,"lastname"));
+				
+					if( write_file(n->file, mailfile) < 0 )
+						syslog(LOG_ERR, "[%s/notify] Unable to write temporary file '%s' for message", n->base.instance, n->file);
+					free(mailfile);
+				
+					if( strlen(n->debugmail) < 1 )
+						g->str_replace(&command, "%address", g->db_get_data(res,i,"email"));
+					else
+						g->str_replace(&command, "%address", n->debugmail);
+					system(command); 
 				}
+				free(command);
 			}
 		}
 		g->db_free(res);
@@ -205,7 +201,7 @@ struct notify_module * init(GLOBAL *g, MODULE *m)
 	free(s); s = g->str_concat(instance, ":file");
 	n->file = strdup(g->iniparser_getstring(ini, s, "/tmp/mail"));
 	free(s); s = g->str_concat(instance, ":command");
-	n->command = strdup(g->iniparser_getstring(ini, s, "mail %address -s \"Inf. o zaleg³o¶ciach w op³atach za Internet\" -a \"Content-Type: text/plain; charset=iso-8859-2\" < /tmp/mail"));
+	n->command = strdup(g->iniparser_getstring(ini, s, "mail -s \"Liabilities information\" %address < /tmp/mail"));
 	free(s); s = g->str_concat(instance, ":limit");
 	n->limit = g->iniparser_getint(ini, s, 0);
 	free(s); s = g->str_concat(instance, ":debug_mail");
