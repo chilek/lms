@@ -217,6 +217,14 @@ CREATE TABLE assignments (
    PRIMARY KEY (id)
 );
 
+/* Informacje o bazie */
+CREATE TABLE dbinfo (
+    keytype VARCHAR(255) DEFAULT '' NOT NULL,
+    keyvalue VARCHAR(255) DEFAULT '' NOT NULL,
+    PRIMARY KEY (keytype)
+);
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004030400');		  
+
 /* Chyba o niczym nie zapomnia³em? */
 COMMIT;
 

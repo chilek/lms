@@ -275,3 +275,15 @@ SELECT
      split_part($1,''.'',3)::int8*256+
      split_part($1,''.'',4)::int8;
 ' LANGUAGE SQL;
+
+/* ---------------------------------------------------
+    Database info table
+------------------------------------------------------*/
+
+CREATE TABLE dbinfo (
+    keytype varchar(255) DEFAULT '' NOT NULL,
+    keyvalue varchar(255) DEFAULT '' NOT NULL,
+    PRIMARY KEY (keytype)
+);
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004030400');		  
+  
