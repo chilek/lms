@@ -32,7 +32,25 @@ case "$1" in
 	fi
 	exit 0
     ;;
-    
+
+    'all')	####### sgml -> html & txt #################
+        jade -t sgml -d lms.dsl index.sgml
+	if [ $? -ne 0 ]
+	    then exit 1
+	fi
+	mv ./*.html ../html/
+
+	jade -t sgml -V nochunks -d lms.dsl index.sgml > ../README.html
+	if [ $? -ne 0 ]
+	    then exit 1
+	fi
+	lynx -dump ../README.html -display_charset=ISO-8859-2 -raw -nolist -dont_wrap_pre > ../README
+        if [ $? -ne 0 ]
+	    then
+	    exit 2
+	fi
+    ;;
+        
     *)
 	echo -e "$0: Brak parametru.\nSposób u¿ycia: docgen.sh html|txt"
     ;;
