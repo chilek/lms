@@ -500,6 +500,13 @@ database = /usr/local/lms/lms.db</screen>
     przypisywania zobowi±zañ u¿ytkownikom. Domy¶lnie wy³±czone.</para>
     <para>Przyk³ad:	<prompt>use_current_payday = 1</prompt></para>
    </listitem>
+   <listitem>
+    <para>arpd_servers</para>
+    <para>Lista serwerów arpd do zczytywania MAC'adresów z odleg³ych sieci.
+    Lista ta powinna zawieraæ wpisy w postaci adresIP[:port] oddzielone
+    spacjami. Domy¶lnie pusta.</para>
+    <para>Przyk³ad:	<prompt>arpd_servers = 192.168.1.1 192.168.2.1</prompt></para>
+   </listitem>
   </itemizedlist>
  	</sect2> 
     </sect1>
