@@ -162,6 +162,57 @@ switch($_GET['type'])
 				}
 				$SMARTY->assign('nodelist', $nnodelist);
 			break;
+			case 3:
+				$layout['pagetitle'] = trans('In Debt Customer\'s Nodes List');
+
+				$order=$_POST['order'].','.$_POST['direction'];
+				if($order=='')
+					$order='name,asc';
+
+				list($order,$direction) = explode(',',$order);
+
+				($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+
+				switch($order)
+				{
+					case 'name':
+						$sqlord = ' ORDER BY nodes.name';
+					break;
+					case 'id':
+						$sqlord = ' ORDER BY id';
+					break;
+					case 'mac':
+						$sqlord = ' ORDER BY mac';
+					break;
+				    	case 'ip':
+						$sqlord = ' ORDER BY ipaddr';
+					break;
+					case 'ownerid':
+						$sqlord = ' ORDER BY ownerid';
+					break;
+				    	case 'owner':
+						$sqlord = ' ORDER BY owner';
+					break;
+				}
+
+				if($nodelist = $LMS->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, 
+					    ownerid, access, warning, netdev, nodes.info AS info, '
+					    .$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, 
+					    COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance
+					    FROM nodes LEFT JOIN users ON (ownerid = users.id)
+					    LEFT JOIN cash ON (cash.userid = users.id)
+					    GROUP BY nodes.id, ipaddr, mac, nodes.name, ownerid, access, warning, netdev, nodes.info, users.lastname, users.name
+					    HAVING SUM((type * -2 + 7) * value) < 0'
+					    .($sqlord != '' ? $sqlord.' '.$direction : '')))
+				{
+					foreach($nodelist as $idx => $row)
+					{
+						($row['access']) ? $totalon++ : $totaloff++;
+					}
+				}
+				
+				$SMARTY->assign('nodelist', $nodelist);
+			break;
 		}	
 		$SMARTY->display('printnodelist.html');
 	break;
