@@ -90,7 +90,6 @@ static QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
 #ifdef USE_MYSQL
     MYSQL_ROW row;
     MYSQL_FIELD *field;
-    enum enum_field_types dtype;
 
     query = (QUERY_HANDLE *) malloc(sizeof(QUERY_HANDLE));
     //query->handle = result; //we need this?
@@ -352,11 +351,12 @@ QUERY_HANDLE * db_query(unsigned char *q)
 	free(stmt);
 	return NULL;
     }
-    if( mysql_num_rows(res) == 0 ) {  // empty result
+/*    if( mysql_num_rows(res) == 0 ) {  // empty result?
 	free(stmt);
 	mysql_free_result(res);
 	return NULL;
     }
+*/
     query = get_query_result(res);
     mysql_free_result(res);
 #endif
