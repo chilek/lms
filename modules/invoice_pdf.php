@@ -262,7 +262,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     for ($i = 1; $i <= 10; $i++) $t_justify[$i]="left";
     for ($i = 1; $i <= 10; $i++) $t_width[$i]=$pdf->getTextWidth($font_size,$t_data[$i])+2*$margin+1;
     // tutaj jeszcze trzeba bêdzie sprawdziæ jak± szeroko¶æ maj± pola w tabelce pu¼niej
-    foreach ($invoice['content'] as $item) {
+    if ($invoice['content']) foreach ($invoice['content'] as $item) {
 	$tt_width[2] = $pdf->getTextWidth($font_size,$item['description']);
 	$tt_width[3] = $pdf->getTextWidth($font_size,$item['pkwiu']);
 	$tt_width[4] = $pdf->getTextWidth($font_size,$item['content']);
@@ -279,7 +279,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     $y = invoice_data_row($x,$y,$width,$font_size,$margin,$t_data,$t_width,$t_justify);
     $t_justify[10] = $t_justify[9] = $t_justify[8] = $t_justify[7] = $t_justify[6] = $t_justify[5] = "right";
     $lp = 1;
-    foreach ($invoice['content'] as $item) {
+    if ($invoice['content']) foreach ($invoice['content'] as $item) {
 	$t_data[1] = $lp;
 	$t_data[2] = $item['description'];
 	$t_data[3] = $item['pkwiu'];
@@ -318,7 +318,7 @@ function invoice_data($x,$y,$width,$font_size,$margin)
     text_align_right($x-$margin,$fy,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('in it:')).'</b>');
     $pdf->line($x,$y,$x+$t_width[7]+$t_width[8]+$t_width[9]+$t_width[10]+8*$margin,$y);
     
-    foreach ($invoice['taxest'] as $item) 
+    if ($invoice['taxest']) foreach ($invoice['taxest'] as $item) 
     {
 	$t_data[7] = iconv("UTF-8","ISO-8859-2",moneyf($item['base']));
 	$t_data[8] = $item['taxvalue']." %";
