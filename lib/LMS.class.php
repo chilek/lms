@@ -86,8 +86,7 @@ class LMS
 		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 10);
 		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 15);
 		$this->AddMenu('Osprzêt sieciowy', 'netdev.gif', '?m=netdevlist', 'Ewidencja sprzêtu sieciowego', 'o', 20);
-		$this->AddMenu('Sieci IP', '
-		network.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 's', 25);
+		$this->AddMenu('Sieci IP', 'network.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 's', 25);
 		$this->AddMenu('Taryfy i finanse', 'money.gif', '?m=tarifflist', 'Zarz±dzanie taryfami oraz finansami sieci', 't', 30);
 		$this->AddMenu('Mailing', 'mail.gif', '?m=mailing', 'Korespondencja seryjna', 'm', 35);
 		$this->AddMenu('Prze³adowanie', 'reload.gif', '?m=reload', '', 'r', 40);
@@ -2089,27 +2088,27 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function NetDevExists($id)
 	{
-		return ($this->DB->GetOne("SELECT * FROM netdevices WHERE id=?", array($id)) ? TRUE : FALSE);
+		return ($this->DB->GetOne('SELECT * FROM netdevices WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
 	function GetNetDevName($id)
 	{
-		return $this->DB->GetRow("SELECT name, model, location FROM netdevices WHERE id=?", array($id));
+		return $this->DB->GetRow('SELECT name, model, location FROM netdevices WHERE id=?', array($id));
 	}
 
 	function GetNetDevIDByNode($id)
 	{
-		return $this->DB->GetOne("SELECT netdev FROM nodes WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT netdev FROM nodes WHERE id=?', array($id));
 	}
 
 	function CountNetDevLinks($id)
 	{
-		return $this->DB->GetOne("SELECT COUNT(*) FROM netlinks WHERE src = ? OR dst = ?", array($id,$id)) + $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE netdev = ? AND ownerid > 0", array($id));
+		return $this->DB->GetOne('SELECT COUNT(*) FROM netlinks WHERE src = ? OR dst = ?', array($id,$id)) + $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE netdev = ? AND ownerid > 0", array($id));
 	}
 
 	function GetNetDevConnected($id)
 	{
-		return $this->DB->GetAll("SELECT (CASE src WHEN ".$id." THEN src ELSE dst END) AS src, (CASE src WHEN ".$id." THEN dst ELSE src END) AS dst FROM netlinks WHERE src = ".$id." OR dst = ".$id);
+		return $this->DB->GetAll('SELECT (CASE src WHEN '.$id.' THEN src ELSE dst END) AS src, (CASE src WHEN '.$id.' THEN dst ELSE src END) AS dst FROM netlinks WHERE src = '.$id.' OR dst = '.$id);
 	}
 
 	function GetNetDevConnectedNames($id)
@@ -2128,50 +2127,44 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $names;
 	}
 
-	function GetNetDevList($order="name,asc")
+	function GetNetDevList($order='name,asc')
 	{
-		list($order,$direction) = explode(",",$order);
+		list($order,$direction) = explode(',',$order);
 
-		($direction=="desc") ? $direction = "desc" : $direction = "asc";
+		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
 		switch($order)
 		{
-			case "name":
-				$sqlord = " ORDER BY name";
+			case 'name':
+				$sqlord = ' ORDER BY name';
 			break;
-
-			case "id":
-				$sqlord = " ORDER BY id";
+			case 'id':
+				$sqlord = ' ORDER BY id';
 			break;
-
-			case "producer":
-				$sqlord = " ORDER BY producer";
+			case 'producer':
+				$sqlord = ' ORDER BY producer';
 			break;
-
-			case "model":
-				$sqlord = " ORDER BY model";
+			case 'model':
+				$sqlord = ' ORDER BY model';
 			break;
-
-			case "ports":
-				$sqlord = " ORDER BY ports";
+			case 'ports':
+				$sqlord = ' ORDER BY ports';
 			break;
-
-			case "serialnumber":
-				$sqlord = " ORDER BY serialnumber";
+			case 'serialnumber':
+				$sqlord = ' ORDER BY serialnumber';
 			break;
-
-			case "location":
-				$sqlord = " ORDER BY location";
+			case 'location':
+				$sqlord = ' ORDER BY location';
 			break;
 		}
 
-		if($netdevlist = $this->DB->GetAll("SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices ".($sqlord != "" ? $sqlord." ".$direction : "")))
+		if($netdevlist = $this->DB->GetAll('SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices '.($sqlord != '' ? $sqlord.' '.$direction : '')))
 			foreach($netdevlist as $idx => $row)
 				$netdevlist[$idx]['takenports'] = $this->CountNetDevLinks($row['id']);
 
 		switch($order)
 		{
-			case "takenports":
+			case 'takenports':
 				foreach($netdevlist as $idx => $row)					
 				{
 					$tptable['idx'][] = $idx;
@@ -2192,23 +2185,23 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetNotConnectedDevices($id)
 	{
-		$query = "SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id!=".$id;
+		$query = 'SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id!='.$id;
 		if ($lista = $this->GetNetDevConnected($id))
 			foreach($lista as $row)
-				$query = $query." and id!=".$row['dst'];
-		return $this->DB->GetAll($query." ORDER BY name");
+				$query = $query.' and id!='.$row['dst'];
+		return $this->DB->GetAll($query.' ORDER BY name');
 	}
 
 	function GetNetDev($id)
 	{
-		$result = $this->DB->GetRow("SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?", array($id));
+		$result = $this->DB->GetRow('SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?', array($id));
 		$result['takenports'] = $this->CountNetDevLinks($id);
 		return $result;
 	}
 
 	function NetDevDelLinks($id)
 	{
-		return $this->DB->Execute("DELETE FROM netlinks WHERE src=? OR dst=?", array($id,$id));
+		return $this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id,$id));
 		$nodes = GetNetdevLinkedNodes($id);
 		if ($nodes) foreach($nodes as $node) {
 			$this->NetDevLinkNode($node['id'],0);
@@ -2246,32 +2239,32 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function DeleteNetDev($id)
 	{
-		$this->DB->Execute("DELETE FROM netlinks WHERE src=? OR dst=?", array($id));
-		$this->DB->Execute("UPDATE nodes SET netdev=0 WHERE netdev=?", array($id));
+		$this->DB->Execute('DELETE FROM netlinks WHERE src=? OR dst=?', array($id));
+		$this->DB->Execute('UPDATE nodes SET netdev=0 WHERE netdev=?', array($id));
 		$this->SetTS('nodes');
 		$this->SetTS('netlinks');
 		$this->SetTS('netdevices');
-		return $this->DB->Execute("DELETE FROM netdevices WHERE id=?", array($id));
+		return $this->DB->Execute('DELETE FROM netdevices WHERE id=?', array($id));
 	}
 
 	function NetDevAdd($netdevdata)
 	{
-		$this->SetTS("netdevices");
-		if($this->DB->Execute("INSERT INTO netdevices (name, location, description, producer, model, serialnumber, ports) VALUES (?, ?, ?, ?, ?, ?, ?)", array($netdevdata['name'],$netdevdata['location'],$netdevdata['description'],$netdevdata['producer'],$netdevdata['model'],$netdevdata['serialnumber'],$netdevdata['ports'])))
-			return $this->DB->GetOne("SELECT MAX(id) FROM netdevices");
+		$this->SetTS('netdevices');
+		if($this->DB->Execute('INSERT INTO netdevices (name, location, description, producer, model, serialnumber, ports) VALUES (?, ?, ?, ?, ?, ?, ?)', array($netdevdata['name'],$netdevdata['location'],$netdevdata['description'],$netdevdata['producer'],$netdevdata['model'],$netdevdata['serialnumber'],$netdevdata['ports'])))
+			return $this->DB->GetOne('SELECT MAX(id) FROM netdevices');
 		else
 			return FALSE;
 	}
 
 	function NetDevUpdate($netdevdata)
 	{
-		$this->SetTS("netdevices");
-		$this->DB->Execute("UPDATE netdevices SET name=?, location=?, description=?, producer=?, model=?, serialnumber=?, ports=? WHERE id=?", array( $netdevdata['name'], $netdevdata['location'], $netdevdata['description'], $netdevdata['producer'], $netdevdata['model'], $netdevdata['serialnumber'], $netdevdata['ports'], $netdevdata['id'] ) );
+		$this->SetTS('netdevices');
+		$this->DB->Execute('UPDATE netdevices SET name=?, location=?, description=?, producer=?, model=?, serialnumber=?, ports=? WHERE id=?', array( $netdevdata['name'], $netdevdata['location'], $netdevdata['description'], $netdevdata['producer'], $netdevdata['model'], $netdevdata['serialnumber'], $netdevdata['ports'], $netdevdata['id'] ) );
 	}
 
 	function IsNetDevLink($dev1, $dev2)
 	{
-		return $this->DB->GetOne("SELECT COUNT(id) FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)", array($dev1, $dev2, $dev1, $dev2));
+		return $this->DB->GetOne('SELECT COUNT(id) FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	} 
 
 	function NetDevLink($dev1, $dev2)
@@ -2287,33 +2280,33 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			if( $netdev1['takenports'] >= $netdev1['ports'] || $netdev2['takenports'] >= $netdev2['ports'])
 				return FALSE;
 			
-			$this->DB->Execute("INSERT INTO netlinks (src, dst) VALUES ($dev1, $dev2)"); 
-			$this->SetTS("netlinks");
+			$this->DB->Execute('INSERT INTO netlinks (src, dst) VALUES (?, ?)', array($dev1, $dev2)); 
+			$this->SetTS('netlinks');
 		}
 		return TRUE;
 	}	
 	
 	function NetDevUnLink($dev1, $dev2)
 	{
-		$this->SetTS("netlinks");
-		$this->DB->Execute("DELETE FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)", array($dev1, $dev2, $dev1, $dev2));
+		$this->SetTS('netlinks');
+		$this->DB->Execute('DELETE FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)', array($dev1, $dev2, $dev1, $dev2));
 	}
 
 	function GetUnlinkedNodes()
 	{
-		return $this->DB->GetAll("SELECT *, inet_ntoa(ipaddr) AS ip FROM nodes WHERE netdev=0 ORDER BY name ASC");
+		return $this->DB->GetAll('SELECT *, inet_ntoa(ipaddr) AS ip FROM nodes WHERE netdev=0 ORDER BY name ASC');
 	}
 
 	function GetNetDevIPs($id)
 	{
-		return $this->DB->GetAll("SELECT id, name, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access FROM nodes WHERE ownerid=0 AND netdev=?", array($id));
+		return $this->DB->GetAll('SELECT id, name, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
 	}
 	
 	/*
 	 * Pozosta³e funkcje...
 	 */
 	
-	function GetRemoteMACs($host = "127.0.0.1", $port = 1029)
+	function GetRemoteMACs($host = '127.0.0.1', $port = 1029)
 	{
 		if($socket = socket_create (AF_INET, SOCK_STREAM, 0))
 			if(@socket_connect ($socket, $host, $port))
@@ -2340,9 +2333,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	{
 		switch(PHP_OS)
 		{
-			case "Linux":
-				if(@is_readable("/proc/net/arp"))
-					$file=fopen("/proc/net/arp","r");
+			case 'Linux':
+				if(@is_readable('/proc/net/arp'))
+					$file=fopen('/proc/net/arp','r');
 				else
 					return FALSE;
 				while(!feof($file))
@@ -2361,11 +2354,11 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 				break;
 
 			default:
-				exec("arp -an|grep -v incompl",$result);
+				exec('arp -an|grep -v incompl',$result);
 				foreach($result as $arpline)
 				{
-					list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(" ",$arpline);
-					$ip = str_replace("(","",str_replace(")","",$ip));
+					list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(' ',$arpline);
+					$ip = str_replace('(','',str_replace(')','',$ip));
 					if($perm != "PERM")
 					{
 						$result['mac'][] = $mac;
@@ -2387,8 +2380,8 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		exec("arp -an | grep -v incompl | grep $ip" ,$result);
 		foreach ($result as $arpline)
 		{
-		    list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(" ",$arpline);
-		    $ip = str_replace("(","",str_replace(")","",$ip));
+		    list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(' ',$arpline);
+		    $ip = str_replace('(','',str_replace(')','',$ip));
 
 		    $result['mac'] = $mac;
 		    $result['ip'] = $ip;
@@ -2403,7 +2396,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		if($emails = $this->GetEmails($mailing['group'], $mailing['network']))
 		{
 			if($this->CONFIG['phpui']['debug_email'])
-				echo "<B>Uwaga! Tryb debug (u¿ywam adresu ".$this->CONFIG['phpui']['debug_email'].")</B><BR>";
+				echo '<B>Uwaga! Tryb debug (u¿ywam adresu '.$this->CONFIG['phpui']['debug_email'].')</B><BR>';
 
 			foreach($emails as $key => $row)
 			{
@@ -2411,13 +2404,13 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 					$row['email'] = $this->CONFIG['phpui']['debug_email'];
 
 				mail (
-					$row['username']." <".$row['email'].">",
+					$row['username'].' <'.$row['email'].'>',
 					$mailing['subject'],
 					$mailing['body'],
-					"From: ".$mailing['sender']." <".$mailing['from'].">\n"."Content-Type: text/plain; charset=ISO-8859-2;\n"."X-Mailer: LMS-".$this->_version."/PHP-".phpversion()."\n"."X-Remote-IP: ".$_SERVER['REMOTE_ADDR']."\n"."X-HTTP-User-Agent: ".$_SERVER['HTTP_USER_AGENT']."\n"
+					'From: '.$mailing['sender'].' <'.$mailing['from'].">\n"."Content-Type: text/plain; charset=ISO-8859-2;\n".'X-Mailer: LMS-'.$this->_version.'/PHP-'.phpversion()."\n".'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n".'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']."\n"
 				);
 				
-				echo "<img src=\"img/mail.gif\" border=\"0\" align=\"absmiddle\" alt=\"\"> ".($key+1)." z ".sizeof($emails)." (".sprintf("%02.2f",round((100/sizeof($emails))*($key+1),2))."%): ".$row['username']." &lt;".$row['email']."&gt;<BR>\n";
+				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.($key+1).' z '.sizeof($emails).' ('.sprintf('%02.2f',round((100/sizeof($emails))*($key+1),2))."%): ".$row['username'].' &lt;'.$row['email']."&gt;<BR>\n";
 				flush();
 			}
 		}
@@ -2477,7 +2470,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	 *  Statystyki
 	 */
 
-	function Traffic($from = 0, $to = "?NOW?", $net = 0, $order = "", $limit = 0)
+	function Traffic($from = 0, $to = '?NOW?', $net = 0, $order = '', $limit = 0)
 	{
 		// period
 		if (is_array($from))
@@ -2497,43 +2490,39 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			$params = $this->GetNetworkParams($net);
 			$params['address']++;
 			$params['broadcast']--;
-			$net = " AND ( ipaddr > ".$params['address']." AND ipaddr < ".$params['broadcast']." )";
+			$net = ' AND ( ipaddr > '.$params['address'].' AND ipaddr < '.$params['broadcast'].' )';
 		}
 		else
-			$net = "";
+			$net = '';
 
 		// order
 		switch ($order)
 		{
-			case "nodeid":
-				$order = " ORDER BY nodeid";
+			case 'nodeid':
+				$order = ' ORDER BY nodeid';
 			break;
-
-			case "download":
-				$order = " ORDER BY download DESC";
+			case 'download':
+				$order = ' ORDER BY download DESC';
 			break;
-
-			case "upload":
-				$order = " ORDER BY upload DESC";
+			case 'upload':
+				$order = ' ORDER BY upload DESC';
 			break;
-
-			case "name":
-				$order = " ORDER BY name";
+			case 'name':
+				$order = ' ORDER BY name';
 			break;
-
-			case "ip":
-				$order = " ORDER BY ipaddr";
+			case 'ip':
+				$order = ' ORDER BY ipaddr';
 			break;
 		}
 
 		// limits
 		if($limit > 0)
-			$limit = " LIMIT ".$limit;
+			$limit = ' LIMIT '.$limit;
 		else
-			$limit = "";
+			$limit = '';
 
 		// join query from parts
-		$query = "SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE 1=1 AND ".$dt." ".$net." GROUP BY nodeid, name, ipaddr ".$order." ".$limit;
+		$query = 'SELECT nodeid, name, inet_ntoa(ipaddr) AS ip, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE 1=1 AND '.$dt.' '.$net.' GROUP BY nodeid, name, ipaddr '.$order.' '.$limit;
 
 		// get results
 		if ($traffic = $this->DB->GetAll($query))
@@ -2589,12 +2578,12 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function TrafficHost($from, $to, $host)
 	{
-	    return $this->DB->GetRow("SELECT sum(upload) as upload, sum(download) as download FROM stats WHERE dt >=".$from." AND dt <".$to." AND nodeid=".$host);
+	    return $this->DB->GetRow('SELECT sum(upload) as upload, sum(download) as download FROM stats WHERE dt >='.$from.' AND dt <'.$to.' AND nodeid='.$host);
 	}
 
 	function TrafficFirstRecord($host)
 	{
-	    return $this->DB->GetOne("SELECT MIN(dt) FROM stats WHERE nodeid=".$host);
+	    return $this->DB->GetOne('SELECT MIN(dt) FROM stats WHERE nodeid='.$host);
 	}
 
 	/*
@@ -2624,7 +2613,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function QueueExists($id)
 	{
-		return ($this->DB->GetOne("SELECT * FROM rtqueues WHERE id=?", array($id)) ? TRUE : FALSE);
+		return ($this->DB->GetOne('SELECT * FROM rtqueues WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
 	function GetQueueName($id)
