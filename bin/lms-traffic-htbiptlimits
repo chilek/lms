@@ -228,15 +228,15 @@ foreach my $key (keys %iftable)
 {
 	print OUTFILE "$tc_binary qdisc del root dev $key\n";
 	print OUTFILE "$tc_binary qdisc add dev $key root handle 1: htb\n";
-	print OUTFILE "$tc_binary class add dev $key parent 1: classid 1:1 htb rate 100mbit burst 10mbit\n";
-	print OUTFILE "$tc_binary class add dev $key parent 1:1 classid 1:2 htb rate ".$iftable{$key}."kbit burst ".($iftable{$key} / 10)."kbit\n";
+	print OUTFILE "$tc_binary class add dev $key parent 1: classid 1:19998 htb rate 100mbit burst 10mbit\n";
+	print OUTFILE "$tc_binary class add dev $key parent 1:19998 classid 1:19999 htb rate ".$iftable{$key}."kbit burst ".($iftable{$key} / 10)."kbit\n";
 	
 }
 
 $dbq = $dbase->prepare("SELECT userid, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments, users, tariffs WHERE users.id = userid AND deleted = 0 AND tariffid = tariffs.id GROUP BY userid");
 $dbq->execute();
 
-my $iptid = 2;
+my $iptid = 0;
 my %htbid;
 
 while (my $row = $dbq->fetchrow_hashref())
@@ -253,9 +253,9 @@ while (my $row = $dbq->fetchrow_hashref())
 		}
 		foreach my $key (keys %ifaces)
 		{
-			$htbid{$key} = 3 if not defined $htbid{$key};
+			$htbid{$key} = 0 if not defined $htbid{$key};
 			$htbid{$key} ++;
-			print OUTFILE "$tc_binary class add dev $key parent 1:2 classid 1:".$htbid{$key}." htb rate ".$row->{'downrate'}."kbit burst ".($row->{'downrate'} / 10)."kbit\n";
+			print OUTFILE "$tc_binary class add dev $key parent 1:19999 classid 1:".$htbid{$key}." htb rate ".$row->{'downrate'}."kbit burst ".($row->{'downrate'} / 10)."kbit\n";
 			print OUTFILE "$tc_binary filter add dev $key protocol ip parent 1: handle $iptid fw classid 1:".$htbid{$key}."\n";
 		}
 	}
@@ -270,9 +270,9 @@ while (my $row = $dbq->fetchrow_hashref())
 		foreach my $wan_interface (@wan_interfaces_list)
 		{
 			my ($if,$spd) = split(':', $wan_interface);
-			$htbid{$if} = 3 if not defined $htbid{$if};
+			$htbid{$if} = 0 if not defined $htbid{$if};
 			$htbid{$if} ++;
-			print OUTFILE "$tc_binary class add dev $if parent 1:2 classid 1:".$htbid{$if}." htb rate ".$row->{'uprate'}."kbit burst ".($row->{'uprate'} / 10). "kbit\n";
+			print OUTFILE "$tc_binary class add dev $if parent 1:19999 classid 1:".$htbid{$if}." htb rate ".$row->{'uprate'}."kbit burst ".($row->{'uprate'} / 10). "kbit\n";
 			print OUTFILE "$tc_binary filter add dev $if protocol ip parent 1: handle $iptid fw classid 1:".$htbid{$if}."\n";
 		}
 	}		
@@ -283,3 +283,5 @@ chown $cuid, $cgid, $outfile or print "Warning! Unable to set owner of $outfile 
 chmod oct($cperm), $outfile or print "Warning! Unable to set permission $cperm to $outfile.\n";
 system("$outfile 1>/dev/null 2>&1");
 $dbase->disconnect();
+
+
