@@ -283,11 +283,14 @@ void reload(GLOBAL *g, struct payments_module *p)
 							g->str_replace(&query, "%invoiceid", itoa(invoiceid));
 							g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
 							g->str_replace(&query, "%desc", description);
-							itemid = atoi(g->db_get_data(result,0,"itemid"));
-						} 
+							g->db_exec(query);
+							
+							exec = g->db_pexec("UPDATE cash SET value=value+? WHERE invoiceid=? AND itemid=?",value, itoa(invoiceid), g->db_get_data(result,0,"itemid"));
+						}
 						else 
 						{
 							itemid++;
+							
 							query = strdup("INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (%invoiceid, %itemid, %value, %taxvalue, '%pkwiu', 'szt.', 1, '%desc', %tariffid)");
 							g->str_replace(&query, "%invoiceid", itoa(invoiceid));
 							g->str_replace(&query, "%itemid", itoa(itemid));
@@ -300,15 +303,16 @@ void reload(GLOBAL *g, struct payments_module *p)
 								g->str_replace(&query, "%taxvalue", taxvalue);
 							else
 								g->str_replace(&query, "%taxvalue", "NULL");
+							
+							g->db_exec(query);
+							
+							g->str_replace(&insert, "%invoiceid", itoa(invoiceid));
+							g->str_replace(&insert, "%itemid", itoa(itemid));
+							exec = g->db_exec(insert);
 						}
-						g->db_exec(query);									
 						g->db_free(result);
 						free(query);
 					}
-					
-					g->str_replace(&insert, "%invoiceid", itoa(invoiceid));
-					g->str_replace(&insert, "%itemid", itoa(itemid));
-					exec = g->db_exec(insert);
 				} 
 				else 
 				{
