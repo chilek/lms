@@ -4,7 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: LMS-International\n"
-"Language-Team: LMS Developers\n"
+"Language-Team: LMS Developers lms.rulez.pl\n"
+"Last-Translator: auto\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -58,8 +59,8 @@ msgstr ""
 msgid "Administrators List"
 msgstr ""
 
-#: ../modules/adminpasswd.php:36
-msgid "Password cannot be empty!<BR>"
+#: ../modules/adminpasswd.php:36 ../modules/chpasswd.php:36
+msgid "Password cannot be empty!"
 msgstr ""
 
 #: ../modules/adminpasswd.php:39
@@ -67,7 +68,8 @@ msgid "Password do not match!"
 msgstr ""
 
 #: ../modules/adminpasswd.php:50
-msgid "Password change for "
+#, python-format
+msgid "Password change for %s"
 msgstr ""
 
 #: ../modules/balancelist.php:47
@@ -86,12 +88,8 @@ msgstr ""
 msgid "Choose MAC address"
 msgstr ""
 
-#: ../modules/chpasswd.php:36
-msgid "Empty password not allowed!<BR>"
-msgstr ""
-
 #: ../modules/chpasswd.php:50
-msgid "Password change"
+msgid "Password Change"
 msgstr ""
 
 #: ../modules/confgen.php:31
@@ -107,59 +105,35 @@ msgid "Database backup deleting"
 msgstr ""
 
 #: ../modules/dbdel.php:37
-msgid "<H1>Database backups deleting</H1>"
+msgid "Database backups deleting"
 msgstr ""
 
 #: ../modules/dbdel.php:38
-msgid "<p>Are you shure, you want to delete database backup created "
+msgid "Are you shure, you want to delete database backup created "
 msgstr ""
 
 #: ../modules/dbdel.php:39
-msgid "Yes, I am shure.</A>"
+msgid "Yes, I am shure."
 msgstr ""
 
 #: ../modules/dblist.php:27
 msgid "Database backups"
 msgstr ""
 
-#: ../modules/dbrecover.php:34
+#: ../modules/dbrecover.php:34 ../modules/dbrecover.php:37
 msgid "Database backup restoring"
 msgstr ""
 
-#: ../modules/dbrecover.php:37
-msgid "<H1>Database backup restoring</H1>"
-msgstr ""
-
 #: ../modules/dbrecover.php:38
-msgid "<p>Are You sure, You want to restore database backup created "
+msgid "Are you sure, you want to restore database backup created "
 msgstr ""
 
-#: ../modules/dbrecover.php:38
-msgid "?</p>"
-msgstr ""
-
-#: ../modules/dbrecover.php:39
-msgid "<a href=\"?m=dbrecover&db="
-msgstr ""
-
-#: ../modules/dbrecover.php:39
-msgid "db"
-msgstr ""
-
-#: ../modules/dbrecover.php:39
-msgid "&is_sure=1\">"
-msgstr ""
-
-#: ../modules/dbrecover.php:39
-msgid "Yes, I am sure.</A>"
+#: ../modules/dbrecover.php:39 ../modules/userbalanceok.php:41
+msgid "Yes, I am sure"
 msgstr ""
 
 #: ../modules/dbview.php:27
 msgid "Database backup view"
-msgstr ""
-
-#: ../modules/genfake.php:1482
-msgid "Database cleaning..."
 msgstr ""
 
 #: ../modules/genfake.php:1505
@@ -248,7 +222,8 @@ msgid "Network IP address isn't correct!"
 msgstr ""
 
 #: ../modules/netadd.php:65
-msgid "That address isn't network address, setting to "
+#, python-format
+msgid "That address isn't network address, setting to %s"
 msgstr ""
 
 #: ../modules/netadd.php:71
@@ -268,20 +243,12 @@ msgstr ""
 msgid "Incorrect WINS server IP address!"
 msgstr ""
 
-#: ../modules/netadd.php:89 ../modules/netadd.php:91
-msgid "gateway"
-msgstr ""
-
 #: ../modules/netadd.php:89
 msgid "Incorrect Gateway IP address!"
 msgstr ""
 
 #: ../modules/netadd.php:91
 msgid "Gateway IP address don't match with network address class!"
-msgstr ""
-
-#: ../modules/netadd.php:95 ../modules/netadd.php:97
-msgid "dhcpstart"
 msgstr ""
 
 #: ../modules/netadd.php:95
@@ -292,10 +259,6 @@ msgstr ""
 msgid "IP address for start of DHCP range not overlaps with this network!"
 msgstr ""
 
-#: ../modules/netadd.php:101 ../modules/netadd.php:103
-msgid "dhcpend"
-msgstr ""
-
 #: ../modules/netadd.php:101 ../modules/netedit.php:123
 msgid "Incorrect IP address for end of DHCP range!"
 msgstr ""
@@ -304,20 +267,12 @@ msgstr ""
 msgid "IP address for end of DHCP range not overlaps with this network!"
 msgstr ""
 
-#: ../modules/netadd.php:108 ../modules/netadd.php:110
-msgid "dhcp"
-msgstr ""
-
 #: ../modules/netadd.php:108
 msgid "Required both IP addresses for DHCP range!"
 msgstr ""
 
 #: ../modules/netadd.php:110
 msgid "End of DHCP range must be greater than start!"
-msgstr ""
-
-#: ../modules/netadd.php:121
-msgid "pagetitle"
 msgstr ""
 
 #: ../modules/netadd.php:121
@@ -798,23 +753,23 @@ msgstr ""
 
 #: ../modules/trafficdbcompact.php:41
 #, python-format
-msgid "Before compacting in database was %d records.<BR>"
+msgid "Before compacting in database was %d records."
 msgstr ""
 
-#: ../modules/trafficdbcompact.php:58
+#: ../modules/trafficdbcompact.php:59
 #, python-format
 msgid "Removed stats for node with ID: %d\n"
 msgstr ""
 
-#: ../modules/trafficdbcompact.php:95
+#: ../modules/trafficdbcompact.php:96
 msgid " - removed, "
 msgstr ""
 
-#: ../modules/trafficdbcompact.php:95
-msgid " - insertedh\n"
+#: ../modules/trafficdbcompact.php:96
+msgid " - inserted\n"
 msgstr ""
 
-#: ../modules/trafficdbcompact.php:99
+#: ../modules/trafficdbcompact.php:100
 #, python-format
 msgid "After compacting in database is %d records."
 msgstr ""
@@ -828,11 +783,12 @@ msgid "Database upgrade: finances format change:"
 msgstr ""
 
 #: ../modules/upgrade01.php:35
-msgid "tariff: '"
+#, python-format
+msgid "tariff: '%s'..."
 msgstr ""
 
-#: ../modules/useradd.php:42
-msgid "Name of user is required"
+#: ../modules/useradd.php:42 ../modules/useredit.php:116
+msgid "Name of user is required!"
 msgstr ""
 
 #: ../modules/useradd.php:45 ../modules/useredit.php:119
@@ -872,10 +828,6 @@ msgid ""
 "All user's data will be lost and all his nodes will be removed from database."
 msgstr ""
 
-#: ../modules/userbalanceok.php:41
-msgid "Yes, I am sure"
-msgstr ""
-
 #: ../modules/userbalanceok.php:45 ../modules/userdel.php:45
 #, python-format
 msgid "User %s deleted."
@@ -891,10 +843,6 @@ msgstr ""
 
 #: ../modules/userdel.php:33
 msgid "That user's ID is incorrect or not exists."
-msgstr ""
-
-#: ../modules/useredit.php:116
-msgid "Name of user is required!"
 msgstr ""
 
 #: ../modules/useredit.php:134
@@ -1095,7 +1043,7 @@ msgid "income"
 msgstr ""
 
 #: ../lib/LMS.class.php:1501
-msgid "expenditure"
+msgid "expense"
 msgstr ""
 
 #: ../lib/LMS.class.php:1507
@@ -1103,54 +1051,68 @@ msgid "user payment"
 msgstr ""
 
 #: ../lib/LMS.class.php:1512
-msgid "user debt"
+msgid "user covenant"
 msgstr ""
 
-#: ../lib/LMS.class.php:1545
+#: ../lib/LMS.class.php:1545 ../lib/LMS.class.php:1585
 msgid "weekly (mon)"
 msgstr ""
 
-#: ../lib/LMS.class.php:1546
+#: ../lib/LMS.class.php:1546 ../lib/LMS.class.php:1586
 msgid "weekly (tue)"
 msgstr ""
 
-#: ../lib/LMS.class.php:1547
+#: ../lib/LMS.class.php:1547 ../lib/LMS.class.php:1587
 msgid "weekly (wed)"
 msgstr ""
 
-#: ../lib/LMS.class.php:1548
+#: ../lib/LMS.class.php:1548 ../lib/LMS.class.php:1588
 msgid "weekly (thu)"
 msgstr ""
 
-#: ../lib/LMS.class.php:1549
+#: ../lib/LMS.class.php:1549 ../lib/LMS.class.php:1589
 msgid "weekly (fri)"
 msgstr ""
 
-#: ../lib/LMS.class.php:1550
+#: ../lib/LMS.class.php:1550 ../lib/LMS.class.php:1590
 msgid "weekly (sat)"
 msgstr ""
 
-#: ../lib/LMS.class.php:1551
+#: ../lib/LMS.class.php:1551 ../lib/LMS.class.php:1591
 msgid "weekly (sun)"
 msgstr ""
 
-#: ../lib/LMS.class.php:1552
+#: ../lib/LMS.class.php:1552 ../lib/LMS.class.php:1592
 msgid "missing"
 msgstr ""
 
-#: ../lib/LMS.class.php:1556
+#: ../lib/LMS.class.php:1556 ../lib/LMS.class.php:1596
 #, python-format
 msgid "monthly (%d)"
 msgstr ""
 
-#: ../lib/LMS.class.php:1560
+#: ../lib/LMS.class.php:1560 ../lib/LMS.class.php:1600
 #, python-format
 msgid "quarterly (%d)"
 msgstr ""
 
-#: ../lib/LMS.class.php:1564
+#: ../lib/LMS.class.php:1564 ../lib/LMS.class.php:1604
 #, python-format
 msgid "yearly (%d)"
+msgstr ""
+
+#: ../lib/LMS.class.php:1708
+#, python-format
+msgid " (%d) addresses"
+msgstr ""
+
+#: ../lib/LMS.class.php:2281
+#, python-format
+msgid "Warning! Debug mode (using '%s')"
+msgstr ""
+
+#: ../lib/LMS.class.php:2295
+msgid " from "
 msgstr ""
 
 #: ../lib/Sysinfo.class.php:115
