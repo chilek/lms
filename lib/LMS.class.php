@@ -341,8 +341,8 @@ class LMS
 			$bin = sprintf("%04b",hexdec($mask[$cnt-1])).$bin;
 		for($cnt=strlen($bin)-1; $cnt >= 0; $cnt --)
 			if($bin[$cnt] == "1")
-				$return[] = strlen($bin) - $cnt -1;
-		return $return;
+				$result[] = strlen($bin) - $cnt -1;
+		return $result;
 	}
 
 	/*
@@ -416,7 +416,7 @@ class LMS
 
 	function GetUser($id)
 	{
-		if($return = $this->ADB->GetRow("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid FROM users WHERE id=?",array($id)))
+		if($result = $this->ADB->GetRow("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, tariff, info, creationdate, moddate, creatorid, modid FROM users WHERE id=?",array($id)))
 		{
 			$result[createdby] = $this->GetAdminName($result[creatorid]);
 			$result[modifiedby] = $this->GetAdminName($result[modid]);
@@ -680,11 +680,11 @@ class LMS
 			
 	function GetUserNodes($id)
 	{
-		if($return = $this->ADB->GetAll("SELECT id, name, mac, ipaddr, access FROM nodes WHERE ownerid=? ORDER BY name ASC",array($id))){
-			$return[total] = sizeof($return);
-			$return[ownerid] = $id;
+		if($result = $this->ADB->GetAll("SELECT id, name, mac, ipaddr, access FROM nodes WHERE ownerid=? ORDER BY name ASC",array($id))){
+			$result[total] = sizeof($result);
+			$result[ownerid] = $id;
 		}
-		return $return;
+		return $result;
 	}
 
 	function GetUserBalance($id)
@@ -765,23 +765,23 @@ class LMS
 
 	function UserStats()
 	{
-		$return[total] = $this->ADB->GetOne("SELECT COUNT(id) FROM users");
-		$return[connected] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=3");
-		$return[awaiting] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=2");
-		$return[interested] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=1");
-		$return[debt] = 0;
-		$return[debtvalue] = 0;
+		$result[total] = $this->ADB->GetOne("SELECT COUNT(id) FROM users");
+		$result[connected] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=3");
+		$result[awaiting] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=2");
+		$result[interested] = $this->ADB->GetOne("SELECT COUNT(id) FROM users WHERE status=1");
+		$result[debt] = 0;
+		$result[debtvalue] = 0;
 		if($users = $this->ADB->GetAll("SELECT id FROM users"))
 			foreach($users as $idx => $row)
 			{
 				$row[balance] = $this->GetUserBalance($row[id]);
 				if($row[balance] < 0)
 				{
-					$return[debt] ++;
-					$return[debtvalue] -= $row[balance];
+					$result[debt] ++;
+					$result[debtvalue] -= $row[balance];
 				}
 			}
-		return $return;
+		return $result;
 	}
 
 	/*
@@ -846,17 +846,17 @@ class LMS
 
 	function GetNode($id)
 	{
-		if($return = $this->ADB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid FROM nodes WHERE id=?",array($id)))
+		if($result = $this->ADB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid FROM nodes WHERE id=?",array($id)))
 		{
-			$return[createdby] = $this->GetAdminName($return[creatorid]);
-			$return[modifiedby] = $this->GetAdminName($return[modid]);
-			$return[creationdateh] = date("Y-m-d, H:i",$return[creationdate]);
-			$return[moddateh] = date("Y-m-d, H:i",$return[moddate]);
-			$return[owner] = $this->GetUsername($return[ownerid]);
-			$return[netid] = $this->GetNetIDByIP($return[ipaddr]);
-			$return[netname] = $this->GetNetworkName($return[netid]);
-			$return[producer] = get_producer($return[mac]);
-			return $return;
+			$result[createdby] = $this->GetAdminName($result[creatorid]);
+			$result[modifiedby] = $this->GetAdminName($result[modid]);
+			$result[creationdateh] = date("Y-m-d, H:i",$result[creationdate]);
+			$result[moddateh] = date("Y-m-d, H:i",$result[moddate]);
+			$result[owner] = $this->GetUsername($result[ownerid]);
+			$result[netid] = $this->GetNetIDByIP($result[ipaddr]);
+			$result[netname] = $this->GetNetworkName($result[netid]);
+			$result[producer] = get_producer($result[mac]);
+			return $result;
 		}else
 			return FALSE;
 	}
@@ -1060,10 +1060,10 @@ class LMS
 	
 	function NodeStats()
 	{
-		$return[connected] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access='Y'");
-		$return[disconnected] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access='N'");
-		$return[total] = $return[connected] + $return[disconnected];
-		return $return;
+		$result[connected] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access='Y'");
+		$result[disconnected] = $this->ADB->GetOne("SELECT COUNT(id) FROM nodes WHERE access='N'");
+		$result[total] = $result[connected] + $result[disconnected];
+		return $result;
 	}
 
 	/*
@@ -1136,12 +1136,12 @@ class LMS
 
 	function GetTariff($id)
 	{
-		$return = $this->ADB->GetRow("SELECT id, name, value, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
-		$return[count] = $this->GetUsersWithTariff($id);
-		$return[totalval] = $return[value] * $return[count];
-		$return[users] = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat('upper(lastname)',"' '",'name')." AS username FROM users WHERE tariff=? AND status=3 ORDER BY username",array($id));
-		$return[rows] = ceil(sizeof($return[users])/2);
-		return $return;
+		$result = $this->ADB->GetRow("SELECT id, name, value, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
+		$result[count] = $this->GetUsersWithTariff($id);
+		$result[totalval] = $result[value] * $result[count];
+		$result[users] = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat('upper(lastname)',"' '",'name')." AS username FROM users WHERE tariff=? AND status=3 ORDER BY username",array($id));
+		$result[rows] = ceil(sizeof($result[users])/2);
+		return $result;
 	}
 
 	function GetTariffs()
@@ -1251,10 +1251,10 @@ class LMS
 					$row[name] = trim($name);
 					$row[mac] = str_replace("-",":",trim($mac));
 					if(!$this->GetNodeIDByIP($row[ipaddr]) && $row[ipaddr])
-						$return[] = $row;
+						$result[] = $row;
 				}	
 			}
-		return $return;
+		return $result;
 	}								
 
 	/*
@@ -1515,14 +1515,14 @@ class LMS
 	
 		for($i=ip_long($address)+1;$i<ip_long(getbraddr($address,$mask));$i++)
 		{
-			$return[addresslong][] = $i;
-			$return[address][] = long2ip($i);
-			$return[nodeid][] = 0;
-			$return[nodename][] = "";
-			$return[ownerid][] = 0;
+			$result[addresslong][] = $i;
+			$result[address][] = long2ip($i);
+			$result[nodeid][] = 0;
+			$result[nodename][] = "";
+			$result[ownerid][] = 0;
 		}
 		
-		if(sizeof($return[address]))
+		if(sizeof($result[address]))
 		{
 			// wrapper do starego formatu
 			
@@ -1536,13 +1536,13 @@ class LMS
 					if(isipin($nodes[ipaddr][$key],$address,$mask))
 					{
 						$pos = ip_long($nodes[ipaddr][$key])-ip_long($address)-1;
-						$return[nodeid][$pos] = $value;
-						$return[nodename][$pos] = $nodes[name][$key];
-						$return[ownerid][$pos] = $nodes[ownerid][$key];
+						$result[nodeid][$pos] = $value;
+						$result[nodename][$pos] = $nodes[name][$key];
+						$result[ownerid][$pos] = $nodes[ownerid][$key];
 					}
 		}
 
-		return $return;
+		return $result;
 	}
 
 	/*
@@ -1565,30 +1565,30 @@ class LMS
 					$ip=trim(substr($line,0,15));
 					if(check_mac($mac))
 					{
-						$return[mac][] = $mac;
-						$return[ip][] = $ip;
-						$return[longip][] = ip_long($ip);
-						$return[nodename][] = $this->GetNodeNameByMAC($mac);
+						$result[mac][] = $mac;
+						$result[ip][] = $ip;
+						$result[longip][] = ip_long($ip);
+						$result[nodename][] = $this->GetNodeNameByMAC($mac);
 					}
 				}
 				break;
 
 			default:
-				exec("arp -an|grep -v incompl",$return);
-				foreach($return as $arpline)
+				exec("arp -an|grep -v incompl",$result);
+				foreach($result as $arpline)
 				{
 					list($empty,$ip,$empty,$mac) = explode(" ",$arpline);
 					$ip = str_replace("(","",str_replace(")","",$ip));
-					$return[mac][] = $mac;
-					$return[ip][] = $ip;
-					$return[longip][] = ip_long($ip);
-					$return[nodename][] = $this->GetNodeNameByMAC($mac);
+					$result[mac][] = $mac;
+					$result[ip][] = $ip;
+					$result[longip][] = ip_long($ip);
+					$result[nodename][] = $this->GetNodeNameByMAC($mac);
 				}
 				break;
 
 		}
-		array_multisort($return[longip],$return[mac],$return[ip],$return[nodename]);
-		return $return;
+		array_multisort($result[longip],$result[mac],$result[ip],$result[nodename]);
+		return $result;
 	}
 
 	function Mailing($mailing)
