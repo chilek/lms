@@ -491,10 +491,12 @@ class LMS
 		$this->SetTS('users');
 		$this->SetTS('nodes');
 		$this->SetTS('userassignments');
-		$res1=$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
-		$res2=$this->DB->Execute('DELETE FROM userassignments WHERE userid=?', array($id));
-		$res3=$this->DB->Execute('UPDATE users SET deleted=1 WHERE id=?', array($id));
-		return $res1 || $res2 || res3;
+		$this->SetTS('assignments');
+		$res1 = $this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
+		$res2 = $this->DB->Execute('DELETE FROM userassignments WHERE userid=?', array($id));
+		$res3 = $this->DB->Execute('UPDATE users SET deleted=1 WHERE id=?', array($id));
+		$res4 = $this->DB->Execute('DELETE FROM assignments WHERE userid=?', array($id));
+		return $res1 || $res2 || $res3 || $res4;
 	}
 
 	function UserUpdate($userdata)

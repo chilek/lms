@@ -6,6 +6,8 @@ wersja 1.4.5 (??/??/????):
     komputera u¿ytkownikowi (alec/WiktorRB)
   - BTS#0000309: poprawiony format kwoty salda w oknie Edycji 
     U¿ytkownika (alec/WiktorRB)
+  - BTS#0000315: przy usuwaniu u¿ytkownika usuwane s± tak¿e jego zobowi±zania
+    (alec/WiktorRB)
 
 wersja 1.4.4 Skaara (02/03/2005):
 
