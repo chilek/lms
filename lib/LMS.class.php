@@ -1481,9 +1481,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	{
 		$this->SetTS("tariffs");
 		if ($tariff['taxvalue'] == '')
-			return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, pkwiu=?, uprate=?, downrate=? WHERE id=?", array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
-		else
 			return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=NULL, pkwiu=?, uprate=?, downrate=? WHERE id=?", array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
+		else
+			return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, pkwiu=?, uprate=?, downrate=? WHERE id=?", array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
 	}
 
 	function TariffDelete($id)
