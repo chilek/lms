@@ -213,7 +213,6 @@ foreach my $local_dest (@local_dests_list)
 print OUTFILE "$iptables_binary -t mangle -F LIMITS
 $iptables_binary -t mangle -X LIMITS
 $iptables_binary -t mangle -N LIMITS
-$iptables_binary -t mangle -F LIMITS
 ";
 
 foreach my $wan_interface (@wan_interfaces_list)
