@@ -83,10 +83,23 @@ foreach ($langs as $val)
 $_LANG = array();
 
 @include($_LIB_DIR.'/locale/'.$_language.'/strings.php');
+@include($_LIB_DIR.'/locale/'.$_language.'/functions.php');
 
 setlocale(LC_COLLATE, $LANGDEFS[$_language]['locale']);
 setlocale(LC_CTYPE, $LANGDEFS[$_language]['locale']);
 setlocale(LC_TIME, $LANGDEFS[$_language]['locale']);
 setlocale(LC_NUMERIC, $LANGDEFS[$_language]['locale']);
 
+
+/*
+if(strtolower($_CONFIG['database']['encoding']) != 'unicode')
+{
+	switch($_CONFIG['database']['type'])
+	{
+		case 'postgres':
+			$DB->Execute("SET CLIENT_ENCODING TO 'UNICODE'");
+		break;
+	}
+}
+*/
 ?>
