@@ -256,6 +256,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 		]);
 	
 	$replymail->head->replace('In-Reply-To',$mh_msgid);
+	$replymail->head->replace('Message-ID','confirm.'.$ticket_id.'.'.$queue.'.'.$timestamp.'@rtsystem');
 	
 	# TODO - is sendmail via pipe is correct way?
 	
