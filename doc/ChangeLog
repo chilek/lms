@@ -36,6 +36,8 @@ wersja 1.3.7 (??/??/2004):
   - w formularzu nowej operacji pokazuje siê ilo¶æ zaznaczonych 
     u¿ytkowników (chilek)
   - przyspieszone wy¶wietlanie listy faktur na MySQL'u (alec)
+  - polecenie 'make daemon' do kompilacji samego demona, bez modu³ów (alec)
+  - przy starcie almsd w 'background mode' nie nastêpuje prze³adowanie (alec)
 
 wersja 1.3.6 Osiris (01/09/2004);
 

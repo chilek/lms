@@ -14,6 +14,9 @@ all: $(OUT) xmodules
 xmodules:
 	make -C modules
 
+daemon:
+	make $(OUT)
+
 $(OUT): ${OBJECTS}
 	gcc $(OBJECTS) -o $(OUT) $(LDFLAGS) $(LIBS)
 	strip $(OUT)
