@@ -1,27 +1,32 @@
-SOURCES = almsd.c db.c util.c
-SOURCES += iniparser/iniparser.c iniparser/dictionary.c iniparser/strlib.c
+LIBS = -lpq -ldl
+LDFLAGS = -L/usr/local/pgsql/lib
+CFLAGS = -I/usr/local/pgsql/include -DUSE_PGSQL -DDEBUG0 -Wall -O2 -DDEBUG1
+DBDRIVER = pgsql
+INSTALLDIR = /usr/local/bin
+
+SOURCES = dbdrivers/$(DBDRIVER)/db.c util.c cron/cronparse.c cron/cron.c \
+	config/dictionary.c config/config.c lmsd.c
 OBJECTS = ${SOURCES:.c=.o}
-OUT = almsd
+OUT = lmsd
 
 all: $(OUT) xmodules
-
-xmodules:
-	make -C modules
 
 daemon:
 	make $(OUT)
 
+xmodules:
+	make -C modules
+
 $(OUT): ${OBJECTS}
-	gcc $(OBJECTS) -o $(OUT) $(LDFLAGS) $(LIBS)
+	gcc $(OBJECTS) -o $(OUT) $(LDFLAGS) $(LIBS) 
 	strip $(OUT)
 
 install: 
 	mkdir -p -m 755 $(INSTALLDIR)
 	install -c -m 700 almsd $(INSTALLDIR)/
-	 
+ 
 remove:
 	rm -f $(INSTALLDIR)/almsd
-	
+
 clean:
 	rm -f $(OBJECTS)
-	make -C modules clean
