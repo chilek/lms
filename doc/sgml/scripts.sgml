@@ -35,31 +35,31 @@
 		    </thead>
 		    <tbody>
 			<row>
-			<entry>lms-notify</entry>
+			<entry><xref linkend="lms-notify"></entry>
 			<entry>Korespondencja seryjna do u¿ytkowników sieci</entry>
 			</row>
 			<row>
-			<entry>lms-notify-sms</entry>
+			<entry><xref linkend="lms-notify-sms"></entry>
 			<entry>Powiadamianie o zaleg³o¶ciach sms'em</entry>
 			</row>
 			<row>
-			<entry>lms-cutoff</entry>
+			<entry><xref linkend="lms-cutoff"></entry>
 			<entry>Od³±czanie u¿ytkowników zad³u¿onych</entry>
 			</row>
 			<row>
-			<entry>lms-etherdesc</entry>
+			<entry><xref linkend="lms-etherdesc"></entry>
 			<entry>Generowanie pliku dla iptraf zawieraj±cego pary MAC adres - nazwa hosta</entry>
 			</row>
 			<row>
-			<entry>lms-payments</entry>
+			<entry><xref linkend="lms-payments"></entry>
 			<entry>Naliczanie op³at okresowych (abonamentowych) z fakturowaniem</entry>
 			</row>
 			<row>
-			<entry>lms-traffic</entry>
+			<entry><xref linkend="lms-traffic"></entry>
 			<entry>Zapis statystyk wykorzystania ³±cza</entry>
 			</row>
 			<row>
-			<entry>lms-traffic-logiptables</entry>
+			<entry><xref linkend="lms-traffic-logiptables"></entry>
 			<entry>Statystyki ³±cza dla iptables</entry>
 			</row>
 			<row>
@@ -71,7 +71,7 @@
 			<entry>Konfiguracja serwera DHCP (/etc/dhcpd.conf)</entry>
 			</row>
 			<row>
-			<entry>lms-makeiptables</entry>
+			<entry><xref linkend="lms-makeiptables"></entry>
 			<entry>Konfiguracja firewalla iptables</entry>
 			</row>
 			<row>
@@ -79,39 +79,39 @@
 			<entry>Konfiguracja firewalla ipchains</entry>
 			</row>
 			<row>
-			<entry>lms-makeoidentconf</entry>
-			<entry>Konfiguracja oident</entry>
-			</row>
-			<row>
 			<entry>lms-makeopenbsdpf</entry>
 			<entry>Konfiguracja firewalla dla systemu OpenBSD</entry>
 			</row>
 			<row>
-			<entry>lms-sendinvoices</entry>
+			<entry>lms-makeoidentconf</entry>
+			<entry>Konfiguracja oident</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-sendinvoices"></entry>
 			<entry>Wysy³anie faktur do u¿ytkowników</entry>
 			</row>
 			<row>
-			<entry>lms-makemacs</entry>
+			<entry><xref linkend="lms-makemacs"></entry>
 			<entry>Filtrowanie ruchu na bazie adresów ¼ród³owych MAC</entry>
 			</row>
 			<row>
-			<entry>lms-makehosts</entry>
+			<entry><xref linkend="lms-makehosts"></entry>
 			<entry>Generuje plik /etc/hosts</entry>
 			</row>
 			<row>
-			<entry>lms-makewarnings</entry>
+			<entry><xref linkend="lms-makewarnings"></entry>
 			<entry>Generuje regu³ki przekierowuj±ce ruch u¿ytkowników zad³u¿onych</entry>
 			</row>
 			<row>
-			<entry>lms-makemessages</entry>
+			<entry><xref linkend="lms-makemessages"></entry>
 			<entry>Generuje regu³ki przekierowuj±ce ruch u¿ytkowników, którym ustawiono wiadomo¶æ administracyjn±</entry>
 			</row>
 			<row>
-			<entry>lms-fping</entry>
+			<entry><xref linkend="lms-fping"></entry>
 			<entry>Badanie aktywno¶ci komputerów.</entry>
 			</row>
 			<row>
-			<entry>lms-rtparser</entry>
+			<entry><xref linkend="lms-rtparser"></entry>
 			<entry>Backend do Helpdesk'a.</entry>
 			</row>
 		    </tbody>	
@@ -121,7 +121,7 @@
        </sect1>
        <sect1 id="scripts-config">
     	    <title>Opis i konfiguracja</title>
-       <sect2 id="lms-notify">
+       <sect2 id="lms-notify" xreflabel="lms-notify">
 	<title>lms-notify</title>
 	  <para>lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci 
 	  i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych 
@@ -249,7 +249,7 @@ http://www.naszasiec.pl/</screen></example>
           </itemizedlist>
           </sect3>
 	</sect2>
-	<sect2 id="lms-notify-sms">
+	<sect2 id="lms-notify-sms" xreflabel="lms-notify-sms">
 	<title>lms-notify-sms</title>
 	  <para>lms-notify-sms to odpowiednik lms-notify, s³u¿±cy do wysy³ania
 	  smsów. Do wysy³ania wiadomo¶ci potrzebna jest komórka Nokii oraz oprogramowanie,
@@ -271,7 +271,7 @@ http://www.naszasiec.pl/</screen></example>
 	    </listitem>
 	  </itemizedlist>
 	</sect2> 
-	<sect2 id="lms-cutoff">
+	<sect2 id="lms-cutoff" xreflabel="lms-cutoff">
 	 <title>lms-cutoff</title>
 	 <para>Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.</para>
          <para>Konfiguracjê dla lms-cutoff mo¿emy ustaliæ w pliku <filename>lms.ini</filename> w sekcji <emphasis>[cutoff]</emphasis>. Mo¿emy tam ustawiæ nastêpuj±ce parametry:</para>
@@ -283,7 +283,7 @@ http://www.naszasiec.pl/</screen></example>
 	  </listitem>
 	 </itemizedlist>
 	</sect2>
-	<sect2 id="lms-payments">
+	<sect2 id="lms-payments" xreflabel="lms-payments">
 	 <title>lms-payments</title>
 	 <para>Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
 	 u¿ytkownikom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
@@ -303,7 +303,7 @@ http://www.naszasiec.pl/</screen></example>
 	  </listitem>
 	 </itemizedlist>
         </sect2>
-    <sect2 id="lms-traffic">
+    <sect2 id="lms-traffic" xreflabel="lms-traffic">
     <title>lms-traffic</title>
     <para>Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
 	przez ka¿dy komputer w sieci lokalnej. W bazie danych zapisywana jest ilo¶æ
@@ -341,7 +341,7 @@ http://www.naszasiec.pl/</screen></example>
 	    </para>
 	</sect3>
     </sect2>
-    <sect2 id="lms-traffic-logiptables">
+    <sect2 id="lms-traffic-logiptables" xreflabel="lms-traffic-logiptables">
 	<title>lms-traffic-logiptables</title>
 	<para>Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
 	przez ka¿dy komputer z sieci lokalnej, na podstawie liczników iptables. Dane 
@@ -389,7 +389,7 @@ http://www.naszasiec.pl/</screen></example>
 	    </itemizedlist>
 	</para>
     </sect2>
-    <sect2 id="lms-makeiptables">
+    <sect2 id="lms-makeiptables" xreflabel="lms-makeiptables">
 	<title>lms-makeiptables, lms-makeipchains</title>
 	    <para>Para skryptów s³u¿±cych do generowania plików zawieraj±cych
 	    regu³y firewalla. Do utworzonego pliku mo¿esz do³±czyæ inne wcze¶niej
@@ -464,7 +464,7 @@ http://www.naszasiec.pl/</screen></example>
 		</listitem>
 	 </itemizedlist>
     </sect2>
-    <sect2 id="lms-etherdesc">
+    <sect2 id="lms-etherdesc" xreflabel="lms-etherdesc">
 	<title>lms-etherdesc</title>
 	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego MAC adresy oraz
 	    nazwy hostów pobierane z bazy lms'a. Adresy zapisywane s± w formacie 'stripped mac',
@@ -501,7 +501,7 @@ http://www.naszasiec.pl/</screen></example>
 		</listitem>
 	    </itemizedlist>
     </sect2>
-    <sect2 id="lms-sendinvoices">
+    <sect2 id="lms-sendinvoices" xreflabel="lms-sendinvoices">
 	<title>lms-sendinvoices</title>
 	<para>Skrypt s³u¿y do wysy³ania poczt± elektroniczn± faktur, jako za³±czników
 	do wiadomo¶ci. Faktury generowane s± na podstawie szablonu dostêpnego w lms-ui,
@@ -550,7 +550,7 @@ http://www.naszasiec.pl/</screen></example>
 	    </itemizedlist>
 	</para>
     </sect2>
-    <sect2 id="lms-makemacs">
+    <sect2 id="lms-makemacs" xreflabel="lms-makemacs">
 	<title>lms-makemacs</title>
 	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra filtruj±ce ruch
 	    u¿ytkowników na bazie testu adresu ¼ród³owego MAC. Dla ka¿dego komputera generowana jest
@@ -619,7 +619,7 @@ http://www.naszasiec.pl/</screen></example>
 		</listitem>
 	    </itemizedlist>
     </sect2>
-    <sect2 id="lms-makehosts">
+    <sect2 id="lms-makehosts" xreflabel="lms-makehosts">
 	<title>lms-makehosts</title>
 	    <para>Skrypt s³u¿±cy do generowania pliku /etc/hosts zawieraj±cego odwzorowania nazw komputerów
 	    na adresy IP.
@@ -666,7 +666,7 @@ http://www.naszasiec.pl/</screen></example>
 		</listitem>
 	    </itemizedlist>
     </sect2>
-    <sect2 id="lms-makewarnings">
+    <sect2 id="lms-makewarnings" xreflabel="lms-makewarnings">
 	<title>lms-makewarnings</title>
 	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
 	    u¿ytkowników o saldzie mniejszym lub równym od zadanego na zadany adres IP i port (wykorzystywana
@@ -729,7 +729,7 @@ http://www.naszasiec.pl/</screen></example>
 		</listitem>
 	    </itemizedlist>
     </sect2>
-    <sect2 id="lms-makemessages">
+    <sect2 id="lms-makemessages" xreflabel="lms-makemessages">
 	<title>lms-makemessages</title>
 	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
 	    u¿ytkowników dla których zosta³o w³±czone przekazywanie wiadomo¶ci administracyjnej (ostrze¿enia) na zadany adres IP i port (wykorzystywana
@@ -787,7 +787,7 @@ http://www.naszasiec.pl/</screen></example>
 		</listitem>
 	    </itemizedlist>
     </sect2>
-    <sect2 id="lms-fping">
+    <sect2 id="lms-fping" xreflabel="lms-fping">
 	<title>lms-fping</title>
 	    <para>Skrypt zapisuje do bazy informacje o aktywno¶ci komputerów. 
 	    Do skanowania wykorzystywany jest szybki program fping (z opcjami -ar1). 
@@ -816,7 +816,7 @@ http://www.naszasiec.pl/</screen></example>
 		</listitem>
 	    </itemizedlist>
     </sect2>
-    <sect2 id="lms-rtparser">
+    <sect2 id="lms-rtparser" xreflabel="lms-rtparser">
 	<title>lms-rtparser</title>
 	    <para>Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który wspó³pracuj±c
 	    z serwerm pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
