@@ -49,10 +49,12 @@
 	</TR>		
 	<TR CLASS="DARK">
 		<TD COLSPAN="6" CLASS="FALL">
-			<B>Strona: 
+			<B>Strona:
+				{if $page > 1}<A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$userlist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
 		</TD>
 	</TR>
@@ -95,6 +97,17 @@
 		</TD>
 	</TR>
 	{/section}
+	<TR CLASS="DARK">
+		<TD COLSPAN="6" CLASS="FALL">
+			<B>Strona:
+				{if $page > 1}<A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$userlist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+		</TD>
+	</TR>
 	<TR bgColor="#DFD5BD">
 		<TD colspan="2" class="fleftu" align="right" valign="top">
 			<IMG SRC="img/info2.gif" border="0" alt="" align="absmiddle"> <B>Razem: {$listdata.total}</B>	
