@@ -889,4 +889,8 @@ function getdir($pwd = './', $pattern = '^.*$')
 	return $files;
 }
 
+function sql_random()
+{
+	return ( rand()/getrandmax() );
+}
 ?>
