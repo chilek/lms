@@ -404,9 +404,14 @@ class LMS
 		return $this->DB->GetOne("SELECT ".$this->DB->Concat("UPPER(lastname)","' '","name")." FROM users WHERE id=?", array($id));
 	}
 
-	function GetEmails($group)
+	function GetEmails($group, $network=NULL)
 	{
-		return $this->DB->GetAll("SELECT email, ".$this->DB->Concat("lastname", "' '", "name")." AS username FROM users WHERE deleted = 0 AND email != '' ".($group !=0 ? "AND status='".$group."'" : ""));
+		
+		if($network) {
+			$net = $this->GetNetworkParams($network);
+			return $this->DB->GetAll('SELECT email, '.$this->DB->Concat('lastname', "' '", 'users.name').' AS username FROM users, nodes WHERE users.id = ownerid AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].") AND deleted = 0 AND email != '' ".($state !=0 ? ' AND status = '.$state :''));
+		} else
+			return $this->DB->GetAll('SELECT email, '.$this->DB->Concat('lastname', "' '", 'users.name')." AS username FROM users WHERE deleted = 0 AND email != '' ".($group !=0 ? "AND status='".$group."'" : ''));
 	}
 
 	function GetUserEmail($id)
@@ -642,7 +647,7 @@ class LMS
 			break;
 
 			case "id":
-				$sqlord = "ORDER BY id";
+				$sqlord = "ORDER BY users.id";
 			break;
 
 			case "address":
@@ -673,10 +678,10 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 		
-		// JOIN with networks and nodes is slowest, so we got two queries here
+		// JOIN with table nodes is slowest, so we have got two queries here
 		if($network) {
 			$net = $this->GetNetworkParams($network);
-			$query = 'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, email, phone1, users.address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users, cash, networks, nodes WHERE users.id = cash.userid AND users.id = ownerid AND (type = 3 OR type = 4) AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') AND networks.id = '.$network.' AND deleted = 0 '.($state !=0 ? ' AND status = '.$state :'').' GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, users.address, gguin, nip, pesel, zip, city, info '.($sqlord !='' ? $sqlord.' '.$direction:'');
+			$query = 'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, email, phone1, users.address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users, cash, nodes WHERE users.id = cash.userid AND users.id = ownerid AND (type = 3 OR type = 4) AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].') AND deleted = 0 '.($state !=0 ? ' AND status = '.$state :'').' GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, users.address, gguin, nip, pesel, zip, city, info '.($sqlord !='' ? $sqlord.' '.$direction:'');
 		} else
 			$query = 'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, email, phone1, address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (type = 3 OR type = 4) WHERE deleted = 0 '.($state !=0 ? ' AND status = '.$state :'').' GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info '.($sqlord !='' ? $sqlord.' '.$direction:'');
 		
@@ -2346,7 +2351,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function Mailing($mailing)
 	{
-		if($emails = $this->GetEmails($mailing['group']))
+		if($emails = $this->GetEmails($mailing['group'], $mailing['network']))
 		{
 			if($this->CONFIG['phpui']['debug_email'])
 				echo "<B>Uwaga! Tryb debug (u¿ywam adresu ".$this->CONFIG['phpui']['debug_email'].")</B><BR>";
