@@ -3,6 +3,7 @@ $Id$
 wersja 1.5.2 (??/??/????):
 
   - experymentalny driver do MS SQL Servera (alec)
+  - poprawne tworzenie shared-network w lms-makedhcpconf (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 
