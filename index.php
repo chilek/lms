@@ -131,15 +131,6 @@ if($cfg = $DB->GetAll('SELECT section, var, value FROM uiconfig WHERE disabled=0
 		$_CONFIG[$row['section']][$row['var']] = $row['value'];
 
 $_TIMEOUT = $_CONFIG['phpui']['timeout'];
-$_FORCE_SSL = $_CONFIG['phpui']['force_ssl'];
-
-// Redirect to SSL
-
-if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
-{
-	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-	exit(0);
-}
 
 // Initialize templates engine
 
@@ -162,6 +153,17 @@ require_once($_LIB_DIR.'/checkdirs.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
 require_once($_LIB_DIR.'/accesstable.php');
+
+$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
+
+// Redirect to SSL
+
+if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
+{
+	header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+	exit(0);
+}
+
 
 //print_r($SMARTY->_tpl_vars['missing_strings']);
 

@@ -22,6 +22,10 @@ wersja 1.5.4 (??/??/????):
     nazwê i email nadawcy (alec)
   - BTS#0000280: poprawione b³êdne zaokr±glanie oraz sumowanie ogólnej kwoty
     podatku na rejestrze sprzeda¿y (.PaKud/alec)
+  - force_ssl z [phpui] nie by³o parsowane przez chkconfig, wiêc sprawdzanie
+    czy trzeba wymusiæ SSL zosta³o przeniesione kawa³ek dalej, po wszystkich
+    includach (i tak do d..y bo po co pó³ tony biliotek i innych pierdó³ skoro
+    skoro i tak zaraz bêdzie redirect) (lukasz)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
