@@ -197,8 +197,6 @@ my $itemid;
 $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, description, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $currtime OR datefrom = 0) AND (dateto > $currtime OR dateto = 0) ORDER BY userid, invoice, value DESC");
 $dbq->execute();
 
-print "UID:\tValue:\tFor:\n" if not $quiet;
-
 while(my $assign = $dbq->fetchrow_hashref())
 {
 	my $uid = $assign->{'userid'};
@@ -294,7 +292,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 		}
 
 		$cdbq->execute();
-		print STDERR "$uid\t$assign->{'value'}\t$desc\n" if not $quiet;
+		print STDERR "CID:$uid\tVAL:$assign->{'value'}\tDESC:$desc\n" if not $quiet;
 	}
 }	
 
@@ -306,7 +304,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 {
 	my $sdbq = $dbase->prepare("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES ($currtime, 0, 2, $assign->{'value'}, 0, '$assign->{'name'}/$assign->{'creditor'}', 0)");
 	$sdbq->execute();
-	print STDERR "0\t$assign->{'value'}\t$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
+	print STDERR "CID:0\tVAL:$assign->{'value'}\tDESC:$assign->{'name'}/$assign->{'creditor'}\n" if not $quiet;
 }
 
 $dbq = $dbase->prepare("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
