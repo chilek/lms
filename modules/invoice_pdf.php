@@ -23,7 +23,6 @@
  *
  *  $Id$
  */
-
 // Faktury w PDF, do u¿ycia z formularzami FT-0100 (c) Polarnet
 // w razie pytañ mailto:lexx@polarnet.org
 
@@ -458,7 +457,6 @@ elseif($_GET['fetchallinvoices'])
 
 	foreach($ids as $idx => $invoiceid)
 	{
-		echo '<PRE>';
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 		foreach(split('\+', $which) as $type)
