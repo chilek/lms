@@ -74,6 +74,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		fprintf(fh, "%s", hm->append);
 		fclose(fh);
 		system(hm->command);
+#ifdef DEBUG
+		syslog(LOG_INFO,"DEBUG: mod_hostfile reload finished");
+#endif
 	}
 	else
 		syslog(LOG_ERR, "mod_hostfile: Unable to write a temporary file '%s'", hm->tmpfile);
@@ -104,7 +107,9 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	hm->tmpfile = strdup(g->iniparser_getstring(ini, "hostfile:tempfile", "/tmp/mod_hostfile"));
 	hm->command = strdup(g->iniparser_getstring(ini, "hostfile:command", ""));
 	g->iniparser_freedict(ini);
-
+#ifdef DEBUG
+	syslog(LOG_INFO,"DEBUG: mod_hostfile initialized");
+#endif
 	return(hm);
 }
 
