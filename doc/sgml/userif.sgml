@@ -209,62 +209,29 @@
  	<title>Dodatki</title>
 	<sect2 id="user-staff-faktury">
 		<title>Faktury</title>
-		<para>LMS umo¿liwia wystawianie faktur. Opcja ta jest standardowo wy³±czona, dlatego na wstêpie
-		musisz w sekcji <emphasis>[finances]</emphasis> <filename>lms.ini</filename> ustawiæ nastêpuj±ce 
-		parametry:
+		<para>LMS umo¿liwia wystawianie faktur. W³±czenia tej opcji dokonuje siê podczas
+		przypisywania taryf u¿ytkownikowie. Do poprawnego dzia³ania i tworzenia wydruków
+		wymagane jest ustawienie podstawowych opcji w sekcji <emphasis>[invoices]</emphasis> 
+		<filename>lms.ini</filename>:
 		<itemizedlist>
 		<listitem>
-			<para>enable_faktury</para>
-			<para>W³±czenie modu³u wystawiania faktur</para>
-			<para>Przyk³ad: <prompt>enable_faktury = 1</prompt></para>
-		</listitem>
-		<listitem>
-			<para>name</para>
-			<para>Nazwa sieci/organizacji na fakturze</para>
-			<para>Przyk³ad: <prompt>name = "Blokowa Sieæ Komputerowa K-27"</prompt></para>
-		</listitem>
-		<listitem>
-			<para>address</para>
-			<para>Adres sieci</para>
-			<para>Przyk³ad: <prompt>address = "Wiosenna 52"</prompt></para>
-		</listitem>
-		<listitem>
-			<para>zip</para>
-			<para>Kod pocztowy</para>
-			<para>Przyk³ad: <prompt>zip = "39-300"</prompt></para>
-		</listitem>
-		<listitem>
-			<para>city</para>
-			<para>Nazwa miasta</para>
-			<para>Przyk³ad: <prompt>city = "Mielec"</prompt></para>
-		</listitem>
-		<listitem>
-			<para>deadline</para>
-			<para>Termin zaplaty w dniach</para>
-			<para>Przyk³ad: <prompt>deadline = 5</prompt></para>
-		</listitem>
-		<listitem>
-			<para>bank</para>
-			<para>Nazwa banku</para>
-			<para>Przyk³ad: <prompt>bank = "Bank S.A. O/Mielec"</prompt></para>
-		</listitem>
-		<listitem>
-			<para>account</para>
-			<para>Numer konta bankowego</para>
-			<para>Przyk³ad: <prompt>account = "123-456789-01"</prompt></para>
+			<para>seller</para>
+			<para>Dane sprzedawcy. Domy¶lnie: pusty</para>
+			<para>Przyk³ad: <prompt>seller = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"</prompt></para>
 		</listitem>
 		<listitem>
 			<para>footer</para>
-			<para>Stopka widoczna na fakturze</para>
-			<para>Przyk³ad: <prompt>footer = "BSK K-27 w Mielcu, tel.5839455, fax.1234567"</prompt></para>
+			<para>Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta</para>
+			<para>Przyk³ad: <prompt>footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu, tel.555-23-23, bla bla"</prompt></para>
 		</listitem>
 		<listitem>
-			<para>template</para>
-			<para>Szablon faktury do u¿ycia</para>
-			<para>Przyk³ad: <prompt>template = /etc/lms/faktura.rtf</prompt></para>
+			<para>default_author</para>
+			<para>Domy¶lna osoba wystawiaj±ca fakturê. Domy¶lnie: puste</para>
+			<para>Przyk³ad: <prompt>default_author = "specjalista d/s fakturowania"</prompt></para>
 		</listitem>
 		</itemizedlist>
 		</para>
+	<!--
 		<para>Szablon jest niczym innym jak dokumentem tekstowym w formacie RTF (tekstowym)
 		lub html który mo¿na stworzyæ pod dowolnym programem obs³uguj±cym RTF. Plik ten
 		powinien wygl±daæ jak gotowa faktura, a pozycje które maj± byæ rozwijane przez
@@ -298,11 +265,10 @@
 		<note><para>Przyk³adowy szablon znajduje siê w katalogu sample (faktura.rtf) i by³
 				testowany pod OpenOffice i M$ Office.</para></note>
 		</para>
+	-->
 		<para>Wystawianie faktur jest dostêpne w oknie 'Rachunek u¿ytkownika', do
 		którego trafisz wybieraj±c ¿±danego u¿ytkownika z listy u¿ytkownków.
-		<warning><para>W bazie danych zapisywane s± kwoty netto. Jak na razie, nie ma
-				mo¿liwo¶ci ustawienia kilku stawek podatku VAT.</para></warning>
-		<warning><para>Do postaci s³ownej rozwi±zywane s± liczby mniejsze od 999.</para></warning>
+		<warning><para>W bazie danych zapisywane s± kwoty brutto. </para></warning>
 		</para>
  </sect2>
  <sect2 id="user-staff-stats">
