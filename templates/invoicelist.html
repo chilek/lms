@@ -4,47 +4,49 @@
 <H1>{$layout.pagetitle}</H1>
 <FORM METHOD="POST" NAME="page">
 {section name=marked loop=$marked}
-    <INPUT TYPE="hidden" NAME="marks[{$marked[marked]}]" VALUE="{$marked[marked]}">
+	<INPUT TYPE="hidden" NAME="marks[{$marked[marked]}]" VALUE="{$marked[marked]}">
 {/section}
 {literal}
 <SCRIPT language=JavaScript>
 	<!--
 	function CheckAll()
 	{
-	for (var i=0; i<document.page.elements.length; i++)
-	{
-	    var e = document.page.elements[i];
-	    if (e.name != 'allbox')
-    		e.checked = document.page.allbox.checked;
+		for (var i=0; i<document.page.elements.length; i++)
+		{
+			var e = document.page.elements[i];
+			if (e.name != 'allbox')
+			e.checked = document.page.allbox.checked;
+		}
 	}
-    }
-    function prints()
-    {
-	document.page.action="?m=invoice&print=cached";
-	document.page.target="_blank";
-	document.page.submit();
-    }
-    function prints_org()
-    {
-	    document.page.action="?m=invoice&print=cached&which=ORYGINA£";
-	    document.page.target="_blank";
-	    document.page.submit();
-	    
-	  }
-	  function prints_cpy()
-	  {
-		  document.page.action="?m=invoice&print=cached&which=KOPIA";
-		  document.page.target="_blank";
-		  document.page.submit();
-
-	  }
-    function page_change()
-    {
-	document.page.action="?m=invoicelist";
-	document.page.target="";
-	document.page.submit();
-    }
-//-->
+	
+	function prints()
+	{
+		document.page.action="?m=invoice&print=cached";
+		document.page.target="_blank";
+		document.page.submit();
+	}
+	
+	function prints_org()
+	{
+		document.page.action="?m=invoice&print=cached&which=ORYGINA£";
+		document.page.target="_blank";
+		document.page.submit();
+	}
+	
+	function prints_cpy()
+	{
+		document.page.action="?m=invoice&print=cached&which=KOPIA";
+		document.page.target="_blank";
+		document.page.submit();
+	}
+	
+	function page_change()
+	{
+		document.page.action="?m=invoicelist";
+		document.page.target="";
+		document.page.submit();
+	}
+	//-->
 </SCRIPT>
 {/literal}
 <TABLE WIDTH="100%" CELLPADDING="3">
@@ -101,7 +103,7 @@
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			{cycle print=false}
-			<INPUT STYLE="border-style: none; background-color: {cycle};"  TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
+			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0" TARGET="_BLANK"></A>
 		</TD>
 	</TR>
