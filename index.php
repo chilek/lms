@@ -128,6 +128,10 @@ $SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 $SMARTY->debugging = chkconfig($_CONFIG[phpui][smarty_debug]);
 
+// assign language variable.
+
+$SMARTY->assign('lang',$lang);
+
 $layout[logname]=$SESSION->logname;
 $layout[logid]=$SESSION->id;
 $layout[lmsv]='1.1-cvs ('.$LMS->_version.'/'.$SESSION->_version.')';
