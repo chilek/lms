@@ -28,6 +28,12 @@ $queue = $_POST['queue'];
 
 if(isset($queue))
 {
+	if($queue['name']=='' && $queue['email']=='' && $queue['description']=='')
+	{
+		header('Location: ?m=rtqueuelist');
+		die;
+	}
+
 	if($queue['name'] == '')
 		$error['name'] = "Kolejka musi posiadaæ nazwê!";
 
