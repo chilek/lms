@@ -1,0 +1,202 @@
+/*
+ * LMS version 1.1-cvs
+ *
+ *  (C) Copyright 2001-2003 LMS Developers
+ *
+ *  Please, see the doc/AUTHORS for more information about authors!
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License Version 2 as
+ *  published by the Free Software Foundation.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ *  USA.
+ *
+ *  $Id$
+ */
+
+#include <stdio.h>
+#include <syslog.h>
+#include <string.h>
+
+#include "almsd.h"
+#include "dhcp.h"
+
+unsigned long inet_addr(char *);
+char * inet_ntoa(unsigned long);
+
+void reload(GLOBAL *g, struct dhcp_module *dhcp)
+{
+	FILE *fh;
+	QUERY_HANDLE *res;
+	int cid_address, cid_mask, cid_gateway, cid_dns, cid_dns2, cid_domain, cid_wins, cid_dhcpstart, cid_dhcpend, cid_mac, cid_name, cid_ip;
+	int i;
+	struct hostcache
+	{
+		unsigned char *name;
+		unsigned char *mac;
+		unsigned long ipaddr;
+	} *hosts = NULL;
+	int nh = 0;
+	unsigned char *name, *mac, *ipaddr;
+	
+	fh = fopen(dhcp->tmpfile, "w");
+	if(fh) {
+		
+		if( (res = g->db_query("SELECT name, mac, ipaddr FROM nodes ORDER BY ipaddr"))!=NULL ) {
+		
+			for(i=0; i<res->nrows; i++) {
+				
+				name = g->db_get_data(res,i,"name");
+				mac = g->db_get_data(res,i,"mac");
+				ipaddr = g->db_get_data(res,i,"ipaddr");
+				
+				if(name && mac && ipaddr) {
+					hosts = (struct hostcache*) realloc(hosts, sizeof(struct hostcache) * (nh + 1));
+					hosts[nh].name = strdup(name);
+					hosts[nh].mac = strdup(mac);
+					hosts[nh].ipaddr = inet_addr(ipaddr);
+					nh++;
+				}
+			}
+			g->db_free(res);
+		}
+		fprintf(fh, "%s\n", dhcp->prefix);
+		
+		if( (res = g->db_query("SELECT address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks"))!=NULL ) {
+		
+			for(i=0; i<res->nrows; i++) {
+			
+				unsigned char *s, *d, *d2, *e;
+				unsigned long netmask, network;
+			
+				s = strdup(dhcp->subnetstart);
+				s = g->str_replace(s, "%a", e = g->db_get_data(res,i,"address"));
+				s = g->str_replace(s, "%m", d = g->db_get_data(res,i,"mask"));
+				fprintf(fh, "%s\n", s);
+				free(s);
+			
+				network = inet_addr(e);
+				netmask = inet_addr(d);
+
+				if( (d = g->db_get_data(res,i,"dhcpstart")) && ((e = g->db_get_data(res,i,"dhcpend"))) ) {
+					if( strlen(d) && strlen(e) ) {
+						s = strdup(dhcp->rangeline);
+						s = g->str_replace(s, "%s", d);
+						s = g->str_replace(s, "%e", e);
+						fprintf(fh, "%s\n", s);
+						free(s);
+					}
+				}
+			
+				if( (d = g->db_get_data(res,i,"gateway")) ) {
+					if( strlen(d) ) {
+						s = strdup(dhcp->gateline);
+						s = g->str_replace(s, "%i", d);
+						fprintf(fh, "%s\n", s);
+						free(s);
+					}
+				}
+
+				if( (d = g->db_get_data(res,i,"dns")) )
+					if( (d2 = g->db_get_data(res,i,"dns2")) ) {
+						if( strlen(d) && strlen(d2) ) {
+							sprintf(e,"%s,%s",d,d2);
+							s = strdup(dhcp->dnsline);
+							s = g->str_replace(s, "%i", e);
+							fprintf(fh, "%s\n", s);
+							free(s);
+						} else if (strlen(d)) {
+							s = strdup(dhcp->dnsline);
+							s = g->str_replace(s, "%i", d);
+							fprintf(fh, "%s\n", s);
+							free(s);
+						}
+					}
+
+				if( (d = g->db_get_data(res,i,"domain")) ) {
+					if( strlen(d) ) {
+						s = strdup(dhcp->domainline);
+						s = g->str_replace(s, "%n", d);
+						fprintf(fh, "%s\n", s);
+						free(s);
+					}
+				}
+
+				if( (d = g->db_get_data(res,i,"wins")) ) 
+					if( strlen(d) ) {
+						s = strdup(dhcp->winsline);
+						s = g->str_replace(s, "%i", d);
+						fprintf(fh, "%s\n", s);
+						free(s);
+					}
+				
+				for(i=0; i<nh; i++) {
+					if( (hosts[i].ipaddr & netmask) == network ) {
+						s = strdup(dhcp->host);
+						s = g->str_replace(s, "%i", inet_ntoa(hosts[i].ipaddr));
+						s = g->str_replace(s, "%n", hosts[i].name);
+						s = g->str_replace(s, "%m", hosts[i].mac);
+						fprintf(fh, "%s\n", s);
+						free(s);
+					}
+				}
+
+				fprintf(fh, "%s\n", dhcp->subnetend);
+			}
+		g->db_free(res);
+		}
+		
+		// cleanup
+		for(i=0; i<nh; i++) {
+			free(hosts[i].name);
+			free(hosts[i].mac);
+		}
+		free(hosts);
+		
+		fprintf(fh, "%s", dhcp->append);
+		fclose(fh);
+		system(dhcp->command);
+	}
+	else
+		syslog(LOG_ERR, "mod_dhcp: Unable to write a temporary file '%s'", dhcp->tmpfile);
+}
+
+struct dhcp_module * init(GLOBAL *g, MODULE *m)
+{
+	struct dhcp_module *dhcp;
+	int i;
+	dictionary *ini;
+	
+	if(g->api_version != APIVERSION) 
+		return (NULL);
+	
+	dhcp = (struct dhcp_module*) realloc(m, sizeof(struct dhcp_module));
+	
+	dhcp->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
+	
+	ini = g->iniparser_load(g->inifile);
+	dhcp->prefix = g->iniparser_getstring(ini, "dhcp:start", "shared-network LMS {");
+	dhcp->append = g->iniparser_getstring(ini, "dhcp:end", "}");
+	dhcp->subnetstart = g->iniparser_getstring(ini, "dhcp:subnet_start", "subnet %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time 86400;");
+	dhcp->subnetend = g->iniparser_getstring(ini, "dhcp:subnet_end", "}");
+	dhcp->gateline = g->iniparser_getstring(ini, "dhcp:subnet_gateway", "option routers %i;");
+	dhcp->dnsline = g->iniparser_getstring(ini, "dhcp:subnet_dns", "option domain-name-servers %i;");
+	dhcp->domainline = g->iniparser_getstring(ini, "dhcp:subnet_domain", "option domain-name %n;");
+	dhcp->winsline = g->iniparser_getstring(ini, "dhcp:subnet_wins", "option netbios-name-servers %i;");
+	dhcp->rangeline = g->iniparser_getstring(ini, "dhcp:subnet_range", "range %s %e;");
+	dhcp->host = g->iniparser_getstring(ini, "dhcp:host", "\thost %n {\n\t\thardware ethernet %m; fixed-address %i; \n\t}");
+	dhcp->tmpfile = g->iniparser_getstring(ini, "dhcp:file", "/tmp/lms_dhcpd.conf");
+	dhcp->command = g->iniparser_getstring(ini, "dhcp:command", "");
+	g->iniparser_freedict(ini);
+	
+	return(dhcp);
+}
+
