@@ -1,5 +1,6 @@
 * 04.12.2003
   - dodane funkcje db_pexec() i db_pquery() (alec)
+  - w zapytaniach u¿ywamy teraz '%NOW%' zamiast '?NOW?' (alec)
  
 * 02.12.2003
   - modu³ 'payments' przystosowany do nowych faktur (alec)

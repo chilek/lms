@@ -119,18 +119,14 @@ QUERY_HANDLE * db_pquery(unsigned char *q, ... )
     QUERY_HANDLE *query;
     va_list ap;
     int i;
-    unsigned char *p, *s, *result, *temp, *stmt;
-
-    // first parse query (to remove special sequences like '?NOW?')
-    stmt = strdup(q);
-    parse_query_stmt(&stmt);
+    unsigned char *p, *s, *result, *temp;
     
     result = (unsigned char*) strdup("");
     s = (unsigned char *) malloc (sizeof(unsigned char*));    
     
-    // now parse
-    va_start(ap, stmt);
-    for(p=stmt; *p; p++) {
+    // find '?' and replace with arg value
+    va_start(ap, q);
+    for(p=q; *p; p++) {
 	    if( *p != '?' ) {
 		    i = strlen(result)+2;
 		    s = (unsigned char*) realloc(s, i);
@@ -146,10 +142,10 @@ QUERY_HANDLE * db_pquery(unsigned char *q, ... )
     } 
     va_end(ap);
     
-    // and execute prepared query
+    // execute prepared query
     query = db_query(result);
     // free temporary vars
-    free(s); free(stmt); free(result);
+    free(s); free(result);
     
     return query;
 }
@@ -192,17 +188,13 @@ int db_pexec(unsigned char *q, ... )
     va_list ap;
     int i, res;
     unsigned char *p, *s, *result, *temp;
-
-    // first parse query (to remove special sequences like '?NOW?')
-    unsigned char *stmt = strdup(q);
-    parse_query_stmt(&stmt);
     
     result = (unsigned char*) strdup("");
     s = (unsigned char *) malloc (sizeof(unsigned char*));    
     
-    // now parse
-    va_start(ap, stmt);
-    for(p=stmt; *p; p++) {
+    // find '?' and replace with arg value
+    va_start(ap, q);
+    for(p=q; *p; p++) {
 	    if( *p != '?' ) {
 		    i = strlen(result)+2;
 		    s = (unsigned char*) realloc(s, i);
@@ -218,11 +210,11 @@ int db_pexec(unsigned char *q, ... )
     } 
     va_end(ap);
     
-    // and execute prepared query
+    // execute prepared query
     res = db_exec(result);
     // free temporary vars
-    free(s); free(stmt); free(result);
-    
+    free(s); free(result);
+
     return res;
 }
 
@@ -381,10 +373,10 @@ static QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
 void parse_query_stmt(unsigned char **stmt)
 {
 #ifdef USE_MYSQL
-    str_replace(stmt,"?NOW?","UNIX_TIMESTAMP()");
+    str_replace(stmt,"%NOW%","UNIX_TIMESTAMP()");
 #endif
 #ifdef USE_PGSQL
-    str_replace(stmt,"?NOW?","EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))");
+    str_replace(stmt,"%NOW%","EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))");
     str_replace(stmt,"LIKE","ILIKE");
     str_replace(stmt,"like","ILIKE");
 #endif
