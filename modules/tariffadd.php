@@ -44,9 +44,11 @@ if(isset($tariffadd))
 
 	if(!(ereg("^[0-9]+$", $tariffadd[uprate])) && $tariffadd[uprate] != "")
 		$error[uprate] = "Pole upstream musi zawieraæ liczbê ca³kowit±";
+	if($tariffadd[uprate]=="") $tariffadd[uprate]=0;
 		
 	if(!ereg("^[0-9]+$", $tariffadd[downrate]) && $tariffadd[downrate] != "")
 		$error[downrate] = "Pole downstream zawieraæ liczbê ca³kowit±";
+	if($tariffadd[downrate]=="") $tariffadd[downrate]=0;
 	
 	if(($tariffadd[uprate] < 8 || $tariffadd[uprate] > 4096) && $tariffadd[uprate] != "")
 		$error[uprate] = "Pole upstream musi zawieraæ liczbê z przedzia³u 8 - 4096";
@@ -55,7 +57,7 @@ if(isset($tariffadd))
 		$error[downrate] = "Pole downstream musi zawieraæ liczbê z przedzia³u 8 - 4096";
 	
 	if($tariffadd[name] == "")
-		$error[name] = "Musisz podaæ nazwê sieci!";
+		$error[name] = "Musisz podaæ nazwê taryfy!";
 	else
 		if($LMS->GetTariffIDByName($tariffadd[name]))
 			$error[name] = "Istnieje ju¿ taryfa o nazwie '".$tariffadd[name]."'!";
@@ -76,6 +78,9 @@ $SMARTY->display("tariffadd.html");
 
 /*
  * $Log$
+ * Revision 1.24  2003/09/06 07:41:17  alec
+ * dodana mo¿liwo¶æ tworzenia taryfy bez uprate i downrate, kosmetyka
+ *
  * Revision 1.23  2003/09/05 13:11:24  lukasz
  * - nowy sposób wy¶wietlania informacji o b³êdach
  *
