@@ -43,6 +43,8 @@ wersja 1.3.7 (??/??/2004):
     dla modu³ów uruchamianych z crona (alec)
   - na mapie sieci zwiêkszony górny margines i usuniête b³êdy wyst. przy
     braku pod³±czonych komputerów (lukas)
+  - w contrib/sqlpanel wyniki poleceñ sql przepuszczane s± przez funkcje
+    nl2br() i htmlspecialchars() (alec)
 
 wersja 1.3.6 Osiris (01/09/2004);
 
