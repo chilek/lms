@@ -2225,7 +2225,7 @@ class LMS
 	{
 		$this->SetTS('nodes');
 		$this->SetTS('networks');
-		$network=$this->GetNetworkRecord($id);
+		$network=$this->GetNetworkRecord($id, 0, 4294967296);
 		$address = $network['addresslong']+$shift;
 		foreach($network['nodes']['id'] as $key => $value)
 		{
@@ -2241,8 +2241,8 @@ class LMS
 	{
 		$this->SetTS('nodes');
 		$this->SetTS('networks');
-		$network['source'] = $this->GetNetworkRecord($src);
-		$network['dest'] = $this->GetNetworkRecord($dst);
+		$network['source'] = $this->GetNetworkRecord($src, 0, 4294967296);
+		$network['dest'] = $this->GetNetworkRecord($dst, 0, 4294967296);
 		foreach($network['source']['nodes']['id'] as $key => $value)
 			if($this->NodeExists($value))
 				$nodelist[] = $value;
