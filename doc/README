@@ -1,3 +1,4 @@
+
 LMS - LAN Management System 1.1-cvs
 
    [logo-small.png]
@@ -115,10 +116,12 @@ Rozdzia³ 1. Wstêp
        Micha³ 'DziQs' Zapalski
        Rados³aw 'Warden' Antoniuk
        Krzysztof 'hunter' Drewicz
+       Marcin 'Lexx' Król
      * Kod C:
 
        Mateusz 'mteg' Golicz
        Aleksander 'A.L.E.C' Machniak
+       Marcin 'Lexx' Król
      * Kod Perl:
 
        £ukasz 'Baseciq' Mozer
@@ -1003,7 +1006,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
      * header
        Dane sprzedawcy. Domy¶lnie: pusty. Mo¿na u¿yæ ci±gu "\n" aby
        oddzieliæ linie od siebie.
-       Przyk³ad: seller = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"
+       Przyk³ad: header = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"
      * footer
        Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta. Stopka
        zostanie umieszczona na dole faktury, ma³± czcionk±. Podobnie jak
