@@ -88,93 +88,52 @@ function execute_program ($program, $args = '')
 	}
 }
 
+function uptimef($ts)
+{
+	if($ts==0)
+		return "n/a";
+	$min= $ts / 60;
+	$hours = $min / 60;
+	$days  = floor($hours / 24);
+	$hours = floor($hours - ($days * 24));
+	$min= floor($min - ($days * 60 * 24) - ($hours * 60));
+	if ($days != 0)
+		$result = $days.' dni ';
+	if ($hours != 0)
+		$result .= $hours.' godzin ';
+	$result .= $min.' minut';
+	
+	return $result;
+}
+
 function uptime()
 {
-
-	// Uptime function.
-	// Taken afair from PHPSysinfo
-	// Untested on *BSD. Can anyone chek this out on *BSD machine? Thanx.
+	// Uptime function. Taken afair from PHPSysinfo.
 
 	switch (PHP_OS)
 	{
-
 		case 'Linux':
 			$fd = fopen('/proc/uptime', 'r');
 			$ar_buf = split(' ', fgets($fd, 4096));
 			fclose($fd);
 			$sys_ticks = trim($ar_buf[0]);
-			$min= $sys_ticks / 60;
-			$hours = $min / 60;
-			$days  = floor($hours / 24);
-			$hours = floor($hours - ($days * 24));
-			$min= floor($min - ($days * 60 * 24) - ($hours * 60));
-			if ($days != 0)
-				$result = $days.' dni ';
-			if ($hours != 0)
-				$result .= $hours.' godzin ';
-			$result .= $min.' minut';
+			$result = uptimef($sys_ticks);
 		break;
-
 		case 'FreeBSD':
 			$s = explode(' ', bsd_grab_key('kern.boottime'));
 			$a = ereg_replace('{ ', '', $s[3]);
 			$sys_ticks = time() - $a;
-			$min= $sys_ticks / 60;
-			$hours = $min / 60;
-			$days  = floor($hours / 24);
-			$hours = floor($hours - ($days * 24));
-			$min= floor($min - ($days * 60 * 24) - ($hours * 60));
-
-			if ( $days != 0 )
-			{
-				$result = $days.' dni ';
-			}
-
-			if ( $hours != 0 )
-			{
-				$result .= $hours.' godzin ';
-			}
-			$result .= $min.' minut';
+			$result = uptimef($sys_ticks);
 		break;
 		case 'NetBSD':
 			$a = bsd_grab_key('kern.boottime');
 			$sys_ticks = time() - $a;
-			$min= $sys_ticks / 60;
-			$hours = $min / 60;
-			$days  = floor($hours / 24);
-			$hours = floor($hours - ($days * 24));
-			$min= floor($min - ($days * 60 * 24) - ($hours * 60));
-
-			if ( $days != 0 )
-			{
-				$result = $days.' dni ';
-			}
-
-			if ( $hours != 0 )
-			{
-				$result .= $hours.' godzin ';
-			}
-			$result .= $min.' minut';
+			$result = uptimef($sys_ticks);
 		break;
 		case 'OpenBSD':
 			$a = bsd_grab_key('kern.boottime');
 			$sys_ticks = time() - $a;
-			$min= $sys_ticks / 60;
-			$hours = $min / 60;
-			$days  = floor($hours / 24);
-			$hours = floor($hours - ($days * 24));
-			$min= floor($min - ($days * 60 * 24) - ($hours * 60));
-
-			if ( $days != 0 )
-			{
-				$result = $days.' dni ';
-			}
-
-			if ( $hours != 0 )
-			{
-				$result .= $hours.' godzin ';
-			}
-			$result .= $min.' minut';
+			$result = uptimef($sys_ticks);
 		break;
 		case 'WINNT':
 //			dl("php_w32api.dll");
@@ -189,15 +148,13 @@ function uptime()
 			}else{
 				$result = 'nieznany (brak w32api)';
 			}
-			break;
+		break;
 		default:
 			$result = 'nieznany os ('.PHP_OS.')';
 		break;
-
 	}
 
 	return $result;
-
 }
 
 function redir($url)
@@ -444,17 +401,13 @@ function writesyslog($message,$type)
 			syslog($type,$message.' (at '.$access.' from '.$_SERVER['REMOTE_ADDR'].' ('.$_SERVER['HTTP_USER_AGENT'].'))');
 
 			closelog();
-
-			break;
-
+		break;
 		default:
-
 			return FALSE;
-			break;
+		break;
 	}
 
 	return TRUE;
-
 }
 
 function rmkdir($dir)
@@ -922,5 +875,6 @@ function getdir($pwd = './', $pattern = '^.*$')
 	}
 	return $files;
 }
+
 
 ?>
