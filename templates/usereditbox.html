@@ -43,8 +43,8 @@
 			{if $userinfo.status eq "2"}<IMG SRC="img/wait.gif" ALT="" border="0">{/if}
 			{if $userinfo.status eq "1"}<IMG SRC="img/unk.gif" ALT="" border="0">{/if}
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2" {tip text="Wybierz status u¿ytkownika"}>
-			<SELECT SIZE="1" NAME="userdata[status]">
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			<SELECT SIZE="1" NAME="userdata[status]" {tip text="Wybierz status u¿ytkownika" trigger="status"}>
 				<OPTION VALUE="3"{if $userinfo.status eq "3"} SELECTED{/if}>pod³±czony</OPTION>
 				<OPTION VALUE="2"{if $userinfo.status eq "2"} SELECTED{/if}>oczekuj±cy</OPTION>
 				<OPTION VALUE="1"{if $userinfo.status eq "1"} SELECTED{/if}>zainteresowany</OPTION>

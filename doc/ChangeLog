@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.2.0 Janet (??/04/2004):
+wersja 1.2.0 Janet (27/04/2004):
 
   - poprawione b³êdne nazwy zmiennych konfiguracyjnych lms-mgc 
     w dokumentacji (alec)
@@ -9,6 +9,7 @@ wersja 1.2.0 Janet (??/04/2004):
   - dodane wykrywanie biblioteki GD przy generowaniu mapy sieci (alec)
   - dodana zapomniana obs³uga null'owych warto¶ci podatku w lms-payments
     i demonie (alec)
+  - poprawiony error-trigger w polu status usereditbox'a (alec)
 
 wersja 1.2.0rc5 Janet (18/04/2004):
 
