@@ -73,7 +73,7 @@ class LMS
 		// a teraz postinit
 
 		foreach($this->modules as $module)
-			if(! $this->$module->_postinit())
+			if(! ($this->$module != NULL ? $this->$module->_postinit() : TRUE))
 				trigger_error('Wyst±pi³y problemy z inicjalizacj± modu³u '.$module.'.');
 
 		// to siê rozejdzie po modu³ach:
@@ -2269,6 +2269,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.305  2003/12/11 12:23:06  lukasz
+ * - tsave
+ *
  * Revision 1.304  2003/12/10 21:23:33  alec
  * - adresy IP przelicza teraz baza danych
  * - teraz biore sie za testowanie lms'a pod katem ustabilizowania
