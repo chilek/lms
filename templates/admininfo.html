@@ -38,20 +38,16 @@
 					</TD>
 				</TR>
 				<TR>
-					<TD WIDTH="1%">
-						<B>
-							<NOBR>Ostatnio zalogowany:</NOBR>
-						</B>
+					<TD WIDTH="1%" NOWRAP>
+						<IMG SRC="img/empty.gif" WIDTH="16" HEIGHT="16" ALT="" BORDER="0"> <B><NOBR>Ostatnio zalogowany:</NOBR></B>
 					</TD>
 					<TD>
 						{$admininfo.lastlogin}, {$admininfo.lastloginip} {if $admininfo.lastloginip neq $admininfo.lastloginhost}({$admininfo.lastloginhost}){/if}
 					</TD>
 				</TR>
 				<TR>
-					<TD WIDTH="1%">
-						<B>
-							<NOBR>Ostatnie nieudane logowanie:</NOBR>
-						</B>
+					<TD WIDTH="1%" NOWRAP>
+						<IMG SRC="img/empty.gif" WIDTH="16" HEIGHT="16" ALT="" BORDER="0"> <B><NOBR>Ostatnie nieudane logowanie:</NOBR></B>
 					</TD>
 					<TD>
 						{$admininfo.faillogin}, {$admininfo.failedloginip} {if $admininfo.failedloginip neq $admininfo.failloginhost}({$admininfo.failloginhost}){/if}
