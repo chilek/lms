@@ -2003,7 +2003,7 @@ class LMS
 	{
 		$adminlist = $this->DB->GetAllByKey('SELECT id, name FROM admins','id');
 		$userslist = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users','id');
-		if($balancelist = $this->DB->GetAll('SELECT id, time, adminid, type, value, taxvalue, userid, comment, invoiceid FROM cash ORDER BY time ASC'))
+		if($balancelist = $this->DB->GetAll('SELECT id, time, adminid, type, value, taxvalue, userid, comment, invoiceid FROM cash ORDER BY time, id'))
 		{
 			foreach($balancelist as $idx => $row)
 			{
