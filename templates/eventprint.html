@@ -1,0 +1,59 @@
+<!--// $Id$ //-->
+{include file="clearheader.html"}
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="50%" ALIGN="LEFT" NOWRAP>
+			<H1>{$layout.pagetitle}: {$date|date_format:"%x (%A)"}</H1>
+		</TD>
+		<TD WIDTH="50%" ALIGN="RIGHT">
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %e %B %Y"}<BR>
+			{t 0=$layout.logname}Prepared by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD WIDTH="1%" CLASS="HEAD" VALIGN="TOP">
+			{t}Time{/t}
+		</TD>
+		<TD WIDTH="97%" CLASS="HEAD" ALIGN="LEFT" VALIGN="TOP">
+			{t}Title{/t}<BR>
+			{t}Description{/t}/{t}Note{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			{t}User{/t}
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			{t}Customer{/t}
+		</TD>
+	</TR>
+	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{foreach item=event from=$eventlist}
+	<TR BGCOLOR="{cycle}">
+		<TD WIDTH="1%" VALIGN="TOP" ALIGN="LEFT">
+			<NOBR>
+			{math equation="floor(x/100)" x=$event.begintime format="%02d"}:{math equation="x % 100" x=$event.begintime format="%02d"}
+			{if $event.begintime != $event.endtime}
+			- {math equation="floor(x/100)" x=$event.endtime format="%02d"}:{math equation="x % 100" x=$event.endtime format="%02d"}
+			{/if}
+			</NOBR>
+		</TD>
+		<TD WIDTH="97%" ALIGN="LEFT" VALIGN="TOP">
+			<B>{$event.title}</B><BR>
+			{$event.description}<BR>
+			{$event.note}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP">
+			{foreach item=admin from=$event.adminlist}
+				<NOBR>{$admin.name|truncate:"25":"..."}</NOBR><BR>
+			{/foreach}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP">
+			<NOBR>{$event.username|truncate:"40":"..."}</NOBR><BR>
+			<NOBR>{$event.useraddr}</NOBR><BR>
+			<NOBR>{$event.userphone}</NOBR>
+		</TD>
+	</TR>
+	{/foreach}
+</TABLE>
