@@ -55,7 +55,7 @@ lms-payments, version $_version
 -h, --help			print this help and exit;
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
--f, --fakedate=YYYYMMDD		override system date
+-f, --fakedate=YYYY/MM/DD	override system date
 -b, --balancecheck		account payments for "indebted" users only
 
 EOF
