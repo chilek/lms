@@ -25,17 +25,9 @@
  */
 
 $DB->BeginTrans();
-$DB->Execute("
-	ALTER TABLE invoices ADD zip1 VARCHAR(10);
-	UPDATE invoices SET zip1=zip;
-	ALTER TABLE invoices DROP zip;
-	ALTER TABLE invoices ADD zip VARCHAR (10);
-	UPDATE invoices SET zip=zip1;
-	ALTER TABLE invoices ALTER zip SET DEFAULT '';
-	ALTER TABLE invoices ALTER zip SET NOT NULL;
-");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005021500', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = '2005030100' WHERE keytype = 'dbversion'");
+
 $DB->CommitTrans();
 
 ?>
