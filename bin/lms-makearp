@@ -1,0 +1,251 @@
+#!/usr/bin/perl -Tw
+#
+# LMS version 1.0
+#
+#  (C) Copyright 2002 Rulez.PL Development Team
+#  (C) Copyright 2001-2002 NetX ACN
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($configfile $quiet $help $version);
+
+sub mask2prefix($)
+{
+	my $mask = shift @_;
+	my @tmp = split('\.',$mask,4);
+	my $q = sprintf("%b%b%b%b",$tmp[0],$tmp[1],$tmp[2],$tmp[3]);
+	$q =~ s/0*$//;
+	if ($q =~ /0/) {
+		print " You idiot. error in mask\n";
+	}
+	my $len = length($q) ;
+	return $len;
+}
+
+sub prefix2mask
+{
+	my $host_bits = 32-$_[0];
+	my $net_mask = (~0 << $host_bits) & 0xffffffff;
+	my @bytes = unpack "CCCC", pack "N", $net_mask;
+	my $dec_rep = sprintf "%d.%d.%d.%d", @bytes;
+	return $dec_rep;
+}					
+
+sub matchip($$$)
+{
+	my ($ip,$net,$mask) = @_;
+	my $prefix = mask2prefix($mask);
+	my $bmask = 2**32 <<(32-$prefix);
+	my @net = split('\.',$net,4);
+	my $bnet = dotquad2u32($net);
+	if(($bnet & $bmask)!= $bnet) {
+		print "EEediot net &mask != net\n"; return 1==0
+	}
+	my $bip = dotquad2u32($ip);
+	return (($bip&$bmask) == $bnet);
+}
+
+sub u32todotquad($)
+{
+	my $p = shift @_;
+	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
+}
+
+sub dotquad2u32($)
+{
+	my $dq = shift||'0.0.0.0';
+	my @dq = split('\.',$dq,4);
+	return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
+}
+
+sub isprivate($)
+{
+	my ($ip) = @_;
+	return matchip($ip,"192.168.1.0","255.255.255.0") || matchip($ip,"10.0.0.0","255.0.0.0") || matchip($ip,"172.16.0.0","255.240.0.0");
+}
+
+my $_version = '1.0-cvs';
+
+my %options = (
+	"--config-file|C=s"	=>	\$configfile,
+	"--quiet|q"		=>	\$quiet,
+	"--help|h"		=>	\$help,
+	"--version|v"		=>	\$version
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-makearp, version $_version
+(C) Copyright 2002 Rulez.PL Development Team
+(C) Copyright 2001-2002 NetX ACN
+
+-C, --config-file=/etc/lms.ini	alternate config file (default: /etc/lms.ini);
+-h, --help			print this help and exit;
+-v, --version			print version info and exit;
+-q, --quiet			suppress any output, except errors;
+
+EOF
+	exit 0;
+}
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-makearp, version $_version
+(C) Copyright 2002 Rulez.PL Development Team
+(C) Copyright 2001-2002 NetX ACN
+
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms.ini";
+}
+
+if(!$quiet)
+{
+	print STDOUT "lms-makearp, version $_version\n";
+	print STDOUT "(C) Copyright 2002 Rulez.PL Development Team\n";
+	print STDOUT "(C) Copyright 2001-2002 NetX ACN\n";
+	print STDOUT "Using file $configfile as config.\n";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+
+my $networks_list = $ini->val('arp', 'networks') || '';
+my $cfile = $ini->val('arp', 'ethers_file') || '/etc/ethers';
+my $cuid = $ini->val('arp', 'ethers_owneruid') || '0';
+my $cgid = $ini->val('arp', 'ethers_ownergif') || '0';
+my $cperm = $ini->val('arp', 'ethers_permission') || '600';
+my $lock_na = $ini->val('arp', 'lock_noaccess') || '0';
+my $lock_fip = $ini->val('arp', 'lock_free_ip') || '0';
+my $lock_dhcp = $ini->val('arp', 'lock_dhcp') || '0';
+
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+my $dbase;
+
+if($dbtype eq "mysql")
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+elsif($dbtype eq "postgres")
+{
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+
+open(ETHERSFILE, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.\n");
+
+my $allnetworks;
+
+my $dbq = $dbase->prepare("SELECT name FROM networks");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref()) {
+	$allnetworks = "$allnetworks $row->{'name'}";
+}
+
+if(!$networks_list)
+{
+	$networks_list = $allnetworks;
+}
+
+my @networks = split ' ',$networks_list;
+
+#
+# Buil nodes list
+#
+
+$dbq = $dbase->prepare("SELECT ipaddr, mac, access FROM nodes");
+$dbq->execute();
+my %maclist;
+my %accesslist;
+
+while (my $row = $dbq->fetchrow_hashref())
+{
+	$maclist{$row->{'ipaddr'}} = $row->{'mac'};
+	$accesslist{$row->{'ipaddr'}} = $row->{'access'};
+}
+
+foreach my $key (@networks)
+{
+	my $dbq = $dbase->prepare("SELECT address, mask, dhcpstart, dhcpend FROM networks WHERE name = '$key'");
+	$dbq->execute();
+	while (my $row = $dbq->fetchrow_hashref()) 
+	{
+		my $dhcpend = dotquad2u32($row->{'dhcpend'}) || '0';
+		my $dhcpstart = dotquad2u32($row->{'dhcpstart'}) || '0';
+		my $longip = dotquad2u32($row->{'address'});
+		my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
+		for(my $i=$longip;$i<$longip+$netsize;$i++)
+		{
+			my $ipaddr = u32todotquad($i);
+			if($maclist{$ipaddr})
+			{
+				if($lock_na && !($accesslist{$ipaddr} eq "Y"))
+				{
+					print ETHERSFILE "00:00:00:00:00:00\t".$ipaddr."\n";
+				}else{
+					print ETHERSFILE $maclist{$ipaddr}."\t".$ipaddr."\n";
+				}
+			}else{
+				if($lock_fip)
+				{
+					if(!($i>=$dhcpstart && $i<=$dhcpend))
+					{
+						print ETHERSFILE "00:00:00:00:00:00\t".$ipaddr."\n";
+					}
+					if(($i>=$dhcpstart && $i<=$dhcpend) && $lock_dhcp)
+					{
+						print ETHERSFILE "00:00:00:00:00:00\t".$ipaddr."\n";
+					}
+				}
+			}
+		}                                                                                                             
+	}
+}
+
+$dbase->disconnect();
+close(ETHERSFILE);
+chown $cuid, $cgid, $cfile or print "Warning! Unable to set owner of $cfile to $cuid.$cgid.\n";
+chmod oct($cperm), $cfile or print "Warning! Unable to set permission $cperm to $cfile.\n";
