@@ -46,13 +46,20 @@ else
 	$n = $_GET['n'];
 $_SESSION['uln'] = $n;
 
+if(!isset($_GET['g']))
+	$g = $_SESSION['ulg'];
+else
+	$g = $_GET['g'];
+$_SESSION['ulg'] = $g;
+
 if (isset($_SESSION['ulp']) && !isset($_GET['page']))
 	$_GET['page'] = $_SESSION['ulp'];
 
-$userlist=$LMS->GetUserList($o, $s, $n);
+$userlist=$LMS->GetUserList($o, $s, $n, $g);
 $listdata['state'] = $userlist['state'];
 $listdata['order'] = $userlist['order'];
 $listdata['network'] = $userlist['network'];
+$listdata['usergroup'] = $userlist['usergroup'];
 $listdata['direction'] = $userlist['direction'];
 
 $_SESSION['ulp'] = $page;
@@ -60,6 +67,7 @@ $_SESSION['ulp'] = $page;
 unset($userlist['total']);
 unset($userlist['state']);
 unset($userlist['network']);
+unset($userlist['usergroup']);
 unset($userlist['order']);
 unset($userlist['below']);
 unset($userlist['over']);
@@ -87,6 +95,7 @@ $start = ($page - 1) * $pagelimit;
 $SMARTY->assign('userlist',$userlist);
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('networks', $LMS->GetNetworks());
+$SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
 $SMARTY->assign('pagelimit',$pagelimit);
 $SMARTY->assign('page',$page);
 $SMARTY->assign('start',$start);
