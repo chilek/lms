@@ -285,7 +285,7 @@ if(! $prev_tid) # generate new ticket if previous not found
         my $replymail = MIME::Entity->build(
 		'Type' => "text/plain",
 		'Charset' => "ISO-8859-2",
-		'From' => $autoreply_from,
+#		'From' => $autoreply_from,
 		'Encoding' => "quoted-printable",
 		'Subject' => "[RT#".sprintf("%06d",$ticket_id)."] Potwierdzenie przyjêcia zg³oszenia o temacie '".$mh_subject."'",
 		'To' => $mh_replyto || $mh_from,
@@ -304,7 +304,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 	);
 	
 	#TODO - is sendmail via pipe is correct way?
-	open SENDMAIL, "|/usr/sbin/sendmail -t -oi -oem"
+	open SENDMAIL, "|/usr/sbin/sendmail -t -oi -oem -f $autoreply_from"
 		or die "$0: open sendmail: $!\n";
 	$replymail->print(\*SENDMAIL);
 	close SENDMAIL;
