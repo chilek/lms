@@ -18,6 +18,11 @@ wersja 1.0pre11 (??/??/2003):
     u¿ytkownika (lukasz)
   - wumieniona czê¶æ ikon (lukasz)
   - poprawki powrotnych redirectów (lukasz)
+  - zabezpieczenie przed por±banymi przegl±darkami które majstruj± z refererem
+    podczas wylogowywania siê (lukasz)
+  - dodane info o ho¶cie na górze obok logo (warden & lukasz)
+  - powróci³y lms-scripts do katalogu bin/ (lexx & lukasz)
+  - na stronie tytu³owej zamiast ID zalogowanego admina jest teraz wersja PHP
   
 wersja 1.0pre10 (15/04/2003):
 
