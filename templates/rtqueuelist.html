@@ -5,7 +5,7 @@
 <TABLE cellpadding="5" WIDTH="100%">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="95%">
-			<IMG src="img/ticket.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<IMG src="img/queue.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 			<B>Kolejka:</B><BR>
 			<IMG src="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 			Opis:
@@ -30,7 +30,7 @@
 	{foreach from=$queues item=queue}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD CLASS="fleft" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
-			<IMG src="img/ticket.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<IMG src="img/queue.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 			<B>{$queue.name}</B><BR>
 			{if $queue.description}
 				<IMG src="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle"> {$queue.description}
