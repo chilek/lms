@@ -30,6 +30,7 @@ $tariffs = $LMS->GetTariffs();
 $contents = $_SESSION['invoicecontents'];
 $customer = $_SESSION['invoicecustomer'];
 $invoice = $_SESSION['invoice'];
+$error = $_SESSION['invoicenewerror'];
 $itemdata = r_trim($_POST);
 
 if($_GET['userid'] != '' && $LMS->UserExists($_GET['userid']))
@@ -74,10 +75,44 @@ switch($_GET['action'])
 	break;
 
 	case 'setcustomer':
-		if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user'])))
-			$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user']));
-		$invoice['paytime'] = sprintf('%d', $_POST['invoice']['paytime']);
-		$invoice['paytype'] = trim($_POST['invoice']['paytype']);
+		
+		unset($invoice); 
+		unset($customer);
+		unset($error);
+		
+		$invoice = $_POST['invoice'];
+		foreach($invoice as $key => $val)
+			$invoice[$key] = $val;
+		
+		$invoice['paytime'] = sprintf('%d', $invoice['paytime']);
+		
+		if($invoice['paytime'] < 0)
+			$invoice['paytime'] = 14;
+
+		if($invoice['cdate'] && !$invoice['cdatewarning'])
+		{
+			list($year, $month, $day) = split('/',$invoice['cdate']);
+			if(checkdate($month, $day, $year))
+				$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
+			else
+				$error['cdate'] = 'Nieprawid³owa data!';
+		}
+
+		if($invoice['cdate'] && !$invoice['cdatewarning'] && !$error)
+		{
+			$maxdate = $LMS->DB->GetOne('SELECT MAX(cdate) FROM invoices');
+			if($invoice['cdate'] < $maxdate)
+			{
+				$error['cdate'] = "Ostatnia data wyst. faktury to '".date('Y/m/d H:i', $maxdate)."'. Je¶li jeste¶ pewien, ¿e chcesz zapisaæ fakturê z dat± '".date('Y/m/d H:i', $invoice['cdate'])."' kliknij ponownie 'Wybierz/zmieñ u¿ytkownika'.";
+				$invoice['cdatewarning'] = 1;
+			}
+		}
+		
+		$invoice['userid'] = $_POST['userid'];
+		
+		if(!$error)
+			if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user'])))
+				$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user']));
 	break;
 
 	case 'save':
@@ -88,19 +123,19 @@ switch($_GET['action'])
 		unset($_SESSION['invoicecontents']);
 		unset($_SESSION['invoicecustomer']);
 		unset($_SESSION['invoice']);
+		unset($_SESSION['invoicenewerror']);
 		header('Location: ?m=invoice&id='.$iid);
 		die;
 	break;
 }
 
-if($invoice['paytime'] < 0)
-	$invoice['paytime'] = 14;
 if($invoice['paytype'] == '')
 	$invoice['paytype'] = 'GOTÓWKA';
 
 $_SESSION['invoice'] = $invoice;
 $_SESSION['invoicecontents'] = $contents;
 $_SESSION['invoicecustomer'] = $customer;
+$_SESSION['invoicenewerror'] = $error;
 
 if($_GET['action'] != '')
 {
@@ -109,11 +144,12 @@ if($_GET['action'] != '')
 	die;
 }
 
-$SMARTY->assign('contents',$contents);
-$SMARTY->assign('customer',$customer);
-$SMARTY->assign('invoice',$invoice);
-$SMARTY->assign('tariffs',$tariffs);
-$SMARTY->assign('users',$users);
+$SMARTY->assign('error', $error);
+$SMARTY->assign('contents', $contents);
+$SMARTY->assign('customer', $customer);
+$SMARTY->assign('invoice', $invoice);
+$SMARTY->assign('tariffs', $tariffs);
+$SMARTY->assign('users', $users);
 $SMARTY->display('invoicenew.html');
 
 ?>
