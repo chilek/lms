@@ -8,7 +8,7 @@
 	polega na przeniesieniu do katalogu <filename>/usr/sbin</filename>. Uruchomienie generatora
 	mo¿na wykonaæ na dwa sposoby: wpisaæ do crona (np. co godzinê)</para>
         <screen>
-	0 * * * *       /usr/sbin/lms-mgc 1 &gt; /dev/null</screen>
+0 * * * *       /usr/sbin/lms-mgc 1 &gt; /dev/null</screen>
 	<para>albo z poziomu LMS skorzystaæ z menu "Prze³adowanie". Druga metoda wymaga u¿ycia 
 	<filename>sudo</filename>. Niestety, jedyne wyj¶cie by umo¿liwiæ uruchomienie lms-mgc, to
 	dopisanie u¿ytkownika do sudo, a nastêpnie ustawienie w sekcji [phpui] <filename>lms.ini</filename>:</para>
@@ -16,14 +16,14 @@
 	<para><prompt>reload_execcmd 	= sudo /usr/sbin/lms-mgc</prompt></para>
         <para>Lms-mgc posiada nastêpuj±ce opcje uruchomienia:
 	<screen>
-	-C, --config-file=/path/lms-mgc.ini	alternatywny plik konfiguracyjny 
-					(default: /etc/lms/lms-mgc.ini);
-	-i, --instances=name		nazwa (lub numer) instancji do uruchomienia, bez czytania 
-					konfiguracji z lms-mgc.ini, np. -i "name1 name2"
-	-h, --help			wy¶wietla pomoc;
-	-v, --version			wy¶wietla numer wersji;
-	-q, --quiet			tylko komunikaty o b³êdach;
-	-d, --debug			informacje szczegó³owe dla kadego IP;</screen>
+-C, --config-file=/path/lms-mgc.ini alternatywny plik konfiguracyjny 
+                                    (default: /etc/lms/lms-mgc.ini);
+-i, --instances=name                nazwa (lub numer) instancji do uruchomienia, bez czytania 
+                                    konfiguracji z lms-mgc.ini, np. -i "name1 name2"
+-h, --help                          wy¶wietla pomoc;
+-v, --version                       wy¶wietla numer wersji;
+-q, --quiet                         tylko komunikaty o b³êdach;
+-d, --debug                         informacje szczegó³owe dla kadego IP;</screen>
 	</para>
   </sect1>
   <sect1 id="mgc-config">
