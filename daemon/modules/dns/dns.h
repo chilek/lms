@@ -18,4 +18,18 @@ struct dns_module
 	unsigned char * confforward;
 	unsigned char * confreverse;
 	
+	unsigned char * networks;
+	unsigned char * usergroups;
+};
+
+struct net
+{
+	unsigned char *name;
+	unsigned long address;
+};
+
+struct group
+{
+	unsigned char *name;
+	int id;
 };
