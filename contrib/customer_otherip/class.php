@@ -23,9 +23,9 @@
  *  $Id$
  */
 
-// REPLACE THIS WITH PATH TO YOU CONFIG FILE
+// REPLACE THIS WITH PATH TO YOURS CONFIG FILE
 
-$CONFIG_FILE = "/etc/lms/lms.ini";
+$CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
@@ -122,6 +122,8 @@ require_once($_SMARTY_DIR.'/Smarty.class.php');
 require_once($_LIB_DIR.'/LMSDB.php');
 require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/LMS.class.php');
+
+require_once("authentication.inc");
 
 // Initialize LMSDB object
 
