@@ -280,7 +280,7 @@ class LMS {
 		switch(PHP_OS)
 		{
 			case "Linux":
-				if(is_readable("/proc/net/arp"))
+				if(@is_readable("/proc/net/arp"))
 					$file=fopen("/proc/net/arp","r");
 				else
 					return FALSE;
