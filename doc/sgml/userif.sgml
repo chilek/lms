@@ -100,87 +100,87 @@
             default value will be used (if it posses any).</para>
 	</sect2>
  </sect1>
- <sect1 id="menu-users">
+ <sect1 id="menu-customers">
 	<title>Customers</title>
 	<para>This is your customers control center, where you can store and
         manage their data, their finances and also their computers. You can even cut all
         customer computers off with single mouse click.
 	<note><para>Automatic cutoff of computers which owners are in debt is
         performed by lms-cutoff Perl script.</para></note></para>
-	<sect2 id="menu-users-list">
+	<sect2 id="menu-customers-list">
 	    <title>List</title>
 	    <para>After you select 'List' you'll see list of your users, that
-            can be filtered based on selected criteria (user status, group or network) or
+            can be filtered based on selected criteria (customer status, group or network) or
             sort by any highlighted column. Warning triangle on the right side of the record
-            shows if any warnings are active for the user. Computer icon next to triangle
+            shows if any warnings are active for the customer. Computer icon next to triangle
             informs you about computers status (connected of cutoff). Clicking of any of 
-            those two symbols toggles status for all computers of the given user. </para>
-            <para>Records of users with negative balance will have 'payback' icon
-            (stack of coins), which allows you to account instant payment for the user,
+            those two symbols toggles status for all computers of the given customer. </para>
+            <para>Records of customers with negative balance will have 'payback' icon
+            (stack of coins), which allows you to account instant payment for the customer,
             which value will reset his debt.</para>
-	    <para>When you click on selected user you'll get screen with details
-            for the user, divided in several panels: user details, computer details,
+	    <para>When you click on selected customer you'll get screen with details
+            for the customer, divided in several panels: customer details, computer details,
             liabilities details and customer account details. You can also select to edit
-            any of the panels on this screen, define user liabilities, payoff or charge the
+            any of the panels on this screen, define customer liabilities, payoff or charge the
             customer.</para>
 	</sect2>
-	<sect2 id="menu-users-new">
+	<sect2 id="menu-customers-new">
 	    <title>New Customer</title>
 	    <para>This option will let you enter data for new customer record.
             You can enter his last and first name here, or if your customer is
 also legal company, enter company name in "Name" and company representative in
-"Forename" field. You should also fill users phone (up to 3) and address (you
+"Forename" field. You should also fill customers phone (up to 3) and address (you
 can enter additional address for correspondence) and his status (connected,
 waiting in queue, prospect).
-	    <note><para>Wrong capitalization (uppercase) of user's last name is
+	    <note><para>Wrong capitalization (uppercase) of customer's last name is
 one of most frequent bug reports. Uppercase is implemented via SQL functions and
 thus you should seek for solution in your DB engine configuration.</para></note>
 	    </para>
 	</sect2>
-	<sect2 id="menu-users-search">
+	<sect2 id="menu-customers-search">
 	    <title>Search</title>
-	    <para>You're able to search users (including deleted users), using
+	    <para>You're able to search customers (including deleted customers), using
 various criteria. This module is more powerful than appropriate quick search
 box in left panel, as you can specify exact field names to search and if many
-users are found, the list of records will be returned, not only the first one.
+customers are found, the list of records will be returned, not only the first one.
 </para>
 	</sect2>
-	<sect2 id="menu-users-groups">
+	<sect2 id="menu-customers-groups">
 	    <title>Groups</title>
-	    <para>This is a place where it's possible to divide your users into
+	    <para>This is a place where it's possible to divide your customers into
 groups. After you click 'Groups' you'll see list of all defined groups with some
 basic information. Clicking on selected group will give you details view, where
 you are able to edit this group properties, and view/add/remove group members.
 </para>
 	</sect2>
-	<sect2 id="menu-users-newgropup">
+	<sect2 id="menu-customers-newgropup">
 	    <title>New Group</title>
 	    <para>You can define new group here, providing its name is unique,
 and it only contains letters, digits and underscore and minus signs. Groups are
 being used in scripts configuration, and for this reason group names cannot
 contain spaces.</para>
 	</sect2>
-	<sect2 id="menu-users-warnings">
+	<sect2 id="menu-customers-warnings">
 	    <title>Messages</title>
             <para>In this module, you're able to write administrative message which
             will appear on customers Web browser screen and assign it massively to all
-            or majority of your users (just pick them using selection box on the left).
+            or majority of your customers (just pick them using selection box on the left).
             It's also possible here to deselect administrative messages massively here.
             </para>
 	</sect2>
-	<sect2 id="menu-users-prints">
+	<sect2 id="menu-customers-prints">
 	    <title>Printing</title>
 	    <para>Set of modules to provide printer-friendly version of your
             records:
 	    <itemizedlist>
 		<listitem>
-		    <para><emphasis>User list</emphasis> with filter and sort abilities, </para>
+		    <para><emphasis>Customer list</emphasis> with filter and sort abilities, </para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>Liability report</emphasis> for any range of user(s), for specified date,</para>
+		    <para><emphasis>Liability report</emphasis> for any range of customer(s), for specified date,</para>
 		</listitem>
 		<listitem>
-		    <para><emphasis>User balance</emphasis> for selected period</para>
+		    <para><emphasis>Customer balance</emphasis> for selected period</para>
 		</listitem>
 	    </itemizedlist>
 	    </para>
@@ -212,7 +212,7 @@ helpful to activate 'Display this form again' checkbox.
 	    <note><para>To search computer addresses in your network you can use
 nbtscan program. If it's available in system, you can click 'Scan' to get all
 data about computers that are online.</para></note>
-	    <note><para>You need to create user and network first, so you can
+	    <note><para>You need to create customer and network first, so you can
 assign new computer to it.</para></note></para>
 	</sect2>
 	<sect2 id="menu-nodes-search">
@@ -224,10 +224,10 @@ guess for you.</para>
 	<sect2 id="menu-nodes-warnings">
 	    <title>Messages</title>
 		<para>You can write administration message here and it will
-appear on user's Web browser screen. In this module you can select majority or
+appear on customer's Web browser screen. In this module you can select majority or
 all computers and assign them common message. Just choose computers using
 selectbox on the left (computers with message already on will be displayed in
-red). If you only want to assign a message to user, but don't want to turn it
+red). If you only want to assign a message to customer, but don't want to turn it
 on, just write a message and don't select any of 'Enable/Disable message' boxes.
 </para>
 	</sect2>	
@@ -319,9 +319,9 @@ and balance sheets.</para>
 	    <para>When you enter 'Tariffs List' panel you'll be able to see list of
 liabilities (Tariffs) that might be assigned to your customers, with basic
 informations about it. When you select and click on liability you'll move to
-'Tariff' module where you're able to edit its parameters and exchange users
+'Tariff' module where you're able to edit its parameters and exchange customers
 between available liabilities. In 'Number of customers'  field you can read
-number of users who are assigned to it and two numbers in parenthesis: total
+number of customers who are assigned to it and two numbers in parenthesis: total
 number of assignments and number of active assignments, considered by its
 activity periods.</para>
 	</sect2>
@@ -369,8 +369,7 @@ invoices.</para>
 	</sect2>
 	<sect2 id="menu-invoices-new">
 	    <title>New Invoice</title>
-		<para>Allows you to issue an invoice for selected user
-manually.</para>
+		<para>Allows you to issue an invoice for selected customer manually.</para>
 	</sect2>
 	<sect2 id="menu-finances-print">
 	    <title>Printing</title>
@@ -417,7 +416,7 @@ below).</para>
 	<para>You have also possibility to define domains and aliases.</para>
 	<sect2 id="accounts-accounts">
 	    <title>Accounts</title>
-	    <para>Account list contains basic information about your user
+	    <para>Account list contains basic information about your customer
 accounts. It's possible to sort it by any highlighted column title and to filter
 it for given criteria. You can edit any account clicking 'Edit' icon.
 Administrator (LMS user) is also able to change account passwords.</para>
@@ -595,7 +594,7 @@ query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases
 	<para>Mailing is component where you can spam groups of your customers
 if you have to communicate something to them. Obviously you need to specify
 sender name and address, write your message in text box and select appropriate
-group of recipients. Your attendance can be grouped by status, network or user
+group of recipients. Your attendance can be grouped by status, network or customer
 groups. If you use mail server on remote host, you will need to set options
 smtp_host, smtp_port, smtp_username, smtp_password in [phpui] section.</para>
 	<para><note><para>Your server has to support PEAR::Mail for this to
@@ -650,7 +649,7 @@ older than month will be approximated to one hour.</para></listitem>
  </sect1>
   <sect1 id="menu-helpdesk">
 	<title>Helpdesk</title>
-	    <para>Helpdesk (or Request Tracker) is user request management
+	    <para>Helpdesk (or Request Tracker) is customer request management
 system. It's possible to keep history of all requests and questions here, both reported by
 customers and users not registered in LMS database. Reports can be grouped in
 queues (categories) and you're able to search them for a given criteria. It's possible to
