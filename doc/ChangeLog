@@ -54,6 +54,8 @@ wersja 1.5.4 (??/??/????):
     wraz z opisem, np. "plik.html:Umowa Test, plik2.html:Umowa Standard" (alec)
   - lms-sendinvoices: dodana opcja --fakedate (alec)
   - dodano mo¿liwo¶æ wydruku listy u¿ytkowników z bilansem na dany dzieñ (alec)
+  - na bilansie u¿ytkownika dodano mo¿liwo¶æ wydruku orygina³ów/kopii 
+    wybranych faktur (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 

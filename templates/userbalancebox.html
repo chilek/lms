@@ -31,6 +31,27 @@
 		document.addbalance.submit();
 	}
 
+	function prints()
+	{
+		document.addbalance.action="?m=invoice&print=cached&cash=1";
+		document.addbalance.target="_blank";
+		document.addbalance.submit();
+	}
+	
+	function prints_org()
+	{
+		document.addbalance.action="?m=invoice&print=cached&cash=1&which={/literal}{t}ORIGINAL{/t}{literal}";
+		document.addbalance.target="_blank";
+		document.addbalance.submit();
+	}
+	
+	function prints_cpy()
+	{
+		document.addbalance.action="?m=invoice&print=cached&cash=1&which={/literal}{t}COPY{/t}{literal}";
+		document.addbalance.target="_blank";
+		document.addbalance.submit();
+	}
+
 	//-->
 </SCRIPT>
 {/literal}
@@ -66,13 +87,7 @@
 				</TR>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{section name=balancelist loop=$balancelist.id start=$limit}
-					{if $balancelist.invoiceid[balancelist] && $balancelist.invoiceid[balancelist] == $bal}
-					<TR bgcolor="{$color}" onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{$color}')"> 
-					{else}
-					<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-					{cycle print=false}
-					{cycle assign=color}
-					{/if}
+				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
 					<TD width="1%">{$balancelist.adminname[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
 					<TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
@@ -88,13 +103,12 @@
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.invoiceid[balancelist]}
 						<A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"} BORDER="0"></A>
-						{else}
+						{/if}
 						{cycle print=false}
 						<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$balancelist.id[balancelist]}]" VALUE="{$balancelist.id[balancelist]}">
-						{/if}</nobr>
+						</nobr>
 					</TD>
 					</TR>
-					{assign var=bal value=$balancelist.invoiceid[balancelist]}
 				{sectionelse}
 				<TR>
 					<TD align="center" width="100%" colspan="9">
@@ -107,10 +121,13 @@
 				</TR>
 				{/section}
 				<TR bgcolor="#DFD5BD">
-					<TD CLASS="ftop" ALIGN="left">
+					<TD CLASS="ftop" ALIGN="left" colspan="7">
 						<NOBR><A HREF="javascript:DeleteMarked();">{t}Delete{/t} <IMG SRC="img/delete.gif" BORDER="0" ALT="{t}Delete{/t}" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:prints_org();">{t}Print originals{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
 					</TD>
-					<TD CLASS="ftop" ALIGN="right" COLSPAN="8">
+					<TD CLASS="ftop" ALIGN="right" COLSPAN="2">
 						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
@@ -118,7 +135,6 @@
 					<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
 					<TD class="ftop">
 						<INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Enter transaction time in format 'yyyy/mm/dd hh:mm' (empty field means current time). Click to select date from calendar."} onClick="cal3.popup();">
-						{*<nobr>{$smarty.now|date_format:"%Y/%m/%d %H:%M"}</nobr>*}
 					</TD>
 					<TD class="ftop">
 						{$layout.logname|truncate:20:"..."|replace:" ":"&nbsp;"}
