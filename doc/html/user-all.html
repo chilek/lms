@@ -88,25 +88,6 @@ NAME="USER-ALL"
 	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze
 	podaj±c ich numery.</P
 ><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN515"
-></A
-><P
-><B
->Rysunek 3-2. LMS-UI: Panel g³ówny</B
-></P
-><A
-HREF="images/welcome.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/welcome-small.png"></SPAN
->
-			</A
-></DIV
-><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
@@ -120,15 +101,49 @@ NAME="MENU-USERS"
 	na nazwie kolumny.</P
 ><P
 >Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu
-	z informacjami szczegó³owymi o nim i przypisanych mu komputerach oraz
-	operacjach finansowych. Tam te¿ mo¿esz zaksiêgowaæ wp³atê lub obci±¿enie jego
-	rachunku.</P
+	z informacjami szczegó³owymi o nim i przypisanych mu komputerach, taryfach oraz
+	operacjach finansowych. Tam te¿ mo¿esz modyfikowaæ dane u¿ytkownika, definiowaæ
+	op³aty abonamentowe i zaksiêgowaæ wp³atê lub obci±¿enie jego rachunku.</P
 ><P
->W menu znajduj±cym siê u góry okna masz do wyboru opcje: filtrowania listy,
-	dodawania nowych u¿ytkowników, wyszukiwania w bazie wg zadanych kryteriów oraz
-	wydruku listy.</P
+>W menu znajduj±cym siê u góry okna masz do wyboru opcje:
+	<UL
+><LI
 ><P
->Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony) u¿ytkowników.</P
+>Lista - Wy¶wietlenie listy u¿ytkowników, tej która pokazuje siê po
+	    wej¶ciu do panelu 'U¿ytkownicy'.</P
+></LI
+><LI
+><P
+>Od³±czeni - Wy¶wietlenie listy u¿ytkowników od³±czonych.</P
+></LI
+><LI
+><P
+>Zad³u¿eni - Wy¶wietlenie listy u¿ytkowników zad³u¿onych.</P
+></LI
+><LI
+><P
+>Nowy - Dodawanie nowego u¿ytkownika.</P
+></LI
+><LI
+><P
+>Szukaj - Wyszukiwanie u¿ytkowników wg zadanych kryteriów.</P
+></LI
+><LI
+><P
+>Wersja do druku - Wy¶wietlenie listy u¿ytkowników, w formacie przyjaznym dla
+	    drukarki.</P
+></LI
+><LI
+><P
+>Wydruk zad³u¿onych - Wy¶wietlenie listy u¿ytkowników zad³u¿onych, w formacie 
+	    przyjaznym dla drukarki.</P
+></LI
+></UL
+>
+	</P
+><P
+>Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony) wszystkich komputerów 
+	przypisanych danemu u¿ytkownikowi.</P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -149,32 +164,13 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Do automatycznego od³±czania u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
+>Do automatycznego od³±czania komputerów u¿ytkowników, których bilans jest poni¿ej zadanej warto¶ci
 	s³u¿y skrypt lms-cutoff.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 ></P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN530"
-></A
-><P
-><B
->Rysunek 3-3. LMS-UI: U¿ytkownicy</B
-></P
-><A
-HREF="images/users.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/users-small.png"></SPAN
->
-			</A
-></DIV
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -187,15 +183,26 @@ NAME="MENU-NODES"
 ><P
 >Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie listy komputerów,
 	wyszukiwania komputerów o danej nazwie, IP lub MAC'u, dodawanie nowych lub usuwanie ju¿
-	wpisanych do bazy komputerów, a tak¿e podgl±d i zmianê informacji o nich. W górnym menu dostêpna
-	jest opcja wydruku listy. Zmiany statusu komputera 'w³±czony/wy³±czony' dokonuje siê
+	wpisanych do bazy komputerów, a tak¿e podgl±d i zmianê informacji o nich. Zmiany statusu 
+	komputera 'w³±czony/wy³±czony' dokonuje siê
 	klikniêciem na ikonê ¿arówki w odpowiedniej linii.</P
+><P
+>Górne menu udostêpnia nastêpuj±ce modu³y:
+	<UL
+><LI
+><P
+>Lista - Wy¶wietlenie listy komputerów, tej która pokazuje siê po
+	    wej¶ciu do panelu 'Komputery'. Listê mo¿na sortowaæ klikaj±c na nazwie kolumny.</P
+></LI
+><LI
+><P
+>Nowy - Dodawanie nowego komputera.</P
 ><P
 ><DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
-WIDTH="100%"
+WIDTH="90%"
 BORDER="0"
 ><TR
 ><TD
@@ -210,32 +217,54 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Aby dodaæ nowy komputer musisz wcze¶niej utworzyæ
-	u¿ytkownika oraz sieæ, którym go przypiszesz.</P
+>Aby wyszukaæ komputery w swojej sieci
+	    mo¿esz skorzystaæ z programu nbtscan. Je¶li jest on zainstalowany w systemie, po
+	    naci¶niêciu 'Skanuj' zobaczysz listê znalezionych komputerów.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 ></P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN542"
-></A
 ><P
-><B
->Rysunek 3-4. LMS-UI: Komputery</B
-></P
-><A
-HREF="images/nodes.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
 ><IMG
-SRC="images/nodes-small.png"></SPAN
->
-			</A
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Aby dodaæ komputer musisz mieæ sieæ i u¿ytkownika,
+	    którym go przypiszesz.</P
+></TD
+></TR
+></TABLE
 ></DIV
+></P
+></LI
+><LI
+><P
+>Szukaj - Wyszukiwanie komputerów wed³ug zadanych kryteriów.</P
+></LI
+><LI
+><P
+>Wersja do druku - Wy¶wietlenie listy komputerów, w formacie 
+	    przyjaznym dla drukarki.</P
+></LI
+></UL
+>
+	</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -251,25 +280,26 @@ NAME="MENU-NETDEVICES"
 	ilo¶æ dostêpnych portów. Klikniêcie na wybranym urz±dzeniu spowoduje
 	wy¶wietlenie informacji szczegó³owych o nim. Mo¿liwe jest definiowanie po³±czeñ
 	urz±dzeñ i komputerów oraz generowanie graficznej mapy ca³ej sieci.</P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN551"
-></A
 ><P
-><B
->Rysunek 3-5. LMS-UI: Osprzêt sieciowy</B
-></P
-><A
-HREF="images/netdev.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/netdev-small.png"></SPAN
+>W tym panelu mo¿esz skorzystaæ z menu:
+	<UL
+><LI
+><P
+>Lista - Wy¶wietlenie listy urz±dzeñ, tej która pokazuje siê po
+	    wej¶ciu do panelu 'Urz±dzenia sieciowe'. Listê mo¿na sortowaæ klikaj±c na nazwie kolumny.</P
+></LI
+><LI
+><P
+>Nowe - Dodawanie nowego urz±dzenia.</P
+></LI
+><LI
+><P
+>Mapa - Generowanie mapy sieci (po³±czeñ sieciowych). Mo¿esz zdefiniowaæ
+	    które urz±dzenie jest nadrzêdne w stosunku do pozosta³ych.</P
+></LI
+></UL
 >
-			</A
-></DIV
+	</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -280,29 +310,26 @@ NAME="USER-NETWORKS"
 >3.2.4. Sieci IP</A
 ></H2
 ><P
->Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, Gateway,
+>Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
 	zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i dostepnych adresów.
 	Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ na podsieci,
 	albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN560"
-></A
 ><P
-><B
->Rysunek 3-6. LMS-UI: Sieci IP</B
-></P
-><A
-HREF="images/networks.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/networks-small.png"></SPAN
+>Modyfikowanie w³a¶ciwo¶ci sieci nastêpuje w module dostêpnym po wybraniu
+	sieci z listy lub bezpo¶rednio po klikniêciu ikony 'Edytuj'. Menu udostêpnia dwie opcje:
+	<UL
+><LI
+><P
+>Lista - Wy¶wietlenie listy sieci. tej która pokazuje siê po
+	    wej¶ciu do panelu 'Sieci IP'.</P
+></LI
+><LI
+><P
+>Nowa sieæ  - Dodawanie sieci.</P
+></LI
+></UL
 >
-			</A
-></DIV
+	</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -315,32 +342,86 @@ NAME="MENU-TARIFFS"
 ><P
 >Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami sieci.</P
 ><P
->Masz mo¿liwo¶æ definiowania taryf abonamentowych i okre¶lenia kwoty abonamentu oraz
-	ograniczeñ upstream, downstream wykorzystywanych pó¼niej podczas generowania plików
-	konfiguracyjnych.</P
+>Masz mo¿liwo¶æ definiowania taryf abonamentowych, op³at (zleceñ) sta³ych, ksiêgowania 
+	operacji finansowych, przegl±danie bilansu i historii rachunku oraz sporz±dzanie faktur. 
+	A oto wszystkie dostêpne modu³y:
+	<UL
+><LI
 ><P
->Dostêpny z górnego menu 'Bilans Finansowy' to historia rachunku z podsumowaniem
-	przychodu i rozchodu. 'Nowa Operacja' umo¿liwia zaksiêgowanie nowych wp³at i obci±¿eñ
-	u¿ytkowników lub wydatków i przychodów sieci.</P
+>Lista taryf - Wy¶wietlenie listy taryf. tej która pokazuje siê po
+	    wej¶ciu do panelu 'Taryfy i finanse'. Klikaj±c wybran± taryfê na li¶cie zostaniesz
+	    przeniesiony do modu³u 'Informacje o taryfie', gdzie mo¿esz edytowaæ jej parametry
+	    lub zamieniaæ u¿ytkownikom taryfy.</P
+></LI
+><LI
+><P
+>Nowa taryfa - Definiowanie nowej taryfy.</P
+></LI
+><LI
+><P
+>Lista op³at - Wy¶wietlenie listy op³at. Klikaj±c wybran± op³atê na li¶cie zostaniesz
+	    przeniesiony do modu³u 'Informacje o op³acie', gdzie mo¿esz edytowaæ jej parametry
+	    lub zaksiêgowaæ dan± op³atê w bazie operacji finansowych.</P
+></LI
+><LI
+><P
+>Nowa op³ata - Definiowanie nowej op³aty sta³ej.</P
+></LI
+><LI
+><P
+>Bilans finansowy - Historia operacji finansowych z podsumowaniem przychodu, rozchodu,
+	    wp³at i zobowi±zañ u¿ytkowników.</P
+></LI
+><LI
+><P
+>Nowa operacja - Wprowadzanie nowych operacji finansowych. Mo¿liwe jest
+	    zaksiêgowanie tej samej wp³aty lub obci±¿enia wielu u¿ytkownikom równocze¶nie.</P
+><P
 ><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN571"
-></A
-><P
-><B
->Rysunek 3-7. LMS-UI: Taryfy i finanse</B
-></P
-><A
-HREF="images/tariffs.png"
-TARGET="_top"
->					<SPAN
-CLASS="INLINEMEDIAOBJECT"
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
 ><IMG
-SRC="images/tariffs-small.png"></SPAN
->
-			</A
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Do naliczania sta³ych op³at abonamentowych najlepiej wykorzystywaæ
+	    skrypt lms-payments lub demona <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+>, które potrafi± równocze¶nie
+	    wystawiaæ faktury.</P
+></TD
+></TR
+></TABLE
 ></DIV
+></P
+></LI
+><LI
+><P
+>Lista faktur - lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych.</P
+></LI
+><LI
+><P
+>Nowa faktura - Rêczne wystawianie faktur dla wybranego u¿ytkownika.</P
+></LI
+></UL
+>
+	</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -399,8 +480,14 @@ ALT="Notatka"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami polecam.
-	skrypt lms-notify.</P
+>Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami mo¿na
+	wykorzystaæ skrypt lms-notify lub modu³y notify i ggnotify demona <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+>.</P
 ></TD
 ></TR
 ></TABLE
@@ -496,25 +583,6 @@ CLASS="FILENAME"
 ><P
 >Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
 	</P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN602"
-></A
-><P
-><B
->Rysunek 3-8. LMS-UI: Bazy danych</B
-></P
-><A
-HREF="images/db.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/db-small.png"></SPAN
->
-			</A
-></DIV
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -531,25 +599,135 @@ NAME="MENU-ADMINS"
 	o danym koncie, w tym o zdefiniowanych prawach dostêpu. W ka¿dej chwili mo¿liwa jest zmiana
 	danych i uprawnieñ za pomoc± przycisku 'Edytuj'. Aby za³o¿yæ nowe konto administratora
 	skorzystaj z górnego menu 'Nowy'.</P
-><DIV
-CLASS="FIGURE"
-><A
-NAME="AEN611"
-></A
-><P
-><B
->Rysunek 3-9. LMS-UI: Administratorzy</B
-></P
-><A
-HREF="images/admins.png"
-TARGET="_top"
->				<SPAN
-CLASS="INLINEMEDIAOBJECT"
-><IMG
-SRC="images/admins-small.png"></SPAN
->
-			</A
 ></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-STATS"
+>3.2.10. Statystyki</A
+></H2
+><P
+>Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
+	dostêpny w menu 'Statystyki'. Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
+	okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz ich wiêcej),
+	ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug downloadu).
+	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
+	ostatnich 30 dni lub ostatniego roku.</P
+><P
+> 
+	<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, albo demon <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	</P
+><P
+>W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci zapisu, mo¿e
+	nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
+	oczekiwania na rysowanie wykresów. Z tego powodu w oknie 'Kompaktowanie
+	bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy bez
+	utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
+	w nastêpuj±cy sposób:
+	<UL
+><LI
+><P
+>Poziom Niski: dane z poprzedniego dnia i starsze, zostan± u¶rednione
+	do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
+	to 6*24 wpisów zostanie zast±pione jednym.</P
+></LI
+><LI
+><P
+>Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
+	jednego dnia.</P
+></LI
+><LI
+><P
+>Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
+	jednej godziny.</P
+></LI
+></UL
+>
+	<DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/warning.gif"
+HSPACE="5"
+ALT="Ostrze&#380;enie"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Kompaktowanie bazy danych jest procesem nieodwracalnym.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	</P
+><P
+>Menu panelu 'Statystyki' obejmuje:
+	<UL
+><LI
+><P
+>Filtr - g³ówne okno do wprowadzania parametrów wykresów oraz do
+	    kompaktowania bazy danych.</P
+></LI
+><LI
+><P
+>Ostatnia godzina - statystyki z ostatniej godziny dla wszystkich sieci.</P
+></LI
+><LI
+><P
+>Ostatni dzieñ - statystyki z ostatniego dnia dla wszystkich sieci.</P
+></LI
+><LI
+><P
+>Ostatnie 30 dni - statystyki z ostatnich 30 dni dla wszystkich sieci.</P
+></LI
+><LI
+><P
+>Ostatni rok - statystyki z ostatnich 365 dni dla wszystkich sieci.</P
+></LI
+></UL
+>
+	</P
 ></DIV
 ></DIV
 ><DIV
