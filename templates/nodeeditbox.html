@@ -40,7 +40,7 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" NAME="nodeedit[netdev]"  {tip text="Select net device from list" trigger="netdev"}>
-				<OPTION VALUE="0" {if ! $nodeinfo.netdev}SELECTED{/if}>--- Brak ---</OPTION>
+				<OPTION VALUE="0" {if ! $nodeinfo.netdev}SELECTED{/if}>{t}--- No device ---{/t}</OPTION>
 				{section name="netdev" loop=$netdevices}
 				<OPTION VALUE="{$netdevices[netdev].id}" {if $nodeinfo.netdev == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</OPTION>
 				{/section}
@@ -53,8 +53,8 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[access]" {tip text="Select node status"}>
-				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>pod³±czony</OPTION>
-				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>od³±czony</OPTION>
+				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>{t}connected{/t}y</OPTION>
+				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>{t}disconnected{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
@@ -64,8 +64,8 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[warning]" {tip text="Select node message"}>
-				<OPTION VALUE="1"{if $nodeinfo.warning} SELECTED{/if}>ostrze¿enie w³±czone</OPTION>
-				<OPTION VALUE="0"{if ! $nodeinfo.warning} SELECTED{/if}>ostrze¿enie wy³±czone</OPTION>
+				<OPTION VALUE="1"{if $nodeinfo.warning} SELECTED{/if}>{t}warning on{/t}</OPTION>
+				<OPTION VALUE="0"{if ! $nodeinfo.warning} SELECTED{/if}>{t}warning off{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
