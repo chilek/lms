@@ -710,13 +710,13 @@ class LMS
 
 	function UserStats()
 	{
-		$result['total'] = $this->DB->GetOne("SELECT COUNT(id) FROM users");
-		$result['connected'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=3");
-		$result['awaiting'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=2");
-		$result['interested'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=1");
+		$result['total'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE deleted=0");
+		$result['connected'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=3 AND deleted=0");
+		$result['awaiting'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=2 AND deleted=0");
+		$result['interested'] = $this->DB->GetOne("SELECT COUNT(id) FROM users WHERE status=1 AND deleted=0");
 		$result['debt'] = 0;
 		$result['debtvalue'] = 0;
-		if($users = $this->DB->GetAll("SELECT id FROM users"))
+		if($users = $this->DB->GetAll("SELECT id FROM users WHERE deleted=0"))
 			foreach($users as $idx => $row)
 			{
 				$row['balance'] = $this->GetUserBalance($row['id']);
@@ -2173,6 +2173,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.282  2003/11/22 18:02:08  alec
+ * UserStats() zlicza³o userów usuniêtych - poprawione
+ *
  * Revision 1.281  2003/11/18 20:55:26  alec
  * http://lists.rulez.pl/lms/1477.html
  *
