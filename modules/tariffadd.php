@@ -45,20 +45,22 @@ if(isset($tariffadd))
 
 	$tariffadd[value] = str_replace(",",".",$tariffadd[value]);
 
+	if($tariffadd[uprate] == "")
+		$tariffadd[uprate] = 0;
 	
-	$uprate = $tariffadd[uprate];
-	$downrate = $tariffadd[downrate];
-	
-	if(!(ereg("^[0-9]+$", $uprate)))
+	if($tariffadd[downrate] == "")
+		$tariffadd[downrate] = 0;
+
+	if(!(ereg("^[0-9]+$", $tariffadd[uprate])))
 		$error[uprate] = "To pole musi zawieraæ liczbê ca³kowit±";
 		
-	if(!ereg("^[0-9]+$", $downrate))
+	if(!ereg("^[0-9]+$", $tariffadd[downrate]))
 		$error[downrate] = "To pole musi zawieraæ liczbê ca³kowit±";
 	
-	if($uprate < 8 || $uprate > 4096)
+	if(($tariffadd[uprate] < 8 || $tariffadd[uprate] > 4096) && $tariffadd[uprate] != 0)
 		$error[uprate] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
 
-	if($downrate < 8 || $downrate > 4096)
+	if(($tariffadd[downrate] < 8 || $tariffadd[downrate] > 4096) && $tariffadd[downrate] != 0)
 		$error[downrate] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
 	
 	if($tariffadd[name] == "")
