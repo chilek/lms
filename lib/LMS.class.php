@@ -1546,6 +1546,88 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return ($this->DB->GetOne('SELECT id FROM tariffs WHERE id=?', array($id))?TRUE:FALSE);
 	}
 
+	function UsergroupWithUserGet($id)
+	{
+		return $this->DB->GetOne('SELECT COUNT(userid) FROM userassignments, users WHERE users.id = userid AND usergroupid = ?', array($id));
+	}
+
+	function UsergroupAdd($usergroupdata)
+	{
+		$this->SetTS('usergroups');
+		$result = $this->DB->Execute('INSERT INTO usergroups (name, description)
+			VALUES (?, ?)',	array($usergroupdata['name'], $usergroupdata['description']));
+		if ($result)
+			return $this->DB->GetOne('SELECT id FROM usergroups WHERE name=?',
+				array($usergroupdata['name']));
+		else
+			return FALSE;
+	}
+
+	function UsergroupUpdate($usergroupdata)
+	{
+		$this->SetTS('usergroups');
+		return $this->DB->Execute('UPDATE usergroups SET name=?, description=?, WHERE id=?',
+			array($usergroupdata['name'], $usergroupdata['description'], $usergroupdata['id']));
+	}
+
+	function UsergroupDelete($id)
+	{
+		 if (!$this->UsergroupWithUserGet($id))
+		 {
+			$this->SetTS('usergroups');
+			return $this->DB->Execute('DELETE FROM usergroups WHERE id=?', array($id));
+		 } else
+			return FALSE;
+	}
+
+	function UsergroupExists($id)
+	{
+		return ($this->DB->GetOne('SELECT id FROM usergroups WHERE id=?', array($id)) ? TRUE : FALSE);
+	}
+
+	function UsergroupGetId($name)
+	{
+		return $this->DB->GetOne('SELECT id FROM usergroups WHERE name=?', array($name));
+	}
+
+	function UsergroupGetName($id)
+	{
+		return $this->DB->GetOne('SELECT name FROM usergroups WHERE id=?', array($id));
+	}
+
+	function UsergroupGetAll()
+	{
+		return $this->DB->GetAll('SELECT id, name, description FROM usergroups ORDER BY name ASC');
+	}
+
+	function UsergroupGet($id)
+	{
+		$result = $this->DB->GetRow('SELECT id, name, description FROM usergroups WHERE id=?', array($id));
+		$result['users'] = $this->DB->GetAll('SELECT users.id AS id, COUNT(users.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS username FROM userassignments, users WHERE users.id = userid AND usergroupid = ? GROUP BY users.id, username', array($id));
+		$result['userscount'] = sizeof($result['users']);
+		$result['count'] = $this->UsergroupWithUserGet($id);
+		return $result;
+	}
+
+	function UsergroupGetList()
+	{
+		if($usergrouplist = $this->DB->GetAll('SELECT id, name, description FROM usergroups ORDER BY name ASC'))
+		{
+			foreach($usergrouplist as $idx => $row)
+			{
+				$usergrouplist[$idx]['users'] = $this->UsergroupWithUserGet($row['id']);
+				$usergrouplist[$idx]['userscount'] = sizeof($this->DB->GetCol("SELECT userid FROM userassignments, users WHERE users.id = userid AND usergroupid = ? GROUP BY userid", array($row['id'])));
+				$totalusers += $usergrouplist[$idx]['users'];
+				$totalcount += $usergrouplist[$idx]['userscount'];
+			}
+		}
+		$usergrouplist['total'] = sizeof($usergrouplist);
+		$usergrouplist['totalusers'] = $totalusers;
+		$usergrouplist['totalcount'] = $totalcount;
+		
+		return $usergrouplist;
+	}
+
 	function SetBalanceZero($user_id)
 	{
 		$this->SetTS('cash');
@@ -1553,7 +1635,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$stan=-$stan;
 		return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, NULL, ?, ?, ?)', array($this->SESSION->id, 3 , round("$stan",2) , $user_id, 'Rozliczono'));
 	}
-	
+
 	function AddBalance($addbalance)
 	{
 		$this->SetTS('cash');
