@@ -39,9 +39,12 @@ function _smarty_function_sum($args, $SMARTY)
 }
 
 $SMARTY->register_function('sum','_smarty_function_sum');
-
+$SMARTY->register_modifier('to_words','to_words');
 /*
  * $Log$
+ * Revision 1.4  2003/09/09 23:40:03  lukasz
+ * - added to_words
+ *
  * Revision 1.3  2003/09/09 01:22:28  lukasz
  * - nowe finanse
  * - kosmetyka
