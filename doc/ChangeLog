@@ -33,7 +33,7 @@ wersja 1.3.3 (??/??/2004):
     u¿ytkowniku i edycji u¿ytkownika (chilek)
   - mo¿liwo¶æ ustalania przynale¿no¶ci do grup w formularzach informacji o
     komputerze i edycji komputera (chilek)
-  - obs³uga grup u¿ytkowników lms-makedhcpconf, lms-makeoidentconf,
+  - obs³uga grup u¿ytkowników w lms-makedhcpconf, lms-makeoidentconf,
     lms-makemacs, lms-makehosts (chilek)
   - naprawione filtrowanie listy userów wg grupy i sieci (alec) 
   - poprawka w bazie przywracaj±ca mo¿liwo¶æ dublowania MAC'ów (alec)
@@ -51,6 +51,7 @@ wersja 1.3.3 (??/??/2004):
   - poprawione ignorowanie naliczeñ o warto¶ci zerowej (lukasz)
   - poprawiony b³±d w almsd, powoduj±cy zwa³kê demona na mysql'u, gdy
     w tabeli timestamps nie ma wpisu '_force' (alec)
+  - przebudowany rozdzia³ 'Interfejs U¿ytkownika' w dokumentacji (alec)
 
 wersja 1.3.2 Kinsey (03/04/2004):
   
