@@ -321,7 +321,7 @@ switch($_GET['type'])
 	break;
 		
 	default: /*******************************************************/
-		$layout['pagetitle'] = trans('Print');
+		$layout['pagetitle'] = trans('Printing');
 		$SMARTY->assign('users', $LMS->GetUserNames());
 		$SMARTY->assign('admins', $LMS->GetAdminNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
