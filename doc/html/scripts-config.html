@@ -1036,35 +1036,518 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="LMS-UPDATEWARNINGS"
->4.3.10. lms-updatewarnings</A
+NAME="LMS-MAKEMACS"
+>4.3.10. lms-makemacs</A
 ></H2
 ><P
->Skrypt automatycznie w³±cza ostrze¿enia (czyli ustawia odpiwedni± flagê w bazie
-	 danych) wszystkim komputerom u¿ytkownika z saldem mniejszym ni¿ kwota okre¶lona parametrem 'limit'.
-	 Regu³y firewalla przekierowuj±ce na stronê z ostrze¿eniem nale¿y wygenerowaæ innym skryptem.</P
+>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra filtruj±ce ruch
+	    u¿ytkowników na bazie testu adresu ¼ród³owego MAC. Dla ka¿dego komputera generowana jest
+	    jedna regu³a dla tablicy nat, zadanego ³añcucha, testuj±ca adres ¼ród³owy IP pakietu oraz adres
+	    ¼ród³owy MAC ramki. Je¶li testy zakoñcz± siê pozytywnie nastêpuje powrót do ³añcucha nadrzêdnego
+	    za pomoc± decyzji RETURN. Na koñcu listy regu³ dodawane s± 2 regu³y przekierowuj±ce ruch http
+	    oraz webcache na podany w konfiguracji adres IP oraz port (z wykorzystaniem decyzji DNAT).
+	    Przekierowanie mo¿e odbywaæ siê na wirtualny host www z zawiadomieniem u¿ytkownika
+	    o zaleg³o¶ciach finansowych bez mo¿liwo¶ci wy³±czenia zawiadomienia. Na koñcu dodawana jest 
+	    regu³a blokuj±ca jakikolwiek inny ruch.
+	    </P
 ><P
->Konfiguracjê dla lms-updatewarnings mo¿emy ustaliæ w pliku <TT
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[macs]</I
+></SPAN
+>
+	    w pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
-> 
-	 w sekcji <SPAN
+>: </P
+><UL
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups </P
+><P
+>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>usergroups = osiedle1 osiedle2</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary</P
+><P
+>Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>config_owneruid</P
+><P
+>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_file</P
+><P
+>Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.macs.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_file = /etc/conf.d/rc.macs</SAMP
+></P
+></LI
+><LI
+><P
+>config_ownergid</P
+><P
+>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_permission</P
+><P
+>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>chain</P
+><P
+>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MACS.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>chain = TESTY_MACOW</SAMP
+></P
+></LI
+><LI
+><P
+>redirect_address</P
+><P
+>Adres IP + port na który bêdzie przekierowywany niesklasyfikowany ruch http i webcache. Domy¶lnie: 127.0.0.1:80.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>redirect_address = 192.168.1.1:3000</SAMP
+></P
+></LI
+><LI
+><P
+>lock_noaccess</P
+><P
+>Czy generowaæ regu³ki testuj±ce z decyzj± RETURN dla komputerów, które s± od³±czone. Domy¶lnie: 0 (regu³y s± generowane)</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>lock_noaccess = 1</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEHOSTS"
+>4.3.11. lms-makehosts</A
+></H2
+><P
+>Skrypt s³u¿±cy do generowania pliku /etc/hosts zawieraj±cego odwzorowania nazw komputerów
+	    na adresy IP.
+	    </P
+><P
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[hosts]</I
+></SPAN
+>
+	    w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
+><UL
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups </P
+><P
+>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>usergroups = osiedle1 osiedle2</SAMP
+></P
+></LI
+><LI
+><P
+>config_owneruid</P
+><P
+>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_file</P
+><P
+>Lokalizacja pliku. Domy¶lnie: /etc/hosts.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_file = /etc/hosts</SAMP
+></P
+></LI
+><LI
+><P
+>config_ownergid</P
+><P
+>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_permission</P
+><P
+>Uprawnienia pliku skryptu. Domy¶lnie: 644 (rw-r--r--).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_permission = 600</SAMP
+></P
+></LI
+><LI
+><P
+>config_header</P
+><P
+>Pierwsza linia w pliku /etc/hosts. Domy¶lnie: 127.0.0.1 localhost localhost.localdomain.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_header = 192.168.1.1 serwer serwer.nasza-siec</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEWARNINGS"
+>4.3.12. lms-makewarnings</A
+></H2
+><P
+>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
+	    u¿ytkowników o saldzie mniejszym lub równym od zadanego na zadany adres IP i port (wykorzystywana
+	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
+	    </P
+><P
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[warnings]</I
 ></SPAN
->. Mo¿emy tam ustawiæ:</P
+>
+	    w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
 ><UL
 ><LI
 ><P
->limit (opcjonalny)</P
+>networks </P
 ><P
->Pozwala na ustalenie limitu bilansu. Domy¶lnie: 0</P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->limit = -20</SAMP
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups </P
+><P
+>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>usergroups = osiedle1 osiedle2</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary</P
+><P
+>Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>config_owneruid</P
+><P
+>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_file</P
+><P
+>Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.warnings.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_file = /etc/conf.d/rc.warnings</SAMP
+></P
+></LI
+><LI
+><P
+>config_ownergid</P
+><P
+>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_permission</P
+><P
+>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>chain</P
+><P
+>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: WARNINGS.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>chain = OSTRZEZENIA</SAMP
+></P
+></LI
+><LI
+><P
+>redirect_address</P
+><P
+>Adres IP + port na który bêdzie przekierowywany ruch http i webcache pochodz±cy z hostów dla których ma byæ w³±czone ostrze¿enie o zaleg³o¶ciach finansowych. Domy¶lnie: 127.0.0.1:80.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>redirect_address = 192.168.1.1:3001</SAMP
+></P
+></LI
+><LI
+><P
+>limit</P
+><P
+>Saldo u¿ytkownika przy którym dla wszystkich komputerów u¿ytkownika generowane s± regu³ki przekierowuj±ce ruch. Domy¶lnie: 0 </P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>limit = -85</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEMESSAGES"
+>4.3.13. lms-makemessages</A
+></H2
+><P
+>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
+	    u¿ytkowników dla których zosta³o w³±czone przekazywanie wiadomo¶ci administracyjnej (ostrze¿enia) na zadany adres IP i port (wykorzystywana
+	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
+	    </P
+><P
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[messages]</I
+></SPAN
+>
+	    w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
+><UL
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups </P
+><P
+>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>usergroups = osiedle1 osiedle2</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary</P
+><P
+>Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>config_owneruid</P
+><P
+>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_file</P
+><P
+>Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.messages.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_file = /etc/conf.d/rc.messages</SAMP
+></P
+></LI
+><LI
+><P
+>config_ownergid</P
+><P
+>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_permission</P
+><P
+>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>chain</P
+><P
+>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MESSAGES.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>chain = WIADOMOSCI</SAMP
+></P
+></LI
+><LI
+><P
+>redirect_address</P
+><P
+>Adres IP + port na który bêdzie przekierowywany ruch http i webcache pochodz±cy z hostów dla których ma byæ w³±czona wiadomo¶æ administracyjna. Domy¶lnie: 127.0.0.1:80.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>redirect_address = 192.168.1.1:3002</SAMP
 ></P
 ></LI
 ></UL

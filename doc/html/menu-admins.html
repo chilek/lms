@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Osprzêt sieciowy</TITLE
+>Administratorzy</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Interfejs U¿ytkownika (LMS-UI)"
 HREF="user.html"><LINK
 REL="PREVIOUS"
-TITLE="Komputery"
-HREF="menu-nodes.html"><LINK
+TITLE="Bazy danych"
+HREF="menu-databases.html"><LINK
 REL="NEXT"
-TITLE="Sieci IP"
-HREF="menu-networks.html"><LINK
+TITLE="Statystyki"
+HREF="menu-stats.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="style.css"><META
@@ -47,7 +47,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="menu-nodes.html"
+HREF="menu-databases.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -61,7 +61,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="menu-networks.html"
+HREF="menu-stats.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -75,81 +75,47 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="MENU-NETDEVICES"
->3.4. Osprzêt sieciowy</A
+NAME="MENU-ADMINS"
+>3.10. Administratorzy</A
 ></H1
 ><P
->W panelu przeznaczonym do ewidencji sprzêtu zarz±dzamy struktur± 
-	sieci, urz±dzeniami typu swich, hub, router, serwer i po³±czeniami miêdzy
-	nimi, a tak¿e przy³±czonymi do nich komputerami. Ka¿demu urzêdzeniu mo¿na przypisaæ 
-	co najmniej jeden adres sieciowy.</P
+>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, czyli osób
+	    korzystaj±cych z LMS'a, zak³adania i przegl±dania ich kont, zmiany hase³ i definiowania 
+	    praw dostêpu.</P
+><P
+> Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale <A
+HREF="install-rights.html"
+>Prawa dostêpu</A
+>.</P
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="MENU-NETDEVICES-LIST"
->3.4.1. Lista</A
+NAME="MENU-ADMINS-LIST"
+>3.10.1. Lista</A
 ></H2
 ><P
->Lista urz±dzeñ zawiera ich nazwy i symbole, po³o¿enie i opis, a ponadto 
-		ilo¶æ dostêpnych portów. Lista mo¿e byæ sortowana wg dowolnego parametru/kolumny.
-		Klikniêcie na wybranym urz±dzeniu spowoduje wy¶wietlenie informacji szczegó³owych 
-		o nim, gdzie mo¿liwe jest definiowanie po³±czeñ urz±dzeñ i komputerów, adresów IP
-		urz±dzenia oraz zamiana dwóch urz±dzeñ.</P
+>Po wej¶ciu do panelu 'Administratorzy' zobaczysz listê wszystkich administratorów
+	    z informacj± o ostatnim logowaniu. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie 
+	    informacji szczegó³owych o danym koncie, w tym o zdefiniowanych prawach dostêpu. 
+	    W ka¿dej chwili mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'. 
+	    Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu 'Nowy'.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="MENU-NETDEVICES-NEW"
->3.4.2. Nowe</A
+NAME="MENU-ADMINS-NEW"
+>3.10.2. Nowy</A
 ></H2
 ><P
->Urz±dzenie sieciowe powinno posiadaæ unikaln± nazwê. Pozosta³e
-		parametry tj. producent, model, nr seryjny, ilo¶æ portów, lokalizacja
-		i opis s± opcjonalne.</P
-></DIV
-><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
-NAME="MENU-NETDEVICES-MAP"
->3.4.3. Mapa</A
-></H2
-><P
->Generowanie graficznej mapy ca³ej sieci, na podstawie
-		danych z bazy lms'a nastêpuje po wybraniu opcji menu 'Mapa'. Mo¿esz 
-		zdefiniowaæ, które urz±dzenie jest nadrzêdne w stosunku do pozosta³ych.
-		<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Do wygenerowania mapy potrzebna jest wbudowana w PHP obs³uga 
-		biblioteki graficznej GD.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-		</P
+>Aby dodaæ nowe konto administratora nale¿y podaæ login oraz has³o, 
+	    które nie mo¿e byæ puste. Podanie imienia, nazwiska i adresu poczty elektronicznej
+	    nie jest wymagane. Poni¿ej mo¿na zaznaczyæ uprawnienia dostêpu do
+	    systemu. Je¿eli wszystkie pola pozostawisz puste, administratorowi 
+	    przypisany zostanie 'Pe³en dostêp'.</P
 ></DIV
 ></DIV
 ><DIV
@@ -168,7 +134,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="menu-nodes.html"
+HREF="menu-databases.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -186,7 +152,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="menu-networks.html"
+HREF="menu-stats.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -196,7 +162,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Komputery</TD
+>Bazy danych</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -210,7 +176,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Sieci IP</TD
+>Statystyki</TD
 ></TR
 ></TABLE
 ></DIV
