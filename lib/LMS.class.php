@@ -2933,7 +2933,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetQueueContent($id)
 	{
-		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, requestor, subject, state, owner, name AS ownername, createtime FROM rttickets LEFT JOIN admins ON owner = admins.id WHERE queueid = ? AND state < 2 ORDER BY createtime DESC', array($id)))
+		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, requestor, subject, state, owner AS ownerid, name AS ownername, createtime FROM rttickets LEFT JOIN admins ON owner = admins.id WHERE queueid = ? ORDER BY createtime DESC', array($id)))
 		{
 			foreach($result as $idx => $ticket)
 			{
