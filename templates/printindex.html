@@ -8,11 +8,5 @@
 			- <a href="?m=print&type=nodelist" target="_blank">komputerów</a>
 		</TD>
 	</TR>
-	<TR>
-		<TD WIDTH="50%" VALIGN="TOP">
-			<P><B>Finanse:</B><BR>
-			<FORM TARGET="_blank" METHOD="GET" ACTION="?m=print" NAME="printb">- <INPUT TYPE="hidden" NAME="m" VALUE="print"><INPUT TYPE="hidden" NAME="type" VALUE="mbalance"><A HREF="javascript:document.printb.submit();">Bilans finansowy za miesi±c:</A> <SELECT SIZE="1" NAME="time">{section name=ml loop=$monthlist}<OPTION VALUE="{$monthlist[ml]}">{$monthlist[ml]}</OPTION>{/section}</SELECT></FORM>
-		</TD>
-	</TR>
 </TABLE>
 {include file="footer.html"}
