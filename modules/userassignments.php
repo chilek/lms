@@ -171,7 +171,10 @@ if($_GET['action'] == 'add' && isset($a))
 		$error['tariffid'] = trans('Tariff not selected!');
 
 	if($a['tariffid']==0)
+	{
 		unset($error['at']);
+		$a['at'] = 0;
+	}
 
 	if(!$error) 
 	{

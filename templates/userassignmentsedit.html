@@ -15,7 +15,8 @@
 		</TD>
 		<TD class="frightu" width="98%">
 			<SELECT size="1" name="assignmentedit[tariffid]" {tip text="Select tariff" trigger="edittariffid"}>
-			{section name=t loop=$tariffs}
+				<OPTION value="0"{if !$assignmentedit.tariffid} SELECTED{/if}>{t}- all liabilities suspending -{/t}</OPTION>
+				{section name=t loop=$tariffs}
 				<OPTION value="{$tariffs[t].id}" {if $tariffs[t].id==$assignmentedit.tariffid}SELECTED{/if}>
 				{$tariffs[t].name} ({$tariffs[t].value|money_format}{if $tariffs[t].downrate || $tariffs[t].downceil}, {$tariffs[t].downrate}-{$tariffs[t].downceil} down{/if}{if $tariffs[t].uprate || $tariffs[t].upceil}, {$tariffs[t].uprate}-{$tariffs[t].upceil} up{/if})
 				</OPTION>

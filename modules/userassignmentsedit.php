@@ -28,7 +28,7 @@ $userid = $LMS->DB->GetOne('SELECT userid FROM assignments WHERE id=?', array($_
 
 if(!$userid)
 {
-	header('Location: ?m='.$_SESSION['backto']);
+	header('Location: ?'.$_SESSION['backto']);
 	die;
 }
 
@@ -156,6 +156,12 @@ if($a = $_POST['assignmentedit'])
 	if($to < $from && $to != 0 && $from != 0)
 		$error['editdateto'] = trans('Incorrect date range!');
 
+	if($a['tariffid']==0)
+	{
+		unset($error['editat']);
+		$at = 0;
+	}
+
 	if(!$error) 
 	{
 		$LMS->DB->Execute('UPDATE assignments SET tariffid=?, userid=?, period=?, at=?, invoice=?, datefrom=?, dateto=? WHERE id=?',
@@ -174,13 +180,11 @@ if($a = $_POST['assignmentedit'])
 }
 else
 {
-	$a = $LMS->DB->GetRow('SELECT assignments.id AS id, userid, tariffid, tariffs.name AS name, period, at, datefrom, dateto, value, invoice, '
-				.$LMS->DB->Concat('users.lastname',"' '",'users.name').' AS username
-				FROM assignments, users, tariffs 
-				WHERE assignments.userid = users.id 
-				AND tariffs.id = tariffid 
-				AND assignments.id=?',array($_GET['id']));
-				
+	$a = $LMS->DB->GetRow('SELECT assignments.id AS id, userid, tariffid, tariffs.name AS name, period, at, datefrom, dateto, value, invoice
+				FROM assignments LEFT JOIN tariffs 
+				ON (tariffs.id = tariffid)
+				WHERE assignments.id = ?',array($_GET['id']));
+
 	if($a['dateto']) 
 		$a['dateto'] = date('Y/m/d', $a['dateto']);
 	if($a['datefrom'])

@@ -22,6 +22,7 @@ version 1.5.5 (??/??/????):
   - BTS#0000283: added link 'Clear Account' on Customer Account (alec)
   - added cash operations import interface (lexx)
   - sql queries speedup in GetTariff() and GetTariffList() (alec)
+  - "all liabilities suspending" can be edited like other assignments (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
