@@ -63,6 +63,7 @@ $balancelist = $LMS->GetUserBalanceList($ownerid);
 $assignments = $LMS->GetUserAssignments($ownerid);
 $usergroups = $LMS->UsergroupGetForUser($ownerid);
 $otherusergroups = $LMS->GetGroupNamesWithoutUser($ownerid);
+$contractlist = $LMS->GetContractList();
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
@@ -88,6 +89,8 @@ $SMARTY->assign('assignments',$assignments);
 $SMARTY->assign('usergroups',$usergroups);
 $SMARTY->assign('otherusergroups',$otherusergroups);
 $SMARTY->assign('tariffs',$tariffs);
+$SMARTY->assign('contractlist',$contractlist);
+$SMARTY->assign('contractcount',sizeof($contractlist));
 $SMARTY->display('nodeinfo.html');
 
 ?>

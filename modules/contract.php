@@ -37,7 +37,7 @@ if($LMS->UserExists($_GET['id']) == 0)
 }
 
 $userinfo = $LMS->GetUser($_GET['id']);
-$assigments = $LMS->GetUserAssignments($_GET['id']);
+$assignments = $LMS->GetUserAssignments($_GET['id']);
 $usernodes = $LMS->GetUserNodes($_GET['id']);
 $tariffs = $LMS->GetTariffs();
 $userinfo['username'] = ucwords(strtolower($userinfo['username']));
@@ -46,16 +46,15 @@ $usernodes['ownerid'] = $_GET['id'];
 $SMARTY->assign(
 		array(
 			'usernodes' => $usernodes,
-			'balancelist' => $balancelist,
-			'assignments' => $assigments,
-			'usergroups' => $usergroups,
-			'otherusergroups' => $otherusergroups,
-			'error' => $error,
+			'assignments' => $assignments,
 			'userinfo' => $userinfo,
 			'tariffs' => $tariffs
 		     )
 		);
 
-$SMARTY->display($LMS->CONFIG['phpui']['contract_template']);
+if($_POST['templ'])
+	$SMARTY->display($_POST['templ']);
+else
+	$SMARTY->display($LMS->CONFIG['phpui']['contract_template']);
 
 ?>

@@ -43,6 +43,7 @@ $otherusergroups = $LMS->GetGroupNamesWithoutUser($_GET['id']);
 $balancelist = $LMS->GetUserBalanceList($_GET['id']);
 $usernodes = $LMS->GetUserNodes($_GET['id']);
 $tariffs = $LMS->GetTariffs();
+$contractlist = $LMS->GetContractList();
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
@@ -58,7 +59,9 @@ $SMARTY->assign(
 			'otherusergroups' => $otherusergroups,
 			'error' => $error,
 			'userinfo' => $userinfo,
-			'tariffs' => $tariffs
+			'tariffs' => $tariffs,
+			'contractlist' => $contractlist,
+			'contractcount' => sizeof($contractlist)
 		     )
 		);
 $SMARTY->display('userinfo.html');

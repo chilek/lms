@@ -1,4 +1,16 @@
 <!--// $Id$ //-->
+{literal}
+<SCRIPT language="JavaScript">
+<!--
+	function Contract()
+	{
+		document.contract.target = "_blank";
+		document.contract.submit();
+	}
+//-->	
+</SCRIPT>
+{/literal}
+<P><FORM name="contract" method="POST" action="?m=contract&id={$userinfo.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
@@ -163,11 +175,21 @@
 			{if $userinfo.deleted}
 				<A HREF="?m=useredit&id={$userinfo.id}&action=recover">{t}Restore{/t} <IMG SRC="img/recover.gif" border="0" align="absmiddle" ALT="[ {t}Restore{/t} ]"></A>
 			{else}
+				{if $contractcount > 1}
+					<SELECT name="templ">
+					{foreach item=contract from=$contractlist}
+						<OPTION value="{$contract.file}">{if $contract.name}{$contract.name|truncate:30:"..."}{else}{$contract.file}{/if}</OPTION>
+					{/foreach}
+					</SELECT>
+					<A href="javascript:Contract();">{t}Print{/t} <IMG src="img/print.gif" border="0" align="absmiddle" ALT="[ {t}Contract{/t} ]"></A>
+				{else}
+					<A href="?m=contract&id={$userinfo.id}" target="_blank">{t}Print contract{/t} <IMG src="img/print.gif" border="0" align="absmiddle" ALT="[ {t}Contract{/t} ]"></A>
+				{/if}
 				<A href="?m=accountlist&u={$userinfo.id}">{t}Accounts{/t} <IMG src="img/account.gif" border="0" align="absmiddle" ALT="[ {t}Accounts{/t} ]"></A>
-				<A href="?m=contract&id={$userinfo.id}" target="_blank">{t}Print contract{/t} <IMG src="img/print.gif" border="0" align="absmiddle" ALT="[ {t}Contract{/t} ]"></A>
 				<A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A>
 				<A href="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, 'Are you sure, you want to remove user: {$userinfo.username} from database?\n\nIf that user have any computers, they will be automatically removed from database too, and informations about them irreversible losed!')">{t}Delete{/t} <img border="0" align="absmiddle" src="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 			{/if}
 		</TD>
 	</TR>
 </TABLE>
+</FORM></P>

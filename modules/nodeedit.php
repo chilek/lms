@@ -142,6 +142,7 @@ $assignments = $LMS->GetUserAssignments($ownerid);
 $balancelist = $LMS->GetUserBalanceList($ownerid);
 $usergroups = $LMS->UsergroupGetForUser($ownerid);
 $otherusergroups = $LMS->GetGroupNamesWithoutUser($ownerid);
+$contractlist = $LMS->GetContractList();
 $netdevices = $LMS->GetNetDevList();
 unset($netdevices['total']);
 unset($netdevices['direction']);
@@ -157,6 +158,8 @@ $SMARTY->assign('error',$error);
 $SMARTY->assign('userinfo',$userinfo);
 $SMARTY->assign('nodeinfo',$nodeinfo);
 $SMARTY->assign('users',$users);
+$SMARTY->assign('contractlist',$contractlist);
+$SMARTY->assign('contractcount',sizeof($contractlist));
 $SMARTY->display('nodeedit.html');
 
 ?>
