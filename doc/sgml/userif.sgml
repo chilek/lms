@@ -196,7 +196,7 @@
 		Parametr ten okre¶la siê przy pomocy opcji
 		<filename>lastonline_limit</filename> w sekcji [phpui] pliku konfiguracyjnego.
 		Status komputerów jest tak¿e widoczny na li¶cie komputerów.
-		<note><para>Do badania aktywno¶ci hostów mo¿na wykorzystaæ skrypt lms-fping.</para></note>
+		<note><para>Do badania aktywno¶ci hostów mo¿na wykorzystaæ skrypt lms-fping lub demona almsd.</para></note>
 		</para>
 	    </sect2>
  </sect1>
