@@ -27,13 +27,13 @@
 			<TD>
 				<B>Filtruj:<BR>Sortuj wed³ug:</B></TD>
 			<TD><B>
-				{if $state neq 3}<A href="?m=userlist&o={$order}&s=3">{else}<U>{/if}pod³±czeni{if $state eq 3}</U>{else}</A>{/if}&nbsp;
-				{if $state neq 2}<A href="?m=userlist&o={$order}&s=2">{else}<U>{/if}oczekuj±cy{if $state eq 2}</U>{else}</A>{/if}&nbsp;
-				{if $state neq 1}<A href="?m=userlist&o={$order}&s=1">{else}<U>{/if}zainteresowani{if $state eq 1}</U>{else}</A>{/if}&nbsp;
-				{if $state neq 0}<A href="?m=userlist&o={$order}&s=0">{else}<U>{/if}wszyscy{if $state eq 0}</U>{else}</A>{/if}&nbsp;<BR>
-				{if $order neq "name"}<A href="?m=userlist&s={$state}&o=name">{else}<U>{/if}nazwiska{if $order eq "name"}</U>{else}</A>{/if}&nbsp;
-				{if $order neq "addr"}<A href="?m=userlist&s={$state}&o=addr">{else}<U>{/if}adresu{if $order eq "addr"}</U>{else}</A>{/if}&nbsp;
-				{if $order neq "id"}<A href="?m=userlist&s={$state}&o=id">{else}<U>{/if}ID{if $order eq "id"}</U>{else}</A>{/if}&nbsp;				
+				{if $userlist.state neq 3}<A href="?m=userlist&o={$userlist.order}&s=3">{else}<U>{/if}pod³±czeni{if $userlist.state eq 3}</U>{else}</A>{/if}&nbsp;
+				{if $userlist.state neq 2}<A href="?m=userlist&o={$userlist.order}&s=2">{else}<U>{/if}oczekuj±cy{if $userlist.state eq 2}</U>{else}</A>{/if}&nbsp;
+				{if $userlist.state neq 1}<A href="?m=userlist&o={$userlist.order}&s=1">{else}<U>{/if}zainteresowani{if $userlist.state eq 1}</U>{else}</A>{/if}&nbsp;
+				{if $userlist.state neq 0}<A href="?m=userlist&o={$userlist.order}&s=0">{else}<U>{/if}wszyscy{if $userlist.state eq 0}</U>{else}</A>{/if}&nbsp;<BR>
+				{if $userlist.order neq "name"}<A href="?m=userlist&s={$userlist.state}&o=name">{else}<U>{/if}nazwiska{if $userlist.order eq "name"}</U>{else}</A>{/if}&nbsp;
+				{if $userlist.order neq "addr"}<A href="?m=userlist&s={$userlist.state}&o=addr">{else}<U>{/if}adresu{if $userlist.order eq "addr"}</U>{else}</A>{/if}&nbsp;
+				{if $userlist.order neq "id"}<A href="?m=userlist&s={$userlist.state}&o=id">{else}<U>{/if}ID{if $userlist.order eq "id"}</U>{else}</A>{/if}&nbsp;				
 			</B></TD></TR></TABLE>
 		</TD>
 		<TD style="border-bottom-style: solid; border-bottom-width: 1pt;">
@@ -66,13 +66,13 @@
 			<TD>
 				<B>Filtruj:<BR>Sortuj wed³ug:</B></TD>
 			<TD><B>
-				{if $state neq 3}<A href="?m=userlist&o={$order}&s=3">{else}<U>{/if}pod³±czeni{if $state eq 3}</U>{else}</A>{/if}&nbsp;
-				{if $state neq 2}<A href="?m=userlist&o={$order}&s=2">{else}<U>{/if}oczekuj±cy{if $state eq 2}</U>{else}</A>{/if}&nbsp;
-				{if $state neq 1}<A href="?m=userlist&o={$order}&s=1">{else}<U>{/if}zainteresowani{if $state eq 1}</U>{else}</A>{/if}&nbsp;
-				{if $state neq 0}<A href="?m=userlist&o={$order}&s=0">{else}<U>{/if}wszyscy{if $state eq 0}</U>{else}</A>{/if}&nbsp;<BR>
-				{if $order neq "name"}<A href="?m=userlist&s={$state}&o=name">{else}<U>{/if}nazwiska{if $order eq "name"}</U>{else}</A>{/if}&nbsp;
-				{if $order neq "addr"}<A href="?m=userlist&s={$state}&o=addr">{else}<U>{/if}adresu{if $order eq "addr"}</U>{else}</A>{/if}&nbsp;
-				{if $order neq "id"}<A href="?m=userlist&s={$state}&o=id">{else}<U>{/if}ID{if $order eq "id"}</U>{else}</A>{/if}&nbsp;				
+				{if $userlist.state neq 3}<A href="?m=userlist&o={$userlist.order}&s=3">{else}<U>{/if}pod³±czeni{if $userlist.state eq 3}</U>{else}</A>{/if}&nbsp;
+				{if $userlist.state neq 2}<A href="?m=userlist&o={$userlist.order}&s=2">{else}<U>{/if}oczekuj±cy{if $userlist.state eq 2}</U>{else}</A>{/if}&nbsp;
+				{if $userlist.state neq 1}<A href="?m=userlist&o={$userlist.order}&s=1">{else}<U>{/if}zainteresowani{if $userlist.state eq 1}</U>{else}</A>{/if}&nbsp;
+				{if $userlist.state neq 0}<A href="?m=userlist&o={$userlist.order}&s=0">{else}<U>{/if}wszyscy{if $userlist.state eq 0}</U>{else}</A>{/if}&nbsp;<BR>
+				{if $userlist.order neq "name"}<A href="?m=userlist&s={$userlist.state}&o=name">{else}<U>{/if}nazwiska{if $userlist.order eq "name"}</U>{else}</A>{/if}&nbsp;
+				{if $userlist.order neq "addr"}<A href="?m=userlist&s={$userlist.state}&o=addr">{else}<U>{/if}adresu{if $userlist.order eq "addr"}</U>{else}</A>{/if}&nbsp;
+				{if $userlist.order neq "id"}<A href="?m=userlist&s={$userlist.state}&o=id">{else}<U>{/if}ID{if $userlist.order eq "id"}</U>{else}</A>{/if}&nbsp;				
 			</B></TD></TR></TABLE>
 		</TD>
 		<TD style="border-top-style: solid; border-top-width: 1pt;">
