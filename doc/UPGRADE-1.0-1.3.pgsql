@@ -5,7 +5,7 @@
 Zaleca siê wcze¶niejszy backup bazy:
 	$ pg_dump lms > db.out
 Sposób u¿ycia:
-	$ psql -U lms -d lms -f UPGRADE.pgsql
+	$ psql -U lms -d lms -f UPGRADE-1.0-1.3.pgsql
 Po tej operacji uruchom LMS i wystartuj modu³ '?m=upgrade01'
 Dopiero na koñcu mo¿na usun±æ niepotrzebne rzeczy:
 	$ psql -U lms -d lms -c ALTER TABLE users DROP tariff; 
@@ -15,8 +15,9 @@ Dopiero na koñcu mo¿na usun±æ niepotrzebne rzeczy:
 
 BEGIN;
 
-/* Tej tabeli ju¿ nie u¿ywamy */
+/* Te tabele ju¿ nie s± u¿ywane */
 DROP TABLE options;
+DROP TABLE tokens;
 
 /* Kosmetyka u adminów */
 UPDATE admins SET lastlogindate=0 WHERE lastlogindate IS NULL;
