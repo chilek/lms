@@ -2,10 +2,13 @@
 <!-- $Id$ -->
 {include file="rtheader.html"}
 <H1><B>{$layout.pagetitle}</B></H1>
-<TABLE cellpadding="3" WIDTH="100%">
+<TABLE cellpadding="5" WIDTH="100%">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="95%">
-			<B>Kolejka:</B>
+			<IMG src="img/ticket.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<B>Kolejka:</B><BR>
+			<IMG src="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			Opis:
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
 			<B>E-mail:</B>
@@ -27,7 +30,11 @@
 	{foreach from=$queues item=queue}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD CLASS="fleft" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
-			<FONT CLASS="h2"><B>{$queue.name}</B></FONT>
+			<IMG src="img/ticket.gif" ALT="" BORDER="0" ALIGN="absmiddle">
+			<B>{$queue.name}</B><BR>
+			{if $queue.description}
+				<IMG src="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle"> {$queue.description}
+			{/if}
 		</TD>
 		<TD>
 			<A HREF="mailto:{$queue.email}">{$queue.email}</A>
@@ -42,10 +49,10 @@
 			{if $queue.lastticket}{$queue.lastticket|date_format:"%Y/%m/%d, %H:%M:%S"}{else}-{/if}
 		</TD>
 		<TD CLASS="fright" NOWRAP>
-			<A HREF="?m=rtdeletequeue&id={$queue.id}"><IMG SRC="img/delete.gif" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=rtdeditqueue&id={$queue.id}"><IMG SRC="img/edit.gif" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtqueuedel&id={$queue.id}"><IMG SRC="img/delete.gif" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtqueueedit&id={$queue.id}"><IMG SRC="img/edit.gif" ALIGN="absmiddle" BORDER="0"></A>
 			<A HREF="?m=rtqueueview&id={$queue.id}"><IMG SRC="img/view.gif" ALIGN="absmiddle" BORDER="0"></A>
-			<A HREF="?m=rtnewticket&id={$queue.id}"><IMG SRC="img/netdev_description.gif" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtticketnew&id={$queue.id}"><IMG SRC="img/netdev_description.gif" ALIGN="absmiddle" BORDER="0"></A>
 		</TD>
 	</TR>
 	{foreachelse}
@@ -61,6 +68,7 @@
 	{/foreach}
 	<TR CLASS="light">
 		<TD COLSPAN="2" ALIGN="RIGHT" CLASS="fleftu">
+			<IMG src="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 			<B>Razem:</B>
 		</TD>
 		<TD ALIGN="CENTER" CLASS="fbt">
