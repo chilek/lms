@@ -149,8 +149,6 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 	exit(0);
 }
 
-$_TIMEOUT = $_CONFIG['phpui']['timeout'];
-
 // test for proper version of Smarty
 
 if(version_compare('2.5.0', $SMARTY->_version) > 0)
@@ -163,14 +161,15 @@ require_once($_LIB_DIR.'/unstrip.php');
 require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/checkip.php');
 require_once($_LIB_DIR.'/LMS.class.php');
-require_once($_LIB_DIR.'/Session.class.php');
+require_once($_LIB_DIR.'/Auth.class.php');
 require_once($_LIB_DIR.'/accesstable.php');
+require_once($_LIB_DIR.'/Session.class.php');
 
-// Initialize Session and LMS classes
+// Initialize Session, Auth and LMS classes
 
-$SESSION = new Session($DB, $_TIMEOUT);
-
-$LMS = new LMS($DB, $SESSION, $_CONFIG);
+$SESSION = new Session($DB, $_CONFIG);
+$AUTH = new Auth($DB, $SESSION);
+$LMS = new LMS($DB, $AUTH, $_CONFIG);
 $LMS->CONFIG = $_CONFIG;
 $LMS->lang = $_language;
 
@@ -186,9 +185,9 @@ $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 $SMARTY->debugging = chkconfig($_CONFIG['phpui']['smarty_debug']);
 require_once($_LIB_DIR.'/smarty_addons.php');
 
-$layout['logname'] = $SESSION->logname;
-$layout['logid'] = $SESSION->id;
-$layout['lmsv'] = '1.5-cvs ('.$LMS->_revision.'/'.$SESSION->_revision.')';
+$layout['logname'] = $AUTH->logname;
+$layout['logid'] = $AUTH->id;
+$layout['lmsv'] = '1.5-cvs ('.$LMS->_revision.'/'.$AUTH->_revision.')';
 $layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['uptime'] = uptime();
@@ -200,10 +199,10 @@ $SMARTY->assign_by_ref('menu', $LMS->MENU);
 $SMARTY->assign_by_ref('layout', $layout);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
-if($SESSION->islogged)
+if($AUTH->islogged)
 {
 
-	if($SESSION->passwd == '')
+	if($AUTH->passwd == '')
 		$SMARTY->assign('emptypasswd',TRUE);
 
 	$module = $_GET['m'];
@@ -213,7 +212,7 @@ if($SESSION->islogged)
 		if(eregi($access['allow'], $module))
 			$allow = TRUE;
 		else{
-			$rights = $LMS->GetAdminRights($SESSION->id);
+			$rights = $LMS->GetAdminRights($AUTH->id);
 			if($rights)
 				foreach($rights as $level)
 					if(isset($access['table'][$level]['deny_reg']) && eregi($access['table'][$level]['deny_reg'], $module))
@@ -250,12 +249,12 @@ if($SESSION->islogged)
 }
 else
 {
-	$SMARTY->assign('error', $SESSION->error);
+	$SMARTY->assign('error', $AUTH->error);
 	$SMARTY->assign('target','?'.$_SERVER['QUERY_STRING']);
 	$SMARTY->display('login.html');
 	
 }
 
+$SESSION->close();
 $DB->Destroy();
-
 ?>
