@@ -72,7 +72,7 @@ function check_ssn($ssn)
 
 function check_zip($zip)
 {
-	return (eregi('^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$', $zip) ? TRUE : FALSE);
+	return eregi('^[0-9]{5}$|^[0-9]{5}-[0-9]{4}$', $zip);
 }
 
 function to_words($num, $power = 0, $powsuffix = '', $short_version = 0)
