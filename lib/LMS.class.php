@@ -2849,6 +2849,8 @@ class LMS
 				$traffic['download']['sum']['data'] += $row['download'];
 				$traffic['upload']['sum']['data'] += $row['upload'];
 			}
+			$traffic['upload']['avgsum'] = $traffic['upload']['sum']['data']/($delta*1024);
+			$traffic['download']['avgsum'] = $traffic['download']['sum']['data']/($delta*1024);
 
 			// get maximum data from array
 
