@@ -2835,6 +2835,28 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	var $rtstates = array( 0 => 'nowy', 1 => 'otwarty', 2 => 'rozwi±zany', 3 => 'martwy' );
 
+	function GetQueue($id)
+	{
+		if($queue = $this->DB->GetRow('SELECT * FROM rtqueues WHERE id=?', array($id)))
+		{
+		    $admins = $this->DB->GetAll('SELECT id, name FROM admins WHERE deleted=0');
+		    foreach($admins as $admin)
+		    {
+			    $admin['rights'] = $this->GetAdminRightsRT($admin['id'],$id);
+			    $queue['rights'][] = $admin; 
+		    }
+		    return $queue;
+		}
+		else
+		    return NULL;
+	}
+	
+	function GetAdminRightsRT($admin, $queue)
+	{
+		$rights = $this->DB->GetOne('SELECT rights FROM rtrights WHERE adminid=? AND queueid=?', array($admin, $queue));
+		return ($rights ? $rights : 0);
+	}
+
 	function GetQueueList()
 	{
 		if($result = $this->DB->GetAll('SELECT id, name, email, description FROM rtqueues'))
@@ -2851,6 +2873,59 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return ($this->DB->GetOne('SELECT * FROM rtqueues WHERE id=?', array($id)) ? TRUE : FALSE);
 	}
 
+	function QueueAdd($queue)
+	{
+		if($this->DB->Execute('INSERT INTO rtqueues (name, email, description) VALUES (?, ?, ?)', array($queue['name'], $queue['email'], $queue['description'])))
+		{
+			$this->SetTS('rtqueues');
+			$id = $this->DB->GetOne('SELECT id FROM rtqueues WHERE name=?', array($queue['name']));
+			if($queue['rights'])
+			{
+				$this->SetTS('rtrights');
+				foreach($queue['rights'] as $right)
+					if($right['rights'])
+						$this->RightsRTAdd($id, $right['id'], $right['rights']);
+			}
+			return $id;
+		}
+		else
+			return FALSE;
+	}
+
+    	function QueueDelete($queue)
+	{
+		if($this->DB->Execute('DELETE FROM rtqueues WHERE id=?', array($queue)))
+			$this->SetTS('rtqueues');
+		if($this->DB->GetOne('DELETE FROM rtrights WHERE queueid=?', array($queue)))
+			$this->SetTS('rtrights');
+		if($tickets = $this->DB->GetCol('SELECT id FROM rttickets WHERE queueid=?', array($queue)))
+		{
+			foreach($tickets as $id)
+				$this->DB->GetOne('DELETE FROM rtmessages WHERE ticketid=?', array($id));
+			$this->SetTS('rtmessages');
+			$this->DB->GetOne('DELETE FROM rttickets WHERE queueid=?', array($queue));
+			$this->SetTS('rttickets');
+		}
+	}
+
+	function RightsRTAdd($queueid, $adminid, $rights)
+	{
+		$this->DB->Execute('INSERT INTO rtrights(queueid, adminid, rights) VALUES(?, ?, ?)', array($queueid, $adminid, $rights));
+		$this->SetTS('rtrights');
+	}
+
+	function QueueUpdate($queue)
+	{
+		$this->DB->Execute('UPDATE rtqueues SET name=?, email=?, description=? WHERE id=?', array($queue['name'], $queue['email'], $queue['description'], $queue['id']));
+		$this->SetTS('rtqueues');
+		$this->DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue['id']));
+		$this->SetTS('rtrights');
+			if($queue['rights'])
+				foreach($queue['rights'] as $right)
+					if($right['rights'])
+						$this->RightsRTAdd($queue['id'], $right['id'], $right['rights']);
+	}
+	
 	function GetQueueName($id)
 	{
 		return $this->DB->GetOne('SELECT name FROM rtqueues WHERE id=?', array($id));

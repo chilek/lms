@@ -24,12 +24,42 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Obs³uga zg³oszeñ';
+$queue = $_POST['queue'];
 
-$queues = $LMS->GetQueueList();
+if(isset($queue))
+{
+	$queue['id'] = $_GET['id'];
+	
+	if($queue['name'] == '')
+		$error['name'] = "Kolejka musi posiadaæ nazwê!";
+
+	if($queue['email']!='' && !check_email($queue['email']))
+		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+
+	foreach($queue['admins'] as $key => $value)
+	{
+		$queue['rights'][] = array('id' => $key, 'rights' => $value, 'name' => $queue['adminnames'][$key]);
+	}
+
+	if(!$error)
+	{
+		$LMS->QueueAdd($queue);
+		header("Location: ?m=rtqueueinfo&id=".$queue['id']);
+		die;
+	}
+}
+else
+{
+	$queue['rights'] = $LMS->GetAdminList();
+	unset($queue['rights']['total']);
+}
+	
+$layout['pagetitle'] = 'Dodawanie kolejki';
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$SMARTY->assign('queues', $queues);
-$SMARTY->display('rtqueuelist.html');
+$SMARTY->assign('queue', $queue);
+$SMARTY->assign('error', $error);
+$SMARTY->display('rtqueueadd.html');
+
 ?>
