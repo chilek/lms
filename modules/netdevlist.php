@@ -24,10 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Osprzêt sieciowy";
-
-$_SESSION['backto']=$_SERVER['QUERY_STRING'];
-
+$layout['pagetitle'] = trans('Network Devices');
 
 if(!isset($_GET['o']))
 	$o = $_SESSION['ndlo'];
@@ -36,11 +33,9 @@ else
 $_SESSION['ndlo'] = $o;
 
 $netdevlist = $LMS->GetNetDevList($o);
-//$nodelist = $LMS->GetNodeList($o);
 $listdata['total'] = $netdevlist['total'];
 $listdata['order'] = $netdevlist['order'];
 $listdata['direction'] = $netdevlist['direction'];
-
 unset($netdevlist['total']);
 unset($netdevlist['order']);
 unset($netdevlist['direction']);
@@ -53,6 +48,8 @@ $pagelimit = (! $LMS->CONFIG['phpui']['nodelist_pagelimit'] ? $listdata['total']
 $start = ($page - 1) * $pagelimit;
 
 $_SESSION['nlp'] = $page;
+
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
 $SMARTY->assign('page',$page);
 $SMARTY->assign('pagelimit',$pagelimit);
