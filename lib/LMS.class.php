@@ -1132,7 +1132,11 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function NodeSetWarn($id,$warning=FALSE)
 	{
 		$this->SetTS('nodes');
-		return $this->DB->Execute('UPDATE nodes SET warning=?, modid=? WHERE id=?', array($warning,$this->SESSION->id,$id));
+		if($warning)
+			return $this->DB->Execute('UPDATE nodes SET warning=?, modid=? WHERE id=?', array(1,$this->SESSION->id,$id));
+		else
+			return $this->DB->Execute('UPDATE nodes SET warning=?, modid=? WHERE id=?', array(0,$this->SESSION->id,$id));
+
 	}
 
 	function NodeSwitchWarn($id)
