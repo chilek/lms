@@ -141,39 +141,4 @@ class Session {
 	}
 }
 
-/*
- * $Log$
- * Revision 1.41  2003/12/01 04:18:37  lukasz
- * - tsave
- *
- * Revision 1.40  2003/12/01 04:10:46  lukasz
- * - typo
- *
- * Revision 1.39  2003/12/01 04:09:31  lukasz
- * - tsave
- *
- * Revision 1.38  2003/09/05 02:07:05  lukasz
- * - massive attack: s/this->ADB->/this->DB->/g
- *
- * Revision 1.37  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.36  2003/08/22 20:32:58  lukasz
- * - fixed bug in COUNT(*) (i hope, i don't have postgres installed)
- *
- * Revision 1.35  2003/08/19 09:53:21  lukasz
- * - zabezpieczenie przed wy¶wietlaniem bezsensownego komunikatu o pustym
- *   ha¶le podczas braku administratorów
- *
- * Revision 1.34  2003/08/19 09:43:29  lukasz
- * - force adminadd module if there is no records in admins table
- * - removed weird things with empty passwords or sth
- * - Warden, you should think about merging this into lms-stable
- *
- * Revision 1.33  2003/08/18 16:57:00  lukasz
- * - more cvs tags :>
- *
- */
-
 ?>

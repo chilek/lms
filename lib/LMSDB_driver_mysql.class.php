@@ -132,47 +132,4 @@ class LMSDB_driver_mysql extends LMSDB_common
 	}
 }
 
-/* 
- * $Log$
- * Revision 1.17  2003/09/12 22:34:21  alec
- * bug fix (I think so)
- *
- * Revision 1.16  2003/09/12 22:22:52  alec
- * Execute zwraca ilo¶æ zmodyfikowanych wierszy dla zapytañ UPDATE, DELETE, INSERT
- *
- * Revision 1.15  2003/09/10 00:16:19  lukasz
- * - LMSDB::Destroy();
- *
- * Revision 1.14  2003/08/31 03:34:20  lukasz
- * - ma³a literówka powoduj±ca to i¿ driver od MySQL'a nie dostawa³ informacji
- *   o ho¶cie z lms.ini, a co za tym idzie zawsze ³±czy³ siê z localhostem.
- *
- * Revision 1.13  2003/08/28 21:07:26  lukasz
- * - added support for transactions
- *
- * Revision 1.12  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.11  2003/08/24 00:37:07  lukasz
- * *** empty log message ***
- *
- * Revision 1.10  2003/08/22 13:15:27  lukasz
- * - ListTables()
- *
- * Revision 1.9  2003/08/19 00:58:43  lukasz
- * - fixed usage of mysql_error();
- *
- * Revision 1.8  2003/08/18 17:16:25  lukasz
- * - temporary save
- *
- * Revision 1.7  2003/08/18 16:47:37  lukasz
- * - once again fixed CVS tags
- *
- * Revision 1.6  2003/08/18 16:46:50  lukasz
- * - fixed CVS tags
- * - beta state - need testing
- *
- */
-
 ?>

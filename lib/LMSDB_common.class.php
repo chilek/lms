@@ -217,47 +217,4 @@ Class LMSDB_common
 
 }
 
-/* 
- * $Log$
- * Revision 1.19  2003/10/08 04:39:38  lukasz
- * - temporary save
- *
- * Revision 1.18  2003/10/06 05:33:04  lukasz
- * - temporary save / lot of fixes
- *
- * Revision 1.17  2003/09/12 22:22:52  alec
- * Execute zwraca ilo¶æ zmodyfikowanych wierszy dla zapytañ UPDATE, DELETE, INSERT
- *
- * Revision 1.16  2003/09/10 00:16:19  lukasz
- * - LMSDB::Destroy();
- *
- * Revision 1.15  2003/08/28 21:07:21  lukasz
- * - added support for transactions
- *
- * Revision 1.14  2003/08/27 19:25:18  lukasz
- * - unset result before returning it
- *
- * Revision 1.13  2003/08/24 13:10:26  lukasz
- * - added few comments
- * - s/<?/<?php/g
- *
- * Revision 1.12  2003/08/24 00:59:29  lukasz
- * - LMSDB: GetAllByKey($query, $key, $inputarray)
- * - LMS: more fixes for new DAL
- *
- * Revision 1.11  2003/08/22 13:15:17  lukasz
- * - ListTables()
- *
- * Revision 1.10  2003/08/19 01:01:57  lukasz
- * - added Now() and Concat(), fixed Connect() (doesn't invoke _driver_selectdb(), because pgsql doesn't have _driver_selectdb())
- *
- * Revision 1.9  2003/08/18 16:47:37  lukasz
- * - once again fixed CVS tags
- *
- * Revision 1.8  2003/08/18 16:46:50  lukasz
- * - fixed CVS tags
- * - beta state - need testing
- *
- */
-
 ?>

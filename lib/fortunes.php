@@ -94,24 +94,4 @@ GPL nie przewiduje zdaje sie braku odpowiedzialnosci za smierc przez kod ;]";
 mt_srand ((double) microtime()* 100000000);
 $layout[fortune] = $fortunes[mt_rand(0,sizeof($fortunes)-1)];
 
-/*
- * $Log$
- * Revision 1.2  2003/11/18 20:49:46  alec
- * literówka bts#00000079
- *
- * Revision 1.1  2003/09/24 22:31:43  lukasz
- * - changed 'TipOfTheDay' to 'fortunes'
- *
- * Revision 1.17  2003/09/11 17:18:17  lukasz
- * - Lexx zaczyna normalnieæ ;>
- *
- * Revision 1.16  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.15  2003/08/18 16:57:00  lukasz
- * - more cvs tags :>
- *
- */
-
 ?>

@@ -38,15 +38,4 @@ if(!is_dir($_BACKUP_DIR))
 if(!is_writable($_BACKUP_DIR))
 	die("Nie mogê zapisywaæ do katalogu <B>".$_BACKUP_DIR."</B> - móg³by¶ wykonaæ komendê:<BR><pre>chown ".posix_geteuid().".".posix_getegid()." ".$_BACKUP_DIR."\nchmod 755 ".$_BACKUP_DIR."</pre><BR>Pomo¿e mi to poprawnie dzia³aæ. Dziêki.");
 
-/*
- * $Log$
- * Revision 1.17  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.16  2003/08/18 16:57:00  lukasz
- * - more cvs tags :>
- *
- */
-
 ?>

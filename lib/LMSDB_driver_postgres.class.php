@@ -133,46 +133,4 @@ class LMSDB_driver_postgres extends LMSDB_common
 	}
 }
 
-/* 
- * $Log$
- * Revision 1.12  2003/10/11 03:45:20  lukasz
- * - http://lists.rulez.pl/lms/1242.html
- *
- * Revision 1.11  2003/09/12 22:22:52  alec
- * Execute zwraca ilo¶æ zmodyfikowanych wierszy dla zapytañ UPDATE, DELETE, INSERT
- *
- * Revision 1.10  2003/09/10 20:17:17  alec
- * fatal error in postgres disconnect()
- *
- * Revision 1.9  2003/09/10 00:16:19  lukasz
- * - LMSDB::Destroy();
- *
- * Revision 1.8  2003/08/28 21:07:33  lukasz
- * - added support for transactions
- *
- * Revision 1.7  2003/08/25 15:59:12  alec
- * Poprawka na nowsze wersje postgresa
- *
- * Revision 1.6  2003/08/24 14:06:35  lukasz
- * - fixed bug #0000061 - added missing param for pg_fetch_array (but it's
- *   propably only workarround)
- *
- * Revision 1.5  2003/08/24 13:55:16  lukasz
- * - fix with local socket connection
- *
- * Revision 1.4  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.3  2003/08/22 18:03:57  lukasz
- * - added _driver_listtables()
- *
- * Revision 1.2  2003/08/22 13:16:23  lukasz
- * - fixed _driver_concat() (PG uses '||' not '+' as concat sign)
- *
- * Revision 1.1  2003/08/19 01:00:13  lukasz
- * - untested driver for pgsql
- *
- */
-
 ?>
