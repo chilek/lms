@@ -27,28 +27,30 @@
 $layout['pagetitle'] = "Informacje o prawach autorskich";
 
 $authors = array(
-		array(
-			'nick' => 'alec',
+		
+		'alec' => array(
 			'realname' => 'Aleksander Machniak',
 			'www' => 'www.alec.pl',
 			'info' => 'kod PHP, C, Perl, HTML, JavaScript, grafika, dokumentacja, PostgreSQL, SQLite'
 		     ),
 
-		array(
-			'nick' => 'Baseciq',
+		'Baseciq' => array(
 			'realname' => '£ukasz Jaros³aw Mozer',
 			'www' => 'www.baseciq.org',
 			'info' => 'pomys³odawca i maintainer, kod PHP, Perl, design, HTML, JavaScript, CSS, grafika, dokumentacja, projekt strony WWW projektu'
-		     ),
+			),
 
-		array(
-			'nick' => 'chilek',
+		'chilek' => array(
 			'info' => 'kod PHP, Perl',
 			'realname' => 'Tomasz Chilinski',
 			),
 
-		array(
-			'nick' => 'Lexx',
+		'hunter' => array(
+			'info' => 'kod PHP, Perl',
+			'realname' => 'Krzysztof Drewicz',
+			),
+
+		'Lexx' => array(
 			'info' => 'kod PHP, C, dokumentacja, projekt strony WWW projektu',
 			'www' => 'www.lexx.w.pl',
 			'realname' => 'Marcin Król',
@@ -56,6 +58,66 @@ $authors = array(
 	
 		);
 
+$others = array(
+
+		'agaran' => array(
+			'info' => 'Kod i support Perl',
+			'realname' => 'Maciej Pijanka',
+			),
+		
+		'kflis' => array(
+			'info' => 'Betatesting, grafika',
+			'www' => 'www.kflis.net',
+			'realname' => 'Kuba Flis',
+			),
+
+		'dzwonus' => array(
+			'info' => 'Betatesting, wspó³autor pomys³u',
+			'realname' => 'Tomasz Dzwonkowski',
+			),
+
+		'victus' => array(
+			'info' => 'Betatesting, wspó³autor pomys³u',
+			'realname' => 'Sebastian Frasunkiewicz',
+			),
+
+		'shasta' => array(
+			'info' => 'Support MySQL, strona WWW',
+			'realname' => 'Kuba Jankowski',
+			'www' => 's.atn.pl',
+			),
+
+		'Bob_R' => array(
+			'info' => 'Support CSS, HTML, JavaScript',
+			'realname' => 'Pawe³ Czerski',
+			'www' => 'plug.atn.pl/~bober/',
+			),
+
+		'sickone' => array(
+			'realname' => 'Pawe³ Kisiela',
+			'info' => 'Support CSS, HTML, JavaScript',
+			'www' => 'gamechannel.int.pl',
+			),
+
+		'DziQs' => array(
+			'realname' => 'Micha³ Zapalski',
+			'info' => 'Kod PHP i Perl',
+			),
+
+		'Pierzak' => array(
+			'realname' => 'Piotr M.',
+			'info' => 'Projekt logo',
+			),
+		);
+				
+$betatesters = array(
+		'byko' => array(
+			'realname' => 'Grzegorz Cichowski',
+			'www' => 'byko.pawlacz.net',
+			),
+		);
+		
+		
 $SMARTY->assign('authors', $authors);
 $SMARTY->display('header.html');
 $SMARTY->display('copyrights-new.html');
