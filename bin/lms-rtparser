@@ -312,11 +312,12 @@ if(! $prev_tid) # generate new ticket if previous not found
 	# get sender e-mail if not specified
 	if(!$autoreply_from)
 	{
-		$dbq = $dbase->prepare("SELECT email FROM rtqueues WHERE id = '$queue'");
+		$dbq = $dbase->prepare("SELECT email, name FROM rtqueues WHERE id = '$queue'");
 		$dbq->execute();
 		if(my $row = $dbq->fetchrow_hashref())
 		{
 			$autoreply_from = $row->{'email'};
+			$autoreply_name = $autoreply_name || $row->{'name'};
 		}
 	}
 
@@ -328,7 +329,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 	
 	my $smtp = Net::SMTP->new($smtpserver);
 	$smtp->mail("$autoreply_from");
-	$smtp->to($mh_replyto || $mh_from);
+	$smtp->to($replytoemail || $fromemail);
 	$smtp->data();
 	if($replytoemail) {
 		$smtp->datasend("To: $replytoname <$replytoemail>\n");
