@@ -158,6 +158,7 @@ my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $dbase;
+my $utsfmt;
 
 sub instance($);
 
@@ -680,8 +681,6 @@ sub instance($)
 	}	
 	return 0;	
 }	
-
-my $utsfmt;
 
 if($dbtype eq "mysql")
 {
