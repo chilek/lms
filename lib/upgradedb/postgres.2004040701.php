@@ -28,8 +28,8 @@ $DB->Execute("
     BEGIN;
     ALTER TABLE tariffs ALTER taxvalue DROP NOT NULL;
     ALTER TABLE invoicecontents ALTER taxvalue DROP NOT NULL;
-    UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004040701', 'dbversion');
-    COMMIT
-");
+    UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?;
+    COMMIT",
+    array('2004040701', 'dbversion'));
 
 ?>
