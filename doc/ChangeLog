@@ -58,6 +58,7 @@ version 1.5.5 Anubis (??/??/????):
   - if we find only one customer we will redirect to his info (chilek)
   - almsd/dhcp,oident,ethers: changed defaults of 'file' and 'command'
     options (alec)
+  - translated to english documentation chapter 'A.L.E.C's LMS Daemon' (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 

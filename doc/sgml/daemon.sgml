@@ -173,7 +173,7 @@ info = "Additional description of module"
                     </row>
                     <row>
                     <entry><xref linkend="daemon-hostfile"></entry>
-                    <entry>Universal module (i.e. making iptables rules)</entry>
+                    <entry>Universal module (e.g. making iptables rules)</entry>
                     </row>
                     <row>
                     <entry><xref linkend="daemon-notify"></entry>
@@ -587,18 +587,18 @@ info = "Additional description of module"
           <title>Traffic</title>
               <sect3 id="traffic-desc">
               <title>Description</title>
-              <para>'Traffic' to odpowiednik perlowego lms-traffic, zapisuj±cy do bazy statystyki
-              wykorzystania ³±cza z pliku utworzonego przez u¿ytkownika. Plik taki powinien mieæ 
-              format: ip_hosta upload download . Wiêcej informacji (w tym jak utworzyæ taki plik)
-              mo¿na znale¼æ w rozdziale dotycz±cym lms-traffic.</para>
+              <para>'Traffic' is an equivalent of perl's script lms-traffic, load to 
+	      database internet link stats from file created by user. That file must
+	      have format: host_IP upload download. More informations (including how to make 
+	      such file) can be found in chapter with lms-traffic description.</para>
               </sect3>
               <sect3 id="traffic-config">
               <title>Configuration</title>
-              <para>Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:</para>
+              <para>Only one available option is also mandatory:</para>
               <itemizedlist>
                <listitem>
                    <para>file</para>
-                   <para>Lokalizacja pliku ze statystykami firewalla. Default: /var/log/traffic.log</para>
+                   <para>Location of file with firewall stats. Default: /var/log/traffic.log</para>
                    <para>Example: <prompt>file = /tmp/log</prompt></para>
                </listitem>
               </itemizedlist>
@@ -608,50 +608,50 @@ info = "Additional description of module"
           <title>Tc (HTB)</title>
               <sect3 id="tc-desc">
               <title>Description</title>
-              <para>Modu³ generuj±cy skrypt zawieraj±cy polecenia iptables i tc s³u¿±ce
-              do ograniczania pasma i limitowania po³±czeñ u¿ytkownikom. Regu³ki dla 
-              komputerów mo¿na dowolnie zdefiniowaæ i wykorzystaæ nie tylko do "traffic 
-              control". Zasada dzia³ania skryptu przedstawia siê nastêpuj±co: Najpierw z bazy
-              pobierane s± dane dla wszystkich u¿ytkowników. Obliczane s± sumy ograniczeñ
-              (uprate, downrate, upceil, downceil, limity po³±czeñ) dla ka¿dego u¿ytkownika
-              Nastêpnie wykonywana jest pêtla ze sprawdzeniem przynale¿no¶ci do grupy u¿ytkowników
-              i sieci (je¶li okre¶lono). Je¶li warto¶ci ograniczeñ s± ró¿ne od zera nastêpuje
-              zapis regu³ do pliku z podmian± zmiennych. W regu³kach mo¿na stosowaæ nastêpuj±ce
-              zmienne: %name - nazwa hosta, %i - adres IP, %m - MAC, %uprate, %downrate, %upceil, 
-              %downceil, %plimit, %climit oraz %x - licznik o warto¶ci pocz±tkowej 100 
-              zwiêkszany o jeden dla ka¿dego komputera.</para>
-              <para>Domy¶lna polityka tworzenia klas htb zak³ada utworzenie jednej klasy dla
-              wszystkich komputerów u¿ytkownika. Mo¿e to byæ zmienione za pomoc± opcji
-              'one_class_per_host'.</para>
-              <para>Configuration domy¶lna zak³ada, ¿e twój system jest przystosowany
-              do zastosowania htb oraz iptables z modu³ami limit, connlimit, mark i ipp2p.
-              Mo¿esz sam spatchowaæ j±dro lub skorzystaæ ze ¼róde³ dostêpnych na stronie
+              <para>Generate script containing iptables and tc rules for traffic control
+              i.e. band and customer connections limiting. Rules for nodes can be freely
+              defined and used not only for traffic control. Principle of operation of this 
+	      module is following: First of all are retrived data of all customers.
+              Accounted are totals of limitations (uprate, downrate, upceil, downceil, connection limit) 
+	      for each customer. Then is performed loop with checking of networks and groups
+	      (if specified). If limit values are not zeroes rules are writed to file with
+              variables replacement. In rules can be used following variables:
+              %name - host name, %i - IP address, %m - MAC, %uprate, %downrate, %upceil, 
+              %downceil, %plimit, %climit, and %x - counter with initial value 100 incremented 
+              by one for each node.</para>
+              <para>Default policy of htb class creating assume one class for
+              all nodes of each customer. In can be changed with 
+              'one_class_per_host' option.</para>
+              <para>Default configuration assume that your system supports
+	      htb and iptables with modules limit, connlimit, mark and ipp2p.
+              You can patch kernel or use sources available at polish project
               <ulink url="http://www.inet.one.pl">www.inet.one.pl</ulink>.</para>
               </sect3>
               <sect3 id="tc-config">
               <title>Configuration</title>
-              <para>Masz do dyspozycji standardowe parametry takie jak usergroups, file,
-              command, networks i dodatkowo opcje definiuj±ce tre¶æ regu³ek tc i firewalla.
-              Domy¶lna konfiguracja przeznaczona jest dla ³±cz 512/128 kbit i 100mbit.</para>
-              <para><note><para>Warto¶ci opcji konfiguracyjnych w <filename>lms.ini</filename>
-              nale¿y podawaæ w jednej linii. W przypadku tego modu³u mo¿e to byæ niezbyt wygodne,
-              dlatego mo¿esz stworzyæ plik z zawarto¶ci± ca³ego nag³ówka (opcja <filename>
-              begin</filename>), a nastêpnie u¿yæ opcji <filename>command</filename> do
-              jego sklejenia z reszt± skryptu wygenerowan± przez modu³.</para></note></para>
+              <para>For your disposal we have basic options like groups of customers, 
+	      file, command, networks and extra options which are define tc and firewall
+	      rules.
+              Default config is designed for 512/128 kbit and 100mbit links.</para>
+              <para><note><para>Values of configuration options in <filename>lms.ini</filename>
+              must be putted in one line. In case of that module it can be not very handy,
+              so you can create file containing whole header (option <filename>
+              begin</filename>), and then use option <filename>command</filename> for
+              join with the rest of file generated by this module.</para></note></para>
               <itemizedlist>
                <listitem>
                    <para>file</para>
-                   <para>Lokalizacja pliku tymczasowego. Default: /etc/rc.d/rc.htb.</para>
+                   <para>Location of file. Default: /etc/rc.d/rc.htb.</para>
                    <para>Example: <prompt>file = /tmp/rc.htb</prompt></para>
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Polecenie pow³oki wykonywane po utworzeniu pliku. Default: "sh /etc/rc.d/rc.htb start".</para>
+                   <para>Shell command executed after file creation. Default: "sh /etc/rc.d/rc.htb start".</para>
                    <para>Example: <prompt>command = "chmod 700 /tmp/rc.htb; /tmp/rc.htb start"</prompt></para>
                </listitem>
                <listitem>
                    <para>begin</para>
-                   <para>Nag³ówek skryptu. Default:
+                   <para>Script header. Default:
 <screen>
 "#!/bin/sh
 IPT=/usr/sbin/iptables
@@ -717,7 +717,7 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 9 u32 match ip dst 0/0 flowi
                </listitem>    
                <listitem>
                    <para>end</para>
-                   <para>Stopka skryptu. Default:
+                   <para>Script footer. Default:
 <screen>
 }
 
@@ -748,18 +748,18 @@ esac
                </listitem>
                <listitem>
                    <para>one_class_per_host</para>
-                   <para>Okre¶la politykê tworzenia klas htb. W ustawieniu domy¶lnym
-                   wszystkie komputery u¿ytkownika zostan± wrzucone do jednej klasy.
-                   Ustawienie tej opcji na 'true' spowoduje, ¿e regu³y okre¶lone w 
-                   host_htb_up i host_htb_down zostan± wygenerowane dla wszystkich
-                   komputerów u¿ytkownika (z inn± warto¶ci± '%x'). Regu³y z host_mark_down,
-                   host_mark_up, host_plimit i host_climit generowane s± dla ka¿dego
-                   komputera niezale¿nie od ustawieñ tej zmiennej. Default: false</para>
+                   <para>Specify policy of htb class creation. In default setting
+                   all computers of customer will be placed in one class.
+                   Setting it on 'true' will made that rules specified in  
+                   host_htb_up and host_htb_down will be generated for all
+                   customer's computers (with different value of '%x'). Rules host_mark_down,
+                   host_mark_up, host_plimit and host_climit are generated for each
+                   node regardless of this option setting. Default: false</para>
                    <para>Example: <prompt>one_class_per_host = 1</prompt></para>
                </listitem>
                <listitem>
                    <para>host_mark_down</para>
-                   <para>Regu³a markuj±ca dla ka¿dego komutera. Default:
+                   <para>Mark rule for each computer. Default:
 <screen>
 # %n
 $IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
@@ -769,7 +769,7 @@ $IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
                </listitem>
                <listitem>
                    <para>host_mark_up</para>
-                   <para>Regu³a markuj±ca dla ka¿dego komutera. Default:
+                   <para>Mark rule for each computer. Default:
 <screen>
 $IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
 </screen>
@@ -778,8 +778,8 @@ $IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
                </listitem>
                <listitem>
                    <para>host_htb_down</para>
-                   <para>Zestaw regu³ dla ka¿dego komutera, wykonywanych
-                   gdy uprate i downrate s± ró¿ne od zera. Default:
+                   <para>Rules for each computer executed when uprate and downrate 
+		   are not zeroes. Default:
 <screen>
 $TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $LAN parent 1:%x esfq perturb 10 hash dst
@@ -790,8 +790,8 @@ $TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%x
                </listitem>
                <listitem>
                    <para>host_htb_up</para>
-                   <para>Zestaw regu³ dla ka¿dego komutera, wykonywanych
-                   gdy uprate i downrate s± ró¿ne od zera. Default:
+                   <para>Rules for each computer executed when uprate and downrate 
+		   are not zeroes. Default:
 <screen>
 $TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $WAN parent 2:%x esfq perturb 10 hash dst
@@ -802,8 +802,8 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x
                </listitem>
                <listitem>
                    <para>host_climit</para>
-                   <para>Regu³ka z ograniczeniem ilo¶ci równoczesnych po³±czeñ tcp. Wykonywana
-                   gdy climit w bazie jest ró¿ny od zera. Default:
+                   <para>Rule with simultaneous tcp connections limit. Executed
+                   when climit in not a zero. Default:
 <screen>
 $IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT
 </screen>
@@ -812,8 +812,8 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m
                </listitem>
                <listitem>
                    <para>host_plimit</para>
-                   <para>Regu³ka z ograniczeniem ilo¶ci pakietów w jednostce czasu (tutaj sekunda). Wykonywana
-                   gdy plimit w bazie jest ró¿ny od zera. Default:
+                   <para>Rule with limiting of packets in time unit (here second). Executed
+                   when plimit is not a zero. Default:
 <screen>
 $IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
 $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
@@ -823,13 +823,13 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                </listitem>
                <listitem>
                    <para>networks</para>
-                   <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+                   <para>List of network names for consideration. Case insensitive.
                    Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
                    <para>usergroups</para>
-                   <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+                   <para>List of customer groups for consideration. Case insensitive. 
                    Default: empty (all groups).</para>
                    <para>Example: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
                </listitem>
@@ -840,10 +840,10 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
           <title>Dns</title>
               <sect3 id="dns-desc">
               <title>Description</title>
-              <para>Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej skomplikowanych.
-              Tworzy dla ka¿dej sieci pliki stref oraz odpowiednie wpisy w named.conf w oparciu
-              o szablony tych plików. Przyk³adowe szablony znajduj± siê w katalogu
-              <filename>/modules/dns/sample</filename>.</para>
+              <para>Configuration of named zones. This is a one from most complicated modules.
+              Create zone files for each network and equivalent entries in named.conf on the
+              basis of templates of this files. Example templates are placed in
+              <filename>/modules/dns/sample</filename> directory.</para>
               </sect3>
               <sect3 id="dns-config">
               <title>Configuration</title>
@@ -851,90 +851,90 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
               <itemizedlist>
                <listitem>
                    <para>forward-patterns</para>
-                   <para>Katalog z szablonami stref. Default: forward.</para>
+                   <para>Directory with zone templates. Default: forward.</para>
                    <para>Example: <prompt>forward-patterns = /dns/patterns/forward</prompt></para>
                </listitem>
                <listitem>
                    <para>reverse-patterns</para>
-                   <para>Katalog z szablonami stref odwrotnych. Default: reverse.</para>
+                   <para>Directory with reverse zone templates. Default: reverse.</para>
                    <para>Example: <prompt>reverse-patterns = /dns/patterns/revers</prompt></para>
                </listitem>
                <listitem>
                    <para>generic-forward</para>
-                   <para>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
-                   'forward-patterns' nie bêdzie pliku odpowiadaj±cego nazwie domenowej sieci.
+                   <para>Default template. It'll be used if in directory specified by
+                   'forward-patterns' will not found file with name corresponding to network domain name.
                    Default: modules/dns/sample/forward/generic.</para>
                    <para>Example: <prompt>generic-forward = /dns/patterns/forward</prompt></para>
                </listitem>
                <listitem>
                    <para>generic-reverse</para>
-                   <para>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
-                   'reverse-patterns' nie bêdzie pliku odpowiadaj±cego numerowi IP sieci.
+                   <para>Default template. It'll be used if in directory specified by
+                   'reverse-patterns' will not found file with name corresponding to network IP address.
                    Default: modules/dns/sample/reverse/generic.</para>
                    <para>Example: <prompt>generic-reverse = /dns/patterns/forward</prompt></para>
                </listitem>
                <listitem>
                    <para>forward-zones</para>
-                   <para>Katalog na pliki wynikowe stref.
+                   <para>Directory for generated zones files.
                    Default: modules/dns/sample/out/forward.</para>
                    <para>Example: <prompt>forward-zones = /dns/forward</prompt></para>
                </listitem>
                <listitem>
                    <para>reverse-zones</para>
-                   <para>Katalog na pliki wynikowe stref odwrotnych.
+                   <para>Directory for generated reverse zones files.
                    Default: modules/dns/sample/out/reverse.</para>
                    <para>Example: <prompt>reverse-zones = /dns/reverse</prompt></para>
                </listitem>
                <listitem>
                    <para>host-reverse</para>
-                   <para>Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane sieci.
+                   <para>Line in reverse zone file for each computer of given network.
                    Default: "%n IN A %i\n".</para>
                    <para>Example: <prompt>host-reverse = "\t %n IN A %i\n"</prompt></para>
                </listitem>
                <listitem>
                    <para>host-forward</para>
-                   <para>Linia w pliku strefy odpowiadaj±ca ka¿demu komputerowi w danej sieci.
+                   <para>Line in zone file for each computer of given network.
                    Default: "%c IN PTR %n.%d.\n".</para>
                    <para>Example: <prompt>host-forward = "\t %c IN PTR %n.%d.\n"</prompt></para>
                </listitem>
                <listitem>
                    <para>conf-pattern</para>
-                   <para>Lokalizacja szablonu g³ównego pliku konfiguracyjnego serwera.
+                   <para>Location of main template of server configuration file.
                    Default: modules/dns/sample/named.conf.</para>
                    <para>Example: <prompt>conf-pattern = /dns/patterns/named.conf</prompt></para>
                </listitem>
                <listitem>
                    <para>conf-output</para>
-                   <para>Lokalizacja g³ównego pliku konfiguracyjnego serwera.
+                   <para>Location of main configuration file.
                    Default: /tmp/named.conf.</para>
                    <para>Example: <prompt>conf-output = /etc/named.conf</prompt></para>
                </listitem>
                <listitem>
                    <para>conf-forward-entry</para>
-                   <para>Wpis dla ka¿dej strefy w g³ównym pliku konfiguracyjnym.
-                   Default: 'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n}; \n'.</para>
+                   <para>Entry for each zone in main configuration file.
+		   Default: 'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n}; \n'.</para>
                    <para>Example: <prompt>conf-forward-entry = 'zone "%n" { \n\ttype master; \n\tfile "forward/%n"; \n\tnotify yes; \n}; \n'</prompt></para>
                </listitem>
                <listitem>
                    <para>conf-reverse-entry</para>
-                   <para>Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
+                   <para>Entry for each reverse zone in main configuration file.
                    Default: 'zone "%c.in-addr.arpa" { \ntype master; \nfile "reverse/%i"; \nnotify yes; \n}; \n'.</para>
                    <para>Example: <prompt>conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'</prompt></para>
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Polecenie wykonywane po utworzeniu plików konf. Default: puste.</para>
-                   <para>Example: <prompt>command = ""</prompt></para>
+                   <para>Shell command executed after creation of files. Default: empty.</para>
+                   <para>Example: <prompt>command = "killall -HUP named"</prompt></para>
                </listitem>
                <listitem>
                    <para>networks</para>
-                   <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+                   <para>List of network names for consideration. Case insensitive.
                    Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
                    <para>usergroups</para>
-                   <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+                   <para>List of customer (user) groups for consideration. Case insensitive. 
                    Default: empty (all groups).</para>
                    <para>Example: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
                </listitem>
@@ -955,7 +955,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
               <itemizedlist>
                <listitem>
                    <para>file</para>
-                   <para>Location of file. Default: /etc/ethers.</para>
+                   <para>Location of output file. Default: /etc/ethers.</para>
                    <para>Example: <prompt>file = /tmp/ethers</prompt></para>
                </listitem>
                <listitem>
