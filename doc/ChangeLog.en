@@ -1,5 +1,10 @@
 $Id$
 
+wersja ?.?.? (??/??/????):
+  - new substitution (%date_month_name) in mail templates, resolves into
+    current month name, based on locales.
+  - added possibility of printing VAT-bills(?)
+  
 wersja 1.1.0 (23/06/2003):
 
   - secondary nameserver support (%DNS2 in lms-mgc); database modification needed:
