@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Remove queue ID: ').sprintf("%04d",$_GET['id']);
+$layout['pagetitle'] = trans('Remove queue ID: $0',sprintf("%04d",$_GET['id']));
 
 if (!$LMS->QueueExists($_GET['id']))
 {
@@ -34,7 +34,7 @@ if (!$LMS->QueueExists($_GET['id']))
 	if($_GET['is_sure']!=1)
 	{
 		$body = '<H1>'.$layout['pagetitle'].'</H1>';
-		$body .= '<P>'.trans('Do you want to remove queue called ').$LMS->GetQueueName($_GET['id']).'?</P>'; 
+		$body .= '<P>'.trans('Do you want to remove queue called $0?',$LMS->GetQueueName($_GET['id'])).'</P>'; 
 		$body .= '<P>'.trans('All tickets and messages in queue will be lost.').'</P>';
 		$body .= '<P><A HREF="?m=rtqueuedel&id='.$_GET['id'].'&is_sure=1">'.trans('Yes, I know what I do.').'</A>&nbsp;';
 		$body .= '<A HREF="?'.$_SESSION['backto'].'">'.trans('No, I have changed my mind.').'</A></P>';

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Wyszukiwanie zg³oszeñ';
+$layout['pagetitle'] = trans('Ticket Search');
 
 $search = $_POST['search'];
 
@@ -60,7 +60,7 @@ $_SESSION['rtp'] = $page;
 if(isset($search) || $_GET['search'])
 {
 	if($search['queue'] && !$LMS->GetAdminRightsRT($SESSION->id, $search['queue']))
-		$error['queue'] = 'Nie posiadasz uprawnieñ do przegl±dania tej kolejki!';
+		$error['queue'] = trans('You have no privilleges to review this queue!');
 	
 	$search = $search ? $search : $_SESSION['rtsearch'];
 	

@@ -39,19 +39,19 @@ if(isset($ticket))
 	}
 
 	if($LMS->GetAdminRightsRT($SESSION->id, $queue) < 2)
-		$error['queue'] = "Nie masz uprawnieñ do tej kolejki!";
+		$error['queue'] = trans('You have no privilleges to this queue!');
 
 	if($ticket['subject'] == '')
-		$error['subject'] = "Zg³oszenie musi posiadaæ tytu³!";
+		$error['subject'] = trans('Ticket must have its title!');
 
 	if($ticket['body'] == '')
-		$error['body'] = "Zg³oszenie musi mieæ tre¶æ!";
+		$error['body'] = trans('Ticket must have its body!');
 
 	if($ticket['email']!='' && !check_email($ticket['email']))
-		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+		$error['email'] = trans('Incorrect email!');
 
 	if($ticket['surname']=='' && $ticket['userid']==0)
-		$error['surname'] = 'Musisz podaæ nazwê/nazwisko zg³aszaj±cego!';
+		$error['surname'] = trans('Reporter name required!');
 
 	$requestor  = ($ticket['surname'] ? $ticket['surname'].' ' : '');
 	$requestor .= ($ticket['name'] ? $ticket['name'].' ' : '');	    
@@ -68,7 +68,7 @@ if(isset($ticket))
 	}
 }
 	
-$layout['pagetitle'] = 'Nowe zg³oszenie';
+$layout['pagetitle'] = trans('New Ticket');
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

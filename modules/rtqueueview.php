@@ -52,7 +52,7 @@ $_SESSION['rts'] = $s;
 
 $queuedata['name'] = $LMS->GetQueueName($queuedata['id']);
 
-$layout['pagetitle'] = 'Podgl±d kolejki: '.$queuedata['name'];
+$layout['pagetitle'] = trans('Queue Review: $0',$queuedata['name']);
 $queue = $LMS->GetQueueContents($_GET['id'], $o, $s);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];

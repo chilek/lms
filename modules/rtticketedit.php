@@ -48,13 +48,13 @@ if(isset($ticketedit))
 {
 	$ticketedit['ticketid'] = $ticket['ticketid'];
 	if($LMS->GetAdminRightsRT($SESSION->id, $ticketedit['queueid']) < 2)
-		$error['queue'] = "Nie masz uprawnieñ do tej kolejki!";
+		$error['queue'] = trans('You have no privilleges to this queue!');
 	
 	if($ticketedit['subject'] == '')
-		$error['subject'] = "Zg³oszenie musi posiadaæ tytu³!";
+		$error['subject'] = trans('Ticket must have its title!');
 
 	if($ticketedit['state']>0 && !$ticketedit['owner'])
-		$error['owner'] = 'Tylko \'nowe\' zg³oszenie mo¿e nie mieæ w³a¶ciciela!';
+		$error['owner'] = trans('Only \'new\' ticket can have no owner!');
 
 	if($ticketedit['state']==0 && $ticketedit['owner'])
 		$ticketedit['state'] = 1;
@@ -73,7 +73,7 @@ if(isset($ticketedit))
 	$ticket['owner'] = $ticketedit['owner'];
 }
 
-$layout['pagetitle'] = 'Edycja zg³oszenia Nr '.sprintf("%06d",$ticket['ticketid']);
+$layout['pagetitle'] = trans('Ticket Edit No $0',sprintf("%06d",$ticket['ticketid']));
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

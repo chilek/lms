@@ -32,7 +32,7 @@ if(! $LMS->QueueExists($_GET['id']))
 
 $queue = $LMS->GetQueue($_GET['id']);
 
-$layout['pagetitle'] = 'Informacje o kolejce: '.$queue['name'];
+$layout['pagetitle'] = trans('Queue Information: $0',$queue['name']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
