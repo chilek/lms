@@ -1,4 +1,8 @@
+<<<<<<< ChangeLog
 $Id$
+=======
+$Id$
+>>>>>>> 1.451
 
 wersja 1.5.1 (??/??/????):
 
@@ -29,6 +33,7 @@ wersja 1.5.1 (??/??/????):
     sortowanie %last_10_in_a_table i znak przy kwotach (alec)
   - mo¿liwo¶æ szybkiego wyszukania zg³oszeñ o okre¶lonych stanach z welcome.html (chilek)
   - pominiêcie usuniêtych u¿ytkowników w szybkim wyszukiwaniu (modu³ quicksearch) (averne)
+  - mo¿liwo¶æ skasowania wiadomo¶ci w widoku zg³oszenia (chilek)
   
 wersja 1.5.0 Marduk (18/09/2004):
 

@@ -3181,6 +3181,12 @@ class LMS
 				    VALUES (?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $msg['subject'], $msg['body'], $msg['adminid'], $msg['userid'], $msg['mailfrom'], $msg['inreplyto'], $msg['messageid'], $msg['replyto'], $msg['headers']));
 	}
 
+	function MessageDel($id)
+	{
+		$this->SetTS('rtmessages');
+		return $this->DB->Execute('DELETE FROM rtmessages WHERE id = ?', array($id));
+	}
+
 	function RTSearch($search, $order='createtime,desc')
 	{
 		if(!$order)
