@@ -33,6 +33,7 @@ version 1.5.5 (??/??/????):
   - fixed floats formatting in AddBalance() for non-english locale (.PaKuD)
   - fixed month and year in invoice number in 'setcustomer' action of file
     invoiceedit.php (alec)
+  - BTS#0000305: helpdesk - fixed design in queue info (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
