@@ -244,7 +244,7 @@ while (my $row = $dbq->fetchrow_hashref())
 
 
 				if ($line =~ /\%abonament/) {
-					my $saldo_dbq = $dbase->prepare("SELECT sum(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND userid=$row->{'id'}");
+					my $saldo_dbq = $dbase->prepare("SELECT sum(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) AND userid = $row->{'id'}");
 					$saldo_dbq->execute();
 					my $ow_s = $saldo_dbq->fetchrow_hashref();
 					$line =~ s/\%abonament/$ow_s->{'value'}/;
