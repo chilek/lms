@@ -164,7 +164,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 	my $txt = $txts{$assign->{'period'}};
 	$txt =~ s/\%/$assign->{'name'}/g;
 	$gotinv{$uid} = 0 if not defined $gotinv{$uid};
-	if($assign->{'value'})
+	if($assign->{'value'} != 0)
 	{
 		if($assign->{'invoice'})
 		{
