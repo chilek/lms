@@ -1,0 +1,1008 @@
+<!-- $Id$ -->
+<chapter id="scripts">
+    <title>Skrypty</title>
+       <sect1 id="scripts-install">
+        <title>Instalacja</title>
+        <para>Je¶li chcesz ustawiæ konfiguracjê którego¶ ze skryptów, robi siê to
+	w odpowiedniej sekcji <filename>lms.ini</filename>. Same skrypty 
+	przenie¶ z katalogu <filename>/lms/bin/</filename> do katalogu <filename>/usr/sbin</filename>. 
+	Po przeniesieniu musisz je jeszcze dopisaæ do crontaba tak, aby by³y uruchamiane 
+	automatycznie, w³a¶nie wtedy kiedy tego chcesz.</para>
+        <para>Przyk³adowo, wpis w crontabie dla skryptu lms-payments (wykonywanego
+	codziennie o godzinie 00:01) powinien wygl±daæ nastêpuj±co:</para>
+        <screen>
+1 0 * * *       /usr/sbin/lms-payments 1 &gt; /dev/null</screen>
+        <para>Po wiêcej informacji mo¿esz siêgn±æ do <command>man crontab</command></para>
+	<para>Wiêkszo¶æ lms'owych skryptów posiada dodatkowe opcje uruchomieniowe:</para>
+	<screen>
+-C plik     po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/lms.ini
+-q          wykonanie skryptu bez wy¶wietlania komunikatów               
+-h          pomoc (a w zasadzie to tylko listing opcji)
+-v          informacja o wersji skryptu</screen>
+       </sect1>
+       <sect1 id="scripts-list">
+       <title>Lista dostêpnych skryptów</title>
+	    <table id="scripts-table">
+		<title>Lista skryptów wykonywalnych</title>
+		<tgroup cols="2">
+		<colspec ALIGN="center" COLWIDTH="200">
+		<colspec ALIGN="center" COLWIDTH="300">
+		    <thead>
+			<row>
+			<entry>Nazwa</entry>
+			<entry>Opis</entry>
+			</row>	
+		    </thead>
+		    <tbody>
+			<row>
+			<entry><xref linkend="lms-notify"></entry>
+			<entry>Korespondencja seryjna do u¿ytkowników sieci</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-notify-sms"></entry>
+			<entry>Powiadamianie o zaleg³o¶ciach sms'em</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-cutoff"></entry>
+			<entry>Od³±czanie u¿ytkowników zad³u¿onych</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-etherdesc"></entry>
+			<entry>Generowanie pliku dla iptraf zawieraj±cego pary MAC adres - nazwa hosta</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-payments"></entry>
+			<entry>Naliczanie op³at okresowych (abonamentowych) z fakturowaniem</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-traffic"></entry>
+			<entry>Zapis statystyk wykorzystania ³±cza</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-traffic-logiptables"></entry>
+			<entry>Statystyki ³±cza dla iptables</entry>
+			</row>
+			<row>
+			<entry>lms-makearp</entry>
+			<entry>Tworzenie tablicy ARP (/etc/ethers)</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-makedhcpconf"></entry>
+			<entry>Konfiguracja serwera DHCP (dhcpd.conf)</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-makeiptables"></entry>
+			<entry>Konfiguracja firewalla iptables</entry>
+			</row>
+			<row>
+			<entry>lms-makeipchains</entry>
+			<entry>Konfiguracja firewalla ipchains</entry>
+			</row>
+			<row>
+			<entry>lms-makeopenbsdpf</entry>
+			<entry>Konfiguracja firewalla dla systemu OpenBSD</entry>
+			</row>
+			<row>
+			<entry>lms-makeoidentconf</entry>
+			<entry>Konfiguracja oident</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-sendinvoices"></entry>
+			<entry>Wysy³anie faktur do u¿ytkowników</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-makemacs"></entry>
+			<entry>Filtrowanie ruchu na bazie adresów ¼ród³owych MAC</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-makehosts"></entry>
+			<entry>Generuje plik /etc/hosts</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-makewarnings"></entry>
+			<entry>Generuje regu³ki przekierowuj±ce ruch u¿ytkowników zad³u¿onych</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-makemessages"></entry>
+			<entry>Generuje regu³ki przekierowuj±ce ruch u¿ytkowników, którym ustawiono wiadomo¶æ administracyjn±</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-fping"></entry>
+			<entry>Badanie aktywno¶ci komputerów.</entry>
+			</row>
+			<row>
+			<entry><xref linkend="lms-rtparser"></entry>
+			<entry>Backend do Helpdesk'a.</entry>
+			</row>
+		    </tbody>	
+		</tgroup>
+	    </table>
+	    <para> </para>
+       </sect1>
+       <sect1 id="scripts-config">
+    	    <title>Opis i konfiguracja</title>
+       <sect2 id="lms-notify" xreflabel="lms-notify">
+	<title>lms-notify</title>
+	  <para>lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci 
+	  i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych 
+	  (w iso-8859-2) i traktowania ich jako szablonów do mailingu.</para>
+	 <sect3 id="lms-notify-templates">
+	  <title>Szablony</title>
+	  <para>W szablonach mo¿na u¿ywaæ nastêpuj±cych zmiennych:</para>
+	  <itemizedlist>
+	    <listitem>
+	       <para>%date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1 poprzedzone 0, np. 02</para>
+	    </listitem>
+	    <listitem>
+	       <para>%date-y - zostanie zast±pione aktualnym rokiem, np. 2003</para>
+	    </listitem>
+	    <listitem>
+	       <para>%date_month_name - zostanie zast±pione nazw± bie¿±cego miesi±ca, np. marzec</para>
+	    </listitem>
+	    <listitem>
+	       <para>%saldo - zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535</para>
+	    </listitem>
+	    <listitem>
+	       <para>%abonament - zostanie zast±pione kwot± abonamentu jaka jest do danego u¿ytkownika przypisana, np. 107</para>
+	    </listitem>
+	    <listitem>
+	       <para>%b - saldo z zanegowanym znakiem, np. 107</para>
+	    </listitem>
+	    <listitem>
+	       <para>%B - saldo z prawdziwym znakiem, np. -107</para>
+	    </listitem>
+	    <listitem>
+	       <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:</para>
+	    </listitem>
+	    <listitem>
+	       <para>%pin - numer PIN u¿ytkownika.</para>
+	    </listitem>
+	    <listitem>
+	       <para>%phone1 - pierwszy numer telefonu u¿ytkownika.</para>
+	    </listitem>
+	  </itemizedlist>
+	  <example id="notify-example">
+	   <title>Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</title>
+<screen>
+Data       | Opis                                                 | Warto¶æ
+-----------+------------------------------------------------------+---------
+2003-02-02 | Abonament za miesi±c 2003/02                         |  107.00
+2003-02-01 | Wp³ata                                               | -107.00
+2003-02-01 | Abonament za miesi±c 2003/02                         |  107.00
+2003-02-01 | Wp³ata                                               | -321.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
+-----------+------------------------------------------------------+---------
+</screen></example>
+	  <example id="notify-template">
+           <title>Lms-notify: Przyk³ad szablonu</title>
+<screen>UWAGA! Ta wiadomo¶æ zosta³a wygenerowana automatycznie.
+
+Uprzejmie informujemy i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za
+internet w wysoko¶ci %B z³.
+
+Je¿eli porozumieli siê ju¿ Pañstwo z administratorami w kwestii op³aty za
+bie¿±cy miesi±c czyli %date-m %date-y roku, prosimy o
+zignorowanie tej wiadomo¶ci.
+
+W wypadku gdy uwa¿aj± Pañstwo i¿ zaleg³o¶æ ta jest nieporozumieniem prosimy o
+jak najszybszy kontakt.
+
+Wszelkie informacje na temat Pañstwa rozliczeñ mog± Pañstwo znale¼æ pod
+adresem http://www.naszasiec.pl/mojekonto/
+
+Je¿eli chcieliby Pañstwo uregulowaæ zaleg³o¶ci prosimy o kontakt:
+
+Dzia³ Rozliczeñ ASK NaszaSiec
+
+Gerwazy Regu³a
+telefon: 0-509031337
+e-mail: gerwazy@staff.naszasiec.pl
+
+Gwidon Mniejwa¿ny
+telefon: 0-606666666
+e-mail: gwidonm@naszasiec.pl
+
+ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
+system bilingowy na Pañstwa koncie:
+
+kwota operacji | typ operacji | data
+
+%last_10_in_a_table
+
+--
+Amatorska Sieæ Komputerowa NaszaSiec
+http://www.naszasiec.pl/</screen></example>
+          </sect3>
+	  <sect3 id="lms-notify-config">
+	  <title>Konfiguracja</title>
+           <para>Konfiguracjê dla lms-notify mo¿na ustaliæ w pliku <filename>lms.ini</filename> w sekcji <emphasis>[notify]</emphasis>. 
+	   Mo¿esz tam ustawiæ nastêpuj±ce parametry:</para>
+	   <itemizedlist>
+            <listitem>
+	     <para>limit (opcjonalny)</para>
+	     <para>Pozwala na ustalenie limitu bilansu, poni¿ej którego do u¿ytkownika zostanie wys³any e-mail z upomnieniem. Domy¶lnie limit = 0</para>
+	     <para>Przyk³ad:	<prompt>limit = -20</prompt></para>
+	    </listitem>
+            <listitem>
+	     <para>mailsubject (wymagany)</para>
+	     <para>Pozwala na ustalenie tematu e-maila wysy³anego do u¿ytkownika. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie: nie ustawione.</para>
+	     <para>Przyk³ad:	<prompt>mailsubject = Informacje o zaleg³o¶ciach w op³atach za internet</prompt></para>
+	    </listitem>
+	    <listitem>
+	     <para>mailtemplate (wymagany)</para>
+	     <para>Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie: nie ustawione.</para>
+	     <para>Przyk³ad:	<prompt>mailtemplate = /etc/lms/notifytemplate.txt</prompt></para>
+            </listitem>
+            <listitem>
+             <para>mailfrom</para>
+             <para>Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie nieustawione</para>
+             <para>Przyk³ad:	<prompt>mailfrom = staff@domain.pl</prompt></para>
+            </listitem>
+            <listitem>
+             <para>mailfname</para>
+             <para>Nazwa nadawcy maila</para>
+             <para>Przyk³ad:	<prompt>mailfname = Administratorzy</prompt></para>
+            </listitem>
+            <listitem>
+             <para>smtp_server</para>
+             <para>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1</para>
+             <para>Przyk³ad:	<prompt>smtp_server = smtp.mydomain.pl</prompt></para>
+            </listitem>
+            <listitem>
+             <para>debug_email (opcjonalny)</para>
+             <para>Adres e-mail do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do u¿ytkowników. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie: nie ustawiony.</para>
+             <para>Przyk³ad:	<prompt>debug_email = lexx@domain.pl</prompt></para>
+            </listitem>
+          </itemizedlist>
+          </sect3>
+	</sect2>
+	<sect2 id="lms-notify-sms" xreflabel="lms-notify-sms">
+	<title>lms-notify-sms</title>
+	  <para>lms-notify-sms to odpowiednik lms-notify, s³u¿±cy do wysy³ania
+	  smsów. Do wysy³ania wiadomo¶ci potrzebna jest komórka Nokii oraz oprogramowanie,
+	  które nale¿y pobraæ z (<ulink url="http://www.gnokii.org">www.gnokii.org</ulink>)
+	  i zainstalowaæ w systemie.</para>
+	  <para>Konfiguracjê dla lms-notify-sms mo¿na ustaliæ w pliku <filename>lms.ini</filename> 
+	  w sekcji <emphasis>[notify-sms]</emphasis>, a masz do dyspozycji nastêpuj±ce opcje:</para>
+	  <itemizedlist>
+            <listitem>
+	     <para>limit (opcjonalny)</para>
+	     <para>Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika 
+	     zostanie wys³any sms z upomnieniem. Domy¶lnie: 0</para>
+	     <para>Przyk³ad:	<prompt>limit = -20</prompt></para>
+	    </listitem>
+            <listitem>
+	     <para>smstemplate (wymagany)</para>
+	     <para>Szablon wiadomo¶ci. Domy¶lnie: nie ustawione.</para>
+	     <para>Przyk³ad:	<prompt>smstemplate = /etc/lms/smstemplate.txt</prompt></para>
+	    </listitem>
+	  </itemizedlist>
+	</sect2> 
+	<sect2 id="lms-cutoff" xreflabel="lms-cutoff">
+	 <title>lms-cutoff</title>
+	 <para>Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.</para>
+         <para>Konfiguracjê dla lms-cutoff mo¿emy ustaliæ w pliku <filename>lms.ini</filename> w sekcji <emphasis>[cutoff]</emphasis>. Mo¿emy tam ustawiæ nastêpuj±ce parametry:</para>
+	 <itemizedlist>
+          <listitem>
+	   <para>limit (opcjonalny)</para>
+	   <para>Pozwala na ustalenie limitu bilansu poni¿ej którego do bazy danych zostanie zapisany stan od³±czony. Domy¶lnie: 0</para>
+	   <para>Przyk³ad:	<prompt>limit = -20</prompt></para>
+	  </listitem>
+	 </itemizedlist>
+	</sect2>
+	<sect2 id="lms-payments" xreflabel="lms-payments">
+	 <title>lms-payments</title>
+	 <para>Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
+	 u¿ytkownikom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
+	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</para>
+	 <para>Skrypt ten udostêpnia dwie opcje do fakturowania, które mo¿na ustawiæ
+	 w sekcji <emphasis>[payments]</emphasis> pliku <filename>lms.ini</filename>:</para>
+	  <itemizedlist>
+          <listitem>
+	   <para>deadline (opcjonalny)</para>
+	   <para>Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14</para>
+	   <para>Przyk³ad:	<prompt>deadline = 7</prompt></para>
+	  </listitem>
+	  <listitem>
+	   <para>paytype (opcjonalny)</para>
+	   <para>Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'</para>
+	   <para>Przyk³ad:	<prompt>paytype = 'GOTÓWKA'</prompt></para>
+	  </listitem>
+	 </itemizedlist>
+	 <para>Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ
+	 <prompt>--fakedate</prompt> (<prompt>-f</prompt>). Przy jego u¿yciu mo¿na 
+	 sprawiæ, aby skrypt dzia³a³ z podmienion± dat± systemow± (w formacie YYYY/MM/DD),
+	 na przyk³ad <prompt>--fakedate=2004/10/10</prompt>.
+	 </para>
+        </sect2>
+    <sect2 id="lms-traffic" xreflabel="lms-traffic">
+    <title>lms-traffic</title>
+    <para>Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
+	przez ka¿dy komputer w sieci lokalnej. W bazie danych zapisywana jest ilo¶æ
+	danych w bajtach, numer komputera z bazy lms i znacznik czasu. 
+	Od u¿ytkownika zale¿y w jakich odstêpach dane bêd± odczytywane.
+	Poniewa¿ dane odczytywane s± z pliku utworzonego przez u¿ytkownika, nie ma
+	znaczenia z jakiego ¼ród³a pochodz±, mo¿e to byæ iptables, ipchains lub
+	program zewnêtrzny np. ipfm.
+    </para>
+    <para>Przegl±danie wykresów wykorzystania ³±cza oraz definiowanie filtrów
+	dostêpne jest z g³ównego menu 'Statystyki'.
+    </para>
+    	<sect3 id="lms-traffic-config">
+	    <title>Instalacja</title>
+	    <para>Przed uruchomieniem lms-traffic nale¿y zadbaæ o utworzenie
+	    pliku z danymi. Zawarto¶æ pliku powinna mieæ nastêpuj±cy format:</para>
+	    <screen>
+&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
+&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
+...</screen>
+	    <para>Skrypt tworz±cy statystyki nale¿y uruchamiaæ z tak± sam± czêstotliwo¶ci± 
+	    co lms-traffic.</para>
+	    <para><note><para>Przyk³ad takiego skryptu dla iptables znajduje siê w 
+	    pliku <filename>/sample/traffic_ipt.sh</filename>.</para></note></para>
+	    <para>Nastêpnie instalujemy skrypt dopisuj±c do crontaba.
+	    Oprócz standardowych opcji wiersza poleceñ mo¿liwe jest
+	    zdefiniowanie lokalizacji pliku z logiem</para>
+	    <screen>
+-f=/plik 	po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traffic.log</screen>
+	    <para>
+	    <warning><para>Czêstotliwo¶æ zapisywania danych do bazy ustala u¿ytkownik. Ustawienie
+	    jej poni¿ej 10 minut, mo¿e spowodowaæ szybki przyrost ilo¶ci rekordów w 
+	    bazie danych, a co za tym idzie zwiêkszyæ czas oczekiwania na wy¶wietlenie
+	    wyników.</para></warning>
+	    </para>
+	</sect3>
+    </sect2>
+    <sect2 id="lms-traffic-logiptables" xreflabel="lms-traffic-logiptables">
+	<title>lms-traffic-logiptables</title>
+	<para>Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
+	przez ka¿dy komputer z sieci lokalnej, na podstawie liczników iptables. Dane 
+	sczytuje z firewalla, tworz±c jednocze¶nie odpowiednie regu³y. Zatem, nie jest 
+	konieczne rêczne tworzenie regu³ iptables, ani wywo³ywanie skryptu  
+	<filename>lms-traffic</filename>.
+	</para>
+	<para>Konfiguracjê nale¿y umie¶ciæ w sekcji <emphasis>[traffic-logiptables]</emphasis>:
+	    <itemizedlist>
+           	<listitem>
+		    <para>outfile</para>
+		    <para>Lokalizacja skryptu z regu³ami iptables. Domy¶lnie: /etc/rc.d/rc.stat</para>
+		    <para>Przyk³ad:	<prompt>outfile = /etc/rc.d/rc.stat</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>iptables_binary</para>
+		    <para>Lokalizacja programu iptables. Domy¶lnie: /usr/sbin/iptables</para>
+		    <para>Przyk³ad:	<prompt>iptables_binary = /usr/local/sbin/iptables</prompt></para>
+		</listitem>		
+           	<listitem>
+		    <para>wan_interfaces</para>
+		    <para>Nazwy interfejsów, na których dane maj± byæ zliczane. Domy¶lnie: niezdefiniowane.</para>
+		    <para>Przyk³ad:	<prompt>wan_interfaces = eth0</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>local_ports</para>
+		    <para>Lista portów (¼ród³owych i docelowych) dla zliczanych pakietów. Domy¶lnie: niezdefiniowane.</para>
+		    <para>Przyk³ad:	<prompt>local_ports = 80</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>script_owneruid</para>
+		    <para>UID w³a¶ciciela skryptu okre¶lonego w 'outfile'. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>script_owneruid = 0</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>script_ownergid</para>
+		    <para>GID w³a¶ciciela skryptu okre¶lonego w 'outfile'. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>script_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>script_permission</para>
+		    <para>Uprawnienia skryptu okre¶lonego w 'outfile'. Domy¶lnie: 700 (rwx------).</para>
+		    <para>Przyk³ad:	<prompt>script_permission = 700</prompt></para>
+		</listitem>
+	    </itemizedlist>
+	</para>
+    </sect2>
+    <sect2 id="lms-makedhcpconf" xreflabel="lms-makedhcpconf">
+	<title>lms-makedhcpconf</title>
+	<para>Tworzenie pliku konfiguracyjnego serwera DHCP - dhcpd.conf. Konfiguracjê
+	skryptu umieszcza siê w sekcji <emphasis>[dhcp]</emphasis>:
+	    <itemizedlist>
+           	<listitem>
+		    <para>config_file</para>
+		    <para>Lokalizacja pliku wynikowego. Domy¶lnie: /etc/dhcpd.conf</para>
+		    <para>Przyk³ad:	<prompt>config_file = /tmp/dhcpd.conf</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>usergroups</para>
+		    <para>Lista nazw grup (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich grup.</para>
+		    <para>Przyk³ad:	<prompt>usergroups = grupa1 grupa2</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>default_lease_time</para>
+		    <para>Domy¶lny czas dzier¿awy. Domy¶lnie: 86400.</para>
+		    <para>Przyk³ad:	<prompt>default_lease_time = 43200</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>max_lease_time</para>
+		    <para>Maksymalny czas dzier¿awy. Domy¶lnie: 86400.</para>
+		    <para>Przyk³ad:	<prompt>max_lease_time = 43200</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>ignore_ddns</para>
+		    <para>Nie generuj wpisu 'ddns-update-style none;' na pocz±tku pliku.
+		    Przydatne przy starszych (2.2) wersjach demona dhcpd. Domy¶lnie: wy³±czone.</para>
+		    <para>Przyk³ad:	<prompt>ignore_ddns = 1</prompt></para>
+		</listitem>
+    		<listitem>
+		    <para>log_facility</para>
+		    <para>Ustawienie trybu logowania daemona dhcp. Je¿eli puste to tryb domy¶lny.</para>
+		    <para>Przyk³ad:	<prompt>log_facility = 7</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>script_owneruid</para>
+		    <para>UID w³a¶ciciela skryptu okre¶lonego w 'config_file'. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>script_owneruid = 0</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>script_ownergid</para>
+		    <para>GID w³a¶ciciela skryptu okre¶lonego w 'config_file'. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>script_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>script_permission</para>
+		    <para>Uprawnienia skryptu okre¶lonego w 'config_file'. Domy¶lnie: 600 (rwx------).</para>
+		    <para>Przyk³ad:	<prompt>script_permission = 700</prompt></para>
+		</listitem>
+	    </itemizedlist>
+	</para>
+	<para>Mo¿esz podaæ czasy dzier¿awy dla konkretnych sieci poprzez stworzenie
+	sekcji <prompt>[dhcp:nazwasieci]</prompt> np.:
+<screen>
+[dhcp:public-custa] # nazwa sieci ma³ymi literami!
+default_lease_time = 3600
+max_lease_time     = 3600</screen>
+
+Mo¿esz podaæ gateway, serwer dns, nazwê domeny i wins dla konkretnego
+hosta poprzez stworzenie sekcji <prompt>[dhcp:adresip]</prompt> np.:
+<screen>
+[dhcp:213.25.209.216]
+domain  = anotherdomain.pl
+gateway = 213.25.209.251
+dns     = 213.25.209.8
+wins    = 213.25.209.10</screen>
+	</para>
+    </sect2>
+    <sect2 id="lms-makeiptables" xreflabel="lms-makeiptables">
+	<title>lms-makeiptables, lms-makeipchains</title>
+	    <para>Para skryptów s³u¿±cych do generowania plików zawieraj±cych
+	    regu³y firewalla. Do utworzonego pliku mo¿esz do³±czyæ inne wcze¶niej
+	    utworzone pliki, a w koñcu nadaæ mu odpowiednie uprawnienia. Skrypty nie
+	    uruchamiaj± wygenerowanych plików.</para>
+	    <para>Konfiguracjê dla tych skryptów mo¿esz ustaliæ w pliku <filename>lms.ini</filename> w sekcji <emphasis>[iptables]</emphasis>
+	    (i odpowiednio <emphasis>[ipchains]</emphasis>). Oba skrypty posiadaj± te same
+	    opcje: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku firewalla. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>iptables_binary (ipchains_binary)</para>
+		    <para>Lokalizacja programu iptables (ipchains). Domy¶lnie: /usr/sbin/iptables (/usr/sbin/ipchains)</para>
+		    <para>Przyk³ad:	<prompt>iptables_binary = /usr/local/sbin/iptables</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>script_file</para>
+		    <para>Plik, do którego zapisujemy regu³y firwalla. Domy¶lnie: /etc/rc.d/rc.masq</para>
+		    <para>Przyk³ad:	<prompt>script_file = /etc/rc.d/rc.firewall</prompt></para>
+		</listitem>		
+           	<listitem>
+		    <para>pre_script</para>
+		    <para>Plik wykonywany PO wyczyszczeniu regu³ek, ale PRZED ustawieniem nowych. 
+		    Domy¶lnie: niezdefiniowany.</para>
+		    <para>Przyk³ad:	<prompt>pre_script = /etc/rc.d/rc.masq-pre</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>post_script</para>
+		    <para>Plik wykonywany PO ustawieniu regu³ek. Domy¶lnie: niezdefiniowany.</para>
+		    <para>Przyk³ad:	<prompt>post_script = /etc/rc.d/rc.masq-post</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>forward_to</para>
+		    <para>Lista sieci, dla których w³±czamy forwarding. Mo¿liwe warto¶ci: "" - pe³ny forward, 
+		    "dowolny ci±g" - wy³±cz forward, "siec1 siec2" - lista sieci z w³±czonym forwardingiem.  
+		    Domy¶lnie: pe³ny forward.</para>
+		    <para>Przyk³ad:	<prompt>forward_to = public-custa public-custb</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>script_owneruid</para>
+		    <para>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>script_owneruid = 0</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>script_ownergid</para>
+		    <para>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>script_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>script_permission</para>
+		    <para>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</para>
+		    <para>Przyk³ad:	<prompt>script_permission = 700</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>snat_address</para>
+		    <para>Adres SNAT. Je¶li nie ustawiono, dla hostów z adresami publicznymi bêdzie
+		    u¿yte "-j MASQUERADE". Je¶li ustawiono zostanie u¿yte "-j SNAT --to xxx.xxx.xxx.xxx".
+		    Dotyczy lms-makeiptables. Domy¶lnie: nie ustawiony.</para>
+		    <para>Przyk³ad:	<prompt>snat_address = 123.123.123.123</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>tcp_redirect_ports (udp_redirect_ports)</para>
+		    <para>Konfiguracja przekierowañ w formie port_¼ród³owy:port_docelowy dla
+		    przekierowañ na lokaln± maszynê dla po³±czeñ wychodz±cych. Dotyczy lms-makeipchains.
+		    Domy¶lnie: nie ustawione.</para>
+		    <para>Przyk³ad:	<prompt>tcp_redirect_ports = 80:3128 25:25</prompt></para>
+		</listitem>
+	 </itemizedlist>
+    </sect2>
+    <sect2 id="lms-etherdesc" xreflabel="lms-etherdesc">
+	<title>lms-etherdesc</title>
+	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego MAC adresy oraz
+	    nazwy hostów pobierane z bazy lms'a. Adresy zapisywane s± w formacie 'stripped mac',
+	    czyli bez ":". Tego typu plik wykorzystywany jest przez pakiet <emphasis>iptraf</emphasis>.
+	    </para>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[ethers]</emphasis>
+	    w pliku <filename>lms.ini</filename>: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>etherdesc_owneruid</para>
+		    <para>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>etherdesc_owneruid = 0</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>etherdesc_file</para>
+		    <para>Lokalizacja pliku. Domy¶lnie: /var/lib/iptraf/ethernet.desc.</para>
+		    <para>Przyk³ad:	<prompt>etherdesc_file = /etc/ethernet.desc</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>etherdesc_ownergid</para>
+		    <para>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>etherdesc_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>etherdesc_permission</para>
+		    <para>Uprawnienia pliku skryptu. Domy¶lnie: 600 (rw-------).</para>
+		    <para>Przyk³ad:	<prompt>etherdesc_permission = 600</prompt></para>
+		</listitem>
+	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-sendinvoices" xreflabel="lms-sendinvoices">
+	<title>lms-sendinvoices</title>
+	<para>Skrypt s³u¿y do wysy³ania poczt± elektroniczn± faktur, jako za³±czników
+	do wiadomo¶ci. Faktury generowane s± na podstawie szablonu dostêpnego w lms-ui,
+	dlatego wymagane jest podanie u¿ytkownika i has³a do interfejsu www lms-ui.</para>
+	<para>W odró¿nieniu od pozosta³ych skrytpów ten wymaga dodatkowych modu³ów perla:
+	Data::Dumper, LWP::UserAgent, MIME::Entity.</para>
+	<para>Konfiguracjê nale¿y umie¶ciæ w sekcji <emphasis>[sendinvoices]</emphasis>:
+	    <itemizedlist>
+        	<listitem>
+		    <para>lms_url</para>
+		    <para>Adres do lms-ui. Domy¶lnie: http://localhost/lms/</para>
+		    <para>Przyk³ad:	<prompt>lms_url = http://lms.mynet.pl</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>lms_user</para>
+		    <para>Login administratora. Domy¶lnie: pusty</para>
+		    <para>Przyk³ad:	<prompt>lms_user = admin</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>lms_password</para>
+		    <para>Has³o do lms-ui. Domy¶lnie: puste</para>
+		    <para>Przyk³ad:	<prompt>lms_password = moje_has³o</prompt></para>
+		</listitem>		
+           	<listitem>
+		    <para>debug_email</para>
+		    <para>Konto pocztowe do testów. Domy¶lnie: niezdefiniowane.</para>
+		    <para>Przyk³ad:	<prompt>debug_email = admin@mynet.pl</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>sender_name</para>
+		    <para>Nadawca listu. Domy¶lnie: niezdefiniowany.</para>
+		    <para>Przyk³ad:	<prompt>sender_name = ASK MyNet</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>sender_email</para>
+		    <para>Adres nadawcy listu. Domy¶lnie: niezdefiniowany.</para>
+		    <para>Przyk³ad:	<prompt>sender_email = admin@mynet.pl</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>tmp_dir</para>
+		    <para>Lokalizacja katalogu tymczasowego. Je¶li nie podano katalog 
+		    odczytywany jest ze zmiennej ¶rodowiskowej 'TMP' lub przyjmowany jest 
+		    katalog '/tmp'.</para>
+		    <para>Przyk³ad:	<prompt>tmp_dir = /home/user/tmp</prompt></para>
+		</listitem>
+	    </itemizedlist>
+	</para>
+    </sect2>
+    <sect2 id="lms-makemacs" xreflabel="lms-makemacs">
+	<title>lms-makemacs</title>
+	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra filtruj±ce ruch
+	    u¿ytkowników na bazie testu adresu ¼ród³owego MAC. Dla ka¿dego komputera generowana jest
+	    jedna regu³a dla tablicy nat, zadanego ³añcucha, testuj±ca adres ¼ród³owy IP pakietu oraz adres
+	    ¼ród³owy MAC ramki. Je¶li testy zakoñcz± siê pozytywnie nastêpuje powrót do ³añcucha nadrzêdnego
+	    za pomoc± decyzji RETURN. Na koñcu listy regu³ dodawane s± 2 regu³y przekierowuj±ce ruch http
+	    oraz webcache na podany w konfiguracji adres IP oraz port (z wykorzystaniem decyzji DNAT).
+	    Przekierowanie mo¿e odbywaæ siê na wirtualny host www z zawiadomieniem u¿ytkownika
+	    o zaleg³o¶ciach finansowych bez mo¿liwo¶ci wy³±czenia zawiadomienia. Na koñcu dodawana jest 
+	    regu³a blokuj±ca jakikolwiek inny ruch.
+	    </para>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[macs]</emphasis>
+	    w pliku <filename>lms.ini</filename>: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>usergroups </para>
+		    <para>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</para>
+		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>iptables_binary</para>
+		    <para>Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</para>
+		    <para>Przyk³ad:	<prompt>iptables_binary = /usr/local/sbin/iptables</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_owneruid</para>
+		    <para>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_owneruid = 0</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_file</para>
+		    <para>Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.macs.</para>
+		    <para>Przyk³ad:	<prompt>config_file = /etc/conf.d/rc.macs</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>config_ownergid</para>
+		    <para>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>config_permission</para>
+		    <para>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</para>
+		    <para>Przyk³ad:	<prompt>config_permission = 700</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>chain</para>
+		    <para>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MACS.</para>
+		    <para>Przyk³ad:	<prompt>chain = TESTY_MACOW</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>redirect_address</para>
+		    <para>Adres IP + port na który bêdzie przekierowywany niesklasyfikowany ruch http i webcache. Domy¶lnie: 127.0.0.1:80.</para>
+		    <para>Przyk³ad:	<prompt>redirect_address = 192.168.1.1:3000</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>lock_noaccess</para>
+		    <para>Czy generowaæ regu³ki testuj±ce z decyzj± RETURN dla komputerów, które s± od³±czone. Domy¶lnie: 0 (regu³y s± generowane)</para>
+		    <para>Przyk³ad:	<prompt>lock_noaccess = 1</prompt></para>
+		</listitem>
+	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-makehosts" xreflabel="lms-makehosts">
+	<title>lms-makehosts</title>
+	    <para>Skrypt s³u¿±cy do generowania pliku /etc/hosts zawieraj±cego odwzorowania nazw komputerów
+	    na adresy IP.
+	    </para>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[hosts]</emphasis>
+	    w pliku <filename>lms.ini</filename>: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>usergroups </para>
+		    <para>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</para>
+		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_owneruid</para>
+		    <para>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_owneruid = 0</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_file</para>
+		    <para>Lokalizacja pliku. Domy¶lnie: /etc/hosts.</para>
+		    <para>Przyk³ad:	<prompt>config_file = /etc/hosts</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>config_ownergid</para>
+		    <para>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>config_permission</para>
+		    <para>Uprawnienia pliku skryptu. Domy¶lnie: 644 (rw-r--r--).</para>
+		    <para>Przyk³ad:	<prompt>config_permission = 600</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>config_header</para>
+		    <para>Pierwsza linia w pliku /etc/hosts. Domy¶lnie: 127.0.0.1 localhost localhost.localdomain.</para>
+		    <para>Przyk³ad:	<prompt>config_header = 192.168.1.1 serwer serwer.nasza-siec</prompt></para>
+		</listitem>
+	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-makewarnings" xreflabel="lms-makewarnings">
+	<title>lms-makewarnings</title>
+	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
+	    u¿ytkowników o saldzie mniejszym lub równym od zadanego na zadany adres IP i port (wykorzystywana
+	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
+	    </para>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[warnings]</emphasis>
+	    w pliku <filename>lms.ini</filename>: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>usergroups </para>
+		    <para>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</para>
+		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>iptables_binary</para>
+		    <para>Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</para>
+		    <para>Przyk³ad:	<prompt>iptables_binary = /usr/local/sbin/iptables</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_owneruid</para>
+		    <para>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_owneruid = 0</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_file</para>
+		    <para>Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.warnings.</para>
+		    <para>Przyk³ad:	<prompt>config_file = /etc/conf.d/rc.warnings</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>config_ownergid</para>
+		    <para>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>config_permission</para>
+		    <para>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</para>
+		    <para>Przyk³ad:	<prompt>config_permission = 700</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>chain</para>
+		    <para>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: WARNINGS.</para>
+		    <para>Przyk³ad:	<prompt>chain = OSTRZEZENIA</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>redirect_address</para>
+		    <para>Adres IP + port na który bêdzie przekierowywany ruch http i webcache pochodz±cy z hostów dla których ma byæ w³±czone ostrze¿enie o zaleg³o¶ciach finansowych. Domy¶lnie: 127.0.0.1:80.</para>
+		    <para>Przyk³ad:	<prompt>redirect_address = 192.168.1.1:3001</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>limit</para>
+		    <para>Saldo u¿ytkownika przy którym dla wszystkich komputerów u¿ytkownika generowane s± regu³ki przekierowuj±ce ruch. Domy¶lnie: 0 </para>
+		    <para>Przyk³ad:	<prompt>limit = -85</prompt></para>
+		</listitem>
+	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-makemessages" xreflabel="lms-makemessages">
+	<title>lms-makemessages</title>
+	    <para>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
+	    u¿ytkowników dla których zosta³o w³±czone przekazywanie wiadomo¶ci administracyjnej (ostrze¿enia) na zadany adres IP i port (wykorzystywana
+	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
+	    </para>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[messages]</emphasis>
+	    w pliku <filename>lms.ini</filename>: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>usergroups </para>
+		    <para>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</para>
+		    <para>Przyk³ad:	<prompt>usergroups = osiedle1 osiedle2</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>iptables_binary</para>
+		    <para>Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</para>
+		    <para>Przyk³ad:	<prompt>iptables_binary = /usr/local/sbin/iptables</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_owneruid</para>
+		    <para>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_owneruid = 0</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>config_file</para>
+		    <para>Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.messages.</para>
+		    <para>Przyk³ad:	<prompt>config_file = /etc/conf.d/rc.messages</prompt></para>
+		</listitem>
+        	<listitem>
+		    <para>config_ownergid</para>
+		    <para>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</para>
+		    <para>Przyk³ad:	<prompt>config_ownergid = 0</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>config_permission</para>
+		    <para>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</para>
+		    <para>Przyk³ad:	<prompt>config_permission = 700</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>chain</para>
+		    <para>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MESSAGES.</para>
+		    <para>Przyk³ad:	<prompt>chain = WIADOMOSCI</prompt></para>
+		</listitem>
+	    	<listitem>
+		    <para>redirect_address</para>
+		    <para>Adres IP + port na który bêdzie przekierowywany ruch http i webcache pochodz±cy z hostów dla których ma byæ w³±czona wiadomo¶æ administracyjna. Domy¶lnie: 127.0.0.1:80.</para>
+		    <para>Przyk³ad:	<prompt>redirect_address = 192.168.1.1:3002</prompt></para>
+		</listitem>
+	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-fping" xreflabel="lms-fping">
+	<title>lms-fping</title>
+	    <para>Skrypt zapisuje do bazy informacje o aktywno¶ci komputerów. 
+	    Do skanowania wykorzystywany jest szybki program fping (z opcjami -ar1). 
+	    Najpierw tworzona jest lista hostów, a nastêpnie, po wywo³aniu fping'a, 
+	    komputerom w³±czonym zostaje przypisana data i czas skanowania. Dziêki temu 
+	    mamy w bazie informacje kiedy dany komputer by³ ostatnio w³±czony.</para>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[fping]</emphasis>
+	    w pliku <filename>lms.ini</filename>: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas skanowania.
+		    Je¶li nie ustawiono przeskanowane zostan± wszystkie komputery.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>fping_binary</para>
+		    <para>Lokalizacja programu fping. Domy¶lnie: /usr/sbin/fping</para>
+		    <para>Przyk³ad:	<prompt>fping_binary = /usr/local/sbin/fping</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>temp_file</para>
+		    <para>Lokalizacja pliku tymczasowego na listê hostów, który
+		    po wykonaniu skryptu zostaje usuniêty. Domy¶lnie: /tmp/fping_hosts.</para>
+		    <para>Przyk³ad:	<prompt>temp_file = /tmp/hosts</prompt></para>
+		</listitem>
+	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-rtparser" xreflabel="lms-rtparser">
+	<title>lms-rtparser</title>
+	    <para>Jest to tzw. backend dla systemu Helpdesk, czyli scrypt który wspó³pracuj±c
+	    z serwerem pocztowym zapisuje do bazy danych wszystkie wiadomo¶ci skierowane na
+	    adresy Helpdesk'a. Skrypt pobiera z wej¶cia wiadomo¶æ pocztow±, parsuje zawarto¶æ
+	    i umieszcza zg³oszenie w kolejce, wysy³aj±c do zg³aszaj±cych
+	    potwierdzenie przyjêcia wiadomo¶ci. W temacie potwierdzenia znajduje siê symbol
+	    zg³oszenia. Podczas parsowania wiadomo¶ci nastêpuje, na 
+	    podstawie tematu wiadomo¶ci, próba rozpoznania czy wiadomo¶æ nie jest odpowiedzi± na inn± wiadomo¶æ z ju¿
+	    przypisanym numerem zg³oszenia. Od wiadomo¶ci zostaj± od³±czone za³±czniki
+	    i umieszczone w katalogu zdefiniowanym w opcji <filename>mail_dir</filename>.</para>
+	    <para>Oprócz modu³ów Perla standardowo wymaganych przez resztê skryptów, nale¿y 
+	    zainstalowaæ tak¿e modu³y <filename>MIME::Parser</filename> i <filename>MIME::Words</filename> z 
+	    pakietu MIME-Tools oraz <filename>Net::SMTP</filename>.</para>
+	    <para>Skrypt mo¿na uruchamiaæ na wiele sposobów. Jednym z nich jest
+	    stworzenie skryptu pow³oki, który odczytuj±c skrzynkê pocztow± wywo³a lms-rtparser 
+	    dla ka¿dego maila. Wygodniejszym zastosowaniem jest jednak zintegrowanie
+	    go z serwerem pocztowym. Poni¿ej przedstawiono sposób pod³±czenia go do
+	    postfixa przy u¿yciu opcji header_checks.
+<screen>
+# plik main.cf:
+header_checks = regexp:/etc/postfix/header_checks
+
+# plik header_checks
+/^To:.*adres@domena.*/ FILTER filter:dummy
+
+# plik master.cf:
+filter unix - n n - 10 pipe
+      -flags=Rq user=nobody argv=/path/to/lms-rtparser
+</screen></para>
+	    <para>Kolejny listing to przyk³ad pod³±czenia parsera do Exima 
+	    przy u¿yciu filtrów systemowych:
+<screen>
+# plik exim.conf
+
+system_filter_pipe_transport = address_pipe
+
+# plik system_filter.txt
+
+if $recipients is "adres_kolejki@domena.pl"
+then 
+     pipe "/sciezka/do/lms-rtparser -q id_kolejki"
+endif
+</screen></para>
+	    <para><note><para>Je¿eli chcesz aby wiadomo¶ci wprowadzane poprzez <emphasis>lms-ui</emphasis>
+	    by³y kierowane do parsera, zamiast bezpo¶rednio zapisywane do bazy, powiniene¶ w³±czyæ
+	    opcjê konfiguracyjn± <filename>helpdesk_backend_mode</filename> w sekcji
+	    <emphasis>[phpui]</emphasis>.</para></note></para>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[rt]</emphasis>
+	    w pliku <filename>lms.ini</filename>: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>default_queue</para>
+		    <para>Numer ID kolejki, do której trafi± zg³oszenia. Je¶li nie
+		    podano, Kolejka zostanie odszukana na podstawie adresu odbiorcy maila.
+		    Opcja ta mo¿e zostaæ nadpisana przy pomocy parametru -q przy
+		    uruchomieniu skryptu. Domy¶lnie: niezdefiniowana.</para>
+		    <para>Przyk³ad:	<prompt>default_queue = </prompt></para>
+		</listitem>
+		<listitem>
+		    <para>mail_from</para>
+		    <para>Nadawca potwierdzenia (adres). Je¶li nie zdefiniowano, zostanie u¿yty adres
+		    kolejki do której zapisano zg³oszenie. Domy¶lnie: pusty.</para>
+		    <para>Przyk³ad:	<prompt>mail_from = rt@net.pl</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>mail_from_name</para>
+		    <para>Nadawca potwierdzenia (nazwa). Domy¶lnie: niezdefiniowana.</para>
+		    <para>Przyk³ad:	<prompt>mail_from_name = 'BOK SuperLAN'</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>smtp_server</para>
+		    <para>Serwer SMTP, przez który zostanie wys³ana wiadomo¶æ. Domy¶lnie: localhost.</para>
+		    <para>Przyk³ad:	<prompt>smtp_server = smtp.mydomain.pl</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>mail_dir</para>
+		    <para>Katalog w którym zostan± zapisane za³±czniki. Katalog ten powinien byæ
+		    dostêpny dla apache'a i u¿ytkownika uruchamiaj±cego lms-rtparser. Gdy nie ustawiono, 
+		    za³±czniki zostan± utracone. Domy¶lnie: niezdefiniowany.</para>
+		    <para>Przyk³ad:	<prompt>mail_dir = /usr/local/lms/mail</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>tmp_dir</para>
+		    <para>Katalog tymczasowy. Domy¶lnie zostanie u¿yty katalog 
+		    zdefiniowany w zmiennej systemowej lub <filename>/tmp</filename>.</para>
+		    <para>Przyk³ad:	<prompt>tmp_dir = /home/user/tmp</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>auto_open</para>
+		    <para>W³±czenie tej opcji spowoduje, ¿e w momencie odebrania
+		    wiadomo¶ci dotycz±cej zg³oszenia zamkniêtego (lub martwego)
+		    zg³oszenie to zostanie otwarte. Domy¶lnie: wy³±czone.</para>
+		    <para>Przyk³ad:	<prompt>auto_open = 1</prompt></para>
+		</listitem>
+	    </itemizedlist>
+    </sect2>
+    </sect1>
+</chapter>
