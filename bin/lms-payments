@@ -231,7 +231,9 @@ while(my $assign = $dbq->fetchrow_hashref())
 	$desc =~ s/\%desc/$assign->{'description'}/g;
 	$desc =~ s/\%period/$period/g;
 	if ($suspension_percentage)
+	{
 		$desc .= " ".$suspension_description;
+	}
 
 	$gotinv{$uid} = 0 if not defined $gotinv{$uid};
 	if($assign->{'value'} != 0)
