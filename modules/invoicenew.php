@@ -27,10 +27,10 @@
 $layout['pagetitle'] = trans('New Invoice');
 $users = $LMS->GetUserNames();
 $tariffs = $LMS->GetTariffs();
-$contents = $_SESSION['invoicecontents'];
-$customer = $_SESSION['invoicecustomer'];
-$invoice = $_SESSION['invoice'];
-$error = $_SESSION['invoicenewerror'];
+$SESSION->restore('invoicecontents', $contents);
+$SESSION->restore('invoicecustomer', $customer);
+$SESSION->restore('invoice', $invoice);
+$SESSION->restore('invoicenewerror', $error);
 $itemdata = r_trim($_POST);
 
 
@@ -209,10 +209,10 @@ switch($_GET['action'])
 		{
 			$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
 		
-			unset($_SESSION['invoicecontents']);
-			unset($_SESSION['invoicecustomer']);
-			unset($_SESSION['invoice']);
-			unset($_SESSION['invoicenewerror']);
+			$SESSION->remove('invoicecontents');
+			$SESSION->remove('invoicecustomer');
+			$SESSION->remove('invoice');
+			$SESSION->remove('invoicenewerror');
 			header('Location: ?m=invoice&id='.$iid);
 			die;
 		}
@@ -222,10 +222,10 @@ switch($_GET['action'])
 if($invoice['paytype'] == '')
 	$invoice['paytype'] = trans('CASH');
 
-$_SESSION['invoice'] = $invoice;
-$_SESSION['invoicecontents'] = $contents;
-$_SESSION['invoicecustomer'] = $customer;
-$_SESSION['invoicenewerror'] = $error;
+$SESSION->save('invoice', $invoice);
+$SESSION->save('invoicecontents', $contents);
+$SESSION->save('invoicecustomer', $customer);
+$SESSION->save('invoicenewerror', $error);
 
 if($_GET['action'] != '')
 {

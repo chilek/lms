@@ -31,6 +31,6 @@ if($LMS->TariffExists($_GET['from']) && $LMS->TariffExists($_GET['to']) && $_GET
 	die;
 }
 else
-	header("Location: ?".$_SESSION['backto']);
+	header("Location: ?".$SESSION->get('backto'));
 
 ?>

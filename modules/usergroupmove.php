@@ -31,6 +31,6 @@ if($LMS->UsergroupExists($_GET['from']) && $LMS->UsergroupExists($_GET['to']) &&
 	die;
 }
 else
-	header("Location: ?".$_SESSION['backto']);
+	header("Location: ?".$SESSION->get('backto'));
 
 ?>

@@ -44,16 +44,16 @@ if($_GET['delticketid'])
 }
 
 if(!isset($_GET['o']))
-	$o = $_SESSION['rto'];
+	$SESSION->restore('rto', $o);
 else
 	$o = $_GET['o'];
-$_SESSION['rto'] = $o;
+$SESSION->save('rto', $o);
 
 if(!isset($_GET['s']))
-	$s = $_SESSION['rts'];
+	$SESSION->restore('rts', $s);
 else
 	$s = $_GET['s'];
-$_SESSION['rts'] = $s;
+$SESSION->save('rts', $s);
 
 $queuedata['name'] = $LMS->GetQueueName($queuedata['id']);
 
@@ -62,8 +62,8 @@ $queue = $LMS->GetQueueContents($_GET['id'], $o, $s);
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-if (isset($_SESSION['rtp']) && !isset($_GET['page']))
-	$_GET['page'] = $_SESSION['rtp'];
+if ($SESSION->is_set('rtp') && !isset($_GET['page']))
+	$SESSION->restore('rtp', $_GET['page']);
 
 $queuedata['total'] = $queue['total'];
 $queuedata['state'] = $queue['state'];
@@ -78,7 +78,7 @@ $page = (! $_GET['page'] ? 1 : $_GET['page']);
 $pagelimit = (! $LMS->CONFIG['phpui']['ticketlist_pagelimit'] ? $queuedata['total'] : $LMS->CONFIG['phpui']['ticketlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$_SESSION['rtp'] = $page;
+$SESSION->save('rtp', $page);
 
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuedata', $queuedata);

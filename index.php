@@ -244,8 +244,8 @@ if($AUTH->islogged)
 		$SMARTY->display('notfound.html');
 	}
 	
-	if($_SESSION['lastmodule'] != $module)
-		$_SESSION['lastmodule'] = $module;
+	if($SESSION->get('lastmodule') != $module)
+		$SESSION->save('lastmodule', $module);
 }
 else
 {

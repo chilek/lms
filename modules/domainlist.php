@@ -55,19 +55,19 @@ function GetDomainList($order='name,asc')
 }
 
 if(!isset($_GET['o']))
-	$o = $_SESSION['dlo'];
+	$SESSION->restore('dlo', $o);
 else
 	$o = $_GET['o'];
-$_SESSION['dlo'] = $o;
+$SESSION->save('dlo', $o);
 
-if (isset($_SESSION['dlp']) && !isset($_GET['page']))
-	$_GET['page'] = $_SESSION['dlp'];
+if ($SESSION->is_set('dlp') && !isset($_GET['page']))
+	$SESSION->restore('dlp', $_GET['page']);
 	    
 $page = (! $_GET['page'] ? 1 : $_GET['page']); 
 $pagelimit = (! $LMS->CONFIG['phpui']['domainlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['domainlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$_SESSION['dlp'] = $page;
+$SESSION->save('dlp', $page);
 
 $layout['pagetitle'] = trans('Domains List');
 

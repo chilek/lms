@@ -67,7 +67,7 @@ case 'disconnectnode':
 
 case 'connect':
 	$linktype = $_GET['linktype'] ? $_GET['linktype'] : '0';
-	$_SESSION['devlinktype'] = $linktype;
+	$SESSION->save('devlinktype', $linktype);
 	if(! $LMS->NetDevLink($_GET['netdev'], $_GET['id'], $linktype) )
 	{
 		$edit = FALSE;
@@ -78,7 +78,7 @@ case 'connect':
     
 case 'connectnode':
 	$linktype = $_GET['linktype'] ? $_GET['linktype'] : '0';
-	$_SESSION['nodelinktype'] = $linktype;
+	$SESSION->save('nodelinktype', $linktype);
 	if(! $LMS->NetDevLinkNode($_GET['nodeid'], $_GET['id'], $linktype) )
 	{
 		$error['linknode'] = trans('Device has not free ports!');
@@ -280,8 +280,8 @@ $SMARTY->assign('netdevips',$netdevips);
 $SMARTY->assign('restnetdevlist',$netdevlist);
 $SMARTY->assign('replacelist',$replacelist);
 $SMARTY->assign('replacelisttotal',$replacelisttotal);
-$SMARTY->assign('devlinktype',$_SESSION['devlinktype']);
-$SMARTY->assign('nodelinktype',$_SESSION['nodelinktype']);
+$SMARTY->assign('devlinktype',$SESSION->get('devlinktype'));
+$SMARTY->assign('nodelinktype',$SESSION->get('nodelinktype'));
 
 switch($edit)
 {

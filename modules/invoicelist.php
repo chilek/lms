@@ -36,30 +36,30 @@ if( sizeof($marks) )
 if(isset($_POST['search']))
 	$s = $_POST['search'];
 else
-	$s = $_SESSION['ils'];
-$_SESSION['ils'] = $s;
+	$SESSION->restore('ils', $s);
+$SESSION->save('ils', $s);
 
 if(isset($_GET['o']))
 	$o = $_GET['o'];
 else
-	$o = $_SESSION['ilo'];
-$_SESSION['ilo'] = $o;
+	$SESSION->restore('ilo', $o);
+$SESSION->save('ilo', $o);
 
 if(isset($_POST['cat']))
 	$c = $_POST['cat'];
 else
-	$c = $_SESSION['ilc'];
-$_SESSION['ilc'] = $c;
+	$SESSION->restore('ilc', $c);
+$SESSION->save('ilc', $c);
 
 if(isset($_POST['group'])) {
 	$g = $_POST['group'];
 	$ge = $_POST['groupexclude'];
 } else {
-	$g = $_SESSION['ilg'];
-	$ge = $_SESSION['ilge'];
+	$SESSION->restore('ilg', $g);
+	$SESSION->restore('ilge', $ge);
 }
-$_SESSION['ilg'] = $g;
-$_SESSION['ilge'] = $ge;
+$SESSION->save('ilg', $g);
+$SESSION->save('ilge', $ge);
 
 if($c == 'cdate' && $s)
 {
@@ -69,10 +69,10 @@ if($c == 'cdate' && $s)
 
 $invoicelist = $LMS->GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $o);
 
-$listdata['cat'] = $_SESSION['ilc'];
-$listdata['search'] = $_SESSION['ils'];
-$listdata['group'] = $_SESSION['ilg'];
-$listdata['groupexclude'] = $_SESSION['ilge'];
+$SESSION->restore('ilc', $listdata['cat']);
+$SESSION->restore('ils', $listdata['search']);
+$SESSION->restore('ilg', $listdata['group']);
+$SESSION->restore('ilge', $listdata['groupexclude']);
 
 $listdata['totalpos'] = sizeof($invoicelist);
 

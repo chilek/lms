@@ -28,7 +28,7 @@ $userid = $_GET['id'];
 
 if(!$userid || $LMS->UserExists($userid)!=TRUE)
 {
-	header('Location: ?m='.$_SESSION['backto']);
+	header('Location: ?m='.$SESSION->get('backto'));
 	die;
 }
 
@@ -105,7 +105,7 @@ if($covenantlist = $LMS->DB->GetAll('SELECT invoiceid, itemid, MIN(cdate) AS cda
 		$record['invoice'] = str_replace('%Y', date('Y', $row['cdate']), $record['invoice']);
 		$record['invoice'] = str_replace('%N', $record['number'], $record['invoice']);
 
-		if(in_array($record['id'], (array) $_SESSION['unpaid'][$userid]))
+		if(in_array($record['id'], (array) $SESSION->get('unpaid.'.$userid)))
 			$record['selected'] = TRUE;
 		
 		$covenantlist[$idx] = array_merge($record, $covenantlist[$idx]);

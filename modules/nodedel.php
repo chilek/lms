@@ -40,8 +40,8 @@ if (!$LMS->NodeExists($_GET['id']))
 	}else{
 		$owner = $LMS->GetNodeOwner($_GET['id']);
 		$LMS->DeleteNode($_GET['id']);
-		if(isset($_SESSION['backto']))
-			header('Location: ?'.$_SESSION['backto']);
+		if($SESSION->is_set('backto'))
+			header('Location: ?'.$SESSION->get('backto'));
 		else
 			header('Location: ?m=userinfo&id='.$owner);
 		$body = '<H1>'.$layout['pagetitle'].'</H1>';

@@ -68,16 +68,16 @@ function GetEventList($year=NULL, $month=NULL, $day=NULL, $forward=0, $userid=0,
 }
 
 if(!isset($_GET['a']))
-	$a = $_SESSION['ela'];
+	$SESSION->restore('ela', $a);
 else
 	$a = $_GET['a'];
-$_SESSION['ela'] = $a;
+$SESSION->save('ela', $a);
 
 if(!isset($_GET['u']))
-	$u = $_SESSION['elu'];
+	$SESSION->restore('elu', $u);
 else 
 	$u = $_GET['u'];
-$_SESSION['elu'] = $u;
+$SESSION->save('elu', $u);
 
 if($_GET['day'] && $_GET['month'] && $_GET['year'])
 {
@@ -86,7 +86,7 @@ if($_GET['day'] && $_GET['month'] && $_GET['year'])
 	$year = $_GET['year'];
 }
 else
-	list($year, $month, $day) = explode('/', $_SESSION['edate']);
+	list($year, $month, $day) = explode('/', $SESSION->get('edate'));
 
 $day = ($day ? $day : date('j',time()));
 $month = ($month ? $month : date('n',time()));
@@ -95,8 +95,8 @@ $year = ($year ? $year : date('Y',time()));
 $layout['pagetitle'] = trans('Timetable');
 
 $eventlist = GetEventList($year, $month, $day, $LMS->CONFIG['phpui']['timetable_days_forward'], $u, $a);
-$listdata['userid'] = $_SESSION['elu'];
-$listdata['adminid'] = $_SESSION['ela'];
+$SESSION->restore('elu', $listdata['userid']);
+$SESSION->restore('ela', $listdata['adminid']);
 
 // create calendars
 for($i=0; $i<$LMS->CONFIG['phpui']['timetable_days_forward']; $i++)
@@ -116,7 +116,7 @@ for($i=1; $i<$daysnum+1; $i++)
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
-$_SESSION['edate'] = sprintf('%04d/%02d/%02d', $year, $month, $day);
+$SESSION->save('edate', sprintf('%04d/%02d/%02d', $year, $month, $day));
 
 $SMARTY->assign('eventlist',$eventlist);
 $SMARTY->assign('listdata',$listdata);
