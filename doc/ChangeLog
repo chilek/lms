@@ -5,6 +5,8 @@ wersja 1.5.4 (??/??/????):
   - rozpoczêto prace nad zmian± domy¶lnego jêzyka na angielski
   - poprawiony b³±d przy usuwaniu op³aty sta³ej powoduj±cy usuniêcie op³aty
     bez potwierdzenia (alec)
+  - dodana opcja konfiguracyjna (phpui -> lang_debug) która pozwala na 
+    wy¶wietlanie w popupie brakuj±cych ci±gów w t³umaczeniach (lexx)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
