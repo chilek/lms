@@ -268,12 +268,12 @@ HREF="#AEN756"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN1422"
+HREF="#AEN1435"
 >Lista modu³ów demona almsd</A
 ></DT
 ><DT
 >7-1. <A
-HREF="#AEN1875"
+HREF="#AEN1898"
 >Drzewo katalogów LMS</A
 ></DT
 ></DL
@@ -298,12 +298,12 @@ HREF="#AEN832"
 ></DT
 ><DT
 >5-1. <A
-HREF="#AEN1357"
+HREF="#AEN1370"
 >Lms-mgc: Przyk³ad instancji</A
 ></DT
 ><DT
 >7-1. <A
-HREF="#AEN2106"
+HREF="#AEN2129"
 >Format opcji konfiguracyjnych</A
 ></DT
 ></DL
@@ -3667,10 +3667,44 @@ NAME="LMS-PAYMENTS"
 ></H3
 ><P
 >Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
-	 u¿ytkownikom oraz op³at sta³ych.
+	 u¿ytkownikom oraz op³at sta³ych. Ponadto zapisuje dane do faktur.
 	 Aby dzia³a³ poprawnie powinien byæ uruchamiany codziennie.</P
 ><P
->Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.</P
+>Skrypt ten udostêpnia dwie opcje do fakturowania, które mo¿na ustawiæ
+	 w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[payments]</I
+></SPAN
+> pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>:</P
+><UL
+><LI
+><P
+>deadline (opcjonalny)</P
+><P
+>Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>deadline = 7</SAMP
+></P
+></LI
+><LI
+><P
+>paytype (opcjonalny)</P
+><P
+>Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>paytype = 'GOTÓWKA'</SAMP
+></P
+></LI
+></UL
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -4962,7 +4996,7 @@ NAME="MGC-EXAMPLE"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN1357"
+NAME="AEN1370"
 ></A
 ><P
 ><B
@@ -5277,7 +5311,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1422"
+NAME="AEN1435"
 ></A
 ><P
 ><B
@@ -5426,6 +5460,28 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >up_payments = no</SAMP
+></P
+></LI
+><LI
+><P
+>deadline (opcjonalny)</P
+><P
+>Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>deadline = 7</SAMP
+></P
+></LI
+><LI
+><P
+>paytype (opcjonalny)</P
+><P
+>Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>paytype = 'GOTÓWKA'</SAMP
 ></P
 ></LI
 ></UL
@@ -6500,7 +6556,7 @@ NAME="DEVEL-CATALOGS"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1875"
+NAME="AEN1898"
 ></A
 ><P
 ><B
@@ -7378,7 +7434,7 @@ NAME="PARAMS"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN2106"
+NAME="AEN2129"
 ></A
 ><P
 ><B

@@ -1266,10 +1266,17 @@ http://www.naszasiec.pl/
 4.3.4. lms-payments
 
    Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
-   u¿ytkownikom oraz op³at sta³ych. Aby dzia³a³ poprawnie powinien byæ
-   uruchamiany codziennie.
+   u¿ytkownikom oraz op³at sta³ych. Ponadto zapisuje dane do faktur. Aby
+   dzia³a³ poprawnie powinien byæ uruchamiany codziennie.
 
-   Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.
+   Skrypt ten udostêpnia dwie opcje do fakturowania, które mo¿na ustawiæ
+   w sekcji [payments] pliku lms.ini:
+     * deadline (opcjonalny)
+       Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14
+       Przyk³ad: deadline = 7
+     * paytype (opcjonalny)
+       Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'
+       Przyk³ad: paytype = 'GOTÓWKA'
      _________________________________________________________________
 
 4.3.5. lms-traffic
@@ -1900,6 +1907,12 @@ info = "Opcjonalny opis modu³u"
        do przodu, czy do ty³u w stosunku do daty naliczenia op³aty.
        Domy¶lnie: yes.
        Przyk³ad: up_payments = no
+     * deadline (opcjonalny)
+       Pozwala na ustalenie terminu p³atno¶ci w dniach. Domy¶lnie: 14
+       Przyk³ad: deadline = 7
+     * paytype (opcjonalny)
+       Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'
+       Przyk³ad: paytype = 'GOTÓWKA'
      _________________________________________________________________
 
 6.2.3. Notify
