@@ -1331,21 +1331,19 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function IsInvoicePaid($invoiceid)
 	{
-		$balance = $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE invoiceid=?', array($invoiceid));
-		if ($balance == 0)
-			return TRUE;
-		return FALSE;
+		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE invoiceid=?', array($invoiceid)) >= 0 ? TRUE : FALSE;
 	}
 
 	function GetInvoicesList()
 	{
 		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value*count) AS value, COUNT(invoiceid) AS count FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
 		{
+			$inv_paid = $this->DB->GetAllByKey('SELECT invoiceid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE invoiceid!=0 GROUP BY invoiceid','id');
 			foreach($result as $idx => $row)
 			{
 				$result[$idx]['year'] = date('Y',$row['cdate']);
 				$result[$idx]['month'] = date('m',$row['cdate']);
-				$result[$idx]['paid'] = $this->IsInvoicePaid($row['id']);
+				$result[$idx]['paid'] = ( $inv_paid[$row['id']]['sum'] >=0 ? TRUE : FALSE );
 			}
 			$result['startdate'] = $this->DB->GetOne('SELECT MIN(cdate) FROM invoices');
 			$result['enddate'] = $this->DB->GetOne('SELECT MAX(cdate) FROM invoices');
