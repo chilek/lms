@@ -36,11 +36,10 @@
 	    </sect2>
 	    <sect2 id="install-req-db">
 	      <title>Serwer baz danych</title>
-	      <para>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 3.23.xx 
-	      </para>
+	      <para>LMS nie bêdzie dzia³a³ prawid³owo na wersjach MySQL starszych od 3.23.xx.</para>
 	      <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</para>
-	      <para>Wykorzystanie bazy SQLite dla LMS'a jest w fazie testów. Jedyn± przetestowan± wersj± 
-	      jest wersja 2.8.11.</para>
+	      <para>Przy wspó³pracy LMS'a z baz± danych SQLite nie stwierdzono ¿adnych
+	      problemów z tym, ¿e jedyn± przetestowan± wersj± jest wersja 2.8.11.</para>
 	    </sect2>
 	    <sect2 id="install-req-smarty">
              <title>Biblioteka Smarty</title>

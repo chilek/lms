@@ -6,7 +6,7 @@
 	<filename>contrib</filename>. Czê¶æ z nich nale¿y dostosowaæ do w³asnych 
 	potrzeb, a niektóre integruj± siê z interfejsem <emphasis>LMS-UI</emphasis>.</para>
 	<sect1 id="contrib-customer">
-    	<title>"Moje konto"</title>
+    	<title>Moje konto</title>
 		<sect2 id="customer-intro">
 		<title>Wstêp</title>
 		<para>W katalogu <filename>contrib/customer</filename> znajduje siê
