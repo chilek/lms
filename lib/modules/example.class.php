@@ -46,8 +46,11 @@ class example
 	
 	var $_description = 'Klasa przyk³adowa';
 
-	// Rewizja pliku, o ile rozwijany by³ w CVS. W przeciwnym wypadku
-	// mo¿na pomin±æ, albo ustawiæ NULL.
+	// Rewizja pliku, o ile rozwijany by³ w CVS. Je¿eli nie by³,
+	// to mo¿na tutaj wpisaæ podwersjê modu³u. CORE i tak usuwa
+	// tekst 'Revision:' oraz znaki $ z koñca i pocz±tku linii,
+	// za to zewnêtrzne modu³y bêd± mog³y sobie porównywaæ te
+	// warto¶ci aby sprawdziæ poprawno¶æ modu³ów.
 
 	var $_revision = '$Revision$';
 	
@@ -64,6 +67,17 @@ class example
 		// np. 'user', w sposób $this->core->user->funkcja(), chocia¿
 		// ca³kiem mo¿liwe ¿e bêdzie mo¿na $this->user->funkcja().
 		
+		return TRUE;
+	}
+
+	function _postinit()
+	{
+
+		// funkcja ta bêdzie wykonywana po zakoñczeniu ³adowania
+		// wszystkich modu³ów. tutaj ka¿dy modu³ mo¿e sobie posprawdzaæ
+		// obecno¶æ innych modu³ów i ewentualnie ubiæ LMS'a je¿eli wykryje
+		// inny modu³ ;-)
+	
 		return TRUE;
 	}
 }
