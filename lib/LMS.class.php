@@ -1314,8 +1314,8 @@ class LMS
 	{
 		if($params = $this->ADB->GetRow("SELECT * FROM networks WHERE id=?",array($id)))
 		{
+			$params['broadcast'] = ip_long(getbraddr($params['address'],$params['mask']));	
 			$params['address'] = ip_long($params['address']);
-			$params['broadcast'] = ip_long(getbraddr($params['address'],$params['mask']));
 		}
 		return $params;
 	}
@@ -1612,7 +1612,7 @@ class LMS
 
 /*
  * $Log$
- * Revision 1.210  2003/08/31 19:34:13  alec
+ * Revision 1.211  2003/08/31 19:48:34  alec
  * removed bug in GetNetworkParams()
  *
  * Revision 1.209  2003/08/31 19:16:54  alec
