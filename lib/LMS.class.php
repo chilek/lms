@@ -1513,7 +1513,6 @@ class LMS
 
 	function IsIPValid($ip,$checkbroadcast=FALSE,$ignoreid=0)
 	{
-		$networks = $this->GetNetworks();
 		if($networks = $this->GetNetworks())
 		{
 			foreach($networks as $idx => $row)
@@ -1541,7 +1540,6 @@ class LMS
 
 	function NetworkOverlaps($network,$mask,$ignorenet=0)
 	{
-		$networks = $this->GetNetworks();
 		$cnetaddr = ip_long($network);
 		$cbroadcast = ip_long(getbraddr($network,$mask));
 
@@ -2286,6 +2284,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.302  2003/12/07 17:01:20  alec
+ * - usuniête zdublowane wywo³ania funkcji
+ *
  * Revision 1.301  2003/12/04 03:43:51  lukasz
  * - dodany PESEL do rekordu u¿ytkownika, upgrade bazy
  *   Je¿eli u¿ytkownik nie posiada NIPu, to wtedy na fakturze umieszczany jest
