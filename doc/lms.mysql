@@ -39,6 +39,7 @@ CREATE TABLE assignments (
   datefrom int(11) NOT NULL default '0',
   dateto int(11) NOT NULL default '0',
   invoice tinyint(1) NOT NULL default '0',
+  suspended tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
@@ -197,6 +198,7 @@ CREATE TABLE nodes (
   netdev int(11) NOT NULL default '0',
   access tinyint(1) NOT NULL default '1',
   warning tinyint(1) NOT NULL default '0',
+  lastonline int(11) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY name (name),
   UNIQUE KEY ipaddr (ipaddr)
@@ -417,4 +419,4 @@ CREATE TABLE userassignments (
   UNIQUE KEY userassignment (usergroupid, userid)
 ) TYPE=MyISAM;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004072700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004081800');
