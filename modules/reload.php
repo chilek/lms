@@ -42,7 +42,11 @@ switch($_RELOAD_TYPE)
 		foreach($execlist as $execcmd)
 		{
 			echo '<P><B>'.$execcmd.'</B>:</P>';
-			echo '<PRE>'.passthru($execcmd).'</PRE>';
+			echo '<PRE>';
+			flush();
+			echo passthru($execcmd);
+			flush();
+			echo '</PRE>';
 		}
 		echo '</TD></TR></TABLE>';
 	break;
