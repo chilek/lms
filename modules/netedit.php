@@ -160,7 +160,7 @@ if(isset($networkdata))
 
 $prefixlist = $LMS->GetPrefixList();
 $networks = $LMS->GetNetworks();
-$layout['pagetitle'] = _("Edit network: ").$network['name'];
+$layout['pagetitle'] = _("Edit Network: ").$network['name'];
 $SMARTY->assign('unlockedit',TRUE);
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('network',$network);

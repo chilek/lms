@@ -53,7 +53,7 @@ unset($nodelist['direction']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$layout['pagetitle'] = _("Info device: ").$netdevinfo['name']." ".$netdevinfo['producer']." ".$netdevinfo['model'];
+$layout['pagetitle'] = _("Info Device: ").$netdevinfo['name']." ".$netdevinfo['producer']." ".$netdevinfo['model'];
 
 $netdevinfo['id'] = $_GET['id'];
 

@@ -36,7 +36,7 @@ if($LMS->AdminExists($id))
 			$error['password'] .= _('Password cannot be empty!');
 		
 		if($passwd['passwd'] != $passwd['confirm'])
-			$error['password'] .= _('Password do not match!');
+			$error['password'] .= _('Passwords do not match!');
 		
 		if(!$error)
 		{

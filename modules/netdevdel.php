@@ -30,7 +30,7 @@ if(! $LMS->NetDevExists($_GET['id']))
 	die;
 }		
 
-$layout['pagetitle'] = _("Deleting device ID: ").sprintf("%04d",$_GET['id']);
+$layout['pagetitle'] = _("Deleting Device ID: ").sprintf("%04d",$_GET['id']);
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('netdevid',$_GET['id']);
 

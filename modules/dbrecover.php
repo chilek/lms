@@ -31,12 +31,12 @@ if($_GET['is_sure'])
 	header("Location: ?m=".$_SESSION['lastmodule']);
 	die;
 }else{
-	$layout['pagetitle'] = _('Database backup restoring');
+	$layout['pagetitle'] = _('Database Backup Restoring');
 	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('header.html');
-	echo '<H1>'._('Database backup restoring').'</H1>';
+	echo '<H1>'._('Database Backup Restoring').'</H1>';
 	echo '<P>'._('Are you sure, you want to restore database backup created ').date("Y/m/d H:i.s",$_GET['db'])."?</p>";
-	echo "<a href=\"?m=dbrecover&db=".$_GET['db']."&is_sure=1\">"._('Yes, I am sure').'</A>';
+	echo "<a href=\"?m=dbrecover&db=".$_GET['db']."&is_sure=1\">"._('Yes, I am sure.').'</A>';
 	$SMARTY->display('footer.html');
 }
 

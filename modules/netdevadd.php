@@ -42,7 +42,7 @@ if(isset($netdevdata)) {
 }
 		
 
-$layout['pagetitle'] = _("New network device");
+$layout['pagetitle'] = _("New Network Device");
 
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('error',$error);

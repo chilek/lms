@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = _("IP networks");
+$layout['pagetitle'] = _("IP Networks");
 
 $netlist = $LMS->GetNetworkList();
 

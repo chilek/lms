@@ -38,7 +38,7 @@ if (!$LMS->UserExists($_GET['id']))
 		$body = "<H1>".$layout['pagetitle']."</H1>";
 		$body .= "<P>"._("Are You sure, You want to delete user ").$LMS->GetUserName($_GET['id'])."?</P>"; 
 		$body .= "<P>"._("All user's data will be lost and all his nodes will be removed from database.")."</P>";
-		$body .= "<P><A HREF=\"?m=userdel&id=".$_GET['id']."&is_sure=1\">"._("Yes, I am sure").".</A></P>";
+		$body .= "<P><A HREF=\"?m=userdel&id=".$_GET['id']."&is_sure=1\">"._("Yes, I am sure.")."</A></P>";
 	}else{
 		header("Location: ?m=".$_SESSION['lastmodule']);
 		$body = "<H1>".$layout['pagetitle']."</H1>";

@@ -37,7 +37,7 @@ $_SESSION['ntlp'][$_GET['id']] = $_GET['page'];
 
 $network = $LMS->GetNetworkRecord($_GET['id'],$_GET['page'],1024);
 
-$layout['pagetitle'] = _("Info network: ").$network['name'];
+$layout['pagetitle'] = _("Info Network: ").$network['name'];
 
 $SMARTY->assign('layout',$layout);
 $SMARTY->assign('network',$network);

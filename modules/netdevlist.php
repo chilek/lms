@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = _("Network devices");
+$layout['pagetitle'] = _("Network Devices");
 
 $_SESSION['backto']=$_SERVER['QUERY_STRING'];
 
