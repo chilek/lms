@@ -11,6 +11,8 @@ wersja 1.4.0 Evalla (??/10/2004):
   - lms-rtparser: auto_open - otwieranie zamkniêtych zg³oszeñ (alec)
   - nazwa interfejsu mo¿e zawieraæ ':' i '.' (alec)
   - naprawione sumowanie kolumny 0% w rejestrze sprzeda¿y (alec)
+  - poprawione b³êdy w pinger.h uniemo¿liwiaj±ce kompilacjê na niektórych
+    wersjach glibc (alec)
 
 wersja 1.4.0rc4 Evalla (05/10/2004):
 
