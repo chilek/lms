@@ -223,6 +223,10 @@ if(isset($message))
 			}
 			$out = mp_new_message($msg);
 
+			$body = $out[0].($out[1] ? "\n".$out[1] : '');
+
+			$LMS->SendMail($recipients, $headers, $body);
+
 			// message to user is written to database
 			if($message['adminid'] && $addmsg) 
 				MessageAdd($message, $_FILES['file']);
