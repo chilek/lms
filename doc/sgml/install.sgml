@@ -32,8 +32,8 @@
            versions. PHP can be downloaded from <ulink url="http://www.php.net">www.php.net</ulink>.
            At least following PHP modules needs to be installed (look for "extension" in
            php.ini or in output of phpinfo function): pcre, posix (for systems info), zlib (for
-           compressed backups), gd (for graphical map) and one of: mysql, pgsql, sqlite (for db
-           support).</para>
+           compressed backups), gd or ming (for graphical map) and one of: mysql, pgsql, sqlite (for db
+           support). For mailing is used PEAR::Mail.</para>
          </sect2>
          <sect2 id="install-req-db">
            <title>Database Server</title>
