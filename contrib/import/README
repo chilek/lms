@@ -12,7 +12,7 @@ p³atno¶ci do zatwierdzenia i/lub korekty.
 2. Instalacja.
 
 Pliki .html umie¶æ w katalogu templates, a .php w modules. Zostanie dodane nowe 
-menu 'Taryfy i Finanse'->'Import'.
+menu 'Finanse'->'Import'.
 
 3. Konfiguracja.
 
@@ -30,9 +30,9 @@ czyli warto¶ci oddzielone tabulatorem.
 $pattern = "/^([^ ]+)\t([^ ]+)[\s\t]+([^ ]+)\t([^ ]+)\t(.*)/";
 
 - pozycja poszczególnych elementów w/w wyra¿enia:
-$pid = 0;	// ID u¿ytkownika, je¶li zero - nast±pi wyszukiwanie 
+$pid = 0;	// ID klienta, je¶li zero - nast±pi wyszukiwanie 
 		// ID wg szablonu, numeru faktury lub nazwiska 
-		// i imienia usera w ca³ym wierszu
+		// i imienia klienta w ca³ym wierszu
 $pname = 2;	// nazwisko
 $plastname = 3; // imiê
 $pvalue = 4;	// kwota

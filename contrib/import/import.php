@@ -26,24 +26,26 @@
 
 /********* konfiguracja (patrz plik README) *********/
 $pattern = "/^([^ ]+)\t([^ ]+)[\s\t]+([^ ]+)\t([^ ]+)\t(.*)/";
-$pid = 0;	// pozycja ID u¿ytkownika w wyra¿eniu
-		// je¶li zero - nast±pi wyszukiwanie ID wg szablonu,
-		// numeru faktury lub nazwiska i imienia usera w ca³ym wierszu
-$pname = 2;	// pozycja nazwiska 
-$plastname = 3; // pozycja imienia 
-$pvalue = 4;	// pozycja kwoty
-$pcomment = 5;  // pozycja komentarza do operacji
-$pdate = 1;  	// pozycja daty
-$date_regexp = '/([0-9]{2})\.([0-9]{2})\.([0-9]{4})/'; // format daty (dd.mm.yyyy)
+$pid = 0;	// customer ID position in expression
+		// if zero - we try to search ID by regexp,
+		// invoice number or customer name and forename in entire row
+$pname = 2;	// name position 
+$plastname = 3; // forename position 
+$pvalue = 4;	// value position
+$pcomment = 5;  // operation comment position
+$pdate = 1;  	// date position
+$date_regexp = '/([0-9]{2})\.([0-9]{2})\.([0-9]{4})/'; // date format (dd.mm.yyyy)
 $pday = 1;
 $pmonth = 2;
 $pyear = 3;
-$invoice_regexp = '/.* (\d*)\/LMS\/([0-9]{4}).*/'; 	//format numeru faktury
-							// domy¶lnie %N/LMS/%Y
-$pinvoice_number = 1; // pozycja numeru faktury w $invoice_regexp
-$pinvoice_year = 2;   // pozycja numeru roku w $invoice_regexp
-$taxvalue = '0.0';	// stawka VAT: 'zw.', '0.0', '7.0', '22.0'	
+$invoice_regexp = '/.* (\d*)\/LMS\/([0-9]{4}).*/'; 	// format of invoice number
+							// default %N/LMS/%Y
+$pinvoice_number = 1; // position of invoice number in $invoice_regexp
+$pinvoice_year = 2;   // year position in $invoice_regexp
+$taxvalue = '0.0';	// Tax rate: 'zw.', '0.0', '7.0', '22.0'	
 /*************** koniec konfiguracji *****************/
+
+include('importlang.php');
 
 if(isset($_GET['upload']))
 {
@@ -117,10 +119,10 @@ if(isset($_GET['upload']))
 		switch($_FILES['file']['error'])
 		{
 			case 1: 			
-			case 2: $error['file'] = 'Plik jest za du¿y.'; break;
-			case 3: $error['file'] = 'Plik zosta³ pobrany czê¶ciowo.'; break;
-			case 4: $error['file'] = 'Nie podano ¶cie¿ki do pliku.'; break;
-			default: $error['file'] = 'Wyst±pi³y problemy z pobraniem pliku.'; break;
+			case 2: $error['file'] = trans('FIle is too large.'); break;
+			case 3: $error['file'] = trans('File has been uploaded partly.'); break;
+			case 4: $error['file'] = trans('Path to file was not specified.'); break;
+			default: $error['file'] = trans'Problem during file upload.'); break;
 		}	
 }
 
@@ -128,7 +130,7 @@ if(isset($_POST['import']))
 {
 	$SMARTY->display('header.html');
 	$SMARTY->display('balanceheader.html');
-	echo '<H1><B>Import p³atno¶ci</B></H1>';
+	echo '<H1><B>'.trans('Payments Import').'</B></H1>';
 	
 	$i=0;
 	$total=0;
@@ -152,18 +154,18 @@ if(isset($_POST['import']))
 			$LMS->AddBalance($balance);
 			$total += $balance['value'];
 			$i++;
-			printf('U¿ytkownik ID:%04d - kwota: %.2f z³<BR>', $balance['userid'],$balance['value']);
+			trans('Customer ID:$0 - value: $1<BR>', printf('%04d',$balance['userid']), moneyf($balance['value']));
 		}
 	}
 
-	printf('<BR>Zapisano %d rek. na ³±czn± kwotê %.2f z³', $i, $total);
+	trans('<BR>Saved $0 rec. on amount $1', $i, moneyf($total));
 	$SMARTY->display('footer.html');
 	die;
 }
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$layout['pagetitle'] = 'Import p³atno¶ci';
+$layout['pagetitle'] = trans('Payments Import');
 
 $SMARTY->assign('import', $import);
 $SMARTY->assign('error', $error);
