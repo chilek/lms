@@ -27,6 +27,13 @@
 		document.page.submit();
 	}
 
+	function invoicepay(id)
+	{
+		document.page.action="?m=invoicepaid&id="+id;
+		document.page.target="";
+		document.page.submit();
+	}
+
 	function prints()
 	{
 		document.page.action="?m=invoice&print=cached";
@@ -122,7 +129,7 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			{cycle print=false}
 			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
-			<A HREF="?m=invoicepaid&id={$invoice.id}"><IMG ALIGN="absmiddle" SRC="img/save.gif" ALT="[ Rozlicz ]" BORDER="0" TARGET="_BLANK"></A>
+			<A HREF="javascript:invoicepay({$invoice.id})"><IMG ALIGN="absmiddle" SRC="img/save.gif" ALT="[ Rozlicz ]" BORDER="0" TARGET="_BLANK"></A>
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0" TARGET="_BLANK"></A>
 		</TD>
 	</TR>
@@ -149,11 +156,11 @@
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD WIDTH="99%" VALIGN="bottom">
+						<A HREF="javascript:cal3.popup()"><IMG SRC="img/calendar.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2">Data operacji:</A>
+						<INPUT TYPE="text" NAME="invoicepaydate" onclick="javascript:cal3.popup()"><BR>
 						<A HREF="javascript:raport();"><IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2">Rejestr sprzeda¿y: </A>
 						Od&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>
 						Do&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>	
-					
-					
 					
 {*					
 					<TABLE WIDTH="100%">
@@ -211,5 +218,6 @@ var cal1 = new calendar(document.forms['page'].elements['from']);
 cal1.time_comp = false;
 var cal2 = new calendar(document.forms['page'].elements['to']);
 cal2.time_comp = false;
+var cal3 = new calendar(document.forms['page'].elements['invoicepaydate']);
 //-->
 </SCRIPT>

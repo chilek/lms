@@ -25,11 +25,25 @@
  */
 
 $invoiceid = $_GET['id'];
+$invoicepaydate = $_POST['invoicepaydate'];
+if($invoicepaydate)
+{
+        // date format 'yyyy/mm/dd hh:mm'
+        list($date,$time) = split(' ',$invoicepaydate);
+        $date = explode('/',$date);
+        $time = explode(':',$time);
+        if(checkdate($date[1],$date[2],$date[0])) //je¶li z³a data, zapisujemy pod dzisiejsz±
+                $invoicepaydate = mktime($time[0],$time[1],0,$date[1],$date[2],$date[0]);
+        else
+                unset($invoicepaydate);
+}
+
 if ($invoicecontent = $LMS->GetInvoiceContent($invoiceid))
 {
 	$invoice = $LMS->DB->GetRow('SELECT customerid FROM invoices WHERE id=?', array($invoiceid));
 	foreach($invoicecontent['content'] as $idx => $row)
 	{
+		$addbalance['time'] = $invoicepaydate;
 		$addbalance['type'] = 3;
 		$addbalance['value'] = $row['value'] * $row['count'];
 		$addbalance['taxvalue'] = $row['taxvalue'];
