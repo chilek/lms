@@ -1,4 +1,3 @@
-
 LMS - LAN Management System 1.1-cvs
 
    [logo-small.png]
@@ -315,14 +314,20 @@ Rozdzia³ 2. Instalacja i konfiguracja
 
 2.3. Instalacja LMS
 
-   Po pobraniu ze strony www.lms.rulez.pl rozpakuj archiwum:
-$ tar zxvf lms-x.x.x.tar.gz
+   LMS w postaci archiwum tar.gz mo¿na pobraæ ze strony domowej projektu
+   (www.lms.rulez.pl), a nastêpnie rozpakowaæ i umie¶ciæ w wybranym
+   katalogu (np. /var/www/lms ) dostêpnym dla serwera www:
+$ cd /var/www
+$ wget http://lms.rulez.pl/download/lms-x.x.x.tar.gz
+$ tar zxf lms-x.x.x.tar.gz
 
-   a nastêpnie przenie¶ pliki z LMS-UI do katalogu osi±galnego z poziomu
-   serwera www (np. /var/www/lms).
-
-   Je¿eli nie skorzysta³e¶ z wersji zawieraj±cej bibliotekê Smarty,
-   pobierz j± i umie¶æ w katalogu lib.
+   Dostêpne s± dwa rodzaje paczek z LMS - zawieraj±ce bibliotekê Smarty
+   (lms-x.x.x+libs.tar.gz) i bez niej. Je¿eli nie skorzysta³e¶ z wersji
+   archiwum zawieraj±cej biblioteki, pobierz j± i umie¶æ w katalogu lib.
+$ cd /var/www/lms/lib
+$ wget http://smarty.php.net/distributions/Smarty-2.6.0.tar.gz
+$ tar zxf Smarty-2.6.0.tar.gz
+$ mv Smarty-2.6.0/libs Smarty
 
    Notatka
 
