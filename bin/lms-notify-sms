@@ -26,11 +26,12 @@ use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
-use Net::SMTP;
-use vars qw($configfile $quiet $help $version);
+use vars qw($configfile $quiet $help $version $debug);
 use POSIX qw(strftime);
 
-my $_version = '1.0-cvs';
+$ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
+
+my $_version = '1.4-cvs';
 my $my_template;
 
 my %options = (
@@ -56,7 +57,7 @@ lms-notify-sms, version $_version
 -h, --help			print this help and exit;
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
--d, --debug			do debugging. don't actually send anything.
+-d, --debug			do debugging, don't send anything.
 
 EOF
 	exit 0;
@@ -100,7 +101,7 @@ my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $limit = $ini->val('notify-sms', 'limit') || 0;
-my $smsfile = $ini->val('notify-sms', 'smstemplate') || 0;
+my $smsfile = $my_template || $ini->val('notify-sms', 'smstemplate');
 
 if(!$smsfile)
 {
@@ -110,23 +111,27 @@ if(!$smsfile)
 
 if(! -r $smsfile)
 {
-	print STDERR "Fatal error: unable to read mail template file $smsfile, exiting!\n";
+	print STDERR "Fatal error: unable to read sms template file $smsfile, exiting!\n";
 	exit 1;
 }
 
 my $dbase;
+my $utsfmt;
 
 if($dbtype eq "mysql")
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "UNIX_TIMESTAMP()";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
 }
 elsif($dbtype eq "sqlite")
 {
 	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+	$utsfmt = "strftime('%s','now')";
 }
 else
 {
@@ -138,30 +143,18 @@ open(MTFILE, "$smsfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
-my $dbq = $dbase->prepare("SELECT users.id, lastname, users.name, email, phone1,  tariffs.description FROM users,tariffs 
-		WHERE users.tariff=tariffs.id");
+my $dbq = $dbase->prepare("SELECT users.id AS id, pin, lastname, name, phone1, phone2, phone3, SUM((type * -2 + 7) * value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id, pin, lastname, name, phone1, phone2, phone3 HAVING SUM((type * -2 + 7) * value) < 0"); 
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
-	my $balance = 0;
-	my $sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type='3'");
-	$sdbq->execute();
-	if(my $srow = $sdbq->fetchrow_hashref())
-	{
-		$balance = $balance + (defined $srow->{'sum'} ? $srow->{'sum'} : 0);
-	}
-	$sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type>='4'");
-	$sdbq->execute();
-	if(my $srow = $sdbq->fetchrow_hashref())
-	{
-		$balance = $balance - (defined $srow->{'sum'} ? $srow->{'sum'} : 0);
-	}
+	my $balance = $row->{'balance'};
 	if($balance < $limit)
 	{
 		if(!$quiet)
 		{
 			print STDOUT "$row->{'id'}\t($balance)\t$row->{'lastname'} $row->{'name'}\n";
 		}
+		
 		# is it ok? what should be sms regexp?
 		my $sms_phone_number;
 		# someone should learn how to write regexp!
@@ -169,84 +162,84 @@ while (my $row = $dbq->fetchrow_hashref())
 		# numbers: 888xxxxxx 880xxxxxx (heyah), 6(0,9)xxxxxxx (plus and era), 50xxxxxxx (idea)
 		# it will also treat as valid numbers begining with: +48, 0, 0-, 0 (space)...
 		my $pnum_regex = '^(\+48|0|)(88[08]|50[0-9]|6[09][0-9])[0-9]{6}$';
+		
 		$row->{'phone1'} =~ s/[ -]//g;
 		$row->{'phone2'} =~ s/[ -]//g;
 		$row->{'phone3'} =~ s/[ -]//g;
-		if($row->{'phone1'} =~ /$pnum_regex/)
-			$sms_phone_number = $row->{'phone1'};
-		elsif ($row->{'phone2'} =~ /$pnum_regex/)
-			$sms_phone_number = $row->{'phone2'};
-		elsif ($row->{'phone3'} =~ /$pnum_regex/)
-			$sms_phone_number=$row->{'phone3'};
+		
+		if($row->{'phone1'} =~ /$pnum_regex/) {
+			$sms_phone_number = $row->{'phone1'}; }
+		elsif ($row->{'phone2'} =~ /$pnum_regex/) {
+			$sms_phone_number = $row->{'phone2'}; }
+		elsif ($row->{'phone3'} =~ /$pnum_regex/) {
+			$sms_phone_number = $row->{'phone3'}; }
+			
 		if ($sms_phone_number)
 		{
 			if(!$quiet)
 			{
 				print STDOUT "Sending sms to $sms_phone_number\n";
 			}
-			my @desttempl = @mtempl;
-			my $subject = $mailsubject;
-			$subject =~ s/\%B/$balance/g;
-			{ my $amount = -$balance; $subject =~ s/\%b/$amount/g; } 
 			
-				$sms_to=$sms_phone_number;
-				$sms_data="";
+			my @desttempl = @mtempl;
+			
+			my $sms_data = "";
 
-				foreach my $line (@desttempl)
-				{
-					$line =~ s/\%B/$balance/g;
-					{ 	
-						my $amount = -$balance;
-						$line =~ s/\%b/$amount/g; 	
-					}
-
-					{ 
-						my $year = strftime( "%Y", localtime());
-						$line =~ s/\%date-y/$year/; 
-					}
-
-					{
-						my $phone = $row->{'phone1'};
-						$line =~ s/\%phone1/$phone/;
-					}
-
-					{
-						my $month = strftime ( "%m", localtime()) ; 
-						$line =~ s/\%date-m/$month/;
-					}
-
-					{
-						my $desc = $row->{'description'}; 
-						$line =~ s/\%desc/$desc/;
-					}
-
-					if ($line =~ /\%saldo/) {
-						my $saldo_dbq = $dbase->prepare("SELECT SUM(value) FROM cash WHERE 
-							userid='$row->{'id'}' AND (type>='4' )") ; 
-						$saldo_dbq->execute();
-						my $ow_s = $saldo_dbq->fetchrow_hashref();
-						$line =~ s/\%saldo/$ow_s->{'SUM(value)'}/;
-					}
-
-
-					if ($line =~ /\%abonament/) {
-						my $saldo_dbq = $dbase->prepare("SELECT users.id,tariffs.value,tariff FROM users,tariffs WHERE 
-							users.id='$row->{'id'}' AND tariffs.id=users.tariff") ; 
-						$saldo_dbq->execute();
-						my $ow_s = $saldo_dbq->fetchrow_hashref();
-						$line =~ s/\%abonament/$ow_s->{'value'}/;
-					}
-
-					$sms_data+=$line;
-
-					system("echo $sms_data | gnokii --sendsms $phone1");
-					}
-					else
-					if(!$quiet)
-					{
-						print STDOUT "This user don't have any sms capable number in database, call him if You can ($row->{'phone1'}).\n";
+			foreach my $line (@desttempl)
+			{
+				$line =~ s/\%B/$balance/g;
+				{ 	
+					my $amount = -$balance;
+					$line =~ s/\%b/$amount/g; 	
 				}
-			}
 
+				{ 
+					my $year = strftime( "%Y", localtime());
+					$line =~ s/\%date-y/$year/; 
+				}
+
+				{
+					my $phone = $row->{'phone1'};
+					$line =~ s/\%phone1/$phone/;
+				}
+
+				{ 
+					my $month = strftime( "%m", localtime());
+					$line =~ s/\%date-m/$month/; 
+				}
+
+				{
+					my $month_name = strftime ( "%B", localtime()) ; 
+					$line =~ s/\%date_month_name/$month_name/;
+				}
+
+				if ($line =~ /\%saldo/) {
+					$line =~ s/\%saldo/$balance/;
+				}
+
+				if ($line =~ /\%pin/) {
+					$line =~ s/\%pin/$row->{'pin'}/;
+				}
+
+				if ($line =~ /\%abonament/) {
+					my $saldo_dbq = $dbase->prepare("SELECT SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) AND userid = $row->{'id'}");
+					$saldo_dbq->execute();
+					my $ow_s = $saldo_dbq->fetchrow_hashref();
+					$line =~ s/\%abonament/$ow_s->{'value'}/;
+				}
+			
+				$sms_data .= $line;
+			}
+			
+			if(!$debug) 
+			{
+				system("echo $sms_data | gnokii --sendsms $sms_phone_number");
+			}
+		}
+		elsif(!$quiet) 
+		{
+				print STDOUT "This user don't have any sms capable number in database, call him if You can ($row->{'phone1'}).\n";
+		}
+	}
 }
 $dbase->disconnect();
