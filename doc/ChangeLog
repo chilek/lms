@@ -42,6 +42,8 @@ wersja 1.5.4 (??/??/????):
   - dodano zabezpieczenie przed wystawieniem faktury bez zawarto¶ci (alec)
   - BTS#0000281: poprawiono wy¶wietlanie listy zad³u¿onych, które na MySQLu
     uwzglêdnia³o tak¿e u¿ytkowników z bilansem równym zero (alec)
+  - zmiana warto¶ci domy¶lnej opcji invoices/content_type: usuniêto definicjê
+    charsetu (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
