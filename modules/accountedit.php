@@ -106,7 +106,10 @@ switch ($option)
 				$account['expdate'] = mktime(0,0,0,$date[1],$date[2],$date[0]);
 		}
 
-		$account['type'] = array_sum($account['type']);	
+		$account['type'] = array_sum($account['type']);
+
+		if(!$account['domainid'] && (($account['type'] & 2) == 2))
+			$error['domainid'] = 'Konto mailowe musi posiadaæ domenê!';
 			
 		if(!$error)
 		{
