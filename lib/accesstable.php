@@ -1,7 +1,7 @@
 <?php
 
 /*
- * LMS version 1.2-cvs
+ * LMS version 1.2.0 Janet
  *
  *  (C) Copyright 2001-2004 LMS Developers
  *
@@ -24,41 +24,41 @@
  *  $Id$
  */
 
-// lista modu³ów które zawsze s± dostêpne dla ka¿dego
+// list of modules with access for anyone
 
 $access[allow] = "^(welcome|copyrights|logout|chpasswd)$";
 
-$access[table][0][name]		= "pe³en dostêp";
+$access[table][0][name]		= _('full access');
 $access[table][0][allow_reg]	= "^.*$";
 
-$access[table][1][name]		= "odczyt wszystkich danych";
+$access[table][1][name]		= _('all data reading');
 $access[table][1][allow_reg]	= "^((admin|balance|db|net|node|netdev|tariff|payment|user)(list|list(debt|disc)|info|view|debt|search|balance)|netdevmap|print)$";
 
-$access[table][2][name]		= "w³±czanie i od³±czanie komputerów";
+$access[table][2][name]		= _('computers connection/disconnection');
 $access[table][2][allow_reg]	= "^nodeset$";
 
-$access[table][3][name]		= "manipulacja finansami";
+$access[table][3][name]		= _('finances manipulation');
 $access[table][3][allow_reg]	= "^((tariff)(add|info|list|move|edit|delete)|(payment)(add|del|edit|info|list)|(balance|balance|userbalance)(new|add|ok)|(invoice|invoice(list|new|report)))$";
 
-$access[table][4][name]         = "prze³adowywanie konfiguracji";
+$access[table][4][name]         = _('configuration reload');
 $access[table][4][allow_reg]    = "^reload$";
 
-$access[table][5][name]		= "manipulacja kontami u¿ytkowników";
+$access[table][5][name]		= _('users accounts manipulation');
 $access[table][5][allow_reg]	= "^user(add|edit|del)$";
 
-$access[table][6][name]		= "manipulacja danymi komputerów";
+$access[table][6][name]		= _('computers manipulation');
 $access[table][6][allow_reg]	= "^(node(add|scan|del|edit|set)|choose(mac|ip))$";
 
-$access[table][7][name]         = "dostêp do statystyk";
+$access[table][7][name]         = _('stats access');
 $access[table][7][allow_reg]    = "^traffic$";
 
-$access[table][8][name]         = "dostêp do korespondencji seryjnej";
+$access[table][8][name]         = _('mailing access');
 $access[table][8][allow_reg]    = "^(mailing|mailingsend)$";
 
-$access[table][253][name]	= "brak dostêpu do modyfikacji i zak³adania nowych kont administratorów";
+$access[table][253][name]	= _('administrators accounts editing access forbidden');
 $access[table][253][deny_reg]	= "^(admin(add|del|edit|passwd))$";
 
-$access[table][255][name]	= "brak dostêpu";
+$access[table][255][name]	= _('no access');
 $access[table][255][deny_reg]	= "^.*$";
 
 ?>
