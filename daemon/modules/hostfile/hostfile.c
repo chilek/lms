@@ -36,11 +36,15 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	FILE *fh;
 	QUERY_HANDLE *res;
 	unsigned char *query;
-	int i, nc=0, n=2;
+	int i, j, m, k=2, gc=0, nc=0, n=2;
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
 	char *netnames = strdup(hm->networks);	
 	char *netname = strdup(netnames);
+	
+	struct group *gps = (struct group *) malloc(sizeof(struct group));
+	char *groupnames = strdup(hm->groups);	
+	char *groupname = strdup(groupnames);
 
 	while( n>1 ) {
 		
@@ -48,13 +52,14 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 		if( strlen(netname) ) {
 
-			if( res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask FROM networks WHERE UPPER(name)=UPPER('?')",netname)) {
+			if( res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname)) {
 
 				if(res->nrows) {
 
 			    		nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
 					nets[nc].name = strdup(g->db_get_data(res,0,"name"));
 					nets[nc].domain = strdup(g->db_get_data(res,0,"domain"));
+					nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
 					nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
 					nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
 					nc++;
@@ -66,15 +71,49 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	free(netname); free(netnames);
 
 	if(!nc)
-		if( (res = g->db_query("SELECT name, domain, address, INET_ATON(mask) AS mask FROM networks"))!=NULL ) {
+		if( (res = g->db_query("SELECT name, domain, address, INET_ATON(mask) AS mask, interface FROM networks"))!=NULL ) {
 
 			for(nc=0; nc<res->nrows; nc++) {
 				
 				nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
 				nets[nc].name = strdup(g->db_get_data(res,nc,"name"));
 				nets[nc].domain = strdup(g->db_get_data(res,nc,"domain"));
+				nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
 				nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
 				nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
+			}
+			g->db_free(res);
+		}
+
+	while( k>1 ) {
+		
+		k = sscanf(groupnames, "%s %[a-zA-Z0-9- ]", groupname, groupnames);
+
+		if( strlen(groupname) ) {
+
+			if( res = g->db_pquery("SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname)) {
+
+				if(res->nrows) {
+
+			    		gps = (struct group *) realloc(gps, (sizeof(struct group) * (gc+1)));
+					gps[gc].name = strdup(g->db_get_data(res,0,"name"));
+					gps[gc].id = atoi(g->db_get_data(res,0,"id"));
+					gc++;
+				}
+	    			g->db_free(res);
+			}				
+		}
+	}
+	free(groupname); free(groupnames);
+
+	if(!gc)
+		if( (res = g->db_query("SELECT name, id FROM usergroups ORDER BY name"))!=NULL ) {
+
+			for(gc=0; gc<res->nrows; gc++) {
+				
+				gps = (struct group*) realloc(gps, (sizeof(struct group) * (gc+1)));
+				gps[gc].name = strdup(g->db_get_data(res,gc,"name"));
+				gps[gc].id = atoi(g->db_get_data(res,gc,"id"));
 			}
 			g->db_free(res);
 		}
@@ -85,30 +124,35 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		fprintf(fh, "%s", hm->prefix);
 		
 		if(hm->skip_dev_ips)
-			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, access FROM nodes WHERE ownerid<>0 ORDER BY ipaddr");
+			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, access, COALESCE(usergroupid, 0) AS groupid FROM nodes LEFT JOIN userassignments ON (ownerid=userid) WHERE ownerid<>0 ORDER BY ipaddr");
 		else
-			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, access FROM nodes ORDER BY ipaddr");
+			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, access, COALESCE(usergroupid, 0) AS groupid FROM nodes LEFT JOIN userassignments ON (ownerid=userid) ORDER BY ipaddr");
 			
 		if( (res = g->db_query(query))!=NULL ) {
 		
 			for(i=0; i<res->nrows; i++) {
 				unsigned char *mac, *ip, *access, *name;
+				int groupid;
 			
 				mac 	= g->db_get_data(res,i,"mac");
 				ip  	= g->db_get_data(res,i,"ip");
 				access 	= g->db_get_data(res,i,"access");
 				name 	= g->db_get_data(res,i,"name");
+				groupid	= atoi(g->db_get_data(res,i,"groupid"));
 
 				if(ip && mac && access) {
 					
 					unsigned long inet = inet_addr(ip);
-					int j;
 					
 					for(j=0; j<nc; j++)
 						if(nets[j].address == (inet & nets[j].mask)) 
 							break;
-					
-					if( j != nc ) {
+							
+					for(m=0; m<gc; m++)
+						if(gps[m].id == groupid) 
+							break;
+
+					if( j != nc && (m != gc || (m==gc && !strlen(hm->groups))) ) {
 
 						unsigned char *pattern, *s;
 
@@ -120,6 +164,8 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 						s = strdup(pattern);
 						g->str_replace(&s, "%domain", nets[j].domain);
 						g->str_replace(&s, "%net", nets[j].name);
+						g->str_replace(&s, "%if", nets[j].interface);
+						g->str_replace(&s, "%group", (groupid!=0 ? (char *)gps[m].name : ""));
 						g->str_replace(&s, "%i", ip);
 						g->str_replace(&s, "%m", mac);
 						g->str_replace(&s, "%n", name);
@@ -145,8 +191,14 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	for(i=0;i<nc;i++) {
 		free(nets[i].name);
 		free(nets[i].domain);	
+		free(nets[i].interface);
 	}
 	free(nets);
+	
+	for(i=0;i<gc;i++) {
+		free(gps[i].name);
+	}
+	free(gps);
 	
 	free(hm->prefix);
 	free(hm->append);
@@ -155,6 +207,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	free(hm->file);
 	free(hm->command);
 	free(hm->networks);
+	free(hm->groups);
 }
 
 struct hostfile_module * init(GLOBAL *g, MODULE *m)
@@ -191,6 +244,8 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	hm->command = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":networks");
 	hm->networks = strdup(g->iniparser_getstring(ini, s, ""));
+	free(s); s = g->str_concat(instance, ":groups");
+	hm->groups = strdup(g->iniparser_getstring(ini, s, ""));
 	
 	g->iniparser_freedict(ini);
 	free(instance);
