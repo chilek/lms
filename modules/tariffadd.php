@@ -31,48 +31,49 @@ if(isset($tariffadd))
 	foreach($tariffadd as $key => $value)
 		$tariffadd[$key] = trim($value);
 
-	if($tariffadd['name']=="" && $tariffadd['comment']=="" && $tariffadd['value']=="")
+	if($tariffadd['name']=='' && $tariffadd['comment']=='' && $tariffadd['value']=='')
 	{
 		header("Location: ?m=tarifflist");
 		die;
 	}
 
-	$tariffadd['value'] = str_replace(",",".",$tariffadd['value']);
+	$tariffadd['value'] = str_replace(',','.',$tariffadd['value']);
 
-	if(!(ereg("^[-]?[0-9.,]+$",$tariffadd['value'])))
-		$error['value'] = "Podana warto¶æ taryfy jest niepoprawna!";
+	if(!(ereg('^[-]?[0-9.,]+$',$tariffadd['value'])))
+		$error['value'] = 'Podana warto¶æ taryfy jest niepoprawna!';
 
-	if(!(ereg("^[0-9.,]+$",$tariffadd['taxvalue'])) || $tariffadd['taxvalue'] < 0 || $tariffadd['taxvalue'] > 100)
-		$error['taxvalue'] = "Podana stawka podatku jest niepoprawna!";
+	if($tariffadd['taxvalue']=='') $tariffadd['taxvalue'] = 0;
+	if(!(ereg('^[0-9.,]+$',$tariffadd['taxvalue'])) || $tariffadd['taxvalue'] < 0 || $tariffadd['taxvalue'] > 100)
+		$error['taxvalue'] = 'Podana stawka podatku jest niepoprawna!';
 
-	if(!(ereg("^[0-9]+$", $tariffadd['uprate'])) && $tariffadd['uprate'] != "")
-		$error['uprate'] = "Pole uprate musi zawieraæ liczbê ca³kowit±";
-	if($tariffadd['uprate']=="") $tariffadd['uprate']=0;
+	if(!(ereg('^[0-9]+$', $tariffadd['uprate'])) && $tariffadd['uprate'] != '')
+		$error['uprate'] = 'Pole uprate musi zawieraæ liczbê ca³kowit±';
+	if($tariffadd['uprate']=='') $tariffadd['uprate'] = 0;
 		
-	if(!ereg("^[0-9]+$", $tariffadd['downrate']) && $tariffadd['downrate'] != "")
-		$error['downrate'] = "Pole downrate zawieraæ liczbê ca³kowit±";
-	if($tariffadd['downrate']=="") $tariffadd['downrate']=0;
+	if(!ereg('^[0-9]+$', $tariffadd['downrate']) && $tariffadd['downrate'] != '')
+		$error['downrate'] = 'Pole downrate zawieraæ liczbê ca³kowit±';
+	if($tariffadd['downrate']=='') $tariffadd['downrate'] = 0;
 	
-	if(($tariffadd['uprate'] < 8 || $tariffadd['uprate'] > 4096) && $tariffadd['uprate'] != "")
-		$error['uprate'] = "Pole uprate musi zawieraæ liczbê z przedzia³u 8 - 4096";
+	if(($tariffadd['uprate'] < 8 || $tariffadd['uprate'] > 4096) && $tariffadd['uprate'] != '')
+		$error['uprate'] = 'Pole uprate musi zawieraæ liczbê z przedzia³u 8 - 4096';
 
-	if(($tariffadd['downrate'] < 8 || $tariffadd['downrate'] > 4096) && $tariffadd['downrate'] != "")
-		$error['downrate'] = "Pole downrate musi zawieraæ liczbê z przedzia³u 8 - 4096";
+	if(($tariffadd['downrate'] < 8 || $tariffadd['downrate'] > 4096) && $tariffadd['downrate'] != '')
+		$error['downrate'] = 'Pole downrate musi zawieraæ liczbê z przedzia³u 8 - 4096';
 	
-	if($tariffadd['name'] == "")
-		$error['name'] = "Musisz podaæ nazwê taryfy!";
+	if($tariffadd['name'] == '')
+		$error['name'] = 'Musisz podaæ nazwê taryfy!';
 	else
 		if($LMS->GetTariffIDByName($tariffadd['name']))
 			$error['name'] = "Istnieje ju¿ taryfa o nazwie '".$tariffadd['name']."'!";
 
 	if(!$error){
-		header("Location: ?m=tarifflist&id=".$LMS->TariffAdd($tariffadd));
+		header('Location: ?m=tarifflist&id='.$LMS->TariffAdd($tariffadd));
 		die;
 	}
 	
 }
 
-$layout['pagetitle'] = "Nowa taryfa";
+$layout['pagetitle'] = 'Nowa taryfa';
 
 $SMARTY->assign('error',$error);
 $SMARTY->assign('tariffadd',$tariffadd);
