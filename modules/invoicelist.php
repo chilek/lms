@@ -54,4 +54,5 @@ $SMARTY->assign('layout',$layout);
 $SMARTY->assign('marks',$marks);
 $SMARTY->assign('invoicelist',$invoicelist);
 $SMARTY->display('invoicelist.html');
-?><PRE><? print_r($invoicelist);
+
+?>
