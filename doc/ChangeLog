@@ -13,6 +13,7 @@ wersja 1.4.5 (??/??/????):
   - BTS#0000317: na li¶cie u¿ytkowników poprawiono wy¶wietlanie tre¶ci
     wiadomo¶ci administracyjnej (alec/WiktorRB)
   - BTS#0000320: kosmetyka tre¶ci kilku podpowiedzi (alec)
+  - poprawione info o ost. nieudanym logowaniu w admininfo (alec)
 
 wersja 1.4.4 Skaara (02/03/2005):
 

@@ -371,9 +371,9 @@ class LMS
 				$admininfo['lastlogin'] = '-';
 
 			if($admininfo['failedlogindate'])
-				$admininfo['faillogin'] = date('Y/m/d H:i',$admininfo['failedlogindate']);
+				$admininfo['failedlogin'] = date('Y/m/d H:i',$admininfo['failedlogindate']);
 			else
-				$admininfo['faillogin'] = '-';
+				$admininfo['failedlogin'] = '-';
 
 
 			if(check_ip($admininfo['lastloginip']))
@@ -385,11 +385,11 @@ class LMS
 			}
 
 			if(check_ip($admininfo['failedloginip']))
-				$admininfo['failloginhost'] = gethostbyaddr($admininfo['failedloginip']);
+				$admininfo['failedloginhost'] = gethostbyaddr($admininfo['failedloginip']);
 			else
 			{
-				$admininfo['failloginhost'] = '-';
-				$admininfo['failloginip'] = '-';
+				$admininfo['failedloginhost'] = '-';
+				$admininfo['failedloginip'] = '-';
 			}
 		}
 		return $admininfo;
