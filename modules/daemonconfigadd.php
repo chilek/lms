@@ -41,11 +41,10 @@ if($config = $_POST['config'])
 	elseif($LMS->DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($config['var'], $config['instanceid'])))
 		$error['var'] = trans('Option with specified name exists in that instance!');
 	
-	if($config['value'] == '')
-		$error['value'] = trans('Option value is required!');
-		
 	if(!$error)
 	{
+		$config['value'] = str_replace("\r\n","\n",$config['value']);
+		
 		$LMS->DB->Execute('INSERT INTO daemonconfig (var, instanceid, description, value) VALUES (?,?,?,?)',
 				    array($config['var'], 
 					    $config['instanceid'], 

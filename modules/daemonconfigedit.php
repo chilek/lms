@@ -37,14 +37,13 @@ if($configedit = $_POST['config'])
 		if($LMS->DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($configedit['var'], $config['instanceid'])))
 			$error['var'] = trans('Option with specified name exists in that instance!');
 	
-	if($configedit['value'] == '')
-		$error['value'] = trans('Option value is required!');
-	
 	if($configedit['disabled'] != 1)
 		$configedit['disabled'] = 0;
 		
 	if(!$error)
 	{
+		$configedit['value'] = str_replace("\r\n","\n", $configedit['value']);
+		
 		$LMS->DB->Execute('UPDATE daemonconfig SET var=?, description=?, value=?, disabled=? WHERE id=?',
 				    array($configedit['var'], 
 					    $configedit['description'],
