@@ -37,7 +37,7 @@ if(! $LMS->GetAdminRightsRT($SESSION->id, 0, $_GET['id']))
 }
 
 $ticket = $LMS->GetTicketContents($_GET['id']);
-$layout['pagetitle'] = 'Zg³oszenie Nr '.$ticket['ticketid'];
+$layout['pagetitle'] = 'Zg³oszenie Nr '.sprintf("%06d",$ticket['ticketid']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

@@ -76,7 +76,7 @@ if(isset($ticketedit))
 $adminlist = $LMS->GetAdminList();
 unset($adminlist['total']);	
 
-$layout['pagetitle'] = 'Edycja zg³oszenia Nr '.$ticket['ticketid'];
+$layout['pagetitle'] = 'Edycja zg³oszenia Nr '.sprintf("%06d",$ticket['ticketid']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
