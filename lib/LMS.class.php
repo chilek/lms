@@ -2977,13 +2977,15 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	{
 		$ts = time();
 		$this->DB->Execute('INSERT INTO rttickets (queueid, userid, requestor, subject, state, owner, createtime) 
-				    VALUES (?, ?, ?, ?, 0, 0, ?)', array($ticket['queueid'], $ticket['userid'], $ticket['requestor'], $ticket['subject'], $ts));
-	//	$this->DB->Execute('INSERT INTO rtmessages (ticketid, )
-	//			    VALUES ()', array());
+				    VALUES (?, ?, ?, ?, 0, 0, ?)', array($ticket['queue'], $ticket['userid'], $ticket['requestor'], $ticket['subject'], $ts));
+		// here possibly wrong way to get inserted ticket id
+		$id = $this->DB->GetOne('SELECT id FROM rttickets WHERE createtime=?', array($ts));
+		$this->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, sender, mailfrom)
+				    VALUES (?, ?, ?, ?, ?, ?)', array($id, $ts, $ticket['subject'], $ticket['body'], $ticket['userid'], $ticket['mailfrom']));
 		$this->SetTS('rttickets');	
 		$this->SetTS('rtmessages');
-		// here possibly wrong way to get inserted ticket id
-		return $this->DB->GetOne('SELECT FROM rttickets WHERE createtime=?', array($ts));
+		
+		return $id;
 	}
 
 	function GetTicketContents($id)
