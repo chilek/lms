@@ -24,22 +24,16 @@
  *  $Id$
  */
 
-require_once($_LIB_DIR.'/Sysinfo.class.php');
-@include($_LIB_DIR.'/locale/'.$_language.'/fortunes.php');
+if($_SERVER['REQUEST_METHOD'] == 'POST')
+{
+	print_r($_POST);
+}
 
-$SI = new Sysinfo;
+$layout['pagetitle'] = trans('Register your installation today! ;-)');
 
-$layout['pagetitle'] = 'LAN Management System';
+print_r($LMS->GetRegisterData());
 
-$layout['dbversion'] = $LMS->DB->GetDBVersion();
-$layout['dbtype'] = $LMS->CONFIG['database']['type'];
-
-$SMARTY->assign('updates', $LMS->CheckUpdates());
 $SMARTY->assign('regdata', $LMS->GetRegisterData());
-$SMARTY->assign('rtstats', $LMS->RTStats());
-$SMARTY->assign('sysinfo',$SI->get_sysinfo());
-$SMARTY->assign('userstats',$LMS->UserStats());
-$SMARTY->assign('nodestats',$LMS->NodeStats());
-$SMARTY->display('welcome.html');
+$SMARTY->display('register.html');
 
 ?>
