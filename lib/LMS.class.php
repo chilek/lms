@@ -86,7 +86,7 @@ class LMS
 		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 10);
 		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 15);
 		$this->AddMenu('Osprzêt sieciowy', 'netdev.gif', '?m=netdevlist', 'Ewidencja sprzêtu sieciowego', 'o', 20);
-		$this->AddMenu('Sieci IP', 'ip.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 's', 25);
+		$this->AddMenu('Sieci IP', 'network.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 's', 25);
 		$this->AddMenu('Taryfy i finanse', 'money.gif', '?m=tarifflist', 'Zarz±dzanie taryfami oraz finansami sieci', 't', 30);
 		$this->AddMenu('Mailing', 'mail.gif', '?m=mailing', 'Korespondencja seryjna', 'm', 35);
 		$this->AddMenu('Prze³adowanie', 'reload.gif', '?m=reload', '', 'r', 40);
