@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+use DBI;
+use Config::IniFiles;
+
+$|=1;
+
+my $configfile = '/etc/lms/lms.ini';
+my $redirect = 'http://lms.rulez.pl/';
+
+my $ini = new Config::IniFiles -file => $configfile;
+
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+
+while ($adres = <STDIN>) {
+    @lista = split(' ', $adres);
+    @ip = split('/', $lista[1]);
+    my $dbq = $dbase->prepare("SELECT warning FROM nodes WHERE ipaddr=INET_ATON('@ip[0]')" );
+    $dbq->execute();
+    my $row = $dbq->fetchrow_hashref();
+    if ($row->{'warning'}) {
+	if (!($lista[0] =~ m/$redirect/)) {
+	    $lista[0] = $redirect."?oldurl=".$lista[0];
+	    $adres = join(' ',@lista)."\n";
+	}
+    }
+    print $adres;
+}
+$dbase->disconnect();
