@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Upgrade</TITLE
+>Moje konto 2</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,14 +10,14 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.4-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Instalacja i konfiguracja"
-HREF="install.html"><LINK
+TITLE="Dodatki"
+HREF="contrib.html"><LINK
 REL="PREVIOUS"
-TITLE="Prawa dostêpu"
-HREF="install-rights.html"><LINK
+TITLE="Dodatki"
+HREF="contrib.html"><LINK
 REL="NEXT"
-TITLE="Interfejs U¿ytkownika (LMS-UI)"
-HREF="user.html"><LINK
+TITLE="Panel SQL"
+HREF="contrib-sqlpanel.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="style.css"><META
@@ -47,7 +47,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="install-rights.html"
+HREF="contrib.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -55,13 +55,13 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia&#322; 2. Instalacja i konfiguracja</TD
+>Rozdzia&#322; 8. Dodatki</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="user.html"
+HREF="contrib-sqlpanel.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -75,67 +75,63 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="INSTALL-UPGRADE"
->2.7. Upgrade</A
+NAME="CONTRIB-CUSTOMER2"
+>8.2. Moje konto 2</A
 ></H1
-><P
->Uaktualnienie LMS'a przebiega w dwóch etapach. Najpierw utwórz
-      katalog z plikami nowej wersji (nie zaleca siê nadpisywania starych plików
-      nowymi), nastêpnie trzeba dokonaæ zmian w bazie.</P
-><P
->Dla u³atwienia migracji danych w katalogu <TT
-CLASS="FILENAME"
->/doc</TT
->
-      przygotowano pliki <TT
-CLASS="FILENAME"
->UPGRADE-1.0-1.4.mysql</TT
-> i 
-      <TT
-CLASS="FILENAME"
->UPGRADE-1.0-1.4.pgsql</TT
-> dla przej¶cia od wersji 1.0.x do wersji 1.4.x
-      oraz <TT
-CLASS="FILENAME"
->UPGRADE-1.2-1.4.mysql</TT
-> i <TT
-CLASS="FILENAME"
->UPGRADE-1.2-1.4.pgsql
-      </TT
-> przy migracji od wersji 1.2.x (1.3.0) do bie¿±cej. W nich znajdziesz krótki
-      opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.
-      W wersjach nowszych od 1.3.0 aktualizacja bazy danych jest przeprowadzana
-      automatycznie w momencie pierwszego logowania.</P
-><P
 ><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CUSTOMER2-INTRO"
+>8.2.1. Wstêp</A
+></H2
 ><P
->W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
-      mo¿na skasowaæ odpowiedni katalog z katalogu <TT
+>W katalogu <TT
 CLASS="FILENAME"
->/lib</TT
-></P
-></TD
-></TR
-></TABLE
+>contrib/customer_otherip</TT
+> znajduje siê
+		odpowiednik <TT
+CLASS="FILENAME"
+>contrib/customer</TT
+>, który nie rozpoznaje
+		u¿ytkownika po adresie IP, ale wymaga logowania. Uwierzytelnianie odbywa siê na 
+		podstawie numeru PIN oraz telefonu u¿ytkownika, ale mo¿liwe jest tak¿e
+		wykorzystanie ID lub numeru umowy (dodatkowe pole w bazie) - patrz 
+		pliki balanceview.php i authentication.inc).</P
+><P
+>Skrypt wy¶wietla bilans i informacje o u¿ytkowniku, a tak¿e w po³±czeniu
+		z <TT
+CLASS="FILENAME"
+>contrib/formularz_przelewu_wplaty</TT
+> umo¿liwia u¿ytkownikowi
+		wydrukowanie druku wp³aty na kwotê zaleg³o¶ci.</P
 ></DIV
-></P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CUSTOMER2-INSTALL"
+>8.2.2. Instalacja</A
+></H2
+><P
+>Instalacja sprowadza siê do ustawienia opcji <TT
+CLASS="FILENAME"
+>sys_dir</TT
+>
+		w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[directories]</I
+></SPAN
+> pliku lms.ini oraz zlinkowania 
+		katalogu <TT
+CLASS="FILENAME"
+>img</TT
+> z lms'owymi ikonkami.</P
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -153,7 +149,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="install-rights.html"
+HREF="contrib.html"
 ACCESSKEY="P"
 >Poprzedni</A
 ></TD
@@ -171,7 +167,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="user.html"
+HREF="contrib-sqlpanel.html"
 ACCESSKEY="N"
 >Nast&#281;pny</A
 ></TD
@@ -181,13 +177,13 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Prawa dostêpu</TD
+>Dodatki</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
 ><A
-HREF="install.html"
+HREF="contrib.html"
 ACCESSKEY="U"
 >Pocz&#261;tek rozdzia&#322;u</A
 ></TD
@@ -195,7 +191,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Interfejs U¿ytkownika (LMS-UI)</TD
+>Panel SQL</TD
 ></TR
 ></TABLE
 ></DIV
