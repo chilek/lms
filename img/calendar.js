@@ -13,7 +13,7 @@
 // if two digit year input dates after this year considered 20 century.
 var NUM_CENTYEAR = 30;
 // is time input control required by default
-var BUL_TIMECOMPONENT = false;
+var BUL_TIMECOMPONENT = true;
 // are year scrolling buttons required by default
 var BUL_YEARSCROLL = false;
 
@@ -48,9 +48,14 @@ function calendar(obj_target) {
 function cal_popup1 (str_datetime) {
 	this.dt_current = this.prs_tsmp(str_datetime ? str_datetime : this.target.value);
 	if (!this.dt_current) return;
+	
+	if(str_datetime!=null) 
+		var dir = '../';
+	else
+		var dir = '';
 
 	var obj_calwindow = window.open(
-		'templates/calendar.html?datetime=' + this.dt_current.valueOf()+ '&id=' + this.id,
+		dir+'templates/calendar.html?datetime=' + this.dt_current.valueOf()+ '&id=' + this.id,
 		'Calendar', 'width=200,height='+(this.time_comp ? 215 : 190)+
 		',status=no,resizable=no,top=200,left=200,dependent=yes,alwaysRaised=yes'
 	);
@@ -66,17 +71,18 @@ function cal_gen_tsmp1 (dt_datetime) {
 // date generating function
 function cal_gen_date1 (dt_datetime) {
 	return (
-		(dt_datetime.getDate() < 10 ? '0' : '') + dt_datetime.getDate() + "-"
-		+ (dt_datetime.getMonth() < 9 ? '0' : '') + (dt_datetime.getMonth() + 1) + "-"
-		+ dt_datetime.getFullYear()
+		dt_datetime.getFullYear() + "/"
+		+ (dt_datetime.getMonth() < 9 ? '0' : '') + (dt_datetime.getMonth() + 1) + "/"
+		+ (dt_datetime.getDate() < 10 ? '0' : '') + dt_datetime.getDate()
 	);
 }
 // time generating function
 function cal_gen_time1 (dt_datetime) {
 	return (
 		(dt_datetime.getHours() < 10 ? '0' : '') + dt_datetime.getHours() + ":"
-		+ (dt_datetime.getMinutes() < 10 ? '0' : '') + (dt_datetime.getMinutes()) + ":"
-		+ (dt_datetime.getSeconds() < 10 ? '0' : '') + (dt_datetime.getSeconds())
+		+ (dt_datetime.getMinutes() < 10 ? '0' : '') + (dt_datetime.getMinutes()) 
+	//	+ ":"
+	//	+ (dt_datetime.getSeconds() < 10 ? '0' : '') + (dt_datetime.getSeconds())
 	);
 }
 
@@ -98,28 +104,28 @@ function cal_prs_tsmp1 (str_datetime) {
 // date parsing function
 function cal_prs_date1 (str_date) {
 
-	var arr_date = str_date.split('-');
+	var arr_date = str_date.split('/');
 
-	if (arr_date.length != 3) return cal_error ("Invalid date format: '" + str_date + "'.\nFormat accepted is dd-mm-yyyy.");
-	if (!arr_date[0]) return cal_error ("Invalid date format: '" + str_date + "'.\nNo day of month value can be found.");
-	if (!RE_NUM.exec(arr_date[0])) return cal_error ("Invalid day of month value: '" + arr_date[0] + "'.\nAllowed values are unsigned integers.");
-	if (!arr_date[1]) return cal_error ("Invalid date format: '" + str_date + "'.\nNo month value can be found.");
-	if (!RE_NUM.exec(arr_date[1])) return cal_error ("Invalid month value: '" + arr_date[1] + "'.\nAllowed values are unsigned integers.");
-	if (!arr_date[2]) return cal_error ("Invalid date format: '" + str_date + "'.\nNo year value can be found.");
-	if (!RE_NUM.exec(arr_date[2])) return cal_error ("Invalid year value: '" + arr_date[2] + "'.\nAllowed values are unsigned integers.");
+	if (arr_date.length != 3) return cal_error ("Z³y format daty: '" + str_date + "'.\nAkceptowany format to 'rrrr/mm/dd gg:mm'.");
+	if (!arr_date[0]) return cal_error ("Z³y format daty: '" + str_date + "'.\nNie podano roku.");
+	if (!RE_NUM.exec(arr_date[0])) return cal_error ("Z³y rok: '" + arr_date[0] + "'.\nDopuszczalne s± liczby ca³kowite bez znaku.");
+	if (!arr_date[1]) return cal_error ("Z³y format daty: '" + str_date + "'.\nNie podano miesi±ca.");
+	if (!RE_NUM.exec(arr_date[1])) return cal_error ("Z³y miesi±ca: '" + arr_date[1] + "'.\nDopuszczalne s± liczby ca³kowite bez znaku.");
+	if (!arr_date[2]) return cal_error ("Z³y format daty: '" + str_date + "'.\nNie dnia podano miesi±ca.");
+	if (!RE_NUM.exec(arr_date[2])) return cal_error ("Z³y dzieñ miesi±ca: '" + arr_date[2] + "'.\nDopuszczalne s± liczby ca³kowite bez znaku.");
 
 	var dt_date = new Date();
 	dt_date.setDate(1);
 
-	if (arr_date[1] < 1 || arr_date[1] > 12) return cal_error ("Invalid month value: '" + arr_date[1] + "'.\nAllowed range is 01-12.");
+	if (arr_date[1] < 1 || arr_date[1] > 12) return cal_error ("Z³y miesi±c: '" + arr_date[1] + "'.\nDopuszczalny zakres 01-12.");
 	dt_date.setMonth(arr_date[1]-1);
 	 
-	if (arr_date[2] < 100) arr_date[2] = Number(arr_date[2]) + (arr_date[2] < NUM_CENTYEAR ? 2000 : 1900);
-	dt_date.setFullYear(arr_date[2]);
+	if (arr_date[0] < 100) arr_date[0] = Number(arr_date[0]) + (arr_date[0] < NUM_CENTYEAR ? 2000 : 1900);
+	dt_date.setFullYear(arr_date[0]);
 
-	var dt_numdays = new Date(arr_date[2], arr_date[1], 0);
-	dt_date.setDate(arr_date[0]);
-	if (dt_date.getMonth() != (arr_date[1]-1)) return cal_error ("Invalid day of month value: '" + arr_date[0] + "'.\nAllowed range is 01-"+dt_numdays.getDate()+".");
+	var dt_numdays = new Date(arr_date[0], arr_date[1], 0);
+	dt_date.setDate(arr_date[2]);
+	if (dt_date.getMonth() != (arr_date[1]-1)) return cal_error ("B³êdny dzieñ miesi±ca: '" + arr_date[2] + "'.\nDopuszczalny zakres: 01-"+dt_numdays.getDate()+".");
 
 	return (dt_date)
 }
@@ -133,20 +139,20 @@ function cal_prs_time1 (str_time, dt_date) {
 	if (!arr_time[0]) dt_date.setHours(0);
 	else if (RE_NUM.exec(arr_time[0])) 
 		if (arr_time[0] < 24) dt_date.setHours(arr_time[0]);
-		else return cal_error ("Invalid hours value: '" + arr_time[0] + "'.\nAllowed range is 00-23.");
-	else return cal_error ("Invalid hours value: '" + arr_time[0] + "'.\nAllowed values are unsigned integers.");
+		else return cal_error ("B³êdna godzina: '" + arr_time[0] + "'.\nDopuszczalny zakres: 00-23.");
+	else return cal_error ("B³êdna godzina: '" + arr_time[0] + "'.\nDopuszczalne s± liczby ca³kowite bez znaku.");
 	
 	if (!arr_time[1]) dt_date.setMinutes(0);
 	else if (RE_NUM.exec(arr_time[1]))
 		if (arr_time[1] < 60) dt_date.setMinutes(arr_time[1]);
-		else return cal_error ("Invalid minutes value: '" + arr_time[1] + "'.\nAllowed range is 00-59.");
-	else return cal_error ("Invalid minutes value: '" + arr_time[1] + "'.\nAllowed values are unsigned integers.");
+		else return cal_error ("B³êdna liczba minut: '" + arr_time[1] + "'.\nDopuszczalny zakres: 00-59.");
+	else return cal_error ("B³êdna liczba minut: '" + arr_time[1] + "'.\nDopuszczalne liczby ca³kowite bez znaku.");
 
-	if (!arr_time[2]) dt_date.setSeconds(0);
-	else if (RE_NUM.exec(arr_time[2]))
-		if (arr_time[2] < 60) dt_date.setSeconds(arr_time[2]);
-		else return cal_error ("Invalid seconds value: '" + arr_time[2] + "'.\nAllowed range is 00-59.");
-	else return cal_error ("Invalid seconds value: '" + arr_time[2] + "'.\nAllowed values are unsigned integers.");
+//	if (!arr_time[2]) dt_date.setSeconds(0);
+//	else if (RE_NUM.exec(arr_time[2]))
+//		if (arr_time[2] < 60) dt_date.setSeconds(arr_time[2]);
+//		else return cal_error ("Invalid seconds value: '" + arr_time[2] + "'.\nAllowed range is 00-59.");
+//	else return cal_error ("Invalid seconds value: '" + arr_time[2] + "'.\nAllowed values are unsigned integers.");
 
 	dt_date.setMilliseconds(0);
 	return dt_date;
