@@ -33,7 +33,7 @@ class LMS {
 	var $db;
 	var $session;
 	var $_BACKUP_DIR;
-	var $_version = '1.0.62';
+	var $_version = '1.0.63';
 
 	function LMS($db,$session)
 	{
@@ -1201,6 +1201,7 @@ class LMS {
 			foreach($tarifflist[id] as $key => $value)
 			{
 				$tarifflist[users][$key] = $this->GetUsersWithTariff($value);
+				$tarifflist[value][$key] = str_replace(".",",",$tarifflist[value][$key]);
 				$tarifflist[totalusers] = $tarifflist[totalusers] + $tarifflist[users][$key];
 				$tarifflist[income][$key] = $tarifflist[users][$key] * $tarifflist[value][$key];
 				$tarifflist[totalincome] = $tarifflist[totalincome] + $tarifflist[income][$key];
@@ -1242,6 +1243,36 @@ class LMS {
 			}
 		}
 		return $admins;
+	}
+
+	function AdminUpdate($admininfo)
+	{
+		$db=$this->db;
+		return $db->ExecSQL("UPDATE `admins` SET `login` = '".$admininfo[login]."', `name` = '".$admininfo[name]."', `email` = '".$admininfo[email]."' WHERE `id` = '".$admininfo[id]."' LIMIT 1");
+	}
+
+	function GetTariffIDByName($name)
+	{
+		$db=$this->db;
+		$db->FetchRow("SELECT `id` FROM `tariffs` WHERE `name` = '".$name."' LIMIT 1");
+		return $db->row[id]; 
+	}
+
+	function TariffAdd($tariffdata)
+	{
+		$db=$this->db;
+		$db->ExecSQL("INSERT INTO `tariffs` (`name`, `description`, `value`) VALUES ('".$tariffdata[name]."', '".$tariffdata[description]."', '".$tariffdata[value]."')");
+		$db->FetchRow("SELECT max(id) AS id FROM `tariffs`");
+		return $db->row[id];
+	}
+	
+	function TariffDelete($id)
+	{
+		$db=$this->db;
+		if(!$this->GetUsersWithTariff($id))
+			return $db->ExecSQL("DELETE FROM `tariffs` WHERE `id` = '".$id."' LIMIT 1");
+		else
+			return FALSE;
 	}
 }
 ?>
