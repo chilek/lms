@@ -26,9 +26,11 @@
 
 $DB->Execute("BEGIN;
 	ALTER TABLE assignments ADD datefrom integer;
+	ALTER TABLE assignments ALTER datefrom SET DEFAULT 0;
 	UPDATE assignments SET datefrom=0;
 	ALTER TABLE assignments ALTER datefrom SET NOT NULL;
 	ALTER TABLE assignments ADD dateto integer;
+	ALTER TABLE assignments ALTER dateto SET DEFAULT 0;
 	UPDATE assignments SET dateto=0;
 	ALTER TABLE assignments ALTER dateto SET NOT NULL;
 ");
