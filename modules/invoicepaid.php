@@ -24,7 +24,12 @@
  *  $Id$
  */
 
-$invoicepaydate = $_POST['invoicepaydate'];
+if (isset($_POST['invoicepaydate']))
+	$invoicepaydate = $_POST['invoicepaydate'];
+else
+	if (isset($_POST['addbalance']['time']))
+		$invoicepaydate = $_POST['addbalance']['time'];
+
 if($invoicepaydate)
 {
         // date format 'yyyy/mm/dd hh:mm'
