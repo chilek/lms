@@ -27,24 +27,25 @@ function auto_iframe(margines)
         }
       }
    }
-   if (parent != self && document.body && (document.body.scrollWidth || document.body.offsetWidth))
-   {
+
+  if (parent != self && document.body && (document.body.scrollWidth || document.body.offsetWidth))
+  {
       var undefined;
       if (isNaN(parseInt(margines))) var margines = 0;
 
-      if (parent.document.getElementById) parent.document.getElementById('autoiframe').Width = 1;
-      else if (parent.document.all) parent.document.all['autoiframe'].Width = 1;
+//      if (parent.document.getElementById) parent.document.getElementById('autoiframe').width = 1;
+//      else if (parent.document.all) parent.document.all['autoiframe'].width = 1;
       var szerokosc = document.body.scrollWidth != undefined ? document.body.scrollWidth : document.body.offsetWidth;
       if (szerokosc)
       {
-        if (parent.document.getElementById)
+       if (parent.document.getElementById)
         {
-          parent.document.getElementById('autoiframe').Width = szerokosc + margines;
+          parent.document.getElementById('autoiframe').width = szerokosc + margines;
           parent.document.getElementById('autoiframe').scrolling = 'no';
         }
         else if (parent.document.all)
         {
-          parent.document.all['autoiframe'].Width = szerokosc + margines;
+          parent.document.all['autoiframe'].width = szerokosc + margines;
           parent.document.all['autoiframe'].scrolling = 'no';
         }
       }
