@@ -71,6 +71,7 @@ CREATE TABLE "networks" (
    "dns" varchar(16),
    "domain" varchar(64),
    "wins" varchar(16),
+   "ispublic" char(1) DEFAULT '' NOT NULL,
    "dhcpstart" varchar(16),
    "dhcpend" varchar(16)
 );
@@ -95,7 +96,16 @@ CREATE TABLE "nodes" (
 );
 CREATE  UNIQUE INDEX "nodes_id_key" ON "nodes" ("id");
 
+/* -------------------------------------------------------- 
+  Struktura tabeli dla "options" 
+-------------------------------------------------------- */
 
+DROP TABLE "options";
+CREATE TABLE "options" (
+   "option" varchar(255) DEFAULT NULL,
+   "value" varchar(255) DEFAULT NULL
+);
+    
 /* -------------------------------------------------------- 
   Struktura tabeli dla "tariffs" 
 -------------------------------------------------------- */
@@ -110,7 +120,16 @@ CREATE TABLE "tariffs" (
 );
 CREATE  UNIQUE INDEX "tariffs_id_key" ON "tariffs" ("id");
 
+/* -------------------------------------------------------- 
+  Struktura tabeli dla "tokens" 
+-------------------------------------------------------- */
 
+DROP TABLE "tokens";
+CREATE TABLE "tokens" (
+   "id" varchar(255) DEFAULT '' NOT NULL,
+   "auth" varchar(255) DEFAULT '' NOT NULL
+);
+    
 /* -------------------------------------------------------- 
   Struktura tabeli dla "timestamps" 
 -------------------------------------------------------- */
@@ -129,12 +148,16 @@ CREATE TABLE "users" (
    "id" int4 DEFAULT nextval('"users_id_seq"'::text) NOT NULL,
    "lastname" varchar,
    "name" varchar,
-   "status" char(1) DEFAULT '1' NOT NULL,
-   "email" varchar(255),
-   "phone1" varchar(255),
-   "phone2" varchar(255),
-   "phone3" varchar(255),
+   "status" char(1) DEFAULT NULL NOT NULL,
+   "email" varchar(255) DEFAULT NULL,
+   "phone1" varchar(255) DEFAULT NULL,
+   "phone2" varchar(255) DEFAULT NULL,
+   "phone3" varchar(255) DEFAULT NULL,
+   "gguin" int4 DEFAULT NULL,
    "address" varchar(255) NOT NULL,
+   "zip" varchar(6) DEFAULT NULL,
+   "city" varchar(32) DEFAULT NULL,
+   "nip" varchar(16) DEFAULT NULL, 
    "tariff" int4 DEFAULT '0' NOT NULL,
    "info" text,
    "creationdate" int4 DEFAULT '0' NOT NULL,
@@ -143,4 +166,10 @@ CREATE TABLE "users" (
    "modid" int4 DEFAULT '0' NOT NULL
 );
 CREATE  UNIQUE INDEX "users_id_key" ON "users" ("id");
+
+/* -------------------------------------------------------- 
+  Ustawienie domy¶lnego administratora
+-------------------------------------------------------- */
+
+INSERT INTO `admins` (`login`, `name`) VALUES ('admin', 'domy¶le konto administracyjne');
 
