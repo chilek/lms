@@ -13,6 +13,7 @@ version 1.5.5 (??/??/????):
     modules i.e. Mailing(), Traffic() (alec)
   - added basic (without group checking) body of check_ssn() function for 
     'en' locale (alec)
+  - contrib/formularz_przelewu_wplaty: fixed encoding (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
