@@ -13,9 +13,13 @@ $KONTO_DO="00123456781234567890123456";
 $ISP1_DO="XXXXXXXXXXXXXXXXXXXXXXXXXXX";
 $ISP2_DO="XXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
-$KWOTA=$_GET["ILE"];
-$USER_OD=$_GET["OD"];
-$USER_ID=$_GET["UID"];
+$KWOTA = $_GET['ILE'];
+$USER_OD = $_GET['OD'];
+$USER_ID = $_GET['UID'];
+
+$KWOTA_NR = str_replace(',','.',$KWOTA);  //na wszelki wypadek
+$KWOTA_ZL = to_words(floor($KWOTA_NR));
+$KWOTA_GR = to_words(($KWOTA_NR - floor($KWOTA_NR))*100);
 
 ?>
 
@@ -83,11 +87,11 @@ for ( $i=0; $i<12; $i++ ) {
 
 <?php require_once("../../lib/common.php"); ?>
 
-<span style="position: absolute; top: 203px; left: 72px; font-family: Courier, Arial, Helvetica; font-size: 8pt; font-weight: bold;"><?php echo(to_words($KWOTA));?></span>
+<span style="position: absolute; top: 203px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 8pt; font-weight: bold;"><?php echo "$KWOTA_ZL z³ $KWOTA_GR gr";?></span>
 
 <span style="position: absolute; top: 235px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 10pt; font-weight: bold;"><?php echo($USER_OD); ?></span>
 <span style="position: absolute; top: 265px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 10pt; font-weight: bold;">A</span>
-<span style="position: absolute; top: 298px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;"><?php echo($USER_ID); ?></span>
+<span style="position: absolute; top: 298px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;">Op³ata abonamentowa - ID:<?php echo($USER_ID); ?></span>
 <span style="position: absolute; top: 327px; left: 62px; font-family: Courier, Arial, Helvetica; font-size: 12pt; font-weight: bold;"></span>
 
 <span style="position: absolute; top: 527px; left: 12px; font-family: Arial, Helvetica; font-size: 12pt; font-weight: bold;">Wydrukowano przy u¿yciu LMS (http://lms.rulez.pl)</span>
