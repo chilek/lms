@@ -344,11 +344,11 @@ class LMS
 			}
 
 			if(check_ip($admininfo['failedloginip']))
-				$admininfo['failloginhost'] = gethostbyaddr($admininfo['failedloginip']);
+				$admininfo['failedloginhost'] = gethostbyaddr($admininfo['failedloginip']);
 			else
 			{
-				$admininfo['failloginhost'] = '-';
-				$admininfo['failloginip'] = '-';
+				$admininfo['failedloginhost'] = '-';
+				$admininfo['failedloginip'] = '-';
 			}
 		}
 		return $admininfo;

@@ -12,12 +12,12 @@
 			<B>{t}Login:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="frightu" NOWRAP>
-			<INPUT TYPE="TEXT" NAME="admininfo[login]" VALUE="{$admininfo.login}" {tip trigger="login"}>
+			<INPUT TYPE="TEXT" NAME="admininfo[login]" VALUE="{$admininfo.login}" {tip trigger="login" bold=1}> <B>({$admininfo.id|string_format:"%04d"})</B>
 		</TD>
 		{else}
 		<TD CLASS="fall" COLSPAN="3" NOWRAP>
 			<IMG SRC="img/pass.gif" ALT="" ALIGN="ABSMIDDLE">
-			<B>{$admininfo.login}</B>
+			<B>{$admininfo.login} ({$admininfo.id|string_format:"%04d"})</B>
 		</TD>
 		{/if}
 	</TR>
@@ -30,9 +30,9 @@
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{if $unlockedit}
-			 <B><INPUT TYPE="TEXT" NAME="admininfo[name]" VALUE="{$admininfo.name}" {tip trigger="name" bold=1}> ({$admininfo.id|string_format:"%04d"})</B>
+			 <INPUT TYPE="TEXT" NAME="admininfo[name]" VALUE="{$admininfo.name}" {tip trigger="name"}>
 			{else}
-			<B>{$admininfo.name} ({$admininfo.id|string_format:"%04d"})</B>
+			<B>{$admininfo.name}</B>
 			{/if}
 		</TD>
 	</TR>
@@ -58,7 +58,7 @@
 		<TD WIDTH="1%" CLASS="fleft"></TD>
 		<TD WIDTH="1%" NOWRAP><B>{t}Last failed login:{/t}</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
-			{$admininfo.faillogin}, {$admininfo.failedloginip} {if $admininfo.failedloginip neq $admininfo.failloginhost}({$admininfo.failloginhost}){/if}
+			{$admininfo.faillogin}, {$admininfo.failedloginip} {if $admininfo.failedloginip neq $admininfo.failedloginhost}({$admininfo.failedloginhost}){/if}
 		</TD>
 	</TR>
 	{/if}
@@ -90,5 +90,12 @@
 		</TD>
 	</TR>
 </TABLE>
-{if $unlockedit}</FORM>{/if}
+{if $unlockedit}
+</FORM>
+<SCRIPT>
+<!--
+document.forms['adminedit'].elements['admininfo[login]'].focus();
+//-->
+</SCRIPT>
+{/if}
 {include file="footer.html"}
