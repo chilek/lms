@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Squid warnings</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Extensions"
+HREF="contrib.html"><LINK
+REL="PREVIOUS"
+TITLE="SQL Panel"
+HREF="contrib-sqlpanel.html"><LINK
+REL="NEXT"
+TITLE="FAQ"
+HREF="faq.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="contrib-sqlpanel.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Extensions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="faq.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONTRIB-SQUID"
+>8.4. Squid warnings</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SQUID-REDIRECTOR-INTRO"
+>8.4.1. Intro</A
+></H2
+><P
+>This tiny set of tools allows you to display users their warning messages (and cut access to entire Web off, it needed) in very elegant way, namely using squid Proxy Server. Obviously to make this work, all users should be forced to use proxy (or transparent proxy should be setup).</P
+><P
+>Key component is redirector. It's responsible for user redirection to programmed message, when warn flag is set in database for his computers. URL to programmed message is not subject of redirection, which enables user's browser to download images. If computer has warn flag set, it's redirected to message, where he has a choice to mark this message as read. After that user is taken back to original (requested) URL. If given computer is disconnected (cutoff) it always redirects him to the message, without any possibility to "quit" to Web. For more information, please see <TT
+CLASS="FILENAME"
+>README</TT
+> file.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="SQUID-REDIRECTOR-INSTALL"
+>8.4.2. Installation</A
+></H2
+><P
+>Let's start from configuring squid (<TT
+CLASS="FILENAME"
+>squid.conf</TT
+>):
+<PRE
+CLASS="SCREEN"
+>redirector_bypass on
+redirect_program /path/to/lms-squid</PRE
+>
+		That informs squid that it should use our redirector for each URL. Next step is to configure our redirector. Open lms-squid file in your favorite editor and change this line:
+<PRE
+CLASS="SCREEN"
+>my $configfile = '/etc/lms/lms.ini';</PRE
+>
+		...to reflect location of your lms.ini file. The rest of configuration is being set in actual <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, where we should add <TT
+CLASS="FILENAME"
+>[squid-redirector]</TT
+> section and define URL of our programmed message:
+<PRE
+CLASS="SCREEN"
+>[squid-redirector]
+redirect        = http://www.ourserver.com/adminMsg/</PRE
+>
+		At last, we copy files <TT
+CLASS="FILENAME"
+>index.php, message.html</TT
+> to the directory that should serve a message to users and linking to lms images directory (<TT
+CLASS="FILENAME"
+>img</TT
+>).</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="contrib-sqlpanel.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="faq.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SQL Panel</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="contrib.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>FAQ</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

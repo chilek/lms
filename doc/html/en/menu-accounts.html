@@ -1,0 +1,388 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Accounts</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="User Interface (LMS-UI)"
+HREF="user.html"><LINK
+REL="PREVIOUS"
+TITLE="Finances"
+HREF="menu-finances.html"><LINK
+REL="NEXT"
+TITLE="Mailing"
+HREF="menu-mailing.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="menu-finances.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. User Interface (LMS-UI)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="menu-mailing.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MENU-ACCOUNTS"
+>3.8. Accounts</A
+></H1
+><P
+>It's now possible to manage accounts from your services using LMS.
+This functionality is provided for advanced system administrators, because it
+requires in-depth knowledge of services running on server in order to configure
+them to use LMS database.</P
+><P
+>You can create four types of accounts now: shell (1), email (2),
+www (4) and ftp (8). Decimal values for internal representation of those accounts
+are given in parenthesis. This approach enables to provide multi-type accounts,
+eg. if you define shell+email+ftp account it will be given number 11 in
+database. This means that for recognition of account type you should use binary
+sums in WHERE clauses of your SQL queries (few examples are written
+below).</P
+><P
+>You have also possibility to define domains and aliases.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ACCOUNTS-ACCOUNTS"
+>3.8.1. Accounts</A
+></H2
+><P
+>Account list contains basic information about your user
+accounts. It's possible to sort it by any highlighted column title and to filter
+it for given criteria. You can edit any account clicking 'Edit' icon.
+Administrator (LMS user) is also able to change account passwords.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ACCOUNTS-NEW"
+>3.8.2. New Account</A
+></H2
+><P
+>To create new account you have to provide its login, password,
+choose at least one account type and assign customer to it. Domain name is
+optional and you'll need it only if you want to support email accounts.
+Expiration date is also optional, leave it empty to make new account valid
+forever.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ACCOUNTS-ALIASES"
+>3.8.3. Aliases</A
+></H2
+><P
+>Every account (email type mainly) might have any number of
+aliases that is needed. Mail server administrator might redirect mail locally
+from all those aliases to one physical existing account. Basic information about
+alias and accompanying account is provided on the list. It's possible to sort
+this list by any highlighted column name and to filter list for given criteria.
+It's not possible to edit an alias - if it's not desirable anymore you have to
+erase (remove) it and create new if needed. Add new aliases at the bottom of the
+list.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ACCOUNTS-DOMAINS"
+>3.8.4. Domains</A
+></H2
+><P
+>You're able to see basic informations about domains on the
+list. It's possible to sort
+this list by any highlighted column name and to filter list for given criteria.
+You can edit domain data by clicking 'Edit' icon. Add new domain at the bottom
+of the list.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ACCOUNTS-EXAMPLES"
+>3.8.5. Examples</A
+></H2
+><P
+>The following section contains fragments of proftpd daemon
+configuration (version 1.2.10) relevant to process of authentication with using
+data available in LMS database. This example contains Postgres configuration and
+optional MySQL configuration in comments, followed by pound (hash) sign.
+	    <DIV
+CLASS="EXAMPLE"
+><A
+NAME="ACCOUNTS-E1"
+></A
+><P
+><B
+>Example 3-1. Accounts. Proftpd configuration.</B
+></P
+><PRE
+CLASS="SCREEN"
+>  ServerName	"LMS FTP Server"
+  
+  #dbname@host:port dbuser dbpass
+  SQLConnectInfo lms@localhost:5432 lms mypassword
+  
+  SQLAuthTypes Crypt Plaintext
+  SQLUserInfo passwd login password uid NULL home NULL
+  RequireValidShell off
+  SQLAuthenticate users
+  
+  # create user home directory if it doesn't exists yet
+  SQLHomedirOnDemand on
+  
+  # login message
+  SQLShowInfo PASS "230" "Last login: %{getlastlogin}"
+  SQLLog PASS setlastlogin
+  
+  # SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE FROM_UNIXTIME(lastlogin) END FROM passwd WHERE login='%u'"
+  # SQLNamedQuery setlastlogin UPDATE "lastlogin=UNIX_TIMESTAMP() WHERE login='%u'" passwd 
+  SQLNamedQuery getlastlogin SELECT "CASE lastlogin WHEN 0 THEN '' ELSE lastlogin::abstime::timestamp::text END FROM passwd WHERE login='%u'"
+  SQLNamedQuery setlastlogin UPDATE "lastlogin=EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)) WHERE login='%u'" passwd
+  
+  # We limit access to valid (not expired) accounts with ftp type
+  # SQLUserWhereClause "type &#38; 8 = 8 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())"
+  SQLUserWhereClause "type &#38; 8 = 8 AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))"</PRE
+></DIV
+></P
+><P
+>Next example will show us how to configure Postfix 2.1.1 mail
+server with Cyrus-SASL 2.1.19 and Courier-IMAP/POP3 3.0.4, so that they use LMS
+database. LMS accounts will be virtual, which means that they will be all
+maintained by one uid on server with mail stored in Maildir format.</P
+><P
+>You'll need to patch your SASL for encrypted passwords,
+because LMS database contains them only in this form. In comments we have
+provided MySQL specific options. Only fragments relevant to database setup are
+shown below:
+	    <DIV
+CLASS="EXAMPLE"
+><A
+NAME="ACCOUNTS-E2"
+></A
+><P
+><B
+>Example 3-2. Accounts. Mail server configuration (postfix+sasl+courier).</B
+></P
+><PRE
+CLASS="SCREEN"
+># smtpd.conf file (Cyrus-SASL):
+
+pwcheck_method: auxprop
+#sql_engine: mysql
+sql_engine: pgsql
+sql_user: lms
+sql_passwd: dbpass
+sql_hostnames: localhost
+sql_database: lms
+#sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
+#       AND login='%u' AND domains.name ='%r' AND type &#38; 2 = 2 
+#	AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
+sql_select: SELECT password FROM passwd, domains WHERE domainid = domains.id
+	AND login='%u' AND domains.name ='%r' AND type &#38; 2 = 2 
+	AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+password_format: crypt
+mech_list: login plain
+
+# authpgsqlrc (or authmysqlrc) (Courier):
+
+#MYSQL_PORT		3306
+PGSQL_PORT		5432
+#MYSQL_USERNAME		lms
+PGSQL_USERNAME		lms
+#MYSQL_PASSWORD		dbpass
+PGSQL_PASSWORD		dbpass
+#MYSQL_DATABASE		lms
+PGSQL_DATABASE		lms
+#MYSQL_SELECT_CLAUSE SELECT login, \
+#       password, '', 104, 104, '/var/spool/mail/virtual', \
+#       CONCAT(login,'/'), '', login, '' \
+#       FROM passwd, domains WHERE domainid = domains.id \
+#       AND login = '$(local_part)' AND domains.name = '$(domain)' \
+#       AND type &#38; 2 = 2 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
+PGSQL_SELECT_CLAUSE SELECT login, \
+        password, '', 104, 104, '/var/spool/mail/virtual', \
+        login ||'/', '', login, '' \
+        FROM passwd, domains WHERE domainid = domains.id 
+        AND login = '$(local_part)' AND domains.name = '$(domain)' \
+        AND type &#38; 2 = 2 \
+        AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+
+# main.cf (Postfix):
+
+virtual_mailbox_base = /var/spool/mail/virtual
+virtual_mailbox_domains = pgsql:/etc/postfix/pgsql_virtual_domains_maps.cf
+virtual_mailbox_maps = pgsql:/etc/postfix/pgsql_virtual_mailbox_maps.cf
+virtual_alias_maps = pgsql:/etc/postfix/pgsql_virtual_alias_maps.cf
+
+# pgsql_virtual_domains_maps.cf (Postfix):
+
+user = lms
+password = dbpass
+hosts = localhost
+dbname = lms
+#MySQL plugin doesn't support query option, thus we build query differently
+#select_field = name
+#table = domains
+#where_field = name
+query = SELECT name FROM domains WHERE name = '%s'
+
+# pgsql_virtual_mailbox_maps.cf (Postfix):
+
+user = lms
+password = dbpass
+hosts = localhost
+dbname = lms
+#table = passwd, domains
+#select_field = CONCAT(login,'/')
+#where_field = CONCAT(login,'@',domains.name)
+additional_conditions = AND domainid = domains.id 
+#       AND type &#38; 2 = 2 AND (expdate = 0 OR expdate &gt; UNIX_TIMESTAMP())
+query = SELECT login || '/' FROM passwd, domains WHERE domainid = domains.id
+        AND login = '%u' AND domains.name = '%d' 
+        AND type &#38; 2 = 2 
+        AND (expdate = 0 OR expdate &gt; EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0)))
+
+# pgsql_virtual_alias_maps.cf (Postfix):
+
+user = lms
+password = dbpass
+hosts = localhost
+dbname = lms
+#table = passwd, domains, aliases
+#select_field = CONCAT(passwd.login,'@',domains.name)
+#where_field = CONCAT(aliases.login,'@',domains.name)
+#additional_conditions = AND  passwd.domainid = domains.id AND passwd.id = aliases.accountid
+query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases 
+        WHERE passwd.domainid = domains.id AND passwd.id = aliases.accountid
+        AND aliases.login = '%u' AND domains.name = '%d' </PRE
+></DIV
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="menu-finances.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="menu-mailing.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Finances</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Mailing</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

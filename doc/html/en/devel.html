@@ -1,0 +1,453 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>For curious</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Modules"
+HREF="daemon-modules.html"><LINK
+REL="NEXT"
+TITLE="Database structure"
+HREF="devel-db.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="daemon-modules.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="devel-db.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="DEVEL"
+></A
+>Chapter 7. For curious</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>7.1. <A
+HREF="devel.html#DEVEL-CATALOGS"
+>Directory tree</A
+></DT
+><DT
+>7.2. <A
+HREF="devel-db.html"
+>Database structure</A
+></DT
+><DD
+><DL
+><DT
+>7.2.1. <A
+HREF="devel-db.html#ADMINS"
+>LMS users ('admins')</A
+></DT
+><DT
+>7.2.2. <A
+HREF="devel-db.html#USERS"
+>Customers ('users')</A
+></DT
+><DT
+>7.2.3. <A
+HREF="devel-db.html#USERGROUPS"
+>Customer groups ('usergroups')</A
+></DT
+><DT
+>7.2.4. <A
+HREF="devel-db.html#USERASSIGNMENTS"
+>Customer groups - continued... ('userassignments')</A
+></DT
+><DT
+>7.2.5. <A
+HREF="devel-db.html#NETWORKS"
+>Networks ('networks')</A
+></DT
+><DT
+>7.2.6. <A
+HREF="devel-db.html#NODES"
+>Computers and network devices ('nodes')</A
+></DT
+><DT
+>7.2.7. <A
+HREF="devel-db.html#NETDEVICES"
+>Network devices - continued... ('netdevices')</A
+></DT
+><DT
+>7.2.8. <A
+HREF="devel-db.html#NETLINKS"
+>Network connections ('netlinks')</A
+></DT
+><DT
+>7.2.9. <A
+HREF="devel-db.html#CASH"
+>Financial operations ('cash')</A
+></DT
+><DT
+>7.2.10. <A
+HREF="devel-db.html#TARIFFS"
+>Subscription fees ('tariffs')</A
+></DT
+><DT
+>7.2.11. <A
+HREF="devel-db.html#PAYMENTS"
+>Solid payments ('payments')</A
+></DT
+><DT
+>7.2.12. <A
+HREF="devel-db.html#ASSIGNMENTS"
+>Financial assignments ('assignments')</A
+></DT
+><DT
+>7.2.13. <A
+HREF="devel-db.html#INVOICES"
+>Invoices ('invoices')</A
+></DT
+><DT
+>7.2.14. <A
+HREF="devel-db.html#INVOICECONTENTS"
+>Invoices - continued... ('invoicecontents')</A
+></DT
+><DT
+>7.2.15. <A
+HREF="devel-db.html#PASSWD"
+>Accounts ('passwd')</A
+></DT
+><DT
+>7.2.16. <A
+HREF="devel-db.html#DOMAINS"
+>Domains ('domains')</A
+></DT
+><DT
+>7.2.17. <A
+HREF="devel-db.html#ALIASES"
+>Aliases ('aliases')</A
+></DT
+><DT
+>7.2.18. <A
+HREF="devel-db.html#TIMESTAMPS"
+>History ('timestamps')</A
+></DT
+><DT
+>7.2.19. <A
+HREF="devel-db.html#STATS"
+>Bandwidth consumption statistics ('stats')</A
+></DT
+><DT
+>7.2.20. <A
+HREF="devel-db.html#RTQUEUES"
+>Helpdesk - Request Tracking ('rtqueues')</A
+></DT
+><DT
+>7.2.21. <A
+HREF="devel-db.html#RTTICKETS"
+>Helpdesk - Request Tracking - continued... ('rttickets')</A
+></DT
+><DT
+>7.2.22. <A
+HREF="devel-db.html#RTMESSAGES"
+>Helpdesk - Request Tracking - continued... ('rtmessages')</A
+></DT
+><DT
+>7.2.23. <A
+HREF="devel-db.html#RTATTACHMENTS"
+>Helpdesk - Request Tracking - continued... ('rtattachments')</A
+></DT
+><DT
+>7.2.24. <A
+HREF="devel-db.html#RTRIGHTS"
+>Helpdesk - Request Tracking - continued... ('rtrights')</A
+></DT
+><DT
+>7.2.25. <A
+HREF="devel-db.html#UICONFIG"
+>LMS-UI Online Configuration ('uiconfig')</A
+></DT
+><DT
+>7.2.26. <A
+HREF="devel-db.html#DBINFO"
+>Database information ('dbinfo')</A
+></DT
+></DL
+></DD
+><DT
+>7.3. <A
+HREF="devel-ini.html"
+>Configuration file format</A
+></DT
+><DD
+><DL
+><DT
+>7.3.1. <A
+HREF="devel-ini.html#COMMENTS"
+>Comments</A
+></DT
+><DT
+>7.3.2. <A
+HREF="devel-ini.html#PARAMS"
+>Sections, variables, values</A
+></DT
+><DT
+>7.3.3. <A
+HREF="devel-ini.html#PERL"
+>Perl scripts variables</A
+></DT
+></DL
+></DD
+><DT
+>7.4. <A
+HREF="devel-genfake.html"
+>Filling DB with random data</A
+></DT
+><DT
+>7.5. <A
+HREF="devel-rights.html"
+>Access levels</A
+></DT
+><DT
+>7.6. <A
+HREF="devel-limits.html"
+>Restrictions</A
+></DT
+><DD
+><DL
+><DT
+>7.6.1. <A
+HREF="devel-limits.html#DEVEL-LIMITS-LMS"
+>LMS project related</A
+></DT
+><DT
+>7.6.2. <A
+HREF="devel-limits.html#DEVEL-LIMITS-DB"
+>SQL engine related</A
+></DT
+></DL
+></DD
+></DL
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DEVEL-CATALOGS"
+>7.1. Directory tree</A
+></H1
+><DIV
+CLASS="TABLE"
+><A
+NAME="CATALOG-TREE"
+></A
+><P
+><B
+>Table 7-1. LMS directory tree</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL
+WIDTH="200"
+ALIGN="CENTER"><COL
+WIDTH="300"
+ALIGN="CENTER"><THEAD
+><TR
+><TH
+>Name</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>backups</TD
+><TD
+>Backup copies of LMS database</TD
+></TR
+><TR
+><TD
+>bin</TD
+><TD
+>Executable lms-* Perl scripts</TD
+></TR
+><TR
+><TD
+>contrib</TD
+><TD
+>LMS user's contributions</TD
+></TR
+><TR
+><TD
+>daemon</TD
+><TD
+>A.L.E.C's LMS Daemon</TD
+></TR
+><TR
+><TD
+>devel</TD
+><TD
+>Developers' scripts to build LMS package</TD
+></TR
+><TR
+><TD
+>doc</TD
+><TD
+>LMS Documentation</TD
+></TR
+><TR
+><TD
+>img</TD
+><TD
+>User Interface Images</TD
+></TR
+><TR
+><TD
+>lib</TD
+><TD
+>Set of LMS and Smarty libraries</TD
+></TR
+><TR
+><TD
+>modules</TD
+><TD
+>User Interface Modules</TD
+></TR
+><TR
+><TD
+>sample</TD
+><TD
+>Sample scripts, configs and additions</TD
+></TR
+><TR
+><TD
+>templates</TD
+><TD
+>User Interface Theme</TD
+></TR
+><TR
+><TD
+>templates_c</TD
+><TD
+>Smarty Theme compilation directory</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="daemon-modules.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="devel-db.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Modules</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Database structure</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

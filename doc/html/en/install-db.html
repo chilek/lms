@@ -95,9 +95,9 @@ NAME="INSTALL-MYSQL-INTRO"
 >2.4.1.1. Intro</A
 ></H3
 ><P
->That very popular database is available with majority of Linux distributions. 
-               If however you must install it independently, begin from sources downloading 
-               from <A
+>That very popular database server is available with majority of Linux
+               distributions. If, however, you have to install it yourself, start with downloading
+               its sources from <A
 HREF="http://www.mysql.com"
 TARGET="_top"
 >www.mysql.com</A
@@ -112,7 +112,7 @@ NAME="INSTALL-MYSQL-SERVER"
 >2.4.1.2. MySQL Server Installation</A
 ></H3
 ><P
->After extracting, go to directory with MySQL and type sequence
+>After extracting, go to directory with MySQL and type this sequence
                of commands:
                <PRE
 CLASS="SCREEN"
@@ -122,7 +122,7 @@ $ make install
 $ /usr/local/mysql/bin/mysql_install_db
 $ chown mysql -R /usr/local/mysql/var
 $ /usr/local/mysql/bin/safe_mysqld &#38;
-$ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</PRE
+$ /usr/local/mysql/bin/mysqladmin -u root password new_password</PRE
 >
           </P
 ></DIV
@@ -135,17 +135,17 @@ NAME="INSTALL-MYSQL-DBCREATE"
 >2.4.1.3. Create Database</A
 ></H3
 ><P
->It is necesserily if you run LMS at the FIRST time. If you are
-               upgrading LMS from older version, appropriate notes what to do with database
-               stands in ChangeLog file. So, go to directory, in which you've got LMS and
-               run mysql's shell:
+>You have to create database if you run LMS for the first time. If you are
+               upgrading from older version, look into Changelog for appropriate notes about
+               database changes. In order to create database and load it with schema go to LMS
+               directory and run:
 <PRE
 CLASS="SCREEN"
->mysql -u[here enter user with full access rights to database] -p
-Enter password:[just enter password:)]
+>mysql -u[user name with database creation rights] -p
+Enter password:[just enter password :)]
 mysql&#62; create database lms;
 mysql&#62; grant usage on lms.* to lms@localhost;
-mysql&#62; grant select,insert,update,delete,create,alter on lms.* to lms@localhost identified by 'haslo';
+mysql&#62; grant select,insert,update,delete,create,alter on lms.* to lms@localhost identified by '[your_password]';
 mysql&#62; flush privileges;
 mysql&#62; use lms;
 mysql&#62; source doc/lms.mysql;</PRE
@@ -161,8 +161,9 @@ NAME="INSTALL-MYSQL-LMS"
 >2.4.1.4. LMS Configuration (lms.ini)</A
 ></H3
 ><P
->Because MySQL is default database for LMS, configuration is limited for
-               setting in section [database] of file /etc/lms/lms.ini password and user's name:
+>Because MySQL is default database for LMS, configuration is limited to
+               [database] section setup. Thus you need to edit /etc/lms/lms.ini and fill in password
+               and user's name:
                <PRE
 CLASS="SCREEN"
 >user     = lms
@@ -170,15 +171,13 @@ password = your_password</PRE
 >
               </P
 ><P
->After that, if LMS can establish connection to database server,
-               it is possible get to the system without problems. If in database is no 
-               such administrator account, only thing what you'll see
-               be form of administrator addition. When you enter correct admin personal
-               details, LMS will move you to login page, where at once you can
-               use newly created account.
-               </P
+>After this step you should be able to enter your system without any problems.
+               Just write an URL for your LMS installation. If there's no user account (first run),
+               you'll be prompted with form to add username and some personal data. When you enter
+               correct admin personal details LMS will move you to login page, where you can use
+               newly created account.</P
 ><P
->Let's stop here, add some stuff to cron, for peace of mind:
+>Let's stop here and add some stuff to cron, for peace of mind:
                <PRE
 CLASS="SCREEN"
 >12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=your-super-secret-password \
@@ -186,8 +185,8 @@ CLASS="SCREEN"
 >
                </P
 ><P
->That will create at 4:12 morning, every 3, 10, 17, 21 and 28 day
-               of month automagic mysql database backup.</P
+>That will create mysql database backup automagically each 3, 10, 17, 21 and 28
+               day of month at 4:12 at night.</P
 ></DIV
 ></DIV
 ><DIV
@@ -207,11 +206,10 @@ NAME="INSTALL-PGSQL-INTRO"
 >2.4.2.1. Intro</A
 ></H3
 ><P
->LMS is tested on PostgreSQL 7.3.4 and higher, but because
-               special properties of that base are not used, there will be
-               no problem with later versions. If you have not instaled PostgreSQL
-               server, best solution will be selfhand compilation from
-               sources available on <A
+>LMS is tested on PostgreSQL 7.3.4 and higher, but because none of special
+               features of the engine are ever used, there should be no problems with its later
+               versions. If you have not installed PostgreSQL server, best solution is to compile
+               it yourself from sources available on <A
 HREF="http://www.postgresql.org"
 TARGET="_top"
 >               www.postgresql.org</A
@@ -226,9 +224,9 @@ NAME="INSTALL-PGSQL-SERVER"
 >2.4.2.2. Installation</A
 ></H3
 ><P
->That is a short version of installation procedure, more info
-               can be find in postgres documentation. After download and extraction
-               go to main directory and run following commands:
+>That is a short version of installation procedure, more info can be found in
+               Postgres documentation. After you download and extract sources go to main directory
+               and run following commands:
                <PRE
 CLASS="SCREEN"
 >$ ./configure --enable-locale
@@ -253,13 +251,12 @@ NAME="INSTALL-PGSQL-DBCREATE"
 >2.4.2.3. Database Creation</A
 ></H3
 ><P
->While server is running you can enter finto creation
-               of database with name 'lms', which owner will be user with
-               login 'lms'.
+>While server is running you can start with adding database and its owner, both
+               named 'lms' and loading database schema:
                <PRE
 CLASS="SCREEN"
 >$ /usr/local/pgsql/bin/createuser -d -A -P lms
-$ /usr/local/pgsql/bin/createdb -E LATIN2 -U lms lms
+$ /usr/local/pgsql/bin/createdb -E UNICODE -U lms lms
 $ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</PRE
 >
           </P
@@ -273,13 +270,13 @@ NAME="INSTALL-PGSQL-LMS"
 >2.4.2.4. LMS Configuration (lms.ini)</A
 ></H3
 ><P
->For LMS default database server is MySQL, so in section
-               [database] of file /etc/lms/lms.ini you must set following options:
+>For LMS default database server is MySQL so you have to set following options
+               in [database] section of /etc/lms/lms.ini file:
                   <PRE
 CLASS="SCREEN"
 >type     = postgres
 user     = lms
-password = password_entered_while_user_lms_account_creation</PRE
+password = password_entered_with_lms_user_creation</PRE
 >
               </P
 ><P
@@ -302,23 +299,27 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Password's demand depends on configuration of postgres users autentication
-                      in <TT
+>The need for password actually depends
+               on Postgres users authentication configuration found in
+               <TT
 CLASS="FILENAME"
 >/usr/local/pgsql/data/pg_hba.conf</TT
->. 
-                      By default password is not required.</P
+> (refer to <A
+HREF="http://www.postgresql.org/docs/8.0/interactive/client-authentication.html#EXAMPLE-PG-HBA.CONF"
+TARGET="_top"
+>               Postgresql documentation</A
+>). By default password is not
+               required and you can comment it with semicolon.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 ></P
 ><P
->After that, if LMS connects to database, you
-               can without problems enter to the system. If in database will be not
-               administrator's account, only thing what you'll see will be
-               form of administrator's account  addition. When you enter correct data
-               LMS will move you to login page, when you can use
+>After this step you should be able to enter your system without any problems.
+               Just write an URL for your LMS installation. If there's no user account (first run),
+               you'll be prompted with form to add username and some personal data. When you enter
+               correct admin personal details LMS will move you to login page, where you can use
                newly created account.</P
 ></DIV
 ></DIV
@@ -339,15 +340,13 @@ NAME="INSTALL-SQLITE-INTRO"
 >2.4.3.1. Intro</A
 ></H3
 ><P
->This one-file database is commend for speed. Authors define
-               that it is 2-3 times faster than MySQL. Furthermore, with properly 
-               configuration it's possible to load whole database in to the RAM 
-               menory, during this the efficiency highly increases.
-               Below is short description of installation.
-               Sources can be downloaded from: <A
+>This one-file database is superior for its speed. Quoting its authors it
+               might be 2-3 times faster than MySQL, and with proper configuration it's possible
+               to load the whole data into RAM, which has high positive impact on performance.
+               Below is short description of installation. Sources can be downloaded from: <A
 HREF="http://www.sqlite.org"
 TARGET="_top"
->               www.sqlite.org</A
+> www.sqlite.org</A
 >.</P
 ></DIV
 ><DIV
@@ -359,11 +358,9 @@ NAME="INSTALL-SQLITE-SERVER"
 >2.4.3.2. Installation</A
 ></H3
 ><P
->Here You can see how to install the SQLite libraries and
-               adding this service to PHP database (in PHP 5.0 ver. have SQLite
-               built in).
-               After unpacking sources go to SQLite directory and type in
-               Commands step by step (for example):
+>Here You can see how to install the SQLite libraries and add extension to your
+               PHP installation (PHP 5.0 has SQLite built in). After you unpack the sources go to
+               SQLite directory and type in commands step by step (for example):
                <PRE
 CLASS="SCREEN"
 >$ ./configure
@@ -378,7 +375,7 @@ $ pear install SQLite-1.0.2.tgz</PRE
 CLASS="SCREEN"
 >extension=sqlite.so</PRE
 >
-               There is option to compile-in SQLite into PHP : <SAMP
+               There is an option to compile-in SQLite PHP extension: <SAMP
 CLASS="PROMPT"
 >--with-sqlite</SAMP
 >.
@@ -393,13 +390,13 @@ NAME="INSTALL-SQLITE-DBCREATE"
 >2.4.3.3. Database Creation</A
 ></H3
 ><P
->It's necessarily when You running LMS FIRST TIME!
-               Go to Yours LMS directory and run SQlite shell:
+>You will need to create your database and fill it with initial schema before
+               using LMS for the first time. Go to your LMS directory and run SQLite shell:
                <PRE
 CLASS="SCREEN"
 >$ sqlite -init doc/lms.sqlite /usr/local/lms/lms.db
 sqlite&#62; .exit
-$ chown 99.98 /usr/local/lms/lms</PRE
+$ chown 99.98 /usr/local/lms/lms.db</PRE
 >
                </P
 ></DIV
@@ -412,16 +409,16 @@ NAME="INSTALL-SQLITE-LMS"
 >2.4.3.4. LMS Configuration (lms.ini)</A
 ></H3
 ><P
->One of the SQLite limits is no authenticity of users, 
-               that's why configuration request only setting type and path to
-               the database file. In section <TT
+>One of the SQLite limitations is that it doesn't authenticate users, so the
+               only configuration options you have to setup are type and path to the database file.
+               In <TT
 CLASS="FILENAME"
 >[database]</TT
->
-               pliku <TT
+> section of <TT
 CLASS="FILENAME"
 >/etc/lms/lms.ini</TT
-> set:
+>
+               file set:
                <PRE
 CLASS="SCREEN"
 >type     = sqlite
@@ -429,9 +426,11 @@ database = /usr/local/lms/lms.db</PRE
 >
               </P
 ><P
->Now we can get in to the system. But if in Database is no 
-               user account, we will see add user account form.
-               </P
+>After this step you should be able to enter your system without any problems.
+               Just write an URL for your LMS installation. If there's no user account (first run),
+               you'll be prompted with form to add username and some personal data. When you enter
+               correct admin personal details LMS will move you to login page, where you can use
+               newly created account.</P
 ></DIV
 ></DIV
 ></DIV

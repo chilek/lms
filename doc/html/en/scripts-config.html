@@ -1,0 +1,2184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Description and configuration</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Scripts"
+HREF="scripts.html"><LINK
+REL="PREVIOUS"
+TITLE="List of available scripts"
+HREF="scripts-list.html"><LINK
+REL="NEXT"
+TITLE="Configuration file generator (lms-mgc)"
+HREF="mgc.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="scripts-list.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Scripts</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="mgc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SCRIPTS-CONFIG"
+>4.3. Description and configuration</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-NOTIFY"
+>4.3.1. lms-notify</A
+></H2
+><P
+>lms-notify is perfect tool to remind your users that they are actually the ones who
+cover all your network and WAN links costs. It makes you possible to create numerous text templates
+for various occasions and use them for mailing your users.</P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="LMS-NOTIFY-TEMPLATES"
+>4.3.1.1. Templates</A
+></H3
+><P
+>You can use following variables in your templates:</P
+><UL
+><LI
+><P
+>%date-m - will be substituted with current month in numerical form with leading zero, eg. 02</P
+></LI
+><LI
+><P
+>%date-y - will be substituted with current year, eg. 2003</P
+></LI
+><LI
+><P
+>%date_month_name - will be substituted with current month name, eg. March</P
+></LI
+><LI
+><P
+>%saldo - will be substituted with current user balance, eg. 535</P
+></LI
+><LI
+><P
+>%abonament - will be substituted with user's subscription fee, eg. 107</P
+></LI
+><LI
+><P
+>%b - user balance with opposite sign, eg. 107</P
+></LI
+><LI
+><P
+>%B - user balance with real sign, eg. -107</P
+></LI
+><LI
+><P
+>%pin - PIN code of the user</P
+></LI
+><LI
+><P
+>%phone1 - user's 1st phone number</P
+></LI
+><LI
+><P
+>%last_10_in_a_table - list of last 10 operations on user's account, eg.</P
+></LI
+></UL
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="NOTIFY-EXAMPLE"
+></A
+><P
+><B
+>Example 4-1. Lms-notify: example of last 10 user's operations</B
+></P
+><PRE
+CLASS="SCREEN"
+>Date       | Description                                          | Amount
+-----------+------------------------------------------------------+---------
+2003-02-02 | Subscription for month 2003/02                       |  107.00
+2003-02-01 | Payment                                              | -107.00
+2003-02-01 | Subscription for month 2003/02                       |  107.00
+2003-02-01 | Payment                                              | -321.00
+2003-01-31 | Subscription for month 2003/01                       |  107.00
+2003-01-31 | Subscription for month 2003/01                       |  107.00
+2003-01-31 | Subscription for month 2003/01                       |  107.00
+-----------+------------------------------------------------------+---------</PRE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="NOTIFY-TEMPLATE"
+></A
+><P
+><B
+>Example 4-2. Lms-notify: example of mailing template</B
+></P
+><PRE
+CLASS="SCREEN"
+>NOTE: This message has been generated automatically.
+
+We kindly remind that you have debt on your internet service provide account 
+for the amount of $ %B.
+
+If you have already regulated your subscription fees for current month, that
+is %date-m %date-y, please just skip this message.
+
+If you think this message was sent to you in error, please contact our
+customer service representative.
+
+All information about payments could be also found at:
+http://bigpro.com/myAccount/
+
+If you want to regulate your account status, please contact our accountant:
+
+Aldfert Rule
+phone: 0-509031337
+e-mail: alde@staff.bigpro.com
+
+Garmund Cooper
+phone: 0-606666666
+e-mail: gcooper@free.bigpro.com
+
+PS. Last 10 operations on your account has been attached below for your
+convenience.
+
+%last_10_in_a_table
+
+--
+Big and Professional Internet Provider, BigPro ISP
+http://www.bigpro.com/</PRE
+></DIV
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="LMS-NOTIFY-CONFIG"
+>4.3.1.2. Configuration</A
+></H3
+><P
+>Configuration of lms-notify should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[notify]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>limit (optional)</P
+><P
+>Lets you setup limit of user debt. Email will be sent below that value. Default: limit = 0</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>limit = -20</SAMP
+></P
+></LI
+><LI
+><P
+>mailsubject (mandatory)</P
+><P
+>Lets you setup subject of email sent. You can use following templates, with meanings identical to those set in email template: %B, %b, %date-y, %date-m, %last_10_in_a_table. Default: not set.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>mailsubject = Debt information</SAMP
+></P
+></LI
+><LI
+><P
+>mailtemplate (mandatory)</P
+><P
+>Lets you setup mail template which will be sent. Default: not set.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>mailtemplate = /etc/lms/notifytemplate.txt</SAMP
+></P
+></LI
+><LI
+><P
+>mailfrom</P
+><P
+>Lets you setup email of the sender. Default: not set.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>mailfrom = staff@bigpro.com</SAMP
+></P
+></LI
+><LI
+><P
+>mailfname</P
+><P
+>Sender name</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>mailfname = Administrators</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_server</P
+><P
+>SMTP server to be used when sending emails. Default: 127.0.0.1</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_server = smtp.bigpro.com</SAMP
+></P
+></LI
+><LI
+><P
+>debug_email (optional)</P
+><P
+>Email address for debugging. All email will be sent to this address instead of sending to real users. Default: not set.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>debug_email = lexx@domain.pl</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-NOTIFY-SMS"
+>4.3.2. lms-notify-sms</A
+></H2
+><P
+>lms-notify-sms is similar to lms-notify, but it's intended to
+send reminders via SMS. You need Nokia cellphone and gnokii software (<A
+HREF="http://www.gnokii.org"
+TARGET="_top"
+>www.gnokii.org</A
+>) for this script to
+work.</P
+><P
+>Configuration of lms-notify-sms should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[notify-sms]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>limit (optional)</P
+><P
+>Lets you setup limit of user debt. SMS will be sent below that value. Default: 0</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>limit = -20</SAMP
+></P
+></LI
+><LI
+><P
+>smstemplate (mandatory)</P
+><P
+>Message template. Default: not set.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smstemplate = /etc/lms/smstemplate.txt</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-CUTOFF"
+>4.3.3. lms-cutoff</A
+></H2
+><P
+>This script allows to cutoff (actually mark as cutoff in
+database and cutting off should be performed by one of firewall rules creation
+script) users whose debt is below some defined value.</P
+><P
+>Configuration of lms-cutoff should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[cutoff]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>limit (optional)</P
+><P
+>Lets you setup limit of user debt. User will be marked as disconnected below that value. Default: 0</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>limit = -20</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-PAYMENTS"
+>4.3.4. lms-payments</A
+></H2
+><P
+>This script is being used to calculate and account subscription
+and solid (fixed) fees. It also accounts your company liabilities and makes
+invoices. You should allow it to run daily if you want it to make it work done
+well.</P
+><P
+>This scripts may be configured with two options related to
+invoices in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[payments]</I
+></SPAN
+> section of
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file:</P
+><UL
+><LI
+><P
+>deadline (optional)</P
+><P
+>Payment deadline in days. Default: 14</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>deadline = 7</SAMP
+></P
+></LI
+><LI
+><P
+>paytype (optional)</P
+><P
+>Type of payment. Default: 'TRANSFER'</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>paytype = 'CASH'</SAMP
+></P
+></LI
+></UL
+><P
+>Script has also one useful command line parameter: <SAMP
+CLASS="PROMPT"
+>--fakedate</SAMP
+>
+         (<SAMP
+CLASS="PROMPT"
+>-f</SAMP
+>). With this option you can make that script will execute
+         with system date (in format YYYY/MM/DD) other that current, eg.
+         <SAMP
+CLASS="PROMPT"
+>--fakedate=2004/10/10</SAMP
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-TRAFFIC"
+>4.3.5. lms-traffic</A
+></H2
+><P
+>This script is an interface between your application and LMS
+database and is intended to gather bandwidth usage statistics. You should
+provide number of bytes received and sent by each computer, which will be
+stored in LMS DB next to computer id and current timestamp. It's up to you how
+often this configuration will be refreshed, just remember to set your
+application to refresh its data in similar interval. Best sources of data are
+iptables or ipchains. You can also use external program, eg. ipfm.</P
+><P
+>Browsing gathered statistics with several filtering capabilities is
+available in LMS-UI in main menu, menu 'Statistics'.
+    </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="LMS-TRAFFIC-CONFIG"
+>4.3.5.1. Installation</A
+></H3
+><P
+>Before you can run lms-traffic you need to create data file
+which will be read in. Format of the file should be as follows:</P
+><PRE
+CLASS="SCREEN"
+>&lt;IP_address&gt; &lt;n_of_spaces&gt; &lt;upload_bytes&gt; &lt;n_of_spaces&gt; &lt;download_bytes&gt;
+&lt;IP_address&gt; &lt;n_of_spaces&gt; &lt;upload_bytes&gt; &lt;n_of_spaces&gt; &lt;download_bytes&gt;
+...</PRE
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Example script utilizing iptables might be found
+in <TT
+CLASS="FILENAME"
+>sample/traffic_ipt.sh</TT
+> file.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>Next you should install lms-traffic script and your custom
+script into crontab. Among standard options you can use define location with
+created data file.
+	    <PRE
+CLASS="SCREEN"
+>-f=/file 	location and name of data file, default: /var/log/traffic.log</PRE
+>
+	    <DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/warning.gif"
+HSPACE="5"
+ALT="Warning"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Frequency checks should be set not higher than 10
+minutes, due that each execution will write new database record for each
+computer. Thus, statistics database might grow fast and it might take longer
+to generate desired statistics.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	    </P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-TRAFFIC-LOGIPTABLES"
+>4.3.6. lms-traffic-logiptables</A
+></H2
+><P
+>This script uses iptables to gather received and sent data
+statistics for each computer. Data is being read from firewall rules, which
+are created on-the-fly. Thus, you are not responsible for setting appropriate
+rules or running custom statistics collector (eg.
+<TT
+CLASS="FILENAME"
+>lms-traffic</TT
+>).
+	</P
+><P
+>Configuration of lms-traffic-logiptables should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[traffic-logiptables]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>outfile</P
+><P
+>Location of file with iptables rules. Default: /etc/rc.d/rc.stat</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>outfile = /etc/rc.d/rc.stat</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary</P
+><P
+>Location of iptables binary. Default: /usr/sbin/iptables</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>wan_interfaces</P
+><P
+>Interface(s) name(s) that should be considered.  Default: not defined.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>wan_interfaces = eth0</SAMP
+></P
+></LI
+><LI
+><P
+>local_ports</P
+><P
+>List of source/destination ports for packet counting. Default: not defined.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>local_ports = 80</SAMP
+></P
+></LI
+><LI
+><P
+>script_owneruid</P
+><P
+>UID of 'outfile' script owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>script_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_ownergid</P
+><P
+>GID of 'outfile' script owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>script_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_permission</P
+><P
+>Permissions of 'outfile' script. Default: 700 (rwx------).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>script_permission = 700</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEDHCPCONF"
+>4.3.7. lms-makedhcpconf</A
+></H2
+><P
+>This module creates DHCP configuration script - dhcpd.conf.</P
+><P
+>Configuration of lms-makedhcpconf should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[dhcp]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>config_file</P
+><P
+>Output file location. Default: /etc/dhcpd.conf</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_file = /tmp/dhcpd.conf</SAMP
+></P
+></LI
+><LI
+><P
+>networks </P
+><P
+>List of (space separated) networks, that should be
+considered while creating configuration file. If unset, configuration will
+include all networks.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups</P
+><P
+>List of (space separated) user groups, that should be
+considered while creating configuration file. If unset, configuration will
+include all user groups.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>usergroups = group1 group2</SAMP
+></P
+></LI
+><LI
+><P
+>default_lease_time</P
+><P
+>Default lease time. Default: 86400.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>default_lease_time = 43200</SAMP
+></P
+></LI
+><LI
+><P
+>max_lease_time</P
+><P
+>Maximal lease time. Default: 86400.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>max_lease_time = 43200</SAMP
+></P
+></LI
+><LI
+><P
+>ignore_ddns</P
+><P
+>Dont put 'ddns-update-style none;' on beginning of
+file. Useful for older (2.2) versions of DHCP. Default: Off.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>ignore_ddns = 1</SAMP
+></P
+></LI
+><LI
+><P
+>log_facility</P
+><P
+>Logging options for DHCP daemon. Default is applied
+if not specified.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>log_facility = 7</SAMP
+></P
+></LI
+><LI
+><P
+>script_owneruid</P
+><P
+>UID of 'config_file' config owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>script_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_ownergid</P
+><P
+>GID of 'config_file' config owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>script_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_permission</P
+><P
+>Permissions of 'config_file' file. Default: 600 (rwx------).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>script_permission = 700</SAMP
+></P
+></LI
+></UL
+><P
+>You can setup leases time on per-host basis by creating
+<SAMP
+CLASS="PROMPT"
+>[dhcp:network_name]</SAMP
+> section (in lowercase), eg.
+<PRE
+CLASS="SCREEN"
+>[dhcp:public-custa] # network name, must be lowercase!!!
+default_lease_time = 3600
+max_lease_time     = 3600</PRE
+>
+
+You can also specify gateway, dns servers, domains name and wins server for
+individual host by creating <SAMP
+CLASS="PROMPT"
+>[dhcp:ip_address]</SAMP
+> section, eg.
+<PRE
+CLASS="SCREEN"
+>[dhcp:213.25.209.216]
+domain  = anotherdomain.com
+gateway = 213.25.209.251
+dns     = 213.25.209.8
+wins    = 213.25.209.10</PRE
+>
+	</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEIPTABLES"
+>4.3.8. lms-makeiptables, lms-makeipchains</A
+></H2
+><P
+>This pair of script is being used to generate files with firewall 
+rules inside. You can prepend this file with previously written header (ie.
+containing network-wide rules or NAT rules) and set some fixed permissions to
+it. Those scripts does not run generated files.</P
+><P
+>Configuration of those scripts should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[iptables]</I
+></SPAN
+> or
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[ipchains]</I
+></SPAN
+> section.  Following parameters are valid:</P
+><UL
+><LI
+><P
+>networks </P
+><P
+>List of (space separated) networks, that should be
+considered while creating configuration file. If unset, configuration will
+include all networks.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary (ipchains_binary)</P
+><P
+>Location of iptables (ipchains) binary. Default: /usr/sbin/iptables (/usr/sbin/ipchains)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>script_file</P
+><P
+>Output file with rules. Default: /etc/rc.d/rc.masq</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>script_file = /etc/rc.d/rc.firewall</SAMP
+></P
+></LI
+><LI
+><P
+>pre_script</P
+><P
+>File appended after cleaning existing rules and before
+adding new. Default: undefined.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>pre_script = /etc/rc.d/rc.masq-pre</SAMP
+></P
+></LI
+><LI
+><P
+>post_script</P
+><P
+>File appended after adding rules. Default: undefined.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>post_script = /etc/rc.d/rc.masq-post</SAMP
+></P
+></LI
+><LI
+><P
+>forward_to</P
+><P
+>List of networks for which NAT should be set. Possible
+values: "" - full forward, "any string" - forward off, "net1 net2" - forward
+active for selected networks. Default: full forward.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>forward_to = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>script_owneruid</P
+><P
+>UID of file owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>script_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_ownergid</P
+><P
+>GID of file owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>script_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_permission</P
+><P
+>Permissions for the file. Default: 700 (rwx------).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>script_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>snat_address</P
+><P
+>SNAT public address. If unset, for hosts with private
+addresses assigned "-j MASQUERADE" rule will be used. If set "-j SNAT --to
+123.123.123.123" (with your IP here) will be used. Only with lms-makeiptables.
+Default: not set.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>snat_address = 123.123.123.123</SAMP
+></P
+></LI
+><LI
+><P
+>tcp_redirect_ports (udp_redirect_ports)</P
+><P
+>List of port forwardings in source_port:dest_port
+format. Can be used to map ports of your firewalled machines to the ones on your
+router. Only with lms-makeipchains. Default: not set.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>tcp_redirect_ports = 80:3128 25:25</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-ETHERDESC"
+>4.3.9. lms-etherdesc</A
+></H2
+><P
+>This script is intended to create file including MAC and IP
+address pairs from LMS DB. MACs are being fetched in 'stripped' format, such is,
+without colon separators. This type of file might be used with
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>iptraf</I
+></SPAN
+> tools.</P
+><P
+>Configuration of lms-etherdesc should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[ethers]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>networks </P
+><P
+>List of (space separated) networks, that should be
+considered while creating configuration file. If unset, configuration will
+include all networks.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>etherdesc_owneruid</P
+><P
+>UID of file owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>etherdesc_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>etherdesc_file</P
+><P
+>File location. Default: /var/lib/iptraf/ethernet.desc.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>etherdesc_file = /etc/ethernet.desc</SAMP
+></P
+></LI
+><LI
+><P
+>etherdesc_ownergid</P
+><P
+>GID of file owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>etherdesc_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>etherdesc_permission</P
+><P
+>Permissions for the file. Default: 600 (rw-------).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>etherdesc_permission = 600</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-SENDINVOICES"
+>4.3.10. lms-sendinvoices</A
+></H2
+><P
+>This script make you possible to automatically send invoices by
+email, as email attachments. Invoices are being created in accordance to
+template used in LMS-UI, thus, you need to provide username and password to
+interface for this module to work.</P
+><P
+>This module, unlike the others, needs some extra Perl modules to
+work: Data::Dumper, LWP::UserAgent and MIME::Entity.</P
+><P
+>Configuration of lms-sendinvoices should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[sendinvoices]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>lms_url</P
+><P
+>URL for your LMS installation. Default: http://localhost/lms/</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>lms_url = http://lms.mynet.pl</SAMP
+></P
+></LI
+><LI
+><P
+>lms_user</P
+><P
+>LMS user login name. Default: empty</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>lms_user = admin</SAMP
+></P
+></LI
+><LI
+><P
+>lms_password</P
+><P
+>LMS user password. Default: empty</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>lms_password = my_secret</SAMP
+></P
+></LI
+><LI
+><P
+>debug_email</P
+><P
+>Email address to test (mail will be redirected here).
+Default: undefined.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>debug_email = admin@mynet.pl</SAMP
+></P
+></LI
+><LI
+><P
+>sender_name</P
+><P
+>Email sender name. Default: undefined.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>sender_name = ASK MyNet</SAMP
+></P
+></LI
+><LI
+><P
+>sender_email</P
+><P
+>Email sender address. Default: undefined.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>sender_email = admin@mynet.pl</SAMP
+></P
+></LI
+><LI
+><P
+>tmp_dir</P
+><P
+>Temp dir location. If unset, should be read from 'TMP'
+environment variable, '/tmp' otherwise.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>tmp_dir = /home/user/tmp</SAMP
+></P
+></LI
+></UL
+><P
+>Script has also one useful command line parameter: <SAMP
+CLASS="PROMPT"
+>--fakedate</SAMP
+> 
+	 (<SAMP
+CLASS="PROMPT"
+>-f</SAMP
+>). With this option you can make that script will execute 
+	 with system date (in format YYYY/MM/DD) other that current, eg. 
+	 <SAMP
+CLASS="PROMPT"
+>--fakedate=2004/10/10</SAMP
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEMACS"
+>4.3.11. lms-makemacs</A
+></H2
+><P
+>This script is capable of making netfilter rules to filter
+traffic based on MAC address of the sender. For each computer one rule for
+configured chain is created, which makes test on sender IP and MAC addresses. If
+it returns success, it returns to parent chain with RETURN target. On the end of
+tests two rules are appended, which redirects all http and webcache traffic to
+given host and port. This is intended to inform user about his debt, by running
+specialized server on this host:port which returns administration message to
+each request. At last, the rule which blocks all traffic is added.
+	    </P
+><P
+>Configuration of lms-makemacs should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[macs]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>networks </P
+><P
+>List of (space separated) networks, that should be
+considered while creating configuration file. If unset, configuration will
+include all networks.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups </P
+><P
+>List of (space separated) user groups0, that should be
+considered while creating configuration file. If unset, configuration will
+include all groups.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>usergroups = settlement1 settlement2</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary</P
+><P
+>Location of iptables binary. Default: /sbin/iptables</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>config_owneruid</P
+><P
+>UID of file owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_file</P
+><P
+>Location of the output file. Default: /etc/rc.d/rc.macs</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_file = /etc/conf.d/rc.macs</SAMP
+></P
+></LI
+><LI
+><P
+>config_ownergid</P
+><P
+>GID of file owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_permission</P
+><P
+>Permissions of the file. Default: 700 (rwx------).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>chain</P
+><P
+>Chain name to use (if non-standard, it will be
+created). Default: MACS.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>chain = CHECKMAC</SAMP
+></P
+></LI
+><LI
+><P
+>redirect_address</P
+><P
+>Address and port, where unmatched traffic for http and
+webcache will be redirected, in address:port format. Default: 127.0.0.1:80.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>redirect_address = 192.168.1.1:3000</SAMP
+></P
+></LI
+><LI
+><P
+>lock_noaccess</P
+><P
+>Should RETURN rule be used for disconnected (cutoff)
+nodes. Default: 0 (rules are being generated)</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>lock_noaccess = 1</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEHOSTS"
+>4.3.12. lms-makehosts</A
+></H2
+><P
+>This script generates /etc/hosts file, with IP address to name
+mappings.
+	    </P
+><P
+>Configuration of lms-makehosts should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[hosts]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>networks </P
+><P
+>List of (space separated) networks, that should be
+considered while creating configuration file. If unset, configuration will
+include all networks.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups </P
+><P
+>List of (space separated) user groups, that should be
+considered while creating configuration file. If unset, configuration will
+include all groups.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>usergroups = settlement1 settlement2</SAMP
+></P
+></LI
+><LI
+><P
+>config_owneruid</P
+><P
+>UID of file owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_file</P
+><P
+>Location of the file. Default: /etc/hosts.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_file = /etc/hosts</SAMP
+></P
+></LI
+><LI
+><P
+>config_ownergid</P
+><P
+>GID of file owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_permission</P
+><P
+>Permissions of the file. Default: 644 (rw-r--r--).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_permission = 600</SAMP
+></P
+></LI
+><LI
+><P
+>config_header</P
+><P
+>First line in /etc/hosts. Default: 127.0.0.1 localhost localhost.localdomain.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_header = 192.168.1.1 ourserver ourserver.ournetwork</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEWARNINGS"
+>4.3.13. lms-makewarnings</A
+></H2
+><P
+>This script may be used to create file including netfiler
+rules redirecting http and webcache traffic to configured IP and port, for users
+in debt. It uses nat table, tests source IPs and makes use of DNAT target.
+	    </P
+><P
+>Configuration of lms-makewarnings should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[warnings]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>networks </P
+><P
+>List of (space separated) networks, that should be
+considered while creating configuration file. If unset, configuration will
+include all networks.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups </P
+><P
+>List of (space separated) user groups, that should be
+considered while creating configuration file. If unset, configuration will
+include all groups.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>usergroups = settlement1 settlement2</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary</P
+><P
+>Location of iptables binary. Default: /sbin/iptables</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>config_owneruid</P
+><P
+>UID of file owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_file</P
+><P
+>Location of the file. Default: /etc/rc.d/rc.warnings.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_file = /etc/conf.d/rc.warnings</SAMP
+></P
+></LI
+><LI
+><P
+>config_ownergid</P
+><P
+>GID of file owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_permission</P
+><P
+>Permissions of the file. Default: 700 (rwx------).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>chain</P
+><P
+>Custom chain to which rules will be added. Default:
+WARNINGS.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>chain = WARN</SAMP
+></P
+></LI
+><LI
+><P
+>redirect_address</P
+><P
+>IP address and port, to which all http and webcache
+traffic will be redirected, for hosts to which warning was enabled in LMS-UI.
+Default: 127.0.0.1:80.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>redirect_address = 192.168.1.1:3001</SAMP
+></P
+></LI
+><LI
+><P
+>limit</P
+><P
+>Rules are being triggered if user balance is below
+this limit. Default: 0 </P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>limit = -85</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEMESSAGES"
+>4.3.14. lms-makemessages</A
+></H2
+><P
+>This script is being used to create file with netfilter rules
+to redirect all http and webcache traffic for users, who has administration
+messages enabled (aka warnings) to configured IP address and port. It uses nat
+table, tests source IPs and makes use of DNAT target.
+	    </P
+><P
+>Configuration of lms-makemessages should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[messages]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>networks </P
+><P
+>List of (space separated) networks, that should be
+considered while creating configuration file. If unset, configuration will
+include all networks.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups </P
+><P
+>List of (space separated) user groups, that should be
+considered while creating configuration file. If unset, configuration will
+include all groups.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>usergroups = settlement1 settlement2</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary</P
+><P
+>Location of iptables binary. Default: /sbin/iptables</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>config_owneruid</P
+><P
+>UID of file owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_file</P
+><P
+>Location of the file. Default: /etc/rc.d/rc.messages.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_file = /etc/conf.d/rc.messages</SAMP
+></P
+></LI
+><LI
+><P
+>config_ownergid</P
+><P
+>GID of file owner. Default: 0 (root).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_permission</P
+><P
+>Permissions of the file. Default: 700 (rwx------).</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>config_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>chain</P
+><P
+>Custom chain to which rules will be added. Default: MESSAGES.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>chain = MESG</SAMP
+></P
+></LI
+><LI
+><P
+>redirect_address</P
+><P
+>IP address and port, to which all http and webcache
+traffic will be redirected, for hosts to which warning was enabled in LMS-UI.
+Default: 127.0.0.1:80.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>redirect_address = 192.168.1.1:3002</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-FPING"
+>4.3.15. lms-fping</A
+></H2
+><P
+>This script probes nodes activity and writes its status to
+database. Fast program fping is being used to scan, with "-ar1" parameters.
+First, list of nodes is prepares, and then fping is executed. For returned hosts
+date and time will be stored into DB, so availability can be visualized in
+interface.</P
+><P
+>Configuration of lms-fping should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[fping]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>networks </P
+><P
+>List of (space separated) networks, that should be
+considered while creating configuration file. If unset, configuration will
+include all networks.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>fping_binary</P
+><P
+>Location of fping binary. Default: /usr/sbin/fping</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>fping_binary = /usr/local/sbin/fping</SAMP
+></P
+></LI
+><LI
+><P
+>temp_file</P
+><P
+>Location of temporary file, where list of hosts for
+fping will be stored. After script execution, this file is removed. Default: /tmp/fping_hosts.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>temp_file = /tmp/hosts</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-RTPARSER"
+>4.3.16. lms-rtparser</A
+></H2
+><P
+>This script is a backend to Helpdesk system, which should be
+integrated into your mail server configuration. It intercepts emails sent to
+queue (as defined in email address field of queue configuration), parses its
+content and puts ticket into database, confirming this operation in email to
+reporter. In subject of confirmation ticket ID will be placed. If email with
+this ID is received again, it will be placed in existing ticket history,
+otherwise new ticket number will be created. Any files in the message will be
+detached and stored in directory defined with <TT
+CLASS="FILENAME"
+>mail_dir</TT
+>
+option.</P
+><P
+>Unlike other Perl modules, this one additionally requires:
+<TT
+CLASS="FILENAME"
+>MIME::Parser</TT
+> and <TT
+CLASS="FILENAME"
+>MIME::Words</TT
+> from
+MIME-Tools package along with <TT
+CLASS="FILENAME"
+>Net::SMTP</TT
+> and
+<TT
+CLASS="FILENAME"
+>Text::Iconv</TT
+>.</P
+><P
+>This script might be installed in several ways. One way is to
+create shell script which reads content of users' mailboxes and calls
+lms-rtparser for each mail (can be done with formail). But more elegant, faster
+and convenient method is to integrate it with your mail server. Below you can
+find example on how to setup Postfix using header_checks.
+<PRE
+CLASS="SCREEN"
+># main.cf file:
+header_checks = regexp:/etc/postfix/header_checks
+
+# header_checks file:
+/^To:.*address@domain.*/ FILTER filter:dummy
+
+# master.cf file:
+filter unix - n n - 10 pipe
+      -flags=Rq user=nobody argv=/path/to/lms-rtparser</PRE
+>
+            Above method is valid for Postfix version equal or newer than 2.0.
+Earlier versions doesn't support FILTER in header_checks. You can work around
+this by using procmail:
+<PRE
+CLASS="SCREEN"
+># main.cf file:
+mailbox_command = /usr/bin/procmail
+
+# in user directory (for whom mails should be routed via helpdesk);
+# .forward file:
+"|IFS=' ' &#38;&#38; exec /usr/bin/procmail -f - || exit 75 #YOUR_USERNAME"
+
+# .procmailrc file:
+:0 c
+   * ^To.*address@domain
+   | /bin/lms-rtparser
+
+:0 A
+$DEFAULT</PRE
+></P
+><P
+>Next example shows how to connect parser to Exim, using system
+filter:
+<PRE
+CLASS="SCREEN"
+># exim.conf file:
+
+system_filter_pipe_transport = address_pipe
+
+# system_filter.txt file:
+
+if $recipients is "queue_email@domena.pl"
+then 
+     pipe "/path/to/lms-rtparser -q queue id"
+endif</PRE
+></P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Messages create in <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>lms-ui</I
+></SPAN
+> may
+be directed to parser, instead of just being written to database. If you prefer
+this behavior turn on <TT
+CLASS="FILENAME"
+>helpdesk_backend_mode</TT
+> option in
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[phpui]</I
+></SPAN
+> section of <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>
+file.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>Configuration of lms-rtparser should be set in
+<TT
+CLASS="FILENAME"
+>lms.ini</TT
+> file, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[rt]</I
+></SPAN
+> section.
+Following parameters are valid:</P
+><UL
+><LI
+><P
+>default_queue</P
+><P
+>ID of the queue, to which requests should be sent if
+		    not specified on command line. If not set queue will be guessed according to
+		    recipient address. Command line -q will override this option. Default:
+		    undefined.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>default_queue = </SAMP
+></P
+></LI
+><LI
+><P
+>mail_from</P
+><P
+>Sender address for confirmations. If undefined, queue
+		    address will be used, to which ticket was assigned. Default: empty.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>mail_from = rt@net.pl</SAMP
+></P
+></LI
+><LI
+><P
+>mail_from_name</P
+><P
+>Sender name for confirmations. Default:
+		    undefined.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>mail_from_name = 'BOK SuperLAN'</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_server</P
+><P
+>SMTP server to be used for sending emails. Default:
+		    localhost.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>smtp_server = smtp.bigpro.com</SAMP
+></P
+></LI
+><LI
+><P
+>mail_dir</P
+><P
+>Directory where attachments should be saved. This
+		    directory will be accessed for read/write both by rtparser user and your Web
+		    Server user. If undefined attachments won't be recorded. Default:
+		    undefined.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>mail_dir = /usr/local/lms/mail</SAMP
+></P
+></LI
+><LI
+><P
+>tmp_dir</P
+><P
+>Temp directory. By default it will be taken from
+		    environment or set to <TT
+CLASS="FILENAME"
+>/tmp</TT
+>.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>tmp_dir = /home/user/tmp</SAMP
+></P
+></LI
+><LI
+><P
+>auto_open</P
+><P
+>This will force reopening closed/dead ticket if
+		    request is sent to it's ID. Default: Off.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>auto_open = 1</SAMP
+></P
+></LI
+><LI
+><P
+>newticket_notify</P
+><P
+>If enabled script will send notification about new ticket
+		    to all users with rights for current queue. Default: Off.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>newticket_notify = 1</SAMP
+></P
+></LI
+><LI
+><P
+>lms_url</P
+><P
+>In notification about new ticket is appended link to this ticket
+		    in UI. Default: http://localhost/lms/.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>lms_url = https://lms.domain.pl/</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="scripts-list.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="mgc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>List of available scripts</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="scripts.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Configuration file generator (lms-mgc)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

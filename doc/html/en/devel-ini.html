@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Configuration file format</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="For curious"
+HREF="devel.html"><LINK
+REL="PREVIOUS"
+TITLE="Database structure"
+HREF="devel-db.html"><LINK
+REL="NEXT"
+TITLE="Filling DB with random data"
+HREF="devel-genfake.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="devel-db.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. For curious</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="devel-genfake.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DEVEL-INI"
+>7.3. Configuration file format</A
+></H1
+><P
+>Configuration file default location is <TT
+CLASS="FILENAME"
+>/etc/lms/lms.ini</TT
+>. It's intended to be central configuration for all LMS components and you can setup your <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+>, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+> daemon and Perl scripts (including <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS_MGC</I
+></SPAN
+>) parameters here. However variable format for Perl scripts is more restricted.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="COMMENTS"
+>7.3.1. Comments</A
+></H2
+><P
+>Configuration file parsers skip all lines that begin with '#' or ';' sign. You can also append comments to the end of the lines containing valid variables and sections , followed by that signs. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PARAMS"
+>7.3.2. Sections, variables, values</A
+></H2
+><P
+>Configuration options are grouped in sections. Name of the section, which is build with alphanumerical signs must be enclosed in square brackets. Their name should be unique in the span of configuration file.</P
+><P
+>Sections and parameters should be placed one per line. Parameter consists of key (variable name) and value (variable content). Key is name of configuration parameter, built from alphanumerical signs. Value should be placed in the same line, after equality sign. If it contains any special characters it should be placed into quotes or apostrophes.</P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="CONFIG-FORMAT"
+></A
+><P
+><B
+>Example 7-1. Format of configuration options</B
+></P
+><PRE
+CLASS="SCREEN"
+>[section]
+key =  value
+variable1 = "some text"
+para_meter = 'i am "para_meter" variable in apostrophes'
+
+[section_1]				# you can comment here
+key = "text with specials: \t and ;"	; you can comment here either
+; and this is comment all line long
+key = "A.L.E.C's LMS Daemon is the best"
+# option = disabled</PRE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PERL"
+>7.3.3. Perl scripts variables</A
+></H2
+><P
+>Configuration for use by Perl scripts is someway restricted, due to restrictions of Config::IniFiles module which parses configuration file. Comments must be placed in new lines only. Values shouldn't be enclosed into apostrophes or quotes and are being read from equality sign since the end of line. </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="devel-db.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="devel-genfake.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Database structure</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="devel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Filling DB with random data</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Restrictions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="For curious"
+HREF="devel.html"><LINK
+REL="PREVIOUS"
+TITLE="Access levels"
+HREF="devel-rights.html"><LINK
+REL="NEXT"
+TITLE="Extensions"
+HREF="contrib.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="devel-rights.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. For curious</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="contrib.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DEVEL-LIMITS"
+>7.6. Restrictions</A
+></H1
+><P
+>Each system has its restrictions. Some of ours are inherited from SQL engine being used. Some from assumptions (nearly) knowingly made by developers. Those are current restrictions:</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DEVEL-LIMITS-LMS"
+>7.6.1. LMS project related</A
+></H2
+><P
+>Number of cash (in 'cash' table) is stored (since lms-1.1) as 32 integer value, so if you have 5000 users you might have problems in 8 years or so.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DEVEL-LIMITS-DB"
+>7.6.2. SQL engine related</A
+></H2
+><UL
+><LI
+><P
+>MySQL</P
+><UL
+><LI
+><P
+>Database size:</P
+><P
+>Following MySQL documentation ("How Big Can MySQL Tables Be?" in chapter "Table size"), MySQL 3.22 is restricted 4GB per table. Since 3.23 restriction is 8 million terabytes (2^63 bytes). It's worth to mention, however, that some systems have filesystem level, usually at 2 or 4 GB.</P
+></LI
+><LI
+><P
+>Number of records:</P
+><P
+>True informations can be obtained, by issuing (in mysql shell):</P
+><PRE
+CLASS="SCREEN"
+>mysql&gt; show table status;
+
+...| Avg_row_length | Data_length | Max_data_length | Index_length |
+...|             44 |       24136 |      4294967295 |        19456 |</PRE
+><P
+>See that free space is about 175 000 time more than currently used, so until you plan to have 100000 users, you're pretty safe in this matter :-)</P
+></LI
+></UL
+></LI
+><LI
+><P
+>PostgreSQL</P
+><UL
+><LI
+><P
+>Database size:</P
+><P
+>PostgreSQL stores data in 8kB blocks. Number of blocks in bound to 32-bit number with sign, which gives maximum table size of 16 terabytes. Filesystem restrictions are avoided by keeping data in slices, 1GB each.</P
+></LI
+><LI
+><P
+>Number of records:</P
+><P
+>PostgreSQL does not have row number limit for tables, however COUNT returns 32-bit number, so for tables longer that 2 billions of records this function will return wrong value (at least in version 7.1).</P
+></LI
+></UL
+></LI
+><LI
+><P
+>SQLite</P
+><UL
+><LI
+><P
+>Database size:</P
+><P
+>Since 2.7.4 SQLite can support 2 terabytes big databases. Additionally it can store up to 1MB (or 16MB - defined at compilation time) in one record.</P
+></LI
+><LI
+><P
+>Number of records:</P
+><P
+>Maximum number of records is 2^32, although it has been never tested.</P
+></LI
+></UL
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="devel-rights.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="contrib.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Access levels</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="devel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Extensions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

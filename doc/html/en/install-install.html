@@ -79,17 +79,17 @@ NAME="INSTALL-INSTALL"
 >2.3. LMS Installation</A
 ></H1
 ><P
->LMS in the form of tar.gz archive can be downloaded from project 
+>LMS in tarball (.tar.gz) archive can be downloaded from project 
           home page (<A
-HREF="http://www.lms.rulez.pl"
+HREF="http://lms.rulez.pl"
 TARGET="_top"
->www.lms.rulez.pl</A
+>lms.rulez.pl</A
 >),
-          afterd that should be extracted and placed in chosen directory (i.e. <TT
+          which should be extracted and placed in chosen directory (i.e. <TT
 CLASS="FILENAME"
->/var/www/lms
-          </TT
->) available for server www:
+>/var/www/lms</TT
+>) 
+          and made available for Web Server (ie. with Alias /lms/ /var/www/lms):
 <PRE
 CLASS="SCREEN"
 >$ cd /var/www
@@ -98,16 +98,16 @@ $ tar zxf lms-x.x.x.tar.gz</PRE
 >
           </P
 ><P
->Two kind of LMS packets are available - including Smarty library
+>Two kind of LMS packets are available - the one with Smarty library included
           (<TT
 CLASS="FILENAME"
 >lms-x.x.x+libs.tar.gz</TT
->) and without that library.
-          If you haven't got package with libraries, you must get and placed them
-          in directory <TT
+>) and without this library. If you have
+          installed version without library you have to get Smarty yourself (eg. using PEAR) and
+          place it in <TT
 CLASS="FILENAME"
 >lib</TT
->.
+> subdirectory.
 <PRE
 CLASS="SCREEN"
 >$ cd /var/www/lms/lib
@@ -136,44 +136,46 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Placement of all directories can be set in section
+>Location of all directories can be set in
           <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[directories]</I
 ></SPAN
-> in file <TT
+> section in <TT
 CLASS="FILENAME"
 >lms.ini</TT
->.</P
+> configuration
+          file.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 ></P
 ><P
->Files with configuration (<TT
+>Configuration files (<TT
 CLASS="FILENAME"
 >sample/lms.ini</TT
-> and <TT
+>
+          and <TT
 CLASS="FILENAME"
->          sample/lms-mgc.ini</TT
->) place in directory <TT
+> sample/lms-mgc.ini</TT
+>) should be placed in
+          <TT
 CLASS="FILENAME"
 >/etc/lms</TT
->.
-          </P
+> directory. </P
 ><P
->Exec scripts from directory <TT
+>Scripts from <TT
 CLASS="FILENAME"
 >bin</TT
-> 
-          is preferably to move to directory <TT
+> directory should be moved to
+          <TT
 CLASS="FILENAME"
 >/usr/sbin</TT
->.
-          </P
+> directory, so you can execute it directly without giving
+          path. </P
 ><P
 ><DIV
 CLASS="WARNING"
@@ -194,15 +196,22 @@ ALT="Warning"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Server www must have reading rights on file <TT
+>Web Server must have read permission on <TT
 CLASS="FILENAME"
 >lms.ini</TT
 >
-          and writing rights on directory <TT
+          file and write permission on <TT
 CLASS="FILENAME"
 >backup</TT
->. 
-          It makes potential drop of system security level.</P
+> directory. Please
+          consider security implications: you might want to protect backup directory with
+          <TT
+CLASS="FILENAME"
+>.htaccess</TT
+> and place your lms.ini outside Web Server's DocumentRoot
+          (LMS allows you to place it in its home directory, but then it's possible to read it
+          with http://yourserver/lms.ini, and it contains valuable information such as database
+          password!).</P
 ></TD
 ></TR
 ></TABLE

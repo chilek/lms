@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Upgrade</TITLE
+>Examples of use</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,14 +10,14 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.5-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Installation and configuration"
-HREF="install.html"><LINK
+TITLE="Configuration file generator (lms-mgc)"
+HREF="mgc.html"><LINK
 REL="PREVIOUS"
-TITLE="Access rights"
-HREF="install-rights.html"><LINK
+TITLE="Configuration"
+HREF="mgc-config.html"><LINK
 REL="NEXT"
-TITLE="Invoices"
-HREF="install-invoices.html"><LINK
+TITLE="A.L.E.C's LMS Daemon"
+HREF="daemon.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -47,7 +47,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="install-rights.html"
+HREF="mgc-config.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -55,13 +55,13 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 2. Installation and configuration</TD
+>Chapter 5. Configuration file generator (lms-mgc)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="install-invoices.html"
+HREF="daemon.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,19 +75,51 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="INSTALL-UPGRADE"
->2.7. Upgrade</A
+NAME="MGC-EXAMPLE"
+>5.3. Examples of use</A
 ></H1
 ><P
->Since version 1.5.4 LMS was released in polish language only. If you are upgrading
-      read polish documentation for upgrade description. In newest versions upgrade is very easy.
-      That process has two stages. First, overwrite old files with new ones and remove contents of
-      <TT
+>Konfiguracja i zasada dzia³ania lms-mgc mo¿e siê wydawaæ do¶æ zawi³a, dlatego
+	pos³u¿ymy siê przyk³adem. Poni¿ej przedstawiono sposób generowania i uruchamiania firewalla
+	ipchains (bardzo prostego).</P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="INSTANCE-EXAMPLE"
+></A
+><P
+><B
+>Example 5-1. Lms-mgc: Example instance</B
+></P
+><P
+>Zacznij od utworzenia nowej sekcji mgc w <TT
 CLASS="FILENAME"
->templates_c</TT
-> directory (or better create new LMS directory tree). Second
-      stage is a database structure change - it's self-executing process acting upon first login to
-      the UI.</P
+>lms-mgc.ini</TT
+>, 
+	nazywaj±c j± 'ipchains' i stwórz w tej sekcji prost± maskaradê per adres IP z lanu:
+	<PRE
+CLASS="SCREEN"
+>[mgc:ipchains]
+outfile           = /etc/rc.d/rc.masq
+outfile_perm      = 700
+header            = #!/bin/sh\n/sbin/ipchains -F\n/sbin/ipchains -X\n/sbin/ipchains -P forward DENY
+grantednode_priv  = /sbin/ipchains -A forward -s %IP -j MASQ
+post_exec         = /etc/rc.d/rc.masq</PRE
+>
+	Dopiszmy tak¿e do sekcji g³ównej mgc informacjê ¿eby mgc uruchamia³ t± sekcjê:
+	<PRE
+CLASS="SCREEN"
+>[mgc]
+instances         = ipchains</PRE
+>
+	</P
+><P
+>Teraz próba odpalenia lms-mgc powinna zaowocowaæ wygenerowaniem
+	<TT
+CLASS="FILENAME"
+>/etc/rc.d/rc.masq</TT
+>, oraz jego odpaleniem.</P
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -105,7 +137,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="install-rights.html"
+HREF="mgc-config.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -123,7 +155,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="install-invoices.html"
+HREF="daemon.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -133,13 +165,13 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Access rights</TD
+>Configuration</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
 ><A
-HREF="install.html"
+HREF="mgc.html"
 ACCESSKEY="U"
 >Up</A
 ></TD
@@ -147,7 +179,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Invoices</TD
+>A.L.E.C's LMS Daemon</TD
 ></TR
 ></TABLE
 ></DIV

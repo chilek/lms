@@ -1,0 +1,1332 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Database structure</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="For curious"
+HREF="devel.html"><LINK
+REL="PREVIOUS"
+TITLE="For curious"
+HREF="devel.html"><LINK
+REL="NEXT"
+TITLE="Configuration file format"
+HREF="devel-ini.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="devel.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. For curious</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="devel-ini.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="DEVEL-DB"
+>7.2. Database structure</A
+></H1
+><P
+>Simple database layout is provided below. For more details (data types, fields restrictions and default values) please refer to <A
+HREF="../lms.mysql"
+TARGET="_top"
+><TT
+CLASS="FILENAME"
+>lms.mysql</TT
+></A
+>, <A
+HREF="../lms.pgsql"
+TARGET="_top"
+><TT
+CLASS="FILENAME"
+>lms.pgsql</TT
+></A
+> and <A
+HREF="../lms.sqlite"
+TARGET="_top"
+><TT
+CLASS="FILENAME"
+>lms.sqlite</TT
+></A
+> in <TT
+CLASS="FILENAME"
+>doc/</TT
+> directory.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ADMINS"
+>7.2.1. LMS users ('admins')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>login - login</TD
+></TR
+><TR
+><TD
+>name - first and last name</TD
+></TR
+><TR
+><TD
+>email - user's email address</TD
+></TR
+><TR
+><TD
+>rights - binary access rights</TD
+></TR
+><TR
+><TD
+>passwd - password to login</TD
+></TR
+><TR
+><TD
+>lastlogindate - date of last login</TD
+></TR
+><TR
+><TD
+>lastloginip - IP of last login</TD
+></TR
+><TR
+><TD
+>failedlogindate - date of last failed login attempt</TD
+></TR
+><TR
+><TD
+>failedloginip - IP of last failed login attempt</TD
+></TR
+><TR
+><TD
+>deleted - if is deleted boolean (0/1)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USERS"
+>7.2.2. Customers ('users')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>lastname - last/company name</TD
+></TR
+><TR
+><TD
+>name - first name</TD
+></TR
+><TR
+><TD
+>status - customer status (3-connected, 2-awaiting, 1-prospect)</TD
+></TR
+><TR
+><TD
+>email - email address</TD
+></TR
+><TR
+><TD
+>phone1 - phone</TD
+></TR
+><TR
+><TD
+>phone2 - phone</TD
+></TR
+><TR
+><TD
+>phone3 - phone</TD
+></TR
+><TR
+><TD
+>gguin - internet (gadu-gadu) messenger serial number</TD
+></TR
+><TR
+><TD
+>pin - pin number (for authentication)</TD
+></TR
+><TR
+><TD
+>address - street address (street, apartment, flat, etc)</TD
+></TR
+><TR
+><TD
+>zip - zip code</TD
+></TR
+><TR
+><TD
+>city - location (city)</TD
+></TR
+><TR
+><TD
+>nip - tax exempt number</TD
+></TR
+><TR
+><TD
+>pesel - social security number</TD
+></TR
+><TR
+><TD
+>info - additional informations</TD
+></TR
+><TR
+><TD
+>serviceaddr - correspondence address</TD
+></TR
+><TR
+><TD
+>creationdate - record creation date</TD
+></TR
+><TR
+><TD
+>moddate - record modification date</TD
+></TR
+><TR
+><TD
+>creatorid - serial of LMS user who created this record</TD
+></TR
+><TR
+><TD
+>modid - serial of LMS user last modification this record</TD
+></TR
+><TR
+><TD
+>deleted - if is deleted from database boolean (0/1)</TD
+></TR
+><TR
+><TD
+>message - message to be displayed if warnings enabled</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USERGROUPS"
+>7.2.3. Customer groups ('usergroups')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>name - group name</TD
+></TR
+><TR
+><TD
+>description - group description</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USERASSIGNMENTS"
+>7.2.4. Customer groups - continued... ('userassignments')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>usergroupid - group serial number</TD
+></TR
+><TR
+><TD
+>userid - customer serial number</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NETWORKS"
+>7.2.5. Networks ('networks')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>name - network name</TD
+></TR
+><TR
+><TD
+>address - IP address</TD
+></TR
+><TR
+><TD
+>mask - network mask</TD
+></TR
+><TR
+><TD
+>interface - network interface (eg. eth1)</TD
+></TR
+><TR
+><TD
+>gateway - gateway IP address</TD
+></TR
+><TR
+><TD
+>dns - IP address of dns server</TD
+></TR
+><TR
+><TD
+>dns2 - IP address of secondary dns server</TD
+></TR
+><TR
+><TD
+>domain - domain of the network</TD
+></TR
+><TR
+><TD
+>wins - WINS server address</TD
+></TR
+><TR
+><TD
+>dhcpstart - first address of dynamic DHCP range</TD
+></TR
+><TR
+><TD
+>dhcpend - last address of dynamic DHCP range</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NODES"
+>7.2.6. Computers and network devices ('nodes')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>name - device name</TD
+></TR
+><TR
+><TD
+>mac - MAC address</TD
+></TR
+><TR
+><TD
+>ipaddr - IP address</TD
+></TR
+><TR
+><TD
+>ownerid - serial number of the owner ('0' if network device)</TD
+></TR
+><TR
+><TD
+>creationdate - creation timestamp</TD
+></TR
+><TR
+><TD
+>moddate - last modification timestamp</TD
+></TR
+><TR
+><TD
+>creatorid - creator's serial number</TD
+></TR
+><TR
+><TD
+>modid - modifier's serial number</TD
+></TR
+><TR
+><TD
+>netdev - serial number of connected network device</TD
+></TR
+><TR
+><TD
+>linktype - type of connection (0-cable, 1-wireless)</TD
+></TR
+><TR
+><TD
+>access - connected/disconnected (cutoff) (1/0)</TD
+></TR
+><TR
+><TD
+>warning - should be warned with administration message? (1/0)</TD
+></TR
+><TR
+><TD
+>lastonline - last network activity timestamp</TD
+></TR
+><TR
+><TD
+>info - additional information</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NETDEVICES"
+>7.2.7. Network devices - continued... ('netdevices')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>name - name</TD
+></TR
+><TR
+><TD
+>location - physical location</TD
+></TR
+><TR
+><TD
+>description - device summary</TD
+></TR
+><TR
+><TD
+>producer - manufacturer's name</TD
+></TR
+><TR
+><TD
+>model - model number</TD
+></TR
+><TR
+><TD
+>serialnumber - products serial number (not DB identifier)</TD
+></TR
+><TR
+><TD
+>ports - number of connections available</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="NETLINKS"
+>7.2.8. Network connections ('netlinks')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>src - connection's beginning</TD
+></TR
+><TR
+><TD
+>dst- connection's end</TD
+></TR
+><TR
+><TD
+>type - type of connection (0-cable, 1-wireless)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CASH"
+>7.2.9. Financial operations ('cash')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>time - timestamp of operation</TD
+></TR
+><TR
+><TD
+>adminid - LMS user id</TD
+></TR
+><TR
+><TD
+>type - type of operation (income, expenditure, payment, debt)</TD
+></TR
+><TR
+><TD
+>value - amount in dollars</TD
+></TR
+><TR
+><TD
+>taxvalue - tax rate in percent</TD
+></TR
+><TR
+><TD
+>userid - customer's serial number ('0' - does not apply)</TD
+></TR
+><TR
+><TD
+>invoiceid - serial number for invoice related to this operation</TD
+></TR
+><TR
+><TD
+>comment - description of operation</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="TARIFFS"
+>7.2.10. Subscription fees ('tariffs')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>name - subscription name</TD
+></TR
+><TR
+><TD
+>value - amount</TD
+></TR
+><TR
+><TD
+>taxvalue - tax rate in percent</TD
+></TR
+><TR
+><TD
+>pkwiu - product/service classification number</TD
+></TR
+><TR
+><TD
+>uprate - upload warranty</TD
+></TR
+><TR
+><TD
+>upceil - upload boundary</TD
+></TR
+><TR
+><TD
+>downrate - download warranty</TD
+></TR
+><TR
+><TD
+>downceil - download boundary</TD
+></TR
+><TR
+><TD
+>climit - limit of concurrent connections</TD
+></TR
+><TR
+><TD
+>plimit - limit of packets per second</TD
+></TR
+><TR
+><TD
+>description - description for subscription</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PAYMENTS"
+>7.2.11. Solid payments ('payments')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>name - name</TD
+></TR
+><TR
+><TD
+>value - amount</TD
+></TR
+><TR
+><TD
+>creditor - creditor name</TD
+></TR
+><TR
+><TD
+>period - interval of operation: weekly/monthly/quarterly/annually (0/1/2/3)</TD
+></TR
+><TR
+><TD
+>at - pay day</TD
+></TR
+><TR
+><TD
+>description - description for payment</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ASSIGNMENTS"
+>7.2.12. Financial assignments ('assignments')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>tariffid - subscription serial number</TD
+></TR
+><TR
+><TD
+>userid - customer serial number</TD
+></TR
+><TR
+><TD
+>period - interval of operation: weekly/monthly/quarterly/annually (0/1/2/3)</TD
+></TR
+><TR
+><TD
+>at - pay day</TD
+></TR
+><TR
+><TD
+>datefrom - start date for assignment</TD
+></TR
+><TR
+><TD
+>dateto - end date for assignment</TD
+></TR
+><TR
+><TD
+>invoice - invoice writeout? (1 - yes, 0 - no)</TD
+></TR
+><TR
+><TD
+>suspended - is this payment suspended? (1 - yes, 0 - no)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INVOICES"
+>7.2.13. Invoices ('invoices')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>number - number in year</TD
+></TR
+><TR
+><TD
+>cdate - date of write out</TD
+></TR
+><TR
+><TD
+>paytime - deadline in days</TD
+></TR
+><TR
+><TD
+>paytype - payment method (cash/transfer/etc.)</TD
+></TR
+><TR
+><TD
+>customerid - customer (buyer) serial number</TD
+></TR
+><TR
+><TD
+>name - name of buyer</TD
+></TR
+><TR
+><TD
+>address - address of buyer</TD
+></TR
+><TR
+><TD
+>nip - SSN of buyer</TD
+></TR
+><TR
+><TD
+>pesel - ID (passport number) of buyer</TD
+></TR
+><TR
+><TD
+>zip - zip code of buyer</TD
+></TR
+><TR
+><TD
+>phone - phone of buyer</TD
+></TR
+><TR
+><TD
+>city - location of buyer</TD
+></TR
+><TR
+><TD
+>finished - is this invoice complete? (0/1)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INVOICECONTENTS"
+>7.2.14. Invoices - continued... ('invoicecontents')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>invoiceid - invoice serial number</TD
+></TR
+><TR
+><TD
+>value - amount</TD
+></TR
+><TR
+><TD
+>taxvalue - tax rate in percent</TD
+></TR
+><TR
+><TD
+>pkwiu - product/service classification number</TD
+></TR
+><TR
+><TD
+>content - used unit (usually 'pc.')</TD
+></TR
+><TR
+><TD
+>count - unit count</TD
+></TR
+><TR
+><TD
+>description - description for invoice</TD
+></TR
+><TR
+><TD
+>tariffid - subscription serial number</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PASSWD"
+>7.2.15. Accounts ('passwd')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>ownerid - customer serial number (0 - "system" account)</TD
+></TR
+><TR
+><TD
+>login - login name</TD
+></TR
+><TR
+><TD
+>password - md5 encrypted password</TD
+></TR
+><TR
+><TD
+>lastlogin - last login date</TD
+></TR
+><TR
+><TD
+>uid - account system UID (usually ownerid+200)</TD
+></TR
+><TR
+><TD
+>home - account home directory (/home/[login])</TD
+></TR
+><TR
+><TD
+>type - account type (binary sum: 1-shell, 2-email, 4-www, 8-ftp)</TD
+></TR
+><TR
+><TD
+>expdate - account expire date</TD
+></TR
+><TR
+><TD
+>domainid - domain serial number</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DOMAINS"
+>7.2.16. Domains ('domains')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>name - domain name</TD
+></TR
+><TR
+><TD
+>description - comments</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ALIASES"
+>7.2.17. Aliases ('aliases')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>login - account name (without domain)</TD
+></TR
+><TR
+><TD
+>accountid - account serial number</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="TIMESTAMPS"
+>7.2.18. History ('timestamps')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>time - last modified timestamp</TD
+></TR
+><TR
+><TD
+>tablename - name of modified table</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="STATS"
+>7.2.19. Bandwidth consumption statistics ('stats')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>nodeid - node serial number</TD
+></TR
+><TR
+><TD
+>dt - timestamp</TD
+></TR
+><TR
+><TD
+>upload - number of bytes sent</TD
+></TR
+><TR
+><TD
+>download - number of bytes received</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RTQUEUES"
+>7.2.20. Helpdesk - Request Tracking ('rtqueues')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>name - queue name</TD
+></TR
+><TR
+><TD
+>email - email account for the queue</TD
+></TR
+><TR
+><TD
+>description - main description for the queue</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RTTICKETS"
+>7.2.21. Helpdesk - Request Tracking - continued... ('rttickets')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>queueid - queue serial number</TD
+></TR
+><TR
+><TD
+>requestor - reporter name and email</TD
+></TR
+><TR
+><TD
+>userid - customer serial number (if reported by customer)</TD
+></TR
+><TR
+><TD
+>subject - ticket name)</TD
+></TR
+><TR
+><TD
+>state - status (0-new, 1-open, 2-resolved, 3-dead)</TD
+></TR
+><TR
+><TD
+>owner - LMS user serial number (ticket owner)</TD
+></TR
+><TR
+><TD
+>createtime - timestamp of report</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RTMESSAGES"
+>7.2.22. Helpdesk - Request Tracking - continued... ('rtmessages')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>ticketid - ticket serial number</TD
+></TR
+><TR
+><TD
+>adminid - LMS user serial number (if ticket sender)</TD
+></TR
+><TR
+><TD
+>userid - customer serial number (if ticket sender)</TD
+></TR
+><TR
+><TD
+>mailfrom - sender email</TD
+></TR
+><TR
+><TD
+>subject - message subject</TD
+></TR
+><TR
+><TD
+>messageid - Message-ID message header</TD
+></TR
+><TR
+><TD
+>inreplyto - thread serial number (if threaded)</TD
+></TR
+><TR
+><TD
+>replyto - Reply-To message header</TD
+></TR
+><TR
+><TD
+>headers - all message headers</TD
+></TR
+><TR
+><TD
+>body - content of message body</TD
+></TR
+><TR
+><TD
+>createtime - date of creation/send/delivery </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RTATTACHMENTS"
+>7.2.23. Helpdesk - Request Tracking - continued... ('rtattachments')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>messageid - message serial number</TD
+></TR
+><TR
+><TD
+>filename - name of file attachment</TD
+></TR
+><TR
+><TD
+>contenttype - type of file</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RTRIGHTS"
+>7.2.24. Helpdesk - Request Tracking - continued... ('rtrights')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>queueid - queue serial number </TD
+></TR
+><TR
+><TD
+>adminid - LMS user serial number</TD
+></TR
+><TR
+><TD
+>rights - permissions (1-read, 2-write)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="UICONFIG"
+>7.2.25. LMS-UI Online Configuration ('uiconfig')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - serial number</TD
+></TR
+><TR
+><TD
+>section - config section name</TD
+></TR
+><TR
+><TD
+>var - config variable name</TD
+></TR
+><TR
+><TD
+>value - config variable value</TD
+></TR
+><TR
+><TD
+>description - option description or comment</TD
+></TR
+><TR
+><TD
+>disabled - is option disabled? (0-active, 1-disabled/default)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DBINFO"
+>7.2.26. Database information ('dbinfo')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>keytype - type</TD
+></TR
+><TR
+><TD
+>keyvalue - value</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="devel.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="devel-ini.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>For curious</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="devel.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Configuration file format</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,278 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Extensions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Restrictions"
+HREF="devel-limits.html"><LINK
+REL="NEXT"
+TITLE="Customer account 2"
+HREF="contrib-customer2.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="devel-limits.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="contrib-customer2.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CONTRIB"
+></A
+>Chapter 8. Extensions</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>8.1. <A
+HREF="contrib.html#CONTRIB-CUSTOMER"
+>Customer account</A
+></DT
+><DD
+><DL
+><DT
+>8.1.1. <A
+HREF="contrib.html#CUSTOMER-INTRO"
+>Intro</A
+></DT
+><DT
+>8.1.2. <A
+HREF="contrib.html#CUSTOMER-INSTALL"
+>Installation</A
+></DT
+></DL
+></DD
+><DT
+>8.2. <A
+HREF="contrib-customer2.html"
+>Customer account 2</A
+></DT
+><DD
+><DL
+><DT
+>8.2.1. <A
+HREF="contrib-customer2.html#CUSTOMER2-INTRO"
+>Intro</A
+></DT
+><DT
+>8.2.2. <A
+HREF="contrib-customer2.html#CUSTOMER2-INSTALL"
+>Installation</A
+></DT
+></DL
+></DD
+><DT
+>8.3. <A
+HREF="contrib-sqlpanel.html"
+>SQL Panel</A
+></DT
+><DD
+><DL
+><DT
+>8.3.1. <A
+HREF="contrib-sqlpanel.html#SQLPANEL-INTRO"
+>Intro</A
+></DT
+><DT
+>8.3.2. <A
+HREF="contrib-sqlpanel.html#SQLPANEL-INSTALL"
+>Installation</A
+></DT
+></DL
+></DD
+><DT
+>8.4. <A
+HREF="contrib-squid.html"
+>Squid warnings</A
+></DT
+><DD
+><DL
+><DT
+>8.4.1. <A
+HREF="contrib-squid.html#SQUID-REDIRECTOR-INTRO"
+>Intro</A
+></DT
+><DT
+>8.4.2. <A
+HREF="contrib-squid.html#SQUID-REDIRECTOR-INSTALL"
+>Installation</A
+></DT
+></DL
+></DD
+></DL
+></DIV
+><P
+>This chapter describes additional modules and implementations which extend LMS functionality. Some of them need to be adjusted for user's own need, some of them integrate with <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-UI</I
+></SPAN
+> interface. All extensions are located in <TT
+CLASS="FILENAME"
+>contrib</TT
+> subdirectory.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONTRIB-CUSTOMER"
+>8.1. Customer account</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CUSTOMER-INTRO"
+>8.1.1. Intro</A
+></H2
+><P
+>In <TT
+CLASS="FILENAME"
+>contrib/customer</TT
+> directory you can find example solution, which displays financial balance and contact information for a given user, which makes possible for your customers to view this data themselves.</P
+><P
+>Script checks IP address for request and displays data which is relevant to computer's owner.</P
+><P
+>For proxy users, people not checking from home or to those who don't intend that they children/spouse/workers are able to see their financial data there's "Customer account 2" module.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CUSTOMER-INSTALL"
+>8.1.2. Installation</A
+></H2
+><P
+>You should copy those files to any path and make it accessible to your Web Server, or set appropriate alias (eg. Alias /myAccount/ /var/www/lms/contrib/customer) and put correct path to <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> in <TT
+CLASS="FILENAME"
+>index.php</TT
+>.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="devel-limits.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="contrib-customer2.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Restrictions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Customer account 2</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

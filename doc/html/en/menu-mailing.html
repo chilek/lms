@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Upgrade</TITLE
+>Mailing</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
@@ -10,14 +10,14 @@ REL="HOME"
 TITLE="LMS - LAN Management System 1.5-cvs"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Installation and configuration"
-HREF="install.html"><LINK
+TITLE="User Interface (LMS-UI)"
+HREF="user.html"><LINK
 REL="PREVIOUS"
-TITLE="Access rights"
-HREF="install-rights.html"><LINK
+TITLE="Accounts"
+HREF="menu-accounts.html"><LINK
 REL="NEXT"
-TITLE="Invoices"
-HREF="install-invoices.html"><LINK
+TITLE="Reload"
+HREF="menu-reload.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="../images/style.css"><META
@@ -47,7 +47,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="install-rights.html"
+HREF="menu-accounts.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -55,13 +55,13 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 2. Installation and configuration</TD
+>Chapter 3. User Interface (LMS-UI)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="install-invoices.html"
+HREF="menu-reload.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,19 +75,75 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="INSTALL-UPGRADE"
->2.7. Upgrade</A
+NAME="MENU-MAILING"
+>3.9. Mailing</A
 ></H1
 ><P
->Since version 1.5.4 LMS was released in polish language only. If you are upgrading
-      read polish documentation for upgrade description. In newest versions upgrade is very easy.
-      That process has two stages. First, overwrite old files with new ones and remove contents of
-      <TT
-CLASS="FILENAME"
->templates_c</TT
-> directory (or better create new LMS directory tree). Second
-      stage is a database structure change - it's self-executing process acting upon first login to
-      the UI.</P
+>Mailing is component where you can spam groups of your customers
+if you have to communicate something to them. Obviously you need to specify
+sender name and address, write your message in text box and select appropriate
+group of recipients. Your attendance can be grouped by status, network or user
+groups.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Your server has to support mail() function for this to
+work.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>It's best to use lms-notify Perl script or notify and
+ggnotify modules of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+> daemon to send emails
+automatically whenever customer is in debt.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -105,7 +161,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="install-rights.html"
+HREF="menu-accounts.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -123,7 +179,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="install-invoices.html"
+HREF="menu-reload.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -133,13 +189,13 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Access rights</TD
+>Accounts</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
 ><A
-HREF="install.html"
+HREF="user.html"
 ACCESSKEY="U"
 >Up</A
 ></TD
@@ -147,7 +203,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Invoices</TD
+>Reload</TD
 ></TR
 ></TABLE
 ></DIV

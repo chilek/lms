@@ -131,23 +131,213 @@ HREF="install-invoices.html"
 ></DD
 ><DT
 >3. <A
+HREF="user.html"
+>User Interface (LMS-UI)</A
+></DT
+><DD
+><DL
+><DT
+>3.1. <A
+HREF="user.html#USER-LOGIN"
+>Login</A
+></DT
+><DT
+>3.2. <A
+HREF="menu-administration.html"
+>Administration</A
+></DT
+><DT
+>3.3. <A
+HREF="menu-users.html"
+>Customers</A
+></DT
+><DT
+>3.4. <A
+HREF="menu-nodes.html"
+>Nodes</A
+></DT
+><DT
+>3.5. <A
+HREF="menu-netdevices.html"
+>Net Devices</A
+></DT
+><DT
+>3.6. <A
+HREF="menu-networks.html"
+>IP Networks</A
+></DT
+><DT
+>3.7. <A
+HREF="menu-finances.html"
+>Finances</A
+></DT
+><DT
+>3.8. <A
+HREF="menu-accounts.html"
+>Accounts</A
+></DT
+><DT
+>3.9. <A
+HREF="menu-mailing.html"
+>Mailing</A
+></DT
+><DT
+>3.10. <A
+HREF="menu-reload.html"
+>Reload</A
+></DT
+><DT
+>3.11. <A
+HREF="menu-stats.html"
+>Stats</A
+></DT
+><DT
+>3.12. <A
+HREF="menu-helpdesk.html"
+>Helpdesk</A
+></DT
+></DL
+></DD
+><DT
+>4. <A
+HREF="scripts.html"
+>Scripts</A
+></DT
+><DD
+><DL
+><DT
+>4.1. <A
+HREF="scripts.html#SCRIPTS-INSTALL"
+>Installation</A
+></DT
+><DT
+>4.2. <A
+HREF="scripts-list.html"
+>List of available scripts</A
+></DT
+><DT
+>4.3. <A
+HREF="scripts-config.html"
+>Description and configuration</A
+></DT
+></DL
+></DD
+><DT
+>5. <A
+HREF="mgc.html"
+>Configuration file generator (lms-mgc)</A
+></DT
+><DD
+><DL
+><DT
+>5.1. <A
+HREF="mgc.html#MGC-INSTALL"
+>Installation</A
+></DT
+><DT
+>5.2. <A
+HREF="mgc-config.html"
+>Configuration</A
+></DT
+><DT
+>5.3. <A
+HREF="mgc-example.html"
+>Examples of use</A
+></DT
+></DL
+></DD
+><DT
+>6. <A
 HREF="daemon.html"
 >A.L.E.C's LMS Daemon</A
 ></DT
 ><DD
 ><DL
 ><DT
->3.1. <A
+>6.1. <A
 HREF="daemon.html#DAEMON-INTRO"
 >Basics</A
 ></DT
 ><DT
->3.2. <A
+>6.2. <A
 HREF="daemon-modules.html"
 >Modules</A
 ></DT
 ></DL
 ></DD
+><DT
+>7. <A
+HREF="devel.html"
+>For curious</A
+></DT
+><DD
+><DL
+><DT
+>7.1. <A
+HREF="devel.html#DEVEL-CATALOGS"
+>Directory tree</A
+></DT
+><DT
+>7.2. <A
+HREF="devel-db.html"
+>Database structure</A
+></DT
+><DT
+>7.3. <A
+HREF="devel-ini.html"
+>Configuration file format</A
+></DT
+><DT
+>7.4. <A
+HREF="devel-genfake.html"
+>Filling DB with random data</A
+></DT
+><DT
+>7.5. <A
+HREF="devel-rights.html"
+>Access levels</A
+></DT
+><DT
+>7.6. <A
+HREF="devel-limits.html"
+>Restrictions</A
+></DT
+></DL
+></DD
+><DT
+>8. <A
+HREF="contrib.html"
+>Extensions</A
+></DT
+><DD
+><DL
+><DT
+>8.1. <A
+HREF="contrib.html#CONTRIB-CUSTOMER"
+>Customer account</A
+></DT
+><DT
+>8.2. <A
+HREF="contrib-customer2.html"
+>Customer account 2</A
+></DT
+><DT
+>8.3. <A
+HREF="contrib-sqlpanel.html"
+>SQL Panel</A
+></DT
+><DT
+>8.4. <A
+HREF="contrib-squid.html"
+>Squid warnings</A
+></DT
+></DL
+></DD
+><DT
+>9. <A
+HREF="faq.html"
+>FAQ</A
+></DT
 ></DL
 ></DIV
 ><DIV
@@ -159,9 +349,59 @@ CLASS="LOT"
 >List of Tables</B
 ></DT
 ><DT
+>4-1. <A
+HREF="scripts-list.html#SCRIPTS-TABLE"
+>Executable scripts list</A
+></DT
+><DT
+>6-1. <A
+HREF="daemon-modules.html#AEN2225"
+>List of all almsd modules</A
+></DT
+><DT
+>7-1. <A
+HREF="devel.html#CATALOG-TREE"
+>LMS directory tree</A
+></DT
+></DL
+></DIV
+><DIV
+CLASS="LOT"
+><DL
+CLASS="LOT"
+><DT
+><B
+>List of Examples</B
+></DT
+><DT
 >3-1. <A
-HREF="daemon-modules.html#AEN785"
->List of almsd daemon modules</A
+HREF="menu-accounts.html#ACCOUNTS-E1"
+>Accounts. Proftpd configuration.</A
+></DT
+><DT
+>3-2. <A
+HREF="menu-accounts.html#ACCOUNTS-E2"
+>Accounts. Mail server configuration (postfix+sasl+courier).</A
+></DT
+><DT
+>4-1. <A
+HREF="scripts-config.html#NOTIFY-EXAMPLE"
+>Lms-notify: example of last 10 user's operations</A
+></DT
+><DT
+>4-2. <A
+HREF="scripts-config.html#NOTIFY-TEMPLATE"
+>Lms-notify: example of mailing template</A
+></DT
+><DT
+>5-1. <A
+HREF="mgc-example.html#INSTANCE-EXAMPLE"
+>Lms-mgc: Example instance</A
+></DT
+><DT
+>7-1. <A
+HREF="devel-ini.html#CONFIG-FORMAT"
+>Format of configuration options</A
 ></DT
 ></DL
 ></DIV

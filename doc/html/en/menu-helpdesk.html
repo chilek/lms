@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML
+><HEAD
+><TITLE
+>Helpdesk</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
+REL="HOME"
+TITLE="LMS - LAN Management System 1.5-cvs"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="User Interface (LMS-UI)"
+HREF="user.html"><LINK
+REL="PREVIOUS"
+TITLE="Stats"
+HREF="menu-stats.html"><LINK
+REL="NEXT"
+TITLE="Scripts"
+HREF="scripts.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="../images/style.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#EBE4D6"
+TEXT="#000000"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>LMS - LAN Management System 1.5-cvs</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="menu-stats.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. User Interface (LMS-UI)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="scripts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="MENU-HELPDESK"
+>3.12. Helpdesk</A
+></H1
+><P
+>Helpdesk (or Request Tracker) is user request management
+system. It's possible to keep history of all requests and questions here, both reported by
+customers and users not registered in LMS database. Reports can be grouped in
+queues (categories) and you're able to search them for a given criteria. It's possible to
+define access rights for LMS users to each queue.</P
+><P
+>You have quick search box in left (menu) panel, which may be
+used to jump to appropriate ticket giving ticket id or reporter name. Searching
+by reporter name will give a list of all tickets available for this user.</P
+><P
+>Each ticket includes history built on messages sent by
+administrators (LMS users) and customers. Administrator may send his message to
+customer specifying recipient name and clicking 'Submit/Send', email will be
+sent with queue address as sender, or - if it's empty - LMS user address. All
+messages, including those sent, are recorder in ticket history. Each ticket may
+be in one of the states: new, opened, resolved or dead.</P
+><P
+>Please look at <A
+HREF="scripts-config.html#LMS-RTPARSER"
+>lms-rtparser</A
+> script which has been developed to
+support incoming requests and outgoing comments by your mail server.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-HELPDESK-LIST"
+>3.12.1. Queues List</A
+></H2
+><P
+>Basic informations and request statistics are available on
+queues list. Select and click on chosen queue to display all tickets belonging
+to it. You can also go to detailed view (including permissions) about queue or
+remove given queue. Removing queue will also remove all belonging tickets from
+database.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-HELPDESK-NEWQUEUE"
+>3.12.2. New queue</A
+></H2
+><P
+>Queue (category) contains a name, optional description and
+optional email address, used in correspondence. 'Permissions' table defines LMS
+users access to this queue, which overrides those set in 'Administration', which
+means, that the user who has 'full access' permissions won't be able to see
+queue and tickets placed in it until he's given access to that queue.
+Enabling 'write' (tickets and comments edit ability) to user automatically gives
+him 'read' access.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-HELPDESK-SEARCH"
+>3.12.3. Searching</A
+></H2
+><P
+>Tickets are searchable by all given criteria (AND not OR). You
+can provide subject, owner, queue, status and reporter for your search.
+Customers may be selected from drop-down list, unregistered users may be
+searched by name or email address.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MENU-HELPDESK-NEWTICKET"
+>3.12.4. New ticket</A
+></H2
+><P
+>For each new ticket you need to provide subject, content,
+queue and reporter. Unregistered users (not in customers database) should be
+recorded using 'Submitter' fields. You can provide email address (in both
+registered/unregistered cases) if ticket will be running via email.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="menu-stats.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="scripts.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Stats</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="user.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Scripts</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
