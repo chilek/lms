@@ -77,6 +77,22 @@ switch($_GET['type'])
 				
 				$SMARTY->assign('userlist', $nuserlist);
 			break;
+			case 6: 
+				$layout['pagetitle'] = 'Lista u¿ytkowników bez komputerów';
+				$userlist=$LMS->GetUserList($_POST['order'].','.$_POST['direction']);
+				unset($userlist['total']);
+				unset($userlist['state']);
+				unset($userlist['order']);
+				unset($userlist['below']);
+				unset($userlist['over']);
+				unset($userlist['direction']);
+
+				foreach($userlist as $idx => $row)
+					if(! $row['account'])
+						$nuserlist[] = $userlist[$idx];
+				
+				$SMARTY->assign('userlist', $nuserlist);
+			break;	
 		}		
 		$SMARTY->display('printuserlist.html');
 	break;
