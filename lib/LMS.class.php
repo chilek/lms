@@ -870,6 +870,9 @@ class LMS
 	function GetNodeList($order="name,asc")
 	{
 
+		if($order=="")
+			$order="name,asc";
+
 		list($order,$direction) = explode(",",$order);
 
 		if($direction=="desc")
