@@ -46,8 +46,10 @@ class LMSDB_driver_postgres extends LMSDB_common
 			$this->_dbhost = $dbhost;
 			$this->_dbuser = $dbuser;
 			$this->_dbname = $dbname;
+			return $this->_dblink;
 		}
-		return $this->_dblink;
+		else
+			return FALSE;
 	}
 	
 	function _driver_execute($query)
@@ -56,7 +58,8 @@ class LMSDB_driver_postgres extends LMSDB_common
 		{
 			$this->_query = $query;
 			$this->_error = FALSE;
-		}else
+		}
+		else
 			$this->_error = pg_last_error($this->_dblink);
 
 		return $this->_result;
@@ -65,7 +68,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 	function _driver_fetchrow_assoc()
 	{
 		if(! $this->_error)
-			return pg_fetch_array($this->_result,PGSQL_ASSOC);
+			return pg_fetch_array($this->_result,NULL,PGSQL_ASSOC);
 		else
 			return FALSE;
 	}
@@ -73,7 +76,7 @@ class LMSDB_driver_postgres extends LMSDB_common
 	function _driver_fetchrow_num()
 	{
 		if(! $this->_error)
-			return pg_fetch_array($this->_result,PGSQL_NUM);
+			return pg_fetch_array($this->_result,NULL,PGSQL_NUM);
 		else
 			return FALSE;
 	}
@@ -103,6 +106,10 @@ class LMSDB_driver_postgres extends LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.6  2003/08/24 14:06:35  lukasz
+ * - fixed bug #0000061 - added missing param for pg_fetch_array (but it's
+ *   propably only workarround)
+ *
  * Revision 1.5  2003/08/24 13:55:16  lukasz
  * - fix with local socket connection
  *
