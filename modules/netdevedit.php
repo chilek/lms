@@ -44,16 +44,23 @@ if(isset($netdevdata)) {
 	$netdevdata[id]=$_GET[id];		
 }
 
+$netdevconnected = $LMS->GetNetDevConnectedNames($_GET[id]);
+$netcomplist = $LMS->GetNetDevNode($_GET[id]);
 
 $layout[pagetitle]="Edycja urz±dzenia: ".$netdevdata[name]." ".$netdevdata[producer];
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("error",$error);
 $SMARTY->assign("netdev",$netdevdata);
+$SMARTY->assign("netdevlist",$netdevconnected);
+$SMARTY->assign("netcomplist",$netcomplist);
 $SMARTY->display("netdevedit.html");
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/25 19:00:10  lexx
+ * - w netdevedit widac do czego urzadzenie jest podlaczone
+ *
  * Revision 1.1  2003/09/12 20:57:05  lexx
  * - netdev
  *
