@@ -206,7 +206,7 @@
           <sect2 id="latest">
                <title>Newest version</title>
                <para>Allways, newest version of LMS can be downloaded from CVS repository
-               CVS with help of www interface <ULINK URL="http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">here</ulink>,
+               with help of www interface <ULINK URL="http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">here</ulink>,
                or classic (anonymous access, empty password):</para>
                <screen>
 cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login

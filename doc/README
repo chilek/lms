@@ -183,7 +183,7 @@ Chapter 1. Intro
 1.4.3. Newest version
 
    Allways, newest version of LMS can be downloaded from CVS repository
-   CVS with help of www interface here, or classic (anonymous access,
+   with help of www interface here, or classic (anonymous access,
    empty password):
 cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
 cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
@@ -770,23 +770,13 @@ database = /usr/local/lms/lms.db
 
 2.7. Upgrade
 
-   LMS upgrade process in two stages. First make directory of new version
-   (overwriting old files with new ones is not recommended) then we have
-   to make some changes in database.
-
-   For easy migration of data in catalog/doc we prepared
-   file:UPGRADE-1.0-1.5.mysql and UPGRADE-1.0-1.5.pgsql for upgrade from
-   1.0 to 1.5 version. Also UPGRADE-1.2-1.5.mysql and
-   UPGRADE-1.2-1.5.pgsql For migration from version 1.3 (and 1.3.0) to
-   current version. In those files you can find short description how to
-   upgrade in dependence of used database. In versions 1.3.0 and higher
-   upgrade of database structure is automatically executed while first
-   logon.
-
-   Note
-
-   In 1.0.x and higher versions ADOdb library Is not required, you can
-   remove applicable directory from lib/ directory.
+   Since 1.5.4 version LMS was only polish system. If you have prior
+   version read polish documentation for upgrade description. In newest
+   versions upgrade is very easy. That process has two stages. First,
+   overwrite old files with new ones and remove contents of templates_c
+   directory (or better create new LMS directory tree). Second stage is a
+   database structure change. It's self-acting process executed on first
+   logon to the UI.
      _________________________________________________________________
 
 2.8. Invoices
@@ -1016,7 +1006,7 @@ info = "Additional description of module"
    cutoff Disconnection of indebted users
    dns Configuration of DNS server
    ethers Making of /etc/ethers file
-   hostfile Universal module (i.e. making iptables rules)
+   hostfile Universal module (e.g. making iptables rules)
    notify E-mail notifying users about payments
    ggnotify Gadu-Gadu (polish internet messenger) notifying users about
    payments
@@ -1520,7 +1510,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
        Default: empty (all networks).
        Example: networks = "lan1 lan2"
      * usergroups
-       List of customers groups for consideration. Case insensitive.
+       List of customer groups for consideration. Case insensitive.
        Default: empty (all groups).
        Example: usergroups = "grupa1 grupa2"
      _________________________________________________________________
@@ -1566,8 +1556,8 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
        Default: "%n IN A %i\n".
        Example: host-reverse = "\t %n IN A %i\n"
      * host-forward
-       Line in zone file for each computer of given network.. Default:
-       "%c IN PTR %n.%d.\n".
+       Line in zone file for each computer of given network. Default: "%c
+       IN PTR %n.%d.\n".
        Example: host-forward = "\t %c IN PTR %n.%d.\n"
      * conf-pattern
        Location of main template of server configuration file. Default:
@@ -1613,7 +1603,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 
    Basic options:
      * file
-       Location of file. Default: /etc/ethers.
+       Location of output file. Default: /etc/ethers.
        Example: file = /tmp/ethers
      * command
        Shell command to execute after config creation. Default: 'erp -f
