@@ -107,9 +107,8 @@ lms-mgc, version $_version
 (C) 2001-2005 LMS Developers
 
 -C, --config-file=/etc/lms/lms-mgc.ini	alternate config file (default: /etc/lms/lms-mgc.ini);
--i, --instances=name		Name (or number) of instance to run, usefull
--i "name1 name2"		tu run specific instances overrding config
-				file;
+-i, --instances=name		Name(s) or number(s) of instance(s) to run, useful
+				for overriding instances option in config file;
 -h, --help			print this help and exit;
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
