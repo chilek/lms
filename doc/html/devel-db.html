@@ -88,13 +88,21 @@ TARGET="_top"
 CLASS="FILENAME"
 >lms.mysql</TT
 ></A
->
-		oraz <A
+>,
+		<A
 HREF="../lms.pgsql"
 TARGET="_top"
 ><TT
 CLASS="FILENAME"
 >lms.pgsql</TT
+></A
+> i 
+		<A
+HREF="../lms.sqlite"
+TARGET="_top"
+><TT
+CLASS="FILENAME"
+>lms.sqlite</TT
 ></A
 > w katalogu
 		<TT
@@ -151,6 +159,10 @@ BORDER="0"
 ><TR
 ><TD
 >failedloginip - adres IP, z którego próbowano siê zalogowaæ</TD
+></TR
+><TR
+><TD
+>deleted - czy usuniêty (0/1)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -254,8 +266,60 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
+NAME="USERGROUPS"
+>7.2.3. Grupy u¿ytkowników ('usergroups')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>name - nazwa</TD
+></TR
+><TR
+><TD
+>description - opis</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USERASSIGNMENTS"
+>7.2.4. Grupy u¿ytkowników - c.d. ('userassignments')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>usergroupid - identyfikator grupy</TD
+></TR
+><TR
+><TD
+>userid - identyfikator u¿ytkownika</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
 NAME="NETWORKS"
->7.2.3. Sieci ('networks')</A
+>7.2.5. Sieci ('networks')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -317,7 +381,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NODES"
->7.2.4. Komputery i adresy IP urz±dzeñ sieciowych ('nodes')</A
+>7.2.6. Komputery i adresy IP urz±dzeñ sieciowych ('nodes')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -375,7 +439,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NETDEVICES"
->7.2.5. Sprzêt sieciowy ('netdevices')</A
+>7.2.7. Sprzêt sieciowy ('netdevices')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -421,7 +485,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NETLINKS"
->7.2.6. Po³±czenia sieciowe ('netlinks')</A
+>7.2.8. Po³±czenia sieciowe ('netlinks')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -447,7 +511,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASH"
->7.2.7. Operacje finansowe ('cash')</A
+>7.2.9. Operacje finansowe ('cash')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -474,6 +538,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>taxvalue - procent podatku</TD
+></TR
+><TR
+><TD
 >userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy)</TD
 ></TR
 ><TR
@@ -493,7 +561,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TARIFFS"
->7.2.8. Taryfy ('tariffs')</A
+>7.2.10. Taryfy ('tariffs')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -539,7 +607,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PAYMENTS"
->7.2.9. Op³aty sta³e ('payments')</A
+>7.2.11. Op³aty sta³e ('payments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -581,7 +649,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ASSIGNMENTS"
->7.2.10. Powi±zania ('assignments')</A
+>7.2.12. Powi±zania ('assignments')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -627,7 +695,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICES"
->7.2.11. Faktury ('invoices')</A
+>7.2.13. Faktury ('invoices')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -697,7 +765,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.12. Faktury - cd. ('invoicecontents')</A
+>7.2.14. Faktury - cd. ('invoicecontents')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -743,7 +811,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.13. Historia ('timestamps')</A
+>7.2.15. Historia ('timestamps')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -765,7 +833,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.14. Statystyki wykorzystania ³±cza ('stats')</A
+>7.2.16. Statystyki wykorzystania ³±cza ('stats')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -795,7 +863,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.15. Informacje o bazie danych ('dbinfo')</A
+>7.2.17. Informacje o bazie danych ('dbinfo')</A
 ></H2
 ><TABLE
 BORDER="0"
