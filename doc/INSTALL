@@ -105,9 +105,10 @@ serwer WWW nie ma dostêpu!!!
 
 ***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***UWAGA***
 
-Voila. Teraz
-przygotujmy  serwer  MySQL.  Wejd¼  do  katalogu w którym masz LMS'a i uruchom
-shell mysql'a:
+Voila. Teraz przygotujmy  serwer  MySQL. Konieczne to jest je¿eli uruchamiamy
+LMS po raz PIERWSZY. Je¿eli uaktualniamy LMS, odpowiednie adnotacje co nale¿y
+zrobiæ z baz± danych s± w pliku ChangeLog. Tak wiêc wejd¼  do  katalogu w
+którym masz LMS'a i uruchom shell mysql'a:
 
 mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
 Enter password:[podaj has³o]
@@ -119,43 +120,9 @@ mysql> flush privileges;
 mysql> use lms;
 mysql> source doc/lms.mysql;
 
-Teraz,  przyda³oby  siê  utworzyæ pierwsze konto administratora. Tak, wiem, to
-jest pokrêcone i bardzo "user-friendly", ale sorry, jako¶ nie doszed³em jeszcze
-do napisania wizarda który wszystko zrobi ³adnie za u¿ytkownika:
-
-mysql> insert into admins (login, passwd) values ('login', '')
-
-Teraz  kilka  s³ów  wyja¶nieñ.  Login,  to oczywi¶cie login pierwszego
-administratora.  Co  do has³a, w przyk³adzie podejmy puste has³o ('').
-Spowoduje  to ¿e bêdzie mo¿na siê zalogowaæ na puste has³o do systemu.
-Oczywi¶cie  zaraz  potem  nale¿y  je  jak  najszybciej  zmieniæ.  Poza
-mo¿liwo¶ci±  pustego has³a, istnieje stara metoda na has³o cryptniête,
-ale sporo ludzi (dunno why) nie potrafi sobie z tym poradziæ. Mimo to,
-z tej sekcji nie ginie opis jak uzyskaæ has³o w md5:
-
-Metoda pierwsza (wymaga shella php) - odpalamy z shella PHP i wpisujemy:
-
-php -q
-<? echo crypt("has³o")."\n"; ?>
-[wciskamy na klawiaturze Ctrl+D]
-$1$AUXO7o/A$.6I0VmetRlZ7NT6YUHQ7e.
-
-Te  krzaczki,  to  w³a¶nie cryptniête has³o, które nale¿y wpisac do MySQL'a :)
-Proste? Nie? :) No to zapraszam do drugiej metody.
-
-Metoda druga (wymaga przegl±darki internetowej):
-
-Nale¿y wej¶æ na stronê http://twoj.serwer.pl/katalog_gdzie_masz_lms/crypt.php.
-
-Dalej jest dosyæ intuicyjnie :)
-
-Teraz, kopiujemy z katalogu sample plik lms.ini do katalogu /etc/lms/ i go
-edytujemy wed³ug instrukcji tam podanych.
-
-Oki.  Wiêc  mamy  LMS'a.  Wchodzimy na WWW i siê logujemy. Teraz mo¿na porobiæ
-porz±dek,  posprz±taæ  w  adminach,  dodaæ u¿yszkodników i komputery do bazy i
-zacz±æ  siê  rozgl±daæ  za LMSd - czyli czym¶ co bêdzie konfigurowaæ serwer na
-podstawie danych zawartych w bazie.
+Po takim zabiegu mo¿na siê ju¿ zalogowaæ do LMS u¿ywaj±c konta 'admin' i
+pustego has³a. Oczywi¶cie po pierwszym zalogowaniu nale¿y NATYCHMIAST zmieniæ
+sobie has³o na jakie¶ normalne.
 
 I to (narazie) na tyle.
 
