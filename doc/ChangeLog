@@ -66,6 +66,7 @@ version 1.5.5 Anubis (??/??/????):
     obsolete (lexx)
   - BTS#0000315: remove assignments in customer delete function (alec/WiktorRB)
   - page headers have been removed (chilek)
+  - lighter customers list (lexx)
 
 version 1.5.4 Ramius (16/02/2005):
 
