@@ -24,6 +24,10 @@
  *  $Id$
  */
 
+if($_GET[action]=="disconnect") {
+	$LMS->NetDevUnLink($_GET[id],$_GET[devid]);
+	header("Location: ?m=netdevinfo&id=".$_GET[id]);
+    }
 $netdevdata = $_POST[netdev];
 
 if(isset($netdevdata)) {
@@ -58,6 +62,9 @@ $SMARTY->display("netdevedit.html");
 
 /*
  * $Log$
+ * Revision 1.3  2003/10/03 19:22:09  alec
+ * now we can netdev disconnect
+ *
  * Revision 1.2  2003/09/25 19:00:10  lexx
  * - w netdevedit widac do czego urzadzenie jest podlaczone
  *
