@@ -1,5 +1,11 @@
 $Id$
 
+wersja 1.2.0rc2 Janet (??/??/????):
+
+  - interface cosmetics (lukasz)
+  - code ceanup (lukasz)
+  - BTS#0000112, BTS#0000114 bugfixes (alec) 
+
 wersja 1.2.0rc1 Janet (18/02/2004):
 
   - Smarty libs version change 2.5.0 -> 2.6.0 (alec)
