@@ -134,12 +134,25 @@ else
 
 open(OUTFILE, ">$outfile") or die("Fatal error: Unable to write $outfile, exiting.\n");
 
+my @local_ports_list = split(' ',$local_ports);
+
+# 1) Stwórzmy ³añcuch STAT
+# 2) Wyczy¶æmy go, bo on móg³ ju¿ istnieæ
+
 print OUTFILE "#!/bin/bash
-$iptables_binary -t mangle -D FORWARD -i $wan_interface -j STAT 1>/dev/null 2>&1
-$iptables_binary -t mangle -D FORWARD -o $wan_interface -j STAT 1>/dev/null 2>&1
-$iptables_binary -t mangle -F STAT 1>/dev/null 2>&1
-$iptables_binary -t mangle -X STAT 1>/dev/null 2>&1
+$iptables_binary -t mangle -D FORWARD -i $wan_interface -j STAT
+$iptables_binary -t mangle -D FORWARD -o $wan_interface -j STAT
+";
+
+foreach my $port (@local_ports_list)
+{
+	print OUTFILE "$iptables_binary -t mangle -D INPUT -p tcp --dport $port -j STAT\n";
+	print OUTFILE "$iptables_binary -t mangle -D OUTPUT -p tcp --sport $port -j STAT\n";
+}
+		
+print OUTFILE "$iptables_binary -t mangle -X STAT
 $iptables_binary -t mangle -N STAT
+$iptables_binary -t mangle -F STAT
 $iptables_binary -t mangle -I FORWARD -i $wan_interface -j STAT
 $iptables_binary -t mangle -I FORWARD -o $wan_interface -j STAT
 ";
@@ -147,8 +160,8 @@ $iptables_binary -t mangle -I FORWARD -o $wan_interface -j STAT
 my @local_ports_list = split(' ',$local_ports);
 foreach my $port (@local_ports_list)
 {
-	print "$iptables_binary -t mangle -I INPUT -p tcp --dport $port -j STAT\n";
-	print "$iptables_binary -t mangle -I OUTPUT -p tcp --sport $port -j STAT\n";
+	print OUTFILE "$iptables_binary -t mangle -I INPUT -p tcp --dport $port -j STAT\n";
+	print OUTFILE "$iptables_binary -t mangle -I OUTPUT -p tcp --sport $port -j STAT\n";
 }
 
 my $dbq = $dbase->prepare("SELECT ipaddr FROM nodes");
@@ -193,8 +206,10 @@ if(open(LOGFILE, "<$logfile"))
 		{
 			chomp $line;
 			my ($ipaddr,$upload,$download) = split(/ +/,$line);
-			$downloads{$ipaddr} += $download if ($downloads{$ipaddr}) or $downloads{$ipaddr} = $download;
-			$uploads{$ipaddr} += $upload if ($uploads{$ipaddr}) or $uploads{$ipaddr} = $upload;
+			$downloads{$ipaddr} = 0 if not defined $downloads{$ipaddr};
+			$downloads{$ipaddr} += $download;
+			$uploads{$ipaddr} = 0 if not defined $uploads{$ipaddr};
+			$uploads{$ipaddr} += $upload;
 		}
 	}
 }
@@ -213,4 +228,4 @@ else
 	exit 1;
 }
 
-system($outfile);
+system("$outfile 1>/dev/null 2>&1");
