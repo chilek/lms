@@ -2980,10 +2980,12 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			break;
 		}
 
-		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, requestor, rttickets.subject AS subject, state, owner AS ownerid, name AS ownername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
+		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 		    FROM rtmessages LEFT JOIN rttickets ON (rttickets.id = rtmessages.ticketid)
-		    LEFT JOIN admins ON (owner = admins.id) WHERE queueid = ? 
-		    GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, name '
+		    LEFT JOIN admins ON (owner = admins.id) 
+		    LEFT JOIN users ON (rttickets.userid = users.id)
+		    WHERE queueid = ? 
+		    GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name '
 		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
 		{
 			foreach($result as $idx => $ticket)
@@ -3034,10 +3036,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$ts = time();
 		$this->DB->Execute('INSERT INTO rttickets (queueid, userid, requestor, subject, state, owner, createtime) 
 				    VALUES (?, ?, ?, ?, 0, 0, ?)', array($ticket['queue'], $ticket['userid'], $ticket['requestor'], $ticket['subject'], $ts));
-		// here possibly wrong way to get inserted ticket id
-		$id = $this->DB->GetOne('SELECT id FROM rttickets WHERE createtime=?', array($ts));
-		$this->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, mailfrom)
-				    VALUES (?, ?, ?, ?, ?)', array($id, $ts, $ticket['subject'], $ticket['body'], $ticket['mailfrom']));
+		$id = $this->DB->GetOne('SELECT id FROM rttickets WHERE createtime=? AND subject=?', array($ts, $ticket['subject']));
+		$this->DB->Execute('INSERT INTO rtmessages (ticketid, userid, createtime, subject, body, mailfrom)
+				    VALUES (?, ?, ?, ?, ?, ?)', array($id, $ticket['userid'], $ts, $ticket['subject'], $ticket['body'], $ticket['mailfrom']));
 		$this->SetTS('rttickets');	
 		$this->SetTS('rtmessages');
 		
@@ -3052,8 +3053,8 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetTicketContents($id)
 	{
-		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, admins.name AS ownername, createtime, subject FROM rttickets LEFT JOIN rtqueues ON queueid = rtqueues.id LEFT JOIN admins ON owner = admins.id WHERE rttickets.id = ?', array($id));
-		$ticket['messages'] = $this->DB->GetAll('SELECT id, mailfrom, subject, body, createtime FROM rtmessages WHERE ticketid = ? ORDER BY createtime ASC', array($id));
+		$ticket = $this->DB->GetRow('SELECT rttickets.id AS ticketid, queueid, rtqueues.name AS queuename, requestor, state, owner, userid, admins.name AS ownername, createtime, subject FROM rttickets LEFT JOIN rtqueues ON (queueid = rtqueues.id) LEFT JOIN admins ON (owner = admins.id) WHERE rttickets.id = ?', array($id));
+		$ticket['messages'] = $this->DB->GetAll('SELECT id, mailfrom, subject, body, createtime, userid, adminid FROM rtmessages WHERE ticketid = ? ORDER BY createtime ASC', array($id));
 		sscanf($ticket['requestor'], "%[^<]<%[^>]", &$ticket['requestor'], &$ticket['requestoremail']);
 //		$ticket['requestoremail'] = ereg_replace('^.* <(.+@.+)>$','\1',$ticket['requestor']);
 //		$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
@@ -3074,8 +3075,8 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function MessageAdd($msg)
 	{
-		$this->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, sender, mailfrom, inreplyto)
-				    VALUES (?, ?NOW?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $msg['subject'], $msg['body'], $msg['sender'], $msg['mailfrom'], $msg['inreplyto']));
+		$this->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, userid, mailfrom, inreplyto)
+				    VALUES (?, ?NOW?, ?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $msg['subject'], $msg['body'], $msg['adminid'], $msg['userid'], $msg['mailfrom'], $msg['inreplyto']));
 		$this->SetTS('rtmessages');
 	}
 
