@@ -73,12 +73,14 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 		
 			for(i=0; i<res->nrows; i++) {
 			
-				unsigned char *s, *d, *d2, *e;
+				unsigned char *s, *s2, *d, *d2, *e;
 				unsigned long netmask, network;
 			
 				s = strdup(dhcp->subnetstart);
-				s = g->str_replace(s, "%a", e = g->db_get_data(res,i,"address"));
-				s = g->str_replace(s, "%m", d = g->db_get_data(res,i,"mask"));
+				s2 = g->str_replace(s, "%a", e = g->db_get_data(res,i,"address"));
+				free(s);
+				s = g->str_replace(s2, "%m", d = g->db_get_data(res,i,"mask"));
+				free(s2);
 				fprintf(fh, "%s\n", s);
 				free(s);
 			
@@ -88,8 +90,10 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				if( (d = g->db_get_data(res,i,"dhcpstart")) && ((e = g->db_get_data(res,i,"dhcpend"))) ) {
 					if( strlen(d) && strlen(e) ) {
 						s = strdup(dhcp->rangeline);
-						s = g->str_replace(s, "%s", d);
-						s = g->str_replace(s, "%e", e);
+						s2 = g->str_replace(s, "%s", d);
+						free(s);
+						s = g->str_replace(s2, "%e", e);
+						free(s2);
 						fprintf(fh, "%s\n", s);
 						free(s);
 					}
@@ -98,9 +102,10 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 				if( (d = g->db_get_data(res,i,"gateway")) ) {
 					if( strlen(d) ) {
 						s = strdup(dhcp->gateline);
-						s = g->str_replace(s, "%i", d);
-						fprintf(fh, "%s\n", s);
+						s2 = g->str_replace(s, "%i", d);
 						free(s);
+						fprintf(fh, "%s\n", s2);
+						free(s2);
 					}
 				}
 
@@ -109,42 +114,49 @@ void reload(GLOBAL *g, struct dhcp_module *dhcp)
 						if( strlen(d) && strlen(d2) ) {
 							sprintf(e,"%s,%s",d,d2);
 							s = strdup(dhcp->dnsline);
-							s = g->str_replace(s, "%i", e);
-							fprintf(fh, "%s\n", s);
+							s2 = g->str_replace(s, "%i", e);
 							free(s);
+							fprintf(fh, "%s\n", s2);
+							free(s2);
 						} else if (strlen(d)) {
 							s = strdup(dhcp->dnsline);
-							s = g->str_replace(s, "%i", d);
-							fprintf(fh, "%s\n", s);
+							s2 = g->str_replace(s, "%i", d);
 							free(s);
+							fprintf(fh, "%s\n", s2);
+							free(s2);
 						}
 					}
 
 				if( (d = g->db_get_data(res,i,"domain")) ) {
 					if( strlen(d) ) {
 						s = strdup(dhcp->domainline);
-						s = g->str_replace(s, "%n", d);
-						fprintf(fh, "%s\n", s);
+						s2 = g->str_replace(s, "%n", d);
 						free(s);
+						fprintf(fh, "%s\n", s2);
+						free(s2);
 					}
 				}
 
 				if( (d = g->db_get_data(res,i,"wins")) ) 
 					if( strlen(d) ) {
 						s = strdup(dhcp->winsline);
-						s = g->str_replace(s, "%i", d);
-						fprintf(fh, "%s\n", s);
+						s2 = g->str_replace(s, "%i", d);
 						free(s);
+						fprintf(fh, "%s\n", s2);
+						free(s2);
 					}
 				
 				for(i=0; i<nh; i++) {
 					if( (hosts[i].ipaddr & netmask) == network ) {
 						s = strdup(dhcp->host);
-						s = g->str_replace(s, "%i", inet_ntoa(hosts[i].ipaddr));
-						s = g->str_replace(s, "%n", hosts[i].name);
-						s = g->str_replace(s, "%m", hosts[i].mac);
-						fprintf(fh, "%s\n", s);
+						s2 = g->str_replace(s, "%i", inet_ntoa(hosts[i].ipaddr));
 						free(s);
+						s = g->str_replace(s2, "%n", hosts[i].name);
+						free(s2);
+						s2 = g->str_replace(s, "%m", hosts[i].mac);
+						free(s);
+						fprintf(fh, "%s\n", s2);
+						free(s2);
 					}
 				}
 
