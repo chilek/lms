@@ -27,7 +27,7 @@
 $DB->BeginTrans();
 
 $DB->Execute("
-    ALTER TABLE assignments ADD discount smallint;
+    ALTER TABLE assignments ADD discount numeric(4,2);
     UPDATE assignments SET discount = 0;
     ALTER TABLE assignments ALTER discount SET NOT NULL;
     ALTER TABLE assignments ALTER discount SET DEFAULT 0;
