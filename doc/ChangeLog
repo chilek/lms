@@ -10,6 +10,21 @@ wersja 1.1.3 (??/??/2003):
     wymaga modyfikacji bazy danych: (lukasz)
     ALTER TABLE users ADD deleted ENUM('Y','N') DEFAULT 'N' NOT NULL;
   - zmienione 'op³ata ab' na bardziej intuicyjne 'obci±¿enie' (lukasz)
+  - zmiana formatu zapisu adresu IP w bazie danych, wymagane upgrejdy bazy:
+
+  MySQL:
+
+  UPDATE nodes SET ipaddr=INET_ATON(ipaddr);
+  ALTER TABLE nodes CHANGE ipaddr ipaddr INT(16) UNSIGNED DEFAULT NULL;
+
+  PostgreSQL:
+
+  UPDATE nodes SET ipaddr=(split_part(ipaddr,'.',1)::int4*(256^3)+split_part(ipaddr,'.',2)::int4*(256^2)+split_part(ipaddr,'.',3)::int4*256+split_part(ipaddr,'.',4)::int4);
+  ALTER TABLE nodes ADD COLUMN ipaddr2 BIGINT;
+  UPDATE nodes SET ipaddr2 = ipaddr; 
+  ALTER TABLE nodes DROP COLUMN ipaddr;
+  ALTER TABLE nodes RENAME COLUMN ipaddr2 to ipaddr;
+  ALTER TABLE nodes ALTER COLUMN ipaddr set NOT NULL;
 
 wersja 1.1.2 (24/08/2003):
 
