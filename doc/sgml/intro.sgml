@@ -211,9 +211,9 @@
                URL="http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">cvs.rulez.pl</ulink>,
                or with CVS tools (anonymous access, empty password):</para>
                <screen>
-CVS -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
-CVS -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
-CVS -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
           </sect2>
           <sect2 id="history">
                <title>Changelog</title>
