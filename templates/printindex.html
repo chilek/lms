@@ -367,6 +367,70 @@ cal4.time_comp = false;
 //-->
 </SCRIPT>
 {/if}
+{if $printmenu=="finances" || !$printmenu}
+<FORM method="post" name="printinvoices" id="printinvoices" action="?m=print&type=invoices" target="_blank">
+<TABLE width="100%" CELLPADDING="3">
+	<TR class="DARK">
+		<TD class="fleftu" width="1%">
+			<IMG src="img/money.gif" alt="" BORDER="0" align="absmiddle">
+		</TD>
+		<TD class="frightu" width="99%">
+			<B>Faktury</B>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="flr" width="100%" colspan="2">
+			<TABLE width="100%">
+				<TR>
+					<TD width="1%">
+						<IMG src="img/user.gif" alt="" BORDER="0" align="absmiddle">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>U¿ytkownik:</B>
+					</TD>
+					<TD width="1%">
+						<SELECT size="1" name="user" {tip text="Dla ograniczenia wyników mo¿esz wybraæ u¿ytkownika"}>
+							<OPTION value="0">- wszyscy -</OPTION>
+							{section name="users" loop=$users}
+							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."}</OPTION>
+							{/section}
+						</SELECT>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/calendar.gif" alt="" BORDER="0" align="absmiddle">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>Okres:</B>&nbsp;
+						Od&nbsp;<INPUT TYPE="text" NAME="invoicefrom" SIZE="10" MAXSIZE="10" OnClick="javascript:cal10.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' albo kliknij aby wybraæ datê z kalendarza"}>
+						Do&nbsp;<INPUT TYPE="text" NAME="invoiceto" SIZE="10" MAXSIZE="10" OnClick="javascript:cal11.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>	
+					</TD>
+					<TD width="1%">
+						<IMG src="img/info.gif" alt="" BORDER="0" align="absmiddle">
+					</TD>
+					<TD width="94%" nowrap>
+						<INPUT TYPE="checkbox" CLASS="box" NAME="invoiceorg" CHECKED>&nbsp;Orygina³&nbsp;
+						<INPUT TYPE="checkbox" CLASS="box" NAME="invoicecopy" CHECKED>&nbsp;Kopia
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR class="LIGHT">
+		<TD class="fbottomu" width="100%" colspan="2" align="right">
+			<A href="javascript:document.printinvoices.submit();">Drukuj <IMG src="img/print.gif" alt="" BORDER="0" align="absmiddle" hspace="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+<SCRIPT>
+<!--
+var cal10 = new calendar(document.printinvoices.elements['invoicefrom']);
+cal10.time_comp = false;
+var cal11 = new calendar(document.printinvoices.elements['invoiceto']);
+cal11.time_comp = false;
+//-->
+</SCRIPT>
+{/if}
 {if $printmenu=="nodes" || !$printmenu}
 <FORM method="post" name="printnodelist" id="printnodelist"  action="?m=print&type=nodelist" target="_blank">
 <TABLE width="100%" CELLPADDING="3">
