@@ -880,7 +880,7 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    skrypt lms-payments lub demona almsd, które potrafi± równocze¶nie
    wystawiaæ faktury.
      * Lista faktur - lista wystawionych faktur z mo¿liwo¶ci± wydruku
-       wybranych.
+       wybranych faktur oraz rejestru sprzeda¿y za dany okres.
      * Nowa faktura - Rêczne wystawianie faktur dla wybranego
        u¿ytkownika.
      _________________________________________________________________
@@ -2266,9 +2266,8 @@ info = "Opcjonalny opis modu³u"
 
 6.2.12.1. Opis
 
-   Modu³ do konfiguracji oidend. W zasadzie mo¿na to zrobiæ modu³em
-   'hostfile', ale w 'oident' masz mo¿liwo¶æ okre¶lenia dla których sieci
-   ma byæ tworzony konfig.
+   Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
+   'hostfile', ale tutaj masz ju¿ gotowe ustawienia domy¶lne.
      _________________________________________________________________
 
 6.2.12.2. Konfiguracja
@@ -2287,9 +2286,9 @@ info = "Opcjonalny opis modu³u"
        Tekst wstawiany na pocz±tku pliku. Domy¶lnie: /tmp/oidentd.conf.
        Przyk³ad: file = /etc/identd.conf
      * networks
-       Lista sieci do uwzglêdnienia. Domy¶lnie: "192.168.0.0/16
-       10.0.0.0/8".
-       Przyk³ad: networks = 192.168.1.0/24
+       Lista nazw sieci do uwzglêdnienia. Domy¶lnie: pusta (wszystkie
+       sieci).
+       Przyk³ad: networks = 'lan1 lan2'
      * command
        Polecenie do wykonania po utworzeniu pliku. Domy¶lnie: puste.
        Przyk³ad: command = "killall -HUP midentd"

@@ -1218,9 +1218,8 @@ NAME="OIDENT-DESC"
 >6.2.12.1. Opis</A
 ></H3
 ><P
->Modu³ do konfiguracji oidend. W zasadzie mo¿na to zrobiæ modu³em
-		    'hostfile', ale w 'oident' masz mo¿liwo¶æ okre¶lenia dla których sieci
-		    ma byæ tworzony konfig.</P
+>Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
+		    'hostfile', ale tutaj masz ju¿ gotowe ustawienia domy¶lne.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -1281,11 +1280,11 @@ CLASS="PROMPT"
 ><P
 >networks</P
 ><P
->Lista sieci do uwzglêdnienia. Domy¶lnie: "192.168.0.0/16 10.0.0.0/8".</P
+>Lista nazw sieci do uwzglêdnienia. Domy¶lnie: pusta (wszystkie sieci).</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
->networks = 192.168.1.0/24</SAMP
+>networks = 'lan1 lan2'</SAMP
 ></P
 ></LI
 ><LI
