@@ -533,13 +533,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->grantednode_prv</P
+>grantednode_priv</P
 ><P
 >Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->grantednode_prv = \t\tnode %NAME (%IP/%MAC) unique %ID;</SAMP
+>grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</SAMP
 ></P
 ></LI
 ><LI
@@ -555,13 +555,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->deniednode_prv</P
+>deniednode_priv</P
 ><P
 >Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->deniednode_prv = node %NAME (%IP/%MAC) unique %ID deny;</SAMP
+>deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;</SAMP
 ></P
 ></LI
 ><LI
@@ -577,13 +577,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->dhcpnode_prv</P
+>dhcpnode_priv</P
 ><P
 >Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->dhcpnode_prv = node unknown (%IP) reject;</SAMP
+>dhcpnode_priv = node unknown (%IP) reject;</SAMP
 ></P
 ></LI
 ><LI
@@ -599,13 +599,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->freeip_prv</P
+>freeip_priv</P
 ><P
 >Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->freeip_prv = node unknown (%IP) lock_as_unused;</SAMP
+>freeip_priv = node unknown (%IP) lock_as_unused;</SAMP
 ></P
 ></LI
 ><LI
@@ -621,13 +621,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->default_prv</P
+>default_priv</P
 ><P
 >Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->default_publ = node unknown (%IP) lock_as_intruder;</SAMP
+>default_priv = node unknown (%IP) lock_as_intruder;</SAMP
 ></P
 ><P
 ><DIV
