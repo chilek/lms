@@ -24,10 +24,9 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Lista komputerów";
+$layout['pagetitle'] = trans('Nodes List');
 
-$_SESSION['backto']=$_SERVER['QUERY_STRING'];
-
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
 if(!isset($_GET['o']))
 	$o = $_SESSION['nlo'];
@@ -47,6 +46,7 @@ unset($nodelist['order']);
 unset($nodelist['direction']);
 unset($nodelist['totalon']);
 unset($nodelist['totaloff']);
+
 if (isset($_SESSION['nlp']) && !isset($_GET['page']))
         $_GET['page'] = $_SESSION['nlp'];
 	

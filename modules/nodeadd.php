@@ -47,40 +47,39 @@ if(isset($nodedata))
 		}
 	
 	if($nodedata['name']=='')
-		$error['name'] = 'Proszê podaæ nazwê komputera!';
+		$error['name'] = trans('Node name is required!');
 	elseif(strlen($nodedata['name']) > 16)
-		$error['name'] = 'Podana nazwa jest za d³uga!';
+		$error['name'] = trans('Node name is too long (max.16 characters!');
 	elseif($LMS->GetNodeIDByName($nodedata['name']))
-		$error['name'] = 'Podana nazwa jest u¿ywana!';
-	elseif(!eregi("^[_a-z0-9-]+$",$nodedata['name']))
-		$error['name'] = 'Podana nazwa zawiera niepoprawne znaki!';		
+		$error['name'] = trans('Specified name is in use!');
+	elseif(!eregi('^[_a-z0-9-]+$',$nodedata['name']))
+		$error['name'] = trans('Specified name contains forbidden characters!');		
 
 	if(!$nodedata['ipaddr'])
-		$error['ipaddr'] = 'Proszê podac adres IP!';
+		$error['ipaddr'] = trans('Node IP address is required!');
 	elseif(!check_ip($nodedata['ipaddr']))
-		$error['ipaddr'] = 'Podany adres IP jest niepoprawny!';
+		$error['ipaddr'] = trans('Incorrect node IP address!';
 	elseif(!$LMS->IsIPValid($nodedata['ipaddr']))
-		$error['ipaddr'] = 'Podany adres IP nie nale¿y do ¿adnej sieci!';
+		$error['ipaddr'] = trans('Specified IP address not overlaps with any network!');
 	elseif(!$LMS->IsIPFree($nodedata['ipaddr']))
-		$error['ipaddr'] = 'Podany adres IP jest zajêty!';
+		$error['ipaddr'] = trans('Specified IP address is in use!');
 
 	if(!$nodedata['mac'])
-		$error['mac'] = 'Proszê podac adres MAC!';
+		$error['mac'] = trans('MAC address is required!');
+	elseif(!check_mac($nodedata['mac']))
+		$error['mac'] = trans('Incorrect MAC address!');
 	elseif($LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE)
 		if($LMS->GetNodeIDByMAC($nodedata['mac']))
-			$error['mac'] = 'Podany MAC jest ju¿ w bazie!';
-	elseif(!check_mac($nodedata['mac']))
-		$error['mac'] = 'Podany adres MAC jest nieprawid³owy!';
+			$error['mac'] = trans('Specified MAC address is in use!');
 
 	if(! $LMS->UserExists($nodedata['ownerid']))
-		$error['user'] = 'Proszê wybraæ u¿ytkownika!';
-
-	if($LMS->GetUserStatus($nodedata['ownerid']) != 3 || $LMS->UserExists($nodedata['ownerid']) != TRUE)
-		$error['user'] = 'Wybrany u¿ytkownik '.$nodedata['ownerid'].' jest b³êdny!';
+		$error['user'] = trans('You must select owner!');
+	elseif($LMS->GetUserStatus($nodedata['ownerid']) != 3)
+		$error['user'] = trans('Selected customer is not connected!');
 
 	if(!$error)
 	{
-		$nodeid=$LMS->NodeAdd($nodedata);
+		$nodeid = $LMS->NodeAdd($nodedata);
 		if($nodedata['reuse']=='')
 		{
 			header('Location: ?m=nodeinfo&id='.$nodeid);
@@ -116,12 +115,12 @@ if(isset($_GET['prename']) && $nodedata['name']=='')
 	$nodedata['name'] = $_GET['prename'];
 		
 
-$layout['pagetitle'] = 'Nowy komputer';
+$layout['pagetitle'] = trans('New Node');
 
 $tariffs = $LMS->GetTariffs();
+$users = $LMS->GetUserNames();
 $balancelist = $LMS->GetUserBalanceList($nodedata['ownerid']);
 $assignments = $LMS->GetUserAssignments($nodedata['ownerid']);
-$users = $LMS->GetUserNames();
 
 $SMARTY->assign('balancelist',$balancelist);
 $SMARTY->assign('assignments',$assignments);

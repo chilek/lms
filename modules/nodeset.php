@@ -43,6 +43,6 @@ if(isset($_GET['netdev']))
 		$backid = $_GET['netdev'];
 	}
 
-header("Location: ?".$_SESSION['backto']."#".$backid);
+header('Location: ?'.$_SESSION['backto'].'#'.$backid);
 
 ?>

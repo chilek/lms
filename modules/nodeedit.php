@@ -54,12 +54,11 @@ $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 if(!isset($_GET['ownerid']))
 	$_SESSION['backto'] .= '&ownerid='.$ownerid;
 							
-$owner = $ownerid;
-$userinfo=$LMS->GetUser($owner);
-$layout['pagetitle'] = 'Informacje o u¿ytkowniku: '.$userinfo['username'].' - edycja komputera: '.$LMS->GetNodeName($_GET['id']);
+$userinfo = $LMS->GetUser($ownerid);
+$layout['pagetitle'] = trans('Info User: $0 - Edit Node: $1',$userinfo['username'], $LMS->GetNodeName($_GET['id']));
 
 $nodeedit = $_POST['nodeedit'];
-$usernodes = $LMS->GetUserNodes($owner);
+$usernodes = $LMS->GetUserNodes($ownerid);
 $nodeinfo = $LMS->GetNode($_GET['id']);
 
 if(isset($nodeedit))
@@ -81,31 +80,31 @@ if(isset($nodeedit))
 		if($LMS->IsIPValid($nodeedit['ipaddr'])) 
 		{
 			if(!$LMS->IsIPFree($nodeedit['ipaddr']) && $LMS->GetNodeIPByID($nodeedit['id'])!=$nodeedit['ipaddr'])
-				$error['ipaddr'] = 'Podany adres IP jest zajêty!';
+				$error['ipaddr'] = trans('Specified address is in use!');
 		}
 		else
-			$error['ipaddr'] = 'Podany adres IP nie nale¿y do ¿adnej sieci!';
+			$error['ipaddr'] = trans('Specified IP address not overlaps with any network!');
 	}
 	else
-		$error['ipaddr'] = 'Podany adres IP jest niepoprawny!';
+		$error['ipaddr'] = trans('Incorrect IP address!');
 
 	if(check_mac($nodeedit['mac']))
 	{
 		if($LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE)
 			if($LMS->GetNodeIDByMAC($nodeedit['mac']) && $LMS->GetNodeMACByID($nodeedit['id'])!=$nodeedit['mac'])
-				$error['mac'] = 'Podany adres MAC jest ju¿ przypisany do innego komputera!';
+				$error['mac'] = trans('Specified MAC address is in use!');
 	}
 	else
-		$error['mac'] = 'Podany adres MAC jest b³êdny!';
+		$error['mac'] = trans('Incorrect MAC address!');
 
 	if($nodeedit['name']=='')
-		$error['name'] = 'Podaj nazwê!';
+		$error['name'] = trans('Node name is required!');
 	elseif($LMS->GetNodeIDByName($nodeedit['name']) && $LMS->GetNodeIDByName($nodeedit['name']) != $nodeedit['id'])
-		$error['name'] = 'Ta nazwa jest zajêta!';
-	elseif(!eregi("^[_a-z0-9-]+$",$nodeedit['name']))
-		$error['name'] = 'Podana nazwa zawiera niepoprawne znaki!';
+		$error['name'] = trans('Specified name is in use!');
+	elseif(!eregi('^[_a-z0-9-]+$',$nodeedit['name']))
+		$error['name'] = trans('Specified name contains forbidden characters!');
 	elseif(strlen($nodeedit['name'])>16)
-		$error['name'] = 'Podana nazwa jest za d³uga!';
+		$error['name'] = trans('Node name is too long (max.16 characters)!');
 
 	if($nodeedit['access']!=1)
 		$nodeedit['access'] = 0;
@@ -116,7 +115,7 @@ if(isset($nodeedit))
 	{
 		$netdev = $LMS->GetNetDev($nodeedit['netdev']); 
 		if($netdev['ports'] <= $netdev['takenports'])
-		    $error['netdev'] = 'Brak wolnych portów w wybranym urz±dzeniu!';
+		    $error['netdev'] = trans('It scants free ports in selected device!');
 		$nodeinfo['netdev'] = $nodeedit['netdev'];
 	}
 	
@@ -137,10 +136,9 @@ if($userinfo['status']==3) $userinfo['shownodes'] = TRUE;
 $users = $LMS->GetUserNames();
 $tariffs = $LMS->GetTariffs();
 $assignments = $LMS->GetUserAssignments($ownerid);
-$balancelist = $LMS->GetUserBalanceList($owner);
+$balancelist = $LMS->GetUserBalanceList($ownerid);
 $usergroups = $LMS->UsergroupGetForUser($ownerid);
 $otherusergroups = $LMS->GetGroupNamesWithoutUser($ownerid);
-
 $netdevices = $LMS->GetNetDevList();
 unset($netdevices['total']);
 unset($netdevices['direction']);
@@ -159,5 +157,3 @@ $SMARTY->assign('users',$users);
 $SMARTY->display('nodeedit.html');
 
 ?>
-
-
