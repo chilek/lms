@@ -1574,7 +1574,6 @@ class LMS
 
      function CountNetDevLinks($id)
      {
-    	  $this->SetTS("netlinks");    
           return $this->DB->GetOne("SELECT COUNT(id) FROM netlinks WHERE src = ? OR dst = ?",array($id,$id)) + $this->DB->GetOne("SELECT COUNT(Id) FROM nodes WHERE netdev = ?",array($id));
      }
 
@@ -1678,15 +1677,22 @@ class LMS
 
      function IsNetDevLink($dev1, $dev2)
      {
-         return $this->DB->GetOne("SELECT COUNT(id) FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)",array($dev1, $dev2, $dev1, $dev2));
-
+        return $this->DB->GetOne("SELECT COUNT(id) FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)",array($dev1, $dev2, $dev1, $dev2));
      }    
 
      function NetDevLink($dev1, $dev2)
      {
-       	if(! $this->IsNetDevLink($dev1,$dev2))
-    		return $this->DB->Execute("INSERT INTO netlinks (src, dst) VALUES ($dev1, $dev2)"); 
-	 $this->SetTS("netlinks");
+       	if( $this->IsNetDevLink($dev1,$dev2))
+		return FALSE;
+	
+	$netdev1 = $this->GetNetDev($dev1);
+	$netdev2 = $this->GetNetDev($dev2);
+	if( $netdev1[takenports] >= $netdev1[ports] || $netdev2[takenports] >= $netdev2[ports])
+		return FALSE;
+	
+	$this->DB->Execute("INSERT INTO netlinks (src, dst) VALUES ($dev1, $dev2)"); 
+	$this->SetTS("netlinks");
+	return TRUE;
      }	
      
      function NetDevUnLink($dev1, $dev2)
@@ -1914,6 +1920,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.256  2003/10/04 13:17:40  alec
+ * new function NetDevLink()
+ *
  * Revision 1.255  2003/10/04 12:17:52  alec
  * new functions for netdevices linking
  *
