@@ -26,6 +26,9 @@
 
 function drawtext($image, $font, $x, $y, $text, $color, $bgcolor)
 {
+	global $_CONFIG;
+	if($_CONFIG['phpui']['gd_translate_to'])
+		$text = iconv('UTF-8', $_CONFIG['phpui']['gd_translate_to'], $text);
 	imagestring($image, $font, $x + 1, $y + 1, $text, $bgcolor);
 	imagestring($image, $font, $x + 1, $y - 1, $text, $bgcolor);
 	imagestring($image, $font, $x - 1, $y + 1, $text, $bgcolor);
