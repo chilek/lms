@@ -20,6 +20,7 @@ wersja 1.0pre6 (17/03/2003):
   - poprawiony pagelimiter w li¶cie u¿ytkowników
   - opcja w³±czaj±ca sharing mac-addr
   - automagiczna instalacja domy¶lnego admina z poziomu pliku lms.mysql
+  - pole "Imiê" mo¿e byæ puste
 
 wersja 1.0pre5 (26/01/2003):
  
