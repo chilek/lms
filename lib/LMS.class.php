@@ -38,25 +38,9 @@ class LMS {
 		$this->session=$session;
 	}
 
-	function SetTS($table)
-	{
-		$db=$this->db;
-		$db->ExecSQL("DELETE FROM `timestamps` WHERE `tablename` = '".$table."'");
-		$db->ExecSQL("INSERT INTO `timestamps` (`tablename`, `timestamp`) VALUES ('".$table."', '".time()."')");
-	}
-
-	function GetTS($table)
-	{
-		$db=$this->db;
-		$db->ExecSQL("SELECT `timestamp` FROM `timestamps` WHERE `tablename` = '".$table."'");
-		$db->FetchRow();
-		return $db->row[0];
-	}
-
 	function DeleteUser($id)
 	{
 		$db=$this->db;
-		$this->SetTS("nodes");
 		$db->ExecSQL("DELETE FROM `nodes` WHERE `ownerid` = '".$id."'");
 		return $db->ExecSQL("DELETE FROM `users` WHERE `id` = '".$id."' LIMIT 1");
 	}
@@ -64,7 +48,6 @@ class LMS {
 	function DeleteNode($id)
 	{
 		$db=$this->db;
-		$this->SetTS("nodes");		
 		return $db->ExecSQL("DELETE FROM `nodes` WHERE `id` = '".$id."'");
 	}
 
@@ -108,7 +91,6 @@ class LMS {
 		`status` = '".$userdata[status]."',
 		`moddate` = '".time()."'
 		WHERE `id` = '".$userdata[id]."' LIMIT 1");
-		$this->SetTS("users");
 		return $result;
 	}
 
@@ -262,41 +244,39 @@ class LMS {
 		if(!isset($state)) $state="3";
 		if(!isset($order)) $order="username,asc";
 		
+		switch ($state){
+			case "3":
+				$sql .= " WHERE status = 3 ";
+			break;
+			case "2":
+				$sql .= " WHERE status = 2 ";
+			break;
+			case "1":
+				$sql .= " WHERE status = 1 ";
+			break;
+		}
+	
 		$db->ExecSQL($sql);
 
-		if($this->GetTS("users") > $_SESSION[ts][users])
-		{
-			echo "<BR>DEBUG: Fetching userlist from DB<BR>";
-			while($db->FetchRow()){
-				list(
-					$userlist[id][],
-					$userlist[lastname][],
-					$userlist[name][],
-					$userlist[status][],
-					$userlist[email][],
-					$userlist[phone1][],
-					$userlist[address][],
-					$userlist[info][]
-				) = $db->row;
-				$userlist[username][] = strtoupper($db->row[1])." ".$db->row[2];
-			}
+		while($db->FetchRow()){
+			
+			list(
+				$userlist[id][],
+				$userlist[lastname][],
+				$userlist[name][],
+				$userlist[status][],
+				$userlist[email][],
+				$userlist[phone1][],
+				$userlist[address][],
+				$userlist[info][]
+			) = $db->row;
 
-
-			$_SESSION[cache][userlist] = $userlist;
-			$_SESSION[ts][users] = $this->GetTS("users");
-		}else{
-			$userlist = $_SESSION[cache][userlist];
 		}
-		
-		if($this->GetTS("cash") > $_SESSION[ts][cash])
-		{
-			echo "<BR>DEBUG: Fetching user's balance info from DB<BR>";
-			for($i=0;$i<sizeof($userlist[id]);$i++)
-				$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
-			$_SESSION[cache][userlist] = $userlist;
-			$_SESSION[ts][cash] = $this->GetTS("cash");
-		}else{
-			$userlist = $_SESSION[cache][userlist];
+
+		for($i=0;$i<sizeof($userlist[id]);$i++){
+
+			$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
+			$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
 		}
 		
 		list($order,$direction)=explode(",",$order);
@@ -377,7 +357,6 @@ class LMS {
 		$db=$this->db;
 		$db->ExecSQL("SELECT `access` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
 		$db->FetchRow();
-		$this->SetTS("nodes");
 		if($db->row[0]=="Y")
 			return $db->ExecSQL("UPDATE `nodes` SET `access` = 'N' WHERE `id` = '".$id."' LIMIT 1");
 		else
@@ -482,7 +461,6 @@ class LMS {
 	{
 		$db=$this->db;
 		$session=$this->session;
-		$this->SetTS("nodes");
 		return $db->ExecSQL("INSERT INTO `nodes` (`name`, `mac`, `ipaddr`, `ownerid`, `creatorid`, `creationdate`) VALUES ('".strtoupper($nodedata[name])."', '".strtoupper($nodedata[mac])."', '".$nodedata[ipaddr]."', '".$nodedata[ownerid]."', '".$session->id."', '".time()."')");
 	}
 
