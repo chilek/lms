@@ -1753,7 +1753,7 @@ class LMS
 			foreach($result as $idx => $row)
 			{
 				$id = $row['id'];
-				$value = sprintf('%0.2f',$row['value']);
+				$value = round($row['value'], 2);
 				$list[$id]['custname'] = $row['name'];
 				$list[$id]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
 				$list[$id]['nip'] = ($row['nip'] ? trans('TEN').' '.$row['nip'] : ($row['pesel'] ? trans('SSN').' '.$row['pesel'] : ''));
@@ -1776,7 +1776,7 @@ class LMS
 						    $list['sum']['val0'] += $value;
 					    break;
 					    case '7.0':
-						     $val = sprintf('%0.2f',$value/1.07);
+					    	     $val = round($value/1.07, 2);
 						     $list[$id]['val7'] += $val;
 						     $list[$id]['tax7'] += $value-$val;
 						     $list[$id]['tax'] += $value-$val;
@@ -1785,7 +1785,7 @@ class LMS
 						     $list['sum']['tax'] += $value-$val;
 					    break;
 					    case '22.0':
-					    	     $val = sprintf('%0.2f',$value/1.22);
+					    	     $val = round($value/1.22, 2);
 						     $list[$id]['val22'] += $val;
 						     $list[$id]['tax22'] += $value-$val;
 						     $list[$id]['tax'] += $value-$val;
