@@ -119,8 +119,8 @@ $SMARTY->debugging = chkconfig($_CONFIG['phpui']['smarty_debug']);
 $layout['logname']=$SESSION->logname;
 $layout['logid']=$SESSION->id;
 $layout['lmsv']='1.1-cvs ('.$LMS->_version.'/'.$SESSION->_version.')';
+$layout['lmsdbv']=$ADB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
-$layout['adodb_version'] = eregi_replace('(.*)\(c\).*','\1',$ADODB_vers);
 $layout['uptime']=uptime();
 $layout['hostname']=hostname();
 $layout['date']=pldate();
@@ -182,6 +182,9 @@ else
 
 /*
  * $Log$
+ * Revision 1.92  2003/08/22 12:59:48  lukasz
+ * -
+ *
  * Revision 1.91  2003/08/22 00:24:29  lukasz
  * - temporary save - adodb no longer needed
  *
