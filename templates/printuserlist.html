@@ -26,7 +26,8 @@
 		</TD>
 		<TD CLASS="HEAD" VALIGN="TOP">
 			E-mail<BR>
-			Taryfa
+			Taryfa<BR>
+			NIP/PESEL
 		</TD>
 		<TD CLASS="HEAD" ALIGN="RIGHT">
 			Saldo
@@ -36,7 +37,7 @@
 	{section name=userlist loop=$userlist}{if $userlist[userlist].id}
 	<TR BGCOLOR="{cycle}">
 		<TD ALIGN="CENTER">
-		{counter}
+			{counter}
 		</TD>
 		<TD ALIGN="CENTER">
 			{$userlist[userlist].id|string_format:"%04d"}
@@ -48,7 +49,8 @@
 		</TD>
 		<TD VALIGN="ABSMIDDLE">
 			{$userlist[userlist].email}<BR>
-			{$userlist[userlist].tariffvalue|string_format:"%01.2f"} z³ / mc
+			{$userlist[userlist].tariffvalue|string_format:"%01.2f"} z³ / mc<BR>
+			{if $userlist[userlist].nip}{$userlist[userlist].nip}{else}{$userlist[userlist].pesel}{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$userlist[userlist].balance|string_format:"%01.2f"} z³
