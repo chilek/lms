@@ -1,1599 +1,185 @@
-<!-- Start of DOCPART.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML
-><HEAD
-><LINK
-href="style.css"
-rel="stylesheet"
-type="text/css"><BODY
-bgcolor="#EBE4D6"
-><CENTER
->    <H1
->LMS - LAN Management System</H1
->
-    <P>              <B
->Marcin</B
->
-        <I
->"Lexx"</I
->
-        <B
->Król</B
->
-      <br>
-              <B
->Krzysztof</B
->
-        <I
->"Hunter"</I
->
-        <B
->Drewicz</B
->
-      <br>
-              <B
->£ukasz</B
->
-        <I
->"Baseciq"</I
->
-        <B
->Mozer</B
->
-      <br>
-    
-    <P><B
->&copy;</B
->     <B
->2003</B
->
-     <B
->LMS Developers</B
->
-    
-    <P><P
-align="justify">Niniejszy  program  jest  oprogramowaniem  wolnodostêpnym;  mo¿esz  go rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej Licencji Publicznej  GNU, wydanej przez Fundacjê Wolnodostêpnego Oprogramowania - wed³ug wersji 2-giej tej Licencji lub której¶ z pó¼niejszych wersji.
-    <P
-align="justify">Niniejszy  program  rozpowszechniany  jest  z  nadziej±,  i¿ bêdzie on u¿yteczny  -  jednak  BEZ  JAKIEJKOLWIEK  GWARANCJI,  nawet  domy¶lnej gwarancji  PRZYDATNO¦CI  HANDLOWEJ  albo  PRZYDATNO¦CI  DO OKRE¦LONYCH ZASTOSOWAÑ.   W  celu  uzyskania  bli¿szych  informacji  -  Powszechna Licencja Publiczna GNU.
-    <P
-align="justify">Z  pewno¶ci±  wraz  z  niniejszym  programem otrzyma³e¶ te¿ egzemplarz Powszechnej  Licencji  Publicznej  GNU;  je¶li  nie  -  napisz do Free Software  Foundation,  Inc.,  59  Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-  </CENTER
-><H2
->Zawarto¶æ</H2
-><ul
->  
-  
-  
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Language" content="pl">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
+<title>::: LMS : Dokumentacja :::</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<table bgcolor="#CEBD9B" cellpadding="3" cellspacing="0" width="100%" style="border-width: 1pt; border-style: solid;">
+<tr>
+<td width="50%" valign="middle">
+	<img border="0" src="logo-small.png" align="left" alt="LMS 1.0">
+</td>
+<td width="50%">
+<p align="right">
+<a href="http://lms.rulez.pl">Strona domowa</a>
+</p>
+</td>
+</tr>
+<TR>
+<TD width="50%">
+<p>&lt;&lt; Poprzednia</p>
+</TD>
+<TD width="50%">
+<p align="right">
+<a href="lms.html">Nastêpna &gt;&gt;</a></p>
+</TD>
+</TR>
+</table>
+<table border="0" cellpadding="10" cellspacing="0" width="100%"><tr><td width="1%" style="border-right-style: dashed; border-right-width: 1pt; border-right-color: #333333; border-left-style: dashed; border-left-width: 1pt; border-left-color: #333333;" bgcolor="#F4F0EC" valign="top">
+<table width="100%">
+<TR>
+<TD width="100%" nowrap>
+<!-- Spis treœci idzie tutaj -->
+<H2>Zawarto¶æ</H2>
+<img src="tab1.gif"><a href="index.html">Przedmowa</a><br><br>
+<img src="tab1.gif"><a href="lms.html">Rozdzia³ 1 - Na pocz±tek</a><br>
+<img src="tab2.gif"><a href="lms.html#1">Czym jest LMS</a><br>
+<img src="tab2.gif"><a href="lms.html#2">Co LMS mo¿e a czego nie</a><br>
+<img src="tab2.gif"><a href="lms.html#3">Co wchodzi w sk³ad LMS</a><br>
+<img src="tab2.gif"><a href="lms.html#4">Instalacja</a><br>
+<img src="tab2.gif"><a href="lms.html#5">Konfiguracja</a><br>
+<img src="tab2.gif"><a href="lms.html#6">Pierwsze logowanie</a><br>
+<img src="tab2.gif"><a href="lms.html#7">Prawa dostêpu</a><br>
+<img src="tab1.gif"><a href="lms-ui.html">Rozdzia³ 2 - LMS UI (User Interface)</a><br>
+<img src="tab2.gif"><a href="lms-ui.html#1">Konfiguracja</a><br>
+<img src="tab1.gif"><a href="lms-mgc.html">Rozdzia³ 3 - LMS-MGC</a><br>
+<img src="tab1.gif"><a href="lms-scr.html">Rozdzia³ 4 - Skrypty</a><br>
+<img src="tab2.gif"><a href="lms-scr.html#1">Instalacja</a><br>
+<img src="tab2.gif"><a href="lms-scr.html#2">lms-notify</a><br>
+<img src="tab2.gif"><a href="lms-scr.html#3">lms-cutoff</a><br>
+<img src="tab2.gif"><a href="lms-scr.html#4">lms-eachmonth</a><br>
+<!-- A tutaj spis siê koñczy -->
+</td>
+</TR>				
+</TABLE>
+</p></td>
+<td width="99%" valign="top" style="border-right-style: dashed; border-right-width: 1pt; border-right-color: #333333;">
+<!-- A tutaj zaczyna siê tresæ -->
+<p align="center"><B>LMS zawiera fragmenty nastêpuj±cego oprogramowania:</B></P>
+<p align="center"><A href="http://phpwizard.net/projects/phpMyAdmin/">phpMyAdmin</A><BR>
+<a href="http://phpsysinfo.sourceforge.net/">phpsysinfo</a><BR>
+<a href="http://florian-amrhein.de/newsportal/index-english.php3">NewsPortal</A><BR>
+oraz przyk³ady kodu zawarte w <a href="http://www.php.net/manual/pl/">Podrêczniku PHP</A></P>
+<a name="autorzy"><p align="center"><B>W rolach g³ównych:</B></P></a>
+<TABLE WIDTH="100%" CELLPADDING="5">
+	<TR>
+		<TD ALIGN="RIGHT" VALIGN="TOP" WIDTH="50%">
+			<B>Kod PHP:</B>
+		</TD>
+		<TD WIDTH="50%">
+			<A HREF="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</A><BR>
+			Micha³ 'DziQs' Zapalski<BR>
+			<A HREF="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</A><BR>
+			Krzysztof 'hunter' Drewicz
+		</TD>
+	</TR>
+	<TR>
+		<TD ALIGN="RIGHT" VALIGN="TOP" WIDTH="50%">
+			<B>Kod C:</B>
+		</TD>
+		<TD WIDTH="50%">
+			Mateusz 'mteg' Golicz
+		</TD>
+	</TR>
+	<TR>
+		<TD ALIGN="RIGHT" VALIGN="TOP" WIDTH="50%">
+			<B>Kod Perl:</B>
+		</TD>
+		<TD WIDTH="50%">
+			<A HREF="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</A><BR>
+			Micha³ 'DziQs' Zapalski<BR>
+			Maciej 'agaran' Pijanka<BR>
+			Krzysztof 'hunter' Drewicz
+		</TD>
+	</TR>
+	<TR>
+		<TD ALIGN="RIGHT" VALIGN="TOP" WIDTH="50%">
+			<B>Design:</B>
+		</TD>
+		<TD WIDTH="50%">
+			<A HREF="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</A>
+		</TD>
+	</TR>
+	<TR>
+		<TD ALIGN="RIGHT" VALIGN="TOP" WIDTH="50%">
+			<B>HTML, JavaScript, CSS:</B>
+		</TD>
+		<TD WIDTH="50%">
+			<A HREF="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</A><BR>
+			<A HREF="http://plug.atn.pl/~bober/">Pawe³ 'Bob_R' Czerski</A><BR>
+			<A HREF="http://gamechannel.int.pl">Pawe³ 'sickone' Kisiela</A>
+		</TD>
+	</TR>
+	<TR>
+		<TD ALIGN="RIGHT" VALIGN="TOP" WIDTH="50%">
+			<B>Grafika:</B>
+		</TD>
+		<TD WIDTH="50%">
+			<A HREF="http://pierzak.melanz.org">Piotr 'Pierzak' M.</A><BR>
+			<A HREF="http://byko.pawlacz.net">Grzegorz 'byko' Cichowski</A><BR>
+			<A HREF="http://www.kflis.net">Kuba 'kflis' Flis</A><BR>
+			<A HREF="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</A>
+		</TD>
+	</TR>
+	<TR>
+		<TD ALIGN="RIGHT" VALIGN="TOP" WIDTH="50%">
+			<B>Support MySQL:</B>
+		</TD>
+		<TD WIDTH="50%">
+			<A HREF="http://s.atn.pl">Kuba 'shasta' Jankowski</A><BR>
+			<A HREF="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</A>
+		</TD>
+	</TR>
+	<TR>
+		<TD ALIGN="RIGHT" VALIGN="TOP" WIDTH="50%">
+			<B>Dokumentacja i strona WWW:</B>
+		</TD>
+		<TD WIDTH="50%">
+			<A HREF="http://s.atn.pl">Kuba 'shasta' Jankowski</A><BR>
+			<A HREF="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziêgielewski</A><BR>
+			<A HREF="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</A><BR>
+			<A HREF="http://www.lexx.w.pl">Marcin 'Lexx' Król</A><BR>
+		</TD>
+	</TR>			
+	<TR>
+		<TD ALIGN="RIGHT" VALIGN="TOP" WIDTH="50%">
+			<B>Betatesting:</B>
+		</TD>
+		<TD>
+			<A HREF="http://byko.pawlacz.net">Grzegorz 'byko' Cichowski</A><BR>
+			<A HREF="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</A><BR>
+			Tomasz 'dzwonek' Dzwonkowski<BR>
+			Sebastian 'Victus' Frasunkiewicz<BR>
+			<A HREF="http://www.kflis.net">Kuba 'kflis' Flis</A><BR>
+			Krystian 'UFOczek' Kochanowski<BR>
+			<A HREF="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziêgielewski</A><BR>
+			Andrzej 'chsh' Gr±dziel<BR>
+			<A HREF="http://www.lexx.w.pl">Marcin 'Lexx' Król</A><BR>
+		</TD>
+	</TR>
+</TABLE>	
+<P align="justify">Niniejszy  program  jest  oprogramowaniem  wolnodostêpnym;  mo¿esz  go rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej Licencji Publicznej  GNU, wydanej przez Fundacjê Wolnodostêpnego Oprogramowania - wed³ug wersji 2-giej tej Licencji lub której¶ z pó¼niejszych wersji.
+<P align="justify">Niniejszy  program  rozpowszechniany  jest  z  nadziej±,  i¿ bêdzie on u¿yteczny  -  jednak  BEZ  JAKIEJKOLWIEK  GWARANCJI,  nawet  domy¶lnej gwarancji  PRZYDATNO¦CI  HANDLOWEJ  albo  PRZYDATNO¦CI  DO OKRE¦LONYCH ZASTOSOWAÑ.   W  celu  uzyskania  bli¿szych  informacji  -  Powszechna Licencja Publiczna GNU.
+<P align="justify">Z  pewno¶ci±  wraz  z  niniejszym  programem otrzyma³e¶ te¿ egzemplarz Powszechnej  Licencji  Publicznej  GNU;  je¶li  nie  -  napisz do Free Software  Foundation,  Inc.,  59  Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
 
-
-    <LI>Rozdzia³ 1 - Na pocz±tek<UL
-><LI>Czym jest LMS<LI>Co LMS mo¿e a czego nie<LI>Co wchodzi w sk³ad LMSa<LI>Instalacja<LI>Konfiguracja<LI>Prawa dostêpu<LI>Bezpieczeñstwo</UL
->
-
-  <LI>Rozdzia³ 2 - LMS UI (User Interface)<UL
-><LI>Konfiguracja.</UL
->
-
-  <LI>Rozdzia³ 3 - LMS-MGC<UL
-></UL
->
-
-  
-    <LI>Rozdzia³ 4 - Skrypty<UL
-><LI>Instalacja<LI>lms-notify<LI>lms-cutoff<LI>lms-eachmonth</UL
->
-
-  </ul
-></BODY
-></HEAD
-><!-- End of DOCPART.html --></HTML
-><!-- Start of DOCPART-.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML
-><HEAD
-><LINK
-href="style.css"
-rel="stylesheet"
-type="text/css"><BODY
-bgcolor="#EBE4D6"
-><H1
->Przedmowa</H1
->
-<P
-align="justify">Wersja parsowana z DocBook'a do htmla przy pomocy jade i pierwszego lepszego arkusza stylów, wiêc nie narzekaæ na brzydkeigo HTMLa. Polskie krzaczki s± w ISO. £adnego HTMLa mo¿na siê spodziewaæ jak wyjdzie wersja 1.0 LMSa (czyli w raczej dalszej nieokre¶lonej przysz³o¶ci ;-) )
-<P
-align="justify">Sugestie s³aæ na lexx maupa polarnet kropka org.</BODY
-></HEAD
-><!-- End of DOCPART-.html --></HTML
-><!-- Start of DOCPART-1.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML
-><HEAD
-><LINK
-href="style.css"
-rel="stylesheet"
-type="text/css"><BODY
-bgcolor="#EBE4D6"
->    <H1
->Rozdzia³ 1. Na pocz±tek</H1
->
-          <H2
->Czym jest LMS</H2
->
-	<P
-align="justify">"LMS" jest skrótem od "LAN Management System". Jest to zestaw aplikacji w PHP i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi (popularnie zwanymi Amatorskimi Sieciami Komputerowymi), opartych o bazê danych MySQL (docelowo, do wyboru, MySQL lub PostgreSQL). G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi u¿ytkowników na poziomie providera z prawdziwego zdarzenia. Najbardziej podstawowe cechy LMS to: 
-	<P><UL
->	  <LI>	     <P
-align="justify">baza danych u¿ytkowników (imiê, nazwisko, adres, numer telefonu, uwagi);
-	  <P>
-	  <LI>	     <P
-align="justify">baza danych komputerów (adres IP, adres MAC);
-	  <P>
-	  <LI>	     <P
-align="justify">prowadzenie prostego rachunku operacji finansowych oraz stanu funduszów sieci;
-	  <P>
-	  <LI>	     <P
-align="justify">ró¿ne taryfy abonamentowe;
-	  <P>
-	  <LI>	     <P
-align="justify">wysy³anie poczt± elektroniczn± upomnieñ do u¿ytkowników;
-	  <P>
-	  <LI>	     <P
-align="justify">automatyczne naliczanie op³at miesiêcznych;
-	  <P>
-	  <LI>	     <P
-align="justify">generowanie praktycznie jakiegkolwiek konfiga na podstawie danych o komputerach w bazie (przyk³adowe configi obejmuj± rc.masq na iptables, dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i odwrotny);
-	  <P>
-	</UL
->
-	
-        <P
-align="justify">Ca³o¶æ zosta³a wymy¶lona w ramach administracji <A
-href="http://www.netx.waw.pl/"
->ASK NetX</A
-> i tam jest nieustannie rozwijana i poddawana testom ;)
-	
-    
-          <H2
->Co LMS mo¿e a czego nie</H2
->
-	<P
-align="justify">LMS Nie zast±pi Ci umiejêtno¶ci jakie powinien mieæ administrator. Je¶li nie potrafisz wykonaæ tak prostych czynno¶æ jak instalacja czy konfiguracja, prawdopodobnie nie bêdziesz umia³ dostroiæ LMS do swojego systemu. Tak wiêc bez znajomo¶ci systemów U*IX siê nie obejdzie.
-    
-          <H2
->Co wchodzi w sk³ad LMSa</H2
->
-	<P
-align="justify">LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <I
->LMS-UI</I
-> (User Interface). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy danych (w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w LMS-UI wykonujemy wszystkie czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMSa.
-	<P
-align="justify">LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty wymagaj± aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, musisz mieæ PERLa. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych b±d¼ wysy³anie upomnieñ. Jest jeszcze LMS-MGC, który te¿ jest skryptem ale na tyle uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny, i zrestartowaæ us³ugê.
-	
-    
-          <H2
->Instalacja</H2
->
-		  <H3
->Wymagania</H3
->
-	    	      <H4
->Serwer WWW</H4
->
-	      <P
-align="justify">Poniewa¿ LMS-UI jest napisane w PHP, potrzebujemy serwer WWW który bêdzie ten jêzyk obs³ugiwa³. Preferowanym serwerem jest Apache <A
-href="http://www.apache.org"
->www.apache.org</A
->
-	    
-	    	      <H4
->Interpreter PHP</H4
->
-	      <P
-align="justify">Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a te¿ poprawnie na 4.1.x (ale poniewa¿ devepolerzy pracuj± na 4.2.3, nie mo¿na zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿emy sci±gn±æ ze strony <A
-href="http://www.php.net"
->www.php.net</A
->
-	    
-	    	      <H4
->Serwer baz danych</H4
->
-	      <P
-align="justify">Preferowany to MySQL. 3.23.53 i nowszy, starszy mo¿e te¿ dzia³aæ, je¶li nie to daj nam o tym znaæ ;-)
-	      <P
-align="justify">LMS-UI oraz LMS-MGC <I
->powinien</I
-> tak¿e dzia³aæ z postgresql, jednak ta konfiguracja jest narazie w fazie testów.
-	    
-	                 <H4
->Biblioteki: Smarty i ADOdb</H4
->
-             <P
-align="justify">LMS-UI do pracy wymaga jeszcze bibliotek Smarty (<A
-href="http://smarty.php.net"
->http://smarty.php.net</A
->) w wersji 2.5.0 lub wy¿szej oraz ADOdb (<A
-href="http://php.weblogs.com/ADOdb"
->http://php.weblogs.com/ADOdb</A
->) w wersji 2.90 lub wy¿szej.
-            
-                        <H4
->Perl</H4
->
-	  <P
-align="justify">O ile dla LMS-UI wystarczy to co powy¿ej, to ¿eby mieæ dzia³aj±cy LMS-MGC, lub resztê skryptów potrzebujemy tak¿e perla i modu³y do niego czyli:
-	  <P><UL
->	    <LI>	       <P
-align="justify">perl w³a¶ciwy i jego podstawowe modu³y (POSIX, GetOpt::Long);
-	    <P>
-	    <LI>	       <P
-align="justify">Net::SMTP;
-	    <P>
-	    <LI>	       <P
-align="justify">Config::IniFiles;
-	    <P>
-	    <LI>	       <P
-align="justify">DBI;
-	    <P>
-	    <LI>	       <P
-align="justify">DBD-mysql (Je¶li masz zamiar u¿ywaæ mysql'a);
-	    <P>
-	    <LI>	       <P
-align="justify">DBD-pg (Je¶li masz zamiar u¿ywaæ postgres'a);
-	    <P>
-	  </UL
->
-	  
-	
-	
-		  <H3
->Sci±gamy LMSa</H3
->
-	  <P
-align="justify"><I
->Nota redaktorska:</I
-> Opis sci±gania wersji CVSowej przy wydaniu stabilnym jest IMHO bezsensowny, ale teraz niech zostanie.
-	  <P
-align="justify">LMSa mo¿emy sci±gn±æ ze strony domowej projektu (<A
-href="http://lms.rulez.pl"
->lms.rulez.pl</A
->), lub bezpo¶rednio z CVS:
-	  <P><TABLE
-border="1"
-bgcolor="#F4F0EC"
-width="100%"
-><TR
-><TD
-><PRE
-><B
->lexx@troll:~$</B
-> wget http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1</PRE
-></TD
-></TR
-></TABLE
->
- 	  <P
-align="justify">je¶li chcemy sci±gn±æ przez interfejs webowy lub je¶li mamy CVS mo¿emy wykonaæ komendê:
-	  
-	  <P><TABLE
-border="1"
-bgcolor="#F4F0EC"
-width="100%"
-><TR
-><TD
-><PRE
-><B
->lexx@troll:~$</B
-> cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot get lms</PRE
-></TD
-></TR
-></TABLE
->
-	
-		  <H3
->Umieszczamy LMS na dysku</H3
->
-	  <P
-align="justify">Je¶li ¶ci±gneli¶my archwiwum to je teraz rozpakowujemy, a nastêpnie przenosimy pliki z lms-ui do katalogu osi±galnego z poziomy przegl±darki www (np. <TT
->/var/www/lms</TT
->). Pliki z konfiguracj± umieszczamy w katalogu <TT
->/etc/lms</TT
->).
-	
-		  <H3
->Biblioteki</H3
->
-	  <P
-align="justify">Je¶li jeste¶my w katalogu z LMSem, to musimy ¶ci±gn±c biblioteki. Najpierw ¶ci±gamy Smarty:
-	  <P><TABLE
-border="1"
-bgcolor="#F4F0EC"
-width="100%"
-><TR
-><TD
-><PRE
-><B
->lexx@troll:~$</B
-> cd /var/www/lms
-<B
->lexx@troll:~$</B
-> cd lib	
-<B
->lexx@troll:~$</B
-> wget http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz
-<B
->lexx@troll:~$</B
-> tar -xzf Smarty-2.5.0.tar.gz
-<B
->lexx@troll:~$</B
-> mv Smarty-2.5.0/libs Smarty</PRE
-></TD
-></TR
-></TABLE
->
-	  <P
-align="justify">Teraz ADOdb:
-	  <P><TABLE
-border="1"
-bgcolor="#F4F0EC"
-width="100%"
-><TR
-><TD
-><PRE
-><B
->lexx@troll:~$</B
-> wget http://phplens.com/lens/dl/adodb320.tgz
-<B
->lexx@troll:~$</B
-> tar -xzf adodb320.tgz</PRE
-></TD
-></TR
-></TABLE
->
-          
-        
-    
-          <H2
->Konfiguracja</H2
->
-      <P
-align="justify">Po ¶ci±gniêciu i zainstalowaniu LMSa musimy jeszcze ustawiæ dwie rzeczy. Bazê danych, oraz podstawowe opcje w <TT
->lms.ini</TT
->
-		  <H3
->MySQL</H3
->
-	  <P><TABLE
-border="1"
-bgcolor="#F4F0EC"
-width="100%"
-><TR
-><TD
-><PRE
-><B
->lexx@troll:~$</B
-> mysql -u [U¿ytkownik z pe³nym dostêpem do bazy] -p
-<B
->Enter password:</B
-> [Has³o]
-<B
->mysql&#62;</B
-> create database lms;
-<B
->mysql&#62;</B
-> grant usage on lms.* to lms@localhost;
-<B
->mysql&#62;</B
-> grant select,insert,update,delete,create on lms.* to lms@localhost identified by '[Tajne Has³o]';
-<B
->mysql&#62;</B
-> flush privileges;
-<B
->mysql&#62;</B
-> use lms;
-<B
->mysql&#62;</B
-> source doc/lms.mysql;</PRE
-></TD
-></TR
-></TABLE
->
-	
-		 <H3
-><TT
->lms.ini</TT
-></H3
->
-	 <P
-align="justify">Sekcja [database] - ustawienia bazy danych
-         <P><UL
->          <LI>	   <P
-align="justify">type
-	   <P
-align="justify">Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">type = mysql</P
->
-	  <P>
-          <LI>	   <P
-align="justify">host
-	   <P
-align="justify">Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj wstawiæ cokolwiek (ipek, domena, path to socketa w formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">host = localhost</P
->
-	  <P>
-          <LI>	   <P
-align="justify">user
-	   <P
-align="justify">U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 'postgres' (PostgreSQL). Domy¶lnie: root
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">user = mysql</P
->
-	  <P>
-          <LI>	   <P
-align="justify">password
-	   <P
-align="justify">Has³o do bazy danych. Domy¶lnie puste.
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">password = password</P
->
-	  <P>
-          <LI>	   <P
-align="justify">database
-	   <P
-align="justify">Nazwa bazy danych, domy¶lnie lms.
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">database = lms</P
->
-	  <P>
-         </UL
->
-         <P
-align="justify">Sekcja [directories] - ustawienia katalogów
-         <P><UL
->          <LI>	   <P
-align="justify">sys_dir
-	   <P
-align="justify">Katalog systemowy. Jest to miejsce gdzie jest ca³a zawarto¶æ UI LMS'a, czyli index.php, grafiki, templejty i reszta. Domy¶lnie, index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale lepiej by by³o gdyby mu powiedzieæ gdzie jest:
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">sys_dir = /var/www/htdocs/lms/</P
->
-	  <P>
-          <LI>	   <P
-align="justify">modules_dir
-	   <P
-align="justify">Katalog z "modu³ami" LMS'a - kawa³kami kodu które szumnie kto¶ (czyli Baseciq) nazwa³ modu³ami. Domy¶lnie jest to podkatalog modules w sys_dir.
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">modules_dir = /usr/share/lms/modules/</P
->
-	  <P>
-          <LI>	   <P
-align="justify">lib_dir
-	   <P
-align="justify">Katalog z "bibliotekami" LMS'a. Czyli zawarto¶æ katalogu lib. Domy¶lnie to podkatalog lib w sys_dir.
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">lib_dir = /usr/share/lms/lib/</P
->
-	  <P>
-          <LI>	   <P
-align="justify">backup_dir
-	   <P
-align="justify">Katalog z backupami SQL'owymi - miejsce gdzie LMS zapisuje dumpy z bazy. Domy¶lnie jest to podkatalog 'backups'. Naprawdê dobrze by by³o go przenie¶æ poza miejsce osi±galne przez przegl±darkê.
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">backup_dir = /var/backup/lms/</P
->
-	  <P>
-          <LI>	   <P
-align="justify">smarty_dir
-	   <P
-align="justify">Katalog z bibliotek± Smarty - domy¶lnie podkatalog Smarty w lib_dir.
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">smarty_dir = /usr/lib/php/Smarty</P
->
-	  <P>
-          <LI>	   <P
-align="justify">smarty_compile_dir
-	   <P
-align="justify">Katalog kompilacji Smartyego. Miejsce gdzie Smarty kompiluje nasze templejty. Domy¶lnie to templates_c w katalogu sysdir.
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">smarty_compile_dir = /var/smarty/compile/lms</P
->
-	  <P>
-          <LI>	   <P
-align="justify">smarty_templates_dir
-	   <P
-align="justify">Katalog z templejtami którymi karmimy Smartiego. Domy¶lnie to podkatalog templates z sys_dir'a.
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">smarty_templates_dir = /usr/share/lms/templates</P
->
-	  <P>
-          <LI>	   <P
-align="justify">adodb_dir
-	   <P
-align="justify">Katalog z ADOdb - czyli tym co posredniczy pomiêdzy baz± a UI. Domy¶lnie podkatalog adodb w lib_dir.
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">adodb_dir = /usr/lib/php/adodb</P
->
-	  <P>
-         </UL
->
-    
-          <H2
->Prawa dostêpu</H2
->
-      <P
-align="justify">LMS  ma  mo¿liwo¶æ  zdefiniowania  do 256 regu³ dostêpu do systemu. Ka¿da z nich mo¿e zabraniaæ, b±d¼ pozwalaæ na dostêp do konkretnych modu³ów. Ka¿demu adminowi mo¿na przydzieliæ dowoln± kombinacjê regu³ dostêpu.
-      <P
-align="justify">Domy¶lnie zdefiniowanych  jest  osiem regu³ dostêpu. Siedem z nich zezwala na dostêp do modu³ów oraz jedna zabrania.
-      <P
-align="justify">Modu³y do których administrator ma zawsze dostêp to: welcome,  copyrights,  logout, chpasswd (przy czym chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostep do reszty jest zdefiniowany regu³ami. Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie przydzieli mu regu³kê 0 czyli pe³en dostêp.
-    
-          <H2
->Bezpieczeñstwo</H2
->
-        <P
-align="justify">Dostêp do lms-ui powinien byæ mo¿liwy tylko po SSL (co zreszt± mo¿na wymusiæ flag± <FONT
-color="brown"
->force_ssl</FONT
-> w <TT
->lms.ini</TT
->), a katalog z kopiami zapasowymi baz danych powinien zostaæ przeniesiony do katalogu gdzie serwer WWW nie ma dostêpu (np. <TT
->/var/backup/lms</TT
->), bo inaczej do plików z kopiami zapasowymi bazy bêdzie siê mo¿na dostaæ z poziomu www bez autoryzacji.
-    
-  </BODY
-></HEAD
-><!-- End of DOCPART-1.html --></HTML
-><!-- Start of DOCPART-2.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML
-><HEAD
-><LINK
-href="style.css"
-rel="stylesheet"
-type="text/css"><BODY
-bgcolor="#EBE4D6"
-> <H1
->Rozdzia³ 2. LMS UI (User Interface)</H1
->
- <P
-align="justify">Tutaj bêdzie opis LMS-UI
-   <H2
->Konfiguracja.</H2
->
-  <P
-align="justify">Konfiguracjê dla lms-ui mo¿emy ustaliæ w pliku <TT
->lms.ini</TT
-> w sekcji <I
->[phpui]</I
->. Mo¿emy tam ustawiæ nastêpuj±ce parametry:
-  <P><UL
->   <LI>    <P
-align="justify">allow_from  (opcjonalny)
-    <P
-align="justify">Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste, ka¿dy adres IP ma dostêp do LMS'a, je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego niechcianego u¿ytkownika.
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</P
->
-   <P>
-   <LI>    <P
-align="justify">timeout
-    <P
-align="justify">Timeout sesji www. Po tym czasie (w sekudnach) u¿ytkownik zostanie wylogowany je¿eli nie podejmie ¿adnej akcji. Domy¶lnie 600 sekund.
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">timeout = 900</P
->
-    <P><FONT
-color="red"
-><B
->Uwaga!:</B
-></FONT
-><BLOCKQUOTE
-><P
-align="justify">Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie bêdziesz móg³ korzystaæ z LMS!</BLOCKQUOTE
->
-   <P>
-   <LI>    <P
-align="justify">userlist_pagelimit
-    <P
-align="justify">Limit wy¶wietlanych pozycji na stronie w li¶cie u¿ytkowników. Domy¶lnie brak limitu.
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">userlist_pagelimit	= 10</P
->
-   <P>
-   <LI>    <P
-align="justify">nodelist_pagelimit
-    <P
-align="justify">Limit wy¶wietlanych pozycji na stronie w li¶cie komputerów. Domy¶lnie brak limitu.
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">nodelist_pagelimit	= 10</P
->
-   <P>
-   <LI>    <P
-align="justify">reload_type
-    <P
-align="justify">Typ reloadu. Dozwolone warto¶ci:
-    <P
-align="justify">exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶ skrypt lub co¶, konfigurowalny poni¿ej)
-    <P
-align="justify">sql  - zrobienie wpisów w SQL'u (te¿ mo¿na ustawiæ konkretne query SQL'a)
-    <P
-align="justify">Domy¶lna warto¶æ to 'sql'.
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">reload_type = exec</P
->
-   <P>
-   <LI>    <P
-align="justify">reload_execcmd
-    <P
-align="justify">Komenda do wykonania podczas reloadu je¿eli reload_type jest ustawione na 'exec'. Domy¶lnie /bin/true. String ten puszczany do komendy system() wiêc pronuje rozwagê i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedyñczo.
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">reload_execcmd = "sudo /usr/bin/reload_lms.sh"</P
->
-   <P>
-   <LI>    <P
-align="justify">reload_sqlquery
-    <P
-align="justify">Query SQL'a. Generalnie, LMS przy nie ustawionym swoim w³asnym QUERY robi dziwne rzeczy które ja ju¿ wymy¶li³em. Chwilowo pewnie wogóle nie kompatybilne z mteg'owym demonikiem, ale pracujemy nad uzgodnieniem formatu. Jak kto¶ bardzo chce, to mo¿na u¿yæ '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika (czyli ;) jest traktowany jako separator kwerend. Tj. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka komend MySQL'a.
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</P
->
-   <P>
-   <LI>    <P
-align="justify">force_ssl
-    <P
-align="justify">Wymuszanie SSL'a. Ustawinie tej zmiennej na 1 spowoduje ¿e LMS bêdzie wymusza³ po³±czenie SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej próbie dostêpu bez SSL. Domy¶lnie wy³±czone.
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">force_ssl = 0</P
->
-   <P>
-   <LI>    <P
-align="justify">allow_mac_sharing
-    <P
-align="justify">Przyzwolenie na dodawanie rekordów komputerów z adresami MAC ju¿ istniej±cymi (nie sprawdza czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">allow_mac_sharing	= 1</P
->
-   <P>
-   <LI>    <P
-align="justify">smarty_debug
-    <P
-align="justify">W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP do Smartyego. Domy¶lnie wy³±czone.
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">smarty_debug = 1</P
->
-   <P>
-   <LI>    <P
-align="justify">adodb_debug
-    <P
-align="justify">W³±czenie debugu ADOdb, przydatne w ¶ledzeniu b³êdów w kwerendach SQL. Domy¶lnie wy³±czone.
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">adodb_debug = 1</P
->
-   <P>
-   <LI>    <P
-align="justify">adodb_debug_log
-    <P
-align="justify">Plik z logiem debugu ADOdb. Je¿eli w³±czymy adodb_debug i podamy tutaj nazwê pliku (do którego bêdzie móg³ zapisaæ serwer www) ca³y debug bêdzie szed³ do pliku, a na interface jedynie krytyczne b³êdy SQL'a. Domy¶lnie puste.
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">adodb_debug_log	= /var/log/debug/lms-adodb.log</P
->
-   <P>
-   <LI>    <P
-align="justify">debug_mail
-    <P
-align="justify">Adres e-mail do debugowania - pod ten email bêd± sz³y maile wysy³ane z sekcji 'mailing' LMS'a, zamiast do w³a¶ciwych u¿ytkowników.
-    <P
-><B
->Przyk³ad:</B
-><P
-align="justify">debug_mail = root@localhost</P
->
-   <P>
-  </UL
->
- </BODY
-></HEAD
-><!-- End of DOCPART-2.html --></HTML
-><!-- Start of DOCPART-3.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML
-><HEAD
-><LINK
-href="style.css"
-rel="stylesheet"
-type="text/css"><BODY
-bgcolor="#EBE4D6"
-> <H1
->Rozdzia³ 3. LMS-MGC</H1
->
-  
-  <P
-align="justify">LMS-MGC to "magiczny" generator plików konfiguracyjnych. Przy odrobinie wysi³ku mo¿emy stworzyæ przy jego pomocy dowolnego rodzaju plik konfiguracyjny (np. generuj±cy odpowiednie strefy dla DNS)
-  <P
-align="justify">Konfiguracjê dla LMS-MGC mo¿emy ustaliæ w pliku <TT
->lms-mgc.ini</TT
->, kótry jest podzielony na kilka sekcji. Podstawowe opcje mo¿emy ustawiæ w sekcji <I
->[database]</I
->:
-   <P><UL
->    <LI>     <P
-align="justify">type
-     <P
-align="justify">Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">type = mysql</P
->
-    <P>
-    <LI>     <P
-align="justify">host
-     <P
-align="justify">Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj wstawiæ cokolwiek (ipek, domena, path to socketa w formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">host = localhost</P
->
-    <P>
-    <LI>     <P
-align="justify">user
-     <P
-align="justify">U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze wskazówkami w doc/INSTALL) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 'postgres' (PostgreSQL). Domy¶lnie: root
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">user = mysql</P
->
-    <P>
-    <LI>     <P
-align="justify">password
-     <P
-align="justify">Has³o do bazy danych. Domy¶lnie puste.
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">password = tajne_haslo</P
->
-    <P>
-    <LI>     <P
-align="justify">database
-     <P
-align="justify">Nazwa bazy danych, domy¶lnie lms.
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">database = lms</P
->
-    <P>
-   </UL
->
-  <P
-align="justify">W³a¶ciwa konfiguracja dotycz±ca generatorów poszczególnych plików konfiguracyjnych jest umieszczana w sekcji <I
->mgc</I
-> i pochodnych. W samej sekcji <I
->mgc</I
-> mo¿emy u¿yæ nastêpuj±cego parametru:
-   <P><UL
->    <LI>     <P
-align="justify">instances
-     <P
-align="justify">Lista "instancji" oddzielona spacjami.
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">instaces = dhcp firewall squid</P
->
-    <P>
-   </UL
->
-  <P
-align="justify">Teraz, ka¿da instancja ma swoj± nazwê i jej konfigruacjê tworzy siê umieszczaj±c sekcjê o nazwie <I
->[mgc:nazwa]</I
->, czyli przyk³adowo: <I
->[mgc:mydaemon]</I
->
-  <P
-align="justify">W samych instancjach mo¿emy u¿ywaæ nastêpuj±cych opcji konfiguracyjnych:
-   <P><UL
->    <LI>     <P
-align="justify">outfile
-     <P
-align="justify">Definiuje plik do którego ma byæ zapisany wynik dzia³ania bierz±cej instancji (je¿eli ta zmienna zmienna bêdzie nie ustawiona, instancja siê zakoñczy)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">outfile = /etc/somefile</P
->
-    <P>
-    <LI>     <P
-align="justify">append
-     <P
-align="justify">Pozwala ustawiæ aby wynik dzia³ania instancji nie nadpisywa³ pliku wynikowego, lecz zosta³ dopisany na jego koñcu
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">append = 1</P
->
-    <P>
-    <LI>     <P
-align="justify">outfile_perm
-     <P
-align="justify">Pozwala na ustawienie praw dostêpu do pliku wyj¶ciowego (domy¶lnie 600)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">outfile_perm = 700</P
->
-    <P>
-    <LI>     <P
-align="justify">outfile_owner
-     <P
-align="justify">Pozwala na ustawienie w³a¶ciciela pliku wyj¶ciowego (domy¶lnie 0)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">outfile_owner = 0</P
->
-     <P><FONT
-color="red"
-><B
->Uwaga!:</B
-></FONT
-><BLOCKQUOTE
->W³a¶ciciel musi byæ podany numerycznie!</BLOCKQUOTE
->
-    <P>
-    <LI>     <P
-align="justify">outfile_group
-     <P
-align="justify">Pozwala na ustawienie grupy pliku wyj¶ciowego (domy¶lnie 0)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">outfile_group = 0</P
->
-     <P><FONT
-color="red"
-><B
->Uwaga!:</B
-></FONT
-><BLOCKQUOTE
->Grupa musi byæ podana numerycznie!</BLOCKQUOTE
->
-    <P>
-    <LI>     <P
-align="justify">header_file
-     <P
-align="justify">Pozwala na umieszczenie w pliku wynikowym zawaro¶ci innego pliku jako nag³ówek (domy¶lnie nie ustawione)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">header_file	= /etc/lms/myservice_header</P
->
-    <P>
-    <LI>     <P
-align="justify">header
-     <P
-align="justify">Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako nag³ówka (domy¶lnie puste)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">header = option1 = bla\noption2 = blabla</P
->
-     <P><B
->Notatka:</B
-><BLOCKQUOTE
->Znak \n zosta³ tu u¿yty jako seperator linii. Koñcowe \n nie jest wymagane.</BLOCKQUOTE
->
-    <P>
-    <LI>     <P
-align="justify">networks
-     <P
-align="justify">Pozwala ustaliæ które z naszych sieci bêd± uwzglêdniane w pliku konfiguracyjnym (domy¶lnie wszystkie)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">networks = cust1-publ cust2-publ cust3-priv</P
->
-    <P>
-   <P><B
->Notatka:</B
-><BLOCKQUOTE
->Teraz mgc pobiera kolejne sieci i wykonuje w kó³ko nastêpuj±ce czynno¶ci:</BLOCKQUOTE
->
-    <LI>     <P
-align="justify">network_header
-     <P
-align="justify">Generuje nag³ówek dla ka¿dej sieci (domy¶lnie puste):
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">network_header = network %ADDR/%MASK { # Config section for %NAME</P
->
-    <P>
-    <LI>     <P
-align="justify">dst_networks
-     <P
-align="justify">Pozwala ustawiæ sieci docelowe, czyli takie dla których bêdzie przetwarzany parametr: dst_network_header (domy¶lnie wszystkie):
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">dst_networks = main coalloc</P
->
-    <P>
-    <LI>     <P
-align="justify">dst_network_header
-     <P
-align="justify">Pozwala ustawiæ nag³ówek dla sieci docelowych
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">dst_network_header = \tallow to %DADDR/%DMASK;</P
->
-    <P>
-    <LI>     <P
-align="justify">network_body
-     <P
-align="justify">Parametr jest przetwarzany po wys³aniu nag³ówków dla sieci, a przed rozpoczêciem analizy adresów IP
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">network_body = \tnodes {</P
->
-    <P>
-   <P><B
->Notatka:</B
-><BLOCKQUOTE
->Teraz MGC rozpocznie przetwarzanie kolejnych adresów IP. Robi to w dosyæ specyficzny sposób. Tj. oblicza kolejny adres IP, i kolejno sprawdza:</BLOCKQUOTE
->
-    <LI>     <P
-align="justify">allnodes
-     <P
-align="justify">Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP.
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">allnodes = ??</P
->
-    <P>
-    <LI>     <P
-align="justify">allexistnodes
-     <P
-align="justify">Pozwala na ustawienie regu³ki przetwarzanej dla ka¿dego kolejnego adresu IP który jest u¿ywany.
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">allexistnodes = ??</P
->
-    <P>
-    <LI>     <P
-align="justify">ignore
-     <P
-align="justify">Pozwala na ustawienie listy adresów w postaci adres/prefix lub adres/maska oddzielanej spacjami dla której ma byæ ignorowane generowanie
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">ignore = ??</P
->
-    <P>
-    <LI>     <P
-align="justify">grantednode_publ
-     <P
-align="justify">Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów publicznych)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;</P
->
-    <P>
-    <LI>     <P
-align="justify">grantednode_prv
-     <P
-align="justify">Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">grantednode_prv = \t\tnode %NAME (%IP/%MAC) unique %ID;</P
->
-    <P>
-    <LI>     <P
-align="justify">deniednode_publ
-     <P
-align="justify">Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów publicznych)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;</P
->
-    <P>
-    <LI>     <P
-align="justify">deniednode_prv
-     <P
-align="justify">Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">deniednode_prv = node %NAME (%IP/%MAC) unique %ID deny;</P
->
-    <P>
-    <LI>     <P
-align="justify">dhcpnode_publ
-     <P
-align="justify">Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów publicznych)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">dhcpnode_publ = node unknown (%IP) reject;</P
->
-    <P>
-    <LI>     <P
-align="justify">dhcpnode_prv
-     <P
-align="justify">Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">dhcpnode_prv = node unknown (%IP) reject;</P
->
-    <P>
-    <LI>     <P
-align="justify">freeip_publ
-     <P
-align="justify">Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów publicznych)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">freeip_publ	= node unknown (%IP) lock_as_unused;</P
->
-    <P>
-    <LI>     <P
-align="justify">freeip_prv
-     <P
-align="justify">Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów prywatnych)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">freeip_prv	= node unknown (%IP) lock_as_unused;</P
->
-    <P>
-    <LI>     <P
-align="justify">default_publ
-     <P
-align="justify">Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów publicznych)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">default_publ = node unknown (%IP) lock_as_intruder;</P
->
-    <P>
-    <LI>     <P
-align="justify">default_prv
-     <P
-align="justify">Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">default_publ = node unknown (%IP) lock_as_intruder;</P
->
-    <P>
-   <P><B
->Notatka:</B
-><BLOCKQUOTE
->lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</BLOCKQUOTE
->
-    <LI>     <P
-align="justify">network_footer
-     <P
-align="justify">Pozwala na ustawienie stopki dla w³a¶nie przetwarzanej sieci
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">network_footer = ??</P
->
-    <P>
-    <LI>     <P
-align="justify">footer_file
-     <P
-align="justify">Pozwala na umieszczenie w pliku wynikowym zawaro¶ci innego pliku jako stopka (domy¶lnie nie ustawione)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">footer_file	= /etc/lms/myservice_footer</P
->
-    <P>
-    <LI>     <P
-align="justify">footer
-     <P
-align="justify">Pozwala na umieszczenie w pliku wynikowym zawarto¶ci zmiennej jako stopki (domy¶lnie puste)
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">footer = # End.</P
->
-    <P>
-    <LI>     <P
-align="justify">post_exec
-     <P
-align="justify">Komenda do wywo³ania po wygenerowaniu pliku konfiguracyjnego
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">post_exec = killall -HUP mydaemon</P
->
-    <P>
-    <LI>     <P
-align="justify">
-     <P
-align="justify">
-     <P
-><B
->Przyk³ad:</B
-><P
-align="justify"></P
->
-    <P>
-   </UL
->
-  <P
-align="justify">Oprócz tego w czê¶ci opcji konfiguracyjnych mo¿emy u¿ywaæ nastêpuj±cych zmiennych:
-   <P><UL
->    <LI>     <P
-align="justify">%IP - zostanie rozwiniête do adresu IP
-    <P>
-    <LI>     <P
-align="justify">%ID - ID sieci w bazie
-    <P>
-    <LI>     <P
-align="justify">%MAC - zostanie rozwiniête do adresu MAC karty sieciowej
-    <P>
-    <LI>     <P
-align="justify">%OWNER - w³a¶ciciel komputera
-    <P>
-    <LI>     <P
-align="justify">%NAME - nazwa sieci du¿ymi znakami
-    <P>
-    <LI>     <P
-align="justify">%name - nazwa sieci ma³ymi znakami
-    <P>
-    <LI>     <P
-align="justify">%UPRATE - limit transferu dla danych wychodz±cych
-    <P>
-    <LI>     <P
-align="justify">%DOWNRATE - limit transferu dla danych przychodz±cych
-    <P>
-    <LI>     <P
-align="justify">%1 %2 %3 %4 - kolejne oktety (od lewej) adresu IP 
-    <P>
-    <LI>     <P
-align="justify">%ADDR - adres sieci
-    <P>
-    <LI>     <P
-align="justify">%GATE - brama sieci
-    <P>
-    <LI>     <P
-align="justify">%DNS - serwer DNS tej sieci
-    <P>
-    <LI>     <P
-align="justify">%DOMAIN - domena tej sieci
-    <P>
-    <LI>     <P
-align="justify">%WINS - adres serwera WINS dla tej sieci
-    <P>
-    <LI>     <P
-align="justify">%DHCPS - pierwszy adres DHCP tej sieci
-    <P>
-    <LI>     <P
-align="justify">%DHCPE - ostatni adres DHCP tej sieci
-    <P>
-    <LI>     <P
-align="justify">%DATE - data w formacie YYYYMMDD;
-    <P>
-    <LI>     <P
-align="justify">%TIME - czas w formacie HHMM;
-    <P>
-    <LI>     <P
-align="justify">%TIMES - czas w formacie HHMMSS;
-    <P>
-    <LI>     <P
-align="justify">%UTIME - czas w formacie unix timestamp;
-    <P>
-   </UL
->
-  </BODY
-></HEAD
-><!-- End of DOCPART-3.html --></HTML
-><!-- Start of DOCPART-4.html --><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML
-><HEAD
-><LINK
-href="style.css"
-rel="stylesheet"
-type="text/css"><BODY
-bgcolor="#EBE4D6"
->    <H1
->Rozdzia³ 4. Skrypty</H1
->
-               <H2
->Instalacja</H2
->
-        <P
-align="justify">Je¶li chcemy ustawiæ konfiguracjê którego¶ ze skryptów, robimy to w odpowiedniej sekcji <TT
->lms.ini</TT
->. Same skrypty przenosimy do katalogu <TT
->/usr/sbin</TT
->. Po przeniesieniu musimy je jeszcze dopisaæ do crontaba tak, aby by³y uruchamiane automatycznie w³a¶nie wtedy kiedy tego chcemy.
-        <P
-align="justify">Pamiêtaj ¿e przewa¿nie bêdziesz chcia³ aby te skrypty by³y uruchamiane tylko raz w miesi±cu (no chyba ¿e chcesz naliczaæ u¿ytkownikom op³aty kilka razy w miesi±cu.)
-        <P
-align="justify">Przyk³adowo, je¶li chcieliby¶my aby op³ata abonamentowa by³a naliczana uzytkownikom 5 dnia ka¿dego miesi±ca o godzinie 1:20, przyk³adowy wpis w <TT
->crontab</TT
-> powinien wygl±daæ tak:
-        <P><TABLE
-border="1"
-bgcolor="#F4F0EC"
-width="100%"
-><TR
-><TD
-><PRE
->20 1 5 * *       /usr/sbin/lms-eachmonth</PRE
-></TD
-></TR
-></TABLE
->
-        <P
-align="justify">Po wiêcej informacji mo¿esz siêgn±æ do <FONT
-color="brown"
->man crontab</FONT
->
-       
-       	<H2
->lms-notify</H2
->
-	 	  <H3
->Szablony</H3
->
-          
-	  <P
-align="justify">lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych [w iso-8859-2] i traktowania ich jako szablonów do mailingu.
-	  <P
-align="justify">W plikach mo¿na u¿ywaæ nastêpuj±cych zmiennych:
-	  <P><UL
->	    <LI>	       <P
-align="justify">%date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1 poprzedzone 0, np. 02
-	    <P>
-	    <LI>	       <P
-align="justify">%date-y - zostanie zast±pione aktualnym rokiem, np 2003
-	    <P>
-	    <LI>	       <P
-align="justify">%saldo - zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535
-	    <P>
-	    <LI>	       <P
-align="justify">%abonament - zostanie zast±pione kwot± abonamentu jaka jest do danego u¿ytkownika przypisana, np. 107
-	    <P>
-	    <LI>	       <P
-align="justify">%b - saldo z zanegowanym znakiem, np. 107
-	    <P>
-	    <LI>	       <P
-align="justify">%B - saldo z prawdziwym znakiem, np. -107
-	    <P>
-	    <LI>	       <P
-align="justify">%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:
-	    <P>
-	  </UL
->
-	  <P
->	   <B
->Przyk³adowy wyci±g 10 ostatnich operacji kasowych</B
->
-<P><TABLE
-border="1"
-bgcolor="#F4F0EC"
-width="100%"
-><TR
-><TD
-><PRE
->Data       | Opis                                                 | Warto¶æ
------------+------------------------------------------------------+---------
-2003-02-02 | Abonament za miesi±c 2003/02                         |  107.00
-2003-02-01 | Wp³ata                                               | -107.00
-2003-02-01 | Abonament za miesi±c 2003/02                         |  107.00
-2003-02-01 | Wp³ata                                               | -321.00
-2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
-2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
-2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
------------+------------------------------------------------------+---------</PRE
-></TD
-></TR
-></TABLE
-></P
->
-	  <P
->           <B
->Przyk³ad szablonu:</B
->
-<P><TABLE
-border="1"
-bgcolor="#F4F0EC"
-width="100%"
-><TR
-><TD
-><PRE
->UWAGA! Ta wiadomo¶æ zosta³a wygenerowana automatycznie.
-
-Uprzejmie informujemy i¿ na Pani/Pana koncie figuruje zaleg³o¶æ w op³atach za
-internet w wysoko¶ci %B z³.
-
-Je¿eli porozumieli siê ju¿ Pañstwo z administratorami w kwestii op³aty za
-bierz±cy miesi±c czyli %date-m %date-y roku, prosimy o
-zignorowanie tej wiadomo¶ci.
-
-W wypadku gdy uwa¿aj± Pañstwo i¿ zaleg³o¶æ ta jest nieporozumieniem prosimy o
-jak najszybszy kontakt.
-
-Wszelkie informacje na temat Pañstwa rozliczeñ mog± Pañstwo znale¼æ pod
-adresem http://www.naszasiec.pl/mojekonto/
-
-Je¿eli chcieliby Pañstwo uregulowaæ zaleg³o¶ci prosimy o kontakt:
-
-Dzia³ Rozliczeñ ASK NaszaSiec
-
-Gerwazy Regu³a
-telefon: 0-509031337
-email: gerwazy@staff.naszasiec.pl
-
-Gwidon Mniejwa¿ny
-telefon: 0-606666666
-email: gwidonm@naszasiec.pl
-
-ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
-system bilingowy na Pañstwa koncie:
-
-kwota operacji | typ operacji | data
-
-%last_10_in_a_table
-
---
-Amatorska Sieæ Komputerowa NaszaSiec
-http://www.naszasiec.pl/</PRE
-></TD
-></TR
-></TABLE
-></P
->
-          
-	  	  <H3
->Konfiguracja</H3
->
-           
-           <P
-align="justify">Konfiguracjê dla lms-notify mo¿emy ustaliæ w pliku <TT
->lms.ini</TT
-> w sekcji <I
->[notify]</I
->. Mo¿emy tam ustawiæ nastêpuj±ce parametry:
-	   <P><UL
->            <LI>	     <P
-align="justify">limit (opcjonalny)
-	     <P
-align="justify">Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0
-	     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">limit = -20</P
->
-	    <P>
-            <LI>	     <P
-align="justify">mailsubject (wymagany)
-	     <P
-align="justify">Pozwala na ustalenie tematu emaila wysy³anego do u¿ytkownika. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie nieustawione.
-	     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">mailsubject = Informacje o zaleg³o¶ciach w op³atach za internet</P
->
-	    <P>
-	    <LI>	     <P
-align="justify">mailtemplate (wymagany)
-	     <P
-align="justify">Pozwala na wskazanie szablonu wiadomo¶ci która zostanie wys³ana do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie nieustawione
-	     <P
-><B
->Przyk³ad:</B
-><P
-align="justify">mailtemplate = /etc/lms/notifytemplate.txt</P
->
-            <P>
-            <LI>             <P
-align="justify">mailfrom
-             <P
-align="justify">Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ, ¿e na niektórych MTA (np. exim) konto to musi istnieæ w systemie. Domy¶lnie nieustawione
-             <P
-><B
->Przyk³ad:</B
-><P
-align="justify">mailfrom	= staff@domain.pl</P
->
-            <P>
-            <LI>             <P
-align="justify">mailfname
-             <P
-align="justify">Nazwa nadawcy maila
-             <P
-><B
->Przyk³ad:</B
-><P
-align="justify">mailfname	= Administratorzy</P
->
-            <P>
-            <LI>             <P
-align="justify">smtp_server
-             <P
-align="justify">Serwer SMTP przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1
-             <P
-><B
->Przyk³ad:</B
-><P
-align="justify">smtp_server = smtp.mydomain.pl</P
->
-            <P>
-            <LI>             <P
-align="justify">debug_email (opcjonalny)
-             <P
-align="justify">Adres email do debugowania. Gdy ustawiony, ca³a poczta zostaje wys³ana na dany email zamiast do u¿ytkowników. Przydatne do debugowania i sprawdzania czy wszystko dzia³a OK. Domy¶lnie nieustawiony.
-             <P
-><B
->Przyk³ad:</B
-><P
-align="justify">lexx@domain.pl</P
->
-            <P>
-          </UL
->
-          
-	
-		 <H2
->lms-cutoff</H2
->
-	 <P
-align="justify">Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.
-         <P
-align="justify">Konfiguracjê dla lms-cutoff mo¿emy ustaliæ w pliku <TT
->lms.ini</TT
-> w sekcji <I
->[cutoff]</I
->. Mo¿emy tam ustawiæ nastêpuj±ce parametry:
-	 <P><UL
->          <LI>	   <P
-align="justify">limit (opcjonalny)
-	   <P
-align="justify">Pozwala na ustalenie limitu bilansu poni¿ej którego do bazy danych zostanie zapisany stan od³±czony. Domy¶lnie limit = 0
-	   <P
-><B
->Przyk³ad:</B
-><P
-align="justify">limit = -20</P
->
-	  <P>
-	 </UL
->
-	
-		 <H2
->lms-eachmonth</H2
->
-	 <P
-align="justify">Skrypt po uruchomieniu nalicza u¿ytkownikom op³atê abonamentow±. Aby dzia³a³ poprawnie powinien byæ uruchamiany tylko raz w miesi±cu (o ile u¿ytkownicy wnosz± op³aty co miesi±c). Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.
-        
-  </BODY
-></HEAD
-><!-- End of DOCPART-4.html --></HTML
->
+<!-- A tutaj konczy siê tresæ -->
+</TD>
+</TR>
+</TABLE><TABLE cellpadding="3" cellspacing="0" style="border-width: 1pt; border-style: solid; border-collapse:collapse" bordercolor="#000000" width="100%" bgcolor="#CEBD9B">
+<TR>
+<TD width="50%">
+<p>&lt;&lt; Poprzednia<br><br>
+<a href="index.html#autorzy">&copy; 2001-2003 LMS Developers<br></A></p>
+</TD>
+<TD width="50%">
+<p align="right">
+<a href="lms.html">Nastêpna &gt;&gt;</a><br><br>
+<b>LMS 1.0</b>
+</p>
+</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
