@@ -123,6 +123,18 @@ $ mv Smarty-2.6.0/libs Smarty
           with http://yourserver/lms.ini, and it contains valuable information such as database
           password!).</para></warning></para>
      </sect1>
+     <sect1 id="install-locale">
+	<title>Localization</title>
+	<para>Default language of user interface is English, and national characters
+	are encoded in UTF-8. For proper displaying of national chars in other languages
+	you must have appropriate locales. E.g. for polish language it'll be
+	following command:
+<screen>
+# localedef -v -c -i pl_PL -f UTF-8 /usr/share/locale/pl_PL.UTF-8
+</screen>
+	Instructions about database encoding settings in follow-up of this chapter.
+	</para>
+    </sect1>
      <sect1 id="install-db">
      <title>Database Server Installation</title>
           <sect2 id="install-mysql">
@@ -211,7 +223,7 @@ $ adduser postgres
 $ mkdir /usr/local/pgsql/data
 $ chown postgres /usr/local/pgsql/data
 $ su - postgres
-$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
+$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data --locale=pl_PL.UTF-8
 $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &</screen>
                </para>
           </sect3>
