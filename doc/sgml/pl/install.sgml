@@ -587,6 +587,12 @@ database = /usr/local/lms/lms.db</screen>
 	    <para>Przyk³ad:	<prompt>lastonline_limit = 300</prompt></para>
 	</listitem>
 	<listitem>
+	    <para>timetable_days_forward</para>
+	    <para>Okre¶la ilo¶æ dni (³±cznie z bie¿±cym) jaka ma byæ wy¶wietlana 
+	    w terminarzu. Domy¶lnie: 7.</para>
+	    <para>Przyk³ad:	<prompt>timetable_days_forward = 2</prompt></para>
+	</listitem>
+	<listitem>
 	    <para>arpd_servers</para>
 	    <para>Lista serwerów arpd do zczytywania MAC'adresów z odleg³ych sieci.
 	    Lista ta powinna zawieraæ wpisy w postaci adresIP[:port] oddzielone
@@ -640,7 +646,7 @@ database = /usr/local/lms/lms.db</screen>
         <listitem><para>zarz±dzanie kontami</para></listitem>
         <listitem><para>konfiguracja UI</para></listitem>
         <listitem><para>zarz±dzanie sieciami i urz±dzeniami sieciowymi</para></listitem>
-	<listitem><para>zarz±dzanie terminarzem</para></listitem>
+	<listitem><para>dostêp do terminarza</para></listitem>
         <listitem><para>brak dostêpu do modyfikacji i zak³adania kont administratorów</para></listitem>
         <listitem><para>brak dostêpu</para></listitem>
        </itemizedlist>
