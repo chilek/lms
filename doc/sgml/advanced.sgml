@@ -302,6 +302,18 @@ key = "A.L.E.C's LMS Daemon is the best"
 			</para>
 		</sect2>
 	</sect1>
+	<sect1 id="devel-genfake">
+		<title>Generowanie danych losowych</title>
+		<para>Dla osób chc±cych szybko sprawdziæ jak dzia³a LMS przygotowali¶my
+		modu³ 'genfake', s³u¿±cy do tworzenia bazy danych. </para>
+		<para>Aby wygenerowaæ dane
+		nale¿y, po zalogowaniu siê w LMS'ie wywo³aæ adres <filename>
+		http://twoj.serwer.net/lms/?m=genfake</filename>, okre¶liæ ilu
+		u¿ytkowników ma zostaæ stworzonych i nacisn±æ ENTER. To wszystko.
+		<note><para>Dla prawid³owego wygenerowania zale¿no¶ci, modu³ 'genfake'
+		nale¿y uruchamiaæ na pustej, nowoutworzonej bazie.</para></note>
+		</para>
+	</sect1>
 	<sect1 id="devel-rights">
 		<title>Poziomy dostêpu</title>
 		<para>W  sumie  tutaj  to  wyt³umaczê  bardziej  dla developerów, gdy¿ osoby
