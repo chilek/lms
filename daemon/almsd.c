@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     unsigned char *command;
     int port;				//
     dictionary *ini;			//config
-    int reload, reload_t = 0;    
+    int reload = 0, counter = 0, reload_t = 0;    
     unsigned char *instance, *instances;
 
     	// read command line args
@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
     	for (;;) {
 		int time;
 		reload = 0;
-	
+		
 		system(command);
 	
 		// try to connect to database
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
 		else {
 	    		if( (res =  db_query("SELECT time FROM timestamps WHERE tablename = '_force'"))!=NULL ) {
 				time = atoi(db_get_data(res,0,"time"));
-				if( time>0 && time!=reload_t ) {
+				if( time>0 && time!=reload_t && counter>0 ) {
 					reload = 1;
 					reload_t = time;
 				}
@@ -253,6 +253,7 @@ int main(int argc, char *argv[])
 		db_disconnect();	  
 		if (quit) termination_handler(0);
 		sleep(sleeptime);    
+		counter++;
     	} // end of main loop **********************************************
 	return 0;
 }
