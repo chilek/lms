@@ -133,10 +133,10 @@ class LMS
 
 	function GetNetIDByIP($ipaddr)
 	{
-		if($networks = $this->ADB->GetAll("SELECT address, mask FROM networks"))
+		if($networks = $this->ADB->GetAll("SELECT id, address, mask FROM networks"))
 			foreach($networks as $idx => $row)
 				if(isipin($ipaddr,$row[address],$row[mask]))
-					return TRUE;
+					return $row[id];
 		return FALSE;
 	}
 
