@@ -458,7 +458,7 @@ class LMS
 
 		list($order,$direction)=explode(",",$order);
 
-		($direction != "desc") ? $direction = "asc" : $direction = "desc";
+		($direction != "desc") ? $direction = "ASC" : $direction = "DESC";
 
 		switch($order){
 
@@ -479,7 +479,7 @@ class LMS
 			break;
 
 			case "balance":
-				$sqlord = "";
+				$sqlord = "ORDER BY deleted ASC, balance";
 			break;
 
 			case "gg":
@@ -517,52 +517,21 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, nip, zip, city, gguin, deleted FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
+		if($userlist = $this->DB->GetAll("SELECT users.id AS id, ".$this->DB->Concat("UPPER(lastname)","' '","users.name")." AS username, deleted, status, email, phone1, address, gguin, nip, zip, city, info, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." GROUP BY users.id, deleted, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, zip, city, info ".($sqlord !="" ? $sqlord." ".$direction:"")))
 		{
-			if($blst = $this->DB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
-				foreach($blst as $row)
-					$balance[$row['id']] = $row['value'];
+			$tariffvalues = $this->DB->GetAllByKey("SELECT users.id AS id, SUM(value) AS value FROM users, assignments, tariffs WHERE users.id = assignments.userid AND tariffs.id = tariffid GROUP by users.id",'id');
+			$access = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid",'id');
 
-			if($blst = $this->DB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
-				foreach($blst as $row)
-					$balance[$row['id']] = $balance[$row['id']] - $row['value'];
-
-			$tariffstlist = $this->DB->GetAllByKey("SELECT users.id AS id, sum(value) AS value FROM users, tariffs, assignments WHERE userid = users.id AND tariffid = tariffs.id GROUP BY id", "id");
-
-			foreach($userlist as $key => $value)
+			foreach($userlist as $idx => $row)
 			{
-				$userlist[$key]['balance'] = $balance[$value['id']];
-				if($balance[$value['id']] < 0)
-					$below = $below + $balance[$value['id']];
-				if($balance[$value['id']] > 0)
-					$over = $over + $balance[$value['id']];
-
-				$userlist[$key]['nodeac'] = $this->GetUserNodesAC($value['id']);
-				$userlist[$key]['tariffvalue'] = $tariffstlist[$value['id']]['value'];
-
-			}
-
-			if($order == "balance")
-			{
-				foreach($userlist as $key => $value)
-				{
-					$blst['key'][] = $key;
-					$blst['value'][] = $value['balance'];
-				}
-
-				if($direction=="desc")
-					array_multisort($blst['value'],SORT_NUMERIC,SORT_DESC,$blst['key']);
+				$userlist[$idx]['tariffvalue'] = $tariffvalues[$row['id']]['value'];
+				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'])
+					$userlist[$idx]['nodeac'] = 1;
+				elseif($access[$row['id']]['acsum'] == 0)
+					$userlist[$idx]['nodeac'] = 0;
 				else
-					array_multisort($blst['value'],SORT_NUMERIC,SORT_ASC,$blst['key']);
-
-				foreach($blst['key'] as $value)
-				{
-					$nuserlist[] = $userlist[$value];
-				}
-
-				$userlist = $nuserlist;
-			}
-
+					$userlist[$idx]['nodeac'] = 2;
+			}																														 
 			$userlist['total']=sizeof($userlist);
 			$userlist['state']=$state;
 			$userlist['order']=$order;
@@ -578,7 +547,7 @@ class LMS
 
 		list($order,$direction)=explode(",",$order);
 
-		($direction != "desc")  ? $direction = "asc" : $direction = "desc";
+		($direction != "desc")  ? $direction = "ASC" : $direction = "DESC";
 
 		switch($order){
 
@@ -599,15 +568,15 @@ class LMS
 			break;
 
 			case "balance":
-				$sqlord = "";
+				$sqlord = "ORDER BY balance";
 			break;
 
 			case "gg":
-			$sqlord = "ORDER BY gguin";
+				$sqlord = "ORDER BY gguin";
 			break;
 
 			case "nip":
-			$sqlord = "ORDER BY nip";
+				$sqlord = "ORDER BY nip";
 			break;
 
 			default:
@@ -618,48 +587,21 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, gguin, nip, zip, city, info FROM users WHERE deleted = 0 ".($state !=0 ? " AND status = '".$state."'":"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
+		if($userlist = $this->DB->GetAll("SELECT users.id AS id, ".$this->DB->Concat("UPPER(lastname)","' '","users.name")." AS username, status, email, phone1, address, gguin, nip, zip, city, info, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 ".($state !=0 ? " AND status = '".$state."'":"")." GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, zip, city, info ".($sqlord !="" ? $sqlord." ".$direction:"")))
 		{
-			if($blst = $this->DB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
-				foreach($blst as $row)
-					$balance[$row['id']] = $row['value'];
+			$tariffvalues = $this->DB->GetAllByKey("SELECT users.id AS id, SUM(value) AS value FROM users, assignments, tariffs WHERE users.id = assignments.userid AND tariffs.id = tariffid GROUP by users.id",'id');
 
-			if($blst = $this->DB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='4' GROUP BY userid"))
-					foreach($blst as $row)
-							$balance[$row['id']] = $balance[$row['id']] - $row['value'];
-
-			$tariffstlist = $this->DB->GetAllByKey("SELECT users.id AS id, sum(value) AS value FROM users, tariffs, assignments WHERE userid = users.id AND tariffid = tariffs.id GROUP BY users.id", "id");
-
-			foreach($userlist as $key => $value)
+			$access = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid",'id');
+			foreach($userlist as $idx => $row)
 			{
-				$userlist[$key]['balance'] = $balance[$value['id']];
-				if($balance[$value['id']] < 0)
-					$below = $below + $balance[$value['id']];
-				if($balance[$value['id']] > 0)
-					$over = $over + $balance[$value['id']];
-
-				$userlist[$key]['nodeac'] = $this->GetUserNodesAC($value['id']);
-				$userlist[$key]['tariffvalue'] = $tariffstlist[$value['id']]['value'];
+				$userlist[$idx]['tariffvalue'] = $tariffvalues[$row['id']]['value'];
+				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'])
+					$userlist[$idx]['nodeac'] = 1;
+				elseif($access[$row['id']]['acsum'] == 0)
+					$userlist[$idx]['nodeac'] = 0;
+				else
+					$userlist[$idx]['nodeac'] = 2;
 			}
-
-			if($order == "balance")
-			{
-				foreach($userlist as $key => $value)
-				{
-					$blst['key'][] = $key;
-					$blst['value'][] = $value['balance'];
-				}
-
-				($direction=="desc") ? array_multisort($blst['value'],SORT_NUMERIC,SORT_DESC,$blst['key']) : array_multisort($blst['value'],SORT_NUMERIC,SORT_ASC,$blst['key']);
-
-				foreach($blst['key'] as $value)
-				{
-					$nuserlist[] = $userlist[$value];
-				}
-
-				$userlist = $nuserlist;
-			}
-
 		}
 
 		$userlist['total']=sizeof($userlist);
@@ -1668,6 +1610,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.220  2003/09/12 20:32:24  lukasz
+ * - cosmetics
+ *
  * Revision 1.219  2003/09/11 19:17:30  lukasz
  * - forgot about SetTS
  *
