@@ -1,10 +1,12 @@
 $Id$
 
-wersja 1.0pre10 (13/04/2003):
+wersja 1.0pre10 (??/04/2003):
 
-  - poprawki zgodno¶ci ze Smarty-2.5.0
+  - poprawki zgodno¶ci ze Smarty-2.5.0 (niestety, automatycznie 2.5.0 jest
+    wymagane przez LMS'a)
   - usuniête zbêdne title w li¶cie userów
   - poprawione wy¶wietlanie nazwiska usera w popupie od usuwania usera
+  - na stronie powitalnej trochê statystyk
 
 wersja 1.0pre9 (13/04/2003):
   
