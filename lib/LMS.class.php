@@ -69,7 +69,10 @@ class LMS {
 	{
 		$db=$this->db;
 		$db->FetchRow("SELECT `time` FROM `timestamps` WHERE `table` = '".$table."'");
-		return $db->row[time];
+		if(!isset($db->row[time]))
+			return -1;
+		else
+			return $db->row[time];
 	}
 
 	function SetAdminPassword($id,$passwd)
@@ -631,18 +634,6 @@ class LMS {
 			if(!isset($state)) $state="3";
 			if(!isset($order)) $order="username,asc";
 			
-/*			switch ($state){
-				case "3":
-					$sql .= " WHERE status = 3 ";
-				break;
-				case "2":
-					$sql .= " WHERE status = 2 ";
-				break;
-				case "1":
-					$sql .= " WHERE status = 1 ";
-				break;
-			}*/
-			
 			$userlist = $db->FetchArray("SELECT id, lastname, name, status, email, phone1, address, info, creationdate, moddate, creatorid, modid FROM users");
 			
 			$userlist[crdate] = $userlist[creationdate];
@@ -1166,6 +1157,7 @@ class LMS {
 	{
 		$db=$this->db;
 		$session=$this->session;
+		$this->SetTS("nodes");
 		return $db->ExecSQL("UPDATE `nodes` SET `name` = '".strtoupper($nodedata[name])."',
 		`ipaddr` = '".$nodedata[ipaddr]."',
 		`mac` = '".$nodedata[mac]."',
