@@ -27,7 +27,6 @@
 $layout['pagetitle'] = trans('Configuration Reload');
 
 $SMARTY->display('header.html');
-$SMARTY->display('reloadheader.html');
 
 echo '<H1>'.$layout['pagetitle'].'</H1>';
 

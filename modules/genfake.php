@@ -1828,7 +1828,6 @@ function makemac()
 }
 
 $SMARTY->display('header.html');
-$SMARTY->display('adminheader.html');
 echo '<H1>'.trans('Generating random data').'</H1>';
 	
 if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 65000)
