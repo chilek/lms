@@ -372,7 +372,7 @@ class LMS
 	{
 		$this->SetTS("users");
 		
-		if($this->ADB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, tariff, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['status'], $useradd['tariff'], $this->SESSION->id, $useradd['info'])))
+		if($this->ADB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, tariff, creationdate, creatorid, info, payday) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['status'], $useradd['tariff'], $this->SESSION->id, $useradd['info'], $useradd['payday'])))
 			return $this->ADB->GetOne("SELECT MAX(id) FROM users");
 		else
 			return FALSE;
@@ -704,7 +704,7 @@ class LMS
 
 		// wrapper do starego formatu
 
-		if($tslist = $this->ADB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash WHERE userid=?",array($id)))
+		if($tslist = $this->ADB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash WHERE userid=? ORDER BY time",array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -1602,6 +1602,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.205  2003/08/28 13:02:05  lukasz
+ * - podawanie dnia naliczania op³aty podczas dodawania usera nic dawa³o
+ *
  * Revision 1.204  2003/08/27 21:38:13  alec
  * removed two ' :)
  *
