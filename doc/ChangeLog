@@ -53,6 +53,7 @@ wersja 1.5.4 (??/??/????):
   - w opcji 'contract_template' mo¿e podawaæ kilka plików szablonów umów
     wraz z opisem, np. "plik.html:Umowa Test, plik2.html:Umowa Standard" (alec)
   - lms-sendinvoices: dodana opcja --fakedate (alec)
+  - dodano mo¿liwo¶æ wydruku listy u¿ytkowników z bilansem na dany dzieñ (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
