@@ -134,7 +134,10 @@
 	       <para>%date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1 poprzedzone 0, np. 02</para>
 	    </listitem>
 	    <listitem>
-	       <para>%date-y - zostanie zast±pione aktualnym rokiem, np 2003</para>
+	       <para>%date-y - zostanie zast±pione aktualnym rokiem, np. 2003</para>
+	    </listitem>
+	    <listitem>
+	       <para>%date_month_name - zostanie zast±pione nazw± bie¿±cego miesi±ca, np. marzec</para>
 	    </listitem>
 	    <listitem>
 	       <para>%saldo - zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535</para>
@@ -153,6 +156,9 @@
 	    </listitem>
 	    <listitem>
 	       <para>%pin - numer PIN u¿ytkownika.</para>
+	    </listitem>
+	    <listitem>
+	       <para>%phone1 - pierwszy numer telefonu u¿ytkownika.</para>
 	    </listitem>
 	  </itemizedlist>
 	  <example id="notify-example">
