@@ -44,7 +44,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 
 	while( n>1 ) {
 		
-		n = sscanf(netnames, "%s %[a-zA-Z0-9- ]", netname, netnames);
+		n = sscanf(netnames, "%s %[.a-zA-Z0-9- ]", netname, netnames);
 
 		if( strlen(netname) ) {
 
