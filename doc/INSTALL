@@ -1,0 +1,124 @@
+------------------------------------------------------------------------------
+                         LAN Managment System 1.0pre1
+------------------------------------------------------------------------------
+                         Krótki podrêcznik instalacji
+------------------------------------------------------------------------------
+
+Witaj.  Zanim  zaczniesz  instalowaæ  LMS w swojej sieci, po¶wiêæ proszê kilka
+minut  na  przeczytanie tego tekstu. Zminimalizuje to do minimum bóle porodowe
+jakie  mo¿esz  odczuwaæ podczas instalacji LMS. Tak wiêc zaparz sobie kawy lub
+siêgnij  bo  butelkê  ze swoim ulubionym napojem, usi±d¼ wygodnie i rozpocznij
+lekturê.
+
+0. Intro - czyli co bêdzie Ci potrzebne.
+
+Po pierwsze: serwer WWW.
+
+Generalnie,   LMS   wymaga   PHP,  wiêc  jakikolwiek  serwer  WWW  obs³uguj±cy
+interpreter  PHP.  Oczywi¶cie  preferowany to Apache 1.3.26 (czyli najnowszy),
+ale na starszych nie powinno byæ najmniejszych problemów.
+
+Po drugie: interpreter PHP.
+
+Tutaj  wymagania s± trochê wy¿sze. Wielce prawdopodobne jest i¿ LMS pójdzie na
+ka¿dym  PHP  4.2.x  które  bêdzie  mia³o  obs³ugê sesji, wyra¿eñ regularnych i
+mysql'a.  W praktyce nawet nie chcia³o mi siê bawiæ w sprawdzanie ze starszymi
+interpreterami   ni¿  PHP-4.2.3.  Prawdopodobnie  po  zrobieniu  kilku  ma³ych
+przeróbek  LMS  pracowa³by  tak¿e z PHP-4.1.x, ale wybaczcie, ja wystarczaj±co
+du¿o czasu po¶wiêci³em na to by LMS wogóle powsta³. Reszta nale¿y do was :)
+
+Po trzecie: serwer MySQL.
+
+Aua. Tutaj to ja ju¿ wogóle zielony jestem. Pisa³em ca³o¶æ korzystaj±c z MySQL
+3.23.53 i nie mam pojêcia która wersja jest wymagana.
+
+I tyle by by³o na temat wymagañ samego LMS'a. Na koniec co do dystrybucji -
+LMS zosta³ odpalony na:
+- PLD 1.0 Ra
+- Debianie 3.0 Woody
+- Windowsie z najnowszym EasyPHP (tak, jestem masochista :>)
+
+I  prawdopodobnie  pójdzie  na  czymkolwiek  (w³±cznie z lodówk±) o ile to co¶
+bêdzie  potrafi³o  zgry¼æ  MySQL'a  i  serwer  WWW z PHP. Bêdê tak¿e wdziêczny
+ka¿demu o przes³anie info o konfiguracji o ile uda mu siê LMS'a odpaliæ.
+
+1. Possijmy co¶.
+
+Nie,  to  nie  porno  film. ¯eby LMS'a chcieæ trzeba go mieæ. A ¿e {$chcieæ eq
+$móc}  wiêc  ¶ci±gnijmy  LMS'a. Jako ¿e w momencie pisania tego tekstu LMS nie
+zosta³ jeszcze ukoñczony, opiszê jak pobraæ wersjê z CVS'a.
+
+Przez WWW, korzystaj±c z interfejsu viewCVS mo¿na pobraæ LMS'a pod adresem:
+
+http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1
+
+U¿ywaj±c CVS'a, wykonaæ z shella komendê:
+
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot get lms
+
+Po ¶ci±gniêciu (i ewentualnym rozpakowaniu) nale¿y LMS'a przenie¶æ do katalogu
+docelowego, np. do /var/www/htdocs/ ewentualnie do /home/httpd/html. Czynno¶ci
+tej  nie  bêdê  opisywa³  gdy¿  je¿eli  nie potrafisz wykonaæ takiej bzdury to
+wogóle sobie daruj.
+
+2. Setting UP :)
+
+Oki, jeste¶my w katalogu LMS'a i teraz przyda³oby siê go przygotowaæ do pracy.
+Zacznijmy  od  doci±gniêcia biblioteki Smarty i umieszczenia jej w odpowiednim
+miejscu, tj w katalogu lib. Ta czynno¶æ wygl±da mniej wiêcej tak:
+
+cd lib
+wget http://smarty.php.net/distributions/Smarty-2.3.1.tar.gz
+tar -xzf Smarty-2.3.1.tar.gz
+mv Smarty-2.3.1 Smarty
+
+Pozostaje  nam  zmieniæ  w³a¶ciciela  katalogu  templates_c  na  u¿ytkownika z
+którego  uruchominy  jest  serwer  www  (np.  http  albo apache). Voila. Teraz
+przygotujmy  serwer  MySQL.  Wejd¼  do  katalogu w którym masz LMS'a i uruchom
+shell mysql'a:
+
+mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
+Enter password:[podaj has³o]
+mysql> create database lms;
+mysql> grant usage on lms.* to lms@localhost;
+mysql> grant select,insert,update,delete,create on lms.* to lms@localhost
+       identified by 'haslo';
+mysql> flush privileges;
+mysql> use lms;
+mysql> source doc/lms.mysql;
+
+Teraz,  przyda³oby  siê  utworzyæ pierwsze konto administratora. Tak, wiem, to
+jest  pokrêcone i bardzo user-friendly, ale sorry, jako¶ nie doszed³em jeszcze
+do napisania wizarda który wszystko zrobi ³adnie za u¿ytkownika:
+
+mysql> insert into admins (login, passwd) values ('login', 'has³o')
+
+Teraz   kilka   s³ów   wyja¶nieñ.   Login,   to  oczywi¶cie  login  pierwszego
+administratora   w   systemie,   natomiast   has³o   to   has³o  tego¿  admina
+przepuszczonego przez PHP'ow± funkcjê crypt(). Nie jest to niestety zbyt ³atwe
+do osi±gniêcia, ale nie pozostawiam was na lodzie :P
+
+Metoda pierwsza (wymaga shella php) - odpalamy z shella PHP i wpisujemy:
+
+php -q
+<? echo crypt("has³o")."\n"; ?>
+[wciskamy na klawiaturze Ctrl+D]
+$1$AUXO7o/A$.6I0VmetRlZ7NT6YUHQ7e.
+
+Te  krzaczki,  to  w³a¶nie cryptniête has³o, które nale¿y wpisac do MySQL'a :)
+Proste? Nie? :) No to zapraszam do drugiej metody.
+
+Metoda druga (wymaga przegl±darki internetowej):
+
+Nale¿y wej¶æ na stronê http://twoj.serwer.pl/katalog_gdzie_masz_lms/crypt.php.
+
+Dalej jest dosyæ intuicyjnie :)
+
+Oki.  Wiêc  mamy  LMS'a.  Wchodzimy na WWW i siê logujemy. Teraz mo¿na porobiæ
+porz±dek,  posprz±taæ  w  adminach,  dodaæ u¿yszkodników i komputery do bazy i
+zacz±æ  siê  rozgl±daæ  za LMSd - czyli czym¶ co bêdzie konfigurowaæ serwer na
+podstawie danych zawartych w bazie.
+
+I to (narazie) na tyle.
+
+$Id$
