@@ -2,6 +2,9 @@ $Id$
 
 wersja 1.1.5 (18/10.2003):
 
+  - dodane opcje do ustawienie w³a¶ciciela oraz praw dostêpu skryptów
+    tworzonych przez lms-traffic-* (lukasz)
+
 wersja 1.1.4 Tanith (03/10/2003):
   
   - lista taryf zlicza³a tak¿e u¿ytkowników usuniêtych (lukasz)
