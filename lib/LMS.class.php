@@ -1498,7 +1498,7 @@ class LMS
 					break;
 
 					case "2":
-						$balancelist[$idx]['type'] = _('expenditure');
+						$balancelist[$idx]['type'] = _('expense');
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'] - $balancelist[$idx]['value'];
 						$balancelist['expense'] = $balancelist['expense'] + $balancelist[$idx]['value'];
 					break;
@@ -1509,7 +1509,7 @@ class LMS
 						$balancelist['incomeu'] = $balancelist['incomeu'] + $balancelist[$idx]['value'];
 					break;
 					case "4":
-						$balancelist[$idx]['type'] = _("user debt"); 
+						$balancelist[$idx]['type'] = _("user covenant"); 
 						$balancelist[$idx]['after'] = $balancelist[$idx]['before'];
 						$balancelist['uinvoice'] = $balancelist['uinvoice'] + $balancelist[$idx]['value'];
 					break;
@@ -1582,26 +1582,26 @@ class LMS
 		    case 0:
 			    switch($payment['at'])
 			    {
-				case 1: $payment['payday'] = "co tydzieñ (pon)"; break;
-				case 2: $payment['payday'] = "co tydzieñ (wt)"; break;
-				case 3: $payment['payday'] = "co tydzieñ (¶r)"; break;
-				case 4: $payment['payday'] = "co tydzieñ (czw)"; break;
-				case 5: $payment['payday'] = "co tydzieñ (pt)"; break;
-				case 6: $payment['payday'] = "co tydzieñ (sob)"; break;
-				case 7: $payment['payday'] = "co tydzieñ (nie)"; break;
-				default : $payment['payday'] = "brak"; break;
+				case 1: $payment['payday'] = _("weekly (mon)"); break;
+				case 2: $payment['payday'] = _("weekly (tue)"); break;
+				case 3: $payment['payday'] = _("weekly (wed)"); break;
+				case 4: $payment['payday'] = _("weekly (thu)"); break;
+				case 5: $payment['payday'] = _("weekly (fri)"); break;
+				case 6: $payment['payday'] = _("weekly (sat)"); break;
+				case 7: $payment['payday'] = _("weekly (sun)"); break;
+				default : $payment['payday'] = _('missing'); break;
 			    }
 		    break;
 		    case 1:
-			    $payment['payday'] = "co miesi±c (".$payment['at'].")"; 
+			    $payment['payday'] = sprintf(_("monthly (%d)"),$payment['at']); 
 		    break;
 		    case 2:
 			    $at = sprintf("%02d/%02d", $payment['at']%100,$payment['at']/100+1);
-			    $payment['payday'] = "co kwarta³ (".$at.")";
+			    $payment['payday'] = sprintf(_("quarterly (%d)"), $at);
 		    break;
 		    case 3:
 			    $at = date("d/m",($payment['at']-1)*86400);
-			    $payment['payday'] = "co rok (".$at.")";
+			    $payment['payday'] = sprintf(_("yearly (%d)"), $at);
 		    break;
 		}
 		return $payment;
@@ -1643,7 +1643,7 @@ class LMS
 	
 	function PaymentDelete($id)
 	{
-		$this->SetTS("payments");		
+		$this->SetTS('payments');		
 		return $this->DB->Execute("DELETE FROM payments WHERE id=?",array($id));
 	}
 	
@@ -1705,7 +1705,7 @@ class LMS
 		for($i=30;$i>15;$i--)
 		{
 			$prefixlist['id'][] = $i;
-			$prefixlist['value'][] = $i." (".pow(2,32-$i)." adresów)";
+			$prefixlist['value'][] = $i.sprintf(_(" (%d) addresses"), pow(2,32-$i));
 		}
 
 		return $prefixlist;
@@ -2278,7 +2278,7 @@ class LMS
 		if($emails = $this->GetEmails($mailing['group']))
 		{
 			if($this->CONFIG['phpui']['debug_email'])
-				echo "<B>Uwaga! Tryb debug (u¿ywam adresu ".$this->CONFIG['phpui']['debug_email'].")</B><BR>";
+				echo '<B>'.sprintf(_("Warning! Debug mode (using '%s')"), $this->CONFIG['phpui']['debug_email']).'</B><BR>';
 
 			foreach($emails as $key => $row)
 			{
@@ -2292,7 +2292,7 @@ class LMS
 					"From: ".$mailing['sender']." <".$mailing['from'].">\n"."Content-Type: text/plain; charset=ISO-8859-2;\n"."X-Mailer: LMS-".$this->_version."/PHP-".phpversion()."\n"."X-Remote-IP: ".$_SERVER['REMOTE_ADDR']."\n"."X-HTTP-User-Agent: ".$_SERVER['HTTP_USER_AGENT']."\n"
 				);
 				
-				echo "<img src=\"img/mail.gif\" border=\"0\" align=\"absmiddle\" alt=\"\"> ".($key+1)." z ".sizeof($emails)." (".sprintf("%02.2f",round((100/sizeof($emails))*($key+1),2))."%): ".$row['username']." &lt;".$row['email']."&gt;<BR>\n";
+				echo "<img src=\"img/mail.gif\" border=\"0\" align=\"absmiddle\" alt=\"\"> ".($key+1)._(" from ").sizeof($emails)." (".sprintf("%02.2f",round((100/sizeof($emails))*($key+1),2))."%): ".$row['username']." &lt;".$row['email']."&gt;<BR>\n";
 				flush();
 			}
 		}
