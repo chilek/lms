@@ -6,3 +6,5 @@ $Id$
 - przepisaæ modu³y z lmsd i napisaæ wiêcej modu³ów .. wiêcej wiêcej wiêcej
 - zaimplementowaæ obs³ugê modu³ów wykonywanych okresowo takich jak lms-cutoff, 
   lms-payments bez u¿ycia crona
+- poprawiæ bug w 'payments' powoduj±cy b³êdne wystawianie faktur, gdy
+  u¿ytkownik posiada kilka taryf i nie do wszystkich wystawiane s± faktury

@@ -1,3 +1,7 @@
+* 09.02.2004
+  - poprawki w 'payments' uwzglêdniaj±ce op³aty kwartalne oraz
+    zmiany w kolumnie period (alec)
+
 * 11.01.2004
   - w 'payments' poprawiony b³±d w obliczaniu yearstart (alec)
   - w 'payments' dodana obs³uga pola 'paytype' z tabeli invoices (alec)

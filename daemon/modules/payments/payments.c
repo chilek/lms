@@ -54,26 +54,32 @@ unsigned char * get_period(struct tm *today, int period, int up_payments)
 	
 	if( up_payments )
 		switch(period) {
-			case 1:	//year
-				t->tm_mon += 12;
+			case 0:	//week
+				t->tm_mday += 7;
 				break;
-			case 2:	//month
+			case 1:	//month
 				t->tm_mon += 1;
 				break;
-			case 3:	//week
-				t->tm_mday += 7;
+			case 2: //quarter
+				t->tm_mon += 3;
+				break;
+			case 3:	//year
+				t->tm_mon += 12;
 				break;
 		}
 	else
 		switch(period) {
-			case 1:	//year
-				t->tm_mon -= 12;
-				break;
-			case 2:	//month
+			case 0:	//week
+				t->tm_mday -= 7;
+				break;		
+			case 1:	//month
 				t->tm_mon -= 1;
 				break;
-			case 3:	//week
-				t->tm_mday -= 7;
+			case 2: //quarter
+				t->tm_mon -= 3;
+				break;
+			case 3:	//year
+				t->tm_mon -= 12;
 				break;
 		}
 		
@@ -98,13 +104,13 @@ void reload(GLOBAL *g, struct payments_module *p)
 {
 	QUERY_HANDLE *res, *result;
 	unsigned char *query, *insert, *insert_inv, *update;
-	unsigned char *w_period, *m_period, *y_period, *value;
+	unsigned char *w_period, *m_period, *q_period, *y_period, *value;
 	unsigned char *description;
 	int i, invoiceid, last_userid=0, number=0, exec=0;
 
 	time_t t;
 	struct tm *tt;
-	unsigned char monthday[3], month[3], year[5], weekday[2], yearday[4];  //odjac jeden?
+	unsigned char monthday[3], month[3], year[5], quarterday[3], weekday[2], yearday[4];  //odjac jeden?
 	unsigned char yearstart[12], yearend[12];
 	
 	// get current date
@@ -116,9 +122,28 @@ void reload(GLOBAL *g, struct payments_module *p)
 	strftime(month, 	sizeof(month), 		"%m", tt);	
 	strftime(year, 		sizeof(year), 		"%Y", tt);
 
-	y_period = get_period(tt, 1, p->up_payments);
-	m_period = get_period(tt, 2, p->up_payments);
-	w_period = get_period(tt, 3, p->up_payments);
+	switch(atoi(month)) {
+		case 1:
+		case 4:
+		case 7:
+		case 10:
+			sprintf(quarterday, "%d", atoi(monthday));
+			break;
+		case 2:
+		case 5:
+		case 8:
+		case 12:
+			sprintf(quarterday, "%d", atoi(monthday)+100);
+			break;
+		default:
+			sprintf(quarterday, "%d", atoi(monthday)+200);
+			break;
+	}
+
+	y_period = get_period(tt, 3, p->up_payments);
+	q_period = get_period(tt, 2, p->up_payments);
+	m_period = get_period(tt, 1, p->up_payments);
+ 	w_period = get_period(tt, 0, p->up_payments);
 
 	// set begin and end date for present year 
 	tt->tm_sec = 0; tt->tm_min = 0; tt->tm_hour = 0; tt->tm_mday = 1; tt->tm_mon = 0;
@@ -129,7 +154,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	strftime(yearend,	sizeof(yearend),	"%s",tt);
 
 	/****** main payments *******/
-	if( (res = g->db_pquery("SELECT * FROM payments WHERE value <> 0 AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?))", monthday, weekday, yearday))!= NULL ) {	
+	if( (res = g->db_pquery("SELECT * FROM payments WHERE value <> 0 AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?))", weekday, monthday, quarterday, yearday))!= NULL ) {	
 
 		for(i=0; i<res->nrows; i++) {
 			
@@ -148,24 +173,14 @@ void reload(GLOBAL *g, struct payments_module *p)
 		
 	/****** user payments *******/
 	// first get max invoiceid for present year
-	query = strdup("SELECT MAX(number) AS number FROM invoices WHERE cdate >= %yearstart AND cdate <= %yearend");
-	g->str_replace(&query, "%yearstart", yearstart);
-	g->str_replace(&query, "%yearend", yearend);
-
-	if( (res = g->db_query(query))!= NULL ) {
+	if( (res = g->db_pquery("SELECT MAX(number) AS number FROM invoices WHERE cdate >= ? AND cdate <= ?", yearstart, yearend))!= NULL ) {
  
  		if( res->nrows )
 			number = atoi(g->db_get_data(res,0,"number"));
 		g->db_free(res);
-		free(query);
-	
+
 		// payments accounting and invoices writing
-		query = strdup("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, users.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND value <> 0 AND ((period = 0 AND at = %monthday) OR (period = 1 AND at = %weekday) OR (period = 2 AND at = %yearday)) ORDER BY userid, value DESC");
-		g->str_replace(&query, "%monthday", monthday);
-		g->str_replace(&query, "%weekday", weekday);
-		g->str_replace(&query, "%yearday", yearday);
-	
-		if( (res = g->db_query(query))!= NULL ) {
+		if( (res = g->db_pquery("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, users.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) ORDER BY userid, value DESC", weekday, monthday, quarterday, yearday))!= NULL ) {
 	
 			for(i=0; i<res->nrows; i++) {
 			
@@ -176,9 +191,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 				g->str_replace(&insert, "%value", value);
 				description = strdup(p->comment);
 				switch( atoi(g->db_get_data(res,i,"period")) ) {
-					case 0: g->str_replace(&description, "%period", m_period); break;
-					case 1: g->str_replace(&description, "%period", w_period); break;
-					case 2: g->str_replace(&description, "%period", y_period); break;
+					case 0: g->str_replace(&description, "%period", w_period); break;
+					case 1: g->str_replace(&description, "%period", m_period); break;
+					case 2: g->str_replace(&description, "%period", q_period); break;
+					case 3: g->str_replace(&description, "%period", y_period); break;
 				}
 				g->str_replace(&description, "%tariff", g->db_get_data(res,i,"tariff"));
 				g->str_replace(&insert, "%comment", description);
@@ -198,7 +214,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->str_replace(&insert_inv, "%phone", g->db_get_data(res,i,"phone"));
 						g->str_replace(&insert_inv, "%nip", g->db_get_data(res,i,"nip"));
 						g->str_replace(&insert_inv, "%pesel", g->db_get_data(res,i,"pesel"));
-						
+	
 						g->db_exec(insert_inv);			
 						free(insert_inv);
 						
@@ -209,15 +225,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 						}
 					}
 					
-					free(query);
-					query = strdup("SELECT * FROM invoicecontents WHERE tariffid = %tariffid AND invoiceid = %invoiceid AND description = '%desc'"); 
-					g->str_replace(&query, "%invoiceid", itoa(invoiceid));
-					g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
-					g->str_replace(&query, "%desc", description);
-					
-					if( (result = g->db_query(query))!=NULL ) {
+					if( (result = g->db_pquery("SELECT * FROM invoicecontents WHERE tariffid = ? AND invoiceid = ? AND description = '?'", g->db_get_data(res,i,"tariffid"), itoa(invoiceid), description))!=NULL ) {
 						
-						free(query);
 						if( result->nrows ) {
 							query = strdup("UPDATE invoicecontents SET count=count+1 WHERE tariffid = %tariffid AND invoiceid = %invoiceid AND description = '%desc'");
 							g->str_replace(&query, "%invoiceid", itoa(invoiceid));
@@ -234,6 +243,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 						}
 						g->db_exec(query);									
 						g->db_free(result);
+						free(query);
 					}
 					
 					g->str_replace(&insert, "%invoiceid", itoa(invoiceid));
@@ -250,8 +260,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 			}
     			g->db_free(res);
 		}	
-		free(query);
 		free(y_period);
+		free(q_period);
 		free(m_period);
 		free(w_period);
 #ifdef DEBUG1
