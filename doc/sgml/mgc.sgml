@@ -17,9 +17,9 @@
         <para>Lms-mgc posiada nastêpuj±ce opcje uruchomienia:
 	<screen>
 	-C, --config-file=/path/lms-mgc.ini	alternatywny plik konfiguracyjny 
-						(default: /etc/lms/lms-mgc.ini);
-	-i, --instances=name		nazwa (lub numer) instancji do uruchomienia, bez czytania konfiguracji
-					z lms-mgc.ini, np. -i "name1 name2"
+					(default: /etc/lms/lms-mgc.ini);
+	-i, --instances=name		nazwa (lub numer) instancji do uruchomienia, bez czytania 
+					konfiguracji z lms-mgc.ini, np. -i "name1 name2"
 	-h, --help			wy¶wietla pomoc;
 	-v, --version			wy¶wietla numer wersji;
 	-q, --quiet			tylko komunikaty o b³êdach;
@@ -218,7 +218,7 @@
      <para>Przyk³ad:	<prompt>default_publ = node unknown (%IP) lock_as_intruder;</prompt></para>
     </listitem>
     </itemizedlist>
-   <para>lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</para>
+   <para><note><para>lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</para></note></para>
     <itemizedlist>
     <listitem>
      <para>network_footer</para>
