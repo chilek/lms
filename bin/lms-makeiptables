@@ -199,12 +199,12 @@ my @fw_networks = split ' ',$forward_to_list;
 
 foreach my $key (@networks)
 {
-	my $dbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = '$key'");
+	my $dbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = UPPER('$key')");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
 		foreach my $skey (@fw_networks)
 		{
-			my $sdbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = '$skey'");
+			my $sdbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = UPPER('$skey')");
 			$sdbq->execute();
 			while(my $srow = $sdbq->fetchrow_hashref())
 			{
@@ -218,7 +218,7 @@ foreach my $key (@networks)
 
 foreach my $key (@networks)
 {
-	my $dbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = '$key'");
+	my $dbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = UPPER('$key')");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
 		my $sdbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ipaddr FROM nodes WHERE access = 1 ORDER BY ipaddr");
