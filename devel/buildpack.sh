@@ -6,6 +6,7 @@
 #
 
 WORKDIR=`pwd`
+NOTDISTRIB="devel"
 
 echo -ne "Katalog tmp? [$TMPDIR]: "
 read TEMPDIR
@@ -46,10 +47,9 @@ umask 022
 cd $TEMPDIR/$X/
 tar -xzf lms.tar.gz
 chmod 777 lms/{templates_c,backups}
-rm -Rf lms/devel
 cd lms
+rm -Rf $NOTDISTRIB
 rgrep -ir '1\.3-cvs' .|cut -d: -f1|sort|uniq|xargs perl -pi -e "s/1\.3-cvs/$LMSVER $CODENAME/g"
-rm -Rf devel
 chmod 777 templates_c backups
 cd ..
 tar -czf $WORKDIR/lms-$LMSVER.tar.gz lms
@@ -59,7 +59,7 @@ tar -xzf Smarty-2.6.1.tar.gz
 mv Smarty-2.6.1/libs Smarty
 rm -Rf Smarty-2.6.1 Smarty-2.6.1.tar.gz
 cd ../
-rm -Rf devel
+rm -Rf $NOTDISTRIB
 cd ../
 tar -czf $WORKDIR/lms-$LMSVER+libs.tar.gz lms
 cd $WORKDIR
