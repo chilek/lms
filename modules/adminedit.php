@@ -96,5 +96,6 @@ $SMARTY->assign("accesslist",$accesslist);
 $SMARTY->assign("admininfo",$admininfo);
 $SMARTY->assign("unlockedit",TRUE);
 $SMARTY->assign("error",$error);
+$SMARTY->assign("layout",$layout);
 $SMARTY->display("admininfo.html");
 ?>

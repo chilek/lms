@@ -147,7 +147,7 @@ if(isset($networkdata))
 
 $prefixlist = $LMS->GetPrefixList();
 $networks = $LMS->GetNetworks();
-$layout[pagetitle]="Informacja o sieci";
+$layout[pagetitle]="Edytowanie sieci";
 $SMARTY->assign("unlockedit",TRUE);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("network",$network);

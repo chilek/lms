@@ -1,5 +1,11 @@
 $Id$
 
+wersja 1.0.1 (21/06/2003):
+
+  - ma³y util w contrib/ - do logowania trafficu hostów z bazy danych - wiêcej
+    info znajdziecie przegl±daj±c ten plik (lukasz)
+  - ma³y cleanup templejtów (sync z develowej wersji)
+
 wersja 1.0.0 (18/05/2003):
 
   - poprawione ikonki (wiem, s± obrzydliwe, ale nikt nie zrobi³ ³adniejszych)
