@@ -107,7 +107,11 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ></LI
 ><LI
 ><P
->%date-y - zostanie zast±pione aktualnym rokiem, np 2003</P
+>%date-y - zostanie zast±pione aktualnym rokiem, np. 2003</P
+></LI
+><LI
+><P
+>%date_month_name - zostanie zast±pione nazw± bie¿±cego miesi±ca, np. marzec</P
 ></LI
 ><LI
 ><P
@@ -132,6 +136,10 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ><LI
 ><P
 >%pin - numer PIN u¿ytkownika.</P
+></LI
+><LI
+><P
+>%phone1 - pierwszy numer telefonu u¿ytkownika.</P
 ></LI
 ></UL
 ><DIV
@@ -1632,10 +1640,14 @@ CLASS="FILENAME"
 >.</P
 ><P
 >Oprócz modu³ów Perla standardowo wymaganych przez resztê skryptów, nale¿y 
-	    zainstalowaæ tak¿e modu³ <TT
+	    zainstalowaæ tak¿e modu³y <TT
 CLASS="FILENAME"
 >MIME::Parser</TT
-> oraz <TT
+> i <TT
+CLASS="FILENAME"
+>MIME::Words</TT
+> z 
+	    pakietu MIME-Tools oraz <TT
 CLASS="FILENAME"
 >Net::SMTP</TT
 >.</P
@@ -1789,6 +1801,19 @@ CLASS="FILENAME"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >tmp_dir = /home/user/tmp</SAMP
+></P
+></LI
+><LI
+><P
+>auto_open</P
+><P
+>W³±czenie tej opcji spowoduje, ¿e w momencie odebrania
+		    wiadomo¶ci dotycz±cej zg³oszenia zamkniêtego (lub martwego)
+		    zg³oszenie to zostanie otwarte. Domy¶lnie: wy³±czone.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>auto_open = 1</SAMP
 ></P
 ></LI
 ></UL

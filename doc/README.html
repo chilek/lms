@@ -1125,7 +1125,7 @@ NAME="INSTALL-REQ-PHP"
 ><P
 >Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a te¿ 
 		poprawnie na 4.1.x (ale poniewa¿ developerzy pracuj± na 4.2.3, nie mo¿na 
-		zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿na ¶ci±gn±æ ze 
+		zagwarantowaæ poprawnej pracy na starszych wersjach (unikaæ wersji 4.2.2). PHP mo¿na ¶ci±gn±æ ze 
 		strony <A
 HREF="http://www.php.net"
 TARGET="_top"
@@ -1168,7 +1168,7 @@ HREF="http://smarty.php.net"
 TARGET="_top"
 >http://smarty.php.net</A
 >)
-		 w wersji 2.5.0 lub wy¿szej.</P
+		 w wersji 2.5.0 lub wy¿szej (unikaæ wersji 2.6.4).</P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -2124,6 +2124,18 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>networkhosts_pagelimit</P
+><P
+>Ilo¶æ komputerów wy¶wietlanych na jednej stronie w informacjach 
+    o sieci. Domy¶lnie: 256.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networkhosts_pagelimit = 1024</SAMP
+></P
+></LI
+><LI
+><P
 >reload_type</P
 ><P
 >Typ reloadu. Dozwolone warto¶ci:</P
@@ -2286,6 +2298,18 @@ CLASS="PROMPT"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >helpdesk_backend_mode = 1</SAMP
+></P
+></LI
+><LI
+><P
+>contract_template</P
+><P
+>W³asny szablon umowy z u¿ytkownikiem. Mo¿na tak¿e dostosowaæ domy¶lny
+    szablon. Domy¶lnie: contract.html.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>contract_template = "../my_templates/contract.html"</SAMP
 ></P
 ></LI
 ></UL
@@ -4242,7 +4266,11 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ></LI
 ><LI
 ><P
->%date-y - zostanie zast±pione aktualnym rokiem, np 2003</P
+>%date-y - zostanie zast±pione aktualnym rokiem, np. 2003</P
+></LI
+><LI
+><P
+>%date_month_name - zostanie zast±pione nazw± bie¿±cego miesi±ca, np. marzec</P
 ></LI
 ><LI
 ><P
@@ -4267,6 +4295,10 @@ NAME="LMS-NOTIFY-TEMPLATES"
 ><LI
 ><P
 >%pin - numer PIN u¿ytkownika.</P
+></LI
+><LI
+><P
+>%phone1 - pierwszy numer telefonu u¿ytkownika.</P
 ></LI
 ></UL
 ><DIV
@@ -5767,10 +5799,14 @@ CLASS="FILENAME"
 >.</P
 ><P
 >Oprócz modu³ów Perla standardowo wymaganych przez resztê skryptów, nale¿y 
-	    zainstalowaæ tak¿e modu³ <TT
+	    zainstalowaæ tak¿e modu³y <TT
 CLASS="FILENAME"
 >MIME::Parser</TT
-> oraz <TT
+> i <TT
+CLASS="FILENAME"
+>MIME::Words</TT
+> z 
+	    pakietu MIME-Tools oraz <TT
 CLASS="FILENAME"
 >Net::SMTP</TT
 >.</P
@@ -5924,6 +5960,19 @@ CLASS="FILENAME"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >tmp_dir = /home/user/tmp</SAMP
+></P
+></LI
+><LI
+><P
+>auto_open</P
+><P
+>W³±czenie tej opcji spowoduje, ¿e w momencie odebrania
+		    wiadomo¶ci dotycz±cej zg³oszenia zamkniêtego (lub martwego)
+		    zg³oszenie to zostanie otwarte. Domy¶lnie: wy³±czone.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>auto_open = 1</SAMP
 ></P
 ></LI
 ></UL
