@@ -228,6 +228,22 @@ class LMS {
 		return $return;
 	}
 
+	function GetUserNames()
+	{
+	
+		$db=$this->db;
+
+		$usernames = $db->FetchArray("SELECT `id`, `name`, `lastname` FROM `users` WHERE `status` = '3'");
+
+		foreach ($usernames[id] as $key => $value)
+			$usernames[username][$key] = strtoupper($usernames[lastname][$key])." ".ucwords($usernames[name][$key]);
+		
+		array_multisort($usernames[username],4,$usernames[id],$usernames[name],$usernames[lastname]);
+
+		return $usernames;
+
+	}
+
 	function GetUserList($order=NULL,$state=NULL)
 	{
 
