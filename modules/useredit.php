@@ -78,7 +78,7 @@ elseif($_GET[action] == "addassignment")
 	}
 
 	if($LMS->TariffExists($_POST[tariffid]) && !$error)
-		$LMS->AddAssignment(array('tariffid' => $_POST[tariffid], 'userid' => $_GET[id], 'period' => $period, 'at' => $at));
+		$LMS->AddAssignment(array('tariffid' => $_POST[tariffid], 'userid' => $_GET[id], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$_POST[invoice])));
 		
 	header('Location: ?m=userinfo&id='.$_GET[id]);
 	die;
@@ -149,6 +149,9 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 /*
  * $Log$
+ * Revision 1.48  2003/10/22 23:07:52  lukasz
+ * - temporary save
+ *
  * Revision 1.47  2003/09/26 17:44:10  alec
  * ujednolicone nag³ówki (dodany ':')
  *

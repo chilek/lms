@@ -96,6 +96,7 @@ my $payday = sprintf("%d",strftime("%e",localtime()));
 
 my $dbase;
 my $utsfmt;
+my %invoiceids;
 
 if($dbtype eq "mysql")
 {
@@ -123,36 +124,72 @@ my $monthtxt = "za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $yea
 my $weektxt = "za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day + 7, $month - 1, $year - 1900);
 my $yeartxt = "za okres ".strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month - 1, $year - 1900 + 1);
 
-my $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period=0 AND at=$day");
+my $yearstart = strftime("%s", 0, 0, 0, 1, 0, $year - 1900);
+my $yearend = strftime("%s", 59, 59, 23, 31, 11, $year - 1900);
+
+my $dbq = $dbase->prepare("SELECT MAX(invoiceid) AS invoiceid FROM cash WHERE time >= $yearstart AND time <= $yearend");
+$dbq->execute();
+my $row = $dbq->fetchrow_hashref();
+my $invoiceid = $row->{'invoiceid'};
+
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period = 0 AND at=$day");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
 	if ($row->{'value'})
 	{
+		$invoiceids{$row->{userid}} = 0 if not defined($invoiceids{$row->{userid}});
+		if($row->{'invoice'})
+		{
+			if($invoiceids{$row->{userid}} eq 0)
+			{
+				$invoiceid ++;
+				$invoiceids{$row->{userid}} = $invoiceid;
+			}
+		}
 		print "User ID: $row->{'userid'}\tValue: $row->{'value'}\n" if (!$quiet);
-		my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata miesiêczna za \\'".$row->{'name'}."\\' ($monthtxt)')");
+		my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Abonament miesiêczny \\'".$row->{'name'}."\\' ($monthtxt)', $invoiceids{$row->{userid}})");
 		$sdbq->execute();
 	}
 }
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period=1 AND at=$weekday");
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period=1 AND at=$weekday");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
 	if ($row->{'value'})
 	{
+		$invoiceids{$row->{userid}} = 0 if not defined($invoiceids{$row->{userid}});
+		if($row->{'invoice'})
+		{
+			if($invoiceids{$row->{userid}} eq 0)
+			{
+				$invoiceid ++;
+				$invoiceids{$row->{userid}} = $invoiceid;
+			}
+		}
+		
 		print "User ID: $row->{'userid'}\tValue: $row->{'value'}\n" if (!$quiet);
-		my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata tygodniowa za \\'".$row->{'name'}."\\' ($weektxt)')");
+		my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Abonament tygodniowy \\'".$row->{'name'}."\\' ($weektxt)', $invoiceids{$row->{userid}})");
 		$sdbq->execute();
 	}
 }
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period=2 AND at=$yearday");
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period=2 AND at=$yearday");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
 	if ($row->{'value'})
 	{
+		$invoiceids{$row->{userid}} = 0 if not defined($invoiceids{$row->{userid}});
+		if($row->{'invoice'})
+		{
+			if($invoiceids{$row->{userid}} eq 0)
+			{
+				$invoiceid ++;
+				$invoiceids{$row->{userid}} = $invoiceid;
+			}
+		}
 		print "User ID: $row->{'userid'}\tValue: $row->{'value'}\n" if (!$quiet);
-		my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata roczna za \\'".$row->{'name'}."\\' ($yeartxt)')");
+		my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Abonament roczny \\'".$row->{'name'}."\\' ($yeartxt)', $invoiceids{$row->{userid}})");
 		$sdbq->execute();
 	}
 }

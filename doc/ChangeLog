@@ -18,6 +18,9 @@ wersja 1.1.5 (18/10/2003):
   - poprawione bugi z rozpoznawanie adresów prywatnych w skryptach oraz
     literówka w lms-iptables (lukasz/wojboj)
   - lms-notify przystosowane do nowych finansów (lukasz)
+  - ALTER TABLE `assignments` ADD `invoice` TINYINT( 1 ) DEFAULT '0' NOT NULL;
+  - ALTER TABLE `cash` ADD `invoiceid` INT DEFAULT '0' NOT NULL ;
+
   
 wersja 1.1.4 Tanith (03/10/2003):
   

@@ -650,7 +650,7 @@ class LMS
 
 		// wrapper do starego formatu
 
-		if($tslist = $this->DB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash WHERE userid=? ORDER BY time",array($id)))
+		if($tslist = $this->DB->GetAll("SELECT id, time, adminid, type, value, userid, comment, invoiceid FROM cash WHERE userid=? ORDER BY time",array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
@@ -1038,7 +1038,7 @@ class LMS
 		if($netid != 0)
 		{
 			$netdev = $this->GetNetDev($netid);
-			if( $netdev[takenports] >= $netdev[ports])
+			if( $netdev['takenports'] >= $netdev['ports'])
 				return FALSE;
 		}
 		
@@ -1048,7 +1048,7 @@ class LMS
 	}
 
 	/*
-	 *  Obs³uga taryf
+	 *  Obs³uga taryf i finansów
 	 */
 
 	function GetUserTariffsValue($id)
@@ -1058,7 +1058,7 @@ class LMS
 
 	function GetUserAssignments($id)
 	{
-		if($assignments = $this->DB->GetAll("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, name FROM assignments, tariffs WHERE userid=? AND tariffs.id = tariffid",array($id)))
+		if($assignments = $this->DB->GetAll("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, name, invoice FROM assignments, tariffs WHERE userid=? AND tariffs.id = tariffid",array($id)))
 		{
 			foreach($assignments as $idx => $row)
 			{
@@ -1101,7 +1101,19 @@ class LMS
 	function AddAssignment($assignmentdata)
 	{
 		$this->SetTS('assignments');
-		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, period, at) VALUES (?, ?, ?, ?)",array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at']));
+		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, period, at, invoice) VALUES (?, ?, ?, ?, ?)",array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at'], $assignmentdata['invoice']));
+	}
+
+	function GetInvoiceContent($invoiceid,$year)
+	{
+		$ystart = mktime(0, 0, 0, 1, 1, $year);
+		$yend = mktime(23, 59, 59, 12, 31, $year);
+		$result['userid'] = $this->DB->GetOne('SELECT userid FROM cash WHERE invoiceid = ? AND time >= ? AND time <= ?', array($invoiceid, $ystart, $yend));
+		$result['userdata'] = $this->GetUser($result['userid']);
+		$result['invoiceid'] = $invoiceid;
+		$result['year'] = $year;
+		$result['content'] = $this->DB->GetAll('SELECT * FROM cash WHERE invoiceid = ? AND time >= ? AND time <= ?', array($invoiceid, $ystart, $yend));
+		return $result;
 	}
 
 	function GetTariffList()
@@ -1220,7 +1232,7 @@ class LMS
 	{
 		$adminlist = $this->DB->GetAllByKey('SELECT id, name FROM admins','id');
 		$userslist = $this->DB->GetAllByKey("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users","id");
-		if($balancelist = $this->DB->GetAll("SELECT id, time, adminid, type, value, userid, comment FROM cash ORDER BY time ASC"))
+		if($balancelist = $this->DB->GetAll("SELECT id, time, adminid, type, value, userid, comment, invoiceid FROM cash ORDER BY time ASC"))
 		{
 			foreach($balancelist as $idx => $row)
 			{
@@ -1625,7 +1637,7 @@ class LMS
 		{
 			foreach($list as $row)
 			{
-				$names[$id]= $this->GetNetDev($row[dst]);
+				$names[$id]= $this->GetNetDev($row['dst']);
 				$id++;
 			}
 		}
@@ -1685,7 +1697,7 @@ class LMS
 		$query = "SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id!=".$id;
 		if ($lista = $this->GetNetDevConnected($id))
 			foreach($lista as $row)
-				$query = $query." and id!=".$row[dst];
+				$query = $query." and id!=".$row['dst'];
 		return $this->DB->GetAll($query);
 	}
 
@@ -1701,7 +1713,7 @@ class LMS
 		return $this->DB->Execute("DELETE FROM netlinks WHERE src=? OR dst=?",array($id,$id));
 		$nodes = GetNetdevLinkedNodes($id);
 		if ($nodes) foreach($nodes as $node) {
-			$this->NetDevLinkNode($node[id],0);
+			$this->NetDevLinkNode($node['id'],0);
 		}
 	}
 	
@@ -1709,9 +1721,9 @@ class LMS
 	{
 		$dev1=$this -> GetNetDev($sid);
 		$dev2=$this -> GetNetDev($did);
-		$location = $dev1[location];
-		$dev1[location] = $dev2[location];
-		$dev2[location] = $location;
+		$location = $dev1['location'];
+		$dev1['location'] = $dev2['location'];
+		$dev2['location'] = $location;
 		$links1 = $this -> GetNetDevConnected($sid);
 		$links2 = $this -> GetNetDevConnected($did);
 		$nodes1 = $this -> GetNetdevLinkedNodes($sid);
@@ -1719,16 +1731,16 @@ class LMS
 		$this -> NetDevDelLinks($sid);
 		$this -> NetDevDelLinks($did);
 		if ($links1) foreach($links1 as $row) {
-			$this -> NetDevLink($did,$row[dst]);
+			$this -> NetDevLink($did,$row['dst']);
 		}
 		if ($links2) foreach($links2 as $row) {
-			$this -> NetDevLink($sid,$row[dst]);
+			$this -> NetDevLink($sid,$row['dst']);
 		}
 		if ($nodes1) foreach($nodes1 as $row) {
-			$this->NetDevLinkNode($row[id],$did);
+			$this->NetDevLinkNode($row['id'],$did);
 		}
 		if ($nodes2) foreach($nodes2 as $row) {
-			$this->NetDevLinkNode($row[id],$sid);
+			$this->NetDevLinkNode($row['id'],$sid);
 		}
 		$this -> NetDevUpdate($dev1);
 		$this -> NetDevUpdate($dev2);
@@ -1774,7 +1786,7 @@ class LMS
 			$netdev1 = $this->GetNetDev($dev1);
 			$netdev2 = $this->GetNetDev($dev2);
 			
-			if( $netdev1[takenports] >= $netdev1[ports] || $netdev2[takenports] >= $netdev2[ports])
+			if( $netdev1['takenports'] >= $netdev1['ports'] || $netdev2['takenports'] >= $netdev2['ports'])
 				return FALSE;
 			
 			$this->DB->Execute("INSERT INTO netlinks (src, dst) VALUES ($dev1, $dev2)"); 
@@ -2047,23 +2059,23 @@ class LMS
 		{
 			foreach ($traffic as $idx => $row)
 			{
-				$traffic[upload][data][] = $row[upload];
-				$traffic[download][data][] = $row[download];
-				$traffic[upload][name][] = ($row[name] ? $row[name] : 'nieznany (ID: '.$row[nodeid].')');
-				$traffic[download][name][] = ($row[name] ? $row[name] : 'nieznany (ID: '.$row[nodeid].')');
-				$traffic[upload][ipaddr][] = long2ip($row[ipaddr]);
-				$traffic[download][nodeid][] = $row[nodeid];
-				$traffic[upload][nodeid][] = $row[nodeid];
-				$traffic[download][ipaddr][] = long2ip($row[ipaddr]);
-				$traffic[download][sum][data] += $row[download];
-				$traffic[upload][sum][data] += $row[upload];
+				$traffic['upload']['data'][] = $row['upload'];
+				$traffic['download']['data'][] = $row['download'];
+				$traffic['upload']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
+				$traffic['download']['name'][] = ($row['name'] ? $row['name'] : 'nieznany (ID: '.$row['nodeid'].')');
+				$traffic['upload']['ipaddr'][] = long2ip($row['ipaddr']);
+				$traffic['download']['nodeid'][] = $row['nodeid'];
+				$traffic['upload']['nodeid'][] = $row['nodeid'];
+				$traffic['download']['ipaddr'][] = long2ip($row['ipaddr']);
+				$traffic['download']['sum']['data'] += $row['download'];
+				$traffic['upload']['sum']['data'] += $row['upload'];
 			}
 
 			// get maximum data from array
 
-			$maximum = max($traffic[download][data]);
-			if($maximum < max($traffic[upload][data]))
-				$maximum = max($traffic[upload][data]);
+			$maximum = max($traffic['download']['data']);
+			if($maximum < max($traffic['upload']['data']))
+				$maximum = max($traffic['upload']['data']);
 
 			if($maximum == 0)		// do not need divide by zero
 				$maximum = 1;
@@ -2071,24 +2083,24 @@ class LMS
 			// make data for bars drawing
 			$x = 0;
 
-			foreach ($traffic[download][data] as $data)
+			foreach ($traffic['download']['data'] as $data)
 			{
-				$traffic[download][bar][] = round($data * 150 / $maximum);
-				list($traffic[download][data][$x], $traffic[download][unit][$x]) = setunits($data);
+				$traffic['download']['bar'][] = round($data * 150 / $maximum);
+				list($traffic['download']['data'][$x], $traffic['download']['unit'][$x]) = setunits($data);
 				$x++;
 			}
 			$x = 0;
 
-			foreach ($traffic[upload][data] as $data)
+			foreach ($traffic['upload']['data'] as $data)
 			{
-				$traffic[upload][bar][] = round($data * 150 / $maximum);
-				list($traffic[upload][data][$x], $traffic[upload][unit][$x]) = setunits($data);
+				$traffic['upload']['bar'][] = round($data * 150 / $maximum);
+				list($traffic['upload']['data'][$x], $traffic['upload']['unit'][$x]) = setunits($data);
 				$x++;
 			}
 
 			//set units for data
-			list($traffic[download][sum][data], $traffic[download][sum][unit]) = setunits($traffic[download][sum][data]);
-			list($traffic[upload][sum][data], $traffic[upload][sum][unit]) = setunits($traffic[upload][sum][data]);
+			list($traffic['download']['sum']['data'], $traffic['download']['sum']['unit']) = setunits($traffic['download']['sum']['data']);
+			list($traffic['upload']['sum']['data'], $traffic['upload']['sum']['unit']) = setunits($traffic['upload']['sum']['data']);
 		}
 
 		return $traffic;
@@ -2112,42 +2124,42 @@ class LMS
 
 	function GetTemplateArrays()
 	{
-		$result[users] = $this->DB->GetAllByKey('SELECT * FROM users','id');
-		$result[nodes] = $this->DB->GetAllByKey('SELECT * FROM nodes ORDER BY ipaddr ASC','id');
-		$result[tariffs] = $this->DB->GetAllByKey('SELECT * FROM tariffs','id');
-		$result[networks] = $this->DB->GetAllByKey('SELECT * FROM networks','id');
+		$result['users'] = $this->DB->GetAllByKey('SELECT * FROM users','id');
+		$result['nodes'] = $this->DB->GetAllByKey('SELECT * FROM nodes ORDER BY ipaddr ASC','id');
+		$result['tariffs'] = $this->DB->GetAllByKey('SELECT * FROM tariffs','id');
+		$result['networks'] = $this->DB->GetAllByKey('SELECT * FROM networks','id');
 		
-		$temp[balance] = $this->DB->GetAllByKey('SELECT users.id AS id, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY userid','id');
-		$temp[finances] = $this->DB->GetAllByKey('SELECT userid, SUM(value) AS value, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments LEFT JOIN tariffs ON tariffs.id = assignments.tariffid GROUP BY userid','userid');
+		$temp['balance'] = $this->DB->GetAllByKey('SELECT users.id AS id, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY userid','id');
+		$temp['finances'] = $this->DB->GetAllByKey('SELECT userid, SUM(value) AS value, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments LEFT JOIN tariffs ON tariffs.id = assignments.tariffid GROUP BY userid','userid');
 
-		foreach($temp[balance] as $balance)
-			$result[users][$balance[id]][balance] = $balance[balance];
+		foreach($temp['balance'] as $balance)
+			$result['users'][$balance['id']]['balance'] = $balance['balance'];
 
-		foreach($temp[finances] as $userid => $financesrecord)
+		foreach($temp['finances'] as $userid => $financesrecord)
 		{
-			$result[users][$userid][uprate] = $financesrecord[uprate];
-			$result[users][$userid][downrate] = $financesrecord[downrate];
-			$result[users][$userid][value] = $financesrecord[value];
+			$result['users'][$userid]['uprate'] = $financesrecord['uprate'];
+			$result['users'][$userid]['downrate'] = $financesrecord['downrate'];
+			$result['users'][$userid]['value'] = $financesrecord['value'];
 		}			
 
-		foreach($result[nodes] as $nodeid => $noderecord)
+		foreach($result['nodes'] as $nodeid => $noderecord)
 		{
-			$result[users][$noderecord[ownerid]][nodes][$nodeid] = &$result[nodes][$nodeid];
-			$result[nodes][$nodeid][owner] = &$result[users][$noderecord[ownerid]];
-			$result[nodes][$nodeid][iplong] = $noderecord[ipaddr];
-			$result[nodes][$nodeid][ipaddr] = long2ip($noderecord[ipaddr]);
+			$result['users'][$noderecord['ownerid']]['nodes'][$nodeid] = &$result['nodes'][$nodeid];
+			$result['nodes'][$nodeid]['owner'] = &$result['users'][$noderecord['ownerid']];
+			$result['nodes'][$nodeid]['iplong'] = $noderecord['ipaddr'];
+			$result['nodes'][$nodeid]['ipaddr'] = long2ip($noderecord['ipaddr']);
 		}
 
-		foreach($result[networks] as $networkid => $networkrecord)
+		foreach($result['networks'] as $networkid => $networkrecord)
 		{
-			$result[networks][$networkid][addresslong] = ip_long($networkrecord[address]);
-			$result[networks][$networkid][endaddresslong] = ip_long(getbraddr($networkrecord[address],$networkrecord[mask]));
-			$result[networks][$networkid][prefix] = mask2prefix($networkrecord[mask]);
-			if($networknodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?',array($result[networks][$networkid][addresslong],$result[networks][$networkid][endaddresslong])))
+			$result['networks'][$networkid]['addresslong'] = ip_long($networkrecord['address']);
+			$result['networks'][$networkid]['endaddresslong'] = ip_long(getbraddr($networkrecord['address'],$networkrecord['mask']));
+			$result['networks'][$networkid]['prefix'] = mask2prefix($networkrecord['mask']);
+			if($networknodes = $this->DB->GetCol('SELECT id FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?',array($result['networks'][$networkid]['addresslong'],$result['networks'][$networkid]['endaddresslong'])))
 				foreach($networknodes as $nodeid)
 				{
-					$result[networks][$networkid][nodes][$nodeid] = &$result[nodes][$nodeid];
-					$result[nodes][$nodeid][network] = &$result[networks][$networkid];
+					$result['networks'][$networkid]['nodes'][$nodeid] = &$result['nodes'][$nodeid];
+					$result['nodes'][$nodeid]['network'] = &$result['networks'][$networkid];
 				}
 		}
 
@@ -2162,6 +2174,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.279  2003/10/22 23:07:52  lukasz
+ * - temporary save
+ *
  * Revision 1.278  2003/10/22 17:50:50  lukasz
  * - generator configów
  *
