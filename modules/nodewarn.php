@@ -82,6 +82,7 @@ unset($nodelist['totaloff']);
 
 $SMARTY->assign('warnmessage', $_SESSION['warnmessage']);
 $SMARTY->assign('warnon', $_SESSION['warnon']);
+$SMARTY->assign('warnoff', $_SESSION['warnoff']);
 $SMARTY->assign('nodelist',$nodelist);
 $SMARTY->display('nodewarnings.html');
 
