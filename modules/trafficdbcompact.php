@@ -38,7 +38,8 @@ $SMARTY->display('header.html');
 $SMARTY->display('trafficheader.html');
 
 echo '<PRE><B>'._('Stats database compactiong').'</B><BR>';
-printf(_("Before compacting in database was %d records.<BR>"),$LMS->DB->GetOne("SELECT COUNT(*) FROM stats"));
+printf(_("Before compacting in database was %d records."),$LMS->DB->GetOne("SELECT COUNT(*) FROM stats"));
+echo '<BR>';
 
 if($delete)
 {
@@ -92,7 +93,7 @@ if($level)
 	    }
 	
 	    $LMS->DB->CommitTrans();
-	    echo ($deleted?$deleted:0)._(" - removed, ").($inserted?$inserted:0)._(" - insertedh\n");
+	    echo ($deleted?$deleted:0)._(" - removed, ").($inserted?$inserted:0)._(" - inserted\n");
 	}
     }
 }

@@ -34,9 +34,9 @@ if($_GET['is_sure'])
 	$layout['pagetitle'] = _('Database backup deleting');
 	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('header.html');
-	echo _("<H1>Database backups deleting</H1>");
-	echo _("<p>Are you shure, you want to delete database backup created ").date("Y/m/d H:i.s",$_GET['db'])."?</p>";
-	echo "<a href=\"?m=dbdel&db=".$_GET['db']."&is_sure=1\">"._('Yes, I am shure.</A>');
+	echo '<H1>'._("Database backups deleting").'</H1>';
+	echo '<P>'._("Are you shure, you want to delete database backup created ").date("Y/m/d H:i.s",$_GET['db'])."?</p>";
+	echo "<a href=\"?m=dbdel&db=".$_GET['db']."&is_sure=1\">"._('Yes, I am shure.').'</A>';
 	$SMARTY->display('footer.html');
 }
 

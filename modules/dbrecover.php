@@ -34,9 +34,9 @@ if($_GET['is_sure'])
 	$layout['pagetitle'] = _('Database backup restoring');
 	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('header.html');
-	echo _("<H1>Database backup restoring</H1>");
-	echo _("<p>Are You sure, You want to restore database backup created ".date("Y/m/d H:i.s",$_GET['db'])."?</p>";
-	echo "<a href=\"?m=dbrecover&db=".$_GET['db']."&is_sure=1\">"._('Yes, I am sure.</A>');
+	echo '<H1>'._('Database backup restoring').'</H1>';
+	echo '<P>'._('Are you sure, you want to restore database backup created ').date("Y/m/d H:i.s",$_GET['db'])."?</p>";
+	echo "<a href=\"?m=dbrecover&db=".$_GET['db']."&is_sure=1\">"._('Yes, I am sure').'</A>';
 	$SMARTY->display('footer.html');
 }
 

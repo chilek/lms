@@ -43,7 +43,7 @@ if($to) {
 	$unixto = mktime(23,59,59); //end of today's day
 }
 
-$layout['pagetitle'] = _('Sale register for period '.$from.' - '.$to;
+$layout['pagetitle'] = sprintf(_('Sale register for period %s - %s'), $from, $to);
 
 $invoicelist = $LMS->InvoicesReport($unixfrom, $unixto);
 

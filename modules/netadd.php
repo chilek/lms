@@ -62,7 +62,7 @@ if(isset($netadd))
 	{
 		if(getnetaddr($netadd['address'],prefix2mask($netadd['prefix']))!=$netadd['address'])
 		{
-			$error['address'] = _("That address isn't network address, setting to ").getnetaddr($netadd['address'],prefix2mask($netadd['prefix']));
+			$error['address'] = sprintf(_("That address isn't network address, setting to %s"), getnetaddr($netadd['address'],prefix2mask($netadd['prefix'])));
 			$netadd['address'] = getnetaddr($netadd['address'],prefix2mask($netadd['prefix']));
 		}
 		else
@@ -82,7 +82,7 @@ if(isset($netadd))
 		$error[dns2] = _("Incorrect DNS server IP address!");
 	
 	if($netadd['wins']!="" && !check_ip($netadd['wins']))
-		$error['wins'] = _("Incorrect WINS server IP address!";
+		$error['wins'] = _("Incorrect WINS server IP address!");
 	
 	if($netadd['gateway']!="")
 		if(!check_ip($netadd['gateway']))
@@ -100,7 +100,7 @@ if(isset($netadd))
 		if(!check_ip($netadd['dhcpend']))
 			$error['dhcpend'] = _("Incorrect IP address for end of DHCP range!");
 	elseif(!isipin($netadd['dhcpend'],getnetaddr($netadd['address'],prefix2mask($netadd['prefix'])),prefix2mask($netadd['prefix'])) && $netadd['address']!="")
-		$error['dhcpend'] = _("IP address for end of DHCP range not overlaps with this network!";
+		$error['dhcpend'] = _("IP address for end of DHCP range not overlaps with this network!");
 	
 	if(!$error['dhcpstart'] && !$error['dhcpend'])
 	{

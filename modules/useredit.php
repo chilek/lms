@@ -113,7 +113,7 @@ elseif(isset($userdata))
 		$userdata[$key] = trim($value);
 
 	if($userdata['lastname']=='')
-		$error['username'] = _("Name of user is required!');
+		$error['username'] = _('Name of user is required!');
 	
 	if($userdata['address']=='')
 		$error['address'] = _('Address of user is required!');

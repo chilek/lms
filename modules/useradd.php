@@ -39,7 +39,7 @@ elseif(isset($useradd))
 {
 
 	if($useradd['lastname']=='')
-		$error['username']= _('Name of user is required');
+		$error['username']= _('Name of user is required!');
 	
 	if($useradd['address']=='')
 		$error['address']= _('Address of user is required!');

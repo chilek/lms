@@ -33,7 +33,7 @@ if($LMS->AdminExists($id))
 	if(isset($passwd))
 	{
 		if($passwd['passwd'] == "" || $passwd['confirm'] == "")
-			$error['password'] .= _('Empty password not allowed!<BR>');
+			$error['password'] .= _('Password cannot be empty!');
 		
 		if($passwd['passwd'] != $passwd['confirm'])
 			$error['password'] .= _('Passwords do not match!');
@@ -47,7 +47,7 @@ if($LMS->AdminExists($id))
 
 	$passwd['realname'] = $LMS->GetAdminName($id);
 	$passwd['id'] = $id;
-	$layout['pagetitle'] = _('Password change');
+	$layout['pagetitle'] = _('Password Change');
 	$SMARTY->assign('layout',$layout);
 	$SMARTY->assign('error',$error);
 	$SMARTY->assign('passwd',$passwd);
