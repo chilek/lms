@@ -245,7 +245,7 @@ http://www.naszasiec.pl/</screen></example>
     </para>
     	<sect2>
 	    <title>Instalacja</title>
-	    <para>Przed uruchomieniem lms-traffic u¿ytkownik nale¿y zadbaæ o utworzenie
+	    <para>Przed uruchomieniem lms-traffic nale¿y zadbaæ o utworzenie
 	    pliku z danymi. Zawarto¶æ pliku powinna mieæ nastêpuj±cy format:</para>
 	    <screen>
 &lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
