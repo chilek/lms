@@ -43,13 +43,13 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 	$fields[] = array( 'x' => -5, 'y' => -5 );
 	$fields[] = array( 'x' => -5, 'y' => 0 );
 	$fields[] = array( 'x' => -5, 'y' => 5 );
-	$fields[] = array( 'x' => 0, 'y' => 10 );
+	$fields[] = array( 'x' => 5, 'y' => 10 );
 	$fields[] = array( 'x' => 10, 'y' => 10 );     
-	$fields[] = array( 'x' => 10, 'y' => 0 );
+	$fields[] = array( 'x' => 10, 'y' => 5 );
 	$fields[] = array( 'x' => 10, 'y' => -10 );
-	$fields[] = array( 'x' => 0, 'y' => -10 );
+	$fields[] = array( 'x' => 5, 'y' => -10 );
 	$fields[] = array( 'x' => -10, 'y' => -10 );
-	$fields[] = array( 'x' => -10, 'y' => 0 );
+	$fields[] = array( 'x' => -10, 'y' => 5 );
 	$fields[] = array( 'x' => -10, 'y' => 10 );
 
 	unset($nodefields);
