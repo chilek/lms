@@ -41,11 +41,23 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	foreach($_POST['marks'] as $markid => $junk)
 		if($junk)
 			$ids[] = $markid;
+
+	if($_GET['cash'])
+	{
+		foreach($ids as $cashid)
+		{
+			if($invoiceid = $LMS->DB->GetOne('SELECT invoiceid FROM cash WHERE id = ?', array($cashid)))
+				$idsx[] = $invoiceid;
+		}
+		$ids = array_unique($idsx);
+	}
+	
 	sort($ids);
 	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
 	foreach($ids as $idx => $invoiceid)
 	{
 		echo '<PRE>';
+		
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 		foreach(split('\+', $which) as $type)

@@ -32,7 +32,10 @@ if (sizeof($_POST['marks']))
 	sort($ids);
 	foreach($ids as $idx => $cashid)
 	{
-		$LMS->DelBalance($cashid);
+		if($invoiceid = $LMS->DB->GetOne('SELECT invoiceid FROM cash WHERE id=?', array($cashid)))
+			$LMS->InvoiceDelete($invoiceid);
+		else
+			$LMS->DelBalance($cashid);
 	}
 }
 
