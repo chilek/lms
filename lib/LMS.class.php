@@ -75,7 +75,7 @@ class LMS {
 		return $db->row[0];
 	}
 
-	function UpdateUser($userdata)
+	function UserUpdate($userdata)
 	{
 		$session=$this->session;
 		$db=$this->db;
@@ -188,6 +188,14 @@ class LMS {
 		return $db->row[0];
 	}
 
+	function GetUserStatus($id)
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT `status` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
+		$db->FetchRow();
+		return $db->row[0];
+	}
+
 	function GetNetwork($id)
 	{
 		$db=$this->db;
@@ -217,7 +225,7 @@ class LMS {
 	}
 			
 
-	function GetUserRecord($id)
+	function GetUser($id)
 	{
 		$db=$this->db;
 		$db->ExecSQL("SELECT * FROM `users` WHERE `id` = '".$id."' LIMIT 1");
@@ -239,7 +247,7 @@ class LMS {
 
 		$db=$this->db;
 
-		$sql="SELECT id, lastname, name, status, email, phone1, address, info FROM users ";
+		$sql="SELECT id, lastname, name, status, email, phone1, address, info, creationdate, moddate, creatorid, modid FROM users ";
 
 		if(!isset($state)) $state="3";
 		if(!isset($order)) $order="username,asc";
@@ -268,7 +276,8 @@ class LMS {
 				$userlist[email][],
 				$userlist[phone1][],
 				$userlist[address][],
-				$userlist[info][]
+				$userlist[info][],
+				$userlist[crdate][],$userlist[moddate][],$userlist[crid][],$userlist[modid][]
 			) = $db->row;
 
 		}
@@ -286,22 +295,22 @@ class LMS {
 
 		if(sizeof($userlist[id])) switch($order){
 			case "username":
-				array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
+				array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 				break;
 			case "id":
-				array_multisort($userlist[id],$direction,SORT_NUMERIC,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
+				array_multisort($userlist[id],$direction,SORT_NUMERIC,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 				break;
 			case "email":
-				array_multisort($userlist[email],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
+				array_multisort($userlist[email],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 				break;
 			case "address":
-				array_multisort($userlist[address],$direction,$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[balance]);
+				array_multisort($userlist[address],$direction,$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 				break;
 			case "balance":
-				array_multisort($userlist[balance],$direction,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info]);
+				array_multisort($userlist[balance],$direction,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 				break;
 			case "phone":
-				array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance]);
+				array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 				break;
 		}
 
@@ -373,20 +382,8 @@ class LMS {
 
 	function GetUserBalance($id)
 	{
-		$db=$this->db;
-		$db->ExecSQL("SELECT type, value FROM `cash` WHERE `userid` = '".$id."'");
-		$return = 0;
-		while($db->FetchRow()){
-			switch($db->row[0]){
-				case "3":
-					$return=$return+$db->row[1];
-				break;
-				case "4":
-					$return=$return-$db->row[1];
-				break;
-			}
-		}
-		return $return;
+		$return = $this->GetUserBalanceList($id);
+		return $return[balance];
 	}
 
 	function GetUserBalanceList($id)
@@ -398,41 +395,46 @@ class LMS {
 		while($db->FetchRow())
 
 		list(
-			$tsaldolist[id][],
-			$tsaldolist[time][],
-			$tsaldolist[adminid][],
-			$tsaldolist[type][],
-			$tsaldolist[value][],
-			$tsaldolist[userid][],
-			$tsaldolist[comment][]
+			$saldolist[id][],
+			$saldolist[time][],
+			$saldolist[adminid][],
+			$saldolist[type][],
+			$saldolist[value][],
+			$saldolist[userid][],
+			$saldolist[comment][]
 		) = $db->row;
-
-		for($i=0;$i<sizeof($tsaldolist[id]);$i++)
+		
+		for($i=0;$i<sizeof($saldolist[id]);$i++)
 		{
-			if($i>0) $tsaldolist[before][$i] = $tsaldolist[after][$i-1];
-			else $tsaldolist[before][$i] = 0;
-
-			switch ($tsaldolist[type][$i]){
-
+			if($i>0) $saldolist[before][$i] = $saldolist[after][$i-1];
+			else $saldolist[before][$i] = 0;
+	
+			// zachcia³o mi siê kurwa pierdolonych locales :S
+			// zak³adam siê ¿e w trakcie pisania wyjdzie jeszcze kwiatek
+			// z zapisem do mysql'a :S
+			$saldolist[value][$i]=str_replace(".",",",$saldolist[value][$i]);
+			$saldolist[value][$i]=round($saldolist[value][$i],2);	
+			switch ($saldolist[type][$i]){
 				case "3":
-					$tsaldolist[after][$i] = $tsaldolist[before][$i] + $tsaldolist[value][$i];
-					$tsaldolist[name][$i] = "wp³ata";
+					$saldolist[after][$i] = round(($saldolist[before][$i] + $saldolist[value][$i]),4);
+					$saldolist[name][$i] = "wp³ata";
 				break;
+				
 				case "4":
-					$tsaldolist[after][$i] = $tsaldolist[before][$i] - $tsaldolist[value][$i];
-					$tsaldolist[name][$i] = "op³ata";
+					$saldolist[after][$i] = round(($saldolist[before][$i] - $saldolist[value][$i]),4);
+					$saldolist[name][$i] = "op³ata ab";
 				break;
 			}
-
-			$tsaldolist[adminname][$i]=$this->GetAdminName($tsaldolist[adminid][$i]);
-			$tsaldolist[date][$i]=date("Y/m/d H:i",$tsaldolist[time][$i]);
+//			echo "ID: $i / Przed: ".$saldolist[before][$i]." / Warto¶æ: ".$saldolist[value][$i]."/ Po: ".$saldolist[after][$i]." / Round: ".round($saldolist[value][$i],2)."<BR>";
+			$saldolist[adminname][$i]=$this->GetAdminName($saldolist[adminid][$i]);
+			$saldolist[date][$i]=date("Y/m/d H:i",$saldolist[time][$i]);
 
 		}
 
-		$tsaldolist[balance] = $tsaldolist[after][sizeof($tsaldolist[id])-1];
-		$tsaldolist[total] = sizeof($tsaldolist[id]);
+		$saldolist[balance] = $saldolist[after][sizeof($saldolist[id])-1];
+		$saldolist[total] = sizeof($saldolist[id]);
 	
-		return $tsaldolist;
+		return $saldolist;
 
 	}
 
@@ -457,14 +459,26 @@ class LMS {
 		return $db->row[0];
 	}
 
-	function AddNode($nodedata)
+	function NodeAdd($nodedata)
 	{
 		$db=$this->db;
 		$session=$this->session;
 		return $db->ExecSQL("INSERT INTO `nodes` (`name`, `mac`, `ipaddr`, `ownerid`, `creatorid`, `creationdate`) VALUES ('".strtoupper($nodedata[name])."', '".strtoupper($nodedata[mac])."', '".$nodedata[ipaddr]."', '".$nodedata[ownerid]."', '".$session->id."', '".time()."')");
 	}
 
-		
+	function UserAdd($useradd)
+	{
+		$db=$this->db;
+		$session=$this->session;
+		if(!isset($useradd[status]))
+			$useradd[status] = 1;
+		if(!isset($useradd[tariff]))
+			$useradd[tariff] = 1;
+		$db->ExecSQL("INSERT INTO `users` (`name`, `lastname`, `phone1`, `phone2`, `phone3`, `address`, `email`, `status`, `tariff`, `creationdate`, `moddate`, `creatorid`, `modid` ) VALUES ('".capitalize($useradd[name])."', '".strtoupper($useradd[lastname])."', '".$useradd[phone1]."', '".$useradd[phone2]."', '".$useradd[phone3]."', '".$useradd[address]."', '".$useradd[email]."', '".$useradd[status]."', '".$useradd[tariff]."', '".time()."', '".time()."', '".$session->id."', '".$session->id."')");
+		$db->ExecSQL("SELECT max(id) FROM `users`");
+		$db->FetchRow();
+		return $db->row[0];
+	}
 
 	function GetUserEmail($id)
 	{
@@ -502,6 +516,13 @@ class LMS {
 	{
 		$db=$this->db;
 		return $db->CountRows("SELECT * FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
+	}
+
+	function AddBalance($addbalance)
+	{
+		$db=$this->db;
+		$session=$this->session;
+		return $db->ExecSQL("INSERT INTO `cash`	(time, adminid, type, value, userid, comment) VALUES ('".time()."','".$session->id."','".$addbalance[type]."','".$addbalance[value]."','".$addbalance[userid]."','".$addbalance[comment]."' )");
 	}
 }
 
