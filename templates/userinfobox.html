@@ -39,14 +39,16 @@
 			{$userinfo.zip} {$userinfo.city}
 		</TD>
 	</TR>
+{if $userinfo.email neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/mail.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			{if $userinfo.email}<A HREF="mailto:{$userinfo.email}">{$userinfo.email}</A>{else}brak{/if}
+			<A HREF="mailto:{$userinfo.email}">{$userinfo.email}</A>
 		</TD>
 	</TR>
+{/if}
 {if $userinfo.gguin neq "" && $userinfo.gguin neq 0}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
@@ -85,7 +87,7 @@
 			<B>Saldo:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} z³</B></FONT>{else}{$userinfo.balance|default:"0"} z³{/if}
+			{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|string_format:"%01.2f"} z³</B></FONT>{else}{$userinfo.balance|default:"0"|string_format:"%01.2f"} z³{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
