@@ -43,53 +43,20 @@ class LMS
 	}
 	
 	/*
-	 *  Funkcje bazodanowe (kompatybilno¶æ, backupy, timestampy
+	 *  Funkcje bazodanowe (backupy, timestampy)
 	 */
-
-	function sqlTSfmt() // zale¿nie od bazy danych zwraca sposób na uzyskanie aktualnego czasu
-	{
-		switch($this->ADB->databaseType)
-		{
-			case "mysql":
-				return "UNIX_TIMESTAMP()";
-				break;
-			case "postgres":
-				return "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
-				break;
-			default:
-				// fall back to local timestamp instead of remote.
-				// it's dangerous if we use remote database where
-				// time can (and propably will) differ from local.
-				return "'".time()."'";
-				break;
-		}
-	}
-
-	function sqlLIKE() // w przypadku postgresa zwraca ILIKE (case-insensitive)
-	{
-		switch($this->ADB->databaseType)
-		{
-			case "postgres":
-				return "ILIKE";
-				break;
-
-			default:
-				return "LIKE";
-				break;
-		}
-	}
 
 	function SetTS($table) // ustawia timestamp tabeli w tabeli 'timestamps'
 	{
 		if($this->ADB->GetOne('SELECT * FROM timestamps WHERE tablename=?',array($table)))
-			$this->ADB->Execute('UPDATE timestamps SET time = '.$this->sqlTSfmt().' WHERE tablename=?',array($table));
+			$this->ADB->Execute('UPDATE timestamps SET time = ?NOW? WHERE tablename=?',array($table));
 		else
-			$this->ADB->Execute('INSERT INTO timestampe (tablename, time) VALUES (?, '.$this->sqlTSfmt().')',array($table));
+			$this->ADB->Execute('INSERT INTO timestampe (tablename, time) VALUES (?, ?NOW?)',array($table));
 
 		if($this->ADB->GetOne('SELECT * FROM timestamps WHERE tablename=?',array('_global')))
-			$this->ADB->Execute('UPDATE timestamps SET time = '.$this->sqlTSfmt().' WHERE tablename=?',array('_global'));
+			$this->ADB->Execute('UPDATE timestamps SET time = ?NOW? WHERE tablename=?',array('_global'));
 		else
-			$this->ADB->Execute('INSERT INTO timestampe (tablename, time) VALUES (?, '.$this->sqlTSfmt().')',array('_global'));
+			$this->ADB->Execute('INSERT INTO timestampe (tablename, time) VALUES (?, ?NOW?)',array('_global'));
 	}
 
 	function GetTS($table) // zwraca timestamp tabeli zapisany w tabeli 'timestamps'
@@ -386,7 +353,7 @@ class LMS
 	{
 		$this->SetTS("users");
 		
-		if($this->ADB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, tariff, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ".$this->sqlTSfmt().", ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['status'], $useradd['tariff'], $this->SESSION->id, $useradd['info'])))
+		if($this->ADB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, tariff, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['status'], $useradd['tariff'], $this->SESSION->id, $useradd['info'])))
 			return $this->ADB->GetOne("SELECT MAX(id) FROM users");
 		else
 			return FALSE;
@@ -404,7 +371,7 @@ class LMS
 	function UserUpdate($userdata)
 	{
 		$this->SetTS("users");
-		return $this->ADB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, tariff=?, moddate=".$this->sqlTSfmt().", modid=?, info=?, lastname=?, name=?, payday=? WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['tariff'], $this->SESSION->id, $userdata['info'], strtoupper($userdata['lastname']), $userdata['name'], $userdata['payday'], $userdata['id'] ) );
+		return $this->ADB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, tariff=?, moddate=?NOW?, modid=?, info=?, lastname=?, name=?, payday=? WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['tariff'], $this->SESSION->id, $userdata['info'], strtoupper($userdata['lastname']), $userdata['name'], $userdata['payday'], $userdata['id'] ) );
 	}
 
 	function GetUserNodesNo($id)
@@ -509,8 +476,6 @@ class LMS
 			break;																			
 		}
 
-		$like = $this->sqlLIKE();
-
 		if(sizeof($search))
 		foreach($search as $key => $value)
 		{
@@ -519,11 +484,11 @@ class LMS
 			{
 				$value = "'%".$value."%'";
 				if($key=="phone")
-					$searchargs[] = "(phone1 $like $value OR phone2 $like $value OR phone3 $like $value)";
+					$searchargs[] = "(phone1 ?LIKE? $value OR phone2 ?LIKE? $value OR phone3 ?LIKE? $value)";
 				elseif($key=="username")
-					$searchargs[] = $this->ADB->Concat("UPPER(lastname)","' '","name")." $like ".$value;
+					$searchargs[] = $this->ADB->Concat("UPPER(lastname)","' '","name")." ?LIKE? ".$value;
 				elseif($key!="s")
-					$searchargs[] = $key." $like ".$value;
+					$searchargs[] = $key." ?LIKE? ".$value;
 			}
 		}
 		
@@ -809,7 +774,7 @@ class LMS
 	function NodeUpdate($nodedata)
 	{
 		$this->SetTS("nodes");
-		return $this->ADB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, moddate=".$this->sqlTSfmt().", modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), $nodedata['ipaddr'], strtoupper($nodedata['mac']), $this->SESSION->id, $nodedata['access'], $nodedata['ownerid'], $nodedata['id']));
+		return $this->ADB->Execute("UPDATE nodes SET name=?, ipaddr=?, mac=?, moddate=?NOW?, modid=?, access=?, ownerid=? WHERE id=?",array(strtoupper($nodedata['name']), $nodedata['ipaddr'], strtoupper($nodedata['mac']), $this->SESSION->id, $nodedata['access'], $nodedata['ownerid'], $nodedata['id']));
 	}
 
 	function DeleteNode($id)
@@ -1060,7 +1025,7 @@ class LMS
 	{
 		$this->SetTS("nodes");
 
-		if($this->ADB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate) VALUES (?, ?, ?, ?, ?, ".$this->sqlTSfmt().")",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id)))
+		if($this->ADB->Execute("INSERT INTO nodes (name, mac, ipaddr, ownerid, creatorid, creationdate) VALUES (?, ?, ?, ?, ?, ?NOW?)",array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$this->SESSION->id)))
 			return $this->ADB->GetOne("SELECT MAX(id) FROM nodes");
 		else
 			return FALSE;
@@ -1178,12 +1143,12 @@ class LMS
 		$this->SetTS("cash");
 		$stan=$this->GetUserBalance($user_id);
 		$stan=-$stan;
-		return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?)",array($this->SESSION->id, 3 , round("$stan",2) , $user_id));
+		return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid) VALUES (?NOW?, ?, ?, ?, ?)",array($this->SESSION->id, 3 , round("$stan",2) , $user_id));
 	}
 	function AddBalance($addbalance)
 	{
 		$this->SetTS("cash");
-		return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (".$this->sqlTSfmt().", ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment']));	
+		return $this->ADB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment']));	
 	}
 	function GetBalanceList()
 	{
@@ -1637,6 +1602,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.194  2003/08/22 00:17:50  lukasz
+ * - removed ADODB ;>
+ *
  * Revision 1.193  2003/08/21 03:14:29  lukasz
  * - http://lists.rulez.pl/lms/0835.html
  *
