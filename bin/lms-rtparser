@@ -41,7 +41,7 @@ sub basename($) { my @tmp = split '/',$_[0]; return pop @tmp }
 
 my $hostname = hostname || 'example.com';
 
-my $save_path = 'some_dir';
+my $save_path = '/home/admins/baseciq/public_html/devel/lms/bin/attach';
 
 my $_version = '1.3-cvs';
 
