@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Dla dociekliwych</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="LMS - LAN Management System 1.1-cvs"
 HREF="index.html"><LINK
@@ -27,6 +27,7 @@ TEXT="#000000"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
+SUMMARY="Header navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -44,6 +45,7 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="daemon-modules.html"
+ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
@@ -57,7 +59,8 @@ ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="devel-db.html"
->Nastêpny</A
+ACCESSKEY="N"
+>Nast&#281;pny</A
 ></TD
 ></TR
 ></TABLE
@@ -69,14 +72,14 @@ CLASS="CHAPTER"
 ><H1
 ><A
 NAME="DEVEL"
->Rozdzia³ 7. Dla dociekliwych</A
-></H1
+></A
+>Rozdzia&#322; 7. Dla dociekliwych</H1
 ><DIV
 CLASS="TOC"
 ><DL
 ><DT
 ><B
->Spis tre¶ci</B
+>Spis tre&#347;ci</B
 ></DT
 ><DT
 >7.1. <A
@@ -137,11 +140,21 @@ HREF="devel-db.html#ASSIGNMENTS"
 ></DT
 ><DT
 >7.2.10. <A
+HREF="devel-db.html#INVOICES"
+>Faktury ('invoices')</A
+></DT
+><DT
+>7.2.11. <A
+HREF="devel-db.html#INVOICECONTENTS"
+>Faktury - cd. ('invoicecontents')</A
+></DT
+><DT
+>7.2.12. <A
 HREF="devel-db.html#TIMESTAMPS"
 >Znaczniki czasu ('timestamps')</A
 ></DT
 ><DT
->7.2.11. <A
+>7.2.13. <A
 HREF="devel-db.html#STATS"
 >Statystyki wykorzystania ³±cza ('stats')</A
 ></DT
@@ -185,12 +198,12 @@ HREF="devel-limits.html"
 ><DL
 ><DT
 >7.5.1. <A
-HREF="devel-limits.html#AEN1645"
+HREF="devel-limits.html#AEN1860"
 >Wynikaj±ce z naszego projektu</A
 ></DT
 ><DT
 >7.5.2. <A
-HREF="devel-limits.html#AEN1648"
+HREF="devel-limits.html#AEN1863"
 >Wynikaj±ce z u¿ywanego DMBS</A
 ></DT
 ></DL
@@ -208,7 +221,7 @@ NAME="DEVEL-CATALOGS"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1447"
+NAME="AEN1629"
 ></A
 ><P
 ><B
@@ -217,151 +230,89 @@ NAME="AEN1447"
 ><TABLE
 BORDER="1"
 CLASS="CALSTABLE"
-><THEAD
+><COL
+WIDTH="200"
+ALIGN="CENTER"><COL
+WIDTH="300"
+ALIGN="CENTER"><THEAD
 ><TR
 ><TH
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Nazwa</TH
 ><TH
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Opis</TH
 ></TR
 ></THEAD
 ><TBODY
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >backups</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Kopie zapasowe bazy danych</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >bin</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Skrypty wykonywalne lms-...</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >contrib</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Dodatki stworzone przez u¿ytkowników LMS</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
+>daemon</TD
+><TD
+>A.L.E.C's LMS Daemon</TD
+></TR
+><TR
+><TD
 >devel</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Skrypty przydatne dla developerów</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >doc</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Dokumentacja</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >img</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Obrazki do Interfejsu U¿ytkownka</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >lib</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >LMS'owy zbiór bibliotek PHP oraz Smarty</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >modules</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Modu³y Interfejsu U¿ytkownika</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >sample</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Przyk³adowe skrypty i inne dodatki</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >templates</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Temlejty Smarty dla Interfejsu U¿ytkownika</TD
 ></TR
 ><TR
 ><TD
-WIDTH="200"
-ALIGN="CENTER"
-VALIGN="TOP"
 >templates_c</TD
 ><TD
-WIDTH="300"
-ALIGN="CENTER"
-VALIGN="TOP"
 >Pliki tymczasowe</TD
 ></TR
 ></TBODY
@@ -374,6 +325,7 @@ CLASS="NAVFOOTER"
 ><HR
 ALIGN="LEFT"
 WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -385,6 +337,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="daemon-modules.html"
+ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
@@ -393,7 +346,8 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="index.html"
->Spis tre¶ci</A
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
 ></TD
 ><TD
 WIDTH="33%"
@@ -401,7 +355,8 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="devel-db.html"
->Nastêpny</A
+ACCESSKEY="N"
+>Nast&#281;pny</A
 ></TD
 ></TR
 ><TR

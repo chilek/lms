@@ -46,16 +46,23 @@ The LMS Developers
         5.2. Konfiguracja
         5.3. Przyk³ad zastosowania lms-mgc
 
-   6. Dla dociekliwych
+   6. A.L.E.C's LMS Daemon
 
-        6.1. Drzewo katalogów
-        6.2. Struktura bazy danych
-        6.3. Poziomy dostêpu
-        6.4. Ograniczenia
+        6.1. Informacje podstawowe
+        6.2. Modu³y
+
+   7. Dla dociekliwych
+
+        7.1. Drzewo katalogów
+        7.2. Struktura bazy danych
+        7.3. Format pliku konfiguracyjnego
+        7.4. Poziomy dostêpu
+        7.5. Ograniczenia
 
    Spis tabel
    4-1. Lista skryptów wykonywalnych
-   6-1. Drzewo katalogów LMS
+   6-1. Lista modu³ów demona almsd
+   7-1. Drzewo katalogów LMS
 
    Spis rysunków
    3-1. LMS-UI: Logowanie
@@ -74,6 +81,7 @@ The LMS Developers
    4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych
    4-2. Lms-notify: Przyk³ad szablonu
    5-1. Lms-mgc: Przyk³ad instancji
+   7-1. Format opcji konfiguracyjnych
      _________________________________________________________________
 
 Rozdzia³ 1. Wstêp
@@ -81,9 +89,9 @@ Rozdzia³ 1. Wstêp
 1.1. Czym jest LMS
 
    "LMS" jest skrótem od "LAN Management System". Jest to zestaw
-   aplikacji w PHP i Perlu, u³atwiaj±cych zarz±dzanie sieciami
+   aplikacji w PHP, C i Perlu, u³atwiaj±cych zarz±dzanie sieciami
    osiedlowymi (popularnie zwanymi Amatorskimi Sieciami Komputerowymi),
-   opartych o bazê danych MySQL lub PostgreSQL. G³ówne za³o¿enia to
+   korzystaj±cych z bazy danych MySQL lub PostgreSQL. G³ówne za³o¿enia to
    uzyskanie jako¶ci us³ug oraz obs³ugi u¿ytkowników na poziomie
    providera z prawdziwego zdarzenia. Najbardziej podstawowe cechy LMS
    to:
@@ -99,7 +107,7 @@ Rozdzia³ 1. Wstêp
      * generowanie praktycznie jakiegokolwiek konfiga na podstawie danych
        o komputerach w bazie (przyk³adowe konfigi obejmuj± rc.masq na
        iptables, dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i
-       odwrotny),
+       odwrotny, htb),
      * wizualizacja statystyk wykorzystania ³±cza.
 
    Ca³o¶æ zosta³a wymy¶lona w ramach administracji ASK NetX i tam jest
@@ -125,6 +133,7 @@ Rozdzia³ 1. Wstêp
      * Kod C:
 
        Mateusz 'mteg' Golicz
+       Aleksander 'A.L.E.C' Machniak
      * Kod Perl:
 
        £ukasz 'Baseciq' Mozer
@@ -258,6 +267,13 @@ Rozdzia³ 2. Instalacja i konfiguracja
    Jest jeszcze LMS-MGC, który te¿ jest skryptem ale na tyle uniwersalnym
    ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i
    zrestartowaæ us³ugê na twoim serwerze.
+
+   Jest jeszcze A.L.E.C's LMS Daemon, napisany w jêzyku C. Jest on
+   przeznaczony (a w³a¶ciwie jego wtyczki) do generowania plików
+   konfiguracyjnych i restartowania us³ug. Mo¿na go stosowaæ jako
+   zamiennik lub uzupe³nienie skryptów perlowych. Odpowiada on za to, aby
+   to co zosta³o zmienione w LMS-UI zosta³o zmienione tak¿e w
+   rzeczywisto¶ci.
      _________________________________________________________________
 
 2.2. Wymagania
@@ -306,6 +322,13 @@ Rozdzia³ 2. Instalacja i konfiguracja
      * DBD-pg (Je¶li masz zamiar u¿ywaæ postgres'a);
      _________________________________________________________________
 
+2.2.6. Kompilator jêzyka C
+
+   Je¶li chcesz uruchomiæ A.L.E.C's LMS Daemon bêdziesz potrzebowa³
+   dzia³aj±cy kompilator jêzyka C, gdy¿ jest on dostarczany wy³±cznie w
+   postaci kodu ¼ród³owego.
+     _________________________________________________________________
+
 2.3. Instalacja LMS
 
    Po pobraniu ze strony www.lms.rulez.pl rozpakuj archiwum:
@@ -314,11 +337,25 @@ $ tar zxvf lms-x.x.x.tar.gz
    a nastêpnie przenie¶ pliki z LMS-UI do katalogu osi±galnego z poziomu
    serwera www (np. /var/www/lms).
 
+   Je¿eli nie skorzysta³e¶ z wersji zawieraj±cej bibliotekê Smarty,
+   pobierz j± i umie¶æ w katalogu lib.
+
+   Notatka
+
+   Po³o¿enie wszystkich katalogów mo¿esz zmieniæ w sekcji [directories]
+   pliku lms.ini.
+
    Pliki z konfiguracj± (sample/lms.ini i sample/lms-mgc.ini) umie¶æ w
    katalogu /etc/lms.
 
    Skrypty wykonywalne z katalogu bin najlepiej przenie¶æ do katalogu
    /usr/sbin.
+
+   Ostrze¿enie
+
+   Serwer www musi mieæ prawo odczytu pliku lms.ini oraz prawa odczytu i
+   zapisu do katalogu backup. Stanowi to potencjalne obni¿enie poziomu
+   bezpieczeñstwa systemu.
      _________________________________________________________________
 
 2.4. Instalacja serwera baz danych
@@ -450,6 +487,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
    umie¶ciæ w katalogu /etc/lms lub w katalogu g³ównym LMS'a. Zawiera on
    zmienne konfiguracyjne LMS-UI oraz wszystkich skryptów wykonywalnych z
    wyj±tkiem LMS-MGC.
+
    Notatka
 
    Pamiêtaj o usuniêciu ¶redników na pocz±tku linii z ustawianym
@@ -548,6 +586,14 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
        Limit wy¶wietlanych pozycji na stronie w li¶cie komputerów.
        Domy¶lnie brak limitu.
        Przyk³ad: nodelist_pagelimit = 10
+     * balancelist_pagelimit
+       Limit wy¶wietlanych pozycji na stronie na rachunku u¿ytkownika.
+       Domy¶lnie: 100.
+       Przyk³ad: balancelist_pagelimit = 50
+     * invoicelist_pagelimit
+       Limit wy¶wietlanych pozycji na stronie w li¶cie faktur. Domy¶lnie:
+       100
+       Przyk³ad: invoicelist_pagelimit = 50
      * reload_type
        Typ reloadu. Dozwolone warto¶ci:
        exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo,
@@ -594,10 +640,6 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms
        wysy³ane z sekcji 'mailing' LMS'a, zamiast do w³a¶ciwych
        u¿ytkowników.
        Przyk³ad: debug_email = root@localhost
-     * enable_stats
-       W³±czenie/wy³±czenie dostêpno¶ci w menu modu³u 'traffic'.
-       Domy¶lnie wy³±czone.
-       Przyk³ad: enable_stats = 1
      * default_zip, default_city, default_address
        Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania
        nowego u¿ytkownika. Przydatne gdy mamy do wpisania wielu
@@ -756,6 +798,8 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    urz±dzeñ sieciowych, zawieraj±c± ich nazwy i symbole, po³o¿enie i
    opis, a ponadto ilo¶æ dostêpnych portów. Klikniêcie na wybranym
    urz±dzeniu spowoduje wy¶wietlenie informacji szczegó³owych o nim.
+   Mo¿liwe jest definiowanie po³±czeñ urz±dzeñ i komputerów oraz
+   generowanie graficznej mapy ca³ej sieci.
 
    Rysunek 3-5. LMS-UI: Osprzêt sieciowy
    [netdev-small.png] 
@@ -809,8 +853,9 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
 3.2.7. Prze³adowanie
 
    Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie
-   konfiguracji zdefiniowanej dla generatora plików konfiguracyjnych
-   lms-mgc. Wiêcej informacji znajdziesz w rozdziale dotycz±cym lms-mgc.
+   konfiguracji i us³ug zdefiniowanych dla generatora plików
+   konfiguracyjnych LMS-MGC lub demona almsd. Wiêcej informacji
+   znajdziesz w rozdzia³ach dotycz±cych LMS-MGC oraz demona.
      _________________________________________________________________
 
 3.2.8. Bazy danych
@@ -851,87 +896,31 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
 
 3.3.1. Faktury
 
-   LMS umo¿liwia wystawianie faktur. Opcja ta jest standardowo wy³±czona,
-   dlatego na wstêpie musisz w sekcji [finances] lms.ini ustawiæ
-   nastêpuj±ce parametry:
-     * enable_faktury
-       W³±czenie modu³u wystawiania faktur
-       Przyk³ad: enable_faktury = 1
-     * name
-       Nazwa sieci/organizacji na fakturze
-       Przyk³ad: name = "Blokowa Sieæ Komputerowa K-27"
-     * address
-       Adres sieci
-       Przyk³ad: address = "Wiosenna 52"
-     * zip
-       Kod pocztowy
-       Przyk³ad: zip = "39-300"
-     * city
-       Nazwa miasta
-       Przyk³ad: city = "Mielec"
-     * deadline
-       Termin zaplaty w dniach
-       Przyk³ad: deadline = 5
-     * bank
-       Nazwa banku
-       Przyk³ad: bank = "Bank S.A. O/Mielec"
-     * account
-       Numer konta bankowego
-       Przyk³ad: account = "123-456789-01"
+   LMS umo¿liwia wystawianie faktur. W³±czenia tej opcji dokonuje siê
+   podczas przypisywania taryf u¿ytkownikom. Do poprawnego dzia³ania i
+   tworzenia wydruków wymagane jest ustawienie podstawowych opcji w
+   sekcji [invoices] lms.ini:
+     * number_template
+       Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer
+       kolejny w roku, '%M' - miesi±c wystawienia, '%Y' - rok
+       wystawienia. Domy¶lnie: %N/LMS/%Y
+       Przyk³ad: number_template = %N/%Y"
+     * seller
+       Dane sprzedawcy. Domy¶lnie: pusty
+       Przyk³ad: seller = "SuperNet ISP\nul.Nowa 15\n12-000 W±chock\n"
      * footer
-       Stopka widoczna na fakturze
-       Przyk³ad: footer = "BSK K-27 w Mielcu, tel.5839455, fax.1234567"
-     * template
-       Szablon faktury do u¿ycia
-       Przyk³ad: template = /etc/lms/faktura.rtf
-
-   Szablon jest niczym innym jak dokumentem tekstowym w formacie RTF
-   (tekstowym) lub html który mo¿na stworzyæ pod dowolnym programem
-   obs³uguj±cym RTF. Plik ten powinien wygl±daæ jak gotowa faktura, a
-   pozycje które maj± byæ rozwijane przez LMS nale¿y zast±piæ
-   nastêpuj±cymi s³owami kluczowymi:
-     * %nabywca - jest rozwijany do imienia i nazwiska nabywcy
-     * %nab_adres - jest rozwijany do adresu nabywcy (ulica)
-     * %nab_adres_cd - jest rozwijany do adresu nabywcy (kod pocztowy i
-       miasto)
-     * %nip - nip nabywcy
-     * %nr_klienta - numer klienta (ID) z bazy u¿ytkowników
-     * %sprzedawca - nazwa sprzedawcy
-     * %sprzed_adres - adres sprzedawcy
-     * %sprzed_adres_cd - ci±g dalszy adreu sprzedawcy
-     * %numer - numer kolejny faktury w postaci id_operacji_kasowej/rok
-     * %data - data wystawienia faktury
-     * %termin - termin zap³aty (ilo¶æ dni ustawia siê w lms.ini)
-     * %dni - ilo¶æ dni do zap³aty, mo¿na ustawiæ j/w
-     * %usluga - nazwa us³ugi, jak nazwa jest pobierany opis operacji
-       kasowej
-     * %od - pierwszy dzieñ okresu ¶wiadczenia us³ugi (pierwszy dzieñ
-       miesi±ca, w ktorym by³o wpisane obci±¿enie do bazy)
-     * %do - ostatni dzieñ okresu ¶wiadczenia us³ugi (ostatni dzieñ
-       miesi±ca, w ktorym by³o wpisane obci±¿enie do bazy)
-     * %netto - warto¶æ us³ugi netto, bezpo¶rednio przepisana z bazy
-     * %brutto - netto + 7% VAT
-     * %vat - warto¶æ VAT (netto * 7%)
-     * %slownie - kwota do zap³aty s³ownie
-     * %konto - jest rozwijane do numeru konta bankowego
-     * %wystawil - jest rozwijane do danych administratora zalogowanego
-       aktualnie w LMS
-     * %stopka - pozwala na wpisanie danych do stopki
-
-   Notatka
-
-   Przyk³adowy szablon znajduje siê w katalogu sample (faktura.rtf) i by³
-   testowany pod OpenOffice i M$ Office.
+       Stopka faktury - np. dane sprzedawcy. Domy¶lnie: pusta
+       Przyk³ad: footer = "Blokowa Sieæ Komputerowa K-27 w Mielcu,
+       tel.555-23-23, bla bla"
+     * default_author
+       Domy¶lna osoba wystawiaj±ca fakturê. Domy¶lnie: puste
+       Przyk³ad: default_author = "specjalista d/s fakturowania"
 
    Wystawianie faktur jest dostêpne w oknie 'Rachunek u¿ytkownika', do
    którego trafisz wybieraj±c ¿±danego u¿ytkownika z listy u¿ytkownków.
    Ostrze¿enie
 
-   W bazie danych zapisywane s± kwoty netto. Jak na razie, nie ma
-   mo¿liwo¶ci ustawienia kilku stawek podatku VAT.
-   Ostrze¿enie
-
-   Do postaci s³ownej rozwi±zywane s± liczby mniejsze od 999.
+   W bazie danych zapisywane s± kwoty brutto.
      _________________________________________________________________
 
 3.3.2. Statystyki
@@ -945,10 +934,6 @@ Rozdzia³ 3. Interfejs U¿ytkownika (LMS-UI)
    wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia, ostatnich
    30 dni lub ostatniego roku.
 
-   Notatka
-
-   Menu 'Statystyki' jest standardowo niedostêpne. Aby je w³±czyæ, nale¿y
-   w sekcji [phpui] pliku lms.ini ustawiæ zmienn±: enable_stats = 1.
    Notatka
 
    Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y
@@ -1013,7 +998,7 @@ Rozdzia³ 4. Skrypty
          lms-traffic           Zapis statystyk wykorzystania ³±cza
    lms-traffic-logiptables      Wspó³praca lms-traffic z iptables
          lms-makearp           Tworzenie tablicy ARP (/etc/ethers)
-      lms-makedhcpconf        Konfiguracja serwera DHCP(/etc/ethers)
+      lms-makedhcpconf      Konfiguracja serwera DHCP(/etc/dhcpd.conf)
       lms-makeiptables           Konfiguracja firewalla iptables
       lms-makeipchains           Konfiguracja firewalla ipchains
       lms-makeiodenconf                Konfiguracja oident
@@ -1480,15 +1465,576 @@ instances         = ipchains
    /etc/rc.d/rc.masq, oraz jego odpaleniem.
      _________________________________________________________________
 
-Rozdzia³ 6. Dla dociekliwych
+Rozdzia³ 6. A.L.E.C's LMS Daemon
 
-6.1. Drzewo katalogów
+6.1. Informacje podstawowe
 
-   Tabela 6-1. Drzewo katalogów LMS
+   Napisany w jêzyku C program ma u³atwiaæ zarz±dzanie us³ugami. Sam
+   demon odpowiada za uruchamianie odpowiednich modu³ów na ¿±danie
+   u¿ytkownika. Modu³y natomiast, s³u¿± do tworzenia plików
+   konfiguracyjnych na podstawie danych z bazy LMS'a oraz restartowania
+   odpowiednich us³ug na serwerze.
+
+   Dlaczego taka nazwa? Wiêkszo¶æ kodu demona napisa³ jeden z developerów
+   - Aleksander 'A.L.E.C' Machniak, niemniej nale¿y tak¿e podkre¶liæ
+   udzia³ Marcina 'Lexx' Króla. Program zawiera fragmenty kodu autorstwa
+   Mateusza 'mteg' Golicza oraz korzysta z biblioteki iniparser Nicolasa
+   Devillarda. Je¶li Ty masz ochotê napisaæ jaki¶ modu³ lub poprawiæ
+   funkcjonalno¶æ demona jak najbardziej do tego zachêcam.
+     _________________________________________________________________
+
+6.1.1. Wymagania
+
+   A.L.E.C's LMS Daemon potrzebuje:
+     * instalacji interfejsu u¿ytkownika LMS-UI
+     * libmysqlclient (tj. pe³nej instalacji MySQL'a lub odpowiedniego
+       pakietu) lub libpq w przypadku bazy PostgreSQL
+     * libdl (to w ka¿dej dzisiejszej dystrybucji jest)
+     * kompilatora jêzyka C
+     _________________________________________________________________
+
+6.1.2. Instalacja
+
+   Przed kompilacj± nale¿y przy pomocy skryptu ./configure ustaliæ opcje
+   przedstawione na poni¿szym listingu (w nawiasach podano warto¶ci
+   domy¶lne opcji):
+  --help                pomoc
+  --enable-debug0       logowanie zapytañ SQL (wy³±czone)
+  --enable-debug1       logowanie zdarzeñ (wy³±czone)
+  --with-pgsql          gdy korzystamy z bazy PostgreSQL (wy³±czone)
+  --with-mysql          gdy korzystamy z bazy MySQL (w³±czone)
+  --prefix=DIR          katalog instalacyjny demona (/usr/local/bin)
+  --libdir=DIR          lokalizacja bibliotek bazy danych (/usr/lib)
+  --incdir=DIR          lokalizacja plików nag³ówkowych bazy danych (/usr/include)
+
+   Zatem wymagane jest okre¶lenie bazy z jakiej bêdziemy korzystaæ
+   (-with-mysql lub -with-pgsql) oraz po³o¿enia bibliotek dostarczanych
+   wraz z baz± (--incdir, --libdir).
+# ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include
+
+   Nastêpnie kompilacja i instalacja (umieszczenie demona w katalogu
+   okre¶lonym zmienn± --prefix):
+# make && make install
+
+   Na koniec skompilowane modu³y (pliki z rozszerzeniem .so), znajduj±ce
+   siê w katalogu modules/nazwa_modu³u przenie¶ do dowolnego katalogu.
+   Ich lokalizacjê bêdziesz okre¶la³ w pliku konfiguracyjnym.
+     _________________________________________________________________
+
+6.1.3. Konfiguracja
+
+   Na pocz±tku nale¿y w pliku konfiguracyjnym LMS-UI (standardowo
+   /etc/lms/lms.ini) ustawiæ typ reloadu obs³ugiwany przez demona:
+reload_type     = sql
+reload_sqlquery = "INSERT INTO reload VALUES('reload')"
+
+   Notatka
+
+   Struktura tabeli 'reload' jest dowolna, zatem musisz zadbaæ o
+   odpowiedni insert.
+
+   Przyk³adowy konfig demona i modu³ów zawarto w pliku lms.ini.sample.
+   Poni¿szy listing przedstawia podstawowe opcje dla demona (konfiguracjê
+   modu³ów omówiono w osobnych rozdzia³ach ich dotycz±cych):
+[database]
+host            = localhost     # nazwa lub ip hosta, domy¶lnie: localhost
+user            = lms           # nazwa u¿ytkownika, domy¶lnie: lms
+password        = mypasswd      # has³o do bazy, domy¶lnie: puste
+database        = lms           # nazwa bazy, domy¶lnie: lms
+port            = 0             # numer portu, domy¶lnie: 0
+
+[lmsd]
+sleeptime       = 30            # okre¶la odstêp czasu (w sekundach) jak czêsto ma
+                                # ma byæ sprawdzana tabela 'reload', domy¶lnie: 30
+instances       = hosts oident firewall       # lista instancji modu³ów
+
+   Notatka
+
+   Lista instancji sk³ada siê z nazw instancji oddzielonych spacj±.
+   Instancja to nazwa sekcji w pliku konfiguracyjnym.
+
+   W sekcji dotycz±cej instancji, oprócz parametrów konfiguracji modu³ów,
+   umieszcza siê opcje podstawowe, jak na poni¿szym listingu:
+[nazwa_instancji]
+module = /¶cie¿ka/nazwa_modu³u.so
+info = "Opcjonalny opis modu³u"
+     _________________________________________________________________
+
+6.1.4. Uruchomienie
+
+   Program mo¿esz uruchamiaæ jako demona pracuj±cego w tle (opcja '-b').
+   Wtedy prze³adowanie konfiguracji i us³ug jest dokonywane na ¿±danie,
+   przez wpis do tabeli 'reload'. Opcja 'sleeptime' (-s) okre¶la okres
+   miêdzy odczytami tej tabeli. Gdy do tabeli 'reload' zostan± zapisane
+   dowolne dane (przy pomocy menu 'Prze³adowanie' w LMS-UI) demon wykona
+   modu³y okre¶lone opcj± 'instances' z lms.ini. Na przyk³ad:
+# almsd -b
+
+   Innym sposobem uruchomienia jest jednorazowy reload w wykorzystaniem
+   crona. Z tego sposobu nale¿y korzystaæ uruchamiaj±c modu³y takie jak
+   'payments' 'notify' 'traffic'. W tym wypadku musisz stworzyæ osobny
+   plik konfiguracyjny dla ka¿dego modu³u (zawieraj±cy równie¿ opcje dla
+   demona) i podaæ go demonowi przy pomocy opcji '-c'. Przyk³adowy wpis
+   do crontab'a wygl±da nastêpuj±co:
+  1 0 * * *    /usr/local/bin/almsd -q -c /etc/lms/payments.lms.ini
+
+   Poni¿szy listing przedstawia dostêpne opcje linii poleceñ programu:
+  -c    ¶cie¿ka do pliku konfiguracyjnego (domy¶lnie: /etc/lms/lms.ini)
+  -b    uruchomienie w tle
+  -s    czas w sek. miêdzy odczytami tabeli 'reload' (domy¶lnie: 30)
+  -q    wykonaj reload i zakoñcz
+  -h    wy¶wietla opcje linii poleceñ
+     _________________________________________________________________
+
+6.2. Modu³y
+
+   Sam demon potrafi tylko uruchamiaæ modu³y i to one odwalaj± ca³±
+   robotê. Wiêkszo¶æ modu³ów jest przeznaczona do okre¶lonego
+   zastosowania, jedynie 'hostfile' mo¿na u¿ywaæ do ró¿nych konfigów
+   (us³ug), np. ró¿nych typów firewalli. Przyk³ady konfiguracji demona i
+   modu³ów zawiera plik daemon/lms.ini.sample. Parametry konfiguracyjne
+   modu³ów umieszcza siê w sekcjach instancji je wywo³uj±cych.
+     _________________________________________________________________
+
+6.2.1. Lista dostêpnych modu³ów
+
+   Tabela 6-1. Lista modu³ów demona almsd
+   Nazwa Opis
+   dhcp Konfiguracja serwera dhcpd
+   cutoff Od³±czanie u¿ytkowników z zaleg³o¶ciami w op³atach
+   dns Konfiguracja serwera dns
+   ethers Tworzenie pliku /etc/ethers
+   hostfile Modu³ uniwersalny (np. tworzenie regó³ iptables)
+   notify Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach poczt±
+   elektroniczn±
+   ggnotify Powiadamianie u¿ytkowników o zaleg³o¶ciach w op³atach przez
+   gadu-gadu
+   payments Naliczanie op³at abonamentowych
+   oident Konfiguracja oident
+   tc Tworzenie regó³ HTB
+   traffic Statystyki wykorzystania ³±cza
+     _________________________________________________________________
+
+6.2.2. Payments
+
+6.2.2.1. Opis
+
+   Modu³ nalicza u¿ytkownikom op³aty abonamentowe. Nale¿y go uruchamiaæ
+   codziennie. Op³aty naliczane na podstawie przypisanych u¿ytkownikowi
+   taryf zapisywane s± do bazy wraz z komentarzem okre¶lonym zmienn±
+   'comment'. Po naliczeniu op³at tworzone s± faktury.
+     _________________________________________________________________
+
+6.2.2.2. Konfiguracja
+
+   Dla tego modu³u s± dostêpne nastêpuj±ce zmienne kofiguracyjne:
+     * comment
+       Komentarz do operacji. '%period' zostanie zamienione na daty od-do
+       nale¿nego abonamentu, np. '10.10.2003 - 09.11.2003', a '%tariff'
+       na nazwê odpowiedniej taryfy. Domy¶lnie: 'Abonament wg taryfy:
+       '%tariff' za okres: %period'.
+       Przyk³ad: comment = 'Abonament miesiêczny za okres %period'
+     * up_payments
+       "Naliczanie z góry", czyli czy okres w komentarzu ma byæ liczony
+       do przodu, czy do ty³u w stosunku do daty naliczenia op³aty.
+       Domy¶lnie: yes.
+       Przyk³ad: up_payments = no
+     _________________________________________________________________
+
+6.2.3. Notify
+
+6.2.3.1. Opis
+
+   Modu³ 'notify' s³u¿y do informowania u¿ytkowników o zaleg³o¶ciach w
+   op³atach za pomoc± poczty elektronicznej. Aktualne saldo u¿ytkownika
+   porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze - wiadomo¶æ
+   zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego
+   szablonu, w którym mo¿na stosowaæ nastêpuj±ce zmienne:
+     * %saldo - aktualne saldo u¿ytkownika
+     * %name - imiê u¿ytkownika
+     * %lastname - nazwisko/nazwa u¿ytkownika
+     * %last_10_in_a_table - wyci±g ostatnich 10 operacji na kocie
+       u¿ytkownika
+     _________________________________________________________________
+
+6.2.3.2. Konfiguracja
+
+   Poni¿ej przedstawiono dostêpne opcje konfiguracyjne modu³u 'notify':
+     * mailtemplate
+       Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty
+       Przyk³ad: mailtemplate = modules/notify/sample/mailtemplate
+     * file
+       Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/mail
+       Przyk³ad: file = /tmp/mail.txt
+     * command
+       Polecenie pow³oki wysy³aj±ce e-maila. '%address' zostanie
+       zast±pione adresem e-mail u¿ytkownika. Domy¶lnie: 'mail %address
+       -s "Inf. o zaleg³o¶ciach w op³atach" < /tmp/mail'.
+       Przyk³ad: command = 'mail %address -s "musisz zap³aciæ, bo jak
+       nie..." < /tmp/mail.txt'
+     * limit
+       Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika
+       spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0
+       Przyk³ad: limit = -20
+     * debug_mail
+       Okre¶la adres na który zostan± wys³ane wszystkie wiadomo¶ci,
+       przydatne podczas testów. Domy¶lnie: puste.
+       Przyk³ad: debug_mail = localhost@moja.net
+     _________________________________________________________________
+
+6.2.4. Ggnotify
+
+6.2.4.1. Opis
+
+   Odpowiednik modu³u 'notify' s³u¿±cy do wysy³ania wiadomo¶ci gadu-gadu.
+   Aktualne saldo u¿ytkownika porównywane jest ze zmienn± 'limit', je¶li
+   jest ni¿sze - wiadomo¶æ zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana
+   jest z przygotowanego szablonu, w którym mo¿na stosowaæ zmienne takie
+   jak dla modu³u 'notify' (mo¿e to byæ te¿ ten sam szablon).
+
+   Modu³ wymaga zainstalowanej biblioteki libgadu oraz ¼róde³ programu
+   ekg. Odpowiednie ¶cie¿ki do nich nale¿y ustawiæ w
+   modules/ggnotify/Makefile przed kompilacj± modu³u.
+     _________________________________________________________________
+
+6.2.4.2. Konfiguracja
+
+   Podobnie jak w 'notify' masz do dyspozycji nastêpuj±ce zmienne:
+     * ggtemplate
+       Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty.
+       Przyk³ad: ggtemplate = modules/ggnotify/sample/mailtemplate
+     * uin
+       Identyfikator gadu-gadu u¿ytkownika wysy³aj±cego wiadomo¶ci.
+       Domy¶lnie: pusty.
+       Przyk³ad: uin = 1234567
+     * password
+       Has³o dla konta okre¶lonego zmienn± 'uin'. Domy¶lnie: puste.
+       Przyk³ad: password = "moje_trudne__has³o"
+     * limit
+       Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika
+       spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0
+       Przyk³ad: limit = -20
+     * debug_uin
+       Je¶li ustawione, na to konto zostan± wys³ane wszyskie wiadomo¶ci.
+       Domy¶lnie: puste.
+       Przyk³ad: debug_uin = 7654321
+     _________________________________________________________________
+
+6.2.5. Cutoff
+
+6.2.5.1. Opis
+
+   Cutoff zmienia na 'od³±czony' status komputerów u¿ytkownikom, którzy
+   maj± na koncie zaleg³o¶ci wiêksze ni¿ okre¶lony limit. Ten modu³ nie
+   zajmuje siê fizycznym blokowaniem dostêpu do sieci. Nale¿y pamiêtaæ
+   aby uruchamiaæ go przed modu³ami takimi jak np. 'hostfile'. Wa¿na jest
+   kolejno¶æ instancji na li¶cie w zmiennej 'instances'. Modu³ 'cutoff'
+   najlepiej uruchamiaæ codziennie.
+     _________________________________________________________________
+
+6.2.5.2. Konfiguracja
+
+   Modu³ 'cutoff' posiada tylko jeden parametr:
+     * limit
+       Od³±czenie nastêpuje je¶li saldo u¿ytkownika spadnie poni¿ej kwoty
+       okre¶lonej t± zmienn±. Domy¶lnie: 0.
+       Przyk³ad: limit = -20
+     _________________________________________________________________
+
+6.2.6. Dhcp
+
+6.2.6.1. Opis
+
+   Modu³ zarz±dzaj±cy serwerem DHCP, tworzy plik konfiguracyjny oraz
+   restartuje us³ugê. Zmienna 'command' umo¿liwia równie¿ wykonywanie
+   innych czynno¶ci (programów).
+     _________________________________________________________________
+
+6.2.6.2. Konfiguracja
+
+   Wiêkszo¶æ parametrów konfiguracyjnych odpowiada fragmentom pliku
+   konfiguracyjnego dhcpd, które w typowych zastosowaniach nie wymagaj±
+   zmiany:
+     * file
+       Okre¶la lokalizacjê pliku konfiguracyjnego serwera dhcp.
+       Domy¶lnie: /tmp/dhcpd.conf.
+       Przyk³ad: file = /etc/dhcpd.conf
+     * command
+       Polecenie wykonywane po utworzeniu pliku konfiguracyjnego.
+       Domy¶lnie: pusta.
+       Przyk³ad: command = 'killall -HUP dhcpd'
+     * begin
+       Nag³ówek pliku. Domy¶lnie: "shared-network LMS {".
+       Przyk³ad: begin = "shared-network LMS {"
+     * end
+       Stopka pliku. Domy¶lnie: "}".
+       Przyk³ad: end = "\n}"
+     * subnet_start
+       Nag³ówek podsieci. '%a' - nazwa, '%m' - maska. Domy¶lnie: "subnet
+       %a netmask %m {\ndefault-lease-time 86400;\nmax-lease-time
+       86400;".
+       Przyk³ad: subnet_start = "subnet %a netmask %m {default-lease-time
+       3600;"
+     * subnet_end
+       Stopka podsieci. Domy¶lnie: "}".
+       Przyk³ad: subnet_end = '\t}'
+     * subnet_gateway
+       Brama podsieci. '%i' zostanie zamienione na adres ip. Domy¶lnie:
+       'option routers %i;'.
+       Przyk³ad: subnet_gateway = "option routers %i"
+     * subnet_dns
+       DNS'y podsieci. '%i - adresy dns'ów. Domy¶lnie: "option
+       domain-name-servers %i;".
+       Przyk³ad: subnet_dns = "option domain-name-servers 192.168.0.1"
+     * subnet_domain
+       Nazwa domenowa podsieci. '%n' - nazwa. Domy¶lnie: "option
+       domain-name %n;".
+       Przyk³ad: subnet_domain = "option domain-name test.%n;"
+     * subnet_wins
+       Serwery wins. '%i' - adres ip serwera. Domy¶lnie: "option
+       netbios-name-servers %i;".
+       Przyk³ad: subnet_wins = ""
+     * subnet_range
+       Zakres adresów podsieci. '%s' - adres pocz±tkowy, '%e' - koniec
+       zakresu. Domy¶lnie: "range %s %e;".
+       Przyk³ad: subnet_range = "range %s %e;"
+     * host
+       Parametry hostów, gdzie '%n' - nazwa hosta, '%m' - MAC, '%i' -
+       adres ip. Domy¶lnie: "\thost %n {\n\t\thardware ethernet %m;
+       fixed-address %i; \n\t}".
+       Przyk³ad: host = "host %n {hardware ethernet %m; fixed-address
+       %i;}"
+     _________________________________________________________________
+
+6.2.7. Hostfile
+
+6.2.7.1. Opis
+
+   Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ wykonuje
+   pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich status
+   (od³±czony/pod³±czony), dlatego mo¿liwe jest tworzenie np. regó³
+   dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku
+   i nastêpnie wykonuje okre¶lone polecenie pow³oki.
+     _________________________________________________________________
+
+6.2.7.2. Konfiguracja
+
+   W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne
+   zmienne, które podczas zapisu do pliku zostan± zast±pione '%i' -
+   adresem ip, '%m' - mac adresem, '%n' - nazw± komputera. Poni¿ej opcje
+   udostêpniane przez ten modu³
+     * file
+       Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/hostfile
+       Przyk³ad: file = /etc/rc.d/rc.firewall
+     * command
+       Polecenie pow³oki wyk. po utworzeniu pliku 'file'. Domy¶lnie:
+       puste
+       Przyk³ad: command = '/bin/sh /etc/rc.d/rc.firewall'
+     * begin
+       Nag³ówek pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -F
+       FORWARD\n"
+       Przyk³ad: begin = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"
+     * end
+       Stopka pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -A
+       FORWARD -J REJECT\n"
+       Przyk³ad: end = "$IPT -A FORWARD -J REJECT\n"
+     * grantedhost
+       Tekst dla hosta pod³±czonego. Domy¶lnie: "/usr/sbin/iptables -A
+       FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"
+       Przyk³ad: grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source
+       %m -j ACCEPT\n"
+     * deniedhost
+       Tekst dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A
+       FORWARD -s %i -m mac --mac-source %m -j REJECT\n"
+       Przyk³ad: deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source
+       %m -j REJECT\n"
+     _________________________________________________________________
+
+6.2.8. Traffic
+
+6.2.8.1. Opis
+
+   'Traffic' to odpowiednik perlowego lms-traffic, zapisuj±cy do bazy
+   statystyki wykorzystania ³±cza z pliku utworzonego przez u¿ytkownika.
+   Plik taki powinien mieæ format: ip_hosta upload download . Wiêcej
+   informacji (w tym jak utworzyæ taki plik) mo¿na znale¼æ w rozdziale
+   dotycz±cym lms-traffic.
+     _________________________________________________________________
+
+6.2.8.2. Konfiguracja
+
+   Jedyny dostêpny parametr jest jednocze¶nie obowi±zkowy:
+     * file
+       Lokalizacja pliku ze statystykami firewalla. Domy¶lnie:
+       /var/log/traffic.log
+       Przyk³ad: file = /tmp/log
+     _________________________________________________________________
+
+6.2.9. Tc (HTB)
+
+6.2.9.1. Opis
+
+   Do pliku okre¶lonego opcj± 'file' zapisywane s± dane dotycz±ce uploadu
+   i downloadu dla komputerów okre¶lonego w taryfach, w formacie: upload,
+   download, numer_ip_hosta_lub_ich_lista.
+
+   Tak przygotowany plik mo¿na wykorzystaæ w skrypcie tworz±cym regu³y
+   htb. Przyk³adowy skrypt htb.sh zamieszczono w katalogu
+   modules/tc/sample. Opcja 'command' jest odpowiedzialna za uruchomienie
+   takiego skryptu.
+     _________________________________________________________________
+
+6.2.9.2. Konfiguracja
+
+   Ten modu³ zawiera standardowe parametry:
+     * file
+       Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/tc.dat.
+       Przyk³ad: file = /tmp/htb.data
+     * command
+       Polecenie pow³oki wykonywane po utworzeniu pliku. Domy¶lnie:
+       "/bin/sh sample/htb.sh < /tmp/tc.dat".
+       Przyk³ad: command = "/bin/bash modules/tc/sample/htb.sh <
+       /tmp/tc.dat"
+     _________________________________________________________________
+
+6.2.10. Dns
+
+6.2.10.1. Opis
+
+   Modu³ do konfiguracji stref serwera 'named' jest jednym z bardziej
+   skomplikowanych. Tworzy dla ka¿dej sieci pliki stref oraz odpowiednie
+   wpisy w named.conf w oparciu o szablony tych plików. Przyk³adowe
+   szablony znajduj± siê w katalogu /modules/dns/sample.
+     _________________________________________________________________
+
+6.2.10.2. Konfiguracja
+
+     * forward-patterns
+       Katalog z szablonami stref. Domy¶lnie: forward.
+       Przyk³ad: forward-patterns = /dns/patterns/forward
+     * reverse-patterns
+       Katalog z szablonami stref odwrotnych. Domy¶lnie: reverse.
+       Przyk³ad: reverse-patterns = /dns/patterns/revers
+     * generic-forward
+       Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu
+       okreslonym 'forward-patterns' nie bêdzie pliku odpowiadaj±cego
+       nazwie domenowej sieci. Domy¶lnie:
+       modules/dns/sample/forward/generic.
+       Przyk³ad: generic-forward = /dns/patterns/forward
+     * generic-reverse
+       Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu
+       okre¶lonym 'reverse-patterns' nie bêdzie pliku odpowiadaj±cego
+       numerowi IP sieci. Domy¶lnie: modules/dns/sample/reverse/generic.
+       Przyk³ad: generic-reverse = /dns/patterns/forward
+     * forward-zones
+       Katalog na pliki wynikowe stref. Domy¶lnie:
+       modules/dns/sample/out/forward.
+       Przyk³ad: forward-zones = /dns/forward
+     * reverse-zones
+       Katalog na pliki wynikowe stref odwrotnych. Domy¶lnie:
+       modules/dns/sample/out/reverse.
+       Przyk³ad: reverse-zones = /dns/reverse
+     * host-reverse
+       Linia w pliku strefy odw. odpowiadaj±ca ka¿demu komputerowi w dane
+       sieci. Domy¶lnie: "%n IN A %i\n".
+       Przyk³ad: host-reverse = "\t %n IN A %i\n"
+     * host-forward
+       Linia w pliku strefy odpowiadaj±ca ka¿demu komputerowi w danej
+       sieci. Domy¶lnie: "%c IN PTR %n.%d.\n".
+       Przyk³ad: host-forward = "\t %c IN PTR %n.%d.\n"
+     * conf-pattern
+       Lokalizacja szablonu g³ównego pliku konfiguracyjnego serwera.
+       Domy¶lnie: modules/dns/sample/named.conf.
+       Przyk³ad: conf-pattern = /dns/patterns/named.conf
+     * conf-output
+       Lokalizacja g³ównego pliku konfiguracyjnego serwera. Domy¶lnie:
+       /tmp/named.conf.
+       Przyk³ad: conf-output = /etc/named.conf
+     * conf-forward-entry
+       Wpis dla ka¿dej strefy w g³ównym pliku konfiguracyjnym. Domy¶lnie:
+       'zone "%n" {\ntype master;\n file "forward/%n"; \nnotify yes; \n};
+       \n'.
+       Przyk³ad: conf-forward-entry = 'zone "%n" { \n\ttype master;
+       \n\tfile "forward/%n"; \n\tnotify yes; \n}; \n'
+     * conf-reverse-entry
+       Wpis dla ka¿dej strefy odw. w g³ównym pliku konfiguracyjnym.
+       Domy¶lnie: 'zone "%c.in-addr.arpa" { \ntype master; \nfile
+       "reverse/%i"; \nnotify yes; \n}; \n'.
+       Przyk³ad: conf-revers-entry = 'zone "%c.in-addr.arpa" { \n\ttype
+       master; \n\tfile "reverse/%i"; \n\tnotify yes; \n}; \n'
+     * command
+       Polecenie wykonywane po utworzeniu plików konf. Domy¶lnie: puste.
+       Przyk³ad: command = ""
+     _________________________________________________________________
+
+6.2.11. Ethers
+
+6.2.11.1. Opis
+
+   Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Ustawiaj±c opcjê
+   'dummy_macs' mo¿na sprawiæ, aby komputerom od³±czonym zosta³
+   przypisany mac-adres 00:00:00:00:00:00.
+     _________________________________________________________________
+
+6.2.11.2. Konfiguracja
+
+   Tutaj s± tylko standardowe opcje:
+     * file
+       Lokalizacja pliku wynikowego. Domy¶lnie: /tmp/ethers.
+       Przyk³ad: file = /etc/ethers
+     * command
+       Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Domy¶lnie:
+       puste.
+       Przyk³ad: command = "arp -f /etc/ethers"
+     * dummy_macs
+       Je¶li ustawimy na 'yes', to komputerom od³±czonym zostanie
+       przypisany mac-adres '00:00:00:00:00:00'. Domy¶lnie: "no".
+       Przyk³ad: dummy_macs = yes
+     _________________________________________________________________
+
+6.2.12. Oident
+
+6.2.12.1. Opis
+
+   Modu³ do konfiguracji oidend. W zasadzie mo¿na to zrobiæ modu³em
+   'hostfile', ale w 'oident' masz mo¿liwo¶æ okre¶lenia dla których sieci
+   ma byæ tworzony konfig.
+     _________________________________________________________________
+
+6.2.12.2. Konfiguracja
+
+   A oto parametry modu³u 'oident'
+     * begin
+       Tekst wstawiany na pocz±tku pliku. Domy¶lnie: puste.
+       Przyk³ad: begin = "#Generowany utomatycznie\n"
+     * end
+       Tekst wstawiany na koñcu pliku. Domy¶lnie: puste.
+       Przyk³ad: end = ""
+     * host
+       Linia tekstu dla ka¿dego komputera. Domy¶lnie: "%i\t%n\tUNIX".
+       Przyk³ad: host = "%i %n WINDOWS"
+     * file
+       Tekst wstawiany na pocz±tku pliku. Domy¶lnie: /tmp/oidentd.conf.
+       Przyk³ad: file = /etc/identd.conf
+     * networks
+       Lista sieci do uwzglêdnienia. Domy¶lnie: "192.168.0.0/16
+       10.0.0.0/8".
+       Przyk³ad: networks = 192.168.1.0/24
+     * command
+       Polecenie do wykonania po utworzeniu pliku. Domyslnie: puste.
+       Przyk³ad: command = "killall -HUP midentd"
+     _________________________________________________________________
+
+Rozdzia³ 7. Dla dociekliwych
+
+7.1. Drzewo katalogów
+
+   Tabela 7-1. Drzewo katalogów LMS
       Nazwa                       Opis
      backups           Kopie zapasowe bazy danych
        bin            Skrypty wykonywalne lms-...
      contrib    Dodatki stworzone przez u¿ytkowników LMS
+     daemon               A.L.E.C's LMS Daemon
       devel        Skrypty przydatne dla developerów
        doc                    Dokumentacja
        img          Obrazki do Interfejsu U¿ytkownka
@@ -1499,7 +2045,7 @@ Rozdzia³ 6. Dla dociekliwych
    templates_c              Pliki tymczasowe
      _________________________________________________________________
 
-6.2. Struktura bazy danych
+7.2. Struktura bazy danych
 
    Poni¿ej przedstawiono ogóln± strukturê bazy danych LMS. Bardziej
    szczegó³owe informacje o typach danych, ograniczeniach nak³adanych na
@@ -1507,7 +2053,7 @@ Rozdzia³ 6. Dla dociekliwych
    lms.pgsql w katalogu /doc.
      _________________________________________________________________
 
-6.2.1. Administratorzy ('admins')
+7.2.1. Administratorzy ('admins')
 
    id - identyfikator
    login - login
@@ -1521,7 +2067,7 @@ Rozdzia³ 6. Dla dociekliwych
    failedloginip - adres IP, z którego próbowano siê zalogowaæ
      _________________________________________________________________
 
-6.2.2. U¿ytkownicy ('users')
+7.2.2. U¿ytkownicy ('users')
 
    id - identyfikator
    lastname - nazwa/nazwisko
@@ -1544,7 +2090,7 @@ Rozdzia³ 6. Dla dociekliwych
    deleted - usuniêty z bazy
      _________________________________________________________________
 
-6.2.3. Sieci ('networks')
+7.2.3. Sieci ('networks')
 
    id - identyfikator
    name - nazwa sieci
@@ -1560,7 +2106,7 @@ Rozdzia³ 6. Dla dociekliwych
    dhcpend - koniec zakresu DHCP
      _________________________________________________________________
 
-6.2.4. Komputery ('nodes')
+7.2.4. Komputery ('nodes')
 
    id - identyfikator
    name - nazwa
@@ -1576,7 +2122,7 @@ Rozdzia³ 6. Dla dociekliwych
    access - pod³±czony/od³aczony
      _________________________________________________________________
 
-6.2.5. Sprzêt sieciowy ('netdevices')
+7.2.5. Sprzêt sieciowy ('netdevices')
 
    id - identyfikator
    name - nazwa
@@ -1588,14 +2134,14 @@ Rozdzia³ 6. Dla dociekliwych
    ports - ilo¶æ portów
      _________________________________________________________________
 
-6.2.6. Po³±czenia sieciowe ('netlinks')
+7.2.6. Po³±czenia sieciowe ('netlinks')
 
    id - identyfikator
    src - jeden koniec
    dst- drugi koniec
      _________________________________________________________________
 
-6.2.7. Operacje finansowe ('cash')
+7.2.7. Operacje finansowe ('cash')
 
    id - identyfikator
    time - znacznik czasu zaksiêgowania operacji
@@ -1603,37 +2149,126 @@ Rozdzia³ 6. Dla dociekliwych
    type - typ operacji (przychów, rozchód, wp³ata, obci±¿enie)
    value - warto¶æ w z³otych
    userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy)
+   invoiceid - identyfikator faktury obejmuj±cej dan± operacjê
    comment - opis operacji
      _________________________________________________________________
 
-6.2.8. Taryfy ('tariffs')
+7.2.8. Taryfy ('tariffs')
 
    id - identyfikator
    name - nazwa
    value - warto¶æ netto w z³otych
+   taxvalue - wysoko¶æ podatku w procentach
+   sww - numer PKWiU
    uprate - ograniczenie szybko¶ci transferu danych wychodz±cych
    downrate - ograniczenie szybko¶ci transferu danych przychodz±cych
    description - opis
      _________________________________________________________________
 
-6.2.9. Powi±zania ('assignments')
+7.2.9. Powi±zania ('assignments')
 
    id - identyfikator
    tariffid - identyfikator taryfy
    userid - identyfikator u¿ytkownika
    period - okres (ilo¶æ dni)
    at - dzieñ naliczania
+   invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)
      _________________________________________________________________
 
-6.2.10. Statystyki wykorzystania ³±cza ('stats')
+7.2.10. Faktury ('invoices')
+
+   id - identyfikator
+   number - numer w roku
+   cdate - data wystawienia
+   paytime - czas zap³aty (ilo¶æ dni)
+   customerid - identyfikator u¿ytkownika-nabywcy
+   name - nazwa (nazwisko i imiê) nabywcy
+   address - adres nabywcy
+   nip - nip nabywcy
+   zip - kod pocztowy nabywcy
+   phone - telefon nabywcy
+   city - miasto nabywcy
+   finished - pole okre¶laj±ce zamkniêcie faktury
+     _________________________________________________________________
+
+7.2.11. Faktury - cd. ('invoicecontents')
+
+   invoiceid - identyfikator faktury
+   value - kwota pozycji
+   taxvalue - wysoko¶æ podatku w procentach
+   sww - numer PKWiU
+   content - u¿yta jednostka (najczê¶ciej 'szt.')
+   count - ilo¶æ
+   description - opis
+   tariffid - identyfikator taryfy
+     _________________________________________________________________
+
+7.2.12. Znaczniki czasu ('timestamps')
+
+   time - czas ostatniej modyfikacji
+   tablename - nazwa tabeli
+     _________________________________________________________________
+
+7.2.13. Statystyki wykorzystania ³±cza ('stats')
 
    nodeid - numer komputera
    dt - znacznik czasu
-   upload - ilo¶æ danych wys³anych w bajtach
-   download - ilo¶æ danych odebranych w bajtach
+   upload - ilo¶æ danych wys³anych, w bajtach
+   download - ilo¶æ danych odebranych, w bajtach
      _________________________________________________________________
 
-6.3. Poziomy dostêpu
+7.3. Format pliku konfiguracyjnego
+
+   W pliku konfiguracyjnym LMS'a (standardowo /etc/lms/lms.ini) mo¿na
+   ustawiaæ parametry LMS-UI, daemona almsd oraz skryptów perlowych
+   (LMS_MGC). Przy czym format warto¶ci parametrów dla skryptów perlowych
+   podlega wiêkszym restrykcjom.
+     _________________________________________________________________
+
+7.3.1. Komentarze
+
+   Programy parsuj±ce plik konfiguracyjny pomijaj± wszystkie linie
+   zaczynaj±ce siê znakiem '#' lub ';'. Komentarze poprzedzone jednym z
+   tych znaków mo¿na tak¿e wstawiaæ w tej samej linii co sekcje i opcje.
+     _________________________________________________________________
+
+7.3.2. Sekcje, klucze, warto¶ci
+
+   Opcje konfiguracyjne pogrupowane s± w sekcje. Nazwê sekcji, sk³adaj±c±
+   siê z liter i/lub cyfr nale¿y zamkn±æ w nawiasy kwadratowe. Ich nazwy
+   powinny byæ unikalne.
+
+   Sekcje i parametry umieszcza siê w osobnych liniach. Parametry
+   sk³adaj± siê z klucza i warto¶ci. Klucz to nazwa parametru
+   konfiguracyjnego sk³adaj±ca siê z liter i/lub cyfr. W tej samej linii
+   co klucz, po znaku równo¶ci, umieszcza siê warto¶æ parametru. Je¶li
+   warto¶æ zawiera znaki specjalne nale¿y j± obj±æ w apostrofy lub
+   cudzys³ów.
+
+   Przyk³ad 7-1. Format opcji konfiguracyjnych
+[sekcja]
+klucz = warto¶æ
+zmienna1 = "jaki¶ tekst"
+para_metr = 'zmienna "para_metr" w apostrofach'
+
+[sekcja_1]                              #tu mo¿na komentowaæ
+klucz = "tekst ze znakami \t i ;"       ; tu te¿ mo¿na komentowaæ
+; a to jest komentarz na ca³± liniê
+key = "A.L.E.C's LMS Daemon is the best"
+# opcja = wy³±czona
+     _________________________________________________________________
+
+7.3.3. Zmienne dla skryptów perlowych
+
+   Konfiguracja skryptów perlowych, z uwagi na zastosowanie modu³u
+   Config::IniFiles, ma pewne ograniczenia. Komentarze mog± byæ wstawiane
+   tylko i wy³±cznie w nowej linii. Warto¶ci zmiennych nie obejmuje siê w
+   apostrofy lub cudzys³ów, a s± one czytane od znaku równo¶ci do koñca
+   wiersza. Dlatego w³a¶nie nie mo¿na umieszczaæ komentarzy w jednej
+   linii z parametrami.
+     _________________________________________________________________
+
+7.4. Poziomy dostêpu
 
    W sumie tutaj to wyt³umaczê bardziej dla developerów, gdy¿ osoby
    korzystaj±ce z LMS raczej nie bêd± zainteresowane.
@@ -1653,21 +2288,21 @@ Rozdzia³ 6. Dla dociekliwych
    znak, co da nam 384 kombinacje.
      _________________________________________________________________
 
-6.4. Ograniczenia
+7.5. Ograniczenia
 
    Ka¿dy system ma ograniczenia. Pewne wynikaja z u¿ytego silnika SQL
    (DBMS) inne za¶ z za³o¿eñ [prawie] ¶wiadomie podjêtych przez
    developerów. Nasz system takowe posiada:
      _________________________________________________________________
 
-6.4.1. Wynikaj±ce z naszego projektu
+7.5.1. Wynikaj±ce z naszego projektu
 
    Ilo¶æ pieniêdzy (tabela 'cash'). Pieni±¿ki (od lms-1.1) przechowujemy
    jako 32 bitow± liczbê ca³kowit± i w zwi±zku z tym za 8 lat bêdziecie
    nas nie lubiæ posiadaj±c oko³o 5000 u¿ytkowników.
      _________________________________________________________________
 
-6.4.2. Wynikaj±ce z u¿ywanego DMBS
+7.5.2. Wynikaj±ce z u¿ywanego DMBS
 
      * MySQL
           + Rozmiar bazy danych:

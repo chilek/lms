@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Struktura bazy danych</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="LMS - LAN Management System 1.1-cvs"
 HREF="index.html"><LINK
@@ -30,6 +30,7 @@ TEXT="#000000"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
+SUMMARY="Header navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -47,20 +48,22 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="devel.html"
+ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia³ 7. Dla dociekliwych</TD
+>Rozdzia&#322; 7. Dla dociekliwych</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="devel-ini.html"
->Nastêpny</A
+ACCESSKEY="N"
+>Nast&#281;pny</A
 ></TD
 ></TR
 ></TABLE
@@ -471,6 +474,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>invoiceid - identyfikator faktury obejmuj±cej dan± operacjê</TD
+></TR
+><TR
+><TD
 >comment - opis operacji</TD
 ></TR
 ></TBODY
@@ -498,6 +505,14 @@ BORDER="0"
 ><TR
 ><TD
 >value - warto¶æ netto w z³otych</TD
+></TR
+><TR
+><TD
+>taxvalue - wysoko¶æ podatku w procentach</TD
+></TR
+><TR
+><TD
+>sww - numer PKWiU</TD
 ></TR
 ><TR
 ><TD
@@ -545,6 +560,118 @@ BORDER="0"
 ><TD
 >at - dzieñ naliczania</TD
 ></TR
+><TR
+><TD
+>invoice - okre¶la czy ma byæ wystawiana faktura (1 - tak, 0 - nie)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INVOICES"
+>7.2.10. Faktury ('invoices')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>number - numer w roku</TD
+></TR
+><TR
+><TD
+>cdate - data wystawienia</TD
+></TR
+><TR
+><TD
+>paytime - czas zap³aty (ilo¶æ dni)</TD
+></TR
+><TR
+><TD
+>customerid - identyfikator u¿ytkownika-nabywcy</TD
+></TR
+><TR
+><TD
+>name - nazwa (nazwisko i imiê) nabywcy</TD
+></TR
+><TR
+><TD
+>address - adres nabywcy</TD
+></TR
+><TR
+><TD
+>nip - nip nabywcy</TD
+></TR
+><TR
+><TD
+>zip - kod pocztowy nabywcy</TD
+></TR
+><TR
+><TD
+>phone - telefon nabywcy</TD
+></TR
+><TR
+><TD
+>city - miasto nabywcy</TD
+></TR
+><TR
+><TD
+>finished - pole okre¶laj±ce zamkniêcie faktury</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INVOICECONTENTS"
+>7.2.11. Faktury - cd. ('invoicecontents')</A
+></H2
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>invoiceid - identyfikator faktury</TD
+></TR
+><TR
+><TD
+>value - kwota pozycji</TD
+></TR
+><TR
+><TD
+>taxvalue - wysoko¶æ podatku w procentach</TD
+></TR
+><TR
+><TD
+>sww - numer PKWiU</TD
+></TR
+><TR
+><TD
+>content - u¿yta jednostka (najczê¶ciej 'szt.')</TD
+></TR
+><TR
+><TD
+>count - ilo¶æ</TD
+></TR
+><TR
+><TD
+>description - opis</TD
+></TR
+><TR
+><TD
+>tariffid - identyfikator taryfy</TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -554,7 +681,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.10. Znaczniki czasu ('timestamps')</A
+>7.2.12. Znaczniki czasu ('timestamps')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -576,7 +703,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.11. Statystyki wykorzystania ³±cza ('stats')</A
+>7.2.13. Statystyki wykorzystania ³±cza ('stats')</A
 ></H2
 ><TABLE
 BORDER="0"
@@ -606,6 +733,7 @@ CLASS="NAVFOOTER"
 ><HR
 ALIGN="LEFT"
 WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -617,6 +745,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="devel.html"
+ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
@@ -625,7 +754,8 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="index.html"
->Spis tre¶ci</A
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
 ></TD
 ><TD
 WIDTH="33%"
@@ -633,7 +763,8 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="devel-ini.html"
->Nastêpny</A
+ACCESSKEY="N"
+>Nast&#281;pny</A
 ></TD
 ></TR
 ><TR
@@ -648,7 +779,8 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="devel.html"
->Pocz±tek rozdzia³u</A
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
 ></TD
 ><TD
 WIDTH="33%"

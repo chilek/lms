@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Konfiguracja podstawowa</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="LMS - LAN Management System 1.1-cvs"
 HREF="index.html"><LINK
@@ -30,6 +30,7 @@ TEXT="#000000"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
+SUMMARY="Header navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -47,20 +48,22 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="install-db.html"
+ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Rozdzia³ 2. Instalacja i konfiguracja</TD
+>Rozdzia&#322; 2. Instalacja i konfiguracja</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="install-rights.html"
->Nastêpny</A
+ACCESSKEY="N"
+>Nast&#281;pny</A
 ></TD
 ></TR
 ></TABLE
@@ -84,13 +87,19 @@ CLASS="FILENAME"
 CLASS="FILENAME"
 >/etc/lms</TT
 > lub w katalogu
-	    g³ównym LMS'a. Zawiera on zmienne konfiguracyjne <I
+	    g³ównym LMS'a. Zawiera on zmienne konfiguracyjne <SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >LMS-UI</I
+></SPAN
 > 
-	    oraz wszystkich skryptów wykonywalnych z wyj±tkiem <I
+	    oraz wszystkich skryptów wykonywalnych z wyj±tkiem <SPAN
+CLASS="emphasis"
+><I
 CLASS="EMPHASIS"
 >LMS-MGC</I
+></SPAN
 >.</P
 ><P
 ><DIV
@@ -136,9 +145,9 @@ NAME="AEN307"
 >Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie 
 	   widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</P
 ><P
->Przyk³ad: <TT
+>Przyk³ad: <SAMP
 CLASS="PROMPT"
->type = mysql</TT
+>type = mysql</SAMP
 ></P
 ></LI
 ><LI
@@ -149,9 +158,9 @@ CLASS="PROMPT"
 	   wstawiæ cokolwiek (ip, domena, ¶cie¿ka do gniazda w formacie 'localhost:/path/to/socket'). 
 	   Domy¶lnie: localhost</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->host = localhost</TT
+>host = localhost</SAMP
 ></P
 ></LI
 ><LI
@@ -163,9 +172,9 @@ CLASS="PROMPT"
 	   prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 
 	   'postgres' (PostgreSQL). Domy¶lnie: root</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->user = lms</TT
+>user = lms</SAMP
 ></P
 ></LI
 ><LI
@@ -174,9 +183,9 @@ CLASS="PROMPT"
 ><P
 >Has³o do bazy danych. Domy¶lnie puste.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->password = password</TT
+>password = password</SAMP
 ></P
 ></LI
 ><LI
@@ -185,9 +194,9 @@ CLASS="PROMPT"
 ><P
 >Nazwa bazy danych, domy¶lnie lms.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->database = lms</TT
+>database = lms</SAMP
 ></P
 ></LI
 ></UL
@@ -213,9 +222,9 @@ NAME="AEN336"
 	   templejty i reszta. Domy¶lnie, index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale 
 	   lepiej by by³o gdyby mu powiedzieæ gdzie jest:</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->sys_dir = /var/www/htdocs/lms/</TT
+>sys_dir = /var/www/htdocs/lms/</SAMP
 ></P
 ></LI
 ><LI
@@ -225,9 +234,9 @@ CLASS="PROMPT"
 >Katalog z "modu³ami" LMS'a. Czyli zawarto¶æ katalogu modules. Domy¶lnie jest to podkatalog 
 	   modules w sys_dir.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->modules_dir = /usr/share/lms/modules/</TT
+>modules_dir = /usr/share/lms/modules/</SAMP
 ></P
 ></LI
 ><LI
@@ -236,9 +245,9 @@ CLASS="PROMPT"
 ><P
 >Katalog z "bibliotekami" LMS'a. Czyli zawarto¶æ katalogu lib. Domy¶lnie to podkatalog lib w sys_dir.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->lib_dir = /usr/share/lms/lib/</TT
+>lib_dir = /usr/share/lms/lib/</SAMP
 ></P
 ></LI
 ><LI
@@ -248,9 +257,9 @@ CLASS="PROMPT"
 >Katalog z kopiami zapasowymi bazy danych - miejsce gdzie LMS zapisuje zrzuty z bazy. 
 	   Domy¶lnie jest to podkatalog 'backups'.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->backup_dir = /var/backup/lms/</TT
+>backup_dir = /var/backup/lms/</SAMP
 ></P
 ><P
 ><DIV
@@ -267,7 +276,7 @@ VALIGN="TOP"
 ><IMG
 SRC="images/warning.gif"
 HSPACE="5"
-ALT="Ostrze¿enie"></TD
+ALT="Ostrze&#380;enie"></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
@@ -286,9 +295,9 @@ VALIGN="TOP"
 ><P
 >Katalog z bibliotek± Smarty - domy¶lnie podkatalog Smarty w lib_dir.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->smarty_dir = /usr/lib/php/Smarty</TT
+>smarty_dir = /usr/lib/php/Smarty</SAMP
 ></P
 ></LI
 ><LI
@@ -301,9 +310,9 @@ CLASS="FILENAME"
 >templates_c</TT
 > w katalogu sysdir.</P
 ><P
->Przyk³ad: 	<TT
+>Przyk³ad: 	<SAMP
 CLASS="PROMPT"
->smarty_compile_dir = /var/smarty/compile/lms</TT
+>smarty_compile_dir = /var/smarty/compile/lms</SAMP
 ></P
 ></LI
 ><LI
@@ -312,9 +321,9 @@ CLASS="PROMPT"
 ><P
 >Katalog z szablonami którymi Smartiego. Domy¶lnie to podkatalog templates z sys_dir'a.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->smarty_templates_dir = /usr/share/lms/templates</TT
+>smarty_templates_dir = /usr/share/lms/templates</SAMP
 ></P
 ></LI
 ></UL
@@ -338,9 +347,9 @@ NAME="AEN379"
 	je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego 
 	niechcianego u¿ytkownika.</P
 ><P
->Przyk³ad:		<TT
+>Przyk³ad:		<SAMP
 CLASS="PROMPT"
->allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</TT
+>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</SAMP
 ></P
 ></LI
 ><LI
@@ -350,9 +359,9 @@ CLASS="PROMPT"
 >Timeout sesji www. Po tym czasie (w sekudnach) u¿ytkownik zostanie wylogowany je¿eli nie 
     podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->timeout = 900</TT
+>timeout = 900</SAMP
 ></P
 ><P
 ><DIV
@@ -369,7 +378,7 @@ VALIGN="TOP"
 ><IMG
 SRC="images/warning.gif"
 HSPACE="5"
-ALT="Ostrze¿enie"></TD
+ALT="Ostrze&#380;enie"></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
@@ -388,9 +397,9 @@ VALIGN="TOP"
 ><P
 >Limit wy¶wietlanych pozycji na stronie w li¶cie u¿ytkowników. Domy¶lnie brak limitu.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->userlist_pagelimit = 10</TT
+>userlist_pagelimit = 10</SAMP
 ></P
 ></LI
 ><LI
@@ -399,9 +408,31 @@ CLASS="PROMPT"
 ><P
 >Limit wy¶wietlanych pozycji na stronie w li¶cie komputerów. Domy¶lnie brak limitu.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->nodelist_pagelimit = 10</TT
+>nodelist_pagelimit = 10</SAMP
+></P
+></LI
+><LI
+><P
+>balancelist_pagelimit</P
+><P
+>Limit wy¶wietlanych pozycji na stronie na rachunku u¿ytkownika. Domy¶lnie: 100.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>balancelist_pagelimit = 50</SAMP
+></P
+></LI
+><LI
+><P
+>invoicelist_pagelimit</P
+><P
+>Limit wy¶wietlanych pozycji na stronie w li¶cie faktur. Domy¶lnie: 100</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>invoicelist_pagelimit = 50</SAMP
 ></P
 ></LI
 ><LI
@@ -417,9 +448,9 @@ CLASS="PROMPT"
 ><P
 >Domy¶lna warto¶æ to 'sql'.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->reload_type = exec</TT
+>reload_type = exec</SAMP
 ></P
 ></LI
 ><LI
@@ -434,9 +465,9 @@ CLASS="FILENAME"
     i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru 
     zglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedyñczo.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->reload_execcmd = "sudo /usr/bin/reload_lms.sh"</TT
+>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</SAMP
 ></P
 ></LI
 ><LI
@@ -449,9 +480,9 @@ CLASS="PROMPT"
     pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest traktowany jako separator kwerend.
     Tj. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka komend MySQL'a.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</TT
+>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</SAMP
 ></P
 ></LI
 ><LI
@@ -462,9 +493,9 @@ CLASS="PROMPT"
     SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej 
     próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->force_ssl = 0</TT
+>force_ssl = 0</SAMP
 ></P
 ></LI
 ><LI
@@ -474,9 +505,9 @@ CLASS="PROMPT"
 >Przyzwolenie na dodawanie rekordów komputerów z adresami MAC ju¿ istniej±cymi (nie sprawdza 
     czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->allow_mac_sharing	= 1</TT
+>allow_mac_sharing	= 1</SAMP
 ></P
 ></LI
 ><LI
@@ -486,9 +517,9 @@ CLASS="PROMPT"
 >W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP 
     do Smartyego. Domy¶lnie wy³±czone.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->smarty_debug = 1</TT
+>smarty_debug = 1</SAMP
 ></P
 ></LI
 ><LI
@@ -498,20 +529,9 @@ CLASS="PROMPT"
 >Adres e-mail do debugowania - pod ten email bêd± sz³y maile wysy³ane z sekcji 'mailing' LMS'a, 
     zamiast do w³a¶ciwych u¿ytkowników.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->debug_email = root@localhost</TT
-></P
-></LI
-><LI
-><P
->enable_stats</P
-><P
->W³±czenie/wy³±czenie dostêpno¶ci w menu modu³u 'traffic'. Domy¶lnie wy³±czone.</P
-><P
->Przyk³ad:	<TT
-CLASS="PROMPT"
->enable_stats = 1</TT
+>debug_email = root@localhost</SAMP
 ></P
 ></LI
 ><LI
@@ -521,9 +541,9 @@ CLASS="PROMPT"
 >Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
     u¿ytkownika. Przydatne gdy mamy do wpisania wielu u¿ytkowników z tej samej ulicy.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->default_zip = 39-300</TT
+>default_zip = 39-300</SAMP
 ></P
 ></LI
 ><LI
@@ -533,9 +553,9 @@ CLASS="PROMPT"
 >Okre¶la, czy ma byæ u¿yty aktualny dzieñ miesi±ca jako dzieñ zap³aty
     zamiast najczê¶ciej u¿ywanego. Domy¶lnie wy³±czone.</P
 ><P
->Przyk³ad:	<TT
+>Przyk³ad:	<SAMP
 CLASS="PROMPT"
->use_current_payday = 1</TT
+>use_current_payday = 1</SAMP
 ></P
 ></LI
 ></UL
@@ -546,6 +566,7 @@ CLASS="NAVFOOTER"
 ><HR
 ALIGN="LEFT"
 WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
 WIDTH="100%"
 BORDER="0"
 CELLPADDING="0"
@@ -557,6 +578,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="install-db.html"
+ACCESSKEY="P"
 >Poprzedni</A
 ></TD
 ><TD
@@ -565,7 +587,8 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="index.html"
->Spis tre¶ci</A
+ACCESSKEY="H"
+>Spis tre&#347;ci</A
 ></TD
 ><TD
 WIDTH="33%"
@@ -573,7 +596,8 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="install-rights.html"
->Nastêpny</A
+ACCESSKEY="N"
+>Nast&#281;pny</A
 ></TD
 ></TR
 ><TR
@@ -588,7 +612,8 @@ ALIGN="center"
 VALIGN="top"
 ><A
 HREF="install.html"
->Pocz±tek rozdzia³u</A
+ACCESSKEY="U"
+>Pocz&#261;tek rozdzia&#322;u</A
 ></TD
 ><TD
 WIDTH="33%"
