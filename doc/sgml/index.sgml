@@ -9,6 +9,7 @@
 <!ENTITY rozdzial5 SYSTEM "mgc.sgml">
 <!ENTITY rozdzial6 SYSTEM "daemon.sgml">
 <!ENTITY rozdzial7 SYSTEM "advanced.sgml">
+<!ENTITY rozdzial8 SYSTEM "contrib.sgml">
 ]>
 
 <book lang=pl>
@@ -34,5 +35,6 @@
 &rozdzial5;
 &rozdzial6;
 &rozdzial7;
+&rozdzial8;
 
 </book>
