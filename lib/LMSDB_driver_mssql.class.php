@@ -154,8 +154,8 @@ class LMSDB_driver_mssql extends LMSDB_common
 		// najpierw sparsujmy wszystkie specjalne meta ¶mieci.
 		$query = eregi_replace('\?NOW\?',$this->_driver_now(),$query);
 		$query = eregi_replace('\?LIKE\?',$this->_driver_like(),$query);
-		$query = eregi_replace('inet_ntoa\(','dbo.inet_ntoa(',$query);
-		$query = eregi_replace('inet_aton\(','dbo.inet_aton(',$query);
+		$query = eregi_replace('inet_ntoa\(',$this->_dbuser.'.inet_ntoa(',$query);
+		$query = eregi_replace('inet_aton\(',$this->_dbuser.'.inet_aton(',$query);
 		if($inputarray)
 		{
 			$queryelements = explode("\0",str_replace('?',"?\0",$query));
