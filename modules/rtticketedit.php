@@ -63,7 +63,7 @@ if(isset($ticketedit))
 	if(!$error)
 	{
 		$LMS->TicketUpdate($ticketedit);
-		$SESSION->redirect('Location: ?m=rtticketview&id='.$id);
+		$SESSION->redirect('?m=rtticketview&id='.$id);
 	}
 	
 	$ticket['subject'] = $ticketedit['subject'];
