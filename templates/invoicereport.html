@@ -1,0 +1,105 @@
+<!--// $Id$ //-->
+{include file="clearheader.html"}
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="100%" ALIGN="CENTER" NOWRAP>
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Nr faktury
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Data wystawienia
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kontrahent
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kwota brutto
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kwota netto<BR>22%
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kwota VAT<BR>22%
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kwota netto<BR>7%
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kwota VAT<BR>7%
+		</TD>	
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Kwota netto<BR>0%
+		</TD>
+	</TR>
+	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{foreach item=invoice from=$invoicelist}
+	<TR BGCOLOR="{cycle}">
+		<TD WIDTH="1%" ALIGN="CENTER">
+			{$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}
+		</TD>
+		<TD WIDTH="1%" ALIGN="CENTER">
+			{$invoice.cdate|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD WIDTH="92%">
+			{$invoice.custname}<BR>
+			{$invoice.custaddress}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{$invoice.brutto|string_format:"%01.2f"}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{$invoice.val22|string_format:"%01.2f"}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{$invoice.tax22|string_format:"%01.2f"}		
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{$invoice.val7|string_format:"%01.2f"}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{$invoice.tax7|string_format:"%01.2f"}		
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
+			{$invoice.val0|string_format:"%01.2f"}
+		</TD>
+	</TR>
+	{/foreach}
+	<TR>
+		<TD COLSPAN="3" ALIGN="RIGHT" VALIGN="TOP">
+			<B>Razem:</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$listdata.brutto|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$listdata.val22|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$listdata.tax22|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$listdata.val7|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$listdata.tax7|string_format:"%01.2f"}</B>
+		</TD>	
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$listdata.tax0|string_format:"%01.2f"}</B>
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="100%" CELLPADDING="1">
+	<TR>
+		<TD WIDTH="100%" ALIGN="LEFT">
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
+			Sporz±dzone przez: {$layout.logname}
+		</TD>
+	</TR>
+</TABLE>
