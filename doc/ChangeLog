@@ -8,6 +8,7 @@ wersja 1.4.0 Evalla (??/10/2004):
     zostaje przerwana, a wersja bazy wskazuje na faktyczn± wersjê - postgres, 
     sqlite lub ostatni nieudany upgrade - mysql (alec)
   - poprawiony b³±d uniemo¿liwiaj±cy edycjê danych grupy u¿ytkowników (alec)
+  - lms-rtparser: auto_open - otwieranie zamkniêtych zg³oszeñ (alec)
 
 wersja 1.4.0rc4 Evalla (05/10/2004):
 
