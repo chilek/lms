@@ -188,6 +188,16 @@
 		<note><para>Do wygenerowania mapy potrzebna jest wbudowana w PHP obs³uga 
 		biblioteki graficznej GD.</para></note>
 		</para>
+		<para>Na mapie hosty wy³±czone oznaczone s± kolorem czarnym. Ikona z pytajnikiem
+		oznacza, ¿e dany komputer nie by³ jeszcze skanowany/w³±czony. Aby skorzystaæ z 
+		tej funkcjonalno¶ci nale¿y, korzystaj±c z crona, uruchamiaæ skrypt skanuj±cy.
+		Na mapie komputer traktowany jest za w³±czony je¶li czas ostatniego pozytywnego
+		skanowania nie jest starszy od zadanej warto¶ci (domy¶lnie 600 sekund).
+		Parametr ten okre¶la siê przy pomocy opcji
+		<filename>lastonline_limit</filename> w sekcji [phpui] pliku konfiguracyjnego.
+		Status komputerów jest tak¿e widoczny na li¶cie komputerów.
+		<note><para>Do badania aktywno¶ci hostów mo¿na wykorzystaæ skrypt lms-fping.</para></note>
+		</para>
 	    </sect2>
  </sect1>
  <sect1 id="menu-networks">
