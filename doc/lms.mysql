@@ -16,16 +16,16 @@
 
 DROP TABLE IF EXISTS admins;
 CREATE TABLE admins (
-  id int(11) NOT NULL auto_increment,
-  login varchar(32) NOT NULL default '',
-  name varchar(64) NOT NULL default '',
-  email varchar(255) NOT NULL default '',
-  rights varchar(64) NOT NULL default '',
-  passwd varchar(255) NOT NULL default '',
-  lastlogindate int(11) default NULL,
-  lastloginip varchar(16) default NULL,
-  failedlogindate int(11) default NULL,
-  failedloginip varchar(16) default NULL,
+  id INT(11) NOT NULL auto_increment,
+  login VARCHAR(32) NOT NULL default '',
+  name VARCHAR(64) NOT NULL default '',
+  email VARCHAR(255) NOT NULL default '',
+  rights VARCHAR(64) NOT NULL default '',
+  passwd VARCHAR(255) NOT NULL default '',
+  lastlogindate INT(11) default NULL,
+  lastloginip VARCHAR(16) default NULL,
+  failedlogindate INT(11) default NULL,
+  failedloginip VARCHAR(16) default NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
@@ -38,14 +38,14 @@ CREATE TABLE admins (
 
 DROP TABLE IF EXISTS cash;
 CREATE TABLE cash (
-  id int(11) NOT NULL auto_increment,
-  time int(11) NOT NULL default '0',
-  adminid int(11) NOT NULL default '0',
-  type int(11) NOT NULL default '0',
+  id INT(11) NOT NULL auto_increment,
+  time INT(11) NOT NULL default '0',
+  adminid INT(11) NOT NULL default '0',
+  type INT(11) NOT NULL default '0',
   value decimal(9,2) NOT NULL default '0',
-  userid int(11) NOT NULL default '0',
-  invoiceid int(11) NOT NULL default '0',
-  comment varchar(255) NOT NULL default '',
+  userid INT(11) NOT NULL default '0',
+  invoiceid INT(11) NOT NULL default '0',
+  comment VARCHAR(255) NOT NULL default '',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
@@ -82,11 +82,11 @@ CREATE TABLE invoices (
 
 CREATE TABLE invoicecontents (
   invoiceid INT NOT NULL,
-  value DOUBLE NOT NULL,
-  taxvalue INT NOT NULL,
+  value DECIMAL(9,2) NOT NULL,
+  taxvalue DECIMAL(9,2) NOT NULL,
   pkwiu VARCHAR(255) DEFAULT '',
   content VARCHAR(16) NOT NULL,
-  count INT NOT NULL,
+  count DECIMAL(9,2) NOT NULL,
   description VARCHAR(255) NOT NULL,
   tariffid INT NOT NULL
 );
@@ -98,18 +98,18 @@ CREATE TABLE invoicecontents (
 
 DROP TABLE IF EXISTS networks;
 CREATE TABLE networks (
-  id int(11) NOT NULL auto_increment,
-  name varchar(255) NOT NULL default '',
-  address int(16) unsigned NOT NULL,
-  mask varchar(16) NOT NULL default '',
-  interface varchar(8) default NULL,
-  gateway varchar(16) default NULL,
-  dns varchar(16) default NULL,
-  dns2 varchar(16) default NULL,
-  domain varchar(64) NOT NULL default '',
-  wins varchar(16) default NULL,
-  dhcpstart varchar(16) default NULL,
-  dhcpend varchar(16) default NULL,
+  id INT(11) NOT NULL auto_increment,
+  name VARCHAR(255) NOT NULL default '',
+  address INT(16) unsigned NOT NULL,
+  mask VARCHAR(16) NOT NULL default '',
+  interface VARCHAR(8) default NULL,
+  gateway VARCHAR(16) default NULL,
+  dns VARCHAR(16) default NULL,
+  dns2 VARCHAR(16) default NULL,
+  domain VARCHAR(64) NOT NULL default '',
+  wins VARCHAR(16) default NULL,
+  dhcpstart VARCHAR(16) default NULL,
+  dhcpend VARCHAR(16) default NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
@@ -122,17 +122,17 @@ CREATE TABLE networks (
 
 DROP TABLE IF EXISTS nodes;
 CREATE TABLE nodes (
-  id int(11) NOT NULL auto_increment,
-  name varchar(16) NOT NULL default '',
-  mac varchar(20) NOT NULL default '',
-  ipaddr int(16) unsigned NOT NULL default '0',
-  ownerid int(11) NOT NULL default '0',
-  netdev int(11) NOT NULL default '0',
-  creationdate int(11) NOT NULL default '0',
-  moddate int(11) NOT NULL default '0',
-  creatorid int(11) NOT NULL default '0',
-  modid int(11) NOT NULL default '0',
-  access tinyint(1) NOT NULL default '1',
+  id INT(11) NOT NULL auto_increment,
+  name VARCHAR(16) NOT NULL default '',
+  mac VARCHAR(20) NOT NULL default '',
+  ipaddr INT(16) unsigned NOT NULL default '0',
+  ownerid INT(11) NOT NULL default '0',
+  netdev INT(11) NOT NULL default '0',
+  creationdate INT(11) NOT NULL default '0',
+  moddate INT(11) NOT NULL default '0',
+  creatorid INT(11) NOT NULL default '0',
+  modid INT(11) NOT NULL default '0',
+  access TINYINT(1) NOT NULL default '1',
   PRIMARY KEY  (id),
   UNIQUE KEY id_2 (id,name),
   KEY id (id)
@@ -145,13 +145,13 @@ CREATE TABLE nodes (
 
 DROP TABLE IF EXISTS tariffs;
 CREATE TABLE tariffs (
-  id int(11) NOT NULL auto_increment,
-  name varchar(255) NOT NULL default '',
-  value decimal(9,2) NOT NULL default '0',
-  taxvalue int(7) NOT NULL default '0',
-  pkwiu varchar(255) NOT NULL default '',
-  uprate int(11) NOT NULL default '0',
-  downrate int(11) NOT NULL default '0',
+  id INT(11) NOT NULL auto_increment,
+  name VARCHAR(255) NOT NULL default '',
+  value DECIMAL(9,2) NOT NULL default '0',
+  taxvalue DECIMAL(9,2) NOT NULL default '0',
+  pkwiu VARCHAR(255) NOT NULL default '',
+  uprate INT(11) NOT NULL default '0',
+  downrate INT(11) NOT NULL default '0',
   description text,
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
@@ -165,8 +165,8 @@ CREATE TABLE tariffs (
 
 DROP TABLE IF EXISTS timestamps;
 CREATE TABLE timestamps (
-  time int(14) NOT NULL default '0',
-  tablename varchar(255) NOT NULL default ''
+  time INT(14) NOT NULL default '0',
+  tablename VARCHAR(255) NOT NULL default ''
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -176,28 +176,28 @@ CREATE TABLE timestamps (
 
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
-  id int(11) NOT NULL auto_increment,
-  lastname varchar(255) default NULL,
-  name varchar(255) default NULL,
-  status int(11) default NULL,
-  email varchar(255) default NULL,
-  phone1 varchar(255) default NULL,
-  phone2 varchar(255) default NULL,
-  phone3 varchar(255) default NULL,
-  gguin int(11) default NULL,
-  address varchar(255) NOT NULL default '',
-  zip varchar(6) default NULL,
-  city varchar(32) default NULL,
-  nip varchar(16) default NULL,
-  pesel varchar(11) default NULL,
-  tariff int(11) NOT NULL default '0',
+  id INT(11) NOT NULL auto_increment,
+  lastname VARCHAR(255) default NULL,
+  name VARCHAR(255) default NULL,
+  status INT(11) default NULL,
+  email VARCHAR(255) default NULL,
+  phone1 VARCHAR(255) default NULL,
+  phone2 VARCHAR(255) default NULL,
+  phone3 VARCHAR(255) default NULL,
+  gguin INT(11) default NULL,
+  address VARCHAR(255) NOT NULL default '',
+  zip VARCHAR(6) default NULL,
+  city VARCHAR(32) default NULL,
+  nip VARCHAR(16) default NULL,
+  pesel VARCHAR(11) default NULL,
+  tariff INT(11) NOT NULL default '0',
   info text,
-  creationdate int(11) NOT NULL default '0',
-  moddate int(11) NOT NULL default '0',
-  creatorid int(11) NOT NULL default '0',
-  modid int(11) NOT NULL default '0',
-  payday int(11) NOT NULL default '5',
-  deleted tinyint(1) NOT NULL default '0',
+  creationdate INT(11) NOT NULL default '0',
+  moddate INT(11) NOT NULL default '0',
+  creatorid INT(11) NOT NULL default '0',
+  modid INT(11) NOT NULL default '0',
+  payday INT(11) NOT NULL default '5',
+  deleted TINYINT(1) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY id_2 (id),
   KEY id (id)
@@ -209,10 +209,10 @@ CREATE TABLE users (
 
 DROP TABLE IF EXISTS stats;
 CREATE TABLE stats (
-  nodeid int(11) NOT NULL default '0',
-  dt int(11) NOT NULL default '0',
-  upload int(11) default '0',
-  download int(11) default '0',        
+  nodeid INT(11) NOT NULL default '0',
+  dt INT(11) NOT NULL default '0',
+  upload INT(11) default '0',
+  download INT(11) default '0',        
   PRIMARY KEY (nodeid, dt)
 ) TYPE=MyISAM;
 
@@ -222,12 +222,12 @@ CREATE TABLE stats (
 
 DROP TABLE IF EXISTS assignments;
 CREATE TABLE assignments (
-  id int(11) NOT NULL auto_increment,
-  tariffid int(11) NOT NULL default '0',
-  userid int(11) NOT NULL default '0',
-  period int(11) NOT NULL default '0',
-  at int(11) NOT NULL default '0',
-  invoice tinyint(1) NOT NULL default '0',
+  id INT(11) NOT NULL auto_increment,
+  tariffid INT(11) NOT NULL default '0',
+  userid INT(11) NOT NULL default '0',
+  period INT(11) NOT NULL default '0',
+  at INT(11) NOT NULL default '0',
+  invoice TINYINT(1) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)
@@ -239,14 +239,14 @@ CREATE TABLE assignments (
 
 DROP TABLE IF EXISTS netdevices;
 CREATE TABLE netdevices (
-  id int(11) NOT NULL auto_increment,
-  name varchar(32) default NULL,
-  location varchar(255) default NULL,
-  description varchar(255) default NULL,
-  producer varchar(64) default NULL,
-  model varchar(32) default NULL,
-  serialnumber varchar(32) default NULL,
-  ports int(10) default NULL,
+  id INT(11) NOT NULL auto_increment,
+  name VARCHAR(32) default NULL,
+  location VARCHAR(255) default NULL,
+  description VARCHAR(255) default NULL,
+  producer VARCHAR(64) default NULL,
+  model VARCHAR(32) default NULL,
+  serialnumber VARCHAR(32) default NULL,
+  ports INT(10) default NULL,
   PRIMARY KEY  (id),
   KEY name (name)
 ) TYPE=MyISAM;
@@ -257,9 +257,9 @@ CREATE TABLE netdevices (
 
 DROP TABLE IF EXISTS netlinks;
 CREATE TABLE netlinks (
-  id int(11) NOT NULL auto_increment,
-  src int(11) NOT NULL default '0',
-  dst int(11) NOT NULL default '0',
+  id INT(11) NOT NULL auto_increment,
+  src INT(11) NOT NULL default '0',
+  dst INT(11) NOT NULL default '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 	
