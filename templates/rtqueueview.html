@@ -20,6 +20,24 @@
 			<B>Razem: {$queuedata.total|default:"0"}</B>
 		</TD>
 	</TR>
+	<TR class="DARK">
+		<TD class="fall" colspan="5">
+			<P><FORM method="GET" action="?m=rtqueueview" name="filter">
+				<INPUT type="HIDDEN" name="m" value="rtqueueview">
+				<INPUT type="HIDDEN" name="id" value="{$queuedata.id}">
+				<INPUT type="HIDDEN" name="page" value="1">
+				<B>Filtruj: </B> Status:
+				<SELECT size="1" class="bold" name="s" OnChange="document.filter.submit();">
+					<OPTION value=""{if $queuedata.state eq ""} SELECTED{/if}>- wszystkie -</OPTION>
+					<OPTION value="0"{if $queuedata.state eq "0"} SELECTED{/if}>nowe</OPTION>
+					<OPTION value="1"{if $queuedata.state eq "1"} SELECTED{/if}>otwarte</OPTION>
+					<OPTION value="2"{if $queuedata.state eq "2"} SELECTED{/if}>rozwi±zane</OPTION>
+					<OPTION value="3"{if $queuedata.state eq "3"} SELECTED{/if}>martwe</OPTION>
+					<OPTION value="-1"{if $queuedata.state eq "-1"} SELECTED{/if}>nierozwi±zane</OPTION>
+				</SELECT>
+			</FORM></P>
+		</TD>
+	</TR>		
 	{if $queuedata.total != 0}
 	<TR class="DARK">
 		<TD colspan="5" class="FALL">

@@ -3055,12 +3055,25 @@ class LMS
 			break;
 		}
 
+		switch($state)
+		{
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+				$statefilter = 'AND state = '.$state;
+				break;
+			case '-1':
+				$statefilter = 'AND state != 2';
+				break;
+		}
+
 		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 		    FROM rttickets LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
 		    LEFT JOIN admins ON (owner = admins.id) 
 		    LEFT JOIN users ON (rttickets.userid = users.id)
-		    WHERE queueid = ? 
-		    GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.userid, users.lastname, users.name '
+		    WHERE queueid = ? '.$statefilter 
+		    .' GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.userid, users.lastname, users.name '
 		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
 		{
 			foreach($result as $idx => $ticket)

@@ -25,6 +25,7 @@ wersja 1.5.3 (??/??/????):
   - w formularzu przelewu/wp³aty mo¿na zdefiniowaæ format reprezentacji s³ownej 
     kwoty (alec/kubatyszko)
   - BTS#0000252: usuniête spacje wiod±ce w repr. s³ownej kwot (alec)
+  - filtrowanie listy zg³oszeñ Helpdesk wg statusu (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 
