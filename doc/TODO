@@ -21,16 +21,9 @@ PROPOSALS:
 - faktury
 - dokumentacja podrêczna (tooltipy, popupy)
 - tooltipy przy b³±dach
-- nodesearch - dok³adniejsze wyszukiwanie po czê¶ciowym adresie IP 
-    teraz jest tak:
-    je¶li wpiszesz 192.16 - wyszuka adresy z zakresu 192.16.0.0 - 192.16.255.255
-    docelowo:
-    je¶li wpiszesz 192.16 - wyszuka adresy z zakresu 192.16.0.0 - 192.16.255.255
-                                                oraz 192.160.0.0 - 192.169.255.255
-- netdevices
+- mapa sieci (netdevices & nodes)
 - zdjêcia u¿ytkowników (taki niepotrzebny bajer :-) 
 - mail mngmnt
-- wizualizacja wyników statystyk
 - prawa dostêpu lms-traffic* i inne testy
 - arpd (dokoñczy, support dla non-linux systems)
 - ³adniejsza wizualizacja wyników statystyk
