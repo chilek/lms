@@ -163,7 +163,7 @@ open(MTFILE, "$mtfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
-my $dbq = $dbase->prepare("SELECT users.id AS id, pin, lastname, name, email, phone1, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id, lastname, name, email, phone1 HAVING SUM((type * -2 + 7) * cash.value) < 0");
+my $dbq = $dbase->prepare("SELECT users.id AS id, pin, lastname, name, email, phone1, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id, pin, lastname, name, email, phone1 HAVING SUM((type * -2 + 7) * cash.value) < 0");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
