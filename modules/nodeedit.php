@@ -30,6 +30,8 @@ if(!$LMS->NodeExists($_GET[id]))
 	else
 		header("Location: ?m=nodelist");
 
+
+
 $nodeid = $_GET[id];
 $ownerid = $LMS->GetNodeOwner($nodeid);
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
@@ -134,6 +136,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.30  2003/09/19 11:00:03  lukasz
+ * - temporary save
+ *
  * Revision 1.29  2003/09/12 02:52:57  lukasz
  * - cosmetics
  *

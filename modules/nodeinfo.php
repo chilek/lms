@@ -45,6 +45,10 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 if(!isset($_GET[ownerid]))
 	$_SESSION[backto] .= "&ownerid=".$ownerid;
 
+if($nodeinfo['netdevid'] == 0)
+	$netdevices = $LMS->GetNetDevList();
+
+$SMARTY->assign("netdevices",$netdevices);
 $SMARTY->assign("balancelist",$balancelist);
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("nodeinfo",$nodeinfo);
@@ -55,6 +59,9 @@ $SMARTY->display("nodeinfo.html");
 
 /*
  * $Log$
+ * Revision 1.20  2003/09/19 11:00:03  lukasz
+ * - temporary save
+ *
  * Revision 1.19  2003/09/12 02:52:57  lukasz
  * - cosmetics
  *
