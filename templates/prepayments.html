@@ -1,0 +1,177 @@
+{include file="header.html"}
+{include file="userheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<link href="img/style.css" rel="stylesheet" type="text/css">
+{literal}
+<SCRIPT language=JavaScript>
+	<!--
+
+	function CheckAllCovenants()
+	{
+		for (var i=0; i<document.prepayments.elements.length; i++)
+		{
+			var e = document.prepayments.elements[i];
+			regexp = /^cmarks/;
+			if (e.name != 'allboxc' && e.name != 'allboxp' && regexp.test(e.name))
+				e.checked = document.prepayments.allboxc.checked;
+		}
+	}
+
+	function CheckAllCovenants2()
+	{
+		document.prepayments.allboxc.checked = !document.prepayments.allboxc.checked;
+		CheckAllCovenants();
+	}
+
+	function CheckAllPrepayments()
+	{
+		for (var i=0; i<document.prepayments.elements.length; i++)
+		{
+			var e = document.prepayments.elements[i];
+			regexp = /^pmarks/;
+			if (e.name != 'allboxc' && e.name != 'allboxp' && regexp.test(e.name))
+				e.checked = document.prepayments.allboxp.checked;
+		}
+	}
+
+	function CheckAllPrepayments2()
+	{
+		document.prepayments.allboxp.checked = !document.prepayments.allboxp.checked;
+		CheckAllPrepayments();
+	}
+
+
+	//-->
+</SCRIPT>
+{/literal}
+<P><FORM name="prepayments" method="POST" action="?m=prepayments&id={$userid}">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD class="fall">
+			<IMG src="img/money.gif" border="0" ALT="" align="absmiddle">
+			<B><A name="balance">{t}Customer Unpaid Covenants:{/t}</A></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="100%" class="fall">
+			<TABLE cellpadding="5" cellspacing="0" width="100%">
+				<TR class="dark">
+					<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
+					<TD width="1%" class="fbt" align="right">{t}Invoice:{/t}</TD>
+					<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
+					<TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
+					<TD width="95%" class="fbt">{t}Description:{/t}</TD>
+					<TD width="1%" class="frightu">&nbsp;</TD>
+				</TR>
+				{cycle values="#DFD5BD,#EBE4D6" print=false}
+				{section name=covenantlist loop=$covenantlist}
+				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+					<TD><nobr>{$covenantlist[covenantlist].cdate|date_format:"%Y/%m/%d"}</nobr></TD>
+					<TD align="right">{$covenantlist[covenantlist].invoice}</TD>
+					<TD align="right"><nobr>{$covenantlist[covenantlist].value|money_format}</nobr></TD>
+					<TD align="right"><nobr>
+						{if $covenantlist[covenantlist].taxvalue}
+							{$covenantlist[covenantlist].taxvalue|string_format:"%01.2f"} %
+						{else}{t}tax-free{/t}
+						{/if}</nobr>
+					</TD>
+					<TD>{$covenantlist[covenantlist].comment}</TD>
+					<TD align="right">
+						{cycle print=false}
+						<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="cmarks[]" VALUE="{$covenantlist[covenantlist].id}"{if $covenantlist[covenantlist].selected} CHECKED{/if}>
+					</TD>
+				</TR>
+				{sectionelse}
+				<TR>
+					<TD align="center" colspan="6">
+						<BR>
+						<BR>
+						<B>{t}That customer hasn't got any unpaid covenants.{/t}</B><BR>
+						<BR>
+						<BR>
+					</TD>
+				</TR>
+				{/section}
+				<TR bgcolor="#DFD5BD">
+					<TD CLASS="ftop" ALIGN="right" colspan="2">
+						<B>{t}Total:{/t}</B>
+					</TD>
+					<TD CLASS="ftop" nowrap>
+						<B>{sum array=$covenantlist column="value" string_format=$LANGDEFS.$_language.money_format}</B>
+					</TD>
+					<TD CLASS="ftop" ALIGN="right" colspan="3" nowrap>
+						<A HREF="javascript:CheckAllCovenants2();">{t}Check All{/t}</A>
+						<INPUT CLASS="box" TYPE="checkbox" NAME="allboxc" onClick="CheckAllCovenants();" VALUE="Check All Covenants">
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+<P><TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD class="fall">
+			<IMG src="img/money.gif" border="0" ALT="" align="absmiddle">
+			<B><A name="balance">{t}Customer Prepayments:{/t}</A></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="100%" class="fall">
+			<TABLE cellpadding="5" cellspacing="0" width="100%">
+				<TR class="dark">
+					<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
+					<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
+					<TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
+					<TD width="96%" class="fbt">{t}Description:{/t}</TD>
+					<TD width="1%" class="frightu">&nbsp;</TD>
+				</TR>
+				{cycle values="#DFD5BD,#EBE4D6" print=false}
+				{section name=prepaymentlist loop=$prepaymentlist}
+				<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+					<TD><nobr>{$prepaymentlist[prepaymentlist].time|date_format:"%Y/%m/%d"}</nobr></TD>
+					<TD align="right"><nobr>{$prepaymentlist[prepaymentlist].value|money_format}</nobr></TD>
+					<TD align="right"><nobr>
+						{if $prepaymentlist[prepaymentlist].taxvalue}
+							{$prepaymentlist[prepaymentlist].taxvalue|string_format:"%01.2f"} %
+						{else}{t}tax-free{/t}
+						{/if}</nobr>
+					</TD>
+					<TD>{$prepaymentlist[prepaymentlist].comment}</TD>
+					<TD align="right">
+						{cycle print=false}
+						<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="pmarks[]" VALUE="{$prepaymentlist[prepaymentlist].id}"{if $prepaymentlist[prepaymentlist].selected} CHECKED{/if}>
+					</TD>
+				</TR>
+				{sectionelse}
+				<TR>
+					<TD align="center" colspan="5">
+						<BR>
+						<BR>
+						<B>{t}That customer hasn't got any prepayments.{/t}</B><BR>
+						<BR>
+						<BR>
+					</TD>
+				</TR>
+				{/section}
+				<TR bgcolor="#DFD5BD">
+					<TD CLASS="ftop" nowrap align="right" valign="top">
+						<B>{t}Total:{/t}
+					</TD>
+					<TD CLASS="ftop" align="right" valign="top" nowrap>
+						<B>{sum array=$prepaymentlist column="value" string_format=$LANGDEFS.$_language.money_format}</B>
+					</TD>
+					<TD CLASS="ftop" ALIGN="right" colspan="3" valign="top" nowrap>
+						<A HREF="javascript:CheckAllPrepayments2();">{t}Check All{/t}</A>
+						<INPUT CLASS="box" TYPE="checkbox" NAME="allboxp" onClick="CheckAllPrepayments();" VALUE="Check All Prepayments"><BR>
+						<A href="javascript: document.prepayments.submit();">{t}Bind Prepayments with Covenants{/t} <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A>
+						<A href="?m=userinfo&id={$userid}">{t}Cancel{/t} <IMG src="img/cancel.gif" border="0" ALT="" align="absmiddle"></A>
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+</P>
+{include file="footer.html"}

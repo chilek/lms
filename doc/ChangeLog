@@ -69,6 +69,8 @@ wersja 1.5.4 (??/??/????):
   - dodano index na kolumnie invoiceid w tabeli cash, przyspieszaj±cy niektóre
     zapytania SQL (alec)
   - mo¿liwo¶æ generowania faktur w PDF (lexx)
+  - dla operacji fakturowanych dodano mo¿liwo¶æ powi±zywania obci±¿eñ z
+    wp³atami/przedp³atami, co np. pozwala na czê¶ciowe rozliczanie faktur (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
