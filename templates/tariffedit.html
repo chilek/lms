@@ -15,77 +15,112 @@
 			<B>&nbsp;({$tariff.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
-
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/value.gif" BORDER="0" ALIGN="absmiddle" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>Warto¶æ:</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]" {tip text="Podaj kwotê" trigger="value"}> z³
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/tax.gif" BORDER="0" ALIGN="absmiddle" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>Stawka&nbsp;podatku:</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<SELECT SIZE="1" NAME="tariff[taxvalue]" VALUE="{$tariff.taxvalue}" {tip text="Wybierz wysoko¶æ podatku VAT" trigger="taxvalue"}>
-				<OPTION VALUE="22" {if $tariff.taxvalue == 22}SELECTED{/if}>22%</OPTION>
-				<OPTION VALUE="7" {if $tariff.taxvalue == 7}SELECTED{/if}>7%</OPTION>
-				<OPTION VALUE="0" {if $tariff.taxvalue == 0}SELECTED{/if}>0%</OPTION>
-				<OPTION VALUE="" {if !$tariff.taxvalue}SELECTED{/if}>zw.</OPTION>
-			</SELECT>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/class.gif" BORDER="0" ALIGN="absmiddle" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>PKWiU:</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.pkwiu}" SIZE="8" NAME="tariff[pkwiu]" {tip text="Podaj symbol PKWiU (opcjonalnie)" trigger="pkwiu"}>
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/uprate.gif" BORDER="0" ALIGN="absmiddle" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>Uprate:</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{if $tariff.uprate}{$tariff.uprate}{/if}" SIZE="8" NAME="tariff[uprate]" {tip text="Podaj liczbê dla ograniczenia uploadu (opcjonalnie)" trigger="uprate"}> kb/s
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/downrate.gif" BORDER="0" ALIGN="absmiddle" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>Downrate:</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{if $tariff.downrate}{$tariff.downrate}{/if}" SIZE="8" NAME="tariff[downrate]" {tip text="Podaj liczbê dla ograniczenia downloadu (opcjonalnie)" trigger="downrate"}> kb/s
-		</TD>
-	</TR>
 	<TR class="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/usercomment.gif" BORDER="0" ALIGN="absmiddle" ALT="">
-		</TD>
-		<TD WIDTH="1%">
-			<B>Opis:</B>
-		</TD>
-		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.description}" NAME="tariff[description]" SIZE="40" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>
-		</TD>
+	    <TD WIDTH="100%" COLSPAN="3" CLASS="flr">
+		<TABLE WIDTH="100%" CELLPADDING="0">
+		    <TR CLASS="LIGHT">
+			<TD WIDTH="50%" VALIGN="top">
+			    <TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+					<IMG SRC="img/value.gif" BORDER="0" ALIGN="absmiddle" ALT="">
+				    </TD>
+				    <TD WIDTH="1%"><B>Warto¶æ:</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]" {tip text="Podaj kwotê" trigger="value"}> z³
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+					<IMG SRC="img/tax.gif" BORDER="0" ALIGN="absmiddle" ALT="">
+				    </TD>
+				    <TD WIDTH="1%"><B>Stawka&nbsp;podatku:</B></TD>
+				    <TD WIDTH="98%">
+					<SELECT SIZE="1" NAME="tariff[taxvalue]" VALUE="{$tariff.taxvalue}" {tip text="Wybierz wysoko¶æ podatku VAT" trigger="taxvalue"}>
+					    <OPTION VALUE="22" {if $tariff.taxvalue == 22}SELECTED{/if}>22%</OPTION>
+					    <OPTION VALUE="7" {if $tariff.taxvalue == 7}SELECTED{/if}>7%</OPTION>
+					    <OPTION VALUE="0" {if $tariff.taxvalue == 0}SELECTED{/if}>0%</OPTION>
+					    <OPTION VALUE="" {if !$tariff.taxvalue}SELECTED{/if}>zw.</OPTION>
+					</SELECT>
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+					<IMG SRC="img/class.gif" BORDER="0" ALIGN="absmiddle" ALT="">
+				    </TD>
+				    <TD WIDTH="1%"><B>PKWiU:</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" VALUE="{$tariff.pkwiu}" SIZE="8" NAME="tariff[pkwiu]" {tip text="Podaj symbol PKWiU (opcjonalnie)" trigger="pkwiu"}>
+				    </TD>
+				</TR>
+				<TR class="LIGHT">
+				    <TD WIDTH="1%">
+					<IMG SRC="img/usercomment.gif" BORDER="0" ALIGN="absmiddle" ALT="">
+				    </TD>
+				    <TD WIDTH="1%"><B>Opis:</B></TD>
+				    <TD WIDTH="98%">
+				        <INPUT TYPE="TEXT" VALUE="{$tariff.description}" NAME="tariff[description]" SIZE="40" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>
+				    </TD>
+				</TR>
+			    </TABLE>
+			</TD>
+			<TD WIDTH="50%" VALIGN="top">
+			    <TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+					<IMG SRC="img/uprate.gif" BORDER="0" ALIGN="absmiddle" ALT="">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>Upload rate:</B></TD>
+				    <TD WIDTH="98%" NOWRAP>
+					<INPUT TYPE="TEXT" VALUE="{if $tariff.uprate}{$tariff.uprate}{/if}" SIZE="8" NAME="tariff[uprate]" {tip text="Podaj minimaln± gwarantowan± warto¶æ uploadu (opcjonalnie)" trigger="uprate"}> kbit/s
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>Upload ceil:</B></TD>
+				    <TD WIDTH="98%" NOWRAP>
+				        <INPUT TYPE="TEXT" VALUE="{if $tariff.upceil}{$tariff.upceil}{/if}" SIZE="8" NAME="tariff[upceil]" {tip text="Podaj maksymaln± warto¶æ uploadu (opcjonalnie)" trigger="upceil"}> kbit/s
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+					<IMG SRC="img/downrate.gif" BORDER="0" ALIGN="absmiddle" ALT="">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>Download rate:</B></TD>
+				    <TD WIDTH="98%" NOWRAP>
+					<INPUT TYPE="TEXT" VALUE="{if $tariff.downrate}{$tariff.downrate}{/if}" SIZE="8" NAME="tariff[downrate]" {tip text="Podaj minimaln± gwarantowan± warto¶æ downloadu (opcjonalnie)" trigger="downrate"}> kbit/s
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>Download ceil:</B></TD>
+				    <TD WIDTH="98%" NOWRAP>
+					<INPUT TYPE="TEXT" VALUE="{if $tariff.downceil}{$tariff.downceil}{/if}" SIZE="8" NAME="tariff[downceil]" {tip text="Podaj maksymaln± warto¶æ downloadu (opcjonalnie)" trigger="downceil"}> kbit/s
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>Connection limit:</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" VALUE="{if $tariff.climit}{$tariff.climit}{/if}" SIZE="8" NAME="tariff[climit]" {tip text="Okre¶l limit równoczesnych po³±czeñ (opcjonalnie)" trigger="climit"}> 
+				    </TD>
+				</TR>
+				<TR CLASS="LIGHT">
+				    <TD WIDTH="1%">
+				    </TD>
+				    <TD WIDTH="1%" NOWRAP><B>Packet limit:</B></TD>
+				    <TD WIDTH="98%">
+					<INPUT TYPE="TEXT" VALUE="{if $tariff.plimit}{$tariff.plimit}{/if}" SIZE="8" NAME="tariff[plimit]" {tip text="Okre¶l limit pakietów w jednostce czasu (opcjonalnie)" trigger="plimit"}> 
+				    </TD>
+				</TR>
+			    </TABLE>
+			</TD>
+		    </TR>
+		</TABLE>
+	    </TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT" CLASS="FBOTTOMU">

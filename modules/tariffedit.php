@@ -39,12 +39,13 @@ if(isset($tariff))
 
 	$tariff['value'] = str_replace(',','.',$tariff['value']);
 	
-	if($tariff['uprate'] == '')
-		$tariff['uprate'] = 0;
-	
-	if($tariff['downrate'] == '')
-		$tariff['downrate'] = 0;
-	
+	if($tariff['uprate'] == '') $tariff['uprate'] = 0;
+	if($tariff['upceil'] == '') $tariff['upceil'] = 0;
+	if($tariff['downrate'] == '') $tariff['downrate'] = 0;
+	if($tariff['downceil'] == '') $tariff['downceil'] = 0;
+	if($tariff['climit'] == '') $tariff['climit'] = 0;
+	if($tariff['plimit'] == '') $tariff['plimit'] = 0;
+
 	if($tariff['name'] == '')
 		$error['name'] = 'Proszê podaæ nazwê taryfy!';
 	elseif($LMS->GetTariffIDByName($tariff['name']) && $tariff['name'] != $LMS->GetTariffName($_GET['id']))
@@ -61,19 +62,29 @@ if(isset($tariff))
 
 	if(!(ereg("^[0-9]+$", $tariff['uprate'])))
 		$error['uprate'] = 'To pole musi zawieraæ liczbê ca³kowit±';
-	
 	if(!ereg('^[0-9]+$', $tariff['downrate']))
 		$error['downrate'] = 'To pole musi zawieraæ liczbê ca³kowit±';
+	if(!(ereg("^[0-9]+$", $tariff['upceil'])))
+		$error['upceil'] = 'To pole musi zawieraæ liczbê ca³kowit±';
+	if(!ereg('^[0-9]+$', $tariff['downceil']))
+		$error['downceil'] = 'To pole musi zawieraæ liczbê ca³kowit±';
+	if(!(ereg("^[0-9]+$", $tariff['climit'])))
+		$error['climit'] = 'To pole musi zawieraæ liczbê ca³kowit±';
+	if(!ereg('^[0-9]+$', $tariff['plimit']))
+		$error['plimit'] = 'To pole musi zawieraæ liczbê ca³kowit±';
 	
 	if(($tariff['uprate'] < 8 || $tariff['uprate'] > 4096) && $tariff['uprate'] != 0)
 		$error['uprate'] = 'To pole musi zawieraæ liczbê z przedzia³u 8 - 4096';
-	
 	if(($tariff['downrate'] < 8 || $tariff['downrate'] > 4096) && $tariff['downrate'] != 0)
 		$error['downrate'] = 'To pole musi zawieraæ liczbê z przedzia³u 8 - 4096';
+	if(($tariff['upceil'] < 8 || $tariff['upceil'] < $tariff['uprate']) && $tariff['upceil'] != 0)
+		$error['upceil'] = 'To pole musi zawieraæ liczbê wiêksz± od 8 i wiêksz± od upload rate';
+	if(($tariff['downceil'] < 8 || $tariff['downceil'] < $tariff['downrate']) && $tariff['downceil'] != 0)
+		$error['downceil'] = 'To pole musi zawieraæ liczbê wiêksz± od 8 i wiêksz± od download rate';
+
 
 	$tariff['id'] = $_GET['id'];
-//	$tariff['count'] = $LMS->GetUsersWithTariff($_GET['id']);	
-//	$tariff['totalval'] = $tariff['count'] * str_replace('.',',',$tariff['value']);
+
 	if(!$error)
 	{
 		$LMS->TariffUpdate($tariff);

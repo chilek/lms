@@ -4,21 +4,26 @@
 <H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="5">
 	<TR class="dark">
-		<TD WIDTH="94%" CLASS="fleftu">
+		<TD WIDTH="93%" CLASS="fleftu">
 			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Nazwa:</B><BR>
 			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;Opis:
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+			ID:
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
 			Downrate:<BR>
 			Uprate:
 		</TD>	
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+			Downceil:<BR>
+			Upceil:
+		</TD>	
+
 		<TD NOWRAP WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
 			Warto¶æ:<BR>
 			Stawka VAT:
 		</TD>	
-		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			ID:
-		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
 			Korzysta:
 		</TD>
@@ -34,9 +39,12 @@
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{section name=tariffs loop=$tarifflist}
 	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-		<TD WIDTH="95%" CLASS="fleft" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';" class="fleft">
+		<TD WIDTH="93%" CLASS="fleft" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';" class="fleft">
 			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{$tarifflist[tariffs].name}</B><BR>
 			{if $tarifflist[tariffs].description}<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{$tarifflist[tariffs].description}{/if}
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+			({$tarifflist[tariffs].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
@@ -46,13 +54,16 @@
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
+			{if $tarifflist[tariffs].downceil}{$tarifflist[tariffs].downceil} kbit{else}-{/if}<BR>
+			{if $tarifflist[tariffs].upceil}{$tarifflist[tariffs].upceil} kbit{else}-{/if}
+			</NOBR>
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
+			<NOBR>
 			{$tarifflist[tariffs].value|string_format:"%01.2f"} z³<BR>
 			{if $tarifflist[tariffs].taxvalue}{$tarifflist[tariffs].taxvalue}%
 			{else}zw.{/if}
 			</NOBR>
-		</TD>
-		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			({$tarifflist[tariffs].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			{$tarifflist[tariffs].userscount} ({$tarifflist[tariffs].users},{$tarifflist[tariffs].assignmentcount})
@@ -70,7 +81,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="7" ALIGN="center" CLASS="fall">
+		<TD COLSPAN="8" ALIGN="center" CLASS="fall">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 			<p><B>Nie ma wprowadzonych ¿adnych taryf do bazy danych!</B></p>
@@ -80,7 +91,7 @@
 	</TR>
 	{/section}
 	<TR CLASS="light">
-		<TD CLASS="fleftu" COLSPAN="4" WIDTH="98%" ALIGN="right">
+		<TD CLASS="fleftu" COLSPAN="5" WIDTH="97%" ALIGN="right">
 			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Razem:</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>

@@ -1609,7 +1609,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetTariffList()
 	{
-		if($tarifflist = $this->DB->GetAll('SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate FROM tariffs ORDER BY name ASC'))
+		if($tarifflist = $this->DB->GetAll('SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate, upceil, downceil, climit, plimit FROM tariffs ORDER BY name ASC'))
 		{
 			$week = $this->DB->GetAllByKey('SELECT COUNT(userid) AS count, tariffid, SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND status = 3 AND period = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY tariffid', 'tariffid');
 			$month = $this->DB->GetAllByKey('SELECT COUNT(userid) AS count, tariffid, SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND status = 3 AND period = 1 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY tariffid', 'tariffid');
@@ -1656,20 +1656,24 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	{
 		$this->SetTS('tariffs');
 		if($tariffdata['taxvalue'] == '')
-			$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate)
-				VALUES (?, ?, ?, NULL, ?, ?, ?)',
+			$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate, upceil, downceil, climit, plimit)
+				VALUES (?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?)',
 				array(
 					$tariffdata['name'],
 					$tariffdata['description'],
 					$tariffdata['value'],
 					$tariffdata['pkwiu'],
 					$tariffdata['uprate'],
-					$tariffdata['downrate']
+					$tariffdata['downrate'],
+					$tariffdata['upceil'],
+					$tariffdata['downceil'],
+					$tariffdata['climit'],
+					$tariffdata['plimit']
 				)
 			);
 		else
-			$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate)
-				VALUES (?, ?, ?, ?, ?, ?, ?)',
+			$result = $this->DB->Execute('INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate, upceil, downceil, climit, plimit)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 				array(
 					$tariffdata['name'],
 					$tariffdata['description'],
@@ -1677,11 +1681,15 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 					$tariffdata['taxvalue'],
 					$tariffdata['pkwiu'],
 					$tariffdata['uprate'],
-					$tariffdata['downrate']
+					$tariffdata['downrate'],
+					$tariffdata['upceil'],
+					$tariffdata['downceil'],
+					$tariffdata['climit'],
+					$tariffdata['plimit']
 				)
 			);
 		if ($result)
-			return $this->DB->GetOne('SELECT id FROM tariffs WHERE name=?', array($tariffdata['name']));
+			return $this->GetTariffIDByName($tariffdata['name']);
 		else
 			return FALSE;
 	}
@@ -1690,9 +1698,9 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	{
 		$this->SetTS('tariffs');
 		if ($tariff['taxvalue'] == '')
-			return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, taxvalue=NULL, pkwiu=?, uprate=?, downrate=? WHERE id=?', array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
+			return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, taxvalue=NULL, pkwiu=?, uprate=?, downrate=?, upceil=?, downceil=?, climit=?, plimit=? WHERE id=?', array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['upceil'], $tariff['downceil'], $tariff['climit'], $tariff['plimit'], $tariff['id']));
 		else
-			return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, pkwiu=?, uprate=?, downrate=? WHERE id=?', array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
+			return $this->DB->Execute('UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, pkwiu=?, uprate=?, downrate=?, upceil=?, downceil=?, climit=?, plimit=? WHERE id=?', array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['upceil'], $tariff['downceil'], $tariff['climit'], $tariff['plimit'], $tariff['id']));
 	}
 
 	function TariffDelete($id)
@@ -1717,7 +1725,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetTariff($id)
 	{
-		$result = $this->DB->GetRow('SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate FROM tariffs WHERE id=?', array($id));
+		$result = $this->DB->GetRow('SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate, upceil, downceil, climit, plimit FROM tariffs WHERE id=?', array($id));
 		$result['users'] = $this->DB->GetAll('SELECT users.id AS id, COUNT(users.id) AS cnt, '.$this->DB->Concat('upper(lastname)',"' '",'name').' AS username FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY users.id, username', array($id));
 		
 		$week = $this->DB->GetRow('SELECT COUNT(userid) AS count, SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND status = 3 AND period = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) AND tariffid = ?', array($id));
@@ -1738,7 +1746,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetTariffs()
 	{
-		return $this->DB->GetAll('SELECT id, name, value, uprate, downrate, taxvalue, pkwiu FROM tariffs ORDER BY value DESC');
+		return $this->DB->GetAll('SELECT id, name, value, uprate, downrate, upceil, downceil, climit, plimit, taxvalue, pkwiu FROM tariffs ORDER BY value DESC');
 	}
 
 	function TariffExists($id)
