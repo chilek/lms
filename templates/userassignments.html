@@ -20,12 +20,12 @@
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{section name=a loop=$assignments}
 				<tr bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=tariffinfo&aid={$assignments[a].tariffid}">{$assignments[a].name}</A></B></TD>
+					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=tariffinfo&id={$assignments[a].tariffid}">{$assignments[a].name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].value|string_format:"%01.2f"} z³</TD>
 					<TD WIDTH="1%" NOWRAP>{$assignments[a].peroid} ({$assignments[a].at})</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].downrate|default:"-"} kbps</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].uprate|default:"-"} kbps</TD>
-					<TD WIDTH="95%" ALIGN="RIGHT" COLSPAN="2">{*<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê oraz zaksiêgowaæ wyrównanie od ostatniego zaksiêgowania do dnia dzisiejszego?')" HREF="?m=useredit&action=assignmentdelete&id={$assignments[a].id}&userid={$balancelist.userid}&balance=1" {popup text="Usuwa taryfê z rekordu u¿ytkownika oraz ksiêguje wyrównanie od dnia ostatniego zdarzenia do dzisiaj"}>Usuñ i wyrównaj <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê?')" HREF="?m=useredit&action=assignmentdelete&id={$assignments[a].id}&userid={$balancelist.userid}" {popup text="Usuwa taryfê z rekordu u¿ytkownika"}>Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
+					<TD WIDTH="95%" ALIGN="RIGHT" COLSPAN="2">{*<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê oraz zaksiêgowaæ wyrównanie od ostatniego zaksiêgowania do dnia dzisiejszego?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}&balance=1" {popup text="Usuwa taryfê z rekordu u¿ytkownika oraz ksiêguje wyrównanie od dnia ostatniego zdarzenia do dzisiaj"}>Usuñ i wyrównaj <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> *}<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi t± taryfê?')" HREF="?m=useredit&action=assignmentdelete&aid={$assignments[a].id}&id={$balancelist.userid}" {popup text="Usuwa taryfê z rekordu u¿ytkownika"}>Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A></TD>
 				</TR>
 				{sectionelse}
 				<TR>
