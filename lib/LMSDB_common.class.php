@@ -116,8 +116,33 @@ Class LMSDB_common
 		$query = eregi_replace('\?LIKE\?',$this->_driver_like(),$query);
 		if($inputarray)
 		{
+			$queryelements = explode("\0",str_replace('?',"?\0",$query));
+			$query = '';
+			foreach($queryelements as $queryelement)
+			{
+				if(strpos($queryelement,'?') !== FALSE)
+				{
+					list($key,$value) = each($inputarray);
+					$queryelement = str_replace('?',$this->_quote_value($value),$queryelement);
+				}
+				$query .= $queryelement;
+			}
 		}
 		return $query;
+	}
+
+	function _quote_value($input)
+	{
+		// je¿eli baza danych wymaga innego eskejpowania ni¿ to, driver
+		// powinien nadpisaæ t± funkcjê
+
+		if($input === NULL)
+			return 'NULL';
+		elseif(gettype($input) == 'string')
+//			return '\''.str_replace(array('\\',"\0","'"),array('\\\\',"\\\0","\\'"),$input).'\'';
+			return '\''.addcslashes($input,"'\\\0").'\'';
+		else
+			return $input;
 	}
 
 	// Funkcje bezpieczeñstwa, tj. na wypadek gdyby driver ich nie
@@ -134,3 +159,8 @@ Class LMSDB_common
 	}
 
 }
+
+/* $ChangeLog:$
+ */
+
+?>
