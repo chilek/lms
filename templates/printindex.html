@@ -2,7 +2,7 @@
 {if $printmenu=="users"}{include file="userheader.html"}{/if}
 {if $printmenu=="nodes"}{include file="nodeheader.html"}{/if}
 <H1>{$layout.pagetitle}</H1>
-{if $printmenu=="users"}
+{if $printmenu=="users" || !$printmenu}
 <SCRIPT type="text/javascript" src="img/calendar.js"></SCRIPT>
 <FORM method="POST" name="printuserlist" action="?m=print&type=userlist" target="_blank">	
 <TABLE width="100%" cellpadding="3">
@@ -22,7 +22,7 @@
 						<IMG src="img/group.gif" alt="" BORDER="0" align="absmiddle">
 					</TD>
 					<TD width="1%" nowrap>
-						<B>Grupa u¿ytkowników:</B>
+						<B>Grupa:</B>
 					</TD>
 					<TD width="1%">
 						<INPUT class="box" type="radio" name="filter" value="3" CHECKED>pod³±czeni<BR>
@@ -83,7 +83,11 @@
 						<B>U¿ytkownik:</B>
 					</TD>
 					<TD width="1%">
-					
+						<SELECT size="1" name="user" {tip text="Wybierz u¿ytkownika"}>
+							{section name="users" loop=$users}
+							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+							{/section}
+						</SELECT>
 					</TD>
 					<TD width="1%">
 						<IMG src="img/calendar.gif" alt="" BORDER="0" align="absmiddle">
@@ -113,7 +117,7 @@ cal2.time_comp = false;
 //-->
 </SCRIPT>
 {/if}
-{if $printmenu=="nodes"}
+{if $printmenu=="nodes" || !$printmenu}
 <FORM method="post" name="printnodelist" action="?m=print&type=nodelist" target="_blank">
 <TABLE width="100%" CELLPADDING="3">
 	<TR class="DARK">
@@ -128,7 +132,36 @@ cal2.time_comp = false;
 		<TD class="flr" width="100%" colspan="2">
 			<TABLE width="100%">
 				<TR>
-					<TD>
+					<TD width="1%">
+						<IMG src="img/group.gif" alt="" BORDER="0" align="absmiddle">
+					</TD>
+					<TD width="1%" nowrap>
+						<B>Grupa:</B>
+					</TD>
+					<TD width="1%">
+						<INPUT class="box" type="radio" name="filter" value="0" CHECKED>wszystkie<BR>
+						<INPUT class="box" type="radio" name="filter" value="1">od³±czone<BR>
+						<INPUT class="box" type="radio" name="filter" value="2">pod³±czone<BR>
+					</TD>
+					<TD width="1%">
+						<IMG src="img/view.gif" alt="" BORDER="0" align="absmiddle">
+					</TD>
+					<TD width="1%">	
+			    			<B>Sortowanie:</B>
+					</TD>
+					<TD width="95%">
+						<SELECT SIZE="1" name="order">
+							<OPTION value="name" SELECTED>Nazwa</OPTION>
+							<OPTION value="id">Identyfikator</OPTION> 
+							<OPTION value="owner">W³a¶ciciel</OPTION> 
+							<OPTION value="ownerid">Identyfikator w³a¶ciciela</OPTION> 
+							<OPTION value="ip">Adres IP</OPTION> 
+							<OPTION value="mac">Adres MAC</OPTION>
+						</SELECT>&nbsp;
+						<SELECT SIZE="1" name="direction">
+							<OPTION value="asc" SELECTED>rosn±co</OPTION>
+							<OPTION value="desc">malej±co</OPTION> 
+						</SELECT>
 					</TD>
 				</TR>
 			</TABLE>
@@ -143,4 +176,3 @@ cal2.time_comp = false;
 </FORM>
 {/if}
 {include file="footer.html"}
-

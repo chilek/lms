@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Wydruki';
-
 switch($_GET['type'])
 {
 	case 'userlist':
@@ -33,19 +31,19 @@ switch($_GET['type'])
 		{
 			case 0:
 				$layout['pagetitle'] = 'Lista u¿ytkowników';
-				$SMARTY->assign('userlist',$LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
+				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
 			break;
 			case 1:
 				$layout['pagetitle'] = 'Lista u¿ytkowników zainteresowanych ';
-				$SMARTY->assign('userlist',$LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
+				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
 			break;
 			case 2:
 				$layout['pagetitle'] = 'Lista u¿ytkowników oczekuj±cych';
-				$SMARTY->assign('userlist',$LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
+				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
 			break;
 			case 3:
 				$layout['pagetitle'] = 'Lista u¿ytkowników pod³±czonych';
-				$SMARTY->assign('userlist',$LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
+				$SMARTY->assign('userlist', $LMS->GetUserList($_POST['order'].','.$_POST['direction'],$_POST['filter']));
 			break;
 			case 4: 
 				$layout['pagetitle'] = 'Lista u¿ytkowników od³±czonych';
@@ -82,15 +80,57 @@ switch($_GET['type'])
 		}		
 		$SMARTY->display('printuserlist.html');
 	break;
+
+	case 'userbalance':
+		$layout['pagetitle'] = 'Bilans u¿ytkownika';	
+		$SMARTY->display('printuserbalance.html');
+	break;	
 	
 	case 'nodelist':
-		$layout['pagetitle'] = 'Lista komputerów';
-		$SMARTY->assign('nodelist',$LMS->GetNodeList($_SESSION['nlo']));
+		switch($_POST['filter'])
+		{
+			case 0:
+				$layout['pagetitle'] = 'Lista komputerów';
+				$SMARTY->assign('nodelist', $LMS->GetNodeList($_POST['order'].','.$_POST['direction']));
+			break;
+			case 1:
+				$layout['pagetitle'] = 'Lista komputerów od³±czonych';
+				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']);
+				unset($nodelist['total']);
+				unset($nodelist['totalon']);
+				unset($nodelist['totaloff']);
+				unset($nodelist['order']);
+				unset($nodelist['direction']);
+				
+				foreach($nodelist as $idx => $row)
+					if(!$row['access'])
+						$nnodelist[] = $nodelist[$idx];
+				
+				$SMARTY->assign('nodelist', $nnodelist);
+			break;
+			case 2:
+				$layout['pagetitle'] = 'Lista komputerów pod³±czonych';
+				$nodelist = $LMS->GetNodeList($_POST['order'].','.$_POST['direction']);
+				unset($nodelist['total']);
+				unset($nodelist['totalon']);
+				unset($nodelist['totaloff']);
+				unset($nodelist['order']);
+				unset($nodelist['direction']);
+				
+				foreach($nodelist as $idx => $row)
+					if($row['access'])
+						$nnodelist[] = $nodelist[$idx];
+				
+				$SMARTY->assign('nodelist', $nnodelist);
+			break;
+		}	
 		$SMARTY->display('printnodelist.html');
 	break;
 	
 	default:
-		$SMARTY->assign('printmenu',$_GET['menu']);
+		$layout['pagetitle'] = 'Wydruki';
+		$SMARTY->assign('users', $LMS->GetUserNames());
+		$SMARTY->assign('printmenu', $_GET['menu']);
 		$SMARTY->display('printindex.html');
 	break;
 }
