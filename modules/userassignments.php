@@ -67,7 +67,7 @@ if($_GET['action'] == 'add' && isset($a))
 			}
 			
 			if($at < 1 || $at > 7)
-				$error['at'] = 'Nieprawid³owy dzieñ tygodnia (1-7)!';
+				$error['at'] = trans('Incorrect weekday (1-7)!');
 		break;
 
 		case 1:
@@ -79,13 +79,13 @@ if($_GET['action'] == 'add' && isset($a))
 			$a['at'] = $at;
 			
 			if($at > 28 || $at < 1)
-				$error['at'] = 'Nieprawid³owy dzieñ miesi±ca (1-28)!';
+				$error['at'] = trans('Incorrect day of month (1-28)!');
 		break;
 
 		case 2:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
-				$error['at'] = 'Niepoprawny format daty (DD/MM)';
+				$error['at'] = trans('Incorrect date format (DD/MM)');
 			}
 			elseif($_CONFIG['phpui']['use_current_payday'] && !$a['at'])
 			{
@@ -101,9 +101,9 @@ if($_GET['action'] == 'add' && isset($a))
 			if(!$error)
 			{
 				if($d>30 || $d<1 || ($d>28 && $m==2))
-					$error['at'] = 'Niepoprawna liczba dni w miesi±cu';
+					$error['at'] = trans('This month doesnt contain specified number of days');
 				if($m>3 || $m<1)
-					$error['at'] = 'Niepoprawny numer miesi±ca (max.3)';
+					$error['at'] = trans('Incorrect month number (max.3)');
 
 				$at = ($m-1) * 100 + $d;
 			}
@@ -112,7 +112,7 @@ if($_GET['action'] == 'add' && isset($a))
 		case 3:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
-				$error['at'] = 'Niepoprawny format daty (DD/MM)';
+				$error['at'] = trans('Incorrect date format (DD/MM)');
 			}
 			elseif($_CONFIG['phpui']['use_current_payday'] && !$a['at'])
 			{
@@ -128,9 +128,9 @@ if($_GET['action'] == 'add' && isset($a))
 			if(!$error)
 			{
 				if($d>30 || $d<1 || ($d>28 && $m==2))
-					$error['at'] = 'Niepoprawna liczba dni w miesi±cu';
+					$error['at'] = trans('This month doesnt contain specified number of days');
 				if($m>12 || $m<1)
-					$error['at'] = 'Niepoprawny numer miesi±ca';
+					$error['at'] = trans('Incorrect month number');
 			
 				$ttime = mktime(12, 0, 0, $m, $d, 1990);
 				$at = date('z',$ttime) + 1;
@@ -146,10 +146,10 @@ if($_GET['action'] == 'add' && isset($a))
 		if(checkdate($m, $d, $y))
 			$from = mktime(0, 0, 0, $m, $d, $y);
 		else
-			$error['datefrom'] = 'Pocz±tek okresu naliczania jest niepoprawny!';
+			$error['datefrom'] = trans('Incorrect charging start time!');
 	}
 	else
-		$error['datefrom'] = 'Pocz±tek okresu naliczania jest niepoprawny!';
+		$error['datefrom'] = trans('Incorrect charging start time!');
 
 	if($a['dateto'] == '')
 		$to = 0;
@@ -159,16 +159,16 @@ if($_GET['action'] == 'add' && isset($a))
 		if(checkdate($m, $d, $y))
 			$to = mktime(23, 59, 59, $m, $d, $y);
 		else
-			$error['dateto'] = 'Koniec okresu naliczania jest niepoprawny!';
+			$error['dateto'] = trans('Incorrect charging end time!');
 	}
 	else
-		$error['dateto'] = 'Koniec okresu naliczania jest niepoprawny!';
+		$error['dateto'] = trans('Incorrect charging end time!');
 
 	if($to < $from && $to != 0 && $from != 0)
-		$error['dateto'] = 'Zakres dat jest niepoprawny!';
+		$error['dateto'] = trans('Incorrect time range!');
 
 	if($a['tariffid']=='')
-		$error['tariffid'] = 'Nie wybra³e¶ taryfy!';
+		$error['tariffid'] = trans('Tariff not selected!');
 
 	if($a['tariffid']==0)
 		unset($error['at']);
@@ -183,7 +183,7 @@ if($_GET['action'] == 'add' && isset($a))
 
 $userinfo = $LMS->GetUser($_GET['id']);
 
-$layout['pagetitle'] = 'Informacje o u¿ytkowniku: '.$userinfo['username'];
+$layout['pagetitle'] = trans('User Information: $0',$userinfo['username']);
 
 $SMARTY->assign('usernodes',$LMS->GetUserNodes($userinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($userinfo['id']));
