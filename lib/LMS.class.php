@@ -1608,7 +1608,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS tax7,
 			SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS tax0,
 			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS taxfree 
-			FROM cash WHERE (type=1 OR type=3) AND time>=? AND time<=? 
+			FROM cash WHERE (type=1 OR type=3) AND time>=? AND time<=? AND invoiceid=0
 			GROUP BY date ORDER BY date ASC',
 			array($date['from'], $date['to']));
 	}
@@ -1620,7 +1620,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS totaltax7,
 			SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS totaltax0,
 			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS totaltaxfree FROM cash
-			WHERE (type=1 OR type=3) AND time>=? AND time<=?',
+			WHERE (type=1 OR type=3) AND time>=? AND time<=? AND invoiceid=0',
 			array($date['from'], $date['to']));
 	}
 
