@@ -1572,7 +1572,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 					$result['content'][$idx]['total'] = $row['value'] * $row['count'];
 					$result['totalbase'] += $result['content'][$idx]['totalbase'];
 					$result['totaltax'] += $result['content'][$idx]['totaltax'];
-					$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['basevalue'];
+					$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['totalbase'];
 					$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
 					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
 					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
