@@ -22,7 +22,7 @@
        </sect1>
        <sect1 id="scripts-list">
        <title>Lista dostêpnych skryptów</title>
-	    <table>
+	    <table id="scripts-table">
 		<title>Lista skryptów wykonywalnych</title>
 		<tgroup cols="2">
 		<colspec ALIGN="center" COLWIDTH="200">
@@ -128,7 +128,7 @@
 	       <para>%last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na koncie u¿ytkownika, np:</para>
 	    </listitem>
 	  </itemizedlist>
-	  <example>
+	  <example id="notify-example">
 	   <title>Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</title>
 <screen>
 Data       | Opis                                                 | Warto¶æ
@@ -142,7 +142,7 @@ Data       | Opis                                                 | Warto¶æ
 2003-01-31 | Abonament za miesi±c 2003/01                         |  107.00
 -----------+------------------------------------------------------+---------
 </screen></example>
-	  <example>
+	  <example id="notify-template">
            <title>Lms-notify: Przyk³ad szablonu</title>
 <screen>UWAGA! Ta wiadomo¶æ zosta³a wygenerowana automatycznie.
 
