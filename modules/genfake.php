@@ -1831,7 +1831,7 @@ $SMARTY->display('header.html');
 $SMARTY->display('adminheader.html');
 echo '<H1>'.trans('Generating random data').'</H1>';
 	
-if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
+if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 65000)
 {
 	echo '<B>'.trans('Clearing database...').'</B><BR>';
 	$DB->Execute('DELETE FROM nodes');
@@ -1930,6 +1930,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 			$nodedata['access'] = 1;
 			$nodedata['warning'] = 0;
 			$nodedata['info'] = '';
+			$nodedata['passwd'] = '';
 			if($nodeid = $LMS->NodeAdd($nodedata))
 				$DB->Execute('UPDATE nodes SET lastonline=? WHERE id=? ', array(mt_rand(time()-2592000,time()+2592000),$nodeid));
 		}
@@ -1967,6 +1968,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$ip['access'] = 1;
 		$ip['warning'] = 0;
 		$ip['info'] = '';
+		$ip['passwd'] = '';
 		$LMS->NetDevLinkNode($LMS->NodeAdd($ip),$i);		
 		$startip++;
 		if($i>1)
@@ -1974,7 +1976,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 	}	
 		
 }else
-	echo '<FORM METHOD="GET" ACTION="?"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">How many records? (max: 250, <FONT COLOR="RED">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</FONT>) <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
+	echo '<FORM METHOD="GET" ACTION="?"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">How many records? (max: 65000, <FONT COLOR="RED">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</FONT>) <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
 	
 $SMARTY->display('footer.html');
 
