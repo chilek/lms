@@ -187,7 +187,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				
 					if( last_userid != atoi(g->db_get_data(res,i,"userid")) ) {
 						// prepare insert to 'invoices' table
-						insert_inv = strdup("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, finished) VALUES (%number, %customerid, '%lastname %name', '%address', '%zip', '%city', '%phone', '%nip', '%pesel', %NOW%, 14, 1 )");
+						insert_inv = strdup("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES (%number, %customerid, '%lastname %name', '%address', '%zip', '%city', '%phone', '%nip', '%pesel', %NOW%, 14, 'PRZELEW', 1 )");
 						g->str_replace(&insert_inv, "%number", itoa(++number));
 						g->str_replace(&insert_inv, "%customerid", g->db_get_data(res,i,"userid"));				
 						g->str_replace(&insert_inv, "%lastname", g->db_get_data(res,i,"lastname"));
