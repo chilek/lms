@@ -37,14 +37,13 @@ if($useradd['name']=='' && $useradd['lastname']=='' && $useradd[phone1]=='' && $
 }
 elseif(isset($useradd))
 {
-
 	if($useradd['lastname']=='')
 		$error['username']='Pola \'nazwisko/nazwa\' oraz \'imiê\' nie mog± byæ puste!';
 	
 	if($useradd['address']=='')
 		$error['address']='Proszê podaæ adres!';
 	
-	if($useradd['nip'] !='' && !eregi('^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$',$useradd['nip']) && !eregi('^[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}$',$useradd['nip']))
+	if($useradd['nip'] !='' && !check_nip($useradd['nip']))
 		$error['nip'] = 'Podany NIP jest b³êdny!';
 
 	if($useradd['pesel'] != '' && !check_pesel($useradd['pesel']))
