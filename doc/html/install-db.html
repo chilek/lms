@@ -88,7 +88,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN196"
+NAME="AEN201"
 >2.4.1.1. Wstêp</A
 ></H3
 ><P
@@ -105,7 +105,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN200"
+NAME="AEN205"
 >2.4.1.2. Instalacja serwera MySQL</A
 ></H3
 ><P
@@ -113,13 +113,13 @@ NAME="AEN200"
 			polecenia:
 			<PRE
 CLASS="SCREEN"
->    	$ ./configure --prefix=/usr/local/mysql
-	$ make
-	$ make install
-	$ /usr/local/mysql/bin/mysql_install_db
-	$ chown mysql -R /usr/local/mysql/var
-	$ /usr/local/mysql/bin/safe_mysqld &#38;
-	$ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</PRE
+>$ ./configure --prefix=/usr/local/mysql
+$ make
+$ make install
+$ /usr/local/mysql/bin/mysql_install_db
+$ chown mysql -R /usr/local/mysql/var
+$ /usr/local/mysql/bin/safe_mysqld &#38;
+$ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</PRE
 >
 		</P
 ></DIV
@@ -128,7 +128,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN204"
+NAME="AEN209"
 >2.4.1.3. Utworzenie bazy danych</A
 ></H3
 ><P
@@ -138,14 +138,14 @@ NAME="AEN204"
 			i uruchom shell mysql'a:
 			<PRE
 CLASS="SCREEN"
->	mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
-    	Enter password:[podaj has³o]
-	mysql&#62; create database lms;
-	mysql&#62; grant usage on lms.* to lms@localhost;
-	mysql&#62; grant select,insert,update,delete,create on lms.* to lms@localhost identified by 'haslo';
-	mysql&#62; flush privileges;
-	mysql&#62; use lms;
-	mysql&#62; source doc/lms.mysql;</PRE
+>mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
+Enter password:[podaj has³o]
+mysql&#62; create database lms;
+mysql&#62; grant usage on lms.* to lms@localhost;
+mysql&#62; grant select,insert,update,delete,create on lms.* to lms@localhost identified by 'haslo';
+mysql&#62; flush privileges;
+mysql&#62; use lms;
+mysql&#62; source doc/lms.mysql;</PRE
 >
 		</P
 ></DIV
@@ -154,7 +154,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN208"
+NAME="AEN213"
 >2.4.1.4. Konfiguracja LMS (lms.ini)</A
 ></H3
 ><P
@@ -162,8 +162,8 @@ NAME="AEN208"
 			siê  do  podania  w  sekcji  [database] pliku /etc/lms/lms.ini has³a i u¿ytkownika:
 			<PRE
 CLASS="SCREEN"
->	user     = lms
-	password = has³o_z_pkt.3</PRE
+>user     = lms
+password = has³o_z_pkt.3</PRE
 >
 		    </P
 ><P
@@ -179,7 +179,7 @@ CLASS="SCREEN"
 			spokoju[tm](C):
 			<PRE
 CLASS="SCREEN"
->	12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o \
+>12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o \
 		    --add-drop-table --add-locks lms &#62; backups/lms-auto-"$(date +%s)".sql</PRE
 >
 			</P
@@ -201,7 +201,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN218"
+NAME="AEN223"
 >2.4.2.1. Wstêp</A
 ></H3
 ><P
@@ -220,7 +220,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN222"
+NAME="AEN227"
 >2.4.2.2. Instalacja</A
 ></H3
 ><P
@@ -229,16 +229,16 @@ NAME="AEN222"
 			do katalogu g³ównego i wydajemy kolejno poni¿sze polecenia.
 			<PRE
 CLASS="SCREEN"
->	$ ./configure --enable-locale
-  	$ gmake
-    	$ su
-    	$ gmake install
-    	$ adduser postgres
-    	$ mkdir /usr/local/pgsql/data
-    	$ chown postgres /usr/local/pgsql/data
-    	$ su - postgres
-    	$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
-    	$ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data &#62;logfile 2&#62;&#38;1 &#38;</PRE
+>$ ./configure --enable-locale
+$ gmake
+$ su
+$ gmake install
+$ adduser postgres
+$ mkdir /usr/local/pgsql/data
+$ chown postgres /usr/local/pgsql/data
+$ su - postgres
+$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
+$ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data &#62;logfile 2&#62;&#38;1 &#38;</PRE
 >
 			</P
 ></DIV
@@ -247,7 +247,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN226"
+NAME="AEN231"
 >2.4.2.3. Utworzenie bazy danych</A
 ></H3
 ><P
@@ -255,9 +255,9 @@ NAME="AEN226"
 			której w³a¶cicielem bêdzie u¿ytkownik z loginem 'lms'. 
 			<PRE
 CLASS="SCREEN"
->    	$ /usr/local/pgsql/bin/createuser -d -A -P lms
-    	$ /usr/local/pgsql/bin/createdb -E LATIN2 -U lms lms
-    	$ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</PRE
+>$ /usr/local/pgsql/bin/createuser -d -A -P lms
+$ /usr/local/pgsql/bin/createdb -E LATIN2 -U lms lms
+$ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</PRE
 >
 		</P
 ></DIV
@@ -266,7 +266,7 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN230"
+NAME="AEN235"
 >2.4.2.4. Konfiguracja LMS (lms.ini)</A
 ></H3
 ><P
@@ -274,9 +274,9 @@ NAME="AEN230"
 			[database] pliku /etc/lms/lms.ini nale¿y ustawiæ nastêpuj±ce opcje:
    			<PRE
 CLASS="SCREEN"
->	type     = postgres
-    	user     = lms
-    	password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</PRE
+>type     = postgres
+user     = lms
+password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</PRE
 >
 		    </P
 ><P

@@ -93,7 +93,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN691"
+NAME="AEN696"
 >4.6.1. Instalacja</A
 ></H2
 ><P
@@ -101,25 +101,78 @@ NAME="AEN691"
 	    pliku z danymi. Zawarto¶æ pliku powinna mieæ nastêpuj±cy format:</P
 ><PRE
 CLASS="SCREEN"
->	    	&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
-		&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
-		...</PRE
+>&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
+&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
+...</PRE
 ><P
 >Skrypt tworz±cy statystyki nale¿y uruchamiaæ z tak± sam± czêstotliwo¶ci± 
-	    co lms-traffic. Przyk³ad takiego skryptu dla iptables znajduje siê w pliku /sample/traffic_ipt.sh.
-	    </P
+	    co lms-traffic.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Przyk³ad takiego skryptu dla iptables znajduje siê w 
+	    pliku <TT
+CLASS="FILENAME"
+>/sample/traffic_ipt.sh</TT
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
 ><P
 >Nastêpnie instalujemy skrypt dopisuj±c do crontaba.
 	    Oprócz standardowych opcji wiersza poleceñ mo¿liwe jest
 	    zdefiniowanie lokalizacji pliku z logiem</P
 ><PRE
 CLASS="SCREEN"
->	    -f=/plik 	po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traffic.log</PRE
+>-f=/plik 	po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traffic.log</PRE
 ><P
->	    Czêstotliwo¶æ zapisywania danych do bazy ustala u¿ytkownik. Ustawienie
+>	    <DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/warning.gif"
+HSPACE="5"
+ALT="Ostrze¿enie"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Czêstotliwo¶æ zapisywania danych do bazy ustala u¿ytkownik. Ustawienie
 	    jej poni¿ej 10 minut, mo¿e spowodowaæ szybki przyrost ilo¶ci rekordów w 
 	    bazie danych, a co za tym idzie zwiêkszyæ czas oczekiwania na wy¶wietlenie
-	    wyników.
+	    wyników.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
 	    </P
 ></DIV
 ></DIV
