@@ -1,5 +1,15 @@
 $Id$
 
+wersja 1.1.3 (??/??/2003):
+
+  - zmieniona filozofia u¿ytkowników - teraz usuniêcie u¿ytkownika tak
+    naprawdê go nie usuwa, a jedynie ukrywa - tj. mo¿na dobraæ siê do
+    u¿ytkownika po jego ID, mo¿na go wyszukaæ, ale nie mo¿na mu dodaæ
+    komputerów i nie widaæ go na li¶cie u¿ytkowników, natomiast w informacji o
+    nim jest informacja o tym ¿e u¿ytkownik jest usuniêty, co oczywi¶cie
+    wymaga modyfikacji bazy danych: (lukasz)
+    ALTER TABLE users ADD deleted ENUM('Y','N') DEFAULT 'N' NOT NULL;
+  - zmienione 'op³ata ab' na bardziej intuicyjne 'obci±¿enie' (lukasz)
 
 wersja 1.1.2 (24/08/2003):
 
