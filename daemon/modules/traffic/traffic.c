@@ -22,10 +22,11 @@
  *  $Id$
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include <syslog.h>
 #include <string.h>
 
-#include "almsd.h"
+#include "lmsd.h"
 #include "traffic.h"
 
 unsigned long inet_addr(unsigned char*);
@@ -49,27 +50,29 @@ int is_host(HOSTS *hosts, int n, unsigned char *ip)
 
 void reload(GLOBAL *g, struct traffic_module *traffic)
 {
-	QUERY_HANDLE *res;
+	QueryHandle *res;
 	int i, k, j=0;
 	HOSTS *hosts = NULL;
 	FILE *fh;
 	
 	// first get hosts data
-	if( (res = g->db_query("SELECT id, ipaddr FROM nodes"))!=NULL) { 
+	res = g->db_query(g->conn, "SELECT id, ipaddr FROM nodes");
 
-		for(i=0; i<res->nrows; i++) {
-		
+	if( g->db_nrows(res) )
+	{
+		for(i=0; i<g->db_nrows(res); i++)
+		{
 			hosts = (HOSTS *) realloc(hosts, sizeof(HOSTS) * (j + 1));
 			hosts[i].ipaddr = strdup(inet_ntoa(inet_addr(g->db_get_data(res,i,"ipaddr"))));
 			hosts[i].id = atoi(g->db_get_data(res,i,"id"));
 			j++;
 		}	
-		g->db_free(res);
 		
 		// open log file for reading
 		fh = fopen(traffic->file,"r");
-		if(fh) {
-			unsigned char *buffer, *host, *download, *upload, *insert;
+		if(fh)
+		{
+			unsigned char *buffer, *host, *download, *upload;
 			
 			buffer = (char *) malloc(100+1);
 			host = (char *) malloc(100+1);
@@ -77,21 +80,16 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 			upload = (char *) malloc(100+1);
 			
 			// read file line by line
-			while( fgets(buffer, 100, fh)!=NULL ) {
-
+			while( fgets(buffer, 100, fh)!=NULL )
+			{
 				if ( sscanf(buffer, "%[^\t ] %[^\t ] %s", host, download, upload) !=3 )
 					continue; //if invalid data format
 					 
-				if( (k = is_host(hosts, j, host)) ) { // host exists ?
-					
-					if( atoi(download) || atoi(upload) ) { // write not null data
-					
-						insert = strdup("INSERT INTO stats (nodeid, dt, download, upload) VALUES (%nodeid, %NOW%, %download, %upload)"); 
-						g->str_replace(&insert, "%nodeid", itoa(k));
-						g->str_replace(&insert, "%download", download);
-						g->str_replace(&insert, "%upload", upload);
-						g->db_exec(insert);
-						free(insert);
+				if( (k = is_host(hosts, j, host)) ) // host exists ?
+				{
+					if( atoi(download) || atoi(upload) ) // write not null data
+					{
+						g->db_pexec(g->conn, "INSERT INTO stats (nodeid, dt, download, upload) VALUES (?, %NOW%, ?, ?)", itoa(k), download, upload);
 					}
 				}
 			}
@@ -111,6 +109,7 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 	else 
 		syslog(LOG_ERR, "[%s/traffic] Unable to read table 'nodes'", traffic->base.instance);
 
+	g->db_free(&res);
 	free(hosts);
 	free(traffic->file);
 }
@@ -118,27 +117,18 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 struct traffic_module * init(GLOBAL *g, MODULE *m)
 {
 	struct traffic_module *traffic;
-	unsigned char *instance, *s;
-	dictionary *ini;
 	
-	if(g->api_version != APIVERSION) 
-	    return (NULL);
-	
-	instance = m->instance;
+	if(g->api_version != APIVERSION)
+	{
+		return (NULL);
+	}
 	
 	traffic = (struct traffic_module *) realloc(m, sizeof(struct traffic_module));
 	
 	traffic->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
-	traffic->base.instance = strdup(instance);
 
-	ini = g->iniparser_load(g->inifile);
-
-	s = g->str_concat(instance, ":file");
-	traffic->file = strdup(g->iniparser_getstring(ini, s, "/var/log/traffic.log"));
+	traffic->file = strdup(g->config_getstring(traffic->base.ini, traffic->base.instance, "file", "/var/log/traffic.log"));
 	
-	g->iniparser_freedict(ini);
-	free(s);
-	free(instance);
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/traffic] initialized", traffic->base.instance);
 #endif	
