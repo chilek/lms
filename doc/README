@@ -1,4 +1,3 @@
-
 LMS - LAN Management System 1.2
 
    [logo-small.png]
@@ -2083,8 +2082,9 @@ info = "Opcjonalny opis modu³u"
 
    W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne
    zmienne, które podczas zapisu do pliku zostan± zast±pione '%i' -
-   adresem ip, '%m' - mac adresem, '%n' - nazw± komputera. Poni¿ej opcje
-   udostêpniane przez ten modu³
+   adresem ip, '%m' - mac adresem, '%n' - nazw± komputera, '%domain' -
+   domen±, '%net' - nazw± sieci. Poni¿ej opcje udostêpniane przez ten
+   modu³
      * file
        Lokalizacja pliku tymczasowego. Domy¶lnie: /tmp/hostfile
        Przyk³ad: file = /etc/rc.d/rc.firewall
@@ -2111,9 +2111,9 @@ info = "Opcjonalny opis modu³u"
        Przyk³ad: deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source
        %m -j REJECT\n"
      * networks
-       Lista sieci, które maj± byæ brane pod uwagê. Domy¶lnie:
-       "192.168.0.0/16 10.0.0.0/8"
-       Przyk³ad: networks = "192.168.0.0/24 192.168.1.0/24"
+       Lista nazw sieci, które maj± byæ brane pod uwagê. Domy¶lnie: pusta
+       (wszystkie sieci).
+       Przyk³ad: networks = "lan1 lan2"
      * skip_dev_ips
        Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy
        urz±dzeñ sieciowych. Domy¶lnie: tak

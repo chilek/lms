@@ -1,3 +1,7 @@
+* 01.03.2004
+  - wraz z wersj± 1.2.0rc1 historia zmian bêdzie kontynuowana w
+    g³ównym ChangeLog'u
+
 * 10.02.2004
   - zmiany w reloadzie: z tabeli timestamps odczytywany jest czas
     i porównywany z czasem zapisanym przy ostatnim prze³adowaniu,
