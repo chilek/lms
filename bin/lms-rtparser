@@ -37,6 +37,8 @@ use Sys::Hostname;
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
+sub basename($) { my @tmp = split '/',$_[0]; return pop @tmp }
+
 my $hostname = hostname || 'example.com';
 
 my $save_path = 'some_dir';
@@ -139,9 +141,8 @@ if($entity->mime_type =~ m|multipart/|i) # if we deal with multipart message...
 		}
 		else
 		{
-			# queue attachments for later copy
-			$body = $entity->parts($partnum);
-			push @attachments, $body->bodyhandle->path;
+			# pchnijmy index encji do tablicy z za³±cznikami
+			push @attachments, $partnum;
 		}
 	}
 }
@@ -319,12 +320,16 @@ else
 }
 if(scalar @attachments)
 {
-	# TODO : saveing attachments info into database, _CONTENTTYPE_ !!!
 	mkdir($save_path.'/'.sprintf('%06d',$ticket_id));
 	mkdir($save_path.'/'.sprintf('%06d',$ticket_id).'/'.sprintf('%06d',$rt_msgid));
-	foreach my $attachment (@attachments)
+	foreach my $partnum (@attachments)
 	{
-		copy($attachment, $save_path.'/'.sprintf('%06d',$ticket_id).'/'.sprintf('%06d',$rt_msgid));
+		$body = $entity->parts($partnum);					
+		my $filename = $body->bodyhandle->path;
+		my $content_type = $body->mime_type;
+		copy($filename, $save_path.'/'.sprintf('%06d',$ticket_id).'/'.sprintf('%06d',$rt_msgid));
+		$dbq = $dbase->prepare("INSERT INTO rtattachments (messageid, filename, contenttype) VALUES ($rt_msgid, '".basename($filename)."', '$content_type')");
+		$dbq->execute();
 	}
 }
 $parser->filer->purge;			# cleanup
