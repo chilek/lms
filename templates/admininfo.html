@@ -6,7 +6,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fall">
-			<B>
+			<IMG SRC="img/admins.gif" ALT="" ALIGN="ABSMIDDLE"> <B>
 				{if $unlockedit}<INPUT TYPE="TEXT" NAME="admininfo[name]" VALUE="{$admininfo.name|capitalize}" SIZE="30"{if $error.name} CLASS="alertb"{else} CLASS="bold"{/if}>
 				{else}{$admininfo.name|capitalize}{/if} ({$admininfo.id|string_format:"%04d"})
 				{if $error.name}<FONT COLOR="red">{$error.name}</FONT>{/if}
@@ -17,10 +17,8 @@
 		<TD CLASS="fall">
 			<TABLE WIDTH="100%" CELLPADDING="1">
 				<TR>
-					<TD WIDTH="1%">
-						<B>
-							Login:
-						</B>
+					<TD WIDTH="1%" NOWRAP>
+						<IMG SRC="img/pass.gif" ALT="" ALIGN="ABSMIDDLE"> <B>Login:</B>
 					</TD>
 					<TD>
 						{if $unlockedit}
@@ -31,10 +29,8 @@
 					</TD>
 				</TR>
 				<TR>
-					<TD WIDTH="1%">
-						<B>
-							<NOBR>E-mail:</NOBR>
-						</B>
+					<TD WIDTH="1%" NOWRAP>
+						<IMG SRC="img/mail.gif" ALT="" ALIGN="ABSMIDDLE"> <B>E-mail:</B>
 					</TD>
 					<TD>
 						{if $unlockedit}<INPUT TYPE="TEXT" NAME="admininfo[email]" VALUE="{$admininfo.email}" CLASS="RED">{else}
