@@ -43,6 +43,9 @@ wersja 1.3.3 (??/??/2004):
   - wydruki list u¿ytkowników mo¿na filtrowaæ wg grupy (alec)
   - do listy u¿ytkowników dodany filtr 'usuniêci' (alec)
   - mo¿liwo¶æ przegl±dania u¿ytkowników 'od³±czonych' (chilek)
+  - w wersji demona dla SQLite dodane funkcje UPPER() i LOWER()
+    uwzglêdniaj±ce systemowe locales, dla prawid³owego kapitalizowania
+    polskich znaków diakrytycznych (alec)
 
 wersja 1.3.2 Kinsey (03/04/2004):
   
@@ -802,7 +805,7 @@ wersja 1.1.0 (23/06/2003):
     wymagany upgrade:
     MySQL: ALTER TABLE `networks` ADD `dns2` VARCHAR( 16 ) AFTER `dns`
     PostgreSQL: ALTER TABLE networks ADD dns2 VARCHAR(16);
-- je¿eli w tym samym katalogu co index.php znajduje siê plik, LMS wykorzysta
+  - je¿eli w tym samym katalogu co index.php znajduje siê plik, LMS wykorzysta
     go zamiast /etc/lms/lms.ini
   - mo¿na ustawiæ domy¶lne warto¶ci dla adresu, miasta i kodu pocztowego
     nowego u¿ytkownika;

@@ -10,6 +10,7 @@
 #include <stdarg.h>
 #include <unistd.h>
 #include <math.h>
+#include <locale.h>
 #include "db.h"
 #include "util.h"
 
@@ -50,6 +51,30 @@ static void floor_f(sqlite_func *context, int argc, const char **argv)
     double z = strtod(argv[0], (char **)NULL);
     sprintf(s,"%.0f", z);
     sqlite_set_result_string(context, s, -1);
+}
+
+static void upper_f(sqlite_func *context, int argc, const char **argv) 
+{
+    unsigned char *z;
+    int i;
+    if( argc<1 || argv[0]==0 ) return;
+    z = sqlite_set_result_string(context, argv[0], -1);
+    if( z==0 ) return;
+    setlocale(LC_ALL, "");
+    for(i=0; z[i]; i++)
+        z[i] = toupper(z[i]);
+}
+
+static void lower_f(sqlite_func *context, int argc, const char **argv)
+{
+    unsigned char *z;
+    int i;
+    if( argc<1 || argv[0]==0 ) return;
+    z = sqlite_set_result_string(context, argv[0], -1);
+    if( z==0 ) return;
+    setlocale(LC_ALL, "");
+    for(i=0; z[i]; i++)
+        z[i] = tolower(z[i]);
 }
 #endif
 
@@ -100,8 +125,8 @@ int db_connect(const unsigned char *db, const unsigned char *user, const unsigne
     sqlite_create_function(conn, "inet_ntoa", 1, inet_ntoa_f, NULL);
     sqlite_create_function(conn, "inet_aton", 1, inet_aton_f, NULL);
     sqlite_create_function(conn, "floor", 1, floor_f, NULL);
-//    sqlite_create_function(conn, "upper", 1, upper_f, NULL);
-//    sqlite_create_function(conn, "lower", 1, lower_f, NULL);
+    sqlite_create_function(conn, "upper", 1, upper_f, NULL);
+    sqlite_create_function(conn, "lower", 1, lower_f, NULL);
 #endif
 #ifdef DEBUG0
 	syslog(LOG_INFO, "DEBUG: [lmsd] Connected with params: db='%s' host='%s' user='%s' port='%d' passwd='*'",db, host, user, port);
