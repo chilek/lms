@@ -148,6 +148,7 @@ CREATE TABLE `users` (
   `moddate` int(11) NOT NULL default '0',
   `creatorid` int(11) NOT NULL default '0',
   `modid` int(11) NOT NULL default '0',
+  `payday` int(11) NOT NULL default '1',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `id_2` (`id`),
   KEY `id` (`id`)
