@@ -613,38 +613,18 @@ class LMS {
 
 		$db=$this->db;
 
-		if(
-			$_SESSION[timestamps][getuserlist][users] != $this->GetTS("users")
-			||
-			$_SESSION[timestamps][getuserlist][nodes] != $this->GetTS("nodes")
-		  )
-		{
+		if(!isset($state)) $state="3";
+		if(!isset($order)) $order="username,asc";
 			
-			if(!isset($state)) $state="3";
-			if(!isset($order)) $order="username,asc";
+		$userlist = $db->FetchArray("SELECT id, lastname, name, status, email, phone1, address, info FROM users");
 			
-			$userlist = $db->FetchArray("SELECT id, lastname, name, status, email, phone1, address, info, creationdate, moddate, creatorid, modid FROM users");
-			
-			$userlist[crdate] = $userlist[creationdate];
-			$userlist[crid] = $userlist[creatorid];
-			
-			if(sizeof($userlist[id]))
-				foreach($userlist[id] as $i => $v)
-					$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
+		if(sizeof($userlist[id]))
+		foreach($userlist[id] as $i => $v)
+			$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
 
-			$_SESSION[cache][getuserlist] = $userlist;
-			$_SESSION[timestamps][getuserlist][users] = $this->GetTS("users");
-			$_SESSION[timestamps][getuserlist][nodes] = $this->GetTS("nodes");
-			$_SESSION[timestamps][getuserlist][cash] = $this->GetTS("cash");
-			
-		}else{
-			$userlist = $_SESSION[cache][getuserlist];
-
-		}
-		
 		foreach($userlist[id] as $i => $v)
 		{
-			$userlist[balance][$i] = $this->GetUserBalance($userlist[id][$i]);
+			$userlist[balance][$i] = $this->GetUserBalance($v);
 			if($userlist[balance][$i] > 0)
 				$userlist[over] = $userlist[over] + $userlist[balance][$i];
 			if($userlist[balance][$i] < 0)
@@ -653,29 +633,33 @@ class LMS {
 		
 		list($order,$direction)=explode(",",$order);
 		
-		if($direction != "desc") $direction = 4;
-		else $direction = 3;
+		if($direction != "desc")
+			$direction = SORT_ASC;
+		else
+			$direction = SORT_DESC;
 		
-		if(sizeof($userlist[id])) switch($order){
-			case "username":
-				array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
-			break;
-			case "id":
-				array_multisort($userlist[id],$direction,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
-			break;
-			case "email":
-				array_multisort($userlist[email],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
-			break;
-			case "address":
-				array_multisort($userlist[address],$direction,$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
-			break;
-			case "balance":
-				array_multisort($userlist[balance],$direction,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
-			break;
-			case "phone":
-				array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
-			break;
-		}
+		if(sizeof($userlist[id]))
+			switch($order){
+				case "username":
+					array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
+				break;
+				case "id":
+					array_multisort($userlist[id],$direction,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
+				break;
+				case "email":
+					array_multisort($userlist[email],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance]);
+				break;
+				case "address":
+					array_multisort($userlist[address],$direction,$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[balance]);
+				break;
+				case "balance":
+					array_multisort($userlist[balance],$direction,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info]);
+				break;
+				case "phone":
+					array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance]);
+				break;
+			}
+
 		foreach($userlist[id] as $i => $v)
 			if($userlist[status][$i] == 3)
 				$userlist[nodeac][$i] = $this->GetUserNodesAC($userlist[id][$i]);
@@ -685,7 +669,8 @@ class LMS {
 		$userlist[order]=$order;
 		$userlist[direction]=$direction;
 		$userlist[total]=sizeof($userlist[id]);
-		
+//		echo "<pre>";	
+//		print_r($userlist);
 		return $userlist;
 	}
 			
