@@ -311,11 +311,11 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	ini = g->iniparser_load(g->inifile);
 
 	s = g->str_concat(instance, ":comment");
-	p->comment = strdup(g->iniparser_getstring(ini, s, "Abonament wg taryfy: %tariff za okres: %period"));
+	p->comment = strdup(g->iniparser_getstring(ini, s, "Subscription according to tariff: %tariff for period: %period"));
 	free(s); s = g->str_concat(instance, ":deadline");
 	p->deadline = strdup(g->iniparser_getstring(ini, s, "14"));
 	free(s); s = g->str_concat(instance, ":paytype");
-	p->paytype = strdup(g->iniparser_getstring(ini, s, "PRZELEW"));
+	p->paytype = strdup(g->iniparser_getstring(ini, s, "TRANSFER"));
 	free(s); s = g->str_concat(instance, ":up_payments");
 	p->up_payments = g->iniparser_getboolean(ini, s, 1);
 	
