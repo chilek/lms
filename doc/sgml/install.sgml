@@ -81,7 +81,7 @@
 	<title>Instalacja LMS</title>
 	  	<para>Po pobraniu ze strony <ulink url="http://www.lms.rulez.pl">www.lms.rulez.pl</ulink>
 		 rozpakowujemy archiwum:
-		 <screen>	 $ tar zxvf lms-x.x.x.tar.gz</screen>
+		 <screen>$ tar zxvf lms-x.x.x.tar.gz</screen>
 		 a nastêpnie przenosimy pliki z lms-ui do katalogu osi±galnego 
 		 z poziomu serwera www (np. <filename>/var/www/lms</filename>).</para> 
 		 <para>Pliki z konfiguracj± (<filename>sample/lms.ini</filename> i <filename>
@@ -107,13 +107,13 @@
 			<para>Po rozpakowaniu, wchodzimy do katalogu z naszym MySQL i wydajemy
 			polecenia:
 			<screen>
-    	$ ./configure --prefix=/usr/local/mysql
-	$ make
-	$ make install
-	$ /usr/local/mysql/bin/mysql_install_db
-	$ chown mysql -R /usr/local/mysql/var
-	$ /usr/local/mysql/bin/safe_mysqld &
-	$ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</screen>
+$ ./configure --prefix=/usr/local/mysql
+$ make
+$ make install
+$ /usr/local/mysql/bin/mysql_install_db
+$ chown mysql -R /usr/local/mysql/var
+$ /usr/local/mysql/bin/safe_mysqld &
+$ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</screen>
 		</para>
 		</sect3>
 		<sect3>
@@ -123,14 +123,14 @@
 			s± w pliku ChangeLog. Tak wiêc, wejd¼ do katalogu w którym masz LMS'a
 			i uruchom shell mysql'a:
 			<screen>
-	mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
-    	Enter password:[podaj has³o]
-	mysql> create database lms;
-	mysql> grant usage on lms.* to lms@localhost;
-	mysql> grant select,insert,update,delete,create on lms.* to lms@localhost identified by 'haslo';
-	mysql> flush privileges;
-	mysql> use lms;
-	mysql> source doc/lms.mysql;</screen>
+mysql -u[tutaj wpisz u¿ytkownika z pe³nym dostêpem do bazy] -p
+Enter password:[podaj has³o]
+mysql> create database lms;
+mysql> grant usage on lms.* to lms@localhost;
+mysql> grant select,insert,update,delete,create on lms.* to lms@localhost identified by 'haslo';
+mysql> flush privileges;
+mysql> use lms;
+mysql> source doc/lms.mysql;</screen>
 		</para>
 		</sect3>
 		<sect3>
@@ -138,8 +138,8 @@
 			<para>Poniewa¿  MySQL  jest  domy¶ln± baz± dla LMS'u, konfiguracja ogranicza
 			siê  do  podania  w  sekcji  [database] pliku /etc/lms/lms.ini has³a i u¿ytkownika:
 			<screen>
-	user     = lms
-	password = has³o_z_pkt.3</screen>
+user     = lms
+password = has³o_z_pkt.3</screen>
 		    </para>
 			<para>Po  takim  zabiegu,  o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
 			danych,  mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
@@ -151,7 +151,7 @@
 			<para>Zatrzymajmy  siê  tutaj  i  dodajmy  co¶  do  crona,  tak dla ¶wiêtego
 			spokoju[tm](C):
 			<screen>
-	12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o \
+12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o \
 		    --add-drop-table --add-locks lms > backups/lms-auto-"$(date +%s)".sql</screen>
 			</para>
 			<para>Spowoduje to wykonywanie 12 po 4 rano, ka¿dego 3, 10, 17, 21 i 28 dnia
@@ -175,16 +175,16 @@
 			w dokumentacji postgresa. Po ¶ci±gniêciu i rozpakowaniu wchodzimy
 			do katalogu g³ównego i wydajemy kolejno poni¿sze polecenia.
 			<screen>
-	$ ./configure --enable-locale
-  	$ gmake
-    	$ su
-    	$ gmake install
-    	$ adduser postgres
-    	$ mkdir /usr/local/pgsql/data
-    	$ chown postgres /usr/local/pgsql/data
-    	$ su - postgres
-    	$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
-    	$ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &</screen>
+$ ./configure --enable-locale
+$ gmake
+$ su
+$ gmake install
+$ adduser postgres
+$ mkdir /usr/local/pgsql/data
+$ chown postgres /usr/local/pgsql/data
+$ su - postgres
+$ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
+$ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &</screen>
 			</para>
 		</sect3>
 		<sect3>
@@ -192,9 +192,9 @@
 			<para>Maj±c uruchomiony serwer mo¿esz przyst±piæ do tworzenia bazy o nazwie 'lms',
 			której w³a¶cicielem bêdzie u¿ytkownik z loginem 'lms'. 
 			<screen>
-    	$ /usr/local/pgsql/bin/createuser -d -A -P lms
-    	$ /usr/local/pgsql/bin/createdb -E LATIN2 -U lms lms
-    	$ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</screen>
+$ /usr/local/pgsql/bin/createuser -d -A -P lms
+$ /usr/local/pgsql/bin/createdb -E LATIN2 -U lms lms
+$ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</screen>
 		</para>
 		</sect3>
 		<sect3>
@@ -202,9 +202,9 @@
 			<para>Dla systemu LMS domy¶lnym serwerem baz danych jest MySQL, dlatego w sekcji
 			[database] pliku /etc/lms/lms.ini nale¿y ustawiæ nastêpuj±ce opcje:
    			<screen>
-	type     = postgres
-    	user     = lms
-    	password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
+type     = postgres
+user     = lms
+password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 		    </para>
 			<para>Uwaga: Has³o jest wymagane w zale¿no¶ci od konfiguracji autentykacji
        			u¿ytkowników postgresa w /usr/local/pgsql/data/pg_hba.conf. 

@@ -11,15 +11,15 @@
         <para>Przyk³adowo, wpis w crontabie dla skryptu lms-payments (wykonywanego
 	codziennie o godzinie 00:01) powinien wygl±daæ nastêpuj±co:</para>
         <screen>
-	1 0 * * *       /usr/sbin/lms-payments 1 &gt; /dev/null</screen>
+1 0 * * *       /usr/sbin/lms-payments 1 &gt; /dev/null</screen>
         <para>Po wiêcej informacji mo¿esz siêgn±æ do <command>man crontab</command></para>
 	<para>Wiêkszo¶æ lms'owych skryptów posiada dodatkowe opcje 
 	uruchomieniowe:</para>
 	<screen>
-	    -C=/plik    po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/lms.ini
-            -q          wykonanie skryptu bez wy¶wietlania komunikatów               
-            -h          pomoc (a w zasadzie to tylko listingu opcji)
-            -v          informacja o wersji skryptu</screen>
+-C=/plik    po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/lms.ini
+-q          wykonanie skryptu bez wy¶wietlania komunikatów               
+-h          pomoc (a w zasadzie to tylko listingu opcji)
+-v          informacja o wersji skryptu</screen>
        </sect1>
        <sect1 id="scripts-list">
        <title>Lista dostêpnych skryptów</title>
@@ -244,9 +244,9 @@ http://www.naszasiec.pl/</screen></example>
 	    <para>Przed uruchomieniem lms-traffic u¿ytkownik powinien zadbaæ o utworzenie
 	    pliku z danymi. Zawarto¶æ pliku powinna mieæ nastêpuj±cy format:</para>
 	    <screen>
-	    	&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
-		&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
-		...</screen>
+&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
+&lt;adres IP&gt; &lt;n_spacji&gt; &lt;upload&gt; &lt;n_spacji&gt; &lt;download&gt;
+...</screen>
 	    <para>Skrypt tworz±cy statystyki nale¿y uruchamiaæ z tak± sam± czêstotliwo¶ci± 
 	    co lms-traffic. Przyk³ad takiego skryptu dla iptables znajduje siê w pliku /sample/traffic_ipt.sh.
 	    </para>
@@ -254,7 +254,7 @@ http://www.naszasiec.pl/</screen></example>
 	    Oprócz standardowych opcji wiersza poleceñ mo¿liwe jest
 	    zdefiniowanie lokalizacji pliku z logiem</para>
 	    <screen>
-	    -f=/plik 	po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traffic.log</screen>
+-f=/plik 	po³o¿enie i nazwa pliku ze statystykami domy¶lnie /var/log/traffic.log</screen>
 	    <para>
 	    Czêstotliwo¶æ zapisywania danych do bazy ustala u¿ytkownik. Ustawienie
 	    jej poni¿ej 10 minut, mo¿e spowodowaæ szybki przyrost ilo¶ci rekordów w 
