@@ -30,7 +30,7 @@ if(!$LMS->AdminExists($_GET['id']))
 	die;
 }
 
-$layout['pagetitle'] = trans('Info about User: $0', $LMS->GetAdminName($_GET['id']));
+$layout['pagetitle'] = trans('User Info: $0', $LMS->GetAdminName($_GET['id']));
 $admininfo = $LMS->GetAdminInfo($_GET['id']);
 
 $rights = $LMS->GetAdminRights($_GET['id']);

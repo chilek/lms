@@ -87,7 +87,7 @@ if($cfg = $_POST['config'])
 	$config = $cfg;
 }
 
-$layout['pagetitle'] = trans('Edit Option: $0',$option);
+$layout['pagetitle'] = trans('Option Edit: $0',$option);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

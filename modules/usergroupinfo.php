@@ -37,7 +37,7 @@ $usergroup = $LMS->UsergroupGet($_GET['id']);
 $users = $LMS->GetUserWithoutGroupNames($_GET['id']);
 $userscount = sizeof($users);
 
-$layout['pagetitle'] = trans('Group Information: $0',$usergroup['name']);
+$layout['pagetitle'] = trans('Group Info: $0',$usergroup['name']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

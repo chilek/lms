@@ -40,7 +40,7 @@ if ($_GET['delmsgid'] && $LMS->FirstMessage($_GET['id']) != $_GET['delmsgid'])
 	$LMS->MessageDel($_GET['delmsgid']);
 
 $ticket = $LMS->GetTicketContents($_GET['id']);
-$layout['pagetitle'] = trans('Ticket Review No $0',sprintf("%06d",$ticket['ticketid']));
+$layout['pagetitle'] = trans('Ticket Review: No. $0',sprintf("%06d",$ticket['ticketid']));
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
