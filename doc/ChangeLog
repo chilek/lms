@@ -17,6 +17,8 @@ wersja 1.4.2 (??/??/????):
   - BTS#0000262,263: lms-squid-warnings obs³uguje bazy postgres i sqlite (alec)
   - lms-rtparser: przy nieustawionej opcji 'mail_from' poprawnie odczytywany
     jest adres kolejki do pola 'From:' potwierdzenia (alec)
+  - BTS#0000257: w sumie miesiêcznych zobowi±zañ u¿ytkownika nie uwzglêdniamy
+    zobowi±zañ zawieszonych (alec)
 
 wersja 1.4.1 Teyla (15/11/2004):
 
