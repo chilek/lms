@@ -32,6 +32,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 {
 	var $_loaded = TRUE;
 	var $_dbtype = 'mysql';
+	var $iconv = NULL;
 
 	function LMSDB_driver_mysql($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
@@ -79,6 +80,9 @@ class LMSDB_driver_mysql extends LMSDB_common
 	function _driver_execute($query)
 	{
 		$this->_query = $query;
+		
+		if($this->iconv)
+			$query = iconv('UTF-8', $this->iconv, $query);
 
 		if($this->_result = mysql_query($query,$this->_dblink))
 			$this->_error = FALSE;
@@ -90,7 +94,19 @@ class LMSDB_driver_mysql extends LMSDB_common
 	function _driver_fetchrow_assoc()
 	{
 		if(! $this->_error)
-			return mysql_fetch_array($this->_result,MYSQL_ASSOC);
+		{
+			$result =  mysql_fetch_array($this->_result,MYSQL_ASSOC);
+			
+			if(!$this->iconv)
+				return $result;
+			else
+			{
+				if($result)
+					foreach($result as $idx => $val)
+						$result[$idx] = iconv($this->iconv, 'UTF-8', $val);
+				return $result;
+			}
+		}
 		else
 			return FALSE;
 	}
@@ -98,7 +114,19 @@ class LMSDB_driver_mysql extends LMSDB_common
 	function _driver_fetchrow_num()
 	{
 		if(! $this->_error)
-			return mysql_fetch_array($this->_result,MYSQL_NUM);
+		{
+			$result = mysql_fetch_array($this->_result,MYSQL_NUM);
+			
+			if(!$this->iconv)
+				return $result;
+			else
+			{
+				if($result)
+					foreach($result as $idx => $val)
+						$result[$idx] = iconv($this->iconv, 'UTF-8', $val);
+				return $result;
+			}
+		}
 		else
 			return FALSE;
 	}

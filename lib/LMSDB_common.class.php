@@ -127,7 +127,7 @@ Class LMSDB_common
 
 		while($row = $this->_driver_fetchrow_num())
 			$result[] = $row[0];
-		
+
 		return $result;
 	}
 
