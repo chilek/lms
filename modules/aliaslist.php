@@ -135,12 +135,10 @@ if($aliasadd = $_POST['aliasadd'])
 				    array($aliasadd['login'], $aliasadd['accountid']));
 		$LMS->SetTS('aliases');
 	}
-	else
-	{
-		$SMARTY->assign('error', $error);
-		$SMARTY->assign('aliasadd', $aliasadd);
-	}
 }	
+
+if($accountid = $_GET['accountid'])
+	$aliasadd['accountid'] = $accountid;
 
 if(!isset($_GET['o']))
 	$o = $_SESSION['allo'];
@@ -197,6 +195,8 @@ $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('aliaslist', $aliaslist);
+$SMARTY->assign('aliasadd', $aliasadd);
+$SMARTY->assign('error', $error);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('domainlist', $LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
