@@ -11,6 +11,8 @@ wersja 1.4.3 (??/??/????):
   - poprawiony tytu³ strony z informacjami o grupie (alec)
   - BTS#0000275: poprawiony b³±d w zapytaniu sql podczas wyszukiwania zg³oszeñ
     wg nazwiska zg³aszaj±cego (rejmer)
+  - BTS#0000278: uprawnienie 'manipulacja danymi komputerów' nie zezwala na
+    od³±czanie/w³±czanie, które jest objête osobnym uprawnieniem (rejmer)
 
 wersja 1.4.2 Lya (14/12/2004):
 

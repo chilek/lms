@@ -46,7 +46,7 @@ $access['table'][5]['name']		= 'manipulacja kontami u¿ytkowników';
 $access['table'][5]['allow_reg']	= '^(user(add|edit|del|assignments|warn)|nodewarn|usergroup(add|edit|delete|move))$';
 
 $access['table'][6]['name'] 		= 'manipulacja danymi komputerów';
-$access['table'][6]['allow_reg']  	= '^(node(add|scan|del|edit|set|warn)|choose(mac|ip))$';
+$access['table'][6]['allow_reg']  	= '^(node(add|scan|del|edit|warn)|choose(mac|ip))$';
 
 $access['table'][7]['name']    	     	= 'dostêp do statystyk';
 $access['table'][7]['allow_reg']	= '^traffic$';
