@@ -1,0 +1,62 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="50%" VALIGN="TOP">
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="50%" ALIGN="RIGHT">
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
+			{t 0=$layout.logname}Created by: $0{/t}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD WIDTH="97%" CLASS="HEAD" ALIGN="CENTER">
+			{t}Period{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Covenants{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Payments{/t}
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			{t}Difference{/t}
+		</TD>
+	</TR>
+	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{foreach from=$monthlist item=month}
+	<TR BGCOLOR="{cycle}">
+		<TD ALIGN="LEFT">
+			{$monthnames.$month}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$list.$month.covenant|money_format}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$list.$month.payment|money_format}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$list.$month.diff|money_format}
+		</TD>
+	</TR>
+	{math equation="x+y" x=$totalcovenant|default:"0" y=$list.$month.covenant|default:"0" assign=totalcovenant}
+	{/foreach}
+	<TR>
+		<TD ALIGN="RIGHT">
+			<B>{t}Total:{/t}</B>
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			<B>{$totalcovenant|money_format}</B>
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			<B>{$totalpayment|money_format}</B>
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			<B>{$totaldiff|money_format}</B>
+		</TD>
+	</TR>
+</TABLE>
