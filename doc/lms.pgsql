@@ -163,3 +163,21 @@ CREATE TABLE assignments (
 	at integer default 0 NOT NULL,
 	PRIMARY KEY (id)
 );
+
+/* ---------------------------------------------------
+   Struktura tabeli netdevices
+----------------------------------------------------*/
+DROP SEQUENCE "netdevices_id_seq";
+CREATE SEQUENCE "netdevices_id_seq";
+DROP TABLE netdevices;
+CREATE TABLE netdevices (
+	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
+	name varchar(32) default NULL,
+	description varchar(255) default NULL,
+	producer varchar(64) default NULL,
+	model varchar(32) default NULL,
+	serialnumber varchar(32) default NULL,
+	ports integer default NULL,
+	PRIMARY KEY (id),
+) ;
+
