@@ -1,6 +1,6 @@
 /*
 *************************************************************
-******* Upgrade bazy danych LMS z wersji 1.0 do 1.1 *********
+******* Upgrade bazy danych LMS z wersji 1.0 do 1.3 *********
 *************************************************************
 Zaleca siê wcze¶niejszy backup bazy:
 	$ pg_dump lms > db.out
