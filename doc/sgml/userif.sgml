@@ -181,7 +181,8 @@
 	    wystawiaæ faktury.</para></note></para>
 	    </listitem>
 	    <listitem>
-	    <para>Lista faktur - lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych.</para>
+	    <para>Lista faktur - lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych faktur
+	    oraz rejestru sprzeda¿y za dany okres.</para>
 	    </listitem>
 	    <listitem>
 	    <para>Nowa faktura - Rêczne wystawianie faktur dla wybranego u¿ytkownika.</para>

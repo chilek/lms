@@ -673,9 +673,8 @@ info = "Opcjonalny opis modu³u"
 		<title>Oident</title>
 		    <sect3 id="oident-desc">
 		    <title>Opis</title>
-		    <para>Modu³ do konfiguracji oidend. W zasadzie mo¿na to zrobiæ modu³em
-		    'hostfile', ale w 'oident' masz mo¿liwo¶æ okre¶lenia dla których sieci
-		    ma byæ tworzony konfig.</para>
+		    <para>Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
+		    'hostfile', ale tutaj masz ju¿ gotowe ustawienia domy¶lne.</para>
 		    </sect3>
 		    <sect3 id="oident-config">
 		    <title>Konfiguracja</title>
@@ -703,8 +702,8 @@ info = "Opcjonalny opis modu³u"
 			</listitem>
 			<listitem>
 			    <para>networks</para>
-			    <para>Lista sieci do uwzglêdnienia. Domy¶lnie: "192.168.0.0/16 10.0.0.0/8".</para>
-			    <para>Przyk³ad: <prompt>networks = 192.168.1.0/24</prompt></para>
+			    <para>Lista nazw sieci do uwzglêdnienia. Domy¶lnie: pusta (wszystkie sieci).</para>
+			    <para>Przyk³ad: <prompt>networks = 'lan1 lan2'</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>command</para>
