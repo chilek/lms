@@ -199,7 +199,7 @@ struct notify_module * init(GLOBAL *g, MODULE *m)
 	
 	ini = g->iniparser_load(g->inifile);
 
-	s = g->str_concat(instance, ":mailtemplate");
+	s = g->str_concat(instance, ":template");
 	n->mailtemplate = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":file");
 	n->file = strdup(g->iniparser_getstring(ini, s, "/tmp/mail"));
