@@ -75,7 +75,7 @@ elseif(isset($userdata))
 	if($userdata['gguin']!=0 && !eregi('^[0-9]{4,}$',$userdata['gguin']))
 		$error['gguin'] = 'Podany numer GG jest niepoprawny!';
 
-	if(!eregi('[0-9]{4,}$',$userdata['pin']))
+	if($userdata['pin']!=0 && !eregi('^[0-9]{4,6}$',$userdata['pin']))
 		$error['pin'] = 'Podany numer PIN jest niepoprawny!';
 
 	if($userdata['status']!=3&&$LMS->GetUserNodesNo($userdata['id'])) 

@@ -103,7 +103,7 @@
 						<B>PIN</B>
 					</TD>
 					<TD width="99%">
-						<INPUT TYPE="text" size="6" value="{$useradd.pin}" name="useradd[pin]" {tip text="Wpisz przynajmniej 4 cyfrowy numer PIN" trigger="pin"}>
+						<INPUT TYPE="text" size="6" value="{if $useradd.pin}{$useradd.pin}{/if}" name="useradd[pin]" {tip text="Wpisz min.4 i max.6 cyfrowy numer PIN (opcjonalnie)" trigger="pin"}>
 					</td>
 				</TR>
 			</TABLE>

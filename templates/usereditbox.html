@@ -123,7 +123,7 @@
 			<B>PIN:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="userdata[pin]" VALUE="{$userinfo.pin}" SIZE="6" {tip text="Wpisz przynajmniej 4 cyfrowy numer PIN" trigger="pin"}>
+			<INPUT TYPE="TEXT" NAME="userdata[pin]" VALUE="{if $userinfo.pin}{$userinfo.pin}{/if}" SIZE="6" {tip text="Wpisz min.4 i max.6 cyfrowy numer PIN (opcjonalnie)" trigger="pin"}>
 		</TD>
 	</TR>
 	
