@@ -260,6 +260,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 							g->str_replace(&query, "%invoiceid", itoa(invoiceid));
 							g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
 							g->str_replace(&query, "%desc", description);
+#ifdef USE_MYSQL
+		}
+#endif
 						} else {
 							query = strdup("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (%invoiceid, %value, %taxvalue, '%pkwiu', 'szt.', 1, '%desc', %tariffid)");
 							g->str_replace(&query, "%invoiceid", itoa(invoiceid));
@@ -275,8 +278,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->db_exec(query);									
 						g->db_free(result);
 						free(query);
+#ifndef USE_MYSQL
 					}
-					
+#endif USE_MYSQL
 					g->str_replace(&insert, "%invoiceid", itoa(invoiceid));
 					exec = g->db_exec(insert);
 				
