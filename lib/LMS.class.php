@@ -1563,7 +1563,7 @@ class LMS
 
 	function GetLinksCategories()
 	{
-		if($return = $this->ADB->GetAll("SELECT id, weight, name, description FROM linkscategories"))
+		if($return = $this->ADB->GetAll("SELECT id, weight, name, description FROM linkscategories ORDER BY weight DESC"))
 		{
 			foreach($return as $idx => $rr)
 			{
@@ -1572,5 +1572,23 @@ class LMS
 		}
 		return $return;
 	}
+
+	function GetLinksCategory($category)
+	{
+		if($return = $this->ADB->GetRow("SELECT id, weight, name, description FROM linkscategories WHERE id=?",array($category)))
+			$return[links] = $this->ADB->GetOne("SELECT COUNT(*) FROM links WHERE id=?",array($category));
+		return $return;
+	}
+
+	function GetLinksList($category)
+	{
+		return $this->ADB->GetAll("SELECT id, url, name, description, count FROM links WHERE category=? ORDER BY name",array($category));
+	}
+
+	function LinksCategoryName($category)
+	{
+		return $this->ADB->GetOne("SELECT name FROM linkscategories WHERE id=?",array($category));
+	}
+
 }
 ?>
