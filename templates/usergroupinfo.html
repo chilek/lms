@@ -11,6 +11,7 @@
 	//-->
 																	</script>
 <H1>{$layout.pagetitle}</H1>
+<FORM NAME="usergroupinfo" METHOD="POST" ACTION="?m=usergroupinfo">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="fleftu">
@@ -49,54 +50,60 @@
 			    <A HREF="?m=usergroupedit&id={$usergroup.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $usergroup.count eq 0} <A HREF="?m=usergroupdelete&id={$usergroup.id}">Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
 		</TD>
 	</TR>
+</TABLE>
+<TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="fleftu">
-			<IMG SRC="img/user.gif" ALT="" ALIGN="ABSMIDDLE">
+			<IMG SRC="img/user.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<B>U¿ytkownicy nale¿±cy do grupy:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="frightu" COLSPAN="2">
-			<B>U¿ytkownicy nale¿±cy do tej grupy:</B>
+			<IMG SRC="img/user.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<B>U¿ytkownicy nienale¿±cy do grupy:</B>
 		</TD>
 	</TR>
-	<TR>
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="3">
-			<TABLE WIDTH="100%" CELLPADDING="2">
-				{cycle values="#DFD5BD,#EBE4D6" print=false}
-				{section name=l1 loop=$usergroup.users max=$usergroup.rows}
-				<TR>
-					{section name=l2 loop=$usergroup.users start=$smarty.section.l1.index step=$usergroup.rows}
-					<TD WIDTH="33%" bgcolor="{cycle}" {cycle print=false} onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '{cycle}')" {cycle print=false} onclick="return self.location.href='?m=userinfo&id={$usergroup.users[l2].id}'"><IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> <A HREF="?m=userinfo&id={$usergroup.users[l2].id}">({$usergroup.users[l2].id|string_format:"%04d"}) {$usergroup.users[l2].username|truncate:50:" ..."} {if $usergroup.users[l2].cnt > 1}({$usergroup.users[l2].cnt}){/if}</A></TD>
-					{/section}{cycle print=false}
-				</TR>
-				{sectionelse}
-				<TR>
-					<TD WIDTH="100%" ALIGN="CENTER">
-						<BR>
-						<BR>
-						<B>¯aden z klientów nie nale¿y do tej grupy</B><BR>
-						<BR>
-						<BR>
-					</TD>
-				</TR>
+	<TR CLASS="LIGHT">
+		{cycle values="#DFD5BD,#EBE4D6" print=false}
+		{section name=l1 loop=$usergroup.users max=$usergroup.rows}
+		{section name=l2 loop=$usergroup.users start=$smarty.section.l1.index step=$usergroup.rows}
+		<TD WIDTH="1%" CLASS="fleft" bgcolor="{cycle}" {cycle print=false} onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '{cycle}')" {cycle print=false} onclick="return self.location.href='?m=userinfo&id={$usergroup.users[l2].id}'"><IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> <A HREF="?m=userinfo&id={$usergroup.users[l2].id}">({$usergroup.users[l2].id|string_format:"%04d"}) {$usergroup.users[l2].username|truncate:50:" ..."} {if $usergroup.users[l2].cnt > 1}({$usergroup.users[l2].cnt}){/if}</A></TD>
+		{/section}{cycle print=false}
+		{sectionelse}
+		<TD WIDTH="1%" CLASS="fleft" ALIGN="CENTER">
+			<BR>
+			<BR>
+			<B>¯aden z klientów nie nale¿y do grupy</B><BR>
+			<BR>
+			<BR>
+		</TD>
+		{/section}
+		<TD WIDTH="99%" CLASS="fright" COLSPAN="2">
+			<INPUT TYPE="hidden" NAME="usergroupinfo[backid]" VALUE="{$usergroup.id}">
+			<SELECT SIZE="20" NAME="usergroupinfo[muserid][]" multiple>
+				{section name=user loop=$users}
+					<OPTION VALUE="{$users[user].id}">
+					{$users[user].username|truncate:50:" ..."} ({$users[user].id|string_format:"%04d"})
+					</OPTION>
 				{/section}
-			</TABLE>
+			</SELECT>
 		</TD>
 	</TR>
-	<TR CLASS="DARK">
-		<TD WIDTH="100%" CLASS="FALL" COLSPAN="3">
-			<P>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fbl">
 			<FORM NAME="tmove" METHOD="GET" ACTION="?m=usergroupmove">
 				<INPUT TYPE="hidden" VALUE="usergroupmove" NAME="m">
 				<INPUT TYPE="hidden" VALUE="{$usergroup.id}" NAME="from">
 				<input type="hidden" name="is_sure">
-				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'Jeste¶ pewien, ¿e chcesz przenie¶æ u¿ytkowników do grupy '+getText(document.tmove.to.value)+'?','1');">Przenie¶ tych u¿ytkowników do grupy:</A> </B>
+				<A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'Jeste¶ pewien, ¿e chcesz przenie¶æ u¿ytkowników do grupy '+getText(document.tmove.to.value)+'?','1');">Przenie¶ tych u¿ytkowników do grupy:</A>
 				<SELECT SIZE="1" NAME="to">
 					{section name=lt loop=$usergroups}
 					{if $usergroups[lt].id neq $usergroup.id}<OPTION VALUE="{$usergroups[lt].id}">{$usergroups[lt].name}</OPTION>{/if}
 					{/section}
 				</SELECT>
 			</FORM>
-			</P>
+		</TD>
+		<TD WIDTH="99%" CLASS="fbr" COLSPAN="2" ALIGN="RIGHT">
+			<A HREF="javascript:document.usergroupinfo.submit();">Dodaj tych u¿ytkowników do grupy <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
+</FORM>
 {include file="footer.html"}
