@@ -321,6 +321,18 @@ http://www.naszasiec.pl/</screen></example>
 	   Domy¶lnie: 'Abonament wg taryfy %tariff za okres %period'</para>
 	   <para>Przyk³ad:	<prompt>comment = %desc</prompt></para>
 	  </listitem>
+          <listitem>
+	   <para>suspension_percentage (opcjonalny)</para>
+	   <para>Warto¶æ procentowa obci±¿enia generowana dla obci±¿eñ zablokowanych.
+	   Domy¶lnie: '0'</para>
+	   <para>Przyk³ad:	<prompt>suspension_percentage = %desc</prompt></para>
+	  </listitem>
+          <listitem>
+	   <para>suspension_description (opcjonalny)</para>
+	   <para>Tekst dodawany na koñcu opisu operacji dla obci±¿eñ zablokowanych. 
+	   Domy¶lnie: ''</para>
+	   <para>Przyk³ad:	<prompt>suspension_description = (zawieszenie)</prompt></para>
+	  </listitem>
 	 </itemizedlist>
 	 <para>Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ
 	 <prompt>--fakedate</prompt> (<prompt>-f</prompt>). Przy jego u¿yciu mo¿na 
