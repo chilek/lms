@@ -18,6 +18,8 @@ wersja 1.5.2 (??/??/????):
   - generowanie PINu podczas edycji/dodawania u¿ytkownika (alec)
   - poprawka w funkcji szybkiego wyszukiwania komputera uwzglêdniaj±ca zmianê
     dzia³ania ip2long() w PHP5 (alec)
+  - BTS#0000229: contrib/customer - uwzglêdniona sytuacja, gdy ³±czymy siê z
+    urz±dzenia sieciowego (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 
