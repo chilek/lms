@@ -66,16 +66,6 @@
 		</sect2>
 		<sect2 id="daemon-config">
 		<title>Konfiguracja</title>
-			<para>Na pocz±tku nale¿y w pliku konfiguracyjnym <emphasis>LMS-UI</emphasis>
-			(standardowo <filename>/etc/lms/lms.ini</filename>) ustawiæ typ reloadu 
-			obs³ugiwany przez demona:
-<screen>
-reload_type	= sql
-reload_sqlquery	= "INSERT INTO reload VALUES('reload')"
-</screen>
-			<note><para>Struktura tabeli 'reload' jest dowolna, zatem musisz zadbaæ 
-			o odpowiedni insert.</para></note>
-			</para>
 			<para>Przyk³adowy konfig demona i modu³ów zawarto w pliku <filename>lms.ini.sample</filename>.
 			Poni¿szy listing przedstawia podstawowe opcje dla demona (konfiguracjê modu³ów omówiono w 
 			osobnych rozdzia³ach ich dotycz±cych):
