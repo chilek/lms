@@ -1,4 +1,4 @@
-1. Co my tu mamy?.
+1. Co my tu mamy?
 
 Katalog zawiera dodatkowe modu³y dla demona almsd:
 
@@ -7,6 +7,8 @@ cbq-init:	generowanie plików dla znanego skryptu do zarz±dzania
 
 cutoff2:	cutoff z dodatkow± funkcjonalno¶ci±, ale dzia³a tylko 
 		z zobowi±zaniami miesiêcznymi
+
+shaper:		konfiguracja shapera (http://sp9wun.republika.pl)
       
 2. Instalacja.
 
