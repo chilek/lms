@@ -184,9 +184,9 @@
      <para>Przyk³ad:	<prompt>grantednode_publ = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>
     </listitem>
     <listitem>
-     <para>grantednode_prv</para>
+     <para>grantednode_priv</para>
      <para>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</para>
-     <para>Przyk³ad:	<prompt>grantednode_prv = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>
+     <para>Przyk³ad:	<prompt>grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</prompt></para>
     </listitem>
     <listitem>
      <para>deniednode_publ</para>
@@ -194,9 +194,9 @@
      <para>Przyk³ad:	<prompt>deniednode_publ = node %NAME (%IP/%MAC) unique %ID deny;</prompt></para>
     </listitem>
     <listitem>
-     <para>deniednode_prv</para>
+     <para>deniednode_priv</para>
      <para>Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)</para>
-     <para>Przyk³ad:	<prompt>deniednode_prv = node %NAME (%IP/%MAC) unique %ID deny;</prompt></para>
+     <para>Przyk³ad:	<prompt>deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;</prompt></para>
     </listitem>
     <listitem>
      <para>dhcpnode_publ</para>
@@ -204,9 +204,9 @@
      <para>Przyk³ad:	<prompt>dhcpnode_publ = node unknown (%IP) reject;</prompt></para>
     </listitem>
     <listitem>
-     <para>dhcpnode_prv</para>
+     <para>dhcpnode_priv</para>
      <para>Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</para>
-     <para>Przyk³ad:	<prompt>dhcpnode_prv = node unknown (%IP) reject;</prompt></para>
+     <para>Przyk³ad:	<prompt>dhcpnode_priv = node unknown (%IP) reject;</prompt></para>
     </listitem>
     <listitem>
      <para>freeip_publ</para>
@@ -214,9 +214,9 @@
      <para>Przyk³ad:	<prompt>freeip_publ = node unknown (%IP) lock_as_unused;</prompt></para>
     </listitem>
     <listitem>
-     <para>freeip_prv</para>
+     <para>freeip_priv</para>
      <para>Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów prywatnych)</para>
-     <para>Przyk³ad:	<prompt>freeip_prv = node unknown (%IP) lock_as_unused;</prompt></para>
+     <para>Przyk³ad:	<prompt>freeip_priv = node unknown (%IP) lock_as_unused;</prompt></para>
     </listitem>
     <listitem>
      <para>default_publ</para>
@@ -224,9 +224,9 @@
      <para>Przyk³ad:	<prompt>default_publ = node unknown (%IP) lock_as_intruder;</prompt></para>
     </listitem>
     <listitem>
-     <para>default_prv</para>
+     <para>default_priv</para>
      <para>Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)</para>
-     <para>Przyk³ad:	<prompt>default_publ = node unknown (%IP) lock_as_intruder;</prompt></para>
+     <para>Przyk³ad:	<prompt>default_priv = node unknown (%IP) lock_as_intruder;</prompt></para>
      <para><note><para>lms-mgc sam rozpoznaje który adres nale¿y do klasy publicznej, a który do prywatnej.</para></note></para>
     </listitem>
     <listitem>
