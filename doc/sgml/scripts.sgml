@@ -852,7 +852,7 @@ filter unix - n n - 10 pipe
 		    <para>Numer ID kolejki, do której trafi± zg³oszenia. Je¶li nie
 		    podano, Kolejka zostanie odszukana na podstawie adresu odbiorcy maila.
 		    Opcja ta mo¿e zostaæ nadpisana przy pomocy parametru -q przy
-		    uruchomieniu skryptu. Domy¶lnie: nie zdefiniowana.</para>
+		    uruchomieniu skryptu. Domy¶lnie: niezdefiniowana.</para>
 		    <para>Przyk³ad:	<prompt>default_queue = </prompt></para>
 		</listitem>
            	<listitem>
@@ -870,13 +870,13 @@ filter unix - n n - 10 pipe
 		    <para>mail_dir</para>
 		    <para>Katalog w którym zostan± zapisane za³±czniki. Katalog ten powinien byæ
 		    dostêpny dla apache'a i u¿ytkownika uruchamiaj±cego lms-rtparser. Gdy nie ustawiono, 
-		    za³±czniki zostan± utracone. Domy¶lnie: niezdefiniowny.</para>
+		    za³±czniki zostan± utracone. Domy¶lnie: niezdefiniowany.</para>
 		    <para>Przyk³ad:	<prompt>mail_dir = /usr/local/lms/mail</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>tmp_dir</para>
 		    <para>Katalog tymczasowy. Domy¶lnie zostanie u¿yty katalog 
-		    zdefiniowany w zmiennej systemowej lub <filename>/tmp</filename></para>
+		    zdefiniowany w zmiennej systemowej lub <filename>/tmp</filename>.</para>
 		    <para>Przyk³ad:	<prompt>tmp_dir = /home/user/tmp</prompt></para>
 		</listitem>
 	    </itemizedlist>
