@@ -27,5 +27,6 @@ TABLE.WARNING	{ border-collapse: collapse; }
 TABLE.WARNING TD { background: #EBCF9E; border-width: 0pt; padding: 3pt; border-style: none }
 TABLE.WARNING P { text-align: center; color: #F00000}
 HR		{ height: 1pt; }
+DIV.TABLE	{ text-align: center; }
 -->
 </STYLE>
