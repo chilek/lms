@@ -140,13 +140,22 @@ class LMS {
 	{
 		$networks = $this->GetNetworks();
 		foreach($networks[id] as $i => $v)
+		{
 			if($checkbroadcast)
+			{
 				if((ip_long($ip) > $networks[addresslong][$i] - 1)&&(ip_long($ip) < ip_long(getbraddr($networks[address][$i],$networks[mask][$i])) + 1))
+				{
 					return TRUE;
-
+				}
+			}
 			else
-				if((ip_long($ip) > $networks[addresslong][$i])&&(ip_long($ip) < ip_long(getbraddr($networks[address][$i],$networks[mask][$i])))	)
+			{
+				if((ip_long($ip) > $networks[addresslong][$i])&&(ip_long($ip) < ip_long(getbraddr($networks[address][$i],$networks[mask][$i]))))
+				{
 					return TRUE;
+				}
+			}
+		}
 		return FALSE;
 	}
 
@@ -217,6 +226,9 @@ class LMS {
 		$db=$this->db;
 		$network = $db->FetchRow("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks` WHERE `id` = '".$id."'");
 		$network[prefix] = mask2prefix($network[mask]);
+
+		
+		
 		return $network;
 	}
 
