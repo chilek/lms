@@ -3,7 +3,7 @@
 /*
  * LMS version 1.5-cvs
  *
- *  (C) Copyright 2001-2003 LMS Developers
+ *  (C) Copyright 2001-2005 LMS Developers
  *
  *  Please, see the doc/AUTHORS for more information about authors!
  *
@@ -26,52 +26,64 @@
 
 // REPLACE THIS WITH PATH TO YOU CONFIG FILE
 
-$CONFIG_FILE = "/etc/lms/lms.ini";
+//$CONFIG_FILE = '/etc/lms/lms.ini';
+$CONFIG_FILE = '/var/www/devel/lms/lms.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
+// *******************************************************************
 
 // Parse configuration file
 
-function lms_parse_ini_file($filename, $process_sections = false)
+function lms_parse_ini_file($filename, $process_sections = false) 
 {
 	$ini_array = array();
-	$sec_name = "";
+	$section = '';
 	$lines = file($filename);
-	foreach($lines as $line)
+	foreach($lines as $line) 
 	{
 		$line = trim($line);
-
-		if($line == "" || $line[0] == ";" || $line[0] == "#")
+		
+		if($line == '' || $line[0] == ';' || $line[0] == '#') 
 			continue;
-
-		if( sscanf($line, "[%[^]]", &$sec_name)==1 )
-			$sec_name = trim($sec_name);
-		else
+		
+		list($sec_name) = sscanf($line, "[%[^]]");
+		
+		if( $sec_name )
+			$section = trim($sec_name);
+		else 
 		{
-			if ( sscanf($line, "%[^=] = '%[^']'", &$property, &$value) != 2 )
-				if ( sscanf($line, "%[^=] = \"%[^\"]\"", &$property, &$value) != 2 )
-					if( sscanf($line, "%[^=] = %[^;#]", &$property, &$value) != 2 )
+			list($property, $value) = sscanf($line, "%[^=] = '%[^']'");
+			if ( !$property || !$value ) 
+			{
+				list($property, $value) = sscanf($line, "%[^=] = \"%[^\"]\"");
+				if ( !$property || !$value ) 
+				{
+					list($property, $value) = sscanf($line, "%[^=] = %[^;#]");
+					if( !$property || !$value ) 
 						continue;
 					else
 						$value = trim($value, "\"'");
-
+				}
+			}
+		
 			$property = trim($property);
 			$value = trim($value);
-
-			if($process_sections)
-				$ini_array[$sec_name][$property] = $value;
-			else
+			
+			if($process_sections) 
+				$ini_array[$section][$property] = $value;
+			else 
 				$ini_array[$property] = $value;
 		}
 	}
+	
 	return $ini_array;
 }
 
-foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key=>$val) $_CONFIG[$key] = $val;
+foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
+	$_CONFIG[$key] = $val;
 
-// Define directories and configuration vars
-
+// Check for configuration vars and set default values
 $_CONFIG['directories']['sys_dir'] = (! $_CONFIG['directories']['sys_dir'] ? getcwd() : $_CONFIG['directories']['sys_dir']);
 $_CONFIG['directories']['backup_dir'] = (! $_CONFIG['directories']['backup_dir'] ? $_CONFIG['directories']['sys_dir'].'/backups' : $_CONFIG['directories']['backup_dir']);
 $_CONFIG['directories']['lib_dir'] = (! $_CONFIG['directories']['lib_dir'] ? $_CONFIG['directories']['sys_dir'].'/lib' : $_CONFIG['directories']['lib_dir']);
@@ -86,18 +98,6 @@ foreach(lms_parse_ini_file($_CONFIG['directories']['lib_dir'].'/config_defaults.
 		if(! isset($_CONFIG[$section][$key]))
 			$_CONFIG[$section][$key] = $val;
 
-function chkconfig($value, $default = FALSE)
-{
-	if(eregi('^(1|y|on|yes|true|tak|t)$', $value))
-		return TRUE;
-	elseif(eregi('^(0|n|no|off|false|nie)$', $value))
-		return FALSE;
-	elseif(!isset($value) || $value == '')
-		return $default;
-	else
-		trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
-}
-
 $_SYSTEM_DIR = $_CONFIG['directories']['sys_dir'];
 $_BACKUP_DIR = $_CONFIG['directories']['backup_dir'];
 $_LIB_DIR = $_CONFIG['directories']['lib_dir'];
@@ -105,48 +105,53 @@ $_MODULES_DIR = $_CONFIG['directories']['modules_dir'];
 $_SMARTY_DIR = $_CONFIG['directories']['smarty_dir'];
 $_SMARTY_COMPILE_DIR = $_CONFIG['directories']['smarty_compile_dir'];
 $_SMARTY_TEMPLATES_DIR = $_CONFIG['directories']['smarty_templates_dir'];
-$_TIMEOUT = $_CONFIG['phpui']['timeout'];
-$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
 $_DBTYPE = $_CONFIG['database']['type'];
 $_DBHOST = $_CONFIG['database']['host'];
 $_DBUSER = $_CONFIG['database']['user'];
 $_DBPASS = $_CONFIG['database']['password'];
 $_DBNAME = $_CONFIG['database']['database'];
 
-// Set our sweet polish locales :>
+// Init database 
 
-//setlocale (LC_ALL, 'pl_PL');
-
-// include required files
-
-require_once($_SMARTY_DIR.'/Smarty.class.php');
 require_once($_LIB_DIR.'/LMSDB.php');
-require_once($_LIB_DIR.'/common.php');
-require_once($_LIB_DIR.'/LMS.class.php');
-
-// Initialize LMSDB object
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
-// Initialize database and template classes
+// Enable data encoding conversion if needed
 
-$SESSION = NULL;
+require_once($_LIB_DIR.'/dbencoding.php');
 
-$LMS = new LMS($DB,$SESSION,$_CONFIG);
+// Initialize templates engine
+
+require_once($_SMARTY_DIR.'/Smarty.class.php');
 
 $SMARTY = new Smarty;
+$SESSION = NULL;
 
-// test for proper version of Smarty
+// Include required files (including sequence is important)
 
+require_once($_LIB_DIR.'/language.php');
+require_once($_LIB_DIR.'/common.php');
+require_once($_LIB_DIR.'/LMS.class.php');
+
+// Initialize LMS class
+
+$LMS = new LMS($DB, $SESSION, $_CONFIG);
+$LMS->CONFIG = $_CONFIG;
+$LMS->lang = $_language;
+
+// set some template and layout variables
+
+$SMARTY->assign_by_ref('_LANG', $_LANG);
+$SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
+$SMARTY->assign_by_ref('_language', $LMS->lang);
 $SMARTY->template_dir = getcwd();
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 
-$layout[lmsv]='1.5-cvs';
+require_once($_LIB_DIR.'/smarty_addons.php');
+include('lang.php');
 
-$SMARTY->assign("menu",$menu);
-$SMARTY->assign("layout",$layout);
-
-header('X-Powered-By: LMS/'.$layout[lmsv]);
+$SMARTY->assign_by_ref('layout', $layout);
 
 if (isset($_SERVER[HTTP_X_FORWARDED_FOR])) {
     $forwarded_ip = explode(",",$_SERVER[HTTP_X_FORWARDED_FOR]);
