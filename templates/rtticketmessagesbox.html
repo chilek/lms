@@ -44,7 +44,7 @@
 			    <A href="?m=rtmessageadd&id={$message.id}&ticketid={$ticket.ticketid}">Odpowiedz <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
 			    {/if}
 			    {if $msgidx > 0}
-			    <A href="?m=rtticketview&id={$ticket.ticketid}&delmsgid={$message.id}">Usuñ <IMG src="img/delete.gif" alt="" border="0" align="absmiddle"></A>
+			    <A href="?m=rtticketview&id={$ticket.ticketid}&delmsgid={$message.id}" onClick="return confirmLink(this,'Na pewno chcesz usun±æ wiadomo¶æ?');">Usuñ <IMG src="img/delete.gif" alt="" border="0" align="absmiddle"></A>
 			    {/if}
 			</TD>
 		    </TR>
