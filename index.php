@@ -27,7 +27,7 @@
 // By default LMS searches current directory for lms.ini. If you wish
 // to keep the configuration file elsewhere, please define it here.
 
-$CONFIG_FILE = './lms.ini';
+$CONFIG_FILE = '/etc/lms/lms.ini';
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
