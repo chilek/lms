@@ -45,7 +45,6 @@ class LMSDB_driver_mysql extends LMSDB_common
 		{
 			$this->_dbhost = $dbhost;
 			$this->_dbuser = $dbuser;
-			$this->_dbpasswd = $dbpasswd;
 		}
 		return $this->_dblink;
 	}
@@ -77,6 +76,16 @@ class LMSDB_driver_mysql extends LMSDB_common
 	function _driver_fetchrow_num()
 	{
 		return mysql_fetch_array($this->_result,MYSQL_NUM);
+	}
+
+	function _driver_now()
+	{
+		return 'UNIX_TIMESTAMP()';
+	}
+
+	function _driver_like()
+	{
+		return 'LIKE';
 	}
 }
 ?>

@@ -64,15 +64,15 @@ Class LMSDB_common
 		$this->_driver_selectdb($dbname);
 	}
 
-	function Execute($query)
+	function Execute($query, $inputarray = NULL)
 	{
-		return $this->_driver_execute($query);
+		return $this->_driver_execute($this->_query_parser($query,$inputarray));
 	}
 
-	function GetAll($query = NULL)
+	function GetAll($query = NULL, $inputarray = NULL)
 	{
 		if($query)
-			$this->Execute($query);
+			$this->Execute($query, $inputarray);
 
 		while($row = $this->_driver_fetchrow_assoc())
 			$result[] = $row;
@@ -80,18 +80,18 @@ Class LMSDB_common
 		return $result;
 	}
 
-	function GetRow($query = NULL)
+	function GetRow($query = NULL, $inputarray = NULL)
 	{
 		if($query)
-			$this->Execute($query);
+			$this->Execute($query, $inputarray);
 
 		return $this->_driver_fetchrow_assoc();
 	}
 
-	function GetCol($query = NULL)
+	function GetCol($query = NULL, $inputarray = NULL)
 	{
 		if($query)
-			$this->Execute($query);
+			$this->Execute($query, $inputarray);
 
 		while($row = $this->_driver_fetchrow_num())
 			$result[] = $row[0];
@@ -99,14 +99,38 @@ Class LMSDB_common
 		return $result;
 	}
 
-	function GetOne($query = NULL)
+	function GetOne($query = NULL, $inputarray = NULL)
 	{
 		if($query)
-			$this->Execute($query);
+			$this->Execute($query, $inputarray);
 
 		list($result) = $this->_driver_fetchrow_num();
 
 		return $result;
+	}
+
+	function _query_parser($query, $inputarray = NULL)
+	{
+		// najpierw sparsujmy wszystkie specjalne meta ¶mieci.
+		$query = eregi_replace('\?NOW\?',$this->_driver_now(),$query);
+		$query = eregi_replace('\?LIKE\?',$this->_driver_like(),$query);
+		if($inputarray)
+		{
+		}
+		return $query;
+	}
+
+	// Funkcje bezpieczeñstwa, tj. na wypadek gdyby driver ich nie
+	// zdefiniowa³.
+
+	function _driver_now()
+	{
+		return time();
+	}
+
+	function _driver_like()
+	{
+		return 'LIKE';
 	}
 
 }
