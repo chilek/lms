@@ -6,7 +6,7 @@
 <TABLE WIDTH="100%" ALIGN="center" CELLPADDING="3">
 	<TR>
 		<TD VALIGN="top" WIDTH="50%">
-			<TABLE WIDTH="100%" CELLPADDING="1">
+			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR class="DARK">
 					<TD class="FALL" align="center" COLSPAN="2">
 						<P><B>Download</B></P>
@@ -30,7 +30,7 @@
 			</TABLE>
 		</TD>
 		<TD VALIGN="top" WIDTH="100%">
-			<TABLE WIDTH="100%" CELLPADDING="1">
+			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR class="DARK">
 					<TD class="FALL" align="center" COLSPAN="2">
 						<P><B>Upload</B></P>
@@ -66,66 +66,22 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
-			<B>Od: (rrrr/mm/dd gg:mm)</B>&nbsp;
+			<B>Od (rrrr/mm/dd gg:mm):</B>
 		</TD>
-		<TD CLASS="fright">&nbsp;
-			<SELECT SIZE=1 NAME="from[year]">
-				{section name="year" loop=$data.year}
-				<OPTION VALUE="{$data.year[year]}">{$data.year[year]}</OPTION>
-				{/section}
-			</SELECT>&nbsp;/
-			<SELECT SIZE=1 NAME="from[month]">
-				{section name="month" loop=$data.month}
-				<OPTION VALUE="{$data.month[month]}">{$data.month[month]|string_format:"%02d"}</OPTION>
-				{/section}
-			</SELECT>&nbsp;/
-			<SELECT SIZE=1 NAME="from[day]">
-				{section name="day" loop=$data.day}
-				<OPTION VALUE="{$data.day[day]}">{$data.day[day]|string_format:"%02d"}</OPTION>
-				{/section}
-			</SELECT>&nbsp;&nbsp;
-			<SELECT SIZE=1 NAME="from[hour]">
-				{section name="hour" loop=$data.hour}
-				<OPTION VALUE="{$data.hour[hour]}">{$data.hour[hour]|string_format:"%02d"}</OPTION>
-				{/section}
-			</SELECT>&nbsp;:
-			<SELECT SIZE=1 NAME="from[minute]">
-				{section name="minute" loop=$data.minute}
-				<OPTION VALUE="{$data.minute[minute]}">{$data.minute[minute]|string_format:"%02d"}</OPTION>
-				{/section}
-			</SELECT>
+		<TD CLASS="fright">
+			{html_select_date field_array="from" prefix="" time=$starttime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
+			&nbsp;
+			{html_select_time field_array="from" prefix="" time=$starttime display_seconds=0}
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
-			<B>Do: (rrrr/mm/dd gg:mm)</B>&nbsp;
+			<B>Do (rrrr/mm/dd gg:mm):</B>&nbsp;
 		</TD>
-		<TD CLASS="fright">&nbsp;
-			<SELECT SIZE=1 NAME="to[year]">
-				{section name="year" loop=$data.year}
-				<OPTION VALUE="{$data.year[year]}" {if $data.year[year]==$now.rok} SELECTED{/if}>{$data.year[year]}</OPTION>
-				{/section}
-			</SELECT>&nbsp;/
-			<SELECT SIZE=1 NAME="to[month]">
-				{section name="month" loop=$data.month}
-				<OPTION VALUE="{$data.month[month]}"{if $data.month[month]==$now.mies} SELECTED{/if}>{$data.month[month]|string_format:"%02d"}</OPTION>
-				{/section}
-			</SELECT>&nbsp;/
-			<SELECT SIZE=1 NAME="to[day]">
-				{section name="day" loop=$data.day}
-				<OPTION VALUE="{$data.day[day]}"{if $data.day[day]==$now.dzien} SELECTED{/if}>{$data.day[day]|string_format:"%02d"}</OPTION>
-				{/section}
-			</SELECT>&nbsp;&nbsp;
-			<SELECT SIZE=1 NAME="to[hour]">
-				{section name="hour" loop=$data.hour}
-				<OPTION VALUE="{$data.hour[hour]}"{if $data.hour[hour]==$now.godz} SELECTED{/if}>{$data.hour[hour]|string_format:"%02d"}</OPTION>
-				{/section}
-			</SELECT>&nbsp;:
-			<SELECT SIZE=1 NAME="to[minute]">
-				{section name="minute" loop=$data.minute}
-				<OPTION VALUE="{$data.minute[minute]}"{if $data.minute[minute]==$now.min} SELECTED{/if}>{$data.minute[minute]|string_format:"%02d"}</OPTION>
-				{/section}
-			</SELECT>
+		<TD CLASS="fright">
+			{html_select_date field_array="to" prefix="" time=$endtime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
+			&nbsp;
+			{html_select_time field_array="to" prefix="" time=$endtime display_seconds=0}
 		</TD>
 	</TR>
 	<TR CLASS="light">
@@ -157,10 +113,10 @@
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
-			<B>Ograniczenie wyników do:</B>&nbsp;
+			<B>Ograniczenie wyników do:</B>
 		</TD>
-		<TD CLASS="fright">&nbsp;
-			<INPUT NAME="limit" SIZE=3></INPUT><B>&nbsp;komputerów</B>
+		<TD CLASS="fright">
+			<INPUT NAME="limit" SIZE=3></INPUT> <B>komputerów</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
