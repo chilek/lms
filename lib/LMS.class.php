@@ -691,6 +691,7 @@ class LMS
 		}
 		else
 			$deleted = 0;
+		$disabled = ($state == 5) ? 1 : 0;
 		
 		if(!isset($state) || $state>3)
 			$state = 3;
@@ -717,6 +718,7 @@ class LMS
 
 			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid','id');
 			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid','id');
+			$userlist2 = NULL;
 			foreach($userlist as $idx => $row)
 			{
 				$userlist[$idx]['tariffvalue'] = $week[$row['id']]['value']+$month[$row['id']]['value']+$quarter[$row['id']]['value']+$year[$row['id']]['value'];
@@ -736,13 +738,18 @@ class LMS
 				else
 					$userlist[$idx]['nodewarn'] = 2;
 					
-				if($userlist[$idx]['balance'] > 0)
-					$over += $userlist[$idx]['balance'];
-				elseif($userlist[$idx]['balance'] < 0)
-					$below += $userlist[$idx]['balance'];
+				if (($disabled && $userlist[$idx]['nodeac'] != 1) || !$disabled)
+					if($userlist[$idx]['balance'] > 0)
+						$over += $userlist[$idx]['balance'];
+					elseif($userlist[$idx]['balance'] < 0)
+						$below += $userlist[$idx]['balance'];
+				if ($disabled && $userlist[$idx]['nodeac'] != 1)
+					$userlist2[] = $userlist[$idx];
 			}
+			if ($disabled)
+				$userlist = $userlist2;
 		}
-		
+
 		switch($order)
 		{
 			case 'tariff':
