@@ -358,7 +358,7 @@ function invoice_footnote($x, $y, $width, $font_size)
 
 function invoice_body() 
 {
-    global $invoice,$pdf,$id,$_CONFIG;
+    global $invoice,$pdf,$id,$_CONFIG,$fh;
     switch ($_CONFIG['invoices']['template_file']) {
 	case "standard":
 	    $top=800;
@@ -398,7 +398,7 @@ function invoice_body()
 	default:
 	    require($_CONFIG['invoices']['template_file']);
     }
-    if (!($invoice['last'])) $id=$pdf->newPage(1,$id,'after'); 
+    if (!($invoice['last'])) $id=$pdf->newPage(1,$id,'after');
 }
 
 // brzydki hack dla ezpdf 
@@ -428,17 +428,33 @@ $id=$pdf->getFirstPageId();
 if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
 	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoices'));
+
 	foreach($_POST['marks'] as $markid => $junk)
 		if($junk)
 			$ids[] = $markid;
+
+	if($_GET['cash'])
+	{
+		foreach($ids as $cashid)
+			if($invoiceid = $LMS->DB->GetOne('SELECT invoiceid FROM cash WHERE id = ?', array($cashid)))
+				$idsx[] = $invoiceid;
+		$ids = array_unique($idsx);
+	}
+
 	sort($ids);
 	$which = ($_GET['which'] != '' ? $_GET['which'] : iconv("UTF-8","ISO-8859-2",trans('ORIGINAL+COPY')));
+	
+	$count = (strstr($which,'+') ? sizeof($ids)*2 : sizeof($ids));
+	$i=0;
+
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 		foreach(split('\+', $which) as $type)
 		{
+			$i++;
+			if($i == $count) $invoice['last'] = 1;
 			invoice_body();
 		}
 	}
@@ -455,12 +471,17 @@ elseif($_GET['fetchallinvoices'])
 				array($_GET['from'], $_GET['to']));
 	if(!$ids) die;
 
+	$count = (strstr($which,'+') ? sizeof($ids)*2 : sizeof($ids));
+	$i=0;
+
 	foreach($ids as $idx => $invoiceid)
 	{
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
 		$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 		foreach(split('\+', $which) as $type)
 		{
+			$i++;
+			if($i == $count) $invoice['last'] = 1;
 			invoice_body();
 		}
 	}
@@ -468,10 +489,6 @@ elseif($_GET['fetchallinvoices'])
 elseif($_GET['fetchsingle'])
 {
 	$invoice = $LMS->GetInvoiceContent($_GET['id']);
-	$ntempl = $LMS->CONFIG['invoices']['number_template'];
-	$ntempl = str_replace('%N',$invoice['number'],$ntempl);
-	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
-	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
 	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0', $ntempl));
 	$invoice['last'] = TRUE;
 	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
@@ -480,10 +497,6 @@ elseif($_GET['fetchsingle'])
 }
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
-	$ntempl = $LMS->CONFIG['invoices']['number_template'];
-	$ntempl = str_replace('%N',$invoice['number'],$ntempl);
-	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
-	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
 	$layout['pagetitle'] = iconv("UTF-8","ISO-8859-2",trans('Invoice No. $0', $ntempl));
 	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 	$type = iconv("UTF-8","ISO-8859-2",trans('ORIGINAL'));
