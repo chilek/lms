@@ -34,7 +34,7 @@ if($_GET['action']=='link')
 {
 	$netdev = $LMS->GetNetDev($_GET['devid']); 
 
-	if($netdev['ports'] <= $netdev['takenports']) 
+	if($netdev['ports'] > $netdev['takenports']) 
 	{
 		$LMS->NetDevLinkNode($_GET['id'],$_GET['devid']);
 		header('Location: ?m=nodeinfo&id='.$_GET['id']);
