@@ -141,10 +141,20 @@ if($_FORCE_SSL && $_SERVER['HTTPS'] != 'on')
 	exit(0);
 }
 
+// Initialize templates engine
+
+require_once($_SMARTY_DIR.'/Smarty.class.php');
+$SMARTY = new Smarty;
+
+
+// test for proper version of Smarty
+
+if(version_compare('2.5.0', $SMARTY->_version) > 0)
+	die('<B>'.trans('Old version of Smarty engine! You must get newest from $0.','<A HREF="http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz">http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz</A>').'</B>');
+
 // Include required files (including sequence is important)
 
 require_once($_LIB_DIR.'/unstrip.php');
-require_once($_SMARTY_DIR.'/Smarty.class.php');
 require_once($_LIB_DIR.'/language.php');
 require_once($_LIB_DIR.'/common.php');
 require_once($_LIB_DIR.'/checkip.php');
@@ -153,7 +163,9 @@ require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
 require_once($_LIB_DIR.'/accesstable.php');
 
-// Initialize session and template classes
+//print_r($SMARTY->_tpl_vars['missing_strings']);
+
+// Initialize Session and LMS classes
 
 $SESSION = new Session($DB, $_TIMEOUT);
 
@@ -161,25 +173,17 @@ $LMS = new LMS($DB, $SESSION, $_CONFIG);
 $LMS->CONFIG = $_CONFIG;
 $LMS->lang = $_language;
 
-$SMARTY = new Smarty;
-$SMARTY->assign('_config',$_CONFIG);
-
-// test for proper version of Smarty
-
-if(version_compare('2.5.0', $SMARTY->_version) > 0)
-	die('<B>'.trans('Old version of Smarty engine! You must get newest from $0.','<A HREF="http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz">http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz</A>').'</B>');
-
 // set some template and layout variables
-
-$SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
-$SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
-$SMARTY->debugging = chkconfig($_CONFIG['phpui']['smarty_debug']);
-require_once($_LIB_DIR.'/smarty_addons.php');
 
 $SMARTY->assign_by_ref('_LANG', $_LANG);
 $SMARTY->assign_by_ref('LANGDEFS', $LANGDEFS);
 $SMARTY->assign_by_ref('_language', $LMS->lang);
 $SMARTY->assign('_dochref', is_dir('doc/html/'.$LMS->lang) ? 'doc/html/'.$LMS->lang.'/' : 'doc/html/en/');
+$SMARTY->assign('_config',$_CONFIG);
+$SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
+$SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
+$SMARTY->debugging = chkconfig($_CONFIG['phpui']['smarty_debug']);
+require_once($_LIB_DIR.'/smarty_addons.php');
 
 $layout['logname'] = $SESSION->logname;
 $layout['logid'] = $SESSION->id;
