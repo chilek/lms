@@ -38,7 +38,7 @@ $tariffs = $LMS->GetTariffs();
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
-$layout[pagetitle]="Informacje o u¿ytkowniku ".$userinfo[username];
+$layout[pagetitle]="Informacje o u¿ytkowniku: ".$userinfo[username];
 
 $usernodes[ownerid] = $_GET[id];
 $SMARTY->assign("usernodes",$usernodes);
@@ -52,6 +52,9 @@ $SMARTY->display("userinfo.html");
 
 /*
  * $Log$
+ * Revision 1.27  2003/09/23 19:11:46  alec
+ * kosmetyka - dodany dwukropek
+ *
  * Revision 1.26  2003/09/09 01:22:28  lukasz
  * - nowe finanse
  * - kosmetyka

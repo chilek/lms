@@ -44,7 +44,7 @@ if(!isset($_GET[ownerid]))
 							
 $owner = $ownerid;
 $userinfo=$LMS->GetUser($owner);
-$layout[pagetitle]="Informacje o u¿ytkowniku ".$userinfo[username]." - edycja komputera ".$LMS->GetNodeName($_GET[id]);
+$layout[pagetitle]="Informacje o u¿ytkowniku: ".$userinfo[username]."<BR>- edycja komputera: ".$LMS->GetNodeName($_GET[id]);
 
 $nodeedit = $_POST[nodeedit];
 $usernodes = $LMS->GetUserNodes($owner);
@@ -139,6 +139,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.32  2003/09/23 19:11:46  alec
+ * kosmetyka - dodany dwukropek
+ *
  * Revision 1.31  2003/09/22 18:12:33  lexx
  * - komputery moga sie linkowac
  *
