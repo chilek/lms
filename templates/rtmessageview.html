@@ -112,6 +112,21 @@
 			<TEXTAREA rows="5" cols="100">{$message.body|escape}</TEXTAREA>
 		</TD>
 	</TR>
+	{if $message.attachments}
+	<TR class="LIGHT">
+		<TD width="1%" class="fleft">
+			<IMG src="img/attach.gif" alt="" border="0" align="absmiddle">
+		</TD>
+		<TD width="1%">
+			<B>Za³±czniki:</B>
+		</TD>
+		<TD width="98%" class="fright">
+			{foreach from=$message.attachments item=a}
+				<A href="?m=rtmessageview&tid={$message.ticketid}&mid={$message.id}&file={$a.filename}">{$a.filename} ({$a.size|string_format:"%.1f"} {$a.unit})</A><BR>
+			{/foreach}
+		</TD>
+	</TR>
+	{/if}
 	<TR class="LIGHT">
 		<TD colspan="3" width="100%" class="fbottomu" align="right" NOWRAP>
 			<A href="?m=rtmessageadd&id={$message.id}&ticketid={$message.ticketid}">Odpowiedz <IMG src="img/edit.gif" alt="" border="0" align="absmiddle"></A>

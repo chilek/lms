@@ -3153,9 +3153,16 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$this->SetTS('rttickets');
 	}
 
+	function GetAttachment($msgid, $filename)
+	{
+		return $this->DB->GetRow('SELECT * FROM rtattachments WHERE messageid = ? AND filename = ?', array($msgid, $filename));
+	}
+
 	function GetMessage($id)
 	{
-		return $this->DB->GetRow('SELECT * FROM rtmessages WHERE id=?', array($id));
+		if($message = $this->DB->GetRow('SELECT * FROM rtmessages WHERE id=?', array($id)))
+			$message['attachments'] = $this->DB->GetAll('SELECT * FROM rtattachments WHERE messageid = ?', array($id));
+		return $message;
 	}
 
 	function MessageAdd($msg)

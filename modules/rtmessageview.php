@@ -24,11 +24,26 @@
  *  $Id$
  */
 
+if($filename = $_GET['file'])
+{
+	if($attach = $LMS->GetAttachment($_GET['mid'], $filename))
+	{
+		$file = $LMS->CONFIG['rt']['mail_dir'].sprintf("/%06d/%06d/%s",$_GET['tid'],$_GET['mid'],$filename);
+		$size = @filesize($file);
+		header('Content-Length: '.$size.' bytes');
+		header('Content-Type: '.$attach['contenttype']);
+		header('Content-Disposition: attachment; filename='.$filename);
+		@readfile($file);
+		die;
+	}
+}
+
 if(! $_GET['id'])
 {
-	header('Location: ?m='.$_SESSION['backto']);
+	header('Location: ?'.$_SESSION['backto']);
 	die;
 }
+
 
 $message = $LMS->GetMessage($_GET['id']); 
 if($message['adminid'])
@@ -37,6 +52,13 @@ if($message['adminid'])
 if($message['userid'])
 	$message['username'] = $LMS->GetUserName($message['userid']);
 	
+foreach($message['attachments'] as $key => $val) 
+{
+	list($size, $unit) = setunits(@filesize($LMS->CONFIG['rt']['mail_dir'].sprintf("/%06d/%06d/%s",$message['ticketid'],$message['id'],$val['filename'])));
+	$message['attachments'][$key]['size'] = $size;
+	$message['attachments'][$key]['unit'] = $unit;
+}
+
 $layout['pagetitle'] = 'Podgl±d wiadomo¶ci';
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
