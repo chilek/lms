@@ -1,4 +1,18 @@
 <!--// $Id$ //-->
+{literal}
+<SCRIPT language="JavaScript">
+<!--
+	function randomize()
+	{
+		var r = 0;
+		do
+			r = Math.floor(Math.random()*1000000-1);
+		while (r<1000);
+		document.useredit.elements['userdata[pin]'].value = r;
+	}
+//-->
+</SCRIPT>
+{/literal}
 <P><FORM NAME="useredit" METHOD="POST" ACTION="?m=useredit&id={$userinfo.id}{if $recover}&action=recover{/if}"><INPUT TYPE="HIDDEN" NAME="userdata[id]" VALUE="{$userinfo.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -123,7 +137,8 @@
 			<B>PIN:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="userdata[pin]" VALUE="{if $userinfo.pin}{$userinfo.pin}{/if}" SIZE="6" {tip text="Wpisz min.4 i max.6 cyfrowy numer PIN (opcjonalnie)" trigger="pin"}>
+			<INPUT TYPE="TEXT" NAME="userdata[pin]" VALUE="{if $userinfo.pin}{$userinfo.pin}{/if}" SIZE="6" {tip text="Wpisz min.4 i max.6 cyfrowy numer PIN (opcjonalnie)" trigger="pin"}>&nbsp;
+			<A href="javascript: randomize()" {tip text="[ Generuj PIN ]"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	
@@ -201,11 +216,3 @@
 	</TR>
 </TABLE>
 </FORM></P>
-{*
-<TR CLASS="LIGHT">
-<TD WIDTH="1%" CLASS="FLEFT">
-</TD>
-<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-</TD>
-</TR>
-*}
