@@ -61,7 +61,7 @@ if(isset($message))
 		$error['destination'] = trans('Incorrect email!');
 
 	if($message['destination']!='' && $message['sender']=='user')
-		$error['destination'] = trans('User cannot send message!');
+		$error['destination'] = trans('Customer cannot send message!');
 
 	if($filename = $_FILES['file']['name'])
 	{
