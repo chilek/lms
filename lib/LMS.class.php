@@ -340,7 +340,6 @@ class LMS
 		return ($this->DB->GetOne("SELECT * FROM admins WHERE id=?",array($id))?TRUE:FALSE);
 	}
 
-
 	function GetAdminInfo($id) // zwraca pe³ne info o podanym adminie
 	{
 		if($admininfo = $this->DB->GetRow("SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip FROM admins WHERE id=?",array($id)))
@@ -732,18 +731,15 @@ class LMS
 	function GetUserBalanceList($id)
 	{
 		// wrapper do starego formatu
-
 		if($talist = $this->DB->GetAll("SELECT id, name FROM admins"))
 			foreach($talist as $idx => $row)
 				$adminslist[$row['id']] = $row['name'];
 
 		// wrapper do starego formatu
-
 		if($tslist = $this->DB->GetAll("SELECT id, time, adminid, type, value, userid, comment, invoiceid FROM cash WHERE userid=? ORDER BY time",array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
-
 
 		if(sizeof($saldolist['id']) > 0)
 		{
@@ -1143,27 +1139,35 @@ class LMS
 				switch($row['period'])
 				{
 					case 0:
-						$row['period'] = 'co miesi±c';
-					break;
-
-					case 1:
 						$row['period'] = 'co tydzieñ';
 						$dni = array('poniedzia³ek', 'wtorek', '¶roda', 'czwartek', 'pi±tek', 'sobota', 'niedziela');
 						$row['at'] = $dni[$row['at'] - 1];
 					break;
-
+					
+					case 1:
+						$row['period'] = 'co miesi±c';
+					break;
+					
 					case 2:
+						$row['period'] = 'co kwarta³';
+						$row['at'] = sprintf("%02d/%02d", $row['at']%100, $row['at']/100+1);
+					break;
+					
+					case 3:
+					/*	
 						$row['period'] = 'co rok';
 						$miesiace = array('styczeñ','luty', 'marzec', 'kwiecieñ', 'maj', 'czerwiec', 'lipiec', 'sierpieñ', 'wrzesieñ', 'pa¼dziernik', 'listopad', 'grudzieñ');
 						$row['at'] --;
 						$ttime = $row['at'] * 86400 + mktime(12, 0, 0, 1, 1, 1990);
 						$row['at'] = date('j ',$ttime);
 						$row['at'] .= $miesiace[date('n',$ttime) - 1];
+					*/
+						$row['period'] = 'co rok';
+						$row['at'] = date('d/m',($row['at']-1)*86400);
 					break;
 				}
 
 				$assignments[$idx] = $row;
-
 			}
 		}
 
@@ -1435,6 +1439,39 @@ class LMS
 	{
 		$paymentlist = $this->DB->GetAll("SELECT id, name, creditor, value, period, at, description FROM payments ORDER BY name ASC");
 		
+		foreach($paymentlist as $idx => $row)
+		{
+			switch($row['period'])
+			{
+				case 0:
+				        switch($row['at'])
+					{
+						case 1: $row['payday'] = "co tydzieñ (pon)"; break;
+						case 2: $row['payday'] = "co tydzieñ (wt)"; break;
+						case 3: $row['payday'] = "co tydzieñ (¶r)"; break;
+						case 4: $row['payday'] = "co tydzieñ (czw)"; break;
+						case 5: $row['payday'] = "co tydzieñ (pt)"; break;
+						case 6: $row['payday'] = "co tydzieñ (sob)"; break;
+						case 7: $row['payday'] = "co tydzieñ (nie)"; break;
+						default : $row['payday'] = "brak"; break;
+				        }
+				break;
+				case 1:
+				        $row['payday'] = "co miesi±c (".$row['at'].")"; 
+				break;
+				case 2:
+					$at = sprintf("%02d/%02d", $row['at']%100,$row['at']/100+1);
+					$row['payday'] = "co kwarta³ (".$at.")";
+				break;
+				case 3:
+					$at = date("d/m",($row['at']-1)*86400);
+					$row['payday'] = "co rok (".$at.")";
+				break;
+			}
+			
+			$paymentlist[$idx] = $row;
+		}	
+			
 		$paymentlist['total'] = sizeof($paymentlist);
 		
 		return $paymentlist;
@@ -1442,7 +1479,36 @@ class LMS
 
 	function GetPayment($id)
 	{
-		return $this->DB->GetRow("SELECT id, name, creditor, value, period, at, description FROM payments WHERE id=?", array($id));
+		$payment = $this->DB->GetRow("SELECT id, name, creditor, value, period, at, description FROM payments WHERE id=?", array($id));
+
+		switch($payment['period'])
+		{
+		    case 0:
+			    switch($payment['at'])
+			    {
+				case 1: $payment['payday'] = "co tydzieñ (pon)"; break;
+				case 2: $payment['payday'] = "co tydzieñ (wt)"; break;
+				case 3: $payment['payday'] = "co tydzieñ (¶r)"; break;
+				case 4: $payment['payday'] = "co tydzieñ (czw)"; break;
+				case 5: $payment['payday'] = "co tydzieñ (pt)"; break;
+				case 6: $payment['payday'] = "co tydzieñ (sob)"; break;
+				case 7: $payment['payday'] = "co tydzieñ (nie)"; break;
+				default : $payment['payday'] = "brak"; break;
+			    }
+		    break;
+		    case 1:
+			    $payment['payday'] = "co miesi±c (".$payment['at'].")"; 
+		    break;
+		    case 2:
+			    $at = sprintf("%02d/%02d", $payment['at']%100,$payment['at']/100+1);
+			    $payment['payday'] = "co kwarta³ (".$at.")";
+		    break;
+		    case 3:
+			    $at = date("d/m",($payment['at']-1)*86400);
+			    $payment['payday'] = "co rok (".$at.")";
+		    break;
+		}
+		return $payment;
 	}
 	
 	function GetPaymentName($id)
@@ -2130,7 +2196,7 @@ class LMS
 					$mailing['body'],
 					"From: ".$mailing['sender']." <".$mailing['from'].">\r\n"."Content-type: text/plain; charset=\"iso-8858-2\"\r\n"."X-Mailer: LMS-".$this->_version."/PHP-".phpversion()."\r\n"."X-Remote-IP: ".$_SERVER['REMOTE_ADDR']."\r\n"."X-HTTP-User-Agent: ".$_SERVER['HTTP_USER_AGENT']."\r\n"
 				);
-
+				
 				echo "<img src=\"img/mail.gif\" border=\"0\" align=\"absmiddle\" alt=\"\"> ".($key+1)." z ".sizeof($emails)." (".sprintf("%02.2f",round((100/sizeof($emails))*($key+1),2))."%): ".$row['username']." &lt;".$row['email']."&gt;<BR>\n";
 				flush();
 			}

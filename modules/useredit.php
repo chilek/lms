@@ -46,12 +46,21 @@ elseif($_GET['action'] == 'addassignment')
 {
 	$period = sprintf('%d',$_POST['period']);
 
-	if($period < 0 || $period > 2)
-		$period = 0;
+	if($period < 0 || $period > 3)
+		$period = 1;
 
 	switch($period)
 	{
 		case 0:
+			$at = sprintf('%d',$_POST['at']);
+			
+			if($at < 1)
+				$at = 1;
+			elseif($at > 7)
+				$at = 7;
+		break;
+
+		case 1:
 			$at = sprintf('%d',$_POST['at']);
 			if($at == 0)
 			{
@@ -66,16 +75,21 @@ elseif($_GET['action'] == 'addassignment')
 				$at = 28;
 		break;
 
-		case 1:
-			$at = sprintf('%d',$_POST['at']);
-			
-			if($at < 1)
-				$at = 1;
-			elseif($at > 7)
-				$at = 7;
+		case 2:
+			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($_POST['at'])))
+				$error[] = 'Niepoprawny format daty';
+			else {
+				list($d,$m) = split('/',trim($_POST['at']));
+				if($d>30 || $d<1)
+					$error[] = 'Niepoprawna liczba dni w miesi±cu';
+				if($m>3 || $m<1)
+					$error[] = 'Niepoprawny numer miesi±ca (max.3)';
+				
+				$at = ($m-1) * 100 + $d;
+			}
 		break;
 
-		case 2:
+		case 3:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($_POST['at'])))
 				$error[] = 'Niepoprawny format daty';
 			else
