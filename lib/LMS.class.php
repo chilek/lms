@@ -2416,7 +2416,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$yearday = date('z', $date);
 		$month = date('n', $date);
 		$monthday = date('j', $date);
-		$weekday = date('w', $date)+1;
+		$weekday = date('w', $date);
 		switch($month) 
 		{
 		    case 1:
