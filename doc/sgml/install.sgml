@@ -460,6 +460,11 @@ database = /usr/local/lms/lms.db</screen>
     <para>Przyk³ad:	<prompt>accountlist_pagelimit = 25</prompt></para>
    </listitem>
    <listitem>
+    <para>domainlist_pagelimit</para>
+    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie domen. Domy¶lnie: 100.</para>
+    <para>Przyk³ad:	<prompt>domainlist_pagelimit = 25</prompt></para>
+   </listitem>
+   <listitem>
     <para>reload_type</para>
     <para>Typ reloadu. Dozwolone warto¶ci:</para>
     <para>exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶ skrypt lub co¶, konfigurowalny
