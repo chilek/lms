@@ -53,6 +53,7 @@ $layout[pagetitle]="Wyszukiwanie u¿ytkownika";
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("header.html");
 $SMARTY->display("userheader.html");
+
 if($_GET[search]==1 || isset($_GET[search]))
 {
 	$userlist = $LMS->SearchUserList($o,$s,$search);
@@ -61,15 +62,7 @@ if($_GET[search]==1 || isset($_GET[search]))
 }
 else
 	$SMARTY->display("usersearch.html");
+
 $SMARTY->display("footer.html");
-/*
- * $Log$
- * Revision 1.18  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.17  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
+
 ?>

@@ -31,14 +31,5 @@ $SMARTY->display("header.html");
 // Tutaj odpowiednie dzia³ania
 
 $SMARTY->display("footer.html");
-/*
- * $Log$
- * Revision 1.15  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.14  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
+
 ?>

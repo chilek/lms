@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * LMS version 1.1-cvs
@@ -37,3 +37,5 @@ foreach($users as $idx => $row)
 	$LMS->AddAssignment(array('tariffid' => $row[tariff], 'at' => $row[payday], 'userid' => $row[id], 'period' => 0, 'invoice' => 0));
 	echo "ok.\n";
 }
+
+?>

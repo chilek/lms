@@ -88,44 +88,4 @@ $SMARTY->assign('useradd',$useradd);
 $SMARTY->assign('error',$error);
 $SMARTY->display('useradd.html');
 
-/*
- * $Log$
- * Revision 1.41  2003/12/04 04:39:14  lukasz
- * - porz±dki
- * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
- *
- * Revision 1.40  2003/12/04 03:43:51  lukasz
- * - dodany PESEL do rekordu u¿ytkownika, upgrade bazy
- *   Je¿eli u¿ytkownik nie posiada NIPu, to wtedy na fakturze umieszczany jest
- *   PESEL.
- * - do faktur zosta³o dodane miejsce wystawienia
- * - zamiana nazewctwa w tabelach z 'sww' na 'pkwiu'
- * - przegenerowane doce
- * - TODO: je¿eli na fakturze nie ma pozycji z pkwiu, to usun±æ t± kolumenê
- *   z faktury.
- * - w cholerê kosmetyki
- *
- * Revision 1.39  2003/11/22 17:32:12  alec
- * poprawka http://lists.rulez.pl/lms/1482.html
- *
- * Revision 1.38  2003/11/22 17:11:58  alec
- * po co tu GetTariffs?
- *
- * Revision 1.37  2003/09/09 01:22:28  lukasz
- * - nowe finanse
- * - kosmetyka
- * - bugfixy
- * - i inne rzeczy o których aktualnie nie pamiêtam
- *
- * Revision 1.36  2003/09/05 13:11:24  lukasz
- * - nowy sposób wy¶wietlania informacji o b³êdach
- *
- * Revision 1.35  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.34  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>

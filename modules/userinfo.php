@@ -50,43 +50,4 @@ $SMARTY->assign('layout',$layout);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->display('userinfo.html');
 
-/*
- * $Log$
- * Revision 1.28  2003/12/04 03:43:51  lukasz
- * - dodany PESEL do rekordu u¿ytkownika, upgrade bazy
- *   Je¿eli u¿ytkownik nie posiada NIPu, to wtedy na fakturze umieszczany jest
- *   PESEL.
- * - do faktur zosta³o dodane miejsce wystawienia
- * - zamiana nazewctwa w tabelach z 'sww' na 'pkwiu'
- * - przegenerowane doce
- * - TODO: je¿eli na fakturze nie ma pozycji z pkwiu, to usun±æ t± kolumenê
- *   z faktury.
- * - w cholerê kosmetyki
- *
- * Revision 1.27  2003/09/23 19:11:46  alec
- * kosmetyka - dodany dwukropek
- *
- * Revision 1.26  2003/09/09 01:22:28  lukasz
- * - nowe finanse
- * - kosmetyka
- * - bugfixy
- * - i inne rzeczy o których aktualnie nie pamiêtam
- *
- * Revision 1.25  2003/08/27 20:32:54  lukasz
- * - changed another ENUM (users.deleted) to BOOL
- *
- * Revision 1.24  2003/08/27 19:26:22  lukasz
- * - changed format of ipaddr storage in database
- *
- * Revision 1.23  2003/08/25 02:12:37  lukasz
- * - zmieniona obs³uga usuwania userów
- *
- * Revision 1.22  2003/08/24 13:12:54  lukasz
- * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
- *   redhat's :>
- *
- * Revision 1.21  2003/08/18 16:52:19  lukasz
- * - added CVS Log tags
- *
- */
 ?>
