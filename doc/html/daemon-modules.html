@@ -750,7 +750,8 @@ NAME="HOSTFILE-DESC"
 ><P
 >Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
 		    wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
-		    status (od³±czony/pod³±czony), dlatego mo¿liwe jest tworzenie np. regu³
+		    status (od³±czony/pod³±czony), sieæ do której s± pod³aczone oraz
+		    grupy do których nale¿± ich w³a¶ciciele, dlatego mo¿liwe jest tworzenie np. regu³
 		    dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku 
 		    i nastêpnie wykonuje okre¶lone polecenie pow³oki.</P
 ></DIV
@@ -838,11 +839,24 @@ CLASS="PROMPT"
 ><P
 >networks</P
 ><P
->Lista nazw sieci, które maj± byæ brane pod uwagê. Domy¶lnie: pusta (wszystkie sieci).</P
+>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+			    Domy¶lnie: pusta (wszystkie sieci).</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >networks = "lan1 lan2"</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups</P
+><P
+>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    Domy¶lnie: pusta (wszystkie sieci).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>usergroups = "grupa1 grupa2"</SAMP
 ></P
 ></LI
 ><LI
