@@ -265,9 +265,13 @@ else
 		$py = (($cely * ($cellh)) + $celltmargin);
 		imagecopy($im,$im_nd,$px,$py,0,0,16,16);
 //		imagestring($im, 1, $px + 20, $py - 8, $deviceid.' ('.$celx.','.$cely.')', $blue);
+		$deviceip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM nodes WHERE ownerid=0 AND netdev=? ORDER BY ipaddr', array($deviceid));
+		if($deviceip[0]) imagestring($im, 1, $px + 20, $py - ($deviceip[1]?17:8), $deviceip[0], $blue);
+		if($deviceip[1]) imagestring($im, 1, $px + 20, $py - 8, $deviceip[1], $blue);
+		if($deviceip[2]) imagestring($im, 1, $px + 20, $py + 17, $deviceip[2], $blue);
+		if($deviceip[3]) imagestring($im, 1, $px + 20, $py + 26, $deviceip[3], $blue);
 		imagestring($im, 3, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), $darkred);
 	}
-	
 	
 		
 	imagepng($im);
