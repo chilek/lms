@@ -9,6 +9,7 @@ wersja 1.0pre7 (??/??/2003):
     zapisywane (BTS: 0000019)
   - w przypadku odrzucenia danych do dodania u¿ytkownika gubi³o siê miasto w
     fromularzu
+  - poprawione templejty tak by LMS by³ zgodny ze Smarty'm 2.4.2
 
 wersja 1.0pre6 (17/03/2003):
 
