@@ -209,7 +209,8 @@ static QUERY_HANDLE * get_query_result(RESULT_HANDLE * result)
 	my_row[i].value = (VALUE *) calloc(query->ncols, sizeof(VALUE));
         for (j = 0; j < query->ncols; j++) {
 	    val = &(my_row[i].value[j]);
-	    buf = (unsigned char *) row[j];
+	    //buf = (unsigned char *) row[j];
+	    buf = (unsigned char *) ( row[j] ? row[j] : "");
 	    val->data = str_save(val->data,buf);
 	}
 	i++;
