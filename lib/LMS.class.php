@@ -1657,6 +1657,15 @@ class LMS
           return $netdevlist;
      }
 
+     function GetNotConnectedDevices($id)
+     {
+          $query = "SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id!=".$id;
+	  if ($lista = $this -> GetNetDevConnected($id))
+               foreach($lista as $row)
+                    $query = $query." and id!=".$row[dst];
+	  return $this->DB->GetAll($query);
+     }
+
      function GetNetDev($id)
      {
           $result = $this->DB->GetRow("SELECT name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?",array($id));
@@ -1934,6 +1943,10 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.262  2003/10/05 20:45:33  lexx
+ * - Lista urzadzen do podlaczenia wyswietla tylko urzadzenia jeszcze nie
+ *   podlaczone
+ *
  * Revision 1.261  2003/10/04 20:51:07  alec
  * brak prog. nbtscan powodowal bledy w funkcji ScanNodes() - poprawione
  *
