@@ -1,7 +1,6 @@
 <!--// $Id$ //-->
-{if $emptypasswd}<H1 align="center"><A HREF="?m=adminpasswd"><FONT COLOR="RED">Twoje konto posiada puste has³o! Natychmiast ustaw sobie has³o!</FONT></A></H1>{/if}
-<BR>
 {if $layout.dberrors}
+<P>
 <TABLE WIDTH="100%" CELLPADDING="10">
 	<TR BGCOLOR="#F4F0EC">
 		<TD WIDTH="1%" CLASS="fleftu">
@@ -16,24 +15,24 @@
 		</TD>
 	</TR>
 </TABLE>
+</P>
 {/if}
 {if !$layout.nomenu}
 			</TD>
 	</TR>
-</TABLE>{/if}
+</TABLE>
+{/if}
 <TABLE cellpadding="3" cellspacing="0" style="border-width: 1pt; border-style: solid; border-collapse:collapse" bordercolor="#000000" width="100%" bgcolor="#CEBD9B">
 	<TR>
-		<TD width="50%">
-			<p><a href="?m=copyrights">&copy; 2001-2004 LMS Developers<br></A></p>
+		<TD width="1%" nowrap>
+			<A href="?m=copyrights">&copy; 2001-2004 LMS Developers</A>
 		</TD>
-		<TD width="50%">
-			<p align="right">
-				<b>
-					LMS {$layout.lmsv} @ {$layout.hostname} (DB: {$layout.dbschversion})<br>
-					{$smarty.now|date_format:"%A, %e %B, %Y"}<br>
-					Uptime: {$layout.uptime}
-				</b>
-			</p>
+		<TD width="99%" align="right" nowrap>
+			<B>
+				LMS {$layout.lmsv} @ {$layout.hostname} (DB: {$layout.dbschversion})<BR>
+				{$smarty.now|date_format:"%A, %e %B, %Y"}<BR>
+				Uptime: {$layout.uptime}
+			</B>
 		</TD>
 	</TR>
 </TABLE>
