@@ -1,5 +1,10 @@
 $Id$
 
+wersja 1.0pre5 (??/??/2003):
+
+  - podzia³ listy u¿ytkowników na strony
+  - poprawiony bug przy dodawaniu nowego usera
+
 wersja 1.0pre4 (21/01/2003):
 
   - pe³ne przeportowanie obs³ugi SQL'a na ADODB
