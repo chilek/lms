@@ -18,6 +18,7 @@ wersja 1.5.1 (??/??/????):
     dodane opcje smtp_server, mail_from_name (alec)
   - usuniêty b³±d przy odtwarzaniu backupu na postgresie spowodowany 
     aktualizacj± nieistniej±cych sekwencji (alec)
+  - status online adresów urz±dzeñ w netdevinfo (alec)
   
 wersja 1.5.0 Marduk (18/09/2004):
 
