@@ -79,9 +79,7 @@ NAME="MGC-EXAMPLE"
 >5.3. Examples of use</A
 ></H1
 ><P
->Konfiguracja i zasada dzia³ania lms-mgc mo¿e siê wydawaæ do¶æ zawi³a, dlatego
-	pos³u¿ymy siê przyk³adem. Poni¿ej przedstawiono sposób generowania i uruchamiania firewalla
-	ipchains (bardzo prostego).</P
+>Configuration and implementation of lms-mgc might seem quite complex, so we provide small example. Below you can find rules to create and execute quite simple ipchains firewall.</P
 ><DIV
 CLASS="EXAMPLE"
 ><A
@@ -92,11 +90,10 @@ NAME="INSTANCE-EXAMPLE"
 >Example 5-1. Lms-mgc: Example instance</B
 ></P
 ><P
->Zacznij od utworzenia nowej sekcji mgc w <TT
+>You should start with creating new mgc section in <TT
 CLASS="FILENAME"
 >lms-mgc.ini</TT
->, 
-	nazywaj±c j± 'ipchains' i stwórz w tej sekcji prost± maskaradê per adres IP z lanu:
+>, with relevant name ('ipchains') and put a simple masquerade rules, per IP, inside:
 	<PRE
 CLASS="SCREEN"
 >[mgc:ipchains]
@@ -106,7 +103,7 @@ header            = #!/bin/sh\n/sbin/ipchains -F\n/sbin/ipchains -X\n/sbin/ipcha
 grantednode_priv  = /sbin/ipchains -A forward -s %IP -j MASQ
 post_exec         = /etc/rc.d/rc.masq</PRE
 >
-	Dopiszmy tak¿e do sekcji g³ównej mgc informacjê ¿eby mgc uruchamia³ t± sekcjê:
+	You can also add your ipchains subsection to main mgc section, so that it executes it by default:
 	<PRE
 CLASS="SCREEN"
 >[mgc]
@@ -114,11 +111,10 @@ instances         = ipchains</PRE
 >
 	</P
 ><P
->Teraz próba odpalenia lms-mgc powinna zaowocowaæ wygenerowaniem
-	<TT
+>If you run lms-mgc now, without any arguments, you should have simple script <TT
 CLASS="FILENAME"
 >/etc/rc.d/rc.masq</TT
->, oraz jego odpaleniem.</P
+> generated and already executed.</P
 ></DIV
 ></DIV
 ><DIV
