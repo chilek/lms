@@ -44,13 +44,21 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 	$fields[] = array( 'x' => -5, 'y' => 0 );
 	$fields[] = array( 'x' => -5, 'y' => 5 );
 	$fields[] = array( 'x' => 5, 'y' => 10 );
-	$fields[] = array( 'x' => 10, 'y' => 10 );     
-	$fields[] = array( 'x' => 10, 'y' => 5 );
-	$fields[] = array( 'x' => 10, 'y' => -10 );
 	$fields[] = array( 'x' => 5, 'y' => -10 );
-	$fields[] = array( 'x' => -10, 'y' => -10 );
+	$fields[] = array( 'x' => -5, 'y' => 10 );
+	$fields[] = array( 'x' => -5, 'y' => -10 );
+	$fields[] = array( 'x' => 10, 'y' => 5 );
+	$fields[] = array( 'x' => 10, 'y' => -5 );
 	$fields[] = array( 'x' => -10, 'y' => 5 );
-	$fields[] = array( 'x' => -10, 'y' => 10 );
+	$fields[] = array( 'x' => -10, 'y' => -5 );
+	$fields[] = array( 'x' => 5, 'y' => 15 );
+	$fields[] = array( 'x' => 5, 'y' => -15 );
+	$fields[] = array( 'x' => -5, 'y' => 15 );
+	$fields[] = array( 'x' => -5, 'y' => -15 );
+	$fields[] = array( 'x' => 10, 'y' => 15 );
+	$fields[] = array( 'x' => 10, 'y' => -15 );
+	$fields[] = array( 'x' => -10, 'y' => 15 );
+	$fields[] = array( 'x' => -10, 'y' => -15 );
 
 	unset($nodefields);
 
@@ -349,7 +357,7 @@ else
 		if($devip[2]) drawtext($im, 1, $px + 20, $py + 17, $devip[2], $blue, $lightbrown);
 		if($devip[3]) drawtext($im, 1, $px + 20, $py + 26, $devip[3], $blue, $lightbrown);
 		
-		drawtext($im, 3, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), $darkred, $lightbrown);
+		drawtext($im, 3, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), $black, $lightbrown);
 		drawtext($im, 2, $px + 20, $py + 18, $DB->GetOne('SELECT location FROM netdevices WHERE id=?',array($deviceid)), $green, $lightbrown);
 	}
 		

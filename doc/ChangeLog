@@ -45,6 +45,8 @@ wersja 1.3.7 (??/??/2004):
     braku pod³±czonych komputerów (lukas)
   - w contrib/sqlpanel wyniki poleceñ sql przepuszczane s± przez funkcje
     nl2br() i htmlspecialchars() (alec)
+  - na mapie zwiêkszony do 24 limit urz±dzeñ pod³±czonych do jednego urz±dzenia
+    oraz usuniêty b³±d pokrywaj±cych siê linków (alec)
 
 wersja 1.3.6 Osiris (01/09/2004);
 
