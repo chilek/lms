@@ -13,7 +13,7 @@
 </TR>
 {cycle values="#DFD5BD,#EBE4D6" print=false}
 {section name=dblist loop=$dblist.time}
-<TR bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 	<TD class="fleft" width="98%" onClick="return self.location.href='?m=dbview&db={$dblist.time[dblist]}';">
 		<IMG src="img/time.gif" align="absmiddle" alt="" border="0"> {$dblist.time[dblist]|date_format:"%e %B %Y, %H:%M.%S (%A)"|capitalize}
 	</TD>
