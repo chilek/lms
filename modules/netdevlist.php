@@ -50,7 +50,7 @@ if (isset($_SESSION[nlp]) && !isset($_GET[page]))
         $_GET[page] = $_SESSION[nlp];
 	
 $page = (! $_GET[page] ? 1 : $_GET[page]);
-$pagelimit = (! $_CONFIG[phpui][nodelist_pagelimit] ? $listdata[total] : $_CONFIG[phpui][nodelist_pagelimit]);
+$pagelimit = (! $LMS->CONFIG[phpui][nodelist_pagelimit] ? $listdata[total] : $LMS->CONFIG[phpui][nodelist_pagelimit]);
 $start = ($page - 1) * $pagelimit;
 
 $_SESSION[nlp] = $page;
@@ -64,6 +64,10 @@ $SMARTY->display("netdevlist.html");
 
 /*
  * $Log$
+ * Revision 1.5  2003/12/04 04:39:14  lukasz
+ * - porz±dki
+ * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
+ *
  * Revision 1.4  2003/10/06 05:33:04  lukasz
  * - temporary save / lot of fixes
  *

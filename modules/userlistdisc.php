@@ -75,7 +75,7 @@ $userlist = $nuserlist;
 $listdata[total] = sizeof($userlist);
 
 $page = (! $_GET[page] ? 1 : $_GET[page]);
-$pagelimit = (! $_CONFIG[phpui][userlist_pagelimit] ? $listdata[total] : $_CONFIG[phpui][userlist_pagelimit]);
+$pagelimit = (! $LMS->CONFIG[phpui][userlist_pagelimit] ? $listdata[total] : $LMS->CONFIG[phpui][userlist_pagelimit]);
 $start = ($page - 1) * $pagelimit;
 
 $SMARTY->assign("layout",$layout);
@@ -89,6 +89,10 @@ $SMARTY->display("userlist.html");
 
 /*
  * $Log$
+ * Revision 1.15  2003/12/04 04:39:14  lukasz
+ * - porz±dki
+ * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
+ *
  * Revision 1.14  2003/09/08 09:10:59  lukasz
  * - removed unused assign with GetTariffs()
  *

@@ -41,7 +41,7 @@ else
 //	print_r($arrays[users]);
 	foreach($arrays as $arrayname => $array)
 		$SMARTY->assign($arrayname, &$array);
-	$SMARTY->template_dir = $_CONFIG['directories']['config_templates_dir'];
+	$SMARTY->template_dir = $LMS->CONFIG['directories']['config_templates_dir'];
 	$SMARTY->left_delimiter = '<?';
 	$SMARTY->right_delimiter = '?>';
 	$SMARTY->display($_GET[tpl].'.tpl');

@@ -64,7 +64,7 @@ if($_GET[search]==1 || isset($_GET[search]))
 		
 	$page = (! $_GET[page] ? 1 : $_GET[page]);
 	
-	$pagelimit = (! $_CONFIG[phpui][nodelist_pagelimit] ? $listdata[total] : $_CONFIG[phpui][nodelist_pagelimit]);
+	$pagelimit = (! $LMS->CONFIG[phpui][nodelist_pagelimit] ? $listdata[total] : $LMS->CONFIG[phpui][nodelist_pagelimit]);
 	$start = ($page - 1) * $pagelimit;
 	$_SESSION[nslp] = $page;
 	
@@ -82,6 +82,10 @@ else
 }
 /*
  * $Log$
+ * Revision 1.17  2003/12/04 04:39:14  lukasz
+ * - porz±dki
+ * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
+ *
  * Revision 1.16  2003/09/22 21:21:44  alec
  * many updates
  *

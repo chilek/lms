@@ -24,27 +24,27 @@
  *  $Id$
  */
 
-$_SESSION[backto] = $_SERVER[QUERY_STRING];
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 $balancelist = $LMS->GetBalanceList();
-$listdata[incomeu] = $balancelist[incomeu];
-$listdata[income] = $balancelist[income];
-$listdata[uinvoice] = $balancelist[uinvoice];
-$listdata[expense] = $balancelist[expense];
-$listdata[total] = $balancelist[total];
-unset($balancelist[incomeu]);
-unset($balancelist[income]);
-unset($balancelist[uinvoice]);
-unset($balancelist[expense]);
-unset($balancelist[total]);
-$listdata[totalpos] = sizeof($balancelist);
-if (isset($_SESSION[blp]) && !isset($_GET[page]))
-        $_GET[page] = $_SESSION[blp];
+$listdata['incomeu'] = $balancelist['incomeu'];
+$listdata['income'] = $balancelist['income'];
+$listdata['uinvoice'] = $balancelist['uinvoice'];
+$listdata['expense'] = $balancelist['expense'];
+$listdata['total'] = $balancelist['total'];
+unset($balancelist['incomeu']);
+unset($balancelist['income']);
+unset($balancelist['uinvoice']);
+unset($balancelist['expense']);
+unset($balancelist['total']);
+$listdata['totalpos'] = sizeof($balancelist);
+if (isset($_SESSION['blp']) && !isset($_GET['page']))
+        $_GET['page'] = $_SESSION['blp'];
 	
-$pagelimit = (! $_CONFIG[phpui][balancelist_pagelimit] ? 100 : $_CONFIG[phpui][balancelist_pagelimit]);
-$page = (! $_GET[page] ? ceil($listdata[totalpos]/$pagelimit) : $_GET[page]); 
+$pagelimit = $LMS->CONFIG['phpui']['balancelist_pagelimit'];
+$page = (! $_GET['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_GET['page']); 
 $start = ($page - 1) * $pagelimit;
-$_SESSION[blp] = $page;
-$layout[pagetitle] = "Bilans finansowy";
+$_SESSION['blp'] = $page;
+$layout['pagetitle'] = "Bilans finansowy";
 $SMARTY->assign("layout",$layout);
 
 $SMARTY->assign("balancelist",$balancelist);
@@ -59,6 +59,10 @@ $SMARTY->display("balancelist.html");
 
 /*
  * $Log$
+ * Revision 1.24  2003/12/04 04:39:14  lukasz
+ * - porz±dki
+ * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
+ *
  * Revision 1.23  2003/08/25 02:11:58  lukasz
  * - changed default pagelimit from 50 to 100
  *

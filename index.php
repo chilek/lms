@@ -89,19 +89,14 @@ $_CONFIG['directories']['backup_dir'] = (! $_CONFIG['directories']['backup_dir']
 $_CONFIG['directories']['lib_dir'] = (! $_CONFIG['directories']['lib_dir'] ? $_CONFIG['directories']['sys_dir'].'/lib' : $_CONFIG['directories']['lib_dir']);
 $_CONFIG['directories']['modules_dir'] = (! $_CONFIG['directories']['modules_dir'] ? $_CONFIG['directories']['sys_dir'].'/modules' : $_CONFIG['directories']['modules_dir']);
 $_CONFIG['directories']['config_templates_dir'] = (! $_CONFIG['directories']['config_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/config_templates' : $_CONFIG['directories']['config_templates_dir']);
-$_CONFIG['directories']['smarty_dir'] = (! $_CONFIG['directories']['smarty_dir'] ? (is_readable('/usr/share/php/smarty/libs/Smarty.class.php') ? '/usr/share/php/smarty/libs' : 
-$_CONFIG['directories']['lib_dir'].'/Smarty') : $_CONFIG['directories']['smarty_dir']);
-
-
+$_CONFIG['directories']['smarty_dir'] = (! $_CONFIG['directories']['smarty_dir'] ? (is_readable('/usr/share/php/smarty/libs/Smarty.class.php') ? '/usr/share/php/smarty/libs' : $_CONFIG['directories']['lib_dir'].'/Smarty') : $_CONFIG['directories']['smarty_dir']);
 $_CONFIG['directories']['smarty_compile_dir'] = (! $_CONFIG['directories']['smarty_compile_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates_c' : $_CONFIG['directories']['smarty_compile_dir']);
 $_CONFIG['directories']['smarty_templates_dir'] = (! $_CONFIG['directories']['smarty_templates_dir'] ? $_CONFIG['directories']['sys_dir'].'/templates' : $_CONFIG['directories']['smarty_templates_dir']);
-$_CONFIG['phpui']['timeout'] = (! $_CONFIG['phpui']['timeout'] ? 600 : $_CONFIG['phpui']['timeout']);
-$_CONFIG['phpui']['force_ssl'] = chkconfig($_CONFIG['phpui']['force_ssl']);
-$_CONFIG['database']['type'] = (! $_CONFIG['database']['type'] ? 'mysql' : $_CONFIG['database']['type']);
-$_CONFIG['database']['host'] = (! isset($_CONFIG['database']['host']) ? 'localhost' : $_CONFIG['database']['host']);
-$_CONFIG['database']['user'] = (! isset($_CONFIG['database']['user']) ? 'lms' : $_CONFIG['database']['user']);
-$_CONFIG['database']['password'] = (! isset($_CONFIG['database']['password']) ? '' : $_CONFIG['database']['password']);
-$_CONFIG['database']['database'] = (! isset($_CONFIG['database']['database']) ? 'lms' : $_CONFIG['database']['database']);
+
+foreach(lms_parse_ini_file($_CONFIG['directories']['lib_dir'].'/config_defaults.ini', TRUE) as $section => $values)
+	foreach($values as $key => $val)
+		if(! isset($_CONFIG[$section][$key]))
+			$_CONFIG[$section][$key] = $val;
 
 $_SYSTEM_DIR = $_CONFIG['directories']['sys_dir'];
 $_BACKUP_DIR = $_CONFIG['directories']['backup_dir'];
@@ -111,12 +106,14 @@ $_SMARTY_DIR = $_CONFIG['directories']['smarty_dir'];
 $_SMARTY_COMPILE_DIR = $_CONFIG['directories']['smarty_compile_dir'];
 $_SMARTY_TEMPLATES_DIR = $_CONFIG['directories']['smarty_templates_dir'];
 $_TIMEOUT = $_CONFIG['phpui']['timeout'];
-$_FORCE_SSL = $_CONFIG['phpui']['force_ssl'];
+$_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
 $_DBTYPE = $_CONFIG['database']['type'];
 $_DBHOST = $_CONFIG['database']['host'];
 $_DBUSER = $_CONFIG['database']['user'];
 $_DBPASS = $_CONFIG['database']['password'];
 $_DBNAME = $_CONFIG['database']['database'];
+
+
 
 // Redirect to SSL
 
@@ -237,6 +234,10 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.122  2003/12/04 04:39:14  lukasz
+ * - porz±dki
+ * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
+ *
  * Revision 1.121  2003/12/02 15:03:24  alec
  * te pierdo³y ju¿ kto¶ kiedy¶ wywali³
  *

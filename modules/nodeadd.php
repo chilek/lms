@@ -71,7 +71,7 @@ if(isset($nodedata))
 	elseif(!$LMS->IsIPFree($nodedata[ipaddr]))
 		$error[ipaddr] = "Podany adres IP jest zajêty!";
 
-	if($LMS->GetNodeIDByMAC($nodedata[mac]) && $_CONFIG[phpui][allow_mac_sharing] == FALSE)
+	if($LMS->GetNodeIDByMAC($nodedata[mac]) && $LMS->CONFIG[phpui][allow_mac_sharing] == FALSE)
 		$error[mac] = "Podany MAC jest ju¿ w bazie!";
 	elseif(!check_mac($nodedata[mac]))
 		$error[mac] = "Podany adres MAC jest nieprawid³owy!";
@@ -128,6 +128,10 @@ $SMARTY->display("nodeadd.html");
 
 /*
  * $Log$
+ * Revision 1.38  2003/12/04 04:39:14  lukasz
+ * - porz±dki
+ * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
+ *
  * Revision 1.37  2003/10/07 19:15:05  alec
  * ujednolicenie naglowka
  *

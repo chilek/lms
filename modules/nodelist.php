@@ -52,7 +52,7 @@ if (isset($_SESSION[nlp]) && !isset($_GET[page]))
         $_GET[page] = $_SESSION[nlp];
 	
 $page = (! $_GET[page] ? 1 : $_GET[page]);
-$pagelimit = (! $_CONFIG[phpui][nodelist_pagelimit] ? $listdata[total] : $_CONFIG[phpui][nodelist_pagelimit]);
+$pagelimit = (! $LMS->CONFIG[phpui][nodelist_pagelimit] ? $listdata[total] : $LMS->CONFIG[phpui][nodelist_pagelimit]);
 $start = ($page - 1) * $pagelimit;
 
 $_SESSION[nlp] = $page;
@@ -66,6 +66,10 @@ $SMARTY->display("nodelist.html");
 
 /*
  * $Log$
+ * Revision 1.26  2003/12/04 04:39:14  lukasz
+ * - porz±dki
+ * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
+ *
  * Revision 1.25  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

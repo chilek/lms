@@ -90,7 +90,7 @@ if(isset($nodeedit))
 		if(
 				$LMS->GetNodeIDByMAC($nodeedit[mac]) &&
 				$LMS->GetNodeMACByID($nodeedit[id])!=$nodeedit[mac] &&
-				$_CONFIG[phpui][allow_mac_sharing] == FALSE
+				$LMS->CONFIG[phpui][allow_mac_sharing] == FALSE
 		)
 		{
 			$error[mac] = "Podany adres MAC jest ju¿ przypisany do innego komputera!";
@@ -157,6 +157,10 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.41  2003/12/04 04:39:14  lukasz
+ * - porz±dki
+ * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
+ *
  * Revision 1.40  2003/10/11 10:17:03  lexx
  * - computer -> node i inne drobne poprawki
  *
