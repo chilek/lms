@@ -35,6 +35,7 @@ if($_GET['rawmode']=="true")
 	{
 		header("Content-Type: application/octetstream");
 		header("Content-Disposition: attachment; filename=lms-backup-".date("Ymd-His",$_GET['db']).".sql");
+		Header("Pragma: public");
 	}
 	else
 		header("Content-Type: text/plain; charset=ISO-8859-2");
