@@ -67,7 +67,9 @@ wersja 1.1.5 (??/??/2003):
 
     BTW. to jeszcze nie koniec, pozostaje mi dopisanie mo¿liwo¶æ rêcznego
     wypisania faktury za pojedyñcz± us³ugê/zdarzenie. Za kilka godzin powinno
-    byæ i to dostêpne.
+    byæ i to dostêpne. Faktury s± wystawiane przez lms-payments, o ile podczas
+    dodawania 'assignmentu' do usera zaznaczy³o siê pole 'faktura'. Docelowo
+    bêdzie mo¿na tworzyæ pojedyñcze faktury, ale to najwcze¶niej jutro.
   
 wersja 1.1.4 Tanith (03/10/2003):
   

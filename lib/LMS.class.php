@@ -1184,7 +1184,7 @@ class LMS
 		{
 			$result['content'][$idx]['basevalue'] = sprintf("%0.2f",($row['value'] / (100 + $row['taxvalue']) * 100));
 			$result['content'][$idx]['totalbase'] = $result['content'][$idx]['basevalue'] * $row['count'];
-			$result['content'][$idx]['totaltax'] = $row['value'] - $result['content'][$idx]['basevalue'] * $row['count'];
+			$result['content'][$idx]['totaltax'] = ($row['value'] - $result['content'][$idx]['basevalue']) * $row['count'];
 			$result['content'][$idx]['total'] = $row['value'] * $row['count'];
 			$result['totalbase'] += $result['content'][$idx]['totalbase'];
 			$result['totaltax'] += $result['content'][$idx]['totaltax'];
@@ -2265,6 +2265,10 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.296  2003/12/01 15:25:37  lukasz
+ * - poprawki
+ * - obs³uga kilku tych samych abonamentów w jednym dniu
+ *
  * Revision 1.295  2003/12/01 14:14:17  lukasz
  * - dodane SWW do faktur
  *
