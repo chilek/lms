@@ -64,7 +64,7 @@ function AccountExists($login) {
         return true; 
     }
 */
-return true;
+return false;
 }
 
 $option = $_GET['op'];
