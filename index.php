@@ -119,8 +119,8 @@ $SMARTY = new Smarty;
 
 // test for proper version of Smarty
 
-if(version_compare("2.4.2",$SMARTY->_version) > 0)
-	die('<B>Niepoprawna wersja engine Smarty! Proszê sci±gn±æ nowszê wersjê spod adresu <A HREF="http://smarty.php.net/distributions/Smarty-2.4.2.tar.gz">http://smarty.php.net/distributions/Smarty-2.4.2.tar.gz</A>!</B>');
+if(version_compare("2.5.0",$SMARTY->_version) > 0)
+	die('<B>Niepoprawna wersja engine Smarty! Proszê sci±gn±æ nowszê wersjê spod adresu <A HREF="http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz">http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz</A>!</B>');
 
 $SMARTY->template_dir = $_SMARTY_TEMPLATES_DIR;
 $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
