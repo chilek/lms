@@ -830,8 +830,9 @@ http://www.naszasiec.pl/</screen></example>
 	    podstawie tematu wiadomo¶ci, próba rozpoznania czy wiadomo¶æ nie jest odpowiedzi± na inn± wiadomo¶æ z ju¿
 	    przypisanym numerem zg³oszenia. Od wiadomo¶ci zostaj± od³±czone za³±czniki
 	    i umieszczone w katalogu zdefiniowanym w opcji <filename>mail_dir</filename>.</para>
-	    <para>Oprócz modu³ów Perla wymaganych przez pozosta³e skrypty nale¿y zainstalowaæ
-	    tak¿e modu³ <filename>MIME::Parser</filename>.</para>
+	    <para>Oprócz modu³ów Perla standardowo wymaganych przez resztê skryptów, nale¿y 
+	    zainstalowaæ tak¿e modu³y <filename>MIME::Parser</filename> i <filename>MIME::Words</filename> z 
+	    pakietu MIME-Tools oraz <filename>Net::SMTP</filename>.</para>
 	    <para>Skrypt mo¿na uruchamiaæ na wiele sposobów. Jednym z nich jest
 	    stworzenie skryptu pow³oki, który odczytuj±c skrzynkê pocztow± wywo³a lms-rtparser 
 	    dla ka¿dego maila. Wygodniejszym zastosowaniem jest jednak zintegrowanie
@@ -864,16 +865,21 @@ filter unix - n n - 10 pipe
 		    uruchomieniu skryptu. Domy¶lnie: niezdefiniowana.</para>
 		    <para>Przyk³ad:	<prompt>default_queue = </prompt></para>
 		</listitem>
-           	<listitem>
-		    <para>sendmail_binary</para>
-		    <para>Lokalizacja programu sendmail. Domy¶lnie: /usr/sbin/sendmail</para>
-		    <para>Przyk³ad:	<prompt>sendmail_binary = /usr/lib/sandmail</prompt></para>
-		</listitem>
 		<listitem>
 		    <para>mail_from</para>
-		    <para>Nadawca potwierdzenia. Je¶li nie zdefiniowano, zostanie u¿yty adres
+		    <para>Nadawca potwierdzenia (adres). Je¶li nie zdefiniowano, zostanie u¿yty adres
 		    kolejki do której zapisano zg³oszenie. Domy¶lnie: pusty.</para>
-		    <para>Przyk³ad:	<prompt>mail_from = &lt;rt@net.pl&gt;</prompt></para>
+		    <para>Przyk³ad:	<prompt>mail_from = rt@net.pl</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>mail_from_name</para>
+		    <para>Nadawca potwierdzenia (nazwa). Domy¶lnie: niezdefiniowana.</para>
+		    <para>Przyk³ad:	<prompt>mail_from_name = 'BOK SuperLAN'</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>smtp_server</para>
+		    <para>Serwer SMTP, przez który zostanie wys³ana wiadomo¶æ. Domy¶lnie: localhost.</para>
+		    <para>Przyk³ad:	<prompt>smtp_server = smtp.mydomain.pl</prompt></para>
 		</listitem>
 		<listitem>
 		    <para>mail_dir</para>

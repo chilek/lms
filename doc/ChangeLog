@@ -1,5 +1,12 @@
 $Id$
 
+wersja 1.4.0rc3 Evalla (??/??/2004):
+
+  - w lms-rtparser potwierdzenia wysy³a Net::SMTP zamiast sendmaila,
+    dodane opcje smtp_server, mail_from_name, usuniêta sendmail_binary (alec)
+  - usuniêty b³±d przy odtwarzaniu backupu na postgresie powodowany próbami
+    aktualizacji nieistniej±cych sekwencji (alec)
+
 wersja 1.4.0rc2 Evalla (24/09/2004):
 
   - usuniête stare pliki UPGRADE* (alec)

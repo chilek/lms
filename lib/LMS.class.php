@@ -208,7 +208,8 @@ class LMS
 			case 'postgres':
 				// uaktualnijmy sequencery postgresa
 				foreach($this->DB->ListTables() as $tablename)
-					$this->DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
+					if(!in_array($tablename, array('rtattachments','dbinfo','invoicecontents','stats','timestamps')))
+						$this->DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
 			break;
 		}
 	}

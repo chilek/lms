@@ -30,14 +30,15 @@ use vars qw($configfile $help $version $queue $debug);
 use POSIX qw(strftime);
 use File::Copy;
 use MIME::Parser;
-#use Data::Dumper;
+use MIME::Words qw(:all);
+use Net::SMTP;
 use Sys::Hostname;
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
 
 sub basename($) { my @tmp = split '/',$_[0]; return pop @tmp }
 
-my $_version = '1.4-cvs';
+my $_version = '1.5-cvs';
 
 my %options = (
 	"--config-file|C=s"     =>      \$configfile,
@@ -94,10 +95,11 @@ my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
-my $sendmail = $ini->val('rt', 'sendmail_binary') || '/usr/sbin/sendmail';
 my $save_path = $ini->val('rt', 'mail_dir') || '';
 my $queue = $queue || $ini->val('rt', 'default_queue');
 my $autoreply_from = $ini->val('rt', 'mail_from') || '';
+my $autoreply_name = $ini->val('rt', 'mail_from_name') || '';
+my $smtpserver = $ini->val('rt', 'smtp_server') || 'localhost';
 
 # very ugly code, but we really need tempdir..
 my $tmpdir = (defined $ini->val('rt', 'tmp_dir') && ! ($ini->val('rt', 'tmp_dir') eq '')) || (defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '') ? $ENV{'TMP'} : '/tmp');
@@ -310,33 +312,38 @@ if(! $prev_tid) # generate new ticket if previous not found
 		}
 	}
 
-        my $replymail = MIME::Entity->build(
-		'Type' => "text/plain",
-		'Charset' => "ISO-8859-2",
-#		'From' => $autoreply_from,
-		'Encoding' => "quoted-printable",
-		'Subject' => "[RT#".sprintf("%06d",$ticket_id)."] Potwierdzenie przyjêcia zg³oszenia o temacie '".$mh_subject."'",
-		'To' => $mh_replyto || $mh_from,
-		'References' => $mh_references.' '.$mh_msgid,
-		'Data' => [
-			"Uprzejmie informujemy ¿e Pañstwa zg³oszenie zosta³o zarejestrowane w naszym\n",
-			"systemie. Zg³oszeniu zosta³ przydzielony numer: RT#".sprintf("%06d",$ticket_id)."\n",
-			"\n",
-			"W przypadku jakiejkolwiek korespondencji zwi±zanej z Pañstwa zg³oszeniem, prosimy\n",
-			"umie¶ciæ w polu tematu wiadomo¶ci nastêpuj±cy ci±g znaków: [RT#".sprintf("%06d",$ticket_id)."]\n",
-			"\n",
-		],
-		'Message-ID' => '<confirm.'.$ticket_id.'.'.$queue.'.'.$timestamp.'@rtsystem.'.$hostname.'>',
-		'In-Reply-To' => $mh_msgid,
-		'X-Mailer' => 'LMS/RT v.'.$_version
-	);
+	# zakodujmy temat potwierdzenia
+	# w ten sposób, bo funkcja encode_mimewords po³yka³a spacje
+	my $subject = '';
+	my @temp = "Potwierdzenie przyjêcia zg³oszenia o temacie '$mh_subject'";
+	foreach my $word (@temp)
+	{
+		$subject = $subject.encode_mimeword($word, 'q','ISO-8859-2')." ";
+	}
 	
-	#TODO - is sendmail via pipe is correct way?
-	open SENDMAIL, "|$sendmail -t -oi -oem -f $autoreply_from"
-		or die "$0: open sendmail: $!\n";
-	$replymail->print(\*SENDMAIL);
-	close SENDMAIL;
-	die "sendmail failed" if ($? >> 255);
+	my $smtp = Net::SMTP->new($smtpserver);
+	$smtp->mail("$autoreply_from");
+	$smtp->to($mh_replyto || $mh_from);
+	$smtp->data();
+	$smtp->datasend("To: ".($mh_replyto || $mh_from)."\n");
+	$smtp->datasend("From: \"$autoreply_name\" <$autoreply_from>\n");
+	$smtp->datasend("Mime-Version: 1.0\n");
+	$smtp->datasend("Content-type: text/plain; charset=iso-8859-2\n");
+	$smtp->datasend("Content-transfer-encoding: 8bit\n");
+	$smtp->datasend("Subject: [RT#".sprintf("%06d",$ticket_id)."] $subject\n");
+	$smtp->datasend("References: $mh_references $mh_msgid\n");
+	$smtp->datasend("Message-ID: <confirm.$ticket_id.$queue.$timestamp\@rtsystem.$hostname>\n");
+	$smtp->datasend("In-Reply-To: $mh_msgid\n");
+	$smtp->datasend("X-Mailer: LMS/RT v.$_version\n");
+	$smtp->datasend("\n");
+	$smtp->datasend("Uprzejmie informujemy ¿e Pañstwa zg³oszenie zosta³o zarejestrowane w naszym\n".
+			"systemie. Zg³oszeniu zosta³ przydzielony numer: RT#".sprintf("%06d",$ticket_id)."\n".
+			"\n".
+			"W przypadku jakiejkolwiek korespondencji zwi±zanej z Pañstwa zg³oszeniem, prosimy\n".
+			"umie¶ciæ w polu tematu wiadomo¶ci nastêpuj±cy ci±g znaków: [RT#".sprintf("%06d",$ticket_id)."]\n".
+			"\n");
+	$smtp->dataend();
+	$smtp->quit;	
 }
 else
 {
