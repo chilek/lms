@@ -27,6 +27,6 @@
 include_once('class.php');
 
 $SMARTY->assign('error', $_GET['error']);
-$SMARTY->display('login.html');
+$SMARTY->display('customerlogin.html');
 
 ?>
