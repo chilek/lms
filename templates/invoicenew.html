@@ -133,7 +133,9 @@
 			{$item.s_valuenetto|string_format:"%02.2f z³"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.taxvalue|string_format:"%01.2f"}%
+			{if $item.taxvalue}
+				{$item.taxvalue|string_format:"%01.2f"}%
+			{else}zw.{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$item.valuebrutto|string_format:"%01.2f z³"}<BR>

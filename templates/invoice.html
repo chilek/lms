@@ -118,7 +118,9 @@
 		{$item.totalbase|string_format:"%.2f"} z³
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
-		{$item.taxvalue}%
+		{if $item.taxvalue}
+			{$item.taxvalue}%
+		{else}zw.{/if}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="RIGHT" NOWRAP>
 		{$item.totaltax|string_format:"%.2f"} z³
@@ -162,7 +164,9 @@
 		{$item.base|string_format:"%.2f"} z³
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT">
-		{$item.taxvalue}%
+		{if $item.taxvalue}
+			{$item.taxvalue}%
+		{else}zw.{/if}
 	</TD>
 	<TD WIDTH="1%" CLASS="fall" ALIGN="RIGHT" NOWRAP>
 		{$item.tax|string_format:"%.2f"} z³

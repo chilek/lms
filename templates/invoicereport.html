@@ -38,6 +38,9 @@
 			Kwota netto<BR>0%
 		</TD>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
+			Zw.<BR>
+		</TD>
+		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			Suma VAT
 		</TD>
 	</TR>
@@ -75,6 +78,9 @@
 			{$invoice.val0|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT">
+			{$invoice.valfree|string_format:"%01.2f"}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT">
 			{$invoice.tax|string_format:"%01.2f"}
 		</TD>
 	</TR>
@@ -100,6 +106,9 @@
 		</TD>	
 		<TD ALIGN="RIGHT" VALIGN="TOP">
 			<B>{$listdata.tax0|string_format:"%01.2f"}</B>
+		</TD>
+		<TD ALIGN="RIGHT" VALIGN="TOP">
+			<B>{$listdata.valfree|string_format:"%01.2f"}</B>
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="TOP">
 			<B>{$listdata.tax|string_format:"%01.2f"}</B>

@@ -39,16 +39,21 @@ switch($_GET['action'])
 {
 	case 'additem':
 		$itemdata = r_trim($_POST);
-		foreach(array('count', 'valuenetto', 'taxvalue', 'valuebrutto') as $key)
+		foreach(array('count', 'valuenetto', 'valuebrutto') as $key)			
 			$itemdata[$key] = sprintf('%01.2f',$itemdata[$key]);
+		if ($itemdata['taxvalue'] != '')
+			$itemdata['taxvalue'] = sprintf('%01.2f',$itemdata['taxvalue']);
 		if($itemdata['count'] > 0 && $itemdata['name'] != '')
 		{
-			if($itemdata['taxvalue'] < 0 || $itemdata['taxvalue'] > 100)
+			$taxvalue = $itemdata['taxvalue'];
+			if ($taxvalue == '')
+				$taxvalue = 0;
+			if($taxvalue < 0 || $taxvalue > 100)
 				$error['taxvalue'] = 'Niepoprawna wysoko¶æ podatku!';
 			if($itemdata['valuenetto'] != 0)
-				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($itemdata['taxvalue'] / 100 + 1),2);
+				$itemdata['valuebrutto'] = round($itemdata['valuenetto'] * ($taxvalue / 100 + 1),2);
 			elseif($itemdata['valuebrutto'] != 0)
-				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($itemdata['taxvalue'] + 100) * 100, 2);
+				$itemdata['valuenetto'] = round($itemdata['valuebrutto'] / ($taxvalue + 100) * 100, 2);
 			$itemdata['s_valuenetto'] = $itemdata['valuenetto'] * $itemdata['count'];
 			$itemdata['s_valuebrutto'] = $itemdata['valuebrutto'] * $itemdata['count'];
 			$itemdata['posuid'] = (string) getmicrotime();
