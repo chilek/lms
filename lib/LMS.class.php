@@ -81,7 +81,7 @@ class LMS
 
 		// to siê rozejdzie po modu³ach:
 
-		$this->AddMenu('RT', 'ticket.gif', '?m=rtqueuelist', 'Obs³uga zg³oszeñ (RT)', 'r', 60);
+		$this->AddMenu('Helpdesk', 'ticket.gif', '?m=rtqueuelist', 'Obs³uga zg³oszeñ (RT)', 'r', 60);
 		$this->AddMenu('Witamy !', 'l.gif', '?', '', '', 0);
 		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 10);
 		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 15);
@@ -2837,7 +2837,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetQueueList()
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, email FROM rtqueues'))
+		if($result = $this->DB->GetAll('SELECT id, name, email, description FROM rtqueues'))
 		{
 			foreach($result as $idx => $row)
 				foreach($this->GetQueueStats($row['id']) as $sidx => $row)
