@@ -1166,11 +1166,11 @@ class LMS
      function GetTariff($id)
      {
           $result = $this->DB->GetRow("SELECT id, name, value, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
-          $result['totalval'] = $result['value'] * $result['count'];
-          $result['users'] = $this->DB->GetAll("SELECT users.id AS id, COUNT(users.id) AS cnt, ".$this->DB->Concat('upper(lastname)',"' '",'name')." AS username FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY id",array($id));
+          $result['users'] = $this->DB->GetAll("SELECT users.id AS id, COUNT(users.id) AS cnt, ".$this->DB->Concat('upper(lastname)',"' '",'name')." AS username FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY users.id, username",array($id));
           $result['userscount'] = sizeof($result['users']);
           $result['count'] = $this->GetUsersWithTariff($id);
-          $result['rows'] = ceil(sizeof($result['users'])/2);
+          $result['totalval'] = $result['value'] * $result['count'];
+	  $result['rows'] = ceil(sizeof($result['users'])/2);
           return $result;
      }
 
@@ -1868,6 +1868,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.239  2003/09/23 19:21:50  alec
+ * poprawione zliczanie zysku miesiecznego oraz bledy w zapytaniu wystepujace na postgresie
+ *
  * Revision 1.238  2003/09/23 18:57:43  alec
  * new method for ip search in SearchNodeList()
  *
