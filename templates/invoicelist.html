@@ -122,6 +122,7 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			{cycle print=false}
 			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
+			<A HREF="?m=invoicepaid&id={$invoice.id}"><IMG ALIGN="absmiddle" SRC="img/save.gif" ALT="[ Rozlicz ]" BORDER="0" TARGET="_BLANK"></A>
 			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0" TARGET="_BLANK"></A>
 		</TD>
 	</TR>
@@ -194,7 +195,8 @@
 						Zaznacz wszystkie<INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"><BR>
 						<A HREF="javascript:prints();">Drukuj <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
 						<A HREF="javascript:prints_org();">Drukuj orygina³y <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
-						<A HREF="javascript:prints_cpy();">Drukuj kopie <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
+						<A HREF="javascript:prints_cpy();">Drukuj kopie <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
+						<A HREF="javascript:pays();">Rozlicz <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
 					</TD>
 				</TR>
 			</TABLE>
