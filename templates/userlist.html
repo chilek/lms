@@ -52,7 +52,7 @@
 	</TR>		
 	<TR CLASS="DARK">
 		<TD COLSPAN="6" CLASS="FALL">
-			<B>Strona:
+			<B>{$lang.page}:
 				{if $page > 1}<A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$userlist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
@@ -104,7 +104,7 @@
 	{/section}
 	<TR CLASS="DARK">
 		<TD COLSPAN="6" CLASS="FALL">
-			<B>Strona:
+			<B>{$lang.page}:
 				{if $page > 1}<A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$userlist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=userlist&s={$listdata.state}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}

@@ -34,7 +34,7 @@
 	</TR>
 	<TR class="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="9">
-			<B>Strona:
+			<B>{$lang.page}:
 				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$balancelist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=balancelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
@@ -78,7 +78,7 @@
 	{/section}
 	<TR class="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="9">
-			<B>Strona:
+			<B>{$lang.page}:
 				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$balancelist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=balancelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
