@@ -133,7 +133,6 @@ else
 	$imgwy = $cellh * ($widthy + 1);
 
 	$im = imagecreatetruecolor($imgwx, $imgwy);
-
 	$lightbrown = imagecolorallocate($im, 234,228,214);
 	$black = imagecolorallocate($im, 0,0,0);
 	$white = imagecolorallocate($im, 255,255,255);
