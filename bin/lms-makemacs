@@ -77,6 +77,12 @@ sub dotquad2u32($)
 	return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
 }
 
+sub isprivate($)
+{
+	my ($ip) = @_;
+	return matchip($ip,"192.168.0.0","255.255.0.0") || matchip($ip,"10.0.0.0","255.0.0.0") || matchip($ip,"172.16.0.0","255.240.0.0");
+}
+
 my $_version = '1.3-cvs';
 
 my %options = (
@@ -135,10 +141,10 @@ my $ini = new Config::IniFiles -file => $configfile;
 
 my $networks_list = $ini->val('macs', 'networks') || '';
 my $usergroups_list = $ini->val('macs', 'usergroups') || '';
-my $cfile = $ini->val('macs', 'macs_file') || '/etc/conf,d/rc.macs';
-my $cuid = $ini->val('macs', 'macs_owneruid') || '0';
-my $cgid = $ini->val('macs', 'macs_ownergid') || '0';
-my $cperm = $ini->val('macs', 'macs_permission') || '0700';
+my $cfile = $ini->val('macs', 'config_file') || '/etc/conf,d/rc.macs';
+my $cuid = $ini->val('macs', 'config_owneruid') || '0';
+my $cgid = $ini->val('macs', 'config_ownergid') || '0';
+my $cperm = $ini->val('macs', 'config_permission') || '600';
 my $redir = $ini->val('macs', 'redirect_address') || '127.0.0.1:80';
 my $ipbin = $ini->val('macs', 'iptables_binary') || '/sbin/iptables';
 my $chain = $ini->val('macs', 'chain') || 'MACS';
