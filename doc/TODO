@@ -10,10 +10,8 @@ $Id$
     c) mo¿liwo¶æ dodawania komentarzy
     d) mo¿liwo¶æ zmiany ownera ticketu ALE NIE NADAWCY!
     e) Drukowanie zg³oszeñ
-    f) Uptime'y zg³oszeñ - dodatkowe pole resolvetime w tabeli rttickets
 3.  Dopracowaæ wysy³anie wiadomo¶ci
 6.  U¿ytkownicy->Ostrze¿enia, to o czym dyskutowali¶my z Lexxem niedawno
-7.  Obs³uga upceil i downceil w lms-htbiptlimits
 8.  Obs³uga networks i usergroups w skryptach i demonie, tam gdzie jeszcze
     jej nie ma a mo¿e siê przydaæ.
 9.  ³adniejsza wizualizacja wyników statystyk
