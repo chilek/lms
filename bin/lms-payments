@@ -26,7 +26,7 @@ use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
-use vars qw($configfile $quiet $help $version $fakedate $balance_check);
+use vars qw($configfile $quiet $help $version $fakedate);
 use POSIX qw(strftime);
 use POSIX qw(mktime);
 use Time::Local;
@@ -39,7 +39,6 @@ my %options = (
 	"--help|h"		=>	\$help,
 	"--version|v"		=>	\$version,
 	"--fakedate|f=s"	=>	\$fakedate,
-	"--balancecheck|b"	=>	\$balance_check
 );
 
 Getopt::Long::config("no_ignore_case");
@@ -56,7 +55,6 @@ lms-payments, version $_version
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
 -f, --fakedate=YYYY/MM/DD	override system date
--b, --balancecheck		account payments for "indebted" users only
 
 EOF
 	exit 0;
@@ -143,17 +141,6 @@ if($fakedate)
 	$utsfmt = strftime("%s", localtime2());
 }
 
-my %balancelist;
-if($balance_check)
-{
-	my $dbq = $dbase->prepare("SELECT users.id AS uid, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id");
-	$dbq->execute();
-	while(my $row = $dbq->fetchrow_hashref())
-	{
-		$balancelist{$row->{'uid'}} = $row->{'balance'};
-	}
-}
-
 my $month = sprintf("%d",strftime("%m",localtime2()));
 my $day = strftime("%e",localtime2());
 my $year = strftime("%Y",localtime2());
@@ -185,7 +172,6 @@ my %gotinv;
 my $time = strftime("%s",localtime2());
 my $icdbq;
 my $suspended = 0;
-my $notbalanced = 0;
 
 # dobra, query wybiera *WSZYSTKIE* mo¿liwe assigmenty na dany dzieñ.
 
@@ -210,25 +196,6 @@ while(my $assign = $dbq->fetchrow_hashref())
 		}
 	} else {
 		next;
-	}
-	# sprawdzamy, czy bilans usera jest wiêkszy od naliczanej nale¿no¶ci
-	# je¶li nie, to naliczamy p³atno¶ci
-	if($balance_check && $notbalanced!=$uid)
-	{
-		my $xdbq = $dbase->prepare("SELECT SUM(value) AS payment FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND ((period = 0 AND at = $weekday) OR (period = 1 AND at = $day) OR (period = 2 AND at = $quarter) OR (period = 3 AND at = $yearday)) AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND userid = $uid");
-		$xdbq->execute();
-		my $xrow = $xdbq->fetchrow_hashref();
-	
-		if($balancelist{$uid} - $xrow->{'payment'} < 0)
-		{
-			$notbalanced = $uid;
-		}
-		else
-		{
-			print "$uid - bilans wiêkszy od sumy nale¿no¶ci (Bilans: $balancelist{$uid}\tP³atno¶æ: $xrow->{'payment'})\n" if not $quiet;
-			$suspended = $uid;
-			next;
-		}
 	}
 
 	my $txt = $txts{$assign->{'period'}};
