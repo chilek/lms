@@ -47,7 +47,12 @@ function _smarty_function_sizeof($args, &$SMARTY)
 function _smarty_function_tip($args, &$SMARTY)
 {
 	$error = eregi_replace('(\'|")','\\\1',$SMARTY->_tpl_vars['error'][$args['trigger']]);
+	$error = str_replace("\r",'',$error);
+	$error = str_replace("\n",'<BR>',$error);
+			
 	$text = eregi_replace('(\'|")','\\\1',$args['text']);
+	$text = str_replace("\r",'',$text);
+	$text = str_replace("\n",'<BR>',$text);
 	
 	if($SMARTY->_tpl_vars['error'][$args['trigger']])
 		$result = ' onMouseOver="return overlib(\'<B><FONT COLOR=RED>'.$error.'</FONT></B>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onMouseOut="nd();" ';
@@ -63,6 +68,9 @@ $SMARTY->register_function('tip','_smarty_function_tip');
 $SMARTY->register_modifier('to_words','to_words');
 /*
  * $Log$
+ * Revision 1.9  2003/10/02 13:15:15  lukasz
+ * - eskejepowanie
+ *
  * Revision 1.8  2003/09/24 22:33:15  lukasz
  * - more error tips
  *
