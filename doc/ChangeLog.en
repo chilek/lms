@@ -6,6 +6,7 @@ version 1.2.1 Sarah (04/05/2004):
     result was empty on MySQL (alec)
   - fixed zero value of payment accounting in lms-payments (lukas)
   - fixed trigger in 'downrate' field in tariffedit.html (alec)
+  - fixed errors in stats database compacting (alec)
 
 version 1.2.0 Janet (28/04/2004):
 
