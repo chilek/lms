@@ -9,6 +9,8 @@ wersja 1.2.0rc2 Janet (??/02/2004):
   - poprawione b³êdy ortograficzne i literówki w dokumentacji (alec)
   - w module 'hostfile' almsd dodana obs³uga opcji 'networks' oraz
     'skip_dev_ips' (alec)
+  - poprawki do upgrade'u: naliczanie taryf miesiêczne, a nie tygodniowe oraz
+    poprawione zapytania sql w UPGRADE.pgsql (alec)
 
 wersja 1.2.0rc1 Janet (18/02/2004):
 

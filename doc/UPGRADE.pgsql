@@ -21,10 +21,10 @@ DROP TABLE options;
 /* Kosmetyka u adminów */
 UPDATE admins SET lastlogindate=0 WHERE lastlogindate IS NULL;
 UPDATE admins SET failedlogindate=0 WHERE failedlogindate IS NULL;	 
-ALTER TABLE admins UPDATE lastlogindate SET DEFAULT 0;
-ALTER TABLE admins UPDATE lastlogindate SET NOT NULL;
-ALTER TABLE admins UPDATE failedlogindate SET DEFAULT 0;
-ALTER TABLE admins UPDATE failedlogindate SET NOT NULL;
+ALTER TABLE admins ALTER COLUMN lastlogindate SET DEFAULT 0;
+ALTER TABLE admins ALTER COLUMN lastlogindate SET NOT NULL;
+ALTER TABLE admins ALTER COLUMN failedlogindate SET DEFAULT 0;
+ALTER TABLE admins ALTER COLUMN failedlogindate SET NOT NULL;
 	
 /* Teraz u¿ytkownicy nie s± usuwani z bazy */
 ALTER TABLE users ADD deleted int2;
@@ -32,11 +32,12 @@ UPDATE users SET deleted=0;
 ALTER TABLE users ALTER COLUMN deleted SET DEFAULT 0;
 ALTER TABLE users ALTER COLUMN deleted SET NOT NULL;
 UPDATE users SET gguin=0 WHERE gguin IS NULL;
-ALTER TABLE users UPDATE COLUMN gguin SET DEFAULT 0;
-ALTER TABLE users UPDATE COLUMN gguin SET NOT NULL;
+ALTER TABLE users ALTER COLUMN gguin SET DEFAULT 0;
+ALTER TABLE users ALTER COLUMN gguin SET NOT NULL;
 
 /* Dzieñ zap³aty */
 ALTER TABLE users ADD payday integer;
+UPDATE users SET payday = 1;
 ALTER TABLE users ALTER COLUMN payday SET DEFAULT 1;
 ALTER TABLE users ALTER COLUMN payday SET NOT NULL;
 
@@ -73,9 +74,8 @@ UPDATE networks SET ipaddr = inet_aton(address);
 ALTER TABLE networks DROP COLUMN address;
 ALTER TABLE networks RENAME COLUMN ipaddr to address;
 ALTER TABLE networks ALTER COLUMN address set NOT NULL;
-ALTER TABLE nodes ADD ipaddr2 BIGINT;
-UPDATE nodes SET ipaddr=inet_aton(ipaddr);
-UPDATE nodes SET ipaddr2 = ipaddr;
+ALTER TABLE nodes ADD ipaddr2 bigint;
+UPDATE nodes SET ipaddr2 = inet_aton(ipaddr);
 ALTER TABLE nodes DROP COLUMN ipaddr;
 ALTER TABLE nodes RENAME COLUMN ipaddr2 to ipaddr;
 ALTER TABLE nodes ALTER COLUMN ipaddr set NOT NULL;
@@ -121,7 +121,7 @@ ALTER TABLE tariffs RENAME val TO value;
 /* Faktury inaczej */
 ALTER TABLE cash ADD COLUMN invoiceid integer;
 ALTER TABLE cash ALTER COLUMN invoiceid SET default 0;
-UPDATE cash SET invoice = 0;
+UPDATE cash SET invoiceid = 0;
 ALTER TABLE cash ALTER COLUMN invoiceid SET NOT NULL; 
 ALTER TABLE tariffs ADD taxvalue decimal(9,2);
 UPDATE tariffs SET taxvalue = 0;
