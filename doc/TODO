@@ -1,21 +1,15 @@
 $Id$
 
-1.  Zawieszenie p³atno¶ci u¿ytkownika
-    a) zawieszanie pojedynczych assignmentów - dodatkowe pole suspended
-    b) zawieszanie wszystkich p³atno¶ci na dany okres - zobowi±zanie z
-       tariffid=0
-2.  Helpdesk
+* Helpdesk:
     a) Backend do Helpdesk'a - poprawiæ i przetestowaæ lms-rtparser
     b) zmiana statusu ticketu podczas odpowiadania
-    c) mo¿liwo¶æ dodawania komentarzy
-    d) mo¿liwo¶æ zmiany ownera ticketu ALE NIE NADAWCY!
-    e) Drukowanie zg³oszeñ
-3.  Dopracowaæ wysy³anie wiadomo¶ci
-6.  U¿ytkownicy->Ostrze¿enia, to o czym dyskutowali¶my z Lexxem niedawno
-8.  Obs³uga networks i usergroups w skryptach i demonie, tam gdzie jeszcze
-    jej nie ma a mo¿e siê przydaæ.
-9.  ³adniejsza wizualizacja wyników statystyk
-10. mail mngmnt
-11. arpd (dokoñczyæ, support dla non-linux systems)
-12. zorientowaæ siê jak wygl±da sprawa z SMTP-AUTH
-13. backend i dokumentacja do lastonline
+    c) Drukowanie zg³oszeñ
+* Dopracowaæ wysy³anie wiadomo¶ci
+* U¿ytkownicy->Ostrze¿enia, to o czym dyskutowali¶my z Lexxem niedawno
+* Obs³uga networks i usergroups w skryptach i demonie, tam gdzie jeszcze
+  jej nie ma a mo¿e siê przydaæ.
+* ³adniejsza wizualizacja wyników statystyk
+* mail mngmnt
+* arpd (dokoñczyæ, support dla non-linux systems)
+* zorientowaæ siê jak wygl±da sprawa z SMTP-AUTH
+* backend i dokumentacja do lastonline
