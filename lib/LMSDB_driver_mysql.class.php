@@ -63,13 +63,21 @@ class LMSDB_driver_mysql extends LMSDB_common
 		{
 			$this->_query = $query;
 			$this->_error = FALSE;
-		}
+		}else
+			$this->_error = mysql_error();
 
 		return $this->_result;
 	}
 
 	function _driver_fetchrow_assoc()
 	{
-		mysql_fetch_array($this->_result,MYSQL_ASSOC))
+		return mysql_fetch_array($this->_result,MYSQL_ASSOC);
 	}
+
+	function _driver_fetchrow_num()
+	{
+		return mysql_fetch_array($this->_result,MYSQL_NUM);
+	}
+}
 ?>
+		
