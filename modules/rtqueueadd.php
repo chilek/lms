@@ -28,8 +28,6 @@ $queue = $_POST['queue'];
 
 if(isset($queue))
 {
-	$queue['id'] = $_GET['id'];
-	
 	if($queue['name'] == '')
 		$error['name'] = "Kolejka musi posiadaæ nazwê!";
 
