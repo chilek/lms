@@ -50,11 +50,11 @@ function _smarty_function_confirm($args, &$SMARTY)
         if($SMARTY->_tpl_vars['_LANG'][$text])
 	        $text = trim($SMARTY->_tpl_vars['_LANG'][$text]);
 	else
-		if(!in_array($content, $SMARTY->_tpl_vars['missing_strings']) && $text !='')
+		if(!in_array($text, $SMARTY->_tpl_vars['missing_strings']) && $text !='')
 			$SMARTY->_tpl_vars['missing_strings'][] = $text;	    
 	if(is_array($args))
-	    foreach($args as $argid => $argval)
-		    $text = str_replace('$'.$argid, $argval, $text);
+		foreach($args as $argid => $argval)
+			$text = str_replace('$'.$argid, $argval, $text);
 
 	$text = str_replace('\'','\\\'',$text);
 	$text = str_replace('"','&quot;',$text);
@@ -77,11 +77,11 @@ function _smarty_function_tip($args, &$SMARTY)
         if($SMARTY->_tpl_vars['_LANG'][$text])
 	        $text = trim($SMARTY->_tpl_vars['_LANG'][$text]);
 	else
-		if(!in_array($content, $SMARTY->_tpl_vars['missing_strings']) && $text !='')
+		if(!in_array($text, $SMARTY->_tpl_vars['missing_strings']) && $text !='')
 			$SMARTY->_tpl_vars['missing_strings'][] = $text;	    
 	if(is_array($args))
-	    foreach($args as $argid => $argval)
-		    $text = str_replace('$'.$argid, $argval, $text);
+		foreach($args as $argid => $argval)
+			$text = str_replace('$'.$argid, $argval, $text);
 
 	$error = str_replace("'",'\\\'',$SMARTY->_tpl_vars['error'][$args['trigger']]);
 	$error = str_replace('"','&quot;',$error);
