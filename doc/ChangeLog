@@ -24,6 +24,8 @@ wersja 1.1.5 (18/10/2003):
     konfigów i prze³adowywania us³ug (alec)
   - w index.php dodano now± funkcjê do parsowania pliku konfiguracyjnego, 
     w pe³ni kompatybilna z daemonem w c i czê¶ciowo z lms-mgc (alec)
+  - do lms.pgsql dodane sql'owe funkcje inet_ntoa() i inet_aton() dla
+    przysz³ych zastosowañ (alec)
   
 wersja 1.1.4 Tanith (03/10/2003):
   

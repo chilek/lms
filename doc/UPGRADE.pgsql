@@ -118,6 +118,26 @@ CREATE TABLE assignments (
    PRIMARY KEY (id)
 );
 
+/* Konwersja adresów internetowych int <-> text */
+CREATE OR REPLACE FUNCTION inet_ntoa(bigint) RETURNS text AS '
+SELECT 
+     ($1/(256*256*256))::text
+     ||''.''||
+     ($1/(256*256) - $1/(256*256*256)*256)::text
+     ||''.''||
+     ($1/256 - $1/(256*256)*256)::text
+     ||''.''||
+     ($1 - $1/256*256)::text;
+' LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION inet_aton(text) RETURNS bigint AS '
+SELECT
+     split_part($1,''.'',1)::int8*(256*256*256)+
+     split_part($1,''.'',2)::int8*(256*256)+
+     split_part($1,''.'',3)::int8*256+
+     split_part($1,''.'',4)::int8;
+' LANGUAGE SQL;
+
 /* Chyba o niczym nie zapomnia³em? */
 COMMIT;
 
