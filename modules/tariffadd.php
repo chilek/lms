@@ -46,27 +46,43 @@ if(isset($tariffadd))
 		if(!(ereg('^[0-9.,]+$',$tariffadd['taxvalue'])) || $tariffadd['taxvalue'] < 0 || $tariffadd['taxvalue'] > 100)
 			$error['taxvalue'] = 'Podana stawka podatku jest niepoprawna!';
 
-	if(!(ereg('^[0-9]+$', $tariffadd['uprate'])) && $tariffadd['uprate'] != '')
-		$error['uprate'] = 'Pole uprate musi zawieraæ liczbê ca³kowit±';
 	if($tariffadd['uprate']=='') $tariffadd['uprate'] = 0;
-		
-	if(!ereg('^[0-9]+$', $tariffadd['downrate']) && $tariffadd['downrate'] != '')
-		$error['downrate'] = 'Pole downrate zawieraæ liczbê ca³kowit±';
 	if($tariffadd['downrate']=='') $tariffadd['downrate'] = 0;
-	
-	if(($tariffadd['uprate'] < 8 || $tariffadd['uprate'] > 4096) && $tariffadd['uprate'] != '')
-		$error['uprate'] = 'Pole uprate musi zawieraæ liczbê z przedzia³u 8 - 4096';
+	if($tariffadd['upceil']=='') $tariffadd['upceil'] = 0;
+	if($tariffadd['downceil']=='') $tariffadd['downceil'] = 0;
+	if($tariffadd['climit']=='') $tariffadd['climit'] = 0;
+	if($tariffadd['plimit']=='') $tariffadd['plimit'] = 0;
 
-	if(($tariffadd['downrate'] < 8 || $tariffadd['downrate'] > 4096) && $tariffadd['downrate'] != '')
-		$error['downrate'] = 'Pole downrate musi zawieraæ liczbê z przedzia³u 8 - 4096';
-	
+	if(!ereg('^[0-9]+$', $tariffadd['uprate']))
+		$error['uprate'] = 'To pole musi zawieraæ liczbê ca³kowit±';
+	if(!ereg('^[0-9]+$', $tariffadd['downrate']))
+		$error['downrate'] = 'To pole musi zawieraæ liczbê ca³kowit±';
+	if(!ereg('^[0-9]+$', $tariffadd['upceil']))
+		$error['upceil'] = 'To pole musi zawieraæ liczbê ca³kowit±';
+	if(!ereg('^[0-9]+$', $tariffadd['downceil']))
+		$error['downceil'] = 'To pole musi zawieraæ liczbê ca³kowit±';
+	if(!ereg('^[0-9]+$', $tariffadd['climit']))
+		$error['climit'] = 'To pole musi zawieraæ liczbê ca³kowit±';
+	if(!ereg('^[0-9]+$', $tariffadd['plimit']))
+		$error['plimit'] = 'To pole musi zawieraæ liczbê ca³kowit±';
+
+	if(($tariffadd['uprate'] < 8 || $tariffadd['uprate'] > 4096) && $tariffadd['uprate'] != 0)
+		$error['uprate'] = 'To pole musi zawieraæ liczbê z przedzia³u 8 - 4096';
+	if(($tariffadd['downrate'] < 8 || $tariffadd['downrate'] > 4096) && $tariffadd['downrate'] != 0)
+		$error['downrate'] = 'To pole musi zawieraæ liczbê z przedzia³u 8 - 4096';
+	if(($tariffadd['upceil'] < 8 || $tariffadd['upceil'] < $tariffadd['uprate']) && $tariffadd['upceil'] != 0)
+		$error['upceil'] = 'To pole musi zawieraæ liczbê wiêksz± od 8 i wiêksz± od upload rate';
+	if(($tariffadd['downceil'] < 8 || $tariffadd['downceil'] < $tariffadd['downrate']) && $tariffadd['downceil'] != 0)
+		$error['downceil'] = 'To pole musi zawieraæ liczbê wiêksz± od 8 i wiêksz± od download rate';
+
 	if($tariffadd['name'] == '')
 		$error['name'] = 'Musisz podaæ nazwê taryfy!';
 	else
 		if($LMS->GetTariffIDByName($tariffadd['name']))
 			$error['name'] = "Istnieje ju¿ taryfa o nazwie '".$tariffadd['name']."'!";
 
-	if(!$error){
+	if(!$error)
+	{
 		header('Location: ?m=tarifflist&id='.$LMS->TariffAdd($tariffadd));
 		die;
 	}
