@@ -135,11 +135,56 @@ HREF="#USER-LOGIN"
 ></DT
 ><DT
 >3.2. <A
-HREF="#USER-ALL"
->Praca z LMS-UI</A
+HREF="#MENU-USERS"
+>U¿ytkownicy</A
 ></DT
 ><DT
 >3.3. <A
+HREF="#MENU-NODES"
+>Komputery</A
+></DT
+><DT
+>3.4. <A
+HREF="#MENU-NETDEVICES"
+>Osprzêt sieciowy</A
+></DT
+><DT
+>3.5. <A
+HREF="#USER-NETWORKS"
+>Sieci IP</A
+></DT
+><DT
+>3.6. <A
+HREF="#MENU-FINANCES"
+>Taryfy i Finanse</A
+></DT
+><DT
+>3.7. <A
+HREF="#MENU-MAILING"
+>Mailing</A
+></DT
+><DT
+>3.8. <A
+HREF="#MENU-RELOAD"
+>Prze³adowanie</A
+></DT
+><DT
+>3.9. <A
+HREF="#MENU-DATABASES"
+>Bazy danych</A
+></DT
+><DT
+>3.10. <A
+HREF="#MENU-ADMINS"
+>Administratorzy</A
+></DT
+><DT
+>3.11. <A
+HREF="#MENU-STATS"
+>Statystyki</A
+></DT
+><DT
+>3.12. <A
 HREF="#USER-STAFF"
 >Dodatki</A
 ></DT
@@ -1116,7 +1161,12 @@ CLASS="EMPHASIS"
 >LMS-MGC</I
 ></SPAN
 > i resztê skryptów potrzebujemy 
-		tak¿e Perla i modu³y do niego czyli:
+		tak¿e Perla i modu³y do niego, które mo¿na pobraæ z <A
+HREF="http://www.cpan.org"
+TARGET="_top"
+>www.cpan.org</A
+>,
+		czyli:
 	  <UL
 ><LI
 ><P
@@ -1584,15 +1634,6 @@ HREF="http://www.sqlite.org"
 TARGET="_top"
 >			www.sqlite.org</A
 >.</P
-><P
->Na obecn± chwilê z SQLite nie wspó³pracuje demon <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->almsd.
-			</I
-></SPAN
-></P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -2385,7 +2426,7 @@ NAME="USER"
   Szybkie wyszukiwanie danych o u¿ytkownikach i ich sprzêcie. Sporz±dzanie korespondencji
   seryjnej do u¿ytkowników, definiowanie praw dostêpu dla administratorów i ich hase³.
   Ponadto daje mo¿liwo¶æ przegl±dania statystyk wykorzystania ³±cza, a tak¿e
-  tworzenia kopii bazy danych oraz zarz±dzania konfiguracj± us³ug na serwerze . 
+  tworzenia kopii bazy danych oraz zarz±dzania konfiguracj± us³ug na serwerze. 
   <SPAN
 CLASS="emphasis"
 ><I
@@ -2411,78 +2452,41 @@ NAME="USER-LOGIN"
 	za³o¿onego konta, zostaniesz przekierowany do modu³u tworzenia kont
 	administratorów. W tym momencie bêdziesz mia³ tylko dostêp do tego
 	jednego modu³u.</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="USER-WELCOME"
+>3.1.1. Praca z LMS-UI</A
+></H3
+><P
+>Po zalogowaniu do LMS'a zobaczysz panel powitalny, na którym znajduj± siê
+	    podstawowe informacje na temat naszego systemu: wersjê LMS i jego sk³adników,
+	    wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i komputerów w bazie oraz ich
+	    stan (pod³±czony/od³±czony), liczbê zad³u¿onych i kwota oraz przydatne lms'owe linki.</P
+><P
+>Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
+	    dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze.
+	    W polach szybkiego wyszukiwania, oprócz id u¿ytkownika lub komputera, mo¿esz 
+	    podawaæ nazwisko, nazwê, fragment adresu, telefon, email, adres IP lub MAC. 
+	    W przypadku gdy w bazie znajduje siê wiêcej u¿ytkowników pasuj±cych do szukanych
+	    danych zostan± wy¶wietlone informacje tylko o jednym u¿ytkowniku lub komputerze.</P
+></DIV
 ></DIV
 ><DIV
 CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
-NAME="USER-ALL"
->3.2. Praca z LMS-UI</A
+NAME="MENU-USERS"
+>3.2. U¿ytkownicy</A
 ></H2
 ><P
->Po zalogowaniu do LMS'a zobaczysz panel powitalny, na którym znajduj± siê
-	podstawowe informacje na temat naszego systemu: wersjê LMS i jego sk³adników,
-	wersjê j±dra i uptime serwera, ilo¶æ u¿ytkowników i komputerów w bazie oraz ich
-	stan (pod³±czony/od³±czony), liczbê zad³u¿onych i kwota oraz przydatne lms'owe linki.</P
-><P
->Z menu po lewej stronie wybierasz interesuj±cy ciê modu³. Mo¿esz równie¿
-	dokonaæ zmiany has³a, wylogowaæ siê lub szybko przej¶æ do informacji o u¿ytkowniku i komputerze
-	podaj±c ich numery.</P
-><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
-><A
-NAME="MENU-USERS"
->3.2.1. U¿ytkownicy</A
-></H3
-><P
->Po wej¶ciu do panelu 'U¿ytkownicy' uka¿e siê lista u¿ytkowników,
-	któr± mo¿esz filtrowaæ wed³ug wybranych kryteriów lub sortowaæ klikaj±c
-	na nazwie kolumny.</P
-><P
->Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu
-	z informacjami szczegó³owymi o nim i przypisanych mu komputerach, taryfach oraz
-	operacjach finansowych. Tam te¿ mo¿esz modyfikowaæ dane u¿ytkownika, definiowaæ
-	op³aty abonamentowe i zaksiêgowaæ wp³atê lub obci±¿enie jego rachunku.</P
-><P
->W menu znajduj±cym siê u góry okna masz do wyboru opcje:
-	<UL
-><LI
-><P
->Lista - Wy¶wietlenie listy u¿ytkowników, tej która pokazuje siê po
-	    wej¶ciu do panelu 'U¿ytkownicy'.</P
-></LI
-><LI
-><P
->Od³±czeni - Wy¶wietlenie listy u¿ytkowników od³±czonych.</P
-></LI
-><LI
-><P
->Zad³u¿eni - Wy¶wietlenie listy u¿ytkowników zad³u¿onych.</P
-></LI
-><LI
-><P
->Nowy - Dodawanie nowego u¿ytkownika.</P
-></LI
-><LI
-><P
->Szukaj - Wyszukiwanie u¿ytkowników wg zadanych kryteriów.</P
-></LI
-><LI
-><P
->Wydruki - Listy oraz bilansy u¿ytkowników, w formacie przyjaznym dla
-	    drukarki z mo¿liwo¶ci± definiowania filtrów i sortowania</P
-></LI
-></UL
->
-	</P
-><P
->Ikona ¿arówki s³u¿y do zmiany statusu (pod³±czony/od³±czony) wszystkich komputerów 
-	przypisanych danemu u¿ytkownikowi.</P
-><P
-><DIV
+>Tutaj zarz±dzasz danymi u¿ytkowników twojej sieci i ich finansami, ale tak¿e 
+	ich komputerami. Mo¿esz na przyk³ad jednym klikniêciem od³±czyæ wszystkie 
+	komputery u¿ytkownika.
+	<DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
@@ -2508,38 +2512,209 @@ VALIGN="TOP"
 ></TABLE
 ></DIV
 ></P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-USERS-LIST"
+>3.2.1. Lista</A
+></H3
+><P
+>Po wej¶ciu do panelu 'U¿ytkownicy' uka¿e siê lista u¿ytkowników,
+	    któr± mo¿esz filtrowaæ wed³ug wybranych kryteriów (statusu, grupy lub sieci)
+	    lub sortowaæ klikaj±c na nazwie kolumny. Na li¶cie ikona ¿arówki informuje
+	    o statusie pod³±czenia komputerów u¿ytkownika, a ikona znaku drogowego
+	    o statusie ostrze¿eñ. Klikniêcie na nich zmienia status na przeciwny w
+	    stosunku do wszystkich komputerów danego u¿ytkownika. Gdy u¿ytkownik nie
+	    posiada przypisanych ¿adnych komputerów ikony te zostan± zamienione znakiem
+	    wykrzyknika.</P
+><P
+>U u¿ytkowników z saldem ujemnym pojawia siê link "Rozlicz", pozwalaj±cy na
+	    zaksiêgowanie jednym klikniêciem wp³aty równowa¿±cej ujemne saldo.</P
+><P
+>Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu
+	    z informacjami szczegó³owymi o nim i przypisanych mu komputerach, taryfach oraz
+	    operacjach finansowych. Tam te¿ mo¿esz modyfikowaæ dane u¿ytkownika, definiowaæ
+	    op³aty abonamentowe i zaksiêgowaæ wp³atê lub obci±¿enie jego rachunku.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-NODES"
->3.2.2. Komputery</A
+NAME="MENU-USERS-NEW"
+>3.2.2. Nowy</A
 ></H3
 ><P
->Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie listy komputerów,
-	wyszukiwania komputerów o danej nazwie, IP lub MAC'u, dodawanie nowych lub usuwanie ju¿
-	wpisanych do bazy komputerów, a tak¿e podgl±d i zmianê informacji o nich. Zmiany statusu 
-	komputera 'w³±czony/wy³±czony' dokonuje siê
-	klikniêciem na ikonê ¿arówki w odpowiedniej linii.</P
-><P
->Górne menu udostêpnia nastêpuj±ce modu³y:
-	<UL
-><LI
-><P
->Lista - Wy¶wietlenie listy komputerów, tej która pokazuje siê po
-	    wej¶ciu do panelu 'Komputery'. Listê mo¿na sortowaæ klikaj±c na nazwie kolumny.</P
-></LI
-><LI
-><P
->Nowy - Dodawanie nowego komputera.</P
-><P
-><DIV
+>Dodaj±c nowego u¿ytkownika podajesz jego nazwisko/nazwê i dane teleadresowe
+	    oraz status (pod³±czony/oczekuj±cy/zainteresowany).
+	    <DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
-WIDTH="90%"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Czêsto zg³aszane jest blêdne kapitalizowanie narodowych znaków diakrytycznych.
+	    Odpowiedzialny za to jest serwer bazy danych i rozwi±zania nale¿y szukaæ w jego konfiguracji.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-USERS-SEARCH"
+>3.2.3. Szukaj</A
+></H3
+><P
+>Mo¿liwe jest wyszukiwanie u¿ytkowników (tak¿e usuniêtych) wg zadanych kryteriów. Modu³ ten,
+	    od pola szybkiego wyszukiwania z menu po lewej stronie, oprócz tego, ¿e jest bardziej rozbudowany 
+	    i pozwala wyszukiwaæ wg wielu kryteriów, ró¿ni siê tak¿e tym, ¿e zwraca listê u¿ytkowników
+	    spe³niaj±cych podane kryteria.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-USERS-GROUPS"
+>3.2.4. Grupy</A
+></H3
+><P
+>Tutaj zarz±dzasz grupami u¿ytkowników. Po klikniêciu menu 'Grupy'
+	    uka¿e ci siê lista grup z podstawowymi informacjami o grupach. Klikaj±c 
+	    na wybranej grupie przejdziesz do modu³u, w którym mo¿esz zmieniæ dane
+	    tej sieci, przegl±daæ oraz przypisywaæ u¿ytkowników do grup.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-USERS-NEWGROPUP"
+>3.2.5. Nowa grupa</A
+></H3
+><P
+>Grupa powinna posiadaæ unikaln± nazwê, sk³adaj±c± siê z liter, cyfr, znaku
+	    my¶lnika lub podkre¶lenia. Poniewa¿ grupy wykorzystywane s± w skryptach w nazwie
+	    nie mo¿e byæ znaku spacji.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-USERS-PRINTS"
+>3.2.6. Wydruki</A
+></H3
+><P
+>Zestaw modu³ów wy¶wietlaj±cych listy w formie przyjaznej dla drukarki
+	    zawiera:
+	    <UL
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Lista u¿ytkowników</I
+></SPAN
+> z wieloma filtrami i dowolnym sortowaniem,</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Raport wierzytelno¶ci</I
+></SPAN
+> u¿ytkownika(ów) na dany dzieñ,</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Bilans u¿ytkownika</I
+></SPAN
+> za wybrany okres</P
+></LI
+></UL
+>
+	    </P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="MENU-NODES"
+>3.3. Komputery</A
+></H2
+><P
+>Panel ten s³u¿y do zarz±dzania komputerami i umo¿liwia: przegl±danie listy komputerów,
+	wyszukiwanie, dodawanie nowych lub usuwanie ju¿	wpisanych do bazy komputerów, a tak¿e podgl±d 
+	i zmianê informacji o nich.</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-NODES-LIST"
+>3.3.1. Lista</A
+></H3
+><P
+>Lista komputerów, ta która pokazuje siê po wej¶ciu do panelu 'Komputery'. 
+	    obejmuje wszystkie komputery w bazie. Mo¿na j± sortowaæ klikaj±c na nazwie dowolnej 
+	    kolumny. W ka¿dym wierszu, po prawej stronie znajduj± siê ikony s³u¿±ce kolejno do:
+	    zmiany statusu komputera [Pod³±cz/Od³±cz], zmiany statusu ostrze¿enia [Ostrzegaj/Nie ostrzegaj],
+	    usuniêcia z bazy [Usuñ], wywo³ania panelu edycyjnego [Edytuj] oraz wy¶wietlenia
+	    informacji szczegó³owych na temat danego komputera [Info]. Do panelu informacyjnego,
+	    który jest zintegrowany z panelem informacji o w³a¶cicielu komputera mo¿na tak¿e
+	    przej¶æ klikaj±c na pod¶wietlonym wierszu.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-NODES-NEW"
+>3.3.2. Nowy</A
+></H3
+><P
+>Tutaj dodaje siê nowe komputery do bazy danych. W tym celu definiujemy nazwê
+	    komputera (sk³adaj±c± siê z liter, cyfr, znaku podkre¶lenia lub my¶lnika), jego w³a¶ciciela,
+	    adres IP, adres MAC oraz status. Przy polach na adresy IP i MAC znajduj± siê linki
+	    do paneli, w których mo¿na wybraæ dostêpny adres IP oraz znaleziony w sieci MAC.
+	    Po wpisaniu danych naci¶nij "Zapisz". Przy wprowadzaniu danych dla wielu komputerów
+	    wygodnie jest zaznaczyæ pole "Wywo³aj ponownie..."
+	    <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
 BORDER="0"
 ><TR
 ><TD
@@ -2561,13 +2736,12 @@ VALIGN="TOP"
 ></TR
 ></TABLE
 ></DIV
-></P
-><P
-><DIV
+>
+	    <DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
-WIDTH="90%"
+WIDTH="100%"
 BORDER="0"
 ><TR
 ><TD
@@ -2589,136 +2763,284 @@ VALIGN="TOP"
 ></TABLE
 ></DIV
 ></P
-></LI
-><LI
-><P
->Szukaj - Wyszukiwanie komputerów wed³ug zadanych kryteriów.</P
-></LI
-><LI
-><P
->Wydruki - Wy¶wietlenie list komputerów, w formacie 
-	    przyjaznym dla drukarki z mo¿liwo¶ci± definiowania filtrów i sortowania.</P
-></LI
-></UL
->
-	</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
+><A
+NAME="MENU-NODES-SEARCH"
+>3.3.3. Szukaj</A
+></H3
+><P
+>Wyszukiwanie komputerów wed³ug zadanych kryteriów. Mo¿esz podaæ 
+	    ca³± lub fragment nazwy komputera oraz jego adresów IP i MAC.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-NODES-WARNINGS"
+>3.3.4. Ostrze¿enia</A
+></H3
+><P
+>Tutaj definiuje siê tre¶æ wiadomo¶ci administracyjnych dla u¿ytkowników oraz
+		w³±cza lub wy³±cza komputerom ostrze¿enia. Po lewej stronie znajduje siê lista, na
+		której komputery z w³±czonym ostrze¿eniem zaznaczone s± kolorem czerwonym. Jesli chcesz
+		tylko zmieniæ/przypisaæ u¿ytkownikom tre¶æ wiadomo¶ci administracyjnej, zaznacz odpowiednie
+		komputery na li¶cie i pozostaw puste pola 'W³±cz ostrze¿enia' oraz 'Wy³±cz ostrze¿enia'.  </P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-NODES-PRINT"
+>3.3.5. Wydruki</A
+></H3
+><P
+>Wy¶wietlenie list komputerów, w formacie przyjaznym dla drukarki 
+		z mo¿liwo¶ci± definiowania filtrów i sortowania podobnie jak na Li¶cie.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
 ><A
 NAME="MENU-NETDEVICES"
->3.2.3. Osprzêt sieciowy</A
+>3.4. Osprzêt sieciowy</A
+></H2
+><P
+>W panelu przeznaczonym do ewidencji sprzêtu zarz±dzamy struktur± 
+	sieci, urz±dzeniami typu swich, hub, router, serwer i po³±czeniami miêdzy
+	nimi, a tak¿e przy³±czonymi do nich komputerami. Ka¿demu urzêdzeniu mo¿na przypisaæ 
+	co najmniej jeden adres sieciowy.</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-NETDEVICES-LIST"
+>3.4.1. Lista</A
 ></H3
 ><P
->W panelu przeznaczonym do ewidencji sprzêtu mo¿na przegl±daæ listê
-	urz±dzeñ sieciowych, zawieraj±c± ich nazwy i symbole, po³o¿enie i opis, a ponadto 
-	ilo¶æ dostêpnych portów. Klikniêcie na wybranym urz±dzeniu spowoduje
-	wy¶wietlenie informacji szczegó³owych o nim. Mo¿liwe jest definiowanie po³±czeñ
-	urz±dzeñ i komputerów oraz generowanie graficznej mapy ca³ej sieci.</P
-><P
->W tym panelu mo¿esz skorzystaæ z menu:
-	<UL
-><LI
-><P
->Lista - Wy¶wietlenie listy urz±dzeñ, tej która pokazuje siê po
-	    wej¶ciu do panelu 'Urz±dzenia sieciowe'. Listê mo¿na sortowaæ klikaj±c na nazwie kolumny.</P
-></LI
-><LI
-><P
->Nowe - Dodawanie nowego urz±dzenia.</P
-></LI
-><LI
-><P
->Mapa - Generowanie mapy sieci (po³±czeñ sieciowych). Mo¿esz zdefiniowaæ
-	    które urz±dzenie jest nadrzêdne w stosunku do pozosta³ych.</P
-></LI
-></UL
->
-	</P
+>Lista urz±dzeñ zawiera ich nazwy i symbole, po³o¿enie i opis, a ponadto 
+		ilo¶æ dostêpnych portów. Lista mo¿e byæ sortowana wg dowolnego parametru/kolumny.
+		Klikniêcie na wybranym urz±dzeniu spowoduje wy¶wietlenie informacji szczegó³owych 
+		o nim, gdzie mo¿liwe jest definiowanie po³±czeñ urz±dzeñ i komputerów, adresów IP
+		urz±dzenia oraz zamiana dwóch urz±dzeñ.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
+><A
+NAME="MENU-NETDEVICES-NEW"
+>3.4.2. Nowe</A
+></H3
+><P
+>Urz±dzenie sieciowe powinno posiadaæ unikaln± nazwê. Pozosta³e
+		parametry tj. producent, model, nr seryjny, ilo¶æ portów, lokalizacja
+		i opis s± opcjonalne.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-NETDEVICES-MAP"
+>3.4.3. Mapa</A
+></H3
+><P
+>Generowanie graficznej mapy ca³ej sieci, na podstawie
+		danych z bazy lms'a nastêpuje po wybraniu opcji menu 'Mapa'. Mo¿esz 
+		zdefiniowaæ, które urz±dzenie jest nadrzêdne w stosunku do pozosta³ych.
+		<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Do wygenerowania mapy potrzebna jest wbudowana w PHP obs³uga 
+		biblioteki graficznej GD.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+		</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
 ><A
 NAME="USER-NETWORKS"
->3.2.4. Sieci IP</A
-></H3
+>3.5. Sieci IP</A
+></H2
 ><P
 >Tutaj definiujesz dane swojej sieci tj. klasê adresow±, domenê, DNS'y, bramê,
-	zakres DHCP. Na li¶cie dostêpna jest równie¿ ilo¶æ zajêtych i dostêpnych adresów.
-	Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ na podsieci,
-	albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</P
+	zakres DHCP. Je¿eli LMS s³u¿y ci do zarz±dzania wieloma sieciami lub dzielisz jedn± sieæ 
+	na podsieci, albo korzystasz z ró¿nych klas adresowych tutaj jest to mo¿liwe.</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-NETWORKS-LIST"
+>3.5.1. Lista</A
+></H3
 ><P
->Modyfikowanie w³a¶ciwo¶ci sieci nastêpuje w module dostêpnym po wybraniu
-	sieci z listy lub bezpo¶rednio po klikniêciu ikony 'Edytuj'. Menu udostêpnia dwie opcje:
-	<UL
-><LI
+>Lista sieci oprócz podstawowych danych o sieciach zawiera podsumowanie ilo¶ci
+	    adresów wolnych i przypisanych. Modyfikowanie w³a¶ciwo¶ci sieci nastêpuje w module 
+	    dostêpnym po wybraniu sieci z listy lub bezpo¶rednio po klikniêciu ikony [Edytuj].</P
 ><P
->Lista - Wy¶wietlenie listy sieci. tej która pokazuje siê po
-	    wej¶ciu do panelu 'Sieci IP'.</P
-></LI
-><LI
-><P
->Nowa sieæ  - Dodawanie sieci.</P
-></LI
-></UL
->
-	</P
+>Podczas edycji danych sieci mo¿esz przegl±daæ listê komputerów z tej sieci, gdzie w 
+	    miejscu adresu IP pojawia siê nazwa komputera/urz±dzenia, do którego mo¿esz przej¶æ 
+	    klikaj±c na odpowiednim polu. Klikniêcie na polu z adresem IP przeniesie Ciê do modu³u
+	    dodawania nowego komputera. Znajdziesz tu tak¿e dwa przydatne linki: <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>	    Porz±dkuj sieæ</I
+></SPAN
+> s³u¿±cy do przeadresowania komputerów, tak aby wyeliminowaæ 
+	    luki w adresacji oraz <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Przeadresuj do sieci</I
+></SPAN
+> s³u¿±cy do przenoszenia wszystkich 
+	    komputerów/urz±dzeñ z tej sieci do innej.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-TARIFFS"
->3.2.5. Taryfy i Finanse</A
+NAME="MENU-NETWORKS-NEW"
+>3.5.2. Nowa sieæ</A
 ></H3
 ><P
->Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami sieci.</P
+>Definiuj±c now± sieæ musisz okre¶liæ jej unikaln± nazwê i klasê adresow±
+	    podaj±c adres IP sieci i maskê. Pozosta³e dane s± opcjonalne.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="MENU-FINANCES"
+>3.6. Taryfy i Finanse</A
+></H2
 ><P
->Masz mo¿liwo¶æ definiowania taryf abonamentowych, op³at (zleceñ) sta³ych, ksiêgowania 
-	operacji finansowych, przegl±danie bilansu i historii rachunku oraz sporz±dzanie faktur. 
-	A oto wszystkie dostêpne modu³y:
-	<UL
-><LI
+>Jest to w³a¶ciwie wiele modu³ów umo¿liwiaj±cych zarz±dzanie finansami sieci.
+	Masz mo¿liwo¶æ definiowania taryf abonamentowych, op³at (zleceñ) sta³ych, ksiêgowania 
+	operacji finansowych, przegl±dania bilansu i historii rachunku oraz sporz±dzania faktur
+	i zestawieñ finansowych.</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-TARIFFS-LIST"
+>3.6.1. Lista taryf</A
+></H3
 ><P
->Lista taryf - Wy¶wietlenie listy taryf. tej która pokazuje siê po
-	    wej¶ciu do panelu 'Taryfy i finanse'. Klikaj±c wybran± taryfê na li¶cie zostaniesz
+>Po wej¶ciu do panelu 'Taryfy i finanse' zobaczysz listê taryf zawieraj±c±
+	    podstawowe informacje o nich. Klikaj±c wybran± taryfê na li¶cie zostaniesz
 	    przeniesiony do modu³u 'Informacje o taryfie', gdzie mo¿esz edytowaæ jej parametry
-	    lub zamieniaæ u¿ytkownikom taryfy.</P
-></LI
-><LI
+	    lub zamieniaæ u¿ytkownikom taryfy. W polu 'ilo¶æ u¿ytkowników' podana jest liczba
+	    u¿ytkowników, którym dana taryfa zosta³a przypisana oraz kolejno od lewej (w nawiasie) ca³kowita 
+	    liczba przypisañ taryfy i liczba aktywnych przypisañ taryfy, uwzglêdniaj±ca okresy obowi±zywania.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-TARIFFS-NEW"
+>3.6.2. Nowa taryfa</A
+></H3
 ><P
->Nowa taryfa - Definiowanie nowej taryfy.</P
-></LI
-><LI
+>Definiuj±c now± taryfê musisz podaæ unikaln± nazwê, kwotê i stawkê podatku.
+	    Przy czym "zw." w polu stawka podatku oznacza "zwolnienie z podatku".</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-PAYMENTS-LIST"
+>3.6.3. Lista op³at</A
+></H3
 ><P
->Lista op³at - Wy¶wietlenie listy op³at. Klikaj±c wybran± op³atê na li¶cie zostaniesz
-	    przeniesiony do modu³u 'Informacje o op³acie', gdzie mo¿esz edytowaæ jej parametry
-	    lub zaksiêgowaæ dan± op³atê w bazie operacji finansowych.</P
-></LI
-><LI
+>Lista op³at sta³ych ¶wiadczonych na rzecz innych podmiotów, oprócz elementów standardowych
+	    zawiera ikonê [Nalicz], przy pomocy której mo¿na obci±¿yæ rachunek sieci. Automatycznym naliczaniem
+	    op³at zajmuje siê skrypt 'lms-payments' lub odpowiedni modu³ demona almsd. Klikaj±c wybran± 
+	    op³atê na li¶cie zostaniesz przeniesiony do modu³u 'Informacje o op³acie', gdzie mo¿esz 
+	    edytowaæ jej parametry lub zaksiêgowaæ dan± op³atê w bazie operacji finansowych.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-PAYMENTS-NEW"
+>3.6.4. Nowa op³ata</A
+></H3
 ><P
->Nowa op³ata - Definiowanie nowej op³aty sta³ej.</P
-></LI
-><LI
+>Nowej op³acie sta³ej przypisujesz unikaln± nazwê, wierzyciela oraz kwotê i dzieñ
+	    naliczenia.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-BALANCE"
+>3.6.5. Bilans finansowy</A
+></H3
 ><P
->Bilans finansowy - Historia operacji finansowych z podsumowaniem przychodu, rozchodu,
-	    wp³at i zobowi±zañ u¿ytkowników.</P
-></LI
-><LI
+>Historia operacji finansowych z podsumowaniem przychodu, rozchodu,
+	    wp³at i zobowi±zañ u¿ytkowników. Ikona drukarki umo¿liwia wydruk faktury odpowiadaj±cej
+	    danej pozycji z listy.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-NEWBALANCE"
+>3.6.6. Nowa operacja</A
+></H3
 ><P
->Nowa operacja - Wprowadzanie nowych operacji finansowych. Mo¿liwe jest
+>Wprowadzanie nowych operacji finansowych. Mo¿liwe jest
 	    zaksiêgowanie tej samej wp³aty lub obci±¿enia wielu u¿ytkownikom równocze¶nie.</P
 ><P
 ><DIV
 CLASS="NOTE"
 ><TABLE
 CLASS="NOTE"
-WIDTH="90%"
+WIDTH="100%"
 BORDER="0"
 ><TR
 ><TD
@@ -2740,354 +3062,36 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >almsd</I
 ></SPAN
->, które potrafi± równocze¶nie
+>, które potrafi± ponadto
 	    wystawiaæ faktury.</P
 ></TD
 ></TR
 ></TABLE
 ></DIV
 ></P
-></LI
-><LI
-><P
->Lista faktur - lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych faktur
-	    oraz rejestru sprzeda¿y za dany okres.</P
-></LI
-><LI
-><P
->Nowa faktura - Rêczne wystawianie faktur dla wybranego u¿ytkownika.</P
-></LI
-><LI
-><P
->Wydruki - wydruk ró¿nych zestawieñ finansowych.</P
-></LI
-></UL
->
-	</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-MAILING"
->3.2.6. Mailing</A
+NAME="MENU-INVOICES-LIST"
+>3.6.7. Lista faktur</A
 ></H3
 ><P
->Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
-	u¿ytkowników twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
-	do której zostanie wys³any e-mail.</P
-><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji mail().</P
-></TD
-></TR
-></TABLE
-></DIV
->
-	<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami mo¿na
-	wykorzystaæ skrypt lms-notify lub modu³y notify i ggnotify demona <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->almsd</I
-></SPAN
->.</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
+>Lista wystawionych faktur z mo¿liwo¶ci± wydruku wybranych faktur (ikona [Drukuj]) oraz rozliczenia
+	    danej pozycji, czyli zaksiêgowania wp³aty (ikona [Rozlicz]).</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="MENU-RELOAD"
->3.2.7. Prze³adowanie</A
+NAME="MENU-INVOICES-NEW"
+>3.6.8. Nowa faktura</A
 ></H3
 ><P
->Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji i us³ug zdefiniowanych
-	dla generatora plików konfiguracyjnych <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS-MGC</I
-></SPAN
-> lub demona <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->almsd</I
-></SPAN
->. 
-	Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->LMS-MGC</I
-></SPAN
-> oraz demona.</P
-></DIV
-><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
-><A
-NAME="MENU-DATABASES"
->3.2.8. Bazy danych</A
-></H3
-><P
->Z panelu 'Bazy danych' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy lms'a.
-	Kopia bazy to plik tekstowy z zawarto¶ci± wszystkich tabel w bazie, zapisywany w
-	katalogu zdefiniowanym w sekcji <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->[directories]</I
-></SPAN
-> <TT
-CLASS="FILENAME"
->lms.ini</TT
->
-	zmienn± <SAMP
-CLASS="PROMPT"
->backup_dir</SAMP
->.</P
-><P
-><DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Domy¶lnie kopie zapisywane s± w katalogu <TT
-CLASS="FILENAME"
->lms/backups</TT
->
-	dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
-><P
->Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
-	</P
-></DIV
-><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
-><A
-NAME="MENU-ADMINS"
->3.2.9. Administratorzy</A
-></H3
-><P
->Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, zmiany hase³ oraz
-	definiowania praw dostêpu. Na pierwszym widoku jest lista administratorów z datami ostatniego
-	logowania. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie informacji szczegó³owych
-	o danym koncie, w tym o zdefiniowanych prawach dostêpu. W ka¿dej chwili mo¿liwa jest zmiana
-	danych i uprawnieñ za pomoc± przycisku 'Edytuj'. Aby za³o¿yæ nowe konto administratora
-	skorzystaj z górnego menu 'Nowy'.</P
-></DIV
-><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
-><A
-NAME="MENU-STATS"
->3.2.10. Statystyki</A
-></H3
-><P
->Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
-	dostêpny w menu 'Statystyki'. Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
-	okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz ich wiêcej),
-	ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug downloadu).
-	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
-	ostatnich 30 dni lub ostatniego roku.</P
-><P
-> 
-	<DIV
-CLASS="NOTE"
-><TABLE
-CLASS="NOTE"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/note.gif"
-HSPACE="5"
-ALT="Notatka"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Zapisem danych do bazy zajmuje siê skrypt lms-traffic, albo demon <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->almsd</I
-></SPAN
->.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-	</P
-><P
->W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci zapisu, mo¿e
-	nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
-	oczekiwania na rysowanie wykresów. Z tego powodu w oknie 'Kompaktowanie
-	bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy bez
-	utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
-	w nastêpuj±cy sposób:
-	<UL
-><LI
-><P
->Poziom Niski: dane z poprzedniego dnia i starsze, zostan± u¶rednione
-	do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
-	to 6*24 wpisów zostanie zast±pione jednym.</P
-></LI
-><LI
-><P
->Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
-	jednego dnia.</P
-></LI
-><LI
-><P
->Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
-	jednej godziny.</P
-></LI
-></UL
->
-	<DIV
-CLASS="WARNING"
-><TABLE
-CLASS="WARNING"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="images/warning.gif"
-HSPACE="5"
-ALT="Ostrze&#380;enie"></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Kompaktowanie bazy danych jest procesem nieodwracalnym.</P
-></TD
-></TR
-></TABLE
-></DIV
->
-	</P
-><P
->Menu panelu 'Statystyki' obejmuje:
-	<UL
-><LI
-><P
->Filtr - g³ówne okno do wprowadzania parametrów wykresów oraz do
-	    kompaktowania bazy danych.</P
-></LI
-><LI
-><P
->Ostatnia godzina - statystyki z ostatniej godziny dla wszystkich sieci.</P
-></LI
-><LI
-><P
->Ostatni dzieñ - statystyki z ostatniego dnia dla wszystkich sieci.</P
-></LI
-><LI
-><P
->Ostatnie 30 dni - statystyki z ostatnich 30 dni dla wszystkich sieci.</P
-></LI
-><LI
-><P
->Ostatni rok - statystyki z ostatnich 365 dni dla wszystkich sieci.</P
-></LI
-></UL
->
-	</P
-></DIV
-></DIV
-><DIV
-CLASS="SECT1"
-><HR><H2
-CLASS="SECT1"
-><A
-NAME="USER-STAFF"
->3.3. Dodatki</A
-></H2
-><DIV
-CLASS="SECT2"
-><H3
-CLASS="SECT2"
-><A
-NAME="USER-STAFF-FAKTURY"
->3.3.1. Faktury</A
-></H3
+>Rêczne wystawianie faktur dla wybranego u¿ytkownika.</P
 ><P
 >LMS umo¿liwia wystawianie faktur automatycznie i rêcznie. Rêczne wystawienie dowolnej
 		faktury jest mo¿liwe z menu 'Nowa faktura' w panelu 'Taryfy i finanse'. Automatyczne wystawianie faktur 
@@ -3285,8 +3289,437 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="MENU-FINANCES-PRINT"
+>3.6.9. Wydruki</A
+></H3
+><P
+>Wydruki zestawieñ finansowych obejmuj±:
+	    <UL
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Bilans finansowy sieci</I
+></SPAN
+> obejmuj±cy operacje finansowe 
+		    za dany okres z mo¿liwo¶ci± wybrania administratora.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>£±czny przychód bezrachunkowy sieci</I
+></SPAN
+> w danym okresie.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Raport wierzytelno¶ci</I
+></SPAN
+> na dany dzieñ, dla wszystkich lub 
+		    wybranego u¿ytkownika.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Rejestr sprzeda¿y</I
+></SPAN
+>, czyli zestawienie faktur na dany okres.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Bilans u¿ytkownika</I
+></SPAN
+> na dany okres.</P
+></LI
+></UL
+>
+	    </P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="MENU-MAILING"
+>3.7. Mailing</A
+></H2
+><P
+>Mailing, czyli Korespondencja Seryjna umo¿liwia wysy³anie wiadomo¶ci do grupy
+	u¿ytkowników twojej sieci. Podajesz dane nadawcy, tre¶æ wiadomo¶ci oraz wybierasz grupê
+	odbiorców, do której zostanie wys³any e-mail. Grupê adresatów mo¿na okre¶liæ
+	wg statusu oraz sieci lub grup u¿ytkowników do których nale¿±.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Serwer musi byæ odpowiednio skonfigurowany do u¿ycia funkcji mail().</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	<DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Do automatycznego wysy³ania upomnieñ do u¿ytkowników zalegaj±cych z op³atami mo¿na
+	wykorzystaæ skrypt lms-notify lub modu³y notify i ggnotify demona <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="MENU-RELOAD"
+>3.8. Prze³adowanie</A
+></H2
+><P
+>Klikniêcie na menu 'Prze³adowanie' spowoduje prze³adowanie konfiguracji i us³ug zdefiniowanych
+	dla generatora plików konfiguracyjnych <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-MGC</I
+></SPAN
+> lub demona <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+>. 
+	Wiêcej informacji znajdziesz w rozdzia³ach dotycz±cych <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>LMS-MGC</I
+></SPAN
+> oraz demona.</P
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="MENU-DATABASES"
+>3.9. Bazy danych</A
+></H2
+><P
+>Z panelu 'Bazy danych' mo¿esz zarz±dzaæ kopiami awaryjnymi danych z bazy lms'a.
+	Kopia bazy to plik tekstowy zawieraj±cy zapytania SQL i dane z wszystkich tabel w bazie, zapisywany w
+	katalogu zdefiniowanym w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[directories]</I
+></SPAN
+> <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>
+	zmienn± <SAMP
+CLASS="PROMPT"
+>backup_dir</SAMP
+>.</P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Domy¶lnie kopie zapisywane s± w katalogu <TT
+CLASS="FILENAME"
+>lms/backups</TT
+>
+	dostêpnym przez przegl±darkê, dlatego dobrze by³o by przenie¶æ go w inne miejsce.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>Sporz±dzone kopie mo¿na w ka¿dej chwili przegl±daæ, usuwaæ lub zapisywaæ na lokalnym dysku.
+	Klikniêcie na ikonkê Odtwórz spowoduje wyczyszczenie bie¿±cej bazy danych i za³adowanie
+	do niej danych z wybranego pliku kopii. Tu¿ przed odtworzeniem tworzona jest kopia
+	aktualnej bazy danych.</P
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="MENU-ADMINS"
+>3.10. Administratorzy</A
+></H2
+><P
+>Panel 'Administratorzy' s³u¿y do zarz±dzania kontami administratorów, czyli osób
+	    korzystaj±cych z LMS'a, zak³adania i przegl±dania ich kont, zmiany hase³ i definiowania 
+	    praw dostêpu.</P
+><P
+> Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale <A
+HREF="#INSTALL-RIGHTS"
+>Prawa dostêpu</A
+>.</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-ADMINS-LIST"
+>3.10.1. Lista</A
+></H3
+><P
+>Po wej¶ciu do panelu 'Administratorzy' zobaczysz listê wszystkich administratorów
+	    z informacj± o ostatnim logowaniu. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie 
+	    informacji szczegó³owych o danym koncie, w tym o zdefiniowanych prawach dostêpu. 
+	    W ka¿dej chwili mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'. 
+	    Aby za³o¿yæ nowe konto administratora skorzystaj z górnego menu 'Nowy'.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-ADMINS-NEW"
+>3.10.2. Nowy</A
+></H3
+><P
+>Aby dodaæ nowe konto administratora nale¿y podaæ login oraz has³o, 
+	    które nie mo¿e byæ puste. Podanie imienia, nazwiska i adresu poczty elektronicznej
+	    nie jest wymagane. Poni¿ej mo¿na zaznaczyæ uprawnienia dostêpu do
+	    systemu. Je¿eli wszystkie pola pozostawisz puste, administratorowi 
+	    przypisany zostanie 'Pe³en dostêp'.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="MENU-STATS"
+>3.11. Statystyki</A
+></H2
+><P
+>Interfejs do przegl±dania statystyk wykorzystania ³±cza w postaci prostych wykresów jest
+	dostêpny w menu 'Statystyki'. Dane statystyk zawieraj± lo¶æ danych wysy³anych i pobieranych 
+	z Internetu (na danym interfejsie) dla ka¿dego komputera. Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej 
+	godziny, ostatniego dnia, ostatnich 30 dni lub ostatniego roku.</P
+><P
+> 
+	    <DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/note.gif"
+HSPACE="5"
+ALT="Notatka"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, albo demon <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>almsd</I
+></SPAN
+>.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	</P
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-STATS-FILTER"
+>3.11.1. Filtr</A
+></H3
+><P
+>Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
+	    okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz 
+	    ich wiêcej), ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad 
+	    wed³ug downloadu).</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="MENU-STATS-COMPACT"
+>3.11.2. Kompaktowanie</A
+></H3
+><P
+>W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci zapisu, mo¿e
+	    nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
+	    oczekiwania na rysowanie wykresów. Z tego powodu w menu 'Kompaktowanie'
+	    udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy statystyk bez
+	    utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
+	    w nastêpuj±cy sposób:
+		<UL
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Poziom Niski</I
+></SPAN
+>: dane z poprzedniego dnia i starsze, zostan± u¶rednione
+			do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
+			to 6*24 wpisów zostanie zast±pione jednym.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Poziom ¦redni</I
+></SPAN
+>: dane starsze ni¿ miesi±c zostan± u¶rednione do
+			jednego dnia.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Poziom Wysoki</I
+></SPAN
+>: dane starsze ni¿ miesi±c zostan± u¶rednione do
+			jednej godziny.</P
+></LI
+></UL
+>
+	    <DIV
+CLASS="WARNING"
+><TABLE
+CLASS="WARNING"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="images/warning.gif"
+HSPACE="5"
+ALT="Ostrze&#380;enie"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Kompaktowanie bazy danych jest procesem nieodwracalnym.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+	    </P
+></DIV
+></DIV
+><DIV
+CLASS="SECT1"
+><HR><H2
+CLASS="SECT1"
+><A
+NAME="USER-STAFF"
+>3.12. Dodatki</A
+></H2
+><DIV
+CLASS="SECT2"
+><H3
+CLASS="SECT2"
+><A
 NAME="USER-STAFF-CUSTOMER"
->3.3.2. "Moje konto"</A
+>3.12.1. "Moje konto"</A
 ></H3
 ><P
 >W katalogu <TT
@@ -3315,7 +3748,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USER-STAFF-SQLPANEL"
->3.3.3. Panel SQL</A
+>3.12.2. Panel SQL</A
 ></H3
 ><DIV
 CLASS="SECT3"
@@ -3323,7 +3756,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="SQLPANEL-INTRO"
->3.3.3.1. Wstêp</A
+>3.12.2.1. Wstêp</A
 ></H4
 ><P
 >W katalogu <TT
@@ -3332,7 +3765,8 @@ CLASS="FILENAME"
 > znajdziesz
 		modu³, dziêki któremu bêdziesz mia³ mo¿liwo¶æ bezpo¶redniego dostêpu 
 		do bazy danych poprzez zadawanie zapytañ SQL. Wyniki wy¶wietlane s±
-		w formie tabeli. Ponadto podawany jest czas wykonania zapytania.</P
+		w formie tabeli. Ponadto podawany jest czas wykonania zapytania. 
+		Mo¿liwe jest tak¿e drukowanie wyników zapytania.</P
 ><P
 >Ilo¶æ wy¶wietlanych wierszy na jednej stronie ograniczana jest
 		domy¶lnie do 50. Mo¿na to zmieniæ przy pomocy zmiennej '<SAMP
@@ -3348,8 +3782,7 @@ CLASS="EMPHASIS"
 > pliku konfiguracyjnego <TT
 CLASS="FILENAME"
 >lms.ini</TT
->.
-		Modu³ umo¿liwia tak¿e wydruk wyników zapytania.</P
+>.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -3357,7 +3790,7 @@ CLASS="SECT3"
 CLASS="SECT3"
 ><A
 NAME="SQLPANEL-INSTALL"
->3.3.3.2. Instalacja</A
+>3.12.2.2. Instalacja</A
 ></H4
 ><P
 >Instalacja polega na skopiowaniu plików w odpowiednie miejsca
@@ -3523,7 +3956,7 @@ ALIGN="CENTER"><THEAD
 ><TD
 >lms-makedhcpconf</TD
 ><TD
->Konfiguracja serwera DHCP(/etc/dhcpd.conf)</TD
+>Konfiguracja serwera DHCP (/etc/dhcpd.conf)</TD
 ></TR
 ><TR
 ><TD
@@ -3539,7 +3972,7 @@ ALIGN="CENTER"><THEAD
 ></TR
 ><TR
 ><TD
->lms-makeiodenconf</TD
+>lms-makeoidentconf</TD
 ><TD
 >Konfiguracja oident</TD
 ></TR
@@ -3557,9 +3990,27 @@ ALIGN="CENTER"><THEAD
 ></TR
 ><TR
 ><TD
->lms-updatewarnings</TD
+>lms-makemacs</TD
 ><TD
->Ostrze¿enia dla u¿ytkowników zad³u¿onych</TD
+>Filtrowanie ruchu na bazie adresów ¼ród³owych MAC</TD
+></TR
+><TR
+><TD
+>lms-makehosts</TD
+><TD
+>Generuje plik /etc/hosts</TD
+></TR
+><TR
+><TD
+>lms-makewarnings</TD
+><TD
+>Generuje regu³ki przekierowuj±ce ruch u¿ytkowników zad³u¿onych</TD
+></TR
+><TR
+><TD
+>lms-makemessages</TD
+><TD
+>Generuje regu³ki przekierowuj±ce ruch u¿ytkowników, którym ustawiono wiadomo¶æ administracyjn±</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -4533,35 +4984,518 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="LMS-UPDATEWARNINGS"
->4.3.10. lms-updatewarnings</A
+NAME="LMS-MAKEMACS"
+>4.3.10. lms-makemacs</A
 ></H3
 ><P
->Skrypt automatycznie w³±cza ostrze¿enia (czyli ustawia odpiwedni± flagê w bazie
-	 danych) wszystkim komputerom u¿ytkownika z saldem mniejszym ni¿ kwota okre¶lona parametrem 'limit'.
-	 Regu³y firewalla przekierowuj±ce na stronê z ostrze¿eniem nale¿y wygenerowaæ innym skryptem.</P
+>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra filtruj±ce ruch
+	    u¿ytkowników na bazie testu adresu ¼ród³owego MAC. Dla ka¿dego komputera generowana jest
+	    jedna regu³a dla tablicy nat, zadanego ³añcucha, testuj±ca adres ¼ród³owy IP pakietu oraz adres
+	    ¼ród³owy MAC ramki. Je¶li testy zakoñcz± siê pozytywnie nastêpuje powrót do ³añcucha nadrzêdnego
+	    za pomoc± decyzji RETURN. Na koñcu listy regu³ dodawane s± 2 regu³y przekierowuj±ce ruch http
+	    oraz webcache na podany w konfiguracji adres IP oraz port (z wykorzystaniem decyzji DNAT).
+	    Przekierowanie mo¿e odbywaæ siê na wirtualny host www z zawiadomieniem u¿ytkownika
+	    o zaleg³o¶ciach finansowych bez mo¿liwo¶ci wy³±czenia zawiadomienia. Na koñcu dodawana jest 
+	    regu³a blokuj±ca jakikolwiek inny ruch.
+	    </P
 ><P
->Konfiguracjê dla lms-updatewarnings mo¿emy ustaliæ w pliku <TT
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[macs]</I
+></SPAN
+>
+	    w pliku <TT
 CLASS="FILENAME"
 >lms.ini</TT
-> 
-	 w sekcji <SPAN
+>: </P
+><UL
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups </P
+><P
+>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>usergroups = osiedle1 osiedle2</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary</P
+><P
+>Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>config_owneruid</P
+><P
+>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_file</P
+><P
+>Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.macs.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_file = /etc/conf.d/rc.macs</SAMP
+></P
+></LI
+><LI
+><P
+>config_ownergid</P
+><P
+>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_permission</P
+><P
+>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>chain</P
+><P
+>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MACS.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>chain = TESTY_MACOW</SAMP
+></P
+></LI
+><LI
+><P
+>redirect_address</P
+><P
+>Adres IP + port na który bêdzie przekierowywany niesklasyfikowany ruch http i webcache. Domy¶lnie: 127.0.0.1:80.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>redirect_address = 192.168.1.1:3000</SAMP
+></P
+></LI
+><LI
+><P
+>lock_noaccess</P
+><P
+>Czy generowaæ regu³ki testuj±ce z decyzj± RETURN dla komputerów, które s± od³±czone. Domy¶lnie: 0 (regu³y s± generowane)</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>lock_noaccess = 1</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEHOSTS"
+>4.3.11. lms-makehosts</A
+></H3
+><P
+>Skrypt s³u¿±cy do generowania pliku /etc/hosts zawieraj±cego odwzorowania nazw komputerów
+	    na adresy IP.
+	    </P
+><P
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[hosts]</I
+></SPAN
+>
+	    w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
+><UL
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups </P
+><P
+>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>usergroups = osiedle1 osiedle2</SAMP
+></P
+></LI
+><LI
+><P
+>config_owneruid</P
+><P
+>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_file</P
+><P
+>Lokalizacja pliku. Domy¶lnie: /etc/hosts.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_file = /etc/hosts</SAMP
+></P
+></LI
+><LI
+><P
+>config_ownergid</P
+><P
+>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_permission</P
+><P
+>Uprawnienia pliku skryptu. Domy¶lnie: 644 (rw-r--r--).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_permission = 600</SAMP
+></P
+></LI
+><LI
+><P
+>config_header</P
+><P
+>Pierwsza linia w pliku /etc/hosts. Domy¶lnie: 127.0.0.1 localhost localhost.localdomain.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_header = 192.168.1.1 serwer serwer.nasza-siec</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEWARNINGS"
+>4.3.12. lms-makewarnings</A
+></H3
+><P
+>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
+	    u¿ytkowników o saldzie mniejszym lub równym od zadanego na zadany adres IP i port (wykorzystywana
+	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
+	    </P
+><P
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >[warnings]</I
 ></SPAN
->. Mo¿emy tam ustawiæ:</P
+>
+	    w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
 ><UL
 ><LI
 ><P
->limit (opcjonalny)</P
+>networks </P
 ><P
->Pozwala na ustalenie limitu bilansu. Domy¶lnie: 0</P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->limit = -20</SAMP
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups </P
+><P
+>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>usergroups = osiedle1 osiedle2</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary</P
+><P
+>Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>config_owneruid</P
+><P
+>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_file</P
+><P
+>Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.warnings.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_file = /etc/conf.d/rc.warnings</SAMP
+></P
+></LI
+><LI
+><P
+>config_ownergid</P
+><P
+>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_permission</P
+><P
+>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>chain</P
+><P
+>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: WARNINGS.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>chain = OSTRZEZENIA</SAMP
+></P
+></LI
+><LI
+><P
+>redirect_address</P
+><P
+>Adres IP + port na który bêdzie przekierowywany ruch http i webcache pochodz±cy z hostów dla których ma byæ w³±czone ostrze¿enie o zaleg³o¶ciach finansowych. Domy¶lnie: 127.0.0.1:80.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>redirect_address = 192.168.1.1:3001</SAMP
+></P
+></LI
+><LI
+><P
+>limit</P
+><P
+>Saldo u¿ytkownika przy którym dla wszystkich komputerów u¿ytkownika generowane s± regu³ki przekierowuj±ce ruch. Domy¶lnie: 0 </P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>limit = -85</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEMESSAGES"
+>4.3.13. lms-makemessages</A
+></H3
+><P
+>Skrypt s³u¿±cy do generowania pliku zawieraj±cego regu³y netfiltra przekierowuj±ce ruch http i webcache
+	    u¿ytkowników dla których zosta³o w³±czone przekazywanie wiadomo¶ci administracyjnej (ostrze¿enia) na zadany adres IP i port (wykorzystywana
+	    jest tablica nat, testy adresów ¼ród³owych IP oraz decyzja DNAT).
+	    </P
+><P
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[messages]</I
+></SPAN
+>
+	    w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
+><UL
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich sieci.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups </P
+><P
+>Lista nazw grup u¿ytkowników (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony plik konfiguracyjny dla wszystkich grup u¿ytkowników.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>usergroups = osiedle1 osiedle2</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary</P
+><P
+>Lokalizacja programu iptables. Domy¶lnie: /sbin/iptables</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>config_owneruid</P
+><P
+>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_file</P
+><P
+>Lokalizacja pliku. Domy¶lnie: /etc/rc.d/rc.messages.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_file = /etc/conf.d/rc.messages</SAMP
+></P
+></LI
+><LI
+><P
+>config_ownergid</P
+><P
+>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>config_permission</P
+><P
+>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>config_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>chain</P
+><P
+>£añuch do którego bêd± dodawane generowane regu³y. Domy¶lnie: MESSAGES.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>chain = WIADOMOSCI</SAMP
+></P
+></LI
+><LI
+><P
+>redirect_address</P
+><P
+>Adres IP + port na który bêdzie przekierowywany ruch http i webcache pochodz±cy z hostów dla których ma byæ w³±czona wiadomo¶æ administracyjna. Domy¶lnie: 127.0.0.1:80.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>redirect_address = 192.168.1.1:3002</SAMP
 ></P
 ></LI
 ></UL
@@ -5096,13 +6030,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->grantednode_prv</P
+>grantednode_priv</P
 ><P
 >Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "pod³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->grantednode_prv = \t\tnode %NAME (%IP/%MAC) unique %ID;</SAMP
+>grantednode_priv = \t\tnode %NAME (%IP/%MAC) unique %ID;</SAMP
 ></P
 ></LI
 ><LI
@@ -5118,13 +6052,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->deniednode_prv</P
+>deniednode_priv</P
 ><P
 >Jest przetwarzana gdy dany adres komputer z danym adresem IP istnieje, ale w lms-ui ma status "od³±czony" (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->deniednode_prv = node %NAME (%IP/%MAC) unique %ID deny;</SAMP
+>deniednode_priv = node %NAME (%IP/%MAC) unique %ID deny;</SAMP
 ></P
 ></LI
 ><LI
@@ -5140,13 +6074,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->dhcpnode_prv</P
+>dhcpnode_priv</P
 ><P
 >Jest przetwarzana gdy dany adres IP zawiera siê w klasie DHCP (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->dhcpnode_prv = node unknown (%IP) reject;</SAMP
+>dhcpnode_priv = node unknown (%IP) reject;</SAMP
 ></P
 ></LI
 ><LI
@@ -5162,13 +6096,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->freeip_prv</P
+>freeip_priv</P
 ><P
 >Jest przetwarzana gdy dany adres IP nie jest przypisany do ¿adnego komputera (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->freeip_prv = node unknown (%IP) lock_as_unused;</SAMP
+>freeip_priv = node unknown (%IP) lock_as_unused;</SAMP
 ></P
 ></LI
 ><LI
@@ -5184,13 +6118,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->default_prv</P
+>default_priv</P
 ><P
 >Regu³ka domy¶lna. Jest przetwarzana gdy adres nie zostanie przetworzony przez ¿adn± regu³kê grantednode lub deniednode (regu³ka przetwarzana dla adresów prywatnych)</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->default_publ = node unknown (%IP) lock_as_intruder;</SAMP
+>default_priv = node unknown (%IP) lock_as_intruder;</SAMP
 ></P
 ><P
 ><DIV
@@ -6342,7 +7276,8 @@ NAME="HOSTFILE-DESC"
 ><P
 >Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
 		    wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
-		    status (od³±czony/pod³±czony), dlatego mo¿liwe jest tworzenie np. regu³
+		    status (od³±czony/pod³±czony), sieæ do której s± pod³aczone oraz
+		    grupy do których nale¿± ich w³a¶ciciele, dlatego mo¿liwe jest tworzenie np. regu³
 		    dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku 
 		    i nastêpnie wykonuje okre¶lone polecenie pow³oki.</P
 ></DIV
@@ -6430,11 +7365,24 @@ CLASS="PROMPT"
 ><P
 >networks</P
 ><P
->Lista nazw sieci, które maj± byæ brane pod uwagê. Domy¶lnie: pusta (wszystkie sieci).</P
+>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
+			    Domy¶lnie: pusta (wszystkie sieci).</P
 ><P
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >networks = "lan1 lan2"</SAMP
+></P
+></LI
+><LI
+><P
+>usergroups</P
+><P
+>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
+			    Domy¶lnie: pusta (wszystkie sieci).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>usergroups = "grupa1 grupa2"</SAMP
 ></P
 ></LI
 ><LI
@@ -7065,13 +8013,21 @@ TARGET="_top"
 CLASS="FILENAME"
 >lms.mysql</TT
 ></A
->
-		oraz <A
+>,
+		<A
 HREF="../lms.pgsql"
 TARGET="_top"
 ><TT
 CLASS="FILENAME"
 >lms.pgsql</TT
+></A
+> i 
+		<A
+HREF="../lms.sqlite"
+TARGET="_top"
+><TT
+CLASS="FILENAME"
+>lms.sqlite</TT
 ></A
 > w katalogu
 		<TT
@@ -7128,6 +8084,10 @@ BORDER="0"
 ><TR
 ><TD
 >failedloginip - adres IP, z którego próbowano siê zalogowaæ</TD
+></TR
+><TR
+><TD
+>deleted - czy usuniêty (0/1)</TD
 ></TR
 ></TBODY
 ></TABLE
@@ -7231,8 +8191,60 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="USERGROUPS"
+>7.2.3. Grupy u¿ytkowników ('usergroups')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>name - nazwa</TD
+></TR
+><TR
+><TD
+>description - opis</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="USERASSIGNMENTS"
+>7.2.4. Grupy u¿ytkowników - c.d. ('userassignments')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>usergroupid - identyfikator grupy</TD
+></TR
+><TR
+><TD
+>userid - identyfikator u¿ytkownika</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="NETWORKS"
->7.2.3. Sieci ('networks')</A
+>7.2.5. Sieci ('networks')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -7294,7 +8306,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NODES"
->7.2.4. Komputery i adresy IP urz±dzeñ sieciowych ('nodes')</A
+>7.2.6. Komputery i adresy IP urz±dzeñ sieciowych ('nodes')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -7352,7 +8364,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NETDEVICES"
->7.2.5. Sprzêt sieciowy ('netdevices')</A
+>7.2.7. Sprzêt sieciowy ('netdevices')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -7398,7 +8410,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="NETLINKS"
->7.2.6. Po³±czenia sieciowe ('netlinks')</A
+>7.2.8. Po³±czenia sieciowe ('netlinks')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -7424,7 +8436,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CASH"
->7.2.7. Operacje finansowe ('cash')</A
+>7.2.9. Operacje finansowe ('cash')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -7451,6 +8463,10 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
+>taxvalue - procent podatku</TD
+></TR
+><TR
+><TD
 >userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy)</TD
 ></TR
 ><TR
@@ -7470,7 +8486,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TARIFFS"
->7.2.8. Taryfy ('tariffs')</A
+>7.2.10. Taryfy ('tariffs')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -7516,7 +8532,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="PAYMENTS"
->7.2.9. Op³aty sta³e ('payments')</A
+>7.2.11. Op³aty sta³e ('payments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -7558,7 +8574,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ASSIGNMENTS"
->7.2.10. Powi±zania ('assignments')</A
+>7.2.12. Powi±zania ('assignments')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -7604,7 +8620,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICES"
->7.2.11. Faktury ('invoices')</A
+>7.2.13. Faktury ('invoices')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -7674,7 +8690,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="INVOICECONTENTS"
->7.2.12. Faktury - cd. ('invoicecontents')</A
+>7.2.14. Faktury - cd. ('invoicecontents')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -7720,7 +8736,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TIMESTAMPS"
->7.2.13. Historia ('timestamps')</A
+>7.2.15. Historia ('timestamps')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -7742,7 +8758,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="STATS"
->7.2.14. Statystyki wykorzystania ³±cza ('stats')</A
+>7.2.16. Statystyki wykorzystania ³±cza ('stats')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -7772,7 +8788,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DBINFO"
->7.2.15. Informacje o bazie danych ('dbinfo')</A
+>7.2.17. Informacje o bazie danych ('dbinfo')</A
 ></H3
 ><TABLE
 BORDER="0"
@@ -8026,7 +9042,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="DEVEL-LIMITS-DB"
->7.6.2. Wynikaj±ce z u¿ywanego DMBS</A
+>7.6.2. Wynikaj±ce z u¿ywanego DBMS</A
 ></H3
 ><UL
 ><LI
@@ -8083,6 +9099,28 @@ CLASS="SCREEN"
 			Jednak funkcja COUNT zwraca 32-bitow± liczbê ca³kowit±, a zatem dla tabel
 			zawieraj±cych ponad dwa miliardy wierszy wynik tej funkcji bêdzie
 			nieprawid³owy. (Informacja dot. PostgreSQL 7.1)</P
+></LI
+></UL
+></LI
+><LI
+><P
+>SQLite</P
+><UL
+><LI
+><P
+>Rozmiar bazy danych:</P
+><P
+>Od wersji 2.7.4 SQLite mo¿e obs³ugiwaæ bazy o rozmiarze do 2 terabajtów. 
+			Dodatkowym ograniczeniem jest objêto¶æ danych zapisanych w jednym rekordzie.
+			Wielko¶æ ta, ograniczona do 1 MB mo¿e zostaæ zwiêkszona do 16 MB podczas 
+			kompilacji.</P
+></LI
+><LI
+><P
+>Ilo¶æ rekordów:</P
+><P
+>Maksymalna ilo¶æ rekordów dla tej bazy to 2^32, ale nikt nie testowa³ nigdy takiej 
+			ilo¶ci.</P
 ></LI
 ></UL
 ></LI
