@@ -21,12 +21,6 @@ unsigned char * str_save(unsigned char *, const unsigned char*);
 /* Termination signals handling */
 void termination_handler(int);
 
-/* Parsing module args */
-//MOD_ARGS * parse_module_argstring(unsigned char *);
-
-/* Parsing args line. Needed for parse_module_argstring() */
-unsigned char *ini_parse(unsigned char *,int *,unsigned char );
-
 /* Concatenates strings */
 unsigned char * str_concat(const unsigned char *, const unsigned char *);
 
