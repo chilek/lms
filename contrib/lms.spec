@@ -1,4 +1,5 @@
 # $Revision$, $Date$
+#
 Summary:	LAN Managment System
 Summary(pl):	System Zarz±dzania Siec± Lokaln±
 Name:		lms
@@ -140,6 +141,9 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld.org.pl
 
 $Log$
+Revision 1.10  2003/05/21 16:43:38  djrzulf
+- test rw
+
 Revision 1.9  2003/05/21 12:10:42  lukasz
 - s/1.0.0/1.1-cvs/g
 
