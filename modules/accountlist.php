@@ -55,9 +55,10 @@ function GetAccountList($order='username,asc', $user=NULL, $type=NULL, $kind=NUL
 	}
 
 	$list = $LMS->DB->GetAll(
-	        'SELECT passwd.id AS id, ownerid, login, lastlogin, expdate, domain, type, '
+	        'SELECT passwd.id AS id, ownerid, login, lastlogin, expdate, domains.name AS domain, type, '
 		.$LMS->DB->Concat('users.lastname', "' '",'users.name').
-		' AS username FROM passwd LEFT JOIN users ON users.id = ownerid WHERE 1=1'
+		' AS username FROM passwd LEFT JOIN users ON users.id = ownerid 
+		LEFT JOIN domains ON domains.id = domainid WHERE 1=1'
 		.($user != '' ? ' AND ownerid = '.$user : '')
 		.($type ? ' AND type & '.$type.' = '.$type : '')
 		.($kind == 1 ? ' AND expdate!= 0 AND expdate < ?NOW?' : '')

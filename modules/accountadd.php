@@ -54,9 +54,6 @@ if($account = $_POST['account'])
 	if(GetAccountIdByLogin($account['login']))
 	    $error['login'] = 'Konto o podanej nazwie ju¿ istnieje!'; 
 	
-	if(!eregi("^[a-z0-9._-]+$", $account['domain']) && $account['domain']!='')
-    	    $error['domain'] = 'Domena zawiera niepoprawne znaki!';
-	    
 	if($account['passwd1'] != $account['passwd2'])
 	    $error['passwd'] = 'Has³a nie mog± siê ró¿niæ!';
 	    
@@ -78,13 +75,13 @@ if($account = $_POST['account'])
 	
 	if(!$error)
 	{
-		$LMS->DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domain, type) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+		$LMS->DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, type) VALUES (?, ?, ?, ?, ?, ?, ?)', 
 				array(	$account['ownerid'], 
 					$account['login'], 
 					crypt($account['passwd1']), 
 					'/home/'.$account['login'],
 					$account['expdate'],
-					$account['domain'],
+					$account['domainid'],
 					$account['type']
 					));
 		$LMS->DB->Execute('UPDATE passwd SET uid = id+2000 WHERE login = ?',array($account['login']));
@@ -107,6 +104,7 @@ if(!$account['type']) $account['type'] = 32767;
 
 $SMARTY->assign('error', $error);
 $SMARTY->assign('users', $LMS->GetUserNames());
+$SMARTY->assign('domainlist', $LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->assign('account', $account);
 $SMARTY->assign('layout', $layout);
 $SMARTY->display('accountadd.html');
