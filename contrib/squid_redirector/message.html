@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pl" lang="pl"> 
 <!--// $Id$ //-->
 <head>
-<meta content="text/html; charset=ISO-8859-2" http-equiv="content-type"/>
-<title>Wiadomość administracyjna</title>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+<title>{t}Administration message{/t}</title>
 {literal}
 <style type="text/css"><!--
 BODY,HTML	{ font-size: 10pt; font-family: Tahoma, Verdana, Arial, Helvetica; margin: 0pt; height:100%}
@@ -33,7 +33,7 @@ IMG		{ border: 0; }
 	</td>
 
 	<td style="background-image: url(img/box_blue_srodek.gif); text-align:left;">
-	    <b>Wiadomość administracyjna</b>
+	    <b>{t}Administration message{/t}</b>
 	</td>
 	<td style="width:1%;">
 	    <img src="img/box_blue.gif" alt=""/> 
@@ -48,14 +48,14 @@ IMG		{ border: 0; }
 		    {if $nodeinfo.access}
 			{$userinfo.message}
 			<br/><br/>
-			<a href="index.php?readed=1&oldurl={$layout.oldurl}">Aby oznaczyć tą wiadomość jako przeczytaną kliknij tutaj.</a>
+			<a href="index.php?readed=1&oldurl={$layout.oldurl}">{t}Click here to mark this message as readed.{/t}</a>
 		    {else}
-			Dostęp do sieci na tym komputerze jest zablokowany.<br/><br/>
+			{t}Access to network on this computer is locked.{/t}<br/><br/>
 			{$userinfo.message}
 		    {/if}
 		{else}
-		    Dostęp do sieci na tym komputerze jest zablokowany. Możliwe przyczyny to: nieznana karta sieciowa lub nieznany komputer.<br/><br/>
-		    Aby uzyskać więcej informacji skontaktuj się z Biurem Obsługi Abonenta.		    
+		    {t}Access to network on this computer is locked. Possible causes: unknown network device or unknown computer.{/t}<br/><br/>
+		    {t}Please contact with our Customer Service.{/t}
 		{/if}
 	    </div>
 	</td>
