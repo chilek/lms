@@ -80,10 +80,10 @@ if($query = $_POST['query'])
 			$i++;
 			if ( $i > $start && $i < ($start+$pagelimit+1) )
 			{
-				$result .= "<TR CLASS=\"LIGHT\"><TD CLASS=\"BLEND\">$i</TD>";
+				$result .= '<TR CLASS="LIGHT"><TD CLASS="BLEND">'.$i.'</TD>';
 				foreach($colnames as $column)	
 				{
-					$result .= "<TD>$row[$column]</TD>";
+					$result .= '<TD>'.$row[$column].'</TD>';
 				}
 				$result .= '</TR>';
 			}
