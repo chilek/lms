@@ -2868,6 +2868,11 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $result;
 	}
 
+	function GetQueueNames()
+	{
+		return $this->DB->GetAll('SELECT id, name FROM rtqueues ORDER BY name');
+	}
+
 	function QueueExists($id)
 	{
 		return ($this->DB->GetOne('SELECT * FROM rtqueues WHERE id=?', array($id)) ? TRUE : FALSE);
@@ -2920,10 +2925,10 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$this->SetTS('rtqueues');
 		$this->DB->Execute('DELETE FROM rtrights WHERE queueid=?', array($queue['id']));
 		$this->SetTS('rtrights');
-			if($queue['rights'])
-				foreach($queue['rights'] as $right)
-					if($right['rights'])
-						$this->RightsRTAdd($queue['id'], $right['id'], $right['rights']);
+		if($queue['rights'])
+			foreach($queue['rights'] as $right)
+				if($right['rights'])
+					$this->RightsRTAdd($queue['id'], $right['id'], $right['rights']);
 	}
 	
 	function GetQueueName($id)
