@@ -29,11 +29,14 @@ if(! $LMS->QueueExists($_GET['id']))
 	header('Location: ?m=rtqueuelist');
 	die;
 }
+$queuedata['id'] = $_GET['id'];
+$queuedata['name'] = $LMS->GetQueueName($queuedata['id']);
 
-$layout['pagetitle'] = 'Podgl±d kolejki '.$LMS->GetQueueName($_GET['id']);
-
+$layout['pagetitle'] = 'Podgl±d kolejki '.$queuedata['name'];
 $queue = $LMS->GetQueueContent($_GET['id']);
+
 $SMARTY->assign('queue', $queue);
+$SMARTY->assign('queuedata', $queuedata);
 $SMARTY->display('rtqueueview.html');
 ?><PRE><?
 print_r($queue);
