@@ -132,7 +132,7 @@ class LMS
 		{
 			case "postgres":
 				// uaktualnijmy sequencery postgresa
-				foreach($this->ADB->MetaTables() as $tablename)
+				foreach($this->ADB->ListTables() as $tablename)
 					$this->ADB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
 			break;
 		}
@@ -144,7 +144,7 @@ class LMS
 			return FALSE;
 		if($dumpfile = fopen($filename,"w"))
 		{
-			foreach($this->ADB->MetaTables() as $tablename)
+			foreach($this->ADB->ListTables() as $tablename)
 			{
 				fputs($dumpfile,"DELETE FROM $tablename;\n");
 				foreach($this->ADB->GetAll("SELECT * FROM ".$tablename) as $row)
@@ -1602,6 +1602,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.195  2003/08/22 13:15:00  lukasz
+ * - fixed MetaTables
+ *
  * Revision 1.194  2003/08/22 00:17:50  lukasz
  * - removed ADODB ;>
  *
