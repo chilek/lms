@@ -69,7 +69,7 @@ if(isset($nodeedit))
 	foreach($nodeedit as $key => $value)
 		$nodeedit[$key] = trim($value);
 	
-	if($nodeedit['ipaddr']=='' && $nodeedit['mac']=='' && $nodeedit['name']=='' && $nodeedit['info']=='')
+	if($nodeedit['ipaddr']=='' && $nodeedit['mac']=='' && $nodeedit['name']=='' && $nodeedit['info']=='' && $nodeedit['passwd']=='')
 	{
 		header('Location: ?m=nodeinfo&id='.$nodeedit['id']);
 		die;
@@ -109,6 +109,9 @@ if(isset($nodeedit))
 	elseif(strlen($nodeedit['name'])>16)
 		$error['name'] = trans('Node name is too long (max.16 characters)!');
 
+	if(strlen($nodeedit['passwd'])>32)
+		$error['passwd'] = trans('Password is too long (max.32 characters)!');
+
 	if($nodeedit['access']!=1)
 		$nodeedit['access'] = 0;
         if($nodeedit[warning]!=1)
@@ -125,6 +128,7 @@ if(isset($nodeedit))
 	$nodeinfo['name'] = $nodeedit['name'];
 	$nodeinfo['mac'] = $nodeedit['mac'];
 	$nodeinfo['ip'] = $nodeedit['ipaddr'];
+	$nodeinfo['passwd'] = $nodeedit['passwd'];
 	$nodeinfo['access'] = $nodeedit['access'];
 	$nodeinfo['ownerid'] = $nodeedit['ownerid'];
 

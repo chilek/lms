@@ -1,5 +1,6 @@
 <!--// $Id$ //-->
-<FORM NAME="editnode" METHOD="POST" ACTION="?m=nodeedit&id={$nodeinfo.id}"><INPUT TYPE="hidden" NAME="nodeedit[id]" VALUE="{$nodeinfo.id}">
+<FORM NAME="editnode" METHOD="POST" ACTION="?m=nodeedit&id={$nodeinfo.id}">
+<INPUT TYPE="hidden" NAME="nodeedit[id]" VALUE="{$nodeinfo.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
@@ -24,6 +25,14 @@
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodeeditmac" VALUE="{$nodeinfo.mac}" {tip text="Enter MAC address or select it from list" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.nodeeditmac);" {tip text="Select MAC address from list"}>&raquo;&raquo;&raquo;</A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/passwd.gif" BORDER="0" ALT="{t}Password:{/t}">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			<INPUT TYPE="TEXT" NAME="nodeedit[passwd]" VALUE="{$nodeinfo.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="[ Generate random password ]"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -110,8 +119,26 @@
 	</TR>	
 </TABLE>
 </FORM>
+{literal}
 <SCRIPT language="javaScript">
 <!--
-document.forms['editnode'].elements['nodeedit[name]'].focus();
+	document.forms['editnode'].elements['nodeedit[name]'].focus();
+	
+	function GenPasswd()
+	{
+		var passwd = new Array();
+		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		var length = {/literal}{$_config.phpui.nodepassword_length|default:"16"}{literal};
+		if(length > 32) length = 32;
+		
+		for(var i=0; i<length; i++)
+		{
+			n = Math.floor(Math.random() * items.length);
+			passwd[i] = items.substring(n, n+1);
+		}
+
+		document.forms['editnode'].elements['nodeedit[passwd]'].value = passwd.join("");
+	}	
 //-->
 </SCRIPT>
+{/literal}

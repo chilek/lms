@@ -74,6 +74,9 @@ if(isset($nodedata))
 		if($LMS->GetNodeIDByMAC($nodedata['mac']))
 			$error['mac'] = trans('Specified MAC address is in use!');
 
+	if(strlen($nodedata['passwd']) > 32)
+		$error['passwd'] = trans('Password is too long (max.32 characters)!');
+
 	if(! $LMS->UserExists($nodedata['ownerid']))
 		$error['user'] = trans('You must select owner!');
 	elseif($LMS->GetUserStatus($nodedata['ownerid']) != 3)

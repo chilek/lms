@@ -35,6 +35,17 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/passwd.gif" BORDER="0" ALT="{t}Password:{/t}">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Password:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="nodedata[passwd]" VALUE="{$nodedata.passwd}" {tip text="Enter password (optional)" trigger="passwd"}> <a href="javascript: GenPasswd();" {tip text="[ Generate random password ]"}>&raquo;&raquo;&raquo;</A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/{if ! $nodedata.access}no{/if}access.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
@@ -96,8 +107,27 @@
 		</TD>
 	</TR>	
 </TABLE></FORM>
+{literal}
 <SCRIPT language="javaScript">
 <!--
-document.forms['nodeadd'].elements['nodedata[name]'].focus();
+	document.forms['nodeadd'].elements['nodedata[name]'].focus();
+
+	function GenPasswd()
+	{
+		var passwd = new Array();
+		var items = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		var length = {/literal}{$_config.phpui.nodepassword_length|default:"16"}{literal};
+		if(length > 32) length = 32;
+		
+		for(var i=0; i<length; i++)
+		{
+			n = Math.floor(Math.random() * items.length);
+			passwd[i] = items.substring(n, n+1);
+		}
+
+		document.forms['nodeadd'].elements['nodedata[passwd]'].value = passwd.join("");
+	}	
+
 //-->
 </SCRIPT>
+{/literal}

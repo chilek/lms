@@ -24,6 +24,16 @@
 			{$nodeinfo.mac} {if $nodeinfo.producer}({$nodeinfo.producer}){/if}
 		</TD>
 	</TR>
+{if $nodeinfo.passwd}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/passwd.gif" BORDER="0" ALT="{t}Password:{/t}">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			{$nodeinfo.passwd}
+		</TD>
+	</TR>
+{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/network.gif" BORDER="0" ALT="{t}Network:{/t}">
