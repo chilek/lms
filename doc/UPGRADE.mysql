@@ -20,6 +20,8 @@ DROP TABLE IF EXISTS options;
 /* Nowe kolumny */
 ALTER TABLE users ADD deleted BOOL DEFAULT '0' NOT NULL;
 ALTER TABLE users ADD payday INT DEFAULT '1' NOT NULL;
+/* PESEL */
+ALTER TABLE users ADD pesel VARCHAR(11) DEFAULT '' AFTER nip;
 
 /* Nowe pola w tabeli */
 ALTER TABLE networks ADD dns2 VARCHAR(16) AFTER dns;
@@ -44,7 +46,7 @@ ALTER TABLE tariffs CHANGE uprate uprate INT(11), CHANGE downrate downrate INT(1
 /* Faktury inaczej */
 ALTER TABLE cash ADD invoiceid INT DEFAULT '0' NOT NULL;
 ALTER TABLE tariffs ADD taxvalue INT DEFAULT '0' NOT NULL AFTER value;
-ALTER TABLE tariffs ADD sww VARCHAR(255) DEFAULT '' NOT NULL AFTER taxvalue;
+ALTER TABLE tariffs ADD pkwiu VARCHAR(255) DEFAULT NULL AFTER taxvalue;
     
 CREATE TABLE invoices (
       id INT NOT NULL AUTO_INCREMENT ,
@@ -54,7 +56,8 @@ CREATE TABLE invoices (
       customerid INT NOT NULL ,
       name VARCHAR( 255 ) NOT NULL ,
       address VARCHAR( 255 ) NOT NULL ,
-      nip VARCHAR( 16 ) NOT NULL ,
+      nip VARCHAR( 16 ) DEFAULT NULL,
+      pesel VARCHAR(11) DEFAULT NULL,
       zip VARCHAR( 6 ) NOT NULL ,
       city VARCHAR( 32 ) NOT NULL ,
       phone VARCHAR( 255 ) NOT NULL ,
@@ -68,7 +71,7 @@ CREATE TABLE invoicecontents (
     invoiceid INT NOT NULL,
     value DOUBLE NOT NULL,
     taxvalue INT NOT NULL,
-    sww VARCHAR( 255 ) NOT NULL DEFAULT '',
+    pkwiu VARCHAR( 255 ) DEFAULT NULL,
     content VARCHAR( 16 ) NOT NULL,
     count INT NOT NULL,
     description VARCHAR( 255 ) NOT NULL,

@@ -27,6 +27,9 @@ ALTER TABLE users ALTER COLUMN deleted SET NOT NULL;
 ALTER TABLE users ADD payday integer;
 ALTER TABLE users ALTER COLUMN payday SET DEFAULT 1;
 ALTER TABLE users ALTER COLUMN payday SET NOT NULL;
+/* pesel */
+ALTER TABLE users ADD pesel varchar(11);
+ALTER TABLE users ALTER COLUMN pesel SET DEFAULT NULL;
 
 /* Nowe kolumny w tabeli */
 ALTER TABLE networks ADD dns2 VARCHAR(16);
@@ -78,10 +81,8 @@ ALTER TABLE tariffs ADD taxvalue integer;
 UPDATE tariffs SET taxvalue = 0;
 ALTER TABLE tariffs ALTER COLUMN taxvalue SET DEFAULT 0;
 ALTER TABLE tariffs ALTER COLUMN taxvalue SET NOT NULL;
-ALTER TABLE tariffs ADD	sww varchar(255);
-UPDATE tariffs SET sww = '';
-ALTER TABLE tariffs ALTER COLUMN sww SET DEFAULT '';
-ALTER TABLE tariffs ALTER COLUMN sww SET NOT NULL;
+ALTER TABLE tariffs ADD	pkwiu varchar(255);
+ALTER TABLE tariffs ALTER COLUMN pkwiu SET DEFAULT NULL;
 
 CREATE SEQUENCE "invoices_id_seq";
 CREATE TABLE invoices (
@@ -92,7 +93,8 @@ CREATE TABLE invoices (
         customerid integer NOT NULL,
         name varchar(255) NOT NULL,
         address varchar(255) NOT NULL,
-        nip varchar(16) NOT NULL,
+        nip varchar(16) DEFAULT NULL,
+	pesel varchar(11) DEFAULT NULL,
         zip varchar(6) NOT NULL,
         city varchar(32) NOT NULL,
         phone varchar(255) NOT NULL,
@@ -104,13 +106,12 @@ CREATE TABLE invoicecontents (
 	invoiceid integer NOT NULL,
 	value float4 NOT NULL,
 	taxvalue integer NOT NULL,
-	sww varchar(255) DEFAULT '' NOT NULL,
+	pkwiu varchar(255) DEFAULT NULL,
 	content varchar(16) NOT NULL,
 	count integer NOT NULL,
 	description varchar(255) NOT NULL,
 	tariffid integer NOT NULL
 );	 
-
 
 /* Nowa tabela dla statystyk */
 CREATE TABLE stats (
