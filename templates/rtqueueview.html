@@ -5,7 +5,7 @@
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" WIDTH="1%" NOWRAP>
-			<B>ID#:</B><BR>
+			<B>ID:</B><BR>
 			Data zg³oszenia:
 		</TD>
 		<TD CLASS="fbt" WIDTH="99%">
@@ -19,17 +19,17 @@
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}		
 	{foreach from=$queue item=ticket}
-	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+	<TR {if $ticket.state >= 2}class="BLEND"{/if} bgcolor="{if $ticket.state == 0}#F5F5F5{else}{cycle}{cycle print=false}{/if}" onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{if $ticket.state == 0}#F5F5F5{else}{cycle}{/if}')">
 		<TD CLASS="fleft" NOWRAP onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
-			<B><FONT CLASS="h3">{$ticket.id|string_format:"%06d"}</FONT></B><BR>
+			<B>{$ticket.id|string_format:"%06d"}</B><BR>
 			{$ticket.createtime|date_format:"%Y/%m/%d, %H:%M:%S"}
 		</TD>
 		<TD onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
-			<FONT CLASS="h3"{if $ticket.state eq 0} COLOR="GREEN"{/if}><B>{$ticket.subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B></FONT></FONT><BR>
-			{$ticket.requestor|escape} &lt;<A HREF="mailto:{$ticket.requestoremail}">{$ticket.requestoremail}</A>&gt;<BR>
+			<B>{$ticket.subject|escape|truncate:"60":"..."|default:"&nbsp;"}</B><BR>
+			{$ticket.requestor|escape} &lt;{if $ticket.state < 2}<A HREF="mailto:{$ticket.requestoremail}">{/if}{$ticket.requestoremail}{if $ticket.state < 2}</A>{/if}&gt;<BR>
 		</TD>
 		<TD CLASS="fright" NOWRAP onClick="return self.location.href='?m=rtticketview&id={$ticket.id}';">
-			<FONT CLASS="h3">{if $ticket.owner}<A HREF="?m=admininfo&id={$ticket.ownerid}">{$ticket.ownername}</A>{else}-{/if}</FONT><BR>
+			{if $ticket.ownername}{if $ticket.state < 2}<A HREF="?m=admininfo&id={$ticket.ownerid}">{/if}{$ticket.ownername}{if $ticket.stat < 2}</A>{/if}{else}-{/if}</FONT><BR>
 			{$ticket.lastmodfied|date_format:"%Y/%m/%d, %H:%M:%S"|default:"-"}
 		</TD>
 	</TR>

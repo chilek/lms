@@ -10,16 +10,16 @@
 			<IMG src="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 			Opis:
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" NOWRAP>
+		<TD CLASS="fbt" WIDTH="1%" align="right" NOWRAP>
 			<B>E-mail:</B>
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%">
+		<TD CLASS="fbt" align="right"  WIDTH="1%">
 			Nowych:
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%">
+		<TD CLASS="fbt" align="right" WIDTH="1%">
 			Otwartych:
 		</TD>
-		<TD CLASS="fbt" WIDTH="1%" ALIGN="CENTER">
+		<TD CLASS="fbt" align="right" WIDTH="1%" ALIGN="CENTER">
 			Ostatni:
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
@@ -36,7 +36,7 @@
 				<IMG src="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle"> {$queue.description}
 			{/if}
 		</TD>
-		<TD>
+		<TD  align="right">
 			<A HREF="mailto:{$queue.email}">{$queue.email}</A>
 		</TD>
 		<TD ALIGN="CENTER" onClick="return self.location.href='?m=rtqueueview&id={$queue.id}';">
