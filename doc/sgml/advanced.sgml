@@ -290,6 +290,54 @@
 				<member>download - ilo¶æ danych odebranych, w bajtach</member>
 			</simplelist>
 		</sect2>
+		<sect2 id="rtqueues">
+			<title>Helpdesk - kolejki ('rtqueues')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>name - nazwa</member>
+				<member>email - adres konta pocztowego</member>
+				<member>description - opis dodatkowy</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="rttickets">
+			<title>Helpdesk - zg³oszenia ('rttickets')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>queueid - identyfikator kolejki</member>
+				<member>requestor - dane zg³aszaj±cego (w tym e-mail)</member>
+				<member>userid - identyfikator u¿ytkownika</member>
+				<member>subject - temat zg³oszenia</member>
+				<member>state - status (0-nowy, 1-otwarty, 2-rozwi±zany, 3-martwy)</member>
+				<member>owner - identyfikator w³a¶ciciela-administratora</member>
+				<member>createtime - data zg³oszenia</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="rtmessages">
+			<title>Helpdesk - wiadomo¶ci ('rtmessages')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>ticketid - identyfikator zg³oszenia</member>
+				<member>adminid - identyfikator administratora nadawcy</member>
+				<member>userid - identyfikator u¿ytkownika nadawcy</member>
+				<member>mailfrom - e-mail nadawcy</member>
+				<member>subject - temat wiadomo¶ci</member>
+				<member>messageid - pocztowy identyfikator wiadomo¶ci</member>
+				<member>inreplyto - identyfikator wiadomo¶ci</member>
+				<member>replyto - </member>
+				<member>headers - </member>
+				<member>body - tre¶æ wiadomo¶ci</member>
+				<member>createtime - data utworzenia/wys³ania </member>
+			</simplelist>
+		</sect2>
+		<sect2 id="rtrights">
+			<title>Helpdesk - uprawnienia ('rtrights')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>queueid - identyfikator kolejki</member>
+				<member>adminid - identyfikator administratora</member>
+				<member>rights - (1-odczyt, 2-zapis)</member>
+			</simplelist>
+		</sect2>
 		<sect2 id="dbinfo">
 			<title>Informacje o bazie danych ('dbinfo')</title>
 			<simplelist>
