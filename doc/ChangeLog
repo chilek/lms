@@ -62,6 +62,7 @@ wersja 1.5.4 (??/??/????):
   - edycja i usuwanie faktur (lexx)
   - dodano index na kolumnie invoiceid w tabeli cash, przyspieszaj±cy niektóre
     zapytania SQL (alec)
+  - mo¿liwo¶æ generowania faktur w PDF (lexx)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
