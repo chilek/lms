@@ -940,6 +940,8 @@ class LMS
 		if(!$filename)
 			return FALSE;
 		$file = fopen($filename,"r");
+		$this->ADB->BeginTrans();
+		
 		while(!feof($file))
 		{
 			$line = fgets($file,4096);
@@ -949,7 +951,19 @@ class LMS
 				$this->ADB->Execute($line);
 			}
 		}
+		$this->ADB->BeginTrans();		
 		fclose($file);
+
+		// Okej, zróbmy parê bzdurek db depend :S
+
+		switch($this->ADB->databaseType)
+		{
+			case "postgres":
+				// update sequencers :S
+				foreach($this->ADB->MetaTables() as $tablename)
+					$this->ADB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
+			break;
+		}
 	}						
 
 	function DBDump($filename=NULL)
