@@ -965,7 +965,7 @@ class LMS
 					$ownertable[idx][] = $idx;
 					$ownertable[owner][] = $row[owner];
 				}
-				if(is_array($ownertable)
+				if(is_array($ownertable))
 					array_multisort($ownertable[owner],($direction == "DESC" ? SORT_DESC : SORT_ASC),$ownertable[idx]);
 				foreach($ownertable[idx] as $idx)
 					$nnodelist[] = $nodelist[$idx];
