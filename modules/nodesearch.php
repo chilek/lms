@@ -27,41 +27,44 @@
 $layout[pagetitle]="Wyszukiwanie komputerów";
 $SMARTY->assign("layout",$layout);
 
-$search = $_POST['search'];
+$search = $_POST[search];
 
 if(!isset($search))
-	$search = $_SESSION['usersearch'];
+	$search = $_SESSION[usersearch];
 else
-	$_SESSION['usersearch'] = $search;		
+	$_SESSION[usersearch] = $search;		
 
-if($_POST['SEARCH']) 
+if($_GET[search]==1 || isset($_GET[search])) 
 {
-	$o = (!isset($_GET['o'])) ? $o = $_SESSION['snlo'] : $o = $_GET['o'];
+	if(!isset($_GET[o]))
+		$o = $_SESSION[snlo];
+	else
+		$o = $_GET[o];
 
-	$_SESSION['snlo'] = $o;
+	$_SESSION[snlo] = $o;
 			
 	$nodelist = $LMS->SearchNodeList($search,$o);
 
-	$listdata['total'] = $nodelist['total'];
-	$listdata['order'] = $nodelist['order'];
-	$listdata['direction'] = $nodelist['direction'];
-	$listdata['totalon'] = $nodelist['totalon'];
-	$listdata['totaloff'] = $nodelist['totaloff'];
+	$listdata[total] = $nodelist[total];
+	$listdata[order] = $nodelist[order];
+	$listdata[direction] = $nodelist[direction];
+	$listdata[totalon] = $nodelist[totalon];
+	$listdata[totaloff] = $nodelist[totaloff];
 
-	unset($nodelist['total']);
-	unset($nodelist['order']);
-	unset($nodelist['direction']);
-	unset($nodelist['totalon']);
-	unset($nodelist['totaloff']);
+	unset($nodelist[total]);
+	unset($nodelist[order]);
+	unset($nodelist[direction]);
+	unset($nodelist[totalon]);
+	unset($nodelist[totaloff]);
 	
-	if (isset($_SESSION['nslp']) && !isset($_GET['page']))
-		$_GET['page'] = $_SESSION['nslp'];
+	if (isset($_SESSION[nslp]) && !isset($_GET[page]))
+		$_GET[page] = $_SESSION[nslp];
 		
-	$page = (! $_GET['page'] ? 1 : $_GET['page']);
+	$page = (! $_GET[page] ? 1 : $_GET[page]);
 	
-	$pagelimit = (! $_CONFIG['phpui']['nodelist_pagelimit'] ? $listdata['total'] : $_CONFIG['phpui']['nodelist_pagelimit']);
+	$pagelimit = (! $_CONFIG[phpui][nodelist_pagelimit] ? $listdata[total] : $_CONFIG[phpui][nodelist_pagelimit]);
 	$start = ($page - 1) * $pagelimit;
-	$_SESSION['nslp'] = $page;
+	$_SESSION[nslp] = $page;
 	
 	$SMARTY->assign("page",$page);
 	$SMARTY->assign("pagelimit",$pagelimit);
