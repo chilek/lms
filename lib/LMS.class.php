@@ -87,7 +87,7 @@ class LMS
 
 		// to siê rozejdzie po modu³ach:
 
-		$this->AddMenu(trans('Administration'), 'settings.gif', '?', trans('System informations and management'), 'i', 0);
+		$this->AddMenu(trans('Administration'), 'settings.gif', '?m=welcome', trans('System informations and management'), 'i', 0);
 		$this->AddMenu(trans('Customers'), 'user.gif', '?m=userlist', trans('Customers: list, searching, adding, groups'), 'u', 5);
 		$this->AddMenu(trans('Nodes'), 'node.gif', '?m=nodelist', trans('Nodes: list, searching, adding'), 'k', 10);
 		$this->AddMenu(trans('Net Devices'), 'netdev.gif', '?m=netdevlist', trans('Record of Network Devices'), 'o', 15);
