@@ -1,18 +1,40 @@
 #!/usr/bin/perl -Tw
 #
+# LMS version 1.1-cvs
+#
+#  (C) 2001-2003 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+#
+
 package lms_arpd;
 
 use strict;
-use Config::IniFiles;
 use Getopt::Long;
 use vars qw(@ISA $help $version);
-use Net::Server::PreFork; # any personality will do  
-use Data::Dumper;
+use Net::Server::PreFork;
 my $_version = '1.1-cvs';
 
 @ISA = qw(Net::Server::PreFork);  
 lms_arpd->run();
-exit;  ### over-ridden subs below  
+exit;
+
 sub process_request 
 {
 	my $self = shift;
@@ -95,4 +117,3 @@ EOF
 
 
 1;
-#--------------- file test.pl ---------------
