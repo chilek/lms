@@ -33,6 +33,24 @@
 
 class example
 {
+	// wersja modu³u. mo¿e byæ cokolwiek, byle by z sensem.
+	// dla modu³ów LMS'a wersja to werjsa ogólna LMS'a.
+	
+	var $_version = '1.1-cvs';
+
+	// autor modu³u. dla modu³ów standardowych 'LMS Developers'.
+	
+	var $_author = 'LMS Developers';
+
+	// Opis. Krótki i zwiêz³y.
+	
+	var $_description = 'Klasa przyk³adowa';
+
+	// Rewizja pliku, o ile rozwijany by³ w CVS. W przeciwnym wypadku
+	// mo¿na pomin±æ, albo ustawiæ NULL.
+
+	var $_revision = '$Revision$';
+	
 	function example(&$core)
 	{
 		// do konstruktora klasy bêdzie zawsze przekazywana referencja
