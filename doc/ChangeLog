@@ -34,6 +34,7 @@ wersja 1.5.1 (??/??/????):
   - lms-rtparser: poprawione/dodane kodowanie nag³ówków potwierdzenia (alec)
   - poprawiony auto-upgrade: w przypadku wyst±pienia b³êdu procedura zostaje
     przerwana (alec)
+  - poprawiony b³±d uniemo¿liwiaj±cy edycjê danych grupy u¿ytkowników (alec)
   
 wersja 1.5.0 Marduk (18/09/2004):
 
