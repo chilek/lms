@@ -89,12 +89,15 @@ require_once($_LIB_DIR.'/checkdirs.php');
 require_once($_LIB_DIR.'/unstrip.php');
 require_once($_SMARTY_DIR.'/Smarty.class.php');
 require_once($_ADODB_DIR.'/adodb.inc.php');
+// require_once($_LIB_DIR.'/LMSDB.php'); - if you want to use new DAL
 require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
 require_once($_LIB_DIR.'/leftmenu.php');
 require_once($_LIB_DIR.'/accesstable.php');
 
 // Initialize ADODB object
+
+$dstart = getmicrotime();
 
 $ADB = ADONewConnection($_DBTYPE);
 $ADB->debug = chkconfig($_CONFIG['phpui']['adodb_debug']);
@@ -103,6 +106,8 @@ if($_CONFIG['phpui']['adodb_debug_log'] && is_writeable($_CONFIG['phpui']['adodb
 $ADB->Connect($_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME);
 
 $ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
+
+// $ADB = DBInit($_DBTYPE,$_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME); - if you want to use new DAL
 
 // Initialize database and template classes
 
@@ -189,9 +194,14 @@ else
 
 /*
  * $Log$
+ * Revision 1.89  2003/08/18 17:16:25  lukasz
+ * - temporary save
+ *
  * Revision 1.88  2003/08/18 16:57:00  lukasz
  * - more cvs tags :>
  *
  */
 
+echo 'exec: '.(getmicrotime()-$dstart);
+print_r($ADB);
 ?>
