@@ -40,10 +40,9 @@ $userinfo = $LMS->GetUser($_GET['id']);
 $assigments = $LMS->GetUserAssignments($_GET['id']);
 $usernodes = $LMS->GetUserNodes($_GET['id']);
 $tariffs = $LMS->GetTariffs();
-$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 $userinfo['username'] = ucwords(strtolower($userinfo['username']));
-
 $usernodes['ownerid'] = $_GET['id'];
+
 $SMARTY->assign(
 		array(
 			'usernodes' => $usernodes,

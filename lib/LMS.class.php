@@ -1830,10 +1830,7 @@ class LMS
 				$balancelist[$idx]['value'] = $row['value'];
 				$balancelist[$idx]['taxvalue'] = $row['taxvalue'];
 				$balancelist[$idx]['username'] = $userslist[$row['userid']]['username'];
-				if($idx)
-					$balancelist[$idx]['before'] = $balancelist[$idx-1]['after'];
-				else
-					$balancelist[$idx]['before'] = 0;
+				$balancelist[$idx]['before'] = $balancelist[$idx-1]['after'];
 
 				switch($row['type'])
 				{
