@@ -49,11 +49,15 @@ $SMARTY->assign("balancelist",$balancelist);
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("nodeinfo",$nodeinfo);
 $SMARTY->assign("assignments",$assignments);
+$SMARTY->assign("tariffs",$tariffs);
 $SMARTY->assign("layout",$layout);
 $SMARTY->display("nodeinfo.html");
 
 /*
  * $Log$
+ * Revision 1.19  2003/09/12 02:52:57  lukasz
+ * - cosmetics
+ *
  * Revision 1.18  2003/09/12 02:48:13  lukasz
  * - parse error @ 51;
  *
