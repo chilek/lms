@@ -41,7 +41,6 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	{
 		echo '<PRE>';
 		$invoice = $LMS->GetInvoiceContent($invoiceid);
-		print_r($invoice);
 		foreach(split('\+', $which) as $type)
 		{
 			$SMARTY->assign('type',$type);
