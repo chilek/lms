@@ -1,4 +1,5 @@
 <?php
+
 /*
  * LMS version 1.3-cvs
  *
@@ -144,7 +145,7 @@ $SMARTY->compile_dir = $_SMARTY_COMPILE_DIR;
 
 $layout[lmsv]='1.3-cvs';
 
-$SMARTY->assign("menu",$menu);
-$SMARTY->assign("layout",$layout);
+$SMARTY->assign('menu',$menu);
+$SMARTY->assign('layout',$layout);
 
 ?>

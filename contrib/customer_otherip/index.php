@@ -1,4 +1,5 @@
 <?php 
+
 /*
  * LMS version 1.3-cvs
  *
@@ -23,7 +24,7 @@
  *  $Id$
  */
 
-include_once("class.php");
+include_once('class.php');
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html><head>
