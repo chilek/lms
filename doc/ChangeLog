@@ -38,6 +38,9 @@ wersja 1.3.4 Terok (??/06/2004):
     %last_10_in_a_table (alec)
   - poprawka linku do listy zad³u¿onych w welcome.html (alec)
   - dodany contrib/customer_otherip (hunter)
+  - rozbudowane faktury o dane do htb: upload ceil, download ceil, 
+    connection limit, packet limit (alec)
+  - przepisany modu³ 'tc' demona uwzglêdnia zmiany w taryfach (alec)
 
 wersja 1.3.3 Sokar (05/05/2004):
   
