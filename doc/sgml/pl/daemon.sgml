@@ -961,13 +961,13 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 		    <itemizedlist>
 			<listitem>
 			    <para>file</para>
-			    <para>Lokalizacja pliku wynikowego. Domy¶lnie: /tmp/ethers.</para>
-			    <para>Przyk³ad: <prompt>file = /etc/ethers</prompt></para>
+			    <para>Lokalizacja pliku wynikowego. Domy¶lnie: /etc/ethers.</para>
+			    <para>Przyk³ad: <prompt>file = /tmp/ethers</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>command</para>
-			    <para>Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Domy¶lnie: puste.</para>
-			    <para>Przyk³ad: <prompt>command = "arp -f /etc/ethers"</prompt></para>
+			    <para>Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Domy¶lnie: 'arp -f /etc/ethers'.</para>
+			    <para>Przyk³ad: <prompt>command = ""</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>dummy_macs</para>
@@ -1018,8 +1018,8 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 			</listitem>
 			<listitem>
 			    <para>file</para>
-			    <para>Tekst wstawiany na pocz±tku pliku. Domy¶lnie: /tmp/oidentd.conf.</para>
-			    <para>Przyk³ad: <prompt>file = /etc/identd.conf</prompt></para>
+			    <para>Nazwa pliku konfiguracyjnego. Domy¶lnie: /etc/oidentd.conf.</para>
+			    <para>Przyk³ad: <prompt>file = /etc/oident/identd.conf</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>networks</para>

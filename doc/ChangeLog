@@ -56,7 +56,8 @@ version 1.5.5 Anubis (??/??/????):
   - new layout for menu (lukasz)
   - ip address selection divided to pages (chilek)
   - if we find only one customer we will redirect to his info (chilek)
-  - almsd/dhcp: changed defaults of 'file' and 'command' options (alec)
+  - almsd/dhcp,oident,ethers: changed defaults of 'file' and 'command'
+    options (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 

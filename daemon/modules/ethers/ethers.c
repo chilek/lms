@@ -182,9 +182,9 @@ struct ethers_module * init(GLOBAL *g, MODULE *m)
 	ini = g->iniparser_load(g->inifile);
 
 	s = g->str_concat(instance, ":file");
-	fm->file = strdup(g->iniparser_getstring(ini, s, "/tmp/ethers"));
+	fm->file = strdup(g->iniparser_getstring(ini, s, "/etc/ethers"));
 	free(s); s = g->str_concat(instance, ":command");
-	fm->command = strdup(g->iniparser_getstring(ini, s, ""));
+	fm->command = strdup(g->iniparser_getstring(ini, s, "arp -f /etc/ethers"));
 	free(s); s = g->str_concat(instance, ":dummy_macs");	
 	fm->dummy_macs = g->iniparser_getboolean(ini,s,0);
 	free(s); s = g->str_concat(instance, ":networks");

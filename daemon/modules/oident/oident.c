@@ -161,7 +161,7 @@ struct oident_module * init(GLOBAL *g, MODULE *m)
 	free(s); s = g->str_concat(instance, ":host");
 	o->host = strdup(g->iniparser_getstring(ini, s, "%i\t%n\tUNIX"));
 	free(s); s = g->str_concat(instance, ":file");
-	o->file = strdup(g->iniparser_getstring(ini, s, "/tmp/oidentd.conf"));
+	o->file = strdup(g->iniparser_getstring(ini, s, "/etc/oidentd.conf"));
 	free(s); s = g->str_concat(instance, ":command");
 	o->command = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":networks");
