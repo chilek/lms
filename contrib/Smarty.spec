@@ -75,6 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld.org.pl
 
 $Log$
+Revision 1.4  2003/04/14 23:09:23  lukasz
+- LMS_0100_pre10
+
 Revision 1.3  2003/04/12 23:02:25  lukasz
 - updates (Smarty-2.5.0)
 
