@@ -3,7 +3,7 @@
 # Skrypt s³u¿y do tworzenia dokumentacji w ró¿nych formatach
 # (html, txt) na podstawie ¼ród³owych plików sgml
 # Przed u¿yciem nale¿y zainstalowaæ w systemie sgml-tools
-# z openjade oraz elinks (tylko dla formatu txt)
+# z openjade (lynx'a pewnie ka¿dy ma)
 #
 
 cd ../doc/sgml
@@ -34,7 +34,7 @@ case "$1" in
     ;;
     
     *)
-	echo -e "$0: Brak parametru.\nSposób u¿ycia: runme.sh html|txt"
+	echo -e "$0: Brak parametru.\nSposób u¿ycia: docgen.sh html|txt"
     ;;
 esac
 
