@@ -36,7 +36,7 @@
 			<B>{$accountlist[accountlist].id|string_format:"%04d"}</B>
 		</TD>
 		<TD valign="top" align="right">
-			<B><nobr>{$accountlist[accountlist].lastlogin}</nobr></B>
+			<nobr>{if $accountlist[accountlist].lastlogin}{$accountlist[accountlist].lastlogin|date_format:"%Y/%m/%d %H:%M"}{else}-{/if}</nobr>
 		</TD>
 		<TD class="fright">
 			<NOBR>
