@@ -62,10 +62,17 @@ function DBLoad($filename=NULL)
 	switch($LMS->CONFIG['database']['type'])
 	{
 		case 'postgres':
-			// uaktualnijmy sequencery postgresa ...
+			// actualize postgres sequences ...
 			foreach($LMS->DB->ListTables() as $tablename)
-				// ... tam gdzie jest *_id_seq
-				if(!in_array($tablename, array('rtattachments','dbinfo','invoicecontents','stats','timestamps','eventassignments')))
+				// ... where we have *_id_seq
+				if(!in_array($tablename, array(
+							'rtattachments',
+							'dbinfo',
+							'invoicecontents',
+							'stats',
+							'timestamps',
+							'eventassignments',
+							'sessions')))
 					$LMS->DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
 		break;
 	}
