@@ -1,0 +1,214 @@
+  <chapter>
+    <title>Na pocz±tek</title>
+    <sect1>
+      <title>Czym jest LMS</title>
+	<para>"LMS" jest skrótem od "LAN Management System". Jest to zestaw aplikacji w PHP i Perlu, u³atwiaj±cych zarz±dzanie sieciami osiedlowymi (popularnie zwanymi Amatorskimi Sieciami Komputerowymi), opartych o bazê danych MySQL (docelowo, do wyboru, MySQL lub PostgreSQL). G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi u¿ytkowników na poziomie providera z prawdziwego zdarzenia. Najbardziej podstawowe cechy LMS to: </para>
+	<itemizedlist>
+	  <listitem>
+	     <para>baza danych u¿ytkowników (imiê, nazwisko, adres, numer telefonu, uwagi);</para>
+	  </listitem>
+	  <listitem>
+	     <para>baza danych komputerów (adres IP, adres MAC);</para>
+	  </listitem>
+	  <listitem>
+	     <para>prowadzenie prostego rachunku operacji finansowych oraz stanu funduszów sieci;</para>
+	  </listitem>
+	  <listitem>
+	     <para>ró¿ne taryfy abonamentowe;</para>
+	  </listitem>
+	  <listitem>
+	     <para>wysy³anie poczt± elektroniczn± upomnieñ do u¿ytkowników;</para>
+	  </listitem>
+	  <listitem>
+	     <para>automatyczne naliczanie op³at miesiêcznych;</para>
+	  </listitem>
+	  <listitem>
+	     <para>generowanie praktycznie jakiegkolwiek konfiga na podstawie danych o komputerach w bazie (przyk³adowe configi obejmuj± rc.masq na iptables, dhcpd.conf, oidentd_masq.conf, /etc/ethers, dns prosty i odwrotny);</para>
+	  </listitem>
+	</itemizedlist>
+	<para>Aktualne prace zmierzaj± tak¿e w kierunku rozbudowy LMS'a o prostego CMS'a (Content Managment System) a tak¿e inne funkcje.</para>
+	<para><emphasis>UWAGA!</emphasis> Jako ¿e developerzy LMS'a s± band± niezdecydowanych i wiecznie marudz±cych person, prawdopodobnie prêdzej siê doczekacie koñca recesji ni¿ wersji stabilnej LMS'a. Do tego czasu macie dwie mo¿liwo¶ci: albo u¿ywaæ wersji 1.0pre5 która chodzi dobrze, albo mêczyæ siê z wersj± CVS i marudziæ na li¶cie mailingowej.</para>
+	<para>Rozbudowa o dodatkowe funkcje bêdzie zale¿eæ od potrzeb i sugestii u¿ytkowników. Projekt jest w powijakach i nie wiadomo do koñca, w któr± stronê bêdzie ewoluowa³. Ca³o¶æ zosta³a wymy¶lona w ramach administracji <ulink url="http://www.netx.waw.pl/">ASK NetX</ulink> i tam jest nieustannie rozwijana i poddawana testom ;)</para>
+	<para>Ca³o¶æ kodu publikowana jest na licencji GNU GPL v2.</para>
+    </sect1>
+    <sect1>
+      <title>Co LMS mo¿e a czego nie</title>
+	<para>LMS Nie zast±pi Ci umiejêtno¶ci jakie powinien mieæ administrator. Je¶li nie potrafisz wykonaæ tak prostych czynno¶æ jak instalacja czy konfiguracja, prawdopodobnie nie bêdziesz umia³ dostroiæ LMS do swojego systemu. Tak wiêc bez znajomo¶ci systemów U*IX siê nie obejdzie.</para>
+    </sect1>
+    <sect1>
+      <title>Co wchodzi w sk³ad LMSa</title>
+	<para>LMS sk³ada siê z kilku modu³ów, podstawowym modu³em jest <emphasis>LMS-UI</emphasis> (User Interface). Jest on w ca³o¶ci napisany w PHP i do pracy wymaga bazy danych (w³a¶ciwie to ka¿dy modu³ wymaga bazy danych). To w³a¶nie w LMS-UI wykonujemy wszystkie czynno¶ci, reszta modu³ów ma tylko za zadanie zautomatyzowaæ pracê LMSa.</para>
+	<para>LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty wymagaj± aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, musisz mieæ PERLa. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych b±d¼ wysy³anie upomnieñ. Jest jeszcze LMS-MGC, który te¿ jest skryptem ale na tyle uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny, i zrestartowaæ us³ugê.</para>
+	<para>Jest jeszcze LMSd (LMS Daemon), napisany w jêzyku C. Jest on przeznaczony (a w³a¶ciwie jego wtyczki) do generowania plików konfiguracyjnych i restartowania us³ug. Odpowiada on za to, aby to co zosta³o zmienione w LMS-UI zosta³o zmienione tak¿e w rzeczywisto¶ci.</para>
+    </sect1>
+    <sect1>
+      <title>Instalacja</title>
+	<sect2>
+	  <title>Wymagania</title>
+	    <sect3>
+	      <title>Serwer WWW</title>
+	      <para>Poniewa¿ LMS-UI jest napisane w PHP, potrzebujemy serwer WWW który bêdzie ten jêzyk obs³ugiwa³. Preferowanym serwerem jest Apache <ulink url="http://www.apache.org">www.apache.org</ulink></para>
+	    </sect3>
+	    <sect3>
+	      <title>Interpreter PHP</title>
+	      <para>Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a te¿ poprawnie na 4.1.x (ale poniewa¿ devepolerzy pracuj± na 4.2.3, nie mo¿na zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿emy sci±gn±æ ze strony <ulink url="http://www.php.net">www.php.net</ulink></para>
+	    </sect3>
+	    <sect3>
+	      <title>Serwer baz danych</title>
+	      <para>Preferowany to MySQL. 3.23.53 i nowszy, starszy mo¿e te¿ dzia³aæ, je¶li nie to daj nam o tym znaæ ;-)</para>
+	      <para>LMS-UI oraz LMS-MGC <emphasis>mo¿e</emphasis> tak¿e dzia³aæ z postgresql, jednak narazie nikomu do tej pory nie chce siê przetestowaæ LMSa przy wspó³pracy z tym serwerem, a tak¿e zrobiæ zrzut baz.</para>
+	    </sect3>
+	    <sect3>
+             <title>Biblioteki: Smarty i ADOdb</title>
+             <para>LMS-UI do pracy wymaga jeszcze bibliotek Smarty (<ulink url="http://smarty.php.net">http://smarty.php.net</ulink>) w wersji 2.5.0 lub wy¿szej oraz ADOdb (<ulink url="http://php.weblogs.com/ADOdb">http://php.weblogs.com/ADOdb</ulink>) w wersji 3.2.0 lub wy¿szej.</para>
+            </sect3>
+            <sect3>
+            <title>Perl</title>
+	  <para>O ile dla LMS-UI wystarczy to co powy¿ej, to ¿eby mieæ dzia³aj±cy LMS-MGC, lub resztê skryptów potrzebujemy tak¿e perla i modu³y do niego czyli:</para>
+	  <itemizedlist>
+	    <listitem>
+	       <para>perl w³a¶ciwy i jego podstawowe modu³y (POSIX, GetOpt::Long);</para>
+	    </listitem>
+	    <listitem>
+	       <para>Net::SMTP;</para>
+	    </listitem>
+	    <listitem>
+	       <para>Config::IniFiles;</para>
+	    </listitem>
+	    <listitem>
+	       <para>DBI;</para>
+	    </listitem>
+	    <listitem>
+	       <para>DBD-mysql (Je¶li masz zamiar u¿ywaæ mysql'a);</para>
+	    </listitem>
+	    <listitem>
+	       <para>DBD-pg (Je¶li masz zamiar u¿ywaæ postgres'a);</para>
+	    </listitem>
+	  </itemizedlist>
+	  </sect3>
+	  <para>A je¶li chcesz uruchomiæ LMSd potrzebujesz dzia³aj±cy kompilator jêzyka C.</para>
+	</SECT2>
+	<sect2>
+	  <title>Sci±gamy LMSa</title>
+	  <para><emphasis>Nota redaktorska:</emphasis> Opis sci±gania wersji CVSowej przy wydaniu stabilnym jest IMHO bezsensowny, ale teraz niech zostanie.</para>
+	  <para>LMSa mo¿emy sci±gn±æ ze strony domowej projektu (<ulink url="http://lms.rulez.pl">lms.rulez.pl</ulink>), lub bezpo¶rednio z CVS:</para>
+	  <screen><prompt>lexx@troll:~$</prompt> <userinput>wget http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1</userinput></screen>
+ 	  <para>je¶li chcemy sci±gn±æ przez interfejs webowy lub je¶li mamy CVS mo¿emy wykonaæ komendê:</para>
+	  <!-- <command>cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot get lms</command> -->
+	  <screen><prompt>lexx@troll:~$</prompt> <userinput>cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot get lms</userinput></screen>
+	</sect2>
+	<sect2>
+	  <title>Umieszczamy LMS na dysku</title>
+	  <para>Je¶li ¶ci±gneli¶my archwiwum to je teraz rozpakowujemy, a nastêpnie przenosimy pliki z lms-ui do katalogu osi±galnego z poziomy przegl±darki www (np. <filename>/var/www/lms</filename>). Pliki z konfiguracj± umieszczamy w katalogu <filename>/etc/lms</filename>).</para>
+	</sect2>
+	<sect2>
+	  <title>Biblioteki</title>
+	  <para>Je¶li jeste¶my w katalogu z LMSem, to musimy ¶ci±gn±c biblioteki. Najpierw ¶ci±gamy Smarty:</para>
+	  <screen><prompt>lexx@troll:~$</prompt> <userinput>cd /var/www/lms</userinput>
+<prompt>lexx@troll:~$</prompt> <userinput>cd lib</userinput>	
+<prompt>lexx@troll:~$</prompt> <userinput>wget http://smarty.php.net/distributions/Smarty-2.5.0.tar.gz</userinput>
+<prompt>lexx@troll:~$</prompt> <userinput>tar -xzf Smarty-2.5.0.tar.gz</userinput>
+<prompt>lexx@troll:~$</prompt> <userinput>mv Smarty-2.5.0/libs Smarty</userinput></screen>
+	  <para>Teraz ADOdb:</para>
+	  <screen><prompt>lexx@troll:~$</prompt> <userinput>wget http://phplens.com/lens/dl/adodb320.tgz</userinput>
+<prompt>lexx@troll:~$</prompt> <userinput>tar -xzf adodb320.tgz</userinput></screen>
+          <!--
+	  Debian owszem jest spoko, ale powinno byæ bardziej ogólnie. IMHO pójdzie do usuniêcia
+	  <para>Je¶li mamy Debiana, to ADOdb mo¿emy zainstalowaæ w ten sposób:</para>
+	  <screen><prompt>lexx@troll:~$</prompt> <userinput>apt-get install libphp-adodb</userinput></screen>
+	  -->
+        </sect2>
+    </sect1>
+    <sect1>
+      <title>Konfiguracja</title>
+      <para>Po ¶ci±gniêciu i zainstalowaniu LMSa musimy jeszcze ustawiæ dwie rzeczy. Bazê danych, oraz podstawowe opcje w <filename>lms.ini</filename></para>
+	<sect2>
+	  <title>MySQL</title>
+	  <screen><prompt>lexx@troll:~$</prompt> <userinput>mysql -u [U¿ytkownik z pe³nym dostêpem do bazy] -p</userinput>
+<prompt>Enter password:</prompt> <userinput>[Has³o]</userinput>
+<prompt>mysql></prompt> <userinput>create database lms;</userinput>
+<prompt>mysql></prompt> <userinput>grant usage on lms.* to lms@localhost;</userinput>
+<prompt>mysql></prompt> <userinput>grant select,insert,update,delete,create on lms.* to lms@localhost identified by '[Tajne Has³o]';</userinput>
+<prompt>mysql></prompt> <userinput>flush privileges;</userinput>
+<prompt>mysql></prompt> <userinput>use lms;</userinput>
+<prompt>mysql></prompt> <userinput>source doc/lms.mysql;</userinput></screen>
+	</sect2>
+	<sect2>
+	 <title><filename>lms.ini</filename></title>
+	 <para>Sekcja [database] - ustawienia bazy danych</para>
+         <itemizedlist>
+          <listitem>
+	   <para>type</para>
+	   <para>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak narazie nie widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</para>
+	   <example><title>Przyk³ad:</title><para>type = mysql</para></example>
+	  </listitem>
+          <listitem>
+	   <para>host</para>
+	   <para>Host gdzie zainstalowana jest baza danych. Najczê¶ciej, localhost, ale mo¿na tutaj wstawiæ cokolwiek (ipek, domena, path to socketa w formacie 'localhost:/path/to/socket'). Domy¶lnie: localhost</para>
+	   <example><title>Przyk³ad:</title><para>host = localhost</para></example>
+	  </listitem>
+          <listitem>
+	   <para>user</para>
+	   <para>U¿ytkownik do bazy danych. W wielu wypadkach (je¿eli postêpowa³e¶ zgodnie ze wskazówkami w dokumentacji) bêdzie to 'lms'. Je¿eli chcesz u¿ywaæ konta uprzywilejowanego, prawdopodobnie wpiszesz 'root' (MySQL na wiêkszo¶ci *nixów), 'mysql' (na PLD) b±d¼ 'postgres' (PostgreSQL). Domy¶lnie: root</para>
+	   <example><title>Przyk³ad:</title><para>user = mysql</para></example>
+	  </listitem>
+          <listitem>
+	   <para>password</para>
+	   <para>Has³o do bazy danych. Domy¶lnie puste.</para>
+	   <example><title>Przyk³ad:</title><para>password = password</para></example>
+	  </listitem>
+          <listitem>
+	   <para>database</para>
+	   <para>Nazwa bazy danych, domy¶lnie lms.</para>
+	   <example><title>Przyk³ad:</title><para>database = lms</para></example>
+	  </listitem>
+         </itemizedlist>
+         <para>Sekcja [directories] - ustawienia katalogów</para>
+         <itemizedlist>
+          <listitem>
+	   <para>sys_dir</para>
+	   <para>Katalog systemowy. Jest to miejsce gdzie jest ca³a zawarto¶æ UI LMS'a, czyli index.php, grafiki, templejty i reszta. Domy¶lnie, index.php stara siê sam odnale¼æ w filesystemie u¿ywaj±c getcwd(), ale lepiej by by³o gdyby mu powiedzieæ gdzie jest:</para>
+	   <example><title>Przyk³ad:</title><para>sys_dir = /var/www/htdocs/lms/</para></example>
+	  </listitem>
+          <listitem>
+	   <para>modules_dir</para>
+	   <para>Katalog z "modu³ami" LMS'a - kawa³kami kodu które szumnie kto¶ (czyli Baseciq) nazwa³ modu³ami. Domy¶lnie jest to podkatalog modules w sys_dir.</para>
+	   <example><title>Przyk³ad:</title><para>modules_dir = /usr/share/lms/modules/</para></example>
+	  </listitem>
+          <listitem>
+	   <para>lib_dir</para>
+	   <para>Katalog z "bibliotekami" LMS'a. Czyli zawarto¶æ katalogu lib. Domy¶lnie to podkatalog lib w sys_dir.</para>
+	   <example><title>Przyk³ad:</title><para>lib_dir = /usr/share/lms/lib/</para></example>
+	  </listitem>
+          <listitem>
+	   <para>backup_dir</para>
+	   <para>Katalog z backupami SQL'owymi - miejsce gdzie LMS zapisuje dumpy z bazy. Domy¶lnie jest to podkatalog 'backups'. Naprawdê dobrze by by³o go przenie¶æ poza miejsce osi±galne przez przegl±darkê.</para>
+	   <example><title>Przyk³ad:</title><para>backup_dir = /var/backup/lms/</para></example>
+	  </listitem>
+          <listitem>
+	   <para>smarty_dir</para>
+	   <para>Katalog z bibliotek± Smarty - domy¶lnie podkatalog Smarty w lib_dir.</para>
+	   <example><title>Przyk³ad:</title><para>smarty_dir = /usr/lib/php/Smarty</para></example>
+	  </listitem>
+          <listitem>
+	   <para>smarty_compile_dir</para>
+	   <para>Katalog kompilacji Smartyego. Miejsce gdzie Smarty kompiluje nasze templejty. Domy¶lnie to templates_c w katalogu sysdir.</para>
+	   <example><title>Przyk³ad:</title><para>smarty_compile_dir = /var/smarty/compile/lms</para></example>
+	  </listitem>
+          <listitem>
+	   <para>smarty_templates_dir</para>
+	   <para>Katalog z templejtami którymi karmimy Smartiego. Domy¶lnie to podkatalog templates z sys_dir'a.</para>
+	   <example><title>Przyk³ad:</title><para>smarty_templates_dir = /usr/share/lms/templates</para></example>
+	  </listitem>
+          <listitem>
+	   <para>adodb_dir</para>
+	   <para>Katalog z ADOdb - czyli tym co posredniczy pomiêdzy baz± a UI. Domy¶lnie podkatalog adodb w lib_dir.</para>
+	   <example><title>Przyk³ad:</title><para>adodb_dir = /usr/lib/php/adodb</para></example>
+	  </listitem>
+         </itemizedlist>
+    </sect1>
+    <sect1>
+      <title>Bezpieczeñstwo</title>
+        <para>Dostêp do lms-ui powinien byæ mo¿liwy tylko po SSL (co zreszt± mo¿na wymusiæ flag± <command>force_ssl</command> w <filename>lms.ini</filename>), a katalog z kopiami zapasowymi baz danych powinien zostaæ przeniesiony do katalogu gdzie serwer WWW nie ma dostêpu (np. <filename>/var/backup/lms</filename>), bo inaczej do plików z kopiami zapasowymi bazy bêdzie siê mo¿na dostaæ z poziomu www bez autoryzacji.</para>
+    </sect1>
+  </chapter>
