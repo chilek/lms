@@ -30,7 +30,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD width="50%" bgcolor="#DFD5BD" class="fleft">
+		<TD width="50%" bgcolor="#DFD5BD" class="fleft" valign="top">
 			<TABLE border="0" cellpadding="2" cellspacing="0" WIDTH="100%">
 				<TR>
 					<TD width="1%" valign="top">
@@ -101,15 +101,18 @@
 			</TABLE>
 		</td>
 		<TD width="50%" bgcolor="#DFD5BD" class="fright" ALIGN="LEFT">
-			<P>
-			<B>Uwagi: </B><BR>
-<TEXTAREA rows="6" cols="50" name="useradd[info]">
-{$useradd.info}
-</TEXTAREA><P>
-<B>Wiadomo¶æ administracyjna: </B><BR>
-<TEXTAREA rows="6" cols="50" name="useradd[message]">
-{$useradd.message}
-</TEXTAREA><P>
+			<P><NOBR><IMG src="img/home.gif" ALT="" align="absmiddle" border="0">
+			    <TEXTAREA rows="4" cols="60" name="useradd[serviceaddr]" {tip text="Adres do dorêczeñ (opcjonalnie)"}>
+				{$useradd.serviceaddr}
+			    </TEXTAREA></NOBR>
+			<P><NOBR><IMG src="img/usercomment.gif" ALT="" align="absmiddle" border="0">
+			    <TEXTAREA rows="4" cols="60" name="useradd[info]" {tip text="Informacje dodatkowe (opcjonalnie)"}>
+				{$useradd.info}
+			    </TEXTAREA></NOBR>
+			<P><NOBR><IMG src="img/mail.gif" ALT="" align="absmiddle" border="0">
+			    <TEXTAREA rows="4" cols="60" name="useradd[message]" {tip text="Wiadomo¶æ administracyjna do u¿ytkownika (opcjonalnie)"}>
+				{$useradd.message}
+			    </TEXTAREA></NOBR>
 		</TD>
 	</TR>
 	<TR class="light">

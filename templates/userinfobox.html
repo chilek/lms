@@ -39,6 +39,16 @@
 			{$userinfo.zip} {$userinfo.city}
 		</TD>
 	</TR>
+{if $userinfo.serviceaddr neq ""}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/home.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			{$userinfo.serviceaddr|replace:"\n":"<BR>"}
+		</TD>
+	</TR>
+{/if}
 {if $userinfo.email neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
