@@ -36,7 +36,7 @@ if($p == 'main')
 	$js = 'var targetfield = parent.targetfield;';
 
 if (isset($_POST['netid']))
-    $netid= $_POST['netid'];
+    $netid = $_POST['netid'];
 elseif (isset($_GET['netid']))
     $netid = $_GET['netid'];
 elseif ($SESSION->is_set('netid'))
@@ -44,25 +44,25 @@ elseif ($SESSION->is_set('netid'))
 else
     $netid = $networks[0]['id'];
 
-$SESSION->save('netid', $netid);
-
-if (isset($_GET['page']))
-	$page = $_GET['page'];
+if (isset($_POST['page']))
+    $page = $_POST['page'];
+elseif (isset($_GET['page']))
+    $page = $_GET['page'];
+elseif ($SESSION->is_set('ntlp.page.'.$netid))
+    $SESSION->restore('ntlp.page.'.$netid, $page);
 else
-	$page = 1;
+    $page = 1;
+
+$SESSION->save('netid', $netid);
+$SESSION->save('ntlp.page.'.$netid, $page);
 
 if($p == 'main')
 {
-	if ($SESSION->is_set('ntlp.page.'.$netid))
-		$SESSION->restore('ntlp.page.'.$netid, $page);
-	if (isset($_POST['page']))
-		$page = $_POST['page'];		
 	$network = $LMS->GetNetworkRecord($netid, $page, $LMS->CONFIG['phpui']['networkhosts_pagelimit']);
-	$SESSION->save('ntlp.page.'.$netid, $network['page']);
 	$SESSION->save('ntlp.pages.'.$netid, $network['pages']);
 }
 
-if($p == 'down')
+if($p == 'down' || $p == 'top')
 {
 	$SESSION->restore('ntlp.page.'.$netid, $network['page']);
 	$SESSION->restore('ntlp.pages.'.$netid, $network['pages']);
