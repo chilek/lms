@@ -1,8 +1,8 @@
 <!-- $Id$ -->
-<TABLE width="100%" cellpadding="3">
+<P><TABLE width="100%" cellpadding="3">
     <TR class="dark">
 	<TD class="fleftu" width="1%" NOWRAP>
-	    <IMG src="img/open.gif" alt="" border="0" align="absmiddle"> Historia zg³oszenia
+	    <IMG src="img/open.gif" alt="" border="0" align="absmiddle"> <B>Historia zg³oszenia</B>
 	</TD>
 	<TD class="frightu" width="99%" align="right" NOWRAP>
 	    {if $ticket.state != 2}
@@ -21,18 +21,23 @@
 			<TD width="1%" class="fbt" ALIGN="RIGHT">
 			    <B>Od:<BR>Temat:</B>
 			</TD>
-			<TD width="98%" class="frightu">
+			<TD width="1%" class="fbt" NOWRAP>
 			    {$message.mailfrom|escape}<BR>
 			    {$message.subject|escape}
 			</TD>
+			<TD width="97%" class="frightu" align="right">
+			    <A href="?m=rtmessageadd&id={$message.id}">Odpowiedz <IMG src="img/save.gif" alt="" border="0" align="absmiddle"></A>
+			</TD>
 		    </TR>
 		    <TR class="LIGHT">
+		    {*
 			<TD width="1%" class="fall" VALIGN="TOP" ALIGN="RIGHT">
 			    <A HREF="#">Odpowiedz</A><BR>
 			    <A HREF="#">Rozwi±¿</A><BR>
 			    <A HREF="#">Skomentuj</A><BR>
 			</TD>
-			<TD COLSPAN="2" width="99%" class="fall" BGCOLOR="#F4F0EC" VALIGN="TOP">
+		*}
+			<TD COLSPAN="4" class="fall" BGCOLOR="#F4F0EC">
 			    <PRE>{$message.body|escape}</PRE>
 			</TD>
 		    </TR>
@@ -41,3 +46,4 @@
 	</TD>
     </TR>
 </TABLE>
+</P>

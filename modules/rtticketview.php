@@ -30,8 +30,14 @@ if(! $LMS->TicketExists($_GET['id']))
 	die;
 }
 
+if(! $LMS->GetAdminRightsRT($SESSION->id, 0, $_GET['id']))
+{
+	$SMARTY->display('noaccess.html');
+	die;
+}
+
 $ticket = $LMS->GetTicketContents($_GET['id']);
-$layout['pagetitle'] = 'Zg³oszenie Nr '.$ticket['ticketid'].': '.$ticket['subject'];
+$layout['pagetitle'] = 'Zg³oszenie Nr '.$ticket['ticketid'];
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
