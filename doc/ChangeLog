@@ -61,6 +61,9 @@ version 1.5.5 Anubis (??/??/????):
   - translated to english documentation chapter 'A.L.E.C's LMS Daemon' (alec)
   - database backups can be restored only on system version according 
     with database version where backup was created (alec)
+  - added contrib/squid_redirector which extends capabilities of squid_warnings 
+    (enable/disable nodes access to squid), and marking squid_warnings as 
+    obsolete (lexx)
 
 version 1.5.4 Ramius (16/02/2005):
 
