@@ -4,6 +4,7 @@ wersja 1.2.5 (??/??/2004):
 
   - poprawka w zapytaniu sql minimalnie przyspieszaj±ca wy¶wietlanie 
     listy u¿ytkowników (alec)
+  - BTS#0000189: poprawiony trigger dns2 w formularzu netadd.html (alec)
 
 wersja 1.2.4 Jolinar (29/07/2004):
 

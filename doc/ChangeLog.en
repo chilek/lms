@@ -3,6 +3,7 @@ $Id$
 version 1.2.5 (??/??/2004):
 
   - fix in sql query for users list speed up (alec)
+  - BTS#0000189: fixed dns2 trigger i netadd.html form (alec)
 
 version 1.2.4 Jolinar (29/07/2004):
 
