@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.0pre5 (??/??/2003):
+wersja 1.0pre5 (26/01/2003):
  
   - PLIKI KONFIGURACYJNE PRZENIESIONE DO KATALOGU /etc/lms/ !!!
   - podzia³ listy u¿ytkowników na strony
@@ -21,16 +21,16 @@ wersja 1.0pre5 (??/??/2003):
     ALTER TABLE `users` ADD `gguin` INT AFTER `phone3`;
     ALTER TABLE `users` ADD `zip` VARCHAR(6) AFTER `address` ,
     ADD `city` VARCHAR(32) AFTER `zip`, ADD `nip` varchar(16) AFTER `city`;
-  - dodano opcjê do lms-notify: 
-  		-D, --template-file=/etc/lms/another.template.txt
-	uruchamia ona alternatywny plik template, przydatne przy wysy³aniu 
-	upomnienia, etc.
+  - dodano opcjê do lms-notify:
+      -D, --template-file=/etc/lms/another.template.txt
+    uruchamia ona alternatywny plik template, przydatne przy wysy³aniu
+    upomnienia, etc.
   - Teraz %b we wzorcu wiadomo¶ci rozwija siê do - (saldo) (czyli jest to
-	kwota do zap³aty, ksiêgowi nie znaj± liczb ujemnych :)
-  - %date-y %date-m %desc rozwijaj± siê odpowiednio do: aktualnego roku, 
-    nazwy miesi±ca (set LANG=pl ?) i opisu pakietu z tariffs. 
-	%last_10_in_a_table zmienia siê w maksymalnie 10 ostatnich operacji na
-	koncie, kto u licha wie co oznaczaj± typy ? gdzie je dokumentowaæ ?
+    kwota do zap³aty, ksiêgowi nie znaj± liczb ujemnych :)
+    %date-y %date-m %desc rozwijaj± siê odpowiednio do: aktualnego roku,
+    nazwy miesi±ca (set LANG=pl ?) i opisu pakietu z tariffs.
+    %last_10_in_a_table zmienia siê w maksymalnie 10 ostatnich operacji na
+    koncie.
 	  
 wersja 1.0pre4 (21/01/2003):
 
