@@ -227,18 +227,18 @@ class LMS
 	 *  Zarz±dzanie kontami administratorów
 	 */
  	
-	function SetAdminPassword($id,$passwd)
+	function SetAdminPassword($id,$passwd) // ustawia has³o admina o id równym $id na $passwd
 	{
 		$this->SetTS("admins");
 		$this->ADB->Execute("UPDATE admins SET passwd=? WHERE id=?",array(crypt($passwd),$id));
 	}
 
-	function GetAdminName($id)
+	function GetAdminName($id) // zwraca imiê admina
 	{
 		return $this->ADB->GetOne("SELECT name FROM admins WHERE id=?",array($id));
 	}
 
-	function GetAdminList()
+	function GetAdminList() // zwraca listê administratorów
 	{
 		if($adminslist = $this->ADB->GetAll("SELECT id, login, name, lastlogindate, lastloginip FROM admins ORDER BY login ASC"))
 		{
@@ -263,12 +263,12 @@ class LMS
 		return $adminslist;
 	}
 
-	function GetAdminIDByLogin($login)
+	function GetAdminIDByLogin($login) // zwraca id admina na podstawie loginu
 	{
 		return $this->ADB->GetOne("SELECT id FROM admins WHERE login=?",array($login));
 	}
 
-	function AdminAdd($adminadd)
+	function AdminAdd($adminadd) // dodaje admina. wymaga tablicy zawieraj±cej dane admina
 	{
 		$this->SetTS("admins");
 		if($this->ADB->Execute("INSERT INTO admins (login, name, email, passwd) VALUES (?, ?, ?, ?)",array($adminadd[login], $adminadd[name], $adminadd[email], crypt($adminadd[password]))))
@@ -277,18 +277,18 @@ class LMS
 			return FALSE;
 	}
 
-	function AdminDelete($id)
+	function AdminDelete($id) // usuwa admina o podanym id
 	{
 		return $this->ADB->Execute("DELETE FROM admins WHERE id=?",array($id));
 	}
 	
-	function AdminExists($id)
+	function AdminExists($id) // zwraca TRUE/FALSE zale¿nie od tego czy admin istnieje czy nie
 	{
 		return ($this->ADB->GetOne("SELECT * FROM admins WHERE id=?",array($id))?TRUE:FALSE);
 	}
 
 
-	function GetAdminInfo($id)
+	function GetAdminInfo($id) // zwraca pe³ne info o podanym adminie
 	{
 		if($admininfo = $this->ADB->GetRow("SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip FROM admins WHERE id=?",array($id)))
 		{
@@ -322,11 +322,10 @@ class LMS
 		return $admininfo;
 	}
 
-	function AdminUpdate($admininfo)
+	function AdminUpdate($admininfo) // uaktualnia rekord admina.
 	{
 		$this->SetTS("admins");
-		return $this->ADB->Execute("
-				UPDATE admins SET login=?, name=?, email=? WHERE id=?",array($admininfo[login],$admininfo[name],$admininfo[email],$admininfo[id]));
+		return $this->ADB->Execute("UPDATE admins SET login=?, name=?, email=? WHERE id=?",array($admininfo[login],$admininfo[name],$admininfo[email],$admininfo[id]));
 	}
 
 	/*
