@@ -50,9 +50,9 @@ function _smarty_function_tip($args, &$SMARTY)
 	$text = eregi_replace('(\'|")','\\\1',$args['text']);
 	
 	if($SMARTY->_tpl_vars['error'][$args['trigger']])
-		return ' onMouseOver="return overlib(\'<B><FONT COLOR=RED>'.$error.'</FONT></B>\');" onMouseOut="nd();"'.($args['bold'] ? ' CLASS="ALERTB" ' : ' CLASS="ALERT" ');
+		return ' onMouseOver="return overlib(\'<B><FONT COLOR=RED>'.$error.'</FONT></B>\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onMouseOut="nd();"'.($args['bold'] ? ' CLASS="ALERTB" ' : ' CLASS="ALERT" ');
 	elseif($args['text'] != "")
-		return 'onMouseOver="return overlib(\''.$text.'\');" onMouseOut="nd();"'.($args['bold'] ? ' CLASS="BOLD" ' : '');	
+		return 'onMouseOver="return overlib(\''.$text.'\',HAUTO,VAUTO,OFFSETX,15,OFFSETY,15);" onMouseOut="nd();"'.($args['bold'] ? ' CLASS="BOLD" ' : '');	
 }
 
 $SMARTY->register_function('sum','_smarty_function_sum');
@@ -61,6 +61,9 @@ $SMARTY->register_function('tip','_smarty_function_tip');
 $SMARTY->register_modifier('to_words','to_words');
 /*
  * $Log$
+ * Revision 1.7  2003/09/22 14:32:23  lukasz
+ * - test
+ *
  * Revision 1.6  2003/09/22 01:14:17  lukasz
  * - new popups
  *
