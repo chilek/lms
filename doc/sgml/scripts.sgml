@@ -71,24 +71,16 @@
 			<entry>Konfiguracja serwera DHCP(/etc/dhcpd.conf)</entry>
 			</row>
 			<row>
-			<entry>lms-makehosts</entry>
-			<entry>Tworzenie pliku /etc/hosts</entry>
-			</row>
-			<row>
 			<entry>lms-makeiptables</entry>
 			<entry>Konfiguracja firewalla iptables</entry>
-			</row>
-			<row>
-			<entry>lms-makemacs</entry>
-			<entry>Konfiguracja filtrowania w oparciu o test mac netfiltra</entry>
 			</row>
 			<row>
 			<entry>lms-makeipchains</entry>
 			<entry>Konfiguracja firewalla ipchains</entry>
 			</row>
 			<row>
-			<entry>lms-makeoidentconf</entry>
-			<entry>Konfiguracja oidentd</entry>
+			<entry>lms-makeiodenconf</entry>
+			<entry>Konfiguracja oident</entry>
 			</row>
 			<row>
 			<entry>lms-makeopenbsdpf</entry>
@@ -99,8 +91,20 @@
 			<entry>Wysy³anie faktur do u¿ytkowników</entry>
 			</row>
 			<row>
-			<entry>lms-updatewarnings</entry>
-			<entry>Ostrze¿enia dla u¿ytkowników zad³u¿onych</entry>
+			<entry>lms-makemacs</entry>
+			<entry>Filtrowanie ruchu na bazie adresów ¼ród³owych MAC</entry>
+			</row>
+			<row>
+			<entry>lms-makehosts</entry>
+			<entry>Generuje plik /etc/hosts</entry>
+			</row>
+			<row>
+			<entry>lms-makewarnings</entry>
+			<entry>Generuje regu³ki przekierowuj±ce ruch u¿ytkowników zad³u¿onych</entry>
+			</row>
+			<row>
+			<entry>lms-makemessages</entry>
+			<entry>Generuje regu³ki przekierowuj±ce ruch u¿ytkowników, którym ustawiono wiadomo¶æ administracyjn±</entry>
 			</row>
 		    </tbody>	
 		</tgroup>
