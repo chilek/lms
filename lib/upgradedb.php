@@ -53,4 +53,7 @@ if($dbversion = $DB->GetOne('SELECT keyvalue FROM dbinfo WHERE keytype = ?',arra
 			}
 		}
 	}
+
+$layout['dbversion'] = DBVERSION;
+
 ?>
