@@ -15,19 +15,19 @@
 </MAP>
 </P>
 <FORM METHOD="GET" ACTION="?m=netdevmap" NAME="x">
-	<P ALIGN="CENTER">Zacznij mapê od:
+	<P ALIGN="CENTER">{t}Begin map from:{/t}
 	<INPUT TYPE="hidden" NAME="m" VALUE="netdevmap">
 	<SELECT SIZE="1" NAME="start" onChange="document.x.submit();">
 		{section name=a loop=$deviceslist}
 		<OPTION VALUE="{$deviceslist[a].id}"{if $deviceslist[a].id eq $start} SELECTED{/if}>{$deviceslist[a].name}</OPTION>
 		{/section}
 	</SELECT>
-	<INPUT TYPE="SUBMIT" VALUE="Generuj">
+	<INPUT TYPE="SUBMIT" VALUE="{t}Generate{/t}">
 	</P>
 </FORM>
 {elseif $gderror}
     <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">
-	<BR><BR><B><FONT COLOR="RED">Twoje PHP nie obs³uguje biblioteki graficznej GD, wymaganej do wygenerowania obrazu mapy!</FONT></B>
+	<BR><BR><B><FONT COLOR="RED">{t}Your PHP do not support Graphic Library required for map generation!{/t}</FONT></B>
     </TD></TR></TABLE>
 {elseif $emptydb}
     <TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="Center">

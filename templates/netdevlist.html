@@ -3,35 +3,35 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <TABLE CELLPADDING="3" width="100%">
-	<TR CLASS="dark" {tip text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
+	<TR CLASS="dark" {tip text="Click on column's name for sorting order change"}>
 		<TD CLASS="fleftu" width="97%">
-			<img src="img/netdev.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>Nazwa:</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/producer.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=producer{if $listdata.direction eq "asc" && $listdata.order eq "producer"},desc{/if}">Producent</A> {if $listdata.order eq "producer"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if} / <A href="?m=netdevlist&o=model{if $listdata.direction eq "asc" && $listdata.order eq "model"},desc{/if}">model:</A> {if $listdata.order eq "model"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/home.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">Lokalizacja:</A> {if $listdata.order eq "location"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<img src="img/netdev.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/producer.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=producer{if $listdata.direction eq "asc" && $listdata.order eq "producer"},desc{/if}">{t}Manufacturer:{/t}</A> {if $listdata.order eq "producer"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if} / <A href="?m=netdevlist&o=model{if $listdata.direction eq "asc" && $listdata.order eq "model"},desc{/if}">{t}model:{/t}</A> {if $listdata.order eq "model"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/home.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">{t}Location:{/t}</A> {if $listdata.order eq "location"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD CLASS="fbt" width="1%" align="right">
 			<A href="?m=netdevlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
-			<img src="img/port.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=ports{if $listdata.direction eq "asc" && $listdata.order eq "ports"},desc{/if}">Ilo¶æ portów:</A> {if $listdata.order eq "ports"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<IMG SRC="img/netdev_takenports.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<A href="?m=netdevlist&o=takenports{if $listdata.direction eq "asc" && $listdata.order eq "takenports"},desc{/if}">Zajête porty:</A> {if $listdata.order eq "takenports"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/serialnumber.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=serialnumber{if $listdata.direction eq "asc" && $listdata.order eq "serialnumber"},desc{/if}">Numer Seryjny:</A> {if $listdata.order eq "serialnumber"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<img src="img/port.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=ports{if $listdata.direction eq "asc" && $listdata.order eq "ports"},desc{/if}">{t}Number of ports:{/t}</A> {if $listdata.order eq "ports"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<IMG SRC="img/netdev_takenports.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<A href="?m=netdevlist&o=takenports{if $listdata.direction eq "asc" && $listdata.order eq "takenports"},desc{/if}">{t}Ports used:{/t}</A> {if $listdata.order eq "takenports"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/serialnumber.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=serialnumber{if $listdata.direction eq "asc" && $listdata.order eq "serialnumber"},desc{/if}">{t}Serial number:{/t}</A> {if $listdata.order eq "serialnumber"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right">
-			<B>Razem: {$listdata.total}</B>
+			<B>{t}Total:{/t} {$listdata.total}</B>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
 		<TD CLASS="fall" colspan="4" WIDTH="100%">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m=netdevlist&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$netdevlist step=$pagelimit}
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=netdevlist&o={$listdata.order},{$listdata.direction|lower}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=netdevlist&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
-			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+			({t}records{/t} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {t}of{/t} {$listdata.total})
 		</TD>
 	</TR>
 	{/if}
@@ -52,9 +52,9 @@
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" align="right">
 			<nobr>
-			<a href="?m=netdevdel&id={$netdevlist[netdevlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ urz±dzenie \'{$netdevlist[netdevlist].name|upper}\' z bazy danych?')"><img src="img/delete.gif" border="0" ALT="[ Usuñ ]"></A>
-			<a href="?m=netdevedit&id={$netdevlist[netdevlist].id}"><img src="img/edit.gif" border="0" ALT="[ Edytuj ]"></A>
-			<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><img src="img/info.gif" border="0" ALT="[ Info ]"></A>
+			<a href="?m=netdevdel&id={$netdevlist[netdevlist].id}" onClick="return confirmLink(this, '{t}Are you sure, you want to remove device \'{$netdevlist[netdevlist].name|upper}\' from database?{/t}')"><img src="img/delete.gif" border="0" ALT="[ {t}Delete{/t} ]"></A>
+			<a href="?m=netdevedit&id={$netdevlist[netdevlist].id}"><img src="img/edit.gif" border="0" ALT="[ {t}Edit{/t} ]"></A>
+			<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><img src="img/info.gif" border="0" ALT="[ {t}Info{/t} ]"></A>
 			</nobr>
 		</TD>
 	</TR>
@@ -64,7 +64,7 @@
 		<TD colspan="4" CLASS="fall" align="center">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Nie posiadasz ¿adnych urz±dzeñ w bazie danych.</b></p>
+			<p><B>{t}There isn't any devices in your database.{/t}</b></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -73,21 +73,21 @@
 	{if $listdata.total != 0}
 	<TR CLASS="dark">
 		<TD CLASS="fall" colspan="4" WIDTH="100%">
-			<B>Strona:
+			<B>{t}Page:{/t}
 				{if $page > 1}<A HREF="?m=netdevlist&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
 				{section name=pcnt loop=$netdevlist step=$pagelimit}  
 				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=netdevlist&o={$listdata.order},{$listdata.direction|lower}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
 				{/section}
 				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=netdevlist&o={$listdata.order},{$listdata.direction|lower}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
 			</B> 
-			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+			({t}records{/t} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} {t}of{/t} {$listdata.total})
 		</TD>
 	</TR>
 	{/if}
 	<TR CLASS="light">
 		<TD WIDTH="99%" COLSPAN="3" CLASS="fleftu" ALIGN="right">
 			<B>
-				Razem:
+				{t}Total:{/t}
 			</B>
 		</TD>
 		<TD WIDTH="1%" COLSPAN="1" CLASS="frightu" VALIGN="TOP">

@@ -14,7 +14,7 @@
 			<IMG SRC="img/producer.gif" ALT="" border="0">
 		</TD>
 		<TD WIDTH="1%">
-		        <B>Producent:</B>
+		        <B>{t}Manufacturer:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 		        {$netdevinfo.producer}
@@ -27,7 +27,7 @@
 			<IMG SRC="img/netdev_model.gif" ALT="" border="0">
 		</TD>
 		<TD WIDTH="1%">
-		        <B>Model:</B>
+		        <B>{t}Model:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 		        {$netdevinfo.model}
@@ -40,7 +40,7 @@
 			<IMG SRC="img/serialnumber.gif" ALT="" border="0">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		        <B>Numer seryjny:</B>
+		        <B>{t}Serial number:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 		        {$netdevinfo.serialnumber}
@@ -52,7 +52,7 @@
 			<IMG SRC="img/port.gif" ALT="" border="0">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		        <B>Ilo¶æ portów:</B>
+		        <B>{t}Number of ports:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 		        {$netdevinfo.ports}
@@ -63,7 +63,7 @@
 			<IMG SRC="img/netdev_takenports.gif" ALT="" border="0">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		        <B>Porty zajête:</B>
+		        <B>{t}Ports used:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 		        {$netdevinfo.takenports}
@@ -75,7 +75,7 @@
 			<IMG SRC="img/home.gif" ALT="" border="0">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-		        <B>Lokalizacja:</B>
+		        <B>{t}Location:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 		        {$netdevinfo.location}
@@ -100,7 +100,7 @@
         {/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">Edytuj <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ Edytuj ]"></A> <A href="?m=netdevdel&id={$netdevinfo.id}" {confirm text="Jeste¶ pewien ¿e chcesz usun±æ urz±dzenie `$netdevinfo.name` z bazy danych?"}>Usuñ <img border="0" align="absmiddle" src="img/delete.gif" ALT=""></A>
+			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A> <A href="?m=netdevdel&id={$netdevinfo.id}" {confirm text="Are you sure, you want to remove device `$netdevinfo.name` from database?"}>{t}Delete{/t} <img border="0" align="absmiddle" src="img/delete.gif" ALT=""></A>
 		</TD>
 	</TR>
 	{if $netdevinfo.id}
@@ -111,8 +111,8 @@
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="replace">
-			<A HREF="javascript:document.replace.submit(); "><B>Wymieñ urz±dzenie:</B></A>
-			<SELECT NAME="netdev" {tip trigger="replace" text="Wybierz z listy urz±dzenie do zamiany"}>
+			<A HREF="javascript:document.replace.submit(); "><B>{t}Replace device:{/t}</B></A>
+			<SELECT NAME="netdev" {tip trigger="replace" text="Select device from list to replace"}>
 				{section name=replacelist loop=$replacelist}
 					{if $replacelist[replacelist].id != $netdevinfo.id}
 					<OPTION VALUE="{$replacelist[replacelist].id}">{$replacelist[replacelist].name} {if $replacelist[replacelist].producer}/ {$replacelist[replacelist].producer}{/if} {if $replacelist[replacelist].location}({$replacelist[replacelist].location}){/if}</OPTION>
@@ -121,7 +121,7 @@
 			</SELECT>
 			</FORM></P>
 			{else}
-			<B>Nie ma urz±dzeñ do wymiany</B>
+			<B>{t}No device for replace{/t}</B>
 			{/if}
 		</TD>
 	</TR>

@@ -5,7 +5,7 @@
 			<IMG SRC="img/ip.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="3">
-			<B>Adresy IP tego urz±dzenia:</B>
+			<B>{t}Device's IP addresses:{/t}</B>
 		</TD>
 	</TR>
 	{if $netdevips}
@@ -13,7 +13,7 @@
 	{section name=list loop=$netdevips}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if ! $netdevips[list].access} class="blend"{/if}>
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<a href="?m=nodeset&id={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Pod³±cz"}{else}{tip text="Od³±cz"}{/if} border="0" align="absmiddle"></A>
+			<a href="?m=nodeset&id={$netdevips[list].id}"><IMG src="img/{if ! $netdevips[list].access}no{/if}access.gif" ALT="" {if ! $netdevips[list].access}{tip text="Connect"}{else}{tip text="Disconnect"}{/if} border="0" align="absmiddle"></A>
 		</TD>
 		<TD WIDTH="97%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			<B>{$netdevips[list].name}</B><BR>	
@@ -24,8 +24,8 @@
 			({$netdevips[list].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHT" NOWRAP>
-			<A HREF="?m=nodedel&id={$netdevips[list].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ adres \'{$netdevips[list].name|upper}\' z bazy danych?')"><IMG SRC="img/delete.gif" BORDER="0" ALT="" {tip text="Usuñ"} ALIGN="ABSMIDDLE"></A>
-			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><IMG SRC="img/edit.gif" BORDER="0" ALT="" {tip text="Edytuj"} ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=nodedel&id={$netdevips[list].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ adres \'{$netdevips[list].name|upper}\' z bazy danych?')"><IMG SRC="img/delete.gif" BORDER="0" ALT="" {tip text="Delete"} ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=netdevedit&action=editip&id={$netdevinfo.id}&ip={$netdevips[list].id}"><IMG SRC="img/edit.gif" BORDER="0" ALT="" {tip text="Edit"} ALIGN="ABSMIDDLE"></A>
 		</TD>
 	</TR>
 	{/section}
@@ -33,19 +33,19 @@
         <TR>
     	    <TD colspan="4" CLASS="fall" align="center">
 	    <p>&nbsp;</p>
-	    <p><B>To urz±dzenie nie ma przypisanych adresów IP.</b></p>
+	    <p><B>{t}Device haven't related IP addresses.{/t}</b></p>
 	    <p>&nbsp;</p>
 	    </TD>
 	</TR>
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="50%" COLSPAN="2" CLASS="FLEFTU">
-			<A HREF="?m=nodeset&netdev={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&access=1"><IMG SRC="img/access.gif" ALIGN="ABSMIDDLE" BORDER="0"> Pod³±cz wszystkie</A><BR>
-			<A HREF="?m=nodeset&netdev={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}"><IMG SRC="img/noaccess.gif" ALIGN="ABSMIDDLE" BORDER="0"> Od³±cz wszystkie</A><BR>
+			<A HREF="?m=nodeset&netdev={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&access=1"><IMG SRC="img/access.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Connect all{/t}</A><BR>
+			<A HREF="?m=nodeset&netdev={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}"><IMG SRC="img/noaccess.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Disconnect all{/t}</A><BR>
 		</TD>
 		<TD WIDTH="50%" COLSPAN="2" CLASS="FRIGHTU">
 			<p align=right>
-			<A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">Nowy <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE" BORDER="0"></A>
+			<A HREF="?m=netdevedit&action=addip&id={$netdevinfo.id}">{t}New{/t} <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE" BORDER="0"></A>
 			</p>
 		</TD>
 </TABLE>
