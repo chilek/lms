@@ -24,6 +24,9 @@ wersja 1.3.7 (??/??/2004):
   - w formularzu nowej operacji napisy okre¶laj±ce typ operacji uaktywniaj±
     odpowiadaj±ce im radio-buttony (chilek)
   - w formularzu nowej operacji zapamiêtywany jest na czas sesji typ operacji (chilek)
+  - w UI dodana obs³uga PIN dla u¿ytkowników - UWAGA! automatyczny upgrade bazy
+    generuje nowe numery PIN dla wszystkich u¿ytkowników! JE¦LI POSIADASZ 
+    JU¯ NUMERY PIN W BAZIE TO ZOSTAN¡ ONE WYGENEROWANE NA NOWO! (lexx)
 
 wersja 1.3.6 Osiris (01/09/2004);
 
