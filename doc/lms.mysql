@@ -81,7 +81,6 @@ CREATE TABLE `nodes` (
   `name` varchar(16) NOT NULL default '',
   `mac` varchar(20) default NULL,
   `ipaddr` varchar(16) default NULL,
-  `iplong` bigint(20) NOT NULL default '0',
   `ownerid` int(11) default NULL,
   `creationdate` int(11) NOT NULL default '0',
   `moddate` int(11) NOT NULL default '0',
