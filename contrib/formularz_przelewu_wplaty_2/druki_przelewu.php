@@ -53,12 +53,12 @@ function main_fill($x,$y,$scale)	{
         $pdf->line(978*$scale+$x,726*$scale+$y,948*$scale+$x,726*$scale+$y);
     }
     $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale,$_NAME);
-    $pdf->addtext(15*$scale+$x,617*$scale+$y,30*$scale, $_ADDRESS." ".$_ZIP." ".$_CITY);
-    $pdf->addtext(15*$scale+$x,555*$scale+$y,30*$scale, $_ACCOUNT);
+    $pdf->addtext(15*$scale+$x,617*$scale+$y,30*$scale,$_ADDRESS." ".$_ZIP." ".$_CITY);
+    $pdf->addtext(15*$scale+$x,555*$scale+$y,30*$scale,$_ACCOUNT);
     $pdf->addtext(550*$scale+$x,497*$scale+$y,30*$scale,number_format(-$userinfo['balance'],2,',',''));
-    $pdf->addtext(15*$scale+$x,375*$scale+$y,30*$scale,$userinfo['username']);
-    $pdf->addtext(15*$scale+$x,315*$scale+$y,30*$scale,$userinfo['address']." ".$userinfo['zip']." ".$userinfo['city']);
-    $pdf->addtext(15*$scale+$x,250*$scale+$y,30*$scale,$_SERVICE." mc. ".strftime("%B")." ID:".sprintf("%04d",$userinfo['id']));
+    $pdf->addtext(15*$scale+$x,375*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']));
+    $pdf->addtext(15*$scale+$x,315*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['address']." ".$userinfo['zip']." ".$userinfo['city']));
+    $pdf->addtext(15*$scale+$x,250*$scale+$y,30*$scale,$_SERVICE." mc. ".iconv('UTF-8','ISO-8859-2',strftime("%B"))." ID:".sprintf("%04d",$userinfo['id']));
 }
 
 function simple_fill_mip($x,$y,$scale)	{
@@ -80,19 +80,19 @@ function simple_fill_mip($x,$y,$scale)	{
     $pdf->addtext(15*$scale+$x,680*$scale+$y,30*$scale, substr($_ACCOUNT,0,17));
     $pdf->addtext(15*$scale+$x,620*$scale+$y,30*$scale, substr($_ACCOUNT,18,200));
     $pdf->addtext(15*$scale+$x,435*$scale+$y,30*$scale,"**".number_format(-$userinfo['balance'],2,',','')."**");
-    //$pdf->addtext(15*$scale+$x,310*$scale+$y,30*$scale,$userinfo['username']);
+    //$pdf->addtext(15*$scale+$x,310*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']));
 
     $font_size=30;
-    while ($pdf->getTextWidth($font_size*$scale,$userinfo['username'])>135)
+    while ($pdf->getTextWidth($font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']))>135)
 	$font_size=$font_size-1;    
-    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,$userinfo['username']);
-    $pdf->addtext(15*$scale+$x,275*$scale+$y,30*$scale,$userinfo['address']);
-    $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale,$userinfo['zip']." ".$userinfo['city']);
+    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']));
+    $pdf->addtext(15*$scale+$x,275*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['address']));
+    $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['zip']." ".$userinfo['city']));
 
     $font_size=30;
-    while ($pdf->getTextWidth($font_size*$scale,$_SERVICE." mc. ".strftime("%B"))>135)
+    while ($pdf->getTextWidth($font_size*$scale,$_SERVICE." mc. ".iconv('UTF-8','ISO-8859-2',strftime("%B")))>135)
 	$font_size=$font_size-1;    
-    $pdf->addtext(15*$scale+$x,385*$scale+$y,$font_size*$scale,$_SERVICE." mc. ".strftime("%B"));
+    $pdf->addtext(15*$scale+$x,385*$scale+$y,$font_size*$scale,$_SERVICE." mc. ".iconv('UTF-8','ISO-8859-2',strftime("%B")));
 
 }
 
@@ -102,9 +102,9 @@ function address_box($x,$y,$scale)	{
     $font_size=30;
     while ($pdf->getTextWidth($font_size*$scale,$userinfo['username'])>240)
 	$font_size=$font_size-1;    
-    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,$userinfo['username']);
-    $pdf->addtext(15*$scale+$x,275*$scale+$y,30*$scale,$userinfo['address']);
-    $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale,$userinfo['zip']." ".$userinfo['city']);
+    $pdf->addtext(15*$scale+$x,310*$scale+$y,$font_size*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['username']));
+    $pdf->addtext(15*$scale+$x,275*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['address']));
+    $pdf->addtext(15*$scale+$x,240*$scale+$y,30*$scale,iconv('UTF-8','ISO-8859-2',$userinfo['zip']." ".$userinfo['city']));
 }
 
 // Dobra, czytamy z lms.ini
@@ -113,7 +113,7 @@ $_SHORT_NAME = (! $_CONFIG[finances]['shortname'] ? "Nazwa nieustawiona" : $_CON
 $_ADDRESS = (! $_CONFIG[finances]['address'] ? "Adres nieustawiony" : $_CONFIG[finances]['address']);
 $_ZIP = (! $_CONFIG[finances]['zip'] ? "00-000" : $_CONFIG[finances]['zip']);
 $_CITY = (! $_CONFIG[finances]['city'] ? "Miasto nieustawione" : $_CONFIG[finances]['city']);
-$_SERVICE = (! $_CONFIG[finances]['service'] ? "Nazwa us³ugi nieustawiona" : $_CONFIG[finances]['service']);
+$_SERVICE = (! $_CONFIG[finances]['service'] ? "Nazwa uslugi nieustawiona" : $_CONFIG[finances]['service']);
 $_ACCOUNT = (! $_CONFIG[finances]['account'] ? "123456789012345678901234567" : $_CONFIG[finances]['account']);
 
 $control_lines = 0;
