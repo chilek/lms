@@ -105,7 +105,7 @@ switch($_GET['bar'])
 #echo $LMS->ADB->_query_parser($query);
 # </debugowanie>
 
-if ($traffic = $LMS->ADB->GetAll($query))
+if ($traffic = $LMS->DB->GetAll($query))
 {
  foreach ($traffic as $idx => $row)
     {
