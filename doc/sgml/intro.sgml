@@ -42,73 +42,117 @@
 		znajomo¶ci systemów U*IX siê nie obejdzie.</para>
    	</sect1>
 	<sect1 id="authors">
-		<title>The LMS Development Group</title>	
+	    <title>Autorzy</title>
+	    <sect2 id="lms">
+	    	<title>LMS Developers</title>	
 		<itemizedlist>
 		<listitem>
-			<para>Kod PHP:</para>
-			<para><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></para>
-			<para>Micha³ 'DziQs' Zapalski</para>
-			<para><ulink url="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</ulink></para>
-			<para>Krzysztof 'hunter' Drewicz</para>
+			<para>Kod PHP:
+			<simplelist>
+			<member><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></member>
+			<member>Micha³ 'DziQs' Zapalski</member>
+			<member><ulink url="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</ulink></member>
+			<member>Krzysztof 'hunter' Drewicz</member>
+			</simplelist>
+			</para>
 		</listitem>
 		<listitem>
-			<para>Kod C:</para>
-			<para>Mateusz 'mteg' Golicz</para>
+			<para>Kod C:
+			<simplelist>
+			<member>Mateusz 'mteg' Golicz</member>
+			</simplelist>
+			</para>
 		</listitem>
 		<listitem>
-			<para>Kod Perl:</para>
-			<para><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></para>
-			<para>Micha³ 'DziQs' Zapalski</para>
-			<para>Maciej 'agaran' Pijanka</para>
-			<para>Krzysztof 'hunter' Drewicz</para>
+			<para>Kod Perl:
+			<simplelist>
+			<member><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></member>
+			<member>Micha³ 'DziQs' Zapalski</member>
+			<member>Maciej 'agaran' Pijanka</member>
+			<member>Krzysztof 'hunter' Drewicz</member>
+			</simplelist>
+			</para>
 		</listitem>
 		<listitem>
-		    <para>Design:</para>	
-		    <para><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></para>
+		    <para>Design:
+		    <simplelist>	
+		    <member><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></member>
+		    </simplelist>
+		    </para>
 		</listitem>
 		<listitem>
-			<para>HTML, JavaScript, CSS:</para>
-			<para><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></para>
-			<para><ulink url="http://plug.atn.pl/~bober/">Pawe³ 'Bob_R' Czerski</ulink></para>
-			<para><ulink url="http://gamechannel.int.pl">Pawe³ 'sickone' Kisiela</ulink></para>
+			<para>HTML, JavaScript, CSS:
+			<simplelist>
+			<member><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></member>
+			<member><ulink url="http://plug.atn.pl/~bober/">Pawe³ 'Bob_R' Czerski</ulink></member>
+			<member><ulink url="http://gamechannel.int.pl">Pawe³ 'sickone' Kisiela</ulink></member>
+			</simplelist>
+			</para>
 		</listitem>
 		<listitem>
-			<para>Grafika:</para>
-			<para><ulink url="http://pierzak.melanz.org">Piotr 'Pierzak' M.</ulink></para>
-			<para><ulink url="http://byko.pawlacz.net">Grzegorz 'byko' Cichowski</ulink></para>
-			<para><ulink url="http://www.kflis.net">Kuba 'kflis' Flis</ulink></para>
-			<para><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></para>
+			<para>Grafika:
+			<simplelist>
+			<member><ulink url="http://pierzak.melanz.org">Piotr 'Pierzak' M.</ulink></member>
+			<member><ulink url="http://byko.pawlacz.net">Grzegorz 'byko' Cichowski</ulink></member>
+			<member><ulink url="http://www.kflis.net">Kuba 'kflis' Flis</ulink></member>
+			<member><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></member>
+			</simplelist>
+			</para>
 		</listitem>
 		<listitem>
-			<para>Support MySQL:</para>	
-			<para><ulink url="http://s.atn.pl">Kuba 'shasta' Jankowski</ulink></para>
-			<para><ulink url="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</ulink></para>
+			<para>Support MySQL:
+			<simplelist>	
+			<member><ulink url="http://s.atn.pl">Kuba 'shasta' Jankowski</ulink></member>
+			<member><ulink url="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</ulink></member>
+			<member>Przemys³aw Babiñski</member>
+			</simplelist>
+			</para>
 		</listitem>
 		<listitem>
-			<para>Support PostgreSQL:</para>
-			<para><ulink url="http://k27.prv.pl/alec">Aleksander 'A.L.E.C' Machniak</ulink></para>
+			<para>Support PostgreSQL:
+			<simplelist>
+			<member><ulink url="http://k27.prv.pl/alec">Aleksander 'A.L.E.C' Machniak</ulink></member>
+			</simplelist>
+			</para>
 		</listitem>
 		<listitem>
-			<para>Dokumentacja i strona WWW:</para>
-			<para><ulink url="http://k27.prv.pl/alec">Aleksander 'A.L.E.C' Machniak</ulink></para>
-			<para><ulink url="http://s.atn.pl">Kuba 'shasta' Jankowski</ulink></para>
-			<para><ulink url="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziêgielewski</ulink></para>
-			<para><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></para>
-			<para><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Król</ulink></para>
+			<para>Dokumentacja i strona WWW:
+			<simplelist>
+			<member><ulink url="http://k27.prv.pl/alec">Aleksander 'A.L.E.C' Machniak</ulink></member>
+			<member><ulink url="http://s.atn.pl">Kuba 'shasta' Jankowski</ulink></member>
+			<member><ulink url="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziêgielewski</ulink></member>
+			<member><ulink url="http://wwww.baseciq.org">£ukasz 'Baseciq' Mozer</ulink></member>
+			<member><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Król</ulink></member>
+			</simplelist>
+			</para>
 		</listitem>
 		<listitem>
-			<para>Betatesterzy:</para>
-			<para><ulink url="http://byko.pawlacz.net">Grzegorz 'byko' Cichowski</ulink></para>
-			<para><ulink url="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</ulink></para>
-			<para>Tomasz 'dzwonek' Dzwonkowski</para>
-			<para>Sebastian 'Victus' Frasunkiewicz</para>
-			<para><ulink url="http://www.kflis.net">Kuba 'kflis' Flis</ulink></para>
-			<para>Krystian 'UFOczek' Kochanowski</para>
-			<para><ulink url="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziêgielewski</ulink></para>
-			<para>Andrzej 'chsh' Gr±dziel</para>
-			<para><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Król</ulink></para>
+			<para>Betatesterzy:
+			<simplelist>
+			<member><ulink url="http://byko.pawlacz.net">Grzegorz 'byko' Cichowski</ulink></member>
+			<member><ulink url="http://debian.black.pl">Rados³aw 'Warden' Antoniuk</ulink></member>
+			<member>Tomasz 'dzwonek' Dzwonkowski</member>
+			<member>Sebastian 'Victus' Frasunkiewicz</member>
+			<member><ulink url="http://www.kflis.net">Kuba 'kflis' Flis</ulink></member>
+			<member>Krystian 'UFOczek' Kochanowski</member>
+			<member><ulink url="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziêgielewski</ulink></member>
+			<member>Andrzej 'chsh' Gr±dziel</member>
+			<member><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Król</ulink></member>
+			</simplelist>
+			</para>
 		</listitem>
 	    </itemizedlist>
+	    </sect2>
+	    <sect2 id="others">
+		<title>Inni</title>
+		<para>LMS zawiera fragmenty nastêpuj±cego oprogramowania: 
+		<ulink url="http://phpwizard.net/projects/phpMyAdmin/">phpMyAdmin</ulink>,
+		<ulink url="phpsysinfo.sourceforge.net">phpsysinfo</ulink>, 
+		<ulink url="florian-amrhein.de/newsportal/index-anglish.php3">NewsPortal</ulink>, 
+		procedury konwersji liczb na postaæ s³own± autorstwa Piotra Klebana oraz
+		przyk³ady kodu zawarte w <ulink url="http://www.php.net/manual/pl/">
+		Podrêczniku PHP</ulink>.</para>
+	    </sect2>
 	</sect1>
 	<sect1 id="legalnotice">
 		<title>Licencja</title>
