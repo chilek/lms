@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Sieci IP";
+$layout[pagetitle]=$lang[pagetitle_netlist];
 $netlist = $LMS->GetNetworkList();
 $prefixlist = $LMS->GetPrefixList();
 $netadd[prefix] = 32;

@@ -38,25 +38,25 @@ if($useradd[name]=="" && $useradd[lastname]=="" && $useradd[phone1]=="" && $user
 elseif(isset($useradd))
 {
 	if($useradd[lastname]=="")
-		$error[username]=TRUE;
+		$error[username]=$lang[error_no_empty_field];
 	
 	if($useradd[address]=="")
-		$error[address]="Proszê podaæ adres!";
+		$error[address]=$lang[error_no_empty_field];
 	
 	if(!$LMS->TariffExists($useradd[tariff]))
-		$error[tariff]=TRUE;
+		$error[tariff]=$lang[error_choose_tariff];
 	
 	if($useradd[nip] !="" && !eregi("^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$",$useradd[nip]) && !eregi("^[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}$",$useradd[nip]))
-		$error[nip] = "Podany NIP jest b³êdny!";
+		$error[nip] = $lang[error_taxid_invalid];
 		
 	if($useradd[zip] !="" && !eregi("^[0-9]{2}-[0-9]{3}$",$useradd[zip]))
-		$error[zip] = "Podany kod pocztowy jest b³êdny!";
+		$error[zip] = $lang[error_zipcode_invalid];
 
 	if($useradd[gguin] == 0)
 		unset($useradd[gguin]);
 
 	if($useradd[gguin] !="" && !eregi("^[0-9]{4,}$",$useradd[gguin]))
-		$error[gguin] = "Podany numer GG jest niepoprawny!";
+		$error[gguin] = $lang[error_gguin_invalid];
 	
 	if(!$error)
 	{
@@ -74,7 +74,7 @@ elseif(isset($useradd))
 	}
 }
 
-$layout[pagetitle]="Nowy u¿ytkownik";
+$layout[pagetitle]=$lang[pagetitle_useradd];
 $tariffs = $LMS->GetTariffs();
 if(!isset($useradd[tariff]))
 	$useradd[tariff] = $tariffs[common];	

@@ -26,7 +26,7 @@
 
 $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
-$layout[pagetitle]="Nowa operacja finansowa";
+$layout[pagetitle]=$lang[pagetitle_balancenew];
 $SMARTY->assign("comment",$_SESSION[addbc]);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("users",$LMS->GetUserNames());

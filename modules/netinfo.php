@@ -32,7 +32,7 @@ if(!$LMS->NetworkExists($_GET[id]))
 
 $network = $LMS->GetNetworkRecord($_GET[id]);
 $networks = $LMS->GetNetworks();
-$layout[pagetitle]="Informacja o sieci";
+$layout[pagetitle]=$lang[pagetitle_netinfo];
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("network",$network);
 $SMARTY->assign("networks",$networks);

@@ -36,28 +36,28 @@ if(isset($userdata))
 		$userdata[$key] = trim($value);
 
 	if($userdata[lastname]=="")
-		$error[username] = "To pole nie mo¿e byæ puste!";
+		$error[username] = $lang[error_no_empty_filed];
 	
 	if($userdata[address]=="")
-		$error[address] = "Proszê podaæ adres!";
+		$error[address] = $lang[error_no_empty_filed];
 
 	if($useradd[nip] !="" && !eregi("^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$",$useradd[nip]) && !eregi("^[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}$",$useradd[nip]) && !check_nip($useradd[nip]))
-		$error[nip] = "Podany NIP jest b³êdny!";
+		$error[nip] = $lang[error_taxid_invalid];
 
 	if($userdata[zip] !="" && !eregi("^[0-9]{2}-[0-9]{3}$",$userdata[zip]))
-		$error[zip] = "Podany kod pocztowy jest b³êdny!";
+		$error[zip] = $lang[error_zip_invalid];
 
 	if($userdata[gguin] == 0)
 		unset($userdata[gguin]);
 
 	if($userdata[gguin] !="" && !eregi("^[0-9]{4,}$",$userdata[gguin]))
-		$error[gguin] = "Podany numer GG jest niepoprawny!";
+		$error[gguin] = $lang[error_gguin_invalid];
 
 	if(!$LMS->TariffExists($userdata[tariff]))
-		$error[tariff] = "Proszê wybraæ taryfê!";
+		$error[tariff] = $lang[error_choose_tariff];
 		
 	if($userdata[status]!=3&&$LMS->GetUserNodesNo($userdata[id])) 
-		$error[status] = "Tylko pod³±czony u¿ytkownik mo¿e posiadaæ komputery!";
+		$error[status] = $lang[error_only_connected_users_can_have_nodes];
 		
 	if (!isset($error)){
 		$LMS->UserUpdate($userdata);
@@ -83,7 +83,7 @@ if(isset($userdata))
 		$userinfo[shownodes] = TRUE;
 }
 
-$layout[pagetitle]="Edycja danych u¿ytkownika ".$userinfo[username];
+$layout[pagetitle] = sprintf($lang[pagetitle_useredit],$userinfo[username]);
 $SMARTY->assign("usernodes",$LMS->GetUserNodes($userinfo[id]));
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($userinfo[id]));
 $SMARTY->assign("tariffs",$LMS->GetTariffs());
