@@ -34,17 +34,17 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD CLASS="fall" WIDTH="100%" COLSPAN="2">
-			<B>Dane u¿ytkownika:</B>
+			<B>{t}Customer data{/t}:</B>
 		</TD>
 	</TR>
 	{if $customer}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>Imiê i nazwisko / nazwa:<BR>
-			Adres:<BR>
+			<B>{t}Name and surname{/t}:<BR>
+			{t}Address{/t}:<BR>
 			<BR>
-			{if $customer.nip}NIP:<BR>{elseif $customer.pesel}PESEL:<BR>{/if}
-			{if $customer.phone1}Telefon:{/if}</B>
+			{if $customer.nip}{t}NIP{/t}:<BR>{elseif $customer.pesel}{t}PESEL{/t}:<BR>{/if}
+			{if $customer.phone1}{t}Phone{/t}:{/if}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			{$customer.username}<BR>
@@ -57,7 +57,7 @@
 	{/if}
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>Termin p³atno¶ci (dni):</B>
+			<B>{t}Deadline of payment (days){/t}:</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="invoice[paytime]" VALUE="{$invoice.paytime}">
@@ -65,7 +65,7 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			<B>Typ p³atno¶ci (gotówka/przelew/etc.):</B>
+			<B>{t}Payment type (cash/transfer/etc.){/t}:</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%" NOWRAP>
 			<INPUT TYPE="TEXT" NAME="invoice[paytype]" VALUE="{$invoice.paytype}">
@@ -73,20 +73,20 @@
 	</TR>			
 	<TR CLASS="light">
 		<TD CLASS="flr" WIDTH="100%" COLSPAN="2">
-			Wybierz u¿ytkownika:
+			{t}Select user{/t}:
 			<SELECT SIZE="1" NAME="user" onChange="document.setcustomer.userid.value=document.setcustomer.user.value">
-				<OPTION VALUE="0">... wybierz u¿ytkownika ...</OPTION>
+				<OPTION VALUE="0">... {t}select user{/t} ...</OPTION>
 				{foreach from=$users item=user}
 				<OPTION VALUE="{$user.id}"{if $customer.id eq $user.id} SELECTED{/if}>{$user.username} ({$user.id|string_format:"%04d"})</OPTION>
 				{/foreach}
 			</SELECT>
-			lub wpisz jego ID:
+			{t}or user's ID{/t}:
 			<INPUT TYPE="TEXT" NAME="userid" VALUE="{$customer.id}" SIZE="5" onChange="document.setcustomer.user.value=document.setcustomer.userid.value">
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" ALIGN="right" COLSPAN="2">
-			<A HREF="javascript:document.setcustomer.submit();">Wybierz / zmieñ u¿ytkownika <IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			<A HREF="javascript:document.setcustomer.submit();">{t}Select / change user{/t} <IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
 		</TD>
 	</TR>
 </TABLE>
@@ -95,28 +95,28 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">
-			<B>Lp.</B>
+			<B>{t}No.{/t}</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="93%">
-			Nazwa wyrobu, towaru lub us³ugi:
+			{t}Name of product, commodity or service{/t}:
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%">
-			PKWiU:
+			{t}PKWiU{/t}:
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
-			Ilo¶æ:<BR>
-			JM:
+			{t}Amount{/t}:<BR>
+			{t}Unit{/t}:
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			Cena netto:<BR>
-			Warto¶æ netto:
+			{t}Net price{/t}:<BR>
+			{t}Net value{/t}:
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="RIGHT">
-			PTU:
+			{t}Tax{/t}:
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			Cena brutto:<BR>
-			Warto¶æ brutto:
+			{t}Gross price{/t}:<BR>
+			{t}Gross value{/t}:
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;
@@ -140,20 +140,20 @@
 			{$item.jm}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.valuenetto|string_format:"%01.2f z³"}<BR>
-			{$item.s_valuenetto|string_format:"%02.2f z³"}
+			{$item.valuenetto|string_format:"%01.2f"}<BR>
+			{$item.s_valuenetto|string_format:"%02.2f"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{if $item.taxvalue}
 				{$item.taxvalue|string_format:"%01.2f"}%
-			{else}zw.{/if}
+			{else}{t}tax-exempt.{/t}{/if}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$item.valuebrutto|string_format:"%01.2f z³"}<BR>
-			{$item.s_valuebrutto|string_format:"%02.2f z³"}
+			{$item.valuebrutto|string_format:"%01.2f"}<BR>
+			{$item.s_valuebrutto|string_format:"%02.2f"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP CLASS="fright">
-			<A HREF="?m=invoicenew&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Skasuj t± pozycjê z listy"} BORDER="0"></A>
+			<A HREF="?m=invoicenew&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"} BORDER="0"></A>
 		</TD>			
 	</TR>
 	{foreachelse}
@@ -161,7 +161,7 @@
 		<TD COLSPAN="8" ALIGN="CENTER" CLASS="flr">
 			<BR>
 			<BR>
-			<B>Nie ma jeszcze pozycji na fakturze. U¿yj formularza poni¿ej aby dodaæ pozycjê.</B><BR>
+			<B>{t}There is no items on invoice. Use form below for items addition.{/t}</B><BR>
 			<BR>
 			<BR>
 		</TD>
@@ -170,16 +170,16 @@
 	{if $contents}
 	<TR CLASS="light">
 		<TD COLSPAN="4" WIDTH="96%" ALIGN="RIGHT" CLASS="fleftu">
-			<B>Razem:</B>
+			<B>{t}Total{/t}:</B>
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
-			{sum array=$contents column=s_valuenetto string_format="%01.2f z³"}
+			{sum array=$contents column=s_valuenetto string_format="%01.2f"}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
 			&nbsp;
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" CLASS="fbt">
-			{sum array=$contents column=s_valuebrutto string_format="%01.2f z³"}
+			{sum array=$contents column=s_valuebrutto string_format="%01.2f"}
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu">
 			&nbsp;
@@ -196,9 +196,9 @@
 			<INPUT TYPE="text" NAME="name" SIZE="48"><BR>
 			<SELECT SIZE="1" NAME="ttariffid">
 				{foreach from=$tariffs item=tariff}
-				<OPTION VALUE="{$tariff.id}">{$tariff.name} ({$tariff.value|string_format:"%0.2f"} z³)</OPTION>
+				<OPTION VALUE="{$tariff.id}">{$tariff.name} ({$tariff.value|string_format:"%0.2f"})</OPTION>
 				{/foreach}
-			</SELECT><A HREF="javascript:setItem(document.additem.ttariffid.value)">Wybierz</A>
+			</SELECT><A HREF="javascript:setItem(document.additem.ttariffid.value)">{t}Select{/t}</A>
 		</TD>
 		<TD CLASS="ftop">
 			<INPUT TYPE="text" NAME="pkwiu" SIZE="6">
@@ -208,26 +208,26 @@
 			<INPUT TYPE="text" NAME="jm" SIZE="1" VALUE="szt">
 		</TD>
 		<TD CLASS="ftop" NOWRAP>
-			<INPUT TYPE="text" NAME="valuenetto" SIZE="6"> z³
+			<INPUT TYPE="text" NAME="valuenetto" SIZE="6">
 		</TD>
 		<TD CLASS="ftop" NOWRAP>
 			<SELECT size="1" name="taxvalue" value="22" {tip text="Wybierz stawkê VAT"}>
 				<OPTION value="22">22%</OPTION>
 				<OPTION value="7">7%</OPTION>
 				<OPTION value="0">0%</OPTION>
-				<OPTION value="">zw.</OPTION>
+				<OPTION value="">{t}tax-exempt.{/t}</OPTION>
 			</SELECT>
 		</TD>
 		<TD CLASS="ftop" NOWRAP>
-			<INPUT TYPE="text" NAME="valuebrutto" SIZE="6"> z³
+			<INPUT TYPE="text" NAME="valuebrutto" SIZE="6">
 		</TD>
 		<TD CLASS="ftr">
-			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" BORDER="0" {tip text="Dodaj pozycjê"}></A>
+			<A HREF="javascript:document.additem.submit(); "><IMG SRC="img/save.gif" ALT="" BORDER="0" {tip text="Add item"}></A>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="8" CLASS="fbottomu" ALIGN="RIGHT">
-			<A HREF="?m=invoicenew&action=clear">Wyczy¶æ zawarto¶æ <IMG ALIGN="ABSMIDDLE" SRC="img/delete.gif" BORDER="0"></A> <A HREF="?m=invoicenew&action=save">Zapisz i zakoñcz <IMG ALIGN="ABSMIDDLE" SRC="img/save.gif" ALT="Dodaj" BORDER="0"></A>
+			<A HREF="?m=invoicenew&action=clear">{t}Clean contents{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/delete.gif" BORDER="0"></A> <A HREF="?m=invoicenew&action=save">{t}Save and exit{/t} <IMG ALIGN="ABSMIDDLE" SRC="img/save.gif" ALT="{t}Add{/t}" BORDER="0"></A>
 		</TD>
 	</TR>
 	</FORM>

@@ -71,19 +71,19 @@
 			<B>ID:</B>
 		</TR>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>Data:</B>
+			<B>{t}Date{/t}:</B>
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>Numer:</B>
+			<B>{t}Number{/t}:</B>
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>Kwota:</B>
+			<B>{t}Value{/t}:</B>
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>Pozycji:</B>
+			<B>{t}Items{/t}:</B>
 		</TD>
 		<TD WIDTH="94%" CLASS="fbt">
-			<B>Dla:</B>
+			<B>{t}For{/t}:</B>
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu">
 			&nbsp;
@@ -92,7 +92,7 @@
 	{if $listdata.totalpos != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
-			<B>Strona: {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+			<B>{t}Page{/t}: {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> ({t}records{/t} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
 		</TD>
 	</TR>
 	{/if}
@@ -111,7 +111,7 @@
 			{$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
-			{$invoice.value|string_format:"%0.2f"} z³
+			{$invoice.value|string_format:"%0.2f"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$invoice.count}
@@ -122,7 +122,7 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			{cycle print=false}
 			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
-			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0" TARGET="_BLANK"></A>
+			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ {t}Print{/t} ]" BORDER="0" TARGET="_BLANK"></A>
 		</TD>
 	</TR>
 	{sectionelse}
@@ -130,7 +130,7 @@
 		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="7">
 			<P>&nbsp;</P>
 			<P>&nbsp;</P>
-			<P><B>Nie znaleziono ¿adnych faktur w bazie danych</B></P>
+			<P><B>{t}There is no invoices in database.{/t}</B></P>
 			<P>&nbsp;</P>
 			<P>&nbsp;</P>
 		</TD>
@@ -139,7 +139,7 @@
 	{if $listdata.totalpos != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
-			<B>Strona: {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+			<B>{t}Page{/t}: {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> ({t}records{/t} {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
 		</TD>
 	</TR>
 	{/if}
@@ -148,46 +148,15 @@
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD WIDTH="99%" VALIGN="bottom">
-						<A HREF="javascript:raport();"><IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2">Rejestr sprzeda¿y: </A>
-						Od&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>
-						Do&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Wpisz datê w formacie 'rrrr/mm/dd' (pole puste oznacza datê dzisiejsz±) albo kliknij aby wybraæ datê z kalendarza"}>	
-{*					
-					<TABLE WIDTH="100%">
-							<TR>
-								<TD WIDTH="1%" ROWSPAN="2">
-									<INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="action" VALUE="markrange">
-								</TD>
-								<TD WIDTH="1%">
-									<B>Od:</B>
-								</TD>
-								<TD WIDTH="98%">
-									{html_select_date field_array="from" prefix="" time=$listdata.startdate field_order="DMY" field_separator=" / " start_year=$listdata.startyear end_year=$listdata.endyear}&nbsp;{html_select_time field_array="from" prefix="" time=$listdata.startdate display_seconds=0}
-								</TD>
-							</TR>
-							<TR>
-								<TD WIDTH="1%">
-									<B>Do:</B>
-								</TD>
-								<TD WIDTH="98%">
-									{html_select_date field_array="to" prefix="" time=$listdata.enddate field_order="DMY" field_separator=" / " start_year=$listdata.startyear end_year=$listdata.endyear}&nbsp;{html_select_time field_array="to" prefix="" time=$listdata.enddate display_seconds=0}
-								</TD>
-							</TR>
-							<TR>
-								<TD WIDTH="1%">
-									<INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="action" VALUE="marktoday">
-								</TD>
-								<TD WIDTH="98%" COLSPAN="2">
-									<B>Dzisiejszy dzieñ</B>
-								</TD>
-							</TR>								
-						</TABLE>
-*}						
+						<A HREF="javascript:raport();"><IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2">{t}Sale registry{/t}: </A>
+						{t}From{/t}&nbsp;<INPUT TYPE="text" NAME="from" SIZE="10" MAXSIZE="10" OnClick="javascript:cal1.popup();" {tip text="Enter date in format 'yyyy/mm/dd' (empty field means current date) or klick to choose date from calendar"}>
+						{t}To{/t}&nbsp;<INPUT TYPE="text" NAME="to" SIZE="10" MAXSIZE="10" OnClick="javascript:cal2.popup();" {tip text="Enter date in format 'yyyy/mm/dd' (empty field means current date) or click to choose date from calendar"}>	
 					</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="right">
-						Zaznacz wszystkie<INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"><BR>
-						<A HREF="javascript:prints();">Drukuj <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
-						<A HREF="javascript:prints_org();">Drukuj orygina³y <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
-						<A HREF="javascript:prints_cpy();">Drukuj kopie <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
+						{t}Check all{/t}<INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"><BR>
+						<A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
+						<A HREF="javascript:prints_org();">{t}Print originals{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A><BR>
+						<A HREF="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
 					</TD>
 				</TR>
 			</TABLE>
