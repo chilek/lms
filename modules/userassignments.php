@@ -114,7 +114,7 @@ if($_GET['action'] == 'add' && isset($a))
 			{
 				$error['at'] = 'Niepoprawny format daty (DD/MM)';
 			}
-			elseif($_CONFIG['phpui']['use_current_payday'] && !$at['at'])
+			elseif($_CONFIG['phpui']['use_current_payday'] && !$a['at'])
 			{
 				$d = date('j', time());
 				$m = date('n', time());
