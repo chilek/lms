@@ -48,6 +48,13 @@
 					{section name=networks loop=$networks}
 					<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"..."}</OPTION>
 					{/section}
+				</SELECT>&nbsp;
+				Grupa:
+				<SELECT SIZE="1" CLASS="bold" NAME="g" ONCHANGE="document.choosefilter.submit();">
+					<OPTION value="" {if !$listdata.usergroup} SELECTED {/if}>- wszystkie -</OPTION>
+					{section name=usergroups loop=$usergroups}
+					<OPTION value="{$usergroups[usergroups].id}" {if $listdata.usergroup eq $usergroups[usergroups].id} SELECTED {/if}>{$usergroups[usergroups].name|truncate:50:"..."}</OPTION>
+					{/section}
 				</SELECT>
 			</FORM></P>
 		</TD>
