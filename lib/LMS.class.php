@@ -32,7 +32,7 @@ class LMS {
 
 	var $db;
 	var $session;
-	var $_version = '1.0.41';
+	var $_version = '1.0.44';
 	var $_usecache = FALSE;
 	var $_debug = TRUE;
 
