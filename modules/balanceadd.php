@@ -31,10 +31,13 @@ $_SESSION['addbc'] = $addbalance['comment'];
 $addbalance['value'] = str_replace(",",".",$addbalance['value']);
 
 if($addbalance['time']) {
-	
-	$date = explode('-',$addbalance['time']);
-	if(checkdate($date[1],$date[0],$date[2]))
-		$addbalance['time'] = mktime(0,0,0,$date[1],$date[0],$date[2]);
+
+	// date format 'yyyy/mm/dd hh:mm'	
+	list($date,$time) = split(' ',$addbalance['time']);
+	$date = explode('/',$date);
+	$time = explode(':',$time);
+	if(checkdate($date[1],$date[2],$date[0])) //je¶li z³a data, zapisujemy pod dzisiejsz±
+		$addbalance['time'] = mktime($time[0],$time[1],0,$date[1],$date[2],$date[0]);
 	else
 		unset($addbalance['time']);
 }
