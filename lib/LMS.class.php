@@ -1025,8 +1025,12 @@ class LMS
 
      function NetDevLinkComputer($id,$netid)
      {
-          $this->SetTS("nodes");
-          return $this->DB->Execute("UPDATE nodes SET netdev=".$netid." WHERE id=".$id);
+        $netdev = $this->GetNetDev($netid);
+	if( $netdev[takenports] >= $netdev[ports])
+	    return FALSE;
+        $this->DB->Execute("UPDATE nodes SET netdev=".$netid." WHERE id=".$id);
+	$this->SetTS("nodes");
+	return TRUE;
      }
 
      /*
@@ -1924,6 +1928,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.259  2003/10/04 19:57:41  alec
+ * free ports checking in NetDevLinkComputer() added
+ *
  * Revision 1.258  2003/10/04 19:45:22  alec
  * get 'netdev' in GetNodeList()
  *
