@@ -139,7 +139,7 @@ $SMARTY->assign("menu",$menu);
 $SMARTY->assign("layout",$layout);
 
 header('X-Powered-By: LMS/'.$layout[lmsv]);
-if($SESSION->islogged || $_GET['m']=='balanceview')
+if($SESSION->islogged)
 {
 
 	if($SESSION->passwd == "")
