@@ -5,6 +5,8 @@ wersja 1.0pre9 (??/04/2003):
   - wymaga Smarty-2.4.2
   - tooltips
   - force ssl
+  - przy dodawaniu usera domy¶lna taryfa to nie ta najdro¿sza, a ta
+    najczê¶ciej u¿ywana
 
 wersja 1.0pre8 (30/03/2003):
 
