@@ -1473,6 +1473,12 @@ class LMS
 		else
 			return FALSE;
 	}
+
+	function TariffUpdate($tariff)
+	{
+		$this->SetTS("tariffs");
+		return $this->ADB->Execute("UPDATE tariffs SET name=?, description=?, value=?, uprate=?, downrate=? WHERE id=?",array($tariff[name], $tariff[description], $tariff[value], $tariff[uprate], $tariff[downrate], $tariff[id]));
+	}
 	
 	function TariffDelete($id)
 	{
