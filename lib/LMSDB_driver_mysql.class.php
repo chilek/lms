@@ -39,12 +39,13 @@ class LMSDB_driver_mysql extends LMSDB_common
 		$this->Connect($dbhost,$dbuser,$dbpasswd,$dbname);
 	}
 
-	function _driver_connect($dbhost,$dbuser,$dbpasswd)
+	function _driver_connect($dbhost,$dbuser,$dbpasswd,$dbname)
 	{
 		if($this->_dblink = mysql_connect($dbaddr,$dbuser,$dbpasswd))
 		{
 			$this->_dbhost = $dbhost;
 			$this->_dbuser = $dbuser;
+			$this->_driver_selectdb($dbname);
 		}
 		return $this->_dblink;
 	}
@@ -63,7 +64,7 @@ class LMSDB_driver_mysql extends LMSDB_common
 			$this->_query = $query;
 			$this->_error = FALSE;
 		}else
-			$this->_error = mysql_error();
+			$this->_error = mysql_error($this->_dblink);
 
 		return $this->_result;
 	}
@@ -94,9 +95,8 @@ class LMSDB_driver_mysql extends LMSDB_common
 		return 'LIKE';
 	}
 
-	function Concat()
+	function _driver_concat($input)
 	{
-		$input = func_get_args();
 		$return = implode(', ',$input);
 		return 'CONCAT('.$return.')';
 	}
@@ -105,6 +105,9 @@ class LMSDB_driver_mysql extends LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.9  2003/08/19 00:58:43  lukasz
+ * - fixed usage of mysql_error();
+ *
  * Revision 1.8  2003/08/18 17:16:25  lukasz
  * - temporary save
  *
