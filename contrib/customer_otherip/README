@@ -45,3 +45,15 @@ w katalogu contrib/customer_otherip, oraz "Options +followlinks w apachu".
 panel wymaga ustawienia opcji sys_dir w lms.ini (sekcja [directories]).
 
 SOA#1
+
+5) W pliku balanceview.php mo¿na siê doszukaæ czego¶ takiego:
+
+#v+
+customer authorization ways
+//$id = GetUserIDByPhone1AndPIN($login, $pin);
+//$id = GetUserIDByContractAndPIN($login, $pin);
+$id = GetUserIDByIDAndPIN($login, $pin);
+#v-
+
+Oznacza to ni mniej ni wiêcej ale ¿e mo¿na u¿ytkownika identyfikowaæ po:
+Telefonie ALBO ID ALBO Nr umowy. Wybór nale¿y do Was.
