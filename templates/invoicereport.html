@@ -40,7 +40,7 @@
 	{cycle values="#FFFFFF,#EEEEEE" print=false}
 	{foreach item=invoice from=$invoicelist}
 	<TR BGCOLOR="{cycle}">
-		<TD WIDTH="1%" ALIGN="CENTER">
+		<TD WIDTH="1%" ALIGN="RIGHT">
 			{$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}
 		</TD>
 		<TD WIDTH="1%" ALIGN="CENTER">
