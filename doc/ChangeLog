@@ -33,11 +33,15 @@ wersja 1.3.7 (??/??/2004):
   - w demonie mo¿na zdefiniowaæ polecenie pow³oki, które bêdzie wykonywane 
     przed ka¿dym po³±czeniem z baz± (alec)
   - w skryptach dodano wy¶wietlanie b³êdów w pliku konfiguracyjnym (alec)
+  - w formularzu nowej operacji pokazuje siê ilo¶æ zaznaczonych u¿ytkowników (chilek)
   - w formularzu nowej operacji pokazuje siê ilo¶æ zaznaczonych 
     u¿ytkowników (chilek)
   - przyspieszone wy¶wietlanie listy faktur na MySQL'u (alec)
   - polecenie 'make daemon' do kompilacji samego demona, bez modu³ów (alec)
   - przy starcie almsd w 'background mode' nie nastêpuje prze³adowanie (alec)
+  - dodane klawisze szybkiego dostêpu w formularzu wyszukiwania u¿ytkownika (S)
+    oraz nowej operacji (W); mo¿na by wszêdzie gdzie to wygodne to pododawaæ - pod mozill±
+    i firefoxem wciskamy odpowiednio Alt+S i Alt+W (chilek)
 
 wersja 1.3.6 Osiris (01/09/2004);
 
