@@ -1,0 +1,41 @@
+<!-- // $Id: style.css,v 1.1 2002/12/29 15:41:35 lukasz Exp $ // -->
+<STYLE type="text/css"><!--
+BODY		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+TD		{ font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+TABLE		{ border-collapse: collapse; border-color: #000000 }
+TD.fleft	{ border-left-width: 1pt; border-left-style: solid; }
+TD.fright	{ border-right-width: 1pt; border-right-style: solid; }
+TD.ftop		{ border-top-width: 1pt; border-top-style: solid; }
+TD.fbottom	{ border-bottom-width: 1pt; border-bottom-style: solid; }
+TD.fleftu	{ border-top-width: 1pt; border-top-style: solid; border-bottom-width: 1pt; border-bottom-style: solid; border-left-width: 1pt; border-left-style: solid; }
+TD.frightu	{ border-top-width: 1pt; border-top-style: solid; border-bottom-width: 1pt; border-bottom-style: solid; border-right-width: 1pt; border-right-style: solid; }
+TD.ftopu	{ border-top-width: 1pt; border-top-style: solid; border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
+TD.fbottomu	{ border-bottom-width: 1pt; border-bottom-style: solid; border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
+TD.fall		{ border-width: 1pt; border-style: solid; }
+TD.fbt		{ border-bottom-width: 1pt; border-bottom-style: solid; border-top-width: 1pt; border-top-style: solid; }
+TD.flr		{ border-left-width: 1pt; border-left-style: solid; border-right-width: 1pt; border-right-style: solid; }
+TD.red		{ color: #FF0000; }
+TD.blend	{ color: #888888; }
+TR.dark		{ background-color: #CEBD9B; }
+TR.light	{ background-color: #DFD5BD; }
+TR.blend	{ color: #888888; }
+FONT.blend	{ color: #888888; }
+A		{ text-decoration: none; }
+A:hover		{ text-decoration: underline; color: #336600; }
+P		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+P.nor		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+P.txt		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; text-align: justify }
+P.separated	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; margin-top: 5; margin-bottom: 5 }
+H1		{ font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+INPUT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; border-color: #000000;  }
+INPUT.bold	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; font-weight: bold; background-color: #EBE4D6; border-color: #000000; }
+INPUT.red	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; color: #800000; }
+INPUT.alert	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; }
+INPUT.alertb	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #FF9B9B; font-weight: bold; color: #800000; } 
+TEXTAREA	{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; }
+TEXTAREA.pre	{ font-size:  8pt; font-family: Courier, Courier New; }
+SELECT		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 1pt; background-color: #EBE4D6; }
+SELECT.alert	{ background-color: #FF9B9B; }
+BUTTON		{ font-size:  8pt; font-family: Tahoma, Verdana, Arial, Helvetica; border-style: solid; border-width: 0pt; background-color: #DFD5BD; }
+//-->
+</STYLE>
