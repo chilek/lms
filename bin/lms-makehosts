@@ -83,7 +83,7 @@ sub u32todotquad($)
 if($help)
 {
 	print STDERR <<EOF;
-lms-makeoidentconf, version $_version
+lms-makehosts, version $_version
 (C) 2001-2004 LMS Developers
 
 -C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
@@ -98,7 +98,7 @@ EOF
 if($version)
 {
 	print STDERR <<EOF;
-lms-makeoidentconf, version $_version
+lms-makehosts, version $_version
 (C) 2001-2004 LMS Developers
 
 EOF
@@ -112,7 +112,7 @@ if(!$configfile)
 
 if(!$quiet)
 {
-	print STDOUT "lms-makeoidentconf, version $_version\n";
+	print STDOUT "lms-makehosts, version $_version\n";
 	print STDOUT "(C) 2001-2004 LMS Developers\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
@@ -125,13 +125,13 @@ if(! -r $configfile)
 
 my $ini = new Config::IniFiles -file => $configfile;
 
-my $cfile = $ini->val('oidentd', 'config_file') || '/etc/oidentd_masq.conf';
-my $cuid = $ini->val('oidentd','config_owneruid') || 0;
-my $cgid = $ini->val('oidentd','config_ownergid') || 0;
-my $cperm = $ini->val('oidentd','config_permission') || '0600';
-my $itempl = $ini->val('oidentd','identd_template') || 'm-%N';
-my $networks_list = $ini->val('oidentd','networks') || '';
-my $usergroups_list = $ini->val('oidentd','usergroups') || '';
+my $cfile = $ini->val('hosts', 'config_file') || '/etc/hosts';
+my $cuid = $ini->val('hosts','config_owneruid') || 0;
+my $cgid = $ini->val('hosts','config_ownergid') || 0;
+my $cperm = $ini->val('hosts','config_permission') || '0644';
+my $cheader = $ini->val('hosts','config_header') || '127.0.0.1 localhost localhost.localdomain';
+my $networks_list = $ini->val('hosts','networks') || '';
+my $usergroups_list = $ini->val('hosts','usergroups') || '';
 
 my $dbtype = $ini->val('database', 'type') || 'mysql';
 my $dbhost = $ini->val('database', 'host') || 'localhost';
@@ -159,7 +159,9 @@ else
 	exit 1;
 }
 
-open(OIDENTDCONF, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.\n");
+open(HOSTSFILE, ">$cfile") or die("Fatal error: Unable to write $cfile, exiting.\n");
+
+print HOSTSFILE $cheader."\n";
 
 if(!$networks_list)
 {
@@ -190,16 +192,14 @@ while (my $row = $dbq->fetchrow_hashref()) {
 
 my @usergroups = split ' ',$usergroups_list;
 
-$dbq = $dbase->prepare("SELECT id, name, ipaddr, ownerid FROM nodes");
+$dbq = $dbase->prepare("SELECT name, ipaddr, ownerid FROM nodes");
 $dbq->execute();
 my %namelist;
-my %idlist;
 my %ownerlist;
 
 while (my $row = $dbq->fetchrow_hashref())
 {
-        $namelist{u32todotquad($row->{'ipaddr'})} = $row->{'name'};
-        $idlist{u32todotquad($row->{'ipaddr'})} = $row->{'id'};
+        $namelist{u32todotquad($row->{'ipaddr'})} = lc($row->{'name'});
         $ownerlist{u32todotquad($row->{'ipaddr'})} = $row->{'ownerid'};
 }
 
@@ -230,14 +230,7 @@ foreach my $key (@networks)
                                 }
                                 if($usergroupscount)
                                 {
-					print OIDENTDCONF "$ipaddr\t";
-					my $ident = $itempl;
-					my $temp = lc($namelist{$ipaddr});
-					$ident =~ s/\%N/$namelist{$ipaddr}/;
-					$ident =~ s/\%n/$temp/;
-					$ident =~ s/\%I/$idlist{$ipaddr}/;
-					$ident =~ s/\%O/$ownerlist{$ipaddr}/;
-					print OIDENTDCONF "$ident\tUNIX\n";
+					print HOSTSFILE "$ipaddr\t$namelist{$ipaddr}\n";
 				}
 			}
 		}
@@ -245,6 +238,6 @@ foreach my $key (@networks)
 }
 
 $dbase->disconnect();
-close(OIDENTDCONF);
+close(HOSTSFILE);
 chown $cuid, $cgid, $cfile or print "Warning! Unable to set owner of $cfile to $cuid.$cgid.\n";
 chmod oct($cperm), $cfile or print "Warning! Unable to set permission $cperm to $cfile.\n";
