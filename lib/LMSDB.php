@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * LMS version 1.1-cvs
@@ -55,6 +55,10 @@ function DBInit($dbtype,$dbhost,$dbuser,$dbpasswd,$dbname)
 
 /*
  * $Log$
+ * Revision 1.3  2003/08/24 13:12:54  lukasz
+ * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
+ *   redhat's :>
+ *
  * Revision 1.2  2003/08/18 16:57:00  lukasz
  * - more cvs tags :>
  *

@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * LMS version 1.1-cvs
@@ -182,6 +182,10 @@ else
 
 /*
  * $Log$
+ * Revision 1.93  2003/08/24 13:12:54  lukasz
+ * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
+ *   redhat's :>
+ *
  * Revision 1.92  2003/08/22 12:59:48  lukasz
  * -
  *

@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*
  * LMS version 1.1-cvs
@@ -663,6 +663,10 @@ function get_producer($mac)
 	
 /*
  * $Log$
+ * Revision 1.43  2003/08/24 13:12:54  lukasz
+ * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
+ *   redhat's :>
+ *
  * Revision 1.42  2003/08/18 16:57:00  lukasz
  * - more cvs tags :>
  *
