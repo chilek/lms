@@ -75,21 +75,22 @@
 	  </sect2>
 	<!--
           Czyszczenie dokumentacji przed wydaniem stabilnym
-	  <para>A je¶li chcesz uruchomiæ LMSd potrzebujesz dzia³aj±cy kompilator jêzyka C.</para>
+	  <para>A je¶li chcesz uruchomiæ LMSd potrzebujesz dzia³aj±cy kompilator 
+	  jêzyka C.</para>
 	-->
 	</sect1>
 	<sect1 id="install-install">
 	<title>Instalacja LMS</title>
 	  	<para>Po pobraniu ze strony <ulink url="http://www.lms.rulez.pl">www.lms.rulez.pl</ulink>
-		 rozpakowujemy archiwum:
+		 rozpakuj archiwum:
 		 <screen>$ tar zxvf lms-x.x.x.tar.gz</screen>
-		 a nastêpnie przenosimy pliki z <emphasis>LMS-UI</emphasis>do katalogu osi±galnego 
+		 a nastêpnie przenie¶ pliki z <emphasis>LMS-UI</emphasis>do katalogu osi±galnego 
 		 z poziomu serwera www (np. <filename>/var/www/lms</filename>).</para> 
 		 <para>Pliki z konfiguracj± (<filename>sample/lms.ini</filename> i <filename>
-		 sample/lms-mgc.ini</filename>) umieszczamy w katalogu <filename>/etc/lms</filename>.
+		 sample/lms-mgc.ini</filename>) umie¶æ w katalogu <filename>/etc/lms</filename>.
 		 </para>
 		 <para>Skrypty wykonywalne z katalogu <filename>bin</filename> 
-		 przenosimy do katalogu <filename>/usr/sbin</filename>.
+		 najlepiej przenie¶æ do katalogu <filename>/usr/sbin</filename>.
 		 </para>
 	</sect1>
 	<sect1 id="install-db">
@@ -105,7 +106,7 @@
 		</sect3>
 		<sect3>
 		<title>Instalacja serwera MySQL</title>
-			<para>Po rozpakowaniu, wchodzimy do katalogu z naszym MySQL i wydajemy
+			<para>Po rozpakowaniu, wejd¼ do katalogu z naszym MySQL i wydaj kolejno
 			polecenia:
 			<screen>
 $ ./configure --prefix=/usr/local/mysql
@@ -119,8 +120,8 @@ $ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</screen>
 		</sect3>
 		<sect3>
 		<title>Utworzenie bazy danych</title>
-			<para>Konieczne  to  jest  je¿eli  uruchamiamy  LMS  po raz PIERWSZY. Je¿eli
-			uaktualniamy LMS, odpowiednie adnotacje co nale¿y zrobiæ z baz± danych
+			<para>Konieczne  to  jest  je¿eli  uruchamiasz  LMS  po raz PIERWSZY. Je¿eli
+			uaktualniasz LMS z poprzedniej wersji, odpowiednie adnotacje co nale¿y zrobiæ z baz± danych
 			s± w pliku ChangeLog. Tak wiêc, wejd¼ do katalogu w którym masz LMS'a
 			i uruchom shell mysql'a:
 			<screen>
@@ -145,17 +146,16 @@ password = has³o_z_pkt.3</screen>
 			<para>Po  takim  zabiegu,  o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy
 			danych,  mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w
 			bazie  danych  nie ma ¿adnego konta administratora, jedyn± rzecz± jak±
-			bêdziemy  widzieæ  bêdzie  formularz  dodania  administratora.  Je¿eli
-			podamy  prawid³owe  dane  administratora, LMS przeniesie nas na stronê
-			logowania gdzie odrazu bêdziemy mogli u¿yæ nowo utworzonego konta.
+			zobaczysz bêdzie  formularz  dodania  administratora.  Je¿eli
+			podasz  prawid³owe  dane  administratora, LMS przeniesie Ciê na stronê
+			logowania gdzie od razu bêdziesz móg³ u¿yæ nowo utworzonego konta.
 			</para>
-			<para>Zatrzymajmy  siê  tutaj  i  dodajmy  co¶  do  crona,  tak dla ¶wiêtego
-			spokoju[tm](C):
+			<para>Zatrzymaj siê tutaj i dodaj co¶ do crona, tak dla ¶wiêtego spokoju:
 			<screen>
 12 4 3,10,17,21,28 * * /usr/bin/mysqldump -u lms --password=Twoje-super-tajne-has³o \
 		    --add-drop-table --add-locks lms > backups/lms-auto-"$(date +%s)".sql</screen>
 			</para>
-			<para>Spowoduje to wykonywanie 12 po 4 rano, ka¿dego 3, 10, 17, 21 i 28 dnia
+			<para>Spowoduje to wykonywanie o 4:12 rano, ka¿dego 3, 10, 17, 21 i 28 dnia
 			miesi±ca automagicznie zrzutu danych z mysqla.</para>
 		</sect3>
 		</sect2>
@@ -163,9 +163,9 @@ password = has³o_z_pkt.3</screen>
 		<title>PostgreSQL</title>
 		<sect3>
 		<title>Wstêp</title>
-			<para>LMS jest testowany na PostgreSQL 7.2.3 i nowszych, ale poniewa¿ ¿adne
+			<para>LMS jest testowany na PostgreSQL 7.3.4 i nowszych, ale poniewa¿ ¿adne
 			skomplikowane w³a¶ciwo¶ci tej bazy nie s± wykorzystywane, nie powinno
-			byæ problemów z innymi wersjami. Je¿eli nie mamy zainstalowanego serwera
+			byæ problemów z innymi wersjami. Je¿eli nie masz zainstalowanego serwera
 			PostgreSQL, najlepszym rozwi±zaniem bêdzie w³asnorêczna kompilacja
 			ze ¼róde³ dostêpnych na stronie <ulink url="http://www.postgresql.org">
 			www.postgresql.org</ulink>.</para>
@@ -173,8 +173,8 @@ password = has³o_z_pkt.3</screen>
 		<sect3>
 		<title>Instalacja</title>
 			<para>Jest to wersja skrócona instalacji, wiêcej informacji znajdziesz
-			w dokumentacji postgresa. Po ¶ci±gniêciu i rozpakowaniu wchodzimy
-			do katalogu g³ównego i wydajemy kolejno poni¿sze polecenia.
+			w dokumentacji postgresa. Po ¶ci±gniêciu i rozpakowaniu wejd¼
+			do katalogu g³ównego i wpisz kolejno poni¿sze polecenia.
 			<screen>
 $ ./configure --enable-locale
 $ gmake
@@ -212,10 +212,10 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
        			Domy¶lnie has³o nie jest wymagane.</para></note></para>
 			<para>Po takim zabiegu, o ile LMS'owi uda siê nawi±zaæ po³±czenie do bazy danych,
 			mo¿na ju¿ bez problemu dostaæ siê do systemu. Je¿eli jednak w bazie danych
-			nie ma ¿adnego konta administratora, jedyn± rzecz± jak± bêdziemy widzieæ
-			bêdzie formularz dodania administratora. Je¿eli podamy prawid³owe dane
-			administratora, LMS przeniesie nas na stronê logowania gdzie odrazu bêdziemy
-			mogli u¿yæ nowo utworzonego konta.</para>
+			nie ma ¿adnego konta administratora, jedyn± rzecz± jak± zobaczysz
+			bêdzie formularz dodania administratora. Je¿eli podasz prawid³owe dane
+			administratora, LMS przeniesie Ciê na stronê logowania gdzie od razu bêdzisz
+			móg³ u¿yæ nowo utworzonego konta.</para>
 		</sect3>
 		</sect2>
 	</sect1>  	
@@ -436,7 +436,7 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
       chpasswd umo¿liwia tylko zmianê w³asnego has³a), dostep do reszty jest zdefiniowany regu³ami.</para>
      <note><para>Je¶li nie ustawimy administratorowi ¿adnej regu³y dostêpu, to LMS domy¶lnie
       przydzieli mu regu³kê 0, czyli pe³en dostêp.</para></note>
-     
+ 
       </sect2>
       <sect2>
       		<title>Jak to dzia³a?</title>
