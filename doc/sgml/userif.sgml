@@ -203,59 +203,6 @@
 			</ulink>
 	</figure>
  </sect2>
- <sect2 id="menu-stats">
-	<title>Statystyki</title>
-	<para>W menu 'Statystyki' dostêpny jest interfejs do przegl±dania statystyk wykorzystania
-	³±cza w postaci prostych wykresów. Przed wygenerowaniem wykresu mo¿esz zdefiniowaæ parametry
-	okre¶laj±ce okres jaki ma byæ brany pod uwagê, ograniczyæ do jednej sieci (je¶li masz ich wiêcej),
-	ilo¶ci komputerów oraz posortowaæ odpowiednio wyniki (na przyk³ad wed³ug downloadu).
-	Korzystaj±c z górnego menu mo¿esz szybko wygenerowaæ statystyki z ostatniej godziny, ostatniego dnia,
-	ostatnich 30 dni lub ostatniego roku.</para>
-	<para><note><para>Menu 'Statystyki' jest standardowo niedostêpne. Aby je w³±czyæ, nale¿y w sekcji
-	<emphasis>[phpui]</emphasis> pliku <filename>lms.ini</filename> ustawiæ zmienn±:
-	<prompt>enable_stats = 1</prompt>.</para></note>
-	<note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y go zainstalowaæ
-	aby mieæ w bazie dane do wykresów.</para></note>
-	</para>
-	<para>W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci, mo¿e
-	nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
-	oczekiwania na rysowanie wykresów. Z tego powodu w oknie 'Kompaktowanie
-	bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy bez
-	utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
-	w nastêpuj±cy sposób:
-	<itemizedlist>
-	<listitem><para>Poziom Niski: dane z poprzedniego dnia i starsze, zostan± u¶rednione
-	do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
-	to 6*24 wpisów zostanie zast±pione jednym.</para></listitem>
-	<listitem><para>Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do
-	jednego dnia.</para></listitem>
-	<listitem><para>Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do
-	jednej godziny.</para></listitem>
-	</itemizedlist>
-	<warning><para>Kompaktowanie bazy danych jest procesem nieodwracalnym.</para></warning>
-	</para>
-	<figure>
-		<title>LMS-UI: Statystyki - filtr</title>
-			<ulink url="images/stats.png">
-				<inlinemediaobject>
-  				<imageobject>
-  					<imagedata fileref="images/stats-small.png" format="png">
-  				</imageobject>
-  				</inlinemediaobject>
-			</ulink>
-	</figure>
-	<para></para>
-	<figure>
-		<title>LMS-UI: Statystyki - wykres</title>
-			<ulink url="images/statbars.png">
-				<inlinemediaobject>
-  				<imageobject>
-  					<imagedata fileref="images/statbars-small.png" format="png">
-  				</imageobject>
-  				</inlinemediaobject>
-			</ulink>
-	</figure>
- </sect2>
  </sect1>
  <sect1 id="user-staff">
  	<title>Dodatki</title>
