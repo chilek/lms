@@ -316,6 +316,58 @@ class LMS {
 		$return[total] = sizeof($return[id]);
 		return $return;
 	}
+
+	function GetNodeList($order=NULL)
+	{
+		$db=$this->db;
+		$nodelist = $db->FetchArray("SELECT `id`, `ipaddr`, `mac`, `name`, `ownerid`, `access` FROM `nodes`");
+		foreach($nodelist[id] as $key => $value){ 
+			$nodelist[iplong][$key] = ip_long($nodelist[ipaddr][$key]);
+			$nodelist[owner][$key] = $this->GetUserName($nodelist[ownerid][$key]);
+		}
+
+		if(!isset($order)) $order="name,asc";
+
+		list($order,$direction)=explode(",",$order);
+
+		if($direction != "desc") 
+			$direction = 4;
+		else 
+			$direction = 3;
+
+		if(sizeof($nodelist[id])) switch($order){
+
+			case "name":
+				array_multisort($nodelist[name],$direction,$nodelist[id],$nodelist[ipaddr],$nodelist[mac],$nodelist[name],$nodelist[ownerid],$nodelist[access],$nodelist[iplong],$nodelist[owner]);
+				break;
+
+			case "mac":
+				array_multisort($nodelist[mac],$direction,$nodelist[id],$nodelist[ipaddr],$nodelist[name],$nodelist[name],$nodelist[ownerid],$nodelist[access],$nodelist[iplong],$nodelist[owner]);
+				break;
+			
+			case "ip":
+
+				array_multisort($nodelist[iplong],$direction,$nodelist[id],$nodelist[ipaddr],$nodelist[name],$nodelist[name],$nodelist[ownerid],$nodelist[access],$nodelist[mac],$nodelist[owner]);
+				break;
+
+			case "id":
+
+				array_multisort($nodelist[id],$direction,$nodelist[iplong],$nodelist[ipaddr],$nodelist[name],$nodelist[name],$nodelist[ownerid],$nodelist[access],$nodelist[mac],$nodelist[owner]);
+				break;
+
+			case "owner":
+
+				array_multisort($nodelist[owner],$direction,$nodelist[iplong],$nodelist[ipaddr],$nodelist[name],$nodelist[name],$nodelist[ownerid],$nodelist[access],$nodelist[mac],$nodelist[id]);
+				break;
+
+		}
+                
+                $nodelist[order]=$order;
+                $nodelist[direction]=$direction;
+                $nodelist[total]=sizeof($nodelist[id]);
+		
+		return $nodelist;
+	}
 	
 	function NodeSet($id)
 	{
@@ -377,6 +429,7 @@ class LMS {
 		}else{
 			$saldolist[balance] = 0;
 		}
+
 		return $saldolist;
 
 	}
@@ -411,7 +464,7 @@ class LMS {
 			$useradd[status] = 1;
 		if(!isset($useradd[tariff]))
 			$useradd[tariff] = 1;
-		$db->ExecSQL("INSERT INTO `users` (`name`, `lastname`, `phone1`, `phone2`, `phone3`, `address`, `email`, `status`, `tariff`, `creationdate`, `moddate`, `creatorid`, `modid` ) VALUES ('".capitalize($useradd[name])."', '".strtoupper($useradd[lastname])."', '".$useradd[phone1]."', '".$useradd[phone2]."', '".$useradd[phone3]."', '".$useradd[address]."', '".$useradd[email]."', '".$useradd[status]."', '".$useradd[tariff]."', '".time()."', '".time()."', '".$session->id."', '".$session->id."')");
+		$db->ExecSQL("INSERT INTO `users` (`name`, `lastname`, `phone1`, `phone2`, `phone3`, `address`, `email`, `status`, `tariff`, `creationdate`, `moddate`, `creatorid`, `modid` ) VALUES ('".ucwords($useradd[name])."', '".strtoupper($useradd[lastname])."', '".$useradd[phone1]."', '".$useradd[phone2]."', '".$useradd[phone3]."', '".$useradd[address]."', '".$useradd[email]."', '".$useradd[status]."', '".$useradd[tariff]."', '".time()."', '".time()."', '".$session->id."', '".$session->id."')");
 		$db->FetchRow("SELECT max(id) FROM `users`");
 		return $db->row["max(id)"];
 	}
