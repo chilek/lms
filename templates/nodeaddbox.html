@@ -6,7 +6,7 @@
 			<IMG SRC="img/node.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="FBT">
-			<B>Nazwa:</B>
+			<B>{$lang.name}:</B>
 		<TD WIDTH="98%" CLASS="FRIGHTU" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name|upper}" CLASS="BOLD">
 			{if $error.name}<BR><FONT COLOR="RED"><B>{$error.name}</B></FONT>{/if}
@@ -14,10 +14,10 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="Adres IP:">
+			<IMG SRC="img/ip.gif" BORDER="0" ALT="{$lang.ip_address}:">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Adres IP:</B>
+			<B>{$lang.ip_address}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}"> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr);" title="Wybierz adres IP z listy">&raquo;&raquo;&raquo;</A>
@@ -26,10 +26,10 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" BORDER="0" ALT="Adres MAC:">
+			<IMG SRC="img/mac.gif" BORDER="0" ALT="{$lang.mac_address}:">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Adres MAC:</B>
+			<B>{$lang.mac_address}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
 			<INPUT TYPE="TEXT" NAME="nodedatamac" VALUE="{$nodedata.mac}"> <a href="javascript: void(0);" onClick="return macchoosewin(document.nodeadd.nodedatamac);" title="Wybierz adres MAC z listy">&raquo;&raquo;&raquo;</A>
@@ -52,10 +52,10 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/user.gif" BORDER="0" ALT="W³a¶ciciel:">
+			<IMG SRC="img/user.gif" BORDER="0" ALT="{$lang.owner}:">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>W³a¶ciciel:</B>
+			<B>{$lang.owner}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
 			<SELECT SIZE="1" NAME="nodedata[ownerid]">
