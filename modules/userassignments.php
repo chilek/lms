@@ -67,7 +67,7 @@ if($_GET['action'] == 'add' && isset($a))
 			}
 			
 			if($at < 1 || $at > 7)
-				$error['at'] = trans('Incorrect weekday (1-7)!');
+				$error['at'] = trans('Incorrect day of week (1-7)!');
 		break;
 
 		case 1:
@@ -101,7 +101,7 @@ if($_GET['action'] == 'add' && isset($a))
 			if(!$error)
 			{
 				if($d>30 || $d<1 || ($d>28 && $m==2))
-					$error['at'] = trans('This month doesnt contain specified number of days');
+					$error['at'] = trans('This month doesn\'t contain specified number of days');
 				if($m>3 || $m<1)
 					$error['at'] = trans('Incorrect month number (max.3)');
 
@@ -165,7 +165,7 @@ if($_GET['action'] == 'add' && isset($a))
 		$error['dateto'] = trans('Incorrect charging end time!');
 
 	if($to < $from && $to != 0 && $from != 0)
-		$error['dateto'] = trans('Incorrect time range!');
+		$error['dateto'] = trans('Incorrect date range!');
 
 	if($a['tariffid']=='')
 		$error['tariffid'] = trans('Tariff not selected!');

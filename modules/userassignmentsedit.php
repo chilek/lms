@@ -55,7 +55,7 @@ if($a = $_POST['assignmentedit'])
 			}
 			
 			if($at < 1 || $at > 7)
-				$error['editat'] = 'Nieprawid³owy dzieñ tygodnia (1-7)!';
+				$error['editat'] = trans('Incorrect day of week (1-7)!');
 		break;
 
 		case 1:
@@ -67,13 +67,13 @@ if($a = $_POST['assignmentedit'])
 			$a['at'] = $at;
 			
 			if($at > 28 || $at < 1)
-				$error['editat'] = 'Nieprawid³owy dzieñ miesi±ca (1-28)!';
+				$error['editat'] = trans('Incorrect day of month (1-28)!');
 		break;
 
 		case 2:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
-				$error['editat'] = 'Niepoprawny format daty (DD/MM)';
+				$error['editat'] = trans('Incorrect date format (DD/MM)');
 			}
 			elseif($_CONFIG['phpui']['use_current_payday'] && !$a['at'])
 			{
@@ -89,9 +89,9 @@ if($a = $_POST['assignmentedit'])
 			if(!$error)
 			{
 				if($d>30 || $d<1 || ($d>28 && $m==2))
-					$error['editat'] = 'Niepoprawna liczba dni w miesi±cu';
+					$error['editat'] = trans('This month doesn\'t contain specified number of days');
 				if($m>3 || $m<1)
-					$error['editat'] = 'Niepoprawny numer miesi±ca (max.3)';
+					$error['editat'] = trans('Incorrect month number (max.3)');
 
 				$at = ($m-1) * 100 + $d;
 			}
@@ -100,7 +100,7 @@ if($a = $_POST['assignmentedit'])
 		case 3:
 			if(!eregi('^[0-9]{2}/[0-9]{2}$',$a['at']) && $a['at'])
 			{
-				$error['editat'] = 'Niepoprawny format daty (DD/MM)';
+				$error['editat'] = trans('Incorrect date format (DD/MM)');
 			}
 			elseif($_CONFIG['phpui']['use_current_payday'] && !$a['at'])
 			{
@@ -116,9 +116,9 @@ if($a = $_POST['assignmentedit'])
 			if(!$error)
 			{
 				if($d>30 || $d<1 || ($d>28 && $m==2))
-					$error['editat'] = 'Niepoprawna liczba dni w miesi±cu';
+					$error['editat'] = trans('This month doesn\'t contain specified number of days');
 				if($m>12 || $m<1)
-					$error['editat'] = 'Niepoprawny numer miesi±ca';
+					$error['editat'] = trans('Incorrect month number');
 			
 				$ttime = mktime(12, 0, 0, $m, $d, 1990);
 				$at = date('z',$ttime) + 1;
@@ -134,10 +134,10 @@ if($a = $_POST['assignmentedit'])
 		if(checkdate($m, $d, $y))
 			$from = mktime(0, 0, 0, $m, $d, $y);
 		else
-			$error['editdatefrom'] = 'Pocz±tek okresu naliczania jest niepoprawny!';
+			$error['editdatefrom'] = trans('Incorrect charging start time!');
 	}
 	else
-		$error['editdatefrom'] = 'Pocz±tek okresu naliczania jest niepoprawny!';
+		$error['editdatefrom'] = trans('Incorrect charging start time!');
 
 	if($a['dateto'] == '')
 		$to = 0;
@@ -147,13 +147,13 @@ if($a = $_POST['assignmentedit'])
 		if(checkdate($m, $d, $y))
 			$to = mktime(23, 59, 59, $m, $d, $y);
 		else
-			$error['editdateto'] = 'Koniec okresu naliczania jest niepoprawny!';
+			$error['editdateto'] = trans('Incorrect charging end time!');
 	}
 	else
-		$error['editdateto'] = 'Koniec okresu naliczania jest niepoprawny!';
+		$error['editdateto'] = trans('Incorrect charging end time!');
 
 	if($to < $from && $to != 0 && $from != 0)
-		$error['editdateto'] = 'Zakres dat jest niepoprawny!';
+		$error['editdateto'] = trans('Incorrect date range!');
 
 	if(!$error) 
 	{
@@ -196,7 +196,7 @@ else
 	}
 }
 
-$layout['pagetitle'] = 'Edycja zobowi±zania u¿ytkownika: '.$a['username'];
+$layout['pagetitle'] = trans('Customer Charging Edit: $0',$a['username']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
