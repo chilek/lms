@@ -33,14 +33,16 @@ if(!$LMS->NodeExists($_GET['id']))
 if($_GET['action']=="link")
 {
 	$netdev = $LMS->GetNetDev($_GET['devid']); 
-	if($netdev['ports'] <= $netdev['takenports'])
-		$error['netdev'] = _("Not enough ports in chosen device!");
-	$errorlinkdev = $netdev;
 
-	if(!$error)
+	if($netdev['ports'] <= $netdev['takenports'])
 	{
 		$LMS->NetDevLinkNode($_GET['id'],$_GET['devid']);
 		header("Location: ?m=nodeinfo&id=".$_GET['id']);
+		die;
+	}
+	else
+	{
+		header("Location: ?m=nodeinfo&id=".$_GET['id'].'&devid='.$_GET['devid']);
 		die;
 	}
 }
@@ -147,7 +149,6 @@ $tariffs = $LMS->GetTariffs();
 $assignments = $LMS->GetUserAssignments($ownerid);
 $balancelist = $LMS->GetUserBalanceList($owner);
 
-$nodeinfo['netdev'] = $errorlinkdev ? $netdev : $LMS->GetNetDev($nodeinfo['netdev']);
 $netdevices = $LMS->GetNetDevList();
 unset($netdevices['total']);
 unset($netdevices['direction']);
