@@ -69,4 +69,15 @@ Class LMSDB_common
 		return $this->_driver_execute($query);
 	}
 
+	function GetAll($query = NULL)
+	{
+		if($query)
+			$this->Execute($query);
+
+		while($row = $this->_driver_fetchrow_assoc())
+			$result[] = $row;
+		
+		return $result;
+	}
+
 }
