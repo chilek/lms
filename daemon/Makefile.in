@@ -1,4 +1,3 @@
-
 SOURCES = almsd.c db.c util.c
 SOURCES += iniparser/iniparser.c iniparser/dictionary.c iniparser/strlib.c
 OBJECTS = ${SOURCES:.c=.o}
@@ -12,5 +11,14 @@ xmodules:
 $(OUT): ${OBJECTS}
 	gcc $(OBJECTS) -o $(OUT) $(LDFLAGS) $(LIBS)
 	strip $(OUT)
-	rm -f $(OBJECTS)
 
+install: 
+	mkdir -p -m 755 $(INSTALLDIR)
+	install -c -m 700 almsd $(INSTALLDIR)/
+	 
+remove:
+	rm -f $(INSTALLDIR)/almsd
+	
+clean:
+	rm -f $(OBJECTS)
+	make -C modules clean
