@@ -51,12 +51,12 @@ class LMS
 		if($this->ADB->GetOne('SELECT * FROM timestamps WHERE tablename=?',array($table)))
 			$this->ADB->Execute('UPDATE timestamps SET time = ?NOW? WHERE tablename=?',array($table));
 		else
-			$this->ADB->Execute('INSERT INTO timestampe (tablename, time) VALUES (?, ?NOW?)',array($table));
+			$this->ADB->Execute('INSERT INTO timestamps (tablename, time) VALUES (?, ?NOW?)',array($table));
 
 		if($this->ADB->GetOne('SELECT * FROM timestamps WHERE tablename=?',array('_global')))
 			$this->ADB->Execute('UPDATE timestamps SET time = ?NOW? WHERE tablename=?',array('_global'));
 		else
-			$this->ADB->Execute('INSERT INTO timestampe (tablename, time) VALUES (?, ?NOW?)',array('_global'));
+			$this->ADB->Execute('INSERT INTO timestamps (tablename, time) VALUES (?, ?NOW?)',array('_global'));
 	}
 
 	function GetTS($table) // zwraca timestamp tabeli zapisany w tabeli 'timestamps'
@@ -1602,6 +1602,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.196  2003/08/23 12:46:57  alec
+ * literówka
+ *
  * Revision 1.195  2003/08/22 13:15:00  lukasz
  * - fixed MetaTables
  *
