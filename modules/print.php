@@ -173,7 +173,7 @@ switch($_GET['type'])
 
 		// date format 'yyyy/mm/dd'	
 		list($year, $month, $day) = split('/',$from);
-		$date['from'] = mktime(0,0,0,$month,$day,$year);
+		$date['from'] = mktime(0,0,1,$month,$day,$year);
 		
 		if($to) {
 			list($year, $month, $day) = split('/',$to);
@@ -185,41 +185,73 @@ switch($_GET['type'])
 		
 		$admin = $_POST['admin'];
 		
-		$layout['pagetitle'] = 'Bilans finansowy '.($admin ? 'dla administratora '.$admin.' ' : '').'za okres '.($from ? ' od '.$from.' ' : '').'do '.$to;
+		$layout['pagetitle'] = 'Bilans finansowy '.($admin ? 'dla administratora '.$LMS->GetAdminName($admin).' ' : '').'za okres '.($from ? ' od '.$from.' ' : '').'do '.$to;
 
-		if($balancelist = $LMS->GetBalanceList())
+		$userslist = $DB->GetAllByKey('SELECT id, '.$DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users','id');
+		
+		if($date['from'])
+			$lastafter = $DB->GetOne('SELECT SUM(CASE type WHEN 2 THEN value*-1 WHEN 4 THEN 0 ELSE value END) FROM cash WHERE time<?', array($date['from']));
+		
+		if($balancelist = $DB->GetAll('SELECT id, time, adminid, type, value, taxvalue, userid, comment 
+			    FROM cash WHERE time>=? AND time<=? ORDER BY time ASC', array($date['from'], $date['to'])))
 		{
-		unset($balancelist['incomeu']);
-		unset($balancelist['income']);
-		unset($balancelist['uinvoice']);
-		unset($balancelist['expense']);
-		unset($balancelist['total']);
-
-		// wiem, ¿e to cholernie nieefektywny sposób, ale...		
-		foreach($balancelist as $idx => $row)
-			if($row['time']>=$date['from'] && $row['time']<=$date['to']) {
+			$x = 0;
+			foreach($balancelist as $idx => $row)
+			{
 				if($admin)
-					if($row['admin']!=$admin)
+					if($row['adminid']!=$admin)
+					{
+						if($row['type']==1 || $row['type']==3)
+							$lastafter += $row['value'];
+						elseif($row['type']==2)
+							$lastafter -= $row['value'];
+
+						unset($balancelist[$idx]);
 						continue;
-				$bbalancelist[] = $balancelist[$idx];
-				switch($balancelist[$idx]['type'])
+					}
+
+				$list[$x]['value'] = $row['value'];
+				$list[$x]['taxvalue'] = $row['taxvalue'];
+				$list[$x]['time'] = $row['time'];
+				$list[$x]['comment'] = $row['comment'];
+				$list[$x]['username'] = $userslist[$row['userid']]['username'];
+
+				switch($row['type'])
 				{
-					case 'przychód':
-						$listdata['income'] += $balancelist[$idx]['value'];
+					case 1:
+						$list[$x]['type'] = 'przychód';
+						$list[$x]['after'] = $lastafter + $list[$x]['value'];
+						$listdata['income'] += $list[$x]['value'];
 					break;
-					case 'rozchód':
-						$listdata['expense'] += $balancelist[$idx]['value'];
+					case 2:
+						$list[$x]['type'] = 'rozchód';
+						$list[$x]['after'] = $lastafter - $list[$x]['value'];
+						$listdata['expense'] += $list[$x]['value'];
 					break;
-					case 'wp³ata u¿':
-						$listdata['incomeu'] += $balancelist[$idx]['value'];
+					case 3:
+						$list[$x]['type'] = 'wp³ata u¿.';
+						$list[$x]['after'] = $lastafter + $list[$x]['value'];
+						$listdata['incomeu'] += $list[$x]['value'];
+					break;
+					case 4:
+						$list[$x]['type'] = 'obci±¿enie u¿.';
+						$list[$x]['after'] = $lastafter;
+					break;
+					default:
+						$list[$x]['type'] = '<FONT COLOR="RED">???</FONT>';
+						$list[$x]['after'] = $lastafter;
 					break;
 				}
+				$lastafter = $list[$x]['after'];
+				$x++;
+				unset($balancelist[$idx]);
 			}
+		}
 		
 		$listdata['total'] = $listdata['income'] + $listdata['incomeu'] - $listdata['expense'];
-		}	
+		
 		$SMARTY->assign('listdata', $listdata);
-		$SMARTY->assign('balancelist', $bbalancelist);
+		$SMARTY->assign('balancelist', $list);
 		$SMARTY->display('printbalancelist.html');
 	break;
 
