@@ -63,7 +63,7 @@
 	<title>Sekcja [mgc] - lista instancji</title>
   	<para>W³a¶ciwa konfiguracja dotycz±ca generatorów poszczególnych plików konfiguracyjnych 
 	jest umieszczana w sekcji <emphasis>[mgc]</emphasis> i pochodnych. W samej sekcji 
-	<emphasis>[mgc]</emphasis> mo¿emy u¿yæ nastêpuj±cego parametru:</para>
+	<emphasis>[mgc]</emphasis> mo¿emy u¿yæ nastêpuj±cego parametru:
    <itemizedlist>
     <listitem>
      <para>instances</para>
@@ -71,14 +71,25 @@
      <para>Przyk³ad:	<prompt>instaces = dhcp firewall squid</prompt></para>
     </listitem>
    </itemizedlist>
+   <note><para>Zmienn± <filename>instances</filename> mo¿na tak¿e umie¶ciæ w
+   sekcji dowolnej instancji. Patrz ni¿ej.</para></note>
+   </para>
 	</sect2>
 	<sect2 id="mgc-config-instances">
-	<title>Sekjca [mgc:xxx] - konfiguracja instancji</title>  
+	<title>Sekcja [mgc:xxx] - konfiguracja instancji</title>  
 	<para>Ka¿da instancja ma swoj± nazwê i jej konfigruacjê tworzy siê umieszczaj±c 
 	sekcjê o nazwie <emphasis>[mgc:nazwa]</emphasis>, czyli przyk³adowo: 
 	<emphasis>[mgc:mydaemon]</emphasis></para>
   <para>W samych instancjach mo¿emy u¿ywaæ nastêpuj±cych opcji konfiguracyjnych:</para>
    <itemizedlist>
+    <listitem>
+     <para>instances</para>
+     <para>Zmienna, w której mo¿esz podaæ listê innych instancji, aby nastêpnie
+     wywo³ywaæ mgc poleceniem '<prompt>lms-mgc -i sekcja</prompt>' zamiast
+     '<prompt>lms-mgc -i "sekcja1 sekcja2 sekcja3"</prompt>'. Je¶li zostanie 
+     u¿yta, wszystkie pozosta³e zmienne tej sekcji zostan± zignorowane.</para>
+     <para>Przyk³ad:	<prompt>instances = dns1 dns2 dns3</prompt></para>
+    </listitem>
     <listitem>
      <para>outfile</para>
      <para>Definiuje plik do którego ma byæ zapisany wynik dzia³ania bierz±cej instancji (je¿eli ta zmienna zmienna bêdzie nie ustawiona, instancja siê zakoñczy)</para>
