@@ -1732,9 +1732,6 @@ class LMS
 			
 			if($group['group'])
 				$result = $result1;
-			
-			$result['startdate'] = $this->DB->GetOne('SELECT MIN(cdate) FROM invoices');
-			$result['enddate'] = $this->DB->GetOne('SELECT MAX(cdate) FROM invoices');
 		}
 		return $result;
 	}
