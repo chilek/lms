@@ -689,6 +689,7 @@ database = /usr/local/lms/lms.db</screen>
         <listitem><para>konfiguracja UI</para></listitem>
         <listitem><para>zarz±dzanie sieciami i urz±dzeniami sieciowymi</para></listitem>
 	<listitem><para>dostêp do terminarza</para></listitem>
+	<listitem><para>zarz±dzanie i konfiguracja demona</para></listitem>
         <listitem><para>brak dostêpu do modyfikacji i zak³adania kont u¿ytkowników</para></listitem>
         <listitem><para>brak dostêpu</para></listitem>
        </itemizedlist>

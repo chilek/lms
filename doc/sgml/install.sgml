@@ -649,6 +649,7 @@ database = /usr/local/lms/lms.db</screen>
         <listitem><para>UI configuration</para></listitem>
         <listitem><para>networks and devices management</para></listitem>
         <listitem><para>timetable management</para></listitem>
+	<listitem><para>daemon management and configuration</para></listitem>
         <listitem><para>users edition and addition forbidden</para></listitem>
         <listitem><para>no access</para></listitem>
        </itemizedlist>
