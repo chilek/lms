@@ -1602,19 +1602,19 @@ class LMS
 						     $val = sprintf('%0.2f',$value/1.07);
 						     $list[$id]['val7'] += $val;
 						     $list[$id]['tax7'] += $value-$val;
-						     $list[$id]['tax'] += $list[$id]['tax7'];
+						     $list[$id]['tax'] += $value-$val;
 						     $list['sum']['val7'] += $val;
 						     $list['sum']['tax7'] += $value-$val;
-						     $list['sum']['tax'] += $list[$id]['tax7'];
+						     $list['sum']['tax'] += $value-$val;
 					    break;
 					    case '22.0':
 					    	     $val = sprintf('%0.2f',$value/1.22);
 						     $list[$id]['val22'] += $val;
 						     $list[$id]['tax22'] += $value-$val;
-						     $list[$id]['tax'] += $list[$id]['tax22'];
+						     $list[$id]['tax'] += $value-$val;
 						     $list['sum']['val22'] += $val;
 						     $list['sum']['tax22'] += $value-$val;
-						     $list['sum']['tax'] += $list[$id]['tax22'];
+						     $list['sum']['tax'] += $value-$val;
 					    break;
 					}
 			}
