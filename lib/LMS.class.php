@@ -891,17 +891,17 @@ class LMS
 			case "name":
 				$sqlord = " ORDER BY name";
 			break;
-
 			case "id":
 				$sqlord = " ORDER BY id";
 			break;
-
 			case "mac":
 				$sqlord = " ORDER BY mac";
 			break;
-
 			case "ip":
 				$sqlord = " ORDER BY ipaddr";
+			break;
+			case "ownerid":
+				$sqlord = " ORDER BY ownerid";
 			break;
 		}
 
@@ -2269,6 +2269,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.311  2003/12/12 18:54:01  alec
+ * - dodane sortowanie listy komputerow po ID usera
+ *
  * Revision 1.310  2003/12/12 18:16:35  alec
  * - w GetTariffList() przy pustej liscie 'total' zwraca 0, a nie ""
  *
