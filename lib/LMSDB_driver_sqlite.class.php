@@ -144,6 +144,7 @@ class LMSDB_driver_sqlite extends LMSDB_common
 		sqlite_create_function($this->_dblink, 'inet_aton','ip2long',1);
 		sqlite_create_function($this->_dblink, 'upper','strtoupper',1);
 		sqlite_create_function($this->_dblink, 'lower','strtolower',1);
+		sqlite_create_function($this->_dblink, 'floor','floor',1);
 	}
 }
 
