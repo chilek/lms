@@ -107,7 +107,18 @@ class Session {
 	function remove($variable)
 	{
 		if(isset($this->_content[$variable]))
-			return unset($this->_contenet[$variable]);
+		{
+			unset($this->_content[$variable]);
+			return TRUE;
+		}
+		else
+			return FALSE;
+	}
+
+	function is_set($variable)
+	{
+		if(isset($this->_content[$variable]))
+			return TRUE;
 		else
 			return FALSE;
 	}

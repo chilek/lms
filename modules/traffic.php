@@ -142,7 +142,7 @@ $layout['pagetitle'] = trans('Network Statistics');
 $bars = 1;
 
 if (isset($_GET['bar']) && isset($_POST['order']))
-	$_SESSION['trafficorder'] = $_POST['order'];
+	$SESSION->save('trafficorder', $_POST['order']);
 	
 switch($_GET['bar'])
 {

@@ -39,12 +39,12 @@ if (isset($_POST['netid']))
     $netid= $_POST['netid'];
 elseif (isset($_GET['netid']))
     $netid = $_GET['netid'];
-elseif (isset($_SESSION['netid']))
-    $netid = $_SESSION['netid'];
+elseif ($SESSION->is_set('netid')))
+    $SESSION->restore('netid', $netid);
 else
     $netid = $networks[0]['id'];
 
-$_SESSION['netid'] = $netid;
+$SESSION->save('netid', $netid);
 
 if($p == 'main')
 	$network = $LMS->GetNetwork($netid);
