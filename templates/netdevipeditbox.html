@@ -12,7 +12,7 @@
 			<IMG SRC="img/ip.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="ipadd[name]" VALUE="{$nodeipdata.name|upper}" {tip text="Wpisz nazwê dla adresu" trigger="ipname" bold=1}>
+			<INPUT TYPE="TEXT" NAME="ipadd[name]" VALUE="{$nodeipdata.name|upper}" MAXLENGTH="16" {tip text="Wpisz nazwê dla adresu" trigger="ipname" bold=1}>
 			<B>({$nodeipdata.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
