@@ -151,6 +151,10 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 		case 'gd_translate_to':
 			$desc = trans('Charset of data that gd library expects (usefull fe. if gd library need ISO-8859-2 instead of UTF-8 to feed imagetext() function.');
 		break;					
+
+		case 'nodepassword_length':
+			$desc = trans('Length of (auto-generated) node password. Max.32. Default: 16.');
+		break;					
 		
 		default:
 			$desc = trans('Unknown option. No description.');
