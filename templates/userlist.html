@@ -106,7 +106,7 @@
 		<TD align="right" class="fright">
 			<NOBR>
 			{if $userlist[userlist].balance < 0}<BR>
-				<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" OnClick="return confirmLink(this, '{t 0=$userlist[userlist].username|escape:"javascript"|escape:"html"}}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');"><IMG src="img/invoice_pay.gif" border="0" align="absmiddle" ALT="[ {t}Account{/t} ]"></A>
+				<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" OnClick="return confirmLink(this, '{t 0=$userlist[userlist].username|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');"><IMG src="img/invoice_pay.gif" border="0" align="absmiddle" ALT="[ {t}Account{/t} ]"></A>
 			{/if}
 			<A href="?m=userdel&id={$userlist[userlist].id}" OnCLick="return confirmLink(this, '{t 0=$userlist[userlist].username|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$0\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ {t}Delete{/t} ]"></A> 
 			<A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A> 
