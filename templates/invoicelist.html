@@ -87,9 +87,8 @@
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			{cycle print=false}
-			
 			<INPUT STYLE="border-style: none; background-color: {cycle};"  TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
-			<A HREF="?m=invoice&id={$invoice.id}"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0" TARGET="_BLANK"></A>
+			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0" TARGET="_BLANK"></A>
 		</TD>
 	</TR>
 	{/section}
