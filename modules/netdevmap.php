@@ -130,6 +130,8 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 }
 
 $layout['pagetitle'] = "Mapa po³±czeñ sieciowych";
+
+$start = sprintf('%d',$_GET['start']);
 	
 if($_GET['graph'] == "")
 {
@@ -188,6 +190,7 @@ if($_GET['graph'] == "")
 	}
 	sort($nodemap);
 	sort($devicemap);
+
 	$SMARTY->assign('devicemap',$devicemap);
 	$SMARTY->assign('nodemap',$nodemap);
 	$SMARTY->assign('deviceslist',$DB->GetAll('SELECT id, name FROM netdevices ORDER BY name ASC'));
@@ -197,7 +200,6 @@ if($_GET['graph'] == "")
 } 
 else
 {	
-	$start = sprintf('%d',$_GET['start']);
 	makemap($DB,$map,$seen,$start);
 	foreach($map as $idx => $x)
 	{
@@ -314,8 +316,6 @@ else
 		drawtext($im, 1, $px + 15, $py - 8, $nodedata['ip'], $blue, $lightbrown);
 		drawtext($im, 1, $px + 15, $py + 2, $nodedata['name'], $black, $lightbrown);
 	}
-				
-		
 
 	foreach($devicemap as $deviceid => $device)
 	{
@@ -333,7 +333,6 @@ else
 		$location=$DB->GetOne('SELECT location FROM netdevices WHERE id=?',array($deviceid));
 		drawtext($im, 2, $px + 20, $py + 18, $location, $green, $lightbrown);
 	}
-	
 		
 	imagepng($im);
 }
