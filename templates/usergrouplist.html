@@ -1,0 +1,73 @@
+{include file="header.html"}
+{include file="userheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="5">
+	<TR class="dark">
+		<TD WIDTH="70%" CLASS="fleftu">
+			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Nazwa:</B>
+		</TD>
+		<TD WIDTH="27%" VALIGN="top" CLASS="fbt" align="right">
+			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;Opis:
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+			ID:
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+			U¿ytkowników:
+		</TD>
+		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
+			<NOBR>
+			<B>Razem: {$listdata.total}</B>
+			</NOBR>
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{section name=usergroups loop=$usergrouplist}
+	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD WIDTH="70%" CLASS="fleft" onClick="return self.location.href='?m=usergroupinfo&id={$usergrouplist[usergroups].id}';" class="fleft">
+			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{$usergrouplist[usergroups].name}</B><BR>
+		</TD>
+		<TD WIDTH="27%" VALIGN="top" align="right" onClick="return self.location.href='?m=usergroupinfo&id={$tusergrouplist[usergroups].id}';">
+			<NOBR>
+			{if $usergrouplist[usergroups].description}<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{$usergrouplist[usergroups].description}{/if}
+			</NOBR>
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=usergroupinfo&id={$usergrouplist[usergroups].id}';">
+			({$usergrouplist[usergroups].id|string_format:"%04d"})
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=usergroupinfo&id={$usergrouplist[usergroups].id}';">
+			{$usergrouplist[usergroups].userscount} ({$usergrouplist[usergroups].users})
+		</TD>
+		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
+			<NOBR>
+			{if $usergrouplist[usergroups].users}<A HREF="javascript:alert('Nie mo¿na usun±æ grupy do której nale¿± jacy¶ u¿ytkownicy!');">{else}<A HREF="?m=usergroupdelete&id={$usergrouplist[usergroups].id}" onClick="return confirmLink(this,'Jeste¶ pewien, ¿e chcesz usun±æ t± grupê?');">{/if}<IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0"></A>
+				<A HREF="?m=usergroupedit&id={$usergrouplist[usergroups].id}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" BORDER="0"></A>
+				<A HREF="?m=usergroupinfo&id={$usergrouplist[usergroups].id}"><IMG SRC="img/info.gif" ALT="[ Info ]" BORDER="0"></A>
+			</NOBR>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD COLSPAN="5" ALIGN="center" CLASS="fall">
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><B>Nie ma wprowadzonych ¿adnych grup do bazy danych!</B></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	<TR CLASS="light">
+		<TD CLASS="fleftu" COLSPAN="3" WIDTH="98%" ALIGN="right">
+			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Razem:</B>
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
+			<B>{$listdata.totalcount} ({$listdata.totalusers})</B>
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%">
+			&nbsp;
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}
