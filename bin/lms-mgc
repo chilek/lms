@@ -2,7 +2,7 @@
 #
 # LMS version 1.5-cvs
 #
-#  (C) 2001-2004 LMS Developers
+#  (C) 2001-2005 LMS Developers
 #
 #  Please, see the doc/AUTHORS for more information about authors!
 #
@@ -104,7 +104,7 @@ if($help)
 {
 	print STDERR <<EOF;
 lms-mgc, version $_version
-(C) 2001-2004 LMS Developers
+(C) 2001-2005 LMS Developers
 
 -C, --config-file=/etc/lms/lms-mgc.ini	alternate config file (default: /etc/lms/lms-mgc.ini);
 -i, --instances=name		Name (or number) of instance to run, usefull
@@ -123,7 +123,7 @@ if($version)
 {
 	print STDERR <<EOF;
 lms-mgc, version $_version
-(C) 2001-2004 LMS Developers
+(C) 2001-2005 LMS Developers
 
 EOF
 	exit 0;
@@ -137,7 +137,7 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-mgc, version $_version\n";
-	print STDOUT "(C) 2001-2004 LMS Developers\n";
+	print STDOUT "(C) 2001-2005 LMS Developers\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 
