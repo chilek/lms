@@ -71,6 +71,19 @@
 		</TD>
 	</TR>
 	{/if}
+	{if $netdevinfo.location}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/home.gif" alt="" border="0">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+		        <B>Lokalizacja:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.location}
+		</TD>
+	</TR>
+	{/if}
         {if $netdevinfo.description}
         <TR CLASS="LIGHT">
                 <TD WIDTH="1%" CLASS="FLEFT">

@@ -195,6 +195,7 @@ DROP TABLE IF EXISTS netdevices;
 CREATE TABLE netdevices (
   id int(11) NOT NULL auto_increment,
   name varchar(32) default NULL,
+  location varchar(255) default NULL,
   description varchar(255) default NULL,
   producer varchar(64) default NULL,
   model varchar(32) default NULL,
