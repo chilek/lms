@@ -750,14 +750,11 @@ class LMS
 				$saldolist['adminname'][$i] = $adminslist[$saldolist['adminid'][$i]];
 				$saldolist['value'][$i] = round($saldolist['value'][$i],3);
 
-				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] = $saldolist['comment'][$i];
-
 				switch ($saldolist['type'][$i]){
 
 					case "3":
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] + $saldolist['value'][$i]),4);
 						$saldolist['name'][$i] = "Wp³ata";
-//						$saldolist['comment'][$i] = "Abonament za".date("Y/m",$saldolist['time'][$i]) || $saldolist['comment'][$i];
 					break;
 
 					case "4":
@@ -768,7 +765,7 @@ class LMS
 				}
 
 				$saldolist['date'][$i]=date("Y/m/d H:i",$saldolist['time'][$i]);
-				// nie chce mi sie czytac, ale czy to nie jest pare linii wy¿ej ?
+
 				(strlen($saldolist['comment'][$i])<3) ? $saldolist['comment'][$i] = $saldolist['name'][$i] : $saldolist['comment'][$i] = $saldolist['comment'][$i];
 			}
 
