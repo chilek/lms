@@ -16,5 +16,5 @@ w sekcji [phpui] pliku konfiguracyjnego lms.ini.
 w drzewie katalogów lms'a. Plik sql.php skopiuj do katalogu modules, 
 a pliki sql.html, sqlprint.html, adminheader.html do katalogu templates.
 	Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu 
-Administratorzy->SQL.
+Administracja->SQL.
 
