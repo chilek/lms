@@ -92,6 +92,7 @@ require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
 require_once($_LIB_DIR.'/leftmenu.php');
 require_once($_LIB_DIR.'/accesstable.php');
+require_once($_LIB_DIR.'/language.php');
 
 $DB = DBInit($_DBTYPE,$_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME);
 
@@ -184,6 +185,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.106  2003/10/01 21:12:29  lukasz
+ * - added language.php
+ *
  * Revision 1.105  2003/09/25 15:13:13  lukasz
  * - force stats te be show
  *
