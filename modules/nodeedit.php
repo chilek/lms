@@ -48,6 +48,7 @@ if(isset($nodeedit))
 {
 	$nodeedit[ipaddr] = $_POST[nodeeditipaddr];
 	$nodeedit[mac] = $_POST[nodeeditmac];
+	$nodeedit[mac] = str_replace("-",":",$nodeedit[mac]);
 
 	foreach($nodeedit as $key => $value)
 		$nodeedit[$key] = trim($value);
