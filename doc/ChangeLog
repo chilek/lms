@@ -51,7 +51,8 @@ wersja 1.2.0rc1 (??/??/????):
     Je¿eli sekcja jaka¶ ma pole 'instances', to tylko to pole zostanie uznane,
     a pozosta³e ustawienia sekcji zostan± zignorowane (lukasz)
   - dodana moliwo¶æ ustawienia daty operacji finansowej (alec)
-            
+  - poprawione formatowanie maili, wyrzucone zbêdne puste linie (lexx)
+          
 wersja 1.1.8 Cronos (01/02/2004):
 
   - netdevmap korzysta z obrazków w formacie PNG (brak obs³ugi GIF na 
