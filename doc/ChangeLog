@@ -2,6 +2,11 @@ $Id$
 
 wersja 1.2.0rc3 Janet (??/??/2004):
 
+  - poprawiony bug w module 'hostfile' demona, w szablonach dla hostów dodane 
+    dwie zmienne: %domain - zamieniana na domenê i %net - na nazwê sieci, 
+    w zmiennej konfiguracyjnej 'networks' podajemy teraz listê nazw sieci, 
+    nie adresów (alec)
+
 wersja 1.2.0rc2 Janet (03/03/2004):
 
   - poprawki kosmetyczne iface (lukasz)
