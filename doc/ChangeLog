@@ -4,7 +4,16 @@ wersja 1.0pre4 (??/01/2003):
 
   - pe³ne przeportowanie obs³ugi SQL'a na ADODB
   - support do MySQL i PostgreSQL
-  - pola uprate i downrate w taryfach
+  - pola uprate i downrate w taryfach. upgrade:
+  
+    ALTER TABLE tariffs ADD uprate INT DEFAULT '0' NOT NULL AFTER
+    value , ADD downrate INT DEFAULT '0' NOT NULL AFTER uprate;
+
+  - poprawka kolumny table na tablename w timestamps. upgrade:
+
+    ALTER TABLE `timestamps` CHANGE `table` `tablename` VARCHAR( 255 ) 
+    NOT NULL
+
   - lista u¿ytkowników: dodana kwota abonamentu miesiêcznego poni¿ej
     aktualnego salda u¿ytkownika (Goblin)
   - lista u¿ytkowników: u¿ytkownik którego komputery s± od³±czone
