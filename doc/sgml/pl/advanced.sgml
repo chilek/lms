@@ -313,6 +313,11 @@
 				<member>type - typ konta (suma: 1-shell, 2-poczta, 4-www, 8-ftp)</member>
 				<member>expdate - data wa¿no¶ci konta</member>
 				<member>domainid - identyfikator domeny z tabeli 'domains'</member>
+				<member>createtime - data utworzenia konta</member>
+				<member>quota_sh - limit</member>
+				<member>quota_mail - limit</member>
+				<member>quota_www - limit</member>
+				<member>quota_ftp - limit</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="domains">
@@ -435,6 +440,40 @@
 			<simplelist>
 				<member>eventid - identyfikator zdarzenia</member>
 				<member>adminid - identyfikator u¿ytkownika</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="daemonhosts">
+			<title>Konfiguracja demona - hosty ('daemonhosts')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>name - nazwa hosta</member>
+				<member>description - opis</member>
+				<member>lastreload - data ostatniego prze³adowania</member>
+				<member>reload - ¿±danie prze³adowania</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="daemoninstances">
+			<title>Konfiguracja demona - instancje ('daemoninstances')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>name - nazwa instancji</member>
+				<member>hostid - identyfikator hosta</member>
+				<member>module - nazwa i ¶cie¿ka do modu³u</member>
+				<member>crontab - czas wykonania</member>
+				<member>priority - priorytet prze³adowania</member>
+				<member>description - opis</member>
+				<member>disabled - status (w³±czona/wy³±czona)</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="daemonconfig">
+			<title>Konfiguracja demona - opcje ('daemonconfig')</title>
+			<simplelist>
+				<member>id - identyfikator</member>
+				<member>instanceid - identyfikator instancji</member>
+				<member>var - nazwa opcji</member>
+				<member>value - warto¶æ opcji</member>
+				<member>description - opis</member>
+				<member>disabled - status (w³±czona/wy³±czona)</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="sessions">
