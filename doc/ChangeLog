@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.3.2 Kinsey (??/04/2004):
+wersja 1.3.2 Kinsey (03/04/2004):
   
   - przeniesienie warning&messages z contrib do glownej galezi 
     dodanie lms-updatewarnings (maniac/alec/Tomasz Chiliñski)
