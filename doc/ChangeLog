@@ -12,6 +12,9 @@ wersja 1.4.4 (??/??/????):
     lub tworzeniu nowego konta (alec)
   - przy dodawaniu administratora 'imiê i nazwisko' nie mo¿e byæ puste (alec) 
   - BTS#0000305: helpdesk - poprawiony interfejs w informacjach o kolejce (alec)
+  - BTS#0000292: w ¶rednim zysku miesiêcznym taryfy nie uwzglêdniamy zobowi±zañ
+    tak¿e przy 'zawieszeniu naliczania wszystkich p³atno¶ci' (alec)
+  - poprawiony b³±d przy zawieszaniu naliczania wszystkich p³atno¶ci (alec)
 
 wersja 1.4.3 Velis (13/01/2005):
 
