@@ -195,7 +195,6 @@ else
 			$cely = $idy - $miny;
 			if(eregi('^n',$device))
 			{
-				
 				$device = str_replace('n','',$device);
 				list($nodeid,$device) = explode('.',$device);
 				$nodemap[$nodeid]['x'] = $celx;
@@ -250,8 +249,10 @@ else
 		$px = (($celx * ($cellw)) + $celllmargin);
 		$py = (($cely * ($cellh)) + $celltmargin);
 		imagecopy($im,$im_n,$px,$py,0,0,15,16);
-//		imagestring($im, 1, $px + 20, $py - 8, $nodeid.' ('.$celx.','.$cely.')', $blue);
-		imagestring($im, 1, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM nodes WHERE id=?',array($nodeid)), $black);
+		$nodedata = $DB->GetRow('SELECT name, INET_NTOA(ipaddr) AS ip FROM nodes WHERE id=?',array($nodeid));
+//		imagestring($im, 1, $px + 15, $py - 8, $nodeid.' ('.$celx.','.$cely.')', $blue);
+		imagestring($im, 1, $px + 15, $py - 8, $nodedata['ip'], $blue);
+		imagestring($im, 1, $px + 15, $py + 2, $nodedata['name'], $black);
 	}
 				
 		
