@@ -839,7 +839,7 @@ class LMS
 					$balance[$row[id]] = $balance[$row[id]] - str_replace(".",",",$row[value]);
 			
 			foreach($this->ADB->GetAll("SELECT id, value FROM tariffs") as $key => $row)
-				$tlist[$value[id]] = $row[value];
+				$tlist[$row[id]] = $row[value];
 			
 			foreach($userlist as $key => $value)
 			{
