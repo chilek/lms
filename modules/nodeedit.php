@@ -44,7 +44,7 @@ if(!isset($_GET[ownerid]))
 							
 $owner = $ownerid;
 $userinfo=$LMS->GetUser($owner);
-$layout[pagetitle]="Informacje o u¿ytkowniku: ".$userinfo[username]." - edycja komputera: ".$LMS->GetNodeName($_GET[id]);
+$layout[pagetitle]="Informacje o u¿ytkowniku: ".$userinfo[username]."<BR>- edycja komputera: ".$LMS->GetNodeName($_GET[id]);
 
 $nodeedit = $_POST[nodeedit];
 $usernodes = $LMS->GetUserNodes($owner);
@@ -109,12 +109,20 @@ if(isset($nodeedit))
 	if($nodeedit[access]!=1)
 		$nodeedit[access] = 0;
 	
+	if($nodeinfo[netdev] != $nodeedit[netdev])
+	{
+		$netdev = $LMS->GetNetDev($nodeedit[netdev]); 
+		if($netdev[ports] <= $netdev[takenports])
+		    $error[netdev] = "Brak wolnych portów w wybranym urz±dzeniu!";
+		$nodeinfo[netdev] = $nodeedit[netdev];
+	}
+	
 	$nodeinfo[name] = $nodeedit[name];
 	$nodeinfo[mac] = $nodeedit[mac];
 	$nodeinfo[ipaddr] = $nodeedit[ipaddr];
 	$nodeinfo[access] = $nodeedit[access];
 	$nodeinfo[ownerid] = $nodeedit[ownerid];
-	$nodeinfo[netdev] = $nodeedit[netdev];
+
 
 	if(!$error)
 	{
@@ -147,11 +155,8 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
- * Revision 1.34  2003/10/01 20:21:13  lukasz
- * - i po co tutaj ten <BR>?
- *
- * Revision 1.33  2003/10/01 16:07:19  alec
- * now we can change netdevice assigned to node
+ * Revision 1.35  2003/10/02 19:40:22  alec
+ * dodane sprawdzanie ilosci portow w netdev
  *
  * Revision 1.32  2003/09/23 19:11:46  alec
  * kosmetyka - dodany dwukropek
