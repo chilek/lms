@@ -408,165 +408,177 @@ database = /usr/local/lms/lms.db</screen>
 	<sect2 id="install-config-ui">
 	<title>Sekcja [phpui] - ustawienia interfejsu</title>
     	<itemizedlist>
+	<listitem>
+    	    <para>lang</para>
+    	    <para>Ustawia jêzyk interfejsu u¿ytkownika. Je¶li nie podano, jêzyk
+	    zostanie ustawiony na podstawie ustawieñ przegl±darki. Domylnie: en.</para>
+    	    <para>Przyk³ad:		<prompt>lang = pl</prompt></para>
+	</listitem>
    	<listitem>
-    	<para>allow_from  (opcjonalny)</para>
-    	<para>Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste, ka¿dy adres IP ma dostêp do LMS'a, 
-	je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego 
-	niechcianego u¿ytkownika.</para>
-    	<para>Przyk³ad:		<prompt>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</prompt></para>
-   </listitem>
-   <listitem>
-    <para>timeout</para>
-    <para>Timeout sesji www. Po tym czasie (w sekundach) u¿ytkownik zostanie wylogowany je¿eli nie 
-    podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</para>
-    <para>Przyk³ad:	<prompt>timeout = 900</prompt></para>
-    <para><warning><para>Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie 
-    bêdziesz móg³ korzystaæ z LMS!</para></warning></para>
-   </listitem>
-   <listitem>
-    <para>userlist_pagelimit</para>
-    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie u¿ytkowników. Domy¶lnie brak limitu.</para>
-    <para>Przyk³ad:	<prompt>userlist_pagelimit = 10</prompt></para>
-   </listitem>
-   <listitem>
-    <para>nodelist_pagelimit</para>
-    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie komputerów. Domy¶lnie brak limitu.</para>
-    <para>Przyk³ad:	<prompt>nodelist_pagelimit = 10</prompt></para>
-   </listitem>
-   <listitem>
-    <para>balancelist_pagelimit</para>
-    <para>Limit wy¶wietlanych pozycji na stronie na rachunku u¿ytkownika. Domy¶lnie: 100.</para>
-    <para>Przyk³ad:	<prompt>balancelist_pagelimit = 50</prompt></para>
-   </listitem>
-   <listitem>
-    <para>invoicelist_pagelimit</para>
-    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie faktur. Domy¶lnie: 100</para>
-    <para>Przyk³ad:	<prompt>invoicelist_pagelimit = 50</prompt></para>
-   </listitem>
-   <listitem>
-    <para>ticketlist_pagelimit</para>
-    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie zg³oszeñ. Domy¶lnie: 100</para>
-    <para>Przyk³ad:	<prompt>ticketlist_pagelimit = 50</prompt></para>
-   </listitem>
-   <listitem>
-    <para>networkhosts_pagelimit</para>
-    <para>Ilo¶æ komputerów wy¶wietlanych na jednej stronie w informacjach 
-    o sieci. Domy¶lnie: 256.</para>
-    <para>Przyk³ad:	<prompt>networkhosts_pagelimit = 1024</prompt></para>
-   </listitem>
-   <listitem>
-    <para>accountlist_pagelimit</para>
-    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie kont. Domy¶lnie: 100.</para>
-    <para>Przyk³ad:	<prompt>accountlist_pagelimit = 25</prompt></para>
-   </listitem>
-   <listitem>
-    <para>domainlist_pagelimit</para>
-    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie domen. Domy¶lnie: 100.</para>
-    <para>Przyk³ad:	<prompt>domainlist_pagelimit = 25</prompt></para>
-   </listitem>
-   <listitem>
-    <para>aliaslist_pagelimit</para>
-    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie aliasów. Domy¶lnie: 100.</para>
-    <para>Przyk³ad:	<prompt>aliaslist_pagelimit = 25</prompt></para>
-   </listitem>
-   <listitem>
-    <para>reload_type</para>
-    <para>Typ reloadu. Dozwolone warto¶ci:</para>
-    <para>exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶ skrypt lub co¶, konfigurowalny
-     poni¿ej)</para>
-    <para>sql  - zrobienie wpisów w SQL'u (te¿ mo¿na ustawiæ konkretne query SQL'a)</para>
-    <para>Domy¶lna warto¶æ to 'sql'.</para>
-    <para>Przyk³ad:	<prompt>reload_type = exec</prompt></para>
-   </listitem>
-   <listitem>
-    <para>reload_execcmd</para>
-    <para>Komenda do wykonania podczas reloadu je¿eli reload_type jest ustawione na 'exec'. Domy¶lnie
-    <filename>/bin/true</filename>. String ten puszczany do komendy system() wiêc proponujê rozwagê 
-    i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru 
-    wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedynczo.</para>
-    <para>Przyk³ad:	<prompt>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</prompt></para>
-   </listitem>
-   <listitem>
-    <para>reload_sqlquery</para>
-    <para>Zapytanie SQL wykonywane podczas reloadu, je¶li <prompt>reload_type = sql</prompt>.  
-    Domy¶lnie zapytanie wrzuca do tabeli timestamps warto¶æ '_force'. W zapytaniu mo¿na u¿yæ 
-    '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest 
-    traktowany jako separator kwerend, tzn. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka zapytañ SQL.</para>
-    <para>Przyk³ad:	<prompt>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</prompt></para>
-   </listitem>
-   <listitem>
-    <para>force_ssl</para>
-    <para>Wymuszanie SSL'a. Ustawienie tej zmiennej na 1 spowoduje ¿e LMS bêdzie wymusza³ po³±czenie 
-    SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej 
-    próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</para>
-    <para>Przyk³ad:	<prompt>force_ssl = 0</prompt></para>
-   </listitem>
-   <listitem>
-    <para>allow_mac_sharing</para>
-    <para>Przyzwolenie na dodawanie rekordów komputerów z adresami MAC ju¿ istniej±cymi (nie sprawdza 
-    czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone</para>
-    <para>Przyk³ad:	<prompt>allow_mac_sharing	= 1</prompt></para>
-   </listitem>
-   <listitem>
-    <para>smarty_debug</para>
-    <para>W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP 
-    do Smartyego. Domy¶lnie wy³±czone.</para>
-    <para>Przyk³ad:	<prompt>smarty_debug = 1</prompt></para>
-   </listitem>
-   <listitem>
-    <para>debug_email</para>
-    <para>Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Mailing' LMS'a, 
-    zamiast do w³a¶ciwych u¿ytkowników.</para>
-    <para>Przyk³ad:	<prompt>debug_email = root@localhost</prompt></para>
-   </listitem>
-   <listitem>
-    <para>default_zip, default_city, default_address</para>
-    <para>Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
-    u¿ytkownika. Przydatne gdy mamy do wpisania wielu u¿ytkowników z tej samej ulicy.</para>
-    <para>Przyk³ad:	<prompt>default_zip = 39-300</prompt></para>
-   </listitem>
-   <listitem>
-    <para>use_current_payday</para>
-    <para>Okre¶la, czy ma byæ u¿yta aktualna data jako dzieñ zap³aty podczas
-    przypisywania zobowi±zañ u¿ytkownikom. Domy¶lnie wy³±czone.</para>
-    <para>Przyk³ad:	<prompt>use_current_payday = 1</prompt></para>
-   </listitem>
-   <listitem>
-    <para>lastonline_limit</para>
-    <para>Okre¶la czas (w sekundach), po którym komputer zostaje uznany za
-    nieaktywny. Powinien odpowiadaæ czêstotliwo¶ci uruchamiania skryptu
-    badaj±cego aktywno¶æ komputerów (np.lms-fping). Domy¶lnie: 600.</para>
-    <para>Przyk³ad:	<prompt>lastonline_limit = 300</prompt></para>
-   </listitem>
-   <listitem>
-    <para>arpd_servers</para>
-    <para>Lista serwerów arpd do zczytywania MAC'adresów z odleg³ych sieci.
-    Lista ta powinna zawieraæ wpisy w postaci adresIP[:port] oddzielone
-    spacjami. Domy¶lnie pusta.</para>
-    <para>Przyk³ad:	<prompt>arpd_servers = 192.168.1.1 192.168.2.1</prompt></para>
-   </listitem>
-   <listitem>
-    <para>helpdesk_backend_mode</para>
-    <para>W³±czenie tej opcji spowoduje, ¿e wszystkie wiadomo¶ci w systemie 
-    helpdesk (oprócz tych skierowanych do zg³aszaj±cego) 
-    bêd± wysy³ane do serwera pocztowego na adres odpowiedniej kolejki.
-    Na serwerze tym powinien byæ uruchomiony skrypt lms-rtparser, który zajmie
-    siê zapisem wiadomo¶ci do bazy danych. Domy¶lnie: wy³±czona.</para>
-    <para>Przyk³ad:	<prompt>helpdesk_backend_mode = 1</prompt></para>
-   </listitem>
-   <listitem>
-    <para>contract_template</para>
-    <para>W³asny szablon umowy z u¿ytkownikiem. Mo¿na tak¿e dostosowaæ domy¶lny
-    szablon. Domy¶lnie: contract.html.</para>
-    <para>Przyk³ad:	<prompt>contract_template = "../my_templates/contract.html"</prompt></para>
-   </listitem>
-   <listitem>
-    <para>to_words_short_format</para>
-    <para>Okre¶la format reprezentacji s³ownej kwot (na fakturach). Dla warto¶ci "1"
-    rozwiniêciem kwoty 123,15 bêdzie "jed dwa trz 15/100". Domy¶lnie: 0.</para>
-    <para>Przyk³ad:	<prompt>to_words_short_format = 1</prompt></para>
-   </listitem>
-  </itemizedlist>
+    	    <para>allow_from</para>
+    	    <para>Lista sieci i adresów IP które maj± dostêp do LMS. Je¿eli puste, ka¿dy adres IP ma dostêp do LMS'a, 
+	    je¿eli wpiszemy tutaj listê adresów b±d¼ klas adresowych, LMS odrzuci b³êdem HTTP 403 ka¿dego 
+	    niechcianego u¿ytkownika.</para>
+    	    <para>Przyk³ad:		<prompt>allow_from = 192.168.0.0/16, 213.25.209.224/27, 213.241.77.29</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>timeout</para>
+	    <para>Timeout sesji www. Po tym czasie (w sekundach) u¿ytkownik zostanie wylogowany je¿eli nie 
+	    podejmie ¿adnej akcji. Domy¶lnie 600 sekund.</para>
+	    <para>Przyk³ad:	<prompt>timeout = 900</prompt></para>
+	    <para><warning><para>Nie ma mo¿liwo¶ci ustawienia braku timeoutu. Je¿eli ustawisz t± warto¶æ na zero, nie 
+	    bêdziesz móg³ korzystaæ z LMS!</para></warning></para>
+	</listitem>
+	<listitem>
+	    <para>userlist_pagelimit</para>
+	    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie u¿ytkowników. Domy¶lnie brak limitu.</para>
+	    <para>Przyk³ad:	<prompt>userlist_pagelimit = 10</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>nodelist_pagelimit</para>
+	    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie komputerów. Domy¶lnie brak limitu.</para>
+	    <para>Przyk³ad:	<prompt>nodelist_pagelimit = 10</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>balancelist_pagelimit</para>
+	    <para>Limit wy¶wietlanych pozycji na stronie na rachunku u¿ytkownika. Domy¶lnie: 100.</para>
+	    <para>Przyk³ad:	<prompt>balancelist_pagelimit = 50</prompt></para>
+        </listitem>
+	<listitem>
+	    <para>invoicelist_pagelimit</para>
+	    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie faktur. Domy¶lnie: 100</para>
+	    <para>Przyk³ad:	<prompt>invoicelist_pagelimit = 50</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>ticketlist_pagelimit</para>
+	    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie zg³oszeñ. Domy¶lnie: 100</para>
+	    <para>Przyk³ad:	<prompt>ticketlist_pagelimit = 50</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>networkhosts_pagelimit</para>
+	    <para>Ilo¶æ komputerów wy¶wietlanych na jednej stronie w informacjach 
+	    o sieci. Domy¶lnie: 256.</para>
+	    <para>Przyk³ad:	<prompt>networkhosts_pagelimit = 1024</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>accountlist_pagelimit</para>
+	    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie kont. Domy¶lnie: 100.</para>
+	    <para>Przyk³ad:	<prompt>accountlist_pagelimit = 25</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>domainlist_pagelimit</para>
+	    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie domen. Domy¶lnie: 100.</para>
+	    <para>Przyk³ad:	<prompt>domainlist_pagelimit = 25</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>aliaslist_pagelimit</para>
+	    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie aliasów. Domy¶lnie: 100.</para>
+	    <para>Przyk³ad:	<prompt>aliaslist_pagelimit = 25</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>reload_type</para>
+	    <para>Typ reloadu. Dozwolone warto¶ci:</para>
+	    <para>exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo, jaki¶ skrypt lub co¶, konfigurowalny
+	     poni¿ej)</para>
+	    <para>sql  - zrobienie wpisów w SQL'u (te¿ mo¿na ustawiæ konkretne query SQL'a)</para>
+	    <para>Domy¶lna warto¶æ to 'sql'.</para>
+	    <para>Przyk³ad:	<prompt>reload_type = exec</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>reload_execcmd</para>
+	    <para>Komenda do wykonania podczas reloadu je¿eli reload_type jest ustawione na 'exec'. Domy¶lnie
+	    <filename>/bin/true</filename>. String ten puszczany do komendy system() wiêc proponujê rozwagê 
+	    i pomy¶lenie co siê robi i jak :) Generalnie ¶redniki powinny byæ parsowane przez bash'a, ale z paru 
+	    wzglêdów LMS sam dzieli poni¿szy ci±g pod wzglêdem ¶redników i wykonuje komendy pojedynczo.</para>
+	    <para>Przyk³ad:	<prompt>reload_execcmd = "sudo /usr/bin/reload_lms.sh"</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>reload_sqlquery</para>
+	    <para>Zapytanie SQL wykonywane podczas reloadu, je¶li <prompt>reload_type = sql</prompt>.  
+	    Domy¶lnie zapytanie wrzuca do tabeli timestamps warto¶æ '_force'. W zapytaniu mo¿na u¿yæ 
+	    '%TIME%' jako podstawki pod aktualny timestamp unixowy. UWAGA! Znak ¶rednika jest 
+	    traktowany jako separator kwerend, tzn. oddzielaj±c znakiem ¶rednika mo¿esz wpisaæ kilka zapytañ SQL.</para>
+	    <para>Przyk³ad:	<prompt>reload_sqlquery = "INSERT INTO reload VALUES ('1','%TIME%')"</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>force_ssl</para>
+	    <para>Wymuszanie SSL'a. Ustawienie tej zmiennej na 1 spowoduje ¿e LMS bêdzie wymusza³ po³±czenie 
+	    SSL powoduj±c redirect do 'https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI] przy ka¿dej 
+	    próbie dostêpu bez SSL. Domy¶lnie wy³±czone.</para>
+	    <para>Przyk³ad:	<prompt>force_ssl = 0</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>allow_mac_sharing</para>
+	    <para>Przyzwolenie na dodawanie rekordów komputerów z adresami MAC ju¿ istniej±cymi (nie sprawdza 
+	    czy jaki¶ inny komputer posiada taki adres MAC). Domy¶lnie wy³±czone</para>
+	    <para>Przyk³ad:	<prompt>allow_mac_sharing	= 1</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>smarty_debug</para>
+	    <para>W³±czenie konsoli debugowej Smartyego, przydatne do ¶ledzenia warto¶ci przekazywanych z PHP 
+	    do Smartyego. Domy¶lnie wy³±czone.</para>
+	    <para>Przyk³ad:	<prompt>smarty_debug = 1</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>lang_debug</para>
+	    <para>W³±czenie translatorskiej konsoli debugowej LMS, przydatne do ¶ledzenia brakuj±cych t³umaczeñ.
+	    Domy¶lnie wy³±czone.</para>
+	    <para>Przyk³ad:	<prompt>lang_debug = 1</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>debug_email</para>
+	    <para>Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Mailing' LMS'a, 
+	    zamiast do w³a¶ciwych u¿ytkowników.</para>
+	    <para>Przyk³ad:	<prompt>debug_email = root@localhost</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>default_zip, default_city, default_address</para>
+	    <para>Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
+	    u¿ytkownika. Przydatne gdy mamy do wpisania wielu u¿ytkowników z tej samej ulicy.</para>
+	    <para>Przyk³ad:	<prompt>default_zip = 39-300</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>use_current_payday</para>
+	    <para>Okre¶la, czy ma byæ u¿yta aktualna data jako dzieñ zap³aty podczas
+	    przypisywania zobowi±zañ u¿ytkownikom. Domy¶lnie wy³±czone.</para>
+	    <para>Przyk³ad:	<prompt>use_current_payday = 1</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>lastonline_limit</para>
+	    <para>Okre¶la czas (w sekundach), po którym komputer zostaje uznany za
+	    nieaktywny. Powinien odpowiadaæ czêstotliwo¶ci uruchamiania skryptu
+	    badaj±cego aktywno¶æ komputerów (np.lms-fping). Domy¶lnie: 600.</para>
+	    <para>Przyk³ad:	<prompt>lastonline_limit = 300</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>arpd_servers</para>
+	    <para>Lista serwerów arpd do zczytywania MAC'adresów z odleg³ych sieci.
+	    Lista ta powinna zawieraæ wpisy w postaci adresIP[:port] oddzielone
+	    spacjami. Domy¶lnie pusta.</para>
+	    <para>Przyk³ad:	<prompt>arpd_servers = 192.168.1.1 192.168.2.1</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>helpdesk_backend_mode</para>
+	    <para>W³±czenie tej opcji spowoduje, ¿e wszystkie wiadomo¶ci w systemie 
+	    helpdesk (oprócz tych skierowanych do zg³aszaj±cego) 
+	    bêd± wysy³ane do serwera pocztowego na adres odpowiedniej kolejki.
+	    Na serwerze tym powinien byæ uruchomiony skrypt lms-rtparser, który zajmie
+	    siê zapisem wiadomo¶ci do bazy danych. Domy¶lnie: wy³±czona.</para>
+	    <para>Przyk³ad:	<prompt>helpdesk_backend_mode = 1</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>contract_template</para>
+	    <para>W³asny szablon umowy z u¿ytkownikiem. Mo¿na tak¿e dostosowaæ domy¶lny
+	    szablon. Domy¶lnie: contract.html.</para>
+	    <para>Przyk³ad:	<prompt>contract_template = "../my_templates/contract.html"</prompt></para>
+	</listitem>
+	<listitem>
+	    <para>to_words_short_format</para>
+	    <para>Okre¶la format reprezentacji s³ownej kwot (na fakturach). Dla warto¶ci "1"
+	    rozwiniêciem kwoty 123,15 bêdzie "jed dwa trz 15/100". Domy¶lnie: 0.</para>
+	    <para>Przyk³ad:	<prompt>to_words_short_format = 1</prompt></para>
+	</listitem>
+	</itemizedlist>
  	</sect2> 
     </sect1>
     <sect1 id="install-rights" xreflabel="Prawa dostêpu">
