@@ -85,6 +85,16 @@
 					<TD WIDTH="33%" bgcolor="{cycle}" {cycle print=false}onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '{cycle}')" {cycle print=false}onclick="return self.location.href='?m=userinfo&id={$tariff.users[l2].id}'"><IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"> <A HREF="?m=userinfo&id={$tariff.users[l2].id}">({$tariff.users[l2].id|string_format:"%04d"}) {$tariff.users[l2].username}</A></TD>
 					{/section}{cycle print=false}
 				</TR>
+				{sectionelse}
+				<TR>
+					<TD WIDTH="100%" ALIGN="CENTER">
+						<BR>
+						<BR>
+						<B>¯aden z klientów nie korzysta z tej taryfy</B><BR>
+						<BR>
+						<BR>
+					</TD>
+				</TR>
 				{/section}
 			</TABLE>
 		</TD>
