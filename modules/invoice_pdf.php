@@ -57,9 +57,9 @@ function invoice_simple_form_fill($x,$y,$scale)
     text_autosize(15*$scale+$x,683*$scale+$y,30*$scale, $tmp,350*$scale);
     text_autosize(15*$scale+$x,445*$scale+$y,30*$scale,"*".number_format($invoice['total'],2,',','')."*",350*$scale);
 
-    text_autosize(15*$scale+$x,390*$scale+$y,30*$scale,$invoice['name'],350*$scale);
-    text_autosize(15*$scale+$x,356*$scale+$y,30*$scale,$invoice['address'],350*$scale);
-    text_autosize(15*$scale+$x,322*$scale+$y,30*$scale,$invoice['zip']." ".$invoice['city'],350*$scale);
+    text_autosize(15*$scale+$x,390*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['name']),350*$scale);
+    text_autosize(15*$scale+$x,356*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['address']),350*$scale);
+    text_autosize(15*$scale+$x,322*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['zip']." ".$invoice['city']),350*$scale);
 
     $tmp = $_CONFIG['invoices'];
     $tmp = iconv("UTF-8","ISO-8859-2",$tmp['number_template']);
@@ -90,8 +90,8 @@ function invoice_main_form_fill($x,$y,$scale)
     $pdf->addtext(330*$scale+$x,495*$scale+$y,30*$scale,'X');
     text_autosize(550*$scale+$x,495*$scale+$y,30*$scale,"*".number_format($invoice['total'],2,',','')."*",400*$scale);
     text_autosize(15*$scale+$x,434*$scale+$y,30*$scale,iconv("UTF-8","ISO-8859-2",trans('$0 dollars $1 cents',to_words(floor($invoice['total'])),to_words(round(($invoice['total']-floor($invoice['total']))*100)))),950*$scale);
-    text_autosize(15*$scale+$x,372*$scale+$y,30*$scale,$invoice['name'],950*$scale);
-    text_autosize(15*$scale+$x,312*$scale+$y,30*$scale,$invoice['address']." ".$invoice['zip']." ".$invoice['city'],950*$scale);
+    text_autosize(15*$scale+$x,372*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['name']),950*$scale);
+    text_autosize(15*$scale+$x,312*$scale+$y,30*$scale, iconv("UTF-8","ISO-8859-2",$invoice['address']." ".$invoice['zip']." ".$invoice['city']),950*$scale);
     $tmp = $_CONFIG['invoices'];
     $tmp = iconv("UTF-8","ISO-8859-2",$tmp['number_template']);
     $tmp = str_replace("%N",$invoice['number'],$tmp);
@@ -135,7 +135,7 @@ function invoice_dates($x,$y) {
     text_align_right($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('Deadline:')).' ');
     $y=$y-text_align_left($x,$y,$font_size,date("Y/m/d",$invoice['pdate']));
     text_align_right($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('Payment type:')).' ');
-    $y=$y-text_align_left($x,$y,$font_size,$invoice['paytype']);
+    $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$invoice['paytype']));
     return $y;
 }
 
@@ -144,9 +144,9 @@ function invoice_buyer($x,$y)
     global $invoice,$pdf;
     $font_size=10;
     $y=$y-text_align_left($x,$y,$font_size,'<b>'.iconv("UTF-8","ISO-8859-2",trans('Purchaser:')).'</b>');
-    $y=$y-text_align_left($x,$y,$font_size,$invoice['name']);
-    $y=$y-text_align_left($x,$y,$font_size,$invoice['address']);
-    $y=$y-text_align_left($x,$y,$font_size,$invoice['zip']." ".$invoice['city']);
+    $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$invoice['name']));
+    $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$invoice['address']));
+    $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",$invoice['zip']." ".$invoice['city']));
     if ($invoice['phone']) $y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('Phone:')).' '.$invoice['phone']);
     if ($invoice['nip']) 
 	$y=$y-text_align_left($x,$y,$font_size,iconv("UTF-8","ISO-8859-2",trans('TEN:')).' '.$invoice['nip']);
@@ -187,13 +187,13 @@ function invoice_address_box($x,$y)
 {
     global $invoice,$pdf;
     $font_size=12;
-    $y=$y-text_align_left($x,$y,$font_size,"<b>".$invoice['name']."</b>");
+    $y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2",$invoice['name'])."</b>");
     if ($invoice['serviceaddr']) {
-	$tmp = explode("\n",$invoice['serviceaddr']);
+	$tmp = explode("\n",iconv("UTF-8","ISO-8859-2",$invoice['serviceaddr']));
 	foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,"<b>".$line."</b>");
     } else {
-	$y=$y-text_align_left($x,$y,$font_size,"<b>".$invoice['address']."</b>");
-	$y=$y-text_align_left($x,$y,$font_size,"<b>".$invoice['zip']." ".$invoice['city']."</b>");
+	$y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2",$invoice['address'])."</b>");
+	$y=$y-text_align_left($x,$y,$font_size,"<b>".iconv("UTF-8","ISO-8859-2",$invoice['zip']." ".$invoice['city'])."</b>");
     }
     return $y;
 }
