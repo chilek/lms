@@ -86,6 +86,10 @@ case "$1" in
 	rm strings.new 2>/dev/null
 	rm strings.old 2>/dev/null
 	DIFFLINESNUM=`cat strings.diff | wc -l`
+	if [ $DIFFLINESNUM == 0 ]
+	then
+		rm strings.diff
+	fi
 	echo "done. Lines: $DIFFLINESNUM"
     ;;
 esac
