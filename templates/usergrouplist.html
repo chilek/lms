@@ -4,11 +4,9 @@
 <H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="5">
 	<TR class="dark">
-		<TD WIDTH="70%" CLASS="fleftu">
-			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Nazwa:</B>
-		</TD>
-		<TD WIDTH="27%" VALIGN="top" CLASS="fbt" align="right">
-			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;Opis:
+		<TD WIDTH="97%" CLASS="fleftu">
+			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Nazwa:</B><BR>
+			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;Opis:
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
 			ID:
@@ -25,19 +23,15 @@
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
 	{section name=usergroups loop=$usergrouplist}
 	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-		<TD WIDTH="70%" CLASS="fleft" onClick="return self.location.href='?m=usergroupinfo&id={$usergrouplist[usergroups].id}';" class="fleft">
+		<TD WIDTH="97%" CLASS="fleft" onClick="return self.location.href='?m=usergroupinfo&id={$usergrouplist[usergroups].id}';" class="fleft">
 			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{$usergrouplist[usergroups].name}</B><BR>
-		</TD>
-		<TD WIDTH="27%" VALIGN="top" align="right" onClick="return self.location.href='?m=usergroupinfo&id={$tusergrouplist[usergroups].id}';">
-			<NOBR>
-			{if $usergrouplist[usergroups].description}<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{$usergrouplist[usergroups].description}{/if}
-			</NOBR>
+			{if $usergrouplist[usergroups].description}<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{$usergrouplist[usergroups].description}{/if}
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=usergroupinfo&id={$usergrouplist[usergroups].id}';">
 			({$usergrouplist[usergroups].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=usergroupinfo&id={$usergrouplist[usergroups].id}';">
-			{$usergrouplist[usergroups].userscount} ({$usergrouplist[usergroups].users})
+			{$usergrouplist[usergroups].userscount} 
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
@@ -49,7 +43,7 @@
 	</TR>
 	{sectionelse}
 	<TR>
-		<TD COLSPAN="5" ALIGN="center" CLASS="fall">
+		<TD COLSPAN="4" ALIGN="center" CLASS="fall">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 			<p><B>Nie ma wprowadzonych ¿adnych grup do bazy danych!</B></p>
@@ -59,11 +53,11 @@
 	</TR>
 	{/section}
 	<TR CLASS="light">
-		<TD CLASS="fleftu" COLSPAN="3" WIDTH="98%" ALIGN="right">
+		<TD CLASS="fleftu" COLSPAN="2" WIDTH="98%" ALIGN="right">
 			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Razem:</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
-			<B>{$listdata.totalcount} ({$listdata.totalusers})</B>
+			<B>{$listdata.totalcount} </B>
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
 			&nbsp;
