@@ -907,63 +907,43 @@ class LMS
 			return FALSE;
 	}
 
-	function GetNodeList($order="name,asc")
+	function GetNodeList($order='name,asc')
 	{
-		if($order=="")
-			$order="name,asc";
+		if($order=='')
+			$order='name,asc';
 
-		list($order,$direction) = explode(",",$order);
+		list($order,$direction) = explode(',',$order);
 
-		($direction=="desc") ? $direction = "desc" : $direction = "asc";
+		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
 		switch($order)
 		{
-			case "name":
-				$sqlord = " ORDER BY name";
+			case 'name':
+				$sqlord = ' ORDER BY name';
 			break;
-			case "id":
-				$sqlord = " ORDER BY id";
+			case 'id':
+				$sqlord = ' ORDER BY id';
 			break;
-			case "mac":
-				$sqlord = " ORDER BY mac";
+			case 'mac':
+				$sqlord = ' ORDER BY mac';
 			break;
-			case "ip":
-				$sqlord = " ORDER BY ipaddr";
+			case 'ip':
+				$sqlord = ' ORDER BY ipaddr';
 			break;
-			case "ownerid":
-				$sqlord = " ORDER BY ownerid";
+			case 'ownerid':
+				$sqlord = ' ORDER BY ownerid';
+			break;
+			case 'owner':
+				$sqlord = ' ORDER BY owner';
 			break;
 		}
 
-		if($username = $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users "))
-			foreach($username as $idx => $row)
-				$usernames[$row['id']] = $row['username'];
-
-		if($nodelist = $this->DB->GetAll("SELECT id, ipaddr,inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access, warning, netdev FROM nodes WHERE ownerid > 0".($sqlord != "" ? $sqlord." ".$direction : "")))
+		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, ownerid, access, warning, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner FROM nodes, users WHERE ownerid = users.id AND ownerid > 0'.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
 			foreach($nodelist as $idx => $row)
 			{
-				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
 				($row['access']) ? $totalon++ : $totaloff++;
 			}
-		}
-
-		switch($order)
-		{
-			case "owner":
-				foreach($nodelist as $idx => $row)
-				{
-					$ownertable['idx'][] = $idx;
-					$ownertable['owner'][] = $row['owner'];
-				}
-				if(is_array($ownertable))
-				{
-					array_multisort($ownertable['owner'],($direction == "desc" ? SORT_DESC : SORT_ASC),$ownertable['idx']);
-					foreach($ownertable['idx'] as $idx)
-						$nnodelist[] = $nodelist[$idx];
-				}
-				$nodelist = $nnodelist;
-			break;
 		}
 
 		$nodelist['total'] = sizeof($nodelist);
