@@ -24,7 +24,8 @@
  *  $Id$
  */
 
-if ((isset($_GET['id'])) && ($_GET['action']=='edit')) {
+if ((isset($_GET['id'])) && ($_GET['action']=='edit'))
+{
     $invoice = $LMS->GetInvoiceContent($_GET['id']);
 
     $SESSION->remove('invoicecontents');
@@ -32,23 +33,24 @@ if ((isset($_GET['id'])) && ($_GET['action']=='edit')) {
 
     foreach ($invoice['content'] as $item) {
 	$i++;
-        $nitem["tariffid"]		= $item["tariffid"];
-	$nitem["name"]			= $item["description"];
-        $nitem["ttariffid"]		= $item["tariffid"];
-	$nitem["pkwiu"]			= $item["pkwiu"];
-        $nitem["count"]			= str_replace(",",".",$item["count"]);
-	$nitem["jm"]			= str_replace(",",".",$item["content"]);
-        $nitem["valuenetto"]		= str_replace(",",".",$item["basevalue"]);
-	$nitem["taxvalue"]		= str_replace(",",".",$item["taxvalue"]);
-        $nitem["valuebrutto"]		= str_replace(",",".",$item["value"]);
-	$nitem["s_valuenetto"]		= str_replace(",",".",$item["totalbase"]);
-        $nitem["s_valuebrutto"]		= str_replace(",",".",$item["total"]);
-	$nitem["posuid"]		= $i;
+        $nitem['tariffid']	= $item['tariffid'];
+	$nitem['name']		= $item['description'];
+        $nitem['ttariffid']	= $item['tariffid'];
+	$nitem['pkwiu']		= $item['pkwiu'];
+        $nitem['count']		= str_replace(',','.',$item['count']);
+	$nitem['jm']		= str_replace(',','.',$item['content']);
+        $nitem['valuenetto']	= str_replace(',','.',$item['basevalue']);
+	$nitem['taxvalue']	= str_replace(',','.',$item['taxvalue']);
+        $nitem['valuebrutto']	= str_replace(',','.',$item['value']);
+	$nitem['s_valuenetto']	= str_replace(',','.',$item['totalbase']);
+        $nitem['s_valuebrutto']	= str_replace(',','.',$item['total']);
+	$nitem['posuid']	= $i;
 	$SESSION->restore('invoicecontents', $invoicecontents);
 	$invoicecontents[] = $nitem;
 	$SESSION->save('invoicecontents', $invoicecontents);
     }
-    $SESSION->save('invoicecustomer', $LMS->GetUser($invoice["customerid"]));
+    $SESSION->save('invoicecustomer', $LMS->GetUser($invoice['customerid']));
+    $invoice['oldcdate'] = $invoice['cdate'];
     $SESSION->save('invoice', $invoice);
     $SESSION->save('invoiceid', $invoice['id']);
 }
@@ -58,13 +60,13 @@ $tariffs = $LMS->GetTariffs();
 $SESSION->restore('invoicecontents', $contents);
 $SESSION->restore('invoicecustomer', $customer);
 $SESSION->restore('invoice', $invoice);
-$SESSION->restore('invoiceerror', $error);
+$SESSION->restore('invoiceediterror', $error);
 $itemdata = r_trim($_POST);
 
 $ntempl = $LMS->CONFIG['invoices']['number_template'];
 $ntempl = str_replace('%N', $invoice['number'], $ntempl);
-$ntempl = str_replace('%M', $invoice['month'], $ntempl);
-$ntempl = str_replace('%Y', $invoice['year'], $ntempl);
+$ntempl = str_replace('%M', date('m',$invoice['oldcdate']), $ntempl);
+$ntempl = str_replace('%Y', date('Y',$invoice['oldcdate']), $ntempl);
 
 $layout['pagetitle'] = trans('Invoice Edit: $0', $ntempl);
 
@@ -118,6 +120,7 @@ switch($_GET['action'])
 
 	case 'setcustomer':
 		
+		$olddate = $invoice['oldcdate'];
 		unset($invoice); 
 		unset($customer);
 		unset($error);
@@ -127,6 +130,8 @@ switch($_GET['action'])
 				$invoice[$key] = $val;
 		
 		$invoice['paytime'] = sprintf('%d', $invoice['paytime']);
+		
+		$invoice['oldcdate'] = $olddate;
 		
 		if($invoice['paytime'] < 0)
 			$invoice['paytime'] = 14;
@@ -139,6 +144,15 @@ switch($_GET['action'])
 				$invoice['cdate'] = mktime(date('G',time()),date('i',time()),date('s',time()),$month,$day,$year);
 				$invoice['month'] = date('m', $invoice['cdate']);
 				$invoice['year'] = date('Y', $invoice['cdate']);
+				
+				$oldmonth = date('m', $olddate);
+				$oldyear = date('Y', $olddate);
+		    		
+				if((($invoice['month'] != $oldmonth || $invoice['year'] != $oldyear) && $LMS->CONFIG['invoices']['monthly_numbering']) ||
+				    ($invoice['year'] != $oldyear && !$LMS->CONFIG['invoices']['monthly_numbering']))
+				{
+					$error['cdate'] = trans('Specified date conflicts with invoice number!');
+				}		
 			}
 			else
 				$error['cdate'] = trans('Incorrect date format!');
