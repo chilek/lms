@@ -949,4 +949,10 @@ function chkconfig($value, $default = FALSE)
 		trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
 }
 
+function moneyf($value)
+{
+	global $LANGDEFS, $_language;
+	return sprintf($LANGDEFS[$_language]['money_format'],$value);
+}
+
 ?>

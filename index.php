@@ -159,7 +159,7 @@ $SESSION = new Session($DB, $_TIMEOUT);
 
 $LMS = new LMS($DB, $SESSION, $_CONFIG);
 $LMS->CONFIG = $_CONFIG;
-$LMS->lang = $language;
+$LMS->lang = $_language;
 
 $SMARTY = new Smarty;
 $SMARTY->assign('_config',$_CONFIG);
