@@ -29,13 +29,13 @@ if($LMS->CONFIG['invoices']['attachment_name'] != '')
 
 if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 {
-	$layout['pagetitle'] = 'Faktury VAT';
+	$layout['pagetitle'] = trans('Invoices');
 	$SMARTY->display('clearheader.html');
 	foreach($_POST['marks'] as $markid => $junk)
 		if($junk)
 			$ids[] = $markid;
 	sort($ids);
-	$which = ($_GET['which'] != '' ? $_GET['which'] : 'ORYGINA£+KOPIA');
+	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
 	foreach($ids as $idx => $invoiceid)
 	{
 		echo '<PRE>';
@@ -52,9 +52,9 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 }
 elseif($_GET['fetchallinvoices'])
 {
-	$layout['pagetitle'] = 'Faktury VAT';
+	$layout['pagetitle'] = trans('Invoices');
 	$SMARTY->display('clearheader.html');
-	$which = ($_GET['which'] != '' ? $_GET['which'] : 'ORYGINA£+KOPIA');
+	$which = ($_GET['which'] != '' ? $_GET['which'] : trans('ORIGINAL+COPY'));
 	
 	$ids = $LMS->DB->GetCol('SELECT id FROM invoices 
 				WHERE cdate > ? AND cdate < ?'
@@ -84,12 +84,12 @@ elseif($_GET['fetchsingle'])
 	$ntempl = str_replace('%N',$invoice['number'],$ntempl);
 	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
 	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
-	$layout['pagetitle'] = 'Faktura VAT nr '.$ntempl;
+	$layout['pagetitle'] = sprintf(trans('Invoice No. %s'),$ntempl);
 	$invoice['last'] = TRUE;
 	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');
-	$SMARTY->assign('type','ORYGINA£');
+	$SMARTY->assign('type',trans('ORIGINAL'));
 	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
 	$SMARTY->display('clearfooter.html');
 }
@@ -99,13 +99,13 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$ntempl = str_replace('%N',$invoice['number'],$ntempl);
 	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
 	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
-	$layout['pagetitle'] = 'Faktura VAT nr '.$ntempl;	
+	$layout['pagetitle'] = sprintf(trans('Invoice No. %s'),$ntempl);
 	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');
-	$SMARTY->assign('type','ORYGINA£');
+	$SMARTY->assign('type',trans('ORIGINAL'));
 	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
-	$SMARTY->assign('type','KOPIA');
+	$SMARTY->assign('type',trans('COPY'));
 	$invoice['last'] = TRUE;
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);

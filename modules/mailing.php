@@ -24,26 +24,26 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Korespondencja seryjna";
+$layout['pagetitle'] = trans('Serial Mail');
 
 if($mailing = $_POST['mailing'])
 {
 	if($mailing['group'] < 0 || $mailing['group'] > 3)
-		$error['group'] = 'Wybra³e¶ b³êdn± grupê u¿ytkowników';
+		$error['group'] = trans('Incorrect customers group!');
 
 	if($mailing['sender']=='')
-		$error['sender'] = 'Proszê podaæ e-mail nadawcy!';
+		$error['sender'] = trans('Sender e-mail is required!');
 	elseif(!check_email($mailing['sender']))
-		$error['sender'] = 'Podany e-mail nie wydaje siê poprawny!';
+		$error['sender'] = trans('Specified e-mail isn\'t correct!');
 
 	if($mailing['from']=='')
-		$error['from'] = 'Proszê podaæ nadawcê!';
+		$error['from'] = trans('Sender name is required!');
 
 	if($mailing['subject']=='')
-		$error['subject'] = 'Proszê podaæ temat listu!';
+		$error['subject'] = trans('Message subject is required!');
 
 	if($mailing['body']=='')
-		$error['body'] = 'Proszê podaæ tre¶æ wiadomo¶ci!';
+		$error['body'] = trans('Message body is required!');
 
 	if(!$error)
 	{
