@@ -34,6 +34,7 @@ if($filename = $_GET['file'])
 			$size = @filesize($file);
 			header('Content-Length: '.$size.' bytes');
 			header('Content-Type: '.$attach['contenttype']);
+			header('Cache-Control: private');
 			header('Content-Disposition: attachment; filename='.$filename);
 			@readfile($file);
 		}

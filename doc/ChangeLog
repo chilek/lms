@@ -8,6 +8,7 @@ wersja 1.4.0rc2 Evalla (??/??/2004):
   - uzupe³niona dokumentacja (alec)
   - poprawki w contrib/customer_otherip (alec)
   - BTS#0000203: nie mo¿na siê logowaæ na usuniête konto admina (alec)
+  - poprawiony b³±d uniemo¿liwiaj±cy otwarcie za³±cznika wiadomo¶ci rt (alec)
 
 wersja 1.4.0rc1 Evalla (18/09/2004):
 
