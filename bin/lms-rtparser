@@ -22,6 +22,9 @@
 #
 #  $Id$
 
+#TODO - detect replies to tickets
+#TODO - reply to a sender on a new ticket
+
 use strict;
 use DBI;
 use Config::IniFiles;
@@ -106,7 +109,9 @@ my $headers = $entity->head;
 my $mh_from = $headers->get('From');
 my $mh_to = $headers->get('To');
 my $mh_msgid = $headers->get('Message-ID');
+my $mh_replyto = $headers->get('Reply-To');
 my $mh_subject = $headers->get('Subject');
+my $mailheaders = $headers->as_string;
 my $body;
 my $mailbody;
 
@@ -130,19 +135,26 @@ else
 	$mailbody = $body->as_string;
 }
 
+
 chomp $mh_from;
 chomp $mh_subject;
 chomp $mh_msgid;
 chomp $mailbody;
+chomp $mailheaders;
+chomp $mh_replyto;
 
 $mailbody =~ s/\\/\\\\/g;
 $mailbody =~ s/\'/\\\'/g;
+$mailheaders =~ s/\\/\\\\/g;
+$mailheaders =~ s/\'/\\\'/g;
 $mh_from =~ s/\\/\\\\/g;
 $mh_from =~ s/\'/\\\'/g;
 $mh_msgid =~ s/\\/\\\\/g;
 $mh_msgid =~ s/\'/\\\'/g;
 $mh_subject =~ s/\\/\\\\/g;
 $mh_subject =~ s/\'/\\\'/g;
+$mh_replyto =~ s/\\/\\\\/g;
+$mh_replyto =~ s/\'/\\\'/g;
 
 #print "From: $mh_from\n";
 #print "Subject: $mh_subject\n";
@@ -190,7 +202,29 @@ my $timestamp = $row->{'timestamp'};
 $dbq = $dbase->prepare("INSERT INTO tickets (queueid, requestor, subject, createtime) VALUES ($queue, '$mh_from', '$mh_subject', '$timestamp')");
 $dbq->execute();
 
-#print Data::Dumper::Dumper $entity;	# debug
+# fetch assigned ID
+
+$dbq = $dbase->prepare("SELECT id FROM tickets WHERE queueid = '$queue' AND requestor = '$mh_from' AND subject = '$mh_subject' AND createtime = '$timestamp'");
+$dbq->execute();
+$row = $dbq->fetchrow_hashref();
+my $ticket_id = $row->{'id'};
+
+#CREATE TABLE `rtmessages` (
+#`id` INT NOT NULL AUTO_INCREMENT ,
+#`ticketid` INT DEFAULT '0' NOT NULL ,
+#`sender` INT DEFAULT '0' NOT NULL ,
+#`mailfrom` VARCHAR( 255 ) NOT NULL ,
+#`subject` VARCHAR( 255 ) NOT NULL ,
+#`messageid` VARCHAR( 255 ) NOT NULL ,
+#`inreplyto` INT DEFAULT '0' NOT NULL ,
+#`replyto` TEXT NOT NULL ,
+#`headers` TEXT NOT NULL ,
+#`body` MEDIUMTEXT NOT NULL ,
+#PRIMARY KEY ( `id` ) 
+#);
+
+$dbq = $dbase->prepare("INSERT INTO rtmessages (ticketid, mailfrom, subject, messageid, replyto, headers, body) VALUES ($ticket_id, '$mh_from', '$mh_subject', '$mh_msgid', '$mh_replyto', '$mailheaders', '$mailbody')");
+$dbq->execute();
 $parser->filer->purge;			# cleanup
 $dbq->finish();
 $dbase->disconnect();
