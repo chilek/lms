@@ -35,7 +35,7 @@
 	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD WIDTH="95%" CLASS="fleft" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';" class="fleft">
 			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{$tarifflist[tariffs].name}</B><BR>
-			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{$tarifflist[tariffs].description}
+			{if $tarifflist[tariffs].description}<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{$tarifflist[tariffs].description}{/if}
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
