@@ -102,6 +102,6 @@ int db_nrows(QueryHandle *);
 int db_ncols(QueryHandle *);
 
 /* Get column name */
-unsigned char * db_colname(ResultHandle *, int);
+unsigned char * db_colname(QueryHandle *, int);
 
 #endif

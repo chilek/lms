@@ -19,7 +19,6 @@ static QueryHandle * get_query_result(ResultHandle *res)
     unsigned char *buf;
     MYSQL_ROW row;
     MYSQL_FIELD *field;
-    enum enum_field_types dtype;
 
     query = (QueryHandle *) malloc(sizeof(QueryHandle));
     query->ncols = mysql_num_fields(res);
