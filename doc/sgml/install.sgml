@@ -556,6 +556,12 @@ database = /usr/local/lms/lms.db</screen>
 	    <para>Example:     <prompt>lastonline_limit = 300</prompt></para>
 	</listitem>
 	<listitem>
+	    <para>timetable_days_forward</para>
+	    <para>Specify number of days (including current day) on timetable.
+	    Default: 7.</para>
+	    <para>Example:     <prompt>timetable_days_forward = 2</prompt></para>
+	</listitem>
+	<listitem>
 	    <para>arpd_servers</para>
 	    <para>List of arpd servers for reading of MAC addresses from remote networks.
 	    That list should include items IP[:port] separated with spaces.
@@ -594,22 +600,23 @@ database = /usr/local/lms/lms.db</screen>
       przydzieliæ dowoln± kombinacjê regu³ dostêpu.</para>
       <para>Domy¶lnie zdefiniowanych jest osiem regu³ dostêpu. 
        <itemizedlist>
-	<listitem><para>pe³en dostêp</para></listitem>
-        <listitem><para>odczyt wszystkich danych (z wyj±tkiem Helpdesku)</para></listitem>
-        <listitem><para>pod³±czanie i od³±czanie komputerów</para></listitem>
-        <listitem><para>manipulowanie finansami</para></listitem>
-        <listitem><para>prze³adowywanie konfiguracji</para></listitem>
-        <listitem><para>manipulowanie danymi u¿ytkowników</para></listitem>
-        <listitem><para>manipulowanie danymi komputerów</para></listitem>
-        <listitem><para>dostêp do statystyk</para></listitem>
-        <listitem><para>dostêp do korespondencji seryjnej</para></listitem>
-        <listitem><para>zarz±dzanie Helpdeskiem (RT)</para></listitem>
-        <listitem><para>obs³uga Helpdesku (RT)</para></listitem>
-        <listitem><para>zarz±dzanie kontami</para></listitem>
-        <listitem><para>konfiguracja UI</para></listitem>
-        <listitem><para>zarz±dzanie sieciami i urz±dzeniami sieciowymi</para></listitem>
-        <listitem><para>brak dostêpu do modyfikacji i zak³adania kont administratorów</para></listitem>
-        <listitem><para>brak dostêpu</para></listitem>
+	<listitem><para>full access</para></listitem>
+        <listitem><para>read only (excluding Helpdesk)</para></listitem>
+        <listitem><para>nodes connection/disconnection</para></listitem>
+        <listitem><para>finances management</para></listitem>
+        <listitem><para>configuration reload</para></listitem>
+        <listitem><para>customers management</para></listitem>
+        <listitem><para>nodes management</para></listitem>
+        <listitem><para>stats access</para></listitem>
+        <listitem><para>mailing access</para></listitem>
+        <listitem><para>Helpdesk (RT) administration</para></listitem>
+        <listitem><para>Helpdesku (RT) operation</para></listitem>
+        <listitem><para>accounts management</para></listitem>
+        <listitem><para>UI configuration</para></listitem>
+        <listitem><para>networks and devices management</para></listitem>
+	<listitem><para>timetable management</para></listitem>
+        <listitem><para>users edition and addition forbidden</para></listitem>
+        <listitem><para>no access</para></listitem>
        </itemizedlist>
       Niektóre z nich zezwalaj± na dostêp do modu³ów oraz dwie zabraniaj±. Modu³y do których 
       administrator ma zawsze dostêp to: welcome, copyrights,  logout, chpasswd (przy czym 
