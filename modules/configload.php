@@ -131,6 +131,10 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 		case 'helpdesk_backend_mode':
 			$desc = trans('When enabled, all messages in helpdesk system (except sent to requestor) will be sent to mail server at address of right queue. Script lms-rtparser should be running on server. Messages to database will be written by script. Default: disabled.');
 		break;
+
+		case 'newticket_notify':
+			$desc = trans('When enabled, system will sent notification after addition of new ticket to all users with rights for current queue. Default: disabled.');
+		break;
 		
 		case 'contract_template':
 			$desc = trans('Specify customer contract template. It can include comma separated list of contract templates with their names. Default: contract.html.');
