@@ -8,4 +8,5 @@ struct payments_module
 	unsigned char *deadline;
 	int up_payments;
 	int expiry_days;
+	int monthly_num;
 };

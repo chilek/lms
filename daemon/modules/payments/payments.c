@@ -111,7 +111,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	time_t t;
 	struct tm *tt;
 	unsigned char monthday[3], month[3], year[5], quarterday[3], weekday[2], yearday[4];  //odjac jeden?
-	unsigned char yearstart[12], yearend[12];
+	unsigned char start[12], end[12];
 	
 	// get current date
 	t = time(NULL);
@@ -145,13 +145,35 @@ void reload(GLOBAL *g, struct payments_module *p)
 	m_period = get_period(tt, 1, p->up_payments);
  	w_period = get_period(tt, 0, p->up_payments);
 
-	// set begin and end date for present year 
-	tt->tm_sec = 0; tt->tm_min = 0; tt->tm_hour = 0; tt->tm_mday = 1; tt->tm_mon = 0;
+	// checking of invoices numbering method ...
+	if( (res = g->db_query("SELECT value FROM uiconfig WHERE var='monthly_numbering' AND section='invoices'"))!= NULL ) 
+	{
+  		if( res->nrows )
+			p->monthly_num = atoi(g->db_get_data(res,0,"value"));
+		g->db_free(res);
+	}
+
+	// and setting appropriate time limits to get current invoice number
+	tt->tm_sec = 0;
+	tt->tm_min = 0;
+	tt->tm_hour = 0;
+	tt->tm_mday = 1;
 	tt->tm_year = atoi(year)-1900;
-	strftime(yearstart,	sizeof(yearstart),	"%s", tt);
-	tt->tm_sec = 59; tt->tm_min = 59; tt->tm_hour = 23; tt->tm_mon = 11; tt->tm_mday = 31;
-	tt->tm_year = atoi(year)-1900;
-	strftime(yearend,	sizeof(yearend),	"%s",tt);
+
+	if(p->monthly_num)
+	{
+		tt->tm_mon = atoi(month)-1; // current month
+		strftime(start,	sizeof(start), "%s", tt);
+		tt->tm_mon++; // next month
+		strftime(end, sizeof(end), "%s", tt);
+	}
+	else
+	{
+		tt->tm_mon = 0; // January
+		strftime(start,	sizeof(start), "%s", tt);
+		tt->tm_year++; // next year
+		strftime(end, sizeof(end), "%s", tt);
+	}
 
 	/****** main payments *******/
 	if( (res = g->db_pquery("SELECT * FROM payments WHERE value <> 0 AND ((period=0 AND at=?) OR (period=1 AND at=?) OR (period=2 AND at=?) OR (period=3 AND at=?))", weekday, monthday, quarterday, yearday))!= NULL )
@@ -173,7 +195,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		
 	/****** user payments *******/
 	// first get max invoiceid for present year
-	if( (res = g->db_pquery("SELECT MAX(number) AS number FROM invoices WHERE cdate >= ? AND cdate <= ?", yearstart, yearend))!= NULL ) 
+	if( (res = g->db_pquery("SELECT MAX(number) AS number FROM invoices WHERE cdate >= ? AND cdate < ?", start, end))!= NULL ) 
 	{
   		if( res->nrows )
 			number = atoi(g->db_get_data(res,0,"number"));
@@ -348,6 +370,7 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	p->up_payments = g->iniparser_getboolean(ini, s, 1);
 	free(s); s = g->str_concat(instance, ":expiry_days");
 	p->expiry_days = g->iniparser_getint(ini, s, 30);
+	p->monthly_num = g->iniparser_getboolean(ini, "invoices:monthly_numbering", 0);
 	
 	g->iniparser_freedict(ini);
 	free(s);
