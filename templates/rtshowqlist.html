@@ -1,5 +1,47 @@
 {include file="header.html"}
 <!-- $Id$ -->
 {include file="rtheader.html"}
-<H1>{$layout.pagetitle}</H1>
+<H1><B>{$layout.pagetitle}</B></H1>
+<TABLE cellpadding="3" WIDTH="100%">
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" WIDTH="1%" NOWRAP>
+			<B>Kolejka:</B>
+		</TD>
+		<TD CLASS="fbt" WIDTH="99%">
+			<B>E-mail:</B>
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%">
+			Nowych:
+		</TD>
+		<TD CLASS="fbt" WIDTH="1%">
+			Otwartych:
+		</TD>
+		<TD CLASS="frightu" WIDTH="1%">
+			&nbsp;
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{foreach from=$queues item=queue}
+	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD CLASS="fleft">
+			<FONT CLASS="h2"><B>{$queue.name}</B></FONT>
+		</TD>
+		<TD>
+			<A HREF="mailto:{$queue.email}">{$queue.email}</A>
+		</TD>
+		<TD ALIGN="CENTER">
+			{$queue.stats.new|default:0}
+		</TD>
+		<TD ALIGN="CENTER">
+			{$queue.stats.open|default:0}
+		</TD>
+		<TD CLASS="fright" NOWRAP>
+			<A HREF="?m=rtdeletequeue&id={$queue.id}"><IMG SRC="img/delete.gif" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtdeditqueue&id={$queue.id}"><IMG SRC="img/edit.gif" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtviewqueue&id={$queue.id}"><IMG SRC="img/view.gif" ALIGN="absmiddle" BORDER="0"></A>
+			<A HREF="?m=rtnewticket&id={$queue.id}"><IMG SRC="img/netdev_description.gif" ALIGN="absmiddle" BORDER="0"></A>
+		</TD>
+	</TR>
+	{/foreach}
+</TABLE>
 {include file="footer.html"}
