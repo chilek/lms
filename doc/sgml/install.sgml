@@ -420,9 +420,9 @@ database = /usr/local/lms/lms.db</screen>
          on zero, you'll can't use LMS!</para></warning></para>
      </listitem>
      <listitem>
-         <para>userlist_pagelimit</para>
-         <para>Limit of displayed positions on one page on users list. Default: no limit.</para>
-         <para>Example:     <prompt>userlist_pagelimit = 10</prompt></para>
+         <para>customerlist_pagelimit</para>
+         <para>Limit of displayed positions on one page on customers list. Default: no limit.</para>
+         <para>Example:     <prompt>customerlist_pagelimit = 10</prompt></para>
      </listitem>
      <listitem>
          <para>nodelist_pagelimit</para>

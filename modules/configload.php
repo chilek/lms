@@ -39,8 +39,8 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
      case 'timeout':
          $desc = trans('Timeout of www session. After that time (in seconds) user will be logged out if not take some action. Default: 600.');
          break;
-     case 'userlist_pagelimit':
-         $desc = trans('Limit of displayed positions on one page on users list. Default: no limit.');
+     case 'customerlist_pagelimit':
+         $desc = trans('Limit of displayed records on page on customers list. Default: no limit.');
          break;
      case 'nodelist_pagelimit':
          $desc = trans('Limit of displayed records on page on nodes list. Default: no limit.');

@@ -450,9 +450,9 @@ database = /usr/local/lms/lms.db</screen>
 	    bêdziesz móg³ korzystaæ z LMS!</para></warning></para>
 	</listitem>
 	<listitem>
-	    <para>userlist_pagelimit</para>
-	    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie u¿ytkowników. Domy¶lnie brak limitu.</para>
-	    <para>Przyk³ad:	<prompt>userlist_pagelimit = 10</prompt></para>
+	    <para>customerlist_pagelimit</para>
+	    <para>Limit wy¶wietlanych pozycji na stronie w li¶cie klientów. Domy¶lnie brak limitu.</para>
+	    <para>Przyk³ad:	<prompt>customerlist_pagelimit = 10</prompt></para>
 	</listitem>
 	<listitem>
 	    <para>nodelist_pagelimit</para>
