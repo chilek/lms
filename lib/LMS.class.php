@@ -81,8 +81,15 @@ class LMS
 
 	function SetTS($table) // ustawia timestamp tabeli w tabeli 'timestamps'
 	{
-		$this->ADB->Replace("timestamps",array("tablename" => "'_global'","time" => $this->sqlTSfmt() ),"tablename");
-		return $this->ADB->Replace("timestamps",array("tablename" => "'".$table."'","time" => $this->sqlTSfmt() ),"tablename");
+		if($this->ADB->GetOne('SELECT * FROM timestamps WHERE tablename=?',array($table)))
+			$this->ADB->Execute('UPDATE timestamps SET time = '.$this->sqlTSfmt().' WHERE tablename=?',array($table))
+		else
+			$this->ADB->Execute('INSERT INTO timestampe (tablename, time) VALUES (?, '.$this->sqlTSfmt().')',array($table));
+
+		if($this->ADB->GetOne('SELECT * FROM timestamps WHERE tablename=?',array('_global')))
+			$this->ADB->Execute('UPDATE timestamps SET time = '.$this->sqlTSfmt().' WHERE tablename=?',array('_global'))
+		else
+			$this->ADB->Execute('INSERT INTO timestampe (tablename, time) VALUES (?, '.$this->sqlTSfmt().')',array('_global'));
 	}
 
 	function GetTS($table) // zwraca timestamp tabeli zapisany w tabeli 'timestamps'
