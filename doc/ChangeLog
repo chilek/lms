@@ -18,6 +18,10 @@ wersja 1.5.4 (??/??/????):
     przy u¿yciu procmaila (D.Rejmer)
   - dodawanie aliasów i domen przeniesiono do osobnych modu³ów, uprawnienie
     'tylko odczyt' zezwala na odczyt danych kont/aliasów/domen (alec)
+  - BTS#0000279: na szablonie wysy³ania maili poprawiono zamienione miejscami
+    nazwê i email nadawcy (alec)
+  - BTS#0000280: poprawione b³êdne zaokr±glanie oraz sumowanie ogólnej kwoty
+    podatku na rejestrze sprzeda¿y (.PaKud/alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 

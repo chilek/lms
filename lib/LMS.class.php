@@ -1576,6 +1576,7 @@ class LMS
 			foreach($result as $idx => $row)
 			{
 				$id = $row['id'];
+				$value = sprintf('%0.2f',$row['value']);
 				$list[$id]['custname'] = $row['name'];
 				$list[$id]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
 				$list[$id]['nip'] = ($row['nip'] ? trans('NIP').' '.$row['nip'] : ($row['pesel'] ? trans('PID').' '.$row['pesel'] : ''));
@@ -1583,36 +1584,39 @@ class LMS
 				$list[$id]['cdate'] = $row['cdate'];
 				$list[$id]['year'] = date('Y',$row['cdate']);
 				$list[$id]['month'] = date('m',$row['cdate']);
-				$list[$id]['brutto'] += $row['value'];
-				$list['sum']['brutto'] += $row['value'];
+				$list[$id]['brutto'] += $value;
+				$list['sum']['brutto'] += $value;
 				if ($row['taxvalue'] == '')
 				{
-					$list[$id]['valfree'] += $row['value'];
-					$list['sum']['valfree'] +=$row['value'];
+					$list[$id]['valfree'] += $value;
+					$list['sum']['valfree'] += $value;
 				}
 				else
 					switch(round($row['taxvalue'],1))
 					{
 					    case '0.0':
-						    $list[$id]['val0'] += $row['value'];
-						    $list['sum']['val0'] +=$row['value'];
+						    $list[$id]['val0'] += $value;
+						    $list['sum']['val0'] += $value;
 					    break;
 					    case '7.0':
-						     $list[$id]['val7'] += $row['value']/1.07;
-						     $list[$id]['tax7'] += $row['value']-$row['value']/1.07;
+						     $val = sprintf('%0.2f',$value/1.07);
+						     $list[$id]['val7'] += $val;
+						     $list[$id]['tax7'] += $value-$val;
 						     $list[$id]['tax'] += $list[$id]['tax7'];
-						     $list['sum']['val7'] +=$row['value']/1.07;
-						     $list['sum']['tax7'] +=$row['value']-$row['value']/1.07;
+						     $list['sum']['val7'] += $val;
+						     $list['sum']['tax7'] += $value-$val;
+						     $list['sum']['tax'] += $list[$id]['tax7'];
 					    break;
 					    case '22.0':
-						     $list[$id]['val22'] += $row['value']/1.22;
-						     $list[$id]['tax22'] += $row['value']-$row['value']/1.22;
+					    	     $val = sprintf('%0.2f',$value/1.22);
+						     $list[$id]['val22'] += $val;
+						     $list[$id]['tax22'] += $value-$val;
 						     $list[$id]['tax'] += $list[$id]['tax22'];
-						     $list['sum']['val22'] +=$row['value']/1.22;
-						     $list['sum']['tax22'] +=$row['value']-$row['value']/1.22;
+						     $list['sum']['val22'] += $val;
+						     $list['sum']['tax22'] += $value-$val;
+						     $list['sum']['tax'] += $list[$id]['tax22'];
 					    break;
 					}
-				$list['sum']['tax'] += $list[$id]['tax'];
 			}
 		}
 		return $list;
