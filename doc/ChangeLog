@@ -5,6 +5,7 @@ wersja 1.2.1 Sarah (04/05/2004):
   - poprawiony b³±d w almsd powoduj±cy wysypkê na MySQL'u w sytuacji, gdy
     SELECT nie zwraca³ wyników (alec)
   - poprawione ignorowanie naliczeñ o warto¶ci zerowej (lukasz)
+  - poprawiony trigger w polu 'downrate' w tariffedit.html (alec)
 
 wersja 1.2.0 Janet (28/04/2004):
 
