@@ -84,7 +84,7 @@ if(isset($networkdata))
 		}
 	}
 
-	if($networkdata['interface'] != "" && !eregi('^[a-z0-9]+$',$networkdata['interface']))
+	if($networkdata['interface'] != "" && !eregi('^[a-z0-9:.]+$',$networkdata['interface']))
 		$error['interface'] = "Niepoprawna nazwa interfejsu!";
 
 	if($networkdata['name']=="")

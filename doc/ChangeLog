@@ -1,5 +1,10 @@
 $Id$
 
+wersja 1.2.7 ??? (??/??/2004):
+
+  - nazwa interfejsu mo¿e siê teraz tak¿e odnosiæ do przestarza³ego systemu
+    aliasowania, b¹dŸ, intefejsów w VLAN'ach (JacekK/alec+lukasz)
+
 wersja 1.2.6 Dreylock (24/09/2004):
 
   - w skryptach sql'owych dodany index na kolumnie 'userid' w tabeli 'cash' 

@@ -72,7 +72,7 @@ if(isset($netadd))
 		}
 	}
 
-	if($netadd['interface'] != '' && !eregi('^[a-z0-9]+$',$netadd['interface']))
+	if($netadd['interface'] != '' && !eregi('^[a-z0-9:.]+$',$netadd['interface']))
 		$error['interface'] = "Niepoprawna nazwa interfejsu!";
 
 	if($netadd['dns']!="" && !check_ip($netadd['dns']))
