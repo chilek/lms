@@ -3,10 +3,10 @@
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 {if $dane}
-<TABLE WIDTH=610 ALIGN="center">
+<TABLE WIDTH=620 ALIGN="center">
     <TR>
 	<TD VALIGN="top">
-	    <TABLE WIDTH=300>
+	    <TABLE WIDTH=310>
 		<TR class="DARK">
 		    <TD class="FALL" align="center">
 		    <P><B>Download</B></P>
@@ -17,7 +17,7 @@
 		    {section name=download loop=$download.name}
 		    <TABLE>
 		    <TR>
-			<TD ALIGN="right" WIDTH=75>{if $showips}{$download.ipaddr[download]}{else}{$download.name[download]|truncate:10:"..."}{/if}</TD>
+			<TD ALIGN="right" WIDTH=85>{if $showips}{$download.ipaddr[download]}{else}{$download.name[download]|truncate:10:"..."}{/if}</TD>
     		    	<TD WIDTH={$download.bar[download]} BGCOLOR="#FFBD9B"></TD>
     			<TD>{$download.dane[download]|string_format:"%.2f "}{$download.jedn[download]}</TD>
 		    <TR>
@@ -33,7 +33,7 @@
 	    </TABLE>
 	</TD>
 	<TD VALIGN="top"> 
-	    <TABLE WIDTH=300>
+	    <TABLE WIDTH=310>
 		<TR class="DARK">
 		    <TD class="FALL" align="center">
 		    <P><B>Upload</B></P>
@@ -44,7 +44,7 @@
 		    {section name=upload loop=$upload.name}
 		    <TABLE>
 		    <TR>
-			<TD ALIGN="right" WIDTH=75>{if $showips}{$upload.ipaddr[upload]}{else}{$upload.name[upload]|truncate:10:"..."}{/if}</TD>
+			<TD ALIGN="right" WIDTH=85>{if $showips}{$upload.ipaddr[upload]}{else}{$upload.name[upload]|truncate:10:"..."}{/if}</TD>
 			<TD WIDTH={$upload.bar[upload]} BGCOLOR="#CEBD9B"></TD>
 			<TD>{$upload.dane[upload]|string_format:"%.2f "}{$upload.jedn[upload]}</TD>
 		    <TR>
