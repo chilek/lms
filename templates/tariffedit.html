@@ -24,7 +24,7 @@
 			<B>Warto¶æ:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]" {tip trigger="value"}> z³
+			<INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]" {tip text="Podaj kwotê" trigger="value"}> z³
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -35,7 +35,7 @@
 			<B>Stawka&nbsp;podatku:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.taxvalue}" SIZE="8" NAME="tariff[taxvalue]" {tip trigger="taxvalue"}> %
+			<INPUT TYPE="TEXT" VALUE="{$tariff.taxvalue}" SIZE="8" NAME="tariff[taxvalue]" {tip text="Podaj wysoko¶æ podatku VAT (opcjonalnie)" trigger="taxvalue"}> %
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -46,7 +46,7 @@
 			<B>PKWiU:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.sww}" SIZE="8" NAME="tariff[sww]" {tip trigger="sww"}>
+			<INPUT TYPE="TEXT" VALUE="{$tariff.pkwiu}" SIZE="8" NAME="tariff[pkwiu]" {tip text="Podaj symbol PKWiU (opcjonalnie)" trigger="pkwiu"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -57,7 +57,7 @@
 			<B>Uprate:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.uprate}" SIZE="8" NAME="tariff[uprate]" {tip trigger="uprate"}> kb/s
+			<INPUT TYPE="TEXT" VALUE="{$tariff.uprate}" SIZE="8" NAME="tariff[uprate]" {tip text="Podaj liczbê dla ograniczenia uploadu (opcjonalnie)" trigger="uprate"}> kb/s
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -68,7 +68,7 @@
 			<B>Downrate:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.downrate}" SIZE="8" NAME="tariff[downrate]" {tip trigger="uprate"}> kb/s
+			<INPUT TYPE="TEXT" VALUE="{$tariff.downrate}" SIZE="8" NAME="tariff[downrate]" {tip text="Podaj liczbê dla ograniczenia downloadu (opcjonalnie)" trigger="uprate"}> kb/s
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -79,7 +79,7 @@
 			<B>Opis:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.description}" NAME="tariff[description]" SIZE="40">
+			<INPUT TYPE="TEXT" VALUE="{$tariff.description}" NAME="tariff[description]" SIZE="40" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
