@@ -172,12 +172,55 @@
 	<TD WIDTH=300 ALIGN="right" CLASS="fleft">
 	</TD>
 	<TD CLASS="fright">&nbsp;
-	<INPUT TYPE="checkbox" NAME="showips" VALUE="1"><B>&nbsp;adresy IP zamiast nazw hostów</B></INPUT>
+	<INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="checkbox" NAME="showips" VALUE="1"><B>&nbsp;adresy IP zamiast nazw hostów</B></INPUT>
 	</TD>
     </TR>
     <TR CLASS="light">
 	<TD COLSPAN=2 ALIGN="right" CLASS="fbottomu">
 	<A HREF="javascript:document.traffic.submit();" ACCESSKEY="D">Dalej <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT="">&nbsp;</A>
+	</TD>
+    </TR>
+</TABLE>
+</FORM>
+<BR><BR><BR>
+<FORM NAME="trafficdbcompact" METHOD="POST" ACTION="?m=trafficdbcompact">
+<TABLE ALIGN="center" WIDTH=600>
+    <TR CLASS="dark">
+	<TD COLSPAN=5 ALIGN="center" CLASS="ftopu">
+	<B>Kompaktowanie bazy danych</B>
+	</TD>
+    </TR>    
+    <TR CLASS="light">
+	<TD WIDTH=5 CLASS="fleft"></TD>
+	<TD WIDTH=295 ALIGN="left">
+	Kompaktowanie bazy danych polega na usuniêciu zbêdnych danych z bazy
+	oraz u¶rednieniu isniej±cych danych, co spowoduje zmniejszenie ilo¶ci
+	rekordów w bazie, a zatem skróci czas oczekiwania na wyniki oraz zmniejszy
+	ich dok³adno¶æ.<BR>
+	<FONT CLASS="alert">Uwaga: Proces jest nieodwracalny.</FONT>
+	</TD>
+	<TD WIDTH=5></TD>
+  	<TD WIDTH=170 ALIGN="left">
+	<B>Poziom dok³adno¶ci danych:</B>
+	</TD>
+	<TD CLASS="fright"><B>
+	<INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="1">Niski</INPUT><BR>
+	<INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="2">¦redni</INPUT><BR>
+	<INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="3">Wysoki</INPUT><BR>
+	</B></TD>
+    </TR>
+    <TR COLSPAN=5 CLASS="light">	
+	<TD WIDTH=5 CLASS="fleft"></TD>
+	<TD WIDTH=295 ALIGN="left"></TD>
+	<TD WIDTH=5></TD>
+  	<TD WIDTH=170ALIGN="left">
+	<INPUT STYLE="border-width: 0pt; background: #DFD5BD" TYPE="checkbox" NAME="delete" VALUE="1"><B>&nbsp;Usuñ dane ponadroczne</B></INPUT>
+	</TD>
+	<TD CLASS="fright"></TD>	
+    </TR>
+    <TR CLASS="light">
+	<TD COLSPAN=5 ALIGN="right" CLASS="fbottomu">
+	<A HREF="javascript:document.trafficdbcompact.submit();" ACCESSKEY="K">Kompaktuj <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT="">&nbsp;</A>
 	</TD>
     </TR>
 </TABLE>
