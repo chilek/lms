@@ -1657,12 +1657,15 @@ class LMS
 				exec("arp -an|grep -v incompl",$result);
 				foreach($result as $arpline)
 				{
-					list($empty,$ip,$empty,$mac) = explode(" ",$arpline);
+					list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(" ",$arpline);
 					$ip = str_replace("(","",str_replace(")","",$ip));
-					$result['mac'][] = $mac;
-					$result['ip'][] = $ip;
-					$result['longip'][] = ip_long($ip);
-					$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+					if($perm != "PERM")
+					{
+						$result['mac'][] = $mac;
+						$result['ip'][] = $ip;
+						$result['longip'][] = ip_long($ip);
+						$result['nodename'][] = $this->GetNodeNameByMAC($mac);
+					}
 				}
 				break;
 
@@ -1789,6 +1792,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.229  2003/09/17 02:14:09  lukasz
+ * - to samo co poprzednio dla innych osów
+ *
  * Revision 1.228  2003/09/17 02:10:40  lukasz
  * - zmiana zachowania procedury zczytuj±cej mac adresy - na Linuksie szuka
  *   ona wpisów 0x2 (podczas gdy pernamentne s± oznaczone 0x6)
