@@ -1278,7 +1278,7 @@ class LMS
 			if($delta>$this->CONFIG['phpui']['lastonline_limit'])
 				$result['lastonlinedate'] .= uptimef($delta).($delta>60 ? ' temu ' : '').'('.date('Y/m/d, H:i',$result['lastonline']).')';
 			else
-				$result['lastonlinedate'] .= trans('off-line');
+				$result['lastonlinedate'] .= trans('on-line');
 			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
 			$result['owner'] = $this->GetUsername($result['ownerid']);
 			$result['netid'] = $this->GetNetIDByIP($result['ip']);
