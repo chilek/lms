@@ -1,6 +1,6 @@
 $Id$
 
-version 1.2.0 (??/03/2004):
+version 1.2.0rc4 Janet (29/03/2004):
 
   - fixed userlist sorting by balance (alec)
   - fixed errors in 'hostfile' and 'oident' almsd modules (alec)
@@ -9,7 +9,7 @@ version 1.2.0 (??/03/2004):
     user assignments (alec)
   - fixed logout problem on Opera browser - BTS#0000128 (alec)
 
-version 1.2.0rc3 Janet (??/??/2004):
+version 1.2.0rc3 Janet (12/03/2004):
 
   - bugfix in almsd's 'hostfile' module, in hosts templates added two 
     vars: %domain - replaced by network domain and %net - by name (alec)
