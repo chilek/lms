@@ -1,3 +1,6 @@
+* 02.12.2003
+  - modu³ 'payments' przystosowany do nowych faktur (alec)
+
 * 01.12.2003
   - w 'payments' poprawione obliczanie %period oraz dodana zmienna %tariff,
     która zostaje zamieniona nazw± taryfy (alec)
