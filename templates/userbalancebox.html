@@ -174,7 +174,7 @@
 					<TD colspan="3">
 						<A href="?m=prepayments&id={$balancelist.userid}">{t}Prepayments{/t} <IMG src="img/edit.gif" border="0" ALT="" align="absmiddle"></A>
 						{if $userinfo.balance < 0}
-						<A href="?m=userbalanceok&id={$userinfo.id}" OnClick="return confirmLink(this, '{t 0=$userinfo.username|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} <IMG src="img/edit.gif" border="0" ALT="" align="absmiddle"></A>
+						<A href="?m=userbalanceok&id={$userinfo.id}" OnClick="return confirmLink(this, '{t 0=$userinfo.username|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');">{t}Clear Account{/t} <IMG src="img/edit.gif" border="0" ALT="" align="absmiddle"></A>
 						{/if}
 
 					</TD>
