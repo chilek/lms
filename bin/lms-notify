@@ -30,7 +30,7 @@ use Net::SMTP;
 use vars qw($configfile $quiet $help $version);
 use POSIX qw(strftime);
 
-my $_version = '1.0.0';
+my $_version = '1.0-cvs';
 my $my_template;
 
 my %options = (
