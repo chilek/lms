@@ -24,6 +24,29 @@
  *  $Id$
  */
 
+include($_LIB_DIR.'/multipart_mime_email.php');
+
+function MessageAdd($msg, $file=NULL)
+{
+	global $LMS;
+	$time = time();
+	$LMS->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, userid, mailfrom, inreplyto, messageid, replyto, headers)
+			    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $time, $msg['subject'], $msg['body'], $msg['adminid'], $msg['userid'], $msg['mailfrom'], $msg['inreplyto'], $msg['messageid'], $msg['replyto'], $msg['headers']));
+	$LMS->SetTS('rtmessages');
+	if($file['name'])
+	{
+		$id = $LMS->DB->GetOne('SELECT id FROM rtmessages WHERE ticketid=? AND adminid=? AND userid=? AND createtime=?', array($msg['ticketid'], $msg['adminid'], $msg['userid'], $time));
+		$dir = $LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d',$msg['ticketid'],$id);
+		@mkdir($LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d',$msg['ticketid']), 0700);
+		mkdir($dir, 0700);
+		$newfile = $dir.'/'.$file['name'];
+		if(rename($file['tmp_name'], $newfile))
+			if($LMS->DB->Execute('INSERT INTO rtattachments (messageid, filename, contenttype) 
+						VALUES (?,?,?)', array($id, $file['name'], $file['type'])))
+				$LMS->SetTS('rtattachments');
+	}		    
+}
+
 $message = $_POST['message'];
 
 if(isset($message))
@@ -39,6 +62,30 @@ if(isset($message))
 
 	if($message['destination']!='' && $message['sender']=='user')
 		$error['destination'] = 'U¿ytkownik nie mo¿e wysy³aæ wiadomo¶ci!';
+
+	if($filename = $_FILES['file']['name'])
+	{
+		if(is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'])
+		{
+			$file = '';
+			$fd = fopen($_FILES['file']['tmp_name'], 'r');
+			if($fd)
+			{
+				while(!feof($fd))
+					$file .= fread($fd,256);
+				fclose($fd);
+			}
+		} 
+		else // upload errors
+			switch($_FILES['file']['error'])
+			{
+				case 1: 			
+				case 2: $error['file'] = 'Plik jest za du¿y.'; break;
+				case 3: $error['file'] = 'Plik zosta³ pobrany czê¶ciowo.'; break;
+				case 4: $error['file'] = 'Nie podano ¶cie¿ki do pliku.'; break;
+				default: $error['file'] = 'Wyst±pi³y problemy z pobraniem pliku.'; break;
+			}
+	}	
 
 	if(!$error)
 	{
@@ -77,12 +124,30 @@ if(isset($message))
 				    .($message['references'] ? 'References: '.$message['references']."\n" : '')
 				    .'Message-Id: '.$message['messageid']."\n"
 				    .'Reply-To: '.$message['replyto']."\n"
-				    ."Content-Type: text/plain; charset=ISO-8859-2;\n"
+				    .(!$file ? "Content-Type: text/plain; charset=ISO-8859-2;\n" : '')
 				    .'X-Mailer: LMS-'.$LMS->_version.'/PHP-'.phpversion()."\n"
 				    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
 				    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT'];
 			    	
-				mail('<'.$message['destination'].'>', $message['subject'], $message['body'], $message['headers']);
+				if($file)
+				{
+					$msg[1]['content_type'] = 'text/plain; charset=ISO-8859-2';
+					$msg[1]['filename'] = '';
+					$msg[1]['no_base64'] = TRUE;
+					$msg[1]['data'] = $message['body'];
+			
+					$msg[2]['content_type'] = $_FILES['file']['type'];
+					$msg[2]['filename'] = $filename;
+					$msg[2]['data'] = $file;
+					$msg[2]['headers'] = '';
+					
+					$out = mp_new_message($msg);
+				}
+				
+				mail('<'.$message['destination'].'>', 
+					$message['subject'], 
+					($out[0] ? $out[0] : $message['body']), 
+					$message['headers']."\n".($out[1] ? "\n".$out[1] : ''));
 				flush();
 			}
 			else 
@@ -91,10 +156,10 @@ if(isset($message))
 				if($message['userid'] || $message['adminid'])
 					$message['mailfrom'] = '';
 				$message['headers'] = '';
-			    	$message['replyto'] = ''; 
+			    	$message['replyto'] = '';
 			}
 				
-			$LMS->MessageAdd($message);
+			MessageAdd($message, $_FILES['file']);
 		}
 		else //wysy³amy do backendu
 		{
@@ -118,17 +183,35 @@ if(isset($message))
 			    .($message['references'] ? 'References: '.$message['references']."\n" : '')
 			    .'Message-Id: '.$message['messageid']."\n"
 			    .'Reply-To: '.$message['replyto']."\n"
-			    ."Content-Type: text/plain; charset=ISO-8859-2;\n"
+			    .(!$file ? "Content-Type: text/plain; charset=ISO-8859-2;\n" : '')
 			    .'X-Mailer: LMS-'.$LMS->_version.'/PHP-'.phpversion()."\n"
 			    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
 			    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT'];
-			
-			mail('<'.$message['destination'].'>', $message['subject'], $message['body'], $message['headers']);
+
+			if($file)
+			{
+				$msg[1]['content_type'] = 'text/plain; charset=ISO-8859-2';
+				$msg[1]['filename'] = '';
+				$msg[1]['no_base64'] = TRUE;
+				$msg[1]['data'] = $message['body'];
+
+				$msg[2]['content_type'] = $_FILES['file']['type'];
+				$msg[2]['filename'] = $filename;
+				$msg[2]['data'] = $file;
+				$msg[2]['headers'] = '';
+				
+				$out = mp_new_message($msg);
+			}
+
+			mail('<'.$message['destination'].'>', 
+				$message['subject'], 
+				($out[0] ? $out[0] : $message['body']), 
+				$message['headers'].($out[1] ? "\n".$out[1] : ''));
 			flush();
 			
 			// wiadomo¶æ do u¿ytkownika zapisujemy w bazie
 			if($message['adminid'] && $addmsg) 
-				$LMS->MessageAdd($message);
+				MessageAdd($message, $_FILES['file']);
 		}
 		
 		// ustawiamy status i w³a¶ciciela ticketu

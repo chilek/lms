@@ -3251,13 +3251,6 @@ class LMS
 		return $message;
 	}
 
-	function MessageAdd($msg)
-	{
-		$this->SetTS('rtmessages');
-		return $this->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, userid, mailfrom, inreplyto, messageid, replyto, headers)
-				    VALUES (?, ?NOW?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $msg['subject'], $msg['body'], $msg['adminid'], $msg['userid'], $msg['mailfrom'], $msg['inreplyto'], $msg['messageid'], $msg['replyto'], $msg['headers']));
-	}
-
 	function FirstMessage($ticketid)
 	{
 		return $this->DB->GetOne('SELECT min(id) FROM rtmessages WHERE ticketid = ?', array($ticketid));
