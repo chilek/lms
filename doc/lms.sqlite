@@ -99,7 +99,7 @@ CREATE TABLE tariffs (
 	id integer PRIMARY KEY,
 	name varchar(255) 	DEFAULT '' NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
-	taxvalue numeric(9,2) 	DEFAULT 0 NOT NULL,
+	taxvalue numeric(9,2) 	DEFAULT 0,
 	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
 	uprate integer		DEFAULT 0 NOT NULL,
 	downrate integer	DEFAULT 0 NOT NULL,
@@ -145,10 +145,11 @@ CREATE TABLE invoices (
 /* -------------------------------------------------------- 
   Struktura tabeli "invoicecontents" 
 -------------------------------------------------------- */
+DROP TABLE invoicecontents
 CREATE TABLE invoicecontents (
 	invoiceid integer 	DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
-	taxvalue numeric(9,2) 	DEFAULT 0 NOT NULL,
+	taxvalue numeric(9,2) 	DEFAULT 0,
 	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
 	content varchar(16) 	DEFAULT '' NOT NULL,
 	count numeric(9,2) 	DEFAULT 0 NOT NULL,
@@ -207,7 +208,6 @@ CREATE TABLE stats (
 );
 /* Ma³y dopalacz niektórych zapytañ */
 CREATE INDEX stats_nodeid_idx ON stats(nodeid);
-
 
 /* ---------------------------------------------------
 	Struktura tabeli netdevices
@@ -283,11 +283,11 @@ CREATE TABLE rtmessages (
 /* --------------------------------------------------
     Database info table
 ------------------------------------------------------*/
-
+DROP TABLE dbinfo;
 CREATE TABLE dbinfo (
     keytype varchar(255) DEFAULT '' NOT NULL,
     keyvalue varchar(255) DEFAULT '' NOT NULL,
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004040200');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004040701');
