@@ -986,7 +986,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		switch($order)
 		{
 			case 'name':
-				$sqlord = ' ORDER BY name';
+				$sqlord = ' ORDER BY nodes.name';
 			break;
 			case 'id':
 				$sqlord = ' ORDER BY id';
