@@ -27,11 +27,11 @@
 // Agggrrr. Nie zwracajcie uwagi na styl pisania *TEGO* kawa³ka kodu :)
 // Jest 7:35 a ja ca³± noc nie spa³em :)
 
-$layout[$pagetitle]="Prze³adowanie ustawieñ";
+$layout[$pagetitle]="Prze³adowanie konfiguracji";
 
 $SMARTY->display("header.html");
 
-?><H1>Prze³adowanie ustawieñ</H1><?php
+?><H1>Prze³adowanie konfiguracji</H1><?php
 
 $_RELOAD_TYPE = $LMS->CONFIG['phpui']['reload_type'];
 $_EXECCMD = $LMS->CONFIG['phpui']['reload_execcmd'];
@@ -92,6 +92,9 @@ $SMARTY->display("footer.html");
 
 /*
  * $Log$
+ * Revision 1.21  2003/12/16 20:28:00  alec
+ * - kosmetyka
+ *
  * Revision 1.20  2003/12/04 04:39:14  lukasz
  * - porz±dki
  * - trochê pod³ubane przy parsowaniu pliku konfiguracyjnego
