@@ -148,7 +148,8 @@ class LMS {
 		if($_SESSION[timestamps][getnetworks][networks] != $this->GetTS("networks"))
 		{
 			$return = $db->FetchArray("SELECT `id`, `name`, `address`, `mask` FROM `networks` ORDER BY `address` ASC");
-			if(sizeof($return[id]))
+			$return[total] = sizeof($return[id]);
+			if($return[total])
 				foreach($return[id] as $i => $v)
 				{
 					$return[addresslong][$i] = ip_long($return[address][$i]);
@@ -237,38 +238,38 @@ class LMS {
 		$networks = $this->GetNetworks();
 		$cnetaddr = ip_long($network);
 		$cbroadcast = ip_long(getbraddr($network,$mask));
-		foreach($networks[id] as $i => $v)
-		{
-			$broadcast = ip_long(getbraddr($networks[address][$i],$networks[mask][$i]));
-			$netaddr = $networks[addresslong][$i];					
-			if($v != $ignorenet)
+		
+		if($networks[total])
+			foreach($networks[id] as $i => $v)
 			{
-				if(
-						($cbroadcast == $broadcast)
-						||
-						($cnetaddr == $netaddr)
-						||
-						(
-						 ($cnetaddr < $netaddr)
-						 &&
-						 ($cbroadcast > $broadcast)
-						)
-						||
-						(
-						 ($cnetaddr > $netaddr)
-						 &&
-						 ($cbroadcast < $broadcast)
-						)
-				  )
-					return TRUE;
+				$broadcast = ip_long(getbraddr($networks[address][$i],$networks[mask][$i]));
+				$netaddr = $networks[addresslong][$i];					
+				if($v != $ignorenet)
+				{
+					if(
+							($cbroadcast == $broadcast)
+							||
+							($cnetaddr == $netaddr)
+							||
+							(
+							 ($cnetaddr < $netaddr)
+							 &&
+							 ($cbroadcast > $broadcast)
+							 )
+							||
+							(
+							 ($cnetaddr > $netaddr)
+							 &&
+							 ($cbroadcast < $broadcast)
+							 )
+							)
+						return TRUE;
 					
+				}
 			}
-		}
 		return FALSE;
 	}
-			
-			
-
+	
 	function GetMACs()
 	{
 		if(is_readable("/proc/net/arp"))
@@ -474,15 +475,15 @@ class LMS {
 			if(sizeof($return[address]))
 			{
 				$nodes = $db->FetchArray("SELECT `name`, `id`, `ownerid`, `ipaddr` FROM `nodes`");
-				foreach($nodes[id] as $key => $value)
-					if(isipin($nodes[ipaddr][$key],$address,$mask))
-					{
-						$pos = ip_long($nodes[ipaddr][$key])-ip_long($address)+1;
-						$return[nodeid][$pos] = $value;
-						$return[nodename][$pos] = $nodes[name][$key];
-						$return[ownerid][$pos] = $nodes[ownerid][$key];
-					}
-				
+				if(sizeof($nodes[id]))
+					foreach($nodes[id] as $key => $value)
+						if(isipin($nodes[ipaddr][$key],$address,$mask))
+						{
+							$pos = ip_long($nodes[ipaddr][$key])-ip_long($address)+1;
+							$return[nodeid][$pos] = $value;
+							$return[nodename][$pos] = $nodes[name][$key];
+							$return[ownerid][$pos] = $nodes[ownerid][$key];
+						}
 			}
 
 			$_SESSION[cache][getnetwork][$id] = $return;
