@@ -40,6 +40,7 @@ CREATE TABLE assignments (
 	suspended smallint	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
+CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
 
 /* -------------------------------------------------------- 
   Structure of table "cash" 
@@ -62,6 +63,7 @@ CREATE TABLE cash (
 );
 CREATE INDEX cash_userid_idx ON cash(userid);
 CREATE INDEX cash_invoiceid_idx ON cash(invoiceid);
+CREATE INDEX cash_time_idx ON cash(time);
 
 /* -------------------------------------------------------- 
   Structure of table "networks" 
@@ -98,6 +100,7 @@ CREATE TABLE nodes (
 	name varchar(16) 	DEFAULT '' NOT NULL,
 	mac varchar(20) 	DEFAULT '' NOT NULL,
 	ipaddr bigint 		DEFAULT 0 NOT NULL,
+	passwd varchar(32)	DEFAULT '' NOT NULL,
 	ownerid integer 	DEFAULT 0 NOT NULL,
 	netdev integer 		DEFAULT 0 NOT NULL,
 	linktype smallint	DEFAULT 0 NOT NULL,
@@ -113,6 +116,7 @@ CREATE TABLE nodes (
 	UNIQUE (name),
 	UNIQUE (ipaddr)
 );
+CREATE INDEX nodes_netdev_idx ON nodes (netdev);
 
 /* -------------------------------------------------------- 
   Structure of table "tariffs" 
@@ -177,6 +181,7 @@ CREATE TABLE invoices (
         finished smallint 	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
+CREATE INDEX invoices_cdate_idx ON invoices(cdate);
 
 /* -------------------------------------------------------- 
   Structure of table "invoicecontents" 
@@ -193,6 +198,7 @@ CREATE TABLE invoicecontents (
 	description varchar(255) DEFAULT '' NOT NULL,
 	tariffid integer 	DEFAULT 0 NOT NULL
 );	 
+CREATE INDEX invoicecontents_invoiceid_idx ON invoicecontents (invoiceid);
 
 /* -------------------------------------------------------- 
   Structure of table "timestamps" 
@@ -370,6 +376,7 @@ CREATE TABLE rttickets (
   resolvetime integer 	DEFAULT 0 NOT NULL,
   PRIMARY KEY (id)
 );
+CREATE INDEX rttickets_queueid_idx ON rttickets (queueid);
 
 DROP SEQUENCE "rtmessages_id_seq";
 CREATE SEQUENCE "rtmessages_id_seq";
@@ -507,6 +514,41 @@ CREATE TABLE eventassignments (
 );
 
 /* ---------------------------------------------------
+ Structure of table "sessions"
+------------------------------------------------------*/
+
+DROP TABLE sessions;
+CREATE TABLE sessions (
+    id varchar(50) NOT NULL default '', 
+    ctime integer NOT NULL default 0, 
+    mtime integer NOT NULL default 0, 
+    atime integer NOT NULL default 0, 
+    vdata text NOT NULL, 
+    content text NOT NULL, 
+    PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
+ Structure of table "cashimport"
+------------------------------------------------------*/
+
+DROP SEQUENCE cashimport_id_seq;
+CREATE SEQUENCE cashimport_id_seq;
+DROP TABLE cashimport;
+CREATE TABLE cashimport (
+    id integer DEFAULT nextval('cashimport_id_seq'::text) NOT NULL,
+    date integer DEFAULT 0 NOT NULL,
+    value numeric(9,2) DEFAULT 0 NOT NULL,
+    customer varchar(150) DEFAULT '' NOT NULL,
+    description varchar(150) DEFAULT '' NOT NULL,
+    customerid integer DEFAULT 0 NOT NULL,
+    hash varchar(50) DEFAULT '' NOT NULL,
+    closed smallint DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id)
+);
+CREATE INDEX cashimport_hash_idx ON cashimport (hash);
+
+/* ---------------------------------------------------
  Structure of table "dbinfo"
 ------------------------------------------------------*/
 
@@ -517,4 +559,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005021500');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005031000');
