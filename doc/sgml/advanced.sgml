@@ -208,8 +208,12 @@
 				<member>value - kwota</member>
 				<member>taxvalue - wysoko¶æ podatku w procentach</member>
 				<member>pkwiu - numer PKWiU</member>
-				<member>uprate - ograniczenie szybko¶ci transferu danych wychodz±cych</member>
-				<member>downrate - ograniczenie szybko¶ci transferu danych przychodz±cych</member>
+				<member>uprate - gwarantowany upload</member>
+				<member>upceil - maksymalny upload</member>
+				<member>downrate - gwarantowany download</member>
+				<member>downceil - maksymalny download</member>
+				<member>climit - limit po³±czeñ</member>
+				<member>plimit - limit pakietów</member>
 				<member>description - opis</member>
 			</simplelist>
 		</sect2>
