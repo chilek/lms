@@ -8,6 +8,8 @@ wersja 1.1.8 (??/??/????):
   - dodane sortowanie listy userów wg wysoko¶ci abonamentu (alec)
   - poprawione sortowanie listy komputerów wg w³a¶ciciela (alec)
   - dodane sortowanie listy urz±dzeñ sieciowych wg ilo¶ci zajêtych portów (alec)
+  - dodane 'wy¶wietl ponownie formularz' w nodeadd (alec)
+  - poprawione b³êdne ustawianie statusu podczas dodawania komputera (alec)
   
 wersja 1.1.7 Hathor (14/12/2003):
 
