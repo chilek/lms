@@ -40,6 +40,7 @@
 			{if $nodeinfo.netdev}
 			<B><A HREF="?m=netdevinfo&id={$netdevices.id}">{$netdevices.name} {$netdevices.producer}/{$netdevices.location}</A></B>
 			{else}
+			{if $netdevices}
 			<P>
 			<FORM METHOD="GET" ACTION="?m=nodeedit" NAME="nodelink"><INPUT TYPE="HIDDEN" NAME="m" VALUE="nodeedit"><INPUT TYPE="HIDDEN" NAME="id" VALUE="{$nodeinfo.id}"><INPUT TYPE="HIDDEN" NAME="action" VALUE="link">
 				<SELECT SIZE="1" NAME="devid">
@@ -50,6 +51,7 @@
 				<A HREF="javascript:document.nodelink.submit(); ">Pod³±cz <IMG SRC="img/edit.gif" ALT="" ALIGN="ABSMIDDLE" BORDER="0"></A>
 			</FORM>
 			</P>
+			{/if}
 			{/if}				
 		</TD>
 	</TR>

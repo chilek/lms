@@ -5,7 +5,7 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="100%" COLSPAN="2" CLASS="FALL">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.name}" NAME="tariff[name]" {if $error.name}CLASS="alertb"{else}CLASS="bold"{/if}>
+			<INPUT TYPE="TEXT" VALUE="{$tariff.name}" NAME="tariff[name]" {tip trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -21,7 +21,7 @@
 			<B>Warto¶æ:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]"{if $error.value} CLASS="alert"{/if}> z³
+			<INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]" {tip trigger="value"}> z³
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -29,7 +29,7 @@
 			<B>Uprate:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.uprate}" SIZE="8" NAME="tariff[uprate]"{if $error.uprate} CLASS="alert"{/if}> kb/s
+			<INPUT TYPE="TEXT" VALUE="{$tariff.uprate}" SIZE="8" NAME="tariff[uprate]" {tip trigger="uprate"}> kb/s
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -37,7 +37,7 @@
 			<B>Downrate:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.downrate}" SIZE="8" NAME="tariff[downrate]"{if $error.uprate} CLASS="alert"{/if}> kb/s
+			<INPUT TYPE="TEXT" VALUE="{$tariff.downrate}" SIZE="8" NAME="tariff[downrate]" {tip trigger="uprate"}> kb/s
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
