@@ -147,6 +147,7 @@ CREATE TABLE tariffs (
   name varchar(255) NOT NULL default '',
   value float NOT NULL default '0',
   taxvalue int(7) NOT NULL default '0',
+  sww varchar(255) NOT NULL default '',
   uprate int(11) NOT NULL default '0',
   downrate int(11) NOT NULL default '0',
   description text NOT NULL,
