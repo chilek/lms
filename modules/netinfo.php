@@ -37,13 +37,16 @@ $_SESSION[ntlp][$_GET[id]] = $_GET[page];
 
 $network = $LMS->GetNetworkRecord($_GET[id],$_GET[page],1024);
 
-$layout[pagetitle]="Informacja o sieci";
+$layout[pagetitle]="Informacja o sieci: ".$network[name];
 
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("network",$network);
 $SMARTY->display("netinfo.html");
 /*
  * $Log$
+ * Revision 1.22  2003/10/03 15:59:46  alec
+ * ujednolicenie interfejsu
+ *
  * Revision 1.21  2003/09/09 01:22:28  lukasz
  * - nowe finanse
  * - kosmetyka
