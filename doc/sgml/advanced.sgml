@@ -103,6 +103,7 @@
 				<member>phone2 - telefon</member>
 				<member>phone3 - telefon</member>
 				<member>gguin - identyfikator gadu-gadu</member>
+				<member>pin - numer pin (uwierzytelnianie)</member>
 				<member>address - adres (ulica, nr domu, nr lokalu)</member>
 				<member>zip - kod pocztowy</member>
 				<member>city - nazwa miasta</member>
