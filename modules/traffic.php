@@ -47,16 +47,16 @@ $dane = 1;
 switch($_GET['bar'])
 {
   case "hour":
-	$query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt < ?NOW? AND dt > ?NOW?-(60*60) GROUP BY nodeid ORDER BY download DESC";
+	$query = "SELECT nodeid, ipaddr, name, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE dt < ?NOW? AND dt > ?NOW?-(60*60) GROUP BY nodeid, name, ipaddr ORDER BY download DESC";
 	break;
   case "day":
-	$query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24) GROUP BY nodeid ORDER BY download DESC";
+	$query = "SELECT nodeid, ipaddr, name, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24) GROUP BY nodeid, name, ipaddr ORDER BY download DESC";
 	break;
   case "month":
-	$query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24*30)  GROUP BY nodeid ORDER BY download DESC";
+	$query = "SELECT nodeid, ipaddr, name, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24*30)  GROUP BY nodeid, name, ipaddr ORDER BY download DESC";
 	break;
   case "year":
-	$query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24*365) GROUP BY nodeid ORDER BY download DESC";
+	$query = "SELECT nodeid, ipaddr, name, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE dt < ?NOW? AND dt > ?NOW?-(60*60*24*365) GROUP BY nodeid, name, ipaddr ORDER BY download DESC";
 	break;
   case "user": ##########################################################
 	$from = ArrayToTimestamp($_POST['from']);
@@ -67,15 +67,17 @@ switch($_GET['bar'])
 	    $params = $LMS->GetNetworkParams($net);
 	    $ipfrom = $params['address']+1;
 	    $ipto = $params['broadcast']-1;
-	    $query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE (ipaddr>$ipfrom AND ipaddr<$ipto) AND (dt > $from AND dt < $to) GROUP BY nodeid";
+	    $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE (ipaddr>$ipfrom AND ipaddr<$ipto) AND (dt > $from AND dt < $to) GROUP BY nodeid, name, ipaddr";
 	} else 
-	    $query = "SELECT nodeid, sum(upload) as upload, sum(download) as download FROM stats WHERE dt > $from AND dt < $to GROUP BY nodeid";
+	    $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats JOIN nodes ON stats.nodeid=nodes.id WHERE dt > $from AND dt < $to GROUP BY nodeid, name, ipaddr";
 	# sortujemy wyniki
 	switch ($_POST['order'])  
 	{
 	    case "nodeid"   : $query = $query." ORDER BY nodeid"; 	 break;
 	    case "download" : $query = $query." ORDER BY download DESC"; break; 	
 	    case "upload"   : $query = $query." ORDER BY upload DESC"; 	 break;
+	    case "name"     : $query = $query." ORDER BY name"; 	 break;
+	    case "ip"       : $query = $query." ORDER BY ipaddr"; 	 break;
 	}
 	# limitujemy wyniki
 	if( $_POST['limit'] > 0 ) $query = $query." LIMIT ".$_POST['limit'];
@@ -109,11 +111,13 @@ if ($traffic = $LMS->DB->GetAll($query))
 {
  foreach ($traffic as $idx => $row)
     {
-    $nodename = $LMS->GetNodeName($row[nodeid]);
+    //$nodename = $LMS->GetNodeName($row[nodeid]);
     $upload[dane]	[] = $row[upload];
     $download[dane]	[] = $row[download];
-    $upload[name]	[] = $nodename;
-    $download[name]	[] = $nodename;
+    $upload[name]	[] = $row[name];	//$nodename;
+    $download[name]	[] = $row[name];	//$nodename;
+    $upload[ipaddr]	[] = long2ip($row[ipaddr]);
+    $download[ipaddr]	[] = long2ip($row[ipaddr]);
     $down_sum += $row[download];
     $up_sum += $row[upload];
     }
@@ -140,8 +144,8 @@ if ($traffic = $LMS->DB->GetAll($query))
 }
 
 $layout[pagetitle]="Statystyki wykorzystania ³±cza";
-list($a,$version,$b)=explode(' ','$Revision$');
 
+$SMARTY->assign("showips",$_POST['showips']);
 $SMARTY->assign("download_sum",$download_sum);
 $SMARTY->assign("upload_sum",$upload_sum);
 $SMARTY->assign("layout",$layout);
