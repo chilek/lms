@@ -31,7 +31,9 @@ wersja ????? (??/??/????):
     '_force' nie jest usuwany, wiêc nie ma problemów z uruchamianiem
     kilku demonów równocze¶nie (lexx/alec)
   - aktualizacja ethercodes.txt (alec)
-          
+  - BTS#0000109: poprawione b³êdne dzia³anie funkcji loadavg() i hostname()
+    na systemach BSD w Sysinfo.class.php (sfor/alec)
+            
 wersja 1.1.8 Cronos (01/02/2004):
 
   - netdevmap korzysta z obrazków w formacie PNG (brak obs³ugi GIF na 

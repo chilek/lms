@@ -101,12 +101,12 @@ class Sysinfo {
 		switch(PHP_OS)
 		{
 			case "Linux":
-			case "FreeBSD":
-			case "OpenBSD":
-			case "NetBSD":
 				exec("hostname -f",$return);
 				$hostname=$return[0];
 				break;
+			case "FreeBSD":
+			case "OpenBSD":
+			case "NetBSD":
 			case "WinNT":
 				exec("hostname",$return);
 				$hostname=$return[0];
@@ -248,6 +248,14 @@ class Sysinfo {
 				}
 				else
 					$results = array('N.A.','N.A.','N.A.');
+			break;
+			case "FreeBSD":
+			case "NetBSD":
+			case "OpenBSD":			
+				$s = $this->bsd_grab_key('vm.loadavg');
+				$s = ereg_replace('{ ', '', $s);
+				$s = ereg_replace(' }', '', $s);
+				$results = explode(' ', $s);
 			break;
 			default:
 				$results = array('N.A.','N.A.','N.A.');
