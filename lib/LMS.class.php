@@ -3262,7 +3262,7 @@ class LMS
 		return FALSE;
 	}
 
-	function SendMail($recipients, $headers, $body)
+	function SendMail($recipients, $headers, $body, $files=NULL)
 	{
 		include('Mail.php');
 
@@ -3277,8 +3277,25 @@ class LMS
 		else
 			$params['auth'] = false;
 
+		if ($files)
+		{
+			$boundary = '-LMS-'.str_replace(' ', '.', microtime());
+			$headers['Mime-Version'] = '1.0';
+			$headers['Content-Type'] = "multipart/mixed;\n  boundary=\"".$boundary.'"';
+			$buf = "\nThis is a multi-part message in MIME format.\n\n";
+			$buf = '--'.$boundary."\n";
+			$buf .= "Content-Type: text/plain; charset=UTF-8\n\n";
+			$buf .= $body."\n";
+			$buf .= '--'.$boundary.'--';
+		}
+		else
+		{
+			$headers['Content-Type'] = 'text/plain; charset=UTF-8';
+			$buf = $body;
+		}
+
 		$mail_object =& Mail::factory('smtp', $params);
-		$mail_object->send($recipients, $headers, $body);
+		$mail_object->send($recipients, $headers, $buf);
 
 		return TRUE;
 	}
