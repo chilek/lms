@@ -26,7 +26,6 @@
 
 setlocale (LC_TIME, "pl_PL");
 
-$trans = array("¡"=>"\'a5","Æ"=>"\'c6","Ê"=>"\'ca","£"=>"\'a3","Ñ"=>"\'d1","Ó"=>"\'d3","¦"=>"\'8c","¯"=>"\'af","¬"=>"\'8f","±"=>"\'b9","æ"=>"\'e6","ê"=>"\'ea","³"=>"\'b3","ñ"=>"\'f1","ó"=>"\'f3","¶"=>"\'9c","¿"=>"\'bf","¼"=>"\'9f");
 
 function slownie($liczba) {
 // Funkcja nie akceptuje liczb wiêkszych ni¿ 999... No có¿ ;) Jak komu¶ to 
@@ -86,10 +85,11 @@ $userinfo=$LMS->GetUser($cash['userid']);
 
 if (! $szablon = @file($_CONFIG[finances]['template'])) { echo "Nie umiem odczytac szablonu, ustawiles wszystko w lms.ini?"; die; }; 
 
-header('Content-type: text/rtf');
-header('Content-Disposition: attachment; filename=faktura_'.$userinfo['lastname']."_".$_GET[id]."_".date("Y",$cash['time']).'.rtf');
-
-//vardump('$userinfo');
+if(substr($_CONFIG[finances]['template'],-4)==".rtf"){  
+    header('Content-type: text/rtf');
+    header('Content-Disposition: attachment; filename=faktura_'.$userinfo['lastname']."_".$_GET[id]."_".date("Y",$cash['time']).'.rtf');
+    $trans = array("¡"=>"\'a5","Æ"=>"\'c6","Ê"=>"\'ca","£"=>"\'a3","Ñ"=>"\'d1","Ó"=>"\'d3","¦"=>"\'8c","¯"=>"\'af","¬"=>"\'8f","±"=>"\'b9","æ"=>"\'e6","ê"=>"\'ea","³"=>"\'b3","ñ"=>"\'f1","ó"=>"\'f3","¶"=>"\'9c","¿"=>"\'bf","¼"=>"\'9f");
+} else $trans = array();    
 
 $szablon = str_replace('%nabywca',strtr($userinfo['username'],$trans),$szablon);
 $szablon = str_replace('%nab_adres_cd',strtr($userinfo['zip']." ".$userinfo['city'],$trans),$szablon);
