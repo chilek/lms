@@ -17,9 +17,7 @@ wersja 1.1.4 (??/??/2003):
   - reload.php uzywa³ sqlTSfmt() który jest obsolete (lexx/lukasz)
   - nowo dodawany komputer domy¶lnie nie mia³ dostêpu (lukasz)
   - ilo¶æ sieci w podsumowaniu by³a zwiêkszana o 2 (lukasz)
-  - kosmetyka kodu (s/this->ADB->/this->DB->/g) (lukasz)
-  - b³êdy s± wy¶wietlane na dole strony, a nie wci¶niête gdzie siê tylko da do
-    tabelek z formularzami (lukasz)
+  - kosmetyka kodu (s/this->ADB->/this->DB->/g i nie tylko) (lukasz)
   - dodany (przeniesiony z contrib) modu³ traffic-stats i bin/lms-traffic, 
     do korzystania z nich wymagane jest utworzenie tabeli 'stats' w bazie 
     danych (alec)
@@ -176,6 +174,11 @@ wersja 1.1.4 (??/??/2003):
     1.0 do 1.1 (alec)
   - lms-payments nie zapisuje nic do tabeli cash je¿eli warto¶æ obci±¿enia
     jest zerowa (lukasz)
+  - zmiany w dokumentacji (lukasz):
+    - wyrzucenie INSTALL.*
+    - zrobienie README i README.html - podrêcznika u¿yszkodnika
+    - posprz±tanie i inne
+  - poprawiona (mam nadziejê) obs³uga b³êdów - teraz to s± tooltipy (lukasz)
 	
 wersja 1.1.3 (29/08/2003):
 
