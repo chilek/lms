@@ -4,6 +4,10 @@ wersja 1.1.5 (18/10.2003):
 
   - dodane opcje do ustawienie w³a¶ciciela oraz praw dostêpu skryptów
     tworzonych przez lms-traffic-* (lukasz)
+  - dodana mo¿liwo¶æ ³±czenia/od³±czania urz±dzeñ sieciowych i komputerów 
+    do urz±dzenia podczas jego edycji (alec)
+  - poprawka w funkcji ScanNodes() zapobiegaj±ca b³êdom w wypadku braku
+    programu nbtscan w systemie (alec)
 
 wersja 1.1.4 Tanith (03/10/2003):
   
