@@ -106,6 +106,10 @@
 			<entry>lms-makemessages</entry>
 			<entry>Generuje regu³ki przekierowuj±ce ruch u¿ytkowników, którym ustawiono wiadomo¶æ administracyjn±</entry>
 			</row>
+			<row>
+			<entry>lms-fping</entry>
+			<entry>Badanie aktywno¶ci komputerów.</entry>
+			</row>
 		    </tbody>	
 		</tgroup>
 	    </table>
@@ -776,6 +780,35 @@ http://www.naszasiec.pl/</screen></example>
 		    <para>redirect_address</para>
 		    <para>Adres IP + port na który bêdzie przekierowywany ruch http i webcache pochodz±cy z hostów dla których ma byæ w³±czona wiadomo¶æ administracyjna. Domy¶lnie: 127.0.0.1:80.</para>
 		    <para>Przyk³ad:	<prompt>redirect_address = 192.168.1.1:3002</prompt></para>
+		</listitem>
+	    </itemizedlist>
+    </sect2>
+    <sect2 id="lms-fping">
+	<title>lms-fping</title>
+	    <para>Skrypt zapisuje do bazy informacje o aktywno¶ci komputerów. 
+	    Do skanowania wykorzystywany jest szybki program fping (z opcjami -ar1). 
+	    Najpierw tworzona jest lista hostów, a nastêpnie, po wywo³aniu fping'a, 
+	    komputerom w³±czonym zostaje przypisana data i czas skanowania. Dziêki temu 
+	    mamy w bazie informacje kiedy dany komputer by³ ostatnio w³±czony.</para>
+	    <para>Konfiguracjê tego skryptu zawiera sekcja <emphasis>[fping]</emphasis>
+	    w pliku <filename>lms.ini</filename>: </para>
+	    <itemizedlist>
+        	<listitem>
+		    <para>networks </para>
+		    <para>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas skanowania.
+		    Je¶li nie ustawiono przeskanowane zostan± wszystkie komputery.</para>
+		    <para>Przyk³ad:	<prompt>networks = public-custa public-custb</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>fping_binary</para>
+		    <para>Lokalizacja programu fping. Domy¶lnie: /usr/sbin/fping</para>
+		    <para>Przyk³ad:	<prompt>fping_binary = /usr/local/sbin/fping</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>temp_file</para>
+		    <para>Lokalizacja pliku tymczasowego na listê hostów, który
+		    po wykonaniu skryptu zostaje usuniêty. Domy¶lnie: /tmp/fping_hosts.</para>
+		    <para>Przyk³ad:	<prompt>temp_file = /tmp/hosts</prompt></para>
 		</listitem>
 	    </itemizedlist>
     </sect2>
