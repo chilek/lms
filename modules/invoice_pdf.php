@@ -157,8 +157,8 @@ function invoice_seller($x,$y) {
     global $invoice,$pdf,$_CONFIG;
     $font_size=10;
     $y=$y-text_align_left($x,$y,$font_size,'<b>Sprzedawca:</b>');
-    $tmp = $_CONFIG['invoices'];
-    $tmp = iconv("UTF-8","ISO-8859-2",$tmp['header']);
+    $tmp = iconv("UTF-8","ISO-8859-2",$_CONFIG['invoices']['header']);
+    $tmp = str_replace('\n',"\n",$tmp);
     $tmp = explode("\n",$tmp);
     foreach ($tmp as $line) $y=$y-text_align_left($x,$y,$font_size,$line);
 
