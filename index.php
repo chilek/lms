@@ -90,7 +90,8 @@ require_once($_SMARTY_DIR.'/Smarty.class.php');
 require_once($_ADODB_DIR.'/adodb.inc.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
-require_once($_LIB_DIR.'/leftmenu.php');
+// Menu is currently defined in language
+//require_once($_LIB_DIR.'/leftmenu.php');
 require_once($_LIB_DIR.'/TipOfTheDay.php');
 require_once($_LIB_DIR.'/accesstable.php');
 
