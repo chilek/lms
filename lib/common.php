@@ -621,5 +621,31 @@ function check_nip($nip)
 
 }
 
+function check_pesel($pesel)
+
+{
+ // AFAIR This doesn't cover people born after Y2k, they have month+20
+ // Be warned.
+ 
+		if (strlen($pesel) != 11 || !is_numeric($pesel))
+				return 0;
+
+		$steps = array(1, 3, 7, 9, 1, 3, 7, 9, 1, 3);
+
+		for ($x = 0; $x < 10; $x++) {
+				$sum_nb += $steps[$x] * $pesel[$x];
+		}
+
+		$sum_m = 10 - $sum_nb % 10;
+
+		if ($sum_m == 10)
+				$sum_c = 0;
+		else
+				$sum_c = $sum_m;
+		if ($sum_c == $pesel[10])
+				return 1;
+		return 0;
+} 
+
 
 ?>
