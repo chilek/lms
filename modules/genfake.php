@@ -1884,7 +1884,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 	$netdata = array( name => 'LAN1', address => '192.168.0.0', prefix => '22', gateway => '192.168.0.1', dns => '192.168.0.1', dns2 => '192.168.3.254', domain => 'ultralan.net', wins => '192.168.0.2', dhcpstart => '192.168.3.230', dhcpend => '192.168.3.253');
 	$LMS->NetworkAdd($netdata);
 
-	echo '<B>'.trans('Generating clients...').'</B><BR>';	
+	echo '<B>'.trans('Generating customers...').'</B><BR>';	
 	$startip = ip_long('192.168.0.0');
 	$cnt = 0;
 	$lnsize = sizeof($lastnames);
