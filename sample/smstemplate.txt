@@ -1,0 +1,1 @@
+Przypominamy o oplacie za Internet: okres %date-m/%date-y %b zlotych
