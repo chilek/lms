@@ -40,7 +40,7 @@ if(isset($payment))
 	$payment['value'] = str_replace(",",".",$payment['value']);
 
 	if(!(ereg("^[-]?[0-9.,]+$",$payment['value'])))
-		$error['value'] = "Incorrect payment value!");
+		$error['value'] = _("Incorrect payment value!");
 
 	if($payment['creditor'] == "")
 		$error['creditor'] = _("Creditor name is required!");
