@@ -112,7 +112,7 @@ class Session {
 	{
 		$dbpasswd = $this->ADB->GetOne("SELECT passwd FROM admins WHERE login=?",array($this->login));
 		$dblogin = $this->ADB->GetOne("SELECT login FROM admins WHERE login=?",array($this->login));
-		if (crypt($this->passwd,$dbpasswd)==$dbpasswd || ($dblogin != "" && $dbpasswd == ""))
+		if (crypt($this->passwd,$dbpasswd)==$dbpasswd || ($dblogin != "" && $dbpasswd == "" && $this->passwd == ""))
 			return TRUE;
 		else 
 		{
