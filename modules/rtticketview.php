@@ -36,8 +36,7 @@ if(! $LMS->GetAdminRightsRT($SESSION->id, 0, $_GET['id']))
 	die;
 }
 
-//if ($_GET['delmsgid'] && $LMS->FirstMessage($_GET['id']) != $_GET['delmsgid'])
-if ($_GET['delmsgid'])
+if ($_GET['delmsgid'] && $LMS->FirstMessage($_GET['id']) != $_GET['delmsgid'])
 	$LMS->MessageDel($_GET['delmsgid']);
 
 $ticket = $LMS->GetTicketContents($_GET['id']);
