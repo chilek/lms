@@ -7,6 +7,8 @@ wersja 1.1.0 (??/??/2003):
     ALTER TABLE `networks` ADD `dns2` VARCHAR( 16 ) AFTER `dns`
   - je¿eli w tym samym katalogu co index.php znajduje siê plik, LMS wykorzysta
     go zamiast /etc/lms/lms.ini
+  - mo¿na ustawiæ domy¶lne warto¶ci dla adresu, miasta i kodu pocztowego
+    nowego u¿ytkownika;
 
 wersja 1.0.0 (18/05/2003):
 

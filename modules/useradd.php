@@ -72,6 +72,10 @@ elseif(isset($useradd))
 		$useradd = $reuse;
 		$useradd[reuse] = "1";
 	}
+}else{
+	$useradd[zip] = $_CONFIG[phpui][default_zip];
+	$useradd[city] = $_CONFIG[phpui][default_city];
+	$useradd[address] = $_CONFIG[phpui][default_address];
 }
 
 $layout[pagetitle]="Nowy u¿ytkownik";
