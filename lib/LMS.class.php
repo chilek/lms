@@ -1584,10 +1584,13 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function UsergroupMove($from, $to)
 	{
-		$this->SetTS('userassignments');
-		$ids = $this->DB->GetCol('SELECT userassignments.id AS id FROM userassignments, users WHERE userid = users.id AND usergroupid = ?', array($from));
-		foreach($ids as $id)
-			$this->DB->Execute('UPDATE userassignments SET usergroupid=? WHERE id=? AND usergroupid=?', array($to, $id, $from));
+
+		if ($ids = $this->DB->GetCol('SELECT userassignments.id AS id FROM userassignments, users WHERE userid = users.id AND usergroupid = ?', array($from))) 
+		{	
+			$this->SetTS('userassignments');
+			foreach($ids as $id)
+				$this->DB->Execute('UPDATE userassignments SET usergroupid=? WHERE id=? AND usergroupid=?', array($to, $id, $from));
+		}
 	}
 
 	function UsergroupGetId($name)
