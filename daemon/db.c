@@ -612,7 +612,7 @@ int db_abort()
     char *error = NULL;
     res = sqlite_exec(conn,"ROLLBACK", NULL, NULL, &error);
 #ifdef DEBUG0
-    syslog(LOG_INFO,"DEBUG: [SQL] BEGIN");
+    syslog(LOG_INFO,"DEBUG: [SQL] ROLLBACK");
 #endif
     if(res!=SQLITE_OK) {
     	syslog(LOG_CRIT,"[db_abort] Query failed. Error: %s",error);
