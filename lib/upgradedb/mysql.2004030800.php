@@ -26,15 +26,44 @@
 
 // Add rtqueues - table that contains information about RT (Request Tracker) queues.
 
-$DB->Execute("CREATE TABLE rtqueues (id int(11) NOT NULL auto_increment, name varchar(255) NOT NULL default '', email varchar(255) NOT NULL default '', PRIMARY KEY (id)) TYPE=MyISAM");
+$DB->Execute("
+    CREATE TABLE rtqueues (
+	id int(11) NOT NULL auto_increment, 
+	name varchar(255) NOT NULL default '', 
+	email varchar(255) NOT NULL default '', 
+	PRIMARY KEY (id)) TYPE=MyISAM
+");
 
 // rttickets - Tickets in RT
 
-$DB->Execute("CREATE TABLE rttickets (id int(11) NOT NULL auto_increment, queueid int(11) NOT NULL default '0', requestor varchar(255) NOT NULL default '', subject varchar(255) NOT NULL default '', state tinyint(4) NOT NULL default '0', owner int(11) NOT NULL default '0', createtime int(11) NOT NULL default '0', PRIMARY KEY (id)) TYPE=MyISAM");
+$DB->Execute("
+    CREATE TABLE rttickets (
+	id int(11) NOT NULL auto_increment, 
+	queueid int(11) NOT NULL default '0', 
+	requestor varchar(255) NOT NULL default '', 
+	subject varchar(255) NOT NULL default '', 
+	state tinyint(4) NOT NULL default '0', 
+	owner int(11) NOT NULL default '0', 
+	createtime int(11) NOT NULL default '0', 
+	PRIMARY KEY (id)) TYPE=MyISAM
+");
 
 // rtmessages - content of mails in RT
 
-$DB->Execute("CREATE TABLE rtmessages (id int(11) NOT NULL auto_increment,ticketid int(11) NOT NULL default '0', sender int(11) NOT NULL default '0', mailfrom varchar(255) NOT NULL default '', subject varchar(255) NOT NULL default '', messageid varchar(255) NOT NULL default '', inreplyto int(11) NOT NULL default '0', replyto text NOT NULL, headers text NOT NULL, body mediumtext NOT NULL, PRIMARY KEY  (id) ) TYPE=MyISAM");
+$DB->Execute("
+    CREATE TABLE rtmessages (
+	id int(11) NOT NULL auto_increment,
+	ticketid int(11) NOT NULL default '0', 
+	sender int(11) NOT NULL default '0', 
+	mailfrom varchar(255) NOT NULL default '', 
+	subject varchar(255) NOT NULL default '', 
+	messageid varchar(255) NOT NULL default '', 
+	inreplyto int(11) NOT NULL default '0', 
+	replyto text NOT NULL default '', 
+	headers text NOT NULL default '', 
+	body mediumtext NOT NULL default '', 
+	PRIMARY KEY  (id) ) TYPE=MyISAM
+");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2004030800', 'dbversion'));
 
