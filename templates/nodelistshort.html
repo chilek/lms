@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="{$LANGDEFS.$_language.html}">
+<meta http-equiv="Content-Type" content="text/html; charset={$LANGDEFS.$_language.charset}">
+<title>::: LMS :::</title>
+<link href="img/style.css" rel="stylesheet" type="text/css">
+<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript" SRC="img/autoiframe.js"></SCRIPT>
+</head>
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%">
+			<IMG SRC="img/node.gif" BORDER="0">
+		</TD>
+		<TD WIDTH="99%">
+			<B>{t 0=$usernodes.total|default:"0"}Customer Nodes ($0):{/t}</B>
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{if $usernodes.total > 0}
+	{section name=usernodes loop=$usernodes}
+	{if $usernodes[usernodes].id}
+	<tr bgcolor="{cycle}" {cycle print=false} {if ! $usernodes[usernodes].access} class="blend"{/if}>
+		<TD WIDTH="1%">
+			<IMG src="img/{if ! $usernodes[usernodes].access}no{/if}access.gif" ALT="[ {if ! $usernodes[usernodes].access}{t}Connect{/t}{else}{t}Disconnect{/t}{/if} ]" border="0" align="absmiddle">
+			<IMG src="img/warning{if ! $usernodes[usernodes].warning}off{else}on{/if}.gif" ALT="[ {if ! $usernodes[usernodes].warning}Ostrzegaj{else}Nie ostrzegaj{/if} ]" border="0" align="absmiddle">
+		</TD>
+		<TD WIDTH="97%">
+			<B>{$usernodes[usernodes].name}</B><BR>
+			<NOBR>{$usernodes[usernodes].ip} / {$usernodes[usernodes].mac}</NOBR><BR>
+			<NOBR>{$usernodes[usernodes].info|truncate:45:"..."}</NOBR>
+		</TD>
+	</TR>
+	{/if}
+	{/section}
+	{else}
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			<P>&nbsp;</P>
+			<P>&nbsp;</P>
+			<P ALIGN="CENTER"><B>{if $userinfo.deleted}<FONT COLOR="RED">{t}That customer was deleted.{/t}</FONT>{else}{t}That customer hasn't got any node.{/t}{/if}</B></P>
+			<P>&nbsp;</P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/if}
+</TABLE>
+
+<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript">
+<!--
+auto_iframe(0);
+//-->
+</SCRIPT>
+</BODY>
+</HTML>
