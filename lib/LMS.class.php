@@ -1871,7 +1871,7 @@ class LMS
 	{
 		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished FROM invoices WHERE id=?', array($invoiceid)))
 		{
-			if($result['content'] = $this->DB->GetAll('SELECT value, taxvalue, pkwiu, content, count, description, tariffid FROM invoicecontents WHERE invoiceid=?', array($invoiceid)))
+			if($result['content'] = $this->DB->GetAll('SELECT value, taxvalue, pkwiu, content, count, description, tariffid, itemid FROM invoicecontents WHERE invoiceid=?', array($invoiceid)))
 				foreach($result['content'] as $idx => $row)
 				{
 					$result['content'][$idx]['basevalue'] = round(($row['value'] / (100 + $row['taxvalue']) * 100),2);
