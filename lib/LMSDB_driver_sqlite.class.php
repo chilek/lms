@@ -55,9 +55,8 @@ class LMSDB_driver_sqlite extends LMSDB_common
 		//	$this->_dbuser = $dbuser;
 			$this->_dbname = $dbname;
 			$this->_error = FALSE;
-			//create UDF functions
-			sqlite_create_function($this->_dblink, 'inet_ntoa','long2ip',1);
-			sqlite_create_function($this->_dblink, 'inet_aton','ip2long',1);
+			// create UDF functions on every connect
+			$this->_driver_udf_functions();
 		}
 		else
 			$this->_error = TRUE;
@@ -83,7 +82,7 @@ class LMSDB_driver_sqlite extends LMSDB_common
 			$this->_error = FALSE;
 		else
 			$this->_error = TRUE;
-
+echo $query.'<BR>';
 		return $this->_result;
 	}
 
@@ -140,6 +139,14 @@ class LMSDB_driver_sqlite extends LMSDB_common
 	function _driver_committrans()
 	{
 		return $this->Execute('COMMIT');
+	}
+	
+	function _driver_udf_functions()
+	{
+		sqlite_create_function($this->_dblink, 'inet_ntoa','long2ip',1);
+		sqlite_create_function($this->_dblink, 'inet_aton','ip2long',1);
+		sqlite_create_function($this->_dblink, 'upper','strtoupper',1);
+		sqlite_create_function($this->_dblink, 'lower','strtolower',1);
 	}
 }
 
