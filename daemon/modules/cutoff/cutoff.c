@@ -33,7 +33,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 {
 	QUERY_HANDLE *res;
 	unsigned char *update;
-	int i, balance, exec = 0;
+	int i, balance, exec = 0, u = 0;
 	char time_fmt[20];
 	size_t tmax=20;
 	char fmt[]="(%d.%m.%Y)";
@@ -45,32 +45,45 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	
 	strftime(time_fmt,tmax,fmt,wsk);
 
-	if( (res = g->db_query("SELECT users.id AS id, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) GROUP BY users.id"))!=NULL) { 
-
-		for(i=0; i<res->nrows; i++) {
-		
+	if( (res = g->db_query("SELECT users.id AS id, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) GROUP BY users.id"))!=NULL) 
+	{
+		for(i=0; i<res->nrows; i++) 
+		{
 			balance = atoi(g->db_get_data(res,i,"balance"));
 			
-			if( balance < c->limit ) {
-			
-				update = strdup("UPDATE nodes SET access = 0, warning = 1 WHERE ownerid = %id");
+			if( balance < c->limit ) 
+			{
+				update = strdup("UPDATE nodes SET access = 0 %w WHERE ownerid = %id AND access = 1");
 				g->str_replace(&update, "%id", g->db_get_data(res,i,"id"));
-				exec = g->db_exec(update);
+				if(*c->warning)
+					g->str_replace(&update, "%w", ", warning = 1");
+				else
+					g->str_replace(&update, "%w", "");
+
+				u = g->db_exec(update);
 				free(update);
-				update = strdup("UPDATE users SET message = 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty %time' WHERE id = %id");
-				g->str_replace(&update, "%id", g->db_get_data(res,i,"id"));
-				g->str_replace(&update, "%time", time_fmt);
-				exec = g->db_exec(update);
-				free(update);
+				
+				if(*c->warning && u)
+				{
+					update = strdup("UPDATE users SET message = '%message' WHERE id = %id");
+					g->str_replace(&update, "%message", c->warning);
+					g->str_replace(&update, "%id", g->db_get_data(res,i,"id"));
+					g->str_replace(&update, "%time", time_fmt);
+					g->db_exec(update);
+					free(update);
+				}
+				exec = u ? 1 : exec;
 			}
 		}	
 		g->db_free(res);
 
 		// set timestamps
-		if( exec ) {
+		if(exec) 
+		{
 			g->db_exec("DELETE FROM timestamps WHERE tablename = 'nodes' OR tablename = '_global'");
 			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('nodes',%NOW%)");
 			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('_global',%NOW%)");
+			system(c->command);
 		}	
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/cutoff] reloaded", c->base.instance);
@@ -79,6 +92,8 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	else 
 		syslog(LOG_ERR, "[%s/cutoff] Unable to read 'users' table", c->base.instance);
 
+	free(c->warning);
+	free(c->command);
 }
 
 struct cutoff_module * init(GLOBAL *g, MODULE *m)
@@ -101,6 +116,10 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 
 	s = g->str_concat(instance, ":limit");
 	c->limit = g->iniparser_getint(ini, s, 0);
+	free(s); s = g->str_concat(instance, ":warning");
+	c->warning = strdup(g->iniparser_getstring(ini, s, "Automatyczna blokada spowodowana przekroczeniem terminu wp³aty %time"));
+	free(s); s = g->str_concat(instance, ":command");
+	c->command = strdup(g->iniparser_getstring(ini, s, ""));
 	
 	g->iniparser_freedict(ini);
 	free(s);
