@@ -22,7 +22,11 @@
  *  $Id$
  */
 
-#include "almsd.h"
+#include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#include "lmsd.h"
 #include "pinger.h"
 
 struct host *hosts = NULL;
@@ -271,66 +275,65 @@ int recv_arp_reply()
 
 void reload(GLOBAL *g, struct pinger_module *p)
 {
-	QUERY_HANDLE *res;
+	QueryHandle *res;
 	int i, j, nc=0, n=2;
 
 	struct net *nets = (struct net *) malloc(sizeof(struct net));
 	char *netnames = strdup(p->networks);	
 	char *netname = strdup(netnames);
 
-	while( n>1 ) {
-		
+	while( n>1 ) 
+	{
 		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 
-		if( strlen(netname) ) {
-
-			if( (res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks WHERE UPPER(name)=UPPER('?')",netname)) ) {
-
-				if(res->nrows) {
-
-			    		nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-					nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
-					nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
-					nc++;
-				}
-	    			g->db_free(res);
-			}				
+		if( strlen(netname) ) 
+		{
+			res = g->db_pquery(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks WHERE UPPER(name)=UPPER('?')", netname);
+			if(g->db_nrows(res))
+			{
+				nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
+				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
+				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
+				nc++;
+			}
+	    		g->db_free(&res);
 		}
 	}
 	free(netname); free(netnames);
 
 	if(!nc)
-		if( (res = g->db_query("SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks"))!=NULL ) {
+	{
+		res = g->db_query(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks");
 
-			for(nc=0; nc<res->nrows; nc++) {
-				
-				nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
-				nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
-				nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
-			}
-			g->db_free(res);
+		for(nc=0; nc<g->db_nrows(res); nc++) 
+		{
+			nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
+			nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
+			nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
 		}
+		g->db_free(&res);
+	}
 
-	if( (res = g->db_pquery("SELECT id, INET_NTOA(ipaddr) AS ip FROM nodes ORDER BY ipaddr"))!=NULL ) {
+	res = g->db_pquery(g->conn, "SELECT id, INET_NTOA(ipaddr) AS ip FROM nodes ORDER BY ipaddr");
 
-		for(i=0; i<res->nrows; i++) {
-		    
+	for(i=0; i<g->db_nrows(res); i++) 
+	{
 			unsigned long ip = inet_addr(g->db_get_data(res,i,"ip"));
 			
-			for(j=0; j<nc; j++)
-				if((ip & nets[j].mask) == nets[j].address)
-					break;
+		for(j=0; j<nc; j++)
+			if((ip & nets[j].mask) == nets[j].address)
+				break;
 			
-			if(j!=nc) {
-				hosts = (struct host*) realloc(hosts, sizeof(struct host) * (nh + 1));
-				hosts[nh].id = strdup(g->db_get_data(res,i,"id"));
-				hosts[nh].ipaddr = ip;
-				hosts[nh].active = 0;
-				nh++;
-			}
+		if(j!=nc) 
+		{
+			hosts = (struct host*) realloc(hosts, sizeof(struct host) * (nh + 1));
+			hosts[nh].id = strdup(g->db_get_data(res,i,"id"));
+			hosts[nh].ipaddr = ip;
+			hosts[nh].active = 0;
+			nh++;
 		}
-		g->db_free(res);
 	}
+	g->db_free(&res);
 
 	/***********************************************************/
 	get_ifaces();
@@ -348,7 +351,7 @@ void reload(GLOBAL *g, struct pinger_module *p)
 			recv_arp_reply();
 			for(i=0; i<nh; i++) 
 				if(hosts[i].active) 
-					g->db_pexec("UPDATE nodes SET lastonline=%NOW% WHERE id=?", hosts[i].id);
+					g->db_pexec(g->conn, "UPDATE nodes SET lastonline=%NOW% WHERE id=?", hosts[i].id);
 		break;
 	}
 
@@ -366,27 +369,18 @@ void reload(GLOBAL *g, struct pinger_module *p)
 struct pinger_module * init(GLOBAL *g, MODULE *m)
 {
 	struct pinger_module *p;
-	unsigned char *instance, *s;
-	dictionary *ini;
 	
 	if(g->api_version != APIVERSION) 
+	{
 		return(NULL);
+	}
 
-	instance = m->instance;
-	
 	p = (struct pinger_module *) realloc(m, sizeof(struct pinger_module));
 	
 	p->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
-	p->base.instance = strdup(instance);
 	
-	ini = g->iniparser_load(g->inifile);
-
-	s = g->str_concat(instance, ":networks");
-	p->networks = strdup(g->iniparser_getstring(ini, s, ""));
+	p->networks = strdup(g->config_getstring(p->base.ini, p->base.instance, "networks", ""));
 	
-	g->iniparser_freedict(ini);
-	free(instance);
-	free(s);
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/pinger] initialized", p->base.instance);
 #endif

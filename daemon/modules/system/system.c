@@ -21,11 +21,13 @@
  *
  *  $Id$
  */
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <syslog.h>
 #include <string.h>
 
-#include "almsd.h"
+#include "lmsd.h"
 #include "system.h"
 
 void reload(GLOBAL *g, struct system_module *s)
@@ -40,27 +42,18 @@ void reload(GLOBAL *g, struct system_module *s)
 struct system_module * init(GLOBAL *g, MODULE *m)
 {
 	struct system_module *s;
-	unsigned char *instance, *a;
-	dictionary *ini;
 	
 	if(g->api_version != APIVERSION) 
-	    return (NULL);
-	
-	instance = m->instance;
+	{
+	        return (NULL);
+	}
 	
 	s = (struct system_module *) realloc(m, sizeof(struct system_module));
 	
 	s->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
-	s->base.instance = strdup(instance);
 
-	ini = g->iniparser_load(g->inifile);
-
-	a = g->str_concat(instance, ":command");
-	s->command = strdup(g->iniparser_getstring(ini, a, ""));
+	s->command = strdup(g->config_getstring(s->base.ini, s->base.instance, "command", ""));
 	
-	g->iniparser_freedict(ini);
-	free(a);
-	free(instance);
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/system] initialized", s->base.instance);
 #endif	
