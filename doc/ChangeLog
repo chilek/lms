@@ -42,6 +42,8 @@ wersja 1.5.2 (??/??/????):
     administratora "ostatniej modyfikacji" (alec)
   - w lms-makemacs poprawiona domy¶lna warto¶æ opcji config_file (alec)
   - dodany 'Rozdzia³ 9 FAQ' w dokumentacji (alec)
+  - przebudowana struktura menu: Administratorzy, Bazy danych, Witamy!
+    zebrane w jednym 'Administracja' (alec)
 
 wersja 1.5.1 Eamon (25/10/2004):
 
