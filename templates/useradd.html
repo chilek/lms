@@ -2,6 +2,20 @@
 {include file="userheader.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
+{literal}
+<SCRIPT language="JavaScript">
+<!--
+	function randomize()
+	{
+		var r = 0;
+		do
+			r = Math.floor(Math.random()*1000000-1);
+		while (r<1000);	
+		document.useradd.elements['useradd[pin]'].value = r;
+	}
+//-->
+</SCRIPT>
+{/literal}
 <P>
 <FORM name="useradd" method="POST" action="?m=useradd">		
 <TABLE cellpadding="4" cellspacing="0" width="100%">
@@ -103,7 +117,7 @@
 						<B>PIN</B>
 					</TD>
 					<TD width="99%">
-						<INPUT TYPE="text" size="6" value="{if $useradd.pin}{$useradd.pin}{/if}" name="useradd[pin]" {tip text="Wpisz min.4 i max.6 cyfrowy numer PIN (opcjonalnie)" trigger="pin"}>
+						<INPUT TYPE="text" size="6" value="{if $useradd.pin}{$useradd.pin}{/if}" name="useradd[pin]" {tip text="Wpisz min.4 i max.6 cyfrowy numer PIN (opcjonalnie)" trigger="pin"}>&nbsp;<A href="javascript: randomize()" {tip text="[ Generuj PIN ]"}>&raquo;&raquo;&raquo;</A>
 					</td>
 				</TR>
 			</TABLE>
