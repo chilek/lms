@@ -69,9 +69,13 @@ if(isset($usergroup))
 		$usergroup[$key] = trim($value);
 
 	if($usergroup['name'] == '')
-		$error['name'] = 'Proszê podaæ nazwê grupy!';
-	elseif($LMS->UsergroupGetId($usergroup['name']) && $usergroup['name'] != $LMS->UsergroupGetName($_GET['id']))
-		$error['name'] = 'Istnieje ju¿ grupa o takiej nazwie!';	
+		$error['name'] = 'Musisz podaæ nazwê grupy!';
+	elseif(strlen($usergroup['name']) > 16)
+		$error['name'] = 'Podana nazwa jest za d³uga!';
+	elseif($LMS->UsergroupGetId($usergroup['name']) && $LMS->UsergroupGetName($usergroup['id'] != $usergroup['name']))
+		$error['name'] = 'Istnieje ju¿ grupa o nazwie'.$usergroup['name'];
+	elseif(!eregi("^[_a-z0-9-]+$",$usergroup['name']))
+		$error['name'] = 'Podana nazwa zawiera niepoprawne znaki!';
 
 	$usergroup['id'] = $_GET['id'];
 
@@ -81,7 +85,6 @@ if(isset($usergroup))
 		header('Location: ?m=usergroupinfo&id='.$usergroup['id']);
 		die;
 	}
-
 }
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
@@ -98,6 +101,3 @@ $SMARTY->assign('userscount', sizeof($users));
 $SMARTY->display('usergroupedit.html');
 
 ?>
-
-
-
