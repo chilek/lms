@@ -24,19 +24,19 @@
  *  $Id$
  */
 
-if($_GET[ownerid]&&$LMS->UserExists($_GET[ownerid]))
+if($_GET['ownerid']&&$LMS->UserExists($_GET['ownerid']))
 {
-	$userinfo = $LMS->GetUser($_GET[ownerid]);
+	$userinfo = $LMS->GetUser($_GET['ownerid']);
 }
 
-$layout[pagetitle]="Wyszukiwanie komputerów";
+$layout['pagetitle'] = "Wyszukiwanie komputerów";
 
-$SMARTY->assign("balancelist",$LMS->GetUserBalanceList($_GET[ownerid]));
-$SMARTY->assign("users",$users);
-$SMARTY->assign("nodes",$LMS->ScanNodes());
-$SMARTY->assign("userinfo",$userinfo);
-$SMARTY->assign("layout",$layout);
+$SMARTY->assign('balancelist',$LMS->GetUserBalanceList($_GET['ownerid']));
+$SMARTY->assign('users',$users);
+$SMARTY->assign('nodes',$LMS->ScanNodes());
+$SMARTY->assign('userinfo',$userinfo);
+$SMARTY->assign('layout',$layout);
 
-$SMARTY->display("nodescan.html");
+$SMARTY->display('nodescan.html');
 
 ?>

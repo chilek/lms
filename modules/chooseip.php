@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$p = $_GET[p];
+$p = $_GET['p'];
 
 if(!isset($p))
 	$js = "var targetfield = window.opener.targetfield;";
@@ -33,27 +33,27 @@ if($p == "main")
 
 $networks = $LMS->GetNetworks();
 
-if (isset($_POST[netid]))
-    $netid= $_POST[netid];
+if (isset($_POST['netid']))
+    $netid= $_POST['netid'];
 
-elseif (isset($_SESSION[netid]))
-    $netid = $_SESSION[netid];
+elseif (isset($_SESSION['netid']))
+    $netid = $_SESSION['netid'];
     
 else
-    $netid = $networks[0][id];
+    $netid = $networks[0]['id'];
 
-$_SESSION[netid] = $netid;
+$_SESSION['netid'] = $netid;
 
 if($p == "main")
 	$network = $LMS->GetNetwork($netid);
 
-$layout[pagetitle] = "Wybierz adres IP";
+$layout['pagetitle'] = "Wybierz adres IP";
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("part",$p);
-$SMARTY->assign("js",$js);
-$SMARTY->assign("networks",$networks);
-$SMARTY->assign("network",$network);
-$SMARTY->display("chooseip.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('part',$p);
+$SMARTY->assign('js',$js);
+$SMARTY->assign('networks',$networks);
+$SMARTY->assign('network',$network);
+$SMARTY->display('chooseip.html');
 
 ?>

@@ -24,44 +24,44 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Lista komputerów";
+$layout['pagetitle'] = "Lista komputerów";
 
-$_SESSION[backto]=$_SERVER[QUERY_STRING];
+$_SESSION['backto']=$_SERVER['QUERY_STRING'];
 
-$SMARTY->assign("layout",$layout);
+$SMARTY->assign('layout',$layout);
 
-if(!isset($_GET[o]))
-	$o = $_SESSION[nlo];
+if(!isset($_GET['o']))
+	$o = $_SESSION['nlo'];
 else
-	$o = $_GET[o];
-$_SESSION[nlo] = $o;
+	$o = $_GET['o'];
+$_SESSION['nlo'] = $o;
 
 $nodelist = $LMS->GetNodeList($o);
-$listdata[total] = $nodelist[total];
-$listdata[order] = $nodelist[order];
-$listdata[direction] = $nodelist[direction];
-$listdata[totalon] = $nodelist[totalon];
-$listdata[totaloff] = $nodelist[totaloff];
+$listdata['total'] = $nodelist['total'];
+$listdata['order'] = $nodelist['order'];
+$listdata['direction'] = $nodelist['direction'];
+$listdata['totalon'] = $nodelist['totalon'];
+$listdata['totaloff'] = $nodelist['totaloff'];
 
-unset($nodelist[total]);
-unset($nodelist[order]);
-unset($nodelist[direction]);
-unset($nodelist[totalon]);
-unset($nodelist[totaloff]);
-if (isset($_SESSION[nlp]) && !isset($_GET[page]))
-        $_GET[page] = $_SESSION[nlp];
+unset($nodelist['total']);
+unset($nodelist['order']);
+unset($nodelist['direction']);
+unset($nodelist['totalon']);
+unset($nodelist['totaloff']);
+if (isset($_SESSION['nlp']) && !isset($_GET['page']))
+        $_GET['page'] = $_SESSION['nlp'];
 	
-$page = (! $_GET[page] ? 1 : $_GET[page]);
-$pagelimit = (! $LMS->CONFIG[phpui][nodelist_pagelimit] ? $listdata[total] : $LMS->CONFIG[phpui][nodelist_pagelimit]);
+$page = (! $_GET['page'] ? 1 : $_GET['page']);
+$pagelimit = (! $LMS->CONFIG['phpui']['nodelist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['nodelist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
-$_SESSION[nlp] = $page;
+$_SESSION['nlp'] = $page;
 
-$SMARTY->assign("page",$page);
-$SMARTY->assign("pagelimit",$pagelimit);
-$SMARTY->assign("start",$start);
-$SMARTY->assign("nodelist",$nodelist);
-$SMARTY->assign("listdata",$listdata);
-$SMARTY->display("nodelist.html");
+$SMARTY->assign('page',$page);
+$SMARTY->assign('pagelimit',$pagelimit);
+$SMARTY->assign('start',$start);
+$SMARTY->assign('nodelist',$nodelist);
+$SMARTY->assign('listdata',$listdata);
+$SMARTY->display('nodelist.html');
 
 ?>

@@ -1474,10 +1474,10 @@ function makemac()
 	return join(':',$mac);
 }
 
-$SMARTY->display("header.html");
+$SMARTY->display('header.html');
 echo '<H1>Generowanie danych losowych</H1>';
 	
-if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
+if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 {
 	echo '<B>Czyszczê bazê danych...</B><BR>';
 	$DB->Execute('DELETE FROM nodes');
@@ -1530,7 +1530,7 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 	$ppsize = sizeof($phoneprefix);
 	$ssize = sizeof($streets);
 	$esize = sizeof($emaildomains);
-	for($i = 0; $i < sprintf('%d',$_GET[l]); $i++)
+	for($i = 0; $i < sprintf('%d',$_GET['l']); $i++)
 	{
 		$useradd['lastname'] = $lastnames[mt_rand(0,$lnsize-1)];
 		$useradd['name'] = $names[mt_rand(0,$nsize-1)];
@@ -1600,6 +1600,6 @@ if(sprintf('%d',$_GET[l]) > 0 && sprintf('%d',$_GET[l]) <= 250)
 }else
 	echo '<FORM METHOD="GET" ACTION="?"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">Ile rekordów wygenerowaæ? (max: 250, <FONT COLOR="RED">UWAGA! TO USUNIE WSZYSTKIE DANE Z BAZY!!!</FONT>) <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
 	
-$SMARTY->display("footer.html");
+$SMARTY->display('footer.html');
 
 ?>

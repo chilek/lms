@@ -32,9 +32,9 @@ $users = $DB->GetAll('SELECT * FROM users');
 $tariffs = $DB->GetAllByKey('SELECT * FROM tariffs','id');
 foreach($users as $idx => $row)
 {
-	echo $row[lastname]." ".$row[name].": ";
-	echo "taryfa: '".$tariffs[$row[tariff]][name]."'... ";
-	$LMS->AddAssignment(array('tariffid' => $row[tariff], 'at' => $row[payday], 'userid' => $row[id], 'period' => 0, 'invoice' => 0));
+	echo $row['lastname']." ".$row['name'].": ";
+	echo "taryfa: '".$tariffs[$row['tariff']]['name']."'... ";
+	$LMS->AddAssignment(array('tariffid' => $row['tariff'], 'at' => $row['payday'], 'userid' => $row['id'], 'period' => 0, 'invoice' => 0));
 	echo "ok.\n";
 }
 

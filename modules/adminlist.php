@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$layout[pagetitle] = "Administratorzy";
+$layout['pagetitle'] = "Administratorzy";
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("adminslist",$LMS->GetAdminList());
-$SMARTY->display("adminlist.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('adminslist',$LMS->GetAdminList());
+$SMARTY->display('adminlist.html');
 
 ?>

@@ -160,7 +160,7 @@ elseif(isset($userdata))
 		$userinfo['shownodes'] = TRUE;
 }
 
-$layout['pagetitle']='Edycja danych u¿ytkownika: '.$userinfo['username'];
+$layout['pagetitle'] = 'Edycja danych u¿ytkownika: '.$userinfo['username'];
 $SMARTY->assign('usernodes',$LMS->GetUserNodes($userinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($userinfo['id']));
 $SMARTY->assign('tariffs',$LMS->GetTariffs());

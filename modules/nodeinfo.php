@@ -24,16 +24,16 @@
  *  $Id$
  */
 
-if(!eregi("^[0-9]+$",$_GET[id]))
+if(!eregi("^[0-9]+$",$_GET['id']))
 {
 	header("Location: ?m=nodelist");
 	die;
 }
 
-if(!$LMS->NodeExists($_GET[id]))
-	if(isset($_GET[ownerid]))
+if(!$LMS->NodeExists($_GET['id']))
+	if(isset($_GET['ownerid']))
 	{
-		header("Location: ?m=userinfo&id=".$_GET[ownerid]);
+		header("Location: ?m=userinfo&id=".$_GET['ownerid']);
 		die;
 	}
 	else
@@ -41,13 +41,13 @@ if(!$LMS->NodeExists($_GET[id]))
 		header("Location: ?m=nodelist");
 		die;
 	}
-elseif($LMS->GetNodeOwner($_GET[id]) == 0)
+elseif($LMS->GetNodeOwner($_GET['id']) == 0)
 {
-	header("Location: ?m=netdevinfo&id=".$LMS->GetNetDevIDByNode($_GET[id]));
+	header("Location: ?m=netdevinfo&id=".$LMS->GetNetDevIDByNode($_GET['id']));
 	die;
 }
 
-$nodeid = $_GET[id];
+$nodeid = $_GET['id'];
 $ownerid = $LMS->GetNodeOwner($nodeid);
 $tariffs = $LMS->GetTariffs();
 $userinfo = $LMS->GetUser($ownerid);
@@ -55,10 +55,10 @@ $nodeinfo = $LMS->GetNode($nodeid);
 $balancelist = $LMS->GetUserBalanceList($ownerid);
 $assignments = $LMS->GetUserAssignments($ownerid);
 
-$_SESSION[backto] = $_SERVER[QUERY_STRING];
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-if(!isset($_GET[ownerid]))
-	$_SESSION[backto] .= "&ownerid=".$ownerid;
+if(!isset($_GET['ownerid']))
+	$_SESSION['backto'] .= "&ownerid=".$ownerid;
 
 if($nodeinfo['netdev'] == 0) {
 	$netdevices = $LMS->GetNetDevList();
@@ -66,19 +66,19 @@ if($nodeinfo['netdev'] == 0) {
 } else
 	$netdevices = $LMS->GetNetDev($nodeinfo['netdev']);
 
-unset($netdevices[total]);
-unset($netdevices[order]);
-unset($netdevices[direction]);
+unset($netdevices['total']);
+unset($netdevices['order']);
+unset($netdevices['direction']);
 
-$layout[pagetitle]="Informacje o komputerze: ".$nodeinfo[name];
+$layout['pagetitle'] = "Informacje o komputerze: ".$nodeinfo['name'];
 
-$SMARTY->assign("netdevices",$netdevices);
-$SMARTY->assign("balancelist",$balancelist);
-$SMARTY->assign("userinfo",$userinfo);
-$SMARTY->assign("nodeinfo",$nodeinfo);
-$SMARTY->assign("assignments",$assignments);
-$SMARTY->assign("tariffs",$tariffs);
-$SMARTY->assign("layout",$layout);
-$SMARTY->display("nodeinfo.html");
+$SMARTY->assign('netdevices',$netdevices);
+$SMARTY->assign('balancelist',$balancelist);
+$SMARTY->assign('userinfo',$userinfo);
+$SMARTY->assign('nodeinfo',$nodeinfo);
+$SMARTY->assign('assignments',$assignments);
+$SMARTY->assign('tariffs',$tariffs);
+$SMARTY->assign('layout',$layout);
+$SMARTY->display('nodeinfo.html');
 
 ?>

@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Tytu³ modu³u";
-$SMARTY->assign("layout",$layout);
-$SMARTY->display("header.html");
+$layout['pagetitle'] = "Tytu³ modu³u";
+$SMARTY->assign('layout',$layout);
+$SMARTY->display('header.html');
 
 // Tutaj odpowiednie dzia³ania
 
-$SMARTY->display("footer.html");
+$SMARTY->display('footer.html');
 
 ?>

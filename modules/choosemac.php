@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$layout[pagetitle] = "Wybierz adres MAC";
+$layout['pagetitle'] = "Wybierz adres MAC";
 
-$p = $_GET[p];
-$netid = $_POST[netid];
+$p = $_GET['p'];
+$netid = $_POST['netid'];
 
 if(!isset($p))
 	$js = "var targetfield = window.opener.targetfield;";
@@ -37,9 +37,9 @@ if($p == "main")
 if($p == "main")
 {
 	$maclist = $LMS->GetMACs();
-	if($LMS->CONFIG[phpui][arpd_servers])
+	if($LMS->CONFIG['phpui']['arpd_servers'])
 	{
-		$servers = split(' ',eregi_replace("[\t ]+"," ",$LMS->CONFIG[phpui][arpd_servers]));
+		$servers = split(' ',eregi_replace("[\t ]+"," ",$LMS->CONFIG['phpui']['arpd_servers']));
 		foreach($servers as $server)
 		{
 			list($addr,$port) = split(':',$server);
@@ -48,12 +48,12 @@ if($p == "main")
 			$maclist = array_merge($maclist,$LMS->GetRemoteMACs($addr,$port));
 		}
 	}
-	$SMARTY->assign("maclist",$maclist);
+	$SMARTY->assign('maclist',$maclist);
 }
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("part",$p);
-$SMARTY->assign("js",$js);
-$SMARTY->display("choosemac.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('part',$p);
+$SMARTY->assign('js',$js);
+$SMARTY->display('choosemac.html');
 
 ?>

@@ -24,19 +24,19 @@
  *  $Id$
  */
 
-$layout['pagetitle']="Lista op³at sta³ych";
+$layout['pagetitle'] = "Lista op³at sta³ych";
 
 $paymentlist = $LMS->GetPaymentList();
 
 $listdata['total'] = $paymentlist['total'];
 
-unset($paymentlist[total]);
+unset($paymentlist['total']);
 
-$_SESSION['backto'] = $_SERVER[QUERY_STRING];
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$SMARTY->assign("paymentlist",$paymentlist);
-$SMARTY->assign("listdata",$listdata);
-$SMARTY->assign("layout",$layout);
-$SMARTY->display("paymentlist.html");
+$SMARTY->assign('paymentlist',$paymentlist);
+$SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('layout',$layout);
+$SMARTY->display('paymentlist.html');
 
 ?>

@@ -24,21 +24,21 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Sieci IP";
+$layout['pagetitle'] = "Sieci IP";
 
 $netlist = $LMS->GetNetworkList();
 
-$listdata[size] = $netlist[size];
-$listdata[assigned] = $netlist[assigned];
+$listdata['size'] = $netlist['size'];
+$listdata['assigned'] = $netlist['assigned'];
 
-unset($netlist[assigned], $netlist[size], $netlist[total]);
+unset($netlist['assigned'], $netlist['size'], $netlist['total']);
 
-$listdata[total] = sizeof($netlist);
+$listdata['total'] = sizeof($netlist);
 
-$SMARTY->assign("listdata",$listdata);
-$SMARTY->assign("netadd",$netadd);
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("netlist",$netlist);
-$SMARTY->display("netlist.html");
+$SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('netadd',$netadd);
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('netlist',$netlist);
+$SMARTY->display('netlist.html');
 
 ?>

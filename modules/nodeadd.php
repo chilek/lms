@@ -25,57 +25,57 @@
  */
 
 
-$nodedata = $_POST[nodedata];
+$nodedata = $_POST['nodedata'];
 
 if(isset($nodedata))
 {
-	$nodedata[ipaddr] = $_POST[nodedataipaddr];
-	$nodedata[mac] = $_POST[nodedatamac];
-	$nodedata[mac] = str_replace("-",":",$nodedata[mac]);
+	$nodedata['ipaddr'] = $_POST['nodedataipaddr'];
+	$nodedata['mac'] = $_POST['nodedatamac'];
+	$nodedata['mac'] = str_replace("-",":",$nodedata['mac']);
 
 	foreach($nodedata as $key => $value)
 		$nodedata[$key] = trim($value);
 
-	if($nodedata[ipaddr]=="" && $nodedata[mac]=="" && $nodedata[name]=="")
-		if($_GET[ownerid])
+	if($nodedata['ipaddr']=="" && $nodedata['mac']=="" && $nodedata['name']=="")
+		if($_GET['ownerid'])
 		{
-			header("Location: ?m=userinfo&id=".$_GET[ownerid]);
+			header("Location: ?m=userinfo&id=".$_GET['ownerid']);
 			die;
 		}else{
 			header("Location: ?m=nodelist");
 			die;
 		}
 	
-	if($nodedata[name]=="")
-		$error[name] = "Proszê podaæ nazwê komputera!";
-	elseif(strlen($nodedata[name]) > 16)
-		$error[name] = "Podana nazwa jest za d³uga!";
-	elseif($LMS->GetNodeIDByName($nodedata[name]))
-		$error[name] = "Podana nazwa jest u¿ywana!";
-	elseif(!eregi("^[_a-z0-9-]+$",$nodedata[name]))
-		$error[name] = "Podana nazwa zawiera niepoprawne znaki!";		
+	if($nodedata['name']=="")
+		$error['name'] = "Proszê podaæ nazwê komputera!";
+	elseif(strlen($nodedata['name']) > 16)
+		$error['name'] = "Podana nazwa jest za d³uga!";
+	elseif($LMS->GetNodeIDByName($nodedata['name']))
+		$error['name'] = "Podana nazwa jest u¿ywana!";
+	elseif(!eregi("^[_a-z0-9-]+$",$nodedata['name']))
+		$error['name'] = "Podana nazwa zawiera niepoprawne znaki!";		
 
-	if(!$nodedata[ipaddr])
-		$error[ipaddr] = "Proszê podac adres IP!";
-	elseif(!check_ip($nodedata[ipaddr]))
-		$error[ipaddr] = "Podany adres IP jest niepoprawny!";
-	elseif(!$LMS->IsIPValid($nodedata[ipaddr]))
-		$error[ipaddr] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
-	elseif(!$LMS->IsIPFree($nodedata[ipaddr]))
-		$error[ipaddr] = "Podany adres IP jest zajêty!";
+	if(!$nodedata['ipaddr'])
+		$error['ipaddr'] = "Proszê podac adres IP!";
+	elseif(!check_ip($nodedata['ipaddr']))
+		$error['ipaddr'] = "Podany adres IP jest niepoprawny!";
+	elseif(!$LMS->IsIPValid($nodedata['ipaddr']))
+		$error['ipaddr'] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
+	elseif(!$LMS->IsIPFree($nodedata['ipaddr']))
+		$error['ipaddr'] = "Podany adres IP jest zajêty!";
 
-	if(!$nodedata[mac])
-		$error[mac] = "Proszê podac adres MAC!";
-	elseif($LMS->GetNodeIDByMAC($nodedata[mac]) && $LMS->CONFIG[phpui][allow_mac_sharing] == FALSE)
-		$error[mac] = "Podany MAC jest ju¿ w bazie!";
-	elseif(!check_mac($nodedata[mac]))
-		$error[mac] = "Podany adres MAC jest nieprawid³owy!";
+	if(!$nodedata['mac'])
+		$error['mac'] = "Proszê podac adres MAC!";
+	elseif($LMS->GetNodeIDByMAC($nodedata['mac']) && $LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE)
+		$error['mac'] = "Podany MAC jest ju¿ w bazie!";
+	elseif(!check_mac($nodedata['mac']))
+		$error['mac'] = "Podany adres MAC jest nieprawid³owy!";
 
-	if(! $LMS->UserExists($nodedata[ownerid]))
-		$error[user] = "Proszê wybraæ u¿ytkownika!";
+	if(! $LMS->UserExists($nodedata['ownerid']))
+		$error['user'] = "Proszê wybraæ u¿ytkownika!";
 
-	if($LMS->GetUserStatus($nodedata[ownerid]) != 3 || $LMS->UserExists($nodedata[ownerid]) != TRUE)
-		$error[user] = "Wybrany u¿ytkownik $nodedata[ownerid] jest b³êdny!";
+	if($LMS->GetUserStatus($nodedata['ownerid']) != 3 || $LMS->UserExists($nodedata['ownerid']) != TRUE)
+		$error['user'] = "Wybrany u¿ytkownik $nodedata['ownerid'] jest b³êdny!";
 
 	if(!$error)
 	{
@@ -91,47 +91,47 @@ if(isset($nodedata))
 
 }
 
-if($LMS->UserExists($_GET[ownerid]) < 0)
+if($LMS->UserExists($_GET['ownerid']) < 0)
 {
-	header('Location: ?m=userinfo&id='.$_GET[ownerid]);
+	header('Location: ?m=userinfo&id='.$_GET['ownerid']);
 	die;
 }
 
-$nodedata[access] = 1;
+$nodedata['access'] = 1;
 
-if($_GET[ownerid] && $LMS->UserExists($_GET[ownerid]) > 0)
+if($_GET['ownerid'] && $LMS->UserExists($_GET['ownerid']) > 0)
 {
-	$nodedata[ownerid] = $_GET[ownerid];
-	$userinfo = $LMS->GetUser($_GET[ownerid]);
+	$nodedata['ownerid'] = $_GET['ownerid'];
+	$userinfo = $LMS->GetUser($_GET['ownerid']);
 }
 
-if(isset($_GET[preip])&&$nodedata[ipaddr]=="")
-	$nodedata[ipaddr] = $_GET[preip];
+if(isset($_GET['preip'])&&$nodedata['ipaddr']=="")
+	$nodedata['ipaddr'] = $_GET['preip'];
 
-if(isset($_GET[premac])&&$nodedata[mac]=="")
-	$nodedata[mac] = $_GET[premac];
+if(isset($_GET['premac'])&&$nodedata['mac']=="")
+	$nodedata['mac'] = $_GET['premac'];
 
-if(isset($_GET[prename])&&$nodedata[name]=="")
-	$nodedata[name] = $_GET[prename];
+if(isset($_GET['prename'])&&$nodedata['name']=="")
+	$nodedata['name'] = $_GET['prename'];
 		
 
-$layout[pagetitle]="Nowy komputer";
+$layout['pagetitle'] = "Nowy komputer";
 
 $tariffs = $LMS->GetTariffs();
-$balancelist = $LMS->GetUserBalanceList($nodedata[ownerid]);
-$assignments = $LMS->GetUserAssignments($nodedata[ownerid]);
+$balancelist = $LMS->GetUserBalanceList($nodedata['ownerid']);
+$assignments = $LMS->GetUserAssignments($nodedata['ownerid']);
 $users = $LMS->GetUserNames();
 
-$SMARTY->assign("balancelist",$balancelist);
-$SMARTY->assign("assignments",$assignments);
-$SMARTY->assign("tariffs",$tariffs);
-$SMARTY->assign("users",$users);
-$SMARTY->assign("error",$error);
-$SMARTY->assign("userinfo",$userinfo);
-$SMARTY->assign("nodedata",$nodedata);
-$SMARTY->assign("layout",$layout);
+$SMARTY->assign('balancelist',$balancelist);
+$SMARTY->assign('assignments',$assignments);
+$SMARTY->assign('tariffs',$tariffs);
+$SMARTY->assign('users',$users);
+$SMARTY->assign('error',$error);
+$SMARTY->assign('userinfo',$userinfo);
+$SMARTY->assign('nodedata',$nodedata);
+$SMARTY->assign('layout',$layout);
 
-$SMARTY->display("nodeadd.html");
+$SMARTY->display('nodeadd.html');
 
 ?>
 

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$LMS->SetAdminLang($SESSION->id,$_GET[lang]);
+$LMS->SetAdminLang($SESSION->id,$_GET['lang']);
 
 header("Location: ?m=welcome");
 

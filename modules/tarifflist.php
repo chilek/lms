@@ -24,20 +24,20 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Lista taryf";
+$layout['pagetitle'] = "Lista taryf";
 
 $tarifflist = $LMS->GetTariffList();
 
-$listdata[total] = $tarifflist[total];
-$listdata[totalincome] = $tarifflist[totalincome];
-$listdata[totalusers] = $tarifflist[totalusers];
-$listdata[totalcount] = $tarifflist[totalcount];
+$listdata['total'] = $tarifflist['total'];
+$listdata['totalincome'] = $tarifflist['totalincome'];
+$listdata['totalusers'] = $tarifflist['totalusers'];
+$listdata['totalcount'] = $tarifflist['totalcount'];
 
-unset($tarifflist[total],$tarifflist[totalincome],$tarifflist[totalusers],$tarifflist[totalcount]);
+unset($tarifflist['total'],$tarifflist['totalincome'],$tarifflist['totalusers'],$tarifflist['totalcount']);
 
-$SMARTY->assign("tarifflist",$tarifflist);
-$SMARTY->assign("listdata",$listdata);
-$SMARTY->assign("layout",$layout);
-$SMARTY->display("tarifflist.html");
+$SMARTY->assign('tarifflist',$tarifflist);
+$SMARTY->assign('listdata',$listdata);
+$SMARTY->assign('layout',$layout);
+$SMARTY->display('tarifflist.html');
 
 ?>

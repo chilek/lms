@@ -24,39 +24,39 @@
  *  $Id$
  */
 
-$passwd = $_POST[passwd];
+$passwd = $_POST['passwd'];
 
-$id = (isset($_GET[id])) ? $_GET[id] : $SESSION->id;
+$id = (isset($_GET['id'])) ? $_GET['id'] : $SESSION->id;
 
 if($LMS->AdminExists($id))
 {
 	if(isset($passwd))
 	{
-		if($passwd[passwd] == "" || $passwd[confirm] == "")
-			$error[password] .= "Has³o nie mo¿e byæ puste!<BR>";
+		if($passwd['passwd'] == "" || $passwd['confirm'] == "")
+			$error['password'] .= "Has³o nie mo¿e byæ puste!<BR>";
 		
-		if($passwd[passwd] != $passwd[confirm])
-			$error[password] .= "Podane has³a siê ró¿ni±!";
+		if($passwd['passwd'] != $passwd['confirm'])
+			$error['password'] .= "Podane has³a siê ró¿ni±!";
 		
 		if(!$error)
 		{
-			$LMS->SetAdminPassword($id,$passwd[passwd]);
+			$LMS->SetAdminPassword($id,$passwd['passwd']);
 			header("Location: ?m=welcome");
 		}
 	}
 
-	$passwd[realname] = $LMS->GetAdminName($id);
-	$passwd[id] = $id;
-	$layout[pagetitle]="Zmiana has³a dla ".$passwd[realname];
-	$SMARTY->assign("layout",$layout);
-	$SMARTY->assign("error",$error);
-	$SMARTY->assign("passwd",$passwd);
-	$SMARTY->display("adminpasswd.html");
+	$passwd['realname'] = $LMS->GetAdminName($id);
+	$passwd['id'] = $id;
+	$layout['pagetitle'] = "Zmiana has³a dla ".$passwd['realname'];
+	$SMARTY->assign('layout',$layout);
+	$SMARTY->assign('error',$error);
+	$SMARTY->assign('passwd',$passwd);
+	$SMARTY->display('adminpasswd.html');
 
 }
 else
 {
-	header("Location: ?m=".$_SESSION[lastmodule]);
+	header("Location: ?m=".$_SESSION['lastmodule']);
 	die;
 }
 

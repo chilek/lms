@@ -24,137 +24,137 @@
  *  $Id$
  */
 
-if(!$LMS->NodeExists($_GET[id]))
-	if(isset($_GET[ownerid]))
-		header("Location: ?m=userinfo&id=".$_GET[ownerid]);
+if(!$LMS->NodeExists($_GET['id']))
+	if(isset($_GET['ownerid']))
+		header("Location: ?m=userinfo&id=".$_GET['ownerid']);
 	else
 		header("Location: ?m=nodelist");
 
-if($_GET[action]=="link")
+if($_GET['action']=="link")
 {
-	$LMS->NetDevLinkNode($_GET[id],$_GET[devid]);
-	header("Location: ?m=nodeinfo&id=".$_GET[id]);
+	$LMS->NetDevLinkNode($_GET['id'],$_GET['devid']);
+	header("Location: ?m=nodeinfo&id=".$_GET['id']);
 	die;
 }
 
-$nodeid = $_GET[id];
+$nodeid = $_GET['id'];
 $ownerid = $LMS->GetNodeOwner($nodeid);
-$_SESSION[backto] = $_SERVER[QUERY_STRING];
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 	
-if(!isset($_GET[ownerid]))
-	$_SESSION[backto] .= "&ownerid=".$ownerid;
+if(!isset($_GET['ownerid']))
+	$_SESSION['backto'] .= "&ownerid=".$ownerid;
 							
 $owner = $ownerid;
 $userinfo=$LMS->GetUser($owner);
-$layout[pagetitle]="Informacje o u¿ytkowniku: ".$userinfo[username]." - edycja komputera: ".$LMS->GetNodeName($_GET[id]);
+$layout['pagetitle'] = "Informacje o u¿ytkowniku: ".$userinfo['username']." - edycja komputera: ".$LMS->GetNodeName($_GET['id']);
 
-$nodeedit = $_POST[nodeedit];
+$nodeedit = $_POST['nodeedit'];
 $usernodes = $LMS->GetUserNodes($owner);
-$nodeinfo = $LMS->GetNode($_GET[id]);
+$nodeinfo = $LMS->GetNode($_GET['id']);
 
 if(isset($nodeedit))
 {
-	$nodeedit[ipaddr] = $_POST[nodeeditipaddr];
-	$nodeedit[mac] = $_POST[nodeeditmac];
-	$nodeedit[mac] = str_replace("-",":",$nodeedit[mac]);
+	$nodeedit['ipaddr'] = $_POST['nodeeditipaddr'];
+	$nodeedit['mac'] = $_POST['nodeeditmac'];
+	$nodeedit['mac'] = str_replace("-",":",$nodeedit['mac']);
 	foreach($nodeedit as $key => $value)
 		$nodeedit[$key] = trim($value);
 	
-	if($nodeedit[ipaddr]==""&&$nodeedit[mac]==""&&$nodeedit[name]=="")
+	if($nodeedit['ipaddr']==""&&$nodeedit['mac']==""&&$nodeedit['name']=="")
 	{
-		header("Location: ?m=nodeinfo&id=".$nodeedit[id]);
+		header("Location: ?m=nodeinfo&id=".$nodeedit['id']);
 		die;
 	}
 
-	if(check_ip($nodeedit[ipaddr]))
+	if(check_ip($nodeedit['ipaddr']))
 	{
-		if($LMS->IsIPValid($nodeedit[ipaddr]))
+		if($LMS->IsIPValid($nodeedit['ipaddr']))
 		{
-			if(!$LMS->IsIPFree($nodeedit[ipaddr])&&$LMS->GetNodeIPByID($nodeedit[id])!=$nodeedit[ipaddr])
+			if(!$LMS->IsIPFree($nodeedit['ipaddr'])&&$LMS->GetNodeIPByID($nodeedit['id'])!=$nodeedit['ipaddr'])
 			{
-				$error[ipaddr] = "Podany adres IP jest zajêty!";
+				$error['ipaddr'] = "Podany adres IP jest zajêty!";
 			}
 		}
 		else
 		{
-			$error[ipaddr] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
+			$error['ipaddr'] = "Podany adres IP nie nale¿y do ¿adnej sieci!";
 		}
 	}
 	else
 	{
-		$error[ipaddr] = "Podany adres IP jest niepoprawny!";
+		$error['ipaddr'] = "Podany adres IP jest niepoprawny!";
 	}
 
-	if(check_mac($nodeedit[mac]))
+	if(check_mac($nodeedit['mac']))
 	{
 		if(
-				$LMS->GetNodeIDByMAC($nodeedit[mac]) &&
-				$LMS->GetNodeMACByID($nodeedit[id])!=$nodeedit[mac] &&
-				$LMS->CONFIG[phpui][allow_mac_sharing] == FALSE
+				$LMS->GetNodeIDByMAC($nodeedit['mac']) &&
+				$LMS->GetNodeMACByID($nodeedit['id'])!=$nodeedit['mac'] &&
+				$LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE
 		)
 		{
-			$error[mac] = "Podany adres MAC jest ju¿ przypisany do innego komputera!";
+			$error['mac'] = "Podany adres MAC jest ju¿ przypisany do innego komputera!";
 		}
 	}
 	else
 	{
-		$error[mac] = "Podany adres MAC jest b³êdny!";
+		$error['mac'] = "Podany adres MAC jest b³êdny!";
 	}
 
-	if($nodeedit[name]=="")
-		$error[name] = "Podaj nazwê!";
-	elseif($LMS->GetNodeIDByName($nodeedit[name]) && $LMS->GetNodeIDByNAME($nodeedit[name]) != $nodeedit[id])
-		$error[name] = "Ta nazwa jest zajêta!";
-	elseif(!eregi("^[_a-z0-9-]+$",$nodeedit[name]))
-		$error[name] = "Podana nazwa zawiera niepoprawne znaki!";
+	if($nodeedit['name']=="")
+		$error['name'] = "Podaj nazwê!";
+	elseif($LMS->GetNodeIDByName($nodeedit['name']) && $LMS->GetNodeIDByNAME($nodeedit['name']) != $nodeedit['id'])
+		$error['name'] = "Ta nazwa jest zajêta!";
+	elseif(!eregi("^[_a-z0-9-]+$",$nodeedit['name']))
+		$error['name'] = "Podana nazwa zawiera niepoprawne znaki!";
 
-	if($nodeedit[access]!=1)
-		$nodeedit[access] = 0;
+	if($nodeedit['access']!=1)
+		$nodeedit['access'] = 0;
 	
-	if($nodeinfo[netdev] != $nodeedit[netdev] && $nodeedit[netdev] != 0)
+	if($nodeinfo['netdev'] != $nodeedit['netdev'] && $nodeedit['netdev'] != 0)
 	{
-		$netdev = $LMS->GetNetDev($nodeedit[netdev]); 
-		if($netdev[ports] <= $netdev[takenports])
-		    $error[netdev] = "Brak wolnych portów w wybranym urz±dzeniu!";
-		$nodeinfo[netdev] = $nodeedit[netdev];
+		$netdev = $LMS->GetNetDev($nodeedit['netdev']); 
+		if($netdev['ports'] <= $netdev['takenports'])
+		    $error['netdev'] = "Brak wolnych portów w wybranym urz±dzeniu!";
+		$nodeinfo['netdev'] = $nodeedit['netdev'];
 	}
 	
-	$nodeinfo[name] = $nodeedit[name];
-	$nodeinfo[mac] = $nodeedit[mac];
-	$nodeinfo[ipaddr] = $nodeedit[ipaddr];
-	$nodeinfo[access] = $nodeedit[access];
-	$nodeinfo[ownerid] = $nodeedit[ownerid];
+	$nodeinfo['name'] = $nodeedit['name'];
+	$nodeinfo['mac'] = $nodeedit['mac'];
+	$nodeinfo['ipaddr'] = $nodeedit['ipaddr'];
+	$nodeinfo['access'] = $nodeedit['access'];
+	$nodeinfo['ownerid'] = $nodeedit['ownerid'];
 
 
 	if(!$error)
 	{
 		$LMS->NodeUpdate($nodeedit);
-		header("Location: ?m=nodeinfo&id=".$nodeedit[id]);
+		header("Location: ?m=nodeinfo&id=".$nodeedit['id']);
 	}
 }
 
-if($userinfo[status]==3) $userinfo[shownodes] = TRUE;
+if($userinfo['status']==3) $userinfo['shownodes'] = TRUE;
 $users = $LMS->GetUserNames();
 $tariffs = $LMS->GetTariffs();
 $assignments = $LMS->GetUserAssignments($ownerid);
 $balancelist = $LMS->GetUserBalanceList($owner);
 
-$nodeinfo[netdev] = $LMS->GetNetDev($nodeinfo[netdev]);
+$nodeinfo['netdev'] = $LMS->GetNetDev($nodeinfo['netdev']);
 $netdevices = $LMS->GetNetDevList();
-unset($netdevices[total]);
-unset($netdevices[direction]);
-unset($netdevices[order]);
+unset($netdevices['total']);
+unset($netdevices['direction']);
+unset($netdevices['order']);
 
-$SMARTY->assign("netdevices",$netdevices);
-$SMARTY->assign("balancelist",$balancelist);
-$SMARTY->assign("assignments",$assignments);
-$SMARTY->assign("tariffs",$tariffs);
-$SMARTY->assign("error",$error);
-$SMARTY->assign("userinfo",$userinfo);
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("nodeinfo",$nodeinfo);
-$SMARTY->assign("users",$users);
-$SMARTY->display("nodeedit.html");
+$SMARTY->assign('netdevices',$netdevices);
+$SMARTY->assign('balancelist',$balancelist);
+$SMARTY->assign('assignments',$assignments);
+$SMARTY->assign('tariffs',$tariffs);
+$SMARTY->assign('error',$error);
+$SMARTY->assign('userinfo',$userinfo);
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('nodeinfo',$nodeinfo);
+$SMARTY->assign('users',$users);
+$SMARTY->display('nodeedit.html');
 
 ?>
 

@@ -72,11 +72,11 @@ if(isset($tariffadd))
 	
 }
 
-$layout['pagetitle']="Nowa taryfa";
+$layout['pagetitle'] = "Nowa taryfa";
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("error",$error);
-$SMARTY->assign("tariffadd",$tariffadd);
-$SMARTY->display("tariffadd.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('error',$error);
+$SMARTY->assign('tariffadd',$tariffadd);
+$SMARTY->display('tariffadd.html');
 
 ?>

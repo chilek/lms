@@ -24,8 +24,8 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Wydruki";
-$SMARTY->assign("layout",$layout);
+$layout['pagetitle'] = "Wydruki";
+$SMARTY->assign('layout',$layout);
 
 $su = $DB->GetOne("SELECT min(time) FROM cash");
 $eu = $DB->GetOne("SELECT max(time) FROM cash");
@@ -50,27 +50,27 @@ for($d=$sy;$d<$ey+1;$d++)
 		$monthlist[] = "$d/$m";
 }
 
-$SMARTY->assign("monthlist",$monthlist);
+$SMARTY->assign('monthlist',$monthlist);
 
-switch($_GET[type])
+switch($_GET['type'])
 {
 	case "userlist":
-		$SMARTY->assign("userlist",$LMS->GetUserList($_SESSION['ulo'],$_SESSION['uls']));
-		$SMARTY->display("printuserlist.html");
+		$SMARTY->assign('userlist',$LMS->GetUserList($_SESSION['ulo'],$_SESSION['uls']));
+		$SMARTY->display('printuserlist.html');
 	break;
 
 	case "nodelist":
-		$SMARTY->assign("nodelist",$LMS->GetNodeList($_SESSION['nlo']));
-		$SMARTY->display("printnodelist.html");
+		$SMARTY->assign('nodelist',$LMS->GetNodeList($_SESSION['nlo']));
+		$SMARTY->display('printnodelist.html');
 	break;
 	
 	case "userlistminus":
-		$SMARTY->assign("userlist",$LMS->GetUserList($_SESSION['ulo'],$_SESSION['uls']));
-		$SMARTY->display("printuserlistminus.html");
+		$SMARTY->assign('userlist',$LMS->GetUserList($_SESSION['ulo'],$_SESSION['uls']));
+		$SMARTY->display('printuserlistminus.html');
 	break;
 
 	default:
-		$SMARTY->display("printindex.html");
+		$SMARTY->display('printindex.html');
 	break;
 }
 

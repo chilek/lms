@@ -24,23 +24,23 @@
  *  $Id$
  */
 
-if(!$LMS->NetworkExists($_GET[id]))
+if(!$LMS->NetworkExists($_GET['id']))
 {
 	header("Location: ?m=netlist");
 	die;
 }
 
-if (isset($_SESSION[ntlp][$_GET[id]]) && !isset($_GET[page]))
-	$_GET[page] = $_SESSION[ntlp][$_GET[id]];
+if (isset($_SESSION['ntlp'][$_GET['id']]) && !isset($_GET['page']))
+	$_GET['page'] = $_SESSION['ntlp'][$_GET['id']];
 
-$_SESSION[ntlp][$_GET[id]] = $_GET[page];
+$_SESSION['ntlp'][$_GET['id']] = $_GET['page'];
 
-$network = $LMS->GetNetworkRecord($_GET[id],$_GET[page],1024);
+$network = $LMS->GetNetworkRecord($_GET['id'],$_GET['page'],1024);
 
-$layout[pagetitle]="Informacja o sieci: ".$network[name];
+$layout['pagetitle'] = "Informacja o sieci: ".$network['name'];
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("network",$network);
-$SMARTY->display("netinfo.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('network',$network);
+$SMARTY->display('netinfo.html');
 
 ?>

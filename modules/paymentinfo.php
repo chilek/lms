@@ -34,10 +34,10 @@ $payment = $LMS->GetPayment($_GET['id']);
 
 $layout['pagetitle'] = "Informacja o op³acie sta³ej: ".$payment['name'];
 
-$_SESSION['backto'] = $_SERVER[QUERY_STRING];
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("payment",$payment);
-$SMARTY->display("paymentinfo.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('payment',$payment);
+$SMARTY->display('paymentinfo.html');
 
 ?>

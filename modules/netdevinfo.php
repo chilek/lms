@@ -37,36 +37,36 @@ $netdevlist = $LMS->GetNotConnectedDevices($_GET['id']);
 $nodelist = $LMS->GetNodeList();
 $replacelist = $LMS->GetNetDevList();
 
-$replacelisttotal = $replacelist[total];
-unset($replacelist[order]);
-unset($replacelist[total]);
-unset($replacelist[direction]);
+$replacelisttotal = $replacelist['total'];
+unset($replacelist['order']);
+unset($replacelist['total']);
+unset($replacelist['direction']);
 
 $nodelist = $LMS->GetUnlinkedNodes();
 $netdevips = $LMS->GetNetDevIPs($_GET['id']);
 
-unset($nodelist[total]);
-unset($nodelist[order]);
-unset($nodelist[totalon]);
-unset($nodelist[totaloff]);
-unset($nodelist[direction]);
+unset($nodelist['total']);
+unset($nodelist['order']);
+unset($nodelist['totalon']);
+unset($nodelist['totaloff']);
+unset($nodelist['direction']);
 
-$_SESSION[backto] = $_SERVER[QUERY_STRING];
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$layout[pagetitle]="Informacje o urz±dzeniu: ".$netdevinfo[name]." ".$netdevinfo[producer]." ".$netdevinfo[model];
+$layout['pagetitle'] = "Informacje o urz±dzeniu: ".$netdevinfo['name']." ".$netdevinfo['producer']." ".$netdevinfo['model'];
 
-$netdevinfo[id] = $_GET['id'];
+$netdevinfo['id'] = $_GET['id'];
 
-$SMARTY->assign("netdevinfo",$netdevinfo);
-$SMARTY->assign("netdevlist",$netdevconnected);
-$SMARTY->assign("netcomplist",$netcomplist);
-$SMARTY->assign("restnetdevlist",$netdevlist);
-$SMARTY->assign("netdevips",$netdevips);
-$SMARTY->assign("nodelist",$nodelist);
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("replacelist",$replacelist);
-$SMARTY->assign("replacelisttotal",$replacelisttotal);
-$SMARTY->assign("nodeipdata",$LMS->GetNode($_GET['ip']));
-$SMARTY->display("netdevinfo.html");
+$SMARTY->assign('netdevinfo',$netdevinfo);
+$SMARTY->assign('netdevlist',$netdevconnected);
+$SMARTY->assign('netcomplist',$netcomplist);
+$SMARTY->assign('restnetdevlist',$netdevlist);
+$SMARTY->assign('netdevips',$netdevips);
+$SMARTY->assign('nodelist',$nodelist);
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('replacelist',$replacelist);
+$SMARTY->assign('replacelisttotal',$replacelisttotal);
+$SMARTY->assign('nodeipdata',$LMS->GetNode($_GET['ip']));
+$SMARTY->display('netdevinfo.html');
 
 ?>

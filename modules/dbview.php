@@ -24,27 +24,27 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Podgl±d bazy danych";
+$layout['pagetitle'] = "Podgl±d bazy danych";
 
-$database = $LMS->DatabaseFetchContent($_GET[db]);
+$database = $LMS->DatabaseFetchContent($_GET['db']);
 
-if($_GET[rawmode]=="true")
+if($_GET['rawmode']=="true")
 {
-	$database[rawmode] = TRUE;
-	if($_GET[save]=="true")
+	$database['rawmode'] = TRUE;
+	if($_GET['save']=="true")
 	{
 		header("Content-Type: application/octetstream");
-		header("Content-Disposition: attachment; filename=lms-backup-".date("Ymd-His",$_GET[db]).".sql");
+		header("Content-Disposition: attachment; filename=lms-backup-".date("Ymd-His",$_GET['db']).".sql");
 	}
 	else
 		header("Content-Type: text/plain; charset=ISO-8859-2");
 }
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("database",$database);
-if(!$database[rawmode])
-	$SMARTY->display("header.html");
-$SMARTY->display("dbview.html");
-if(!$database[rawmode])
-	$SMARTY->display("footer.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('database',$database);
+if(!$database['rawmode'])
+	$SMARTY->display('header.html');
+$SMARTY->display('dbview.html');
+if(!$database['rawmode'])
+	$SMARTY->display('footer.html');
 ?>
