@@ -197,23 +197,22 @@ if(!$networks_list)
 
 my @networks = split ' ',$networks_list;
 
-my $allusergroups = "";
-
-$dbq = $dbase->prepare("SELECT name FROM usergroups");
-$dbq->execute();
-while (my $row = $dbq->fetchrow_hashref()) {
-	$allusergroups = "$allusergroups $row->{'name'}";
-}
+my $iniusergroups = $usergroups_list;
 
 if(!$usergroups_list)
 {
-	$usergroups_list = $allusergroups;
+	$dbq = $dbase->prepare("SELECT name FROM usergroups");
+	$dbq->execute();
+	while (my $row = $dbq->fetchrow_hashref()) 
+	{
+		$usergroups_list = "$usergroups_list $row->{'name'}";
+	}
 }
 
 my @usergroups = split ' ',$usergroups_list;
 
 #
-# Buil nodes list
+# Build nodes list
 #
 
 $dbq = $dbase->prepare("SELECT id, name FROM usergroups");
@@ -240,7 +239,7 @@ while (my $row = $dbq->fetchrow_hashref())
 			$usergroupscount++;
 		}
 	}
-	if($usergroupscount || !$usergroups_list)
+	if($usergroupscount || !$iniusergroups)
 	{
 		my $balance = 0;
 		my $sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type='3'");

@@ -197,17 +197,15 @@ if(!$networks_list)
 
 my @networks = split ' ',$networks_list;
 
-my $allusergroups = "";
-
-$dbq = $dbase->prepare("SELECT name FROM usergroups");
-$dbq->execute();
-while (my $row = $dbq->fetchrow_hashref()) {
-	$allusergroups = "$allusergroups $row->{'name'}";
-}
+my $iniusergroups = $usergroups_list;
 
 if(!$usergroups_list)
 {
-	$usergroups_list = $allusergroups;
+	$dbq = $dbase->prepare("SELECT name FROM usergroups");
+	$dbq->execute();
+	while (my $row = $dbq->fetchrow_hashref()) {
+		$usergroups_list = "$usergroups_list $row->{'name'}";
+	}
 }
 
 my @usergroups = split ' ',$usergroups_list;
@@ -241,7 +239,7 @@ while (my $row = $dbq->fetchrow_hashref())
 			$usergroupscount++;
 		}
 	}
-	if($usergroupscount || !$usergroups_list)
+	if($usergroupscount || !$iniusergroups)
 	{
 	        my $tmpname = lc($row->{'name'});
 		my $ipaddr = u32todotquad($row->{'ipaddr'});
