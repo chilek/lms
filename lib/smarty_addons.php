@@ -38,10 +38,20 @@ function _smarty_function_sum($args, $SMARTY)
 	return sprintf($format,(isset($result) ? $result : $default));
 }
 
+function _smarty_function_sizeof($args, $SMARTY)
+{
+	$array = $args['of'];
+	return sizeof($array);
+}
+
 $SMARTY->register_function('sum','_smarty_function_sum');
+$SMARTY->register_function('size','_smarty_function_sizeof');
 $SMARTY->register_modifier('to_words','to_words');
 /*
  * $Log$
+ * Revision 1.5  2003/09/13 12:49:49  lukasz
+ * - tsave
+ *
  * Revision 1.4  2003/09/09 23:40:03  lukasz
  * - added to_words
  *

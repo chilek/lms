@@ -107,7 +107,7 @@ wersja 1.1.4 (??/??/2003):
     MySQL:
 	ALTER TABLE users DROP tariff, DROP payday;
     PostgreSQL:
-	ALTER TABLE test DROP tariff; ALTER TABLE test DROP payday;	
+	ALTER TABLE test DROP tariff; ALTER TABLE test DROP payday;	
 
     4) Dopiszcie do crona lms-payments tak aby by³ uruchamiany codziennie o
        godzinie 0:00.

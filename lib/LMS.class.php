@@ -458,7 +458,7 @@ class LMS
 
 		list($order,$direction)=explode(",",$order);
 
-		($direction != "desc") ? $direction = "ASC" : $direction = "DESC";
+		($direction != "desc") ? $direction = "asc" : $direction = "desc";
 
 		switch($order){
 
@@ -551,7 +551,7 @@ class LMS
 
 		list($order,$direction)=explode(",",$order);
 
-		($direction != "desc")  ? $direction = "ASC" : $direction = "DESC";
+		($direction != "desc")  ? $direction = "asc" : $direction = "desc";
 
 		switch($order){
 
@@ -816,7 +816,7 @@ class LMS
 
 		list($order,$direction) = explode(",",$order);
 
-		($direction=="desc") ? $direction = "DESC" : $direction = "ASC";
+		($direction=="desc") ? $direction = "desc" : $direction = "asc";
 
 		switch($order)
 		{
@@ -886,7 +886,7 @@ class LMS
 
 		list($order,$direction) = explode(",",$order);
 
-		($direction=="desc") ? $direction = "DESC" : $direction = "ASC";
+		($direction=="desc") ? $direction = "desc" : $direction = "asc";
 
 		switch($order)
 		{
@@ -1552,7 +1552,7 @@ class LMS
 
 		list($order,$direction) = explode(",",$order);
 
-		($direction=="desc") ? $direction = "DESC" : $direction = "ASC";
+		($direction=="desc") ? $direction = "desc" : $direction = "asc";
 
 		switch($order)
 		{
@@ -1693,6 +1693,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.223  2003/09/13 12:49:49  lukasz
+ * - tsave
+ *
  * Revision 1.222  2003/09/12 20:59:20  lexx
  * - netdev
  *
