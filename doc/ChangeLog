@@ -14,6 +14,7 @@ version 1.5.6 Baal (??/??/????):
     * configuration in database (only, ini files not supported)
     * rewrited database drivers
     * database connection options from command line or environment
+    * selected hosts/routers reloading
     * WARNING: Old daemon not supported in Reload menu!
 
 version 1.5.5 Anubis (25/03/2005):
