@@ -33,6 +33,7 @@ $DB->Execute("
 	UPDATE invoices SET zip=zip1;
 	ALTER TABLE invoices ALTER zip SET DEFAULT '';
 	ALTER TABLE invoices ALTER zip SET NOT NULL;
+	ALTER TABLE invoices DROP zip1;
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005021500', 'dbversion'));
