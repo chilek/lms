@@ -68,7 +68,7 @@ $contractlist = $LMS->GetContractList();
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 if(!isset($_GET['ownerid']))
-	$_SESSION['backto'] .= '&ownerid='.$ownerid;
+	$SESSION->save('backto', $SESSION->get('backto').'&ownerid='.$ownerid);
 
 if($nodeinfo['netdev'] == 0) 
 	$netdevices = $LMS->GetNetDevList();

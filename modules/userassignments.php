@@ -33,14 +33,14 @@ if(! $LMS->UserExists($_GET['id']))
 if($_GET['action'] == 'delete')
 {
 	$LMS->DeleteAssignment($_GET['aid'],$_GET['balance']);
-	header('Location: ?'.$_SESSION['backto']);
+	header('Location: ?'.$SESSION->get('backto'));
 	die;
 }
 
 if($_GET['action'] == 'suspend')
 {
 	$LMS->SuspendAssignment($_GET['aid'], $_GET['suspend']);
-	header('Location: ?'.$_SESSION['backto']);
+	header('Location: ?'.$SESSION->get('backto'));
 	die;
 }
 
@@ -179,7 +179,7 @@ if($_GET['action'] == 'add' && isset($a))
 	if(!$error) 
 	{
 		$LMS->AddAssignment(array('tariffid' => $a['tariffid'], 'userid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$a['invoice']), 'datefrom' => $from, 'dateto' => $to ));
-		header('Location: ?'.$_SESSION['backto']);
+		header('Location: ?'.$SESSION->get('backto'));
 		die;
 	}
 }

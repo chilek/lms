@@ -148,22 +148,22 @@ switch($_GET['bar'])
 {
 	case 'hour':
 		$traffic = Traffic( time()-(60*60), time(), 0,
-			isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : 'download');
+			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
 	case 'day':
 		$traffic = Traffic( time()-(60*60*24), time(),  0,
-			isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : 'download');
+			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
 	case 'month':
 		$traffic = Traffic( time()-(60*60*24*30), time(), 0,
-			isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : 'download');
+			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
 	case 'year':
 		$traffic = Traffic( time()-(60*60*24*365), time(), 0,
-			isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : 'download');
+			$SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 	break;
 
 	case 'user':
@@ -197,7 +197,7 @@ $SMARTY->assign('showips',$_POST['showips']);
 $SMARTY->assign('download',$download);
 $SMARTY->assign('upload',$upload);
 $SMARTY->assign('bars',$bars);
-$SMARTY->assign('trafficorder', isset($_SESSION['trafficorder']) ? $_SESSION['trafficorder'] : 'download');
+$SMARTY->assign('trafficorder', $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 $SMARTY->display('traffic.html');
 
 ?>
