@@ -1,0 +1,95 @@
+<!-- $Id$ -->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="FLEFTU">
+			<IMG SRC="img/netdev.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+			<B>{$netdevinfo.name} ({$netdevinfo.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+        {if $netdevinfo.producer}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev_producer.gif" alt="" border="0">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>Producent:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.producer}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.model}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev_model.gif" alt="" border="0">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>Model:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.model}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.serialnumber}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev_serialnumber.gif" alt="" border="0">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>Numer seryjny:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.serialnumber}
+		</TD>
+	</TR>
+	{/if}
+	{if $netdevinfo.description}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev_ports.gif" alt="" border="0">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>Ilo¶æ portów:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.ports}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev_takenports.gif" alt="" border="0">
+		</TD>
+		<TD WIDTH="1%">
+		        <B>Porty zajête:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+		        {$netdevinfo.takenports}
+		</TD>
+	</TR>
+	{/if}
+        {if $netdevinfo.description}
+        <TR CLASS="LIGHT">
+                <TD WIDTH="1%" CLASS="FLEFT">
+                        <IMG SRC="img/netdev_description.gif" BORDER="0" ALT="">
+                </TD>
+                <TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+                        <TABLE WIDTH="100%" CELLPADDING="5">
+                                <TR>
+                                        <TD CLASS="FALL" BGCOLOR="#F4F0EC">
+                                                {$netdevinfo.description}
+                                        </TD>
+                                </TR>
+                        </TABLE>
+                </TD>
+        </TR>
+        {/if}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
+			<A href="?m=netdevedit&id={$netdevinfo.id}" ACCESSKEY="E">Edytuj <IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=netdevdel&id={$netdevinfo.id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ urz±dzenie: {$netdevinfo.name} z bazy danych?')">Usuñ <img border="0" align="absmiddle" src="img/delete.gif" alt=""></A>
+		</TD>
+	</TR>
+</TABLE>

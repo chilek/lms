@@ -26,6 +26,8 @@
 
 // Array with left menu on engine.
 
+global $_SHOW_STATS, $_SHOW_NETDEV;
+
 $menu = Array();
 
 $menu[name]	[] = "Witamy !";
@@ -45,6 +47,14 @@ $menu[img]	[] = "node.gif";
 $menu[link]	[] = "?m=nodelist";
 $menu[accesskey][] = "k";
 $menu[tip]	[] = "Komputery: lista, wyszukiwanie, dodawanie";
+
+if ($_SHOW_NETDEV == 1) {
+    $menu[name]		[] = "Osprzêt sieciowy";
+    $menu[img]		[] = "netdev.gif";
+    $menu[link]		[] = "?m=netdevlist";
+    $menu[accesskey]	[] = "o";
+    $menu[tip]		[] = "Ewidencja sprzêtu sieciowego";
+}
 
 $menu[name]	[] = "Sieci IP";
 $menu[img]	[] = "ip.gif";
@@ -82,8 +92,6 @@ $menu[link]     [] = "?m=adminlist";
 $menu[accesskey][] = "d";
 $menu[tip]	[] = "Konta administratorów systemu";
 
-global $_SHOW_STATS;
-
 if ($_SHOW_STATS == 1) {
     $menu[name]		[] = "Statystyki";
     $menu[img]		[] = "traffic.gif";
@@ -94,6 +102,9 @@ if ($_SHOW_STATS == 1) {
 
 /*
  * $Log$
+ * Revision 1.52  2003/09/12 21:00:41  lexx
+ * - netdev
+ *
  * Revision 1.51  2003/09/05 19:49:46  lexx
  * - enable_stats
  *
