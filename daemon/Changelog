@@ -1,3 +1,6 @@
+* 11.01.2004
+  - w 'payments' poprawiony b³±d w obliczaniu yearstart (alec)
+
 * 10.01.2004
   - przebudowa 'payments', tzn. poprawione bugi, kosmetyka i dodana
     obs³uga op³at sta³ych (alec)

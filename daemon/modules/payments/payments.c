@@ -121,7 +121,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	w_period = get_period(tt, 3, p->up_payments);
 
 	// set begin and end date for present year 
-	tt->tm_sec = 0; tt->tm_min = 0; tt->tm_hour = 0; tt->tm_mday = 1; tt->tm_mon = 1;
+	tt->tm_sec = 0; tt->tm_min = 0; tt->tm_hour = 0; tt->tm_mday = 1; tt->tm_mon = 0;
 	tt->tm_year = atoi(year)-1900;
 	strftime(yearstart,	sizeof(yearstart),	"%s", tt);
 	tt->tm_sec = 59; tt->tm_min = 59; tt->tm_hour = 23; tt->tm_mon = 11; tt->tm_mday = 31;
