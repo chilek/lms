@@ -2944,13 +2944,42 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		return $this->DB->GetOne('SELECT email FROM rtqueues WHERE id=?', array($id));
 	}
 
-	function GetQueueContents($id)
+	function GetQueueContents($id, $order='createtime,desc', $state=NULL)
 	{
+		if(!$order)
+			$order = 'createtime,desc';
+	
+		list($order,$direction)=explode(',',$order);
+
+		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+
+		switch($order)
+		{
+			case 'ticketid':
+				$sqlord = 'ORDER BY rttickets.id';
+			break;
+			case 'subject':
+				$sqlord = 'ORDER BY rttickets.subject';
+			break;
+			case 'requestor':
+				$sqlord = 'ORDER BY requestor';
+			break;
+			case 'owner':
+				$sqlord = 'ORDER BY ownername';
+			break;
+			case 'lastmodified':
+				$sqlord = 'ORDER BY lastmodified';
+			break;
+			default:
+				$sqlord = 'ORDER BY rttickets.createtime';
+			break;
+		}
+
 		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, requestor, rttickets.subject AS subject, state, owner AS ownerid, name AS ownername, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 		    FROM rtmessages LEFT JOIN rttickets ON (rttickets.id = rtmessages.ticketid)
 		    LEFT JOIN admins ON (owner = admins.id) WHERE queueid = ? 
-		    GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, name
-		    ORDER BY rttickets.createtime DESC', array($id)))
+		    GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, name '
+		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
 		{
 			foreach($result as $idx => $ticket)
 			{
@@ -2961,6 +2990,11 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 				$result['total']++;
 			}
 		}
+		
+		$result['state'] = $state;
+		$result['order'] = $order;
+		$result['direction'] = $direction;
+		
 		return $result;
 	}
 
@@ -3024,7 +3058,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function SetTicketState($ticket, $state)
 	{
-		$tjis->SetTs('rttickets');
+		$tjis->SetTS('rttickets');
 		return $this->DB->Execute('UPDATE rttickets SET state=? WHERE id=?', array($state, $ticket));
 	}
 

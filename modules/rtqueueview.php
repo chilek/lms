@@ -38,17 +38,48 @@ if(! $LMS->GetAdminRightsRT($SESSION->id, $queuedata['id']))
 	die;
 }
 
+if(!isset($_GET['o']))
+	$o = $_SESSION['rto'];
+else
+	$o = $_GET['o'];
+$_SESSION['rto'] = $o;
+
+if(!isset($_GET['s']))
+	$s = $_SESSION['rts'];
+else
+	$s = $_GET['s'];
+$_SESSION['rts'] = $s;
+
 $queuedata['name'] = $LMS->GetQueueName($queuedata['id']);
 
 $layout['pagetitle'] = 'Podgl±d kolejki: '.$queuedata['name'];
-$queue = $LMS->GetQueueContents($_GET['id']);
+$queue = $LMS->GetQueueContents($_GET['id'], $o, $s);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$SMARTY->assign('queuetotal', $queue['total']);
+if (isset($_SESSION['rtp']) && !isset($_GET['page']))
+	$_GET['page'] = $_SESSION['rtp'];
+
+$queuedata['total'] = $queue['total'];
+$queuedata['state'] = $_SESSION['rts'];;
+$queuedata['order'] = $queue['order'];
+$queuedata['direction'] = $queue['direction'];
 unset($queue['total']);
+unset($queue['state']);
+unset($queue['order']);
+unset($queue['direction']);
+
+$page = (! $_GET['page'] ? 1 : $_GET['page']); 
+$pagelimit = (! $LMS->CONFIG['phpui']['ticketlist_pagelimit'] ? $queuedata['total'] : $LMS->CONFIG['phpui']['ticketlist_pagelimit']);
+$start = ($page - 1) * $pagelimit;
+
+$_SESSION['rtp'] = $page;
+
 $SMARTY->assign('queue', $queue);
 $SMARTY->assign('queuedata', $queuedata);
+$SMARTY->assign('pagelimit',$pagelimit);
+$SMARTY->assign('page',$page);
+$SMARTY->assign('start',$start);
 $SMARTY->display('rtqueueview.html');
 
 ?>
