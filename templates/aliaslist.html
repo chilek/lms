@@ -1,0 +1,144 @@
+{include file="header.html"}
+{include file="accountheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<P><TABLE cellpadding="3" WIDTH="100%">
+	<TR bgcolor="#CEBD9B">
+		<TD width="95%" class="fleftu">
+			<IMG src="img/alias.gif" alt="" align="absmiddle" border="0"> <A href="?m=aliaslist&o=login{if $listdata.direction eq "asc" && $listdata.order eq "login"},desc{/if}"><B>Login:</B></A> {if $listdata.order eq "login"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<IMG src="img/user.gif" alt="" align="absmiddle" border="0"> <A href="?m=aliaslist&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">U¿ytkownik:</A> {if $listdata.order eq "username"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+		</TD>
+		<TD width="1%" class="fbt" align="center" valign="top">
+			<A href="?m=aliaslist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+		</TD>
+		<TD width="1%" class="fbt" align="right" valign="top" NOWRAP>
+			<A href="?m=aliaslist&o=account{if $listdata.direction eq "asc" && $listdata.order eq "account"},desc{/if}"><B>Konto</B>:</A> {if $listdata.order eq "account"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<IMG src="img/account.gif" alt="" align="absmiddle" border="0">
+		</TD>
+		<TD width="1%" class="fbt" NOWRAP valign="top">
+			<IMG src="img/network.gif" alt="" align="absmiddle" border="0">
+			<A href="?m=aliaslist&o=domain{if $listdata.direction eq "asc" && $listdata.order eq "domain"},desc{/if}"><B>Domena:</B></A> {if $listdata.order eq "domain"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+		</TD>
+		<TD width="1%" class="fbt" align="right" valign="top" NOWRAP>
+			<A href="?m=aliaslist&o=expdate{if $listdata.direction eq "asc" && $listdata.order eq "expdate"},desc{/if}">Data wa¿no¶ci:</A> {if $listdata.order eq "expdate"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+		</TD>
+		<TD width="1%" class="frightu" NOWRAP>
+			 <B>Razem: {$listdata.total}</B>
+		</TD>
+	</TR>
+	<TR class="DARK">
+		<TD class="fall" colspan="6">
+			<P><FORM method="GET" action="?m=aliaslist" name="filter">
+				<INPUT type="HIDDEN" name="m" value="aliaslist">
+				<INPUT type="HIDDEN" name="page" value="1">
+				<B>Filtruj: </B> U¿ytkownicy:
+				<SELECT size="1" name="u" OnChange="document.filter.submit();">
+					<OPTION value=""{if $listdata.user eq ""} SELECTED{/if}>- wszyscy -</OPTION>
+					<OPTION value="0"{if $listdata.user eq "0"} SELECTED{/if}>KONTA SYSTEMOWE</OPTION>
+					{section name=userlist loop=$userlist}
+					    <OPTION value="{$userlist[userlist].id}"{if $userlist[userlist].id eq $listdata.user} SELECTED{/if}>{$userlist[userlist].username|truncate:50:"..."}</OPTION>
+					{/section}
+				</SELECT>&nbsp;
+				Rodzaj:
+				<SELECT size="1" name="k" OnChange="document.filter.submit();">
+					<OPTION value="0"{if !$listdata.kind} SELECTED {/if}>- wszystkie -</OPTION>
+					<OPTION value="1"{if $listdata.kind eq 1} SELECTED {/if}>przeterminowane</OPTION>
+					<OPTION value="2"{if $listdata.kind eq 2} SELECTED {/if}>aktywne</OPTION>
+				</SELECT>&nbsp;
+				Domena:
+				<SELECT size="1" name="d" OnChange="document.filter.submit();">
+					<OPTION value=""{if $listdata.domainid eq ""} SELECTED{/if}>- wszystkie -</OPTION>
+					{section name=domainlist loop=$domainlist}
+					    <OPTION value="{$domainlist[domainlist].id}"{if $domainlist[domainlist].id eq $listdata.domainid} SELECTED{/if}>{$domainlist[domainlist].name}</OPTION>
+					{/section}
+				</SELECT>
+			</FORM></P>
+		</TD>
+	</TR>		
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="6" CLASS="FALL">
+			<B>Strona:
+				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$aliaslist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+		</TD>
+	</TR>
+	{/if}
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{section name=aliaslist loop=$aliaslist start=$start max=$pagelimit}
+	<TR {if $aliaslist[aliaslist].expdate != 0 && $aliaslist[aliaslist].expdate < $smarty.now}class="BLEND"{/if} bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD class="fleft">
+			<IMG src="img/alias.gif" ALT="" align="absmiddle" border="0"><B> {$aliaslist[aliaslist].login}</B>
+			{if $aliaslist[aliaslist].username}
+			<BR><A href="?m=userinfo&id={$aliaslist[aliaslist].ownerid}">
+			<IMG src="img/user.gif" alt="" align="absmiddle" border="0"> {$aliaslist[aliaslist].username|truncate:50:"..."}
+			</A>
+			{/if}
+		</TD>
+		<TD valign="top">
+			({$aliaslist[aliaslist].id|string_format:"%04d"})
+		</TD>
+		<TD align="right" NOWRAP valign="top">
+			<B>{$aliaslist[aliaslist].account}</B> <IMG src="img/account.gif" alt="" align="absmiddle" border="0">
+		</TD>
+		<TD NOWRAP valign="top">
+			<IMG src="img/network.gif" alt="" align="absmiddle" border="0"> <B>{$aliaslist[aliaslist].domain}</B>
+		</TD>
+		<TD align="right" valign="top">
+			{if $aliaslist[aliaslist].expdate}{$aliaslist[aliaslist].expdate|date_format:"%Y/%m/%d"}{/if}</nobr>
+		</TD>
+		<TD class="fright" align="right">
+			<A href="?m=aliasdel&id={$aliaslist[aliaslist].id}" OnClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ alias \'{$aliaslist[aliaslist].login}\' z bazy danych?')"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ Usuñ ]"></A>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD colspan="6" align="center" class="flr">
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><B>Nie znaleziono ¿adnych aliasów w bazie danych.</B></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	{if $listdata.total != 0}
+	<TR CLASS="DARK">
+		<TD COLSPAN="6" CLASS="FALL">
+			<B>Strona:
+				{if $page > 1}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$aliaslist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m={$layout.module}&o={$listdata.order},{$listdata.direction}&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+			</B> 
+			(rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.total}{$listdata.total}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.total})
+		</TD>
+	</TR>
+	{/if}
+	<TR bgColor="#DFD5BD">
+		<A name="aliasadd">
+		<FORM name="aliasadd" method="POST" action="?m=aliaslist">
+		<TD class="fleftu" NOWRAP colspan="2">
+			<B>Dodaj: </B>
+			<INPUT type="text" name="aliasadd[login]" value="{$aliasadd.login}" {tip text="Podaj nazwê aliasu" trigger="login"} size="20">
+		</TD>
+		<TD class="fbt">
+			<SELECT size="1" name="aliasadd[accountid]" {tip text="Wybierz konto dla aliasu" trigger="accountid"}>
+				<OPTION value="0"{if !$aliasadd.accountid} SELECTED{/if}>- wybierz konto -</OPTION>
+				{section name=accountlist loop=$accountlist}
+				    <OPTION value="{$accountlist[accountlist].id}"{if $accountlist[accountlist].id eq $aliasadd.accountid} SELECTED{/if}>{$accountlist[accountlist].login}{if $accountlist[accountlist].domain}@{$accountlist[accountlist].domain}{/if}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+		<TD colspan="3" class="frightu" align="right" NOWRAP>
+			<A href="javascript: document.aliasadd.submit();">Dodaj <IMG SRC="img/save.gif" border="0" ALT="" align="absmiddle"></A>
+		</TD>
+	</TR>
+</TABLE></P>
+{include file="footer.html"}

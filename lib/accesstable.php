@@ -61,7 +61,7 @@ $access['table'][10]['name']        	= 'obs³uga Helpdesku (RT)';
 $access['table'][10]['allow_reg']   	= '^(rtsearch|rtqueue(list|info|view)|(rtticket|rtmessage)(add|edit|info|view|print))$';
 
 $access['table'][11]['name']        	= 'manipulacja kontami';
-$access['table'][11]['allow_reg']   	= '^(account(list|edit|add|del)|domain(list|edit|del))$';
+$access['table'][11]['allow_reg']   	= '^(account(list|edit|add|del)|domain|alias(list|edit|del))$';
 
 $access['table'][12]['name']        	= 'konfiguracja interfejsu u¿ytkownika';
 $access['table'][12]['allow_reg']   	= '^(config(list|edit|add|del))$';

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-function GetAccountList($order='username,asc', $user=NULL, $type=NULL, $kind=NULL, $domain='')
+function GetAccountList($order='login,asc', $user=NULL, $type=NULL, $kind=NULL, $domain='')
 {
 	global $LMS;
 
