@@ -1172,13 +1172,10 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
 			$result['creationdateh'] = date('Y-m-d, H:i',$result['creationdate']);
-			if((time()-$result['lastonline'])>600)
-			{
-				$result['lastonlinedate'] = date('Y-m-d, H:i',$result['lastonline'])."<br>";
-				$result['lastonlinedate'] .= date('(i \m\i\n\u\t, G \g\o\d\z\i\n, ',time()-$result['lastonline']-3600);
-				$result['lastonlinedate'] .= round((time()-$result['lastonline'])/86400)." dni temu)";			
-			} else
-				$result['lastonlinedate'] .= "aktualnie w³±czony";
+			if((time()-$result['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit'])
+				$result['lastonlinedate'] .= uptimef(time()-$result['lastonline']).' temu ('.date('Y-m-d, H:i',$result['lastonline']).')';
+			else
+				$result['lastonlinedate'] .= 'aktualnie w³±czony';
 			$result['moddateh'] = date('Y-m-d, H:i',$result['moddate']);
 			$result['owner'] = $this->GetUsername($result['ownerid']);
 			$result['netid'] = $this->GetNetIDByIP($result['ip']);
