@@ -1,6 +1,23 @@
 <!--// $Id$ //-->
 {if $emptypasswd}<H1 align="center"><A HREF="?m=adminpasswd"><FONT COLOR="RED">Twoje konto posiada puste has³o! Natychmiast ustaw sobie has³o!</FONT></A></H1>{/if}
-{if !$layout.nomenu}		</TD>
+{if !$layout.nomenu}
+{if $error}
+<HR SIZE="1pt">
+<TABLE width="100%" cellpadding="10">
+	<TR bgcolor="#F4F0EC">
+		<TD class="fleftu" width="1%">
+			<IMG SRC="img/error.png" alt="[ B£¡D ! ]" border="">
+		</TD>
+		<TD class="frightu" width="99%">
+			<P class="txt"><FONT COLOR="RED">{foreach from=$error item=errormsg}
+				<B>B³±d:</B> {$errormsg}<BR>
+				{/foreach}
+			</P>
+		</TD>
+	</TR>
+</TABLE>
+{/if}
+			</TD>
 	</TR>
 </TABLE>{/if}
 <TABLE cellpadding="3" cellspacing="0" style="border-width: 1pt; border-style: solid; border-collapse:collapse" bordercolor="#000000" width="100%" bgcolor="#CEBD9B">

@@ -8,8 +8,7 @@
 		<TD WIDTH="1%" CLASS="FBT">
 			<B>Nazwa:</B>
 		<TD WIDTH="98%" CLASS="FRIGHTU" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name|upper}" CLASS="BOLD">
-			{if $error.name}<BR><FONT COLOR="RED"><B>{$error.name}</B></FONT>{/if}
+			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name|upper}" {if $error.name}CLASS="alertb"{else}CLASS="bold"{/if}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -20,8 +19,7 @@
 			<B>Adres IP:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}"> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr);" title="Wybierz adres IP z listy">&raquo;&raquo;&raquo;</A>
-			{if $error.ipaddr}<BR><FONT COLOR="RED"><B>{$error.ipaddr}</B>{/if}
+			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}"{if $error.ipaddr} CLASS="alert"{/if}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr);" title="Wybierz adres IP z listy">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -32,8 +30,7 @@
 			<B>Adres MAC:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodedatamac" VALUE="{$nodedata.mac}"> <a href="javascript: void(0);" onClick="return macchoosewin(document.nodeadd.nodedatamac);" title="Wybierz adres MAC z listy">&raquo;&raquo;&raquo;</A>
-			{if $error.mac}<BR><FONT COLOR="RED"><B>{$error.mac}</B>{/if}
+			<INPUT TYPE="TEXT" NAME="nodedatamac" VALUE="{$nodedata.mac}"{if $error.mac} CLASS="alertb"{/if}> <a href="javascript: void(0);" onClick="return macchoosewin(document.nodeadd.nodedatamac);" title="Wybierz adres MAC z listy">&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -58,12 +55,11 @@
 			<B>W³a¶ciciel:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodedata[ownerid]">
+			<SELECT SIZE="1" NAME="nodedata[ownerid]"{if $error.user} CLASS="alert"{/if}>
 				{section name=users loop=$users}
 				<OPTION VALUE="{$users[users].id}"{if $nodedata.ownerid eq $users[users].id} SELECTED{/if}>{$users[users].username} ({$users[users].id|string_format:"%04d"})</OPTION>
 				{/section}
 			</SELECT>
-			{if $error.user}<BR><B><FONT COLOR="RED">{$error.user}</FONT></B>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

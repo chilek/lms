@@ -51,13 +51,13 @@ if(isset($netadd))
 	if($netadd[name]=="")
 		$error[name] = "Musisz podaæ nazwê sieci!";
 	elseif(!eregi("^[.a-z0-9-]+$",$netadd[name]))
-		$error[name] = "Podana nazwa zawiera niepoprawne znaki!";
+		$error[name] = "Podana nazwa sieci zawiera niepoprawne znaki!";
 	
 	if($netadd[domain] != "" && !eregi("^[.a-z0-9-]+$",$netadd[domain]))
-		$error[domain] = "Podana nazwa zawiera niepoprawne znaki!";
+		$error[domain] = "Podana nazwa domeny zawiera niepoprawne znaki!";
 	
 	if(!check_ip($netadd[address]))
-		$error[address] = "Podany adres IP jest nieprawid³owy!";
+		$error[address] = "Podany adres IP sieci jest nieprawid³owy!";
 	else
 	{
 		if(getnetaddr($netadd[address],prefix2mask($netadd[prefix]))!=$netadd[address])
@@ -68,7 +68,7 @@ if(isset($netadd))
 		else
 		{
 			if($LMS->NetworkOverlaps($netadd[address],prefix2mask($netadd[prefix])))
-				$error[address] = "Podana sieæ pokrywa siê z inn± sieci±!";
+				$error[address] = "Podany adres sieci pokrywa siê z inn± sieci±!";
 		}
 	}
 
@@ -76,31 +76,31 @@ if(isset($netadd))
 		$error[interface] = "Niepoprawna nazwa interfejsu!";
 
 	if($netadd[dns]!="" && !check_ip($netadd[dns]))
-		$error[dns] = "Podany adres IP jest nieprawid³owy!";
+		$error[dns] = "Podany adres IP serwera DNS jest nieprawid³owy!";
 	
 	if($netadd[dns2]!="" && !check_ip($netadd[dns2]))
-		$error[dns2] = "Podany adres IP jest nieprawid³owy!";
+		$error[dns2] = "Podany adres IP serwera DNS jest nieprawid³owy!";
 	
 	if($netadd[wins]!="" && !check_ip($netadd[wins]))
-		$error[wins] = "Podany adres IP jest nieprawid³owy!";
+		$error[wins] = "Podany adres IP serwera WINS jest nieprawid³owy!";
 	
 	if($netadd[gateway]!="")
 		if(!check_ip($netadd[gateway]))
-			$error[gateway] = "Podany adres IP jest nieprawid³owy!";
+			$error[gateway] = "Podany adres IP bramy jest nieprawid³owy!";
 	elseif(!isipin($netadd[gateway],getnetaddr($netadd[address],prefix2mask($netadd[prefix])),prefix2mask($netadd[prefix])))
-		$error[gateway] = "Podany adres gateway'a nie pasuje do adresu sieci!";
+		$error[gateway] = "Podany adres bramy nie pasuje do adresu sieci!";
 	
 	if($netadd[dhcpstart]!="")
 		if(!check_ip($netadd[dhcpstart]))
-			$error[dhcpstart] = "Podany adres IP jest nieprawid³owy!";
+			$error[dhcpstart] = "Podany adres IP pocz±tku zakresu DHCP jest nieprawid³owy!";
 	elseif(!isipin($netadd[dhcpstart],getnetaddr($netadd[address],prefix2mask($netadd[prefix])),prefix2mask($netadd[prefix])) && $netadd[address]!="")
-		$error[dhcpstart] = "Podany adres IP nie nale¿y do tej sieci!";
+		$error[dhcpstart] = "Podany adres IP pocz±tku zakresu DHCP nie nale¿y do tej sieci!";
 	
 	if($netadd[dhcpend]!="")
 		if(!check_ip($netadd[dhcpend]))
-			$error[dhcpend] = "Podany adres IP jest nieprawid³owy!";
+			$error[dhcpend] = "Podany adres IP koñca zakresu DHCP jest nieprawid³owy!";
 	elseif(!isipin($netadd[dhcpend],getnetaddr($netadd[address],prefix2mask($netadd[prefix])),prefix2mask($netadd[prefix])) && $netadd[address]!="")
-		$error[dhcpend] = "Podany adres IP nie nale¿y do tej sieci!";
+		$error[dhcpend] = "Podany adres IP koñca zakresu DHCP nie nale¿y do tej sieci!";
 	
 	if(!$error[dhcpstart] && !$error[dhcpend])
 	{
@@ -131,6 +131,9 @@ $SMARTY->display("netadd.html");
 
 /*
  * $Log$
+ * Revision 1.24  2003/09/05 13:11:24  lukasz
+ * - nowy sposób wy¶wietlania informacji o b³êdach
+ *
  * Revision 1.23  2003/08/30 01:11:21  lukasz
  * - nowe pole w li¶cie sieci: interfejs
  *

@@ -44,10 +44,12 @@ if(isset($admininfo))
 		$error[login] = "Podany login jest ju¿ zajêty!";
 
 	if($admininfo[login] == "")
-		$error[login] = "To pole nie mo¿e byæ puste!";
+		$error[login] = "Pole login nie mo¿e byæ puste!";
+	elseif(!eregi("^[a-z0-9.-_]+$",$adminadd[login]))
+		$error[login] = "Login zawiera niepoprawne znaki!";
 
 	if($admininfo[name] == "")
-		$error[name] = "To pole nie mo¿e byæ puste!";
+		$error[name] = "Pole 'imiê i nazwisko' nie mo¿e byæ puste!";
 
 	if($admininfo[email]!="" && !check_email($admininfo[email]))
 		$error[email] = "Podany email nie wydaje siê byæ poprawny!";
@@ -100,6 +102,9 @@ $SMARTY->assign("layout",$layout);
 $SMARTY->display("admininfo.html");
 /*
  * $Log$
+ * Revision 1.20  2003/09/05 13:11:23  lukasz
+ * - nowy sposób wy¶wietlania informacji o b³êdach
+ *
  * Revision 1.19  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>

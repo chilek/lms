@@ -53,7 +53,7 @@ if(isset($userdata))
 		$userdata[payday] = 28;
 
 	if($userdata[lastname]=="")
-		$error[username] = "To pole nie mo¿e byæ puste!";
+		$error[username] = "Pola 'nazwisko/nazwa' oraz imiê nie mog± byæ puste!";
 	
 	if($userdata[address]=="")
 		$error[address] = "Proszê podaæ adres!";
@@ -117,6 +117,9 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 /*
  * $Log$
+ * Revision 1.41  2003/09/05 13:11:24  lukasz
+ * - nowy sposób wy¶wietlania informacji o b³êdach
+ *
  * Revision 1.40  2003/08/25 02:12:24  lukasz
  * - zmieniona obs³uga usuwania userów
  *

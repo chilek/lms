@@ -29,16 +29,16 @@ $layout[pagetitle]="Mailing";
 $mailing = $_POST[mailing];
 
 if($mailing[group] < 0 || $mailing[group] > 3)
-	$error[group] = TRUE;
+	$error[group] = "Wybra³e¶ b³êdn± grupê u¿ytkowników";
 
 if($mailing[sender]=="")
-	$error[sender] = TRUE;
+	$error[sender] = "Proszê podaæ e-mail nadawcy!";
 
 if($mailing[from]=="")
-	$error[from] = TRUE;
+	$error[from] = "Proszê podaæ nadawcê!";
 
 if($mailing[subject]=="")
-	$error[subject] = TRUE;
+	$error[subject] = "Proszê podaæ temat listu!";
 
 if($error)
 {
@@ -61,6 +61,9 @@ if($error)
 }
 /*
  * $Log$
+ * Revision 1.19  2003/09/05 13:11:24  lukasz
+ * - nowy sposób wy¶wietlania informacji o b³êdach
+ *
  * Revision 1.18  2003/08/24 13:12:54  lukasz
  * - massive attack: s/<?/<?php/g - that was causing problems on some fucked
  *   redhat's :>
