@@ -52,8 +52,8 @@
 	</TR>{/section}
 	<TR bgColor="#DFD5BD" title="Dodaj nowego u¿ytkownika">
 		<FORM METHOD="post" NAME="useradd" ACTION="?m=useradd#useradd">
-		<TD colspan="2" class="fleftu"><A NAME="useradd">
-			<IMG SRC="img/user.gif" border="0" alt="" align="absmiddle"> <INPUT TYPE="text" NAME="useradd[lastname]" title="Nazwisko" class="{if $error.username}alertb{else}bold{/if}" size="12" value="{$useradd.lastname}"> <INPUT TYPE="text" NAME="useradd[name]" title="Imiê" class="{if $error.username}alertb{else}bold{/if}" size="10" value="{$useradd.name}">{if $error.username}<BR><FONT COLOR="red"><B>¯adne z tych pól nie mo¿e byæ puste!</B></FONT>{/if}<BR>
+		<TD colspan="2" class="fleftu">
+			<A NAME="useradd"><IMG SRC="img/user.gif" border="0" alt="" align="absmiddle"> <INPUT TYPE="text" NAME="useradd[lastname]" title="Nazwisko" class="{if $error.username}alertb{else}bold{/if}" size="12" value="{$useradd.lastname}"> <INPUT TYPE="text" NAME="useradd[name]" title="Imiê" class="{if $error.username}alertb{else}bold{/if}" size="10" value="{$useradd.name}">{if $error.username}<BR><FONT COLOR="red"><B>¯adne z tych pól nie mo¿e byæ puste!</B></FONT>{/if}<BR></A>
 			<IMG src="img/phone.gif" alt="" align="absmiddle" border="0"> <INPUT TYPE="text" NAME="useradd[phone1]" title="Telefon" size="15" value="{$useradd.phone1}">
 		</TD>
 		<TD class="fbt">
