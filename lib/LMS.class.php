@@ -708,14 +708,8 @@ class LMS
 			
 	function GetUserNodes($id)
 	{
-		$DB=$this->DB;
-		$DB->execSQL("SELECT `id`, `name`, `mac`, `ipaddr`, `ownerid`, `access` FROM `nodes` WHERE `ownerid` = '".$id."' ORDER BY `name` ASC");
-		while($DB->fetchRow()){
-			foreach($DB->row as $key => $value)
-				$return[$key][] = $value;
-			$return[iplong][] = ip_long($DB->row[ipaddr]);
-		}
-		$return[total] = sizeof($return[id]);
+		if($return = $this->ADB->GetAll("SELECT id, name, mac, ipaddr, access FROM nodes WHERE ownerid=?",array($id)))
+			$return[total] = sizeof($return);
 		return $return;
 	}
 
