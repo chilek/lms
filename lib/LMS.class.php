@@ -1521,6 +1521,7 @@ class LMS
 				$list[$id]['nip'] = ($row['nip'] ? trans('TEN').' '.$row['nip'] : ($row['pesel'] ? trans('SSN').' '.$row['pesel'] : ''));
 				$list[$id]['number'] = $row['number'];
 				$list[$id]['cdate'] = $row['cdate'];
+				$list[$id]['customerid'] = $row['customerid'];
 				$list[$id]['year'] = date('Y',$row['cdate']);
 				$list[$id]['month'] = date('m',$row['cdate']);
 				$list[$id]['brutto'] += $value;

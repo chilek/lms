@@ -55,7 +55,7 @@
 			{$invoice.cdate|date_format:"%Y/%m/%d"}
 		</TD>
 		<TD WIDTH="91%">
-			{$invoice.custname}<BR>
+			{$invoice.custname} ({$invoice.customerid|string_format:"%04d"})<BR>
 			{$invoice.custaddress}<BR>
 			{$invoice.nip}
 		</TD>
