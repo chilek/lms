@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <syslog.h>
 #include <string.h>
+#include <time.h>
 
 #include "almsd.h"
 #include "cutoff.h"
@@ -33,6 +34,16 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	QUERY_HANDLE *res, *result;
 	unsigned char *query, *update;
 	int i, balance, value, exec = 0;
+	char time_fmt[20];
+	size_t tmax=20;
+	char fmt[]="(%d.%m.%Y)";
+	struct tm *tp, *wsk;
+	time_t t;
+	
+	t=time(&t);
+	wsk=localtime(&t);
+	
+	strftime(time_fmt,tmax,fmt,wsk);
 
 	if( (res = g->db_query("SELECT users.id AS id, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) GROUP BY users.id"))!=NULL) { 
 
@@ -42,8 +53,13 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			
 			if( balance < c->limit ) {
 			
-				update = strdup("UPDATE nodes SET access = 0 WHERE ownerid = %id");
+				update = strdup("UPDATE nodes SET access = 0, warning = 1 WHERE ownerid = %id");
 				g->str_replace(&update, "%id", g->db_get_data(res,i,"id"));
+				exec = g->db_exec(update);
+				free(update);
+				update = strdup("UPDATE users SET message = 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty %time' WHERE id = %id");
+				g->str_replace(&update, "%id", g->db_get_data(res,i,"id"));
+				g->str_replace(&update, "%time", time_fmt);
 				exec = g->db_exec(update);
 				free(update);
 			}
