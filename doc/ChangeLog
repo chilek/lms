@@ -1,28 +1,37 @@
 $Id$
 
 wersja 1.1.4 (??/??/2003):
+  
   - ewidencja sprzêtu sieciowego, narazie brzydka i g³upia ale dzia³a,
     oczywi¶cie potrzebna nowa tabela (lexx)
-    
-    Na MySQL robimy:
-
+    MySQL:
     DROP TABLE IF EXISTS netdevices;
     CREATE TABLE netdevices (
-      id int(11) NOT NULL auto_increment,
-      name varchar(32) default NULL,
-      description varchar(255) default NULL,
-      producer varchar(64) default NULL,
-      model varchar(32) default NULL,
-      serialnumber varchar(32) default NULL,
-      ports int(10) default NULL,
-      PRIMARY KEY  (id),
-      KEY name (name)
+	id int(11) NOT NULL auto_increment,
+	name varchar(32) default NULL,
+        description varchar(255) default NULL,
+        producer varchar(64) default NULL,
+        model varchar(32) default NULL,
+        serialnumber varchar(32) default NULL,
+        ports int(10) default NULL,
+        PRIMARY KEY  (id),
+        KEY name (name)
     ) TYPE=MyISAM;
-		      
-    Na PostgreSQL robimy:
     
-    ???
-    
+    PostgreSQL:
+    DROP SEQUENCE "netdevices_id_seq";
+    CREATE SEQUENCE "netdevices_id_seq";
+    DROP TABLE netdevices;
+    CREATE TABLE netdevices (
+	id integer default nextval('netdevices_id_seq'::text) NOT NULL,
+	name varchar(32) default NULL,
+	description varchar(255) default NULL,
+	producer varchar(64) default NULL,
+	model varchar(32) default NULL,
+	serialnumber varchar(32) default NULL,
+	ports integer default NULL,
+	PRIMARY KEY (id),
+    );    
   - lista taryf zlicza³a tak¿e u¿ytkowników usuniêtych (lukasz)
   - do listy sieci dodane nowe pole: interfejs - bardzo przydatne przy
     budowaniu skryptów iptables/ipchains/htb gdy mamy sieci adresowe na
@@ -50,14 +59,20 @@ wersja 1.1.4 (??/??/2003):
     wszystkie '-' na ':' (lukasz)
   - ma³a zmiana filozofii tablicy tariffs - 'NULL' to nie ustawiony limit, '0'
     to brak limitu - dlaczego? dowiecie siê lada dzieñ ;-) (lukasz):
-    ALTER TABLE tariffs CHANGE uprate uprate INT(11), CHANGE downrate downrate INT(11) 
+    MySQL:
+	ALTER TABLE tariffs CHANGE uprate uprate INT(11), CHANGE downrate downrate INT(11); 
+    PostgreSQL:
+	ALTER TABLE tariffs ALTER uprate DROP NOT NULL;
+	ALTER TABLE tariffs ALTER uprate DROP DEFAULT;
+	ALTER TABLE tariffs ALTER downrate DROP NOT NULL;
+	ALTER TABLE tariffs ALTER downrate DROP DEFAULT;
   - 'ma³a' rewolucja w finansach, a co za tym idzie 'du¿y' upgrade bazy, ale
     mam nadziejê ¿e sobie poradzicie (lukasz):
     
     0) Wykonaj BEZWZGLÊDNIE backup bazy danych.
     
     1) Stwórz tabelê 'assignments':
-
+    MySQL:
     DROP TABLE IF EXISTS assignments;
     CREATE TABLE assignments (
     	id int(11) NOT NULL auto_increment,
@@ -68,8 +83,20 @@ wersja 1.1.4 (??/??/2003):
 	PRIMARY KEY  (id),
 	UNIQUE KEY id (id),
 	KEY id_2 (id)
-    ) TYPE=MyISAM
-
+    ) TYPE=MyISAM;
+    
+    PostgreSQL:
+    DROP SEQUENCE "assignments_id_seq";
+    CREATE SEQUENCE "assignments_id_seq";
+    DROP TABLE assignments;
+    CREATE TABLE assignments (
+    	id integer default nextval('assignments_id_seq'::text) NOT NULL,
+	tariffid integer default 0 NOT NULL,
+	userid integer default 0 NOT NULL,
+	period integer default 0 NOT NULL,
+	at integer default 0 NOT NULL,
+	PRIMARY KEY (id)
+    );
     2) Uruchom modu³ 'upgrade01' - czyli po zalogowaniu sie do LMS'a
     wpiszcie w url na koñcu '?m=upgrade01', np.
     'http://serwer.pl/lms/?m=upgrade01'. UWAGA! Modu³ ten nale¿y uruchomiæ
@@ -77,8 +104,10 @@ wersja 1.1.4 (??/??/2003):
     danych.
 
     3) Teraz mo¿na usun±æ nieu¿ywane pola z bazy danych:
-
-    ALTER TABLE users DROP tariff, DROP payday;
+    MySQL:
+	ALTER TABLE users DROP tariff, DROP payday;
+    PostgreSQL:
+	ALTER TABLE test DROP tariff; ALTER TABLE test DROP payday;	
 
     4) Dopiszcie do crona lms-payments tak aby by³ uruchamiany codziennie o
        godzinie 0:00.
