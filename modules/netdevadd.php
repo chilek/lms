@@ -24,14 +24,14 @@
  *  $Id$
  */
 
-$netdevdata = $_POST[netdev];
+$netdevdata = $_POST['netdev'];
 
 if(isset($netdevdata)) {
 	// Jakby to dzia³a³o to by by³o mi³o... :P
-	//if($netdevdata[ports] !="" && !eregi("^[0-9]{,4}$",$netdevdata[ports]))
-        //        $error[ports] = "Podana ilo¶æ portów jest b³êdna!";
-	if($netdevdata[name] == "")
-		$error[name] = "Pole nazwa nie mo¿e byæ puste!";
+	//if($netdevdata['ports'] !="" && !eregi("^[0-9]{,4}$",$netdevdata['ports']))
+        //        $error['ports'] = "Podana ilo¶æ portów jest b³êdna!";
+	if($netdevdata['name'] == "")
+		$error['name'] = "Pole nazwa nie mo¿e byæ puste!";
 
         if(!$error)
         {
@@ -42,11 +42,11 @@ if(isset($netdevdata)) {
 }
 		
 
-$layout[pagetitle]="Nowe urz±dzenie";
+$layout['pagetitle'] = "Nowe urz±dzenie";
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("error",$error);
-$SMARTY->assign("netdev",$netdevdata);
-$SMARTY->display("netdevadd.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('error',$error);
+$SMARTY->assign('netdev',$netdevdata);
+$SMARTY->display('netdevadd.html');
 
 ?>

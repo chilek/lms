@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if(! $invoice = $LMS->GetInvoiceContent($_GET[id]))
+if(! $invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
 	header('Location: ?m=invoicelist');
 	die;
@@ -45,34 +45,34 @@ for($i = 0; $i < strlen($_GET[linia1]) && $i < sizeof($cols); $i++)
 for($i = 0; $i < strlen($_GET[linia2]) && $i < sizeof($cols); $i++)
 	imagestring($img, 5, $cols[$i]+3, $rows[1]+3, $_GET[linia2][$i], $black);
 
-$linia3 = substr($_GET[nrrk],0,25);
-$linia4 = substr($_GET[nrrk],25,8);
+$linia3 = substr($_GET['nrrk'],0,25);
+$linia4 = substr($_GET['nrrk'],25,8);
 
 for($i = 0; $i < strlen($linia3); $i++ )
 	imagestring($img, 5, $cols[$i+2]+3, $rows[2]+3, $linia3[$i], $black);
 for($i = 0; $i < strlen($linia4); $i++ )
 	imagestring($img, 5, $cols[$i]+3, $rows[3]+3, $linia4[$i], $black);
 
-$cur = ($_GET[cur] != '' ? $_GET[cur] : 'PLN');
+$cur = ($_GET['cur'] != '' ? $_GET['cur'] : 'PLN');
 
 for($i = 0; $i < strlen($cur) && $i < 3; $i++)
 	imagestring($img, 5, $cols[$i+11]+3, $rows[3]+3, $cur[$i], $black);
 
-$val = str_replace('.',',',sprintf('%.2f',$invoice[total]));
+$val = str_replace('.',',',sprintf('%.2f',$invoice['total']));
 
 for($i = 0; $i < strlen($val) && $i < 11; $i++)
 	imagestring($img, 5, $cols[$i+15]+3, $rows[3]+3, $val[$i], $black);
 
-imagestring($img, 3, $cols[0]+5,$rows[4]+4, trim(to_words(sprintf('%d',$invoice[total]))).' z³ '.trim(to_words($invoice[totalg])).' gr', $black);
+imagestring($img, 3, $cols[0]+5,$rows[4]+4, trim(to_words(sprintf('%d',$invoice['total']))).' z³ '.trim(to_words($invoice['totalg'])).' gr', $black);
 
 $ntempl = $LMS->CONFIG['invoices']['number_template'];
 $ntempl = str_replace('%N',$invoice['number'],$ntempl);
 $ntempl = str_replace('%M',$invoice['month'],$ntempl);
 $ntempl = str_replace('%Y',$invoice['year'],$ntempl);
 
-$linia5 = $invoice[name];
-$linia6 = $invoice[zip].' '.$invoice[city].', '.$invoice[address];
-$linia7 = 'ID KLIENTA: '.sprintf('%04d',$invoice[customerid]);
+$linia5 = $invoice['name'];
+$linia6 = $invoice['zip'].' '.$invoice['city'].', '.$invoice['address'];
+$linia7 = 'ID KLIENTA: '.sprintf('%04d',$invoice['customerid']);
 $linia8 = 'Op³ata za fakturê VAT nr '.$ntempl;
 
 //imagestring($img, 5, $cols[0]+3, $rows[5]+3, $linia5, $black);

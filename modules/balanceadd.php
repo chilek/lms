@@ -44,30 +44,30 @@ if($addbalance['time']) {
 		unset($addbalance['time']);
 }
 
-if($addbalance[type]=="3"||$addbalance[type]=="4")
+if($addbalance['type']=="3"||$addbalance['type']=="4")
 	{
-		if(isset($addbalance[muserid]))
+		if(isset($addbalance['muserid']))
 		{
-			foreach($addbalance[muserid] as $value)
+			foreach($addbalance['muserid'] as $value)
 				if($LMS->UserExists($value))
 				{
-					$addbalance[userid]=$value;
+					$addbalance['userid']=$value;
 					$LMS->AddBalance($addbalance);
 				}
 		}
 		else
 		{
-			if($LMS->UserExists($addbalance[userid]))
+			if($LMS->UserExists($addbalance['userid']))
 				$LMS->AddBalance($addbalance);
 		}
 	}
 
-	if($addbalance[type]=="2"||$addbalance[type]=="1")
+	if($addbalance['type']=="2"||$addbalance['type']=="1")
 	{
-		$addbalance[userid] = "0";
+		$addbalance['userid'] = "0";
 		$LMS->AddBalance($addbalance);
 	}
 
-header("Location: ?".$_SESSION[backto]);
+header("Location: ?".$_SESSION['backto']);
 
 ?>

@@ -26,9 +26,9 @@
 
 // zacznijmy od budowania listy hostów:
 
-if($_GET[tpl] == '')
+if($_GET['tpl'] == '')
 {
-	$layout[pagetitle] = 'Pliki konfiguracyjne';
+	$layout['pagetitle'] = 'Pliki konfiguracyjne';
 	$templateslist = $LMS->GetTemplatesList();
 	$SMARTY->assign('templateslist',$templateslist);
 	$SMARTY->assign('layout',$layout);
@@ -43,7 +43,7 @@ else
 	$SMARTY->template_dir = $LMS->CONFIG['directories']['config_templates_dir'];
 	$SMARTY->left_delimiter = '<?';
 	$SMARTY->right_delimiter = '?>';
-	$SMARTY->display($_GET[tpl].'.tpl');
+	$SMARTY->display($_GET['tpl'].'.tpl');
 }
 
 ?>

@@ -24,20 +24,20 @@
  *  $Id$
  */
 
-if($_GET[is_sure])
+if($_GET['is_sure'])
 {
 	$LMS->DatabaseCreate();
-	$LMS->DatabaseRecover($_GET[db]);
-	header("Location: ?m=".$_SESSION[lastmodule]);
+	$LMS->DatabaseRecover($_GET['db']);
+	header("Location: ?m=".$_SESSION['lastmodule']);
 	die;
 }else{
-	$layout[pagetitle]="Odtworzenie bazy danych danych";
-	$SMARTY->assign("layout",$layout);
-	$SMARTY->display("header.html");
+	$layout['pagetitle'] = "Odtworzenie bazy danych danych";
+	$SMARTY->assign('layout',$layout);
+	$SMARTY->display('header.html');
 	echo "<H1>Odtworzenie bazy danych danych</H1>";
-	echo "<p>Czy jeste¶ pewien ¿e chcesz odtworzyæ bazê danych utworzon± dnia ".date("Y/m/d H:i.s",$_GET[db])."?</p>";
-	echo "<a href=\"?m=dbrecover&db=".$_GET[db]."&is_sure=1\">Tak, jestem pewien</A>";
-	$SMARTY->display("footer.html");
+	echo "<p>Czy jeste¶ pewien ¿e chcesz odtworzyæ bazê danych utworzon± dnia ".date("Y/m/d H:i.s",$_GET['db'])."?</p>";
+	echo "<a href=\"?m=dbrecover&db=".$_GET['db']."&is_sure=1\">Tak, jestem pewien</A>";
+	$SMARTY->display('footer.html');
 }
 
 ?>

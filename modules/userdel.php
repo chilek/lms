@@ -24,33 +24,33 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Usuniêcie u¿ytkownika ID: ".sprintf("%04d",$_GET[id]);
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("userid",$_GET[id]);
+$layout['pagetitle'] = "Usuniêcie u¿ytkownika ID: ".sprintf("%04d",$_GET['id']);
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('userid',$_GET['id']);
 
-if (!$LMS->UserExists($_GET[id]))
+if (!$LMS->UserExists($_GET['id']))
 {
-	$body = "<H1>".$layout[pagetitle]."</H1><P>Podany przez Ciebie ID jest b³êdny b±d¼ nie istnieje w bazie danych.</P>";
+	$body = "<H1>".$layout['pagetitle']."</H1><P>Podany przez Ciebie ID jest b³êdny b±d¼ nie istnieje w bazie danych.</P>";
 }else{
 
-	if($_GET[is_sure]!=1)
+	if($_GET['is_sure']!=1)
 	{
-		$body = "<H1>".$layout[pagetitle]."</H1>";
-		$body .= "<P>Czy jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika ".$LMS->GetUserName($_GET[id])."?</P>"; 
+		$body = "<H1>".$layout['pagetitle']."</H1>";
+		$body .= "<P>Czy jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika ".$LMS->GetUserName($_GET['id'])."?</P>"; 
 		$body .= "<P>Wszystkie dane u¿ytkownika zostan± utracone, a tak¿e wszystkie przypisane temu u¿ytkownikowi komputery zostan± usuniête.</P>";
-		$body .= "<P><A HREF=\"?m=userdel&id=".$_GET[id]."&is_sure=1\">Tak, jestem pewien.</A></P>";
+		$body .= "<P><A HREF=\"?m=userdel&id=".$_GET['id']."&is_sure=1\">Tak, jestem pewien.</A></P>";
 	}else{
-		header("Location: ?".$_SESSION[backto]);
-		$body = "<H1>".$layout[pagetitle]."</H1>";
-		$body .= "<P>U¿ytkownik ".$LMS->GetUserName($_GET[id])." zosta³ usuniêty.</P>";
-		$LMS->DeleteUser($_GET[id]);
+		header("Location: ?".$_SESSION['backto']);
+		$body = "<H1>".$layout['pagetitle']."</H1>";
+		$body .= "<P>U¿ytkownik ".$LMS->GetUserName($_GET['id'])." zosta³ usuniêty.</P>";
+		$LMS->DeleteUser($_GET['id']);
 	}
 		
 }
 
-$SMARTY->display("header.html");
-$SMARTY->assign("body",$body);
-$SMARTY->display("dialog.html");
-$SMARTY->display("footer.html");
+$SMARTY->display('header.html');
+$SMARTY->assign('body',$body);
+$SMARTY->display('dialog.html');
+$SMARTY->display('footer.html');
 
 ?>

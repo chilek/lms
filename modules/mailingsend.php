@@ -24,43 +24,43 @@
  *  $Id$
  */
 
-$layout[pagetitle]="Mailing";
+$layout['pagetitle'] = "Mailing";
 
-$mailing = $_POST[mailing];
+$mailing = $_POST['mailing'];
 
-if($mailing[group] < 0 || $mailing[group] > 3)
-	$error[group] = "Wybra³e¶ b³êdn± grupê u¿ytkowników";
+if($mailing['group'] < 0 || $mailing['group'] > 3)
+	$error['group'] = "Wybra³e¶ b³êdn± grupê u¿ytkowników";
 
-if($mailing[sender]==""){
-	$error[sender] = "Proszê podaæ e-mail nadawcy!";
-}elseif(!check_email($mailing[sender]))
-	$error[sender] = "Podany e-mail nie wydaje siê poprawny!";
+if($mailing['sender']==""){
+	$error['sender'] = "Proszê podaæ e-mail nadawcy!";
+}elseif(!check_email($mailing['sender']))
+	$error['sender'] = "Podany e-mail nie wydaje siê poprawny!";
 
-if($mailing[from]=="")
-	$error[from] = "Proszê podaæ nadawcê!";
+if($mailing['from']=="")
+	$error['from'] = "Proszê podaæ nadawcê!";
 
-if($mailing[subject]=="")
-	$error[subject] = "Proszê podaæ temat listu!";
+if($mailing['subject']=="")
+	$error['subject'] = "Proszê podaæ temat listu!";
 
 if($error)
 {
-	$SMARTY->assign("layout",$layout);
-	$SMARTY->assign("error",$error);
-	$SMARTY->assign("mailing",$mailing);
-	$SMARTY->display("mailing.html");
+	$SMARTY->assign('layout',$layout);
+	$SMARTY->assign('error',$error);
+	$SMARTY->assign('mailing',$mailing);
+	$SMARTY->display('mailing.html');
 }
 else
 {
-	$layout[nomenu] = TRUE;
-	$mailing[body] = textwrap($mailing[body]);
-	$mailing[body] = str_replace("\r", "", $mailing[body]);
-	$SMARTY->assign("mailing",$mailing);
-	$SMARTY->assign("layout",$layout);
-	$SMARTY->display("header.html");
-	$SMARTY->display("mailingsend.html");
+	$layout['nomenu'] = TRUE;
+	$mailing['body'] = textwrap($mailing['body']);
+	$mailing['body'] = str_replace("\r", "", $mailing['body']);
+	$SMARTY->assign('mailing',$mailing);
+	$SMARTY->assign('layout',$layout);
+	$SMARTY->display('header.html');
+	$SMARTY->display('mailingsend.html');
 	$emails = $LMS->Mailing($mailing);
 	$SMARTY->display("mailingsend-footer.html");
-	$SMARTY->display("footer.html");
+	$SMARTY->display('footer.html');
 }
 
 ?>

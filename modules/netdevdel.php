@@ -24,38 +24,38 @@
  *  $Id$
  */
 
-if(! $LMS->NetDevExists($_GET[id]))
+if(! $LMS->NetDevExists($_GET['id']))
 {
 	header('Location: ?m=netdevlist');
 	die;
 }		
 
-$layout[pagetitle]="Usuniêcie urz±dzenia ID: ".sprintf("%04d",$_GET[id]);
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("netdevid",$_GET[id]);
+$layout['pagetitle'] = "Usuniêcie urz±dzenia ID: ".sprintf("%04d",$_GET['id']);
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('netdevid',$_GET['id']);
 
-if($LMS->CountNetDevLinks($_GET[id])>0)
+if($LMS->CountNetDevLinks($_GET['id'])>0)
 {
-	$body = "<H1>".$layout[pagetitle]."</H1>";
+	$body = "<H1>".$layout['pagetitle']."</H1>";
 	$body .= "<P>Nie mo¿na usun±æ urz±dzenia które jest pod³±czone do innych urz±dzeñ.</P>";
 }else{
-    if($_GET[is_sure]!=1)
+    if($_GET['is_sure']!=1)
     {
-	    $body = "<H1>".$layout[pagetitle]."</H1>";
+	    $body = "<H1>".$layout['pagetitle']."</H1>";
 	    $body .= "<P>Czy jeste¶ pewien ¿e chcesz usun±æ urz±dzenie?</P>"; 
-	    $body .= "<P><A HREF=\"?m=userdel&id=".$_GET[id]."&is_sure=1\">Tak, jestem pewien.</A></P>";
+	    $body .= "<P><A HREF=\"?m=userdel&id=".$_GET['id']."&is_sure=1\">Tak, jestem pewien.</A></P>";
     }else{
 	    header("Location: ?m=netdevlist");
-	    $body = "<H1>".$layout[pagetitle]."</H1>";
+	    $body = "<H1>".$layout['pagetitle']."</H1>";
 	    $body .= "<P>Urz±dzenie zosta³o usuniête.</P>";
-	    $LMS->DeleteNetDev($_GET[id]);
+	    $LMS->DeleteNetDev($_GET['id']);
     }
 }
 	
 
-$SMARTY->display("header.html");
-$SMARTY->assign("body",$body);
-$SMARTY->display("dialog.html");
-$SMARTY->display("footer.html");
+$SMARTY->display('header.html');
+$SMARTY->assign('body',$body);
+$SMARTY->display('dialog.html');
+$SMARTY->display('footer.html');
 
 ?>

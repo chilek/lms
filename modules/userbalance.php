@@ -24,18 +24,18 @@
  *  $Id$
  */
 
-if(!$LMS->UserExists($_GET[id]))
+if(!$LMS->UserExists($_GET['id']))
 	header("Location: ?m=userlist");
 
-$username=$LMS->GetUserName($_GET[id]);
-$id = $_GET[id];
+$username=$LMS->GetUserName($_GET['id']);
+$id = $_GET['id'];
 
-$layout[pagetitle]='Rachunek u¿ytkownika: <A HREF="?m=userinfo&id='.$_GET[id].'">'.$username.'</A>';
+$layout['pagetitle'] = 'Rachunek u¿ytkownika: <A HREF="?m=userinfo&id='.$_GET['id'].'">'.$username.'</A>';
 
-$SMARTY->assign("balancelist",$LMS->GetUserBalanceList($_GET[id]));
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("username",$username);
-$SMARTY->assign("id",$id);
-$SMARTY->display("userbalance.html");
+$SMARTY->assign('balancelist',$LMS->GetUserBalanceList($_GET['id']));
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('username',$username);
+$SMARTY->assign('id',$id);
+$SMARTY->display('userbalance.html');
 
 ?>

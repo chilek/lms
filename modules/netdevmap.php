@@ -102,10 +102,10 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 				$tx = NULL;
 				$ty = NULL;
 				for($i=0;$i < sizeof($fields);$i++)
-					if($tx == NULL && $ty == NULL && $map[$x + $fields[$i][x]][$y + $fields[$i][y]] == NULL)
+					if($tx == NULL && $ty == NULL && $map[$x + $fields[$i]['x']][$y + $fields[$i]['y']] == NULL)
 					{
-						$tx = $x + $fields[$i][x];
-						$ty = $y + $fields[$i][y];
+						$tx = $x + $fields[$i]['x'];
+						$ty = $y + $fields[$i]['y'];
 					}
 
 				if($tx != NULL && $ty != NULL)
@@ -120,10 +120,10 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 				$ntx = NULL;
 				$nty = NULL;
 				for($i=0;$i < sizeof($nodefields);$i++)
-					if($ntx == NULL && $nty == NULL && $map[$x + $nodefields[$i][x]][$y + $nodefields[$i][y]] == NULL)
+					if($ntx == NULL && $nty == NULL && $map[$x + $nodefields[$i]['x']][$y + $nodefields[$i]['y']] == NULL)
 					{
-						$ntx = $x + $nodefields[$i][x];
-						$nty = $y + $nodefields[$i][y];
+						$ntx = $x + $nodefields[$i]['x'];
+						$nty = $y + $nodefields[$i]['y'];
 					}
 				if($ntx != NULL && $nty != NULL)
 					$map[$ntx][$nty] = 'n'.$nodeid.'.'.$device;
@@ -132,18 +132,18 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 	}
 }
 
-$layout[pagetitle] = "Mapa po³±czeñ sieciowych";
+$layout['pagetitle'] = "Mapa po³±czeñ sieciowych";
 $SMARTY->assign('layout',$layout);
 
-if($_GET[graph] == "")
+if($_GET['graph'] == "")
 {
 	$SMARTY->assign('deviceslist',$DB->GetAll('SELECT id, name FROM netdevices ORDER BY name ASC'));
-	$SMARTY->assign('start',$_GET[start]);
+	$SMARTY->assign('start',$_GET['start']);
 	$SMARTY->display('netdevmap.html');
 }
 else
 {	
-	$start = sprintf('%d',$_GET[start]);
+	$start = sprintf('%d',$_GET['start']);
 	makemap($DB,$map,$seen,$start);
 	foreach($map as $idx => $x)
 	{
@@ -198,14 +198,14 @@ else
 				
 				$device = str_replace('n','',$device);
 				list($nodeid,$device) = explode('.',$device);
-				$nodemap[$nodeid][x] = $celx;
-				$nodemap[$nodeid][y] = $cely;
-				$nodemap[$nodeid][device] = $device;
+				$nodemap[$nodeid]['x'] = $celx;
+				$nodemap[$nodeid]['y'] = $cely;
+				$nodemap[$nodeid]['device'] = $device;
 			}
 			else
 			{
-				$devicemap[$device][x] = $celx;
-				$devicemap[$device][y] = $cely;
+				$devicemap[$device]['x'] = $celx;
+				$devicemap[$device]['y'] = $cely;
 			}
 		}
 	}
@@ -213,10 +213,10 @@ else
 	$links = $DB->GetAll('SELECT src, dst FROM netlinks');
 	if($links) foreach($links as $link)
 	{
-		$src_celx = $devicemap[$link[src]][x];
-		$src_cely = $devicemap[$link[src]][y];
-		$dst_celx = $devicemap[$link[dst]][x];
-		$dst_cely = $devicemap[$link[dst]][y];
+		$src_celx = $devicemap[$link['src']]['x'];
+		$src_cely = $devicemap[$link['src']]['y'];
+		$dst_celx = $devicemap[$link['dst']]['x'];
+		$dst_cely = $devicemap[$link['dst']]['y'];
 		$src_px = (($src_celx * $cellw) + $celllmargin);
 		$src_py = (($src_cely * $cellh) + $celltmargin);
 		$dst_px = (($dst_celx * $cellw) + $celllmargin);
@@ -227,10 +227,10 @@ else
 
 	foreach($nodemap as $node)
 	{
-		$src_celx = $node[x];
-		$src_cely = $node[y];
-		$dst_celx = $devicemap[$node[device]][x];
-		$dst_cely = $devicemap[$node[device]][y];
+		$src_celx = $node['x'];
+		$src_cely = $node['y'];
+		$dst_celx = $devicemap[$node['device']]['x'];
+		$dst_cely = $devicemap[$node['device']]['y'];
 		$src_px = (($src_celx * $cellw) + $celllmargin);
 		$src_py = (($src_cely * $cellh) + $celltmargin);
 		$dst_px = (($dst_celx * $cellw) + $celllmargin);
@@ -245,8 +245,8 @@ else
 	
 	foreach($nodemap as $nodeid => $node)
 	{
-		$celx = $node[x];
-		$cely = $node[y];
+		$celx = $node['x'];
+		$cely = $node['y'];
 		$px = (($celx * ($cellw)) + $celllmargin);
 		$py = (($cely * ($cellh)) + $celltmargin);
 		imagecopy($im,$im_n,$px,$py,0,0,15,16);
@@ -258,8 +258,8 @@ else
 
 	foreach($devicemap as $deviceid => $device)
 	{
-		$celx = $device[x];
-		$cely = $device[y];
+		$celx = $device['x'];
+		$cely = $device['y'];
 		$px = (($celx * ($cellw)) + $celllmargin);
 		$py = (($cely * ($cellh)) + $celltmargin);
 		imagecopy($im,$im_nd,$px,$py,0,0,16,16);
