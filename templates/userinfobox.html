@@ -160,8 +160,14 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
-			{if $userinfo.deleted}<A HREF="?m=useredit&id={$userinfo.id}&action=recover">Przywróæ <IMG SRC="img/recover.gif" border="0" align="absmiddle" ALT="[ Przywróæ ]"></A>{else}<A href="?m=contract&id={$userinfo.id}" target="_blank">Drukuj umowê <IMG src="img/print.gif" border="0" align="absmiddle" ALT="[ Umowa ]"></A> <A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">Edytuj <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ Edytuj ]"></A> <A href="?m=userdel&id={$userinfo.id}" 
-				{confirm text="Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: `$userinfo.username` z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!"}>Usuñ <img border="0" align="absmiddle" src="img/delete.gif" ALT="[ Usuñ ]"></A>{/if}
+			{if $userinfo.deleted}
+				<A HREF="?m=useredit&id={$userinfo.id}&action=recover">Przywróæ <IMG SRC="img/recover.gif" border="0" align="absmiddle" ALT="[ Przywróæ ]"></A>
+			{else}
+				<A href="?m=accountlist&u={$userinfo.id}">Konta <IMG src="img/account.gif" border="0" align="absmiddle" ALT="[ Konta u¿ytkownika ]"></A>
+				<A href="?m=contract&id={$userinfo.id}" target="_blank">Drukuj umowê <IMG src="img/print.gif" border="0" align="absmiddle" ALT="[ Umowa ]"></A>
+				<A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">Edytuj <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ Edytuj ]"></A>
+				<A href="?m=userdel&id={$userinfo.id}" {confirm text="Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: `$userinfo.username` z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!"}>Usuñ <img border="0" align="absmiddle" src="img/delete.gif" ALT="[ Usuñ ]"></A>
+			{/if}
 		</TD>
 	</TR>
 </TABLE>
