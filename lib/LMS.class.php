@@ -422,6 +422,7 @@ class LMS
 			$result['creationdateh'] = date("Y-m-d, H:i",$result['creationdate']);
 			$result['moddateh'] = date("Y-m-d, H:i",$result['moddate']);
 			$result['balance'] = $this->GetUserBalance($result['id']);
+			$result['tariffsvalue'] = $this->GetUserTariffsValue($result['id']);
 			return $result;
 		}else
 			return FALSE;
@@ -1059,6 +1060,11 @@ class LMS
 	 *  Obs³uga taryf
 	 */
 
+	function GetUserTariffsValue($id)
+	{
+		return $this->DB->GetOne("SELECT sum(value) FROM assignments, tariffs WHERE tariffid = tariffs.id AND userid=?",array($id));
+	}
+
 	function GetUserAssignments($id)
 	{
 		if($assignments = $this->DB->GetAll("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, name FROM assignments, tariffs WHERE userid=? AND tariffs.id = tariffid",array($id)))
@@ -1660,6 +1666,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.218  2003/09/11 03:42:37  lukasz
+ * - rekord u¿ytkownika zwraca tak¿e sumê op³at
+ *
  * Revision 1.217  2003/09/10 19:02:52  alec
  * bug fix for postgres in GetUserList
  *
