@@ -6,6 +6,8 @@ $Id$
 * zorientowaæ siê jak wygl±da sprawa z SMTP-AUTH
 * nie-tylko-linux, silny porting demona i skryptów dla ipfw/ipf/pf [+]
 * wsparcie zdalnego konfigu dla mini-distro (co¶ a'la freesco/m0n0wall) [+]  
+* konta o ile nie zostan± przepisane ³adniej to w najbli¿szej wersji stable
+  nie powinny siê znale¼æ
 
 1.7 (deadline dla 1.5 to koniec kwietnia/pocz±tek maja)
 
@@ -21,7 +23,7 @@ $Id$
 
 ! j.w. ale dla wersji 1.2 i 1.3
 * nowy daemon
-* rewolucje w bazie [=]
+* rewolucje w bazie [=] (np. users -> customers, admins -> users or sth)
 * przerobienie na nowe modu³y
 * zrobienie 'LMSAPI' - czyli, zintegrowanej z LMS biblioteki serwuj±cej
   podstawowe funkcje LMSa (takie read only) - ka¿dy modu³ móg³by dodawaæ
