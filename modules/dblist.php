@@ -26,9 +26,42 @@
 
 $layout['pagetitle'] = trans('Database Backups');
 
-$dblist = $LMS->DatabaseList();
+if ($handle = opendir($LMS->CONFIG['directories']['backup_dir']))
+{
+	while (false !== ($file = readdir($handle)))
+	{
+		if ($file != '.' && $file != '..')
+		{
+			$path = pathinfo($file);
+			if($path['extension'] == 'sql')
+			{
+				if(substr($path['basename'],0,4) == 'lms-')
+				{
+					$dblist['time'][] = substr(basename("$file",'.sql'),4);
+					$dblist['size'][] = filesize($LMS->CONFIG['directories']['backup_dir'].'/'.$file);
+					$dblist['type'][] = 'plain';
+				}
+			}
+			elseif(extension_loaded('zlib'))
+			{
+				if((($path['extension'] == 'gz')&&(strstr($file, "sql.gz")))&& (substr($path['basename'],0,4) == 'lms-'))
+				{
+					$dblist['time'][] = substr(basename("$file",'.sql.gz'),4);
+					$dblist['size'][] = filesize($LMS->CONFIG['directories']['backup_dir'].'/'.$file);
+					$dblist['type'][] = 'gz';
+				}
+			}
+		}
+	}
+	closedir($handle);
+}
 
-$SMARTY->assign('dblist',$dblist);
+if(sizeof($dblist['time']))
+	array_multisort($dblist['time'],$dblist['size'],$dblist['type']);
+
+$dblist['total'] = sizeof($dblist['time']);
+
+$SMARTY->assign('dblist', $dblist);
 $SMARTY->display('dblist.html');
 
 ?>

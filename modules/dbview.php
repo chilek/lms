@@ -24,15 +24,50 @@
  *  $Id$
  */
 
+function DatabaseFetchContent($dbtime,$save=FALSE)
+{
+	global $LMS;
+	
+	if(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql'))
+	{
+		$content = file($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
+		foreach($content as $value)
+			$database['content'] .= $value;
+		$database['size'] = filesize($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
+		$database['time'] = $dbtime;
+		return $database;
+	}
+	elseif((extension_loaded('zlib'))&&(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz')))
+	{
+		if($save==TRUE)
+		{
+			$file=fopen($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz',"r"); //tutaj przepisuje plik binarny 
+			while($part = fread($file,8192))
+                            	$database .= $part; 
+		}
+		else
+		{
+			$content = gzfile($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
+                	foreach($content as $value)
+                        	$database['content'] .= $value;
+                	$database['size'] = filesize($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
+                	$database['time'] = $dbtime;
+		}
+                return $database;
+	}
+	else
+		return FALSE;
+}
+
 $layout['pagetitle'] = trans('View Database Backup');
 
 if ((extension_loaded('zlib'))&&(strstr($_GET['file'],"sql.gz")))
 {
-	$filecontent = $LMS->DatabaseFetchContent($_GET['db'],true); //doalem parametr bool na koncu ktory mowi czy gzipowac czy nie
-	$database = $LMS->DatabaseFetchContent($_GET['db']);
+	$filecontent = DatabaseFetchContent($_GET['db'],true); //dodalem parametr bool na koncu ktory mowi czy gzipowac czy nie
+	$database = DatabaseFetchContent($_GET['db']);
 }
 else
-$database = $LMS->DatabaseFetchContent($_GET['db']);
+	$database = DatabaseFetchContent($_GET['db']);
 
 if($_GET['rawmode']=='true')
 {
@@ -70,4 +105,3 @@ $SMARTY->display('dbview.html');
 if(!$database['rawmode'])
 	$SMARTY->display('footer.html');
 ?>
-
