@@ -30,15 +30,17 @@
 
 class LMS {
 
+	var $ADB;
 	var $DB;
 	var $SESSION;
 	var $_BACKUP_DIR;
 	var $_version = '1.0.65';
 
-	function LMS($DB,$SESSION)
+	function LMS($DB,$SESSION,$ADB)
 	{
 		$this->DB=$DB;
 		$this->SESSION=$SESSION;
+		$this->ADB=$ADB;
 	}
 
 	function SetTS($table)
@@ -319,58 +321,42 @@ class LMS {
 
 	function GetNodeIDByIP($ipaddr)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `id` FROM `nodes` WHERE `ipaddr` = '".$ipaddr."' LIMIT 1");
-		return $DB->row[id];
+		return $this->ADB->GetOne("SELECT id, name FROM nodes WHERE ipaddr=?",array($ipaddr));
 	}
 
 	function GetNodeIDByMAC($mac)	
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `id` FROM `nodes` WHERE `mac` = '".$mac."' LIMIT 1");
-		return $DB->row[id];
+		return $this->ADB->GetOne("SELECT id FROM nodes WHERE mac=?",array($mac));
 	}
 
 	function GetNodeIDByName($name)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `id` FROM `nodes` WHERE `name` = '".$name."' LIMIT 1");
-		return $DB->row[id];
+		return $this->ADB->GetOne("SELECT id FROM nodes WHERE name=?",array($name));
 	}
 
 	function GetNodeIPByID($id)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `ipaddr` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
-		return $DB->row[ipaddr];
+		return $this->ADB->GetOne("SELECT ipaddr FROM nodes WHERE id=?",array($id));
 	}
 
 	function GetNodeMACByID($id)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `mac` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
-		return $DB->row[mac];
+		return $this->ADB->GetOne("SELECT mac FROM nodes WHERE id=?",array($id));
 	}
 
 	function GetNodeName($id)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `name` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
-		return $DB->row[name];
+		return $this->ADB->GetOne("SELECT name FROM nodes WHERE id=?",array($id));
 	}
 
 	function GetNodeNameByIP($ipaddr)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `name` FROM `nodes` WHERE `ipaddr` = '".$ipaddr."' LIMIT 1");
-		return $DB->row[name];
+		return $this->ADB->GetOne("SELECT name FROM nodes WHERE ipaddr=?",array($ipaddr));
 	}
 
 	function GetUserStatus($id)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `status` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
-		return $DB->row[status];
+		return $this->ADB->GetOne("SELECT status FROM users WHERE id=?",array($id));
 	}
 
 	function NetworkShift($network="0.0.0.0",$mask="0.0.0.0",$shift=0)
