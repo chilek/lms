@@ -24,13 +24,11 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Bazy danych";
+$layout['pagetitle'] = "Kopie zapasowe bazy danych";
 
 $dblist = $LMS->DatabaseList();
 
 $SMARTY->assign('dblist',$dblist);
-$SMARTY->display('header.html');
 $SMARTY->display('dblist.html');
-$SMARTY->display('footer.html');
 
 ?>

@@ -31,8 +31,9 @@ if($_GET['is_sure'])
 	header("Location: ?m=".$_SESSION['lastmodule']);
 	die;
 }else{
-	$layout['pagetitle'] = "Odtworzenie bazy danych danych";
+	$layout['pagetitle'] = "Odtworzenie bazy danych";
 	$SMARTY->display('header.html');
+	$SMARTY->display('adminheader.html');
 	echo "<H1>Odtworzenie bazy danych danych</H1>";
 	echo "<p>Czy jeste¶ pewien ¿e chcesz odtworzyæ bazê danych utworzon± dnia ".date("Y/m/d H:i.s",$_GET['db'])."?</p>";
 	echo "<a href=\"?m=dbrecover&db=".$_GET['db']."&is_sure=1\">Tak, jestem pewien</A>";

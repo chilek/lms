@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Podgl±d bazy danych";
+$layout['pagetitle'] = "Podgl±d kopii zapasowej bazy danych";
 
 $database = $LMS->DatabaseFetchContent($_GET['db']);
 
@@ -43,7 +43,10 @@ if($_GET['rawmode']=="true")
 
 $SMARTY->assign('database',$database);
 if(!$database['rawmode'])
+{
 	$SMARTY->display('header.html');
+	$SMARTY->display('adminheader.html');
+}
 $SMARTY->display('dbview.html');
 if(!$database['rawmode'])
 	$SMARTY->display('footer.html');
