@@ -124,11 +124,15 @@ $layout['pagetitle'] = trans('New Node');
 
 $tariffs = $LMS->GetTariffs();
 $users = $LMS->GetUserNames();
-$balancelist = $LMS->GetUserBalanceList($nodedata['ownerid']);
-$assignments = $LMS->GetUserAssignments($nodedata['ownerid']);
 
-$SMARTY->assign('balancelist',$balancelist);
-$SMARTY->assign('assignments',$assignments);
+if($nodedata['ownerid'])
+{
+	$SMARTY->assign('balancelist', $LMS->GetUserBalanceList($nodedata['ownerid']));
+	$SMARTY->assign('assignments', $LMS->GetUserAssignments($nodedata['ownerid']));
+	$SMARTY->assign('usergroups', $LMS->UsergroupGetForUser($nodedata['ownerid']));
+	$SMARTY->assign('otherusergroups', $LMS->GetGroupNamesWithoutUser($nodedata['ownerid']));
+}
+
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('users',$users);
 $SMARTY->assign('error',$error);

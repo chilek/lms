@@ -48,6 +48,8 @@ version 1.5.5 Anubis (??/??/????):
   - we can pay invoices in userbalancebox (chilek)
   - new session management using database backend, also authorization has been
     put into separate class (lukasz)
+  - BTS#0000308: added lost customer's groups table while adding new node for 
+    a customer (alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
