@@ -40,35 +40,43 @@ $obraz = imagecreatefrompng('img/przelew.png');
 $czarny = imagecolorallocate($obraz, 0, 0, 0);
 $bialy = imagecolorallocate ($obraz, 255, 255, 255);
 
-imagepstext ($obraz, $_CONFIG[finances]['name'], $font, 25, $czarny, $bialy, 40, 40);
-imagepstext ($obraz, $_CONFIG[finances]['address']." ".$_CONFIG[finances]['zip']." ".$_CONFIG[finances]['city'], $font, 25, $czarny, $bialy, 40, 92);
-imagepstext ($obraz, $_CONFIG[finances]['account'], $font, 25, $czarny, $bialy, 100, 144);
+// Dobra, czytamy z lms.ini
+$_NAME = (! $_CONFIG[finances]['name'] ? "Nazwa nieustawiona" : $_CONFIG[finances]['name']);
+$_ADDRESS = (! $_CONFIG[finances]['address'] ? "Adres nieustawiony" : $_CONFIG[finances]['address']);
+$_ZIP = (! $_CONFIG[finances]['zip'] ? "00-000" : $_CONFIG[finances]['zip']);
+$_CITY = (! $_CONFIG[finances]['city'] ? "Miasto nieustawione" : $_CONFIG[finances]['city']);
+$_SERVICE = (! $_CONFIG[finances]['service'] ? "Nazwa us³ugi nieustawiona" : $_CONFIG[finances]['service']);
+$_ACCOUNT = (! $_CONFIG[finances]['account'] ? "Numer konta nieustawiony" : $_CONFIG[finances]['account']);
+
+imagepstext ($obraz, $_NAME, $font, 25, $czarny, $bialy, 40, 40);
+imagepstext ($obraz, $_ADDRESS." ".$_ZIP." ".$_CITY, $font, 25, $czarny, $bialy, 40, 92);
+imagepstext ($obraz, $_ACCOUNT, $font, 25, $czarny, $bialy, 100, 144);
 imagepstext ($obraz, "**".-$userinfo['balance']."**", $font, 25, $czarny, $bialy, 488, 196);
 imagepstext ($obraz, $userinfo['username'], $font, 25, $czarny, $bialy, 40, 300);
 imagepstext ($obraz, $userinfo['address']." ".$userinfo['zip']." ".$userinfo['city'], $font, 25, $czarny, $bialy, 40, 352);
-imagepstext ($obraz, $_CONFIG[finances]['service'], $font, 25, $czarny, $bialy, 40, 404);
+imagepstext ($obraz, $_SERVICE, $font, 25, $czarny, $bialy, 40, 404);
 
-imagepstext ($obraz, $_CONFIG[finances]['name'], $font, 25, $czarny, $bialy, 40,684);
-imagepstext ($obraz, $_CONFIG[finances]['address']." ".$_CONFIG[finances]['zip']." ".$_CONFIG[finances]['city'], $font, 25, $czarny, $bialy, 40, 736);
-imagepstext ($obraz, $_CONFIG[finances]['account'], $font, 25, $czarny, $bialy, 100, 788);
+imagepstext ($obraz, $_NAME, $font, 25, $czarny, $bialy, 40,684);
+imagepstext ($obraz, $_ADDRESS." ".$_ZIP." ".$_CITY, $font, 25, $czarny, $bialy, 40, 736);
+imagepstext ($obraz, $_ACCOUNT, $font, 25, $czarny, $bialy, 100, 788);
 imagepstext ($obraz, "**".-$userinfo['balance']."**", $font, 25, $czarny, $bialy, 488, 840);
 imagepstext ($obraz, $userinfo['username'], $font, 25, $czarny, $bialy, 40, 944);
 imagepstext ($obraz, $userinfo['address']." ".$userinfo['zip']." ".$userinfo['city'], $font, 25, $czarny, $bialy, 40, 996);
-imagepstext ($obraz, $_CONFIG[finances]['service'], $font, 25, $czarny, $bialy, 40, 1048);
+imagepstext ($obraz, $_SERVICE, $font, 25, $czarny, $bialy, 40, 1048);
 
-imagepstext ($obraz, $_CONFIG[finances]['account'], $font, 20, $czarny, $bialy, 935, 35);
-imagepstext ($obraz, $_CONFIG[finances]['name'], $font, 20, $czarny, $bialy, 935,125);
-imagepstext ($obraz, $_CONFIG[finances]['address'], $font, 20, $czarny, $bialy, 935, 150);
-imagepstext ($obraz, $_CONFIG[finances]['zip']." ".$_CONFIG[finances]['city'], $font, 20, $czarny, $bialy, 935, 175);
+imagepstext ($obraz, $_ACCOUNT, $font, 20, $czarny, $bialy, 935, 35);
+imagepstext ($obraz, $_NAME, $font, 20, $czarny, $bialy, 935,125);
+imagepstext ($obraz, $_ADDRESS, $font, 20, $czarny, $bialy, 935, 150);
+imagepstext ($obraz, $_ZIP." ".$_CITY, $font, 20, $czarny, $bialy, 935, 175);
 imagepstext ($obraz, "**".-$userinfo['balance']."**", $font, 20, $czarny, $bialy, 935, 220);
 imagepstext ($obraz, $userinfo['username'], $font, 20, $czarny, $bialy, 935, 310);
 imagepstext ($obraz, $userinfo['address'], $font, 20, $czarny, $bialy, 935, 335);
 imagepstext ($obraz, $userinfo['zip']." ".$userinfo['city'], $font, 20, $czarny, $bialy, 935, 360);
 
-imagepstext ($obraz, $_CONFIG[finances]['account'], $font, 20, $czarny, $bialy, 935, 679);
-imagepstext ($obraz, $_CONFIG[finances]['name'], $font, 20, $czarny, $bialy, 935, 769);
-imagepstext ($obraz, $_CONFIG[finances]['address'], $font, 20, $czarny, $bialy, 935, 794);
-imagepstext ($obraz, $_CONFIG[finances]['zip']." ".$_CONFIG[finances]['city'], $font, 20, $czarny, $bialy, 935, 819);
+imagepstext ($obraz, $_ACCOUNT, $font, 20, $czarny, $bialy, 935, 679);
+imagepstext ($obraz, $_NAME, $font, 20, $czarny, $bialy, 935, 769);
+imagepstext ($obraz, $_ADDRESS, $font, 20, $czarny, $bialy, 935, 794);
+imagepstext ($obraz, $_ZIP." ".$_CITY, $font, 20, $czarny, $bialy, 935, 819);
 imagepstext ($obraz, "**".-$userinfo['balance']."**", $font, 20, $czarny, $bialy, 935, 864);
 imagepstext ($obraz, $userinfo['username'], $font, 20, $czarny, $bialy, 935, 954);
 imagepstext ($obraz, $userinfo['address'], $font, 20, $czarny, $bialy, 935, 979);
