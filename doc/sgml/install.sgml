@@ -118,14 +118,14 @@ $ mv Smarty-2.6.0/libs Smarty
 	<title>Instalacja serwera baz danych</title>
 		<sect2 id="install-mysql">
 		<title>MySQL</title>
-		<sect3>
+		<sect3 id="install-mysql-intro">
 		<title>Wstêp</title>
 			<para>Ta  bardzo  popularna  baza  jest  dostêpna  z wiêkszo¶ci± dystrybucji
 			Linuksa.  Je¿eli  jednak bêdziesz musia³ j± zainstalowaæ samodzielnie,
 			zacznij od ¶ci±gniêcia ¼róde³ z <ulink url="http://www.mysql.org">
 			www.mysql.org</ulink>.</para>
 		</sect3>
-		<sect3>
+		<sect3 id="install-mysql-server">
 		<title>Instalacja serwera MySQL</title>
 			<para>Po rozpakowaniu, wejd¼ do katalogu z naszym MySQL i wydaj kolejno
 			polecenia:
@@ -139,7 +139,7 @@ $ /usr/local/mysql/bin/safe_mysqld &
 $ /usr/local/mysql/bin/mysqladmin -u root password nowe_has³o</screen>
 		</para>
 		</sect3>
-		<sect3>
+		<sect3 id="install-mysql-dbcreate">
 		<title>Utworzenie bazy danych</title>
 			<para>Konieczne  to  jest  je¿eli  uruchamiasz  LMS  po raz PIERWSZY. Je¿eli
 			uaktualniasz LMS z poprzedniej wersji, odpowiednie adnotacje co nale¿y zrobiæ z baz± danych
@@ -156,7 +156,7 @@ mysql> use lms;
 mysql> source doc/lms.mysql;</screen>
 		</para>
 		</sect3>
-		<sect3>
+		<sect3 id="install-mysql-lms">
 		<title>Konfiguracja LMS (lms.ini)</title>
 			<para>Poniewa¿  MySQL  jest  domy¶ln± baz± dla LMS'u, konfiguracja ogranicza
 			siê  do  podania  w  sekcji  [database] pliku /etc/lms/lms.ini has³a i u¿ytkownika:
@@ -182,7 +182,7 @@ password = has³o_z_pkt.3</screen>
 		</sect2>
 		<sect2 id="install-pgsql">
 		<title>PostgreSQL</title>
-		<sect3>
+		<sect3 id="install-pgsql-intro">
 		<title>Wstêp</title>
 			<para>LMS jest testowany na PostgreSQL 7.3.4 i nowszych, ale poniewa¿ ¿adne
 			skomplikowane w³a¶ciwo¶ci tej bazy nie s± wykorzystywane, nie powinno
@@ -191,7 +191,7 @@ password = has³o_z_pkt.3</screen>
 			ze ¼róde³ dostêpnych na stronie <ulink url="http://www.postgresql.org">
 			www.postgresql.org</ulink>.</para>
 		</sect3>
-		<sect3>
+		<sect3 id="install-pgsql-server">
 		<title>Instalacja</title>
 			<para>Jest to wersja skrócona instalacji, wiêcej informacji znajdziesz
 			w dokumentacji postgresa. Po ¶ci±gniêciu i rozpakowaniu wejd¼
@@ -209,7 +209,7 @@ $ /usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data
 $ /usr/local/pgsql/bin/postmaster -D /usr/local/pgsql/data >logfile 2>&1 &</screen>
 			</para>
 		</sect3>
-		<sect3>
+		<sect3 id="install-pgsql-dbcreate">
 		<title>Utworzenie bazy danych</title>
 			<para>Maj±c uruchomiony serwer mo¿esz przyst±piæ do tworzenia bazy o nazwie 'lms',
 			której w³a¶cicielem bêdzie u¿ytkownik z loginem 'lms'. 
@@ -219,7 +219,7 @@ $ /usr/local/pgsql/bin/createdb -E LATIN2 -U lms lms
 $ /usr/local/pgsql/bin/psql -d lms -U lms -f /lms/doc/lms.pgsql</screen>
 		</para>
 		</sect3>
-		<sect3>
+		<sect3 id="install-pgsql-lms">
 		<title>Konfiguracja LMS (lms.ini)</title>
 			<para>Dla systemu LMS domy¶lnym serwerem baz danych jest MySQL, dlatego w sekcji
 			[database] pliku /etc/lms/lms.ini nale¿y ustawiæ nastêpuj±ce opcje:

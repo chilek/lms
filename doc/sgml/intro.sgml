@@ -181,14 +181,14 @@
 	</sect1>
 	<sect1 id="moreinfo">
 		<title>Informacje dodatkowe</title>
-		<sect2>
+		<sect2 id="contact">
 			<title>Kontakt z autorami</title>
 			<para>Najlepiej poprzez listê mailingow±, na któr± mo¿na siê zapisaæ wysy³aj±c
 			pustego maila o temacie "subscribe lms" na adres <ulink url="mailto: ecartis@lists.rulez.pl">ecartis@lists.rulez.pl</ulink>,
 			a maile wysy³a siê na adres lms@lists.rulez.pl.
 			</para>
 		</sect2>
-		<sect2>
+		<sect2 id="bugs">
 			<title>Zg³aszanie b³êdów i pomys³ów</title>
 			<para>Aby efektywnie zg³osiæ b³±d lub nowy pomys³, najlepiej jest zapisaæ siê na listê mailingow±
 			gdzie kto¶ z autorów b±d¼ u¿ytkowników bêdzie mia³ szansê odpowiedzieæ
@@ -199,7 +199,7 @@
 			http://bts.rulez.pl</ulink>.
 			</para>
 		</sect2>
-		<sect2>
+		<sect2 id="latest">
 			<title>Najnowsza wersja</title>
 			<para>Zawsze aktualn± werjsê LMS mo¿na pobraæ z repozytorium CVS za pomoc±
 			interfejsu www <ULINK URL="http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">tutaj</ulink>,
@@ -212,7 +212,7 @@ cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
 			adresem <ulink url="http://cvs.rulez.pl">http://cvs.rulez.pl</ulink>.
 			</para>
 		</sect2>
-		<sect2>
+		<sect2 id="history">
 			<title>Historia zmian</title>
 			<para>Informacje o zmianach jakie zasz³y w kolejnych 
 			wersjach LMS zawarte s± w pliku <ulink url="../ChangeLog">
