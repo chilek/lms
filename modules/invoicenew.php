@@ -88,7 +88,7 @@ switch($_GET['action'])
 		unset($_SESSION['invoicecontents']);
 		unset($_SESSION['invoicecustomer']);
 		unset($_SESSION['invoice']);
-		header('Location: ?m=invoicelist&openonload='.$iid);
+		header('Location: ?m=invoice&id='.$iid);
 		die;
 	break;
 }
