@@ -1,12 +1,12 @@
 {include file="clearheader.html"}
 <TABLE WIDTH="100%">
 	<TR>
-		<TD WIDTH="1%" VALIGN="TOP" NOWRAP>
+		<TD WIDTH="50%" VALIGN="TOP">
 			<H1>{$layout.pagetitle}</H1>
 		</TD>
-		<TD ALIGN="RIGHT">
+		<TD WIDTH="50%" ALIGN="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
-			{$smarty.now|date_format:"%A, %e %B, %Y"|capitalize}<BR>
+			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
 			Sporz±dzone przez: {$layout.logname}
 		</TD>
 	</TR>
@@ -14,29 +14,26 @@
 <TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD ALIGN="CENTER" CLASS="HEAD">
-			LP:
+			Lp
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			ID:
+			Id
 		</TD>
 		<TD CLASS="HEAD">
-			<B>Nazwisko i imiê:</B><BR>
-			Adres:<BR>
-			Telefon:
+			<B>Nazwisko i imiê</B><BR>
+			Adres<BR>
+			Telefon
 		</TD>
 		<TD CLASS="HEAD" VALIGN="TOP">
-			E-mail:<BR>
-			Taryfa:
+			E-mail<BR>
+			Taryfa
 		</TD>
-		<TD CLASS="HEAD">
-			Saldo:
+		<TD CLASS="HEAD" ALIGN="RIGHT">
+			Saldo
 		</TD>
-		
-
 	</TR>
 	{cycle values="#FFFFFF,#EEEEEE" print=false}
 	{section name=userlist loop=$userlist}{if $userlist[userlist].id}
-
 	<TR BGCOLOR="{cycle}">
 		<TD ALIGN="CENTER">
 		{counter}
@@ -56,7 +53,6 @@
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$userlist[userlist].balance|string_format:"%01.2f"} z³
 		</TD>
-
 	</TR>
 	{/if}{/section}
 </TABLE>
