@@ -46,8 +46,27 @@ else
 
 $SESSION->save('netid', $netid);
 
+if (isset($_GET['page']))
+	$page = $_GET['page'];
+else
+	$page = 1;
+
 if($p == 'main')
-	$network = $LMS->GetNetwork($netid);
+{
+	if ($SESSION->is_set('ntlp.page.'.$netid))
+		$SESSION->restore('ntlp.page.'.$netid, $page);
+	if (isset($_POST['page']))
+		$page = $_POST['page'];		
+	$network = $LMS->GetNetworkRecord($netid, $page, $LMS->CONFIG['phpui']['networkhosts_pagelimit']);
+	$SESSION->save('ntlp.page.'.$netid, $network['page']);
+	$SESSION->save('ntlp.pages.'.$netid, $network['pages']);
+}
+
+if($p == 'down')
+{
+	$SESSION->restore('ntlp.page.'.$netid, $network['page']);
+	$SESSION->restore('ntlp.pages.'.$netid, $network['pages']);
+}
 
 $SMARTY->assign('part',$p);
 $SMARTY->assign('js',$js);
