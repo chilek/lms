@@ -4043,7 +4043,7 @@ dbname = lms
 #query = SELECT CONCAT(passwd.login,'@',domains.name) FROM passwd, domains, aliases 
 #       WHERE passwd.domainid = domains.id AND passwd.id = aliases.accountid
 #       AND aliases.login = '%u' AND domains.name = '%d' 
-query = SELECT passwd.login || '@' domains.name FROM passwd, domains, aliases 
+query = SELECT passwd.login || '@' || domains.name FROM passwd, domains, aliases 
         WHERE passwd.domainid = domains.id AND passwd.id = aliases.accountid
         AND aliases.login = '%u' AND domains.name = '%d' </PRE
 ></DIV
