@@ -5,26 +5,24 @@
 <TABLE WIDTH="100%" CELLPADDING="5">
 	<TR class="dark">
 		<TD WIDTH="94%" CLASS="fleftu">
-			<B>Nazwa:<BR>
-			Opis:</B>
+			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Nazwa:</B><BR>
+			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;Opis:
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			<B>Downstream:<BR>
-			Upstream:</B>
+			Downrate:<BR>
+			Uprate:
 		</TD>	
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			<B>Warto¶æ:</B>
+			Warto¶æ:
 		</TD>	
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			<B>ID:</B>
+			ID:
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			<B>Korzysta:</B>
+			Korzysta:
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
-			<NOBR>
-			<B>Dochód m-c:</B>
-			</NOBR>
+			<NOBR>Dochód m-c:</NOBR>
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
 			<NOBR>
@@ -36,8 +34,8 @@
 	{section name=tariffs loop=$tarifflist}
 	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD WIDTH="95%" CLASS="fleft" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';" class="fleft">
-			<B>{$tarifflist[tariffs].name}</B><BR>
-			{$tarifflist[tariffs].description}
+			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{$tarifflist[tariffs].name}</B><BR>
+			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{$tarifflist[tariffs].description}
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
@@ -80,7 +78,7 @@
 	{/section}
 	<TR CLASS="light">
 		<TD CLASS="fleftu" COLSPAN="4" WIDTH="98%" ALIGN="right">
-			<B>Razem:</B>
+			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Razem:</B>
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right" NOWRAP>
 			<B>{$listdata.totalusers} {if $listdata.totalcount neq $listdata.totalusers}({$listdata.totalcount}){/if}</B>
