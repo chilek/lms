@@ -518,66 +518,66 @@ info = "Additional description of module"
           <title>Hostfile</title>
               <sect3 id="hostfile-desc">
               <title>Description</title>
-              <para>Modu³ 'hostfile' jest do¶æ uniwersalnym narzêdziem. Poniewa¿ 
-              wykonuje pêtlê po wszystkich komputerach w bazie rozró¿niaj±c ich
-              status (od³±czony/pod³±czony), sieæ do której s± pod³aczone oraz
-              grupy do których nale¿± ich w³a¶ciciele, dlatego mo¿liwe jest tworzenie np. regu³
-              dowolnego firewalla, czy te¿ pliku /etc/hosts. Dane zapisuje do pliku 
-              i nastêpnie wykonuje okre¶lone polecenie pow³oki.</para>
+              <para>Module 'hostfile' is a rather multipurposed tool. It performs 
+              loop on all hosts from database distingue status of them
+              (connected/diconnected), network for which are they connected and
+              groups of they owners. Because of that it is possible to create e.g. any
+              firewall rules, or file /etc/hosts. Data are writed to file 
+              and after that is executed specified shell command.</para>
               </sect3>
               <sect3 id="hostfile-config">
               <title>Configuration</title>
-              <para>W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
-              które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
-              adresem, '%n' - nazw± komputera, '%p' - password, '%info' - opisem komputera, '%domain' - domen±, 
-              '%net' - nazw± sieci, '%gw' - adresem bramy w sieci do której nale¿y dany komputer.
-              Poni¿ej opcje udostêpniane przez ten modu³</para>
+              <para>In 'grantedhost' and 'deniedhost' options can be used special sequences,
+              which during write to file will be replaced by '%i' - IP address, '%m' - MAC
+              address, '%n' - host name, '%p' - password, '%info' - node description, '%domain' - domain, 
+              '%net' - net name, '%gw' - gateway address of network for which belongs given node.
+              This module has following options:</para>
               <itemizedlist>
                <listitem>
                    <para>file</para>
-                   <para>Lokalizacja pliku tymczasowego. Default: /tmp/hostfile</para>
+                   <para>Location of generated file. Default: /tmp/hostfile</para>
                    <para>Example: <prompt>file = /etc/rc.d/rc.firewall</prompt></para>
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Polecenie pow³oki wyk. po utworzeniu pliku 'file'. Default: puste</para>
+                   <para>Shell command(s) executed after 'file' generation. Default: empty</para>
                    <para>Example: <prompt>command = '/bin/sh /etc/rc.d/rc.firewall'</prompt></para>
                </listitem>
                <listitem>
                    <para>begin</para>
-                   <para>Nag³ówek pliku tymczasowego. Default: "/usr/sbin/iptables -F FORWARD\n"</para>
+                   <para>File header. Default: "/usr/sbin/iptables -F FORWARD\n"</para>
                    <para>Example: <prompt>begin = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"</prompt></para>
                </listitem>
                <listitem>
                    <para>end</para>
-                   <para>Stopka pliku tymczasowego. Default: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</para>
+                   <para>File footer. Default: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</para>
                    <para>Example: <prompt>end = "$IPT -A FORWARD -J REJECT\n"</prompt></para>
                </listitem>
                <listitem>
                    <para>grantedhost</para>
-                   <para>Tekst dla hosta pod³±czonego. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</para>
+                   <para>Text of rule for connected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</para>
                    <para>Example: <prompt>grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</prompt></para>
                </listitem>
                <listitem>
                    <para>deniedhost</para>
-                   <para>Tekst dla hosta od³±czonego. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
+                   <para>Text of rule for disconnected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
                    <para>Example: <prompt>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</prompt></para>
                </listitem>
                <listitem>
                    <para>networks</para>
-                   <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
-                   Default: pusta (wszystkie sieci).</para>
+                   <para>List of network names for consideration. Letters size doesn't matter.
+                   Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
                    <para>usergroups</para>
-                   <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
-                   Default: pusta (wszystkie grupy).</para>
+                   <para>List of customers groups names for consideration. Letters size doesn't matter. 
+                   Default: empty (all groups).</para>
                    <para>Example: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
                </listitem>
                <listitem>
                    <para>skip_dev_ips</para>
-                   <para>Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy urz±dzeñ sieciowych. Default: tak</para>
+                   <para>If enabled (yes, true) addresses of network devices will be ignored (omitted). Default: yes</para>
                    <para>Example: <prompt>skip_dev_ips = no</prompt></para>
                </listitem>
               </itemizedlist>
@@ -824,13 +824,13 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                <listitem>
                    <para>networks</para>
                    <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
-                   Default: pusta (wszystkie sieci).</para>
+                   Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
                    <para>usergroups</para>
                    <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
-                   Default: pusta (wszystkie grupy).</para>
+                   Default: empty (all groups).</para>
                    <para>Example: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
                </listitem>
               </itemizedlist>
@@ -929,13 +929,13 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                <listitem>
                    <para>networks</para>
                    <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
-                   Default: pusta (wszystkie sieci).</para>
+                   Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
                    <para>usergroups</para>
                    <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
-                   Default: pusta (wszystkie grupy).</para>
+                   Default: empty (all groups).</para>
                    <para>Example: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
                </listitem>
               </itemizedlist>
@@ -945,40 +945,40 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
           <title>Ethers</title>
               <sect3 id="ethers-desc">
               <title>Description</title>
-              <para>Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Ustawiaj±c opcjê
-              'dummy_macs' mo¿na sprawiæ, aby komputerom od³±czonym zosta³ przypisany 
-              mac-adres 00:00:00:00:00:00.</para>
+              <para>This module creates configuration of system ARP table. Setting option
+              'dummy_macs' you can make that all disconnected computers will have 
+              mac address 00:00:00:00:00:00.</para>
               </sect3>
               <sect3 id="ethers-config">
               <title>Configuration</title>
-              <para>Tutaj s± tylko standardowe opcje:</para>
+              <para>Basic options:</para>
               <itemizedlist>
                <listitem>
                    <para>file</para>
-                   <para>Lokalizacja pliku wynikowego. Default: /tmp/ethers.</para>
-                   <para>Example: <prompt>file = /etc/ethers</prompt></para>
+                   <para>Location of file. Default: /etc/ethers.</para>
+                   <para>Example: <prompt>file = /tmp/ethers</prompt></para>
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Polecenie pow³oki wykonywane po wygenerowaniu konfiga. Default: puste.</para>
-                   <para>Example: <prompt>command = "arp -f /etc/ethers"</prompt></para>
+                   <para>Shell command to execute after config creation. Default: 'erp -f /etc/ethers'.</para>
+                   <para>Example: <prompt>command = ""</prompt></para>
                </listitem>
                <listitem>
                    <para>dummy_macs</para>
-                   <para>Je¶li ustawimy na 'yes', to komputerom od³±czonym zostanie
-                   przypisany mac-adres '00:00:00:00:00:00'. Default: "no".</para>
+                   <para>If you set to 'yes', disconnected computers will get
+                   MAC '00:00:00:00:00:00'. Default: "no".</para>
                    <para>Example: <prompt>dummy_macs = yes</prompt></para>
                </listitem>
                <listitem>
                    <para>networks</para>
-                   <para>Lista nazw sieci, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia.
-                   Default: pusta (wszystkie sieci).</para>
+                   <para>List of network names for consideration. Letters size doesn't matter.
+                   Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
                    <para>usergroups</para>
-                   <para>Lista nazw grup u¿ytkowników, które maj± byæ brane pod uwagê. Wielko¶æ liter nie ma znaczenia. 
-                   Default: pusta (wszystkie grupy).</para>
+                   <para>List of customer groups names for consideration. Letter size doesn't matter. 
+                   Default: empty (all groups).</para>
                    <para>Example: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
                </listitem>
               </itemizedlist>
@@ -988,42 +988,43 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
           <title>Oident</title>
               <sect3 id="oident-desc">
               <title>Description</title>
-              <para>Modu³ do konfiguracji oidentd. W zasadzie mo¿na to zrobiæ modu³em
-              'hostfile', ale tutaj masz ju¿ gotowe ustawienia domy¶lne.</para>
+              <para>Module for oidentd configuration. Basically it can be made
+              with hostfile module, but here you have ready-made default settings
+	      for that purpose.</para>
               </sect3>
               <sect3 id="oident-config">
               <title>Configuration</title>
-              <para>A oto parametry modu³u 'oident'</para>
+              <para>And here are the options of oident:</para>
               <itemizedlist>
                <listitem>
                    <para>begin</para>
-                   <para>Tekst wstawiany na pocz±tku pliku. Default: puste.</para>
-                   <para>Example: <prompt>begin = "#Generowany automatycznie\n"</prompt></para>
+                   <para>Text inserted on the beginning of file. Default: empty.</para>
+                   <para>Example: <prompt>begin = "#Auto-generated\n"</prompt></para>
                </listitem>
                <listitem>
                    <para>end</para>
-                   <para>Tekst wstawiany na koñcu pliku. Default: puste.</para>
+                   <para>Text inserted on the end of file. Default: empty.</para>
                    <para>Example: <prompt>end = ""</prompt></para>
                </listitem>
                <listitem>
                    <para>host</para>
-                   <para>Linia tekstu dla ka¿dego komputera. Default: "%i\t%n\tUNIX".</para>
+                   <para>Line of text for each of computers. Default: "%i\t%n\tUNIX".</para>
                    <para>Example: <prompt>host = "%i %n WINDOWS"</prompt></para>
                </listitem>
                <listitem>
                    <para>file</para>
-                   <para>Tekst wstawiany na pocz±tku pliku. Default: /tmp/oidentd.conf.</para>
-                   <para>Example: <prompt>file = /etc/identd.conf</prompt></para>
+                   <para>Configuration file. Default: /etc/oidentd.conf.</para>
+                   <para>Example: <prompt>file = /tmp/identd.conf</prompt></para>
                </listitem>
                <listitem>
                    <para>networks</para>
-                   <para>Lista nazw sieci do uwzglêdnienia. Default: pusta (wszystkie sieci).</para>
+                   <para>List of networks. Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = 'lan1 lan2'</prompt></para>
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Polecenie do wykonania po utworzeniu pliku. Default: puste.</para>
-                   <para>Example: <prompt>command = "killall -HUP midentd"</prompt></para>
+                   <para>Shell command(s) to execute after file creation. Default: empty.</para>
+                   <para>Example: <prompt>command = "killall -HUP oidentd"</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>
@@ -1032,21 +1033,21 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
           <title>Pinger</title>
               <sect3 id="pinger-desc">
               <title>Description</title>
-              <para>Modu³ pinger to odpowiednik perlowego skryptu lms-fping. Ró¿nice s± jednak
-              zasadnicze. Nie potrzebuje zewnêtrznego programu i dzia³a przy wykorzystaniu
-              protoko³u ARP. Powodem tego jest mniej wiêcej dwukrotnie szybsze wykonanie
-              skanowania sieci. Nie ma tak¿e problemów z komputerami maj±cymi wy³±czone 
-              odpowiadanie na pingi. Po skanowaniu, wszystkim w³±czonym komputerom jest
-              ustawiany w bazie danych czas skanowania, wykorzystywany do obrazowania
-              aktywno¶ci komputerów np. na mapie sieci.</para>
+              <para>Module pinger it's an equivalent to perl's script lms-fping. However differences
+              are fundamental. It not need external program and work with use of
+              ARP protocol. It follows more or less twice faster execution of 
+              network scanning. Also there are not problems with hosts wich have disabled
+              ping responsing. After scanning, for all online hosts in database is set
+              time of scanning, used to illustrate hosts activity e.g. on network 
+	      map.</para>
               </sect3>
               <sect3 id="pinger-config">
               <title>Configuration</title>
-              <para>Pinger udostêpnia tylko jedn± opcjê konfiguracyjn±:</para>
+              <para>Pinger has only one config option:</para>
               <itemizedlist>
                <listitem>
                    <para>networks</para>
-                   <para>Lista nazw sieci, które maj± byæ skanowane. Default: pusta (wszystkie sieci).</para>
+                   <para>List of network names. Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = 'lan1 lan2'</prompt></para>
                </listitem>
               </itemizedlist>
