@@ -100,10 +100,10 @@ void reload(GLOBAL *g, struct notify_module *n)
 	unsigned char *command, *id;
 	int i, j, balance;
 
-	if ( (res = g->db_query("SELECT users.id AS id, email, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id, email"))!=NULL ) {
+	if ( (res = g->db_query("SELECT users.id AS id, email, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id, name, lastname, email"))!=NULL ) {
 	
 		for(i=0; i<res->nrows; i++) {
-		    if( strlen(g->db_get_data(res,i,"email")) > 0 ) {
+			if( strlen(g->db_get_data(res,i,"email")) > 0 ) {
 				balance = atoi(g->db_get_data(res,i,"balance"));
 			
 				if( balance < n->limit ) {
