@@ -7,16 +7,17 @@ Od  20.04.2003  LMS  ma  mo¿liwo¶æ  definiowania  poziomów  dostêpu do
 systemu.  W  tym  tek¶cie  postaram  siê  opisaæ  jak  funkcjonuje  to
 rozwi±zanie.
 
-Dziêki  zastosowaniu  kolumny  `rights`  w  tabeli  `admins` unikne³em
+Dziêki  zastosowaniu  kolumny  `rights`  w  tabeli  `admins` unikn±³em
 konieczno¶ci  modyfikacji  bazy  danych.  W  LMS mo¿na zdefiniowaæ 256
-regu³ dostêpu. Ka¿da z nich mo¿e zabraniaæ, b±d¼ pozwalaæ na dostêp do
+regu³ dostêpu. Ka¿da z nich mo¿e zabraniaæ, b±d¼ pozwalaæ,na dostêp do
 konkretnych modu³ów. Przypisywanie tych poziomów dostêpu polega nie na
 ustawianiu  konkretnego  poziomu,  a  ustawianiu czy admin ma prawo do
 danego  poziomu  czy nie (po polsku: mo¿emy przypisaæ adminowi dowoln±
 kombinacjê poziomów a nie tylko jeden).
 
-Aktualnie  zdefiniowanych  jest  osiem regu³ dostêpu. Siedem z nich s±
-zezwalaj±ce na dostêp do modu³ów oraz jedna zabraniaj±ca.
+Aktualnie  zdefiniowanych  jest  osiem regu³ dostêpu. 
+Siedem z nich s± to regu³y zezwalaj±ce na dostêp do modu³ów oraz jedna
+zabraniaj±ca.
 
 Decyzja  czy  u¿ytkownik  ma prawo dostêpu do modu³u czy nie przebiega
 nastêpuj±co:
@@ -25,7 +26,7 @@ nastêpuj±co:
 dostêp  (aktualnie  welcome,  copyrights,  logout, chpasswd, przy czym
 chpasswd umo¿liwia tylko zmianê w³asnego has³a).
 
--  potem  s±  sprawdzane  czy  modu³  pasuje do regu³ w poszczególnych
+-  potem  s±  sprawdzamy  czy  modu³  pasuje do regu³ w poszczególnych
 poziomach do których administrator ma dostêp
 
 -  na  koñcu podejmowana jest decyzja czy u¿ytkownik ma uprawnienia by
@@ -50,7 +51,7 @@ A jak to jest zapisywane?
 W  sumie  tutaj  to  wyt³umaczê  bardziej  dla developerów, gdy¿ osoby
 korzystaj±ce z LMS raczej nie bêd± zainteresowane.
 
-Orginalnie poziomy dostêpu mia³y byæ definiowane poprzez ró¿ne litery.
+Oryginalnie poziomy dostêpu mia³y byæ definiowane poprzez ró¿ne litery
 By³o  to  za³o¿enie  z  czasów LMS-0.4, lecz nigdy nie wykorzystane. Z
 racji  tego  ¿e  wesz³o  to  do 1.0 d³ugo siê g³owi³em jak wykorzystaæ
 64-znakowego  stringa. Otó¿ w kolumnie rights jest poprostu 64-znakowa

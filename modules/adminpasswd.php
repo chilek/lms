@@ -26,7 +26,7 @@
 
 $passwd = $_POST[passwd];
 
-$id = (isset($_GET[id]) ? $_GET[id] : $SESSION->id);
+$id = (isset($_GET[id])) ? $_GET[id] : $SESSION->id;
 
 if($LMS->AdminExists($id))
 {
