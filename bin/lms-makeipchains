@@ -178,7 +178,7 @@ if($prescript)
 	print IPCHAINSSCRIPT "$prescript\n";
 }
 
-my $allnetworks;
+my $allnetworks = "";
 
 my $dbq = $dbase->prepare("SELECT name FROM networks");
 $dbq->execute();
@@ -207,7 +207,7 @@ my @udp_rports = split ',',$udp_rports_list;
 
 foreach my $key (@networks)
 {
-	my $dbq = $dbase->prepare("SELECT address, mask FROM networks WHERE name = '$key'");
+	my $dbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = '$key'");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
 		foreach my $skey (@fw_networks)
@@ -227,11 +227,10 @@ foreach my $key (@networks)
 	my $dbq = $dbase->prepare("SELECT inet_ntoa(address) AS address, mask FROM networks WHERE name = '$key'");
 	$dbq->execute();
 	while (my $row = $dbq->fetchrow_hashref()) {
-		my $sdbq = $dbase->prepare("SELECT ipaddr FROM nodes WHERE access = 1");
+		my $sdbq = $dbase->prepare("SELECT inet_ntoa(ipaddr) AS ipaddr FROM nodes WHERE access = 1 ORDER BY ipaddr");
 		$sdbq->execute();
 		while(my $srow = $sdbq->fetchrow_hashref())
 		{
-			$srow->{'ipaddr'} = u32todotquad($srow->{'ipaddr'});
 			if(matchip($srow->{'ipaddr'},$row->{'address'},$row->{'mask'}))
 			{
 				if(isprivate($srow->{'ipaddr'}))
