@@ -23,7 +23,7 @@ version 1.2.0rc5 Janet (18/04/2004):
   - null taxvalue for tariffs and invoices, database upgrade needed (alec)
     MySQL:
 	ALTER TABLE tariffs CHANGE taxvalue taxvalue decimal(9,2) NULL DEFAULT '0.00'; 
-	ALTER TABLE invoicecontents ALTER taxvalue taxvalue decimal(9,2) NULL DEFAULT '0.00';
+	ALTER TABLE invoicecontents CHANGE taxvalue taxvalue decimal(9,2) NULL DEFAULT '0.00';
     PostgreSQL:
 	ALTER TABLE tariffs ALTER taxvalue DROP NOT NULL; 
 	ALTER TABLE tariffs ALTER taxvalue SET DEFAULT 0; 
