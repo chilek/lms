@@ -6,29 +6,29 @@
 			<IMG SRC="img/node.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name|upper}" {tip text="Wpisz nazwê komputera" trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" NAME="nodeedit[name]" VALUE="{$nodeinfo.name|upper}" {tip text="Enter node's name" trigger="name" bold=1}>
 			<B>({$nodeinfo.id|string_format:"%04d"})</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="Adres IP:">
+			<IMG SRC="img/ip.gif" BORDER="0" ALT="{t}IP address{/t}:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" {tip text="Wpisz lub wybierz z listy adres IP" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr);" {tip text="Wybierz adres IP z listy"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="nodeeditipaddr" VALUE="{$nodeinfo.ip}" {tip text="Enter or select from list IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddr);" {tip text="Select IP address from list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" BORDER="0" ALT="Adres MAC:">
+			<IMG SRC="img/mac.gif" BORDER="0" ALT="{/t}MAC address{/t}:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<INPUT TYPE="TEXT" NAME="nodeeditmac" VALUE="{$nodeinfo.mac}" {tip text="Wpisz lub wybierz z listy adres MAC" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.nodeeditmac);" {tip text="Wybierz adres MAC z listy"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="nodeeditmac" VALUE="{$nodeinfo.mac}" {tip text="Enter or select from list MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.editnode.nodeeditmac);" {tip text="Select MSC address from list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/network.gif" BORDER="0" ALT="Sieæ:">
+			<IMG SRC="img/network.gif" BORDER="0" ALT="{t}Network{/t}:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			<B><A HREF="?m=netinfo&id={$nodeinfo.netid}">{$nodeinfo.netname}</A></B>
@@ -36,11 +36,11 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/netdev.gif" BORDER="0" ALT="Urz±dzenie sieciowe:">
+			<IMG SRC="img/netdev.gif" BORDER="0" ALT="{t}Network device{/t}:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[netdev]"  {tip text="Wybierz urz±dzenie sieciowe z listy" trigger="netdev"}>
-				<OPTION VALUE="0" {if ! $nodeinfo.netdev.id}SELECTED{/if}>--- Brak ---</OPTION>
+			<SELECT SIZE="1" NAME="nodeedit[netdev]"  {tip text="Select network device from list" trigger="netdev"}>
+				<OPTION VALUE="0" {if ! $nodeinfo.netdev.id}SELECTED{/if}>{t}--- Empty ---{/t}</OPTION>
 				{section name="netdev" loop=$netdevices}
 				<OPTION VALUE="{$netdevices[netdev].id}" {if $nodeinfo.netdev.id == $netdevices[netdev].id} SELECTED {/if}>{$netdevices[netdev].name} {if $netdevices[netdev].producer}/ {$netdevices[netdev].producer}{/if} {if $netdevices[netdev].location}({$netdevices[netdev].location }){/if}</OPTION>
 				{/section}
@@ -52,18 +52,18 @@
 			<IMG SRC="img/{if ! $nodeinfo.access}no{/if}access.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[access]" {tip text="Wybierz status komputera"}>
-				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>pod³±czony</OPTION>
-				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>od³±czony</OPTION>
+			<SELECT SIZE="1" CLASS="BOLD" NAME="nodeedit[access]" {tip text="Select node's status"}>
+				<OPTION VALUE="1"{if $nodeinfo.access} SELECTED{/if}>{t}connected{/t}</OPTION>
+				<OPTION VALUE="0"{if ! $nodeinfo.access} SELECTED{/if}>{t}disconnected{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/user.gif" BORDER="0" ALT="W³a¶ciciel:">
+			<IMG SRC="img/user.gif" BORDER="0" ALT="{t}Owner{/t}:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			<SELECT SIZE="1" NAME="nodeedit[ownerid]" {tip text="Przypisz komputer do u¿ytkownika"}>
+			<SELECT SIZE="1" NAME="nodeedit[ownerid]" {tip text="Attribute node for owner"}>
 				{section name=users loop=$users}
 				<OPTION VALUE="{$users[users].id}"{if $nodeinfo.ownerid eq $users[users].id} SELECTED{/if}>{$users[users].username|truncate:30:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 				{/section}
@@ -75,8 +75,8 @@
 			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Utworzony:<BR>
-			Zmodyfikowany:</B>
+			<B>{t}Created{/t}:<BR>
+			{t}Modified{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{$nodeinfo.createdby}, {$nodeinfo.creationdateh}<BR>
@@ -85,8 +85,8 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="javascript:document.editnode.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
-			<A HREF="?m=nodeinfo&id={$nodeinfo.id}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="javascript:document.editnode.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="?m=nodeinfo&id={$nodeinfo.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
 	</TR>	
 </TABLE>

@@ -6,31 +6,31 @@
 			<IMG SRC="img/node.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="FBT">
-			<B>Nazwa:</B>
+			<B>{t}Name{/t}:</B>
 		<TD WIDTH="98%" CLASS="FRIGHTU">
-			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name|upper}" {tip text="Wpisz nazwê komputera" trigger="name" bold=1}>
+			<INPUT TYPE="TEXT" NAME="nodedata[name]" VALUE="{$nodedata.name|upper}" {tip text="Enter node's name" trigger="name" bold=1}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="Adres IP:">
+			<IMG SRC="img/ip.gif" BORDER="0" ALT="{t}IP address{/t}:">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Adres IP:</B>
+			<B>{t}IP address{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}" {tip text="Wpisz lub wybierz z listy adres IP" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr);" {tip text="Wybierz adres IP z listy"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="nodedataipaddr" VALUE="{$nodedata.ipaddr}" {tip text="Enter or select from list IP address" trigger="ipaddr"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr);" {tip text="Select IP address from list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" BORDER="0" ALT="Adres MAC:">
+			<IMG SRC="img/mac.gif" BORDER="0" ALT="{t}MAC address{/t}:">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Adres MAC:</B>
+			<B>{t}MAC address{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="nodedatamac" VALUE="{$nodedata.mac}" {tip text="Wpisz lub wybierz z listy adres MAC" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.nodeadd.nodedatamac);" {tip text="Wybierz adres MAC z listy"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="nodedatamac" VALUE="{$nodedata.mac}" {tip text="Enter or select from list MAC address" trigger="mac"}> <a href="javascript: void(0);" onClick="return macchoosewin(document.nodeadd.nodedatamac);" {tip text="Select MAC address from list"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -38,24 +38,24 @@
 			<IMG SRC="img/{if ! $nodedata.access}no{/if}access.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Status:</B>
+			<B>{t}Status{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[access]" {tip text="Wybierz status komputera"}>
-				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>pod³±czony</OPTION>
-				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>od³±czony</OPTION>
+			<SELECT SIZE="1" CLASS="BOLD" NAME="nodedata[access]" {tip text="Select node's status"}>
+				<OPTION VALUE="1"{if $nodedata.access} SELECTED{/if}>{t}connected{/t}</OPTION>
+				<OPTION VALUE="0"{if ! $nodedata.access} SELECTED{/if}>{t}disconnected{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/user.gif" BORDER="0" ALT="W³a¶ciciel:">
+			<IMG SRC="img/user.gif" BORDER="0" ALT="{t}Owner{/t}:">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>W³a¶ciciel:</B>
+			<B>{t}Owner{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip text="Przypisz komputer do u¿ytkownika" trigger="user"}>
+			<SELECT SIZE="1" NAME="nodedata[ownerid]" {tip text="Attribute node for user" trigger="user"}>
 				{section name=users loop=$users}
 				<OPTION VALUE="{$users[users].id}"{if $nodedata.ownerid eq $users[users].id} SELECTED{/if}>{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 				{/section}
@@ -64,10 +64,10 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="?m=nodescan{if $userinfo.id}&ownerid={$userinfo.id}{/if}">Skanuj <IMG SRC="img/search.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
-			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
-			<A HREF="?m={if $userinfo.id}userinfo&id={$userinfo.id}{else}nodelist{/if}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A><BR>
-			<input type="checkbox" name="nodedata[reuse]" value="ON" style="border-style: none;"{if $nodedata.reuse} checked{/if}> Wywo³aj ponownie ten formularz po dodaniu komputera
+			<A HREF="?m=nodescan{if $userinfo.id}&ownerid={$userinfo.id}{/if}">{t}Scan{/t} <IMG SRC="img/search.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="javascript:document.nodeadd.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="?m={if $userinfo.id}userinfo&id={$userinfo.id}{else}nodelist{/if}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A><BR>
+			<input type="checkbox" name="nodedata[reuse]" value="ON" style="border-style: none;"{if $nodedata.reuse} checked{/if}> {t}Display this form after node addition again{/t}
 		</TD>
 	</TR>	
 </TABLE></FORM></P>
