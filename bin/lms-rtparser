@@ -202,7 +202,7 @@ $queue = 0 if($queue eq '');
 if( $mh_subject =~ /\[RT#[0-9]{6,}\]/ )
 {
 	$prev_tid = $mh_subject;
-	$prev_tid =~ s/\[RT#([0-9]{6,})\]/\1/g;
+	$prev_tid =~ s/.*\[RT#([0-9]{6,})\].*/\1/;
 	$prev_tid = sprintf('%d',$prev_tid);
 	$dbq = $dbase->prepare("SELECT * FROM tickets WHERE id = $prev_tid AND queueid = $queue");
 	$dbq->execute();
@@ -211,7 +211,6 @@ if( $mh_subject =~ /\[RT#[0-9]{6,}\]/ )
 		$prev_tid = 0;
 	}
 }
-
 # create new ticket.
 #CREATE TABLE `tickets` (
 #`id` INT NOT NULL AUTO_INCREMENT ,
@@ -256,7 +255,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 		]);
 	
 	$replymail->head->replace('In-Reply-To',$mh_msgid);
-	$replymail->head->replace('Message-ID','confirm.'.$ticket_id.'.'.$queue.'.'.$timestamp.'@rtsystem');
+	$replymail->head->replace('Message-ID','<confirm.'.$ticket_id.'.'.$queue.'.'.$timestamp.'@rtsystem>');
 	
 	# TODO - is sendmail via pipe is correct way?
 	
