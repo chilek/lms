@@ -161,6 +161,11 @@ $txts{1} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".
 $txts{2} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month + 2, $year - 1900);
 $txts{3} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, $day - 1, $month - 1, $year - 1900 + 1);
 
+# speciall case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
+# assigment is made not 1st of January:  
+ 
+my $current_month = strftime("%Y/%m/%d", 0, 0, 12, 1, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, 0 , $month , $year - 1900);
+
 my $start = 0;
 my $end = 0;
 
@@ -230,6 +235,8 @@ while(my $assign = $dbq->fetchrow_hashref())
 	$desc =~ s/\%tariff/$assign->{'name'}/g;
 	$desc =~ s/\%desc/$assign->{'description'}/g;
 	$desc =~ s/\%period/$period/g;
+	$desc =~ s/\%current_month/$current_month/g;
+	
 	if ($suspension_percentage)
 	{
 		$desc .= " ".$suspension_description;
