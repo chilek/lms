@@ -124,10 +124,10 @@
 			Taryfa:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			{if $userinfo.balance < 0}<FONT CLASS="ALERT">{$userinfo.balance|default:"0"} z³</FONT>{else}{$userinfo.balance|default:"0"} z³{/if}<BR>
+			{if $userinfo.balance < 0}<FONT CLASS="ALERT">{$userinfo.balance|default:"0"} {.currency}</FONT>{else}{$userinfo.balance|default:"0"} {.currency}{/if}<BR>
 			<SELECT SIZE="1" NAME="userdata[tariff]">
 				{section name=t loop=$tariffs.id}
-				<OPTION VALUE="{$tariffs.id[t]}"{if $tariffs.id[t] eq $userinfo.tariff} SELECTED{/if}>{$tariffs.name[t]} ({$tariffs.value[t]} z³/mc)</OPTION>
+				<OPTION VALUE="{$tariffs.id[t]}"{if $tariffs.id[t] eq $userinfo.tariff} SELECTED{/if}>{$tariffs.name[t]} ({$tariffs.value[t]} {.currency}/mc)</OPTION>
 				{/section}
 			</SELECT>
 			{if $error.tariff}<BR><FONT CLASS="ALERT">{$error.tariff}</FONT>{/if}

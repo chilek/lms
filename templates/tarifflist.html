@@ -47,7 +47,7 @@
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
-			{$tarifflist[tariffs].value|string_format:"%01.2f"} z³
+			{$tarifflist[tariffs].value|string_format:"%01.2f"} {.currency}
 			</NOBR>
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
@@ -57,7 +57,7 @@
 			{$tarifflist[tariffs].users}
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
-			{$tarifflist[tariffs].income|string_format:"%01.2f"} z³
+			{$tarifflist[tariffs].income|string_format:"%01.2f"} {.currency}
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
 			<NOBR>
@@ -83,7 +83,7 @@
 			<B>Razem:</B>
 		</TD>
 		<TD CLASS="frightu" COLSPAN="2" WIDTH="2%">
-			<B>{$listdata.totalincome|string_format:"%01.2f"} z³</B>
+			<B>{$listdata.totalincome|string_format:"%01.2f"} {.currency}</B>
 		</TD>
 	</TR>
 </TABLE>

@@ -76,8 +76,8 @@
 			Taryfa:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} z³</B></FONT>{else}{$userinfo.balance|default:"0"} z³{/if}<BR>
-			<A HREF="?m=tariffinfo&id={$userinfo.tariff}">{$userinfo.tariffname}</A> ({$userinfo.tariffvalue} z³/mc)
+			{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|default:"0"} {.currency}</B></FONT>{else}{$userinfo.balance|default:"0"} {.currency}{/if}<BR>
+			<A HREF="?m=tariffinfo&id={$userinfo.tariff}">{$userinfo.tariffname}</A> ({$userinfo.tariffvalue} {.currency}/mc)
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
