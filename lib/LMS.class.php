@@ -1051,10 +1051,10 @@ class LMS {
 
 	function GetPrefixList()
 	{
-		for($i=32;$i>-1;$i--)
+		for($i=30;$i>15;$i--)
 		{
 			$prefixlist[id][] = $i;
-			$prefixlist[value][] = $i;
+			$prefixlist[value][] = $i." (".pow(2,32-$i)." adresów)";
 		}
 		
 		return $prefixlist;
