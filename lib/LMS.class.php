@@ -2068,12 +2068,12 @@ class LMS
 		$this->SetTS('cash');
 		if($addbalance['time'])
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?)', array($addbalance['time'],$this->SESSION->id, $addbalance['type'], round($addbalance['value'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($addbalance['time'],$this->SESSION->id, $addbalance['type'], round($addbalance['value'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0 ), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 			else
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'],$this->SESSION->id, $addbalance['type'], round($addbalance['value'],2), round($addbalance['taxvalue'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', array($addbalance['time'],$this->SESSION->id, $addbalance['type'], round($addbalance['value'],2), round($addbalance['taxvalue'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 		else
 			if($addbalance['taxvalue'] == '')
-				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?)', array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
+				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?, ?, ?)', array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0) ));
 			else
 				return $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?, ?, ?)', array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2), round($addbalance['taxvalue'],2), $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0), ($addbalance['itemid'] ? $addbalance['itemid'] : 0)  ));
 	}
