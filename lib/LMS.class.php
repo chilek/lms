@@ -30,6 +30,11 @@ define('RT_OPEN', trans('opened'));
 define('RT_RESOLVED', trans('resolved'));
 define('RT_DEAD', trans('dead'));
 
+define('ACCOUNT_SHELL', 1);
+define('ACCOUNT_MAIL', 2);
+define('ACCOUNT_WWW', 4);
+define('ACCOUNT_FTP', 8);
+
 // LMS Class - contains internal LMS database functions used
 // to fetch data like usernames, searching for mac's by ID, etc..
 

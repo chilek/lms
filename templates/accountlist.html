@@ -9,7 +9,8 @@
 		</TD>
 		<TD width="1%" class="fbt" align="right" valign="top" NOWRAP>
 			<A href="?m=accountlist&o=domain{if $listdata.direction eq "asc" && $listdata.order eq "domain"},desc{/if}">{t}Domain:{/t}</A> {if $listdata.order eq "domain"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			{t}Type (sh/mail/www/ftp):{/t}
+			{t}Type (sh/mail/www/ftp):{/t}<BR>
+			{t}Quotas (sh/mail/www/ftp):{/t}
 		</TD>
 		<TD width="1%" valign="top" class="fbt" NOWRAP>
 			<A href="?m=accountlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
@@ -92,7 +93,8 @@
 		</TD>
 		<TD align="right" NOWRAP valign="top">
 			{$accountlist[accountlist].domain}<BR>
-			{if ($accountlist[accountlist].type & 1) == 1}*{else}-{/if}/{if ($accountlist[accountlist].type & 2) == 2}*{else}-{/if}/{if ($accountlist[accountlist].type & 4) == 4}*{else}-{/if}/{if ($accountlist[accountlist].type & 8) == 8}*{else}-{/if}		
+			{if ($accountlist[accountlist].type & 1) == 1}*{else}-{/if}/{if ($accountlist[accountlist].type & 2) == 2}*{else}-{/if}/{if ($accountlist[accountlist].type & 4) == 4}*{else}-{/if}/{if ($accountlist[accountlist].type & 8) == 8}*{else}-{/if}<BR>
+			{$accountlist[accountlist].quota_sh}/{$accountlist[accountlist].quota_mail}/{$accountlist[accountlist].quota_www}/{$accountlist[accountlist].quota_ftp}
 		</TD>
 		<TD align="right" valign="top">
 			({$accountlist[accountlist].id|string_format:"%04d"})
