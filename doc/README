@@ -295,8 +295,8 @@ Rozdzia³ 2. Instalacja i konfiguracja
 
    Interpreter powinien byæ w wersji 4.2.x lub nowszej, chocia¿ dzia³a
    te¿ poprawnie na 4.1.x (ale poniewa¿ developerzy pracuj± na 4.2.3, nie
-   mo¿na zagwarantowaæ poprawnej pracy na starszych wersjach. PHP mo¿na
-   ¶ci±gn±æ ze strony www.php.net.
+   mo¿na zagwarantowaæ poprawnej pracy na starszych wersjach (unikaæ
+   wersji 4.2.2). PHP mo¿na ¶ci±gn±æ ze strony www.php.net.
      _________________________________________________________________
 
 2.2.3. Serwer baz danych
@@ -313,7 +313,8 @@ Rozdzia³ 2. Instalacja i konfiguracja
 2.2.4. Biblioteka Smarty
 
    LMS-UI do pracy wymaga jeszcze biblioteki Smarty
-   (http://smarty.php.net) w wersji 2.5.0 lub wy¿szej.
+   (http://smarty.php.net) w wersji 2.5.0 lub wy¿szej (unikaæ wersji
+   2.6.4).
      _________________________________________________________________
 
 2.2.5. Perl
@@ -664,6 +665,10 @@ database = /usr/local/lms/lms.db
        Limit wy¶wietlanych pozycji na stronie w li¶cie zg³oszeñ.
        Domy¶lnie: 100
        Przyk³ad: ticketlist_pagelimit = 50
+     * networkhosts_pagelimit
+       Ilo¶æ komputerów wy¶wietlanych na jednej stronie w informacjach o
+       sieci. Domy¶lnie: 256.
+       Przyk³ad: networkhosts_pagelimit = 1024
      * reload_type
        Typ reloadu. Dozwolone warto¶ci:
        exec - wywo³ywanie jakiej¶ komendy (najczê¶ciej co¶ przez sudo,
@@ -736,6 +741,10 @@ database = /usr/local/lms/lms.db
        tym powinien byæ uruchomiony skrypt lms-rtparser, który zajmie siê
        zapisem wiadomo¶ci do bazy danych. Domy¶lnie: wy³±czona.
        Przyk³ad: helpdesk_backend_mode = 1
+     * contract_template
+       W³asny szablon umowy z u¿ytkownikiem. Mo¿na tak¿e dostosowaæ
+       domy¶lny szablon. Domy¶lnie: contract.html.
+       Przyk³ad: contract_template = "../my_templates/contract.html"
      _________________________________________________________________
 
 2.6. Prawa dostêpu
@@ -1500,7 +1509,9 @@ Rozdzia³ 4. Skrypty
    W szablonach mo¿na u¿ywaæ nastêpuj±cych zmiennych:
      * %date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1
        poprzedzone 0, np. 02
-     * %date-y - zostanie zast±pione aktualnym rokiem, np 2003
+     * %date-y - zostanie zast±pione aktualnym rokiem, np. 2003
+     * %date_month_name - zostanie zast±pione nazw± bie¿±cego miesi±ca,
+       np. marzec
      * %saldo - zostanie zast±pione aktualnym saldem u¿ytkownika, np. 535
      * %abonament - zostanie zast±pione kwot± abonamentu jaka jest do
        danego u¿ytkownika przypisana, np. 107
@@ -1509,6 +1520,7 @@ Rozdzia³ 4. Skrypty
      * %last_10_in_a_table - wyci±g ostatnich 10 operacji kasowych na
        koncie u¿ytkownika, np:
      * %pin - numer PIN u¿ytkownika.
+     * %phone1 - pierwszy numer telefonu u¿ytkownika.
 
    Przyk³ad 4-1. Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji
    kasowych
@@ -2079,7 +2091,8 @@ http://www.naszasiec.pl/
    opcji mail_dir.
 
    Oprócz modu³ów Perla standardowo wymaganych przez resztê skryptów,
-   nale¿y zainstalowaæ tak¿e modu³ MIME::Parser oraz Net::SMTP.
+   nale¿y zainstalowaæ tak¿e modu³y MIME::Parser i MIME::Words z pakietu
+   MIME-Tools oraz Net::SMTP.
 
    Skrypt mo¿na uruchamiaæ na wiele sposobów. Jednym z nich jest
    stworzenie skryptu pow³oki, który odczytuj±c skrzynkê pocztow± wywo³a
@@ -2131,6 +2144,11 @@ filter unix - n n - 10 pipe
        Katalog tymczasowy. Domy¶lnie zostanie u¿yty katalog zdefiniowany
        w zmiennej systemowej lub /tmp.
        Przyk³ad: tmp_dir = /home/user/tmp
+     * auto_open
+       W³±czenie tej opcji spowoduje, ¿e w momencie odebrania wiadomo¶ci
+       dotycz±cej zg³oszenia zamkniêtego (lub martwego) zg³oszenie to
+       zostanie otwarte. Domy¶lnie: wy³±czone.
+       Przyk³ad: auto_open = 1
      _________________________________________________________________
 
 Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
