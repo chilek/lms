@@ -9,7 +9,7 @@
 			<IMG SRC="img/money.gif" BORDER="0" ALIGN="absmiddle" ALT="">
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" NOWRAP>
-			<B>Nazwa:</B>
+			<B>{t}Name{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="frightu">
 			<INPUT TYPE="TEXT" VALUE="{$tariff.name}" NAME="tariff[name]" {tip trigger="name" bold=1}>
@@ -22,10 +22,10 @@
 			<IMG SRC="img/value.gif" BORDER="0" ALIGN="absmiddle" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Warto¶æ:</B>
+			<B>{t}Value{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]" {tip text="Podaj kwotê" trigger="value"}> z³
+			<INPUT TYPE="TEXT" VALUE="{$tariff.value}" SIZE="8" NAME="tariff[value]" {tip text="Enter value" trigger="value"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -33,14 +33,14 @@
 			<IMG SRC="img/tax.gif" BORDER="0" ALIGN="absmiddle" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Stawka&nbsp;podatku:</B>
+			<B>{t}Tax{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<SELECT SIZE="1" NAME="tariff[taxvalue]" VALUE="{$tariff.taxvalue}" {tip text="Wybierz wysoko¶æ podatku VAT" trigger="taxvalue"}>
+			<SELECT SIZE="1" NAME="tariff[taxvalue]" VALUE="{$tariff.taxvalue}" {tip text="Enter tax rate" trigger="taxvalue"}>
 				<OPTION VALUE="22" {if $tariff.taxvalue == 22}SELECTED{/if}>22%</OPTION>
 				<OPTION VALUE="7" {if $tariff.taxvalue == 7}SELECTED{/if}>7%</OPTION>
 				<OPTION VALUE="0" {if $tariff.taxvalue == 0}SELECTED{/if}>0%</OPTION>
-				<OPTION VALUE="" {if !$tariff.taxvalue}SELECTED{/if}>zw.</OPTION>
+				<OPTION VALUE="" {if !$tariff.taxvalue}SELECTED{/if}>{t}tax-exempt.{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
@@ -49,10 +49,10 @@
 			<IMG SRC="img/class.gif" BORDER="0" ALIGN="absmiddle" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>PKWiU:</B>
+			<B>{t}PKWiU{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.pkwiu}" SIZE="8" NAME="tariff[pkwiu]" {tip text="Podaj symbol PKWiU (opcjonalnie)" trigger="pkwiu"}>
+			<INPUT TYPE="TEXT" VALUE="{$tariff.pkwiu}" SIZE="8" NAME="tariff[pkwiu]" {tip text="Enter PKWiU symbol (optionally)" trigger="pkwiu"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -60,10 +60,10 @@
 			<IMG SRC="img/uprate.gif" BORDER="0" ALIGN="absmiddle" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Uprate:</B>
+			<B>{t}Uprate{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.uprate}" SIZE="8" NAME="tariff[uprate]" {tip text="Podaj liczbê dla ograniczenia uploadu (opcjonalnie)" trigger="uprate"}> kb/s
+			<INPUT TYPE="TEXT" VALUE="{$tariff.uprate}" SIZE="8" NAME="tariff[uprate]" {tip text="Enter upload limit (optionally)" trigger="uprate"}> kb/s
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -71,10 +71,10 @@
 			<IMG SRC="img/downrate.gif" BORDER="0" ALIGN="absmiddle" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Downrate:</B>
+			<B>{t}Downrate{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.downrate}" SIZE="8" NAME="tariff[downrate]" {tip text="Podaj liczbê dla ograniczenia downloadu (opcjonalnie)" trigger="downrate"}> kb/s
+			<INPUT TYPE="TEXT" VALUE="{$tariff.downrate}" SIZE="8" NAME="tariff[downrate]" {tip text="Enter download limit (optionally)" trigger="downrate"}> kb/s
 		</TD>
 	</TR>
 	<TR class="LIGHT">
@@ -82,16 +82,16 @@
 			<IMG SRC="img/usercomment.gif" BORDER="0" ALIGN="absmiddle" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Opis:</B>
+			<B>{t}Description{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.description}" NAME="tariff[description]" SIZE="40" {tip text="Wpisz informacje dodatkowe (opcjonalnie)"}>
+			<INPUT TYPE="TEXT" VALUE="{$tariff.description}" NAME="tariff[description]" SIZE="40" {tip text="Enter additional informations (optionally)"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" ALIGN="RIGHT" CLASS="FBOTTOMU">
-			<A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">Usuñ <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{/if}
-			<A HREF="?m=tariffinfo&id={$tariff.id}">Anuluj <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> 
+			<A HREF="javascript:document.tedit.submit();" ACCESSKEY="S">{t}Submit{/t} <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE"></A>{/if}
+			<A HREF="?m=tariffinfo&id={$tariff.id}">{t}Cancel{/t} <IMG SRC="img/cancel.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A> 
 		
 		</TD>
 	</TR>

@@ -6,7 +6,7 @@
 	function getText(index)
 	{literal}{{/literal}
 		{section name=lt loop=$tariffs}
-		if(index=={$tariffs[lt].id}) return '{$tariffs[lt].name} ({$tariffs[lt].value} z³)';
+		if(index=={$tariffs[lt].id}) return '{$tariffs[lt].name} ({$tariffs[lt].value})';
 		{/section}
 	{literal}}{/literal}
 	//-->
@@ -25,28 +25,28 @@
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/value.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
-		<TD WIDTH="1%"><B>Warto¶æ:</B>
+		<TD WIDTH="1%"><B>{t}Value{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			{$tariff.value|string_format:"%01.2f"} z³
+			{$tariff.value|string_format:"%01.2f"}
 		</TD>
 	</TR>
 	<TR class="LIGHT">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/tax.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
-		<TD WIDTH="1%"><B>Stawka podatku:</B></TD>
+		<TD WIDTH="1%"><B>{t}Tax{/t}:</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{if $tariff.taxvalue}
 				{$tariff.taxvalue} %
-			{else}zw.{/if}
+			{else}{t}tax-exempt.{/t}{/if}
 		</TD>
 	</TR>
 	<TR class="LIGHT">
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/class.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
-		<TD WIDTH="1%"><B>PKWiU:</B></TD>
+		<TD WIDTH="1%"><B>{t}PKWiU{/t}:</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$tariff.pkwiu}
 		</TD>
@@ -55,27 +55,27 @@
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/uprate.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
-		<TD WIDTH="1%"><B>Uprate:</B>
+		<TD WIDTH="1%"><B>{t}Uprate{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			{if $tariff.uprate}{$tariff.uprate} kb/s{else}brak limitu{/if}
+			{if $tariff.uprate}{$tariff.uprate} kb/s{else}{t}no limit{/t}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/downrate.gif" BORDER="0" ALT="" ALIGN="absmiddle">
 		</TD>
-		<TD WIDTH="1%"><B>Downrate:</B>
+		<TD WIDTH="1%"><B>{t}Downrate{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			{if $tariff.downrate}{$tariff.downrate} kb/s{else}brak limitu{/if}
+			{if $tariff.downrate}{$tariff.downrate} kb/s{else}{t}no limit{/t}{/if}
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 			<IMG SRC="img/users.gif" BORDER="0" ALT="" ALIGN="absmiddle">
 		</TD>
-		<TD WIDTH="1%" NOWRAP><B>Ilo¶æ u¿ytkowników:</B>
+		<TD WIDTH="1%" NOWRAP><B>{t}Amount of users{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
 			{$tariff.userscount} ({$tariff.count})
@@ -85,10 +85,10 @@
 		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
 			<IMG SRC="img/values.gif" BORDER="0" ALT="" ALIGN="absmiddle">
 		</TD>
-		<TD WIDTH="1%" NOWRAP><B>¦r. zysk miesiêczny:</B>
+		<TD WIDTH="1%" NOWRAP><B>{t}Avg monthly income{/t}:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="fright">
-			{$tariff.totalval|string_format:"%01.2f"} z³
+			{$tariff.totalval|string_format:"%01.2f"}
 		</TD>
 	</TR>
 	{if $tariff.description}
@@ -107,12 +107,12 @@
 	{/if}
 	<TR CLASS="light">
 	        <TD ALIGN="RIGHT" CLASS="fbottomu" COLSPAN="3">
-			    <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">Usuñ <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
+			    <A HREF="?m=tariffedit&id={$tariff.id}" ACCESSKEY="E">{t}Edit{/t} <IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{if $tariff.count eq 0} <A HREF="?m=tariffdelete&id={$tariff.id}">{t}Delete{/t} <IMG SRC="img/delete.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="DARK">
 		<TD WIDTH="100%" CLASS="fall" COLSPAN="3">
-			<B>U¿ytkownicy w tej taryfie:</B>
+			<B>{t}Users in tariff{/t}:</B>
 		</TD>
 	</TR>
 	<TR>
@@ -130,7 +130,7 @@
 					<TD WIDTH="100%" ALIGN="CENTER">
 						<BR>
 						<BR>
-						<B>¯aden z klientów nie korzysta z tej taryfy</B><BR>
+						<B>{t}There is no users in this tariff{/t}</B><BR>
 						<BR>
 						<BR>
 					</TD>
@@ -146,10 +146,10 @@
 				<INPUT TYPE="hidden" VALUE="tariffmove" NAME="m">
 				<INPUT TYPE="hidden" VALUE="{$tariff.id}" NAME="from">
 				<input type="hidden" name="is_sure">
-				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'Jeste¶ pewien ¿e chcesz przenie¶æ u¿ytkowników do taryfy '+getText(document.tmove.to.value)+'?','1');">Przenie¶ tych u¿ytkowników do taryfy:</A> </B>
+				<B><A HREF="javascript:document.tmove.submit();" onClick="return confirmForm(is_sure,'{t}Are you sure, you want to move users to tariff{/t} '+getText(document.tmove.to.value)+'?','1');">{t}Move users to tariff{/t}:</A> </B>
 				<SELECT SIZE="1" NAME="to">
 					{section name=lt loop=$tariffs}
-					{if $tariffs[lt].id neq $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value} z³)</OPTION>{/if}
+					{if $tariffs[lt].id neq $tariff.id}<OPTION VALUE="{$tariffs[lt].id}">{$tariffs[lt].name} ({$tariffs[lt].value})</OPTION>{/if}
 					{/section}
 				</SELECT>
 			</FORM>
