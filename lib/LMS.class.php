@@ -452,46 +452,37 @@ class LMS
 		return $counter;
 	}
 
-	function GetNetworkRecord($id)
+	function GetNetworkRecord($id,$strip=TRUE)
 	{
 		$network = $this->ADB->GetRow("SELECT id, name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?",array($id));
 		$network[prefix] = mask2prefix($network[mask]);
 		$network[addresslong] = ip_long($network[address]);
 		$network[size] = pow(2,32-$network[prefix]);
 		$network[rows] = ceil($network[size]/4);
-		$network[assigned] = 0;	
-		// wype³nijmy tabelê pustymi danymi - ¿eby nie by³o burdelu
-		// i ¿eby rekordy by³y ³adnie pouk³adane :)
-		// BTW - W LI¦CIE NIE PRZEKAZUJEMY ADRESU SIECI I BROADCASTA!!!
-		
-		for($i=0;$i<$network[size]-2;$i++)
+		$network[assigned] = 0;
+		$network[broadcast] = getbraddr($network[address],$network[mask]);
+
+		$tnodes = $this->ADB->GetAll("SELECT id, name, ipaddr, ownerid FROM nodes");
+		foreach($tnodes as $idx => $row)
+			$nodes[ip_long($row[ipaddr])] = $row;
+
+		if($strip)
+			echo "Strip";
+
+		for($i=0;$i<$network[size]-($strip ? 2 : 0);$i++)
 		{
-			$network[nodes][address][$i] = long2ip(ip_long($network[address])+$i+1);
-			$network[nodes][id][$i] = "";
-			$network[nodes][ownerid][$i] = "";
-			$network[nodes][name][$i] = "";
+//			$node = $nodes["".($network[addresslong]+$i).""];
+			$longip = $network[addresslong] + $i + ($strip ? 1 : 0);
+			$node = $nodes["".$longip.""];
+			$network[nodes][addresslong][$i] = $longip;
+			$network[nodes][address][$i] = long2ip($longip);;
+			$network[nodes][id][$i] = $node[id];
+			$network[nodes][name][$i] = $node[name];
+			$network[nodes][ownerid][$i] = $node[ownerid];
+			if(isset($node))
+				$network[assigned] ++;
 		}
 
-		// wrapper do starego formatu
-		$tnnodes = $this->ADB->GetAll("SELECT id, name, ipaddr, ownerid FROM nodes");
-		foreach($tnnodes as $row)
-			foreach($row as $column => $value)
-				$networknodes[$column][] = $value;
-		
-		if(sizeof($networknodes[id]))
-			foreach($networknodes[id] as $key => $value)
-			{
-				$networknodes[addresslong][$key] = ip_long($networknodes[ipaddr][$key]);
-				if(isipin($networknodes[ipaddr][$key],$network[address],$network[mask]))
-				{
-					$pos = $networknodes[addresslong][$key] - ip_long($network[address]) -1;
-					$network[nodes][address][$pos] = $networknodes[ipaddr][$key];
-					$network[nodes][id][$pos] = $networknodes[id][$key];
-					$network[nodes][ownerid][$pos] = $networknodes[ownerid][$key];
-					$network[nodes][name][$pos] = $networknodes[name][$key];
-					$network[assigned] ++;
-				}
-			}
 		$network[free] = $network[size] - $network[assigned] - 2;
 		return $network;
 	}
