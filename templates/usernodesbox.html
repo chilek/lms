@@ -26,7 +26,7 @@
 			({$usernodes[usernodes].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHT" NOWRAP>
-			<A HREF="?m=nodedel&id={$usernodes[usernodes].id}" onClick="return confirmLink(this, '{t 0=$usernodes[usernodes].name|upper}Are you sure, you want to remove node: $0 from database?{/t}')"><IMG SRC="img/delete.gif" BORDER="0" ALT="[ {t}Delete{/t} ]" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=nodedel&id={$usernodes[usernodes].id}" onClick="return confirmLink(this, '{t 0=$usernodes[usernodes].name|upper}Are you sure, you want to remove node \'$0\' from database?{/t}')"><IMG SRC="img/delete.gif" BORDER="0" ALT="[ {t}Delete{/t} ]" ALIGN="ABSMIDDLE"></A>
 			<A HREF="?m=nodeedit&id={$usernodes[usernodes].id}"><IMG SRC="img/edit.gif" BORDER="0" ALT="[ {t}Edit{/t} ]" ALIGN="ABSMIDDLE"></A>
 			<A HREF="?m=nodeinfo&id={$usernodes[usernodes].id}"><IMG SRC="img/info.gif" BORDER="0" ALT="[ {t}Info{/t} ]" ALIGN="ABSMIDDLE"></A>
 		</TD>
@@ -46,10 +46,10 @@
 	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="99%" COLSPAN="3" CLASS="FLEFTU">
-			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}&access=1"><IMG SRC="img/access.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Connect all nodes{/t}</A><BR>
-			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}"><IMG SRC="img/noaccess.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Disconnect all nodes{/t}</A><BR>
-			<A HREF="?m=nodewarn&ownerid={$usernodes.ownerid}&warning=1"><IMG SRC="img/warningon.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Enable warnings for all nodes{/t}</A><BR>
-			<A HREF="?m=nodewarn&ownerid={$usernodes.ownerid}"><IMG SRC="img/warningoff.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Disable warnings for all nodes{/t}</A><BR>
+			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}&access=1"><IMG SRC="img/access.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Connect All{/t}</A><BR>
+			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}"><IMG SRC="img/noaccess.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Disconnect All{/t}</A><BR>
+			<A HREF="?m=nodewarn&ownerid={$usernodes.ownerid}&warning=1"><IMG SRC="img/warningon.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Enable Warnings for All{/t}</A><BR>
+			<A HREF="?m=nodewarn&ownerid={$usernodes.ownerid}"><IMG SRC="img/warningoff.gif" ALIGN="ABSMIDDLE" BORDER="0"> {t}Disable Warnings for All{/t}</A><BR>
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHTU" NOWRAP VALIGN="BOTTOM" ALIGN="RIGHT">
 			{if $userinfo.status eq "3" and ! $userinfo.deleted}<A HREF="?m=nodeadd&ownerid={$usernodes.ownerid}">{t}New{/t} <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE" BORDER="0"></A>{else}<FONT CLASS="BLEND">{t}New{/t} <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE">{/if}
