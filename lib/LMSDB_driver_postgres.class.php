@@ -100,12 +100,24 @@ class LMSDB_driver_postgres extends LMSDB_common
 	function _driver_listtables()
 	{
 		return $this->GetCol('SELECT relname AS name FROM pg_class WHERE relkind = \'r\' and relname !~ \'^pg_\' and relname !~ \'^sql_\'');
-	}		
-		
+	}
+
+	function _driver_begintrans()
+	{
+		return $this->Execute('BEGIN');
+	}
+
+	function _driver_committrans()
+	{
+		return $this->Execute('COMMIT');
+	}
 }
 
 /* 
  * $Log$
+ * Revision 1.8  2003/08/28 21:07:33  lukasz
+ * - added support for transactions
+ *
  * Revision 1.7  2003/08/25 15:59:12  alec
  * Poprawka na nowsze wersje postgresa
  *

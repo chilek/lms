@@ -150,6 +150,16 @@ Class LMSDB_common
 		return $this->_driver_listtables();
 	}
 
+	function BeginTrans()
+	{
+		return $this->_driver_begintrans();
+	}
+
+	function CommitTrans()
+	{
+		return $this->_driver_committrans();
+	}
+
 	function _query_parser($query, $inputarray = NULL)
 	{
 		// najpierw sparsujmy wszystkie specjalne meta ¶mieci.
@@ -202,6 +212,9 @@ Class LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.15  2003/08/28 21:07:21  lukasz
+ * - added support for transactions
+ *
  * Revision 1.14  2003/08/27 19:25:18  lukasz
  * - unset result before returning it
  *
