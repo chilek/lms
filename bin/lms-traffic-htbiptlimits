@@ -1,0 +1,280 @@
+#!/usr/bin/perl -Tw
+#
+# LMS version 1.1-cvs
+#
+#  (C) 2001-2003 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($configfile $quiet $help $version);
+
+$ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
+
+sub u32todotquad($)
+{
+	my $p = shift @_;
+	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
+}		
+
+sub dotquad2u32($)
+{
+	my $dq = shift||'0.0.0.0';
+	my @dq = split('\.',$dq,4);
+	return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
+}			
+
+sub mask2prefix($)
+{
+	my $mask = shift @_;
+	my @tmp = split('\.',$mask,4);
+	my $q = sprintf("%b%b%b%b",$tmp[0],$tmp[1],$tmp[2],$tmp[3]);
+	$q =~ s/0*$//;
+	if ($q =~ /0/) {
+		return -1;
+	}
+	my $len = length($q) ;
+	return $len;
+}
+
+sub prefix2mask
+{
+	my $host_bits = 32-$_[0];
+	my $net_mask = (~0 << $host_bits) & 0xffffffff;
+	my @bytes = unpack "CCCC", pack "N", $net_mask;
+	my $dec_rep = sprintf "%d.%d.%d.%d", @bytes;
+	return $dec_rep;
+}
+
+
+my $_version = '1.1-cvs';
+
+my %options = (
+	"--config-file|C=s"	=>	\$configfile,
+	"--quiet|q"		=>	\$quiet,
+	"--help|h"		=>	\$help,
+	"--version|v"		=>	\$version
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-traffic-htbiptlimits, version $_version
+(C) 2001-2003 LMS Developers
+
+-C, --config-file=/etc/lms/lms.ini	alternate config file (default: /etc/lms/lms.ini);
+-h, --help			print this help and exit;
+-v, --version			print version info and exit;
+-q, --quiet			suppress any output, except errors;
+
+EOF
+	exit 0;
+}
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-traffic-htbiptlimits, version $_version
+(C) 2001-2003 LMS Developers
+
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms/lms.ini";
+}
+
+if(!$quiet)
+{
+	print STDOUT "lms-traffic-htbiptlimits, version $_version\n";
+	print STDOUT "(C) 2001-2003 LMS Developers\n";
+	print STDOUT "Using file $configfile as config.\n";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+
+my $outfile = $ini->val('traffic-htbiptlimits','outfile') || '/etc/rc.d/rc.limits';
+my $iptables_binary = $ini->val('traffic-htbiptlimits','iptables_binary') || '/usr/sbin/iptables';
+my $tc_binary = $ini->val('traffic-htbiptlimits','tc_binary') || '/sbin/tc';
+my $wan_interfaces = $ini->val('traffic-htbiptlimits','wan_interfaces') || '';
+my $local_ports = $ini->val('traffic-htbiptlimits','local_ports') || '';
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+
+my $dbase;
+my %iftable;
+my $totalspd;
+
+if(! $wan_interfaces)
+{
+	print STDERR "Fatal error: 'wan_interfaces' not defined, exiting.\n";
+	exit 1;
+}
+
+if($dbtype eq "mysql")
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+elsif($dbtype eq "postgres")
+{
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+
+open(OUTFILE, ">$outfile") or die("Fatal error: Unable to write $outfile, exiting.\n");
+
+my @local_ports_list = split(' ',$local_ports);
+my @wan_interfaces_list = split(' ',$wan_interfaces);
+
+print OUTFILE "#!/bin/bash\n";
+
+foreach my $wan_interface (@wan_interfaces_list)
+{
+	my ($if,$spd) = split(':', $wan_interface);
+	print OUTFILE "$iptables_binary -t mangle -D FORWARD -i $if -j LIMITS\n";
+	print OUTFILE "$iptables_binary -t mangle -D FORWARD -o $if -j LIMITS\n";
+	$iftable{$if} = $spd;
+	$totalspd = 0 if not defined $totalspd;
+	$totalspd += $spd;
+}
+
+foreach my $port (@local_ports_list)
+{
+	print OUTFILE "$iptables_binary -t mangle -D INPUT -p tcp --dport $port -j LIMITS\n";
+	print OUTFILE "$iptables_binary -t mangle -D OUTPUT -p tcp --sport $port -j LIMITS\n";
+}
+		
+print OUTFILE "$iptables_binary -t mangle -F LIMITS
+$iptables_binary -t mangle -X LIMITS
+$iptables_binary -t mangle -N LIMITS
+$iptables_binary -t mangle -F LIMITS
+";
+
+foreach my $wan_interface (@wan_interfaces_list)
+{
+	my ($if,$spd) = split(':', $wan_interface);
+	print OUTFILE "$iptables_binary -t mangle -I FORWARD -i $if -j LIMITS\n";
+	print OUTFILE "$iptables_binary -t mangle -I FORWARD -o $if -j LIMITS\n";
+}
+
+foreach my $port (@local_ports_list)
+{
+	print OUTFILE "$iptables_binary -t mangle -I INPUT -p tcp --dport $port -j LIMITS\n";
+	print OUTFILE "$iptables_binary -t mangle -I OUTPUT -p tcp --sport $port -j LIMITS\n";
+}
+
+my %nodetable;
+my $dbq = $dbase->prepare("SELECT address, mask, interface FROM networks");
+$dbq->execute();
+while (my $row = $dbq->fetchrow_hashref())
+{
+	my $netstart = dotquad2u32($row->{'address'});
+	my $prefix = mask2prefix($row->{'mask'});
+	my $netsize = 2**(32 - $prefix);
+	my $netend = $netstart + $netsize - 1;
+	my $sdbq = $dbase->prepare("SELECT ipaddr, ownerid FROM nodes WHERE ipaddr >= $netstart AND ipaddr <= $netend");
+	$sdbq->execute();
+	while (my $srow = $sdbq->fetchrow_hashref())
+	{
+		my $ipaddr = u32todotquad($srow->{'ipaddr'});
+		$nodetable{$srow->{'ownerid'}} = "" if not defined $nodetable{$srow->{'ownerid'}};
+		$nodetable{$srow->{'ownerid'}} = $nodetable{$srow->{'ownerid'}} . " " . $ipaddr . ":" . $row->{'interface'};
+		$iftable{$row->{'interface'}} = $totalspd if not defined $iftable{$row->{'interface'}};
+	}
+}
+
+foreach my $key (keys %iftable)
+{
+	print OUTFILE "$tc_binary qdisc del root dev $key\n";
+	print OUTFILE "$tc_binary qdisc add dev $key root handle 1: htb\n";
+	print OUTFILE "$tc_binary class add dev $key parent 1: classid 1:19998 htb rate 100mbit burst 10mbit\n";
+	print OUTFILE "$tc_binary class add dev $key parent 1:19998 classid 1:19999 htb rate ".$iftable{$key}."kbit burst ".($iftable{$key} / 10)."kbit\n";
+	
+}
+
+$dbq = $dbase->prepare("SELECT userid, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments, users, tariffs WHERE users.id = userid AND deleted = 0 AND tariffid = tariffs.id GROUP BY userid");
+$dbq->execute();
+
+my $iptid = 0;
+my %htbid;
+
+while (my $row = $dbq->fetchrow_hashref())
+{
+	if($nodetable{$row->{'userid'}} && $row->{'downrate'})
+	{
+		my %ifaces;
+		$iptid ++;
+		foreach my $ippair (split(' ',$nodetable{$row->{'userid'}}))
+		{
+			my ($ipaddr, $if) = split(':',$ippair);
+			$ifaces{$if} = 1;
+			print OUTFILE "$iptables_binary -t mangle -A LIMITS -d $ipaddr -j MARK --set-mark $iptid\n";
+		}
+		foreach my $key (keys %ifaces)
+		{
+			$htbid{$key} = 0 if not defined $htbid{$key};
+			$htbid{$key} ++;
+			print OUTFILE "$tc_binary class add dev $key parent 1:19999 classid 1:".$htbid{$key}." htb rate ".$row->{'downrate'}."kbit burst ".($row->{'downrate'} / 10)."kbit\n";
+			print OUTFILE "$tc_binary filter add dev $key protocol ip parent 1: handle $iptid fw classid 1:".$htbid{$key}."\n";
+		}
+	}
+	if($nodetable{$row->{'userid'}} && $row->{'uprate'})
+	{
+		$iptid ++;
+		foreach my $ippair (split(' ',$nodetable{$row->{'userid'}}))
+		{
+			my ($ipaddr, $if) = split(':',$ippair);
+			print OUTFILE "$iptables_binary -t mangle -A LIMITS -s $ipaddr -j MARK --set-mark $iptid\n";
+		}
+		foreach my $wan_interface (@wan_interfaces_list)
+		{
+			my ($if,$spd) = split(':', $wan_interface);
+			$htbid{$if} = 0 if not defined $htbid{$if};
+			$htbid{$if} ++;
+			print OUTFILE "$tc_binary class add dev $if parent 1:19999 classid 1:".$htbid{$if}." htb rate ".$row->{'uprate'}."kbit burst ".($row->{'uprate'} / 10). "kbit\n";
+			print OUTFILE "$tc_binary filter add dev $if protocol ip parent 1: handle $iptid fw classid 1:".$htbid{$if}."\n";
+		}
+	}		
+}
+
+close(OUTFILE);
+system("$outfile 1>/dev/null 2>&1");
+$dbase->disconnect();
