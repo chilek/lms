@@ -1,7 +1,7 @@
 {include file="header.html"}
 {include file="nodeheader.html"}
 <!--// $Id$ //-->
-<H1>Lista komputerów</H1>
+<H1>{$lang.nodelist}</H1>
 <table cellpadding="3" width="100%">
 	<TR class="dark" {popup text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
 		<TD class="fleftu" width="97%">
@@ -17,7 +17,7 @@
 			<img src="img/mac.gif" border="0" alt="" align="absmiddle">&nbsp;<A href="?m=nodelist&o=mac{if $listdata.direction eq "ASC" && $listdata.order eq "mac"},desc{/if}">{$lang.mac_address}:</A> {if $listdata.order eq "mac"}<IMG SRC="img/{if $listdata.direction eq "DESC"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right">
-			<NOBR><B>Razem: {$listdata.total}</B></NOBR>
+			<NOBR><B>{$lang.total}:{$listdata.total}</B></NOBR>
 		</TD>
 	</TR>
 	<TR CLASS="dark">
