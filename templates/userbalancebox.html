@@ -19,6 +19,15 @@
 		CheckAll();
 	}
 
+	function invoicepay(id)
+	{
+		if(! confirm('{/literal}{t}Are you sure, you want to account selected invoice?{/t}{literal}'))
+			return;
+		document.addbalance.action="?m=invoicepaid&id="+id;
+		document.addbalance.target="";
+		document.addbalance.submit();
+	}
+
 	function DeleteMarked()
 	{
 		if(! confirm('{/literal}{t}Are you sure, you want to delete selected operation(s) and/or invoice item(s)?{/t}{literal}'))
@@ -110,6 +119,9 @@
 					<TD width="92%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right"><nobr>
 						{if $balancelist.invoiceid[balancelist]}
+							{if $balancelist.invoicepaid[balancelist] == 0}
+							<A href="javascript:invoicepay({$balancelist.invoiceid[balancelist]})"><IMG SRC="img/invoice_pay.gif" ALT="" {tip text="Pay invoice"} BORDER="0"></A>
+							{/if}
 						<A href="?m=invoice&id={$balancelist.invoiceid[balancelist]}" TARGET="_blank"><IMG SRC="img/print.gif" ALT="" {tip text="Invoice"} BORDER="0"></A>
 						{/if}
 						{cycle print=false}

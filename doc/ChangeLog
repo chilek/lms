@@ -45,6 +45,7 @@ version 1.5.5 (??/??/????):
     charset (req. Text::Iconv), changed encoding of confirmation message (alec)
   - added contrib/coffee_cup (lexx)
   - added passwd field to nodes record (alec)
+  - we can pay invoices in userbalancebox (chilek)
 
 version 1.5.4 Ramius (16/02/2005):
 

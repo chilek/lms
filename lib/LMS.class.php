@@ -788,7 +788,7 @@ class LMS
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
-
+		
 		if(sizeof($saldolist['id']) > 0)
 		{
 			foreach($saldolist['id'] as $i => $v)
@@ -797,6 +797,7 @@ class LMS
 
 //				$saldolist['adminname'][$i] = $adminslist[$saldolist['adminid'][$i]];
 				$saldolist['value'][$i] = round($saldolist['value'][$i],3);
+				$saldolist['invoicepaid'][$i] = 1;
 
 				switch ($saldolist['type'][$i]){
 
@@ -808,6 +809,8 @@ class LMS
 					case '4':
 						$saldolist['after'][$i] = round(($saldolist['before'][$i] - $saldolist['value'][$i]),4);
 						$saldolist['name'][$i] = trans('covenant');
+						if ($saldolist['invoiceid'][$i])
+							$saldolist['invoicepaid'][$i] = $this->IsInvoicePaid($saldolist['invoiceid'][$i]);
 					break;
 				}
 
