@@ -26,25 +26,25 @@
 	<P><TABLE width="100%" cellpadding="3">
 		<TR class="dark">
 			<TD width="1%" class="fleftu"><IMG src="img/producer.gif" ALT="" align="absmiddle"></TD>
-			<TD width="1%" class="fbt"><B>Zapytanie:</B></TD>
+			<TD width="1%" class="fbt"><B>{t}Query:{/t}</B></TD>
 			<TD width="98%" class="frightu">{$query}</TD>
 		</TR>
 		<TR class="light">
 			<TD width="1%" class="fleft"><IMG src="img/time.gif" ALT="" align="absmiddle"></TD>
-			<TD width="1%" NOWRAP><B>Czas wykonania:</B></TD>
+			<TD width="1%" NOWRAP><B>{t}Execution time:{/t}</B></TD>
 			<TD width="98%" class="fright">{$executetime|string_format:"%0.3f"} s</TD>
 		</TR>
 		<TR class="light">
 			<TD width="1%" class="fleft"><IMG src="img/id.gif" ALT="" align="absmiddle"></TD>
-			<TD width="1%"><B>Ilo¶æ wierszy:</B></TD>
+			<TD width="1%"><B>{t}Rows count:{/t}</B></TD>
 			<TD width="98%" class="fright">{$nrows}</TD>
 		</TR>
 		<TR class="light">
 			<TD width="100%" colspan="3" class="fbottomu" align="right" nowrap>
 				<INPUT type="hidden" name="query" value="{$query}"></INPUT>
-				<A href="javascript: document.sql.submit();">Wykonaj ponownie <IMG src="img/save.gif" border="0" align="absmiddle" alt=""></A>&nbsp;
-				<A href="javascript: printResult();">Drukuj <IMG src="img/print.gif" border="0" align="absmiddle" alt=""></A>&nbsp;
-				<A href="?m=sql">Anuluj <IMG src="img/cancel.gif" border="0" align="absmiddle" alt=""></A>
+				<A href="javascript: document.sql.submit();">{t}Execute again{/t} <IMG src="img/save.gif" border="0" align="absmiddle" alt=""></A>&nbsp;
+				<A href="javascript: printResult();">{t}Print{/t} <IMG src="img/print.gif" border="0" align="absmiddle" alt=""></A>&nbsp;
+				<A href="?m=sql">{t}Cancel{/t} <IMG src="img/cancel.gif" border="0" align="absmiddle" alt=""></A>
 			</TD>
 		</TR>
 	</TABLE></P>
@@ -54,7 +54,7 @@
 	<TR><TD>
 		<TABLE width="100%" cellpadding="3">
 			<TR class="dark">
-				<TD class="blend"><B>lp.</B></TD>
+				<TD class="blend"><B>{t}No.{/t}</B></TD>
 				{foreach from=$colnames item=col}
 				<TD><B>{$col}</B></TD>
 				{/foreach}
@@ -63,7 +63,7 @@
 			{if $nrows > $pagelimit}
 			<TR class="dark">
 				<TD width="100%" colspan="{math equation="x+1" x=$ncols}">
-					<B>Strona: 
+					<B>{t}Page:{/t} 
 					{if $page > 1} 
 						<A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;
 					{/if} 
@@ -90,7 +90,7 @@
 			<IMG SRC="img/producer.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD CLASS="FRIGHTU" WIDTH="99%" COLSPAN="2"NOWRAP>
-			<B>Zapytanie SQL do bazy danych</B>
+			<B>{t}SQL query{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -98,15 +98,15 @@
 			<IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Tre¶æ zapytania:</B>
+			<B>{t}Query contents:{/t}</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<TEXTAREA NAME="query" COLS="80" ROWS="10" {tip text="Wpisz tre¶æ zapytania sql" trigger="query"}>{$query}</TEXTAREA><BR>
+			<TEXTAREA NAME="query" COLS="80" ROWS="10" {tip text="Enter contents of SQL query" trigger="query"}>{$query}</TEXTAREA><BR>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			 <A HREF="javascript:document.sql.submit();">Wy¶lij zapytanie<IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			 <A HREF="javascript:document.sql.submit();" accesskey="s">{t}Execute{/t} <IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
 		</TD>
 	</TR>
 </TABLE>

@@ -23,8 +23,10 @@
  *
  *  $Id$
  */
+
+include('sqllang.php');
  
-$layout['pagetitle'] = 'SQL';
+$layout['pagetitle'] = trans('SQL');
 
 if($query = $_POST['query'])
 {
@@ -39,7 +41,7 @@ if($query = $_POST['query'])
 
 	if(sizeof($LMS->DB->errors)) 
 	{
-		$error['query'] = 'Zapytanie nie jest poprawne!';
+		$error['query'] = trans('Query is not correct!');
 		$SMARTY->assign('error', $error);
 		$SMARTY->assign('query', $query);
 		$SMARTY->display('sql.html');	
@@ -100,7 +102,7 @@ if($query = $_POST['query'])
 	$SMARTY->assign('colnames', $colnames);
 	$SMARTY->assign('executetime', $duration);
 	$SMARTY->assign('result', $result);
-	$layout['pagetitle'] = 'SQL - Wyniki zapytania';
+	$layout['pagetitle'] = trans('SQL - Query Results');
 }
 
 $SMARTY->assign('query', $query);
