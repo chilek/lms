@@ -36,104 +36,6 @@ elseif(! $LMS->UserExists($_GET['id']))
 	header('Location: ?m=userlist');
 	die;
 }
-if($_GET['action'] == 'assignmentdelete')
-{
-	$LMS->DeleteAssignment($_GET['aid'],$_GET['balance']);
-	header('Location: ?m=userinfo&id='.$_GET['id']);
-	die;
-}
-elseif($_GET['action'] == 'addassignment')
-{
-	$period = sprintf('%d',$_POST['period']);
-
-	if($period < 0 || $period > 3)
-		$period = 1;
-
-	switch($period)
-	{
-		case 0:
-			$at = sprintf('%d',$_POST['at']);
-			
-			if($at < 1)
-				$at = 1;
-			elseif($at > 7)
-				$at = 7;
-		break;
-
-		case 1:
-			$at = sprintf('%d',$_POST['at']);
-			if($at == 0)
-			{
-				$at = 1 + date('d',time());
-				if($at > 28)
-					$at = 1;
-			}
-				
-			if($at < 1)
-				$at = 1;
-			elseif($at > 28)
-				$at = 28;
-		break;
-
-		case 2:
-			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($_POST['at'])))
-				$error[] = 'Niepoprawny format daty';
-			else {
-				list($d,$m) = split('/',trim($_POST['at']));
-				if($d>30 || $d<1)
-					$error[] = 'Niepoprawna liczba dni w miesi±cu';
-				if($m>3 || $m<1)
-					$error[] = 'Niepoprawny numer miesi±ca (max.3)';
-				
-				$at = ($m-1) * 100 + $d;
-			}
-		break;
-
-		case 3:
-			if(!eregi('^[0-9]{2}/[0-9]{2}$',trim($_POST['at'])))
-				$error[] = 'Niepoprawny format daty';
-			else
-				list($d,$m) = split('/',trim($_POST['at']));
-			$ttime = mktime(12, 0, 0, $m, $d, 1990);
-			$at = date('z',$ttime) + 1;
-		break;
-	}
-
-	if(trim($_POST['datefrom'] == ''))
-		$from = 0;
-	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',trim($_POST['datefrom'])))
-	{
-		list($y, $m, $d) = split('/', trim($_POST['datefrom']));
-		if(checkdate($m, $d, $y))
-			$from = mktime(0, 0, 0, $m, $d, $y);
-		else
-			$error[] = 'Koniec okresu naliczania jest niepoprawny!';
-	}
-	else
-		$error[] = 'Pocz±tek okresu naliczania jest niepoprawny!';
-
-	if(trim($_POST['dateto'] == ''))
-		$to = 0;
-	elseif(eregi('^[0-9]{4}/[0-9]{2}/[0-9]{2}$',trim($_POST['dateto'])))
-	{
-		list($y, $m, $d) = split('/', trim($_POST['dateto']));
-		if(checkdate($m, $d, $y))
-			$to = mktime(23, 59, 59, $m, $d, $y);
-		else
-			$error[] = 'Koniec okresu naliczania jest niepoprawny!';
-	}
-	else
-		$error[] = 'Koniec okresu naliczania jest niepoprawny!';
-
-	if($to < $from && $to != 0 && $from != 0)
-		$error[] = 'Zakres dat jest niepoprawny!';
-
-	if($LMS->TariffExists($_POST['tariffid']) && !$error)
-		$LMS->AddAssignment(array('tariffid' => $_POST['tariffid'], 'userid' => $_GET['id'], 'period' => $period, 'at' => $at, 'invoice' => sprintf('%d',$_POST['invoice']), 'datefrom' => $from, 'dateto' => $to ));
-	header('Location: ?m=userinfo&id='.$_GET['id']);
-	die;
-			
-}
 elseif($_GET['action'] == 'usergroupdelete')
 {
 	$LMS->UserassignmentDelete(array('userid' => $_GET['id'], 'usergroupid' => $_GET['usergroupid']));
@@ -149,7 +51,6 @@ elseif($_GET['action'] == 'usergroupadd')
 }
 elseif(isset($userdata))
 {
-
 	foreach($userdata as $key=>$value)
 		$userdata[$key] = trim($value);
 
@@ -202,6 +103,7 @@ elseif(isset($userdata))
 }
 
 $layout['pagetitle'] = 'Edycja danych u¿ytkownika: '.$userinfo['username'];
+
 $SMARTY->assign('usernodes',$LMS->GetUserNodes($userinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($userinfo['id']));
 $SMARTY->assign('tariffs',$LMS->GetTariffs());
