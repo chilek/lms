@@ -32,6 +32,7 @@ class LMS {
 
 	var $db;
 	var $session;
+	var $_BACKUP_DIR;
 	var $_version = '1.0.49';
 
 	function LMS($db,$session)
@@ -774,7 +775,8 @@ class LMS {
 
 	function DatabaseList()
 	{
-		if ($handle = opendir(BACKUP_DIR))
+		$_BACKUP_DIR = $this->_BACKUP_DIR;
+		if ($handle = opendir($_BACKUP_DIR))
 		{
 			while (false !== ($file = readdir($handle)))
 			{
@@ -786,7 +788,7 @@ class LMS {
 						if(substr($path[basename],0,4)=="lms-")
 						{
 							$dblist[time][] = substr(basename($file,".sql"),4);
-							$dblist[size][] = filesize(BACKUP_DIR."/".$file);
+							$dblist[size][] = filesize($_BACKUP_DIR."/".$file);
 						}
 					}
 				}
@@ -801,10 +803,11 @@ class LMS {
 
 	function DatabaseRecover($dbtime)
 	{
+		$_BACKUP_DIR = $this->_BACKUP_DIR;
 		$db=$this->db;
-		if(file_exists(BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
+		if(file_exists($_BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
 		{
-			return $db->Source(BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+			return $db->Source($_BACKUP_DIR.'/lms-'.$dbtime.'.sql');
 		}
 		else
 			return FALSE;
@@ -813,14 +816,16 @@ class LMS {
 	function DatabaseCreate()
 	{
 		$db=$this->db;
-		return $db->Dump(BACKUP_DIR.'/lms-'.time().'.sql');
+		$_BACKUP_DIR = $this->_BACKUP_DIR;
+		return $db->Dump($_BACKUP_DIR.'/lms-'.time().'.sql');
 	}
 
 	function DatabaseDelete($dbtime)
 	{
-		if(file_exists(BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
+		$_BACKUP_DIR = $this->_BACKUP_DIR;
+		if(file_exists($_BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
 		{
-			return unlink(BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+			return unlink($_BACKUP_DIR.'/lms-'.$dbtime.'.sql');
 		}
 		else
 			return FALSE;
@@ -828,12 +833,13 @@ class LMS {
 
 	function DatabaseFetchContent($dbtime)
 	{
-		if(file_exists(BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
+		$_BACKUP_DIR = $this->_BACKUP_DIR;	
+		if(file_exists($_BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
 		{
-			$content = file(BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+			$content = file($_BACKUP_DIR.'/lms-'.$dbtime.'.sql');
 			foreach($content as $value)
 				$database[content] .= $value;
-			$database[size] = filesize(BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+			$database[size] = filesize($_BACKUP_DIR.'/lms-'.$dbtime.'.sql');
 			$database[time] = $dbtime;
 			return $database;
 		}
