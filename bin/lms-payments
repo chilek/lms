@@ -127,25 +127,34 @@ my $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
-	print "User ID: $row->{'userid'}\tValue: $row->{'value'}\n" if (!$quiet);
-	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata miesiêczna za \\'".$row->{'name'}."\\' ($monthtxt)')");
-	$sdbq->execute();
+	if ($row->{'value'})
+	{
+		print "User ID: $row->{'userid'}\tValue: $row->{'value'}\n" if (!$quiet);
+		my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata miesiêczna za \\'".$row->{'name'}."\\' ($monthtxt)')");
+		$sdbq->execute();
+	}
 }
 $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period=1 AND at=$weekday");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
-	print "User ID: $row->{'userid'}\tValue: $row->{'value'}\n" if (!$quiet);
-	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata tygodniowa za \\'".$row->{'name'}."\\' ($weektxt)')");
-	$sdbq->execute();
+	if ($row->{'value'})
+	{
+		print "User ID: $row->{'userid'}\tValue: $row->{'value'}\n" if (!$quiet);
+		my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata tygodniowa za \\'".$row->{'name'}."\\' ($weektxt)')");
+		$sdbq->execute();
+	}
 }
 $dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, tariffs.name AS name FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND period=2 AND at=$yearday");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
-	print "User ID: $row->{'userid'}\tValue: $row->{'value'}\n" if (!$quiet);
-	my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata roczna za \\'".$row->{'name'}."\\' ($yeartxt)')");
-	$sdbq->execute();
+	if ($row->{'value'})
+	{
+		print "User ID: $row->{'userid'}\tValue: $row->{'value'}\n" if (!$quiet);
+		my $sdbq = $dbase->prepare("INSERT INTO cash (time, type, value, userid, comment) VALUES ($utsfmt, '4', '$row->{'value'}', '$row->{'userid'}', 'Op³ata roczna za \\'".$row->{'name'}."\\' ($yeartxt)')");
+		$sdbq->execute();
+	}
 }
 $dbq = $dbase->prepare("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
 $dbq->execute();
