@@ -427,9 +427,37 @@ CREATE TABLE passwd (
     home varchar(255) NOT NULL DEFAULT '',
     type smallint NOT NULL DEFAULT 0,
     expdate int NOT NULL DEFAULT 0,
-    domain varchar(255)	NOT NULL DEFAULT '',
+    domainid int NOT NULL DEFAULT 0,
     PRIMARY KEY (id)
     UNIQUE (login)
+);
+
+---------------------------------------------------------------
+-- Struktura tabeli dla aliases
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='aliases' AND type='U') 
+    DROP TABLE alises;
+CREATE TABLE aliases (
+    id int NOT NULL IDENTITY(1,1),
+    login varchar(255) NOT NULL DEFAULT '',
+    accountid int NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE (login, accountid)
+);
+
+---------------------------------------------------------------
+-- Struktura tabeli dla domains
+--
+
+IF EXISTS (SELECT name FROM sysobjects WHERE name='domains' AND type='U') 
+    DROP TABLE domains;
+CREATE TABLE domains (
+    id int NOT NULL IDENTITY(1,1),
+    name varchar(255) NOT NULL DEFAULT '',
+    description text NOT NULL DEFAULT '',
+    PRIMARY KEY (id),
+    UNIQUE (name)
 );
 
 ---------------------------------------------------------------
@@ -440,8 +468,8 @@ IF EXISTS (SELECT name FROM sysobjects WHERE name='uiconfig' AND type='U')
     DROP TABLE uiconfig;
 CREATE TABLE uiconfig (
     id int NOT NULL IDENTITY(1,1),
-    section varchar(255) NOT NULL DEFAULT '',
-    var varchar(255) NOT NULL DEFAULT '',
+    section varchar(64) NOT NULL DEFAULT '',
+    var varchar(64) NOT NULL DEFAULT '',
     value text NOT NULL DEFAULT '',
     description text NOT NULL DEFAULT '',
     disabled smallint NOT NULL DEFAULT 0,
@@ -511,4 +539,4 @@ BEGIN
 END
 GO
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004112700');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004121000');
