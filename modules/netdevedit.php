@@ -69,7 +69,7 @@ case 'connect':
 		header('Location: ?m=netdevinfo&id='.$_GET['id']);
 	break;
     
-case 'connectnode:
+case 'connectnode':
 	if(! $LMS->NetDevLinkNode($_GET['nodeid'], $_GET['id']) )
 	{
 		$error['linknode'] = 'Brak wolnych portów w urz±dzeniu';
@@ -132,7 +132,7 @@ case 'formaddip':
 	
 	if(!$error)
 	{
-		$nodeipdata['warning'] = '';
+		$nodeipdata['warning'] = 0;
 		$LMS->NetDevLinkNode($LMS->NodeAdd($nodeipdata),$_GET['id']);
 		header('Location: ?m=netdevinfo&id='.$_GET['id']);
 		die;
@@ -188,6 +188,7 @@ case 'formeditip':
 		if($LMS->GetNodeIDByMAC($nodeipdata['mac']) && $LMS->GetNodeMACByID($_GET['ip'])!=$nodeipdata['mac'])
 			$error['mac'] = 'Podany MAC jest ju¿ w bazie!';
 	
+	$nodeipdata['warning'] = 0;
 
 	if(!$error)
 	{
