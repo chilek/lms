@@ -24,7 +24,7 @@
 			<TABLE>
 				<TR>
 					<TD>
-						<B>{t}Name/surname:{/t}</B>
+						<B>{t}Name/surname{/t}:</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -33,7 +33,7 @@
 				</TR>
 				<TR>
 					<TD>
-						<B>{t}Forename:{/t}</B>
+						<B>{t}Forename{/t}:</B>
 					</TD>
 					<TD>&nbsp;</TD>
 					<TD>
@@ -93,7 +93,7 @@
 						<IMG src="img/gg.gif" ALT="" align="absmiddle" border="0" width="16" height="16">
 					</td>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{if $useradd.gguin}{$useradd.gguin}{/if}" name="useradd[gguin]" {tip text="Enter customer GaduGadu UIN (optional)" trigger="gguin"}>
+						<INPUT TYPE="text" size="40" value="{if $useradd.gguin}{$useradd.gguin}{/if}" name="useradd[gguin]" {tip text="Enter customer Internet Messenger UIN (optional)" trigger="gguin"}>
 					</td>
 				</TR>
 				<TR>
@@ -106,10 +106,10 @@
 				</TR>
 				<TR>
 					<TD width="1%">
-						<B>{t}PSL{/t}</B>
+						<B>{t}PID{/t}</B>
 					</TD>
 					<TD width="99%">
-						<INPUT TYPE="text" size="40" value="{$useradd.pesel}" name="useradd[pesel]" {tip text="Enter customer PESEL (optional)" trigger="pesel"}>
+						<INPUT TYPE="text" size="40" value="{$useradd.pesel}" name="useradd[pesel]" {tip text="Enter customer personal ID (optional)" trigger="pesel"}>
 					</td>
 				</TR>
 				<TR>
