@@ -987,6 +987,9 @@ class LMS
 			case "ip":				
 				$sqlord = " ORDER BY ipaddr";
 			break;
+			case "ownerid":
+				$sqlord = " ORDER BY ownerid";
+			break;
 		}
 		
 		foreach($args as $idx => $value)
@@ -996,7 +999,7 @@ class LMS
 				switch($idx)
 				{
 					case "ipaddr" :
-						$check_ip = trim($value);
+						$searchargs[] = "inet_ntoa(ipaddr) ?LIKE? '%".trim($value)."%'";
 					break;
 					default :
 						$searchargs[] = $idx." ?LIKE? '%".$value."%'";
@@ -1017,28 +1020,9 @@ class LMS
 			{
 				//$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
 				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
-				// filtr adresów IP
-				if($check_ip)
-				{
-					if( !strstr($nodelist[$idx]['ip'],$check_ip) )
-					{
-						unset($nodelist[$idx]);
-						continue;
-					}
-				}
 				($row['access']) ? $totalon++ : $totaloff++;
 			}
-			//uporz±dkowanie indeksów tablicy po filtrowaniu IP
-			if($check_ip)
-			{
-				foreach($nodelist as $node)
-				{
-					$templist[] = $node;
-					unset($nodelist);
-					$nodelist = $templist;
-				}
-			}
-			
+
 			switch($order)
 			{
 				case "owner":
@@ -2257,6 +2241,11 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.320  2003/12/17 21:48:20  alec
+ * - dodane sortowanie w SearchNodeList() i poprawki
+ * - w nodesearchresults dodane sortowanie wg ownerid i poprawione b³êdy
+ *   powoduj±ce brak sortowania wg niektórych kolumn
+ *
  * Revision 1.319  2003/12/16 23:10:32  alec
  * - poprawione ustawianie 'access' podczas dodawania komputera
  *
