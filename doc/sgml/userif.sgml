@@ -349,9 +349,15 @@
 		<itemizedlist>
 		<listitem>
 			<para>number_template</para>
-			<para>Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku,
+			<para>Wzorzec numeru faktury. Dostêpne zmienne wzorca to: '%N' - numer kolejny w roku/miesi±cu,
 			'%M' - miesi±c wystawienia, '%Y' - rok wystawienia. Domy¶lnie: %N/LMS/%Y</para>
 			<para>Przyk³ad: <prompt>number_template = %N/%Y</prompt></para>
+		</listitem>
+		<listitem>
+			<para>monthly_numbering</para>
+			<para>W³±czenie tej opcji spowoduje zerowanie numeracji faktur na pocz±tku ka¿dego miesi±ca.
+			Domy¶lnie: wy³±czona</para>
+			<para>Przyk³ad: <prompt>monthly_numbering = 1</prompt></para>
 		</listitem>
 		<listitem>
 			<para>header</para>

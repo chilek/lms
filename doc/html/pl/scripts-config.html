@@ -1852,16 +1852,13 @@ filter unix - n n - 10 pipe
 <PRE
 CLASS="SCREEN"
 ># plik main.cf
-
 mailbox_command = /usr/bin/procmail
 
 # w katalogu domowym u¿ytkownika, którego maile maj± byæ obs³ugiwane przez HelpDesk:
 # plik .forward
-
 "|IFS=' ' &#38;&#38; exec /usr/bin/procmail -f - || exit 75 #YOUR_USERNAME"
 
 # plik .procmailrc
-
 :0 c
    * ^To.*adres@domena
    | /bin/lms-rtparser
