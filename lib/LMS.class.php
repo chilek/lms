@@ -2998,6 +2998,15 @@ class LMS
 		return $id;
 	}
 
+	function TicketDelete($ticketid)
+	{
+		$ts = time();
+		$this->DB->Execute('DELETE FROM rtmessages WHERE ticketid=?', array($ticketid));
+		$this->DB->Execute('DELETE FROM rttickets WHERE id=?', array($ticketid));
+		$this->SetTS('rtqueues');	
+		$this->SetTS('rttickets');
+	}
+
 	function TicketUpdate($ticket)
 	{
 		$this->SetTS('rttickets');

@@ -38,6 +38,11 @@ if(! $LMS->GetAdminRightsRT($SESSION->id, $queuedata['id']))
 	die;
 }
 
+if($_GET['delticketid'])
+{
+	$LMS->TicketDelete($_GET['delticketid']);
+}
+
 if(!isset($_GET['o']))
 	$o = $_SESSION['rto'];
 else

@@ -97,6 +97,7 @@
 			{if $ticket.state < 2}
 			<A href="?m=rtticketedit&id={$ticket.ticketid}&state=2">{t}Resolve{/t} <IMG src="img/resolved.gif" alt="" border="0" align="absmiddle"></A>&nbsp;
 			{/if}
+			<A href="?m=rtqueueview&id={$ticket.queueid}&delticketid={$ticket.ticketid}" onClick="return confirmLink(this, '{t 0=$ticket.ticketid}Are you sure, you want to remove ticket $0?{/t}')">{t}Delete{/t} <IMG src="img/delete.gif" alt="" border="0" align="absmiddle"></A>
 			<A href="?m=rtticketedit&id={$ticket.ticketid}">{t}Edit{/t} <IMG src="img/edit.gif" alt="" border="0" align="absmiddle"></A>
 			<A href="?m=rtticketprint&id={$ticket.ticketid}" target="_BLANK">{t}Print{/t} <IMG src="img/print.gif" alt="" border="0" align="absmiddle"></A>
 			<A href="?m=rtqueueview&id={$ticket.queueid}">{t}Cancel{/t} <IMG src="img/cancel.gif" alt="" border="0" align="absmiddle"></A>
