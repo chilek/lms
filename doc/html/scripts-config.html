@@ -1631,6 +1631,15 @@ CLASS="FILENAME"
 >mail_dir</TT
 >.</P
 ><P
+>Oprócz modu³ów Perla standardowo wymaganych przez resztê skryptów, nale¿y 
+	    zainstalowaæ tak¿e modu³ <TT
+CLASS="FILENAME"
+>MIME::Parser</TT
+> oraz <TT
+CLASS="FILENAME"
+>Net::SMTP</TT
+>.</P
+><P
 >Skrypt mo¿na uruchamiaæ na wiele sposobów. Jednym z nich jest
 	    stworzenie skryptu pow³oki, który odczytuj±c skrzynkê pocztow± wywo³a lms-rtparser 
 	    dla ka¿dego maila. Wygodniejszym zastosowaniem jest jednak zintegrowanie
@@ -1722,25 +1731,36 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->sendmail_binary</P
-><P
->Lokalizacja programu sendmail. Domy¶lnie: /usr/sbin/sendmail</P
-><P
->Przyk³ad:	<SAMP
-CLASS="PROMPT"
->sendmail_binary = /usr/lib/sandmail</SAMP
-></P
-></LI
-><LI
-><P
 >mail_from</P
 ><P
->Nadawca potwierdzenia. Je¶li nie zdefiniowano, zostanie u¿yty adres
+>Nadawca potwierdzenia (adres). Je¶li nie zdefiniowano, zostanie u¿yty adres
 		    kolejki do której zapisano zg³oszenie. Domy¶lnie: pusty.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
->mail_from = &lt;rt@net.pl&gt;</SAMP
+>mail_from = rt@net.pl</SAMP
+></P
+></LI
+><LI
+><P
+>mail_from_name</P
+><P
+>Nadawca potwierdzenia (nazwa). Domy¶lnie: niezdefiniowana.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mail_from_name = 'BOK SuperLAN'</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_server</P
+><P
+>Serwer SMTP, przez który zostanie wys³ana wiadomo¶æ. Domy¶lnie: localhost.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>smtp_server = smtp.mydomain.pl</SAMP
 ></P
 ></LI
 ><LI

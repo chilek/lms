@@ -2078,6 +2078,9 @@ http://www.naszasiec.pl/
    zostaj± od³±czone za³±czniki i umieszczone w katalogu zdefiniowanym w
    opcji mail_dir.
 
+   Oprócz modu³ów Perla standardowo wymaganych przez resztê skryptów,
+   nale¿y zainstalowaæ tak¿e modu³ MIME::Parser oraz Net::SMTP.
+
    Skrypt mo¿na uruchamiaæ na wiele sposobów. Jednym z nich jest
    stworzenie skryptu pow³oki, który odczytuj±c skrzynkê pocztow± wywo³a
    lms-rtparser dla ka¿dego maila. Wygodniejszym zastosowaniem jest
@@ -2106,13 +2109,18 @@ filter unix - n n - 10 pipe
        Opcja ta mo¿e zostaæ nadpisana przy pomocy parametru -q przy
        uruchomieniu skryptu. Domy¶lnie: niezdefiniowana.
        Przyk³ad: default_queue =
-     * sendmail_binary
-       Lokalizacja programu sendmail. Domy¶lnie: /usr/sbin/sendmail
-       Przyk³ad: sendmail_binary = /usr/lib/sandmail
      * mail_from
-       Nadawca potwierdzenia. Je¶li nie zdefiniowano, zostanie u¿yty
-       adres kolejki do której zapisano zg³oszenie. Domy¶lnie: pusty.
-       Przyk³ad: mail_from = <rt@net.pl>
+       Nadawca potwierdzenia (adres). Je¶li nie zdefiniowano, zostanie
+       u¿yty adres kolejki do której zapisano zg³oszenie. Domy¶lnie:
+       pusty.
+       Przyk³ad: mail_from = rt@net.pl
+     * mail_from_name
+       Nadawca potwierdzenia (nazwa). Domy¶lnie: niezdefiniowana.
+       Przyk³ad: mail_from_name = 'BOK SuperLAN'
+     * smtp_server
+       Serwer SMTP, przez który zostanie wys³ana wiadomo¶æ. Domy¶lnie:
+       localhost.
+       Przyk³ad: smtp_server = smtp.mydomain.pl
      * mail_dir
        Katalog w którym zostan± zapisane za³±czniki. Katalog ten powinien
        byæ dostêpny dla apache'a i u¿ytkownika uruchamiaj±cego

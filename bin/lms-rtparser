@@ -97,7 +97,7 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 my $save_path = $ini->val('rt', 'mail_dir') || '';
 my $queue = $queue || $ini->val('rt', 'default_queue');
 my $autoreply_from = $ini->val('rt', 'mail_from') || '';
-my $autoreply_name = $ini->val('rt', 'mail_from_name') || 'RT System';
+my $autoreply_name = $ini->val('rt', 'mail_from_name') || '';
 my $smtpserver = $ini->val('rt', 'smtp_server') || 'localhost';
 
 # very ugly code, but we really need tempdir..
