@@ -7,6 +7,8 @@ wersja 1.4.1 (??/??/2004):
   - dodane brakuj±ce warto¶ci domy¶lne niektórych kolumn w tabeli rtmessages
     w pliku lms.mysql (alec)
   - dokumentacja: dodany opis lms-makedhcpconf (alec)
+  - poprawka w funkcji szybkiego wyszukiwania komputerów spowodowana odmiennym
+    dzia³aniem ip2long() w PHP5 (alec)
 
 wersja 1.4.0 Evalla (15/10/2004):
 
