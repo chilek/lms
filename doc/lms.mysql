@@ -274,3 +274,17 @@ CREATE TABLE netlinks (
   dst INT(11) NOT NULL default '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
+
+#
+# Struktura tabeli 'dbinfo'
+#
+
+DROP TABLE IF EXISTS dbinfo;
+CREATE TABLE dbinfo (
+  keytype VARCHAR(255) NOT NULL default '',
+  keyvalue VARCHAR(255) NOT NULL default '',
+  PRIMARY KEY  (keytype),
+  UNIQUE KEY keytype (keytype),
+  KEY keytype_2 (keytype)
+) TYPE=MyISAM;
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004030400');

@@ -144,6 +144,10 @@ require_once($_LIB_DIR.'/language.php');
 
 $DB = DBInit($_DBTYPE, $_DBHOST, $_DBUSER, $_DBPASS, $_DBNAME);
 
+// Call any of upgrade process before anything else.
+
+require_once($_LIB_DIR.'/upgradedb.php');
+
 // Initialize database and template classes
 
 $SESSION = new Session($DB, $_TIMEOUT);
