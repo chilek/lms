@@ -39,7 +39,8 @@ if(!isset($_GET[ownerid]))
 	$_SESSION[backto] .= "&ownerid=".$ownerid;
 
 $SMARTY->assign("balancelist",$LMS->GetUserBalanceList($ownerid));
-print_r($LMS->GetUserBalanceList($ownerid));
 $SMARTY->assign("userinfo",$LMS->GetUser($ownerid));
 $SMARTY->assign("nodeinfo",$LMS->GetNode($nodeid));
 $SMARTY->display("nodeinfo.html");
+
+?>
