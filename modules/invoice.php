@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout[pagetitle] = 'Faktura nr. '.$_GET[id].'/LMS/'.$_GET[year];
+$layout[pagetitle] = 'Faktura nr '.$_GET[id].'/LMS/'.$_GET[year];
 
 $invoice = $LMS->GetInvoiceContent($_GET[id],$_GET[year]);
 
