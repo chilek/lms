@@ -2150,7 +2150,7 @@ class LMS
 					$line=fgets($file,4096);
 					$line=eregi_replace("[\t ]+"," ",$line);
 					list($ip, $hwtype, $flags, $hwaddr, $mask, $device) = split(' ',$line);
-					if($flags == "0x2" || $flags == "0x6")
+					if($flags != '0x6' && $hwaddr != '00:00:00:00:00:00')
 					{
 						$result['mac'][] = $hwaddr;
 						$result['ip'][] = $ip;
