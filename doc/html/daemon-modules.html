@@ -433,7 +433,24 @@ NAME="GGNOTIFY-DESC"
 >6.2.4.1. Opis</A
 ></H3
 ><P
-></P
+>Odpowiednik modu³u 'notify' s³u¿±cy do wysy³ania wiadomo¶ci gadu-gadu.
+		    Aktualne saldo u¿ytkownika porównywane jest ze zmienn± 'limit', je¶li jest ni¿sze 
+		    - wiadomo¶æ zostaje wys³ana. Tre¶æ wiadomo¶ci pobierana jest z przygotowanego szablonu, 
+		    w którym mo¿na stosowaæ zmienne takie jak dla modu³u 'notify' (mo¿e to byæ te¿ ten sam 
+		    szablon).</P
+><P
+>Modu³ wymaga zainstalowanej biblioteki <TT
+CLASS="FILENAME"
+>libgadu</TT
+> oraz ¼róde³
+		    programu <TT
+CLASS="FILENAME"
+>ekg</TT
+>. Odpowiednie ¶cie¿ki do nich nale¿y ustawiæ
+		    w <TT
+CLASS="FILENAME"
+>modules/ggnotify/Makefile</TT
+> przed kompilacj± modu³u.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -444,14 +461,64 @@ NAME="GGNOTIFY-CONFIG"
 >6.2.4.2. Konfiguracja</A
 ></H3
 ><P
-></P
+>Podobnie jak w 'notify' masz do dyspozycji nastêpuj±ce zmienne:</P
 ><UL
 ><LI
 ><P
-></P
+>ggtemplate</P
 ><P
-></P
+>Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty.</P
 ><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>ggtemplate = modules/ggnotify/sample/mailtemplate</TT
+></P
+></LI
+><LI
+><P
+>uin</P
+><P
+>Identyfikator gadu-gadu u¿ytkownika wysy³aj±cego wiadomo¶ci. 
+			    Domy¶lnie: pusty.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>uin = 1234567</TT
+></P
+></LI
+><LI
+><P
+>password</P
+><P
+>Has³o dla konta okre¶lonego zmienn± 'uin'. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>password = "moje_trudne__has³o"</TT
+></P
+></LI
+><LI
+><P
+>limit</P
+><P
+>Wiadomo¶æ o zaleg³o¶ciach zostaje wys³ana je¶li saldo u¿ytkownika 
+			    spadnie poni¿ej kwoty okre¶lonej zmienn± limit. Domy¶lnie: 0</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>limit = -20</TT
+></P
+></LI
+><LI
+><P
+>debug_uin</P
+><P
+>Je¶li ustawione, na to konto zostan± wys³ane wszyskie wiadomo¶ci.
+			    Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>debug_uin = 7654321</TT
 ></P
 ></LI
 ></UL
@@ -566,13 +633,13 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->start</P
+>begin</P
 ><P
 >Nag³ówek pliku. Domy¶lnie: "shared-network LMS {".</P
 ><P
 >Przyk³ad: <TT
 CLASS="PROMPT"
->start = "shared-network LMS {"</TT
+>begin = "shared-network LMS {"</TT
 ></P
 ></LI
 ><LI
@@ -738,24 +805,24 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->prefix</P
+>begin</P
 ><P
 >Nag³ówek pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -F FORWARD\n"</P
 ><P
 >Przyk³ad: <TT
 CLASS="PROMPT"
->prefix = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"</TT
+>begin = "IPT=/usr/sbin/iptables \n$IPT -F FORWARD\n"</TT
 ></P
 ></LI
 ><LI
 ><P
->append</P
+>end</P
 ><P
 >Stopka pliku tymczasowego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -J REJECT\n"</P
 ><P
 >Przyk³ad: <TT
 CLASS="PROMPT"
->append = "$IPT -A FORWARD -J REJECT\n"</TT
+>end = "$IPT -A FORWARD -J REJECT\n"</TT
 ></P
 ></LI
 ><LI
@@ -1109,8 +1176,9 @@ NAME="ETHERS-DESC"
 >6.2.11.1. Opis</A
 ></H3
 ><P
->Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Komputerom
-		    od³±czonym zostaje przypisany mac-adres 00:00:00:00:00:00.</P
+>Modu³ tworz±cy konfiguracjê tablicy ARP systemu. Ustawiaj±c opcjê
+		    'dummy_macs' mo¿na sprawiæ, aby komputerom od³±czonym zosta³ przypisany 
+		    mac-adres 00:00:00:00:00:00.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -1121,7 +1189,7 @@ NAME="ETHERS-CONFIG"
 >6.2.11.2. Konfiguracja</A
 ></H3
 ><P
-></P
+>Tutaj s± tylko standardowe opcje:</P
 ><UL
 ><LI
 ><P
@@ -1145,6 +1213,18 @@ CLASS="PROMPT"
 >command = "arp -f /etc/ethers"</TT
 ></P
 ></LI
+><LI
+><P
+>dummy_macs</P
+><P
+>Je¶li ustawimy na 'yes', to komputerom od³±czonym zostanie
+			    przypisany mac-adres '00:00:00:00:00:00'. Domy¶lnie: "no".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>dummy_macs = yes</TT
+></P
+></LI
 ></UL
 ></DIV
 ></DIV
@@ -1165,7 +1245,9 @@ NAME="OIDENT-DESC"
 >6.2.12.1. Opis</A
 ></H3
 ><P
-></P
+>Modu³ do konfiguracji oidend. W zasadzie mo¿na to zrobiæ modu³em
+		    'hostfile', ale w 'oident' masz mo¿liwo¶æ okre¶lenia dla których sieci
+		    ma byæ tworzony konfig.</P
 ></DIV
 ><DIV
 CLASS="SECT3"
@@ -1176,14 +1258,72 @@ NAME="OIDENT-CONFIG"
 >6.2.12.2. Konfiguracja</A
 ></H3
 ><P
-></P
+>A oto parametry modu³u 'oident'</P
 ><UL
 ><LI
 ><P
-></P
+>begin</P
 ><P
-></P
+>Tekst wstawiany na pocz±tku pliku. Domy¶lnie: puste.</P
 ><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>begin = "#Generowany utomatycznie\n"</TT
+></P
+></LI
+><LI
+><P
+>end</P
+><P
+>Tekst wstawiany na koñcu pliku. Domy¶lnie: puste.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>end = ""</TT
+></P
+></LI
+><LI
+><P
+>host</P
+><P
+>Linia tekstu dla ka¿dego komputera. Domy¶lnie: "%i\t%n\tUNIX".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>host = "%i %n WINDOWS"</TT
+></P
+></LI
+><LI
+><P
+>file</P
+><P
+>Tekst wstawiany na pocz±tku pliku. Domy¶lnie: /tmp/oidentd.conf.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>file = /etc/identd.conf</TT
+></P
+></LI
+><LI
+><P
+>networks</P
+><P
+>Lista sieci do uwzglêdnienia. Domy¶lnie: "192.168.0.0/16 10.0.0.0/8".</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>networks = 192.168.1.0/24</TT
+></P
+></LI
+><LI
+><P
+>command</P
+><P
+>Polecenie do wykonania po utworzeniu pliku. Domyslnie: puste.</P
+><P
+>Przyk³ad: <TT
+CLASS="PROMPT"
+>command = "killall -HUP midentd"</TT
 ></P
 ></LI
 ></UL
