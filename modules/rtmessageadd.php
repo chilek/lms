@@ -26,13 +26,8 @@
 
 $message = $_POST['message'];
 
-if($_GET['id'])
-	$reply = $LMS->GetMessage($_GET['id']); 
-
 if(isset($message))
 {
-	$message['ticketid'] = $_GET['ticketid'];
-
 	if($message['subject'] == '')
 		$error['subject'] = "Wiadomo¶æ musi mieæ tytu³!";
 
@@ -42,35 +37,92 @@ if(isset($message))
 	if($message['destination']!='' && !check_email($message['destination']))
 		$error['destination'] = 'Podany email nie wydaje siê byæ poprawny!';
 
-	if($message['destination']=='' && isset($_GET['mail']))
-		$error['destination'] = 'Nie mo¿na wys³aæ wiadomo¶ci bez adresu odbiorcy!';
+	if($message['destination']!='' && $message['sender']=='user')
+		$error['destination'] = 'U¿ytkownik nie mo¿e wysy³aæ wiadomo¶ci!';
 
 
 	if(!$error)
 	{
-		$message['mailfrom'] = '';
-		$message['userid'] = 0;
-		$message['inreplyto'] = ($reply['id'] ? $reply['id'] : 0);
-				
-		if($LMS->MessageAdd($message))
-		{
-			if(!$LMS->GetTicketOwner($message['ticketid']))
-				$LMS->SetTicketOwner($message['ticketid']);
-			if(!$LMS->GetTicketState($message['ticketid']))
-				$LMS->SetTicketState($message['ticketid'], 1);
-		}
+		$queue = $LMS->GetQueueByTicketId($message['ticketid']);
+		$admin = $LMS->GetAdminInfo($SESSION->id);
+		
+		$message['messageid'] = '<msg.'.$message['ticketid'].'.'.$queue['id'].'.'.time().'@rtsystem.'.gethostbyaddr(gethostbyname($_SERVER['SERVER_NAME'])).'>';
 
-		if(isset($_GET['mail']))
+		if($LMS->CONFIG['phpui']['debug_email'])
+			$message['destination'] = $LMS->CONFIG['phpui']['debug_email'];
+		
+		if($message['sender']=='admin')
 		{
-			$message['username'] = $LMS->DB->GetOne('SELECT '.$LMS->DB->Concat('lastname',"' '", 'name').' FROM users WHERE email=?', array($message['destination']));
-			$admin = $LMS->GetAdminInfo($message['adminid']);
-			$queue = $LMS->GetQueueByTicketId($message['ticketid']);
-			$message['sender'] = $admin['name'];
-			$message['from'] = $queue['email'] ? $queue['email'] : $admin['email'];
-			$message['references'] = $reply['messageid'];
-	
-			$LMS->MessageSend($message);
+			$message['adminid'] = $SESSION->id;
+			$message['userid'] = 0;		
 		}
+		else
+		{
+			$message['adminid'] = 0;
+			if($message['userid'])
+				$message['mailfrom'] = $LMS->GetUserEmail($message['userid']);
+			else
+				$message['mailfrom'] = $message['destination'];
+		}
+		
+		if(!$LMS->CONFIG['phpui']['helpdesk_backend_mode'])
+		{
+			if($message['destination'])
+			{
+				$message['mailfrom'] = $queue['email'] ? $queue['email'] : $admin['email'];
+				$message['mailfrom'] = $LMS->CONFIG['rt']['mail_from'] ? $LMS->CONFIG['rt']['mail_from'] : '<'.$message['mailfrom'].'>';
+				$message['replyto'] = $message['mailfrom']; 
+				$message['headers'] = 'From: '.$message['mailfrom']."\n"
+				    .($message['references'] ? 'References: '.$message['references']."\n" : '')
+				    .'Message-Id: '.$message['messageid']."\n"
+				    .'Reply-To: '.$message['mailfrom']."\n"
+				    ."Content-Type: text/plain; charset=ISO-8859-2;\n"
+				    .'X-Mailer: LMS-'.$LMS->_version.'/PHP-'.phpversion()."\n"
+				    .'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
+				    .'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']."\n";
+			    	
+				
+				mail('<'.$message['destination'].'>',
+					$message['subject'],
+					$message['body'],
+					$message['headers']);
+				flush();
+			}
+			else 
+			{
+				$message['messageid'] = '';
+				$message['mailfrom'] = '';
+				$message['headers'] = '';
+			    	$message['replyto'] = ''; 
+			}
+				
+			$LMS->MessageAdd($message);
+		}
+		else //wysy³amy do backendu
+		{
+			
+	/*
+			mail (	'<'.$message['destination'].'>',
+			$message['subject'],
+			$message['body'],
+			'From: '.($LMS->CONFIG['rt']['mail_from'] ? $LMS->CONFIG['rt']['mail_from'] : '<'.$message['from'].'>')."\n"
+			.($message['references'] ? 'References: '.$message['references']."\n" : '')
+			.'Message-Id: '.$message['messageid']."\n"
+			.'Reply-To: '.$message['from']."\n"
+			."Content-Type: text/plain; charset=ISO-8859-2;\n"
+			.'X-Mailer: LMS-'.$LMS->_version.'/PHP-'.phpversion()."\n"
+			.'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n"
+			.'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']."\n"
+			);
+			flush();
+	*/	}
+		
+		// ustawiamy status i w³a¶ciciela ticketu
+		if(!$LMS->GetTicketOwner($message['ticketid']))
+			$LMS->SetTicketOwner($message['ticketid']);
+		if(!$LMS->GetTicketState($message['ticketid']))
+			$LMS->SetTicketState($message['ticketid'], 1);
+
 		header("Location: ?m=rtticketview&id=".$message['ticketid']);
 		die;
 	}
@@ -80,21 +132,36 @@ else
 	if($_GET['ticketid'])
 		$queue = $LMS->GetQueueByTicketId($_GET['ticketid']);
 	$admin = $LMS->GetAdminInfo($SESSION->id);
-
-	$message['mailfrom'] = ($queue['email'] ? $queue['email'] : $admin['email']);
-	$message['destination'] = ($reply['replyto'] ? $reply['replyto'] : $reply['mailfrom']);
+	
 	$message['ticketid'] = $_GET['ticketid'];
-}
+	$message['userid'] = $LMS->DB->GetOne('SELECT userid FROM rttickets WHERE id = ?', array($message['ticketid']));
+	
+	if($_GET['id'])
+	{
+		$reply = $LMS->GetMessage($_GET['id']); 
 
-$adminlist = $LMS->GetAdminList();
-unset($adminlist['total']);
+		if($reply['replyto'])
+			$message['destination'] = ereg_replace('^.* <(.+@.+)>','\1',$reply['replyto']);
+		else 
+			$message['destination'] = ereg_replace('^.* <(.+@.+)>','\1',$reply['mailfrom']);
+
+		if(!$message['destination'] && !$reply['adminid'])
+			$message['destination'] = $LMS->GetUserEmail($message['userid']);
+	
+		$message['subject'] = 'Re: '.$reply['subject'];
+			
+		$message['inreplyto'] = $reply['id'];
+		$message['references'] = $reply['messageid'];
+	}
+	
+	if(!eregi("[RT#[0-9]{6}]",$message['subject'])) 
+		$message['subject'] .= sprintf(" [RT#%06d]",$message['ticketid']); 
+}
 
 $layout['pagetitle'] = 'Nowa wiadomo¶æ';
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$SMARTY->assign('admin', $admin);
-$SMARTY->assign('adminlist', $adminlist);
 $SMARTY->assign('message', $message);
 $SMARTY->assign('error', $error);
 $SMARTY->display('rtmessageadd.html');
