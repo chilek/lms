@@ -270,7 +270,7 @@ foreach my $key (keys %iftable)
 	
 }
 
-$dbq = $dbase->prepare("SELECT userid, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments, users, tariffs WHERE users.id = userid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY userid");
+$dbq = $dbase->prepare("SELECT userid, SUM(uprate) AS uprate, SUM(downrate) AS downrate, SUM(upceil) AS upceil, SUM(downceil) AS downceil FROM assignments, users, tariffs WHERE users.id = userid AND deleted = 0 AND tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) GROUP BY userid");
 $dbq->execute();
 
 my $iptid = 0;
@@ -292,7 +292,7 @@ while (my $row = $dbq->fetchrow_hashref())
 		{
 			$htbid{$key} = 0 if not defined $htbid{$key};
 			$htbid{$key} ++;
-			print OUTFILE "$tc_binary class add dev $key parent 1:19999 classid 1:".$htbid{$key}." htb rate ".$row->{'downrate'}."kbit burst ".($row->{'downrate'} / 8)."kbit\n";
+			print OUTFILE "$tc_binary class add dev $key parent 1:19999 classid 1:".$htbid{$key}." htb rate ".$row->{'downrate'}."kbit ceil ".$row->{'downceil'}."kbit burst ".($row->{'downrate'} / 8)."kbit\n";
 			print OUTFILE "$tc_binary filter add dev $key protocol ip parent 1: handle $iptid fw classid 1:".$htbid{$key}."\n";
 		}
 	}
@@ -309,7 +309,7 @@ while (my $row = $dbq->fetchrow_hashref())
 			my ($if,$spd) = split(':', $wan_interface);
 			$htbid{$if} = 0 if not defined $htbid{$if};
 			$htbid{$if} ++;
-			print OUTFILE "$tc_binary class add dev $if parent 1:19999 classid 1:".$htbid{$if}." htb rate ".$row->{'uprate'}."kbit burst ".($row->{'uprate'} / 8). "kbit\n";
+			print OUTFILE "$tc_binary class add dev $if parent 1:19999 classid 1:".$htbid{$if}." htb rate ".$row->{'uprate'}."kbit ceil ".$row->{'upceil'}."kbit burst ".($row->{'uprate'} / 8). "kbit\n";
 			print OUTFILE "$tc_binary filter add dev $if protocol ip parent 1: handle $iptid fw classid 1:".$htbid{$if}."\n";
 		}
 	}		
