@@ -636,17 +636,18 @@ class LMS {
 		$userlist = $db->FetchArray("SELECT id, lastname, name, status, email, phone1, address, info FROM users");
 			
 		if(sizeof($userlist[id]))
-		foreach($userlist[id] as $i => $v)
-			$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
+			foreach($userlist[id] as $i => $v)
+				$userlist[username][$i] = strtoupper($userlist[lastname][$i])." ".$userlist[name][$i];
 
-		foreach($userlist[id] as $i => $v)
-		{
-			$userlist[balance][$i] = $this->GetUserBalance($v);
-			if($userlist[balance][$i] > 0)
-				$userlist[over] = $userlist[over] + $userlist[balance][$i];
-			if($userlist[balance][$i] < 0)
-				$userlist[below] = $userlist[below] - $userlist[balance][$i];
-		}
+		if(sizeof($userlist[id]))
+			foreach($userlist[id] as $i => $v)
+			{
+				$userlist[balance][$i] = $this->GetUserBalance($v);
+				if($userlist[balance][$i] > 0)
+					$userlist[over] = $userlist[over] + $userlist[balance][$i];
+				if($userlist[balance][$i] < 0)
+					$userlist[below] = $userlist[below] - $userlist[balance][$i];
+			}
 		
 		list($order,$direction)=explode(",",$order);
 		
@@ -676,12 +677,13 @@ class LMS {
 					array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance]);
 				break;
 			}
-
-		foreach($userlist[id] as $i => $v)
-			if($userlist[status][$i] == 3)
-				$userlist[nodeac][$i] = $this->GetUserNodesAC($userlist[id][$i]);
-			else
-				$userlist[nodeac][$i] = FALSE;
+		
+		if(sizeof($userlist[id]))
+			foreach($userlist[id] as $i => $v)
+				if($userlist[status][$i] == 3)
+					$userlist[nodeac][$i] = $this->GetUserNodesAC($userlist[id][$i]);
+				else
+					$userlist[nodeac][$i] = FALSE;
 		$userlist[state]=$state;
 		$userlist[order]=$order;
 		$userlist[direction]=$direction;
