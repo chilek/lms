@@ -1186,7 +1186,7 @@ class LMS
 		$this->SetTS('invoicecontents');
 		$number = $this->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate <= ?',array(mktime(0, 0, 0, 1, 1, date('Y',$cdate)), mktime(23, 59, 59, 12, 31, date('Y',$cdate))));
 		$number++;
-		$this->DB->Execute('INSERT INTO invoices (number, cdate, paytime, customerid, name, address, nip, pesel, zip, city, phone, finished) VALUES (?, ?, 14, ?, ?, ?, ?, ?, ?, ?, ?, 1)',array($number, $cdate, $invoice['customer']['id'], $invoice['customer']['username'], $invoice['customer']['address'], $invoice['customer']['nip'], $invoice['customer']['pesel'], $invoice['customer']['zip'], $invoice['customer']['city'], $invoice['customer']['phone1']));
+		$this->DB->Execute('INSERT INTO invoices (number, cdate, paytime, paytype, customerid, name, address, nip, pesel, zip, city, phone, finished) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)',array($number, $cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['username'], $invoice['customer']['address'], $invoice['customer']['nip'], $invoice['customer']['pesel'], $invoice['customer']['zip'], $invoice['customer']['city'], $invoice['customer']['phone1']));
 		$iid = $this->DB->GetOne('SELECT id FROM invoices WHERE number = ? AND cdate = ?',array($number,$cdate));
 		foreach($invoice['contents'] as $idx => $item)
 		{
@@ -1226,7 +1226,7 @@ class LMS
 
 	function GetInvoiceContent($invoiceid)
 	{
-		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, nip, pesel, cdate, paytime, finished FROM invoices WHERE id=?',array($invoiceid)))
+		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished FROM invoices WHERE id=?',array($invoiceid)))
 		{
 			if($result['content'] = $this->DB->GetAll('SELECT value, taxvalue, pkwiu, content, count, description, tariffid FROM invoicecontents WHERE invoiceid=?',array($invoiceid)))
 				foreach($result['content'] as $idx => $row)

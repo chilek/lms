@@ -29,6 +29,7 @@ $users = $LMS->GetUserNames();
 $tariffs = $LMS->GetTariffs();
 $contents = $_SESSION[invoicecontents];
 $customer = $_SESSION[invoicecustomer];
+$invoice = $_SESSION[invoice];
 $itemdata = r_trim($_POST);
 
 if($_GET['userid'] != '' && $LMS->UserExists($_GET['userid']))
@@ -70,20 +71,29 @@ switch($_GET['action'])
 	case 'setcustomer':
 		if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['userid'])))
 			$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['userid']));
+		$invoice[paytime] = sprintf('%d', $_POST['invoice']['paytime']);
+		$invoice[paytype] = trim($_POST['invoice']['paytype']);
 	break;
 
 	case 'save':
 		if($contents && $customer)
 		{
-			$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents));
+			$iid = $LMS->AddInvoice(array('customer' => $customer, 'contents' => $contents, 'invoice' => $invoice));
 		}
 		unset($_SESSION[invoicecontents]);
 		unset($_SESSION[invoicecustomer]);
+		unset($_SESSION[invoice]);
 		header('Location: ?m=invoicelist&openonload='.$iid);
 		die;
 	break;
 }
 
+if($invoice['paytime'] < 1)
+	$invoice['paytime'] = 14;
+if($invoice['paytype'] == '')
+	$invoice['paytype'] = 'GOTÓWKA';
+
+$_SESSION[invoice] = $invoice;
 $_SESSION[invoicecontents] = $contents;
 $_SESSION[invoicecustomer] = $customer;
 
@@ -96,6 +106,7 @@ if($_GET['action'] != '')
 
 $SMARTY->assign('contents',$contents);
 $SMARTY->assign('customer',$customer);
+$SMARTY->assign('invoice',$invoice);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('users',$users);
 $SMARTY->assign('layout',$layout);
