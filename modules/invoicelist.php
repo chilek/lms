@@ -23,6 +23,7 @@
  *
  *  $Id$
  */
+
 $layout['pagetitle'] = 'Lista faktur';
 
 $marks = $_POST['marks'];
@@ -42,13 +43,9 @@ unset($invoicelist['startdate'], $invoicelist['enddate']);
 
 $listdata['totalpos'] = sizeof($invoicelist);
 
-if (isset($_SESSION['ilp']) && !isset($_GET['page']))
-	$_GET['page'] = $_SESSION['ilp'];
-
 $pagelimit = $LMS->CONFIG['phpui']['invoicelist_pagelimit'];
 $page = (! $_POST['page'] ? ceil($listdata['totalpos']/$pagelimit) : $_POST['page']);
 $start = ($page - 1) * $pagelimit;
-$_SESSION['ilp'] = $page;
 
 $SMARTY->assign('listdata',$listdata);
 $SMARTY->assign('pagelimit',$pagelimit);
