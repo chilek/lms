@@ -81,9 +81,9 @@ switch($_GET['action'])
 		unset($customer);
 		unset($error);
 		
-		$invoice = $_POST['invoice'];
-		foreach($invoice as $key => $val)
-			$invoice[$key] = $val;
+		if($invoice = $_POST['invoice'])
+			foreach($invoice as $key => $val)
+				$invoice[$key] = $val;
 		
 		$invoice['paytime'] = sprintf('%d', $invoice['paytime']);
 		
