@@ -35,7 +35,7 @@ $option = $_GET['op'];
 
 if($id && !AccountExists($id))
 {
-	$SESSION->redirect($SESSION->get('backto'));
+	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
