@@ -35,11 +35,7 @@ LMS Developers
 
         4.1. Instalacja
         4.2. Lista dostêpnych skryptów
-        4.3. lms-notify
-        4.4. lms-notify-sms
-        4.5. lms-cutoff
-        4.6. lms-payments
-        4.7. lms-traffic
+        4.3. Opis i konfiguracja
 
    5. Generator plików konfiguracyjnych (lms-mgc)
 
@@ -1064,7 +1060,7 @@ Rozdzia³ 4. Skrypty
    Po wiêcej informacji mo¿esz siêgn±æ do man crontab
 
    Wiêkszo¶æ lms'owych skryptów posiada dodatkowe opcje uruchomieniowe:
--C=/plik    po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/lms.ini
+-C plik     po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/lms.ini
 -q          wykonanie skryptu bez wy¶wietlania komunikatów
 -h          pomoc (a w zasadzie to tylko listing opcji)
 -v          informacja o wersji skryptu
@@ -1073,31 +1069,36 @@ Rozdzia³ 4. Skrypty
 4.2. Lista dostêpnych skryptów
 
    Tabela 4-1. Lista skryptów wykonywalnych
-            Nazwa                              Opis
-         lms-notify        Korespondencja seryjna do u¿ytkowników sieci
-       lms-notify-sms          Powiadamianie o zalego¶ciach sms'em
-         lms-cutoff            Od³±czanie u¿ytkowników zad³u¿onych
-        lms-payments       Naliczanie op³at okresowych (abonamentowych)
-         lms-traffic           Zapis statystyk wykorzystania ³±cza
-   lms-traffic-logiptables      Wspó³praca lms-traffic z iptables
-         lms-makearp           Tworzenie tablicy ARP (/etc/ethers)
-      lms-makedhcpconf      Konfiguracja serwera DHCP(/etc/dhcpd.conf)
-      lms-makeiptables           Konfiguracja firewalla iptables
-      lms-makeipchains           Konfiguracja firewalla ipchains
-      lms-makeiodenconf                Konfiguracja oident
-      lms-makeopenbsdpf     Konfiguracja firewalla dla systemu OpenBSD
+   Nazwa Opis
+   lms-notify Korespondencja seryjna do u¿ytkowników sieci
+   lms-notify-sms Powiadamianie o zalego¶ciach sms'em
+   lms-cutoff Od³±czanie u¿ytkowników zad³u¿onych
+   lms-etherdesc Generowanie pliku dla iptraf zawieraj±cego pary MAC
+   adres - nazwa hosta
+   lms-payments Naliczanie op³at okresowych (abonamentowych)
+   lms-traffic Zapis statystyk wykorzystania ³±cza
+   lms-traffic-logiptables Wspó³praca lms-traffic z iptables
+   lms-makearp Tworzenie tablicy ARP (/etc/ethers)
+   lms-makedhcpconf Konfiguracja serwera DHCP(/etc/dhcpd.conf)
+   lms-makeiptables Konfiguracja firewalla iptables
+   lms-makeipchains Konfiguracja firewalla ipchains
+   lms-makeiodenconf Konfiguracja oident
+   lms-makeopenbsdpf Konfiguracja firewalla dla systemu OpenBSD
      _________________________________________________________________
 
-4.3. lms-notify
+4.3. Opis i konfiguracja
 
-4.3.1. Szablony
+4.3.1. lms-notify
 
    lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do
    pracy sieci i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie
-   kilku[-nastu] plików tekstowych [w iso-8859-2] i traktowania ich jako
+   kilku[-nastu] plików tekstowych (w iso-8859-2) i traktowania ich jako
    szablonów do mailingu.
+     _________________________________________________________________
 
-   W plikach mo¿na u¿ywaæ nastêpuj±cych zmiennych:
+4.3.1.1. Szablony
+
+   W szablonach mo¿na u¿ywaæ nastêpuj±cych zmiennych:
      * %date-m - zostanie zast±pione aktualnym miesi±cem, licz±c od 1
        poprzedzone 0, np. 02
      * %date-y - zostanie zast±pione aktualnym rokiem, np 2003
@@ -1162,23 +1163,24 @@ Amatorska Sieæ Komputerowa NaszaSiec
 http://www.naszasiec.pl/
      _________________________________________________________________
 
-4.3.2. Konfiguracja
+4.3.1.2. Konfiguracja
 
    Konfiguracjê dla lms-notify mo¿na ustaliæ w pliku lms.ini w sekcji
    [notify]. Mo¿esz tam ustawiæ nastêpuj±ce parametry:
      * limit (opcjonalny)
-       Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika
-       zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0
+       Pozwala na ustalenie limitu bilansu, poni¿ej którego do
+       u¿ytkownika zostanie wys³any email z upomnieniem. Domy¶lnie limit
+       = 0
        Przyk³ad: limit = -20
      * mailsubject (wymagany)
-       Pozwala na ustalenie tematu emaila wysy³anego do u¿ytkownika.
+       Pozwala na ustalenie tematu e-maila wysy³anego do u¿ytkownika.
        Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y,
        %date-m, %last_10_in_a_table). Domy¶lnie nieustawione.
        Przyk³ad: mailsubject = Informacje o zaleg³o¶ciach w op³atach za
        internet
      * mailtemplate (wymagany)
-       Pozwala na wskazanie szablonu wiadomo¶ci która zostanie wys³ana do
-       u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie nieustawione
+       Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana
+       do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie nieustawione
        Przyk³ad: mailtemplate = /etc/lms/notifytemplate.txt
      * mailfrom
        Adres e-mail z którego zostanie wys³any e-mail. Proszê pamiêtaæ,
@@ -1189,7 +1191,7 @@ http://www.naszasiec.pl/
        Nazwa nadawcy maila
        Przyk³ad: mailfname = Administratorzy
      * smtp_server
-       Serwer SMTP przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie:
+       Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie:
        127.0.0.1
        Przyk³ad: smtp_server = smtp.mydomain.pl
      * debug_email (opcjonalny)
@@ -1200,7 +1202,7 @@ http://www.naszasiec.pl/
        Przyk³ad: debug_email = lexx@domain.pl
      _________________________________________________________________
 
-4.4. lms-notify-sms
+4.3.2. lms-notify-sms
 
    lms-notify-sms to odpowiednik lms-notify, s³u¿±cy do wysy³ania smsów.
    Do wysy³ania wiadomo¶ci potrzebna jest komórka Nokii oraz
@@ -1218,7 +1220,7 @@ http://www.naszasiec.pl/
        Przyk³ad: smstemplate = /etc/lms/smstemplate.txt
      _________________________________________________________________
 
-4.5. lms-cutoff
+4.3.3. lms-cutoff
 
    Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu
    komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej
@@ -1233,7 +1235,7 @@ http://www.naszasiec.pl/
        Przyk³ad: limit = -20
      _________________________________________________________________
 
-4.6. lms-payments
+4.3.4. lms-payments
 
    Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
    u¿ytkownikom oraz op³at sta³ych. Aby dzia³a³ poprawnie powinien byæ
@@ -1242,7 +1244,7 @@ http://www.naszasiec.pl/
    Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.
      _________________________________________________________________
 
-4.7. lms-traffic
+4.3.5. lms-traffic
 
    Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i
    wys³anych przez ka¿dy komputer w sieci lokalnej. W bazie danych
@@ -1256,7 +1258,7 @@ http://www.naszasiec.pl/
    dostêpne jest z g³ównego menu 'Statystyki'.
      _________________________________________________________________
 
-4.7.1. Instalacja
+4.3.5.1. Instalacja
 
    Przed uruchomieniem lms-traffic nale¿y zadbaæ o utworzenie pliku z
    danymi. Zawarto¶æ pliku powinna mieæ nastêpuj±cy format:
@@ -1283,6 +1285,132 @@ http://www.naszasiec.pl/
    jej poni¿ej 10 minut, mo¿e spowodowaæ szybki przyrost ilo¶ci rekordów
    w bazie danych, a co za tym idzie zwiêkszyæ czas oczekiwania na
    wy¶wietlenie wyników.
+     _________________________________________________________________
+
+4.3.6. lms-traffic-logiptables
+
+   Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i
+   wys³anych przez ka¿dy komputer z sieci lokalnej, na podstawie
+   liczników iptables. Dane zczytuje z firewalla, tworz±c jednocze¶nie
+   odpowiednie regu³y. Zatem, nie jest konieczne rêczne tworzenie regu³
+   iptables. Dane zapisywane s± do pliku o formacie wymaganym przez
+   lms-traffic.
+
+   Konfiguracjê nale¿y umie¶ciæ w sekcji [traffic-logiptables]:
+     * logfile
+       Lokalizacja pliku na dane. Domy¶lnie: niezdefiniowana.
+       Przyk³ad: logfile = /var/log/traffic.log
+     * outfile
+       Lokalizacja skryptu z regu³ami iptables. Domy¶lnie:
+       /etc/rc.d/rc.stat
+       Przyk³ad: outfile = /etc/rc.d/rc.stat
+     * iptables_binary
+       Lokalizacja programu iptables. Domy¶lnie: /usr/sbin/iptables
+       Przyk³ad: iptables_binary = /usr/local/sbin/iptables
+     * wan_interfaces
+       Nazwy interfejsów, na których dane maj± byæ zliczane. Domy¶lnie:
+       niezdefiniowane.
+       Przyk³ad: wan_interfaces = eth0
+     * local_ports
+       Lista portów (¼ród³owych i docelowych) dla zliczanych pakietów.
+       Domy¶lnie: niezdefiniowane.
+       Przyk³ad: local_ports = 80
+     * script_owneruid
+       UID w³a¶ciciela skryptu okre¶lonego w 'outfile'. Domy¶lnie: 0
+       (root).
+       Przyk³ad: script_owneruid = 0
+     * script_ownergid
+       GID w³a¶ciciela skryptu okre¶lonego w 'outfile'. Domy¶lnie: 0
+       (root).
+       Przyk³ad: script_ownergid = 0
+     * script_permission
+       Uprawnienia skryptu okre¶lonego w 'outfile'. Domy¶lnie: 700
+       (rwx------).
+       Przyk³ad: script_permission = 700
+     _________________________________________________________________
+
+4.3.7. lms-makeiptables, lms-makeipchains
+
+   Para skryptów s³u¿±cych do generowania plików zawieraj±cych regu³y
+   firewalla. Do utworzonego pliku mo¿esz do³±czyæ inne wcze¶niej
+   utworzone pliki, a w koñcu nadaæ mu odpowiednie uprawnienia. Skrypty
+   nie uruchamiaj± wygenerowanych plików.
+
+   Konfiguracjê dla tych skryptów mo¿esz ustaliæ w pliku lms.ini w sekcji
+   [iptables] (i odpowiednio [ipchains]). Oba skrypty posiadaj± te same
+   opcje:
+     * networks
+       Lista nazw sieci (oddzielonych spacjami), które maj± byæ
+       uwzglêdnione podczas generowania pliku firewalla. Je¶li nie
+       ustawiono, zostanie stworzony konfig dla wszystkich sieci.
+       Przyk³ad: networks = public-custa public-custb
+     * iptables_binary (ipchains_binary)
+       Lokalizacja programu iptables (ipchains). Domy¶lnie:
+       /usr/sbin/iptables (/usr/sbin/ipchains)
+       Przyk³ad: iptables_binary = /usr/local/sbin/iptables
+     * script_file
+       Plik, do którego zapisujemy regu³y firwalla. Domy¶lnie:
+       /etc/rc.d/rc.masq
+       Przyk³ad: script_file = /etc/rc.d/rc.firewall
+     * pre_script
+       Plik wykonywany PO wyczyszczeniu regu³ek, ale PRZED ustawieniem
+       nowych. Domy¶lnie: niezdefiniowany.
+       Przyk³ad: pre_script = /etc/rc.d/rc.masq-pre
+     * post_script
+       Plik wykonywany PO ustawieniu regu³ek. Domy¶lnie: niezdefiniowany.
+       Przyk³ad: post_script = /etc/rc.d/rc.masq-post
+     * forward_to
+       Lista sieci, dla których w³±czamy forwarding. Mo¿liwe warto¶ci: ""
+       - pe³ny forward, "dowolny ci±g" - wy³±cz forward, "siec1 siec2" -
+       lista sieci z w³±czonym forwardingiem. Domy¶lnie: pe³ny forward.
+       Przyk³ad: forward_to = public-custa public-custb
+     * script_owneruid
+       UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).
+       Przyk³ad: script_owneruid = 0
+     * script_ownergid
+       GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).
+       Przyk³ad: script_ownergid = 0
+     * script_permission
+       Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).
+       Przyk³ad: script_permission = 700
+     * snat_address
+       Adres SNAT. Je¶li nie ustawiono, dla hostów z adresami publicznymi
+       bêdzie u¿yte "-j MASQUERADE". Je¶li ustawiono zostanie u¿yte "-j
+       SNAT --to xxx.xxx.xxx.xxx". Dotyczy lms-makeiptables. Domy¶lnie:
+       nieustawiony.
+       Przyk³ad: snat_address = 123.123.123.123
+     * tcp_redirect_ports (udp_redirect_ports)
+       Konfiguracja przekierowañ w formie port_¼ród³owy:port_docelowy dla
+       przekierowañ na lokaln± maszynê dla po³±czeñ wychodz±cych. Dotyczy
+       lms-makeipchains. Domy¶lnie: nieustawione.
+       Przyk³ad: tcp_redirect_ports = 80:3128 25:25
+     _________________________________________________________________
+
+4.3.8. lms-etherdesc
+
+   Skrypt s³u¿±cy do generowania pliku zawieraj±cego MAC adresy oraz
+   nazwy hostów pobierane z bazy lms'a. Adresy zapisywane s± w formacie
+   'stripped mac', czyli bez ":". Tego typu plik wykorzystywany jest
+   przez pakiet iptraf.
+
+   Konfiguracjê tego skryptu zawiera sekcja [ethers] w pliku lms.ini:
+     * networks
+       Lista nazw sieci (oddzielonych spacjami), które maj± byæ
+       uwzglêdnione podczas generowania pliku. Je¶li nie ustawiono,
+       zostanie stworzony konfig dla wszystkich sieci.
+       Przyk³ad: networks = public-custa public-custb
+     * etherdesc_owneruid
+       UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).
+       Przyk³ad: etherdesc_owneruid = 0
+     * etherdesc_file
+       Lokalizacja pliku. Domy¶lnie: /var/lib/iptraf/ethernet.desc.
+       Przyk³ad: etherdesc_file = /etc/ethernet.desc
+     * etherdesc_ownergid
+       GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).
+       Przyk³ad: etherdesc_ownergid = 0
+     * etherdesc_permission
+       Uprawnienia pliku skryptu. Domy¶lnie: 600 (rw-------).
+       Przyk³ad: etherdesc_permission = 600
      _________________________________________________________________
 
 Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)

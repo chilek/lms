@@ -164,28 +164,8 @@ HREF="#SCRIPTS-LIST"
 ></DT
 ><DT
 >4.3. <A
-HREF="#SCRIPTS-NOTIFY"
->lms-notify</A
-></DT
-><DT
->4.4. <A
-HREF="#SCRIPTS-NOTIFY-SMS"
->lms-notify-sms</A
-></DT
-><DT
->4.5. <A
-HREF="#SCRIPTS-CUTOFF"
->lms-cutoff</A
-></DT
-><DT
->4.6. <A
-HREF="#SCRIPTS-PAYMENTS"
->lms-payments</A
-></DT
-><DT
->4.7. <A
-HREF="#SCRIPTS-TRAFFIC"
->lms-traffic</A
+HREF="#SCRIPTS-CONFIG"
+>Opis i konfiguracja</A
 ></DT
 ></DL
 ></DD
@@ -288,12 +268,12 @@ HREF="#AEN729"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN1237"
+HREF="#AEN1385"
 >Lista modu³ów demona almsd</A
 ></DT
 ><DT
 >7-1. <A
-HREF="#AEN1680"
+HREF="#AEN1828"
 >Drzewo katalogów LMS</A
 ></DT
 ></DL
@@ -308,22 +288,22 @@ CLASS="LOT"
 ></DT
 ><DT
 >4-1. <A
-HREF="#AEN797"
+HREF="#AEN802"
 >Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</A
 ></DT
 ><DT
 >4-2. <A
-HREF="#AEN800"
+HREF="#AEN805"
 >Lms-notify: Przyk³ad szablonu</A
 ></DT
 ><DT
 >5-1. <A
-HREF="#AEN1172"
+HREF="#AEN1320"
 >Lms-mgc: Przyk³ad instancji</A
 ></DT
 ><DT
 >7-1. <A
-HREF="#AEN1911"
+HREF="#AEN2059"
 >Format opcji konfiguracyjnych</A
 ></DT
 ></DL
@@ -3149,7 +3129,7 @@ CLASS="COMMAND"
 >Wiêkszo¶æ lms'owych skryptów posiada dodatkowe opcje uruchomieniowe:</P
 ><PRE
 CLASS="SCREEN"
->-C=/plik    po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/lms.ini
+>-C plik     po³o¿enie i nazwa alternatywnego pliku lms.ini, domy¶lnie /etc/lms/lms.ini
 -q          wykonanie skryptu bez wy¶wietlania komunikatów               
 -h          pomoc (a w zasadzie to tylko listing opcji)
 -v          informacja o wersji skryptu</PRE
@@ -3204,6 +3184,12 @@ ALIGN="CENTER"><THEAD
 >lms-cutoff</TD
 ><TD
 >Od³±czanie u¿ytkowników zad³u¿onych</TD
+></TR
+><TR
+><TD
+>lms-etherdesc</TD
+><TD
+>Generowanie pliku dla iptraf zawieraj±cego pary MAC adres - nazwa hosta</TD
 ></TR
 ><TR
 ><TD
@@ -3270,21 +3256,31 @@ CLASS="SECT1"
 ><HR><H2
 CLASS="SECT1"
 ><A
-NAME="SCRIPTS-NOTIFY"
->4.3. lms-notify</A
+NAME="SCRIPTS-CONFIG"
+>4.3. Opis i konfiguracja</A
 ></H2
 ><DIV
 CLASS="SECT2"
 ><H3
 CLASS="SECT2"
 ><A
-NAME="AEN778"
->4.3.1. Szablony</A
+NAME="LMS-NOTIFY"
+>4.3.1. lms-notify</A
 ></H3
 ><P
->lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych [w iso-8859-2] i traktowania ich jako szablonów do mailingu.</P
+>lms-notify jest dobrym sposobem przypominania ludziom o tym ¿e do pracy sieci 
+	  i ³±cz konieczne s± ich pieni±¿ki. Pozwala on na napisanie kilku[-nastu] plików tekstowych 
+	  (w iso-8859-2) i traktowania ich jako szablonów do mailingu.</P
+><DIV
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
+><A
+NAME="LMS-NOTIFY-TEMPLATES"
+>4.3.1.1. Szablony</A
+></H4
 ><P
->W plikach mo¿na u¿ywaæ nastêpuj±cych zmiennych:</P
+>W szablonach mo¿na u¿ywaæ nastêpuj±cych zmiennych:</P
 ><UL
 ><LI
 ><P
@@ -3318,7 +3314,7 @@ NAME="AEN778"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN797"
+NAME="AEN802"
 ></A
 ><P
 ><B
@@ -3340,7 +3336,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN800"
+NAME="AEN805"
 ></A
 ><P
 ><B
@@ -3388,13 +3384,13 @@ http://www.naszasiec.pl/</PRE
 ></DIV
 ></DIV
 ><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
 ><A
-NAME="AEN803"
->4.3.2. Konfiguracja</A
-></H3
+NAME="LMS-NOTIFY-CONFIG"
+>4.3.1.2. Konfiguracja</A
+></H4
 ><P
 >Konfiguracjê dla lms-notify mo¿na ustaliæ w pliku <TT
 CLASS="FILENAME"
@@ -3412,7 +3408,7 @@ CLASS="EMPHASIS"
 ><P
 >limit (opcjonalny)</P
 ><P
->Pozwala na ustalenie limitu bilansu poni¿ej którego do u¿ytkownika zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0</P
+>Pozwala na ustalenie limitu bilansu, poni¿ej którego do u¿ytkownika zostanie wys³any email z upomnieniem. Domy¶lnie limit = 0</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -3423,7 +3419,7 @@ CLASS="PROMPT"
 ><P
 >mailsubject (wymagany)</P
 ><P
->Pozwala na ustalenie tematu emaila wysy³anego do u¿ytkownika. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie nieustawione.</P
+>Pozwala na ustalenie tematu e-maila wysy³anego do u¿ytkownika. Mo¿na u¿ywaæ podstawieñ znanych z szablonów (%B, %b, %date-y, %date-m, %last_10_in_a_table). Domy¶lnie nieustawione.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -3434,7 +3430,7 @@ CLASS="PROMPT"
 ><P
 >mailtemplate (wymagany)</P
 ><P
->Pozwala na wskazanie szablonu wiadomo¶ci która zostanie wys³ana do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie nieustawione</P
+>Pozwala na wskazanie szablonu wiadomo¶ci, która zostanie wys³ana do u¿ytkownika. Wiêcej o szablonach tutaj. Domy¶lnie nieustawione</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -3467,7 +3463,7 @@ CLASS="PROMPT"
 ><P
 >smtp_server</P
 ><P
->Serwer SMTP przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1</P
+>Serwer SMTP, przez który ma zostaæ wys³ana wiadomo¶æ. Domy¶lnie: 127.0.0.1</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
@@ -3489,13 +3485,13 @@ CLASS="PROMPT"
 ></DIV
 ></DIV
 ><DIV
-CLASS="SECT1"
-><HR><H2
-CLASS="SECT1"
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
 ><A
-NAME="SCRIPTS-NOTIFY-SMS"
->4.4. lms-notify-sms</A
-></H2
+NAME="LMS-NOTIFY-SMS"
+>4.3.2. lms-notify-sms</A
+></H3
 ><P
 >lms-notify-sms to odpowiednik lms-notify, s³u¿±cy do wysy³ania
 	  smsów. Do wysy³ania wiadomo¶ci potrzebna jest komórka Nokii oraz oprogramowanie,
@@ -3544,13 +3540,13 @@ CLASS="PROMPT"
 ></UL
 ></DIV
 ><DIV
-CLASS="SECT1"
-><HR><H2
-CLASS="SECT1"
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
 ><A
-NAME="SCRIPTS-CUTOFF"
->4.5. lms-cutoff</A
-></H2
+NAME="LMS-CUTOFF"
+>4.3.3. lms-cutoff</A
+></H3
 ><P
 >Skrypt pozwala na od³±czenie (a raczej zmianê w bazie danych stanu komputerów na wy³±czony) u¿ytkowników których bilans jest poni¿ej zadanej warto¶ci. W³a¶ciwe od³±czanie powinno byæ realizowane przez generator plików konfiguracyjnych.</P
 ><P
@@ -3579,13 +3575,13 @@ CLASS="PROMPT"
 ></UL
 ></DIV
 ><DIV
-CLASS="SECT1"
-><HR><H2
-CLASS="SECT1"
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
 ><A
-NAME="SCRIPTS-PAYMENTS"
->4.6. lms-payments</A
-></H2
+NAME="LMS-PAYMENTS"
+>4.3.4. lms-payments</A
+></H3
 ><P
 >Skrypt s³u¿±cy do naliczania op³at abonamentowych przypisanych
 	 u¿ytkownikom oraz op³at sta³ych.
@@ -3594,13 +3590,13 @@ NAME="SCRIPTS-PAYMENTS"
 >Skrypt ten nie posiada ¿adnych opcji konfiguracyjnych.</P
 ></DIV
 ><DIV
-CLASS="SECT1"
-><HR><H2
-CLASS="SECT1"
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
 ><A
-NAME="SCRIPTS-TRAFFIC"
->4.7. lms-traffic</A
-></H2
+NAME="LMS-TRAFFIC"
+>4.3.5. lms-traffic</A
+></H3
 ><P
 >Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
 	przez ka¿dy komputer w sieci lokalnej. W bazie danych zapisywana jest ilo¶æ
@@ -3615,13 +3611,13 @@ NAME="SCRIPTS-TRAFFIC"
 	dostêpne jest z g³ównego menu 'Statystyki'.
     </P
 ><DIV
-CLASS="SECT2"
-><HR><H3
-CLASS="SECT2"
+CLASS="SECT3"
+><HR><H4
+CLASS="SECT3"
 ><A
-NAME="AEN882"
->4.7.1. Instalacja</A
-></H3
+NAME="LMS-TRAFFIC-CONFIG"
+>4.3.5.1. Instalacja</A
+></H4
 ><P
 >Przed uruchomieniem lms-traffic nale¿y zadbaæ o utworzenie
 	    pliku z danymi. Zawarto¶æ pliku powinna mieæ nastêpuj±cy format:</P
@@ -3700,6 +3696,380 @@ VALIGN="TOP"
 ></DIV
 >
 	    </P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="LMS-TRAFFIC-LOGIPTABLES"
+>4.3.6. lms-traffic-logiptables</A
+></H3
+><P
+>Skrypt s³u¿y do logowania informacji o ilo¶ci danych pobranych i wys³anych
+	przez ka¿dy komputer z sieci lokalnej, na podstawie liczników iptables. Dane 
+	zczytuje z firewalla, tworz±c jednocze¶nie odpowiednie regu³y. Zatem, nie jest 
+	konieczne rêczne tworzenie regu³ iptables. Dane zapisywane s± do pliku o 
+	formacie wymaganym przez <TT
+CLASS="FILENAME"
+>lms-traffic</TT
+>.
+	</P
+><P
+>Konfiguracjê nale¿y umie¶ciæ w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[traffic-logiptables]</I
+></SPAN
+>:
+	    <UL
+><LI
+><P
+>logfile</P
+><P
+>Lokalizacja pliku na dane. Domy¶lnie: niezdefiniowana.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>logfile = /var/log/traffic.log</SAMP
+></P
+></LI
+><LI
+><P
+>outfile</P
+><P
+>Lokalizacja skryptu z regu³ami iptables. Domy¶lnie: /etc/rc.d/rc.stat</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>outfile = /etc/rc.d/rc.stat</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary</P
+><P
+>Lokalizacja programu iptables. Domy¶lnie: /usr/sbin/iptables</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>wan_interfaces</P
+><P
+>Nazwy interfejsów, na których dane maj± byæ zliczane. Domy¶lnie: niezdefiniowane.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>wan_interfaces = eth0</SAMP
+></P
+></LI
+><LI
+><P
+>local_ports</P
+><P
+>Lista portów (¼ród³owych i docelowych) dla zliczanych pakietów. Domy¶lnie: niezdefiniowane.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>local_ports = 80</SAMP
+></P
+></LI
+><LI
+><P
+>script_owneruid</P
+><P
+>UID w³a¶ciciela skryptu okre¶lonego w 'outfile'. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_ownergid</P
+><P
+>GID w³a¶ciciela skryptu okre¶lonego w 'outfile'. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_permission</P
+><P
+>Uprawnienia skryptu okre¶lonego w 'outfile'. Domy¶lnie: 700 (rwx------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_permission = 700</SAMP
+></P
+></LI
+></UL
+>
+	</P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="LMS-MAKEIPTABLES"
+>4.3.7. lms-makeiptables, lms-makeipchains</A
+></H3
+><P
+>Para skryptów s³u¿±cych do generowania plików zawieraj±cych
+	    regu³y firewalla. Do utworzonego pliku mo¿esz do³±czyæ inne wcze¶niej
+	    utworzone pliki, a w koñcu nadaæ mu odpowiednie uprawnienia. Skrypty nie
+	    uruchamiaj± wygenerowanych plików.</P
+><P
+>Konfiguracjê dla tych skryptów mo¿esz ustaliæ w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+> w sekcji <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[iptables]</I
+></SPAN
+>
+	    (i odpowiednio <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[ipchains]</I
+></SPAN
+>). Oba skrypty posiadaj± te same
+	    opcje: </P
+><UL
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku firewalla. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>iptables_binary (ipchains_binary)</P
+><P
+>Lokalizacja programu iptables (ipchains). Domy¶lnie: /usr/sbin/iptables (/usr/sbin/ipchains)</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>iptables_binary = /usr/local/sbin/iptables</SAMP
+></P
+></LI
+><LI
+><P
+>script_file</P
+><P
+>Plik, do którego zapisujemy regu³y firwalla. Domy¶lnie: /etc/rc.d/rc.masq</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_file = /etc/rc.d/rc.firewall</SAMP
+></P
+></LI
+><LI
+><P
+>pre_script</P
+><P
+>Plik wykonywany PO wyczyszczeniu regu³ek, ale PRZED ustawieniem nowych. 
+		    Domy¶lnie: niezdefiniowany.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>pre_script = /etc/rc.d/rc.masq-pre</SAMP
+></P
+></LI
+><LI
+><P
+>post_script</P
+><P
+>Plik wykonywany PO ustawieniu regu³ek. Domy¶lnie: niezdefiniowany.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>post_script = /etc/rc.d/rc.masq-post</SAMP
+></P
+></LI
+><LI
+><P
+>forward_to</P
+><P
+>Lista sieci, dla których w³±czamy forwarding. Mo¿liwe warto¶ci: "" - pe³ny forward, 
+		    "dowolny ci±g" - wy³±cz forward, "siec1 siec2" - lista sieci z w³±czonym forwardingiem.  
+		    Domy¶lnie: pe³ny forward.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>forward_to = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>script_owneruid</P
+><P
+>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_ownergid</P
+><P
+>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>script_permission</P
+><P
+>Uprawnienia pliku skryptu. Domy¶lnie: 700 (rwx------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>script_permission = 700</SAMP
+></P
+></LI
+><LI
+><P
+>snat_address</P
+><P
+>Adres SNAT. Je¶li nie ustawiono, dla hostów z adresami publicznymi bêdzie
+		    u¿yte "-j MASQUERADE". Je¶li ustawiono zostanie u¿yte "-j SNAT --to xxx.xxx.xxx.xxx".
+		    Dotyczy lms-makeiptables. Domy¶lnie: nieustawiony.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>snat_address = 123.123.123.123</SAMP
+></P
+></LI
+><LI
+><P
+>tcp_redirect_ports (udp_redirect_ports)</P
+><P
+>Konfiguracja przekierowañ w formie port_¼ród³owy:port_docelowy dla
+		    przekierowañ na lokaln± maszynê dla po³±czeñ wychodz±cych. Dotyczy lms-makeipchains.
+		    Domy¶lnie: nieustawione.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>tcp_redirect_ports = 80:3128 25:25</SAMP
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="LMS-ETHERDESC"
+>4.3.8. lms-etherdesc</A
+></H3
+><P
+>Skrypt s³u¿±cy do generowania pliku zawieraj±cego MAC adresy oraz
+	    nazwy hostów pobierane z bazy lms'a. Adresy zapisywane s± w formacie 'stripped mac',
+	    czyli bez ":". Tego typu plik wykorzystywany jest przez pakiet <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>iptraf</I
+></SPAN
+>.
+	    </P
+><P
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[ethers]</I
+></SPAN
+>
+	    w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
+><UL
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas generowania
+		    pliku. Je¶li nie ustawiono, zostanie stworzony konfig dla wszystkich sieci.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>etherdesc_owneruid</P
+><P
+>UID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>etherdesc_owneruid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>etherdesc_file</P
+><P
+>Lokalizacja pliku. Domy¶lnie: /var/lib/iptraf/ethernet.desc.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>etherdesc_file = /etc/ethernet.desc</SAMP
+></P
+></LI
+><LI
+><P
+>etherdesc_ownergid</P
+><P
+>GID w³a¶ciciela pliku. Domy¶lnie: 0 (root).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>etherdesc_ownergid = 0</SAMP
+></P
+></LI
+><LI
+><P
+>etherdesc_permission</P
+><P
+>Uprawnienia pliku skryptu. Domy¶lnie: 600 (rw-------).</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>etherdesc_permission = 600</SAMP
+></P
+></LI
+></UL
 ></DIV
 ></DIV
 ></DIV
@@ -4458,7 +4828,7 @@ NAME="MGC-EXAMPLE"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN1172"
+NAME="AEN1320"
 ></A
 ><P
 ><B
@@ -4773,7 +5143,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1237"
+NAME="AEN1385"
 ></A
 ><P
 ><B
@@ -5974,7 +6344,7 @@ NAME="DEVEL-CATALOGS"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN1680"
+NAME="AEN1828"
 ></A
 ><P
 ><B
@@ -6852,7 +7222,7 @@ NAME="PARAMS"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN1911"
+NAME="AEN2059"
 ></A
 ><P
 ><B
@@ -7007,7 +7377,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN1933"
+NAME="AEN2081"
 >7.6.1. Wynikaj±ce z naszego projektu</A
 ></H3
 ><P
@@ -7020,7 +7390,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="AEN1936"
+NAME="AEN2084"
 >7.6.2. Wynikaj±ce z u¿ywanego DMBS</A
 ></H3
 ><UL
