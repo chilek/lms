@@ -59,7 +59,14 @@ class LMS {
 		$db->FetchRow("SELECT `name` FROM `admins` WHERE `id` = '".$id."' LIMIT 1");
 		return $db->row[name];
 	}
-	
+
+	function GetNetworkName($id)
+	{	
+		$db=$this->db;
+		$db->FetchRow("SELECT `name` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
+		return $db->row[name];
+	}
+
 	function GetTariffValue($id)
 	{
 		$db=$this->db;
@@ -224,13 +231,76 @@ class LMS {
 		return $db->row[status];
 	}
 
+	function NetworkCompress($id)
+	{
+		$db=$this->db;
+		$network=$this->GetNetworkRecord($id);
+		$address = $network[addresslong];
+		foreach($network[nodes][id] as $key => $value)
+		{
+			if($value)
+			{
+				$address ++;
+				$db->ExecSQL("UPDATE `nodes` SET `ipaddr` = '".long2ip($address)."' WHERE `id` = '".$value."' LIMIT 1");
+			}				
+		}
+	}
+
+	function NetworkRemap($src,$dst)
+	{
+		$db=$this->db;
+		$network[source] = $this->GetNetworkRecord($src);
+		$network[dest] = $this->GetNetworkRecord($dst);
+		foreach($network[source][nodes][id] as $key => $value)
+			if($this->NodeExists($value))
+				$nodelist[] = $value;
+		$counter = 0;
+		if(sizeof($nodelist))
+			foreach($nodelist as $value)
+			{
+				while($this->NodeExists($network[dest][nodes][id][$counter]))
+					$counter++;
+				$db->ExecSQL("UPDATE `nodes` SET `ipaddr` = '".$network[dest][nodes][address][$counter]."' WHERE `id` = '".$value."' LIMIT 1");
+				$counter++;
+			}
+		return $counter;
+	}
+
 	function GetNetworkRecord($id)
 	{
 		$db=$this->db;
 		$network = $db->FetchRow("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks` WHERE `id` = '".$id."'");
 		$network[prefix] = mask2prefix($network[mask]);
-		$network[size] = pow(2,32-$network[prefix]);		
+		$network[addresslong] = ip_long($network[address]);
+		$network[size] = pow(2,32-$network[prefix]);
+		$network[rows] = ceil($network[size]/4);
+		$network[assigned] = 0;	
+		// wype³nijmy tabelê pustymi danymi - ¿eby nie by³o burdelu
+		// i ¿eby rekordy by³y ³adnie pouk³adane :)
+		// BTW - W LI¦CIE NIE PRZEKAZUJEMY ADRESU SIECI I BROADCASTA!!!
 		
+		for($i=0;$i<$network[size]-2;$i++)
+		{
+			$network[nodes][address][$i] = long2ip(ip_long($network[address])+$i+1);
+			$network[nodes][id][$i] = "";
+			$network[nodes][ownerid][$i] = "";
+			$network[nodes][name][$i] = "";
+		}
+		$networknodes = $db->FetchArray("SELECT `id`, `name`, `ipaddr`, `ownerid` FROM `nodes`");
+		foreach($networknodes[id] as $key => $value)
+		{
+			$networknodes[addresslong][$key] = ip_long($networknodes[ipaddr][$key]);
+			if(isipin($networknodes[ipaddr][$key],$network[address],$network[mask]))
+			{
+				$pos = $networknodes[addresslong][$key] - ip_long($network[address]) -1;
+				$network[nodes][address][$pos] = $networknodes[ipaddr][$key];
+				$network[nodes][id][$pos] = $networknodes[id][$key];
+				$network[nodes][ownerid][$pos] = $networknodes[ownerid][$key];
+				$network[nodes][name][$pos] = $networknodes[name][$key];
+				$network[assigned] ++;
+			}
+		}
+		$network[free] = $network[size] - $network[assigned] - 2;
 		return $network;
 	}
 
@@ -268,6 +338,7 @@ class LMS {
 			}
 			array_multisort($return[addresslong],$return[address],$return[nodeid],$return[nodename],$return[mark]);
 		}
+		
 		return $return;
 	}
 			
