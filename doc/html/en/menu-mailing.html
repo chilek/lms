@@ -83,7 +83,8 @@ NAME="MENU-MAILING"
 if you have to communicate something to them. Obviously you need to specify
 sender name and address, write your message in text box and select appropriate
 group of recipients. Your attendance can be grouped by status, network or user
-groups.</P
+groups. If you use mail server on remote host, you will need to set options
+smtp_host, smtp_port, smtp_username, smtp_password in [phpui] section.</P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -104,7 +105,7 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Your server has to support mail() function for this to
+>Your server has to support PEAR::Mail for this to
 work.</P
 ></TD
 ></TR
@@ -130,8 +131,8 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->It's best to use lms-notify Perl script or notify and
-ggnotify modules of <SPAN
+>It's best to use lms-notify Perl script or notify
+module of <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"

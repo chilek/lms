@@ -321,6 +321,14 @@ TARGET="_top"
                you'll be prompted with form to add username and some personal data. When you enter
                correct admin personal details LMS will move you to login page, where you can use
                newly created account.</P
+><P
+>Let's stop here and add some stuff to cron, for peace of mind:
+               <PRE
+CLASS="SCREEN"
+>12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean --create --column-inserts  \
+            --format=p lms -- file backups/lms-auto-"$(date +%s)".sql</PRE
+>
+	    </P
 ></DIV
 ></DIV
 ><DIV

@@ -58,7 +58,7 @@ version 1.5.5 Anubis (??/??/????):
   - if we find only one customer we will redirect to his info (chilek)
   - almsd/dhcp,oident,ethers: changed defaults of 'file' and 'command'
     options (alec)
-  - translated to english documentation chapter 'A.L.E.C's LMS Daemon' (alec)
+  - translated to english almost entire documentation (kondi/alec)
   - database backups can be restored only on system version according 
     with database version where backup was created (alec)
   - added contrib/squid_redirector which extends capabilities of squid_warnings 

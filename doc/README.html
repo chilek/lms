@@ -352,7 +352,7 @@ HREF="#SCRIPTS-TABLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN2225"
+HREF="#AEN2232"
 >List of all almsd modules</A
 ></DT
 ><DT
@@ -1026,9 +1026,9 @@ TARGET="_top"
                or with CVS tools (anonymous access, empty password):</P
 ><PRE
 CLASS="SCREEN"
->CVS -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
-CVS -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
-CVS -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</PRE
+>cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
+cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</PRE
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -1671,6 +1671,14 @@ TARGET="_top"
                you'll be prompted with form to add username and some personal data. When you enter
                correct admin personal details LMS will move you to login page, where you can use
                newly created account.</P
+><P
+>Let's stop here and add some stuff to cron, for peace of mind:
+               <PRE
+CLASS="SCREEN"
+>12 4 3,10,17,21,28 * * /usr/bin/pg_dump -U lms --clean --create --column-inserts  \
+            --format=p lms -- file backups/lms-auto-"$(date +%s)".sql</PRE
+>
+	    </P
 ></DIV
 ></DIV
 ><DIV
@@ -2515,6 +2523,17 @@ CLASS="PROMPT"
 >Example:     <SAMP
 CLASS="PROMPT"
 >nodepassword_length = 8</SAMP
+></P
+></LI
+><LI
+><P
+>smtp_host, smtp_port, smtp_username, smtp_password</P
+><P
+>Parameters of smtp authorization in mailing. Default: 127.0.0.1:25.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>smtp_host = mail.domain.pl</SAMP
 ></P
 ></LI
 ></UL
@@ -4269,7 +4288,8 @@ NAME="MENU-MAILING"
 if you have to communicate something to them. Obviously you need to specify
 sender name and address, write your message in text box and select appropriate
 group of recipients. Your attendance can be grouped by status, network or user
-groups.</P
+groups. If you use mail server on remote host, you will need to set options
+smtp_host, smtp_port, smtp_username, smtp_password in [phpui] section.</P
 ><P
 ><DIV
 CLASS="NOTE"
@@ -4290,7 +4310,7 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Your server has to support mail() function for this to
+>Your server has to support PEAR::Mail for this to
 work.</P
 ></TD
 ></TR
@@ -4316,8 +4336,8 @@ ALT="Note"></TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->It's best to use lms-notify Perl script or notify and
-ggnotify modules of <SPAN
+>It's best to use lms-notify Perl script or notify
+module of <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -8188,7 +8208,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2225"
+NAME="AEN2232"
 ></A
 ><P
 ><B
