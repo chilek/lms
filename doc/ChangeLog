@@ -4,6 +4,8 @@ wersja 1.4.3 (??/??/????):
 
   - BTS#0000269: poprawiona walidacja NIPu przy edycji i dodawaniu
     u¿ytkownika (alec)
+  - lms-mgc ignoruje wpis node(x.x.x.x) je¿eli host x.x.x.x nie istnieje
+    (dzwonus/lukasz)
 
 wersja 1.4.2 Lya (14/12/2004):
 
