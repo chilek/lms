@@ -1,5 +1,11 @@
 <!-- $Id$ -->
-<FORM NAME="editipaddr" METHOD="POST" ACTION="?m=netdevedit&action=formeditip&id={$netdevinfo.id}&ip={$nodeipdata.id}"><INPUT TYPE="hidden" NAME="ipadd[id]" VALUE="{$nodeipdata.id}">
+<FORM NAME="editipaddr" METHOD="POST" ACTION="?m=netdevedit&action=formeditip&id={$netdevinfo.id}&ip={$nodeipdata.id}">
+    <INPUT TYPE="hidden" NAME="ipadd[id]" VALUE="{$nodeipdata.id}">
+    <INPUT TYPE="hidden" NAME="ipadd[createdby]" VALUE="{$nodeipdata.createdby}">
+    <INPUT TYPE="hidden" NAME="ipadd[creationdateh]" VALUE="{$nodeipdata.creationdateh}">
+    <INPUT TYPE="hidden" NAME="ipadd[moddate]" VALUE="{$nodeipdata.moddate}">
+    <INPUT TYPE="hidden" NAME="ipadd[modifiedby]" VALUE="{$nodeipdata.modifiedby}">
+    <INPUT TYPE="hidden" NAME="ipadd[moddateh]" VALUE="{$nodeipdata.moddateh}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="FLEFTU">
