@@ -65,6 +65,7 @@ version 1.5.5 Anubis (??/??/????):
     (enable/disable nodes access to squid), and marking squid_warnings as 
     obsolete (lexx)
   - BTS#0000315: remove assignments in customer delete function (alec/WiktorRB)
+  - page headers have been removed (chilek)
 
 version 1.5.4 Ramius (16/02/2005):
 
