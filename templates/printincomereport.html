@@ -8,29 +8,29 @@
 		<TD WIDTH="50%" ALIGN="RIGHT">
 			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
 			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
-			Sporz±dzone przez: {$layout.logname}
+			{t 0=$layout.logname}Created by: $0{/t}
 		</TD>
 	</TR>
 </TABLE>
 <TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			Lp
+			{t}No.{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			Data
+			{t}Date{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			22% VAT
+			{t}22% VAT{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			7% VAT
+			{t}7% VAT{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			0% VAT
+			{t}0% VAT{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="CENTER">
-			zw. VAT
+			{t}Tax-free{/t}
 		</TD>
 	</TR>
 	{cycle values="#FFFFFF,#EEEEEE" print=false}
@@ -40,7 +40,7 @@
 			{counter}
 		</TD>
 		<TD ALIGN="CENTER" NOWRAP>
-			{$incomelist[incomelist].date|date_format:"%d.%m.%Y"}
+			{$incomelist[incomelist].date|date_format:"%Y/%m/%d"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$incomelist[incomelist].tax22|string_format:"%01.2f"}
@@ -58,9 +58,9 @@
 	{sectionelse}
 	<TR>
 		<TD ALIGN="center" WIDTH="100%" COLSPAN="6">
-			<p>&nbsp;</p>
-			<p><B>Brak operacji kasowych</B></p>
-			<p>&nbsp;</p>
+			<P>&nbsp;</P>
+			<P><B>{t}No such cash oparations.{/t}</B></P>
+			<P>&nbsp;</P>
 		</TD>
 	</TR>
 	{/section}
@@ -68,7 +68,7 @@
 		<TD ALIGN="CENTER">
 		</TD>
 		<TD ALIGN="CENTER" NOWRAP>
-			Razem:
+			{t}Total:{/t}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
 			{$totalincomelist.totaltax22|string_format:"%01.2f"}

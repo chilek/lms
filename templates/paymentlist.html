@@ -9,20 +9,20 @@
 			<IMG SRC="img/creditor.gif" ALT="" BORDER="0" ALIGN="absmiddle">
 		</TD>
 		<TD WIDTH="95%" CLASS="fbt" ALIGN="left">
-			<B>Nazwa:</B><BR>
-			Wierzyciel:
+			<B>{t}Name:{/t}</B><BR>
+			{t}CVreditor:{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" ALIGN="right">
-			ID:
+			{t}ID:{/t}
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt" ALIGN="right">
-			Warto¶æ:
+			{t}Value:{/t}
 		</TD>	
 		<TD NOWRAP WIDTH="1%" CLASS="fbt" ALIGN="right">
-			Dzieñ zap³aty:
+			{t}Payment day:{/t}
 		</TD>
 		<TD NOWRAP WIDTH="1%" CLASS="frightu" ALIGN="RIGHT">
-			<B>Razem: {$listdata.total}</B>
+			<B>{t 0=$listdata.total}Total: $0{/t}</B>
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}
@@ -56,10 +56,10 @@
 				<INPUT TYPE="HIDDEN" NAME="addbalance[value]" VALUE="{$paymentlist[payments].value}">
 				<INPUT TYPE="HIDDEN" NAME="addbalance[comment]" VALUE="{$paymentlist[payments].name} / {$paymentlist[payments].creditor}">
 				<NOBR>
-				<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ t± op³atê?');"><IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0"></A>
-				<A HREF="?m=paymentedit&id={$paymentlist[payments].id}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" BORDER="0"></A>
-				<A HREF="?m=paymentinfo&id={$paymentlist[payments].id}"><IMG SRC="img/info.gif" ALT="[ Info ]" BORDER="0"></A>&nbsp;
-				<A HREF="javascript:document.addbalance.submit();"><IMG SRC="img/save.gif" ALT="[ Nalicz ]" BORDER="0"></A>
+				<A HREF="?m=paymentdel&id={$paymentlist[payments].id}" onClick="return confirmLink(this,'{t}Are you sure, you want to delete that payment?{/t}');"><IMG SRC="img/delete.gif" ALT="[ {t}Delete{/t} ]" BORDER="0"></A>
+				<A HREF="?m=paymentedit&id={$paymentlist[payments].id}"><IMG SRC="img/edit.gif" ALT="[ {t}Edit{/t} ]" BORDER="0"></A>
+				<A HREF="?m=paymentinfo&id={$paymentlist[payments].id}"><IMG SRC="img/info.gif" ALT="[ {t}Info{/t} ]" BORDER="0"></A>&nbsp;
+				<A HREF="javascript:document.addbalance.submit();"><IMG SRC="img/save.gif" ALT="[ {t}Account payment{/t} ]" BORDER="0"></A>
 				</NOBR>
 			</FORM></P>
 		</TD>
@@ -69,7 +69,7 @@
 		<TD COLSPAN="6" ALIGN="center" CLASS="fall">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Nie ma wprowadzonych ¿adnych op³at sta³ych do bazy danych!</B></p>
+			<p><B>{t}No such standing payments in database.{/t}</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -80,7 +80,7 @@
 			&nbsp;
 		</TD>
 		<TD CLASS="fbt" WIDTH="1%" ALIGN="right">
-			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>Razem:</B>
+			<IMG SRC="img/info2.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{t}Total:{/t}</B>
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%" ALIGN="left">
 			<B>{$listdata.total}</B>
