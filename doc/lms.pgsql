@@ -37,6 +37,7 @@ CREATE TABLE assignments (
 	datefrom integer	DEFAULT 0 NOT NULL,
 	dateto integer		DEFAULT 0 NOT NULL,
 	invoice smallint 	DEFAULT 0 NOT NULL,
+	suspended smallint	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -102,6 +103,7 @@ CREATE TABLE nodes (
 	modid integer 		DEFAULT 0 NOT NULL,
 	access smallint 	DEFAULT 1 NOT NULL,
 	warning smallint 	DEFAULT 0 NOT NULL,
+	lastonline integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (name),
 	UNIQUE (ipaddr)
@@ -404,4 +406,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004072700');    
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004081800');    
