@@ -195,12 +195,12 @@ switch($_GET['type'])
 					break;
 				}
 
-				if($nodelist = $LMS->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, 
-					    ownerid, access, warning, netdev, nodes.info AS info, '
-					    .$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, 
+				if($nodelist = $LMS->DB->GetAll('SELECT nodes.id AS id, inet_ntoa(ipaddr) AS ip, mac, 
+					    nodes.name AS name, nodes.info AS info, '
+					    .$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner
 					    FROM nodes LEFT JOIN users ON (ownerid = users.id)
 					    LEFT JOIN cash ON (cash.userid = users.id)
-					    GROUP BY nodes.id, ipaddr, mac, nodes.name, ownerid, access, warning, netdev, nodes.info, users.lastname, users.name
+					    GROUP BY nodes.id, ipaddr, mac, nodes.name, nodes.info, users.lastname, users.name
 					    HAVING SUM((type * -2 + 7) * value) < 0'
 					    .($sqlord != '' ? $sqlord.' '.$direction : '')))
 				{
