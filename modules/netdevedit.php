@@ -92,6 +92,9 @@ if(isset($netdevdata))
 
 	if($netdevdata[name] == "")
 		$error[name] = "Pole nazwa nie mo¿e byæ puste!";
+
+	if($netdevdata[ports] < $LMS->CountNetDevLinks($_GET[id]))
+		$error[ports] = "Liczba pod³±czonych urz±dzeñ przekracza liczbê portów!";
 	
 	if(!$error)
 	{
@@ -146,6 +149,9 @@ else
 
 /*
  * $Log$
+ * Revision 1.16  2003/10/10 12:38:01  lexx
+ * - Jak do 5 portowego swicha pod³±czyæ 10 urz±dzeñ ;)
+ *
  * Revision 1.15  2003/10/10 12:25:58  lexx
  * - Dodana mo¿liwo¶æ zamiany urz±dzeñ miejscami
  *
