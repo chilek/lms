@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-include_once("class.php");
+include_once('class.php');
 
 $loginform = $_POST[loginform];
 $login = $loginform[login];
@@ -32,12 +32,12 @@ $passwd = $loginform[pwd];
 
 $id = $LMS->DB->GetOne('SELECT id FROM users WHERE phone1 = ? AND pin = ?', array($login, $passwd));
 
-$SMARTY->assign("user",$LMS->GetUser($id));
-$SMARTY->assign("userinfo",$LMS->GetUser($id));
-$SMARTY->assign("balancelist",$LMS->GetUserBalanceList($id));
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("limit",15);
+$SMARTY->assign('user',$LMS->GetUser($id));
+$SMARTY->assign('userinfo',$LMS->GetUser($id));
+$SMARTY->assign('balancelist',$LMS->GetUserBalanceList($id));
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('limit',15);
 
-$SMARTY->display("balanceview.html");
+$SMARTY->display('balanceview.html');
 
 ?>
