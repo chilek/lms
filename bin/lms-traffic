@@ -13,7 +13,7 @@ use Getopt::Long;
 use vars qw($logfile $configfile $quiet $help $version);
 use POSIX qw(strftime);
 
-my $_version = '1.0beta';
+my $_version = '1.1beta';
 
 my %options = (
 	"--traffic-log-file|f=s"=>	\$logfile,
@@ -60,7 +60,7 @@ if(!$configfile)
 if(!$quiet)
 {
 	print STDOUT "lms-traffic, version $_version\n";
-	print STDOUT "(C) 2001-2003 LMS Developers\n";
+	print STDOUT "(C) Copyright 2003 Rulez.PL Development Team\n";
 	print STDOUT "Using file $configfile as config.\n";
 }
 
@@ -131,25 +131,28 @@ close(LOGFILE);
 # insert data to lms database 
 foreach my $line (@lines)           
 {
-    my ($ip,$upload,$download) = split(/ +/,$line);                 
-    if($table{$ip})   # if IP is in our database then we can insert
+    my ($ip,$upload,$download) = split('[\t\s]+',$line);                 
+    if( $table{$ip} )   # if IP is in our database then we can insert
     {
- 	if($upload || $download) # don't need zeroes 
+ 	if( $upload || $download ) # don't need zeroes 
 	{   
-	$dbq = $dbase->prepare("INSERT INTO stats (nodeid, dt, download, upload) VALUES ( ".$table{$ip}.", $utsfmt, $download, $upload)");
+	$dbq = $dbase->prepare("INSERT INTO stats (nodeid, dt, download, upload) VALUES ( $table{$ip} , $utsfmt, $download, $upload)");
     	$dbq->execute();
-	}
-    	if(!$quiet)
+	if(!$quiet)
     	{
-    	print "IP: $ip\tSend: $upload\t Recv: $download\n"
+    	    print "IP: $ip\tSend: $upload\t Recv: $download\n";
     	}
+	} else
+	{
+	    print "IP: $ip\tSkipped - null data\n";
+	}
     } 
     else 
     {
 	if(!$quiet)
     	{
-    	print "IP: $ip\tSkipped\n"
-    	}
+    	    print "IP: $ip\tSkipped - not in database\n";
+	}
     }
 }
 # finally 
