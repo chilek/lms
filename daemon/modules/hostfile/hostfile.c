@@ -34,7 +34,7 @@ unsigned long inet_addr(char *);
 void reload(GLOBAL *g, struct hostfile_module *hm)
 {
 	FILE *fh;
-	QUERY_HANDLE *res;
+	QUERY_HANDLE *res, *res1;
 	unsigned char *query;
 	int i, j, m, k=2, gc=0, nc=0, n=2;
 
@@ -124,35 +124,40 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		fprintf(fh, "%s", hm->prefix);
 		
 		if(hm->skip_dev_ips)
-			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, access, COALESCE(usergroupid, 0) AS groupid FROM nodes LEFT JOIN userassignments ON (ownerid=userid) WHERE ownerid<>0 ORDER BY ipaddr");
+			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, ownerid, access FROM nodes WHERE ownerid<>0 ORDER BY ipaddr");
 		else
-			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, access, COALESCE(usergroupid, 0) AS groupid FROM nodes LEFT JOIN userassignments ON (ownerid=userid) ORDER BY ipaddr");
+			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, ownerid, access FROM nodes ORDER BY ipaddr");
 			
 		if( (res = g->db_query(query))!=NULL ) {
 		
 			for(i=0; i<res->nrows; i++) {
 				unsigned char *mac, *ip, *access, *name;
-				int groupid;
 			
 				mac 	= g->db_get_data(res,i,"mac");
 				ip  	= g->db_get_data(res,i,"ip");
 				access 	= g->db_get_data(res,i,"access");
 				name 	= g->db_get_data(res,i,"name");
-				groupid	= atoi(g->db_get_data(res,i,"groupid"));
 
 				if(ip && mac && access) {
 					
 					unsigned long inet = inet_addr(ip);
-					
+					// networks test
 					for(j=0; j<nc; j++)
 						if(nets[j].address == (inet & nets[j].mask)) 
 							break;
-							
-					for(m=0; m<gc; m++)
-						if(gps[m].id == groupid) 
-							break;
-
-					if( j != nc && (m != gc || (m==gc && !strlen(hm->groups))) ) {
+					// groups test
+					if( res1 = g->db_pquery("SELECT DISTINCT(usergroupid) AS groupid FROM userassignments WHERE userid=?", g->db_get_data(res,i,"ownerid"))) {
+						for(k=0; k<res1->nrows; k++) {
+							int groupid = atoi(g->db_get_data(res1, k, "groupid"));
+							for(m=0; m<gc; m++) 
+								if(gps[m].id==groupid) 
+									break;
+							if(m!=gc) break;
+						}
+						g->db_free(res1);
+					}
+					
+					if( j!=nc && (m!=gc || (m==gc && !strlen(hm->groups))) ) {
 
 						unsigned char *pattern, *s;
 
@@ -165,7 +170,6 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 						g->str_replace(&s, "%domain", nets[j].domain);
 						g->str_replace(&s, "%net", nets[j].name);
 						g->str_replace(&s, "%if", nets[j].interface);
-						g->str_replace(&s, "%group", (groupid!=0 ? (char *)gps[m].name : ""));
 						g->str_replace(&s, "%i", ip);
 						g->str_replace(&s, "%m", mac);
 						g->str_replace(&s, "%n", name);
