@@ -20,6 +20,7 @@ version 1.5.5 (??/??/????):
     phpui/helpdesk_sender_name for name of message sender (alec)
   - fixed bug in userassignmentedit.html when customer has " sign in name (alec)
   - BTS#0000283: added link 'Clear Account' on Customer Account (alec)
+  - added cash operations import interface (lexx)
 
 version 1.5.4 Ramius (16/02/2005):
 
