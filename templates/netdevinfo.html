@@ -4,18 +4,11 @@
 <H1>{$layout.pagetitle}</H1>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
-		<TD VALIGN="TOP" WIDTH="50%">
-			{include file="netdevinfobox.html"}
-		</TD>
-{*		<TD VALIGN="TOP" WIDTH="50%">
-			{include file="netdevipbox.html"}
-		</TD>
-*}	</TR>
-	<TR>
-		<TD VALIGN="TOP" WIDTH="50%">
+		<TD VALIGN="TOP" WIDTH="50%" VALIGN="TOP">
+			{include file="netdevinfobox.html"}<BR>
 			{include file="netdevconnbox.html"}
 		</TD>
-		<TD VALIGN="TOP" WIDTH="50%">
+		<TD VALIGN="TOP" WIDTH="50%" ROWSPAN="2" VALIGN="TOP">
 			{include file="netdevnodes.html"}
 		</TD>
 	</TR>
