@@ -36,13 +36,13 @@ cat Makefile.in >> Makefile
 # Make modules Makefile's
 cd ./modules
 
-for x in firewall hostfile ethers
+for x in `ls -F | grep -v CVS | grep /`
 do
 echo "
 LIBS = $LIBS 
 CFLAGS = $CFLAGS $FLAGS -I../..
 LDFLAGS = $LDFLAGS
-" > ./${x}/Makefile    
-cat ./${x}/Makefile.in >> ./${x}/Makefile
+" > ./${x}Makefile    
+cat ./${x}Makefile.in >> ./${x}Makefile
 
 done 
