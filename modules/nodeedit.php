@@ -119,10 +119,13 @@ if(isset($nodeedit))
 
 if($userinfo[status]==3) $userinfo[shownodes] = TRUE;
 $users = $LMS->GetUserNames();
+$tariffs = $LMS->GetTariffs();
+$assignments = $LMS->GetUserAssignments($ownerid);
+$balancelist = $LMS->GetUserBalanceList($owner);
 
-
-$SMARTY->assign("balancelist",$LMS->GetUserBalanceList($owner));
-$SMARTY->assign("assignments",$LMS->GetUserAssignments($ownerid));
+$SMARTY->assign("balancelist",$balancelist);
+$SMARTY->assign("assignments",$assignments);
+$SMARTY->assign("tariffs",$tariffs);
 $SMARTY->assign("error",$error);
 $SMARTY->assign("userinfo",$userinfo);
 $SMARTY->assign("layout",$layout);
@@ -131,6 +134,9 @@ $SMARTY->assign("users",$users);
 $SMARTY->display("nodeedit.html");
 /*
  * $Log$
+ * Revision 1.29  2003/09/12 02:52:57  lukasz
+ * - cosmetics
+ *
  * Revision 1.28  2003/09/09 01:44:07  lukasz
  * - poprawki node{edit,info,add}
  *

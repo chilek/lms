@@ -111,8 +111,13 @@ if(isset($_GET[prename])&&$nodedata[name]=="")
 
 $layout[pagetitle]="Dodanie nowego komputera";
 
-$SMARTY->assign("balancelist",$LMS->GetUserBalanceList($nodedata[ownerid]));
-$SMARTY->assign("assignments",$LMS->GetUserAssignments($nodedata[ownerid]));
+$tariffs = $LMS->GetTariffs();
+$balancelist = $LMS->GetUserBalanceList($nodedata[ownerid]);
+$assignments = $LMS->GetUserAssignments($nodedata[ownerid]);
+
+$SMARTY->assign("balancelist",$balancelist);
+$SMARTY->assign("assignments",$assignments);
+$SMARTY->assign("tariffs",$tariffs);
 $SMARTY->assign("users",$users);
 $SMARTY->assign("error",$error);
 $SMARTY->assign("userinfo",$userinfo);
@@ -123,6 +128,9 @@ $SMARTY->display("nodeadd.html");
 
 /*
  * $Log$
+ * Revision 1.36  2003/09/12 02:52:57  lukasz
+ * - cosmetics
+ *
  * Revision 1.35  2003/09/09 01:44:07  lukasz
  * - poprawki node{edit,info,add}
  *
