@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="pl">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
+{* WSTAW SWÓJ TYTUŁ STRONY *}
+<title></title>
+{literal}
+<STYLE type="text/css"><!--
+	BODY            { font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+	TD              { font-size: 8pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+	TABLE           { border-collapse: collapse; border-color: #000000 }
+	FONT.blend      { color: #888888; font-size:  7pt; }
+	A:hover         { text-decoration: underline; color: #345C9E; }
+	H1              { font-size: 14pt; font-family: Tahoma, Verdana, Arial, Helvetica; }
+	TD.fbottom      { border-bottom-width: 1pt; border-bottom-style: solid; }
+</STYLE>
+{/literal}
+</head>
+<body marginheight="0" marginwidth="0" bgcolor="#FFFFFF" link="#800000" vlink="#800000" alink="#336600">
+	<DIV ALIGN="CENTER">
+		<CENTER>
+			<TABLE WIDTH="750" CELLPADDING="5">
+				<TR>
+					<TD COLSPAN="2" CLASS="FBOTTOM">
+						<H1>Informacje o użytkowniku</H1>
+					</TD>
+				</TR>
+				<TR>
+					<TD WIDTH="1%" NOWRAP>
+						<B>Numer identyfikacyjny:</B>
+					</TD>
+					<TD WIDTH="99%">
+						{$userinfo.id|string_format:"%04d"}
+					</TD>
+				</TR>
+				<TR>
+					<TD WIDTH="1%" NOWRAP>
+						<B>Nazwa klienta:</B>
+					</TD>
+					<TD WIDTH="99%">
+						{$userinfo.username}
+					</TD>
+				</TR>
+				<TR>
+					<TD WIDTH="1%" NOWRAP>
+						<B>Adres:</B>
+					</TD>
+					<TD WIDTH="99%">
+						{$userinfo.address}
+						{if $userinfo.zip || $userinfo.city}<BR>{$userinfo.zip} {$userinfo.city}{/if}
+					</TD>
+				</TR>
+				<TR>
+					<TD WIDTH="1%" NOWRAP>
+						<B>Telefon:</B>
+					</TD>
+					<TD WIDTH="99%">
+						{$userinfo.phone1}
+					</TD>
+				</TR>
+				<TR>
+					<TD WIDTH="1%" NOWRAP>
+						<B>Taryfa:</B>
+					</TD>
+					<TD WIDTH="99%">
+						{$userinfo.tariffname} ({$userinfo.tariffvalue|string_format:"%01.2f"} zł/mc)
+					</TD>
+				</TR>
+				<TR>
+					<TD COLSPAN="2" ALIGN="CENTER">
+						<B>Bilans finansowy:</B>
+					</TD>
+				</TR>
+				<TR>
+					<TD COLSPAN="2" ALIGN="CENTER">
+						<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1">
+							<TR BGCOLOR="#000000">
+								<TD>
+									<FONT COLOR="#FFFFFF"><B>Lp.</B></FONT>
+								</TD>
+								<TD>
+									<FONT COLOR="#FFFFFF"><B>Data:</B></FONT>
+								</TD>
+								<TD>
+									<FONT COLOR="#FFFFFF"><B>Rodzaj:</B></FONT>
+								</TD>
+								<TD ALIGN="RIGHT">
+									<FONT COLOR="#FFFFFF"><B>Wartość:</B></FONT>
+								</TD>
+								<TD ALIGN="RIGHT">
+									<FONT COLOR="#FFFFFF"><B>Saldo po:</B></FONT>
+								</TD>
+								<TD>
+									<FONT COLOR="#FFFFFF"><B>Komentarz</B></FONT>
+								</TD>
+							</TR>
+							{section name=b loop=$balance.id}
+							<TR>
+								<TD>
+									{$balance.id[b]|string_format:"%08d"}
+								</TD>
+								<TD>
+									{$balance.date[b]}
+								</TD>
+								<TD>
+									{$balance.name[b]}
+								</TD>
+								<TD ALIGN="RIGHT">
+									{$balance.value[b]|string_format:"%01.2f"} zł
+								</TD>
+								<TD ALIGN="RIGHT">
+									{$balance.after[b]|string_format:"%01.2f"} zł
+								</TD>
+								<TD>
+									{$balance.comment[b]}
+								</TD>
+							</TR>
+							{sectionelse}
+							<TR>
+								<TD COLSPAN="6" ALIGN="CENTER"
+									<BR>
+									<BR>
+									<B>Brak danych!</B><BR>
+									<BR>
+									<BR>
+								</TD>
+							</TR>
+							{/section}
+						</TABLE>
+					</TD>
+				</TR>
+				<TR>
+					<TD COLSPAN="2">
+						&nbsp;
+					</TD>
+				</TR>
+				<TR>
+					<TD COLSPAN="2" CLASS="FBOTTOM">
+						&nbsp;
+					</TD>
+				</TR>
+				<TR>
+					<TD>
+						<IMG SRC="lms-powered.png" ALT="Powered by LMS!">
+					</TD>
+					<TD WIDTH="99%" ALIGN="RIGHT">
+						<FONT CLASS="BLEND">Wygenerowano przy użyciu LMS {$layout.lmsv}<BR>
+							&copy; 2001-2003 LMS Developers - <A HREF="http://lms.rulez.pl">http://lms.rulez.pl</A>
+						</FONT>
+					</TD>
+				</TR>
+			</TABLE>
+		</CENTER>
+	</DIV>
+</BODY>
+</HTML>
