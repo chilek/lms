@@ -5,6 +5,8 @@ wersja 1.5.1 (??/??/????):
   - przyspieszone wy¶wietlanie modu³u wydruków i innych pobieraj±cych listê
     administratorów (alec)
   - BTS#0000200 (alec)
+  - poprawki i kosmetyka w contrib/customer_otherip oraz dodany opis do
+    dokumentacji (alec)
 
 wersja 1.5.0 Marduk (18/09/2004):
 
