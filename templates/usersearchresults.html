@@ -5,9 +5,9 @@
 	<TR bgcolor="#CEBD9B" {tip text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
 		<TD width="95%" class="fleftu">
 			<B>
-			<img src="img/user.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=username{if $userlist.direction eq "asc" && $userlist.order eq "username"},desc{/if}">Nazwisko/nazwa i imiê:</A></B> {if $userlist.order eq "username"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/phone.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=phone{if $userlist.direction eq "asc" && $userlist.order eq "phone"},desc{/if}">Telefon:</A></B> {if $userlist.order eq "phone"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/home.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=address{if $userlist.direction eq "asc" && $userlist.order eq "address"},desc{/if}">Adres:</A> {if $userlist.order eq "address"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<img src="img/user.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=username{if $userlist.direction eq "asc" && $userlist.order eq "username"},desc{/if}">{t}Name/surname and forename{/t}:</A></B> {if $userlist.order eq "username"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/phone.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=phone{if $userlist.direction eq "asc" && $userlist.order eq "phone"},desc{/if}">{t}Phone{/t}:</A></B> {if $userlist.order eq "phone"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/home.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=address{if $userlist.direction eq "asc" && $userlist.order eq "address"},desc{/if}">{t}Address{/t}:</A> {if $userlist.order eq "address"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD align="right" width="1%" class="fbt">
 			<a href="?m=usersearch&search&s={$userlist.state}&o=id{if $userlist.direction eq "asc" && $userlist.order eq "id"},desc{/if}">ID:</A></B> {if $userlist.order eq "id"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
@@ -15,8 +15,8 @@
 		</TD>
 		<TD width="1%" class="fbt">
 			<img src="img/mail.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=email{if $userlist.direction eq "asc" && $userlist.order eq "email"},desc{/if}">E-mail:</A> {if $userlist.order eq "email"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/gg.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=gg{if $userlist.direction eq "asc" && $userlist.order eq "gg"},desc{/if}">GG:</A> {if $userlist.order eq "gg"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<a href="?m=usersearch&search&s={$userlist.state}&o=nip{if $userlist.direction eq "asc" && $userlist.order eq "nip"},desc{/if}">NIP:</A> {if $userlist.order eq "nip"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<img src="img/gg.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=gg{if $userlist.direction eq "asc" && $userlist.order eq "gg"},desc{/if}">{t}GG{/t}:</A> {if $userlist.order eq "gg"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<a href="?m=usersearch&search&s={$userlist.state}&o=nip{if $userlist.direction eq "asc" && $userlist.order eq "nip"},desc{/if}">{t}NIP{/t}:</A> {if $userlist.order eq "nip"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD width="1%" class="fbt">
 			<img src="img/money.gif" ALT="" align="absmiddle">
@@ -26,14 +26,14 @@
 			<a href="?m=usersearch&search&s={$userlist.state}&o=tariff{if $userlist.direction eq "asc" && $userlist.order eq "tariff"},desc{/if}">Abonament:</A>&nbsp;{if $userlist.order eq "tariff"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD width="1%" class="frightu">
-			<NOBR><B>Razem: {$userlist.total}</B></NOBR>
+			<NOBR><B>{t}Total{/t}: {$userlist.total}</B></NOBR>
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=userlist loop=$userlist}{assign var="userlistshown" value="yes"}
 	{if $userlist[userlist].id}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if $userlist[userlist].nodeac eq 0} class="blend"{/if}>
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" class="fleft" valign="top">
-			<A name="{$userlist[userlist].id}"><IMG src="img/{if $userlist[userlist].status eq 1}unk{/if}{if $userlist[userlist].status eq 2}wait{/if}{if $userlist[userlist].status eq 3}user{/if}.gif" ALT="" align="absmiddle" border="0">{if $userlist[userlist].info} <img src="img/usercomment.gif" ALT="" align="absmiddle" {capture name="userinfo"}{$userlist[userlist].info|replace:"\n":"<BR>"}{/capture}{tip text=$smarty.capture.userinfo}>{/if}&nbsp;<B><nobr>{$userlist[userlist].username}</B>{if $userlist[userlist].deleted} (<FONT COLOR="RED">u¿ytkownik usuniêty</FONT>){/if}</nobr></A>{if $userlist[userlist].phone1 neq ""}<BR>
+			<A name="{$userlist[userlist].id}"><IMG src="img/{if $userlist[userlist].status eq 1}unk{/if}{if $userlist[userlist].status eq 2}wait{/if}{if $userlist[userlist].status eq 3}user{/if}.gif" ALT="" align="absmiddle" border="0">{if $userlist[userlist].info} <img src="img/usercomment.gif" ALT="" align="absmiddle" {capture name="userinfo"}{$userlist[userlist].info|replace:"\n":"<BR>"}{/capture}{tip text=$smarty.capture.userinfo}>{/if}&nbsp;<B><nobr>{$userlist[userlist].username}</B>{if $userlist[userlist].deleted} (<FONT COLOR="RED">{t}deleted user{/t}</FONT>){/if}</nobr></A>{if $userlist[userlist].phone1 neq ""}<BR>
 			<IMG src="img/phone.gif" ALT="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].phone1}{/if}<BR>
 			<IMG SRC="img/home.gif" ALT="" align="absmiddle" border="0">&nbsp;{$userlist[userlist].address}{if $userlist[userlist].city neq ""},{/if} {$userlist[userlist].zip} {$userlist[userlist].city}
 		</TD>
@@ -50,11 +50,12 @@
 			<IMG src="img/money.gif" align="left" border="0" ALT="">
 		</TD>
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" align="right" valign="top" NOWRAP>
-			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|string_format:"%01.2f"} z³{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|string_format:"%01.2f"} z³</FONT></NOBR>{if $userlist[userlist].balance < 0}<BR>
-			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz rozliczyæ WSZYSTKIE nale¿no¶ci u¿ytkownika: {$userlist[userlist].username|upper} z bazy danych?\n\n')">Rozlicz &raquo;</A>{/if}
+			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|string_format:"%01.2f"} z³{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|string_format:"%01.2f"} </FONT></NOBR>{if $userlist[userlist].balance < 0}<BR>
+			<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" onClick="return confirmLink(this, '{t}Are you sure, you want to account ALL liabilities of user: {$userlist[userlist].username|upper} from database?{/t}\n\n')">{t}Account{/t} &raquo;</A>{/if}
 		</TD>
 		<TD class="fright">
-			<NOBR><A href="?m=userdel&id={$userlist[userlist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.username[userlist]|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ Usuñ ]"></A> {if $userlist[userlist].deleted eq "Y"}<A HREF="?m=useredit&id={$userlist[userlist].id}&action=recover"><IMG src="img/recover.gif" border="0" ALIGN="ABSMIDDLE" ALT="[ Przywróc ]"></A>{else}<A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ Edytuj ]"></A>{/if} <A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" ALT="[ Info ]"></A></NOBR>
+			<NOBR><A href="?m=userdel&id={$userlist[userlist].id}" onClick="return confirmLink(this, '{t}Are you sure, you wanto to remove user: {$userlist.username[userlist]|upper} from database?\n\nIf that user have any computers, they will be automatically removed from database, and informations about them will be irreversible lost!{/t}')"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ {t}Delete{/t} ]"></A> {if $userlist[userlist].deleted eq "Y"}<A HREF="?m=useredit&id={$userlist[userlist].id}&action=recover"><IMG src="img/recover.gif" border="0" ALIGN="ABSMIDDLE" ALT="[ Przywróc ]"></A>{else}<A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A>{/if} 
+			    <A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" ALT="[ {t}Info{/t} ]"></A></NOBR>
 		</TD>
 	</TR>
 	{/if}
@@ -64,7 +65,7 @@
 		<TD colspan="6" align="center" class="flr">
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
-			<p><B>Nie znaleziono ¿adnych u¿ytkowników spe³niaj±cych podane kryteria.</B></p>
+			<p><B>{t}Users matching search conditions not found.{/t}</B></p>
 			<p>&nbsp;</p>
 			<p>&nbsp;</p>
 		</TD>
@@ -72,15 +73,15 @@
 	{/if}
 	<TR bgColor="#DFD5BD">
 		<TD colspan="2" class="fleftu" align="right" valign="top">
-			<IMG SRC="img/info2.gif" border="0" ALT="" align="absmiddle"> <B>Razem: {$userlist.total}</B>	
+			<IMG SRC="img/info2.gif" border="0" ALT="" align="absmiddle"> <B>{t}Total{/t}: {$userlist.total}</B>	
 		</TD>
 		<TD class="fbt" align="right">
-			<B>Zaleg³o¶ci:<BR>
-			Nadp³aty:</B>
+			<B>{t}Outstandings{/t}:<BR>
+			{t}Overcharges{/t}:</B>
 		</TD>
 		<TD class="fbt" align="right" COLSPAN="2"> 
-			<B>{$userlist.below|string_format:"%01.2f"} z³<BR>
-			{$userlist.over|string_format:"%01.2f"} z³</B>
+			<B>{$userlist.below|string_format:"%01.2f"} <BR>
+			{$userlist.over|string_format:"%01.2f"} </B>
 		</TD>
 		<TD class="frightu">
 			&nbsp;
