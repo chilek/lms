@@ -28,6 +28,8 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 $layout[pagetitle]="Nowa operacja finansowa";
 $SMARTY->assign("comment",$_SESSION[addbc]);
+$SMARTY->assign("time", $_SESSION[addbt]);
+$SMARTY->assign("value", $_SESSION[addbv]);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("users",$LMS->GetUserNames());
 $SMARTY->display("balancenew.html");
