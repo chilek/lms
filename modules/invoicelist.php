@@ -39,6 +39,12 @@ else
 	$s = $_SESSION['ils'];
 $_SESSION['ils'] = $s;
 
+if(isset($_GET['o']))
+	$o = $_GET['o'];
+else
+	$o = $_SESSION['ilo'];
+$_SESSION['ilo'] = $o;
+
 if(isset($_POST['cat']))
 	$c = $_POST['cat'];
 else
@@ -61,7 +67,7 @@ if($c == 'cdate' && $s)
 	$s = mktime(0,0,0, $month, $day, $year);
 }
 
-$invoicelist = $LMS->GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge));
+$invoicelist = $LMS->GetInvoicesList($s, $c, array('group' => $g, 'exclude'=> $ge), $o);
 
 $listdata['startdate'] = $invoicelist['startdate'];
 $listdata['enddate'] = $invoicelist['enddate'];

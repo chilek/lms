@@ -1803,8 +1803,36 @@ class LMS
 		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE invoiceid=?', array($invoiceid)) >= 0 ? TRUE : FALSE;
 	}
 
-	function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL)
+	function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 	{
+		if($order=='')
+			$order='invoices.id,asc';
+
+		list($order,$direction) = explode(',',$order);
+
+		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
+
+		switch($order)
+		{
+			case 'id':
+				$sqlord = ' ORDER BY invoices.id';
+			break;
+			case 'cdate':
+				$sqlord = ' ORDER BY invoices.cdate';
+			break;
+			case 'number':
+				$sqlord = ' ORDER BY number';
+			break;
+			case 'value':
+				$sqlord = ' ORDER BY value';
+			break;
+			case 'count':
+				$sqlord = ' ORDER BY count';
+			break;
+			case 'name':
+				$sqlord = ' ORDER BY name';
+			break;
+		}
 		if($search && $cat)
 		{
 			switch($cat)
@@ -1838,8 +1866,8 @@ class LMS
 						FROM invoices, invoicecontents 
 						WHERE invoiceid = id AND finished = 1 '
 						.$where
-						.' GROUP BY id, number, cdate, customerid, name, address, zip, city, finished 
-						ORDER BY cdate ASC'))
+						.' GROUP BY id, number, cdate, customerid, name, address, zip, city, finished '
+						.$sqlord.' ASC'))
 		{
 			$inv_paid = $this->DB->GetAllByKey('SELECT invoiceid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum FROM cash WHERE invoiceid!=0 GROUP BY invoiceid','id');
 			
