@@ -53,6 +53,13 @@ elseif($_GET[action] == "addassignment")
 	{
 		case 0:
 			$at = sprintf('%d',$_POST[at]);
+			if($at == 0)
+			{
+				$at = 1 + date('d',time());
+				if($at > 28)
+					$at = 1;
+			}
+				
 			if($at < 1)
 				$at = 1;
 			elseif($at > 28)
@@ -61,6 +68,7 @@ elseif($_GET[action] == "addassignment")
 
 		case 1:
 			$at = sprintf('%d',$_POST[at]);
+			
 			if($at < 1)
 				$at = 1;
 			elseif($at > 7)
@@ -149,6 +157,9 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 /*
  * $Log$
+ * Revision 1.49  2003/12/02 03:56:41  lukasz
+ * - przy pustym polu doda assign na nastêpny dzieñ
+ *
  * Revision 1.48  2003/10/22 23:07:52  lukasz
  * - temporary save
  *
