@@ -1,6 +1,6 @@
 <!-- $Id$ -->
 <chapter id="user">
- <title>Interfejs U¿ytkownika (lms-ui)</title>
+ <title>Interfejs U¿ytkownika (LMS-UI)</title>
  <para>LMS'owy Interfejs U¿ytkownika to panel administracyjny do tworzenia
   i zarz±dzania baz± u¿ytkowników i komputerów dostêpny za pomoc± przegl±darki
   internetowej. Umo¿liwia wprowadzanie danych komputerów,
@@ -200,6 +200,23 @@
 	<note><para>Zapisem danych do bazy zajmuje siê skrypt lms-traffic, dlatego nale¿y go zainstalowaæ
 	aby mieæ w bazie dane do wykresów.</para></note>
 	</para>
+	<para>W zale¿no¶ci od wybranej przez u¿ytkownika czêstotliwo¶ci, mo¿e 
+	nast±piæ szybki przyrost danych w bazie, co spowoduje zwiêkszenie czasu
+	oczekiwania na rysowanie wykresów. Z tego powodu w oknie 'Kompaktowanie
+	bazy danych' udostêpniono mo¿liwo¶æ zmniejszenia rozmiarów bazy bez
+	utraty danych. Wybieraj±c poziom dok³adno¶ci danych, dane zostan± u¶rednione
+	w nastêpuj±cy sposób:
+	<itemizedlist>
+	<listitem><para>Poziom Niski: dane z poprzedniego dnia i starsze, zostan± u¶rednione
+	do jednego dnia, czyli je¶li do bazy zapisywane by³y z czêstotliwo¶ci± 10 minut,
+	to 6*24 wpisów zostanie zast±pione jednym.</para></listitem>
+	<listitem><para>Poziom ¦redni: dane starsze ni¿ miesi±c zostan± u¶rednione do 
+	jednego dnia.</para></listitem>
+	<listitem><para>Poziom Wysoki: dane starsze ni¿ miesi±c zostan± u¶rednione do 
+	jednej godziny.</para></listitem>
+	</itemizedlist>
+	<warning><para>Kompaktowanie bazy danych jest procesem nieodwracalnym.</para></warning>
+	</para>   
 	<figure>
 		<title>LMS-UI: Statystyki - filtr</title>
 			<ulink url="images/stats.png">
