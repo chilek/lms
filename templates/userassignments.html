@@ -20,7 +20,7 @@
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{section name=a loop=$assignments}
 				<tr bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=tariffinfo&id={$assignments[a].tariffid}">{$assignments[a].name}</A></B></TD>
+					<TD WIDTH="1%" NOWRAP><B><A HREF="?m=tariffinfo&aid={$assignments[a].tariffid}">{$assignments[a].name}</A></B></TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].value|string_format:"%01.2f"} z³</TD>
 					<TD WIDTH="1%" NOWRAP>{$assignments[a].peroid} ({$assignments[a].at})</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">{$assignments[a].downrate|default:"-"} kbps</TD>

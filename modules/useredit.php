@@ -38,7 +38,7 @@ elseif(! $LMS->UserExists($_GET[id]))
 }
 if($_GET[action] == "assignmentdelete")
 {
-	$LMS->DeleteAssignment($_GET[id],$_GET[balance]);
+	$LMS->DeleteAssignment($_GET[aid],$_GET[balance]);
 	header('Location: ?m=userinfo&id='.$_GET[userid]);
 	die;
 }
@@ -149,6 +149,9 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 /*
  * $Log$
+ * Revision 1.44  2003/09/09 01:48:47  lukasz
+ * - another bugfix
+ *
  * Revision 1.43  2003/09/09 01:24:26  lukasz
  * - cosmetics
  *
