@@ -43,10 +43,14 @@ wersja 1.1.7 (??/??/????):
   - dodane sortowanie po ownerid na li¶cie komputerów (alec)
   - naprawione kapitalizowanie polskich znaków diakrytycznych w
     useredit - dok³adniej, przerzucone z PHP na bazê danych (alec)
-  - zmiana typu kolumn ptrzechowuj±cych warto¶ci pieniê¿ne (hunter/alec)
+  - zmiana typu kolumn ptrzechowuj±cych warto¶ci pieniê¿ne (hunter/alec/lukasz)
     MySQL:
 	ALTER TABLE cash MODIFY value DECIMAL(9,2);
 	ALTER TABLE tariffs MODIFY value DECIMAL(9,2);
+	ALTER TABLE invoicecontents MODIFY value DECIMAL(9,2);
+	ALTER TABLE invoicecontents MODIFY taxvalue DECIMAL(9,2);
+	ALTER TABLE invoicecontents MODIFY count DECIMAL(9,2);
+	ALTER TABLE tariffs MODIFY taxvalue DECIMAL(9,2);
     PostgreSQL:    
 	ALTER TABLE cash ADD val numeric(9,2);
 	UPDATE cash SET val=value;
@@ -60,6 +64,7 @@ wersja 1.1.7 (??/??/????):
 	ALTER TABLE tariffs ALTER val SET DEFAULT 0;
 	ALTER TABLE tariffs DROP COLUMN value;
 	ALTER TABLE tariffs RENAME val TO value;
+  - dodana mo¿liwo¶æ tworzenia faktur poprzez PHP-UI (lukasz)
   - ujednolicony reload dla almsd i ui, teraz almsd prze³adowuje siê przy 
     standardowych ustawieniach ui (nie wymagana tabela reload) (Lexx)
 

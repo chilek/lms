@@ -1170,6 +1170,23 @@ class LMS
 		return $this->DB->Execute("INSERT INTO assignments (tariffid, userid, period, at, invoice) VALUES (?, ?, ?, ?, ?)",array($assignmentdata['tariffid'], $assignmentdata['userid'], $assignmentdata['period'], $assignmentdata['at'], $assignmentdata['invoice']));
 	}
 
+	function AddInvoice($invoice)
+	{
+		$cdate = time();
+		$this->SetTS('invoices');
+		$this->SetTS('invoicecontents');
+		$number = $this->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate <= ?',array(mktime(0, 0, 0, 1, 1, date('Y',$cdate)), mktime(23, 59, 59, 12, 31, date('Y',$cdate))));
+		$number++;
+		$this->DB->Execute('INSERT INTO invoices (number, cdate, paytime, customerid, name, address, nip, pesel, zip, city, phone, finished) VALUES (?, ?, 14, ?, ?, ?, ?, ?, ?, ?, ?, 1)',array($number, $cdate, $invoice['customer']['id'], $invoice['customer']['username'], $invoice['customer']['address'], $invoice['customer']['nip'], $invoice['customer']['pesel'], $invoice['customer']['zip'], $invoice['customer']['city'], $invoice['customer']['phone1']));
+		$iid = $this->DB->GetOne('SELECT id FROM invoices WHERE number = ? AND cdate = ?',array($number,$cdate));
+		foreach($invoice['contents'] as $idx => $item)
+		{
+			$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',array($iid, $item['valuebrutto'], $item['taxvalue'], $item['pkwiu'], $item['jm'], $item['count'], $item['name'], $item['tariffid']));
+			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto'], 'userid' => $invoice['customer']['id'], 'comment' => $item['name'], 'invoiceid' => $iid));
+		}
+		return $iid;
+	}
+
 	function GetInvoicesList()
 	{
 		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value) AS value, COUNT(invoiceid) AS count FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
@@ -1214,7 +1231,7 @@ class LMS
 					$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['basevalue'];
 					$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
 					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
-					$result['taxest'][$row['taxvalue']]['taxvalue'] += $row['taxvalue'];
+					$result['taxest'][$row['taxvalue']]['taxvalue'] = $row['taxvalue'];
 					$result['total'] += $result['content'][$idx]['total'];
 					
 				}
@@ -1323,7 +1340,7 @@ class LMS
 
 	function GetTariffs()
 	{
-		return $this->DB->GetAll("SELECT id, name, value, uprate, downrate FROM tariffs ORDER BY value DESC");
+		return $this->DB->GetAll("SELECT id, name, value, uprate, downrate, taxvalue, pkwiu FROM tariffs ORDER BY value DESC");
 	}
 
 	function TariffExists($id)
@@ -1341,7 +1358,7 @@ class LMS
 	function AddBalance($addbalance)
 	{
 		$this->SetTS("cash");
-		return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment']));
+		return $this->DB->Execute("INSERT INTO cash (time, adminid, type, value, userid, comment, invoiceid) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)",array($this->SESSION->id, $addbalance['type'], round($addbalance['value'],2) , $addbalance['userid'], $addbalance['comment'], ($addbalance['invoiceid'] ? $addbalance['invoiceid'] : 0)));
 	}
 	function GetBalanceList()
 	{
@@ -2207,6 +2224,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.315  2003/12/14 18:38:00  lukasz
+ * - finisz z fakturami + kosmetyka
+ *
  * Revision 1.314  2003/12/14 13:31:55  lukasz
  * - e, ja to zmieniam czêsto zdanie
  *

@@ -24,12 +24,13 @@
 				</tr>
 				{cycle values="#DFD5BD,#EBE4D6" print=false}
 				{section name=balancelist loop=$balancelist.id start=$limit}
-				    {if $balancelist.invoiceid[balancelist] && $balancelist.invoiceid[balancelist] == $bal}
+					{if $balancelist.invoiceid[balancelist] && $balancelist.invoiceid[balancelist] == $bal}
 					<TR bgcolor="{$color}" onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{$color}')"> 
-				    {else}
+					{else}
 					<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-					{cycle print=false} {cycle assign=color}
-				    {/if}
+					{cycle print=false}
+					{cycle assign=color}
+					{/if}
 					<TD width="1%"><nobr>{$balancelist.date[balancelist]}</nobr></TD>
 					<TD width="1%">{$balancelist.adminname[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
 					<TD width="1%" NOWRAP><b>{$balancelist.name[balancelist]}</b></TD>
@@ -38,12 +39,12 @@
 					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|string_format:"%01.2f"} z³{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
 					<TD width="93%">{$balancelist.comment[balancelist]}</TD>
 					<TD width="1%" align="right"><nobr>
-					    {if $balancelist.invoiceid[balancelist] && $balancelist.invoiceid[balancelist] != $bal}
-					    <A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>
-					    {/if}</nobr>
+						{if $balancelist.invoiceid[balancelist] && $balancelist.invoiceid[balancelist] != $bal}
+						<A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>
+						{/if}</nobr>
 					</TD>
 					</TR>
-				    {assign var=bal value=$balancelist.invoiceid[balancelist]}
+					{assign var=bal value=$balancelist.invoiceid[balancelist]}
 				{sectionelse}
 				<TR>
 					<TD align="center" width="100%" colspan="7"><p>&nbsp;</p>
