@@ -1,6 +1,6 @@
 $Id$
 
-wersja 1.4.4 (??/??/????):
+wersja 1.4.4 Skaara (02/03/2005):
 
   - BTS#0000281: poprawione wy¶wietlanie listy zad³u¿onych, która na MySQLu
     uwzglêdnia³a tak¿e u¿ytkowników z bilansem równym zero (alec)
