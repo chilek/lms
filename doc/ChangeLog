@@ -14,6 +14,7 @@ version 1.5.5 (??/??/????):
   - added basic (without group checking) body of check_ssn() function for 
     'en' locale (alec)
   - contrib/formularz_przelewu_wplaty: fixed encoding (alec)
+  - lms-payments print accounting messages on STDERR (lukasz/alec)
 
 version 1.5.4 Ramius (16/02/2005):
 
