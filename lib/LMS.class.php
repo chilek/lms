@@ -1525,24 +1525,14 @@ class LMS
 	function GetTariffList()
 	{
 		// wrapper do starego formatu
-		if($ttlist = $this->ADB->GetAll("SELECT id, name, value, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
-		{
-			foreach($ttlist as $idx => $row)
+		if($tarifflist = $this->ADB->GetAll("SELECT id, name, value, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
+			foreach($tarifflist as $idx => $row)
 			{
-				foreach($row as $column => $value)
-					$tarifflist[$column][] = $value;
-
+				$tarifflist[$idx][users] = $this->GetUsersWithTariff($row[id]);
+				$tarifflist[$idx][income] = $tarifflist[$idx][users] * $row[value];
+				$tarifflist[totalincome] += $tarifflist[$idx][income];
+				$tarifflist[totalusers] += $tarifflist[$idx][users];
 			}
-
-			foreach($tarifflist[id] as $idx => $id)
-			{
-				$tarifflist[users][$idx] = $this->GetUsersWithTariff($id);
-				$tarifflist[totalusers] = $tarifflist[totalusers] + $tarifflist[users][$idx];
-				$tarifflist[income][$idx] = $tarifflist[users][$idx] * $tarifflist[value][$idx];
-				$tarifflist[totalincome] = $tarifflist[totalincome] + $tarifflist[income][$idx];
-			}
-
-		}
 
 		$tarifflist[total] = sizeof($ttlist);
 		return $tarifflist;
