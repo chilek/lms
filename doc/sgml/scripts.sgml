@@ -900,6 +900,13 @@ filter unix - n n - 10 pipe
 		    zdefiniowany w zmiennej systemowej lub <filename>/tmp</filename>.</para>
 		    <para>Przyk³ad:	<prompt>tmp_dir = /home/user/tmp</prompt></para>
 		</listitem>
+		<listitem>
+		    <para>auto_open</para>
+		    <para>W³±czenie tej opcji spowoduje, ¿e w momencie odebrania
+		    wiadomo¶ci dotycz±cej zg³oszenia zamkniêtego (lub martwego)
+		    zg³oszenie to zostanie otwarte. Domy¶lnie: wy³±czone.</para>
+		    <para>Przyk³ad:	<prompt>auto_open = 1</prompt></para>
+		</listitem>
 	    </itemizedlist>
     </sect2>
     </sect1>

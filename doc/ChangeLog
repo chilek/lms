@@ -36,6 +36,7 @@ wersja 1.5.1 (??/??/????):
     przerwana (alec)
   - poprawiony b³±d uniemo¿liwiaj±cy edycjê danych grupy u¿ytkowników (alec)
   - opcja phpui/contract_template lms.ini dla szablonu umowy usera (alec)
+  - lms-rtparser: auto_open - automatyczne otwieranie zamkniêtych zg³oszeñ (alec)
   
 wersja 1.5.0 Marduk (18/09/2004):
 
