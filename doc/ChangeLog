@@ -1,5 +1,9 @@
 $Id$
 
+wersja 1.2.0rc2 Janet (??/02/2004):
+
+  - poprawki kosmetyczne iface (lukasz)
+
 wersja 1.2.0rc1 Janet (18/02/2004):
 
   - zmiana wersji biblioteki Smarty z 2.5.0 na 2.6.0 (alec)
@@ -673,7 +677,7 @@ wersja 1.1.0 (23/06/2003):
     wymagany upgrade:
     MySQL: ALTER TABLE `networks` ADD `dns2` VARCHAR( 16 ) AFTER `dns`
     PostgreSQL: ALTER TABLE networks ADD dns2 VARCHAR(16);
-- je¿eli w tym samym katalogu co index.php znajduje siê plik, LMS wykorzysta
+  - je¿eli w tym samym katalogu co index.php znajduje siê plik, LMS wykorzysta
     go zamiast /etc/lms/lms.ini
   - mo¿na ustawiæ domy¶lne warto¶ci dla adresu, miasta i kodu pocztowego
     nowego u¿ytkownika;
