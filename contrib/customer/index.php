@@ -86,18 +86,6 @@ foreach(lms_parse_ini_file($_CONFIG['directories']['lib_dir'].'/config_defaults.
 		if(! isset($_CONFIG[$section][$key]))
 			$_CONFIG[$section][$key] = $val;
 
-function chkconfig($value, $default = FALSE)
-{
-	if(eregi('^(1|y|on|yes|true|tak|t)$', $value))
-		return TRUE;
-	elseif(eregi('^(0|n|no|off|false|nie)$', $value))
-		return FALSE;
-	elseif(!isset($value) || $value == '')
-		return $default;
-	else
-		trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
-}
-
 $_SYSTEM_DIR = $_CONFIG['directories']['sys_dir'];
 $_BACKUP_DIR = $_CONFIG['directories']['backup_dir'];
 $_LIB_DIR = $_CONFIG['directories']['lib_dir'];
@@ -106,6 +94,14 @@ $_SMARTY_DIR = $_CONFIG['directories']['smarty_dir'];
 $_SMARTY_COMPILE_DIR = $_CONFIG['directories']['smarty_compile_dir'];
 $_SMARTY_TEMPLATES_DIR = $_CONFIG['directories']['smarty_templates_dir'];
 $_TIMEOUT = $_CONFIG['phpui']['timeout'];
+
+// include required files
+
+require_once($_SMARTY_DIR.'/Smarty.class.php');
+require_once($_LIB_DIR.'/LMSDB.php');
+require_once($_LIB_DIR.'/common.php');
+require_once($_LIB_DIR.'/LMS.class.php');
+
 $_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
 $_DBTYPE = $_CONFIG['database']['type'];
 $_DBHOST = $_CONFIG['database']['host'];
@@ -116,13 +112,6 @@ $_DBNAME = $_CONFIG['database']['database'];
 // Set our sweet polish locales :>
 
 //setlocale (LC_ALL, 'pl_PL');
-
-// include required files
-
-require_once($_SMARTY_DIR.'/Smarty.class.php');
-require_once($_LIB_DIR.'/LMSDB.php');
-require_once($_LIB_DIR.'/common.php');
-require_once($_LIB_DIR.'/LMS.class.php');
 
 // Initialize LMSDB object
 
