@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-if (strtolower($_CONFIG['invoices']['type'])=='pdf')
+if (strtolower($_CONFIG['invoices']['type']) == 'pdf')
 {
-    include("invoice_pdf.php");
+    include('invoice_pdf.php');
     die;
 }
 

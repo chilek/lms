@@ -353,8 +353,8 @@ switch($_GET['type'])
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 
-		if($_POST['invoiceorg'] && !$_POST['invoicecopy']) $witch = 'ORYGINA£';
-		if(!$_POST['invoiceorg'] && $_POST['invoicecopy']) $witch = 'KOPIA';
+		if($_POST['invoiceorg'] && !$_POST['invoicecopy']) $witch = trans('ORIGINAL');
+		if(!$_POST['invoiceorg'] && $_POST['invoicecopy']) $witch = trans('COPY');
 		
 		$layout['pagetitle'] = trans('Invoices');
 		header('Location: ?m=invoice&fetchallinvoices=1&which='.$witch.'&userid='.$_POST['user'].'&from='.$date['from'].'&to='.$date['to']);
