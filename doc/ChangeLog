@@ -60,6 +60,8 @@ wersja 1.1.7 (??/??/????):
 	ALTER TABLE tariffs ALTER val SET DEFAULT 0;
 	ALTER TABLE tariffs DROP COLUMN value;
 	ALTER TABLE tariffs RENAME val TO value;
+  - ujednolicony reload dla almsd i ui, teraz almsd prze³adowuje siê przy 
+    standardowych ustawieniach ui (nie wymagana tabela reload) (Lexx)
 
 wersja 1.1.6 Seth (08/12/2003):
 
