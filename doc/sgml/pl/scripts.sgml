@@ -916,7 +916,7 @@ wins    = 213.25.209.10</screen>
 	    </itemizedlist>
     </sect2>
     <sect2 id="lms-reminder" xreflabel="lms-reminder">
-	<title>lms-notify</title>
+	<title>lms-reminder</title>
 	  <para>Skrypt s³u¿y do przypominania klientom o zaplanowanych na dany dzieñ 
 	  zadaniach. Lista zdarzeñ przypisanych w Terminarzu danemu klientowi w bie¿±cym
 	  dniu zostaje wys³ana na jego adres e-mail.</para>
