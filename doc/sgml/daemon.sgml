@@ -325,7 +325,7 @@ info = "Opcjonalny opis modu³u"
 			</listitem>
 			<listitem>
 			    <para>debug_uin</para>
-			    <para>Je¶li ustawione, na to konto zostan± wys³ane wszyskie wiadomo¶ci.
+			    <para>Je¶li ustawione, na to konto zostan± wys³ane wszystkie wiadomo¶ci.
 			    Domy¶lnie: puste.</para>
 			    <para>Przyk³ad: <prompt>debug_uin = 7654321</prompt></para>
 			</listitem>
@@ -481,6 +481,16 @@ info = "Opcjonalny opis modu³u"
 			    <para>Tekst dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
 			    <para>Przyk³ad: <prompt>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</prompt></para>
 			</listitem>
+			<listitem>
+			    <para>networks</para>
+			    <para>Lista sieci, które maj± byæ brane pod uwagê. Domy¶lnie: "192.168.0.0/16 10.0.0.0/8"</para>
+			    <para>Przyk³ad: <prompt>networks = "192.168.0.0/24 192.168.1.0/24"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>skip_dev_ips</para>
+			    <para>Je¶li ustawiona na tak (yes, true) pominiête zostan± adresy urz±dzeñ sieciowych. Domy¶lnie: tak</para>
+			    <para>Przyk³ad: <prompt>skip_dev_ips = no</prompt></para>
+			</listitem>
 		    </itemizedlist>
 		    </sect3>
 		</sect2>	    
@@ -559,7 +569,7 @@ info = "Opcjonalny opis modu³u"
 			</listitem>
 			<listitem>
 			    <para>generic-forward</para>
-			    <para>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okreslonym
+			    <para>Szablon domy¶lny. Zostanie wykorzystany je¶li w katalogu okre¶lonym
 			    'forward-patterns' nie bêdzie pliku odpowiadaj±cego nazwie domenowej sieci.
 			    Domy¶lnie: modules/dns/sample/forward/generic.</para>
 			    <para>Przyk³ad: <prompt>generic-forward = /dns/patterns/forward</prompt></para>
@@ -673,7 +683,7 @@ info = "Opcjonalny opis modu³u"
 			<listitem>
 			    <para>begin</para>
 			    <para>Tekst wstawiany na pocz±tku pliku. Domy¶lnie: puste.</para>
-			    <para>Przyk³ad: <prompt>begin = "#Generowany utomatycznie\n"</prompt></para>
+			    <para>Przyk³ad: <prompt>begin = "#Generowany automatycznie\n"</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>end</para>
@@ -697,7 +707,7 @@ info = "Opcjonalny opis modu³u"
 			</listitem>
 			<listitem>
 			    <para>command</para>
-			    <para>Polecenie do wykonania po utworzeniu pliku. Domyslnie: puste.</para>
+			    <para>Polecenie do wykonania po utworzeniu pliku. Domy¶lnie: puste.</para>
 			    <para>Przyk³ad: <prompt>command = "killall -HUP midentd"</prompt></para>
 			</listitem>
 		    </itemizedlist>
