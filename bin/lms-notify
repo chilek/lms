@@ -35,7 +35,7 @@ my $my_template;
 
 my %options = (
 	"--config-file|C=s"	=>	\$configfile,
-	"--template-file|D=s" =>  \$my_template,
+	"--template-file|D=s"	=> 	\$my_template,
 	"--quiet|q"		=>	\$quiet,
 	"--help|h"		=>	\$help,
 	"--version|v"		=>	\$version
@@ -224,13 +224,21 @@ while (my $row = $dbq->fetchrow_hashref())
 				$line =~ s/\%date-y/$year/; 
 				}
 
-                {
-                my $phone = $row->{'phone1'};
-                $line =~ s/\%phone1/$phone/;
+		                {
+               			my $phone = $row->{'phone1'};
+			        $line =~ s/\%phone1/$phone/;
 				}
 				
+				{
 				my $month = strftime ( "%m", localtime()) ; 
 				$line =~ s/\%date-m/$month/;
+				}
+
+				
+				{
+				my $month_name = strftime ( "%B", localtime()) ; 
+				$line =~ s/\%date-month-name/$month_name/;
+				}
 				
 				{
 				my $desc = $row->{'description'}; 
