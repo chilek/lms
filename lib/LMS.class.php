@@ -1607,30 +1607,21 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS tax22,
 			SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS tax7,
 			SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS tax0,
-			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS taxfree FROM cash
-			WHERE (type=1 OR type=3) GROUP BY date HAVING date>=? AND date<=? ORDER BY date ASC',
+			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS taxfree 
+			FROM cash WHERE (type=1 OR type=3) AND time>=? AND time<=? 
+			GROUP BY date ORDER BY date ASC',
 			array($date['from'], $date['to']));
 	}
 
 	function GetTotalIncomeList($date)
 	{
-		if ($totalincomelist = $this->DB->GetAll('SELECT
+		return $this->DB->GetRow('SELECT
 			SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS totaltax22,
 			SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS totaltax7,
 			SUM(CASE taxvalue WHEN 0.00 THEN value ELSE 0 END) AS totaltax0,
 			SUM(CASE WHEN taxvalue IS NULL THEN value ELSE 0 END) AS totaltaxfree FROM cash
 			WHERE (type=1 OR type=3) AND time>=? AND time<=?',
-			array($date['from'], $date['to'])))
-		{
-			foreach($totalincomelist as $idx => $row)
-			{
-				$totalincomelist['totaltax22'] = $row['totaltax22'];
-				$totalincomelist['totaltax7'] = $row['totaltax7'];
-				$totalincomelist['totaltax0'] = $row['totaltax0'];
-				$totalincomelist['totaltaxfree'] = $row['totaltaxfree'];
-			}
-		}
-		return $totalincomelist;
+			array($date['from'], $date['to']));
 	}
 
 	/*
