@@ -160,6 +160,7 @@ if($SESSION->islogged)
 			$SMARTY->display('noaccess.html');
 	}elseif($module==''){
 		$layout['module']='welcome';
+		$SMARTY->assign('warning',!chkconfig($_CONFIG['phpui']['diable_devel_warning']));
 		include($_MODULES_DIR.'/welcome.php');
 	}else{
 		$layout['module']='notfound';
@@ -182,6 +183,9 @@ else
 
 /*
  * $Log$
+ * Revision 1.95  2003/09/01 22:16:21  lukasz
+ * - ostrze¿enie o wersji rozwojowej ;>
+ *
  * Revision 1.94  2003/08/24 13:53:30  lukasz
  * - do not change empty dbhost with postgres
  *
