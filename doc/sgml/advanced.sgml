@@ -200,6 +200,7 @@
 				<member>taxvalue - tax rate in percent</member>
 				<member>userid - customer's serial number ('0' - does not apply)</member>
 				<member>invoiceid - serial number for invoice related to this operation</member>
+				<member>itemid - invoice item identifier</member>
 				<member>comment - description of operation</member>
 			</simplelist>
 		</sect2>
@@ -270,6 +271,7 @@
 			<title>Invoices - continued... ('invoicecontents')</title>
    			<simplelist>
 				<member>invoiceid - invoice serial number</member>
+				<member>itemid - invoice item identifier</member>
 				<member>value - amount</member>
 				<member>taxvalue - tax rate in percent</member>
 				<member>pkwiu - product/service classification number</member>
@@ -292,6 +294,11 @@
 				<member>type - account type (binary sum: 1-shell, 2-email, 4-www, 8-ftp)</member>
 				<member>expdate - account expire date</member>
 				<member>domainid - domain serial number</member>
+				<member>createtime - account creation date</member>
+				<member>quota_sh - limits</member>
+				<member>quota_mail - limits</member>
+				<member>quota_www - limits</member>
+				<member>quota_ftp - limits</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="domains">
@@ -391,6 +398,74 @@
 				<member>value - config variable value</member>
 				<member>description - option description or comment</member>
 				<member>disabled - is option disabled? (0-active, 1-disabled/default)</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="events">
+			<title>Timetable - events ('events')</title>
+			<simplelist>
+				<member>id - identifier</member>
+				<member>title - title</member>
+				<member>description - info</member>
+				<member>note - note</member>
+				<member>date - event date</member>
+				<member>begintime - beginning of event</member>
+				<member>endtime - ending of event</member>
+				<member>adminid - event creator ID</member>
+				<member>userid - customer ID</member>
+				<member>private - status (private/public)</member>
+				<member>closed - closing status</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="eventassignments">
+			<title>Timetable - assignments ('eventassignments')</title>
+			<simplelist>
+				<member>eventid - event identifier</member>
+				<member>adminid - user identifier</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="sessions">
+			<title>Sessions ('sessions')</title>
+			<simplelist>
+				<member>id - session identifier</member>
+				<member>ctime - create time</member>
+				<member>mtime - last modification time</member>
+				<member>atime - last access time</member>
+				<member>vdata - verification data</member>
+				<member>content - data</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="daemonhosts">
+			<title>Daemon configuration - hosts ('daemonhosts')</title>
+			<simplelist>
+				<member>id - identifier</member>
+				<member>name - host name</member>
+				<member>description - additional informations</member>
+				<member>lastreload - last reload date</member>
+				<member>reload - reload order</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="daemoninstances">
+			<title>Daemon configuration - instances ('daemoninstances')</title>
+			<simplelist>
+				<member>id - identifier</member>
+				<member>name - instance name</member>
+				<member>hostid - host identifier</member>
+				<member>module - module file path and name</member>
+				<member>crontab - time of reload</member>
+				<member>priority - reload priority</member>
+				<member>description - additional informations</member>
+				<member>disabled - status (enabled/disabled)</member>
+			</simplelist>
+		</sect2>
+		<sect2 id="daemonconfig">
+			<title>Daemon configuration - options ('daemonconfig')</title>
+			<simplelist>
+				<member>id - identifier</member>
+				<member>instanceid - instance identifier</member>
+				<member>var - option name</member>
+				<member>value - option value</member>
+				<member>description - additional informations</member>
+				<member>disabled - status (enabled/disabled)</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="dbinfo">
