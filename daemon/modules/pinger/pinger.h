@@ -1,6 +1,7 @@
 #include <syslog.h>
 #include <sys/ioctl.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <linux/if_arp.h>
 #include <features.h>    /* for the glibc version number */
 #if __GLIBC__ >= 2 && __GLIBC_MINOR >= 1
@@ -14,6 +15,9 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/time.h>
 
 #define KB 1024
 #define MAXIFN 16

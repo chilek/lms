@@ -284,7 +284,7 @@ void reload(GLOBAL *g, struct pinger_module *p)
 
 		if( strlen(netname) ) {
 
-			if( res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks WHERE UPPER(name)=UPPER('?')",netname)) {
+			if( (res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks WHERE UPPER(name)=UPPER('?')",netname)) ) {
 
 				if(res->nrows) {
 

@@ -28,6 +28,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <time.h>
 
 #include "almsd.h"
 #include "notify.h"
@@ -97,7 +98,7 @@ void reload(GLOBAL *g, struct notify_module *n)
 {
 	QUERY_HANDLE *res, *result;
 	unsigned char *mailfile = 0;
-	unsigned char *command, *id;
+	unsigned char *command;
 	int i, j, balance;
 
 	if ( (res = g->db_query("SELECT users.id AS id, email, name, lastname, SUM((type * -2 +7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id, name, lastname, email"))!=NULL ) {
