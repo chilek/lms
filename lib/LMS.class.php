@@ -835,8 +835,10 @@ class LMS
 			
 	function GetUserNodes($id)
 	{
-		if($return = $this->ADB->GetAll("SELECT id, name, mac, ipaddr, access FROM nodes WHERE ownerid=?",array($id)))
+		if($return = $this->ADB->GetAll("SELECT id, name, mac, ipaddr, access FROM nodes WHERE ownerid=?",array($id))){
 			$return[total] = sizeof($return);
+			$return[ownerid] = $id;
+		}
 		return $return;
 	}
 
