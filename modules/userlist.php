@@ -25,7 +25,7 @@
  *  $Id$
  */
 
-$_SESSION[userdelfrom] = $QUERY_STRING;
+$_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 $layout[pagetitle]="Lista u¿ytkowników";
 
