@@ -185,7 +185,7 @@ class LMS
 							$dblist['type'][] = 'plain';
 						}
 					}
-					if ($this->CONFIG['phpui']['support_gzip']=='1')
+					if (extension_loaded('zlib'))
 					{
 						if((($path['extension'] == 'gz')&&(strstr($file, "sql.gz")))&& (substr($path['basename'],0,4) == 'lms-'))
 						{
@@ -210,7 +210,7 @@ class LMS
 		{
 			return $this->DBLoad($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
 		}
-		else if (($this->CONFIG['phpui']['support_gzip']=='1')&&(file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz')))
+		else if ((extension_loaded('zlib'))&&(file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz')))
 		{
 			return $this->DBLoad($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
 		}
@@ -225,7 +225,7 @@ class LMS
 		$finfo = pathinfo($filename);
 		$ext = $finfo['extension'];
 
-		if (($this->CONFIG['phpui']['support_gzip'=='1'])&&($ext=="gz"))
+		if ((extension_loaded('zlib'))&&($ext=="gz"))
 			$file = gzopen($filename,'r'); //jezeli chcemy gz to plik najpierw trzeba rozpakowac
 		else
 			$file = fopen($filename,'r');
@@ -241,7 +241,7 @@ class LMS
 			}
 		}
 		$this->DB->CommitTrans();
-		if (($this->CONFIG['phpui']['support_gzip'=='1'])&&($ext=="gz"))
+		if ((extension_loaded('zlib'))&&($ext=="gz"))
 			gzclose($file);
 		else
 			fclose($file);
@@ -262,12 +262,12 @@ class LMS
 		}
 	}
 
-	function DBDump($filename=NULL) // zrzuca bazê danych do pliku
+	function DBDump($filename=NULL,$gzipped=FALSE) // zrzuca bazê danych do pliku
 	{
 		if(! $filename)
 			return FALSE;
-		if (($this->CONFIG['phpui']['gzip_backups']=='1')&&($this->CONFIG['phpui']['support_gzip']=='1'))
-			$dumpfile = gzopen($filename,'w');
+		if (($gzipped)&&(extension_loaded('zlib')))
+			$dumpfile = gzopen($filename,'w'); 
 		else
 			$dumpfile = fopen($filename,'w');
 
@@ -296,19 +296,19 @@ class LMS
 					unset($values);
 				}
 			}
-			if(($this->CONFIG['phpui']['gzip_backups']=='1')&&($this->CONFIG['phpui']['support_gzip']=='1'))
-				gzclose($dumpfile);
+			if (($gzipped)&&(extension_loaded('zlib')))
+				gzclose($dumpfile); 
 			else
-				fclose($dumpfile);
+				fclose($dumpfile); 
 		}
 		else
 			return FALSE;
 	}
 
-	function DatabaseCreate() // wykonuje zrzut kopii bazy danych
+	function DatabaseCreate($gzipped=FALSE) // wykonuje zrzut kopii bazy danych
 	{
-		if (($this->CONFIG['phpui']['gzip_backups']=='1')&&($this->CONFIG['phpui']['support_gzip']=='1'))
-			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/lms-'.time().'.sql.gz');
+		if (($gzipped)&&(extension_loaded('zlib')))
+			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/lms-'.time().'.sql.gz',TRUE);
 		else
 			return $this->DBDump($this->CONFIG['directories']['backup_dir'].'/lms-'.time().'.sql');
 	}
@@ -319,7 +319,7 @@ class LMS
 		{
 			return @unlink($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql');
 		}
-		else if (($this->CONFIG['phpui']['support_gzip']=='1')&&((@file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz'))))
+		else if ((extension_loaded('zlib'))&&((@file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz'))))
 		{
 			return @unlink($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz');
 		}
@@ -338,7 +338,7 @@ class LMS
 			$database['time'] = $dbtime;
 			return $database;
 		}
-		else if (($this->CONFIG['phpui']['support_gzip']=='1')&&(file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz')))
+		else if ((extension_loaded('zlib'))&&(file_exists($this->CONFIG['directories']['backup_dir'].'/lms-'.$dbtime.'.sql.gz')))
 		{
 			if($save==TRUE)
 			{
