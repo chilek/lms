@@ -106,7 +106,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	unsigned char *query, *insert, *insert_inv;
 	unsigned char *w_period, *m_period, *q_period, *y_period, *value, *taxvalue;
 	unsigned char *description;
-	int i, invoiceid=0, last_userid=0, number=0, exec=0, suspended=0;
+	int i, invoiceid=0, last_userid=0, number=0, exec=0, suspended=0, itemid=0;
 
 	time_t t;
 	struct tm *tt;
@@ -202,7 +202,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		g->db_free(res);
 
 		// payments accounting and invoices writing
-		if( (res = g->db_pquery("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, users.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY userid, value DESC", weekday, monthday, quarterday, yearday))!= NULL ) 
+		if( (res = g->db_pquery("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, users.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY userid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday))!= NULL ) 
 		{
 			for(i=0; i<res->nrows; i++) 
 			{
@@ -226,7 +226,7 @@ void reload(GLOBAL *g, struct payments_module *p)
     				value = g->db_get_data(res,i,"value");
 				taxvalue = g->db_get_data(res,i,"taxvalue");
 				// prepare insert to 'cash' table
-				insert = strdup("INSERT INTO cash (time, type, value, taxvalue, userid, comment, invoiceid) VALUES (%NOW%, 4, %value, %taxvalue, %userid, '%comment', %invoiceid)");
+				insert = strdup("INSERT INTO cash (time, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (%NOW%, 4, %value, %taxvalue, %userid, '%comment', %invoiceid, %itemid)");
 				g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
 				g->str_replace(&insert, "%value", value);
 				description = strdup(p->comment);
@@ -272,9 +272,10 @@ void reload(GLOBAL *g, struct payments_module *p)
 							invoiceid = (result->nrows ? atoi(g->db_get_data(result,0,"id")) : 0);
 							g->db_free(result);
 						}
+						itemid = 0;
 					}
 					
-					if( (result = g->db_pquery("SELECT * FROM invoicecontents WHERE tariffid = ? AND invoiceid = ? AND description = '?'", g->db_get_data(res,i,"tariffid"), itoa(invoiceid), description))!=NULL ) 
+					if( (result = g->db_pquery("SELECT itemid FROM invoicecontents WHERE tariffid = ? AND invoiceid = ? AND description = '?'", g->db_get_data(res,i,"tariffid"), itoa(invoiceid), description))!=NULL ) 
 					{
 						if( result->nrows ) 
 						{
@@ -282,13 +283,19 @@ void reload(GLOBAL *g, struct payments_module *p)
 							g->str_replace(&query, "%invoiceid", itoa(invoiceid));
 							g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
 							g->str_replace(&query, "%desc", description);
-						} else {
-							query = strdup("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (%invoiceid, %value, %taxvalue, '%pkwiu', 'szt.', 1, '%desc', %tariffid)");
+							itemid = atoi(g->db_get_data(result,0,"itemid"));
+						} 
+						else 
+						{
+							itemid++;
+							query = strdup("INSERT INTO invoicecontents (invoiceid, itemid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (%invoiceid, %itemid, %value, %taxvalue, '%pkwiu', 'szt.', 1, '%desc', %tariffid)");
 							g->str_replace(&query, "%invoiceid", itoa(invoiceid));
+							g->str_replace(&query, "%itemid", itoa(itemid));
 							g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
 							g->str_replace(&query, "%value", g->db_get_data(res,i,"value"));
 							g->str_replace(&query, "%pkwiu", g->db_get_data(res,i,"pkwiu"));
 							g->str_replace(&query, "%desc", description);
+
 							if( strlen(taxvalue) )
 								g->str_replace(&query, "%taxvalue", taxvalue);
 							else
@@ -300,9 +307,13 @@ void reload(GLOBAL *g, struct payments_module *p)
 					}
 					
 					g->str_replace(&insert, "%invoiceid", itoa(invoiceid));
+					g->str_replace(&insert, "%itemid", itoa(itemid));
 					exec = g->db_exec(insert);
-				} else {
+				} 
+				else 
+				{
 					g->str_replace(&insert, "%invoiceid", "0");
+					g->str_replace(&insert, "%itemid", "0");
 					exec = g->db_exec(insert) ? 1 : exec;
 				}
 
