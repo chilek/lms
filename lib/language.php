@@ -24,10 +24,26 @@
  *  $Id$
  */
 
-// Plik do ustawiania locales i do translacji...
-// Chwilowo tutaj nie ma nic, naprawdê nic, poprostu potrzebne do eksperymentów paru.
+$language = 'en';
+$langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+foreach ($langs as $val) {
+    switch (substr($val, 0, 2)) {
+	case 'pl':
+            $language = 'pl';
+            break 2;
+        case 'en':
+	    $language = 'en';
+	    break 2;
+    }
+}
 
-// ustawienie komunikatów syst. na polskie
-setlocale(LC_MESSAGES,'pl_PL');
-// ustawienie formatu czasu na polski
-setlocale(LC_TIME,'pl_PL');
+switch ($language) {
+    case 'pl':
+	require_once($_LIB_DIR.'/lang/polish.php');
+	break;
+    case 'en':
+	require_once($_LIB_DIR.'/lang/english.php');
+        break;
+}
+
+?>

@@ -153,6 +153,7 @@ $LMS->CONFIG = $_CONFIG;
 
 $SMARTY = new Smarty;
 $SMARTY->assign('_config',$_CONFIG);
+$SMARTY->assign('lang',$lang);
 
 // test for proper version of Smarty
 
