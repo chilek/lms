@@ -1,5 +1,16 @@
 $Id$
 
+Spis rzeczy:
+
+1) co to
+2) sql i pin
+3) lms-notify
+4) ikonki
+5) pos³owie
+
+
+1) co to
+
 Jest to mini panel dla u¿ytkowników którzy:
 
 a) korzystaj± z proxy
@@ -7,6 +18,7 @@ b) nie korzystaj± z sieci tylko w domu
 c) nie chc± aby dzieci/ma³¿onkowie/pracownicy mieli wgl±d w dane fiansowe 
 dotycz±ce ich dostêpu do sieci/innych us³ug sprzedawanych przez LMS.
 
+2) sql i pin
 
 Na pocz±tek kolumna pin:
 
@@ -21,6 +33,8 @@ mysql> UPDATE users SET pin=RAND()*10 + RAND()*100 + RAND()*1000
 	+ RAND()*10000 + RAND()*100000-1;
 pgsql> UPDATE users SET pin=random()*10 + random()*100 + random()*1000 
 	+ random()*10000 + random()*100000-1;
+	
+3) lms-notify
 	
 Dobrze jest te¿ powiadomiæ u¿ytkowników w co rocznym/miesiêcznym/tygodniowym 
 mailu rozrachunkowo-newsletterowym:
@@ -56,4 +70,15 @@ Oraz dodaæ mo¿liwo¶æ podmiany %pin w mailach (opkolice 250 linijki):
 #V-
 
 
-ps. SOA#1.
+
+4) ikonki
+
+Ikonki aby dzia³a³y dobrze jest daæ np:
+
+$ ln -s ../../img img
+
+w katalogu contrib/customer_otherip, oraz "Options +followlinks w apachu".
+
+5) pos³owie
+
+SOA#1
