@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--// $Id$ //-->
+<html><head>
+<meta name="GENERATOR" content="LMS {$layout.lmsv}">
+<meta http-equiv="Content-Language" content="pl">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
+<title>::: LMS :{if $layout.pagetitle neq ""} {$layout.pagetitle} :{/if}::</title>
+<link href="img/style.css" rel="stylesheet" type="text/css">
+<script language="JavaScript" type="text/JavaScript" src="img/common.js"> </script>
+</head>
+<body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600">
+<table bgcolor="#CEBD9B" cellpadding="3" cellspacing="0" width="100%" style="border-width: 1pt; border-style: solid;">
+<tr>
+<td width="50%" valign="middle">
+	<img border="0" src="img/lms.gif" align="left" alt="LMS {$layout.lmsv}">
+</td>
+<td width="50%">
+<p align="right">
+<a href="doc/">Dokumentacja</a> / <a href="http://lms.rulez.pl">Strona domowa</a>
+</p>
+<p align="right">
+<B>
+	Zalogowany jako: {$layout.logname}
+</B>
+</P>
+</td>
+</tr>
+</table>
+{if $layout.nomenu neq TRUE}
+<table border="0" cellpadding="10" cellspacing="0" width="100%"><tr><td width="1%" style="border-right-style: dashed; border-right-width: 1pt; border-right-color: #333333; border-left-style: dashed; border-left-width: 1pt; border-left-color: #333333;" bgcolor="#F4F0EC" valign="top">
+		<table width="100%">
+			{section name=menu loop=$menu.link}
+			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
+				<TD width="100%" class="fbt" nowrap>
+					<P CLASS="separated">
+						<IMG SRC="img/{$menu.img[menu]}" BORDER="0" ALT="" ALIGN="absmiddle">
+						<a href="{$menu.link[menu]}"{if $menu.accesskey[menu]} accesskey="{$menu.accesskey[menu]}"{/if}><B>{$menu.name[menu]}</B></A>
+					</P>
+				</TD>
+			</TR>
+			{/section}
+			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
+				<TD width="100%" class="fbt" nowrap>
+					<P CLASS="separated">
+						<IMG SRC="img/pass.gif" BORDER="0" alt="" align="absmiddle">
+						<a href="?m=adminpasswd&id={$layout.logid}" accesskey="p"><B>Zmień hasło</B></A>
+					</P>
+				</TD>
+			</TR>
+			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
+				<TD width="100%" class="fbt" nowrap>
+					<P CLASS="separated">
+						<IMG SRC="img/logout.gif" BORDER="0" ALT="" ALIGN="absmiddle">
+						<a href="?m=logout" onClick="return confirmLink(this,'Na pewno chcesz się wylogować?');" accesskey="q"><B>Wyloguj się</B></A>
+					</P>
+				</TD>
+			</TR>
+			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
+				<FORM METHOD="GET" ACTION="?m=userinfo">
+					<TD width="100%" class="fbt" nowrap>
+						<P CLASS="separated">
+						<IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
+						<INPUT TYPE="text" NAME="id" VALUE="" SIZE="10">
+						<INPUT TYPE="hidden" NAME="m" VALUE="userinfo">
+						</P>
+					</TD>
+				</FORM>
+			</TR>
+			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
+				<FORM METHOD="GET" ACTION="?m=userinfo">
+					<TD width="100%" class="fbt" nowrap>
+						<P CLASS="separated">
+						<IMG SRC="img/node.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
+						<INPUT TYPE="text" NAME="id" VALUE="" SIZE="10">
+						<INPUT TYPE="hidden" NAME="m" VALUE="nodeinfo">
+						</P>
+					</TD>
+				</FORM>
+			</TR>				
+		</TABLE>
+</p></td>
+<td width="99%" valign="top" style="border-right-style: dashed; border-right-width: 1pt; border-right-color: #333333;">
+{/if}
+{if $emptypasswd}<H1 align="center"><A HREF="?m=adminpasswd"><FONT COLOR="RED">Twoje konto posiada puste hasło! Natychmiast ustaw sobie hasło!</FONT></A></H1>{/if}

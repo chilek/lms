@@ -1,0 +1,24 @@
+{include file="header.html"}
+{include file="nodeheader.html"}
+<!-- $Id$ -->
+<H1>Dodanie komputera {if $userinfo.id}(dla {$userinfo.username}){/if}</H1>
+{if $userinfo}
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD VALIGN="TOP" WIDTH="50%">
+			{include file="userinfobox.html"}
+		</TD>
+		<TD VALIGN="TOP" WIDTH="50%">
+			{include file="nodeaddbox.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			{include file="userbalancebox.html" limit=10}
+		</TD>
+	</TR>
+</TABLE>
+{else}
+{include file="nodeaddbox.html"}
+{/if}
+{include file="footer.html"}

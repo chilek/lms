@@ -1,0 +1,21 @@
+<!--// $Id$ //-->
+<H1>Mailing</H1>
+<FORM name="mailing" method="post" action="?m=mailingsend" TARGET="_blank">
+<p class="txt"><b>1.</B> Wybierz grupê odbiorców:<BR>
+<select name="mailing[group]">
+	<option value="3">u¿ytkownicy pod³±czeni</option>
+	<option value="2">osoby oczekuj±ce na pod³±czenie</option>
+	<option value="1">osoby zainteresowane</option>
+	<option value="0">wszyskie adresy E-mail zapisane w bazie</option>
+</select>{if $error.group}<BR><FONT COLOR="red"><B>Yyy... Jaki¶ g³upi b³±d, wybierz jeszcze raz grupê.</B></FONT>{/if}</p>
+<p class="txt"><B>2.</B>{if $error.sender}<FONT COLOR="RED"><B>{/if} Wpisz nadawcê wiadomo¶ci (np. Administratorzy Sieci Wiosenna):{if $error.sender}</B></FONT>{/if}<BR>
+<input type="text" name="mailing[sender]" size="60" value="{$mailing.sender}"{if $error.sender} CLASS="alert"{/if}></P>
+<P class="txt"><B>3.</B>{if $error.from}<FONT COLOR="RED"><B>{/if} Wpisz adres email nadawcy (np. admins@wiosenna.net):{if $error.from}</B></FONT>{/if}<BR>
+<input type="text" name="mailing[from]" size="60"{if $error.from} CLASS="alert"{/if} VALUE="{$mailing.from}"></p>
+<P class="txt"><B>4.</B>{if $error.subject}<FONT COLOR="RED"><B>{/if} Wpisz temat wiadomo¶ci (np. "Wa¿ny komunikat"):{if $error.subject}</B></FONT>{/if}<BR>
+<input type="text" name="mailing[subject]" size="60"{if $error.subject} CLASS="alert"{/if} VALUE="{$mailing.subject}"></p>
+<P class="txt"><B>5.</B> Wpisz tre¶æ wiadomo¶ci:<BR>
+<textarea name="mailing[body]" cols="80" rows="25">{$mailing.body}</textarea><BR>
+<img src="img/tip.gif" alt="[ TIP ]" border="0" align="absmiddle"> U¿ywaj klawisza Enter po to tylko by zamkn±æ akapit. LMS sam sformatuje wiadomo¶æ i po³amie linijki.</P>
+<P class="txt"><B>6.</B> Wy¶lij wiadomo¶æ: <input type="SUBMIT" name="mailing[submit]" value="Wy¶lij &raquo;"></p>
+</FORM>

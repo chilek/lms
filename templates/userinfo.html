@@ -1,0 +1,20 @@
+{include file="header.html"}
+{include file="userheader.html"}
+<!-- $Id$ -->
+<H1>Informacje o u¿ytkowniku {$userinfo.username}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR>
+		<TD VALIGN="TOP" WIDTH="50%">
+			{include file="userinfobox.html"}
+		</TD>
+		<TD VALIGN="TOP" WIDTH="50%">
+			{include file="usernodesbox.html"}
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="100%" COLSPAN="2">
+			{include file="userbalancebox.html" limit=-10}
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

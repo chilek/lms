@@ -1,0 +1,90 @@
+{include file="header.html"}
+{include file="balanceheader.html"}
+<!--// $Id$ //-->
+<H1>Lista taryf</H1>
+<TABLE WIDTH="100%" CELLPADDING="5">
+	<TR class="dark">
+		<TD WIDTH="94%" CLASS="fleftu">
+			<B>Nazwa:<BR>
+			Opis:</B>
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+			<B>Downstream:<BR>
+			Upstream:</B>
+		</TD>	
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+			<B>Warto¶æ:</B>
+		</TD>	
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+			<B>ID:</B>
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+			<B>Korzysta:</B>
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
+			<NOBR>
+			<B>Zysk m-c:</B>
+			</NOBR>
+		</TD>
+		<TD WIDTH="1%" CLASS="frightu">
+			<NOBR>
+			<B>Razem: {$tarifflist.total}</B>
+			</NOBR>
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{section name=tariffs loop=$tarifflist.id}
+	<TR BGCOLOR="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD WIDTH="95%" CLASS="fleft" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist.id[tariffs]}';" class="fleft">
+			<B>{$tarifflist.name[tariffs]}</B><BR>
+			{$tarifflist.description[tariffs]}
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist.id[tariffs]}';">
+			<NOBR>
+			{if $tarifflist.downrate[tariffs]}{$tarifflist.downrate[tariffs]} kbit{else}-{/if}<BR>
+			{if $tarifflist.uprate[tariffs]}{$tarifflist.uprate[tariffs]} kbit{else}-{/if}
+			</NOBR>
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist.id[tariffs]}';">
+			<NOBR>
+			{$tarifflist.value[tariffs]|string_format:"%01.2f"} z³
+			</NOBR>
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist.id[tariffs]}';">
+			({$tarifflist.id[tariffs]|string_format:"%04d"})
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist.id[tariffs]}';">
+			{$tarifflist.users[tariffs]}
+		</TD>
+		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist.id[tariffs]}';">
+			{$tarifflist.income[tariffs]|string_format:"%01.2f"} z³
+		</TD>
+		<TD WIDTH="1%" CLASS="fright" ALIGN="right">
+			<NOBR>
+			{if $tarifflist.users[tariffs]}<A HREF="javascript:alert('Nie mo¿na usun±æ taryfy z której korzystaj± jacy¶ u¿ytkownicy!');">{else}<A HREF="?m=tariffdelete&id={$tarifflist.id[tariffs]}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ t± taryfê?');">{/if}<IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0"></A>
+				<A HREF="?m=tariffedit&id={$tarifflist.id[tariffs]}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" BORDER="0"></A>
+				<A HREF="?m=tariffinfo&id={$tarifflist.id[tariffs]}"><IMG SRC="img/info.gif" ALT="[ Info ]" BORDER="0"></A>
+			</NOBR>
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD COLSPAN="7" ALIGN="center" CLASS="fall">
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+			<p><B>Nie ma wprowadzonych ¿adnych taryf do bazy danych!</B></p>
+			<p>&nbsp;</p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	<TR CLASS="light">
+		<TD CLASS="fleftu" COLSPAN="5" WIDTH="98%" ALIGN="right">
+			<B>Razem:</B>
+		</TD>
+		<TD CLASS="frightu" COLSPAN="2" WIDTH="2%">
+			<B>{$tarifflist.totalincome|string_format:"%01.2f"} z³</B>
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

@@ -1,0 +1,673 @@
+#!/usr/bin/perl -Tw
+#
+# LMS version 1.0
+#
+#  (C) 2001-2003 LMS Developers
+#
+#  Please, see the doc/AUTHORS for more information about authors!
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License Version 2 as
+#  published by the Free Software Foundation.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#  USA.
+#
+#  $Id$
+
+use strict;
+use DBI;
+use Config::IniFiles;
+use Getopt::Long;
+use vars qw($configfile $quiet $help $version $instances_cmd $debug);
+use POSIX qw(strftime);
+
+$ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
+
+sub mask2prefix($)
+{
+	my $mask = shift @_;
+	my @tmp = split('\.',$mask,4);
+	my $q = sprintf("%b%b%b%b",$tmp[0],$tmp[1],$tmp[2],$tmp[3]);
+	$q =~ s/0*$//;
+	if ($q =~ /0/) {
+		return -1;
+	}
+	my $len = length($q) ;
+	return $len;
+}	
+
+sub prefix2mask
+{
+	my $host_bits = 32-$_[0];
+	my $net_mask = (~0 << $host_bits) & 0xffffffff;
+	my @bytes = unpack "CCCC", pack "N", $net_mask;
+	my $dec_rep = sprintf "%d.%d.%d.%d", @bytes;
+	return $dec_rep;
+}					
+
+sub matchip($$$)
+{
+	my ($ip,$net,$mask) = @_;
+	my $prefix = mask2prefix($mask);
+	my $bmask = 2**32 <<(32-$prefix);
+	my @net = split('\.',$net,4);
+	my $bnet = dotquad2u32($net);
+	if(($bnet & $bmask)!= $bnet) {
+		$bnet = ($bnet & $bmask);
+	}
+	my $bip = dotquad2u32($ip);
+	return (($bip&$bmask) == $bnet);
+}
+
+sub u32todotquad($)
+{
+	my $p = shift @_;
+	return sprintf "%d.%d.%d.%d", ($p>>24)&0xff,($p>>16)&0xff, ($p>>8)&0xff,$p&0xff;
+}
+
+sub dotquad2u32($)
+{
+	my $dq = shift||'0.0.0.0';
+	my @dq = split('\.',$dq,4);
+	return ((($dq[0] << 8) + $dq[1] << 8) + $dq[2] << 8) + $dq[3];
+}
+
+sub isprivate($)
+{
+	my ($ip) = @_;
+	return matchip($ip,"192.168.0.0","255.255.0.0") || matchip($ip,"10.0.0.0","255.0.0.0") || matchip($ip,"172.16.0.0","255.240.0.0");
+}
+
+my $_version = '1.0-cvs';
+
+my %options = (
+	"--config-file|C=s"	=>	\$configfile,
+	"--quiet|q"		=>	\$quiet,
+	"--help|h"		=>	\$help,
+	"--version|v"		=>	\$version,
+	"--debug|d"		=>	\$debug,
+	"--instances|i=s"	=>	\$instances_cmd
+);
+
+Getopt::Long::config("no_ignore_case");
+GetOptions(%options);
+
+if($help)
+{
+	print STDERR <<EOF;
+lms-mgc, version $_version
+(C) 2001-2003 LMS Developers
+
+-C, --config-file=/etc/lms/lms-mgc.ini	alternate config file (default: /etc/lms/lms-mgc.ini);
+-i, --instances=name		Name (or number) of instance to run, usefull
+-i "name1 name2"		tu run specific instances overrding config
+				file;
+-h, --help			print this help and exit;
+-v, --version			print version info and exit;
+-q, --quiet			suppress any output, except errors;
+-d, --debug			print which rule match every IP;
+
+EOF
+	exit 0;
+}
+
+if($version)
+{
+	print STDERR <<EOF;
+lms-mgc, version $_version
+(C) 2001-2003 LMS Developers
+
+EOF
+	exit 0;
+}
+
+if(!$configfile)
+{
+	$configfile = "/etc/lms/lms-mgc.ini";
+}
+
+if(!$quiet)
+{
+	print STDOUT "lms-mgc, version $_version\n";
+	print STDOUT "(C) Copyright 2002 Rulez.PL Development Team\n";
+	print STDOUT "(C) Copyright 2001-2002 NetX ACN\n";
+	print STDOUT "Using file $configfile as config.\n";
+}
+
+if(! -r $configfile)
+{
+	print STDERR "Fatal error: Unable to read configuration file $configfile, exiting.\n";
+	exit 1;
+}
+
+my $ini = new Config::IniFiles -file => $configfile;
+
+my $instances_cfg = $ini->val('mgc', 'instances') || '0';
+
+my $dbtype = $ini->val('database', 'type') || 'mysql';
+my $dbhost = $ini->val('database', 'host') || 'localhost';
+my $dbuser = $ini->val('database', 'user') || 'root';
+my $dbpasswd = $ini->val('database', 'password') || '';
+my $dbname = $ini->val('database', 'database') || 'lms';
+
+my $dbase;
+
+sub instance($)
+{
+	my($instanceno) = @_;
+	print STDOUT "Starting up instance: $instanceno\n" unless $quiet;
+	
+	my $outfile = $ini->val("mgc:$instanceno",'outfile') || '';
+	my $header_file = $ini->val("mgc:$instanceno",'header_file') || '';
+	my $header = $ini->val("mgc:$instanceno",'header') || '';
+	my $footer_file = $ini->val("mgc:$instanceno",'footer_file') || '';
+	my $footer = $ini->val("mgc:$instanceno",'footer') || '';			
+	my $networks = $ini->val("mgc:$instanceno", 'networks') || '';
+	my $dst_networks = $ini->val("mgc:$instanceno", 'dst_networks') || '';
+	my $network_header = $ini->val("mgc:$instanceno", 'network_header') || '';
+	my $dst_network_header = $ini->val("mgc:$instanceno", 'dst_network_header') || '';
+	my $network_body = $ini->val("mgc:$instanceno",'network_body') || '';
+	my $network_footer = $ini->val("mgc:$instanceno", 'network_footer') || '';
+	my $grantednode_priv = $ini->val("mgc:$instanceno",'grantednode_priv') || '';
+	my $deniednode_priv = $ini->val("mgc:$instanceno",'deniednode_priv') || '';
+	my $freeip_priv = $ini->val("mgc:$instanceno",'freeip_priv') || '';
+	my $default_priv = $ini->val("mgc:$instanceno",'default_priv') || '';
+	my $dhcpnode_priv = $ini->val("mgc:$instanceno",'dhcpnode_priv') || '';
+	my $grantednode_publ = $ini->val("mgc:$instanceno",'grantednode_publ') || '';
+	my $deniednode_publ = $ini->val("mgc:$instanceno",'deniednode_publ') || '';
+	my $freeip_publ = $ini->val("mgc:$instanceno",'freeip_publ') || '';
+	my $default_publ = $ini->val("mgc:$instanceno",'default_publ') || '';
+	my $dhcpnode_publ = $ini->val("mgc:$instanceno",'dhcpnode_publ') || '';
+	my $outfile_perm = $ini->val("mgc:$instanceno",'outfile_perm') || '600';
+	my $outfile_owner = $ini->val("mgc:$instanceno",'outfile_owner') || '0';
+	my $outfile_group = $ini->val("mgc:$instanceno",'outfile_group') || '0';
+	my $allnodes = $ini->val("mgc:$instanceno",'allnodes') || '';
+	my $allexistnodes = $ini->val("mgc:$instanceno", 'allexistnodes') || '';
+	my $append = $ini->val("mgc:$instanceno", 'append') || '0';
+	my $post_exec = $ini->val("mgc:$instanceno", 'post_exec') || '';
+	my $ignore_list = $ini->val("mgc:$instanceno", 'ignore') || '';
+	
+	my $allnetworks;
+
+	my $dbq = $dbase->prepare("SELECT name FROM networks");
+
+	$dbq->execute();
+	while (my $row = $dbq->fetchrow_hashref()) {
+		$allnetworks = "$allnetworks $row->{'name'}";
+	}		
+
+	print "debug: allnetworks is: '$allnetworks'\n" if $debug;
+	
+	if(!$networks)
+	{
+		print "debug: no networks defined, using '$allnetworks'\n" if $debug;
+		$networks = $allnetworks;
+	}else{
+		print "debug: networks defined are: '$networks'\n" if $debug;
+	}
+	
+	if(!$dst_networks)
+	{
+		print "debug: no dst_networks defined, using '$allnetworks'\n" if $debug;
+		$dst_networks = $allnetworks;
+	}else{
+		print "debug: dst_networks are: '$dst_networks'\n" if $debug;
+	}
+			
+	
+	if(!$outfile)
+	{
+		print STDERR "Fatal error: missing outfile in [mgc:$instanceno], aborting this instance.\n";
+		return 1;
+	}
+	
+	my $cantwrite;
+	
+	if($append)
+	{
+		open(OUTFILE, ">>$outfile") or $cantwrite = 1;
+	}else{
+		open(OUTFILE, ">$outfile") or $cantwrite = 1;
+	}
+	
+	if($cantwrite)
+	{
+		print STDERR "Fatal error: unable to write $outfile, aborting this instance.\n";
+		return 1;
+	}
+
+	if($header_file)
+	{
+		print STDOUT "Copying contents of $header_file...\n" unless $quiet;
+		if(! -r $header_file)
+		{
+			print STDERR "Warning: unable to read $header_file!\n";
+		}else{
+			open(HEADERFILE, "$header_file");
+			my @headercontents = <HEADERFILE>;
+			close HEADERFILE;
+			foreach my $line (@headercontents)
+			{
+				print OUTFILE "$line";
+			}
+		}
+	}
+
+	my $time = strftime("%H%M",gmtime);
+	my $times = strftime("%H%M%S",gmtime);
+	my $utime = time();
+	my $date = strftime("%Y%m%d",gmtime);
+		
+	if($header)
+	{
+		print STDOUT "Writting headers...\n" unless $quiet;
+		$header =~ s/\\n/\n/g;
+		$header =~ s/\\t/\t/g;
+		$header =~ s/\%TIMES/$times/g;
+		$header =~ s/\%TIME/$time/g;
+		$header =~ s/\%UTIME/$utime/g;
+		$header =~ s/\%DATE/$date/g;										
+		print OUTFILE "$header\n";
+	}
+
+	my @networks = split ' ',$networks;
+	my @dst_networks = split ' ',$dst_networks;
+	my @ignore_items = split ' ',$ignore_list;
+	
+	foreach my $srcnetwork (@networks)
+	{
+		$srcnetwork = uc($srcnetwork);
+		print "debug: starting network $srcnetwork\n" if $debug;
+		my $dbq = $dbase->prepare("SELECT id, name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$srcnetwork'");
+		$dbq->execute();
+		my $row = $dbq->fetchrow_hashref();
+		if(!$row)
+		{
+			print STDERR "Fatal error: Didn't find any network matching $srcnetwork, exiting.\nHint: Do you know that PostgreSQL have case-sensitive queries by default?\n";
+			return 1;
+		}
+		$row->{'name'} = lc($row->{'name'});
+		$row->{'NAME'} = uc($row->{'name'});
+		
+		if($network_header)
+		{
+			my $tnh = $network_header;
+			$tnh =~ s/\%ID/$row->{'id'}/g;
+			$tnh =~ s/\%name/$row->{'name'}/g;
+			$tnh =~ s/\%NAME/$row->{'NAME'}/g;
+			$tnh =~ s/\%ADDR/$row->{'address'}/g;
+			$tnh =~ s/\%MASK/$row->{'mask'}/g;
+			$tnh =~ s/\%GATE/$row->{'gateway'}/g;
+			$tnh =~ s/\%DNS/$row->{'dns'}/g;
+			$tnh =~ s/\%DOMAIN/$row->{'domain'}/g;
+			$tnh =~ s/\%WINS/$row->{'wins'}/g;
+			$tnh =~ s/\%DHCPS/$row->{'dhcpstart'}/g;
+			$tnh =~ s/\%DHCPE/$row->{'dhcpend'}/g;
+			$tnh =~ s/\%TIMES/$times/g;
+			$tnh =~ s/\%TIME/$time/g;
+			$tnh =~ s/\%UTIME/$utime/g;
+			$tnh =~ s/\%DATE/$date/g;
+			$tnh =~ s/\\n/\n/g;
+			$tnh =~ s/\\t/\t/g;
+
+			print OUTFILE $tnh."\n";
+		}
+
+		if($dst_network_header)
+		{
+			foreach my $dstnetwork (@dst_networks)
+			{
+				$dstnetwork = uc($dstnetwork);
+				my $sdbq = $dbase->prepare("SELECT id, name, address, mask, gateway, dns, domain, wins, dhcpstart, dhcpend FROM networks WHERE name = '$dstnetwork'");
+				$sdbq->execute();
+				my $srow = $sdbq->fetchrow_hashref();
+				my $dtnh = $dst_network_header;
+				$dtnh =~ s/\%ID/$row->{'id'}/g;
+				$dtnh =~ s/\%name/$row->{'name'}/g;
+				$dtnh =~ s/\%NAME/$row->{'NAME'}/g;
+				$dtnh =~ s/\%ADDR/$row->{'address'}/g;
+				$dtnh =~ s/\%MASK/$row->{'mask'}/g;
+				$dtnh =~ s/\%GATE/$row->{'gateway'}/g;
+				$dtnh =~ s/\%DNS/$row->{'dns'}/g;
+				$dtnh =~ s/\%DOMAIN/lc($row->{'domain'}/g;
+				$dtnh =~ s/\%WINS/$row->{'wins'}/g;
+				$dtnh =~ s/\%DHCPS/$row->{'dhcpstart'}/g;
+				$dtnh =~ s/\%DHCPE/$row->{'dhcpend'}/g;
+				$dtnh =~ s/\%TIMES/$times/g;
+				$dtnh =~ s/\%TIME/$time/g;
+				$dtnh =~ s/\%UTIME/$utime/g;
+				$dtnh =~ s/\%DATE/$date/g;
+				$dtnh =~ s/\%DID/$srow->{'id'}/g;
+				$dtnh =~ s/\%dname/$srow->{'name'}/g;
+				$dtnh =~ s/\%DNAME/$srow->{'NAME'}/g;
+				$dtnh =~ s/\%DADDR/$srow->{'address'}/g;
+				$dtnh =~ s/\%DMASK/$srow->{'mask'}/g;
+				$dtnh =~ s/\%DGATE/$srow->{'gateway'}/g;
+				$dtnh =~ s/\%DDNS/$srow->{'dns'}/g;
+				$dtnh =~ s/\%DDOMAIN/$srow->{'domain'}/g;
+				$dtnh =~ s/\%DWINS/$srow->{'wins'}/g;
+				$dtnh =~ s/\%DDHCPS/$srow->{'dhcpstart'}/g;
+				$dtnh =~ s/\%DDHCPE/$srow->{'dhcpend'}/g;
+				$dtnh =~ s/\\n/\n/g;
+				$dtnh =~ s/\\t/\t/g;
+				print OUTFILE $dtnh."\n";
+			}
+		}
+
+                if($network_body)
+		{
+			my $tnb = $network_body;
+			$tnb =~ s/\%ID/$row->{'id'}/g;
+			$tnb =~ s/\%name/$row->{'name'}/g;
+			$tnb =~ s/\%NAME/$row->{'NAME'}/g;
+			$tnb =~ s/\%ADDR/$row->{'address'}/g;
+			$tnb =~ s/\%MASK/$row->{'mask'}/g;
+			$tnb =~ s/\%GATE/$row->{'gateway'}/g;
+			$tnb =~ s/\%DNS/$row->{'dns'}/g;
+			$tnb =~ s/\%DOMAIN/$row->{'domain'}/g;
+			$tnb =~ s/\%WINS/$row->{'wins'}/g;
+			$tnb =~ s/\%DHCPS/$row->{'dhcpstart'}/g;
+			$tnb =~ s/\%DHCPE/$row->{'dhcpend'}/g;
+			$tnb =~ s/\%TIMES/$times/g;
+			$tnb =~ s/\%TIME/$time/g;
+			$tnb =~ s/\%UTIME/$utime/g;
+			$tnb =~ s/\%DATE/$date/g;
+			$tnb =~ s/\\n/\n/g;
+			$tnb =~ s/\\t/\t/g;
+			
+			print OUTFILE $tnb."\n";
+		}
+		
+		# BUILD NODELIST
+		#
+		#
+		$dbq = $dbase->prepare("SELECT ipaddr, mac, access, id, ownerid, name FROM nodes");
+		$dbq->execute();
+		my %maclist;
+		my %accesslist;
+		my %idlist;
+		my %namelist;
+		my %ucnamelist;
+		my %ownerlist;
+		
+		while (my $row = $dbq->fetchrow_hashref())
+		{
+			$maclist{$row->{'ipaddr'}} = $row->{'mac'};
+			$accesslist{$row->{'ipaddr'}} = $row->{'access'};
+			$idlist{$row->{'ipaddr'}} = $row->{'id'};
+			$namelist{$row->{'ipaddr'}} = lc($row->{'name'});
+			$ucnamelist{$row->{'ipaddr'}} = uc($row->{'name'});
+			$ownerlist{$row->{'ipaddr'}} = $row->{'ownerid'};
+		}
+				
+		
+		my $dhcpend = dotquad2u32($row->{'dhcpend'}) || '0';
+		my $dhcpstart = dotquad2u32($row->{'dhcpstart'}) || '0';
+		my $longip = dotquad2u32($row->{'address'});
+		my $netsize = 2**(32 - mask2prefix($row->{'mask'}));
+		my $grantednode;
+		my $deniednode;
+		my $freeip;
+		my $dhcpnode;
+		my $default;
+		
+		if(isprivate($row->{'address'}))
+		{
+			print "private (using _priv rules), " if $debug;
+			$grantednode = $grantednode_priv;
+			$deniednode = $deniednode_priv;
+			$freeip = $freeip_priv;
+			$dhcpnode = $dhcpnode_priv;
+			$default = $default_priv;
+		}
+		else
+		{
+			print "public (using _publ rules), " if $debug;
+			$grantednode = $grantednode_publ;
+			$deniednode = $deniednode_publ;
+			$freeip = $freeip_publ;
+			$dhcpnode = $dhcpnode_publ;
+			$default = $default_publ;
+		}
+		
+		for(my $i=$longip;$i<$longip+$netsize;$i++)
+		{
+			my $ipaddr = u32todotquad($i);
+			my $rule = '';
+			my $ignored = 0;
+			print "debug: ".$ipaddr.": " if $debug;
+			
+			foreach my $ignored_item (@ignore_items)
+			{
+				my($iip,$imask) = split '/',$ignored_item;
+				if(!$imask)
+				{
+					$imask = "255.255.255.255";
+				}elsif($imask =~ /^\d+\.\d+\.\d+\.\d+$/)
+				{
+					# nope; mask is good
+				}elsif($imask >= 0 && $imask <= 32)
+				{
+					$imask = prefix2mask($imask);
+				}else{
+					print STDERR "Warning! Wrong ignore item: $iip/$imask!\n";
+				}
+
+				if(matchip($ipaddr,$iip,$imask))
+				{
+					$ignored = 1;
+				}
+			}
+						
+			if($ignored)
+			{
+				print "ignoring.\n" if $debug;
+			}elsif($allnodes)
+			{
+				print "using default rule for ALL nodes.\n" if $debug;
+				$rule = $allnodes;
+			}
+			elsif($allexistnodes && $idlist{$ipaddr})
+			{
+				print "using default rule for ALL nodes that exists.\n" if $debug;
+				$rule = $allexistnodes;
+			}
+			elsif($idlist{$ipaddr} && ($accesslist{$ipaddr} eq "Y") && $grantednode)
+			{
+				print "exists in db (access eq \"Y\") and rule for grantednode exists, applying.\n" if $debug;
+				$rule = $grantednode;
+			}
+			elsif($idlist{$ipaddr} && !($accesslist{$ipaddr} eq "Y") && $deniednode)
+			{
+				print "exists in db (access neq \"Y\") and rule for deniednode exists, applying.\n" if $debug;
+				$rule = $deniednode;
+			}
+			elsif(($i>=$dhcpstart && $i<=$dhcpend) && $dhcpnode)
+			{
+				print "match DHCP range and dhcpnode rule exists, applying.\n" if $debug;
+				$rule = $dhcpnode;
+			}
+			elsif(!($idlist{$ipaddr}) && !($i>=$dhcpstart && $i<=$dhcpend) && $freeip)
+			{
+				print "not exists, doesn't match DHCP, but freeip rule exists, applying.\n" if $debug;
+				$rule = $freeip;
+			}
+			elsif($default)
+			{
+				print "doesn't match previous rules, but default exists, applying.\n" if $debug;
+				$rule = $default;
+			}else
+			{
+				print "no matching rule or (what is more possible) no rule exists in config file. I do nothing with this address.\n" if $debug;
+				$rule = '';
+			}
+
+			my $id = $idlist{$ipaddr} || '';
+			my $NAME = $ucnamelist{$ipaddr} || '';
+			my $name = $namelist{$ipaddr} || '';
+			my $mac = $maclist{$ipaddr} || '';
+			my $macs = lc($mac);
+			$macs =~ s/://g;
+			my $owner = $ownerlist{$ipaddr} || '';
+			my ($q1,$q2,$q3,$q4) = split('\.',$ipaddr,4);
+			
+			$rule =~ s/\%NID/$row->{'id'}/g;
+			$rule =~ s/\%nname/$row->{'name'}/g;
+			$rule =~ s/\%NNAME/$row->{'NAME'}/g;
+			$rule =~ s/\%NADDR/$row->{'address'}/g;
+			$rule =~ s/\%NMASK/$row->{'mask'}/g;
+			$rule =~ s/\%NGATE/$row->{'gateway'}/g;
+			$rule =~ s/\%NDNS/$row->{'dns'}/g;
+			$rule =~ s/\%NDOMAIN/$row->{'domain'}/g;
+			$rule =~ s/\%NWINS/$row->{'wins'}/g;
+			$rule =~ s/\%NDHCPS/$row->{'dhcpstart'}/g;
+			$rule =~ s/\%NDHCPE/$row->{'dhcpend'}/g;
+			$rule =~ s/\%ID/$id/g;
+			$rule =~ s/\%IP/$ipaddr/g;
+			$rule =~ s/\%ADDR/$ipaddr/g;
+			$rule =~ s/\%IPADDR/$ipaddr/g;
+			$rule =~ s/\%NAME/$NAME/g;
+			$rule =~ s/\%name/$name/g;
+			$rule =~ s/\%SMAC/$macs/g;
+			$rule =~ s/\%MAC/$mac/g;
+			$rule =~ s/\%OWNER/$owner/g;
+			$rule =~ s/\%TIMES/$times/g;
+			$rule =~ s/\%TIME/$time/g;
+			$rule =~ s/\%UTIME/$utime/g;
+			$rule =~ s/\%DATE/$date/g;
+			$rule =~ s/\%1/$q1/g;
+			$rule =~ s/\%2/$q2/g;
+			$rule =~ s/\%3/$q3/g;
+			$rule =~ s/\%4/$q4/g;
+			$rule =~ s/\\n/\n/g;
+			$rule =~ s/\\t/\t/g;
+			
+			if($rule)
+			{
+				print OUTFILE "$rule\n";
+			}
+		}
+
+		if($network_footer)
+		{
+			my $tnh = $network_footer;
+			$tnh =~ s/\%ID/$row->{'id'}/g;
+			$tnh =~ s/\%name/$row->{'name'}/g;
+			$tnh =~ s/\%NAME/$row->{'NAME'}/g;
+			$tnh =~ s/\%ADDR/$row->{'address'}/g;
+			$tnh =~ s/\%MASK/$row->{'mask'}/g;
+			$tnh =~ s/\%GATE/$row->{'gateway'}/g;
+			$tnh =~ s/\%DNS/$row->{'dns'}/g;
+			$tnh =~ s/\%DOMAIN/$row->{'domain'}/g;
+			$tnh =~ s/\%WINS/$row->{'wins'}/g;
+			$tnh =~ s/\%DHCPS/$row->{'dhcpstart'}/g;
+			$tnh =~ s/\%DHCPE/$row->{'dhcpend'}/g;
+			$tnh =~ s/\%TIMES/$times/g;
+			$tnh =~ s/\%TIME/$time/g;
+			$tnh =~ s/\%UTIME/$utime/g;
+			$tnh =~ s/\%DATE/$date/g;
+			$tnh =~ s/\\n/\n/g;
+			$tnh =~ s/\\t/\t/g;
+			
+			print OUTFILE $tnh."\n";
+		}
+		
+
+		
+	}
+
+	if($footer)
+	{
+		print STDOUT "Writting footer...\n" unless $quiet;
+		$footer =~ s/\\n/\n/g;
+		$footer =~ s/\\t/\t/g;
+		$footer =~ s/\%TIMES/$times/g;
+		$footer =~ s/\%TIME/$time/g;
+		$footer =~ s/\%UTIME/$utime/g;
+		$footer =~ s/\%DATE/$date/g;										
+
+		print OUTFILE "$footer\n";
+	}
+	
+	if($footer_file)
+	{
+		print STDOUT "Copying contents of $footer_file...\n" unless $quiet;
+		if(! -r $footer_file)
+		{
+			print STDERR "Warning: unable to read $footer_file!\n";
+		}else{
+			open(FOOTERFILE, "$footer_file");
+			my @footercontents = <FOOTERFILE>;
+			close FOOTERFILE;
+			foreach my $line (@footercontents)
+			{
+				print OUTFILE "$line";
+			}
+		}
+	}
+	close OUTFILE;
+	chown $outfile_owner, $outfile_group, $outfile or print "Warning! Unable to set owner of $outfile to $outfile_owner.$outfile_group.\n";
+	chmod oct($outfile_perm), $outfile or print "Warning! Unable to set permission $outfile_perm to $outfile.\n";
+
+	if($post_exec)
+	{
+		my @execmds = split ";",$post_exec;
+		foreach my $execmd (@execmds)
+		{
+			print "Executing: $execmd\n" unless $quiet;
+			system($execmd);
+		}
+	}	
+	return 0;	
+}	
+
+if($dbtype eq "mysql")
+{
+	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+elsif($dbtype eq "postgres")
+{
+	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
+}
+else
+{
+	print STDERR "Fatal error: unsupported database type: $dbtype, exiting.\n";
+	exit 1;
+}
+
+my $instances;
+
+if($instances_cmd)
+{
+	$instances = $instances_cmd;
+}elsif($instances_cfg)
+{
+	$instances = $instances_cfg;
+}else{
+	print STDERR "Fatal error: you didn't define instances to run. Set this in $configfile, or\nusing -i switch from cmdline, exiting.\n";
+	$dbase->disconnect();
+	exit(1);
+}
+
+my @instanceslist = split " ",$instances;
+my $runi;
+
+foreach my $instance (@instanceslist)
+{
+	print STDOUT "Executing \"$instance\" instance...\n" unless $quiet;
+	my $rcode = instance($instance);
+	print STDOUT "Instance $instance finished with code $rcode.\n" unless $quiet;
+	$runi++;
+}
+
+print STDOUT "Finished. $runi instances runned.\n" unless $quiet;
+
+$dbase->disconnect();

@@ -1,0 +1,111 @@
+{include file="header.html"}
+{include file="balanceheader.html"}
+<!--// $Id$ //-->
+<H1>Bilans finansowy</H1>
+<TABLE width="100%" cellpadding="3">
+	<TR class="dark">
+		<TD width="1%" class="fleftu">
+			<B>ID:</B>
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>Data:</B>
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>Admin:</B>
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>Typ:</B>
+		</TD>
+		<TD width="1%" class="fbt" align="right">
+			<B>Warto¶æ:</B>
+		</TD>
+		<TD width="1%" class="fbt" align="center">
+			<B>&raquo;</B>
+		</TD>
+		<TD width="1%" class="fbt" align="right">
+			<B>Po:</B>
+		</TD>
+		<TD width="1%" class="fbt">
+			<B>U¿ytkownik:</B>
+		</TD>
+		<TD width="91%" class="frightu">
+			<B>Opis:</B>
+		</TD>
+	</TR>
+	<TR class="dark">
+		<TD WIDTH="100%" class="fall" COLSPAN="9">
+			<B>Strona:
+				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$balancelist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=balancelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=balancelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+
+			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{section name=balancelist loop=$balancelist start=$start max=$pagelimit}
+	<TR bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD width="1%" class="fleft" valign="top">
+			{$balancelist[balancelist].id|string_format:"%04d"}
+		</TD>
+		<TD width="1%" nowrap valign="top">
+			<NOBR>{$balancelist[balancelist].time|date_format:"%Y/%m/%d %H:%M.%S"}</NOBR>
+		</TD>
+		<TD width="1%" nowrap valign="top">
+			{if $balancelist[balancelist].adminid}<NOBR>{$balancelist[balancelist].admin|truncate:16:"..."}</NOBR>{else}-{/if}
+		</TD>
+		<TD width="1%" nowrap valign="top">
+			<NOBR><B>{$balancelist[balancelist].type}</B></NOBR>
+		</TD>
+		<TD width="1%" align="right" nowrap valign="top">
+			<NOBR>{$balancelist[balancelist].value|string_format:"%01.2f"} z³</NOBR>
+		</TD>
+		<TD width="1%" align="center" valign="top">
+			&raquo;
+		</TD>
+		<TD width="1%" align="right" nowrap valign="top"> 
+			<NOBR>{$balancelist[balancelist].after|string_format:"%01.2f"} z³</NOBR>
+		</TD>
+		<TD width="1%" nowrap valign="top">
+			{if $balancelist[balancelist].userid}<NOBR><A HREF="?m=userinfo&id={$balancelist[balancelist].userid}">{$balancelist[balancelist].username|truncate:20:"..."}</A></NOBR>{else} - {/if}
+		</TD>
+		<TD width="92%" class="fright">
+			{$balancelist[balancelist].comment}
+		</TD>
+	</TR>
+	{/section}
+	<TR class="dark">
+		<TD WIDTH="100%" class="fall" COLSPAN="9">
+			<B>Strona:
+				{if $page > 1}<A HREF="?m=balancelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if}
+				{section name=pcnt loop=$balancelist step=$pagelimit}
+				{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=balancelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}
+				{/section}
+				{if $page < $smarty.section.pcnt.rownum}<A HREF="?m=balancelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}
+
+			</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD colspan="4" width="4%" align="right" class="fleftu">
+			<B>Przychód:</B><BR>
+			<B>Zobowi±zania u¿ytkowników:</B><BR>
+			<B>Wp³aty u¿ytkowników:</B><BR>
+			<B>Rozchód:</B><HR>
+			<B>Razem:</B>
+		</TD>
+		<TD width="1%" nowrap class="fbt" align="right">
+			<NOBR>{$listdata.income|string_format:"%01.2f"} z³<BR>
+			{$listdata.uinvoice|string_format:"%01.2f"} z³<BR>
+			{$listdata.incomeu|string_format:"%01.2f"} z³<BR>
+			{$listdata.expense|string_format:"%01.2f"} z³<HR>
+			{$listdata.total|string_format:"%01.2f"} z³</NOBR>
+		</TD>
+		<TD width="95%" colspan="4" class="frightu">
+			&nbsp;
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

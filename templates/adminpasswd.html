@@ -1,0 +1,48 @@
+{include file="header.html"}
+<!--// $Id$ //-->
+<H1>Zmiana has³a dla {$passwd.realname}</H1>
+<DIV ALIGN="CENTER"><CENTER><FORM method="POST" action="?m=adminpasswd&id={$passwd.id}" name="password">
+<TABLE width="1%" cellpadding="3" border="0">
+	<TR class="dark">
+		<TD class="fall" nowrap colspan="2" nowrap>
+			<NOBR><img src="img/pass.gif" border="0" align="absmiddle" alt=""> <B>Podaj nowe has³o:</B></NOBR>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fleft" align="right" nowrap>
+			<NOBR><B>Nowe has³o:</B></NOBR>
+		</TD>
+		<TD class="fright" nowrap>
+			<input type="password" name="passwd[passwd]">
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD class="fleft" align="right" nowrap>
+			<NOBR><B>Powtórz:</B></NOBR>
+		</TD>
+		<TD class="fright" nowrap>
+			<input type="password" name="passwd[confirm]">
+		</TD>
+		
+	</TR>
+	<TR class="light">
+		<TD colspan="2" align="center" class="flr">
+			Je¿eli zmieniasz swoje has³o, zostaniesz automatycznie wylogowany i poproszony o ponowne zalogowanie.
+		</TD>
+	</TR>
+	{if $error.password}
+	<TR class="light">
+		<TD class="flr" align="center" colspan="2">
+			<B><FONT COLOR="red">{$error.password}</FONT></B>
+		</TD>
+	</TR>
+	{/if}
+	<TR class="light">
+		<TD class="fbottomu" align="right" colspan="2">
+			<A href="javascript:document.password.submit();">Zmieñ has³o <img src="img/pass.gif" border="0" align="absmiddle" alt=""></A>
+		</TD>
+	</TR>
+		
+</TABLE>
+</CENTER></DIV>
+{include file="footer.html"}

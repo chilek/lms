@@ -1,0 +1,54 @@
+<!-- $Id$ -->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="FLEFTU">
+			<IMG SRC="img/node.gif" BORDER="0">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="3">
+			<B>Komputery u¿ytkownika ({$usernodes.total|default:"brak"}):</B>
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{if $usernodes.total > 0}
+	{section name=usernodes loop=$usernodes}
+	{if $usernodes[usernodes].id}
+	<tr bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if $usernodes[usernodes].access neq "Y"} class="blend"{/if}>
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<a href="?m=nodeset&id={$usernodes[usernodes].id}"><IMG src="img/n{if $usernodes[usernodes].access neq "Y"}no{/if}access.gif" alt="[ {if $usernodes[usernodes].access neq "Y"}Pod³±cz{else}Od³±cz{/if} ]" border="0" align="absmiddle"></A>
+		</TD>
+		<TD WIDTH="97%" onClick="return self.location.href='?m=nodeinfo&id={$usernodes[usernodes].id}';">
+			<B>{$usernodes[usernodes].name}</B><BR>
+			{$usernodes[usernodes].ipaddr} / {$usernodes[usernodes].mac}
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP" onClick="return self.location.href='?m=nodeinfo&id={$usernodes[usernodes].id}';">
+			({$usernodes[usernodes].id|string_format:"%04d"})
+		</TD>
+		<TD WIDTH="1%" CLASS="FRIGHT" NOWRAP>
+			<A HREF="?m=nodedel&id={$usernodes[usernodes].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ komputer \'{$usernodes[usernodes].name|upper}\' z bazy danych?')"><IMG SRC="img/delete.gif" BORDER="0" ALT="[ Usuñ ]" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=nodeedit&id={$usernodes[usernodes].id}"><IMG SRC="img/edit.gif" BORDER="0" ALT="[ Edytuj ]" ALIGN="ABSMIDDLE"></A>
+			<A HREF="?m=nodeinfo&id={$usernodes[usernodes].id}"><IMG SRC="img/info.gif" BORDER="0" ALT="[ Info ]" ALIGN="ABSMIDDLE"></A>
+		</TD>
+	</TR>
+	{/if}
+	{/section}
+	{else}
+	<TR>
+		<TD WIDTH="100%" COLSPAN="4" CLASS="FALL">
+			<P>&nbsp;</P>
+			<P>&nbsp;</P>
+			<P ALIGN="CENTER"><B>Ten u¿ytkownik nie posiada komputerów.</B></P>
+			<P>&nbsp;</P>
+			<P>&nbsp;</P>
+		</TD>
+	</TR>
+	{/if}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="99%" COLSPAN="3" CLASS="FLEFTU">
+			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}&access=1"><IMG SRC="img/naccess.gif" ALIGN="ABSMIDDLE" BORDER="0"> Pod³±cz wszystkie</A><BR>
+			<A HREF="?m=nodeset&ownerid={$usernodes.ownerid}"><IMG SRC="img/nnoaccess.gif" ALIGN="ABSMIDDLE" BORDER="0"> Od³±cz wszystkie</A><BR>
+		</TD>
+		<TD WIDTH="1%" CLASS="FRIGHTU" NOWRAP VALIGN="BOTTOM" ALIGN="RIGHT">
+			<A HREF="?m=nodeadd&ownerid={$usernodes.ownerid}">Nowy <IMG SRC="img/edit.gif" ALIGN="ABSMIDDLE" BORDER="0"></A>
+		</TD>
+	</TR>
+</TABLE>

@@ -1,0 +1,51 @@
+{include file="header.html"}
+{include file="balanceheader.html"}
+<!--// $Id$ //-->
+<H1>Nowa taryfa</H1>
+<FORM METHOD="POST" NAME="tariffadd" ACTION="?m=tariffadd">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="100%" CLASS="FALL" COLSPAN="5">
+			<B>Dodaj now± taryfê:</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<B>Nazwa:</B></TD>
+		<TD WIDTH="95%">
+			<INPUT TYPE="TEXT" NAME="tariffadd[name]" VALUE="{$tariffadd.name}"{if $error.name} CLASS="alertb"> <FONT COLOR="red"><B>{$error.name}</B></FONT{else} CLASS="red"{/if}>
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Downstream (kb/s):</B>
+		</TD>
+		<TD WIDTH="1%">
+			<INPUT TYPE="TEXT" NAME="tariffadd[downrate]" SIZE="5" VALUE="{$tariffadd.downrate}"{if $error.downrate} CLASS="alertb"> <FONT COLOR="red"><B>{$error.downrate}</B></FONT{else} CLASS="red"{/if}>
+		</TD>
+		<TD WIDTH="1%" CLASS="fright" ROWSPAN="2">
+			<NOBR>
+			<B>Warto¶æ: <INPUT TYPE="TEXT" SIZE="5" NAME="tariffadd[value]" VALUE="{$tariffadd.value}"{if $error.value} CLASS="ALERTB">z³<BR><FONT COLOR="RED">{$error.value}</FONT{else}z³{/if}></B>
+			</NOBR>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft">
+			<B>Opis:</B>
+		</TD>
+		<TD WIDTH="95%">
+			<INPUT TYPE="TEXT" NAME="tariffadd[description]" SIZE="30" VALUE="{$tariffadd.description}">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Upstream (kb/s):</B>
+		</TD>
+		<TD WIDTH="98%">
+			<INPUT TYPE="TEXT" NAME="tariffadd[uprate]" SIZE="5" VALUE="{$tariffadd.uprate}"{if $error.uprate} CLASS="alertb"> <FONT COLOR="red"><B>{$error.uprate}</B></FONT{else} CLASS="red"{/if}>
+		</TD>	
+	</TR>
+
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" COLSPAN="5" CLASS="FBOTTOMU" ALIGN="RIGHT"> 
+			<A HREF="javascript:document.tariffadd.submit();">Dodaj <IMG SRC="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+		</TD>
+	</TR>
+</TABLE></FORM></P>
+{include file="footer.html"}

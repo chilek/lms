@@ -1,0 +1,149 @@
+{include file="header.html"}
+{include file="netheader.html"}
+<!--// $Id$ //-->
+{if $unlockedit}<script language="javascript">
+	<!--
+		function getText(index)
+		{literal}{{/literal}
+			{section name=networks loop=$networks}
+			if(index=={$networks[networks].id}) return '{$networks[networks].name|upper} ({$networks[networks].address}/{$networks[networks].prefix})';
+			{/section}
+		{literal}}{/literal}	
+	//-->
+</script>{/if}
+<H1>{if !$unlockedit}Informacja o sieci{else}Edycja sieci{/if} {$network.name|upper}</H1>
+<TABLE cellpadding="3" width="100%">
+	{if $unlockedit}<FORM METHOD="POST" ACTION="?m=netedit&id={$network.id}" NAME="netedit">{/if}
+	<TR class="dark">
+		<TD width="100%" class="fall" colspan="4">
+			<IMG SRC="img/network.gif" border="0" align="absmiddle" alt=""> {if $unlockedit}<INPUT TYPE="text" NAME="networkdata[name]" VALUE="{$network.name|upper}" {if $error.name}class="alertb"><BR><B><FONT COLOR="RED">{$error.name}</FONT><B{else}class="bold"{/if}>{else}<B>{$network.name|upper}</B>{/if} <B>({$network.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="1%" class="fleft">
+			<nobr><IMG SRC="img/ip.gif" border="0" align="absmiddle" alt=""> <B>Adres / prefix:</B></nobr>
+		</TD>
+		<TD width="48%">
+			<NOBR>{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[address]" VALUE="{$network.address}"{if $error.address} class="alert"{/if}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $network.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{if $error.address}<BR><FONT COLOR="RED"><B>{$error.address}</B></FONT>{/if}{else}{$network.address}/{$network.prefix}{/if}</NOBR>
+		</TD>
+		<TD width="2%" rowspan="2">
+			<NOBR><IMG src="img/dhcp.gif" border="0" align="absmiddle" alt=""> <B>Zakres DHCP:</B></NOBR>	
+		</TD>
+		<TD width="48%" class="fright" rowspan="2">
+			{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[dhcpstart]" VALUE="{$network.dhcpstart}"{if $error.dhcpstart} class="alert"><BR><FONT COLOR="red"><B>{$error.dhcpstart}</B></FONT{/if}><BR>
+				<INPUT TYPE="text" NAME="networkdata[dhcpend]" VALUE="{$network.dhcpend}"{if $error.dhcpend} class="alert"><BR><FONT COLOR="red"><B>{$error.dhcpend}</B></FONT{/if}>{if $error.dhcp}<BR><FONT COLOR="RED"><B>{$error.dhcp}</B></FONT>{/if}{else}
+			{$network.dhcpstart}<BR>
+			{$network.dhcpend}
+			{/if}
+		</TD>
+	</TR>
+	<TR class="light">
+		<td width="1%" class="fleft">
+			<nobr><img src="img/cmp.gif" border="0" align="absmiddle" alt=""> <B>Rozmiar sieci:</B>
+		</td>
+		<TD width="48%">
+			{$network.size} adresów
+		</TD>
+	<TR class="light">
+		<TD width="2%" class="fleft">
+			<nobr><img src="img/gateway.gif" border="0" align="absmiddle" alt=""> <B>Gateway:</B></nobr>
+		</TD>		
+		<TD width="48%">
+			{if $unlockedit}
+			<INPUT TYPE="text" NAME="networkdata[gateway]" VALUE="{$network.gateway}"{if $error.gateway} class="alert"><BR><FONT COLOR="red"><B>{$error.gateway}</B></FONT{/if}>
+			{else}
+			{$network.gateway}
+			{/if}
+		</TD>
+		<TD width="2%">
+			<nobr><img src="img/dns.gif" border="0" align="absmiddle" alt=""> <B>Serwer DNS:</B></NOBR>
+		</TD>
+		<TD width="48%" class="fright">
+			{if $unlockedit}
+			<INPUT TYPE="text" NAME="networkdata[dns]" VALUE="{$network.dns}"{if $error.dns} class="alert"><BR><FONT COLOR="red"><B>{$error.dns}</B></FONT{/if}>
+			{else}			
+			{$network.dns}
+			{/if}
+		</TD>
+	</TR>
+	<TR class="light">
+		<TD width="2%" class="fleft">
+			<nobr><img src="img/wins.gif" border="0" align="absmiddle" alt=""> <B>Serwer WINS:</B></NOBR>
+		</TD>
+		<TD width="48%">
+			{if $unlockedit}
+			<INPUT TYPE="text" NAME="networkdata[wins]" VALUE="{$network.wins}"{if $error.wins} class="alert"><BR><FONT COLOR="red"><B>{$error.wins}</B></FONT{/if}>
+			{else}
+			{$network.wins}
+			{/if}
+		</TD>
+		<TD width="2%">
+			<nobr><img src="img/node.gif" border="0" align="absmiddle" alt=""> <B>Domena:</B></NOBR>
+		</TD>
+		<TD width="48%" class="fright">
+			{if $unlockedit}
+			<INPUT TYPE="text" NAME="networkdata[domain]" VALUE="{$network.domain}"{if $error.domain} class="alert"><BR><FONT COLOR="red"><B>{$error.domain}</B></FONT{/if}>
+			{else}
+			{$network.domain}
+			{/if}
+		</TD>
+	</TR>
+{if $unlockedit}</form>{/if}
+	<TR class="light">
+		<TD width="100%" class="flr" colspan="4" align="right">
+			{if $unlockedit}
+			<form name="remap" action="" method="get">
+			<A href="?m=netcmp&id={$network.id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz przyznaæ wszystkim komputerom adresy od nowa? Pamiêtaj, ¿e mo¿e to wywo³aæ niez³e zamieszanie w sieci :)')">Porz±dkuj sieæ <img src="img/cmp.gif" align="absmiddle" alt="[ Posortuj ]" border="0"></A><BR>
+				<input type="hidden" name="is_sure">
+				<input type="hidden" name="m" value="netremap">
+				<input type="hidden" name="id" value="{$network.id}">
+				<a href="javascript:document.remap.submit()" onClick="return confirmForm(is_sure,'Jeste¶ pewien ¿e chcesz przeadresowaæ sieæ {$network.name} do sieci '+getText(document.remap.mapto.value)+'?','1');">Przeadresuj do sieci:</A> 
+					<select size="1" name="mapto">
+						{section name=networks loop=$networks}
+						{if $networks[networks].id neq $network.id}
+						<option value="{$networks[networks].id}">{$networks[networks].name} ({$networks[networks].address}/{$networks[networks].prefix})</option>
+						{/if}
+						{/section}
+					</select>
+				<img src="img/remap.gif" border="0" alt="" align="absmiddle"><BR>
+				<a href="javascript:document.netedit.submit()" ACCESSKEY="S">Zapisz <IMG src="img/save.gif" alt="[ Zapisz ]" align="absmiddle" border="0"></a>
+				<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ sieæ \'{$network.name|upper}\'?')">Usuñ <img src="img/delete.gif" align="absmiddle" alt="[ Usuñ ]" border="0"></A>
+				<a href="?m=netinfo&id={$network.id}">Anuluj <img src="img/cancel.gif" align="absmiddle" alt="[ Anuluj ]" border="0"></A></TD></form>
+			{else}	
+			<A href="?m=netedit&id={$network.id}" ACCESSKEY="E">Edytuj <img src="img/edit.gif" align="absmiddle" alt="[ Edytuj ]" border="0"></A>
+			<A href="?m=netdel&id={$network.id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ sieæ \'{$network.name|upper}\'?')">Usuñ <img src="img/delete.gif" align="absmiddle" alt="[ Usuñ ]" border="0"></A>
+			{if $error.delete}<BR><FONT COLOR="red"><B>Nie mo¿na usun±æ sieci je¿eli znajduj± siê w niej jakie¶ komputery!</B></FONT>{/if}
+		</TD>
+			{/if}
+	</TR>
+	<TR class="dark">
+		<TD width="100%" class="fall" colspan="4">
+			<img src="img/ip.gif" align="absmiddle" alt="" border="0"> <B>Wykorzystanie adresów IP:</B>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="100%" class="fall" colspan="4">
+			<table width="100%" cellpadding="3">
+				{cycle values="#DFD5BD,#EBE4D6" print=false}
+				{section name=network loop=$network.nodes.id max=$network.rows}
+				<TR>
+					{section name=subnetwork loop=$network.nodes.address start=$smarty.section.network.index step=$network.rows}
+					<TD bgcolor="{cycle}" {cycle print=false}align="center" width="25%" onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '{cycle}')" {cycle print=false}valign="middle"{if $network.nodes.id[networkip]} class="blend"{/if}{if $network.nodes.id[subnetwork]} onclick="return self.location.href='?m=userinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}'"{else} onclick="return self.location.href='?m=nodeadd&preip={$network.nodes.address[subnetwork]}'"{/if}>
+					<img src="img/node.gif" align="left" alt="" border="0">
+					{if $network.nodes.id[subnetwork]}<a href="?m=userinfo&id={$network.nodes.ownerid[subnetwork]}#{$network.nodes.id[subnetwork]}"><font class="blend">{$network.nodes.name[subnetwork]}</font></A>{else}<a href="?m=nodeadd&preip={$network.nodes.address[subnetwork]}">{$network.nodes.address[subnetwork]}</A>{/if}
+					
+				</TD>
+				{/section}
+				{cycle print=false}
+				</TR>
+				{/section}
+				<TR class="light">
+					<TD colspan="4" align="right" class="ftop">
+						<B>Razem: {$network.assigned} (dostêpne: {$network.free})</B>
+					</TD>
+				</TR>
+			</table>
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

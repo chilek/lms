@@ -1,0 +1,40 @@
+{if $database.rawmode}
+{$database.content|replace:"\n":"\r\n"}
+{else}
+<!--// $Id$ //-->
+<H1>Podgl±d bazy danych</H1>
+<TABLE width="100%" cellpadding="3">
+	<TR>
+		<TD width="100%">
+			<img src="img/time.gif" align="absmiddle" alt="" border="0"> <B>Data utworzenia:</B> {$database.time|date_format:"%e %B %Y, %H:%M.%S (%A)"|capitalize}<BR>
+			<img src="img/size.gif" align="absmiddle" alt="" border="0"> <B>Rozmiar:</B> {$database.size} bajtów<BR>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="100%">
+			<FORM NAME="dbcontent">
+			<SCRIPT LANGUAGE="javascript">
+				function highlightcontent()
+				{literal}{{/literal}
+					document.dbcontent.dbcontent.focus();
+					document.dbcontent.dbcontent.select();
+				{literal}}{/literal}
+			</SCRIPT>
+			<FORM NAME="dbcontent">
+<TEXTAREA COLS="80" ROWS="30" class="pre" NAME="dbcontent">{$database.content}</TEXTAREA><BR>
+			<A HREF="javascript:highlightcontent();">Zaznacz</A>
+			</FORM>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="100%">
+			<A href="?m=dbview&db={$database.time}&rawmode=true&file=/lms-{$database.time|date_format:"%Y%m%d-%H%M%S"}.sql"><img src="img/view.gif" border="0" alt="" align="absmiddle"> Podgl±d bez nag³ówków</A>
+		</TD>
+	</TR>
+	<TR>
+		<TD widht="100%">
+			<A href="?m=dbview&db={$database.time}&rawmode=true&save=true&file=/lms-{$database.time|date_format:"%Y%m%d-%H%M%S"}.sql"><img src="img/save.gif" border="0" alt="" align="absmiddle"> Zapisz na dysk lokalny</A><BR>
+		</TR>
+	</TR>
+</TABLE>
+{/if}

@@ -1,0 +1,48 @@
+{include file="header.html"}
+{include file="adminheader.html"}
+<!--// $Id$ //-->
+<H1>Administratorzy</H1>
+<table width="100%" cellpadding="3">
+	<TR class="dark">
+		<TD class="fleftu" width="1%">
+			<NOBR><IMG SRC="img/admins.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>Login:</B></NOBR>
+		</TD>
+		<TD class="fbt" width="96%">
+			<NOBR><IMG SRC="img/info2.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>Imiê i nazwisko:</B></NOBR>
+		</TD>
+		<TD class="fbt" width="2%" NOWRAP>
+			<IMG SRC="img/time.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>Ostatnio zalogowany:</B>
+		</TD>
+		<TD class="frightu" width="1%">
+			<NOBR><B>Razem: {$adminslist.total}</B></NOBR>
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{section name=adminslist loop=$adminslist}{if $adminslist[adminslist].id}
+	<TR bgcolor="{cycle}" {cycle print=false}onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD class="fleft" width="1%" onClick="return self.location.href='?m=admininfo&id={$adminslist[adminslist].id}';">
+			<NOBR><IMG SRC="img/admins.gif" ALIGN="absmiddle" ALT="" BORDER=""> <B>{$adminslist[adminslist].login}</B></NOBR>
+		</TD>
+		<TD width="96%" onClick="return self.location.href='?m=admininfo&id={$adminslist[adminslist].id}';">
+			<NOBR><IMG SRC="img/info2.gif" ALIGN="absmiddle" ALT="" BORDER=""> {$adminslist[adminslist].name}</NOBR>
+		</TD>
+		<TD width="1%" onClick="return self.location.href='?m=admininfo&id={$adminslist[adminslist].id}';">
+			<NOBR><IMG SRC="img/time.gif" ALIGN="absmiddle" ALT="" BORDER=""> {$adminslist[adminslist].lastlogin}
+			{$adminslist[adminslist].lastloginip} {if $adminslist[adminslist].lastloginip neq $adminslist[adminslist].lastloginhost}({$adminslist[adminslist].lastloginhost}){/if}</NOBR>
+		</TD>
+		<TD width="1%" class="fright">
+			<nobr>
+			<a href="?m=adminpasswd&id={$adminslist[adminslist].id}"><img src="img/keys.gif" border="0" align="absmiddle" alt="[ Zmieñ has³o ]"></A>
+			{if $adminslist[adminslist].id neq $layout.logid}<a href="?m=admindel&id={$adminslist[adminslist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien i ¶wiadom ¿e chcesz usun±æ tego administratora? Konto to zostanie bezpowrotnie usuniête z systemu!');">{/if}<img src="img/delete.gif" border="0" align="absmiddle" alt="[ Usuñ ]"></A>
+			<a href="?m=adminedit&id={$adminslist[adminslist].id}"><img src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A>
+			<a href="?m=admininfo&id={$adminslist[adminslist].id}"><img src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A>
+		</TD>
+	</TR>
+	{/if}{/section}
+	<TR CLASS="LIGHT">
+		<TD CLASS="FALL" COLSPAN="4">
+			&nbsp;
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

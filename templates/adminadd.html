@@ -1,0 +1,57 @@
+{include file="header.html"}
+{include file="adminheader.html"}
+<!-- $Id$ -->
+<H1>Nowy administrator</H1>
+<FORM NAME="adminadd" METHOD="POST" ACTION="?m=adminadd">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="FLEFTU" WIDTH="1%">
+			<B>Login:</B>
+		</TD>
+		<TD CLASS="FRIGHTU" WIDTH="99%">
+			<INPUT TYPE="TEXT" NAME="adminadd[login]" VALUE="{$adminadd.login}"{if $error.login} CLASS="ALERT"><BR>
+			<FONT CLASS="ALERT">{$error.login}</FONT{/if}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" NOWRAP>
+			<B>Imiê i nazwisko:</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="adminadd[name]" VALUE="{$adminadd.name}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT">
+			<B>Email:</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="adminadd[email]" VALUE="{$adminadd.email}"{if $error.email} CLASS="ALERT"><BR>
+			<FONT CLASS="ALERT">{$error.email}</FONT{/if}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT">
+			<B>Has³o:</B>
+		</TD>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="PASSWORD" NAME="adminadd[password]"{if $error.password} CLASS="ALERT"{/if}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" VALIGN="TOP">
+			<B>Powtórz:</B>
+		</TR>
+		<TD CLASS="FRIGHT">
+			<INPUT TYPE="PASSWORD" NAME="adminadd[confirm]"{if $error.password} CLASS="ALERT"><BR>
+			<FONT CLASS="ALERT">{$error.password}</FONT{/if}>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FBOTTOMU" COLSPAN="2" ALIGN="RIGHT">
+			<A HREF="javascript:document.adminadd.submit(); ">Dodaj <IMG SRC="img/save.gif" ALIGN="ABSMIDDLE" ALT="" BORDER="0"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{include file="footer.html"}

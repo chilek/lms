@@ -1,0 +1,149 @@
+{include file="header.html"}
+{include file="userheader.html"}
+<!--// $Id$ //-->
+<H1>Nowy u¿ytkownik</H1>
+<P>
+<FORM name="useradd" method="POST" action="?m=useradd">		
+<TABLE cellpadding="4" cellspacing="0" width="100%">
+	<TR>
+		<TD class="fall" width="100%" bgcolor="#CEBD9B" colspan="2">
+			<TABLE>
+				<TR>
+					<TD>
+						<B>Nazwisko:</B>
+					</TD>
+					<TD>&nbsp;</TD>
+					<TD>
+						<INPUT TYPE="TEXT" NAME="useradd[lastname]" VALUE="{$useradd.lastname}" CLASS="{if $error.username}ALERTB{else}BOLD{/if}">
+					</TD>
+					{if $error.username}
+					<TD ROWSPAN="2">
+						&nbsp;
+					</TD>
+					<TD ROWSPAN="2">
+						<B><FONT COLOR="RED">Te pola nie mog± byæ puste!</FONT></B>
+					</TD>
+					{/if}						
+				</TR>
+				<TR>
+					<TD>
+						<B>Imiê:</B>
+					</TD>
+					<TD>&nbsp;</TD>
+					<TD>
+						<INPUT TYPE="TEXT" NAME="useradd[name]" VALUE="{$useradd.name}" CLASS="{if $error.username}ALERTB{else}BOLD{/if}">
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR>
+		<TD width="50%" bgcolor="#DFD5BD" class="fleft">
+			<TABLE border="0" cellpadding="2" cellspacing="0">
+				<TR>
+					<TD width="1%" valign="top">
+						{if $useradd.status eq "3"}<IMG SRC="img/user.gif" alt="" border="0">{/if}
+						{if $useradd.status eq "2"}<IMG SRC="img/wait.gif" alt="" border="0">{/if}
+						{if $useradd.status eq "1"}<IMG SRC="img/unk.gif" alt="" border="0">{/if}
+					</tD>
+					<TD width="99%">
+						<SELECT size="1" name="useradd[status]"{if $error.status} CLASS="alert"{/if}>
+							<OPTION VALUE="3"{if $useradd.status eq "3"} SELECTED{/if}><B>pod³±czony</B></OPTION>
+							<OPTION VALUE="2"{if $useradd.status eq "2"} SELECTED{/if}><B>oczekuj±cy</B></option>
+							<OPTION VALUE="1"{if $useradd.status eq "1"} SELECTED{/if}><B>zainteresowany</B></OPTION>
+						</SELECT>
+					</TD>
+				</tr>
+				<TR>
+					<TD width="1%" valign="top">
+						<IMG src="img/phone.gif" alt="" border="0" width="16" width="16" height="16"><BR>
+					<TD width="99%">
+						<INPUT TYPE="text" size="40" value="{$useradd.phone1}" name="useradd[phone1]"><BR>
+						<INPUT TYPE="text" size="40" value="{$useradd.phone2}" name="useradd[phone2]"><BR>
+						<INPUT TYPE="text" size="40" value="{$useradd.phone3}" name="useradd[phone3]">
+					</TD>
+				
+				</TR>
+				<TR>
+					<TD width="1%">
+						<IMG src="img/home.gif" alt="" align="absmiddle" border="0" width="16" height="16">
+					</td>
+					<TD width="99%">
+						<INPUT TYPE="text" size="40" value="{$useradd.address}" name="useradd[address]" {if $error.address}CLASS="ALERT"{/if}>{if $error.address}<BR><FONT CLASS="ALERT">{$error.address}</FONT>{/if}<BR>
+						<B>Kod:</B> <INPUT TYPE="text" SIZE="5" VALUE="{$useradd.zip}" NAME="useradd[zip]"{if $error.zip} CLASS="ALERT"{/if}> <B>Miasto:</B> <INPUT TYPE="TEXT" SIZE="16" VALUE="{$useradd.city}" NAME="useradd[city]"{if $error.city} CLASS="ALERT"{/if}>
+						{if $error.zip}<BR><FONT COLOR="RED"><B>{$error.zip}</B></FONT>{/if}
+						{if $error.city}<BR><FONT COLOR="RED"><B>{$error.city}</B></FONT>{/if}
+					</td>
+				</TR>
+				<TR>
+					<TD width="1%">
+						<IMG src="img/mail.gif" alt="" align="absmiddle" border="0" width="16" height="16">
+					</td>
+					<TD width="99%">
+						<INPUT TYPE="text" size="40" value="{$useradd.email}" name="useradd[email]" {if $error.email}CLASS="alert"{/if}>{if $error.email}<BR><FONT CLASS="ALERT">{$error.email}</FONT>{/if}
+					</td>
+				</TR>
+				<TR>
+					<TD width="1%">
+						<IMG src="img/gg.gif" alt="" align="absmiddle" border="0" width="16" height="16">
+					</td>
+					<TD width="99%">
+						<INPUT TYPE="text" size="40" value="{$useradd.gguin}" name="useradd[gguin]" {if $error.gguin}CLASS="ALERT"><BR><FONT CLASS="ALERT">{$error.gguin}</FONT{/if}>
+					</td>
+				</TR>
+				<TR>
+					<TD width="1%">
+						<B>NIP</B>
+					</td>
+					<TD width="99%">
+						<INPUT TYPE="text" size="40" value="{$useradd.nip}" name="useradd[nip]" {if $error.nip}CLASS="alert"{/if}>{if $error.nip}<BR><FONT CLASS="ALERT">{$error.nip}</FONT>{/if}					
+					</td>
+				</TR>
+
+				<TR>
+					<TD>
+						<img src="img/money.gif" border="0" alt="">
+					</TD>
+					<TD>
+						<TABLE>
+							<TR>
+								<TD>
+									<B>Taryfa:</B>
+								</TD>
+								<TD>
+									&nbsp;
+								</TD>
+								<TD>
+									<SELECT size="1" name="useradd[tariff]">
+										{section name=tariffs loop=$tariffs.id}
+										<OPTION VALUE="{$tariffs.id[tariffs]}"{if $tariffs.id[tariffs] eq $useradd.tariff} SELECTED{/if}> {$tariffs.name[tariffs]} ({$tariffs.value[tariffs]} z³)</OPTION>
+										{/section}
+									</SELECT>
+									{if $error.tariff}
+									<FONT COLOR="Red"><B>Proszê wybraæ taryfê!</B></FONT>
+									{/if}
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
+            		</TABLE>
+		</td>
+		<TD width="50%" bgcolor="#DFD5BD" class="fright">
+			<p>
+			<b>Uwagi: </b><BR>
+<TEXTAREA rows="6" cols="50" name="useradd[info]">
+{$useradd.info}
+</TEXTAREA>
+		</td>
+	</TR>
+	<TR class="light">
+		<TD width="100%" colspan="2" class="fbottomu" align="right">
+			<img src="img/save.gif" alt="" align="absmiddle" border="0"> <a href="javascript:document.useradd.submit();" ACCESSKEY="S">Zapisz</a><BR>
+			<input type="checkbox" name="useradd[reuse]" value="ON" style="border-style: none;"{if $useradd.reuse} checked{/if}> Wywo³aj ponownie ten formularz po dodaniu u¿ytkownika
+		</td>
+	</TR>
+</TABLE>
+</FORM>
+</P>
+{include file="footer.html"}
