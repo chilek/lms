@@ -99,6 +99,8 @@ function RTSearch($search, $order='createtime,desc')
 $layout['pagetitle'] = trans('Ticket Search');
 
 $search = $_POST['search'];
+if(isset($_POST['contract']))
+	$search = $_POST['contract'];
 
 if(isset($_GET['state']))
 {
