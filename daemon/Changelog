@@ -1,3 +1,8 @@
+* 10.11.2003
+  - dodany modu³ 'cutoff' (alec)
+  - dodany modu³ 'payments' (alec)
+  - dodanie do GLOBAL brakuj±cej db_exec() (alec)
+
 * 07.11.2003
   - przebudowana funkcja str_replace() i co siê z tym wi±¿e za³atana
     powa¿na dziura, teraz funkcja zwraca ilo¶æ wyst±pieñ zamienianego
