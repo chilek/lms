@@ -1,4 +1,4 @@
-<P>
+<!-- $Id$ -->
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<FORM NAME="netdevedit" METHOD="POST" ACTION="?m=netdevedit&id={$netdevinfo.id}">
 	<TR CLASS="DARK">
@@ -95,6 +95,7 @@
 	{if $netdevinfo.id}
 	<TR CLASS="DARK">
 		<TD WIDTH="100%" CLASS="fall" COLSPAN=4 ALIGN="center">
+			{if $replacelisttotal>1}
 			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="replace">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
@@ -102,11 +103,17 @@
 			<A HREF="javascript:document.replace.submit(); "><B>Wymieñ urz±dzenie:</B></A>
 			<SELECT NAME="netdev" {tip trigger="replace" text="Wybierz z listy urz±dzenie do zamiany"}>
 				{section name=replacelist loop=$replacelist}
+				{if $replacelist[replacelist].id != $netdevinfo.id}
 				<OPTION VALUE="{$replacelist[replacelist].id}">{$replacelist[replacelist].name} {if $replacelist[replacelist].producer}/ {$replacelist[replacelist].producer}{/if} {if $replacelist[replacelist].location}({$replacelist[replacelist].location}){/if}</OPTION>
+				{/if}
 				{/section}
 			</SELECT>
 			</FORM></P>
+			{else}
+			<B>Nie ma urz±dzeñ do wymiany</B>
+			{/if}
 		</TD>
 	</TR>
 	{/if}
-</TABLE></P>
+</TABLE>
+

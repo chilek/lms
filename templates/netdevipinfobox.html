@@ -1,0 +1,63 @@
+<!-- $Id$ -->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="FLEFTU">
+			<IMG SRC="img/ip.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
+			<B>{$nodeipdata.name|upper} ({$nodeipdata.id|string_format:"%04d"})</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/ip.gif" BORDER="0" ALT="Adres IP:">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			{$nodeipdata.ip}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/mac.gif" BORDER="0" ALT="Adres MAC:">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			{$nodeipdata.mac} {if $nodeipdata.producer}({$nodeipdata.producer}){/if}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/network.gif" BORDER="0" ALT="Sieæ:">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			<B><A HREF="?m=netinfo&id={$nodeipdata.netid}">{$nodeipdata.netname}</A></B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<A HREF="?m=nodeset&id={$nodeipdata.id}"><IMG SRC="img/{if ! $nodeipdata.access}no{/if}access.gif" BORDER="0" ALT=""></A>
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			<B>{if $nodeipdata.access}pod³±czony{else}od³±czony{/if}</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="1%">
+			<B>Utworzony:<BR>
+			Zmodyfikowany:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			{$nodeipdata.createdby}, {$nodeipdata.creationdateh}<BR>
+			{if $nodeipdata.moddate}{$nodeipdata.modifiedby}, {$nodeipdata.moddateh}{else}-{/if}
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">Wszystkie adresy <IMG SRC="img/cancel.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
+			<A HREF="?m=nodedel&id={$nodeipdata.id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ adres \'{$nodeipdata.name|upper}\' z bazy danych?')">Usuñ <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
+			<A HREF="?m=netdevedit&id={$netdevinfo.id}&action=editip&ip={$nodeipdata.id}" ACCESSKEY="E">Edytuj <IMG SRC="img/edit.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A>
+		</TD>
+	</TR>	
+</TABLE>
