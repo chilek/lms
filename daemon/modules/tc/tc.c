@@ -30,7 +30,6 @@
 #include "tc.h"
 
 unsigned long inet_addr(unsigned char *);
-//unsigned char *inet_ntoa(unsigned long);
 
 char * itoa(int i)
 {
@@ -105,12 +104,12 @@ void reload(GLOBAL *g, struct tc_module *tc)
 		// we need user ID and average data values for nodes
 		if( (ures = g->db_query("
 			SELECT userid AS id, 
-				CEIL(SUM(uprate)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS uprate, 
-				CEIL(SUM(downrate)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS downrate, 
-				CEIL(SUM(upceil)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS upceil, 
-				CEIL(SUM(downceil)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS downceil, 
-				CEIL(SUM(climit)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS climit, 
-				CEIL(SUM(plimit)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS plimit
+				ROUND(SUM(uprate)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS uprate, 
+				ROUND(SUM(downrate)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS downrate, 
+				ROUND(SUM(upceil)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS upceil, 
+				ROUND(SUM(downceil)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS downceil, 
+				ROUND(SUM(climit)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS climit, 
+				ROUND(SUM(plimit)/COUNT(DISTINCT nodes.id)/COUNT(DISTINCT nodes.id)) AS plimit
 			FROM assignments
 				LEFT JOIN tariffs ON (tariffid = tariffs.id)
 				LEFT JOIN nodes ON (userid = ownerid)
