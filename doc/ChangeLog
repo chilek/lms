@@ -125,6 +125,7 @@ wersja 1.1.4 (??/??/2003):
     PosgreSQL:
 	ALTER TABLE netdevices ADD COLUMN location varchar(255);
   - do modu³u 'Statystyki' dodano mo¿liwo¶æ kompaktowania bazy danych (alec)
+  - poprawiony http://bts.rulez.pl/bug_view_page.php?bug_id=0000072 (lukasz)
       
 wersja 1.1.3 (29/08/2003):
 
