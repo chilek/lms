@@ -257,6 +257,15 @@ $toemail =~ s/^.*<(.+\@.+)>$/\1/g;
 if(! $prev_tid) # generate new ticket if previous not found
 {
 	# find queue ID if not specified
+	if(!$queue)
+	{
+		$dbq = $dbase->prepare("SELECT id FROM rtqueues WHERE email = '$toemail'");
+		$dbq->execute();
+		if(my $row = $dbq->fetchrow_hashref())
+		{
+			$queue = $row->{'id'};
+		}
+	}
 	
 	if(!$queue)
 	{
@@ -290,6 +299,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 	$row = $dbq->fetchrow_hashref();
 	$rt_msgid = $row->{'id'};	
 
+	# get sender e-mail if not specified
 	if(!$autoreply_from)
 	{
 		$dbq = $dbase->prepare("SELECT email FROM rtqueues WHERE id = '$queue'");
