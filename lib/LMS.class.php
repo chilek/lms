@@ -32,22 +32,12 @@ class LMS {
 
 	var $db;
 	var $session;
-	var $_version = '1.0.44';
-	var $_usecache = FALSE;
-	var $_debug = TRUE;
+	var $_version = '1.0.47';
 
 	function LMS($db,$session)
 	{
 		$this->db=$db;
 		$this->session=$session;
-	}
-
-	function Cache($arg=FALSE)
-	{
-		if($arg)
-			$this->_usecache = TRUE;
-		else
-			$this->_usecache = FALSE;
 	}
 
 	function SetTS($table)
@@ -176,6 +166,7 @@ class LMS {
 	{
 		$db=$this->db;
 		$networks = $db->FetchArray("SELECT `id`, `name`, `address`, `mask`, `gateway`, `dns`, `domain`, `wins`, `dhcpstart`, `dhcpend` FROM `networks`");
+		$nodes = $db->FetchArray("SELECT `ipaddr` FROM `nodes`");
 		$networks[total] = sizeof($networks[id]);
 		if($networks[total])
 		{
@@ -187,10 +178,14 @@ class LMS {
 				$networks[broadcast][$key] = getbraddr($networks[address][$key],$networks[mask][$key]);
 				$networks[boradcastlong][$key] = ip_long($networks[broadcast][$key]);
 				$networks[size][$key] = pow(2,(32-$networks[prefix][$key]));
-				$networks[table][$key] = $this->GetNetwork($value);
-				$networks[assigned][$key] = $networks[table][$key][totalnodes];
-				$networks[assigned][total] = $networks[assigned][total] + $networks[assigned][$key];
 				$networks[size][total] = $networks[size][total] + $networks[size][$key];
+				if(sizeof($nodes[ipaddr]))
+					foreach($nodes[ipaddr] as $ip)
+						if(isipin($value,$networks[address],$networks[mask]))
+						{
+							$networks[assigned][$key] ++;
+						}
+				$networks[assigned][total] = $networks[assigned][total] + $networks[assigned][$key];
 			}
 		}
 		return $networks;
@@ -444,38 +439,33 @@ class LMS {
 				$_SESSION[timestamps][getnetwork][$id][nodes] != $this->GetTS("nodes")
 		  )
 		{
-			if($id=="ALL")
-				$db->ExecSQL("SELECT `address`, `mask`, `name` FROM `networks`");
-			else
-				$db->ExecSQL("SELECT `address`, `mask`, `name` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
-			while($db->FetchRow()){
+			$db->row = "";
+			$db->FetchRow("SELECT `address`, `mask`, `name` FROM `networks` WHERE `id` = '".$id."' LIMIT 1");
+			if($db->row != "")
 				foreach($db->row as $key => $value)
 					$$key = $value;
 				
-				$c=0;
-				for($i=ip_long($address)+1;$i<ip_long(getbraddr($address,$mask));$i++)
-				{
-					$return[addresslong][] = $i;
-					$return[address][] = long2ip($i);
-					if($c == "0")
-						$return[mark][] = $name;
-					else
-						$return[mark][] = "";
-					$c++;	
-				}
+			for($i=ip_long($address)+1;$i<ip_long(getbraddr($address,$mask));$i++)
+			{
+				$return[addresslong][] = $i;
+				$return[address][] = long2ip($i);
+				$return[nodeid][$i] = 0;
+				$return[nodename][$i] = "";
+				$return[ownerid][$i] = 0;
 			}
 			
 			if(sizeof($return[address]))
 			{
-				foreach($return[address] as $i => $v)
-				{
-					if($db->FetchRow("SELECT `name`, `id`, `ownerid` FROM `nodes` WHERE `ipaddr` = '".$return[address][$i]."' LIMIT 1"))
-						$return[totalnodes]++;
-					$return[nodeid][$i]= $db->row[id];
-					$return[nodename][$i] = $db->row[name];
-					$return[ownerid][$i] = $db->row[ownerid];
-				}
-				array_multisort($return[addresslong],$return[address],$return[nodeid],$return[nodename],$return[mark]);
+				$nodes = $db->FetchArray("SELECT `name`, `id`, `ownerid`, `ipaddr` FROM `nodes`");
+				foreach($nodes[id] as $key => $value)
+					if(isipin($nodes[ipaddr][$key],$address,$mask))
+					{
+						$pos = ip_long($nodes[ipaddr][$key])-ip_long($address)+1;
+						$return[nodeid][$pos] = $value;
+						$return[nodename][$pos] = $nodes[name][$key];
+						$return[ownerid][$pos] = $nodes[ownerid][$key];
+					}
+				
 			}
 
 			$_SESSION[cache][getnetwork][$id] = $return;
@@ -613,7 +603,6 @@ class LMS {
 				$balancelist = $_SESSION[cache][getbalancelist];
 				
 			}
-//		var_dump($balancelist);
 		return $balancelist;
 	}
 
@@ -1131,9 +1120,6 @@ class LMS {
 	{
 		$db=$this->db;
 		$db->FetchRow("SELECT `id` FROM `admins` WHERE `login` = '".$login."' LIMIT 1");
-//		if($db->row[id]=="")
-//			return 0;
-//		else
 			return $db->row[id];
 	}
 
