@@ -29,15 +29,19 @@ Otwieramy w naszym ulubionym edytorze plik lms-squid-warnings i
 praktycznie wszystko co mo¿na ustawiæ w naszym redirectorze to:
 ------
 my $configfile = '/etc/lms/lms.ini';
-my $redirect = 'http://lms.rulez.pl/';
 ------
-Czyli odpowiednio po³o¿enie pliku konfiguracyjnego oraz URL z nasz± winetk±.
-Resztê danych redirector pobiera z pliku lms.ini
+Czyli po³o¿enie pliku konfiguracyjnego. Reszta konfiguracji ustawiana jest 
+w lms.ini, gdzie dopisujemy:
+------
+[squid-warnings]
+redirect        = http://nasz.serwer.pl/winetka/
+------
+Czyli adres winetki.
 
 Ad c.
 
-Do katalogu gdzie ma byæ widoczna wasza winetka kopiujemy index.php, 
-message.html i zawarto¶æ katalog img.
+Do katalogu gdzie ma byæ widoczna winetka kopiujemy index.php, message.html 
+i zawarto¶æ katalog img.
 
 2. W dzia³aniu.
 
@@ -55,7 +59,7 @@ Po drodze nigdzie nie s± wykorzystywane ¿adne regu³ki firewalla, ani ¿aden
 daemon nie jest prze³adowywany. Skrypty podczas dzia³ania nie modyfikuj±
 ¿adnych plików. Jedyn± wad± mo¿e byæ nieznaczne spowolnienie pracy squida
 (przyk³adowo, na moim Athlonie 1.2 przetworzenie 2000 adresów, z czego po³owa 
-podlega³a przekierowaniu, a druga nie trwa³o 1,166 sekundy, co daje czas 
-przetwarzania oko³o 0,000583 sekundy na adres. W momencie pisania tego tekstu
+podlega³a przekierowaniu, a druga nie trwa³o 0,774 sekundy, co daje czas 
+przetwarzania oko³o 0,000387 sekundy na adres. W momencie pisania tego tekstu
 strona g³ówna Wirtualnej Polski sk³ada³a siê z 62 elementów, przez co 
-redirector zwiêkszy³ jej czas ³adowania o 0,036146 sekundy).
+redirector zwiêkszy³ jej czas ³adowania o 0,023994 sekundy).
