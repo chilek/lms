@@ -1,0 +1,77 @@
+{literal}
+<script language="javascript">
+	<!--
+	function removeUsers() {
+		document.userassignments.oper.value="0";
+		document.userassignments.submit();
+	}
+	//-->
+{/literal}																</script>
+<P>
+<FORM NAME="userassignments" METHOD="POST" ACTION="?m=usergroupedit">
+<INPUT TYPE="hidden" NAME="userassignments[backid]" VALUE="{$usergroup.id}">
+<INPUT TYPE="hidden" NAME="oper" VALUE="1">
+<TABLE WIDTH="100%" CELLPADDING="0">
+    <TR><TD WIDTH="49%" VALIGN="TOP">
+	    <TABLE WIDTH="100%" CELLPADDING="3">
+		<TR CLASS="DARK">
+		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
+			<IMG SRC="img/user.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<B>U¿ytkownicy w grupie:</B>
+		    </TD>
+		</TR>
+		<TR CLASS="LIGHT">
+		    <TD WIDTH="100%" CLASS="flr" ALIGN="CENTER">
+		    {if $usergroup.userscount}
+			<SELECT SIZE="20" NAME="userassignments[gmuserid][]" multiple>
+				{section name=user loop=$usergroup.users}
+					<OPTION VALUE="{$usergroup.users[user].id}">
+					{$usergroup.users[user].username|truncate:50:" ..."} ({$usergroup.users[user].id|string_format:"%04d"})
+					</OPTION>
+				{/section}
+			</SELECT>
+		    {else}
+			<BR>
+			<BR>
+			<B>W tej grupie nie ma u¿ytkowników</B><BR>
+			<BR>
+			<BR>
+		    {/if}
+		    </TD>
+		</TR>
+		<TR CLASS="LIGHT">
+		    <TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT" NOWRAP>
+			<A HREF="javascript:removeUsers();">Usuñ tych u¿ytkowników z grupy <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
+		    </TD>
+		</TR>
+	    </TABLE>
+    </TD>
+    <TD WIDTH="2%">
+    </TD>
+    <TD WIDTH="49%" VALIGN="TOP">
+	    <TABLE WIDTH="100%" CELLPADDING="3">
+		<TR CLASS="DARK">
+		    <TD WIDTH="100%" CLASS="fall" NOWRAP>
+			<IMG SRC="img/user.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<B>Przypisz nowych u¿ytkowników do tej grupy:</B>
+		    </TD>
+		</TR>
+		<TR CLASS="LIGHT">
+		    <TD WIDTH="100%" CLASS="flr" ALIGN="CENTER">
+			<SELECT SIZE="20" NAME="userassignments[muserid][]" multiple>
+				{section name=user loop=$users}
+					<OPTION VALUE="{$users[user].id}">
+					{$users[user].username|truncate:50:" ..."} ({$users[user].id|string_format:"%04d"})
+					</OPTION>
+				{/section}
+			</SELECT>
+		    </TD>
+		</TR>
+		<TR CLASS="LIGHT">
+		    <TD WIDTH="100%" CLASS="fbottomu" ALIGN="RIGHT" NOWRAP>
+			<A HREF="javascript:document.userassignments.submit();">Dodaj tych u¿ytkowników do grupy <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
+		    </TD>
+		</TR>
+	</TABLE>
+    </TD></TR>
+</TABLE>
+</FORM>
+</P>

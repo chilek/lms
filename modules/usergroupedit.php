@@ -24,6 +24,36 @@
  *  $Id$
  */
 
+$userassignments = $_POST['userassignments'];
+$oper = $_POST['oper'];
+
+if(isset($userassignments))
+{
+	if (sizeof($userassignments['gmuserid']) && $oper=='0')
+	{
+		$assignment['usergroupid'] = $userassignments['backid'];
+		foreach($userassignments['gmuserid'] as $value)
+		{
+			$assignment['userid'] = $value;
+			$LMS->UserassignmentDelete($assignment);
+		}
+		header('Location: ?'.$_SESSION['backto']);
+		die;
+	}
+
+	if (sizeof($userassignments['muserid']) && $oper=='1')
+	{
+		$assignment['usergroupid'] = $userassignments['backid'];
+		foreach($userassignments['muserid'] as $value)
+		{
+			$assignment['userid'] = $value;
+			$LMS->UserassignmentAdd($assignment);
+		}
+		header('Location: ?'.$_SESSION['backto']);
+		die;
+	}
+}
+
 if(!$LMS->UsergroupExists($_GET['id']))
 {
 	header('Location: ?m=usergrouplist');
@@ -51,12 +81,19 @@ if(isset($usergroup))
 		die;
 	}
 
-}else
-	$usergroup = $LMS->UsergroupGet($_GET['id']);
-	
+}
+
+$usergroup = $LMS->UsergroupGet($_GET['id']);
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+
 $layout['pagetitle'] = 'Edycja grupy: '.$usergroup['name'];	
+
 $SMARTY->assign('usergroup',$usergroup);
 $SMARTY->assign('error',$error);
+$SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->display('usergroupedit.html');
 
 ?>
+
+
+

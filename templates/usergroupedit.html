@@ -1,7 +1,7 @@
 {include file="header.html"}
 {include file="userheader.html"}
 <H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="tedit" ACTION="?m=usergroupedit&id={$usergroup.id}">
+<P><FORM METHOD="POST" NAME="tedit" ACTION="?m=usergroupedit&id={$usergroup.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="fleftu">
@@ -34,5 +34,6 @@
 		</TD>
 	</TR>
 </TABLE>
-</FORM>
+</FORM></P>
+{include file="usergroupassignments.html"}
 {include file="footer.html"}
