@@ -34,6 +34,23 @@ int descs_count = 0;
 
 void sig_int(int a) {  sigint = 1;  }
 
+int eth_aton(const char *src, char dst[ETH_ALEN])
+{
+	char *ep;
+	long l;
+	int i;
+	
+	for(i=0; i<ETH_ALEN; i++) {
+		l = strtol(src, &ep, 16);
+		if(ep == src || l<0 || l>0xff || (i < ETH_ALEN - 1 && *ep != ':'))
+			break;
+		dst[i] = (u_char)l;
+		src = ep+1;
+	}
+
+	return ((i == ETH_ALEN && *ep == '\0') ? 0 : -1);
+}
+
 void get_iface_desc(char if_name[IFNAMSIZ], struct if_desc *desc) 
 {
 	int sock;
@@ -111,11 +128,12 @@ void get_ifaces(void)
 
 int send_arp_req(int sock, in_addr_t ip) 
 {
-	unsigned char buf[2*KB] = {0}, broadcast[6] = "\xFF\xFF\xFF\xFF\xFF\xFF";
+	unsigned char buf[2*KB] = {0};
 	struct sockaddr_ll str;
 	int r, index, roz_arpha, roz_etha;
 	struct ethhdr etha;
 	struct arphdr arpha;
+	unsigned char broadcast[ETH_ALEN] = "\xFF\xFF\xFF\xFF\xFF\xFF";
 	unsigned char ar_sha[ETH_ALEN];	// sender hardware address
 	unsigned char ar_tha[ETH_ALEN];	// target hardware address
 	struct timeval tv;
@@ -131,40 +149,39 @@ int send_arp_req(int sock, in_addr_t ip)
 	//uzupelnienie struktury adresowej do sendto()
 	memset(&str, 0, sizeof(str));
 	str.sll_family = PF_PACKET;
-	memcpy(str.sll_addr, descs[index].mac, 6);    //htons(t);  //00:C0:26:2B:C9:09
+	memcpy(str.sll_addr, descs[index].mac, ETH_ALEN);    	//htons(t);  //00:C0:26:2B:C9:09
 	str.sll_halen = 6;
 	str.sll_ifindex = descs[index].index;
 
 	//.........budujemy naglowek Ethernetowy warstwy lacza danych...............
-	memcpy(etha.h_dest, broadcast, 6);	// destination eth addr
-	memcpy(etha.h_source, descs[index].mac, 6);	// source ether addr
+	memcpy(etha.h_dest, broadcast, ETH_ALEN);		// destination eth addr
+	memcpy(etha.h_source, descs[index].mac, ETH_ALEN);	// source ether addr
 	etha.h_proto = htons(ETH_P_ARP);
 
 	//.........budujemy naglowek ARP warstwy sieciowej...............
 	arpha.ar_hrd = htons(ARPHRD_ETHER);		// format of hardware address
-	arpha.ar_pro = htons(0x0800); 	// format of protocol address
-	arpha.ar_hln = 6;		// length of hardware address
-	arpha.ar_pln = 4;		// length of protocol address
+	arpha.ar_pro = htons(0x0800); 			// format of protocol address
+	arpha.ar_hln = ETH_ALEN;			// length of hardware address
+	arpha.ar_pln = 4;				// length of protocol address
 	arpha.ar_op = htons(ARPOP_REQUEST);
 
-	memcpy(ar_sha, descs[index].mac, 6);	// sender hardware address
-	memset(ar_tha, 0, 6);	// target hardware address
+	memcpy(ar_sha, descs[index].mac, ETH_ALEN);	// sender hardware address
+	memset(ar_tha, 0, ETH_ALEN);			// target hardware address
 
 	// ...... budujemy pakiet ...............
 	roz_arpha = sizeof(arpha);
 	roz_etha = sizeof(etha);
 	memcpy(buf, &etha, roz_etha);
 	memcpy(buf + roz_etha, &arpha, roz_arpha);
-	memcpy(buf + roz_etha + roz_arpha, ar_sha, 6);
-	memcpy(buf + roz_etha + roz_arpha + 6 + 4, ar_tha, 6);
-	memcpy(buf + roz_etha + roz_arpha + 6, &(descs[index].ip), 4);// sender IP address
-
+	memcpy(buf + roz_etha + roz_arpha, ar_sha, ETH_ALEN);
+	memcpy(buf + roz_etha + roz_arpha + ETH_ALEN + 4, ar_tha, ETH_ALEN);
+	memcpy(buf + roz_etha + roz_arpha + ETH_ALEN, &(descs[index].ip), 4);// sender IP address
 	tv.tv_sec = 0;
 	tv.tv_usec = 2000;
 	select(1, NULL, NULL, NULL, &tv);
 
 //	ip = htonl(ip);
-	memcpy(buf + roz_etha + roz_arpha + 6 + 4 + 6, &ip, 4);
+	memcpy(buf + roz_etha + roz_arpha + ETH_ALEN + 4 + ETH_ALEN, &ip, 4);
 //	ip = ntohl(ip);
 
 	if ((r = sendto(sock, buf, 42, 0, (struct sockaddr*)&str, sizeof(str))) == -1) {
@@ -198,23 +215,22 @@ int recv_arp_reply()
 	struct sockaddr_ll str;
 	unsigned int sock, len, r, index, i, roz_arpha, roz_etha;
 	unsigned int dstip, srcip;
-	char *tm;
-	struct ethhdr etha;
+	struct ethhdr *etha;
 	struct arphdr *arpha;
 	struct timeval tt, acttime, oldtime;
-
-	roz_arpha = sizeof(arpha);
-	roz_etha = sizeof(etha);
-
-	str.sll_family = PF_PACKET;
-	str.sll_protocol = htons(ETH_P_ARP);
-	str.sll_hatype = ARPHRD_ETHER;
-	str.sll_pkttype = PACKET_HOST;
 
 	if ((sock = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ARP))) == -1) {
 		printf("recv_arp_reply: socket: %s\n",strerror(errno));
 		return 1;
 	}
+
+	roz_arpha = sizeof(struct arphdr*);
+	roz_etha = sizeof(struct ethhdr);
+
+	str.sll_family = PF_PACKET;
+	str.sll_protocol = htons(ETH_P_ARP);
+	str.sll_hatype = ARPHRD_ETHER;
+	str.sll_pkttype = PACKET_HOST;
 	len = sizeof(buf);
 
 	gettimeofday(&oldtime, NULL);
@@ -245,26 +261,26 @@ int recv_arp_reply()
 
 		arpha = (struct arphdr *)(buf + sizeof(struct ethhdr));
 		if (ntohs(arpha->ar_op) == ARPOP_REPLY) {
-		
-			memcpy(&dstip, buf + roz_etha + roz_arpha + 6 + 4 + 6 + 4, 4);
-			memcpy(&srcip, buf + roz_etha + roz_arpha + 6 + 4, 4);
 
+
+			memcpy(&dstip, buf + roz_etha + roz_arpha + ETH_ALEN + 4 + ETH_ALEN + 4, 4);
+			memcpy(&srcip, buf + roz_etha + roz_arpha + ETH_ALEN + 4, 4);
+/*
 			// odnalezienie adresu IP z ktorego chcemy wysylac ramke
 			for (index = 0; index < descs_count; index++)
 				if (descs[index].network == (dstip & descs[index].netmask))
 					break;
 			
 			if (index < descs_count) {
-
+*/
 				gettimeofday(&oldtime, NULL);
 				
-				for(i=0; i<nh; i++) {
+				for(i=0; i<nh; i++)
 					if (hosts[i].ipaddr == srcip) {
 						hosts[i].active = 1;
 						break;
 					}
-				}
-			}
+		//	}
 		}
 	}
 
@@ -355,7 +371,7 @@ void reload(GLOBAL *g, struct pinger_module *p)
 					g->db_pexec("UPDATE nodes SET lastonline=%NOW% WHERE id=?", hosts[i].id);
 		break;
 	}
-//	g->db_pexec("UPDATE nodes SET lastonline=%NOW% WHERE id=?", "57");	
+
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/pinger] reloaded", p->base.instance);
 #endif
