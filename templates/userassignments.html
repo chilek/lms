@@ -44,6 +44,7 @@
 						{if $a.tariffid}
 						<A href="?m=userassignments&action=suspend&id={$balancelist.userid}&aid={$a.id}&suspend={if $a.suspended}0{else}1{/if}" {tip text="W³±cza/Wy³±cza naliczanie wybranego zobowi±zania"}><IMG SRC="img/wait.gif" ALT="[ {if $a.suspended}Przywróæ{else}Zawie¶{/if} ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
 						{/if}
+						<A HREF="?m=userassignmentsedit&id={$a.id}"><IMG SRC="img/edit.gif" ALT="[ Edytuj ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
 						<A onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownikowi to zobowi±zanie?')" HREF="?m=userassignments&action=delete&aid={$a.id}&id={$balancelist.userid}" {tip text="Usuwa zobowi±zanie z rekordu u¿ytkownika"}><IMG SRC="img/delete.gif" ALT="[ Usuñ ]" BORDER="0" ALIGN="ABSMIDDLE"></A>
 					</TD>
 				</TR>
