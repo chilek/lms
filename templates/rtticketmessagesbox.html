@@ -42,7 +42,7 @@
 		    </TR>
 		    <TR class="LIGHT">
 			<TD COLSPAN="4" class="fbt" BGCOLOR="#F4F0EC">
-			    <PRE>{$message.body|escape}</PRE>
+			    {$message.body|escape|replace:"\n":"<BR>"}
 			</TD>
 		    </TR>
 		{/foreach}
