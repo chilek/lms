@@ -30,7 +30,7 @@ $_SESSION['addtype'] = $addbalance['type'];
 $_SESSION['addbc'] = $addbalance['comment'];
 $_SESSION['addbt'] = $addbalance['time'];
 $_SESSION['addbv'] = $addbalance['value'];
-if ($addbalance['taxvalue'] == trans('tax-free'))
+if($addbalance['taxvalue'] == 'tax-free') //don't translate 'tax-free' here!
 	$addbalance['taxvalue'] = '';
 $_SESSION['addbtax'] = $addbalance['taxvalue'];
 
@@ -49,29 +49,62 @@ if($addbalance['time']) {
 		unset($addbalance['time']);
 }
 
-if($addbalance['type']=='3'||$addbalance['type']=='4')
+if($addbalance['type']=='3' || $addbalance['type']=='4')
+{
+	if(isset($addbalance['muserid']))
 	{
-		if(isset($addbalance['muserid']))
+		foreach($addbalance['muserid'] as $value)
+			if($LMS->UserExists($value))
+			{
+				$addbalance['userid'] = $value;
+				$LMS->AddBalance($addbalance);
+			}
+	}
+	else
+	{
+		if($LMS->UserExists($addbalance['userid']))
 		{
-			foreach($addbalance['muserid'] as $value)
-				if($LMS->UserExists($value))
+			if($unpaid = $_SESSION['unpaid'][$addbalance['userid']])
+			{
+				foreach($unpaid as $cashid)
 				{
-					$addbalance['userid'] = $value;
+					if($addbalance['value'] <= 0)
+						break;
+				
+					$row = $LMS->DB->GetRow('SELECT invoiceid, itemid, comment, taxvalue FROM cash WHERE id = ?', array($cashid));
+					$value = $LMS->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE value*-1 END)*-1 AS value
+								    FROM cash WHERE invoiceid = ? AND itemid = ?', 
+								    array($row['invoiceid'], $row['itemid']));
+					
+					$addbalance['itemid'] = $row['itemid'];
+					$addbalance['invoiceid'] = $row['invoiceid'];
+					$addbalance['taxvalue'] = $row['taxvalue'];
+					$addbalance['comment'] = $addbalance['comment'] ? $addbalance['comment'] : $row['comment'];
+					
+					$oldvalue = $addbalance['value'];
+					if($oldvalue >= $value)
+						$addbalance['value'] = $value;
+					else
+						$addbalance['value'] = $oldvalue;
+						
 					$LMS->AddBalance($addbalance);
+					
+					$addbalance['value'] = $oldvalue - $addbalance['value'];
 				}
-		}
-		else
-		{
-			if($LMS->UserExists($addbalance['userid']))
+				
+				unset($_SESSION['unpaid'][$addbalance['userid']]);
+			}
+			else
 				$LMS->AddBalance($addbalance);
 		}
 	}
+}
 
-	if($addbalance['type']=='2'||$addbalance['type']=='1')
-	{
-		$addbalance['userid'] = '0';
-		$LMS->AddBalance($addbalance);
-	}
+if($addbalance['type']=='2' || $addbalance['type']=='1')
+{
+	$addbalance['userid'] = '0';
+	$LMS->AddBalance($addbalance);
+}
 
 header('Location: ?'.$_SESSION['backto']);
 
