@@ -118,7 +118,7 @@ void reload(GLOBAL *g, struct notify_module *n)
 						
 							unsigned char *select, *date, *value, *comment, *last_ten, *temp, *temp2;
 					
-							select = strdup("SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value FROM cash WHERE userid = %id ORDER BY time LIMIT 10");
+							select = strdup("SELECT comment, time, CASE WHEN type=4 THEN value*-1 ELSE value END AS value FROM cash WHERE userid = %id ORDER BY time DESC LIMIT 10");
 							g->str_replace(&select, "%id", g->db_get_data(res,i,"id"));
 						
 							if( (result = g->db_query(select))!=NULL ) {
