@@ -2712,6 +2712,7 @@ class LMS
 
 	function Mailing($mailing)
 	{
+		global $LANGDEFS;
 		if($emails = $this->GetEmails($mailing['group'], $mailing['network'], $mailing['usergroup']))
 		{
 			if($this->CONFIG['phpui']['debug_email'])
@@ -2726,7 +2727,7 @@ class LMS
 					$row['username'].' <'.$row['email'].'>',
 					$mailing['subject'],
 					$mailing['body'],
-					'From: '.$mailing['from'].' <'.$mailing['sender'].">\n".'Content-Type: text/plain; charset='.$LANGDEFS[$_language]['charset'].";\n".'X-Mailer: LMS-'.$this->_version.'/PHP-'.phpversion()."\n".'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n".'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']."\n"
+					'From: '.$mailing['from'].' <'.$mailing['sender'].">\n".'Content-Type: text/plain; charset='.$LANGDEFS[$this->lang]['charset'].";\n".'X-Mailer: LMS-'.$this->_version.'/PHP-'.phpversion()."\n".'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n".'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']."\n"
 				);
 				
 				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.trans('$0 of $1 ($2): $3 &lt;$4&gt;', ($key+1), sizeof($emails), sprintf('%02.2f',round((100/sizeof($emails))*($key+1),2)), $row['username'], $row['email'])."<BR>\n";
