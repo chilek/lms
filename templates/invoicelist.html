@@ -97,7 +97,7 @@
 			{$invoice.id|string_format:"%04d"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M.%S"}
+			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			{$_config.invoices.number_template|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}
