@@ -244,7 +244,7 @@
 	</sect2>
 	<sect2 id="mgc-config-vars">
 	<title>Zmienne konfiguracyjne</title>
-  <para>Oprócz tego w czê¶ci opcji konfiguracyjnych mo¿emy u¿ywaæ nastêpuj±cych zmiennych:</para>
+  <para>W opcjach konfiguracyjnych mo¿na u¿ywaæ nastêpuj±cych zmiennych:</para>
    <itemizedlist>
     <listitem>
      <para>%IP - zostanie rozwiniête do adresu IP</para>
