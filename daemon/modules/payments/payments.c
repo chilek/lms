@@ -106,7 +106,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 	unsigned char *query, *insert, *insert_inv;
 	unsigned char *w_period, *m_period, *q_period, *y_period, *value, *taxvalue;
 	unsigned char *description;
-	int i, invoiceid, last_userid=0, number=0, exec=0, suspended=0;
+	int i, invoiceid=0, last_userid=0, number=0, exec=0, suspended=0;
 
 	time_t t;
 	struct tm *tt;
