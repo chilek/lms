@@ -36,6 +36,9 @@ $layout['pagetitle'] = trans('New Account');
 
 if($account = $_POST['account'])
 {
+	$quota = $_POST['quota'];
+	foreach($quota as $type => $value)
+		$quota[$type] = sprintf('%d', $value);
 	if(!($account['login'] || $account['passwd1'] || $account['passwd2']))
 	{
 		$SESSION->redirect('?m=accountlist');
@@ -70,14 +73,18 @@ if($account = $_POST['account'])
 	
 	if(!$error)
 	{
-		$LMS->DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, type) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+		$LMS->DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, type, quota_sh, quota_mail, quota_www, quota_ftp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				array(	$account['ownerid'], 
 					$account['login'], 
 					crypt($account['passwd1']), 
 					'/home/'.$account['login'],
 					$account['expdate'],
 					$account['domainid'],
-					$account['type']
+					$account['type'],
+					$quota['sh'],
+					$quota['mail'],
+					$quota['www'],
+					$quota['ftp']
 					));
 		$LMS->DB->Execute('UPDATE passwd SET uid = id+2000 WHERE login = ?',array($account['login']));
 		$LMS->SetTS('passwd');
@@ -100,6 +107,7 @@ $SMARTY->assign('error', $error);
 $SMARTY->assign('users', $LMS->GetUserNames());
 $SMARTY->assign('domainlist', $LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));
 $SMARTY->assign('account', $account);
+$SMARTY->assign('quota', $quota);
 $SMARTY->assign('layout', $layout);
 $SMARTY->display('accountadd.html');
 
