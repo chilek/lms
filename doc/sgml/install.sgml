@@ -10,7 +10,7 @@
 	<para>LMS to tak¿e zestaw skryptów w jêzyku PERL, i to w³a¶nie te skrypty wymagaj± 
 	aby¶ posiada³ interpreter tego jêzyka. Je¶li bêdziesz chcia³ u¿ywaæ tych skryptów, 
 	musisz mieæ PERLa. Skrypty pozwalaj± m.in. na comiesiêczne naliczanie op³at abonamentowych 
-	b±d¼ wysy³anie upomnieñ. Jest jeszcze <emphasis>LMS-MGC</emphasis>, który te¿ jest skryptem ale na tyle 
+	b±d¼ wysy³anie upomnieñ. Najwiêkszy z nich - <emphasis>LMS-MGC</emphasis> jest skryptem, ale na tyle 
 	uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i zrestartowaæ 
 	us³ugê na twoim serwerze.</para>
         <para>Jest jeszcze <emphasis>A.L.E.C's LMS Daemon</emphasis>, napisany w jêzyku C. Jest on przeznaczony 
@@ -40,8 +40,7 @@
 	      </para>
 	      <para>LMS wspó³pracuje tak¿e z PostgreSQL w wersji 7.3.x lub nowszych.</para>
 	      <para>Wykorzystanie bazy SQLite dla LMS'a jest w fazie testów. Jedyn± przetestowan± wersj± 
-	      jest 2.8.11. O niedogodno¶ciach stosowania tego silnika mo¿esz poczytaæ w dalszej
-	      czê¶ci tego rozdzia³u.</para>
+	      jest wersja 2.8.11.</para>
 	    </sect2>
 	    <sect2 id="install-req-smarty">
              <title>Biblioteka Smarty</title>
@@ -70,7 +69,10 @@
 	       <para>DBD-mysql (Je¶li masz zamiar u¿ywaæ mysql'a);</para>
 	    </listitem>
 	    <listitem>
-	       <para>DBD-pg (Je¶li masz zamiar u¿ywaæ postgres'a);</para>
+	       <para>DBD-Pg (Je¶li masz zamiar u¿ywaæ postgres'a);</para>
+	    </listitem>
+	    <listitem>
+	       <para>DBD-SQLite (Je¶li masz zamiar u¿ywaæ bazê SQLite);</para>
 	    </listitem>
 	  </itemizedlist></para>
 	  </sect2>
@@ -250,14 +252,13 @@ password = has³o_podane_przy_tworzeniu_u¿ytkownika_lms</screen>
 			znaczny wzrost wydajno¶ci. Poni¿ej przedstawiono krótki opis instalacji.
 			¬ród³a mo¿na pobraæ z <ulink url="http://www.sqlite.org">
 			www.sqlite.org</ulink>.</para>
-			<para>Na obecn± chwilê z SQLite nie wspó³pracuje daemon almsd, ani 
-			skrypty perlowe. We wspó³pracy z LMS-UI nie ma wiêkszych problemów, ale
-			wystêpuje b³±d przy korzystaniu z pól szybkiego wyszukiwania.</para>
+			<para>Na obecn± chwilê z SQLite nie wspó³pracuje demon <emphasis>almsd.
+			</emphasis></para>
 		</sect3>
 		<sect3 id="install-sqlite-server">
 		<title>Instalacja SQLite</title>
 			<para>Opisano tutaj sposób instalacji bibliotek SQLite oraz 
-			dodanie obs³ugi tej bazy przez PHP (PHP w wersji 5.0 ma wbudowan±
+			dodanie obs³ugi tej bazy do PHP (PHP w wersji 5.0 ma wbudowan±
 			obs³ugê SQLite). Po rozpakowaniu ¼róde³, wejd¼ do katalogu z SQLite 
 			i wydaj kolejno polecenia (¶cie¿ki przyk³adowe):
 			<screen>
@@ -315,7 +316,7 @@ database = /usr/local/lms/lms.db</screen>
             <listitem>
 	    <para>type</para>
 	   <para>Typ bazy danych. Aktualnie w 100% supportowany jest 'mysql', ale jak na razie nie 
-	   widaæ wiêkszych problemów z 'postgres'. Domy¶lnie: mysql</para>
+	   widaæ wiêkszych problemów z 'postgres' i 'sqlite'. Domy¶lnie: mysql</para>
 	   <para>Przyk³ad: <prompt>type = mysql</prompt></para>
 	  </listitem>
           <listitem>
@@ -340,7 +341,7 @@ database = /usr/local/lms/lms.db</screen>
 	  </listitem>
           <listitem>
 	   <para>database</para>
-	   <para>Nazwa bazy danych, domy¶lnie lms.</para>
+	   <para>Nazwa bazy danych (a w przypadku SQLite ¶cie¿ka do pliku bazy), domy¶lnie lms.</para>
 	   <para>Przyk³ad:	<prompt>database = lms</prompt></para>
 	  </listitem>
          </itemizedlist>
