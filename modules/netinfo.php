@@ -36,7 +36,5 @@ $layout[pagetitle]="Informacja o sieci";
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("network",$network);
 $SMARTY->assign("networks",$networks);
-$SMARTY->display("header.html");
 $SMARTY->display("netinfo.html");
-$SMARTY->display("footer.html");
 ?>
