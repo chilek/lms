@@ -81,14 +81,6 @@ $_DBUSER = (! $_CONFIG[database]['user'] ? 'root' : $_CONFIG[database]['user']);
 $_DBPASS = (! $_CONFIG[database]['password'] ? '' : $_CONFIG[database]['password']);
 $_DBNAME = (! $_CONFIG[database]['database'] ? 'lms' : $_CONFIG[database]['database']);
 
-// include language file (temporary)
-
-if(is_readable($_LIB_DIR.'/lang/'.$_LANG.'.php'))
-	require_once($_LIB_DIR.'/lang/'.$_LANG.'.php');
-else
-	require_once($_LIB_DIR.'/lang/pl.php');
-	
-
 // include required files
 
 require_once($_LIB_DIR.'/common.php');
@@ -121,6 +113,15 @@ $LMS->CONFIG[backup_dir] = $_BACKUP_DIR;
 $LMS->CONFIG[debug_email] = $_CONFIG[phpui][debug_email];
 
 $SMARTY = new Smarty;
+
+if(is_readable($_LIB_DIR.'/lang/'.$SESSION->lang.'.php'))
+	require_once($_LIB_DIR.'/lang/'.$SESSION->lang.'.php');
+elseif(is_readable($_LIB_DIR.'/lang/'.$_LANG.'.php'))
+	require_once($_LIB_DIR.'/lang/'.$_LANG.'.php');
+else
+	require_once($_LIB_DIR.'/lang/pl.php');
+		
+print_r($SESSION);
 
 // test for proper version of Smarty
 

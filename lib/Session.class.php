@@ -55,9 +55,10 @@ class Session {
 		
 		if($this->VerifyPassword()&&$this->TimeOut($timeout)){
 			$this->islogged = TRUE;
-			$admindata = $this->ADB->GetRow("SELECT id, name FROM admins WHERE login=?",array($this->login));
+			$admindata = $this->ADB->GetRow("SELECT id, name, lang FROM admins WHERE login=?",array($this->login));
 			$this->id = $admindata[id];
 			$this->logname = $admindata[name];
+			$this->lang = $admindata[lang];
 			$this->last = $_SESSION[session_last];
 			$this->lastip = $_SESSION[session_lastip];
 			if(isset($loginform))
