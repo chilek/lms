@@ -8,7 +8,8 @@
 			<NOBR><IMG src="img/network.gif" border="0" ALT="" align="absmiddle"> <B>Nazwa:</B><BR><IMG src="img/ip.gif" border="0" ALT="" align="absmiddle"> Adres/prefix (interfejs):</NOBR>
 		</TD>
 		<TD class="fbt" valign="top" align="right" width="1%">
-			ID:
+			<NOBR><IMG src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">ID:</NOBR><BR>
+			<NOBR><IMG src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">Adresy (razem/zajête/online):</NOBR>
 		</TD>
 		<TD class="fbt" width="1%">
 			<NOBR><IMG src="img/dns.gif" border="0" ALT="" align="absmiddle"> Serwery DNS:<BR><IMG src="img/domain.gif" border="0" ALT="" align="absmiddle"> Domena:</NOBR>
@@ -30,7 +31,7 @@
 			<nobr><IMG src="img/network.gif" border="0" ALT="" align="absmiddle"> <B>{$netlist[netlist].name}</B><BR><IMG src="img/ip.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</nobr>
 		</TD>
 		<TD valign="top" align="right" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';" width="1%">
-			<nobr><img src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">({$netlist[netlist].id|string_format:"%04d"})<BR><img src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">rozmiar: {$netlist[netlist].size} (zaj: {$netlist[netlist].assigned|string_format:"%01d"})</nobr>
+			<nobr><img src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">({$netlist[netlist].id|string_format:"%04d"})<BR><img src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">{$netlist[netlist].size}/{$netlist[netlist].assigned|string_format:"%01d"}/{$netlist[netlist].online|string_format:"%01d"}</nobr>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
 			<nobr>{if $netlist[netlist].dns neq ""}<IMG src="img/dns.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].dns}{if $netlist[netlist].dns2 neq ""}, {$netlist[netlist].dns2}{/if}{/if}<BR>

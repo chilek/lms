@@ -34,6 +34,7 @@ $layout['pagetitle'] = 'LAN Management System';
 $layout['dbversion'] = $LMS->DB->GetDBVersion();
 $layout['dbtype'] = $LMS->CONFIG['database']['type'];
 
+$SMARTY->assign('rtstats', $LMS->RTStats());
 $SMARTY->assign('sysinfo',$SI->get_sysinfo());
 $SMARTY->assign('userstats',$LMS->UserStats());
 $SMARTY->assign('nodestats',$LMS->NodeStats());

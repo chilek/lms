@@ -3,6 +3,9 @@ $Id$
 wersja 1.4.0 Evalla (??/10/2004):
 
   - usuniête pliki zwi±zane z niedokoñczonym pomys³em config_templates (alec)
+  - w welcome.html dodane okno ze statystykami Helpdesku (alec)
+  - dodana opcja networkhosts_pagelimit, kosmetyka w netinfo/netedit (alec)
+  - na li¶cie sieci pokazujemy ilo¶æ komputerów online (alec)
 
 wersja 1.4.0rc3 Evalla (28/09/2004):
 

@@ -1167,7 +1167,7 @@ class LMS
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
 			$result['creationdateh'] = date('Y-m-d, H:i',$result['creationdate']);
 			$delta = time()-$result['lastonline'];
-			if($delta>$LMS->CONFIG['phpui']['lastonline_limit'])
+			if($delta>$this->CONFIG['phpui']['lastonline_limit'])
 				$result['lastonlinedate'] .= uptimef($delta).($delta>60 ? ' temu ' : '').'('.date('Y-m-d, H:i',$result['lastonline']).')';
 			else
 				$result['lastonlinedate'] .= 'aktualnie w³±czony';
@@ -2130,6 +2130,7 @@ class LMS
 				$row['broadcast'] = getbraddr($row['address'],$row['mask']);
 				$row['broadcastlong'] = ip_long($row['broadcast']);
 				$row['assigned'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?', array($row['addresslong'], $row['broadcastlong']));
+				$row['online'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ? AND (?NOW? - lastonline < ?)', array($row['addresslong'], $row['broadcastlong'], $this->CONFIG['phpui']['lastonline_limit']));
 				$networks[$idx] = $row;
 				$networks['size'] += $row['size'];
 				$networks['assigned'] += $row['assigned'];
@@ -2218,7 +2219,7 @@ class LMS
 	{
 		$this->SetTS('nodes');
 		$this->SetTS('networks');
-		$network=$this->GetNetworkRecord($id);
+		$network = $this->GetNetworkRecord($id,0,4294967296);
 		$address = $network['addresslong']+$shift;
 		foreach($network['nodes']['id'] as $key => $value)
 		{
@@ -2234,8 +2235,8 @@ class LMS
 	{
 		$this->SetTS('nodes');
 		$this->SetTS('networks');
-		$network['source'] = $this->GetNetworkRecord($src);
-		$network['dest'] = $this->GetNetworkRecord($dst);
+		$network['source'] = $this->GetNetworkRecord($src,0,4294967296);
+		$network['dest'] = $this->GetNetworkRecord($dst,0,4294967296);
 		foreach($network['source']['nodes']['id'] as $key => $value)
 			if($this->NodeExists($value))
 				$nodelist[] = $value;
@@ -2251,13 +2252,22 @@ class LMS
 		return $counter;
 	}
 
-	function GetNetworkRecord($id,$page = 0, $plimit = 4294967296)
+	function GetNetworkRecord($id, $page = 0, $plimit = 0)
 	{
 		$network = $this->DB->GetRow('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks WHERE id=?', array($id));
 		$network['prefix'] = mask2prefix($network['mask']);
 		$network['size'] = pow(2,32-$network['prefix']);
 		$network['assigned'] = 0;
 		$network['broadcast'] = getbraddr($network['address'],$network['mask']);
+
+		$network['assigned'] = $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr < ?", array($network['addresslong'], $network['addresslong'] + $network['size']));
+		$network['free'] = $network['size'] - $network['assigned'] - 2;
+		if ($network['dhcpstart']) 
+			$network['free']=$network['free'] - (ip_long($network['dhcpend']) - ip_long($network['dhcpstart']) + 1);
+		
+		if(!$plimit)
+			return $network;
+		
 		$network['pagemax'] = ceil($network['size'] / $plimit);
 
 		if($page > $network['pagemax'])
@@ -2299,12 +2309,7 @@ class LMS
 		}
 		$network['nodes']['name'][0] = '*** NETWORK ***';
 		$network['nodes']['name'][$i-1] = '*** BROADCAST ***';
-
-		$network['assigned'] = $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr < ?", array($network['addresslong'], $network['addresslong'] + $network['size']));
-
 		$network['rows'] = ceil(sizeof($network['nodes']['address']) / 4);
-		$network['free'] = $network['size'] - $network['assigned'] - 2;
-		if ($network['dhcpstart']) { $network['free']=$network['free'] - (ip_long($network['dhcpend']) - ip_long($network['dhcpstart']) + 1); }
 		$network['pages'] = ceil($network['size'] / $plimit);
 		$network['page'] = $page + 1;
 
@@ -3045,6 +3050,15 @@ class LMS
 		}
 		$stats['lastticket'] = $this->DB->GetOne('SELECT createtime FROM rttickets WHERE queueid = ? ORDER BY createtime DESC', array($id));
 		return $stats;
+	}
+
+	function RTStats()
+	{
+		return $this->DB->GetRow('SELECT COUNT(CASE state WHEN 0 THEN 1 END) AS new,
+						COUNT(CASE state WHEN 1 THEN state END) AS open,
+						COUNT(CASE state WHEN 2 THEN state END) AS resolved,
+						COUNT(CASE state WHEN 3 THEN state END) AS dead
+					 FROM rttickets');
 	}
 	
 	function GetQueueByTicketId($id)
