@@ -10,7 +10,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/ip.gif" BORDER="0" ALT="Adres IP:">
+			<IMG SRC="img/ip.gif" BORDER="0" ALT="{$lang.ip_address}:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			{$nodeinfo.ipaddr}
@@ -18,7 +18,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/mac.gif" BORDER="0" ALT="Adres MAC:">
+			<IMG SRC="img/mac.gif" BORDER="0" ALT="{$lang.mac_address}:">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			{$nodeinfo.mac} {if $nodeinfo.producer}({$nodeinfo.producer}){/if}
