@@ -23,6 +23,15 @@
 		document.forms['addbalance'].elements['addbalance[type]'][i].checked = true;
 	}
 
+	function CountSelectedUsers()
+	{
+		var j = 0;
+		for (var i = 0; i < document.forms['addbalance'].elements[0].length; i++) {
+			if (document.forms['addbalance'].elements[0].options[i].selected)
+				j++;
+			}
+		document.forms['addbalance'].selectededit.value = j;
+	}
 //-->
 </SCRIPT>
 {/literal}
@@ -40,11 +49,14 @@
 				<TR CLASS="LIGHT">
 					<TD CLASS="FALL">
 						Wybierz u¿ytkowników których dotyczyæ ma ta operacja finansowa. Je¿eli typ operacji nie jest obci±¿eniem b±d¼ wp³at± u¿ytkownika, system zignoruje listê u¿ytkowników.<BR><BR>
-						<SELECT size="20" name="addbalance[muserid][]" multiple>
+						<SELECT size="20" name="addbalance[muserid][]" onChange="javascript:CountSelectedUsers();" multiple>
 							{section name=users loop=$users}
 							<OPTION value="{$users[users].id}">{$users[users].username|truncate:25:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
+						<P ALIGN="center">
+						Zaznaczonych: <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" STYLE="border:0;" readonly></INPUT>
+						</P>
 					</TD>
 				</TR>
 			</TABLE>
