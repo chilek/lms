@@ -22,17 +22,13 @@
 #
 #  $Id$
 
-#TODO - CHECK FOR ALL NEEDED CONFIGURATION OPTIONS!
-#       THERE IS NO SUCH CHECK AT THIS TIME!
-
 use strict;
 use DBI;
 use Config::IniFiles;
 use Getopt::Long;
-use vars qw($configfile $help $version $queue $debug);
+use vars qw($configfile $help $version $quiet);
 use POSIX qw(strftime);
-use Data::Dumper;
-use LWP::UserAgent ();
+use LWP::UserAgent;
 use MIME::Entity;
 
 $ENV{'PATH'}='/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin';
@@ -41,6 +37,7 @@ my $_version = '1.5-cvs';
 
 my %options = (
 	"--config-file|C=s"     =>      \$configfile,
+	"--quiet|q"     	=>      \$quiet,
 	"--help|h"              =>      \$help,
 	"--version|v"           =>      \$version,
 );
@@ -56,6 +53,7 @@ lms-sendinvoices, version $_version
 
 -C, --config-file=/etc/lms/lms.ini
 		alternate config file (default: /etc/lms/lms.ini);
+-q, --quiet	suppress any output, except errors;
 -h, --help	print this help and exit;
 -v, --version	print version info and exit;
 
@@ -84,6 +82,13 @@ if(! -r $configfile)
 	exit 1;
 }
 
+if(!$quiet)
+{
+	print STDOUT "lms-sendinvoices, version $_version\n";
+	print STDOUT "(C) 2001-2005 LMS Developers\n";
+	print STDOUT "Using file $configfile as config.\n";
+}
+
 my $ini = new Config::IniFiles -file => $configfile;
 print @Config::IniFiles::errors;
 
@@ -99,10 +104,23 @@ my $lms_password = $ini->val('sendinvoices', 'lms_password') || '';
 my $debug_email = $ini->val('sendinvoices', 'debug_email') || '';
 my $sender_name = $ini->val('sendinvoices', 'sender_name') || '';
 my $sender_email = $ini->val('sendinvoices', 'sender_email') || '';
+my $filetype = $ini->val('invoices', 'type') || '';
 
 # very ugly code, but we really need tempdir..
 # 
 my $tmpdir = (defined $ini->val('sendinvoices', 'tmp_dir') && ! ($ini->val('sendinvoices', 'tmp_dir') eq '')) || (defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '') ? $ENV{'TMP'} : '/tmp');
+
+if(!$sender_name)
+{
+	print STDERR "Fatal error: sender_name unset! Can't continue, exiting.\n";
+	exit 1;
+}
+
+if(!$sender_email)
+{
+	print STDERR "Fatal error: sender_email unset! Can't continue, exiting.\n";
+	exit 1;
+}
 
 my $dbase;
 my $utsfmt;
@@ -141,6 +159,17 @@ else
 	exit 1;
 }
 
+my $fencoding = 'quoted-printable';
+my $ftype = 'text/html';
+my $fext = 'html';
+
+if($filetype eq 'pdf')
+{
+	$ftype = 'application/octetstream';
+	$fencoding = '';
+	$fext = 'pdf';
+}
+
 my $month = sprintf("%d",strftime("%m",localtime()));
 my $day = strftime("%e",localtime());
 my $year = strftime("%Y",localtime());
@@ -155,7 +184,11 @@ while(my $row = $dbq->fetchrow_hashref())
 	$invoice_number =~ s/\%N/$row->{'number'}/g;
 	$invoice_number =~ s/\%Y/$year/g;
 	$invoice_number =~ s/\%M/$month/g;
-	print "Faktura VAT nr. $invoice_number dla ";
+	if(!$quiet)
+	{
+		print "VAT Invoice No. $invoice_number for ";
+	}
+	
 	if($row->{'email'})
 	{
 		my $ua = LWP::UserAgent->new;
@@ -173,7 +206,7 @@ while(my $row = $dbq->fetchrow_hashref())
 			$mail->head->add('To',$row->{'name'}.' <'.$custemail.'>');
 			$mail->head->add('From', $sender_name.' <'.$sender_email.'>');
 			$mail->head->add('Reply-To', $sender_name.' <'.$sender_email.'>');
-			$mail->head->add('Subject', 'Faktura VAT nr. '.$invoice_number);
+			$mail->head->add('Subject', 'Faktura VAT nr '.$invoice_number);
 			$mail->head->add('Message-ID', '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>');
 			$mail->head->add('Return-path', '<'.$sender_email.'>');
 			$mail->attach(
@@ -185,10 +218,10 @@ while(my $row = $dbq->fetchrow_hashref())
 					],
 			);
 			$mail->attach(
-				Type => 'text/html',
+				Type => $ftype,
 				Charset => 'ISO-8859-2',
-				Encoding => 'quoted-printable',
-				Filename => 'faktura_'.$row->{'id'}.'.html',
+				Encoding => $fencoding,
+				Filename => 'faktura_'.$row->{'id'}.'.'.$fext,
 				Data => [
 					$response->content,
 				],
