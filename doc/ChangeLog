@@ -52,7 +52,6 @@ wersja 1.1.8 (??/??/????):
 	description text,
 	PRIMARY KEY (id)
     );
->>>>>>> 1.214
     
 wersja 1.1.7 Hathor (14/12/2003):
 
