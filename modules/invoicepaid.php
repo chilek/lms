@@ -31,7 +31,7 @@ if ($invoicecontent = $LMS->GetInvoiceContent($invoiceid))
 	foreach($invoicecontent['content'] as $idx => $row)
 	{
 		$addbalance['type'] = 3;
-		$addbalance['value'] = $row['value'];
+		$addbalance['value'] = $row['value'] * $row['count'];
 		$addbalance['taxvalue'] = $row['taxvalue'];
 		$addbalance['userid'] = $invoice['customerid'];
 		$addbalance['comment'] = $row['description'];
