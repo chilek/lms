@@ -88,6 +88,7 @@
 				<member>lastloginip - adres IP, z którego nast±pi³o ostatnie logowanie</member>
 				<member>failedlogindate - data ostatniej nieudanej próby logowania</member>
 				<member>failedloginip - adres IP, z którego próbowano siê zalogowaæ</member>
+				<member>deleted - czy usuniêty (0/1)</member>
 			</simplelist>
 		</sect2>
 		<sect2 id="users">
@@ -193,6 +194,7 @@
 				<member>adminid - identyfikator administratora dokonuj±cego operacji</member>
 				<member>type - typ operacji (przychód, rozchód, wp³ata, obci±¿enie)</member>
 				<member>value - warto¶æ w z³otych</member>
+				<member>taxvalue - procent podatku</member>
 				<member>userid - identyfikator u¿ytkownika ('0' - je¶li nie dotyczy)</member>
 				<member>invoiceid - identyfikator faktury obejmuj±cej dan± operacjê</member>
 				<member>comment - opis operacji</member>
