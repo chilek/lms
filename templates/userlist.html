@@ -25,7 +25,7 @@
 		</TD>
 		<TD width="1%" class="fbt" ALIGN="right" VALIGN="TOP" NOWRAP>
 			<a href="?m={$layout.module}&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">Saldo:</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			Abonament:
+			<a href="?m={$layout.module}&s={$listdata.state}&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">Abonament:</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD width="1%" class="frightu">
 			<NOBR><B>Razem: {$listdata.total}</B></NOBR>
