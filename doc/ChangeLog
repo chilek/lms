@@ -1,5 +1,13 @@
 $Id$
 
+wersja 1.1.6 (??/??/????):
+
+  - opis taryfy mo¿e byæ NULL (alec)
+    MySQL:
+	ALTER TABLE tariffs CHANGE description description text;	
+    PostgreSQL:
+	ALTER TABLE tariffs ALTER COLUMN description DROP NOT NULL;
+
 wersja 1.1.5 Amaonet (04/12/2003):
 
   - dodane opcje do ustawienie w³a¶ciciela oraz praw dostêpu skryptów

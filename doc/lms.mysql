@@ -152,7 +152,7 @@ CREATE TABLE tariffs (
   pkwiu varchar(255) NOT NULL default '',
   uprate int(11) NOT NULL default '0',
   downrate int(11) NOT NULL default '0',
-  description text NOT NULL,
+  description text,
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
   KEY id_2 (id)

@@ -41,7 +41,9 @@ ALTER TABLE nodes CHANGE mac mac VARCHAR(20) NOT NULL;
 ALTER TABLE nodes ADD netdev INT(11) NOT NULL DEFAULT '0' AFTER modid;
 
 /* Zmiana zapisu limitu */
-ALTER TABLE tariffs CHANGE uprate uprate INT(11), CHANGE downrate downrate INT(11);
+ALTER TABLE tariffs CHANGE uprate uprate INT(11), 
+		    CHANGE downrate downrate INT(11),
+		    CHANGE description description text;
 
 /* Faktury inaczej */
 ALTER TABLE cash ADD invoiceid INT DEFAULT '0' NOT NULL;

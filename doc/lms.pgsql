@@ -95,7 +95,7 @@ CREATE TABLE tariffs (
 	pkwiu varchar(255) DEFAULT NULL,
 	uprate integer,
 	downrate integer,
-	description text NOT NULL,
+	description text,
 	PRIMARY KEY (id)
 );
 
