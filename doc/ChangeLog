@@ -8,6 +8,9 @@ version 1.2.2 (??/??/2004):
     connecting computer to net device from nodeinfobox.html (alec)
   - bugfix BTS#0000151: tariff's average monthly income take not waiting and
     interested users into account (alec)
+  - invoice bugfix BTS#0000154 (alec)
+  - on new invoice form, numbers can be entered with comma or dot and removed
+    leading zero from numbers less 10 (alec)
 
 version 1.2.1 Sarah (04/05/2004):
 

@@ -141,7 +141,7 @@
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$item.valuenetto|string_format:"%01.2f"}<BR>
-			{$item.s_valuenetto|string_format:"%02.2f"}
+			{$item.s_valuenetto|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{if $item.taxvalue}
@@ -150,7 +150,7 @@
 		</TD>
 		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
 			{$item.valuebrutto|string_format:"%01.2f"}<BR>
-			{$item.s_valuebrutto|string_format:"%02.2f"}
+			{$item.s_valuebrutto|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP CLASS="fright">
 			<A HREF="?m=invoicenew&action=deletepos&posuid={$item.posuid}"><IMG SRC="img/delete.gif" {tip text="Remove this item from list"} BORDER="0"></A>
