@@ -50,6 +50,9 @@ int db_connect(const unsigned char *db, const unsigned char *user, const unsigne
         return ERROR;
     }
 #endif
+#ifdef DEBUG
+    syslog(LOG_INFO, "DEBUG: Connected with params: db=%s host=%s user=%s passwd=%s port=%d",db, host, user, passwd, port);
+#endif
     return OK;
 }
 
@@ -62,6 +65,9 @@ int db_disconnect(void)
 #ifdef USE_PGSQL
      if( PQstatus(conn) != CONNECTION_BAD )
           PQfinish(conn);
+#endif
+#ifdef DEBUG
+    syslog(LOG_INFO, "DEBUG: Disconnected");
 #endif
      return OK;
 }
