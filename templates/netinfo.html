@@ -27,7 +27,7 @@
 			<NOBR>{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[address]" VALUE="{$network.address}"{if $error.address} class="alert"{/if}> / <SELECT size="1" title="Prefixlen" name="networkdata[prefix]">{section name=prefixlist loop=$prefixlist.id}<OPTION VALUE="{$prefixlist.id[prefixlist]}"{if $prefixlist.id[prefixlist] eq $network.prefix} SELECTED{/if}>{$prefixlist.value[prefixlist]}</OPTION>{/section}</SELECT>{if $error.address}<BR><FONT COLOR="RED"><B>{$error.address}</B></FONT>{/if}{else}{$network.address}/{$network.prefix}{/if}</NOBR>
 		</TD>
 		<TD width="2%" rowspan="2">
-			<NOBR><IMG src="img/dhcp.gif" border="0" align="absmiddle" alt=""> <B>Zakres DHCP:</B></NOBR>	
+			<NOBR><IMG src="img/dhcp.gif" border="0" align="absmiddle" alt=""> <B>{$lang.dhcp_range}::</B></NOBR>	
 		</TD>
 		<TD width="48%" class="fright" rowspan="2">
 			{if $unlockedit}<INPUT TYPE="text" NAME="networkdata[dhcpstart]" VALUE="{$network.dhcpstart}"{if $error.dhcpstart} class="alert"><BR><FONT COLOR="red"><B>{$error.dhcpstart}</B></FONT{/if}><BR>
@@ -39,14 +39,14 @@
 	</TR>
 	<TR class="light">
 		<td width="1%" class="fleft">
-			<nobr><img src="img/cmp.gif" border="0" align="absmiddle" alt=""> <B>Rozmiar sieci:</B>
+			<nobr><img src="img/cmp.gif" border="0" align="absmiddle" alt=""> <B>{$lang.network_size}:</B>
 		</td>
 		<TD width="48%">
 			{$network.size} adresów
 		</TD>
 	<TR class="light">
 		<TD width="2%" class="fleft">
-			<nobr><img src="img/gateway.gif" border="0" align="absmiddle" alt=""> <B>Gateway:</B></nobr>
+			<nobr><img src="img/gateway.gif" border="0" align="absmiddle" alt=""> <B>{$lang.gateway}:</B></nobr>
 		</TD>		
 		<TD width="48%">
 			{if $unlockedit}
@@ -56,7 +56,7 @@
 			{/if}
 		</TD>
 		<TD width="2%">
-			<nobr><img src="img/dns.gif" border="0" align="absmiddle" alt=""> <B>Serwer DNS:</B></NOBR>
+			<nobr><img src="img/dns.gif" border="0" align="absmiddle" alt=""> <B>{$lang.dns_server}:</B></NOBR>
 		</TD>
 		<TD width="48%" class="fright">
 			{if $unlockedit}
@@ -68,7 +68,7 @@
 	</TR>
 	<TR class="light">
 		<TD width="2%" class="fleft">
-			<nobr><img src="img/wins.gif" border="0" align="absmiddle" alt=""> <B>Serwer WINS:</B></NOBR>
+			<nobr><img src="img/wins.gif" border="0" align="absmiddle" alt=""> <B>{$lang.wins_server}:</B></NOBR>
 		</TD>
 		<TD width="48%">
 			{if $unlockedit}
@@ -78,7 +78,7 @@
 			{/if}
 		</TD>
 		<TD width="2%">
-			<nobr><img src="img/node.gif" border="0" align="absmiddle" alt=""> <B>Domena:</B></NOBR>
+			<nobr><img src="img/node.gif" border="0" align="absmiddle" alt=""> <B>{$lang.domain}:</B></NOBR>
 		</TD>
 		<TD width="48%" class="fright">
 			{if $unlockedit}
