@@ -40,19 +40,19 @@
 			{counter}
 		</TD>
 		<TD ALIGN="CENTER" NOWRAP>
-			{$incomelist[incomelist].date|date_format:"%Y/%m/%d"}
+			{$incomelist[incomelist].date|date_format:"%d.%m.%Y"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$incomelist[incomelist].tax22|string_format:"%01.2f"} z³
+			{$incomelist[incomelist].tax22|string_format:"%01.2f"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$incomelist[incomelist].tax7|string_format:"%01.2f"} z³
+			{$incomelist[incomelist].tax7|string_format:"%01.2f"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$incomelist[incomelist].tax0|string_format:"%01.2f"} z³
+			{$incomelist[incomelist].tax0|string_format:"%01.2f"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$incomelist[incomelist].taxfree|string_format:"%01.2f"} z³
+			{$incomelist[incomelist].taxfree|string_format:"%01.2f"}
 		</TD>
 	</TR>
 	{sectionelse}
@@ -71,16 +71,16 @@
 			Razem:
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$totalincomelist.totaltax22|string_format:"%01.2f"} z³
+			{$totalincomelist.totaltax22|string_format:"%01.2f"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$totalincomelist.totaltax7|string_format:"%01.2f"} z³
+			{$totalincomelist.totaltax7|string_format:"%01.2f"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$totalincomelist.totaltax0|string_format:"%01.2f"} z³
+			{$totalincomelist.totaltax0|string_format:"%01.2f"}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
-			{$totalincomelist.totaltaxfree|string_format:"%01.2f"} z³
+			{$totalincomelist.totaltaxfree|string_format:"%01.2f"}
 		</TD>
 	</TR>
 </TABLE>
