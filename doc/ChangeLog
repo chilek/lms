@@ -1,5 +1,10 @@
 $Id$
 
+wersja 1.0pre9 (??/04/2003):
+  
+  - wymaga Smarty-2.4.2
+  - tooltips
+
 wersja 1.0pre8 (30/03/2003):
 
   - poprawiony bug z edycj± u¿ytkownika i traceniem zawarto¶ci pola z
