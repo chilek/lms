@@ -13,6 +13,8 @@ wersja 1.3.7 (??/??/2004):
   - podgl±d szczegó³ów wiadomo¶ci Helpdesku (alec)
   - podczas odpowiadania na zg³oszenie nastêpuje zmiana statusu i w³a¶ciciela
     je¶li nie by³y wcze¶niej ustawione (alec)
+  - nazwa sieci mo¿e zawieraæ znak '_' (alec)
+  - nazwa grupy mo¿e zawieraæ znak '.' (alec)
 
 wersja 1.3.6 Osiris (01/09/2004);
 

@@ -49,7 +49,7 @@ if(isset($netadd))
 
 	if($netadd['name'] == '')
 		$error['name'] = 'Musisz podaæ nazwê sieci!';
-	elseif(!eregi('^[.a-z0-9-]+$', $netadd['name']))
+	elseif(!eregi('^[._a-z0-9-]+$', $netadd['name']))
 		$error['name'] = 'Podana nazwa sieci zawiera niepoprawne znaki!';
 	
 	if($netadd['domain'] != '' && !eregi('^[.a-z0-9-]+$', $netadd['domain']))
