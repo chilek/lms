@@ -40,7 +40,7 @@ void reload(GLOBAL *g, struct tc_module *tc)
 	
 	fh = fopen(tc->file, "w");
 	if(fh) {
-		if( (res = g->db_query("SELECT userid, ipaddr, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments, tariffs, nodes WHERE tariffs.id = tariffid AND userid = ownerid GROUP BY userid, ipaddr ORDER BY userid"))!=NULL ) {
+		if( (res = g->db_query("SELECT userid, ipaddr, SUM(uprate) AS uprate, SUM(downrate) AS downrate FROM assignments, tariffs, nodes WHERE tariffs.id = tariffid AND userid = ownerid AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) GROUP BY userid, ipaddr ORDER BY userid"))!=NULL ) {
 		
 			for(i=0; i<res->nrows; i++) {
 				unsigned char *uprate;
