@@ -426,24 +426,25 @@ password = password_entered_while_user_lms_account_creation</screen>
    </listitem>
    <listitem>
     <para>debug_email</para>
-    <para>Adres e-mail do debugowania - pod ten adres bêd± sz³y wiadomo¶ci wysy³ane z sekcji 'Mailing' LMS'a, 
-    zamiast do w³a¶ciwych u¿ytkowników.</para>
+    <para>E-mail address for debugging - at this address will goes messages sended from madule 'Mailing', 
+    instead of proper users.</para>
     <para>Example:	<prompt>debug_email = root@localhost</prompt></para>
    </listitem>
    <listitem>
     <para>default_zip, default_city, default_address</para>
-    <para>Domy¶lny kod pocztowy, miasto, ulica, stosowane podczas wstawiania nowego
-    u¿ytkownika. Przydatne gdy mamy do wpisania wielu u¿ytkowników z tej samej ulicy.</para>
+    <para>Default zip code, city, street, used while inserting of new user.
+    Useful when we have many users on the same street.</para>
     <para>Example:	<prompt>default_zip = 39-300</prompt></para>
    </listitem>
    <listitem>
     <para>use_current_payday</para>
-    <para>Okre¶la, czy ma byæ u¿yty aktualny dzieñ miesi±ca jako dzieñ zap³aty
-    zamiast najczê¶ciej u¿ywanego. Default wy³±czone.</para>
+    <para>Qualify to use current day of month for payment day
+    instead of most often used day. Default: 0 (off).</para>
     <para>Example:	<prompt>use_current_payday = 1</prompt></para>
    </listitem>
   </itemizedlist>
  	</sect2> 
+<!--
     </sect1>
     <sect1 id="install-rights">
       <title>Prawa dostêpu</title>
@@ -503,5 +504,6 @@ password = password_entered_while_user_lms_account_creation</screen>
       opis jak przeprowadziæ aktualizacjê w zale¿no¶ci od stosowanej bazy danych.</para>
       <para><note><para>W wersjach wy¿szych od 1.0.x biblioteka ADOdb nie jest wymagana,
       mo¿na skasowaæ odpowiedni katalog</para></note></para>
+-->
     </sect1>
   </chapter>
