@@ -1178,34 +1178,43 @@ class LMS
 
 	function GetInvoicesList()
 	{
-		$result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, finished, sum(value), count(invoiceid) FROM invoices LEFT JOIN invoicecontents ON invoiceid = id GROUP BY id, number, cdate, customerid, name, finished ORDER BY cdate ASC');
+		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, finished, SUM(value) AS value, COUNT(invoiceid) AS count FROM invoices LEFT JOIN invoicecontents ON invoiceid = id GROUP BY id, number, cdate, customerid, name, address, zip, city, finished ORDER BY cdate ASC'))
+			foreach($result as $idx => $row)
+			{
+				$result[$idx]['year'] = date('Y',$row['cdate']);
+				$result[$idx]['month'] = date('m',$row['cdate']);
+			}
 		return $result;
 	}
 
 	function GetInvoiceContent($invoiceid)
 	{
-		$result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, nip, cdate, paytime, finished FROM invoices WHERE id=?',array($invoiceid));
-		$result['content'] = $this->DB->GetAll('SELECT value, taxvalue, sww, content, count, description, tariffid FROM invoicecontents WHERE invoiceid=?',array($invoiceid));
-		foreach($result['content'] as $idx => $row)
+		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, nip, cdate, paytime, finished FROM invoices WHERE id=?',array($invoiceid)))
 		{
-			$result['content'][$idx]['basevalue'] = sprintf("%0.2f",($row['value'] / (100 + $row['taxvalue']) * 100));
-			$result['content'][$idx]['totalbase'] = $result['content'][$idx]['basevalue'] * $row['count'];
-			$result['content'][$idx]['totaltax'] = ($row['value'] - $result['content'][$idx]['basevalue']) * $row['count'];
-			$result['content'][$idx]['total'] = $row['value'] * $row['count'];
-			$result['totalbase'] += $result['content'][$idx]['totalbase'];
-			$result['totaltax'] += $result['content'][$idx]['totaltax'];
-			$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['basevalue'];
-			$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
-			$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
-			$result['taxest'][$row['taxvalue']]['taxvalue'] += $row['taxvalue'];
-			$result['total'] += $result['content'][$idx]['total'];
-			
+			if($result['content'] = $this->DB->GetAll('SELECT value, taxvalue, sww, content, count, description, tariffid FROM invoicecontents WHERE invoiceid=?',array($invoiceid)))
+				foreach($result['content'] as $idx => $row)
+				{
+					$result['content'][$idx]['basevalue'] = sprintf("%0.2f",($row['value'] / (100 + $row['taxvalue']) * 100));
+					$result['content'][$idx]['totalbase'] = $result['content'][$idx]['basevalue'] * $row['count'];
+					$result['content'][$idx]['totaltax'] = ($row['value'] - $result['content'][$idx]['basevalue']) * $row['count'];
+					$result['content'][$idx]['total'] = $row['value'] * $row['count'];
+					$result['totalbase'] += $result['content'][$idx]['totalbase'];
+					$result['totaltax'] += $result['content'][$idx]['totaltax'];
+					$result['taxest'][$row['taxvalue']]['base'] += $result['content'][$idx]['basevalue'];
+					$result['taxest'][$row['taxvalue']]['total'] += $result['content'][$idx]['total'];
+					$result['taxest'][$row['taxvalue']]['tax'] += $result['content'][$idx]['totaltax'];
+					$result['taxest'][$row['taxvalue']]['taxvalue'] += $row['taxvalue'];
+					$result['total'] += $result['content'][$idx]['total'];
+					
+				}
+			$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
+			$result['totalg'] = floor(($result['total'] - floor($result['total'])) * 100);
+			$result['year'] = date('Y',$result['cdate']);
+			$result['month'] = date('m',$result['cdate']);
+			return $result;
 		}
-		$result['pdate'] = $result['cdate'] + ($result['paytime'] * 86400);
-		$result['totalg'] = floor(($result['total'] - floor($result['total'])) * 100);
-		$result['year'] = date('Y',$result['cdate']);
-		$result['month'] = date('m',$result['cdate']);
-		return $result;
+		else
+			return FALSE;
 	}
 
 	function GetTariffList()
@@ -2273,6 +2282,11 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.299  2003/12/02 03:57:13  lukasz
+ * - poprawka genfake'a
+ * - prawie skoñczone drukowanie masowe
+ * - trochê innych rzeczy
+ *
  * Revision 1.298  2003/12/02 01:48:21  lukasz
  * - poprawiony bug z numerem faktury
  * - dodane number_template do opcji faktur

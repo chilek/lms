@@ -1,0 +1,109 @@
+{include file="header.html"}
+<H1>{$layout.pagetitle}</H1>
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="fleftu" WIDTH="1%" CLASS="fbt">
+			<B>ID:</B>
+		</TR>
+		<TD WIDTH="1%" CLASS="fbt">
+			<B>Data:</B>
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt">
+			<B>Numer:</B>
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt">
+			<B>Kwota:</B>
+		</TD>
+		<TD WIDTH="1%" CLASS="fbt">
+			<B>Pozycji:</B>
+		</TD>
+		<TD WIDTH="94%" CLASS="fbt">
+			<B>Dla:</B>
+		</TD>
+		<TD WIDTH="1%" CLASS="frightu">
+			&nbsp;
+		</TD>
+	</TR>
+	<TR CLASS="dark">
+		<TD WIDTH="100%" class="fall" COLSPAN="7">
+			<B>Strona: {if $page > 1}<A HREF="?m=invoicelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=invoicelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="?m=invoicelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+		</TD>
+	</TR>
+	<FORM METHOD="POST" NAME="marks" ACTION="?m=invoicelist{if $page ne ""}&page={$page}{/if}&action=updatemarks">
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{section name=invoicelist loop=$invoicelist start=$start max=$pagelimit}
+	{assign var=invoice value=$invoicelist[invoicelist]}
+	{assign var=invoiceid value=$invoice.id}
+	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD CLASS="fleft" WIDTH="1%" CLASS="FLEFT">
+			{$invoice.id|string_format:"%04d"}
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			{$invoice.cdate|date_format:"%Y/%m/%d %H:%M.%S"}
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			{$_config.invoices.number_template|default:"%N/LMS/%Y"|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{$invoice.value|string_format:"%0.2f"} z³
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			{$invoice.count}
+		</TD>
+		<TD WIDTH="94%">
+			<A HREF="?m=userinfo&id={$invoice.customerid}">{$invoice.name}, {$invoice.address}, {$invoice.zip} {$invoice.city}</A>
+		</TD>
+		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
+			{cycle print=false}
+			{if $marks.$invoiceid}<IMG ALIGN="absmiddle" SRC="img/mark.gif">{/if}
+			<INPUT STYLE="border-style: none; background-color: {cycle};"  TYPE="checkbox" NAME="mark[{$invoiceid}]" VALUE="1">
+			<A HREF="?m=invoice&id={$invoice.id}"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0"></A>
+		</TD>
+	</TR>
+	{/section}
+	</FORM>
+	<TR CLASS="dark">
+		<TD WIDTH="100%" class="fall" COLSPAN="7">
+			<B>Strona: {if $page > 1}<A HREF="?m=invoicelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=invoicelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="?m=invoicelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+		</TD>
+	</TR>
+	<TR CLASS="dark">
+		<TD WIDTH="100%" ALIGN="right" CLASS="fall" COLSPAN="7">
+			<A HREF="javascript:document.marks.submit(); ">Uaktualnij zaznaczenia <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
+			<A HREF="?m=invoicelist&action=clearmarks">Wyczy¶æ zaznaczenia <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
+			<A HREF="?m=invoice&print=cached" TARGET="_BLANK">Drukuj zaznaczone <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
+		</TD>
+	</TR>
+</TABLE>
+<BR>
+<TABLE WIDTH="1%" CELLPADDING="3" ALIGN="CENTER">
+	<TR CLASS="dark">
+		<TD COLSPAN="3" CLASS="fall" ALIGN="CENTER">
+			<B>Zaznacz:</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" NOWRAP ALIGN="CENTER" ROWSPAN="2" CLASS="fleft">
+			<INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="action" VALUE="markrange" CHECKED>
+		</TD>
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			<B>Od:</B>
+		</TD>
+		<TD WIDTH="98%" NOWRAP CLASS="fright">
+			{html_select_date field_array="from" prefix="" time=$starttime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
+			&nbsp;
+			{html_select_time field_array="from" prefix="" time=$starttime display_seconds=0}
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT">
+			<B>Do:</B>
+		</TD>
+		<TD WIDTH="98%" NOWRAP CLASS="fright">
+			{html_select_date field_array="to" prefix="" time=$endtime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
+			&nbsp;
+			{html_select_time field_array="to" prefix="" time=$endtime display_seconds=0}
+		</TD>
+	</TR>
+</TABLE>
+{include file="footer.html"}

@@ -24,18 +24,49 @@
  *  $Id$
  */
 
-$invoice = $LMS->GetInvoiceContent($_GET[id]);
-$layout[pagetitle] = 'Faktura VAT nr '.$invoice[number].'/LMS/'.date('Y',$invoice[cdate]);
-
-$SMARTY->assign('layout',$layout);
-$SMARTY->assign('invoice',$invoice);
-$SMARTY->display('clearheader.html');
-$SMARTY->assign('type','ORYGINA£');
-$SMARTY->display('invoice.html');
-$SMARTY->assign('type','KOPIA');
-$invoice[last] = TRUE;
-$SMARTY->assign('invoice',$invoice);
-$SMARTY->display('invoice.html');
-$SMARTY->display('clearfooter.html');
-
+if($_GET['print'] == 'cached' && sizeof($_SESSION[ilp_marks]))
+{
+	$layout[pagetitle] = 'Faktury VAT';
+	$SMARTY->assign('layout',$layout);
+	$SMARTY->display('clearheader.html');
+	foreach($_SESSION[ilp_marks] as $markid => $junk)
+		if($junk)
+			$ids[] = $markid;
+	sort($ids);
+	foreach($ids as $idx => $invoiceid)
+	{
+		$invoice = $LMS->GetInvoiceContent($invoiceid);
+		$SMARTY->assign('type','ORYGINA£');
+		$SMARTY->assign('invoice',$invoice);
+		$SMARTY->display('invoice.html');
+		$SMARTY->assign('type','KOPIA');
+		if(! $ids[$idx+1])
+		{
+			$invoice[last] = TRUE;
+			$SMARTY->assign('invoice',$invoice);
+		}
+		$SMARTY->display('invoice.html');
+	}
+	$SMARTY->display('clearfooter.html');
+}
+elseif($invoice = $LMS->GetInvoiceContent($_GET[id]))
+{
+	$layout[pagetitle] = 'Faktura VAT nr '.$invoice[number].'/LMS/'.date('Y',$invoice[cdate]);
+	
+	$SMARTY->assign('layout',$layout);
+	$SMARTY->assign('invoice',$invoice);
+	$SMARTY->display('clearheader.html');
+	$SMARTY->assign('type','ORYGINA£');
+	$SMARTY->display('invoice.html');
+	$SMARTY->assign('type','KOPIA');
+	$invoice[last] = TRUE;
+	$SMARTY->assign('invoice',$invoice);
+	$SMARTY->display('invoice.html');
+	$SMARTY->display('clearfooter.html');
+}
+else
+{
+	header('Location: ?m=invoicelist');
+	die;
+}
 ?>
