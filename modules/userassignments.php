@@ -183,7 +183,7 @@ if($_GET['action'] == 'add' && isset($a))
 
 $userinfo = $LMS->GetUser($_GET['id']);
 
-$layout['pagetitle'] = trans('User Information: $0',$userinfo['username']);
+$layout['pagetitle'] = trans('Customer Information: $0',$userinfo['username']);
 
 $SMARTY->assign('usernodes',$LMS->GetUserNodes($userinfo['id']));
 $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($userinfo['id']));
