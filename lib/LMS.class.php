@@ -1277,9 +1277,15 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		{
 			$item['valuebrutto'] = str_replace(',','.',$item['valuebrutto']);
 			$item['count'] = str_replace(',','.',$item['count']);
-			$item['taxvalue'] = str_replace(',','.',$item['taxvalue']);
+			if ($item['taxvalue'] == 'zw.')
+				$item['taxvalue'] == '';
+			else
+				$item['taxvalue'] = str_replace(',','.',$item['taxvalue']);
 			
-			$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($iid, $item['valuebrutto'], $item['taxvalue'], $item['pkwiu'], $item['jm'], $item['count'], $item['name'], $item['tariffid']));
+			if ($item['taxvalue'] == '')
+				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, NULL, ?, ?, ?, ?, ?)', array($iid, $item['valuebrutto'], $item['pkwiu'], $item['jm'], $item['count'], $item['name'], $item['tariffid']));
+			else
+				$this->DB->Execute('INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', array($iid, $item['valuebrutto'], $item['taxvalue'], $item['pkwiu'], $item['jm'], $item['count'], $item['name'], $item['tariffid']));
 			$this->AddBalance(array('type' => 4, 'value' => $item['valuebrutto']*$item['count'], 'userid' => $invoice['customer']['id'], 'comment' => $item['name'], 'invoiceid' => $iid));
 		}
 		return $iid;
@@ -1301,27 +1307,33 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 				$list[$id]['month'] = date('m',$row['cdate']);
 				$list[$id]['brutto'] += $row['value'];
 				$list['sum']['brutto'] += $row['value'];
-				switch(round($row['taxvalue'],1))
+				if ($row['taxvalue'] == '')
 				{
-				    case '0.0':
-					    $list[$id]['val0'] += $row['value'];
-					    $list['sum']['val0'] +=$row['value'];
-				    break;
-				    case '7.0':
-					     $list[$id]['val7'] += $row['value']/1.07;
-					     $list[$id]['tax7'] += $row['value']-$row['value']/1.07;
-					     $list[$id]['tax'] += $list[$id]['tax7'];
-					     $list['sum']['val7'] +=$row['value']/1.07;
-					     $list['sum']['tax7'] +=$row['value']-$row['value']/1.07;
-				    break;
-				    case '22.0':
-					     $list[$id]['val22'] += $row['value']/1.22;
-					     $list[$id]['tax22'] += $row['value']-$row['value']/1.22;
-					     $list[$id]['tax'] += $list[$id]['tax22'];
-					     $list['sum']['val22'] +=$row['value']/1.22;
-					     $list['sum']['tax22'] +=$row['value']-$row['value']/1.22;
-				    break;
+					$list[$id]['valfree'] += $row['value'];
+					$list['sum']['valfree'] +=$row['value'];
 				}
+				else
+					switch(round($row['taxvalue'],1))
+					{
+					    case '0.0':
+						    $list[$id]['val0'] += $row['value'];
+						    $list['sum']['val0'] +=$row['value'];
+					    break;
+					    case '7.0':
+						     $list[$id]['val7'] += $row['value']/1.07;
+						     $list[$id]['tax7'] += $row['value']-$row['value']/1.07;
+						     $list[$id]['tax'] += $list[$id]['tax7'];
+						     $list['sum']['val7'] +=$row['value']/1.07;
+						     $list['sum']['tax7'] +=$row['value']-$row['value']/1.07;
+					    break;
+					    case '22.0':
+						     $list[$id]['val22'] += $row['value']/1.22;
+						     $list[$id]['tax22'] += $row['value']-$row['value']/1.22;
+						     $list[$id]['tax'] += $list[$id]['tax22'];
+						     $list['sum']['val22'] +=$row['value']/1.22;
+						     $list['sum']['tax22'] +=$row['value']-$row['value']/1.22;
+					    break;
+					}
 				$list['sum']['tax'] += $list[$id]['tax'];
 			}
 		}
@@ -1434,18 +1446,32 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function TariffAdd($tariffdata)
 	{
 		$this->SetTS("tariffs");
-		if($this->DB->Execute("INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate)
-			VALUES (?, ?, ?, ?, ?, ?, ?)",
-			array(
-				$tariffdata['name'],
-				$tariffdata['description'],
-				$tariffdata['value'],
-				$tariffdata['taxvalue'],
-				$tariffdata['pkwiu'],
-				$tariffdata['uprate'],
-				$tariffdata['downrate']
-			)
-		))
+		if($tariffdata['taxvalue']=='')
+			$result = $this->DB->Execute("INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate)
+				VALUES (?, ?, ?, NULL, ?, ?, ?)",
+				array(
+					$tariffdata['name'],
+					$tariffdata['description'],
+					$tariffdata['value'],
+					$tariffdata['pkwiu'],
+					$tariffdata['uprate'],
+					$tariffdata['downrate']
+				)
+			);
+		else
+			$result = $this->DB->Execute("INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate)
+				VALUES (?, ?, ?, ?, ?, ?, ?)",
+				array(
+					$tariffdata['name'],
+					$tariffdata['description'],
+					$tariffdata['value'],
+					$tariffdata['taxvalue'],
+					$tariffdata['pkwiu'],
+					$tariffdata['uprate'],
+					$tariffdata['downrate']
+				)
+			);
+		if ($result)
 			return $this->DB->GetOne("SELECT id FROM tariffs WHERE name=?", array($tariffdata['name']));
 		else
 			return FALSE;
@@ -1454,7 +1480,10 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 	function TariffUpdate($tariff)
 	{
 		$this->SetTS("tariffs");
-		return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, pkwiu=?, uprate=?, downrate=? WHERE id=?", array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
+		if ($tariff['taxvalue'])
+			return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, pkwiu=?, uprate=?, downrate=? WHERE id=?", array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
+		else
+			return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=NULL, pkwiu=?, uprate=?, downrate=? WHERE id=?", array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
 	}
 
 	function TariffDelete($id)

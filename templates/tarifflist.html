@@ -47,7 +47,8 @@
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			<NOBR>
 			{$tarifflist[tariffs].value|string_format:"%01.2f"} z³<BR>
-			{$tarifflist[tariffs].taxvalue}%
+			{if $tarifflist[tariffs].taxvalue}{$tarifflist[tariffs].taxvalue}%
+			{else}zw.{/if}
 			</NOBR>
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">

@@ -55,10 +55,9 @@ if(isset($tariff))
 	elseif(!(ereg('^[-]?[0-9.,]+$', $tariff['value'])))
 		$error['value'] = 'Podana warto¶æ jest niepoprawna!';
 	
-	if($tariff['taxvalue'] == '')
-		$tariff['taxvalue'] = '0.00';
-	elseif(!(ereg('^[0-9.,]+$', $tariff['taxvalue'])) || $tariff['taxvalue'] < 0 || $tariff['taxvalue'] > 100)
-		$error['taxvalue'] = 'Podana stawka podatku jest niepoprawna!';
+	if($tariff['taxvalue'] != '')
+	  	if(!(ereg('^[0-9.,]+$', $tariff['taxvalue'])) || $tariff['taxvalue'] < 0 || $tariff['taxvalue'] > 100)
+			$error['taxvalue'] = 'Podana stawka podatku jest niepoprawna!';
 
 	if(!(ereg("^[0-9]+$", $tariff['uprate'])))
 		$error['uprate'] = 'To pole musi zawieraæ liczbê ca³kowit±';

@@ -36,7 +36,9 @@
 		</TD>
 		<TD WIDTH="1%"><B>Stawka podatku:</B></TD>
 		<TD WIDTH="98%" CLASS="fright">
-			{$tariff.taxvalue} %
+			{if $tariff.taxvalue}
+				{$tariff.taxvalue} %
+			{else}zw.{/if}
 		</TD>
 	</TR>
 	<TR class="LIGHT">
