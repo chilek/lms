@@ -1,6 +1,7 @@
 /* $Id$ */
 
 #include <string.h>
+#include <stdio.h>
 #include <syslog.h>
 #include <stdarg.h>
 #include <stdlib.h>
