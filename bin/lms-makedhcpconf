@@ -130,7 +130,7 @@ my $ini = new Config::IniFiles -file => $configfile;
 my $networks_list = $ini->val('dhcp', 'networks') || '';
 my $deflease = $ini->val('dhcp', 'default_lease_time') || '86400';
 my $maxlease = $ini->val('dhcp', 'max_lease_time') || '86400';
-my $cfile = $ini->val('dhcp', 'config_file') || '/etc/dhcpd1.conf';
+my $cfile = $ini->val('dhcp', 'config_file') || '/etc/dhcpd.conf';
 my $cuid = $ini->val('dhcp','config_owneruid') || 0;
 my $cgid = $ini->val('dhcp','config_ownergid') || 0;
 my $cperm = $ini->val('dhcp','config_permission') || '0600';
