@@ -33,6 +33,7 @@ $DB->Execute("
 	UPDATE users SET zip=zip1;
 	ALTER TABLE users ALTER zip SET DEFAULT '';
 	ALTER TABLE users ALTER zip SET NOT NULL;
+	ALTER TABLE users DROP zip1;
 ");
 
 $DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005012700', 'dbversion'));
