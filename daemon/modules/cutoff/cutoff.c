@@ -62,6 +62,7 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	} 
 	else 
 		syslog(LOG_ERR, "[%s/cutoff] Unable to read 'users' table", c->base.instance);
+
 }
 
 struct cutoff_module * init(GLOBAL *g, MODULE *m)
@@ -73,7 +74,7 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 	if(g->api_version != APIVERSION) 
 	    return (NULL);
 	
-	instance = strdup(m->instance);
+	instance = m->instance;
 	
 	c = (struct cutoff_module *) realloc(m, sizeof(struct cutoff_module));
 	

@@ -72,7 +72,7 @@ struct ethers_module * init(GLOBAL *g, MODULE *m)
 	if(g->api_version != APIVERSION) 
 	    return(NULL);
 	
-	instance = strdup(m->instance);
+	instance = m->instance;
 	
 	fm = (struct ethers_module *) realloc(m, sizeof(struct ethers_module));
 	

@@ -40,7 +40,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 {
 	QUERY_HANDLE *res;
 	unsigned char *query, *insert, *period, *value;
-	int i, invoiceid;
+	int i, invoiceid, exec=0;
 
 	time_t t;
 	struct tm *tt;
@@ -97,7 +97,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					g->str_replace(&insert, "%value", value);
 					g->str_replace(&insert, "%comment", p->comment);
 					g->str_replace(&insert, "%period", period);	
-					g->db_exec(insert);
+					exec = g->db_exec(insert);
 					free(insert);
 				}
 			}
@@ -123,7 +123,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					g->str_replace(&insert, "%value", value);
 					g->str_replace(&insert, "%comment", p->comment);
 					g->str_replace(&insert, "%period", period);	
-					g->db_exec("");
+					exec = g->db_exec(insert);
 					free(insert);
 				}
 			}
@@ -149,7 +149,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					g->str_replace(&insert, "%value", value);
 					g->str_replace(&insert, "%comment", p->comment);
 					g->str_replace(&insert, "%period", period);	
-					g->db_exec("");
+					exec = g->db_exec(insert);
 					free(insert);
 				}
 			}
@@ -158,10 +158,11 @@ void reload(GLOBAL *g, struct payments_module *p)
 		free(query);			
 	
 		// set timestamps
-		g->db_exec("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
-		g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('cash', ?NOW?)");
-		g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('_global', ?NOW?)");
-
+		if( exec) {
+			g->db_exec("DELETE FROM timestamps WHERE tablename = 'cash' OR tablename = '_global'");
+			g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('cash', ?NOW?)");
+			g->db_exec("INSERT INTO timestamps (tablename, time) VALUES ('_global', ?NOW?)");
+		}
 		free(period);
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/payments] reloaded", p->base.instance);
@@ -171,7 +172,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 		free(query);
 		syslog(LOG_ERR, "[%s/payments] Unable to read 'cash' table for invoice max id",p->base.instance);
 	}
-	
+
 	// clean up
 	free(p->comment);
 }
@@ -185,7 +186,7 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	if(g->api_version != APIVERSION) 
 	    return (NULL);
 	
-	instance = strdup(m->instance);
+	instance = m->instance;
 	
 	p = (struct payments_module *) realloc(m, sizeof(struct payments_module));
 	
