@@ -1560,5 +1560,17 @@ class LMS
 			$return[date("Y",$row[creationdate])][date("m",$row[creationdate])*1]++;
 		return $return[$year];
 	}
+
+	function GetLinksCategories()
+	{
+		if($return = $this->ADB->GetAll("SELECT id, weight, name, description FROM linkscategories"))
+		{
+			foreach($return as $idx => $rr)
+			{
+				$return[$idx][links] = $this->ADB->GetOne("SELECT COUNT(*) FROM links WHERE id=?",array($rr[id]));
+			}
+		}
+		return $return;
+	}
 }
 ?>
