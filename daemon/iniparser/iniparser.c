@@ -262,6 +262,7 @@ char * iniparser_getstring(dictionary * d, char * key, char * def)
     lc_key = strdup(strlwc(key));
     sval = dictionary_get(d, lc_key, def);
     free(lc_key);
+
     return sval ;
 }
 
@@ -450,6 +451,7 @@ dictionary * iniparser_load(char * ininame)
     char        key[ASCIILINESZ+1];
     char        val[ASCIILINESZ+1];
     char    *   where ;
+    char    *   value;
     FILE    *   ini ;
     int         lineno ;
 
@@ -487,7 +489,9 @@ dictionary * iniparser_load(char * ininame)
                 } else {
                     strcpy(val, strcrop(val));
                 }
-                iniparser_add_entry(d, sec, key, val);
+		value = parse(val);
+                iniparser_add_entry(d, sec, key, value);
+		free(value);
             }
         }
     }
