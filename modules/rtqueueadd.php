@@ -35,7 +35,10 @@ if(isset($queue))
 	}
 
 	if($queue['name'] == '')
-		$error['name'] = "Kolejka musi posiadaæ nazwê!";
+		$error['name'] = 'Kolejka musi posiadaæ nazwê!';
+
+	if($queue['name'] != '' && $LMS->GetQueueIdByName($queue['name']))
+		$error['name'] = 'Kolejka o podanej nazwie jest ju¿ w bazie!';
 
 	if($queue['email']!='' && !check_email($queue['email']))
 		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
@@ -51,12 +54,17 @@ if(isset($queue))
 		die;
 	}
 }
-else
+
+$admins = $LMS->GetAdminList();
+unset($admins['total']);
+
+foreach($admins as $admin) 
 {
-	$queue['rights'] = $LMS->GetAdminList();
-	unset($queue['rights']['total']);
+	$admin['rights'] = $queue['admins'][$admin['id']];
+	$queue['nrights'][] = $admin;
 }
-	
+$queue['rights'] = $queue['nrights'];
+
 $layout['pagetitle'] = 'Nowa kolejka';
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
