@@ -190,12 +190,12 @@ function hostname()
 	switch(PHP_OS)
 	{
 		case 'Linux':
-		case 'FreeBSD':
-		case 'OpenBSD':
-		case 'NetBSD':
 			exec('hostname -f',$return);
 			$hostname=$return[0];
 			break;
+		case 'FreeBSD':
+		case 'OpenBSD':
+		case 'NetBSD':
 		case 'WinNT':
 			exec('hostname',$return);
 			$hostname=$return[0];
