@@ -9,6 +9,8 @@ wersja 1.1.5 (18/10.2003):
     do urz±dzenia podczas jego edycji (alec)
   - poprawka w funkcji ScanNodes() zapobiegaj±ca b³êdom w wypadku braku
     programu nbtscan w systemie (alec)
+  - poprawione wyszukiwanie komputerów po adresie IP, mo¿liwe jest wyszukiwanie
+    tekstowe po fragmencie adresu (alec)
 
 wersja 1.1.4 Tanith (03/10/2003):
   
