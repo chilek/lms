@@ -6,37 +6,37 @@
 <TABLE ALIGN="center" WIDTH="600" CELLPADDING="3">
 	<TR CLASS="dark">
 		<TD COLSPAN="2" ALIGN="left" CLASS="fall">
-			<B>Parametry kompaktowania</B>
+			<B>{t}Compacting parameters{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
-	 	<TD WIDTH="1%" ALIGN="right" CLASS="fleft" {tip text="Kompaktowanie bazy danych polega na usuniêciu zbêdnych danych z bazy oraz u¶rednieniu isniej±cych danych, co spowoduje zmniejszenie ilo¶ci rekordów w bazie, a zatem skróci czas oczekiwania na wyniki oraz zmniejszy ich dok³adno¶æ."} NOWRAP>
-			<B>Poziom dok³adno¶ci danych:</B>
+	 	<TD WIDTH="1%" ALIGN="right" CLASS="fleft" {tip text="Compacting of database insist on removing non-essential data from database and averaging existing data. This will decrease amount of records in database and reduce results latency, but also decrease stats precision"} NOWRAP>
+			<B>{t}Data precision level{/t}:</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="fright">
-			<B><INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="1" {tip text="Dane starsze ni¿ dzieñ zostan± u¶rednione do jednego dnia"}>Niski</INPUT><BR>
-			   <INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="2" {tip text="Dane starsze ni¿ miesi±c zostan± u¶rednione do jednego dnia"}>¦redni</INPUT><BR>
-			   <INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="3" {tip text="Dane starsze ni¿ miesi±c zostan± u¶rednione do jednej godziny"}>Wysoki</INPUT>
+			<B><INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="1" {tip text="Data older than one day will be averaged to one day"}>{t}Low{/t}</INPUT><BR>
+			   <INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="2" {tip text="Data older than one month will be averaged to one day"}>{t}Medium{/t}</INPUT><BR>
+			   <INPUT STYLE="border-style: none; background: #DFD5BD" TYPE="radio" NAME="level" VALUE="3" {tip text="Data older than one month will be averaged to one hour"}>{t}High{/t}</INPUT>
 			</B>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 		</TD>
-		<TD WIDTH="99%" CLASS="fright" {tip text="Zaznaczenie tej opcji spowoduje usuniêcie z bazy wpisów starszych ni¿ rok"}>
-		    <INPUT CLASS="box" TYPE="checkbox" NAME="delete" VALUE="1"><B>&nbsp;Usuñ dane ponadroczne</B></INPUT>
+		<TD WIDTH="99%" CLASS="fright" {tip text="Check that option for deletion of records older than one year"}>
+		    <INPUT CLASS="box" TYPE="checkbox" NAME="delete" VALUE="1"><B>&nbsp;{t}Delete data older than one year{/t}</B></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft">
 		</TD>
-		<TD WIDTH="99%" CLASS="fright" {tip text="Zaznaczenie tej opcji spowoduje usuniêcie statystyk komputerów nie znajduj±cych siê w bazie"} NOWRAP>
-		    <INPUT CLASS="box" TYPE="checkbox" NAME="removedeleted" VALUE="1"><B>&nbsp;Usuñ dane nieistniej±cych komputerów</B></INPUT>
+		<TD WIDTH="99%" CLASS="fright" {tip text="Check that option for deletion of stats of nodes that already not exists in database"} NOWRAP>
+		    <INPUT CLASS="box" TYPE="checkbox" NAME="removedeleted" VALUE="1"><B>&nbsp;{t}Delete stats of non-existing (deleted) nodes{/t}</B></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
 		<TD COLSPAN="2" ALIGN="right" CLASS="fbottomu">
-			<A HREF="javascript:document.trafficdbcompact.submit();" ACCESSKEY="K">Kompaktuj <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="javascript:document.trafficdbcompact.submit();" ACCESSKEY="K">{t}Compact{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
