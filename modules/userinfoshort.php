@@ -24,45 +24,11 @@
  *  $Id$
  */
 
-if(!eregi("^[0-9]+$",$_GET['id']))
-{
-	//header('Location: ?m=userlist');
-	die;
-}
-
-if($LMS->UserExists($_GET['id']) == 0)
-{
-	//header('Location: ?m=userlist');
-	die;
-}
 
 $userinfo = $LMS->GetUser($_GET['id']);
-$assigments = $LMS->GetUserAssignments($_GET['id']);
 $usergroups = $LMS->UsergroupGetForUser($_GET['id']);
-$otherusergroups = $LMS->GetGroupNamesWithoutUser($_GET['id']);
-$balancelist = $LMS->GetUserBalanceList($_GET['id']);
-$usernodes = $LMS->GetUserNodes($_GET['id']);
-$tariffs = $LMS->GetTariffs();
-$contractlist = $LMS->GetContractList();
-
-$SESSION->save('backto', $_SERVER['QUERY_STRING']);
-
-$layout['pagetitle'] = trans('Customer Info: $0',$userinfo['username']);
-
-$usernodes['ownerid'] = $_GET['id'];
-$SMARTY->assign(
-		array(
-			'usernodes' => $usernodes,
-			'balancelist' => $balancelist,
-			'assignments' => $assigments,
-			'usergroups' => $usergroups,
-			'otherusergroups' => $otherusergroups,
-			'userinfo' => $userinfo,
-			'tariffs' => $tariffs,
-			'contractlist' => $contractlist,
-			'contractcount' => sizeof($contractlist)
-		     )
-		);
+$SMARTY->assign('usergroups',$usergroups);
+$SMARTY->assign('userinfo',$userinfo);
 $SMARTY->display('userinfoshort.html');
 
 ?>
