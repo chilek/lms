@@ -7,6 +7,8 @@ wersja 1.1.2 (??/0?/2003):
   - Dodatkowa opcja %date_month_name w szablonach mailingu, rozwi±zywana do
     nazwy aktualnego miesi±ca (w/g LC_NUMERIC? hunter)
   - pewne zmiany w dokumentacji dot. postgresa, aktualizacja lms.pgsql (alec)
+  - zrobione po ludzku wykrywanie pustej tabeli admins - w tym momencie LMS
+    przy pustej tablicy bêdzie dozwala³ dostêp do modu³u adminadd (lukasz)
 
 wersja 1.1.1 (09/08/2003):
 
