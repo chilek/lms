@@ -25,6 +25,7 @@
  */
 
 $layout['pagetitle'] = trans('New Invoice');
+
 $users = $LMS->GetUserNames();
 $tariffs = $LMS->GetTariffs();
 $SESSION->restore('invoicecontents', $contents);
@@ -32,7 +33,6 @@ $SESSION->restore('invoicecustomer', $customer);
 $SESSION->restore('invoice', $invoice);
 $SESSION->restore('invoicenewerror', $error);
 $itemdata = r_trim($_POST);
-
 
 switch($_GET['action'])
 {
