@@ -124,6 +124,7 @@ if(! -r $configfile)
 }
 
 my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
 
 my $cfile = $ini->val('hosts', 'config_file') || '/etc/hosts';
 my $cuid = $ini->val('hosts','config_owneruid') || 0;

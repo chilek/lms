@@ -138,6 +138,7 @@ if(! -r $configfile)
 }
 
 my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
 
 my $networks_list = $ini->val('arp', 'networks') || '';
 my $cfile = $ini->val('arp', 'ethers_file') || '/etc/ethers';

@@ -93,6 +93,7 @@ if(! -r $configfile)
 }
 
 my $ini = new Config::IniFiles -file => $configfile;
+print @Config::IniFiles::errors;
 
 my $outfile = $ini->val('traffic-logiptables','outfile') || '/etc/rc.d/rc.stat';
 my $iptables_binary = $ini->val('traffic-logiptables','iptables_binary') || '/usr/sbin/iptables';
