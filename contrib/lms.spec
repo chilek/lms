@@ -1,14 +1,14 @@
 # $Revision$, $Date$
-Summary:	LAN Management System
-Summary(pl):	System Zarz±dzania Siec± Lokaln±
+Summary:	LAN Managment System
+Summary(pl):	System Zarz±dzania Sieci± Lokaln±
 Name:		lms
-Version:	1.0.0
-Release:	0.1
+Version:	1.0.4
+Release:	1
 License:	GPL
 Vendor:		LMS Developers
 Group:		Networking/Utilities
-# Source0-md5:	f5fd004f7288287fb0158265b2654b3d
 Source0:	http://lms.rulez.pl/download/%{name}-%{version}.tar.gz
+# Source0-md5:	1481b7b7b8c14a739ce38f14c1fd2aeb
 Patch0:		%{name}-PLD.patch
 URL:		http://lms.rulez.pl/
 Requires:	php
@@ -27,31 +27,27 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 This is a package of applications in PHP and Perl for managing LANs.
-It's using MySQL (for now) but PostgreSQL will be supported in near
-future. The main goal is to get the best service of users at
-provider's level.
+It's using MySQL or PostgreSQL. The main goal is to get the best 
+service of users at provider's level.
 The main features in LMS are:
-- database of users (name, surname, address, telefon number, 
+- database of users (name, surname, address, telefon number,
   commentary);
 - database of computers (IP, MAC);
 - easy-ridden financial system and funds of network;
 - different subscriptions;
 - sending warnings to users;
-- autogenerating dhcpd.conf;
-- autogenerating firewall rules (ipchains/iptables);
-- autogenerating idents for ident daemon;
 - many levels of access for LMS administrators;
-- integration with LinuxStat package;
-- autogenerating ARP rules (ether auth);
-- autogenerating DNS files.
+- autogenerating ipchains, iptables, dhcpd, ethers file, oidentd,
+  openbsd packet filter configuration files/scripts;
+- autogenerating almost any kind of config file using templates;
 
 %description -l pl
 "LMS" jest skrótem od "LAN Management System". Jest to zestaw
 aplikacji w PHP i Perlu, u³atwiaj±cych zarz±dzanie sieciami
 osiedlowymi (popularnie zwanymi Amatorskimi Sieciami Komputerowymi),
-opartych o bazê danych MySQL (docelowo, do wyboru, MySQL lub
-PostgreSQL). G³ówne za³o¿enia to uzyskanie jako¶ci us³ug oraz obs³ugi
-u¿ytkowników na poziomie providera z prawdziwego zdarzenia.
+opartych o bazê danych MySQL lub PostgreSQL. G³ówne za³o¿enia to 
+uzyskanie jako¶ci us³ug oraz obs³ugi u¿ytkowników na poziomie 
+providera z prawdziwego zdarzenia. 
 Najbardziej podstawowe cechy LMS to:
 - baza danych u¿ytkowników (imiê, nazwisko, adres, numer telefonu,
   uwagi);
@@ -61,18 +57,15 @@ Najbardziej podstawowe cechy LMS to:
 - ró¿ne taryfy abonamentowe;
 - wysy³anie poczt± elektroniczn± upomnieñ do u¿ytkowników;
 - automatyczne naliczanie op³at miesiêcznych;
-- generowanie dhcpd.conf;
-- generowanie regu³ firewalla (ipchains/iptables);
-- generowanie identów dla demona oidentd;
 - ró¿ne poziomy dostêpu do funkcji LMS dla administratorów;
-- generowanie wpisów ARP (blokada adresów IP po ARP);
-- generowanie wpisów do DNS.
+- generowanie regu³ i plików konfiguracyjnych dla ipchains, iptables,
+  dhcpd, oidentd, packet filtra openbsd, wpisów /etc/ethers
 - generowanie praktycznie ka¿dego pliku konfiguracyjnego na podstawie
-  danych w bazie.
+  danych w bazie przy u¿yciu prostych szablonów;
 
 %package scripts
-Summary:	LAN Management System - scripts
-Summary(pl):	LAN Management System - skrypty
+Summary:	LAN Managment System - scripts
+Summary(pl):	LAN Managment System - skrypty
 Requires:	perl-Net-SMTP-Server
 Requires:	perl-Config-IniFiles
 Requires:	perl-DBI
@@ -89,7 +82,7 @@ lms-mgc.
 Ten pakiet zawiera skrypty do zintegrowania LMS z systemem, naliczania
 comiesiêcznych op³at, powiadamiania u¿ytkowników o ich zad³u¿eniu oraz
 ich automagicznego od³±czania. Mo¿esz tak¿e zbudowaæ prawdopodobnie
-ka¿dy typ pliku konfiguracyjnego przy u¿yciu lms-mgc.
+ka¿dy typ pliku konfiguracyjnego przy u¿yciu lms-mgc;
 
 %prep
 %setup -q -n %{name}
@@ -142,14 +135,26 @@ rm -rf $RPM_BUILD_ROOT
 All persons listed below can be reached at <cvs_login>@pld-linux.org
 
 $Log$
-Revision 1.13  2003/09/19 11:04:05  lukasz
-- typo
+Revision 1.14  2003/12/12 04:03:47  lukasz
+- gez. synced with PLD's version
 
-Revision 1.12  2003/06/23 13:42:28  lukasz
-- force commit for LMS-1.1.0
+Revision 1.31  2003/12/12 04:02:58  baseciq
+- up to 1.0.4
+- fixed descriptions
+- maybe someone can look at lms-1.1.x and make .spec for it?
 
-Revision 1.11  2003/06/13 05:30:24  lukasz
-- sync with PLD version of specfile
+Revision 1.30  2003/08/30 02:21:31  baseciq
+- up to 1.0.3
+
+Revision 1.29  2003/08/20 20:58:32  undefine
+- update to 1.0.2
+
+Revision 1.28  2003/08/18 08:08:18  gotar
+- mass commit: cosmetics (removed trailing white spaces)
+
+Revision 1.27  2003/06/30 08:10:10  baseciq
+- up: 1.0.1
+- rel 1
 
 Revision 1.26  2003/06/12 22:39:06  baseciq
 - sync up to 1.0.0 (latest stable version)
