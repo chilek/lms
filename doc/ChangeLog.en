@@ -1,6 +1,6 @@
 $Id$
 
-version 1.2.3 (??/??/2004):
+version 1.2.3 Anise (06/07/2004):
 
   - fixed content of 'from' and 'sender' fields in e-mail header 
     send from lms-ui (alec)
