@@ -2,48 +2,39 @@ $Id$
 
 wersja 1.1.0 (??/??/2003):
 
-  - support do drugiego serwera dns (w lms-mgc jako %DNS2)
-    wymagany upgrade:
+  - secondary nameserver support (%DNS2 in lms-mgc); database modification needed:
     ALTER TABLE `networks` ADD `dns2` VARCHAR( 16 ) AFTER `dns`
-  - je¿eli w tym samym katalogu co index.php znajduje siê plik, LMS wykorzysta
-    go zamiast /etc/lms/lms.ini
-  - mo¿na ustawiæ domy¶lne warto¶ci dla adresu, miasta i kodu pocztowego
-    nowego u¿ytkownika;
+  - if the lms.ini file exists in the same directory as index.php, LMS will use it instead of /etc/lms/lms.ini;
+  - default values for address, city and postal code can now be set for adding users;
 
 wersja 1.0.0 (18/05/2003):
 
-  - poprawione ikonki (wiem, s± obrzydliwe, ale nikt nie zrobi³ ³adniejszych)
-  - dosyæ rozbudowana dokumentacja (niestety nadal uboga, ale lepszy rydz ni¿
-    grzybki atomowe)
+  - icons have been changed (Yeah, they are awful, but nobody has done any better)
+  - some documentation. Not much but better than nothing. Any volunteers to write? :-)
   - uff...
 
 wersja 1.0.0rc1 (17/05/2003):
 
-  - przymiarki do dokumentacji (Lexx)
-  - porz±dki w LMS.class.php (lukasz)
-  - contrib/customers - prosta strona dla ciekawych u¿ytkowników - w zwi±zku z
-    czym znikn±³ obskurny button ze strony logowania z napisem 'Stan konta'
-    (lukasz)
-  - zrobione wstêpnie ró¿ne poziomy dostêpu (lukasz)
-  - poprawione lms-notify (lukasz)
-  - dodane 'u¿yteczne linki' do strony powitalnej (lukasz)
-  - poprawione wydruki: listing wed³ug aktualnego sortowania oraz filtra (warden)
-  - dodane 'skanuj' przy dodawaniu komputera - wyszukuje hosty przy u¿yciu
-    programu nbtscan (kennyGRV/lukasz)
-  - dodana informacja o producencie karty sieciowej w nodeinfobox (lukasz)
-  - poprawione byki z wy¶wietlaniem ostatnich 10 operacji finansowych
-    u¿ytkownika (lukasz)
-  - wymieniona czê¶æ ikon (lukasz)
-  - poprawki powrotnych redirectów (lukasz)
-  - zabezpieczenie przed por±banymi przegl±darkami które majstruj± z refererem
-    podczas wylogowywania siê (lukasz)
-  - dodane info o ho¶cie na górze obok logo (warden & lukasz)
-  - powróci³y lms-scripts do katalogu bin/ (lexx & lukasz)
-  - na stronie tytu³owej zamiast ID zalogowanego admina jest teraz wersja PHP
-  - finalnie poprawione lms-notify
-  - poprawiony template maila (byko/lukasz)
-  - poprawione sprawdzanie adresu email (repcio/lukasz)
-  - sporo porz±dków
+  - docs incoming (Lexx)
+  - some cleaning in LMS.class.php (lukasz)
+  - contrib/customers - simple layout for curious lusers. As an effect, the awful (?! -> warden)
+    button on the front page of LMS has disappeared. (lukasz)
+  - different access levels (basic) (lukasz)
+  - lms-notify corrected (lukasz)
+  - add 'useful links' to the greeting page (lukasz)
+  - printing layouts corrected: lists by the actual filter and without it (warden)
+  - added 'scan' option when adding a new node - searches for hosts with nbtscan (kennyGRV/lukasz)
+  - added NIC manufacturer info in nodeinfo box (lukasz)
+  - showing miscalculated last financial operations bug - fixed (lukasz)
+  - some icons have been changed (lukasz)
+  - back redirects fixed (lukasz)
+  - bogon browsers supports (some browsers do referrer rigging when logging out) (lukasz)
+  - host information added on the top of the login page (warden & lukasz)
+  - lms-scripts back in bin/ (lexx & lukasz)
+  - lms-notify finally works.
+  - mail template changed (byko/lukasz)
+  - email schema checking fixed (repcio/lukasz)
+  - a lot of cleaning :-)
   
 wersja 1.0pre10 (15/04/2003):
 
