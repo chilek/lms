@@ -211,4 +211,6 @@ $dbq = $dbase->prepare("INSERT INTO timestamps (tablename,time) VALUES ('cash',$
 $dbq->execute();
 $dbq = $dbase->prepare("INSERT INTO timestamps (tablename,time) VALUES ('_global',$utsfmt)");
 $dbq->execute();
+$dbq = $dbase->prepare("DELETE FROM assignments WHERE dateto < $utsfmt - 86400 * 30 AND dateto != 0");
+$dbq->execute();
 $dbase->disconnect();
