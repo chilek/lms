@@ -32,7 +32,7 @@ $access[table][0][name]		= "pe³en dostêp";
 $access[table][0][allow_reg]	= "^.*$";
 
 $access[table][1][name]		= "odczyt wszystkich danych";
-$access[table][1][allow_reg]	= "^((admin|balance|db|net|node|netdev|tariff|payment|user)(list|list(debt|disc)|info|view|debt|search|balance)|netdevmap|print)$";
+$access[table][1][allow_reg]	= "^((admin|balance|db|net|node|netdev|tariff|payment|user|usergroup)(list|list(debt|disc)|info|view|debt|search|balance)|netdevmap|print)$";
 
 $access[table][2][name]		= "w³±czanie i od³±czanie komputerów";
 $access[table][2][allow_reg]	= "^nodeset$";
@@ -44,10 +44,10 @@ $access[table][4][name]         = "prze³adowywanie konfiguracji";
 $access[table][4][allow_reg]    = "^reload$";
 
 $access[table][5][name]		= "manipulacja kontami u¿ytkowników";
-$access[table][5][allow_reg]	= "^user(add|edit|del)$";
+$access[table][5][allow_reg]	= "^(user(add|edit|del)|nodewarn|usergroup(add|edit|delete|move))$";
 
 $access[table][6][name]		= "manipulacja danymi komputerów";
-$access[table][6][allow_reg]	= "^(node(add|scan|del|edit|set)|choose(mac|ip))$";
+$access[table][6][allow_reg]	= "^(node(add|scan|del|edit|set|warn)|choose(mac|ip))$";
 
 $access[table][7][name]         = "dostêp do statystyk";
 $access[table][7][allow_reg]    = "^traffic$";
