@@ -1837,7 +1837,7 @@ class LMS
 		     $limit = "";
 
 	     // join query from parts
-	     $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE ".$dt." ".$net."GROUP BY nodeid, name, ipaddr ".$order." ".$limit;
+	     $query = "SELECT nodeid, name, ipaddr, sum(upload) as upload, sum(download) as download FROM stats LEFT JOIN nodes ON stats.nodeid=nodes.id WHERE ".$dt." ".$net." GROUP BY nodeid, name, ipaddr ".$order." ".$limit;
 
 	     // get results
 	     if ($traffic = $this->DB->GetAll($query))
@@ -1894,6 +1894,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.245  2003/09/26 01:40:15  lukasz
+ * - typo
+ *
  * Revision 1.244  2003/09/26 01:16:24  lukasz
  * - zmienione nazwy kluczy na kompatybilne z tym co zwraca smarty
  * - zmienione pole sekund w mktime() bo przecie¿ i tak nie jest ono
