@@ -135,7 +135,7 @@ info = "Opcjonalny opis modu³u"
 	Parametry konfiguracyjne modu³ów umieszcza siê w sekcjach instancji je wywo³uj±cych.</para>
 		<sect2 id="daemon-moduleslist">
 		<title>Lista dostêpnych modu³ów</title>
-			<table>
+			<table id="modules-list">
 			<title>Lista modu³ów demona almsd</title>
 			<tgroup cols="2">
 			<colspec ALIGN="center" COLWIDTH="200">

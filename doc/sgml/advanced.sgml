@@ -3,7 +3,7 @@
 	<title>Dla dociekliwych</title>
 	<sect1 id="devel-catalogs">
 		<title>Drzewo katalogów</title>
-			<table>
+			<table id="catalog-tree">
 				<title>Drzewo katalogów LMS</title>
 			<tgroup cols="2">
 				<colspec ALIGN="center" COLWIDTH="200">
@@ -297,7 +297,7 @@
 			sk³adaj±ca siê z liter i/lub cyfr. W tej samej linii co klucz, po znaku
 			równo¶ci, umieszcza siê warto¶æ parametru. Je¶li warto¶æ zawiera znaki specjalne
 			nale¿y j± obj±æ w apostrofy lub cudzys³ów.</para>
-			<example>
+			<example id="config-format">
 				<title>Format opcji konfiguracyjnych</title>
 				<screen>
 [sekcja]
