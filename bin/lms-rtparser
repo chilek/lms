@@ -237,7 +237,7 @@ if( !$prev_tid && ($mh_subject =~ /\[RT#[0-9]{6,}\]/) )
 	$prev_tid =~ s/.*\[RT#([0-9]{6,})\].*/\1/;
 	$prev_tid = sprintf('%d',$prev_tid);
 	
-	$dbq = $dbase->prepare("SELECT id FROM rttickets WHERE id = $prev_tid AND queueid = $queue");
+	$dbq = $dbase->prepare("SELECT id FROM rttickets WHERE id = $prev_tid");
 	$dbq->execute();
 	if(!($row = $dbq->fetchrow_hashref()))
 	{
