@@ -1678,6 +1678,8 @@ class LMS
 		$this->DB->Execute('UPDATE invoices SET cdate = ?, paytime = ?, paytype = ?, customerid = ?, name = ?, address = ?, nip = ?, pesel = ?, zip = ?, city = ?, phone = ? WHERE id = ?', array($cdate, $invoice['invoice']['paytime'], $invoice['invoice']['paytype'], $invoice['customer']['id'], $invoice['customer']['username'], $invoice['customer']['address'], $invoice['customer']['nip'], $invoice['customer']['pesel'], $invoice['customer']['zip'], $invoice['customer']['city'], $invoice['customer']['phone1'], $iid));
 		$this->DB->Execute('DELETE FROM invoicecontents WHERE invoiceid = ?', array($iid));
 		$this->DB->Execute('DELETE FROM cash WHERE invoiceid = ? AND type = 4', array($iid));
+		//if invoice was paid (then you need to manual bind orphant payments with covenants)
+		$this->DB->Execute('UPDATE cash SET invoiceid = 0, itemid = 0, userid = ? WHERE invoiceid = ?', array($invoice['customer']['id'], $iid));
 		
 		$itemid=0;
 		foreach($invoice['contents'] as $idx => $item)
