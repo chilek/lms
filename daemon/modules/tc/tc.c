@@ -292,6 +292,10 @@ LAN=eth1
 WAN=eth0
 BURST=\"burst 5k\"
 
+#marking cleanup
+$IPT -t mangle -F PREROUTING
+#limits cleanup
+$IPT -t filter -F FORWARD
 $TC qdisc del dev $LAN root 2> /dev/null
 $TC qdisc del dev $WAN root 2> /dev/null
 # incomming traffic
