@@ -237,7 +237,7 @@ while (my $row = $dbq->fetchrow_hashref())
 				
 				{
 				my $month_name = strftime ( "%B", localtime()) ; 
-				$line =~ s/\%date-month-name/$month_name/;
+				$line =~ s/\%date_month_name/$month_name/;
 				}
 				
 				{
