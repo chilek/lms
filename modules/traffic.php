@@ -104,7 +104,7 @@ switch($_GET['bar'])
 }
 ###########################################################################
 # <debugowanie>
-#echo $LMS->ADB->_query_parser($query);
+#echo $LMS->DB->_query_parser($query);
 # </debugowanie>
 
 if ($traffic = $LMS->DB->GetAll($query))
