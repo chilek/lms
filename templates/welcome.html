@@ -199,6 +199,55 @@
 		<TD WIDTH="50%" VALIGN="TOP">
 			<TABLE WIDTH="100%" CELLPADDING="3">
 				<TR CLASS="DARK">
+					<TD COLSPAN="2" ALIGN="CENTER" CLASS="FALL">
+						<IMG SRC="img/ticket.gif" ALIGN="ABSMIDDLE"> <B>Zg³oszenia Helpdesk:</B>
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Nowe:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$rtstats.new|default:"0"}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Otwarte:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$rtstats.open|default:"0"}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Martwe:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$rtstats.dead|default:"0"}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFT">
+						<B>Rozwi±zane:</B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHT">
+						{$rtstats.resolved|default:"0"}
+					</TD>
+				</TR>
+				<TR CLASS="LIGHT">
+					<TD WIDTH="50%" ALIGN="RIGHT" CLASS="FLEFTU">
+						<B><A href="?m=rtqueuelist">Razem:</A></B>
+					</TD>
+					<TD WIDTH="50%" CLASS="FRIGHTU">
+						{$rtstats.open+$rtstats.new+$rtstats.dead+$rtstats.resolved|default:"0"}
+					</TD>
+				</TR>
+			</TABLE>
+		</TD>
+		<TD WIDTH="50%" VALIGN="TOP">
+		    <TABLE WIDTH="100%" CELLPADDING="3">
+				<TR CLASS="DARK">
 					<TD ALIGN="CENTER" CLASS="FALL">
 						<IMG SRC="img/tip.gif" ALIGN="ABSMIDDLE"> <B>Przydatne linki</B>
 					</TD>
