@@ -14,7 +14,8 @@ wersja 1.1.5 (18/10/2003):
   - na wykresach statystyk dostêpne s± dane komputerów usuniêtych z bazy oraz
     dodano opcja usuwania statystyk tych komputerów podczas kompaktowania 
     bazy (alec)
-
+  - dodana mo¿liwo¶æ wymiany urz±dzeñ (lexx)
+  
 wersja 1.1.4 Tanith (03/10/2003):
   
   - lista taryf zlicza³a tak¿e u¿ytkowników usuniêtych (lukasz)
