@@ -1251,7 +1251,7 @@ class LMS
 
 	function GetNodeIDByName($name)
 	{
-		return $this->DB->GetOne('SELECT id FROM nodes WHERE name=?', array($name));
+		return $this->DB->GetOne('SELECT id FROM nodes WHERE name=UPPER(?)', array($name));
 	}
 
 	function GetNodeIPByID($id)
