@@ -1,6 +1,4 @@
 <!-- $Id$ -->
-<TABLE WIDTH="100%" HEIGHT="100%">
-<TR HEIGHT="98%"><TD WIDTH="100%" HEIGHT="98%">
 <DIV{if !$invoice.last} STYLE="page-break-after: always"{/if}>
 <TABLE WIDTH="100%" CELLSPACING="3">
 	<TR>
@@ -8,14 +6,14 @@
 			<B>Faktura VAT nr {$_config.invoices.number_template|default:"%N/LMS/%Y"|replace:"%N":$invoice.number|replace:"%Y":$invoice.year|replace:"%M":$invoice.month}</B><BR>
 			<B>{$type}</B>
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" VALIGN="TOP">
+		<TD WIDTH="1%" NOWRAP ALIGN="RIGHT" VALIGN="TOP" CLASS="sdr">
 			Data wystawienia:<BR>
 			Data sprzeda¿y:<BR>
 			Termin zap³aty:<BR>
 			Sposób zap³aty:
 		</TD>
-		<TD WIDTH="1%" NOWRAP ALIGN="LEFT" VALIGN="TOP">
-			{$invoice.cdate|date_format:"%d.%m.%Y"}<BR>
+		<TD WIDTH="1%" NOWRAP ALIGN="LEFT" VALIGN="TOP" CLASS="sdr">
+			{$invoice.cdate|date_format:"%d.%m.%Y"} {if $_config.invoices.cplace neq ""}, {$_config.invoices.cplace}{/if}<BR>
 			{$invoice.cdate|date_format:"%d.%m.%Y"}<BR>
 			{$invoice.pdate|date_format:"%d.%m.%Y"}<BR>
 			przelew
@@ -42,12 +40,11 @@
 			Polska<BR>
 			<BR>
 			{if $invoice.phone neq ""}Tel: {$invoice.phone}<BR>{/if}
-			{if $invoice.nip neq ""}NIP: {$invoice.nip}<BR>{/if}
+			{if $invoice.nip neq ""}NIP: {$invoice.nip}<BR>{elseif $invoice.pesel neq ""}PESEL: {$invoice.pesel}<BR>{/if}
 			<BR>
 			<B>Numer klienta: {$invoice.customerid|string_format:"%04d"}</B>
 		</TD>
 		<TD WIDTH="34%" VALIGN="TOP" CLASS="sdr">
-			<BR>
 			<BR>
 			<BR>
 			<BR>
@@ -73,7 +70,7 @@
 		<B>Nazwa wyrobu, towaru lub us³ugi:</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
-		<B>KWiU:</B>
+		<B>PKWiU:</B>
 	</TD>
 	<TD WIDTH="1%" CLASS="head" ALIGN="CENTER">
 		<B>JM:</B>
@@ -106,7 +103,7 @@
 		{$item.description}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR">
-		{$item.sww}
+		{$item.pkwiu}
 	</TD>
 	<TD WIDTH="1%" CLASS="FLR" ALIGN="CENTER">
 		{$item.content}
@@ -191,7 +188,7 @@
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH="50%" ALIGN="RIGHT">
+		<TD WIDTH="50%" ALIGN="RIGHT" CLASS="SDR">
 			S³ownie: {$invoice.total|string_format:"%d"|to_words} z³ {$invoice.totalg|to_words} gr
 		</TD>
 	</TR>
@@ -210,7 +207,6 @@
 </TABLE>
 </TD>
 </TR>
-<TR HEIGHT="2%"><TD WIDTH="100%" HEIGHT="2%" NOWRAP>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR>
 		<TD WIDTH="100%" ALIGN="CENTER" COLSPAN="2" CLASS="hd1">
@@ -223,5 +219,4 @@
 		</TD>
 	</TR>
 </TABLE>
-</TD></TR></TABLE>
 </DIV>

@@ -187,7 +187,7 @@
 				<member>name - nazwa</member>
 				<member>value - warto¶æ netto w z³otych</member>
 				<member>taxvalue - wysoko¶æ podatku w procentach</member>
-				<member>sww - numer PKWiU</member>
+				<member>pkwiu - numer PKWiU</member>
 				<member>uprate - ograniczenie szybko¶ci transferu danych wychodz±cych</member>
 				<member>downrate - ograniczenie szybko¶ci transferu danych przychodz±cych</member>
 				<member>description - opis</member>
@@ -227,7 +227,7 @@
 				<member>invoiceid - identyfikator faktury</member>
 				<member>value - kwota pozycji</member>
 				<member>taxvalue - wysoko¶æ podatku w procentach</member>
-				<member>sww - numer PKWiU</member>
+				<member>pkwiu - numer PKWiU</member>
 				<member>content - u¿yta jednostka (najczê¶ciej 'szt.')</member>
 				<member>count - ilo¶æ</member>
 				<member>description - opis</member>

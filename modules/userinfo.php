@@ -24,34 +24,45 @@
  *  $Id$
  */
 
-if($LMS->UserExists($_GET[id]) == 0)
+if($LMS->UserExists($_GET['id']) == 0)
 {
-	header("Location: ?m=userlist");
+	header('Location: ?m=userlist');
 	die;
 }
 
-$userinfo = $LMS->GetUser($_GET[id]);
-$assigments = $LMS->GetUserAssignments($_GET[id]);
-$balancelist = $LMS->GetUserBalanceList($_GET[id]);
-$usernodes = $LMS->GetUserNodes($_GET[id]);
+$userinfo = $LMS->GetUser($_GET['id']);
+$assigments = $LMS->GetUserAssignments($_GET['id']);
+$balancelist = $LMS->GetUserBalanceList($_GET['id']);
+$usernodes = $LMS->GetUserNodes($_GET['id']);
 $tariffs = $LMS->GetTariffs();
 
-$_SESSION[backto] = $_SERVER[QUERY_STRING];
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$layout[pagetitle]="Informacje o u¿ytkowniku: ".$userinfo[username];
+$layout['pagetitle']='Informacje o u¿ytkowniku: '.$userinfo['username'];
 
-$usernodes[ownerid] = $_GET[id];
-$SMARTY->assign("usernodes",$usernodes);
-$SMARTY->assign("balancelist",$balancelist);
-$SMARTY->assign("assignments",$assigments);
-$SMARTY->assign("error",$error);
-$SMARTY->assign("userinfo",$userinfo);
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("tariffs",$tariffs);
-$SMARTY->display("userinfo.html");
+$usernodes['ownerid'] = $_GET['id'];
+$SMARTY->assign('usernodes',$usernodes);
+$SMARTY->assign('balancelist',$balancelist);
+$SMARTY->assign('assignments',$assigments);
+$SMARTY->assign('error',$error);
+$SMARTY->assign('userinfo',$userinfo);
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('tariffs',$tariffs);
+$SMARTY->display('userinfo.html');
 
 /*
  * $Log$
+ * Revision 1.28  2003/12/04 03:43:51  lukasz
+ * - dodany PESEL do rekordu u¿ytkownika, upgrade bazy
+ *   Je¿eli u¿ytkownik nie posiada NIPu, to wtedy na fakturze umieszczany jest
+ *   PESEL.
+ * - do faktur zosta³o dodane miejsce wystawienia
+ * - zamiana nazewctwa w tabelach z 'sww' na 'pkwiu'
+ * - przegenerowane doce
+ * - TODO: je¿eli na fakturze nie ma pozycji z pkwiu, to usun±æ t± kolumenê
+ *   z faktury.
+ * - w cholerê kosmetyki
+ *
  * Revision 1.27  2003/09/23 19:11:46  alec
  * kosmetyka - dodany dwukropek
  *
