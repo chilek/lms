@@ -12,7 +12,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/netdev_producer.gif" BORDER="0" ALT="">
+			<IMG SRC="img/producer.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>Producent:</B>
@@ -34,7 +34,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/netdev_serialnumber.gif" BORDER="0" ALT="">
+			<IMG SRC="img/serialnumber.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>Numer seryjny:</B>
@@ -45,7 +45,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
-			<IMG SRC="img/netdev_ports.gif" BORDER="0" ALT="">
+			<IMG SRC="img/port.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
 			<B>Ilo¶æ portów:</B>
@@ -62,7 +62,13 @@
 			<B>Opis:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT" COLSPAN="2">
-			<TEXTAREA NAME="netdev[description]" CLASS="bold" COLS="40" ROWS="5" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5">{$netdev.description}</TEXTAREA>
+			<TABLE WIDTH="1%" CELLPADDING="5">
+				<TR>
+					<TD CLASS="FALL" BGCOLOR="#F4F0EC">
+						<TEXTAREA NAME="netdev[description]" CLASS="bold" COLS="40" ROWS="5" STYLE="background-color: #F4F0EC; border-style: none; border-width: 0pt" COLS="40" ROWS="5">{$netdev.description}</TEXTAREA>
+					</TD>
+				</TR>
+			</TABLE>
 		</TD>
 	</TR>
 
