@@ -312,14 +312,16 @@ if(! $prev_tid) # generate new ticket if previous not found
 		}
 	}
 
+	# zakodujmy temat potwierdzenia
+	# w ten sposób, bo funkcja encode_mimewords po³yka³a spacje
 	my $subject = '';
 	my @temp = "Potwierdzenie przyjêcia zg³oszenia o temacie '$mh_subject'";
 	foreach my $word (@temp)
 	{
-		$subject = "$subject".encode_mimeword($word, 'q','ISO-8859-2')." ";
+		$subject = $subject.encode_mimeword($word, 'q','ISO-8859-2')." ";
 	}
-	my $smtp = Net::SMTP->new($smtpserver);
 	
+	my $smtp = Net::SMTP->new($smtpserver);
 	$smtp->mail("$autoreply_from");
 	$smtp->to($mh_replyto || $mh_from);
 	$smtp->data();
