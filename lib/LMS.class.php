@@ -399,19 +399,20 @@ class LMS {
 			$network[nodes][name][$i] = "";
 		}
 		$networknodes = $db->FetchArray("SELECT `id`, `name`, `ipaddr`, `ownerid` FROM `nodes`");
-		foreach($networknodes[id] as $key => $value)
-		{
-			$networknodes[addresslong][$key] = ip_long($networknodes[ipaddr][$key]);
-			if(isipin($networknodes[ipaddr][$key],$network[address],$network[mask]))
+		if(sizeof($networknodes[id]))
+			foreach($networknodes[id] as $key => $value)
 			{
-				$pos = $networknodes[addresslong][$key] - ip_long($network[address]) -1;
-				$network[nodes][address][$pos] = $networknodes[ipaddr][$key];
-				$network[nodes][id][$pos] = $networknodes[id][$key];
-				$network[nodes][ownerid][$pos] = $networknodes[ownerid][$key];
-				$network[nodes][name][$pos] = $networknodes[name][$key];
-				$network[assigned] ++;
+				$networknodes[addresslong][$key] = ip_long($networknodes[ipaddr][$key]);
+				if(isipin($networknodes[ipaddr][$key],$network[address],$network[mask]))
+				{
+					$pos = $networknodes[addresslong][$key] - ip_long($network[address]) -1;
+					$network[nodes][address][$pos] = $networknodes[ipaddr][$key];
+					$network[nodes][id][$pos] = $networknodes[id][$key];
+					$network[nodes][ownerid][$pos] = $networknodes[ownerid][$key];
+					$network[nodes][name][$pos] = $networknodes[name][$key];
+					$network[assigned] ++;
+				}
 			}
-		}
 		$network[free] = $network[size] - $network[assigned] - 2;
 		return $network;
 	}
