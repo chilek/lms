@@ -26,7 +26,7 @@
 
 if(!$LMS->TariffExists($_GET['id']))
 {
-	header("Location: ?m=tarifflist");
+	header('Location: ?m=tarifflist');
 	die;
 }
 
@@ -37,55 +37,55 @@ if(isset($tariff))
 	foreach($tariff as $key => $value)
 		$tariff[$key] = trim($value);
 
-	$tariff['value'] = str_replace(",",".",$tariff['value']);
+	$tariff['value'] = str_replace(',','.',$tariff['value']);
 	
-	if($tariff['uprate'] == "")
+	if($tariff['uprate'] == '')
 		$tariff['uprate'] = 0;
 	
-	if($tariff['downrate'] == "")
+	if($tariff['downrate'] == '')
 		$tariff['downrate'] = 0;
 	
-	if($tariff['name'] == "")
-		$error['name'] = "Proszê podaæ nazwê taryfy!";
+	if($tariff['name'] == '')
+		$error['name'] = 'Proszê podaæ nazwê taryfy!';
 	elseif($LMS->GetTariffIDByName($tariff['name']) && $tariff['name'] != $LMS->GetTariffName($_GET['id']))
-		$error['name'] = "Istnieje ju¿ taryfa o takiej nazwie!";	
+		$error['name'] = 'Istnieje ju¿ taryfa o takiej nazwie!';	
 
-	if($tariff['value'] == "")
-		$error['value'] = "Proszê podaæ warto¶æ!";
-	elseif(!(ereg("^[-]?[0-9.,]+$", $tariff['value'])))
-		$error['value'] = "Podana warto¶æ jest niepoprawna!";
+	if($tariff['value'] == '')
+		$error['value'] = 'Proszê podaæ warto¶æ!';
+	elseif(!(ereg('^[-]?[0-9.,]+$', $tariff['value'])))
+		$error['value'] = 'Podana warto¶æ jest niepoprawna!';
 	
-	if($tariff['taxvalue'] == "")
-		$error['taxvalue'] = "Proszê podaæ stawkê podatku!";
-	elseif(!(ereg("^[0-9.,]+$", $tariff['taxvalue'])) || $tariff['taxvalue'] < 0 || $tariff['taxvalue'] > 100)
-		$error['taxvalue'] = "Podana stawka podatku jest niepoprawna!";
+	if($tariff['taxvalue'] == '')
+		$tariff['taxvalue'] = '0.00';
+	elseif(!(ereg('^[0-9.,]+$', $tariff['taxvalue'])) || $tariff['taxvalue'] < 0 || $tariff['taxvalue'] > 100)
+		$error['taxvalue'] = 'Podana stawka podatku jest niepoprawna!';
 
 	if(!(ereg("^[0-9]+$", $tariff['uprate'])))
-		$error['uprate'] = "To pole musi zawieraæ liczbê ca³kowit±";
+		$error['uprate'] = 'To pole musi zawieraæ liczbê ca³kowit±';
 	
-	if(!ereg("^[0-9]+$", $tariff['downrate']))
-		$error['downrate'] = "To pole musi zawieraæ liczbê ca³kowit±";
+	if(!ereg('^[0-9]+$', $tariff['downrate']))
+		$error['downrate'] = 'To pole musi zawieraæ liczbê ca³kowit±';
 	
 	if(($tariff['uprate'] < 8 || $tariff['uprate'] > 4096) && $tariff['uprate'] != 0)
-		$error['uprate'] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
+		$error['uprate'] = 'To pole musi zawieraæ liczbê z przedzia³u 8 - 4096';
 	
 	if(($tariff['downrate'] < 8 || $tariff['downrate'] > 4096) && $tariff['downrate'] != 0)
-		$error['downrate'] = "To pole musi zawieraæ liczbê z przedzia³u 8 - 4096";
+		$error['downrate'] = 'To pole musi zawieraæ liczbê z przedzia³u 8 - 4096';
 
 	$tariff['id'] = $_GET['id'];
 	$tariff['count'] = $LMS->GetUsersWithTariff($_GET['id']);	
-	$tariff['totalval'] = $tariff['count'] * str_replace(".",",",$tariff['value']);
+	$tariff['totalval'] = $tariff['count'] * str_replace('.',',',$tariff['value']);
 	if(!$error)
 	{
 		$LMS->TariffUpdate($tariff);
-		header("Location: ?m=tariffinfo&id=".$tariff['id']);
+		header('Location: ?m=tariffinfo&id='.$tariff['id']);
 		die;
 	}
 
 }else
 	$tariff = $LMS->GetTariff($_GET['id']);
 	
-$layout['pagetitle'] = "Edycja taryfy: ".$tariff['name'];	
+$layout['pagetitle'] = 'Edycja taryfy: '.$tariff['name'];	
 $SMARTY->assign('tariff',$tariff);
 $SMARTY->assign('error',$error);
 $SMARTY->display('tariffedit.html');

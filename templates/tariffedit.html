@@ -57,7 +57,7 @@
 			<B>Uprate:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.uprate}" SIZE="8" NAME="tariff[uprate]" {tip text="Podaj liczbê dla ograniczenia uploadu (opcjonalnie)" trigger="uprate"}> kb/s
+			<INPUT TYPE="TEXT" VALUE="{if $tariff.uprate}{$tariff.uprate}{/if}" SIZE="8" NAME="tariff[uprate]" {tip text="Podaj liczbê dla ograniczenia uploadu (opcjonalnie)" trigger="uprate"}> kb/s
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -68,7 +68,7 @@
 			<B>Downrate:</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" VALUE="{$tariff.downrate}" SIZE="8" NAME="tariff[downrate]" {tip text="Podaj liczbê dla ograniczenia downloadu (opcjonalnie)" trigger="uprate"}> kb/s
+			<INPUT TYPE="TEXT" VALUE="{if $tariff.downrate}{$tariff.downrate}{/if}" SIZE="8" NAME="tariff[downrate]" {tip text="Podaj liczbê dla ograniczenia downloadu (opcjonalnie)" trigger="uprate"}> kb/s
 		</TD>
 	</TR>
 	<TR class="LIGHT">
