@@ -156,6 +156,13 @@ class LMSDB_driver_mssql extends LMSDB_common
 		$query = eregi_replace('\?LIKE\?',$this->_driver_like(),$query);
 		$query = eregi_replace('inet_ntoa\(',$this->_dbuser.'.inet_ntoa(',$query);
 		$query = eregi_replace('inet_aton\(',$this->_dbuser.'.inet_aton(',$query);
+		
+		if(eregi('^.*LIMIT 1$',$query))
+		{
+			$query = eregi_replace('LIMIT 1','',$query);
+			$query = eregi_replace('^SELECT','SELECT TOP 1',$query);
+		}
+		
 		if($inputarray)
 		{
 			$queryelements = explode("\0",str_replace('?',"?\0",$query));
