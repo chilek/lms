@@ -112,6 +112,35 @@ $fortunes[] = "Prima Aprilis 2004 - lms@lists.rulez.pl:
 <@Detekt>      Poniewa¿ baset wynalaz³ nowy algorytm optymalizacji.
 <@T.Chiliñski> A ja my¶lê, ¿e to wersja demo, pozbawiona pe³nej funkcjonalno¶ci.";
 
+$fortunes[] = "Subject: [lms] Re: przycisk rozlicz ;-)
+
+powiem   tak.. u mnie w firmie jest CallCenter z historia rozmow z
+klientem...
+jedna z lepszych adnotacji z dzialu DH:
+ \"Klient ma problem egzystencjonalny, prawdopodobnie pomylil dzien z
+ noca, albo butelke wody mineralnej z inna woda przezroczysta
+ 
+ ... nie potrafil wypelnic formularza rejestracji domeny\"
+
+Pozdrawiam,
+Tomasz T. Ciaszczyk";
+
+$fortunes[] = "Subject: [lms] Re: przycisk rozlicz ;-)
+
+powiem   tak.. u mnie w firmie jest CallCenter z historia rozmow z
+klientem...
+
+DH: przekierowanie do BOK
+BOK: klientka jest glupia bo sie pyta czy prawym czy lewym pzyciskiem
+myszki kliknac na 'dalej'
+5 minut pozniej nowa rozmowa od tej samej klientki:
+BOK: nie chce z nim gadac
+DT: \"przemila rozmowa o tym jak skanowac dokumenty, wysylac je mailem,
+ewentualnie przeskalowac aby Pani modem sie nie znudzil wysylajac
+maila 5 godzin. Przy okazji mam nocleg w Poznaniu\" dlugosc rozmowy 68 minut
+
+Pozdrawiam,
+Tomasz T. Ciaszczyk";
 
 mt_srand ((double) microtime()* 100000000);
 $layout[fortune] = $fortunes[mt_rand(0,sizeof($fortunes)-1)];
