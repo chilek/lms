@@ -1,0 +1,34 @@
+{include file="header.html"}
+{include file="adminheader.html"}
+<!--// $Id$ //-->
+<H1>{$layout.pagetitle}</H1>
+<FORM NAME="sql" method="post" action="?m=sql">
+<INPUT TYPE="hidden" NAME="run" VALUE="1">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD CLASS="FLEFTU" WIDTH="1%">
+			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
+		</TD>
+		<TD CLASS="FRIGHTU" WIDTH="99%" COLSPAN="2"NOWRAP>
+			<B>Zapytanie SQL do bazy danych</B>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FLEFT" WIDTH="1%">
+			<IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Tre¶æ zapytania:</B>
+		</TD>
+		<TD CLASS="FRIGHT" WIDTH="98%">
+			<TEXTAREA NAME="query" COLS="80" ROWS="10" {tip text="Wpisz tre¶æ zapytania sql" trigger="query"}>{$query}</TEXTAREA><BR>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
+			 <A HREF="javascript:document.sql.submit();">Wy¶lij zapytanie<IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM>
+{include file="footer.html"}
