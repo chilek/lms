@@ -35,26 +35,31 @@ class Session {
 	var $last;
 	var $lastip;
 	var $error;
-	var $_version = NULL;
+	var $_version = '1.1-cvs';
+	var $_revision = '$Revision:';
 
-	function Session($DB,$timeout = 600)
+	function Session(&$DB,$timeout = 600)
 	{
-		$this->_version = eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$');
 		session_start();
-		$this->DB = $DB;
+		$this->DB = &$DB;
 		$loginform = $_POST[loginform];
-		if(isset($loginform)){
+		if(isset($loginform))
+		{
 			$this->login = $loginform[login];
 			$this->passwd = $loginform[pwd];
 			$_SESSION[session_timestamp] = time();
 			writesyslog("Login attempt by ".$this->login,LOG_INFO);
-		}elseif($this->DB->GetOne('SELECT COUNT(id) FROM admins') == 0){
+		}
+		elseif($this->DB->GetOne('SELECT COUNT(id) FROM admins') == 0)
+		{
 			$this->islogged = TRUE;
 			$this->passwd = 'EMPTY';
 			$this->logname = 'nie zalogowany';
 			$_GET[m] = 'adminadd';
 			return TRUE;
-		}else{
+		}
+		else
+		{
 			$this->login = $_SESSION[session_login];
 			$this->passwd = $_SESSION[session_passwd];
 		}
@@ -133,6 +138,9 @@ class Session {
 
 /*
  * $Log$
+ * Revision 1.39  2003/12/01 04:09:31  lukasz
+ * - tsave
+ *
  * Revision 1.38  2003/09/05 02:07:05  lukasz
  * - massive attack: s/this->ADB->/this->DB->/g
  *

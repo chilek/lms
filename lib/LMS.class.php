@@ -30,18 +30,21 @@
 class LMS
 {
 
-	var $DB;		// obiekt bazy danych
-	var $SESSION;		// obiekt z Session.class.php (zarz±dzanie sesj±)
-	var $CONFIG;		// tablica zawieraj±ca zmienne z lms.ini
-	var $_version = NULL;	// wersja klasy
+	var $DB;			// obiekt bazy danych
+	var $SESSION;			// obiekt z Session.class.php (zarz±dzanie sesj±)
+	var $CONFIG;			// tablica zawieraj±ca zmienne z lms.ini
+	var $_version = '1.1-cvs';	// wersja klasy
+	var $_revision = '$Revision$';
 	var $MENU = array();
 
 	function LMS(&$DB, &$SESSION, &$CONFIG) // ustawia zmienne klasy
 	{
-		$this->_version = eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$');
 		$this->SESSION = &$SESSION;
 		$this->DB = &$DB;
 		$this->CONFIG = &$CONFIG;
+		$this->modules[] = "CORE";
+		$this->modules[] = "SESSION";
+		$this->CORE = &$this;
 
 		// za³aduj ekstra klasy:
 
@@ -57,6 +60,13 @@ class LMS
 					$this->modules[] = $classname;
 				}
 			}
+		}
+
+		// poustawiajmy ->version
+
+		foreach($this->modules as $module)
+		{
+			$this->$module->version = $this->$module->_version.".".eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->$module->_revision);
 		}
 
 		// to siê rozejdzie po modu³ach:
@@ -705,7 +715,8 @@ class LMS
 					$saldolist[$column][] = $value;
 
 
-		if(sizeof($saldolist['id']) > 0){
+		if(sizeof($saldolist['id']) > 0)
+		{
 			foreach($saldolist['id'] as $i => $v)
 			{
 				($i>0) ? $saldolist['before'][$i] = $saldolist['after'][$i-1] : $saldolist['before'][$i] = 0;
@@ -2228,6 +2239,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.289  2003/12/01 04:09:31  lukasz
+ * - tsave
+ *
  * Revision 1.288  2003/12/01 02:12:48  lukasz
  * - tsave - do nowych faktur... jak siê wy¶piê to dokoñczê
  *
