@@ -3,7 +3,7 @@
 # --------------------------------------------------------
 
 #
-# Struktura tabeli dla  admins
+# Structure of table  admins
 #
 
 DROP TABLE IF EXISTS admins;
@@ -24,11 +24,9 @@ CREATE TABLE admins (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  assignments
+# Structure of table  assignments
 #
-
 DROP TABLE IF EXISTS assignments;
 CREATE TABLE assignments (
   id int(11) NOT NULL auto_increment,
@@ -44,11 +42,9 @@ CREATE TABLE assignments (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  cash
+# Structure of table  cash
 #
-
 DROP TABLE IF EXISTS cash;
 CREATE TABLE cash (
   id int(11) NOT NULL auto_increment,
@@ -60,16 +56,16 @@ CREATE TABLE cash (
   userid int(11) NOT NULL default '0',
   comment varchar(255) NOT NULL default '',
   invoiceid int(11) NOT NULL default '0',
+  itemid smallint NOT NULL default '0',
   PRIMARY KEY  (id),
-  INDEX userid (userid)
+  INDEX userid (userid),
+  INDEX invoiceid (invoiceid)
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  dbinfo
+# Structure of table  dbinfo
 #
-
 DROP TABLE IF EXISTS dbinfo;
 CREATE TABLE dbinfo (
   keytype varchar(255) NOT NULL default '',
@@ -78,14 +74,13 @@ CREATE TABLE dbinfo (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  invoicecontents
+# Structure of table  invoicecontents
 #
-
 DROP TABLE IF EXISTS invoicecontents;
 CREATE TABLE invoicecontents (
   invoiceid int(11) NOT NULL default '0',
+  itemid smallint NOT NULL default '0',
   value decimal(9,2) NOT NULL default '0.00',
   taxvalue decimal(9,2) default '0.00',
   pkwiu varchar(255) NOT NULL default '',
@@ -96,11 +91,9 @@ CREATE TABLE invoicecontents (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  invoices
+# Structure of table  invoices
 #
-
 DROP TABLE IF EXISTS invoices;
 CREATE TABLE invoices (
   id int(11) NOT NULL auto_increment,
@@ -113,7 +106,7 @@ CREATE TABLE invoices (
   address varchar(255) NOT NULL default '',
   nip varchar(16) NOT NULL default '',
   pesel varchar(11) NOT NULL default '',
-  zip varchar(6) NOT NULL default '',
+  zip varchar(10) NOT NULL default '',
   city varchar(32) NOT NULL default '',
   phone varchar(255) NOT NULL default '',
   finished tinyint(1) NOT NULL default '0',
@@ -121,11 +114,9 @@ CREATE TABLE invoices (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  netdevices
+# Structure of table  netdevices
 #
-
 DROP TABLE IF EXISTS netdevices;
 CREATE TABLE netdevices (
   id int(11) NOT NULL auto_increment,
@@ -140,11 +131,9 @@ CREATE TABLE netdevices (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  netlinks
+# Structure of table  netlinks
 #
-
 DROP TABLE IF EXISTS netlinks;
 CREATE TABLE netlinks (
   id int(11) NOT NULL auto_increment,
@@ -156,11 +145,9 @@ CREATE TABLE netlinks (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  networks
+# Structure of table  networks
 #
-
 DROP TABLE IF EXISTS networks;
 CREATE TABLE networks (
   id int(11) NOT NULL auto_increment,
@@ -181,11 +168,9 @@ CREATE TABLE networks (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  nodes
+# Structure of table  nodes
 #
-
 DROP TABLE IF EXISTS nodes;
 CREATE TABLE nodes (
   id int(11) NOT NULL auto_increment,
@@ -209,11 +194,9 @@ CREATE TABLE nodes (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  payments
+# Structure of table  payments
 #
-
 DROP TABLE IF EXISTS payments;
 CREATE TABLE payments (
   id int(11) NOT NULL auto_increment,
@@ -227,11 +210,9 @@ CREATE TABLE payments (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  rtattachments
+# Structure of table  rtattachments
 #
-
 DROP TABLE IF EXISTS rtattachments;
 CREATE TABLE rtattachments (
   messageid int(11) NOT NULL default '0',
@@ -240,11 +221,9 @@ CREATE TABLE rtattachments (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  rtmessages
+# Structure of table  rtmessages
 #
-
 DROP TABLE IF EXISTS rtmessages;
 CREATE TABLE rtmessages (
   id int(11) NOT NULL auto_increment,
@@ -263,11 +242,9 @@ CREATE TABLE rtmessages (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  rtqueues
+# Structure of table  rtqueues
 #
-
 DROP TABLE IF EXISTS rtqueues;
 CREATE TABLE rtqueues (
   id int(11) NOT NULL auto_increment,
@@ -279,11 +256,9 @@ CREATE TABLE rtqueues (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  rttickets
+# Structure of table  rttickets
 #
-
 DROP TABLE IF EXISTS rttickets;
 CREATE TABLE rttickets (
   id int(11) NOT NULL auto_increment,
@@ -299,11 +274,9 @@ CREATE TABLE rttickets (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  rtrights
+# Structure of table  rtrights
 #
-
 DROP TABLE IF EXISTS rtrights;
 CREATE TABLE rtrights (
     id INT(11) NOT NULL auto_increment, 
@@ -315,11 +288,9 @@ CREATE TABLE rtrights (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  stats
+# Structure of table stats
 #
-
 DROP TABLE IF EXISTS stats;
 CREATE TABLE stats (
   nodeid int(11) NOT NULL default '0',
@@ -330,11 +301,9 @@ CREATE TABLE stats (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  tariffs
+# Structure of table tariffs
 #
-
 DROP TABLE IF EXISTS tariffs;
 CREATE TABLE tariffs (
   id int(11) NOT NULL auto_increment,
@@ -354,11 +323,9 @@ CREATE TABLE tariffs (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  timestamps
+# Structure of table timestamps
 #
-
 DROP TABLE IF EXISTS timestamps;
 CREATE TABLE timestamps (
   time int(14) NOT NULL default '0',
@@ -367,11 +334,9 @@ CREATE TABLE timestamps (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-
 #
-# Struktura tabeli dla  users
+# Structure of table users (customers)
 #
-
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   id int(11) NOT NULL auto_increment,
@@ -384,7 +349,7 @@ CREATE TABLE users (
   phone3 varchar(255) NOT NULL default '',
   gguin int(11) NOT NULL default '0',
   address varchar(255) NOT NULL default '',
-  zip varchar(6) NOT NULL default '',
+  zip varchar(10) NOT NULL default '',
   city varchar(32) NOT NULL default '',
   nip varchar(16) NOT NULL default '',
   pesel varchar(11) NOT NULL default '',
@@ -400,8 +365,9 @@ CREATE TABLE users (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
+# --------------------------------------------------------
 #
-# Struktura tabeli dla usergroups
+# Structure of table usergroups
 #
 DROP TABLE IF EXISTS usergroups;
 CREATE TABLE usergroups (
@@ -412,8 +378,9 @@ CREATE TABLE usergroups (
   UNIQUE KEY name (name)
 ) TYPE=MyISAM;
 
+# --------------------------------------------------------
 #
-# Struktura tabeli dla userassignments
+# Structure of table userassignments
 #
 DROP TABLE IF EXISTS userassignments;
 CREATE TABLE userassignments (
@@ -424,8 +391,9 @@ CREATE TABLE userassignments (
   UNIQUE KEY userassignment (usergroupid, userid)
 ) TYPE=MyISAM;
 
+# --------------------------------------------------------
 #
-# Struktura tabeli dla passwd
+# Structure of table passwd
 #
 DROP TABLE IF EXISTS passwd;
 CREATE TABLE passwd (
@@ -443,8 +411,9 @@ CREATE TABLE passwd (
     UNIQUE KEY login (login)
 ) TYPE=MyISAM;
 
+# --------------------------------------------------------
 #
-# Struktura tabeli dla domains
+# Structure of table domains
 #
 DROP TABLE IF EXISTS domains;
 CREATE TABLE domains (
@@ -455,8 +424,9 @@ CREATE TABLE domains (
     UNIQUE KEY (name)
 ) TYPE=MyISAM;
 
+# --------------------------------------------------------
 #
-# Struktura tabeli dla passwd
+# Structure of table passwd
 #
 DROP TABLE IF EXISTS aliases;
 CREATE TABLE aliases (
@@ -467,8 +437,9 @@ CREATE TABLE aliases (
     UNIQUE KEY (login, accountid)
 ) TYPE=MyISAM;
 
+# --------------------------------------------------------
 #
-# Struktura tabeli dla uiconfig
+# Structure of table uiconfig
 #
 DROP TABLE IF EXISTS uiconfig;
 CREATE TABLE uiconfig (
@@ -482,4 +453,37 @@ CREATE TABLE uiconfig (
     UNIQUE KEY var (section, var)
 ) TYPE=MyISAM;
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2004121000');
+# --------------------------------------------------------
+#
+# Structure of table events
+#
+DROP TABLE IF EXISTS events;
+CREATE TABLE events (
+    id int(11) NOT NULL auto_increment,
+    title varchar(255) NOT NULL default '',
+    description text NOT NULL default '',
+    note text NOT NULL default '',
+    date int(11) NOT NULL default '0',
+    begintime smallint(4) NOT NULL default '0',
+    endtime smallint(4) NOT NULL default '0',
+    adminid int(11) NOT NULL default '0',
+    userid int(11) NOT NULL default '0',
+    private tinyint(1) NOT NULL default '0',
+    closed tinyint(1) NOT NULL default '0',
+    PRIMARY KEY (id),
+    INDEX date (date)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table eventassignments
+#
+DROP TABLE IF EXISTS eventassignments;
+CREATE TABLE eventassignments (
+    eventid int(11) NOT NULL default '0',
+    adminid int(11) NOT NULL default '0',
+    UNIQUE (eventid, adminid)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005021500');

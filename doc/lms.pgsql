@@ -1,7 +1,7 @@
 /* $Id$ */ 
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "admins" 
+  Structure of table "admins" 
 -------------------------------------------------------- */
 DROP SEQUENCE "admins_id_seq";
 CREATE SEQUENCE "admins_id_seq";
@@ -23,7 +23,7 @@ CREATE TABLE admins (
 );
 
 /* ----------------------------------------------------
-	 Struktura tabeli assignments
+ Structure of table "assignments"
 ---------------------------------------------------*/
 DROP SEQUENCE "assignments_id_seq";
 CREATE SEQUENCE "assignments_id_seq";
@@ -42,7 +42,7 @@ CREATE TABLE assignments (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "cash" 
+  Structure of table "cash" 
 -------------------------------------------------------- */
 DROP SEQUENCE "cash_id_seq";
 CREATE SEQUENCE "cash_id_seq";
@@ -57,12 +57,14 @@ CREATE TABLE cash (
 	userid integer 		DEFAULT 0 NOT NULL,
 	comment varchar(255) 	DEFAULT '' NOT NULL,
 	invoiceid integer 	DEFAULT 0 NOT NULL,
+	itemid smallint		DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX cash_userid_idx ON cash(userid);
+CREATE INDEX cash_invoiceid_idx ON cash(invoiceid);
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "networks" 
+  Structure of table "networks" 
 -------------------------------------------------------- */
 DROP SEQUENCE "networks_id_seq";
 CREATE SEQUENCE "networks_id_seq";
@@ -86,7 +88,7 @@ CREATE TABLE networks (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "nodes" 
+  Structure of table "nodes" 
 -------------------------------------------------------- */
 DROP SEQUENCE "nodes_id_seq";
 CREATE SEQUENCE "nodes_id_seq";
@@ -113,7 +115,7 @@ CREATE TABLE nodes (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "tariffs" 
+  Structure of table "tariffs" 
 -------------------------------------------------------- */
 DROP SEQUENCE "tariffs_id_seq";
 CREATE SEQUENCE "tariffs_id_seq"; 
@@ -136,7 +138,7 @@ CREATE TABLE tariffs (
 );
 
 /* ---------------------------------------------------------
-  Struktura tabeli "payments"
+  Structure of table "payments"
 --------------------------------------------------------- */
 DROP SEQUENCE "payments_id_seq";
 CREATE SEQUENCE "payments_id_seq";
@@ -153,7 +155,7 @@ CREATE TABLE payments (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "invoices" 
+  Structure of table "invoices" 
 -------------------------------------------------------- */
 DROP SEQUENCE "invoices_id_seq";
 CREATE SEQUENCE "invoices_id_seq";
@@ -169,7 +171,7 @@ CREATE TABLE invoices (
         address varchar(255) 	DEFAULT '' NOT NULL,
         nip varchar(16) 	DEFAULT '' NOT NULL,
 	pesel varchar(11) 	DEFAULT '' NOT NULL,
-        zip varchar(6) 		DEFAULT '' NOT NULL,
+        zip varchar(10)		DEFAULT '' NOT NULL,
         city varchar(32) 	DEFAULT '' NOT NULL,
         phone varchar(255) 	DEFAULT '' NOT NULL,
         finished smallint 	DEFAULT 0 NOT NULL,
@@ -177,11 +179,12 @@ CREATE TABLE invoices (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "invoicecontents" 
+  Structure of table "invoicecontents" 
 -------------------------------------------------------- */
 DROP TABLE invoicecontents;
 CREATE TABLE invoicecontents (
 	invoiceid integer 	DEFAULT 0 NOT NULL,
+	itemid smallint		DEFAULT 0 NOT NULL,
 	value numeric(9,2) 	DEFAULT 0 NOT NULL,
 	taxvalue numeric(9,2) 	DEFAULT 0,
 	pkwiu varchar(255) 	DEFAULT '' NOT NULL,
@@ -192,7 +195,7 @@ CREATE TABLE invoicecontents (
 );	 
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "timestamps" 
+  Structure of table "timestamps" 
 -------------------------------------------------------- */
 DROP TABLE timestamps;
 CREATE TABLE timestamps (
@@ -202,7 +205,7 @@ CREATE TABLE timestamps (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "users" 
+  Structure of table "users" (customers)
 -------------------------------------------------------- */
 DROP SEQUENCE "users_id_seq";
 CREATE SEQUENCE "users_id_seq";
@@ -218,7 +221,7 @@ CREATE TABLE users (
 	phone3 varchar(255) 	DEFAULT '' NOT NULL,
 	gguin integer 		DEFAULT 0 NOT NULL,
 	address varchar(255) 	DEFAULT '' NOT NULL,
-	zip varchar(6) 		DEFAULT '' NOT NULL,
+	zip varchar(10)		DEFAULT '' NOT NULL,
 	city varchar(32) 	DEFAULT '' NOT NULL,
 	nip varchar(16) 	DEFAULT '' NOT NULL,
 	pesel varchar(11) 	DEFAULT '' NOT NULL,
@@ -235,7 +238,7 @@ CREATE TABLE users (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "usergroups" 
+  Structure of table "usergroups" 
 -------------------------------------------------------- */
 DROP SEQUENCE "usergroups_id_seq";
 CREATE SEQUENCE "usergroups_id_seq";
@@ -249,7 +252,7 @@ CREATE TABLE usergroups (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "userassignments" 
+  Structure of table "userassignments" 
 -------------------------------------------------------- */
 DROP SEQUENCE "userassignments_id_seq";
 CREATE SEQUENCE "userassignments_id_seq";
@@ -263,7 +266,7 @@ CREATE TABLE userassignments (
 );
 
 /* -------------------------------------------------------- 
-  Struktura tabeli "stats" 
+  Structure of table "stats" 
 -------------------------------------------------------- */
 DROP TABLE stats;
 CREATE TABLE stats (
@@ -276,7 +279,7 @@ CREATE TABLE stats (
 CREATE INDEX stats_nodeid_idx ON stats(nodeid);
 
 /* ---------------------------------------------------
-	Struktura tabeli netdevices
+ Structure of table "netdevices"
 ----------------------------------------------------*/
 DROP SEQUENCE "netdevices_id_seq";
 CREATE SEQUENCE "netdevices_id_seq";
@@ -294,7 +297,7 @@ CREATE TABLE netdevices (
 );
 
 /* ---------------------------------------------------
-	Struktura tabeli netlinks
+ Structure of table "netlinks"
 ----------------------------------------------------*/
 DROP SEQUENCE "netlinks_id_seq";
 CREATE SEQUENCE "netlinks_id_seq";
@@ -309,7 +312,7 @@ CREATE TABLE netlinks (
 );
 
 /* ---------------------------------------------------
-    Functions for network address translations
+ Functions for network address translations
 ------------------------------------------------------*/
 CREATE OR REPLACE FUNCTION inet_ntoa(bigint) RETURNS text AS '
 SELECT 
@@ -331,7 +334,7 @@ SELECT
 ' LANGUAGE SQL;
 
 /* --------------------------------------------------
-    Tables for RT
+ Tables for RT (Helpdesk)
 -----------------------------------------------------*/
 DROP TABLE rtattachments;  
 CREATE TABLE rtattachments (
@@ -400,7 +403,7 @@ CREATE TABLE rtrights (
 );
 
 /* ---------------------------------------------------
-    Accounts table
+ Structure of table "passwd" (accounts)
 ------------------------------------------------------*/
 
 DROP SEQUENCE passwd_id_seq;
@@ -422,7 +425,7 @@ CREATE TABLE passwd (
 );
 
 /* ---------------------------------------------------
-    Domains table
+ Structure of table "domains"
 ------------------------------------------------------*/
 
 DROP SEQUENCE domains_id_seq;
@@ -437,7 +440,7 @@ CREATE TABLE domains (
 );
 
 /* ---------------------------------------------------
-    Aliases table
+ Structure of table "aliases"
 ------------------------------------------------------*/
 
 DROP SEQUENCE aliases_id_seq;
@@ -452,7 +455,7 @@ CREATE TABLE aliases (
 );
 
 /* ---------------------------------------------------
-    LMS-UI Configuration table
+ LMS-UI Configuration table
 ------------------------------------------------------*/
 
 DROP SEQUENCE uiconfig_id_seq;
@@ -470,7 +473,41 @@ CREATE TABLE uiconfig (
 );
 
 /* ---------------------------------------------------
-    Database info table
+ Structure of table "events" (Timetable)
+------------------------------------------------------*/
+
+DROP SEQUENCE events_id_seq;
+CREATE SEQUENCE events_id_seq;
+DROP TABLE events;
+CREATE TABLE events (
+	id integer default nextval('rtqueues_id_seq'::text) NOT NULL,
+	title varchar(255) DEFAULT '' NOT NULL,
+	description text DEFAULT '' NOT NULL,
+	note text DEFAULT '' NOT NULL,
+	date integer DEFAULT 0 NOT NULL,
+	begintime smallint DEFAULT 0 NOT NULL,
+	endtime smallint DEFAULT 0 NOT NULL,
+	adminid integer DEFAULT 0 NOT NULL,
+	userid integer DEFAULT 0 NOT NULL,
+	private smallint DEFAULT 0 NOT NULL,
+	closed smallint DEFAULT 0 NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX events_date_idx ON events(date);
+
+/* ---------------------------------------------------
+ Structure of table "events" (Timetable)
+------------------------------------------------------*/
+
+DROP TABLE eventassignments;
+CREATE TABLE eventassignments (
+	eventid integer DEFAULT 0 NOT NULL,
+	adminid integer DEFAULT 0 NOT NULL,
+	UNIQUE (eventid, adminid)
+);
+
+/* ---------------------------------------------------
+ Structure of table "dbinfo"
 ------------------------------------------------------*/
 
 DROP TABLE dbinfo;
@@ -480,4 +517,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004121000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005021500');
