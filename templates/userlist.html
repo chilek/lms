@@ -19,7 +19,7 @@
 			<img src="img/money.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$userlist.state}&o=balance{if $userlist.direction eq 4 && $userlist.order eq "balance"},desc{/if}">Saldo:</A>&nbsp;{if $userlist.order eq "balance"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD width="1%" class="frightu">
-			&nbsp;
+			<B>Razem: {$userlist.total}</B>
 		</TD>
 	</TR>
 	<TR bgColor="CEBD9B">
@@ -27,7 +27,7 @@
 			<B>Filtruj: <img src="img/user.gif" align="absmiddle" border="0" alt=""> {if $userlist.state neq 3}<a href="?m=userlist&s=3">{else}<U>{/if}pod³±czeni{if $userlist.state neq 3}</a>{else}</U>{/if} <img src="img/wait.gif" align="absmiddle" border="0" alt=""> {if $userlist.state neq 2}<a href="?m=userlist&s=2">{else}<U>{/if}oczekuj±cy{if $userlist.state neq 2}</a>{else}</U>{/if} <img src="img/unk.gif" align="absmiddle" border="0" alt=""> {if $userlist.state neq 1}<a href="?m=userlist&s=1">{else}<U>{/if}zainteresowani{if $userlist.state neq 1}</a>{else}</U>{/if}</a> <img src="img/user.gif" align="absmiddle" border="0" alt=""> {if $userlist.state neq 0}<a href="?m=userlist&s=0">{else}<U>{/if}wszyscy{if $userlist.state neq 0}</a>{else}</U>{/if}</B>	
 		</TD>
 		<TD colspan="2" class="frightu" align="right">
-			<B>Razem: {$userlist.total}</B>
+			&nbsp;
 		</TD>
 	</TR>
 	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=userlist loop=$userlist.id}
@@ -50,62 +50,76 @@
 			<NOBR><A href="?m=userdel&id={$userlist.id[userlist]}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.username[userlist]|upper} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><IMG src="img/delete.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A> <A href="?m=useredit&id={$userlist.id[userlist]}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A> <A href="?m=userinfo&id={$userlist.id[userlist]}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A></NOBR>
 		</TD>
 	</TR>{/section}
+	<TR bgColor="#DFD5BD">
+		<TD colspan="2" class="fleftu" align="right" valign="top">
+			<IMG SRC="img/info2.gif" border="0" alt="" align="absmiddle"> <B>Razem: {$userlist.total}</B>	
+		</TD>
+		<TD class="fbt" align="right">
+			<B>Zaleg³o¶ci:<BR>
+			Nadp³aty:</B>
+		</TD>
+		<TD class="fbt" align="right">
+			<B>{$userlist.below|string_format:"%01.2f"} z³<BR>
+			{$userlist.over|string_format:"%01.2f"} z³</B>
+		</TD>
+		<TD class="frightu">
+			&nbsp;
+		</TD>
+	</TR>
 	<TR bgColor="#DFD5BD" title="Dodaj nowego u¿ytkownika">
-		<FORM METHOD="post" NAME="useradd" ACTION="?m=useradd#useradd">
-		<TD colspan="2" class="fleftu">
-			<NOBR><A NAME="useradd"><IMG SRC="img/user.gif" border="0" alt="" align="absmiddle"> <INPUT TYPE="text" NAME="useradd[lastname]" title="Nazwisko" class="{if $error.username}alertb{else}bold{/if}" size="12" value="{$useradd.lastname}"> <INPUT TYPE="text" NAME="useradd[name]" title="Imiê" class="{if $error.username}alertb{else}bold{/if}" size="10" value="{$useradd.name}">{if $error.username}<BR><FONT COLOR="red"><B>¯adne z tych pól nie mo¿e byæ puste!</B></FONT>{/if}</A><BR>
-			<IMG src="img/phone.gif" alt="" align="absmiddle" border="0"> <INPUT TYPE="text" NAME="useradd[phone1]" title="Telefon" size="15" value="{$useradd.phone1}"><BR>
-			<IMG src="img/unk.gif" alt="" align="absmiddle" border="0">&nbsp;<SELECT size="1" name="useradd[status]">
-				<OPTION VALUE="3" {if $useradd.status eq 3 || $userlist.state eq 3} SELECTED{/if}><B>pod³±czony</B></OPTION>
-				<OPTION VALUE="2" {if $useradd.status eq 2 || $userlist.state eq 2} SELECTED{/if}><B>oczekuj±cy</B></option>
-				<OPTION VALUE="1" {if $useradd.status eq 1 || $userlist.state eq 1} SELECTED{/if}><B>zainteresowany</B></OPTION>
-			</SELECT>
-		</TD>
-		<TD class="fbt">
-			<IMG SRC="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;<INPUT TYPE="text" NAME="useradd[address]" title="Adres" value="{$useradd.address}"{if $error.address} class="alert"{/if}><BR>
-			{if $error.address}<FONT COLOR="red"><B>To pole nie mo¿e byæ puste!</B></FONT><BR>{/if}
-			<IMG SRC="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;<INPUT TYPE="text" NAME="useradd[email]" title="E-mail" value="{$useradd.email}"><BR>
-			<img src="img/money.gif" alt="" align="absmiddle" border="0">&nbsp;<SELECT size="1" name="useradd[tariff]">
-				{section name=tariffs loop=$tariffs.id}
-				<OPTION VALUE="{$tariffs.id[tariffs]}"{if $tariffs.id[tariffs] eq $useradd.tariff} SELECTED{/if}> {$tariffs.name[tariffs]} ({$tariffs.value[tariffs]} z³)</OPTION>
-				{/section}
-			</SELECT>
-			{if $error.tariff}
-			<BR><FONT COLOR="red"><B>Proszê wybraæ taryfê!</B></FONT>
-			{/if}
-		</TD>
-		<TD colspan="2" class="frightu" align="right">
-			<A HREF="javascript:document.useradd.submit();">Dodaj&nbsp;u¿ytkownika&nbsp;<IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
-		</TD>
-		</FORM>
-	</TR>
-	<TR bgColor="#CEBD9B">
-		<TD colspan="3" class="fleftu">
-			<B>Filtruj: <img src="img/user.gif" align="absmiddle" border="0" alt=""> {if $userlist.state neq 3}<a href="?m=userlist&s=3">{else}<U>{/if}pod³±czeni{if $userlist.state neq 3}</a>{else}</U>{/if} <img src="img/wait.gif" align="absmiddle" border="0" alt=""> {if $userlist.state neq 2}<a href="?m=userlist&s=2">{else}<U>{/if}oczekuj±cy{if $userlist.state neq 2}</a>{else}</U>{/if} <img src="img/unk.gif" align="absmiddle" border="0" alt=""> {if $userlist.state neq 1}<a href="?m=userlist&s=1">{else}<U>{/if}zainteresowani{if $userlist.state neq 1}</a>{else}</U>{/if}</a> <img src="img/user.gif" align="absmiddle" border="0" alt=""> {if $userlist.state neq 0}<a href="?m=userlist&s=0">{else}<U>{/if}wszyscy{if $userlist.state neq 0}</a>{else}</U>{/if}</B>	
-		</TD>
-		<TD colspan="2" class="frightu" align="right">
-			<B>Razem: {$userlist.total}</B>
-		</TD>
-	</TR>
-	<TR bgcolor="#CEBD9B">
-		<TD width="95%" class="fleftu">
-			<B>
-			<img src="img/user.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$userlist.state}&o=username{if $userlist.direction eq 4 && $userlist.order eq "username"},desc{/if}">Nazwisko i imiê:</A></B> {if $userlist.order eq "username"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<img src="img/phone.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$userlist.state}&o=phone{if $userlist.direction eq 4 && $userlist.order eq "phone"},desc{/if}">Telefon:</A></B> {if $userlist.order eq "phone"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-		</TD>
-		<TD align="right" width="1%" class="fbt">
-			<a href="?m=userlist&s={$userlist.state}&o=id{if $userlist.direction eq 4 && $userlist.order eq "id"},desc{/if}">ID:</A></B> {if $userlist.order eq "id"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			&nbsp;
-		</TD>
-		<TD width="1%" class="fbt">
-			<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$userlist.state}&o=address{if $userlist.direction eq 4 && $userlist.order eq "address"},desc{/if}">Adres:</A> {if $userlist.order eq "address"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<br>
-			<img src="img/mail.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$userlist.state}&o=email{if $userlist.direction eq 4 && $userlist.order eq "email"},desc{/if}">E-mail:</A> {if $userlist.order eq "email"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
-		</TD>
-		<TD width="1%" class="fbt">
-			<img src="img/money.gif" alt="" align="absmiddle">&nbsp;<a href="?m=userlist&s={$userlist.state}&o=balance{if $userlist.direction eq 4 && $userlist.order eq "balance"},desc{/if}">Saldo:</A>&nbsp;{if $userlist.order eq "balance"}<IMG SRC="img/{if $userlist.direction eq 3}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
-		</TD>
-		<TD width="1%" class="frightu">
-			&nbsp;
+		<TD colspan="5" class="fall">
+			<P><a name="useradd"><FORM METHOD="post" NAME="useradd" ACTION="?m=useradd#useradd">
+					<B>Dodaj nowego u¿ytkownika:</B>
+					<table width="100%">
+					<TR>
+						<TD width="1%">
+							<IMG SRC="img/user.gif" border="0" alt="" align="absmiddle">
+						</TD>
+						<TD width="95%">
+							<NOBR><INPUT TYPE="text" NAME="useradd[lastname]" title="Nazwisko" class="{if $error.username}alertb{else}bold{/if}" size="12" value="{$useradd.lastname}"> <INPUT TYPE="text" NAME="useradd[name]" title="Imiê" class="{if $error.username}alertb{else}bold{/if}" size="10" value="{$useradd.name}">{if $error.username}<BR><FONT COLOR="red"><B>¯adne z tych pól nie mo¿e byæ puste!</B></FONT>{/if}</NOBR>
+						</TD>
+						<TD width="1%">
+							<IMG SRC="img/home.gif" alt="" align="absmiddle" border="0">
+						</TD>
+						<TD width="1%">
+							<INPUT TYPE="text" NAME="useradd[address]" title="Adres" value="{$useradd.address}"{if $error.address} class="alert"{/if}>
+							{if $error.address}<BR><FONT COLOR="red"><B>To pole nie mo¿e byæ puste!</B></FONT>{/if}
+						</TD>
+						<TD width="1%">
+							<img src="img/money.gif" alt="" align="absmiddle" border="0">
+						</TD>
+						<TD width="1%">
+							<SELECT size="1" name="useradd[tariff]">{section name=tariffs loop=$tariffs.id}<OPTION VALUE="{$tariffs.id[tariffs]}"{if $tariffs.id[tariffs] eq $useradd.tariff} SELECTED{/if}> {$tariffs.name[tariffs]} ({$tariffs.value[tariffs]} z³)</OPTION>{/section}</SELECT>{if $error.tariff}<B><FONT COLOR="red"><B>Proszê wybraæ taryfê!</B></FONT>{/if}
+						</TD>
+					</TR>
+					<TR>
+						<TD width="1%">
+							<IMG src="img/phone.gif" alt="" align="absmiddle" border="0">
+						</TD>
+						<TD width="95%">
+							<INPUT TYPE="text" NAME="useradd[phone1]" title="Telefon" size="15" value="{$useradd.phone1}"><BR>
+						</TD>
+						<TD width="1%">
+							<IMG SRC="img/mail.gif" alt="" align="absmiddle" border="0">
+						</TD>
+						<TD width="1%">
+							<INPUT TYPE="text" NAME="useradd[email]" title="E-mail" value="{$useradd.email}">
+						</TD>
+						<TD width="1%" align="right" valign="top">
+							<IMG src="img/unk.gif" alt="" align="absmiddle" border="0">
+						</TD>
+						<TD width="1%" align="right">
+							<SELECT size="1" name="useradd[status]"><OPTION VALUE="3" {if $useradd.status eq 3 || $userlist.state eq 3} SELECTED{/if}><B>pod³±czony</B></OPTION><OPTION VALUE="2" {if $useradd.status eq 2 || $userlist.state eq 2} SELECTED{/if}><B>oczekuj±cy</B></option><OPTION VALUE="1" {if $useradd.status eq 1 || $userlist.state eq 1} SELECTED{/if}><B>zainteresowany</B></OPTION></SELECT>
+						</TD>
+					</TR>
+					<TR>
+						<TD colspan="6" align="right">
+							<A HREF="javascript:document.useradd.submit();">Dodaj&nbsp;u¿ytkownika&nbsp;<IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="absmiddle"></A>
+						</TD>
+					</TR>
+				</TABLE>				
+			</FORM>
+			</A></p>
 		</TD>
 	</TR>
 </TABLE>
