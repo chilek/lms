@@ -348,9 +348,9 @@ info = "Opcjonalny opis modu³u"
 		    <para>Podobnie jak w 'notify' masz do dyspozycji nastêpuj±ce zmienne:</para>
 		    <itemizedlist>
 			<listitem>
-			    <para>ggtemplate</para>
+			    <para>template</para>
 			    <para>Lokalizacja pliku z szablonem wiadomo¶ci. Domy¶lnie: pusty.</para>
-			    <para>Przyk³ad: <prompt>ggtemplate = modules/ggnotify/sample/mailtemplate</prompt></para>
+			    <para>Przyk³ad: <prompt>template = modules/ggnotify/sample/mailtemplate</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>uin</para>
