@@ -1260,6 +1260,28 @@ class LMS
 
 		return $balancelist;
 	}
+	
+	function ScanNodes()
+	{
+		$networks = $this->GetNetworks();
+		foreach($networks as $idx => $network)
+		{
+			$out = split("\n",execute_program("nbtscan","-q -s: ".$network[address]."/".$network[prefix]));
+			foreach($out as $line)
+			{
+				list($ipaddr,$name,$null,$login,$mac)=split(":",$line);
+				$row[ipaddr] = trim($ipaddr);
+				$row[name] = trim($name);
+				$row[mac] = str_replace("-",":",trim($mac));
+				if(!$this->GetNodeIDByIP($row[ipaddr]))
+					$return[] = $row;
+			}	
+		}
+//		$out = execute_program("nbtscan","-q -s: 192.168.1.0/24");
+//		echo '<PRE>';
+//		print_r($this->GetNetworks());
+		return $return;
+	}								
 
 	/*
 	 *  Obs³uga rekordów z sieciami
@@ -1548,7 +1570,7 @@ class LMS
 
 		return $return;
 	}
-	
+
 	/*
 	 * Pozosta³e funkcje...
 	 */
