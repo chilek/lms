@@ -103,7 +103,7 @@ lms-makearp, version $_version
 (C) Copyright 2002 Rulez.PL Development Team
 (C) Copyright 2001-2002 NetX ACN
 
--C, --config-file=/etc/lms.ini	alternate config file (default: /etc/lms.ini);
+-C, --config-file=/etc/lms/lms-scripts.ini	alternate config file (default: /etc/lms/lms-scripts.ini);
 -h, --help			print this help and exit;
 -v, --version			print version info and exit;
 -q, --quiet			suppress any output, except errors;
@@ -125,7 +125,7 @@ EOF
 
 if(!$configfile)
 {
-	$configfile = "/etc/lms.ini";
+	$configfile = "/etc/lms/lms-scripts.ini";
 }
 
 if(!$quiet)
