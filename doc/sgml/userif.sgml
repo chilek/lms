@@ -52,8 +52,8 @@
 	któr± mo¿esz filtrowaæ wed³ug wybranych kryteriów lub sortowaæ klikaj±c
 	na nazwie kolumny.</para>
 	<para>Klikniêcie na wybranym u¿ytkowniku spowoduje przej¶cie do panelu
-	z informacjami szczegó³owymi o nim i przypisanym mu komputerach oraz
-	operacja finansowych. Tam te¿ mo¿esz zaksiêgowaæ wp³atê lub obci±¿enie jego
+	z informacjami szczegó³owymi o nim i przypisanych mu komputerach oraz
+	operacjach finansowych. Tam te¿ mo¿esz zaksiêgowaæ wp³atê lub obci±¿enie jego
 	rachunku.</para>
 	<para>W menu znajduj±cym siê u góry okna masz do wyboru opcje: filtrowania listy, 
 	dodawania nowych u¿ytkowników, wyszukiwania w bazie wg zadanych kryteriów oraz
@@ -70,7 +70,8 @@
  </sect2>
  <sect2 id="menu-nodes">
 	<title>Komputery</title>
-	<para>babla</para>
+	<para><warning><para>Aby dodaæ nowy komputer musisz wcze¶niej utworzyæ 
+	u¿ytkownika oraz sieæ, które mu przypiszesz.</para></warning></para>
 	<figure>
 	<title>LMS-UI: Komputery</title>
 	<ulink url="images/nodes.png">
@@ -108,14 +109,6 @@
  <sect2 id="menu-mailing">
 	<title>Mailing</title>
 	<para></para>
-	<figure>
-	<title>LMS-UI: Mailing</title>
-	<ulink url="images/mailing.png"><inlinemediaobject>
-  		<imageobject>
-  		<imagedata fileref="images/mailing-small.png" format="png">
-  		</imageobject>
-  	</inlinemediaobject></ulink>
-	</figure>
  </sect2>
  <sect2 id="menu-reload">
 	<title>Prze³adowanie</title>
@@ -149,10 +142,19 @@
 	<title>Statystyki</title>
 	<para></para>
 	<figure>
-	<title>LMS-UI: Statystyki</title>
+	<title>LMS-UI: Statystyki - filtr</title>
 	<ulink url="images/stats.png"><inlinemediaobject>
   		<imageobject>
   		<imagedata fileref="images/stats-small.png" format="png">
+  		</imageobject>
+  	</inlinemediaobject></ulink>
+	</figure>
+	<para></para>
+		<figure>
+	<title>LMS-UI: Statystyki - wykres</title>
+	<ulink url="images/statbars.png"><inlinemediaobject>
+  		<imageobject>
+  		<imagedata fileref="images/statbars-small.png" format="png">
   		</imageobject>
   	</inlinemediaobject></ulink>
 	</figure>
