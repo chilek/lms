@@ -5,7 +5,7 @@
 			<IMG SRC="img/user.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN="2">
-			<B>{$userinfo.username} ({$userinfo.id|string_format:"%04d"}){if $userinfo.deleted} <FONT COLOR="RED">(u¿ytkownik usuniêty)</FONT>{/if}</B>
+			<B>{$userinfo.username} ({$userinfo.id|string_format:"%04d"}){if $userinfo.deleted} <FONT COLOR="RED">({t}deleted user{/t})</FONT>{/if}</B>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -15,9 +15,9 @@
 			{if $userinfo.status eq "1"}<IMG SRC="img/unk.gif" ALT="" border="0">{/if}			
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-			{if $userinfo.status eq "3"}<B>pod³±czony</B>{/if}
-			{if $userinfo.status eq "2"}<B>oczekuj±cy</B>{/if}
-			{if $userinfo.status eq "1"}<B>zainteresowany</B>{/if}
+			{if $userinfo.status eq "3"}<B>{t}connected{/t}</B>{/if}
+			{if $userinfo.status eq "2"}<B>{t}waiting{/t}</B>{/if}
+			{if $userinfo.status eq "1"}<B>{t}interested{/t}</B>{/if}
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -72,7 +72,7 @@
 {if $userinfo.nip neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT" ALIGN="CENTER">
-			<B>NIP:</B>
+			<B>{t}NIP:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			{$userinfo.nip}
@@ -82,7 +82,7 @@
 {if $userinfo.pesel neq ""}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT" ALIGN="CENTER">
-			<B>PSL:</B>
+			<B>{t}PSL:{/t}</B>
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
 			{$userinfo.pesel}
@@ -95,7 +95,7 @@
 			<IMG SRC="img/pin.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			PIN:
+			{t}PIN:{/t}
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{$userinfo.pin}
@@ -107,7 +107,7 @@
 			<IMG SRC="img/money.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Saldo:</B>
+			<B>{t}Balance:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{if $userinfo.balance < 0}<FONT COLOR="RED"><B>{$userinfo.balance|string_format:"%01.2f"} z³</B></FONT>{else}{$userinfo.balance|default:"0"|string_format:"%01.2f"} z³{/if}
@@ -118,8 +118,8 @@
 			<IMG SRC="img/admins.gif" BORDER="0" ALT="">
 		</TD>
 		<TD WIDTH="1%">
-			<B>Utworzony:<BR>
-			Zmodyfikowany:</B>
+			<B>{t}Created:{/t}<BR>
+			{t}Modified:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
 			{$userinfo.createdby}, {$userinfo.creationdateh}<BR>
@@ -161,12 +161,12 @@
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" COLSPAN="3" CLASS="FBOTTOMU" ALIGN="RIGHT">
 			{if $userinfo.deleted}
-				<A HREF="?m=useredit&id={$userinfo.id}&action=recover">Przywróæ <IMG SRC="img/recover.gif" border="0" align="absmiddle" ALT="[ Przywróæ ]"></A>
+				<A HREF="?m=useredit&id={$userinfo.id}&action=recover">{t}Restore{/t} <IMG SRC="img/recover.gif" border="0" align="absmiddle" ALT="[ {t}Restore{/t} ]"></A>
 			{else}
-				<A href="?m=accountlist&u={$userinfo.id}">Konta <IMG src="img/account.gif" border="0" align="absmiddle" ALT="[ Konta u¿ytkownika ]"></A>
-				<A href="?m=contract&id={$userinfo.id}" target="_blank">Drukuj umowê <IMG src="img/print.gif" border="0" align="absmiddle" ALT="[ Umowa ]"></A>
-				<A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">Edytuj <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ Edytuj ]"></A>
-				<A href="?m=userdel&id={$userinfo.id}" {confirm text="Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: `$userinfo.username` z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!"}>Usuñ <img border="0" align="absmiddle" src="img/delete.gif" ALT="[ Usuñ ]"></A>
+				<A href="?m=accountlist&u={$userinfo.id}">{t}Accounts{/t} <IMG src="img/account.gif" border="0" align="absmiddle" ALT="[ {t}Customer's accounts{/t} ]"></A>
+				<A href="?m=contract&id={$userinfo.id}" target="_blank">{t}Print contract{/t} <IMG src="img/print.gif" border="0" align="absmiddle" ALT="[ {t}Contract{/t} ]"></A>
+				<A href="?m=useredit&id={$userinfo.id}" ACCESSKEY="E">{t}Edit{/t} <IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A>
+				<A href="?m=userdel&id={$userinfo.id}" onClick="return confirmLink(this, 'Are you sure, you want to remove user: {$userinfo.username} from database?\n\nIf that user have any computers, they will be automatically removed from database too, and informations about them irreversible losed!')">{t}Delete{/t} <img border="0" align="absmiddle" src="img/delete.gif" ALT="[ {t}Delete{/t} ]"></A>
 			{/if}
 		</TD>
 	</TR>
