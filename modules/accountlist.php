@@ -117,7 +117,7 @@ $start = ($page - 1) * $pagelimit;
 
 $_SESSION['alp'] = $page;
 
-$layout['pagetitle'] = 'Zarz±dzanie kontami';
+$layout['pagetitle'] = trans('Accounts Management');
 
 $accountlist = GetAccountList($o, $u, $t, $k, $d);
 $listdata['total'] = $accountlist['total'];

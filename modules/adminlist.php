@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = 'Administratorzy';
+$layout['pagetitle'] = trans('Users List');
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 

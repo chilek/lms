@@ -40,28 +40,26 @@ if(isset($admininfo))
 	foreach($admininfo as $key => $value)
 		$admininfo[$key] = trim($value);
 
-	if($LMS->GetAdminIDByLogin($admininfo['login']) && $LMS->GetAdminIDByLogin($admininfo['login']) != $_GET['id'])
-		$error['login'] = 'Podany login jest ju¿ zajêty!';
-
 	if($admininfo['login'] == '')
-		$error['login'] = "Pole login nie mo¿e byæ puste!";
-	elseif(!eregi("^[a-z0-9.-_]+$",$admininfo['login']))
-		$error['login'] = 'Login zawiera niepoprawne znaki!';
+		$error['login'] = trans('Login can\'t be empty!');
+	elseif(!eregi('^[a-z0-9.-_]+$',$admininfo['login']))
+		$error['login'] = trans('Login contains forbidden characters!');
+	elseif($LMS->GetAdminIDByLogin($admininfo['login']) && $LMS->GetAdminIDByLogin($admininfo['login']) != $_GET['id'])
+		$error['login'] = trans('Account with specified login exists!');
 
 	if($admininfo['name'] == '')
-		$error['name'] = "Pole 'imiê i nazwisko' nie mo¿e byæ puste!";
+		$error['name'] = trans('You must enter name and surname!');
 
 	if($admininfo['email']!='' && !check_email($admininfo['email']))
-		$error['email'] = 'Podany email nie wydaje siê byæ poprawny!';
+		$error['email'] = trans('E-mail isn\'t correct!');
 				
-
 	// zróbmy maskê ACL...
 
 	for($i=0;$i<256;$i++)
 		$mask .= '0';
 	
 	foreach($access['table'] as $idx => $row)
-		if($acl[$idx]=="1")
+		if($acl[$idx]=='1')
 			$mask[255-$idx] = '1';
 	for($i=0;$i<256;$i += 4)
 		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
@@ -81,7 +79,7 @@ foreach($LMS->GetAdminInfo($_GET['id']) as $key => $value)
 	if(!isset($admininfo[$key]))
 		$admininfo[$key] = $value;
 
-$layout['pagetitle'] = 'Edycja danych administratora: '.$LMS->GetAdminName($_GET['id']);
+$layout['pagetitle'] = sprintf(trans('Edit User: %s'), $LMS->GetAdminName($_GET['id']));
 
 $rights = $LMS->GetAdminRights($_GET['id']);
 
