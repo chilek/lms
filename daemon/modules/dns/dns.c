@@ -22,7 +22,6 @@
  *  $Id$
  */
 
-
 #include <stdio.h>
 #include <syslog.h>
 #include <string.h>
@@ -62,6 +61,9 @@ unsigned char *load_file(unsigned char *name)
 		ret[l] = 0;
 	}
 	close(fd);
+#ifdef DEBUG1
+	syslog(LOG_INFO, "DEBUG: File '%s' loaded", name);
+#endif
 	return(ret);
 }
 
@@ -80,6 +82,9 @@ int write_file(unsigned char *name, unsigned char *text)
 		if(l <= 0) break;
 	}
 	close(fd);
+#ifdef DEBUG1
+	syslog(LOG_INFO, "DEBUG: File '%s' writed", name);
+#endif
 	return (0);
 }
 
@@ -270,7 +275,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 						rinfile = g->str_concat(rinfile, inet_ntoa(network));
 				
 						if(write_file(finfile, forwardzone) < 0)
-							syslog(LOG_WARNING, "Unable to open output forward zone file %s for domain %s, skipping forward zone for this domain.", finfile, name);
+							syslog(LOG_WARNING, "[%s/dns] Unable to open output forward zone file '%s' for domain '%s', skipping forward zone for this domain.", dns->base.instance, finfile, name);
 						else {
 							unsigned char *zone;
 							zone = strdup(dns->confforward);
@@ -282,7 +287,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 						}
 
 						if(write_file(rinfile, reversezone) < 0)
-							syslog(LOG_WARNING, "Unable to open output reverse zone file %s for domain %s, skipping reverse zone for this domain.", rinfile, name);
+							syslog(LOG_WARNING, "[%s/dns] Unable to open output reverse zone file '%s' for domain '%s', skipping reverse zone for this domain.", dns->base.instance, rinfile, name);
 						else {
 							unsigned char *zone;
 							zone = strdup(dns->confreverse);
@@ -300,7 +305,7 @@ void reload(GLOBAL *g, struct dns_module *dns)
 						free(reversezone);
 					}
 					else
-						syslog(LOG_WARNING, "Unable to open one of the templates for domain %s, skipping this domain. Set at least generic-forward= and generic-reverse= properly.", name);
+						syslog(LOG_WARNING, "[%s/dns] Unable to open one of the templates for domain '%s', skipping this domain. Set at least 'generic-forward' and 'generic-reverse' properly.", dns->base.instance, name);
 				}
 			}	
 		}
@@ -316,14 +321,16 @@ void reload(GLOBAL *g, struct dns_module *dns)
 	if(configfile) {
 		configfile = g->str_replace(configfile, "%z", configentries);
 		if(write_file(dns->confout, configfile) < 0)
-			syslog(LOG_INFO, "Unable to write DNS configuration file %s", dns->confout);
+			syslog(LOG_ERR, "[%s/dns] Unable to write DNS configuration file '%s'", dns->base.instance, dns->confout);
 		free(configfile);
-	
+
+	system(dns->command);
+#ifdef DEBUG1
+	syslog(LOG_INFO, "DEBUG: [%s/dns] reloaded",dns->base.instance);
+#endif	
 	}
 	else
-		syslog(LOG_INFO, "Unable to open DNS pattern file %s", dns->confpattern);
-	
-	system(dns->command);
+		syslog(LOG_ERR, "[%s/dns] Unable to open DNS pattern file '%s'", dns->base.instance, dns->confpattern);
 	
 	free(configentries);
 	free(dns->fpatterns);
