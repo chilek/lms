@@ -2,7 +2,22 @@
 {include file="header.html"}
 {include file="balanceheader.html"}
 <H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="marks" ACTION="?m=invoicelist{if $page ne ""}&page={$page}{/if}&action=updatemarks">
+<FORM METHOD="POST" NAME="marks" ACTION="?m=invoice&print=cached">
+{literal}
+<SCRIPT language=JavaScript>
+<!--
+function CheckAll()
+  {
+  for (var i=0; i<document.marks.elements.length; i++)
+    {
+    var e = document.marks.elements[i];
+    if (e.name != 'allbox')
+      e.checked = document.marks.allbox.checked;
+    }
+  }
+//-->
+</SCRIPT>
+{/literal}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%" CLASS="fbt">
@@ -58,7 +73,7 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 			{cycle print=false}
 			{if $marks.$invoiceid}<IMG ALIGN="absmiddle" SRC="img/mark.gif">{/if}
-			<INPUT STYLE="border-style: none; background-color: {cycle};"  TYPE="checkbox" NAME="mark[{$invoiceid}]" VALUE="1">
+			<INPUT STYLE="border-style: none; background-color: {cycle};"  TYPE="checkbox" NAME="mark[{$invoice.id}]" VALUE="{$invoice.id}">
 			<A HREF="?m=invoice&id={$invoice.id}"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0" TARGET="_BLANK"></A>
 		</TD>
 	</TR>
@@ -66,11 +81,6 @@
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
 			<B>Strona: {if $page > 1}<A HREF="?m=invoicelist&page={math equation="x - 1" x=$page}">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="?m=invoicelist&page={$smarty.section.pcnt.rownum}">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="?m=invoicelist&page={math equation="x + 1" x=$page}">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
-		</TD>
-	</TR>
-	<TR CLASS="dark">
-		<TD COLSPAN="7" class="fall" COLSPAN="7">
-			<B>Zaznacz:</B>
 		</TD>
 	</TR>
 	<TR CLASS="dark">
@@ -109,9 +119,14 @@
 						</TABLE>*}
 					</TD>
 					<TD WIDTH="1%" NOWRAP ALIGN="right">
-						<A HREF="javascript:document.marks.submit(); ">Uaktualnij zaznaczenia <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
-						<A HREF="?m=invoicelist&action=clearmarks">Wyczy¶æ zaznaczenia <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
-						<A HREF="?m=invoice&print=cached" TARGET="_BLANK">Drukuj zaznaczone <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
+					{*
+						<A HREF="javascript:document.marks.submit();">Uaktualnij zaznaczenia <IMG SRC="img/save.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
+						<A HREF="?m=invoicelist&action=clearmarks">Wyczy¶æ zaznaczone <IMG SRC="img/delete.gif" BORDER="0" ALT="" ALIGN="absmiddle"></A><BR>
+					*}
+						Zaznacz wszystkie
+						<INPUT CLASS="box" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"><BR>
+
+						<A HREF="javascript:document.marks.submit();">Drukuj <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A>
 					</TD>
 				</TR>
 			</TABLE>
