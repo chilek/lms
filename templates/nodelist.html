@@ -47,7 +47,7 @@
 		</TD>
 		<TD class="fright" width="1%">
 			<nobr>
-			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/{if $nodelist[nodelist].access neq "Y"}no{/if}access.gif" border="0" alt="{if $nodelist[nodelist].access eq "Y"}[ Od³±cz ]{else}[ Pod³±cz ]{/if}"></A>
+			<a href="?m=nodeset&id={$nodelist[nodelist].id}"><img src="img/n{if $nodelist[nodelist].access neq "Y"}no{/if}access.gif" border="0" alt="{if $nodelist[nodelist].access eq "Y"}[ Od³±cz ]{else}[ Pod³±cz ]{/if}"></A>
 			<a href="?m=nodedel&id={$nodelist[nodelist].id}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ komputer \'{$nodelist[nodelist].name|upper}\' z bazy danych?')"><img src="img/delete.gif" border="0" alt="[ Usuñ ]"></A>
 			<a href="?m=nodeedit&id={$nodelist[nodelist].id}"><img src="img/edit.gif" border="0" alt="[ Edytuj ]"></A>
 			<a href="?m=nodeinfo&id={$nodelist[nodelist].id}"><img src="img/info.gif" border="0" alt="[ Info ]"></A>
