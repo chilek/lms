@@ -1073,7 +1073,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 			foreach($username as $idx => $row)
 				$usernames[$row['id']] = $row['username'];
 		
-		if($nodelist = $this->DB->GetAll('SELECT id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access FROM nodes '.$searchargs.' '.($sqlord != '' ? $sqlord.' '.$direction : '')))
+		if($nodelist = $this->DB->GetAll('SELECT id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access, warning FROM nodes '.$searchargs.' '.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
 			foreach($nodelist as $idx => $row)
 			{
