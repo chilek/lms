@@ -51,6 +51,9 @@ if($cfg = $_POST['config'])
 {
 	$cfg['id'] = $id;
 	
+	foreach($cfg as $key => $val) 
+	    $cfg[$key] = trim($val);
+	
 	if(!eregi("^[a-z0-9_-]+$", $cfg['var']))
     	    $error['var'] = 'Nazwa opcji zawiera niepoprawne znaki!';
 
@@ -69,6 +72,23 @@ if($cfg = $_POST['config'])
 	    $error['value'] = 'Opcja musi mieæ okre¶lon± warto¶æ!';
 	
 	if($cfg['disabled']!='1') $cfg['disabled'] = 0;
+
+	// sprawdzenie warto¶ci niektórych opcji (z config_defaults.ini)
+	switch($cfg['var'])
+	{
+	    case 'accountlist_pagelimit':
+	    case 'ticketlist_pagelimit':
+	    case 'balancelist_pagelimit':
+	    case 'invoicelist_pagelimit':
+	    case 'timeout':
+		    if($cfg['value']<=0)
+			    $error['value'] = 'Warto¶æ opcji \''.$cfg['var'].'\' musi byæ liczb± wiêksz± od zera!';
+		break;
+	    case 'reload_type':
+		    if($cfg['value']!='sql' && $cfg['value']!='exec')
+			    $error['value'] = 'Z³y typ reloadu. Obs³ugiwane typy: sql, exec!';
+		break;
+	}
 
 	if(!$error)
 	{
