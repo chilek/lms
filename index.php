@@ -60,7 +60,6 @@ $_MODULES_DIR = (! $_CONFIG['directories']['modules_dir'] ? $_SYSTEM_DIR.'/modul
 $_SMARTY_DIR = (! $_CONFIG['directories']['smarty_dir'] ? $_LIB_DIR.'/Smarty' : $_CONFIG['directories']['smarty_dir']);
 $_SMARTY_COMPILE_DIR = (! $_CONFIG['directories']['smarty_compile_dir'] ? $_SYSTEM_DIR.'/templates_c' : $_CONFIG['directories']['smarty_compile_dir']);
 $_SMARTY_TEMPLATES_DIR = (! $_CONFIG['directories']['smarty_templates_dir'] ? $_SYSTEM_DIR.'/templates' : $_CONFIG['directories']['smarty_templates_dir']);
-$_ADODB_DIR = (! $_CONFIG['directories']['adodb_dir'] ? $_LIB_DIR.'/adodb' : $_CONFIG['directories']['adodb_dir']);
 $_TIMEOUT = (! $_CONFIG['phpui']['timeout'] ? 600 : $_CONFIG['phpui']['timeout']);
 $_FORCE_SSL = chkconfig($_CONFIG['phpui']['force_ssl']);
 $_DBTYPE = (! $_CONFIG['database']['type'] ? 'mysql' : $_CONFIG['database']['type']);
@@ -88,8 +87,7 @@ require_once($_LIB_DIR.'/checkip.php');
 require_once($_LIB_DIR.'/checkdirs.php');
 require_once($_LIB_DIR.'/unstrip.php');
 require_once($_SMARTY_DIR.'/Smarty.class.php');
-require_once($_ADODB_DIR.'/adodb.inc.php');
-// require_once($_LIB_DIR.'/LMSDB.php'); - if you want to use new DAL
+require_once($_LIB_DIR.'/LMSDB.php');
 require_once($_LIB_DIR.'/LMS.class.php');
 require_once($_LIB_DIR.'/Session.class.php');
 require_once($_LIB_DIR.'/leftmenu.php');
@@ -97,15 +95,7 @@ require_once($_LIB_DIR.'/accesstable.php');
 
 // Initialize ADODB object
 
-$ADB = ADONewConnection($_DBTYPE);
-$ADB->debug = chkconfig($_CONFIG['phpui']['adodb_debug']);
-if($_CONFIG['phpui']['adodb_debug_log'] && is_writeable($_CONFIG['phpui']['adodb_debug_log']))
-	define(ADODB_OUTP,'writelog');
-$ADB->Connect($_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME);
-
-$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
-
-// $ADB = DBInit($_DBTYPE,$_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME); - if you want to use new DAL
+$ADB = DBInit($_DBTYPE,$_DBHOST,$_DBUSER,$_DBPASS,$_DBNAME);
 
 // Initialize database and template classes
 
@@ -192,6 +182,9 @@ else
 
 /*
  * $Log$
+ * Revision 1.91  2003/08/22 00:24:29  lukasz
+ * - temporary save - adodb no longer needed
+ *
  * Revision 1.90  2003/08/19 01:18:53  lukasz
  * - cleanups
  *
