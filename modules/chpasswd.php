@@ -51,6 +51,7 @@ if($LMS->AdminExists($id))
 	$SMARTY->assign("layout",$layout);
 	$SMARTY->assign("error",$error);
 	$SMARTY->assign("passwd",$passwd);
+	$SMARTY->assign("target","?m=chpasswd");
 	$SMARTY->display("adminpasswd.html");
 
 }
