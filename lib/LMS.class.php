@@ -131,6 +131,15 @@ class LMS
 		return $this->ADB->GetOne("SELECT name FROM tariffs WHERE id=?",array($id));
 	}
 
+	function GetNetIDByIP($ipaddr)
+	{
+		if($networks = $this->ADB->GetAll("SELECT address, mask FROM networks"))
+			foreach($networks as $idx => $row)
+				if(isipin($ipaddr,$row[address],$row[mask]))
+					return TRUE;
+		return FALSE;
+	}
+
 	function UserUpdate($userdata)
 	{
 		$this->SetTS("users");
@@ -507,6 +516,22 @@ class LMS
 			$return[tariffvalue] = $this->GetTariffValue($return[tariff]);
 			$return[tariffname] = $this->GetTariffName($return[tariff]);
 			$return[balance] = $this->GetUserBalance($return[id]);
+			return $return;
+		}else
+			return FALSE;
+	}
+
+	function GetNode($id)
+	{
+		if($return = $this->ADB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid FROM nodes WHERE id=?",array($id)))
+		{
+			$return[createdby] = $this->GetAdminName($return[creatorid]);
+			$return[modifiedby] = $this->GetAdminName($return[modid]);
+			$return[creationdateh] = date("Y-m-d, H:i",$return[creationdate]);
+			$return[moddateh] = date("Y-m-d, H:i",$return[moddate]);
+			$return[owner] = $this->GetUsername($return[ownerid]);
+			$return[netid] = $this->GetNetIDByIP($return[ipaddr]);
+			$return[netname] = $this->GetNetworkName($return[netid]);
 			return $return;
 		}else
 			return FALSE;
