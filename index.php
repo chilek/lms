@@ -99,9 +99,9 @@ $_CONFIG['phpui']['timeout'] = (! $_CONFIG['phpui']['timeout'] ? 600 : $_CONFIG[
 $_CONFIG['phpui']['force_ssl'] = chkconfig($_CONFIG['phpui']['force_ssl']);
 $_CONFIG['database']['type'] = (! $_CONFIG['database']['type'] ? 'mysql' : $_CONFIG['database']['type']);
 $_CONFIG['database']['host'] = (! isset($_CONFIG['database']['host']) ? 'localhost' : $_CONFIG['database']['host']);
-$_CONFIG['database']['user'] = (! isset($_CONFIG['database']['user']) ? 'LMS1_2' : $_CONFIG['database']['user']);
-$_CONFIG['database']['password'] = (! isset($_CONFIG['database']['password']) ? 'haselko' : $_CONFIG['database']['password']);
-$_CONFIG['database']['database'] = (! isset($_CONFIG['database']['database']) ? 'lms1_2' : $_CONFIG['database']['database']);
+$_CONFIG['database']['user'] = (! isset($_CONFIG['database']['user']) ? 'lms' : $_CONFIG['database']['user']);
+$_CONFIG['database']['password'] = (! isset($_CONFIG['database']['password']) ? '' : $_CONFIG['database']['password']);
+$_CONFIG['database']['database'] = (! isset($_CONFIG['database']['database']) ? 'lms' : $_CONFIG['database']['database']);
 
 $_SYSTEM_DIR = $_CONFIG['directories']['sys_dir'];
 $_BACKUP_DIR = $_CONFIG['directories']['backup_dir'];
@@ -237,6 +237,9 @@ $DB->Destroy();
 
 /*
  * $Log$
+ * Revision 1.121  2003/12/02 15:03:24  alec
+ * te pierdo³y ju¿ kto¶ kiedy¶ wywali³
+ *
  * Revision 1.120  2003/12/01 06:13:37  lukasz
  * - temporary save, do not touch
  *
