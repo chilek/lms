@@ -44,6 +44,8 @@ wersja 1.5.3 (??/??/????):
     jest adres kolejki (alec)
   - BTS#0000257: w sumie op³at miesiêcznych u¿ytkowników oraz w ¶rednim zysku
     miesiêcznym taryf nie uwzglêdniamy zobowi±zañ zawieszonych (alec)
+  - BTS#0000266: zabezpieczenie przed generowaniem mapy sieci, w której nie ma
+    urz±dzeñ, co powodowa³o segfaulta Apache'a (alec)
 
 wersja 1.5.2 Isis (25/11/2004):
 
