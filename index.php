@@ -26,7 +26,7 @@
 
 // REPLACE THIS WITH PATH TO YOU CONFIG FILE
 
-$CONFIG_FILE = '/etc/lms/lms.ini';
+$CONFIG_FILE = (is_readable('lms.ini') ? 'lms.ini' : '/etc/lms/lms.ini');
 
 // PLEASE DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW
 // *EXACTLY* WHAT ARE YOU DOING!!!
@@ -51,7 +51,7 @@ function chkconfig($value,$default=FALSE)
 		trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
 }
 									
-// Define directories and configuration vars
+// Check for configuration vars and set default values
 
 $_SYSTEM_DIR = (! $_CONFIG[directories]['sys_dir'] ? getcwd() : $_CONFIG[directories]['sys_dir']);
 $_BACKUP_DIR = (! $_CONFIG[directories]['backup_dir'] ? $_SYSTEM_DIR.'/backups' : $_CONFIG[directories]['backup_dir']);
@@ -63,6 +63,11 @@ $_SMARTY_TEMPLATES_DIR = (! $_CONFIG[directories]['smarty_templates_dir'] ? $_SY
 $_ADODB_DIR = (! $_CONFIG[directories]['adodb_dir'] ? $_LIB_DIR.'/adodb' : $_CONFIG[directories]['adodb_dir']);
 $_TIMEOUT = (! $_CONFIG[phpui]['timeout'] ? 600 : $_CONFIG[phpui]['timeout']);
 $_FORCE_SSL = chkconfig($_CONFIG[phpui]['force_ssl']);
+$_DBTYPE = (! $_CONFIG[database]['type'] ? 'mysql' : $_CONFIG[database]['type']);
+$_DBHOST = (! $_CONFIG[database]['host'] ? 'localhost' : $_CONFIG[database]['host']);
+$_DBUSER = (! $_CONFIG[database]['user'] ? 'root' : $_CONFIG[database]['user']);
+$_DBPASS = (! $_CONFIG[database]['password'] ? '' : $_CONFIG[database]['password']);
+$_DBNAME = (! $_CONFIG[database]['database'] ? 'lms' : $_CONFIG[database]['database']);
 
 // Redirect to SSL
 
@@ -71,14 +76,6 @@ if($_FORCE_SSL && $_SERVER[HTTPS] != 'on')
 	header('Location: https://'.$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI]);
 	exit(0);
 }
-
-// Define database variables
-
-$_DBTYPE = (! $_CONFIG[database]['type'] ? 'mysql' : $_CONFIG[database]['type']);
-$_DBHOST = (! $_CONFIG[database]['host'] ? 'localhost' : $_CONFIG[database]['host']);
-$_DBUSER = (! $_CONFIG[database]['user'] ? 'root' : $_CONFIG[database]['user']);
-$_DBPASS = (! $_CONFIG[database]['password'] ? '' : $_CONFIG[database]['password']);
-$_DBNAME = (! $_CONFIG[database]['database'] ? 'lms' : $_CONFIG[database]['database']);
 
 // Set our sweet polish locales :>
 
