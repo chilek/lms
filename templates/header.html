@@ -35,7 +35,7 @@
 				<TD width="100%" class="fbt" nowrap>
 					<P CLASS="separated">
 						<IMG SRC="img/{$menu.img[menu]}" BORDER="0" ALT="" ALIGN="absmiddle">
-						<a href="{$menu.link[menu]}"{if $menu.accesskey[menu]} accesskey="{$menu.accesskey[menu]}"{/if}{if $menu.tip[menu]} {popup text=$menu.tip[menu]}{/if}><B>{$menu.name[menu]}</B></A>
+						<a href="{$menu.link[menu]}"{if $menu.accesskey[menu]} accesskey="{$menu.accesskey[menu]}"{/if}{if $menu.tip[menu]} {popup text="<B>`$menu.tip[menu]`</B>"}{/if}><B>{$menu.name[menu]}</B></A>
 					</P>
 				</TD>
 			</TR>
