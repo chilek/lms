@@ -33,43 +33,51 @@
 
 $CONFIG_FILE = (is_readable('lms.ini')) ? 'lms.ini' : '/etc/lms/lms.ini';
 
-// Funkcja do parsowania pliku konfiguracyjnego - niekoniecznie wymagana,
-// ale przydatna
+// Funkcja parsuj±ca plik konfiguracyjny
 
-function lms_parse_ini_file($filename, $process_sections = false)
+function lms_parse_ini_file($filename, $process_sections = false) 
 {
-        $ini_array = array();
-        $sec_name = "";
-        $lines = file($filename);
-        foreach($lines as $line)
-        {
-                $line = trim($line);
-
-                if($line == "" || $line[0] == ";" || $line[0] == "#")
-                        continue;
-
-                if( sscanf($line, "[%[^]]", &$sec_name)==1 )
-                        $sec_name = trim($sec_name);
-                else
-                {
-                        if ( sscanf($line, "%[^=] = '%[^']'", &$property, &$value) != 2 )
-                                if ( sscanf($line, "%[^=] = \"%[^\"]\"", &$property, &$value) != 2 )
-                                        if( sscanf($line, "%[^=] = %[^;#]",    &$property, &$value) != 2 )
-                                                continue;
-                                        else
-                                                $value = trim($value, "\"'");
-
-                        $property = trim($property);
-                        $value = trim($value);
-
-                        if($process_sections)
-                                $ini_array[$sec_name][$property] = $value;
-                        else
-                                $ini_array[$property] = $value;
-                }
-        }
-
-        return $ini_array;
+	$ini_array = array();
+	$section = '';
+	$lines = file($filename);
+	foreach($lines as $line) 
+	{
+		$line = trim($line);
+		
+		if($line == '' || $line[0] == ';' || $line[0] == '#') 
+			continue;
+		
+		list($sec_name) = sscanf($line, "[%[^]]");
+		
+		if( $sec_name )
+			$section = trim($sec_name);
+		else 
+		{
+			list($property, $value) = sscanf($line, "%[^=] = '%[^']'");
+			if ( !$property || !$value ) 
+			{
+				list($property, $value) = sscanf($line, "%[^=] = \"%[^\"]\"");
+				if ( !$property || !$value ) 
+				{
+					list($property, $value) = sscanf($line, "%[^=] = %[^;#]");
+					if( !$property || !$value ) 
+						continue;
+					else
+						$value = trim($value, "\"'");
+				}
+			}
+		
+			$property = trim($property);
+			$value = trim($value);
+			
+			if($process_sections) 
+				$ini_array[$section][$property] = $value;
+			else 
+				$ini_array[$property] = $value;
+		}
+	}
+	
+	return $ini_array;
 }
 
 // Funkcja do sprawdzania warto¶ci logicznych z configa.
@@ -85,6 +93,11 @@ function chkconfig($value, $default = FALSE)
         else
                 trigger_error('B³êdna warto¶æ opcji "'.$value.'"');
 }
+
+// Odczytanie pliku konfiguracyjnego
+
+foreach(lms_parse_ini_file($CONFIG_FILE, true) as $key => $val)
+	$_CONFIG[$key] = $val;
 
 // Domy¶lne warto¶ci zmiennych których nie da siê gdzie indziej zdefiniowaæ.
 
