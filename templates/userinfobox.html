@@ -59,10 +59,21 @@
 {/if}
 {if $userinfo.nip neq ""}
 	<TR CLASS="LIGHT">
-		<TD WIDTH="1%" CLASS="FLEFT" ALIGN=CENTER>
-		<B>NIP</B>
+		<TD WIDTH="1%" CLASS="FLEFT" ALIGN="CENTER">
+			<B>NIP</B>
 		</TD>
-		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">{$userinfo.nip}
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			{$userinfo.nip}
+		</TD>
+	</TR>
+{/if}
+{if $userinfo.pesel neq ""}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT" ALIGN="CENTER">
+			<B>PSL</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
+			{$userinfo.pesel}
 		</TD>
 	</TR>
 {/if}

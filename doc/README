@@ -2178,7 +2178,7 @@ Rozdzia³ 7. Dla dociekliwych
    name - nazwa
    value - warto¶æ netto w z³otych
    taxvalue - wysoko¶æ podatku w procentach
-   sww - numer PKWiU
+   pkwiu - numer PKWiU
    uprate - ograniczenie szybko¶ci transferu danych wychodz±cych
    downrate - ograniczenie szybko¶ci transferu danych przychodz±cych
    description - opis
@@ -2215,7 +2215,7 @@ Rozdzia³ 7. Dla dociekliwych
    invoiceid - identyfikator faktury
    value - kwota pozycji
    taxvalue - wysoko¶æ podatku w procentach
-   sww - numer PKWiU
+   pkwiu - numer PKWiU
    content - u¿yta jednostka (najczê¶ciej 'szt.')
    count - ilo¶æ
    description - opis

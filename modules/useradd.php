@@ -24,69 +24,83 @@
  *  $Id$
  */
 
-$useradd = $_POST[useradd];
+$useradd = $_POST['useradd'];
 
 if(sizeof($useradd))
 	foreach($useradd as $key=>$value)
 		$useradd[$key] = trim($value);
 
-if($useradd[name]=="" && $useradd[lastname]=="" && $useradd[phone1]=="" && $useradd[address]=="" && $useradd[email]=="" && isset($useradd))
+if($useradd['name']=='' && $useradd['lastname']=='' && $useradd[phone1]=='' && $useradd['address']=='' && $useradd['email']=='' && isset($useradd))
 {
-	header("Location: ?m=useradd");
+	header('Location: ?m=useradd');
 	die;
 }
 elseif(isset($useradd))
 {
 
-	if($useradd[lastname]=="")
-		$error[username]="Pola 'nazwisko/nazwa' oraz 'imiê' nie mog± byæ puste!";
+	if($useradd['lastname']=='')
+		$error['username']='Pola \'nazwisko/nazwa\' oraz \'imiê\' nie mog± byæ puste!';
 	
-	if($useradd[address]=="")
-		$error[address]="Proszê podaæ adres!";
+	if($useradd['address']=='')
+		$error['address']='Proszê podaæ adres!';
 	
-	if($useradd[nip] !="" && !eregi("^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$",$useradd[nip]) && !eregi("^[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}$",$useradd[nip]))
-		$error[nip] = "Podany NIP jest b³êdny!";
+	if($useradd['nip'] !='' && !eregi('^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$',$useradd['nip']) && !eregi('^[0-9]{3}-[0-9]{2}-[0-9]{2}-[0-9]{3}$',$useradd['nip']))
+		$error['nip'] = 'Podany NIP jest b³êdny!';
+
+	if($useradd['pesel'] != '' && !check_pesel($useradd['pesel']))
+		$error['pesel'] = 'Podany PESEL jest b³êdny!';
 		
-	if($useradd[zip] !="" && !eregi("^[0-9]{2}-[0-9]{3}$",$useradd[zip]))
-		$error[zip] = "Podany kod pocztowy jest b³êdny!";
+	if($useradd['zip'] !='' && !eregi('^[0-9]{2}-[0-9]{3}$',$useradd['zip']))
+		$error['zip'] = 'Podany kod pocztowy jest b³êdny!';
 
-	if($useradd[gguin] == 0)
-		unset($useradd[gguin]);
+	if($useradd['gguin'] == 0)
+		unset($useradd['gguin']);
 
-	if($useradd[gguin] !="" && !eregi("^[0-9]{4,}$",$useradd[gguin]))
-		$error[gguin] = "Podany numer GG jest niepoprawny!";
+	if($useradd['gguin'] !='' && !eregi('^[0-9]{4,}$',$useradd['gguin']))
+		$error['gguin'] = 'Podany numer GG jest niepoprawny!';
 	
 	if(!$error)
 	{
 		$id = $LMS->UserAdd($useradd);
-		if($useradd[reuse] =="")
+		if($useradd['reuse'] =='')
 		{
-			header("Location: ?m=userinfo&id=".$id);
+			header('Location: ?m=userinfo&id='.$id);
 			die;
 		}
-		$reuse[status] = $useradd[status];
+		$reuse['status'] = $useradd['status'];
 		unset($useradd);
 		$useradd = $reuse;
-		$useradd[reuse] = "1";
+		$useradd['reuse'] = '1';
 	}
 }
 
-if(!isset($useradd[zip]))	
-	$useradd[zip] = $_CONFIG[phpui][default_zip];
-if(!isset($useradd[city]))	
-	$useradd[city] = $_CONFIG[phpui][default_city];
-if(!isset($useradd[address]))	
-	$useradd[address] = $_CONFIG[phpui][default_address];
+if(!isset($useradd['zip']))	
+	$useradd['zip'] = $_CONFIG['phpui']['default_zip'];
+if(!isset($useradd['city']))	
+	$useradd['city'] = $_CONFIG['phpui']['default_city'];
+if(!isset($useradd['address']))	
+	$useradd['address'] = $_CONFIG['phpui']['default_address'];
 
-$layout[pagetitle]="Nowy u¿ytkownik";
+$layout['pagetitle']='Nowy u¿ytkownik';
 
-$SMARTY->assign("layout",$layout);
-$SMARTY->assign("useradd",$useradd);
-$SMARTY->assign("error",$error);
-$SMARTY->display("useradd.html");
+$SMARTY->assign('layout',$layout);
+$SMARTY->assign('useradd',$useradd);
+$SMARTY->assign('error',$error);
+$SMARTY->display('useradd.html');
 
 /*
  * $Log$
+ * Revision 1.40  2003/12/04 03:43:51  lukasz
+ * - dodany PESEL do rekordu u¿ytkownika, upgrade bazy
+ *   Je¿eli u¿ytkownik nie posiada NIPu, to wtedy na fakturze umieszczany jest
+ *   PESEL.
+ * - do faktur zosta³o dodane miejsce wystawienia
+ * - zamiana nazewctwa w tabelach z 'sww' na 'pkwiu'
+ * - przegenerowane doce
+ * - TODO: je¿eli na fakturze nie ma pozycji z pkwiu, to usun±æ t± kolumenê
+ *   z faktury.
+ * - w cholerê kosmetyki
+ *
  * Revision 1.39  2003/11/22 17:32:12  alec
  * poprawka http://lists.rulez.pl/lms/1482.html
  *

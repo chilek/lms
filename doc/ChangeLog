@@ -65,13 +65,22 @@ wersja 1.1.5 (??/??/2003):
 	`tariffid` INT NOT NULL
     );
 
-    BTW. to jeszcze nie koniec, pozostaje mi dopisanie mo¿liwo¶æ rêcznego
+    BTW. to jeszcze nie koniec, pozostaje mi dopisanie mo¿liwo¶ci rêcznego
     wypisania faktury za pojedyñcz± us³ugê/zdarzenie. Za kilka godzin powinno
     byæ i to dostêpne. Faktury s± wystawiane przez lms-payments, o ile podczas
     dodawania 'assignmentu' do usera zaznaczy³o siê pole 'faktura'. Docelowo
     bêdzie mo¿na tworzyæ pojedyñcze faktury, ale to najwcze¶niej jutro.
   - z racji zmienionego kawa³ek czasu temu systemu finansów lms-mgc nie ma ju¿
-    %TID i %TVAL
+    %TID i %TVAL (lukasz)
+  - dodany PESEL do rekordu u¿ytkownika, upgrade bazy (lukasz):
+    ALTER TABLE `users` ADD `pesel` VARCHAR(11) DEFAULT '' NOT NULL AFTER `nip`;
+    ALTER TABLE `invoices` ADD `pesel` VARCHAR(11) DEFAULT '' NOT NULL AFTER `nip`;
+    Je¿eli u¿ytkownik nie posiada NIPu, to wtedy na fakturze umieszczany jest
+    PESEL.
+  - do faktur zosta³o dodane miejsce wystawienia (lukasz);
+  - zamiana nazewctwa w tabelach z 'sww' na 'pkwiu' (lukasz);
+    ALTER TABLE `tariffs` CHANGE `sww` `pkwiu` VARCHAR( 255 ) NOT NULL;
+    ALTER TABLE `invoicecontents` CHANGE `sww` `pkwiu` VARCHAR( 255 ) NOT NULL;
   
 wersja 1.1.4 Tanith (03/10/2003):
   

@@ -443,7 +443,7 @@ class LMS
 	{
 		$this->SetTS("users");
 
-		if($this->DB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, status, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['status'], $this->SESSION->id, $useradd['info'])))
+		if($this->DB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?)",array(ucwords($useradd['name']), strtoupper($useradd['lastname']), $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->SESSION->id, $useradd['info'])))
 			return $this->DB->GetOne("SELECT MAX(id) FROM users");
 		else
 			return FALSE;
@@ -461,7 +461,7 @@ class LMS
 	function UserUpdate($userdata)
 	{
 		$this->SetTS("users");
-		return $this->DB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, moddate=?NOW?, modid=?, info=?, lastname=?, name=?, deleted=0 WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $this->SESSION->id, $userdata['info'], strtoupper($userdata['lastname']), $userdata['name'], $userdata['id'] ) );
+		return $this->DB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, lastname=?, name=?, deleted=0 WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['pesel'], $this->SESSION->id, $userdata['info'], strtoupper($userdata['lastname']), $userdata['name'], $userdata['id'] ) );
 	}
 
 	function GetUserNodesNo($id)
@@ -486,7 +486,7 @@ class LMS
 
 	function GetUser($id)
 	{
-		if($result = $this->DB->GetRow("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, city, info, creationdate, moddate, creatorid, modid, deleted FROM users WHERE id=?",array($id)))
+		if($result = $this->DB->GetRow("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, pesel, city, info, creationdate, moddate, creatorid, modid, deleted FROM users WHERE id=?",array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
@@ -557,7 +557,7 @@ class LMS
 			break;
 
 			case "nip":
-				$sqlord = "ORDER BY deleted ASC, nip";
+				$sqlord = "ORDER BY deleted ASC, nip, pesel";
 			break;
 
 			default:
@@ -587,7 +587,7 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->DB->GetAll("SELECT users.id AS id, ".$this->DB->Concat("UPPER(lastname)","' '","users.name")." AS username, deleted, status, email, phone1, address, gguin, nip, zip, city, info, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." GROUP BY users.id, deleted, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, zip, city, info ".($sqlord !="" ? $sqlord." ".$direction:"")))
+		if($userlist = $this->DB->GetAll("SELECT users.id AS id, ".$this->DB->Concat("UPPER(lastname)","' '","users.name")." AS username, deleted, status, email, phone1, address, gguin, nip, pesel, zip, city, info, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." GROUP BY users.id, deleted, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info ".($sqlord !="" ? $sqlord." ".$direction:"")))
 		{
 			$tariffvalues = $this->DB->GetAllByKey("SELECT users.id AS id, SUM(value) AS value FROM users, assignments, tariffs WHERE users.id = assignments.userid AND tariffs.id = tariffid GROUP by users.id",'id');
 			$access = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid",'id');
@@ -650,7 +650,7 @@ class LMS
 			break;
 
 			case "nip":
-				$sqlord = "ORDER BY nip";
+				$sqlord = "ORDER BY nip, pesel";
 			break;
 
 			default:
@@ -661,7 +661,7 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->DB->GetAll("SELECT users.id AS id, ".$this->DB->Concat("UPPER(lastname)","' '","users.name")." AS username, status, email, phone1, address, gguin, nip, zip, city, info, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 ".($state !=0 ? " AND status = '".$state."'":"")." GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, zip, city, info ".($sqlord !="" ? $sqlord." ".$direction:"")))
+		if($userlist = $this->DB->GetAll("SELECT users.id AS id, ".$this->DB->Concat("UPPER(lastname)","' '","users.name")." AS username, status, email, phone1, address, gguin, nip, pesel, zip, city, info, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 ".($state !=0 ? " AND status = '".$state."'":"")." GROUP BY users.id, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info ".($sqlord !="" ? $sqlord." ".$direction:"")))
 		{
 			$tariffvalues = $this->DB->GetAllByKey("SELECT users.id AS id, SUM(value) AS value FROM users, assignments, tariffs WHERE users.id = assignments.userid AND tariffs.id = tariffid GROUP by users.id",'id');
 
@@ -1193,9 +1193,9 @@ class LMS
 
 	function GetInvoiceContent($invoiceid)
 	{
-		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, nip, cdate, paytime, finished FROM invoices WHERE id=?',array($invoiceid)))
+		if($result = $this->DB->GetRow('SELECT id, number, name, customerid, address, zip, city, phone, nip, pesel, cdate, paytime, finished FROM invoices WHERE id=?',array($invoiceid)))
 		{
-			if($result['content'] = $this->DB->GetAll('SELECT value, taxvalue, sww, content, count, description, tariffid FROM invoicecontents WHERE invoiceid=?',array($invoiceid)))
+			if($result['content'] = $this->DB->GetAll('SELECT value, taxvalue, pkwiu, content, count, description, tariffid FROM invoicecontents WHERE invoiceid=?',array($invoiceid)))
 				foreach($result['content'] as $idx => $row)
 				{
 					$result['content'][$idx]['basevalue'] = sprintf("%0.2f",($row['value'] / (100 + $row['taxvalue']) * 100));
@@ -1223,7 +1223,7 @@ class LMS
 
 	function GetTariffList()
 	{
-		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, taxvalue, sww, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
+		if($tarifflist = $this->DB->GetAll("SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate FROM tariffs ORDER BY value DESC"))
 		{
 			$total = sizeof($tarifflist);
 			foreach($tarifflist as $idx => $row)
@@ -1258,14 +1258,14 @@ class LMS
 	function TariffAdd($tariffdata)
 	{
 		$this->SetTS("tariffs");
-		if($this->DB->Execute("INSERT INTO tariffs (name, description, value, taxvalue, sww, uprate, downrate)
+		if($this->DB->Execute("INSERT INTO tariffs (name, description, value, taxvalue, pkwiu, uprate, downrate)
 			VALUES (?, ?, ?, ?, ?, ?, ?)",
 			array(
 				$tariffdata['name'],
 				$tariffdata['description'],
 				$tariffdata['value'],
 				$tariffdata['taxvalue'],
-				$tariffdata['sww'],
+				$tariffdata['pkwiu'],
 				$tariffdata['uprate'],
 				$tariffdata['downrate']
 			)
@@ -1278,7 +1278,7 @@ class LMS
 	function TariffUpdate($tariff)
 	{
 		$this->SetTS("tariffs");
-		return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, sww=?, uprate=?, downrate=? WHERE id=?",array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['sww'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
+		return $this->DB->Execute("UPDATE tariffs SET name=?, description=?, value=?, taxvalue=?, pkwiu=?, uprate=?, downrate=? WHERE id=?",array($tariff['name'], $tariff['description'], $tariff['value'], $tariff['taxvalue'], $tariff['pkwiu'], $tariff['uprate'], $tariff['downrate'], $tariff['id']));
 	}
 
 	function TariffDelete($id)
@@ -1303,7 +1303,7 @@ class LMS
 
 	function GetTariff($id)
 	{
-		$result = $this->DB->GetRow("SELECT id, name, value, taxvalue, sww, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
+		$result = $this->DB->GetRow("SELECT id, name, value, taxvalue, pkwiu, description, uprate, downrate FROM tariffs WHERE id=?",array($id));
 		$result['users'] = $this->DB->GetAll("SELECT users.id AS id, COUNT(users.id) AS cnt, ".$this->DB->Concat('upper(lastname)',"' '",'name')." AS username FROM assignments, users WHERE users.id = userid AND deleted = 0 AND tariffid = ? GROUP BY users.id, username",array($id));
 		$result['userscount'] = sizeof($result['users']);
 		$result['count'] = $this->GetUsersWithTariff($id);
@@ -2286,6 +2286,17 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.301  2003/12/04 03:43:51  lukasz
+ * - dodany PESEL do rekordu u¿ytkownika, upgrade bazy
+ *   Je¿eli u¿ytkownik nie posiada NIPu, to wtedy na fakturze umieszczany jest
+ *   PESEL.
+ * - do faktur zosta³o dodane miejsce wystawienia
+ * - zamiana nazewctwa w tabelach z 'sww' na 'pkwiu'
+ * - przegenerowane doce
+ * - TODO: je¿eli na fakturze nie ma pozycji z pkwiu, to usun±æ t± kolumenê
+ *   z faktury.
+ * - w cholerê kosmetyki
+ *
  * Revision 1.300  2003/12/03 00:48:52  lukasz
  * - z racji zmienionego systemu finansów nie maj± racji bytu ju¿ %TID i %TVAL
  *   w lms-mgc.

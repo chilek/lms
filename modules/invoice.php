@@ -24,12 +24,12 @@
  *  $Id$
  */
 
-if($_GET['print'] == 'cached' && sizeof($_SESSION[ilp_marks]))
+if($_GET['print'] == 'cached' && sizeof($_SESSION['ilp_marks']))
 {
-	$layout[pagetitle] = 'Faktury VAT';
+	$layout['pagetitle'] = 'Faktury VAT';
 	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('clearheader.html');
-	foreach($_SESSION[ilp_marks] as $markid => $junk)
+	foreach($_SESSION['ilp_marks'] as $markid => $junk)
 		if($junk)
 			$ids[] = $markid;
 	sort($ids);
@@ -42,24 +42,27 @@ if($_GET['print'] == 'cached' && sizeof($_SESSION[ilp_marks]))
 		$SMARTY->assign('type','KOPIA');
 		if(! $ids[$idx+1])
 		{
-			$invoice[last] = TRUE;
+			$invoice['last'] = TRUE;
 			$SMARTY->assign('invoice',$invoice);
 		}
 		$SMARTY->display('invoice.html');
 	}
 	$SMARTY->display('clearfooter.html');
 }
-elseif($invoice = $LMS->GetInvoiceContent($_GET[id]))
+elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
-	$layout[pagetitle] = 'Faktura VAT nr '.$invoice[number].'/LMS/'.date('Y',$invoice[cdate]);
-	
+	$ntempl = ($_CONFIG['invoices']['number_template'] != '' ? $_CONFIG['invoices']['number_template'] : '%N/LMS/%Y');
+	$ntempl = str_replace('%N',$invoice['number'],$ntempl);
+	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
+	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
+	$layout['pagetitle'] = 'Faktura VAT nr '.$ntempl;	
 	$SMARTY->assign('layout',$layout);
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');
 	$SMARTY->assign('type','ORYGINA£');
 	$SMARTY->display('invoice.html');
 	$SMARTY->assign('type','KOPIA');
-	$invoice[last] = TRUE;
+	$invoice['last'] = TRUE;
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('invoice.html');
 	$SMARTY->display('clearfooter.html');

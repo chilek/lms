@@ -138,7 +138,7 @@ my $icdbq;
 
 # dobra, query wybiera *WSZYSTKIE* mo¿liwe assigmenty na dany dzieñ.
 
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, sww, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND ((period = 0 AND at=$day) OR (period = 1 AND at=$weekday) OR (period = 2 AND at = $yearday))");
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, invoice FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND ((period = 0 AND at=$day) OR (period = 1 AND at=$weekday) OR (period = 2 AND at = $yearday))");
 $dbq->execute();
 
 print "UID:\tKwota:\tZa:\n";
@@ -159,7 +159,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 				my $udbq = $dbase->prepare("SELECT * FROM users WHERE id=$uid");
 				$udbq->execute();
 				my $urow = $udbq->fetchrow_hashref();
-				my $idbq = $dbase->prepare("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, cdate, paytime, finished) VALUES ($number, $uid, '$urow->{'lastname'} $urow->{'name'}', '$urow->{'address'}', '$urow->{'zip'}', '$urow->{'city'}', '$urow->{'phone1'}', '$urow->{'nip'}', $time, 14, 1)");
+				my $idbq = $dbase->prepare("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, finished) VALUES ($number, $uid, '$urow->{'lastname'} $urow->{'name'}', '$urow->{'address'}', '$urow->{'zip'}', '$urow->{'city'}', '$urow->{'phone1'}', '$urow->{'nip'}', $urow->{'pesel'}, $time, 14, 1)");
 				$idbq->execute();
 				$idbq = $dbase->prepare("SELECT id FROM invoices WHERE number=$number AND cdate=$time AND finished=1 AND customerid=$uid");
 				$idbq->execute();
@@ -176,7 +176,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 			}
 			else
 			{
-				$icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, sww, content, count, description, tariffid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxvalue'}, '$assign->{'sww'}', 'szt', 1, '$txt', $assign->{'tariffid'})");
+				$icdbq = $dbase->prepare("INSERT INTO invoicecontents (invoiceid, value, taxvalue, pkwiu, content, count, description, tariffid) VALUES ($gotinv{$uid}, $assign->{'value'}, $assign->{'taxvalue'}, '$assign->{'pkwiu'}', 'szt', 1, '$txt', $assign->{'tariffid'})");
 				$icdbq->execute();
 			}
 		}
