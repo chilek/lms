@@ -26,11 +26,13 @@
  */
 
 $network = $LMS->GetNetworkRecord($_GET[id]);
-
+$networkip = $LMS->GetNetwork($_GET[id]);
+$networkip[rows] = ceil(sizeof($networkip[nodeid])/4);
 $layout[pagetitle]="Informacja o sieci";
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("network",$network);
+$SMARTY->assign("networkip",$networkip);
 $SMARTY->display("header.html");
 $SMARTY->display("netinfo.html");
 $SMARTY->display("footer.html");
-?><pre><? print_r($network); ?>
+?><pre><? print_r($networkip);
