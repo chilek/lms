@@ -27,70 +27,62 @@
 </tr>
 </table>
 {if $layout.nomenu neq TRUE}
-<table border="0" cellpadding="10" cellspacing="0" width="100%"><tr><td width="1%" style="border-right-style: dashed; border-right-width: 1pt; border-right-color: #333333; border-left-style: dashed; border-left-width: 1pt; border-left-color: #333333;" bgcolor="#F4F0EC" valign="top">
-		<table width="100%">
-			{section name=menu loop=$menu.link}
-			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
-				<TD width="100%" class="fbt" onClick="return self.location.href='{$menu.link[menu]}';" nowrap>
-					<P CLASS="separated">
-						<IMG SRC="img/{$menu.img[menu]}" BORDER="0" ALT="" ALIGN="absmiddle">
-						<a href="{$menu.link[menu]}"{if $menu.accesskey[menu]} accesskey="{$menu.accesskey[menu]}"{/if}{if $menu.tip[menu]} {tip text="<B>\$0</B>" 0=$menu.tip[menu]}{/if}><B>{$menu.name[menu]}</B></A>
-					</P>
-				</TD>
-			</TR>
-			{/section}
-			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
-				<TD width="100%" class="fbt" onClick="return self.location.href='?m=chpasswd';" nowrap>
-					<P CLASS="separated">
-						<IMG SRC="img/pass.gif" BORDER="0" ALT="" align="absmiddle">
-						<a href="?m=chpasswd" accesskey="p" {tip text="<B>Allows you to change your password</B>"}><B>{t}Password{/t}</B></A>
-					</P>
-				</TD>
-			</TR>
-			<TR>
-				<TD width="100%" class="fbt" nowrap>
-					<P CLASS="separated">
-						<IMG SRC="img/logout.gif" BORDER="0" ALT="" ALIGN="absmiddle">
-						<a href="?m=logout" onClick="return confirmLink(this,'{t}Are you sure that you want to logout?{/t}');" accesskey="q" {tip text="<B>Allows you to logout</B>"}><B>{t}Logout{/t}</B></A>
-					</P>
-				</TD>
-			</TR>
-			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
-				<FORM METHOD="GET" ACTION="?m=quicksearch">
-					<TD width="100%" class="fbt" nowrap {tip text="<B>Enter customer ID, forename/surename, part of email address, telephone or customer email address and press Enter</B>"}>
-						<P CLASS="separated">
-						<IMG SRC="img/user.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
-						<INPUT TYPE="text" NAME="what" VALUE="" SIZE="10">
-						<INPUT TYPE="hidden" NAME="m" VALUE="quicksearch">
-						<INPUT TYPE="hidden" NAME="mode" VALUE="user">
-						</P>
-					</TD>
-				</FORM>
-			</TR>
-			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
-				<FORM METHOD="GET" ACTION="?m=quicksearch">
-					<TD width="100%" class="fbt" nowrap {tip text="<B>Enter node ID, name, IP address or MAC address and press Enter</B>"}>
-						<P CLASS="separated">
-						<IMG SRC="img/node.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
-						<INPUT TYPE="text" NAME="what" VALUE="" SIZE="10">
-						<INPUT TYPE="hidden" NAME="m" VALUE="quicksearch">
-						<INPUT TYPE="hidden" NAME="mode" VALUE="node">
-						</P>
-					</TD>
-				</FORM>
-			</TR>
-			<TR onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '#F4F0EC')">
-				<FORM METHOD="GET" ACTION="?m=quicksearch">
-					<TD width="100%" class="fbt" nowrap {tip text="<B>Enter request tracker ID or customer name and press Enter</B>"}>
-						<P CLASS="separated">
-						<IMG SRC="img/ticket.gif" BORDER="0" ALT="" ALIGN="ABSMIDDLE">
-						<INPUT TYPE="text" NAME="what" VALUE="" SIZE="10">
-						<INPUT TYPE="hidden" NAME="m" VALUE="quicksearch">
-						<INPUT TYPE="hidden" NAME="mode" VALUE="ticket">
-					</TD>
-				</FORM>
-			</TR>			
-		</TABLE>
-</p></td>
-<td width="99%" valign="top" style="border-right-style: dashed; border-right-width: 1pt; border-right-color: #333333;">
+<table border="0" cellpadding="10" cellspacing="0" width="100%"><tr><td width="1%" style="padding: 0pt; border-right-style: dashed; border-right-width: 1pt; border-right-color: #333333; border-left-style: dashed; border-left-width: 1pt; border-left-color: #333333;" bgcolor="#CEBD9B" valign="top">
+	<table id="click-menu1" class="click-menu" cellpadding="0" cellspacing="0">
+		{foreach from=$newmenu item=menuitem name=menu}
+		<tr>
+			<td class="click-menu">
+				<div class="tip"{if $menuitem.tip} {tip text="<B>\$0</B>" 0=$menuitem.tip}{/if}{if ! $menuitem.submenu} onClick="return self.location.href='{$menuitem.link}';"{/if}>
+					<div class="box1"><img src="img/{$menuitem.img}" alt="*" border="0" style="position: absolute"><font style="margin-left: 21px">{$menuitem.name}</font></div>
+				<div class="section">
+				{if $menuitem.submenu}
+					{foreach from=$menuitem.submenu item=submenuitem}
+					<div class="box2" onClick="return self.location.href='{$submenuitem.link}';"{if $submenuitem.tip} {tip text="<B>\$0</B>" 0=$submenuitem.tip}{/if}>&raquo; <a href="{$submenuitem.link}">{$submenuitem.name}</a></div>
+					{/foreach}
+				{/if}
+				</div>
+			</td>
+		</tr>
+		{/foreach}
+		<tr>
+			<td class="click-menu">
+				<div class="tip" {tip text="<B>Allows you to logout</B>"} onClick="if(confirm('{t}Are you sure that you want to logout?{/t}')){literal}{ return self.location.href='?m=logout&is_sure=1';}{/literal} ">
+					<div class="box1"><img src="img/logout.gif" alt="*" border="0" style="position: absolute"><font style="margin-left: 21px">{t}Logout{/t}</font></div>
+				</div>
+			</td>
+		</tr>
+		<form method="get" action="?m=quicksearch">
+		<tr>
+			<td class="click-menu">
+				<div class="tip" {tip text="<B>Enter customer ID, forename/surename, part of email address, telephone or customer email address and press Enter</B>"}>
+					<div class="box1"><img src="img/user.gif" alt="*" border="0" style="position: absolute"><font style="margin-left: 21px"><input type="text" name="what" value="" size="10"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="user"></font></div>
+				</div>
+			</td>
+		</tr>
+		</form>
+		<form method="get" action="?m=quicksearch">
+		<tr>
+			<td class="click-menu">
+				<div class="tip" {tip text="<B>Enter node ID, name, IP address or MAC address and press Enter</B>"}>
+					<div class="box1"><img src="img/node.gif" alt="*" border="0" style="position: absolute"><font style="margin-left: 21px"><input type="text" name="what" value="" size="10"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="node"></font></div>
+				</div>
+			</td>
+		</tr>
+		</form>
+		<form method="get" action="?m=quicksearch">
+		<tr>
+			<td class="click-menu">
+				<div class="tip" {tip text="<B>Enter request tracker ID or customer name and press Enter</B>"}>
+					<div class="box1"><img src="img/ticket.gif" alt="*" border="0" style="position: absolute"><font style="margin-left: 21px"><input type="text" name="what" value="" size="10"><input type="hidden" name="m" value="quicksearch"><input type="hidden" name="mode" value="ticket"></font></div>
+				</div>
+			</td>
+		</tr>
+		</form>
+	</table>
+	<script type="text/javascript">
+		var clickMenu1 = new ClickShowHideMenu('click-menu1');
+		clickMenu1.init();
+	</script>				
+	</td>
+	<td width="99%" valign="top" style="border-right-style: dashed; border-right-width: 1pt; border-right-color: #333333;">
 {/if}
