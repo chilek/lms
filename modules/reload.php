@@ -24,14 +24,12 @@
  *  $Id$
  */
 
-// Agggrrr. Nie zwracajcie uwagi na styl pisania *TEGO* kawa³ka kodu :)
-// Jest 7:35 a ja ca³± noc nie spa³em :)
-
-$layout[$pagetitle]="Prze³adowanie konfiguracji";
+$layout['pagetitle'] = 'Prze³adowanie konfiguracji';
 
 $SMARTY->display('header.html');
+$SMARTY->display('reloadheader.html');
 
-?><H1>Prze³adowanie konfiguracji</H1><?php
+echo '<H1>Prze³adowanie konfiguracji</H1>';
 
 $_RELOAD_TYPE = $LMS->CONFIG['phpui']['reload_type'];
 $_EXECCMD = $LMS->CONFIG['phpui']['reload_execcmd'];
@@ -88,7 +86,6 @@ switch($_RELOAD_TYPE)
 	break;
 
 	default:
-
 		echo "<P><B><FONT COLOR=\"RED\">B³±d! Niepoprawny typ reloadu: '".$_RELOAD_TYPE."' !</FONT></B></P>";
 	break;
 
