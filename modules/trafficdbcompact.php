@@ -25,8 +25,9 @@
 
 $delete = $_POST['delete'];
 $level = $_POST['level'];
+$removedeleted = $_POST['removedeleted'];
 
-if (!($level || $delete))
+if (!($level || $delete || $removedeleted))
 {
     $SMARTY->display("traffic.html");
     die;
@@ -42,6 +43,18 @@ if($delete)
 {
     $yeardeleted = $LMS->DB->Execute("DELETE FROM stats where dt < ?NOW? - 365*24*60*60");
     echo "Usuniêto ponadrocznych ".$yeardeleted." rekordów.\n";
+}
+
+if($removedeleted)
+{
+    $nodes_from_stats = $LMS->DB->GetCol("SELECT DISTINCT nodeid FROM stats"); 
+    $nodes = $LMS->DB->GetCol("SELECT id FROM nodes");
+    foreach($nodes_from_stats as $node)
+    {
+	if(!in_array($node,$nodes))
+	    if($LMS->DB->Execute("DELETE FROM stats WHERE nodeid = ".$node))
+		echo "Usuniêto statystyki komputera o ID: ".$node."\n";
+    }
 }
 
 if($level)
