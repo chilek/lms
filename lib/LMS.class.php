@@ -612,7 +612,7 @@ class LMS {
 					{
 						if(substr($path[basename],0,4)=="lms-")
 						{
-							$dblist[time][] = substr($path[basename],4);
+							$dblist[time][] = substr(basename($file,".sql"),4);
 							$dblist[size][] = filesize(BACKUP_DIR."/".$file);
 						}
 					}
@@ -626,12 +626,48 @@ class LMS {
 		return $dblist;
 	}		
 
+	function DatabaseRecover($dbtime)
+	{
+		$db=$this->db;
+		if(file_exists(BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
+		{
+			return $db->Source(BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+		}
+		else
+			return FALSE;
+	}
+
 	function DatabaseCreate()
 	{
 		$db=$this->db;
 		return $db->Dump(BACKUP_DIR.'/lms-'.time().'.sql');
 	}
 
+	function DatabaseDelete($dbtime)
+	{
+		if(file_exists(BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
+		{
+			return unlink(BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+		}
+		else
+			return FALSE;
+	}
+
+	function DatabaseFetchContent($dbtime)
+	{
+		if(file_exists(BACKUP_DIR.'/lms-'.$dbtime.'.sql'))
+		{
+			$content = file(BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+			foreach($content as $value)
+				$database[content] .= $value;
+			$database[size] = filesize(BACKUP_DIR.'/lms-'.$dbtime.'.sql');
+			$database[time] = $dbtime;
+			return $database;
+		}
+		else
+			return FALSE;
+	}
+		
 	function NodeSet($id)
 	{
 		$db=$this->db;
