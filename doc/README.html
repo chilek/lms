@@ -2216,12 +2216,25 @@ CLASS="PROMPT"
 ><P
 >use_current_payday</P
 ><P
->Okre¶la, czy ma byæ u¿yty aktualny dzieñ miesi±ca jako dzieñ zap³aty
-    zamiast najczê¶ciej u¿ywanego. Domy¶lnie wy³±czone.</P
+>Okre¶la, czy ma byæ u¿yta aktualna data jako dzieñ zap³aty podczas
+    przypisywania zobowi±zañ u¿ytkownikom. Domy¶lnie wy³±czone.</P
 ><P
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >use_current_payday = 1</SAMP
+></P
+></LI
+><LI
+><P
+>arpd_servers</P
+><P
+>Lista serwerów arpd do zczytywania MAC'adresów z odleg³ych sieci.
+    Lista ta powinna zawieraæ wpisy w postaci adresIP[:port] oddzielone
+    spacjami. Domy¶lnie pusta.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>arpd_servers = 192.168.1.1 192.168.2.1</SAMP
 ></P
 ></LI
 ></UL
@@ -2289,6 +2302,14 @@ NAME="INSTALL-RIGHTS-IDEA"
 ><LI
 ><P
 >brak dostêpu do modyfikacji i zak³adania kont administratorów</P
+></LI
+><LI
+><P
+>zarz±dzanie Helpdeskiem (RT)</P
+></LI
+><LI
+><P
+>obs³uga Helpdesku (RT)</P
 ></LI
 ><LI
 ><P
@@ -3745,6 +3766,14 @@ NAME="MENU-HELPDESK"
 	    zg³oszenia, w którym mo¿na podawaæ jego ID lub nazwisko zg³aszaj±cego je
 	    u¿ytkownika. W drugim przypadku zostanie wy¶wietlona lista wszystkich zg³oszeñ
 	    danego u¿ytkownika.</P
+><P
+>Ka¿de zg³oszenie posiada historiê, na któr± sk³adaj± siê wiadomo¶ci
+	    od administratorów i u¿ytkowników. Administrator mo¿e wys³aæ swoj± wiadomo¶æ do 
+	    u¿ytkownika, klikaj±c 'Wy¶lij' podczas dodawania wiadomo¶ci. (Nale¿y podaæ
+	    e-mail odbiorcy. Adresem nadawcy bêdzie adres kolejki, a je¶li jest pusty, adres 
+	    administratora). Wszystkie wiadomo¶ci tak¿e te wys³ane, zostaj± zapisane 
+	    w historii zg³oszenia. Zg³oszenie mo¿e mieæ cztery stany: nowy, otwarty, rozwi±zany 
+	    i martwy.</P
 ><DIV
 CLASS="SECT2"
 ><HR><H3
@@ -9204,8 +9233,176 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
+NAME="RTQUEUES"
+>7.2.17. Helpdesk - kolejki ('rtqueues')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>name - nazwa</TD
+></TR
+><TR
+><TD
+>email - adres konta pocztowego</TD
+></TR
+><TR
+><TD
+>description - opis dodatkowy</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="RTTICKETS"
+>7.2.18. Helpdesk - zg³oszenia ('rttickets')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>queueid - identyfikator kolejki</TD
+></TR
+><TR
+><TD
+>requestor - dane zg³aszaj±cego (w tym e-mail)</TD
+></TR
+><TR
+><TD
+>userid - identyfikator u¿ytkownika</TD
+></TR
+><TR
+><TD
+>subject - temat zg³oszenia</TD
+></TR
+><TR
+><TD
+>state - status (0-nowy, 1-otwarty, 2-rozwi±zany, 3-martwy)</TD
+></TR
+><TR
+><TD
+>owner - identyfikator w³a¶ciciela-administratora</TD
+></TR
+><TR
+><TD
+>createtime - data zg³oszenia</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="RTMESSAGES"
+>7.2.19. Helpdesk - wiadomo¶ci ('rtmessages')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>ticketid - identyfikator zg³oszenia</TD
+></TR
+><TR
+><TD
+>adminid - identyfikator administratora nadawcy</TD
+></TR
+><TR
+><TD
+>userid - identyfikator u¿ytkownika nadawcy</TD
+></TR
+><TR
+><TD
+>mailfrom - e-mail nadawcy</TD
+></TR
+><TR
+><TD
+>subject - temat wiadomo¶ci</TD
+></TR
+><TR
+><TD
+>messageid - pocztowy identyfikator wiadomo¶ci</TD
+></TR
+><TR
+><TD
+>inreplyto - identyfikator wiadomo¶ci</TD
+></TR
+><TR
+><TD
+>replyto - </TD
+></TR
+><TR
+><TD
+>headers - </TD
+></TR
+><TR
+><TD
+>body - tre¶æ wiadomo¶ci</TD
+></TR
+><TR
+><TD
+>createtime - data utworzenia/wys³ania </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="RTRIGHTS"
+>7.2.20. Helpdesk - uprawnienia ('rtrights')</A
+></H3
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>id - identyfikator</TD
+></TR
+><TR
+><TD
+>queueid - identyfikator kolejki</TD
+></TR
+><TR
+><TD
+>adminid - identyfikator administratora</TD
+></TR
+><TR
+><TD
+>rights - (1-odczyt, 2-zapis)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
 NAME="DBINFO"
->7.2.17. Informacje o bazie danych ('dbinfo')</A
+>7.2.21. Informacje o bazie danych ('dbinfo')</A
 ></H3
 ><TABLE
 BORDER="0"
