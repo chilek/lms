@@ -11,6 +11,8 @@ version 1.2.2 (??/??/2004):
   - invoice bugfix BTS#0000154 (alec)
   - on new invoice form, numbers can be entered with comma or dot and removed
     leading zero from numbers less 10 (alec)
+  - DBDump() bugfix, prevents errors while database restoring with NULL
+    values in taxvalue columns (alec)
 
 version 1.2.1 Sarah (04/05/2004):
 

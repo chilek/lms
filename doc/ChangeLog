@@ -11,6 +11,8 @@ wersja 1.2.2 (??/??/2004):
   - poprawiony b³±d na fakturze: BTS#0000154 (alec)
   - poprawki w formularzu dodawania faktury: mo¿na podawaæ kwoty z przecinkiem
     i usuniêto wiod±ce zero dla kwot mniejszych od 10 (alec)
+  - poprawka w funkcji DBDump() zapobiegaj±ca b³êdowi podczas odtwarzania
+    kopii bazy danych z warto¶ciami NULL ('zw.') w kolumnach taxvalue (alec)
 
 wersja 1.2.1 Sarah (07/05/2004):
 

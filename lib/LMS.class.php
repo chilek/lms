@@ -228,7 +228,10 @@ class LMS
 						foreach($row as $field => $value)
 						{
 							$fields[] = $field;
-							$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
+							if(isset($value))
+								$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
+							else
+								$values[] = 'NULL';
 						}
 						fputs($dumpfile,implode(", ",$fields));
 						fputs($dumpfile,") VALUES (");
