@@ -153,6 +153,7 @@ wersja 1.1.4 (??/??/2003):
     adresów IP w bazie danych i inne drobne poprawki (alec)
   - poprawione b³êdy w GetTariff() wystêpuj±ce na postgresie (alec)
   - b³êdy teraz pokazuj± siê jako popupy (lukasz)
+  - nowy skrypt - bin/lms-traffic-htbiptlimits - do limitowania pasma (lukasz)
 	
 wersja 1.1.3 (29/08/2003):
 
