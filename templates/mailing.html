@@ -38,12 +38,20 @@
 			<B>Grupa odbiorców:</B>
 		</TD>
 		<TD CLASS="FRIGHTU" WIDTH="98%">
+			U¿ytkownicy:
 			<SELECT NAME="mailing[group]" {tip trigger="group" text="Wybierz grupê adresatów"}>
-				<option value="3">u¿ytkownicy pod³±czeni</option>
-				<option value="2">osoby oczekuj±ce na pod³±czenie</option>
-				<option value="1">osoby zainteresowane</option>
-				<option value="0">wszyskie adresy E-mail zapisane w bazie</option>
-			</SELECT>		
+				<option value="3">pod³±czeni</option>
+				<option value="2">oczekuj±cy</option>
+				<option value="1">zainteresowani</option>
+				<option value="0">wszyscy</option>
+			</SELECT>&nbsp;
+			Sieæ:
+			<SELECT NAME="mailing[network]" {tip trigger="network" text="Wybierz sieæ"}>
+				<option value="0">- wszystkie -</option>
+				{section name="networks" loop=$networks}
+				<option value="{$networks[networks].id}">{$networks[networks].name}</option>
+				{/section}
+			</SELECT>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">

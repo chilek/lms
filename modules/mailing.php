@@ -26,6 +26,7 @@
 
 $layout['pagetitle'] = "Mailing";
 
+$SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->display('mailing.html');
 
 ?>
