@@ -625,7 +625,6 @@ sub instance($)
 			$rule =~ s/\%PLIMIT/$plimit/g;
 			$rule =~ s/\%ID/$id/g;
 			$rule =~ s/\%IP/$ipaddr/g;
-			$rule =~ s/\%ADDR/$ipaddr/g;
 			$rule =~ s/\%INFO/$info/g;
 			$rule =~ s/\%NAME/$NAME/g;
 			$rule =~ s/\%name/$name/g;
