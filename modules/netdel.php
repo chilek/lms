@@ -45,7 +45,6 @@ if(!$error)
 		die;
 	}else{
 		$layout['pagetitle'] = "Usuniêcie sieci ".strtoupper($network['name']);
-		$SMARTY->assign('layout',$layout);
 		$SMARTY->display('header.html');
 		echo "<H1>Usuniêcie sieci ".strtoupper($network['name'])."</H1>";
 		echo "<p>Czy jeste¶ pewien ¿e chcesz usun±æ t± sieæ?</p>";
@@ -54,7 +53,6 @@ if(!$error)
 	}
 }else{
 	$layout['pagetitle'] = "Informacja o sieci";
-	$SMARTY->assign('layout',$layout);
 	$SMARTY->assign('network',$network);
 	$SMARTY->assign('networks',$networks);
 	$SMARTY->assign('error',$error);

@@ -162,7 +162,6 @@ $prefixlist = $LMS->GetPrefixList();
 $networks = $LMS->GetNetworks();
 $layout['pagetitle'] = "Edytowanie sieci: ".$network['name'];
 $SMARTY->assign('unlockedit',TRUE);
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('network',$network);
 $SMARTY->assign('networks',$networks);
 $SMARTY->assign('networkdata',$networkdata);

@@ -80,7 +80,6 @@ foreach($access['table'] as $idx => $row)
 }
 
 $layout['pagetitle'] = "Nowy administrator";
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('adminadd',$adminadd);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('accesslist',$accesslist);

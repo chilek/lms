@@ -50,7 +50,6 @@ else
 $_SESSION['usls'] = $s;
 				
 $layout['pagetitle'] = "Wyszukiwanie u¿ytkownika";
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('header.html');
 $SMARTY->display('userheader.html');
 

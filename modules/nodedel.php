@@ -25,7 +25,6 @@
  */
 
 $layout['pagetitle'] = "Usuniêcie komputera ".$LMS->GetNodeName($_GET['id']);
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('nodeid',$_GET['id']);
 
 if (!$LMS->NodeExists($_GET['id']))

@@ -129,7 +129,6 @@ $SMARTY->assign('users',$users);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('userinfo',$userinfo);
 $SMARTY->assign('nodedata',$nodedata);
-$SMARTY->assign('layout',$layout);
 
 $SMARTY->display('nodeadd.html');
 

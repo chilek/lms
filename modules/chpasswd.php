@@ -48,7 +48,6 @@ if($LMS->AdminExists($id))
 	$passwd['realname'] = $LMS->GetAdminName($id);
 	$passwd['id'] = $id;
 	$layout['pagetitle'] = "Zmiana has³a";
-	$SMARTY->assign('layout',$layout);
 	$SMARTY->assign('error',$error);
 	$SMARTY->assign('passwd',$passwd);
 	$SMARTY->assign('target',"?m=chpasswd");

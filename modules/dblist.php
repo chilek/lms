@@ -28,7 +28,6 @@ $layout['pagetitle'] = "Bazy danych";
 
 $dblist = $LMS->DatabaseList();
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('dblist',$dblist);
 $SMARTY->display('header.html');
 $SMARTY->display('dblist.html');

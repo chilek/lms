@@ -248,7 +248,6 @@ $netdevips = $LMS->GetNetDevIPs($_GET['id']);
 
 $layout['pagetitle'] = "Edycja urz±dzenia: ".$netdevdata['name']." ".$netdevdata['producer'];
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('netdevinfo',$netdevdata);
 $SMARTY->assign('netdevlist',$netdevconnected);

@@ -47,7 +47,6 @@ if(!$error)
 
 	}else{
 		$layout['pagetitle'] = "Readresowanie sieci ".strtoupper($network['source']['name']);
-		$SMARTY->assign('layout',$layout);
 		$SMARTY->display('header.html');
 		echo "<H1>Readresowanie sieci ".strtoupper($network['source']['name'])."</H1>";
 		echo "<p>Jeste¶ pewien ¿e chcesz przeadresowaæ sieæ ".strtoupper($network['source']['name'])." (".$network['source']['address']."/".$network['source']['prefix'].") do sieci ".strtoupper($network['dest']['name'])." (".$network['dest']['address']."/".$network['dest']['prefix'].") ?</p>";
@@ -56,7 +55,6 @@ if(!$error)
 	}
 }else{
 	$networks = $LMS->GetNetworks();
-	$SMARTY->assign('layout',$layout);
 	$SMARTY->assign('network',$network['source']);
 	$SMARTY->assign('networks',$networks);
 	$SMARTY->assign('error',$error);

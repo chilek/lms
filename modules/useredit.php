@@ -166,7 +166,6 @@ $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($userinfo['id']));
 $SMARTY->assign('tariffs',$LMS->GetTariffs());
 $SMARTY->assign('assignments',$LMS->GetUserAssignments($_GET['id']));
 $SMARTY->assign('userinfo',$userinfo);
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('recover',($_GET['action'] == 'recover' ? 1 : 0));
 $SMARTY->display('useredit.html');
 

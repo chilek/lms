@@ -44,7 +44,6 @@ if($mailing['subject']=="")
 
 if($error)
 {
-	$SMARTY->assign('layout',$layout);
 	$SMARTY->assign('error',$error);
 	$SMARTY->assign('mailing',$mailing);
 	$SMARTY->display('mailing.html');
@@ -55,7 +54,6 @@ else
 	$mailing['body'] = textwrap($mailing['body']);
 	$mailing['body'] = str_replace("\r", "", $mailing['body']);
 	$SMARTY->assign('mailing',$mailing);
-	$SMARTY->assign('layout',$layout);
 	$SMARTY->display('header.html');
 	$SMARTY->display('mailingsend.html');
 	$emails = $LMS->Mailing($mailing);

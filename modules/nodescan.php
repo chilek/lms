@@ -35,7 +35,6 @@ $SMARTY->assign('balancelist',$LMS->GetUserBalanceList($_GET['ownerid']));
 $SMARTY->assign('users',$users);
 $SMARTY->assign('nodes',$LMS->ScanNodes());
 $SMARTY->assign('userinfo',$userinfo);
-$SMARTY->assign('layout',$layout);
 
 $SMARTY->display('nodescan.html');
 

@@ -49,7 +49,6 @@ if($p == "main")
 
 $layout['pagetitle'] = "Wybierz adres IP";
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('part',$p);
 $SMARTY->assign('js',$js);
 $SMARTY->assign('networks',$networks);

@@ -34,7 +34,6 @@ $layout['pagetitle'] = "Informacja o taryfie: ".$tariff['name'];
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('tariff',$tariff);
 $SMARTY->assign('tariffs',$LMS->GetTariffs());
 $SMARTY->display('tariffinfo.html');

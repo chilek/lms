@@ -38,7 +38,6 @@ foreach($rights as $right)
 	if($access['table'][$right]['name'])
 		$accesslist[] = $access['table'][$right]['name'];
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('admininfo',$admininfo);
 $SMARTY->assign('accesslist',$accesslist);
 $SMARTY->display('admininfo.html');

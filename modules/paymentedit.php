@@ -123,7 +123,6 @@ if(isset($payment))
 	
 $layout['pagetitle'] = "Edycja op³aty sta³ej: ".$payment['name'];	
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('payment',$payment);
 $SMARTY->assign('error',$error);
 $SMARTY->display('paymentedit.html');

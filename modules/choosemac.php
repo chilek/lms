@@ -51,7 +51,6 @@ if($p == "main")
 	$SMARTY->assign('maclist',$maclist);
 }
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('part',$p);
 $SMARTY->assign('js',$js);
 $SMARTY->display('choosemac.html');

@@ -153,7 +153,6 @@ $SMARTY->assign('assignments',$assignments);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('userinfo',$userinfo);
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('nodeinfo',$nodeinfo);
 $SMARTY->assign('users',$users);
 $SMARTY->display('nodeedit.html');

@@ -109,7 +109,6 @@ $SMARTY->assign('customer',$customer);
 $SMARTY->assign('invoice',$invoice);
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('users',$users);
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('invoicenew.html');
 
 ?>

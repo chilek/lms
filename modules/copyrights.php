@@ -26,7 +26,6 @@
 
 $layout['pagetitle'] = "Informacje o prawach autorskich";
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->display('header.html');
 $SMARTY->display('copyrights.html');
 $SMARTY->display('footer.html');

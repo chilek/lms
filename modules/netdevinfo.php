@@ -63,7 +63,6 @@ $SMARTY->assign('netcomplist',$netcomplist);
 $SMARTY->assign('restnetdevlist',$netdevlist);
 $SMARTY->assign('netdevips',$netdevips);
 $SMARTY->assign('nodelist',$nodelist);
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('replacelist',$replacelist);
 $SMARTY->assign('replacelisttotal',$replacelisttotal);
 $SMARTY->assign('nodeipdata',$LMS->GetNode($_GET['ip']));

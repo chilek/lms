@@ -40,7 +40,6 @@ if($_GET['rawmode']=="true")
 		header("Content-Type: text/plain; charset=ISO-8859-2");
 }
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('database',$database);
 if(!$database['rawmode'])
 	$SMARTY->display('header.html');

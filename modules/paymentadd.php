@@ -117,7 +117,6 @@ if(isset($payment))
 
 $layout['pagetitle'] = "Nowa op³ata sta³a";
 
-$SMARTY->assign('layout',$layout);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('payment',$payment);
 $SMARTY->display('paymentadd.html');
