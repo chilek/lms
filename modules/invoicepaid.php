@@ -46,7 +46,7 @@ if ($invoiceid == 'multi')
 			if ($junk)
 				$ids[] = $markid;
 		foreach($ids as $idx => $invoiceid)
-			if ($invoicecontent = $LMS->GetInvoiceContent($invoiceid))
+			if (!$LMS->IsInvoicePaid($invoiceid) && $invoicecontent = $LMS->GetInvoiceContent($invoiceid))
 			{
 				$invoice = $LMS->DB->GetRow('SELECT customerid FROM invoices WHERE id=?', array($invoiceid));
 				foreach($invoicecontent['content'] as $idx2 => $row)
@@ -63,16 +63,15 @@ if ($invoiceid == 'multi')
 			}
 	}
 }
-elseif ($invoicecontent = $LMS->GetInvoiceContent($invoiceid))
+elseif (!$LMS->IsInvoicePaid($invoiceid) && $invoicecontent = $LMS->GetInvoiceContent($invoiceid))
 {
-	$invoice = $LMS->DB->GetRow('SELECT customerid FROM invoices WHERE id=?', array($invoiceid));
 	foreach($invoicecontent['content'] as $idx => $row)
 	{
 		$addbalance['time'] = $invoicepaydate;
 		$addbalance['type'] = 3;
 		$addbalance['value'] = $row['value'] * $row['count'];
 		$addbalance['taxvalue'] = $row['taxvalue'];
-		$addbalance['userid'] = $invoice['customerid'];
+		$addbalance['userid'] = $invoicecontent['customerid'];
 		$addbalance['comment'] = $row['description'];
 		$addbalance['invoiceid'] = $invoiceid;
 		$LMS->AddBalance($addbalance);
