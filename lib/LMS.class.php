@@ -793,7 +793,7 @@ class LMS
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid FROM nodes WHERE id=?",array($id)))
+		if($result = $this->DB->GetRow("SELECT id, name, ownerid, ipaddr, mac, access, creationdate, moddate, creatorid, modid, netdev FROM nodes WHERE id=?",array($id)))
 		{
 			$result['ip'] = long2ip($result['ipaddr']);
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
@@ -1006,6 +1006,23 @@ class LMS
 		$result['disconnected'] = $this->DB->GetOne("SELECT COUNT(id) FROM nodes WHERE access=0");
 		$result['total'] = $result['connected'] + $result['disconnected'];
 		return $result;
+	}
+
+	function GetNetDevNode($id)
+	{
+		if($nodelist = $this->DB->GetAll("SELECT id, name, ownerid, ipaddr, netdev FROM nodes WHERE netdev=?",array($id)))
+			foreach($nodelist as $idx => $row)
+			{
+				$nodelist[$idx]['ip'] = long2ip($row['ipaddr']);
+				$nodelist[$idx]['owner'] = $this->GetUsername($row['ownerid']);
+			}
+		return $nodelist;
+	}
+
+	function NetDevLinkComputer($id,$netid)
+	{
+		$this->SetTS("nodes");
+		return $this->DB->Execute("UPDATE nodes SET netdev=".$netid." WHERE id=".$id);
 	}
 
 	/*
@@ -1548,12 +1565,13 @@ class LMS
 	
 	function GetNetDevName($id)
 	{
-		return $this->DB->GetOne("SELECT name FROM netdevices WHERE id=?",array($id));
+		return $this->DB->GetRow("SELECT name, model, location FROM netdevices WHERE id=?",array($id));
 	}
 	
 	function CountNetDevLinks($id)
 	{
-		return $this->DB->GetOne("SELECT COUNT(Id) FROM netlinks WHERE src = ".$id." OR dst = ".$id);
+		// To powinno byc sumowane przez sql'a
+		return $this->DB->GetOne("SELECT COUNT(Id) FROM netlinks WHERE src = ".$id." OR dst = ".$id) + $this->DB->GetOne("SELECT COUNT(Id) FROM nodes WHERE netdev = ".$id);
 	}
 	
 	function GetNetDevConnected($id)
@@ -1843,6 +1861,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.234  2003/09/22 18:07:56  lexx
+ * - dalej netdev
+ *
  * Revision 1.233  2003/09/22 01:13:54  lukasz
  * - foreach() error
  *
