@@ -29,13 +29,27 @@ function MessageAdd($msg, $headers, $file=NULL)
 	global $LMS;
 	$time = time();
 	
+	$head = '';
 	if($headers)
 		foreach($headers as $idx => $header)
 			$head .= $idx.": ".$header."\n";
 	
 	$LMS->DB->Execute('INSERT INTO rtmessages (ticketid, createtime, subject, body, adminid, userid, mailfrom, inreplyto, messageid, replyto, headers)
-			    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($msg['ticketid'], $time, $msg['subject'], $msg['body'], $msg['adminid'], $msg['userid'], $msg['mailfrom'], $msg['inreplyto'], $msg['messageid'], $headers['Reply-To'], $head));
+			    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+			    array(
+				$msg['ticketid'],
+				$time,
+				$msg['subject'],
+				$msg['body'],
+				$msg['adminid'],
+				$msg['userid'],
+				$msg['mailfrom'],
+				$msg['inreplyto'],
+				$msg['messageid'],
+				(isset($msg['replyto']) ? $msg['replyto'] : $headers['Reply-To']),
+				$head));
 	$LMS->SetTS('rtmessages');
+
 	if($file['name'])
 	{
 		$id = $LMS->DB->GetOne('SELECT id FROM rtmessages WHERE ticketid=? AND adminid=? AND userid=? AND createtime=?', array($msg['ticketid'], $msg['adminid'], $msg['userid'], $time));
