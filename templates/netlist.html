@@ -5,19 +5,19 @@
 <table cellpadding="3" width="100%">
 	<TR bgcolor="#CEBD9B">
 		<TD class="fleftu" width="96%">
-			<NOBR><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>Nazwa:</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> Adres/prefix (interfejs):</NOBR>
+			<NOBR><IMG src="img/network.gif" border="0" ALT="" align="absmiddle"> <B>Nazwa:</B><BR><IMG src="img/ip.gif" border="0" ALT="" align="absmiddle"> Adres/prefix (interfejs):</NOBR>
 		</TD>
 		<TD class="fbt" valign="top" align="right" width="1%">
 			ID:
 		</TD>
 		<TD class="fbt" width="1%">
-			<NOBR><IMG src="img/dns.gif" border="0" alt="" align="absmiddle"> Serwery DNS:<BR><IMG src="img/domain.gif" border="0" alt="" align="absmiddle"> Domena:</NOBR>
+			<NOBR><IMG src="img/dns.gif" border="0" ALT="" align="absmiddle"> Serwery DNS:<BR><IMG src="img/domain.gif" border="0" ALT="" align="absmiddle"> Domena:</NOBR>
 		</TD>
 		<TD class="fbt" width="1%">
-			<NOBR><IMG src="img/gateway.gif" border="0" alt="" align="absmiddle"> Gateway:<BR>	<IMG src="img/wins.gif" border="0" alt="" align="absmiddle"> Serwer WINS:</NOBR>
+			<NOBR><IMG src="img/gateway.gif" border="0" ALT="" align="absmiddle"> Gateway:<BR>	<IMG src="img/wins.gif" border="0" ALT="" align="absmiddle"> Serwer WINS:</NOBR>
 		</TD>
 		<TD class="fbt" valign="top" width="1%">
-			<NOBR><IMG src="img/dhcp.gif" align="absmiddle" alt="" border="0"> Zakres DHCP:</NOBR>
+			<NOBR><IMG src="img/dhcp.gif" align="absmiddle" ALT="" border="0"> Zakres DHCP:</NOBR>
 		</TD>
 		<TD class="frightu" width="1%" align="right">
 			<NOBR><B>Razem: {$listdata.total}</B></NOBR>
@@ -27,27 +27,27 @@
 	{section name=netlist loop=$netlist}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD class="fleft" width="96%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr><IMG src="img/network.gif" border="0" alt="" align="absmiddle"> <B>{$netlist[netlist].name}</B><BR><IMG src="img/ip.gif" border="0" alt="" align="absmiddle"> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</nobr>
+			<nobr><IMG src="img/network.gif" border="0" ALT="" align="absmiddle"> <B>{$netlist[netlist].name}</B><BR><IMG src="img/ip.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].address} / {$netlist[netlist].prefix} {if $netlist[netlist].interface}({$netlist[netlist].interface}){/if}</nobr>
 		</TD>
 		<TD valign="top" align="right" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';" width="1%">
-			<nobr><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">({$netlist[netlist].id|string_format:"%04d"})<BR><img src="img/empty.gif" align="absmiddle" width="1" height="16" alt="" border="0">rozmiar: {$netlist[netlist].size} (zaj: {$netlist[netlist].assigned|string_format:"%01d"})</nobr>
+			<nobr><img src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">({$netlist[netlist].id|string_format:"%04d"})<BR><img src="img/empty.gif" align="absmiddle" width="1" height="16" ALT="" border="0">rozmiar: {$netlist[netlist].size} (zaj: {$netlist[netlist].assigned|string_format:"%01d"})</nobr>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr>{if $netlist[netlist].dns neq ""}<IMG src="img/dns.gif" border="0" alt="" align="absmiddle"> {$netlist[netlist].dns}{if $netlist[netlist].dns2 neq ""}, {$netlist[netlist].dns2}{/if}{/if}<BR>
-			{if $netlist[netlist].domain neq ""}<IMG src="img/domain.gif" border="0" alt="" align="absmiddle"> {$netlist[netlist].domain}{/if}&nbsp;</nobr>
+			<nobr>{if $netlist[netlist].dns neq ""}<IMG src="img/dns.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].dns}{if $netlist[netlist].dns2 neq ""}, {$netlist[netlist].dns2}{/if}{/if}<BR>
+			{if $netlist[netlist].domain neq ""}<IMG src="img/domain.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].domain}{/if}&nbsp;</nobr>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr>{if $netlist[netlist].gateway neq ""}<IMG src="img/gateway.gif" border="0" alt="" align="absmiddle"> {$netlist[netlist].gateway}{/if}<BR>
-			{if $netlist[netlist].wins neq ""}<IMG src="img/wins.gif" border="0" alt="" align="absmiddle"> {$netlist[netlist].wins}{/if}&nbsp;</nobr>
+			<nobr>{if $netlist[netlist].gateway neq ""}<IMG src="img/gateway.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].gateway}{/if}<BR>
+			{if $netlist[netlist].wins neq ""}<IMG src="img/wins.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].wins}{/if}&nbsp;</nobr>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netinfo&id={$netlist[netlist].id}';">
-			<nobr>{if $netlist[netlist].dhcpstart}<IMG src="img/dhcpstart.gif" border="0" alt="" align="absmiddle"> {$netlist[netlist].dhcpstart}<BR><IMG src="img/dhcpend.gif" border="0" alt="" align="absmiddle"> {$netlist[netlist].dhcpend}{/if}</nobr>
+			<nobr>{if $netlist[netlist].dhcpstart}<IMG src="img/dhcpstart.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].dhcpstart}<BR><IMG src="img/dhcpend.gif" border="0" ALT="" align="absmiddle"> {$netlist[netlist].dhcpend}{/if}</nobr>
 		</TD>
 		<TD class="fright">
 			<nobr>
-			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ sieæ \'{$netlist[netlist].name|upper}\'?')"><IMG src="img/delete.gif" border="0" alt="[ Usuñ ]"></A>
-			<a href="?m=netedit&id={$netlist[netlist].id}"><IMG src="img/edit.gif" border="0" alt="[ Edytuj ]"></A>
-			<a href="?m=netinfo&id={$netlist[netlist].id}"><IMG src="img/info.gif" border="0" alt="[ Info ]"></A></nobr>
+			<a href="?m=netdel&id={$netlist[netlist].id}" onClick="return confirmLink(this,'Jeste¶ pewien ¿e chcesz usun±æ sieæ \'{$netlist[netlist].name|upper}\'?')"><IMG src="img/delete.gif" border="0" ALT="[ Usuñ ]"></A>
+			<a href="?m=netedit&id={$netlist[netlist].id}"><IMG src="img/edit.gif" border="0" ALT="[ Edytuj ]"></A>
+			<a href="?m=netinfo&id={$netlist[netlist].id}"><IMG src="img/info.gif" border="0" ALT="[ Info ]"></A></nobr>
 		</TD>
 	</TR>
 	{sectionelse}
