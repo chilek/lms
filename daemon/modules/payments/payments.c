@@ -203,7 +203,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 				
 					if( last_userid != atoi(g->db_get_data(res,i,"userid")) ) {
 						// prepare insert to 'invoices' table
-						insert_inv = strdup("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES (%number, %customerid, '%lastname %name', '%address', '%zip', '%city', '%phone', '%nip', '%pesel', %NOW%, 14, 'PRZELEW', 1 )");
+						insert_inv = strdup("INSERT INTO invoices (number, customerid, name, address, zip, city, phone, nip, pesel, cdate, paytime, paytype, finished) VALUES (%number, %customerid, '%lastname %name', '%address', '%zip', '%city', '%phone', '%nip', '%pesel', %NOW%, %deadline, '%paytype', 1 )");
 						g->str_replace(&insert_inv, "%number", itoa(++number));
 						g->str_replace(&insert_inv, "%customerid", g->db_get_data(res,i,"userid"));				
 						g->str_replace(&insert_inv, "%lastname", g->db_get_data(res,i,"lastname"));
@@ -214,7 +214,9 @@ void reload(GLOBAL *g, struct payments_module *p)
 						g->str_replace(&insert_inv, "%phone", g->db_get_data(res,i,"phone"));
 						g->str_replace(&insert_inv, "%nip", g->db_get_data(res,i,"nip"));
 						g->str_replace(&insert_inv, "%pesel", g->db_get_data(res,i,"pesel"));
-	
+						g->str_replace(&insert_inv, "%deadline", p->deadline);
+						g->str_replace(&insert_inv, "%paytype", p->paytype);
+			
 						g->db_exec(insert_inv);			
 						free(insert_inv);
 						
@@ -285,6 +287,8 @@ void reload(GLOBAL *g, struct payments_module *p)
 
 	// clean up
 	free(p->comment);
+	free(p->deadline);
+	free(p->paytype);
 }
 
 struct payments_module * init(GLOBAL *g, MODULE *m)
@@ -307,6 +311,10 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 
 	s = g->str_concat(instance, ":comment");
 	p->comment = strdup(g->iniparser_getstring(ini, s, "Abonament wg taryfy: %tariff za okres: %period"));
+	free(s); s = g->str_concat(instance, ":deadline");
+	p->deadline = strdup(g->iniparser_getstring(ini, s, "14"));
+	free(s); s = g->str_concat(instance, ":paytype");
+	p->paytype = strdup(g->iniparser_getstring(ini, s, "PRZELEW"));
 	free(s); s = g->str_concat(instance, ":up_payments");
 	p->up_payments = g->iniparser_getboolean(ini, s, 1);
 	free(s); s = g->str_concat(instance, ":expiry_days");
