@@ -1541,6 +1541,70 @@ CLASS="PROMPT"
 ></LI
 ></UL
 ></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="LMS-FPING"
+>4.3.14. lms-fping</A
+></H2
+><P
+>Skrypt zapisuje do bazy informacje o aktywno¶ci komputerów. 
+	    Do skanowania wykorzystywany jest szybki program fping (z opcjami -ar1). 
+	    Najpierw tworzona jest lista hostów, a nastêpnie, po wywo³aniu fping'a, 
+	    komputerom w³±czonym zostaje przypisana data i czas skanowania. Dziêki temu 
+	    mamy w bazie informacje kiedy dany komputer by³ ostatnio w³±czony.</P
+><P
+>Konfiguracjê tego skryptu zawiera sekcja <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>[fping]</I
+></SPAN
+>
+	    w pliku <TT
+CLASS="FILENAME"
+>lms.ini</TT
+>: </P
+><UL
+><LI
+><P
+>networks </P
+><P
+>Lista nazw sieci (oddzielonych spacjami), które maj± byæ uwzglêdnione podczas skanowania.
+		    Je¶li nie ustawiono przeskanowane zostan± wszystkie komputery.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>networks = public-custa public-custb</SAMP
+></P
+></LI
+><LI
+><P
+>fping_binary</P
+><P
+>Lokalizacja programu fping. Domy¶lnie: /usr/sbin/fping</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>fping_binary = /usr/local/sbin/fping</SAMP
+></P
+></LI
+><LI
+><P
+>temp_file</P
+><P
+>Lokalizacja pliku tymczasowego na listê hostów, który
+		    po wykonaniu skryptu zostaje usuniêty. Domy¶lnie: /tmp/fping_hosts.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>temp_file = /tmp/hosts</SAMP
+></P
+></LI
+></UL
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"

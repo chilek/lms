@@ -192,6 +192,12 @@ ALIGN="CENTER"><THEAD
 ><TD
 >Statystyki wykorzystania ³±cza</TD
 ></TR
+><TR
+><TD
+>pinger</TD
+><TD
+>Badanie aktywno¶ci u¿ytkowników</TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
@@ -1713,6 +1719,56 @@ CLASS="PROMPT"
 >Przyk³ad: <SAMP
 CLASS="PROMPT"
 >command = "killall -HUP midentd"</SAMP
+></P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="DAEMON-PINGER"
+>6.2.14. Pinger</A
+></H2
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="PINGER-DESC"
+>6.2.14.1. Opis</A
+></H3
+><P
+>Modu³ pinger to odpowiednik perlowego skryptu lms-fping. Ró¿nice s± jednak
+		    zasadnicze. Nie potrzebuje zewnêtrznego programu i dzia³a przy wykorzystaniu
+		    protoko³u ARP. Powodem tego jest mniej wiêcej dwukrotnie szybsze wykonanie
+		    skanowania sieci. Nie ma tak¿e problemów z komputerami maj±cymi wy³±czone 
+		    odpowiadanie na pingi. Po skanowaniu, wszystkim w³±czonym komputerom jest
+		    ustawiany w bazie danych czas skanowania, wykorzystywany do obrazowania
+		    aktywno¶ci komputerów np. na mapie sieci.</P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="PINGER-CONFIG"
+>6.2.14.2. Konfiguracja</A
+></H3
+><P
+>Pinger udostêpnia tylko jedn± opcjê konfiguracyjn±:</P
+><UL
+><LI
+><P
+>networks</P
+><P
+>Lista nazw sieci, które maj± byæ skanowane. Domy¶lnie: pusta (wszystkie sieci).</P
+><P
+>Przyk³ad: <SAMP
+CLASS="PROMPT"
+>networks = 'lan1 lan2'</SAMP
 ></P
 ></LI
 ></UL

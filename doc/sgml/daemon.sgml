@@ -196,6 +196,10 @@ info = "Opcjonalny opis modu³u"
 				<entry>traffic</entry>
 				<entry>Statystyki wykorzystania ³±cza</entry>
 				</row>
+				<row>
+				<entry>pinger</entry>
+				<entry>Badanie aktywno¶ci u¿ytkowników</entry>
+				</row>
 				</tbody>
 			</tgroup>
 			</table>
@@ -966,6 +970,30 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
 			    <para>command</para>
 			    <para>Polecenie do wykonania po utworzeniu pliku. Domy¶lnie: puste.</para>
 			    <para>Przyk³ad: <prompt>command = "killall -HUP midentd"</prompt></para>
+			</listitem>
+		    </itemizedlist>
+		    </sect3>
+		</sect2>
+		<sect2 id="daemon-pinger">
+		<title>Pinger</title>
+		    <sect3 id="pinger-desc">
+		    <title>Opis</title>
+		    <para>Modu³ pinger to odpowiednik perlowego skryptu lms-fping. Ró¿nice s± jednak
+		    zasadnicze. Nie potrzebuje zewnêtrznego programu i dzia³a przy wykorzystaniu
+		    protoko³u ARP. Powodem tego jest mniej wiêcej dwukrotnie szybsze wykonanie
+		    skanowania sieci. Nie ma tak¿e problemów z komputerami maj±cymi wy³±czone 
+		    odpowiadanie na pingi. Po skanowaniu, wszystkim w³±czonym komputerom jest
+		    ustawiany w bazie danych czas skanowania, wykorzystywany do obrazowania
+		    aktywno¶ci komputerów np. na mapie sieci.</para>
+		    </sect3>
+		    <sect3 id="pinger-config">
+		    <title>Konfiguracja</title>
+		    <para>Pinger udostêpnia tylko jedn± opcjê konfiguracyjn±:</para>
+		    <itemizedlist>
+			<listitem>
+			    <para>networks</para>
+			    <para>Lista nazw sieci, które maj± byæ skanowane. Domy¶lnie: pusta (wszystkie sieci).</para>
+			    <para>Przyk³ad: <prompt>networks = 'lan1 lan2'</prompt></para>
 			</listitem>
 		    </itemizedlist>
 		    </sect3>
