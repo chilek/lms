@@ -1511,11 +1511,11 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 	}
 
 	echo '<B>Generuje taryfy...</B><BR>';
-	$tariffdata = array( name => 'Lite', description => 'Taryfa Lite', value => '30', taxvalue => '7', pkwiu => '', uprate => '64', downrate => '128');
+	$tariffdata = array( name => 'Lite', description => 'Taryfa Lite', value => '30', taxvalue => '7', pkwiu => '', uprate => '64', upceil=> '64', downrate => '128', downceil => '128', climit => '0', plimit => '0');
 	$LMS->TariffAdd($tariffdata);
-	$tariffdata = array( name => 'Standard', description => 'Taryfa Standard', value => '60', taxvalue => '7', pkwiu => '', uprate => '128', downrate => '256');
+	$tariffdata = array( name => 'Standard', description => 'Taryfa Standard', value => '60', taxvalue => '7', pkwiu => '', uprate => '128', upceil => '128', downrate => '256', downceil => '256', climit => '0', plimit => '0');
 	$LMS->TariffAdd($tariffdata);
-	$tariffdata = array( name => 'Gold', description => 'Taryfa Gold', value => '120', taxvalue => '7', pkwiu => '', uprate => '256', downrate => '512');
+	$tariffdata = array( name => 'Gold', description => 'Taryfa Gold', value => '120', taxvalue => '7', pkwiu => '', uprate => '256', upceil => '256', downrate => '512', downceil => '512', climit => '0', plimit => '0');
 	$LMS->TariffAdd($tariffdata);
 
 	echo '<B>Generuje op³aty sta³e...</B><BR>';
