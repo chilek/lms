@@ -2981,7 +2981,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		}
 
 		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
-		    FROM rtmessages LEFT JOIN rttickets ON (rttickets.id = rtmessages.ticketid)
+		    FROM rttickets LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
 		    LEFT JOIN admins ON (owner = admins.id) 
 		    LEFT JOIN users ON (rttickets.userid = users.id)
 		    WHERE queueid = ? 
@@ -3137,8 +3137,8 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$where .= ($search['email']!='' ? 'AND requestor LIKE \''.$search['email'].'\' ' : '');
 		
 		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
-		    FROM rtmessages 
-		    LEFT JOIN rttickets ON (rttickets.id = rtmessages.ticketid)
+		    FROM rttickets 
+		    LEFT JOIN rtmessages ON (rttickets.id = rtmessages.ticketid)
 		    LEFT JOIN admins ON (owner = admins.id) 
 		    LEFT JOIN users ON (rttickets.userid = users.id)
 		    WHERE 1=1 '
