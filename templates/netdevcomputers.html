@@ -1,0 +1,63 @@
+<!-- $Id$ -->
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="DARK">
+		<TD WIDTH="1%" CLASS="FLEFTU">
+			<IMG SRC="img/node.gif" BORDER="0" ALT="">
+		</TD>
+		<TD WIDTH="99%" CLASS="FRIGHTU" COLSPAN=3>
+			<B>Komputery pod³±czone:</B>
+		</TD>
+	</TR>
+	<TR CLASS="dark">
+		<TD CLASS="fleftu" width="1%">
+			<img src="img/node.gif" alt="" align="absmiddle"><BR>
+			<img src="img/user.gif" alt="" align="absmiddle">
+		</TD>
+		<TD CLASS="fbt" width="49%">
+			Nazwa:</B><BR>
+			W³a¶ciciel:
+		</TD>
+		<TD CLASS="fbt" width="1%">
+			<BR>
+			<img src="img/ip.gif" alt="" align="absmiddle">
+		</TD>
+		<TD CLASS="FRIGHTU" width="49%">
+			ID:<BR>
+			Adres IP:
+		</TD>
+	</TR>
+
+	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=netcomplist loop=$netcomplist start=$start}
+	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD width="1%" CLASS="fleft" onClick="return self.location.href='?m=netdevinfo&id={$netcomplist[netcomplist].id}';">
+			<IMG SRC="img/node.gif" ALT="" ALIGN="ABSMIDDLE"><BR>
+			<img src="img/user.gif" alt="" align="absmiddle">
+		</TD>
+		<TD width="49%" onClick="return self.location.href='?m=netdevinfo&id={$netcomplist[netcomplist].id}';">
+			<a name="{$netcomplist[netcomplist].id}"><B>{$netcomplist[netcomplist].name} / {$netcomplist[netcomplist].producer}</B></A><BR>
+			{$netcomplist[netcomplist].location}
+		</TD>
+		<TD width="1%" onClick="return self.location.href='?m=netdevinfo&id={$netcomplist[netcomplist].id}';">
+			<br>
+			<IMG SRC="img/ip.gif" ALT="" ALIGN="ABSMIDDLE">
+		</TD>
+		<TD width="49%" CLASS="fright" onClick="return self.location.href='?m=netdevinfo&id={$netcomplist[netcomplist].id}';">
+			({$netcomplist[netcomplist].id|string_format:"%04d"})<br>
+			{$netcomplist[netcomplist].ports} ({$netcomplist[netcomplist].takenports})
+		</TD>
+	</TR>
+	{if $netcomplist[netcomplist.index_next].ownerid eq $netcomplist[netcomplist].ownerid && $listdata.order eq "owner"}{cycle print=false}{/if}
+	{sectionelse}
+	<TR>
+		<TD colspan="4" CLASS="fall" align="center">
+			<p>&nbsp;</p>
+			<p><B>Nie posiadasz ¿adnych pod³±czonych komputerów.</b></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+        <TR CLASS="light">
+                <TD WIDTH="100%" COLSPAN="4" CLASS="ftop">
+                </TD>
+        </TR>
+</TABLE>
