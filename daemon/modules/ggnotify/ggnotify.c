@@ -218,7 +218,7 @@ struct ggnotify_module * init(GLOBAL *g, MODULE *m)
 	n->ggtemplate = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":uin");
 	n->uin = g->iniparser_getint(ini, s, 0);
-	free(s); s = g->str_concat(instance, ":passwd");
+	free(s); s = g->str_concat(instance, ":password");
 	n->passwd = strdup(g->iniparser_getstring(ini, s, ""));
 	free(s); s = g->str_concat(instance, ":limit");
 	n->limit = g->iniparser_getint(ini, s, 0);
