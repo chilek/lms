@@ -689,9 +689,17 @@ class LMS
 				$sqlord = "";
 			break;
 			
-			default:
-				$sqlord = "ORDER BY lastname, name";
+			case "gg":
+				$sqlord = "ORDER BY gguin";
 			break;
+			
+			case "nip":
+				$sqlord = "ORDER BY nip";
+			break;
+			
+			default:
+				$sqlord = "ORDER BY ".$this->ADB->Concat("UPPER(lastname)","' '","name");
+			break;																			
 		}
 
 		$like = $this->sqlLIKE();
@@ -718,7 +726,7 @@ class LMS
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, tariff FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
+		if($userlist = $this->ADB->GetAll("SELECT id, ".$this->ADB->Concat("UPPER(lastname)","' '","name")." AS username, status, email, phone1, address, info, tariff, nip, zip, city, gguin FROM users WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." ".($sqlord !="" ? $sqlord." ".$direction:"" )))
 		{
 			if($blst = $this->ADB->GetAll("SELECT userid AS id, SUM(value) AS value FROM cash WHERE type='3' GROUP BY userid"))
 				foreach($blst as $row)
