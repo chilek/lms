@@ -3,41 +3,43 @@
      <title>A.L.E.C's LMS Daemon</title>
      <sect1 id="daemon-intro">
      <title>Basics</title>
-     <para>Written in C program facilitate management of services. Daemon is
-         responsible for starting of appropriate modules on user demand only. Modules
-         are making configuration files based on data from LMS's database and
-         restarting selected services on a server.
-         </para>
-     <para>Why such name? The better part of daemon code was written by one of developers - Aleksander 
-     'A.L.E.C' Machniak, nevertheless must underline a contribution of Marcina 'Lexx' Krol. Program
-     include fragments of code of Mateusza 'mteg' Golicz's old daemon and use Nicolas Devillard's iniparser
-     library.
+     <para>This C daemon was developed to aid management of your services. It's responsible for
+     starting appropriate modules, each performing specific task. You have to select modules that
+     you intend to use before starting the daemon. Each module makes configuration files based on
+     its template and data from LMS database and manages (restarting) selected services on a server.
      </para>
+     <para>Why such name? The majority of daemon code has been written by one of developers -
+     Aleksander 'A.L.E.C' Machniak. Nevertheless we must emphasize contributions done by Marcin 'Lexx'
+     Krol. It also includes fragments of code of Mateusz 'mteg' Golicz old daemon and use Nicolas
+     Devillard iniparser library. </para>
           <sect2 id="daemon-requirements">
           <title>Requirements</title>
-               <para><emphasis>A.L.E.C's LMS Daemon</emphasis> require:
+               <para><emphasis>A.L.E.C's LMS Daemon</emphasis> requires:
                      <itemizedlist>
                <listitem>
                     <para>LMS user interface installation</para>
                </listitem>
                <listitem>
-                    <para><filename>libmysqlclient</filename> (full MySQL installation or respective packet) 
-                    or <filename>libpq</filename> in case of PostgreSQL database or <filename>sqlite</filename></para>
+                    <para><filename>libmysqlclient</filename> shared library (included in full MySQL
+                    installation or respective "devel" package) or <filename>libpq</filename> shared
+                    library in case of PostgreSQL database use or <filename>sqlite</filename> shared
+                    library</para>
                      </listitem>
                <listitem>
-                    <para><filename>libdl</filename> (that is in every present-day distribution)</para>
+                    <para><filename>libdl</filename> shared library (present in every modern
+                    distribution)</para>
                </listitem>
                <listitem>
-                    <para>C compiler</para>
+                    <para>C compiler (gcc)</para>
                </listitem>
                </itemizedlist>
                      </para>
           </sect2>
           <sect2 id="daemon-install">
           <title>Installation</title>
-               <para>Prior to compilation you must set options described on following listing
-               with help of <filename>./configure</filename> script (in brackets are shown
-               default values):
+               <para>You have to setup some configure options prior to compilation, that can be
+               listed with --help flag of <filename>./configure</filename> script (default values
+               shown in brackets):
 <screen>
   --help                help
   --enable-debug0       SQL queries logging (disabled)
@@ -49,9 +51,10 @@
   --libdir=DIR          location of database libraries (/usr/lib)
   --incdir=DIR          location of database header files (/usr/include)
 </screen>
-               Then, required is to set database which you will use (--with-mysql 
-               or --with-pgsql) and location of libraries supplied with database (--incdir, --libdir).
-               You can use only one database. If you will change database, you must to recompile daemon.
+               It's required to choose one database which you will use (--with-mysql or --with-pgsql
+               or --with-sqlite) and location of libraries supplied with database (--incdir,
+               --libdir). You can use only one database. If you will change database, you have to
+               recompile your daemon.
 <screen>
 # ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include
 </screen>
@@ -60,16 +63,17 @@
 <screen>
 # make && make install
 </screen>
-               Finally, compiled modules (files with <filename>.so</filename> extension),
-               found in directory <filename>modules/module_name</filename> move to any 
-               directory. Their location you will set in configuration file.
+               Finally, compiled modules (files with <filename>.so</filename> extension), found in
+               directory <filename>modules/module_name</filename> should be moved to some directory.
+               Their location will be set in configuration file.
                </para>
           </sect2>
           <sect2 id="daemon-config">
           <title>Configuration</title>
-               <para>Example daemon configuration you can find in file <filename>lms.ini.sample</filename>.
-               Following listing describe basic options for daemon (modules configuration is described 
-               in separate chapters concerning modules):
+               <para>You can find example daemon configuration in
+               <filename>lms.ini.sample</filename> file. The following listing describes basic
+               options for the daemon (modules configuration is described later, in separate
+               chapters concerning each module):
 <screen>
 [database]
 host            = localhost     # host name or IP, default: localhost
@@ -81,66 +85,64 @@ port            = 0             # port number, default: 0
 [lmsd]
 sleeptime       = 30            # time interval (in seconds) how often to
                                 # check for reload order, default: 30
-instances       = hosts oident firewall       # module instances list
-command         = 'echo Connecting...'        # shell command to run before every database connection 
+instances       = hosts oident firewall       # selected (active) modules list
+command         = 'echo Connecting...'        # shell command that run before each database connection 
 </screen>
-               <note><para>List of instances contains instances names detached with 
-               spaces. Instance is a name of section in configuration file.</para></note>
-               </para>
-               <para>In instance section, beside config modules params, you must specify
-               primary options, as on following listing:
+               <note><para>List of instances contains modules names separated with spaces. Instance
+               is a name of section below in this configuration file.</para></note> </para>
+               <para>Instance section, beside config modules params, must contain primary options,
+               as on following listing:
 <screen>
 [instance_name]
 module = /path/to/module.so
 info = "Additional description of module"
 </screen>          
                </para>
-               <para>Change of 'instances' and any option i instances sections do not
-               require daemon restart. For other global options restart is required.</para>
+               <para>Change of 'instances' or any option in instance sections do not require daemon
+               restart. For other global options restart is required.</para>
           </sect2>
           <sect2 id="daemon-run">
           <title>Starting</title>
-               <para>You can run program as a daemon working in background (option '-b'). Then
-               configuration and services reload is done on demand with use of 
-               'Reload' menu in <emphasis>LMS-UI</emphasis>. Option 'sleeptime' (-s) specify interval
-               between database reads. When daemon detects reload order, he runs
-               modules defined by 'instances' option in <filename>lms.ini</filename>.
+               <para>You can run this program as a daemon, detached to background with option '-b'.
+               While running configuration and services reload is performed on demand using 'Reload'
+               menu in <emphasis>LMS-UI</emphasis>. Sleep time runtime option (-s) specify interval
+               between database checks. When daemon detects reload order, it runs modules defined by
+               'instances' option in <filename>lms.ini</filename>.
                For example:
 <screen>
 # almsd -b
 </screen>               
                </para>
-               <para>Other way to run is disposable reload with usage of cron. 
-               You must to use this manner of reload for runing modules like 'payments'
-               'notify' or 'traffic'. In that case you can specify instances to reload
-               with use of option '-i'. Example crontab's entry:
+               <para>Other way to run is periodical execution with cron. You have to use this mode
+               for running modules like 'payments' 'notify' or 'traffic'. In those cases you can
+               specify instances to reload with use of option '-i'. Example crontab entry:
 <screen>
   1 0 * * *    /usr/local/bin/almsd -qi "payments notify"
 </screen>
                </para>
-               <para>Following listing describe program command line options:
+               <para>Following listing describes all program command line options:
 <screen>
   -c     path to config (default: /etc/lms/lms.ini)
-  -i     list of instances (separated by space) to reload
+  -i     list of instances (separated by spaces) to reload
   -b     run in background (daemon mode)
-  -s     'reload' table reading interval in sec. (default: 30)
-  -q      reload and quit
-  -h      prints command line options
+  -s     database checks interval in sec. (default: 30)
+  -q     reload and quit
+  -h     prints command line options
 </screen>
                </para>
           </sect2>
      </sect1>
      <sect1 id="daemon-modules">
      <title>Modules</title>
-     <para>Daemon can only run modules and they are doing all job. 
-     Most of modules are designed to specific application, only 'hostfile' 
-     can be used to many different configs (services), i.e. various firewall types. 
-     Daemon and modules configuration examples contains file <filename>daemon/lms.ini.sample</filename>.
-     Modules configuration parameters must be placed in appropriate instances sections.</para>
+     <para>As we stated before daemon can only run modules and they are doing all the job. 
+     Most modules are designed to specific application, only 'hostfile' 
+     can be used to create many different configs (and manage numerous services), ie. various firewall types. 
+     Daemon and modules configuration examples are contained in the <filename>daemon/lms.ini.sample</filename> file.
+     Module configuration parameters MUST be placed in appropriate instance section.</para>
           <sect2 id="daemon-moduleslist">
           <title>Modules list</title>
                <table>
-               <title>List of almsd daemon modules</title>
+               <title>List of all almsd modules</title>
                <tgroup cols="2">
                <colspec ALIGN="center" COLWIDTH="200">
                <colspec ALIGN="center" COLWIDTH="300">
@@ -169,19 +171,19 @@ info = "Additional description of module"
                     </row>
                     <row>
                     <entry><xref linkend="daemon-ethers"></entry>
-                    <entry>Making of /etc/ethers file</entry>
+                    <entry>/etc/ethers file creation</entry>
                     </row>
                     <row>
                     <entry><xref linkend="daemon-hostfile"></entry>
-                    <entry>Universal module (e.g. making iptables rules)</entry>
+                    <entry>Universal module (eg. making iptables rules)</entry>
                     </row>
                     <row>
                     <entry><xref linkend="daemon-notify"></entry>
-                    <entry>E-mail notifying users about payments</entry>
+                    <entry>Email notify about payments</entry>
                     </row>
                     <row>
                     <entry><xref linkend="daemon-ggnotify"></entry>
-                    <entry>Gadu-Gadu (polish internet messenger) notifying users about payments</entry>
+                    <entry>Gadu-Gadu (polish internet messenger) notify about payments</entry>
                     </row>
                     <row>
                     <entry><xref linkend="daemon-payments"></entry>
@@ -201,7 +203,7 @@ info = "Additional description of module"
                     </row>
                     <row>
                     <entry><xref linkend="daemon-pinger"></entry>
-                    <entry>Users activity scanning</entry>
+                    <entry>Users activity (online) scanning</entry>
                     </row>
                     </tbody>
                </tgroup>
@@ -211,15 +213,15 @@ info = "Additional description of module"
           <title>System</title>
               <sect3 id="system-desc">
               <title>Description</title>
-              <para>This module doing only one thing. It's executing of given command 
-	      of linux shell. It can be usefull when you want to execute some command
-	      or run external script while configuration reload, e.g. one of them, 
-              which are in LMS <filename>/bin</filename> directory.</para>
+              <para>This module does only one thing: it runs given 
+	      Linux shell command. It can be useful if you want to execute some command
+	      or run external script while configuration is being reload, eg. one of those 
+              in LMS <filename>/bin</filename> directory.</para>
               </sect3>
               <sect3 id="system-config">
               <title>Configuration</title>
-              <para>By reason of above-mentioned you can define only command contents.
-              Shell should advise with list of commands separated by semicolons:</para>
+              <para>For above reason you can define only command string. Module will pass list of
+              commands to shell, separated by semicolons:</para>
               <itemizedlist>
                <listitem>
                    <para>command</para>
@@ -233,35 +235,34 @@ info = "Additional description of module"
           <title>Payments</title>
               <sect3 id="payments-desc">
               <title>Description</title>
-              <para>Module accounts customers subscription payments and solid payments. It should 
-              be executed commonly once a day. Payments are accounted on base of customers
-              liabilities and writed to database with description defined in 'comment' option.
-              After accounting are created invoices. Description of solid payment is a 
-              mass of its name and creditor name. At the end from database are removed
-	      out-of-dated customers liabilities.</para>
+              <para>Module calculates subscription and solid fees for customers, basing on current
+               date. It should be executed once a day. Payments are calculated basing on customers
+               liabilities and written to database with description filled in 'comment' field. If
+               appropriate, invoices are created. Description of solid payment is a combination of liability
+               and creditor name. At the end outdated liabilities are being removed from database. </para>
               </sect3>
               <sect3 id="payments-config">
               <title>Configuration</title>
-              <para>For that module you can use following options:</para>
+              <para>You can use following options for this module:</para>
               <itemizedlist>
                <listitem>
                    <para>comment</para>
-                   <para>Operation description. '%period' will be replaced by dates from-to 
-                   of subscription, e.g. '10.10.2003 - 09.11.2003', and '%tariff' by name
-                   of tariff. Default: 'Abonament wg taryfy: '%tariff' za okres: %period'.</para>
+                   <para>Description of operation. '%period' will be replaced by start and end
+                   date of subscription, e.g. '10.10.2003 - 09.11.2003', and '%tariff' by name of
+                   liability. Default: 'Subscription: '%tariff' for period: %period'.</para>
                    <para>Example: <prompt>comment = 'Subscription: %tariff for period %period' </prompt></para>
                </listitem>
                <listitem>
                    <para>up_payments</para>
-                   <para>Decision how should be counted period in comment - forward
-                   or backward relatively to date of payment accounting. Default: yes.</para>
+                   <para>How should period in comment be counted - forward or backward relatively to
+                   date of write out. Default: yes.</para>
                    <para>Example: <prompt>up_payments = no</prompt></para>
                </listitem>
                <listitem>
                    <para>expiry_days</para>
                    <para>Defines number of days from date of liability expiration, after which 
                    that liability will be removed from database. When you set '0' data will be
-                   removed immediately after date, for which binds that liability. Default: 30.</para>
+                   removed immediately after date of the write out. Default: 30.</para>
                    <para>Example: <prompt>expiry_days = 365</prompt></para>
                </listitem>
                <listitem>
@@ -271,7 +272,7 @@ info = "Additional description of module"
                </listitem>
                <listitem>
                    <para>paytype</para>
-                   <para>Payment type. Default: 'PRZELEW'.</para>
+                   <para>Payment type. Default: 'TRANSFER'.</para>
                    <para>Example: <prompt>paytype = 'CASH'</prompt></para>
                </listitem>
               </itemizedlist>
@@ -281,11 +282,10 @@ info = "Additional description of module"
           <title>Notify</title>
               <sect3 id="notify-desc">
               <title>Description</title>
-              <para>Module 'notify' is destined to inform customers of debt
-              in payments using electronic mail. Current customer balance
-              is compared with 'limit' option, if is lower - message will 
-	      be sent. Message content is taken from prepared template, which
-              can consists following variables:
+               <para>Module 'notify' is designed to inform customers about their debt using
+               electronic mail. Current customer balance is compared to 'limit' option, if it's
+               beneath that limit - message will be sent. Message content is taken from template,
+               which may include the following variables:
               <itemizedlist>
                <listitem>
                    <para>%saldo - current customer balance</para>
@@ -294,7 +294,7 @@ info = "Additional description of module"
                    <para>%name - customer forename</para>
                </listitem>
                <listitem>
-                   <para>%lastname - customer name/lastname</para>
+                   <para>%lastname - company name or customer lastname</para>
                </listitem>
                <listitem>
                    <para>%last_10_in_a_table - last 10 operations on customer account</para>
@@ -303,7 +303,7 @@ info = "Additional description of module"
               </sect3>
               <sect3 id="notify-config">
               <title>Configuration</title>
-              <para>Below are presented configuration options of 'notify' module:</para>
+              <para>Configuration options for 'notify' module are presented below:</para>
               <itemizedlist>
                <listitem>
                    <para>template</para>
@@ -312,26 +312,27 @@ info = "Additional description of module"
                </listitem>
                <listitem>
                    <para>file</para>
-                   <para>Location of temprary file. Default: /tmp/mail</para>
+                   <para>Location of temporary file. Default: /tmp/mail</para>
                    <para>Example: <prompt>file = /tmp/mail.txt</prompt></para>
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Shell command for e-maila sending. '%address' will be replaced
-                   by customer e-mail address. Default: 'mail -s "Liabilities Information" %address &lt; /tmp/mail'.</para>
+                   <para>Shell command for sending an e-mail. '%address' will be replaced by
+                   customer e-mail address. Default: 'mail -s "Liabilities Information" %address
+                   &lt; /tmp/mail'.</para>
                    <para>Example: <prompt>command = 'mail -s "You must pay or ..." $address &lt; /tmp/mail.txt'</prompt></para>
                </listitem>          
                <listitem>
                    <para>limit</para>
-                   <para>Message is sended when customer balance will decrease
-                   below value defined in that option. Default: 0</para>
+                   <para>Message is sent when customer balance will decrease below value defined in
+                   this option. Default: 0</para>
                    <para>Example: <prompt>limit = -20</prompt></para>
                </listitem>
                <listitem>
                    <para>debug_mail</para>
-                   <para>If set, at this address goes all messages. Useful
-                   for testing. Default: empty.</para>
-                   <para>Example: <prompt>debug_mail = localhost@my.net</prompt></para>
+                   <para>If set, all messages goes to this address, instead of sending them to
+                   customers. Useful for testing. Default: empty.</para>
+                   <para>Example: <prompt>debug_mail = tester@my.net</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>
@@ -340,15 +341,15 @@ info = "Additional description of module"
           <title>Ggnotify</title>
               <sect3 id="ggnotify-desc">
               <title>Description</title>
-              <para>Equivalent of 'notify' module destined to sending gadu-gadu messages.
-	      Gadu-Gadu it's a most popular polish internet messenger.</para>
-              <para>Module require installed <filename>libgadu</filename> library and sources
-              of <filename>ekg</filename> program. Appropriate paths for them must to be
-	      put in <filename>modules/ggnotify/Makefile</filename> before module compilation.</para>
+              <para>Equivalent of 'notify' module developed to send gadu-gadu instant messages.
+              Gadu-Gadu is most popular polish internet messenger.</para>
+              <para>Module require <filename>libgadu</filename> shared library and sources
+              of <filename>ekg</filename> program. Appropriate paths for them must be present in
+              <filename>modules/ggnotify/Makefile</filename> before module compilation.</para>
               </sect3>
               <sect3 id="ggnotify-config">
               <title>Configuration</title>
-              <para>Podobnie jak w 'notify' masz do dyspozycji nastêpuj±ce zmienne:</para>
+              <para>Options similar to 'notify' module might be also used here:</para>
               <itemizedlist>
                <listitem>
                    <para>template</para>
@@ -357,24 +358,24 @@ info = "Additional description of module"
                </listitem>
                <listitem>
                    <para>uin</para>
-                   <para>Gadu-gadu identifier of message sender. 
+                   <para>Gadu-gadu identifier number of message sender. 
                    Default: empty.</para>
                    <para>Example: <prompt>uin = 1234567</prompt></para>
                </listitem>
                <listitem>
                    <para>password</para>
-                   <para>Password for account specified in 'uin'. Default: empty.</para>
+                   <para>Password for account specified by 'uin'. Default: empty.</para>
                    <para>Example: <prompt>password = "my_HURD.password"</prompt></para>
                </listitem>          
                <listitem>
                    <para>limit</para>
-                   <para>Message is sended when customer balance will decrease
-                   below value defined in that option. Default: 0</para>
+                   <para>Message is sent when customer balance will decrease below value defined in
+                   this option. Default: 0</para>
                    <para>Example: <prompt>limit = -20</prompt></para>
                </listitem>
                <listitem>
                    <para>debug_uin</para>
-                   <para>If is set, there will go all messages. Default: empty.</para>
+                   <para>If is set, all messages will go to that 'uin'. Default: empty.</para>
                    <para>Example: <prompt>debug_uin = 7654321</prompt></para>
                </listitem>
               </itemizedlist>
@@ -384,67 +385,66 @@ info = "Additional description of module"
           <title>Cutoff</title>
               <sect3 id="cutoff-desc">
               <title>Description</title>
-              <para>Cutoff do change nodes status to 'disconnected' and/or enable warnings
-              for customers, which have debts at an account greater than specified limit.
-              This module do not blocking network access.</para>
+              <para>Cutoff do change nodes status to 'disconnected' and/or enable warnings for
+              customers, which have debts greater than specified limit. This module does not doing
+              actual blocking of network access.</para>
               </sect3>
               <sect3 id="cutoff-config">
               <title>Configuration</title>
-              <para>For module 'cutoff' we have following options:</para>
+              <para>You can use following options for 'cutoff' module:</para>
               <itemizedlist>
                <listitem>
                    <para>limit</para>
-                   <para>Disconnection ensue if customer balance will decrease below
-                   specified value. Default: 0.</para>
+                   <para>Disconnection occurs when customer balance decreases below specified value.
+                   Default: 0.</para>
                    <para>Example: <prompt>limit = -20</prompt></para>
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Specify system command, wich will be executed if at least one
-                   customer will be disconnected or warning will be enabled. 
+                   <para>Specifies system command, that is executed if at least one customer should
+                   be disconnected or warning should be enabled.
                    Default: empty.</para>
                    <para>Example: <prompt>command = 'almsd -qi firewall'</prompt></para>
                </listitem>
                <listitem>
                    <para>warning</para>
-                   <para>Enable warning for disconnected customer and write specified 
-                   by this option message. If empty, warning will be not enabled.
-                   Date in message is hidden in '%time' variable.
-                   Default: 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty (dd.mm.yyyy)".</para>
+                   <para>Enable warning for disconnected customer and write him WWW browser message
+                   specified in this option. If empty, warning will be not enabled. Date in
+                   message is substituted providing '%time' variable. Default: 'Web access blocked
+                   automatically due to payment deadline override (%time)".</para>
                    <para>Example: <prompt>warning = ""</prompt></para>
                </listitem>
                <listitem>
                    <para>warnings_only</para>
-                   <para>Here you can to decide, if you want to use this module
-                   only for warnings enabling. Default: false.</para>
+                   <para>Here you can to decide, if you want to use this module only for warnings or
+                   to actually cut people off. Default: false.</para>
                    <para>Example: <prompt>warnings_only = true</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>
           </sect2>
           <sect2 id="daemon-dhcp" xreflabel="dhcp">
-          <title>Dhcp</title>
+          <title>DHCP</title>
               <sect3 id="dhcp-desc">
               <title>Description</title>
-              <para>Module for management of DHCP server, creates configuration file
-              and restarts service. Option 'command' make possible execution of other 
-              functions (programs).</para>
+              <para>Module responsible for management of DHCP server, creates configuration file and
+              restarts service. It's possible to execute other functions (programs) with 'command'
+              option.</para>
               </sect3>
               <sect3 id="dhcp-config">
               <title>Configuration</title>
-              <para>Most of configuration parameters match with parts of 
-              dhcpd configuration file, which in typical purposes do not need
-              change:</para>
+              <para>Most of configuration parameters match with parts of DHCP configuration file,
+              and in typical environment doesn't need any changes:</para>
               <itemizedlist>
                <listitem>
                    <para>file</para>
-                   <para>Specify location of dhcp server configuration file. 
+                   <para>Location of DHCP server configuration file. 
                    Default: /etc/dhcpd.conf.</para>
                    <para>Example: <prompt>file = /etc/dhcp/dhcpd.conf</prompt></para>
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Shell command executed after file generation. 
+                   <para>Shell command executed after config file creation. 
                    Default: 'killall dhcpd; /usr/sbin/dhcpd'.</para>
                    <para>Example: <prompt>command = '/etc/rc.d/rc.dhcpd restart'</prompt></para>
                </listitem>
@@ -470,7 +470,7 @@ info = "Additional description of module"
                </listitem>
                <listitem>
                    <para>subnet_gateway</para>
-                   <para>Subnet gateway. '%i' will be changed to ip address. Default: 'option routers %i;'.</para>
+                   <para>Subnet gateway. '%i' will be changed to IP address. Default: 'option routers %i;'.</para>
                    <para>Example: <prompt>subnet_gateway = "option routers %i"</prompt></para>
                </listitem>
                <listitem>
@@ -501,13 +501,13 @@ info = "Additional description of module"
                </listitem>
                <listitem>
                    <para>networks</para>
-                   <para>List of network names to take into consideration. Letters size is not important.
+                   <para>List of network names that should be included in configuration (case insensitive).
                    Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
                    <para>usergroups</para>
-                   <para>List of customers groups to take into consideration. Letters size is not important.
+                   <para>List of customers groups that should be included in configuration (case insensitive).
                    Default: empty (all groups).</para>
                    <para>Example: <prompt>usergroups = "group1 group2"</prompt></para>
                </listitem>
@@ -518,19 +518,19 @@ info = "Additional description of module"
           <title>Hostfile</title>
               <sect3 id="hostfile-desc">
               <title>Description</title>
-              <para>Module 'hostfile' is a rather multipurposed tool. It performs 
-              loop on all hosts from database distingue status of them
-              (connected/diconnected), network for which are they connected and
-              groups of they owners. Because of that it is possible to create e.g. any
-              firewall rules, or file /etc/hosts. Data are writed to file 
-              and after that is executed specified shell command.</para>
+              <para>Module 'hostfile' is a multipurpose tool. It performs loop on all hosts from
+              database fetching their status (connected/disconnected), network that they are
+              connected to and groups of they owners. Because of that it is possible to create any
+              firewall rules, or /etc/hosts file. Data is written to file and after that specified
+              shell command is executed.</para>
               </sect3>
               <sect3 id="hostfile-config">
               <title>Configuration</title>
-              <para>In 'grantedhost' and 'deniedhost' options can be used special sequences,
-              which during write to file will be replaced by '%i' - IP address, '%m' - MAC
-              address, '%n' - host name, '%p' - password, '%info' - node description, '%domain' - domain, 
-              '%net' - net name, '%gw' - gateway address of network for which belongs given node.
+              <para>The following templates might be used for 'grantedhost' and 'deniedhost' options
+              replaced with actual data from database: '%i' - IP address, '%m' - MAC address, '%n'
+              - host name, '%p' - node (computer) password, '%info' - node description, '%domain' -
+              domain, '%net' - net name, '%gw' - gateway address of network that given node belongs
+              to.
               This module has following options:</para>
               <itemizedlist>
                <listitem>
@@ -540,7 +540,7 @@ info = "Additional description of module"
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Shell command(s) executed after 'file' generation. Default: empty</para>
+                   <para>Shell command(s) executed after 'file' creation. Default: empty</para>
                    <para>Example: <prompt>command = '/bin/sh /etc/rc.d/rc.firewall'</prompt></para>
                </listitem>
                <listitem>
@@ -555,29 +555,30 @@ info = "Additional description of module"
                </listitem>
                <listitem>
                    <para>grantedhost</para>
-                   <para>Text of rule for connected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</para>
+                   <para>Line with rule(s) for connected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</para>
                    <para>Example: <prompt>grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"</prompt></para>
                </listitem>
                <listitem>
                    <para>deniedhost</para>
-                   <para>Text of rule for disconnected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
+                   <para>Line with rule(s) for disconnected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
                    <para>Example: <prompt>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</prompt></para>
                </listitem>
                <listitem>
                    <para>networks</para>
-                   <para>List of network names for consideration. Letters size doesn't matter.
-                   Default: empty (all networks).</para>
+                   <para>List of network names which members should be included in config (case
+                   insensitive). Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
                    <para>usergroups</para>
-                   <para>List of customers groups names for consideration. Letters size doesn't matter. 
-                   Default: empty (all groups).</para>
-                   <para>Example: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+                   <para>List of customer group names which members should be included in config
+                   (case insensitive). Default: empty (all groups).</para>
+                   <para>Example: <prompt>usergroups = "group1 group2"</prompt></para>
                </listitem>
                <listitem>
                    <para>skip_dev_ips</para>
-                   <para>If enabled (yes, true) addresses of network devices will be ignored (omitted). Default: yes</para>
+                   <para>If enabled (yes, true) network devices (devices that does not belong to
+                   customers) will be ignored (omitted). Default: yes</para>
                    <para>Example: <prompt>skip_dev_ips = no</prompt></para>
                </listitem>
               </itemizedlist>
@@ -587,14 +588,14 @@ info = "Additional description of module"
           <title>Traffic</title>
               <sect3 id="traffic-desc">
               <title>Description</title>
-              <para>'Traffic' is an equivalent of perl's script lms-traffic, load to 
-	      database internet link stats from file created by user. That file must
-	      have format: host_IP upload download. More informations (including how to make 
-	      such file) can be found in chapter with lms-traffic description.</para>
+              <para>'Traffic' is an equivalent of 'lms-traffic' Perl script,which loads internet
+              link stats to database, from file created by user. That file must have format: host_IP upload
+              download. More informations (including how to make such file) can be found in chapter with
+              lms-traffic description.</para>
               </sect3>
               <sect3 id="traffic-config">
               <title>Configuration</title>
-              <para>Only one available option is also mandatory:</para>
+              <para>There is only one available option and it's mandatory:</para>
               <itemizedlist>
                <listitem>
                    <para>file</para>
@@ -608,36 +609,32 @@ info = "Additional description of module"
           <title>Tc (HTB)</title>
               <sect3 id="tc-desc">
               <title>Description</title>
-              <para>Generate script containing iptables and tc rules for traffic control
-              i.e. band and customer connections limiting. Rules for nodes can be freely
-              defined and used not only for traffic control. Principle of operation of this 
-	      module is following: First of all are retrived data of all customers.
-              Accounted are totals of limitations (uprate, downrate, upceil, downceil, connection limit) 
-	      for each customer. Then is performed loop with checking of networks and groups
-	      (if specified). If limit values are not zeroes rules are writed to file with
-              variables replacement. In rules can be used following variables:
-              %name - host name, %i - IP address, %m - MAC, %uprate, %downrate, %upceil, 
-              %downceil, %plimit, %climit, and %x - counter with initial value 100 incremented 
-              by one for each node.</para>
-              <para>Default policy of htb class creating assume one class for
-              all nodes of each customer. In can be changed with 
-              'one_class_per_host' option.</para>
-              <para>Default configuration assume that your system supports
-	      htb and iptables with modules limit, connlimit, mark and ipp2p.
-              You can patch kernel or use sources available at polish project
-              <ulink url="http://www.inet.one.pl">www.inet.one.pl</ulink>.</para>
+              <para>Generate script containing iptables and tc rules for traffic control ie. band
+              and customer connections limits. Rules for nodes can be freely defined and used not only
+              for traffic control. Principle of operation of this module is following: First of all
+              all customers data is being retrieved. Totals for limitations (uprate, downrate, upceil,
+              downceil, connection limit) are being calculated for each customer. Then, loop is performed
+              to check networks and groups (if specified). If limit values are not zeroes rules are written
+              to file with variables replacement. The following variables can be used in rules: %name - host
+              name, %i - IP address, %m - MAC, %uprate, %downrate, %upceil, %downceil, %plimit, %climit,
+              and %x - integer counter with initial value of 100 incremented by one for each node.</para>
+              <para>Default policy for creating HTB class is one class per all nodes belonging to
+              each customer. It can be changed with 'one_class_per_host' option.</para>
+              <para>Default configuration assumes that your system supports HTB and iptables with
+              modules limit, connlimit, mark and ipp2p. You can patch kernel or use sources available
+              at <ulink url="http://www.inet.one.pl">www.inet.one.pl</ulink> (polish project, site in
+              PL).</para>
               </sect3>
               <sect3 id="tc-config">
               <title>Configuration</title>
-              <para>For your disposal we have basic options like groups of customers, 
-	      file, command, networks and extra options which are define tc and firewall
-	      rules.
-              Default config is designed for 512/128 kbit and 100mbit links.</para>
-              <para><note><para>Values of configuration options in <filename>lms.ini</filename>
-              must be putted in one line. In case of that module it can be not very handy,
-              so you can create file containing whole header (option <filename>
-              begin</filename>), and then use option <filename>command</filename> for
-              join with the rest of file generated by this module.</para></note></para>
+              <para>There are basic options like groups of customers, file, command, networks and
+              extra options which are define tc and firewall rules available to use. Default config is
+              designed for 512/128 kbit limits and 100mbit links.</para>
+              <para><note><para>Configuration options values in <filename>lms.ini</filename> file
+              have to be defined in one line, in case of that module it can be not very handy, so
+              you can create file containing whole header (option <filename> begin</filename>),
+              and then use option <filename>command</filename> to join them with the rest of file
+              generated by this module.</para></note></para>
               <itemizedlist>
                <listitem>
                    <para>file</para>
@@ -678,7 +675,7 @@ stop
 $IPT -t mangle -N LIMITS
 $IPT -t mangle -I FORWARD -i $WAN -j LIMITS
 $IPT -t mangle -I FORWARD -o $WAN -j LIMITS
-# incomming traffic
+# incoming traffic
 $IPT -t mangle -A OUTPUT -j MARK --set-mark 1
 $TC qdisc add dev $LAN root handle 1:0 htb default 3 r2q 1
 $TC class add dev $LAN parent 1:0 classid 1:1 htb rate 99000kbit ceil 99000kbit quantum 1500
@@ -748,18 +745,17 @@ esac
                </listitem>
                <listitem>
                    <para>one_class_per_host</para>
-                   <para>Specify policy of htb class creation. In default setting
-                   all computers of customer will be placed in one class.
-                   Setting it on 'true' will made that rules specified in  
-                   host_htb_up and host_htb_down will be generated for all
-                   customer's computers (with different value of '%x'). Rules host_mark_down,
-                   host_mark_up, host_plimit and host_climit are generated for each
-                   node regardless of this option setting. Default: false</para>
+                   <para>Specify htb class creation policy. By default all computers of customer
+                   will be placed in one class. Setting it to 'true' will effect in that rules
+                   specified in host_htb_up and host_htb_down will be generated for all customer's
+                   computers (with different value of '%x'). Rules host_mark_down, host_mark_up,
+                   host_plimit and host_climit are generated for each node regardless of this option
+                   setting. Default: false</para>
                    <para>Example: <prompt>one_class_per_host = 1</prompt></para>
                </listitem>
                <listitem>
                    <para>host_mark_down</para>
-                   <para>Mark rule for each computer. Default:
+                   <para>Mark rule for each offline computer. Default:
 <screen>
 # %n
 $IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x
@@ -778,8 +774,8 @@ $IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x
                </listitem>
                <listitem>
                    <para>host_htb_down</para>
-                   <para>Rules for each computer executed when uprate and downrate 
-		   are not zeroes. Default:
+                   <para>Rules for each computer executed when uprate and downrate value
+		   is above zero. Default:
 <screen>
 $TC class add dev $LAN parent 1:2 classid 1:%x htb rate %downratekbit ceil %downceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $LAN parent 1:%x esfq perturb 10 hash dst
@@ -790,8 +786,8 @@ $TC filter add dev $LAN parent 1:0 protocol ip prio 5 handle %x fw flowid 1:%x
                </listitem>
                <listitem>
                    <para>host_htb_up</para>
-                   <para>Rules for each computer executed when uprate and downrate 
-		   are not zeroes. Default:
+                   <para>Rules for each computer executed when uprate and downrate value
+		   is above zero. Default:
 <screen>
 $TC class add dev $WAN parent 2:1 classid 2:%x htb rate %upratekbit ceil %upceilkbit $BURST prio 2 quantum 1500
 $TC qdisc add dev $WAN parent 2:%x esfq perturb 10 hash dst
@@ -802,8 +798,8 @@ $TC filter add dev $WAN parent 2:0 protocol ip prio 5 handle %x fw flowid 2:%x
                </listitem>
                <listitem>
                    <para>host_climit</para>
-                   <para>Rule with simultaneous tcp connections limit. Executed
-                   when climit in not a zero. Default:
+                   <para>Rule with simultaneous TCP connections limit. Executed
+                   when climit value is above zero. Default:
 <screen>
 $IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m ipp2p --ipp2p -j REJECT
 </screen>
@@ -813,7 +809,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m connlimit --connlimit-above %climit -m
                <listitem>
                    <para>host_plimit</para>
                    <para>Rule with limiting of packets in time unit (here second). Executed
-                   when plimit is not a zero. Default:
+                   when plimit value is above zero. Default:
 <screen>
 $IPT -t filter -I FORWARD -p tcp -d %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
 $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp2p -j ACCEPT
@@ -823,15 +819,15 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                </listitem>
                <listitem>
                    <para>networks</para>
-                   <para>List of network names for consideration. Case insensitive.
+                   <para>List of network names that should be included in configuration (case insensitive).
                    Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
                    <para>usergroups</para>
-                   <para>List of customer groups for consideration. Case insensitive. 
+                   <para>List of customer groups that should be included in configuration (case insensitive).
                    Default: empty (all groups).</para>
-                   <para>Example: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+                   <para>Example: <prompt>usergroups = "group1 group2"</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>
@@ -840,9 +836,9 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
           <title>Dns</title>
               <sect3 id="dns-desc">
               <title>Description</title>
-              <para>Configuration of named zones. This is a one from most complicated modules.
-              Create zone files for each network and equivalent entries in named.conf on the
-              basis of templates of this files. Example templates are placed in
+              <para>Configuration of named zones. This is one of most complicated modules
+              to setup. It creates zone files for each network and zone definition entries
+              in named.conf on the basis of template files. Example templates are placed in
               <filename>/modules/dns/sample</filename> directory.</para>
               </sect3>
               <sect3 id="dns-config">
@@ -861,27 +857,27 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                </listitem>
                <listitem>
                    <para>generic-forward</para>
-                   <para>Default template. It'll be used if in directory specified by
-                   'forward-patterns' will not found file with name corresponding to network domain name.
-                   Default: modules/dns/sample/forward/generic.</para>
+                   <para>Default template. It will be used if directory specified by
+                   'forward-patterns' doesn't contain a file with name corresponding to network
+                   domain name. Default: modules/dns/sample/forward/generic.</para>
                    <para>Example: <prompt>generic-forward = /dns/patterns/forward</prompt></para>
                </listitem>
                <listitem>
                    <para>generic-reverse</para>
-                   <para>Default template. It'll be used if in directory specified by
-                   'reverse-patterns' will not found file with name corresponding to network IP address.
-                   Default: modules/dns/sample/reverse/generic.</para>
+                   <para>Default template. It will be used if directory specified by
+                   'reverse-patterns' doesn't contain a file with name corresponding to network IP
+                   address. Default: modules/dns/sample/reverse/generic.</para>
                    <para>Example: <prompt>generic-reverse = /dns/patterns/forward</prompt></para>
                </listitem>
                <listitem>
                    <para>forward-zones</para>
-                   <para>Directory for generated zones files.
+                   <para>Directory for generated zone files.
                    Default: modules/dns/sample/out/forward.</para>
                    <para>Example: <prompt>forward-zones = /dns/forward</prompt></para>
                </listitem>
                <listitem>
                    <para>reverse-zones</para>
-                   <para>Directory for generated reverse zones files.
+                   <para>Directory for generated reverse zone files.
                    Default: modules/dns/sample/out/reverse.</para>
                    <para>Example: <prompt>reverse-zones = /dns/reverse</prompt></para>
                </listitem>
@@ -899,7 +895,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                </listitem>
                <listitem>
                    <para>conf-pattern</para>
-                   <para>Location of main template of server configuration file.
+                   <para>Location of main template for server configuration file.
                    Default: modules/dns/sample/named.conf.</para>
                    <para>Example: <prompt>conf-pattern = /dns/patterns/named.conf</prompt></para>
                </listitem>
@@ -923,20 +919,20 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Shell command executed after creation of files. Default: empty.</para>
+                   <para>Shell command executed after files creation. Default: empty.</para>
                    <para>Example: <prompt>command = "killall -HUP named"</prompt></para>
                </listitem>
                <listitem>
                    <para>networks</para>
-                   <para>List of network names for consideration. Case insensitive.
+                   <para>List of network names that should be included in configuration (case insensitive).
                    Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
                    <para>usergroups</para>
-                   <para>List of customer (user) groups for consideration. Case insensitive. 
+                   <para>List of customer (user) groups that should be included in configuration (case insensitive).
                    Default: empty (all groups).</para>
-                   <para>Example: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+                   <para>Example: <prompt>usergroups = "group1 group2"</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>
@@ -945,9 +941,9 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
           <title>Ethers</title>
               <sect3 id="ethers-desc">
               <title>Description</title>
-              <para>This module creates configuration of system ARP table. Setting option
-              'dummy_macs' you can make that all disconnected computers will have 
-              mac address 00:00:00:00:00:00.</para>
+              <para>This module creates configuration for system ARP table. Setting option
+              'dummy_macs' will put mac address 00:00:00:00:00:00 for all disconnected
+              computers.</para>
               </sect3>
               <sect3 id="ethers-config">
               <title>Configuration</title>
@@ -960,7 +956,7 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                </listitem>
                <listitem>
                    <para>command</para>
-                   <para>Shell command to execute after config creation. Default: 'erp -f /etc/ethers'.</para>
+                   <para>Shell command to execute after config file creation. Default: 'arp -f /etc/ethers'.</para>
                    <para>Example: <prompt>command = ""</prompt></para>
                </listitem>
                <listitem>
@@ -971,15 +967,15 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
                </listitem>
                <listitem>
                    <para>networks</para>
-                   <para>List of network names for consideration. Letters size doesn't matter.
+                   <para>List of network names that should be included in configuration (case insensitive).
                    Default: empty (all networks).</para>
                    <para>Example: <prompt>networks = "lan1 lan2"</prompt></para>
                </listitem>
                <listitem>
                    <para>usergroups</para>
-                   <para>List of customer groups names for consideration. Letter size doesn't matter. 
+                   <para>List of customer groups names that should be included in configuration (case insensitive).
                    Default: empty (all groups).</para>
-                   <para>Example: <prompt>usergroups = "grupa1 grupa2"</prompt></para>
+                   <para>Example: <prompt>usergroups = "group1 group2"</prompt></para>
                </listitem>
               </itemizedlist>
               </sect3>
@@ -988,9 +984,9 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
           <title>Oident</title>
               <sect3 id="oident-desc">
               <title>Description</title>
-              <para>Module for oidentd configuration. Basically it can be made
+              <para>Module for oidentd configuration. Basically it can be created
               with hostfile module, but here you have ready-made default settings
-	      for that purpose.</para>
+	      for this purpose.</para>
               </sect3>
               <sect3 id="oident-config">
               <title>Configuration</title>
@@ -1033,13 +1029,12 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
           <title>Pinger</title>
               <sect3 id="pinger-desc">
               <title>Description</title>
-              <para>Module pinger it's an equivalent to perl's script lms-fping. However differences
-              are fundamental. It not need external program and work with use of
-              ARP protocol. It follows more or less twice faster execution of 
-              network scanning. Also there are not problems with hosts wich have disabled
-              ping responsing. After scanning, for all online hosts in database is set
-              time of scanning, used to illustrate hosts activity e.g. on network 
-	      map.</para>
+              <para>Module pinger is an equivalent of lms-fping Perl script, however it has some
+              fundamental differences. It doesn't need external program to check hosts availability and
+              work with use of ARP protocol and thus it can perform network scanning about 2 times faster.
+              Also there are no problems with hosts with ping response disabled or firewalled. After
+              scanning, last-seen time is set for all online hosts in database used to illustrate hosts
+              activity on nodes list and network map.</para>
               </sect3>
               <sect3 id="pinger-config">
               <title>Configuration</title>

@@ -3,50 +3,50 @@
     <title>Intro</title>
      <sect1 id="about-lms">
           <title>About LMS</title>
-          <para>"LMS" (LAN Management System) is a package of applications in PHP, Perl and C
-          for managing LANs with MySQL, PostgreSQL or SQLite databases support. The main goal is 
-          to get the best service of customers at high provider's level. The main features in LMS 
-          are:</para>
+          <para>LMS (LAN Management System) is a package of applications for managing LAN
+          networks. Its main goal is to provide the best service to customers, as seen in large ISP
+          companies. LMS is written in PHP, Perl and C and can use MySQL, PostgreSQL or SQLite as
+          its database backends. The following functionalities are provided at the time:</para>
           <itemizedlist>
              <listitem>
-                    <para>database of customers (name, surname, address, phone numbers, commentary and other),</para>
+                    <para>customer database (names, addresses, phones, comments, etc),</para>
             </listitem>
             <listitem>
-                      <para>database of computers (IP, MAC),</para>
+                      <para>computers inventory (IP, MAC),</para>
             </listitem>   
             <listitem>
-                      <para>easy-ridden financial system and funds of network,</para>
+                      <para>simple financial system suited for network operations,</para>
             </listitem>
             <listitem>
-                      <para>financial balances and invoices</para>
+                      <para>financial balances and invoices,</para>
             </listitem>
             <listitem>
-                  <para>sending e-mail warnings to users,</para>
+                  <para>email warnings to users,</para>
             </listitem>
             <listitem>
-                  <para>automatic billing,</para>
+                  <para>automatic billing schedule,</para>
             </listitem>
             <listitem>
-                  <para>generating of (almost) any kind of config file (i.e.
-               ipchains/iptables based firewall script, dhcp daemon configuration,
-               zone file for bind, static arp entries, oident, htb and more...)</para>
+                  <para>ability to generate (almost) any kind of config file (ie.
+               ipchains/iptables firewall scripts, DHCP daemon configuration,
+               zones for bind, /etc/ethers entries, oident, htb and more...),</para>
             </listitem>
           <listitem>
-               <para>visualization of internet link usage stats,</para>
+               <para>visualization of bandwidth consumption per host,</para>
           </listitem>
           <listitem>
                     <para>request tracker system (Helpdesk),</para>
           </listitem>
 	  <listitem>
-                    <para>timetable (organizer).</para>
+                    <para>timetable (Organizer).</para>
           </listitem>
           </itemizedlist>
-          <para>All stuff was invented for administration of <ulink url="http://www.netx.waw.pl/">ASK NetX</ulink> 
-          and there is still developed and tested.</para>
-          <para>LMS will not replace your administrator's skills. If you can't make
-          so simple activity like installation or configuration, probably you'll cannot
-          adjust LMS for your system. So, you must have knowledge about administration of 
-          UNIX systems.</para>
+          <para>Initial components of this software were invented to aid administration of <ulink
+          url="http://www.netx.waw.pl/">ASK NetX</ulink> (amateur computer network) and it's still
+          developed and tested here.</para>
+          <para>LMS won't replace administration skills. If you can't handle installation and
+          configuration of your system, you likely won't manage to adjust LMS for your system. In
+          short - administration of UNIX systems is needed to operate this software.</para>
         </sect1>
      <sect1 id="authors">
          <title>Authors</title>
@@ -115,7 +115,7 @@
                <simplelist>     
                <member><ulink url="http://s.atn.pl">Kuba 'shasta' Jankowski</ulink></member>
                <member><ulink url="http://debian.black.pl">Radoslaw 'Warden' Antoniuk</ulink></member>
-               <member>Przemys³aw Babinski</member>
+               <member>Przemyslaw Babinski</member>
                </simplelist>
                </para>
           </listitem>
@@ -127,18 +127,19 @@
                </para>
           </listitem>
           <listitem>
-               <para>WWW Page & Documentation:
+               <para>Web Page & Documentation:
                <simplelist>
                <member><ulink url="http://alec.pl">Aleksander 'A.L.E.C' Machniak</ulink></member>
                <member><ulink url="http://s.atn.pl">Kuba 'shasta' Jankowski</ulink></member>
                <member><ulink url="http://www.rednet.krakow.pl/~jabbas/">Grzegorz 'JaBBaS' Dziegielewski</ulink></member>
                <member><ulink url="http://wwww.baseciq.org">Lukasz 'Baseciq' Mozer</ulink></member>
                <member><ulink url="http://www.lexx.w.pl">Marcin 'Lexx' Krol</ulink></member>
+               <member><ulink url="http://kondi.net">Konrad 'Kondi' Rzentarzewski</ulink></member>
                </simplelist>
                </para>
           </listitem>
           <listitem>
-               <para>Betatesting:
+               <para>Beta testing:
                <simplelist>
                <member><ulink url="http://byko.pawlacz.net">Grzegorz 'byko' Cichowski</ulink></member>
                <member><ulink url="http://debian.black.pl">Radoslaw 'Warden' Antoniuk</ulink></member>
@@ -163,7 +164,7 @@
           <ulink url="www.nirvani.net/software">Multipart Mime Email Generator Library</ulink>, 
           <ulink url="www.ros.co.nz/pdf/">ezpdf</ulink>, 
           <ulink url="www.softcomplex.com/products/tigra_calendar/">Tigra Calendar</ulink>,
-          Piotr Kleban's polish procedures of number-to-words conversion and
+          Piotr Kleban's number-to-words conversion procedures and
           code examples from <ulink url="http://www.php.net/manual/">
           PHP manual</ulink>.</para>
          </sect2>
@@ -187,37 +188,37 @@
           <title>Other Information</title>
           <sect2 id="contact">
                <title>Contact</title>
-               <para>Preferably via a mailing list, which you can subscribe sending
-               empty e-mail with subject "subscribe lms-en" on address <ulink url="mailto: ecartis@lists.rulez.pl">ecartis@lists.rulez.pl</ulink>,
-               e-mails are sent on address lms-en@lists.rulez.pl.
+               <para>Preferably via a mailing list, which you can subscribe by sending
+               empty e-mail with subject "subscribe lms-en" to address 
+               <ulink url="mailto: ecartis@lists.rulez.pl">ecartis@lists.rulez.pl</ulink>.
+               Further emails should be sent to address lms-en@lists.rulez.pl.
                </para>
           </sect2>
           <sect2 id="bugs">
-               <title>Ideas and Bugs Advertising</title>
-               <para>In order to effectively report bugs or new ideas, best is to subscribe mailing list
-               where somebody from authors or users will have a chance to answer
-               on questions that are worrying you. Also, available is BTS, where can be
-               bugs advertised (needed registration). Reports from BTS going also to mailing list
-               so best to subscribe, report bug on BTS, send link on list
-               and wait for events evolution. Address of BTS is <ulink url="http://bts.rulez.pl">
-               http://bts.rulez.pl</ulink>.
-               </para>
+               <title>Ideas and Bugs Reports</title>
+              <para>In order to effectively report bugs or new ideas, it's recommended to
+               subscribe mailing list, where you can get quickest response for your problems from
+               either LMS users or developers team. There's also Bug Tracking System available, when
+               you can report bugs upon registration. Reports from BTS are also forwarded to mailing
+               list, so the best practice is to subscribe to list, report via BTS and send link to
+               mailing list and finally wait as your report will evolve. BTS address is <ulink
+               url="http://bts.rulez.pl">bts.rulez.pl</ulink>.</para>
           </sect2>
           <sect2 id="latest">
                <title>Newest version</title>
-               <para>Allways, newest version of LMS can be downloaded from CVS repository
-               with help of www interface <ULINK URL="http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">here</ulink>,
-               or classic (anonymous access, empty password):</para>
+               <para>Newest version of LMS can be downloaded from CVS repository
+               utilizing WWW interface at <ULINK
+               URL="http://cvs.rulez.pl/viewcvs.cgi/lms/lms.tar.gz?tarball=1">cvs.rulez.pl</ulink>,
+               or with CVS tools (anonymous access, empty password):</para>
                <screen>
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
-cvs -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
+CVS -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot login
+CVS -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot co lms
+CVS -d :pserver:cvs@cvs.rulez.pl:/home/cvsroot logout</screen>
           </sect2>
           <sect2 id="history">
                <title>Changelog</title>
-               <para>Informations about changes, which was made in all
-               versions of LMS are included in file <ulink url="../../ChangeLog">
-               ChangeLog</ulink>.</para>
+               <para>Informations about changes and version history of LMS is included in 
+               <ulink url="../../ChangeLog">Changelog</ulink>.</para>
           </sect2>
      </sect1>
 </chapter>

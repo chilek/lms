@@ -4,106 +4,74 @@
     <qandaset>
         <qandaentry>
 	    <question id="q1">
-	        <para><emphasis role="bold">Co zrobiæ gdy nie generuje siê mapa sieci?</emphasis></para>
+	        <para><emphasis role="bold">My network device map does not show up. What to do?</emphasis></para>
 	    </question>
 	    <answer>
-	        <para>Pierwsze co nale¿y sprawdziæ, to logi serwera www. 
-		Najczê¶ciej pomaga zwiêkszenie parametru <prompt>memory_limit</prompt>
-		w <filename>php.ini</filename>.</para>
+	        <para>First you should check your Web Server logs. Usually it's helpful to increase amount of memory PHP may use in <prompt>memory_limit</prompt> option of <filename>php.ini</filename> file.</para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>
 	    <question id="q2">
-	    	<para><emphasis role="bold">Jak dodaæ dwa komputery z tym samym adresem IP?</emphasis></para>
+	    	<para><emphasis role="bold">How to add two computers with the same IP?</emphasis></para>
 	    </question>
 	    <answer>
-	        <para>Nie ma takiej mo¿liwo¶ci. Co wiêcej, autorzy nie przewiduj±
-		takiej funkcjonalno¶ci w najbli¿szej przysz³o¶ci. Jednak masz jeszcze
-		szansê skorzystaæ z patch'a <prompt>multiip</prompt> znajduj±cego
-		siê w <prompt>contrib</prompt>.</para>
+	        <para>There is no such possibility. Additionally, authors have no plans for such a functionality in near future. However you might try to use unofficial patch <prompt>multiip</prompt> which could be found in <prompt>contrib</prompt> directory.</para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>
 	    <question id="q3">
-	        <para><emphasis role="bold">Jak dodaæ dwa komputery z tym samym adresem MAC?</emphasis></para>
+	        <para><emphasis role="bold">How to add two computers with the same MAC?</emphasis></para>
 	    </question>
 	    <answer>
-	        <para>A dokumentacjê przejrza³e¶? Do tego s³u¿y opcja <prompt>
-		allow_mac_sharing = 1</prompt>.</para>
+	        <para>Check documentation. You probably look for <prompt>allow_mac_sharing = 1</prompt>.</para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>
 	    <question id="q4">
-	    	<para><emphasis role="bold">Co oznacza b³±d <prompt>Can't locate Config/IniFiles.pm in @INC ...</prompt>?</emphasis></para>
+	    	<para><emphasis role="bold">I see following error: <prompt>Can't locate Config/IniFiles.pm in @INC ...</prompt>What should I do?</emphasis></para>
 	    </question>
 	    <answer>
-	        <para>Prawdopodobnie nie masz zainstalowanych wymaganych modu³ow 
-		Perla, w tym wypadku chodzi o <filename>Config::IniFiles</filename>.
-		Najwygodniejszym sposobem instalacji modu³ów jest skorzystanie z CPANu
-		w nastêpuj±cy sposób: 
+	        <para>It's likely that you don't have required Perl modules installed. In this case it's <filename>Config::IniFiles</filename> that is missing. The easiest way to install Perl modules is to use CPAN extension, eg.
 		<prompt>perl -MCPAN -e 'install Config::IniFiles'</prompt>.</para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>
 	    <question id="q5">
-	    	<para><emphasis role="bold">Zrobiem parê poprawek. Jak mogê dodaæ je do LMSa?</emphasis></para>
+	    	<para><emphasis role="bold">I make few corrections. Do you accept any patches?</emphasis></para>
 	    </question>
 	    <answer>
-	        <para>Poprawki najlepiej zg³aszaæ na listê mailingow±. Do wiadomo¶ci,
-		z krótkim opisem poprawki, nale¿y do³±czyæ diff'a (najlepiej do aktualnej
-		wersji cvs'owej), którego mo¿na wykonaæ w nastêpuj±cy sposób:
+	        <para>You should post it to our mailing list. Attach your patches (preferably to current cvs version, use unified diff format) along with short description on what your code does. Eg.
 <screen>
 $ cd lms
-$ cvs -z7 diff -u > /tmp/moja_latka.patch
+$ cvs -z7 diff -u > /tmp/my_patch.patch
 </screen>
-		Je¿eli jeste¶ zainteresowany do³±czeniem do grona developerów
-		i otrzymaniem praw zapisu do CVSu zg³o¶ tak± chêæ na listê. Wcze¶niej
-		jednak powiniene¶ siê daæ poznaæ na li¶cie jako odpowiedzialna 
-		i kompetentna osoba np. przysy³aj±c poprawki.</para>
+		If you're interested into joining LMS developers team, please apply on the mailing list. You should however first make a good impression and stay on the list for a while, that may prove your skills, before asking us for cvs account.</para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>
 	    <question id="q6">
-	    	<para><emphasis role="bold">Która wersja LMSa jest najnowsza?</emphasis></para>
+	    	<para><emphasis role="bold">What is current version of LMS?</emphasis></para>
 	    </question>
 	    <answer>
-	        <para>Wersje LMSa s± numerowane analogicznie do j±dra Linuksa. 
-		I tak w LMS-x.y.z mamy: x - g³ówny numer wersji, y - jak parzysty
-		to wersja stabilna, jak nieparzysty to rozwojowa (niestabilna), 
-		z - mniej istotny numer podwersji. W zwi±zku z tym, je¶li uka¿e siê 
-		wersja stabilna np. 1.4.0, to w tej ga³êzi (1.4) nie bêdzie ju¿ dodawana
-		nowa funkcjonalno¶æ, bêd± usuwane tylko ewentualne b³êdy. Jednocze¶nie
-		powstaje wersja rozwojowa 1.5.x, która przez dodanie nowych rzeczy,
-		mo¿e byæ niestabilna/nie dzia³aj±ca prawid³owo.</para>
-		<para>Archiwum wszystkich wersji LMS znajduje siê pod adresem
+	        <para>LMS adopts versioning from Linux kernel. Thus, in LMS-x.y.z we have: x - major version number, y - stable if number is even, unstable if odd, z - minor version number. Therefore, if stable version appears, eg. 1.4.0 you shouldn't expect any new functionality in this branch, 1.5.x is created instead, where new features are being put, and which might not function well, or might be unstable.</para>
+		<para>Archive of all LMS versions can be found here:
 		<ulink url="http://lms.rulez.pl/download/">lms.rulez.pl/download</ulink></para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>
 	    <question id="q7">
-	    	<para><emphasis role="bold">Jak wypisaæ siê z listy mailingowej?</emphasis></para>
+	    	<para><emphasis role="bold">How to unsubscribe from the mailing list?</emphasis></para>
 	    </question>
 	    <answer>
-	        <para>Informacja ta jest zawarta w nag³ówkach wszystkich wiadomo¶ci 
-		z listy mailingowej. Nale¿y wys³aæ wiadomo¶æ z tematem "unsubscribe"
-		na adres lms-request@lists.rulez.pl.</para>
+	        <para>Information about it is enclosed in all messages headers. You should send "unsubscribe" entitled message to lms-en-request@lists.rulez.pl.</para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>
 	    <question id="q8">
-	    	<para><emphasis role="bold">Jakie s± ograniczenia ilo¶ci urz±dzeñ na mapie?</emphasis></para>
+	    	<para><emphasis role="bold">What is a limit of network devices on the map?</emphasis></para>
 	    </question>
 	    <answer>
-	        <para>Algorytm zastosowany przy tworzeniu mapy nie jest doskona³y.
-		Do jednego urz±dzenia mo¿na pod³±czyæ maksymalnie 24 komputery (tyle 
-		bêdzie widoczne na mapie, mo¿na pod³±czyæ wiêcej, ale zostan± pominiête).
-		Podobnie wygl±da sprawa z urz±dzeniami. Ka¿de urz±dzenie sieciowe
-		mo¿e mieæ pod³±czonych 24 innych urz±dzeñ. Z tym, ¿e w przypadku
-		urz±dzeñ, w pewnych warunkach (czêsto) liczba ta mo¿e siê zmniejszyæ (w
-		zale¿no¶ci od rozmieszczenia urz±dzeñ na siatce mapy). Po przekroczeniu
-		tej liczby mog± wystêpowaæ b³êdne po³±czenia wybiegaj±ce poza mapê, ¿adziej
-		problemy z wygenerowaniem mapy.
-		</para>
+	        <para>Map creation algorithm isn't perfect. You can connect maximum of 24 computers to one network device (this number at max will appear on map, you can connect more devices of course). Similarly, each network device might be connected to the other 24 devices, but usually this number is subject of change (it might be smaller), depending on how devices are placed on the map. When this number is exceeded you may observe bogus connections going beyond the map, or less likely, problems with generating map at all.</para>
 	    </answer>
 	</qandaentry>
 	<qandaentry>
@@ -111,13 +79,7 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 	    	<para><emphasis role="bold">Insecure $ENV{BASH_ENV} while running -T switch...</emphasis></para>
 	    </question>
 	    <answer>
-	        <para>Powo³any b³±d pojawia siê podczas uruchamiania skryptów
-		perlowych korzystaj±cych z zewnêtrznych programów na niektórych 
-		systemach. Opis problemu i sposoby jego rozwi±zania podane s± w manualu
-		perla (man perlsec) w dziale "Cleaning Up Your Path". Naprostszym rozwi±zaniem jest
-		usuniêcie przy³±cznika -T (który odpowiada za to zamieszanie) z pierwszej 
-		linii skryptu.
-		</para>
+	        <para>Quoted error appears while you run Perl scripts that needs to use external programs on some systems. Problem description and possible solutions are described in Perl manual (man perlsec) in "Cleaning Up Your Path" chapter. Simplest solution is to remove -T switch, which is responsible for the error, from the first line of the script.</para>
 	    </answer>
 	</qandaentry>
     </qandaset>
