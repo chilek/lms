@@ -46,6 +46,7 @@ wersja 1.5.4 (??/??/????):
   - Terminarz (alec)
   - zmiana typu kolumny przechowuj±cej kod pocztowy na VARCHAR(10) uwzgl.
     amerykañski format 5+4 (alec)
+  - dodana mo¿liwo¶æ wydruku listy komputerów u¿ytkowników zad³u¿onych (alec)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
