@@ -1,5 +1,9 @@
 $Id$
 
+wersja 1.4.2 (??/??/????):
+
+  - BTS#0000246: na FreeBSD hostname uruchamiamy bez opcji -f (alec)
+
 wersja 1.4.1 Teyla (15/11/2004):
 
   - poprawione b³êdne dzia³anie pola 'adres IP' przy edycji komputera, gdy
