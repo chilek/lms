@@ -30,6 +30,7 @@ $_SESSION[backto] = $_SERVER[QUERY_STRING];
 
 $layout[pagetitle]="Informacje o urz±dzeniu: ".$netdevinfo[name]." ".$netdevinfo[producer]." ".$netdevinfo[model];
 
+$netdevinfo[description] = str_replace('\n','<br>',$netdevinfo[description]);
 $netdevinfo[id] = $_GET[id];
 $netdevinfo[takenports] = 'Narazie nie policze ;)';
 $SMARTY->assign("netdevinfo",$netdevinfo);
@@ -38,6 +39,9 @@ $SMARTY->display("netdevinfo.html");
 
 /*
  * $Log$
+ * Revision 1.2  2003/09/13 20:20:14  lexx
+ * - lokalizacja
+ *
  * Revision 1.1  2003/09/12 20:57:05  lexx
  * - netdev
  *

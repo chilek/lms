@@ -1579,9 +1579,13 @@ class LMS
 			case "serialnumber":
 				$sqlord = " ORDER BY serialnumber";
 			break;
+
+			case "location":
+				$sqlord = " ORDER BY location";
+			break;
 		}
 
-		$netdevlist = $this->DB->GetAll("SELECT id, name, description, producer, model, serialnumber, ports FROM netdevices ".($sqlord != "" ? $sqlord." ".$direction : ""));
+		$netdevlist = $this->DB->GetAll("SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices ".($sqlord != "" ? $sqlord." ".$direction : ""));
 
 		$netdevlist['total'] = sizeof($netdevlist);
 		$netdevlist['order'] = $order;
@@ -1592,7 +1596,7 @@ class LMS
 	 
 	function GetNetDev($id)
 	{
-		$result = $this->DB->GetRow("SELECT name, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?",array($id));
+		$result = $this->DB->GetRow("SELECT name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id=?",array($id));
 		return $result;
 	}
 
@@ -1604,7 +1608,7 @@ class LMS
 	function NetDevAdd($netdevdata)
 	{
 		$this->SetTS("netdevices");
-		if($this->DB->Execute("INSERT INTO netdevices (name, description, producer, model, serialnumber, ports) VALUES (?, ?, ?, ?, ?, ?)",array($netdevdata['name'],$netdevdata['description'],$netdevdata['producer'],$netdevdata['model'],$netdevdata['serialnumber'],$netdevdata['ports'])))
+		if($this->DB->Execute("INSERT INTO netdevices (name, location, description, producer, model, serialnumber, ports) VALUES (?, ?, ?, ?, ?, ?, ?)",array($netdevdata['name'],$netdevdata['location'],$netdevdata['description'],$netdevdata['producer'],$netdevdata['model'],$netdevdata['serialnumber'],$netdevdata['ports'])))
 			return $this->DB->GetOne("SELECT MAX(id) FROM netdevices");
 		else
 			return FALSE;
@@ -1612,7 +1616,7 @@ class LMS
 
 	function NetDevUpdate($netdevdata)
 	{
-		$this->DB->Execute("UPDATE netdevices SET name=?, description=?, producer=?, model=?, serialnumber=?, ports=? WHERE id=?", array( $netdevdata['name'], $netdevdata['description'], $netdevdata['producer'], $netdevdata['model'], $netdevdata['serialnumber'], $netdevdata['ports'], $netdevdata['id'] ) );
+		$this->DB->Execute("UPDATE netdevices SET name=?, location=?, description=?, producer=?, model=?, serialnumber=?, ports=? WHERE id=?", array( $netdevdata['name'], $netdevdata['location'], $netdevdata['description'], $netdevdata['producer'], $netdevdata['model'], $netdevdata['serialnumber'], $netdevdata['ports'], $netdevdata['id'] ) );
 	}
 
 	/*
@@ -1693,6 +1697,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.224  2003/09/13 20:19:56  lexx
+ * - lokalizacja
+ *
  * Revision 1.223  2003/09/13 12:49:49  lukasz
  * - tsave
  *

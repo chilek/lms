@@ -6,13 +6,15 @@
 	<TR CLASS="dark" {popup text="Kliknij na nazwie kolumny aby zmieniæ kryteria sortowania"}>
 		<TD CLASS="fleftu" width="99%">
 			<img src="img/netdev.gif" alt="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>Nazwa:</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
-			<img src="img/producer.gif" alt="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=producer{if $listdata.direction eq "asc" && $listdata.order eq "producer"},desc{/if}">Producent</A> {if $listdata.order eq "producer"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if} / <A href="?m=netdevlist&o=model{if $listdata.direction eq "asc" && $listdata.order eq "model"},desc{/if}">model:</A> {if $listdata.order eq "model"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
+			<img src="img/producer.gif" alt="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=producer{if $listdata.direction eq "asc" && $listdata.order eq "producer"},desc{/if}">Producent</A> {if $listdata.order eq "producer"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if} / <A href="?m=netdevlist&o=model{if $listdata.direction eq "asc" && $listdata.order eq "model"},desc{/if}">model:</A> {if $listdata.order eq "model"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<img src="img/home.gif" alt="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">Lokalizacja:</A> {if $listdata.order eq "location"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD CLASS="fbt" width="1%" align="right">
 			<A href="?m=netdevlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
 			<img src="img/port.gif" alt="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=ports{if $listdata.direction eq "asc" && $listdata.order eq "ports"},desc{/if}">Ilo¶æ portów:</A> {if $listdata.order eq "ports"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}<BR>
+			<IMG SRC="img/netdev_takenports.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;Zajête porty:<BR>
 			<img src="img/serialnumber.gif" alt="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=serialnumber{if $listdata.direction eq "asc" && $listdata.order eq "serialnumber"},desc{/if}">Numer Seryjny:</A> {if $listdata.order eq "serialnumber"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" alt="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right">
@@ -34,13 +36,15 @@
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD width="99%" CLASS="fleft" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
 			<IMG SRC="img/netdev.gif" ALT="" ALIGN="ABSMIDDLE"> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name}</B></A><BR>
-			<IMG SRC="img/producer.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].producer} {if $netdevlist[netdevlist].model}/ {$netdevlist[netdevlist].model}{/if}
+			<IMG SRC="img/producer.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].producer} {if $netdevlist[netdevlist].model}/ {$netdevlist[netdevlist].model}{/if}<BR>
+			<img src="img/home.gif" alt="" align="absmiddle"> {$netdevlist[netdevlist].location}
 		</TD>
 		<TD WIDTH="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" align="right" VALIGN="TOP">
 			({$netdevlist[netdevlist].id|string_format:"%04d"})
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
 			<IMG SRC="img/port.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].ports}<BR>
+			<IMG SRC="img/netdev_takenports.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].takenports}<BR>
 			<IMG SRC="img/serialnumber.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].serialnumber}
 		</TD>
 		<TD CLASS="fright" width="1%" align="right">
