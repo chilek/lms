@@ -225,7 +225,7 @@ while (my $row = $dbq->fetchrow_hashref())
 	$usergrouplist{$row->{'name'}} = $row->{'id'};
 }
 
-$dbq = $dbase->prepare("SELECT id, lastname, name, email, phone1 FROM users");
+$dbq = $dbase->prepare("SELECT id, lastname, name FROM users WHERE deleted=0");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
