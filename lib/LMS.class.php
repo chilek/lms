@@ -3163,7 +3163,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$where  = ($search['queue']     ? 'AND queueid='.$search['queue'].' '          : '');
 		$where .= ($search['owner']     ? 'AND owner='.$search['owner'].' '            : '');
 		$where .= ($search['userid']    ? 'AND rttickets.userid='.$search['userid'].' '   : '');
-		$where .= ($search['subject']   ? 'AND subject=\''.$search['subject'].'\' '       : '');
+		$where .= ($search['subject']   ? 'AND rttickets.subject=\''.$search['subject'].'\' '       : '');
 		$where .= ($search['state']!='' ? 'AND state='.$search['state'].' '            : '');
 		$where .= ($search['name']!=''  ? 'AND requestor LIKE \''.$search['name']/'\' '  : '');
 		$where .= ($search['email']!='' ? 'AND requestor LIKE \''.$search['email'].'\' ' : '');
