@@ -46,6 +46,8 @@ version 1.5.5 Anubis (??/??/????):
   - added contrib/coffee_cup (lexx)
   - added passwd field to nodes record (alec)
   - we can pay invoices in userbalancebox (chilek)
+  - new session management using database backend, also authorization has been
+    put into separate class (lukasz)
 
 version 1.5.4 Ramius (16/02/2005):
 
