@@ -91,9 +91,13 @@ void reload(GLOBAL *g, struct payments_module *p)
 				if( atoi(value = g->db_get_data(res,i,"value")) ) {
 			
     					insert = strdup("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (?NOW?, 4, %value, %userid, '%comment', %invoiceid)");
+					
+					if( atoi(g->db_get_data(res,i,"invoice")) )				
+						g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
+					else 	
+						g->str_replace(&insert, "%invoiceid", "0");
 				
 					g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
-					g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
 					g->str_replace(&insert, "%value", value);
 					g->str_replace(&insert, "%comment", p->comment);
 					g->str_replace(&insert, "%period", period);	
@@ -118,8 +122,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 			
     					insert = strdup("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (?NOW?, 4, %value, %userid, '%comment', %invoiceid)");
 			
+					if( atoi(g->db_get_data(res,i,"invoice")) )				
+						g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
+					else 	
+						g->str_replace(&insert, "%invoiceid", "0");
+				
 					g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
-					g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
 					g->str_replace(&insert, "%value", value);
 					g->str_replace(&insert, "%comment", p->comment);
 					g->str_replace(&insert, "%period", period);	
@@ -144,8 +152,12 @@ void reload(GLOBAL *g, struct payments_module *p)
 			
     					insert = strdup("INSERT INTO cash (time, type, value, userid, comment, invoiceid) VALUES (?NOW?, 4, %value, %userid, '%comment', %invoiceid)");
 			
+					if( atoi(g->db_get_data(res,i,"invoice")) )				
+						g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
+					else 	
+						g->str_replace(&insert, "%invoiceid", "0");
+				
 					g->str_replace(&insert, "%userid", g->db_get_data(res,i,"userid"));
-					g->str_replace(&insert, "%invoiceid", itoa(++invoiceid));
 					g->str_replace(&insert, "%value", value);
 					g->str_replace(&insert, "%comment", p->comment);
 					g->str_replace(&insert, "%period", period);	
