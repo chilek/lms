@@ -168,9 +168,12 @@ if($SESSION->islogged)
 			include($_MODULES_DIR.'/'.$module.'.php');
 		}else
 			$SMARTY->display('noaccess.html');
-	}else{
+	}elseif($module==''){
 		$layout[module]='welcome';
 		include($_MODULES_DIR.'/welcome.php');
+	}else{
+		$layout[module]='notfound';
+		include($_MODULES_DIR.'/notfound.php');
 	}
 	
 	if($_SESSION[lastmodule]!=$module)
