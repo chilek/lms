@@ -967,7 +967,7 @@ wins    = 213.25.209.10</screen>
 	    i umieszczone w katalogu zdefiniowanym w opcji <filename>mail_dir</filename>.</para>
 	    <para>Oprócz modu³ów Perla standardowo wymaganych przez resztê skryptów, nale¿y 
 	    zainstalowaæ tak¿e modu³y <filename>MIME::Parser</filename> i <filename>MIME::Words</filename> z 
-	    pakietu MIME-Tools oraz <filename>Net::SMTP</filename>.</para>
+	    pakietu MIME-Tools oraz <filename>Net::SMTP</filename> i <filename>Text::Iconv</filename>.</para>
 	    <para>Skrypt mo¿na uruchamiaæ na wiele sposobów. Jednym z nich jest
 	    stworzenie skryptu pow³oki, który odczytuj±c skrzynkê pocztow± wywo³a lms-rtparser
 	    dla ka¿dego maila. Wygodniejszym zastosowaniem jest jednak zintegrowanie
