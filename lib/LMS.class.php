@@ -1204,7 +1204,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 
 	function GetUserAssignments($id)
 	{
-		if($assignments = $this->DB->GetAll("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, name, invoice FROM assignments, tariffs WHERE userid=? AND tariffs.id = tariffid", array($id)))
+		if($assignments = $this->DB->GetAll("SELECT assignments.id AS id, tariffid, userid, period, at, value, uprate, downrate, name, invoice, datefrom, dateto FROM assignments, tariffs WHERE userid=? AND tariffs.id = tariffid ORDER BY datefrom ASC", array($id)))
 		{
 			foreach($assignments as $idx => $row)
 			{
