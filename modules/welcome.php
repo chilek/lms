@@ -29,7 +29,7 @@ require_once($_LIB_DIR."/fortunes.php");
 
 $SI = new Sysinfo;
 
-$layout[pagetitle]="Witamy w LMS :-) !";
+$layout[pagetitle]="LAN Management System";
 $SMARTY->assign("sysinfo",$SI->get_sysinfo());
 $SMARTY->assign("userstats",$LMS->UserStats());
 $SMARTY->assign("nodestats",$LMS->NodeStats());
