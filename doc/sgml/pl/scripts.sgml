@@ -631,13 +631,6 @@ wins    = 213.25.209.10</screen>
 		    <para>Adres nadawcy listu. Domy¶lnie: niezdefiniowany.</para>
 		    <para>Przyk³ad:	<prompt>sender_email = admin@mynet.pl</prompt></para>
 		</listitem>
-        	<listitem>
-		    <para>tmp_dir</para>
-		    <para>Lokalizacja katalogu tymczasowego. Je¶li nie podano katalog 
-		    odczytywany jest ze zmiennej ¶rodowiskowej 'TMP' lub przyjmowany jest 
-		    katalog '/tmp'.</para>
-		    <para>Przyk³ad:	<prompt>tmp_dir = /home/user/tmp</prompt></para>
-		</listitem>
 	    </itemizedlist>
 	</para>
     </sect2>
