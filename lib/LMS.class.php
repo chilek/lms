@@ -42,11 +42,11 @@ class LMS
 		if($SESSION !== NULL)
 		{
 			$this->SESSION = &$SESSION;
-			$this->modules[] = "SESSION";
+			$this->modules[] = 'SESSION';
 		}
 		$this->DB = &$DB;
 		$this->CONFIG = &$CONFIG;
-		$this->modules[] = "CORE";
+		$this->modules[] = 'CORE';
 		$this->CORE = &$this;
 
 		// za³aduj ekstra klasy:
@@ -70,7 +70,7 @@ class LMS
 		foreach($this->modules as $module)
 		{
 			$this->$module->_revision = eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->$module->_revision);
-			$this->$module->version = $this->$module->_version." (".$this->$module->_revision.")";
+			$this->$module->version = $this->$module->_version.' ('.$this->$module->_revision.')';
 		}
 
 		// a teraz postinit
@@ -136,12 +136,12 @@ class LMS
 
 	function GetTS($table) // zwraca timestamp tabeli zapisany w tabeli 'timestamps'
 	{
-		return $this->DB->GetOne("SELECT time FROM timestamps WHERE tablename=?", array($table));
+		return $this->DB->GetOne('SELECT time FROM timestamps WHERE tablename=?', array($table));
 	}
 
 	function DeleteTS($table) // usuwa timestamp tabeli zapisany w tabeli 'timestamps'
 	{
-		return $this->DB->Execute("DELETE FROM timestamps WHERE tablename=?", array($table));
+		return $this->DB->Execute('DELETE FROM timestamps WHERE tablename=?', array($table));
 	}
 
 	function DatabaseList() // zwraca listê kopii baz danych w katalogu z backupami
@@ -150,15 +150,15 @@ class LMS
 		{
 			while (false !== ($file = readdir($handle)))
 			{
-				if ($file != "." && $file != "..")
+				if ($file != '.' && $file != '..')
 				{
 					$path = pathinfo($file);
-					if($path['extension'] = "sql")
+					if($path['extension'] = 'sql')
 					{
-						if(substr($path['basename'],0,4)=="lms-")
+						if(substr($path['basename'],0,4)=='lms-')
 						{
-							$dblist['time'][] = substr(basename("$file",".sql"),4);
-							$dblist['size'][] = filesize($this->CONFIG['directories']['backup_dir']."/".$file);
+							$dblist['time'][] = substr(basename("$file",'.sql'),4);
+							$dblist['size'][] = filesize($this->CONFIG['directories']['backup_dir'].'/'.$file);
 						}
 					}
 				}
@@ -185,14 +185,14 @@ class LMS
 	{
 		if(!$filename)
 			return FALSE;
-		$file = fopen($filename,"r");
+		$file = fopen($filename,'r');
 		$this->DB->BeginTrans(); // przyspieszmy dzia³anie je¿eli baza danych obs³uguje transakcje
 		while(!feof($file))
 		{
 			$line = fgets($file,4096);
-			if($line!="")
+			if($line!='')
 			{
-				$line=str_replace(";\n","",$line);
+				$line=str_replace(';\n','',$line);
 				$this->DB->Execute($line);
 			}
 		}
@@ -205,7 +205,7 @@ class LMS
 
 		switch($this->DB->databaseType)
 		{
-			case "postgres":
+			case 'postgres':
 				// uaktualnijmy sequencery postgresa
 				foreach($this->DB->ListTables() as $tablename)
 					$this->DB->Execute("SELECT setval('".$tablename."_id_seq',max(id)) FROM ".$tablename);
@@ -217,12 +217,12 @@ class LMS
 	{
 		if(! $filename)
 			return FALSE;
-		if($dumpfile = fopen($filename,"w"))
+		if($dumpfile = fopen($filename,'w'))
 		{
 			foreach($this->DB->ListTables() as $tablename)
 			{
 				fputs($dumpfile,"DELETE FROM $tablename;\n");
-				if($dump = $this->DB->GetAll("SELECT * FROM ".$tablename))
+				if($dump = $this->DB->GetAll('SELECT * FROM '.$tablename))
 					foreach($dump as $row)
 					{
 						fputs($dumpfile,"INSERT INTO $tablename (");
@@ -231,10 +231,10 @@ class LMS
 							$fields[] = $field;
 							$values[] = "'".addcslashes($value,"\r\n\'\"\\")."'";
 						}
-						fputs($dumpfile,implode(", ",$fields));
-						fputs($dumpfile,") VALUES (");
-						fputs($dumpfile,implode(", ",$values));
-						fputs($dumpfile,");\n");
+						fputs($dumpfile,implode(', ',$fields));
+						fputs($dumpfile,') VALUES (');
+						fputs($dumpfile,implode(', ',$values));
+						fputs($dumpfile,');\n');
 						unset($fields);
 						unset($values);
 					}
@@ -281,33 +281,32 @@ class LMS
 
 	function SetAdminPassword($id,$passwd) // ustawia has³o admina o id równym $id na $passwd
 	{
-		$this->SetTS("admins");
-		$this->DB->Execute("UPDATE admins SET passwd=? WHERE id=?", array(crypt($passwd),$id));
+		$this->SetTS('admins');
+		$this->DB->Execute('UPDATE admins SET passwd=? WHERE id=?', array(crypt($passwd),$id));
 	}
 
 	function GetAdminName($id) // zwraca imiê admina
 	{
-		return $this->DB->GetOne("SELECT name FROM admins WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT name FROM admins WHERE id=?', array($id));
 	}
 
 	function GetAdminList() // zwraca listê administratorów
 	{
-		$query = "SELECT id, login, name, lastlogindate, lastloginip FROM admins ORDER BY login ASC";
-		if($adminslist = $this->DB->GetAll($query))
+		if($adminslist = $this->DB->GetAll('SELECT id, login, name, lastlogindate, lastloginip FROM admins ORDER BY login ASC'))
 		{
 			foreach($adminslist as $idx => $row)
 			{
 				if($row['lastlogindate'])
-					$adminslist[$idx]['lastlogin'] = date("Y/m/d H:i",$row['lastlogindate']);
+					$adminslist[$idx]['lastlogin'] = date('Y/m/d H:i',$row['lastlogindate']);
 				else
-					$adminslist[$idx]['lastlogin'] = "-";
+					$adminslist[$idx]['lastlogin'] = '-';
 
 				if(check_ip($row['lastloginip']))
 					$adminslist[$idx]['lastloginhost'] = gethostbyaddr($row['lastloginip']);
 				else
 				{
-					$adminslist[$idx]['lastloginhost'] = "-";
-					$adminslist[$idx]['lastloginip'] = "-";
+					$adminslist[$idx]['lastloginhost'] = '-';
+					$adminslist[$idx]['lastloginip'] = '-';
 				}
 			}
 		}
@@ -318,58 +317,58 @@ class LMS
 
 	function GetAdminIDByLogin($login) // zwraca id admina na podstawie loginu
 	{
-		return $this->DB->GetOne("SELECT id FROM admins WHERE login=?", array($login));
+		return $this->DB->GetOne('SELECT id FROM admins WHERE login=?', array($login));
 	}
 
 	function AdminAdd($adminadd) // dodaje admina. wymaga tablicy zawieraj±cej dane admina
 	{
-		$this->SetTS("admins");
-		if($this->DB->Execute("INSERT INTO admins (login, name, email, passwd, rights) VALUES (?, ?, ?, ?, ?)", array($adminadd['login'], $adminadd['name'], $adminadd['email'], crypt($adminadd['password']),$adminadd['rights'])))
-			return $this->DB->GetOne("SELECT id FROM admins WHERE login=?", array($adminadd['login']));
+		$this->SetTS('admins');
+		if($this->DB->Execute('INSERT INTO admins (login, name, email, passwd, rights) VALUES (?, ?, ?, ?, ?)', array($adminadd['login'], $adminadd['name'], $adminadd['email'], crypt($adminadd['password']),$adminadd['rights'])))
+			return $this->DB->GetOne('SELECT id FROM admins WHERE login=?', array($adminadd['login']));
 		else
 			return FALSE;
 	}
 
 	function AdminDelete($id) // usuwa admina o podanym id
 	{
-		$this->SetTS("admins");
-		return $this->DB->Execute("DELETE FROM admins WHERE id=?", array($id));
+		$this->SetTS('admins');
+		return $this->DB->Execute('DELETE FROM admins WHERE id=?', array($id));
 	}
 
 	function AdminExists($id) // zwraca TRUE/FALSE zale¿nie od tego czy admin istnieje czy nie
 	{
-		return ($this->DB->GetOne("SELECT * FROM admins WHERE id=?", array($id))?TRUE:FALSE);
+		return ($this->DB->GetOne('SELECT * FROM admins WHERE id=?', array($id))?TRUE:FALSE);
 	}
 
 	function GetAdminInfo($id) // zwraca pe³ne info o podanym adminie
 	{
-		if($admininfo = $this->DB->GetRow("SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip FROM admins WHERE id=?", array($id)))
+		if($admininfo = $this->DB->GetRow('SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip FROM admins WHERE id=?', array($id)))
 		{
 			if($admininfo['lastlogindate'])
-				$admininfo['lastlogin'] = date("Y/m/d H:i",$admininfo['lastlogindate']);
+				$admininfo['lastlogin'] = date('Y/m/d H:i',$admininfo['lastlogindate']);
 			else
-				$admininfo['lastlogin'] = "-";
+				$admininfo['lastlogin'] = '-';
 
 			if($admininfo['failedlogindate'])
-				$admininfo['faillogin'] = date("Y/m/d H:i",$admininfo['failedlogindate']);
+				$admininfo['faillogin'] = date('Y/m/d H:i',$admininfo['failedlogindate']);
 			else
-				$admininfo['faillogin'] = "-";
+				$admininfo['faillogin'] = '-';
 
 
 			if(check_ip($admininfo['lastloginip']))
 				$admininfo['lastloginhost'] = gethostbyaddr($admininfo['lastloginip']);
 			else
 			{
-				$admininfo['lastloginhost'] = "-";
-				$admininfo['lastloginip'] = "-";
+				$admininfo['lastloginhost'] = '-';
+				$admininfo['lastloginip'] = '-';
 			}
 
 			if(check_ip($admininfo['failedloginip']))
 				$admininfo['failloginhost'] = gethostbyaddr($admininfo['failedloginip']);
 			else
 			{
-				$admininfo['failloginhost'] = "-";
-				$admininfo['failloginip'] = "-";
+				$admininfo['failloginhost'] = '-';
+				$admininfo['failloginip'] = '-';
 			}
 		}
 		return $admininfo;
@@ -377,20 +376,20 @@ class LMS
 
 	function AdminUpdate($admininfo) // uaktualnia rekord admina.
 	{
-		$this->SetTS("admins");
-		return $this->DB->Execute("UPDATE admins SET login=?, name=?, email=?, rights=? WHERE id=?", array($admininfo['login'],$admininfo['name'],$admininfo['email'],$admininfo['rights'],$admininfo['id']));
+		$this->SetTS('admins');
+		return $this->DB->Execute('UPDATE admins SET login=?, name=?, email=?, rights=? WHERE id=?', array($admininfo['login'],$admininfo['name'],$admininfo['email'],$admininfo['rights'],$admininfo['id']));
 	}
 
 	function GetAdminRights($id)
 	{
-		$mask = $this->DB->GetOne("SELECT rights FROM admins WHERE id=?", array($id));
-		if($mask == "")
-			$mask = "1";
+		$mask = $this->DB->GetOne('SELECT rights FROM admins WHERE id=?', array($id));
+		if($mask == '')
+			$mask = '1';
 		$len = strlen($mask);
 		for($cnt=$len; $cnt > 0; $cnt --)
-			$bin = sprintf("%04b",hexdec($mask[$cnt-1])).$bin;
+			$bin = sprintf('%04b',hexdec($mask[$cnt-1])).$bin;
 		for($cnt=strlen($bin)-1; $cnt >= 0; $cnt --)
-			if($bin[$cnt] == "1")
+			if($bin[$cnt] == '1')
 				$result[] = strlen($bin) - $cnt -1;
 		return $result;
 	}
@@ -401,7 +400,7 @@ class LMS
 
 	function GetUserName($id)
 	{
-		return $this->DB->GetOne("SELECT ".$this->DB->Concat("UPPER(lastname)","' '","name")." FROM users WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' FROM users WHERE id=?', array($id));
 	}
 
 	function GetEmails($group, $network=NULL)
@@ -415,12 +414,12 @@ class LMS
 
 	function GetUserEmail($id)
 	{
-		return $this->DB->GetOne("SELECT email FROM users WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT email FROM users WHERE id=?', array($id));
 	}
 
 	function UserExists($id)
 	{
-		switch($this->DB->GetOne("SELECT deleted FROM users WHERE id=?", array($id)))
+		switch($this->DB->GetOne('SELECT deleted FROM users WHERE id=?', array($id)))
 		{
 			case '0':
 				return TRUE;
@@ -438,7 +437,7 @@ class LMS
 	function RecoverUser($id)
 	{
 		$this->SetTS('users');
-		return $this->DB->Execute("UPDATE users SET deleted=0 WHERE id=?", array($id));
+		return $this->DB->Execute('UPDATE users SET deleted=0 WHERE id=?', array($id));
 	}
 
 	// confusing function name, gets number of tariff assignments, not number of users with this tariff
@@ -449,56 +448,56 @@ class LMS
 
 	function UserAdd($useradd)
 	{
-		if($this->DB->Execute("INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info, message) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?)", array(ucwords($useradd['name']), $useradd['lastname'], $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->SESSION->id, $useradd['info'], $useradd['message']))) {
-			$this->SetTS("users");
-			return $this->DB->GetOne("SELECT MAX(id) FROM users");
+		if($this->DB->Execute('INSERT INTO users (name, lastname, phone1, phone2, phone3, gguin, address, zip, city, email, nip, pesel, status, creationdate, creatorid, info, message) VALUES (?, UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?NOW?, ?, ?, ?)', array(ucwords($useradd['name']), $useradd['lastname'], $useradd['phone1'], $useradd['phone2'], $useradd['phone3'], $useradd['gguin'], $useradd['address'], $useradd['zip'], $useradd['city'], $useradd['email'], $useradd['nip'], $useradd['pesel'], $useradd['status'], $this->SESSION->id, $useradd['info'], $useradd['message']))) {
+			$this->SetTS('users');
+			return $this->DB->GetOne('SELECT MAX(id) FROM users');
 		} else
 			return FALSE;
 	}
 
 	function DeleteUser($id)
 	{
-		$this->SetTS("users");
-		$this->SetTS("nodes");
-		$res1=$this->DB->Execute("DELETE FROM nodes WHERE ownerid=?", array($id));
-		$res2=$this->DB->Execute("UPDATE users SET deleted=1 WHERE id=?", array($id));
+		$this->SetTS('users');
+		$this->SetTS('nodes');
+		$res1=$this->DB->Execute('DELETE FROM nodes WHERE ownerid=?', array($id));
+		$res2=$this->DB->Execute('UPDATE users SET deleted=1 WHERE id=?', array($id));
 		return $res1 || $res2;
 	}
 
 	function UserUpdate($userdata)
 	{
-		$this->SetTS("users");
-		return $this->DB->Execute("UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, lastname=UPPER(?), name=?, deleted=0, message=? WHERE id=?", array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['pesel'], $this->SESSION->id, $userdata['info'], $userdata['lastname'], ucwords($userdata['name']), $userdata['message'], $userdata['id'] ) );
+		$this->SetTS('users');
+		return $this->DB->Execute('UPDATE users SET status=?, phone1=?, phone2=?, phone3=?, address=?, zip=?, city=?, email=?, gguin=?, nip=?, pesel=?, moddate=?NOW?, modid=?, info=?, lastname=UPPER(?), name=?, deleted=0, message=? WHERE id=?', array( $userdata['status'], $userdata['phone1'], $userdata['phone2'], $userdata['phone3'], $userdata['address'], $userdata['zip'], $userdata['city'], $userdata['email'], $userdata['gguin'], $userdata['nip'], $userdata['pesel'], $this->SESSION->id, $userdata['info'], $userdata['lastname'], ucwords($userdata['name']), $userdata['message'], $userdata['id'] ) );
 	}
 
 	function GetUserNodesNo($id)
 	{
-		return $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ownerid=?", array($id));
+		return $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id));
 	}
 
 	function GetUserIDByIP($ipaddr)
 	{
-		return $this->DB->GetOne("SELECT ownerid FROM nodes WHERE ipaddr=inet_aton(?)", array($ipaddr));
+		return $this->DB->GetOne('SELECT ownerid FROM nodes WHERE ipaddr=inet_aton(?)', array($ipaddr));
 	}
 
 	function GetCashByID($id)
 	{
-		return $this->DB->GetRow("SELECT time, adminid, type, value, userid, comment FROM cash WHERE id=?", array($id));
+		return $this->DB->GetRow('SELECT time, adminid, type, value, userid, comment FROM cash WHERE id=?', array($id));
 	}
 
 	function GetUserStatus($id)
 	{
-		return $this->DB->GetOne("SELECT status FROM users WHERE id=?", array($id));
+		return $this->DB->GetOne('SELECT status FROM users WHERE id=?', array($id));
 	}
 
 	function GetUser($id)
 	{
-		if($result = $this->DB->GetRow("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, pesel, city, info, creationdate, moddate, creatorid, modid, deleted, message FROM users WHERE id=?", array($id)))
+		if($result = $this->DB->GetRow('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username, lastname, name, status, email, gguin, phone1, phone2, phone3, address, zip, nip, pesel, city, info, creationdate, moddate, creatorid, modid, deleted, message FROM users WHERE id=?', array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
 			$result['creationdateh'] = date("Y-m-d, H:i",$result['creationdate']);
-			$result['moddateh'] = date("Y-m-d, H:i",$result['moddate']);
+			$result['moddateh'] = date('Y-m-d, H:i',$result['moddate']);
 			$result['balance'] = $this->GetUserBalance($result['id']);
 			$result['tariffsvalue'] = $this->GetUserTariffsValue($result['id']);
 			return $result;
@@ -508,12 +507,12 @@ class LMS
 
 	function GetUserNames()
 	{
-		return $this->DB->GetAll("SELECT id, ".$this->DB->Concat("UPPER(lastname)","' '","name")." AS username FROM users WHERE status=3 AND deleted = 0 ORDER BY username");
+		return $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users WHERE status=3 AND deleted = 0 ORDER BY username');
 	}
 
 	function GetUserNodesAC($id)
 	{
-		if($acl = $this->DB->GetALL("SELECT access FROM nodes WHERE ownerid=?", array($id)))
+		if($acl = $this->DB->GetALL('SELECT access FROM nodes WHERE ownerid=?', array($id)))
 		{
 			foreach($acl as $value)
 				if($value['access'])
@@ -524,7 +523,7 @@ class LMS
 			if($y && !$n) return TRUE;
 			if($n && !$y) return FALSE;
 		}
-		if($this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ownerid=?", array($id)))
+		if($this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ownerid=?', array($id)))
 			return 2;
 		else
 			return FALSE;
@@ -532,76 +531,69 @@ class LMS
 
 	function SearchUserList($order=NULL,$state=NULL,$search=NULL)
 	{
-		list($order,$direction)=explode(",",$order);
+		list($order,$direction)=explode(',',$order);
 
-		($direction != "desc") ? $direction = "asc" : $direction = "desc";
+		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
 		switch($order){
 
-			case "phone":
-				$sqlord = "ORDER BY deleted ASC, phone1";
+			case 'phone':
+				$sqlord = 'ORDER BY deleted ASC, phone1';
 			break;
-
-			case "id":
-				$sqlord = "ORDER BY deleted ASC, id";
+			case 'id':
+				$sqlord = 'ORDER BY deleted ASC, id';
 			break;
-
-			case "address":
-				$sqlord = "ORDER BY deleted ASC, address";
+			case 'address':
+				$sqlord = 'ORDER BY deleted ASC, address';
 			break;
-
-			case "email":
-				$sqlord = "ORDER BY deleted ASC, email";
+			case 'email':
+				$sqlord = 'ORDER BY deleted ASC, email';
 			break;
-
-			case "balance":
-				$sqlord = "ORDER BY deleted ASC, balance";
+			case 'balance':
+				$sqlord = 'ORDER BY deleted ASC, balance';
 			break;
-
-			case "gg":
-				$sqlord = "ORDER BY deleted ASC, gguin";
+			case 'gg':
+				$sqlord = 'ORDER BY deleted ASC, gguin';
 			break;
-
-			case "nip":
-				$sqlord = "ORDER BY deleted ASC, nip, pesel";
+			case 'nip':
+				$sqlord = 'ORDER BY deleted ASC, nip, pesel';
 			break;
-
 			default:
-				$sqlord = "ORDER BY deleted ASC, ".$this->DB->Concat("UPPER(lastname)","' '","name");
+				$sqlord = 'ORDER BY deleted ASC, '.$this->DB->Concat('UPPER(lastname)',"' '",'name');
 			break;
 		}
 
 		if(sizeof($search))
 			foreach($search as $key => $value)
 			{
-				$value = str_replace(" ","%",trim($value));
-				if($value!="")
+				$value = str_replace(' ','%',trim($value));
+				if($value!='')
 				{
 					$value = "'%".$value."%'";
-					if($key=="phone")
+					if($key=='phone')
 						$searchargs[] = "(phone1 ?LIKE? $value OR phone2 ?LIKE? $value OR phone3 ?LIKE? $value)";
-					elseif($key=="username")
-						$searchargs[] = $this->DB->Concat("UPPER(lastname)","' '","name")." ?LIKE? ".$value;
-					elseif($key!="s")
-						$searchargs[] = $key." ?LIKE? ".$value;
+					elseif($key=='username')
+						$searchargs[] = $this->DB->Concat('UPPER(lastname)',"' '",'name').' ?LIKE? '.$value;
+					elseif($key!='s')
+						$searchargs[] = $key.' ?LIKE? '.$value;
 				}
 			}
 
 		if($searchargs)
-			$sqlsarg = implode(" AND ",$searchargs);
+			$sqlsarg = implode(' AND ',$searchargs);
 
 		if(!isset($state))
 			$state = 3;
 
-		if($userlist = $this->DB->GetAll("SELECT users.id AS id, ".$this->DB->Concat("UPPER(lastname)","' '","users.name")." AS username, deleted, status, email, phone1, address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 ".($state !=0 ? " AND status = '".$state."'":"").($sqlsarg !="" ? " AND ".$sqlsarg :"")." GROUP BY users.id, deleted, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info ".($sqlord !="" ? $sqlord." ".$direction:"")))
+		if($userlist = $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, deleted, status, email, phone1, address, gguin, nip, pesel, zip, city, info, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 '.($state !=0 ? " AND status = '".$state."'":'').($sqlsarg !='' ? ' AND '.$sqlsarg :'').' GROUP BY users.id, deleted, lastname, users.name, status, email, phone1, phone2, phone3, address, gguin, nip, pesel, zip, city, info '.($sqlord !='' ? $sqlord.' '.$direction:'')))
 		{
 			$week = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
 			$month = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
 			$quarter = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)/3 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
 			$year = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
 
-			$access = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid",'id');
-			$warning = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid",'id');
+			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid','id');
+			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid','id');
 
 			foreach($userlist as $idx => $row)
 			{
@@ -635,42 +627,35 @@ class LMS
 
 	function GetUserList($order='username,asc', $state=NULL, $network=NULL)
 	{
-		list($order,$direction)=explode(",",$order);
+		list($order,$direction)=explode(',',$order);
 
-		($direction != "desc") ? $direction = "asc" : $direction = "desc";
+		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
-		switch($order){
-
-			case "phone":
-				$sqlord = "ORDER BY phone1";
+		switch($order)
+		{
+			case 'phone':
+				$sqlord = 'ORDER BY phone1';
 			break;
-
-			case "id":
-				$sqlord = "ORDER BY users.id";
+			case 'id':
+				$sqlord = 'ORDER BY users.id';
 			break;
-
-			case "address":
-				$sqlord = "ORDER BY address";
+			case 'address':
+				$sqlord = 'ORDER BY address';
 			break;
-
-			case "email":
-				$sqlord = "ORDER BY email";
+			case 'email':
+				$sqlord = 'ORDER BY email';
 			break;
-
-			case "balance":
-				$sqlord = "ORDER BY balance";
+			case 'balance':
+				$sqlord = 'ORDER BY balance';
 			break;
-
-			case "gg":
-				$sqlord = "ORDER BY gguin";
+			case 'gg':
+				$sqlord = 'ORDER BY gguin';
 			break;
-
-			case "nip":
-				$sqlord = "ORDER BY nip, pesel";
+			case 'nip':
+				$sqlord = 'ORDER BY nip, pesel';
 			break;
-
 			default:
-				$sqlord = "ORDER BY ".$this->DB->Concat("UPPER(lastname)","' '","users.name");
+				$sqlord = 'ORDER BY '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name');
 			break;
 		}
 
@@ -691,8 +676,8 @@ class LMS
 			$quarter = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)/3 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
 			$year = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(value)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
 
-			$access = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid",'id');
-			$warning = $this->DB->GetAllByKey("SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid",'id');
+			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid','id');
+			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid','id');
 			foreach($userlist as $idx => $row)
 			{
 				$userlist[$idx]['tariffvalue'] = $week[$row['id']]['value']+$month[$row['id']]['value']+$quarter[$row['id']]['value']+$year[$row['id']]['value'];
@@ -721,7 +706,7 @@ class LMS
 		
 		switch($order)
 		{
-			case "tariff":
+			case 'tariff':
 				foreach($userlist as $idx => $row)
 				{
 					$tarifftable['idx'][] = $idx;
