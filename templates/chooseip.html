@@ -25,7 +25,7 @@
 	{section name=iplist loop=$network.address}
 	{if $network.mark[iplist] neq ""}<TR><TD COLSPAN="2" CLASS="fbt" align="center" bgcolor="#DFD5BD">{$network.mark[iplist]}</TD></TR>{/if}
 	{if $smarty.section.iplist.index is even}<TR>{/if}
-		<TD width="50%" align="center">
+		<TD width="50%" align="center" onmouseover="setPointerTD(this, '#CCFFCC')" onmouseout="setPointerTD(this, '#EBE4D6')"{if $network.nodename[iplist] eq ""} onClick="sendvalue(targetfield,'{$network.address[iplist]}');"{/if}>
 			{if $network.nodename[iplist] neq ""}
 				<FONT COLOR="#666666">{$network.nodename[iplist]}</FONT>
 			{else}
