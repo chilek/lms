@@ -67,9 +67,9 @@
 {/literal}
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
-		<TD CLASS="fleftu" WIDTH="1%" CLASS="fbt">
+		<TD CLASS="fleftu" WIDTH="1%">
 			<B>ID:</B>
-		</TR>
+		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
 			<B>Data:</B>
 		</TD>
@@ -101,7 +101,7 @@
 	{assign var=invoice value=$invoicelist[invoicelist]}
 	{assign var=invoiceid value=$invoice.id}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-		<TD CLASS="fleft" WIDTH="1%" CLASS="FLEFT">
+		<TD WIDTH="1%" CLASS="fleft">
 			{$invoice.id|string_format:"%04d"}
 		</TD>
 		<TD WIDTH="1%" NOWRAP>

@@ -8,6 +8,8 @@ wersja 1.3.3 (??/??/2004):
     okresowe assignmenty (alec)
   - dodana obs³uga datefrom i dateto w module 'tc' demona (alec)
   - dodana obs³uga zwolnieñ z VAT w taryfach i fakturach (chilek)
+  - poprawione b³êdy w wygl±dzie listy faktur, z którymi nie radzi³a
+    sobie Mozilla (alec)
 
 wersja 1.3.2 Kinsey (03/04/2004):
   
