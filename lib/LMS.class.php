@@ -35,11 +35,27 @@ class LMS
 	var $CONFIG;		// tablica zawieraj±ca zmienne z lms.ini
 	var $_version = NULL;	// wersja klasy
 
-	function LMS($DB,$SESSION) // ustawia zmienne klasy
+	function LMS(&$DB, &$SESSION, &$CONFIG) // ustawia zmienne klasy
 	{
 		$this->_version = eregi_replace('^.Revision: ([0-9.]+).*','\1','$Revision$');
-		$this->SESSION = $SESSION;
-		$this->DB = $DB;
+		$this->SESSION = &$SESSION;
+		$this->DB = &$DB;
+		$this->CONFIG = &$CONFIG;
+
+		// za³aduj ekstra klasy:
+
+		if($dirhandle = opendir($this->CONFIG['directories']['lib_dir'].'/modules/'))
+		{
+			while(FALSE !== ($file = readdir($dirhandle)))
+			{
+				if(ereg('^.*\.class.php$',$file))
+				{
+					$classname = ereg_replace('\.class.php$','',$file);
+					require_once($this->CONFIG['directories']['lib_dir'].'/modules/'.$classname.'.class.php');
+					$this->$classname = new $classname($this);
+				}
+			}
+		}
 	}
 
 	/*
@@ -2173,6 +2189,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.283  2003/11/26 16:33:02  lukasz
+ * - takie testy z pe³n± modu³owo¶ci±.
+ *
  * Revision 1.282  2003/11/22 18:02:08  alec
  * UserStats() zlicza³o userów usuniêtych - poprawione
  *
