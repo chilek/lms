@@ -44,7 +44,9 @@ wersja 1.1.3 (??/??/2003):
     dodatkowe operacje poprawiaj±ce bazê (zalecane):
     ALTER TABLE nodes CHANGE ownerid ownerid INT(11) DEFAULT '0' NOT NULL;
     ALTER TABLE nodes CHANGE mac mac VARCHAR(20) NOT NULL;
-  - zoptymalizowany kod do wy¶wietlania du¿ych sieci (lukasz);
+  - zoptymalizowany kod do wy¶wietlania du¿ych sieci (lukasz)
+  - podawanie dnia naliczania op³aty podczas dodawania usera nic dawa³o
+    (lukasz)
   
 wersja 1.1.2 (24/08/2003):
 
