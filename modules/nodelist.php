@@ -32,7 +32,7 @@ if(!isset($_GET['o']))
 	$SESSION->restore('nlo', $o);
 else
 	$o = $_GET['o'];
-$SESSION->save('nlo', $o)
+$SESSION->save('nlo', $o);
 
 $nodelist = $LMS->GetNodeList($o);
 $listdata['total'] = $nodelist['total'];
