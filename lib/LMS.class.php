@@ -1663,7 +1663,7 @@ class LMS
 	function GetInvoicesList($search=NULL, $cat=NULL, $group=NULL, $order)
 	{
 		if($order=='')
-			$order='invoices.id,asc';
+			$order='id,asc';
 
 		list($order,$direction) = explode(',',$order);
 
@@ -1704,7 +1704,7 @@ class LMS
 					$where = ' AND cdate >= '.$search.' AND cdate < '.($search+86400);
 					break;
 				case 'nip':
-					$where = ' AND nip = '.$search;
+					$where = ' AND nip = \''.$search.'\'';
 					break;
 				case 'customerid':
 					$where = ' AND customerid = '.intval($search);
@@ -1724,7 +1724,7 @@ class LMS
 						WHERE invoiceid = id AND finished = 1 '
 						.$where
 						.' GROUP BY id, number, cdate, customerid, name, address, zip, city, finished '
-						.$sqlord.' ASC'))
+						.$sqlord))
 		{
 			$inv_paid = $this->DB->GetAllByKey('SELECT invoiceid AS id, SUM(CASE type WHEN 3 THEN value ELSE -value END) AS sum FROM cash WHERE invoiceid!=0 GROUP BY invoiceid','id');
 			
