@@ -4,7 +4,7 @@ wersja 1.0pre3 (??/??/????):
 
   - poprawione pobieranie hostname i uptime (Marcoos)
   - zmiana typu kolumny value w tabeli cash z float na double
-
+  - zmiana typu kolumny value w tabeli tariffs z float na double
 
 wersja 1.0pre2 (25/12/2002):
 
