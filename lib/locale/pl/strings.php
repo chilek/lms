@@ -702,7 +702,7 @@ $_LANG['Last year stats for all networks'] = 'Statystyki z ostatniego roku dla w
 $_LANG['Liability Report'] = 'Raport wierzytelności';
 $_LANG['Liability Report on $0'] = 'Raport wierzytelności dla $0';
 $_LANG['Limit of displayed nodes on one page in Network Information. Default: 256. With 0, this informations are ommited (page is displaying faster).'] = 'Limit wyświetlanych komputerów na jednej stronie w Informacjach o Sieci. Domyślnie: 256. Ustawiając na 0, informacje te zostaną pominięte (strona będzie się wyświetlać szybciej).';
-$_LANG['Limit of displayed records on page on accounts list. Default: 100.'] = 'Limit wyświetlanych rekordów na jednej stronie listy kont'. Domyślnie: 100.';
+$_LANG['Limit of displayed records on page on accounts list. Default: 100.'] = 'Limit wyświetlanych rekordów na jednej stronie listy kont. Domyślnie: 100.';
 $_LANG['Limit of displayed records on page on aliases list. Default: 100.'] = 'Limit wyświetlanych rekordów na jednej stronie listy aliasów. Domyślnie: 100.';
 $_LANG['Limit of displayed records on page on customers list. Default: no limit.'] = 'Limit wyświetlanych rekordów na jednej stronie listy klientów. Domyślnie: brak limitu.';
 $_LANG['Limit of displayed records on page on domains list. Default: 100.'] = 'Limit wyświetlanych rekordów na jednej stronie listy domen. Domyślnie: 100.';
@@ -1274,7 +1274,6 @@ $_LANG['Useful Links:'] = 'Użyteczne linki:';
 $_LANG['user'] = 'użytkownik';
 $_LANG['User'] = 'Użytkownik';
 $_LANG['User:'] = 'Użytkownik:';
-
 $_LANG['User-defined stats'] = 'Statystyki zdefiniowane przez użytkownika';
 $_LANG['User Edit: $0'] = 'Edycja użytkownika: $0';
 $_LANG['User Info: $0'] = 'Informacje o użytkowniku: $0';
