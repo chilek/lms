@@ -15,7 +15,7 @@ var NUM_CENTYEAR = 30;
 // is time input control required by default
 var BUL_TIMECOMPONENT = true;
 // are year scrolling buttons required by default
-var BUL_YEARSCROLL = false;
+var BUL_YEARSCROLL = true;
 
 var calendars = [];
 var RE_NUM = /^\-?\d+$/;
