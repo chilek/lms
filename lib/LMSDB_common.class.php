@@ -70,7 +70,6 @@ Class LMSDB_common
 	{
 
 		// wykonuje query sql'owe, jednocze¶nie je parsuj±c
-	
 		return $this->_driver_execute($this->_query_parser($query,$inputarray));
 	}
 
@@ -82,6 +81,8 @@ Class LMSDB_common
 		if($query)
 			$this->Execute($query, $inputarray);
 
+		unset($result);
+
 		while($row = $this->_driver_fetchrow_assoc())
 			$result[] = $row;
 		
@@ -92,6 +93,8 @@ Class LMSDB_common
 	{
 		if($query)
 			$this->Execute($query, $inputarray);
+
+		unset($result);
 
 		while($row = $this->_driver_fetchrow_assoc())
 			$result[$row[$key]] = $row;
@@ -112,6 +115,8 @@ Class LMSDB_common
 		if($query)
 			$this->Execute($query, $inputarray);
 
+		unset($result);
+
 		while($row = $this->_driver_fetchrow_num())
 			$result[] = $row[0];
 		
@@ -122,6 +127,8 @@ Class LMSDB_common
 	{
 		if($query)
 			$this->Execute($query, $inputarray);
+
+		unset($result);
 
 		list($result) = $this->_driver_fetchrow_num();
 
@@ -195,6 +202,9 @@ Class LMSDB_common
 
 /* 
  * $Log$
+ * Revision 1.14  2003/08/27 19:25:18  lukasz
+ * - unset result before returning it
+ *
  * Revision 1.13  2003/08/24 13:10:26  lukasz
  * - added few comments
  * - s/<?/<?php/g
