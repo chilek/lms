@@ -14,7 +14,7 @@ wersja 1.5.4 (??/??/????):
   - BTS#0000278: dodane uprawnienie 'zarz±dzanie sieciami i urz±dzeniami' oraz
     wy³±czono z uprawnienia 'zarz±dzanie komputerami' od³±czanie/w³±czanie
     komputerów (rejmer/alec)
-  - w dokumentacji dodana informacja jak pod³±czyæ lms-rtparser do postixa
+  - w dokumentacji dodana informacja jak pod³±czyæ lms-rtparser do postfixa
     przy u¿yciu procmaila (D.Rejmer)
   - dodawanie aliasów i domen przeniesiono do osobnych modu³ów, uprawnienie
     'tylko odczyt' zezwala na odczyt danych kont/aliasów/domen (alec)
@@ -42,6 +42,7 @@ wersja 1.5.4 (??/??/????):
     charsetu (alec)
   - numeracja miesiêczna faktur: invoices/monthly_numbering (alec)
   - BTS#0000299: poprawka w funkcji sprawdzaj±cej poprawno¶æ MAC'a (lukas)
+  - dodana opcja %PIN do lms-mgc (lukasz)
 
 wersja 1.5.3 Nirrti (16/12/2004):
 
