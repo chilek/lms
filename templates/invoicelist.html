@@ -35,7 +35,7 @@
 
 	function pays()
 	{
-		if(! confirm('Czy na pewno chcesz rozliczyæ WSZYSTKIE wybrane faktury?'))
+		if(! confirm('{/literal}{t}Are you sure, you want to account ALL selected invoices?{/t}{literal}'))
 			return;
 		document.page.action="?m=invoicepaid&id=multi";
 		document.page.target="";
@@ -51,14 +51,14 @@
 	
 	function prints_org()
 	{
-		document.page.action="?m=invoice&print=cached&which=ORYGINA£";
+		document.page.action="?m=invoice&print=cached&which={/literal}{t}ORIGINAL{/t}{literal}";
 		document.page.target="_blank";
 		document.page.submit();
 	}
 	
 	function prints_cpy()
 	{
-		document.page.action="?m=invoice&print=cached&which=KOPIA";
+		document.page.action="?m=invoice&print=cached&which={/literal}{t}COPY{/t}{literal}";
 		document.page.target="_blank";
 		document.page.submit();
 	}
@@ -75,22 +75,22 @@
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="fleftu" WIDTH="1%">
-			<B>ID:</B>
+			<B>{t}ID:{/t}</B>
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>Data:</B>
+			<B>{t}Date:{/t}</B>
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>Numer:</B>
+			<B>{t}Number:{/t}</B>
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>Kwota:</B>
+			<B>{t}Value:{/t}</B>
 		</TD>
 		<TD WIDTH="1%" CLASS="fbt">
-			<B>Pozycji:</B>
+			<B>{t}Items:{/t}</B>
 		</TD>
 		<TD WIDTH="94%" CLASS="fbt">
-			<B>Dla:</B>
+			<B>{t}For:{/t}</B>
 		</TD>
 		<TD WIDTH="1%" CLASS="frightu">
 			&nbsp;
@@ -99,7 +99,12 @@
 	{if $listdata.totalpos != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
-			<B>Strona: {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+			<B>{t}Page:{/t} {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B>
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.totalpos}
+				{assign var=endx value=$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.totalpos}records $0 - $1 of $2{/t})
 		</TD>
 	</TR>
 	{/if}
@@ -129,9 +134,9 @@
 		<TD WIDTH="1%" ALIGN="RIGHT" CLASS="fright" NOWRAP>
 				{if !$invoice.paid}
 			<A HREF="javascript:invoicepay({$invoice.id})">
-			<IMG ALIGN="absmiddle" SRC="img/edit.gif" ALT="[ Rozlicz ]" BORDER="0" TARGET="_BLANK"></A>
+			<IMG ALIGN="absmiddle" SRC="img/edit.gif" ALT="[ {t}Account{/t} ]" BORDER="0" TARGET="_BLANK"></A>
 			{/if}
-			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ Drukuj ]" BORDER="0" TARGET="_BLANK"></A>
+			<A HREF="?m=invoice&id={$invoice.id}" TARGET="_blank"><IMG ALIGN="absmiddle" SRC="img/print.gif" ALT="[ {t}Print{/t} ]" BORDER="0" TARGET="_BLANK"></A>
 			{cycle print=false}
 			<INPUT STYLE="border-style: none; background-color: {cycle};" TYPE="checkbox" NAME="marks[{$invoice.id}]" VALUE="{$invoice.id}"{if $marks.$invoiceid}CHECKED{/if}>
 		</TD>
@@ -141,7 +146,7 @@
 		<TD WIDTH="100%" class="fall" ALIGN="center"  COLSPAN="7">
 			<P>&nbsp;</P>
 			<P>&nbsp;</P>
-			<P><B>Nie znaleziono ¿adnych faktur w bazie danych</B></P>
+			<P><B>{t}No such invoices in database.{/t}</B></P>
 			<P>&nbsp;</P>
 			<P>&nbsp;</P>
 		</TD>
@@ -150,7 +155,12 @@
 	{if $listdata.totalpos != 0}
 	<TR CLASS="dark">
 		<TD WIDTH="100%" class="fall" COLSPAN="7">
-			<B>Strona: {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> (rekordy {math equation="x + 1" x=$start} - {if $start + $pagelimit > $listdata.totalpos}{$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit}{/if} z {$listdata.totalpos})
+			<B>{t}Page:{/t} {if $page > 1} <A HREF="javascript:page_change({math equation="x - 1" x=$page});">&laquo;&laquo;&laquo;</A>{else}&laquo;&laquo;&laquo;{/if} {section name=pcnt loop=$invoicelist step=$pagelimit}{if $page eq $smarty.section.pcnt.rownum}[{else} <A HREF="javascript:page_change({$smarty.section.pcnt.rownum});">{/if}{$smarty.section.pcnt.rownum}{if $page eq $smarty.section.pcnt.rownum}]{else}</A> {/if}{/section} {if $page < $smarty.section.pcnt.rownum}<A HREF="javascript:page_change({math equation="x + 1" x=$page});">&raquo;&raquo;&raquo;</A>{else}&raquo;&raquo;&raquo;{/if}</B> 
+			{math equation="x + 1" x=$start assign=startx}
+			{if $start + $pagelimit > $listdata.totalpos}
+				{assign var=endx value=$listdata.totalpos}{else}{math equation="x + y" x=$start y=$pagelimit assign=endx}
+			{/if}
+			({t 0=$startx 1=$endx 2=$listdata.totalpos}records $0 - $1 of $2{/t})
 		</TD>
 	</TR>
 	{/if}
@@ -159,14 +169,14 @@
 			<TABLE WIDTH="100%">
 				<TR>
 					<TD ALIGN="left">
-						<NOBR><A HREF="javascript:prints();">Drukuj <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:prints_org();">Drukuj orygina³y <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:prints_cpy();">Drukuj kopie <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><A HREF="javascript:pays();">Rozlicz <IMG SRC="img/edit.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
-						<NOBR><INPUT TYPE="text" NAME="invoicepaydate" SIZE="10" onclick="javascript:cal1.popup()" {tip text="Podaj datê rozliczenia w formacie 'YYYY/MM/DD' (pole puste oznacza datê dzisiejsz±)."}>&nbsp;<IMG SRC="img/calendar.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></NOBR>
+						<NOBR><A HREF="javascript:prints();">{t}Print{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:prints_org();">{t}Print originals{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:prints_cpy();">{t}Print copies{/t} <IMG SRC="img/print.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><A HREF="javascript:pays();">{t}Account{/t} <IMG SRC="img/edit.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></A></NOBR>&nbsp;
+						<NOBR><INPUT TYPE="text" NAME="invoicepaydate" SIZE="10" onclick="javascript:cal1.popup()" {tip text="Enter accounting date in format 'YYYY/MM/DD' (empty field means current date)"}>&nbsp;<IMG SRC="img/calendar.gif" BORDER="0" ALT="" ALIGN="absmiddle" HSPACE="2"></NOBR>
 					</TD>
 					<TD ALIGN="right">	
-						<NOBR><A HREF="javascript:CheckAll2();">Zaznacz wszystkie</A><INPUT STYLE="border:0; background-color:#CEBD9B;" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
+						<NOBR><A HREF="javascript:CheckAll2();">{t}Check All{/t}</A><INPUT STYLE="border:0; background-color:#CEBD9B;" TYPE="checkbox" NAME="allbox" onClick="CheckAll();" VALUE="Check All Boxes"></NOBR>
 					</TD>
 				</TR>
 			</TABLE>
