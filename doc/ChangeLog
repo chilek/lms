@@ -7,6 +7,14 @@ version 1.5.6 Baal (??/??/????):
   - tickets searching for selected user in userinfobox (chilek)
   - percentage discount for customer liabilities/assignments (alec)
   - added dirty support for quotas in accounts (lukasz)
+  - new daemon (alec):
+    * changed name to 'lmsd'
+    * online configuration and management
+    * cron's style work
+    * configuration in database (only, ini files not supported)
+    * rewrited database drivers
+    * database connection options from command line or environment
+    * WARNING: Old daemon not supported in Reload menu!
 
 version 1.5.5 Anubis (25/03/2005):
 
