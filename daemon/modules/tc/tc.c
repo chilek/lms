@@ -89,7 +89,6 @@ void reload(GLOBAL *g, struct tc_module *tc)
 					ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
 					ugps[gc].id = atoi(g->db_get_data(res,0,"id"));
 					gc++;
-					printf("&");
 				}
     				g->db_free(res);
 			}				
