@@ -49,6 +49,17 @@
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/info.gif" BORDER="0" ALT="Opis:">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>Opis:</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<TEXTAREA NAME="ipadd[info]" ROWS="5" COLS="40" {tip text="Informacje dodatkowe (opcjonalnie)"}>{$nodeipdata.info}</TEXTAREA>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
 			<A HREF="javascript:document.editipaddr.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 			<A HREF="?m=netdevinfo&id={$netdevinfo.id}">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>

@@ -17,9 +17,10 @@
 		</TD>
 		<TD WIDTH="97%" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			<B>{$netdevips[list].name}</B><BR>	
-			{$netdevips[list].ip} / {$netdevips[list].mac}
+			{$netdevips[list].ip} / {$netdevips[list].mac}<BR>
+			<NOBR>{$netdevips[list].info|truncate:45:"..."}</NOBR>
 		</TD>
-		<TD WIDTH="1%" ALIGN="RIGHT" VALIGN="TOP" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
+		<TD WIDTH="1%" ALIGN="RIGHT" onClick="return self.location.href='?m=netdevinfo&id={if $netdevinfo.id}{$netdevinfo.id}{else}{$netdevedit.id}{/if}&ip={$netdevips[list].id}';">
 			({$netdevips[list].id|string_format:"%04d"})
 		</TD>
 		<TD WIDTH="1%" CLASS="FRIGHT" NOWRAP>
