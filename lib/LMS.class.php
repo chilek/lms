@@ -626,7 +626,7 @@ class LMS
 					foreach($blst as $row)
 							$balance[$row['id']] = $balance[$row['id']] - $row['value'];
 
-			$tariffstlist = $this->DB->GetAllByKey("SELECT users.id AS id, sum(value) AS value FROM users, tariffs, assignments WHERE userid = users.id AND tariffid = tariffs.id GROUP BY id", "id");
+			$tariffstlist = $this->DB->GetAllByKey("SELECT users.id AS id, sum(value) AS value FROM users, tariffs, assignments WHERE userid = users.id AND tariffid = tariffs.id GROUP BY users.id", "id");
 
 			foreach($userlist as $key => $value)
 			{
@@ -1660,6 +1660,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.217  2003/09/10 19:02:52  alec
+ * bug fix for postgres in GetUserList
+ *
  * Revision 1.216  2003/09/09 21:19:45  lukasz
  * - cleanup
  *
