@@ -76,7 +76,7 @@ elseif(isset($useradd))
 }
 
 $layout[pagetitle]="Nowy u¿ytkownik";
-$tariffs = $LMS->GetTariffs();
+
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("useradd",$useradd);
 $SMARTY->assign("error",$error);
@@ -84,6 +84,9 @@ $SMARTY->display("useradd.html");
 
 /*
  * $Log$
+ * Revision 1.38  2003/11/22 17:11:58  alec
+ * po co tu GetTariffs?
+ *
  * Revision 1.37  2003/09/09 01:22:28  lukasz
  * - nowe finanse
  * - kosmetyka
