@@ -273,7 +273,7 @@ switch($_GET['type'])
 			$date['to'] = mktime(23,59,59); //koniec dnia dzisiejszego
 		}
 		
-		$layout['pagetitle'] = '£±czny przychód bezrachunkowy za okres '.($from ? ' od '.$from.' ' : '').'do '.$to;
+		$layout['pagetitle'] = trans('Total Invoiceless Income ($0 to $1)',($from ? $from : ''), $to);
 
 		$incomelist = $LMS->GetIncomeList($date);
 		$totalincomelist = $LMS->GetTotalIncomeList($date);
