@@ -46,6 +46,12 @@ $menu[link]	[] = "?m=nodelist";
 $menu[accesskey][] = "k";
 $menu[tip]	[] = "Komputery: lista, wyszukiwanie, dodawanie";
 
+$menu[name]	[] = "Osprzêt sieciowy";
+$menu[img]	[] = "mac.gif";
+$menu[link]	[] = "?m=netdevlist";
+$menu[accesskey][] = "p";
+$menu[tip]	[] = "Ewidencja osprzêtu sieciowego";
+
 $menu[name]	[] = "Sieci IP";
 $menu[img]	[] = "ip.gif";
 $menu[link]	[] = "?m=netlist";
