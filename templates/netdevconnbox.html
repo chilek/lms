@@ -35,7 +35,7 @@
 			<img src="img/home.gif" alt="" align="absmiddle">
 		</TD>
 		<TD width="49%" CLASS="fbt" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
-			<a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name} / {$netdevlist[netdevlist].producer}</B></A><BR>
+			<a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name} {if $netdevlist[netdevlist].producer}/ {$netdevlist[netdevlist].producer}{/if}</B></A><BR>
 			{$netdevlist[netdevlist].location}
 		</TD>
 		<TD width="1%" CLASS="fbt" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';">
