@@ -1,6 +1,11 @@
 $Id$
 
-version 1.2.0 Janet (27/04/2004):
+version 1.2.1 (??/05/2004):
+
+  - fixed bug in almsd causing memory protection violation when SELECT
+    result was empty on MySQL (alec)
+
+version 1.2.0 Janet (28/04/2004):
 
   - fixed confusing config variables names of lms-mgc in doc (alec)
   - fixed errorous behavior of null taxvalue in tariffs (alec)

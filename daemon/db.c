@@ -92,6 +92,11 @@ QUERY_HANDLE * db_query(unsigned char *q)
 	free(stmt);
 	return NULL;
     }
+    if( mysql_num_rows(res) == 0 ) {
+	free(stmt);
+	mysql_free_result(res);
+	return NULL;
+    }
 #endif
 #ifdef USE_PGSQL
     res = PQexec(conn,stmt);
