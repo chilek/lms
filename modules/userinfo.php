@@ -25,7 +25,10 @@
  */
 
 if($LMS->UserExists($_GET[id]) == 0)
+{
 	header("Location: ?m=userlist");
+	die;
+}
 
 $userinfo=$LMS->GetUser($_GET[id]);
 
@@ -45,6 +48,9 @@ $SMARTY->display("userinfo.html");
 
 /*
  * $Log$
+ * Revision 1.25  2003/08/27 20:32:54  lukasz
+ * - changed another ENUM (users.deleted) to BOOL
+ *
  * Revision 1.24  2003/08/27 19:26:22  lukasz
  * - changed format of ipaddr storage in database
  *
