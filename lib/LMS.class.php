@@ -1672,11 +1672,26 @@ class LMS
 
      function NetDevUpdate($netdevdata)
      {
+          $this->SetTS("netdevices");
           $this->DB->Execute("UPDATE netdevices SET name=?, location=?, description=?, producer=?, model=?, serialnumber=?, ports=? WHERE id=?", array( $netdevdata['name'], $netdevdata['location'], $netdevdata['description'], $netdevdata['producer'], $netdevdata['model'], $netdevdata['serialnumber'], $netdevdata['ports'], $netdevdata['id'] ) );
      }
 
+     function IsNetDevLink($dev1, $dev2)
+     {
+         return $this->DB->GetOne("SELECT COUNT(id) FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)",array($dev1, $dev2, $dev1, $dev2));
+
+     }    
+
+     function NetDevLink($dev1, $dev2)
+     {
+       	if(! $this->IsNetDevLink($dev1,$dev2))
+    		return $this->DB->Execute("INSERT INTO netlinks (src, dst) VALUES ($dev1, $dev2)"); 
+	 $this->SetTS("netlinks");
+     }	
+     
      function NetDevUnLink($dev1, $dev2)
      {
+        $this->SetTS("netlinks");
         $this->DB->Execute("DELETE FROM netlinks WHERE (src=? AND dst=?) OR (dst=? AND src=?)",array($dev1, $dev2, $dev1, $dev2));
      }
      
@@ -1899,6 +1914,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.255  2003/10/04 12:17:52  alec
+ * new functions for netdevices linking
+ *
  * Revision 1.254  2003/10/03 19:35:49  alec
  * SetTS in NetDevUnLink() added
  *
