@@ -114,7 +114,7 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	free(s); s = g->str_concat(instance,":end");
 	hm->append = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -A FORWARD -j REJECT\n"));
 	free(s); s = g->str_concat(instance,":grantedhost");	
-	hm->grant = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n"));
+	hm->grant = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n/usr/sbin/iptables -A FORWARD -d %i -j ACCEPT\n"));
 	free(s); s = g->str_concat(instance,":deniedhost");
 	hm->deny = strdup(g->iniparser_getstring(ini, s, "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"));
 	free(s); s = g->str_concat(instance,":file");
