@@ -610,9 +610,10 @@ database = /usr/local/lms/lms.db</screen>
 	</listitem>
 	<listitem>
 	    <para>contract_template</para>
-	    <para>W³asny szablon umowy z u¿ytkownikiem. Mo¿na tak¿e dostosowaæ domy¶lny
-	    szablon. Domy¶lnie: contract.html.</para>
+	    <para>W³asny szablon umowy z u¿ytkownikiem. Mo¿e zawieraæ listê umów oddzielonych 
+	    przecinkami. Domy¶lnie: contract.html.</para>
 	    <para>Przyk³ad:	<prompt>contract_template = "../my_templates/contract.html"</prompt></para>
+	    <para>Przyk³ad:	<prompt>contract_template = "contract.html:Umowa Podstawowa, umowa.html:Umowa Rozbudowana"</prompt></para>
 	</listitem>
 	<listitem>
 	    <para>to_words_short_format</para>

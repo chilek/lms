@@ -578,9 +578,10 @@ database = /usr/local/lms/lms.db</screen>
 	</listitem>
 	<listitem>
 	    <para>contract_template</para>
-	    <para>Specify customer contract template. Default template can be adapted.
-	    Default: contract.html.</para>
+	    <para>Specify customer contract template. Can include comma separated 
+	    list of contract templates. Default: contract.html.</para>
 	    <para>Example:     <prompt>contract_template = "../my_templates/contract.html"</prompt></para>
+	    <para>Example:     <prompt>contract_template = "contract.html:Default Contract, file.html:Contract Plus"</prompt></para>
 	</listitem>
 	<listitem>
 	    <para>to_words_short_format</para>
