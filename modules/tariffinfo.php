@@ -26,11 +26,13 @@
 
 if(!$LMS->TariffExists($_GET['id']))
 {
-	header("Location: ?m=tarifflist");
+	header('Location: ?m=tarifflist');
 	die;
 }
+
 $tariff = $LMS->GetTariff($_GET['id']);
-$layout['pagetitle'] = trans('Tariff Information $0',$tariff['name']);
+
+$layout['pagetitle'] = trans('Tariff Info: $0',$tariff['name']);
 
 $_SESSION['backto'] = $_SERVER['QUERY_STRING'];
 
