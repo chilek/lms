@@ -3380,6 +3380,15 @@ class LMS
 	}
 
 	/*
+	 * Konta, Aliasy, Domeny
+	 */
+
+	function GetAccountIdByLogin($login) 
+	{
+		return $this->DB->GetOne('SELECT id FROM passwd WHERE login = ?', array($login));
+	}
+
+	/*
 	 * Templejty plików konfiguracyjnych
 	 */
 
