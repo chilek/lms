@@ -1,4 +1,5 @@
 <!--// $Id$ //-->
+<SCRIPT LANGUAGE="JavaScript" SRC="img/calendar.js"></SCRIPT>
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD class="fleftu">
@@ -38,10 +39,10 @@
 					<TD width="1%" align="center">&raquo;</TD>
 					<TD width="1%" align="right"><nobr>{if $balancelist.after[balancelist] < 0}<FONT color="red">{/if}{$balancelist.after[balancelist]|string_format:"%01.2f"} z³{if $balancelist.after[balancelist] < 0}</FONT>{/if}</nobr></TD>
 					<TD width="93%">{$balancelist.comment[balancelist]}</TD>
-					<TD width="1%" align="right"><nobr>
+					<TD width="1%" align="right">
 						{if $balancelist.invoiceid[balancelist] && $balancelist.invoiceid[balancelist] != $bal}
 						<A HREF="?m=invoice&id={$balancelist.invoiceid[balancelist]}"><IMG SRC="img/print.gif" ALT="" {tip text="Faktura"} BORDER="0"></A>
-						{/if}</nobr>
+						{/if}
 					</TD>
 					</TR>
 					{assign var=bal value=$balancelist.invoiceid[balancelist]}
@@ -55,24 +56,28 @@
 				{/section}
 				<TR bgcolor="#DFD5BD" title="Nowa operacja kasowa">
 					<FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.userid}">
-						<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
-						<TD class="ftop">
-							<nobr>{$smarty.now|date_format:"%Y/%m/%d %H:%M"}</nobr>
-						</TD>
-						<TD class="ftop">
-							{$layout.logname|truncate:20:"..."|replace:" ":"&nbsp;"}
-						</TD>
-						<TD class="ftop">
-							<SELECT SIZE="1" name="addbalance[type]" {tip text="Wybierz rodzaj operacji finansowej"}>
+					<INPUT TYPE="hidden" NAME="addbalance[userid]" VALUE="{$balancelist.userid}">
+					<TD colspan="8" class="ftop">
+						<TABLE width="100%" cellpadding="0">
+						<TR>
+						<TD width="1%" valign="top" NOWRAP>
+							<IMG src="img/money.gif" border="0" ALT="" align="absmiddle">
+							<B>Nowa operacja:</B>&nbsp;&nbsp;
+							Typ: <SELECT SIZE="1" name="addbalance[type]" {tip text="Wybierz rodzaj operacji finansowej"}>
 								<OPTION value="3">wp³ata</OPTION>
 								<OPTION value="4">obci±¿enie</OPTION>
-							</SELECT>
+							</SELECT>&nbsp;&nbsp;
 						</TD>
-						<TD colspan="2" class="ftop" nowrap>
-							<INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s" {tip text="Wpisz warto¶æ operacji"}> z³
+						<TD width="98%">
+							<NOBR>Kwota: <INPUT TYPE="text" size="12" name="addbalance[value]" accesskey="s" {tip text="Wpisz warto¶æ operacji"}> z³&nbsp;&nbsp;</NOBR>
+							<NOBR>Data: <INPUT TYPE="text" name="addbalance[time]" size="15" maxsize="15" {tip text="Wybierz lub wpisz czas operacji w formacie 'rrrr/mm/dd gg:mm' (pole puste oznacza datê dzisiejsz±"}><A HREF="javascript:cal1.popup();">&nbsp;&raquo;&raquo;&raquo</A>&nbsp;&nbsp;</NOBR>
+							<NOBR>Opis: <INPUT TYPE="text" size="25" align="left" name="addbalance[comment]" {tip text="Podaj opis dla tej operacji finansowej"}>&nbsp;&nbsp;</NOBR>
 						</TD>
-						<TD colspan="3" align="right" class="ftop">
-							<B>Opis:</B> <INPUT TYPE="text" size="22" align="left" name="addbalance[comment]" {tip text="Podaj opis dla tej operacji finansowej"}> <A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A>
+						<TD align="right" width="1%">
+							<NOBR><A href="javascript:document.addbalance.submit();">Dodaj <IMG src="img/save.gif" border="0" ALT="" align="absmiddle"></A></NOBR>
+						</TD>
+						</TR>
+						</TABLE>	
 						</TD>
 					</FORM>
 				</TR>
@@ -80,4 +85,6 @@
 		</TD>
 	</TR>
 </TABLE>
-				
+<SCRIPT><!--
+var cal1 = new calendar(document.forms['addbalance'].elements['addbalance[time]']);
+//--></SCRIPT>
