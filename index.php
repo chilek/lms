@@ -38,31 +38,40 @@ ini_set('session.name','LMSSESSIONID');
 function lms_parse_ini_file($filename, $process_sections = false) 
 {
 	$ini_array = array();
-	$sec_name = "";
+	$section = '';
 	$lines = file($filename);
 	foreach($lines as $line) 
 	{
 		$line = trim($line);
 		
-		if($line == "" || $line[0] == ";" || $line[0] == "#") 
+		if($line == '' || $line[0] == ';' || $line[0] == '#') 
 			continue;
 		
-		if( sscanf($line, "[%[^]]", &$sec_name)==1 ) 
-			$sec_name = trim($sec_name);
+		list($sec_name) = sscanf($line, "[%[^]]");
+		
+		if( $sec_name )
+			$section = trim($sec_name);
 		else 
 		{
-			if ( sscanf($line, "%[^=] = '%[^']'", &$property, &$value) != 2 ) 
-				if ( sscanf($line, "%[^=] = \"%[^\"]\"", &$property, &$value) != 2 ) 
-					if( sscanf($line, "%[^=] = %[^;#]",    &$property, &$value) != 2 ) 
+			list($property, $value) = sscanf($line, "%[^=] = '%[^']'");
+			if ( !$property || !$value ) 
+			{
+				list($property, $value) = sscanf($line, "%[^=] = \"%[^\"]\"");
+				if ( !$property || !$value ) 
+				{
+					list($property, $value) = sscanf($line, "%[^=] = %[^;#]");
+					if( !$property || !$value ) 
 						continue;
 					else
 						$value = trim($value, "\"'");
-			
+				}
+			}
+		
 			$property = trim($property);
 			$value = trim($value);
 			
 			if($process_sections) 
-				$ini_array[$sec_name][$property] = $value;
+				$ini_array[$section][$property] = $value;
 			else 
 				$ini_array[$property] = $value;
 		}
