@@ -3,7 +3,7 @@
 # http://www.phpmyadmin.net/ (download page)
 #
 # Host: localhost
-# Czas wygenerowania: 27 Sie 2003, 22:58
+# Czas wygenerowania: 27 Sie 2003, 23:06
 # Wersja serwera: 3.23.57
 # Wersja PHP: 4.2.3
 # Baza danych : lms
@@ -82,15 +82,15 @@ DROP TABLE IF EXISTS nodes;
 CREATE TABLE nodes (
   id int(11) NOT NULL auto_increment,
   name varchar(16) NOT NULL default '',
-  mac varchar(20) default NULL,
-  ipaddr varchar(16) default NULL,
+  mac varchar(20) NOT NULL default '',
+  ipaddr int(16) unsigned NOT NULL default '0',
   iplong bigint(20) NOT NULL default '0',
-  ownerid int(11) default NULL,
+  ownerid int(11) NOT NULL default '0',
   creationdate int(11) NOT NULL default '0',
   moddate int(11) NOT NULL default '0',
   creatorid int(11) NOT NULL default '0',
   modid int(11) NOT NULL default '0',
-  access char(1) NOT NULL default 'Y',
+  access tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (id),
   UNIQUE KEY id_2 (id,name),
   KEY id (id)
@@ -111,8 +111,7 @@ CREATE TABLE tariffs (
   description text NOT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY id (id),
-  KEY id_2 (id),
-  KEY id_3 (id)
+  KEY id_2 (id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
@@ -153,6 +152,7 @@ CREATE TABLE users (
   creatorid int(11) NOT NULL default '0',
   modid int(11) NOT NULL default '0',
   payday int(11) NOT NULL default '5',
+  deleted tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY id_2 (id),
   KEY id (id)
