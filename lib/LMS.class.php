@@ -34,6 +34,7 @@ class LMS
 	var $SESSION;		// obiekt z Session.class.php (zarz±dzanie sesj±)
 	var $CONFIG;		// tablica zawieraj±ca zmienne z lms.ini
 	var $_version = NULL;	// wersja klasy
+	var $MENU = array();
 
 	function LMS(&$DB, &$SESSION, &$CONFIG) // ustawia zmienne klasy
 	{
@@ -48,15 +49,47 @@ class LMS
 		{
 			while(FALSE !== ($file = readdir($dirhandle)))
 			{
-				if(ereg('^.*\.class.php$',$file))
+				if(ereg('^[0-9a-z]+\.class.php$',$file))
 				{
 					$classname = ereg_replace('\.class.php$','',$file);
 					require_once($this->CONFIG['directories']['lib_dir'].'/modules/'.$classname.'.class.php');
 					$this->$classname = new $classname($this);
+					$this->modules[] = $classname;
 				}
 			}
 		}
+
+		// to siê rozejdzie po modu³ach:
+
+		$this->AddMenu('Witamy !', 'l.gif', '?', '', '', 0);
+		$this->AddMenu('U¿ytkownicy', 'user.gif', '?m=userlist', 'U¿ytkownicy: lista, wyszukiwanie, dodanie nowego', 'u', 10);
+		$this->AddMenu('Komputery', 'node.gif', '?m=nodelist', 'Komputery: lista, wyszukiwanie, dodawanie', 'k', 15);
+		$this->AddMenu('Osprzêt sieciowy', 'netdev.gif', '?m=netdevlist', 'Ewidencja sprzêtu sieciowego', 'o', 20);
+		$this->AddMenu('Sieci IP', 'ip.gif', '?m=netlist', 'Zarz±dzanie klasami adresowymi IP', 's', 25);
+		$this->AddMenu('Taryfy i finanse', 'money.gif', '?m=tarifflist', 'Zarz±dzanie taryfami oraz finansami sieci', 't', 30);
+		$this->AddMenu('Mailing', 'mail.gif', '?m=mailing', 'Korespondencja seryjna', 'm', 35);
+		$this->AddMenu('Prze³adowanie', 'reload.gif', '?m=reload', '', 'r', 40);
+		$this->AddMenu('Bazy danych', 'db.gif', '?m=dblist', 'Zarz±dzanie kopiami zapasowymi bazy danych', 'b', 45);
+		$this->AddMenu('Administratorzy', 'admins.gif', '?m=adminlist', 'Konta administratorów systemu', 'd', 50);
+		$this->AddMenu('Statystyki', 'traffic.gif', '?m=traffic', 'Statystyki wykorzystania ³±cza', 'x', 55);
 	}
+
+	/*
+	 *  Funkcje podstawowe (ró¿ne)
+	 */
+
+	function AddMenu($name = '', $img = '', $link = '', $tip = '', $accesskey = '', $prio = 99)
+	{
+		if($name != '')
+		{
+			foreach(array('name', 'img', 'link', 'tip', 'accesskey', 'prio') as $key)
+				$this->MENU[$key][] = $$key;
+			array_multisort($this->MENU[prio], SORT_NUMERIC, SORT_ASC, $this->MENU[name], SORT_STRING, SORT_ASC, $this->MENU[img], $this->MENU[link], $this->MENU[accesskey], $this->MENU[tip]);
+			return TRUE;
+		}
+		return FALSE;
+	}
+		
 
 	/*
 	 *  Funkcje bazodanowe (backupy, timestampy)
@@ -2189,6 +2222,9 @@ class LMS
 
 /*
  * $Log$
+ * Revision 1.285  2003/11/28 09:48:04  lukasz
+ * - tsave
+ *
  * Revision 1.284  2003/11/26 21:07:00  alec
  * GetAll -> GetRow w GetInvoiceContent()
  *
