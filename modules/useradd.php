@@ -52,9 +52,11 @@ elseif(isset($useradd))
 	if($useradd[zip] !="" && !eregi("^[0-9]{2}-[0-9]{3}$",$useradd[zip]))
 		$error[zip] = "Podany kod pocztowy jest b³êdny!";
 
+	if($useradd[gguin] == 0)
+		unset($useradd[gguin]);
+
 	if($useradd[gguin] !="" && !eregi("^[0-9]{4,}$",$useradd[gguin]))
 		$error[gguin] = "Podany numer GG jest niepoprawny!";
-        elseif($useradd[gguin] =="") $useradd[gguin] = NULL;
 	
 	if(!$error)
 	{
