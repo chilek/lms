@@ -105,4 +105,6 @@ char * strcrop(char * s);
 /*--------------------------------------------------------------------------*/
 char * strstrip(char * s) ;
 
+unsigned char * parse(unsigned char *);//, unsigned char);
+
 #endif
