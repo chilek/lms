@@ -24,18 +24,62 @@
  *  $Id$
  */
 
-if($LMS->UserExists($_GET['ownerid']))
+$setwarnings = $_POST['setwarnings'];
+
+if(sizeof($setwarnings['mnodeid']))
 {
-	$LMS->NodeSetWarnU($_GET['ownerid'], $_GET['warning']);
-	$backid = $_GET['ownerid'];
+	foreach($setwarnings['mnodeid'] as $value)
+	{
+		if (isset($setwarnings['warnon']) && $LMS->NodeExists($value))
+			$LMS->NodeSetWarn($value, ($setwarnings['warnon']) ? TRUE : FALSE);
+		if (isset($setwarnings['message']))
+		{
+			$LMS->SetTS('users');
+			$LMS->DB->Execute('UPDATE users SET message=? WHERE id=?', array($setwarnings['message'],$LMS->GetNodeOwner($value)));
+		}
+	}
+	$_SESSION['warnmessage'] = $setwarnings['message'];
+	$_SESSION['warnon'] = $setwarnings['warnon'];
+	
+	header('Location: ?'.$_SESSION['backto']);
+	die;
 }
 
-if($LMS->NodeExists($_GET['id']))
+if($backid = $_GET['ownerid'])
 {
-	$LMS->NodeSwitchWarn($_GET['id']);
-	$backid = $_GET['id'];
+	if($LMS->UserExists($backid))
+	{
+		$LMS->NodeSetWarnU($backid, $_GET['warning']);
+		header('Location: ?'.$_SESSION['backto'].'#'.$backid);
+		die;
+	}
 }
 
-header("Location: ?".$_SESSION['backto']."#".$backid);
+if($backid = $_GET['id'])
+{
+	if($LMS->NodeExists($backid))
+	{
+		$LMS->NodeSwitchWarn($backid);
+		header('Location: ?'.$_SESSION['backto'].'#'.$backid);
+		die;
+	}
+}
+
+$_SESSION['backto'] = $_SERVER['QUERY_STRING'];
+
+$layout['pagetitle'] = 'Ostrze¿enia';
+
+$nodelist = $LMS->GetNodeList();
+unset($nodelist['total']);
+unset($nodelist['order']);
+unset($nodelist['direction']);
+unset($nodelist['totalon']);
+unset($nodelist['totaloff']);
+
+$SMARTY->assign('warnmessage', $_SESSION['warnmessage']);
+$SMARTY->assign('warnon', $_SESSION['warnon']);
+$SMARTY->assign('nodelist',$nodelist);
+$SMARTY->display('nodewarnings.html');
 
 ?>
+
