@@ -73,6 +73,9 @@ $access['table'][13]['allow_reg']   	= '^((net|netdev)(info|list|edit|add|del|cm
 $access['table'][14]['name']        	= trans('timetable management');
 $access['table'][14]['allow_reg']   	= '^(event(list|edit|add|del|info|print|search))$';
 
+$access['table'][15]['name']        	= trans('daemon management and configuration');
+$access['table'][15]['allow_reg']   	= '^((daemonhost|daemoninstance|daemonconfig)(list|edit|add|del|view))$';
+
 $access['table'][253]['name']		= trans('users edition and addition forbidden');
 $access['table'][253]['deny_reg']	= '^(admin(add|del|edit|passwd))$';
 
