@@ -79,5 +79,15 @@ $ cvs -z7 diff -u > /tmp/moja_latka.patch
 		<ulink url="http://lms.rulez.pl/download/">lms.rulez.pl/download</ulink></para>
 	    </answer>
 	</qandaentry>
+	<qandaentry>
+	    <question id="q7">
+	    	<para><emphasis role="bold">Jak wypisaæ siê z listy mailingowej?</emphasis></para>
+	    </question>
+	    <answer>
+	        <para>Informacja ta jest zawarta w nag³ówkach wszystkich wiadomo¶ci 
+		z listy mailingowej. Nale¿y wys³aæ wiadomo¶æ z tematem "unsubscribe"
+		na adres lms-request@lists.rulez.pl.</para>
+	    </answer>
+	</qandaentry>
     </qandaset>
 </chapter>
