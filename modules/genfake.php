@@ -1814,7 +1814,7 @@ $producer[] = "D-Link";
 
 function mkpw($nchars)
 {
-	$allowed="0123456789ABCDEF";
+	$allowed='0123456789ABCDEF';
 	mt_srand ((double) microtime() * 100000000);
 	while (strlen($return)<$nchars) $return .= $allowed[mt_rand(0,strlen($allowed))];
 	return $return;
@@ -1829,11 +1829,11 @@ function makemac()
 
 $SMARTY->display('header.html');
 $SMARTY->display('adminheader.html');
-echo '<H1>Generating random data</H1>';
+echo '<H1>'.trans('Generating random data').'</H1>';
 	
 if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 {
-	echo '<B>Clearing database...</B><BR>';
+	echo '<B>'.trans('Clearing database...').'</B><BR>';
 	$DB->Execute('DELETE FROM nodes');
 	$DB->Execute('DELETE FROM users');
 	$DB->Execute('DELETE FROM cash');
@@ -1844,16 +1844,16 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 	$DB->Execute('DELETE FROM netdevices');
 	$DB->Execute('DELETE FROM netlinks');
 	
-	if($LMS->CONFIG['database']['type']=="postgres")
+	if($LMS->CONFIG['database']['type']=='postgres')
 	{
-		$DB->Execute("DROP SEQUENCE \"nodes_id_seq\"; CREATE SEQUENCE \"nodes_id_seq\"");
-		$DB->Execute("DROP SEQUENCE \"users_id_seq\"; CREATE SEQUENCE \"users_id_seq\"");
-		$DB->Execute("DROP SEQUENCE \"cash_id_seq\";  CREATE SEQUENCE \"cash_id_seq\"");
-		$DB->Execute("DROP SEQUENCE \"assignments_id_seq\";CREATE SEQUENCE \"assignments_id_seq\"");
-		$DB->Execute("DROP SEQUENCE \"networks_id_seq\";   CREATE SEQUENCE \"networks_id_seq\"");
-		$DB->Execute("DROP SEQUENCE \"tariffs_id_seq\";    CREATE SEQUENCE \"tariffs_id_seq\"");
-		$DB->Execute("DROP SEQUENCE \"netdevices_id_seq\"; CREATE SEQUENCE \"netdevices_id_seq\"");
-		$DB->Execute("DROP SEQUENCE \"netlinks_id_seq\";   CREATE SEQUENCE \"netlinks_id_seq\"");
+		$DB->Execute('DROP SEQUENCE "nodes_id_seq"; CREATE SEQUENCE "nodes_id_seq"');
+		$DB->Execute('DROP SEQUENCE "users_id_seq"; CREATE SEQUENCE "users_id_seq"');
+		$DB->Execute('DROP SEQUENCE "cash_id_seq";  CREATE SEQUENCE "cash_id_seq"');
+		$DB->Execute('DROP SEQUENCE "assignments_id_seq";CREATE SEQUENCE "assignments_id_seq"');
+		$DB->Execute('DROP SEQUENCE "networks_id_seq";   CREATE SEQUENCE "networks_id_seq"');
+		$DB->Execute('DROP SEQUENCE "tariffs_id_seq";    CREATE SEQUENCE "tariffs_id_seq"');
+		$DB->Execute('DROP SEQUENCE "netdevices_id_seq"; CREATE SEQUENCE "netdevices_id_seq"');
+		$DB->Execute('DROP SEQUENCE "netlinks_id_seq";   CREATE SEQUENCE "netlinks_id_seq"');
 	}
 	
 	if($LMS->CONFIG['database']['type']=='mysql')
@@ -1864,27 +1864,27 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$DB->Execute('ALTER TABLE tariffs auto_increment=0');
 	}
 
-	echo '<B>Creating tarifs...</B><BR>';
-	$tariffdata = array( name => 'Lite', description => 'Taryfa Lite', value => '30', taxvalue => '7', pkwiu => '', uprate => '64', upceil=> '64', downrate => '128', downceil => '128', climit => '0', plimit => '0');
+	echo '<B>'.trans('Creating tariffs...').'</B><BR>';
+	$tariffdata = array( name => 'Lite', description => 'Lite Tariff', value => '30', taxvalue => '7', pkwiu => '', uprate => '64', upceil=> '64', downrate => '128', downceil => '128', climit => '0', plimit => '0');
 	$LMS->TariffAdd($tariffdata);
-	$tariffdata = array( name => 'Standard', description => 'Taryfa Standard', value => '60', taxvalue => '7', pkwiu => '', uprate => '128', upceil => '128', downrate => '256', downceil => '256', climit => '0', plimit => '0');
+	$tariffdata = array( name => 'Standart', description => 'Standart Tariff', value => '60', taxvalue => '7', pkwiu => '', uprate => '128', upceil => '128', downrate => '256', downceil => '256', climit => '0', plimit => '0');
 	$LMS->TariffAdd($tariffdata);
-	$tariffdata = array( name => 'Gold', description => 'Taryfa Gold', value => '120', taxvalue => '7', pkwiu => '', uprate => '256', upceil => '256', downrate => '512', downceil => '512', climit => '0', plimit => '0');
+	$tariffdata = array( name => 'Gold', description => 'Gold Tariff', value => '120', taxvalue => '7', pkwiu => '', uprate => '256', upceil => '256', downrate => '512', downceil => '512', climit => '0', plimit => '0');
 	$LMS->TariffAdd($tariffdata);
 
-	echo '<B>Generating payments...</B><BR>';
-	$paymentdata = array( name => 'DSL-512', description => 'Abonament za ³±cze', value => '200', creditor => 'Internet Super Provider S.A.', period => '1', at => '10');
+	echo '<B>'.trans('Generating payments...').'</B><BR>';
+	$paymentdata = array( name => 'DSL-2048', description => 'Internet Link subscription', value => '200', creditor => 'Internet Super Provider Ltd.', period => '1', at => '10');
 	$LMS->PaymentAdd($paymentdata);
-	$paymentdata = array( name => 'Serwerownia', description => 'Wynajem lokalu', value => '300', creditor => 'Spó³dzielnia Mieszkaniowa "WIDOK"', period => '1', at => '20');
+	$paymentdata = array( name => 'Server Room', description => 'Rent', value => '300', creditor => 'Residential Cooperative "VIEW"', period => '1', at => '20');
 	$LMS->PaymentAdd($paymentdata);
-	$paymentdata = array( name => 'Domena', description => 'Op³ata za domenê "nasza.net"', value => '150', creditor => 'NASK', period => '3', at => '31');
+	$paymentdata = array( name => 'Domain', description => 'Domain "our.net" subscription', value => '150', creditor => 'NASK', period => '3', at => '31');
 	$LMS->PaymentAdd($paymentdata);
 	
-	echo '<B>Generating network...</B><BR>';
+	echo '<B>'.trans('Generating network...').'</B><BR>';
 	$netdata = array( name => 'LAN1', address => '192.168.0.0', prefix => '22', gateway => '192.168.0.1', dns => '192.168.0.1', dns2 => '192.168.3.254', domain => 'ultralan.net', wins => '192.168.0.2', dhcpstart => '192.168.3.230', dhcpend => '192.168.3.253');
 	$LMS->NetworkAdd($netdata);
 
-	echo '<B>Generating clients...</B><BR>';	
+	echo '<B>'.trans('Generating clients...').'</B><BR>';	
 	$startip = ip_long('192.168.0.0');
 	$cnt = 0;
 	$lnsize = sizeof($lastnames);
@@ -1936,8 +1936,8 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$startip ++;
 	}
 	
-	echo '<B>Generating network hardware and connections...</B><BR>';	
-	$nodes = $DB->GetOne("SELECT count(id) FROM nodes");
+	echo '<B>'.trans('Generating network hardware and connections...').'</B><BR>';
+	$nodes = $DB->GetOne('SELECT count(id) FROM nodes');
 	$sprod = sizeof($producer);
 	$i = 0;
 	while($nodes)
@@ -1945,14 +1945,14 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$i++;
 		$prod = mt_rand(0,$sprod-1);
 		$LMS->NetDevAdd(array(
-			'name' => "SWITCH_".$i,
+			'name' => 'SWITCH_'.$i,
 			'location' => $streets[mt_rand(0,$ssize-1)].' '.mt_rand(1,50),
-			'description' => "",
+			'description' => '',
 			'producer' => $producer[$prod],
-			'model' => "10/100 Mbps Switch",
-			'serialnumber' => ($i*1000000+$i*200000)."-".($i*11111)."-".($i*33),
-			'ports' => "16",
-			'info' => ""));
+			'model' => '10/100 Mbps Switch',
+			'serialnumber' => ($i*1000000+$i*200000).'-'.($i*11111).'-'.($i*33),
+			'ports' => '16',
+			'info' => ''));
 		$ports = mt_rand(4,14);
 		for($j = 0; $j < $ports; $j++)
 		{
@@ -1963,7 +1963,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 		$ip['ownerid'] = 0;
 		$ip['ipaddr'] = long2ip($startip); 
 		$ip['mac'] = makemac();
-		$ip['name'] = "SWITCH_".$i;
+		$ip['name'] = 'SWITCH_'.$i;
 		$ip['access'] = 1;
 		$ip['warning'] = 0;
 		$ip['info'] = '';
@@ -1974,7 +1974,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 250)
 	}	
 		
 }else
-	echo '<FORM METHOD="GET" ACTION="?"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">How many records? (max: 250, <FONT COLOR="RED">WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!</FONT>) <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
+	echo '<FORM METHOD="GET" ACTION="?"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">How many records? (max: 250, <FONT COLOR="RED">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</FONT>) <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
 	
 $SMARTY->display('footer.html');
 

@@ -46,7 +46,7 @@ if($id && !DomainExists($id))
 
 $domain = $LMS->DB->GetRow('SELECT id, name, description FROM domains WHERE id = ?', array($id));
 
-$layout['pagetitle'] = 'Edycja domeny: '.$domain['name'];
+$layout['pagetitle'] = sprintf(trans('Edit Domain: %s'),$domain['name']);
 
 if($_POST['domain'])
 {
@@ -63,9 +63,9 @@ if($_POST['domain'])
 	}
 	
 	if($domain['name'] == '')
-		$error['name'] = 'Nie poda³e¶ nazwy domeny!';
+		$error['name'] = trans('Domain name is required!');
 	elseif($olddomain != $domain['name'] && GetDomainIdByName($domain['name']))
-		$error['name'] = 'Domena o podanej nazwie ju¿ istnieje!';
+		$error['name'] = trans('Domain with specified name exists!');
 
 	if(!$error)
 	{

@@ -24,21 +24,21 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = "Podgl±d kopii zapasowej bazy danych";
+$layout['pagetitle'] = trans('View Database Backup');
 
 $database = $LMS->DatabaseFetchContent($_GET['db']);
 
-if($_GET['rawmode']=="true")
+if($_GET['rawmode']=='true')
 {
 	$database['rawmode'] = TRUE;
-	if($_GET['save']=="true")
+	if($_GET['save']=='true')
 	{
-		header("Content-Type: application/octetstream");
-		header("Content-Disposition: attachment; filename=lms-backup-".date("Ymd-His",$_GET['db']).".sql");
-		Header("Pragma: public");
+		header('Content-Type: application/octetstream');
+		header('Content-Disposition: attachment; filename=lms-backup-'.date('Ymd-His',$_GET['db']).'.sql');
+		Header('Pragma: public');
 	}
 	else
-		header("Content-Type: text/plain; charset=ISO-8859-2");
+		header('Content-Type: text/plain; charset='.$LANGDEFS[$LMS->lang]['charset']);
 }
 
 $SMARTY->assign('database',$database);
