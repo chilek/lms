@@ -1,0 +1,100 @@
+{include file="header.html"}
+{include file="rtheader.html"}
+<!-- $Id$ -->
+<H1><B>{$layout.pagetitle}</B></H1>
+<P><FORM method="POST" name="search" action="?m=rtsearch">
+<TABLE WIDTH="100%" CELLPADDING="3">
+	<TR CLASS="dark">
+		<TD WIDTH="100%" CLASS="fall" colspan="2" NOWRAP>
+			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
+			<B>Wy¶wietl zg³oszenia spe³niaj±ce nastêpuj±ce kryteria:</B>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/ticket.gif" alt="" border="0" align="absmiddle">
+			<B>Temat:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<INPUT type="text" size="50" name="search[subject]" value="{$search.subject}" {tip text="Podaj temat zg³oszenia"}></INPUT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/user.gif" alt="" border="0" align="absmiddle">
+			<B>Zg³aszaj±cy:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<TABLE width="100%" cellpadding="1">
+			    <TR>
+			    	<TD width="100%" colspan="2">
+				    <SELECT size="1" name="search[userid]" {tip text="Wybierz u¿ytkownika z listy lub wprowad¼ jego dane jesli nie jest klientem sieci"}>
+					<OPTION value="0">- wszyscy -</OPTION>
+					{foreach from=$userlist item=userlist}
+					    <OPTION value="{$userlist.id}" {if $userlist.id == $search.userid}SELECTED{/if}>{$userlist.username} ({$userlist.id|string_format:"%04d"})</OPTION>
+					{/foreach}
+				    </SELECT>
+				</TD>
+			    </TR>
+			    <TR>
+				<TD width="1%" NOWRAP>Nazwisko i imiê:</TD>
+				<TD width="99%"><INPUT type="text" name="search[name]" value="{$search.name}" {tip text="Wybierz u¿ytkownika z listy lub wprowad¼ jego dane jesli nie jest klientem sieci"}></TD>
+			    </TR>
+			    <TR>
+				<TD width="1%">E-mail:</TD>
+				<TD width="99%"><INPUT type="text" name="search[email]" value="{$search.email}" {tip text="Wybierz u¿ytkownika z listy lub wprowad¼ jego dane jesli nie jest klientem sieci"}></TD>
+			    </TR>
+			</TABLE>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/admins.gif" alt="" border="0" align="absmiddle">
+			<B>W³a¶ciciel:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<SELECT size="1" name="search[owner]" {tip text="Wybierz administratora/w³a¶ciciela zg³oszenia"}>
+				<OPTION value="0">- wszyscy -</OPTION>
+				{foreach from=$adminlist item=adminlist}
+			        <OPTION value="{$adminlist.id}" {if $adminlist.id == $search.owner}SELECTED{/if}>{$adminlist.name}</OPTION>
+				{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/queue.gif" alt="" border="0" align="absmiddle">
+			<B>Kolejka:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<SELECT size="1" name="search[queue]" {tip text="Wybierz kolejkê" trigger="queue"}>
+				<OPTION value="0" SELECTED>- wszystkie -</OPTION>
+			{foreach from=$queuelist item=queuelist}
+				<OPTION value="{$queuelist.id}" {if $queuelist.id == $search.queue}SELECTED{/if}>{$queuelist.name}</OPTION>
+			{/foreach}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG src="img/dead.gif" alt="" border="0" align="absmiddle">
+			<B>Status:</B>
+		</TD>
+		<TD WIDTH="99%" CLASS="fright">
+			<SELECT SIZE="1" name="search[state]" {tip text="Wybierz status zg³oszenia"}>
+				<OPTION value="" {if $search.state==""}SELECTED{/if}>- wszystkie -</OPTION>
+				<OPTION value="0" {if $search.state=="0"}SELECTED{/if}>nowy</OPTION>
+				<OPTION value="1" {if $search.state=="1"}SELECTED{/if}>otwarty</OPTION>
+				<OPTION value="2" {if $search.state=="2"}SELECTED{/if}>rozwi±zany</OPTION>
+				<OPTION value="3" {if $search.state=="3"}SELECTED{/if}>martwy</OPTION>
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="light">
+		<TD WIDTH="100%" CLASS="fbottomu" colspan="2" align="right">
+			<A href="javascript: document.search.submit();">Szukaj <IMG src="img/search.gif" border="0" alt="" align="absmiddle"></A>
+		</TD>
+	</TR>
+</TABLE>
+</FORM></P>
+{include file="footer.html}

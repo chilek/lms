@@ -3097,6 +3097,74 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 		$this->SetTS('rtmessages');
 	}
 
+	function RTSearch($search, $order='createtime,desc')
+	{
+		if(!$order)
+			$order = 'createtime,desc';
+	
+		list($order,$direction)=explode(',',$order);
+
+		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+
+		switch($order)
+		{
+			case 'ticketid':
+				$sqlord = 'ORDER BY rttickets.id';
+			break;
+			case 'subject':
+				$sqlord = 'ORDER BY rttickets.subject';
+			break;
+			case 'requestor':
+				$sqlord = 'ORDER BY requestor';
+			break;
+			case 'owner':
+				$sqlord = 'ORDER BY ownername';
+			break;
+			case 'lastmodified':
+				$sqlord = 'ORDER BY lastmodified';
+			break;
+			default:
+				$sqlord = 'ORDER BY rttickets.createtime';
+			break;
+		}
+
+		$where  = ($search['queue']     ? 'AND queueid='.$search['queue'].' '          : '');
+		$where .= ($search['owner']     ? 'AND owner='.$search['owner'].' '            : '');
+		$where .= ($search['userid']    ? 'AND rttickets.userid='.$search['userid'].' '   : '');
+		$where .= ($search['subject']   ? 'AND subject=\''.$search['subject'].'\' '       : '');
+		$where .= ($search['state']!='' ? 'AND state='.$search['state'].' '            : '');
+		$where .= ($search['name']!=''  ? 'AND requestor LIKE \''.$search['name']/'\' '  : '');
+		$where .= ($search['email']!='' ? 'AND requestor LIKE \''.$search['email'].'\' ' : '');
+		
+		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
+		    FROM rtmessages 
+		    LEFT JOIN rttickets ON (rttickets.id = rtmessages.ticketid)
+		    LEFT JOIN admins ON (owner = admins.id) 
+		    LEFT JOIN users ON (rttickets.userid = users.id)
+		    WHERE 1=1 '
+		    .$where 
+		    .'GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.userid, users.lastname, users.name '
+		    .($sqlord !='' ? $sqlord.' '.$direction:'')))
+		{
+			foreach($result as $idx => $ticket)
+			{
+				//$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
+				//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
+				if(!$ticket['userid'])
+					sscanf($ticket['requestor'], "%[^<]<%[^>]", &$ticket['requestor'], &$ticket['requestoremail']);
+				else
+					sscanf($ticket['requestor'], "<%[^>]", &$ticket['requestoremail']);
+				$result[$idx] = $ticket;
+				$result['total']++;
+			}
+		}
+		
+		$result['order'] = $order;
+		$result['direction'] = $direction;
+		
+		return $result;
+	}
+
 	/*
 	 * Templejty plików konfiguracyjnych
 	 *
