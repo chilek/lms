@@ -1,20 +1,17 @@
 <!-- $Id$ -->
 <chapter id="daemon">
-     <title>A.L.E.C's LMS Daemon</title>
+     <title>LMS Daemon</title>
      <sect1 id="daemon-intro">
      <title>Basics</title>
      <para>This C daemon was developed to aid management of your services. It's responsible for
-     starting appropriate modules, each performing specific task. You have to select modules that
-     you intend to use before starting the daemon. Each module makes configuration files based on
-     its template and data from LMS database and manages (restarting) selected services on a server.
+     starting appropriate modules, each performing specific task. Each module makes configuration 
+     files based on its template and data from LMS database and manages (restarting) selected services 
+     on a server. Modules can also collect statistics, check hosts activity, account payments or
+     notify debtors about their charges.
      </para>
-     <para>Why such name? The majority of daemon code has been written by one of developers -
-     Aleksander 'A.L.E.C' Machniak. Nevertheless we must emphasize contributions done by Marcin 'Lexx'
-     Krol. It also includes fragments of code of Mateusz 'mteg' Golicz old daemon and use Nicolas
-     Devillard iniparser library. </para>
           <sect2 id="daemon-requirements">
           <title>Requirements</title>
-               <para><emphasis>A.L.E.C's LMS Daemon</emphasis> requires:
+               <para><emphasis>LMS Daemon</emphasis> requires:
                      <itemizedlist>
                <listitem>
                     <para>LMS user interface installation</para>
@@ -65,71 +62,75 @@
 </screen>
                Finally, compiled modules (files with <filename>.so</filename> extension), found in
                directory <filename>modules/module_name</filename> should be moved to some directory.
-               Their location will be set in configuration file.
+               Their location will be set in configuration.
                </para>
           </sect2>
           <sect2 id="daemon-config">
           <title>Configuration</title>
-               <para>You can find example daemon configuration in
-               <filename>lms.ini.sample</filename> file. The following listing describes basic
-               options for the daemon (modules configuration is described later, in separate
-               chapters concerning each module):
+               <para>For daemon and modules configuration is destined menu Reload -> Configuration
+	       in <emphasis>LMS-UI</emphasis>. Modules configuration is described later, in separate
+               chapters concerning each module. Basic daemon parameters and data for connection to
+	       database should be specified as command line options, according to following listing:
 <screen>
-[database]
-host            = localhost     # host name or IP, default: localhost
-user            = lms           # user name, default: lms
-password        = mypasswd      # database password, default: empty
-database        = lms           # database name, default: lms
-port            = 0             # port number, default: 0
-
-[lmsd]
-sleeptime       = 30            # time interval (in seconds) how often to
-                                # check for reload order, default: 30
-instances       = hosts oident firewall       # selected (active) modules list
-command         = 'echo Connecting...'        # shell command that run before each database connection 
+-h host           host where is instaled database (default: localhost)
+-d db_name        database name (default: lms)
+-u user           database user name (default: lms)
+-p password       database password (default: empty)
+-H hostname       name of host where daemon runs. By default is assumed name returned by
+                  hostname command, but it can be overwrited. That name must according
+                  with name specified in hosts configuration
+- c command       shell command to run before every database connection (default: empty)
+-q                do reload and exit
+-v                prints version and copyright info
+-i "instance[ ...]" list of instances for reload. Other instances will be ignored
 </screen>
-               <note><para>List of instances contains modules names separated with spaces. Instance
-               is a name of section below in this configuration file.</para></note> </para>
-               <para>Instance section, beside config modules params, must contain primary options,
-               as on following listing:
-<screen>
-[instance_name]
-module = /path/to/module.so
-info = "Additional description of module"
-</screen>          
+		Database connection options are readed also from shell variables:
+		LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
+               <note><para>List of instances contains instances names separated with spaces.</para></note> 
+	       </para>
+               <para>Daemon configuration is composed of hosts (that makes possible to configure
+	       and reload of daemons installed on different hosts/routers) and configuration sections
+	       called as instances.</para>
+	       <para>Instance, beside config modules params, must contain primary options as:
+	       <itemizedlist>
+	    	    <listitem>
+			<para>Name</para>
+			<para>Instance name unique within each host.</para>
+			<para>Example: system</para>
+		    </listitem>
+	    	    <listitem>
+			<para>Priority</para>
+			<para>Priority number, that define instances reload sequence.</para>
+			<para>Example: 10</para>
+		    </listitem>
+	    	    <listitem>
+			<para>Module</para>
+			<para>Module name with path. After daemon installation modules are placed in daemon/modules/ directory.</para>
+			<para>Example: /usr/lib/system.so</para>
+		    </listitem>
+	    	    <listitem>
+			<para>Crontab</para>
+			<para>Module execution time specified in crontab style. All data must be numeric.
+			Following example cause instance execution at 5 minutes interval between 8 and 18 
+			hour every day. If crontab is empty instance will be reloaded only while reload. 
+			Default: empty.</para>
+			<para>Example: */5 8-18 * * *</para>
+		    </listitem>
+	       </itemizedlist>
                </para>
-               <para>Change of 'instances' or any option in instance sections do not require daemon
-               restart. For other global options restart is required.</para>
+               <para>Any configuration change do not require daemon restart.</para>
           </sect2>
           <sect2 id="daemon-run">
           <title>Starting</title>
-               <para>You can run this program as a daemon, detached to background with option '-b'.
-               While running configuration and services reload is performed on demand using 'Reload'
-               menu in <emphasis>LMS-UI</emphasis>. Sleep time runtime option (-s) specify interval
-               between database checks. When daemon detects reload order, it runs modules defined by
-               'instances' option in <filename>lms.ini</filename>.
-               For example:
-<screen>
-# almsd -b
-</screen>               
-               </para>
-               <para>Other way to run is periodical execution with cron. You have to use this mode
-               for running modules like 'payments' 'notify' or 'traffic'. In those cases you can
-               specify instances to reload with use of option '-i'. Example crontab entry:
-<screen>
-  1 0 * * *    /usr/local/bin/almsd -qi "payments notify"
-</screen>
-               </para>
-               <para>Following listing describes all program command line options:
-<screen>
-  -c     path to config (default: /etc/lms/lms.ini)
-  -i     list of instances (separated by spaces) to reload
-  -b     run in background (daemon mode)
-  -s     database checks interval in sec. (default: 30)
-  -q     reload and quit
-  -h     prints command line options
-</screen>
-               </para>
+               <para>By default program runs in daemon mode. In that mode
+               configuration and services reload is performed on demand using 'Reload'
+               menu in <emphasis>LMS-UI</emphasis>. Reload order checking and configuration
+	       reading (especially instances list and configuration of them) is done on each minute. 
+	       When daemon detects reload order, it runs all enabled instances. Instances with 
+	       specified crontab will be executed it's matching with current time.</para>
+               <para>Other way to run daemon is disposable reload with use of '-q' option.
+	       This way is useful for tests, and in conjunction with '-i' option allows to
+	       run selected instances regardless of crontab of the rest of instances.</para>
           </sect2>
      </sect1>
      <sect1 id="daemon-modules">
@@ -137,12 +138,11 @@ info = "Additional description of module"
      <para>As we stated before daemon can only run modules and they are doing all the job. 
      Most modules are designed to specific application, only 'hostfile' 
      can be used to create many different configs (and manage numerous services), ie. various firewall types. 
-     Daemon and modules configuration examples are contained in the <filename>daemon/lms.ini.sample</filename> file.
      Module configuration parameters MUST be placed in appropriate instance section.</para>
           <sect2 id="daemon-moduleslist">
           <title>Modules list</title>
                <table>
-               <title>List of all almsd modules</title>
+               <title>List of all lmsd modules</title>
                <tgroup cols="2">
                <colspec ALIGN="center" COLWIDTH="200">
                <colspec ALIGN="center" COLWIDTH="300">
@@ -404,7 +404,7 @@ info = "Additional description of module"
                    <para>Specifies system command, that is executed if at least one customer should
                    be disconnected or warning should be enabled.
                    Default: empty.</para>
-                   <para>Example: <prompt>command = 'almsd -qi firewall'</prompt></para>
+                   <para>Example: <prompt>command = 'lmsd -qi firewall'</prompt></para>
                </listitem>
                <listitem>
                    <para>warning</para>
@@ -630,11 +630,6 @@ info = "Additional description of module"
               <para>There are basic options like groups of customers, file, command, networks and
               extra options which are define tc and firewall rules available to use. Default config is
               designed for 512/128 kbit limits and 100mbit links.</para>
-              <para><note><para>Configuration options values in <filename>lms.ini</filename> file
-              have to be defined in one line, in case of that module it can be not very handy, so
-              you can create file containing whole header (option <filename> begin</filename>),
-              and then use option <filename>command</filename> to join them with the rest of file
-              generated by this module.</para></note></para>
               <itemizedlist>
                <listitem>
                    <para>file</para>
