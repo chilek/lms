@@ -87,8 +87,6 @@ $SMARTY->assign("tarifflist",$tarifflist);
 $SMARTY->assign("layout",$layout);
 $SMARTY->assign("error",$error);
 $SMARTY->assign("tariffadd",$tariffadd);
-$SMARTY->display("header.html");
-$SMARTY->display("tarifflist.html");
-$SMARTY->display("footer.html");
+$SMARTY->display("tariffadd.html");
 
 ?>
