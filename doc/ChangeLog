@@ -20,7 +20,8 @@ wersja 1.1.5 (18/10/2003):
   - lms-notify przystosowane do nowych finansów (lukasz)
   - ALTER TABLE `assignments` ADD `invoice` TINYINT( 1 ) DEFAULT '0' NOT NULL;
   - ALTER TABLE `cash` ADD `invoiceid` INT DEFAULT '0' NOT NULL ;
-
+  - w katalogu /daemon pojawi³a siê wersja alfa programu do generowania
+    konfigów i prze³adowywania us³ug - under construction (alec)
   
 wersja 1.1.4 Tanith (03/10/2003):
   
