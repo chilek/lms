@@ -2,7 +2,7 @@
 {include file="balanceheader.html"}
 <!-- $Id$ -->
 <H1>{$layout.pagetitle}</H1>
-<FORM METHOD="POST" NAME="paymentedit" ACTION="?m=paymentedit&id={$payment.id}">
+<P><FORM METHOD="POST" NAME="paymentedit" ACTION="?m=paymentedit&id={$payment.id}">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD WIDTH="1%" CLASS="fleftu">
@@ -73,4 +73,10 @@
 	</TR>
 </TABLE>
 </FORM>
+</P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['paymentedit'].elements['payment[name]'].focus();
+//-->
+</SCRIPT>
 {include file="footer.html"}

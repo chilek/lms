@@ -73,10 +73,15 @@
 	</TR>
 	<TR class="LIGHT">
 	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	    	<A HREF="javascript:document.queue.submit();">Zapisz <IMG src="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
-		<A HREF="?m=rtqueuedel&id={$queue.id}" {confirm text="Czy jeste¶ pewien, ¿e chcesz usun±æ kolejkê \"`$queue.name`\" oraz wszystkie przypisane do niej zg³oszenia i wiadomo¶ci?"}>Usuñ <IMG src="img/delete.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+	    	<A HREF="javascript:document.queue.submit();" accesskey="s">Zapisz <IMG src="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+		<A HREF="?m=rtqueuedel&id={$queue.id}" {confirm text="Czy jeste¶ pewien, ¿e chcesz usun±æ kolejkê \"`$queue.name`\" oraz wszystkie przypisane do niej zg³oszenia i wiadomo¶ci?"} accesskey="d">Usuñ <IMG src="img/delete.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
 		<A HREF="?m=rtqueuelist">Anuluj <IMG src="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
 	    </TD>
 	</TR>
 </TABLE></FORM></P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['queue'].elements['queue[name]'].focus();
+//-->
+</SCRIPT>
 {include file="footer.html"}

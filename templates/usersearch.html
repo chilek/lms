@@ -1,3 +1,6 @@
+{include file="header.html"}
+{include file="userheader.html"}
+<!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
 <P>
 <FORM METHOD="POST" ACTION="?m=usersearch&search=1" NAME="usersearch">
@@ -100,3 +103,9 @@
 </TABLE>
 </FORM>
 </P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['usersearch'].elements['search[username]'].focus();
+//-->
+</SCRIPT>
+{include file="footer.html"}

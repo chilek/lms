@@ -45,10 +45,15 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
-			<A href="javascript:document.nodesearch.submit()">Szukaj<IMG SRC="img/search.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+			<A href="javascript:document.nodesearch.submit()" accesskey="s">Szukaj<IMG SRC="img/search.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
 		</TD>
 	</TR>
 </TABLE>
 </FORM>
 </P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['nodesearch'].elements['search[name]'].focus();
+//-->
+</SCRIPT>
 {include file="footer.html"}

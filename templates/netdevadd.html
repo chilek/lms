@@ -2,7 +2,6 @@
 {include file="netdevheader.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-
 <P><FORM NAME="netdevadd" METHOD="POST" ACTION="?m=netdevadd">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
@@ -83,9 +82,15 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="100%" CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			<A HREF="javascript:document.netdevadd.submit();" ACCESSKEY="S">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
+			<A HREF="javascript:document.netdevadd.submit();" ACCESSKEY="s">Zapisz <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 			<A HREF="?m=netdevlist">Anuluj <IMG SRC="img/cancel.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
 	</TR>	
-</TABLE></FORM></P>
+</TABLE>
+</FORM></P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['netdevadd'].elements['netdev[name]'].focus();
+//-->
+</SCRIPT>
 {include file="footer.html"}

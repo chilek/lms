@@ -73,9 +73,14 @@
 	</TR>
 	<TR class="LIGHT">
 	    <TD width="100%" COLSPAN="3" class="FBOTTOMU" ALIGN="RIGHT"> 
-	    	<A HREF="javascript:document.queue.submit();">Zapisz <IMG src="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+	    	<A HREF="javascript:document.queue.submit();" accesskey="s">Zapisz <IMG src="img/save.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
 		<A HREF="?m=rtqueuelist">Anuluj <IMG src="img/cancel.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
 	    </TD>
 	</TR>
 </TABLE></FORM></P>
+<SCRIPT language="javaScript">
+<!--
+document.forms['queue'].elements['queue[name]'].focus();
+//-->
+</SCRIPT>
 {include file="footer.html"}
