@@ -65,11 +65,11 @@
 		<sect2 id="sqlpanel-install">
 		<title>Instalacja</title>
 		<para>Instalacja polega na skopiowaniu plików w odpowiednie miejsca
-		w drzewie katalogów lms'a. Plik <filename>sql.php</filename> skopiuj
-		do katalogu <filename>modules</filename>, a pliki <filename>sql.html, sqlprint.html, 
-		adminheader.html</filename> do katalogu <filename>templates</filename>.
-		Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy z menu 
-		<emphasis>Administracja->SQL.</emphasis></para>
+		w drzewie katalogów lms'a. Plik <filename>sql.php, sqllang.php</filename> skopiuj
+		do katalogu <filename>modules</filename>, a pliki <filename>sql.html, sqlprint.html
+		</filename> do katalogu <filename>templates</filename>.
+		Po tej czynno¶ci dostêp do modu³u bêdzie mo¿liwy przez wywo³anie
+		http://lms.adres.pl/?m=sql.</para>
 		</sect2>
 	</sect1>
 	<sect1 id="contrib-squid">
