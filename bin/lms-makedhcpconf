@@ -203,6 +203,7 @@ while (my $row = $dbq->fetchrow_hashref())
 
 my @used_ifaces;
 my $last_iface = '';
+my @if;
 my @networks = split ' ',$networks_list;
 
 $dbq = $dbase->prepare("SELECT id, LOWER(name) AS name, interface, inet_ntoa(address) AS address, mask, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks ORDER BY interface");
@@ -232,18 +233,25 @@ while (my $row = $dbq->fetchrow_hashref())
 	my $nmaxlease = $ini->val("dhcp:$key",'max_lease_time') || $maxlease;
 
 	$row->{'interface'} = $row->{'interface'} || '';
+
+	if($row->{'interface'})
+	{
+		@if = split('\:',$row->{'interface'});
+		@if = split('\.',$if[0]);
+	}
+	my $iface = $if[0] || '';
 		
-        if (!($last_iface eq $row->{'interface'}) && !($last_iface eq '') && !length($row->{'interface'})==0)
+        if (!($last_iface eq $iface) && !($last_iface eq '') && !length($iface)==0)
         {
         	print DHCPDCONF "}\n\n";
         }
 		
-        if (!length($row->{'interface'})==0)
+        if (!length($iface)==0)
         {
-    		if (!($row->{'interface'} eq $last_iface))
+    		if (!($iface eq $last_iface))
                 {
-            		print DHCPDCONF "shared-network LMS-$row->{'interface'} {\n"; 
-			$last_iface = $row->{'interface'};
+            		print DHCPDCONF "shared-network LMS-$iface {\n"; 
+			$last_iface = $iface;
                 }
 	}
 
