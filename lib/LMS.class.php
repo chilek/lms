@@ -110,7 +110,7 @@ class LMS
 		{
 			foreach(array('name', 'img', 'link', 'tip', 'accesskey', 'prio') as $key)
 				$this->MENU[$key][] = $$key;
-			array_multisort($this->MENU[prio], SORT_NUMERIC, SORT_ASC, $this->MENU[name], SORT_STRING, SORT_ASC, $this->MENU[img], $this->MENU[link], $this->MENU[accesskey], $this->MENU[tip]);
+			array_multisort($this->MENU['prio'], SORT_NUMERIC, SORT_ASC, $this->MENU['name'], SORT_STRING, SORT_ASC, $this->MENU['img'], $this->MENU['link'], $this->MENU['accesskey'], $this->MENU['tip']);
 			return TRUE;
 		}
 		return FALSE;
@@ -2745,11 +2745,11 @@ class LMS
 	{
 		// period
 		if (is_array($from))
-			$fromdate = mktime($from[Hour],$from[Minute],0,$from[Month],$from[Day],$from[Year]);
+			$fromdate = mktime($from['Hour'],$from['Minute'],0,$from['Month'],$from['Day'],$from['Year']);
 		else
 			$fromdate = $from;
 		if (is_array($to))
-			$todate = mktime($to[Hour],$to[Minute],59,$to[Month],$to[Day],$to[Year]);
+			$todate = mktime($to['Hour'],$to['Minute'],59,$to['Month'],$to['Day'],$to['Year']);
 		else
 			$todate = $to;
 

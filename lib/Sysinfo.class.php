@@ -33,12 +33,12 @@ class Sysinfo {
 	
 	function get_sysinfo()
 	{
-		$return[hostname] = $this->hostname();
-		$return[uptime] = $this->uptime();
-		$return[kernel] = $this->kernel();
-		$return[users] = $this->users();
-		$return[loadavg] = $this->loadavg();
-		$return[phpversion] = phpversion();
+		$return['hostname'] = $this->hostname();
+		$return['uptime'] = $this->uptime();
+		$return['kernel'] = $this->kernel();
+		$return['users'] = $this->users();
+		$return['loadavg'] = $this->loadavg();
+		$return['phpversion'] = phpversion();
 		return $return;
 	}
 

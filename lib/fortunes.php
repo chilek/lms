@@ -114,6 +114,6 @@ $fortunes[] = "Prima Aprilis 2004 - lms@lists.rulez.pl:
 
 
 mt_srand ((double) microtime()* 100000000);
-$layout[fortune] = $fortunes[mt_rand(0,sizeof($fortunes)-1)];
+$layout['fortune'] = $fortunes[mt_rand(0,sizeof($fortunes)-1)];
 
 ?>
