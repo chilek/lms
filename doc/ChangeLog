@@ -5,7 +5,7 @@ version 1.5.5 (??/??/????):
   - fixed empty page printing on html invoices when trying to print only 
     originals or copies (alec)
 
-wersja 1.5.4 Ramius (16/02/2005):
+version 1.5.4 Ramius (16/02/2005):
 
   - domy¶lnym jêzykiem interfejsu u¿ytkownika jest angielski (en), wykonano
     t³umaczenie na jêzyk polski, zmieniono nazewnictwo: u¿ytkownicy -> klienci,
@@ -82,7 +82,7 @@ wersja 1.5.4 Ramius (16/02/2005):
   - lms-payments: dodano opcjê 'comment' ustalaj±c± komentarz do op³aty,
     dozwolone zmienne: %tariff, %period, %desc (alec)
 
-wersja 1.5.3 Nirrti (16/12/2004):
+version 1.5.3 Nirrti (16/12/2004):
 
   - w polu email przy dodawaniu/edycji u¿ytkownika mo¿na wpisaæ tylko jeden 
     adres, dodane sprawdzenie poprawno¶ci tego adresu (alec)
@@ -136,7 +136,7 @@ wersja 1.5.3 Nirrti (16/12/2004):
     (dzwonus/lukasz)
   - Helpdesk: dodana mo¿liwo¶æ wysy³ania wiadomo¶ci z za³±cznikiem (alec)
 
-wersja 1.5.2 Isis (25/11/2004):
+version 1.5.2 Isis (25/11/2004):
 
   - experymentalny driver do MS SQL Servera (alec)
   - poprawne tworzenie shared-network w lms-makedhcpconf (alec)
@@ -183,7 +183,7 @@ wersja 1.5.2 Isis (25/11/2004):
   - Konta (lexx/alec)
   - contrib/daemon/shaper (M.Adamski)
 
-wersja 1.5.1 Eamon (25/10/2004):
+version 1.5.1 Eamon (25/10/2004):
 
   - przyspieszone wy¶wietlanie modu³u wydruków i innych pobieraj±cych listê
     administratorów (alec)
@@ -226,7 +226,7 @@ wersja 1.5.1 Eamon (25/10/2004):
   - nazwa interfejsu mo¿e zawieraæ ':' i '.' (alec)
   - naprawione sumowanie w kolumnie 0% w rejestrze sprzeda¿y (alec)
   - poprawione b³êdy w pinger.h uniemo¿liwiaj±ce kompilacjê na niektórych
-    wersjach glibca (alec)
+    versionch glibca (alec)
   - BTS#0000221: dodany monit o potwierdzenie rozliczenia faktury (alec)
   - usuniête przekierowanie do listy faktur po dodaniu faktury (alec)
   - po³±czenia wireless na mapie sieci (alec)
@@ -235,7 +235,7 @@ wersja 1.5.1 Eamon (25/10/2004):
     backupu (alec)
   - dodany contrib/import, czyli import p³atno¶ci z pliku txt (alec)
   
-wersja 1.5.0 Marduk (18/09/2004):
+version 1.5.0 Marduk (18/09/2004):
 
   - w lms-makedhcpconf hosty s± sortowane (alec)
   - drukowanie zg³oszeñ (alec)
@@ -286,7 +286,7 @@ wersja 1.5.0 Marduk (18/09/2004):
   - dopracowane wysy³anie wiadomo¶ci w Helpdesku (alec)
   - obs³uga za³±czników w Helpdesku (alec)
 
-wersja 1.3.6 Osiris (01/09/2004);
+version 1.3.6 Osiris (01/09/2004);
 
   - obci±¿enia s± naliczane wed³ug ich warto¶ci, rosn±co - w wypadku jak kto¶
     ma odliczenie jakie¶, zostanie ono naliczone jako pierwsze, przez co nawet
@@ -321,7 +321,7 @@ wersja 1.3.6 Osiris (01/09/2004);
   - dodane contrib/squid_warnings (lexx)
   - w dokum. dodany rozdzia³ 'Dodatki' opisuj±cy zawarto¶æ /contrib (alec)
   
-wersja 1.3.5 Ju (30/07/2004):
+version 1.3.5 Ju (30/07/2004):
 
   - usuniêty b³±d w skryptach perlowych, powoduj±cy b³êdne dzia³anie
     przy pustej zmiennej konfiguracyjnej 'usergroups' (alec)
@@ -355,7 +355,7 @@ wersja 1.3.5 Ju (30/07/2004):
   - poprawna odmiana wyrazów dzieñ, godzina, minuta w uptime'ach (alec)
   - dodany filtr 'minimalny uptime' do wyszukiwania zg³oszeñ (alec)
 
-wersja 1.3.4 Terok (06/07/2004):
+version 1.3.4 Terok (06/07/2004):
 
   - naprawiony combobox ze stawk± podatku w 'Rachunku u¿ytkownika' (alec)
   - je¶li ¿adna grupa nie istnieje to skrypty bior± pod uwagê wszystkich
@@ -402,7 +402,7 @@ wersja 1.3.4 Terok (06/07/2004):
     bazy danych (alec)
   - wznowiono prace na systemem RT (Helpdesk) (alec)
 
-wersja 1.3.3 Sokar (05/05/2004):
+version 1.3.3 Sokar (05/05/2004):
   
   - naprawione usuwanie pozycji na fakturze (alec) 
   - w demonie dodana obs³uga bazy SQLite (alec)
@@ -455,7 +455,7 @@ wersja 1.3.3 Sokar (05/05/2004):
     w tabeli timestamps nie ma wpisu '_force' (alec)
   - przebudowany rozdzia³ 'Interfejs U¿ytkownika' w dokumentacji (alec)
 
-wersja 1.3.2 Kinsey (03/04/2004):
+version 1.3.2 Kinsey (03/04/2004):
   
   - przeniesienie warning&messages z contrib do g³ównej ga³êzi
     dodanie lms-updatewarnings (maniac/alec/chilek)
@@ -504,7 +504,7 @@ wersja 1.3.2 Kinsey (03/04/2004):
   - w automatycznych fakturach mo¿na zdefiniowaæ rodzaj p³atno¶ci 
     i termin zap³aty: lms-payments i almsd (alec)
   
-wersja 1.3.1 Maybourne (04/03/2004):
+version 1.3.1 Maybourne (04/03/2004):
 
   - poprawiony b³±d w GetInvoiceContents() powoduj±cy b³êdne wy¶wietlanie
     liczby groszy s³ownie na fakturze - BTS#0000112 (alec)
@@ -537,22 +537,22 @@ wersja 1.3.1 Maybourne (04/03/2004):
 	);
 	INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2004030400');		  
   - dodany 'Raport sprzeda¿y' czyli wydruk listy faktur za dany okres (alec)
-  
-wersja 1.3.0 Apophis (18/02/2004):
 
-  - zmiana wersji biblioteki Smarty z 2.5.0 na 2.6.0 (alec)
-  - dodane contrib/warn&msg (Rafa³ Ramocki/Tomasz Chiliñski)
-  - jeszcze jedna poprawka w bazie w zwi±zku z BTS#103 (alec)
+version 1.3.0 Apophis (18/02/2004):
+
+  - Smarty libs version change 2.5.0 -> 2.6.0 (alec)
+  - added contrib/warn&msg (Rafa³ Ramocki/Tomasz Chiliñski)
+  - another database fix results from BTS#103 (alec)
     MySQL:
 	ALTER TABLE `users` CHANGE `gguin` `gguin` INT(11) DEFAULT '0';
     PostgreSQL:
 	UPDATE users SET gguin=0 WHERE gguin IS NULL;
 	ALTER TABLE users UPDATE gguin SET DEFAULT 0;
 	ALTER TABLE users UPDATE gguin SET NOT NULL;
-  - w genfake.php dodane generowanie przyk³. op³at sta³ych (alec)
-  - naliczanie kwartalne taryf i op³at sta³ych, przy okazji ma³e 
-    usystematyzowanie w kolumnie period (naliczanie: 0-tygodniowe, 
-    1-miesiêczne, 2-kwartalne, 3-roczne) (alec)
+  - in genfake.php added example payments generation (alec)
+  - tariff and payments quarterly accounting, small systematization in 
+    period column (accounting: 0-weekly, 1-monthly, 2-quarterly, 
+    3-yearly) (alec)
 	UPDATE assignments SET period = 4 WHERE period = 1;
 	UPDATE assignments SET period = 1 WHERE period = 0;
 	UPDATE assignments SET period = 0 WHERE period = 4;
@@ -561,61 +561,49 @@ wersja 1.3.0 Apophis (18/02/2004):
 	UPDATE payments SET period = 1 WHERE period = 0;
 	UPDATE payments SET period = 0 WHERE period = 4;
 	UPDATE payments SET period = 3 WHERE period = 2;
-  - lista sieci domy¶lnie sortowana jest po nazwie (alec)
-  - lista urz±dzeñ do pod³±czenia jest sortowana po nazwie (alec)
-  - naprawiona nawigacja na li¶cie faktur - BTS#0000104 (alec)
-  - zmiany w reloadzie demona: z tabeli 'timestamps' odczytywany jest
-    czas i porównywany z czasem z poprzedniego prze³adowania, wpis 
-    '_force' nie jest usuwany, wiêc nie ma problemów z uruchamianiem
-    kilku demonów równocze¶nie (lexx/alec)
-  - aktualizacja ethercodes.txt (alec)
-  - BTS#0000109: poprawione b³êdne dzia³anie funkcji loadavg() i hostname()
-    na systemach BSD w Sysinfo.class.php (sfor/alec)
-  - teraz w MGC mo¿emy zdefiniowaæ sekcje która bêdzie wywo³ywaæ inne
-    podsekcje - dla przyk³adu - mamy 5 sekcji dotycz±cych dns (dns1... dns5) -
-    tworzymy dla nich co¶ takiego:
+  - default networklist sorting by name (alec)
+  - list of devices for connection is sorted by name (alec)
+  - fixed navigation on invoicelist - BTS#0000104 (alec)
+  - changes in daemon reload method: from 'timestamps' table readed is
+    time and compared with time from previous reload, '_force' record 
+    isn't deleted, so there are no problems with many daemons (lexx/alec)
+  - ethercodes.txt up-to-date (alec)
+  - BTS#0000109: fixes of bugs on BSD systems in loadavg() and hostname() 
+    from Sysinfo.class.php (sfor/alec)
+  - now some MGC section can have 'instances' that he calls other subsections
+    - for example - if we have 5 sections related to the dns (dns1... dns5) -
+    we can build sth like that:
 
     [mgc:dns]
     instances = dns1 dns2 dns3 dns4 dns5
 
-    i teraz je¿eli mo¿emy wywo³aæ:
+    and now we do run of lms-mgc like that:   lms-mgc -i dns
+    not like:    lms-mgc -i "dns1 dns2 dns3 dns4 dns5"
 
-    lms-mgc -i dns
+    If section have 'instances' variable, that variable will be respected,
+    and others settings in this section ignored (lukasz)
+  - now you can set time of the finance operations (alec)
+  - fixed e-mails formatting, removed empty lines (lexx)
 
-    zamiast:
+version 1.1.8 Cronos (01/02/2004):
 
-    lms-mgc -i "dns1 dns2 dns3 dns4 dns5"
-
-    Je¿eli sekcja jaka¶ ma pole 'instances', to tylko to pole zostanie uznane,
-    a pozosta³e ustawienia sekcji zostan± zignorowane (lukasz)
-  - dodana moliwo¶æ ustawienia daty operacji finansowej (alec)
-  - poprawione formatowanie maili, wyrzucone zbêdne puste linie (lexx)
-          
-wersja 1.1.8 Cronos (01/02/2004):
-
-  - dodane pole message do tabeli users
-  - dodane pole warnigns do tabeli nodes
-  - netdevmap korzysta z obrazków w formacie PNG (brak obs³ugi GIF na 
-    niektórych systemach) (Lexx)
-  - poprawione zliczanie rekordów na pustych listach, BTS#90 (alec)
-  - dodane sortowanie listy userów wg wysoko¶ci abonamentu (alec)
-  - poprawione sortowanie listy komputerów wg w³a¶ciciela (alec)
-  - dodane sortowanie listy urz±dzeñ sieciowych wg ilo¶ci zajêtych portów (alec)
-  - dodane 'wy¶wietl ponownie formularz' w nodeadd (alec)
-  - poprawione b³êdne ustawianie statusu podczas dodawania komputera (alec)
-  - porz±dki w dokumentacji - wyrzucone obrazki oraz usuniête commit logi,
-    wiêc niech nie dziwi mniejsza objêto¶æ tarballa w porównaniu z
-    1.1.7 (alec)
-  - dodane sprawdzenie czy wpisano liczbê w polu szybkiego wyszukiwania
-    komputera i u¿ytkownika, co zapobiega b³êdowi w zapytaniu do bazy (alec)
-  - lms-notify-sms nied³ugo bêdzie mo¿na wysy³aæ smsy z upomnieniami o
-    zaleg³o¶ciach. Wymagany pakiet gnokii (hunter)
-  - dodane uprawnienie 'dostêp do korespondencji seryjnej' (alec)
-  - urz±dzeniom sieciowym mo¿na przypisywaæ adresy IP oraz MAC (lexx/alec)
-  - w genfake.php poprawione czyszczenie bazy oraz dodane generowanie
-    danych osprzêtu i po³±czeñ sieciowych (alec)
-  - poprawka w GetMACs() zgodnie z BTS#0000092 (alec)    
-  - mo¿liwo¶æ podania terminu i rodzaju p³atno¶ci przy pisaniu faktury z palca
+  - netdevmap uses PNG images (some systems don't support GIF format) (Lexx) 
+  - fixed records accounting on empty lists, BTS#90 (alec)
+  - added userlist sorting by sum of tariffs (alec)
+  - fixed nodelist sorting by owner (alec)
+  - added netdevlist sorting by number of taken ports (alec)
+  - added checkbox 'print form again' in nodeadd (alec)
+  - fixed errornous status setting during adding of nodes (alec)
+  - documentation cleanup - pictures & commit logs removed,
+    so don't be suprise tarball is smaller than 1.1.7 (alec)
+  - added number checking in quick node and user seeking input box (alec)
+  - lms-notify-sms for sms sending. Required gnokii package (hunter)
+  - added 'mailing access' right (alec)
+  - added IP and MAC address attribute for net devices (lexx/alec)
+  - in genfake.php fixed cleanup of database and added net devices and netlinks
+    data generation (alec)
+  - BTS#0000092 fix in GetMACs() (alec)    
+  - added deadline and payment type in invoices
     (lukasz):
     MySQL:
     	ALTER TABLE `invoices` ADD `paytype` VARCHAR(255) DEFAULT '' NOT NULL AFTER `paytime`;
@@ -624,7 +612,7 @@ wersja 1.1.8 Cronos (01/02/2004):
 	UPDATE invoices SET paytype='';
 	ALTER TABLE invoices ALTER COLUMN paytype ADD NOT NULL; 
 	ALTER TABLE invoices ALTER COLUMN paytype SET DEFAULT '';
-  - 'op³aty sta³e' (alec)
+  - 'permanent payments' (alec)
     MySQL:
     CREATE TABLE payments (
 	id INT(11) NOT NULL auto_increment,
@@ -650,20 +638,19 @@ wersja 1.1.8 Cronos (01/02/2004):
 	description text,
 	PRIMARY KEY (id)
     );
-  - poprawiona weryfikacja danych w taryfach: warto¶æ taryfy mo¿e byæ ujemna,
-    warto¶æ podatku nie mo¿e byæ ujemna (alec)
-  - na li¶cie u¿ytkowników, zamiast ¿arówki pojawia siê wykrzyknik, je¶li
-    u¿ytkownik nie posiada ¿adnych komputerów (alec)
-  - naprawione b³êdne przeliczanie adresów sieci w lms-makeiptables 
-    i lms-makeipchains wynikaj±ce ze zmiany formatu pola w bazie (alec)
-  - w opcji 'networks' dla skryptów perlowych nazwy sieci mo¿na podawaæ
-    ma³ymi literami - istotne dla bazy PostgreSQL, która ma zapytania
-    case-sensitive (alec)
-  - poprawiony interfejs 'mailingu', dodane sprawdzanie poprawno¶ci e-maila
-    oraz nieuwzglêdnianie u¿ytkowników usuniêtych (alec)
-  - w oknie 'Informacje o LMS' dodana wersja serwera bazy danych (alec)
-  - kosmetyka bazy zgodnie z BTS#000103, czyli poprawki zapobiegaj±ce b³êdom
-    podczas odtwarzania kopii bazy na nowszych wersjach postgresa (alec)
+  - fixed data werification in tariffs: tariff value can be negative,
+    tax value can not (alec)
+  - on users list, exclamation mark instead of light bulb sign if user
+    has no nodes (alec)
+  - fixed network address translation in lms-makeiptables and
+    lms-makeipchains resulting from address data type change (alec)
+  - in perl-script's option 'networks' networks names can be lower case
+    - important for PostgreSQL database, where queries are case-sensitive (alec)
+  - new 'mailing' interface, added e-mail checking and not taking deleted
+    users into account (alec)
+  - in window 'LMS Informations' added DBMS version (alec)
+  - database cosmetics consistent with BTS#000103, or else bug fixes 
+    while backup restoring on later versions of postgres (alec)
     MySQL:
 	ALTER TABLE `admins` CHANGE `lastlogindate` `lastlogindate` INT(11) DEFAULT '0';
 	ALTER TABLE `admins` CHANGE `failedlogindate` `failedlogindate` INT(11) DEFAULT '0';
@@ -675,12 +662,11 @@ wersja 1.1.8 Cronos (01/02/2004):
 	ALTER TABLE admins UPDATE failedlogindate SET DEFAULT 0;
 	ALTER TABLE admins UPDATE failedlogindate SET NOT NULL;
 	
-wersja 1.1.7 Hathor (14/12/2003):
+version 1.1.7 Hathor (14/12/2003):
 
-  - adresy sieci w bazie trzymamy teraz jako bigint, do przeliczeñ
-    u¿ywamy funkcji INET_NTOA() i INET_ATON(), zwi±zane z tym
-    podniesienie wymagañ odno¶nie wersji bazy danych (Mysql 3.23.xx,
-    PostgreSQL 7.3.x) i nastêpuj±ce zmiany w bazie (alec):
+  - networks address now are type of bigint, for conversions are used
+    INET_NTOA() and INET_ATON() functions, so required higher versions of
+    database (Mysql 3.23.xx, PostgreSQL 7.3.x) (alec):
     MySQL:
 	UPDATE networks SET address=INET_ATON(address);
         ALTER TABLE networks CHANGE address address INT(16) UNSIGNED NOT NULL;
@@ -707,18 +693,15 @@ wersja 1.1.7 Hathor (14/12/2003):
         ALTER TABLE networks DROP COLUMN address;
         ALTER TABLE networks RENAME COLUMN ipaddr to address;
         ALTER TABLE networks ALTER COLUMN address set NOT NULL;
-  
-  - przeliczanie adresów IP int<->char przerzucone z PHP na
-    bazê danych (alec)
-  - poprawione contrib/customer do nowej konstrukcji LMS() oraz 'initLMS.php'
-    w contrib - przyk³adowy plik który pokazuje jak siê inicjuje klasê LMS'a
-    ¿eby wszystko ³adnie chodzi³o (lukasz)
-  - poprawiony byk w lms-payments, polegaj±cy na zwa³ce przy generowaniu
-    faktur je¿eli pole pesel'a by³o puste (MaReK/lukasz)
-  - dodane sortowanie po ownerid na li¶cie komputerów (alec)
-  - naprawione kapitalizowanie polskich znaków diakrytycznych w
-    useredit - dok³adniej, przerzucone z PHP na bazê danych (alec)
-  - zmiana typu kolumn ptrzechowuj±cych warto¶ci pieniê¿ne (hunter/alec/lukasz)
+
+  - IP address conversion int<->char taken to database, not PHP (alec)
+  - fixed contrib/customer for new construction LMS() and 'initLMS.php'
+    in contrib - example file explains LMS's class initialization (lukasz)
+  - fixed bug in lms-payments, while invoices generation, when pesel field
+    was empty (MaReK/lukasz)
+  - added ownerid sorting on nodes list (alec)
+  - taken to database polish special characters capitalization (alec)
+  - change of monetary columns data type (hunter/alec/lukasz)
     MySQL:
 	ALTER TABLE cash MODIFY value DECIMAL(9,2);
 	ALTER TABLE tariffs MODIFY value DECIMAL(9,2);
@@ -763,55 +746,52 @@ wersja 1.1.7 Hathor (14/12/2003):
 	ALTER TABLE invoicecontents RENAME taxv TO taxvalue;
 	ALTER TABLE invoicecontents DROP COLUMN count;
 	ALTER TABLE invoicecontents RENAME cnt TO count;	
-  - dodana mo¿liwo¶æ tworzenia faktur poprzez PHP-UI (lukasz)
-  - ujednolicony reload dla almsd i ui, teraz almsd prze³adowuje siê przy 
-    standardowych ustawieniach ui (nie wymagana tabela reload) (Lexx)
+  - added possibility to invoicing in PHP-UI (lukasz)
+  - standardized reload for almsd and ui, now almsd reloads with standard 
+    ui settings (reload table isn't needed) (Lexx)
 
-wersja 1.1.6 Seth (08/12/2003):
+version 1.1.6 Seth (08/12/2003):
 
-  - literówka: http://bts.rulez.pl/bug_view_page.php?bug_id=0000088
+  - misprint: http://bts.rulez.pl/bug_view_page.php?bug_id=0000088
     (chilek/lukasz)
-  - poprawiony modu³ upgrade:
+  - fixed upgrade module:
     http://bts.rulez.pl/bug_view_page.php?bug_id=0000085 (chilek/lukasz)
-  - poprawione dodawanie taryf (alec)
-  - byk w skrypcie lms-makearp
+  - fixed tariff adding (alec)
+  - bugfix in lms-makearp
     http://bts.rulez.pl/bug_view_page.php?bug_id=0000086 (chilek/lukasz)
-  - opis taryfy mo¿e byæ NULL (alec)
+  - tariff description can be NULL (alec)
     MySQL:
     	ALTER TABLE tariffs CHANGE description description text;
     PostgreSQL:
     	ALTER TABLE tariffs ALTER COLUMN description DROP NOT NULL;  
 
-wersja 1.1.5 Amaonet (04/12/2003):
+version 1.1.5 Amaonet (04/12/2003):
 
-  - dodane opcje do ustawienie w³a¶ciciela oraz praw dostêpu skryptów
-    tworzonych przez lms-traffic-* (lukasz)
-  - contrib/customer przystosowane do nowego API baz danych
-  - dodana mo¿liwo¶æ ³±czenia/od³±czania urz±dzeñ sieciowych i komputerów 
-    do urz±dzenia podczas jego edycji (alec)
-  - poprawka w funkcji ScanNodes() zapobiegaj±ca b³êdom w wypadku braku
-    programu nbtscan w systemie (alec)
-  - poprawione wyszukiwanie komputerów po adresie IP, mo¿liwe jest wyszukiwanie
-    tekstowe po fragmencie adresu (alec)
-  - na wykresach statystyk dostêpne s± dane komputerów usuniêtych z bazy oraz
-    dodano opcja usuwania statystyk tych komputerów podczas kompaktowania 
-    bazy (alec)
-  - dodana mo¿liwo¶æ wymiany urz±dzeñ (lexx)
-  - poprawione bugi z rozpoznawanie adresów prywatnych w skryptach oraz
-    literówka w lms-iptables (lukasz/wojboj)
-  - lms-notify przystosowane do nowych finansów (lukasz)
-  - w katalogu /daemon pojawi³a siê wersja alfa programu do generowania
-    konfigów i prze³adowywania us³ug (alec)
-  - w index.php dodano now± funkcjê do parsowania pliku konfiguracyjnego, 
-    w pe³ni kompatybilna z daemonem w c i czê¶ciowo z lms-mgc (alec)
-  - do lms.pgsql dodane sql'owe funkcje inet_ntoa() i inet_aton() dla
-    przysz³ych zastosowañ (alec)
-  - poprawione b³êdne zliczanie userów w panelu powitalnym (alec)
-  - poprawione warto¶ci domy¶lne formularza dodawania userów (alec)
-  - usuniêcie usera na li¶cie nie powoduje ju¿ przej¶cia do userinfo (alec)
-  - w sumie fakturki mo¿na uznaæ za skoñczone - teraz siê bardzo ³adnie
-    wystawiaj± i loguj± i bardzo ³adnie siê drukuj±, co oczywi¶cie wymaga
-    poprawek w bazie danych (lukasz):
+  - added options for owner and permissions for script files maked
+    with lms-traffic-* (lukasz)
+  - contrib/customer adapted for new database API
+  - added possibility of netdevices and nodes connection/diconnection
+    with other netdevice while editing them (alec)
+  - correction in function ScanNodes() preventing errors while nbtscan
+    programm is missing (alec)
+  - node search by address fixed, text searching by part of address added (alec)
+  - added deleted nodes stats on stat bars and added option for deleting
+    this in database compacting process (alec) 
+  - added possibility of netdevices exchange (lexx)
+  - fixed bugs on private address recognition in scripts and misprint in
+    lms-iptables (lukasz/wojboj)
+  - lms-notify adjusted for new finances (lukasz)
+  - in /daemon directory has become alfa version of programm for config
+    generation and services reloading (alec)
+  - in index.php new config file parsing function, fully compatible 
+    with daemon and partly with lms-mgc (alec)
+  - in lms.pgsql added SQL functions inet_ntoa() i inet_aton() for
+    future applications (alec)
+  - fixed errornous users accounting in welcome screen (alec)
+  - fixed default values in useradd form (alec)
+  - deleting of user on the list not causing userinfo to expose (alec)
+  - invoices are done - now are realy pretty and that require database
+    change (lukasz):
     MySQL:
 	ALTER TABLE `tariffs` ADD `taxvalue` INT DEFAULT '0' NOT NULL AFTER `value`;
 	ALTER TABLE `tariffs` ADD `sww` VARCHAR(255) DEFAULT '' AFTER `taxvalue`;
@@ -887,15 +867,8 @@ wersja 1.1.5 Amaonet (04/12/2003):
 	    description varchar(255) NOT NULL,
 	    tariffid integer NOT NULL
 	);	 
-    
-    BTW. to jeszcze nie koniec, pozostaje mi dopisanie mo¿liwo¶ci rêcznego
-    wypisania faktury za pojedyñcz± us³ugê/zdarzenie. Za kilka godzin powinno
-    byæ i to dostêpne. Faktury s± wystawiane przez lms-payments, o ile podczas
-    dodawania 'assignmentu' do usera zaznaczy³o siê pole 'faktura'. Docelowo
-    bêdzie mo¿na tworzyæ pojedyñcze faktury, ale to najwcze¶niej jutro.
-  - z racji zmienionego kawa³ek czasu temu systemu finansów lms-mgc nie ma ju¿
-    %TID i %TVAL (lukasz)
-  - dodany PESEL do rekordu u¿ytkownika, upgrade bazy (lukasz):
+  - removed %TID and %TVAL from lms-mgc (lukasz)
+  - added PESEL column in user record, database upgrade (lukasz):
     MySQL:
 	ALTER TABLE `users` ADD `pesel` VARCHAR(11) DEFAULT '' AFTER `nip`;
 	ALTER TABLE `invoices` ADD `pesel` VARCHAR(11) DEFAULT '' AFTER `nip`;
@@ -905,10 +878,9 @@ wersja 1.1.5 Amaonet (04/12/2003):
 	ALTER TABLE invoices ADD pesel varchar(11);
 	ALTER TABLE invoices ALTER pesel SET DEFAULT NULL;
 
-    Je¿eli u¿ytkownik nie posiada NIPu, to wtedy na fakturze umieszczany jest
-    PESEL.
-  - do faktur zosta³o dodane miejsce wystawienia (lukasz);
-  - zamiana nazewctwa w tabelach z 'sww' na 'pkwiu' (lukasz);
+    If user has no NIP, then to invoice goes PESEL.
+  - for invoices added place of putting out (lukasz);
+  - terminology change: 'sww' to 'pkwiu' (lukasz);
     MySQL:
 	ALTER TABLE `tariffs` CHANGE `sww` `pkwiu` VARCHAR( 255 );
 	ALTER TABLE `invoicecontents` CHANGE `sww` `pkwiu` VARCHAR( 255 );
@@ -916,27 +888,25 @@ wersja 1.1.5 Amaonet (04/12/2003):
 	ALTER TABLE tariffs RENAME sww TO pkwiu;
 	ALTER TABLE invoicecontents RENAME sww TO pkwiu;  
 
-wersja 1.1.4 Tanith (03/10/2003):
+version 1.1.4 Tanith (03/10/2003):
   
-  - lista taryf zlicza³a tak¿e u¿ytkowników usuniêtych (lukasz)
-  - do listy sieci dodane nowe pole: interfejs - bardzo przydatne przy
-    budowaniu skryptów iptables/ipchains/htb gdy mamy sieci adresowe na
-    ró¿nych interfejsach, dostêpne w lms-mgc jako %IFACE, %DIFACE i %NIFACE,
-    co jak zwykle niesie upgrade formatu bazy (lukasz):
+  - tariff list not accounts deleted users (lukasz)
+  - added new field on network list: interface - very usefull with making
+    iptables/ipchains/htb scripts when we have networks on different 
+    interfaces, in lms-mgc named %IFACE, %DIFACE and %NIFACE,
+    like allways database format upgrade needed (lukasz):
     MySQL:
         ALTER TABLE networks ADD interface VARCHAR(8) AFTER mask;
     PostgreSQL:
     	ALTER TABLE networks ADD interface VARCHAR(8);
-  - usuniêta ma³a literówka powoduj±ca to i¿ driver od MySQL'a nie dostawa³
-    informacji o ho¶cie do bazy danych z lms.ini, a co za tym idzie zawsze
-    próbowa³ siê ³±czyæ z localhost'em (lukasz)    
-  - reload.php uzywa³ sqlTSfmt() który jest obsolete (lexx/lukasz)
-  - nowo dodawany komputer domy¶lnie nie mia³ dostêpu (lukasz)
-  - ilo¶æ sieci w podsumowaniu by³a zwiêkszana o 2 (lukasz)
-  - kosmetyka kodu (s/this->ADB->/this->DB->/g i nie tylko) (lukasz)
-  - dodany (przeniesiony z contrib) modu³ traffic-stats i bin/lms-traffic, 
-    do korzystania z nich wymagane jest utworzenie tabeli 'stats' w bazie 
-    danych (alec)
+  - removed misprint causing MySQL's driver looses host informations from
+    lms.ini then allways try to connect with localhost (lukasz)
+  - reload.php used obsolete sqlTSfmt() (lexx/lukasz)
+  - newly added node have access by default (lukasz)
+  - amount of networks on summary was incremented by 2 (lukasz)
+  - source code cosmetics (s/this->ADB->/this->DB->/g and others) (lukasz)
+  - added traffic-stats module (taken from contrib) and bin/lms-traffic, 
+    required table 'stats' creation for them: (alec)
     MySQL:
 	DROP TABLE IF EXISTS stats;
 	CREATE TABLE stats (
@@ -955,12 +925,11 @@ wersja 1.1.4 Tanith (03/10/2003):
 	    download integer DEFAULT 0,
 	    PRIMARY KEY (nodeid, dt)
 	);    
-  - nowa dokumentacja (sgml/html/txt) (alec)
-  - poprawiony bug pozwalaj±cy na zapisanie mac adresu ze znakiem '-' podczas
-    edycji danych komputera - teraz podobnie jak podczas dodawania - zamienia
-    wszystkie '-' na ':' (lukasz)
-  - ma³a zmiana filozofii tablicy tariffs - 'NULL' to nie ustawiony limit, '0'
-    to brak limitu - dlaczego? dowiecie siê lada dzieñ ;-) (lukasz):
+  - new documentation (sgml/html/txt) (alec)
+  - bugfix allowing mac address with '-' char writing while node edition - now, 
+    like while adding - changing all '-' for ':' (lukasz)
+  - small change of philosophy in tariffs table - 'NULL' is not set limit, '0'
+    is a limit lack - why? you learn at eny day ;-) (lukasz):
     MySQL:
 	ALTER TABLE tariffs CHANGE uprate uprate INT(11), CHANGE downrate downrate INT(11); 
     PostgreSQL:
@@ -968,12 +937,12 @@ wersja 1.1.4 Tanith (03/10/2003):
 	ALTER TABLE tariffs ALTER uprate DROP DEFAULT;
 	ALTER TABLE tariffs ALTER downrate DROP NOT NULL;
 	ALTER TABLE tariffs ALTER downrate DROP DEFAULT;
-  - 'ma³a' rewolucja w finansach, a co za tym idzie 'du¿y' upgrade bazy, ale
-    mam nadziejê ¿e sobie poradzicie (lukasz):
+  - 'small' rewolution in finances, and 'big' database upgrade, but i think
+    you cope with this (lukasz):
     
-    0) Wykonaj BEZWZGLÊDNIE backup bazy danych.
+    0) COMPLETELY do database backup.
     
-    1) Stwórz tabelê 'assignments':
+    1) Create table 'assignments':
     MySQL:
     DROP TABLE IF EXISTS assignments;
     CREATE TABLE assignments (
@@ -999,29 +968,26 @@ wersja 1.1.4 Tanith (03/10/2003):
 	at integer default 0 NOT NULL,
 	PRIMARY KEY (id)
     );
-    2) Uruchom modu³ 'upgrade01' - czyli po zalogowaniu sie do LMS'a
-    wpiszcie w url na koñcu '?m=upgrade01', np.
-    'http://serwer.pl/lms/?m=upgrade01'. UWAGA! Modu³ ten nale¿y uruchomiæ
-    TYLKO RAZ! Jak go uruchomisz wiêcej ni¿ raz, popsujesz sobie ca³± bazê
-    danych.
+    2) Run 'upgrade01' module - that means, after login write in url
+    at the end '?m=upgrade01', i.e. 'http://serwer.pl/lms/?m=upgrade01'. 
+    CAUTION! Run that module ONLY one time. If you run them couple of times,
+    you destroy your database.
 
-    3) Teraz mo¿na usun±æ nieu¿ywane pola z bazy danych:
+    3) Now cleanup of useless database columns:
     MySQL:
 	ALTER TABLE users DROP tariff, DROP payday;
     PostgreSQL:
 	ALTER TABLE users DROP tariff; ALTER TABLE users DROP payday;	
 
-    4) Dopiszcie do crona lms-payments tak aby by³ uruchamiany codziennie o
-       godzinie 0:00.
+    4) Write in cron lms-payments for runing everyday at 0:00.
 
     5) Voila.
 
-  - nowy skrypt w bin: lms-traffic-logiptables, loguje transfery do loga
-    akceptowalnego przez lms-traffic alec'a, wiêcej info w sample/lms.ini
-    (lukasz)
-  - optymalizacja kodu w wielu miejscach (lukasz)
-  - ewidencja sprzêtu sieciowego, narazie brzydka i g³upia ale dzia³a,
-    oczywi¶cie potrzebna nowa tabela (lexx)
+  - new script in bin: lms-traffic-logiptables, logs transfers to log
+    accepted by alec's lms-traffic, more info in sample/lms.ini (lukasz)
+  - code optymalization at many places (lukasz)
+  - network devices list, so far stupid and ugly, but working
+    of course needed new table (lexx)
     MySQL:
     DROP TABLE IF EXISTS netdevices;
     CREATE TABLE netdevices (
@@ -1050,17 +1016,16 @@ wersja 1.1.4 Tanith (03/10/2003):
         ports integer default NULL,
         PRIMARY KEY (id)
     );
-  - Ewidencja urz±dzeñ sieciowych - dodano pole lokalizacja, oczywi¶cie
-    upgrade bazy (Lexx)
+  - netdevices - added 'location' column (lexx)
     MySql:
 	ALTER TABLE `netdevices` ADD `location` VARCHAR( 255 ) AFTER `name` ;
     PosgreSQL:
 	ALTER TABLE netdevices ADD COLUMN location varchar(255);
-  - do modu³u 'Statystyki' dodano mo¿liwo¶æ kompaktowania bazy danych (alec)
-  - poprawiony http://bts.rulez.pl/bug_view_page.php?bug_id=0000072 (lukasz)
-  - od teraz wpisy w tablicy arp '00:00:00:00:00:00' nie s± ignorowane, za to
-    wpisy statyczne (0x6/PERM) s± (lukasz)
-  - dalej netdev, tym razem psujemy po³±czenia (Lexx)
+  - for 'Stats' module added database compacting possibility (alec)
+  - fixed http://bts.rulez.pl/bug_view_page.php?bug_id=0000072 (lukasz)
+  - at present arp table records '00:00:00:00:00:00' are not ignored, but
+    static records (0x6/PERM) are (lukasz)
+  - still netdev, now we break down the links (Lexx)
     MySql:
 	CREATE TABLE netlinks (
 	  id int(11) NOT NULL auto_increment,
@@ -1076,7 +1041,7 @@ wersja 1.1.4 Tanith (03/10/2003):
 	  dst integer default 0 NOT NULL,
 	  PRIMARY KEY  (id)
 	);
-  - komputery mog± siê l±czyæ do urz±dzeñ sieciowych (Lexx)
+  - nodes can be linked to netdevices (Lexx)
     MySql:
 	ALTER TABLE `nodes` ADD `netdev` INT(11) NOT NULL default '0' AFTER `modid` ;
     PosgreSQL:
@@ -1084,29 +1049,26 @@ wersja 1.1.4 Tanith (03/10/2003):
 	ALTER TABLE nodes ALTER COLUMN netdev SET default 0;
 	UPDATE nodes SET netdev = 0;
 	ALTER TABLE nodes ALTER COLUMN netdev SET NOT NULL;  	
-  - update modu³u 'nodesearch' wynikaj±cy ze zmiany sposobu zapisu
-    adresów IP w bazie danych i inne drobne poprawki (alec)
-  - poprawione b³êdy w GetTariff() wystêpuj±ce na postgresie (alec)
-  - b³êdy teraz pokazuj± siê jako popupy (lukasz)
-  - nowy skrypt - bin/lms-traffic-htbiptlimits - do limitowania pasma (lukasz)
-  - nowe pliki doc/UPGRADE.mysql, doc/UPGRADE.pgsql do upgrade'u bazy z wersji
-    1.0 do 1.1 (alec)
-  - lms-payments nie zapisuje nic do tabeli cash je¿eli warto¶æ obci±¿enia
-    jest zerowa (lukasz)
-  - zmiany w dokumentacji (lukasz):
-    - wyrzucenie INSTALL.*
-    - zrobienie README i README.html - podrêcznika u¿yszkodnika
-    - posprz±tanie i inne
-  - poprawiona (mam nadziejê) obs³uga b³êdów - teraz to s± tooltipy (lukasz)
+  - update 'nodesearch' module (alec)
+  - bugfixes in GetTariff() on postgres (alec)
+  - errors are now popups (lukasz)
+  - new script - bin/lms-traffic-htbiptlimits - for traffic limiting (lukasz)
+  - new files doc/UPGRADE.mysql, doc/UPGRADE.pgsql for database upgrade
+    since 1.0 to 1.1 version (alec)
+  - lms-payments not writing to table 'cash' if load value is zero (lukasz)
+  - changes in docs (lukasz):
+    - removed INSTALL.*
+    - new README and README.html - user manual
+    - cleanup
+  - fixed (I hope so) error handling - now we have tooltips (lukasz)
 	
-wersja 1.1.3 (29/08/2003):
+version 1.1.3 (29/08/2003):
 
-  - zmieniona filozofia u¿ytkowników - teraz usuniêcie u¿ytkownika tak
-    naprawdê go nie usuwa, a jedynie ukrywa - tj. mo¿na dobraæ siê do
-    u¿ytkownika po jego ID, mo¿na go wyszukaæ, ale nie mo¿na mu dodaæ
-    komputerów i nie widaæ go na li¶cie u¿ytkowników, natomiast w informacji o
-    nim jest informacja o tym ¿e u¿ytkownik jest usuniêty, co oczywi¶cie
-    wymaga modyfikacji bazy danych: (lukasz)
+  - changed users philosophy - now user deletion not delete them really,
+    but only hidding and is possible get them by his ID, hi can by searched,
+    but adding nodes is not possible, on userlist hi is invisible, however
+    in his userinfo is note that hi is deleted. Of course database
+    modification needed: (lukasz)
     MySQL:
 	ALTER TABLE users ADD deleted BOOL DEFAULT '0' NOT NULL;
     PostgreSQL:
@@ -1114,17 +1076,14 @@ wersja 1.1.3 (29/08/2003):
 	UPDATE users SET deleted=0;
 	ALTER TABLE users ALTER COLUMN deleted SET DEFAULT 0;
 	ALTER TABLE users ALTER COLUMN deleted SET NOT NULL;
-    (dla tych co zd±¿yli zrobiæ to na ENUM
+    (if you do this on ENUM
     MySQL:
  	ALTER TABLE users CHANGE deleted deleted CHAR(1) DEFAULT 'N' NOT NULL;
 	UPDATE users SET deleted=1 WHERE deleted='Y';
 	UPDATE users SET deleted=0 WHERE deleted='N';
 	ALTER TABLE users CHANGE deleted deleted BOOL DEFAULT '0' NOT NULL;
-    PostgreSQL: metoda taka sama jak z polem access w tabeli nodes, patrz ni¿ej;
-    )
-  - zmienione 'op³ata ab' na bardziej intuicyjne 'obci±¿enie' (lukasz)
-  - zmiana formatu zapisu adresu IP w bazie danych, wymagane upgrejdy bazy
-    (lukasz):
+    PostgreSQL: the same method like with 'access' column in table 'nodes')
+  - IP address format change, database upgrade: (lukasz):
     MySQL:
         UPDATE nodes SET ipaddr=INET_ATON(ipaddr);
 	ALTER TABLE nodes CHANGE ipaddr ipaddr INT(16) UNSIGNED NOT NULL;
@@ -1139,13 +1098,13 @@ wersja 1.1.3 (29/08/2003):
 	ALTER TABLE nodes RENAME COLUMN ipaddr2 to ipaddr;
 	ALTER TABLE nodes ALTER COLUMN ipaddr set NOT NULL;
 
-  - zmiana formatu zapisu czy komputer ma dostêp czy te¿ nie - teraz nie ma
-    jakiego¶ g³upiego chara ale jest boolean (znaczy siê stary MySQL udaje ¿e
-    to boolean i daje tinyint), a co za tym idzie kolejny upgrade (lukasz):
+  - change of recording method of nodes access - now is not a stupid char, but
+    boolean (that means MySQL try to imitate boolean on tinyint), and
+    another upgrade (lukasz):
 	UPDATE nodes SET access='1' WHERE access='Y';
 	UPDATE nodes SET access='0' WHERE access='N';
 	ALTER TABLE nodes CHANGE access access BOOL NOT NULL DEFAULT '1';
-    a w PostgreSQL pola s± typu int2 :
+    and in PostgreSQL columns are type of int2:
 	UPDATE nodes SET access= CASE access WHEN 'Y' THEN '1' ELSE '0' END;
 	ALTER TABLE nodes ADD access2 int2; 
 	UPDATE nodes SET access2 = access::text::int2; 
@@ -1153,7 +1112,7 @@ wersja 1.1.3 (29/08/2003):
 	ALTER TABLE nodes RENAME COLUMN access2 TO access;
 	ALTER TABLE nodes ALTER COLUMN access SET NOT NULL;
 	ALTER TABLE nodes ALTER COLUMN access SET DEFAULT 0;
-    dodatkowe operacje poprawiaj±ce bazê (zalecane):
+    additional database improving operations (zalecane):
     MySQL:
 	ALTER TABLE nodes CHANGE ownerid ownerid INT(11) DEFAULT '0' NOT NULL;
 	ALTER TABLE nodes CHANGE mac mac VARCHAR(20) NOT NULL;
@@ -1161,105 +1120,91 @@ wersja 1.1.3 (29/08/2003):
 	ALTER TABLE nodes ALTER COLUMN ownerid SET DEFAULT '0'; 
 	ALTER TABLE nodes ALTER COLUMN mac SET NOT NULL;
 	
-  - zoptymalizowany kod do wy¶wietlania du¿ych sieci (lukasz)
-  - podawanie dnia naliczania op³aty podczas dodawania usera nic dawa³o
-    (lukasz)
-  - w³±czone z powrotem transakcje przy ³adowaniu backupu bazy danych
-    (lukasz)
+  - source optimized for big networks printing (lukasz)
+  - transactions while database backup restoring again enabled (lukasz)
   
-wersja 1.1.2 (24/08/2003):
+version 1.1.2 (24/08/2003):
 
-  - mo¿liwo¶æ wystawiania faktur (Lexx)
-  - Dodatkowa opcja %date_month_name w szablonach mailingu, rozwi±zywana do
-    nazwy aktualnego miesi±ca (w/g LC_NUMERIC? hunter)
-  - pewne zmiany w dokumentacji dot. postgresa, aktualizacja lms.pgsql (alec)
-  - zrobione po ludzku wykrywanie pustej tabeli admins - w tym momencie LMS
-    przy pustej tablicy bêdzie dozwala³ dostêp do modu³u adminadd (lukasz)
-  - lms-mgc nie uwzglêdnia adresu sieci i broadcasta przy generowaniu regu³
-    (lukasz)
-  - podczas wyboru MAC'a ignorowane s± wpisy '00:00:00:00:00:00' i
-    'FF:FF:FF:FF:FF:FF' (lukasz)
-  - nowa zabawka w contrib/ - bandlogger+htblimiter - w oparciu o HTB oraz
+  - new substitution (%date_month_name) in mail templates, resolves into
+    current month name, based on locales.
+  - added possibility of custom invoicing (Lexx)
+  - additional option %date_month_name in mailingu templates, solved for
+    actual month name (acc. LC_NUMERIC? hunter)
+  - some changes in docs concerning postgres, lms.pgsql upgrade (alec)
+  - humanization of empty admins table detection - now, when that table is 
+    empty LMS allows adminadd module access (lukasz)
+  - in lms-mgc network address and broadcast are ignored while rules
+    generation (lukasz)
+  - while MAC's selection entries '00:00:00:00:00:00' and 'FF:FF:FF:FF:FF:FF' 
+    are ignored (lukasz)
+  - new toy in /contrib - bandlogger+htblimiter - supporting HTB and 
     iptables (lukasz)
-  - i stalo siê - LMS nie wymaga ju¿ ADOdb - ma w³asne biblioteki do obs³ugi
-    mysql'a i postgresa (lukasz)
-  - zamienione wszystkie '<?' (krótkie tagi PHP) na '<?php' - w sumie tak
-    powinno byæ od pocz±tku, ale kto by na to wpad³, co nie? (lukasz)
+  - is done - ADOdb is not required - LMS have own libs for mysql and
+    postgres databases (lukasz)
+  - changed all '<?' (short PHP tags) to '<?php' - that should be at the
+    beginning, but who go to fall into that? (lukasz)
 
-wersja 1.1.1 (09/08/2003):
+version 1.1.1 (09/08/2003):
 
-  - mo¿liwo¶æ wydruku osób które s± zad³u¿one (MichalZ)
-  - dodane %TID (id taryfy) i %TVAL (warto¶æ taryfy) do lms-mgc (lukasz)
-  - poprawione problemy ze zmian± kolejno¶ci sortowania na li¶cie osób
-    od³±czonych b±d¼ zad³u¿onych (lukasz)
-  - naprawiony bug z oper± (zamiana exit(0) na die) (lukasz)
-  - wprowadzono mo¿liwo¶æ ustawienia dnia zap³aty, konieczne zmiany w SQL to:
-    MySQL: ALTER TABLE `users` ADD `payday` INT DEFAULT '5' NOT NULL;
-    PostgreSQL: ALTER TABLE users ADD payday integer;
-		ALTER TABLE users ALTER COLUMN payday SET DEFAULT 0;
-		ALTER TABLE users ALTER COLUMN payday SET NOT NULL;
-    gdzie zamiast '5', mo¿emy podaæ domy¶lny dzieñ zap³aty, tj. je¿eli teraz
-    op³aty w Twojej sieci s± naliczane ka¿dego pi±tego dnia miesi±ca, to
-    wtedy spowoduje to przypisanie ka¿demu u¿ytkownikowi takiego dnia
-    p³atno¶ci (lukasz)
-  - w zwi±zku z powy¿sz± innowacj±, nie istnieje lms-eachmonth, a
-    lms-payments, który powinien byæ odpalany z crona codziennie! (lukasz)
-  - cleanup kodu (wywalenie g³ównie ¶mieci i trochê poprawnego kodowania...)
-    (lukasz)
+  - new possibility of indebted users printing (MichalZ)
+  - added %TID (tariff id) and %TVAL (tariff value) in lms-mgc (lukasz)
+  - removed problems with sorting change on indebted or disconnected 
+    users (lukasz)
+  - Opera browser bugfix (change exit(0) to die) (lukasz)
+  - added possibility of payments day setting, needed SQL change:
+    MySQL: 
+	ALTER TABLE `users` ADD `payday` INT DEFAULT '5' NOT NULL;
+    PostgreSQL: 
+	ALTER TABLE users ADD payday integer;
+	ALTER TABLE users ALTER COLUMN payday SET DEFAULT 0;
+	ALTER TABLE users ALTER COLUMN payday SET NOT NULL;
+    where in place of '5', can be write default payments day (lukasz)
+  - related to upper, not exist lms-eachmonth, now is lms-payments, 
+    which must be run everyday with cron! (lukasz)
+  - source cleanup (lukasz)
+  
+version 1.1.0 (23/06/2003):
 
-wersja 1.1.0 (23/06/2003):
+  - secondary nameserver support (%DNS2 in lms-mgc); database modification needed:
+    MySQL:	
+	ALTER TABLE `networks` ADD `dns2` VARCHAR( 16 ) AFTER `dns`;
+    PostgreSQL: 
+	ALTER TABLE networks ADD dns2 VARCHAR(16);
+  - if the lms.ini file exists in the same directory as index.php, LMS will use it instead of /etc/lms/lms.ini;
+  - default values for address, city and postal code can now be set for adding users;
+  - new file: ChangeLog.en (warden)
+  - not used table 'options' removed and lms.mysql refreshed (lukasz)
 
-  - support do drugiego serwera dns (w lms-mgc jako %DNS2)
-    wymagany upgrade:
-    MySQL: ALTER TABLE `networks` ADD `dns2` VARCHAR( 16 ) AFTER `dns`
-    PostgreSQL: ALTER TABLE networks ADD dns2 VARCHAR(16);
-  - je¿eli w tym samym katalogu co index.php znajduje siê plik, LMS wykorzysta
-    go zamiast /etc/lms/lms.ini
-  - mo¿na ustawiæ domy¶lne warto¶ci dla adresu, miasta i kodu pocztowego
-    nowego u¿ytkownika;
-  - w zwi±zku z ci±g³ymi sprzeczkami nt. wprowadzenia nazwy klienta zmieni³em
-    teksty (dla przyk³adu) 'Nazwisko i imiê' na 'Nazwisko/nazwa i imiê'. Brzmi
-    durnie ale kompromis niez³y (lukasz)
-  - dodany ChangeLog.en (warden)
-  - usuniêta nieu¿ywana tabela 'options' i wygenerowany od nowa lms.mysql
-    (lukasz)
-			
-wersja 1.0.0 (18/05/2003):
+version 1.0.0 (18/05/2003):
 
-  - poprawione ikonki (wiem, s± obrzydliwe, ale nikt nie zrobi³ ³adniejszych)
-  - dosyæ rozbudowana dokumentacja (niestety nadal uboga, ale lepszy rydz ni¿
-    grzybki atomowe)
+  - icons have been changed (Yeah, they are awful, but nobody has done any better)
+  - some documentation. Not much but better than nothing. Any volunteers to write? :-)
   - uff...
 
-wersja 1.0.0rc1 (17/05/2003):
+version 1.0.0rc1 (17/05/2003):
 
-  - przymiarki do dokumentacji (Lexx)
-  - porz±dki w LMS.class.php (lukasz)
-  - contrib/customers - prosta strona dla ciekawych u¿ytkowników - w zwi±zku z
-    czym znikn±³ obskurny button ze strony logowania z napisem 'Stan konta'
-    (lukasz)
-  - zrobione wstêpnie ró¿ne poziomy dostêpu (lukasz)
-  - poprawione lms-notify (lukasz)
-  - dodane 'u¿yteczne linki' do strony powitalnej (lukasz)
-  - poprawione wydruki: listing wed³ug aktualnego sortowania oraz filtra (warden)
-  - dodane 'skanuj' przy dodawaniu komputera - wyszukuje hosty przy u¿yciu
-    programu nbtscan (kennyGRV/lukasz)
-  - dodana informacja o producencie karty sieciowej w nodeinfobox (lukasz)
-  - poprawione byki z wy¶wietlaniem ostatnich 10 operacji finansowych
-    u¿ytkownika (lukasz)
-  - wymieniona czê¶æ ikon (lukasz)
-  - poprawki powrotnych redirectów (lukasz)
-  - zabezpieczenie przed por±banymi przegl±darkami które majstruj± z refererem
-    podczas wylogowywania siê (lukasz)
-  - dodane info o ho¶cie na górze obok logo (warden & lukasz)
-  - powróci³y lms-scripts do katalogu bin/ (lexx & lukasz)
-  - na stronie tytu³owej zamiast ID zalogowanego admina jest teraz wersja PHP
-  - finalnie poprawione lms-notify
-  - poprawiony template maila (byko/lukasz)
-  - poprawione sprawdzanie adresu email (repcio/lukasz)
-  - sporo porz±dków
+  - docs incoming (Lexx)
+  - some cleaning in LMS.class.php (lukasz)
+  - contrib/customers - simple layout for curious lusers. As an effect, the awful (?! -> warden)
+    button on the front page of LMS has disappeared. (lukasz)
+  - different access levels (basic) (lukasz)
+  - lms-notify corrected (lukasz)
+  - add 'useful links' to the greeting page (lukasz)
+  - printing layouts corrected: lists by the actual filter and without it (warden)
+  - added 'scan' option when adding a new node - searches for hosts with nbtscan (kennyGRV/lukasz)
+  - added NIC manufacturer info in nodeinfo box (lukasz)
+  - showing miscalculated last financial operations bug - fixed (lukasz)
+  - some icons have been changed (lukasz)
+  - back redirects fixed (lukasz)
+  - bogon browsers supports (some browsers do referrer rigging when logging out) (lukasz)
+  - host information added on the top of the login page (warden & lukasz)
+  - lms-scripts back in bin/ (lexx & lukasz)
+  - lms-notify finally works.
+  - mail template changed (byko/lukasz)
+  - email schema checking fixed (repcio/lukasz)
+  - a lot of cleaning :-)
   
-wersja 1.0pre10 (15/04/2003):
+version 1.0pre10 (15/04/2003):
 
   - poprawki zgodno¶ci ze Smarty-2.5.0 (niestety, automatycznie 2.5.0 jest
     wymagane przez LMS'a)
@@ -1270,7 +1215,7 @@ wersja 1.0pre10 (15/04/2003):
   - jak zwykle kosmetyka (literówki i tym podobne)
   - logosy by Pierzak
 
-wersja 1.0pre9 'CVS-Has-Been-Crashed-Edition' (13/04/2003):
+version 1.0pre9 'CVS-Has-Been-Crashed-Edition' (13/04/2003):
   
   - wymaga Smarty-2.4.2
   - tooltips
@@ -1282,14 +1227,14 @@ wersja 1.0pre9 'CVS-Has-Been-Crashed-Edition' (13/04/2003):
   - sporo kosmetyki (popupy i opisy pól formularzy)
   - logosy by Pierzak
 
-wersja 1.0pre8 (30/03/2003):
+version 1.0pre8 (30/03/2003):
 
   - poprawiony bug z edycj± u¿ytkownika i traceniem zawarto¶ci pola z
     komentarzem
   - przeniesiony formularz dodawania sieci do oddzielnej strony
   - poprawione kilka innych bugów	
 
-wersja 1.0pre7 (24/03/2003):
+version 1.0pre7 (24/03/2003):
 
   - poprawiony powa¿ny bug w lms-mgc powoduj±cy traktowanie jako
     prywatnej sieci tylko 192.168.1.0/24 a nie 192.168.0.0/16
@@ -1300,7 +1245,7 @@ wersja 1.0pre7 (24/03/2003):
     fromularzu
   - poprawione templejty tak by LMS by³ zgodny ze Smarty'm 2.4.2
 
-wersja 1.0pre6 (17/03/2003):
+version 1.0pre6 (17/03/2003):
 
   - mo¿liwo¶æ edycji imienia i nazwiska u¿ytkownika
   - sporo kosmetyki, poprawek w sortowaniu i nie tylko
@@ -1322,7 +1267,7 @@ wersja 1.0pre6 (17/03/2003):
   - automagiczna instalacja domy¶lnego admina z poziomu pliku lms.mysql
   - pole "Imiê" mo¿e byæ puste
 
-wersja 1.0pre5 (26/01/2003):
+version 1.0pre5 (26/01/2003):
  
   - PLIKI KONFIGURACYJNE PRZENIESIONE DO KATALOGU /etc/lms/ !!!
   - podzia³ listy u¿ytkowników na strony
@@ -1354,7 +1299,7 @@ wersja 1.0pre5 (26/01/2003):
     %last_10_in_a_table zmienia siê w maksymalnie 10 ostatnich operacji na
     koncie.
 	  
-wersja 1.0pre4 (21/01/2003):
+version 1.0pre4 (21/01/2003):
 
   - pe³ne przeportowanie obs³ugi SQL'a na ADODB
   - support do MySQL i PostgreSQL
@@ -1379,7 +1324,7 @@ wersja 1.0pre4 (21/01/2003):
     jakiej¶ komendy);
   - poprawki w dodawaniu taryf;
   
-wersja 1.0pre3 (27/12/2002):
+version 1.0pre3 (27/12/2002):
 
   - poprawione pobieranie hostname i uptime (Marcoos)
   - zmiana typu kolumny value w tabeli cash z float na double
@@ -1388,7 +1333,7 @@ wersja 1.0pre3 (27/12/2002):
     lub klasami adresowymi
   - poprawka parsowania ¶cie¿ek do katalogów z configa
 
-wersja 1.0pre2 (25/12/2002):
+version 1.0pre2 (25/12/2002):
 
   - parsowanie configa nie zapisuje odrazu zmiennych odczytanych
     z ini jako globalnych, a do tablicy $_CONFIG (nie mo¿na napisaæ 
@@ -1399,7 +1344,7 @@ wersja 1.0pre2 (25/12/2002):
   - posprz±tane w niektórych plikach
   - poprawiony plik doc/lms.mysql i doc/INSTALL
 
-wersja 1.0pre1 (24/12/2002):
+version 1.0pre1 (24/12/2002):
 
   - przepisane obiektowo
   - napisane z wykorzystaniem engine'u template'owego Smarty
@@ -1407,7 +1352,7 @@ wersja 1.0pre1 (24/12/2002):
   - bardzo fajne sortowanie (tm) :-)
   - wprowadzone cacheowanie wyników (nawala, ale co¶ tam dzia³a)
 
-wersja 0.4:
+version 0.4:
 
   - napisana od nowa, ca³kowicie z wykorzystaniem sesji, oraz
     paru u³atwieñ je¿eli chodzi o SQL'a
@@ -1420,18 +1365,18 @@ wersja 0.4:
   - dane administratorów s± trzymane w bazie danych i nie trzeba
     rêcznie ustawiaæ hase³ w pliku .htpasswd
 
-wersja 0.3:
+version 0.3:
    
   - obs³uga finansów i rozliczeñ u¿ytkowników
 
-wersja 0.2:
+version 0.2:
 
   - obs³uga komputerów, generowanie plików od maskarady na iptables i od
     DHCP
   - pomoc w wyszukiwaniu mac-adresów poprzez listowanie widocznych adresów w
     trakcie dodawania
 
-wersja 0.1:
+version 0.1:
 
   - autoryzacja oparta o .htpasswd w serwerze www
   - prosta baza u¿ytkowników zawieraj±ca dane osobowe oraz status

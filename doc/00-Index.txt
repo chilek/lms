@@ -1,24 +1,22 @@
 
-Indeks plików dokumentacji (czyli tych w doc):
+Documentation files index (in doc directory):
 
-00-Index.txt	- w³a¶nie go czytasz :)
-AUTHORS		- Autorki i Ci którzy psuj± LMSa
-COPYING		- Licencja na jakiej udostêpniany jest LMS
-COPYRIGHTS	- Nag³ówek licencyjny do plików php/html/etc
-ChangeLog	- Plik z histori± zmian
-ChangeLog.en	- Historia zmian po angielsku
-README		- Podrêcznik u¿ytkownika
-README.html	- Podrêcznik u¿ytkownika - wersja w jednym pliku HTML
-TODO		- Do-Zrobienia.
-lms.mysql	- Polecenia zak³adaj±ce tabelki dla MySQL
-lms.pgsql	- Polecenia zak³adaj±ce tabelki dla PostgreSQL
-lms.sqlite	- Polecenia zak³adaj±ce tabelki dla SQLite
-lms.mssql	- Polecenia zak³adaj±ce tabelki dla MS SQL Server
-UPGRADE-*.mysql	- jak uaktualniæ lms'a do wersji bie¿±cej
-UPGRADE-*.pgsql	- jak uaktualniæ lms'a do wersji bie¿±cej
+00-Index.txt	- you are reading it :)
+AUTHORS		- LMS authors and contributors
+COPYING		- licence
+COPYRIGHTS	- licence header for php/html/etc files
+ChangeLog	- history of changes
+README		- User Manual
+README.html	- User Manual - one html file version
+TODO		- features to do
+lms.mysql	- create database queries for MySQL
+lms.pgsql	- create database queries for PostgreSQL
+lms.sqlite	- create database queries for SQLite
+UPGRADE-*.mysql	- how to upgrade lms to current version (see doc)
+UPGRADE-*.pgsql	- how to upgrade lms to current version (see doc)
 
-html/		- katalog z podrêcznikiem u¿ytkownika w wersji HTML
-sgml/		- katalog z podrêcznikiem u¿ytkownika w DocBook'u
+html/		- directory with HTML version of User Manual
+sgml/		- directory with DocBook sources of User Manual
 
 --------------------------------------------------------------------------
 $Id$
