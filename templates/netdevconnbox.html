@@ -3,17 +3,17 @@
 	<TR CLASS="DARK">
 		<TD WIDTH="100%" CLASS="FALL" COLSPAN="3">
 			<IMG SRC="img/mac.gif" BORDER="0" ALIGN="absmiddle" ALT="">
-			<B>Urz±dzenia pod³±czone:</B>
+			<B>{t}Connected devices{/t}:</B>
 		</TD>
 	</TR>
 	<TR CLASS="dark">
 		<TD CLASS="fleftu" width="98%">
-			<img src="img/netdev.gif" ALT="" align="absmiddle"> <B>Nazwa / Producent:</B><BR>
-			<img src="img/home.gif" ALT="" align="absmiddle"> Lokalizacja:
+			<img src="img/netdev.gif" ALT="" align="absmiddle"> <B>{t}Name / Producer{/t}:</B><BR>
+			<img src="img/home.gif" ALT="" align="absmiddle"> {t}Location{/t}:
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
 			<img src="img/empty.gif" ALT="" HEIGHT="16" WIDTH="16" align="absmiddle"> ID:<BR>
-			<img src="img/port.gif" ALT="" align="absmiddle"> Porty (zajête):
+			<img src="img/port.gif" ALT="" align="absmiddle"> {t}Ports (busy){/t}:
 		</TD>
 		<TD CLASS="frightu" width="1%">
 			&nbsp;
@@ -31,14 +31,14 @@
 			<IMG SRC="img/port.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})
 		</TD>
 		<TD WIDTH="1%" CLASS="fright">
-			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}" {confirm text="Napewno chcesz usun±æ to po³±cznie?"}><IMG SRC="img/delete.gif" ALIGN="absmiddle" BORDER="0" {tip text="Usuñ to po³±czenie"}></A>
+			<A HREF="?m=netdevedit&action=disconnect&id={$netdevinfo.id}&devid={$netdevlist[netdevlist].id}" {confirm text="Are you sure, you want to remove this connection?"}><IMG SRC="img/delete.gif" ALIGN="absmiddle" BORDER="0" {tip text="Remove connection"}></A>
 		</TD>
 	</TR>
 	{sectionelse}
 	<TR>
 		<TD colspan="3" CLASS="fall" align="center">
 			<p>&nbsp;</p>
-			<p><B>Nie posiadasz ¿adnych pod³±czonych urz±dzeñ.</b></p>
+			<p><B>{t}Lack of connected devices.{/t}</b></p>
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
@@ -46,16 +46,16 @@
 	<TR CLASS="DARK">
 		<TD WIDTH="100%" CLASS="FALL" COLSPAN="3" ALIGN="CENTER">
 			{if $netdevinfo.ports eq $netdevinfo.takenports}
-			<B>Wszystkie porty w tym urz±dzeniu s± zajête</B>
+			<B>{t}All ports in this device are busy{/t}</B>
 			{elseif !$restnetdevlist}
-			<B>Nie ma urz±dzeñ do pod³±czenia</B>
+			<B>{t}Lack of devices for connection{/t}</B>
 			{else}
 			<P><FORM METHOD="GET" ACTION="?m=netdevedit" NAME="connect">
 			<INPUT TYPE="HIDDEN" NAME="m" VALUE="netdevedit">
 			<INPUT TYPE="HIDDEN" NAME="id" VALUE="{$netdevinfo.id}">
 			<INPUT TYPE="HIDDEN" NAME="action" VALUE="connect">
-			<A HREF="javascript:document.connect.submit(); "><B>Pod³±cz urz±dzenie:</B></A>
-			<SELECT NAME="netdev" {tip trigger="link" text="Wybierz z listy urz±dzenie do pod³aczenia"}>
+			<A HREF="javascript:document.connect.submit(); "><B>{t}Connect device{/t}:</B></A>
+			<SELECT NAME="netdev" {tip trigger="link" text="Select device for connection"}>
 				{section name=restnetdevlist loop=$restnetdevlist}
 				<OPTION VALUE="{$restnetdevlist[restnetdevlist].id}">{$restnetdevlist[restnetdevlist].name} {if $restnetdevlist[restnetdevlist].producer}/ {$restnetdevlist[restnetdevlist].producer}{/if} {if $restnetdevlist[restnetdevlist].location}({$restnetdevlist[restnetdevlist].location}){/if}</OPTION>
 				{/section}

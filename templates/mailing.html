@@ -35,14 +35,14 @@
 			<IMG SRC="img/group.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD CLASS="FBT" WIDTH="1%" NOWRAP>
-			<B>Grupa odbiorców:</B>
+			<B>{t}Destination group{/t}:</B>
 		</TD>
 		<TD CLASS="FRIGHTU" WIDTH="98%">
-			<SELECT NAME="mailing[group]" {tip trigger="group" text="Wybierz grupê adresatów"}>
-				<option value="3">u¿ytkownicy pod³±czeni</option>
-				<option value="2">osoby oczekuj±ce na pod³±czenie</option>
-				<option value="1">osoby zainteresowane</option>
-				<option value="0">wszyskie adresy E-mail zapisane w bazie</option>
+			<SELECT NAME="mailing[group]" {tip trigger="group" text="Select destination (receivers) group"}>
+				<option value="3">{t}connected users{/t}</option>
+				<option value="2">{t}waiting for connection{/t}</option>
+				<option value="1">{t}interested{/t}</option>
+				<option value="0">{t}all addresses in database{/t}</option>
 			</SELECT>		
 		</TD>
 	</TR>
@@ -51,10 +51,10 @@
 			<IMG SRC="img/email.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>E-mail nadawcy:</B>
+			<B>{t}Sender E-mail address{/t}:</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<INPUT type="text" NAME="mailing[sender]" SIZE="40" value="{$mailing.sender}" {tip trigger="sender" text="Podaj adres e-mail nadawcy listu"}>
+			<INPUT type="text" NAME="mailing[sender]" SIZE="40" value="{$mailing.sender}" {tip trigger="sender" text="Enter E-mail address of sender"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -62,10 +62,10 @@
 			<IMG SRC="img/admins.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD WIDTH="1%">
-			<B>Nadawca:</B>
+			<B>{t}Sender{/t}:</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<INPUT type="text" NAME="mailing[from]" SIZE="40"  VALUE="{$mailing.from}" {tip trigger="from" text="Wpisz nadawcê listu"}>
+			<INPUT type="text" NAME="mailing[from]" SIZE="40"  VALUE="{$mailing.from}" {tip trigger="from" text="Enter sender of message"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -73,10 +73,10 @@
 			<IMG SRC="img/mail.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD WIDTH="1%">
-			<B>Temat:</B>
+			<B>{t}Title{/t}:</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<INPUT type="text" NAME="mailing[subject]" SIZE="80" VALUE="{$mailing.subject}" {tip trigger="subject" text="Podaj temat listu"}>
+			<INPUT type="text" NAME="mailing[subject]" SIZE="80" VALUE="{$mailing.subject}" {tip trigger="subject" text="Enter title of message"}>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -84,15 +84,15 @@
 			<IMG SRC="img/edit.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"> 
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>Tre¶æ wiadomo¶ci:</B>
+			<B>{t}Content{/t}:</B>
 		</TD>
 		<TD CLASS="FRIGHT" WIDTH="98%">
-			<TEXTAREA NAME="mailing[body]" COLS="80" ROWS="20" {tip text="			 U¿ywaj klawisza Enter po to tylko by zamkn±æ akapit. LMS sam sformatuje wiadomo¶æ i po³amie linijki."}>{$mailing.body}</TEXTAREA><BR>
+			<TEXTAREA NAME="mailing[body]" COLS="80" ROWS="20" {tip text="Use Enter key only for paragraph closing. LMS will format body of a message and break lines."}>{$mailing.body}</TEXTAREA><BR>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="FBOTTOMU" COLSPAN="3" ALIGN="RIGHT">
-			 <A HREF="javascript:Send();">Wy¶lij wiadomo¶æ <IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
+			 <A HREF="javascript:Send();">{t}Send message{/t} <IMG SRC="img/save.gif" ALT="" BORDER="0" ALIGN="ABSMIDDLE"></A>
 		</TD>
 	</TR>
 </TABLE>
