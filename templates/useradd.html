@@ -116,7 +116,7 @@
 								<TD>
 									<SELECT size="1" name="useradd[tariff]">
 										{section name=tariffs loop=$tariffs.id}
-										<OPTION VALUE="{$tariffs.id[tariffs]}"{if $tariffs.id[tariffs] eq $useradd.tariff} SELECTED{/if}> {$tariffs.name[tariffs]} ({$tariffs.value[tariffs]} z³)</OPTION>
+										<OPTION VALUE="{$tariffs.id[tariffs]}"{if $tariffs.id[tariffs] eq $useradd.tariff} SELECTED{/if}> {$tariffs.name[tariffs]} ({$tariffs.value[tariffs]} {.currency})</OPTION>
 										{/section}
 									</SELECT>
 									{if $error.tariff}
