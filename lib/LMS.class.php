@@ -2641,7 +2641,7 @@ to mo¿na zrobiæ jednym zapytaniem, patrz ni¿ej
 					$row['username'].' <'.$row['email'].'>',
 					$mailing['subject'],
 					$mailing['body'],
-					'From: '.$mailing['sender'].' <'.$mailing['from'].">\n"."Content-Type: text/plain; charset=ISO-8859-2;\n".'X-Mailer: LMS-'.$this->_version.'/PHP-'.phpversion()."\n".'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n".'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']."\n"
+					'From: '.$mailing['from'].' <'.$mailing['sender'].">\n"."Content-Type: text/plain; charset=ISO-8859-2;\n".'X-Mailer: LMS-'.$this->_version.'/PHP-'.phpversion()."\n".'X-Remote-IP: '.$_SERVER['REMOTE_ADDR']."\n".'X-HTTP-User-Agent: '.$_SERVER['HTTP_USER_AGENT']."\n"
 				);
 				
 				echo '<img src="img/mail.gif" border="0" align="absmiddle" alt=""> '.($key+1).' z '.sizeof($emails).' ('.sprintf('%02.2f',round((100/sizeof($emails))*($key+1),2))."%): ".$row['username'].' &lt;'.$row['email']."&gt;<BR>\n";
