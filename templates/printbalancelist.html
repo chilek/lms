@@ -1,0 +1,89 @@
+{include file="clearheader.html"}
+<!--// $Id$ //-->
+<TABLE WIDTH="100%">
+	<TR>
+		<TD WIDTH="50%" VALIGN="TOP">
+			<H1>{$layout.pagetitle}</H1>
+		</TD>
+		<TD WIDTH="50%" ALIGN="RIGHT">
+			LMS {$layout.lmsv} @ {$layout.hostname}<BR>
+			{$smarty.now|date_format:"%A, %e %B %Y"|capitalize}<BR>
+			Sporz±dzone przez: {$layout.logname}
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+	<TR>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			Lp
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			Data
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			Typ
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			Warto¶æ
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			Po
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			Uzytkownik
+		</TD>
+		<TD CLASS="HEAD" ALIGN="CENTER">
+			Opis
+		</TD>		
+	</TR>
+	{cycle values="#FFFFFF,#EEEEEE" print=false}
+	{section name=balancelist loop=$balancelist}
+	<TR BGCOLOR="{cycle}">
+		<TD ALIGN="CENTER">
+			{counter}
+		</TD>
+		<TD ALIGN="CENTER" NOWRAP>
+			{$balancelist[balancelist].time|date_format:"%Y/%m/%d"}
+		</TD>
+		<TD ALIGN="LEFT" NOWRAP>
+			{$balancelist[balancelist].type}
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$balancelist[balancelist].value|string_format:"%01.2f"} z³
+		</TD>
+		<TD ALIGN="RIGHT" NOWRAP>
+			{$balancelist[balancelist].after|string_format:"%01.2f"} z³
+		</TD>
+		<TD ALIGN="LEFT" NOWRAP>
+			{$balancelist[balancelist].username|truncate:20:"..."}
+		</TD>
+		<TD ALIGN="LEFT">
+			{$balancelist[balancelist].comment}
+		</TD>
+	</TR>
+	{sectionelse}
+	<TR>
+		<TD ALIGN="center" WIDTH="100%" COLSPAN="7">
+			<p>&nbsp;</p>
+			<p><B>Brak operacji kasowych</B></p>
+			<p>&nbsp;</p>
+		</TD>
+	</TR>
+	{/section}
+	<TR>
+		<TD ALIGN="RIGHT" BGCOLOR="#EEEEEE" COLSPAN="4">
+			<B>Wp³aty u¿ytkowników:</B><BR>
+			<B>Przychód:</B><BR>
+			<B>Rozchód:</B><BR>
+			<B>Razem:</B>
+		</TD>
+		<TD ALIGN="RIGHT" BGCOLOR="#EEEEEE">
+			{$listdata.incomeu|string_format:"%01.2f"} z³<BR>
+			{$listdata.income|string_format:"%01.2f"} z³<BR>
+			{$listdata.expense|string_format:"%01.2f"} z³<BR>
+			<NOBR><B>{$listdata.total|string_format:"%01.2f"} z³</B><NOBR>
+		</TD>
+		<TD COLSPAN="2" BGCOLOR="#EEEEEE">
+		</TD>
+	</TR>
+</TABLE>
