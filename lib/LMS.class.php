@@ -921,19 +921,14 @@ class LMS {
 
 	function GetOwner($id)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `ownerid` FROM `nodes` WHERE `id` = '".$id."' LIMIT 1");
-		return $DB->row[ownerid];
+		return $this->ADB->GetOne("SELECT ownerid FROM nodes WHERE id=?",array($id));
 	}
 
 	function GetUserBalance($id)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT SUM(value) AS value FROM cash WHERE userid = '".$id."' AND type = '3'");
-		$return = str_replace(".",",",$DB->row[value]);
-		$DB->fetchRow("SELECT SUM(value) AS value FROM cash WHERE userid = '".$id."' AND type = '4'");
-		$return = $return - str_replace(".",",",$DB->row[value]);
-		return round($return,2);
+		$bin = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='3'",array($id));
+		$bab = $this->ADB->GetOne("SELECT SUM(value) FROM cash WHERE userid=? AND type='4'",array($id));
+		return round(str_replace(".",",",$bin) - str_replace(".",",",$bab));
 	}
 
 	function GetUserBalanceList($id)
@@ -1012,9 +1007,7 @@ class LMS {
 
 	function GetUserName($id)
 	{
-		$DB=$this->DB;
-		$DB->fetchRow("SELECT `lastname`, `name` FROM `users` WHERE `id` = '".$id."' LIMIT 1");
-		return strtoupper($DB->row[lastname])." ".$DB->row[name];
+		return $this->ADB->GetOne("SELECT CONCAT(UPPER(lastname),' ',name) FROM users WHERE id=?",array($id));
 	}
 
 	function NodeAdd($nodedata)
