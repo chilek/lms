@@ -659,7 +659,7 @@ class LMS {
 				array_multisort($userlist[username],$direction,$userlist[id],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 			break;
 			case "id":
-				array_multisort($userlist[id],$direction,SORT_NUMERIC,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
+				array_multisort($userlist[id],$direction,$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 			break;
 			case "email":
 				array_multisort($userlist[email],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[phone1],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
@@ -668,7 +668,7 @@ class LMS {
 				array_multisort($userlist[address],$direction,$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 			break;
 			case "balance":
-				array_multisort($userlist[balance],$direction,SORT_NUMERIC,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
+				array_multisort($userlist[balance],$direction,$userlist[address],$userlist[id],$userlist[username],$userlist[status],$userlist[email],$userlist[phone1],$userlist[info],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
 			break;
 			case "phone":
 				array_multisort($userlist[phone1],$direction,$userlist[username],$userlist[id],$userlist[status],$userlist[email],$userlist[address],$userlist[info],$userlist[balance],$userlist[crdate],$userlist[moddate],$userlist[crid],$userlist[modid]);
