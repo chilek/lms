@@ -15,4 +15,18 @@ struct dhcp_module
 	unsigned char *host;
 	unsigned char *file;
 	unsigned char *command;
+	unsigned char *networks;
+	unsigned char *usergroups;
+};
+
+struct net
+{
+	unsigned char *name;
+	unsigned long address;
+};
+
+struct group
+{
+	unsigned char *name;
+	int id;
 };

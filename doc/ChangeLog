@@ -16,7 +16,7 @@ wersja 1.3.7 (??/??/2004):
   - nazwa sieci mo¿e zawieraæ znak '_' (alec)
   - nazwa grupy mo¿e zawieraæ znak '.' (alec)
   - dodana obs³uga opcji konfig. 'networks' i 'usergroups' w module 'ethers'
-    demona (alec)
+    i 'dhcp' demona (alec)
   - poprawione b³êdne interpretowanie opcji 'networks' w modu³ach demona
     gdy nazwa sieci zawiera³a kropkê (alec)
 
