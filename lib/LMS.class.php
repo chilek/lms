@@ -89,6 +89,17 @@ class LMS {
 		$return[balance] = $this->GetUserBalance($return[id]);
 		return $return;
 	}
+
+	function GetUserNodes($id)
+	{
+		$db=$this->db;
+		$db->ExecSQL("SELECT * FROM `nodes` WHERE `ownerid` = '".$id."'");
+		while($db->FetchRow()){
+			list($return[id][],$return[name][],$return[mac][],$return[iplong][],$return[ownerid][],$return[creationdate][],$return[moddate][],$return[creatorid][],$return[modid][],$return[access][])=$db->row;
+			$return[ipaddr][] = long2ip($db->row[3]);
+		}
+		return $return;
+	}
 	
 	function GetUserName($id)
 	{

@@ -1,46 +1,102 @@
 <!--// $Id$ //-->
 <H1>Lista u¿ytkowników</H1>
 <P>{$layout.sortmsg}</P>
-<table style="border-color: #000000; border-collapse: collapse;" cellpadding="4">
-<tr>
-<td style="border-left-style: solid; border-left-width: 1pt; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt;" bgcolor="#CEBD9B"><B>Nazwisko i imiê</B><BR>Telefon:</td>
-<td style="border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt;" bgcolor="#CEBD9B">ID:<BR>&nbsp;</TD>
-<td style="border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt;" bgcolor="#CEBD9B">Adres:<br>E-mail:</td>
-<td style="border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-right-style: solid; border-right-width: 1pt;" bgcolor="#CEBD9B">Saldo:</TD>
-<TD>&nbsp;</TD>
-</tr>
-<TR><TD colspan="4" style="border-style: solid; border-width: 1pt;" bgcolor="#CEBD9B" align="center"><B>U¿ytkownicy pod³±czeni</B></TD></TR>
-{cycle values=" bgcolor=\"#DFD5BD\"," print=false}
-{section name=userlist loop=$userlist.id}
-{if $userlist.status[userlist] eq 3}<tr{cycle}>
-<td><img src="img/user.gif" alt="" align="absmiddle" border="0">&nbsp;<B>{$userlist.lastname[userlist]|upper|replace:" ":"&nbsp;"}&nbsp;{$userlist.name[userlist]|capitalize|replace:" ":"&nbsp;"}&nbsp;</B>
-{if $userlist.phone1[userlist] neq ""}<BR><img src="img/phone.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.phone1[userlist]}{/if}</TD>
-<TD valign="top">({$userlist.id[userlist]|string_format:"%04d"})</TD>
-<TD><img src="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.address[userlist]}
-{if $userlist.email[userlist] neq ""}<BR><img src="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;<a href="mailto:{$userlist.email[userlist]}">{$userlist.email[userlist]}</A>{/if}</TD>
-<TD align="right"><img src="img/money.gif" align="left" border="0" alt="">{if $userlist.balance[userlist] < 0}<font color="#ff0000"><B>{/if}{$userlist.balance[userlist]} z³{if $userlist.balance[userlist] < 0}</FONT></B>{/if}</TD>
-<TD><a href="?m=userdel&id={$userlist.id[userlist]}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.lastname[userlist]|upper} {$userlist.name[userlist]|capitalize} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><img src="img/kosz.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A>&nbsp;<a href="?m=useredit&id={$userlist.id[userlist]}"><img src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A>&nbsp;<a href="?m=userinfo&id={$userlist.id[userlist]}"><img src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A></TD>
-</TR>{/if}{/section}
-<TR><TD colspan="4" style="border-style: solid; border-width: 1pt;" bgcolor="#CEBD9B" align="center"><B>U¿ytkownicy oczekuj±cy</B></TD></TR>
-{section name=userlist loop=$userlist.id}
-{if $userlist.status[userlist] eq 2}<tr{cycle}>
-<td><img src="img/user.gif" alt="" align="absmiddle" border="0">&nbsp;<B>{$userlist.lastname[userlist]|upper|replace:" ":"&nbsp;"}&nbsp;{$userlist.name[userlist]|capitalize|replace:" ":"&nbsp;"}&nbsp;</B>
-{if $userlist.phone1[userlist] neq ""}<BR><img src="img/phone.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.phone1[userlist]}{/if}</TD>
-<TD valign="top">({$userlist.id[userlist]|string_format:"%04d"})</TD>
-<TD><img src="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.address[userlist]}
-{if $userlist.email[userlist] neq ""}<BR><img src="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;<a href="mailto:{$userlist.email[userlist]}">{$userlist.email[userlist]}</A>{/if}</TD>
-<TD align="right"><img src="img/money.gif" align="left" border="0" alt="">{if $userlist.balance[userlist] < 0}<font color="#ff0000"><B>{/if}{$userlist.balance[userlist]} z³{if $userlist.balance[userlist] < 0}</FONT></B>{/if}</TD>
-<TD><a href="?m=userdel&id={$userlist.id[userlist]}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.lastname[userlist]|upper} {$userlist.name[userlist]|capitalize} z bazy danych?\n\nDane u¿ytkownika bêd± bezpowrotnie stracone!')"><img src="img/kosz.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A>&nbsp;<a href="?m=useredit&id={$userlist.id[userlist]}"><img src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A>&nbsp;<a href="?m=userinfo&id={$userlist.id[userlist]}"><img src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A></TD>
-</TR>{/if}{/section}
-<TR><TD colspan="4" style="border-style: solid; border-width: 1pt;" bgcolor="#CEBD9B" align="center"><B>Osoby zainteresowane</B></TD></TR>
-{section name=userlist loop=$userlist.id}
-{if $userlist.status[userlist] eq 1}<tr{cycle}>
-<td><img src="img/user.gif" alt="" align="absmiddle" border="0">&nbsp;<B>{$userlist.lastname[userlist]|upper|replace:" ":"&nbsp;"}&nbsp;{$userlist.name[userlist]|capitalize|replace:" ":"&nbsp;"}&nbsp;</B>
-{if $userlist.phone1[userlist] neq ""}<BR><img src="img/phone.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.phone1[userlist]}{/if}</TD>
-<TD valign="top">({$userlist.id[userlist]|string_format:"%04d"})</TD>
-<TD><img src="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.address[userlist]}
-{if $userlist.email[userlist] neq ""}<BR><img src="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;<a href="mailto:{$userlist.email[userlist]}">{$userlist.email[userlist]}</A>{/if}</TD>
-<TD align="right"><img src="img/money.gif" align="left" border="0" alt="">{if $userlist.balance[userlist] < 0}<font color="#ff0000"><B>{/if}{$userlist.balance[userlist]} z³{if $userlist.balance[userlist] < 0}</FONT></B>{/if}</TD>
-<TD><a href="?m=userdel&id={$userlist.id[userlist]}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.lastname[userlist]|upper} {$userlist.name[userlist]|capitalize} z bazy danych?\n\nDane u¿ytkownika bêd± bezpowrotnie stracone!')"><img src="img/kosz.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A>&nbsp;<a href="?m=useredit&id={$userlist.id[userlist]}"><img src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A>&nbsp;<a href="?m=userinfo&id={$userlist.id[userlist]}"><img src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A></TD>
-</TR>{/if}{/section}
-</table>
+<div align="center"><center>
+<TABLE style="border-color: #000000; border-collapse: collapse;" cellpadding="4">
+	<TR>
+		<TD style="border-left-style: solid; border-left-width: 1pt; border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt;" bgcolor="#CEBD9B">
+			<B>Nazwisko i imiê</B><BR>
+			Telefon:
+		</TD>
+		<TD style="border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt;" bgcolor="#CEBD9B">
+			ID:<BR>
+			&nbsp;
+		</TD>
+		<TD style="border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt;" bgcolor="#CEBD9B">
+			Adres:<br>
+			E-mail:
+		</TD>
+		<TD style="border-top-style: solid; border-top-width: 1pt; border-bottom-style: solid; border-bottom-width: 1pt; border-right-style: solid; border-right-width: 1pt;" bgcolor="#CEBD9B">
+			Saldo:
+		</TD>
+		<TD>
+			&nbsp;
+		</TD>
+	</TR>
+	<TR>
+		<TD colspan="4" style="border-style: solid; border-width: 1pt;" bgcolor="#CEBD9B" align="center">
+			<B>U¿ytkownicy pod³±czeni</B>
+		</TD>
+	</TR>
+	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=userlist loop=$userlist.id}{if $userlist.status[userlist] eq 3}
+	<TR bgcolor="{cycle}"{cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';">
+			<IMG src="img/user.gif" alt="" align="absmiddle" border="0">&nbsp;<B>{$userlist.lastname[userlist]|upper|replace:" ":"&nbsp;"}&nbsp;{$userlist.name[userlist]|capitalize|replace:" ":"&nbsp;"}&nbsp;</B>{if $userlist.phone1[userlist] neq ""}<BR>
+			<IMG src="img/phone.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.phone1[userlist]}{/if}
+		</TD>
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';" valign="top">
+			({$userlist.id[userlist]|string_format:"%04d"})
+		</TD>
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';">
+			<IMG src="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.address[userlist]}{if $userlist.email[userlist] neq ""}<BR>
+			<IMG src="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;<A href="mailto:{$userlist.email[userlist]}">{$userlist.email[userlist]}</A>{/if}
+		</TD>
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';" align="right">
+			<IMG src="img/money.gif" align="left" border="0" alt="">{if $userlist.balance[userlist] < 0}<font color="#ff0000"><B>{/if}{$userlist.balance[userlist]} z³{if $userlist.balance[userlist] < 0}</FONT></B>{/if}
+		</TD>
+		<TD>
+			<A href="?m=userdel&id={$userlist.id[userlist]}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.lastname[userlist]|upper} {$userlist.name[userlist]|capitalize} z bazy danych?\n\nJe¿eli dany u¿ytkownik posiada jakiekolwiek komputery, zostan± automatycznie usuniête z bazy danych a informacje o nich nieodwracalnie stracone!')"><IMG src="img/kosz.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A>&nbsp;<A href="?m=useredit&id={$userlist.id[userlist]}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A>&nbsp;<A href="?m=userinfo&id={$userlist.id[userlist]}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A>
+		</TD>
+	</TR>{/if}{/section}
+	<TR>
+		<TD colspan="4" style="border-style: solid; border-width: 1pt;" bgcolor="#CEBD9B" align="center">
+			<B>U¿ytkownicy oczekuj±cy</B>
+		</TD>
+	</TR>
+	{section name=userlist loop=$userlist.id}{if $userlist.status[userlist] eq 2}
+	<TR bgcolor="{cycle}"{cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';">
+			<IMG src="img/user.gif" alt="" align="absmiddle" border="0">&nbsp;<B>{$userlist.lastname[userlist]|upper|replace:" ":"&nbsp;"}&nbsp;{$userlist.name[userlist]|capitalize|replace:" ":"&nbsp;"}&nbsp;</B>{if $userlist.phone1[userlist] neq ""}<BR>
+			<IMG src="img/phone.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.phone1[userlist]}{/if}
+		</TD>
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';" valign="top">
+			({$userlist.id[userlist]|string_format:"%04d"})
+		</TD>
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';">
+			<IMG src="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.address[userlist]}{if $userlist.email[userlist] neq ""}<BR>
+			<IMG src="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;<A href="mailto:{$userlist.email[userlist]}">{$userlist.email[userlist]}</A>{/if}
+		</TD>
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';" align="right">
+			<IMG src="img/money.gif" align="left" border="0" alt="">{if $userlist.balance[userlist] < 0}<font color="#ff0000"><B>{/if}{$userlist.balance[userlist]} z³{if $userlist.balance[userlist] < 0}</FONT></B>{/if}
+		</TD>
+		<TD>
+			<A href="?m=userdel&id={$userlist.id[userlist]}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.lastname[userlist]|upper} {$userlist.name[userlist]|capitalize} z bazy danych?\n\nDane u¿ytkownika bêd± bezpowrotnie stracone!')"><IMG src="img/kosz.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A>&nbsp;<A href="?m=useredit&id={$userlist.id[userlist]}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A>&nbsp;<A href="?m=userinfo&id={$userlist.id[userlist]}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A>
+		</TD>
+	</TR>{/if}{/section}
+	<TR>
+		<TD colspan="4" style="border-style: solid; border-width: 1pt;" bgcolor="#CEBD9B" align="center">
+			<B>Osoby zainteresowane</B>
+		</TD>
+	</TR>
+	{section name=userlist loop=$userlist.id}{if $userlist.status[userlist] eq 1}
+	<TR bgcolor="{cycle}"{cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';">
+			<IMG src="img/user.gif" alt="" align="absmiddle" border="0">&nbsp;<B>{$userlist.lastname[userlist]|upper|replace:" ":"&nbsp;"}&nbsp;{$userlist.name[userlist]|capitalize|replace:" ":"&nbsp;"}&nbsp;</B>{if $userlist.phone1[userlist] neq ""}<BR>
+			<IMG src="img/phone.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.phone1[userlist]}{/if}
+		</TD>
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';" valign="top">
+			({$userlist.id[userlist]|string_format:"%04d"})
+		</TD>
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';">
+			<IMG src="img/home.gif" alt="" align="absmiddle" border="0">&nbsp;{$userlist.address[userlist]}{if $userlist.email[userlist] neq ""}<BR>
+			<IMG src="img/mail.gif" alt="" align="absmiddle" border="0">&nbsp;<A href="mailto:{$userlist.email[userlist]}">{$userlist.email[userlist]}</A>{/if}
+		</TD>
+		<TD onClick="return parent.location.href='?m=userinfo&id={$userlist.id[userlist]}';" align="right">
+			<IMG src="img/money.gif" align="left" border="0" alt="">{if $userlist.balance[userlist] < 0}<font color="#ff0000"><B>{/if}{$userlist.balance[userlist]} z³{if $userlist.balance[userlist] < 0}</FONT></B>{/if}
+		</TD>
+		<TD>
+			<A href="?m=userdel&id={$userlist.id[userlist]}" onClick="return confirmLink(this, 'Jeste¶ pewien ¿e chcesz usun±æ u¿ytkownika: {$userlist.lastname[userlist]|upper} {$userlist.name[userlist]|capitalize} z bazy danych?\n\nDane u¿ytkownika bêd± bezpowrotnie stracone!')"><IMG src="img/kosz.gif" align="absmiddle" border="0" alt="[ Usuñ ]"></A>&nbsp;<A href="?m=useredit&id={$userlist.id[userlist]}"><IMG src="img/edit.gif" border="0" align="absmiddle" alt="[ Edytuj ]"></A>&nbsp;<A href="?m=userinfo&id={$userlist.id[userlist]}"><IMG src="img/info.gif" border="0" align="absmiddle" alt="[ Info ]"></A>
+		</TD>
+	</TR>{/if}{/section}
+</TABLE>
+</CENTER></DIV>
