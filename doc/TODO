@@ -5,7 +5,6 @@ $Id$
     b) zmiana statusu ticketu podczas odpowiadania
     c) Drukowanie zg³oszeñ
 * Dopracowaæ wysy³anie wiadomo¶ci
-* U¿ytkownicy->Ostrze¿enia, to o czym dyskutowali¶my z Lexxem niedawno
 * Obs³uga networks i usergroups w skryptach i demonie, tam gdzie jeszcze
   jej nie ma a mo¿e siê przydaæ.
 * ³adniejsza wizualizacja wyników statystyk
