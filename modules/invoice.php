@@ -50,6 +50,21 @@ if($_GET['print'] == 'cached' && sizeof($_POST['marks']))
 	}
 	$SMARTY->display('clearfooter.html');
 }
+elseif($_GET['fetchsingle'])
+{
+	$invoice = $LMS->GetInvoiceContent($_GET['id']);
+	$ntempl = $LMS->CONFIG['invoices']['number_template'];
+	$ntempl = str_replace('%N',$invoice['number'],$ntempl);
+	$ntempl = str_replace('%M',$invoice['month'],$ntempl);
+	$ntempl = str_replace('%Y',$invoice['year'],$ntempl);
+	$layout['pagetitle'] = 'Faktura VAT nr '.$ntempl;
+	$invoice['last'] = TRUE;
+	$SMARTY->assign('invoice',$invoice);
+	$SMARTY->display('clearheader.html');
+	$SMARTY->assign('type','ORYGINA£');
+	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
+	$SMARTY->display('clearfooter.html');
+}
 elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 {
 	$ntempl = $LMS->CONFIG['invoices']['number_template'];
