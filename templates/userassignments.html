@@ -58,12 +58,11 @@
 				<TR bgcolor="#DFD5BD">
 					<TD CLASS="ftop" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="value" string_format=$LANGDEFS.$_language.money_format}</TD>
-					<TD CLASS="ftop">&nbsp;</TD>
+					<TD CLASS="ftop" NOWRAP ALIGN="LEFT">({sum array=$assignments column="discounted_value" string_format=$LANGDEFS.$_language.money_format})</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="downrate" default="-"}({sum array=$assignments column="downceil" default="-"}) kbps</TD>
 					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="uprate" default="-"}({sum array=$assignments column="upceil" default="-"}) kbps</TD>
 					<TD CLASS="ftop">&nbsp;</TD>
-					<TD CLASS="ftop" COLSPAN="2" NOWRAP ALIGN="RIGHT"><B>{t}Total with discounts:{/t}</B></TD>
-					<TD CLASS="ftop" NOWRAP ALIGN="RIGHT">{sum array=$assignments column="discounted_value" string_format=$LANGDEFS.$_language.money_format}</TD>
+					<TD CLASS="ftop" COLSPAN="3">&nbsp;</TD>
 				</TR>
 				<FORM METHOD="POST" NAME="assignment" ACTION="?m=userassignments&action=add&id={$balancelist.userid}">
 				<TR bgcolor="#DFD5BD">
