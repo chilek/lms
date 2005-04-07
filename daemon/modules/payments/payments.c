@@ -222,7 +222,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 			}
     			
 			if( suspended == uid || s_state )
-				val = val * p->suspending_percentage / 100;
+				val = val * p->suspension_percentage / 100;
 			
 			if( !val )
 				continue;
@@ -389,11 +389,11 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	g->db_free(&res);
 	p->monthly_num = p->monthly_num ? p->monthly_num : 0;
 
-	res = g->db_query(g->conn, "SELECT value FROM uiconfig WHERE section='finances' AND var='suspending_percentage' AND disabled=0");
+	res = g->db_query(g->conn, "SELECT value FROM uiconfig WHERE section='finances' AND var='suspension_percentage' AND disabled=0");
 	if( g->db_nrows(res) )
-		p->suspending_percentage = atof(g->db_get_data(res, 0, "value"));
+		p->suspension_percentage = atof(g->db_get_data(res, 0, "value"));
 	else
-		p->suspending_percentage = 0;
+		p->suspension_percentage = 0;
 	g->db_free(&res);
 	
 #ifdef DEBUG1
