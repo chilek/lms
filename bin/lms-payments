@@ -211,7 +211,7 @@ my $itemid;
 
 # let's go, query fetch *ALL* assignments in given day
 
-$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, description, invoice,
+$dbq = $dbase->prepare("SELECT assignments.id AS id, tariffid, userid, period, at, suspended, taxvalue, pkwiu, uprate, downrate, tariffs.name AS name, description, invoice,
 	CASE suspended WHEN 0 THEN ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) ELSE
 	ROUND(ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) * $suspension_percentage/100, 2) END AS value
 	FROM assignments, tariffs, users
@@ -233,10 +233,16 @@ while(my $assign = $dbq->fetchrow_hashref())
 		if(my $xrow = $xdbq->fetchrow_hashref())
 		{
 			$suspended = $uid;
-			$assign->{'value'} = sprintf("%.2f", $assign->{'value'} * $suspension_percentage / 100);
+			if (!$assign->{'suspended'})
+			{
+				$assign->{'value'} = sprintf("%.2f", $assign->{'value'} * $suspension_percentage / 100);
+			}
 		}
 	} else {
-		$assign->{'value'} = sprintf("%.2f", $assign->{'value'} * $suspension_percentage / 100);
+		if (!$assign->{'suspended'})
+		{
+			$assign->{'value'} = sprintf("%.2f", $assign->{'value'} * $suspension_percentage / 100);
+		}
 	}
 
 	my $period = $txts{$assign->{'period'}};
