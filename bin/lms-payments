@@ -233,10 +233,10 @@ while(my $assign = $dbq->fetchrow_hashref())
 		if(my $xrow = $xdbq->fetchrow_hashref())
 		{
 			$suspended = $uid;
-			next;
+			$assign->{'value'} = sprintf("%.2f", $assign->{'value'} * $suspension_percentage / 100);
 		}
 	} else {
-		next;
+		$assign->{'value'} = sprintf("%.2f", $assign->{'value'} * $suspension_percentage / 100);
 	}
 
 	my $period = $txts{$assign->{'period'}};
