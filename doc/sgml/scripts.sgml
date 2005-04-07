@@ -313,11 +313,6 @@ invoices in <emphasis>[payments]</emphasis> section of
 	   <para>Example:	<prompt>paytype = 'CASH'</prompt></para>
 	  </listitem>
 	  <listitem>
-	   <para>suspension_percentage (optional)</para>
-	   <para>Percentage for suspended liabilities. Default: '0'</para>
-	   <para>Example:	<prompt>suspension_percentage = '50'</prompt></para>
-	  </listitem>
-	  <listitem>
 	   <para>suspension_description (optional)</para>
 	   <para>Suspension description for suspended liabilities. Default: ''</para>
 	   <para>Example:	<prompt>paytype = '(suspension)'</prompt></para>
