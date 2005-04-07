@@ -138,8 +138,8 @@ else
 	exit 1;
 }
 
-my $date = mktime(0, 0, 0, strftime("%e",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900);
-my $day = strftime("%x", 0, 0, 0, strftime("%e",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900);
+my $date = mktime(0, 0, 0, strftime("%e",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900, 0, 0, -1);
+my $day = strftime("%x", 0, 0, 0, strftime("%e",localtime()), strftime("%m",localtime())-1, strftime("%Y",localtime())-1900, 0, 0, -1);
 
 my $dbq = $dbase->prepare("SELECT id, name, email FROM admins WHERE deleted = 0 AND email != ''");
 $dbq->execute();
