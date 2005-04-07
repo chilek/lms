@@ -163,7 +163,7 @@ $txts{3} = strftime("%Y/%m/%d", 0, 0, 12, $day, $month - 1, $year - 1900)." - ".
 
 # special case, ie. you have 01.01.2005-01.31.2005 on invoice, but invoice/
 # assigment is made not January, the 1st:
- 
+
 my $current_month = strftime("%Y/%m/%d", 0, 0, 12, 1, $month - 1, $year - 1900)." - ".strftime("%Y/%m/%d", 0, 0, 12, 0 , $month , $year - 1900);
 
 my $start = 0;
