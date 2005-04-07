@@ -553,7 +553,7 @@ class LMS
 		if($state>3)
 			$state = 0;
 
-		$suspension_percentage = $this->CONFIG['payments']['suspension_percentage'];
+		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
 		if($userlist = $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, deleted, status, address, zip, city, info, message, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 '.($state !=0 ? " AND status = '".$state."'":'').($sqlsarg !='' ? ' AND '.$sqlsarg :'').' GROUP BY users.id, deleted, lastname, users.name, status, address, zip, city, info, message '.($sqlord !='' ? $sqlord.' '.$direction:'')))
 		{
 			$week = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE value * discount / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
@@ -640,7 +640,7 @@ class LMS
 		if($network) 
 			$net = $this->GetNetworkParams($network);
 		
-		$suspension_percentage = $this->CONFIG['payments']['suspension_percentage'];
+		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
 		if($userlist = $this->DB->GetAll( 
 				'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, users.address, zip, city, users.info AS info, message,  '
 				.($network ? 'COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance ' : 'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance ')
