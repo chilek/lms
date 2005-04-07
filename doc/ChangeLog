@@ -33,6 +33,7 @@ version 1.5.6 Baal (??/??/????):
     it fixes problem with lastname capitalization (chilek)
   - we show total assignments with discounts in userassignments and
     customer lists (chilek)
+  - fixed handling ip addresses from netdevices in lms-mgc (lukasz)
 
 version 1.5.5 Anubis (25/03/2005):
 
