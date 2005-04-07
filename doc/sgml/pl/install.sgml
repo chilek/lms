@@ -663,7 +663,21 @@ database = /usr/local/lms/lms.db</screen>
 	    <para>Przyk³ad:	<prompt>smtp_host = poczta.domena.pl</prompt></para>
 	</listitem>
 	</itemizedlist>
- 	</sect2> 
+ 	</sect2>
+	<sect2 id="install-config-finances">
+	<title>Sekcja [finances] - konfiguracja finansów</title>
+	<para>Sekcja ta zawiera opcje dotycz±ce naliczania op³at, a tak¿e
+	dane do druków przelewu, których opis znajdziesz w rozdziale o fakturach.
+    	<itemizedlist>
+          <listitem>
+	   <para>suspension_percentage (opcjonalny)</para>
+	   <para>Warto¶æ procentowa obci±¿enia generowana dla obci±¿eñ zawieszonych.
+	   Domy¶lnie: '0'</para>
+	   <para>Przyk³ad:	<prompt>suspension_percentage = 50</prompt></para>
+	  </listitem>
+	  </itemizedlist>
+	  </para>
+	</sect2>
     </sect1>
     <sect1 id="install-rights" xreflabel="Prawa dostêpu">
       <title>Prawa dostêpu</title>

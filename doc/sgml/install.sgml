@@ -635,7 +635,20 @@ database = /usr/local/lms/lms.db</screen>
          <para>Example:     <prompt>smtp_host = mail.domain.pl</prompt></para>
      </listitem>
      </itemizedlist>
-      </sect2> 
+	</sect2> 
+        <sect2 id="install-config-finances">
+	<title>Section [finances] - Finances Settings</title>
+	<para>This section consist options for financial system and for payment
+	forms. You can read more about that in Invoices chapter.
+    	    <itemizedlist>
+		<listitem>
+		<para>suspension_percentage (optional)</para>
+		<para>Percentage for suspended liabilities. Default: '0'</para>
+		<para>Example:	<prompt>suspension_percentage = '50'</prompt></para>
+		</listitem>
+       	    </itemizedlist>
+	</para>
+	</sect2>
     </sect1>
     <sect1 id="install-rights">
       <title>Access rights</title>
