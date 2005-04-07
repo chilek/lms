@@ -9,4 +9,5 @@ struct payments_module
 	int up_payments;
 	int expiry_days;
 	int monthly_num;
+	double suspending_percentage;
 };

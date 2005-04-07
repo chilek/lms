@@ -37,6 +37,13 @@ char * itoa(int i)
 	return string;
 }
 
+char * ftoa(double i)
+{
+	static char string[12];
+	sprintf(string, "%.2f", i);
+	return string;
+}
+
 unsigned char * get_period(struct tm *today, int period, int up_payments)
 {
 	struct tm *t;
@@ -86,8 +93,8 @@ unsigned char * get_period(struct tm *today, int period, int up_payments)
 
 	new_time = mktime(t);
 
-	strftime(to, 11, "%Y-%m-%d", localtime(&old_time));
-	strftime(from, 11, "%Y-%m-%d", localtime(&new_time));
+	strftime(to, 11, "%Y/%m/%d", localtime(&old_time));
+	strftime(from, 11, "%Y/%m/%d", localtime(&new_time));
 
 	result = (unsigned char *) malloc(strlen(from)+strlen(to)+3);
 
@@ -195,26 +202,32 @@ void reload(GLOBAL *g, struct payments_module *p)
 		g->db_free(&res);
 
 		// payments accounting and invoices writing
-		res = g->db_pquery(g->conn, "SELECT assignments.id AS id, tariffid, userid, period, at, ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, taxvalue, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, users.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND suspended = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY userid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
+		res = g->db_pquery(g->conn, "SELECT assignments.id AS id, tariffid, userid, period, at, ROUND(CASE discount WHEN 0 THEN value ELSE value-value*discount/100 END, 2) AS value, taxvalue, suspended, pkwiu, uprate, downrate, tariffs.name AS tariff, invoice, UPPER(lastname) AS lastname, users.name AS name, address, zip, city, nip, pesel, phone1 AS phone FROM assignments, tariffs, users WHERE tariffs.id = tariffid AND userid = users.id AND status = 3 AND deleted = 0 AND value <> 0 AND ((period = 0 AND at = ?) OR (period = 1 AND at = ?) OR (period = 2 AND at = ?) OR (period = 3 AND at = ?)) AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) ORDER BY userid, invoice DESC, value DESC", weekday, monthday, quarterday, yearday);
 		
 		for(i=0; i<g->db_nrows(res); i++) 
 		{
 			int uid = atoi(g->db_get_data(res,i,"userid"));
+			int s_state = atoi(g->db_get_data(res,i,"suspended"));
+			double val = atof(g->db_get_data(res,i,"value"));
 			
 			// assignments suspending check
-			if(suspended != uid)
+			if( suspended != uid )
 			{
 				sres = g->db_pquery(g->conn, "SELECT 1 FROM assignments, users WHERE userid = users.id AND tariffid = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND userid = ?", g->db_get_data(res,i,"userid"));
 				if( g->db_nrows(sres) ) 
 				{
 					suspended = uid;
-					continue;
 				}
 				g->db_free(&sres);
-			} else
-				continue;
+			}
     			
-			value = g->db_get_data(res,i,"value");
+			if( suspended == uid || s_state )
+				val = val * p->suspending_percentage / 100;
+			
+			if( !val )
+				continue;
+			
+			value = ftoa(val);
 			taxvalue = g->db_get_data(res,i,"taxvalue");
 			// prepare insert to 'cash' table
 			insert = strdup("INSERT INTO cash (time, type, value, taxvalue, userid, comment, invoiceid, itemid) VALUES (%NOW%, 4, %value, %taxvalue, %userid, '%comment', %invoiceid, %itemid)");
@@ -282,7 +295,7 @@ void reload(GLOBAL *g, struct payments_module *p)
 					g->str_replace(&query, "%invoiceid", itoa(invoiceid));
 					g->str_replace(&query, "%itemid", itoa(itemid));
 					g->str_replace(&query, "%tariffid", g->db_get_data(res,i,"tariffid"));
-					g->str_replace(&query, "%value", g->db_get_data(res,i,"value"));
+					g->str_replace(&query, "%value", value);
 					g->str_replace(&query, "%pkwiu", g->db_get_data(res,i,"pkwiu"));
 					g->str_replace(&query, "%desc", description);
 						if( strlen(taxvalue) )
@@ -375,6 +388,13 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	}
 	g->db_free(&res);
 	p->monthly_num = p->monthly_num ? p->monthly_num : 0;
+
+	res = g->db_query(g->conn, "SELECT value FROM uiconfig WHERE section='finances' AND var='suspending_percentage' AND disabled=0");
+	if( g->db_nrows(res) )
+		p->suspending_percentage = atof(g->db_get_data(res, 0, "value"));
+	else
+		p->suspending_percentage = 0;
+	g->db_free(&res);
 	
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/payments] initialized", p->base.instance);
