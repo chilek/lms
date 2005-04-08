@@ -1334,6 +1334,25 @@ class LMS
 		return $number;
 	}
 
+	function InvoiceExists($number, $cdate=NULL)
+	{
+		if(!$number) return FALSE;
+		
+		$cdate = $cdate ? $cdate : time();	    
+		if($this->CONFIG['invoices']['monthly_numbering'])
+		{
+			$start = mktime(0, 0, 0, date('n',$cdate), 1, date('Y',$cdate));
+			$end = mktime(0, 0, 0, date('n',$cdate)+1, 1, date('Y',$cdate));
+		}
+		else
+		{
+			$start = mktime(0, 0, 0, 1, 1, date('Y',$cdate));
+			$end = mktime(0, 0, 0, 1, 1, date('Y',$cdate)+1);
+		}
+
+		return ($this->DB->GetOne('SELECT number FROM invoices WHERE cdate >= ? AND cdate < ? AND number = ?', array($start, $end, $number)) ? TRUE : FALSE);
+	}
+	
 	function GetUserTariffsValue($id)
 	{
 		return $this->DB->GetOne('SELECT sum(value) FROM assignments, tariffs WHERE tariffid = tariffs.id AND userid=? AND suspended = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0)', array($id));
