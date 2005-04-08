@@ -131,19 +131,7 @@ switch($_GET['action'])
 				
 				if (($oldmonth!=$month) || ($oldyear!=$year))
 				{
-					if($LMS->CONFIG['invoices']['monthly_numbering'])
-			    		{
-				        	$start = mktime(0, 0, 0, date('n',$invoice['cdate']), 1, date('Y',$invoice['cdate']));
-			    			$end = mktime(0, 0, 0, date('n',$invoice['cdate'])+1, 1, date('Y',$invoice['cdate']));
-					}
-					else
-				    	{
-				        	$start = mktime(0, 0, 0, 1, 1, date('Y',$invoice['cdate']));
-		            			$end = mktime(0, 0, 0, 1, 1, date('Y',$invoice['cdate'])+1);
-				    	}
-						
-					$number = $LMS->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
-					$invoice['number'] = $number ? ++$number : 1;
+					$invoice['number'] = $LMS->GetNewInvoiceNumber();
 					$invoice['month'] = $month;
 					$invoice['year']  = $year;
 				} 
@@ -167,22 +155,8 @@ switch($_GET['action'])
 			}
 		}
 
-		if($LMS->CONFIG['invoices']['monthly_numbering'])
-		{
-			$start = mktime(0, 0, 0, date('n',$invoice['cdate']), 1, date('Y',$invoice['cdate']));
-			$end = mktime(0, 0, 0, date('n',$invoice['cdate'])+1, 1, date('Y',$invoice['cdate']));
-		}
-		else
-		{
-			$start = mktime(0, 0, 0, 1, 1, date('Y',$invoice['cdate']));
-			$end = mktime(0, 0, 0, 1, 1, date('Y',$invoice['cdate'])+1);
-		}
-		
 		if(!$invoice['number'])
-		{
-			$number = $LMS->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
-			$invoice['number'] = $number ? ++$number : 1;
-		}
+			$invoice['number'] = $LMS->GetNewInvoiceNumber();
 		
 		if(!eregi('^[0-9]+$',$invoice['number']))
 		{
@@ -193,8 +167,7 @@ switch($_GET['action'])
 		if ($LMS->DB->GetOne('SELECT number FROM invoices WHERE cdate >= ? AND cdate < ? AND number = ?', array($start, $end, $invoice['number'] ? $invoice['number'] : 0)))
 		{
 				$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);
-				$number = $LMS->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
-				$invoice['number'] = $number ? ++$number : 1;
+			$invoice['number'] = $LMS->GetNewInvoiceNumber();
 		}
 
 		if(!$error)
