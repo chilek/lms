@@ -122,11 +122,13 @@
 			<NOBR>{$balancelist[balancelist].value|money_format}</NOBR>
 		</TD>
 		<TD width="1%" align="right" nowrap valign="top">
+		{if $balancelist[balancelist].type!=3}
 			<NOBR>
 			{if $balancelist[balancelist].taxvalue!=''}
 				{$balancelist[balancelist].taxvalue|string_format:"%01.2f"} %
 			{else}{t}tax-free{/t}{/if}
 			</NOBR>
+		{/if}			
 		</TD>
 		<TD width="1%" align="center" valign="top">
 			&raquo;
