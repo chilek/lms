@@ -2,6 +2,8 @@ $Id$
 
 planowane psucie bazy co obi±æ moim skromnym powinno w finansach:
 
+Tabelka cash:
+
 ID   type   value   taxvalue
 1 |    4 | 70.00 |          | Abonament miesiêczny "Pakiet 256" 
 2 |    4 | 30.00 |    22.00 | karta sieciowa
@@ -14,30 +16,60 @@ mia³y co¶ do powiedzenia o programach do faktur etc..
 
 W/w kawa³ek powinien wygl±daæ tak:
 
-ID   type   value   taxvalue      TaxID
-1 |    4 | 70.00 |               |  1  | Abonament miesiêczny "Pakiet 256"
-2 |    4 | 30.00 | 30*.22==6.60  |  4  | karta sieciowa
+ID   type   value  tax    TaxID
+1 |    4 | 70.00 |       |  1  | Abonament za co¶tam
+2 |    4 | 30.00 | 6.60  |  4  | karta sieciowa
 
-aha, wp³ata to zawsze:
+(30 * 22% = 6.60)
 
-9 |    3 | 36.60 |               |  0  | Wp³ata za kartê sieciow±
+Aha, wp³ata to zawsze:
+9 |    3 | 36.60 |             | Wp³ata za kartê sieciow±
 
+Tyle ¿e tutaj ciut duplikujemy invoices. Cash to obci±¿enia i wp³aty, 
+powi±zane miedzy sob± lu¼no (invoice / item id).
+
+Niechcia³bym aby invoicecontents by³y duplikowane w cash.
+(nota bene: IsInvoicePaid zak³ada ¿e cash ma warto¶ci netto i olewa podatki, 
+przy okazji type 1 traktuj±c jako obci±¿enie... )
+
+Ciekawe wyj¶cie z sytuacji jest takie:
+
+Cash:
+ID| type | value |      Comment         | invoiceid | invoiceitemid |
+1 |  4   | 70.00 | Abonament za co¶tam  |     1     |       1       |
+2 |  4   | 36.60 | karta sieciowa       |     1     |       2       |
+
+Tutaj pracowicie cash import wykazuje siê tak:
+
+3 |  3   | 106.60| Wp³ata za F/V/1/LMS  |    NULL   | NULL          | 
+
+Kto¶ potem zmienia tak:
+
+3 |  3   | 106.60| Wp³ata za F/V/1/LMS  |    *1*    | NULL          | 
+
+Albo rozbia: 
+
+4 |  3   | 70.00 | Abonament            |     1     |       1       | 
+5 |  3   | 36.60 | Wp³ata za NIC        |     1     |       2       |
+
+
+
+InvoiceContents:
+
+Itemid |   Comment  |  Netto  | Tax | TaxValue  |
+-------+------------+---------+-----+-----------+
+  1    |  Abonament |   70.00 |  1  | 0.00      |
+  2    |     NIC    |   30.00 |  4  | 6.60      |
+
+
+Tutaj pytanie: czy podatek liczymy i zapisujemy w bazie czy te¿ ka¿dorazowo liczymy na podstawie numerka? 
 
 TaxID to niestety kolejny tabelek (taxes?) wygl±daj±cy tak:
-ID | Taxed | TaxRate|   desc [ | valid from | valid to | -> tego byæ ju¿ nie musi ]
-1  |   0   | 0.00   |   zw. / vat free
-2  |   1   | 0.00   |   0%
-3  |   1   | 7.00   |   7%
-4  |   1   | 22.00  |   22%
+
+ID | IsTaxed | TaxRate|   desc [ | valid from | valid to | -> tego byæ ju¿ nie musi ]
+1  |   0     | 0.00   |   zw. / vat free
+2  |   1     | 0.00   |    0%
+3  |   1     | 7.00   |    7%
+4  |   1     | 22.00  |   22%
 
 etc.. wystarcz± smallinty na ID i taxed, tax rate jako numeric (4,2) 
-
-Aha, jak ju¿ kto¶ psuje to sugerujê dodaæ do cash:
-
-Accountingtype int; For future use :p
-
-Tabelka typu (same inty):
-
-Accountingtype | Account_DT | Account_CT | Tax_Accounting
-
-A po cio to w nastêpnym odcinku :p
