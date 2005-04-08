@@ -1312,7 +1312,34 @@ class LMS
 	
 	/*
 	 *  Tarrifs and finances
-	 */
+	*/
+
+	function GetNewInvoiceNumber($number=NULL) 
+	{
+		 if($this->CONFIG['invoices']['monthly_numbering'])
+		 {
+			  $start = mktime(0, 0, 0, date('n',$invoice['cdate']), 1, date('Y',$invoice['cdate']));
+			  $end = mktime(0, 0, 0, date('n',$invoice['cdate'])+1, 1, date('Y',$invoice['cdate']));
+		 }
+		 else
+		 {
+			  $start = mktime(0, 0, 0, 1, 1, date('Y',$invoice['cdate']));
+			  $end = mktime(0, 0, 0, 1, 1, date('Y',$invoice['cdate'])+1);
+		 }
+
+		 if(!$number)
+		 {
+			  $number = $this->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
+			  $invoice['number'] = $number ? ++$number : 1;
+		 }
+
+		 if ($this->DB->GetOne('SELECT number FROM invoices WHERE cdate >= ? AND cdate < ? AND number = ?', array($start, $end, $invoice['number'] ? $invoice['number'] : 0)))
+		 {
+			  $number = $LMS->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
+			  $number = $number ? ++$number : 1;
+		 }
+		 return $number;
+	}
 
 	function GetUserTariffsValue($id)
 	{
