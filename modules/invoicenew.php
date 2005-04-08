@@ -43,19 +43,7 @@ switch($_GET['action'])
     		unset($customer);
     		unset($error);
 		
-		if($LMS->CONFIG['invoices']['monthly_numbering'])
-	    	{
-		        $start = mktime(0, 0, 0, date('n',time()), 1, date('Y',time()));
-		        $end = mktime(0, 0, 0, date('n',time())+1, 1, date('Y',time()));
-		}
-		else
-		{
-		        $start = mktime(0, 0, 0, 1, 1, date('Y',time()));
-		        $end = mktime(0, 0, 0, 1, 1, date('Y',time())+1);
-		}
-
-		$number = $LMS->DB->GetOne('SELECT MAX(number) FROM invoices WHERE cdate >= ? AND cdate < ?', array($start, $end));
-		$invoice['number'] = $number ? ++$number : 1;
+		$invoice['number'] = $LMS->GetNewInvoiceNumber();
 		$invoice['month'] = date("m");
 		$invoice['year']  = date("Y");
 		$invoice['cdate'] = time();
@@ -119,10 +107,9 @@ switch($_GET['action'])
 		if($invoice['paytime'] < 0)
 			$invoice['paytime'] = 14;
 
-		$invoice['number'] = $_POST['invoice']['number'];
 		$invoice['userid'] = $_POST['userid'];
 		
-		if($invoice['cdate']) // && !$invoice['cdatewarning'])
+		if($invoice['cdate'])
 		{
 			list($year, $month, $day) = split('/',$invoice['cdate']);
 			if(checkdate($month, $day, $year)) 
@@ -131,7 +118,6 @@ switch($_GET['action'])
 				
 				if (($oldmonth!=$month) || ($oldyear!=$year))
 				{
-					$invoice['number'] = $LMS->GetNewInvoiceNumber();
 					$invoice['month'] = $month;
 					$invoice['year']  = $year;
 				} 
@@ -142,10 +128,16 @@ switch($_GET['action'])
 				}
 			}
 			else
+			{
 				$error['cdate'] = trans('Incorrect date format!');
+				$invoice['cdate'] = time();
+				$invoice['month'] = $oldmonth;
+				$invoice['year']  = $oldyear;
+				break;
+			}
 		}
 
-		if($invoice['cdate'] && !$invoice['cdatewarning'] && !$error)
+		if($invoice['cdate'] && !$invoice['cdatewarning'])
 		{
 			$maxdate = $LMS->DB->GetOne('SELECT MAX(cdate) FROM invoices');
 			if($invoice['cdate'] < $maxdate)
@@ -156,20 +148,15 @@ switch($_GET['action'])
 		}
 
 		if(!$invoice['number'])
-			$invoice['number'] = $LMS->GetNewInvoiceNumber();
-		
-		if(!eregi('^[0-9]+$',$invoice['number']))
+			$invoice['number'] = $LMS->GetNewInvoiceNumber($invoice['cdate']);
+		else
 		{
-			$error['number'] = trans('Invoice number must be integer!');
-			break;
-		}
-		
-		if ($LMS->DB->GetOne('SELECT number FROM invoices WHERE cdate >= ? AND cdate < ? AND number = ?', array($start, $end, $invoice['number'] ? $invoice['number'] : 0)))
-		{
+			if(!eregi('^[0-9]+$', $invoice['number']))
+				$error['number'] = trans('Invoice number must be integer!');
+			elseif($LMS->InvoiceExists($invoice['number'], $invoice['cdate']))
 				$error['number'] = trans('Invoice number $0 already exists!', $invoice['number']);
-			$invoice['number'] = $LMS->GetNewInvoiceNumber();
 		}
-
+		
 		if(!$error)
 			if($LMS->UserExists(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user'])))
 				$customer = $LMS->GetUser(($_GET['userid'] != '' ? $_GET['userid'] : $_POST['user']));
