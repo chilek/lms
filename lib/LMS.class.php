@@ -1937,6 +1937,12 @@ class LMS
 	{
 		$this->SetTS('cash');
 		$addbalance['value'] = str_replace(',','.',round($addbalance['value'],2));
+
+		// Payment is without any TAX !!!
+		
+		if ($addbalance['type']==3)
+			$addbalance['taxvalue'] = NULL;	
+
 		$addbalance['taxvalue'] = $addbalance['taxvalue']!='' ? str_replace(',','.',round($addbalance['taxvalue'],2)) : '';
 		if($addbalance['time'])
 			if($addbalance['taxvalue'] == '')
