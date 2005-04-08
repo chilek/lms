@@ -50,7 +50,9 @@ Albo rozbia:
 4 |  3   | 70.00 | Abonament            |     1     |       1       | 
 5 |  3   | 36.60 | Wp³ata za NIC        |     1     |       2       |
 
-
+alec> moim zdaniem tak raczej nie, gdy¿ np. do obliczenia bilansu trzeba robiæ 
+      z³±czenie z du¿± tablic± invoicecontents co odbije siê ¼le (znacznie) na
+      wydajno¶ci
 
 InvoiceContents:
 
@@ -61,6 +63,10 @@ Itemid |   Comment  |  Netto  | Tax | TaxValue  |
 
 
 Tutaj pytanie: czy podatek liczymy i zapisujemy w bazie czy te¿ ka¿dorazowo liczymy na podstawie numerka? 
+
+alec> moim zdaniem mo¿na zrezygnowaæ z taxvalue w cash, a tak¿e w invoicecontents,
+      (zostawiæ taxid) ale pod warunkiem, ¿e nie bêdziemy pozwalaæ na zmiany
+      taxrate w tabeli taxes
 
 TaxID to niestety kolejny tabelek (taxes?) wygl±daj±cy tak:
 
