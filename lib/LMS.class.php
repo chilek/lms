@@ -61,7 +61,7 @@ class LMS
 		$this->CORE = &$this;
 
 		// za³aduj ekstra klasy:
-
+/*
 		if($dirhandle = @opendir($this->CONFIG['directories']['lib_dir'].'/modules/'))
 		{
 			while(FALSE !== ($file = readdir($dirhandle)))
@@ -77,13 +77,13 @@ class LMS
 		}
 
 		// poustawiajmy ->version
-
+*/
 		foreach($this->modules as $module)
 		{
 			$this->$module->_revision = eregi_replace('^.Revision: ([0-9.]+).*','\1',$this->$module->_revision);
 			$this->$module->version = $this->$module->_version.' ('.$this->$module->_revision.')';
 		}
-
+/*
 		// a teraz postinit
 
 		foreach($this->modules as $module)
@@ -104,7 +104,7 @@ class LMS
 		$this->AddMenu(trans('Stats'), 'traffic.gif', '?m=traffic', trans('Statistics of Internet Link Usage'), 'x', 45);
 		$this->AddMenu(trans('Helpdesk'), 'ticket.gif', '?m=rtqueuelist', trans('Requests Tracking'), 'h', 50);
 		$this->AddMenu(trans('Timetable'), 'calendar.gif', '?m=eventlist', trans('Events Tracking'), 'v', 55);
-	}
+*/	}
 
 	function _postinit()
 	{
@@ -135,7 +135,7 @@ class LMS
 	 *	3 - as above, and changes
 	 *	4 - paranoid, id est all above and all modules calls
 	 */
-
+/*
 	function Log($loglevel=0, $message=NULL)
 	{
 		if( $loglevel <= $this->CONFIG['phpui']['loglevel'] && $message )
@@ -145,7 +145,7 @@ class LMS
 			//I think, we can ommit SetTS('syslog')
 		}
 	}
-	
+*/	
 	/*
 	 *  Database functions (backups, timestamps)
 	 */
