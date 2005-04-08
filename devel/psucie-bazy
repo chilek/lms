@@ -29,8 +29,6 @@ Tyle ¿e tutaj ciut duplikujemy invoices. Cash to obci±¿enia i wp³aty,
 powi±zane miedzy sob± lu¼no (invoice / item id).
 
 Niechcia³bym aby invoicecontents by³y duplikowane w cash.
-(nota bene: IsInvoicePaid zak³ada ¿e cash ma warto¶ci netto i olewa podatki, 
-przy okazji type 1 traktuj±c jako obci±¿enie... )
 
 Ciekawe wyj¶cie z sytuacji jest takie:
 
