@@ -36,6 +36,7 @@ version 1.5.6 Baal (??/??/????):
   - fixed handling ip addresses from netdevices in lms-mgc (lukasz)
   - BTS#000327: in lms-reminder added negative values of daylight saving time
     for time functions acc. to PHP functions (alec)
+  - added balance and tariff summary on customers list printout (alec)
 
 version 1.5.5 Anubis (25/03/2005):
 

@@ -25,9 +25,9 @@
 			{t}Address{/t}<BR>
 			{t}Phone{/t}
 		</TD>
-		<TD CLASS="HEAD" VALIGN="TOP">
-			{t}E-mail{/t}<BR>
+		<TD CLASS="HEAD" VALIGN="TOP" ALIGN="RIGHT">
 			{t}Tariff{/t}<BR>
+			{t}E-mail{/t}<BR>
 			{t}TEN/SSN{/t}
 		</TD>
 		<TD CLASS="HEAD" ALIGN="RIGHT">
@@ -48,9 +48,9 @@
 			{$userlist[userlist].address}{if $userlist[userlist].city neq ""},{/if} {$userlist[userlist].zip} {$userlist[userlist].city}<BR>
 			{$userlist[userlist].phone1}
 		</TD>
-		<TD VALIGN="ABSMIDDLE">
+		<TD VALIGN="ABSMIDDLE" ALIGN="RIGHT">
+			{$userlist[userlist].tariffvalue|money_format}<BR>
 			{$userlist[userlist].email}<BR>
-			{$userlist[userlist].tariffvalue|money_format} {t}per month{/t}<BR>
 			{if $userlist[userlist].nip}{$userlist[userlist].nip}{else}{$userlist[userlist].pesel}{/if}
 		</TD>
 		<TD ALIGN="RIGHT" NOWRAP>
@@ -58,4 +58,9 @@
 		</TD>
 	</TR>
 	{/if}{/section}
+	<TR BGCOLOR="#EEEEEE">
+		<TD COLSPAN="3" ALIGN="RIGHT"><B>{t}Total:{/t}</B></TD>
+		<TD ALIGN="RIGHT"><B>{sum array=$userlist column="tariffvalue" string_format=$LANGDEFS.$_language.money_format}</B></TD>
+		<TD ALIGN="RIGHT"><B>{sum array=$userlist column="balance" string_format=$LANGDEFS.$_language.money_format}</B></TD>
+	</TR>
 </TABLE>
