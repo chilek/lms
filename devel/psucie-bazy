@@ -9,18 +9,7 @@ ID   type   value   taxvalue
 2 |    4 | 30.00 |    22.00 | karta sieciowa
                    ^^^^^^^^^
 
-To jest ¼le. Podatek siê liczy raz i choæ mozna powiedzieæ ¿e
-22.00/100 * 30.00 to da zawsze tyle samo to jednak raczej nie jest to 
-ani ³adne ani te¿ mi³o widziane przez khem "hministerstwa" które kiedy¶ 
-mia³y co¶ do powiedzenia o programach do faktur etc..
-
-W/w kawa³ek powinien wygl±daæ tak:
-
-ID   type   value  tax    TaxID
-1 |    4 | 70.00 |       |  1  | Abonament za co¶tam
-2 |    4 | 30.00 | 6.60  |  4  | karta sieciowa
-
-(30 * 22% = 6.60)
+To jest ¼le. 
 
 Aha, wp³ata to zawsze:
 9 |    3 | 36.60 |             | Wp³ata za kartê sieciow±
@@ -54,26 +43,86 @@ alec> moim zdaniem tak raczej nie, gdy¿ np. do obliczenia bilansu trzeba robiæ
       z³±czenie z du¿± tablic± invoicecontents co odbije siê ¼le (znacznie) na
       wydajno¶ci
 
+hunter> no w³a¶nie chyba nie, bo bilansu per vat siê chyba nie robi?
+
+Idea jest te¿ taka ¿e _mo¿na_ cash potem skompresowaæ np:
+
+ID | type | value   |      Comment           | invoiceid | invoiceitemid |
+31 |  4   | 9970.00 | Obci±¿enia za rok 2003 |     
+32 |  3   | 9870.00 | Wp³aty za rok 2003     | 
+
+(Co nie jest ani zbyt piêkne, ani m±dre ale daje jakie¶ pola manewru gdy 
+potwierdzili¶my sobie salda z klientem i nie potrzeba trzymaæ szczegó³ów 
+typu kiedy obci±¿yli¶my/kiedy zap³aci³, wiemy ¿e ¶cigamy go o te 100 z³ 
+ró¿nicy i tyle)
+
 InvoiceContents:
 
-Itemid |   Comment  |  Netto  | Tax | TaxValue  |
--------+------------+---------+-----+-----------+
-  1    |  Abonament |   70.00 |  1  | 0.00      |
-  2    |     NIC    |   30.00 |  4  | 6.60      |
+Itemid |   Comment  |  Netto  | Tax | 
+-------+------------+---------+-----|
+  1    |  Abonament |   70.00 |  1  | 
+  2    |     NIC    |   30.00 |  4  | 
 
 
-Tutaj pytanie: czy podatek liczymy i zapisujemy w bazie czy te¿ ka¿dorazowo liczymy na podstawie numerka? 
+Taxes:
 
-alec> moim zdaniem mo¿na zrezygnowaæ z taxvalue w cash, a tak¿e w invoicecontents,
-      (zostawiæ taxid) ale pod warunkiem, ¿e nie bêdziemy pozwalaæ na zmiany
-      taxrate w tabeli taxes
+ID | IsTaxed | TaxRate|  desc    | ValidFrom | ValidTo | 
+1  |   0     | 0.00   | vat free |     1     |         | 
+2  |   1     | 0.00   |   0%     |     1     |         |
+3  |   1     | 7.00   |   7%     |     1     |         |
+4  |   1     | 22.00  |   22%    |     1     |         |
 
-TaxID to niestety kolejny tabelek (taxes?) wygl±daj±cy tak:
+(teraz marzenia:)
 
-ID | IsTaxed | TaxRate|   desc [ | valid from | valid to | -> tego byæ ju¿ nie musi ]
-1  |   0     | 0.00   |   zw. / vat free
-2  |   1     | 0.00   |    0%
-3  |   1     | 7.00   |    7%
-4  |   1     | 22.00  |   22%
+4  |   1     | 22.00  |   22%    |     1     |   3     |
+5  |   1     | 15.00  |   15%    |     4     |         |
 
 etc.. wystarcz± smallinty na ID i taxed, tax rate jako numeric (4,2) 
+
+
+Aha Invoices:
+
+Teraz:
+ id | number |   cdate    | paytime | paytype | ...
+
+(W 1.7/1.9 ?): 
+
+id | number | number_plan | refersto | paytime | paytype | financial_peroid
+11 |   1    |      1      |    NULL  |   14    |    1    |      3
+
+12 |   1    |      2      |     11   |   10    |    1    |      3       | 
+13 |   2    |      1      |     11   |   10    |    1    |      3       | 
+
+
+Po co takie zamotanie?
+
+Zarówno id 12 jak i 13 mog± byæ korekt± 11, 
+
+12 ma swój inny plan numerowania ( np numer/LMSKOR/2005) 
+13 korzysta z planu "1" ( np numer/LMS/2005) 
+
+Daje to mo¿liwo¶æ pój¶cia zarówno w stronê LMS jak i LMSKOR
+
+Ten ca³y financial_peroid to próba racjonalizacji korzystania z cdate, 
+to co jest dzia³a ale pachnie ¼le. Chcia³bym i¶æ w kierunku:
+"%n/LMS/%period" Mo¿e to zbyt szumnie wygl±da, ale przynajmniej rok i miesi±c 
+lepiej mieæ w invoices i na podstawie tych warto¶ci sprawdzaæ czy jest ju¿ 
+faktura w danym okresie.
+
+A Period:
+
+id | year | month
+1  | 2004 | NULL
+2  | 2005 |   1
+3  | 2005 |   2
+...
+13 | 2005 |  12
+
+No i paytype: (to raczej kosmetyka)
+
+Id | Comment
+1  | Gotówka
+2  | Przelew
+3  | Zaliczka/Przedp³ata
+... 
+
