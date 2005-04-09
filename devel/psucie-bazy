@@ -39,12 +39,6 @@ Albo rozbia:
 4 |  3   | 70.00 | Abonament            |     1     |       1       | 
 5 |  3   | 36.60 | Wp³ata za NIC        |     1     |       2       |
 
-alec> moim zdaniem tak raczej nie, gdy¿ np. do obliczenia bilansu trzeba robiæ 
-      z³±czenie z du¿± tablic± invoicecontents co odbije siê ¼le (znacznie) na
-      wydajno¶ci
-
-hunter> no w³a¶nie chyba nie, bo bilansu per vat siê chyba nie robi?
-
 Idea jest te¿ taka ¿e _mo¿na_ cash potem skompresowaæ np:
 
 ID | type | value   |      Comment           | invoiceid | invoiceitemid |
