@@ -25,37 +25,43 @@
  */
 
 $layout['pagetitle'] = trans('Cash Operations Import');
+
+if($_GET['action']=='delete')
+{
+	if($marks = $_POST['marks'])
+		foreach($marks as $id)
+			$LMS->DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($id));
+}
+elseif($marks = $_POST['marks'])
+{
+	$customers = $_POST['customer'];
+	foreach($marks as $id)
+	{
+		if($customers[$id])
+		{
+			$import = $LMS->DB->GetRow('SELECT * FROM cashimport WHERE id = ?', array($id));
+			$LMS->DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($id));
+			$balance['time'] = $import['date'];
+			$balance['type'] = 3;
+			$balance['value'] = $import['value'];
+			$balance['userid'] = $customers[$id];
+			$balance['comment'] = $import['description'];
+			$LMS->AddBalance($balance);
+		}
+		else
+			$error[$id] = trans('Customer not selected!');
+	}
+}
+
+$importlist = $LMS->DB->GetAll('SELECT * FROM cashimport WHERE closed = 0 AND value > 0');
+$listdata['total'] = sizeof($importlist);
+
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$op = $_GET['op'];
+$SMARTY->assign('importlist', $importlist);
+$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('error', $error);
+$SMARTY->assign('userlist', $LMS->GetUserNames());
+$SMARTY->display('cashimport.html');
 
-switch ($op) {
-    case "del":
-	$LMS->DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($_GET['id']));
-	header('Location: ?m=cashimport');
-	break;
-    case "assign":
-	if ($_POST['customer']!=0) {
-	    $data = $LMS->DB->GetRow('SELECT * FROM cashimport WHERE id = ?', array($_GET['id']));
-	    $LMS->DB->Execute('UPDATE cashimport SET closed = 1 WHERE id = ?', array($_GET['id']));
-	    $balance['time'] = $data['date'];
-	    $balance['type'] = 3;
-	    $balance['value'] = $data['value'];
-	    $balance['userid'] = $_POST['customer'];
-	    $balance['comment'] = $data['description'];
-	    $LMS->AddBalance($balance);
-	    header('Location: ?m=cashimport');
-	    break;
-	} else {
-	    $error[$_GET['id']] = trans('No customer selected!');
-	}
-    default:	
-	$userlist = $LMS->GetUserNames();
-	$importlist = $LMS->DB->GetAll('SELECT * FROM cashimport WHERE closed = 0 AND value > 0');
-	$importlist['total'] = sizeof($importlist);
-	$SMARTY->assign('importlist',$importlist);
-	$SMARTY->assign('userlist',$userlist);
-	$SMARTY->assign('error',$error);
-	$SMARTY->display('cashimport.html');
-}
 ?>
