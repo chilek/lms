@@ -54,10 +54,9 @@ int main(int argc, char *argv[])
 	host = (char *) malloc(sizeof(char)*255);  	//database
 	dhost = (char *) malloc(sizeof(char)*255);	//daemon
 
-#ifdef DEBUG1
     	syslog(LOG_INFO, "LMS Daemon started.");
-#endif
-	// check environment	
+
+    	// check environment	
 	if( getenv("LMSDBPASS") ) passwd = getenv("LMSDBPASS"); else passwd = "";
 	if( getenv("LMSDBNAME") ) db = getenv("LMSDBNAME"); else db = "lms";
 	if( getenv("LMSDBUSER") ) user = getenv("LMSDBUSER"); else user = "lms";
@@ -88,7 +87,6 @@ int main(int argc, char *argv[])
     	g->str_replace = &str_replace;
     	g->str_save = &str_save;
     	g->str_concat = &str_concat;
-//	g->str_lwc = &strlwc;
 
     	g->config_getstring = &config_getstring;
 	g->config_getint = &config_getint;

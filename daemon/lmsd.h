@@ -46,7 +46,6 @@ struct global
 	int (*str_replace)(unsigned char **, const unsigned char *, const unsigned char *);
 	unsigned char * (*str_save)(unsigned char *, const unsigned char *);
 	unsigned char * (*str_concat)(const unsigned char *, const unsigned char *);
-//	unsigned char * (*str_lwc)(const unsigned char *);
 };
 
 struct module
