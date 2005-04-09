@@ -143,6 +143,14 @@ else
 	exit 1;
 }
 
+# get/set invoice file type
+my $dbq = $dbase->prepare("SELECT value FROM uiconfig WHERE section='invoices' AND var='type' AND disabled=0");
+$dbq->execute();
+if(my $row = $dbq->fetchrow_hashref())
+{
+	$filetype = $row->{'value'};
+}
+
 my $fencoding = 'quoted-printable';
 my $ftype = 'text/html';
 my $fext = 'html';
@@ -173,7 +181,7 @@ my $year = strftime("%Y",localtime2());
 my $daystart = strftime("%s", 0, 0, 0, $day, $month - 1, $year - 1900);
 my $dayend = strftime("%s", 59, 59, 23, $day, $month - 1, $year - 1900);
 
-my $dbq = $dbase->prepare('SELECT invoices.id AS id, number, cdate, email, invoices.name AS name, customerid FROM invoices LEFT JOIN users ON users.id = customerid WHERE deleted = 0 AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
+$dbq = $dbase->prepare('SELECT invoices.id AS id, number, cdate, email, invoices.name AS name, customerid FROM invoices LEFT JOIN users ON users.id = customerid WHERE deleted = 0 AND cdate >= '.$daystart.' AND cdate <= '.$dayend);
 $dbq->execute();
 while(my $row = $dbq->fetchrow_hashref())
 {
@@ -210,15 +218,15 @@ while(my $row = $dbq->fetchrow_hashref())
 			$mail->head->add('Return-path', '<'.$sender_email.'>');
 			$mail->attach(
 				Type => 'text/plain',
-				Charset => 'ISO-8859-2',
+				Charset => 'UTF-8',
 				Encoding => 'quoted-printable',
 				Data => [
-					"W za³±czeniu, faktura VAT nr. $invoice_number\n",
+					"W zaÅ‚Ä…czeniu, faktura VAT Nr $invoice_number\n",
 					],
 			);
 			$mail->attach(
 				Type => $ftype,
-				Charset => 'ISO-8859-2',
+				Charset => 'UTF-8',
 				Encoding => $fencoding,
 				Filename => 'faktura_'.$row->{'id'}.'.'.$fext,
 				Data => [
