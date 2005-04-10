@@ -17,7 +17,7 @@
 		{foreach from=$ticket.messages item=message}
 		    <TR class="DARK">
 			<TD width="1%" class="fbt" ALIGN="RIGHT">
-			    <B>{$message.createtime|date_format:"%Y/%m/%d<BR>%H:%M.%S"}</B>
+			    <B>{$message.createtime|date_format:"%Y/%m/%d<BR>%H:%M"}</B>
 			</TD>
 			<TD width="1%" class="fbt" ALIGN="RIGHT">
 			    <B>{t}From:{/t}<BR>{t}Subject:{/t}</B>
