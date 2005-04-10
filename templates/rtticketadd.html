@@ -21,12 +21,15 @@
 			<TABLE width="100%" cellpadding="1">
 			    <TR>
 			    	<TD width="100%" colspan="2">
-				    <SELECT size="1" name="ticket[userid]" {if !$ticket.userid}{tip trigger="requestor"}{/if} {tip text="Select customer from list or enter his data if is not a customer"}>
+				    <SELECT size="1" name="ticket[userid]" {if !$ticket.userid}{tip trigger="requestor"}{/if} {tip text="Select customer from list or enter his data if is not a customer"} onChange="document.forms['ticket'].elements['ticket[custid]'].value=document.forms['ticket'].elements['ticket[userid]'].value">
 					<OPTION value="0">- {t}select customer{/t} -</OPTION>
 					{foreach from=$userlist item=userlist}
 					    <OPTION value="{$userlist.id}" {if $userlist.id == $user}SELECTED{/if}>{$userlist.username} ({$userlist.id|string_format:"%04d"})</OPTION>
 					{/foreach}
 				    </SELECT>
+				    <NOBR>{t}or Customer ID:{/t}
+				    <INPUT TYPE="TEXT" NAME="ticket[custid]" VALUE="{$ticket.custid}" SIZE="5" onChange="document.forms['ticket'].elements['ticket[userid]'].value=document.forms['ticket'].elements['ticket[custid]'].value" {tip trigger="custid"}>
+				    </NOBR>
 				</TD>
 			    </TR>
 			    <TR>
