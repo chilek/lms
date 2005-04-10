@@ -1,4 +1,3 @@
-CFLAGS = -Wall -O2
 MODULES = ethers hostfile dhcp oident dns cutoff payments traffic notify tc \
 	    system pinger cbq-init cutoff2 shaper \
 	    ggnotify

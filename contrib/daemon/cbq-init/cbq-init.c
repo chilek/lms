@@ -25,8 +25,9 @@
 #include <stdio.h>
 #include <syslog.h>
 #include <string.h>
+#include <stdlib.h>
 
-#include "almsd.h"
+#include "lmsd.h"
 #include "cbq-init.h"
 
 unsigned long inet_addr(unsigned char *);
@@ -41,7 +42,7 @@ char * itoa(int i)
 void reload(GLOBAL *g, struct cbq_module *cbq)
 {
 	FILE *fh, *fh1, *fh2;
-	QUERY_HANDLE *res, *ures, *nres;
+	QueryHandle *res, *ures, *nres;
 	int x=100, i, j, v, k=2, m=0, n=2, nc=0, gc=0;
 	unsigned char *file;
 
@@ -59,35 +60,35 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 		n = sscanf(netnames, "%s %[._a-zA-Z0-9- ]", netname, netnames);
 
 		if( strlen(netname) ) 
-			if( (res = g->db_pquery("SELECT name, domain, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname)) ) 
+		{
+			res = g->db_pquery(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface FROM networks WHERE UPPER(name)=UPPER('?')",netname);
+			if( g->db_nrows(res) ) 
 			{
-				if(res->nrows) 
-				{
-		    			nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
-					nets[nc].name = strdup(g->db_get_data(res,0,"name"));
-					nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
-					nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
-					nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
-					nc++;
-				}
-    				g->db_free(res);
-			}				
+		    		nets = (struct net *) realloc(nets, (sizeof(struct net) * (nc+1)));
+				nets[nc].name = strdup(g->db_get_data(res,0,"name"));
+				nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
+				nets[nc].address = inet_addr(g->db_get_data(res,0,"address"));
+				nets[nc].mask = inet_addr(g->db_get_data(res,0,"mask"));
+				nc++;
+			}
+    			g->db_free(&res);
+		}				
 	}
 	free(netname); free(netnames);
 
 	if(!nc)
-		if( (res = g->db_query("SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks"))!=NULL ) 
+	{
+		res = g->db_query(g->conn, "SELECT name, domain, address, INET_ATON(mask) AS mask, interface, gateway FROM networks");
+		for(nc=0; nc<g->db_nrows(res); nc++) 
 		{
-			for(nc=0; nc<res->nrows; nc++) 
-			{
-				nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
-				nets[nc].name = strdup(g->db_get_data(res,nc,"name"));
-				nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
-				nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
-				nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
-			}
-			g->db_free(res);
+			nets = (struct net*) realloc(nets, (sizeof(struct net) * (nc+1)));
+			nets[nc].name = strdup(g->db_get_data(res,nc,"name"));
+			nets[nc].interface = strdup(g->db_get_data(res,0,"interface"));
+			nets[nc].address = inet_addr(g->db_get_data(res,nc,"address"));
+			nets[nc].mask = inet_addr(g->db_get_data(res,nc,"mask"));
 		}
+		g->db_free(&res);
+	}
 
 	// get table of usergroups
 	while( k>1 ) 
@@ -95,26 +96,27 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 		k = sscanf(groupnames, "%s %[._a-zA-Z0-9- ]", groupname, groupnames);
 
 		if( strlen(groupname) )
-			if( (res = g->db_pquery("SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname)) ) 
+		{
+			res = g->db_pquery(g->conn, "SELECT name, id FROM usergroups WHERE UPPER(name)=UPPER('?')",groupname);
+			if( g->db_nrows(res) ) 
 			{
-				if(res->nrows) 
-				{
-			    		ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
-					ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
-					ugps[gc].id = atoi(g->db_get_data(res,0,"id"));
-					gc++;
-				}
-    				g->db_free(res);
-			}				
+				ugps = (struct group *) realloc(ugps, (sizeof(struct group) * (gc+1)));
+				ugps[gc].name = strdup(g->db_get_data(res,0,"name"));
+				ugps[gc].id = atoi(g->db_get_data(res,0,"id"));
+				gc++;
+			}
+    			g->db_free(&res);
+		}				
 	}
 	free(groupname); free(groupnames);
 
 	fh = fopen(cbq->mark_file, "w");
 	if(fh)
 	{
-		// get data for any user with connected nodes and active assignments
-		// we need user ID and average data values for nodes
-		if( (ures = g->db_query("SELECT userid AS id, SUM(uprate)/COUNT(DISTINCT nodes.id) AS uprate, SUM(downrate)/COUNT(DISTINCT nodes.id) AS downrate, SUM(upceil)/COUNT(DISTINCT nodes.id) AS upceil, SUM(downceil)/COUNT(DISTINCT nodes.id) AS downceil, SUM(climit)/COUNT(DISTINCT nodes.id) AS climit, SUM(plimit)/COUNT(DISTINCT nodes.id) AS plimit FROM assignments LEFT JOIN tariffs ON (tariffid = tariffs.id) LEFT JOIN nodes ON (userid = ownerid) WHERE access = 1 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) GROUP BY userid ORDER BY userid"))!=NULL ) 
+		// get data for any customer with connected nodes and active assignments
+		// we need customer ID and average data values for nodes
+		ures = g->db_query(g->conn, "SELECT userid AS id, SUM(uprate)/COUNT(DISTINCT nodes.id) AS uprate, SUM(downrate)/COUNT(DISTINCT nodes.id) AS downrate, SUM(upceil)/COUNT(DISTINCT nodes.id) AS upceil, SUM(downceil)/COUNT(DISTINCT nodes.id) AS downceil, SUM(climit)/COUNT(DISTINCT nodes.id) AS climit, SUM(plimit)/COUNT(DISTINCT nodes.id) AS plimit FROM assignments LEFT JOIN tariffs ON (tariffid = tariffs.id) LEFT JOIN nodes ON (userid = ownerid) WHERE access = 1 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) GROUP BY userid ORDER BY userid");
+		if( g->db_nrows(ures) )
 		{
 			// delete old configuration files
 			unsigned char *cmd = strdup("rm -f %d/cbq-*");
@@ -124,22 +126,23 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 			
 			fprintf(fh, "%s", cbq->mark_file_begin);
 		
-			for(i=0; i<ures->nrows; i++) 
+			for(i=0; i<g->db_nrows(ures); i++) 
 			{	
 				// test user's membership in usergroups
+				m = 0;
 				if(gc)
-					if( (res = g->db_pquery("SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(ures,i,"id"))) ) 
+				{
+					res = g->db_pquery(g->conn, "SELECT usergroupid FROM userassignments WHERE userid=?", g->db_get_data(ures,i,"id"));
+					for(k=0; k<g->db_nrows(res); k++) 
 					{
-						for(k=0; k<res->nrows; k++) 
-						{
-							int groupid = atoi(g->db_get_data(res, k, "usergroupid"));
-							for(m=0; m<gc; m++) 
-								if(ugps[m].id==groupid) 
-									break;
-							if(m!=gc) break;
-						}
-						g->db_free(res);
+						int groupid = atoi(g->db_get_data(res, k, "usergroupid"));
+						for(m=0; m<gc; m++) 
+							if(ugps[m].id==groupid) 
+								break;
+						if(m!=gc) break;
 					}
+					g->db_free(&res);
+				}
 					
 				if( !gc || m!=gc ) 
 				{
@@ -156,109 +159,107 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
     					int n_climit = atoi(climit);
 					int n_plimit = atoi(plimit);
 					
-					if( (nres = g->db_pquery("SELECT INET_NTOA(ipaddr) AS ip, ipaddr, mac, name FROM nodes WHERE ownerid = ? AND access = 1 ORDER BY ipaddr", g->db_get_data(ures,i,"id")))!=NULL ) 
-					{
-						for(j=0; j<nres->nrows; j++) 
-						{	
-							char *ipaddr = g->db_get_data(nres,j,"ip");
-							char *mac = g->db_get_data(nres,j,"mac");
-							unsigned char *name = g->db_get_data(nres,j,"name");
-							unsigned char *mark_rule = strdup(cbq->mark_rule);
-							unsigned char *cbq_down = strdup(cbq->cbq_down);
-							unsigned char *cbq_up = strdup(cbq->cbq_up);
-							int h_uprate = (int) n_uprate/nres->nrows;
-							int h_upceil = (int) n_upceil/nres->nrows;
-							int h_downrate = (int) n_downrate/nres->nrows;
-							int h_downceil = (int) n_downceil/nres->nrows;
-							int h_plimit = (int) n_plimit/nres->nrows;
-							int h_climit = (int) n_climit/nres->nrows;
+					nres = g->db_pquery(g->conn, "SELECT INET_NTOA(ipaddr) AS ip, ipaddr, mac, name FROM nodes WHERE ownerid = ? AND access = 1 ORDER BY ipaddr", g->db_get_data(ures,i,"id")); 
+					
+					for(j=0; j<g->db_nrows(nres); j++) 
+					{	
+						char *ipaddr = g->db_get_data(nres,j,"ip");
+						char *mac = g->db_get_data(nres,j,"mac");
+						unsigned char *name = g->db_get_data(nres,j,"name");
+						unsigned char *mark_rule = strdup(cbq->mark_rule);
+						unsigned char *cbq_down = strdup(cbq->cbq_down);
+						unsigned char *cbq_up = strdup(cbq->cbq_up);
+						int h_uprate = (int) n_uprate/nres->nrows;
+						int h_upceil = (int) n_upceil/nres->nrows;
+						int h_downrate = (int) n_downrate/nres->nrows;
+						int h_downceil = (int) n_downceil/nres->nrows;
+						int h_plimit = (int) n_plimit/nres->nrows;
+						int h_climit = (int) n_climit/nres->nrows;
+						
+						// test node's membership in networks
+						// to get valid network's interface name
+						for(v=0; v<nc; v++)
+							if(nets[v].address == (inet_addr(ipaddr) & nets[v].mask)) 
+								break;
+						if(v!=nc)
+						{
+							g->str_replace(&mark_rule, "%n", name);
+							g->str_replace(&mark_rule, "%if", nets[v].interface);
+							g->str_replace(&mark_rule, "%i", ipaddr);
+							g->str_replace(&mark_rule, "%m", mac);
+							g->str_replace(&mark_rule, "%x", itoa(x));
+										
+							fprintf(fh, "%s", mark_rule);
 							
-							// test node's membership in networks
-							// to get valid network's interface name
-							for(v=0; v<nc; v++)
-								if(nets[v].address == (inet_addr(ipaddr) & nets[v].mask)) 
-									break;
+							//create file 1
+							file = strdup("%d/cbq-%x.%n");
+							g->str_replace(&file, "%d", cbq->path);
+							g->str_replace(&file, "%n", name);
+							g->str_replace(&file, "%x", itoa(x));
+							fh1 = fopen(file, "w");
 
-							if(v!=nc)
+							if(fh1)
 							{
-								g->str_replace(&mark_rule, "%n", name);
-								g->str_replace(&mark_rule, "%if", nets[v].interface);
-								g->str_replace(&mark_rule, "%i", ipaddr);
-								g->str_replace(&mark_rule, "%m", mac);
-								g->str_replace(&mark_rule, "%x", itoa(x));
-											
-								fprintf(fh, "%s", mark_rule);
+								g->str_replace(&cbq_down, "%n", name);
+								g->str_replace(&cbq_down, "%if", nets[v].interface);
+								g->str_replace(&cbq_down, "%i", ipaddr);
+								g->str_replace(&cbq_down, "%m", mac);
+								g->str_replace(&cbq_down, "%x", itoa(x));
+								g->str_replace(&cbq_down, "%downrate", itoa(h_downrate));
+								g->str_replace(&cbq_down, "%rw", itoa((int)(h_downrate/10)));
+								g->str_replace(&cbq_down, "%downceil", itoa(h_downceil));
+								g->str_replace(&cbq_down, "%cw", itoa((int)(h_downceil/10)));
+								g->str_replace(&cbq_down, "%climit", itoa(h_climit));
+								g->str_replace(&cbq_down, "%plimit", itoa(h_plimit));
 								
-								//create file 1
-								file = strdup("%d/cbq-%x.%n");
-								g->str_replace(&file, "%d", cbq->path);
-								g->str_replace(&file, "%n", name);
-								g->str_replace(&file, "%x", itoa(x));
-								fh1 = fopen(file, "w");
-
-								if(fh1)
-								{
-									g->str_replace(&cbq_down, "%n", name);
-									g->str_replace(&cbq_down, "%if", nets[v].interface);
-									g->str_replace(&cbq_down, "%i", ipaddr);
-									g->str_replace(&cbq_down, "%m", mac);
-									g->str_replace(&cbq_down, "%x", itoa(x));
-									g->str_replace(&cbq_down, "%downrate", itoa(h_downrate));
-									g->str_replace(&cbq_down, "%rw", itoa((int)(h_downrate/10)));
-									g->str_replace(&cbq_down, "%downceil", itoa(h_downceil));
-									g->str_replace(&cbq_down, "%cw", itoa((int)(h_downceil/10)));
-									g->str_replace(&cbq_down, "%climit", itoa(h_climit));
-									g->str_replace(&cbq_down, "%plimit", itoa(h_plimit));
-									
-									fprintf(fh1, "%s", cbq_down);
-									fclose(fh1);
-								}
-								else if(strlen(cbq->cbq_down))
-								{
-									syslog(LOG_ERR, "[%s/cbq-init] Unable to write file %s", cbq->base.instance, file);
-								}
-								free(file);
-								
-								//create file 2
-								file = strdup("%d/cbq-%x.%n");
-								g->str_replace(&file, "%d", cbq->path);
-								g->str_replace(&file, "%n", name);
-								g->str_replace(&file, "%x", itoa(x+1000));
-								fh2 = fopen(file, "w");
-									
-								if(fh2)
-								{
-									g->str_replace(&cbq_up, "%n", name);
-									g->str_replace(&cbq_up, "%if", nets[v].interface);
-									g->str_replace(&cbq_up, "%i", ipaddr);
-									g->str_replace(&cbq_up, "%m", mac);
-									g->str_replace(&cbq_up, "%x", itoa(x));
-									g->str_replace(&cbq_up, "%uprate", itoa(h_uprate));
-									g->str_replace(&cbq_up, "%rw", itoa((int)(h_uprate/10)));
-									g->str_replace(&cbq_up, "%upceil", itoa(h_upceil));
-										g->str_replace(&cbq_up, "%cw", itoa((int)(h_upceil/10)));
-									g->str_replace(&cbq_up, "%climit", itoa(h_climit));
-									g->str_replace(&cbq_up, "%plimit", itoa(h_plimit));
-																		
-									fprintf(fh2, "%s", cbq_up);
-									fclose(fh2);
-								} 
-								else if(strlen(cbq->cbq_up))
-								{
-									syslog(LOG_ERR, "[%s/cbq-init] Unable to write file %s", cbq->base.instance, file);
-								}
-								free(file);
+								fprintf(fh1, "%s", cbq_down);
+								fclose(fh1);
 							}
-							x++;
-							free(cbq_down); 
-							free(cbq_up); 
-							free(mark_rule);	
+							else if(strlen(cbq->cbq_down))
+							{
+								syslog(LOG_ERR, "[%s/cbq-init] Unable to write file %s", cbq->base.instance, file);
+							}
+							free(file);
+							
+							//create file 2
+							file = strdup("%d/cbq-%x.%n");
+							g->str_replace(&file, "%d", cbq->path);
+							g->str_replace(&file, "%n", name);
+							g->str_replace(&file, "%x", itoa(x+1000));
+							fh2 = fopen(file, "w");
+								
+							if(fh2)
+							{
+								g->str_replace(&cbq_up, "%n", name);
+								g->str_replace(&cbq_up, "%if", nets[v].interface);
+								g->str_replace(&cbq_up, "%i", ipaddr);
+								g->str_replace(&cbq_up, "%m", mac);
+								g->str_replace(&cbq_up, "%x", itoa(x));
+								g->str_replace(&cbq_up, "%uprate", itoa(h_uprate));
+								g->str_replace(&cbq_up, "%rw", itoa((int)(h_uprate/10)));
+								g->str_replace(&cbq_up, "%upceil", itoa(h_upceil));
+								g->str_replace(&cbq_up, "%cw", itoa((int)(h_upceil/10)));
+								g->str_replace(&cbq_up, "%climit", itoa(h_climit));
+								g->str_replace(&cbq_up, "%plimit", itoa(h_plimit));
+																	
+								fprintf(fh2, "%s", cbq_up);
+								fclose(fh2);
+							} 
+							else if(strlen(cbq->cbq_up))
+							{
+								syslog(LOG_ERR, "[%s/cbq-init] Unable to write file %s", cbq->base.instance, file);
+							}
+							free(file);
 						}
-						g->db_free(nres);
+						x++;
+						free(cbq_down); 
+						free(cbq_up); 
+						free(mark_rule);	
 					}
+					g->db_free(&nres);
 				}
 			}
-			g->db_free(ures);
+			g->db_free(&ures);
 		}
 		else
 			syslog(LOG_ERR, "[%s/cbq-init] Unable to read database", cbq->base.instance);
@@ -273,15 +274,15 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 	else
 		syslog(LOG_ERR, "[%s/cbq-init] Unable to write file '%s'", cbq->base.instance, cbq->mark_file);
 
-	for(i=0;i<nc;i++) {
+	for(i=0;i<nc;i++)
+	{
 		free(nets[i].name);
 		free(nets[i].interface);
 	}
 	free(nets);
 	
-	for(i=0;i<gc;i++) {
+	for(i=0;i<gc;i++)
 		free(ugps[i].name);
-	}
 	free(ugps);
 	
 	free(cbq->path);
@@ -299,47 +300,35 @@ void reload(GLOBAL *g, struct cbq_module *cbq)
 struct cbq_module * init(GLOBAL *g, MODULE *m)
 {
 	struct cbq_module *cbq;
-	unsigned char *instance, *s;
-	dictionary *ini;
 	
-	if(g->api_version != APIVERSION) 
+	if(g->api_version != APIVERSION)
+	{
 		return (NULL);
-	
-	instance = m->instance;
+	}
 	
 	cbq = (struct cbq_module*) realloc(m, sizeof(struct cbq_module));
 	
 	cbq->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
-	cbq->base.instance = strdup(instance);
 	
-	ini = g->iniparser_load(g->inifile);
-	
-	s = g->str_concat(instance, ":path");
-	cbq->path = strdup(g->iniparser_getstring(ini, s, "/etc/sysconfig/cbq"));
-	free(s); s = g->str_concat(instance, ":command");
-	cbq->command = strdup(g->iniparser_getstring(ini, s, "/etc/rc.d/cbq.init restart nocache"));
-	free(s); s = g->str_concat(instance, ":cbq_down");
-	cbq->cbq_down = strdup(g->iniparser_getstring(ini, s, "\
+	cbq->path = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "path", "/etc/sysconfig/cbq"));
+	cbq->command = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "command", "/etc/rc.d/cbq.init restart nocache"));
+	cbq->cbq_down = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "cbq_down", "\
 DEVICE=%if,100Mbit,10Mbit\n\
 RATE=%downrateKbit\n\
 WEIGHT=%rwKbit\n\
 PRIO=5\n\
 RULE=%i"));
-	free(s); s = g->str_concat(instance, ":cbq_up");
-	cbq->cbq_up = strdup(g->iniparser_getstring(ini, s, "\
+	cbq->cbq_up = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "cbq_up", "\
 DEVICE=eth1,100Mbit,10Mbit\n\
 RATE=%uprateKbit\n\
 WEIGHT=%rwKbit\n\
 PRIO=5\n\
 MARK=%x"));
-	free(s); s = g->str_concat(instance, ":mark_rule");
-	cbq->mark_rule = strdup(g->iniparser_getstring(ini, s, "# %n\n\
+	cbq->mark_rule = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "mark_rule", "# %n\n\
 $IPT -t mangle -A LIMITS -s %i -j MARK --set-mark %x\n\
 $IPT -t mangle -A LIMITS -d %i -j MARK --set-mark %x\n"));
-	free(s); s = g->str_concat(instance, ":mark_file");
-	cbq->mark_file = strdup(g->iniparser_getstring(ini, s, "/etc/rc.d/rc.marks"));
-	free(s); s = g->str_concat(instance, ":mark_file_begin");
-	cbq->mark_file_begin = strdup(g->iniparser_getstring(ini, s, "\
+	cbq->mark_file = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "mark_file", "/etc/rc.d/rc.marks"));
+	cbq->mark_file_begin = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "mark_file_begin", "\
 #!/bin/sh\n\
 IPT=/sbin/iptables\n\
 WAN=eth1\n\n\
@@ -350,17 +339,10 @@ $IPT -t mangle -X LIMITS >/dev/null 2>&1\n\
 $IPT -t mangle -N LIMITS\n\
 $IPT -t mangle -I FORWARD -i $WAN -j LIMITS\n\
 $IPT -t mangle -I FORWARD -o $WAN -j LIMITS\n\n"));
-	free(s); s = g->str_concat(instance, ":mark_file_end");
-	cbq->mark_file_end = strdup(g->iniparser_getstring(ini, s, ""));
-
-	free(s); s = g->str_concat(instance, ":networks");
-	cbq->networks = strdup(g->iniparser_getstring(ini, s, ""));
-	free(s); s = g->str_concat(instance, ":usergroups");
-	cbq->usergroups = strdup(g->iniparser_getstring(ini, s, ""));
+	cbq->mark_file_end = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "mark_file_end", ""));
+	cbq->networks = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "networks", ""));
+	cbq->usergroups = strdup(g->config_getstring(cbq->base.ini, cbq->base.instance, "usergroups", ""));
 	
-	g->iniparser_freedict(ini);
-	free(instance);
-	free(s);
 #ifdef DEBUG1
 	syslog(LOG_INFO, "DEBUG: [%s/cbq-init] initialized", cbq->base.instance);
 #endif

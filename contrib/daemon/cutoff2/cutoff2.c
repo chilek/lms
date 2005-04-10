@@ -26,8 +26,9 @@
 #include <syslog.h>
 #include <string.h>
 #include <time.h>
+#include <stdlib.h>
 
-#include "almsd.h"
+#include "lmsd.h"
 #include "cutoff2.h"
 
 int is_deadline(int at, int limit, time_t t)
@@ -45,7 +46,7 @@ int is_deadline(int at, int limit, time_t t)
 
 void reload(GLOBAL *g, struct cutoff_module *c)
 {
-	QUERY_HANDLE *res, *result;
+	QueryHandle *res, *result;
 	int i, plimit=0, limit=0, execu=0, execn=0, u=0, n=0;
 	char time_fmt[DATE_FORMAT_LEN], fmt[]="(%d.%m.%Y)";
 	struct tm *wsk;
@@ -72,23 +73,24 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 	
 	if(c->deadline > 28) c->deadline = 28;
 
-	if( (res = g->db_query("SELECT users.id AS id, SUM((type * -2 + 7) * cash.value)*-1 AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id HAVING SUM((type * -2 + 7) * cash.value) < 0"))!=NULL) 
+	res = g->db_query(g->conn, "SELECT users.id AS id, SUM((type * -2 + 7) * cash.value)*-1 AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id HAVING SUM((type * -2 + 7) * cash.value) < 0");
+	if( g->db_nrows(res) )
 	{
-		for(i=0; i<res->nrows; i++) 
+		for(i=0; i<g->db_nrows(res); i++) 
 		{
 			char *userid = g->db_get_data(res,i,"id");
 			float balance = atof(g->db_get_data(res,i,"balance"));
 			int at = 0;
 			float value = 0;
 			
-			if( (result = g->db_pquery("SELECT MAX(at) AS at, SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND userid = ? GROUP BY userid HAVING SUM(value) > 0", userid))!=NULL)
+			if( (result = g->db_pquery(g->conn, "SELECT MAX(at) AS at, SUM(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND period = 1 AND suspended = 0 AND (datefrom <= %NOW% OR datefrom = 0) AND (dateto >= %NOW% OR dateto = 0) AND userid = ? GROUP BY userid HAVING SUM(value) > 0", userid))!=NULL)
 			{
-				if(result->nrows)
+				if( g->db_nrows(result) )
 				{
 					at = atoi(g->db_get_data(result,0,"at"));
 					value = atof(g->db_get_data(result,0,"value"));
 				}
-				g->db_free(result);
+				g->db_free(&result);
 			}
 			else continue;
 			
@@ -108,35 +110,35 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 			//printf("UserID: %s\tPayDay: %d\tValue: %.2f\tBalance: %.2f\n",userid, at, value, balance);
 			
     			if(!c->warn_only)
-				n = g->db_pexec("UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), userid);
+				n = g->db_pexec(g->conn, "UPDATE nodes SET access = 0 ? WHERE ownerid = ? AND access = 1", (*c->warning ? ", warning = 1" : ""), userid);
 			else 
-				n = g->db_pexec("UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", userid);
+				n = g->db_pexec(g->conn, "UPDATE nodes SET warning = 1 WHERE ownerid = ? AND warning = 0", userid);
 
 			execn = n ? 1 : execn;
 			
 			if(*c->warning && n)
 			{
-				u = g->db_pexec("UPDATE users SET message = '?' WHERE id = ?", c->warning, userid);
+				u = g->db_pexec(g->conn, "UPDATE users SET message = '?' WHERE id = ?", c->warning, userid);
 				execu = u ? 1 : execu;
 			}
 		}	
-		g->db_free(res);
+		g->db_free(&res);
 
 		// set timestamps
 		if(execu)
 		{
-			g->db_exec("DELETE FROM timestamps WHERE tablename = 'users'");
-			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('users',%NOW%)");
+			g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = 'users'");
+			g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('users',%NOW%)");
 		}
 		if(execn)
 		{
-			g->db_exec("DELETE FROM timestamps WHERE tablename = 'nodes'");
-			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('nodes',%NOW%)");
+			g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = 'nodes'");
+			g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('nodes',%NOW%)");
 		}	
 		if(execn || execu)
 		{
-			g->db_exec("DELETE FROM timestamps WHERE tablename = '_global'");
-			g->db_exec("INSERT INTO timestamps (tablename,time) VALUES ('_global',%NOW%)");
+			g->db_exec(g->conn, "DELETE FROM timestamps WHERE tablename = '_global'");
+			g->db_exec(g->conn, "INSERT INTO timestamps (tablename,time) VALUES ('_global',%NOW%)");
 			system(c->command);
 		}
 #ifdef DEBUG1
@@ -154,35 +156,22 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 struct cutoff_module * init(GLOBAL *g, MODULE *m)
 {
 	struct cutoff_module *c;
-	unsigned char *instance, *s;
-	dictionary *ini;
 	
-	if(g->api_version != APIVERSION) 
-	    return (NULL);
-	
-	instance = m->instance;
+	if(g->api_version != APIVERSION)
+	{
+		return (NULL);
+	}
 	
 	c = (struct cutoff_module *) realloc(m, sizeof(struct cutoff_module));
 	
 	c->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
-	c->base.instance = strdup(instance);
 
-	ini = g->iniparser_load(g->inifile);
-
-	s = g->str_concat(instance, ":limit");
-	c->limit = strdup(g->iniparser_getstring(ini, s, "0"));
-	free(s); s = g->str_concat(instance, ":deadline");
-	c->deadline = g->iniparser_getint(ini, s, 0);
-	free(s); s = g->str_concat(instance, ":warnings_only");
-	c->warn_only = g->iniparser_getboolean(ini, s, 0);
-	free(s); s = g->str_concat(instance, ":warning");
-	c->warning = strdup(g->iniparser_getstring(ini, s, "Automatyczna blokada spowodowana przekroczeniem terminu wp³aty %time"));
-	free(s); s = g->str_concat(instance, ":command");
-	c->command = strdup(g->iniparser_getstring(ini, s, ""));
+	c->limit = strdup(g->config_getstring(c->base.ini, c->base.instance, "limit", "0"));
+	c->deadline = g->config_getint(c->base.ini, c->base.instance, "deadline", 0);
+	c->warn_only = g->config_getbool(c->base.ini, c->base.instance, "warnings_only", 0);
+	c->warning = strdup(g->config_getstring(c->base.ini, c->base.instance, "warning", "Automatyczna blokada spowodowana przekroczeniem terminu wp³aty %time"));
+	c->command = strdup(g->config_getstring(c->base.ini, c->base.instance, "command", ""));
 	
-	g->iniparser_freedict(ini);
-	free(s);
-	free(instance);
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/cutoff] initialized", c->base.instance);
 #endif	
