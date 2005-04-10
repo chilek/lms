@@ -39,6 +39,8 @@ version 1.5.6 Baal (??/??/????):
   - added balance and tariff summary on customers list printout (alec)
   - lms-sendinvoices: fixed message and attachement charset/encoding, added 
     reading of invoice type configuration option from database (alec)
+  - while adding or searching tickets in helpdesk customer ID can be
+    specified instead of selecting customer from the list (alec)
 
 version 1.5.5 Anubis (25/03/2005):
 

@@ -28,7 +28,7 @@ $layout['pagetitle'] = trans('Remove queue ID: $0',sprintf("%04d",$_GET['id']));
 
 if (!$LMS->QueueExists($_GET['id']))
 {
-	$body = '<H1>'.$layout['pagetitle'].'</H1><P>'.trans('Specified ID is not proper or does not exist.').'</P>';
+	$body = '<H1>'.$layout['pagetitle'].'</H1><P>'.trans('Specified ID is not proper or does not exist!').'</P>';
 }else{
 
 	if($_GET['is_sure']!=1)

@@ -136,7 +136,7 @@ if(isset($search) || $_GET['search'])
 {
 	if($search['queue'] && !$LMS->GetAdminRightsRT($AUTH->id, $search['queue']))
 		$error['queue'] = trans('You have no privilleges to review this queue!');
-	
+
 	$search = $search ? $search : $SESSION->get('rtsearch');
 	
 	if(!$error)

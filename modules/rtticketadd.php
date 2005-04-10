@@ -48,6 +48,9 @@ if(isset($ticket))
 	if($ticket['email']!='' && !check_email($ticket['email']))
 		$error['email'] = trans('Incorrect email!');
 
+	if($ticket['custid']!=$ticket['userid'])
+		$error['custid'] = trans('Specified ID is not proper or does not exist!');
+
 	if($ticket['surname']=='' && $ticket['userid']==0)
 		$error['surname'] = trans('Requestor name required!');
 
