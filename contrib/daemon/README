@@ -1,19 +1,19 @@
-1. Co my tu mamy?
+1. What we've got here?
 
-Katalog zawiera dodatkowe modu³y dla demona almsd:
+Directory consist additional modules for lms daemon:
 
-cbq-init:	generowanie plików dla znanego skryptu do zarz±dzania
-    		pasmem (http://sourceforge.net/projects/cbqinit)
+cbq-init:	generate files for well-known script for traffic
+    		control (http://sourceforge.net/projects/cbqinit)
 
-cutoff2:	cutoff z dodatkow± funkcjonalno¶ci±, ale dzia³a tylko 
-		z zobowi±zaniami miesiêcznymi
+cutoff2:	cutoff with additional functionality, works fine with 
+		monthly liabilities
 
-shaper:		konfiguracja shapera (http://sp9wun.republika.pl)
+shaper:		shaper (another bandwidth limiting program) configuration 
+		(http://sp9wun.republika.pl)
       
-2. Instalacja.
+2. Installation.
 
     cp -r contrib/daemon/* daemon/modules/
     cd daemon
-    ./configure	(z odpowiednimi opcjami)
+    ./configure	(with appropriate options)
     make
-    
