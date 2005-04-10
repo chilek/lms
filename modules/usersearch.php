@@ -47,23 +47,29 @@ else
 	$s = $_GET['s'];
 	
 $SESSION->save('usls', $s);
-				
-$layout['pagetitle'] = trans('Customer Search');
+
 
 if($_GET['search']==1 || isset($_GET['search']))
 {
+	$layout['pagetitle'] = trans('Customer Search Results');
 	$userlist = $LMS->SearchUserList($o,$s,$search);
-	if ($userlist['total'] == 1)
+	$SMARTY->assign('userlist',$userlist);
+	
+	if(isset($_GET['print']))
+	{
+		$SMARTY->display('printuserlist.html');
+	}
+	elseif($userlist['total'] == 1)
 	{
 		$SESSION->redirect('?m=userinfo&id='.$userlist[0]['id']);
 	}
 	else
-	{
-		$SMARTY->assign('userlist',$userlist);
 		$SMARTY->display('usersearchresults.html');
-	}
 }
 else
+{
+	$layout['pagetitle'] = trans('Customer Search');
 	$SMARTY->display('usersearch.html');
+}
 
 ?>

@@ -24,8 +24,6 @@
  *  $Id$
  */
 
-$layout['pagetitle'] = trans('Nodes Searching');
-
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $search = $_POST['search'];
@@ -37,6 +35,8 @@ else
 
 if($_GET['search']==1 || isset($_GET['search'])) 
 {
+	$layout['pagetitle'] = trans('Nodes Search Results');
+
 	if(!isset($_GET['o']))
 		$SESSION->restore('snlo', $o);
 	else
@@ -72,11 +72,15 @@ if($_GET['search']==1 || isset($_GET['search']))
 	$SMARTY->assign('start',$start);
 	$SMARTY->assign('nodelist',$nodelist);
 	$SMARTY->assign('listdata',$listdata);
-	$SMARTY->display('nodesearchresults.html');
 	
+	if(isset($_GET['print']))
+		$SMARTY->display('printnodelist.html');
+	else
+		$SMARTY->display('nodesearchresults.html');
 }
 else 
 {
+	$layout['pagetitle'] = trans('Nodes Search');
 	$SMARTY->display('nodesearch.html');
 }
 
