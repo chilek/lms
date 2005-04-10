@@ -1,8 +1,26 @@
 {include file="header.html"}
 <!--// $Id$ //-->
+<SCRIPT language="javaScript">
+{literal}
+<!-- 
+	function PrintList()
+	{
+		document.usersearch.action = "?m=usersearch&search=1&print=1";
+		document.usersearch.target = "_BLANK";
+		document.usersearch.submit();
+	}
+
+	function Search()
+	{
+		document.usersearch.action = "?m=usersearch&search=1";
+		document.usersearch.target = "";
+		document.usersearch.submit();
+	}
+//-->	
+{/literal}
+</SCRIPT>
 <H1>{$layout.pagetitle}</H1>
-<P>
-<FORM METHOD="POST" ACTION="?m=usersearch&search=1" NAME="usersearch">
+<P><FORM METHOD="POST" ACTION="?m=usersearch&search=1" NAME="usersearch">
 <TABLE WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="DARK">
 		<TD CLASS="FALL" COLSPAN="2">
@@ -96,8 +114,9 @@
 	</TR>
 	<TR CLASS="light">
 		<TD CLASS="fbottomu" WIDTH="100%" COLSPAN="2" ALIGN="right">
-			<A ACCESSKEY="S" href="javascript:document.usersearch.submit();">{t}Search{/t} <IMG SRC="img/search.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
-		</TD>
+			<A ACCESSKEY="S" href="javascript:Search();">{t}Submit{/t} <IMG SRC="img/search.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>&nbsp;
+			<A href="javascript:PrintList();">{t}Print{/t} <IMG SRC="img/print.gif" BORDER="0" ALIGN="absmiddle" ALT=""></A>
+		</TD>	
 	</TR>
 </TABLE>
 </FORM>

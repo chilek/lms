@@ -1160,15 +1160,13 @@ class LMS
 		if($searchargs)
 			$searchargs = ' WHERE ownerid > 0 AND '.implode(' AND ',$searchargs);
 		
-		if($username = $this->DB->GetAll('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users'))
-			foreach($username as $idx => $row)
-				$usernames[$row['id']] = $row['username'];
-		
 		if($nodelist = $this->DB->GetAll('SELECT id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access, warning, info FROM nodes '.$searchargs.' '.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
+			$usernames = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users', 'id');
+			
 			foreach($nodelist as $idx => $row)
 			{
-				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']];
+				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']]['username'];
 				($row['access']) ? $totalon++ : $totaloff++;
 			}
 
