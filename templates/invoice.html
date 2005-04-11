@@ -235,14 +235,13 @@
 
 <!-- The Other Page of Invoice userbalancelist + userpin -->
 <!-- insert page break here and buy auto-duplex printer :p -->
-	
-		PIN: <CODE>{$invoice.userpin}</CODE>
 
+PIN: <CODE>{$invoice.userpin}</CODE>
 <TABLE cellpadding="5" cellspacing="0" width="100%">
 	<TR>
 		<TD width="1%" class="fleftu">{t}Date:{/t}</TD>
 		<TD width="1%" class="fbt">{t}User:{/t}</TD>
-		<TD width="1%" class="fbt"><B>{t}Type:{/t}</B></TD>
+		<TD width="1%" class="fbt">{t}Type:{/t}</TD>
 		<TD width="1%" class="fbt" align="right">{t}Value:{/t}</TD>
 		<TD width="1%" class="fbt" align="right">{t}Tax:{/t}</TD>
 		<TD width="1%" class="fbt" align="center">&raquo;</TD>
@@ -253,7 +252,7 @@
 	<TR>
 		<TD width="1%"><nobr>{$invoice.userbalancelist.date[balancelist]}</nobr></TD>
 		<TD width="1%">{$invoice.userbalancelist.adminname[balancelist]|truncate:20:" ..."|replace:" ":"&nbsp;"}</TD>
-		<TD width="1%" NOWRAP><b>{$invoice.userbalancelist.name[balancelist]}</b></TD>
+		<TD width="1%" NOWRAP>{$invoice.userbalancelist.name[balancelist]}</TD>
 		<TD width="1%" align="right"><nobr>{$invoice.userbalancelist.value[balancelist]|money_format}</nobr></TD>
 		<TD width="1%" align="right"><nobr>
                         {if $invoice.userbalancelist.taxvalue[balancelist]}
