@@ -45,7 +45,7 @@
          <sect2 id="install-req-smarty">
              <title>Smarty Library</title>
             <para><emphasis>LMS-UI</emphasis> requires Smarty library (<ulink
-            url="http://smarty.php.net">http://smarty.php.net</ulink>) in version 2.5.0
+            url="http://smarty.php.net">http://smarty.php.net</ulink>) in version 2.6.0
             or higher (don't use 2.6.4 version). Newer versions of Smarty requires that
             you have not enabled "magic_quotes_runtime" (set to Off) option in <ulink
             url="http://www.php.net/manual/en/configuration.php">PHP configuration</ulink>.</para>
