@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 	if( getenv("LMSDBUSER") ) user = getenv("LMSDBUSER"); else user = "lms";
 	if( getenv("LMSDBHOST") ) host = getenv("LMSDBHOST"); else host = "localhost";
 	if( getenv("LMSDBPORT") ) port = atoi(getenv("LMSDBPORT"));
-	if( !strlen(dhost) ) gethostname(dhost, 255);
+	gethostname(dhost, 255);
 
     	// read command line args
 	parse_command_line(argc, argv);
