@@ -1126,10 +1126,10 @@ class LMS
 		switch($order)
 		{
 			case 'name':
-				$sqlord = ' ORDER BY name';
+				$sqlord = ' ORDER BY nodes.name';
 			break;
 			case 'id':
-				$sqlord = ' ORDER BY id';
+				$sqlord = ' ORDER BY nodes.id';
 			break;
 			case 'mac':
 				$sqlord = ' ORDER BY mac';
@@ -1139,6 +1139,9 @@ class LMS
 			break;
 			case 'ownerid':
 				$sqlord = ' ORDER BY ownerid';
+			break;
+			case 'owner':
+				$sqlord = ' ORDER BY owner';
 			break;
 		}
 		
@@ -1151,6 +1154,12 @@ class LMS
 					case 'ipaddr' :
 						$searchargs[] = "inet_ntoa(ipaddr) ?LIKE? '%".trim($value)."%'";
 					break;
+					case 'name' :
+						$searchargs[] = "nodes.name ?LIKE? '%".$value."%'";
+					break;
+					case 'info' :
+						$searchargs[] = "nodes.info ?LIKE? '%".$value."%'";
+					break;
 					default :
 						$searchargs[] = $idx." ?LIKE? '%".$value."%'";
 				}
@@ -1158,43 +1167,27 @@ class LMS
 		}
 		
 		if($searchargs)
-			$searchargs = ' WHERE ownerid > 0 AND '.implode(' AND ',$searchargs);
+			$searchargs = ' WHERE '.implode(' AND ',$searchargs);
 		
-		if($nodelist = $this->DB->GetAll('SELECT id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, name, ownerid, access, warning, info FROM nodes '.$searchargs.' '.($sqlord != '' ? $sqlord.' '.$direction : '')))
+		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, ownerid, access, warning, nodes.info AS info, '
+						.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner
+						FROM users LEFT JOIN nodes ON ownerid = users.id'
+						.$searchargs.' '.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
-			$usernames = $this->DB->GetAllByKey('SELECT id, '.$this->DB->Concat('UPPER(lastname)',"' '",'name').' AS username FROM users', 'id');
-			
 			foreach($nodelist as $idx => $row)
 			{
-				$nodelist[$idx]['owner'] = $usernames[$row['ownerid']]['username'];
 				($row['access']) ? $totalon++ : $totaloff++;
 			}
 
-			switch($order)
-			{
-				case 'owner':
-					foreach($nodelist as $idx => $row)					
-					{
-						$ownertable['idx'][] = $idx;
-						$ownertable['owner'][] = $row['owner'];
-					}
-					array_multisort($ownertable['owner'],($direction == 'desc' ? SORT_DESC : SORT_ASC),$ownertable['idx']);
-					foreach($ownertable['idx'] as $idx)
-						$nnodelist[] = $nodelist[$idx];
-					$nodelist = $nnodelist;
-				break;
-			}
-			
-			$nodelist['total'] = sizeof($nodelist);
-			$nodelist['order'] = $order;
-			$nodelist['direction'] = $direction;
-			$nodelist['totalon'] = $totalon;
-			$nodelist['totaloff'] = $totaloff;
-			
-			return $nodelist;
 		}
 
-		return FALSE;
+		$nodelist['total'] = sizeof($nodelist);
+		$nodelist['order'] = $order;
+		$nodelist['direction'] = $direction;
+		$nodelist['totalon'] = $totalon;
+		$nodelist['totaloff'] = $totaloff;
+		
+		return $nodelist;
 	}
 
 	function NodeSet($id)
