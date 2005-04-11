@@ -79,14 +79,18 @@
 	    <para>Pocz±wszy od wersji 1.5.3 mo¿liwa jest konfiguracja interfejsu
 	    u¿ytkownika tak¿e poprzez <emphasis>LMS-UI</emphasis>. Opcje przechowywane 
 	    s± w bazie danych i nale¿y je przenie¶æ z pliku <filename>lms.ini</filename>.
-	    Do tego celu s³u¿y modu³ <filename>upgrade02</filename>, który jest
-	    automatycznie wykonywany po klikniêciu linku znajduj±cego siê na pustej
-	    li¶cie opcji konfiguracyjnych.</para>
-	    <para><note><para>Opcje konfigurowane w <emphasis>LMS-UI</emphasis> maj±
+	    W celu automatycznego przeniesienia konfiguracji do bazy danych kliknij na
+	    linku znajduj±cym siê na pustej li¶cie opcji konfiguracyjnych.</para>
+	    <para>
+	    <note><para>Opcje konfigurowane w <emphasis>LMS-UI</emphasis> maj±
 	    wiêkszy priorytet od tych zapisanych w <filename>lms.ini</filename>, co
 	    oznacza, ¿e plik konfiguracyjny jest tak¿e odczytywany, ale warto¶ci 
 	    zmiennych z tego pliku nadpisywane s± warto¶ciami zapisanymi
-	    w bazie danych.</para></note></para>
+	    w bazie danych.</para></note>
+	    <note><para>Demon odczytuje niektóre opcje konfiguracyjne UI tylko z bazy
+	    danych, dlatego zaleca siê przechowywanie konfiguracji w bazie zamiast w pliku 
+	    ini.</para></note>
+	    </para>
 	    <para>Aby dodaæ now± opcjê kliknij link 'Dodaj opcjê'.
 	    Aby wyedytowaæ parametry opcji kliknij na jej rekord. Zostaniesz przeniesiony 
 	    do formularza edycyjnego. Zmiana statusu
