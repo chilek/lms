@@ -3327,12 +3327,12 @@ class LMS
 		$params['port'] = $this->CONFIG['phpui']['smtp_port'];
 		if ($this->CONFIG['phpui']['smtp_username'])
 		{
-			$params['auth'] = true;
+			$params['auth'] = $this->CONFIG['phpui']['smtp_auth_type'];
 			$params['username'] = $this->CONFIG['phpui']['smtp_username'];
 			$params['password'] = $this->CONFIG['phpui']['smtp_password'];
 		}
 		else
-			$params['auth'] = false;
+			$params['auth'] = 'none';
 
 		$headers['X-Mailer'] = 'LMS-'.$this->_version;
 		$headers['X-Remote-IP'] = $_SERVER['REMOTE_ADDR'];
