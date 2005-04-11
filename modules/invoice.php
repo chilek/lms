@@ -138,9 +138,9 @@ elseif($invoice = $LMS->GetInvoiceContent($_GET['id']))
 	$invoice['serviceaddr'] = $LMS->GetUserServiceAddress($invoice['customerid']);
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display('clearheader.html');
-#	$SMARTY->assign('type',trans('ORIGINAL'));
-#	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
-	$SMARTY->assign('type',trans('ORIGINAL+COPY'));
+	$SMARTY->assign('type',trans('ORIGINAL'));
+	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
+	$SMARTY->assign('type',trans('COPY'));
 	$invoice['last'] = TRUE;
 	$SMARTY->assign('invoice',$invoice);
 	$SMARTY->display($LMS->CONFIG['invoices']['template_file']);
