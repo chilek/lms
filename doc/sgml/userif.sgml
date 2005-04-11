@@ -86,13 +86,14 @@
             options directly via <emphasis>LMS-UI</emphasis>, instead of editing
             <filename>lms.ini</filename>. Those options are stored in database and you first
             need to import them from your config file (even if you haven't edited anything
-            yet, default values will be imported). This can be done with help of
-            <filename>upgrade02</filename> UI module, which will be executed after you click
+            yet, default values will be imported). This can be done by clicking
             on the link presented on empty list.</para>
 	    <para><note><para>Options setup with <emphasis>LMS-UI</emphasis>
             have higher priority than those in configuration file. With options setup in UI,
             the configuration will be still imported from file but values will be then
             overwritten by those found in DB.</para></note></para>
+	    <para><note><para>Daemon read some non-daemon options only from
+	    database, so is prefered to store configuration in database.</para></note></para>
 	    <para>In order to manually add new option click 'Add option' on the
             bottom of the list. To edit option value, click on its record. You'll be given
             with edit form, where you are also able to remove this option. Changing option
