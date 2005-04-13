@@ -401,9 +401,9 @@ if(! $prev_tid) # generate new ticket if previous not found
 		{
 			my $smtp = Net::SMTP->new($smtpserver);
 			$smtp->mail("$autoreply_from");
-			$smtp->to($replytoemail || $fromemail);
+			$smtp->to($row->{'email'});
 			$smtp->data();
-			$smtp->datasend("To: $row->{'name'} <$row->{'email'}>\n");
+			$smtp->datasend("To: \"$row->{'name'}\" <$row->{'email'}>\n");
 			$smtp->datasend("From: \"$autoreply_name\" <$autoreply_from>\n");
 			$smtp->datasend("Mime-Version: 1.0\n");
 			$smtp->datasend("Content-type: text/plain; charset=UTF-8\n");
