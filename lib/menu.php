@@ -445,6 +445,15 @@ $menu = array(
 			'accesskey' => 'p',
 			'prio' => '60',
 		),
+
+		array(
+			'name' => trans('Documentation'),
+			'img' => 'doc.gif',
+			'link' => (is_dir('doc/html/'.$LMS->lang) ? 'doc/html/'.$LMS->lang.'/' : 'doc/html/en/'),
+			'tip' => trans('Documentation'),
+			'accesshey' => 'h',
+			'prio' => '65',
+		),
 	);
 
 ?>

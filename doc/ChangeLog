@@ -43,6 +43,7 @@ version 1.5.6 Baal (??/??/????):
     specified instead of selecting customer from the list (alec)
   - nodes and customers search results (if they are lists) can be displayed 
     in printer-friendly format (alec)
+  - little (?) layout revolution (inspired by lexx and kondi) (lukasz)
 
 version 1.5.5 Anubis (25/03/2005):
 
