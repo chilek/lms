@@ -8,7 +8,16 @@ $Id$
 * wsparcie zdalnego konfigu dla mini-distro (co¶ a'la freesco/m0n0wall) [+]  
 * konta o ile nie zostan± przepisane ³adniej to w najbli¿szej wersji stable
   nie powinny siê znale¼æ
-
+* ka¿dy konkretny modu³ móg³by mieæ ikonkê pomocy, która by kopa³a pacjenta
+  do odpowiedniego rozdzia³u w dokumentacji (a mo¿e w podmenu od doców)
+* feedback - co¶ co generowa³oby dumpa z wersj± bazy, pliku, a mo¿e even md5
+  modu³ów, etc. aby ³atwiej by³o rozwi±zywaæ b³êdy. oczywi¶cie konfiguracja
+  te¿.
+* wy¶wietlanie warninga ¿e lms.ini w formie pliku to ju¿ generalnie nie
+  jest u¿ywany (poza sekcj± database, chocia¿ uwa¿am ¿e bezpieczniejsze by
+  by³o w formie skryptu php, bo nie wyssa siê go tak ³atwo przez http)
+  i ¿eby zmigrowaæ do UI ustawienia a w 2.0 wyj...aæ support do tego :)
+  
 1.7 (deadline dla 1.5 to koniec kwietnia/pocz±tek maja)
 
 ! w momencie wydania 1.6 i rozpoczêcia 1.7 zarzucenie supportu dla 1.0 i 1.1
