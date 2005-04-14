@@ -12,14 +12,14 @@
 <body topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" bgcolor="#EBE4D6" link="#800000" vlink="#800000" alink="#336600"{if $warning} onLoad="javascript:alert('{t}Warning! This version of LMS is under development! Remember that it can be unstable and surely still have many bugs! If you need stability try 1.4 (polish only) version!{/t}')"{/if}>
 {popup_init src="img/overlib.js"}
 {if $layout.nomenu neq TRUE}
-<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="fright" bgcolor="#CEBD9B" valign="top">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%"><tr><td width="1%" class="fright" bgcolor="#CEBD9B" valign="top">
 	<table width="100%">
 		<tr>
 			<td align="center" style="border-bottom-style: dashed; border-bottom-width: 1px;">
 				<br>
 				<img border="0" src="img/logo-40.png" align="absmiddle" ALT="LMS {$layout.lmsv}"><br>
 				<br>
-				<B>LMS {$layout.lmsvs}</B><br>
+				<B>LMS {$layout.lmsv}</B><br>
 				&nbsp;<br>
 			</td>
 		</tr>
@@ -81,7 +81,7 @@
 			<td nowrap align="center"><BR><A href="?m=copyrights">&copy; 2001-2005<br>LMS Developers</A></td>
 		</tr>
 		<tr>
-			<td nowrap align="center"><font style="font-size: 7pt;">&nbsp;<br><B>LMS {$layout.lmsv}<br>DB: {$layout.dbschversion}<br>@ {$layout.hostname}</B></font>&nbsp;<br>&nbsp;<br></td>
+			<td nowrap align="center"><font style="font-size: 7pt;">&nbsp;<br><B>LMS {$layout.lmsv}<br>({$layout.lmsvr})<br>DB: {$layout.dbschversion}<br>@ {$layout.hostname}</B></font>&nbsp;<br>&nbsp;<br></td>
 		</tr>
 	</table>
 	<script type="text/javascript">

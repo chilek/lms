@@ -187,12 +187,12 @@ require_once($_LIB_DIR.'/smarty_addons.php');
 
 $layout['logname'] = $AUTH->logname;
 $layout['logid'] = $AUTH->id;
-$layout['lmsv'] = '1.5-cvs ('.$LMS->_revision.'/'.$AUTH->_revision.')';
 $layout['lmsdbv'] = $DB->_version;
 $layout['smarty_version'] = $SMARTY->_version;
 $layout['uptime'] = uptime();
 $layout['hostname'] = hostname();
-$layout['lmsvs'] = '1.5-cvs';
+$layout['lmsv'] = '1.5-cvs';
+$layout['lmsvr'] = $LMS->_revision.'/'.$AUTH->_revision;
 $layout['dberrors'] =& $DB->errors;
 
 $SMARTY->assign_by_ref('menu', $LMS->MENU);
