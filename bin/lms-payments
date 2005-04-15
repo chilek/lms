@@ -253,7 +253,7 @@ while(my $assign = $dbq->fetchrow_hashref())
 	$desc =~ s/\%period/$period/g;
 	$desc =~ s/\%current_month/$current_month/g;
 	
-	if ($suspension_percentage)
+	if ($suspension_percentage && ($assign->{'suspended'} || $suspended == $uid))
 	{
 		$desc .= " ".$suspension_description;
 	}
