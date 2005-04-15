@@ -1,9 +1,7 @@
 $Id$
 
-* okresowa procentowa obni¿ka abonamentu
 * ³adniejsza wizualizacja wyników statystyk
 * arpd (dokoñczyæ, support dla non-linux systems) [xxx]
-* zorientowaæ siê jak wygl±da sprawa z SMTP-AUTH
 * nie-tylko-linux, silny porting demona i skryptów dla ipfw/ipf/pf [+]
 * wsparcie zdalnego konfigu dla mini-distro (co¶ a'la freesco/m0n0wall) [+]  
 * konta o ile nie zostan± przepisane ³adniej to w najbli¿szej wersji stable
@@ -17,6 +15,10 @@ $Id$
   jest u¿ywany (poza sekcj± database, chocia¿ uwa¿am ¿e bezpieczniejsze by
   by³o w formie skryptu php, bo nie wyssa siê go tak ³atwo przez http)
   i ¿eby zmigrowaæ do UI ustawienia a w 2.0 wyj...aæ support do tego :)
+* pomyle¶leæ nad jakim¶ sposobem archiwizacji starych danych finansowych
+  - o ile baza danych sobie poradzi z danymi z kilku lat, nawet w du¿ej sieci,
+  to w UI mo¿e nie byæ ju¿ za ciekawie
+
   
 1.7 (deadline dla 1.5 to koniec kwietnia/pocz±tek maja)
 
@@ -31,7 +33,6 @@ $Id$
      gdyby co¶ wiêcej tam do zrobienia by³o) [xx]
 
 ! j.w. ale dla wersji 1.2 i 1.3
-* nowy daemon
 * rewolucje w bazie [=] (np. users -> customers, admins -> users or sth)
 * przerobienie na nowe modu³y
 * zrobienie 'LMSAPI' - czyli zintegrowanej z LMS biblioteki serwuj±cej
