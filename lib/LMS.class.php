@@ -3207,13 +3207,14 @@ class LMS
 		exec("arp -an | grep -v incompl | grep $ip" ,$result);
 		foreach ($result as $arpline)
 		{
-		    list($fqdn,$ip,$at,$mac,$hwtype,$perm) = explode(' ',$arpline);
-		    $ip = str_replace('(','',str_replace(')','',$ip));
-
-		    $result['mac'] = $mac;
-		    $result['ip'] = $ip;
-		    $result['longip'] = ip_long($ip);
-		    $result['nodename'] = $this->GetNodeNameByMAC($mac);
+		    list($fqdn,$arp_ip,$at,$mac,$hwtype,$perm) = explode(' ',$arpline);
+		    $arp_ip = str_replace('(','',str_replace(')','',$arp_ip));
+		    if ($ip==$arp_ip){
+		   	 $result['mac'] = $mac;
+		   	 $result['ip'] = $ip;
+		   	 $result['longip'] = ip_long($ip);
+		   	 $result['nodename'] = $this->GetNodeNameByMAC($mac);
+		    }
 		}		
 		return $result;
 	}
