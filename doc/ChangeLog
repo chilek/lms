@@ -44,6 +44,7 @@ version 1.5.6 Baal (??/??/????):
   - nodes and customers search results (if they are lists) can be displayed 
     in printer-friendly format (alec)
   - little (?) layout revolution (inspired by lexx and kondi) (lukasz)
+  - fixed total tax summary on Sale Report (alec)
 
 version 1.5.5 Anubis (25/03/2005):
 

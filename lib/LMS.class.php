@@ -1547,59 +1547,6 @@ class LMS
 			$this->InvoiceDelete($invoiceid);
 	}
 
-	function InvoicesReport($from, $to)
-	{
-		if($result = $this->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, nip, pesel, taxvalue, SUM(value*count) AS value FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 AND (cdate BETWEEN ? AND ?) GROUP BY id, number, taxvalue, cdate, customerid, name, address, zip, city, nip, pesel, finished ORDER BY cdate ASC', array($from, $to)))
-		{
-			foreach($result as $idx => $row)
-			{
-				$id = $row['id'];
-				$value = round($row['value'], 2);
-				$list[$id]['custname'] = $row['name'];
-				$list[$id]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
-				$list[$id]['nip'] = ($row['nip'] ? trans('TEN').' '.$row['nip'] : ($row['pesel'] ? trans('SSN').' '.$row['pesel'] : ''));
-				$list[$id]['number'] = $row['number'];
-				$list[$id]['cdate'] = $row['cdate'];
-				$list[$id]['customerid'] = $row['customerid'];
-				$list[$id]['year'] = date('Y',$row['cdate']);
-				$list[$id]['month'] = date('m',$row['cdate']);
-				$list[$id]['brutto'] += $value;
-				$list['sum']['brutto'] += $value;
-				if ($row['taxvalue'] == '')
-				{
-					$list[$id]['valfree'] += $value;
-					$list['sum']['valfree'] += $value;
-				}
-				else
-					switch(round($row['taxvalue'],1))
-					{
-					    case '0.0':
-						    $list[$id]['val0'] += $value;
-						    $list['sum']['val0'] += $value;
-					    break;
-					    case '7.0':
-						     $list[$id]['tax7'] += round($value - ($value/1.07), 2);
-						     $list[$id]['val7'] += $value - $list[$id]['tax7'];
-					    	     $list[$id]['tax']   += $list[$id]['tax7'];
-						     $list['sum']['tax7'] += $list[$id]['tax7'];
-						     $list['sum']['val7'] += $list[$id]['val7'];
-						     $list['sum']['tax']   += $list[$id]['tax'];
-
-					    break;
-					    case '22.0':
-						     $list[$id]['tax22'] += round($value - ($value/1.22), 2);
-						     $list[$id]['val22'] += $value - $list[$id]['tax22'];
-					    	     $list[$id]['tax']   += $list[$id]['tax22'];
-						     $list['sum']['tax22'] += $list[$id]['tax22'];
-						     $list['sum']['val22'] += $list[$id]['val22'];
-						     $list['sum']['tax']   += $list[$id]['tax'];
-					    break;
-					}
-			}
-		}
-		return $list;
-	}
-
 	function IsInvoicePaid($invoiceid)
 	{
 		return $this->DB->GetOne('SELECT SUM(CASE type WHEN 3 THEN value ELSE -value END) FROM cash WHERE invoiceid=?', array($invoiceid)) >= 0 ? TRUE : FALSE;

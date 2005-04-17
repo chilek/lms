@@ -45,14 +45,59 @@ if($to) {
 
 $layout['pagetitle'] = trans('Sale Registry for period $0 - $1', $from, $to);
 
-$invoicelist = $LMS->InvoicesReport($unixfrom, $unixto);
+if($result = $LMS->DB->GetAll('SELECT id, number, cdate, customerid, name, address, zip, city, nip, pesel, taxvalue, SUM(value*count) AS value FROM invoices LEFT JOIN invoicecontents ON invoiceid = id WHERE finished = 1 AND (cdate BETWEEN ? AND ?) GROUP BY id, number, taxvalue, cdate, customerid, name, address, zip, city, nip, pesel, finished ORDER BY cdate ASC', array($unixfrom, $unixto)))
+{
+	foreach($result as $idx => $row)
+	{
+		$id = $row['id'];
+		$value = round($row['value'], 2);
+		$invoicelist[$id]['custname'] = $row['name'];
+		$invoicelist[$id]['custaddress'] = $row['zip'].' '.$row['city'].', '.$row['address'];
+		$invoicelist[$id]['nip'] = ($row['nip'] ? trans('TEN').' '.$row['nip'] : ($row['pesel'] ? trans('SSN').' '.$row['pesel'] : ''));
+		$invoicelist[$id]['number'] = $row['number'];
+		$invoicelist[$id]['cdate'] = $row['cdate'];
+		$invoicelist[$id]['customerid'] = $row['customerid'];
+		$invoicelist[$id]['year'] = date('Y',$row['cdate']);
+		$invoicelist[$id]['month'] = date('m',$row['cdate']);
+		$invoicelist[$id]['brutto'] += $value;
 
-$listdata = $invoicelist['sum'];
-unset($invoicelist['sum']);
+		$listdata['brutto'] += $value;
+		if ($row['taxvalue'] == '')
+		{
+			$invoicelist[$id]['valfree'] += $value;
+			$listdata['valfree'] += $value;
+		}
+		else
+			switch(round($row['taxvalue'],1))
+			{
+			    case '0.0':
+				    $invoicelist[$id]['val0'] += $value;
+				    $listdata['val0'] += $value;
+			    break;
+			    case '7.0':
+				     $invoicelist[$id]['tax7'] += round($value - ($value/1.07), 2);
+				     $invoicelist[$id]['val7'] += $value - $invoicelist[$id]['tax7'];
+			    	     $invoicelist[$id]['tax']   += $invoicelist[$id]['tax7'];
+				     $listdata['tax7'] += $invoicelist[$id]['tax7'];
+				     $listdata['val7'] += $invoicelist[$id]['val7'];
+				     $listdata['tax']  += $invoicelist[$id]['tax7'];
+			    break;
+			    case '22.0':
+				     $invoicelist[$id]['tax22'] += round($value - ($value/1.22), 2);
+				     $invoicelist[$id]['val22'] += $value - $invoicelist[$id]['tax22'];
+			    	     $invoicelist[$id]['tax']   += $invoicelist[$id]['tax22'];
+				     $listdata['tax22'] += $invoicelist[$id]['tax22'];
+				     $listdata['val22'] += $invoicelist[$id]['val22'];
+				     $listdata['tax']   += $invoicelist[$id]['tax22'];
+			    break;
+		    }
+	}
+	
+}
 
-$SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('layout',$layout);
-$SMARTY->assign('invoicelist',$invoicelist);
+$SMARTY->assign('listdata', $listdata);
+$SMARTY->assign('layout', $layout);
+$SMARTY->assign('invoicelist', $invoicelist);
 $SMARTY->display('invoicereport.html');
 
 ?>
