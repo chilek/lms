@@ -224,9 +224,9 @@ while(my $row = $dbq->fetchrow_hashref())
 			$mail_subject =~ s/%invoice/$invoice_number/g;
 			
 			my $mail = build MIME::Entity Type=>"multipart/mixed";
-			$mail->head->add('To',$row->{'name'}.' <'.$custemail.'>');
-			$mail->head->add('From', $sender_name.' <'.$sender_email.'>');
-			$mail->head->add('Reply-To', $sender_name.' <'.$sender_email.'>');
+			$mail->head->add('To', '"'.$row->{'name'}.'"'.' <'.$custemail.'>');
+			$mail->head->add('From', '"'.$sender_name.'"'.' <'.$sender_email.'>');
+			$mail->head->add('Reply-To', '"'.$sender_name.'"'.' <'.$sender_email.'>');
 			$mail->head->add('Subject', $mail_subject);
 			$mail->head->add('Message-ID', '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>');
 			$mail->head->add('Return-path', '<'.$sender_email.'>');
