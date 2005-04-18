@@ -1061,6 +1061,20 @@ endif
 		    <para>Przyk³ad:	<prompt>mail_from_name = 'BOK SuperLAN'</prompt></para>
 		</listitem>
 		<listitem>
+		    <para>autoreply_subject</para>
+		    <para>Temat potwierdzenia. Tu mo¿na korzystaæ ze zmiannych %tid - 
+		    identyfikator zg³oszenia i %subject - temat zg³oszenia.
+		    Domy¶lnie: "[RT#%tid] Receipt of request '%subject'".</para>
+		    <para>Przyk³ad:	<prompt>autoreply_subject = "[RT#%tid] Potwierdzenie odbioru zg³oszenia o temacie '%subject'"</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>autoreply_body</para>
+		    <para>Tre¶æ potwierdzenia. Tu mo¿na korzystaæ ze zmiannych: %tid - 
+		    identyfikator zg³oszenia i %subject - temat zg³oszenia.
+		    Domy¶lnie: "Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n."</para>
+		    <para>Example:	<prompt>autoreply_body = "Pañstwa zg³oszenie zosta³o zarejestrowane w naszym systemie.\nZg³oszeniu zosta³ nadany numer: RT#%tid.\nW korespondencji zwi±zanej z tym zg³oszeniem prosimy podawaæ w temacie ci±g znaków [RT#%tid].\n"</prompt></para>
+		</listitem>
+		<listitem>
 		    <para>smtp_server</para>
 		    <para>Serwer SMTP, przez który zostanie wys³ana wiadomo¶æ. Domy¶lnie: localhost.</para>
 		    <para>Przyk³ad:	<prompt>smtp_server = smtp.mydomain.pl</prompt></para>
