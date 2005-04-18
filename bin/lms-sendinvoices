@@ -98,14 +98,18 @@ my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
+
 my $invoice_ntemplate = $ini->val('invoices', 'number_template') || '%N/LMS/%Y';
+my $filetype = $ini->val('invoices', 'type') || '';
+
 my $lms_url = $ini->val('sendinvoices', 'lms_url') || 'http://localhost/lms/';
 my $lms_user = $ini->val('sendinvoices', 'lms_user') || '';
 my $lms_password = $ini->val('sendinvoices', 'lms_password') || '';
 my $debug_email = $ini->val('sendinvoices', 'debug_email') || '';
 my $sender_name = $ini->val('sendinvoices', 'sender_name') || '';
 my $sender_email = $ini->val('sendinvoices', 'sender_email') || '';
-my $filetype = $ini->val('invoices', 'type') || '';
+my $mail_subject = $ini->val('sendinvoices', 'mail_subject') || 'Invoice No. %invoice';
+my $mail_body = $ini->val('sendinvoices', 'mail_body') || 'Attached file with Invoice No. %invoice';
 
 if(!$sender_name)
 {
@@ -162,6 +166,13 @@ if($filetype eq 'pdf')
 	$fext = 'pdf';
 }
 
+$dbq = $dbase->prepare("SELECT value FROM uiconfig WHERE section='invoices' AND var='number_template' AND disabled=0");
+$dbq->execute();
+if(my $row = $dbq->fetchrow_hashref())
+{
+	$invoice_ntemplate = $row->{'value'};
+}
+
 sub localtime2()
 {
 	if($fakedate)
@@ -206,32 +217,31 @@ while(my $row = $dbq->fetchrow_hashref())
 			
 			if(!$quiet)
 			{
-				print "VAT Invoice No. $invoice_number for $row->{'name'} <$custemail>\n";
+				print "Invoice No. $invoice_number for $row->{'name'} <$custemail>\n";
 			}
+			
+			$mail_body =~ s/%invoice/$invoice_number/g;
+			$mail_subject =~ s/%invoice/$invoice_number/g;
 			
 			my $mail = build MIME::Entity Type=>"multipart/mixed";
 			$mail->head->add('To',$row->{'name'}.' <'.$custemail.'>');
 			$mail->head->add('From', $sender_name.' <'.$sender_email.'>');
 			$mail->head->add('Reply-To', $sender_name.' <'.$sender_email.'>');
-			$mail->head->add('Subject', 'Faktura VAT nr '.$invoice_number);
+			$mail->head->add('Subject', $mail_subject);
 			$mail->head->add('Message-ID', '<lms.sendinvoice.'.$row->{'id'}.'.'.$row->{'customerid'}.'@lms>');
 			$mail->head->add('Return-path', '<'.$sender_email.'>');
 			$mail->attach(
 				Type => 'text/plain',
 				Charset => 'UTF-8',
 				Encoding => 'quoted-printable',
-				Data => [
-					"W załączeniu, faktura VAT Nr $invoice_number\n",
-					],
+				Data => [ "$mail_body\n" ],
 			);
 			$mail->attach(
 				Type => $ftype,
 				Charset => 'UTF-8',
 				Encoding => $fencoding,
-				Filename => 'faktura_'.$row->{'id'}.'.'.$fext,
-				Data => [
-					$response->content,
-				],
+				Filename => 'invoice_'.$row->{'id'}.'.'.$fext,
+				Data => [ $response->content ],
 			);
 			$mail->smtpsend('MailFrom' => $sender_email, 'To' => $custemail, 'Return-path' => $sender_email);
 			

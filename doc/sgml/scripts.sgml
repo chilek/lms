@@ -652,7 +652,7 @@ Following parameters are valid:</para>
            	<listitem>
 		    <para>debug_email</para>
 		    <para>Email address to test (mail will be redirected here).
-Default: undefined.</para>
+		    Default: undefined.</para>
 		    <para>Example:	<prompt>debug_email = admin@mynet.pl</prompt></para>
 		</listitem>
            	<listitem>
@@ -665,11 +665,17 @@ Default: undefined.</para>
 		    <para>Email sender address. Default: undefined.</para>
 		    <para>Example:	<prompt>sender_email = admin@mynet.pl</prompt></para>
 		</listitem>
-        	<listitem>
-		    <para>tmp_dir</para>
-		    <para>Temp dir location. If unset, should be read from 'TMP'
-environment variable, '/tmp' otherwise.</para>
-		    <para>Example:	<prompt>tmp_dir = /home/user/tmp</prompt></para>
+           	<listitem>
+		    <para>mail_subject</para>
+		    <para>Email subject. Can use %invoice variable replaced by invoice number. 
+		    Default: 'Invoice No. %invoice'.</para>
+		    <para>Example:	<prompt>mail_subject = 'New invoice'</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>mail_body</para>
+		    <para>Email body. Can use %invoice variable replaced by invoice number. 
+		    Default: 'Attached file with Invoice No. %invoice'.</para>
+		    <para>Example:	<prompt>mail_body = ''</prompt></para>
 		</listitem>
 	    </itemizedlist>
 	 <para>Script has also one useful command line parameter: <prompt>--fakedate</prompt> 
