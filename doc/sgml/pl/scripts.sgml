@@ -168,7 +168,6 @@
 	  <example id="notify-example">
 	   <title>Lms-notify: Przyk³adowy wyci±g 10 ostatnich operacji kasowych</title>
 <screen>
-Data       | Opis                                                 | Warto¶æ
 -----------+------------------------------------------------------+---------
 2003-02-02 | Abonament za miesi±c 2003/02                         |  107.00
 2003-02-01 | Wp³ata                                               | -107.00
@@ -211,8 +210,7 @@ e-mail: gwidonm@naszasiec.pl
 ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
 system bilingowy na Pañstwa koncie:
 
-kwota operacji | typ operacji | data
-
+Data       | Opis                                                 | Warto¶æ
 %last_10_in_a_table
 
 --

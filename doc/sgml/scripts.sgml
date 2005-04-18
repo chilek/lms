@@ -164,7 +164,6 @@ scripts.</para>
 	  <example id="notify-example">
 	   <title>Lms-notify: example of last 10 customer's operations</title>
 <screen>
-Date       | Description                                          | Amount
 -----------+------------------------------------------------------+---------
 2003-02-02 | Subscription for month 2003/02                       |  107.00
 2003-02-01 | Payment                                              | -107.00
@@ -204,6 +203,7 @@ e-mail: gcooper@free.bigpro.com
 PS. Last 10 operations on your account has been attached below for your
 convenience.
 
+Date       | Description                                          | Amount
 %last_10_in_a_table
 
 --

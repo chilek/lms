@@ -162,131 +162,118 @@ open(MTFILE, "$mtfile");
 my @mtempl = <MTFILE>;
 close MTFILE;
 
-my $dbq = $dbase->prepare("SELECT users.id AS id, pin, lastname, name, email, phone1, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id, pin, lastname, name, email, phone1 HAVING SUM((type * -2 + 7) * cash.value) < 0");
+my $dbq = $dbase->prepare("SELECT users.id AS id, pin, UPPER(lastname) AS lastname, name, email, phone1, SUM((type * -2 + 7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid GROUP BY users.id, pin, lastname, name, email, phone1 HAVING SUM((type * -2 + 7) * cash.value) < $limit");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
 	my $balance = $row->{'balance'};
-	if($balance < $limit)
+	if(!$quiet)
+	{
+		print STDOUT "$row->{'lastname'} $row->{'name'} (".sprintf("%04d",$row->{'id'}).")\t$balance\n";
+	}
+	if($row->{'email'})
 	{
 		if(!$quiet)
 		{
-			print STDOUT "$row->{'lastname'} $row->{'name'} (".sprintf("%04d",$row->{'id'}).")\t$balance\n";
+			print STDOUT "Sending e-mail to $row->{'email'}\n";
 		}
-		if($row->{'email'})
+		
+		my @desttempl = @mtempl;
+		my $subject = $mailsubject;
+		
+		$subject =~ s/\%B/$balance/g;
+		
 		{
-			if(!$quiet)
-			{
-				print STDOUT "Sending e-mail to $row->{'email'}\n";
-			}
-			
-			my @desttempl = @mtempl;
-			my $subject = $mailsubject;
-			
-			$subject =~ s/\%B/$balance/g;
-			
-			{
-				my $amount = -$balance; $subject =~ s/\%b/$amount/g;
-			} 
-			
-			my $smtp = Net::SMTP->new("$smtpserver");
-			$smtp->mail("$mailfrom");
-
-			if($debugemail)
-			{
-				$smtp->to($debugemail);
-			}
-			else
-			{
-				$smtp->to($row->{'email'});
-			}
-
-			$smtp->data();
-
-			$smtp->datasend("From: $mailfname <$mailfrom>\n");
-			$smtp->datasend("To: $row->{'name'} $row->{'lastname'} <$row->{'email'}>\n");
-			$smtp->datasend("Subject: $subject\n");
-			$smtp->datasend("User-Agent: lms\-notify v. $_version\n");
-			$smtp->datasend("Content-type: text/plain; charset=ISO-8859-2\n");
-			$smtp->datasend("Mime-Version: 1.0\n");
-			$smtp->datasend("Content-transfer-encoding: 8bit\n");
-			$smtp->datasend("\n");
-
-			foreach my $line (@desttempl)
-			{
-				$line =~ s/\%B/$balance/g;
-				{ 	
+			my $amount = -$balance; $subject =~ s/\%b/$amount/g;
+		} 
+		
+		my $smtp = Net::SMTP->new("$smtpserver");
+		$smtp->mail("$mailfrom");
+		if($debugemail)
+		{
+			$smtp->to($debugemail);
+		}
+		else
+		{
+			$smtp->to($row->{'email'});
+		}
+		$smtp->data();
+		$smtp->datasend("From: $mailfname <$mailfrom>\n");
+		$smtp->datasend("To: $row->{'name'} $row->{'lastname'} <$row->{'email'}>\n");
+		$smtp->datasend("Subject: $subject\n");
+		$smtp->datasend("User-Agent: lms\-notify v. $_version\n");
+		$smtp->datasend("Content-type: text/plain; charset=ISO-8859-2\n");
+		$smtp->datasend("Mime-Version: 1.0\n");
+		$smtp->datasend("Content-transfer-encoding: 8bit\n");
+		$smtp->datasend("\n");
+		foreach my $line (@desttempl)
+		{
+			$line =~ s/\%B/$balance/g;
+			{ 	
 				my $amount = -$balance;
 				$line =~ s/\%b/$amount/g; 	
-				}
-
-				{ 
+			}
+			{ 
 				my $year = strftime( "%Y", localtime());
 				$line =~ s/\%date-y/$year/; 
-				}
-
-		                {
-               			my $phone = $row->{'phone1'};
-			        $line =~ s/\%phone1/$phone/;
-				}
-				
-				{
-				my $month = strftime ( "%m", localtime()) ; 
-				$line =~ s/\%date-m/$month/;
-				}
-				
-				{
-				my $month_name = strftime ( "%B", localtime()) ; 
-				$line =~ s/\%date_month_name/$month_name/;
-				}
-				
-				if ($line =~ /\%saldo/) {
-					$line =~ s/\%saldo/$row->{'balance'}/;
-				}
-
-				if ($line =~ /\%pin/) {
-					$line =~ s/\%pin/$row->{'pin'}/;
-				}
-
-				if ($line =~ /\%abonament/) {
-					my $saldo_dbq = $dbase->prepare("SELECT sum(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) AND userid = $row->{'id'}");
-					$saldo_dbq->execute();
-					my $ow_s = $saldo_dbq->fetchrow_hashref();
-					$line =~ s/\%abonament/$ow_s->{'value'}/;
-				}
-
-				if ($line =~ /\%last_10_in_a_table/ ) {
-					my $last10_dbq = $dbase->prepare("SELECT comment, value, type, time FROM cash WHERE 
-							userid='$row->{'id'}' AND (type>='3' ) ORDER BY time DESC LIMIT 10") ;
-				# ok, now we are going to rise up system's load
-					$last10_dbq->execute();
- 					$smtp->datasend("Data       | Opis                                                 | Warto¶æ\n");
-					$smtp->datasend("-----------+------------------------------------------------------+---------\n");
-					while (my $row_s = $last10_dbq->fetchrow_hashref())
-					{
-						my $aqq=($row_s->{'type'}==3)?1:-1;
-						my $op_amount=sprintf("%8.2f", $aqq*$row_s->{'value'});
-						my @typy = ('a', 'b', 'Abonament', 'Wp³ata', 'Instalacja', 'Inne');
-						my $op_type=@typy[$row_s->{'type'}] || "$row_s->{'type'}";
-						my $for_what = sprintf("%-52s",$row_s->{'comment'} || $op_type);
-						my $op_time=strftime( "%Y-%m-%d", localtime($row_s->{'time'}) );
-						$smtp->datasend("$op_time | $for_what | $op_amount \n");
-					}
-					$smtp->datasend("-----------+------------------------------------------------------+---------\n");
-				} else 
-				{
-					$smtp->datasend("$line"); 
-				}
 			}
-			$smtp->dataend();
-			$smtp->quit;
-		}else{
-			if(!$quiet)
+		        {
+           			my $phone = $row->{'phone1'};
+		    		$line =~ s/\%phone1/$phone/;
+			}
 			{
-				print STDOUT "This user don't have any e-mail in database, call him if You can ($row->{'phone1'}).\n";
+				my $month = strftime ( "%m", localtime());
+				$line =~ s/\%date-m/$month/;
+			}
+			{
+				my $month_name = strftime ( "%B", localtime());
+				$line =~ s/\%date_month_name/$month_name/;
+			}
+				
+			if ($line =~ /\%saldo/) {
+				$line =~ s/\%saldo/$row->{'balance'}/;
+			}
+
+			if ($line =~ /\%pin/) {
+				$line =~ s/\%pin/$row->{'pin'}/;
+			}
+
+			if ($line =~ /\%abonament/) {
+				my $saldo_dbq = $dbase->prepare("SELECT sum(value) AS value FROM assignments, tariffs WHERE tariffid = tariffs.id AND (datefrom <= $utsfmt OR datefrom = 0) AND (dateto > $utsfmt OR dateto = 0) AND ((datefrom < dateto) OR (datefrom = 0 AND datefrom = 0)) AND userid = $row->{'id'}");
+				$saldo_dbq->execute();
+				my $ow_s = $saldo_dbq->fetchrow_hashref();
+				$line =~ s/\%abonament/$ow_s->{'value'}/;
+			}
+			if ($line =~ /\%last_10_in_a_table/ ) {
+				my $last10_dbq = $dbase->prepare("SELECT comment, value, type, time FROM cash WHERE 
+						userid='$row->{'id'}' AND (type>='3' ) ORDER BY time DESC LIMIT 10");
+			# ok, now we are going to rise up system's load
+				$last10_dbq->execute();
+				$smtp->datasend("-----------+------------------------------------------------------+---------\n");
+				while (my $row_s = $last10_dbq->fetchrow_hashref())
+				{
+					my $aqq=($row_s->{'type'}==3)?1:-1;
+					my $op_amount=sprintf("%8.2f", $aqq*$row_s->{'value'});
+					my @typy = ('a', 'b', 'Abonament', 'Wp³ata', 'Instalacja', 'Inne');
+					my $op_type=@typy[$row_s->{'type'}] || "$row_s->{'type'}";
+					my $for_what = sprintf("%-52s",$row_s->{'comment'} || $op_type);
+					my $op_time=strftime( "%Y-%m-%d", localtime($row_s->{'time'}) );
+					$smtp->datasend("$op_time | $for_what | $op_amount \n");
+				}
+				$smtp->datasend("-----------+------------------------------------------------------+---------\n");
+			} else 
+			{
+				$smtp->datasend("$line"); 
 			}
 		}
+		$smtp->dataend();
+		$smtp->quit;
+	}else{
+		if(!$quiet)
+		{
+			print STDOUT "This user don't have any e-mail in database, call him if You can ($row->{'phone1'}).\n";
+		}
 	}
-	
 }
+
 $dbase->disconnect();
