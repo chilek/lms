@@ -94,6 +94,7 @@ my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $limit = $ini->val('makeon', 'limit') || 0;
+my $message = $ini->val('makeon', 'message') || 'Thanks you for a payment';
 
 my $dbase;
 my $utsfmt;
@@ -119,42 +120,24 @@ else
 	exit 1;
 }
 
-my $dbq = $dbase->prepare("SELECT id, lastname, name FROM users WHERE deleted=0");
+my $dbq = $dbase->prepare("SELECT users.id AS id, UPPER(lastname) AS lastname, name, SUM((cash.type*-2+7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id, lastname, name HAVING SUM((cash.type*-2+7) * cash.value) >= $limit ORDER BY lastname, name");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
-	my $balance = 0;
-	my $sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type='3'");
-	$sdbq->execute();
-	if(my $srow = $sdbq->fetchrow_hashref())
+	if(!$quiet)
 	{
-		$balance = $balance + (defined $srow->{'sum'} ? $srow->{'sum'} : 0);
+		print STDOUT "$row->{'lastname'} $row->{'name'} ($row->{'id'})\t$row->{'balance'}\n";
 	}
-	$sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type='4'");
-	$sdbq->execute();
-	if(my $srow = $sdbq->fetchrow_hashref())
-	{
-		$balance = $balance - (defined $srow->{'sum'} ? $srow->{'sum'} : 0);
-	}
-
-	if($balance >= $limit)
-	{
-	    if(!$quiet)
-	    {
-		    print STDOUT "$row->{'id'}\t($balance)\t$row->{'lastname'} $row->{'name'}\n";
-	    }
-            $sdbq = $dbase->prepare("UPDATE nodes SET access=1, warning=0 WHERE ownerid='$row->{'id'}'");
-	    $sdbq->execute();
-	    $sdbq = $dbase->prepare("UPDATE users SET message='Dziêkujemy za wp³atê' WHERE id='$row->{'id'}'");
-	    $sdbq->execute();
-	}
+	                                    		# warning=1 (?)
+	my $rows = $dbase->do("UPDATE nodes SET access=1, warning=0 WHERE ownerid=$row->{'id'} AND (access=0 OR warning=1)");
 	
+	if($message && $rows > 0)
+	{
+		$dbase->do("UPDATE users SET message='$message' WHERE id='$row->{'id'}'");
+	}
 }
 
-$dbq = $dbase->prepare("DELETE FROM timestamps WHERE tablename = 'nodes' OR tablename = '_global'");
-$dbq->execute();
-$dbq = $dbase->prepare("INSERT INTO timestamps (tablename,time) VALUES ('nodes',$utsfmt)");
-$dbq->execute();
-$dbq = $dbase->prepare("INSERT INTO timestamps (tablename,time) VALUES ('_global',$utsfmt)");
-$dbq->execute();
+$dbase->do("DELETE FROM timestamps WHERE tablename = 'nodes' OR tablename = '_global'");
+$dbase->do("INSERT INTO timestamps (tablename,time) VALUES ('nodes',$utsfmt)");
+$dbase->do("INSERT INTO timestamps (tablename,time) VALUES ('_global',$utsfmt)");
 $dbase->disconnect();
