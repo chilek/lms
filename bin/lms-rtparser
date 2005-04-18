@@ -98,15 +98,26 @@ my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 my $dbencoding = $ini->val('database', 'server_encoding') || 'UTF-8';
+
 my $save_path = $ini->val('rt', 'mail_dir') || '';
 my $queue = $queue || $ini->val('rt', 'default_queue');
-my $autoreply_from = $ini->val('rt', 'mail_from') || '';
-my $autoreply_name = $ini->val('rt', 'mail_from_name') || '';
 my $smtpserver = $ini->val('rt', 'smtp_server') || 'localhost';
 my $auto_open = $ini->val('rt', 'auto_open') || 0;
 my $tmp_dir = $ini->val('rt', 'tmp_dir') || '';
 my $notify = $ini->val('rt', 'newticket_notify') || 0;
 my $lms_url = $ini->val('rt', 'lms_url') || 'http://localhost/lms/';
+my $autoreply_from = $ini->val('rt', 'mail_from') || '';
+my $autoreply_name = $ini->val('rt', 'mail_from_name') || '';
+my $autoreply_subject = $ini->val('rt', 'autoreply_subject') || "[RT#%tid] Receipt of request '%subject'";
+my $autoreply_body = $ini->val('rt', 'autoreply_body') || '';
+
+if(! $autoreply_body)
+{
+	$autoreply_body = "Your request was registered in our system.\n".
+		"To this request was assigned ticket identifier: RT#%tid\n\n".
+		"Please, place string [RT#%tid] in subject field of any\n".
+		"mail relating to this request.\n"
+}
 
 # very ugly code, but we really need tempdir..
 my $tmpdir = $tmp_dir || ((defined $ENV{'TMP'} && ! ($ENV{'TMP'} eq '')) ? $ENV{'TMP'} : '/tmp');
@@ -357,9 +368,15 @@ if(! $prev_tid) # generate new ticket if previous not found
 			$autoreply_name = $autoreply_name || $row->{'name'};
 		}
 	}
+	
+	my $ticketid = sprintf("%06d", $ticket_id);
+	$autoreply_subject =~ s/\%tid/$ticketid/g;
+	$autoreply_subject =~ s/\%subject/$mh_subject/g;
+	$autoreply_body =~ s/\%tid/$ticketid/g;
+	$autoreply_body =~ s/\%subject/$mh_subject/g;
 
 	# encode confirmation headers
-	my $c_subject = encode_mimeword("Potwierdzenie przyjęcia zgłoszenia o temacie '$mh_subject'",'q','UTF-8');
+	my $c_subject = encode_mimeword($autoreply_subject,'q','UTF-8');
 	$autoreply_name = encode_mimeword($autoreply_name,'q','UTF-8');
 	$replytoname = encode_mimeword($replytoname,'q','UTF-8');
 	$fromname = encode_mimeword($fromname,'q','UTF-8');
@@ -377,18 +394,12 @@ if(! $prev_tid) # generate new ticket if previous not found
 	$smtp->datasend("Mime-Version: 1.0\n");
 	$smtp->datasend("Content-type: text/plain; charset=UTF-8\n");
 	$smtp->datasend("Content-transfer-encoding: 8bit\n");
-	$smtp->datasend("Subject: [RT#".sprintf("%06d",$ticket_id)."] $c_subject\n");
+	$smtp->datasend("Subject: $c_subject\n");
 	$smtp->datasend("References: $mh_references $mh_msgid\n");
 	$smtp->datasend("Message-ID: <confirm.$ticket_id.$queue.$timestamp\@rtsystem.$hostname>\n");
 	$smtp->datasend("In-Reply-To: $mh_msgid\n");
 	$smtp->datasend("X-Mailer: LMS/RT v.$_version\n");
-	$smtp->datasend("\n");
-	$smtp->datasend("Uprzejmie informujemy że Państwa zgłoszenie zostało zarejestrowane w naszym\n".
-			"systemie. Zgłoszeniu został przydzielony numer: RT#".sprintf("%06d",$ticket_id)."\n".
-			"\n".
-			"W przypadku jakiejkolwiek korespondencji związanej z Państwa zgłoszeniem, prosimy\n".
-			"umieścić w polu tematu wiadomości następujący ciąg znaków: [RT#".sprintf("%06d",$ticket_id)."]\n".
-			"\n");
+	$smtp->datasend("\n$autoreply_body\n");
 	$smtp->dataend();
 	$smtp->quit;	
 	
@@ -408,7 +419,7 @@ if(! $prev_tid) # generate new ticket if previous not found
 			$smtp->datasend("Mime-Version: 1.0\n");
 			$smtp->datasend("Content-type: text/plain; charset=UTF-8\n");
 			$smtp->datasend("Content-transfer-encoding: 8bit\n");
-			$smtp->datasend("Subject: [RT#".sprintf("%06d",$ticket_id)."] $mh_subject\n");
+			$smtp->datasend("Subject: [RT#$ticketid] $mh_subject\n");
 			$smtp->datasend("X-Mailer: LMS/RT v.$_version\n");
 			$smtp->datasend("\n");
 			$smtp->datasend("$lms_url/?m=rtticketview&id=$ticket_id\n\n");

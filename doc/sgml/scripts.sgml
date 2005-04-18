@@ -1051,6 +1051,20 @@ Following parameters are valid:</para>
 		    <para>Example:	<prompt>mail_from_name = 'BOK SuperLAN'</prompt></para>
 		</listitem>
 		<listitem>
+		    <para>autoreply_subject</para>
+		    <para>Confirmation subject. Here you can use replacement variables %tid - 
+		    ticket id and %subject - request subject.
+		    Default: "[RT#%tid] Receipt of request '%subject'".</para>
+		    <para>Example:	<prompt>autoreply_subject = '[RT#%tid] Helpdesk confirmation'</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>autoreply_body</para>
+		    <para>Confirmation body. Here you can use replacement variables %tid - 
+		    ticket id and %subject - request subject.
+		    Default: 'Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n.'</para>
+		    <para>Example:	<prompt>autoreply_body = ''</prompt></para>
+		</listitem>
+		<listitem>
 		    <para>smtp_server</para>
 		    <para>SMTP server to be used for sending emails. Default:
 		    localhost.</para>

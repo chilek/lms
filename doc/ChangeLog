@@ -45,6 +45,8 @@ version 1.5.6 Baal (??/??/????):
     in printer-friendly format (alec)
   - little (?) layout revolution (inspired by lexx and kondi) (lukasz)
   - fixed total tax summary on Sale Report (alec)
+  - lms-rtparser: added options autoreply_body and autoreply_subject with
+    translated to english default values (alec)
 
 version 1.5.5 Anubis (25/03/2005):
 
