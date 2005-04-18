@@ -52,6 +52,8 @@ version 1.5.6 Baal (??/??/????):
   - lms-cutoff: added option 'message', optimized balance calculation (alec)
   - lms-makeon: added option 'message', optimized balance calculation (alec)
   - lms-notify: deleted columns header in %last_10_in_a_table (alec)
+  - lms-payments: translated to english default values of options
+    'paytype' and 'comment' (alec)
 
 version 1.5.5 Anubis (25/03/2005):
 

@@ -96,11 +96,13 @@ my $dbhost = $ini->val('database', 'host') || 'localhost';
 my $dbuser = $ini->val('database', 'user') || 'root';
 my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
+
 my $deadline = $ini->val('payments', 'deadline') || '14';
-my $paytype = $ini->val('payments', 'paytype') || 'PRZELEW';
-my $comment = $ini->val('payments', 'comment') || 'Abonament wg taryfy %tariff za okres %period';
-my $suspension_percentage = $ini->val('finances', 'suspension_percentage') || '0';
+my $paytype = $ini->val('payments', 'paytype') || 'TRANSFER';
+my $comment = $ini->val('payments', 'comment') || 'Tariff %tariff subscription for period %period';
 my $suspension_description = $ini->val('payments', 'suspension_description') || '';
+
+my $suspension_percentage = $ini->val('finances', 'suspension_percentage') || '0';
 my $monthly_num = $ini->val('invoices', 'monthly_numbering') || 0;
 
 my $dbase;
@@ -245,12 +247,10 @@ while(my $assign = $dbq->fetchrow_hashref())
 		}
 	}
 
-	my $period = $txts{$assign->{'period'}};
 	my $desc = $comment;
-	
 	$desc =~ s/\%tariff/$assign->{'name'}/g;
 	$desc =~ s/\%desc/$assign->{'description'}/g;
-	$desc =~ s/\%period/$period/g;
+	$desc =~ s/\%period/$txts{$assign->{'period'}}/g;
 	$desc =~ s/\%current_month/$current_month/g;
 	
 	if ($suspension_percentage && ($assign->{'suspended'} || $suspended == $uid))
