@@ -294,6 +294,14 @@ http://www.naszasiec.pl/</screen></example>
 	   <para>Pozwala na ustalenie limitu bilansu poni¿ej którego do bazy danych zostanie zapisany stan od³±czony. Domy¶lnie: 0</para>
 	   <para>Przyk³ad:	<prompt>limit = -20</prompt></para>
 	  </listitem>
+	  <listitem>
+	   <para>message (optional)</para>
+	   <para>Je¶li nie jest pusta, wiadomo¶æ ta po od³aczeniu u¿ytkownika zostanie 
+	   zapisana do jego rekordu w polu wiadomo¶ci administracyjnej. W tre¶ci wiadomo¶ci
+	   mo¿na u¿yæ zmiennej %now, która zostanie zamieniona na bie¿±c± datê.
+	   Domy¶lnie: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</para>
+	   <para>Przyk³ad:	<prompt>message = ''</prompt></para>
+	  </listitem>
 	 </itemizedlist>
 	</sect2>
 	<sect2 id="lms-payments" xreflabel="lms-payments">

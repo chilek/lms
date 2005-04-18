@@ -49,6 +49,7 @@ version 1.5.6 Baal (??/??/????):
     translated to english default values (alec)
   - BTS#0000334: bugfix in GetNodeByMAC() function (kuba)
   - changed default tax value to 22% in selection lists (alec)
+  - lms-cutoff: added option 'message', optimized balance calculation (alec)
 
 version 1.5.5 Anubis (25/03/2005):
 

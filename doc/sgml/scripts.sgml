@@ -290,6 +290,13 @@ Following parameters are valid:</para>
 	   <para>Lets you setup limit of customer debt. Customer will be marked as disconnected below that value. Default: 0</para>
 	   <para>Example:	<prompt>limit = -20</prompt></para>
 	  </listitem>
+	  <listitem>
+	   <para>message (optional)</para>
+	   <para>If not empty, that message will be writed in warning message field in customer record 
+	   after cutting him off.  You can specify in message variable %now, that will be replaced by current date.
+	   Default: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</para>
+	   <para>Example:	<prompt>message = ''</prompt></para>
+	  </listitem>
 	 </itemizedlist>
 	</sect2>
 	<sect2 id="lms-payments" xreflabel="lms-payments">
