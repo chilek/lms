@@ -94,10 +94,10 @@ my $dbpasswd = $ini->val('database', 'password') || '';
 my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $limit = $ini->val('cutoff', 'limit') || 0;
+my $message = $ini->val('cutoff', 'message') || 'Automatic cutoff caused by exceeding of liabilities limit on %now';
 
 my $dbase;
 my $utsfmt;
-my $now_date = strftime "(%d.%m.%Y)", localtime;
 
 if($dbtype eq "mysql")
 {
@@ -120,35 +120,27 @@ else
 	exit 1;
 }
 
-my $dbq = $dbase->prepare("SELECT id, lastname, name, email, phone1 FROM users");
+my $now_date = strftime "%Y/%m/%d", localtime;
+$message =~ s/%now/$now_date/g;
+
+my $dbq = $dbase->prepare("SELECT users.id AS id, UPPER(lastname) AS lastname, name, SUM((cash.type*-2+7) * cash.value) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE deleted = 0 GROUP BY users.id, lastname, name HAVING SUM((cash.type*-2+7) * cash.value) < $limit ORDER BY lastname, name");
 $dbq->execute();
 while (my $row = $dbq->fetchrow_hashref())
 {
-	my $balance = 0;
-	my $sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type='3'");
-	$sdbq->execute();
-	if(my $srow = $sdbq->fetchrow_hashref())
+	if(!$quiet)
 	{
-		$balance = $balance + (defined $srow->{'sum'} ? $srow->{'sum'} : 0);
-	}
-	$sdbq = $dbase->prepare("SELECT SUM(value) AS sum FROM cash WHERE userid='$row->{'id'}' AND type='4'");
-	$sdbq->execute();
-	if(my $srow = $sdbq->fetchrow_hashref())
-	{
-		$balance = $balance - (defined $srow->{'sum'} ? $srow->{'sum'} : 0);
-	}
-	if($balance < $limit)
-	{
-		if(!$quiet)
-		{
-			print STDOUT "$row->{'id'}\t($balance)\t$row->{'lastname'} $row->{'name'}\n";
-		}
-		$sdbq = $dbase->prepare("UPDATE nodes SET access=0, warning=1 WHERE ownerid='$row->{'id'}'");
-		$sdbq->execute();
-		$sdbq = $dbase->prepare("UPDATE users SET message='Automatyczna blokada spowodowana przekroczeniem terminu wp³aty $now_date' WHERE id ='$row->{'id'}'");
-		$sdbq->execute();
+		print STDOUT "$row->{'lastname'} $row->{'name'} ($row->{'id'})\t$row->{'balance'}\n";
 	}
 	
+	my $sdbq = $dbase->prepare("UPDATE nodes SET access=0, warning=1 WHERE ownerid='$row->{'id'}'");
+	$sdbq->execute();
+		
+	if($message)
+	{
+		
+		$sdbq = $dbase->prepare("UPDATE users SET message='$message' WHERE id ='$row->{'id'}'");
+		$sdbq->execute();
+	}
 }
 
 $dbq = $dbase->prepare("DELETE FROM timestamps WHERE tablename = 'nodes' OR tablename = '_global'");
