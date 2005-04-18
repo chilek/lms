@@ -1880,7 +1880,8 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 65000)
 	$LMS->PaymentAdd($paymentdata);
 	
 	echo '<B>'.trans('Generating network...').'</B><BR>';
-	$netdata = array( name => 'LAN1', address => '192.168.0.0', prefix => '22', gateway => '192.168.0.1', dns => '192.168.0.1', dns2 => '192.168.3.254', domain => 'ultralan.net', wins => '192.168.0.2', dhcpstart => '192.168.3.230', dhcpend => '192.168.3.253');
+	$prefix = ($_GET['l']*2>1024) ? 16 : 22;
+	$netdata = array( name => 'LAN1', address => '192.168.0.0', prefix => $prefix, gateway => '192.168.0.1', dns => '192.168.0.1', dns2 => '192.168.3.254', domain => 'ultralan.net', wins => '192.168.0.2', dhcpstart => '192.168.3.230', dhcpend => '192.168.3.253');
 	$LMS->NetworkAdd($netdata);
 
 	echo '<B>'.trans('Generating customers...').'</B><BR>';	
@@ -1917,7 +1918,7 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 65000)
 		$useradd['pin'] = rand(10000,99999);
 		$id = $LMS->UserAdd($useradd);
 		$LMS->AddAssignMent(array( 'tariffid' => $useradd['tariff'], 'userid' => $id, 'period' => 1, 'at' => $useradd['payday'], 'invoice' => 0, 'datefrom' => 0, 'dateto' => 0, 'discount' => 0));
-		$nodes = mt_rand(1,3);
+		$nodes = mt_rand(1,2);
 		for($j = 0; $j < $nodes; $j++)
 		{
 			$nodedata['name'] = $nodenames[$cnt].$i;
