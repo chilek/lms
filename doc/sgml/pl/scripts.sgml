@@ -659,6 +659,18 @@ wins    = 213.25.209.10</screen>
 		    <para>Adres nadawcy listu. Domy¶lnie: niezdefiniowany.</para>
 		    <para>Przyk³ad:	<prompt>sender_email = admin@mynet.pl</prompt></para>
 		</listitem>
+		<listitem>
+		    <para>mail_subject</para>
+		    <para>Temat wiadomo¶ci. Mo¿na u¿yæ zmiennej %invoice zastêpowanej numerem faktury. 
+		    Domy¶lnie: 'Invoice No. %invoice'.</para>
+		    <para>Przyk³ad:	<prompt>mail_subject = 'Nowa faktura'</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>mail_body</para>
+		    <para>Tre¶æ wiadomo¶ci. Mo¿na u¿yæ zmiennej %invoice, która zostanie zast±piona numerem faktury. 
+		    Domy¶lnie: 'Attached file with Invoice No. %invoice'.</para>
+		    <para>Przyk³ad:	<prompt>mail_body = ''</prompt></para>
+		</listitem>
 	    </itemizedlist>
 	 Ponadto mamy do dyspozycji jeden przydatny parametr wiersza poleceñ
 	 <prompt>--fakedate</prompt> (<prompt>-f</prompt>). Przy jego u¿yciu mo¿na 
@@ -1117,3 +1129,15 @@ endif
     </sect2>
     </sect1>
 </chapter>
+           	<listitem>
+		    <para>mail_subject</para>
+		    <para>Email subject. Can use %invoice variable replaced by invoice number. 
+		    Default: 'Invoice No. %invoice'.</para>
+		    <para>Example:	<prompt>mail_subject = 'New invoice'</prompt></para>
+		</listitem>
+           	<listitem>
+		    <para>mail_body</para>
+		    <para>Email body. Can use %invoice variable replaced by invoice number. 
+		    Default: 'Attached file with Invoice No. %invoice'.</para>
+		    <para>Example:	<prompt>mail_body = ''</prompt></para>
+		</listitem>
