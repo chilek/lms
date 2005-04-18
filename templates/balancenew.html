@@ -112,10 +112,10 @@
 					</TD>
 					<TD WIDTH="98%" CLASS="FRIGHT">
 						<SELECT size="1" name="addbalance[taxvalue]" value="{$taxvalue}" {tip text="Select Tax rate"}>
-							<OPTION value="22" {if $taxvalue == 22}selected{/if}>22%</OPTION>
-							<OPTION value="7" {if $taxvalue == 7}selected{/if}>7%</OPTION>
-							<OPTION value="0" {if $taxvalue == 0}selected{/if}>0%</OPTION>
-							<OPTION value="tax-free" {if !$taxvalue}selected{/if}>{t}tax-free{/t}</OPTION>
+							<OPTION value="22" {if $taxvalue == "22" || !$taxvalue}selected{/if}>22%</OPTION>
+							<OPTION value="7" {if $taxvalue == "7"}selected{/if}>7%</OPTION>
+							<OPTION value="0" {if $taxvalue == "0"}selected{/if}>0%</OPTION>
+							<OPTION value="tax-free" {if $taxvalue=="" || $taxvalue=="tax-free"}selected{/if}>{t}tax-free{/t}</OPTION>
 						</SELECT>
 					</TD>
 				</TR>
