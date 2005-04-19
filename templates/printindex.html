@@ -387,7 +387,7 @@ cal4.time_comp = false;
 						<SELECT size="1" name="user" {tip text="You can select customer to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
 							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."}</OPTION>
+							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
@@ -439,7 +439,7 @@ cal4.time_comp = false;
 						<SELECT size="1" name="user" {tip text="You can select customer to limit results"}>
 							<OPTION value="0">{t}- all customers -{/t}</OPTION>
 							{section name="users" loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."}</OPTION>
+							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 					</TD>
