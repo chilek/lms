@@ -1129,15 +1129,3 @@ endif
     </sect2>
     </sect1>
 </chapter>
-           	<listitem>
-		    <para>mail_subject</para>
-		    <para>Email subject. Can use %invoice variable replaced by invoice number. 
-		    Default: 'Invoice No. %invoice'.</para>
-		    <para>Example:	<prompt>mail_subject = 'New invoice'</prompt></para>
-		</listitem>
-           	<listitem>
-		    <para>mail_body</para>
-		    <para>Email body. Can use %invoice variable replaced by invoice number. 
-		    Default: 'Attached file with Invoice No. %invoice'.</para>
-		    <para>Example:	<prompt>mail_body = ''</prompt></para>
-		</listitem>

@@ -357,7 +357,7 @@ HREF="#SCRIPTS-TABLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN2268"
+HREF="#AEN2294"
 >List of all lmsd modules</A
 ></DT
 ><DT
@@ -915,11 +915,6 @@ TARGET="_top"
 >overLIB</A
 >, 
           <A
-HREF="www.nirvani.net/software"
-TARGET="_top"
->Multipart Mime Email Generator Library</A
->, 
-          <A
 HREF="www.ros.co.nz/pdf/"
 TARGET="_top"
 >ezpdf</A
@@ -1201,7 +1196,7 @@ CLASS="EMPHASIS"
 HREF="http://smarty.php.net"
 TARGET="_top"
 >http://smarty.php.net</A
->) in version 2.5.0
+>) in version 2.6.0
             or higher (don't use 2.6.4 version). Newer versions of Smarty requires that
             you have not enabled "magic_quotes_runtime" (set to Off) option in <A
 HREF="http://www.php.net/manual/en/configuration.php"
@@ -2563,6 +2558,33 @@ CLASS="PROMPT"
 ></LI
 ></UL
 ></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="INSTALL-CONFIG-FINANCES"
+>2.6.4. Section [finances] - Finances Settings</A
+></H3
+><P
+>This section consist options for financial system and for payment
+	forms. You can read more about that in Invoices chapter.
+    	    <UL
+><LI
+><P
+>suspension_percentage (optional)</P
+><P
+>Percentage for suspended liabilities. Default: '0'</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>suspension_percentage = '50'</SAMP
+></P
+></LI
+></UL
+>
+	</P
+></DIV
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -3237,11 +3259,7 @@ CLASS="FILENAME"
 >lms.ini</TT
 >. Those options are stored in database and you first
             need to import them from your config file (even if you haven't edited anything
-            yet, default values will be imported). This can be done with help of
-            <TT
-CLASS="FILENAME"
->upgrade02</TT
-> UI module, which will be executed after you click
+            yet, default values will be imported). This can be done by clicking
             on the link presented on empty list.</P
 ><P
 ><DIV
@@ -3273,6 +3291,33 @@ CLASS="EMPHASIS"
             have higher priority than those in configuration file. With options setup in UI,
             the configuration will be still imported from file but values will be then
             overwritten by those found in DB.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Daemon read some non-daemon options only from
+	    database, so is prefered to store configuration in database.</P
 ></TD
 ></TR
 ></TABLE
@@ -4978,8 +5023,7 @@ NAME="NOTIFY-EXAMPLE"
 ></P
 ><PRE
 CLASS="SCREEN"
->Date       | Description                                          | Amount
------------+------------------------------------------------------+---------
+>-----------+------------------------------------------------------+---------
 2003-02-02 | Subscription for month 2003/02                       |  107.00
 2003-02-01 | Payment                                              | -107.00
 2003-02-01 | Subscription for month 2003/02                       |  107.00
@@ -5027,6 +5071,7 @@ e-mail: gcooper@free.bigpro.com
 PS. Last 10 operations on your account has been attached below for your
 convenience.
 
+Date       | Description                                          | Amount
 %last_10_in_a_table
 
 --
@@ -5227,6 +5272,19 @@ CLASS="PROMPT"
 >limit = -20</SAMP
 ></P
 ></LI
+><LI
+><P
+>message (optional)</P
+><P
+>If not empty, that message will be writed in warning message field in customer record 
+	   after cutting him off.  You can specify in message variable %now, that will be replaced by current date.
+	   Default: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>message = ''</SAMP
+></P
+></LI
 ></UL
 ></DIV
 ><DIV
@@ -5280,20 +5338,10 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->suspension_percentage (optional)</P
-><P
->Percentage for suspended liabilities. Default: '0'</P
-><P
->Example:	<SAMP
-CLASS="PROMPT"
->suspension_percentage = '50'</SAMP
-></P
-></LI
-><LI
-><P
 >suspension_description (optional)</P
 ><P
->Suspension description for suspended liabilities. Default: ''</P
+>Suspension description for suspended liabilities added at the end of comment. 
+	   Default: ''</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -5306,19 +5354,21 @@ CLASS="PROMPT"
 ><P
 >Description on invoice attached to every periodical assigment</P
 ><P
->Default: 'Abonament wg taryfy %tariff za okres %period'</P
+>Default: 'Tariff %tariff subscription for period %period'</P
 ><P
 >Some keywords are substitiuted:</P
 ><P
->%tariff tariff name</P
+>%tariff - tariff name</P
 ><P
->%period period (counted from current day to the last in cycle, in form YYYY/MM/DD)</P
+>%period - period (counted from current day to the last in cycle, in form YYYY/MM/DD)</P
 ><P
->%%current_month period form 1st of current month to the end of it</P
+>%%current_month - period form 1st of current month to the end of it</P
+><P
+>%desc - tariff description</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->paytype = 'Abonament za %current_month w/g taryfy %tariff '</SAMP
+>paytype = 'Subscription for %current_month'</SAMP
 ></P
 ></LI
 ></UL
@@ -6048,7 +6098,7 @@ CLASS="PROMPT"
 >debug_email</P
 ><P
 >Email address to test (mail will be redirected here).
-Default: undefined.</P
+		    Default: undefined.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -6079,14 +6129,26 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->tmp_dir</P
+>mail_subject</P
 ><P
->Temp dir location. If unset, should be read from 'TMP'
-environment variable, '/tmp' otherwise.</P
+>Email subject. Can use %invoice variable replaced by invoice number. 
+		    Default: 'Invoice No. %invoice'.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->tmp_dir = /home/user/tmp</SAMP
+>mail_subject = 'New invoice'</SAMP
+></P
+></LI
+><LI
+><P
+>mail_body</P
+><P
+>Email body. Can use %invoice variable replaced by invoice number. 
+		    Default: 'Attached file with Invoice No. %invoice'.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>mail_body = ''</SAMP
 ></P
 ></LI
 ></UL
@@ -6903,6 +6965,32 @@ CLASS="PROMPT"
 >Example:	<SAMP
 CLASS="PROMPT"
 >mail_from_name = 'BOK SuperLAN'</SAMP
+></P
+></LI
+><LI
+><P
+>autoreply_subject</P
+><P
+>Confirmation subject. Here you can use replacement variables %tid - 
+		    ticket id and %subject - request subject.
+		    Default: "[RT#%tid] Receipt of request '%subject'".</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>autoreply_subject = '[RT#%tid] Helpdesk confirmation'</SAMP
+></P
+></LI
+><LI
+><P
+>autoreply_body</P
+><P
+>Confirmation body. Here you can use replacement variables %tid - 
+		    ticket id and %subject - request subject.
+		    Default: 'Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n.'</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>autoreply_body = ''</SAMP
 ></P
 ></LI
 ><LI
@@ -8266,7 +8354,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2268"
+NAME="AEN2294"
 ></A
 ><P
 ><B
@@ -8499,12 +8587,12 @@ NAME="PAYMENTS-CONFIG"
 >comment</P
 ><P
 >Description of operation. '%period' will be replaced by start and end
-                   date of subscription, e.g. '10.10.2003 - 09.11.2003', and '%tariff' by name of
+                   date of subscription, e.g. '2003/10/10 - 2003/11/09', and '%tariff' by name of
                    liability. Default: 'Subscription: '%tariff' for period: %period'.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->comment = 'Subscription: %tariff for period %period' </SAMP
+>comment = 'Subscription %tariff' </SAMP
 ></P
 ></LI
 ><LI
@@ -8838,8 +8926,8 @@ CLASS="PROMPT"
 ><P
 >Enable warning for disconnected customer and write him WWW browser message
                    specified in this option. If empty, warning will be not enabled. Date in
-                   message is substituted providing '%time' variable. Default: 'Web access blocked
-                   automatically due to payment deadline override (%time)".</P
+                   message is substituted providing '%time' variable. Default: 'Blocked
+                   automatically due to payment deadline override on %time".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"

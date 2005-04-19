@@ -153,8 +153,7 @@ NAME="NOTIFY-EXAMPLE"
 ></P
 ><PRE
 CLASS="SCREEN"
->Data       | Opis                                                 | Warto¶æ
------------+------------------------------------------------------+---------
+>-----------+------------------------------------------------------+---------
 2003-02-02 | Abonament za miesi±c 2003/02                         |  107.00
 2003-02-01 | Wp³ata                                               | -107.00
 2003-02-01 | Abonament za miesi±c 2003/02                         |  107.00
@@ -205,8 +204,7 @@ e-mail: gwidonm@naszasiec.pl
 ps. za³±czamy ostatnie 10 operacji jakie zosta³o zarejestrowane przez nasz
 system bilingowy na Pañstwa koncie:
 
-kwota operacji | typ operacji | data
-
+Data       | Opis                                                 | Warto¶æ
 %last_10_in_a_table
 
 --
@@ -403,6 +401,20 @@ CLASS="PROMPT"
 >limit = -20</SAMP
 ></P
 ></LI
+><LI
+><P
+>message (optional)</P
+><P
+>Je¶li nie jest pusta, wiadomo¶æ ta po od³aczeniu u¿ytkownika zostanie 
+	   zapisana do jego rekordu w polu wiadomo¶ci administracyjnej. W tre¶ci wiadomo¶ci
+	   mo¿na u¿yæ zmiennej %now, która zostanie zamieniona na bie¿±c± datê.
+	   Domy¶lnie: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>message = ''</SAMP
+></P
+></LI
 ></UL
 ></DIV
 ><DIV
@@ -443,66 +455,43 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
+>paytype (opcjonalny)</P
+><P
+>Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'TRANSFER'</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>paytype = 'PRZELEW'</SAMP
+></P
+></LI
+><LI
+><P
 >comment (opcjonalny)</P
 ><P
 >Opis pozycji na fakturze za naliczane zobowi±zanie</P
 ><P
->Domy¶lnie: 'Abonament wg taryfy %tariff za okres %period'</P
+>Domy¶lnie: 'Tariff %tariff subscription for period %period'</P
 ><P
 >Niektóre ze s³ów kluczowych s± zastêpowane:</P
 ><P
->%tariff Nazwa taryfy</P
+>%tariff - nazwa taryfy</P
 ><P
->%period Okres (liczony od dzi¶ do ostatniego dnia cyklu rozliczeniowego, w formacie YYYY/MM/DD)</P
+>%period - okres (liczony od dzi¶ do ostatniego dnia cyklu rozliczeniowego, w formacie YYYY/MM/DD)</P
 ><P
->%%current_month Okres od pierwszego dnia bie¿±cego miesi±ca do jego koñca</P
+>%%current_month - okres od pierwszego dnia bie¿±cego miesi±ca do jego koñca</P
+><P
+>%desc - opis taryfy</P
 ><P
 >Przyk³ad:       <SAMP
 CLASS="PROMPT"
->paytype = 'Abonament za %current_month w/g taryfy %tariff '</SAMP
-></P
-></LI
-><LI
-><P
->paytype (opcjonalny)</P
-><P
->Okre¶la rodzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'</P
-><P
->Przyk³ad:	<SAMP
-CLASS="PROMPT"
->paytype = 'GOTÓWKA'</SAMP
-></P
-></LI
-><LI
-><P
->comment</P
-><P
->Opis operacji, w którym mo¿na skorzystaæ ze zmiennych: %tariff
-	   - zamienianej na nazwê taryfy, %period - okres i %desc - opis taryfy. 
-	   Domy¶lnie: 'Abonament wg taryfy %tariff za okres %period'</P
-><P
->Przyk³ad:	<SAMP
-CLASS="PROMPT"
->comment = %desc</SAMP
-></P
-></LI
-><LI
-><P
->suspension_percentage (opcjonalny)</P
-><P
->Warto¶æ procentowa obci±¿enia generowana dla obci±¿eñ zablokowanych.
-	   Domy¶lnie: '0'</P
-><P
->Przyk³ad:	<SAMP
-CLASS="PROMPT"
->suspension_percentage = %desc</SAMP
+>paytype = 'Abonament za %current_month w/g taryfy %tariff'</SAMP
 ></P
 ></LI
 ><LI
 ><P
 >suspension_description (opcjonalny)</P
 ><P
->Tekst dodawany na koñcu opisu operacji dla obci±¿eñ zablokowanych. 
+>Tekst dodawany na koñcu opisu operacji dla obci±¿eñ zawieszonych. 
 	   Domy¶lnie: ''</P
 ><P
 >Przyk³ad:	<SAMP
@@ -1250,6 +1239,30 @@ CLASS="PROMPT"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >sender_email = admin@mynet.pl</SAMP
+></P
+></LI
+><LI
+><P
+>mail_subject</P
+><P
+>Temat wiadomo¶ci. Mo¿na u¿yæ zmiennej %invoice zastêpowanej numerem faktury. 
+		    Domy¶lnie: 'Invoice No. %invoice'.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mail_subject = 'Nowa faktura'</SAMP
+></P
+></LI
+><LI
+><P
+>mail_body</P
+><P
+>Tre¶æ wiadomo¶ci. Mo¿na u¿yæ zmiennej %invoice, która zostanie zast±piona numerem faktury. 
+		    Domy¶lnie: 'Attached file with Invoice No. %invoice'.</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>mail_body = ''</SAMP
 ></P
 ></LI
 ></UL
@@ -2123,6 +2136,32 @@ CLASS="PROMPT"
 >Przyk³ad:	<SAMP
 CLASS="PROMPT"
 >mail_from_name = 'BOK SuperLAN'</SAMP
+></P
+></LI
+><LI
+><P
+>autoreply_subject</P
+><P
+>Temat potwierdzenia. Tu mo¿na korzystaæ ze zmiannych %tid - 
+		    identyfikator zg³oszenia i %subject - temat zg³oszenia.
+		    Domy¶lnie: "[RT#%tid] Receipt of request '%subject'".</P
+><P
+>Przyk³ad:	<SAMP
+CLASS="PROMPT"
+>autoreply_subject = "[RT#%tid] Potwierdzenie odbioru zg³oszenia o temacie '%subject'"</SAMP
+></P
+></LI
+><LI
+><P
+>autoreply_body</P
+><P
+>Tre¶æ potwierdzenia. Tu mo¿na korzystaæ ze zmiannych: %tid - 
+		    identyfikator zg³oszenia i %subject - temat zg³oszenia.
+		    Domy¶lnie: "Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n."</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>autoreply_body = "Pañstwa zg³oszenie zosta³o zarejestrowane w naszym systemie.\nZg³oszeniu zosta³ nadany numer: RT#%tid.\nW korespondencji zwi±zanej z tym zg³oszeniem prosimy podawaæ w temacie ci±g znaków [RT#%tid].\n"</SAMP
 ></P
 ></LI
 ><LI

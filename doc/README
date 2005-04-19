@@ -191,9 +191,9 @@ Chapter 1. Intro
 1.2.2. Others
 
    LMS uses elements of other software: phpMyAdmin, phpsysinfo,
-   NewsPortal, overLIB, Multipart Mime Email Generator Library, ezpdf,
-   Tigra Calendar, Piotr Kleban's number-to-words conversion procedures
-   and code examples from PHP manual.
+   NewsPortal, overLIB, ezpdf, Tigra Calendar, Piotr Kleban's
+   number-to-words conversion procedures and code examples from PHP
+   manual.
      _________________________________________________________________
 
 1.3. Legal Notice
@@ -310,7 +310,7 @@ Chapter 2. Installation and configuration
 2.2.4. Smarty Library
 
    LMS-UI requires Smarty library (http://smarty.php.net) in version
-   2.5.0 or higher (don't use 2.6.4 version). Newer versions of Smarty
+   2.6.0 or higher (don't use 2.6.4 version). Newer versions of Smarty
    requires that you have not enabled "magic_quotes_runtime" (set to Off)
    option in PHP configuration.
      _________________________________________________________________
@@ -824,6 +824,15 @@ database = /usr/local/lms/lms.db
        Example: smtp_host = mail.domain.pl
      _________________________________________________________________
 
+2.6.4. Section [finances] - Finances Settings
+
+   This section consist options for financial system and for payment
+   forms. You can read more about that in Invoices chapter.
+     * suspension_percentage (optional)
+       Percentage for suspended liabilities. Default: '0'
+       Example: suspension_percentage = '50'
+     _________________________________________________________________
+
 2.7. Access rights
 
 2.7.1. Idea
@@ -1088,8 +1097,8 @@ Chapter 3. User Interface (LMS-UI)
    directly via LMS-UI, instead of editing lms.ini. Those options are
    stored in database and you first need to import them from your config
    file (even if you haven't edited anything yet, default values will be
-   imported). This can be done with help of upgrade02 UI module, which
-   will be executed after you click on the link presented on empty list.
+   imported). This can be done by clicking on the link presented on empty
+   list.
 
    Note
 
@@ -1097,6 +1106,11 @@ Chapter 3. User Interface (LMS-UI)
    configuration file. With options setup in UI, the configuration will
    be still imported from file but values will be then overwritten by
    those found in DB.
+
+   Note
+
+   Daemon read some non-daemon options only from database, so is prefered
+   to store configuration in database.
 
    In order to manually add new option click 'Add option' on the bottom
    of the list. To edit option value, click on its record. You'll be
@@ -1837,7 +1851,6 @@ Chapter 4. Scripts
        account, eg.
 
    Example 4-1. Lms-notify: example of last 10 customer's operations
-Date       | Description                                          | Amount
 -----------+------------------------------------------------------+---------
 2003-02-02 | Subscription for month 2003/02                       |  107.00
 2003-02-01 | Payment                                              | -107.00
@@ -1876,6 +1889,7 @@ e-mail: gcooper@free.bigpro.com
 PS. Last 10 operations on your account has been attached below for your
 convenience.
 
+Date       | Description                                          | Amount
 %last_10_in_a_table
 
 --
@@ -1943,6 +1957,13 @@ http://www.bigpro.com/
        Lets you setup limit of customer debt. Customer will be marked as
        disconnected below that value. Default: 0
        Example: limit = -20
+     * message (optional)
+       If not empty, that message will be writed in warning message field
+       in customer record after cutting him off. You can specify in
+       message variable %now, that will be replaced by current date.
+       Default: 'Automatic cutoff caused by exceeding of liabilities
+       limit on %now'
+       Example: message = ''
      _________________________________________________________________
 
 4.3.4. lms-payments
@@ -1960,22 +1981,21 @@ http://www.bigpro.com/
      * paytype (optional)
        Type of payment. Default: 'TRANSFER'
        Example: paytype = 'CASH'
-     * suspension_percentage (optional)
-       Percentage for suspended liabilities. Default: '0'
-       Example: suspension_percentage = '50'
      * suspension_description (optional)
-       Suspension description for suspended liabilities. Default: ''
+       Suspension description for suspended liabilities added at the end
+       of comment. Default: ''
        Example: paytype = '(suspension)'
      * comment (optional)
        Description on invoice attached to every periodical assigment
-       Default: 'Abonament wg taryfy %tariff za okres %period'
+       Default: 'Tariff %tariff subscription for period %period'
        Some keywords are substitiuted:
-       %tariff tariff name
-       %period period (counted from current day to the last in cycle, in
-       form YYYY/MM/DD)
-       %%current_month period form 1st of current month to the end of it
-       Example: paytype = 'Abonament za %current_month w/g taryfy %tariff
-       '
+       %tariff - tariff name
+       %period - period (counted from current day to the last in cycle,
+       in form YYYY/MM/DD)
+       %%current_month - period form 1st of current month to the end of
+       it
+       %desc - tariff description
+       Example: paytype = 'Subscription for %current_month'
 
    Script has also one useful command line parameter: --fakedate (-f).
    With this option you can make that script will execute with system
@@ -2231,10 +2251,14 @@ wins    = 213.25.209.10
      * sender_email
        Email sender address. Default: undefined.
        Example: sender_email = admin@mynet.pl
-     * tmp_dir
-       Temp dir location. If unset, should be read from 'TMP' environment
-       variable, '/tmp' otherwise.
-       Example: tmp_dir = /home/user/tmp
+     * mail_subject
+       Email subject. Can use %invoice variable replaced by invoice
+       number. Default: 'Invoice No. %invoice'.
+       Example: mail_subject = 'New invoice'
+     * mail_body
+       Email body. Can use %invoice variable replaced by invoice number.
+       Default: 'Attached file with Invoice No. %invoice'.
+       Example: mail_body = ''
 
    Script has also one useful command line parameter: --fakedate (-f).
    With this option you can make that script will execute with system
@@ -2532,6 +2556,18 @@ endif
      * mail_from_name
        Sender name for confirmations. Default: undefined.
        Example: mail_from_name = 'BOK SuperLAN'
+     * autoreply_subject
+       Confirmation subject. Here you can use replacement variables %tid
+       - ticket id and %subject - request subject. Default: "[RT#%tid]
+       Receipt of request '%subject'".
+       Example: autoreply_subject = '[RT#%tid] Helpdesk confirmation'
+     * autoreply_body
+       Confirmation body. Here you can use replacement variables %tid -
+       ticket id and %subject - request subject. Default: 'Your request
+       was registered in our system.\nTo this request was assigned ticket
+       identifier RT#%tid.\nPlease, place string [RT#%tid] in subject
+       field of any\nmail relating to this request.\n.'
+       Example: autoreply_body = ''
      * smtp_server
        SMTP server to be used for sending emails. Default: localhost.
        Example: smtp_server = smtp.bigpro.com
@@ -3076,10 +3112,10 @@ Chapter 6. LMS Daemon
    You can use following options for this module:
      * comment
        Description of operation. '%period' will be replaced by start and
-       end date of subscription, e.g. '10.10.2003 - 09.11.2003', and
+       end date of subscription, e.g. '2003/10/10 - 2003/11/09', and
        '%tariff' by name of liability. Default: 'Subscription: '%tariff'
        for period: %period'.
-       Example: comment = 'Subscription: %tariff for period %period'
+       Example: comment = 'Subscription %tariff'
      * up_payments
        How should period in comment be counted - forward or backward
        relatively to date of write out. Default: yes.
@@ -3196,8 +3232,8 @@ Chapter 6. LMS Daemon
        Enable warning for disconnected customer and write him WWW browser
        message specified in this option. If empty, warning will be not
        enabled. Date in message is substituted providing '%time'
-       variable. Default: 'Web access blocked automatically due to
-       payment deadline override (%time)".
+       variable. Default: 'Blocked automatically due to payment deadline
+       override on %time".
        Example: warning = ""
      * warnings_only
        Here you can to decide, if you want to use this module only for

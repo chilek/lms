@@ -153,8 +153,7 @@ NAME="NOTIFY-EXAMPLE"
 ></P
 ><PRE
 CLASS="SCREEN"
->Date       | Description                                          | Amount
------------+------------------------------------------------------+---------
+>-----------+------------------------------------------------------+---------
 2003-02-02 | Subscription for month 2003/02                       |  107.00
 2003-02-01 | Payment                                              | -107.00
 2003-02-01 | Subscription for month 2003/02                       |  107.00
@@ -202,6 +201,7 @@ e-mail: gcooper@free.bigpro.com
 PS. Last 10 operations on your account has been attached below for your
 convenience.
 
+Date       | Description                                          | Amount
 %last_10_in_a_table
 
 --
@@ -402,6 +402,19 @@ CLASS="PROMPT"
 >limit = -20</SAMP
 ></P
 ></LI
+><LI
+><P
+>message (optional)</P
+><P
+>If not empty, that message will be writed in warning message field in customer record 
+	   after cutting him off.  You can specify in message variable %now, that will be replaced by current date.
+	   Default: 'Automatic cutoff caused by exceeding of liabilities limit on %now'</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>message = ''</SAMP
+></P
+></LI
 ></UL
 ></DIV
 ><DIV
@@ -455,20 +468,10 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->suspension_percentage (optional)</P
-><P
->Percentage for suspended liabilities. Default: '0'</P
-><P
->Example:	<SAMP
-CLASS="PROMPT"
->suspension_percentage = '50'</SAMP
-></P
-></LI
-><LI
-><P
 >suspension_description (optional)</P
 ><P
->Suspension description for suspended liabilities. Default: ''</P
+>Suspension description for suspended liabilities added at the end of comment. 
+	   Default: ''</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -481,19 +484,21 @@ CLASS="PROMPT"
 ><P
 >Description on invoice attached to every periodical assigment</P
 ><P
->Default: 'Abonament wg taryfy %tariff za okres %period'</P
+>Default: 'Tariff %tariff subscription for period %period'</P
 ><P
 >Some keywords are substitiuted:</P
 ><P
->%tariff tariff name</P
+>%tariff - tariff name</P
 ><P
->%period period (counted from current day to the last in cycle, in form YYYY/MM/DD)</P
+>%period - period (counted from current day to the last in cycle, in form YYYY/MM/DD)</P
 ><P
->%%current_month period form 1st of current month to the end of it</P
+>%%current_month - period form 1st of current month to the end of it</P
+><P
+>%desc - tariff description</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->paytype = 'Abonament za %current_month w/g taryfy %tariff '</SAMP
+>paytype = 'Subscription for %current_month'</SAMP
 ></P
 ></LI
 ></UL
@@ -1223,7 +1228,7 @@ CLASS="PROMPT"
 >debug_email</P
 ><P
 >Email address to test (mail will be redirected here).
-Default: undefined.</P
+		    Default: undefined.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
@@ -1254,14 +1259,26 @@ CLASS="PROMPT"
 ></LI
 ><LI
 ><P
->tmp_dir</P
+>mail_subject</P
 ><P
->Temp dir location. If unset, should be read from 'TMP'
-environment variable, '/tmp' otherwise.</P
+>Email subject. Can use %invoice variable replaced by invoice number. 
+		    Default: 'Invoice No. %invoice'.</P
 ><P
 >Example:	<SAMP
 CLASS="PROMPT"
->tmp_dir = /home/user/tmp</SAMP
+>mail_subject = 'New invoice'</SAMP
+></P
+></LI
+><LI
+><P
+>mail_body</P
+><P
+>Email body. Can use %invoice variable replaced by invoice number. 
+		    Default: 'Attached file with Invoice No. %invoice'.</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>mail_body = ''</SAMP
 ></P
 ></LI
 ></UL
@@ -2078,6 +2095,32 @@ CLASS="PROMPT"
 >Example:	<SAMP
 CLASS="PROMPT"
 >mail_from_name = 'BOK SuperLAN'</SAMP
+></P
+></LI
+><LI
+><P
+>autoreply_subject</P
+><P
+>Confirmation subject. Here you can use replacement variables %tid - 
+		    ticket id and %subject - request subject.
+		    Default: "[RT#%tid] Receipt of request '%subject'".</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>autoreply_subject = '[RT#%tid] Helpdesk confirmation'</SAMP
+></P
+></LI
+><LI
+><P
+>autoreply_body</P
+><P
+>Confirmation body. Here you can use replacement variables %tid - 
+		    ticket id and %subject - request subject.
+		    Default: 'Your request was registered in our system.\nTo this request was assigned ticket identifier RT#%tid.\nPlease, place string [RT#%tid] in subject field of any\nmail relating to this request.\n.'</P
+><P
+>Example:	<SAMP
+CLASS="PROMPT"
+>autoreply_body = ''</SAMP
 ></P
 ></LI
 ><LI
