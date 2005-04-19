@@ -231,11 +231,7 @@ CLASS="FILENAME"
 >lms.ini</TT
 >. Those options are stored in database and you first
             need to import them from your config file (even if you haven't edited anything
-            yet, default values will be imported). This can be done with help of
-            <TT
-CLASS="FILENAME"
->upgrade02</TT
-> UI module, which will be executed after you click
+            yet, default values will be imported). This can be done by clicking
             on the link presented on empty list.</P
 ><P
 ><DIV
@@ -267,6 +263,33 @@ CLASS="EMPHASIS"
             have higher priority than those in configuration file. With options setup in UI,
             the configuration will be still imported from file but values will be then
             overwritten by those found in DB.</P
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+><DIV
+CLASS="NOTE"
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="../images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Daemon read some non-daemon options only from
+	    database, so is prefered to store configuration in database.</P
 ></TD
 ></TR
 ></TABLE

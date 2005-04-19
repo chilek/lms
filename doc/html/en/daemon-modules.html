@@ -94,7 +94,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2268"
+NAME="AEN2294"
 ></A
 ><P
 ><B
@@ -327,12 +327,12 @@ NAME="PAYMENTS-CONFIG"
 >comment</P
 ><P
 >Description of operation. '%period' will be replaced by start and end
-                   date of subscription, e.g. '10.10.2003 - 09.11.2003', and '%tariff' by name of
+                   date of subscription, e.g. '2003/10/10 - 2003/11/09', and '%tariff' by name of
                    liability. Default: 'Subscription: '%tariff' for period: %period'.</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
->comment = 'Subscription: %tariff for period %period' </SAMP
+>comment = 'Subscription %tariff' </SAMP
 ></P
 ></LI
 ><LI
@@ -666,8 +666,8 @@ CLASS="PROMPT"
 ><P
 >Enable warning for disconnected customer and write him WWW browser message
                    specified in this option. If empty, warning will be not enabled. Date in
-                   message is substituted providing '%time' variable. Default: 'Web access blocked
-                   automatically due to payment deadline override (%time)".</P
+                   message is substituted providing '%time' variable. Default: 'Blocked
+                   automatically due to payment deadline override on %time".</P
 ><P
 >Example: <SAMP
 CLASS="PROMPT"
