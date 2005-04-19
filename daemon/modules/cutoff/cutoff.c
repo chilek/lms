@@ -35,9 +35,9 @@ void reload(GLOBAL *g, struct cutoff_module *c)
 {
 	QueryHandle *res;
 	int i, execu=0, execn=0, u=0, n=0;
-	char time_fmt[20];
-	size_t tmax=20;
-	char fmt[]="(%Y/%m/%d)";
+	char time_fmt[10];
+	size_t tmax=10;
+	char fmt[]="%Y/%m/%d";
 	struct tm *wsk;
 	time_t t;
 	
@@ -112,7 +112,7 @@ struct cutoff_module * init(GLOBAL *g, MODULE *m)
 	c->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 
 	c->limit = strdup(g->config_getstring(c->base.ini, c->base.instance, "limit", "0"));
-	c->warning = strdup(g->config_getstring(c->base.ini, c->base.instance, "warning", "Automatyczna blokada spowodowana przekroczeniem terminu wp³aty %time"));
+	c->warning = strdup(g->config_getstring(c->base.ini, c->base.instance, "warning", "Blocked automatically due to payment deadline override on %time"));
 	c->command = strdup(g->config_getstring(c->base.ini, c->base.instance, "command", ""));
 	c->warn_only = g->config_getbool(c->base.ini, c->base.instance, "warnings_only", 0);
 	
