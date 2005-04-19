@@ -38,6 +38,7 @@ CREATE TABLE assignments (
   dateto int(11) NOT NULL default '0',
   invoice tinyint(1) NOT NULL default '0',
   suspended tinyint(1) NOT NULL default '0',
+  discount decimal(4,2) NOT NULL default '0',
   PRIMARY KEY  (id),
   INDEX tariffid (tariffid)
 ) TYPE=MyISAM;
@@ -287,9 +288,9 @@ CREATE TABLE rttickets (
 DROP TABLE IF EXISTS rtrights;
 CREATE TABLE rtrights (
     id INT(11) NOT NULL auto_increment, 
-    adminid INT(11) DEFAULT 0 NOT NULL,
-    queueid INT(11) DEFAULT 0 NOT NULL,
-    rights INT(11) DEFAULT 0 NOT NULL,
+    adminid INT(11) default 0 NOT NULL,
+    queueid INT(11) default 0 NOT NULL,
+    rights INT(11) default 0 NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (adminid, queueid)
 ) TYPE=MyISAM;
@@ -414,6 +415,12 @@ CREATE TABLE passwd (
     type smallint NOT NULL default 0,
     expdate int(11) NOT NULL default 0,
     domainid int(11) NOT NULL default 0,
+    quota_sh int(11) NOT NULL default 0,
+    quota_mail int(11) NOT NULL default 0,
+    quota_www int(11) NOT NULL default 0,
+    quota_ftp int(11) NOT NULL default 0,
+    realname varchar(255) NOT NULL default '',
+    createtime int(11) NOT NULL default 0,
     PRIMARY KEY (id),
     UNIQUE KEY login (login)
 ) TYPE=MyISAM;
@@ -425,8 +432,8 @@ CREATE TABLE passwd (
 DROP TABLE IF EXISTS domains;
 CREATE TABLE domains (
     id int(11) NOT NULL auto_increment,
-    name varchar(255) NOT NULL DEFAULT '',
-    description text NOT NULL DEFAULT '',
+    name varchar(255) NOT NULL default '',
+    description text NOT NULL default '',
     PRIMARY KEY (id),
     UNIQUE KEY (name)
 ) TYPE=MyISAM;
@@ -438,8 +445,8 @@ CREATE TABLE domains (
 DROP TABLE IF EXISTS aliases;
 CREATE TABLE aliases (
     id int(11) NOT NULL auto_increment,
-    login varchar(255) NOT NULL DEFAULT '',
-    accountid int(11) NOT NULL DEFAULT '0',
+    login varchar(255) NOT NULL default '',
+    accountid int(11) NOT NULL default '0',
     PRIMARY KEY (id),
     UNIQUE KEY (login, accountid)
 ) TYPE=MyISAM;
@@ -526,4 +533,52 @@ CREATE TABLE cashimport (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005031000');
+#
+# Structure of table daemonhosts (lmsd configuration)
+#
+DROP TABLE IF EXISTS daemonhosts;
+CREATE TABLE daemonhosts (
+    id int(11) NOT NULL auto_increment,
+    name varchar(255) default '' NOT NULL,
+    description text default '' NOT NULL,
+    lastreload int(11) default '0' NOT NULL,
+    reload tinyint(1) default '0' NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY name (name)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table daemoninstances (lmsd configuration)
+#
+DROP TABLE IF EXISTS daemoninstances;
+CREATE TABLE daemoninstances (
+    id int(11) NOT NULL auto_increment,
+    name varchar(255) default '' NOT NULL,
+    hostid int(11) default '0' NOT NULL,
+    module varchar(255) default '' NOT NULL,
+    crontab varchar(255) default '' NOT NULL,
+    priority int(11) default '0' NOT NULL,
+    description text default '' NOT NULL,
+    disabled tinyint(1) default '0' NOT NULL,
+    PRIMARY KEY (id)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+#
+# Structure of table daemonconfig (lmsd configuration)
+#
+DROP TABLE IF EXISTS daemonconfig;
+CREATE TABLE daemonconfig (
+    id int(11) NOT NULL auto_increment,
+    instanceid int(11) default '0' NOT NULL,
+    var varchar(64) default '' NOT NULL,
+    value text default '' NOT NULL,
+    description text default '' NOT NULL,
+    disabled tinyint(1) default '0' NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY instanceid (instanceid, var)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005033103');

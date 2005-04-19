@@ -32,7 +32,8 @@ CREATE TABLE assignments (
 	datefrom integer	DEFAULT 0 NOT NULL,
 	dateto integer		DEFAULT 0 NOT NULL,
 	invoice smallint 	DEFAULT 0 NOT NULL,
-	suspended smallint	DEFAULT 0 NOT NULL
+	suspended smallint	DEFAULT 0 NOT NULL,
+	discount numeric(4,2)	DEFAULT 0 NOT NULL
 );
 CREATE INDEX assignments_tariffid_idx ON assignments(tariffid);
 
@@ -353,6 +354,12 @@ CREATE TABLE passwd (
     type smallint 		DEFAULT 0 NOT NULL,
     expdate integer		DEFAULT 0 NOT NULL,
     domainid integer		DEFAULT '' NOT NULL,
+    createtime integer		DEFAULT 0 NOT NULL,
+    realname varchar(255)	DEFAULT '' NOT NULL,
+    quota_sh integer		DEFAULT 0 NOT NULL,
+    quota_mail integer		DEFAULT 0 NOT NULL,
+    quota_www integer		DEFAULT 0 NOT NULL,
+    quota_ftp integer		DEFAULT 0 NOT NULL,
     UNIQUE (login)
 );
 
@@ -454,6 +461,43 @@ CREATE TABLE sessions (
 );
 
 /* --------------------------------------------------
+    Daemon configuration tables
+------------------------------------------------------*/
+
+DROP TABLE daemonhosts;
+CREATE TABLE daemonhosts (
+    id integer PRIMARY KEY,
+    name varchar(255) 	DEFAULT '' NOT NULL,
+    description text 	DEFAULT '' NOT NULL,
+    lastreload integer 	DEFAULT 0 NOT NULL,
+    reload smallint 	DEFAULT 0 NOT NULL,
+    UNIQUE (name)
+);
+
+DROP TABLE daemoninstances;
+CREATE TABLE daemoninstances (
+    id integer PRIMARY KEY,
+    name varchar(255) 	DEFAULT '' NOT NULL,
+    hostid integer 	DEFAULT 0 NOT NULL,
+    module varchar(255) DEFAULT '' NOT NULL,
+    crontab varchar(255) DEFAULT '' NOT NULL,
+    priority integer 	DEFAULT 0 NOT NULL,
+    description text 	DEFAULT '' NOT NULL,
+    disabled smallint 	DEFAULT 0 NOT NULL
+);
+
+DROP TABLE daemonconfig;
+CREATE TABLE daemonconfig (
+    id integer PRIMARY KEY,
+    instanceid integer 	DEFAULT 0 NOT NULL,
+    var varchar(64) 	DEFAULT '' NOT NULL,
+    value text 		DEFAULT '' NOT NULL,
+    description text 	DEFAULT '' NOT NULL,
+    disabled smallint 	DEFAULT 0 NOT NULL,
+    UNIQUE(instanceid, var)
+);
+
+/* --------------------------------------------------
     Database info table
 ------------------------------------------------------*/
 
@@ -464,4 +508,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005031000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005033103');
