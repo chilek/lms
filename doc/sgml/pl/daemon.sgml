@@ -252,8 +252,8 @@
 			<listitem>
 			    <para>comment</para>
 			    <para>Komentarz do operacji. '%period' zostanie zamienione na daty od-do 
-			    nale¿nego abonamentu, np. '10.10.2003 - 09.11.2003', a '%tariff' na nazwê
-			    odpowiedniej taryfy. Domy¶lnie: 'Abonament wg taryfy: '%tariff' za okres: %period'.</para>
+			    nale¿nego abonamentu, np. '2003/10/10 - 2003/11/09', a '%tariff' na nazwê
+			    odpowiedniej taryfy. Domy¶lnie: 'Subscription: '%tariff' for period: %period'.</para>
 			    <para>Przyk³ad: <prompt>comment = 'Abonament miesiêczny za okres %period' </prompt></para>
 			</listitem>
 			<listitem>
@@ -276,7 +276,7 @@
 			</listitem>
 			<listitem>
 			    <para>paytype</para>
-			    <para>Rozdzaj p³atno¶ci. Domy¶lnie: 'PRZELEW'.</para>
+			    <para>Rozdzaj p³atno¶ci. Domy¶lnie: 'TRANSFER'.</para>
 			    <para>Przyk³ad: <prompt>paytype = 'GOTÓWKA'</prompt></para>
 			</listitem>
 		    </itemizedlist>
@@ -419,7 +419,7 @@
 			    <para>W³±cza ostrze¿enie dla od³±czanego klienta i przypisuje mu 
 			    okre¶lon± w tej opcji tre¶æ. Je¿eli pusta, ostrze¿enie nie bêdzie w³±czane.
 			    Data w ostrze¿eniu ukryta jest pod zmienn± '%time'.
-			    Domy¶lnie: 'Automatyczna blokada spowodowana przekroczeniem terminu wp³aty (dd.mm.yyyy)".</para>
+			    Domy¶lnie: 'Blocked automatically due to payment deadline override on %time".</para>
 			    <para>Przyk³ad: <prompt>warning = ""</prompt></para>
 			</listitem>
 			<listitem>

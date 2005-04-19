@@ -57,6 +57,8 @@ version 1.5.6 Baal (??/??/????):
   - lms-sendinvoices: added (englished) options 'mail_subject' and 'mail_body',
     added reading of invoices/number_template setting from database,
     added "" for recipient and sender names (alec)
+  - lmsd/cutoff: translated to english default value of 'warning' option (alec)
+  - lmsd/payments: translated defaults of 'paytype' and 'comment' options (alec)
     
 version 1.5.5 Anubis (25/03/2005):
 
