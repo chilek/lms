@@ -367,9 +367,9 @@ struct payments_module * init(GLOBAL *g, MODULE *m)
 	
 	p->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 	
-	p->comment = strdup(g->config_getstring(p->base.ini, p->base.instance, "comment", "Abonament wg taryfy: %tariff za okres: %period"));
+	p->comment = strdup(g->config_getstring(p->base.ini, p->base.instance, "comment", "Subscription: %tariff for period: %period"));
 	p->deadline = strdup(g->config_getstring(p->base.ini, p->base.instance, "deadline", "14"));
-	p->paytype = strdup(g->config_getstring(p->base.ini, p->base.instance, "paytype", "PRZELEW"));
+	p->paytype = strdup(g->config_getstring(p->base.ini, p->base.instance, "paytype", "TRANSFER"));
 	p->up_payments = g->config_getbool(p->base.ini, p->base.instance, "up_payments", 1);
 	p->expiry_days = g->config_getint(p->base.ini, p->base.instance, "expiry_days", 30);
 	
