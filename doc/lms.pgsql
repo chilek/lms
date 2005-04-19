@@ -38,6 +38,7 @@ CREATE TABLE assignments (
 	dateto integer		DEFAULT 0 NOT NULL,
 	invoice smallint 	DEFAULT 0 NOT NULL,
 	suspended smallint	DEFAULT 0 NOT NULL,
+	discount numeric(4,2)	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id)
 );
 CREATE INDEX assignments_tariffid_idx ON assignments (tariffid);
@@ -427,6 +428,12 @@ CREATE TABLE passwd (
 	type smallint 		DEFAULT 0 NOT NULL,
 	expdate	integer		DEFAULT 0 NOT NULL,
 	domainid integer	DEFAULT 0 NOT NULL,
+	realname varchar(255)	DEFAULT '' NOT NULL,
+	createtime integer	DEFAULT 0 NOT NULL,
+	quota_sh integer	DEFAULT 0 NOT NULL,
+	quota_mail integer	DEFAULT 0 NOT NULL,
+	quota_www integer	DEFAULT 0 NOT NULL,
+	quota_ftp integer	DEFAULT 0 NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (login)
 );
@@ -549,6 +556,60 @@ CREATE TABLE cashimport (
 CREATE INDEX cashimport_hash_idx ON cashimport (hash);
 
 /* ---------------------------------------------------
+ Structure of table "daemonhosts" (lmsd config)
+------------------------------------------------------*/
+
+DROP SEQUENCE daemonhosts_id_seq;
+CREATE SEQUENCE daemonhosts_id_seq;
+DROP TABLE daemonhosts;
+CREATE TABLE daemonhosts (
+    id integer DEFAULT nextval('daemonhosts_id_seq'::text) NOT NULL,
+    name varchar(255) 		DEFAULT '' NOT NULL,
+    description text 		DEFAULT '' NOT NULL,
+    lastreload integer 		DEFAULT 0 NOT NULL,
+    reload smallint 		DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
+/* ---------------------------------------------------
+ Structure of table "daemoninstances" (lmsd config)
+------------------------------------------------------*/
+
+DROP SEQUENCE daemoninstances_id_seq;
+CREATE SEQUENCE daemoninstances_id_seq;
+DROP TABLE daemoninstances;
+CREATE TABLE daemoninstances (
+    id integer DEFAULT nextval('daemoninstances_id_seq'::text) NOT NULL,
+    name varchar(255) 		DEFAULT '' NOT NULL,
+    hostid integer 		DEFAULT 0 NOT NULL,
+    module varchar(255) 	DEFAULT '' NOT NULL,
+    crontab varchar(255) 	DEFAULT '' NOT NULL,
+    priority integer 		DEFAULT 0 NOT NULL,
+    description text 		DEFAULT '' NOT NULL,
+    disabled smallint 		DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id)
+);
+
+/* ---------------------------------------------------
+ Structure of table "daemonconfig" (lmsd config)
+------------------------------------------------------*/
+
+DROP SEQUENCE daemonconfig_id_seq;
+CREATE SEQUENCE daemonconfig_id_seq;
+DROP TABLE daemonconfig;
+CREATE TABLE daemonconfig (
+    id integer DEFAULT nextval('daemonconfig_id_seq'::text) NOT NULL,
+    instanceid integer 		DEFAULT 0 NOT NULL,
+    var varchar(64) 		DEFAULT '' NOT NULL,
+    value text 			DEFAULT '' NOT NULL,
+    description text 		DEFAULT '' NOT NULL,
+    disabled smallint 		DEFAULT 0 NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE(instanceid, var)
+);
+
+/* ---------------------------------------------------
  Structure of table "dbinfo"
 ------------------------------------------------------*/
 
@@ -559,4 +620,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005031000');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005033103');
