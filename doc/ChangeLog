@@ -59,8 +59,8 @@ version 1.5.6 Baal (??/??/????):
     added "" for recipient and sender names (alec)
   - lmsd/cutoff: translated to english default value of 'warning' option (alec)
   - lmsd/payments: translated defaults of 'paytype' and 'comment' options (alec)
-  - fixed (ming) bug in network map causing problems with texts on large maps
-    and speedup - one query for nodes and one for devices (alec)
+  - fixed (ming) bug in network map causing problems with texts on large maps,
+    optimized time of map generation (alec)
     
 version 1.5.5 Anubis (25/03/2005):
 
