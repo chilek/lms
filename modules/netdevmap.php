@@ -26,10 +26,17 @@
 
 function drawtext($x, $y, $text, $r, $g, $b)
 {
-	global $texts;
-        $texts->setColor($r, $g, $b);
-	$texts->moveTo($x, $y);	
-	$texts->addString($text);
+	global $m, $font;
+
+	if(!$text) return;
+	
+	$t = new SWFTextField(SWFTEXTFIELD_NOEDIT | SWFTEXTFIELD_NOSELECT);
+	$t->setFont($font);
+	$t->setHeight(8);
+	$t->setColor($r, $g, $b);
+	$t->addString($text);
+	$i = $m->add($t);
+	$i->moveTo($x, $y);	
 }
 
 function pngdrawtext($image, $font, $x, $y, $text, $color, $bgcolor)
@@ -269,9 +276,8 @@ elseif ($_GET['graph'] == 'flash')
 	Ming_setScale(20.0);
 	ming_useswfversion(5);
 	$m = new SWFMovie();
-	$m->setRate(20.000000);
 	$m->setDimension($imgwx, $imgwy);
-	$m->setBackground(234,228,214);
+	$font = new SWFFont("img/Arial.fdb");
 	$connections = new SWFShape();
 
 	foreach($map as $idx => $x)
@@ -352,12 +358,7 @@ elseif ($_GET['graph'] == 'flash')
 	$im_d_off = new SWFBitmap(fopen("img/netdev_off.jpg","rb"));
 	$im_d_on  = new SWFBitmap(fopen("img/netdev_on.jpg","rb"));
 	
-	$font = new SWFFont("img/Arial.fdb");
-	$texts = new SWFText();
-	$texts->setFont($font);
-	$texts->setColor(0, 0, 0);
-        $texts->setHeight(8);
-
+	$nodes = $DB->GetAllByKey('SELECT id, name, INET_NTOA(ipaddr) AS ip, lastonline FROM nodes', 'id');
 
 	if($nodemap) foreach($nodemap as $nodeid => $node)
 	{
@@ -367,9 +368,11 @@ elseif ($_GET['graph'] == 'flash')
 		$cely = $node['y'];
 		$px = (($celx * ($cellw)) + $celllmargin);
 		$py = (($cely * ($cellh)) + $celltmargin);
-		$nodedata = $DB->GetRow('SELECT name, INET_NTOA(ipaddr) AS ip, lastonline FROM nodes WHERE id=?',array($nodeid));
-		if ($nodedata['lastonline']) {	
-			if ((time()-$nodedata['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit']) {
+
+		$n = $nodes[$nodeid];
+		
+		if ($n['lastonline']) {	
+			if ((time()-$n['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit']) {
 				$myfill = $squareshape->addFill($im_n_off,SWFFILL_TILED_BITMAP);
 			} else {
 				$myfill = $squareshape->addFill($im_n_on,SWFFILL_TILED_BITMAP);
@@ -388,9 +391,14 @@ elseif ($_GET['graph'] == 'flash')
 		$i=$m->add($button);
 		$i->moveTo($px,$py);
 		
-		drawtext($px + 15, $py - 8, $nodedata['ip'], 0, 0, 255);
-		drawtext($px + 15, $py + 2, $nodedata['name'], 0, 0, 0); 
+		drawtext($px + 15, $py - 4, $n['ip'], 0, 0, 255);
+		drawtext($px + 15, $py + 10, $n['name'], 0, 0, 0); 
 	}
+
+	$devices = $DB->GetAllByKey('SELECT netdevices.id AS id, netdevices.name AS name, location, MAX(lastonline) AS lastonline 
+				    FROM netdevices LEFT JOIN nodes ON (netdevices.id = netdev)
+				    WHERE ownerid=0 
+				    GROUP BY netdevices.id, netdevices.name, location', 'id');
 
 	foreach($devicemap as $deviceid => $device)
 	{
@@ -401,9 +409,11 @@ elseif ($_GET['graph'] == 'flash')
 		$px = (($celx * ($cellw)) + $celllmargin);
 		$py = (($cely * ($cellh)) + $celltmargin);
 		
-		$lastonline = $DB->GetOne('SELECT MAX(lastonline) FROM nodes WHERE ownerid=0 AND netdev=?', array($deviceid));
-		if ($lastonline) {	
-			if ((time()-$lastonline)>$LMS->CONFIG['phpui']['lastonline_limit']) {
+		$d = $devices[$deviceid];
+		
+		if ($d['lastonline']) 
+		{	
+			if ((time()-$d['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit']) {
 				$myfill = $squareshape->addFill($im_d_off,SWFFILL_TILED_BITMAP);
 			} else {
 				$myfill = $squareshape->addFill($im_d_on,SWFFILL_TILED_BITMAP);
@@ -424,16 +434,15 @@ elseif ($_GET['graph'] == 'flash')
 		$i->moveTo($px,$py);
 
 		$devip = $DB->GetCol('SELECT INET_NTOA(ipaddr) FROM nodes WHERE ownerid=0 AND netdev=? ORDER BY ipaddr LIMIT 4', array($deviceid));
-		if($devip[0]) drawtext($px + 20, $py - ($devip[1]?17:8), $devip[0], 0,0,255);
-		if($devip[1]) drawtext($px + 20, $py - 8, $devip[1], 0,0,255);
-		if($devip[2]) drawtext($px + 20, $py + 17, $devip[2], 0,0,255);
-		if($devip[3]) drawtext($px + 20, $py + 26, $devip[3], 0,0,255);
+		if($devip[0]) drawtext($px + 16, $py - ($devip[1]?16:8), $devip[0], 0,0,255);
+		if($devip[1]) drawtext($px + 16, $py - 8, $devip[1], 0,0,255);
+		if($devip[2]) drawtext($px + 16, $py + 16, $devip[2], 0,0,255);
+		if($devip[3]) drawtext($px + 16, $py + 24, $devip[3], 0,0,255);
 		
-		drawtext($px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), 0,0,0);
-		drawtext($px + 20, $py + 18, $DB->GetOne('SELECT location FROM netdevices WHERE id=?',array($deviceid)), 0,128,0); 
+		drawtext($px + 16, $py + 0, $d['name'], 0,0,0);
+		drawtext($px + 16, $py + 8, $d['location'], 0,128,0); 
 	}
 		
-	$m->add($texts);
 	header("Content-type: application/x-shockwave-flash");
 	// Note: this line avoids a bug in InternetExplorer that won't allow
 	// downloads over https
@@ -555,24 +564,33 @@ elseif ($_GET['graph'] == 'flash')
 	$im_d_off = imagecreatefrompng('img/netdev_off.png');
 	$im_d_on = imagecreatefrompng('img/netdev_on.png');
 
+	$nodes = $DB->GetAllByKey('SELECT id, name, INET_NTOA(ipaddr) AS ip, lastonline FROM nodes', 'id');
+
 	if($nodemap) foreach($nodemap as $nodeid => $node)
 	{
 		$celx = $node['x'];
 		$cely = $node['y'];
 		$px = (($celx * ($cellw)) + $celllmargin);
 		$py = (($cely * ($cellh)) + $celltmargin);
-		$nodedata = $DB->GetRow('SELECT name, INET_NTOA(ipaddr) AS ip, lastonline FROM nodes WHERE id=?',array($nodeid));
-		if ($nodedata['lastonline']) {	
-			if ((time()-$nodedata['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit'])
+
+		$n = $nodes[$nodeid];
+
+		if ($n['lastonline']) {	
+			if ((time()-$n['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit'])
 				imagecopy($im,$im_n_off,$px,$py,0,0,15,16);
 			else 
 				imagecopy($im,$im_n_on,$px,$py,0,0,15,16);
 		} else 
 			imagecopy($im,$im_n_unk,$px,$py,0,0,15,16);
 		
-		pngdrawtext($im, 1, $px + 15, $py - 8, $nodedata['ip'], $blue, $lightbrown);
-		pngdrawtext($im, 1, $px + 15, $py + 2, $nodedata['name'], $black, $lightbrown);
+		pngdrawtext($im, 1, $px + 15, $py - 8, $n['ip'], $blue, $lightbrown);
+		pngdrawtext($im, 1, $px + 15, $py + 2, $n['name'], $black, $lightbrown);
 	}
+
+	$devices = $DB->GetAllByKey('SELECT netdevices.id AS id, netdevices.name AS name, location, MAX(lastonline) AS lastonline 
+				    FROM netdevices LEFT JOIN nodes ON (netdevices.id = netdev)
+				    WHERE ownerid=0 
+				    GROUP BY netdevices.id, netdevices.name, location', 'id');
 
 	foreach($devicemap as $deviceid => $device)
 	{
@@ -580,10 +598,11 @@ elseif ($_GET['graph'] == 'flash')
 		$cely = $device['y'];
 		$px = (($celx * ($cellw)) + $celllmargin);
 		$py = (($cely * ($cellh)) + $celltmargin);
+
+		$d = $devices[$deviceid];
 		
-		$lastonline = $DB->GetOne('SELECT MAX(lastonline) FROM nodes WHERE ownerid=0 AND netdev=?', array($deviceid));
-		if ($lastonline) {	
-			if ((time()-$lastonline)>$LMS->CONFIG['phpui']['lastonline_limit'])
+		if ($d['lastonline']) {	
+			if ((time()-$d['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit'])
 				imagecopy($im,$im_d_off,$px,$py,0,0,16,16);
 			else 
 				imagecopy($im,$im_d_on,$px,$py,0,0,16,16);
@@ -596,10 +615,11 @@ elseif ($_GET['graph'] == 'flash')
 		if($devip[2]) pngdrawtext($im, 1, $px + 20, $py + 17, $devip[2], $blue, $lightbrown);
 		if($devip[3]) pngdrawtext($im, 1, $px + 20, $py + 26, $devip[3], $blue, $lightbrown);
 		
-		pngdrawtext($im, 3, $px + 20, $py + 2, $DB->GetOne('SELECT name FROM netdevices WHERE id=?',array($deviceid)), $black, $lightbrown);
-		pngdrawtext($im, 2, $px + 20, $py + 18, $DB->GetOne('SELECT location FROM netdevices WHERE id=?',array($deviceid)), $green, $lightbrown);
+		pngdrawtext($im, 3, $px + 20, $py + 2, $d['name'], $black, $lightbrown);
+		pngdrawtext($im, 2, $px + 20, $py + 18, $d['location'], $green, $lightbrown);
 	}
 		
 	imagepng($im);
 }
+
 ?>
