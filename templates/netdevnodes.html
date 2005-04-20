@@ -7,12 +7,12 @@
 		</TD>
 	</TR>
 	<TR CLASS="dark">
-		<TD CLASS="fleftu" width="98%">
+		<TD CLASS="fleftu" width="98%" nowrap>
 			<img src="img/node.gif" ALT="" align="absmiddle"> <B>{t}Name:{/t}</B><BR>
 			<img src="img/user.gif" ALT="" align="absmiddle"> {t}Owner:{/t}
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
-			<img src="img/empty.gif" WIDTH="16" HEIGHT="16" align="absmiddle"> {t}Address:{/t}<BR>
+			<img src="img/empty.gif" WIDTH="16" HEIGHT="16" align="absmiddle"> {t}ID:{/t}<BR>
 			<img src="img/ip.gif" ALT="" align="absmiddle"> {t}IP address:{/t}
 		</TD>
 		<TD CLASS="frightu" WIDTH="1%">
@@ -22,9 +22,9 @@
 
 	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=netcomplist loop=$netcomplist start=$start}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
-		<TD width="99%" CLASS="fleft" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
+		<TD width="98%" CLASS="fleft" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">
 			<IMG SRC="img/node.gif" ALT="" ALIGN="ABSMIDDLE"> <B>{$netcomplist[netcomplist].name}</B><BR>
-			<img src="img/user.gif" ALT="" ALIGN="absmiddle"> {$netcomplist[netcomplist].owner}
+			<IMG SRC="img/user.gif" ALT="" ALIGN="absmiddle"> <A href="?m=userinfo&id={$netcomplist[netcomplist].ownerid}" {tip 0=$netcomplist[netcomplist].ownerid dynpopup='?m=userinfoshort&id=$0'}>{$netcomplist[netcomplist].owner}</A>
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';" NOWRAP>
 			{if $netcomplist[netcomplist].linktype}
@@ -32,8 +32,7 @@
 			{else}
 			<A href="?m=netdevedit&action=switchnodelinktype&linktype=1&id={$netdevinfo.id}&nodeid={$netcomplist[netcomplist].id}"><IMG src="img/netdev_takenports.gif" alt="[ {t}Change connection type{/t} ]" align="absmiddle" border="0"></A>
 			{/if}
-			{$netcomplist[netcomplist].address}<BR>
-			{if $netcomplist[netcomplist].city neq " "}{$netcomplist[netcomplist].city}<BR>{/if}
+			({$netcomplist[netcomplist].id|string_format:"%04d"})<BR>
 			<IMG SRC="img/ip.gif" ALT="" ALIGN="ABSMIDDLE"> {$netcomplist[netcomplist].ip}
 		</TD>
 		<TD CLASS="fright" WIDTH="1%">
