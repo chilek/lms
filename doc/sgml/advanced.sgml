@@ -78,6 +78,7 @@
 				<member>name - first and last name</member>
 				<member>email - user's email address</member>
 				<member>rights - binary access rights</member>
+				<member>hosts - list of hosts allowed for logon</member>
 				<member>passwd - password to login</member>
 				<member>lastlogindate - date of last login</member>
 				<member>lastloginip - IP of last login</member>

@@ -83,6 +83,7 @@
 				<member>name - nazwa (nazwisko i imiê)</member>
 				<member>email - adres admina</member>
 				<member>rights - prawa dostêpu</member>
+				<member>hosts - lista hostów z prawem do logowania</member>
 				<member>passwd - has³o logowania</member>
 				<member>lastlogindate - data ostatniego logowania</member>
 				<member>lastloginip - adres IP, z którego nast±pi³o ostatnie logowanie</member>

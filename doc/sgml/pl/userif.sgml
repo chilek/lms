@@ -48,15 +48,19 @@
 	    <para> Prawa dostêpu zosta³y szczegó³owo opisane w rozdziale <xref linkend="install-rights">.</para> 
 	    <para>Po wybraniu menu 'U¿ytkownicy' zobaczysz listê wszystkich u¿ytkowników
 	    z informacj± o ostatnim logowaniu. Klikniêcie na pozycji z listy spowoduje wy¶wietlenie 
-	    informacji szczegó³owych o danym koncie, w tym o zdefiniowanych prawach dostêpu. 
+	    informacji szczegó³owych o danym koncie, w tym o zdefiniowanych prawach dostêpu
+	    i hostach z których dany u¿ytkownik mo¿e siê logowaæ. 
 	    W ka¿dej chwili mo¿liwa jest zmiana danych i uprawnieñ za pomoc± przycisku 'Edytuj'. 
 	    Aby za³o¿yæ nowe konto u¿ytkownika skorzystaj z górnego menu 'Nowy u¿ytkownik'.</para>
 	</sect2>
 	<sect2 id="administration-newuser">
 	<title>Nowy u¿ytkownik</title>
-	    <para>Aby dodaæ nowe konto u¿ytkownika nale¿y podaæ login oraz has³o, 
+	    <para>Aby dodaæ nowe konto u¿ytkownika nale¿y podaæ login oraz has³o,
 	    które nie mo¿e byæ puste. Podanie imienia, nazwiska i adresu poczty elektronicznej
-	    nie jest wymagane. Poni¿ej mo¿na zaznaczyæ uprawnienia dostêpu do
+	    nie jest wymagane. "Dozwolone hosty" to lista adresów IP hostów lub sieci
+	    oddzielonych przecinkiem, z których dany u¿ytkownik mo¿e siê logowaæ do
+	    systemu (podobnie do opcji konfiguracyjnej 'allow_from').
+	    Poni¿ej mo¿na zaznaczyæ uprawnienia dostêpu do
 	    systemu. Je¿eli wszystkie pola pozostawisz puste, u¿ytkownikowi 
 	    przypisany zostanie 'Pe³en dostêp'.</para>
 	</sect2>

@@ -286,7 +286,7 @@ class LMS
 	function AdminAdd($adminadd) // dodaje admina. wymaga tablicy zawieraj±cej dane admina
 	{
 		$this->SetTS('admins');
-		if($this->DB->Execute('INSERT INTO admins (login, name, email, passwd, rights) VALUES (?, ?, ?, ?, ?)', array($adminadd['login'], $adminadd['name'], $adminadd['email'], crypt($adminadd['password']),$adminadd['rights'])))
+		if($this->DB->Execute('INSERT INTO admins (login, name, email, passwd, rights, hosts) VALUES (?, ?, ?, ?, ?, ?)', array($adminadd['login'], $adminadd['name'], $adminadd['email'], crypt($adminadd['password']),$adminadd['rights'], $adminadd['hosts'])))
 			return $this->DB->GetOne('SELECT id FROM admins WHERE login=?', array($adminadd['login']));
 		else
 			return FALSE;
@@ -317,7 +317,7 @@ class LMS
 
 	function GetAdminInfo($id) // zwraca pe³ne info o podanym adminie
 	{
-		if($admininfo = $this->DB->GetRow('SELECT id, login, name, email, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted FROM admins WHERE id=?', array($id)))
+		if($admininfo = $this->DB->GetRow('SELECT id, login, name, email, hosts, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted FROM admins WHERE id=?', array($id)))
 		{
 			if($admininfo['id']==$this->AUTH->id)
 			{
@@ -357,7 +357,7 @@ class LMS
 	function AdminUpdate($admininfo) // uaktualnia rekord admina.
 	{
 		$this->SetTS('admins');
-		return $this->DB->Execute('UPDATE admins SET login=?, name=?, email=?, rights=? WHERE id=?', array($admininfo['login'],$admininfo['name'],$admininfo['email'],$admininfo['rights'],$admininfo['id']));
+		return $this->DB->Execute('UPDATE admins SET login=?, name=?, email=?, rights=?, hosts=? WHERE id=?', array($admininfo['login'],$admininfo['name'],$admininfo['email'],$admininfo['rights'],$admininfo['hosts'],$admininfo['id']));
 	}
 
 	function GetAdminRights($id)

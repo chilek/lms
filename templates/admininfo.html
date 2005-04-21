@@ -46,6 +46,18 @@
 			{if $admininfo.email}<A HREF="mailto:{$admininfo.email}">{$admininfo.email}</A>{else}-{/if}{/if}
 		</TD>
 	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="fleft" NOWRAP>
+			<IMG SRC="img/ip.gif" ALT="" ALIGN="ABSMIDDLE">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Allowed hosts:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="fright" NOWRAP>
+			{if $unlockedit} <INPUT TYPE="TEXT" SIZE="40" NAME="admininfo[hosts]" VALUE="{$admininfo.hosts}" {tip text="Enter coma separated list of hosts or networks" trigger="hosts"}> {else}
+			{if $admininfo.hosts}{$admininfo.hosts}{else}{t}all{/t}{/if} {/if}
+		</TD>
+	</TR>
 	{if ! $unlockedit}
 	<TR CLASS="light">
 		<TD WIDTH="1%" CLASS="fleft"></TD>
