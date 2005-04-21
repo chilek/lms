@@ -78,7 +78,7 @@ function DBLoad($filename=NULL)
 	}
 }
 
-if($_GET['is_sure'])
+if(isset($_GET['is_sure']))
 {
 	if ($_GET['gz'])
 		$LMS->DatabaseCreate(TRUE);
@@ -100,7 +100,6 @@ if($_GET['is_sure'])
 }else{
 	$layout['pagetitle'] = trans('Database Backup Recovery');
 	$SMARTY->display('header.html');
-	$SMARTY->display('adminheader.html');
 	echo '<H1>'.trans('Database Backup Recovery').'</H1>';
 	echo '<P>'.trans('Are you sure, you want to recover database created at $0?', date('Y/m/d H:i.s',$_GET['db'])).'</P>';
 	echo '<A href="?m=dbrecover&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am sure').'</A>';

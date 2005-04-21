@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if ($_GET['gz'])
+if (isset($_GET['gz']))
 	$LMS->DatabaseCreate(TRUE);
 else
 	$LMS->DatabaseCreate();
