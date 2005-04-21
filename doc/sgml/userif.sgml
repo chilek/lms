@@ -45,7 +45,7 @@
             activity totals and financial balance. Additionally all LMS links
             are gathered here.</para>
 	</sect2>
-	<sect2 id="administration-admins">
+	<sect2 id="administration-users">
 	    <title>Users</title>
 	    <para>'Users' panel is designed for LMS users (ie. network
             administrators) management. You can create or modify any account here, change
@@ -53,14 +53,16 @@
 	    <para>For more information on access rights, see <xref linkend="install-rights">.</para> 
 	    <para>Initially after selecting 'Users', you'll get list of all
             users with last login time and host information. When you click on the account,
-            you're able to see it's details, including defined access rights. You can modify
-            data any time by clicking 'Edit' link. To create new user use left panel and
-            click 'New user'.</para>
+            you're able to see it's details, including defined access rights and hosts allowed
+	    for logon. You can modify data any time by clicking 'Edit' link. To create new user 
+	    use left panel and click 'New user'.</para>
 	</sect2>
-	<sect2 id="administration-newadmin">
+	<sect2 id="administration-newuser">
 	<title>New user</title>
 	    <para>In order to create new user, you need to provide at least
-            login name and non empty password. Name and email fields are optional. Below you
+            login name and non empty password. Name and email fields are optional. 
+	    Allowed hosts is a coma separated list of host or network IP addresses
+	    in 'allow_from' configuration option style. Below you
             can mark specific system access rights. If you leave all those fields unchecked
             (default), user will be granted with 'full access'.</para>
 	</sect2>

@@ -12,6 +12,7 @@ CREATE TABLE admins (
 	name varchar(64) 	DEFAULT '' NOT NULL,
 	email varchar(255) 	DEFAULT '' NOT NULL,
 	rights varchar(64) 	DEFAULT '' NOT NULL,
+	hosts varchar(255) 	DEFAULT '' NOT NULL,
 	passwd varchar(255) 	DEFAULT '' NOT NULL,
 	lastlogindate integer 	DEFAULT 0  NOT NULL,
 	lastloginip varchar(16) DEFAULT '' NOT NULL,
@@ -620,4 +621,4 @@ CREATE TABLE dbinfo (
     PRIMARY KEY (keytype)
 );
 
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005033103');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion','2005042100');

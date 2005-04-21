@@ -13,6 +13,7 @@ CREATE TABLE admins (
   name varchar(64) NOT NULL default '',
   email varchar(255) NOT NULL default '',
   rights varchar(64) NOT NULL default '',
+  hosts varchar(255) NOT NULL default '',
   passwd varchar(255) NOT NULL default '',
   lastlogindate int(11) NOT NULL default '0',
   lastloginip varchar(16) NOT NULL default '',
@@ -581,4 +582,4 @@ CREATE TABLE daemonconfig (
 ) TYPE=MyISAM;
 
 # --------------------------------------------------------
-INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005033103');
+INSERT INTO dbinfo (keytype, keyvalue) VALUES ('dbversion', '2005042100');

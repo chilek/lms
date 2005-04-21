@@ -32,6 +32,7 @@ class Auth {
 	var $passwd;
 	var $islogged = FALSE;
 	var $last;
+	var $ip;
 	var $lastip;
 	var $error;
 	var $_version = '1.5-cvs';
@@ -43,6 +44,7 @@ class Auth {
 	{
 		$this->DB = &$DB;
 		$this->SESSION = &$SESSION;
+		$this->ip = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 		
 		if($_GET['override'])
 			$loginform = $_GET['loginform'];
@@ -69,7 +71,10 @@ class Auth {
 			$this->SESSION->restore('session_passwd', $this->passwd);
 		}
 		
-		if($this->VerifyPassword())
+		$hostverified = $this->VerifyHost();
+		$passverified = $this->VerifyPassword();
+
+		if($passverified && $hostverified)
 		{
 			$this->islogged = TRUE;
 			$admindata = $this->DB->GetRow('SELECT id, name FROM admins WHERE login=?',array($this->login));
@@ -83,7 +88,7 @@ class Auth {
 				$this->last = $admindata['lastlogindate'];
 				$this->lastip = $admindata['lastloginip'];
 				
-				$this->DB->Execute('UPDATE admins SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(),$_SERVER['REMOTE_ADDR'],$this->id));
+				$this->DB->Execute('UPDATE admins SET lastlogindate=?, lastloginip=? WHERE id=?', array(time(), $this->ip ,$this->id));
 				writesyslog('User '.$this->login.' logged in.', LOG_INFO);
 			}
 			$this->SESSION->save('session_login', $this->login);
@@ -96,7 +101,11 @@ class Auth {
 			$this->islogged = FALSE;
 			if(isset($loginform))
 			{
-				writesyslog('Bad password for '.$this->login, LOG_WARNING);
+				if(!$hostverified)
+					writesyslog('Bad host ('.$this->ip.') for '.$this->login, LOG_WARNING);
+				if(!$passverified)
+					writesyslog('Bad password for '.$this->login, LOG_WARNING);
+				
 				$this->DB->Execute('UPDATE admins SET failedlogindate=?, failedloginip=? WHERE login=?',array(time(),$_SERVER['REMOTE_ADDR'],$this->login));
 			}
 			$this->LogOut();
@@ -128,6 +137,37 @@ class Auth {
 				$this->error = trans('Wrong password or login.');
 			else
 				$this->error = trans('Login yourself, please.');
+			return FALSE;
+		}
+	}
+
+	function VerifyHost()
+	{
+		$hosts = $this->DB->GetOne('SELECT hosts FROM admins WHERE login=? AND deleted=0',array($this->login));
+		
+		if(!$hosts)
+			return TRUE;
+		
+		$allowedlist = explode(',', $hosts);
+
+		foreach($allowedlist as $value)
+		{
+			list($net,$mask) = split('/', $value);
+			$net = trim($net);
+			$mask = trim($mask);
+			if($mask == '')
+				$mask = '32';
+			if($mask >= 0 || $mask <= 32)
+				$mask = prefix2mask($mask);
+			if(isipinstrict($this->ip, $net, $mask))
+				$isin = TRUE;
+		}
+
+		if($isin)
+			return TRUE;
+		else 
+		{
+			$this->error = trans('Access denied.');
 			return FALSE;
 		}
 	}
