@@ -62,6 +62,7 @@ version 1.5.6 Baal (??/??/????):
   - fixed (ming) bug in network map causing problems with texts on large maps,
     optimized time of map generation (alec)
   - added users IP authorization (alec)
+  - some code cleanup for error_reporting = E_ALL (alec)
     
 version 1.5.5 Anubis (25/03/2005):
 

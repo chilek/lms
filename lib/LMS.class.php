@@ -366,6 +366,7 @@ class LMS
 		if($mask == '')
 			$mask = '1';
 		$len = strlen($mask);
+		$bin = '';
 		for($cnt=$len; $cnt > 0; $cnt --)
 			$bin = sprintf('%04b',hexdec($mask[$cnt-1])).$bin;
 		for($cnt=strlen($bin)-1; $cnt >= 0; $cnt --)

@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-// Sprawdzenie czy po³±czenie z dozwolonego IP.
+// Checking if connection is from allowed IP
 
-if($_CONFIG['phpui']['allow_from'])
+if(isset($_CONFIG['phpui']['allow_from']))
 {
 	// usuñmy prefix ipv6 jak jest
 	
