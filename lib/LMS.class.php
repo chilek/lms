@@ -1269,7 +1269,7 @@ class LMS
 
 	function GetNetDevLinkedNodes($id)
 	{
-		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, ipaddr, inet_ntoa(ipaddr) AS ip, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, users.address AS address, '.$this->DB->Concat('users.zip',"' '",'users.city').' AS city FROM nodes, users WHERE ownerid = users.id AND netdev=? AND ownerid > 0 ORDER BY nodes.name ASC', array($id));
+		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, ipaddr, inet_ntoa(ipaddr) AS ip, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, ownerid FROM nodes, users WHERE ownerid = users.id AND netdev=? AND ownerid > 0 ORDER BY nodes.name ASC', array($id));
 	}
 
 	function NetDevLinkNode($id, $netid, $type=NULL)
