@@ -33,12 +33,25 @@ if ($handle = opendir($LMS->CONFIG['directories']['backup_dir']))
 		if ($file != '.' && $file != '..')
 		{
 			$path = pathinfo($file);
+			
+			if(!isset($path['extension']))
+				continue;
+			
 			if($path['extension'] == 'sql')
 			{
 				if(substr($path['basename'],0,4) == 'lms-')
 				{
 					$name = substr(basename($file,'.sql'),4,25);
-					list($dblist['time'][],$dblist['dbv'][]) = explode('-', $name);
+					if($pos = strpos($name,'-'))
+					{
+						$dblist['dbv'][]  = substr($name, $pos, 0) ;
+						$dblist['time'][] = substr($name, 0, $pos);
+					} 
+					else
+					{
+						$dblist['dbv'][]  = '';
+						$dblist['time'][] = (int) $name;
+					}
 					$dblist['name'][] = $name;
 					$dblist['size'][] = filesize($LMS->CONFIG['directories']['backup_dir'].'/'.$file);
 					$dblist['type'][] = 'plain';
@@ -49,7 +62,16 @@ if ($handle = opendir($LMS->CONFIG['directories']['backup_dir']))
 				if((($path['extension'] == 'gz')&&(strstr($file, "sql.gz")))&& (substr($path['basename'],0,4) == 'lms-'))
 				{
 					$name = substr(basename($file,'.sql.gz'),4,25);
-					list($dblist['time'][],$dblist['dbv'][]) = explode('-', $name);
+					if($pos = strpos($name,'-'))
+					{
+						$dblist['dbv'][]  = substr($name, $pos, 0) ;
+						$dblist['time'][] = substr($name, 0, $pos);
+					} 
+					else
+					{
+						$dblist['dbv'][]  = FALSE;
+						$dblist['time'][] = (int) $name;
+					}
 					$dblist['name'][] = $name;
 					$dblist['size'][] = filesize($LMS->CONFIG['directories']['backup_dir'].'/'.$file);
 					$dblist['type'][] = 'gz';

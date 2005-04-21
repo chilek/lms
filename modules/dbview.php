@@ -29,10 +29,11 @@ function DatabaseFetchContent($db,$save=FALSE)
 	global $LMS;
 	
 	if(file_exists($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
-	{
-		$content = file($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql');
-		foreach($content as $value)
-			$database['content'] .= $value;
+	{		
+		$database['content'] = '';
+		if($content = file($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql'))
+			foreach($content as $value)
+				$database['content'] .= $value;
 		$database['size'] = filesize($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql');
 		$database['name'] = $db;
 		list($database['time']) = explode('-',$db);
@@ -43,14 +44,16 @@ function DatabaseFetchContent($db,$save=FALSE)
 		if($save==TRUE)
 		{
 			$file=fopen($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz',"r"); //tutaj przepisuje plik binarny 
+			$database = '';
 			while($part = fread($file,8192))
                             	$database .= $part; 
 		}
 		else
 		{
-			$content = gzfile($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
-                	foreach($content as $value)
-                        	$database['content'] .= $value;
+			$database['content'] = '';
+			if($content = gzfile($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz'))
+				foreach($content as $value)
+                        		$database['content'] .= $value;
                 	$database['size'] = filesize($LMS->CONFIG['directories']['backup_dir'].'/lms-'.$db.'.sql.gz');
                 	$database['name'] = $db;
 			list($database['time']) = explode('-',$db);
@@ -71,10 +74,10 @@ if ((extension_loaded('zlib'))&&(strstr($_GET['file'],"sql.gz")))
 else
 	$database = DatabaseFetchContent($_GET['db']);
 
-if($_GET['rawmode']=='true')
+if(isset($_GET['rawmode']))
 {
 	$database['rawmode'] = TRUE;
-	if($_GET['save']=='true')
+	if(isset($_GET['save']))
 	{
 		header('Content-Type: application/octetstream');
 		if ((extension_loaded('zlib'))&&($_GET['rawmode']=='true')&&($_GET['save']=='true')&&(strstr($_GET['file'],"sql.gz")))
@@ -95,15 +98,16 @@ if($_GET['rawmode']=='true')
 }
 
 $SMARTY->assign('database',$database);
-if(!$database['rawmode'])
-{
+
+if(!isset($_GET['rawmode']))
 	$SMARTY->display('header.html');
-	$SMARTY->display('adminheader.html');
-}
+
 if (strstr($_GET['file'],"sql.gz"))
-$SMARTY->assign('use_gzip','true');
+	$SMARTY->assign('use_gzip','true');
 
 $SMARTY->display('dbview.html');
-if(!$database['rawmode'])
+
+if(!isset($_GET['rawmode']))
 	$SMARTY->display('footer.html');
+
 ?>

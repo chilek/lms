@@ -24,11 +24,14 @@
  *  $Id$
  */
 
-$adminadd = $_POST['adminadd'];
-$acl = $_POST['acl'];
+$acl = isset($_POST['acl']) ? $_POST['acl'] : array();
+$adminadd = isset($_POST['adminadd']) ? $_POST['adminadd'] : array();
+$error = FALSE;
 
-if(isset($adminadd))
+if(sizeof($adminadd))
 {
+	
+	
 	foreach($adminadd as $key => $value)
 		$adminadd[$key] = trim($value);
 	
@@ -57,12 +60,16 @@ if(isset($adminadd))
 
 	// zróbmy maskê ACL...
 
+	$mask = '';
+	$outmask = '';
+	
 	for($i=0;$i<256;$i++)
 		$mask .= '0';
 
 	foreach($access['table'] as $idx => $row)
-		if($acl[$idx]=='1')
-			$mask[255-$idx] = '1';
+		if(isset($acl[$idx]))
+			if($acl[$idx]=='1')
+				$mask[255-$idx] = '1';
 
 	for($i=0;$i<256;$i += 4)
 		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
@@ -74,11 +81,13 @@ if(isset($adminadd))
 		$SESSION->redirect('?m=admininfo&id='.$LMS->AdminAdd($adminadd));
 	}
 }
+
 foreach($access['table'] as $idx => $row)
 {
 	$row['id'] = $idx;
-	if($acl[$idx] == '1')
-		$row['enabled'] = TRUE;
+	if(isset($acl[$idx]))
+		if($acl[$idx] == '1')
+			$row['enabled'] = TRUE;
 	$accesslist[] = $row;
 }
 

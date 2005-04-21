@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-if($_GET['is_sure'])
+if(isset($_GET['is_sure']))
 {
 	$basename = 'lms-'.$_GET['db'];
 	
@@ -43,7 +43,6 @@ else
 {
 	$layout['pagetitle'] = trans('Backup Delete');
 	$SMARTY->display('header.html');
-	$SMARTY->display('adminheader.html');
 	echo '<H1>'.trans('Deletion of Database Backup').'</H1>';
 	echo '<P>'.trans('Are you sure, you want to delete database backup created at $0 ?',date('Y/m/d H:i.s',$_GET['db'])).'</P>';
 	echo '<a href="?m=dbdel&db='.$_GET['db'].'&is_sure=1">'.trans('Yes, I am sure').'</A>';

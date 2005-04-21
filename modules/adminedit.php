@@ -29,9 +29,11 @@ if(!$LMS->AdminExists($_GET['id']))
 	$SESSION->redirect('?m=adminlist');
 }
 
-$admininfo = $_POST['admininfo'];
+$admininfo = isset($_POST['admininfo']) ? $_POST['admininfo'] : FALSE;
 
-if(isset($admininfo))
+$error = FALSE;
+
+if($admininfo)
 {
 	$acl = $_POST['acl'];
 	$admininfo['id'] = $_GET['id'];
@@ -54,12 +56,16 @@ if(isset($admininfo))
 				
 	// zróbmy maskê ACL...
 
+	$mask = '';
+	$outmask = '';
+	
 	for($i=0;$i<256;$i++)
 		$mask .= '0';
 	
 	foreach($access['table'] as $idx => $row)
-		if($acl[$idx]=='1')
-			$mask[255-$idx] = '1';
+		if(isset($acl[$idx]))
+			if($acl[$idx]=='1')
+				$mask[255-$idx] = '1';
 	for($i=0;$i<256;$i += 4)
 		$outmask = $outmask . dechex(bindec(substr($mask,$i,4)));
 
