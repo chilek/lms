@@ -25,8 +25,10 @@
  */
 
 $layout['pagetitle'] = trans('New Config Option');
+$error = array();
+$config = isset($_POST['config']) ? $_POST['config'] : array();
 
-if($config = $_POST['config'])
+if(sizeof($config))
 {
 	foreach($config as $key => $val)
 	    $config[$key] = trim($val);
@@ -53,7 +55,7 @@ if($config = $_POST['config'])
 	elseif($msg = $LMS->CheckOption($config['name'], $config['value']))
 	        $error['value'] = $msg;
 	
-	if($config['disabled']!='1') $config['disabled'] = 0;
+	if(!isset($config['disabled'])) $config['disabled'] = 0;
 
 	if(!$error)
 	{
@@ -66,7 +68,7 @@ if($config = $_POST['config'])
 					));
 		$LMS->SetTS('uiconfig');
 		
-		if(!$config['reuse'])
+		if(!isset($config['reuse']))
 		{
 			$SESSION->redirect('?m=configlist');
 		}

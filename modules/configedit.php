@@ -37,7 +37,7 @@ if($id && !ConfigOptionExists($id))
 	$SESSION->redirect('?m=configlist');
 }
 
-if($_GET['statuschange'])
+if(isset($_GET['statuschange']))
 {
 	$LMS->DB->Execute('UPDATE uiconfig SET disabled = CASE disabled WHEN 0 THEN 1 ELSE 0 END WHERE id = ?',array($id));
 	$SESSION->redirect('?m=configlist');
@@ -45,9 +45,11 @@ if($_GET['statuschange'])
 
 $config = $LMS->DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
 $option = $config['var'];
+$error = array();
 
-if($cfg = $_POST['config'])
+if(isset($_POST['config']))
 {
+	$cfg = $_POST['config'];
 	$cfg['id'] = $id;
 	
 	foreach($cfg as $key => $val) 
@@ -73,7 +75,7 @@ if($cfg = $_POST['config'])
 	elseif($msg = $LMS->CheckOption($cfg['var'], $cfg['value']))
 		$error['value'] = $msg;
 	
-	if($cfg['disabled']!='1') $cfg['disabled'] = 0;
+	if(!isset($cfg['disabled'])) $cfg['disabled'] = 0;
 
 	if(!$error)
 	{
