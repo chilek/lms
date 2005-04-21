@@ -28,9 +28,9 @@ function GetConfigList($order='var,asc')
 {
 	global $LMS;
 
-	list($order,$direction) = explode(',',$order);
-
-	($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
+	list($order, $direction) = sscanf($order, '%[^,],%s');
+	
+	$direction = ($direction != 'desc') ? 'asc' : 'desc';
 
 	switch($order)
 	{
@@ -70,7 +70,7 @@ unset($configlist['total']);
 unset($configlist['order']);
 unset($configlist['direction']);
 	    
-$page = (! $_GET['page'] ? 1 : $_GET['page']); 
+$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
 $pagelimit = (! $LMS->CONFIG['phpui']['configlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['configlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 

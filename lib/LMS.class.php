@@ -40,7 +40,6 @@ define('ACCOUNT_FTP', 8);
 
 class LMS
 {
-
 	var $DB;			// database object
 	var $AUTH;			// object from Session.class.php (session management)
 	var $CONFIG;			// table including lms.ini options
@@ -600,7 +599,7 @@ class LMS
 
 	function GetUserList($order='username,asc', $state=NULL, $network=NULL, $usergroup=NULL, $time=NULL)
 	{
-		list($order,$direction)=explode(',',$order);
+		list($order,$direction) = sscanf($order, '%[^,],%s');
 
 		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
@@ -725,15 +724,15 @@ class LMS
 				$userlist = $nuserelist;
 			break;
 		}
-		$userlist['total']=sizeof($userlist);
-		$userlist['state']=$state;
-		$userlist['network']=$network;
-		$userlist['usergroup']=$usergroup;
-		$userlist['order']=$order;
-		$userlist['below']=$below;
-		$userlist['over']=$over;
-		$userlist['direction']=$direction;
-
+		$userlist['total'] = sizeof($userlist);
+		$userlist['state'] = $state;
+		$userlist['network'] = $network;
+		$userlist['usergroup'] = $usergroup;
+		$userlist['order'] = $order;
+		$userlist['direction'] = $direction;
+		$userlist['below']= isset($below) ? $below : 0;
+		$userlist['over']= isset($over) ? $over : 0;
+		
 		return $userlist;
 	}
 
@@ -770,13 +769,14 @@ class LMS
 
 	function GetUserBalanceList($id)
 	{
+		$saldolist = array();
 		// wrapper do starego formatu
 		if($tslist = $this->DB->GetAll('SELECT cash.id AS id, time, type, value, taxvalue, userid, comment, invoiceid, name AS adminname FROM cash LEFT JOIN admins ON admins.id=adminid WHERE userid=? ORDER BY time', array($id)))
 			foreach($tslist as $row)
 				foreach($row as $column => $value)
 					$saldolist[$column][] = $value;
 		
-		if(sizeof($saldolist['id']) > 0)
+		if(sizeof($saldolist) > 0)
 		{
 			foreach($saldolist['id'] as $i => $v)
 			{
@@ -808,9 +808,10 @@ class LMS
 
 			$saldolist['balance'] = $saldolist['after'][sizeof($saldolist['id'])-1];
 			$saldolist['total'] = sizeof($saldolist['id']);
-
-		} else 
+		} else {
 			$saldolist['balance'] = 0;
+			$saldolist['total'] = 0;
+		}
 
 		if($saldolist['total'])
 		{
@@ -3186,7 +3187,7 @@ class LMS
 			$lastcheck = 0;
 		if($lastcheck + $this->CONFIG['phpui']['check_for_updates_period'] < $time)
 		{
-			list($v, $codename) = split(' ', $this->_version);
+			list($v, ) = split(' ', $this->_version);
 			ini_set('default_socket_timeout', 5);
 			if($updatefile = @fopen('http://lms.rulez.pl/update.php?uiid='.$uiid.'&v='.$v, 'r'))
 			{

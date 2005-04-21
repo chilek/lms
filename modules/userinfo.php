@@ -55,7 +55,6 @@ $SMARTY->assign(
 			'assignments' => $assigments,
 			'usergroups' => $usergroups,
 			'otherusergroups' => $otherusergroups,
-			'error' => $error,
 			'userinfo' => $userinfo,
 			'tariffs' => $tariffs,
 			'contractlist' => $contractlist,

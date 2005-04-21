@@ -24,9 +24,9 @@
  *  $Id$
  */
 
-$userdata = $_POST['userdata'];
+$action = isset($_GET['action']) ? $_GET['action'] : '';
 
-if($LMS->UserExists($_GET['id']) < 0 && $_GET['action'] != 'recover')
+if($LMS->UserExists($_GET['id']) < 0 && $action != 'recover')
 {
 	$SESSION->redirect('?m=userinfo&id='.$_GET['id']);
 }
@@ -34,19 +34,20 @@ elseif(! $LMS->UserExists($_GET['id']))
 {
 	$SESSION->redirect('?m=userlist');
 }
-elseif($_GET['action'] == 'usergroupdelete')
+elseif($action == 'usergroupdelete')
 {
 	$LMS->UserassignmentDelete(array('userid' => $_GET['id'], 'usergroupid' => $_GET['usergroupid']));
 	$SESSION->redirect('?m=userinfo&id='.$_GET['id']);
 }
-elseif($_GET['action'] == 'usergroupadd')
+elseif($action == 'usergroupadd')
 {
 	if ($LMS->UsergroupExists($_POST['usergroupid']))
 		$LMS->UserassignmentAdd(array('userid' => $_GET['id'], 'usergroupid' => $_POST['usergroupid']));
 	$SESSION->redirect('?m=userinfo&id='.$_GET['id']);
 }
-elseif(isset($userdata))
+elseif(isset($_POST['userdata']))
 {
+	$userdata = $_POST['userdata'];
 	foreach($userdata as $key=>$value)
 		$userdata[$key] = trim($value);
 
@@ -115,7 +116,7 @@ $SMARTY->assign('assignments',$LMS->GetUserAssignments($_GET['id']));
 $SMARTY->assign('usergroups',$LMS->UsergroupGetForUser($_GET['id']));
 $SMARTY->assign('otherusergroups',$LMS->GetGroupNamesWithoutUser($_GET['id']));
 $SMARTY->assign('userinfo',$userinfo);
-$SMARTY->assign('recover',($_GET['action'] == 'recover' ? 1 : 0));
+$SMARTY->assign('recover',($action == 'recover' ? 1 : 0));
 $SMARTY->display('useredit.html');
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);

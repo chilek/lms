@@ -208,9 +208,10 @@ function getbraddr($ip,$mask)
 		}
 		$maskb = decbin($maska);
 		$i=0;
-		while (($maskb[$i]=='1') && ($i<32))
+		$out = '';
+		while (($i<32) && ($maskb[$i]=='1'))
 		{
-			$out.=$ipb[$i];
+			$out .= $ipb[$i];
 			$i++;
 		}
 		while(strlen($out) != 32)
@@ -252,12 +253,12 @@ function check_mask($mask)
 		return FALSE;
 	else
 	{
-		while (($maskb[$i] == '1') && ($i<32))
+		while (($i<32) && ($maskb[$i] == '1'))
 		{
 			$i++;
 		}
 		$j=$i+1;
-		while (($maskb[$j] == '0') && ($j<32))
+		while (($j<32) && ($maskb[$j] == '0'))
 		{
 			$j++;
 		}
@@ -270,7 +271,9 @@ function check_mask($mask)
 
 function prefix2mask($prefix)
 {
-	if($prefix>=0&&$prefix<=32){
+	if($prefix>=0&&$prefix<=32)
+	{	
+		$out = '';
 		for($ti=0;$ti<$prefix;$ti++)
 			$out .= '1';
 		for($ti=$prefix;$ti<32;$ti++)
