@@ -24,7 +24,6 @@
  *  $Id$
  */
 
-
 class Session {
 
 	var $SID = NULL;			// session unique ID
@@ -149,8 +148,6 @@ class Session {
 		{
 			$this->DB->Execute('UPDATE sessions SET atime = ?NOW? WHERE id = ?', array($this->SID));
 			$this->_content = unserialize($this->DB->GetOne('SELECT content FROM sessions WHERE id = ?', array($this->SID)));
-			
-			
 		}
 		else
 			$this->_createSession();
@@ -205,7 +202,6 @@ class Session {
 		header('Location: '.$location);
 		die;
 	}
-
 }
 
 ?>

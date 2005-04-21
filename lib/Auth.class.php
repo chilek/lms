@@ -46,10 +46,11 @@ class Auth {
 		$this->SESSION = &$SESSION;
 		$this->ip = str_replace('::ffff:', '', $_SERVER['REMOTE_ADDR']);
 		
-		if($_GET['override'])
+		if(isset($_GET['override']))
 			$loginform = $_GET['loginform'];
-		else
+		elseif(isset($_POST['loginform']))
 			$loginform = $_POST['loginform'];
+		
 		if(isset($loginform))
 		{
 			$this->login = $loginform['login'];

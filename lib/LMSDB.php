@@ -31,7 +31,7 @@
  * This file include required files and do some nasty things ;>
  */
 
-define(LMSDB_DIR,dirname(__FILE__));
+define('LMSDB_DIR',dirname(__FILE__));
 
 require_once(LMSDB_DIR.'/LMSDB_common.class.php');
 
