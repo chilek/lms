@@ -45,7 +45,6 @@ if(isset($_GET['statuschange']))
 
 $config = $LMS->DB->GetRow('SELECT * FROM uiconfig WHERE id = ?', array($id));
 $option = $config['var'];
-$error = array();
 
 if(isset($_POST['config']))
 {

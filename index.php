@@ -203,10 +203,12 @@ $SMARTY->assign_by_ref('menu', $LMS->MENU);
 require_once($_LIB_DIR.'/menu.php');
 
 $SMARTY->assign_by_ref('newmenu', $menu);
-
 $SMARTY->assign_by_ref('layout', $layout);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
+
+$error = array(); // initialize error variable needed for (almost) all modules
+
 if($AUTH->islogged)
 {
 	if($AUTH->passwd == '')

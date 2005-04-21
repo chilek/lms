@@ -31,8 +31,6 @@ if(!$LMS->AdminExists($_GET['id']))
 
 $admininfo = isset($_POST['admininfo']) ? $_POST['admininfo'] : FALSE;
 
-$error = FALSE;
-
 if($admininfo)
 {
 	$acl = $_POST['acl'];
