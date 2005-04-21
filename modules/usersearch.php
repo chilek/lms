@@ -24,7 +24,8 @@
  *  $Id$
  */
 
-$search = $_POST['search'];
+if(isset($_POST['search']))
+	$search = $_POST['search'];
 
 if(isset($search['s']))
 	$_GET['s'] = $search['s'];
@@ -49,7 +50,7 @@ else
 $SESSION->save('usls', $s);
 
 
-if($_GET['search']==1 || isset($_GET['search']))
+if(isset($_GET['search']))
 {
 	$layout['pagetitle'] = trans('Customer Search Results');
 	$userlist = $LMS->SearchUserList($o,$s,$search);

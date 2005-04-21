@@ -24,14 +24,19 @@
  *  $Id$
  */
 
-$userassignments = $_POST['userassignments'];
-$oper = $_POST['oper'];
-
-if(isset($userassignments))
+if(!$LMS->UsergroupExists($_GET['id']))
 {
-	if (sizeof($userassignments['gmuserid']) && $oper=='0')
+	$SESSION->redirect('?m=usergrouplist');
+}
+
+if(isset($_POST['userassignments']))
+{
+	$oper = $_POST['oper'];
+	$userassignments = $_POST['userassignments'];
+	
+	if(isset($userassignments['gmuserid']) && $oper=='0')
 	{
-		$assignment['usergroupid'] = $userassignments['backid'];
+		$assignment['usergroupid'] = $_GET['id'];
 		foreach($userassignments['gmuserid'] as $value)
 		{
 			$assignment['userid'] = $value;
@@ -40,9 +45,9 @@ if(isset($userassignments))
 		$SESSION->redirect('?'.$SESSION->get('backto'));
 	}
 
-	if (sizeof($userassignments['muserid']) && $oper=='1')
+	if (isset($userassignments['muserid']) && $oper=='1')
 	{
-		$assignment['usergroupid'] = $userassignments['backid'];
+		$assignment['usergroupid'] = $_GET['id'];
 		foreach($userassignments['muserid'] as $value)
 		{
 			$assignment['userid'] = $value;
@@ -53,20 +58,15 @@ if(isset($userassignments))
 	}
 }
 
-if(!$LMS->UsergroupExists($_GET['id']))
-{
-	$SESSION->redirect('?m=usergrouplist');
-}
-
 $usergroup = $LMS->UsergroupGet($_GET['id']);
-$users = $LMS->GetUserWithoutGroupNames($usergroup['id']);
+$users = $LMS->GetUserWithoutGroupNames($_GET['id']);
 
-$layout['pagetitle'] = trans('Group Edit: $0',$usergroup['name']);
+$layout['pagetitle'] = trans('Group Edit: $0', $usergroup['name']);
 
-$usergroupedit = $_POST['usergroup'];
-
-if(isset($usergroupedit))
+if(isset($_POST['usergroup']))
 {
+	$usergroupedit = $_POST['usergroup'];
+
 	foreach($usergroupedit as $key => $value)
 		$usergroupedit[$key] = trim($value);
 

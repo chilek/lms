@@ -25,7 +25,7 @@
  */
 
 $layout['pagetitle'] = trans('New Config Option');
-$error = array();
+
 $config = isset($_POST['config']) ? $_POST['config'] : array();
 
 if(sizeof($config))

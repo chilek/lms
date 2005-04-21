@@ -26,7 +26,6 @@
 
 $acl = isset($_POST['acl']) ? $_POST['acl'] : array();
 $adminadd = isset($_POST['adminadd']) ? $_POST['adminadd'] : array();
-$error = FALSE;
 
 if(sizeof($adminadd))
 {

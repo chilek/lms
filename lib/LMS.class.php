@@ -511,7 +511,7 @@ class LMS
 
 	function SearchUserList($order=NULL,$state=NULL,$search=NULL)
 	{
-		list($order,$direction)=explode(',',$order);
+		list($order,$direction) = sscanf($order, '%[^,],%s');
 
 		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
@@ -590,9 +590,9 @@ class LMS
 			$userlist['total']=sizeof($userlist);
 			$userlist['state']=$state;
 			$userlist['order']=$order;
-			$userlist['below']=$below;
-			$userlist['over']=$over;
 			$userlist['direction']=$direction;
+			$userlist['below'] = isset($below) ? $below : 0;
+			$userlist['over'] = isset($over) ? $over : 0;
 		}
 		return $userlist;
 	}
@@ -921,6 +921,9 @@ class LMS
 	{
 		if($usergrouplist = $this->DB->GetAll('SELECT id, name, description FROM usergroups ORDER BY name ASC'))
 		{
+			$totalusers = 0;
+			$totalcount = 0;
+			
 			foreach($usergrouplist as $idx => $row)
 			{
 				$usergrouplist[$idx]['users'] = $this->UsergroupWithUserGet($row['id']);
@@ -928,10 +931,11 @@ class LMS
 				$totalusers += $usergrouplist[$idx]['users'];
 				$totalcount += $usergrouplist[$idx]['userscount'];
 			}
+			
+			$usergrouplist['total'] = sizeof($usergrouplist);
+			$usergrouplist['totalusers'] = $totalusers;
+			$usergrouplist['totalcount'] = $totalcount;
 		}
-		$usergrouplist['total'] = sizeof($usergrouplist);
-		$usergrouplist['totalusers'] = $totalusers;
-		$usergrouplist['totalcount'] = $totalcount;
 		
 		return $usergrouplist;
 	}
