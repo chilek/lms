@@ -2391,25 +2391,28 @@ class LMS
 		$start = $page * $plimit;
 		$end = ($network['size'] > $plimit ? $start + $plimit : $network['size']);
 	
+		$network['pageassigned'] = 0;
+		
 		$nodes = $this->DB->GetAllByKey('SELECT id, name, ipaddr, ownerid, netdev FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?','ipaddr', array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
 	
 		for($i = 0; $i < ($end - $start) ; $i ++)
 		{
 			$longip = $network['addresslong'] + $i + $start;
-			$node = $nodes["".$longip.""];
+			
+			$node = isset($nodes["".$longip.""]) ? $nodes["".$longip.""] : NULL;
+			$network['nodes']['id'][$i] = isset($node['id']) ? $node['id'] : 0;
+			$network['nodes']['netdev'][$i] = isset($node['netdev']) ? $node['netdev'] : 0;
+			$network['nodes']['ownerid'][$i] = isset($node['ownerid']) ? $node['ownerid'] : 0;
+						
 			$network['nodes']['addresslong'][$i] = $longip;
 			$network['nodes']['address'][$i] = long2ip($longip);
-			$network['nodes']['id'][$i] = $node['id'];
-			$network['nodes']['netdev'][$i] = $node['netdev'];
-
+			
 			if( $network['nodes']['addresslong'][$i] >= ip_long($network['dhcpstart']) && $network['nodes']['addresslong'][$i] <= ip_long($network['dhcpend']) )
 				$network['nodes']['name'][$i] = 'DHCP';
-			else
+			elseif(isset($node['name']))
 				$network['nodes']['name'][$i] = $node['name'];
 				
-			$network['nodes']['ownerid'][$i] = $node['ownerid'];
-			
-			if( $node['id'] )
+			if( isset($node['id']) )
 				$network['pageassigned'] ++;
 			if( $network['nodes']['ownerid'][$i] == 0 && $network['nodes']['netdev'][$i] > 0) 
 			{
@@ -2420,7 +2423,7 @@ class LMS
 				$network['nodes']['name'][$i] = '*** NETWORK ***';
 			if( $network['nodes']['address'][$i] == $network['broadcast'])
 				$network['nodes']['name'][$i] = '*** BROADCAST ***';
-			if( $network['nodes']['address'][$i] == $network['gateway'] && $node['name']=='')
+			if( $network['nodes']['address'][$i] == $network['gateway'] && !isset($node['name']))
 				$network['nodes']['name'][$i] = '*** GATEWAY ***';
 		}
 		$network['rows'] = ceil(sizeof($network['nodes']['address']) / 4);

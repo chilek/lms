@@ -28,8 +28,9 @@ $instance = $LMS->DB->GetRow('SELECT id, name, hostid, description, module, cron
 
 $layout['pagetitle'] = trans('Instance Edit: $0', $instance['name']);
 
-if($instedit = $_POST['instance']) 
+if(isset($_POST['instance']))
 {
+	$instedit = $_POST['instance'];
 	foreach($instedit as $idx => $key)
 		$instedit[$idx] = trim($key);
 
@@ -50,24 +51,25 @@ if($instedit = $_POST['instance'])
 	if($instedit['crontab'] != '' && !eregi('^[0-9/*,-]+[ \t][0-9/*,-]+[ \t][0-9/*,-]+[ \t][0-9/*,-]+[ \t][0-9/*,-]+$', $instedit['crontab']))
 		$error['crontab'] = trans('Incorrect crontab format!');
 	
-	if($instedit['disabled']!='1') $instedit['disabled'] = 0;
+	if(!isset($instedit['disabled'])) $instedit['disabled'] = 0;
 	
 	if(!$error)
 	{
-		$LMS->DB->Execute('UPDATE daemoninstances SET name=?, hostid=?, description=?, module=?, crontab=?, priority=? WHERE id=?',
+		$LMS->DB->Execute('UPDATE daemoninstances SET name=?, hostid=?, description=?, module=?, crontab=?, priority=?, disabled=? WHERE id=?',
 				    array($instedit['name'], 
 					    $instedit['hostid'], 
 					    $instedit['description'],
 					    $instedit['module'],
 					    $instedit['crontab'],
 					    $instedit['priority'],
+					    $instedit['disabled'],
 					    $instedit['id']));
 		$LMS->SetTS('daemoninstances');
 		
 		$SESSION->redirect('?m=daemoninstancelist&id='.$instedit['hostid']);
 	}
 }	
-elseif($_GET['statuschange'])
+elseif(isset($_GET['statuschange']))
 {
 	if($instance['disabled'])
 		$LMS->DB->Execute('UPDATE daemoninstances SET disabled=0 WHERE id=?', array($_GET['id']));
@@ -79,7 +81,7 @@ elseif($_GET['statuschange'])
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
-$SMARTY->assign('instance', $instedit ? $instedit : $instance);
+$SMARTY->assign('instance', isset($instedit) ? $instedit : $instance);
 $SMARTY->assign('hosts', $LMS->DB->GetAll('SELECT id, name FROM daemonhosts ORDER BY name'));
 $SMARTY->assign('layout', $layout);
 $SMARTY->display('daemoninstanceedit.html');
