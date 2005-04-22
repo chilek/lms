@@ -26,14 +26,14 @@
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$search = $_POST['search'];
+$search = isset($_POST['search']) ? $_POST['search'] : FALSE;
 
 if(!isset($search))
 	$SESSION->restore('usersearch', $search);
 else
 	$SESSION->save('usersearch', $search);
 
-if($_GET['search']==1 || isset($_GET['search'])) 
+if(isset($_GET['search'])) 
 {
 	$layout['pagetitle'] = trans('Nodes Search Results');
 
@@ -61,7 +61,7 @@ if($_GET['search']==1 || isset($_GET['search']))
 	if ($SESSION->is_set('nslp') && !isset($_GET['page']))
 		$SESSION->restore('nslp', $_GET['page']);
 		
-	$page = (! $_GET['page'] ? 1 : $_GET['page']);
+	$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
 	
 	$pagelimit = (! $LMS->CONFIG['phpui']['nodelist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['nodelist_pagelimit']);
 	$start = ($page - 1) * $pagelimit;

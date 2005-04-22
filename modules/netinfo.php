@@ -29,12 +29,14 @@ if(!$LMS->NetworkExists($_GET['id']))
 	$SESSION->redirect('?m=netlist');
 }
 
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+
 if($SESSION->is_set('ntlp.'.$_GET['id']) && !isset($_GET['page']))
-	$SESSION->restore('ntlp.'.$_GET['id'], $_GET['page']);
+	$SESSION->restore('ntlp.'.$_GET['id'], $page);
 
-$SESSION->save('ntlp.'.$_GET['id'], $_GET['page']);
+$SESSION->save('ntlp.'.$_GET['id'], $page);
 
-$network = $LMS->GetNetworkRecord($_GET['id'],$_GET['page'], $LMS->CONFIG['phpui']['networkhosts_pagelimit']);
+$network = $LMS->GetNetworkRecord($_GET['id'], $page, $LMS->CONFIG['phpui']['networkhosts_pagelimit']);
 
 $layout['pagetitle'] = trans('Info Network: $0', $network['name']);
 

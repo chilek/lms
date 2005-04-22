@@ -2228,6 +2228,10 @@ class LMS
 	function GetNetworkList()
 	{
 		if($networks = $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks ORDER BY name'))
+		{
+			$size = 0;
+			$assigned = 0;
+			
 			foreach($networks as $idx => $row)
 			{
 				$row['prefix'] = mask2prefix($row['mask']);
@@ -2237,10 +2241,12 @@ class LMS
 				$row['assigned'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?', array($row['addresslong'], $row['broadcastlong']));
             			$row['online'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ? AND (?NOW? - lastonline < ?)', array($row['addresslong'], $row['broadcastlong'], $this->CONFIG['phpui']['lastonline_limit']));
 				$networks[$idx] = $row;
-				$networks['size'] += $row['size'];
-				$networks['assigned'] += $row['assigned'];
+				$size += $row['size'];
+				$assigned += $row['assigned'];
 			}
-
+			$networks['size'] = $size;
+			$networks['assigned'] = $assigned;
+		}
 		return $networks;
 	}
 
@@ -2494,6 +2500,7 @@ class LMS
 		// To powinno byæ lepiej zrobione...
 		$list = $this->GetNetDevConnected($id);
 		$i = 0;
+		$names = array();
 		if ($list) 
 		{
 			foreach($list as $row)
@@ -2514,9 +2521,6 @@ class LMS
 
 		switch($order)
 		{
-			case 'name':
-				$sqlord = ' ORDER BY name';
-			break;
 			case 'id':
 				$sqlord = ' ORDER BY id';
 			break;
@@ -2534,6 +2538,9 @@ class LMS
 			break;
 			case 'location':
 				$sqlord = ' ORDER BY location';
+			break;
+			default:
+				$sqlord = ' ORDER BY name';
 			break;
 		}
 
