@@ -51,7 +51,7 @@ Class LMSDB_common
 	var $_result = NULL;
 
 	var $errors = array();
-	var $debug = TRUE;
+	var $debug = FALSE;
 
 	function LMSDB_common()
 	{
