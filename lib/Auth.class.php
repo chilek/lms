@@ -31,6 +31,8 @@ class Auth {
 	var $logname;
 	var $passwd;
 	var $islogged = FALSE;
+	var $passverified = FALSE;
+	var $hostverified = FALSE;
 	var $last;
 	var $ip;
 	var $lastip;
@@ -62,7 +64,7 @@ class Auth {
 		{
 			$this->islogged = TRUE;
 			$this->passwd = 'EMPTY';
-			$this->logname = trans('not logged in');
+			$this->logname = '';
 			$_GET['m'] = 'adminadd';
 			return TRUE;
 		}
@@ -72,14 +74,8 @@ class Auth {
 			$this->SESSION->restore('session_passwd', $this->passwd);
 		}
 		
-		list($passverified, $hostverified) = $this->VerifyAdmin();
-
-		if($passverified && $hostverified)
+		if($this->VerifyAdmin())
 		{
-			$this->islogged = TRUE;
-			$admindata = $this->DB->GetRow('SELECT id, name FROM admins WHERE login=?',array($this->login));
-			$this->id = $admindata['id'];
-			$this->logname = $admindata['name'];
 			$this->SESSION->restore('session_last', $this->last);
 			$this->SESSION->restore('session_lastip', $this->lastip);
 			if(isset($loginform))
@@ -101,9 +97,9 @@ class Auth {
 			$this->islogged = FALSE;
 			if(isset($loginform))
 			{
-				if(!$hostverified)
+				if(!$this->hostverified)
 					writesyslog('Bad host ('.$this->ip.') for '.$this->login, LOG_WARNING);
-				if(!$passverified)
+				if(!$this->passverified)
 					writesyslog('Bad password for '.$this->login, LOG_WARNING);
 				
 				$this->DB->Execute('UPDATE admins SET failedlogindate=?, failedloginip=? WHERE login=?',array(time(),$_SERVER['REMOTE_ADDR'],$this->login));
@@ -175,8 +171,15 @@ class Auth {
 	
 	function VerifyAdmin()
 	{
-		$admin = $this->DB->GetRow('SELECT passwd, hosts FROM admins WHERE login=? AND deleted=0',array($this->login));
-		return array($this->VerifyPassword($admin['passwd']), $this->VerifyHost($admin['hosts']));
+		$admin = $this->DB->GetRow('SELECT id, name, passwd, hosts FROM admins WHERE login=? AND deleted=0', array($this->login));
+		
+		$this->passverified = $this->VerifyPassword($admin['passwd']);
+		$this->hostverified = $this->VerifyHost($admin['hosts']);
+		$this->logname = $admin['name'];
+		$this->id = $admin['id'];
+		$this->islogged = ($this->passverified && $this->hostverified);
+		
+		return $this->islogged;
 	}
 }
 
