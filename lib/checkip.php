@@ -36,7 +36,7 @@ if(isset($_CONFIG['phpui']['allow_from']))
 
 	foreach($allowedlist as $value)
 	{
-		list($net,$mask) = split('/',$value);
+		list($net,$mask) = sscanf($value, '%[^/]/%[0-9]');
 		$net=trim($net);
 		$mask=trim($mask);
 		if($mask == '')

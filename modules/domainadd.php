@@ -30,8 +30,10 @@ function GetDomainIdByName($name)
 	return $LMS->DB->GetOne('SELECT id FROM domains WHERE name = ?', array($name));
 }
 
-if($domainadd = $_POST['domainadd']) 
+if(isset($_POST['domainadd']))
 {
+	$domainadd = $_POST['domainadd'];
+
 	$domainadd['name'] = trim($domainadd['name']);
 	$domainadd['description'] = trim($domainadd['description']);
 	
@@ -51,7 +53,7 @@ if($domainadd = $_POST['domainadd'])
 				    array($domainadd['name'], $domainadd['description']));
 		$LMS->SetTS('domains');
 		
-		if(!$domainadd['reuse'])
+		if(!isset($domainadd['reuse']))
 		{
 			$SESSION->redirect('?m=domainlist');
 		}
@@ -59,7 +61,7 @@ if($domainadd = $_POST['domainadd'])
 		unset($domainadd['name']);
 		unset($domainadd['description']);
 	}
-
+	$SMARTY->assign('domainadd', $domainadd);
 }	
 
 $layout['pagetitle'] = trans('New Domain');
@@ -67,7 +69,6 @@ $layout['pagetitle'] = trans('New Domain');
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
 $SMARTY->assign('error', $error);
-$SMARTY->assign('domainadd', $domainadd);
 $SMARTY->assign('layout', $layout);
 $SMARTY->display('domainadd.html');
 

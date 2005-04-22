@@ -3178,7 +3178,7 @@ class LMS
 		
 		foreach($contractlist as $idx => $row)
 		{
-			list($file, $name) = explode(':', $row);
+			list($file, $name) = sscanf($row, '%[^:]:%[^[]]');
 			$clist[$idx]['file'] = trim($file);
 			$clist[$idx]['name'] = trim($name);
 		}

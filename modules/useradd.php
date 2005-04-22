@@ -24,18 +24,18 @@
  *  $Id$
  */
 
-$useradd = $_POST['useradd'];
-
-if(sizeof($useradd))
-	foreach($useradd as $key=>$value)
-		$useradd[$key] = trim($value);
-
-if($useradd['name'] == '' && $useradd['lastname'] == '' && $useradd[phone1] == '' && $useradd['address'] == '' && $useradd['email'] == '' && isset($useradd))
+if(isset($_POST['useradd']))
 {
-	$SESSION->redirect('?m=useradd');
-}
-elseif(isset($useradd))
-{
+	$useradd = $_POST['useradd'];
+
+	if(sizeof($useradd))
+		foreach($useradd as $key=>$value)
+			$useradd[$key] = trim($value);
+
+	if($useradd['name'] == '' && $useradd['lastname'] == '' && $useradd['phone1'] == '' && $useradd['address'] == '' && $useradd['email'] == '')
+	{
+		$SESSION->redirect('?m=useradd');
+	}
 
 	if($useradd['lastname'] == '')
 		$error['username'] = trans('\'Surname/Name\' and \'First Name\' fields cannot be empty!');
@@ -70,7 +70,7 @@ elseif(isset($useradd))
 	if(!$error)
 	{
 		$id = $LMS->UserAdd($useradd);
-		if($useradd['reuse'] =='')
+		if(!isset($useradd['reuse']))
 		{
 			$SESSION->redirect('?m=userinfo&id='.$id);
 		}
@@ -81,11 +81,11 @@ elseif(isset($useradd))
 	}
 }
 
-if(!isset($useradd['zip']))	
+if(!isset($useradd['zip']) && isset($LMS->CONFIG['phpui']['default_zip']))
 	$useradd['zip'] = $LMS->CONFIG['phpui']['default_zip'];
-if(!isset($useradd['city']))	
+if(!isset($useradd['city']) && isset($LMS->CONFIG['phpui']['default_city']))
 	$useradd['city'] = $LMS->CONFIG['phpui']['default_city'];
-if(!isset($useradd['address']))	
+if(!isset($useradd['address']) && isset($LMS->CONFIG['phpui']['default_address']))
 	$useradd['address'] = $LMS->CONFIG['phpui']['default_address'];
 
 $layout['pagetitle'] = trans('New Customer');

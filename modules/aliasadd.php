@@ -42,7 +42,9 @@ function AliasExistsInDomain($login, $domain)
 	return ($LMS->DB->GetOne('SELECT 1 FROM aliases, passwd WHERE accountid = passwd.id AND aliases.login = ? AND domainid = ?', array($login, $domain)) ? TRUE : FALSE);
 }
 
-if($aliasadd = $_POST['aliasadd']) 
+$aliasadd = isset($_POST['aliasadd']) ? $_POST['aliasadd'] : NULL;
+
+if(sizeof($aliasadd)) 
 {
 	$aliasadd['login'] = trim($aliasadd['login']);
 
@@ -79,7 +81,7 @@ if($aliasadd = $_POST['aliasadd'])
 				    array($aliasadd['login'], $aliasadd['accountid']));
 		$LMS->SetTS('aliases');
 		
-		if(!$aliasadd['reuse'])
+		if(!isset($aliasadd['reuse']))
 		{
 			$SESSION->redirect('?m=aliaslist');
 		}
@@ -87,8 +89,8 @@ if($aliasadd = $_POST['aliasadd'])
 	}
 }	
 
-if($accountid = $_GET['accountid'])
-	$aliasadd['accountid'] = $accountid;
+if(isset($_GET['accountid']))
+	$aliasadd['accountid'] = $_GET['accountid'];
 
 $layout['pagetitle'] = trans('New Alias');
 

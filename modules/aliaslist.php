@@ -28,7 +28,7 @@ function GetAliasList($order='login,asc', $user=NULL, $kind=NULL, $domain='')
 {
 	global $LMS;
 
-	list($order,$direction) = explode(',',$order);
+	list($order,$direction) = sscanf($order, '%[^,],%s');
 
 	($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
@@ -106,8 +106,8 @@ $SESSION->save('ald', $d);
 if ($SESSION->is_set('allp') && !isset($_GET['page']))
 	$SESSION->restore('allp', $_GET['page']);
 	    
-$page = (! $_GET['page'] ? 1 : $_GET['page']); 
-$pagelimit = (! $LMS->CONFIG['phpui']['aliaslist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['aliaslist_pagelimit']);
+$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
+$pagelimit = (!isset($LMS->CONFIG['phpui']['aliaslist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['aliaslist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('allp', $page);
@@ -134,7 +134,6 @@ $SMARTY->assign('pagelimit', $pagelimit);
 $SMARTY->assign('page', $page);
 $SMARTY->assign('start', $start);
 $SMARTY->assign('aliaslist', $aliaslist);
-$SMARTY->assign('error', $error);
 $SMARTY->assign('listdata', $listdata);
 $SMARTY->assign('userlist', $LMS->GetUserNames());
 $SMARTY->assign('domainlist', $LMS->DB->GetAll('SELECT id, name FROM domains ORDER BY name'));

@@ -47,7 +47,7 @@ $domain = $LMS->DB->GetRow('SELECT id, name, description FROM domains WHERE id =
 
 $layout['pagetitle'] = trans('Domain Edit: $0', $domain['name']);
 
-if($_POST['domain'])
+if(isset($_POST['domain']))
 {
 	$olddomain = $domain['name'];
 	$domain = $_POST['domain'];
