@@ -30,7 +30,9 @@ if(!$LMS->NodeExists($_GET['id']))
 	else
 		header('Location: ?m=nodelist');
 
-if($_GET['action']=='link')
+$action = isset($_GET['action']) ? $_GET['action'] : '';
+
+if($action=='link')
 {
 	$netdev = $LMS->GetNetDev($_GET['devid']); 
 
@@ -55,12 +57,13 @@ if(!isset($_GET['ownerid']))
 $userinfo = $LMS->GetUser($ownerid);
 $layout['pagetitle'] = trans('Customer Info: $0 - Node Edit: $1',$userinfo['username'], $LMS->GetNodeName($_GET['id']));
 
-$nodeedit = $_POST['nodeedit'];
 $usernodes = $LMS->GetUserNodes($ownerid);
 $nodeinfo = $LMS->GetNode($_GET['id']);
 
-if(isset($nodeedit))
+if(isset($_POST['nodeedit']))
 {
+	$nodeedit = $_POST['nodeedit'];
+	
 	$nodeedit['ipaddr'] = $_POST['nodeeditipaddr'];
 	$nodeedit['mac'] = $_POST['nodeeditmac'];
 	$nodeedit['mac'] = str_replace('-',':',$nodeedit['mac']);
@@ -90,7 +93,9 @@ if(isset($nodeedit))
 
 	if(check_mac($nodeedit['mac']))
 	{
-		if($LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE)
+		if(isset($LMS->CONFIG['phpui']['allow_mac_sharing']) && 
+			$LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE
+			)
 			if($LMS->GetNodeIDByMAC($nodeedit['mac']) && $LMS->GetNodeMACByID($nodeedit['id'])!=$nodeedit['mac'])
 				$error['mac'] = trans('Specified MAC address is in use!');
 	}
@@ -111,8 +116,8 @@ if(isset($nodeedit))
 
 	if($nodeedit['access']!=1)
 		$nodeedit['access'] = 0;
-        if($nodeedit[warning]!=1)
-                $nodeedit[warning] = 0;	
+        if($nodeedit['warning']!=1)
+                $nodeedit['warning'] = 0;	
 
 	if($nodeinfo['netdev'] != $nodeedit['netdev'] && $nodeedit['netdev'] != 0)
 	{

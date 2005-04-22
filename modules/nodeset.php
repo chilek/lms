@@ -24,16 +24,19 @@
  *  $Id$
  */
 
-if($LMS->UserExists($_GET['ownerid']))
+$ownerid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
+$id = isset($_GET['id']) ? $_GET['id'] : 0;
+
+if($LMS->UserExists($ownerid))
 {
-	$LMS->NodeSetU($_GET['ownerid'], $_GET['access']);
-	$backid = $_GET['ownerid'];
+	$LMS->NodeSetU($ownerid, $_GET['access']);
+	$backid = $ownerid;
 }
 
-if($LMS->NodeExists($_GET['id']))
+if($LMS->NodeExists($id))
 {
-	$LMS->NodeSet($_GET['id']);
-	$backid = $_GET['id'];
+	$LMS->NodeSet($id);
+	$backid = $id;
 }
 
 if(isset($_GET['netdev']))

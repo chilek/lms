@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$usergroupadd = $_POST['usergroupadd'];
-
-if(isset($usergroupadd))
+if(isset($_POST['usergroupadd']))
 {
+	$usergroupadd = $_POST['usergroupadd'];
+	
 	foreach($usergroupadd as $key => $value)
 		$usergroupadd[$key] = trim($value);
 
@@ -45,16 +45,17 @@ if(isset($usergroupadd))
 	elseif(!eregi("^[._a-z0-9-]+$",$usergroupadd['name']))
 		$error['name'] = trans('Invalid chars in group name!');
 
-	if(!$error){
+	if(!$error)
+	{
 		$SESSION->redirect('?m=usergrouplist&id='.$LMS->UsergroupAdd($usergroupadd));
 	}
 	
+	$SMARTY->assign('error',$error);
+	$SMARTY->assign('usergroupadd',$usergroupadd);
 }
 
 $layout['pagetitle'] = trans('New Group');
 
-$SMARTY->assign('error',$error);
-$SMARTY->assign('usergroupadd',$usergroupadd);
 $SMARTY->display('usergroupadd.html');
 
 ?>
