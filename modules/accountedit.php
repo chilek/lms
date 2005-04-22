@@ -31,7 +31,7 @@ function AccountExists($id)
 }
 
 $id = $_GET['id'];
-$option = $_GET['op'];
+$option = isset($_GET['op']) ? $_GET['op'] : '';
 
 if($id && !AccountExists($id))
 {
@@ -79,7 +79,7 @@ switch ($option)
     
 	$layout['pagetitle'] = trans('Account Edit: $0', $account['login']);
     
-	if($_POST['account'])
+	if(isset($_POST['account']))
 	{
 		$oldlogin = $account['login'];
 		$account = $_POST['account'];

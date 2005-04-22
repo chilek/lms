@@ -28,7 +28,7 @@ function GetAccountList($order='login,asc', $user=NULL, $type=NULL, $kind=NULL, 
 {
 	global $LMS;
 
-	list($order,$direction) = explode(',',$order);
+	list($order,$direction) = sscanf($order, '%[^,],%s');
 
 	($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 
@@ -111,8 +111,8 @@ $SESSION->save('ald', $d);
 if ($SESSION->is_set('alp') && !isset($_GET['page']))
 	$SESSION->restore('alp', $_GET['page']);
 	    
-$page = (! $_GET['page'] ? 1 : $_GET['page']); 
-$pagelimit = (! $LMS->CONFIG['phpui']['accountlist_pagelimit'] ? $listdata['total'] : $LMS->CONFIG['phpui']['accountlist_pagelimit']);
+$page = (!isset($_GET['page']) ? 1 : $_GET['page']);
+$pagelimit = (!isset($LMS->CONFIG['phpui']['accountlist_pagelimit']) ? $listdata['total'] : $LMS->CONFIG['phpui']['accountlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('alp', $page);
