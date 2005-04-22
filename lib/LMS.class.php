@@ -552,6 +552,8 @@ class LMS
 
 		if($state>3)
 			$state = 0;
+			
+		$over = 0; $below = 0;
 
 		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
 		if($userlist = $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, deleted, status, address, zip, city, info, message, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 '.($state !=0 ? " AND status = '".$state."'":'').($sqlsarg !='' ? ' AND '.$sqlsarg :'').' GROUP BY users.id, deleted, lastname, users.name, status, address, zip, city, info, message '.($sqlord !='' ? $sqlord.' '.$direction:'')))
@@ -591,8 +593,8 @@ class LMS
 			$userlist['state']=$state;
 			$userlist['order']=$order;
 			$userlist['direction']=$direction;
-			$userlist['below'] = isset($below) ? $below : 0;
-			$userlist['over'] = isset($over) ? $over : 0;
+			$userlist['below'] = $below;
+			$userlist['over'] = $over;
 		}
 		return $userlist;
 	}
@@ -639,6 +641,8 @@ class LMS
 
 		if($network) 
 			$net = $this->GetNetworkParams($network);
+		
+		$over = 0; $below = 0;
 		
 		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
 		if($userlist = $this->DB->GetAll( 
@@ -730,8 +734,8 @@ class LMS
 		$userlist['usergroup'] = $usergroup;
 		$userlist['order'] = $order;
 		$userlist['direction'] = $direction;
-		$userlist['below']= isset($below) ? $below : 0;
-		$userlist['over']= isset($over) ? $over : 0;
+		$userlist['below']= $below;
+		$userlist['over']= $over;
 		
 		return $userlist;
 	}
@@ -1062,11 +1066,10 @@ class LMS
 			else
 				$result['lastonlinedate'] = trans('online');
 			$result['moddateh'] = date('Y/m/d, H:i',$result['moddate']);
-			$result['owner'] = $this->GetUsername($result['ownerid']);
+			$result['owner'] = $this->GetUserName($result['ownerid']);
 			$result['netid'] = $this->GetNetIDByIP($result['ip']);
 			$result['netname'] = $this->GetNetworkName($result['netid']);
 			$result['producer'] = get_producer($result['mac']);
-			$result['devicename'] = $this->GetNetDevName($result['netdevid']);
 			return $result;
 		}else
 			return FALSE;
@@ -1077,7 +1080,7 @@ class LMS
 		if($order=='')
 			$order='name,asc';
 
-		list($order,$direction) = explode(',',$order);
+		list($order,$direction) = sscanf($order, '%[^,],%s');
 
 		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
@@ -1103,6 +1106,8 @@ class LMS
 			break;
 		}
 
+		$totalon = 0; $totaloff = 0;
+		
 		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, ownerid, access, warning, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, lastonline, nodes.info AS info FROM nodes, users WHERE ownerid = users.id AND ownerid > 0'.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
 			foreach($nodelist as $idx => $row)
@@ -1125,7 +1130,7 @@ class LMS
 		if($order=='')
 			$order='name,asc';
 		
-		list($order,$direction) = explode(',',$order);
+		list($order,$direction) = sscanf($order, '%[^,],%s');
 		
 		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 		
@@ -1174,6 +1179,8 @@ class LMS
 		
 		if($searchargs)
 			$searchargs = ' WHERE '.implode(' AND ',$searchargs);
+		
+		$totalon = 0; $totaloff = 0;
 		
 		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, ownerid, access, warning, nodes.info AS info, '
 						.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner
@@ -1563,7 +1570,7 @@ class LMS
 		if($order=='')
 			$order='id,asc';
 
-		list($order,$direction) = explode(',',$order);
+		list($order,$direction) = sscanf($order, '%[^,],%s');
 
 		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
@@ -2501,7 +2508,7 @@ class LMS
 
 	function GetNetDevList($order='name,asc')
 	{
-		list($order,$direction) = explode(',',$order);
+		list($order,$direction) = sscanf($order, '%[^,],%s');
 
 		($direction=='desc') ? $direction = 'desc' : $direction = 'asc';
 
@@ -2808,7 +2815,7 @@ class LMS
 		if(!$order)
 			$order = 'createtime,desc';
 	
-		list($order,$direction) = explode(',',$order);
+		list($order,$direction) = sscanf($order, '%[^,],%s');
 
 		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
 

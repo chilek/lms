@@ -24,27 +24,31 @@
  *  $Id$
  */
 
-$setwarnings = $_POST['setwarnings'];
+$setwarnings = isset($_POST['setwarnings']) ? $_POST['setwarnings'] : array();
 
-if(sizeof($setwarnings['muserid']))
+if(isset($setwarnings['muserid']))
 {
+	$warnon = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : FALSE;
+	$warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : FALSE;
+	$message = isset($setwarnings['message']) ? $setwarnings['message'] : '';
+	
 	foreach($setwarnings['muserid'] as $uid)
 	{
-		if($setwarnings['warnon'])
+		if($warnon)
 			$LMS->NodeSetWarnU($uid, TRUE);
-		if($setwarnings['warnoff']) 
+		if($warnoff) 
 			$LMS->NodeSetWarnU($uid, FALSE);
 		
-		if (isset($setwarnings['message']))
+		if($message)
 		{
 			$LMS->SetTS('users');
-			$LMS->DB->Execute('UPDATE users SET message=? WHERE id=?', array($setwarnings['message'],$uid));
+			$LMS->DB->Execute('UPDATE users SET message=? WHERE id=?', array($message, $uid));
 		}
 	}
 
-	$SESSION->save('warnmessage', $setwarnings['message']);
-	$SESSION->save('warnon', $setwarnings['warnon']);
-	$SESSION->save('warnoff', $setwarnings['warnoff']);
+	$SESSION->save('warnmessage', $message);
+	$SESSION->save('warnon', $warnon);
+	$SESSION->save('warnoff', $warnoff);
 	
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }

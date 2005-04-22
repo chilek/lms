@@ -24,10 +24,14 @@
  *  $Id$
  */
 
-switch($_GET['type'])
+$type = isset($_GET['type']) ? $_GET['type'] : '';
+
+switch($type)
 {
 	case 'userlist':
 
+		$date = 0;
+		
 		if($_POST['day'])
 		{
 			list($year, $month, $day) = split('/',$_POST['day']);
@@ -546,7 +550,7 @@ switch($_GET['type'])
 		$SMARTY->assign('admins', $LMS->GetAdminNames());
 		$SMARTY->assign('networks', $LMS->GetNetworks());
 		$SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
-		$SMARTY->assign('printmenu', $_GET['menu']);
+		$SMARTY->assign('printmenu', isset($_GET['menu']) ? $_GET['menu'] : '');
 		$SMARTY->display('printindex.html');
 	break;
 }

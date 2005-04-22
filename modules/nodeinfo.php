@@ -43,7 +43,7 @@ elseif($LMS->GetNodeOwner($_GET['id']) == 0)
 	$SESSION->redirect('?m=netdevinfo&id='.$LMS->GetNetDevIDByNode($_GET['id']));
 }
 
-if($_GET['devid'])
+if(isset($_GET['devid']))
 {
 	$error['netdev'] = trans('It scants free ports in selected device!');
 	$SMARTY->assign('error', $error);

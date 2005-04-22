@@ -24,14 +24,14 @@
  *  $Id$
  */
 
-$passwd = $_POST['passwd'];
-
 $id = $AUTH->id;
 
 if($LMS->AdminExists($id))
 {
-	if(isset($passwd))
+	if(isset($_POST['passwd']))
 	{
+		$passwd = $_POST['passwd'];
+		
 		if($passwd['passwd'] == '' || $passwd['confirm'] == '')
 			$error['password'] = trans('Empty passwords are not allowed!');
 		
@@ -45,7 +45,6 @@ if($LMS->AdminExists($id))
 		}
 	}
 
-	$passwd['realname'] = $LMS->GetAdminName($id);
 	$passwd['id'] = $id;
 	$layout['pagetitle'] = trans('Password Change');
 	$SMARTY->assign('error', $error);

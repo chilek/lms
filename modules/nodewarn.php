@@ -24,31 +24,37 @@
  *  $Id$
  */
 
-$setwarnings = $_POST['setwarnings'];
+$setwarnings = isset($_POST['setwarnings']) ? $_POST['setwarnings'] : array();
 
-if(sizeof($setwarnings['mnodeid']))
+if(isset($setwarnings['mnodeid']))
 {
+	$message = isset($setwarnings['message']) ? $setwarnings['message'] : '';
+	$warnon = isset($setwarnings['warnon']) ? $setwarnings['warnon'] : FALSE;
+	$warnoff = isset($setwarnings['warnoff']) ? $setwarnings['warnoff'] : FALSE;
+
 	foreach($setwarnings['mnodeid'] as $value)
 	{
-		if($setwarnings['warnon'])
+		if($warnon)
 			$LMS->NodeSetWarn($value, TRUE);
-		if($setwarnings['warnoff']) 
+		if($warnoff) 
 			$LMS->NodeSetWarn($value, FALSE);
 		
-		if (isset($setwarnings['message']))
+		if($message)
 		{
 			$LMS->SetTS('users');
-			$LMS->DB->Execute('UPDATE users SET message=? WHERE id=?', array($setwarnings['message'],$LMS->GetNodeOwner($value)));
+			$LMS->DB->Execute('UPDATE users SET message=? WHERE id=?', array($message,$LMS->GetNodeOwner($value)));
 		}
 	}
-	$SESSION->save('warnmessage', $setwarnings['message']);
-	$SESSION->save('warnon', $setwarnings['warnon']);
-	$SESSION->save('warnoff', $setwarnings['warnoff']);
+	$SESSION->save('warnmessage', $message);
+	$SESSION->save('warnon', $warnon);
+	$SESSION->save('warnoff', $warnoff);
 	
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
 
-if($backid = $_GET['ownerid'])
+$backid = isset($_GET['ownerid']) ? $_GET['ownerid'] : 0;
+
+if($backid)
 {
 	if($LMS->UserExists($backid))
 	{
@@ -57,7 +63,9 @@ if($backid = $_GET['ownerid'])
 	}
 }
 
-if($backid = $_GET['id'])
+$backid = isset($_GET['id']) ? $_GET['id'] : 0;
+
+if($backid)
 {
 	if($LMS->NodeExists($backid))
 	{

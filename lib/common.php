@@ -485,10 +485,13 @@ function get_producer($mac)
 	global $_LIB_DIR;
 	$mac = strtoupper(str_replace(':','-',substr($mac,0,8)));
 	if($macfile = fopen($_LIB_DIR.'/ethercodes.txt','r'))
-		while($mac != $prefix && ! feof($macfile))
+		while(!feof($macfile))
 		{
-			$line=fgets($macfile,4096);
-			list($prefix,$producer) = split(':',trim($line));
+			$line = trim(fgets($macfile,4096));
+			if($line)
+				list($prefix,$producer) = explode(':', $line);
+			if($mac == $prefix)
+				break;
 		}
 	fclose($macfile);
 	return $producer;
