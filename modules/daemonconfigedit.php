@@ -26,8 +26,10 @@
 
 $config = $LMS->DB->GetRow('SELECT id, var, value, description, disabled, instanceid FROM daemonconfig WHERE id=?', array($_GET['id']));
 
-if($configedit = $_POST['config']) 
+if(isset($_POST['config'])) 
 {
+	$configedit = $_POST['config'];
+
 	foreach($configedit as $idx => $key)
 		$configedit[$idx] = trim($key);
 	
@@ -37,7 +39,7 @@ if($configedit = $_POST['config'])
 		if($LMS->DB->GetOne('SELECT id FROM daemonconfig WHERE var=? AND instanceid=?', array($configedit['var'], $config['instanceid'])))
 			$error['var'] = trans('Option with specified name exists in that instance!');
 	
-	if($configedit['disabled'] != 1)
+	if(!isset($configedit['disabled']))
 		$configedit['disabled'] = 0;
 		
 	if(!$error)

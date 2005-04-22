@@ -24,10 +24,10 @@
  *  $Id$
  */
 
-$netadd = $_POST['netadd'];
-
-if(isset($netadd))
+if(isset($_POST['netadd']))
 {
+	$netadd = $_POST['netadd'];
+	
 	foreach($netadd as $key=>$value)
 	{
 		$netadd[$key] = trim($value);
@@ -101,7 +101,7 @@ if(isset($netadd))
 	elseif(!isipin($netadd['dhcpend'], getnetaddr($netadd['address'], prefix2mask($netadd['prefix'])), prefix2mask($netadd['prefix'])) && $netadd['address'] != '')
 		$error['dhcpend'] = trans('IP address for DHCP range end does not match with network address!');
 	
-	if(!$error['dhcpstart'] && !$error['dhcpend'])
+	if(!isset($error['dhcpstart']) && !isset($error['dhcpend']))
 	{
 		if(($netadd['dhcpstart'] != '' && $netadd['dhcpend'] == '') || ($netadd['dhcpstart'] == '' && $netadd['dhcpend'] != ''))
 			$error['dhcp'] = trans('Both IP addresses for DHCP range are required!');
@@ -114,16 +114,13 @@ if(isset($netadd))
 		$SESSION->redirect('?m=netinfo&id='.$LMS->NetworkAdd($netadd));
 	}
 
+	$SMARTY->assign('error', $error);
+	$SMARTY->assign('netadd', $netadd);
 }
 
 $layout['pagetitle'] = trans('New Network');
 
-$prefixlist = $LMS->GetPrefixList();
-$netlist = $LMS->GetNetworkList();
-$SMARTY->assign('error', $error);
-$SMARTY->assign('netadd', $netadd);
-$SMARTY->assign('prefixlist', $prefixlist);
-$SMARTY->assign('netlist', $netlist);
+$SMARTY->assign('prefixlist', $LMS->GetPrefixList());
 $SMARTY->display('netadd.html');
 
 ?>

@@ -34,11 +34,12 @@ if($SESSION->is_set('ntlp.'.$_GET['id']) && ! isset($_GET['page']))
 
 $SESSION->save('ntlp.'.$_GET['id'], $_GET['page']);
 	
-$networkdata = $_POST['networkdata'];
 $network = $LMS->GetNetworkRecord($_GET['id'],$_GET['page'], $LMS->CONFIG['phpui']['networkhosts_pagelimit']);
 
-if(isset($networkdata))
+if(isset($_POST['networkdata']))
 {
+	$networkdata = $_POST['networkdata'];
+
 	foreach($networkdata as $key => $value)
 		$networkdata[$key] = trim($value);
 		
@@ -96,8 +97,8 @@ if(isset($networkdata))
 	if($networkdata['dns']!='' && !check_ip($networkdata['dns']))
 		$error['dns'] = trans('Incorrect DNS server IP address!');
 
-	if($networkdata[dns2]!='' && !check_ip($networkdata[dns2]))
-		$error[dns2] = trans('Incorrect DNS server IP address!');
+	if($networkdata['dns2']!='' && !check_ip($networkdata['dns2']))
+		$error['dns2'] = trans('Incorrect DNS server IP address!');
 
 	if($networkdata['wins']!='' && !check_ip($networkdata['wins']))
 		$error['wins'] =  trans('Incorrect WINS server IP address!');
@@ -123,7 +124,7 @@ if(isset($networkdata))
 			if(!isipin($networkdata['dhcpend'],getnetaddr($networkdata['address'],prefix2mask($networkdata['prefix'])),prefix2mask($networkdata['prefix'])) && $networkdata['address']!="")
 				$error['dhcpend'] = trans('IP address for DHCP range end does not match with network address!');
 	
-	if(!$error['dhcpstart'] && !$error['dhcpend'])
+	if(!isset($error['dhcpstart']) && !isset($error['dhcpend']))
 	{
 		if(($networkdata['dhcpstart']!='' && $networkdata['dhcpend']=='')||($networkdata['dhcpstart']=='' && $networkdata['dhcpend']!=''))
 			$error['dhcp'] = trans('Both IP addresses for DHCP range are required!');
@@ -133,9 +134,9 @@ if(isset($networkdata))
 	
 	if(!$error)
 	{
-		if($networkdata['needcmp'])
+		if(isset($networkdata['needcmp']) && $networkdata['needcmp'])
 			$LMS->NetworkCompress($networkdata['id']);
-		if($networkdata['needshft'])
+		if(isset($networkdata['needshft']) && $networkdata['needshft'])
 			$LMS->NetworkShift($network['address'],$network['mask'],($networkdata['addresslong'] - $network['addresslong']));
 		$LMS->NetworkUpdate($networkdata);
 		$SESSION->redirect('?m=netinfo&id='.$networkdata['id']);
@@ -151,8 +152,7 @@ if(isset($networkdata))
 	$network['gateway'] = $networkdata['gateway'];
 	$network['wins'] = $networkdata['wins'];
 	$network['dns'] = $networkdata['dns'];
-	$network[dns2] = $networkdata[dns2];
-
+	$network['dns2'] = $networkdata['dns2'];
 }
 
 $prefixlist = $LMS->GetPrefixList();
@@ -161,7 +161,7 @@ $layout['pagetitle'] = trans('Network Edit: $0',$network['name']);
 $SMARTY->assign('unlockedit',TRUE);
 $SMARTY->assign('network',$network);
 $SMARTY->assign('networks',$networks);
-$SMARTY->assign('networkdata',$networkdata);
+$SMARTY->assign('netlistsize',sizeof($networks));
 $SMARTY->assign('prefixlist',$prefixlist);
 $SMARTY->assign('error',$error);
 $SMARTY->display('netinfo.html');

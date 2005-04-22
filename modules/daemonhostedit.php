@@ -34,8 +34,9 @@ $host = $LMS->DB->GetRow('SELECT id, name, description FROM daemonhosts WHERE id
 
 $layout['pagetitle'] = trans('Host Edit: $0', $host['name']);
 
-if($hostedit = $_POST['hostedit']) 
+if(isset($_POST['hostedit']))
 {
+	$hostedit = $_POST['hostedit'];
 	$hostedit['name'] = trim($hostedit['name']);
 	$hostedit['description'] = trim($hostedit['description']);
 	
@@ -60,9 +61,9 @@ if($hostedit = $_POST['hostedit'])
 
 $SESSION->save('backto', $_SERVER['QUERY_STRING']);
 
-$SMARTY->assign('error', $error);
 $SMARTY->assign('hostedit', $host);
 $SMARTY->assign('layout', $layout);
+$SMARTY->assign('error', $error);
 $SMARTY->display('daemonhostedit.html');
 
 ?>
