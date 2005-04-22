@@ -12,7 +12,7 @@
 		</TD>
 	</TR>
 </TABLE>
-<TABLE WIDTH="100%" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
+<TABLE WIDTH="600" CELLPADDING="3" BORDER="1" ALIGN="CENTER">
 	<TR>
 		<TD WIDTH="1%" CLASS="HEAD" ALIGN="CENTER" VALIGN="TOP">
 			{t}No.{/t}
@@ -45,14 +45,6 @@
 			{t}Total Tax{/t}
 		</TD>
 	</TR>
-	{assign var="sum" value=0}
-	{assign var="sumval22" value=0}
-	{assign var="sumval7" value=0}
-	{assign var="sumval0" value=0}
-	{assign var="sumvalfree" value=0}
-	{assign var="sumtax22" value=0}
-	{assign var="sumtax7" value=0}
-	{assign var="sumtax" value=0}
 	{cycle values="#FFFFFF,#EEEEEE" print=false}
 	{foreach item=report from=$reportlist}
 	<TR BGCOLOR="{cycle}">
@@ -60,7 +52,7 @@
 			{counter}
 		</TD>
 		<TD WIDTH="91%">
-			{$report.username}<BR>
+			{$report.username} ({$report.userid|string_format:"%04d"})<BR>
 			{$report.address}
 			{if $report.nip}<BR>{$report.nip}{/if}
 		</TD>
@@ -68,16 +60,16 @@
 			{$report.brutto|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT">
-			{math equation="x/1.22" x=$report.val22 format="%01.2f"}
+			{$report.netto22|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT">
-			{math equation="x*0.22" x=$report.val22 format="%01.2f"}		
+			{$report.tax22|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT">
-			{math equation="x/1.07" x=$report.val7 format="%01.2f"}
+			{$report.netto7|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT">
-			{math equation="x*0.07" x=$report.val7 format="%01.2f"}
+			{$report.tax7|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT">
 			{$report.val0|string_format:"%01.2f"}
@@ -86,45 +78,37 @@
 			{$report.valfree|string_format:"%01.2f"}
 		</TD>
 		<TD WIDTH="1%" ALIGN="RIGHT">
-			{math equation="x*0.22+y*0.07" x=$report.val22 y=$report.val7 format="%01.2f"}
+			{$report.taxsum|string_format:"%01.2f"}
 		</TD>
 	</TR>
-	{math assign="sum" equation="x+y" x=$sum y=$report.brutto format="%01.2f"}
-	{math assign="sumval22" equation="x+y/1.22" x=$sumval22 y=$report.val22 format="%01.2f" }
-	{math assign="sumval7" equation="x+y/1.07" x=$sumval7 y=$report.val7 format="%01.2f" }
-	{math assign="sumval0" equation="x+y" x=$sumval0 y=$report.val0 format="%01.2f" }
-	{math assign="sumvalfree" equation="x+y" x=$sumvalfree y=$report.valfree format="%01.2f" }
-	{math assign="sumtax22" equation="x+y*0.22" x=$sumtax22 y=$report.val22 format="%01.2f" }
-	{math assign="sumtax7" equation="x+y*0.07" x=$sumtax7 y=$report.val7 format="%01.2f" }
-	{math assign="sumtax" equation="x+y*0.22+z*0.07" x=$sumtax y=$report.val22 z=$report.val7 format="%01.2f" }
 	{/foreach}
 	<TR>
 		<TD COLSPAN="2" ALIGN="RIGHT" VALIGN="TOP">
 			<B>{t}Total:{/t}</B>
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$sum|string_format:"%01.2f"}</B>
+			<B>{sum array=$reportlist column="brutto" string_format="%01.2f"}</B>
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$sumval22|string_format:"%01.2f"}</B>
+			<B>{sum array=$reportlist column="netto22" string_format="%01.2f"}</B>
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$sumtax22|string_format:"%01.2f"}</B>
+			<B>{sum array=$reportlist column="tax22" string_format="%01.2f"}</B>
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$sumval7|string_format:"%01.2f"}</B>
+			<B>{sum array=$reportlist column="netto7" string_format="%01.2f"}</B>
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$sumtax7|string_format:"%01.2f"}</B>
+			<B>{sum array=$reportlist column="tax7" string_format="%01.2f"}</B>
 		</TD>	
 		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$sumval0|string_format:"%01.2f"}</B>
+			<B>{sum array=$reportlist column="val0" string_format="%01.2f"}</B>
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$sumvalfree|string_format:"%01.2f"}</B>
+			<B>{sum array=$reportlist column="valfree" string_format="%01.2f"}</B>
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="TOP">
-			<B>{$sumtax|string_format:"%01.2f"}</B>
+			<B>{sum array=$reportlist column="taxsum" string_format="%01.2f"}</B>
 		</TD>
 	</TR>
 </TABLE>

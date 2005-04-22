@@ -432,7 +432,8 @@ switch($type)
 
 	case 'liabilityreport': /********************************************/
 	
-		if($_POST['day']) {
+		if(isset($_POST['day']) && $_POST['day']) 
+		{
 			list($year, $month, $day) = split('/',$_POST['day']);
 			$reportday = mktime(0,0,0,$month,$day,$year);
 		} else 
@@ -440,8 +441,8 @@ switch($type)
 		
 		$layout['pagetitle'] = trans('Liability Report on $0',date('Y/m/d', $reportday));
 
-		$order = ($_POST['order'] ? $_POST['order'] : 'brutto').','.($_POST['direction'] ? $_POST['direction'] : 'asc');
-		$userid = $_POST['user'];
+		$order = (isset($_POST['order']) ? $_POST['order'] : 'brutto').','.(isset($_POST['direction']) ? $_POST['direction'] : 'asc');
+		$userid = (isset($_POST['user']) ? $_POST['user'] : 0);
 
 		$yearday = date('z', $reportday);
 		$month = date('n', $reportday);
@@ -475,7 +476,7 @@ switch($type)
 			break;
 		}
 		
-		$reportlist =  $LMS->DB->GetAll('SELECT '.$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, '
+		if($reportlist =  $LMS->DB->GetAll('SELECT userid, '.$LMS->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, '
 			    .$LMS->DB->Concat('city',"' '",'address').' AS address, nip, 
 			    SUM(CASE taxvalue WHEN 22.00 THEN value ELSE 0 END) AS val22,  
 			    SUM(CASE taxvalue WHEN 7.00 THEN value ELSE 0 END) AS val7, 
@@ -489,7 +490,16 @@ switch($type)
 			    .($userid ? 'AND userid='.$userid : ''). 
 			    ' GROUP BY userid, lastname, users.name, city, address, nip '
 			    .($sqlord != '' ? $sqlord.' '.$direction : ''),
-			    array($reportday, $reportday, $weekday, $monthday, $quarterday, $yearday));
+			    array($reportday, $reportday, $weekday, $monthday, $quarterday, $yearday))
+		)
+			foreach($reportlist as $idx => $row)
+			{
+				$reportlist[$idx]['tax7'] = round($row['val7']-$row['val7']/1.07, 2);
+				$reportlist[$idx]['tax22'] = round($row['val22']-$row['val22']/1.22,2);
+				$reportlist[$idx]['netto7'] = $row['val7'] - $reportlist[$idx]['tax7'];
+				$reportlist[$idx]['netto22'] = $row['val22'] - $reportlist[$idx]['tax22'];
+				$reportlist[$idx]['taxsum'] = $reportlist[$idx]['tax22'] + $reportlist[$idx]['tax7'];
+			}
 
 		$SMARTY->assign('reportlist', $reportlist);
 		$SMARTY->display('printliabilityreport.html');
