@@ -24,9 +24,11 @@
  *  $Id$
  */
 
-if($netdevdata = $_POST['netdev']) 
+if(isset($_POST['netdev']))
 {
-	if($netdevdata['ports'] =='')
+	$netdevdata = $_POST['netdev'];
+
+	if($netdevdata['ports'] == '')
 		$netdevdata['ports'] = 0;
 	if($netdevdata['name'] == '')
 		$error['name'] = trans('Device name is required!');
@@ -38,13 +40,13 @@ if($netdevdata = $_POST['netdev'])
 	    $netdevid = $LMS->NetDevAdd($netdevdata);
 	    $SESSION->redirect('?m=netdevinfo&id='.$netdevid);
         }
+	
+	$SMARTY->assign('error', $error);
+	$SMARTY->assign('netdev', $netdevdata);
 }
 		
-
 $layout['pagetitle'] = trans('New Device');
 
-$SMARTY->assign('error', $error);
-$SMARTY->assign('netdev', $netdevdata);
 $SMARTY->display('netdevadd.html');
 
 ?>

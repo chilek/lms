@@ -84,10 +84,13 @@ elseif(isset($_POST['userdata']))
 	if($userdata['status']!=3&&$LMS->GetUserNodesNo($userdata['id'])) 
 		$error['status'] = trans('Only customer with status \'connected\' can own computers!');
 		
-	if (!isset($error)){
+	if (!$error)
+	{
 		$LMS->UserUpdate($userdata);
 		$SESSION->redirect('?m=userinfo&id='.$userdata['id']);
-	}else{
+	}
+	else
+	{
 		$olddata=$LMS->GetUser($_GET['id']);
 		$userinfo=$userdata;
 		$userinfo['createdby']=$olddata['createdby'];

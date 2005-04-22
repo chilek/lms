@@ -207,7 +207,7 @@ $SMARTY->assign_by_ref('layout', $layout);
 
 header('X-Powered-By: LMS/'.$layout['lmsv']);
 
-$error = array(); // initialize error variable needed for (almost) all modules
+$error = NULL; // initialize error variable needed for (almost) all modules
 
 if($AUTH->islogged)
 {

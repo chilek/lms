@@ -29,9 +29,10 @@ if(! $LMS->NetDevExists($_GET['id']))
 	$SESSION->redirect('?m=netdevlist');
 }		
 
-$edit = data;
+$action = isset($_GET['action']) ? $_GET['action'] : '';
+$edit = 'data';
 
-switch($_GET['action'])
+switch($action)
 {
 case 'replace':
 	$dev1 = $LMS->GetNetDev($_GET['id']);
@@ -62,7 +63,7 @@ case 'disconnectnode':
 	$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 
 case 'connect':
-	$linktype = $_GET['linktype'] ? $_GET['linktype'] : '0';
+	$linktype = isset($_GET['linktype']) ? $_GET['linktype'] : '0';
 	$SESSION->save('devlinktype', $linktype);
 	if(! $LMS->NetDevLink($_GET['netdev'], $_GET['id'], $linktype) )
 	{
@@ -73,7 +74,7 @@ case 'connect':
 	break;
     
 case 'connectnode':
-	$linktype = $_GET['linktype'] ? $_GET['linktype'] : '0';
+	$linktype = isset($_GET['linktype']) ? $_GET['linktype'] : '0';
 	$SESSION->save('nodelinktype', $linktype);
 	if(! $LMS->NetDevLinkNode($_GET['nodeid'], $_GET['id'], $linktype) )
 	{
@@ -88,7 +89,7 @@ case 'addip':
 	break;
 
 case 'editip':
-	$nodeipdata=$LMS->GetNode($_GET['ip']);
+	$nodeipdata = $LMS->GetNode($_GET['ip']);
 	$nodeipdata['ipaddr'] = $nodeipdata['ip'];
 	$SMARTY->assign('nodeipdata',$nodeipdata);
 	$edit = 'ip';
@@ -196,7 +197,9 @@ case 'formeditip':
 		$error['mac'] =  trans('MAC address is required!');
 	elseif(!check_mac($nodeipdata['mac']))
 		$error['mac'] = trans('Incorrect MAC address!');
-	elseif($LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE)
+	elseif(isset($LMS->CONFIG['phpui']['allow_mac_sharing']) &&
+		$LMS->CONFIG['phpui']['allow_mac_sharing'] == FALSE
+		)
 		if($LMS->GetNodeIDByMAC($nodeipdata['mac']) && $LMS->GetNodeMACByID($_GET['ip'])!=$nodeipdata['mac'])
 			$error['mac'] = trans('MAC address is in use!');
 	
@@ -213,9 +216,9 @@ case 'formeditip':
 	break;
 }
 
-$netdevdata = $_POST['netdev'];
-if(isset($netdevdata))
+if(isset($_POST['netdev']))
 {
+	$netdevdata = $_POST['netdev'];
 	$netdevdata['id'] = $_GET['id'];
 
 	if($netdevdata['name'] == '')

@@ -36,7 +36,6 @@ unset($netlist['size']);
 $listdata['total'] = sizeof($netlist);
 
 $SMARTY->assign('listdata',$listdata);
-$SMARTY->assign('netadd',$netadd);
 $SMARTY->assign('netlist',$netlist);
 $SMARTY->display('netlist.html');
 

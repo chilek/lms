@@ -126,14 +126,14 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 
 		if($devices) foreach($devices as $deviceid)
 		{
-			if(! $seen[$deviceid])
+			if(!isset($seen[$deviceid]))
 			{
 				// tego urz±dzenia nie przerabiali¶my jeszcze
 				// wyszukajmy wolny punkt w okolicy
 				$tx = NULL;
 				$ty = NULL;
 				for($i=0;$i < sizeof($fields);$i++)
-					if($tx == NULL && $ty == NULL && $map[$x + $fields[$i]['x']][$y + $fields[$i]['y']] == NULL)
+					if($tx == NULL && $ty == NULL && !isset($map[$x + $fields[$i]['x']][$y + $fields[$i]['y']]))
 					{
 						$tx = $x + $fields[$i]['x'];
 						$ty = $y + $fields[$i]['y'];
@@ -151,7 +151,7 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 				$ntx = NULL;
 				$nty = NULL;
 				for($i=0;$i < sizeof($nodefields);$i++)
-					if($ntx == NULL && $nty == NULL && $map[$x + $nodefields[$i]['x']][$y + $nodefields[$i]['y']] == NULL)
+					if($ntx == NULL && $nty == NULL && !isset($map[$x + $nodefields[$i]['x']][$y + $nodefields[$i]['y']]))
 					{
 						$ntx = $x + $nodefields[$i]['x'];
 						$nty = $y + $nodefields[$i]['y'];
@@ -165,16 +165,19 @@ function makemap(&$DB, &$map, &$seen, $device = 0, $x = 50, $y = 50)
 
 $layout['pagetitle'] = trans('Network Map');
 
-$start = sprintf('%d',$_GET['start']);
-	
-if($_GET['graph'] == '')
+$graph = isset($_GET['graph']) ? $_GET['graph'] : '';
+$start = isset($_GET['start']) ? $_GET['start'] : 0;
+
+$minx = 0; $maxx = 0; $miny = 0; $maxy = 0;
+
+if($graph == '')
 {
 	makemap($DB,$map,$seen,$start);
 	if($map)
 	{
 		foreach($map as $idx => $x)
 		{
-			if($minx == NULL)
+			if(!$minx)
 				$minx = $idx;
 			elseif($idx < $minx)
 				$minx = $idx;
@@ -183,7 +186,7 @@ if($_GET['graph'] == '')
 				$maxx = $idx;
 			foreach($x as $idy => $y)
 			{
-				if($miny == NULL)
+				if(!$miny)
 					$miny = $idy;
 				elseif($idy < $miny)
 					$miny = $idy;
@@ -236,11 +239,11 @@ if($_GET['graph'] == '')
 	$SMARTY->assign('deviceslist', $deviceslist);
 	$SMARTY->assign('emptydb', sizeof($deviceslist) ? FALSE : TRUE);
 	$SMARTY->assign('gderror', ! function_exists('imagepng'));
-	$SMARTY->assign('start', $_GET['start']);
+	$SMARTY->assign('start', $start);
 	$SMARTY->assign('ming', function_exists('ming_useswfversion'));
 	$SMARTY->display('netdevmap.html');
 } 
-elseif ($_GET['graph'] == 'flash')
+elseif ($graph == 'flash')
 {	
 	makemap($DB,$map,$seen,$start);
 	foreach($map as $idx => $x)
@@ -454,7 +457,7 @@ elseif ($_GET['graph'] == 'flash')
 	makemap($DB,$map,$seen,$start);
 	foreach($map as $idx => $x)
 	{
-		if($minx == NULL)
+		if(!$minx)
 			$minx = $idx;
 		elseif($idx < $minx)
 			$minx = $idx;
@@ -463,7 +466,7 @@ elseif ($_GET['graph'] == 'flash')
 			$maxx = $idx;
 		foreach($x as $idy => $y)
 		{
-			if($miny == NULL)
+			if(!$miny)
 				$miny = $idy;
 			elseif($idy < $miny)
 				$miny = $idy;

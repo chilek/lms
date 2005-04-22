@@ -66,7 +66,8 @@ $SMARTY->assign('replacelist',$replacelist);
 $SMARTY->assign('replacelisttotal',$replacelisttotal);
 $SMARTY->assign('devlinktype',$SESSION->get('devlinktype'));
 $SMARTY->assign('nodelinktype',$SESSION->get('nodelinktype'));
-$SMARTY->assign('nodeipdata',$LMS->GetNode($_GET['ip']));
+if(isset($_GET['ip']))
+	$SMARTY->assign('nodeipdata',$LMS->GetNode($_GET['ip']));
 $SMARTY->display('netdevinfo.html');
 
 ?>
