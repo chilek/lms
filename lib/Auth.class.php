@@ -72,8 +72,7 @@ class Auth {
 			$this->SESSION->restore('session_passwd', $this->passwd);
 		}
 		
-		$hostverified = $this->VerifyHost();
-		$passverified = $this->VerifyPassword();
+		list($passverified, $hostverified) = $this->VerifyAdmin();
 
 		if($passverified && $hostverified)
 		{
@@ -127,9 +126,8 @@ class Auth {
 		$this->SESSION->finish();
 	}		
 	
-	function VerifyPassword()
+	function VerifyPassword($dbpasswd = '')
 	{
-		$dbpasswd = $this->DB->GetOne('SELECT passwd FROM admins WHERE login=? AND deleted=0',array($this->login));
 		if (crypt($this->passwd,$dbpasswd)==$dbpasswd)
 			return TRUE;
 		else 
@@ -142,18 +140,17 @@ class Auth {
 		}
 	}
 
-	function VerifyHost()
+	function VerifyHost($hosts = '')
 	{
-		$hosts = $this->DB->GetOne('SELECT hosts FROM admins WHERE login=? AND deleted=0',array($this->login));
-		
 		if(!$hosts)
 			return TRUE;
 		
 		$allowedlist = explode(',', $hosts);
-
+		$isin = FALSE;
+		
 		foreach($allowedlist as $value)
 		{
-			list($net,$mask) = split('/', $value);
+			list($net,$mask) = sscanf($value, '%[0-9.]/%[0-9]');
 			$net = trim($net);
 			$mask = trim($mask);
 			if($mask == '')
@@ -161,16 +158,25 @@ class Auth {
 			if($mask >= 0 || $mask <= 32)
 				$mask = prefix2mask($mask);
 			if(isipinstrict($this->ip, $net, $mask))
+			{
 				$isin = TRUE;
+				break;
+			}
 		}
 
 		if($isin)
 			return TRUE;
 		else 
 		{
-			$this->error = trans('Access denied.');
+			$this->error = trans('Access denied!');
 			return FALSE;
 		}
+	}
+	
+	function VerifyAdmin()
+	{
+		$admin = $this->DB->GetRow('SELECT passwd, hosts FROM admins WHERE login=? AND deleted=0',array($this->login));
+		return array($this->VerifyPassword($admin['passwd']), $this->VerifyHost($admin['hosts']));
 	}
 }
 
