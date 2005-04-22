@@ -1,7 +1,7 @@
 {include file="header.html"}
 <!--// $Id$ //-->
 <H1>{$layout.pagetitle}</H1>
-<DIV ALIGN="CENTER"><CENTER><FORM method="POST" action="{if $target}{$target}{else}?m=adminpasswd&id={$passwd.id}{/if}" name="password">
+<P><DIV ALIGN="CENTER"><CENTER><FORM method="POST" action="{if $target}{$target}{else}?m=adminpasswd&id={$passwd.id}{/if}" name="password">
 <TABLE width="1%" cellpadding="3" border="0">
 	<TR class="dark">
 		<TD class="fall" nowrap colspan="2" nowrap>
@@ -37,7 +37,7 @@
 	</TR>
 		
 </TABLE>
-</CENTER></DIV>
+</CENTER></DIV></P>
 <SCRIPT>
 <!--
 document.forms['password'].elements['passwd[passwd]'].focus();
