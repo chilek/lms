@@ -56,34 +56,43 @@
 </TABLE>
 {else}
 <FORM NAME="traffic" METHOD="POST" ACTION="?m=traffic&bar=user">
-<TABLE ALIGN="center" WIDTH="600" CELLPADDING="3">
+<TABLE ALIGN="center" WIDTH="100%" CELLPADDING="3">
 	<TR CLASS="dark">
-		<TD COLSPAN="2" ALIGN="center" CLASS="fall">
-			<B>{t}Enter search conditions{/t}</B>
+		<TD COLSPAN="3" CLASS="fall">
+			<B>{t}Enter search conditions:{/t}</B>
 		</TD>
 	</TR>
 	<TR CLASS="light" {tip text="Limit results for selected period"}>
-		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG src="img/calendar.gif" align="absmiddle" border="0">
+		</TD>
+		<TD WIDTH="1%" nowrap>
 			<B>{t}From (day/month/year hh:mm):{/t}</B>
 		</TD>
-		<TD CLASS="fright">
+		<TD WIDTH="98%" CLASS="fright" nowrap>
 			{html_select_date field_array="from" prefix="" time=$starttime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
 			&nbsp;
 			{html_select_time field_array="from" prefix="" time=$starttime display_seconds=0}
 		</TD>
 	</TR>
 	<TR CLASS="light" {tip text="Limit results for selected period"}>
-		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG src="img/calendar.gif" align="absmiddle" border="0">
+		</TD>
+		<TD nowrap>
 			<B>{t}To (day/month/year hh:mm):{/t}</B>
 		</TD>
-		<TD CLASS="fright">
+		<TD CLASS="fright" nowrap>
 			{html_select_date field_array="to" prefix="" time=$endtime field_order="DMY" field_separator=" / " start_year=$startyear end_year=$endyear}
 			&nbsp;
 			{html_select_time field_array="to" prefix="" time=$endtime display_seconds=0}
 		</TD>
 	</TR>
 	<TR CLASS="light" {tip text="Limit results for selected network"}>
-		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG src="img/network.gif" align="absmiddle" border="0">
+		</TD>
+		<TD nowrap>
 			<B>{t}Network:{/t}</B>
 		</TD>
 		<TD CLASS="fright">
@@ -96,7 +105,10 @@
 		</TD>
 	</TR>
 	<TR CLASS="light" {tip text="Select results sorting order"}>
-		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
+		<TD WIDTH="1%" CLASS="fleft">
+			<IMG src="img/view.gif" align="absmiddle" border="0">
+		</TD>
+		<TD nowrap>
 			<B>{t}Sorting:{/t}</B>
 		</TD>
 		<TD CLASS="fright">
@@ -110,21 +122,25 @@
 		</TD>
 	</TR>
 	<TR CLASS="light" {tip text="Limit results for n computers"}>
-		<TD WIDTH="300" ALIGN="right" CLASS="fleft">
-			<B>{t}Limit results for:{/t}</B>
+		<TD WIDTH="1%" CLASS="fleft"></TD>
+		<TD nowrap>
+			<B>{t}Nodes limit:{/t}</B>
 		</TD>
 		<TD CLASS="fright">
-			<INPUT NAME="limit" SIZE="3"></INPUT> <B>{t}nodes{/t}</B>
+			<INPUT NAME="limit" SIZE="3"></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light" {tip text="Nodes depiction way on charts"}>
-		<TD WIDTH="300" ALIGN="right" CLASS="fleft"></TD>
+		<TD WIDTH="1%" CLASS="fleft"></TD>
+		<TD nowrap>
+			<B>{t}IP addresses instead of nodes names{/t}</B>
+		</TD>
 		<TD CLASS="fright">
-			<INPUT CLASS="box" TYPE="checkbox" NAME="showips" VALUE="1"><B>&nbsp;{t}IP addresses instead of nodes names{/t}</B></INPUT>
+			<INPUT CLASS="box" TYPE="checkbox" NAME="showips" VALUE="1"></INPUT>
 		</TD>
 	</TR>
 	<TR CLASS="light">
-		<TD COLSPAN="2" ALIGN="right" CLASS="fbottomu">
+		<TD COLSPAN="3" ALIGN="right" CLASS="fbottomu">
 			<A HREF="javascript:document.traffic.submit();" ACCESSKEY="s">{t}Submit{/t} <IMG SRC="img/save.gif" BORDER="0" ALIGN="ABSMIDDLE" ALT=""></A>
 		</TD>
 	</TR>
