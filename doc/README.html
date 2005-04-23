@@ -3140,7 +3140,7 @@ CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="ADMINISTRATION-ADMINS"
+NAME="ADMINISTRATION-USERS"
 >3.2.2. Users</A
 ></H3
 ><P
@@ -3155,22 +3155,25 @@ HREF="#INSTALL-RIGHTS"
 ><P
 >Initially after selecting 'Users', you'll get list of all
             users with last login time and host information. When you click on the account,
-            you're able to see it's details, including defined access rights. You can modify
-            data any time by clicking 'Edit' link. To create new user use left panel and
-            click 'New user'.</P
+            you're able to see it's details, including defined access rights.
+	    You can modify data any time by clicking 'Edit' link. To create new user 
+	    use left panel and click 'New user'.</P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><HR><H3
 CLASS="SECT2"
 ><A
-NAME="ADMINISTRATION-NEWADMIN"
+NAME="ADMINISTRATION-NEWUSER"
 >3.2.3. New user</A
 ></H3
 ><P
 >In order to create new user, you need to provide at least
-            login name and non empty password. Name and email fields are optional. Below you
-            can mark specific system access rights. If you leave all those fields unchecked
+            login name and non empty password. Name and email fields are optional. 
+	    Allowed hosts is a coma separated list of host or network IP addresses
+	    in 'allow_from' configuration option style. If that list is empty,
+	    hosts checking is skipped. Below you can mark specific system access 
+	    rights. If you leave all those fields unchecked
             (default), user will be granted with 'full access'.</P
 ></DIV
 ><DIV
@@ -10312,6 +10315,10 @@ BORDER="0"
 ><TR
 ><TD
 >rights - binary access rights</TD
+></TR
+><TR
+><TD
+>hosts - list of hosts allowed for logon</TD
 ></TR
 ><TR
 ><TD
