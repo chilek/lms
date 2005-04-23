@@ -1066,9 +1066,12 @@ Chapter 3. User Interface (LMS-UI)
 3.2.3. New user
 
    In order to create new user, you need to provide at least login name
-   and non empty password. Name and email fields are optional. Below you
-   can mark specific system access rights. If you leave all those fields
-   unchecked (default), user will be granted with 'full access'.
+   and non empty password. Name and email fields are optional. Allowed
+   hosts is a coma separated list of host or network IP addresses in
+   'allow_from' configuration option style. If that list is empty, hosts
+   checking is skipped. Below you can mark specific system access rights.
+   If you leave all those fields unchecked (default), user will be
+   granted with 'full access'.
      _________________________________________________________________
 
 3.2.4. Backups
@@ -3769,6 +3772,7 @@ Chapter 7. For curious
    name - first and last name
    email - user's email address
    rights - binary access rights
+   hosts - list of hosts allowed for logon
    passwd - password to login
    lastlogindate - date of last login
    lastloginip - IP of last login
