@@ -78,8 +78,10 @@ function GetEmails($group, $network=NULL, $usergroup=NULL)
 
 $layout['pagetitle'] = trans('Serial Mail');
 
-if($mailing = $_POST['mailing'])
+if(isset($_POST['mailing']))
 {
+	$mailing = $_POST['mailing'];
+
 	if($mailing['group'] < 0 || $mailing['group'] > 6)
 		$error['group'] = trans('Incorrect customers group!');
 
@@ -104,11 +106,15 @@ if($mailing = $_POST['mailing'])
 		$mailing['body'] = str_replace("\r", '', $mailing['body']);
 		$SMARTY->assign('mailing', $mailing);
 		$SMARTY->display('header.html');
+		
+		$emails = GetEmails($mailing['group'], $mailing['network'], $mailing['usergroup']);
+		
+		$SMARTY->assign('recipcount', sizeof($emails));
 		$SMARTY->display('mailingsend.html');
 		
-		if($emails = GetEmails($mailing['group'], $mailing['network'], $mailing['usergroup']))
+		if(sizeof($emails))
 		{
-			if($LMS->CONFIG['phpui']['debug_email'])
+			if(isset($LMS->CONFIG['phpui']['debug_email']))
 				echo '<B>'.trans('Warning! Debug mode (using address $0).',$LMS->CONFIG['phpui']['debug_email']).'</B><BR>';
 			
 			$headers['Date'] = date('D, d F Y H:i:s T');
@@ -118,7 +124,7 @@ if($mailing = $_POST['mailing'])
 			
 			foreach($emails as $key => $row)
 			{
-				if($LMS->CONFIG['phpui']['debug_email'])
+				if(isset($LMS->CONFIG['phpui']['debug_email']))
 					$row['email'] = $LMS->CONFIG['phpui']['debug_email'];
 				
 				$headers['To'] = '<'.$row['email'].'>';
@@ -134,10 +140,10 @@ if($mailing = $_POST['mailing'])
 		$SESSION->close();
 		die;
 	}
+	$SMARTY->assign('mailing', $mailing);
 }
 
 $SMARTY->assign('error', $error);
-$SMARTY->assign('mailing', $mailing);
 $SMARTY->assign('networks', $LMS->GetNetworks());
 $SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
 $SMARTY->assign('admininfo', $LMS->GetAdminInfo($AUTH->id));

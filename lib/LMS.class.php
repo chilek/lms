@@ -3277,13 +3277,13 @@ class LMS
 	{
 		include_once('Mail.php');
 
-		$params['host'] = $this->CONFIG['phpui']['smtp_host'];
-		$params['port'] = $this->CONFIG['phpui']['smtp_port'];
-		if ($this->CONFIG['phpui']['smtp_username'])
+		$params['host'] = isset($this->CONFIG['phpui']['smtp_host']) ? $this->CONFIG['phpui']['smtp_host'] : '';
+		$params['port'] = isset($this->CONFIG['phpui']['smtp_port']) ? $this->CONFIG['phpui']['smtp_port'] : NULL;
+		if(isset($this->CONFIG['phpui']['smtp_username']))
 		{
-			$params['auth'] = $this->CONFIG['phpui']['smtp_auth_type'];
-			$params['username'] = $this->CONFIG['phpui']['smtp_username'];
-			$params['password'] = $this->CONFIG['phpui']['smtp_password'];
+			$params['auth'] = isset($this->CONFIG['phpui']['smtp_auth_type']) ? $this->CONFIG['phpui']['smtp_auth_type'] : '';
+			$params['username'] = isset($this->CONFIG['phpui']['smtp_username']) ? $this->CONFIG['phpui']['smtp_username'] : '';
+			$params['password'] = isset($this->CONFIG['phpui']['smtp_password']) ? $this->CONFIG['phpui']['smtp_password'] : '';
 		}
 		else
 			$params['auth'] = 'none';
