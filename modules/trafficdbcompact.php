@@ -26,30 +26,26 @@
 
 $layout['pagetitle'] = trans('Network Statistics Compacting');
 
-$delete = $_POST['delete'];
-$level = $_POST['level'];
-$removedeleted = $_POST['removedeleted'];
-
-if (!($level || $delete || $removedeleted))
+if (!isset($_POST['level']) && !isset($_POST['delete']) && !isset($_POST['removedeleted']))
 {
     $SMARTY->display('trafficdbcompact.html');
     $SESSION->close();
     die;
 }
 
+$layout['nomenu'] =  TRUE;
 $SMARTY->display('header.html');
-$SMARTY->display('trafficheader.html');
 
-echo '<PRE><B>'.trans('Database compacting').'</B><BR>';
+echo '<BR><BLOCKQUOTE><H1>'.trans('Database compacting').'</H1><PRE>';
 echo trans('$0 records before compaction.<BR>',$LMS->DB->GetOne('SELECT COUNT(*) FROM stats'));
 
-if($delete)
+if(isset($_POST['delete']))
 {
     $yeardeleted = $LMS->DB->Execute('DELETE FROM stats where dt < ?NOW? - 365*24*60*60');
     echo trans('$0 at least one year old records have been removed.<BR>',$yeardeleted);
 }
 
-if($removedeleted)
+if(isset($_POST['removedeleted']))
 {
     if($nodes_from_stats = $LMS->DB->GetCol('SELECT DISTINCT nodeid FROM stats')) 
     {
@@ -63,10 +59,10 @@ if($removedeleted)
     }
 }
 
-if($level)
+if(isset($_POST['level']))
 {
     $time = time();
-    switch($level)
+    switch($_POST['level'])
     {
 	case 1 : $period = $time-24*60*60; $step = 24*60*60; break; //1 day, day
 	case 2 : $period = $time-30*24*60*60; $step = 24*60*60; break;//month, day
@@ -77,7 +73,7 @@ if($level)
 	$nodes = $LMS->DB->GetAll('SELECT id, name FROM nodes ORDER BY name');
 	foreach($nodes as $node)
 	{
-    	    echo '\''.$node['name'].'\'\t: '; 
+    	    echo "'".$node['name']."'\t: "; 
 	    $deleted = 0;
 	    $inserted = 0;
 	    $LMS->DB->BeginTrans();
@@ -86,20 +82,20 @@ if($level)
 	    {
 		$data = $LMS->DB->GetRow('SELECT sum(upload) as upload, sum(download) as download FROM stats WHERE dt >= ? AND dt < ? AND nodeid=? GROUP BY nodeid', array($maxtime-$step,$maxtime,$node['id']));
 		$deleted += $LMS->DB->Execute('DELETE FROM stats WHERE nodeid=? AND dt >= ? AND dt < ?', array($node['id'],$maxtime-$step,$maxtime)); 
-		$download = ($data['download']?$data['download']:0);
-		$upload = ($data['upload']?$data['upload']:0);
+		$download = (isset($data['download']) ? $data['download'] : 0);
+		$upload = (isset($data['upload']) ? $data['upload'] : 0);
 		if($download || $upload)
 		    $inserted += $LMS->DB->Execute('INSERT INTO stats (nodeid, dt, upload, download) VALUES (?, ?, ?, ?)', array($node['id'], $maxtime, $upload, $download ));
 		$maxtime -= $step;
 	    }
 	    $LMS->DB->CommitTrans();
-	    echo trans('$0 - removed, $1 - inserted<BR>', ($deleted ? $deleted : 0), ($inserted ? $inserted : 0));
+	    echo trans('$0 - removed, $1 - inserted<BR>', $deleted, $inserted);
 	}
     }
 }
 echo trans('$0 records after compaction.<BR>',$LMS->DB->GetOne("SELECT COUNT(*) FROM stats"));
+echo '<P><BR><B><A HREF="javascript:window.close();">'.trans('Now you can close this window.').'</A></B></BLOCKQUOTE>';
 
 $SMARTY->display('footer.html');
 
 ?>
-
