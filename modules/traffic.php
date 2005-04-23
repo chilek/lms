@@ -29,11 +29,11 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 	
 	// period
 	if (is_array($from))
-		$fromdate = mktime($from[Hour],$from[Minute],0,$from[Month],$from[Day],$from[Year]);
+		$fromdate = mktime($from['Hour'],$from['Minute'],0,$from['Month'],$from['Day'],$from['Year']);
 	else
 		$fromdate = $from;
 	if (is_array($to))
-		$todate = mktime($to[Hour],$to[Minute],59,$to[Month],$to[Day],$to[Year]);
+		$todate = mktime($to['Hour'],$to['Minute'],59,$to['Month'],$to['Day'],$to['Year']);
 	else
 		$todate = $to;
 
@@ -84,6 +84,9 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 	// get results
 	if ($traffic = $LMS->DB->GetAll($query))
 	{
+		$downloadsum = 0;
+		$uploadsum = 0;
+		
 		foreach ($traffic as $idx => $row)
 		{
 			$traffic['upload']['data'][] = $row['upload'];
@@ -96,11 +99,14 @@ function Traffic($from = 0, $to = 0, $net = 0, $order = '', $limit = 0)
 			$traffic['download']['nodeid'][] = $row['nodeid'];
 			$traffic['upload']['nodeid'][] = $row['nodeid'];
 			$traffic['download']['ipaddr'][] = $row['ip'];
-			$traffic['download']['sum']['data'] += $row['download'];
-			$traffic['upload']['sum']['data'] += $row['upload'];
+			$downloadsum += $row['download'];
+			$uploadsum += $row['upload'];
 		}
-		$traffic['upload']['avgsum'] = $traffic['upload']['sum']['data']/($delta*1024);
-		$traffic['download']['avgsum'] = $traffic['download']['sum']['data']/($delta*1024);
+
+		$traffic['upload']['sum']['data'] = $uploadsum;
+		$traffic['download']['sum']['data'] = $downloadsum;
+		$traffic['upload']['avgsum'] = $uploadsum/($delta*1024);
+		$traffic['download']['avgsum'] = $downloadsum/($delta*1024);
 
 		// get maximum data from array
 
@@ -141,10 +147,12 @@ $layout['pagetitle'] = trans('Network Statistics');
 
 $bars = 1;
 
-if (isset($_GET['bar']) && isset($_POST['order']))
+if(isset($_GET['bar']) && isset($_POST['order']))
 	$SESSION->save('trafficorder', $_POST['order']);
-	
-switch($_GET['bar'])
+
+$bar = isset($_GET['bar']) ? $_GET['bar'] : '';
+
+switch($bar)
 {
 	case 'hour':
 		$traffic = Traffic( time()-(60*60), time(), 0,
@@ -177,8 +185,11 @@ switch($_GET['bar'])
 	break;
 }
 
-$download = $traffic['download'];
-$upload = $traffic['upload'];
+if(isset($traffic))
+{
+	$SMARTY->assign('download', $traffic['download']);
+	$SMARTY->assign('upload', $traffic['upload']);
+}
 
 // fuck this anyway... Maybe i write function in LMS:: for this, but not now
 
@@ -187,15 +198,11 @@ $endtime = $DB->GetOne('SELECT MAX(dt) FROM stats');
 $startyear = date('Y',$starttime);
 $endyear = date('Y',$endtime);
 
-unset($traffic);
-
 $SMARTY->assign('starttime',$starttime);
 $SMARTY->assign('startyear',$startyear);
 $SMARTY->assign('endtime',$endtime);
 $SMARTY->assign('endyear',$endyear);
-$SMARTY->assign('showips',$_POST['showips']);
-$SMARTY->assign('download',$download);
-$SMARTY->assign('upload',$upload);
+$SMARTY->assign('showips', isset($_POST['showips']) ? TRUE : FALSE);
 $SMARTY->assign('bars',$bars);
 $SMARTY->assign('trafficorder', $SESSION->is_set('trafficorder') ? $SESSION->get('trafficorder') : 'download');
 $SMARTY->display('traffic.html');
