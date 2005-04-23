@@ -1816,7 +1816,9 @@ function mkpw($nchars)
 {
 	$allowed='0123456789ABCDEF';
 	mt_srand ((double) microtime() * 100000000);
-	while (strlen($return)<$nchars) $return .= $allowed[mt_rand(0,strlen($allowed))];
+	$return = '';
+	while (strlen($return)<$nchars) 
+		$return .= $allowed[mt_rand(0,strlen($allowed)-1)];
 	return $return;
 }
 				
@@ -1827,11 +1829,12 @@ function makemac()
 	return join(':',$mac);
 }
 
-$SMARTY->display('header.html');
-echo '<H1>'.trans('Generating random data').'</H1>';
-	
-if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 65000)
+if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 65000)
 {
+	$layout['nomenu'] = TRUE;
+	$SMARTY->display('header.html');
+	echo '<BLOCKQUOTE><BR><H1>'.trans('Generating random data').'</H1>';
+
 	echo '<B>'.trans('Clearing database...').'</B><BR>';
 	$DB->Execute('DELETE FROM nodes');
 	$DB->Execute('DELETE FROM users');
@@ -1864,24 +1867,24 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 65000)
 	}
 
 	echo '<B>'.trans('Creating tariffs...').'</B><BR>';
-	$tariffdata = array( name => 'Lite', description => 'Lite Tariff', value => '30', taxvalue => '7', pkwiu => '', uprate => '64', upceil=> '64', downrate => '128', downceil => '128', climit => '0', plimit => '0');
+	$tariffdata = array( 'name' => 'Lite', 'description' => 'Lite Tariff', 'value' => '30', 'taxvalue' => '7', 'pkwiu' => '', 'uprate' => '64', 'upceil' => '64', 'downrate' => '128', 'downceil' => '128', 'climit' => '0', 'plimit' => '0');
 	$LMS->TariffAdd($tariffdata);
-	$tariffdata = array( name => 'Standart', description => 'Standart Tariff', value => '60', taxvalue => '7', pkwiu => '', uprate => '128', upceil => '128', downrate => '256', downceil => '256', climit => '0', plimit => '0');
+	$tariffdata = array( 'name' => 'Standart', 'description' => 'Standart Tariff', 'value' => '60', 'taxvalue' => '7', 'pkwiu' => '', 'uprate' => '128', 'upceil' => '128', 'downrate' => '256', 'downceil' => '256', 'climit' => '0', 'plimit' => '0');
 	$LMS->TariffAdd($tariffdata);
-	$tariffdata = array( name => 'Gold', description => 'Gold Tariff', value => '120', taxvalue => '7', pkwiu => '', uprate => '256', upceil => '256', downrate => '512', downceil => '512', climit => '0', plimit => '0');
+	$tariffdata = array( 'name' => 'Gold', 'description' => 'Gold Tariff', 'value' => '120', 'taxvalue' => '7', 'pkwiu' => '', 'uprate' => '256', 'upceil' => '256', 'downrate' => '512', 'downceil' => '512', 'climit' => '0', 'plimit' => '0');
 	$LMS->TariffAdd($tariffdata);
 
 	echo '<B>'.trans('Generating payments...').'</B><BR>';
-	$paymentdata = array( name => 'DSL-2048', description => 'Internet Link subscription', value => '200', creditor => 'Internet Super Provider Ltd.', period => '1', at => '10');
+	$paymentdata = array( 'name' => 'DSL-2048', 'description' => 'Internet Link subscription', 'value' => '200', 'creditor' => 'Internet Super Provider Ltd.', 'period' => '1', 'at' => '10');
 	$LMS->PaymentAdd($paymentdata);
-	$paymentdata = array( name => 'Server Room', description => 'Rent', value => '300', creditor => 'Residential Cooperative "VIEW"', period => '1', at => '20');
+	$paymentdata = array( 'name' => 'Server Room', 'description' => 'Rent', 'value' => '300', 'creditor' => 'Residential Cooperative "VIEW"', 'period' => '1', 'at' => '20');
 	$LMS->PaymentAdd($paymentdata);
-	$paymentdata = array( name => 'Domain', description => 'Domain "our.net" subscription', value => '150', creditor => 'NASK', period => '3', at => '31');
+	$paymentdata = array( 'name' => 'Domain', 'description' => 'Domain "our.net" subscription', 'value' => '150', 'creditor' => 'NASK', 'period' => '3', 'at' => '31');
 	$LMS->PaymentAdd($paymentdata);
 	
 	echo '<B>'.trans('Generating network...').'</B><BR>';
 	$prefix = ($_GET['l']*2>1024) ? 16 : 22;
-	$netdata = array( name => 'LAN1', address => '192.168.0.0', prefix => $prefix, gateway => '192.168.0.1', dns => '192.168.0.1', dns2 => '192.168.3.254', domain => 'ultralan.net', wins => '192.168.0.2', dhcpstart => '192.168.3.230', dhcpend => '192.168.3.253');
+	$netdata = array( 'name' => 'LAN1', 'address' => '192.168.0.0', 'prefix' => $prefix, 'gateway' => '192.168.0.1', 'dns' => '192.168.0.1', 'dns2' => '192.168.3.254', 'domain' => 'ultralan.net', 'wins' => '192.168.0.2', 'dhcpstart' => '192.168.3.230', 'dhcpend' => '192.168.3.253', 'interface' => 'eth0');
 	$LMS->NetworkAdd($netdata);
 
 	echo '<B>'.trans('Generating customers...').'</B><BR>';	
@@ -1974,10 +1977,17 @@ if(sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l']) <= 65000)
 		if($i>1)
 			$LMS->NetDevLink($i,$i-1);
 	}	
-		
-}else
-	echo '<FORM METHOD="GET" ACTION="?"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">'.trans('How many records? (max: 65000)').' <FONT COLOR="RED">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</FONT> <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
-	
-$SMARTY->display('footer.html');
+
+	echo '<P><B><A HREF="javascript:window.close();">'.trans('Now you can close this window.').'</A></B></BLOCKQUOTE>';
+	$SMARTY->display('footer.html');
+}
+else
+{
+	$SMARTY->display('header.html');
+	echo '<H1>'.trans('Generating random data').'</H1>';
+	echo '<FORM METHOD="GET" ACTION="?" TARGET="_BLANK"><INPUT TYPE="HIDDEN" VALUE="genfake" NAME="m">'.trans('How many records? (max: 65000)').' <FONT COLOR="RED">'.trans('WARNING! THIS WILL DELETE ALL DATA FROM DATABASE!!!').'</FONT> <INPUT TYPE="TEXT" NAME="l" SIZE="30"></FORM>';
+	$SMARTY->display('footer.html');
+}
 
 ?>
+
