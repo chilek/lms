@@ -121,10 +121,12 @@ function showOrHide(elementslist)
 		if(document.getElementById(elementid).style.display != 'none')
 		{
 			document.getElementById(elementid).style.display = 'none';
+			setCookie(elementid, '0');
 		}
 		else
 		{
 			document.getElementById(elementid).style.display = '';
+			setCookie(elementid, '1');
 		}
 		part_num += 1;
 	}
@@ -138,3 +140,28 @@ function getSeconds()
 	var timer_now2 = new Date();
 	return Math.round((timer_now2.getTime() - timer_start)/1000);
 }
+
+function getCookie(name) 
+{
+        var cookies = document.cookie.split(";");
+	for (var i=0; i<cookies.length; i++) 
+	{
+    		var a = cookies[i].split("=");
+                if (a.length == 2)
+		{
+            		a[0] = a[0].trim();
+                	a[1] = a[1].trim();
+                	if (a[0] == name)
+			{
+                    		return unescape(a[1]);
+			}
+                }
+        }
+        return null;
+}
+
+function setCookie(name, value)
+{
+        document.cookie = name + "=" + escape(value);
+}
+
