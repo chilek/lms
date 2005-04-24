@@ -102,6 +102,7 @@ CREATE TABLE nodes (
 	name varchar(16) 	DEFAULT '' NOT NULL,
 	mac varchar(20) 	DEFAULT '' NOT NULL,
 	ipaddr bigint 		DEFAULT 0 NOT NULL,
+	ipaddr_pub bigint 		DEFAULT 0 NOT NULL,
 	passwd varchar(32)	DEFAULT '' NOT NULL,
 	ownerid integer 	DEFAULT 0 NOT NULL,
 	netdev integer 		DEFAULT 0 NOT NULL,
