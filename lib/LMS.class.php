@@ -2170,7 +2170,7 @@ class LMS
 
 	function IsIPFree($ip)
 	{
-		return !($this->DB->GetOne('SELECT * FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip,$ip) ? TRUE : FALSE));
+		return !($this->DB->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip, $ip)) ? TRUE : FALSE);
 	}
 
 	function IsIPGateway($ip)
