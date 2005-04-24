@@ -76,7 +76,7 @@ if(isset($nodedata))
 			$error['ipaddr_pub'] = trans('Specified IP address is network gateway!');
 	}
 	else
-    		$nodedata['ipaddr_pub'] = '';
+    		$nodedata['ipaddr_pub'] = '0.0.0.0';
 
 	if(!$nodedata['mac'])
 		$error['mac'] = trans('MAC address is required!');

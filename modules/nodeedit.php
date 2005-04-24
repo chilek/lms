@@ -92,7 +92,7 @@ if(isset($_POST['nodeedit']))
 	else
 		$error['ipaddr'] = trans('Incorrect IP address!');
 
-	if (($nodeedit['ipaddr_pub']!="0.0.0.0")&&($nodeedit['ipaddr_pub']!=''))
+	if($nodeedit['ipaddr_pub']!='0.0.0.0' && $nodeedit['ipaddr_pub']!='')
 	{
 		if(check_ip($nodeedit['ipaddr_pub']))
         	{
@@ -110,11 +110,8 @@ if(isset($_POST['nodeedit']))
         	else
         	        $error['ipaddr_pub'] = trans('Incorrect IP address!');
 	}
-		else
-		{
-		if($nodeedit['ipaddr_pub']=='')
-			$nodeedit['ipaddr_pub']="0.0.0.0";
-		;}//tutaj nic nie robimy - jak jest 0.0.0.0 to niech sobie bedzie
+	else
+		$nodeedit['ipaddr_pub'] = '0.0.0.0';
 
 	if(check_mac($nodeedit['mac']))
 	{
