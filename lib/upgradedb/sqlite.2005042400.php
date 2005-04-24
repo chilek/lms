@@ -26,31 +26,37 @@
 
 $DB->BeginTrans();
 
-$DB->Execute("CREATE TEMP TABLE admins_t AS SELECT * FROM admins");
-$DB->Execute("DROP TABLE admins");
-$DB->Execute("CREATE TABLE admins (
+$DB->Execute("CREATE TEMP TABLE nodes_t AS SELECT * FROM nodes");
+$DB->Execute("DROP TABLE nodes");
+$DB->Execute("CREATE TABLE nodes (
 	id integer PRIMARY KEY,
-	login varchar(32) 	DEFAULT '' NOT NULL,
-	name varchar(64) 	DEFAULT '' NOT NULL,
-	email varchar(255) 	DEFAULT '' NOT NULL,
-	rights varchar(64) 	DEFAULT '' NOT NULL,
-	hosts varchar(255) 	DEFAULT '' NOT NULL,
-	passwd varchar(255) 	DEFAULT '' NOT NULL,
-	lastlogindate integer 	DEFAULT 0  NOT NULL,
-	lastloginip varchar(16) DEFAULT '' NOT NULL,
-	failedlogindate integer DEFAULT 0  NOT NULL,
-	failedloginip varchar(16) DEFAULT '' NOT NULL,
-	deleted smallint	DEFAULT 0 NOT NULL,
-	UNIQUE (login)
+	name varchar(16) 	DEFAULT '' NOT NULL,
+	mac varchar(20) 	DEFAULT '' NOT NULL,
+	ipaddr bigint 		DEFAULT 0 NOT NULL,
+	ipaddr_pub bigint 	DEFAULT 0 NOT NULL,
+	passwd varchar(32)	DEFAULT '' NOT NULL,
+	ownerid integer 	DEFAULT 0 NOT NULL,
+	netdev integer 		DEFAULT 0 NOT NULL,
+	linktype smallint	DEFAULT 0 NOT NULL,
+	creationdate integer 	DEFAULT 0 NOT NULL,
+	moddate integer 	DEFAULT 0 NOT NULL,
+	creatorid integer 	DEFAULT 0 NOT NULL,
+	modid integer 		DEFAULT 0 NOT NULL,
+	access smallint 	DEFAULT 1 NOT NULL,
+	warning smallint 	DEFAULT 0 NOT NULL,
+	lastonline smallint 	DEFAULT 0 NOT NULL,
+	info text 		DEFAULT '' NOT NULL,
+	UNIQUE (name),
+	UNIQUE (ipaddr))
 ");
-$DB->Execute("INSERT INTO admins (id, login, name, email, rights, passwd, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted)
-		SELECT id, login, name, email, rights, passwd, lastlogindate, lastloginip, failedlogindate, failedloginip, deleted
-		FROM admins_t");
-$DB->Execute("DROP TABLE admins_t");
+$DB->Execute("INSERT INTO nodes (id, name, mac, ipaddr, passwd, ownerid, netdev, linktype, creationdate, moddate, creatorid, modid, access, warning, lastonline, info)
+		SELECT id, name, mac, ipaddr, passwd, ownerid, netdev, linktype, creationdate, moddate, creatorid, modid, access, warning, lastonline, info
+		FROM nodes_t");
+$DB->Execute("DROP TABLE nodes_t");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005042100', 'dbversion'));
-$DB->Execute("ALTER TABLE nodes add ipaddr_pub bigint DEFAULT '0' NOT NULL");
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005042400', 'dbversion'));
 
 $DB->CommitTrans();
 
 ?>
+
