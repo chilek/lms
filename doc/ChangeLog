@@ -65,6 +65,7 @@ version 1.5.6 Baal (??/??/????):
   - some code cleanup for error_reporting = E_ALL (alec)
   - locale independent date format on reports / dropped bugy capitalize (alec)
   - fixed liabilities report (bugy Smarty's math) and added customer ID (alec)
+  - lmsd/traffic: fixed sequence of data while reading log file (alec)
     
 version 1.5.5 Anubis (25/03/2005):
 
