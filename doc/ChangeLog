@@ -1,6 +1,6 @@
 $Id$
 
-version 1.5.6 Baal (??/??/????):
+version 1.5.6 Baal (24/04/2005):
 
   - finished translation of documentation (kondi)
   - we can use limitations in percents in warnings (chilek)

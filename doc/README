@@ -2032,7 +2032,7 @@ http://www.bigpro.com/
    Note
 
    Example script utilizing iptables might be found in
-   sample/traffic_ipt.sh file.
+   sample/traffic_ipt.pl file.
 
    Next you should install lms-traffic script and your custom script into
    crontab. Among standard options you can use define location with
