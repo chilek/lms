@@ -369,7 +369,7 @@ http://www.naszasiec.pl/</screen></example>
 	    <para>Skrypt tworz±cy statystyki nale¿y uruchamiaæ z tak± sam± czêstotliwo¶ci± 
 	    co lms-traffic.</para>
 	    <para><note><para>Przyk³ad takiego skryptu dla iptables znajduje siê w 
-	    pliku <filename>/sample/traffic_ipt.sh</filename>.</para></note></para>
+	    pliku <filename>/sample/traffic_ipt.pl</filename>.</para></note></para>
 	    <para>Nastêpnie instalujemy skrypt dopisuj±c do crontaba.
 	    Oprócz standardowych opcji wiersza poleceñ mo¿liwe jest
 	    zdefiniowanie lokalizacji pliku z logiem</para>
