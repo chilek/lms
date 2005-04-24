@@ -16,6 +16,7 @@
 			{$nodeinfo.ip}
 		</TD>
 	</TR>
+	{if $nodeinfo.ip_pub != "0.0.0.0"}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/ip.gif" BORDER="0" ALT="{t}IP address (PUB):{/t}">
@@ -24,6 +25,7 @@
 			{$nodeinfo.ip_pub}
 		</TD>
 	</TR>
+	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/mac.gif" BORDER="0" ALT="{t}MAC address:{/t}">
