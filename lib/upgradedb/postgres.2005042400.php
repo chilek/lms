@@ -27,14 +27,13 @@
 $DB->BeginTrans();
 
 $DB->Execute("
-	ALTER TABLE admins ADD hosts varchar(255);
-	UPDATE admins SET hosts='';
-	ALTER TABLE admins ALTER hosts SET NOT NULL;
-	ALTER TABLE admins ALTER hosts SET DEFAULT '';
-	ALTER TABLE nodes ADD column ipaddr_pub bigint NO NULL DEFAULT '0';
+	ALTER TABLE nodes ADD ipaddr_pub bigint;
+	UPDATE nodes SET ipaddr_pub = 0;
+	ALTER TABLE nodes ALTER ipaddr_pub SET NOT NULL;
+	ALTER TABLE nodes ALTER ipaddr_pub SET DEFAULT 0;
 ");
 
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005042100', 'dbversion'));
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005042400', 'dbversion'));
 
 $DB->CommitTrans();
 

@@ -24,7 +24,7 @@
  *  $Id$
  */
 
-$DB->Execute("ALTER TABLE admins ADD hosts varchar(255) DEFAULT '' NOT NULL");
-$DB->Execute("ALTER TABLE admins ADD ipaddr_pub int(16) unsigned DEFAULT '0' NOT NULL");
-$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005042100', 'dbversion'));
+$DB->Execute("ALTER TABLE admins ADD ipaddr_pub int(16) unsigned  DEFAULT '0' NOT NULL");
+$DB->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?",array('2005042400', 'dbversion'));
+
 ?>
