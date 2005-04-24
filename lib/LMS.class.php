@@ -2862,6 +2862,8 @@ class LMS
 			case '-1':
 				$statefilter = 'AND state != 2';
 				break;
+			default:
+				$statefilter = '';
 		}
 
 		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
@@ -2872,10 +2874,9 @@ class LMS
 		    .' GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.userid, users.lastname, users.name '
 		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
 		{
+			$result['total'] = 0;
 			foreach($result as $idx => $ticket)
 			{
-				//$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
-				//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 				if(!$ticket['userid'])
 					list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
 				else
@@ -2899,7 +2900,7 @@ class LMS
 			foreach($result as $row)
 				$stats[$row['state']] = $row['scount'];
 			foreach(array('new', 'open', 'resolved', 'dead') as $idx => $value)
-				$stats[$value] = $stats[$idx];
+				$stats[$value] = isset($stats[$idx]) ? $stats[$idx] : 0;
 		}
 		$stats['lastticket'] = $this->DB->GetOne('SELECT createtime FROM rttickets WHERE queueid = ? ORDER BY createtime DESC', array($id));
 		return $stats;

@@ -50,7 +50,7 @@ function MessageAdd($msg, $headers, $file=NULL)
 				$head));
 	$LMS->SetTS('rtmessages');
 
-	if($file['name'])
+	if(isset($file['name']))
 	{
 		$id = $LMS->DB->GetOne('SELECT id FROM rtmessages WHERE ticketid=? AND adminid=? AND userid=? AND createtime=?', array($msg['ticketid'], $msg['adminid'], $msg['userid'], $time));
 		$dir = $LMS->CONFIG['rt']['mail_dir'].sprintf('/%06d/%06d',$msg['ticketid'],$id);
@@ -64,10 +64,10 @@ function MessageAdd($msg, $headers, $file=NULL)
 	}		    
 }
 
-$message = $_POST['message'];
-
-if(isset($message))
+if(isset($_POST['message']))
 {
+	$message = $_POST['message'];
+	
 	if($message['subject'] == '')
 		$error['subject'] = trans('Message title not specified!');
 	
@@ -161,7 +161,7 @@ if(isset($message))
 						.$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/') + 1)
 						.'?m=rtticketview&id='.$message['ticketid'];
 				$files = NULL;
-				if ($file)
+				if (isset($file))
 				{
 					$files[0]['content_type'] = $_FILES['file']['type'];
 					$files[0]['filename'] = $filename;

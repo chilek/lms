@@ -38,7 +38,7 @@ if(! $LMS->GetAdminRightsRT($AUTH->id, $queuedata['id']))
 	die;
 }
 
-if($_GET['delticketid'])
+if(isset($_GET['delticketid']))
 {
 	$LMS->TicketDelete($_GET['delticketid']);
 }
@@ -74,8 +74,8 @@ unset($queue['state']);
 unset($queue['order']);
 unset($queue['direction']);
 
-$page = (! $_GET['page'] ? 1 : $_GET['page']); 
-$pagelimit = (! $LMS->CONFIG['phpui']['ticketlist_pagelimit'] ? $queuedata['total'] : $LMS->CONFIG['phpui']['ticketlist_pagelimit']);
+$page = (!isset($_GET['page']) ? 1 : $_GET['page']); 
+$pagelimit = (!isset($LMS->CONFIG['phpui']['ticketlist_pagelimit']) ? $queuedata['total'] : $LMS->CONFIG['phpui']['ticketlist_pagelimit']);
 $start = ($page - 1) * $pagelimit;
 
 $SESSION->save('rtp', $page);
