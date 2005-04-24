@@ -202,11 +202,11 @@
 <SCRIPT>
 <!--
 var cal3 = new calendar(document.forms['addbalance'].elements['addbalance[time]']);
-{literal}
+{if $limit}{literal}
 if(getCookie('userbalance')=='0')
 {
 	document.getElementById('userbalance').style.display = 'none';
 }
-{/literal}
+{/literal}{/if}
 //-->
 </SCRIPT>
