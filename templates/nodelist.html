@@ -13,6 +13,7 @@
 		</TD>
 		<TD CLASS="fbt" width="1%" nowrap>
 			<img src="img/ip.gif" border="0" ALT="" align="absmiddle">&nbsp;<A href="?m=nodelist&o=ip{if $listdata.direction eq "asc" && $listdata.order eq "ip"},desc{/if}">{t}IP address:{/t}</A> {if $listdata.order eq "ip"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/ip.gif" border="0" ALT="" align="absmiddle">&nbsp;<A href="?m=nodelist&o=ip_pub{if $listdata.direction eq "asc" && $listdata.order eq "ip_pub"},desc{/if}">{t}IP address (PUB):{/t}</A> {if $listdata.order eq "ip_pub"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			<img src="img/mac.gif" border="0" ALT="" align="absmiddle">&nbsp;<A href="?m=nodelist&o=mac{if $listdata.direction eq "asc" && $listdata.order eq "mac"},desc{/if}">{t}MAC address:{/t}</A> {if $listdata.order eq "mac"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD CLASS="frightu" width="1%" align="right">
@@ -62,6 +63,7 @@
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top">
 			<img src="img/ip.gif" border="0" ALT="" align="absmiddle">&nbsp;{$nodelist[nodelist].ip}<BR>
+			<img src="img/ip.gif" border="0" ALT="" align="absmiddle">&nbsp;{$nodelist[nodelist].ip_pub}<BR>
 			<nobr><img src="img/mac.gif" border="0" ALT="" align="absmiddle">&nbsp;{$nodelist[nodelist].mac}</nobr>
 		</TD>
 		<TD class="fright" width="1%">

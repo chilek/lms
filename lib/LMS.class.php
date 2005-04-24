@@ -99,7 +99,7 @@ class LMS
 		$this->AddMenu(trans('Finances'), 'money.gif', '?m=tarifflist', trans('Tariffs and Network Finances Management'), 'f', 25);
 		$this->AddMenu(trans('Accounts'), 'account.gif', '?m=accountlist', trans('Accounts, Domains, Aliases Management'), 'a', 30);
 		$this->AddMenu(trans('Mailing'), 'mail.gif', '?m=mailing', trans('Serial Mail'), 'm', 35);
-		$this->AddMenu(trans('Reload'), 'reload.gif', '?m=reload', '', 'r', 40);
+		$this->AddMenu(trans('Reload'), 'reload.gif', '?m=fwreload', '', 'r', 40);
 		$this->AddMenu(trans('Stats'), 'traffic.gif', '?m=traffic', trans('Statistics of Internet Link Usage'), 'x', 45);
 		$this->AddMenu(trans('Helpdesk'), 'ticket.gif', '?m=rtqueuelist', trans('Requests Tracking'), 'h', 50);
 		$this->AddMenu(trans('Timetable'), 'calendar.gif', '?m=eventlist', trans('Events Tracking'), 'v', 55);
@@ -457,7 +457,7 @@ class LMS
 
 	function GetUserIDByIP($ipaddr)
 	{
-		return $this->DB->GetOne('SELECT ownerid FROM nodes WHERE ipaddr=inet_aton(?)', array($ipaddr));
+		return $this->DB->GetOne('SELECT ownerid FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr));
 	}
 
 	function GetCashByID($id)
@@ -742,7 +742,7 @@ class LMS
 
 	function GetUserNodes($id)
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, passwd, access, warning, info FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
+		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) , passwd, access, warning, info FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
 		{
 			$result['total'] = sizeof($result);
 			$result['ownerid'] = $id;
@@ -999,7 +999,7 @@ class LMS
 	function NodeUpdate($nodedata)
 	{
 		$this->SetTS('nodes');
-		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr=inet_aton(?), mac=UPPER(?), passwd=?, netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=?, info=? WHERE id=?', array($nodedata['name'], $nodedata['ipaddr'], $nodedata['mac'], $nodedata['passwd'], $nodedata['netdev'], $this->AUTH->id, $nodedata['access'], $nodedata['warning'], $nodedata['ownerid'], $nodedata['info'], $nodedata['id']));
+		return $this->DB->Execute('UPDATE nodes SET name=UPPER(?), ipaddr_pub=inet_aton(?), ipaddr=inet_aton(?), mac=UPPER(?), passwd=?, netdev=?, moddate=?NOW?, modid=?, access=?, warning=?, ownerid=?, info=? WHERE id=?', array($nodedata['name'], $nodedata['ipaddr_pub'], $nodedata['ipaddr'], $nodedata['mac'], $nodedata['passwd'], $nodedata['netdev'], $this->AUTH->id, $nodedata['access'], $nodedata['warning'], $nodedata['ownerid'], $nodedata['info'], $nodedata['id']));
 	}
 
 	function DeleteNode($id)
@@ -1015,7 +1015,7 @@ class LMS
 
 	function GetNodeIDByIP($ipaddr)
 	{
-		return $this->DB->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?)', array($ipaddr));
+		return $this->DB->GetOne('SELECT id FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr,$ipaddr));
 	}
 
 	function GetNodeIDByMAC($mac)
@@ -1033,6 +1033,11 @@ class LMS
 		return $this->DB->GetOne('SELECT inet_ntoa(ipaddr) FROM nodes WHERE id=?', array($id));
 	}
 
+	function GetNodePubIPByID($id)
+	{
+		return $this->DB->GetOne('SELECT inet_ntoa(ipaddr_pub) FROM nodes WHERE id=?', array($id));
+	}
+
 	function GetNodeMACByID($id)
 	{
 		return $this->DB->GetOne('SELECT mac FROM nodes WHERE id=?', array($id));
@@ -1045,12 +1050,12 @@ class LMS
 
 	function GetNodeNameByIP($ipaddr)
 	{
-		return $this->DB->GetOne('SELECT name FROM nodes WHERE ipaddr=inet_aton(?)', array($ipaddr));
+		return $this->DB->GetOne('SELECT name FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr_pub));
 	}
 
 	function GetNode($id)
 	{
-		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, mac, passwd, access, warning, creationdate, moddate, creatorid, modid, netdev, lastonline, info FROM nodes WHERE id=?', array($id)))
+		if($result = $this->DB->GetRow('SELECT id, name, ownerid, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, passwd, access, warning, creationdate, moddate, creatorid, modid, netdev, lastonline, info FROM nodes WHERE id=?', array($id)))
 		{
 			$result['createdby'] = $this->GetAdminName($result['creatorid']);
 			$result['modifiedby'] = $this->GetAdminName($result['modid']);
@@ -1098,6 +1103,9 @@ class LMS
 			case 'ip':
 				$sqlord = ' ORDER BY ipaddr';
 			break;
+			case 'ip_pub':
+				$sqlord = ' ORDER BY ipaddr_pub';
+			break;
 			case 'ownerid':
 				$sqlord = ' ORDER BY ownerid';
 			break;
@@ -1108,7 +1116,7 @@ class LMS
 
 		$totalon = 0; $totaloff = 0;
 		
-		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, ownerid, access, warning, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, lastonline, nodes.info AS info FROM nodes, users WHERE ownerid = users.id AND ownerid > 0'.($sqlord != '' ? $sqlord.' '.$direction : '')))
+		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, lastonline, nodes.info AS info FROM nodes, users WHERE ownerid = users.id AND ownerid > 0'.($sqlord != '' ? $sqlord.' '.$direction : '')))
 		{
 			foreach($nodelist as $idx => $row)
 			{
@@ -1148,6 +1156,9 @@ class LMS
 			case 'ip':		
 				$sqlord = ' ORDER BY ipaddr';
 			break;
+			case 'ip_pub':
+				$sqlord = ' ORDER BY ipaddr-pub';
+			break;
 			case 'ownerid':
 				$sqlord = ' ORDER BY ownerid';
 			break;
@@ -1163,7 +1174,7 @@ class LMS
 				switch($idx)
 				{
 					case 'ipaddr' :
-						$searchargs[] = "inet_ntoa(ipaddr) ?LIKE? '%".trim($value)."%'";
+						$searchargs[] = "inet_ntoa(ipaddr) ?LIKE? '%".trim($value)."%'"." OR "."inet_ntoa(ipaddr_pub) ?LIKE? '%".trim($value)."%'";
 					break;
 					case 'name' :
 						$searchargs[] = "nodes.name ?LIKE? '%".$value."%'";
@@ -1182,7 +1193,7 @@ class LMS
 		
 		$totalon = 0; $totaloff = 0;
 		
-		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, mac, nodes.name AS name, ownerid, access, warning, nodes.info AS info, '
+		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, nodes.info AS info, '
 						.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner
 						FROM users LEFT JOIN nodes ON ownerid = users.id'
 						.$searchargs.' '.($sqlord != '' ? $sqlord.' '.$direction : '')))
@@ -1260,7 +1271,7 @@ class LMS
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS('nodes');
-		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ownerid, passwd, creatorid, creationdate, access, warning, info) VALUES (?, ?, inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?)', array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ownerid'],$nodedata['passwd'],$this->AUTH->id, $nodedata['access'], $nodedata['warning'], $nodedata['info'])))
+		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, creationdate, access, warning, info) VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?)', array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ipaddr_pub'],$nodedata['ownerid'],$nodedata['passwd'],$this->AUTH->id, $nodedata['access'], $nodedata['warning'], $nodedata['info'])))
 			return $this->DB->GetOne('SELECT MAX(id) FROM nodes');
 		else
 			return FALSE;
@@ -1282,7 +1293,7 @@ class LMS
 
 	function GetNetDevLinkedNodes($id)
 	{
-		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, ipaddr, inet_ntoa(ipaddr) AS ip, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, ownerid FROM nodes, users WHERE ownerid = users.id AND netdev=? AND ownerid > 0 ORDER BY nodes.name ASC', array($id));
+		return $this->DB->GetAll('SELECT nodes.id AS id, nodes.name AS name, linktype, ipaddr, inet_ntoa(ipaddr) AS ip,ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, netdev, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner, ownerid FROM nodes, users WHERE ownerid = users.id AND netdev=? AND ownerid > 0 ORDER BY nodes.name ASC', array($id));
 	}
 
 	function NetDevLinkNode($id, $netid, $type=NULL)
@@ -2159,7 +2170,7 @@ class LMS
 
 	function IsIPFree($ip)
 	{
-		return !($this->DB->GetOne('SELECT * FROM nodes WHERE ipaddr=inet_aton(?)', array($ip)) ? TRUE : FALSE);
+		return !($this->DB->GetOne('SELECT * FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ip,$ip) ? TRUE : FALSE));
 	}
 
 	function IsIPGateway($ip)
@@ -2449,7 +2460,7 @@ class LMS
 		}
 		
 		if(sizeof($result['address']))
-			if($nodes = $this->DB->GetAll('SELECT name, id, ownerid, ipaddr FROM nodes WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($address, getbraddr($address,$mask))))
+			if($nodes = $this->DB->GetAll('SELECT name, id, ownerid, ipaddr ,ipaddr_pub FROM nodes WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($address, getbraddr($address,$mask))))
 				foreach($nodes as $node)
 				{
 					$pos = ($node['ipaddr'] - $addresslong - 1);
@@ -2689,7 +2700,7 @@ class LMS
 
 	function GetNetDevIPs($id)
 	{
-		return $this->DB->GetAll('SELECT id, name, ipaddr, inet_ntoa(ipaddr) AS ip, mac, access, info FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
+		return $this->DB->GetAll('SELECT id, name, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pubmac, access, info FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
 	}
 	
 	/*
@@ -2862,8 +2873,6 @@ class LMS
 			case '-1':
 				$statefilter = 'AND state != 2';
 				break;
-			default:
-				$statefilter = '';
 		}
 
 		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
@@ -2874,9 +2883,10 @@ class LMS
 		    .' GROUP BY rttickets.id, requestor, rttickets.createtime, rttickets.subject, state, owner, admins.name, rttickets.userid, users.lastname, users.name '
 		    .($sqlord !='' ? $sqlord.' '.$direction:''), array($id)))
 		{
-			$result['total'] = 0;
 			foreach($result as $idx => $ticket)
 			{
+				//$ticket['requestoremail'] = ereg_replace('^.*<(.*@.*)>$','\1',$ticket['requestor']);
+				//$ticket['requestor'] = str_replace(' <'.$ticket['requestoremail'].'>','',$ticket['requestor']);
 				if(!$ticket['userid'])
 					list($ticket['requestor'], $ticket['requestoremail']) = sscanf($ticket['requestor'], "%[^<]<%[^>]");
 				else
@@ -2900,7 +2910,7 @@ class LMS
 			foreach($result as $row)
 				$stats[$row['state']] = $row['scount'];
 			foreach(array('new', 'open', 'resolved', 'dead') as $idx => $value)
-				$stats[$value] = isset($stats[$idx]) ? $stats[$idx] : 0;
+				$stats[$value] = $stats[$idx];
 		}
 		$stats['lastticket'] = $this->DB->GetOne('SELECT createtime FROM rttickets WHERE queueid = ? ORDER BY createtime DESC', array($id));
 		return $stats;
@@ -3278,13 +3288,13 @@ class LMS
 	{
 		include_once('Mail.php');
 
-		$params['host'] = isset($this->CONFIG['phpui']['smtp_host']) ? $this->CONFIG['phpui']['smtp_host'] : '';
-		$params['port'] = isset($this->CONFIG['phpui']['smtp_port']) ? $this->CONFIG['phpui']['smtp_port'] : NULL;
-		if(isset($this->CONFIG['phpui']['smtp_username']))
+		$params['host'] = $this->CONFIG['phpui']['smtp_host'];
+		$params['port'] = $this->CONFIG['phpui']['smtp_port'];
+		if ($this->CONFIG['phpui']['smtp_username'])
 		{
-			$params['auth'] = isset($this->CONFIG['phpui']['smtp_auth_type']) ? $this->CONFIG['phpui']['smtp_auth_type'] : '';
-			$params['username'] = isset($this->CONFIG['phpui']['smtp_username']) ? $this->CONFIG['phpui']['smtp_username'] : '';
-			$params['password'] = isset($this->CONFIG['phpui']['smtp_password']) ? $this->CONFIG['phpui']['smtp_password'] : '';
+			$params['auth'] = $this->CONFIG['phpui']['smtp_auth_type'];
+			$params['username'] = $this->CONFIG['phpui']['smtp_username'];
+			$params['password'] = $this->CONFIG['phpui']['smtp_password'];
 		}
 		else
 			$params['auth'] = 'none';
