@@ -24,6 +24,17 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/ip.gif" BORDER="0" ALT="{t}IP address:{/t}">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}IP address:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<INPUT TYPE="TEXT" NAME="nodedataipaddrpub" VALUE="{$nodedata.ipaddr_pub}" {tip text="Enter IP address or select it from list" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddrpub);" {tip text="Enter or select IP address from list"}>&raquo;&raquo;&raquo;</A>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/mac.gif" BORDER="0" ALT="{t}MAC address:{/t}">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
