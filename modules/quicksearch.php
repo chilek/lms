@@ -39,7 +39,7 @@ switch($_GET['mode'])
 
 	case 'node':
 		if(($nodeid = $DB->GetOne('SELECT id FROM nodes WHERE id = '.(ip2long($search)!==FALSE ? ip2long($search) : -1))) ||
-		   ($nodeid = $DB->GetOne('SELECT id FROM nodes WHERE ipaddr = ? OR name = UPPER(?) OR mac = UPPER(?) LIMIT 1', array(ip_long($search), $search, $search)))
+		   ($nodeid = $DB->GetOne('SELECT id FROM nodes WHERE (ipaddr = ? OR ipaddr_pub = ? ) OR name = UPPER(?) OR mac = UPPER(?) LIMIT 1', array(ip_long($search), ip_long($search), $search, $search)))
 		   )
 			$target = '?m=nodeinfo&id='.$nodeid;
 		else

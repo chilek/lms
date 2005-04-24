@@ -30,13 +30,14 @@ $nodedata = $_POST['nodedata'];
 if(isset($nodedata))
 {
 	$nodedata['ipaddr'] = $_POST['nodedataipaddr'];
+	$nodedata['ipaddr_pub'] = $_POST['nodedataipaddrpub'];
 	$nodedata['mac'] = $_POST['nodedatamac'];
 	$nodedata['mac'] = str_replace('-',':',$nodedata['mac']);
 
 	foreach($nodedata as $key => $value)
 		$nodedata[$key] = trim($value);
 
-	if($nodedata['ipaddr']=='' && $nodedata['mac']=='' && $nodedata['name']=='')
+	if($nodedata['ipaddr']=='' && $nodedata['ipaddr_pub'] && $nodedata['mac']=='' && $nodedata['name']=='')
 		if($_GET['ownerid'])
 		{
 			$SESSION->redirect('?m=userinfo&id='.$_GET['ownerid']);
@@ -63,6 +64,21 @@ if(isset($nodedata))
 		$error['ipaddr'] = trans('Specified IP address is in use!');
 	elseif($LMS->IsIPGateway($nodedata['ipaddr']))
 		$error['ipaddr'] = trans('Specified IP address is network gateway!');
+
+	if (($nodedata['ipaddr_pub']!="0.0.0.0")&&($nodedata['ipaddr_pub']!=''))
+	{
+		if(!check_ip($nodedata['ipaddr']))
+                	$error['ipaddr'] = trans('Incorrect node IP address!');
+        	elseif(!$LMS->IsIPValid($nodedata['ipaddr']))
+                	$error['ipaddr'] = trans('Specified IP address does not overlap with any network!');
+	}
+		else
+		{
+			if($nodedata['ipaddr_pub']=='')
+                        $nodedata['ipaddr_pub']="0.0.0.0";
+	                ;
+		}//tutaj nic nie robimy - jak jest 0.0.0.0 to niech sobie bedzie
+	
 
 	if(!$nodedata['mac'])
 		$error['mac'] = trans('MAC address is required!');
