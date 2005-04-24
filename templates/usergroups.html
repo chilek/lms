@@ -6,7 +6,7 @@
 			<B><A name="groups">{t}Groups Membership:{/t}</A></B> 
 		</TD>
 	</TR>
-	<TR id="groupspanel">
+	<TR id="groupspanel" style="display:none;">
 		<TD WIDTH="100%" class="fall">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
@@ -52,3 +52,11 @@
 		</TD>
 	</TR>
 </TABLE>
+{literal}<SCRIPT>
+<!--
+	if(getCookie('groupspanel')=='1')
+	{
+		document.getElementById('groupspanel').style.display = '';
+	}
+//-->
+</SCRIPT>{/literal}

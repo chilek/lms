@@ -6,7 +6,7 @@
 			<B><A name="balance">{t}Customer Liabilities:{/t}</A></B>
 		</TD>
 	</TR>
-	<TR id="userassignments">
+	<TR id="userassignments" style="display:none;">
 		<TD WIDTH="100%" class="fall">
 			<TABLE cellpadding="5" cellspacing="0" WIDTH="100%">
 				<TR class="dark">
@@ -112,11 +112,18 @@
 		</TD>
 	</TR>
 </TABLE>
+{literal}
 <SCRIPT>
 <!--
 var cal1 = new calendar(document.forms['assignment'].elements['assignment[datefrom]']);
 cal1.time_comp = false;
 var cal2 = new calendar(document.forms['assignment'].elements['assignment[dateto]']);
 cal2.time_comp = false;
+
+if(getCookie('userassignments')=='1')
+{
+	document.getElementById('userassignments').style.display = '';
+}
 //-->
 </SCRIPT>
+{/literal}
