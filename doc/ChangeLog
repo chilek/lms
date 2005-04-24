@@ -3,6 +3,7 @@ $Id$
 version x.x.x (xx/xx/xxxx):
 
   - lmsd/ethers: fixed output file format (alec)
+  - fixed bug (made in last release) in chooseip module (alec)
 
 version 1.5.6 Baal (24/04/2005):
 
