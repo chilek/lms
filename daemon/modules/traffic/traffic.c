@@ -79,7 +79,7 @@ void reload(GLOBAL *g, struct traffic_module *traffic)
 			// read file line by line
 			while( fgets(buffer, 100, fh)!=NULL ) {
 
-				if ( sscanf(buffer, "%[^\t ] %[^\t ] %s", host, download, upload) !=3 )
+				if ( sscanf(buffer, "%[^\t ] %[^\t ] %s", host, upload, download) !=3 )
 					continue; //if invalid data format
 					 
 				if( k = is_host(hosts, j, host) ) { // host exists ?
