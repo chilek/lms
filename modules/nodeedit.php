@@ -65,12 +65,13 @@ if(isset($_POST['nodeedit']))
 	$nodeedit = $_POST['nodeedit'];
 	
 	$nodeedit['ipaddr'] = $_POST['nodeeditipaddr'];
+	$nodeedit['ipaddr_pub'] = $_POST['nodeeditipaddrpub'];
 	$nodeedit['mac'] = $_POST['nodeeditmac'];
 	$nodeedit['mac'] = str_replace('-',':',$nodeedit['mac']);
 	foreach($nodeedit as $key => $value)
 		$nodeedit[$key] = trim($value);
 	
-	if($nodeedit['ipaddr']=='' && $nodeedit['mac']=='' && $nodeedit['name']=='' && $nodeedit['info']=='' && $nodeedit['passwd']=='')
+	if($nodeedit['ipaddr']=='' && $nodeedit['ipaddr_pub']=='' && $nodeedit['mac']=='' && $nodeedit['name']=='' && $nodeedit['info']=='' && $nodeedit['passwd']=='')
 	{
 		$SESSION->redirect('?m=nodeinfo&id='.$nodeedit['id']);
 	}
@@ -90,6 +91,30 @@ if(isset($_POST['nodeedit']))
 	}
 	else
 		$error['ipaddr'] = trans('Incorrect IP address!');
+
+	if (($nodeedit['ipaddr_pub']!="0.0.0.0")&&($nodeedit['ipaddr_pub']!=''))
+	{
+		if(check_ip($nodeedit['ipaddr_pub']))
+        	{
+        	        if($LMS->IsIPValid($nodeedit['ipaddr_pub']))
+        	        {
+        	                $ip = $LMS->GetNodePubIPByID($nodeedit['id']);
+        	                if($ip!=$nodeedit['ipaddr_pub'] && !$LMS->IsIPFree($nodeedit['ipaddr_pub']))
+        	                        $error['ipaddr_pub'] = trans('Specified IP address is in use!');
+        	                elseif($ip!=$nodeedit['ipaddr_pub'] && $LMS->IsIPGateway($nodeedit['ipaddr_pub']))
+        	                        $error['ipaddr_pub'] = trans('Specified IP address is network gateway!');
+        	        }
+        	        else
+        	                $error['ipaddr_pub'] = trans('Specified IP address does not overlap with any network!');
+        	}
+        	else
+        	        $error['ipaddr_pub'] = trans('Incorrect IP address!');
+	}
+		else
+		{
+		if($nodeedit['ipaddr_pub']=='')
+			$nodeedit['ipaddr_pub']="0.0.0.0";
+		;}//tutaj nic nie robimy - jak jest 0.0.0.0 to niech sobie bedzie
 
 	if(check_mac($nodeedit['mac']))
 	{
@@ -130,6 +155,7 @@ if(isset($_POST['nodeedit']))
 	$nodeinfo['name'] = $nodeedit['name'];
 	$nodeinfo['mac'] = $nodeedit['mac'];
 	$nodeinfo['ip'] = $nodeedit['ipaddr'];
+	$nodeinfo['ip_pub'] = $nodeedit['ipaddr_pub'];
 	$nodeinfo['passwd'] = $nodeedit['passwd'];
 	$nodeinfo['access'] = $nodeedit['access'];
 	$nodeinfo['ownerid'] = $nodeedit['ownerid'];
