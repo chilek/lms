@@ -195,6 +195,7 @@ Class LMSDB_common
 		// najpierw sparsujmy wszystkie specjalne meta ¶mieci.
 		$query = eregi_replace('\?NOW\?',$this->_driver_now(),$query);
 		$query = eregi_replace('\?LIKE\?',$this->_driver_like(),$query);
+
 		if($inputarray)
 		{
 			$queryelements = explode("\0",str_replace('?',"?\0",$query));
