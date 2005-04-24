@@ -24,8 +24,9 @@
  *  $Id$
  */
 
-if($filename = $_GET['file'])
+if(isset($_GET['file']))
 {
+	$filename = $_GET['file'];
 	if($attach = $LMS->GetAttachment($_GET['mid'], $filename))
 	{
 		$file = $LMS->CONFIG['rt']['mail_dir'].sprintf("/%06d/%06d/%s",$_GET['tid'],$_GET['mid'],$filename);
@@ -43,7 +44,7 @@ if($filename = $_GET['file'])
 	}
 }
 
-if(! $_GET['id'])
+if(!isset($_GET['id']))
 {
 	$SESSION->redirect('?'.$SESSION->get('backto'));
 }
