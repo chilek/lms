@@ -1050,7 +1050,7 @@ class LMS
 
 	function GetNodeNameByIP($ipaddr)
 	{
-		return $this->DB->GetOne('SELECT name FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr_pub));
+		return $this->DB->GetOne('SELECT name FROM nodes WHERE ipaddr=inet_aton(?) OR ipaddr_pub=inet_aton(?)', array($ipaddr, $ipaddr));
 	}
 
 	function GetNode($id)
