@@ -146,6 +146,7 @@ case 'formaddip':
 
 	if(!$error)
 	{
+		$nodeipdata['ipaddr_pub']="0.0.0.0";
 		$nodeipdata['warning'] = 0;
 		$nodeipdata['passwd'] = '';
 		$LMS->NetDevLinkNode($LMS->NodeAdd($nodeipdata),$_GET['id']);
@@ -208,6 +209,7 @@ case 'formeditip':
 
 	if(!$error)
 	{
+		$nodeipdata['ipaddr_pub']="0.0.0.0";
 		$LMS->NodeUpdate($nodeipdata);	
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
