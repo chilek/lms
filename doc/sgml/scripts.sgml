@@ -363,7 +363,7 @@ which will be read in. Format of the file should be as follows:</para>
 &lt;IP_address&gt; &lt;n_of_spaces&gt; &lt;upload_bytes&gt; &lt;n_of_spaces&gt; &lt;download_bytes&gt;
 ...</screen>
 	    <para><note><para>Example script utilizing iptables might be found
-in <filename>sample/traffic_ipt.sh</filename> file.</para></note></para>
+in <filename>sample/traffic_ipt.pl</filename> file.</para></note></para>
 	    <para>Next you should install lms-traffic script and your custom
 script into crontab. Among standard options you can use define location with
 created data file.
