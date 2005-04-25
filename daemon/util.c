@@ -88,6 +88,10 @@ unsigned char * str_concat(const unsigned char *s1, const unsigned char *s2)
 /* termination signals handling */
 void termination_handler(int signum)
 {
-	syslog(LOG_INFO, "LMS Daemon exited.");
+	if(signum)
+		syslog(LOG_ERR, "LMS Daemon exited abnormally.");
+	else
+		syslog(LOG_INFO, "LMS Daemon exited.");
+		
 	exit(signum);
 }
