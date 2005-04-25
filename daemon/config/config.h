@@ -37,4 +37,10 @@ int config_getint(Config *, unsigned char *, unsigned char *, int);
 int config_getbool(Config *, unsigned char *, unsigned char *, int);
 double config_getdouble(Config *, unsigned char *, unsigned char *, double);
 
+#ifdef CONFIGFILE
+Config * config_load_from_file(const unsigned char *);
+unsigned char * strskp(unsigned char *);
+unsigned char * strcrop(unsigned char *);
+#endif
+
 #endif

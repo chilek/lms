@@ -66,6 +66,9 @@ do
 	-inc=* | --inc=* | -incdir=* | --incdir=* )
 		incdir="$ac_optarg"
 	;;
+	-ini=* | -ini=* | -inifile=* | --inifile=* )
+		inifile="$ac_optarg"
+	;;
 	-help | --help )
     		# Omit some internal or obsolete options to make the list less imposing.
     		# This message is too long to be a string in the A/UX 3.1 sh.
@@ -82,6 +85,8 @@ Options: [defaults in brackets after descriptions]
 			(/usr/local/bin)
   --libdir=DIR		sets location of database library (/usr/lib)
   --incdir=DIR		sets location of database include files (/usr/include)
+  --inifile=FILE        location of configuration file - disables online
+                        configuration
 EOF
     		exit 0
 	;;
@@ -143,6 +148,15 @@ if test "${enable_debug1+set}" = set
 then
 	FLAGS="$FLAGS -DDEBUG1"
 	echo " yes"
+else
+	echo " no"
+fi
+
+echo -n "Configuration file..."
+if test "${inifile+set}" = set
+then
+	FLAGS="$FLAGS -DCONFIGFILE=\\\"$inifile\\\""
+	echo " $inifile"
 else
 	echo " no"
 fi
