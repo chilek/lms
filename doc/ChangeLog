@@ -5,6 +5,7 @@ version x.x.x (xx/xx/xxxx):
   - lmsd/ethers: fixed output file format (alec)
   - fixed bug (made in last release) in chooseip module (alec)
   - keeping ShowOrHide status of boxes in customer info (alec)
+  - BTS#0000337: fixed helpdesk tickets searching (alec)
 
 version 1.5.6 Baal (24/04/2005):
 
