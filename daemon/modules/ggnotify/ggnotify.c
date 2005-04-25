@@ -94,8 +94,8 @@ void reload(GLOBAL *g, struct ggnotify_module *n)
 	{
 		syslog(LOG_ERR, "[%s/ggnotify] Unable to connect to Gadu-Gadu server.", n->base.instance);
 		gg_free_session(sess);
-		exit(0);
-	} else 
+	} 
+	else 
 	{
 #ifdef DEBUG1
 		syslog(LOG_INFO, "DEBUG: [%s/ggnotify] Connected to Gadu-Gadu server.",n->base.instance);
