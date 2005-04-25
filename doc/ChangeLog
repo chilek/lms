@@ -16,6 +16,8 @@ wersja 1.4.5 (??/??/????):
   - poprawione info o ost. nieudanym logowaniu w admininfo (alec)
   - almsd/traffic: poprawiona kolejno¶æ danych odczytywanych z pliku ze
     statystykami - odpowiada opisowi z dokumentacji (alec)
+  - BTS#0000337: poprawione wyszukiwanie zg³oszeñ (alec)
+  - almsd/ethers: poprawiony format pliku wynikowego (alec)
 
 wersja 1.4.4 Skaara (02/03/2005):
 

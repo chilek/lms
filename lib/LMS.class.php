@@ -3241,17 +3241,15 @@ class LMS
 			break;
 		}
 
-		$where  = ($search['queue']     ? 'AND queueid='.$search['queue'].' '          : '');
-		$where .= ($search['owner']     ? 'AND owner='.$search['owner'].' '            : '');
-		$where .= ($search['userid']    ? 'AND rttickets.userid='.$search['userid'].' '   : '');
-		$where .= ($search['subject']   ? 'AND rttickets.subject=\''.$search['subject'].'\' '       : '');
-		$where .= ($search['state']!='' ? 'AND state='.$search['state'].' '            : '');
-		$where .= ($search['name']!=''  ? 'AND requestor LIKE \''.$search['name'].'\' '  : '');
-		$where .= ($search['email']!='' ? 'AND requestor LIKE \''.$search['email'].'\' ' : '');
+		$where  = ($search['queue']     ? 'AND queueid='.$search['queue'].' '          		: '');
+		$where .= ($search['owner']     ? 'AND owner='.$search['owner'].' '            		: '');
+		$where .= ($search['userid']    ? 'AND rttickets.userid='.$search['userid'].' '   	: '');
+		$where .= ($search['subject']   ? 'AND rttickets.subject ?LIKE? \'%'.$search['subject'].'%\' '	: '');
+		$where .= ($search['state']!='' ? 'AND state='.$search['state'].' '            		: '');
+		$where .= ($search['email']!='' ? 'AND requestor ?LIKE? \'%'.$search['email'].'%\' ' 	: '');
 		$where .= ($search['uptime']!='' ? 'AND (resolvetime-rttickets.createtime > '.$search['uptime'].' OR ('.time().'-rttickets.createtime > '.$search['uptime'].' AND resolvetime = 0) ) ' : '');
-		
-		if($search['username'])
-			$where = 'AND users.lastname ?LIKE? \'%'.$search['username'].'%\' OR requestor ?LIKE? \'%'.$search['username'].'%\' ';
+		if($search['name'])
+			$where .= 'AND (requestor ?LIKE? \'%'.$search['name'].'%\' OR '.$this->DB->Concat('users.lastname',"' '",'users.name').' ?LIKE? \'%'.$search['name'].'%\') ';
 
 		if($result = $this->DB->GetAll('SELECT rttickets.id AS id, rttickets.userid AS userid, requestor, rttickets.subject AS subject, state, owner AS ownerid, admins.name AS ownername, '.$this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' AS username, rttickets.createtime AS createtime, MAX(rtmessages.createtime) AS lastmodified 
 		    FROM rttickets 

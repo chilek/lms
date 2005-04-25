@@ -131,10 +131,10 @@ void reload(GLOBAL *g, struct ethers_module *fm)
 				if( j!=nc && (gc==0 || m!=gc) ) {
 
 					if( atoi(g->db_get_data(res,i,"access")) )
-						fprintf(fh, "%s\t%s\n", inet_ntoa(inet), g->db_get_data(res,i,"mac"));
+						fprintf(fh, "%s\t%s\n", g->db_get_data(res,i,"mac"), inet_ntoa(inet));
 					else
 						if( fm->dummy_macs )
-							fprintf(fh, "%s\t00:00:00:00:00:00\n", inet_ntoa(inet));	
+							fprintf(fh, "00:00:00:00:00:00\t%s\n", inet_ntoa(inet));	
 				}
 			}
     			g->db_free(res);
