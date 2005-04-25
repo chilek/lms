@@ -50,7 +50,9 @@ int main(int argc, char *argv[])
 	INSTANCE *instances;
 	int i = 0, reload = 0, i_no = 0;
 	unsigned char *inst, *instance; 
-
+#ifdef CONFIGFILE
+	Config *ini;
+#endif
 	host = (char *) malloc(sizeof(char)*255);  	//database
 	dhost = (char *) malloc(sizeof(char)*255);	//daemon
 
@@ -158,6 +160,7 @@ int main(int argc, char *argv[])
 		// get instances list even if reload == 0
 		// maybe we should do that once before main loop, but
 		// now we can change configuration without daemon restart
+#ifndef CONFIGFILE
 		if(iopt) // from command line...
 		{
 			inst = strdup(iopt);
@@ -197,7 +200,44 @@ int main(int argc, char *argv[])
 			}
 			db_free(&res);
 		}
-
+#else 
+		// read config from ini file
+		ini = config_load(g->conn, dhost, NULL);
+		if(iopt) // from command line...
+		{
+			inst = strdup(iopt);
+			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
+			{
+				char *crontab = config_getstring(ini, instance, "crontab", "");
+				if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) )
+				{
+					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
+					instances[i_no].name = strdup(instance);
+					instances[i_no].module = strdup(config_getstring(ini, instance, "module", ""));
+					instances[i_no].crontab = strdup(crontab);
+					i_no++;
+				}
+			}
+			free(inst);	
+		}		
+		else // ... or from file
+		{
+			inst = strdup(config_getstring(ini, "lmsd", "instances", ""));
+			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
+			{
+				char *crontab = config_getstring(ini, instance, "crontab", "");
+				if( crontab_match(tt, crontab) || (!strlen(crontab) && reload) )
+				{
+					instances = (INSTANCE *) realloc(instances, sizeof(INSTANCE)*(i_no+1));
+					instances[i_no].name = strdup(instance);
+					instances[i_no].module = strdup(config_getstring(ini, instance, "module", ""));
+					instances[i_no].crontab = strdup(crontab);
+					i_no++;
+				}
+			}
+		}
+		config_free(ini);
+#endif
 		db_disconnect(g->conn);
 
 		// forking reload - we can do a job for longer than one minute
@@ -219,7 +259,7 @@ int main(int argc, char *argv[])
 				{
 					exit(1);
 				}
-				
+
 				for(i=0; i<i_no; i++)
 				{
 					MODULE *mod = (MODULE*) malloc(sizeof(MODULE));
@@ -276,10 +316,11 @@ int main(int argc, char *argv[])
 				free(instances[i].module);
 				free(instances[i].crontab);
 			}
+			
 		}
 		
 		free(instances);
-				
+		
 		if( quit ) termination_handler(0);
 		
     	} // end of loop **********************************************

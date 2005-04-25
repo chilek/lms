@@ -27,6 +27,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <syslog.h>
+#include <ctype.h>
 
 #include "config.h"
 
@@ -111,13 +112,10 @@ void config_add(Config *c, unsigned char *sec, unsigned char * key, unsigned cha
 
 Config * config_load(ConnHandle *conn, const unsigned char *dbhost, const unsigned char *section)
 {
-    Config *c;
-    QueryHandle *res;
-    unsigned char *sec;
-    unsigned char *var;
-    unsigned char *val;
-    int i;
 
+#ifdef CONFIGFILE
+    return config_load_from_file(section);
+#else
     if( !conn )
     {
 	    syslog(LOG_ERR, "ERROR: [config_load] Lost connection handle.");
@@ -128,7 +126,7 @@ Config * config_load(ConnHandle *conn, const unsigned char *dbhost, const unsign
     c = config_new(0);
     
     if( ! section )
-	    res = db_pquery(conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, daemonhosts, daemoninstances WHERE hostid=daemonhosts.id AND instanceid=daemoninstances.id AND daemonhosts.name='?' AND daemonconfig.disabled=0",dbhost);
+	    res = db_pquery(conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, daemonhosts, daemoninstances WHERE hostid=daemonhosts.id AND instanceid=daemoninstances.id AND daemonhosts.name='?' AND daemonconfig.disabled=0", dbhost);
     else
 	    res = db_pquery(conn, "SELECT daemoninstances.name AS section, var, value FROM daemonconfig, daemonhosts, daemoninstances WHERE hostid=daemonhosts.id AND instanceid=daemoninstances.id AND daemonhosts.name='?' AND daemoninstances.name='?' AND daemonconfig.disabled=0", dbhost, section);
 
@@ -142,7 +140,99 @@ Config * config_load(ConnHandle *conn, const unsigned char *dbhost, const unsign
     
     db_free(&res);
     return c;
+#endif
 }
+
+#ifdef CONFIGFILE
+Config * config_load_from_file(const unsigned char *section)
+{
+    Config *c;
+    unsigned char sec[1024+1];
+    unsigned char key[1024+1];
+    unsigned char lin[1024+1];
+    unsigned char val[1024+1];
+    unsigned char *where, *value, *lastsec = "";
+    FILE * ini ;
+    int lineno ;
+
+    if ((ini=fopen(CONFIGFILE, "r"))==NULL)
+    {
+	    syslog(LOG_ERR, "[config_load] Unable to open file '%s'.", CONFIGFILE);
+    	    return NULL ;
+    }
+
+    c = config_new(0);
+    lineno = 0;
+    sec[0] = 0;
+
+    while( fgets(lin, 1024, ini)!=NULL )
+    {
+    	    lineno++ ;
+    	    where = strskp(lin); /* Skip leading spaces */
+
+    	    if( *where==';' || *where=='#' || *where==0 )
+        	    continue ; /* Comment lines */
+    	    else
+	    {
+    		    if( sscanf(where, "[%[^]]", sec)==1 )
+		    {
+			    lastsec = sec;/* Valid section name */
+			    continue;
+		    }
+        	    else if( (sscanf (where, "%[^=] = \"%[^\"]\"", key, val) == 2
+                	    ||  sscanf (where, "%[^=] = '%[^\']'", key, val) == 2
+                	    ||  sscanf (where, "%[^=] = %[^;#]",   key, val) == 2)
+			    && strlen(lastsec)
+			    && ( !section || (!strcmp(lastsec, section))) )
+		    {
+			    strcpy(key, strcrop(key));
+            		    strcpy(val, strcrop(val));
+			    /*
+                	    * sscanf cannot handle "" or '' as empty value,
+                	    * this is done here
+                	    */
+        		    if (!strcmp(val, "\"\"") || !strcmp(val, "''"))
+                		    val[0] = (unsigned char) 0;
+	
+			    value = parse(val);
+			    config_add(c, lastsec, key, value);
+			    free(value);
+    		    }
+    	    }
+    }
+
+    fclose(ini);
+    return c ;
+}
+
+unsigned char * strskp(unsigned char * s)
+{
+	unsigned char * skip = s;
+	if( s==NULL ) return NULL;
+	while (isspace((int)*skip) && *skip) skip++;
+	return skip;
+} 
+
+unsigned char * strcrop(unsigned char * s)
+{
+	static unsigned char l[1024+1];
+	unsigned char *last;
+
+	if( s==NULL ) return NULL;
+	memset(l, 0, 1024+1);
+	strcpy(l, s);
+	last = l + strlen(l);
+	while (last > l) 
+	{
+		if (!isspace((int)*(last-1)))
+			break;
+		last--;
+	}
+	*last = (unsigned char) 0;
+	return l;
+}
+
+#endif
 
 unsigned char * config_getstring(Config *c, unsigned char *sec, unsigned char *key, unsigned char *def)
 {
@@ -205,3 +295,4 @@ int config_getbool(Config *c, unsigned char *sec, unsigned char * key, int notfo
     }
     return ret;
 }
+
