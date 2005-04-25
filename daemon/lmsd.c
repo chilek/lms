@@ -18,9 +18,9 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  *  USA.
- *
- *  $Id$
  */
+
+#define REVISION "$Id$"
 
 #include <time.h>
 #include <stdlib.h>
@@ -102,13 +102,13 @@ int main(int argc, char *argv[])
 		{
 			case -1:
     	    			fprintf(stderr, "Fork error. Exiting.");
-            			exit(1);
+            			termination_handler(1);
         		case 0:
 				setsid();
 				break;
 			default:
 #ifdef DEBUG1	
-	    			syslog(LOG_INFO, "Daemonize. Forked child %d.", fval);
+	    			syslog(LOG_INFO, "DEBUG: [lmsd] Daemonize. Forked child %d.", fval);
 #endif
             			exit(0); // parent exits
         	}
@@ -247,17 +247,19 @@ int main(int argc, char *argv[])
 			{
 			case -1:
         			syslog(LOG_CRIT, "Fork error. Can't reload.");
+				if ( quit ) termination_handler(1);
             			break;
 			case 0: // continue main loop
+				if( quit ) exit(0); // quiet parent exit
 				break;
 			default:
 #ifdef DEBUG1
-				syslog(LOG_INFO, "Reloading...");
+				syslog(LOG_INFO, "DEBUG: [lmsd] Reloading...");
 #endif
 				// try to connect to database again
 				if( !(g->conn = db_connect(db,user,passwd,host,port)) )
 				{
-					exit(1);
+					termination_handler(1);
 				}
 
 				for(i=0; i<i_no; i++)
@@ -307,7 +309,10 @@ int main(int argc, char *argv[])
 				db_disconnect(g->conn);
 	
 				// exit child (reload) thread
-				exit(0);
+				if( quit ) 
+					termination_handler(0);  // write info to syslog
+				else 
+					exit(0);
 			}
 			
 			for(i=0; i<i_no; i++)
@@ -319,9 +324,9 @@ int main(int argc, char *argv[])
 			
 		}
 		
-		free(instances);
-		
 		if( quit ) termination_handler(0);
+		
+		free(instances);
 		
     	} // end of loop **********************************************
 	return 0;
@@ -331,13 +336,16 @@ int main(int argc, char *argv[])
 static void parse_command_line(int argc, char **argv)
 {
 	int opt;
+	char revision[10];
+	
+	sscanf(REVISION, "$Id: lmsd.c,v %s", revision);
 	
 	while ( (opt = getopt(argc, argv, "qvi:h:p:d:u:H:c:")) != -1 ) 
 	{
 		switch (opt) 
 		{
     		case 'v':
-            		printf("LMS Daemon version 1.5-cvs\nCopyright (c) 2001-2005 LMS Developers\n");
+            		printf("LMS Daemon version 1.5-cvs (%s)\nCopyright (c) 2001-2005 LMS Developers\n", revision);
             		exit(0);
 		case 'q':
     			quit = 1;
@@ -364,7 +372,7 @@ static void parse_command_line(int argc, char **argv)
 			command = optarg;
 			break;
         	default:
-			printf("LMS Daemon version 1.5-cvs. Command line options:\n");
+			printf("LMS Daemon version 1.5-cvs (%s). Command line options:\n", revision);
 			printf(" -h host[:port]\t\tdatabase host (default: 'localhost')\n");
 			printf(" -d db_name\t\tdatabase name (default: 'lms')\n");
 			printf(" -u db_user\t\tdatabase user (default: 'lms')\n");
