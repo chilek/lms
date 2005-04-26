@@ -85,8 +85,7 @@ Options: [defaults in brackets after descriptions]
 			(/usr/local/bin)
   --libdir=DIR		sets location of database library (/usr/lib)
   --incdir=DIR		sets location of database include files (/usr/include)
-  --inifile=FILE        location of configuration file - disables online
-                        configuration
+  --inifile=FILE        configuration file - disables online configuration
 EOF
     		exit 0
 	;;
