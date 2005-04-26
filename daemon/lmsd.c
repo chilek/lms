@@ -265,7 +265,10 @@ int main(int argc, char *argv[])
 				// try to connect to database again
 				if( !(g->conn = db_connect(db,user,passwd,host,port)) )
 				{
-					termination_handler(1);
+					if( quit ) 
+						termination_handler(1);
+					else 
+						exit(1);
 				}
 
 				for(i=0; i<i_no; i++)
@@ -313,17 +316,17 @@ int main(int argc, char *argv[])
 				// write reload timestamp
 				if( reload )
 					db_pexec(g->conn, "UPDATE daemonhosts SET lastreload=%NOW%, reload=0 WHERE name='?'", dhost);
+				
 				db_disconnect(g->conn);
 	
 				// exit child (reload) thread
 				if( !quit ) 
 				{
 #ifdef DEBUG1
-					syslog(LOG_INFO, "DEBUG: [lmsd] Reload child exited.");
+					syslog(LOG_INFO, "DEBUG: [lmsd] Reload finished. Exiting child.");
 #endif
 					exit(0);
 				}
-				//if( quit ) termination_handler(0);
 			}
 			
 			for(i=0; i<i_no; i++)
