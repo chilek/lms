@@ -30,7 +30,7 @@
 		</TD>
 		<TD WIDTH="97%">
 			<B>{$usernodes[usernodes].name}</B><BR>
-			<NOBR>{$usernodes[usernodes].ip} / {$usernodes[usernodes].mac}</NOBR><BR>
+			<NOBR>{$usernodes[usernodes].ip} {if $usernodes[usernodes].ip_pub} ({$usernodes[usernodes].ip_pub}) {/if} / {$usernodes[usernodes].mac}</NOBR><BR>
 			<NOBR>{$usernodes[usernodes].info|truncate:45:"..."}</NOBR>
 		</TD>
 	</TR>

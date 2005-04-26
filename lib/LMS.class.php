@@ -742,7 +742,7 @@ class LMS
 
 	function GetUserNodes($id)
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) , passwd, access, warning, info FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
+		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub , passwd, access, warning, info FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
 		{
 			$result['total'] = sizeof($result);
 			$result['ownerid'] = $id;
