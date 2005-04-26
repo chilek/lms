@@ -47,11 +47,15 @@
   --prefix=DIR          program install directory (/usr/local/bin)
   --libdir=DIR          location of database libraries (/usr/lib)
   --incdir=DIR          location of database header files (/usr/include)
+  --inifile=FILE        configuration file - disables online configuration
 </screen>
                It's required to choose one database which you will use (--with-mysql or --with-pgsql
                or --with-sqlite) and location of libraries supplied with database (--incdir,
                --libdir). You can use only one database. If you will change database, you have to
-               recompile your daemon.
+               recompile your daemon. It's also possible to force daemon to use
+	       configuration files instead of database. He can't use
+	       both of them in the same time, you'll need to choose that before
+	       compilation.
 <screen>
 # ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include
 </screen>
@@ -80,9 +84,10 @@
                   hostname command, but it can be overwrited. That name must according
                   with name specified in hosts configuration
 - c command       shell command to run before every database connection (default: empty)
--q                do reload and exit
--v                prints version and copyright info
 -i "instance[ ...]" list of instances for reload. Other instances will be ignored
+-q                do reload and exit
+-f                run in foreground (don't fork)
+-v                prints version and copyright info
 </screen>
 		Database connection options are readed also from shell variables:
 		LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
