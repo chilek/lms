@@ -33,7 +33,7 @@
   
 #include "lmsd.h"
 
-int quit = 0, port = 0;
+int quit = 0, port = 0, dontfork = 0;
 char *db, *user, *passwd, *host, *dhost;
 unsigned char *command = NULL;
 unsigned char *iopt = NULL;
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	time_t tt;
 	GLOBAL *g;
 	INSTANCE *instances;
-	int i = 0, reload = 0, i_no = 0;
+	int fval = 0, i = 0, reload = 0, i_no = 0;
 	unsigned char *inst, *instance; 
 #ifdef CONFIGFILE
 	Config *ini;
@@ -96,8 +96,9 @@ int main(int argc, char *argv[])
 	g->config_getdouble = &config_getdouble;
 
     	// daemonize
-    	if ( !quit ) {
-		int fval = fork();
+    	if ( !quit && !dontfork )
+	{
+		fval = fork();
         	switch (fval) 
 		{
 			case -1:
@@ -135,7 +136,13 @@ int main(int argc, char *argv[])
 		}
 
 		// run shell command, i.e. secure connections tuneling
-		system(command);
+		if(command!=NULL)
+		{
+#ifdef DEBUG1
+			syslog(LOG_INFO, "DEBUG: [lmsd] Executing command: %s.", command);
+#endif
+			system(command);
+		}
 
 		// try to connect to database
 		if( !(g->conn = db_connect(db,user,passwd,host,port)) )
@@ -147,7 +154,7 @@ int main(int argc, char *argv[])
 		if( !reload )
 		{
 			// check reload order
-			res = db_pquery(g->conn, "SELECT reload FROM daemonhosts WHERE name = '?' AND reload>0", dhost);
+			res = db_pquery(g->conn, "SELECT reload FROM daemonhosts WHERE name = '?' AND reload != 0", dhost);
 			if( db_nrows(res) )
 			{
 				reload = 1;
@@ -240,19 +247,18 @@ int main(int argc, char *argv[])
 #endif
 		db_disconnect(g->conn);
 
-		// forking reload - we can do a job for longer than one minute
 		if( i_no )
 		{
-			switch (fork()) 
+			// forking reload - we can do a job for longer than one minute
+			// don't fork in "quit mode"
+			fval = quit ? 1 : fork();
+			if( fval < 0 ) 
 			{
-			case -1:
         			syslog(LOG_CRIT, "Fork error. Can't reload.");
 				if ( quit ) termination_handler(1);
-            			break;
-			case 0: // continue main loop
-				if( quit ) exit(0); // quiet parent exit
-				break;
-			default:
+			}
+			else if( fval > 0 ) //child or "quit mode"
+			{
 #ifdef DEBUG1
 				syslog(LOG_INFO, "DEBUG: [lmsd] Reloading...");
 #endif
@@ -305,14 +311,19 @@ int main(int argc, char *argv[])
 				}
 				
 				// write reload timestamp
-				db_pexec(g->conn, "UPDATE daemonhosts SET lastreload=%NOW%, reload=0 WHERE name='?'", dhost);
+				if( reload )
+					db_pexec(g->conn, "UPDATE daemonhosts SET lastreload=%NOW%, reload=0 WHERE name='?'", dhost);
 				db_disconnect(g->conn);
 	
 				// exit child (reload) thread
-				if( quit ) 
-					termination_handler(0);  // write info to syslog
-				else 
+				if( !quit ) 
+				{
+#ifdef DEBUG1
+					syslog(LOG_INFO, "DEBUG: [lmsd] Reload child exited.");
+#endif
 					exit(0);
+				}
+				//if( quit ) termination_handler(0);
 			}
 			
 			for(i=0; i<i_no; i++)
@@ -321,7 +332,6 @@ int main(int argc, char *argv[])
 				free(instances[i].module);
 				free(instances[i].crontab);
 			}
-			
 		}
 		
 		if( quit ) termination_handler(0);
@@ -340,7 +350,7 @@ static void parse_command_line(int argc, char **argv)
 	
 	sscanf(REVISION, "$Id: lmsd.c,v %s", revision);
 	
-	while ( (opt = getopt(argc, argv, "qvi:h:p:d:u:H:c:")) != -1 ) 
+	while ( (opt = getopt(argc, argv, "qfvi:h:p:d:u:H:c:")) != -1 ) 
 	{
 		switch (opt) 
 		{
@@ -349,6 +359,9 @@ static void parse_command_line(int argc, char **argv)
             		exit(0);
 		case 'q':
     			quit = 1;
+            		break;
+		case 'f':
+    			dontfork = 1;
             		break;
 		case 'i':
         		iopt = optarg;
@@ -380,8 +393,9 @@ static void parse_command_line(int argc, char **argv)
 			printf(" -H daemon_host\t\thost name where runs daemon (default: `hostname`)\n");
 			printf(" -c command\t\tshell command to run before database connecting (default: empty)\n");
                 	printf(" -q \t\t\tdo a reload and quit\n");
-			printf(" -v \t\t\tprint version and copyright info\n");
+			printf(" -f \t\t\trun in foreground (don't fork)\n");
 			printf(" -i \"instance[ ...]\" list of instances to reload\n");
+			printf(" -v \t\t\tprint version and copyright info\n");
                 	exit(1);
 		}
     	}
@@ -400,12 +414,12 @@ static int crontab_match(time_t tt, char *crontab)
 	CronTime ct;
 	memset(&ct, 0, sizeof(CronTime));
 
-	if( strlen(crontab) ) 
+	if( strlen(crontab) )
 	{
 		if( cron_parse_time(&ct, crontab) != PARSE_OK )
 			return 0;
-		if( !cron_match_time(&ct, &tt) )
-			return 0;
+		if( cron_match_time(&ct, &tt) )
+			return 1;
 	}
-	return 1;		
+	return 0;
 }

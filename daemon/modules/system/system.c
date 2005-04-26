@@ -53,7 +53,6 @@ struct system_module * init(GLOBAL *g, MODULE *m)
 	s->base.reload = (void (*)(GLOBAL *, MODULE *)) &reload;
 
 	s->command = strdup(g->config_getstring(s->base.ini, s->base.instance, "command", ""));
-	
 #ifdef DEBUG1
 	syslog(LOG_INFO,"DEBUG: [%s/system] initialized", s->base.instance);
 #endif	
