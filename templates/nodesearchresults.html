@@ -50,8 +50,8 @@
 			<img src="img/empty.gif" align="absmiddle" ALT="" border="0" width="1" height="16">({$nodelist[nodelist].id|string_format:"%04d"})<BR>
 			<img src="img/empty.gif" align="absmiddle" ALT="" border="0" width="1" height="16"><font class="blend">({$nodelist[nodelist].ownerid|string_format:"%04d"})</font>
 		</TD>
-		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top">
-			<img src="img/ip.gif" border="0" ALT="" align="absmiddle">&nbsp;{$nodelist[nodelist].ip}{if $nodelist[nodelist].ip_pub != "0.0.0.0"}({$nodelist[nodelist].ip_pub}){/if}<BR>
+		<TD width="1%" onClick="return self.location.href='?m=nodeinfo&id={$nodelist[nodelist].id}';" valign="top" nowrap>
+			<img src="img/ip.gif" border="0" ALT="" align="absmiddle">&nbsp;{$nodelist[nodelist].ip}{if $nodelist[nodelist].ip_pub != "0.0.0.0"} ({$nodelist[nodelist].ip_pub}){/if}<BR>
 			<img src="img/mac.gif" border="0" ALT="" align="absmiddle">&nbsp;{$nodelist[nodelist].mac}
 		</TD>
 		<TD class="fright" width="1%">
