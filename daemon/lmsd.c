@@ -394,10 +394,10 @@ static void parse_command_line(int argc, char **argv)
 			printf(" -u db_user\t\tdatabase user (default: 'lms')\n");
 			printf(" -p password\t\tdatabase password (default: '')\n");
 			printf(" -H daemon_host\t\thost name where runs daemon (default: `hostname`)\n");
-			printf(" -c command\t\tshell command to run before database connecting (default: empty)\n");
+			printf(" -c command\t\tshell command to run before database connecting\n\t\t\t(default: empty)\n");
                 	printf(" -q \t\t\tdo a reload and quit\n");
 			printf(" -f \t\t\trun in foreground (don't fork)\n");
-			printf(" -i \"instance[ ...]\" list of instances to reload\n");
+			printf(" -i \"instance[ ...]\"\tlist of instances to reload\n");
 			printf(" -v \t\t\tprint version and copyright info\n");
                 	exit(1);
 		}
