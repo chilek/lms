@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <syslog.h>
+
 #include "util.h"
 
 /* Replaces each instance of string 'old' on the string 'string' with string 'new' */
@@ -85,13 +86,3 @@ unsigned char * str_concat(const unsigned char *s1, const unsigned char *s2)
 	return(ret);
 }
 
-/* termination signals handling */
-void termination_handler(int signum)
-{
-	if(signum)
-		syslog(LOG_ERR, "LMS Daemon exited abnormally.");
-	else
-		syslog(LOG_INFO, "LMS Daemon exited.");
-		
-	exit(signum);
-}

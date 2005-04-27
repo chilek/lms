@@ -11,7 +11,4 @@ unsigned char * str_save(unsigned char *, const unsigned char*);
 /* Concatenates strings */
 unsigned char * str_concat(const unsigned char *, const unsigned char *);
 
-/* Termination signals handling */
-void termination_handler(int);
-
 #endif
