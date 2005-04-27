@@ -36,7 +36,8 @@
 #include "lmsd.h"
 
 int quit = 0, port = 0, dontfork = 0;
-char *db, *user, *passwd, *host, *dhost;
+char *db, *user, *passwd;
+char host[255], dhost[255];
 unsigned char *command = NULL;
 unsigned char *iopt = NULL;
 struct sigaction sa, orig;
@@ -58,17 +59,14 @@ int main(int argc, char *argv[])
 #ifdef CONFIGFILE
 	Config *ini;
 #endif
-	host = (char *) malloc(sizeof(char)*255);  	//database
-	dhost = (char *) malloc(sizeof(char)*255);	//daemon
-
     	syslog(LOG_INFO, "LMS Daemon started.");
 
     	// check environment	
-	if( getenv("LMSDBPASS") ) passwd = getenv("LMSDBPASS"); else passwd = "";
-	if( getenv("LMSDBNAME") ) db = getenv("LMSDBNAME"); else db = "lms";
-	if( getenv("LMSDBUSER") ) user = getenv("LMSDBUSER"); else user = "lms";
-	if( getenv("LMSDBHOST") ) host = getenv("LMSDBHOST"); else host = "localhost";
-	if( getenv("LMSDBPORT") ) port = atoi(getenv("LMSDBPORT"));
+	passwd = ( getenv("LMSDBPASS") ? getenv("LMSDBPASS") : "" );
+	db = ( getenv("LMSDBNAME") ? getenv("LMSDBNAME") : "lms" );
+	user = ( getenv("LMSDBUSER") ? getenv("LMSDBUSER") : "lms" );
+	port = ( getenv("LMSDBPORT") ? atoi(getenv("LMSDBPORT")) : 0 );
+	if( getenv("LMSDBHOST") ) strcpy(host, getenv("LMSDBHOST")); else strcpy(host, "localhost");
 	gethostname(dhost, 255);
 
     	// read command line args
@@ -401,7 +399,7 @@ static void parse_command_line(int argc, char **argv)
 			user = optarg;
 			break;
 		case 'H':
-			dhost = optarg;
+			strcpy(dhost, optarg);
 			break;
 		case 'c':
 			command = optarg;
