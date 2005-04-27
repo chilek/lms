@@ -45,6 +45,7 @@ static void parse_command_line(int argc, char **argv);
 static void free_module(MODULE *module);
 static int crontab_match(time_t tt, char *crontab);
 void sig_child(int signum);
+void termination_handler(int signum);
 
 int main(int argc, char *argv[])
 {
@@ -451,4 +452,15 @@ void sig_child(int signum)
 	if(signum != SIGCHLD ) return;
 	
 	while( waitpid(-1, NULL, WNOHANG) > 0 )	continue;
+}
+
+/* termination signals handling */
+void termination_handler(int signum)
+{
+	if(signum)
+		syslog(LOG_ERR, "LMS Daemon exited abnormally.");
+	else
+		syslog(LOG_INFO, "LMS Daemon exited.");
+		
+	exit(signum);
 }
