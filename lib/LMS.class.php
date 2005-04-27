@@ -565,6 +565,7 @@ class LMS
 
 			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid','id');
 			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid','id');
+			$onlines = $this->DB->GetAllByKey('SELECT MAX(lastonline) AS online, ownerid AS id FROM nodes GROUP BY ownerid','id');
 
 			foreach($userlist as $idx => $row)
 			{
@@ -588,7 +589,11 @@ class LMS
 					$over += $userlist[$idx]['balance'];
 				elseif($userlist[$idx]['balance'] < 0)
 					$below += $userlist[$idx]['balance'];
+					
+				if($onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
+					$userlist[$idx]['online'] = 1;
 			}
+
 			$userlist['total']=sizeof($userlist);
 			$userlist['state']=$state;
 			$userlist['order']=$order;
@@ -669,9 +674,10 @@ class LMS
 
 			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid','id');
 			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid','id');
-			if($online)
-				$onlines = $this->DB->GetAllByKey('SELECT MAX(lastonline) AS online, ownerid AS id FROM nodes GROUP BY ownerid','id');
+			$onlines = $this->DB->GetAllByKey('SELECT MAX(lastonline) AS online, ownerid AS id FROM nodes GROUP BY ownerid','id');
+			
 			$userlist2 = NULL;
+			
 			foreach($userlist as $idx => $row)
 			{
 				$userlist[$idx]['tariffvalue'] = round($week[$row['id']]['value']+$month[$row['id']]['value']+$quarter[$row['id']]['value']+$year[$row['id']]['value'], 2);
@@ -699,9 +705,11 @@ class LMS
 				if ($disabled && $userlist[$idx]['nodeac'] != 1)
 					$userlist2[] = $userlist[$idx];
 					
-				if($online)
-					if($onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
-						$userlist2[] = $userlist[$idx];
+				if($onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
+					$userlist[$idx]['online'] = 1;
+				
+				if($online && $userlist[$idx]['online'])
+					$userlist2[] = $userlist[$idx];
 				
 				if($indebted)
 					if($userlist[$idx]['balance'] < 0)
