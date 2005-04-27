@@ -80,6 +80,30 @@
 		</TD>
 		<TD valign="top" align="right">
 			({$userlist[userlist].id|string_format:"%04d"})<BR>
+			{if $userlist[userlist].account}
+				<IMG SRC="img/node{if !$userlist[userlist].online}_off{/if}.gif" align="absmiddle" ALT="" border="0" {tip 0=$userlist[userlist].id dynpopup='?m=nodelistshort&id=$0'}></A>
+			{/if}
+		</TD>
+		<TD align="right" valign="top" NOWRAP>
+			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|money_format}{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|money_format}</FONT></NOBR>
+		</TD>		
+		<TD align="right" class="fright">
+			<NOBR>
+			{if $userlist[userlist].balance < 0}
+				<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" OnClick="return confirmLink(this, '{t 0=$userlist[userlist].username|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');"><IMG src="img/invoice_pay.gif" border="0" align="absmiddle" ALT="[ {t}Account{/t} ]"></A>
+			{/if}
+			{if $userlist[userlist].account}
+				{if $userlist[userlist].status eq 3}
+					{if $userlist[userlist].nodeac eq 1}
+						<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}"><IMG SRC="img/access.gif" align="absmiddle" ALT="[ {t}Disconnect All{/t} ]" border="0"></A>
+					{else}
+						{if $userlist[userlist].nodeac eq 2}
+							<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}"><IMG SRC="img/mixaccess.gif" align="absmiddle" ALT="[ {t}Disconnect All{/t} ]" border="0"></A>
+						{else}<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}&access=1"><IMG SRC="img/noaccess.gif" align="absmiddle" ALT="[ {t}Connect All{/t} ]" border="0"></A>
+						{/if}
+					{/if}
+				{/if}
+			{/if}
 			{if $userlist[userlist].warncount}
 				{if $userlist[userlist].status eq 3}
 					{if $userlist[userlist].nodewarn eq 1}
@@ -91,22 +115,6 @@
 						{/if}
 					{/if}
 				{/if}
-			{/if}		
-			{if $userlist[userlist].account}
-				{if $userlist[userlist].nodeac neq 0}
-					<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}&access=0" {tip 0=$userlist[userlist].id dynpopup='?m=nodelistshort&id=$0'}><IMG SRC="img/node_on.gif" align="absmiddle" ALT="[ {t}Disconnect All{/t} ]" border="0"></A>
-				{else}
-					<A HREF="?m=nodeset&ownerid={$userlist[userlist].id}&access=1" {tip 0=$userlist[userlist].id dynpopup='?m=nodelistshort&id=$0'}><IMG SRC="img/node_off.gif" align="absmiddle" ALT="[ {t}Connect All{/t} ]" border="0"></A>
-				{/if}
-			{/if}
-		</TD>
-		<TD align="right" valign="top" NOWRAP>
-			<NOBR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0">{if $userlist[userlist].balance < 0}<font color="#ff0000"><B>{/if}{$userlist[userlist].balance|money_format}{if $userlist[userlist].balance < 0}</FONT></B>{/if}<BR><IMG src="img/empty.gif" width="1" height="16" ALIGN="absmiddle" ALT="" BORDER="0"><FONT CLASS="blend">{$userlist[userlist].tariffvalue|money_format}</FONT></NOBR>
-		</TD>		
-		<TD align="right" class="fright">
-			<NOBR>
-			{if $userlist[userlist].balance < 0}
-				<A HREF="?m=userbalanceok&id={$userlist[userlist].id}" OnClick="return confirmLink(this, '{t 0=$userlist[userlist].username|escape:"javascript"|escape:"html"}Are you sure, you want to account ALL debts of customer \'$0\'?{/t}');"><IMG src="img/invoice_pay.gif" border="0" align="absmiddle" ALT="[ {t}Account{/t} ]"></A>
 			{/if}
 			<A href="?m=userdel&id={$userlist[userlist].id}" OnCLick="return confirmLink(this, '{t 0=$userlist[userlist].username|escape:"javascript"|escape:"html"}Are you sure, you want to remove customer \'$0\' from database?\n\nIf that customer have some nodes, they will be also removed and data definitely lost!{/t}');"><IMG src="img/delete.gif" align="absmiddle" border="0" ALT="[ {t}Delete{/t} ]"></A> 
 			<A href="?m=useredit&id={$userlist[userlist].id}"><IMG src="img/edit.gif" border="0" align="absmiddle" ALT="[ {t}Edit{/t} ]"></A> 

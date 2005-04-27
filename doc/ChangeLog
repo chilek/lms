@@ -14,6 +14,8 @@ version x.x.x (xx/xx/xxxx):
     zombies (alec/G.Stanislawski)
   - BTS#0000338: can specify network device while node addition (alec)
   - lmsd: fixed -h option segfault (alec)
+  - on customers list added nodes online status and icon for nodes connection 
+    status change (alec)
     
 version 1.5.6 Baal (24/04/2005):
 
