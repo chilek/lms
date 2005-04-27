@@ -742,10 +742,9 @@ class LMS
 
 	function GetUserNodes($id)
 	{
-		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub , passwd, access, warning, info FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
+		if($result = $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, passwd, access, warning, info, ownerid FROM nodes WHERE ownerid=? ORDER BY name ASC', array($id)))
 		{
 			$result['total'] = sizeof($result);
-			$result['ownerid'] = $id;
 		}
 		return $result;
 	}
@@ -1271,7 +1270,7 @@ class LMS
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS('nodes');
-		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, creationdate, access, warning, info) VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?)', array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ipaddr_pub'],$nodedata['ownerid'],$nodedata['passwd'],$this->AUTH->id, $nodedata['access'], $nodedata['warning'], $nodedata['info'])))
+		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, creationdate, access, warning, info, netdev) VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?)', array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ipaddr_pub'],$nodedata['ownerid'],$nodedata['passwd'],$this->AUTH->id, $nodedata['access'], $nodedata['warning'], $nodedata['info'], ($nodedata['netdev'] ? $nodedata['netdev'] : 0))))
 			return $this->DB->GetOne('SELECT MAX(id) FROM nodes');
 		else
 			return FALSE;
@@ -2583,6 +2582,11 @@ class LMS
 		return $netdevlist;
 	}
 
+	function GetNetDevNames()
+	{
+		return $this->DB->GetAll('SELECT id, name, location, producer FROM netdevices ORDER BY name');
+	}
+
 	function GetNotConnectedDevices($id)
 	{
 		$query = 'SELECT id, name, location, description, producer, model, serialnumber, ports FROM netdevices WHERE id!='.$id;
@@ -2700,7 +2704,7 @@ class LMS
 
 	function GetNetDevIPs($id)
 	{
-		return $this->DB->GetAll('SELECT id, name, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pubmac, access, info FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
+		return $this->DB->GetAll('SELECT id, name, mac, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pubmac, access, info FROM nodes WHERE ownerid=0 AND netdev=?', array($id));
 	}
 	
 	/*

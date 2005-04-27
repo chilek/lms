@@ -94,6 +94,13 @@ if(isset($nodedata))
 	elseif($LMS->GetUserStatus($nodedata['ownerid']) != 3)
 		$error['user'] = trans('Selected customer is not connected!');
 
+	if($nodedata['netdev'])
+	{
+		$netdev = $LMS->GetNetDev($nodedata['netdev']); 
+		if($netdev['ports'] <= $netdev['takenports']) 
+			$error['netdev'] = trans('Device has not free ports!');
+	}
+
 	if(!$error)
 	{
 		$nodeid = $LMS->NodeAdd($nodedata);
@@ -104,7 +111,9 @@ if(isset($nodedata))
 		unset($nodedata);
 		$nodedata['reuse'] = '1';
 	}
-
+	
+	if($nodedata['ipaddr_pub']=='0.0.0.0')
+		$nodedata['ipaddr_pub'] = '';
 }
 
 if($LMS->UserExists($_GET['ownerid']) < 0)
@@ -143,13 +152,12 @@ if($nodedata['ownerid'])
 	$SMARTY->assign('otherusergroups', $LMS->GetGroupNamesWithoutUser($nodedata['ownerid']));
 }
 
+$SMARTY->assign('netdevices',$LMS->GetNetDevNames());
 $SMARTY->assign('tariffs',$tariffs);
 $SMARTY->assign('users',$users);
 $SMARTY->assign('error',$error);
 $SMARTY->assign('userinfo',$userinfo);
 $SMARTY->assign('nodedata',$nodedata);
-
 $SMARTY->display('nodeadd.html');
 
 ?>
-
