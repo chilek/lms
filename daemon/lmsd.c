@@ -30,6 +30,8 @@
 #include <stdio.h>     
 #include <string.h>
 #include <dlfcn.h>  
+#include <sys/types.h>
+#include <sys/wait.h>
   
 #include "lmsd.h"
 
@@ -37,10 +39,12 @@ int quit = 0, port = 0, dontfork = 0;
 char *db, *user, *passwd, *host, *dhost;
 unsigned char *command = NULL;
 unsigned char *iopt = NULL;
+struct sigaction sa, orig;
 
 static void parse_command_line(int argc, char **argv);
 static void free_module(MODULE *module);
 static int crontab_match(time_t tt, char *crontab);
+void sig_child(int signum);
 
 int main(int argc, char *argv[])
 {
@@ -94,6 +98,12 @@ int main(int argc, char *argv[])
 	g->config_getint = &config_getint;
 	g->config_getbool = &config_getbool;
 	g->config_getdouble = &config_getdouble;
+
+	// catch SIGCHLD to catch zombies
+	sa.sa_handler = sig_child;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(SIGCHLD, &sa, &orig);
 
     	// daemonize
     	if ( !quit && !dontfork )
@@ -250,15 +260,21 @@ int main(int argc, char *argv[])
 		if( i_no )
 		{
 			// forking reload - we can do a job for longer than one minute
-			// don't fork in "quit mode"
-			fval = quit ? 1 : fork();
+			if( quit )
+				fval = 0; // don't fork if "quit mode"
+			else
+				fval = fork();
+			
 			if( fval < 0 ) 
 			{
         			syslog(LOG_CRIT, "Fork error. Can't reload.");
 				if ( quit ) termination_handler(1);
 			}
-			else if( fval > 0 ) //child or "quit mode"
+			else if( fval == 0 ) // child or "quit mode"
 			{
+				// restore old handler so we can wait for childs executed by modules
+				if( ! quit )
+					sigaction(SIGCHLD, &orig, NULL);
 #ifdef DEBUG1
 				syslog(LOG_INFO, "DEBUG: [lmsd] Reloading...");
 #endif
@@ -328,6 +344,8 @@ int main(int argc, char *argv[])
 					exit(0);
 				}
 			}
+			else 
+				sleep(10); // it's important to sleep parent
 			
 			for(i=0; i<i_no; i++)
 			{ 
@@ -425,4 +443,12 @@ static int crontab_match(time_t tt, char *crontab)
 			return 1;
 	}
 	return 0;
+}
+
+/* signal handler for SIGCHLD reaps zombie children */
+void sig_child(int signum)
+{
+	if(signum != SIGCHLD ) return;
+	
+	while( waitpid(-1, NULL, WNOHANG) > 0 )	continue;
 }
