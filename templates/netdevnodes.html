@@ -19,7 +19,6 @@
 			&nbsp;	
 		</TD>
 	</TR>
-
 	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=netcomplist loop=$netcomplist start=$start}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD width="98%" CLASS="fleft" onClick="return self.location.href='?m=nodeinfo&id={$netcomplist[netcomplist].id}';">

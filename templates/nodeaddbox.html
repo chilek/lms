@@ -27,10 +27,10 @@
 			<IMG SRC="img/ip_pub.gif" BORDER="0" ALT="{t}Pub. IP address:{/t}">
 		</TD>
 		<TD WIDTH="1%" NOWRAP>
-			<B>{t}IP address:{/t}</B>
+			<B>{t}Pub. IP address:{/t}</B>
 		</TD>
 		<TD WIDTH="98%" CLASS="FRIGHT">
-			<INPUT TYPE="TEXT" NAME="nodedataipaddr_pub" VALUE="{$nodedata.ipaddr_pub}" {tip text="Enter IP address or select it from list" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr_pub);" {tip text="Enter or select IP address from list"}>&raquo;&raquo;&raquo;</A>
+			<INPUT TYPE="TEXT" NAME="nodedataipaddr_pub" VALUE="{$nodedata.ipaddr_pub}" {tip text="Enter IP address or select it from list (optional)" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.nodeadd.nodedataipaddr_pub);" {tip text="Enter or select IP address from list (optional)"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -98,6 +98,24 @@
 			</SELECT>
 		</TD>
 	</TR>
+	{if $netdevices}
+	<TR CLASS="LIGHT">
+		<TD WIDTH="1%" CLASS="FLEFT">
+			<IMG SRC="img/netdev.gif" BORDER="0" ALT="{t}Net device:{/t}">
+		</TD>
+		<TD WIDTH="1%" NOWRAP>
+			<B>{t}Net device:{/t}</B>
+		</TD>
+		<TD WIDTH="98%" CLASS="FRIGHT">
+			<SELECT SIZE="1" NAME="nodedata[netdev]" {tip text="Select network device (optional)" trigger="netdev"}>
+				<OPTION VALUE="0"{if !$nodedata.netdev} SELECTED{/if}>{t}- select device -{/t}</OPTION>
+				{section name=netdevices loop=$netdevices}
+				<OPTION VALUE="{$netdevices[netdevices].id}"{if $netdevices[netdevices].id==$nodedata.netdev} SELECTED{/if}>{$netdevices[netdevices].name} {$netdevices[netdevices].producer}{if $netdevices[netdevices].location} / {$netdevices[netdevices].location}{/if}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	{/if}
 	<TR CLASS="LIGHT">
 		<TD WIDTH="1%" CLASS="FLEFT">
 			<IMG SRC="img/info.gif" BORDER="0" ALT="{t}Description:{/t}">

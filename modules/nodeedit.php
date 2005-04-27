@@ -162,6 +162,9 @@ if(isset($_POST['nodeedit']))
 		$LMS->NodeUpdate($nodeedit);
 		header('Location: ?m=nodeinfo&id='.$nodeedit['id']);
 	}
+
+	if($nodeedit['ipaddr_pub']=='0.0.0.0')
+		$nodeinfo['ipaddr_pub'] = '';
 }
 
 if($userinfo['status']==3) $userinfo['shownodes'] = TRUE;
@@ -172,10 +175,7 @@ $balancelist = $LMS->GetUserBalanceList($ownerid);
 $usergroups = $LMS->UsergroupGetForUser($ownerid);
 $otherusergroups = $LMS->GetGroupNamesWithoutUser($ownerid);
 $contractlist = $LMS->GetContractList();
-$netdevices = $LMS->GetNetDevList();
-unset($netdevices['total']);
-unset($netdevices['direction']);
-unset($netdevices['order']);
+$netdevices = $LMS->GetNetDevNames();
 
 $SMARTY->assign('netdevices',$netdevices);
 $SMARTY->assign('balancelist',$balancelist);

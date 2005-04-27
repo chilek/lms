@@ -67,13 +67,9 @@ if(!isset($_GET['ownerid']))
 	$SESSION->save('backto', $SESSION->get('backto').'&ownerid='.$ownerid);
 
 if($nodeinfo['netdev'] == 0) 
-	$netdevices = $LMS->GetNetDevList();
+	$netdevices = $LMS->GetNetDevNames();
 else
 	$netdevices = $LMS->GetNetDev($nodeinfo['netdev']);
-
-unset($netdevices['total']);
-unset($netdevices['order']);
-unset($netdevices['direction']);
 
 $layout['pagetitle'] = trans('Node Info: $0',$nodeinfo['name']);
 

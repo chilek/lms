@@ -24,7 +24,7 @@
 			<IMG SRC="img/ip_pub.gif" BORDER="0" ALT="{t}Pub. IP address:{/t}">
 		</TD>
 		<TD WIDTH="99%" CLASS="FRIGHT" COLSPAN="2">
-                       <INPUT TYPE="TEXT" NAME="nodeeditipaddrpub" {if $nodeinfo.ip_pub != "0.0.0.0"}VALUE="{$nodeinfo.ip_pub}"{/if} {tip text="Enter IP address or select it from list" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddrpub,{$nodeinfo.netid});" {tip text="Select IP address from list"}>&raquo;&raquo;&raquo;</A>
+                       <INPUT TYPE="TEXT" NAME="nodeeditipaddrpub" {if $nodeinfo.ip_pub != "0.0.0.0"}VALUE="{$nodeinfo.ip_pub}"{/if} {tip text="Enter IP address or select it from list" trigger="ipaddr_pub"}> <a href="javascript: void(0);" onClick="return ipchoosewin(document.editnode.nodeeditipaddrpub,{$nodeinfo.netid});" {tip text="Select IP address from list (optional)"}>&raquo;&raquo;&raquo;</A>
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
