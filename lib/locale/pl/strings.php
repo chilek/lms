@@ -1458,5 +1458,6 @@ $_LANG['Your PHP do not support Graphic Library required for map generation!'] =
 $_LANG['Your unique installation ID:'] = 'Twój unikalny nr rejestracyjny:';
 $_LANG['You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.'] = 'Z pewnością wraz z niniejszym programem otrzymałeś też egzemplarz Powszechnej Licencji Publicznej GNU; jeśli nie - napisz do Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.';
 $_LANG['Zip:'] = 'Kod:';
+$_LANG['viewing invoices'] = 'Podgląd faktur';
 
 ?>
