@@ -5,23 +5,23 @@
 <TABLE cellpadding="3" WIDTH="100%">
 	<TR bgcolor="#CEBD9B" {tip text="Click on column's name to change sorting order"}>
 		<TD width="97%" class="fleftu">
-			<img src="img/user.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=username{if $userlist.direction eq "asc" && $userlist.order eq "username"},desc{/if}">{t}Name/Surname and Forename:{/t}</A></B> {if $userlist.order eq "username"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/home.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$userlist.state}&o=address{if $userlist.direction eq "asc" && $userlist.order eq "address"},desc{/if}">{t}Address:{/t}</A> {if $userlist.order eq "address"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<img src="img/user.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$listdata.state}&o=username{if $listdata.direction eq "asc" && $listdata.order eq "username"},desc{/if}">{t}Name/Surname and Forename:{/t}</A></B> {if $listdata.order eq "username"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<img src="img/home.gif" ALT="" align="absmiddle">&nbsp;<a href="?m=usersearch&search&s={$listdata.state}&o=address{if $listdata.direction eq "asc" && $listdata.order eq "address"},desc{/if}">{t}Address:{/t}</A> {if $listdata.order eq "address"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD align="right" width="1%" class="fbt" valign="top">
-			<a href="?m=usersearch&search&s={$userlist.state}&o=id{if $userlist.direction eq "asc" && $userlist.order eq "id"},desc{/if}">{t}ID:{/t}</A></B> {if $userlist.order eq "id"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<a href="?m=usersearch&search&s={$listdata.state}&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">{t}ID:{/t}</A></B> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
 			{t}Services:{/t}
 		</TD>
 		<TD width="1%" class="fbt" ALIGN="right" valign="top">
-			<a href="?m=usersearch&search&s={$userlist.state}&o=balance{if $userlist.direction eq "asc" && $userlist.order eq "balance"},desc{/if}">{t}Balance:{/t}</A>&nbsp;{if $userlist.order eq "balance"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<a href="?m=usersearch&search&s={$userlist.state}&o=tariff{if $userlist.direction eq "asc" && $userlist.order eq "tariff"},desc{/if}">{t}Subscription:{/t}</A>&nbsp;{if $userlist.order eq "tariff"}<IMG SRC="img/{if $userlist.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<a href="?m=usersearch&search&s={$listdata.state}&o=balance{if $listdata.direction eq "asc" && $listdata.order eq "balance"},desc{/if}">{t}Balance:{/t}</A>&nbsp;{if $listdata.order eq "balance"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<a href="?m=usersearch&search&s={$listdata.state}&o=tariff{if $listdata.direction eq "asc" && $listdata.order eq "tariff"},desc{/if}">{t}Subscription:{/t}</A>&nbsp;{if $listdata.order eq "tariff"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD width="1%" class="frightu" align="right" nowrap>
-			<NOBR><B>{t 0=$userlist.total|default:"0"}Total: $0{/t}</B></NOBR>
+			<NOBR><B>{t 0=$listdata.total|default:"0"}Total: $0{/t}</B></NOBR>
 		</TD>
 	</TR>
-	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=userlist loop=$userlist}{assign var="userlistshown" value="yes"}
-	{if $userlist[userlist].id}
+	{cycle values="#DFD5BD,#EBE4D6" print=false}
+	{section name=userlist loop=$userlist}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')"{if $userlist[userlist].nodeac eq 0} class="blend"{/if}>
 		<TD onClick="return self.location.href='?m=userinfo&id={$userlist[userlist].id}';" class="fleft" valign="top">
 			<IMG src="img/{if $userlist[userlist].status eq 1}unk{/if}{if $userlist[userlist].status eq 2}wait{/if}{if $userlist[userlist].status eq 3}user{/if}.gif" ALT="" align="absmiddle" border="0">{if $userlist[userlist].info} <img src="img/usercomment.gif" ALT="" align="absmiddle" {tip text=$userlist[userlist].info}>{/if} <A name="{$userlist[userlist].id}" {tip 0=$userlist[userlist].id dynpopup='?m=userinfoshort&id=$0'}><B>{$userlist[userlist].username}</B>{if $userlist[userlist].deleted} (<FONT COLOR="RED">{t}deleted customer{/t}</FONT>){/if}</A><BR>
@@ -70,9 +70,7 @@
 			<A href="?m=userinfo&id={$userlist[userlist].id}"><IMG src="img/info.gif" border="0" align="absmiddle" ALT="[ {t}Info{/t} ]"></A></NOBR>
 		</TD>
 	</TR>
-	{/if}
-	{/section}
-	{if $userlistshown neq "yes"}
+	{sectionelse}
 	<TR>
 		<TD colspan="4" align="center" class="flr">
 			<p>&nbsp;</p>
@@ -82,7 +80,7 @@
 			<p>&nbsp;</p>
 		</TD>
 	</TR>
-	{/if}
+	{/section}
 	<TR bgColor="#DFD5BD">
 		<TD class="fleftu"" align="right">
 			&nbsp;
@@ -91,7 +89,7 @@
 			<B>{t}Outstandings{/t}:<BR>
 			{t}Overcharges{/t}:</B>
 		</TD>
-		<TD class="fbt" align="right"> 
+		<TD class="fbt" align="right" nowrap>
 			<B>{$userlist.below|money_format}<BR>
 			{$userlist.over|money_format}</B>
 		</TD>

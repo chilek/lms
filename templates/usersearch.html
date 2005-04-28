@@ -29,7 +29,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{t}Name/Surname and forename:{/t}</B></NOBR>
+			<IMG src="img/user.gif" align="absmiddle" border="0" alt=""> <B>{t}Name/Surname and forename:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[username]" VALUE="{$search.username}">
@@ -37,7 +37,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{t}Address:{/t}</B></NOBR>
+			<IMG src="img/home.gif" align="absmiddle" border="0" alt=""> <B>{t}Address:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[address]" VALUE="{$search.address}">
@@ -45,23 +45,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{t}Phone:{/t}</B></NOBR>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[phone]" VALUE="{$search.phone}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{t}E-mail:{/t}</B></NOBR>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[email]" VALUE="{$search.email}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{t}City:{/t}</B></NOBR>
+			<IMG src="img/home.gif" align="absmiddle" border="0" alt=""> <B>{t}City:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[city]" VALUE="{$search.city}">
@@ -69,7 +53,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{t}Postcode:{/t}</B></NOBR>
+			<IMG src="img/home.gif" align="absmiddle" border="0" alt=""> <B>{t}Postcode:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[zip]" VALUE="{$search.zip}">
@@ -77,7 +61,23 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{t}TEN:{/t}</B></NOBR>
+			<IMG src="img/phone.gif" align="absmiddle" border="0" alt=""> <B>{t}Phone:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[phone]" VALUE="{$search.phone}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/mail.gif" align="absmiddle" border="0" alt=""> <B>{t}E-mail:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[email]" VALUE="{$search.email}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/empty.gif" width="16" align="absmiddle" border="0" alt=""> <B>{t}TEN:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[nip]" VALUE="{$search.nip}">
@@ -85,7 +85,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{t}IM:{/t}</B></NOBR>
+			<IMG src="img/gg.gif" align="absmiddle" border="0" alt=""> <B>{t}IM:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[gguin]" VALUE="{$search.gguin}">
@@ -93,7 +93,7 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{t}SSN:{/t}</B></NOBR>
+			<IMG src="img/empty.gif" width="16" align="absmiddle" border="0" alt=""> <B>{t}SSN:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[pesel]" VALUE="{$search.pesel}">
@@ -101,14 +101,44 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<NOBR><B>{t}State:{/t}</B></NOBR>
+			<IMG src="img/network.gif" align="absmiddle" border="0" alt=""> <B>{t}Network:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
-			<SELECT SIZE="1" NAME="search[s]">
+			<SELECT SIZE="1" NAME="n">
+				<OPTION value="0" {if !$listdata.network} SELECTED {/if}>{t}- all networks -{/t}</OPTION>
+				{section name=networks loop=$networks}
+				<OPTION value="{$networks[networks].id}" {if $listdata.network eq $networks[networks].id} SELECTED {/if}>{$networks[networks].name|truncate:50:"..."}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/group.gif" align="absmiddle" border="0" alt=""> <B>{t}Group:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<SELECT SIZE="1" NAME="g">
+				<OPTION value="" {if !$listdata.usergroup} SELECTED {/if}>{t}- all groups -{/t}</OPTION>
+				{section name=usergroups loop=$usergroups}
+				<OPTION value="{$usergroups[usergroups].id}" {if $listdata.usergroup eq $usergroups[usergroups].id} SELECTED {/if}>{$usergroups[usergroups].name|truncate:50:"..."}</OPTION>
+				{/section}
+			</SELECT>
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/empty.gif" width="16" align="absmiddle" border="0" alt=""> <B>{t}State:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<SELECT SIZE="1" NAME="s">
 				<OPTION VALUE="0">{t}- all -{/t}</OPTION>
 				<OPTION VALUE="3">{t}connected{/t}</OPTION>
 				<OPTION VALUE="2">{t}waiting{/t}</OPTION>
 				<OPTION VALUE="1">{t}interested{/t}</OPTION>
+				<OPTION VALUE="4">{t}deleted {/t}</OPTION>
+				<OPTION VALUE="5">{t}disconnected {/t}</OPTION>
+				<OPTION VALUE="6">{t}in debt{/t}</OPTION>
+				<OPTION VALUE="7">{t}online{/t}</OPTION>
 			</SELECT>
 		</TD>
 	</TR>
@@ -126,4 +156,4 @@
 document.forms['usersearch'].elements['search[username]'].focus();
 //-->
 </SCRIPT>
-{include file="footer.html"}
+{include file="footer.html"}			

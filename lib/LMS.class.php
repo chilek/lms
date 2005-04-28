@@ -509,102 +509,7 @@ class LMS
 			return FALSE;
 	}
 
-	function SearchUserList($order=NULL,$state=NULL,$search=NULL)
-	{
-		list($order,$direction) = sscanf($order, '%[^,],%s');
-
-		($direction != 'desc') ? $direction = 'asc' : $direction = 'desc';
-
-		switch($order)
-		{
-			case 'id':
-				$sqlord = 'ORDER BY deleted ASC, id';
-			break;
-			case 'address':
-				$sqlord = 'ORDER BY deleted ASC, address';
-			break;
-			case 'balance':
-				$sqlord = 'ORDER BY deleted ASC, balance';
-			break;
-			default:
-				$sqlord = 'ORDER BY deleted ASC, '.$this->DB->Concat('UPPER(lastname)',"' '",'name');
-			break;
-		}
-
-		if(sizeof($search))
-			foreach($search as $key => $value)
-			{
-				$value = str_replace(' ','%',trim($value));
-				if($value!='')
-				{
-					$value = "'%".$value."%'";
-					if($key=='phone')
-						$searchargs[] = "(phone1 ?LIKE? $value OR phone2 ?LIKE? $value OR phone3 ?LIKE? $value)";
-					elseif($key=='username')
-						$searchargs[] = $this->DB->Concat('UPPER(lastname)',"' '",'name').' ?LIKE? '.$value;
-					elseif($key!='s')
-						$searchargs[] = $key.' ?LIKE? '.$value;
-				}
-			}
-
-		if($searchargs)
-			$sqlsarg = implode(' AND ',$searchargs);
-
-		if($state>3)
-			$state = 0;
-			
-		$over = 0; $below = 0;
-
-		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
-		if($userlist = $this->DB->GetAll('SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, deleted, status, address, zip, city, info, message, COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance FROM users LEFT JOIN cash ON users.id = cash.userid AND (cash.type = 3 OR cash.type = 4) WHERE 1=1 '.($state !=0 ? " AND status = '".$state."'":'').($sqlsarg !='' ? ' AND '.$sqlsarg :'').' GROUP BY users.id, deleted, lastname, users.name, status, address, zip, city, info, message '.($sqlord !='' ? $sqlord.' '.$direction:'')))
-		{
-			$week = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE value * discount / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)*4 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 0 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
-			$month = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE value * discount / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END) AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 1 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
-			$quarter = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE value * discount / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)/3 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 2 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
-			$year = $this->DB->GetAllByKey('SELECT users.id AS id, SUM(CASE suspended WHEN 0 THEN (CASE discount WHEN 0 THEN value ELSE value * discount / 100 END) ELSE (CASE discount WHEN 0 THEN value * '.$suspension_percentage.' / 100 ELSE value * discount * '.$suspension_percentage.' / 10000 END) END)/12 AS value FROM assignments, tariffs, users WHERE userid = users.id AND tariffid = tariffs.id AND deleted = 0 AND period = 3 AND (datefrom <= ?NOW? OR datefrom = 0) AND (dateto > ?NOW? OR dateto = 0) GROUP BY users.id', 'id');
-
-			$access = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(access) AS acsum, COUNT(access) AS account FROM nodes GROUP BY ownerid','id');
-			$warning = $this->DB->GetAllByKey('SELECT ownerid AS id, SUM(warning) AS warnsum, COUNT(warning) AS warncount FROM nodes GROUP BY ownerid','id');
-			$onlines = $this->DB->GetAllByKey('SELECT MAX(lastonline) AS online, ownerid AS id FROM nodes GROUP BY ownerid','id');
-
-			foreach($userlist as $idx => $row)
-			{
-				$userlist[$idx]['tariffvalue'] = round($week[$row['id']]['value']+$month[$row['id']]['value']+$quarter[$row['id']]['value']+$year[$row['id']]['value'], 2);
-				$userlist[$idx]['account'] = $access[$row['id']]['account'];
-				$userlist[$idx]['warncount'] = $warning[$row['id']]['warncount'];
-
-				if($access[$row['id']]['account'] == $access[$row['id']]['acsum'])
-					$userlist[$idx]['nodeac'] = 1;
-				elseif($access[$row['id']]['acsum'] == 0)
-					$userlist[$idx]['nodeac'] = 0;
-				else
-					$userlist[$idx]['nodeac'] = 2;
-				if($warning[$row['id']]['warncount'] == $warning[$row['id']]['warnsum'])
-					$userlist[$idx]['nodewarn'] = 1;
-				elseif($warning[$row['id']]['warnsum'] == 0)
-					$userlist[$idx]['nodewarn'] = 0;
-				else
-					$userlist[$idx]['nodewarn'] = 2;
-				if($userlist[$idx]['balance'] > 0)
-					$over += $userlist[$idx]['balance'];
-				elseif($userlist[$idx]['balance'] < 0)
-					$below += $userlist[$idx]['balance'];
-					
-				if($onlines[$row['id']]['online'] > time()-$this->CONFIG['phpui']['lastonline_limit'])
-					$userlist[$idx]['online'] = 1;
-			}
-
-			$userlist['total']=sizeof($userlist);
-			$userlist['state']=$state;
-			$userlist['order']=$order;
-			$userlist['direction']=$direction;
-			$userlist['below'] = $below;
-			$userlist['over'] = $over;
-		}
-		return $userlist;
-	}
-
-	function GetUserList($order='username,asc', $state=NULL, $network=NULL, $usergroup=NULL, $time=NULL)
+	function GetUserList($order='username,asc', $state=NULL, $network=NULL, $usergroup=NULL, $search=NULL, $time=NULL)
 	{
 		list($order,$direction) = sscanf($order, '%[^,],%s');
 
@@ -649,18 +554,49 @@ class LMS
 		
 		$over = 0; $below = 0;
 		
+		if(sizeof($search))
+			foreach($search as $key => $value)
+			{
+				$value = str_replace(' ','%',trim($value));
+				if($value!='')
+				{
+					$value = "'%".$value."%'";
+					switch($key) 
+					{
+						case 'phone':
+							$searchargs[] = "(phone1 ?LIKE? $value OR phone2 ?LIKE? $value OR phone3 ?LIKE? $value)";
+						break;
+						case 'zip':
+						case 'city':
+						case 'address':
+							$searchargs[] = "($key ?LIKE? $value OR serviceaddr ?LIKE? $value)";
+						break;
+						case 'username':
+							$searchargs[] = $this->DB->Concat('UPPER(users.lastname)',"' '",'users.name').' ?LIKE? '.$value;
+						break;
+						default:
+							$searchargs[] = "$key ?LIKE? $value";
+					}
+				}
+			}
+
+		if($searchargs)
+			$sqlsarg = implode(' AND ',$searchargs);
+
+		
 		$suspension_percentage = $this->CONFIG['finances']['suspension_percentage'];
 		if($userlist = $this->DB->GetAll( 
-				'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, users.address, zip, city, users.info AS info, message,  '
+				'SELECT users.id AS id, '.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS username, status, users.address, zip, city, users.info AS info, message, '
 				.($network ? 'COALESCE(SUM((type * -2 + 7) * value), 0.00)/(CASE COUNT(DISTINCT nodes.id) WHEN 0 THEN 1 ELSE COUNT(DISTINCT nodes.id) END) AS balance ' : 'COALESCE(SUM((type * -2 + 7) * value), 0.00) AS balance ')
 				.'FROM users LEFT JOIN cash ON (users.id=cash.userid AND (type = 3 OR type = 4)) '
 				.($network ? 'LEFT JOIN nodes ON (users.id=ownerid) ' : '')
-				.($usergroup ? 'LEFT JOIN userassignments ON (users.id=userassignments.userid) ':'')
+				.($usergroup ? 'LEFT JOIN userassignments ON (users.id=userassignments.userid) ' : '')
 				.'WHERE deleted = '.$deleted
 				.($state !=0 ? ' AND status = '.$state :'') 
 				.($network ? ' AND (ipaddr > '.$net['address'].' AND ipaddr < '.$net['broadcast'].')' : '')
 				.($usergroup ? ' AND usergroupid='.$usergroup : '')
 				.($time ? ' AND time < '.$time : '')
+				.($sqlsarg !='' ? ' AND '.$sqlsarg :'')
 				.' GROUP BY users.id, lastname, users.name, status, users.address, zip, city, users.info, message '
 		// ten fragment nie chcial dzialac na mysqlu		
 		//		.($indebted ? ' HAVING SUM((type * -2 + 7) * value) < 0 ' : '')

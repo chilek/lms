@@ -27,34 +27,63 @@
 if(isset($_POST['search']))
 	$search = $_POST['search'];
 
-if(isset($search['s']))
-	$_GET['s'] = $search['s'];
-
 if(!isset($search))
 	$SESSION->restore('usersearch', $search);
 else
 	$SESSION->save('usersearch', $search);
 
+if(!isset($_POST['n']))
+	$SESSION->restore('usln', $n);
+else
+	$n = $_POST['n'];
+
+$s = $_POST['s'];
+
+if(!isset($_POST['s']) && !$s)
+	$SESSION->restore('usls', $s);	
+else if(isset($_GET['s']))
+	$s = $_GET['s'];
+$SESSION->save('usls', $s);
+
 if(!isset($_GET['o']))
 	$SESSION->restore('uslo', $o);
 else
 	$o = $_GET['o'];
-
 $SESSION->save('uslo', $o);
 
-if(!isset($_GET['s']))
-	$SESSION->restore('usls', $s);	
+if(!isset($_POST['n']))
+	$SESSION->restore('usln', $n);
 else
-	$s = $_GET['s'];
-	
-$SESSION->save('usls', $s);
+	$n = $_POST['n'];
+$SESSION->save('usln', $n);
 
+if(!isset($_POST['g']))
+	$SESSION->restore('uslg', $g);
+else
+	$g = $_POST['g'];
+$SESSION->save('uslg', $g);
 
 if(isset($_GET['search']))
 {
 	$layout['pagetitle'] = trans('Customer Search Results');
-	$userlist = $LMS->SearchUserList($o,$s,$search);
+	$userlist = $LMS->GetUserList($o, $s, $n, $g, $search);
+	
+	$listdata['total'] = $userlist['total'];
+	$listdata['direction'] = $userlist['direction'];
+	$listdata['order'] = $userlist['order'];
+	$listdata['state'] = $userlist['state'];
+	
+	unset($userlist['total']);
+	unset($userlist['state']);
+	unset($userlist['network']);
+	unset($userlist['usergroup']);
+	unset($userlist['direction']);
+	unset($userlist['order']);
+	unset($userlist['below']);
+	unset($userlist['over']);
+		
 	$SMARTY->assign('userlist',$userlist);
+	$SMARTY->assign('listdata',$listdata);
 	
 	if(isset($_GET['print']))
 	{
@@ -70,6 +99,8 @@ if(isset($_GET['search']))
 else
 {
 	$layout['pagetitle'] = trans('Customer Search');
+	$SMARTY->assign('networks', $LMS->GetNetworks());
+	$SMARTY->assign('usergroups', $LMS->UsergroupGetAll());
 	$SMARTY->display('usersearch.html');
 }
 
