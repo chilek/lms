@@ -580,11 +580,11 @@ elseif ($graph == 'flash')
 
 		if ($n['lastonline']) {	
 			if ((time()-$n['lastonline'])>$LMS->CONFIG['phpui']['lastonline_limit'])
-				imagecopy($im,$im_n_off,$px,$py,0,0,15,16);
+				imagecopy($im,$im_n_off,$px,$py,0,0,16,16);
 			else 
-				imagecopy($im,$im_n_on,$px,$py,0,0,15,16);
+				imagecopy($im,$im_n_on,$px,$py,0,0,16,16);
 		} else 
-			imagecopy($im,$im_n_unk,$px,$py,0,0,15,16);
+			imagecopy($im,$im_n_unk,$px,$py,0,0,16,16);
 		
 		pngdrawtext($im, 1, $px + 15, $py - 8, $n['ip'], $blue, $lightbrown);
 		pngdrawtext($im, 1, $px + 15, $py + 2, $n['name'], $black, $lightbrown);
