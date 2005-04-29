@@ -1214,7 +1214,17 @@ class LMS
 	function NodeAdd($nodedata)
 	{
 		$this->SetTS('nodes');
-		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, creationdate, access, warning, info, netdev) VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?)', array(strtoupper($nodedata['name']),strtoupper($nodedata['mac']),$nodedata['ipaddr'],$nodedata['ipaddr_pub'],$nodedata['ownerid'],$nodedata['passwd'],$this->AUTH->id, $nodedata['access'], $nodedata['warning'], $nodedata['info'], ($nodedata['netdev'] ? $nodedata['netdev'] : 0))))
+		if($this->DB->Execute('INSERT INTO nodes (name, mac, ipaddr, ipaddr_pub, ownerid, passwd, creatorid, creationdate, access, warning, info, netdev) VALUES (?, ?, inet_aton(?),inet_aton(?), ?, ?, ?, ?NOW?, ?, ?, ?, ?)', 
+				array(strtoupper($nodedata['name']),
+				    strtoupper($nodedata['mac']),
+				    $nodedata['ipaddr'],
+				    ($nodedata['netdev'] ? $nodedata['netdev'] : '0.0.0.0'),
+				    $nodedata['ownerid'],
+				    $nodedata['passwd'],
+				    $this->AUTH->id, 
+				    $nodedata['access'], 
+				    $nodedata['warning'], 
+				    $nodedata['info'])))
 			return $this->DB->GetOne('SELECT MAX(id) FROM nodes');
 		else
 			return FALSE;
