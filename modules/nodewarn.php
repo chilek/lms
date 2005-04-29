@@ -59,7 +59,12 @@ if($backid)
 	if($LMS->UserExists($backid))
 	{
 		$LMS->NodeSetWarnU($backid, $_GET['warning']);
-		$SESSION->redirect('?'.$SESSION->get('backto').'#'.$backid);
+		
+		$redir = $SESSION->get('backto');
+		if($SESSION->get('lastmodule')=='usersearch')
+			$redir .= '&search=1';
+			
+		$SESSION->redirect('?'.$redir.'#'.$backid);
 	}
 }
 
