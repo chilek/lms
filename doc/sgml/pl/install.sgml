@@ -13,7 +13,7 @@
 	b±d¼ wysy³anie upomnieñ. Najwiêkszy z nich - <emphasis>LMS-MGC</emphasis> jest skryptem, ale na tyle 
 	uniwersalnym ¿e potrafi wygenerowaæ praktycznie dowolny plik konfiguracyjny i zrestartowaæ 
 	us³ugê na twoim serwerze.</para>
-        <para>Jest jeszcze <emphasis>A.L.E.C's LMS Daemon</emphasis>, napisany w jêzyku C. Jest on przeznaczony 
+        <para>Jest jeszcze <emphasis>LMS Daemon</emphasis>, napisany w jêzyku C. Jest on przeznaczony 
 	(a w³a¶ciwie jego wtyczki) do generowania plików konfiguracyjnych i restartowania us³ug. 
 	Mo¿na go stosowaæ jako zamiennik lub uzupe³nienie skryptów perlowych.
 	Odpowiada on za to, aby to co zosta³o zmienione w <emphasis>LMS-UI</emphasis> zosta³o zmienione tak¿e 
@@ -82,7 +82,7 @@
 	  </sect2>
 	  <sect2 id="install-req-c">
 	    <title>Kompilator jêzyka C</title>
-	  <para>Je¶li chcesz uruchomiæ <emphasis>A.L.E.C's LMS Daemon</emphasis> bêdziesz potrzebowa³
+	  <para>Je¶li chcesz uruchomiæ <emphasis>LMS Daemon</emphasis> bêdziesz potrzebowa³
 	  dzia³aj±cy kompilator jêzyka C, gdy¿ jest on dostarczany wy³±cznie w postaci
 	  kodu ¼ród³owego.</para>
 	  </sect2>

@@ -12,7 +12,7 @@
      also contains <emphasis>LMS-MGC</emphasis>, which may be configured to generate virtually
      any configuration file or script and manage your server. Note that some of the scripts might
      need additional Perl modules to function.</para>
-     <para>At the end there is also <emphasis>A.L.E.C's LMS Daemon</emphasis>, written in C, which is
+     <para>At the end there is also <emphasis>LMS Daemon</emphasis>, written in C, which is
      being used (its plugins in fact) as a drop-in replacement for <emphasis>LMS-MGC</emphasis> - to
      configure and manage (ie. restart) your services. It's main advantage is that it responds for
      all <emphasis>LMS-UI</emphasis> changes in realtime.</para>
@@ -80,7 +80,7 @@
        </sect2>
        <sect2 id="install-req-c">
          <title>C Compiler</title>
-       <para>If you intend to run <emphasis>A.L.E.C's LMS Daemon</emphasis> you will need
+       <para>If you intend to run <emphasis>LMS Daemon</emphasis> you will need
        working C compiler, because daemon will be provided in source code form only.</para>
        </sect2>
      </sect1>
