@@ -1928,12 +1928,14 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$cnt++;
 			$startip++;
 			$nodedata['ipaddr'] = long2ip($startip);
+			$nodedata['ipaddr_pub'] = '0.0.0.0';
 			$nodedata['mac'] = makemac();
 			$nodedata['ownerid'] = $id;
 			$nodedata['access'] = 1;
 			$nodedata['warning'] = 0;
 			$nodedata['info'] = '';
 			$nodedata['passwd'] = '';
+			$nodedata['netdev'] = 0;
 			if($nodeid = $LMS->NodeAdd($nodedata))
 				$DB->Execute('UPDATE nodes SET lastonline=? WHERE id=? ', array(mt_rand(time()-2592000,time()+2592000),$nodeid));
 		}
@@ -1965,14 +1967,15 @@ if(isset($_GET['l']) && sprintf('%d',$_GET['l']) > 0 && sprintf('%d',$_GET['l'])
 			$nodes--;
 		}
 		$ip['ownerid'] = 0;
-		$ip['ipaddr'] = long2ip($startip); 
+		$ip['ipaddr'] = long2ip($startip);
+		$ip['ipaddr_pub'] = '0.0.0.0';
 		$ip['mac'] = makemac();
 		$ip['name'] = 'SWITCH_'.$i;
 		$ip['access'] = 1;
 		$ip['warning'] = 0;
 		$ip['info'] = '';
 		$ip['passwd'] = '';
-		$LMS->NetDevLinkNode($LMS->NodeAdd($ip),$i);		
+		$ip['netdev'] = $i;
 		$startip++;
 		if($i>1)
 			$LMS->NetDevLink($i,$i-1);
