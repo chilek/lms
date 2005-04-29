@@ -1218,13 +1218,14 @@ class LMS
 				array(strtoupper($nodedata['name']),
 				    strtoupper($nodedata['mac']),
 				    $nodedata['ipaddr'],
-				    ($nodedata['netdev'] ? $nodedata['netdev'] : '0.0.0.0'),
+				    $nodedata['ipaddr_pub'],
 				    $nodedata['ownerid'],
 				    $nodedata['passwd'],
 				    $this->AUTH->id, 
 				    $nodedata['access'], 
 				    $nodedata['warning'], 
-				    $nodedata['info'])))
+				    $nodedata['info'],
+				    $nodedata['netdev'])))
 			return $this->DB->GetOne('SELECT MAX(id) FROM nodes');
 		else
 			return FALSE;
