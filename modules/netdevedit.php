@@ -146,10 +146,11 @@ case 'formaddip':
 
 	if(!$error)
 	{
-		$nodeipdata['ipaddr_pub']="0.0.0.0";
+		$nodeipdata['ipaddr_pub'] = '0.0.0.0';
 		$nodeipdata['warning'] = 0;
 		$nodeipdata['passwd'] = '';
-		$LMS->NetDevLinkNode($LMS->NodeAdd($nodeipdata),$_GET['id']);
+		$nodeipdata['netdev'] = $_GET['id'];
+		$LMS->NodeAdd($nodeipdata);
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
 	$SMARTY->assign('nodeipdata',$nodeipdata); 
@@ -209,7 +210,7 @@ case 'formeditip':
 
 	if(!$error)
 	{
-		$nodeipdata['ipaddr_pub']="0.0.0.0";
+		$nodeipdata['ipaddr_pub'] = '0.0.0.0';
 		$LMS->NodeUpdate($nodeipdata);	
 		$SESSION->redirect('?m=netdevinfo&id='.$_GET['id']);
 	}
