@@ -4,20 +4,21 @@
 <TABLE CELLPADDING="3" width="100%">
 	<TR CLASS="dark" {tip text="Click on column's name to change sorting order"}>
 		<TD CLASS="fleftu" width="97%">
-			<img src="img/netdev.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/producer.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=producer{if $listdata.direction eq "asc" && $listdata.order eq "producer"},desc{/if}">{t}Manufacturer:{/t}</A> {if $listdata.order eq "producer"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if} / <A href="?m=netdevlist&o=model{if $listdata.direction eq "asc" && $listdata.order eq "model"},desc{/if}">{t}model:{/t}</A> {if $listdata.order eq "model"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/home.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">{t}Location:{/t}</A> {if $listdata.order eq "location"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<IMG src="img/netdev.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=name{if $listdata.direction eq "asc" && $listdata.order eq "name"},desc{/if}"><B>{t}Name:{/t}</B></A> {if $listdata.order eq "name"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
+			<IMG src="img/producer.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=producer{if $listdata.direction eq "asc" && $listdata.order eq "producer"},desc{/if}">{t}Manufacturer:{/t}</A> {if $listdata.order eq "producer"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if} / 
+			<A href="?m=netdevlist&o=model{if $listdata.direction eq "asc" && $listdata.order eq "model"},desc{/if}">{t}Model:{/t}</A> {if $listdata.order eq "model"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if} /
+			<A href="?m=netdevlist&o=location{if $listdata.direction eq "asc" && $listdata.order eq "location"},desc{/if}">{t}Location:{/t}</A> {if $listdata.order eq "location"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
-		<TD CLASS="fbt" width="1%" align="right">
-			<A href="?m=netdevlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+		<TD CLASS="fbt" width="1%" align="right" valign="top">
+			<A href="?m=netdevlist&o=id{if $listdata.direction eq "asc" && $listdata.order eq "id"},desc{/if}">ID:</A> {if $listdata.order eq "id"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
 		<TD CLASS="fbt" width="1%" NOWRAP>
-			<img src="img/port.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=ports{if $listdata.direction eq "asc" && $listdata.order eq "ports"},desc{/if}">{t}Number of ports:{/t}</A> {if $listdata.order eq "ports"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<IMG SRC="img/netdev_takenports.gif" ALT="" ALIGN="ABSMIDDLE">&nbsp;<A href="?m=netdevlist&o=takenports{if $listdata.direction eq "asc" && $listdata.order eq "takenports"},desc{/if}">{t}Ports used:{/t}</A> {if $listdata.order eq "takenports"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}<BR>
-			<img src="img/serialnumber.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=serialnumber{if $listdata.direction eq "asc" && $listdata.order eq "serialnumber"},desc{/if}">{t}Serial number:{/t}</A> {if $listdata.order eq "serialnumber"}<IMG SRC="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			<IMG src="img/port.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=ports{if $listdata.direction eq "asc" && $listdata.order eq "ports"},desc{/if}">{t}Number of ports:{/t}</A> {if $listdata.order eq "ports"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
+			(<A href="?m=netdevlist&o=takenports{if $listdata.direction eq "asc" && $listdata.order eq "takenports"},desc{/if}">{t}Ports used:{/t}</A>{if $listdata.order eq "takenports"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if})<BR>
+			<IMG src="img/serialnumber.gif" ALT="" align="absmiddle">&nbsp;<A href="?m=netdevlist&o=serialnumber{if $listdata.direction eq "asc" && $listdata.order eq "serialnumber"},desc{/if}">{t}Serial number:{/t}</A> {if $listdata.order eq "serialnumber"}<IMG src="img/{if $listdata.direction eq "desc"}asc{else}desc{/if}_order.gif" align="absmiddle" border="0" ALT="">{/if}
 		</TD>
-		<TD CLASS="frightu" width="1%" align="right">
-			<B>{t}Total:{/t} {$listdata.total}</B>
+		<TD CLASS="frightu" width="1%" align="right" nowrap>
+			<B>{t}Total:{/t} {$listdata.total|default:"0"}</B>
 		</TD>
 	</TR>
 	{if $listdata.total != 0}
@@ -41,23 +42,21 @@
 	{cycle values="#DFD5BD,#EBE4D6" print=false}{section name=netdevlist loop=$netdevlist start=$start max=$pagelimit}
 	<TR bgcolor="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD width="97%" CLASS="fleft" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" VALIGN="TOP">
-			<IMG SRC="img/netdev.gif" ALT="" ALIGN="ABSMIDDLE"> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name}</B></A><BR>
-			<IMG SRC="img/producer.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].producer} {if $netdevlist[netdevlist].model}/ {$netdevlist[netdevlist].model}{/if}<BR>
-			<IMG SRC="img/home.gif" ALT="" align="absmiddle"> {$netdevlist[netdevlist].location}
+			<IMG src="img/netdev.gif" ALT="" ALIGN="ABSMIDDLE"> <a name="{$netdevlist[netdevlist].id}"><B>{$netdevlist[netdevlist].name}</B></A><BR>
+			<IMG src="img/producer.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].producer} {if $netdevlist[netdevlist].model}/ {$netdevlist[netdevlist].model}{/if}{if $netdevlist[netdevlist].location} / {$netdevlist[netdevlist].location}{/if}
 		</TD>
 		<TD WIDTH="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" align="right" VALIGN="TOP">
 			({$netdevlist[netdevlist].id|string_format:"%04d"})
 		</TD>
 		<TD width="1%" onClick="return self.location.href='?m=netdevinfo&id={$netdevlist[netdevlist].id}';" NOWRAP>
-			<IMG SRC="img/port.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].ports}<BR>
-			<IMG SRC="img/netdev_takenports.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].takenports}<BR>
-			<IMG SRC="img/serialnumber.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].serialnumber}
+			<IMG src="img/port.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].ports} ({$netdevlist[netdevlist].takenports})<BR>
+			<IMG src="img/serialnumber.gif" ALT="" ALIGN="ABSMIDDLE"> {$netdevlist[netdevlist].serialnumber}
 		</TD>
 		<TD WIDTH="1%" CLASS="fright" align="right">
 			<nobr>
-			<a href="?m=netdevdel&id={$netdevlist[netdevlist].id}" onClick="return confirmLink(this, '{t 0=$netdevlist[netdevlist].name|upper}Are you sure, you want to remove device \'$0\' from database?{/t}')"><img src="img/delete.gif" border="0" ALT="[ {t}Delete{/t} ]"></A>
-			<a href="?m=netdevedit&id={$netdevlist[netdevlist].id}"><img src="img/edit.gif" border="0" ALT="[ {t}Edit{/t} ]"></A>
-			<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><img src="img/info.gif" border="0" ALT="[ {t}Info{/t} ]"></A>
+			<a href="?m=netdevdel&id={$netdevlist[netdevlist].id}" onClick="return confirmLink(this, '{t 0=$netdevlist[netdevlist].name|upper}Are you sure, you want to remove device \'$0\' from database?{/t}')"><IMG src="img/delete.gif" border="0" ALT="[ {t}Delete{/t} ]"></A>
+			<a href="?m=netdevedit&id={$netdevlist[netdevlist].id}"><IMG src="img/edit.gif" border="0" ALT="[ {t}Edit{/t} ]"></A>
+			<a href="?m=netdevinfo&id={$netdevlist[netdevlist].id}"><IMG src="img/info.gif" border="0" ALT="[ {t}Info{/t} ]"></A>
 			</nobr>
 		</TD>
 	</TR>
@@ -94,14 +93,10 @@
 	<TR CLASS="light">
 		<TD WIDTH="99%" COLSPAN="3" CLASS="fleftu" ALIGN="right">
 			<B>
-				{t}Total:{/t}
+				{t}Total:{/t} {$listdata.total|default:"0"}
 			</B>
 		</TD>
-		<TD WIDTH="1%" COLSPAN="1" CLASS="frightu" VALIGN="TOP">
-			<B>
-				{$listdata.total|default:"0"}
-			</B>
-		</TD>				
+		<TD WIDTH="1%" COLSPAN="1" CLASS="frightu"></TD>				
 	</TR>			
 </TABLE>
 {include file="footer.html"}
