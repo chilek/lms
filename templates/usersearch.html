@@ -39,24 +39,10 @@
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<IMG src="img/home.gif" align="absmiddle" border="0" alt=""> <B>{t}Address:{/t}</B>
 		</TD>
-		<TD CLASS="fright" WIDTH="99%">
+		<TD CLASS="fright" WIDTH="99%" nowrap>
 			<INPUT TYPE="text" NAME="search[address]" VALUE="{$search.address}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/home.gif" align="absmiddle" border="0" alt=""> <B>{t}City:{/t}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[city]" VALUE="{$search.city}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/home.gif" align="absmiddle" border="0" alt=""> <B>{t}Postcode:{/t}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[zip]" VALUE="{$search.zip}">
+			<B>{t}City:{/t}</B> <INPUT TYPE="text" NAME="search[city]" VALUE="{$search.city}">
+			<B>{t}Postcode:{/t}</B> <INPUT TYPE="text" NAME="search[zip]" VALUE="{$search.zip}" SIZE="10">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -77,18 +63,18 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/empty.gif" width="16" align="absmiddle" border="0" alt=""> <B>{t}TEN:{/t}</B>
-		</TD>
-		<TD CLASS="fright" WIDTH="99%">
-			<INPUT TYPE="text" NAME="search[nip]" VALUE="{$search.nip}">
-		</TD>
-	</TR>
-	<TR CLASS="LIGHT">
-		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
 			<IMG src="img/gg.gif" align="absmiddle" border="0" alt=""> <B>{t}IM:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<INPUT TYPE="text" NAME="search[gguin]" VALUE="{$search.gguin}">
+		</TD>
+	</TR>
+	<TR CLASS="LIGHT">
+		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
+			<IMG src="img/empty.gif" width="16" align="absmiddle" border="0" alt=""> <B>{t}TEN:{/t}</B>
+		</TD>
+		<TD CLASS="fright" WIDTH="99%">
+			<INPUT TYPE="text" NAME="search[nip]" VALUE="{$search.nip}">
 		</TD>
 	</TR>
 	<TR CLASS="LIGHT">
@@ -127,14 +113,14 @@
 	</TR>
 	<TR CLASS="LIGHT">
 		<TD CLASS="fleft" WIDTH="1%" NOWRAP>
-			<IMG src="img/empty.gif" width="16" align="absmiddle" border="0" alt=""> <B>{t}State:{/t}</B>
+			<IMG src="img/access.gif" width="16" align="absmiddle" border="0" alt=""> <B>{t}State:{/t}</B>
 		</TD>
 		<TD CLASS="fright" WIDTH="99%">
 			<SELECT SIZE="1" NAME="s">
 				<OPTION VALUE="0">{t}- all -{/t}</OPTION>
-				<OPTION VALUE="3">{t}connected{/t}</OPTION>
+				<OPTION VALUE="3">{t}connected {/t}</OPTION>
 				<OPTION VALUE="2">{t}waiting{/t}</OPTION>
-				<OPTION VALUE="1">{t}interested{/t}</OPTION>
+				<OPTION VALUE="1">{t}interested {/t}</OPTION>
 				<OPTION VALUE="4">{t}deleted {/t}</OPTION>
 				<OPTION VALUE="5">{t}disconnected {/t}</OPTION>
 				<OPTION VALUE="6">{t}in debt{/t}</OPTION>
