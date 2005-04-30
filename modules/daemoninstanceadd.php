@@ -47,6 +47,11 @@ if($instance = $_POST['instance'])
 	
 	if($instance['crontab'] != '' && !eregi('^[0-9/*,-]+[ \t][0-9/*,-]+[ \t][0-9/*,-]+[ \t][0-9/*,-]+[ \t][0-9/*,-]+$', $instance['crontab']))
 		$error['crontab'] = trans('Incorrect crontab format!');
+
+	if($instance['priority'] == '')
+		$instance['priority'] = 0;
+	elseif(!is_numeric($instance['priority']))
+		$error['priority'] = trans('Priority must be type of integer!');
 	
 	if(!$error)
 	{

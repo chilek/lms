@@ -52,6 +52,11 @@ if(isset($_POST['instance']))
 		$error['crontab'] = trans('Incorrect crontab format!');
 	
 	if(!isset($instedit['disabled'])) $instedit['disabled'] = 0;
+
+	if($instedit['priority'] == '')
+		$instedit['priority'] = 0;
+	elseif(!is_numeric($instedit['priority']))
+		$error['priority'] = trans('Priority must be type of integer!');
 	
 	if(!$error)
 	{
