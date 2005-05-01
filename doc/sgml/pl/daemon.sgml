@@ -41,7 +41,7 @@
   --with-sqlite         gdy korzystasz z bazy SQLite (wy³±czone)
   --with-pgsql          gdy korzystasz z bazy PostgreSQL (wy³±czone)
   --with-mysql          gdy korzystasz z bazy MySQL (w³±czone)
-  --prefix=DIR          katalog instalacyjny demona (/usr/local/bin)
+  --prefix=PREFIX       katalog instalacyjny demona i modu³ów (/usr/local)
   --libdir=DIR          lokalizacja bibliotek bazy danych (/usr/lib)
   --incdir=DIR          lokalizacja plików nag³ówkowych bazy danych (/usr/include)
   --inifile=FILE        plik konfiguracyjny - wy³±cza konfiguracjê przez UI
@@ -60,9 +60,10 @@
 <screen>
 # make && make install
 </screen>
-			Na koniec skompilowane modu³y (pliki z rozszerzeniem <filename>.so</filename>),
-			znajduj±ce siê w katalogu <filename>modules/nazwa_modu³u</filename> przenie¶ 
-			do dowolnego katalogu. Ich lokalizacjê bêdziesz okre¶la³ podczas konfiguracji.
+			Skompilowane modu³y (pliki z rozszerzeniem <filename>.so</filename>),
+			znajduj±ce siê w katalogu <filename>modules/nazwa_modu³u</filename> zostaj± 
+			umieszczone w katalogu PREFIX/lib, a g³ówny program (lmsd) w katalogu
+			PREFIX/bin.
 			</para>
 		</sect2>
 		<sect2 id="daemon-config">

@@ -17,10 +17,13 @@ $(OUT): ${OBJECTS}
 
 install: 
 	mkdir -p -m 755 $(INSTALLDIR)
+	mkdir -p -m 755 $(MODULESDIR)
 	install -c -m 700 lmsd $(INSTALLDIR)/
+	make -C modules install
  
 remove:
 	rm -f $(INSTALLDIR)/lmsd
 
 clean:
 	rm -f $(OBJECTS)
+	make -C modules clean
