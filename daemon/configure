@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # Initialize default variables
-prefix="/usr/local/bin"
+prefix="/usr/local"
 incdir="/usr/include"
 libdir="/usr/lib"
 with_mysql=yes
@@ -81,8 +81,9 @@ Options: [defaults in brackets after descriptions]
   --with-pgsql		enables use of PostgreSQL database (disabled)
   --with-mysql		enables use of MySQL database (enabled)
   --with-sqlite		enables use of SQLite database (disabled)
-  --prefix=DIR		sets program and modules install location 
-			(/usr/local/bin)
+  --prefix=PREFIX	sets program and modules install location
+			(/usr/local), modules goes to PREFIX/lib and main
+			program to PREFIX/bin
   --libdir=DIR		sets location of database library (/usr/lib)
   --incdir=DIR		sets location of database include files (/usr/include)
   --inifile=FILE        configuration file - disables online configuration
@@ -180,7 +181,8 @@ LIBS = $LIBS
 LDFLAGS = $LDFLAGS
 CFLAGS = $CFLAGS $FLAGS -Wall -O2
 DBDRIVER = $DBDRIVER
-INSTALLDIR = $INSTALLDIR
+INSTALLDIR = $INSTALLDIR/bin
+MODULESDIR = $INSTALLDIR/lib
 " > Makefile \
 && cat Makefile.in >> Makefile
 echo " done"
@@ -199,7 +201,8 @@ do
 LIBS = $LIBS 
 CFLAGS = $CFLAGS $FLAGS -I../.. -Wall -O2
 LDFLAGS = $LDFLAGS
-INSTALLDIR = $INSTALLDIR
+INSTALLDIR = $INSTALLDIR/bin
+MODULESDIR = $INSTALLDIR/lib
 " > ./${x}/Makefile && cat ./${x}/Makefile.in >> ./${x}/Makefile
 	    echo " done"
 	fi

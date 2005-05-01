@@ -44,7 +44,7 @@
   --with-pgsql          enables using of PostgreSQL database (disabled)
   --with-mysql          enables using of MySQL database (enabled)
   --with-sqlite         enables using of SQLite database (disabled)
-  --prefix=DIR          program install directory (/usr/local/bin)
+  --prefix=PREFIX       program and modules install directory (/usr/local)
   --libdir=DIR          location of database libraries (/usr/lib)
   --incdir=DIR          location of database header files (/usr/include)
   --inifile=FILE        configuration file - disables online configuration
@@ -64,9 +64,9 @@
 <screen>
 # make && make install
 </screen>
-               Finally, compiled modules (files with <filename>.so</filename> extension), found in
-               directory <filename>modules/module_name</filename> should be moved to some directory.
-               Their location will be set in configuration.
+               Compiled modules (files with <filename>.so</filename> extension), found in
+               directory <filename>modules/module_name</filename> will be moved to directory
+	       PREFIX/lib. Main program goes to PREFIX/bin.
                </para>
           </sect2>
           <sect2 id="daemon-config">
