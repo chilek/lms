@@ -23,6 +23,7 @@ version ? (??/??/????):
   - lmsd: changed default value of configure option --prefix to /usr/local,
     "make install" installs modules to PREFIX/lib, and lmsd to PREFIX/bin (alec)
   - added "realname" field to account record (alec)
+  - lms-mgc: added %CUSTOMER variable for node record (alec)
     
 version 1.5.6 Baal (24/04/2005):
 
