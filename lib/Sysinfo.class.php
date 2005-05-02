@@ -184,7 +184,7 @@ class Sysinfo {
 		{
 			case 'WinNT':
 			case 'Win32':
-				$result = "N.A.";
+				$result = 'N.A.';
 			default:
 				$who = split('=', execute_program('who', '-q'));
 				$result = $who[1];
@@ -193,7 +193,6 @@ class Sysinfo {
 		if($result=='')
 			$result = 'N.A.';
 		return $result;
-
 	}
 
 	function loadavg()
