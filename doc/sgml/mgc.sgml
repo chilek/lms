@@ -276,7 +276,7 @@
      <para>%MAC - zostanie rozwiniête do adresu MAC karty sieciowej</para>
     </listitem>
     <listitem>
-     <para>%OWNER - w³a¶ciciel komputera</para>
+     <para>%OWNER - ID w³a¶ciciela komputera</para>
     </listitem>
     <listitem>
      <para>%NAME - nazwa sieci du¿ymi znakami</para>

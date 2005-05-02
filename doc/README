@@ -2463,7 +2463,7 @@ Rozdzia³ 5. Generator plików konfiguracyjnych (lms-mgc)
      * %IP - zostanie rozwiniête do adresu IP
      * %ID - ID sieci w bazie
      * %MAC - zostanie rozwiniête do adresu MAC karty sieciowej
-     * %OWNER - w³a¶ciciel komputera
+     * %OWNER - ID w³a¶ciciela komputera
      * %NAME - nazwa sieci du¿ymi znakami
      * %name - nazwa sieci ma³ymi znakami
      * %UPRATE - gwarantowany transfer dla danych wychodz±cych
