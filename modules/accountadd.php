@@ -76,7 +76,7 @@ if(isset($_POST['account']))
 	
 	if(!$error)
 	{
-		$LMS->DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, type, quota_sh, quota_mail, quota_www, quota_ftp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+		$LMS->DB->Execute('INSERT INTO passwd (ownerid, login, password, home, expdate, domainid, type, realname, quota_sh, quota_mail, quota_www, quota_ftp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
 				array(	$account['ownerid'], 
 					$account['login'], 
 					crypt($account['passwd1']), 
@@ -84,6 +84,7 @@ if(isset($_POST['account']))
 					$account['expdate'],
 					$account['domainid'],
 					$account['type'],
+					$account['realname'],
 					$quota['sh'],
 					$quota['mail'],
 					$quota['www'],
@@ -97,6 +98,7 @@ if(isset($_POST['account']))
 		}
 		
 		unset($account['login']);
+		unset($account['realname']);
 		unset($account['passwd1']);
 		unset($account['passwd2']);
 	}
