@@ -2,7 +2,7 @@
 <!--// $Id$ //-->
 {include file="calendar_js.html"}
 <H1>{$layout.pagetitle}</H1>
-<P align="CENTER">
+<P>
 <FORM method="POST" action="?m=accountadd" name="account">
 <TABLE width="100%" cellpadding="3" border="0">
 	<TR class="dark">
@@ -60,65 +60,6 @@
 					</select>
 				    </TD>
 				</TR>
-				<TR>
-				    <TD width="1%">
-					<img src="img/calendar.gif" border="0" align="absmiddle" ALT="">
-				    </TD>
-				    <TD width="1%" nowrap>
-					<B>{t}Expiration date:{/t}</B>
-				    </TD>
-				    <TD width="98%">
-					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter or click to choose expiration date for account in format YYYY/MM/DD (Empty field means account never expires)" trigger="expdate"}>
-				    </TD>
-			    </TR>
-			    <TR>
-				    <TD width="1%">
-					    <img src="img/empty.gif" border="0" align="absmiddle" alt="">
-				    </td>
-				    <td width="1%" nowrap>
-					    <b>{t}Quotas:{/t}</b>
-				    </td>
-				    <td width="98%">
-					    <table width="100%">
-						    <tr>
-							    <td width="1%">
-								    {t}shell{/t}:
-							    </td>
-							    <td width="99%">
-								    <input type="text" size="3" maxlength="5" name="quota[sh]" value="{$quota.sh}">
-							    </td>
-						    </tr>
-						    <tr>
-							    <td width="1%">
-								    {t}mail{/t}:
-							    </td>
-							    <td width="99%">
-								    <input type="text" size="3" maxlength="5" name="quota[mail]" value="{$quota.mail}">
-							    </td>
-						    </tr>
-						    <tr>
-							    <td width="1%">
-								    {t}www{/t}:
-							    </td>
-							    <td width="99%">
-								    <input type="text" size="3" maxlength="5" name="quota[www]" value="{$quota.www}">
-							    </td>
-						    </tr>
-						    <tr>
-							    <td width="1%">
-								    {t}ftp{/t}:
-							    </td>
-							    <td width="99%">
-								    <input type="text" size="3" maxlength="5" name="quota[ftp]" value="{$quota.ftp}">
-							    </td>
-						    </tr>
-					    </table>
-				    </td>
-			    </tr>
-			    </TABLE>
-			</TD>
-			<TD width="50%" valign="top">
-			    <TABLE width="100%" cellpadding="3">
 			    	<TR>
 				    <TD width="1%">
 					<img src="img/user.gif" border="0" align="absmiddle" ALT="">
@@ -137,18 +78,56 @@
 				</TR>
 				<TR>
 				    <TD width="1%">
+					<img src="img/name.gif" border="0" align="absmiddle" ALT="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{t}Name/Surname and forename:{/t}</B>
+				    </TD>
+				    <TD width="98%">
+					<input type="text" name="account[realname]" value="{$account.realname}" {tip text="Enter optional account name" trigger="realname"}>
+				    </TD>
+				</TR>
+				<TR>
+				    <TD width="1%">
+					<img src="img/calendar.gif" border="0" align="absmiddle" ALT="">
+				    </TD>
+				    <TD width="1%" nowrap>
+					<B>{t}Expiration date:{/t}</B>
+				    </TD>
+				    <TD width="98%">
+					<input type="text" size="10" name="account[expdate]" value="{if $account.expdate}{$account.expdate|date_format:"%Y/%m/%d"}{/if}" OnClick="javascript:cal1.popup();" {tip text="Enter or click to choose expiration date for account in format YYYY/MM/DD (Empty field means account never expires)" trigger="expdate"}>
+				    </TD>
+				</TR>
+			    </TABLE>
+			</TD>
+			<TD width="50%" valign="top">
+			    <TABLE width="100%" cellpadding="3">
+				<TR>
+				    <TD width="1%">
 					<img src="img/account.gif" border="0" align="absmiddle" ALT="">
 				    </TD>
 				    <TD width="1%">
-					<B>{t}Type:{/t}</B>
+					<B>{t}Type/Limit:{/t}</B>
 				    </TD>
 				    <TD width="98%">
-					<NOBR>
-					<INPUT type="checkbox" name="account[type][shell]" value="1" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 1) == 1}CHECKED{/if}> {t}shell{/t}
-					<INPUT type="checkbox" name="account[type][mail]" value="2" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 2) == 2}CHECKED{/if}> {t}mail{/t}
-					<INPUT type="checkbox" name="account[type][www]" value="4" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 4) == 4}CHECKED{/if}> {t}www{/t}
-					<INPUT type="checkbox" name="account[type][ftp]" value="8" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 8) == 8}CHECKED{/if}> {t}ftp{/t}
-					</NOBR>
+					    <table width="100%">
+						    <tr>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][shell]" value="1" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 1) == 1}CHECKED{/if}> {t}shell{/t}</td>
+							    <td>&nbsp;<input type="text" size="3" maxlength="5" name="quota[sh]" value="{$quota.sh}" {tip text="Enter account limits (optional)"}></td>
+						    </tr>
+						    <tr>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][mail]" value="2" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 2) == 2}CHECKED{/if}> {t}mail{/t}</td>
+							    <td>&nbsp;<input type="text" size="3" maxlength="5" name="quota[mail]" value="{$quota.mail}" {tip text="Enter account limits (optional)"}></td>
+						    </tr>
+						    <tr>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][www]" value="4" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 4) == 4}CHECKED{/if}> {t}www{/t}</td>
+							    <td>&nbsp;<input type="text" size="3" maxlength="5" name="quota[www]" value="{$quota.www}" {tip text="Enter account limits (optional)"}></td>
+						    </tr>
+						    <tr>
+							    <td width="1%" nowrap><INPUT type="checkbox" name="account[type][ftp]" value="8" style="border-style: none; background-color: #DFD5BD;" {if ($account.type & 8) == 8}CHECKED{/if}> {t}ftp{/t}</td>
+							    <td>&nbsp;<input type="text" size="3" maxlength="5" name="quota[ftp]" value="{$quota.ftp}" {tip text="Enter account limits (optional)"}></td>
+						    </tr>
+					    </table>
 				    </TD>
 				</TR>
 			    </TABLE>
@@ -165,7 +144,7 @@
 		</TD>
 	</TR>
 </TABLE>
-</P>
+</FORM></P>
 <SCRIPT>
 <!--
 var cal1 = new calendar(document.forms['account'].elements['account[expdate]']);
