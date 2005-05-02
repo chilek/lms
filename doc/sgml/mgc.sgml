@@ -267,7 +267,10 @@ include all networks.</para>
      <para>%SMAC - MAC address, in lowercase and without colon separators</para>
     </listitem>
     <listitem>
-     <para>%OWNER - owner's name</para>
+     <para>%OWNER - owner's ID</para>
+    </listitem>
+    <listitem>
+     <para>%CUSTOMER - owner's lastname and name</para>
     </listitem>
     <listitem>
      <para>%NAME - computer name, in uppercase</para>

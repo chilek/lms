@@ -159,6 +159,7 @@ my $dbname = $ini->val('database', 'database') || 'lms';
 
 my $dbase;
 my $utsfmt;
+my $customerq;
 
 sub instance($);
 
@@ -440,7 +441,7 @@ sub instance($)
 		
 		# BUILD NODELIST
 		
-		$dbq = $dbase->prepare("SELECT ipaddr, mac, passwd, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info, pin FROM nodes LEFT JOIN users ON nodes.ownerid = users.id");
+		$dbq = $dbase->prepare("SELECT ipaddr, mac, passwd, access, nodes.id as id, ownerid, nodes.name as name, warning, nodes.info AS info, pin, $customerq FROM nodes LEFT JOIN users ON nodes.ownerid = users.id");
 		$dbq->execute();
 
 		my %maclist;
@@ -453,6 +454,7 @@ sub instance($)
 		my %infolist;
 		my %pinlist;
 		my %passlist;
+		my %customerlist;
 		
 		while (my $row = $dbq->fetchrow_hashref())
 		{
@@ -467,6 +469,7 @@ sub instance($)
 			$ownerlist{$row->{'ipaddr'}} = $row->{'ownerid'};
 			$infolist{$row->{'ipaddr'}} = $row->{'info'};
 			$pinlist{$row->{'ipaddr'}} = $row->{'pin'};
+			$customerlist{$row->{'ipaddr'}} = $row->{'customer'};
 		}
 
 		my $dhcpend = dotquad2u32($row->{'dhcpend'}) || '0';
@@ -607,6 +610,7 @@ sub instance($)
 			my $info = $infolist{$ipaddr} || '';
 			my $pin = $pinlist{$ipaddr} || '';
 			my $passwd = $passlist{$ipaddr} || '';
+			my $customer = $customerlist{$ipaddr} || '';
 			my $macs = lc($mac);
 			$macs =~ s/://g;
 			my ($q1,$q2,$q3,$q4) = split('\.',$ipaddr,4);
@@ -644,6 +648,7 @@ sub instance($)
 			$rule =~ s/\%DATE/$date/g;
 			$rule =~ s/\%PIN/$pin/g;
 			$rule =~ s/\%PASSWD/$passwd/g;
+			$rule =~ s/\%CUSTOMER/$customer/g;
 			$rule =~ s/\%1/$q1/g;
 			$rule =~ s/\%2/$q2/g;
 			$rule =~ s/\%3/$q3/g;
@@ -736,18 +741,21 @@ if($dbtype eq "mysql")
 {
 	$dbase = DBI->connect("DBI:mysql:database=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "UNIX_TIMESTAMP()";
+	$customerq = "CONCAT(UPPER(users.lastname), ' ', users.name) AS customer";
 }
 elsif($dbtype eq "postgres")
 {
 	$dbase = DBI->connect("DBI:Pg:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$utsfmt = "EXTRACT(EPOCH FROM CURRENT_TIMESTAMP(0))";
+	$customerq = "UPPER(users.lastname) || ' ' || users.name AS customer";
 }
 elsif($dbtype eq "sqlite")
 {
 	$dbase = DBI->connect("DBI:SQLite:dbname=$dbname;host=$dbhost","$dbuser","$dbpasswd", { RaiseError => 1 });
 	$dbase->func('inet_ntoa',1,'u32todotquad','create_function');
-	$dbase->func('inet_aton',1,'dotquad2u32','create_function');	
-	$utsfmt = "strftime('%s','now')";	
+	$dbase->func('inet_aton',1,'dotquad2u32','create_function');
+	$utsfmt = "strftime('%s','now')";
+	$customerq = "UPPER(users.lastname) || ' ' || users.name AS customer";
 }
 else
 {

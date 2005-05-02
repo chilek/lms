@@ -284,7 +284,10 @@
      <para>%SMAC - adres MAC pisany ma³ymi literami z usuniêtymi dwukropkami</para>
     </listitem>
     <listitem>
-     <para>%OWNER - w³a¶ciciel komputera</para>
+     <para>%OWNER - ID w³a¶ciciela komputera</para>
+    </listitem>
+    <listitem>
+     <para>%CUSTOMER - nazwisko i imiê w³a¶ciciela komputera</para>
     </listitem>
     <listitem>
      <para>%NAME - nazwa komputera du¿ymi znakami</para>
