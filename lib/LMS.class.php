@@ -2293,38 +2293,58 @@ class LMS
 
 	function NetworkCompress($id,$shift=0)
 	{
-		$this->SetTS('nodes');
-		$this->SetTS('networks');
-		$network=$this->GetNetworkRecord($id);
-		$address = $network['addresslong']+$shift;
-		foreach($network['nodes']['id'] as $key => $value)
-		{
+		$network = $this->GetNetworkRecord($id);
+		$address = $network['addresslong'] + $shift;
+		$broadcast = $network['addresslong'] + $network['size'];
+		foreach($network['nodes']['id'] as $idx => $value)
 			if($value)
+				$nodes[] = $network['nodes']['addresslong'][$idx];
+		rsort($nodes);
+		
+		for($i = $address+1; $i < $broadcast; $i++)
+		{
+			if(!sizeof($nodes)) break;
+			$ip = array_pop($nodes);
+			if($i==$ip)
+				continue;
+			else
 			{
-				$address ++;
-				$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE id=?', array($address,$value));
+				if(!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE ipaddr=?', array($i,$ip)))
+					$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i,$ip));
 			}
 		}
+		
+		$this->SetTS('nodes');
 	}
 
 	function NetworkRemap($src,$dst)
 	{
 		$this->SetTS('nodes');
-		$this->SetTS('networks');
 		$network['source'] = $this->GetNetworkRecord($src);
 		$network['dest'] = $this->GetNetworkRecord($dst);
-		foreach($network['source']['nodes']['id'] as $key => $value)
-			if($this->NodeExists($value))
-				$nodelist[] = $value;
-		$counter = 1;
-		if(sizeof($nodelist))
-			foreach($nodelist as $value)
-			{
-				while($this->NodeExists($network['dest']['nodes']['id'][$counter]))
-					$counter++;
-				$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE id=?', array($network['dest']['nodes']['addresslong'][$counter],$value));
-				$counter++;
-			}
+		$address = $network['dest']['addresslong']+1;
+		$broadcast = $network['dest']['addresslong'] + $network['dest']['size'];
+		foreach($network['source']['nodes']['id'] as $idx => $value)
+			if($value)
+				$nodes[] = $network['source']['nodes']['addresslong'][$idx];
+		foreach($network['dest']['nodes']['id'] as $idx => $value)
+			if($value)
+				$destnodes[] = $network['dest']['nodes']['addresslong'][$idx];
+		
+		for($i = $address; $i < $broadcast; $i++)
+		{
+			if(!sizeof($nodes)) break;
+			$ip = array_pop($nodes);
+
+			while(in_array($i, $destnodes))
+				$i++;
+				
+			if(!$this->DB->Execute('UPDATE nodes SET ipaddr=? WHERE ipaddr=?', array($i,$ip)))
+				$this->DB->Execute('UPDATE nodes SET ipaddr_pub=? WHERE ipaddr_pub=?', array($i,$ip));
+			
+			$counter++;
+		}
+		
 		return $counter;
 	}
 
@@ -2359,9 +2379,9 @@ class LMS
 		$network['pageassigned'] = 0;
 		
 		$nodes = $this->DB->GetAllByKey('SELECT id, name, ipaddr, ownerid, netdev FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?','ipaddr', array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
-		$nodespub = $this->DB->GetAllByKey('SELECT id, name, ipaddr_pub, ownerid, netdev FROM nodes WHERE ipaddr_pub >= ? AND ipaddr_pub <= ?','ipaddr_pub', array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
-	
-		$nodes = array_merge($nodes, $nodespub);
+		if($nodespub = $this->DB->GetAllByKey('SELECT id, name, ipaddr_pub, ownerid, netdev FROM nodes WHERE ipaddr_pub >= ? AND ipaddr_pub <= ?','ipaddr_pub', array(($network['addresslong'] + $start), ($network['addresslong'] + $end))))
+			foreach($nodespub as $idx => $row)
+				$nodes["".$idx.""] = $row;
 		
 		for($i = 0; $i < ($end - $start) ; $i ++)
 		{
