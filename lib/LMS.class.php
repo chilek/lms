@@ -2194,8 +2194,7 @@ class LMS
 	{
 		if($networks = $this->DB->GetAll('SELECT id, name, inet_ntoa(address) AS address, address AS addresslong, mask, interface, gateway, dns, dns2, domain, wins, dhcpstart, dhcpend FROM networks ORDER BY name'))
 		{
-			$size = 0;
-			$assigned = 0;
+			$size = 0; $assigned = 0; $online = 0;
 			
 			foreach($networks as $idx => $row)
 			{
@@ -2203,14 +2202,16 @@ class LMS
 				$row['size'] = pow(2,(32 - $row['prefix']));
 				$row['broadcast'] = getbraddr($row['address'],$row['mask']);
 				$row['broadcastlong'] = ip_long($row['broadcast']);
-				$row['assigned'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?', array($row['addresslong'], $row['broadcastlong']));
-            			$row['online'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr <= ? AND (?NOW? - lastonline < ?)', array($row['addresslong'], $row['broadcastlong'], $this->CONFIG['phpui']['lastonline_limit']));
+				$row['assigned'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE (ipaddr >= ? AND ipaddr <= ?) OR (ipaddr_pub >= ? AND ipaddr_pub <= ?)', array($row['addresslong'], $row['broadcastlong'], $row['addresslong'], $row['broadcastlong']));
+            			$row['online'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE ((ipaddr >= ? AND ipaddr <= ?)  OR (ipaddr_pub >= ? AND ipaddr_pub <= ?)) AND (?NOW? - lastonline < ?)', array($row['addresslong'], $row['broadcastlong'], $row['addresslong'], $row['broadcastlong'], $this->CONFIG['phpui']['lastonline_limit']));
 				$networks[$idx] = $row;
 				$size += $row['size'];
 				$assigned += $row['assigned'];
+				$online += $row['online'];
 			}
 			$networks['size'] = $size;
 			$networks['assigned'] = $assigned;
+			$networks['online'] = $online;
 		}
 		return $networks;
 	}
@@ -2281,7 +2282,6 @@ class LMS
 	function NetworkShift($network='0.0.0.0',$mask='0.0.0.0',$shift=0)
 	{
 		$this->SetTS('nodes');
-		$this->SetTS('networks');
 		return $this->DB->Execute('UPDATE nodes SET ipaddr = ipaddr + ? WHERE ipaddr >= inet_aton(?) AND ipaddr <= inet_aton(?)', array($shift, $network, getbraddr($network,$mask)));
 	}
 
@@ -2336,7 +2336,7 @@ class LMS
 		$network['assigned'] = 0;
 		$network['broadcast'] = getbraddr($network['address'],$network['mask']);
 		
-		$network['assigned'] = $this->DB->GetOne("SELECT COUNT(*) FROM nodes WHERE ipaddr >= ? AND ipaddr < ?", array($network['addresslong'], $network['addresslong'] + $network['size']));
+		$network['assigned'] = $this->DB->GetOne('SELECT COUNT(*) FROM nodes WHERE (ipaddr >= ? AND ipaddr < ?) OR (ipaddr_pub >= ? AND ipaddr_pub < ?)', array($network['addresslong'], $network['addresslong'] + $network['size'], $network['addresslong'], $network['addresslong'] + $network['size']));
 
 		$network['free'] = $network['size'] - $network['assigned'] - 2;
 		if ($network['dhcpstart'])
@@ -2359,7 +2359,10 @@ class LMS
 		$network['pageassigned'] = 0;
 		
 		$nodes = $this->DB->GetAllByKey('SELECT id, name, ipaddr, ownerid, netdev FROM nodes WHERE ipaddr >= ? AND ipaddr <= ?','ipaddr', array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
+		$nodespub = $this->DB->GetAllByKey('SELECT id, name, ipaddr_pub, ownerid, netdev FROM nodes WHERE ipaddr_pub >= ? AND ipaddr_pub <= ?','ipaddr_pub', array(($network['addresslong'] + $start), ($network['addresslong'] + $end)));
 	
+		$nodes = array_merge($nodes, $nodespub);
+		
 		for($i = 0; $i < ($end - $start) ; $i ++)
 		{
 			$longip = $network['addresslong'] + $i + $start;
