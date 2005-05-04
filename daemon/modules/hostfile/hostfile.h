@@ -22,6 +22,8 @@ struct hostfile_module
 	unsigned char *append;
 	unsigned char *grant;
 	unsigned char *deny;
+	unsigned char *grant_pub;
+	unsigned char *deny_pub;
 	unsigned char *file;
 	unsigned char *command;
 	unsigned char *networks;

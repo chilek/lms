@@ -543,8 +543,9 @@
 		    </sect3>
 		    <sect3 id="hostfile-config">
 		    <title>Konfiguracja</title>
-		    <para>W opcjach 'grantedhost' i 'deniedhost' mo¿na stosowaæ specjalne zmienne,
-		    które podczas zapisu do pliku zostan± zast±pione '%i' - adresem ip, '%m' - mac
+		    <para>W opcjach 'grantedhost' i 'deniedhost' oraz 'public_deniedhost' i 'public_grantedhost'
+		    mo¿na stosowaæ specjalne zmienne, które podczas zapisu do pliku zostan± 
+		    zast±pione '%i' - adresem ip, '%ipub' - adresem publicznym hosta, '%m' - mac
 		    adresem, '%n' - nazw± komputera, '%p' - has³em, '%info' - opisem komputera, '%domain' - domen±, 
 		    '%net' - nazw± sieci, '%gw' - adresem bramy w sieci do której nale¿y dany komputer.
 		    Poni¿ej opcje udostêpniane przez ten modu³</para>
@@ -578,6 +579,18 @@
 			    <para>deniedhost</para>
 			    <para>Tekst dla hosta od³±czonego. Domy¶lnie: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
 			    <para>Przyk³ad: <prompt>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>public_grantedhost</para>
+			    <para>Tekst dla hosta pod³±czonego, który posiada adres publiczny. 
+			    Domy¶lnie regu³a okre¶lona opcj± 'grantedhost'.</para>
+			    <para>Przyk³ad: <prompt>public_grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n$IPT -t nat -A PREROUTING -p tcp -d %ipub -j DNAT --to-destination %i\n$IPT -t nat -A POSTROUTING -s %i -j SNAT --to-source %ipub\n"</prompt></para>
+			</listitem>
+			<listitem>
+			    <para>public_deniedhost</para>
+			    <para>Tekst dla hosta od³±czonego, który posiada adres publiczny. 
+			    Domy¶lnie regu³a okre¶lona opcj± 'deniedhost'.</para>
+			    <para>Przyk³ad: <prompt>public_deniedhost = ""</prompt></para>
 			</listitem>
 			<listitem>
 			    <para>networks</para>
