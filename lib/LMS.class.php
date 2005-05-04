@@ -1136,7 +1136,7 @@ class LMS
 		
 		$totalon = 0; $totaloff = 0;
 		
-		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, nodes.info AS info, '
+		if($nodelist = $this->DB->GetAll('SELECT nodes.id AS id, ipaddr, inet_ntoa(ipaddr) AS ip, ipaddr_pub, inet_ntoa(ipaddr_pub) AS ip_pub, mac, nodes.name AS name, ownerid, access, warning, nodes.info AS info, lastonline, '
 						.$this->DB->Concat('UPPER(lastname)',"' '",'users.name').' AS owner
 						FROM users LEFT JOIN nodes ON ownerid = users.id'
 						.$searchargs.' '.($sqlord != '' ? $sqlord.' '.$direction : '')))
