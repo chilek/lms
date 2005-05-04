@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
 			inst = strdup(iopt);
 			for( instance=strtok(inst," "); instance!=NULL; instance=strtok(NULL, " ") )
 			{
-				res = db_pquery(g->conn, "SELECT module, crontab FROM daemoninstances, daemonhosts WHERE daemonhosts.id=hostid AND disabled=0 AND daemonhosts.name = '?' AND daemoninstances.name='?'", dhost, instance);
+				res = db_pquery(g->conn, "SELECT module, crontab FROM daemoninstances, daemonhosts WHERE daemonhosts.id = hostid AND disabled = 0 AND daemonhosts.name = '?' AND daemoninstances.name = '?'", dhost, instance);
 				if( db_nrows(res) )
 				{
 					char *crontab = db_get_data(res, 0, "crontab");
@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
 		}		
 		else // ... or from database
 		{
-			res = db_pquery(g->conn, "SELECT module, crontab, daemoninstances.name AS name FROM daemoninstances, daemonhosts WHERE daemonhosts.id=hostid AND disabled=0 AND daemonhosts.name = '?' ORDER BY priority", dhost);
+			res = db_pquery(g->conn, "SELECT module, crontab, daemoninstances.name AS name FROM daemoninstances, daemonhosts WHERE daemonhosts.id = hostid AND disabled = 0 AND daemonhosts.name = '?' ORDER BY priority", dhost);
 			for(i=0; i<db_nrows(res); i++)
 			{
 				char *crontab = db_get_data(res, i, "crontab");
@@ -330,7 +330,7 @@ int main(int argc, char *argv[])
 				
 				// write reload timestamp
 				if( reload )
-					db_pexec(g->conn, "UPDATE daemonhosts SET lastreload=%NOW%, reload=0 WHERE name='?'", dhost);
+					db_pexec(g->conn, "UPDATE daemonhosts SET lastreload = %NOW%, reload = 0 WHERE name = '?'", dhost);
 				
 				db_disconnect(g->conn);
 	
