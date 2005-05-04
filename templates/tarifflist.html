@@ -5,7 +5,7 @@
 	<TR class="dark">
 		<TD WIDTH="93%" CLASS="fleftu">
 			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{t}Name:{/t}</B><BR>
-			<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{t}Description:{/t}
+			<IMG SRC="img/info1.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{t}Description:{/t}
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" CLASS="fbt" align="right">
 			{t}ID:{/t}
@@ -40,7 +40,7 @@
 	<TR BGCOLOR="{cycle}" {cycle print=false} onmouseover="setPointer(this, '#CCFFCC')" onmouseout="setPointer(this, '{cycle}')">
 		<TD WIDTH="93%" CLASS="fleft" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';" class="fleft">
 			<IMG SRC="img/money.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;<B>{$tarifflist[tariffs].name}</B><BR>
-			{if $tarifflist[tariffs].description}<IMG SRC="img/usercomment.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{$tarifflist[tariffs].description}{/if}
+			{if $tarifflist[tariffs].description}<IMG SRC="img/info1.gif" ALT="" BORDER="0" ALIGN="absmiddle">&nbsp;{$tarifflist[tariffs].description}{/if}
 		</TD>
 		<TD WIDTH="1%" VALIGN="top" align="right" onClick="return self.location.href='?m=tariffinfo&id={$tarifflist[tariffs].id}';">
 			({$tarifflist[tariffs].id|string_format:"%04d"})
