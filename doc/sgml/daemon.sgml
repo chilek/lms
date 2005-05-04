@@ -531,11 +531,11 @@
               </sect3>
               <sect3 id="hostfile-config">
               <title>Configuration</title>
-              <para>The following templates might be used for 'grantedhost' and 'deniedhost' options
-              replaced with actual data from database: '%i' - IP address, '%m' - MAC address, '%n'
-              - host name, '%p' - node (computer) password, '%info' - node description, '%domain' -
-              domain, '%net' - net name, '%gw' - gateway address of network that given node belongs
-              to.
+              <para>The following templates might be used for 'grantedhost', 'deniedhost', 'public_grantedhost'
+	      and 'public_deniedhost' options replaced with actual data from database: '%i' - IP address, 
+	      '%ipub' - public IP address, '%m' - MAC address, '%n' - host name, '%p' - node (computer) password, 
+	      '%info' - node description, '%domain' - domain, '%net' - net name, '%gw' - gateway address of network 
+	      that given node belongs to.
               This module has following options:</para>
               <itemizedlist>
                <listitem>
@@ -568,6 +568,18 @@
                    <para>Line with rule(s) for disconnected node. Default: "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</para>
                    <para>Example: <prompt>deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</prompt></para>
                </listitem>
+	        <listitem>
+		    <para>public_grantedhost</para>
+		    <para>Line with rule(s) for connected node with specified public IP.
+		    By default rule specified in 'grantedhost' option.</para>
+		    <para>Example: <prompt>public_grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n$IPT -t nat -A PREROUTING -p tcp -d %ipub -j DNAT --to-destination %i\n$IPT -t nat -A POSTROUTING -s %i -j SNAT --to-source %ipub\n"</prompt></para>
+		</listitem>
+		<listitem>
+		    <para>public_deniedhost</para>
+		    <para>Line with rule(s) for disconnected node with specified public IP.
+		    By default rule specified in 'deniedhost' option.</para>
+		    <para>Example: <prompt>public_deniedhost = ""</prompt></para>
+		</listitem>
                <listitem>
                    <para>networks</para>
                    <para>List of network names which members should be included in config (case
@@ -1050,5 +1062,3 @@ $IPT -t filter -I FORWARD -p tcp -s %i -m limit --limit %plimit/s -m ipp2p --ipp
           </sect2>
      </sect1>
 </chapter>
-
-    

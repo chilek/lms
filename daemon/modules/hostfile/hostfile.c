@@ -127,18 +127,19 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 		fprintf(fh, "%s", hm->prefix);
 		
 		if(hm->skip_dev_ips)
-			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, passwd, ownerid, access, info FROM nodes WHERE ownerid<>0 ORDER BY ipaddr");
+			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, passwd, ownerid, access, info FROM nodes WHERE ownerid<>0 ORDER BY ipaddr");
 		else
-			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, passwd, ownerid, access, info FROM nodes ORDER BY ipaddr");
+			query = strdup("SELECT LOWER(name) AS name, mac, INET_NTOA(ipaddr) AS ip, INET_NTOA(ipaddr_pub) AS ip_pub, passwd, ownerid, access, info FROM nodes ORDER BY ipaddr");
 			
 		res = g->db_query(g->conn, query);
 		
 		for(i=0; i<g->db_nrows(res); i++)
 		{
-			unsigned char *mac, *ip, *access, *name, *info, *passwd;
+			unsigned char *mac, *ip, *ip_pub, *access, *name, *info, *passwd;
 	
 			mac 	= g->db_get_data(res,i,"mac");
 			ip  	= g->db_get_data(res,i,"ip");
+			ip_pub 	= g->db_get_data(res,i,"ip_pub");
 			access 	= g->db_get_data(res,i,"access");
 			name 	= g->db_get_data(res,i,"name");
 			info 	= g->db_get_data(res,i,"info");
@@ -147,13 +148,14 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 			if(ip && mac && access)
 			{
 				unsigned long inet = inet_addr(ip);
+				unsigned long inet_pub = inet_addr(ip_pub);
 				int ownerid = atoi(g->db_get_data(res,i,"ownerid"));
 				
 				// networks test
 				for(j=0; j<nc; j++)
-					if(nets[j].address == (inet & nets[j].mask)) 
+					if(nets[j].address == (inet & nets[j].mask))
 						break;
-				
+								
 				// groups test
 				m = gc;
 				if( strlen(hm->usergroups)>0 && ownerid )
@@ -175,9 +177,9 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 					unsigned char *pattern, *s;
 
 					if(*access == '1')
-						pattern = hm->grant;
+						pattern = ( inet_pub ? hm->grant_pub : hm->grant );
 					else
-						pattern = hm->deny;
+						pattern = ( inet_pub ? hm->deny_pub : hm->deny );
 			
 					s = strdup(pattern);
 					g->str_replace(&s, "%domain", nets[j].domain);
@@ -185,6 +187,7 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 					g->str_replace(&s, "%if", nets[j].interface);
 					g->str_replace(&s, "%gw", nets[j].gateway);
 					g->str_replace(&s, "%info", info);
+					g->str_replace(&s, "%ipub", ip_pub);
 					g->str_replace(&s, "%i", ip);
 					g->str_replace(&s, "%m", mac);
 					g->str_replace(&s, "%n", name);
@@ -225,8 +228,10 @@ void reload(GLOBAL *g, struct hostfile_module *hm)
 	
 	free(hm->prefix);
 	free(hm->append);
-	free(hm->grant);	
+	free(hm->grant);
 	free(hm->deny);
+	free(hm->grant_pub);
+	free(hm->deny_pub);
 	free(hm->file);
 	free(hm->command);
 	free(hm->networks);
@@ -250,7 +255,9 @@ struct hostfile_module * init(GLOBAL *g, MODULE *m)
 	hm->append = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "end", "/usr/sbin/iptables -A FORWARD -j REJECT\n"));
 	hm->grant = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "grantedhost", "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n/usr/sbin/iptables -A FORWARD -d %i -j ACCEPT\n"));
 	hm->deny = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "deniedhost", "/usr/sbin/iptables -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"));
-	hm->skip_dev_ips = g->config_getbool(hm->base.ini, hm->base.instance, "skip_ipv_ips", 1);
+	hm->grant_pub = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "public_grantedhost", hm->grant));
+	hm->deny_pub = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "public_deniedhost", hm->deny));
+	hm->skip_dev_ips = g->config_getbool(hm->base.ini, hm->base.instance, "skip_dev_ips", 1);
 	hm->file = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "file", "/tmp/hostfile"));
 	hm->command = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "command", ""));
 	hm->networks = strdup(g->config_getstring(hm->base.ini, hm->base.instance, "networks", ""));
