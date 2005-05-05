@@ -27,6 +27,7 @@ version ? (??/??/????):
   - node's public IP (alec/kuba)
   - lms-squid: changed/fixed lms.ini section name to [redirector] (alec)
   - removed old contrib/squid_warnings (alec)
+  - added option custom_accesstable for user-defined access rights (alec)
     
 version 1.5.6 Baal (24/04/2005):
 
