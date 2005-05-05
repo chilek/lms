@@ -91,7 +91,7 @@ if(isset($_GET['search']))
 	{
 		$SMARTY->display('printuserlist.html');
 	}
-	elseif($userlist['total'] == 1)
+	elseif($listdata['total'] == 1)
 	{
 		$SESSION->redirect('?m=userinfo&id='.$userlist[0]['id']);
 	}
