@@ -76,7 +76,7 @@ case "$1" in
 	perl -ne 'print if s/\$_LANG\[\x27(.*?[^\\])\x27\].*/$1/' < strings.php > strings.new
 	perl -ne 'print if s/\$_LANG\[\x27(.*?[^\\])\x27\].*/$1/' < ../lib/locale/$2/strings.php > strings.old
 	# make a diff from parsed files
-	diff strings.new strings.old > strings.diff
+	diff strings.old strings.new > strings.diff
 	# and change format of diff file
 	#perl -nle 'print "\$_LANG[\x27$_\x27] = \x27$_\x27;"' < strings.diff.tmp > strings.diff
 	# clean up
