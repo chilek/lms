@@ -282,12 +282,17 @@ CLASS="SCREEN"
   --with-sqlite         gdy korzystasz z bazy SQLite (wy³±czone)
   --with-pgsql          gdy korzystasz z bazy PostgreSQL (wy³±czone)
   --with-mysql          gdy korzystasz z bazy MySQL (w³±czone)
-  --prefix=DIR          katalog instalacyjny demona (/usr/local/bin)
+  --prefix=PREFIX       katalog instalacyjny demona i modu³ów (/usr/local)
   --libdir=DIR          lokalizacja bibliotek bazy danych (/usr/lib)
-  --incdir=DIR          lokalizacja plików nag³ówkowych bazy danych (/usr/include)</PRE
+  --incdir=DIR          lokalizacja plików nag³ówkowych bazy danych (/usr/include)
+  --inifile=FILE        plik konfiguracyjny - wy³±cza konfiguracjê przez UI</PRE
 >
 			Zatem wymagane jest okre¶lenie bazy z jakiej bêdziemy korzystaæ (-with-mysql 
-			lub -with-pgsql) oraz po³o¿enia bibliotek dostarczanych wraz z baz± (--incdir, --libdir).
+			lub -with-pgsql) oraz po³o¿enia bibliotek dostarczanych wraz z baz± (--incdir, 
+			--libdir). Mo¿liwe jest zmuszenie demona do korzystania
+			z plików konfiguracyjnych zamiast bazy danych. Nie jest
+			mo¿liwe u¿ywanie obu sposobów przechowywania konfiguracji,
+			dlatego nale¿y o tym zdecydowaæ przed kompilacj±.
 <PRE
 CLASS="SCREEN"
 ># ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include</PRE
@@ -298,15 +303,16 @@ CLASS="SCREEN"
 CLASS="SCREEN"
 ># make &#38;&#38; make install</PRE
 >
-			Na koniec skompilowane modu³y (pliki z rozszerzeniem <TT
+			Skompilowane modu³y (pliki z rozszerzeniem <TT
 CLASS="FILENAME"
 >.so</TT
 >),
 			znajduj±ce siê w katalogu <TT
 CLASS="FILENAME"
 >modules/nazwa_modu³u</TT
-> przenie¶ 
-			do dowolnego katalogu. Ich lokalizacjê bêdziesz okre¶la³ podczas konfiguracji.
+> zostaj± 
+			umieszczone w katalogu PREFIX/lib, a g³ówny program (lmsd) w katalogu
+			PREFIX/bin.
 			</P
 ></DIV
 ><DIV
@@ -340,10 +346,11 @@ CLASS="SCREEN"
                   ta musi zgadzaæ siê z nazw± hosta podan± w konfiguracji hostów
 -c polecenie      polecenie pow³oki do wykonania przed ka¿dym po³±czeniem z baz± 
                   tzn. co minutê (domy¶lnie: puste)
--q                wykonuje prze³adowanie i koñczy pracê
--v                wy¶wietla wersjê i prawa licencyjne
 -i "instancja[ ...]" lista instancji (modu³ów) do prze³adowania. Wszystkie pozosta³e 
-                  zostan± pominiête</PRE
+                  zostan± pominiête
+-q                wykonuje prze³adowanie i koñczy pracê
+-f                dzia³a na pierwszym planie (nie forkuje siê) 
+-v                wy¶wietla wersjê i prawa licencyjne</PRE
 >
 			Opcje dostêpu do bazy s± tak¿e odczytywane ze zmiennych pow³oki:
 			LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
