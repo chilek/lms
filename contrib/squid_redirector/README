@@ -34,7 +34,7 @@ my $configfile = '/etc/lms/lms.ini';
 Czyli po³o¿enie pliku konfiguracyjnego. Reszta konfiguracji ustawiana jest 
 w lms.ini, gdzie dopisujemy:
 ------
-[squid-redirector]
+[redirector]
 redirect        = http://nasz.serwer.pl/winetka/
 ------
 Czyli adres winetki.

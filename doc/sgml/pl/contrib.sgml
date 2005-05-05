@@ -109,10 +109,10 @@ my $configfile = '/etc/lms/lms.ini';
 </screen>
 		Czyli po³o¿enie pliku konfiguracyjnego. Reszta konfiguracji 
 		ustawiana jest w <filename>lms.ini</filename>, gdzie dopisujemy sekcjê 
-		<filename>[squid-redirector]</filename> i definiujemy adres winetki:
+		<filename>[redirector]</filename> i definiujemy adres winetki:
 <screen>
-[squid-redirector]
-redirect        = http://nasz.serwer.pl/winetka/
+[redirector]
+redirect        = http://net-komp.net.pl
 </screen>
 		Do katalogu gdzie ma byæ widoczna winetka kopiujemy pliki
 		<filename>index.php, message.html</filename> i zawarto¶æ katalogu 
