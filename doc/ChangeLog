@@ -28,6 +28,8 @@ version ? (??/??/????):
   - lms-squid: changed/fixed lms.ini section name to [redirector] (alec)
   - removed old contrib/squid_warnings (alec)
   - added option custom_accesstable for user-defined access rights (alec)
+  - fixed devices desc on map when device has no IP, now device lastonline 
+    status is getting from all connected nodes lastonline value (alec)
     
 version 1.5.6 Baal (24/04/2005):
 
