@@ -331,7 +331,7 @@ HREF="#CONTRIB-SQLPANEL"
 ><DT
 >8.4. <A
 HREF="#CONTRIB-SQUID"
->Squid warnings</A
+>Squid redirector</A
 ></DT
 ></DL
 ></DD
@@ -357,7 +357,7 @@ HREF="#SCRIPTS-TABLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN2294"
+HREF="#AEN2296"
 >List of all lmsd modules</A
 ></DT
 ><DT
@@ -1091,7 +1091,7 @@ CLASS="EMPHASIS"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->A.L.E.C's LMS Daemon</I
+>LMS Daemon</I
 ></SPAN
 >, written in C, which is
      being used (its plugins in fact) as a drop-in replacement for <SPAN
@@ -1266,7 +1266,7 @@ NAME="INSTALL-REQ-C"
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
->A.L.E.C's LMS Daemon</I
+>LMS Daemon</I
 ></SPAN
 > you will need
        working C compiler, because daemon will be provided in source code form only.</P
@@ -7811,7 +7811,11 @@ NAME="MGC-CONFIG-VARS"
 ></LI
 ><LI
 ><P
->%OWNER - owner's name</P
+>%OWNER - owner's ID</P
+></LI
+><LI
+><P
+>%CUSTOMER - owner's lastname and name</P
 ></LI
 ><LI
 ><P
@@ -8168,14 +8172,18 @@ CLASS="SCREEN"
   --with-pgsql          enables using of PostgreSQL database (disabled)
   --with-mysql          enables using of MySQL database (enabled)
   --with-sqlite         enables using of SQLite database (disabled)
-  --prefix=DIR          program install directory (/usr/local/bin)
+  --prefix=PREFIX       program and modules install directory (/usr/local)
   --libdir=DIR          location of database libraries (/usr/lib)
-  --incdir=DIR          location of database header files (/usr/include)</PRE
+  --incdir=DIR          location of database header files (/usr/include)
+  --inifile=FILE        configuration file - disables online configuration</PRE
 >
                It's required to choose one database which you will use (--with-mysql or --with-pgsql
                or --with-sqlite) and location of libraries supplied with database (--incdir,
                --libdir). You can use only one database. If you will change database, you have to
-               recompile your daemon.
+               recompile your daemon. It's also possible to force daemon to use
+	       configuration files instead of database. He can't use
+	       both of them in the same time, you'll need to choose that before
+	       compilation.
 <PRE
 CLASS="SCREEN"
 ># ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include</PRE
@@ -8186,15 +8194,15 @@ CLASS="SCREEN"
 CLASS="SCREEN"
 ># make &#38;&#38; make install</PRE
 >
-               Finally, compiled modules (files with <TT
+               Compiled modules (files with <TT
 CLASS="FILENAME"
 >.so</TT
 > extension), found in
                directory <TT
 CLASS="FILENAME"
 >modules/module_name</TT
-> should be moved to some directory.
-               Their location will be set in configuration.
+> will be moved to directory
+	       PREFIX/lib. Main program goes to PREFIX/bin.
                </P
 ></DIV
 ><DIV
@@ -8226,9 +8234,10 @@ CLASS="SCREEN"
                   hostname command, but it can be overwrited. That name must according
                   with name specified in hosts configuration
 - c command       shell command to run before every database connection (default: empty)
+-i "instance[ ...]" list of instances for reload. Other instances will be ignored
 -q                do reload and exit
--v                prints version and copyright info
--i "instance[ ...]" list of instances for reload. Other instances will be ignored</PRE
+-f                run in foreground (don't fork)
+-v                prints version and copyright info</PRE
 >
 		Database connection options are readed also from shell variables:
 		LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
@@ -8357,7 +8366,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2294"
+NAME="AEN2296"
 ></A
 ><P
 ><B
@@ -9179,11 +9188,11 @@ NAME="HOSTFILE-CONFIG"
 >6.2.8.2. Configuration</A
 ></H4
 ><P
->The following templates might be used for 'grantedhost' and 'deniedhost' options
-              replaced with actual data from database: '%i' - IP address, '%m' - MAC address, '%n'
-              - host name, '%p' - node (computer) password, '%info' - node description, '%domain' -
-              domain, '%net' - net name, '%gw' - gateway address of network that given node belongs
-              to.
+>The following templates might be used for 'grantedhost', 'deniedhost', 'public_grantedhost'
+	      and 'public_deniedhost' options replaced with actual data from database: '%i' - IP address, 
+	      '%ipub' - public IP address, '%m' - MAC address, '%n' - host name, '%p' - node (computer) password, 
+	      '%info' - node description, '%domain' - domain, '%net' - net name, '%gw' - gateway address of network 
+	      that given node belongs to.
               This module has following options:</P
 ><UL
 ><LI
@@ -9250,6 +9259,30 @@ CLASS="PROMPT"
 >Example: <SAMP
 CLASS="PROMPT"
 >deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</SAMP
+></P
+></LI
+><LI
+><P
+>public_grantedhost</P
+><P
+>Line with rule(s) for connected node with specified public IP.
+		    By default rule specified in 'grantedhost' option.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>public_grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n$IPT -t nat -A PREROUTING -p tcp -d %ipub -j DNAT --to-destination %i\n$IPT -t nat -A POSTROUTING -s %i -j SNAT --to-source %ipub\n"</SAMP
+></P
+></LI
+><LI
+><P
+>public_deniedhost</P
+><P
+>Line with rule(s) for disconnected node with specified public IP.
+		    By default rule specified in 'deniedhost' option.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>public_deniedhost = ""</SAMP
 ></P
 ></LI
 ><LI
@@ -12218,7 +12251,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="CONTRIB-SQUID"
->8.4. Squid warnings</A
+>8.4. Squid redirector</A
 ></H2
 ><DIV
 CLASS="SECT2"
@@ -12264,12 +12297,12 @@ CLASS="FILENAME"
 >lms.ini</TT
 > file, where we should add <TT
 CLASS="FILENAME"
->[squid-redirector]</TT
+>[redirector]</TT
 > section and define URL of our programmed message:
 <PRE
 CLASS="SCREEN"
->[squid-redirector]
-redirect        = http://www.ourserver.com/adminMsg/</PRE
+>[redirector]
+redirect        = http://net-komp.net.pl</PRE
 >
 		At last, we copy files <TT
 CLASS="FILENAME"

@@ -94,7 +94,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2294"
+NAME="AEN2296"
 ></A
 ><P
 ><B
@@ -916,11 +916,11 @@ NAME="HOSTFILE-CONFIG"
 >6.2.8.2. Configuration</A
 ></H3
 ><P
->The following templates might be used for 'grantedhost' and 'deniedhost' options
-              replaced with actual data from database: '%i' - IP address, '%m' - MAC address, '%n'
-              - host name, '%p' - node (computer) password, '%info' - node description, '%domain' -
-              domain, '%net' - net name, '%gw' - gateway address of network that given node belongs
-              to.
+>The following templates might be used for 'grantedhost', 'deniedhost', 'public_grantedhost'
+	      and 'public_deniedhost' options replaced with actual data from database: '%i' - IP address, 
+	      '%ipub' - public IP address, '%m' - MAC address, '%n' - host name, '%p' - node (computer) password, 
+	      '%info' - node description, '%domain' - domain, '%net' - net name, '%gw' - gateway address of network 
+	      that given node belongs to.
               This module has following options:</P
 ><UL
 ><LI
@@ -987,6 +987,30 @@ CLASS="PROMPT"
 >Example: <SAMP
 CLASS="PROMPT"
 >deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j REJECT\n"</SAMP
+></P
+></LI
+><LI
+><P
+>public_grantedhost</P
+><P
+>Line with rule(s) for connected node with specified public IP.
+		    By default rule specified in 'grantedhost' option.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>public_grantedhost = "$IPT -A FORWARD -s %i -m mac --mac-source %m -j ACCEPT\n$IPT -t nat -A PREROUTING -p tcp -d %ipub -j DNAT --to-destination %i\n$IPT -t nat -A POSTROUTING -s %i -j SNAT --to-source %ipub\n"</SAMP
+></P
+></LI
+><LI
+><P
+>public_deniedhost</P
+><P
+>Line with rule(s) for disconnected node with specified public IP.
+		    By default rule specified in 'deniedhost' option.</P
+><P
+>Example: <SAMP
+CLASS="PROMPT"
+>public_deniedhost = ""</SAMP
 ></P
 ></LI
 ><LI

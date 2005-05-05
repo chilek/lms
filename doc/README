@@ -73,7 +73,7 @@ LMS Developers
         8.1. Customer account
         8.2. Customer account 2
         8.3. SQL Panel
-        8.4. Squid warnings
+        8.4. Squid redirector
 
    9. FAQ
 
@@ -271,10 +271,10 @@ Chapter 2. Installation and configuration
    script and manage your server. Note that some of the scripts might
    need additional Perl modules to function.
 
-   At the end there is also A.L.E.C's LMS Daemon, written in C, which is
-   being used (its plugins in fact) as a drop-in replacement for LMS-MGC
-   - to configure and manage (ie. restart) your services. It's main
-   advantage is that it responds for all LMS-UI changes in realtime.
+   At the end there is also LMS Daemon, written in C, which is being used
+   (its plugins in fact) as a drop-in replacement for LMS-MGC - to
+   configure and manage (ie. restart) your services. It's main advantage
+   is that it responds for all LMS-UI changes in realtime.
      _________________________________________________________________
 
 2.2. Requirements
@@ -330,8 +330,8 @@ Chapter 2. Installation and configuration
 
 2.2.6. C Compiler
 
-   If you intend to run A.L.E.C's LMS Daemon you will need working C
-   compiler, because daemon will be provided in source code form only.
+   If you intend to run LMS Daemon you will need working C compiler,
+   because daemon will be provided in source code form only.
      _________________________________________________________________
 
 2.3. LMS Installation
@@ -2849,7 +2849,8 @@ Chapter 5. Configuration file generator (lms-mgc)
      * %ID - ID of computer
      * %MAC - MAC address
      * %SMAC - MAC address, in lowercase and without colon separators
-     * %OWNER - owner's name
+     * %OWNER - owner's ID
+     * %CUSTOMER - owner's lastname and name
      * %NAME - computer name, in uppercase
      * %name - computer name, in lowercase
      * %INFO - computer description
@@ -2965,23 +2966,27 @@ Chapter 6. LMS Daemon
   --with-pgsql          enables using of PostgreSQL database (disabled)
   --with-mysql          enables using of MySQL database (enabled)
   --with-sqlite         enables using of SQLite database (disabled)
-  --prefix=DIR          program install directory (/usr/local/bin)
+  --prefix=PREFIX       program and modules install directory (/usr/local)
   --libdir=DIR          location of database libraries (/usr/lib)
   --incdir=DIR          location of database header files (/usr/include)
+  --inifile=FILE        configuration file - disables online configuration
 
    It's required to choose one database which you will use (--with-mysql
    or --with-pgsql or --with-sqlite) and location of libraries supplied
    with database (--incdir, --libdir). You can use only one database. If
-   you will change database, you have to recompile your daemon.
+   you will change database, you have to recompile your daemon. It's also
+   possible to force daemon to use configuration files instead of
+   database. He can't use both of them in the same time, you'll need to
+   choose that before compilation.
 # ./configure --with-pgsql --libdir=/usr/local/pgsql/lib --incdir=/usr/local/pgsql/include
 
    After that you can compile and install (put daemon in directory given
    with --prefix option):
 # make && make install
 
-   Finally, compiled modules (files with .so extension), found in
-   directory modules/module_name should be moved to some directory. Their
-   location will be set in configuration.
+   Compiled modules (files with .so extension), found in directory
+   modules/module_name will be moved to directory PREFIX/lib. Main
+   program goes to PREFIX/bin.
      _________________________________________________________________
 
 6.1.3. Configuration
@@ -2999,9 +3004,10 @@ Chapter 6. LMS Daemon
                   hostname command, but it can be overwrited. That name must according
                   with name specified in hosts configuration
 - c command       shell command to run before every database connection (default: empty)
--q                do reload and exit
--v                prints version and copyright info
 -i "instance[ ...]" list of instances for reload. Other instances will be ignored
+-q                do reload and exit
+-f                run in foreground (don't fork)
+-v                prints version and copyright info
 
    Database connection options are readed also from shell variables:
    LMSDBPASS, LMSDBNAME, LMSDBUSER, LMSDBHOST, LMSDBPORT.
@@ -3330,12 +3336,13 @@ Chapter 6. LMS Daemon
 
 6.2.8.2. Configuration
 
-   The following templates might be used for 'grantedhost' and
-   'deniedhost' options replaced with actual data from database: '%i' -
-   IP address, '%m' - MAC address, '%n' - host name, '%p' - node
-   (computer) password, '%info' - node description, '%domain' - domain,
-   '%net' - net name, '%gw' - gateway address of network that given node
-   belongs to. This module has following options:
+   The following templates might be used for 'grantedhost', 'deniedhost',
+   'public_grantedhost' and 'public_deniedhost' options replaced with
+   actual data from database: '%i' - IP address, '%ipub' - public IP
+   address, '%m' - MAC address, '%n' - host name, '%p' - node (computer)
+   password, '%info' - node description, '%domain' - domain, '%net' - net
+   name, '%gw' - gateway address of network that given node belongs to.
+   This module has following options:
      * file
        Location of generated file. Default: /tmp/hostfile
        Example: file = /etc/rc.d/rc.firewall
@@ -3359,6 +3366,17 @@ Chapter 6. LMS Daemon
        REJECT\n"
        Example: deniedhost = "$IPT -A FORWARD -s %i -m mac --mac-source
        %m -j REJECT\n"
+     * public_grantedhost
+       Line with rule(s) for connected node with specified public IP. By
+       default rule specified in 'grantedhost' option.
+       Example: public_grantedhost = "$IPT -A FORWARD -s %i -m mac
+       --mac-source %m -j ACCEPT\n$IPT -t nat -A PREROUTING -p tcp -d
+       %ipub -j DNAT --to-destination %i\n$IPT -t nat -A POSTROUTING -s
+       %i -j SNAT --to-source %ipub\n"
+     * public_deniedhost
+       Line with rule(s) for disconnected node with specified public IP.
+       By default rule specified in 'deniedhost' option.
+       Example: public_deniedhost = ""
      * networks
        List of network names which members should be included in config
        (case insensitive). Default: empty (all networks).
@@ -4375,7 +4393,7 @@ Chapter 8. Extensions
    module via http://lms.domain.pl/?m=sql.
      _________________________________________________________________
 
-8.4. Squid warnings
+8.4. Squid redirector
 
 8.4.1. Intro
 
@@ -4408,10 +4426,10 @@ redirect_program /path/to/lms-squid
 my $configfile = '/etc/lms/lms.ini';
 
    ...to reflect location of your lms.ini file. The rest of configuration
-   is being set in actual lms.ini file, where we should add
-   [squid-redirector] section and define URL of our programmed message:
-[squid-redirector]
-redirect        = http://www.ourserver.com/adminMsg/
+   is being set in actual lms.ini file, where we should add [redirector]
+   section and define URL of our programmed message:
+[redirector]
+redirect        = http://net-komp.net.pl
 
    At last, we copy files index.php, message.html to the directory that
    should serve a message to users and linking to lms images directory
