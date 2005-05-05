@@ -81,4 +81,8 @@ $access['table'][253]['deny_reg']	= '^(admin(add|del|edit|passwd))$';
 $access['table'][255]['name']		= trans('no access');
 $access['table'][255]['deny_reg']	= '^.*$';
 
+// read user-defined access rights table
+if(isset($_CONFIG['phpui']['custom_accesstable']))
+	@require_once($_LIB_DIR.'/'.$_CONFIG['phpui']['custom_accesstable']);
+
 ?>
