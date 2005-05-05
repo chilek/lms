@@ -41,7 +41,7 @@
 		</sect2>
 	</sect1>
 	<sect1 id="contrib-squid">
-    	<title>Squid warnings</title>
+    	<title>Squid redirector</title>
 		<sect2 id="squid-redirector-intro">
 		<title>Intro</title>
 		<para>This tiny set of tools allows you to display users their warning messages (and cut access to entire Web off, it needed) in very elegant way, namely using squid Proxy Server. Obviously to make this work, all users should be forced to use proxy (or transparent proxy should be setup).</para>
@@ -58,10 +58,10 @@ redirect_program /path/to/lms-squid
 <screen>
 my $configfile = '/etc/lms/lms.ini';
 </screen>
-		...to reflect location of your lms.ini file. The rest of configuration is being set in actual <filename>lms.ini</filename> file, where we should add <filename>[squid-redirector]</filename> section and define URL of our programmed message:
+		...to reflect location of your lms.ini file. The rest of configuration is being set in actual <filename>lms.ini</filename> file, where we should add <filename>[redirector]</filename> section and define URL of our programmed message:
 <screen>
-[squid-redirector]
-redirect        = http://www.ourserver.com/adminMsg/
+[redirector]
+redirect        = http://net-komp.net.pl
 </screen>
 		At last, we copy files <filename>index.php, message.html</filename> to the directory that should serve a message to users and linking to lms images directory (<filename>img</filename>).</para>
 		</sect2>
