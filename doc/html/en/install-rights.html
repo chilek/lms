@@ -231,6 +231,46 @@ BORDER="0"
 >
           </P
 ></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-RIGHTS-USER"
+>2.7.3. User-defined access rules</A
+></H2
+><P
+>Advanced users can define additional any access rules
+		or redefine existing ones.  In order to do that you must make
+		PHP script based on file <TT
+CLASS="FILENAME"
+>lib/accesstable.php</TT
+>
+		place them in LMS's <TT
+CLASS="FILENAME"
+>lib</TT
+> directory. Then 
+		set option <TT
+CLASS="FILENAME"
+>custom_accesstable</TT
+> in [phpui]
+		section to created file name.</P
+><P
+>In that way is possible to define your own rules to allow
+		or deny access for any modules. Module it's a name of PHP file
+		in <TT
+CLASS="FILENAME"
+>modules</TT
+> directory, which in access rules
+		is given without extension. For example, is possible to define
+		rule for invoices displaying (e.g. for script lms-sendinvoices) 
+		in following way:
+<PRE
+CLASS="SCREEN"
+></PRE
+>
+		</P
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"

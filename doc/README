@@ -822,6 +822,14 @@ database = /usr/local/lms/lms.db
        Parameters of smtp authorization in mailing. Default:
        127.0.0.1:25.
        Example: smtp_host = mail.domain.pl
+     * gd_translate_to
+       Charset of data that GD library expects (usefull if GD need
+       ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default:
+       ISO-8859-2.
+       Example: gd_translate_to =
+     * check_for_updates_period
+       How often to check for LMS updates (in seconds). Default: 86400.
+       Example: check_for_updates_period = 604800
      _________________________________________________________________
 
 2.6.4. Section [finances] - Finances Settings
@@ -886,6 +894,20 @@ database = /usr/local/lms/lms.db
    access to module, then LMS will grant access to module, but if module
    does not match at any level then no-access-message also will be
    printed.
+     _________________________________________________________________
+
+2.7.3. User-defined access rules
+
+   Advanced users can define additional any access rules or redefine
+   existing ones. In order to do that you must make PHP script based on
+   file lib/accesstable.php place them in LMS's lib directory. Then set
+   option custom_accesstable in [phpui] section to created file name.
+
+   In that way is possible to define your own rules to allow or deny
+   access for any modules. Module it's a name of PHP file in modules
+   directory, which in access rules is given without extension. For
+   example, is possible to define rule for invoices displaying (e.g. for
+   script lms-sendinvoices) in following way:
      _________________________________________________________________
 
 2.8. Upgrade

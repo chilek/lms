@@ -235,6 +235,45 @@ BORDER="0"
 >
 		</P
 ></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALL-RIGHTS-USER"
+>2.7.3. Regu³y dostêpu definiowane przez u¿ytkownika</A
+></H2
+><P
+>Zaawansowani u¿ytkownicy maj± mo¿liwo¶æ zdefiniowania dodatkowych
+		dowolnych regu³ dostêpu lub przedefiniowania istniej±cych. W tym celu
+		nale¿y utworzyæ skrypt PHP na wzór <TT
+CLASS="FILENAME"
+>lib/accesstable.php</TT
+>
+		i umie¶ciæ go w katalogu <TT
+CLASS="FILENAME"
+>lib</TT
+> LMS-a. Nazwê pliku
+		podajemy w opcji <TT
+CLASS="FILENAME"
+>custom_accesstable</TT
+> sekcji [phpui].</P
+><P
+>W ten sposób mo¿na zdefiniowaæ w³asne regu³y zezwalaj±ce lub
+		zabraniaj±ce dostêpu do dowolnych modu³ów. Modu³ to nazwa pliku PHP
+		z katalogu <TT
+CLASS="FILENAME"
+>modules</TT
+>, któr± w regu³ach dostêpu podajemy
+		bez rozszerzenia. Dla przyk³adu, mo¿na zdefiniowaæ uprawnienie do
+		odczytu faktur (np. na potrzeby skryptu lms-sendinvoices) w nastêpuj±cy
+		sposób:
+<PRE
+CLASS="SCREEN"
+></PRE
+>
+		</P
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
