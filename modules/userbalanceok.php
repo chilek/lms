@@ -33,7 +33,33 @@ if (!$LMS->UserExists($_GET['id']))
 }
 else
 {
-	$LMS->SetBalanceZero($_GET['id']);
+	$user_id = $_GET['id'];
+		
+	$stan = array(
+			'22.0' => $LMS->GetUserBalance($user_id, '22.0'),
+			'7.0' => $LMS->GetUserBalance($user_id, '7.0'),
+			'0.0' => $LMS->GetUserBalance($user_id, '0.0'),
+			trans('tax-free') => $LMS->GetUserBalance($user_id, trans('tax-free'))
+	);
+	asort($stan);
+		
+	foreach($stan as $key => $val)
+	{
+		if(($balance = $LMS->GetUserBalance($user_id)) >= 0)
+			break;
+	
+		if($balance > $val)
+			$val = -($balance);
+		else		
+			$val = -$val;
+	
+		if ($key == trans('tax-free'))
+			$ret[$key] = $LMS->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?)', array($LMS->AUTH->id, 3 , round($val,2) , $user_id, trans('Accounted')));
+		else
+			$ret[$key] = $LMS->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)', array($LMS->AUTH->id, 3 , round($val,2) , $key, $user_id, trans('Accounted')));
+	}
+	$LMS->SetTS('cash');
+	
 	header('Location: ?'.$SESSION->get('backto'));
 }
 
@@ -43,3 +69,4 @@ $SMARTY->display('dialog.html');
 $SMARTY->display('footer.html');
 
 ?>
+

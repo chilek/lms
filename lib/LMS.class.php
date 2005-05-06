@@ -25,6 +25,7 @@
  */
 
 // we need this defines, and we need to place them here, see below why
+
 define('RT_NEW', trans('new'));
 define('RT_OPEN', trans('opened'));
 define('RT_RESOLVED', trans('resolved'));
@@ -47,7 +48,7 @@ class LMS
 	var $_revision = '$Revision$';
 	var $MENU = array();
 
-	function LMS(&$DB, &$AUTH, &$CONFIG) // ustawia zmienne klasy
+	function LMS(&$DB, &$AUTH, &$CONFIG) // class variables setting
 	{
 		if($AUTH !== NULL)
 		{
@@ -88,42 +89,12 @@ class LMS
 		foreach($this->modules as $module)
 			if(! ($this->$module != NULL ? $this->$module->_postinit() : TRUE))
 				trigger_error('Wyst±pi³y problemy z inicjalizacj± modu³u '.$module.'.');
-
-		// to siê rozejdzie po modu³ach:
-
-		$this->AddMenu(trans('Administration'), 'settings.gif', '?m=welcome', trans('System informations and management'), 'i', 0);
-		$this->AddMenu(trans('Customers'), 'user.gif', '?m=userlist', trans('Customers: list, searching, adding, groups'), 'u', 5);
-		$this->AddMenu(trans('Nodes'), 'node.gif', '?m=nodelist', trans('Nodes: list, searching, adding'), 'k', 10);
-		$this->AddMenu(trans('Net Devices'), 'netdev.gif', '?m=netdevlist', trans('Record of Network Devices'), 'o', 15);
-		$this->AddMenu(trans('IP Networks'), 'network.gif', '?m=netlist', trans('IP Address Classes Management'), 't', 20);
-		$this->AddMenu(trans('Finances'), 'money.gif', '?m=tarifflist', trans('Tariffs and Network Finances Management'), 'f', 25);
-		$this->AddMenu(trans('Accounts'), 'account.gif', '?m=accountlist', trans('Accounts, Domains, Aliases Management'), 'a', 30);
-		$this->AddMenu(trans('Mailing'), 'mail.gif', '?m=mailing', trans('Serial Mail'), 'm', 35);
-		$this->AddMenu(trans('Reload'), 'reload.gif', '?m=fwreload', '', 'r', 40);
-		$this->AddMenu(trans('Stats'), 'traffic.gif', '?m=traffic', trans('Statistics of Internet Link Usage'), 'x', 45);
-		$this->AddMenu(trans('Helpdesk'), 'ticket.gif', '?m=rtqueuelist', trans('Requests Tracking'), 'h', 50);
-		$this->AddMenu(trans('Timetable'), 'calendar.gif', '?m=eventlist', trans('Events Tracking'), 'v', 55);
-*/	}
+*/	
+	}
 
 	function _postinit()
 	{
 		return TRUE;
-	}
-
-	/*
-	 *  Basic functions (various)
-	 */
-
-	function AddMenu($name = '', $img = '', $link = '', $tip = '', $accesskey = '', $prio = 99)
-	{
-		if($name != '')
-		{
-			foreach(array('name', 'img', 'link', 'tip', 'accesskey', 'prio') as $key)
-				$this->MENU[$key][] = $$key;
-			array_multisort($this->MENU[prio], SORT_NUMERIC, SORT_ASC, $this->MENU[name], SORT_STRING, SORT_ASC, $this->MENU[img], $this->MENU[link], $this->MENU[accesskey], $this->MENU[tip]);
-			return TRUE;
-		}
-		return FALSE;
 	}
 
 	/*
@@ -132,7 +103,7 @@ class LMS
 	 *	1 - system log in and modules calls without access privileges 
 	 *	2 - as above, addition and deletion
 	 *	3 - as above, and changes
-	 *	4 - paranoid, id est all above and all modules calls
+	 *	4 - as above, and all modules calls (paranoid)
 	 */
 /*
 	function Log($loglevel=0, $message=NULL)
@@ -1829,36 +1800,6 @@ class LMS
 	function TariffExists($id)
 	{
 		return ($this->DB->GetOne('SELECT id FROM tariffs WHERE id=?', array($id))?TRUE:FALSE);
-	}
-
-	function SetBalanceZero($user_id)
-	{
-		$this->SetTS('cash');
-		
-		$stan = array(
-				'22.0' => $this->GetUserBalance($user_id, '22.0'),
-				'7.0' => $this->GetUserBalance($user_id, '7.0'),
-				'0.0' => $this->GetUserBalance($user_id, '0.0'),
-				trans('tax-free') => $this->GetUserBalance($user_id, trans('tax-free'))
-		);
-		asort($stan);
-		
-		foreach($stan as $key => $val)
-		{
-			if(($balance = $this->GetUserBalance($user_id)) >= 0)
-				break;
-		
-			if($balance > $val)
-				$val = -($balance);
-			else		
-				$val = -$val;
-	
-			if ($key == trans('tax-free'))
-				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, NULL, ?, ?)', array($this->AUTH->id, 3 , round($val,2) , $user_id, trans('Accounted')));
-			else
-				$ret[$key] = $this->DB->Execute('INSERT INTO cash (time, adminid, type, value, taxvalue, userid, comment) VALUES (?NOW?, ?, ?, ?, ?, ?, ?)', array($this->AUTH->id, 3 , round($val,2) , $key, $user_id, trans('Accounted')));
-		}
-		return $ret;
 	}
 
 	function AddBalance($addbalance)
