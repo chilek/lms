@@ -357,7 +357,7 @@ HREF="#SCRIPTS-TABLE"
 ></DT
 ><DT
 >6-1. <A
-HREF="#AEN2296"
+HREF="#AEN2315"
 >List of all lmsd modules</A
 ></DT
 ><DT
@@ -2556,6 +2556,28 @@ CLASS="PROMPT"
 >smtp_host = mail.domain.pl</SAMP
 ></P
 ></LI
+><LI
+><P
+>gd_translate_to</P
+><P
+>Charset of data that GD library expects (usefull if GD need ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default: ISO-8859-2.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>gd_translate_to = </SAMP
+></P
+></LI
+><LI
+><P
+>check_for_updates_period</P
+><P
+>How often to check for LMS updates (in seconds). Default: 86400.</P
+><P
+>Example:     <SAMP
+CLASS="PROMPT"
+>check_for_updates_period = 604800</SAMP
+></P
+></LI
 ></UL
 ></DIV
 ><DIV
@@ -2746,6 +2768,46 @@ BORDER="0"
 ></TABLE
 >
           </P
+></DIV
+><DIV
+CLASS="SECT2"
+><HR><H3
+CLASS="SECT2"
+><A
+NAME="INSTALL-RIGHTS-USER"
+>2.7.3. User-defined access rules</A
+></H3
+><P
+>Advanced users can define additional any access rules
+		or redefine existing ones.  In order to do that you must make
+		PHP script based on file <TT
+CLASS="FILENAME"
+>lib/accesstable.php</TT
+>
+		place them in LMS's <TT
+CLASS="FILENAME"
+>lib</TT
+> directory. Then 
+		set option <TT
+CLASS="FILENAME"
+>custom_accesstable</TT
+> in [phpui]
+		section to created file name.</P
+><P
+>In that way is possible to define your own rules to allow
+		or deny access for any modules. Module it's a name of PHP file
+		in <TT
+CLASS="FILENAME"
+>modules</TT
+> directory, which in access rules
+		is given without extension. For example, is possible to define
+		rule for invoices displaying (e.g. for script lms-sendinvoices) 
+		in following way:
+<PRE
+CLASS="SCREEN"
+></PRE
+>
+		</P
 ></DIV
 ></DIV
 ><DIV
@@ -8366,7 +8428,7 @@ NAME="DAEMON-MODULESLIST"
 ><DIV
 CLASS="TABLE"
 ><A
-NAME="AEN2296"
+NAME="AEN2315"
 ></A
 ><P
 ><B
