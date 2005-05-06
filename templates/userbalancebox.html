@@ -74,8 +74,8 @@
 {/literal}
 <FORM name="addbalance" method="POST" action="?m=balanceadd&id={$balancelist.userid}">
 <TABLE WIDTH="100%" CELLPADDING="3">
-	<TR CLASS="DARK" {if $limit}OnCLick="showOrHide('userbalance');"{/if}>
-		<TD class="fleftu">
+	<TR CLASS="DARK">
+		<TD class="fleftu" {if $limit}OnCLick="showOrHide('userbalance');"{/if}>
 			<IMG src="img/money.gif" border="0" ALT="" align="absmiddle">
 			<B>{t}Customer Account:{/t}</B> 
 			{if $limit}
