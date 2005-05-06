@@ -132,6 +132,10 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 			$desc = trans('When enabled, all messages in helpdesk system (except sent to requestor) will be sent to mail server at address of right queue. Script lms-rtparser should be running on server. Messages to database will be written by script. Default: disabled.');
 		break;
 
+		case 'helpdesk_sender_name':
+			$desc = trans('Name of messages sender or predefined variables: "queue" - queue name, "user" - logged user name. Default: none.');
+		break;
+
 		case 'newticket_notify':
 			$desc = trans('When enabled, system will sent notification after addition of new ticket to all users with rights for current queue. Default: disabled.');
 		break;
@@ -162,6 +166,17 @@ foreach($LMS->CONFIG['phpui'] as $key => $val)
 		
 		case 'custom_accesstable':
 			$desc = trans('PHP file with user-defined access rules in "lib" directory. Default: empty.');
+		break;					
+
+		case 'check_for_updates_period':
+			$desc = trans('How often to check for LMS updates (in seconds). Default: 86400.');
+		break;					
+
+		case 'smtp_port':
+		case 'smtp_host':
+		case 'smtp_username':
+		case 'smtp_password':
+			$desc = trans('SMTP settings.');
 		break;					
 		
 		default:

@@ -662,6 +662,16 @@ database = /usr/local/lms/lms.db</screen>
 	    PEAR::Mail. Domy¶lnie: 127.0.0.1:25.</para>
 	    <para>Przyk³ad:	<prompt>smtp_host = poczta.domena.pl</prompt></para>
 	</listitem>
+	<listitem>
+    	    <para>gd_translate_to</para>
+            <para>Kodowanie danych dla biblioteki GD (przydatne je¶li GD wymaga ISO-8859-2 zamiast UTF-8 dla funkcji imagetext). Domy¶lnie: ISO-8859-2.</para>
+            <para>Przyk³ad:     <prompt>gd_translate_to = </prompt></para>
+        </listitem>
+        <listitem>
+    	    <para>check_for_updates_period</para>
+            <para>Jak czêsto sprawdzaæ czy s± dostêpne poprawki LMS-a (w sekundach). Domy¶lnie: 86400.</para>
+            <para>Przyk³ad:     <prompt>check_for_updates_period = 604800</prompt></para>
+        </listitem>
 	</itemizedlist>
  	</sect2>
 	<sect2 id="install-config-finances">

@@ -3057,6 +3057,7 @@ class LMS
 			case 'timeout':
 			case 'timetable_days_forward':
 			case 'nodepassword_length':
+			case 'check_for_updates_period':
 				if($value<=0)
 					return trans('Value of option "$0" must be a number grater than zero!' ,$var);
 			break;
