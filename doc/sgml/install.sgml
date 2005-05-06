@@ -634,6 +634,16 @@ database = /usr/local/lms/lms.db</screen>
          <para>Parameters of smtp authorization in mailing. Default: 127.0.0.1:25.</para>
          <para>Example:     <prompt>smtp_host = mail.domain.pl</prompt></para>
      </listitem>
+     <listitem>
+         <para>gd_translate_to</para>
+         <para>Charset of data that GD library expects (usefull if GD need ISO-8859-2 instead of UTF-8 to feed imagetext() function. Default: ISO-8859-2.</para>
+         <para>Example:     <prompt>gd_translate_to = </prompt></para>
+     </listitem>
+     <listitem>
+         <para>check_for_updates_period</para>
+         <para>How often to check for LMS updates (in seconds). Default: 86400.</para>
+         <para>Example:     <prompt>check_for_updates_period = 604800</prompt></para>
+     </listitem>
      </itemizedlist>
 	</sect2> 
         <sect2 id="install-config-finances">
