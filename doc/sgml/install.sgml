@@ -698,7 +698,29 @@ database = /usr/local/lms/lms.db</screen>
           but if module does not match at any level then no-access-message also will be printed.</member>
 	  </simplelist>
           </para>
-     </sect2>
+	</sect2>
+	<sect2 id="install-rights-user">
+      		<title>User-defined access rules</title>
+		<para>Advanced users can define additional any access rules
+		or redefine existing ones.  In order to do that you must make
+		PHP script based on file <filename>lib/accesstable.php</filename>
+		place them in LMS's <filename>lib</filename> directory. Then 
+		set option <filename>custom_accesstable</filename> in [phpui]
+		section to created file name.</para>
+		<para>In that way is possible to define your own rules to allow
+		or deny access for any modules. Module it's a name of PHP file
+		in <filename>modules</filename> directory, which in access rules
+		is given without extension. For example, is possible to define
+		rule for invoices displaying (e.g. for script lms-sendinvoices) 
+		in following way:
+<screen>
+<?php
+$access['table'][100]['name']      = 'invoices displaying';
+$access['table'][100]['allow_reg'] = '^invoice$';
+?>
+</screen>
+		</para>
+	</sect2>
     </sect1>
     <sect1 id="install-upgrade">
       <title>Upgrade</title>
