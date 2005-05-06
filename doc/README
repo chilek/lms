@@ -908,6 +908,10 @@ database = /usr/local/lms/lms.db
    directory, which in access rules is given without extension. For
    example, is possible to define rule for invoices displaying (e.g. for
    script lms-sendinvoices) in following way:
+<?php
+$access['table'][100]['name']      = 'invoices displaying';
+$access['table'][100]['allow_reg'] = '^invoice$';
+?>
      _________________________________________________________________
 
 2.8. Upgrade

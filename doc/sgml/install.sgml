@@ -724,10 +724,10 @@ database = /usr/local/lms/lms.db</screen>
 		rule for invoices displaying (e.g. for script lms-sendinvoices) 
 		in following way:
 <screen>
-<?php
+&lt;?php
 $access['table'][100]['name']      = 'invoices displaying';
 $access['table'][100]['allow_reg'] = '^invoice$';
-?>
+?&gt;
 </screen>
 		</para>
 	</sect2>
