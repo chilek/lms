@@ -30,8 +30,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
 	$SESSION->redirect('?m=welcome');
 }
 
-
-
 $layout['pagetitle'] = trans('Register your installation today! ;-)');
 
 $SMARTY->assign('uiid', $LMS->GetUniqueInstallationID());
