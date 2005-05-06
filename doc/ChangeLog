@@ -30,6 +30,8 @@ version 1.6.0rc1 Thor (??/??/????):
   - added option custom_accesstable for user-defined access rights (alec)
   - fixed devices desc on map when device has no IP, now device lastonline 
     status is getting from all connected nodes lastonline value (alec)
+  - BTS#0000340: option [Account] on customer list accounts all customer's 
+    covenants including invoices (alec)
     
 version 1.5.6 Baal (24/04/2005):
 
