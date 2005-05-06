@@ -63,7 +63,7 @@
 						{t}Select customers which has to concern new operation. If operation isn't customer payment or covenant, system will ignore list of customers.{/t}<BR><BR>
 						<SELECT size="20" name="addbalance[muserid][]" onChange="javascript:CountSelectedUsers();" multiple>
 							{section name=users loop=$users}
-							<OPTION value="{$users[users].id}">{$users[users].username|truncate:25:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
+							<OPTION value="{$users[users].id}">{$users[users].username|truncate:50:" ..."} ({$users[users].id|string_format:"%04d"})</OPTION>
 							{/section}
 						</SELECT>
 						{t}Selected:{/t} <INPUT TYPE="edit" NAME="selectededit" VALUE="0" SIZE="5" STYLE="border:0; background-color: #DFD5BD;" readonly></INPUT>
@@ -141,7 +141,6 @@
 						<INPUT TYPE="TEXT" NAME="addbalance[comment]" VALUE="{$comment}" SIZE="50" {tip text="Enter comment"}>
 					</TD>
 				</TR>
-
 				<TR CLASS="LIGHT">
 					<TD CLASS="fbottomu" ALIGN="right" COLSPAN="3">
 						<A HREF="javascript:AddBalance();" ACCESSKEY="s" >{t}Submit{/t} <IMG SRC="img/save.gif" BORDER="0" ALT=""></A>
